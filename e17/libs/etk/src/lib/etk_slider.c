@@ -15,7 +15,8 @@
 
 enum Etk_Slider_Property_Id
 {
-   ETK_SLIDER_LABEL_FORMAT_PROPERTY
+   ETK_SLIDER_LABEL_FORMAT_PROPERTY,
+   ETK_SLIDER_INVERTED_PROPERTY
 };
 
 static void _etk_slider_constructor(Etk_Slider *slider);
@@ -53,6 +54,8 @@ Etk_Type *etk_slider_type_get(void)
       
       etk_type_property_add(slider_type, "label_format", ETK_SLIDER_LABEL_FORMAT_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
+      etk_type_property_add(slider_type, "inverted", ETK_SLIDER_INVERTED_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       
       slider_type->property_set = _etk_slider_property_set;
       slider_type->property_get = _etk_slider_property_get;
@@ -161,6 +164,39 @@ const char *etk_slider_label_get(Etk_Slider *slider)
    return slider->format;
 }
 
+/**
+ * @brief Sets whether or not the slider is inverted. An inverted slider has its ends inverted: the maximum bound is
+ * at the left end for an Etk_HSlider, or at the bottom end (for an Etk_VSlider).
+ * @param slider a slider
+ * @param inverted ETK_TRUE to invert the slider, ETK_FALSE otherwise
+ */
+void etk_slider_inverted_set(Etk_Slider *slider, Etk_Bool inverted)
+{
+   if (!slider || slider->inverted == inverted)
+      return;
+   
+   slider->inverted = inverted;
+   if (ETK_WIDGET(slider)->theme_object)
+   {
+      _etk_slider_value_changed_handler(ETK_RANGE(slider), ETK_RANGE(slider)->value);
+      etk_widget_theme_signal_emit(ETK_WIDGET(slider),
+         inverted ? "etk,state,inverted" : "etk,state,normal", ETK_FALSE);
+   }
+   etk_object_notify(ETK_OBJECT(slider), "inverted");
+}
+
+/**
+ * @brief Gets whether or not the slider is inverted
+ * @param slider a slider
+ * @return Returns ETK_TRUE if the slider is inverted, ETK_FALSE otherwise
+ */
+Etk_Bool etk_slider_inverted_get(Etk_Slider *slider)
+{
+   if (!slider)
+      return ETK_FALSE;
+   return slider->inverted;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -173,8 +209,9 @@ static void _etk_slider_constructor(Etk_Slider *slider)
    if (!slider)
       return;
 
-   slider->dragging = ETK_FALSE;
    slider->format = NULL;
+   slider->inverted = ETK_FALSE;
+   slider->dragging = ETK_FALSE;
    
    ETK_RANGE(slider)->value_changed = _etk_slider_value_changed_handler;
    etk_signal_connect("realize", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realize_cb), NULL);
@@ -205,6 +242,9 @@ static void _etk_slider_property_set(Etk_Object *object, int property_id, Etk_Pr
       case ETK_SLIDER_LABEL_FORMAT_PROPERTY:
          etk_slider_label_set(slider, etk_property_value_string_get(value));
          break;
+      case ETK_SLIDER_INVERTED_PROPERTY:
+         etk_slider_inverted_set(slider, etk_property_value_bool_get(value));
+         break;
       default:
          break;
    }
@@ -222,6 +262,9 @@ static void _etk_slider_property_get(Etk_Object *object, int property_id, Etk_Pr
    {
       case ETK_SLIDER_LABEL_FORMAT_PROPERTY:
          etk_property_value_string_set(value, slider->format);
+         break;
+      case ETK_SLIDER_INVERTED_PROPERTY:
+         etk_property_value_bool_set(value, slider->inverted);
          break;
       default:
          break;
@@ -243,6 +286,8 @@ static void _etk_slider_realize_cb(Etk_Object *object, void *data)
    if (!(slider = ETK_SLIDER(object)) || !(theme_object = ETK_WIDGET(slider)->theme_object))
       return;
 
+   etk_widget_theme_signal_emit(ETK_WIDGET(slider),
+      slider->inverted ? "etk,state,inverted" : "etk,state,normal", ETK_FALSE);
    etk_widget_theme_signal_emit(ETK_WIDGET(object),
       slider->format ? "etk,action,show,label" : "etk,action,hide,label", ETK_TRUE);
    edje_object_signal_callback_add(theme_object, "drag*", "etk.dragable.slider",
@@ -256,22 +301,24 @@ static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *even
 {
    Etk_Range *range;
    Etk_Bool propagate = ETK_FALSE;
+   int dir;
 
    if (!(range = ETK_RANGE(object)))
       return;
 
-   if (strcmp(event->keyname, "Right") == 0 || strcmp(event->keyname, "Down") == 0)
-      etk_range_value_set(range, range->value + range->step_increment);
-   else if (strcmp(event->keyname, "Left") == 0 || strcmp(event->keyname, "Up") == 0)
-      etk_range_value_set(range, range->value - range->step_increment);
+   dir = ETK_SLIDER(range)->inverted ? -1 : 1;
+   if (strcmp(event->keyname, "Right") == 0 || strcmp(event->keyname, "Up") == 0)
+      etk_range_value_set(range, range->value + dir * range->step_increment);
+   else if (strcmp(event->keyname, "Left") == 0 || strcmp(event->keyname, "Down") == 0)
+      etk_range_value_set(range, range->value - dir * range->step_increment);
    else if (strcmp(event->keyname, "Home") == 0)
       etk_range_value_set(range, range->lower);
    else if (strcmp(event->keyname, "End") == 0)
       etk_range_value_set(range, range->upper);
    else if (strcmp(event->keyname, "Next") == 0)
-      etk_range_value_set(range, range->value + range->page_increment);
+      etk_range_value_set(range, range->value - dir * range->page_increment);
    else if (strcmp(event->keyname, "Prior") == 0)
-      etk_range_value_set(range, range->value - range->page_increment);
+      etk_range_value_set(range, range->value + dir * range->page_increment);
    else
       propagate = ETK_TRUE;
    
@@ -282,12 +329,14 @@ static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *even
 /* Called when the user wants to change the value with the mouse wheel */
 static void _etk_slider_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
-   Etk_Range *slider_range;
+   Etk_Range *range;
+   int dir;
    
-   if (!(slider_range = ETK_RANGE(object)))
+   if (!(range = ETK_RANGE(object)))
       return;
    
-   etk_range_value_set(slider_range, slider_range->value + event->z * slider_range->step_increment);
+   dir = ETK_SLIDER(range)->inverted ? 1 : -1;
+   etk_range_value_set(range, range->value + dir * event->z * range->step_increment);
    etk_signal_stop();
 }
 
@@ -307,9 +356,16 @@ static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const ch
    else if (strcmp(emission, "drag") == 0)
    {
       if (ETK_IS_HSLIDER(range))
+      {
          edje_object_part_drag_value_get(obj, "etk.dragable.slider", &v, NULL);
+         v = ETK_SLIDER(range)->inverted ? (1.0 - v) : v;
+      }
       else
+      {
          edje_object_part_drag_value_get(obj, "etk.dragable.slider", NULL, &v);
+         v = ETK_SLIDER(range)->inverted ? v : (1.0 - v);
+      }
+      
       etk_range_value_set(range, range->lower + v * (range->upper - range->lower));
    }
 }
@@ -332,15 +388,22 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
    if (!slider->dragging)
    {
       if (ETK_IS_HSLIDER(slider))
+      {
+         percent = slider->inverted ? (1.0 - percent) : percent;
          edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", percent, 0.0);
+      }
       else
+      {
+         percent = slider->inverted ? percent : (1.0 - percent);
          edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", 0.0, percent);
+      }
    }
    
    _etk_slider_label_update(slider);
 }
 
 /* Called when the range of the slider is changed */
+/* TODO: do we need that? _etk_slider_value_changed_handler() might be good enough? */
 static void _etk_slider_range_changed_cb(Etk_Object *object, const char *property_name, void *data)
 {
    Etk_Range *range;
@@ -376,7 +439,7 @@ static void _etk_slider_label_update(Etk_Slider *slider)
    if (!slider || !slider->format)
       return;
    
-   snprintf(label, sizeof(label), slider->format, etk_range_value_get(ETK_RANGE(slider)));
+   snprintf(label, sizeof(label), slider->format, ETK_RANGE(slider)->value);
    etk_widget_theme_part_text_set(ETK_WIDGET(slider), "etk.text.label", label);
 }
 
@@ -396,6 +459,8 @@ static void _etk_slider_label_update(Etk_Slider *slider)
  * Since Etk_Slider inherits from Etk_Range, you can use all the @a etk_range_*() functions to get or set the value of
  * a slider, or to change its bounds. You can also use the @a "value_changed" signal to be notified when the value
  * of a slider is changed. @n
+ * By default, the maximum bound of an Etk_HSlider is the right end, and the top end for an Etk_VSlider. But you can
+ * invert the ends of a slider with etk_slider_inverted_set(). @n
  * Sliders can also have their own label. For example, if you want to use a slider to control a value in centimeters,
  * you can add the associated label with:
  * @code
@@ -416,4 +481,9 @@ static void _etk_slider_label_update(Etk_Slider *slider)
  * @prop_type String (char *)
  * @prop_rw
  * @prop_val NULL
+ * \par
+ * @prop_name "inverted": Whether or not the slider is inverted
+ * @prop_type Boolean (char *)
+ * @prop_rw
+ * @prop_val ETK_FALSE
  */

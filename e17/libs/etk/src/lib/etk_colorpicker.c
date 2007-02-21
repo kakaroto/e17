@@ -264,14 +264,12 @@ void etk_colorpicker_use_alpha_set(Etk_Colorpicker *cp, Etk_Bool use_alpha)
    {
       etk_widget_show(cp->alpha_slider);
       etk_widget_show(cp->alpha_name_label);
-      etk_widget_show(cp->alpha_value_label);
       etk_range_value_set(ETK_RANGE(cp->alpha_slider), cp->current_color.a);
    }
    else
    {
       etk_widget_hide(cp->alpha_slider);
       etk_widget_hide(cp->alpha_name_label);
-      etk_widget_hide(cp->alpha_value_label);
       cp->current_color.a = 255;
    }
    etk_object_notify(ETK_OBJECT(cp), "use_alpha");
@@ -355,7 +353,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    etk_table_attach_default(ETK_TABLE(cp->main_table), cp->picker_widget, 0, 0, 0, 0);
    etk_widget_show(cp->picker_widget);
    
-   cp->component_table = etk_table_new(3, 7, ETK_FALSE);
+   cp->component_table = etk_table_new(2, 7, ETK_FALSE);
    etk_widget_internal_set(cp->component_table, ETK_TRUE);
    etk_table_attach_default(ETK_TABLE(cp->main_table), cp->component_table, 1, 1, 0, 0);
    etk_widget_show(cp->component_table);
@@ -373,6 +371,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       etk_widget_show(cp->radios[i]);
       
       cp->sliders[i] = etk_hslider_new(0.0, _etk_colorpicker_max_values[i], 0.0, steps[i], steps[i] * 5);
+      etk_slider_label_set(ETK_SLIDER(cp->sliders[i]), "%.0f");
       etk_widget_theme_parent_set(cp->sliders[i], ETK_WIDGET(cp));
       etk_widget_internal_set(cp->sliders[i], ETK_TRUE);
       etk_table_attach(ETK_TABLE(cp->component_table), cp->sliders[i], 1, 1, i, i,
@@ -380,14 +379,6 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       etk_widget_show(cp->sliders[i]);
       
       cp->sliders_image[i] = NULL;
-      
-      cp->value_labels[i] = etk_label_new("0");
-      etk_widget_internal_set(cp->value_labels[i], ETK_TRUE);
-      /* TODO: this sucks.. the width shouldn't be hardcoded.. */
-      etk_widget_size_request_set(cp->value_labels[i], 28, -1);
-      etk_table_attach(ETK_TABLE(cp->component_table), cp->value_labels[i], 2, 2, i, i,
-         0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
-      etk_widget_show(cp->value_labels[i]);
       
       etk_signal_connect("toggled", ETK_OBJECT(cp->radios[i]),
          ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
@@ -407,16 +398,10 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
          0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
       
       cp->alpha_slider = etk_hslider_new(0.0, 255.0, 255.0, 10, 5.0);
+      etk_slider_label_set(ETK_SLIDER(cp->alpha_slider), "%.0f");
       etk_widget_internal_set(cp->alpha_slider, ETK_TRUE);
       etk_table_attach(ETK_TABLE(cp->component_table), cp->alpha_slider, 1, 1, 6, 6,
          0, 0, ETK_TABLE_HFILL | ETK_TABLE_EXPAND);
-      
-      cp->alpha_value_label = etk_label_new("255");
-      etk_widget_internal_set(cp->alpha_value_label, ETK_TRUE);
-      /* TODO: this sucks.. the width shouldn't be hardcoded.. */
-      etk_widget_size_request_set(cp->alpha_value_label, 28, -1);
-      etk_table_attach(ETK_TABLE(cp->component_table), cp->alpha_value_label, 2, 2, 6, 6,
-         0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
       
       etk_signal_connect("value_changed", ETK_OBJECT(cp->alpha_slider),
          ETK_CALLBACK(_etk_colorpicker_alpha_slider_value_changed_cb), cp);
@@ -727,7 +712,6 @@ static void _etk_colorpicker_slider_value_changed_cb(Etk_Object *object, double 
    Etk_Color color;
    Etk_Bool update_sp_image;
    Etk_Bool update_vp_image;
-   char string[10];
    float h, s, v;
    int i;
    
@@ -745,13 +729,6 @@ static void _etk_colorpicker_slider_value_changed_cb(Etk_Object *object, double 
             cp->sp_xpos = value / _etk_colorpicker_max_values[i];
          else if (i == cp->sp_ycomponent)
             cp->sp_ypos = value / _etk_colorpicker_max_values[i];
-         
-         /* We update the corresponding label */
-         if (i == ETK_COLORPICKER_S || i == ETK_COLORPICKER_V)
-            snprintf(string, 10, "%d", (int)(value * 100));
-         else
-            snprintf(string, 10, "%d",(int)value);
-         etk_label_set(ETK_LABEL(cp->value_labels[i]), string);
          
          if (cp->ignore_value_changed)
             return;
@@ -841,13 +818,9 @@ static void _etk_colorpicker_alpha_slider_value_changed_cb(Etk_Object *object, d
    Etk_Colorpicker *cp;
    Etk_Widget *slider;
    Etk_Color color;
-   char string[10];
    
    if (!(slider = ETK_WIDGET(object)) || !(cp = ETK_COLORPICKER(data)))
       return;
-   
-   snprintf(string, 10, "%d", (int)(value));
-   etk_label_set(ETK_LABEL(cp->alpha_value_label), string);
    
    /* TODO: do we really need that?? */
    if (cp->ignore_value_changed)

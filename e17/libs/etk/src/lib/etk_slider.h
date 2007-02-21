@@ -43,6 +43,7 @@ struct Etk_Slider
    Etk_Range range;
    
    char *format;
+   Etk_Bool inverted;
    Etk_Bool dragging;
 };
 
@@ -77,6 +78,8 @@ Etk_Widget *etk_vslider_new(double lower, double upper, double value, double ste
 
 void        etk_slider_label_set(Etk_Slider *slider, const char *label_format);
 const char *etk_slider_label_get(Etk_Slider *slider);
+void        etk_slider_inverted_set(Etk_Slider *slider, Etk_Bool inverted);
+Etk_Bool    etk_slider_inverted_get(Etk_Slider *slider);
 
 /** @} */
 

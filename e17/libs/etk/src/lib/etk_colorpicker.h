@@ -75,12 +75,10 @@ struct Etk_Colorpicker
    /* Component widgets */
    Etk_Widget *component_table;
    Etk_Widget *radios[6];
-   Etk_Widget *value_labels[6];
    
    /* Alpha slider */
    Etk_Widget *alpha_slider;
    Etk_Widget *alpha_name_label;
-   Etk_Widget *alpha_value_label;
    
    /* Current color objects */
    Etk_Widget *color_table;
