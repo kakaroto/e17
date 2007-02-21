@@ -424,11 +424,16 @@ static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const ch
          v = _etk_slider_value_get_from_edje(slider);
          etk_range_value_set(ETK_RANGE(slider), v);
       }
-      else if (slider->policy == ETK_SLIDER_DELAYED)
+      else
       {
-         if (slider->update_timer)
-            ecore_timer_del(slider->update_timer);
-         slider->update_timer = ecore_timer_add(UPDATE_DELAY, _etk_slider_update_timer_cb, slider);
+         if (slider->policy == ETK_SLIDER_DELAYED)
+         {
+            if (slider->update_timer)
+               ecore_timer_del(slider->update_timer);
+            slider->update_timer = ecore_timer_add(UPDATE_DELAY, _etk_slider_update_timer_cb, slider);
+         }
+         
+         _etk_slider_label_update(slider);
       }
    }
 }
