@@ -15,8 +15,8 @@ group {
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: 3 2;
-               to: "label_clip";
+               offset: -1 11;
+               to: "slider_bar";
             }
          }
       }
@@ -27,11 +27,11 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.5;
-               offset: 3 -1;
+               offset: 4 -1;
             }
             rel2 {
                relative: 0.0 0.5;
-               offset: -1 0;
+               offset: -4 0;
                to_x: "label_clip";
             }
             image {
@@ -111,27 +111,26 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 1.0 0.0;
-               offset: -1 -4;
-               to_y: "etk.text.label";
+               offset: -1 0;
+               to_y: "label_under";
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -2 3;
-               to_y: "etk.text.label";
+               offset: -2 -1;
+               to_y: "label_under";
             }
          }
          description {
             state: "visible" 0.0;
-            inherit: "default" 0.0;
             rel1 {
                relative: 0.0 0.0;
-               offset: -5 -4;
-               to: "etk.text.label";
+               offset: 0 0;
+               to: "label_under";
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: 2 3;
-               to: "etk.text.label";
+               offset: -1 -1;
+               to: "label_under";
             }
          }
       }
@@ -140,11 +139,18 @@ group {
          clip_to: "label_clip";
          description {
             state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            min: 30 0;
             rel1 {
-               to: "label_clip";
+               relative: 0.0 0.0;
+               offset: -6 -5;
+               to: "etk.text.label";
             }
             rel2 {
-               to: "label_clip";
+               relative: 1.0 1.0;
+               offset: 4 2;
+               to: "etk.text.label";
             }
             image {
                normal: "frame_label_under.png";
@@ -167,18 +173,17 @@ group {
             fixed: 1 1;
             rel1 {
                relative: 1.0 0.5;
-               offset: -3 0;
+               offset: -6 0;
             }
             rel2 {
                relative: 1.0 0.5;
-               offset: -3 0;
+               offset: -6 0;
             }
             text {
                text: "0.0";
                font: "Vera";
                size: 10;
                min: 1 1;
-               max: 1 1;
             }
          }
       }
@@ -189,10 +194,10 @@ group {
          description {
             state: "default" 0.0;
             rel1 {
-               to: "label_clip";
+               to: "label_under";
             }
             rel2 {
-               to: "label_clip";
+               to: "label_under";
             }
             image {
                normal: "frame_label_over.png";
@@ -307,18 +312,15 @@ group {
          description {
             state: "default" 0.0;
             color: 255 255 255 0;
-            min: 30 0;
-            fixed: 1 1;
             rel1 {
                relative: 0.0 0.0;
-               offset: -4 -4;
-               to_x: "label_clip";
-               to_y: "slider_bar";
+               offset: -13 -4;
+               to: "slider_bar";
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: 2 0;
-               to: "label_clip";
+               offset: 11 -1;
+               to: "slider_bar";
             }
          }
       }
@@ -329,11 +331,11 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.5 0.0;
-               offset: -1 3;
+               offset: -1 4;
             }
             rel2 {
                relative: 0.5 0.0;
-               offset: 0 -1;
+               offset: 0 -4;
                to_y: "label_clip";
             }
             image {
@@ -359,7 +361,7 @@ group {
             }
             rel2 {
                relative: 0.0 1.0;
-               offset: 7 -3;
+               offset: 7 -5;
                to: "slider_bar";
             }
          }
@@ -413,27 +415,26 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 1.0;
-               offset: -5 -1;
-               to_x: "etk.text.label";
+               offset: 0 -1;
+               to_x: "label_under";
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: 2 -2;
-               to_x: "etk.text.label";
+               offset: -1 -2;
+               to_x: "label_under";
             }
          }
          description {
             state: "visible" 0.0;
-            inherit: "default" 0.0;
             rel1 {
                relative: 0.0 0.0;
-               offset: -5 -4;
-               to: "etk.text.label";
+               offset: 0 0;
+               to: "label_under";
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: 2 3;
-               to: "etk.text.label";
+               offset: -1 -1;
+               to: "label_under";
             }
          }
       }
@@ -442,11 +443,18 @@ group {
          clip_to: "label_clip";
          description {
             state: "default" 0.0;
+            align: 0.5 1.0;
+            fixed: 1 1;
+            min: 30 0;
             rel1 {
-               to: "label_clip";
+               relative: 0.0 0.0;
+               offset: -6 -5;
+               to: "etk.text.label";
             }
             rel2 {
-               to: "label_clip";
+               relative: 1.0 1.0;
+               offset: 4 2;
+               to: "etk.text.label";
             }
             image {
                normal: "frame_label_under.png";
@@ -465,22 +473,21 @@ group {
          description {
             state: "default" 0.0;
             color: 0 0 0 255;
+            align: 0.5 1.0;
             fixed: 1 1;
             rel1 {
-               relative: 0.0 1.0;
-               offset: 8 -8;
+               relative: 0.5 1.0;
+               offset: 0 -3;
             }
             rel2 {
-               relative: 1.0 1.0;
-               offset: -7 -8;
+               relative: 0.5 1.0;
+               offset: 0 -3;
             }
             text {
                text: "0.0";
                font: "Vera";
                size: 10;
-               align: 0.5 0.5;
                min: 1 1;
-               max: 1 1;
             }
          }
       }
@@ -491,10 +498,10 @@ group {
          description {
             state: "default" 0.0;
             rel1 {
-               to: "label_clip";
+               to: "label_under";
             }
             rel2 {
-               to: "label_clip";
+               to: "label_under";
             }
             image {
                normal: "frame_label_over.png";
