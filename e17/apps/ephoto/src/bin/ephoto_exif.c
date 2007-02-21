@@ -58,19 +58,22 @@ static char *get_image(void)
 {
 	const char *img;
 
-        if (VISIBLE(em->fbox_vbox))
+        if (VISIBLE(em->fbox_vbox) && em->currentf)
         {
                 img = ewl_widget_name_get(em->currentf);
         }
-        else if (VISIBLE(em->list_vbox))
+        else if (VISIBLE(em->list_vbox) && em->currentl)
         {
-                img = ewl_widget_name_get(em->currenti);
+                img = ewl_widget_name_get(em->currentl);
         }
         else if (VISIBLE(em->edit_vbox))
         {
                 img = ewl_image_file_path_get(EWL_IMAGE(em->eimage));
         }
-
+	else
+	{
+		return NULL;
+	}
 	return strdup(img);
 }
 
@@ -138,6 +141,10 @@ void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 	Ewl_View *view;
 	
 	img = get_image();
+	if(!img)
+	{
+		return;
+	}
 
 	win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "Ephoto Exif Info");

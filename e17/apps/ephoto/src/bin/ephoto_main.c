@@ -137,13 +137,15 @@ void create_main_gui(void)
 
         image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/normal_view.png", 0, show_normal_view, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_attach_tooltip_text_set(image, "Normal View");
 
         vsep = ewl_vseparator_new();
         ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
         ewl_widget_show(vsep);
 
         image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/list_view.png", 0, show_list_view, NULL);
-        ewl_image_constrain_set(EWL_IMAGE(image), 30);        
+        ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_attach_tooltip_text_set(image, "List View");      
 
         vsep = ewl_vseparator_new();
         ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
@@ -151,6 +153,7 @@ void create_main_gui(void)
 
 	image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/edit_view.png", 0, show_edit_view, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_attach_tooltip_text_set(image, "Edit View");
 
 	vsep = ewl_vseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
@@ -158,6 +161,7 @@ void create_main_gui(void)
 
         image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/get_exif.png", 0, display_exif_dialog, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_attach_tooltip_text_set(image, "View Exif");
 
         vsep = ewl_vseparator_new();
         ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
@@ -165,6 +169,7 @@ void create_main_gui(void)
 
         image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", 0, window_fullscreen, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_attach_tooltip_text_set(image, "Fullscreen");
 
         vsep = ewl_vseparator_new();
         ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
@@ -172,6 +177,7 @@ void create_main_gui(void)
 
         image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/x-office-presentation.png", 0, NULL, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_attach_tooltip_text_set(image, "Slideshow");
 
         vsep = ewl_vseparator_new();
         ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
@@ -183,8 +189,8 @@ void create_main_gui(void)
 	ewl_widget_show(em->edit_tools);
 
 	add_edit_tools(em->edit_tools);
-	ewl_widget_hide(em->edit_tools);
-
+	ewl_widget_disable(em->edit_tools);
+	
 	em->albums = ecore_list_new();
 	em->db = ephoto_db_init();
 	em->albums = ephoto_db_list_albums(em->db);

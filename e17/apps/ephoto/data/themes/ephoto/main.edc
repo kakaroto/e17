@@ -62,6 +62,11 @@ data
         item: "/text/font" "ewl/default";
         item: "/text/font_size" 10;
         item: "/text/style" "none";
+	item: "/tooltip/delay" ".2";
+	item: "/tooltip/group" "/ephoto/window";
+	item: "/tooltip/hoffset" "5";
+	item: "/tooltip/voffset" "5";
+	item: "/tree2/vbox/scrollpane/overlay/vbox/node/row/cell/hbox/group" "/ephoto/select";
 	item: "/vscrollbar/decrement/group" "/ephoto/vscrollbar/decrement";
 	item: "/vscrollbar/increment/group" "/ephoto/vscrollbar/increment";
 	item: "/vseeker/group" "/ephoto/vrunner";

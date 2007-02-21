@@ -30,11 +30,10 @@ Ewl_Widget *add_normal_view(Ewl_Widget *c)
 void show_normal_view(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->fbox_vbox);
+	ewl_widget_disable(em->edit_tools);
         ewl_widget_show(em->atree);
         ewl_widget_show(em->tbar);
         ewl_widget_show(em->ilabel);
-	ewl_widget_hide(em->edit_tools);
-        ewl_widget_configure(em->fbox);
 }
 
 /*Set the info that is in the info label on normal view*/

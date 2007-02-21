@@ -88,7 +88,7 @@ struct _Ephoto_Main
 	Ewl_Widget *atree; 
 	Ewl_Widget *currenta;
 	Ewl_Widget *currentf;
-	Ewl_Widget *currenti;
+	Ewl_Widget *currentl;
 	Ewl_Widget *edit_tools;
 	Ewl_Widget *edit_vbox;
 	Ewl_Widget *eimage;

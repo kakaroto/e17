@@ -29,11 +29,10 @@ void show_edit_view(Ewl_Widget *w, void *event, void *data)
 {
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->edit_vbox);
 	ecore_dlist_goto_first(em->images);
-	ewl_widget_show(em->edit_tools);
+	ewl_widget_enable(em->edit_tools);
         ewl_widget_hide(em->atree);
         ewl_widget_hide(em->tbar);
         ewl_widget_hide(em->ilabel);
-        ewl_widget_reparent(em->eimage);
 }
 
 /*Add edit tools to container c*/
@@ -43,15 +42,19 @@ void add_edit_tools(Ewl_Widget *c)
 
 	image = add_image(c, PACKAGE_DATA_DIR "/images/undo.png", 0, rotate_image_left, NULL);
 	ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_attach_tooltip_text_set(image, "Rotate Image Left");
 
         image = add_image(c, PACKAGE_DATA_DIR "/images/redo.png", 0, rotate_image_right, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_attach_tooltip_text_set(image, "Rotate Image Right");
 
         image = add_image(c, PACKAGE_DATA_DIR "/images/go-next.png", 0, flip_image_horizontal, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_attach_tooltip_text_set(image, "Flip Image Horizontally");
 
         image = add_image(c, PACKAGE_DATA_DIR "/images/go-down.png", 0, flip_image_vertical, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
+	ewl_attach_tooltip_text_set(image, "Flip Image Vertically");
 
 	sep = ewl_vseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(c), sep);
@@ -60,10 +63,12 @@ void add_edit_tools(Ewl_Widget *c)
         image = add_image(c, PACKAGE_DATA_DIR "/images/media-seek-backward.png", 0, previous_image, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
 	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_RIGHT);
+	ewl_attach_tooltip_text_set(image, "Previous Image");
 
         image = add_image(c, PACKAGE_DATA_DIR "/images/media-seek-forward.png", 0, next_image, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
 	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_RIGHT);
+	ewl_attach_tooltip_text_set(image, "Next Image");
 
 	return;
 }
