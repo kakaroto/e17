@@ -4220,3 +4220,15 @@ Use global animation time step.
 Update config item notes.
 Make shadow on/off change effective immediately.
 
+
+-------------------------------------------------------------------------------
+
+Tue Feb 20 18:45:20 CET 2007
+(Kim)
+
+--- 0.16.8.6 ---
+Japanese translation update (Yasufumi Haga).
+Add icon to iconbox after in stead of before animation.
+Disable dialog checkbox for non-functional "Button Image" feature.
+Add some checks to avoid imlib warnings.
+
