@@ -109,8 +109,9 @@ group {
                offset: 4 -6;
             }
             rel2 {
-               relative: 1.0 0.5;
+               relative: 0.0 0.5;
                offset: -5 5;
+               to_x: "label_under";
             }
             image {
                normal: "colorpicker_slider_trough.png";
@@ -153,6 +154,77 @@ group {
             max: 9 15;
             image {
                normal: "colorpicker_slider_drag.png";
+            }
+         }
+      }
+      part {
+         name: "label_under";
+         description {
+            state: "default" 0.0;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            min: 30 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -6 -5;
+               to: "etk.text.label";
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 4 2;
+               to: "etk.text.label";
+            }
+            image {
+               normal: "frame_label_under.png";
+               border: 3 3 3 3;
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+      }
+      part {
+         name: "etk.text.label";
+         type: TEXT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            align: 1.0 0.5;
+            fixed: 1 1;
+            rel1 {
+               relative: 1.0 0.5;
+               offset: -6 0;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -6 0;
+            }
+            text {
+               text: "0.0";
+               font: "Vera";
+               size: 10;
+               min: 1 1;
+            }
+         }
+      }
+      part {
+         name: "label_over";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "label_under";
+            }
+            rel2 {
+               to: "label_under";
+            }
+            image {
+               normal: "frame_label_over.png";
+               border: 7 7 7 7;
+            }
+            fill {
+               smooth: 0;
             }
          }
       }
