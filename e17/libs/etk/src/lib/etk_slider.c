@@ -13,10 +13,13 @@
  * @{
  */
 
+#define UPDATE_DELAY 0.3
+
 enum Etk_Slider_Property_Id
 {
    ETK_SLIDER_LABEL_FORMAT_PROPERTY,
-   ETK_SLIDER_INVERTED_PROPERTY
+   ETK_SLIDER_INVERTED_PROPERTY,
+   ETK_SLIDER_UPDATE_POLICY_PROPERTY
 };
 
 static void _etk_slider_constructor(Etk_Slider *slider);
@@ -30,6 +33,8 @@ static void _etk_slider_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *e
 static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_slider_value_changed_handler(Etk_Range *range, double value);
 static void _etk_slider_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
+static int _etk_slider_update_timer_cb(void *data);
+static double _etk_slider_value_get_from_edje(Etk_Slider *slider);
 static void _etk_slider_label_update(Etk_Slider *slider);
 
 /**************************
@@ -56,6 +61,8 @@ Etk_Type *etk_slider_type_get(void)
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(slider_type, "inverted", ETK_SLIDER_INVERTED_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(slider_type, "update_policy", ETK_SLIDER_UPDATE_POLICY_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SLIDER_CONTINUOUS));
       
       slider_type->property_set = _etk_slider_property_set;
       slider_type->property_get = _etk_slider_property_get;
@@ -197,6 +204,37 @@ Etk_Bool etk_slider_inverted_get(Etk_Slider *slider)
    return slider->inverted;
 }
 
+/**
+ * @brief Sets the update-policy of the slider
+ * @param slider
+ * @param policy the update-policy to set to the timer
+ */
+void etk_slider_update_policy_set(Etk_Slider *slider, Etk_Slider_Update_Policy policy)
+{
+   if (!slider || slider->policy == policy)
+      return;
+   
+   slider->policy = policy;
+   if (slider->update_timer)
+   {
+      ecore_timer_del(slider->update_timer);
+      slider->update_timer = NULL;
+   }
+   etk_object_notify(ETK_OBJECT(slider), "update_policy");
+}
+
+/**
+ * @brief Gets the update-policy of the slider
+ * @param slider a slider
+ * @return Returns the update-policy of the slider
+ */
+Etk_Slider_Update_Policy etk_slider_update_policy_get(Etk_Slider *slider)
+{
+   if (!slider)
+      return ETK_SLIDER_CONTINUOUS;
+   return slider->policy;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -212,6 +250,8 @@ static void _etk_slider_constructor(Etk_Slider *slider)
    slider->format = NULL;
    slider->inverted = ETK_FALSE;
    slider->dragging = ETK_FALSE;
+   slider->policy = ETK_SLIDER_CONTINUOUS;
+   slider->update_timer = NULL;
    
    ETK_RANGE(slider)->value_changed = _etk_slider_value_changed_handler;
    etk_signal_connect("realize", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realize_cb), NULL);
@@ -226,6 +266,9 @@ static void _etk_slider_destructor(Etk_Slider *slider)
 {
    if (!slider)
       return;
+   
+   if (slider->update_timer)
+      ecore_timer_del(slider->update_timer);
    free(slider->format);
 }
 
@@ -244,6 +287,9 @@ static void _etk_slider_property_set(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_SLIDER_INVERTED_PROPERTY:
          etk_slider_inverted_set(slider, etk_property_value_bool_get(value));
+         break;
+      case ETK_SLIDER_UPDATE_POLICY_PROPERTY:
+         etk_slider_update_policy_set(slider, etk_property_value_int_get(value));
          break;
       default:
          break;
@@ -265,6 +311,9 @@ static void _etk_slider_property_get(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_SLIDER_INVERTED_PROPERTY:
          etk_property_value_bool_set(value, slider->inverted);
+         break;
+      case ETK_SLIDER_UPDATE_POLICY_PROPERTY:
+         etk_property_value_int_set(value, slider->policy);
          break;
       default:
          break;
@@ -343,30 +392,44 @@ static void _etk_slider_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *e
 /* Called when the cursor of the slider is dragged */
 static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
-   Etk_Range *range;
+   Etk_Slider *slider;
    double v;
 
-   if (!(range = ETK_RANGE(data)))
+   if (!(slider = ETK_SLIDER(data)))
       return;
 
    if (strcmp(emission, "drag,start") == 0)
-      ETK_SLIDER(range)->dragging = ETK_TRUE;
+      slider->dragging = ETK_TRUE;
    else if (strcmp(emission, "drag,stop") == 0)
-      ETK_SLIDER(range)->dragging = ETK_FALSE;
+   {
+      /* The drag-button is released: we change the value of the slider if it uses the
+       * discontinuous or the delayed update-policy */
+      if (slider->policy == ETK_SLIDER_DISCONTINUOUS || slider->policy == ETK_SLIDER_DELAYED)
+      {
+         v = _etk_slider_value_get_from_edje(slider);
+         etk_range_value_set(ETK_RANGE(slider), v);
+         if (slider->update_timer)
+         {
+            ecore_timer_del(slider->update_timer);
+            slider->update_timer = NULL;
+         }
+      }
+      slider->dragging = ETK_FALSE;
+   }
    else if (strcmp(emission, "drag") == 0)
    {
-      if (ETK_IS_HSLIDER(range))
+      /* The drag-button has been moved */
+      if (slider->policy == ETK_SLIDER_CONTINUOUS)
       {
-         edje_object_part_drag_value_get(obj, "etk.dragable.slider", &v, NULL);
-         v = ETK_SLIDER(range)->inverted ? (1.0 - v) : v;
+         v = _etk_slider_value_get_from_edje(slider);
+         etk_range_value_set(ETK_RANGE(slider), v);
       }
-      else
+      else if (slider->policy == ETK_SLIDER_DELAYED)
       {
-         edje_object_part_drag_value_get(obj, "etk.dragable.slider", NULL, &v);
-         v = ETK_SLIDER(range)->inverted ? v : (1.0 - v);
+         if (slider->update_timer)
+            ecore_timer_del(slider->update_timer);
+         slider->update_timer = ecore_timer_add(UPDATE_DELAY, _etk_slider_update_timer_cb, slider);
       }
-      
-      etk_range_value_set(range, range->lower + v * (range->upper - range->lower));
    }
 }
 
@@ -403,43 +466,76 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
 }
 
 /* Called when the range of the slider is changed */
-/* TODO: do we need that? _etk_slider_value_changed_handler() might be good enough? */
 static void _etk_slider_range_changed_cb(Etk_Object *object, const char *property_name, void *data)
 {
    Etk_Range *range;
-   Evas_Object *theme_object;
-   double percent;
 
-   if (!(range = ETK_RANGE(object)) || !(theme_object = ETK_WIDGET(range)->theme_object))
+   if (!(range = ETK_RANGE(object)))
       return;
+   _etk_slider_value_changed_handler(range, range->value);
+}
 
-   /* Update the position of the drag button in the slider */
-   if (range->upper - range->page_size > range->lower)
-      percent = ETK_CLAMP((range->value - range->lower) / (range->upper - range->lower - range->page_size), 0.0, 1.0);
-   else
-      percent = 0.0;
+/* Timer used to update the slider's value when its policy is ETK_SLIDER_DELAYED */
+static int _etk_slider_update_timer_cb(void *data)
+{
+   Etk_Slider *slider;
+   double v;
    
-   if (ETK_IS_HSLIDER(range))
-      edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", percent, 0.0);
-   else
-      edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", 0.0, percent);
+   if (!(slider = ETK_SLIDER(data)))
+      return 0;
+   
+   v = _etk_slider_value_get_from_edje(slider);
+   etk_range_value_set(ETK_RANGE(slider), v);
+   slider->update_timer = NULL;
+   return 0;
 }
 
 /**************************
  *
- * Callbacks and handlers
+ * Private functions
  *
  **************************/
+
+/* Gets the value of the slider from the position of the drag-object */
+static double _etk_slider_value_get_from_edje(Etk_Slider *slider)
+{
+   Etk_Range *range;
+   double v;
+   
+   if (!(range = ETK_RANGE(slider)) || !ETK_WIDGET(slider)->theme_object || range->upper <= range->lower)
+      return 0.0;
+   
+   if (ETK_IS_HSLIDER(slider))
+   {
+      edje_object_part_drag_value_get(ETK_WIDGET(slider)->theme_object, "etk.dragable.slider", &v, NULL);
+      v = slider->inverted ? (1.0 - v) : v;
+   }
+   else
+   {
+      edje_object_part_drag_value_get(ETK_WIDGET(slider)->theme_object, "etk.dragable.slider", NULL, &v);
+      v = slider->inverted ? v : (1.0 - v);
+   }
+   
+   v = range->lower + v * (range->upper - range->lower);
+   return v;
+}
 
 /* Updates the label of the slider's theme-object */
 static void _etk_slider_label_update(Etk_Slider *slider)
 {
    char label[256];
+   double v;
    
-   if (!slider || !slider->format)
+   if (!slider)
       return;
    
-   snprintf(label, sizeof(label), slider->format, ETK_RANGE(slider)->value);
+   if (slider->format)
+   {
+      v = _etk_slider_value_get_from_edje(slider);
+      snprintf(label, sizeof(label), slider->format, v);
+   }
+   else
+      label[0] = '\0';
    etk_widget_theme_part_text_set(ETK_WIDGET(slider), "etk.text.label", label);
 }
 
@@ -458,9 +554,14 @@ static void _etk_slider_label_update(Etk_Slider *slider)
  * Etk_Slider is the base class for Etk_HSlider (for horizontal sliders) and Etk_VSlider (for vertical sliders). @n
  * Since Etk_Slider inherits from Etk_Range, you can use all the @a etk_range_*() functions to get or set the value of
  * a slider, or to change its bounds. You can also use the @a "value_changed" signal to be notified when the value
- * of a slider is changed. @n
+ * of a slider is changed. @n @n
+ * A slider can have different update-policies: by default, it uses a continuous update-policy, meaning the value of
+ * the slider will be changed each timer the slider's button is moved. But a slider can also use a discontinuous
+ * update-policy (the value will be changed only when the drag-button is released) or a delayed update-policy (the
+ * value will be changed after a brief timeout where no slider motion occurs). The update-policy can be changed with
+ * etk_slider_update_policy_set(). @n \n
  * By default, the maximum bound of an Etk_HSlider is the right end, and the top end for an Etk_VSlider. But you can
- * invert the ends of a slider with etk_slider_inverted_set(). @n
+ * invert the ends of a slider with etk_slider_inverted_set(). @n @n
  * Sliders can also have their own label. For example, if you want to use a slider to control a value in centimeters,
  * you can add the associated label with:
  * @code
@@ -486,4 +587,9 @@ static void _etk_slider_label_update(Etk_Slider *slider)
  * @prop_type Boolean (char *)
  * @prop_rw
  * @prop_val ETK_FALSE
+ * \par
+ * @prop_name "update_policy": The update-policy of the slider (continuous, discontinuous or delayed)
+ * @prop_type Integer (Etk_Slider_Update_Policy)
+ * @prop_rw
+ * @prop_val ETK_SLIDER_CONTINUOUS
  */

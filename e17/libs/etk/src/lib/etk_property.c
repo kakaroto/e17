@@ -672,8 +672,8 @@ const char *etk_property_value_string_get(Etk_Property_Value *value)
  *
  * Most of the following functions are used internally by Etk, you usually do not have to directly call any of the
  * etk_property_*() functions. @n
- * If you want to create a property for a new object type, use etk_type_property_add() instead. @n
- * The only case where you have to use the etk_property_value_*_set/get() functions in in the property_set/get()
+ * If you want to create a property for a new object type, use etk_type_property_add(). @n
+ * The only case where you have to use the etk_property_value_*_set/get() functions is in the property_set/get()
  * methods when you are implementing a new widget, to set or to get the value of a property.  @n
  *
  * See Etk_Object for more information about how to use the property system.

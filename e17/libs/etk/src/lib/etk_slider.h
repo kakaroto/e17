@@ -3,6 +3,7 @@
 #define _ETK_SLIDER_H_
 
 #include "etk_range.h"
+#include <Ecore.h>
 #include "etk_types.h"
 
 /**
@@ -32,6 +33,15 @@
 /** Checks if the object is an Etk_VSlider */
 #define ETK_IS_VSLIDER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VSLIDER_TYPE))
 
+
+/** @brief The different kinds of update policy for a slider */
+typedef enum Etk_Slider_Update_Policy
+{
+   ETK_SLIDER_CONTINUOUS,       /**< The slider will be updated as soon as its button is dragged */
+   ETK_SLIDER_DISCONTINUOUS,    /**< The slider will be updated as soon as its button gets released */
+   ETK_SLIDER_DELAYED           /**< The slider will be updated after a brief timeout where no slider motion occurs */
+} Etk_Slider_Update_Policy;
+
 /**
  * @brief A widget with a cursor that the user can drag to change its value
  * @structinfo
@@ -45,6 +55,8 @@ struct Etk_Slider
    char *format;
    Etk_Bool inverted;
    Etk_Bool dragging;
+   Etk_Slider_Update_Policy policy;
+   Ecore_Timer *update_timer;
 };
 
 /**
@@ -80,6 +92,9 @@ void        etk_slider_label_set(Etk_Slider *slider, const char *label_format);
 const char *etk_slider_label_get(Etk_Slider *slider);
 void        etk_slider_inverted_set(Etk_Slider *slider, Etk_Bool inverted);
 Etk_Bool    etk_slider_inverted_get(Etk_Slider *slider);
+
+void                     etk_slider_update_policy_set(Etk_Slider *slider, Etk_Slider_Update_Policy policy);
+Etk_Slider_Update_Policy etk_slider_update_policy_get(Etk_Slider *slider);
 
 /** @} */
 
