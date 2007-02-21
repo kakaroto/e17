@@ -8,6 +8,7 @@ struct _E_Config_Dialog_Data
    char *device;
    char *app;
    int limit, show_text;
+   int show_popup;
    
    Ecore_List *devs;
    int num;
@@ -82,6 +83,7 @@ _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
      cfdata->app = strdup(ci->app);
 
    cfdata->show_text = ci->show_text;
+   cfdata->show_popup = ci->show_popup;
    cfdata->limit = ci->limit;
    
    cfdata->devs = _config_devices_get();
@@ -110,6 +112,8 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    
    of = e_widget_framelist_add(evas, _("General Settings"), 0);
    ob = e_widget_check_add(evas, _("Show Text"), &(cfdata->show_text));
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_check_add(evas, _("Show Popup On Mouse-Over"), &(cfdata->show_popup));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_label_add(evas, _("Launch Application On Double-Click"));
    e_widget_framelist_object_append(of, ob);
@@ -158,7 +162,8 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      }
    ci->limit = cfdata->limit;
    ci->show_text = cfdata->show_text;
-
+   ci->show_popup = cfdata->show_popup;
+   
    if (ci->app) evas_stringshare_del(ci->app);
    if (cfdata->app != NULL)
      ci->app = evas_stringshare_add(cfdata->app);

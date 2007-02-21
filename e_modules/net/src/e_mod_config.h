@@ -19,6 +19,7 @@ struct _Config_Item
    const char *device;
    const char *app;
    int limit, show_text;
+   int show_popup;
 };
 
 EAPI Config_Item *_config_item_get(const char *id);

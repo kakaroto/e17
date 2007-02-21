@@ -20,6 +20,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(item_edd, Config_Item, device, STR);
    E_CONFIG_VAL(item_edd, Config_Item, app, STR);
    E_CONFIG_VAL(item_edd, Config_Item, limit, INT);
+   E_CONFIG_VAL(item_edd, Config_Item, show_popup, INT);
    E_CONFIG_VAL(item_edd, Config_Item, show_text, INT);
    
    conf_edd = E_CONFIG_DD_NEW("Config", Config);

@@ -21,6 +21,7 @@ _config_item_get(const char *id)
    ci->app = evas_stringshare_add("");
    ci->limit = 0;
    ci->show_text = 1;
+   ci->show_popup = 0;
    cfg->items = evas_list_append(cfg->items, ci);
    return ci;
 }

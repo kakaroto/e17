@@ -106,9 +106,9 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
    else if ((ev->button == 1) && (!cfg->menu))
      {
 	if (inst->popup_locked) 
-	  inst->popup_locked=0;
+	  inst->popup_locked = 0;
 	else
-	  inst->popup_locked=1;
+	  inst->popup_locked = 1;
      }
    else if ((ev->button == 3) && (!cfg->menu)) 
      {
@@ -155,10 +155,10 @@ _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *sou
 
    inst = data;
    if (inst->popup != NULL) return;
-
-   inst->popup = E_NEW(Popup, 1);
    ci = _config_item_get(inst->gcc->id);
+   if (!ci->show_popup) return;
    
+   inst->popup = E_NEW(Popup, 1);
    snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(cfg->mod));
    
    con = e_container_current_get(e_manager_current_get());
