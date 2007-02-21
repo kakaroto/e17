@@ -19,6 +19,7 @@ int photo_menu_show(Photo_Item *pi)
 {
    E_Menu *mn, *mn2;
    E_Menu_Item *mi;
+   char buf[4096];
 
    mn = e_menu_new();
    e_menu_post_deactivate_callback_set(mn, _cb_deactivate_post, pi);
@@ -54,11 +55,12 @@ int photo_menu_show(Photo_Item *pi)
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_INFOS);
    e_menu_item_callback_set(mi, _cb_picture_info, pi);
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Set picture as background"));
+   e_menu_item_label_set(mi, _("Set as background"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_SETBG);
    e_menu_item_callback_set(mi, _cb_picture_setbg, pi);
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("See picture in a viewer"));
+   snprintf(buf, sizeof(buf), "%s %s", _("Open in"), photo->config->pictures_viewer);
+   e_menu_item_label_set(mi, buf);
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_VIEWER);
    e_menu_item_callback_set(mi, _cb_picture_viewer, pi);
 
@@ -66,18 +68,18 @@ int photo_menu_show(Photo_Item *pi)
    e_menu_item_separator_set(mi, 1);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Configure this Photo gadget"));
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
-   e_menu_item_callback_set(mi, _cb_configure_item, pi);
-   mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, _("Configure Photo module"));
    e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _cb_configure_general, NULL);
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, _("Configure this Photo gadget"));
+   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+   e_menu_item_callback_set(mi, _cb_configure_item, pi);
 
    mn2 = e_menu_new();
    e_gadcon_client_util_menu_items_append(pi->gcc, mn2, 0);
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Gadget and Shelf"));
+   e_menu_item_label_set(mi, _("Configure Gadget and Shelf"));
    e_menu_item_submenu_set(mi, mn2);
 
    pi->menu = mn;

@@ -11,6 +11,8 @@ BUGS
 NEEDED
 ----------------------------------------------------
 
+* fix the "Set as wallpaper", using E code, like slideshow module
+
 * option to set the thumb size, and no thumb mode
 
 * find a way to have the path of a generated thumb, to load it direcly

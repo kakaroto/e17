@@ -18,8 +18,6 @@ struct _E_Config_Dialog_Data
 static void        *_create_data(E_Config_Dialog *cfd);
 static void         _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void         _fill_data(E_Config_Dialog_Data *cfdata, Photo_Item *pi);
-static void         _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata, Evas_Object *o);
-static int          _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int          _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
@@ -102,12 +100,14 @@ _fill_data(E_Config_Dialog_Data *cfdata, Photo_Item *pi)
    cfdata->action_mouse_middle = pi->config->action_mouse_middle;
 }
 
-static void
-_common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata, Evas_Object *o)
+static Evas_Object *
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
+   Evas_Object *o;
    Evas_Object *of, *ob;
    E_Radio_Group *rg;
-
+   
+   o = e_widget_table_add(evas, 0);
 
    of = e_widget_frametable_add(evas, _("Timer between pictures change"), 0);
 
@@ -145,10 +145,12 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_frametable_object_append(of, ob, 2, 3, 1, 1, 1, 1, 1, 1);   
 
    e_widget_table_object_append(o, of, 0, 1, 1, 1, 1, 1, 1, 1);
+
+   return o;
 }
 
 static int
-_common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    Photo_Item *pi;
 
@@ -170,34 +172,10 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
         photo_item_label_mode_set(pi);
      }
 
-   return 1;
-}
-
-static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
-{
-   Evas_Object *o;
-   
-   o = e_widget_table_add(evas, 0);
-
-   _common_create_widgets(cfd, evas, cfdata, o);
-
-   return o;
-}
-
-static int
-_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
-{
-   Photo_Item *pi;
-   int ret;
-
-   pi = cfdata->pi;
-   ret = _common_apply_data(cfd, cfdata);
-
    photo_item_label_mode_set(pi);
 
    photo_config_save();
-   return ret;
+   return 1;
 }
 
 static Evas_Object *
@@ -207,9 +185,6 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    E_Radio_Group *rg;
 
    o = e_widget_table_add(evas, 0);
-
-   _common_create_widgets(cfd, evas, cfdata, o);
-
 
    of = e_widget_frametable_add(evas, _("Mouse actions"), 0);
 
@@ -242,7 +217,6 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    int ret;
 
    pi = cfdata->pi;
-   ret = _common_apply_data(cfd, cfdata);
 
    if ( (pi->config->action_mouse_over = cfdata->action_mouse_over) ||
         (pi->config->action_mouse_left = cfdata->action_mouse_left) ||
@@ -256,5 +230,5 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      }
 
    photo_config_save();
-   return ret;
+   return 1;
 }

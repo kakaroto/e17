@@ -28,8 +28,6 @@ struct _E_Config_Dialog_Data
 static void        *_create_data(E_Config_Dialog *cfd);
 static void         _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void         _fill_data(E_Config_Dialog_Data *cfdata);
-static void         _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata, Evas_Object *o);
-static int          _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int          _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
@@ -210,13 +208,14 @@ _fill_data(E_Config_Dialog_Data *cfdata)
    cfdata->action_mouse_middle = photo->config->action_mouse_middle;
 }
 
-static void
-_common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata, Evas_Object *o)
+static Evas_Object *
+_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
-   Evas_Object *of, *ob;
+   Evas_Object *o, *of, *ob;
    E_Radio_Group *rg;
    int wmw, wmh;
-
+   
+   o = e_widget_table_add(evas, 0);
 
    of = e_widget_frametable_add(evas, _("Picture directories"), 0);
 
@@ -260,7 +259,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_table_object_append(o, of, 0, 1, 1, 1, 1, 1, 1, 1);
 
 
-   of = e_widget_frametable_add(evas, _("Mouse actions"), 0);
+   of = e_widget_frametable_add(evas, _("Default Mouse actions"), 0);
 
    ob = e_widget_label_add(evas, _("Over"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
@@ -281,10 +280,12 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
 
 
    e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
+
+   return o;
 }
 
 static int
-_common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    if ( (photo->config->show_label != cfdata->show_label ) ||
         (photo->config->action_mouse_over != cfdata->action_mouse_over) ||
@@ -302,30 +303,8 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    photo->config->nice_trans = cfdata->nice_trans;
 
-   return 1;
-}
-
-static Evas_Object *
-_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
-{
-   Evas_Object *o;
-   
-   o = e_widget_table_add(evas, 0);
-
-   _common_create_widgets(cfd, evas, cfdata, o);
-
-   return o;
-}
-
-static int
-_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
-{
-   int ret;
-
-   ret = _common_apply_data(cfd, cfdata);
-
    photo_config_save();
-   return ret;
+   return 1;
 }
 
 static Evas_Object *
@@ -336,10 +315,21 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    o = e_widget_table_add(evas, 0);
 
-   _common_create_widgets(cfd, evas, cfdata, o);
+   of = e_widget_frametable_add(evas, _("Popups"), 0);
 
+   ob = e_widget_label_add(evas, _("Picture loader popup"));
+   e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 1);
+   rg = e_widget_radio_group_new(&(cfdata->local.popup));
+   ob = e_widget_radio_add(evas, _("Never"), PICTURE_LOCAL_POPUP_NEVER, rg);
+   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_radio_add(evas, _("Summary"), PICTURE_LOCAL_POPUP_SUM, rg);
+   e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
+   ob = e_widget_radio_add(evas, _("Verbose"), PICTURE_LOCAL_POPUP_ALWAYS, rg);
+   e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 1, 1);
 
-   of = e_widget_frametable_add(evas, _("Misc"), 0);
+   e_widget_table_object_append(o, of, 0, 0, 1, 1, 1, 1, 1, 1);
+
+   of = e_widget_frametable_add(evas, _("Miscellaneous"), 0);
 
    ob = e_widget_check_add(evas, _("Remove generated backgrounds"),
                            &(cfdata->pictures_set_bg_purge));
@@ -367,23 +357,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
 
 
-   e_widget_table_object_append(o, of, 1, 1, 1, 2, 1, 1, 1, 1);
-
-
-   of = e_widget_frametable_add(evas, _("Popups"), 0);
-
-   ob = e_widget_label_add(evas, _("Picture loader popup"));
-   e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 1);
-   rg = e_widget_radio_group_new(&(cfdata->local.popup));
-   ob = e_widget_radio_add(evas, _("Never"), PICTURE_LOCAL_POPUP_NEVER, rg);
-   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Summary"), PICTURE_LOCAL_POPUP_SUM, rg);
-   e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Verbose"), PICTURE_LOCAL_POPUP_ALWAYS, rg);
-   e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 1, 1);
-
-   e_widget_table_object_append(o, of, 0, 2, 1, 1, 1, 1, 1, 1);
-
+   e_widget_table_object_append(o, of, 0, 1, 1, 1, 1, 1, 1, 1);
 
    return o;
 }
@@ -391,10 +365,6 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 static int
 _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   int ret;
-   
-   ret = _common_apply_data(cfd, cfdata);
-
    photo->config->pictures_set_bg_purge = cfdata->pictures_set_bg_purge;
    if (photo->config->pictures_viewer)
      evas_stringshare_del(photo->config->pictures_viewer);
@@ -405,7 +375,7 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    photo->config->local.popup = cfdata->local.popup;
 
    photo_config_save();
-   return ret;
+   return 1;
 }
 
 
