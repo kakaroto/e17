@@ -32,7 +32,7 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
  * @brief Gets the type of an Etk_Alignment
  * @return Returns the type of an Etk_Alignment
  */
-Etk_Type *etk_alignment_type_get()
+Etk_Type *etk_alignment_type_get(void)
 {
    static Etk_Type *alignment_type = NULL;
 
@@ -72,7 +72,7 @@ Etk_Widget *etk_alignment_new(float xalign, float yalign, float xscale, float ys
 }
 
 /**
- * @brief Sets the parameters of the alignment
+ * @brief Changes the parameters of the alignment
  * @param alignment an alignment
  * @param xalign the horizontal alignment, from 0.0 (left) to 1.0 (right)
  * @param yalign the vertical alignment, from 0.0 (top) to 1.0 (bottom)
@@ -115,12 +115,12 @@ void etk_alignment_set(Etk_Alignment *alignment, float xalign, float yalign, flo
 }
 
 /**
- * @brief Gets the parameters of the alignment
+ * @brief Gets the different parameters of the alignment
  * @param alignment an alignment
- * @param xalign the location to store the horizontal alignment
- * @param yalign the location to store the vertical alignment
- * @param xscale the location to store the horizontal scale factor
- * @param yscale the location to store the vertical scale factor
+ * @param xalign the location where to store the horizontal alignment
+ * @param yalign the location where to store the vertical alignment
+ * @param xscale the location where to store the horizontal scale factor
+ * @param yscale the location where to store the vertical scale factor
  */
 void etk_alignment_get(Etk_Alignment *alignment, float *xalign, float *yalign, float *xscale, float *yscale)
 {
@@ -263,7 +263,7 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
  * from 0.0 (the child doesn't expand at all) to 1.0 (the child takes up all the available space). @n
  * The align settings control the alignment of the child inside the container,
  * from 0.0 (the child is aligned on the left/top) to 1.0 (the child is aligned on the right/bottom). @n
- * The align settings have no effect if the scale factors are set to 1.0. 
+ * The align settings have no effect if the scale factors are set to 1.0.
  *
  * \par Object Hierarchy:
  * - Etk_Object

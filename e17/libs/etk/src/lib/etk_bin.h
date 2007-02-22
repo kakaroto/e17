@@ -18,6 +18,7 @@
 /** Checks if the object is an Etk_Bin */
 #define ETK_IS_BIN(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_BIN_TYPE))
 
+
 /**
  * @brief @widget A container that can contain only one child
  * @structinfo
@@ -31,7 +32,8 @@ struct Etk_Bin
    Etk_Widget *child;
 };
 
-Etk_Type *etk_bin_type_get();
+
+Etk_Type *etk_bin_type_get(void);
 
 void        etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child);
 Etk_Widget *etk_bin_child_get(Etk_Bin *bin);

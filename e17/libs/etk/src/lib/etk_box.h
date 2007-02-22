@@ -9,7 +9,7 @@
 /**
  * @defgroup Etk_Box Etk_Box
  * @brief The Etk_Box widget is a container that can contain several children
- * packed in one direction (horizontal or vertical) 
+ * packed in one direction (horizontal or vertical)
  * @{
  */
 
@@ -56,6 +56,7 @@ typedef enum Etk_Box_Fill_Policy
                                        * horizontally for an Etk_VBox) */
 } Etk_Box_Fill_Policy;
 
+
 /**
  * @brief @widget An abstract class for a box
  * @structinfo
@@ -94,9 +95,10 @@ struct Etk_VBox
    Etk_Box box;
 };
 
-Etk_Type *etk_box_type_get();
-Etk_Type *etk_hbox_type_get();
-Etk_Type *etk_vbox_type_get();
+
+Etk_Type *etk_box_type_get(void);
+Etk_Type *etk_hbox_type_get(void);
+Etk_Type *etk_vbox_type_get(void);
 
 Etk_Widget *etk_hbox_new(Etk_Bool homogeneous, int spacing);
 Etk_Widget *etk_vbox_new(Etk_Bool homogeneous, int spacing);

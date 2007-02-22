@@ -20,9 +20,9 @@
  * @param argc the location of the "argc" parameter passed to main()
  * @param argv the location of the "argv" parameter passed to main()
  * @param long_name the complete name of the argument to find. If '--long_name' is found in @a argv, this function will
- * return ETK_TRUE. You can set it to NULL to ignore it
+ * return ETK_TRUE. You can set this param to NULL to ignore it
  * @param short_name a shortcut for the argument to find. If '-short_name' is found in @a argv, this function will
- * return ETK_TRUE. You can set it to NULL to ignore it
+ * return ETK_TRUE. You can set this param to NULL to ignore it
  * @param remove if @a remove is ETK_TRUE, the argument will be removed from @a argv if it is found
  * @return Returns ETK_TRUE if the argument has been found, ETK_FALSE otherwise
  */
@@ -70,27 +70,26 @@ Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, cha
  * @param argc the location of the "argc" parameter passed to main()
  * @param argv the location of the "argv" parameter passed to main()
  * @param long_name the complete name of the argument to find. If --long_name is found in @a argv and is followed by a
- * value, this function will return ETK_TRUE. You can set it to NULL to ignore it
+ * value, this function will return ETK_TRUE. You can set this param to NULL to ignore it
  * @param short_name a shortcut for the argument to find. If -short_name is found in @a argv and is followed by a
- * value, this function will return ETK_TRUE. You can set it to NULL to ignore it
+ * value, this function will return ETK_TRUE. You can set this param to NULL to ignore it
  * @param remove if @a remove is ETK_TRUE, the argument and its value will be removed from @a argv
  * if they are found
- * @param value the location where to store the value of the argument. You'll have to free it when you no longer need it.
- * If NULL, it's expected that the agrument has no value
+ * @param value the location where to store the value of the argument. You'll have to free it when you no
+ * longer need it. This parameter should not be NULL, otherwise the function will return ETK_FALSE
  * @return Returns ETK_TRUE if the argument has been found and was followed by a value, ETK_FALSE otherwise
  */
 Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, char short_name, Etk_Bool remove, char **value)
 {
    int num_args = 0;
    char *arg, *next, *value_ptr = NULL;
-   int arg_len, long_name_len = 0;
+   int arg_len, long_name_len;
    int i, j;
    
-   if (!argc || !argv)
+   if (!argc || !argv || !value)
       return ETK_FALSE;
    
-   if (long_name)
-      long_name_len = strlen(long_name);
+   long_name_len = long_name ? strlen(long_name) : 0;
    
    for (i = 0; i < *argc; i++)
    {
@@ -109,10 +108,7 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
             /* -s value */
             if (arg_len == 2)
             {
-	       /* valueless */
-	       if (!value)
-		   num_args = 1;
-	       else if ((i + 1 < *argc) && (next = (*argv)[i + 1]) && next[0] != '-')
+               if ((i + 1 < *argc) && (next = (*argv)[i + 1]) && next[0] != '-')
                {
                   value_ptr = next;
                   num_args = 2;
@@ -131,11 +127,8 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
       {
          if (strncmp(&arg[2], long_name, long_name_len) == 0)
          {
-	    /* valueless */
-	    if (!value && !((arg_len > long_name_len + 3) && (arg[long_name_len + 2] == '=')))
-	       num_args = 1;
             /* --long_name value */
-	    else if (arg_len == long_name_len + 2)
+            if (arg_len == long_name_len + 2)
             {
                if ((i + 1 < *argc) && (next = (*argv)[i + 1]) && next[0] != '-')
                {
@@ -152,18 +145,17 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
          }
       }
       
-      if (num_args)
+      if (value_ptr)
       {
-	 /* A value has been found */
-	 if (value_ptr)
-	    if (value) *value = strdup(value_ptr);
+         /* A value has been found */
+         *value = strdup(value_ptr);
          if (remove)
          {
-            for (j = i; j < *argc - num_args + 1; j++)
-	       (*argv)[j] = (*argv)[j + num_args];
-	    (*argc) -= num_args;
+            for (j = i; j < *argc - num_args; j++)
+               (*argv)[j] = (*argv)[j + num_args];
+            (*argc) -= num_args;
          }
-	 return ETK_TRUE;
+         return ETK_TRUE;
       }
    }
    
@@ -185,4 +177,7 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
  * Two kinds of arguments are supported:
  * - <b>Short arguments</b>: <i>"-c"</i>, <i>"-c value"</i> or <i>"-cvalue"</i>
  * - <b>Long arguments</b>: <i>"--argument"</i>, <i>"--agument value"</i> or <i>"--argument=value"</i>
+ *
+ * To check whether an argument that takes no value is present, use etk_argument_is_set(). @n
+ * To get the value of an argument, use etk_argument_value_get()
  */

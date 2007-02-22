@@ -19,6 +19,7 @@
 /** Checks if the object is an Etk_Alignment */
 #define ETK_IS_ALIGNMENT(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_ALIGNMENT_TYPE))
 
+
 /**
  * @brief @widget A container containing one child which can be aligned and scaled
  * @structinfo
@@ -35,7 +36,8 @@ struct Etk_Alignment
    float yscale;
 };
 
-Etk_Type   *etk_alignment_type_get();
+
+Etk_Type   *etk_alignment_type_get(void);
 Etk_Widget *etk_alignment_new(float xalign, float yalign, float xscale, float yscale);
 
 void etk_alignment_set(Etk_Alignment *alignment, float xalign, float yalign, float xscale, float yscale);

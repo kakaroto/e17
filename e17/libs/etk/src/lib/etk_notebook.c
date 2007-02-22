@@ -480,7 +480,6 @@ static void _etk_notebook_constructor(Etk_Notebook *notebook)
    ETK_CONTAINER(notebook)->children_get = _etk_notebook_children_get;
    ETK_WIDGET(notebook)->size_request = _etk_notebook_size_request;
    ETK_WIDGET(notebook)->size_allocate = _etk_notebook_size_allocate;
-   ETK_WIDGET(notebook)->use_focus_order = ETK_TRUE;
 }
 
 /* Destroys the notebook */

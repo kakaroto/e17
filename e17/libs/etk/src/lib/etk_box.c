@@ -55,7 +55,7 @@ static Etk_Box_Cell *_etk_box_cell_get(Etk_Box *box, Etk_Widget *widget);
  * @brief Gets the type of an Etk_Box
  * @return Returns the type of an Etk_Box
  */
-Etk_Type *etk_box_type_get()
+Etk_Type *etk_box_type_get(void)
 {
    static Etk_Type *box_type = NULL;
 
@@ -81,7 +81,7 @@ Etk_Type *etk_box_type_get()
  * @brief Gets the type of an Etk_HBox
  * @return Returns the type of an Etk_HBox
  */
-Etk_Type *etk_hbox_type_get()
+Etk_Type *etk_hbox_type_get(void)
 {
    static Etk_Type *hbox_type = NULL;
 
@@ -99,7 +99,7 @@ Etk_Type *etk_hbox_type_get()
  * @brief Gets the type of an Etk_VBox
  * @return Returns the type of an Etk_VBox
  */
-Etk_Type *etk_vbox_type_get()
+Etk_Type *etk_vbox_type_get(void)
 {
    static Etk_Type *vbox_type = NULL;
 
@@ -114,8 +114,8 @@ Etk_Type *etk_vbox_type_get()
 
 /**
  * @brief Creates a new hbox
- * @param homogeneous if @a homogeneous == ETK_TRUE, all the children will have the same size
- * @param spacing the amount of space between two children
+ * @param homogeneous if @a homogeneous == ETK_TRUE, all the cells of the box will have the same size
+ * @param spacing the amount of space between two cells
  */
 Etk_Widget *etk_hbox_new(Etk_Bool homogeneous, int spacing)
 {
@@ -124,7 +124,7 @@ Etk_Widget *etk_hbox_new(Etk_Bool homogeneous, int spacing)
 
 /**
  * @brief Creates a new vbox
- * @param homogeneous if @a homogeneous == ETK_TRUE, all the cells will have the same size
+ * @param homogeneous if @a homogeneous == ETK_TRUE, all the cells of the box will have the same size
  * @param spacing the amount of space between two cells
  */
 Etk_Widget *etk_vbox_new(Etk_Bool homogeneous, int spacing)
@@ -133,11 +133,11 @@ Etk_Widget *etk_vbox_new(Etk_Bool homogeneous, int spacing)
 }
 
 /**
- * @brief Packs a widget at the start of one of the two groups of children of the box
+ * @brief Packs a widget at the start of one of the two child-groups of the box
  * @param box a box
  * @param child the widget to pack
- * @param group the group in which the child will be packed
- * @param fill_policy the fill policy of the child
+ * @param group the group where to pack the child
+ * @param fill_policy the fill-policy of the child, it indicates how it should fill its cell
  * @param padding the amount of free space on the two sides of the child, in pixels
  */
 void etk_box_prepend(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding)
@@ -148,11 +148,11 @@ void etk_box_prepend(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_B
 }
 
 /**
- * @brief Packs a widget at the end of one of the groups of children of the box
+ * @brief Packs a widget at the end of one of the two child-groups of the box
  * @param box a box
  * @param child the widget to pack
- * @param group the group in which the child will be packed
- * @param fill_policy the fill policy of the child
+ * @param group the group where to pack the child
+ * @param fill_policy the fill-policy of the child, it indicates how it should fill its cell
  * @param padding the amount of free space on the two sides of the child, in pixels
  */
 void etk_box_append(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding)
@@ -167,15 +167,15 @@ void etk_box_append(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Bo
 }
 
 /**
- * @brief Packs a widget after another widget, in one of the groups of children of the box
+ * @brief Packs a widget after another widget, in one of the two child-groups of the box
  * @param box a box
  * @param child the widget to pack
- * @param group the group in which the child will be packed
- * @param after the child after which @a child will be packed. If @a after is NULL, @a child will be packed at the start
- * of the group
- * @param fill_policy the fill policy of the child
+ * @param group the group where to pack the child
+ * @param after the child after which @a child will be packed. If @a after is NULL, @a child will be
+ * packed at the start of the group
+ * @param fill_policy the fill-policy of the child, it indicates how it should fill its cell
  * @param padding the amount of free space on the two sides of the child, in pixels
- * @warning @a after has to be packed in the group @a group, or it'll have no effect
+ * @warning @a after has to be packed in @a group, or the function will have no effect
  */
 void etk_box_insert(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Widget *after, Etk_Box_Fill_Policy fill_policy, int padding)
 {
@@ -189,14 +189,14 @@ void etk_box_insert(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Wi
 }
 
 /**
- * @brief Packs a widget at a given position, in one of the groups of children of the box
+ * @brief Packs a widget at a given position, in one of the two child-groups of the box
  * @param box a box
  * @param child the widget to pack
- * @param group the group in which the child will be packed
+ * @param group the group where to pack the child
  * @param pos the position where to pack @a child (starting from 0). If @a pos <= 0, @a child will be packed at the
- * start of the group of children, and if @a pos is greater than the number of children in the group, it will be packed
+ * start of the child-group, and if @a pos is greater than the number of children in the group, it will be packed
  * at the end
- * @param fill_policy the fill policy of the child
+ * @param fill_policy the fill-policy of the child, it indicates how it should fill its cell
  * @param padding the amount of free space on the two sides of the child, in pixels
  */
 void etk_box_insert_at(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, int pos, Etk_Box_Fill_Policy fill_policy, int padding)
@@ -219,9 +219,9 @@ void etk_box_insert_at(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, int
 /**
  * @brief Gets the child at a given position in the box
  * @param box a box
- * @param group the group in which the child you want to get is
+ * @param group the group in which the child you want to get is packed
  * @param pos the position of the child you want to get (starting from 0)
- * @return Returns the child at the given position, or NULL on failure
+ * @return Returns the child at the given position, or NULL if there no childat this position
  */
 Etk_Widget *etk_box_child_get_at(Etk_Box *box, Etk_Box_Group group, int pos)
 {
@@ -237,12 +237,12 @@ Etk_Widget *etk_box_child_get_at(Etk_Box *box, Etk_Box_Group group, int pos)
 }
 
 /**
- * @brief Sets the position of a child of the box
+ * @brief Changes the position of a child of the box
  * @param box a box
  * @param child the child you want to change the position of
  * @param group the group in which the child will be repacked
  * @param pos the position where to repack @a child (starting from 0). If @a pos <= 0, @a child will be packed at the
- * start of the group of children, and if @a pos is greater than the number of children in the group, it will be packed
+ * start of the child-group, and if @a pos is greater than the number of children in the group, it will be packed
  * at the end
  */
 void etk_box_child_position_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, int pos)
@@ -254,6 +254,8 @@ void etk_box_child_position_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Group g
       return;
    
    box->cells[cell->group] = evas_list_remove(box->cells[cell->group], cell);
+   cell->group = group;
+   
    if (pos <= 0)
       box->cells[group] = evas_list_prepend(box->cells[group], cell);
    else if (pos >= evas_list_count(box->cells[group]))
@@ -263,6 +265,7 @@ void etk_box_child_position_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Group g
       l = evas_list_nth_list(box->cells[group], pos - 1);
       box->cells[group] = evas_list_append_relative_list(box->cells[group], cell, l);
    }
+   
    etk_widget_redraw_queue(ETK_WIDGET(box));
 }
 
@@ -272,7 +275,7 @@ void etk_box_child_position_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Group g
  * @param child the child you want to get the position of
  * @param group the location where to store the group in which the child is
  * @param pos the location where to store the position of the child
- * @return Returns ETK_TRUE on success, ETK_FALSE on failure (because @a child is not a child of the box)
+ * @return Returns ETK_TRUE on success, or ETK_FALSE if @a child is not a child of the box
  */
 Etk_Bool etk_box_child_position_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Group *group, int *pos)
 {
@@ -303,11 +306,11 @@ Etk_Bool etk_box_child_position_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Gro
 }
 
 /**
- * @brief Sets the packing settings of a child of the box
+ * @brief Changes the packing settings of a child of the box
  * @param box a box
  * @param child a child of the box. If @a child is not packed in the box, this function has no effect
- * @param fill_policy the fill policy of the child
- * @param padding the amount of free space on the two sides of the child, in pixels
+ * @param fill_policy the new fill-policy of the child
+ * @param padding the new amount of free space on the two sides of the child, in pixels
  */
 void etk_box_child_packing_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Policy fill_policy, int padding)
 {
@@ -328,9 +331,9 @@ void etk_box_child_packing_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Pol
  * @brief Gets the packing settings of a child of the box
  * @param box a box
  * @param child a child of the box
- * @param fill_policy the location where to store the fill policy of the child
+ * @param fill_policy the location where to store the fill-policy of the child
  * @param padding the location where to store the padding of the child
- * @return Returns ETK_TRUE on success, and ETK_FALSE on failure (because @a child is not packed in @a box)
+ * @return Returns ETK_TRUE on success, or ETK_FALSE if @a child is not a child of the box
  */
 Etk_Bool etk_box_child_packing_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Policy *fill_policy, int *padding)
 {
@@ -354,7 +357,7 @@ Etk_Bool etk_box_child_packing_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill
 /**
  * @brief Sets the amount of free space between two cells
  * @param box a box
- * @param spacing the amount of free space between two cells, in pixels
+ * @param spacing the new amount of free space between two cells, in pixels
  */
 void etk_box_spacing_set(Etk_Box *box, int spacing)
 {
@@ -394,7 +397,7 @@ void etk_box_homogeneous_set(Etk_Box *box, Etk_Bool homogeneous)
 }
 
 /**
- * @brief Checks whether all the cells of the box have the same size
+ * @brief Gets whether or not all the cells of the box have the same size
  * @param box a box
  * @return Returns ETK_TRUE if the box is homogeneous, ETK_FALSE otherwise
  */
@@ -431,7 +434,6 @@ static void _etk_box_constructor(Etk_Box *box)
    ETK_CONTAINER(box)->child_add = _etk_box_child_add;
    ETK_CONTAINER(box)->child_remove = _etk_box_child_remove;
    ETK_CONTAINER(box)->children_get = _etk_box_children_get;
-   ETK_WIDGET(box)->use_focus_order = ETK_TRUE;
 }
 
 /* Destroys the box */
@@ -504,22 +506,20 @@ static void _etk_box_child_add(Etk_Container *container, Etk_Widget *widget)
 /* Removes the child from the box */
 static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
 {
-   Etk_Widget *box_widget;
    Etk_Box *box;
    Etk_Box_Cell *cell;
 
-   if (!(box_widget = ETK_WIDGET(container)) || !widget || (widget->parent != box_widget))
+   if (!(box = ETK_BOX(container)) || !widget || (widget->parent != ETK_WIDGET(box)))
       return;
    
-   box = ETK_BOX(box_widget);
    if ((cell = _etk_box_cell_get(box, widget)))
    {
       box->cells[cell->group] = evas_list_remove(box->cells[cell->group], cell);
-      box_widget->focus_order = evas_list_remove(box_widget->focus_order, widget);
+      ETK_WIDGET(box)->focus_order = evas_list_remove(ETK_WIDGET(box)->focus_order, widget);
       etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
-      etk_widget_size_recalc_queue(box_widget);
       free(cell);
       
+      etk_widget_size_recalc_queue(ETK_WIDGET(box));
       etk_signal_emit_by_name("child_removed", ETK_OBJECT(box), NULL, widget);
    }
 }
@@ -609,7 +609,7 @@ static void _etk_hbox_size_request(Etk_Widget *widget, Etk_Size *size)
             box->request_sizes[i][j] = child_size.w + 2 * cell->padding;
             size->w += box->request_sizes[i][j];
          }
-
+         
          if (size->h < child_size.h)
             size->h = child_size.h;
          
@@ -1008,23 +1008,21 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  *
  **************************/
 
-/* Adds a child to the box, after the child contained in the cell "after" */
+/* Adds a new widget to the box, after the cell "after" */
 static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Box_Cell *after, Etk_Box_Fill_Policy fill_policy, int padding)
 {
    Etk_Box_Cell *cell, *c;
    Etk_Widget *box_widget;
    
-   if (!box || !child)
+   if (!(box_widget = ETK_WIDGET(box)) || !child)
       return;
    if (after && after->group != group)
    {
       ETK_WARNING("The child to pack and the widget after which the child should be packed "
-         "do not belong to the same start/end-group");
+         "do not belong to the same child-group");
       return;
    }
    
-   box_widget = ETK_WIDGET(box);
-
    cell = malloc(sizeof(Etk_Box_Cell));
    cell->child = child;
    cell->group = group;
@@ -1093,9 +1091,7 @@ static Etk_Box_Cell *_etk_box_cell_get(Etk_Box *box, Etk_Widget *widget)
  * start-group are packed at the start of the box (left for the hbox, top for the vbox) and the children of the
  * end-group are packed at the end of the box (right for the hbox, bottom for the vbox). @n
  * Widgets can be packed with the functions etk_box_prepend(), etk_box_append(), etk_box_insert() and
- * etk_box_insert_at(). @n @n
- * The "homogeneous" setting determines whether or not all the children of the box take up the same amount of space. @n
- * The "spacing" setting determines the amount of space between two children.
+ * etk_box_insert_at().
  * 
  * \par Object Hierarchy:
  * - Etk_Object

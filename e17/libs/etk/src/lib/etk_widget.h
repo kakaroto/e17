@@ -105,7 +105,6 @@ struct Etk_Widget
    unsigned int has_event_object : 1;
    unsigned int focusable : 1;
    unsigned int focus_on_click : 1;
-   unsigned int use_focus_order : 1;
    unsigned int need_size_recalc : 1;
    unsigned int need_redraw : 1;
    unsigned int need_theme_size_recalc : 1;

@@ -36,7 +36,7 @@ static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
  * @brief Gets the type of an Etk_Bin
  * @return Returns the type of an Etk_Bin
  */
-Etk_Type *etk_bin_type_get()
+Etk_Type *etk_bin_type_get(void)
 {
    static Etk_Type *bin_type = NULL;
 
@@ -58,7 +58,7 @@ Etk_Type *etk_bin_type_get()
 /**
  * @brief Sets the child of the bin
  * @param bin a bin
- * @param child the child to set
+ * @param child the widget to add to the bin
  */
 void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
 {

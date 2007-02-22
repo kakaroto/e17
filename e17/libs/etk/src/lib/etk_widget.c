@@ -2021,7 +2021,6 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->internal = ETK_FALSE;
    widget->focusable = ETK_FALSE;
    widget->focus_on_click = ETK_FALSE;
-   widget->use_focus_order = ETK_FALSE;
    widget->has_event_object = ETK_FALSE;
    widget->repeat_mouse_events = ETK_FALSE;
    widget->pass_mouse_events = ETK_FALSE;
