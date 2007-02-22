@@ -1800,6 +1800,47 @@ new(class)
 	OUTPUT:
 	RETVAL
 
+MODULE = Etk::Slider	PACKAGE = Etk::Slider	PREFIX = etk_slider_
+
+void
+etk_slider_label_set(slider, label)
+	Etk_Slider * slider
+	const char * label
+	ALIAS:
+	LabelSet=1
+
+const char *
+etk_slider_label_get(slider)
+	Etk_Slider * slider
+	ALIAS:
+	LabelGet=1
+
+void
+etk_slider_inverted_set(slider, inverted)
+	Etk_Slider * slider
+	Etk_Bool inverted
+	ALIAS:
+	InvertedSet=1
+
+Etk_Bool
+etk_slider_inverted_get(slider)
+	Etk_Slider * slider
+	ALIAS:
+	InvertedGet=1
+
+void
+etk_slider_update_policy_set(slider, policy)
+	Etk_Slider * slider
+	Etk_Slider_Update_Policy policy
+	ALIAS:
+	UpdatePolicySet=1
+
+Etk_Slider_Update_Policy
+etk_slider_update_policy_get(slider)
+	Etk_Slider * slider
+	ALIAS:
+	UpdatePolicyGet=1
+
 MODULE = Etk::HSlider	PACKAGE = Etk::HSlider	PREFIX = etk_hslider_
 
 Etk_HSlider *

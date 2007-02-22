@@ -83,6 +83,7 @@ Etk_Separator *					T_PTROBJ_ETK
 Etk_HSeparator *				T_PTROBJ_ETK
 Etk_VSeparator *				T_PTROBJ_ETK
 Etk_Slider *					T_PTROBJ_ETK
+Etk_Slider_Update_Policy			T_IV
 Etk_HSlider *					T_PTROBJ_ETK
 Etk_VSlider *					T_PTROBJ_ETK
 Etk_HScrollbar *				T_PTROBJ_ETK

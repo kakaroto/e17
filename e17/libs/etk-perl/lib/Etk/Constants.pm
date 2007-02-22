@@ -62,6 +62,7 @@ our %EXPORT_TAGS = (
    popupwindow	=> [qw/BelowRight BelowLeft AboveRight AboveLeft/],
    window	=> [qw/Normal Above Below/],
    swallow	=> [qw/None IncompatibleParent NotRealized NoPart/],
+   slider	=> [qw/Continuous Discontinuous Delayed/],
    );
 
 my @all = ();
@@ -302,3 +303,11 @@ use constant {
    NotRealized=>2,
    NoPart=>3
 };
+
+# slider
+use constant {
+   Continuous=>0,
+   Discontinuous=>1,
+   Delayed=>2
+};
+
