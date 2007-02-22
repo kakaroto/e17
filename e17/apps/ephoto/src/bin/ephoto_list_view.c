@@ -90,7 +90,7 @@ static Ewl_Widget *list_view_new(void)
 /*The row that is added to the tree*/
 static void list_view_assign(Ewl_Widget *w, void *data)
 {
-	char *image;
+	const char *image;
 	char info[PATH_MAX];
 	int size;
 	int width, height;
@@ -106,7 +106,7 @@ static void list_view_assign(Ewl_Widget *w, void *data)
 	size = ecore_file_size(image);
 
 	snprintf(info, PATH_MAX, "Name: %s\nPixels: %s\nSize: %s\n",
-						 basename(image), 
+						 basename((char *)image), 
 						 image_pixels_string_get(image),
 						 file_size_get(size));
 	

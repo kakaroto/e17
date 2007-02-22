@@ -1,7 +1,33 @@
 #include "ephoto.h"
 
+const char *file_size_get(int size)
+{
+        double dsize;
+        char fsize[256];
+
+        dsize = (double)size;
+        if (dsize < 1024.0) snprintf(fsize, sizeof(fsize), _("%'.0f Bytes"), dsize);
+        else
+        {
+                dsize /= 1024.0;
+                if (dsize < 1024) snprintf(fsize, sizeof(fsize), _("%'.0f KB"), dsize);
+                else
+                {
+                        dsize /= 1024.0;
+                        if (dsize < 1024) snprintf(fsize, sizeof(fsize), _("%'.0f MB"), dsize);
+                        else
+                        {
+                                dsize /= 1024.0;
+                                snprintf(fsize, sizeof(fsize), _("%'.1f GB"), dsize);
+                        }
+                }
+        }
+        return strdup(fsize);
+}
+
+
 /*Get the pixels and return them in a string*/
-char *image_pixels_string_get(const char *file)
+const char *image_pixels_string_get(const char *file)
 {
         char pixels[PATH_MAX];
         int w, h;
@@ -33,28 +59,3 @@ void image_pixels_int_get(const char *file, int *width, int *height)
 	return;
 }
 
-/*Get the size of a file*/
-char *file_size_get(int size)
-{
-        double dsize;
-        char fsize[256];
-
-        dsize = (double)size;
-        if (dsize < 1024.0) snprintf(fsize, sizeof(fsize), _("%'.0f Bytes"), dsize);
-        else
-        {
-                dsize /= 1024.0;
-                if (dsize < 1024) snprintf(fsize, sizeof(fsize), _("%'.0f KB"), dsize);
-                else
-                {
-                        dsize /= 1024.0;
-                        if (dsize < 1024) snprintf(fsize, sizeof(fsize), _("%'.0f MB"), dsize);
-                        else
-                        {
-                                dsize /= 1024.0;
-                                snprintf(fsize, sizeof(fsize), _("%'.1f GB"), dsize);
-                        }
-                }
-        }
-        return strdup(fsize);
-}

@@ -18,31 +18,51 @@
 #include <time.h>
 #include <unistd.h>
 
+/* NLS */
+#ifdef ENABLE_NLS
+# include <libintl.h>
+# include <locale.h>
+# define _(str) gettext(str)
+# define gettext_noop(str) str
+# define N_(str) gettext_noop(str)
+#else
+# define _(str) (str)
+# define gettext_noop(str) str
+# define N_(str) gettext_noop(str)
+# define gettext(str) ((char*) (str))
+#endif
+
+/* NLS callbacks */
+char *sgettext(const char *msgid);
+#define S_(str) sgettext(str)
+
+#endif
+
 /* Ephoto Main gui callbacks */
 void create_main_gui(void);
 
 /* Ephoto Browsing */
-Ecore_List *get_directories(char *directory);
-Ecore_List *get_images(char *directory);
+Ecore_List *get_directories(const char *directory);
+Ecore_List *get_images(const char *directory);
 
 /* Ephoto Exif */
-Ecore_Hash *get_exif_data(char *file);
+Ecore_Hash *get_exif_data(const char *file);
 void display_exif_dialog(Ewl_Widget *w, void *event, void *data);
 
 /* Ephoto Databasing */
 sqlite3 *ephoto_db_init(void);
-void ephoto_db_add_album(sqlite3 *db, char *name, char *description);
-void ephoto_db_delete_album(sqlite3 *db, char *name);
+void ephoto_db_add_album(sqlite3 *db, const char *name, const char *description);
+void ephoto_db_delete_album(sqlite3 *db, const char *name);
 Ecore_List *ephoto_db_list_albums(sqlite3 *db);
-void ephoto_db_add_image(sqlite3 *db, char *album, char *name, char *path);
-void ephoto_db_delete_image(sqlite3 *db, char *album, char *path);
-Ecore_List *ephoto_db_list_images(sqlite3 *db, char *album);
+void ephoto_db_add_image(sqlite3 *db, const char *album, const char *name, const char *path);
+void ephoto_db_delete_image(sqlite3 *db, const char *album, const char *path);
+Ecore_List *ephoto_db_list_images(sqlite3 *db, const char *album);
 void ephoto_db_close(sqlite3 *db);
 
 /* Ephoto Gui */
-Ewl_Widget *add_button(Ewl_Widget *c, char *txt, char *img, void *cb, void *data);
-Ewl_Widget *add_image(Ewl_Widget *c, char *img, int thumbnail, void *cb, void *data);
-Ewl_Widget *add_label(Ewl_Widget *c, char *lbl, int blue);
+Ewl_Widget *add_button(Ewl_Widget *c, const char *txt, const char *img, void *cb, void *data);
+Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, void *data);
+Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl, int blue);
 Ewl_Widget *add_shadow(Ewl_Widget *c);
 
 /* Ephoto Imaging */
@@ -68,9 +88,9 @@ void set_info(Ewl_Widget *w, void *event, void *data);
 void generate_thumbnail(Ewl_Widget *image, char *path);
 
 /* Ephoto Utilities*/
-char *image_pixels_string_get(const char *file);
+const char *file_size_get(int size);
+const char *image_pixels_string_get(const char *file);
 void image_pixels_int_get(const char *file, int *width, int *height);
-char *file_size_get(int size);
 
 /* Ephoto Views */
 void show_normal_view(Ewl_Widget *w, void *event, void *data);
@@ -107,22 +127,3 @@ struct _Ephoto_Main
 
 extern Ephoto_Main *em;
 
-/* NLS */
-#ifdef ENABLE_NLS
-# include <libintl.h>
-# include <locale.h>
-# define _(str) gettext(str)
-# define gettext_noop(str) str
-# define N_(str) gettext_noop(str)
-#else
-# define _(str) (str)
-# define gettext_noop(str) str
-# define N_(str) gettext_noop(str)
-# define gettext(str) ((char*) (str))
-#endif
-
-/* NLS callbacks */
-char *sgettext(const char *msgid);
-#define S_(str) sgettext(str)
-
-#endif

@@ -1,10 +1,10 @@
 #include "ephoto.h"
 
 /*Populate a List of Sub Directories Inside of Directory.*/
-Ecore_List *get_directories(char *directory)
+Ecore_List *get_directories(const char *directory)
 {
 	Ecore_List *ls, *files;
-	char *file;
+	const char *file;
 	char path[PATH_MAX];
 
 	if (ecore_file_is_dir(directory))
@@ -48,10 +48,10 @@ Ecore_List *get_directories(char *directory)
 }
 
 /*Populate a List of Images Inside of Directory*/
-Ecore_List *get_images(char *directory)
+Ecore_List *get_images(const char *directory)
 {
         Ecore_List *ls, *files;
-        char *file;
+        const char *file;
         char path[PATH_MAX];
 
         if (ecore_file_is_dir(directory))

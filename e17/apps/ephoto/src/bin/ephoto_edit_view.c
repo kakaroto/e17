@@ -76,7 +76,7 @@ void add_edit_tools(Ewl_Widget *c)
 /*Go to the previous image*/
 static void previous_image(Ewl_Widget *w, void *event, void *data)
 {
-        char *image;
+        const char *image;
 
         ecore_dlist_previous(em->images);
         image = ecore_dlist_current(em->images);
@@ -95,7 +95,7 @@ static void previous_image(Ewl_Widget *w, void *event, void *data)
 /*Go to the next image*/
 static void next_image(Ewl_Widget *w, void *event, void *data)
 {
-	char *image;
+	const char *image;
 
 	ecore_dlist_next(em->images);
 	image = ecore_dlist_current(em->images);

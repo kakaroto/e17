@@ -1,7 +1,7 @@
 #include "ephoto.h"
 
 /*Create and Add a Button to the Container c*/
-Ewl_Widget *add_button(Ewl_Widget *c, char *txt, char *img, void *cb, void *data)
+Ewl_Widget *add_button(Ewl_Widget *c, const char *txt, const char *img, void *cb, void *data)
 {
 	Ewl_Widget *button;
 
@@ -27,10 +27,10 @@ Ewl_Widget *add_button(Ewl_Widget *c, char *txt, char *img, void *cb, void *data
 }
 
 /*Create and Add an Image to the Container c*/
-Ewl_Widget *add_image(Ewl_Widget *c, char *img, int thumbnail, void *cb, void *data)
+Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, void *data)
 {
 	Ewl_Widget *image;
-	char *thumb;
+	const char *thumb;
 	int w, h, pid;
 
 	if(!thumbnail)
@@ -77,7 +77,7 @@ Ewl_Widget *add_image(Ewl_Widget *c, char *img, int thumbnail, void *cb, void *d
 }
 
 /*Add a label to the container c, with the text lbl, and whether you want it blue*/
-Ewl_Widget *add_label(Ewl_Widget *c, char *lbl, int blue)
+Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl, int blue)
 {
 	Ewl_Widget *label;
 

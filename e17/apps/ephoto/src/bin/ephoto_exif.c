@@ -1,11 +1,11 @@
 #include "ephoto.h" 
 
-static char *get_image(void);
+static const char *get_image(void);
 static void close_dialog(Ewl_Widget *w, void *event, void *data);
 static void add_exif_to_container(Ewl_Widget *w, void *event, void *data);
 
 /*Get the Exif Data for an image and return it in a hash*/
-Ecore_Hash *get_exif_data(char *file)
+Ecore_Hash *get_exif_data(const char *file)
 {
 	const char **args, *ifd_name, *title;
 	char value[1024];
@@ -54,7 +54,7 @@ Ecore_Hash *get_exif_data(char *file)
 }
 
 /*Get the current image*/
-static char *get_image(void)
+static const char *get_image(void)
 {
 	const char *img;
 
@@ -94,7 +94,8 @@ static void close_dialog(Ewl_Widget *w, void *event, void *data)
 /*Add all the exif information to the container w*/
 static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 {
-	char *img, *key, *value, text[PATH_MAX];
+	const char *img, *key, *value;
+	char text[PATH_MAX];
 	Ecore_Hash *exif_info;
 	Ecore_List *keys, *values;
 	Ewl_Widget *win;
@@ -134,7 +135,7 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 /*Display a dialog which will display exif data*/
 void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 {
-	char *img;
+	const char *img;
 	Ecore_Hash *exif_info;
 	Ewl_Widget *win, *vbox, *image, *sp, *list, *label;
 	Ewl_Model *model;

@@ -39,7 +39,7 @@ void show_normal_view(Ewl_Widget *w, void *event, void *data)
 /*Set the info that is in the info label on normal view*/
 void set_info(Ewl_Widget *w, void *event, void *data)
 {
-	char *path, *pixels, *size;
+	const char *path, *pixels, *size;
 	char info[PATH_MAX];
 	time_t modtime;
 
@@ -50,11 +50,11 @@ void set_info(Ewl_Widget *w, void *event, void *data)
 		ewl_widget_state_set(em->currentf, "selected", EWL_STATE_PERSISTENT);
 	}
 	
-	path = (char *)ewl_widget_name_get(w);
+	path = ewl_widget_name_get(w);
 	pixels = image_pixels_string_get(path);
 	size = file_size_get(ecore_file_size(path));
 	modtime = ecore_file_mod_time(path);
-	snprintf(info, PATH_MAX, "%s - %s - %s", basename(path), pixels, size);
+	snprintf(info, PATH_MAX, "%s - %s - %s", basename((char *)path), pixels, size);
 
 	ewl_label_text_set(EWL_LABEL(em->ilabel), info);
 	ewl_widget_reparent(em->ilabel);

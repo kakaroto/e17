@@ -77,7 +77,7 @@ static int get_album_id(void *notused, int argc, char **argv, char **col)
 }
 
 /*Add a new album to the album table*/
-void ephoto_db_add_album(sqlite3 *db, char *name, char *description)
+void ephoto_db_add_album(sqlite3 *db, const char *name, const char *description)
 {
 	char command[PATH_MAX];
 
@@ -89,7 +89,7 @@ void ephoto_db_add_album(sqlite3 *db, char *name, char *description)
 }
 
 /*Deleate an album from the album table*/
-void ephoto_db_delete_album(sqlite3 *db, char *name)
+void ephoto_db_delete_album(sqlite3 *db, const char *name)
 {
 	char command[PATH_MAX];
 
@@ -104,7 +104,7 @@ void ephoto_db_delete_album(sqlite3 *db, char *name)
 }
 
 /*Add a new image to a particular album*/
-void ephoto_db_add_image(sqlite3 *db, char *album, char *name, char *path)
+void ephoto_db_add_image(sqlite3 *db, const char *album, const char *name, const char *path)
 {
 	char command[PATH_MAX];
 	
@@ -130,7 +130,7 @@ void ephoto_db_add_image(sqlite3 *db, char *album, char *name, char *path)
 }
 
 /*Delete an image from a particular album*/
-void ephoto_db_delete_image(sqlite3 *db, char *album, char *path)
+void ephoto_db_delete_image(sqlite3 *db, const char *album, const char *path)
 {
 	char command[PATH_MAX];
 
@@ -204,10 +204,10 @@ static int list_image_ids(void *notused, int argc, char **argv, char **col)
 }
 
 /*Return a list of images belonging to a certain album*/
-Ecore_List *ephoto_db_list_images(sqlite3 *db, char *album)
+Ecore_List *ephoto_db_list_images(sqlite3 *db,  const char *album)
 {
 	char command[PATH_MAX];
-	char *id;
+	const char *id;
 
 	if(images_list)
 	{
