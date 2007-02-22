@@ -1,70 +1,52 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-# data files for the module
-filesdir = $(datadir)/images
-
-files_DATA = \
-blizzard.png \
-blowingsnow.png \
-chancetstormn.png \
-chancetstorm.png \
-clear-sky.png \
-cloud.png \
-cloudy_night.png \
-cloudy.png \
-drizzle.png \
-fair.png \
-fdrizzle.png \
-flurries.png \
-fog.png \
-freezingrain.png \
-hazy.png \
-heavy-rain.png \
-ice.png \
-isolated.t-storm.png \
-light-rain.png \
-light-snow.png \
-luna-ceatza.png \
-luna-nori.png \
-mcloudyn.png \
-mcloudynr.png \
-mcloudyns.png \
-mcloudy.png \
-mcloudyr.png \
-mcloudys.png \
-moon.png \
-moon-rain.png \
-moon-snow.png \
-moon-tstorm.png \
-mostly-cloudy.png \
-pcloudyn.png \
-pcloudynr.png \
-pcloudyns.png \
-pcloudy.png \
-pcloudyrn.png \
-pcloudyr.png \
-pcloudys.png \
-rainandsnow.png \
-rain.png \
-showers.png \
-sleet.png \
-smoke.png \
-snow.png \
-snowshowers.png \
-suncloud.png \
-sun-light-clouds.png \
-sunnyn.png \
-sunny.png \
-sun.png \
-sunrain.png \
-sunsnow.png \
-thunder.png \
-t-storm_night.png \
-tstormn.png \
-tstorm.png \
-unknown.png \
-wind.png \
-wswarning.png \
-wswatch.png
-
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = \
+0 \
+1 \
+2 \
+3 \
+4 \
+5 \
+6 \
+7 \
+8 \
+9 \
+10 \
+11 \
+12 \
+13 \
+14 \
+15 \
+16 \
+17 \
+18 \
+19 \
+20 \
+21 \
+22 \
+23 \
+24 \
+25 \
+26 \
+27 \
+28 \
+29 \
+30 \
+31 \
+32 \
+33 \
+34 \
+35 \
+36 \
+37 \
+38 \
+39 \
+40 \
+41 \
+42 \
+43 \
+44 \
+45 \
+46 \
+47 \
+3200
