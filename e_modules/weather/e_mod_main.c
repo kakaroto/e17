@@ -713,6 +713,7 @@ _weather_config_updated (const char *id)
 	  snprintf (buf, sizeof (buf), "%d°%c", inst->temp, inst->degrees);
 	  edje_object_part_text_set (inst->weather->weather_obj, "temp", buf);
 
+	  _weather_cb_check (inst);
 	  if (!inst->check_timer)
 	    inst->check_timer =
 	      ecore_timer_add ((double) ci->poll_time, _weather_cb_check,
