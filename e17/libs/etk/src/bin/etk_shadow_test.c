@@ -51,7 +51,7 @@ void etk_test_shadow_window_create(void *data)
    etk_container_border_width_set(ETK_CONTAINER(vbox), 5);
    etk_paned_child1_set(ETK_PANED(vpaned), vbox, ETK_TRUE);
    
-   label = etk_label_new("<h1>Pictures:</h1>");
+   label = etk_label_new("<title>Pictures:</title>");
    etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_FILL, 0);
    
    alignment = etk_alignment_new(0.5, 0.0, 0.0, 0.0);
@@ -94,7 +94,7 @@ void etk_test_shadow_window_create(void *data)
    etk_container_add(ETK_CONTAINER(shadow), vbox);
    
    /* TODO: FIXME: why "Settings:" is not displayed? */
-   label = etk_label_new("<h1>Shadow Settings:</h1>");
+   label = etk_label_new("<title>Shadow Settings:</title>");
    etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_FILL, 0);
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);

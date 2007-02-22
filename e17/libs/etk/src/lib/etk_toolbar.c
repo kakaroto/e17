@@ -194,7 +194,7 @@ void etk_toolbar_style_set(Etk_Toolbar *toolbar, Etk_Toolbar_Style style)
    for (l = children; l; l = l->next)
    {
       if (ETK_IS_TOOL_ITEM(l->data))
-	 etk_button_style_set(ETK_BUTTON(l->data), button_style);
+         etk_button_style_set(ETK_BUTTON(l->data), button_style);
    }
    evas_list_free(children);
    
@@ -453,7 +453,7 @@ static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, v
    {
       etk_widget_theme_parent_set(child, ETK_WIDGET(toolbar));
    }
-   etk_signal_emit_by_name("child_added", ETK_OBJECT(toolbar), NULL, child);
+   //etk_signal_emit_by_name("child_added", ETK_OBJECT(toolbar), NULL, child);
 }
 
 /* Called when a widget is removed from the toolbar's box */

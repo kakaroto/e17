@@ -58,8 +58,8 @@ struct Etk_Button
    Etk_Stock_Size stock_size;
 };
 
-Etk_Type   *etk_button_type_get();
-Etk_Widget *etk_button_new();
+Etk_Type   *etk_button_type_get(void);
+Etk_Widget *etk_button_new(void);
 Etk_Widget *etk_button_new_with_label(const char *label);
 Etk_Widget *etk_button_new_from_stock(Etk_Stock_Id stock_id);
 

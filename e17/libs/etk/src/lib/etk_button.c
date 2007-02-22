@@ -62,7 +62,7 @@ static Etk_Signal *_etk_button_signals[ETK_BUTTON_NUM_SIGNALS];
  * @brief Gets the type of an Etk_Button
  * @return Returns the type of an Etk_Button
  */
-Etk_Type *etk_button_type_get()
+Etk_Type *etk_button_type_get(void)
 {
    static Etk_Type *button_type = NULL;
 
@@ -102,7 +102,7 @@ Etk_Type *etk_button_type_get()
  * @brief Creates a new button
  * @return Returns the new button
  */
-Etk_Widget *etk_button_new()
+Etk_Widget *etk_button_new(void)
 {
    return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button",
       "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
@@ -230,8 +230,9 @@ void etk_button_image_set(Etk_Button *button, Etk_Image *image)
    
    if (button->image)
    {
-      etk_signal_disconnect("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
+      etk_signal_block("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
       etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->image));
+      etk_signal_unblock("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
    }
 
    button->image = image;
@@ -340,9 +341,13 @@ void etk_button_style_set(Etk_Button *button, Etk_Button_Style style)
    if (button->box)
    {
       if (button->image)
-	 etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->image));
+      {
+         etk_signal_block("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
+         etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->image));
+         etk_signal_unblock("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
+      }
       if (button->label)
-	 etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->label));
+         etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->label));
       etk_object_destroy(ETK_OBJECT(button->box));
       button->box = NULL;
    }
@@ -363,9 +368,9 @@ Etk_Button_Style etk_button_style_get(Etk_Button *button)
 }
 
 /**
- * @brief Sets the stock size of the button's image
+ * @brief Sets the stock-size of the button's image
  * @param button a button
- * @param size the stock size
+ * @param size the stock-size
  */
 void etk_button_stock_size_set(Etk_Button *button, Etk_Stock_Size size)
 {
@@ -387,9 +392,9 @@ void etk_button_stock_size_set(Etk_Button *button, Etk_Stock_Size size)
 }
 
 /**
- * @brief Gets the stock size of the button's image
+ * @brief Gets the stock-size of the button's image
  * @param button a button
- * @return Returns the stock size of the button's image
+ * @return Returns the stock-size of the button's image
  */
 Etk_Stock_Size etk_button_stock_size_get(Etk_Button *button)
 {
@@ -417,10 +422,10 @@ static void _etk_button_constructor(Etk_Button *button)
    button->stock_size = ETK_STOCK_SMALL;
    
    button->label = etk_label_new(NULL);
+   etk_label_alignment_set(ETK_LABEL(button->label), 0.5, 0.5);
    etk_widget_internal_set(button->label, ETK_TRUE);
    etk_widget_theme_parent_set(button->label, ETK_WIDGET(button));
    etk_widget_pass_mouse_events_set(button->label, ETK_TRUE);
-   etk_label_alignment_set(ETK_LABEL(button->label), 0.5, 0.5);
    etk_container_add(ETK_CONTAINER(button), button->label);
 
    button->pressed = _etk_button_pressed_handler;
@@ -467,7 +472,7 @@ static void _etk_button_property_set(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_BUTTON_STOCK_SIZE_PROPERTY:
          etk_button_stock_size_set(button, etk_property_value_int_get(value));
-         break;      
+         break;
       default:
          break;
    }
@@ -500,7 +505,7 @@ static void _etk_button_property_get(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_BUTTON_STOCK_SIZE_PROPERTY:
          etk_property_value_int_set(value, button->stock_size);
-         break;      
+         break;
       default:
          break;
    }
@@ -536,6 +541,7 @@ static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, 
    {
       button->image = NULL;
       _etk_button_rebuild(button);
+      etk_object_notify(ETK_OBJECT(button), "image");
    }
 }
 
@@ -655,10 +661,10 @@ static void _etk_button_rebuild(Etk_Button *button)
 
       if (!button->box)
       {
-	 if (button->style == ETK_BUTTON_BOTH_VERT)
-	    button->box = etk_vbox_new(ETK_FALSE, 1);	   
-	 else
-	    button->box = etk_hbox_new(ETK_FALSE, 8);
+         if (button->style == ETK_BUTTON_BOTH_VERT)
+            button->box = etk_vbox_new(ETK_FALSE, 2);
+         else
+            button->box = etk_hbox_new(ETK_FALSE, 8);
          etk_container_add(ETK_CONTAINER(button->alignment), button->box);
          etk_widget_internal_set(button->box, ETK_TRUE);
          etk_widget_pass_mouse_events_set(button->box, ETK_TRUE);
@@ -704,8 +710,10 @@ static void _etk_button_rebuild(Etk_Button *button)
  * @addtogroup Etk_Button
  *
  * @image html widgets/button.png
- * An Etk_Button usually contains only a label and an icon, but it can contain any type of widgets.
- * 
+ * An Etk_Button usually contains only a label and an icon, but it can contain any type of widgets. @n
+ * You can change the label of the button with etk_button_label_set(), and you can change its icon with
+ * etk_button_image_set()
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

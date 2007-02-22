@@ -162,16 +162,16 @@ void etk_entry_image_set(Etk_Entry *entry, Etk_Entry_Image_Position position, Et
    if (position == ETK_ENTRY_IMAGE_PRIMARY)
    {
       if (entry->primary_image == image)
-	 return;
+         return;
 
       if (entry->primary_image)
       {
-	 etk_widget_parent_set(ETK_WIDGET(entry->primary_image), NULL);
-	 etk_widget_internal_set(ETK_WIDGET(entry->primary_image), ETK_FALSE);
-	 entry->primary_image = NULL;
+         etk_widget_parent_set(ETK_WIDGET(entry->primary_image), NULL);
+         etk_widget_internal_set(ETK_WIDGET(entry->primary_image), ETK_FALSE);
+         entry->primary_image = NULL;
       }
       if (!image)
-	 return;
+         return;
 
       entry->primary_image = image;
       ok = 1;
@@ -179,16 +179,16 @@ void etk_entry_image_set(Etk_Entry *entry, Etk_Entry_Image_Position position, Et
    else if (position == ETK_ENTRY_IMAGE_SECONDARY)
    {
       if (entry->secondary_image == image)
-	 return;
+         return;
 
       if (entry->secondary_image)
       {
-	 etk_widget_parent_set(ETK_WIDGET(entry->secondary_image), NULL);
-	 etk_widget_internal_set(ETK_WIDGET(entry->secondary_image), ETK_FALSE);
-	 entry->secondary_image = NULL;
+         etk_widget_parent_set(ETK_WIDGET(entry->secondary_image), NULL);
+         etk_widget_internal_set(ETK_WIDGET(entry->secondary_image), ETK_FALSE);
+         entry->secondary_image = NULL;
       }
       if (!image)
-	 return;
+         return;
 
       entry->secondary_image = image;
       ok = 1;
@@ -220,18 +220,18 @@ void etk_entry_image_highlight_set(Etk_Entry *entry, Etk_Entry_Image_Position po
    if (position == ETK_ENTRY_IMAGE_PRIMARY)
    {
       if (!(image = entry->primary_image))
-	 return;
+         return;
       if (entry->primary_image_highlight == highlight)
-	 return;
+         return;
 
       entry->primary_image_highlight = highlight;
    }
    else if (position == ETK_ENTRY_IMAGE_SECONDARY)
    {
       if (!(image = entry->secondary_image))
-	 return;
+         return;
       if (entry->secondary_image_highlight == highlight)
-	 return;
+         return;
 
       entry->secondary_image_highlight = highlight;
    }
@@ -240,24 +240,24 @@ void etk_entry_image_highlight_set(Etk_Entry *entry, Etk_Entry_Image_Position po
    if (highlight)
    {
       etk_signal_connect("mouse_in", ETK_OBJECT(image),
-	    ETK_CALLBACK(_etk_entry_image_mouse_in_cb), entry);
+         ETK_CALLBACK(_etk_entry_image_mouse_in_cb), entry);
       etk_signal_connect("mouse_out", ETK_OBJECT(image),
-	    ETK_CALLBACK(_etk_entry_image_mouse_out_cb), entry);
+         ETK_CALLBACK(_etk_entry_image_mouse_out_cb), entry);
       etk_signal_connect("mouse_down", ETK_OBJECT(image),
-	    ETK_CALLBACK(_etk_entry_image_mouse_down_cb), entry);
+         ETK_CALLBACK(_etk_entry_image_mouse_down_cb), entry);
       etk_signal_connect("mouse_up", ETK_OBJECT(image),
-	    ETK_CALLBACK(_etk_entry_image_mouse_up_cb), entry);
+         ETK_CALLBACK(_etk_entry_image_mouse_up_cb), entry);
    }
    else
    {
       etk_signal_disconnect("mouse_in", ETK_OBJECT(image),
-	    ETK_CALLBACK(_etk_entry_image_mouse_in_cb));
+         ETK_CALLBACK(_etk_entry_image_mouse_in_cb));
       etk_signal_disconnect("mouse_out", ETK_OBJECT(image),
-	    ETK_CALLBACK(_etk_entry_image_mouse_out_cb));
+         ETK_CALLBACK(_etk_entry_image_mouse_out_cb));
       etk_signal_disconnect("mouse_down", ETK_OBJECT(image),
-	    ETK_CALLBACK(_etk_entry_image_mouse_down_cb));
+         ETK_CALLBACK(_etk_entry_image_mouse_down_cb));
       etk_signal_disconnect("mouse_up", ETK_OBJECT(image),
-	    ETK_CALLBACK(_etk_entry_image_mouse_up_cb));
+         ETK_CALLBACK(_etk_entry_image_mouse_up_cb));
 
       evas_object_color_set(etk_image_evas_object_get(image), 255, 255, 255, 255);
    }
@@ -277,7 +277,7 @@ void etk_entry_clear_button_add(Etk_Entry *entry)
    image = etk_image_new_from_stock(ETK_STOCK_EDIT_CLEAR, ETK_STOCK_SMALL);
    etk_entry_image_set(entry, ETK_ENTRY_IMAGE_SECONDARY, ETK_IMAGE(image));
    etk_signal_connect("mouse_click", ETK_OBJECT(image),
-	 ETK_CALLBACK(_etk_entry_clear_button_cb), entry);
+      ETK_CALLBACK(_etk_entry_clear_button_cb), entry);
 }
 
 /**
@@ -388,10 +388,10 @@ static void _etk_entry_property_set(Etk_Object *object, int property_id, Etk_Pro
    switch (property_id)
    {
       case ETK_ENTRY_PASSWORD_MODE_PROPERTY:
-	 etk_entry_password_mode_set(entry, etk_property_value_bool_get(value));
-	 break;
+         etk_entry_password_mode_set(entry, etk_property_value_bool_get(value));
+         break;
       default:
-	 break;
+         break;
    }
 }
 
@@ -439,36 +439,36 @@ static void _etk_entry_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       w = geometry.w;
       if (entry->primary_image)
       {
-	 image = entry->primary_image;
-	 etk_image_size_get(image, &i_geometry.w, &i_geometry.h);
+         image = entry->primary_image;
+         etk_image_size_get(image, &i_geometry.w, &i_geometry.h);
 
-	 i_geometry.x = geometry.x;
-	 i_geometry.y = geometry.y;
-	 i_geometry.w = i_geometry.h = ETK_MAX(i_geometry.w, i_geometry.h);
-	 if (geometry.h <= i_geometry.h)
-	    i_geometry.w = i_geometry.h = geometry.h;
-	 else
-	    i_geometry.y += (geometry.h - i_geometry.h)/2;
+         i_geometry.x = geometry.x;
+         i_geometry.y = geometry.y;
+         i_geometry.w = i_geometry.h = ETK_MAX(i_geometry.w, i_geometry.h);
+         if (geometry.h <= i_geometry.h)
+            i_geometry.w = i_geometry.h = geometry.h;
+         else
+            i_geometry.y += (geometry.h - i_geometry.h)/2;
 
-	 etk_widget_size_allocate(ETK_WIDGET(image), i_geometry);
-	 x += i_geometry.w + entry->image_interspace;
-	 w -= i_geometry.w + entry->image_interspace;
+         etk_widget_size_allocate(ETK_WIDGET(image), i_geometry);
+         x += i_geometry.w + entry->image_interspace;
+         w -= i_geometry.w + entry->image_interspace;
       }
       if (entry->secondary_image)
       {
-	 image = entry->secondary_image;
-	 etk_image_size_get(image, &i_geometry.w, &i_geometry.h);
+         image = entry->secondary_image;
+         etk_image_size_get(image, &i_geometry.w, &i_geometry.h);
 
-	 i_geometry.x = geometry.x + geometry.w - i_geometry.w;
-	 i_geometry.y = geometry.y;
-	 i_geometry.w = i_geometry.h = ETK_MAX(i_geometry.w, i_geometry.h);
-	 if (geometry.h <= i_geometry.h)
-	    i_geometry.w = i_geometry.h = geometry.h;
-	 else
-	    i_geometry.y += (geometry.h - i_geometry.h)/2;
+         i_geometry.x = geometry.x + geometry.w - i_geometry.w;
+         i_geometry.y = geometry.y;
+         i_geometry.w = i_geometry.h = ETK_MAX(i_geometry.w, i_geometry.h);
+         if (geometry.h <= i_geometry.h)
+            i_geometry.w = i_geometry.h = geometry.h;
+         else
+            i_geometry.y += (geometry.h - i_geometry.h)/2;
 
-	 etk_widget_size_allocate(ETK_WIDGET(image), i_geometry);
-	 w -= i_geometry.w + entry->image_interspace;
+         etk_widget_size_allocate(ETK_WIDGET(image), i_geometry);
+         w -= i_geometry.w + entry->image_interspace;
       }
 
       evas_object_move(entry->editable_object, x, geometry.y);
@@ -803,8 +803,8 @@ static void _etk_entry_image_mouse_in_cb(Etk_Widget *widget, Etk_Event_Mouse_In 
       return;
 
    evas_object_color_set(etk_image_evas_object_get(image),
-	 entry->highlight_color.r, entry->highlight_color.g,
-	 entry->highlight_color.b, entry->highlight_color.a);
+         entry->highlight_color.r, entry->highlight_color.g,
+         entry->highlight_color.b, entry->highlight_color.a);
 }
 
 /* Called when the mouse moves out of the image */
@@ -847,8 +847,8 @@ static void _etk_entry_image_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Up 
       return;
 
    evas_object_color_set(etk_image_evas_object_get(image),
-	 entry->highlight_color.r, entry->highlight_color.g,
-	 entry->highlight_color.b, entry->highlight_color.a);
+      entry->highlight_color.r, entry->highlight_color.g,
+      entry->highlight_color.b, entry->highlight_color.a);
 }
 
 /* Called when the clear button is pressed */

@@ -1,6 +1,6 @@
 group {
    name: "etk/spinner";
-   min: 60 18;
+   min: 50 18;
    parts {
       part {
          name: "spinner";
@@ -23,23 +23,23 @@ group {
             }
          }
       }
-      part {      
-	 name: "clip";
-	 type: RECT;
-	 description {
-	    state: "default" 0.0;
-	    rel1 {
-	       relative: 0.0 0.5;
-	       offset: 0 -7;
-	    }
-	    rel2 {
-	       relative: 1.0 0.5;
-	       offset: -3 6;
-	    }
-	 }
+      part {
+         name: "clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.5;
+               offset: 0 -7;
+            }
+            rel2 {
+               relative: 1.0 0.5;
+               offset: -3 6;
+            }
+         }
       }      
       part {
-         name: "etk.swallow.text";
+         name: "etk.swallow.content";
          type: SWALLOW;
          description {
             state: "default" 0.0;
@@ -57,10 +57,10 @@ group {
       }
       FOCUS_GLOW(0.0, 0.0, 0, 0, "spinner", 1.0, 1.0, -1, -1, "spinner")
       part {
-	 name: "up_arrow";
-         clip_to: "clip";	 
-	 description {
-	    state: "default" 0.0;
+         name: "up_arrow";
+         clip_to: "clip";         
+         description {
+            state: "default" 0.0;
             rel1 {
                relative: 1.0 0.0;
                offset: -16 -2;
@@ -71,23 +71,23 @@ group {
                offset: -1 -9;
                to: "spinner";
             }
-	    image {
-	       normal: "spinner_button_up1.png";
-	    }
-	 }
-	 description {
-	    state: "down" 0.0;
-	    inherit: "default" 0.0;
-	    image {
-	       normal: "spinner_button_up2.png";
-	    }
-	 }
+            image {
+               normal: "spinner_button_up1.png";
+            }
+         }
+         description {
+            state: "down" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "spinner_button_up2.png";
+            }
+         }
       }
       part {
-	 name: "down_arrow";
+         name: "down_arrow";
          clip_to: "clip";
-	 description {
-	    state: "default" 0.0;
+         description {
+            state: "default" 0.0;
             rel1 {
                relative: 1.0 0.0;
                offset: -16 9;
@@ -98,17 +98,17 @@ group {
                offset: -1 2;
                to: "spinner";
             }
-	    image {
-	       normal: "spinner_button_down1.png";
-	    }	    
-	 }
-	 description {
-	    state: "down" 0.0;
-	    inherit: "default" 0.0;
-	    image {
-	       normal: "spinner_button_down2.png";
-	    }
-	 }	 
+            image {
+               normal: "spinner_button_down1.png";
+            }            
+         }
+         description {
+            state: "down" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "spinner_button_down2.png";
+            }
+         }         
       }
    }
    programs {
@@ -125,56 +125,56 @@ group {
          UNFOCUS_GLOW_ACTION
       }
       program {  
-	 name: "up_arrow_up";  
-	 signal: "mouse,up,1";  
-	 source: "up_arrow";  
-	 action: STATE_SET "default" 0.0;  
-	 target: "up_arrow";  
+         name: "up_arrow_up";  
+         signal: "mouse,up,1";  
+         source: "up_arrow";  
+         action: STATE_SET "default" 0.0;  
+         target: "up_arrow";  
       }  
       program {  
-	 name: "up_arrow_down";  
-	 signal: "mouse,down,1*";  
-	 source: "up_arrow";  
-	 action: STATE_SET "down" 0.0;  
-	 target: "up_arrow";
+         name: "up_arrow_down";  
+         signal: "mouse,down,1*";  
+         source: "up_arrow";  
+         action: STATE_SET "down" 0.0;  
+         target: "up_arrow";
       }        
       program {  
-	 name: "down_arrow_up";  
-	 signal: "mouse,up,1";  
-	 source: "down_arrow";
-	 action: STATE_SET "default" 0.0;  
-	 target: "down_arrow";  
+         name: "down_arrow_up";  
+         signal: "mouse,up,1";  
+         source: "down_arrow";
+         action: STATE_SET "default" 0.0;  
+         target: "down_arrow";  
       }  
       program {  
-	 name: "down_arrow_down";  
-	 signal: "mouse,down,1*";  
-	 source: "down_arrow";  
-	 action: STATE_SET "down" 0.0;  
-	 target: "down_arrow";
+         name: "down_arrow_down";  
+         signal: "mouse,down,1*";  
+         source: "down_arrow";  
+         action: STATE_SET "down" 0.0;  
+         target: "down_arrow";
       }
       program {       
-	 name: "up_arrow_pressed"; 
-	 source: "up_arrow";
-	 signal: "mouse,down,1*"; 
-	 action: SIGNAL_EMIT "etk,action,increment,start" ""; 
+         name: "up_arrow_pressed"; 
+         source: "up_arrow";
+         signal: "mouse,down,1*"; 
+         action: SIGNAL_EMIT "etk,action,increment,start" ""; 
       } 
       program {
-	 name: "up_arrow_released"; 
-	 source: "up_arrow";
-	 signal: "mouse,up,1"; 
-	 action: SIGNAL_EMIT "etk,action,increment,stop" "";
+         name: "up_arrow_released"; 
+         source: "up_arrow";
+         signal: "mouse,up,1"; 
+         action: SIGNAL_EMIT "etk,action,increment,stop" "";
       }
       program {       
-	 name: "down_arrow_pressed"; 
-	 source: "down_arrow";
-	 signal: "mouse,down,1*"; 
-	 action: SIGNAL_EMIT "etk,action,decrement,start" ""; 
+         name: "down_arrow_pressed"; 
+         source: "down_arrow";
+         signal: "mouse,down,1*"; 
+         action: SIGNAL_EMIT "etk,action,decrement,start" ""; 
       } 
       program {
-	 name: "down_arrow_released"; 
-	 source: "down_arrow";
-	 signal: "mouse,up,1"; 
-	 action: SIGNAL_EMIT "etk,action,decrement,stop" "";
+         name: "down_arrow_released"; 
+         source: "down_arrow";
+         signal: "mouse,up,1"; 
+         action: SIGNAL_EMIT "etk,action,decrement,stop" "";
       }      
    }
 }
@@ -184,20 +184,20 @@ group {
    parts {
       part {
          name: "etk.text.text";
-	 type: TEXT;
-	 mouse_events: 0;
-	 description {
-	    state: "default" 0.0;
-	    color: 0 0 0 255;
-	    text {
-	       text: "Entry";
-	       font: "Vera";
-	       size: 10;
-	       min: 1 1;
-	       align: 0.0 0.5;
+         type: TEXT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            text {
+               text: "Entry";
+               font: "Vera";
+               size: 10;
+               min: 1 1;
+               align: 0.0 0.5;
                text_class: "spinner";
-	    }
-	 }
+            }
+         }
       }
    }
 }
@@ -224,8 +224,8 @@ group {
    programs {
       program {
          name: "on_cursor_show";
-	 signal:  "etk,action,show,cursor";
-	 source:  "etk";
+         signal:  "etk,action,show,cursor";
+         source:  "etk";
          action: ACTION_STOP;
          target: "cursor_show";
          target: "cursor_hide";

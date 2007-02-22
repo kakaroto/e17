@@ -30,6 +30,7 @@ enum Etk_Spinner_Propery_Id
 static void _etk_spinner_constructor(Etk_Spinner *spinner);
 static void _etk_spinner_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_spinner_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
+static void _etk_spinner_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
 static void _etk_spinner_realize_cb(Etk_Object *object, void *data);
 static void _etk_spinner_unrealize_cb(Etk_Object *object, void *data);
@@ -220,14 +221,14 @@ static void _etk_spinner_constructor(Etk_Spinner *spinner)
    strcpy(spinner->value_format, "%.0f");
    spinner->snap_to_ticks = ETK_FALSE;
    spinner->wrap = ETK_FALSE;
-   
    spinner->step_timer = NULL;
    spinner->successive_steps = 0;
-
    spinner->editable_object = NULL;
    spinner->selection_dragging = ETK_FALSE;
    
    ETK_RANGE(spinner)->value_changed = _etk_spinner_value_changed_handler;
+   ETK_WIDGET(spinner)->size_allocate = _etk_spinner_size_allocate;
+   
    etk_signal_connect("realize", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unrealize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_down_cb), NULL);
@@ -251,16 +252,16 @@ static void _etk_spinner_property_set(Etk_Object *object, int property_id, Etk_P
    switch (property_id)
    {
       case ETK_SPINNER_DIGITS_PROPERTY:
-	 etk_spinner_digits_set(spinner, etk_property_value_int_get(value));
-	 break;
+         etk_spinner_digits_set(spinner, etk_property_value_int_get(value));
+         break;
       case ETK_SPINNER_SNAP_TO_TICKS_PROPERTY:
-	 etk_spinner_snap_to_ticks_set(spinner, etk_property_value_bool_get(value));
-	 break;
+         etk_spinner_snap_to_ticks_set(spinner, etk_property_value_bool_get(value));
+         break;
       case ETK_SPINNER_WRAP_PROPERTY:
-	 etk_spinner_wrap_set(spinner, etk_property_value_bool_get(value));
-	 break;
+         etk_spinner_wrap_set(spinner, etk_property_value_bool_get(value));
+         break;
       default:
-	 break;
+         break;
    }
 }
 
@@ -286,6 +287,18 @@ static void _etk_spinner_property_get(Etk_Object *object, int property_id, Etk_P
       default:
          break;
    }
+}
+
+/* Resizes the spinner to the allocated size */
+static void _etk_spinner_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
+{
+   Etk_Spinner *spinner;
+
+   if (!(spinner = ETK_SPINNER(widget)))
+      return;
+   
+   evas_object_move(spinner->editable_object, geometry.x, geometry.y);
+   evas_object_resize(spinner->editable_object, geometry.w, geometry.h);
 }
 
 /**************************
@@ -318,7 +331,7 @@ static void _etk_spinner_realize_cb(Etk_Object *object, void *data)
       etk_editable_selection_hide(spinner->editable_object);
    }
    evas_object_show(spinner->editable_object);
-   etk_widget_swallow_object(ETK_WIDGET(spinner), "etk.swallow.text", spinner->editable_object);
+   etk_widget_member_object_add(ETK_WIDGET(spinner), spinner->editable_object);
    
    evas_object_event_callback_add(spinner->editable_object, EVAS_CALLBACK_MOUSE_IN,
       _etk_spinner_editable_mouse_in_cb, spinner);
