@@ -51,6 +51,12 @@ struct _Weather
   Evas_Object *icon_obj;
 };
 
+struct 
+{
+   const char *host;
+   int port;
+} proxy; 
+
 /* Module Function Protos */
 static void _weather_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 				    void *event_info);
@@ -61,7 +67,7 @@ static int _weather_cb_check (void *data);
 static Config_Item *_weather_config_item_get (const char *id);
 static Weather *_weather_new (Evas * evas);
 static void _weather_free (Weather * w);
-static void _weather_get_proxy (Config_Item * ci);
+static void _weather_get_proxy (void);
 static int _weather_server_add (void *data, int type, void *event);
 static int _weather_server_del (void *data, int type, void *event);
 static int _weather_server_data (void *data, int type, void *event);
@@ -266,8 +272,6 @@ _weather_config_item_get (const char *id)
   ci->host = evas_stringshare_add ("www.rssweather.com");
   ci->code = evas_stringshare_add ("KJFK");
 
-  _weather_get_proxy (ci);
-
   weather_config->items = evas_list_append (weather_config->items, ci);
   return ci;
 }
@@ -317,10 +321,10 @@ e_modapi_init (E_Module * m)
       ci->host = evas_stringshare_add ("www.rssweather.com");
       ci->code = evas_stringshare_add ("KJFK");
       ci->id = evas_stringshare_add ("0");
-      _weather_get_proxy (ci);
 
       weather_config->items = evas_list_append (weather_config->items, ci);
     }
+  _weather_get_proxy ();
 
   weather_config->module = m;
   e_gadcon_provider_register (&_gadcon_class);
@@ -353,16 +357,13 @@ e_modapi_shutdown (E_Module * m)
 	evas_stringshare_del (ci->host);
       if (ci->code)
 	evas_stringshare_del (ci->code);
-      if (ci->proxy.host)
-	evas_stringshare_del (ci->proxy.host);
       weather_config->items =
 	evas_list_remove_list (weather_config->items, weather_config->items);
       free (ci);
       ci = NULL;
     }
 
-  free (weather_config);
-  weather_config = NULL;
+  E_FREE (weather_config);
   E_CONFIG_DD_FREE (conf_item_edd);
   E_CONFIG_DD_FREE (conf_edd);
   return 1;
@@ -435,38 +436,33 @@ _weather_free (Weather * w)
 }
 
 static void
-_weather_get_proxy (Config_Item * ci)
+_weather_get_proxy (void)
 {
-  char *env;
+  char env[128];
 
-  if (!ci)
-    return;
+  snprintf (env, sizeof (env), "%s", getenv ("http_proxy"));
+  if (!env[0]) snprintf (env, sizeof (env), "%s", getenv ("HTTP_PROXY"));
+  if (strncmp (env, "http://", 7)) return;
 
-  env = getenv ("http_proxy");
-  if (!env)
-    env = getenv ("HTTP_PROXY");
-  if ((env) && (!strncmp (env, "http://", 7)))
-    {
-      char *host = NULL;
-      char *p;
-      int port = 0;
+  char *host = NULL;
+  char *p;
+  int port = 0;
 
-      host = strchr (env, ':');
-      host += 3;
-      p = strchr (host, ':');
-      if (p)
+  host = strchr (env, ':');
+  host += 3;
+  p = strchr (host, ':');
+  if (p)
 	{
 	  *p = 0;
 	  p++;
 	  if (sscanf (p, "%d", &port) != 1)
 	    port = 0;
 	}
-      if ((host) && (port))
+  if ((host) && (port))
 	{
-	  ci->proxy.host = evas_stringshare_add (host);
-	  ci->proxy.port = port;
+	  proxy.host = evas_stringshare_add (host);
+	  proxy.port = port;
 	}
-    }
 }
 
 static int
@@ -484,10 +480,10 @@ _weather_cb_check (void *data)
       inst->server = NULL;
     }
 
-  if (ci->proxy.port != 0)
+  if (proxy.port != 0)
     inst->server =
-      ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM, ci->proxy.host,
-				ci->proxy.port, inst);
+      ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM, proxy.host,
+				proxy.port, inst);
   else
     inst->server =
       ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM, ci->host, 80, inst);
