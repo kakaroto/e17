@@ -698,7 +698,8 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                child_geometry.x += cell->padding;
                child_geometry.w -= 2 * cell->padding;
                
-               etk_container_child_space_fill(child, &child_geometry, cell->fill_policy & ETK_BOX_FILL, ETK_TRUE, 0.5, 0.5); 
+               etk_container_child_space_fill(child, &child_geometry,
+                  cell->fill_policy & ETK_BOX_FILL, !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), 0.5, 0.5); 
                etk_widget_size_allocate(child, child_geometry);
             }
             
@@ -762,7 +763,8 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                child_geometry.x += cell->padding;
                child_geometry.w -= 2 * cell->padding;
                
-               etk_container_child_space_fill(child, &child_geometry, cell->fill_policy & ETK_BOX_FILL, ETK_TRUE, 0.5, 0.5); 
+               etk_container_child_space_fill(child, &child_geometry,
+                  cell->fill_policy & ETK_BOX_FILL, !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), 0.5, 0.5); 
                etk_widget_size_allocate(child, child_geometry);
             }
             
@@ -923,7 +925,8 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                child_geometry.y += cell->padding;
                child_geometry.h -= 2 * cell->padding;
                
-               etk_container_child_space_fill(child, &child_geometry, ETK_TRUE, cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5); 
+               etk_container_child_space_fill(child, &child_geometry,
+                  !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5); 
                etk_widget_size_allocate(child, child_geometry);
             }
             
@@ -987,7 +990,8 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                child_geometry.y += cell->padding;
                child_geometry.h -= 2 * cell->padding;
                
-               etk_container_child_space_fill(child, &child_geometry, ETK_TRUE, cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5); 
+               etk_container_child_space_fill(child, &child_geometry,
+                  !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5); 
                etk_widget_size_allocate(child, child_geometry);
             }
             

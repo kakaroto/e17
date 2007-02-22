@@ -47,10 +47,13 @@ typedef enum Etk_Box_Group
 /** @brief Describes how a child of the box expands and fills the space */
 typedef enum Etk_Box_Fill_Policy
 {
-   ETK_BOX_NONE = 0,            /**< The child does not fill or expand */
-   ETK_BOX_EXPAND = 1 << 0,     /**< The cell containing the child will expand to take all the available space */
-   ETK_BOX_FILL = 1 << 1,       /**< The child will fill all the available space in its cell */
-   ETK_BOX_EXPAND_FILL = ETK_BOX_EXPAND | ETK_BOX_FILL    /**< Equivalent to ETK_BOX_EXPAND | ETK_BOX_FILL */
+   ETK_BOX_NONE = 0,                  /**< The child does not fill or expand */
+   ETK_BOX_EXPAND = 1 << 0,           /**< The cell containing the child will expand to take all the available space */
+   ETK_BOX_FILL = 1 << 1,             /**< The child will fill all the available space in its cell */
+   ETK_BOX_EXPAND_FILL = ETK_BOX_EXPAND | ETK_BOX_FILL,   /**< Equivalent to ETK_BOX_EXPAND | ETK_BOX_FILL */
+   ETK_BOX_SHRINK_OPPOSITE = 1 << 2   /**< The child will shrink in the opposite direction of the box
+                                       * (i.e the child will shrink vertically for an Etk_HBox, and
+                                       * horizontally for an Etk_VBox) */
 } Etk_Box_Fill_Policy;
 
 /**
