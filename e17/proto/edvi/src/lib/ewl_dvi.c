@@ -45,7 +45,9 @@ ewl_dvi_new(void)
  * @return Returns no value.
  * @brief Initialize an dvi widget to default values and callbacks
  *
- * Sets the fields and callbacks of @a dvi to their default values.
+ * Sets the fields and callbacks of @a dvi to their default
+ * values. The property EDVI_PROPERTY_DELAYED_FONT_OPEN is set by
+ * default.
  */
 int
 ewl_dvi_init(Ewl_Dvi *dvi)
@@ -81,7 +83,7 @@ ewl_dvi_init(Ewl_Dvi *dvi)
 
 	dvi->dvi_device = edvi_device_new (edvi_dpi_get(), edvi_dpi_get());
 	dvi->dvi_property = edvi_property_new();
-	edvi_property_delayed_font_open_set(dvi->dvi_property, 1);
+	edvi_property_property_set (dvi->dvi_property, EDVI_PROPERTY_DELAYED_FONT_OPEN);
 	dvi->dvi_document = NULL;
 	dvi->dvi_page = NULL;
 

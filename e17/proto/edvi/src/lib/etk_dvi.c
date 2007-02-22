@@ -61,7 +61,7 @@ Etk_Type *etk_dvi_type_get()
 }
 
 /**
- * @brief Creates a new dvi
+ * @brief Creates a new dvi with the property EDVI_PROPERTY_DELAYED_FONT_OPEN set by default.
  * @return Returns the new dvi widget
  */
 Etk_Widget *etk_dvi_new()
@@ -330,7 +330,7 @@ static void _etk_dvi_constructor(Etk_Dvi *dvi)
 
    dvi->dvi_device = edvi_device_new (edvi_dpi_get(), edvi_dpi_get());
    dvi->dvi_property = edvi_property_new();
-   edvi_property_delayed_font_open_set(dvi->dvi_property, 1);
+   edvi_property_property_set (dvi->dvi_property, EDVI_PROPERTY_DELAYED_FONT_OPEN);
    dvi->dvi_document = NULL;
    dvi->dvi_page = NULL;
 

@@ -98,6 +98,8 @@ main (int argc, char *argv[])
 
   ewl_main ();
 
+  edvi_shutdown ();
+
   return 0;
 }
 
@@ -111,7 +113,6 @@ static void _quit_cb (Ewl_Widget * w, void *ev_data, void *user_data)
   }
   ewl_widget_destroy(w);
   ewl_main_quit();
-  edvi_shutdown ();
 }
 
 static void

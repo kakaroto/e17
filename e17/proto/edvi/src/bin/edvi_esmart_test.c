@@ -25,7 +25,7 @@ main (int argc, char *argv[])
   if (argc < 3)
     {
       printf ("\nUsage: %s filename page_number\n\n", argv[0]);
-      exit (-1);
+      return -1;
     }
 
   printf ("[DVI] version : %s\n", edvi_version_get ());
@@ -102,7 +102,6 @@ static int
 app_signal_exit(void *data, int ev_type, void *ev)
 {
    ecore_main_loop_quit();
-   edvi_shutdown ();
    return 1;
 }
 
@@ -110,5 +109,4 @@ static void
 app_delete_request(Ecore_Evas *ee)
 {
    ecore_main_loop_quit();
-   edvi_shutdown ();
 }

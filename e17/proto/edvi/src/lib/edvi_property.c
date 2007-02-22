@@ -28,8 +28,6 @@ edvi_property_new ()
     return 0;
   }
 
-  DVI_PROPERTY_SET(property->dvi_property, DVI_PROP_ASYNC_GS_INVOCATION);
-
   return property;
 }
 
@@ -45,25 +43,31 @@ edvi_property_delete (Edvi_Property *property)
 }
 
 void
-edvi_property_delayed_font_open_set (Edvi_Property *property,
-                                     int            delayed_font_open)
+edvi_property_property_set (Edvi_Property   *property,
+                            Edvi_Property_Id id)
 {
   if (!property)
     return;
 
-  if (delayed_font_open)
-    DVI_PROPERTY_SET(property->dvi_property,
-                     DVI_PROP_DELAYED_FONT_OPEN);
-  else
-    DVI_PROPERTY_UNSET(property->dvi_property,
-                       DVI_PROP_DELAYED_FONT_OPEN);
+  DVI_PROPERTY_SET(property->dvi_property, id);
+}
+
+void
+edvi_property_property_unset (Edvi_Property   *property,
+                              Edvi_Property_Id id)
+{
+  if (!property)
+    return;
+
+  DVI_PROPERTY_UNSET(property->dvi_property, id);
 }
 
 int
-edvi_property_delayed_font_open_get (Edvi_Property *property)
+edvi_property_property_isset (Edvi_Property   *property,
+                              Edvi_Property_Id id)
 {
   if (!property)
     return 0;
 
-  return DVI_PROPERTY_TEST (property->dvi_property, DVI_PROP_DELAYED_FONT_OPEN);
+  return DVI_PROPERTY_TEST (property->dvi_property, id);
 }

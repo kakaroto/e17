@@ -9,9 +9,14 @@ Edvi_Property *edvi_property_new ();
 
 void           edvi_property_delete (Edvi_Property *property);
 
-void           edvi_property_delayed_font_open_set (Edvi_Property *property,
-                                                    int            delayed_font_open);
+void           edvi_property_property_set (Edvi_Property   *property,
+                                           Edvi_Property_Id id);
 
-int            edvi_property_delayed_font_open_get (Edvi_Property *property);
+void           edvi_property_property_unset (Edvi_Property   *property,
+                                             Edvi_Property_Id id);
+
+int            edvi_property_property_isset (Edvi_Property   *property,
+                                             Edvi_Property_Id id);
+
 
 #endif /* __EDVI_PROPERTY_H__ */

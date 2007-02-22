@@ -51,7 +51,6 @@ main (int argc, char * argv[])
   Evas          *evas;
   Evas_Object   *o;
   char          *param_kpathsea_mode  = "cx";
-  int            param_delayed_font_open = 1;
 
   if (argc < 2) {
     printf ("\nUsage: %s file.dvi\n\n", argv[0]);
@@ -77,7 +76,7 @@ main (int argc, char * argv[])
   if (!property) {
     goto free_device;
   }
-  edvi_property_delayed_font_open_set (property, param_delayed_font_open);
+  edvi_property_property_set (property, EDVI_PROPERTY_DELAYED_FONT_OPEN);
 
   document = edvi_document_new (filename, device, property);
   if (!document) {
@@ -121,6 +120,7 @@ main (int argc, char * argv[])
 
   ecore_main_loop_begin ();
 
+  ecore_evas_shutdown ();
  shutdown_ecore:
   ecore_shutdown ();
  shutdown_evas:

@@ -108,7 +108,7 @@ esmart_dvi_init (Evas_Object *obj)
 
   sp->dvi_device = edvi_device_new (edvi_dpi_get(), edvi_dpi_get());
   sp->dvi_property = edvi_property_new();
-  edvi_property_delayed_font_open_set(sp->dvi_property, 1);
+  edvi_property_property_set (sp->dvi_property, EDVI_PROPERTY_DELAYED_FONT_OPEN);
   sp->dvi_document = NULL;
   sp->dvi_page = NULL;
 
