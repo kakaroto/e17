@@ -648,6 +648,7 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    int num_children_to_expand = 0;
    int i, j;
    float start_offset, end_offset;
+   float width;
 
    if (!(hbox = ETK_HBOX(widget)))
       return;
@@ -680,19 +681,20 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
             
             if (etk_widget_is_visible(child))
             {
+               width = box->request_sizes[i][j] * ratio;
                child_geometry.y = geometry.y + container->border_width;
-               child_geometry.w = box->request_sizes[i][j] * ratio;
+               child_geometry.w = width;
                child_geometry.h = allocated_size.h;
 
                if (cell->group == ETK_BOX_START)
                {
                   child_geometry.x = geometry.x + start_offset;
-                  start_offset += child_geometry.w + box->spacing;
+                  start_offset += width + box->spacing;
                }
                else
                {
                   child_geometry.x = geometry.x + geometry.w - end_offset - child_geometry.w;
-                  end_offset += child_geometry.w + box->spacing;
+                  end_offset += width + box->spacing;
                }
                
                child_geometry.x += cell->padding;
@@ -743,21 +745,22 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
             
             if (etk_widget_is_visible(child))
             {
-               child_geometry.y = geometry.y + container->border_width;
-               child_geometry.w = box->request_sizes[i][j];
-               child_geometry.h = allocated_size.h;
+               width = box->request_sizes[i][j];
                if (cell->fill_policy & ETK_BOX_EXPAND)
-                  child_geometry.w += free_space;
+                  width += free_space;
+               child_geometry.y = geometry.y + container->border_width;
+               child_geometry.w = width;
+               child_geometry.h = allocated_size.h;
 
                if (cell->group == ETK_BOX_START)
                {
                   child_geometry.x = geometry.x + start_offset;
-                  start_offset += child_geometry.w + box->spacing;
+                  start_offset += width + box->spacing;
                }
                else
                {
                   child_geometry.x = geometry.x + geometry.w - end_offset - child_geometry.w;
-                  end_offset += child_geometry.w + box->spacing;
+                  end_offset += width + box->spacing;
                }
 
                child_geometry.x += cell->padding;
@@ -875,6 +878,7 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    int num_children_to_expand = 0;
    int i, j;
    float start_offset, end_offset;
+   float height;
 
    if (!(vbox = ETK_VBOX(widget)))
       return;
@@ -907,19 +911,20 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
             
             if (etk_widget_is_visible(child))
             {
+               height = box->request_sizes[i][j] * ratio;
                child_geometry.x = geometry.x + container->border_width;
                child_geometry.w = allocated_size.w;
-               child_geometry.h = box->request_sizes[i][j] * ratio;
+               child_geometry.h = height;
 
                if (cell->group == ETK_BOX_START)
                {
                   child_geometry.y = geometry.y + start_offset;
-                  start_offset += child_geometry.h + box->spacing;
+                  start_offset += height + box->spacing;
                }
                else
                {
                   child_geometry.y = geometry.y + geometry.h - end_offset - child_geometry.h;
-                  end_offset += child_geometry.h + box->spacing;
+                  end_offset += height + box->spacing;
                }
                
                child_geometry.y += cell->padding;
@@ -970,21 +975,22 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
             
             if (etk_widget_is_visible(child))
             {
+               height = box->request_sizes[i][j];
+               if (cell->fill_policy & ETK_BOX_EXPAND)
+                  height += free_space;
                child_geometry.x = geometry.x + container->border_width;
                child_geometry.w = allocated_size.w;
-               child_geometry.h = box->request_sizes[i][j];
-               if (cell->fill_policy & ETK_BOX_EXPAND)
-                  child_geometry.h += free_space;
+               child_geometry.h = height;
 
                if (cell->group == ETK_BOX_START)
                {
                   child_geometry.y = geometry.y + start_offset;
-                  start_offset += child_geometry.h + box->spacing;
+                  start_offset += height + box->spacing;
                }
                else
                {
                   child_geometry.y = geometry.y + geometry.h - end_offset - child_geometry.h;
-                  end_offset += child_geometry.h + box->spacing;
+                  end_offset += height + box->spacing;
                }
 
                child_geometry.y += cell->padding;
