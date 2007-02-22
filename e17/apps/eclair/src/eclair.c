@@ -20,8 +20,6 @@ static Evas_Bool _eclair_create_cover_window(Eclair *eclair);
 static Evas_Bool _eclair_create_playlist_container_object(Eclair *eclair, Eclair_Window *window);
 static Evas_Bool _eclair_create_cover_object(Eclair *eclair, Eclair_Window *window);
 static void _eclair_add_inter_windows_callbacks(Eclair *eclair);
-static void _eclair_sig_pregest();
-static void _eclair_on_segv(int num);
 
 //Initialize eclair
 Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
@@ -696,38 +694,9 @@ static void _eclair_add_inter_windows_callbacks(Eclair *eclair)
    }
 }
 
-//Handle segvs
-static void _eclair_sig_pregest()
-{
-   struct sigaction sa;
-
-   sa.sa_handler = _eclair_on_segv;
-   sigaction(SIGSEGV, &sa, (struct sigaction *)0);
-}
-
-//Display a message on segvs
-static void _eclair_on_segv(int num)
-{
-   fprintf(stderr, "\n\n");   
-   fprintf(stderr, "Oops, eclair has crashed (SIG: %d) :(\n", num);
-   fprintf(stderr, "\n");
-   fprintf(stderr, "Have you compiled the latest version of eclair, emotion, evas, and all eclair dependencies ?\n");
-   fprintf(stderr, "If it failed again, please report bugs to Mo0m (simon.treny@free.fr)\n");
-   fprintf(stderr, "Describe how bugs happened, gdb traces, and so on ;)\n");
-   fprintf(stderr, "\n");
-   fprintf(stderr, "With that, devs will be able to correct bugs faster and easier\n");
-   fprintf(stderr, "If you correct the bug, or see in which code part it can provide, include it too\n");
-   fprintf(stderr, "\n");
-   fprintf(stderr, "Thanks :)\n");
-   
-   exit(128 + num);
-}
-
 int main(int argc, char *argv[])
 {
    Eclair eclair;
-
-   _eclair_sig_pregest();
 
    if (!eclair_init(&eclair, &argc, &argv))
       return 1;
