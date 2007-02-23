@@ -50,8 +50,8 @@ static void _etk_shadow_property_set(Etk_Object *object, int property_id, Etk_Pr
 static void _etk_shadow_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_shadow_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_shadow_realized_cb(Etk_Object *object, void *data);
-static void _etk_shadow_unrealized_cb(Etk_Object *object, void *data);
+static void _etk_shadow_realize_cb(Etk_Object *object, void *data);
+static void _etk_shadow_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow);
 static void _etk_shadow_border_recalc(Etk_Shadow *shadow);
 static Etk_Bool _etk_shadow_edge_visible(Etk_Shadow *shadow, Etk_Shadow_Object_Id object_id);
@@ -398,8 +398,8 @@ static void _etk_shadow_constructor(Etk_Shadow *shadow)
    ETK_WIDGET(shadow)->size_request = _etk_shadow_size_request;
    ETK_WIDGET(shadow)->size_allocate = _etk_shadow_size_allocate;
 
-   etk_signal_connect("realize", ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_realized_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_unrealized_cb), NULL);
+   etk_signal_connect("realize", ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_realize_cb), NULL);
+   etk_signal_connect("unrealize", ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_unrealize_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -685,7 +685,7 @@ static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the shadow container is realized */
-static void _etk_shadow_realized_cb(Etk_Object *object, void *data)
+static void _etk_shadow_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Shadow *shadow;
    Evas *evas;
@@ -731,7 +731,7 @@ static void _etk_shadow_realized_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the shadow container is unrealized */
-static void _etk_shadow_unrealized_cb(Etk_Object *object, void *data)
+static void _etk_shadow_unrealize_cb(Etk_Object *object, void *data)
 {
    Etk_Shadow *shadow;
    int i;

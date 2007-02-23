@@ -300,5 +300,11 @@ static void _etk_cache_object_deleted_cb(void *data, Evas *e, Evas_Object *obj, 
  * @addtogroup Etk_Cache
  *
  * You will almost never have to use Etk_Cache directly, except if you are implementing a new widget that needs to
- * load a lot of images efficiently, or if you are creating a new tree-model that displays images.
+ * load a lot of images efficiently, or if you are creating a new tree-model that displays images. @n
+ *
+ * The cache system is a simple pool where you can store a limited number of Evas objects associated to a filename and
+ * to a key. If you try to add a new object with etk_cache_add() while the cache is already full, the oldest object
+ * of the cache will be destroyed. You can then retrieve a cached object from its filename/key with etk_cache_find(). @n
+ * You can also dynamically change the maximum size of the cache system with etk_cache_size_set() and know the current
+ * number of cached objects with etk_cache_num_objects_get().
  */

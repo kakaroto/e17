@@ -29,8 +29,9 @@ struct Etk_Check_Button
    Etk_Toggle_Button toggle_button;
 };
 
-Etk_Type   *etk_check_button_type_get();
-Etk_Widget *etk_check_button_new();
+
+Etk_Type   *etk_check_button_type_get(void);
+Etk_Widget *etk_check_button_new(void);
 Etk_Widget *etk_check_button_new_with_label(const char *label);
 
 /** @} */

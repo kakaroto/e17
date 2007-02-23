@@ -20,7 +20,7 @@
 #define ETK_IS_COLORPICKER(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_COLORPICKER_TYPE))
 
 
-/** @brief The color modes used by the colorpicker */
+/** @brief The different color modes that can be used by the colorpicker */
 typedef enum Etk_Colorpicker_Mode
 {
    ETK_COLORPICKER_H,     /**< The "Hue" mode */
@@ -30,6 +30,7 @@ typedef enum Etk_Colorpicker_Mode
    ETK_COLORPICKER_G,     /**< The "Green" mode */
    ETK_COLORPICKER_B      /**< The "Blue" mode */
 } Etk_Colorpicker_Mode;
+
 
 /**
  * @brief @widget A widget that allows the user to select a color
@@ -66,19 +67,19 @@ struct Etk_Colorpicker
    Etk_Bool vp_image_needs_update;
    Etk_Bool vp_cursor_needs_update;
    
+   /* Component widgets */
+   Etk_Widget *component_table;
+   Etk_Widget *radios[6];
+   
    /* Sliders */
    Etk_Widget *sliders[6];
    Evas_Object *sliders_image[6];
    int sliders_res;
    Etk_Bool sliders_need_update;
    
-   /* Component widgets */
-   Etk_Widget *component_table;
-   Etk_Widget *radios[6];
-   
    /* Alpha slider */
    Etk_Widget *alpha_slider;
-   Etk_Widget *alpha_name_label;
+   Etk_Widget *alpha_label;
    
    /* Current color objects */
    Etk_Widget *color_table;
@@ -87,12 +88,11 @@ struct Etk_Colorpicker
    Evas_Object *current_color_rect;
    
    Etk_Bool ignore_value_changed;
-   Etk_Bool emit_signal;
-   
    Etk_Bool use_alpha;
    Etk_Colorpicker_Mode mode;
    Etk_Color current_color;
 };
+
 
 Etk_Type   *etk_colorpicker_type_get(void);
 Etk_Widget *etk_colorpicker_new(void);

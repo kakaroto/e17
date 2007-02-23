@@ -19,6 +19,7 @@
 /** Checks if the object is an Etk_Canvas */
 #define ETK_IS_CANVAS(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CANVAS_TYPE))
 
+
 /**
  * @brief @widget A widget that can contain any type of Evas_Object
  * @structinfo
@@ -33,8 +34,9 @@ struct Etk_Canvas
    Evas_List *objects;
 };
 
-Etk_Type   *etk_canvas_type_get();
-Etk_Widget *etk_canvas_new();
+
+Etk_Type   *etk_canvas_type_get(void);
+Etk_Widget *etk_canvas_new(void);
 
 Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object);
 void     etk_canvas_object_remove(Etk_Canvas *canvas, Evas_Object *object);

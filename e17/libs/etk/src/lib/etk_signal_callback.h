@@ -7,7 +7,7 @@
 
 /**
  * @defgroup Etk_Signal_Callback Etk_Signal_Callback
- * @brief For more infos, see the page about Etk_Signal
+ * @brief For more info, see the page about Etk_Signal
  * @{
  */
 

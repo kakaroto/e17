@@ -27,7 +27,7 @@ static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj,
  * @brief Gets the type of an Etk_Canvas
  * @return Returns the type of an Etk_Canvas
  */
-Etk_Type *etk_canvas_type_get()
+Etk_Type *etk_canvas_type_get(void)
 {
    static Etk_Type *canvas_type = NULL;
 
@@ -44,22 +44,21 @@ Etk_Type *etk_canvas_type_get()
  * @brief Creates a new canvas
  * @return Returns the new canvas widget
  */
-Etk_Widget *etk_canvas_new()
+Etk_Widget *etk_canvas_new(void)
 {
    return etk_widget_new(ETK_CANVAS_TYPE, NULL);
 }
 
 /**
- * @brief Adds an evas object to the canvas. The object will be moved to the top left corner of the canvas
- * and will be resized to 32x32. The object will also be clipped against the canvas. @n
- * You can then use any Evas function to control the object
+ * @brief Adds an Evas object to the canvas. The object will be moved to the top left corner of the canvas and
+ * will be clipped against the canvas. You can then use any Evas function to control the object
  * @param canvas a canvas
  * @param object the object to add
- * @return Returns ETK_TRUE on success, or ETK_FALSE on failure
- * (probably because the canvas and the object do not belong to the same evas)
+ * @return Returns ETK_TRUE on success, or ETK_FALSE on failure (probably because the canvas and
+ * the object do not belong to the same Evas)
  * @note The object will be automatically deleted when the canvas is destroyed
  * @warning The object position remains relative to the window, and not to the canvas itself
- * (See the detailed description Etk_Canvas, at the top of this page, for more information)
+ * (See the detailed description of Etk_Canvas, at the top of this page, for more information)
  */
 Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
 {
@@ -78,7 +77,6 @@ Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
    if ((result = etk_widget_member_object_add(ETK_WIDGET(canvas), object)))
    {
       evas_object_move(object, cx, cy);
-      evas_object_resize(object, 32, 32);
       evas_object_clip_set(object, canvas->clip);
       evas_object_show(canvas->clip);
       
@@ -90,7 +88,7 @@ Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
 }
 
 /**
- * @brief Removes an evas object from the canvas. The evas object will also be automatically hidden
+ * @brief Removes an Evas object from the canvas. The removed object will be automatically hidden
  * @param canvas a canvas
  * @param object the evas object to remove
  */
@@ -115,13 +113,13 @@ void etk_canvas_object_remove(Etk_Canvas *canvas, Evas_Object *object)
 }
 
 /**
- * @brief Moves an Evas Object to position ( @a x, @a y ), relatively to the canvas top-left corner.
+ * @brief Moves an Evas object to position ( @a x, @a y ), relatively to the canvas' top-left corner.
  * @param canvas a canvas
- * @param object the object to move. The object does not necessarily belong to the canvas
- * @param x the x component of the position where to move the object, relative to the canvas top-left corner
- * @param y the y component of the position where to move the object, relative to the canvas top-left corner
- * @note You can still use evas_object_move(), but the position passed to evas_object_move() is relative to the evas,
- * not to the canvas.
+ * @param object the object to move
+ * @param x the x component of the position where to move the object, relative to the canvas' top-left corner
+ * @param y the y component of the position where to move the object, relative to the canvas' top-left corner
+ * @note You can still use evas_object_move() to move an object of the canvas, but the position passed to
+ * evas_object_move() is relative to the Evas, not to the canvas.
  */
 void etk_canvas_object_move(Etk_Canvas *canvas, Evas_Object *object, int x, int y)
 {
@@ -135,17 +133,17 @@ void etk_canvas_object_move(Etk_Canvas *canvas, Evas_Object *object, int x, int 
 }
 
 /**
- * @brief Gets the geometry of an Evas Object. The returned position will be relative to the canvas top-left corner
+ * @brief Gets the geometry of an Evas Object. The returned position will be relative to the canvas' top-left corner
  * @param canvas a canvas
- * @param object the object to get the position of. The object does not necessarily belong to the canvas
+ * @param object the object to get the geomtry of
  * @param x the location where to store the x component of the position of the object,
- * relative to the canvas top-left corner
+ * relative to the canvas' top-left corner
  * @param y the location where to store the y component of the position of the object,
- * relative to the canvas top-left corner
+ * relative to the canvas' top-left corner
  * @param w the location where to store the width of the object
  * @param h the location where to store the height of the object
  * @note You can still use evas_object_geometry_get(), but the position returned by evas_object_geometry_get() is
- * relative to the evas, not to the canvas.
+ * relative to the Evas, not to the canvas.
  */
 void etk_canvas_object_geometry_get(Etk_Canvas *canvas, Evas_Object *object, int *x, int *y, int *w, int *h)
 {
@@ -229,6 +227,7 @@ static void _etk_canvas_unrealize_cb(Etk_Object *object, void *data)
       return;
    
    canvas->clip = NULL;
+   evas_list_free(canvas->objects);
    canvas->objects = NULL;
 }
 
@@ -257,9 +256,9 @@ static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj,
  * @addtogroup Etk_Canvas
  *
  * @image html widgets/canvas.png
- * To add an object to a canvas, the object and the canvas should belong to the same evas. It means the canvas has to be
- * realized when you create the objects. You can for example create the objects in a callback connected to the "realize"
- * signal of the canvas widget.
+ * To add an object to a canvas, the object and the canvas should belong to the same evas. It means the canvas has
+ * to be realized when you create the objects. You can for example create the objects in a callback connected to the
+ * @b "realize" signal of the canvas widget.
  * @code
  * etk_signal_connect("realize", ETK_OBJECT(canvas), ETK_CALLBACK(canvas_realize_cb), NULL),
  *
@@ -274,9 +273,9 @@ static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj,
  * }
  * @endcode @n
  * 
- * Once an object is added to the canvas, you can use any evas_object_* functions to control it. @n
- * You just have to keep in mind that calling evas_object_move() on an object belonging to the canvas
- * will move the object relatively to the top-left corner of the window, and not to the top corner of the canvas itself. @n
+ * Once an object is added to the canvas, you can use any @a evas_object_*() functions to control it. @n
+ * You just have to keep in mind that calling evas_object_move() on an object belonging to the canvas will move
+ * the object relatively to the top-left corner of the window, and not to the top corner of the canvas itself. @n
  * So if you want to move your object to the position (200, 300) inside the canvas, you first have to get the position
  * (cx, cy) of the canvas and then to move the object relatively to it: @n
  * @code
@@ -286,7 +285,7 @@ static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj,
  * The function etk_canvas_object_move() does that for you. @n @n
  *
  * When the canvas is moved, the objects belonging to it are automatically moved with it,
- * but you might want to add a notification callback to the @a "geometry" property of the canvas widget, which will be
+ * but you might want to add a notification callback to the @b "geometry" property of the canvas widget, which will be
  * called each time the geometry of the canvas is changed. That way, you can resize the objects when the size of the
  * canvas is modified: @n
  * @code
