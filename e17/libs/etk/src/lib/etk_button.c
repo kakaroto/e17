@@ -119,9 +119,10 @@ Etk_Widget *etk_button_new_with_label(const char *label)
 }
 
 /**
- * @brief Creates a new button with a label and an icon defined by a stock id
- * @param stock_id the stock id corresponding to the label and the icon to use
+ * @brief Creates a new button with a label and an icon defined by a stock-id
+ * @param stock_id the stock-id corresponding to the label and the icon to use
  * @return Returns the new button
+ * @note For some stock-id, the label is empty
  * @see Etk_Stock
  */
 Etk_Widget *etk_button_new_from_stock(Etk_Stock_Id stock_id)
@@ -135,7 +136,7 @@ Etk_Widget *etk_button_new_from_stock(Etk_Stock_Id stock_id)
 }
 
 /**
- * @brief Presses the button (the button should be released)
+ * @brief Presses the button if it wasn't already pressed
  * @param button a button
  */
 void etk_button_press(Etk_Button *button)
@@ -148,7 +149,7 @@ void etk_button_press(Etk_Button *button)
 }
 
 /**
- * @brief Releases the button (the button should be pressed)
+ * @brief Releases the button if it was pressed
  * @param button a button
  */
 void etk_button_release(Etk_Button *button)
@@ -178,30 +179,34 @@ void etk_button_click(Etk_Button *button)
  */
 void etk_button_label_set(Etk_Button *button, const char *label)
 {
-   Etk_Widget *widget, *parent;
+   Etk_Widget *parent;
    Etk_Bool rebuild;
 
-   if (!(widget = ETK_WIDGET(button)))
+   if (!button)
       return;
    
    etk_label_set(ETK_LABEL(button->label), label);
-   if (!label || *label == '\0')
-      etk_widget_hide(button->label);
-   else
-      etk_widget_show(button->label);
 
    /* Rebuild the button only if necessary (i.e. if the label is currently not packed into the button) */
    rebuild = ETK_TRUE;
    for (parent = etk_widget_parent_get(button->label); parent; parent = etk_widget_parent_get(parent))
    {
-      if (parent == widget)
+      if (parent == ETK_WIDGET(button))
       {
          rebuild = ETK_FALSE;
          break;
       }
    }
+   
    if (rebuild)
       _etk_button_rebuild(button);
+   else
+   {
+      if (!label || *label == '\0')
+         etk_widget_hide(button->label);
+      else
+         etk_widget_show(button->label);
+   }
    
    etk_object_notify(ETK_OBJECT(button), "label");
 }
@@ -219,9 +224,13 @@ const char *etk_button_label_get(Etk_Button *button)
 }
 
 /**
- * @brief Sets the image of the button. The current image will be unpacked, but not destroyed
+ * @brief Sets the image of the button
  * @param button a button
  * @param image the image to set
+ * @note The current image will be destroyed only if it has been set with etk_button_new_from_stock()
+ * or with etk_button_set_from_stock(). Otherwise, it will just be unpacked and you'll still be able to use it
+ * @note The image will be automatically shown, but you can still manually hide it with calling etk_widget_hide()
+ * after having called etk_button_image_set()
  */
 void etk_button_image_set(Etk_Button *button, Etk_Image *image)
 {
@@ -230,12 +239,16 @@ void etk_button_image_set(Etk_Button *button, Etk_Image *image)
    
    if (button->image)
    {
-      etk_signal_block("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
-      etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->image));
-      etk_signal_unblock("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
+      button->ignore_image_remove = ETK_TRUE;
+      if (button->image_from_stock)
+         etk_object_destroy(ETK_OBJECT(button->image));
+      else
+         etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->image));
+      button->ignore_image_remove = ETK_FALSE;
    }
 
    button->image = image;
+   button->image_from_stock = ETK_FALSE;
    _etk_button_rebuild(button);
    etk_object_notify(ETK_OBJECT(button), "image");
 }
@@ -243,7 +256,7 @@ void etk_button_image_set(Etk_Button *button, Etk_Image *image)
 /**
  * @brief Gets the image of the button
  * @param button a button
- * @return Returns the image of button
+ * @return Returns the image of the button, or NULL if the button has no image
  */
 Etk_Image *etk_button_image_get(Etk_Button *button)
 {
@@ -253,9 +266,10 @@ Etk_Image *etk_button_image_get(Etk_Button *button)
 }
 
 /**
- * @brief Sets the label and the image of the button from a stock id
+ * @brief Sets the label and the image of the button from a stock-id
  * @param button a button
- * @param stock_id the stock id to use
+ * @param stock_id the stock-id to use
+ * @note For some stock-id, the label is empty
  */
 void etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id)
 {
@@ -270,15 +284,16 @@ void etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id)
    
    image = etk_image_new_from_stock(stock_id, button->stock_size);
    etk_widget_internal_set(image, ETK_TRUE);
-   etk_widget_show(image);
    etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
+   button->image_from_stock = ETK_TRUE;
 }
 
 /**
- * @brief Sets the alignment of the child of the button (it only has effect if the child is a label, or an alignment)
+ * @brief Sets the alignment of the child of the button
  * @param button a button
  * @param xalign the horizontal alignment (0.0 = left, 0.5 = center, 1.0 = right, ...)
  * @param yalign the vertical alignment (0.0 = top, 0.5 = center, 1.0 = bottom, ...)
+ * @note It only has effect if the child is a label or an alignment
  */
 void etk_button_alignment_set(Etk_Button *button, float xalign, float yalign)
 {
@@ -314,7 +329,7 @@ void etk_button_alignment_set(Etk_Button *button, float xalign, float yalign)
 }
 
 /**
- * @brief Gets the alignment of the child of the button
+ * @brief Gets the alignment of the button's child
  * @param button a button
  * @param xalign the location where to store the horizontal alignment
  * @param yalign the location where to store the vertical alignment
@@ -340,17 +355,13 @@ void etk_button_style_set(Etk_Button *button, Etk_Button_Style style)
    button->style = style;
    if (button->box)
    {
-      if (button->image)
-      {
-         etk_signal_block("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
-         etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->image));
-         etk_signal_unblock("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb));
-      }
-      if (button->label)
-         etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->label));
+      button->ignore_image_remove = ETK_TRUE;
+      etk_container_remove_all(ETK_CONTAINER(button->box));
       etk_object_destroy(ETK_OBJECT(button->box));
+      button->ignore_image_remove = ETK_FALSE;
       button->box = NULL;
    }
+   
    _etk_button_rebuild(button);
    etk_object_notify(ETK_OBJECT(button), "style");
 }
@@ -432,8 +443,9 @@ static void _etk_button_constructor(Etk_Button *button)
    button->released = _etk_button_released_handler;
    button->clicked = _etk_button_clicked_handler;
 
-   button->building = ETK_FALSE;
+   button->ignore_image_remove = ETK_FALSE;
    button->is_pressed = ETK_FALSE;
+   button->image_from_stock = ETK_FALSE;
    button->xalign = 0.5;
    button->yalign = 0.5;
 
@@ -537,10 +549,12 @@ static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, 
    if (!(button = ETK_BUTTON(data)) || (child != ETK_WIDGET(button->image)))
       return;
    
-   if (!button->building)
+   if (!button->ignore_image_remove)
    {
       button->image = NULL;
-      _etk_button_rebuild(button);
+      /* We rebuild the button only if the button's child is not a user-defined widget */
+      if (button->alignment == etk_bin_child_get(ETK_BIN(button)))
+         _etk_button_rebuild(button);
       etk_object_notify(ETK_OBJECT(button), "image");
    }
 }
@@ -640,22 +654,24 @@ static void _etk_button_clicked_handler(Etk_Button *button)
    etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,clicked", ETK_FALSE);
 }
 
-/* Rebuilds the children of the button */
+/* Rebuilds the default layout for the button */
 static void _etk_button_rebuild(Etk_Button *button)
 {
+   const char *text;
+   
    if (!button)
       return;
 
-   button->building = ETK_TRUE;
+   button->ignore_image_remove = ETK_TRUE;
    
+   /* Rebuild the containers containing the label and image */
    if (button->image)
    {
       if (!button->alignment)
       {
          button->alignment = etk_alignment_new(button->xalign, button->yalign, 0.0, 0.0);
-         etk_container_add(ETK_CONTAINER(button), button->alignment);
          etk_widget_internal_set(button->alignment, ETK_TRUE);
-         etk_widget_pass_mouse_events_set(button->alignment, ETK_TRUE);
+         etk_container_add(ETK_CONTAINER(button), button->alignment);
          etk_widget_show(button->alignment);
       }
 
@@ -665,11 +681,11 @@ static void _etk_button_rebuild(Etk_Button *button)
             button->box = etk_vbox_new(ETK_FALSE, 2);
          else
             button->box = etk_hbox_new(ETK_FALSE, 8);
-         etk_container_add(ETK_CONTAINER(button->alignment), button->box);
          etk_widget_internal_set(button->box, ETK_TRUE);
-         etk_widget_pass_mouse_events_set(button->box, ETK_TRUE);
+         etk_container_add(ETK_CONTAINER(button->alignment), button->box);
          etk_widget_show(button->box);
-         etk_signal_connect("child_removed", ETK_OBJECT(button->box), ETK_CALLBACK(_etk_button_image_removed_cb), button);
+         etk_signal_connect("child_removed", ETK_OBJECT(button->box),
+            ETK_CALLBACK(_etk_button_image_removed_cb), button);
       }
       else
          etk_container_remove_all(ETK_CONTAINER(button->box));
@@ -685,17 +701,24 @@ static void _etk_button_rebuild(Etk_Button *button)
       etk_object_destroy(ETK_OBJECT(button->alignment));
       button->alignment = NULL;
       button->box = NULL;
-
+      
       etk_label_alignment_set(ETK_LABEL(button->label), button->xalign, button->yalign);
       etk_container_add(ETK_CONTAINER(button), button->label);
    }
    
-   if (button->style == ETK_BUTTON_TEXT)
-      etk_widget_hide(ETK_WIDGET(button->image));
-   else if (button->style == ETK_BUTTON_ICON)
+   /* Show/hide the label and the image */
+   text = etk_label_get(ETK_LABEL(button->label));
+   if (button->style != ETK_BUTTON_ICON && text && *text != '\0')
+      etk_widget_show(button->label);
+   else
       etk_widget_hide(button->label);
    
-   button->building = ETK_FALSE;
+   if (button->style != ETK_BUTTON_TEXT)
+      etk_widget_show(ETK_WIDGET(button->image));
+   else
+      etk_widget_hide(ETK_WIDGET(button->image));
+   
+   button->ignore_image_remove = ETK_FALSE;
 }
 
 /** @} */
@@ -712,7 +735,7 @@ static void _etk_button_rebuild(Etk_Button *button)
  * @image html widgets/button.png
  * An Etk_Button usually contains only a label and an icon, but it can contain any type of widgets. @n
  * You can change the label of the button with etk_button_label_set(), and you can change its icon with
- * etk_button_image_set()
+ * etk_button_image_set(). You can also pack your own widget with etk_bin_child_set()
  *
  * \par Object Hierarchy:
  * - Etk_Object

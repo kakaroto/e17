@@ -1693,7 +1693,7 @@ Etk_Bool etk_widget_dnd_dest_get(Etk_Widget *widget)
  */
 void etk_widget_dnd_source_set(Etk_Widget *widget, Etk_Bool on)
 {
-   if (!widget)
+   //if (!widget)
       return;
    
    if (on)
@@ -1767,7 +1767,7 @@ Etk_Bool etk_widget_dnd_internal_get(Etk_Widget *widget)
  */
 void etk_widget_dnd_drag_widget_set(Etk_Widget *widget, Etk_Widget *drag_widget)
 {
-   if(!widget || !drag_widget)
+   //if(!widget || !drag_widget)
      return;
    
    etk_container_add(ETK_CONTAINER(widget->drag), drag_widget);

@@ -19,10 +19,8 @@
 /** Checks if the object is an Etk_Button */
 #define ETK_IS_BUTTON(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_BUTTON_TYPE))
 
-/**
- * @enum Etk_Button_Style
- * @brief The button's style (icon, text, both vertically, both horizontally)
- */
+
+/** @brief The button's style (icon, text, both vertically, both horizontally) */
 typedef enum Etk_Button_Style
 {
    ETK_BUTTON_ICON,             /**< Only the icon is visible */
@@ -30,6 +28,7 @@ typedef enum Etk_Button_Style
    ETK_BUTTON_BOTH_HORIZ,       /**< Both the icon and the label are visible, the icon is at the left of the label */
    ETK_BUTTON_BOTH_VERT         /**< Both the icon and the label are visible, the icon is above the label */
 } Etk_Button_Style;
+
 
 /**
  * @brief @widget A widget that can be pressed, released or clicked
@@ -50,13 +49,15 @@ struct Etk_Button
    void (*released)(Etk_Button *button);
    void (*clicked)(Etk_Button *button);
 
-   Etk_Bool building;
    Etk_Bool is_pressed;
+   Etk_Bool ignore_image_remove;
+   Etk_Bool image_from_stock;
    float xalign;
    float yalign;
    Etk_Button_Style style;
    Etk_Stock_Size stock_size;
 };
+
 
 Etk_Type   *etk_button_type_get(void);
 Etk_Widget *etk_button_new(void);
