@@ -779,7 +779,6 @@ static void _etk_colorpicker_sp_mouse_down_cb(void *data, Evas *e, Evas_Object *
    xpercent = ETK_CLAMP((float)(event->canvas.x - x) / w, 0.0, 1.0);
    ypercent = 1.0 - ETK_CLAMP((float)(event->canvas.y - y) / h, 0.0, 1.0);
    
-   printf("Mouse Down\n");
    _etk_colorpicker_sp_cursor_move(cp, xpercent, ypercent);
    cp->sp_dragging = ETK_TRUE;
 }
@@ -805,7 +804,6 @@ static void _etk_colorpicker_sp_mouse_move_cb(void *data, Evas *e, Evas_Object *
    if (!(cp = ETK_COLORPICKER(data)) || !(event = event_info) || !cp->sp_dragging)
       return;
    
-   printf("Mouse Move\n");
    evas_object_geometry_get(cp->sp_image, &x, &y, &w, &h);
    xpercent = ETK_CLAMP((float)(event->cur.canvas.x - x) / w, 0.0, 1.0);
    ypercent = 1.0 - ETK_CLAMP((float)(event->cur.canvas.y - y) / h, 0.0, 1.0);

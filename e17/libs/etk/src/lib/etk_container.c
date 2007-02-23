@@ -40,7 +40,7 @@ static Etk_Signal *_etk_container_signals[ETK_CONTAINER_NUM_SIGNALS];
  * @brief Gets the type of an Etk_Container
  * @return Returns the type of an Etk_Container
  */
-Etk_Type *etk_container_type_get()
+Etk_Type *etk_container_type_get(void)
 {
    static Etk_Type *container_type = NULL;
 
@@ -65,7 +65,7 @@ Etk_Type *etk_container_type_get()
 }
 
 /**
- * @brief Adds a child to the container. It simply calls the "child_add()" function corresponding to the container
+ * @brief Adds a child to the container. It simply calls the "child_add()" method of the container
  * @param container a container
  * @param widget the widget to add
  */
@@ -77,8 +77,8 @@ void etk_container_add(Etk_Container *container, Etk_Widget *widget)
 }
 
 /**
- * @brief Removes a child from the container It simply calls the "child_remove()" function corresponding
- * to the container. The child won't be destroyed, it is just unpacked
+ * @brief Removes a child from the container It simply calls the "child_remove()" method of the container.
+ * The child is not destroyed, it is just unpacked
  * @param container a container
  * @param widget the widget to remove
  */
@@ -107,9 +107,11 @@ void etk_container_remove_all(Etk_Container *container)
 }
 
 /**
- * @brief Sets the border width of the container. The border will be added on each side of the container
+ * @brief Sets the border width of a container. The border width is the amount of space left around the *inside* of
+ * the container. To add free space around the outside of a container, you can use etk_widget_padding_set()
  * @param container a container
  * @param border_width the border width to set
+ * @see etk_widget_padding_set()
  */
 void etk_container_border_width_set(Etk_Container *container, int border_width)
 {
@@ -135,10 +137,10 @@ int etk_container_border_width_get(Etk_Container *container)
 
 /**
  * @brief Gets the list of the children of the container.
- * It simply calls the "childrend_get()" function corresponding to the container. @n
- * The list will have to be freed with evas_list_free()
+ * It simply calls the "childrend_get()" method of the container. @n
+ * The list will have to be freed with evas_list_free() when you no longer need it
  * @param container a container
- * @return Returns the list of the children of @a container
+ * @return Returns the list of the container's children
  * @warning The returned list has to be freed with evas_list_free()
  */
 Evas_List *etk_container_children_get(Etk_Container *container)
@@ -163,7 +165,7 @@ Etk_Bool etk_container_is_child(Etk_Container *container, Etk_Widget *widget)
       return ETK_FALSE;
    
    children = etk_container_children_get(container);
-   is_child = (evas_list_find(etk_container_children_get(container), widget) != NULL);
+   is_child = (evas_list_find(children, widget) != NULL);
    evas_list_free(children);
    
    return is_child;
@@ -207,12 +209,12 @@ void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(E
 }
 
 /**
- * @brief A utility function that resizes the allocated space acoording to the fill policy.
+ * @brief A utility function that resizes the given space according to the specified fill-policy.
  * It is mainly used by container implementations
  * @param child a child
  * @param child_space the allocated space for the child. It will be modified according to the fill options
- * @param hfill if hfill == ETK_TRUE, the child will fill the space horizontally
- * @param vfill if vfill == ETK_TRUE, the child will fill the space vertically
+ * @param hfill if @a hfill == ETK_TRUE, the child will fill the space horizontally
+ * @param vfill if @a vfill == ETK_TRUE, the child will fill the space vertically
  * @param xalign the horizontal alignment of the child widget in the child space (has no effect if @a hfill is ETK_TRUE)
  * @param yalign the vertical alignment of the child widget in the child space (has no effect if @a vfill is ETK_TRUE)
  */
@@ -263,6 +265,8 @@ static void _etk_container_destructor(Etk_Container *container)
    if (!container)
       return;
    
+   /* We need to do that because Etk_Widget's destructor may
+    * still want to access those methods */
    container->child_add = NULL;
    container->child_remove = NULL;
    container->children_get = NULL;
@@ -315,15 +319,18 @@ static void _etk_container_property_get(Etk_Object *object, int property_id, Etk
 /**
  * @addtogroup Etk_Container
  *
- * Etk_Container is an abstract class which allows the user to add or remove children to a inheriting widget. @n @n
- * etk_container_add() calls the @a child_add() function of the inheriting widget, such as etk_bin_child_set()
+ * Etk_Container is an abstract class which allows the user to add or remove children to an inheriting widget. @n @n
+ * etk_container_add() calls the @a child_add() method of the inheriting container, such as etk_bin_child_set()
  * for Etk_Bin, or etk_box_append() for Etk_Box. But, you will often have to call directly a function of the API
  * of the inheriting widget, in order to add the child at a specific place. For example, you'll have to call directly
- * etk_box_append() with the ETK_BOX_END paramater to pack a child at the end of a box (since etk_container_add() packs
+ * etk_box_append() with the ETK_BOX_END parameter to pack a child at the end of a box (since etk_container_add() packs
  * the child at the start of the box by default). @n
- * etk_container_remove() calls the @a child_remove() function of the inheriting widget, which will remove the child
+ * etk_container_remove() calls the @a child_remove() method of the inheriting container, which will remove the child
  * from the container. @n @n
- * You can also get the list of the children of the container with etk_container_children_get().
+ * You can also get the list of the children of the container with etk_container_children_get(). @n
+ *
+ * Note that when a container is destroyed, all its children are automatically destroyed too. If you want to avoid that,
+ * before destroying the container, you can call etk_container_remove_all().
  * 
  * \par Object Hierarchy:
  * - Etk_Object
@@ -344,7 +351,7 @@ static void _etk_container_property_get(Etk_Object *object, int property_id, Etk
  * @signal_data
  *
  * \par Properties:
- * @prop_name "border_width": The size of the border to add on each side of the container
+ * @prop_name "border_width": The amount of space left around the inside of the container
  * @prop_type Integer
  * @prop_rw
  * @prop_val 0

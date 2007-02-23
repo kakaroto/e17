@@ -19,6 +19,7 @@
 /** Checks if the object is an Etk_Container */
 #define ETK_IS_CONTAINER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CONTAINER_TYPE))
 
+
 /**
  * @brief @widget A widget that can contain other widgets
  * @structinfo
@@ -36,7 +37,8 @@ struct Etk_Container
    int border_width;
 };
 
-Etk_Type *etk_container_type_get();
+
+Etk_Type *etk_container_type_get(void);
 
 void etk_container_add(Etk_Container *container, Etk_Widget *widget);
 void etk_container_remove(Etk_Container *container, Etk_Widget *widget);
