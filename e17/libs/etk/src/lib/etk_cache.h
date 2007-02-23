@@ -25,6 +25,7 @@ struct Etk_Cache
    void *free_cb_data;
 };
  
+
 Etk_Cache *etk_cache_new(int size);
 void       etk_cache_destroy(Etk_Cache *cache);
 void       etk_cache_clear(Etk_Cache *cache);

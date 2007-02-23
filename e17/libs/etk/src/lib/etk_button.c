@@ -777,7 +777,7 @@ static void _etk_button_rebuild(Etk_Button *button)
  * @prop_rw
  * @prop_val ETK_BUTTON_BOTH_HORIZ
  * \par 
- * @prop_name "stock_size": The stock size of the image of the button
+ * @prop_name "stock_size": The stock-size of the image of the button
  * @prop_type Integer (Etk_Stock_Size)
  * @prop_rw
  * @prop_val ETK_STOCK_SMALL
