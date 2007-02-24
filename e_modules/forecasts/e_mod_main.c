@@ -474,7 +474,7 @@ EAPI int
 e_modapi_about(E_Module * m)
 {
    e_module_dialog_show(m, D_("Enlightenment Forecasts Module"),
-	 D_("A forecasts forecast module for Enlightenment"));
+	 D_("A weather forecast module for Enlightenment"));
    return 1;
 }
 

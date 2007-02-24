@@ -112,7 +112,7 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
   ob = e_widget_label_add(evas, D_("Get your Yahoo Forecasts Code code at:"));
   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
   ob =
-    e_widget_label_add(evas, D_("http://forecasts.yahoo.com"));
+    e_widget_label_add(evas, D_("http://weather.yahoo.com"));
   e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
   e_widget_list_object_append(o, of, 1, 1, 0.5);
 
