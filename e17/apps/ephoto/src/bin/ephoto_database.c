@@ -97,7 +97,7 @@ void ephoto_db_delete_album(sqlite3 *db, const char *name)
 	sqlite3_exec(db, command, 0, 0, 0);
 	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", name);
 	sqlite3_exec(db, command, get_album_id, 0, 0);
-	snprintf(command, PATH_MAX, "DELETE FROM album_images WHERE album_id = '%s';", album_id);
+	snprintf(command, PATH_MAX, "DELETE FROM album_images WHERE album_id = '%d';", album_id);
 	sqlite3_exec(db, command, 0, 0, 0);
 
 	return;
@@ -190,7 +190,6 @@ static int list_images(void *notused, int argc, char **argv, char **col)
 /*Populate a list of the id's of images belonging to a certain album*/
 static int list_image_ids(void *notused, int argc, char **argv, char **col)
 {
-	char command[PATH_MAX];
 	int i;
 
 	notused = 0;

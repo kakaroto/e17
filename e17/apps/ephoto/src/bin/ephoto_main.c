@@ -55,8 +55,8 @@ static void window_fullscreen(Ewl_Widget *w, void *event, void *data)
 /*Create the Main Ephoto Window*/
 void create_main_gui(void)
 {
-	Ewl_Widget *vbox, *spacer, *text, *entry, *hbox;
-	Ewl_Widget *rvbox, *sp, *hsep, *vsep, *image;
+	Ewl_Widget *vbox, *spacer, *entry, *hbox;
+	Ewl_Widget *rvbox, *hsep, *vsep, *image;
 
 	em = NULL;
 	em = calloc(1, sizeof(Ephoto_Main));
@@ -209,7 +209,7 @@ static void populate(Ewl_Widget *w, void *event, void *data)
 {
 	const char *album;
 	char *imagef;
-	Ewl_Widget *shadow, *thumb;
+	Ewl_Widget *thumb;
 
 	if (w)
 	{
@@ -421,7 +421,7 @@ static void *album_data_fetch(void *data, unsigned int row, unsigned int column)
 	album = ecore_list_goto_index(em->albums, row);
 	if (album)
 	{
-		val = album;
+		val = (void *)album;
 	}
 
 	return val;

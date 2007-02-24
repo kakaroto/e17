@@ -141,7 +141,7 @@ static void *list_data_fetch(void *data, unsigned int row, unsigned int column)
 	image = ecore_list_goto_index(em->images, row);
 	if (image)
 	{
-		val = image;
+		val = (void *)image;
 	}
 
 	return val;

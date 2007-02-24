@@ -2,7 +2,7 @@
 
 int main(int argc, char **argv)
 {
-	char *album, *name, *description, *path, input[2];
+	char *album, *name, *description, *path, input;
 	int i;
 	Ecore_List *albums, *images;
 	sqlite3 *db;
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 			       "the name %s and the description %s? ", 
 			       name, description);
 			scanf("%c", &input);
-			if(!strncasecmp(input, "y", 1))
+			if(input == 'y' || input == 'Y')
 			{
 				db = ephoto_db_init();
 				ephoto_db_add_album(db, name, description);
@@ -113,7 +113,7 @@ int main(int argc, char **argv)
 			       "to album %s with a name %s and path %s? ", 
 			       album, name, path);
 			scanf("%c", &input);
-			if(!strncasecmp(input, "y", 1))
+			if(input == 'y' || input == 'Y')
 			{
 				db = ephoto_db_init();
 				ephoto_db_add_image(db, album, name, path);
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
                                "from the directory %s to the album %s? ",
                                path, album);
                         scanf("%c", &input);
-                        if(!strncasecmp(input, "y", 1))
+                        if(input == 'y' || input == 'Y')
                         {
 				db = ephoto_db_init();
 				images = ecore_list_new();
@@ -212,7 +212,7 @@ int main(int argc, char **argv)
 			printf("Are you sure you want to remove the album %s? ", 
 			       name);
 			scanf("%c", &input);
-			if(!strncasecmp(input, "y", 1))
+			if(input == 'y' || input == 'Y')
 			{
 				db = ephoto_db_init();
 				ephoto_db_delete_album(db, name);
@@ -246,7 +246,7 @@ int main(int argc, char **argv)
 			       "from the album %s? ", 
 			       path, album);
 			scanf("%c", &input);
-			if(!strncasecmp(input, "y", 1))
+			if(input == 'y' || input == 'Y')
 			{
 				db = ephoto_db_init();
 				ephoto_db_delete_image(db, album, path);

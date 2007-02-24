@@ -45,7 +45,6 @@ const char *image_pixels_string_get(const char *file)
 /*Get the pixels and return them in integers*/
 void image_pixels_int_get(const char *file, int *width, int *height)
 {
-        char pixels[PATH_MAX];
 	int w, h;
 	Evas_Imaging_Image *image;
 

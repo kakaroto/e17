@@ -136,7 +136,6 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 {
 	const char *img;
-	Ecore_Hash *exif_info;
 	Ewl_Widget *win, *vbox, *image, *sp, *list, *label;
 	Ewl_Model *model;
 	Ewl_View *view;

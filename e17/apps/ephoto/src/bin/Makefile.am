@@ -15,7 +15,7 @@ ephoto_SOURCES = ephoto.c \
 		      ephoto_normal_view.c \
 		      ephoto_utils.c
 		     
-ephoto_CFLAGS = @ewl_cflags@
+ephoto_CFLAGS = @ewl_cflags@ -Wall -Werror
 
 ephoto_LDADD =  @ewl_libs@ -lsqlite3 -lexif
 
