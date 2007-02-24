@@ -3,5 +3,5 @@ Encoding=UTF-8
 Name=E16
 Comment=This session starts the Enlightenment (e16) window manager
 Exec=starte16
-Icon=
+Icon=@ENLIGHTENMENT_ROOT@/misc/e16.png
 Type=Application

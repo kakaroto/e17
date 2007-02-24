@@ -3,5 +3,5 @@ Encoding=UTF-8
 Name=E-KDE
 Comment=This session starts KDE using enlightenment (e16) as window manager
 Exec=starte16 KDE
-Icon=
+Icon=@ENLIGHTENMENT_ROOT@/misc/e16.png
 Type=Application

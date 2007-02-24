@@ -1,2 +1,5 @@
 Makefile.in
 Makefile
+e16.desktop
+e16-gnome.desktop
+e16-kde.desktop
