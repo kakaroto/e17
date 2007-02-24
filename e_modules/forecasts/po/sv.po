@@ -1,0 +1,83 @@
+# Swedish translation of Weather module for E17.
+# This file is put in the public domain.
+# Anders Trobäck <enlightenment@troback.com>, 2006.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Weather module for E17 N/A\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-07-06 18:49+0200\n"
+"PO-Revision-Date: 2006-07-06 23:42+0200\n"
+"Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
+"Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: e_mod_config.c:36
+msgid "Weather Configuration"
+msgstr "Väder konfiguration"
+
+#: e_mod_config.c:80
+msgid "Display Settings"
+msgstr "Visa"
+
+#: e_mod_config.c:82
+msgid "Simple"
+msgstr "Enkel"
+
+#: e_mod_config.c:84
+msgid "Detailed"
+msgstr "Detaljerad"
+
+#: e_mod_config.c:86
+msgid "Poll Time"
+msgstr "Uppdateringsintervall"
+
+#: e_mod_config.c:88
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f minuter"
+
+#: e_mod_config.c:92
+msgid "Degree Settings"
+msgstr "Grader"
+
+#: e_mod_config.c:94
+msgid "Celsius"
+msgstr "Celsius"
+
+#: e_mod_config.c:96
+msgid "Farenheit"
+msgstr "Farenheit"
+
+#: e_mod_config.c:100 e_mod_config.c:101
+msgid "ICAO Code"
+msgstr "ICAO kod"
+
+#: e_mod_config.c:106
+msgid "Get your ICAO code at:"
+msgstr "Hitta din ICAO kod på:"
+
+#: e_mod_config.c:108
+msgid "http://www.weather.gov/tg/siteloc.shtml"
+msgstr "http://www.weather.gov/tg/siteloc.shtml"
+
+#: e_mod_main.c:148
+msgid "Weather"
+msgstr "Väder"
+
+#: e_mod_main.c:182
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#: e_mod_main.c:357
+msgid "A weather forecast module for Enlightenment"
+msgstr "En väderleksmodul för Enlightenment"
+
+#: e_mod_main.c:357
+msgid "Enlightenment Weather Module"
+msgstr "Enlightenment väder modul"
+

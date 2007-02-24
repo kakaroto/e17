@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Forecasts
+Exec=enlightenment
+StartupNotify=false
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=forecasts,gadget
+Icon=./module.edj
