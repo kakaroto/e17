@@ -1,52 +1,70 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-EXTRA_DIST = \
-0.png \
-1.png \
-2.png \
-3.png \
-4.png \
-5.png \
-6.png \
-7.png \
-8.png \
-9.png \
-10.png \
-11.png \
-12.png \
-13.png \
-14.png \
-15.png \
-16.png \
-17.png \
-18.png \
-19.png \
-20.png \
-21.png \
-22.png \
-23.png \
-24.png \
-25.png \
-26.png \
-27.png \
-28.png \
-29.png \
-30.png \
-31.png \
-32.png \
-33.png \
-34.png \
-35.png \
-36.png \
-37.png \
-38.png \
-39.png \
-40.png \
-41.png \
-42.png \
-43.png \
-44.png \
-45.png \
-46.png \
-47.png \
-3200.png
+# data files for the module
+filesdir = $(datadir)/images
+
+files_DATA = \
+blizzard.png \
+blowingsnow.png \
+chancetstormn.png \
+chancetstorm.png \
+clear-sky.png \
+cloud.png \
+cloudy_night.png \
+cloudy.png \
+drizzle.png \
+fair.png \
+fdrizzle.png \
+flurries.png \
+fog.png \
+freezingrain.png \
+hazy.png \
+heavy-rain.png \
+ice.png \
+isolated.t-storm.png \
+light-rain.png \
+light-snow.png \
+luna-ceatza.png \
+luna-nori.png \
+mcloudyn.png \
+mcloudynr.png \
+mcloudyns.png \
+mcloudy.png \
+mcloudyr.png \
+mcloudys.png \
+moon.png \
+moon-rain.png \
+moon-snow.png \
+moon-tstorm.png \
+mostly-cloudy.png \
+pcloudyn.png \
+pcloudynr.png \
+pcloudyns.png \
+pcloudy.png \
+pcloudyrn.png \
+pcloudyr.png \
+pcloudys.png \
+rainandsnow.png \
+rain.png \
+showers.png \
+sleet.png \
+smoke.png \
+snow.png \
+snowshowers.png \
+suncloud.png \
+sun-light-clouds.png \
+sunnyn.png \
+sunny.png \
+sun.png \
+sunrain.png \
+sunsnow.png \
+thunder.png \
+t-storm_night.png \
+tstormn.png \
+tstorm.png \
+unknown.png \
+wind.png \
+wswarning.png \
+wswatch.png
+
+EXTRA_DIST = $(files_DATA)

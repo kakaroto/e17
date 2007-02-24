@@ -5,5 +5,7 @@
 
 #include "e_mod_main.h"
 
+void _configure_weather_module(Weather_Face *wf);
+
 #endif
 #endif

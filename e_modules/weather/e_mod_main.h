@@ -3,12 +3,13 @@
 #ifndef E_MOD_MAIN_H
 #define E_MOD_MAIN_H
 
+#define SIMPLE_DISPLAY 0
+#define DETAILED_DISPLAY 1
 #define DEGREES_F 0
 #define DEGREES_C 1
 
 typedef struct _Config Config;
 typedef struct _Config_Item Config_Item;
-typedef struct _Popup Popup;
 
 struct _Config
 {
@@ -24,24 +25,13 @@ struct _Config_Item
    const char *id;
 
    double poll_time;
-   int degrees;
+   int display, degrees;
    const char *host, *code;
-   int show_text;
-};
-
-struct _Popup
-{
-   E_Popup *win;
-
-   int w, h;
-
-   Evas_Object *o_list, *o_bg, *o_ft[3];
-   Evas_Object *current_desc;
-   Evas_Object *wind_chill, *wind_speed;
-   Evas_Object *icon;
-   Evas_Object *humidity, *visibility, *pressure, *rising;
-   Evas_Object *sunrise, *sunset;
-   Evas_Object *desc[2], *high[2], *low[2], *f_icon[2];
+   struct
+   {
+      const char *host;
+      int port;
+   } proxy;
 };
 
 EAPI extern E_Module_Api e_modapi;
@@ -53,6 +43,7 @@ EAPI int   e_modapi_about(E_Module *m);
 
 void _config_weather_module(Config_Item *ci);
 void _weather_config_updated(const char *id);
+void _weather_convert_degrees(void *data);
 
 extern Config *weather_config;
 
