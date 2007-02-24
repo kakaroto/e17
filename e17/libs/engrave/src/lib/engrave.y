@@ -72,6 +72,7 @@ edjes: /* blank */
 	| images edjes 
 	| fonts edjes
 	| spectra edjes
+	| styles edjes
 	| collections edjes
 	| data edjes
 	| error {
