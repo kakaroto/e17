@@ -1127,7 +1127,7 @@ static void _etk_colorpicker_update_from_sliders(Etk_Colorpicker *cp, Etk_Colorp
    /* First, we update the values of the other sliders */
    if (mode == ETK_COLORPICKER_H || mode == ETK_COLORPICKER_S || mode == ETK_COLORPICKER_V)
    {
-      h = etk_range_value_get(ETK_RANGE(cp->sliders[ETK_COLORPICKER_S]));
+      h = etk_range_value_get(ETK_RANGE(cp->sliders[ETK_COLORPICKER_H]));
       s = etk_range_value_get(ETK_RANGE(cp->sliders[ETK_COLORPICKER_S]));
       v = etk_range_value_get(ETK_RANGE(cp->sliders[ETK_COLORPICKER_V]));
       evas_color_hsv_to_rgb(h, s, v, &color.r, &color.g, &color.b);
