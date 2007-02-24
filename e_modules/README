@@ -32,6 +32,8 @@ engage - Icon bar / task bar / system tray.
 
 flame - A module to display flames on the desktop.
 
+forecasts - A module to display  the current condition and forecasts.
+
 language - A module to control active keyboard/keyboard layout/layout variant.
 
 mail - A module to periodically check for new email.
