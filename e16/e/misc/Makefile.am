@@ -5,11 +5,11 @@ SESSIONS = E16 E-GNOME E-KDE
 STARTUP = starte16
 ICONS = e16.png
 
-misc_DATA = $(DESKTOPS_IN) $(XCLIENTS) $(SESSIONS) $(SCRIPTS) $(ICONS)
+misc_DATA = $(DESKTOPS) $(XCLIENTS) $(SESSIONS) $(SCRIPTS) $(ICONS)
 sesm_DATA = e16.desktop
 bin_SCRIPTS = starte16
 
-EXTRA_DIST = $(misc_DATA)
+EXTRA_DIST = $(DESKTOPS_IN) $(XCLIENTS) $(SESSIONS) $(SCRIPTS) $(ICONS)
 
 miscdir = $(ENLIGHTENMENT_ROOT)/misc
 sesmdir = $(datadir)/xsessions
