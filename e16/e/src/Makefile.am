@@ -120,7 +120,7 @@ LDADD = \
 	$(E_X_LIBS) 		\
 	-lX11 -lm
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/intl $(ECORE_CFLAGS) $(ESD_CFLAGS) $(IMLIB2_CFLAGS) $(XFT_CFLAGS) $(X_CFLAGS)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) $(ECORE_CFLAGS) $(ESD_CFLAGS) $(IMLIB2_CFLAGS) $(XFT_CFLAGS) $(X_CFLAGS)
 
 install-data-local:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes

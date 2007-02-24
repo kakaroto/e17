@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = intl dox eesh epp src lib config themes man scripts misc po
+SUBDIRS = dox eesh epp src lib config themes man scripts misc po
 
 EXTRA_DIST = \
 timestamp.h \

@@ -57,7 +57,7 @@ AM_PROG_LIBTOOL
 AC_PATH_X
 AC_PATH_XTRA
 
-AC_CHECK_HEADERS(alloca.h stdarg.h wctype.h)
+AC_CHECK_HEADERS(alloca.h locale.h stdarg.h wctype.h)
 
 AC_TYPE_SIGNAL
 
@@ -84,7 +84,7 @@ AC_CHECK_FUNCS(buttox)
 AM_ICONV
 AM_LANGINFO_CODESET
 
-AM_GNU_GETTEXT
+AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.12.1])
 
 AC_ARG_ENABLE(fsstd,
@@ -303,7 +303,6 @@ themes/Makefile
 scripts/Makefile
 misc/Makefile
 po/Makefile.in
-intl/Makefile
 e16.spec
 ])
 
