@@ -207,7 +207,7 @@ static int list_image_ids(void *notused, int argc, char **argv, char **col)
 Ecore_List *ephoto_db_list_images(sqlite3 *db,  const char *album)
 {
 	char command[PATH_MAX];
-	const char *id;
+	char *id;
 
 	if(images_list)
 	{

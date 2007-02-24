@@ -4,7 +4,9 @@
 /*NLS Translator*/
 char *sgettext(const char *msgid)
 {
-	char *msgval = gettext(msgid);
+	char *msgval;
+
+	msgval = gettext(msgid);
 	
 	if (msgval == msgid)
 	{

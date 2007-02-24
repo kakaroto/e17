@@ -135,7 +135,7 @@ static Ewl_Widget *list_header_fetch(void *data, int column)
 /* The images that will be displayed*/ 
 static void *list_data_fetch(void *data, unsigned int row, unsigned int column)
 {
-	char *image;
+	const char *image;
 	void *val = NULL;
 
 	image = ecore_list_goto_index(em->images, row);

@@ -4,7 +4,7 @@
 Ecore_List *get_directories(const char *directory)
 {
 	Ecore_List *ls, *files;
-	const char *file;
+	char *file;
 	char path[PATH_MAX];
 
 	if (ecore_file_is_dir(directory))
@@ -51,7 +51,7 @@ Ecore_List *get_directories(const char *directory)
 Ecore_List *get_images(const char *directory)
 {
         Ecore_List *ls, *files;
-        const char *file;
+        char *file;
         char path[PATH_MAX];
 
         if (ecore_file_is_dir(directory))

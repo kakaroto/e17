@@ -30,8 +30,7 @@ Ewl_Widget *add_button(Ewl_Widget *c, const char *txt, const char *img, void *cb
 Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, void *data)
 {
 	Ewl_Widget *image;
-	const char *thumb;
-	int w, h, pid;
+	int w, h;
 
 	if(!thumbnail)
 	{

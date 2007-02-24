@@ -207,7 +207,8 @@ void create_main_gui(void)
 /*Update the Image List*/
 static void populate(Ewl_Widget *w, void *event, void *data)
 {
-	char *album, *imagef;
+	const char *album;
+	char *imagef;
 	Ewl_Widget *shadow, *thumb;
 
 	if (w)
@@ -387,7 +388,7 @@ static Ewl_Widget *album_view_new(void)
 /*The row that is added to the tree*/
 static void album_view_assign(Ewl_Widget *w, void *data)
 {
-	char *album;
+	const char *album;
 
 	album = data;
 	ewl_icon_image_set(EWL_ICON(w), PACKAGE_DATA_DIR "/images/image.png", NULL);
@@ -414,7 +415,7 @@ static Ewl_Widget *album_header_fetch(void *data, int column)
 /* The albums that will be displayed*/ 
 static void *album_data_fetch(void *data, unsigned int row, unsigned int column)
 {
-	char *album;
+	const char *album;
 	void *val = NULL;
 
 	album = ecore_list_goto_index(em->albums, row);

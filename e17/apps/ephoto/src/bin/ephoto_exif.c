@@ -7,7 +7,7 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data);
 /*Get the Exif Data for an image and return it in a hash*/
 Ecore_Hash *get_exif_data(const char *file)
 {
-	const char **args, *ifd_name, *title;
+	const char **args, *title;
 	char value[1024];
 	unsigned int i, tag;
 	Ecore_Hash *exif_info;
@@ -94,7 +94,8 @@ static void close_dialog(Ewl_Widget *w, void *event, void *data)
 /*Add all the exif information to the container w*/
 static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 {
-	const char *img, *key, *value;
+	const char *img;
+	char *key, *value;
 	char text[PATH_MAX];
 	Ecore_Hash *exif_info;
 	Ecore_List *keys, *values;
@@ -127,8 +128,7 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 	ewl_mvc_data_set(EWL_MVC(w), values);
 	ewl_widget_data_set(win, "list", values);
 	ecore_hash_destroy(exif_info);
-	free(img);
-	
+		
 	return;
 }
 
@@ -187,8 +187,6 @@ void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 
 	add_button(vbox, "Close", PACKAGE_DATA_DIR "/images/dialog-close.png", close_dialog, win);
 	
-	free(img);
-
 	return;
 }
 
