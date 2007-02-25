@@ -1638,8 +1638,8 @@ EDisplayClose(void)
 #else
    XCloseDisplay(disp);
 #endif
-   XSetErrorHandler((XErrorHandler) NULL);
-   XSetIOErrorHandler((XIOErrorHandler) NULL);
+   XSetErrorHandler(NULL);
+   XSetIOErrorHandler(NULL);
    disp = NULL;
 }
 
@@ -1653,8 +1653,8 @@ EDisplayDisconnect(void)
 #else
    close(ConnectionNumber(disp));
 #endif
-   XSetErrorHandler((XErrorHandler) NULL);
-   XSetIOErrorHandler((XIOErrorHandler) NULL);
+   XSetErrorHandler(NULL);
+   XSetIOErrorHandler(NULL);
 
    disp = NULL;
 }

@@ -273,7 +273,7 @@ IPC_Screen(const char *params, Client * c __UNUSED__)
      {
 	ScreenShowInfo(p);
      }
-   else if (!p || !strncmp(param, "size", 2))
+   else if (!strncmp(param, "size", 2))
      {
 	IpcPrintf("Screen %d  size %dx%d\n", VRoot.scr, VRoot.w, VRoot.h);
      }
