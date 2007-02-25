@@ -1490,17 +1490,16 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	return;
      }
 
+   if (!param1[0])
+     {
+	IpcPrintf("ImageClass not specified\n");
+	return;
+     }
+
    if (!strcmp(param2, "create"))
      {
-     }
-   else if (!strcmp(param2, "delete"))
-     {
-	ic = ImageclassFind(param1, 0);
-	if (ic)
-	   ImageclassDestroy(ic);
-     }
-   else if (!strcmp(param2, "modify"))
-     {
+	/* Not implemented */
+	return;
      }
    else if (!strcmp(param2, "free_pixmap"))
      {
@@ -1509,130 +1508,123 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	word(params, 3, param3);
 	p = (Pixmap) strtol(param3, (char **)NULL, 0);
 	EImagePixmapFree(p);
+	return;
+     }
+
+   ic = ImageclassFind(param1, 0);
+   if (!ic)
+     {
+	IpcPrintf("ImageClass not found: %s\n", param1);
+	return;
+     }
+
+   if (!strcmp(param2, "delete"))
+     {
+	ImageclassDestroy(ic);
+     }
+   else if (!strcmp(param2, "modify"))
+     {
+	/* Not implemented */
      }
    else if (!strcmp(param2, "get_padding"))
      {
-	ic = ImageclassFind(param1, 0);
-	if (ic)
-	   IpcPrintf("%i %i %i %i\n",
-		     ic->padding.left, ic->padding.right,
-		     ic->padding.top, ic->padding.bottom);
-	else
-	   IpcPrintf("Error: Imageclass does not exist\n");
+	IpcPrintf("%i %i %i %i\n",
+		  ic->padding.left, ic->padding.right,
+		  ic->padding.top, ic->padding.bottom);
      }
    else if (!strcmp(param2, "get_image_size"))
      {
-	ic = ImageclassFind(param1, 0);
-	if (ic)
+	ImagestateRealize(ic->norm.normal);
+	if (ic->norm.normal->im)
 	  {
-	     ImagestateRealize(ic->norm.normal);
-	     if (ic->norm.normal->im)
-	       {
-		  int                 w, h;
+	     int                 w, h;
 
-		  EImageGetSize(ic->norm.normal->im, &w, &h);
-		  EImageFree(ic->norm.normal->im);
-		  IpcPrintf("%i %i\n", w, h);
-	       }
+	     EImageGetSize(ic->norm.normal->im, &w, &h);
+	     EImageFree(ic->norm.normal->im);
+	     IpcPrintf("%i %i\n", w, h);
 	  }
-	else
-	   IpcPrintf("Error: Imageclass does not exist\n");
      }
    else if (!strcmp(param2, "apply"))
      {
-	ic = ImageclassFind(param1, 0);
-	if (ic)
+	Window              xwin;
+	Win                 win;
+	char                state[20];
+	const char         *winptr, *hptr;
+	int                 st, w = -1, h = -1;
+
+	winptr = atword(params, 3);
+	xwin = (Window) strtoul(winptr, NULL, 0);
+	win = ECreateWinFromXwin(xwin);
+	if (!win)
+	   return;
+
+	word(params, 4, state);
+	if (!strcmp(state, "hilited"))
+	   st = STATE_HILITED;
+	else if (!strcmp(state, "clicked"))
+	   st = STATE_CLICKED;
+	else if (!strcmp(state, "disabled"))
+	   st = STATE_DISABLED;
+	else
+	   st = STATE_NORMAL;
+
+	hptr = atword(params, 6);
+	if (hptr)
 	  {
-	     Window              xwin;
-	     Win                 win;
-	     char                state[20];
-	     const char         *winptr, *hptr;
-	     int                 st, w = -1, h = -1;
-
-	     winptr = atword(params, 3);
-	     xwin = (Window) strtoul(winptr, NULL, 0);
-	     win = ECreateWinFromXwin(xwin);
-	     if (!win)
-		return;
-
-	     word(params, 4, state);
-	     if (!strcmp(state, "hilited"))
-		st = STATE_HILITED;
-	     else if (!strcmp(state, "clicked"))
-		st = STATE_CLICKED;
-	     else if (!strcmp(state, "disabled"))
-		st = STATE_DISABLED;
-	     else
-		st = STATE_NORMAL;
-
-	     hptr = atword(params, 6);
-	     if (hptr)
-	       {
-		  w = (int)strtol(atword(params, 5), NULL, 0);
-		  h = (int)strtol(hptr, NULL, 0);
-	       }
-
-	     ImageclassApply(ic, win, w, h, 0, 0, st, ST_SOLID);
-	     EDestroyWin(win);
+	     w = (int)strtol(atword(params, 5), NULL, 0);
+	     h = (int)strtol(hptr, NULL, 0);
 	  }
+
+	ImageclassApply(ic, win, w, h, 0, 0, st, ST_SOLID);
+	EDestroyWin(win);
      }
    else if (!strcmp(param2, "apply_copy"))
      {
-	ic = ImageclassFind(param1, 0);
-	if (ic)
+	Window              xwin;
+	Win                 win;
+	char                state[20];
+	const char         *winptr, *hptr;
+	int                 st, w = -1, h = -1;
+	PmapMask            pmm;
+
+	winptr = atword(params, 3);
+	xwin = (Window) strtoul(winptr, NULL, 0);
+
+	word(params, 4, state);
+	if (!strcmp(state, "hilited"))
+	   st = STATE_HILITED;
+	else if (!strcmp(state, "clicked"))
+	   st = STATE_CLICKED;
+	else if (!strcmp(state, "disabled"))
+	   st = STATE_DISABLED;
+	else
+	   st = STATE_NORMAL;
+
+	hptr = atword(params, 6);
+	if (!hptr)
 	  {
-	     Window              xwin;
-	     Win                 win;
-	     char                state[20];
-	     const char         *winptr, *hptr;
-	     int                 st, w = -1, h = -1;
-	     PmapMask            pmm;
-
-	     winptr = atword(params, 3);
-	     xwin = (Window) strtoul(winptr, NULL, 0);
-
-	     word(params, 4, state);
-	     if (!strcmp(state, "hilited"))
-		st = STATE_HILITED;
-	     else if (!strcmp(state, "clicked"))
-		st = STATE_CLICKED;
-	     else if (!strcmp(state, "disabled"))
-		st = STATE_DISABLED;
-	     else
-		st = STATE_NORMAL;
-
-	     hptr = atword(params, 6);
-	     if (!hptr)
-	       {
-		  IpcPrintf("Error:  missing width and/or height\n");
-		  return;
-	       }
-
-	     w = (int)strtol(atword(params, 5), NULL, 0);
-	     h = (int)strtol(hptr, NULL, 0);
-
-	     win = ECreateWinFromXwin(xwin);
-	     if (!win)
-		return;
-
-	     ImageclassApplyCopy(ic, win, w, h, 0, 0, st, &pmm, 1, ST_SOLID);
-	     IpcPrintf("0x%08lx 0x%08lx\n", pmm.pmap, pmm.mask);
-	     EDestroyWin(win);
+	     IpcPrintf("Error:  missing width and/or height\n");
+	     return;
 	  }
-     }
-   else if (!strcmp(param2, "ref_count"))
-     {
-	ic = ImageclassFind(param1, 0);
-	if (ic)
-	   IpcPrintf("%u references remain\n", ic->ref_count);
+
+	w = (int)strtol(atword(params, 5), NULL, 0);
+	h = (int)strtol(hptr, NULL, 0);
+
+	win = ECreateWinFromXwin(xwin);
+	if (!win)
+	   return;
+
+	ImageclassApplyCopy(ic, win, w, h, 0, 0, st, &pmm, 1, ST_SOLID);
+	IpcPrintf("0x%08lx 0x%08lx\n", pmm.pmap, pmm.mask);
+	EDestroyWin(win);
      }
    else if (!strcmp(param2, "query"))
      {
-	ic = ImageclassFind(param1, 0);
-	if (ic)
-	   IpcPrintf("ImageClass %s found\n", ic->name);
-	else
-	   IpcPrintf("ImageClass %s not found\n", param1);
+	IpcPrintf("ImageClass %s found\n", ic->name);
+     }
+   else if (!strcmp(param2, "ref_count"))
+     {
+	IpcPrintf("%u references remain\n", ic->ref_count);
      }
    else
      {

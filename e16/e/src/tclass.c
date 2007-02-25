@@ -524,6 +524,12 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
 	return;
      }
 
+   if (!strcmp(param2, "create"))
+     {
+	/* Not implemented */
+	return;
+     }
+
    tc = TextclassFind(param1, 0);
    if (!tc)
      {
@@ -531,82 +537,70 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
 	return;
      }
 
-   if (!strcmp(param2, "create"))
+   if (!strcmp(param2, "delete"))
      {
-     }
-   else if (!strcmp(param2, "delete"))
-     {
-	if (tc)
-	   TextclassDestroy(tc);
+	TextclassDestroy(tc);
      }
    else if (!strcmp(param2, "modify"))
      {
+	/* Not implemented */
      }
    else if (!strcmp(param2, "apply"))
      {
-	if (tc)
-	  {
-	     Window              xwin;
-	     Win                 win;
-	     int                 state;
-	     int                 x, y;
-	     const char         *txt;
+	Window              xwin;
+	Win                 win;
+	int                 state;
+	int                 x, y;
+	const char         *txt;
 
-	     word(params, 3, param3);
-	     xwin = (Window) strtoul(param3, NULL, 0);
+	word(params, 3, param3);
+	xwin = (Window) strtoul(param3, NULL, 0);
 
-	     word(params, 4, param3);
-	     x = atoi(param3);
-	     word(params, 5, param3);
-	     y = atoi(param3);
+	word(params, 4, param3);
+	x = atoi(param3);
+	word(params, 5, param3);
+	y = atoi(param3);
 
-	     word(params, 6, param3);
-	     state = STATE_NORMAL;
-	     if (!strcmp(param3, "normal"))
-		state = STATE_NORMAL;
-	     else if (!strcmp(param3, "hilited"))
-		state = STATE_HILITED;
-	     else if (!strcmp(param3, "clicked"))
-		state = STATE_CLICKED;
-	     else if (!strcmp(param3, "disabled"))
-		state = STATE_DISABLED;
+	word(params, 6, param3);
+	state = STATE_NORMAL;
+	if (!strcmp(param3, "normal"))
+	   state = STATE_NORMAL;
+	else if (!strcmp(param3, "hilited"))
+	   state = STATE_HILITED;
+	else if (!strcmp(param3, "clicked"))
+	   state = STATE_CLICKED;
+	else if (!strcmp(param3, "disabled"))
+	   state = STATE_DISABLED;
 
-	     txt = atword(params, 7);
-	     if (!txt)
-		return;
+	txt = atword(params, 7);
+	if (!txt)
+	   return;
 
-	     win = ECreateWinFromXwin(xwin);
-	     if (!win)
-		return;
+	win = ECreateWinFromXwin(xwin);
+	if (!win)
+	   return;
 
-	     TextDraw(tc, win, None, 0, 0, state, txt, x, y, 99999, 99999, 17,
-		      0);
-	     EDestroyWin(win);
-	  }
+	TextDraw(tc, win, None, 0, 0, state, txt, x, y, 99999, 99999, 17, 0);
+	EDestroyWin(win);
      }
    else if (!strcmp(param2, "query_size"))
      {
-	if (tc)
-	  {
-	     int                 w, h;
-	     const char         *txt;
+	int                 w, h;
+	const char         *txt;
 
-	     w = h = 0;
-	     txt = atword(params, 3);
-	     if (txt)
-		TextSize(tc, 0, 0, STATE_NORMAL, txt, &w, &h, 17);
-	     IpcPrintf("%i %i\n", w, h);
-	  }
+	w = h = 0;
+	txt = atword(params, 3);
+	if (txt)
+	   TextSize(tc, 0, 0, STATE_NORMAL, txt, &w, &h, 17);
+	IpcPrintf("%i %i\n", w, h);
      }
    else if (!strcmp(param2, "query"))
      {
-	if (tc)
-	   IpcPrintf("TextClass %s found\n", tc->name);
+	IpcPrintf("TextClass %s found\n", tc->name);
      }
    else if (!strcmp(param2, "ref_count"))
      {
-	if (tc)
-	   IpcPrintf("%u references remain.\n", tc->ref_count);
+	IpcPrintf("%u references remain\n", tc->ref_count);
      }
    else
      {
