@@ -1605,8 +1605,9 @@ HandleIPC(const char *params, Client * c)
    IpcPrintInit();
 
    cmd[0] = 0;
+   num = 0;
    sscanf(params, "%100s %n", cmd, &num);
-   prm = (num > 0) ? params + num : NULL;
+   prm = (num > 0 && params[num]) ? params + num : NULL;
 
    lst = IPC_GetList(&num);
 
