@@ -91,7 +91,14 @@ Etk_String *etk_string_new_printf(const char *format, ...)
  */
 Etk_String *etk_string_new_vprintf(const char *format, va_list args)
 {
-   return etk_string_set_vprintf(ETK_STRING(etk_object_new(ETK_STRING_TYPE, NULL)), format, args);
+   Etk_String *new_string;
+   va_list args2;
+   
+   va_copy(args2, args);
+   new_string = etk_string_set_vprintf(ETK_STRING(etk_object_new(ETK_STRING_TYPE, NULL)), format, args2);
+   va_end(args2);
+   
+   return new_string;
 }
 
 /**
@@ -275,7 +282,7 @@ Etk_String *etk_string_set_vprintf(Etk_String *string, const char *format, va_li
    Etk_String *result;
    
    va_copy(args2, args);
-   text = _etk_string_vprintf(format, args);
+   text = _etk_string_vprintf(format, args2);
    result = etk_string_set(string, text);
    free(text);
    va_end(args2);
