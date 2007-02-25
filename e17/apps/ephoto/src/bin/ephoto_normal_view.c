@@ -21,7 +21,7 @@ Ewl_Widget *add_normal_view(Ewl_Widget *c)
         ewl_container_child_append(EWL_CONTAINER(sp), em->fbox);
         ewl_widget_show(em->fbox);
 
-	em->ilabel = add_label(em->fbox_vbox, "Image Information", 1);
+	em->ilabel = add_label(em->fbox_vbox, "Image Information");
 
 	return em->fbox_vbox;
 }

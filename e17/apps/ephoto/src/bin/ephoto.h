@@ -62,7 +62,8 @@ void ephoto_db_close(sqlite3 *db);
 /* Ephoto Gui */
 Ewl_Widget *add_button(Ewl_Widget *c, const char *txt, const char *img, void *cb, void *data);
 Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, void *data);
-Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl, int blue);
+Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl);
+Ewl_Widget *add_text(Ewl_Widget *c, const char *text);
 Ewl_Widget *add_shadow(Ewl_Widget *c);
 
 /* Ephoto Imaging */

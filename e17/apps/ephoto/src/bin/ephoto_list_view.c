@@ -110,13 +110,10 @@ static void list_view_assign(Ewl_Widget *w, void *data)
 						 image_pixels_string_get(image),
 						 file_size_get(size));
 	
-	text = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(text), info);
-	ewl_container_child_append(EWL_CONTAINER(w), text);
+	text = add_text(w, info);
 	ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_LEFT);
-	ewl_widget_show(text);
-
+	
 	return;
 }	
 

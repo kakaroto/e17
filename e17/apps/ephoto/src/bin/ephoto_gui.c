@@ -76,22 +76,33 @@ Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, v
 }
 
 /*Add a label to the container c, with the text lbl, and whether you want it blue*/
-Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl, int blue)
+Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl)
 {
 	Ewl_Widget *label;
 
 	label = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(label), lbl);
 	ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_SHRINK);
 	ewl_container_child_append(EWL_CONTAINER(c), label);
-	if(blue)
-	{
-		ewl_widget_state_set(label, "blue", EWL_STATE_PERSISTENT);
-	}
 	ewl_widget_show(label);
 
 	return label;
+}
+
+/*Add a text widget to the container c*/
+Ewl_Widget *add_text(Ewl_Widget *c, const char *txt)
+{
+	Ewl_Widget *text;
+	
+	text = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(text), txt);
+        ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+        ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
+        ewl_container_child_append(EWL_CONTAINER(c), text);
+        ewl_widget_show(text);
+
+        return text;
 }
 
 /*Add a shadow to the container c*/

@@ -136,7 +136,7 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 {
 	const char *img;
-	Ewl_Widget *win, *vbox, *image, *sp, *list, *label;
+	Ewl_Widget *win, *vbox, *image, *sp, *list, *text;
 	Ewl_Model *model;
 	Ewl_View *view;
 	
@@ -159,14 +159,14 @@ void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 	ewl_container_child_append(EWL_CONTAINER(win), vbox);
 	ewl_widget_show(vbox);
 
-	label = add_label(vbox, "Preview", 0);
+	text = add_text(vbox, "Preview");
 
 	image = add_image(vbox, img, 1, NULL, NULL);
 	ewl_image_constrain_set(EWL_IMAGE(image), 120);
 	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
 
-	label = add_label(vbox, "Image Information", 0);
+	text = add_text(vbox, "Image Information");
 
 	sp = ewl_scrollpane_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(sp), EWL_FLAG_FILL_ALL);
