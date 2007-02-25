@@ -18,7 +18,7 @@ group
 			}
 			description
 			{
-				state: "blue" 0.0;
+				state: "colored" 0.0;
 				color: 71 135 195 255;
 			}
 		}
@@ -55,7 +55,7 @@ group
 			}
 			description
 			{
-				state: "blue" 0.0;
+				state: "colored" 0.0;
 				inherit: "default" 0.0;
                                 text
                                 {
@@ -73,10 +73,10 @@ group
 	{
                 program
                 {
-                        name: "blue";
-                        signal: "blue";
+                        name: "colored";
+                        signal: "colored";
                         source: "*";
-                        action: STATE_SET "blue" 0.0;
+                        action: STATE_SET "colored" 0.0;
                         target: "background";
 			target: "/ephoto/label/text";
                 }

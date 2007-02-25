@@ -22,6 +22,8 @@ Ewl_Widget *add_normal_view(Ewl_Widget *c)
         ewl_widget_show(em->fbox);
 
 	em->ilabel = add_label(em->fbox_vbox, "Image Information");
+	ewl_object_fill_policy_set(EWL_OBJECT(em->ilabel), EWL_FLAG_FILL_HFILL);
+	ewl_widget_state_set(em->ilabel, "colored", EWL_STATE_PERSISTENT);
 
 	return em->fbox_vbox;
 }
