@@ -31,7 +31,6 @@
 #include "emodule.h"
 #include "file.h"
 #include "iclass.h"
-#include "parse.h"
 #include "settings.h"
 #include "tclass.h"
 #include "timers.h"
@@ -2378,7 +2377,7 @@ BackgroundSet1(const char *name, const char *params)
    Background         *bg;
    XColor              xclr;
 
-   if (!p)
+   if (!p || !p[0])
       return;
 
    bg = BackgroundFind(name);
@@ -2514,7 +2513,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 {
    const char         *p;
    char                cmd[128], prm[128], buf[4096];
-   int                 i, len, num;
+   int                 i, len, num, len2;
    Background         *bg;
 
    cmd[0] = prm[0] = '\0';
@@ -2522,7 +2521,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
    if (p)
      {
 	len = 0;
-	sscanf(p, "%100s %100s %n", cmd, prm, &len);
+	sscanf(p, "%100s %n%100s %n", cmd, &len2, prm, &len);
 	p += len;
      }
 
@@ -2626,32 +2625,38 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
    else
      {
 	/* Compatibility with pre- 0.16.8 clients */
-	BackgroundSet1(cmd, atword(params, 2));
+	BackgroundSet1(cmd, params + len2);
      }
 }
 
 static void
 IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
 {
-   char                param1[FILEPATH_LEN_MAX], w[FILEPATH_LEN_MAX];
+   char                name[1024];
+   const char         *p;
    Background         *bg;
-   int                 i, wd;
+   int                 i, l;
 
-   word(params, 1, param1);
+   p = params;
+   name[0] = '\0';
+   l = 0;
+   sscanf(p, "%1000s %n", name, &l);
+   p += l;
 
-   bg = BackgroundFind(param1);
+   bg = BackgroundFind(name);
    if (!bg)
       return;
 
-   for (wd = 2;; wd++)
+   for (;;)
      {
-	w[0] = 0;
-	word(params, wd++, w);
-	if (!w[0])
+	i = l = -1;
+	sscanf(p, "%d %n", &i, &l);
+	p += l;
+	if (i < 0)
 	   break;
-	i = atoi(w);
 	DeskBackgroundSet(DeskGet(i), bg);
      }
+
    autosave();
 }
 

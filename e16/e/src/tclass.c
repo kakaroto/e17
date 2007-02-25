@@ -26,7 +26,6 @@
 #include "e16-ecore_list.h"
 #include "emodule.h"
 #include "iclass.h"
-#include "parse.h"
 #include "tclass.h"
 #include "xwin.h"
 
@@ -494,9 +493,10 @@ TextclassSighan(int sig, void *prm __UNUSED__)
 static void
 TextclassIpc(const char *params, Client * c __UNUSED__)
 {
-   char                param1[FILEPATH_LEN_MAX];
-   char                param2[FILEPATH_LEN_MAX];
-   char                param3[FILEPATH_LEN_MAX];
+   char                param1[1024];
+   char                param2[1024];
+   int                 l;
+   const char         *p;
    TextClass          *tc;
 
    if (!params)
@@ -505,12 +505,11 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
 	return;
      }
 
-   param1[0] = 0;
-   param2[0] = 0;
-   param3[0] = 0;
-
-   word(params, 1, param1);
-   word(params, 2, param2);
+   p = params;
+   l = 0;
+   param1[0] = param2[0] = '\0';
+   sscanf(params, "%1000s %1000s %n", param1, param2, &l);
+   p += l;
 
    if (!strncmp(param1, "list", 2))
      {
@@ -549,49 +548,49 @@ TextclassIpc(const char *params, Client * c __UNUSED__)
      {
 	Window              xwin;
 	Win                 win;
-	int                 state;
-	int                 x, y;
-	const char         *txt;
+	char                state[20];
+	int                 x, y, st;
 
-	word(params, 3, param3);
-	xwin = (Window) strtoul(param3, NULL, 0);
+	/* 3:xwin 4:x 5:y 6:state 7-:txt */
+	xwin = None;
+	x = y = 0;
+	state[0] = '\0';
+	l = 0;
+	sscanf(p, "%lx %d %d %16s %n", &xwin, &x, &y, state, &l);
+	p += l;
 
-	word(params, 4, param3);
-	x = atoi(param3);
-	word(params, 5, param3);
-	y = atoi(param3);
+	if (!strcmp(state, "normal"))
+	   st = STATE_NORMAL;
+	else if (!strcmp(state, "hilited"))
+	   st = STATE_HILITED;
+	else if (!strcmp(state, "clicked"))
+	   st = STATE_CLICKED;
+	else if (!strcmp(state, "disabled"))
+	   st = STATE_DISABLED;
+	else
+	   st = STATE_NORMAL;
 
-	word(params, 6, param3);
-	state = STATE_NORMAL;
-	if (!strcmp(param3, "normal"))
-	   state = STATE_NORMAL;
-	else if (!strcmp(param3, "hilited"))
-	   state = STATE_HILITED;
-	else if (!strcmp(param3, "clicked"))
-	   state = STATE_CLICKED;
-	else if (!strcmp(param3, "disabled"))
-	   state = STATE_DISABLED;
-
-	txt = atword(params, 7);
-	if (!txt)
+	if (l == 0)
 	   return;
 
 	win = ECreateWinFromXwin(xwin);
 	if (!win)
 	   return;
 
-	TextDraw(tc, win, None, 0, 0, state, txt, x, y, 99999, 99999, 17, 0);
+	TextDraw(tc, win, None, 0, 0, st, p, x, y, 99999, 99999, 17, 0);
 	EDestroyWin(win);
      }
    else if (!strcmp(param2, "query_size"))
      {
 	int                 w, h;
-	const char         *txt;
+
+	/* 3-:txt */
+
+	if (l == 0)
+	   return;
 
 	w = h = 0;
-	txt = atword(params, 3);
-	if (txt)
-	   TextSize(tc, 0, 0, STATE_NORMAL, txt, &w, &h, 17);
+	TextSize(tc, 0, 0, STATE_NORMAL, p, &w, &h, 17);
 	IpcPrintf("%i %i\n", w, h);
      }
    else if (!strcmp(param2, "query"))

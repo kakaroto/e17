@@ -31,7 +31,6 @@
 #include "ewin-ops.h"
 #include "grabs.h"
 #include "hints.h"		/* FIXME - Should not be here */
-#include "parse.h"
 #include "screen.h"
 #include "session.h"
 #include "snaps.h"
@@ -994,7 +993,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 static void
 IPC_Remember(const char *params, Client * c __UNUSED__)
 {
-   int                 window;
+   int                 window, l;
    EWin               *ewin;
 
    if (!params)
@@ -1003,8 +1002,12 @@ IPC_Remember(const char *params, Client * c __UNUSED__)
 	goto done;
      }
 
+   l = 0;
    window = 0;
-   sscanf(params, "%x", &window);
+   sscanf(params, "%x %n", &window, &l);
+   if (l <= 0)
+      return;
+
    ewin = EwinFindByClient(window);
    if (!ewin)
      {
@@ -1012,7 +1015,7 @@ IPC_Remember(const char *params, Client * c __UNUSED__)
 	goto done;
      }
 
-   SnapshotEwinParse(ewin, atword(params, 2));
+   SnapshotEwinParse(ewin, params + l);
 
  done:
    return;
@@ -1033,10 +1036,14 @@ IPC_Restart(const char *params __UNUSED__, Client * c __UNUSED__)
 static void
 IPC_Exit(const char *params, Client * c __UNUSED__)
 {
-   char                param1[FILEPATH_LEN_MAX];
+   char                param1[1024];
+   const char         *p2;
+   int                 l;
 
    param1[0] = 0;
-   word(params, 1, param1);
+   l = 0;
+   sscanf(params, "%1000s %n", param1, &l);
+   p2 = (l > 0) ? params + l : NULL;
 
    if (!param1[0])
       SessionExit(EEXIT_EXIT, NULL);
@@ -1045,9 +1052,9 @@ IPC_Exit(const char *params, Client * c __UNUSED__)
    else if (!strcmp(param1, "restart"))
       SessionExit(EEXIT_RESTART, NULL);
    else if (!strcmp(param1, "theme"))
-      SessionExit(EEXIT_THEME, atword(params, 2));
+      SessionExit(EEXIT_THEME, p2);
    else if (!strcmp(param1, "exec"))
-      SessionExit(EEXIT_EXEC, atword(params, 2));
+      SessionExit(EEXIT_EXEC, p2);
 }
 
 static void
@@ -1588,7 +1595,8 @@ int
 HandleIPC(const char *params, Client * c)
 {
    int                 i, num, ok;
-   char                w[FILEPATH_LEN_MAX];
+   char                cmd[128];
+   const char         *prm;
    const IpcItem     **lst, *ipc;
 
    if (EDebug(EDBUG_TYPE_IPC))
@@ -1596,24 +1604,20 @@ HandleIPC(const char *params, Client * c)
 
    IpcPrintInit();
 
-   lst = IPC_GetList(&num);
+   cmd[0] = 0;
+   sscanf(params, "%100s %n", cmd, &num);
+   prm = (num > 0) ? params + num : NULL;
 
-   w[0] = 0;
-   word(params, 1, w);
+   lst = IPC_GetList(&num);
 
    ok = 0;
    for (i = 0; i < num; i++)
      {
 	ipc = lst[i];
-	if (!(ipc->nick && !strcmp(w, ipc->nick)) && strcmp(w, ipc->name))
+	if (!(ipc->nick && !strcmp(cmd, ipc->nick)) && strcmp(cmd, ipc->name))
 	   continue;
 
-	w[0] = 0;
-	word(params, 2, w);
-	if (w[0])
-	   ipc->func(atword(params, 2), c);
-	else
-	   ipc->func(NULL, c);
+	ipc->func(prm, c);
 
 	ok = 1;
 	break;

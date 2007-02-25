@@ -29,7 +29,6 @@
 #include "eimage.h"
 #include "emodule.h"
 #include "iclass.h"
-#include "parse.h"
 #include "tclass.h"
 #include "xwin.h"
 
@@ -1466,9 +1465,10 @@ ImageclassSighan(int sig, void *prm __UNUSED__)
 static void
 ImageclassIpc(const char *params, Client * c __UNUSED__)
 {
-   char                param1[FILEPATH_LEN_MAX];
-   char                param2[FILEPATH_LEN_MAX];
-   char                param3[FILEPATH_LEN_MAX];
+   char                param1[1024];
+   char                param2[1024];
+   int                 l;
+   const char         *p;
    ImageClass         *ic;
 
    if (!params)
@@ -1477,12 +1477,11 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	return;
      }
 
-   param1[0] = 0;
-   param2[0] = 0;
-   param3[0] = 0;
-
-   word(params, 1, param1);
-   word(params, 2, param2);
+   p = params;
+   l = 0;
+   param1[0] = param2[0] = '\0';
+   sscanf(p, "%1000s %1000s %n", param1, param2, &l);
+   p += l;
 
    if (!strncmp(param1, "list", 2))
      {
@@ -1503,11 +1502,10 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
      }
    else if (!strcmp(param2, "free_pixmap"))
      {
-	Pixmap              p;
+	Pixmap              pmap;
 
-	word(params, 3, param3);
-	p = (Pixmap) strtol(param3, (char **)NULL, 0);
-	EImagePixmapFree(p);
+	pmap = (Pixmap) strtol(p, NULL, 0);
+	EImagePixmapFree(pmap);
 	return;
      }
 
@@ -1549,17 +1547,21 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	Window              xwin;
 	Win                 win;
 	char                state[20];
-	const char         *winptr, *hptr;
-	int                 st, w = -1, h = -1;
+	int                 st, w, h;
 
-	winptr = atword(params, 3);
-	xwin = (Window) strtoul(winptr, NULL, 0);
+	/* 3:xwin 4:state 5:w 6:h */
+	xwin = None;
+	state[0] = '\0';
+	w = h = -1;
+	sscanf(p, "%lx %16s %d %d", &xwin, state, &w, &h);
+
 	win = ECreateWinFromXwin(xwin);
 	if (!win)
 	   return;
 
-	word(params, 4, state);
-	if (!strcmp(state, "hilited"))
+	if (!strcmp(state, "normal"))
+	   st = STATE_NORMAL;
+	else if (!strcmp(state, "hilited"))
 	   st = STATE_HILITED;
 	else if (!strcmp(state, "clicked"))
 	   st = STATE_CLICKED;
@@ -1567,13 +1569,6 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	   st = STATE_DISABLED;
 	else
 	   st = STATE_NORMAL;
-
-	hptr = atword(params, 6);
-	if (hptr)
-	  {
-	     w = (int)strtol(atword(params, 5), NULL, 0);
-	     h = (int)strtol(hptr, NULL, 0);
-	  }
 
 	ImageclassApply(ic, win, w, h, 0, 0, st, ST_SOLID);
 	EDestroyWin(win);
@@ -1583,15 +1578,22 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	Window              xwin;
 	Win                 win;
 	char                state[20];
-	const char         *winptr, *hptr;
-	int                 st, w = -1, h = -1;
+	int                 st, w, h;
 	PmapMask            pmm;
 
-	winptr = atword(params, 3);
-	xwin = (Window) strtoul(winptr, NULL, 0);
+	/* 3:xwin 4:state 5:w 6:h */
+	xwin = None;
+	state[0] = '\0';
+	w = h = -1;
+	sscanf(p, "%lx %16s %d %d", &xwin, state, &w, &h);
 
-	word(params, 4, state);
-	if (!strcmp(state, "hilited"))
+	win = ECreateWinFromXwin(xwin);
+	if (!win)
+	   return;
+
+	if (!strcmp(state, "normal"))
+	   st = STATE_NORMAL;
+	else if (!strcmp(state, "hilited"))
 	   st = STATE_HILITED;
 	else if (!strcmp(state, "clicked"))
 	   st = STATE_CLICKED;
@@ -1600,19 +1602,11 @@ ImageclassIpc(const char *params, Client * c __UNUSED__)
 	else
 	   st = STATE_NORMAL;
 
-	hptr = atword(params, 6);
-	if (!hptr)
+	if (w < 0 || h < 0)
 	  {
 	     IpcPrintf("Error:  missing width and/or height\n");
 	     return;
 	  }
-
-	w = (int)strtol(atword(params, 5), NULL, 0);
-	h = (int)strtol(hptr, NULL, 0);
-
-	win = ECreateWinFromXwin(xwin);
-	if (!win)
-	   return;
 
 	ImageclassApplyCopy(ic, win, w, h, 0, 0, st, &pmm, 1, ST_SOLID);
 	IpcPrintf("0x%08lx 0x%08lx\n", pmm.pmap, pmm.mask);
