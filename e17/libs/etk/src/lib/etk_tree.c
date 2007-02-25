@@ -1131,12 +1131,12 @@ void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args)
       return;
    
    va_copy(args2, args);
-   while ((col = va_arg(args, Etk_Tree_Col *)))
+   while ((col = va_arg(args2, Etk_Tree_Col *)))
    {
       for (i = 0; i < col->num_models; i++)
       {
          if (col->models[i]->cell_data_get)
-            col->models[i]->cell_data_get(col->models[i], row->cells_data[col->id][i], &args);
+            col->models[i]->cell_data_get(col->models[i], row->cells_data[col->id][i], &args2);
       }
    }
    va_end(args2);
@@ -1231,10 +1231,10 @@ void etk_tree_row_model_fields_get_valist(Etk_Tree_Row *row, va_list args)
       return;
    
    va_copy(args2, args);
-   while ((model = va_arg(args, Etk_Tree_Model *)))
+   while ((model = va_arg(args2, Etk_Tree_Model *)))
    {
       if (model->cell_data_get)
-         model->cell_data_get(model, row->cells_data[model->col->id][model->index], &args);
+         model->cell_data_get(model, row->cells_data[model->col->id][model->index], &args2);
    }
    va_end(args2);
 }
