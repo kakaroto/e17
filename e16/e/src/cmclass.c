@@ -180,14 +180,15 @@ ColorModifierConfigLoad(FILE * fs)
    int                 i = 0, tx, ty;
    int                 rnum = 0, gnum = 0, bnum = 0;
    ColorModifierClass *cm;
-   int                 fields;
+   int                 fields, len2;
 
    while (GetLine(s, sizeof(s), fs))
      {
 	s2[0] = 0;
 	i = 0;
 	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
+	len2 = 0;
+	fields = sscanf(s, "%i %n%4000s", &i1, &len2, s2);
 
 	if (fields < 1)
 	  {
@@ -230,7 +231,7 @@ ColorModifierConfigLoad(FILE * fs)
 	     name = Estrdup(s2);
 	     break;
 	  case COLORMOD_RED:
-	     params = atword(s, 2);
+	     params = (s[len2]) ? s + len2 : NULL;
 	     current_param = params;
 	     if (!current_param)
 		goto done;
@@ -262,7 +263,7 @@ ColorModifierConfigLoad(FILE * fs)
 	     rnum = i;
 	     break;
 	  case COLORMOD_GREEN:
-	     params = atword(s, 2);
+	     params = (s[len2]) ? s + len2 : NULL;
 	     current_param = params;
 	     if (!current_param)
 		goto done;
@@ -294,7 +295,7 @@ ColorModifierConfigLoad(FILE * fs)
 	     gnum = i;
 	     break;
 	  case COLORMOD_BLUE:
-	     params = atword(s, 2);
+	     params = (s[len2]) ? s + len2 : NULL;
 	     current_param = params;
 	     if (!current_param)
 		goto done;

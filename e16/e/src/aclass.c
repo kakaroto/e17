@@ -30,7 +30,6 @@
 #include "ewins.h"
 #include "file.h"
 #include "grabs.h"
-#include "parse.h"
 #include <ctype.h>
 
 typedef struct _actiontype
@@ -139,8 +138,9 @@ ActionAddTo(Action * aa, const char *params)
    at = EMALLOC(ActionType, 1);
    if (!at)
       return;
+
    at->next = NULL;
-   at->params = Estrdup(params);
+   at->params = (params && *params) ? Estrdup(params) : NULL;
    if (!aa->action)
      {
 	aa->action = at;
@@ -274,13 +274,13 @@ AclassConfigLoad(FILE * fs)
    char               *aclass_tooltipstring = NULL;
    char               *action_tooltipstring = NULL;
    char global = 0;
-   int                 fields;
+   int                 fields, len2, len;
 
    while (GetLine(s, sizeof(s), fs))
      {
 	s2[0] = 0;
 	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
+	fields = sscanf(s, "%i %n%4000s %n", &i1, &len2, s2, &len);
 
 	if (fields < 1)
 	  {
@@ -486,15 +486,15 @@ AclassConfigLoad(FILE * fs)
 		  ActionclassAddAction(ac, aa);
 		  first = 0;
 	       }
-	     ActionAddTo(aa, atword(s, 2));
+	     ActionAddTo(aa, s + len2);
 	     break;
 	  case CONFIG_ACTION_TOOLTIP:
 	     action_tooltipstring =
-		Estrdupcat2(action_tooltipstring, "\n", atword(s, 2));
+		Estrdupcat2(action_tooltipstring, "\n", s + len2);
 	     break;
 	  case CONFIG_TOOLTIP:
 	     aclass_tooltipstring =
-		Estrdupcat2(aclass_tooltipstring, "\n", atword(s, 2));
+		Estrdupcat2(aclass_tooltipstring, "\n", s + len2);
 	     break;
 	  default:
 	     RecoverUserConfig();
@@ -722,7 +722,7 @@ AclassConfigLoad2(FILE * fs)
    char                prm1[128], prm2[128], prm3[128];
    ActionClass        *ac = NULL;
    Action             *aa = NULL;
-   int                 len;
+   int                 len, len2;
 
    for (;;)
      {
@@ -736,7 +736,8 @@ AclassConfigLoad2(FILE * fs)
 	s[len] = '\0';
 
 	prm3[0] = '\0';
-	len = sscanf(s, "%16s %128s %16s", prm1, prm2, prm3);
+	len2 = 0;
+	len = sscanf(s, "%16s %n%128s %16s", prm1, &len2, prm2, prm3);
 	if (len < 2)
 	   continue;
 
@@ -785,12 +786,12 @@ AclassConfigLoad2(FILE * fs)
 	     if (aa)
 	       {
 		  aa->tooltipstring =
-		     Estrdupcat2(aa->tooltipstring, "\n", atword(s, 2));
+		     Estrdupcat2(aa->tooltipstring, "\n", s + len2);
 	       }
 	     else if (ac)
 	       {
 		  ac->tooltipstring =
-		     Estrdupcat2(ac->tooltipstring, "\n", atword(s, 2));
+		     Estrdupcat2(ac->tooltipstring, "\n", s + len2);
 	       }
 	  }
      }
@@ -1338,6 +1339,10 @@ IPC_KeybindingsSet(const char *params, Client * c __UNUSED__)
    char                buf[FILEPATH_LEN_MAX];
    const char         *sp, *ss;
 
+   ss = params;
+   if (!ss || !ss[0])
+      return;
+
    Mode.keybinds_changed = 1;
 
    ac = (ActionClass *) ecore_list_remove_node(aclass_list_global,
@@ -1347,9 +1352,7 @@ IPC_KeybindingsSet(const char *params, Client * c __UNUSED__)
       ActionclassDestroy(ac);
 
    ac = ActionclassCreate("KEYBINDINGS", 1);
-
-   ss = atword(params, 1);
-   if (!ss)
+   if (!ac)
       return;
 
    i = 0;
@@ -1359,7 +1362,7 @@ IPC_KeybindingsSet(const char *params, Client * c __UNUSED__)
 	char                key[256];
 	int                 mod = 0;
 	int                 act_id = 0;
-	int                 j = 0;
+	int                 j = 0, len;
 
 	/* put line in buf */
 	sp = &(ss[i]);
@@ -1374,7 +1377,8 @@ IPC_KeybindingsSet(const char *params, Client * c __UNUSED__)
 	i += j;
 
 	/* parse the line */
-	sscanf(buf, "%250s %i %i", key, &mod, &act_id);
+	len = 0;
+	sscanf(buf, "%250s %i %i %n", key, &mod, &act_id, &len);
 	if (mod == 0)
 	   mod = 0;
 	else if (mod == 1)
@@ -1420,10 +1424,7 @@ IPC_KeybindingsSet(const char *params, Client * c __UNUSED__)
 
 	aa = ActionCreate(4, 0, mod, 0, 0, 0, key, NULL);
 	ActionclassAddAction(ac, aa);
-	if (atword(buf, 4))
-	   ActionAddTo(aa, atword(buf, 4));
-	else
-	   ActionAddTo(aa, NULL);
+	ActionAddTo(aa, buf + len);
 	GrabActionKey(aa);
      }
 

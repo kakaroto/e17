@@ -35,7 +35,6 @@
 #include "hints.h"
 #include "iclass.h"
 #include "menus.h"
-#include "parse.h"
 #include "screen.h"
 #include "settings.h"
 #include "tclass.h"
@@ -1822,13 +1821,14 @@ MenuConfigLoad(FILE * fs)
    MenuItem           *mi;
    MenuStyle          *ms;
    ImageClass         *ic = NULL;
-   int                 fields;
+   int                 fields, len2, len;
 
    while (GetLine(s, sizeof(s), fs))
      {
 	s2[0] = 0;
 	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
+	len = 0;
+	fields = sscanf(s, "%i %n%4000s %n", &i1, &len2, s2, &len);
 
 	if (fields < 1)
 	  {
@@ -1880,7 +1880,7 @@ MenuConfigLoad(FILE * fs)
 	     break;
 	  case MENU_TITLE:
 	     if (m)
-		MenuSetTitle(m, atword(s, 2));
+		MenuSetTitle(m, s + len2);
 	     break;
 	  case MENU_ITEM:
 #if 0				/* FIXME - Why ? */
@@ -1893,7 +1893,7 @@ MenuConfigLoad(FILE * fs)
 	     ic = NULL;
 	     if (strcmp("NULL", s2))
 		ic = ImageclassFind(s2, 0);
-	     params = atword(s, 3);
+	     params = s + len;
 	     _EFDUP(txt, params);
 	     break;
 	  case MENU_ACTION:
@@ -1905,18 +1905,12 @@ MenuConfigLoad(FILE * fs)
 		   * on your system before adding the menu entry */
 		  if (!strcmp(s2, "exec"))
 		    {
-		       char                buf[1024];
-
-		       params = atword(s, 3);
-		       if (params)
-			 {
-			    sscanf(atword(s, 3), "%1000s", buf);
-			    ok = path_canexec(buf);
-			 }
+		       sscanf(s + len, "%1000s", s3);
+		       ok = path_canexec(s3);
 		    }
 		  if (ok)
 		    {
-		       params = atword(s, 2);
+		       params = s + len2;
 		       mi = MenuItemCreate(txt, ic, params, NULL);
 		       MenuAddItem(m, mi);
 		    }
@@ -1925,7 +1919,8 @@ MenuConfigLoad(FILE * fs)
 	       }
 	     break;
 	  case MENU_SUBMENU:
-	     sscanf(s, "%i %4000s %4000s", &i1, s2, s3);
+	     len2 = 0;
+	     sscanf(s + len, "%4000s %n", s3, &len2);
 	     ic = NULL;
 	     if (strcmp("NULL", s3))
 		ic = ImageclassFind(s3, 0);
@@ -1935,7 +1930,7 @@ MenuConfigLoad(FILE * fs)
 	     if (MenuIsEmpty(mm))
 		break;
 #endif
-	     mi = MenuItemCreate(atword(s, 4), ic, NULL, mm);
+	     mi = MenuItemCreate(s + len2, ic, NULL, mm);
 	     MenuAddItem(m, mi);
 	     break;
 	  default:
