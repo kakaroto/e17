@@ -35,6 +35,8 @@
 #include <errno.h>
 #include <sys/stat.h>
 
+static char         menu_scan_recursive = 0;
+
 static Menu        *MenuCreateFromFlatFile(const char *name, Menu * parent,
 					   MenuStyle * ms, const char *file);
 static Menu        *MenuCreateFromDirectory(const char *name, Menu * parent,
@@ -269,13 +271,20 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
    MenuSetData(m, Estrdup(dir));
    MenuSetLoader(m, MenuLoadFromDirectory);
 
-   /* Hmmm... Make sure background dirs are scanned during startup */
-   if (Mode.wm.startup)
+   if (menu_scan_recursive)
       MenuLoadFromDirectory(m);
 
    calls--;
 
    return m;
+}
+
+void
+ScanBackgroundMenu(void)
+{
+   menu_scan_recursive = 1;
+   MenuLoad(MenuFind("BACKGROUNDS_MENU"));
+   menu_scan_recursive = 0;
 }
 
 static void

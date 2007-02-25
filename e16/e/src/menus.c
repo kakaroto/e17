@@ -257,6 +257,15 @@ MenuEwinInit(EWin * ewin, void *ptr)
 
 static void         MenuShowMasker(Menu * m);
 
+int
+MenuLoad(Menu * m)
+{
+   if (!m || !m->loader)
+      return 0;
+
+   return m->loader(m);
+}
+
 static void
 MenuShow(Menu * m, char noshow)
 {
@@ -269,11 +278,8 @@ MenuShow(Menu * m, char noshow)
    if (m->shown || !m->style)
       return;
 
-   if (m->loader)
-     {
-	if (m->loader(m))
-	   MenuRealize(m);
-     }
+   if (MenuLoad(m))
+      MenuRealize(m);
 
    if (m->num <= 0)
       return;
@@ -1042,7 +1048,7 @@ _MenuMatchName(const void *data, const void *match)
    return 1;
 }
 
-static Menu        *
+Menu               *
 MenuFind(const char *name)
 {
    Menu               *m;

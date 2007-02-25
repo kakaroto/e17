@@ -2092,6 +2092,8 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    int                 num;
    char                s[1024];
 
+   ScanBackgroundMenu();
+
    if (!bg)
       bg = DeskBackgroundGet(DesksGetCurrent());
    if (!bg)

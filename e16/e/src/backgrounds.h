@@ -57,4 +57,6 @@ Background         *BackgroundGetForDesk(unsigned int desk);
 void                BackgroundsInvalidate(int refresh);
 int                 BackgroundsConfigLoad(FILE * fs);
 
+void                ScanBackgroundMenu(void);
+
 #endif /* _BACKGROUNDS_H_ */
