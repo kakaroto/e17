@@ -25,7 +25,6 @@
 #include "dialog.h"
 #include "eimage.h"
 #include "emodule.h"
-#include "parse.h"
 #include "settings.h"
 #include "timers.h"
 #include "xwin.h"
@@ -927,21 +926,18 @@ const DialogDef     DlgFx = {
 static void
 FxIpc(const char *params, Client * c __UNUSED__)
 {
-   char                word1[FILEPATH_LEN_MAX];
-   char                word2[FILEPATH_LEN_MAX];
+   char                word1[1024];
+   char                word2[1024];
 
    if (!params)
       return;
 
-   word1[0] = '\0';
-   word2[0] = '\0';
-
-   word(params, 1, word1);
+   word1[0] = word2[0] = '\0';
+   sscanf(params, "%1000s %1000s", word1, word2);
 
    if (!strcmp(word1, "raindrops") || !strcmp(word1, "ripples") ||
        !strcmp(word1, "waves"))
      {
-	word(params, 2, word2);
 	if (!strcmp(word2, ""))
 	   FX_Op(word1, FX_OP_TOGGLE);
 	else if (!strcmp(word2, "on"))

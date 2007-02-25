@@ -29,7 +29,6 @@
 #include "emodule.h"
 #include "ewins.h"
 #include "ewin-ops.h"
-#include "parse.h"
 #include "windowmatch.h"
 
 typedef struct _windowmatch WindowMatch;
@@ -143,15 +142,15 @@ WindowMatchConfigLoad(FILE * fs)
    WindowMatch        *wm = 0;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
-   const char         *ss;
    int                 i1;
-   int                 fields;
+   int                 fields, len;
 
    while (GetLine(s, sizeof(s), fs))
      {
 	s2[0] = 0;
 	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
+	len = 0;
+	fields = sscanf(s, "%i %4000s %n", &i1, s2, &len);
 
 	if (fields < 1)
 	   i1 = CONFIG_INVALID;
@@ -191,22 +190,19 @@ WindowMatchConfigLoad(FILE * fs)
 	     if (!wm)
 		break;
 	     wm->match = MATCH_TYPE_TITLE;
-	     ss = atword(s, 2);
-	     wm->value = Estrdup(ss);
+	     wm->value = Estrdup(s + len);
 	     break;
 	  case WINDOWMATCH_MATCHNAME:
 	     if (!wm)
 		break;
 	     wm->match = MATCH_TYPE_WM_NAME;
-	     ss = atword(s, 2);
-	     wm->value = Estrdup(ss);
+	     wm->value = Estrdup(s + len);
 	     break;
 	  case WINDOWMATCH_MATCHCLASS:
 	     if (!wm)
 		break;
 	     wm->match = MATCH_TYPE_WM_CLASS;
-	     ss = atword(s, 2);
-	     wm->value = Estrdup(ss);
+	     wm->value = Estrdup(s + len);
 	     break;
 
 	  case WINDOWMATCH_WIDTH:

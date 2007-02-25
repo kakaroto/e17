@@ -32,7 +32,6 @@
 #include "file.h"
 #include "grabs.h"
 #include "iclass.h"
-#include "parse.h"
 #include "tclass.h"
 #include "tooltips.h"
 #include "xwin.h"
@@ -712,14 +711,14 @@ ButtonsConfigLoad(FILE * ConfigFile)
    char                sticky = 0;
    char                show = 1;
    char                internal = 0;
-   int                 fields;
-   const char         *ss;
+   int                 fields, len;
 
    while (GetLine(s, sizeof(s), ConfigFile))
      {
 	s2[0] = 0;
 	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
+	len = 0;
+	fields = sscanf(s, "%i %4000s %n", &i1, s2, &len);
 
 	if (fields < 1)
 	  {
@@ -762,8 +761,7 @@ ButtonsConfigLoad(FILE * ConfigFile)
 	     break;
 	  case BUTTON_LABEL:
 	     _EFREE(label);
-	     ss = atword(s, 2);
-	     label = Estrdup(ss);
+	     label = Estrdup(s + len);
 	     if (pbt)
 	       {
 		  _EFREE(pbt->label);
@@ -1047,10 +1045,11 @@ _ButtonHideShow(void *data, void *prm)
 static void
 doHideShowButton(const char *params)
 {
-   Button             *b;
    char                s[1024];
    const char         *ss;
+   int                 len;
    button_match_data   bmd = { -1, 1, NULL };
+   Button             *b;
 
    if (!params)
      {
@@ -1059,7 +1058,11 @@ doHideShowButton(const char *params)
 	goto done;
      }
 
-   sscanf(params, "%1000s", s);
+   s[0] = '\0';
+   len = 0;
+   sscanf(params, "%1000s %n", s, &len);
+   ss = (len > 0) ? params + len : NULL;
+
    if (!strcmp(s, "button"))
      {
 	sscanf(params, "%*s %1000s", s);
@@ -1069,7 +1072,6 @@ doHideShowButton(const char *params)
      }
    else if (!strcmp(s, "buttons"))
      {
-	ss = atword(params, 2);
 	if (!ss)
 	   return;
 
@@ -1078,7 +1080,6 @@ doHideShowButton(const char *params)
      }
    else if (!strcmp(s, "all_buttons_except"))
      {
-	ss = atword(params, 2);
 	if (!ss)
 	   return;
 

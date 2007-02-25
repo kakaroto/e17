@@ -29,7 +29,6 @@
 #include "ewins.h"
 #include "file.h"
 #include "groups.h"
-#include "parse.h"
 #include "settings.h"
 #include "snaps.h"
 #include "timers.h"
@@ -1538,16 +1537,26 @@ SnapshotEwinUnmatch(EWin * ewin)
 void
 SnapshotEwinParse(EWin * ewin, const char *params)
 {
-   char                param[FILEPATH_LEN_MAX];
+   char                param[1024];
+   const char         *p;
+   int                 len;
    unsigned int        match_flags, use_flags;
+
+   p = params;
+   if (!p)
+      return;
 
    match_flags = SNAP_MATCH_DEFAULT;
    use_flags = 0;
 
-   for (; params;)
+   for (;;)
      {
-	param[0] = 0;
-	word(params, 1, param);
+	param[0] = '\0';
+	len = 0;
+	sscanf(p, "%s %n", param, &len);
+	if (len <= 0)
+	   break;
+	p += len;
 
 	if (!strcmp(param, "all"))
 	  {
@@ -1586,8 +1595,6 @@ SnapshotEwinParse(EWin * ewin, const char *params)
 #endif
 	else if (!strcmp(param, "group"))
 	   use_flags |= SNAP_USE_GROUPS;
-
-	params = atword(params, 2);
      }
 
    if (ewin->snap)
