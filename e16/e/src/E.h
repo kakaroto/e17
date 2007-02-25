@@ -57,6 +57,10 @@
 #define USE_COMPOSITE 1
 #endif
 
+#ifdef HAVE_GLX
+#define USE_GLX 1
+#endif
+
 #include "xwin.h"
 
 #define ENABLE_COLOR_MODIFIERS 0	/* Not functional */
@@ -185,6 +189,8 @@
 #define XEXT_DAMAGE      5
 #define XEXT_FIXES       6
 #define XEXT_RENDER      7
+#define XEXT_GLX         8
+
 #define XEXT_CM_ALL     16
 
 #define XEXT_AVAILABLE(ext)  (Mode.server.extensions & (1 << ext))

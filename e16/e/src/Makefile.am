@@ -112,6 +112,7 @@ LDADD = \
 	$(ECORE_LIBS)		\
 	$(ESD_LIBS) 		\
 	$(IMLIB2_LIBS) 		\
+	$(GLX_LIBS) 		\
 	$(XFT_LIBS) 		\
 	$(X_PRE_LIBS) 		\
 	$(X_LIBS) 		\

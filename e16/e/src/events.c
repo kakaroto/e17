@@ -44,6 +44,9 @@
 #include <X11/extensions/Xfixes.h>
 #include <X11/extensions/Xrender.h>
 #endif
+#if USE_GLX
+#include <GL/glx.h>
+#endif
 
 #if ENABLE_DEBUG_EVENTS
 static const char  *EventName(unsigned int type);
@@ -162,6 +165,9 @@ static const EServerExt Extensions[] = {
    {"Damage", XEXT_DAMAGE, XDamageQueryExtension, XDamageQueryVersion, NULL},
    {"Fixes", XEXT_FIXES, XFixesQueryExtension, XFixesQueryVersion, NULL},
    {"Render", XEXT_RENDER, XRenderQueryExtension, XRenderQueryVersion, NULL},
+#endif
+#if USE_GLX
+   {"GLX", XEXT_GLX, glXQueryExtension, glXQueryVersion, NULL},
 #endif
 };
 
