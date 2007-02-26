@@ -27,11 +27,6 @@ struct _Config_Item
    double poll_time;
    int display, degrees;
    const char *host, *code;
-   struct
-   {
-      const char *host;
-      int port;
-   } proxy;
 };
 
 EAPI extern E_Module_Api e_modapi;
