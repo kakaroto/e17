@@ -267,10 +267,16 @@ _tclock_cb_check (void *data)
 	
 	memset (buf, 0, sizeof (buf));
 	
-	strftime (buf, 1024, ci->time_format, local_time);
-	edje_object_part_text_set (inst->tclock, "tclock_time", buf);
-	strftime (buf, 1024, ci->date_format, local_time);
-	edje_object_part_text_set (inst->tclock, "tclock_date", buf);
+	if (ci->time_format)
+	  {
+	    strftime (buf, 1024, ci->time_format, local_time);
+	    edje_object_part_text_set (inst->tclock, "tclock_time", buf);
+	  }
+	if (ci->date_format)
+	  {
+	    strftime (buf, 1024, ci->date_format, local_time);
+	    edje_object_part_text_set (inst->tclock, "tclock_date", buf);
+	  }
      }
    
   return 1;

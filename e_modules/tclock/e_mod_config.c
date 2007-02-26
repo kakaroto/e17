@@ -49,8 +49,10 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 {
   cfdata->show_time = ci->show_time;
   cfdata->show_date = ci->show_date;
-  cfdata->time_format = strdup (ci->time_format);
-  cfdata->date_format = strdup (ci->date_format);
+  if (ci->time_format)
+    cfdata->time_format = strdup (ci->time_format);
+  if (ci->date_format)
+    cfdata->date_format = strdup (ci->date_format);
 }
 
 static void *
