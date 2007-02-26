@@ -68,7 +68,7 @@ MenuLoadFromDirectory(Menu * m)
 {
    Progressbar        *p = NULL;
    Menu               *mm;
-   int                 i, num;
+   int                 i, num, len;
    const char         *dir;
    char              **list, s[4096], ss[4096], cs[4096];
    const char         *ext;
@@ -120,36 +120,30 @@ MenuLoadFromDirectory(Menu * m)
 		return 1;
 	     while (fgets(s, sizeof(s), f))
 	       {
+		  char                s2[4096];
+
 		  s[strlen(s) - 1] = 0;
-		  word(s, 1, ss);
+		  len = 0;
+		  sscanf(s, "%1000s %1000s %n", ss, s2, &len);
 		  if (!strcmp(ss, "BG"))
 		    {
-		       char                s2[4096], s3[512];
-
-		       word(s, 2, s2);
-		       word(s, 3, s3);
-		       Esnprintf(s, sizeof(s), "%s/%s", dir, s2);
-		       mi = MenuItemCreateFromBackground(s3, s);
-		       if (mi)
-			  MenuAddItem(m, mi);
+		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
+		       mi = MenuItemCreateFromBackground(s + len, ss);
+		       MenuAddItem(m, mi);
 		    }
 		  else if (!strcmp(ss, "EXE"))
 		    {
-		       word(s, 2, ss);
-		       Esnprintf(s, sizeof(s), "exec %s/%s", dir, ss);
-		       mi = MenuItemCreate(NULL, NULL, s, NULL);
+		       Esnprintf(ss, sizeof(ss), "exec %s/%s", dir, s2);
+		       mi = MenuItemCreate(NULL, NULL, ss, NULL);
 		       MenuAddItem(m, mi);
 		    }
 		  else if (!strcmp(ss, "DIR"))
 		    {
-		       char                tmp[4096];
-
-		       word(s, 2, tmp);
-		       Esnprintf(s, sizeof(s), "%s/%s:%s", dir, tmp,
+		       Esnprintf(s, sizeof(s), "%s/%s:%s", dir, s2,
 				 MenuGetName(m));
-		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, tmp);
+		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
 		       mm = MenuCreateFromDirectory(s, m, NULL, ss);
-		       mi = MenuItemCreate(tmp, NULL, NULL, mm);
+		       mi = MenuItemCreate(s2, NULL, NULL, mm);
 		       MenuAddItem(m, mi);
 		    }
 	       }
@@ -351,7 +345,7 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 	       }
 	     if ((act) && (!strcmp(act, "exec")) && (params))
 	       {
-		  word(params, 1, wd);
+		  sscanf(params, "%4000s", wd);
 		  if (path_canexec(wd))
 		    {
 		       Esnprintf(s, sizeof(s), "exec %s", params);

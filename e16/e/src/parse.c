@@ -26,6 +26,8 @@
 #include "parse.h"
 #include "util.h"
 
+#if 0				/* Unused */
+
 const char         *
 atword(const char *s, int num)
 {
@@ -112,6 +114,8 @@ word(const char *s, int num, char *wd)
 	*wd = 0;
      }
 }
+
+#endif /* Unused */
 
 /* gets word number [num] in the string [s] and copies it into [wd] */
 /* wd is NULL terminated. If word [num] does not exist wd = "" */

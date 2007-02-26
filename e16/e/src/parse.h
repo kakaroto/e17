@@ -23,8 +23,6 @@
 #ifndef _PARSE_H_
 #define _PARSE_H_
 
-const char         *atword(const char *s, int num);
-void                word(const char *s, int num, char *wd);
 char               *field(char *s, int fieldno);
 void                fword(char *s, int num, char *wd);
 

@@ -641,6 +641,8 @@ MenuRepack(Menu * m)
 void
 MenuAddItem(Menu * m, MenuItem * item)
 {
+   if (!item)
+      return;
    m->num++;
    m->items = EREALLOC(MenuItem *, m->items, m->num);
    m->items[m->num - 1] = item;
@@ -1930,7 +1932,7 @@ MenuConfigLoad(FILE * fs)
 	     if (MenuIsEmpty(mm))
 		break;
 #endif
-	     mi = MenuItemCreate(s + len2, ic, NULL, mm);
+	     mi = MenuItemCreate(s + len + len2, ic, NULL, mm);
 	     MenuAddItem(m, mi);
 	     break;
 	  default:

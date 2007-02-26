@@ -28,7 +28,6 @@
 #include "emodule.h"
 #include "ewins.h"
 #include "groups.h"
-#include "parse.h"
 #include "settings.h"
 #include "snaps.h"
 #include "timers.h"
@@ -508,68 +507,55 @@ GroupsLoad(void)
 
    while (fgets(s, sizeof(s), f))
      {
-	char                ss[1024];
+	char                ss[128];
+	int                 ii;
 
 	if (strlen(s) > 0)
 	   s[strlen(s) - 1] = 0;
-	word(s, 1, ss);
+	ii = 0;
+	sscanf(s, "%100s %d", ss, &ii);
 
 	if (!strcmp(ss, "NEW:"))
 	  {
 	     g = GroupCreate();
 	     if (g)
-	       {
-		  word(s, 2, ss);
-		  g->index = atoi(ss);
-	       }
+		g->index = ii;
+	     continue;
 	  }
-	else if (!strcmp(ss, "ICONIFY:"))
+	if (!g)
+	   continue;
+
+	if (!strcmp(ss, "ICONIFY:"))
 	  {
-	     word(s, 2, ss);
-	     if (g)
-		g->cfg.iconify = (char)atoi(ss);
+	     g->cfg.iconify = ii;
 	  }
 	else if (!strcmp(ss, "KILL:"))
 	  {
-	     word(s, 2, ss);
-	     if (g)
-		g->cfg.kill = (char)atoi(ss);
+	     g->cfg.kill = ii;
 	  }
 	else if (!strcmp(ss, "MOVE:"))
 	  {
-	     word(s, 2, ss);
-	     if (g)
-		g->cfg.move = (char)atoi(ss);
+	     g->cfg.move = ii;
 	  }
 	else if (!strcmp(ss, "RAISE:"))
 	  {
-	     word(s, 2, ss);
-	     if (g)
-		g->cfg.raise = (char)atoi(ss);
+	     g->cfg.raise = ii;
 	  }
 	else if (!strcmp(ss, "SET_BORDER:"))
 	  {
-	     word(s, 2, ss);
-	     if (g)
-		g->cfg.set_border = (char)atoi(ss);
+	     g->cfg.set_border = ii;
 	  }
 	else if (!strcmp(ss, "STICK:"))
 	  {
-	     word(s, 2, ss);
-	     if (g)
-		g->cfg.stick = (char)atoi(ss);
+	     g->cfg.stick = ii;
 	  }
 	else if (!strcmp(ss, "SHADE:"))
 	  {
-	     word(s, 2, ss);
-	     if (g)
-		g->cfg.shade = (char)atoi(ss);
+	     g->cfg.shade = ii;
 	  }
 	else if (!strcmp(ss, "MIRROR:"))
 	  {
-	     word(s, 2, ss);
-	     if (g)
-		g->cfg.mirror = (char)atoi(ss);
+	     g->cfg.mirror = ii;
 	  }
      }
    fclose(f);
@@ -1140,13 +1126,10 @@ IPC_GroupInfo(const char *params, Client * c __UNUSED__)
 
    if (params)
      {
-	char                groupid[FILEPATH_LEN_MAX];
 	int                 gix;
 
-	groupid[0] = 0;
-	word(params, 1, groupid);
-	sscanf(groupid, "%d", &gix);
-
+	gix = -1;
+	sscanf(params, "%d", &gix);
 	group = GroupFind(gix);
 	if (group)
 	   GroupShow(group);
@@ -1164,10 +1147,10 @@ static void
 IPC_GroupOps(const char *params, Client * c __UNUSED__)
 {
    Group              *group = Mode_groups.current;
-   char                groupid[FILEPATH_LEN_MAX];
+   char                windowid[128];
+   char                operation[128];
+   char                groupid[128];
    int                 gix;
-   char                windowid[FILEPATH_LEN_MAX];
-   char                operation[FILEPATH_LEN_MAX];
    unsigned int        win;
    EWin               *ewin;
 
@@ -1177,11 +1160,12 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
 	return;
      }
 
-   windowid[0] = 0;
-   operation[0] = 0;
-   word(params, 1, windowid);
+   windowid[0] = operation[0] = groupid[0] = '\0';
+   sscanf(params, "%100s %100s %100s", windowid, operation, groupid);
+   win = 0;
    sscanf(windowid, "%x", &win);
-   word(params, 2, operation);
+   gix = -1;
+   sscanf(groupid, "%d", &gix);
 
    if (!operation[0])
      {
@@ -1206,40 +1190,19 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
      }
    else if (!strcmp(operation, "add"))
      {
-	groupid[0] = 0;
-	word(params, 3, groupid);
-
-	if (groupid[0])
-	  {
-	     sscanf(groupid, "%d", &gix);
-	     group = GroupFind(gix);
-	  }
+	group = GroupFind(gix);
 	AddEwinToGroup(ewin, group);
 	IpcPrintf("add %8x", win);
      }
    else if (!strcmp(operation, "del"))
      {
-	groupid[0] = 0;
-	word(params, 3, groupid);
-
-	if (groupid[0])
-	  {
-	     sscanf(groupid, "%d", &gix);
-	     group = GroupFind(gix);
-	  }
+	group = GroupFind(gix);
 	RemoveEwinFromGroup(ewin, group);
 	IpcPrintf("del %8x", win);
      }
    else if (!strcmp(operation, "break"))
      {
-	groupid[0] = 0;
-	word(params, 3, groupid);
-
-	if (groupid[0])
-	  {
-	     sscanf(groupid, "%d", &gix);
-	     group = GroupFind(gix);
-	  }
+	group = GroupFind(gix);
 	BreakWindowGroup(ewin, group);
 	IpcPrintf("break %8x", win);
      }
@@ -1259,12 +1222,12 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
 static void
 IPC_Group(const char *params, Client * c __UNUSED__)
 {
-   char                groupid[FILEPATH_LEN_MAX];
-   char                operation[FILEPATH_LEN_MAX];
-   char                param1[FILEPATH_LEN_MAX];
+   char                groupid[128];
+   char                operation[128];
+   char                param1[128];
    int                 gix;
    Group              *group;
-   int                 onoff = -1;
+   int                 onoff;
 
    if (!params)
      {
@@ -1272,12 +1235,10 @@ IPC_Group(const char *params, Client * c __UNUSED__)
 	return;
      }
 
-   groupid[0] = 0;
-   operation[0] = 0;
-   param1[0] = 0;
-   word(params, 1, groupid);
+   groupid[0] = operation[0] = param1[0] = '\0';
+   sscanf(params, "%100s %100s %100s", groupid, operation, param1);
+   gix = -1;
    sscanf(groupid, "%d", &gix);
-   word(params, 2, operation);
 
    if (!operation[0])
      {
@@ -1293,13 +1254,13 @@ IPC_Group(const char *params, Client * c __UNUSED__)
 	return;
      }
 
-   word(params, 3, param1);
-   if (param1[0])
+   if (!param1[0])
      {
 	IpcPrintf("Error: no mode specified");
 	return;
      }
 
+   onoff = -1;
    if (!strcmp(param1, "on"))
       onoff = 1;
    else if (!strcmp(param1, "off"))
