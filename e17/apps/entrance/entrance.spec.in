@@ -1,7 +1,7 @@
 Summary: enlightened display manager
 Name: @PACKAGE@
 Version: @VERSION@
-Release: 1.20070201
+Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/
