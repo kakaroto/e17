@@ -1,7 +1,7 @@
 Summary: enlightened display manager
 Name: @PACKAGE@
 Version: @VERSION@
-Release: 0.%(date '+%Y%m%d')
+Release: 1.20070201
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/
@@ -11,7 +11,7 @@ Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project 
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-xdm, XFree86-xdm
 BuildRequires: libjpeg-devel, zlib-devel, /etc/X11/xdm/Xsession
-BuildRequires: ecore-devel, edje-devel, esmart-devel
+BuildRequires: ecore-bin, ecore-devel, edje-devel, esmart-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
