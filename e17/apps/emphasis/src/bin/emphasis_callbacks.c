@@ -1142,9 +1142,10 @@ cb_media_pls_load_clicked(Etk_Object *object, void *data)
   player = data;
   col = etk_tree_nth_col_get(ETK_TREE(player->media.pls_list), 0);
   row = etk_tree_selected_row_get(ETK_TREE(player->media.pls_list));
+  if (!row) return;
   etk_tree_row_fields_get(row, ETK_FALSE, col, &playlist_name, NULL);
 
-  mpc_playlist_clear();
+//  mpc_playlist_clear();
   etk_tree_multiple_select_set(ETK_TREE(player->media.pls_content), ETK_TRUE);
   etk_tree_select_all(ETK_TREE(player->media.pls_content));
   emphasis_playlist_append_selected(ETK_TREE(player->media.pls_content),

@@ -79,7 +79,6 @@ emphasis_init_menu(Emphasis_Gui *gui)
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
 	etk_signal_connect("mouse_down", ETK_OBJECT(player->media.track), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
-
 }
 
 /**

@@ -557,6 +557,7 @@ mpc_play_if_stopped(void)
     {
       song =
         mpd_playlist_get_changes(mo, mpd_playlist_get_old_playlist_id(mo));
+      if (!song) return;
       mpc_play_id(song->song->id);
       mpd_data_free(song);
     }
