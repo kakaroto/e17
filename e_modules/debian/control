@@ -51,8 +51,15 @@ Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
 Provides: emodule-flame
 Description: An E17 module that draws flames on the desktop
- Eflame is an E17 module which draws flames of configurable colors on
+ Flame is an E17 module which draws flames of configurable colors on
  the lower part of the screen.
+
+Package: emodule0-forecasts
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-forecasts
+Description: An E17 module which displays weather forecasts
+ Forecasts is an E17 module which displays the weather forecast.
 
 Package: emodule0-language
 Architecture: any
@@ -187,7 +194,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
 Provides: emodule-weather
 Description: An E17 weather module
- An E17 module displaying the current weather conditions and forecast.
+ An E17 module displaying the current weather conditions.
  Features are:
  - choose between simple and detailed view
  - specify poll time
@@ -214,7 +221,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-cpu, emodule0-deskshow, emodule0-emu, emodule0-flame, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
+Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-cpu, emodule0-deskshow, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all, e17-modules
 Description: A dummy package for installing all modules for E17
@@ -226,6 +233,7 @@ Description: A dummy package for installing all modules for E17
  Emu         : A module front end that runs arbitrary back ends
                written in any language.
  Flame       : Displays flames at the bottom of the screen.
+ Forecasts   : Shows the weather forecast.
  Language    : Allows to control keyboard layout, model and variant.
  Mail        : A mail module supporting pop3, imap, mailbox and mdir.
  Mem         : Monitors memory usage.
