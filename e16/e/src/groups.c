@@ -118,6 +118,22 @@ GroupFind(int gid)
 				    (void *)(long)gid);
 }
 
+static Group       *
+GroupFind2(const char *groupid)
+{
+   int                 gid;
+
+   if (groupid[0] == '*' || groupid[0] == '\0')
+      return Mode_groups.current;
+
+   gid = -1;
+   sscanf(groupid, "%d", &gid);
+   if (gid <= 0)
+      return NULL;
+
+   return GroupFind(gid);
+}
+
 void
 GroupSetId(Group * group, int gid)
 {
@@ -603,6 +619,8 @@ ChooseGroup(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
      {
 	Efree(tmp_groups);
 	tmp_groups = NULL;
+
+	SaveGroups();
      }
 }
 
@@ -1021,14 +1039,25 @@ GroupsConfigure(const char *params)
      {
 	DialogShowSimple(&DlgGroupDefaults, NULL);
      }
-   else if (!strcmp(s, "group_membership"))
+   else if (!strcmp(s, "add"))
      {
 	ewin = GetFocusEwin();
-	if (ewin)
-	   ChooseGroupDialog(ewin,
-			     _
-			     ("  Pick the group the window will belong to:  \n"),
-			     GROUP_SELECT_ALL_EXCEPT_EWIN, GROUP_OP_ADD);
+	ChooseGroupDialog(ewin,
+			  _("Pick the group the window will belong to:"),
+			  GROUP_SELECT_ALL_EXCEPT_EWIN, GROUP_OP_ADD);
+     }
+   else if (!strcmp(s, "del"))
+     {
+	ewin = GetFocusEwin();
+	ChooseGroupDialog(ewin,
+			  _("Select the group to remove the window from:"),
+			  GROUP_SELECT_EWIN_ONLY, GROUP_OP_DEL);
+     }
+   else if (!strcmp(s, "break"))
+     {
+	ewin = GetFocusEwin();
+	ChooseGroupDialog(ewin, _("Select the group to break:"),
+			  GROUP_SELECT_EWIN_ONLY, GROUP_OP_BREAK);
      }
 }
 
@@ -1042,63 +1071,6 @@ GroupsSighan(int sig, void *prm __UNUSED__)
 	break;
      }
 }
-
-#if 0				/* FIXME - Obsolete? */
-static int
-doShowHideGroup(EWin * ewin, const char *params __UNUSED__)
-{
-   ShowHideWinGroups(ewin, -1, SET_TOGGLE);
-   return 0;
-}
-
-static int
-doStartGroup(EWin * ewin, const char *params __UNUSED__)
-{
-   BuildWindowGroup(&ewin, 1);
-   SaveGroups();
-   return 0;
-}
-
-static int
-doAddToGroup(EWin * ewin, const char *params __UNUSED__)
-{
-   if (!Mode.groups.current)
-     {
-	ChooseGroupDialog(ewin,
-			  _("\n  There's no current group at the moment.  \n"
-			    "  The current group is the last one you created,  \n"
-			    "  and it exists until you create a new one or break  \n"
-			    "  the latest one.  \n\n"
-			    "  Pick another group that the window will belong to here:  \n\n"),
-			  GROUP_SELECT_ALL_EXCEPT_EWIN, GROUP_OP_ADD);
-	return 0;
-     }
-   else
-      AddEwinToGroup(ewin, Mode.groups.current);
-   SaveGroups();
-   return 0;
-}
-
-static int
-doRemoveFromGroup(EWin * ewin, const char *params __UNUSED__)
-{
-   ChooseGroupDialog(ewin,
-		     _("   Select the group to remove the window from.  "),
-		     GROUP_SELECT_EWIN_ONLY, GROUP_OP_DEL);
-
-   SaveGroups();
-   return 0;
-}
-
-static int
-doBreakGroup(EWin * ewin, const char *params __UNUSED__)
-{
-   ChooseGroupDialog(ewin, _("  Select the group to break  "),
-		     GROUP_SELECT_EWIN_ONLY, GROUP_OP_BREAK);
-   SaveGroups();
-   return 0;
-}
-#endif
 
 static void
 GroupShow(Group * g)
@@ -1126,15 +1098,11 @@ IPC_GroupInfo(const char *params, Client * c __UNUSED__)
 
    if (params)
      {
-	int                 gix;
-
-	gix = -1;
-	sscanf(params, "%d", &gix);
-	group = GroupFind(gix);
+	group = GroupFind2(params);
 	if (group)
 	   GroupShow(group);
 	else
-	   IpcPrintf("Error: no such group: %d", gix);
+	   IpcPrintf("Error: no such group: %s", params);
      }
    else
      {
@@ -1150,7 +1118,6 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
    char                windowid[128];
    char                operation[128];
    char                groupid[128];
-   int                 gix;
    unsigned int        win;
    EWin               *ewin;
 
@@ -1164,8 +1131,6 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
    sscanf(params, "%100s %100s %100s", windowid, operation, groupid);
    win = 0;
    sscanf(windowid, "%x", &win);
-   gix = -1;
-   sscanf(groupid, "%d", &gix);
 
    if (!operation[0])
      {
@@ -1174,9 +1139,11 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
      }
 
    if (!strcmp(windowid, "*"))
-      ewin = GetContextEwin();
-   else
-      ewin = EwinFindByChildren(win);
+     {
+	ewin = GetContextEwin();
+	if (!ewin)
+	   ewin = GetFocusEwin();
+     }
    if (!ewin)
      {
 	IpcPrintf("Error: no such window: %8x", win);
@@ -1190,19 +1157,19 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
      }
    else if (!strcmp(operation, "add"))
      {
-	group = GroupFind(gix);
+	group = GroupFind2(groupid);
 	AddEwinToGroup(ewin, group);
 	IpcPrintf("add %8x", win);
      }
    else if (!strcmp(operation, "del"))
      {
-	group = GroupFind(gix);
+	group = GroupFind2(groupid);
 	RemoveEwinFromGroup(ewin, group);
 	IpcPrintf("del %8x", win);
      }
    else if (!strcmp(operation, "break"))
      {
-	group = GroupFind(gix);
+	group = GroupFind2(groupid);
 	BreakWindowGroup(ewin, group);
 	IpcPrintf("break %8x", win);
      }
@@ -1225,7 +1192,6 @@ IPC_Group(const char *params, Client * c __UNUSED__)
    char                groupid[128];
    char                operation[128];
    char                param1[128];
-   int                 gix;
    Group              *group;
    int                 onoff;
 
@@ -1237,8 +1203,6 @@ IPC_Group(const char *params, Client * c __UNUSED__)
 
    groupid[0] = operation[0] = param1[0] = '\0';
    sscanf(params, "%100s %100s %100s", groupid, operation, param1);
-   gix = -1;
-   sscanf(groupid, "%d", &gix);
 
    if (!operation[0])
      {
@@ -1246,11 +1210,10 @@ IPC_Group(const char *params, Client * c __UNUSED__)
 	return;
      }
 
-   group = GroupFind(gix);
-
+   group = GroupFind2(groupid);
    if (!group)
      {
-	IpcPrintf("Error: no such group: %d", gix);
+	IpcPrintf("Error: no such group: %s", groupid);
 	return;
      }
 
