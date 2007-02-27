@@ -1027,8 +1027,7 @@ _forecasts_popup_content_create(Instance *inst, Evas *evas)
   e_widget_list_object_append(o, of, 1, 1, 0.5);
   ol = e_widget_list_add(evas, 1, 1);
 
-  for (i = 0; i < FORECASTS; i++)
-    {
+  for (i = 0; i < FORECASTS; i++) {
        int row = 0;
 
        of = e_widget_frametable_add(evas, D_("No date"), 0);
@@ -1055,7 +1054,7 @@ _forecasts_popup_content_create(Instance *inst, Evas *evas)
        e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 1, 0);
        inst->popup->low[i] = ob;
        e_widget_list_object_append(ol, of, 1, 1, 0.5);
-    }
+  }
 
   e_widget_list_object_append(o, ol, 1, 1, 0.5);
   inst->popup->o_list = o;
@@ -1073,7 +1072,7 @@ _forecasts_popup_content_fill(Instance *inst)
    snprintf(buf, sizeof(buf), "%s", inst->location);
    e_widget_frametable_label_set(inst->popup->o_ft[0], buf);
 
-   snprintf(buf, sizeof(buf), "%s", inst->condition.desc);
+   snprintf(buf, sizeof(buf), "%s: %d°%c", inst->condition.desc, inst->condition.temp, inst->units.temp);
    e_widget_label_text_set(inst->popup->current_desc, buf);
 
    snprintf(buf, sizeof(buf), "%d°%c", inst->details.wind.chill, inst->units.temp);
@@ -1111,8 +1110,7 @@ _forecasts_popup_content_fill(Instance *inst)
 
    e_widget_frametable_content_align_set(inst->popup->o_ft[0], 0.5, 0.5);
 
-   for (i = 0; i < FORECASTS; i++)
-     {
+   for (i = 0; i < FORECASTS; i++) {
 	e_widget_image_object_set(inst->popup->f_icon[i],
 	      _forecasts_popup_icon_create(inst->popup, inst->forecast[i].code));
 
@@ -1129,7 +1127,7 @@ _forecasts_popup_content_fill(Instance *inst)
 	e_widget_label_text_set(inst->popup->desc[i], buf);
 
 	e_widget_frametable_content_align_set(inst->popup->o_ft[i+1], 0.5, 0.5);
-     }
+   }
 
    e_widget_min_size_get(inst->popup->o_list, &pw, &ph);
    edje_extern_object_min_size_set(inst->popup->o_list, pw, ph);
