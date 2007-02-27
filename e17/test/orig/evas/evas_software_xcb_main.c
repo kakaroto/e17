@@ -202,10 +202,13 @@ main(int argc, char **argv)
    {
       Evas_Engine_Info_Software_Xcb *einfo;
 
-      einfo = (Evas_Engine_Info_Software_Xcb *) evas_engine_info_get(evas);
+      einfo = (Evas_Engine_Info_Software_Xcb *)
+      evas_engine_info_get(evas);
+      if (!einfo) printf ("merde\n");
 
       /* the following is specific to the engine */
       einfo->info.conn = conn;
+      einfo->info.screen = screen;
       einfo->info.visual = visualtype_get(conn, screen);
       einfo->info.colormap = screen->default_colormap;
       einfo->info.drawable = win;
@@ -231,6 +234,7 @@ main(int argc, char **argv)
 
       /* the following is specific to the engine */
       einfo->info.conn = conn;
+      einfo->info.screen = screen;
       einfo->info.visual = visualtype_get(conn, screen);
       einfo->info.colormap = screen->default_colormap;
       einfo->info.drawable = win;
@@ -256,6 +260,7 @@ main(int argc, char **argv)
 
       /* the following is specific to the engine */
       einfo->info.conn = conn;
+      einfo->info.screen = screen;
       einfo->info.visual = visualtype_get(conn, screen);
       einfo->info.colormap = screen->default_colormap;
       einfo->info.drawable = win;
@@ -281,6 +286,7 @@ main(int argc, char **argv)
 
       /* the following is specific to the engine */
       einfo->info.conn = conn;
+      einfo->info.screen = screen;
       einfo->info.visual = visualtype_get(conn, screen);
       einfo->info.colormap = screen->default_colormap;
       einfo->info.drawable = win;
@@ -306,6 +312,7 @@ main(int argc, char **argv)
 
       /* the following is specific to the engine */
       einfo->info.conn = conn;
+      einfo->info.screen = screen;
       einfo->info.visual = visualtype_get(conn, screen);
       einfo->info.colormap = screen->default_colormap;
       einfo->info.drawable = win;
