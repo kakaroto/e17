@@ -34,6 +34,7 @@ struct _Popup
    E_Popup *win;
 
    int w, h;
+   int pinned : 1;
 
    Evas_Object *o_list, *o_bg, *o_ft[3];
    Evas_Object *current_desc;

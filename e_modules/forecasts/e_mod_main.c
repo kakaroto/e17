@@ -8,7 +8,9 @@
 #define KM_TO_MI 1.609344
 #define MB_TO_IN 68.946497518
 
-#define DEBUG(f, a) printf("[forecasts] "f"\n", a);
+#define GOLDEN_RATIO 1.618033989
+
+#define DEBUG(f, ...) printf("[forecasts] "f"\n", __VA_ARGS__) 
 
 
 /* Gadcon Function Protos */
@@ -122,6 +124,7 @@ static void _forecasts_convert_pressures(float *value, int dir);
 static void _forecasts_display_set(Instance * inst, int ok);
 static void _forecasts_popup_content_create(Instance *inst, Evas *evas);
 static void _forecasts_popup_content_fill(Instance *inst);
+static void _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static Evas_Object * _forecasts_popup_icon_create(Popup *popup, int code);
@@ -153,6 +156,8 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
    gcc->data = inst;
    inst->gcc = gcc;
    inst->forecasts_obj = o;
+   evas_object_event_callback_add(inst->forecasts_obj, EVAS_CALLBACK_MOUSE_DOWN,
+				   _cb_mouse_down, inst);
    evas_object_event_callback_add(inst->forecasts_obj, EVAS_CALLBACK_MOUSE_IN,
 				   _cb_mouse_in, inst);
    evas_object_event_callback_add(inst->forecasts_obj, EVAS_CALLBACK_MOUSE_OUT,
@@ -955,29 +960,31 @@ _forecasts_config_updated(const char *id)
 static void
 _forecasts_popup_content_create(Instance *inst, Evas *evas)
 {
-  Evas_Object *o, *ol, *of, *ob;
-  Evas_Coord minw, minh;
+  Evas_Object *o, *ol, *of, *ob, *oi;
   int row = 0, i;
   int w, h;
 
   o = e_widget_list_add(evas, 0, 0);
   of = e_widget_frametable_add(evas, D_("No location"), 0);
   ob = e_widget_label_add(evas, D_("No description"));
-  e_widget_frametable_object_append(of, ob, 0, row, 3, 1, 0, 0, 1, 0);
+  e_widget_frametable_object_append(of, ob, 0, row, 2, 1, 0, 0, 1, 0);
   inst->popup->current_desc = ob;
-  e_widget_list_object_append(o, of, 1, 1, 0.5);
   inst->popup->o_ft[0] = of;
+
+  oi = 	_forecasts_popup_icon_create(inst->popup, 3200);
+  edje_object_size_max_get(oi, &w, &h);
+  DEBUG("Icon size %dx%d", w, h);
+  if (w > 160) w = 160;		/* For now there is a limit to how big the icon should be */
+  if (h > 160) h = 160;		/* In the future, the icon should be set from the theme, not part of the table */
+  ob = e_widget_image_add_from_object(evas, oi, w, h);
+  e_widget_frametable_object_append(of, ob, 2, row, 1, 4, 1, 1, 1, 1);
+  inst->popup->icon = ob;
 
   ob = e_widget_label_add(evas, D_("Wind Chill"));
   e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
   ob = e_widget_label_add(evas, "0°C");
   e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
   inst->popup->wind_chill = ob;
-
-  ob = e_widget_image_add_from_object(evas,
-	_forecasts_popup_icon_create(inst->popup, 3200), 0, 0);
-  e_widget_frametable_object_append(of, ob, 2, row, 1, 4, 1, 1, 1, 1);
-  inst->popup->icon = ob;
 
   ob = e_widget_label_add(evas, D_("Wind Speed"));
   e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
@@ -1007,28 +1014,24 @@ _forecasts_popup_content_create(Instance *inst, Evas *evas)
   e_widget_frametable_object_append(of, ob, 2, row, 1, 1, 1, 0, 1, 0);
   inst->popup->rising = ob;
 
-  ob = e_widget_label_add(evas, D_("Sunrise"));
+  ob = e_widget_label_add(evas, D_("Sunrise / Sunset"));
   e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
   ob = e_widget_label_add(evas, "0:00 am");
-  e_widget_frametable_object_append(of, ob, 1, row, 2, 1, 1, 0, 1, 0);
+  e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 1, 0);
   inst->popup->sunrise = ob;
 
-  ob = e_widget_label_add(evas, D_("Sunset"));
-  e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
   ob = e_widget_label_add(evas, "0:00 pm");
-  e_widget_frametable_object_append(of, ob, 1, row, 2, 1, 1, 0, 1, 0);
+  e_widget_frametable_object_append(of, ob, 2, row, 1, 1, 1, 0, 1, 0);
   inst->popup->sunset = ob;
 
-  e_widget_min_size_get(of, &w, &h);
+  e_widget_list_object_append(o, of, 1, 1, 0.5);
   ol = e_widget_list_add(evas, 1, 1);
-  e_widget_list_object_append(o, ol, 1, 1, 0.5);
 
   for (i = 0; i < FORECASTS; i++)
     {
        int row = 0;
 
        of = e_widget_frametable_add(evas, D_("No date"), 0);
-       e_widget_list_object_append(ol, of, 1, 1, 0.5);
        inst->popup->o_ft[i+1] = of;
 
        ob = e_widget_label_add(evas, D_("No description"));
@@ -1051,10 +1054,12 @@ _forecasts_popup_content_create(Instance *inst, Evas *evas)
        ob = e_widget_label_add(evas, "0°C");
        e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 1, 0);
        inst->popup->low[i] = ob;
-       e_widget_min_size_get(of, &w, &h);
+       e_widget_list_object_append(ol, of, 1, 1, 0.5);
     }
 
+  e_widget_list_object_append(o, ol, 1, 1, 0.5);
   inst->popup->o_list = o;
+  e_popup_edje_bg_object_set(inst->popup->win, inst->popup->o_bg);
 }
 
 static void
@@ -1150,6 +1155,25 @@ _forecasts_popup_icon_create(Popup *popup, int code)
 }
 
 static void 
+_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Instance *inst;
+   Evas_Event_Mouse_Down *ev;
+
+   inst = data;
+   ev = event_info;
+   if (ev->button == 1) {
+	if (inst->popup->pinned) {
+	  inst->popup->pinned = 0;
+	  edje_object_signal_emit(inst->popup->o_bg, "e,state,unpinned", "e");
+	} else {
+	  inst->popup->pinned = 1;
+	  edje_object_signal_emit(inst->popup->o_bg, "e,state,pinned", "e");
+	}
+   }
+}
+
+static void 
 _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
@@ -1162,11 +1186,17 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    evas_object_show(inst->popup->o_bg);
    e_widget_min_size_get(inst->popup->o_list, &pw, &ph);
    edje_extern_object_min_size_set(inst->popup->o_list, pw, ph);
-   edje_object_size_min_calc(inst->popup->o_bg, &inst->popup->w, &inst->popup->h);
-   /* FIXME: can't seem to get the correct size */
-   inst->popup->w = 400;
-   inst->popup->h = 400;
-   evas_object_resize(inst->popup->o_bg, inst->popup->w, inst->popup->h);
+   edje_object_size_min_calc(inst->popup->o_bg, &ww, &wh);
+   /* Apply the golden ratio to the popup */
+   if ((double) ww / wh > GOLDEN_RATIO) {
+	wh = ww / GOLDEN_RATIO;
+   } else if ((double) ww / wh < GOLDEN_RATIO - (double) 1) {
+	ww = wh * (GOLDEN_RATIO - (double) 1);
+   }
+
+   evas_object_resize(inst->popup->o_bg, ww, wh);
+   inst->popup->w = ww;
+   inst->popup->h = wh;
 
    /* Popup positioning */
    evas_object_geometry_get(obj, &gx, &gy, &gw, &gh);
@@ -1220,5 +1250,6 @@ _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
    
    inst = data;
    if (!inst->popup) return;
+   if (inst->popup->pinned) return;
    e_popup_hide(inst->popup->win);
 }
