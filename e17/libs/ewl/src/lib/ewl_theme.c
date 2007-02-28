@@ -253,27 +253,19 @@ ewl_theme_lookup_cache(Ecore_Hash *cache, const char *k, const char *v)
 	DCHECK_PARAM_PTR("cache", cache);
 	DCHECK_PARAM_PTR("k", k);
 
-	if (v != EWL_THEME_KEY_NOMATCH) {
-		if (v) {
-			ecore_hash_set(cache, (void *)ecore_string_instance(k), 
-						(void *)ecore_string_instance(v));
-		}
-		/*
-		 * Mark unmatched keys in the cache.
-		 */
-		else {
-			ecore_hash_set(cache, (void *)ecore_string_instance(k), 
-							EWL_THEME_KEY_NOMATCH);
-		}
-	}
+	/*
+	 * The v value should already be a string instance at this point so we
+	 * can set the value directly whether its a match or no match.
+	 */
+	ecore_hash_set(cache, (void *)ecore_string_instance(k), (void *)v);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static char *
+static const char *
 ewl_theme_lookup_key(Ecore_Hash *cache, const char *path, const char *k)
 {
-	char *ret;
+	const char *ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cache", cache, NULL);
@@ -281,15 +273,47 @@ ewl_theme_lookup_key(Ecore_Hash *cache, const char *path, const char *k)
 
 	ret = ecore_hash_get(cache, k);
 	if (!ret) {
+		char *tmp = NULL;
 
 		/*
 		 * Resort to looking in the edje.
 		 */
 		if (path)
-			ret = edje_file_data_get(path, k);
+			tmp = edje_file_data_get(path, k);
+
+		/*
+		 * Get a string instance for the value so we can treat the
+		 * return type consistently and not leak memory.
+		 */
+		if (tmp) {
+			ret = ecore_string_instance(tmp);
+			FREE(tmp);
+		}
 	}
+	else
+		ret = ecore_string_instance(ret);
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to reset theme settings
+ * @return Returns no value.
+ * @brief Reset the theme settings for the widget @a w.
+ */
+void
+ewl_theme_data_reset(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	if (w->theme) {
+		ecore_hash_destroy(w->theme);
+		w->theme = NULL;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -301,7 +325,8 @@ ewl_theme_lookup_key(Ecore_Hash *cache, const char *path, const char *k)
 const char *
 ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 {
-	char *ret = NULL;
+	Ecore_Hash *cache = NULL;
+	const char *ret = NULL;
 	char *temp = NULL;
 	char key[PATH_MAX];
 
@@ -357,8 +382,10 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 		if (w && w->theme)
 			ret = ewl_theme_lookup_key(w->theme, w->theme_path, temp);
 
-		if (ret)
+		if (ret) {
+			cache = w->theme;
 			break;
+		}
 
 		temp++;
 		temp = strchr(temp, '/');
@@ -376,18 +403,24 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 		while (temp && !ret) {
 			ret = ewl_theme_lookup_key(ewl_theme_def_data,
 					ewl_theme_path, temp);
-			if (ret)
+			if (ret) {
+				cache = ewl_theme_def_data;
 				break;
+			}
 
 			temp++;
 			temp = strchr(temp, '/');
 		}
 
-		/*
-		 * Mark unmatched keys in the cache.
-		 */
-		ewl_theme_lookup_cache(ewl_theme_def_data, key, ret);
 	}
+
+	if (!cache)
+		cache = ewl_theme_def_data;
+
+	/*
+	 * Mark all keys matched and unmatched in the cache.
+	 */
+	ewl_theme_lookup_cache(cache, key, ret);
 
 	/*
 	 * Fixup unmatched keys in the cache.

@@ -117,6 +117,7 @@ cb_select_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 
 	snprintf(theme_filename, sizeof(theme_filename), 
 			PACKAGE_DATA_DIR "/ewl/themes/%s", (char *)data);
+	ewl_theme_data_reset(notebook);
 	ewl_theme_data_str_set(notebook, "/file", theme_filename);
 
 	if (selected_theme) free(selected_theme);
