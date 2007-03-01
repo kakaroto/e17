@@ -157,6 +157,8 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   instance->layout_parent = layout;
   instance->core = core;
 
+  Etk_Tree_Col* tree_col;
+
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE));
@@ -173,7 +175,8 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 	etk_tree_col_model_add(col_tree, etk_tree_model_text_new());
   col_tree = etk_tree_col_new(ETK_TREE(view->list), _("Value"), 200, 0.0);
 	etk_tree_col_model_add(col_tree, etk_tree_model_text_new());
-  etk_tree_build(ETK_TREE(view->list));
+  
+	etk_tree_build(ETK_TREE(view->list));
   etk_container_add(ETK_CONTAINER(view->window), view->list);
   
 

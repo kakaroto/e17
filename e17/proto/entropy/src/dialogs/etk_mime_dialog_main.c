@@ -498,12 +498,14 @@ void etk_mime_dialog_create()
 	_etk_mime_dialog_main_tree = tree;
 	
 	etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
+	
 	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Description"), 125, 0.0);
 	etk_tree_col_model_add(tree_col, etk_tree_model_text_new());
 
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("MIME Type"), 150, 0.0);
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("MIME Type"), 150,0.0);
 	etk_tree_col_model_add(tree_col, etk_tree_model_text_new());
-        etk_tree_col_expand_set(tree_col, ETK_TRUE);
+        
+	etk_tree_col_expand_set(tree_col, ETK_TRUE);
 
 	etk_tree_build(ETK_TREE(tree));
 	etk_box_append(ETK_BOX(hbox), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
@@ -543,9 +545,10 @@ void etk_mime_dialog_create()
 	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Executable"),  150, 0.0);
 	etk_tree_col_model_add(tree_col, etk_tree_model_text_new());
 
-	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Arguments"), 150, 0.0);
+	tree_col = etk_tree_col_new(ETK_TREE(tree), _("Arguments"), 125,0.0);
 	etk_tree_col_model_add(tree_col, etk_tree_model_text_new());
 
+	
 	etk_tree_build(ETK_TREE(tree));
 	etk_box_append(ETK_BOX(vbox), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 

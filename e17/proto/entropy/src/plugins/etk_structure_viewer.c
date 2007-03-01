@@ -74,7 +74,7 @@ static void _etk_structure_viewer_xdnd_drag_drop_cb(Etk_Object *object, void *ev
    entropy_gui_component_instance* instance;
    event_file_core* e_event;
 
-   /*FIXME - DND is disabled during the transition to tree2*/
+   /*FIXME - DND is disabled during the transition to tree*/
    return;
    
    ev = event;
