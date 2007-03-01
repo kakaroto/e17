@@ -33,6 +33,8 @@
 #include "timers.h"
 #include <math.h>
 
+#define USE_GROUP_SHOWHIDE 0	/* Don't think this is useful. */
+
 #define SET_OFF    0
 #define SET_ON     1
 #define SET_TOGGLE 2
@@ -389,6 +391,7 @@ GetWinGroupMemberNames(Group ** groups, int num)
    return group_member_strings;
 }
 
+#if USE_GROUP_SHOWHIDE
 static void
 ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
 {
@@ -465,6 +468,11 @@ ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
       Efree(gwins);
    SaveGroups();
 }
+#else
+
+#define ShowHideWinGroups(ewin, group_index, onoff)
+
+#endif /* USE_GROUP_SHOWHIDE */
 
 void
 SaveGroups(void)
