@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-02-14 22:30+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-02-28 21:21+0100\n"
 "PO-Revision-Date: 2007-02-23 00:04+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
@@ -60,27 +60,27 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:205 src/backgrounds.c:243 src/borders.c:651 src/buttons.c:194
-#: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:357 src/tclass.c:98
+#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:651 src/buttons.c:193
+#: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:356 src/tclass.c:97
 #: src/tooltips.c:140
 #, c-format
 msgid "%u references remain\n"
 msgstr "Il reste %u références\n"
 
-#: src/aclass.c:294 src/backgrounds.c:1148 src/borders.c:1106
-#: src/borders.c:1229 src/buttons.c:733 src/cmclass.c:201 src/config.c:249
-#: src/container.c:1774 src/cursors.c:177 src/iclass.c:549 src/menus.c:1724
-#: src/menus.c:1834 src/slideout.c:427 src/tclass.c:259 src/tooltips.c:176
-#: src/windowmatch.c:161
+#: src/aclass.c:294 src/backgrounds.c:1147 src/borders.c:1106
+#: src/borders.c:1229 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
+#: src/container.c:1774 src/cursors.c:177 src/iclass.c:548 src/menus.c:1731
+#: src/menus.c:1842 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
+#: src/windowmatch.c:160
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: Omission de donnée superflue dans \"%s\"\n"
 
-#: src/aclass.c:302 src/backgrounds.c:1156 src/borders.c:1112
-#: src/borders.c:1235 src/buttons.c:741 src/cmclass.c:209 src/config.c:257
-#: src/cursors.c:183 src/iclass.c:554 src/menus.c:1729 src/menus.c:1840
-#: src/slideout.c:433 src/tclass.c:265 src/tooltips.c:182
-#: src/windowmatch.c:166
+#: src/aclass.c:302 src/backgrounds.c:1155 src/borders.c:1112
+#: src/borders.c:1235 src/buttons.c:740 src/cmclass.c:210 src/config.c:257
+#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1736 src/menus.c:1848
+#: src/slideout.c:433 src/tclass.c:264 src/tooltips.c:182
+#: src/windowmatch.c:165
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: Absence de donnée requise dans \"%s\"\n"
@@ -217,7 +217,7 @@ msgstr "Redémarrer Enlightenment"
 msgid "Quit Enlightenment"
 msgstr "Quitter Enlightenment"
 
-#: src/backgrounds.c:1649
+#: src/backgrounds.c:1648
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -228,11 +228,11 @@ msgstr ""
 "Nom: %s\n"
 "Fichier: %s\n"
 
-#: src/backgrounds.c:1650
+#: src/backgrounds.c:1649
 msgid "-NONE-"
 msgstr "-AUCUN-"
 
-#: src/backgrounds.c:1829 src/backgrounds.c:1831
+#: src/backgrounds.c:1828 src/backgrounds.c:1830
 msgid ""
 "No\n"
 "Background"
@@ -240,56 +240,56 @@ msgstr ""
 "Aucun\n"
 "fond d'écran"
 
-#: src/backgrounds.c:1911 src/backgrounds.c:2266
+#: src/backgrounds.c:1910 src/backgrounds.c:2267
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Purger les fonds d'écran non utilisés après %2i:%02i:%02i"
 
-#: src/backgrounds.c:2113
+#: src/backgrounds.c:2114
 msgid "BG Colour\n"
 msgstr "Couleur du fond\n"
 
-#: src/backgrounds.c:2121
+#: src/backgrounds.c:2122
 msgid "Move to Front\n"
 msgstr "Placer en 1er\n"
 
-#: src/backgrounds.c:2126
+#: src/backgrounds.c:2127
 msgid "Duplicate\n"
 msgstr "Dupliquer\n"
 
-#: src/backgrounds.c:2130
+#: src/backgrounds.c:2131
 msgid "Unlist\n"
 msgstr "Retirer de la liste\n"
 
-#: src/backgrounds.c:2134
+#: src/backgrounds.c:2135
 msgid "Delete File\n"
 msgstr "Effacer le fichier\n"
 
-#: src/backgrounds.c:2142
+#: src/backgrounds.c:2143
 msgid "Red:\n"
 msgstr "Rouge:\n"
 
-#: src/backgrounds.c:2151
+#: src/backgrounds.c:2152
 msgid "Use background image"
 msgstr "Utiliser l'image en fond d'écran"
 
-#: src/backgrounds.c:2157
+#: src/backgrounds.c:2158
 msgid "Green:\n"
 msgstr "Vert:\n"
 
-#: src/backgrounds.c:2166
+#: src/backgrounds.c:2167
 msgid "Keep aspect on scale"
 msgstr "Garder l'aspect lors du dimensionnement"
 
-#: src/backgrounds.c:2172
+#: src/backgrounds.c:2173
 msgid "Blue:\n"
 msgstr "Bleu:\n"
 
-#: src/backgrounds.c:2181
+#: src/backgrounds.c:2182
 msgid "Tile image across background"
 msgstr "Créer une mosaïque avec l'image"
 
-#: src/backgrounds.c:2192
+#: src/backgrounds.c:2193
 msgid ""
 "Background\n"
 "Image\n"
@@ -303,43 +303,43 @@ msgstr ""
 " \n"
 "du fond d'écran\n"
 
-#: src/backgrounds.c:2256
+#: src/backgrounds.c:2257
 msgid "Use dithering in Hi-Colour"
 msgstr "Utiliser le tramage (dithering)"
 
-#: src/backgrounds.c:2260
+#: src/backgrounds.c:2261
 msgid "Background overrides theme"
 msgstr "Le fond d'écran remplace celui du thème"
 
-#: src/backgrounds.c:2303
+#: src/backgrounds.c:2304
 msgid "Pre-scan BG's"
 msgstr "Scanner les fonds d'écran"
 
-#: src/backgrounds.c:2311
+#: src/backgrounds.c:2312
 msgid "Sort by File"
 msgstr "Trier par Fichier"
 
-#: src/backgrounds.c:2316
+#: src/backgrounds.c:2317
 msgid "Sort by Attr."
 msgstr "Trier par Attribut"
 
-#: src/backgrounds.c:2321
+#: src/backgrounds.c:2322
 msgid "Sort by Image"
 msgstr "Trier par Image"
 
-#: src/backgrounds.c:2350
+#: src/backgrounds.c:2351
 msgid "Enable background transparency compatibility mode"
 msgstr "Activer le mode de compatibilité avec la transparence d'arrière-plan"
 
-#: src/backgrounds.c:2356 src/mod-trans.c:193
+#: src/backgrounds.c:2357 src/mod-trans.c:193
 msgid "Background"
 msgstr "Arrière-plan"
 
-#: src/backgrounds.c:2357
+#: src/backgrounds.c:2358
 msgid "Desktop Background Settings"
 msgstr "Paramètres d'arrière-plan du bureau"
 
-#: src/backgrounds.c:2360
+#: src/backgrounds.c:2361
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -347,7 +347,7 @@ msgstr ""
 "Bureau Enlightenment\n"
 "Dialogue de paramétrage d'arrière-plan\n"
 
-#: src/cmclass.c:330
+#: src/cmclass.c:331
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -693,7 +693,7 @@ msgstr "Gauche"
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2468 src/menus-misc.c:709
+#: src/desktops.c:2468 src/menus-misc.c:712
 msgid "Desks"
 msgstr "Bureaux multiples"
 
@@ -758,7 +758,7 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux virtuels\n"
 
-#: src/dialog.c:883 src/dialog.c:2175 src/dialog.c:2206 src/events.c:79
+#: src/dialog.c:883 src/dialog.c:2175 src/dialog.c:2206 src/events.c:82
 #: src/handlers.c:194 src/sound.c:313
 msgid "OK"
 msgstr "OK"
@@ -783,11 +783,11 @@ msgstr ""
 "les extensions Composite, Damage,\n"
 "Fixes, et Render sont chargées."
 
-#: src/events.c:79
+#: src/events.c:82
 msgid "X server setup error"
 msgstr "Erreur de configuration du serveur X"
 
-#: src/events.c:80
+#: src/events.c:83
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -905,31 +905,31 @@ msgstr ""
 "Dialogue de paramétrage du\n"
 "Focus\n"
 
-#: src/fx.c:901
+#: src/fx.c:900
 msgid "Effects"
 msgstr "Effets"
 
-#: src/fx.c:904
+#: src/fx.c:903
 msgid "Enable Effect: Raindrops"
 msgstr "Activer l'effet: Gouttes de pluie"
 
-#: src/fx.c:908
+#: src/fx.c:907
 msgid "Ripples"
 msgstr "Ondes"
 
-#: src/fx.c:912
+#: src/fx.c:911
 msgid "Waves"
 msgstr "Vagues"
 
-#: src/fx.c:918
+#: src/fx.c:917
 msgid "FX"
 msgstr "Effets spéciaux"
 
-#: src/fx.c:919
+#: src/fx.c:918
 msgid "Special FX Settings"
 msgstr "Paramètres des Effets spéciaux"
 
-#: src/fx.c:922
+#: src/fx.c:921
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -937,11 +937,11 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Effets spéciaux\n"
 
-#: src/groups.c:673
+#: src/groups.c:685
 msgid "Window Group Selection"
 msgstr "Sélection de Groupe de fenêtres"
 
-#: src/groups.c:676
+#: src/groups.c:688
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -949,11 +949,11 @@ msgstr ""
 "Dialogue de sélection de\n"
 "Groupe de fenêtres\n"
 
-#: src/groups.c:699 src/groups.c:708 src/groups.c:716 src/groups.c:903
+#: src/groups.c:711 src/groups.c:720 src/groups.c:728 src/groups.c:915
 msgid "Window Group Error"
 msgstr "Erreur Groupe de fenêtres"
 
-#: src/groups.c:701
+#: src/groups.c:713
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -967,7 +967,7 @@ msgstr ""
 "  seulement si la fenêtre courante appartient au moins à un groupe.  \n"
 "\n"
 
-#: src/groups.c:709
+#: src/groups.c:721
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -981,7 +981,7 @@ msgstr ""
 "  Vous devez d'abord créer un nouveau groupe.  \n"
 "\n"
 
-#: src/groups.c:718
+#: src/groups.c:730
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -991,11 +991,11 @@ msgstr ""
 "  Il n'y a aucun groupe existant. Vous devez en créer un.  \n"
 "\n"
 
-#: src/groups.c:809
+#: src/groups.c:821
 msgid "   Pick the group to configure:   "
 msgstr "   Choisissez le groupe à configurer:   "
 
-#: src/groups.c:840
+#: src/groups.c:852
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -1003,43 +1003,43 @@ msgstr ""
 "  Les actions suivantes sont appliquées  \n"
 "  à tous les membres du groupe:  "
 
-#: src/groups.c:845 src/groups.c:947
+#: src/groups.c:857 src/groups.c:959
 msgid "Changing Border Style"
 msgstr "Changement du style de bordure"
 
-#: src/groups.c:850 src/groups.c:952
+#: src/groups.c:862 src/groups.c:964
 msgid "Iconifying"
 msgstr "Icônification"
 
-#: src/groups.c:855 src/groups.c:957
+#: src/groups.c:867 src/groups.c:969
 msgid "Killing"
 msgstr "Destruction"
 
-#: src/groups.c:860 src/groups.c:962
+#: src/groups.c:872 src/groups.c:974
 msgid "Moving"
 msgstr "Déplacement"
 
-#: src/groups.c:865 src/groups.c:967
+#: src/groups.c:877 src/groups.c:979
 msgid "Raising/Lowering"
 msgstr "Élévation/Abaissement"
 
-#: src/groups.c:870 src/groups.c:972
+#: src/groups.c:882 src/groups.c:984
 msgid "Sticking"
 msgstr "Collage"
 
-#: src/groups.c:875 src/groups.c:977
+#: src/groups.c:887 src/groups.c:989
 msgid "Shading"
 msgstr "Masquage"
 
-#: src/groups.c:880 src/groups.c:982
+#: src/groups.c:892 src/groups.c:994
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Répercuter Masquage/Icônification/Collage"
 
-#: src/groups.c:887
+#: src/groups.c:899
 msgid "Window Group Settings"
 msgstr "Paramètres des Groupes de fenêtres"
 
-#: src/groups.c:890
+#: src/groups.c:902
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -1047,7 +1047,7 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Groupes de fenêtres\n"
 
-#: src/groups.c:905
+#: src/groups.c:917
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1057,27 +1057,27 @@ msgstr ""
 "  Cette fenêtre n'appartient à aucun groupe.  \n"
 "\n"
 
-#: src/groups.c:940
+#: src/groups.c:952
 msgid " Per-group settings: "
 msgstr " Paramètres par groupe: "
 
-#: src/groups.c:991
+#: src/groups.c:1003
 msgid " Global settings: "
 msgstr " Paramètres globaux: "
 
-#: src/groups.c:995
+#: src/groups.c:1007
 msgid "Swap Window Locations"
 msgstr "Mettre en cache la position des fenêtres"
 
-#: src/groups.c:1001 src/menus-misc.c:769
+#: src/groups.c:1013 src/menus-misc.c:772
 msgid "Groups"
 msgstr "Groupes"
 
-#: src/groups.c:1002
+#: src/groups.c:1014
 msgid "Default Group Control Settings"
 msgstr "Paramètres par défaut des Groupes"
 
-#: src/groups.c:1005
+#: src/groups.c:1017
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1085,36 +1085,19 @@ msgstr ""
 "Dialogue de paramétrage\n"
 "par défaut des Groupes\n"
 
-#: src/groups.c:1044
-msgid "  Pick the group the window will belong to:  \n"
+#: src/groups.c:1054
+#, fuzzy
+msgid "Pick the group the window will belong to:"
 msgstr "  Choisissez le groupe auquel cette fenêtre appartiendra:  \n"
 
-#: src/groups.c:1082
-msgid ""
-"\n"
-"  There's no current group at the moment.  \n"
-"  The current group is the last one you created,  \n"
-"  and it exists until you create a new one or break  \n"
-"  the latest one.  \n"
-"\n"
-"  Pick another group that the window will belong to here:  \n"
-"\n"
-msgstr ""
-"\n"
-"  Il n'y a aucun groupe courant pour le moment.  \n"
-"  Le groupe courant est le dernier que vous avez créé,  \n"
-"  il existera jusqu'à ce que vous ayez créé un nouveau groupe ou\n"
-"  détruit le dernier.  \n"
-"\n"
-"  Choisissez un autre groupe auquel la fenêtre appartiendra:  \n"
-"\n"
-
-#: src/groups.c:1100
-msgid "   Select the group to remove the window from.  "
+#: src/groups.c:1061
+#, fuzzy
+msgid "Select the group to remove the window from:"
 msgstr "   Choisissez le groupe duquel la fenêtre sera retirée:  "
 
-#: src/groups.c:1110
-msgid "  Select the group to break  "
+#: src/groups.c:1067
+#, fuzzy
+msgid "Select the group to break:"
 msgstr "  Choisissez le groupe à supprimer:  "
 
 #: src/handlers.c:66
@@ -1221,7 +1204,7 @@ msgstr "Erreur de sélection !"
 msgid "Could not acquire selection: %s"
 msgstr "Impossible de faire la sélection : %s"
 
-#: src/iclass.c:718
+#: src/iclass.c:717
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -1242,11 +1225,11 @@ msgstr "Options de la Boîte à icônes"
 msgid "Iconbox Settings"
 msgstr "Paramètres de la Boîte à icônes"
 
-#: src/ipc.c:326
+#: src/ipc.c:325
 msgid "Message"
 msgstr "Message"
 
-#: src/ipc.c:1062
+#: src/ipc.c:1069
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1255,11 +1238,11 @@ msgstr ""
 "Version d'Enlightenment: %s\n"
 "Code courant:            %s\n"
 
-#: src/ipc.c:1691
+#: src/ipc.c:1696
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Aide des commandes IPC\n"
 
-#: src/ipc.c:1695
+#: src/ipc.c:1700
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1269,19 +1252,19 @@ msgstr ""
 "Tapez \"help <commande>\" pour une description individuelle\n"
 "\n"
 
-#: src/ipc.c:1697 src/ipc.c:1717 src/ipc.c:1729
+#: src/ipc.c:1702 src/ipc.c:1722 src/ipc.c:1734
 msgid "Commands currently available:\n"
 msgstr "Commandes disponibles actuellement:\n"
 
-#: src/ipc.c:1715
+#: src/ipc.c:1720
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Tapez \"help full\" pour une description de toutes les commandes\n"
 
-#: src/ipc.c:1716
+#: src/ipc.c:1721
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Tapez \"help <commande>\" pour une description individuelle\n"
 
-#: src/ipc.c:1718 src/ipc.c:1730
+#: src/ipc.c:1723 src/ipc.c:1735
 msgid "         <command>     : <description>\n"
 msgstr "      <commande>   : <description>\n"
 
@@ -1344,57 +1327,57 @@ msgstr ""
 "Veuillez rectifier cette erreur et vous assurer qu'il est\n"
 "correctement installé.\n"
 
-#: src/menus-misc.c:581 config/strings.c:119
+#: src/menus-misc.c:584 config/strings.c:119
 msgid "Themes"
 msgstr "Thèmes"
 
-#: src/menus-misc.c:669
+#: src/menus-misc.c:672
 msgid "Window List"
 msgstr "Liste des fenêtres"
 
-#: src/menus-misc.c:691
+#: src/menus-misc.c:694
 msgid "Go to this Desktop"
 msgstr "Aller vers ce Bureau"
 
-#: src/menus-misc.c:695 src/menus-misc.c:791
+#: src/menus-misc.c:698 src/menus-misc.c:794
 #, c-format
 msgid "Desktop %i"
 msgstr "Bureau %i"
 
-#: src/menus-misc.c:738
+#: src/menus-misc.c:741
 msgid "Show/Hide this group"
 msgstr "Afficher/Masquer ce groupe"
 
-#: src/menus-misc.c:743
+#: src/menus-misc.c:746
 msgid "Iconify this group"
 msgstr "Icônifier ce groupe"
 
-#: src/menus-misc.c:754
+#: src/menus-misc.c:757
 #, c-format
 msgid "Group %i"
 msgstr "Groupe %i"
 
-#: src/menus.c:2034
+#: src/menus.c:2037
 msgid "Animated display of menus"
 msgstr "Animer l'affichage des menus"
 
-#: src/menus.c:2039
+#: src/menus.c:2042
 msgid "Always pop up menus on screen"
 msgstr "Toujours afficher les menus sur l'écran"
 
-#: src/menus.c:2044
+#: src/menus.c:2047
 msgid "Warp pointer after moving menus"
 msgstr "Distorsion du curseur après déplacement des menus"
 
-#: src/menus.c:2050
+#: src/menus.c:2053
 msgid "Menus"
 msgstr "Menus"
 
-#: src/menus.c:2051
+#: src/menus.c:2054
 msgid "Menu Settings"
 msgstr "Paramètres des Menus"
 
-#: src/menus.c:2054
+#: src/menus.c:2057
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
@@ -1968,7 +1951,7 @@ msgstr ""
 "les auteurs d'Enlightenment n'ont jamais entendu parlé, ou auquel ils\n"
 "n'ont jamais eu accès.\n"
 
-#: src/slideout.c:457 src/tclass.c:460
+#: src/slideout.c:457 src/tclass.c:459
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -1981,87 +1964,87 @@ msgstr ""
 "%s\n"
 "Ignoré, on continue...\n"
 
-#: src/snaps.c:743
+#: src/snaps.c:742
 msgid "Title:"
 msgstr "Titre:"
 
-#: src/snaps.c:755
+#: src/snaps.c:754
 msgid "Name:"
 msgstr "Nom:"
 
-#: src/snaps.c:768
+#: src/snaps.c:767
 msgid "Class:"
 msgstr "Classe:"
 
-#: src/snaps.c:781
+#: src/snaps.c:780
 msgid "Role:"
 msgstr "Rôle:"
 
-#: src/snaps.c:794
+#: src/snaps.c:793
 msgid "Command:"
 msgstr "Commande:"
 
-#: src/snaps.c:834
+#: src/snaps.c:833
 msgid "Track Changes"
 msgstr "Traquer les changements"
 
-#: src/snaps.c:839
+#: src/snaps.c:838
 msgid "Location"
 msgstr "Emplacement"
 
-#: src/snaps.c:844
+#: src/snaps.c:843
 msgid "Border style"
 msgstr "Style de bordure"
 
-#: src/snaps.c:849 config/strings.c:138
+#: src/snaps.c:848 config/strings.c:138
 msgid "Size"
 msgstr "Taille"
 
-#: src/snaps.c:854 config/strings.c:117
+#: src/snaps.c:853 config/strings.c:117
 msgid "Desktop"
 msgstr "Bureau"
 
-#: src/snaps.c:859
+#: src/snaps.c:858
 msgid "Shaded state"
 msgstr "État de masquage"
 
-#: src/snaps.c:864
+#: src/snaps.c:863
 msgid "Sticky state"
 msgstr "État de collage"
 
-#: src/snaps.c:869
+#: src/snaps.c:868
 msgid "Stacking layer"
 msgstr "Niveau"
 
-#: src/snaps.c:874
+#: src/snaps.c:873
 msgid "Window List Skip"
 msgstr "Ignoré de la liste des fenêtres"
 
-#: src/snaps.c:880 config/strings.c:180
+#: src/snaps.c:879 config/strings.c:180
 msgid "Opacity"
 msgstr "Opacité"
 
-#: src/snaps.c:885
+#: src/snaps.c:884
 msgid "Shadowing"
 msgstr "Ombrage"
 
-#: src/snaps.c:891
+#: src/snaps.c:890
 msgid "Flags"
 msgstr "Drapeaux"
 
-#: src/snaps.c:910
+#: src/snaps.c:909
 msgid "Restart application on login"
 msgstr "Lancer l'application au démarrage"
 
-#: src/snaps.c:929
+#: src/snaps.c:928
 msgid "Remember this window's group(s)"
 msgstr "Se souvenir des groupes de cette fenêtre"
 
-#: src/snaps.c:937
+#: src/snaps.c:936
 msgid "Remembered Application Attributes"
 msgstr "Attributs d'application mémorisés"
 
-#: src/snaps.c:940
+#: src/snaps.c:939
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
@@ -2071,31 +2054,31 @@ msgstr ""
 "fenêtre que vous désirez mémoriser\n"
 "à partir de maintenant\n"
 
-#: src/snaps.c:1031
+#: src/snaps.c:1030
 msgid "Delete"
 msgstr "Effacer"
 
-#: src/snaps.c:1059
+#: src/snaps.c:1058
 msgid "Remembered Settings..."
 msgstr "Paramètres de Mémorisation..."
 
-#: src/snaps.c:1066
+#: src/snaps.c:1065
 msgid "Unused"
 msgstr "Inutilisé"
 
-#: src/snaps.c:1079
+#: src/snaps.c:1078
 msgid "There are no active windows with remembered attributes."
 msgstr "Il n'y a aucune fenêtre active avec des attributs mémorisés."
 
-#: src/snaps.c:1085
+#: src/snaps.c:1084
 msgid "Remember"
 msgstr "Mémorisation"
 
-#: src/snaps.c:1086
+#: src/snaps.c:1085
 msgid "Remembered Windows Settings"
 msgstr "Paramètres de Mémorisation des fenêtres"
 
-#: src/snaps.c:1089
+#: src/snaps.c:1088
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
@@ -2103,7 +2086,7 @@ msgstr ""
 "Dialogue de paramétrage de la\n"
 "Mémorisation des fenêtres\n"
 
-#: src/snaps.c:1182
+#: src/snaps.c:1181
 msgid "Error saving snaps file\n"
 msgstr "Erreur lors de l'écriture du fichier de session\n"
 
@@ -2279,7 +2262,7 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bulles d'aide\n"
 
-#: src/windowmatch.c:304
+#: src/windowmatch.c:300
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -2483,7 +2466,9 @@ msgstr "Coller / Décoller"
 
 #: config/strings.c:63
 msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
-msgstr "Basculer l'état d'omniprésence (visibilité sur tous les bureaux) de cette fenêtre."
+msgstr ""
+"Basculer l'état d'omniprésence (visibilité sur tous les bureaux) de cette "
+"fenêtre."
 
 #: config/strings.c:65
 msgid ""
@@ -2897,3 +2882,22 @@ msgstr "Autres"
 #: config/strings.c:187
 msgid "Enlightenment Epplets"
 msgstr "Epplets d'Enlightenment"
+
+#~ msgid ""
+#~ "\n"
+#~ "  There's no current group at the moment.  \n"
+#~ "  The current group is the last one you created,  \n"
+#~ "  and it exists until you create a new one or break  \n"
+#~ "  the latest one.  \n"
+#~ "\n"
+#~ "  Pick another group that the window will belong to here:  \n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "  Il n'y a aucun groupe courant pour le moment.  \n"
+#~ "  Le groupe courant est le dernier que vous avez créé,  \n"
+#~ "  il existera jusqu'à ce que vous ayez créé un nouveau groupe ou\n"
+#~ "  détruit le dernier.  \n"
+#~ "\n"
+#~ "  Choisissez un autre groupe auquel la fenêtre appartiendra:  \n"
+#~ "\n"
