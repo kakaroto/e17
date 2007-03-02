@@ -1107,6 +1107,12 @@ ewl_debug_indent_print(int mod_dir)
 	if (mod_dir > 0) ewl_debug_indent_lvl ++;
 }
 
+/**
+ * @param hook: The shutdown callback to call
+ * @return Returns no value
+ * @brief Allows a widget to hookup a shutdown callback that will be called
+ * when Ewl is shutdown.
+ */
 void
 ewl_shutdown_add(Ewl_Shutdown_Hook hook)
 {

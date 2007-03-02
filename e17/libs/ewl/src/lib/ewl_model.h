@@ -63,9 +63,10 @@ typedef int (*Ewl_Model_Expandable)(void *data, unsigned int row);
 typedef void *(*Ewl_Model_Expansion_Data_Fetch)(void *data, unsigned int row);
 
 /**
- * @def EWL_MODEL_EXPANSION_MODEL_FETCH(f) ((Ewl_Model_Expansion_Model_Fetch)(f)
+ * @def EWL_MODEL_EXPANSION_MODEL_FETCH(f)
  * Model callback to get the model to use for the expansion point
  */
+#define EWL_MODEL_EXPANSION_MODEL_FETCH(f) ((Ewl_Model_Expansion_Model_Fetch)(f)
 
 /**
  * A typedef to shorten the definition of the model_expansion_model_fetch

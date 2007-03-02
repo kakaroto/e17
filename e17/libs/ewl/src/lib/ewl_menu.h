@@ -48,13 +48,19 @@ struct Ewl_Menu
 	Ewl_Widget *menubar_parent;	/**< Parent menu bar */
 };
 
+/**
+ * A simple struct to contain menu information
+ */
 typedef struct Ewl_Menu_Info Ewl_Menu_Info;
 
+/**
+ * Provides a simple structure to contain menu information
+ */
 struct Ewl_Menu_Info
 {
-	char *name;
-	char *img;
-	void (*cb)(Ewl_Widget *w, void *ev, void *data);
+	char *name;						/**< The name of the menu item */
+	char *img;						/**< The menu item image */
+	void (*cb)(Ewl_Widget *w, void *ev, void *data);	/**< The menu item callback */
 };
 
 Ewl_Widget	*ewl_menu_new(void);

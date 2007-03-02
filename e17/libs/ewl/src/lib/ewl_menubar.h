@@ -47,11 +47,18 @@ struct Ewl_Menubar
 	Ewl_Widget 	*inner_box; /**< The box to pack the widgets into */
 };
 
+/**
+ * Ewl_Menubar_Info
+ */
 typedef struct Ewl_Menubar_Info Ewl_Menubar_Info;
+
+/**
+ * Provides a simple menu structure for the menubar
+ */
 struct Ewl_Menubar_Info
 {
-	char *name;
-	Ewl_Menu_Info *menu;
+	char *name;		/**< The menu name */
+	Ewl_Menu_Info *menu;	/**< The menu items */
 };
 
 Ewl_Widget 	*ewl_menubar_new(void);
@@ -60,7 +67,7 @@ Ewl_Widget	*ewl_vmenubar_new(void);
 
 int	    	 ewl_menubar_init(Ewl_Menubar *mb);
 
-void		 ewl_menubar_from_info(Ewl_Menubar *mb, Ewl_Menubar_Info info[]);
+void		 ewl_menubar_from_info(Ewl_Menubar *mb, Ewl_Menubar_Info *info);
 
 void		 ewl_menubar_orientation_set(Ewl_Menubar *mb, Ewl_Orientation o);
 Ewl_Orientation	 ewl_menubar_orientation_get(Ewl_Menubar *mb);

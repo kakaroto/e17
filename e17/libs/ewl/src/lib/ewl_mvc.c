@@ -295,7 +295,6 @@ ewl_mvc_selected_clear(Ewl_MVC *mvc)
 
 /**
  * @param mvc: The MVC to work with
- * @param data: The parent data containing the index selection
  * @param list: The list of items to set selected.
  * @return Returns no value
  * @brief Sets the list of items to select. This will remove any items it
@@ -630,6 +629,7 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
 
 /**
  * @param mvc: The MVC to work with
+ * @param data: UNUSED
  * @param row: The row to check for
  * @param column: The column to check for
  * @return Returns TRUE if the index is selected, FALSE otherwise
@@ -708,6 +708,7 @@ ewl_mvc_selection_index_new(Ewl_Model *model, void *data, int row, int column)
 
 /**
  * @param model: The model to work with this data
+ * @param data: The data that we're working with
  * @param srow: The start row
  * @param scolumn: The start column
  * @param erow: The end row

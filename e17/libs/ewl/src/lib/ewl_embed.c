@@ -188,14 +188,14 @@ ewl_embed_shutdown(void)
 }
 
 /**
- * @param emb: the embedded container to change the target evas
- * @param evas: the new evas to draw the container and it's contents
- * @param evas_window: the window containing the evas, for event dispatching
- * @return Returns an evas smart object on success, NULL on failure.
- * @brief Change the evas used by the embedded container
+ * @param emb: the embedded container to change the target canvas
+ * @param canvas: the new canvas to draw the container and it's contents
+ * @param canvas_window: the window containing the canvas, for event dispatching
+ * @return Returns an canvas object on success, NULL on failure.
+ * @brief Change the canvas used by the embedded container
  *
  * The returned smart object can be used to manipulate the area used by EWL
- * through standard evas functions.
+ * through standard canvas functions.
  */
 void *
 ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas, Ewl_Embed_Window *canvas_window)

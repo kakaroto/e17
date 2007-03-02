@@ -120,6 +120,7 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 /**
  * @param tree: The Ewl_Tree to append the column too
  * @param view: The view to use for this column
+ * @param sortable: Is the column sortable
  * @return Returns no value.
  * @brief Append a new column to the tree
  */
@@ -154,6 +155,7 @@ ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_View *view,
 /**
  * @param tree: The Ewl_Tree to prepend the column too
  * @param view: The view to use for this column
+ * @param sortable: Is the column sortable
  * @return Returns no value.
  * @brief Prepend a new column to the tree
  */
@@ -189,6 +191,7 @@ ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_View *view,
  * @param tree: The Ewl_Tree to insert the column into
  * @param view: The view to use for this column
  * @param idx: The index to insert into 
+ * @param sortable: Is the column sortable?
  * @return Returns no value.
  * @brief Insert a new column into the tree
  */

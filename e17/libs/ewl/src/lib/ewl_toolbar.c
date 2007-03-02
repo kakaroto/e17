@@ -136,7 +136,7 @@ ewl_toolbar_orientation_get(Ewl_Toolbar *t)
 
 /**
  * @param t: The toolbar to set the orientation on
- * @param o: The orientation to set on the toolbar
+ * @param part: The Ewl_Icon_Part to hide
  * @return Returns no value
  * @brief Set the orientation of the toolbar
  */
