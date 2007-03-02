@@ -1313,7 +1313,7 @@ ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	tree = data;
 	view = ewl_tree2_view_widget_get(tree);
 
-	if (ewl_widget_type_is(view, EWL_TREE2_VIEW_SCROLLED_TYPE))
+	if (EWL_TREE2_VIEW_SCROLLED_IS(view))
 		ewl_tree2_view_scrolled_scroll_headers_set(EWL_TREE2_VIEW(view),
 			ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)));
 }
