@@ -11,7 +11,7 @@
 #include <sys/stat.h>
 #endif
 
-#define MAIN_EDC_NAME "default.edc"
+#define MAIN_EDC_NAME "main_edje_source.edc"
 
 char *engrave_filename = NULL;
 
@@ -135,9 +135,9 @@ engrave_load_edj(const char *filename)
     return 0;
   }
 
-  len = strlen(work_dir) + strlen(ptr) + 12;
+  len = strlen(work_dir) + strlen(ptr) + strlen(MAIN_EDC_NAME) + 23;
   cmd = (char *)calloc(len, sizeof(char));
-  snprintf(cmd, len, "edje_decc %s/%s", work_dir, ptr);
+  snprintf(cmd, len, "edje_decc %s/%s -main-out "MAIN_EDC_NAME, work_dir, ptr);
   ret = system(cmd);
   FREE(cmd);
 
