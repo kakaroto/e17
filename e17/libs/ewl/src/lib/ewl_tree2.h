@@ -72,6 +72,12 @@
 #define EWL_TREE2_TYPE "tree2"
 
 /**
+ * @def EWL_TREE2_IS(w)
+ * Returns TRUE if the widget is an Ewl_Tree2, FALSE otherwise
+ */
+#define EWL_TREE2_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TREE2_TYPE))
+
+/**
  * @def EWL_TREE2(t)
  * Typecasts a pointer to an Ewl_Tree pointer.
  */
@@ -196,6 +202,13 @@ Ewl_Sort_Direction	 ewl_tree2_column_sort_direction_get(Ewl_Tree2_Column *c);
  * Ewl_Tree2_Node stuff
  */
 #define EWL_TREE2_NODE_TYPE "node"
+
+/**
+ * @def EWL_TREE2_NODE_IS(w)
+ * Returns TRUE if the widget is an Ewl_Tree2_Node, FALSE otherwise
+ */
+#define EWL_TREE2_NODE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TREE2_NODE_TYPE))
+
 #define EWL_TREE2_NODE(n) ((Ewl_Tree2_Node *)n)
 typedef struct Ewl_Tree2_Node Ewl_Tree2_Node;
 struct Ewl_Tree2_Node

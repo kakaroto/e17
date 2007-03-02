@@ -182,7 +182,7 @@ ewl_menu_cb_expand_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_container_child_iterate_begin(bar);
 		while ((sub = EWL_MENU(ewl_container_child_next(bar)))) {
 			if ((sub != EWL_MENU(w)) 
-					&& ewl_widget_type_is(EWL_WIDGET(sub), EWL_MENU_TYPE)
+					&& EWL_MENU_IS(sub)
 					&& (sub->base.popup) 
 					&& VISIBLE(sub->base.popup)) {
 				hide_menu = sub;

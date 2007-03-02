@@ -19,6 +19,12 @@
 #define EWL_SPECTRUM_TYPE "spectrum"
 
 /**
+ * @def EWL_SPECTRUM_IS(w)
+ * Returns TRUE if the widget is an Ewl_Spectrum, FALSE otherwise
+ */
+#define EWL_SPECTRUM_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_SPECTRUM_TYPE))
+
+/**
  * @def EWL_SPECTRUM(sp)
  * Typecasts a pointer to an Ewl_Spectrum pointer.
  */

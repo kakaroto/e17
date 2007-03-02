@@ -26,6 +26,12 @@
 #define EWL_MENU_ITEM_TYPE "menu_item"
 
 /**
+ * @def EWL_MENU_ITEM_IS(w)
+ * Returns TRUE if the widget is an Ewl_Menu_Item, FALSE otherwise
+ */
+#define EWL_MENU_ITEM_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_MENU_ITEM_TYPE))
+
+/**
  * This serves as a basis for all menu related entries. It provides the most
  * basic layout facilities for items in a menu.
  */

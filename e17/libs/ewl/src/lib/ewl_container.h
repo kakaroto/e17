@@ -20,6 +20,12 @@
 #define EWL_CONTAINER_TYPE "container"
 
 /**
+ * @def EWL_CONTAINER_IS(w)
+ * Returns TRUE if the widget is an Ewl_Container, FALSE otherwise
+ */
+#define EWL_CONTAINER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_CONTAINER_TYPE))
+
+/**
  * This class inherits from Ewl_Widget and provides the capabilities necessary
  * for nesting other widgets inside.
  */

@@ -27,6 +27,12 @@
 #define EWL_COMBO_TYPE "combo"
 
 /**
+ * @def EWL_COMBO_IS(w)
+ * Returns TRUE if the widget is an Ewl_Combo, FALSE otherwise
+ */
+#define EWL_COMBO_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_COMBO_TYPE))
+
+/**
  * A simple internal combo box, it is limited to drawing within the current
  * evas.
  */

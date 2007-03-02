@@ -26,6 +26,12 @@
 #define EWL_CALENDAR_TYPE "calendar"
 
 /**
+ * @def EWL_CALENDAR_IS(w)
+ * Returns TRUE if the widget is an Ewl_Calendar, FALSE otherwise
+ */
+#define EWL_CALENDAR_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_CALENDAR_TYPE))
+
+/**
  * The Ewl_Calendar structure
  */
 typedef struct Ewl_Calendar Ewl_Calendar;

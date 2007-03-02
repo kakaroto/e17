@@ -24,6 +24,12 @@
 #define EWL_CURSOR_TYPE "cursor"
 
 /**
+ * @def EWL_CURSOR_IS(w)
+ * Returns TRUE if the widget is an Ewl_Cursor, FALSE otherwise
+ */
+#define EWL_CURSOR_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_CURSOR_TYPE))
+
+/**
  * Ewl_Cursor provides a container that has a labeled cursor.
  */
 typedef struct Ewl_Cursor Ewl_Cursor;

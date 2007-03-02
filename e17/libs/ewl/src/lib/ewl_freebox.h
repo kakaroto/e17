@@ -33,6 +33,12 @@ typedef int (*Ewl_Freebox_Comparator)(Ewl_Widget *a, Ewl_Widget *b);
 #define EWL_FREEBOX(box) ((Ewl_Freebox *)box)
 
 /**
+ * @def EWL_FREEBOX_IS(w)
+ * Returns TRUE if the widget is an Ewl_Freebox, FALSE otherwise
+ */
+#define EWL_FREEBOX_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_FREEBOX_TYPE))
+
+/**
  * A free layout container.
  */
 typedef struct Ewl_Freebox Ewl_Freebox;

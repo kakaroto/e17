@@ -160,7 +160,7 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	row = ewl_container_child_index_get(EWL_CONTAINER(data), w);
 	if (row == -1) 
 	{
-		if (!ewl_widget_type_is(w, EWL_HIGHLIGHT_TYPE))
+		if (!EWL_HIGHLIGHT_IS(w))
 		{
 			DWARNING("Unknown widget clicked for container.");
 			DRETURN(DLEVEL_STABLE);

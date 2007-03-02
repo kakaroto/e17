@@ -22,6 +22,12 @@
 #define EWL_FILELIST_COLUMN_TYPE "filelist_column"
 
 /**
+ * @def EWL_FILELIST_COLUMN_IS(w)
+ * Returns TRUE if the widget is an Ewl_Filelist_Column, FALSE otherwise
+ */
+#define EWL_FILELIST_COLUMN_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_FILELIST_COLUMN_TYPE))
+
+/**
  * @def EWL_FILELIST_COLUMN(fl)
  * Typecasts a pointer to an Ewl_Filelist_Column pointer
  */

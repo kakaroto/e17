@@ -26,6 +26,12 @@
 #define EWL_STATUSBAR_TYPE "statusbar"
 
 /**
+ * @def EWL_STATUSBAR_IS(w)
+ * Returns TRUE if the widget is an Ewl_Statusbar, FALSE otherwise
+ */
+#define EWL_STATUSBAR_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_STATUSBAR_TYPE))
+
+/**
  * The Ewl_Statusbar
  */
 typedef struct Ewl_Statusbar Ewl_Statusbar;

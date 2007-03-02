@@ -27,6 +27,12 @@
 #define EWL_FILEDIALOG_TYPE "filedialog"
 
 /**
+ * @def EWL_FILEDIALOG_IS(w)
+ * Returns TRUE if the widget is an Ewl_Filedialog, FALSE otherwise
+ */
+#define EWL_FILEDIALOG_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_FILEDIALOG_TYPE))
+
+/**
  * The Ewl_Filedialog provides a filedialog
  */
 typedef struct Ewl_Filedialog Ewl_Filedialog;

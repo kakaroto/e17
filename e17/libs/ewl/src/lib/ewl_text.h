@@ -30,16 +30,34 @@
 #define EWL_TEXT_TYPE "text"
 
 /**
+ * @def EWL_TEXT_IS(w)
+ * Returns TRUE if the widget is an Ewl_Text, FALSE otherwise
+ */
+#define EWL_TEXT_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TEXT_TYPE))
+
+/**
  * @def EWL_TEXT_TRIGGER_TYPE
  * The type name for the Ewl_Text_Trigger widget
  */
 #define EWL_TEXT_TRIGGER_TYPE "trigger"
 
 /**
+ * @def EWL_TEXT_TRIGGER_IS(w)
+ * Returns TRUE if the widget is an Ewl_Text_Trigger, FALSE otherwise
+ */
+#define EWL_TEXT_TRIGGER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TEXT_TRIGGER_TYPE))
+
+/**
  * @def EWL_TEXT_SELECTION_TYPE
  * The type name for the Ewl_Text_Selection widget
  */
 #define EWL_TEXT_SELECTION_TYPE "selection"
+
+/**
+ * @def EWL_TEXT_SELECTION_IS(w)
+ * Returns TRUE if the widget is an Ewl_Text_Selection, FALSE otherwise
+ */
+#define EWL_TEXT_SELECTION_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TEXT_SELECTION_TYPE))
 
 /**
  * @def EWL_TEXT(text)

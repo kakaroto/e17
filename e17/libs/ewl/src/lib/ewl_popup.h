@@ -20,6 +20,12 @@
 #define EWL_POPUP_TYPE "popup"
 
 /**
+ * @def EWL_POPUP_IS(w)
+ * Returns TRUE if the widget is an Ewl_Popup, FALSE otherwise
+ */
+#define EWL_POPUP_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_POPUP_TYPE))
+
+/**
  * Provides an Ewl_Widget to simply act with override windows
  */
 typedef struct Ewl_Popup Ewl_Popup;

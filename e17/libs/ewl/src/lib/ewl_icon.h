@@ -21,6 +21,12 @@
 #define EWL_ICON_TYPE "icon"
 
 /**
+ * @def EWL_ICON_IS(w)
+ * Returns TRUE if the widget is an Ewl_Icon, FALSE otherwise
+ */
+#define EWL_ICON_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_ICON_TYPE))
+
+/**
  * @def EWL_ICON(icon)
  * Typecasts a pointer to an Ewl_Icon pointer.
  */

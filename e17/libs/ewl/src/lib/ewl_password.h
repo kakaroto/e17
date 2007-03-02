@@ -26,6 +26,12 @@
 #define EWL_PASSWORD_TYPE "password"
 
 /**
+ * @def EWL_PASSWORD_IS(w)
+ * Returns TRUE if the widget is an Ewl_Password, FALSE otherwise
+ */
+#define EWL_PASSWORD_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_PASSWORD_TYPE))
+
+/**
  * Inherits from the Ewl_Widget and provides single line editable text.
  */
 typedef struct Ewl_Password Ewl_Password;

@@ -27,6 +27,12 @@
 #define EWL_MENUBAR_TYPE "menubar"
 
 /**
+ * @def EWL_MENUBAR_IS(w)
+ * Returns TRUE if the widget is an Ewl_Menubar, FALSE otherwise
+ */
+#define EWL_MENUBAR_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_MENUBAR_TYPE))
+
+/**
  * The Ewl_Menubar widget
  */
 typedef struct Ewl_Menubar Ewl_Menubar;

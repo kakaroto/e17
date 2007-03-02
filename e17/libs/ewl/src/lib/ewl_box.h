@@ -25,6 +25,12 @@
 #define EWL_BOX_TYPE "box"
 
 /**
+ * @def EWL_BOX_IS(w)
+ * Returns TRUE if the widget is an Ewl_Box, FALSE otherwise
+ */
+#define EWL_BOX_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_BOX_TYPE))
+
+/**
  * The box widget is an Ewl_Container and lays out Ewl_Widget's either
  * horizontally or vertically.
  */

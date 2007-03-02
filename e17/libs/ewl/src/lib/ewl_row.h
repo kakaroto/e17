@@ -24,6 +24,12 @@
 #define EWL_ROW_TYPE "row"
 
 /**
+ * @def EWL_ROW_IS(w)
+ * Returns TRUE if the widget is an Ewl_Row, FALSE otherwise
+ */
+#define EWL_ROW_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_ROW_TYPE))
+
+/**
  * The Ewl_Row widget
  */
 typedef struct Ewl_Row Ewl_Row;

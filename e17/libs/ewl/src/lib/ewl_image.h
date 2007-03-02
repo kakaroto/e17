@@ -24,6 +24,12 @@
 #define EWL_IMAGE_TYPE "image"
 
 /**
+ * @def EWL_IMAGE_IS(w)
+ * Returns TRUE if the widget is an Ewl_Image, FALSE otherwise
+ */
+#define EWL_IMAGE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_IMAGE_TYPE))
+
+/**
  * @enum Ewl_Image_Type
  * The type of image
  */

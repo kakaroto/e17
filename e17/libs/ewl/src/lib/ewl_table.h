@@ -28,6 +28,12 @@
 #define EWL_TABLE_TYPE "table"
 
 /**
+ * @def EWL_TABLE_IS(w)
+ * Returns TRUE if the widget is an Ewl_Table, FALSE otherwise
+ */
+#define EWL_TABLE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TABLE_TYPE))
+
+/**
  * The table widget is an Ewl_Container used to lay out widgets in a grid like
  * pattern with headers and alignment.
  */

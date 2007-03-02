@@ -21,6 +21,12 @@
 #define EWL_HIGHLIGHT_TYPE "highlight"
 
 /**
+ * @def EWL_HIGHLIGHT_IS(w)
+ * Returns TRUE if the widget is an Ewl_Highlight, FALSE otherwise
+ */
+#define EWL_HIGHLIGHT_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_HIGHLIGHT_TYPE))
+
+/**
  * @def EWL_HIGHLIGHT
  * Typecasts a pointer to an Ewl_Highlight pointer.
  */

@@ -21,6 +21,12 @@
 #define EWL_LIST_TYPE "list"
 
 /**
+ * @def EWL_LIST_IS(w)
+ * Returns TRUE if the widget is an Ewl_LIST, FALSE otherwise
+ */
+#define EWL_LIST_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_LIST_TYPE))
+
+/**
  * @def EWL_LIST(list)
  * Typecasts a pointer to an Ewl_List pointer
  */

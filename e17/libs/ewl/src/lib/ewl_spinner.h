@@ -27,6 +27,12 @@
 #define EWL_SPINNER_TYPE "spinner"
 
 /**
+ * @def EWL_SPINNER_IS(w)
+ * Returns TRUE if the widget is an Ewl_Spinner, FALSE otherwise
+ */
+#define EWL_SPINNER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_SPINNER_TYPE))
+
+/**
  * A combination of entry and increment/decrement buttons for adjusting
  * numerical values.
  */

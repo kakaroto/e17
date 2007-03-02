@@ -21,6 +21,12 @@
 #define EWL_TOOLBAR_TYPE "toolbar"
 
 /**
+ * @def EWL_TOOLBAR_IS(w)
+ * Returns TRUE if the widget is an Ewl_Toolbar, FALSE otherwise
+ */
+#define EWL_TOOLBAR_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TOOLBAR_TYPE))
+
+/**
  * Ewl_Toolbar
  */
 typedef struct Ewl_Toolbar Ewl_Toolbar;

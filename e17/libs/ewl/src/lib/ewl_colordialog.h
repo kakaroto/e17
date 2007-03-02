@@ -20,6 +20,12 @@
 #define EWL_COLORDIALOG_TYPE "colordialog"
 
 /**
+ * @def EWL_COLORDIALOG_IS(w)
+ * Returns TRUE if the widget is an Ewl_Colordialog, FALSE otherwise
+ */
+#define EWL_COLORDIALOG_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_COLORDIALOG_TYPE))
+
+/**
  * @def EWL_COLORDIALOG(cd)
  * Typecast a pointer to an Ewl_Colordialog pointer.
  */

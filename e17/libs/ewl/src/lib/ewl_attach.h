@@ -16,6 +16,12 @@
 #define EWL_ATTACH_TOOLTIP_TYPE "tooltip"
 
 /**
+ * @def EWL_ATTACH_IS(w)
+ * Returns TRUE if the widget is an Ewl_Attach widget, FALSE otherwise
+ */
+#define EWL_ATTACH_IS(w) (ewl_widget_type_is(EWL_WIDGET(w)), EWL_ATTACH_TYPE)
+
+/**
  * @def EWL_ATTACH(attach)
  * Typecast a pointer to an Ewl_Attach pointer 
  */

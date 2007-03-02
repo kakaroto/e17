@@ -20,6 +20,12 @@
 #define EWL_RANGE_TYPE "range"
 
 /**
+ * @def EWL_RANGE_IS(w)
+ * Returns TRUE if the widget is an Ewl_Range, FALSE otherwise
+ */
+#define EWL_RANGE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_RANGE_TYPE))
+
+/**
  * The Ewl_Range provides a means to select a value from a range using a
  * draggable button.
  */

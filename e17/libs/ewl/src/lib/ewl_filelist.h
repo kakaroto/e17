@@ -24,6 +24,12 @@
 #define EWL_FILELIST_TYPE "filelist"
 
 /**
+ * @def EWL_FILELIST_IS(w)
+ * Returns TRUE if the widget is an Ewl_Filelist, FALSE otherwise
+ */
+#define EWL_FILELIST_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_FILELIST_TYPE))
+
+/**
  * The Ewl_Filelist provides a base class for the file lists 
  */
 typedef struct Ewl_Filelist Ewl_Filelist;

@@ -21,10 +21,22 @@
 #define EWL_ENTRY_TYPE "entry"
 
 /**
+ * @def EWL_ENTRY_IS(w)
+ * Returns TRUE if the widget is an Ewl_Entry, FALSE otherwise
+ */
+#define EWL_ENTRY_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_ENTRY_TYPE))
+
+/**
  * @def EWL_ENTRY_CURSOR_TYPE
  * The type name for the Ewl_Entry_Cursor widget
  */
 #define EWL_ENTRY_CURSOR_TYPE "cursor"
+
+/**
+ * @def EWL_ENTRY_CURSOR_IS(w)
+ * Returns TRUE if the widget is an Ewl_Entry_Cursor, FALSE otherwise
+ */
+#define EWL_ENTRY_CURSOR_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_ENTRY_CURSOR_TYPE))
 
 /**
  * @def EWL_ENTRY(entry)

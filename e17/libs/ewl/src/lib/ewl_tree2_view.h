@@ -22,6 +22,12 @@
 #define EWL_TREE2_VIEW_TYPE "tree2_view"
 
 /**
+ * @def EWL_TREE2_VIEW_IS(w)
+ * Returns TRUE if the widget is an Ewl_Tree2_View, FALSE otherwise
+ */
+#define EWL_TREE2_VIEW_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TREE2_VIEW_TYPE))
+
+/**
  * @def EWL_TREE2_VIEW(v)
  * Typecasts a pointer to an Ewl_Tree2_View pointer 
  */

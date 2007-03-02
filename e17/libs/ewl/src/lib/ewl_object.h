@@ -3,9 +3,8 @@
 #define EWL_OBJECT_H
 
 /**
- * @addtogroup Ewl_Object Ewl_Object: Basic Object Inherited by Ewl_Widget
- * @brief Defines the Ewl_Object class along with methods and macros related
- * to it.
+ * @addtogroup Ewl_Object Ewl_Object: Base object. Provides functionality available to all widgets.
+ * @brief Defines the Ewl_Object class along with basic methods and macros.
  *
  * @{
  */
@@ -15,6 +14,7 @@
  * The minimum possible size any object can receive.
  */
 #define EWL_OBJECT_MIN_SIZE (1)
+
 /**
  * @def EWL_OBJECT_MAX_SIZE 
  * The maximum possible size any object can receive.

@@ -702,12 +702,12 @@ ewl_tree_node_row_walk_signal(Ewl_Tree *tree, Ewl_Tree_Node *node)
 
 	ewl_container_child_iterate_begin(EWL_CONTAINER(node));
 	while ((child = ewl_container_child_next(EWL_CONTAINER(node)))) {
-		if (ewl_widget_type_is(child, EWL_TREE_NODE_TYPE)) {
+		if (EWL_TREE_NODE_IS(child)) {
 			if (VISIBLE(child)) {
 				ewl_tree_node_row_walk_signal(tree, EWL_TREE_NODE(child));
 			}
 		}
-		else if (ewl_widget_type_is(child, EWL_ROW_TYPE)) {
+		else if (EWL_ROW_IS(child)) {
 			ewl_tree_row_signal(tree, child);
 		}
 	}
@@ -725,10 +725,10 @@ ewl_tree_row_walk_signal(Ewl_Tree *tree)
 	ewl_tree_row_pos = 0;
 	ewl_container_child_iterate_begin(EWL_CONTAINER(tree));
 	while ((child = ewl_container_child_next(EWL_CONTAINER(tree)))) {
-		if (ewl_widget_type_is(child, EWL_TREE_NODE_TYPE)) {
+		if (EWL_TREE_NODE_IS(child)) {
 			ewl_tree_node_row_walk_signal(tree, EWL_TREE_NODE(child));
 		}
-		else if (ewl_widget_type_is(child, EWL_ROW_TYPE)) {
+		else if (EWL_ROW_IS(child)) {
 			ewl_tree_row_signal(tree, child);
 		}
 	}

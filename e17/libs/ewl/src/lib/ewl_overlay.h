@@ -25,6 +25,12 @@
 #define EWL_OVERLAY_TYPE "overlay"
 
 /**
+ * @def EWL_OVERLAY_IS(w)
+ * Returns TRUE if the widget is an Ewl_Overlay, FALSE otherwise
+ */
+#define EWL_OVERLAY_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_OVERLAY_TYPE))
+
+/**
  * The overlay structure is mostly a container for holding widgets and a
  * wrapper evas smart object.
  */

@@ -22,6 +22,12 @@
 #define EWL_FILELIST_ICON_TYPE "filelist_icon"
 
 /**
+ * @def EWL_FILELIST_ICON_IS(w)
+ * Returns TRUE if the widget is an Ewl_Filelist_Icon, FALSE otherwise
+ */
+#define EWL_FILELIST_ICON_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_FILELIST_ICON_TYPE))
+
+/**
  * The Ewl_Filelist_Icon provides an icon view of the files
  */
 typedef struct Ewl_Filelist_Icon Ewl_Filelist_Icon;

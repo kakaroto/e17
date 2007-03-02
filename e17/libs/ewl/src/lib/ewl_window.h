@@ -25,6 +25,12 @@
 #define EWL_WINDOW_TYPE "window"
 
 /**
+ * @def EWL_WINDOW_IS(w)
+ * Returns TRUE if the widget is an Ewl_Window, FALSE otherwise
+ */
+#define EWL_WINDOW_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_WINDOW_TYPE))
+
+/**
  * The window structure is mostly a container for holding widgets and a
  * wrapper around the xlib window.
  */

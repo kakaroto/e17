@@ -30,6 +30,12 @@
 #define EWL_PANED_TYPE "paned"
 
 /**
+ * @def EWL_PANED_IS(w)
+ * Returns TRUE if the widget is an Ewl_Paned, FALSE otherwise
+ */
+#define EWL_PANED_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_PANED_TYPE))
+
+/**
  * @def EWL_PANED(pane)
  * Typecasts a pointer to a Ewl_Paned pointer
  */
@@ -84,6 +90,12 @@ void ewl_paned_cb_destroy(Ewl_Widget *w, void *ev, void *data);
  * The type name for the Ewl_Paned_Grabber widget
  */
 #define EWL_PANED_GRABBER_TYPE "paned_grabber"
+
+/**
+ * @def EWL_PANED_GRABBER_IS(w)
+ * Returns TRUE if the widget is an Ewl_Paned_Grabber, FALSE otherwise
+ */
+#define EWL_PANED_GRABBER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_PANED_GRABBER_TYPE))
 
 /**
  * Typedef for the Ewl_Paned_Grabber struct

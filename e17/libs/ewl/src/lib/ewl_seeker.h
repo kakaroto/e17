@@ -29,6 +29,12 @@
 #define EWL_SEEKER_TYPE "seeker"
 
 /**
+ * @def EWL_SEEKER_IS(w)
+ * Returns TRUE if the widget is an Ewl_Seeker, FALSE otherwise
+ */
+#define EWL_SEEKER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_SEEKER_TYPE))
+
+/**
  * The Ewl_Seeker provides a means to select a value from a range using a
  * draggable button.
  */

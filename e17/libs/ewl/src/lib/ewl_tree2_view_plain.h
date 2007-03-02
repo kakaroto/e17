@@ -21,6 +21,12 @@
 #define EWL_TREE2_VIEW_PLAIN_TYPE "tree2_view_plain"
 
 /**
+ * @def EWL_TREE2_VIEW_PLAIN_IS(w)
+ * Returns TRUE if the widget is an Ewl_Tree2_View_Plain, FALSE otherwise
+ */
+#define EWL_TREE2_VIEW_PLAIN_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TREE2_VIEW_PLAIN_TYPE))
+
+/**
  * Ewl_Tree2_View_Plain
  */
 typedef struct Ewl_Tree2_View_Plain Ewl_Tree2_View_Plain;

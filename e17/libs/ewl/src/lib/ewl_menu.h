@@ -27,6 +27,12 @@
 #define EWL_MENU_TYPE "menu"
 
 /**
+ * @def EWL_MENU_IS(w)
+ * Returns TRUE if the widget is an Ewl_Menu, FALSE otherwise
+ */
+#define EWL_MENU_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_MENU_TYPE))
+
+/**
  * A simple internal menu, it is limited to drawing within the current evas.
  */
 typedef struct Ewl_Menu Ewl_Menu;

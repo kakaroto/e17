@@ -27,6 +27,12 @@
 #define EWL_SHADOW_TYPE "shadow"
 
 /**
+ * @def EWL_SHADOW_IS(w)
+ * Returns TRUE if the widget is an Ewl_Shadow, FALSE otherwise
+ */
+#define EWL_SHADOW_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_SHADOW_TYPE))
+
+/**
  * Ewl_Shadow provides a container that has a shadowed border.
  */
 typedef struct Ewl_Shadow Ewl_Shadow;

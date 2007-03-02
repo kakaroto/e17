@@ -24,6 +24,12 @@
 #define EWL_DIALOG_TYPE "dialog"
 
 /**
+ * @def EWL_DIALOG_IS(w)
+ * Returns TRUE if the widget is an Ewl_Dialog, FALSE otherwise
+ */
+#define EWL_DIALOG_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_DIALOG_TYPE))
+
+/**
  * The dialog structure is a window with two areas: a box (vbox) to hold
  * messages and another box (action_area) to put buttons
  * (usually). These boxes can be separated by a line.

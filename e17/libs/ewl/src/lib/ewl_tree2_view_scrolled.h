@@ -21,6 +21,12 @@
 #define EWL_TREE2_VIEW_SCROLLED_TYPE "tree2_view_scrolled"
 
 /**
+ * @def EWL_TREE2_VIEW_SCROLLED_IS(w)
+ * Returns TRUE if the widget is an Ewl_Tree2_View_Scrolled, FALSE otherwise
+ */
+#define EWL_TREE2_VIEW_SCROLLED_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TREE2_VIEW_SCROLLED_TYPE))
+
+/**
  * Ewl_Tree2_View_Scrolled
  */
 typedef struct Ewl_Tree2_View_Scrolled Ewl_Tree2_View_Scrolled;

@@ -27,6 +27,12 @@
 #define EWL_SEPARATOR_TYPE "separator"
 
 /**
+ * @def EWL_SEPARATOR_IS(w)
+ * Returns TRUE if the widget is an Ewl_Separator, FALSE otherwise
+ */
+#define EWL_SEPARATOR_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_SEPARATOR_TYPE))
+
+/**
  * Provides an Ewl_Widget to simply act as a separator between other
  * Ewl_Widget's.
  */

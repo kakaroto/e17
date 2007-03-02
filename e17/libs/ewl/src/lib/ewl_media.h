@@ -24,6 +24,12 @@
 #define EWL_MEDIA_TYPE "media"
 
 /**
+ * @def EWL_MEDIA_IS(w)
+ * Returns TRUE if the widget is an Ewl_Media, FALSE otherwise
+ */
+#define EWL_MEDIA_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_MEDIA_TYPE))
+
+/**
  * The Ewl_Media widget
  */
 typedef struct Ewl_Media Ewl_Media;

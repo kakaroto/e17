@@ -25,6 +25,12 @@
 #define EWL_SCROLLPANE_TYPE "scrollpane"
 
 /**
+ * @def EWL_SCROLLPANE_IS(w)
+ * Returns TRUE if the widget is an Ewl_Scrollpane, FALSE otherwise
+ */
+#define EWL_SCROLLPANE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_SCROLLPANE_TYPE))
+
+/**
  * The scrollpane provides a way to pan around large collections of images.
  */
 typedef struct Ewl_Scrollpane Ewl_Scrollpane;

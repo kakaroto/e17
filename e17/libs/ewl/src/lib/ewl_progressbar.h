@@ -28,6 +28,12 @@
 #define EWL_PROGRESSBAR_TYPE "progressbar"
 
 /**
+ * @def EWL_PROGRESSBAR_IS(w)
+ * Returns TRUE if the widget is an Ewl_Progressbar, FALSE otherwise
+ */
+#define EWL_PROGRESSBAR_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_PROGRESSBAR_TYPE))
+
+/**
  * The Ewl_Progressbar provides a statusbar from a given value
  */
 typedef struct Ewl_Progressbar Ewl_Progressbar;

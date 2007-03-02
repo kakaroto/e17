@@ -38,6 +38,12 @@
 #define EWL_SCROLLBAR_TYPE "scrollbar"
 
 /**
+ * @def EWL_SCROLLBAR_IS(w)
+ * Returns TRUE if the widget is an Ewl_Scrollbar, FALSE otherwise
+ */
+#define EWL_SCROLLBAR_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_SCROLLBAR_TYPE))
+
+/**
  * Provides a seeker with increment and decrement buttons arranged in a
  * specified order.
  */

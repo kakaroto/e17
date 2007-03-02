@@ -156,7 +156,7 @@ ewl_toolbar_icon_part_hide(Ewl_Toolbar *t, Ewl_Icon_Part part)
 
 	ewl_container_child_iterate_begin(EWL_CONTAINER(t));
 	while ((child = ewl_container_child_next(EWL_CONTAINER(t)))) {
-		if (ewl_widget_type_is(child, EWL_ICON_TYPE))
+		if (EWL_ICON_IS(child))
 			ewl_icon_part_hide(EWL_ICON(child), part);
 	}
 
@@ -184,7 +184,7 @@ ewl_toolbar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	ewl_menubar_cb_child_add(c, w);
 	t = EWL_TOOLBAR(EWL_WIDGET(c)->parent);
 
-	if (ewl_widget_type_is(w, EWL_ICON_TYPE)) 
+	if (EWL_ICON_IS(w)) 
 		ewl_icon_part_hide(EWL_ICON(w), t->hidden);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

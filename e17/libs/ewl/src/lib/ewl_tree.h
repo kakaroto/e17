@@ -27,10 +27,22 @@
 #define EWL_TREE_TYPE "tree"
 
 /**
+ * @def EWL_TREE_IS(w)
+ * Returns TRUE if the widget is an Ewl_Tree, FALSE otherwise
+ */
+#define EWL_TREE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TREE_TYPE))
+
+/**
  * @def EWL_TREE_NODE_TYPE
  * The type name for the Ewl_Tree_Node widget
  */
 #define EWL_TREE_NODE_TYPE "node"
+
+/**
+ * @def EWL_TREE_NODE_IS(w)
+ * Returns TRUE if the widget is an Ewl_Tree_Node, FALSE otherwise
+ */
+#define EWL_TREE_NODE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TREE_NODE_TYPE))
 
 /**
  * The Ewl_Tree widget

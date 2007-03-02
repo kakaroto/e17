@@ -24,6 +24,12 @@
 #define EWL_CELL_TYPE "cell"
 
 /**
+ * @def EWL_CELL_IS(w)
+ * Returns TRUE if the widget is an Ewl_Cell, FALSE otherwise
+ */
+#define EWL_CELL_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_CELL_TYPE))
+
+/**
  * The Ewl_Cell widget
  */
 typedef struct Ewl_Cell Ewl_Cell;

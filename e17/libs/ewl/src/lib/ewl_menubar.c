@@ -205,7 +205,7 @@ ewl_menubar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_widget_type_is(w, "menu")) 
+	if (EWL_MENU_IS(w)) 
 		EWL_MENU(w)->menubar_parent = EWL_WIDGET(c);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

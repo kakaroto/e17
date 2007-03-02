@@ -25,6 +25,12 @@
 #define EWL_EMBED_TYPE "embed"
 
 /**
+ * @def EWL_EMBED_IS(w)
+ * Returns TRUE if the widget is an Ewl_Embed, FALSE otherwise
+ */
+#define EWL_EMBED_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_EMBED_TYPE))
+
+/**
  * The embed structure is mostly a container for holding widgets and a
  * wrapper canvas smart object.
  */

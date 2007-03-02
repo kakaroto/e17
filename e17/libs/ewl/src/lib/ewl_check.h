@@ -25,6 +25,12 @@
 #define EWL_CHECK_TYPE "check"
 
 /**
+ * @def EWL_CHECK_IS(w)
+ * Returns TRUE if the widget is an Ewl_Check, FALSE otherwise
+ */
+#define EWL_CHECK_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_CHECK_TYPE))
+
+/**
  * A single purpose extension of Ewl_Widget to provide a checked state.
  */
 typedef struct Ewl_Check Ewl_Check;

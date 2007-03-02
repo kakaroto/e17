@@ -20,6 +20,12 @@
 #define EWL_HISTOGRAM_TYPE "histogram"
 
 /**
+ * @def EWL_HISTOGRAM_IS(w)
+ * Returns TRUE if the widget is an Ewl_Histogram, FALSE otherwise
+ */
+#define EWL_HISTOGRAM_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_HISTOGRAM_TYPE))
+
+/**
  * @enum Ewl_Histogram_Channel
  * The histogram channels
  */

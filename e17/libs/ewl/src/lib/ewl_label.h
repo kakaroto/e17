@@ -25,6 +25,12 @@
 #define EWL_LABEL_TYPE "label"
 
 /**
+ * @def EWL_LABEL_IS(w)
+ * Returns TRUE if the widget is an Ewl_Label, FALSE otherwise
+ */
+#define EWL_LABEL_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_LABEL_TYPE))
+
+/**
  * The Ewl_Label widget
  */
 typedef struct Ewl_Label Ewl_Label;

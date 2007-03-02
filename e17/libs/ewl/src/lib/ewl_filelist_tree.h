@@ -22,6 +22,12 @@
 #define EWL_FILELIST_TREE_TYPE "filelist_tree"
 
 /**
+ * @def EWL_FILELIST_TREE_IS(w)
+ * Returns TRUE if the widget is an Ewl_Filelist_Tree, FALSE otherwise
+ */
+#define EWL_FILELIST_TREE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_FILELIST_TREE_TYPE))
+
+/**
  * The Ewl_Filelist_Tree widget provides a tree view of the files
  */
 typedef struct Ewl_Filelist_Tree Ewl_Filelist_Tree;

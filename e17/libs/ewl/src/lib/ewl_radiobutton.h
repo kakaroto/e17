@@ -27,6 +27,12 @@
 #define EWL_RADIOBUTTON_TYPE "radiobutton"
 
 /**
+ * @def EWL_RADIOBUTTON_IS(w)
+ * Returns TRUE if the widget is an Ewl_Radiobutton, FALSE otherwise
+ */
+#define EWL_RADIOBUTTON_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_RADIOBUTTON_TYPE))
+
+/**
  * The radio button provides a means for selecting a single item from a group
  * of options.
  */

@@ -20,6 +20,12 @@
 #define EWL_COLORPICKER_TYPE "colorpicker"
 
 /**
+ * @def EWL_COLORPICKER_IS(w)
+ * Returns TRUE if the widget is an Ewl_Colorpicker, FALSE otherwise
+ */
+#define EWL_COLORPICKER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_COLORPICKER_TYPE))
+
+/**
  * @def EWL_COLORPICKER(cp)
  * Typecast a pointer to an Ewl_Colorpicker pointer.
  */

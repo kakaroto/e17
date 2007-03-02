@@ -22,6 +22,12 @@
  */
 #define EWL_MVC_TYPE "mvc"
 
+/**
+ * @def EWL_MVC_IS(w)
+ * Returns TRUE if the widget is an Ewl_Mvc, FALSE otherwise
+ */
+#define EWL_MVC_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_MVC_TYPE))
+
 /** 
  * @def EWL_SELECTION(x)
  * Typecast a pointer to an Ewl_Selection pointer

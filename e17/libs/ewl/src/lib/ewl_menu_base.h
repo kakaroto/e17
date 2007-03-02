@@ -27,6 +27,12 @@
 #define EWL_MENU_BASE_TYPE "menu_base"
 
 /**
+ * @def EWL_MENU_BASE_IS(w)
+ * Returns TRUE if the widget is an Ewl_Menu_Base, FALSE otherwise
+ */
+#define EWL_MENU_BASE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_MENU_BASE_TYPE))
+
+/**
  * Provides the basic functionality common to the various menu classes.
  */
 typedef struct Ewl_Menu_Base Ewl_Menu_Base;

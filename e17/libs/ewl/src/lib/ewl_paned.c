@@ -164,7 +164,7 @@ ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 	ecore_dlist_goto_first(EWL_CONTAINER(p)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(p)->children)))
 	{
-		if (ewl_widget_type_is(child, EWL_PANED_GRABBER_TYPE))
+		if (EWL_PANED_GRABBER_IS(child))
 			ewl_paned_grabber_paned_orientation_set(
 					EWL_PANED_GRABBER(child), o);
 	}
@@ -207,7 +207,7 @@ ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* if this is a grabber we can skipp it */
-	if (ewl_widget_type_is(w, EWL_PANED_GRABBER_TYPE))
+	if (EWL_PANED_GRABBER_IS(w))
 		DRETURN(DLEVEL_STABLE);
 
 	o = ewl_paned_grabber_new();
@@ -247,7 +247,7 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx)
 
 	p = EWL_PANED(c);
 	/* skip grabbers */
-	if (ewl_widget_type_is(w, EWL_PANED_GRABBER_TYPE))
+	if (EWL_PANED_GRABBER_IS(w))
 		DRETURN(DLEVEL_STABLE);
 
 	/* our grabber is always to our left, since we were just removed
@@ -465,8 +465,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 			Ewl_Widget *grab;
 			int min, new_size, grab_pos;
 			if (!VISIBLE(child) 
-				|| ewl_widget_type_is(child,
-						EWL_PANED_GRABBER_TYPE))
+				|| EWL_PANED_GRABBER_IS((child)))
 				continue;
 
 			min = layout->minimum_size(EWL_OBJECT(child));
@@ -570,7 +569,7 @@ ewl_paned_grabbers_update(Ewl_Paned *p)
 	while ((child = ecore_dlist_next(c->children)))
 	{
 		/* internal means grabber */
-		if (ewl_widget_type_is(child, EWL_PANED_GRABBER_TYPE))
+		if (EWL_PANED_GRABBER_IS(child))
 		{
 			/* if there is a widget to the left we store the
 			 * grabber */
@@ -843,7 +842,7 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 	{
 		if (!VISIBLE(child)) continue;
 
-		if (ewl_widget_type_is(child, EWL_PANED_GRABBER_TYPE))
+		if (EWL_PANED_GRABBER_IS(child))
 		{
 			stop_grabber = EWL_PANED_GRABBER(child);
 			break;
@@ -870,7 +869,7 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 	{
 		if (!VISIBLE(child)) continue;
 
-		if (ewl_widget_type_is(child, EWL_PANED_GRABBER_TYPE)) {
+		if (EWL_PANED_GRABBER_IS(child)) {
 			stop_grabber = EWL_PANED_GRABBER(child);
 			break;
 		}
@@ -1070,8 +1069,7 @@ ewl_paned_grabber_next(Ewl_Paned *p)
 
 	while ((child = ecore_dlist_next(c->children))) 
 	{
-		if (VISIBLE(child) && ewl_widget_type_is(child, 
-						EWL_PANED_GRABBER_TYPE))
+		if (VISIBLE(child) && EWL_PANED_GRABBER_IS(child ))
 			break;
 	}
 
@@ -1094,8 +1092,7 @@ ewl_paned_visible_panes(Ewl_Paned *p)
 	ecore_dlist_goto_first(c->children);
 	while ((child = ecore_dlist_next(c->children))) 
 	{
-		if (VISIBLE(child) && !ewl_widget_type_is(child, 
-						EWL_PANED_GRABBER_TYPE))
+		if (VISIBLE(child) && !EWL_PANED_GRABBER_IS(child))
 			i++;
 	}
 

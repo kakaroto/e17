@@ -27,6 +27,12 @@
 #define EWL_FLOATER_TYPE "floater"
 
 /**
+ * @def EWL_FLOATER_IS(w)
+ * Returns TRUE if the widget is an Ewl_Floater, FALSE otherwise
+ */
+#define EWL_FLOATER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_FLOATER_TYPE))
+
+/**
  * The floater is a container for widgets that need to be drawn on top
  * of multiple widgets (ie. dropdownbox)
  */

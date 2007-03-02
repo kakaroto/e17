@@ -106,7 +106,7 @@ ewl_menu_base_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	ecore_dlist_goto_first(pb->children);
 	while ((child = ecore_dlist_next(pb->children))) {
-		if (ewl_widget_type_is(child, "menu_item")) {
+		if (EWL_MENU_ITEM_IS(child)) {
 			item = EWL_MENU_ITEM(child);
 			item->inmenu = menu->popup;
 		}

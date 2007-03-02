@@ -23,6 +23,12 @@
 #define EWL_EXPANSION_TYPE "expansion"
 
 /**
+ * @def EWL_EXPANSION_IS(w)
+ * Returns TRUE if the widget is an Ewl_Expansion, FALSE otherwise
+ */
+#define EWL_EXPANSION_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_EXPANSION_TYPE))
+
+/**
  * A tree expansion handle.
  */
 typedef struct Ewl_Expansion Ewl_Expansion;

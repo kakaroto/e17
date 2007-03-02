@@ -24,6 +24,12 @@
 #define EWL_GRID_TYPE "grid"
 
 /**
+ * @def EWL_GRID_IS(w)
+ * Returns TRUE if the widget is an Ewl_Grid, FALSE otherwise
+ */
+#define EWL_GRID_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_GRID_TYPE))
+
+/**
  * The Ewl_Grid_Info structure
  */
 typedef struct Ewl_Grid_Info Ewl_Grid_Info;

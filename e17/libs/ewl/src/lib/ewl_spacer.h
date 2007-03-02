@@ -25,6 +25,12 @@
 #define EWL_SPACER_TYPE "spacer"
 
 /**
+ * @def EWL_SPACER_IS(w)
+ * Returns TRUE if the widget is an Ewl_Spacer, FALSE otherwise
+ */
+#define EWL_SPACER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_SPACER_TYPE))
+
+/**
  * The Ewl_Spacer is a simple widget that is used to tweak spacing in an app.
  */
 typedef struct Ewl_Spacer Ewl_Spacer;

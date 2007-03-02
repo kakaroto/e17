@@ -24,6 +24,12 @@
 #define EWL_WIDGET_TYPE "widget"
 
 /**
+ * @def EWL_WIDGET_IS(w)
+ * Returns TRUE if the widget is an Ewl_Widget, FALSE otherwise
+ */
+#define EWL_WIDGET_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_WIDGET_TYPE))
+
+/**
  * The attachment list 
  */
 typedef struct Ewl_Attach_List Ewl_Attach_List;

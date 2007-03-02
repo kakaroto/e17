@@ -27,6 +27,12 @@
 #define EWL_BUTTON_TYPE "button"
 
 /**
+ * @def EWL_BUTTON_IS(w)
+ * Returns TRUE if the widget is an Ewl_Button, FALSE otherwise
+ */
+#define EWL_BUTTON_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_BUTTON_TYPE))
+
+/**
  * The button provides a simple wrapper for creating a clickable Ewl_Widget
  * with an Ewl_Text displayed inside.
  */

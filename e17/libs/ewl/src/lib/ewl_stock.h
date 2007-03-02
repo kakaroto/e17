@@ -29,6 +29,12 @@ typedef struct Ewl_Stock_Funcs Ewl_Stock_Funcs;
 #define EWL_STOCK_TYPE "stock"
 
 /**
+ * @def EWL_STOCK_IS(w)
+ * Returns TRUE if the widget is an Ewl_Stock, FALSE otherwise
+ */
+#define EWL_STOCK_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_STOCK_TYPE))
+
+/**
  * The stock structure.
  */
 typedef struct Ewl_Stock Ewl_Stock;

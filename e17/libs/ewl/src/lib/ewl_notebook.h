@@ -30,6 +30,12 @@
 #define EWL_NOTEBOOK_TYPE "notebook"
 
 /**
+ * @def EWL_NOTEBOOK_IS(w)
+ * Returns TRUE if the widget is an Ewl_Notebook, FALSE otherwise
+ */
+#define EWL_NOTEBOOK_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_NOTEBOOK_TYPE))
+
+/**
  * @def EWL_NOTEBOOK(n)
  * Typecasts a pointer to an Ewl_Notebook pointer.
  */

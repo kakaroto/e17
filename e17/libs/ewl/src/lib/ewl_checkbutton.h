@@ -27,6 +27,12 @@
 #define EWL_CHECKBUTTON_TYPE "checkbutton"
 
 /**
+ * @def EWL_CHECKBUTTON_IS(w)
+ * Returns TRUE if the widget is an Ewl_Checkbutton, FALSE otherwise
+ */
+#define EWL_CHECKBUTTONBUTTON_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_CHECKBUTTONBUTTON_TYPE))
+
+/**
  * The button class is a basic button with a label. This class is inherited by
  * the check button and radio button classes.
  */

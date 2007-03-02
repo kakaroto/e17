@@ -27,6 +27,12 @@
 #define EWL_BORDER_TYPE "border"
 
 /**
+ * @def EWL_BORDER_IS(w)
+ * Returns TRUE if the widget is an Ewl_Border widget, FALSE otherwise
+ */
+#define EWL_BORDER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_BORDER_TYPE))
+
+/**
  * Ewl_Border provides a container that has a labeled border.
  */
 typedef struct Ewl_Border Ewl_Border;

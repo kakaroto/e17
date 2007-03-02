@@ -26,6 +26,12 @@
 #define EWL_DATEPICKER_TYPE "datepicker"
 
 /**
+ * @def EWL_DATEPICKER_IS(w)
+ * Returns TRUE if the widget is an Ewl_Datepicker, FALSE otherwise
+ */
+#define EWL_DATEPICKER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_DATEPICKER_TYPE))
+
+/**
  * The Ewl_Datepicker
  */
 typedef struct Ewl_Datepicker Ewl_Datepicker;
