@@ -96,13 +96,6 @@
 
 
   Ewl_Test
-     - The theme test is currently testing the wrong thing. The theme test
-       should only change the theme on it's little window instead of the
-       entire test program. This needs to be fixed.
-
-     - Add a second theme test that tests changing the theme on the window
-       instead of just widgets inside the window.
-
      - Add a unit test to create a buffer engine window, show it, unrealize
        and realize it. (This currently causes a segv in the buffer engine
        code.)
