@@ -25,5 +25,4 @@ all: $(EDJS)
 
 SUFFIXES = .edc .edj
 .edc.edj:
-#	edje_cc -v -id $(top_builddir)/data/images `basename $<` $@
-	(cd $(top_srcdir)/data/images ; edje_cc -v -id . $(notdir $<) $(top_builddir)/data/images/$(notdir $@))
+	edje_cc -v -id $(srcdir) $< $@
