@@ -808,6 +808,24 @@ enum Ewl_Tree_Selection_Type
 typedef enum Ewl_Tree_Selection_Type Ewl_Tree_Selection_Type;
 
 /**
+ * @enum Ewl_Histogram_Channel
+ * The histogram channels
+ */
+enum Ewl_Histogram_Channel
+{
+	EWL_HISTOGRAM_CHANNEL_Y,
+	EWL_HISTOGRAM_CHANNEL_R,
+	EWL_HISTOGRAM_CHANNEL_G,
+	EWL_HISTOGRAM_CHANNEL_B,
+	EWL_HISTOGRAM_CHANNEL_MAX
+};
+
+/**
+ * Ewl_Histogram_Channel
+ */
+typedef enum Ewl_Histogram_Channel Ewl_Histogram_Channel;
+
+/**
  * @}
  */ 
 
