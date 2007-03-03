@@ -247,12 +247,6 @@ void		ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag 
 Ewl_Widget     *ewl_widget_drag_candidate_get(void);
 void 		ewl_widget_dnd_reset(void);
 
-/**
- * @def LAYER(w)
- * Used to retrieve the layer of a widget.
- */
-#define LAYER(w) (EWL_WIDGET(w)->layer)
-
 /*
  * Internally used callbacks, override at your own risk.
  */

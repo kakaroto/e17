@@ -1175,7 +1175,7 @@ ewl_widget_layer_priority_set(Ewl_Widget *w, int layer)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	LAYER(w) = layer;
+	w->layer = layer;
 
 	if (REALIZED(w))
 		ewl_widget_layer_update(w);
@@ -1195,7 +1195,7 @@ ewl_widget_layer_priority_get(Ewl_Widget *w)
 	DCHECK_PARAM_PTR_RET("w", w, 0);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
-	DRETURN_INT(LAYER(w), DLEVEL_STABLE);
+	DRETURN_INT(w->layer, DLEVEL_STABLE);
 }
 
 /**
@@ -2064,6 +2064,7 @@ static void
 ewl_widget_layer_update(Ewl_Widget *w)
 {
 	Ewl_Widget *p;
+	int layer;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -2078,10 +2079,11 @@ ewl_widget_layer_update(Ewl_Widget *w)
 		evas_object_raise(w->smart_object);
 		DRETURN(DLEVEL_STABLE);
 	}
-	
-	if (LAYER(w) == 0)
+
+	layer = ewl_widget_layer_priority_get(w);
+	if (layer == 0)
 		evas_object_stack_above(w->smart_object, p->fx_clip_box);
-	else if (LAYER(w) > 0) {
+	else if (layer > 0) {
 		Evas_Object *above;
 		
 		if (!(above = ewl_widget_layer_neighbor_find_above(w)))
@@ -2125,7 +2127,8 @@ ewl_widget_layer_neighbor_find_above(Ewl_Widget *w)
 			/* ignore the widget itself */
 			if (w == found)
 				continue;
-			if (LAYER(w) <= LAYER(found))
+			if (ewl_widget_layer_priority_get(w) <= 
+					ewl_widget_layer_priority_get(found))
 				break;
 			ol = o;
 		}
@@ -2160,7 +2163,8 @@ ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
 			/* ignore the widget itself */
 			if (w == found)
 				continue;
-			if (LAYER(w) >= LAYER(found)) 
+			if (ewl_widget_layer_priority_get(w) >= 
+					ewl_widget_layer_priority_get(found))
 				break;
 			ol = o;
 		}

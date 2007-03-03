@@ -713,7 +713,8 @@ ewl_container_child_at_get(Ewl_Container *widget, int x, int y)
 				found = child;
 				break;
 			}
-			if ((!found || LAYER(found) <= LAYER(child)))
+			if ((!found || ewl_widget_layer_priority_get(found) <= 
+						ewl_widget_layer_priority_get(child)))
 				found = child;
 		}
 	}
