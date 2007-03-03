@@ -55,6 +55,9 @@ enum Ewl_Engine_Canvas_Hooks
 	EWL_ENGINE_CANVAS_RENDER,
 	EWL_ENGINE_CANVAS_FREEZE,
 	EWL_ENGINE_CANVAS_THAW,
+
+	EWL_ENGINE_CANVAS_DAMAGE_ADD,
+
 	EWL_ENGINE_CANVAS_MAX
 };
 
@@ -195,6 +198,9 @@ void		 ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y,
 void		 ewl_engine_canvas_render(Ewl_Embed *embed);
 void		 ewl_engine_canvas_freeze(Ewl_Embed *embed);
 void		 ewl_engine_canvas_thaw(Ewl_Embed *embed);
+void		 ewl_engine_canvas_damage_add(Ewl_Embed *embed, int x, int y, 
+								int w, int h);
+
 int 		 ewl_engine_pointer_data_new(Ewl_Embed *embed,
 						unsigned int *data, int w, int h);
 void		 ewl_engine_pointer_free(Ewl_Embed *embed, int pointer);
@@ -255,6 +261,8 @@ typedef void  (*Ewl_Engine_Cb_Canvas_Output_Set)(Ewl_Embed *emb, int x, int y,
 typedef void  (*Ewl_Engine_Cb_Canvas_Render)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Canvas_Freeze)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Canvas_Thaw)(Ewl_Embed *embed);
+typedef void  (*Ewl_Engine_Cb_Canvas_Damage_Add)(Ewl_Embed *embed, 
+						int x, int y, int w, int h);
 typedef void  (*Ewl_Engine_Cb_Theme_Freeze)();
 typedef void  (*Ewl_Engine_Cb_Theme_Thaw)();
 typedef char *(*Ewl_Engine_Cb_Theme_Data_Get)(char *path, char *key);

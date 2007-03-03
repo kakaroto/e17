@@ -14,6 +14,7 @@ static void ee_canvas_output_set(Ewl_Embed *embed, int x, int y, int width,
 static void ee_canvas_render(Ewl_Embed *embed);
 static void ee_canvas_freeze(Ewl_Embed *embed);
 static void ee_canvas_thaw(Ewl_Embed *embed);
+static void ee_canvas_damage_add(Ewl_Embed *embed, int x, int y, int w, int h);
 static void *ee_canvas_smart_new(Ewl_Embed *embed);
 static void *ee_canvas_clip_add(Ewl_Embed *embed);
 static void ee_canvas_stack_add(Ewl_Widget *w);
@@ -28,7 +29,8 @@ static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
 		ee_canvas_output_set,
 		ee_canvas_render,
 		ee_canvas_freeze,
-		ee_canvas_thaw
+		ee_canvas_thaw,
+		ee_canvas_damage_add
 	};
 
 static void *theme_funcs[EWL_ENGINE_THEME_MAX] =
@@ -151,11 +153,22 @@ ee_canvas_thaw(Ewl_Embed *embed)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 
-	if (embed->canvas && evas_event_freeze_get(embed->canvas) > 0) {
+	if (embed->canvas && evas_event_freeze_get(embed->canvas) > 0)
 		evas_event_thaw(embed->canvas);
-	}
 
 	DRETURN(DLEVEL_STABLE);
+}
+
+static void
+ee_canvas_damage_add(Ewl_Embed *embed, int x, int y, int w, int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+
+	if (embed->canvas)
+		evas_damage_rectangle_add(embed->canvas, x, y, w, h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void *

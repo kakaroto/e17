@@ -1061,6 +1061,24 @@ ewl_engine_canvas_thaw(Ewl_Embed *embed)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_engine_canvas_damage_add(Ewl_Embed *embed, int x, int y, int w, int h)
+{
+	Ewl_Engine_Cb_Canvas_Damage_Add damage_add;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	damage_add = ewl_engine_hook_get(embed,
+					EWL_ENGINE_HOOK_TYPE_CANVAS,
+					EWL_ENGINE_CANVAS_DAMAGE_ADD);
+	if (damage_add)
+		damage_add(embed, x, y, w, h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /**
  * @param embed: Embed used to lookup the current theme engine.
  * @return Returns no value
