@@ -891,6 +891,7 @@ ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void *e)
 	 * let them know in case a widget is using a non-evas based draw method
 	 */
 	Ecore_X_Event_Window_Damage *ev;
+	Ewl_Event_Window_Expose event;
 	Ewl_Window *window;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -901,8 +902,13 @@ ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+	event.x = ev->x;
+	event.y = ev->y;
+	event.w = ev->w;
+	event.h = ev->h;
+
 	evas_damage_rectangle_add(EWL_EMBED(window)->canvas, ev->x, ev->y, ev->w, ev->h);
-	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_EXPOSE);
+	ewl_callback_call_with_event_data(EWL_WIDGET(window), EWL_CALLBACK_EXPOSE, &event);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
