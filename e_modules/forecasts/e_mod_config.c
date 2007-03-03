@@ -82,6 +82,7 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
 {
   Evas_Object *o, *of, *ob;
   E_Radio_Group *rg, *dg;
+  char buf[4096];
 
   o = e_widget_list_add(evas, 0, 0);
   of = e_widget_framelist_add(evas, D_("Display Settings"), 0);
@@ -109,10 +110,10 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
   ob = e_widget_entry_add(evas, &cfdata->code);
   e_widget_min_size_set(ob, 100, 1);
   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
-  ob = e_widget_label_add(evas, D_("Get your Yahoo Forecasts Code code at:"));
+  ob = e_widget_label_add(evas, D_("To find the code for your area, go to:"));
   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
-  ob =
-    e_widget_label_add(evas, "http://weather.yahoo.com");
+  snprintf(buf, sizeof(buf), D_("%s, find your area, and look at the URL"), "http://weather.yahoo.com");
+  ob = e_widget_label_add(evas, buf);
   e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
   e_widget_list_object_append(o, of, 1, 1, 0.5);
 

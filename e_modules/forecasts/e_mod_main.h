@@ -36,13 +36,7 @@ struct _Popup
    int w, h;
    int pinned : 1;
 
-   Evas_Object *o_list, *o_bg, *o_ft[3];
-   Evas_Object *current_desc;
-   Evas_Object *wind_chill, *wind_speed;
-   Evas_Object *icon;
-   Evas_Object *humidity, *visibility, *pressure, *rising;
-   Evas_Object *sunrise, *sunset;
-   Evas_Object *desc[2], *high[2], *low[2], *f_icon[2];
+   Evas_Object *o_bg;
 };
 
 EAPI extern E_Module_Api e_modapi;

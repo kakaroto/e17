@@ -10,7 +10,8 @@
 
 #define GOLDEN_RATIO 1.618033989
 
-#define DEBUG(f, ...) printf("[forecasts] "f"\n", __VA_ARGS__) 
+#define ENABLE_DEBUG 0
+#define DEBUG(f, ...) if(ENABLE_DEBUG) printf("[forecasts] "f"\n", __VA_ARGS__) 
 
 
 /* Gadcon Function Protos */
@@ -122,12 +123,13 @@ static void _forecasts_convert_distances(int *value, int dir);
 static void _forecasts_convert_distances_float(float *value, int dir);
 static void _forecasts_convert_pressures(float *value, int dir);
 static void _forecasts_display_set(Instance * inst, int ok);
-static void _forecasts_popup_content_create(Instance *inst, Evas *evas);
-static void _forecasts_popup_content_fill(Instance *inst);
+static void _forecasts_popup_content_create(Instance *inst);
 static void _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static Evas_Object * _forecasts_popup_icon_create(Popup *popup, int code);
+static void _forecasts_popup_destroy(Instance *inst);
+static void _forecasts_popup_toggle_pinned_state(Popup *popup);
 
 /* Gadcon Functions */
 static E_Gadcon_Client *
@@ -138,7 +140,6 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
    Forecasts *w;
    Instance *inst;
    Config_Item *ci;
-   char buf[4096];
    int pw, ph;
    Popup *popup;
 
@@ -162,26 +163,6 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
 				   _cb_mouse_in, inst);
    evas_object_event_callback_add(inst->forecasts_obj, EVAS_CALLBACK_MOUSE_OUT,
 				   _cb_mouse_out, inst);
-
-   popup = E_NEW(Popup, 1);
-   inst->popup = popup;
-   popup->win = e_popup_new(e_zone_current_get(e_container_current_get(e_manager_current_get())), 0, 0, 0, 0);
-   e_popup_layer_set(popup->win, 999);
-   o = edje_object_add(popup->win->evas);
-   snprintf(buf, sizeof(buf), "%s/forecasts.edj",
-	 e_module_dir_get(forecasts_config->module));
-   if (!e_theme_edje_object_set(o, "base/theme/modules/forecasts",
-	    "modules/forecasts/popup"))
-     edje_object_file_set(o, buf, "modules/forecasts/popup");
-   evas_object_show(o);
-   popup->o_bg = o;
-   _forecasts_popup_content_create(inst, popup->win->evas);
-   e_widget_min_size_get(popup->o_list, &pw, &ph);
-   edje_extern_object_min_size_set(popup->o_list, pw, ph);
-   edje_object_part_swallow(o, "e.swallow.content", popup->o_list);
-   edje_object_size_min_calc(popup->o_bg, &popup->w, &popup->h);
-   evas_object_move(popup->o_bg, 0, 0);
-   evas_object_resize(popup->o_bg, popup->w, popup->h);
 
    if (!ci->show_text)
      edje_object_signal_emit(inst->forecasts_obj, "e,state,description,hide", "e");
@@ -350,7 +331,7 @@ _forecasts_config_item_get(const char *id)
 
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
-   ci->poll_time = 900.0;
+   ci->poll_time = 60.0;
    ci->degrees = DEGREES_C;
    ci->host = evas_stringshare_add("xml.weather.yahoo.com");
    ci->code = evas_stringshare_add("BUXX0005");
@@ -399,7 +380,7 @@ e_modapi_init(E_Module * m)
 	forecasts_config = E_NEW(Config, 1);
 
 	ci = E_NEW(Config_Item, 1);
-	ci->poll_time = 900.0;
+	ci->poll_time = 60.0;
 	ci->degrees = DEGREES_C;
 	ci->host = evas_stringshare_add("xml.weather.yahoo.com");
 	ci->code = evas_stringshare_add("BUXX0005");
@@ -902,7 +883,7 @@ _forecasts_display_set(Instance * inst, int ok)
    edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.temp", buf);
    edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.description",
 	 inst->condition.desc);
-   _forecasts_popup_content_fill(inst);
+   _forecasts_popup_content_create(inst);
 }
 
 void
@@ -932,7 +913,7 @@ _forecasts_config_updated(const char *id)
 	     if (inst->area) evas_stringshare_del(inst->area);
 	     inst->area = evas_stringshare_add(ci->code);
 	     _forecasts_converter(inst);
-	     _forecasts_popup_content_fill(inst);
+	     _forecasts_popup_content_create(inst);
 
 	     snprintf(buf, sizeof(buf), "%d°%c", inst->condition.temp, inst->units.temp);
 	     edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.temp", buf);
@@ -958,137 +939,74 @@ _forecasts_config_updated(const char *id)
 }
 
 static void
-_forecasts_popup_content_create(Instance *inst, Evas *evas)
+_forecasts_popup_content_create(Instance *inst)
 {
-  Evas_Object *o, *ol, *of, *ob, *oi;
-  int row = 0, i;
-  int w, h;
-
-  o = e_widget_list_add(evas, 0, 0);
-  of = e_widget_frametable_add(evas, D_("No location"), 0);
-  ob = e_widget_label_add(evas, D_("No description"));
-  e_widget_frametable_object_append(of, ob, 0, row, 2, 1, 0, 0, 1, 0);
-  inst->popup->current_desc = ob;
-  inst->popup->o_ft[0] = of;
-
-  oi = 	_forecasts_popup_icon_create(inst->popup, 3200);
-  edje_object_size_max_get(oi, &w, &h);
-  DEBUG("Icon size %dx%d", w, h);
-  if (w > 160) w = 160;		/* For now there is a limit to how big the icon should be */
-  if (h > 160) h = 160;		/* In the future, the icon should be set from the theme, not part of the table */
-  ob = e_widget_image_add_from_object(evas, oi, w, h);
-  e_widget_frametable_object_append(of, ob, 2, row, 1, 4, 1, 1, 1, 1);
-  inst->popup->icon = ob;
-
-  ob = e_widget_label_add(evas, D_("Wind Chill"));
-  e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
-  ob = e_widget_label_add(evas, "0°C");
-  e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
-  inst->popup->wind_chill = ob;
-
-  ob = e_widget_label_add(evas, D_("Wind Speed"));
-  e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
-  ob = e_widget_label_add(evas, "0 kph");
-  e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
-  inst->popup->wind_speed = ob;
-
-  ob = e_widget_label_add(evas, D_("Humidity"));
-  e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
-  ob = e_widget_label_add(evas, "0 %");
-  e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
-  inst->popup->humidity = ob;
-
-  ob = e_widget_label_add(evas, D_("Visibility"));
-  e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
-  ob = e_widget_label_add(evas, "0.0 km");
-  e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
-  inst->popup->visibility = ob;
-
-  ob = e_widget_label_add(evas, D_("Pressure"));
-  e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
-  ob = e_widget_label_add(evas, "0.0 mb");
-  e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
-  inst->popup->pressure = ob;
-
-  ob = e_widget_label_add(evas, D_("Steady"));
-  e_widget_frametable_object_append(of, ob, 2, row, 1, 1, 1, 0, 1, 0);
-  inst->popup->rising = ob;
-
-  ob = e_widget_label_add(evas, D_("Sunrise / Sunset"));
-  e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
-  ob = e_widget_label_add(evas, "0:00 am");
-  e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 1, 0);
-  inst->popup->sunrise = ob;
-
-  ob = e_widget_label_add(evas, "0:00 pm");
-  e_widget_frametable_object_append(of, ob, 2, row, 1, 1, 1, 0, 1, 0);
-  inst->popup->sunset = ob;
-
-  e_widget_list_object_append(o, of, 1, 1, 0.5);
-  ol = e_widget_list_add(evas, 1, 1);
-
-  for (i = 0; i < FORECASTS; i++) {
-       int row = 0;
-
-       of = e_widget_frametable_add(evas, D_("No date"), 0);
-       inst->popup->o_ft[i+1] = of;
-
-       ob = e_widget_label_add(evas, D_("No description"));
-       e_widget_frametable_object_append(of, ob, 0, row, 3, 1, 0, 0, 1, 0);
-       inst->popup->desc[i] = ob;
-
-       ob = e_widget_label_add(evas, D_("High"));
-       e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 1, 0);
-       ob = e_widget_label_add(evas, "0°C");
-       e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 1, 0);
-       inst->popup->high[i] = ob;
-
-       ob = e_widget_image_add_from_object(evas,
-	     _forecasts_popup_icon_create(inst->popup, 3200), 0, 0);
-       e_widget_frametable_object_append(of, ob, 2, row, 1, 2, 0, 0, 0, 0);
-       inst->popup->f_icon[i] = ob;
-
-       ob = e_widget_label_add(evas, D_("Low"));
-       e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 1, 0);
-       ob = e_widget_label_add(evas, "0°C");
-       e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 1, 0);
-       inst->popup->low[i] = ob;
-       e_widget_list_object_append(ol, of, 1, 1, 0.5);
-  }
-
-  e_widget_list_object_append(o, ol, 1, 1, 0.5);
-  inst->popup->o_list = o;
-  e_popup_edje_bg_object_set(inst->popup->win, inst->popup->o_bg);
-}
-
-static void
-_forecasts_popup_content_fill(Instance *inst)
-{
-   int i, pw, ph;
+   Evas_Object *o, *ol, *of, *ob, *oi;
+   Evas *evas;
    char buf[4096];
-   char m[4096];
-   Evas_Object *o;
+   int row = 0, i;
+   int w, h;
 
+   if (inst->popup) _forecasts_popup_destroy(inst);
+   inst->popup = E_NEW(Popup, 1);
+   inst->popup->win = e_popup_new(e_zone_current_get(e_container_current_get(e_manager_current_get())), 0, 0, 0, 0);
+   e_popup_layer_set(inst->popup->win, 999);
+   evas = inst->popup->win->evas;
+   o = edje_object_add(evas);
+   snprintf(buf, sizeof(buf), "%s/forecasts.edj",
+	 e_module_dir_get(forecasts_config->module));
+   if (!e_theme_edje_object_set(o, "base/theme/modules/forecasts",
+	    "modules/forecasts/popup"))
+     edje_object_file_set(o, buf, "modules/forecasts/popup");
+   evas_object_show(o);
+   inst->popup->o_bg = o;
+   evas_object_move(inst->popup->o_bg, 0, 0);
+
+   o = e_widget_list_add(evas, 0, 0);
    snprintf(buf, sizeof(buf), "%s", inst->location);
-   e_widget_frametable_label_set(inst->popup->o_ft[0], buf);
+   of = e_widget_frametable_add(evas, buf, 0);
 
    snprintf(buf, sizeof(buf), "%s: %d°%c", inst->condition.desc, inst->condition.temp, inst->units.temp);
-   e_widget_label_text_set(inst->popup->current_desc, buf);
+   ob = e_widget_label_add(evas, buf);
+   e_widget_frametable_object_append(of, ob, 0, row, 2, 1, 0, 0, 1, 0);
 
+   oi = _forecasts_popup_icon_create(inst->popup, inst->condition.code);
+   edje_object_size_max_get(oi, &w, &h);
+   DEBUG("Icon size %dx%d", w, h);
+   if (w > 160) w = 160;	/* For now there is a limit to how big the icon should be */
+   if (h > 160) h = 160;	/* In the future, the icon should be set from the theme, not part of the table */
+   ob = e_widget_image_add_from_object(evas, oi, w, h);
+   e_widget_frametable_object_append(of, ob, 2, row, 1, 4, 1, 1, 1, 1);
+
+   ob = e_widget_label_add(evas, D_("Wind Chill"));
+   e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
    snprintf(buf, sizeof(buf), "%d°%c", inst->details.wind.chill, inst->units.temp);
-   e_widget_label_text_set(inst->popup->wind_chill, buf);
+   ob = e_widget_label_add(evas, buf);
+   e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
 
+   ob = e_widget_label_add(evas, D_("Wind Speed"));
+   e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
    snprintf(buf, sizeof(buf), "%d %s", inst->details.wind.speed, inst->units.speed);
-   e_widget_label_text_set(inst->popup->wind_speed, buf);
+   ob = e_widget_label_add(evas, buf);
+   e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
 
+   ob = e_widget_label_add(evas, D_("Humidity"));
+   e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
    snprintf(buf, sizeof(buf), "%d %%", inst->details.atmosphere.humidity);
-   e_widget_label_text_set(inst->popup->humidity, buf);
+   ob = e_widget_label_add(evas, buf);
+   e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
 
+   ob = e_widget_label_add(evas, D_("Visibility"));
+   e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
    snprintf(buf, sizeof(buf), "%.2f %s", inst->details.atmosphere.visibility, inst->units.distance);
-   e_widget_label_text_set(inst->popup->visibility, buf);
+   ob = e_widget_label_add(evas, buf);
+   e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
 
+   ob = e_widget_label_add(evas, D_("Pressure"));
+   e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
    snprintf(buf, sizeof(buf), "%.2f %s", inst->details.atmosphere.pressure, inst->units.pressure);
-   e_widget_label_text_set(inst->popup->pressure, buf);
+   ob = e_widget_label_add(evas, buf);
+   e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 0, 0);
 
    if (inst->details.atmosphere.rising == 1)
      snprintf(buf, sizeof(buf), D_("Rising"));
@@ -1096,42 +1014,58 @@ _forecasts_popup_content_fill(Instance *inst)
      snprintf(buf, sizeof(buf), D_("Falling"));
    else
      snprintf(buf, sizeof(buf), D_("Steady"));
-   e_widget_label_text_set(inst->popup->rising, buf);
+   ob = e_widget_label_add(evas, buf);
+   e_widget_frametable_object_append(of, ob, 2, row, 1, 1, 1, 0, 1, 0);
 
+   ob = e_widget_label_add(evas, D_("Sunrise / Sunset"));
+   e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 0, 0);
    snprintf(buf, sizeof(buf), "%s", inst->details.astronomy.sunrise);
-   e_widget_label_text_set(inst->popup->sunrise, buf);
+   ob = e_widget_label_add(evas, buf);
+   e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 1, 0);
 
    snprintf(buf, sizeof(buf), "%s", inst->details.astronomy.sunset);
-   e_widget_label_text_set(inst->popup->sunset, buf);
+   ob = e_widget_label_add(evas, buf);
+   e_widget_frametable_object_append(of, ob, 2, row, 1, 1, 1, 0, 1, 0);
 
-   
-   e_widget_image_object_set(inst->popup->icon,
-	 _forecasts_popup_icon_create(inst->popup, inst->condition.code));
-
-   e_widget_frametable_content_align_set(inst->popup->o_ft[0], 0.5, 0.5);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   ol = e_widget_list_add(evas, 1, 1);
 
    for (i = 0; i < FORECASTS; i++) {
-	e_widget_image_object_set(inst->popup->f_icon[i],
-	      _forecasts_popup_icon_create(inst->popup, inst->forecast[i].code));
-
-	snprintf(buf, sizeof(buf), "%d°%c", inst->forecast[i].high, inst->units.temp);
-	e_widget_label_text_set(inst->popup->high[i], buf);
-
-	snprintf(buf, sizeof(buf), "%d°%c", inst->forecast[i].low, inst->units.temp);
-	e_widget_label_text_set(inst->popup->low[i], buf);
+	int row = 0;
 
 	snprintf(buf, sizeof(buf), "%s", inst->forecast[i].date);
-	e_widget_frametable_label_set(inst->popup->o_ft[i+1], buf);
+	of = e_widget_frametable_add(evas, buf, 0);
 
 	snprintf(buf, sizeof(buf), "%s", inst->forecast[i].desc);
-	e_widget_label_text_set(inst->popup->desc[i], buf);
+	ob = e_widget_label_add(evas, buf);
+	e_widget_frametable_object_append(of, ob, 0, row, 3, 1, 0, 0, 1, 0);
 
-	e_widget_frametable_content_align_set(inst->popup->o_ft[i+1], 0.5, 0.5);
+	ob = e_widget_label_add(evas, D_("High"));
+	e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 1, 0);
+	snprintf(buf, sizeof(buf), "%d°%c", inst->forecast[i].high, inst->units.temp);
+	ob = e_widget_label_add(evas, buf);
+	e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 1, 0);
+
+	ob = e_widget_image_add_from_object(evas,
+	      _forecasts_popup_icon_create(inst->popup, inst->forecast[i].code), 0, 0);
+	e_widget_frametable_object_append(of, ob, 2, row, 1, 2, 0, 0, 0, 0);
+
+	ob = e_widget_label_add(evas, D_("Low"));
+	e_widget_frametable_object_append(of, ob, 0, ++row, 1, 1, 1, 0, 1, 0);
+	snprintf(buf, sizeof(buf), "%d°%c", inst->forecast[i].low, inst->units.temp);
+	ob = e_widget_label_add(evas, buf);
+	e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 1, 0);
+	e_widget_list_object_append(ol, of, 1, 1, 0.5);
    }
 
-   e_widget_min_size_get(inst->popup->o_list, &pw, &ph);
-   edje_extern_object_min_size_set(inst->popup->o_list, pw, ph);
+   e_widget_list_object_append(o, ol, 1, 1, 0.5);
+   e_popup_edje_bg_object_set(inst->popup->win, inst->popup->o_bg);
+
+   e_widget_min_size_get(o, &w, &h);
+   edje_extern_object_min_size_set(o, w, h);
+   edje_object_part_swallow(inst->popup->o_bg, "e.swallow.content", o);
    edje_object_size_min_calc(inst->popup->o_bg, &inst->popup->w, &inst->popup->h);
+   DEBUG("Popup size %dx%d", inst->popup->w, inst->popup->h);
    evas_object_resize(inst->popup->o_bg, inst->popup->w, inst->popup->h);
 }
 
@@ -1152,6 +1086,29 @@ _forecasts_popup_icon_create(Popup *popup, int code)
    return o;
 }
 
+static void
+_forecasts_popup_destroy(Instance *inst)
+{
+   if (!inst->popup) return;
+   if (inst->popup->pinned) _forecasts_popup_toggle_pinned_state(inst->popup);
+   evas_object_del(inst->popup->o_bg);
+   e_object_del(E_OBJECT(inst->popup->win));
+   E_FREE(inst->popup);
+}
+
+static void
+_forecasts_popup_toggle_pinned_state(Popup *popup)
+{
+   if (!popup) return;
+   if (popup->pinned) {
+	popup->pinned = 0;
+	edje_object_signal_emit(popup->o_bg, "e,state,unpinned", "e");
+   } else {
+	popup->pinned = 1;
+	edje_object_signal_emit(popup->o_bg, "e,state,pinned", "e");
+   }
+}
+
 static void 
 _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
@@ -1161,13 +1118,7 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    inst = data;
    ev = event_info;
    if (ev->button == 1) {
-	if (inst->popup->pinned) {
-	  inst->popup->pinned = 0;
-	  edje_object_signal_emit(inst->popup->o_bg, "e,state,unpinned", "e");
-	} else {
-	  inst->popup->pinned = 1;
-	  edje_object_signal_emit(inst->popup->o_bg, "e,state,pinned", "e");
-	}
+	_forecasts_popup_toggle_pinned_state(inst->popup);
    }
 }
 
@@ -1175,15 +1126,13 @@ static void
 _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
-   int ww, wh, pw, ph;
+   int ww, wh;
    Evas_Coord gx, gy, gw, gh, cx, cy, cw, ch, px, py;
    
    inst = data;
    if (!inst->popup) return;
    e_popup_show(inst->popup->win);
    evas_object_show(inst->popup->o_bg);
-   e_widget_min_size_get(inst->popup->o_list, &pw, &ph);
-   edje_extern_object_min_size_set(inst->popup->o_list, pw, ph);
    edje_object_size_min_calc(inst->popup->o_bg, &ww, &wh);
    /* Apply the golden ratio to the popup */
    if ((double) ww / wh > GOLDEN_RATIO) {
