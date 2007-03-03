@@ -28,20 +28,20 @@ typedef struct
 
 	int (*align_ask) (Ewl_Object * ob);
 	void (*align_set) (Ewl_Object * ob, int size);
-} Box_Orientation;
+} Ewl_Box_Orientation;
 
 /*
  * The information for the two different orientations
  */
-static Box_Orientation *ewl_box_vertical = NULL;
-static Box_Orientation *ewl_box_horizontal = NULL;
+static Ewl_Box_Orientation *ewl_box_vertical = NULL;
+static Ewl_Box_Orientation *ewl_box_horizontal = NULL;
 
 static void ewl_box_cb_shutdown(void);
 
 /*
  * And a pointer to the currently used orientation
  */
-static Box_Orientation *ewl_box_info = NULL;
+static Ewl_Box_Orientation *ewl_box_info = NULL;
 
 /*
  * These lists are used to sort children when configured.
@@ -920,7 +920,7 @@ ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 			int size, Ewl_Orientation o)
 {
 	int align_size, fill_size;
-	Box_Orientation *info;
+	Ewl_Box_Orientation *info;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -969,7 +969,7 @@ ewl_box_setup(void)
 	ewl_shutdown_add(ewl_box_cb_shutdown);
 
 	if (!ewl_box_vertical) {
-		ewl_box_vertical = NEW(Box_Orientation, 1);
+		ewl_box_vertical = NEW(Ewl_Box_Orientation, 1);
 		if (!ewl_box_vertical)
 			DRETURN(DLEVEL_STABLE);
 
@@ -1010,7 +1010,7 @@ ewl_box_setup(void)
 	}
 
 	if (!ewl_box_horizontal) {
-		ewl_box_horizontal = NEW(Box_Orientation, 1);
+		ewl_box_horizontal = NEW(Ewl_Box_Orientation, 1);
 		if (!ewl_box_horizontal)
 			DRETURN(DLEVEL_STABLE);
 
