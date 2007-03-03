@@ -202,6 +202,7 @@ _gc_shutdown(E_Gadcon_Client * gcc)
    inst = gcc->data;
    w = inst->forecasts;
 
+   if (inst->popup) _forecasts_popup_destroy(inst);
    if (inst->check_timer)
      ecore_timer_del(inst->check_timer);
    if (inst->add_handler)
@@ -1127,7 +1128,7 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
    int ww, wh;
-   Evas_Coord gx, gy, gw, gh, cx, cy, cw, ch, px, py;
+   Evas_Coord gx, gy, gw, gh, zw, zh, px, py;
    
    inst = data;
    if (!inst->popup) return;
@@ -1146,8 +1147,11 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    inst->popup->h = wh;
 
    /* Popup positioning */
-   evas_object_geometry_get(obj, &gx, &gy, &gw, &gh);
-   e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
+   e_gadcon_client_geometry_get(inst->gcc, &gx, &gy, &gw, &gh);
+   zw = inst->gcc->gadcon->zone->w;
+   zh = inst->gcc->gadcon->zone->h;
+   DEBUG("Zone size: %dx%d", zw, zh);
+   DEBUG("Object geometry: %dx%d, %dx%d", gx, gy, gw, gh);
    switch (inst->gcc->gadcon->orient)
      {
       case E_GADCON_ORIENT_CORNER_RT:
@@ -1155,7 +1159,7 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
       case E_GADCON_ORIENT_RIGHT:
 	 px = gx - inst->popup->w;
 	 py = gy;
-	 if (py + inst->popup->h >= ch)
+	 if (py + inst->popup->h >= zh)
 	   py = gy + gh - inst->popup->h;
 	 break;
       case E_GADCON_ORIENT_LEFT:
@@ -1163,7 +1167,7 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
       case E_GADCON_ORIENT_CORNER_LB:
 	 px = gx + gw;
 	 py = gy;
-	 if (py + inst->popup->h >= ch)
+	 if (py + inst->popup->h >= zh)
 	   py = gy + gh - inst->popup->h;
 	 break;
 	 break;
@@ -1172,7 +1176,7 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
       case E_GADCON_ORIENT_CORNER_TR:
 	 py = gy + gh;
 	 px = gx;
-	 if (px + inst->popup->w >= cw)
+	 if (px + inst->popup->w >= zw)
 	   px = gx + gw - inst->popup->w;
 	 break;
       case E_GADCON_ORIENT_BOTTOM:
@@ -1180,7 +1184,7 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
       case E_GADCON_ORIENT_CORNER_BR:
 	 py = gy - inst->popup->h;
 	 px = gx;
-	 if (px + inst->popup->w >= cw)
+	 if (px + inst->popup->w >= zw)
 	   px = gx + gw - inst->popup->w;
 	 break;
       default:
