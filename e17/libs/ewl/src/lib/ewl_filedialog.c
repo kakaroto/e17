@@ -457,7 +457,7 @@ ewl_filedialog_cb_delete_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 static void
 ewl_filedialog_respond(Ewl_Filedialog *fd, unsigned int response)
 {
-	Ewl_Dialog_Event ev;
+	Ewl_Event_Action_Response ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -473,7 +473,7 @@ ewl_filedialog_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev,
 							void *data)
 {
 	Ewl_Filedialog *fd;
-	Ewl_Filepicker_Event *e;
+	Ewl_Event_Action_Response *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

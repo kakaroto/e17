@@ -237,42 +237,16 @@ struct Ewl_Event_Dnd_Data_Request
 };
 
 /**
- * The Ewl_Dialog_Evenet type
+ * The Ewl_Event_Action_Response type
  */
-typedef struct Ewl_Dialog_Event Ewl_Dialog_Event;
+typedef struct Ewl_Event_Action_Response Ewl_Event_Action_Response;
 
 /**
- * Stores the reponse from a dialog
+ * Stores the reponse from a user action
  */
-struct Ewl_Dialog_Event
+struct Ewl_Event_Action_Response
 {
-	unsigned int response; /**< The response ID from the dialog */
-};
-
-/**
- * The Ewl_Filepicker_Event type
- */
-typedef struct Ewl_Filepicker_Event Ewl_Filepicker_Event;
-
-/**
- * Contains the filepicker response
- */
-struct Ewl_Filepicker_Event
-{
-	unsigned int response;	/**< The filepicker response */
-};
-
-/**
- * The Ewl_Filelist_Event type
- */
-typedef struct Ewl_Filelist_Event Ewl_Filelist_Event;
-
-/**
- * Contains the filelist event type
- */
-struct Ewl_Filelist_Event
-{
-	Ewl_Filelist_Event_Type type;	/**< The type of event */
+	unsigned int response; /**< The response ID */
 };
 
 unsigned int 	ewl_ev_modifiers_get(void);

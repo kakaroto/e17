@@ -337,7 +337,7 @@ ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__,
 static void
 ewl_colordialog_respond(Ewl_Colordialog *cd, unsigned int response)
 {
-	Ewl_Dialog_Event cd_ev;
+	Ewl_Event_Action_Response cd_ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);

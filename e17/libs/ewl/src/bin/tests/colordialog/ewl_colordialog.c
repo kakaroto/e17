@@ -43,7 +43,7 @@ create_test(Ewl_Container *box)
 static void
 colordialog_cb_value_changed(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-	Ewl_Dialog_Event *cd_ev;
+	Ewl_Event_Action_Response *cd_ev;
 
 	cd_ev = ev;
 	if (cd_ev->response == EWL_STOCK_OK)

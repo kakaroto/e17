@@ -331,7 +331,7 @@ create_image_fd_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 static void
 create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 {
-	Ewl_Dialog_Event *e;
+	Ewl_Event_Action_Response *e;
 	Ewl_Widget *entry = data;
   
 	e = ev;

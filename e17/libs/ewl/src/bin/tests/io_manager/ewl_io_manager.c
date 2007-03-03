@@ -64,7 +64,7 @@ cb_fd_delete(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 static void
 cb_open(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-	Ewl_Dialog_Event *e;
+	Ewl_Event_Action_Response *e;
 	Ewl_Filedialog *fd;
 	Ewl_Widget *scroll, *t;
 	char *s, path[1024];

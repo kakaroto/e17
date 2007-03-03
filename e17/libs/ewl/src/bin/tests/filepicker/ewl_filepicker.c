@@ -111,7 +111,7 @@ ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev,
 					void *data __UNUSED__)
 {
 	Ewl_Filepicker *fp;
-	Ewl_Filepicker_Event *e;
+	Ewl_Event_Action_Response *e;
 
 	fp = EWL_FILEPICKER(w);
 	e = ev;

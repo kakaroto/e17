@@ -50,7 +50,7 @@ ewl_filelist_init(Ewl_Filelist *fl)
 void
 ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 {
-	Ewl_Filelist_Event ev_data;
+	Ewl_Event_Action_Response ev_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
@@ -60,7 +60,7 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 	fl->directory = strdup(dir);
 	if (fl->dir_change) fl->dir_change(fl);
 
-	ev_data.type = EWL_FILELIST_EVENT_TYPE_DIR_CHANGE;
+	ev_data.response = EWL_FILELIST_EVENT_DIR_CHANGE;
 
 	ewl_callback_call_with_event_data(EWL_WIDGET(fl), 
 			EWL_CALLBACK_VALUE_CHANGED, &ev_data);
@@ -505,13 +505,13 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 void
 ewl_filelist_selected_files_change_notify(Ewl_Filelist *fl)
 {
-	Ewl_Filelist_Event ev_data;
+	Ewl_Event_Action_Response ev_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
 
-	ev_data.type = EWL_FILELIST_EVENT_TYPE_SELECTION_CHANGE;
+	ev_data.response = EWL_FILELIST_EVENT_SELECTION_CHANGE;
 	ewl_callback_call_with_event_data(EWL_WIDGET(fl), 
 			EWL_CALLBACK_VALUE_CHANGED, &ev_data);
 

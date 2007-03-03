@@ -97,7 +97,7 @@ fd_cb_delete(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 static void
 fd_cb_value_changed(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-	Ewl_Dialog_Event *e;
+	Ewl_Event_Action_Response *e;
 	Ewl_Widget *list;
 	Ewl_Filedialog *fd;
 

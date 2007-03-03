@@ -575,7 +575,7 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 {
 	Ewl_Filepicker *fp;
 	Ewl_Filelist *fl;
-	Ewl_Filelist_Event *e;
+	Ewl_Event_Action_Response *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -586,7 +586,7 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 	e = ev;
 
 	/* XXX need to correctly deal with multiselect files in here */
-	if (e->type == EWL_FILELIST_EVENT_TYPE_DIR_CHANGE)
+	if (e->response == EWL_FILELIST_EVENT_DIR_CHANGE)
 	{
 		char *dir;
 
@@ -596,7 +596,7 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 
 		FREE(dir);
 	}
-	else if (e->type == EWL_FILELIST_EVENT_TYPE_SELECTION_CHANGE)
+	else if (e->response == EWL_FILELIST_EVENT_SELECTION_CHANGE)
 		ewl_text_text_set(EWL_TEXT(fp->file_entry), 
 				ewl_filelist_selected_file_get(fl));
 
@@ -609,7 +609,7 @@ ewl_filepicker_cb_button_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	Ewl_Filepicker *fp;
 	Ewl_Stock *s;
-	Ewl_Filepicker_Event e;
+	Ewl_Event_Action_Response e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

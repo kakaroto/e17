@@ -181,7 +181,7 @@ seeker_move_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 static void
 open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 {
-	Ewl_Dialog_Event *e;
+	Ewl_Event_Action_Response *e;
 
 	ewl_widget_hide(fd_win);
 
