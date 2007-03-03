@@ -510,7 +510,7 @@ ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 		menu = EWL_MENU(fd->menu);
 		ewl_window_move(EWL_WINDOW(menu->base.popup), 
-					x + event->x, y + event->y);
+					x + event->base.x, y + event->base.y);
 		ewl_widget_show(fd->menu);
 
 		ewl_callback_call(EWL_WIDGET(fd->menu),

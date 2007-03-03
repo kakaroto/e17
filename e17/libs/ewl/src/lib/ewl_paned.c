@@ -742,7 +742,7 @@ ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev,
 						void *data __UNUSED__)
 {
 	Ewl_Paned *p;
-	Ewl_Event_Mouse_Down *event;
+	Ewl_Event_Mouse *event;
 	int ds;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -783,7 +783,7 @@ ewl_paned_grabber_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 static void
 ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 {
-	Ewl_Event_Mouse_Move *e;
+	Ewl_Event_Mouse *e;
 	Ewl_Paned_Grabber *stop_grabber = NULL;
 	Ewl_Widget *child;
 	Ewl_Container *c;

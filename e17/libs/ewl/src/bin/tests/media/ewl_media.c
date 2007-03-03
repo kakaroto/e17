@@ -221,7 +221,7 @@ open_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 static void
 key_up_cb(Ewl_Widget *w, void *event, void *data)
 {
-	Ewl_Event_Key_Up *e = (Ewl_Event_Key_Up *)event;
+	Ewl_Event_Key *e = event;
 
 	if (!strcmp(e->keyname, "p"))
 		ewl_media_play_set(EWL_MEDIA(video), 1);

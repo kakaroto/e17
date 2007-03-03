@@ -595,7 +595,7 @@ static void
 ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Attach *attach;
-	Ewl_Event_Mouse_Move *e;
+	Ewl_Event_Mouse *e;
 	const char *delay_str;
 	double delay = 1.0;
 

@@ -115,13 +115,13 @@ cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	pointer_win = ewl_widget_name_find(WIN_NAME);
 
-	x = (int)((double)(event->x - CURRENT_X(w)) *
+	x = (int)((double)(event->base.x - CURRENT_X(w)) *
 			((double)CURRENT_W(pointer_win) / (double)CURRENT_W(w)));
-	y = (int)((double)(event->y - CURRENT_Y(w)) *
+	y = (int)((double)(event->base.y - CURRENT_Y(w)) *
 			((double)CURRENT_H(pointer_win) / (double)CURRENT_H(w)));
 
 	ewl_embed_mouse_down_feed(EWL_EMBED(pointer_win), event->button,
-			event->clicks, x, y, event->modifiers);
+			event->clicks, x, y, event->base.modifiers);
 }
 
 static void
@@ -133,13 +133,13 @@ cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	pointer_win = ewl_widget_name_find(WIN_NAME);
 
-	x = (int)((double)(event->x - CURRENT_X(w)) *
+	x = (int)((double)(event->base.x - CURRENT_X(w)) *
 			((double)CURRENT_W(pointer_win) / (double)CURRENT_W(w)));
-	y = (int)((double)(event->y - CURRENT_Y(w)) *
+	y = (int)((double)(event->base.y - CURRENT_Y(w)) *
 			((double)CURRENT_H(pointer_win) / (double)CURRENT_H(w)));
 
 	ewl_embed_mouse_up_feed(EWL_EMBED(pointer_win), event->button, x, y,
-			event->modifiers);
+			event->base.modifiers);
 }
 
 static void
@@ -147,7 +147,7 @@ cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	int x, y;
 	Ewl_Widget *pointer_win;
-	Ewl_Event_Mouse_Move *event = ev;
+	Ewl_Event_Mouse *event = ev;
 
 	pointer_win = ewl_widget_name_find(WIN_NAME);
 

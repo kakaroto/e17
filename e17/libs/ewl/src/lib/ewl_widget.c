@@ -3047,8 +3047,8 @@ ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
 		int x, y;
 
 		ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
-		x = e->x - (CURRENT_X(w) - INSET_LEFT(w));
-		y = e->y - (CURRENT_Y(w) - INSET_TOP(w));
+		x = e->base.x - (CURRENT_X(w) - INSET_LEFT(w));
+		y = e->base.y - (CURRENT_Y(w) - INSET_TOP(w));
 		if ((x > 0) && (x < CURRENT_W(w) + INSET_HORIZONTAL(w)) &&
 				(y > 0) && (y < CURRENT_H(w) + INSET_VERTICAL(w))) {
 			ewl_callback_call_with_event_data(w,
@@ -3056,7 +3056,7 @@ ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
 		}
 		else {
 			ewl_embed_mouse_move_feed(ewl_embed_widget_find(w),
-					e->x, e->y, e->modifiers);
+					e->base.x, e->base.y, e->base.modifiers);
 		}
 	} else
 		ewl_widget_state_set(w, "mouse,out", EWL_STATE_TRANSIENT);
@@ -3078,7 +3078,7 @@ ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 {
 	Ewl_Embed *embed;
 	Ewl_Object *o;
-	Ewl_Event_Mouse_Move *ev = ev_data;
+	Ewl_Event_Mouse *ev = ev_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

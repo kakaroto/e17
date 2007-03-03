@@ -1352,7 +1352,7 @@ ewl_tree_cb_row_select(Ewl_Widget *w, void *ev_data,
 {
 	Ewl_Tree *tree;
 	Ewl_Tree_Node *node;
-	Ewl_Event_Mouse_Down *ev;
+	Ewl_Event_Mouse *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

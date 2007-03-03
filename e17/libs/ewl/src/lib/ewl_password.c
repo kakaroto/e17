@@ -218,7 +218,7 @@ ewl_password_cb_key_down(Ewl_Widget *w, void *ev_data,
 {
 	int len;
 	Ewl_Password *e;
-	Ewl_Event_Key_Down *ev;
+	Ewl_Event_Key *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

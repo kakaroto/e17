@@ -338,7 +338,7 @@ ewl_button_fill_policy_get(Ewl_Button *b)
 void
 ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-	Ewl_Event_Key_Up *event;
+	Ewl_Event_Key *event;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -352,10 +352,10 @@ ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	{
 		Ewl_Event_Mouse_Up e;
 
-		e.x = 0;
-		e.y = 0;
+		e.base.modifiers = 0;
+		e.base.x = 0;
+		e.base.y = 0;
 		e.button = 1;
-		e.modifiers = 0;
 
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_CLICKED, &e);
 	}

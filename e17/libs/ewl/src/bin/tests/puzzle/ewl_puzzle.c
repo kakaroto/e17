@@ -162,7 +162,7 @@ puzzle_mouse_up_cb(Ewl_Widget *w, void *e, void *data)
 {
 	int cx, cy, cw, ch;
 	int col, row;
-	Ewl_Event_Mouse_Up *ev;
+	Ewl_Event_Mouse *ev;
 	Ewl_Widget *g;
 
 	g = data;

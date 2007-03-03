@@ -355,7 +355,7 @@ void
 ewl_spectrum_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Spectrum *sp;
-	Ewl_Event_Mouse_Down *e;
+	Ewl_Event_Mouse *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -384,7 +384,7 @@ void
 ewl_spectrum_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Spectrum *sp;
-	Ewl_Event_Mouse_Move *e;
+	Ewl_Event_Mouse *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

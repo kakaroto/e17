@@ -341,7 +341,7 @@ void
 ewl_seeker_cb_button_mouse_down(Ewl_Widget *w, void *ev_data,
 					void *user_data __UNUSED__)
 {
-	Ewl_Event_Mouse_Down *ev;
+	Ewl_Event_Mouse *ev;
 	Ewl_Seeker *s;
 	int xx, yy, ww, hh;
 
@@ -396,7 +396,7 @@ void
 ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 			 void *user_data __UNUSED__)
 {
-	Ewl_Event_Mouse_Move *ev;
+	Ewl_Event_Mouse *ev;
 	Ewl_Seeker *s;
 	Ewl_Range *r;
 	double scale;
@@ -456,7 +456,7 @@ ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data,
 {
 	Ewl_Seeker *s;
 	Ewl_Range *r;
-	Ewl_Event_Mouse_Down *ev;
+	Ewl_Event_Mouse *ev;
 	double value, step = 0;
 	int xx, yy, ww, hh;
 
@@ -551,7 +551,7 @@ ewl_seeker_cb_key_down(Ewl_Widget *w, void *ev_data,
 				void *user_data __UNUSED__)
 {
 	Ewl_Range *r;
-	Ewl_Event_Key_Down *ev;
+	Ewl_Event_Key *ev;
 	double start, end;
 
 	void (*increase)(Ewl_Range *r);

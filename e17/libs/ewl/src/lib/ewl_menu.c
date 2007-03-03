@@ -238,7 +238,7 @@ ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
 void
 ewl_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data) 
 {
-	Ewl_Event_Mouse_Move *ev;
+	Ewl_Event_Mouse *ev;
 	Ewl_Menu *menu;
 	Ewl_Embed *embed, *menu_embed;
 	int x, y, wx, wy;

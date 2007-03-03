@@ -273,7 +273,7 @@ ewl_dnd_snoop_cb_dnd_position(Ewl_Widget *w, void *event,
 						void *data __UNUSED__)
 {
 	char buf[PATH_MAX];
-	Ewl_Event_Mouse_Move *ev = event;
+	Ewl_Event_Mouse *ev = event;
 	snprintf(buf, PATH_MAX, "Position event on widget %p: %d %d\n", w, ev->x, ev->y);
 	ewl_dnd_snoop_output(buf);
 }

@@ -804,8 +804,8 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 		DRETURN(DLEVEL_STABLE);
 
 	/* are the multiselect keys pressed? */
-	if ((ev->modifiers & EWL_KEY_MODIFIER_SHIFT)
-			|| (ev->modifiers & EWL_KEY_MODIFIER_CTRL))
+	if ((ev->base.modifiers & EWL_KEY_MODIFIER_SHIFT)
+			|| (ev->base.modifiers & EWL_KEY_MODIFIER_CTRL))
 		multi = TRUE;
 
 	/* we are not in multiselect mode, or the multiselect keys aren't
@@ -831,7 +831,7 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 	/* ok, we're in multiselect mode and either shift or ctrl are
 	 * pressed */
 
-	if (ev->modifiers & EWL_KEY_MODIFIER_SHIFT)
+	if (ev->base.modifiers & EWL_KEY_MODIFIER_SHIFT)
 	{
 		/* we have no base selected so this is the first click with
 		 * the shift. set base and set the clicked as selected */

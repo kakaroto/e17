@@ -336,7 +336,7 @@ ewl_entry_cb_focus_out(Ewl_Widget *w, void *ev __UNUSED__,
 void
 ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-	Ewl_Event_Key_Down *event;
+	Ewl_Event_Key *event;
 	Ewl_Entry *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -415,7 +415,7 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 void
 ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
-	Ewl_Event_Mouse_Down *event;
+	Ewl_Event_Mouse *event;
 	Ewl_Entry *e;
 	unsigned int idx = 0;
 

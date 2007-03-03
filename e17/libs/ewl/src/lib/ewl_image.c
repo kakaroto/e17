@@ -1091,7 +1091,7 @@ ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 {
 	Ewl_Image *i;
 	Ewl_Embed *emb;
-	Ewl_Event_Mouse_Move *ev;
+	Ewl_Event_Mouse *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

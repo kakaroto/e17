@@ -395,8 +395,8 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
 	/* 
 	 * setup the event struct 
 	 */
-	ev.modifiers = mods;
-	ev.keyname = strdup(keyname);
+	ev.base.modifiers = mods;
+	ev.base.keyname = strdup(keyname);
 
 	/*
 	 * If a widget has been selected then we send the keystroke to the
@@ -429,7 +429,7 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
 		temp = temp->parent;
 	}
 
-	FREE(ev.keyname);
+	FREE(ev.base.keyname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -460,8 +460,8 @@ ewl_embed_key_up_feed(Ewl_Embed *embed, const char *keyname,
 			&& (!strcmp(keyname, "Tab")))
 		DRETURN(DLEVEL_STABLE);
 
-	ev.modifiers = mods;
-	ev.keyname = strdup(keyname);
+	ev.base.modifiers = mods;
+	ev.base.keyname = strdup(keyname);
 
 	/*
 	 * Dispatcher of key up events, these get sent to the last widget
@@ -475,7 +475,7 @@ ewl_embed_key_up_feed(Ewl_Embed *embed, const char *keyname,
 		temp = temp->parent;
 	}
 
-	FREE(ev.keyname);
+	FREE(ev.base.keyname);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -532,9 +532,9 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 */
 	embed->last.clicked = widget;
 
-	ev.modifiers = mods;
-	ev.x = x;
-	ev.y = y;
+	ev.base.modifiers = mods;
+	ev.base.x = x;
+	ev.base.y = y;
 	ev.button = b;
 	ev.clicks = clicks;
 
@@ -611,9 +611,9 @@ ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
 
 	ewl_embed_active_set(embed, TRUE);
 
-	ev.modifiers = mods;
-	ev.x = x;
-	ev.y = y;
+	ev.base.modifiers = mods;
+	ev.base.x = x;
+	ev.base.y = y;
 	ev.button = b;
 
 	/*
@@ -656,9 +656,9 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 
 	ewl_embed_active_set(embed, TRUE);
 
-	ev.modifiers = mods;
-	ev.x = x;
-	ev.y = y;
+	ev.base.modifiers = mods;
+	ev.base.x = x;
+	ev.base.y = y;
 
 	/*
 	 * Focus a new widget if the mouse isn't pressed on the currently
@@ -942,9 +942,9 @@ ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 
 	ewl_embed_active_set(embed, TRUE);
 
-	ev.modifiers = mods;
-	ev.x = x;
-	ev.y = y;
+	ev.base.modifiers = mods;
+	ev.base.x = x;
+	ev.base.y = y;
 
 	while (embed->last.mouse_in) {
 		ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in), 
@@ -979,9 +979,9 @@ ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir, unsig
 
 	ewl_embed_active_set(embed, TRUE);
 
-	ev.modifiers = mods;
-	ev.x = x;
-	ev.y = y;
+	ev.base.modifiers = mods;
+	ev.base.x = x;
+	ev.base.y = y;
 	ev.z = z;
 	ev.dir = dir;
 

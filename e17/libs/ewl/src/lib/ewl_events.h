@@ -26,6 +26,20 @@ struct Ewl_Event_Window_Expose
 };
 
 /**
+ * The Ewl_Event_Key structure
+ */
+typedef struct Ewl_Event_Key Ewl_Event_Key;
+
+/**
+ * Provides the basic information about key events
+ */
+struct Ewl_Event_Key
+{
+	unsigned int modifiers;	/**< Key modifiers that were pressed */
+	char *keyname;		/**< Name of the key that was pressed */
+};
+
+/**
  *  The Ewl_Event_Window_Key_Down structure 
  */
 typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
@@ -35,8 +49,7 @@ typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
  */
 struct Ewl_Event_Key_Down
 {
-	unsigned int modifiers; /**< Modifiers that were pressed */
-	char *keyname; /**< Name of the key that was pressed */
+	Ewl_Event_Key base;	/**< Basic key information */
 };
 
 /**
@@ -49,8 +62,22 @@ typedef struct Ewl_Event_Key_Up Ewl_Event_Key_Up;
  */
 struct Ewl_Event_Key_Up
 {
+	Ewl_Event_Key base;	/**< Basic key information */
+};
+
+/**
+ * The Ewl_Event_Mouse structure
+ */
+typedef struct Ewl_Event_Mouse Ewl_Event_Mouse;
+
+/**
+ * Provides base mouse information
+ */
+struct Ewl_Event_Mouse
+{
 	unsigned int modifiers; /**< Modifiers that were pressed */
-	char *keyname; /**< Name of the key that was released */
+	int x;			/**< X coordinate the mouse release occurred at */
+	int y;			/**< Y coordinate the mouse release occurred at */
 };
 
 /**
@@ -63,11 +90,9 @@ typedef struct Ewl_Event_Mouse_Down Ewl_Event_Mouse_Down;
  */
 struct Ewl_Event_Mouse_Down
 {
-	unsigned int modifiers; /**< Modifiers that were pressed */
-	int button; /**< The mouse button that was pressed */
-	int clicks; /**< Number of consecutive clicks */
-	int x; /**< X coordinate the mouse press occurred at */
-	int y; /**< Y coordinate the mouse press occurred at */
+	Ewl_Event_Mouse base;	/**< Base mouse information */
+	int button;		/**< The mouse button that was released */
+	int clicks;		/**< Number of consecutive clicks */
 };
 
 /**
@@ -80,10 +105,8 @@ typedef struct Ewl_Event_Mouse_Up Ewl_Event_Mouse_Up;
  */
 struct Ewl_Event_Mouse_Up
 {
-	unsigned int modifiers; /**< Modifiers that were pressed */
-	int button; /**< The mouse button that was released */
-	int x; /**< X coordinate the mouse release occurred at */
-	int y; /**< Y coordinate the mouse release occurred at */
+	Ewl_Event_Mouse base;	/**< Base mouse information */
+	int button;		/**< The mouse button that was released */
 };
 
 /**
@@ -96,9 +119,7 @@ typedef struct Ewl_Event_Mouse_Move Ewl_Event_Mouse_Move;
  */
 struct Ewl_Event_Mouse_Move
 {
-	unsigned int modifiers; /**< Modifiers that were pressed */
-	int x; /**< X coordinate the mouse moved to */
-	int y; /**< Y coordinate the mouse moved to */
+	Ewl_Event_Mouse base;	/**< Base mouse information */
 };
 
 /**
@@ -111,9 +132,7 @@ typedef struct Ewl_Event_Mouse_In Ewl_Event_Mouse_In;
  */
 struct Ewl_Event_Mouse_In
 {
-	unsigned int modifiers; /**< Modifiers that were pressed */
-	int x; /**< X coordinate the mouse entered at */
-	int y; /**< Y coordinate the mouse entered at */
+	Ewl_Event_Mouse base;	/**< Base mouse information */
 };
 
 /**
@@ -126,9 +145,7 @@ typedef struct Ewl_Event_Mouse_Out Ewl_Event_Mouse_Out;
  */
 struct Ewl_Event_Mouse_Out
 {
-	unsigned int modifiers; /**< Modifiers that were pressed */
-	int x; /**< X coordinate the mouse left at */
-	int y; /**< Y coordinate the mouse left at */
+	Ewl_Event_Mouse base; /**< Base mouse information */
 };
 
 /**
@@ -141,11 +158,9 @@ typedef struct Ewl_Event_Mouse_Wheel Ewl_Event_Mouse_Wheel;
  */
 struct Ewl_Event_Mouse_Wheel
 {
-	unsigned int modifiers; /**< Modifiers that were pressed */
-	int x; /**< X coordinate the mouse left at */
-	int y; /**< Y coordinate the mouse left at */
-	int z; /**< Z value of mouse wheel */
-	int dir; /**< Direction mouse wheel scrolled */
+	Ewl_Event_Mouse base;	/**< Base mouse information */
+	int z;			/**< Z value of mouse wheel */
+	int dir;		/**< Direction mouse wheel scrolled */
 };
 
 /**
@@ -160,8 +175,12 @@ struct Ewl_Dnd_Types
 {
 	int num_types;	/**< The number of DND types */
 	char** types;	/**< The list of DND types */
-	
 };
+
+/**
+ * The Ewl_Event_Dnd_Position type
+ */
+typedef struct Ewl_Event_Dnd_Position Ewl_Event_Dnd_Position;
 
 /**
  * Provides information about dnd drops movement
@@ -173,9 +192,9 @@ struct Ewl_Event_Dnd_Position
 };
 
 /**
- * The Ewl_Event_Dnd_Position type
+ * The Ewl_Event_Dnd_Drop type
  */
-typedef struct Ewl_Event_Dnd_Position Ewl_Event_Dnd_Position;
+typedef struct Ewl_Event_Dnd_Drop Ewl_Event_Dnd_Drop;
 
 /**
  * Provides information about dnd drops movement
@@ -188,9 +207,9 @@ struct Ewl_Event_Dnd_Drop
 };
 
 /**
- * The Ewl_Event_Dnd_Drop type
+ * The Ewl_Event_Dnd_Data_Received type
  */
-typedef struct Ewl_Event_Dnd_Drop Ewl_Event_Dnd_Drop;
+typedef struct Ewl_Event_Dnd_Data_Received Ewl_Event_Dnd_Data_Received;
 
 /**
  * Provides information about dnd drop data
@@ -204,9 +223,9 @@ struct Ewl_Event_Dnd_Data_Received
 };
 
 /**
- * The Ewl_Event_Dnd_Data_Received type
+ * The Ewl_Event_Dnd_Data_Requested type
  */
-typedef struct Ewl_Event_Dnd_Data_Received Ewl_Event_Dnd_Data_Received;
+typedef struct Ewl_Event_Dnd_Data_Request Ewl_Event_Dnd_Data_Request;
 
 /**
  * Provides information about dnd data requests
@@ -216,11 +235,6 @@ struct Ewl_Event_Dnd_Data_Request
 	void *handle; /**< Engine specific handle for responding to request */
 	char *type;   /**< Type of data requested */
 };
-
-/**
- * The Ewl_Event_Dnd_Data_Requested type
- */
-typedef struct Ewl_Event_Dnd_Data_Request Ewl_Event_Dnd_Data_Request;
 
 /**
  * The Ewl_Dialog_Evenet type

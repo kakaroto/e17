@@ -3794,7 +3794,7 @@ void
 ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Text *t;
-	Ewl_Event_Mouse_Down *event;
+	Ewl_Event_Mouse *event;
 	unsigned int char_idx = 0;
 	unsigned int modifiers;
 
@@ -3865,7 +3865,7 @@ void
 ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Text *t;
-	Ewl_Event_Mouse_Up *event;
+	Ewl_Event_Mouse *event;
 	unsigned int modifiers;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -3906,7 +3906,7 @@ void
 ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
 	Ewl_Text *t;
-	Ewl_Event_Mouse_Move *event;
+	Ewl_Event_Mouse *event;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
