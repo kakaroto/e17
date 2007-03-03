@@ -26,35 +26,6 @@ struct Ewl_Event_Window_Expose
 };
 
 /**
- * The Ewl_Event_Window_Configure type
- */
-typedef struct Ewl_Event_Window_Configure Ewl_Event_Window_Configure;
-
-/**
- * Notifies widgets when the enclosing window size has changed.
- */
-struct Ewl_Event_Window_Configure
-{
-	int x; /**< Beginning X coordinate of the windows new position */
-	int y; /**< Beginning Y coordinate of the windows new position */
-	int w; /**< The new width of the window */
-	int h; /**< The new height of the window */
-};
-
-/**
- * The Ewl_Event_Window_Delete type
- */
-typedef struct Ewl_Event_Window_Delete Ewl_Event_Window_Delete;
-
-/**
- * Notifies of window close requests.
- */
-struct Ewl_Event_Window_Delete
-{
-	int ignore;	/**< Unused. */
-};
-
-/**
  *  The Ewl_Event_Window_Key_Down structure 
  */
 typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
