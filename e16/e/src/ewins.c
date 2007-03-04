@@ -1900,6 +1900,101 @@ EwinChangesProcess(EWin * ewin)
    EWinChanges.flags = 0;
 }
 
+EWin              **
+EwinListTransients(const EWin * ewin, int *num, int group)
+{
+   EWin               *const *ewins, **lst, *ew;
+   int                 i, j, n;
+
+   j = 0;
+   lst = NULL;
+
+   if (EwinGetTransientCount(ewin) <= 0)
+      goto done;
+
+   ewins = EwinListGetAll(&n);
+
+   /* Find regular transients */
+   for (i = 0; i < n; i++)
+     {
+	ew = ewins[i];
+
+	/* Skip self-reference */
+	if (ew == ewin)
+	   continue;
+
+	if (EwinGetTransientFor(ew) == EwinGetClientXwin(ewin))
+	  {
+	     lst = EREALLOC(EWin *, lst, j + 1);
+	     lst[j++] = ew;
+	  }
+     }
+
+   if (!group)
+      goto done;
+
+   /* Group transients (if ewin is not a transient) */
+   if (EwinIsTransient(ewin))
+      goto done;
+
+   for (i = 0; i < n; i++)
+     {
+	ew = ewins[i];
+
+	/* Skip self-reference */
+	if (ew == ewin)
+	   continue;
+
+	if (EwinGetTransientFor(ew) == VRoot.xwin &&
+	    EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin))
+	  {
+	     lst = EREALLOC(EWin *, lst, j + 1);
+	     lst[j++] = ew;
+	  }
+     }
+
+ done:
+   *num = j;
+   return lst;
+}
+
+EWin              **
+EwinListTransientFor(const EWin * ewin, int *num)
+{
+   EWin               *const *ewins, **lst, *ew;
+   int                 i, j, n;
+
+   j = 0;
+   lst = NULL;
+
+   if (!EwinIsTransient(ewin))
+      goto done;
+
+   ewins = EwinListGetAll(&n);
+   for (i = 0; i < n; i++)
+     {
+	ew = ewins[i];
+
+	/* Skip self-reference */
+	if (ew == ewin)
+	   continue;
+
+	/* Regular parent or if root trans, top level group members */
+	if ((EwinGetTransientFor(ewin) == EwinGetClientXwin(ew)) ||
+	    (!EwinIsTransient(ew) &&
+	     EwinGetTransientFor(ewin) == VRoot.xwin &&
+	     EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin)))
+	  {
+	     lst = EREALLOC(EWin *, lst, j + 1);
+	     lst[j++] = ew;
+	  }
+     }
+
+ done:
+   *num = j;
+   return lst;
+}
+
 void
 EwinsEventsConfigure(int mode)
 {

@@ -376,6 +376,9 @@ void                EwinUpdateOpacity(EWin * ewin);
 
 void                EwinChange(EWin * ewin, unsigned int flag);
 
+EWin              **EwinListTransients(const EWin * ewin, int *num, int group);
+EWin              **EwinListTransientFor(const EWin * ewin, int *num);
+
 void                EwinsEventsConfigure(int mode);
 void                EwinsSetFree(void);
 void                EwinsShowDesktop(int on);
@@ -436,8 +439,8 @@ EWin               *EwinFindByPtr(const EWin * ewin);
 EWin               *EwinFindByFrame(Window win);
 EWin               *EwinFindByClient(Window win);
 EWin               *EwinFindByChildren(Window win);
-EWin              **EwinListTransients(const EWin * ewin, int *num, int group);
-EWin              **EwinListTransientFor(const EWin * ewin, int *num);
+EWin              **EwinsFindByExpr(const char *match, int *pnum, int *pflags);
+EWin               *EwinFindByExpr(const char *match);
 
 /* icccm.c (for now) */
 #if USE_XSYNC

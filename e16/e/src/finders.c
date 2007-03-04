@@ -24,6 +24,8 @@
 #include "borders.h"
 #include "ewins.h"
 #include "groups.h"
+#include <ctype.h>
+#include <string.h>
 
 EWin               *
 EwinFindByPtr(const EWin * ewin)
@@ -94,6 +96,136 @@ EwinFindByChildren(Window win)
 	  }
      }
    return NULL;
+}
+
+EWin              **
+EwinsFindByExpr(const char *match, int *pnum, int *pflags)
+{
+   EWin               *ewin, **lst;
+   EWin               *const *ewins;
+   int                 type;
+   int                 i, num, len, nfound, match_one, flags;
+
+   if (pnum)
+      *pnum = 0;
+
+   if (!match || !match[0])
+      return NULL;
+
+   ewin = NULL;
+   flags = 0;
+
+   if (!strcmp(match, "*") || !strcmp(match, "=") || !strcmp(match, "current"))
+     {
+	ewin = GetContextEwin();
+	if (!ewin)
+	   ewin = GetFocusEwin();
+	if (match[0] == '=')
+	   flags = 1;		/* Nogroup */
+	goto do_one;
+     }
+
+   if (isdigit(match[0]))
+     {
+	unsigned int        win;
+
+	sscanf(match, "%x", &win);
+	ewin = EwinFindByChildren(win);
+	goto do_one;
+     }
+
+   match_one = 1;
+   if (!strcmp(match, "all"))
+     {
+	type = 'a';
+	match_one = 0;
+	flags = 1;		/* Nogroup */
+     }
+   else if (match[0] == '=')
+     {
+	type = 's';
+	match++;
+	flags = 1;		/* Nogroup */
+     }
+   else if (strchr(match, '*'))
+     {
+	type = 'w';
+	match_one = 0;
+	flags = 1;		/* Nogroup */
+     }
+   else
+     {
+	type = 's';
+     }
+
+   len = strlen(match);
+   if (len <= 0)
+      return NULL;
+
+   ewins = EwinListGetAll(&num);
+   if (!ewins)
+      return NULL;
+
+   nfound = 0;
+   lst = NULL;
+   for (i = 0; i < num; i++)
+     {
+	ewin = ewins[i];
+
+	if (type == 'a')	/* All */
+	  {
+	  }
+	else if (type == 'w')	/* Wildcard */
+	  {
+	     if (!matchregexp(match, EwinGetIcccmName(ewin)))
+		continue;
+	  }
+	else			/* Match name (substring) */
+	  {
+	     const char         *name;
+
+	     name = EwinGetIcccmName(ewin);
+	     if (!name)
+		continue;
+	     if (!strcasestr(name, match))
+		continue;
+	  }
+	nfound++;
+	lst = EREALLOC(EWin *, lst, nfound);
+	lst[nfound - 1] = ewin;
+	if (match_one)
+	   break;
+     }
+   goto done;
+
+ do_one:
+   if (!ewin)
+      return NULL;
+   nfound = 1;
+   lst = EMALLOC(EWin *, 1);
+   if (!lst)
+      return NULL;
+   lst[0] = ewin;
+
+ done:
+   if (pnum)
+      *pnum = nfound;
+   if (pflags)
+      *pflags = flags;
+   return lst;
+}
+
+EWin               *
+EwinFindByExpr(const char *match)
+{
+   EWin               *ewin, **lst;
+
+   lst = EwinsFindByExpr(match, NULL, NULL);
+   if (!lst)
+      return NULL;
+   ewin = lst[0];
+   Efree(lst);
+   return ewin;
 }
 
 EWin              **
@@ -189,99 +321,4 @@ ListWinGroupMembersForEwin(const EWin * ewin, int action, char nogroup,
      }
    *pnum = gwcnt;
    return gwins;
-}
-
-EWin              **
-EwinListTransients(const EWin * ewin, int *num, int group)
-{
-   EWin               *const *ewins, **lst, *ew;
-   int                 i, j, n;
-
-   j = 0;
-   lst = NULL;
-
-   if (EwinGetTransientCount(ewin) <= 0)
-      goto done;
-
-   ewins = EwinListGetAll(&n);
-
-   /* Find regular transients */
-   for (i = 0; i < n; i++)
-     {
-	ew = ewins[i];
-
-	/* Skip self-reference */
-	if (ew == ewin)
-	   continue;
-
-	if (EwinGetTransientFor(ew) == EwinGetClientXwin(ewin))
-	  {
-	     lst = EREALLOC(EWin *, lst, j + 1);
-	     lst[j++] = ew;
-	  }
-     }
-
-   if (!group)
-      goto done;
-
-   /* Group transients (if ewin is not a transient) */
-   if (EwinIsTransient(ewin))
-      goto done;
-
-   for (i = 0; i < n; i++)
-     {
-	ew = ewins[i];
-
-	/* Skip self-reference */
-	if (ew == ewin)
-	   continue;
-
-	if (EwinGetTransientFor(ew) == VRoot.xwin &&
-	    EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin))
-	  {
-	     lst = EREALLOC(EWin *, lst, j + 1);
-	     lst[j++] = ew;
-	  }
-     }
-
- done:
-   *num = j;
-   return lst;
-}
-
-EWin              **
-EwinListTransientFor(const EWin * ewin, int *num)
-{
-   EWin               *const *ewins, **lst, *ew;
-   int                 i, j, n;
-
-   j = 0;
-   lst = NULL;
-
-   if (!EwinIsTransient(ewin))
-      goto done;
-
-   ewins = EwinListGetAll(&n);
-   for (i = 0; i < n; i++)
-     {
-	ew = ewins[i];
-
-	/* Skip self-reference */
-	if (ew == ewin)
-	   continue;
-
-	/* Regular parent or if root trans, top level group members */
-	if ((EwinGetTransientFor(ewin) == EwinGetClientXwin(ew)) ||
-	    (!EwinIsTransient(ew) &&
-	     EwinGetTransientFor(ewin) == VRoot.xwin &&
-	     EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin)))
-	  {
-	     lst = EREALLOC(EWin *, lst, j + 1);
-	     lst[j++] = ew;
-	  }
-     }
-
- done:
-   *num = j;
-   return lst;
 }

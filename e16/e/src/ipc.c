@@ -36,7 +36,6 @@
 #include "snaps.h"
 #include "timers.h"
 #include "xwin.h"
-#include <ctype.h>
 
 #define SS(s) ((s) ? (s) : NoText)
 static const char   NoText[] = "-NONE-";
@@ -90,136 +89,6 @@ IpcPrintf(const char *fmt, ...)
 
    strcpy(bufptr + bufsiz, tmp);
    bufsiz += len;
-}
-
-static EWin       **
-IpcFindEwins(const char *match, int *pnum, int *pflags)
-{
-   EWin               *ewin, **lst;
-   EWin               *const *ewins;
-   int                 type;
-   int                 i, num, len, nfound, match_one, flags;
-
-   if (pnum)
-      *pnum = 0;
-
-   if (!match || !match[0])
-      return NULL;
-
-   ewin = NULL;
-   flags = 0;
-
-   if (!strcmp(match, "*") || !strcmp(match, "=") || !strcmp(match, "current"))
-     {
-	ewin = GetContextEwin();
-	if (!ewin)
-	   ewin = GetFocusEwin();
-	if (match[0] == '=')
-	   flags = 1;		/* Nogroup */
-	goto do_one;
-     }
-
-   if (isdigit(match[0]))
-     {
-	unsigned int        win;
-
-	sscanf(match, "%x", &win);
-	ewin = EwinFindByChildren(win);
-	goto do_one;
-     }
-
-   match_one = 1;
-   if (!strcmp(match, "all"))
-     {
-	type = 'a';
-	match_one = 0;
-	flags = 1;		/* Nogroup */
-     }
-   else if (match[0] == '=')
-     {
-	type = 's';
-	match++;
-	flags = 1;		/* Nogroup */
-     }
-   else if (strchr(match, '*'))
-     {
-	type = 'w';
-	match_one = 0;
-	flags = 1;		/* Nogroup */
-     }
-   else
-     {
-	type = 's';
-     }
-
-   len = strlen(match);
-   if (len <= 0)
-      return NULL;
-
-   ewins = EwinListGetAll(&num);
-   if (!ewins)
-      return NULL;
-
-   nfound = 0;
-   lst = NULL;
-   for (i = 0; i < num; i++)
-     {
-	ewin = ewins[i];
-
-	if (type == 'a')	/* All */
-	  {
-	  }
-	else if (type == 'w')	/* Wildcard */
-	  {
-	     if (!matchregexp(match, EwinGetIcccmName(ewin)))
-		continue;
-	  }
-	else			/* Match name (substring) */
-	  {
-	     const char         *name;
-
-	     name = EwinGetIcccmName(ewin);
-	     if (!name)
-		continue;
-	     if (!strcasestr(name, match))
-		continue;
-	  }
-	nfound++;
-	lst = EREALLOC(EWin *, lst, nfound);
-	lst[nfound - 1] = ewin;
-	if (match_one)
-	   break;
-     }
-   goto done;
-
- do_one:
-   if (!ewin)
-      return NULL;
-   nfound = 1;
-   lst = EMALLOC(EWin *, 1);
-   if (!lst)
-      return NULL;
-   lst[0] = ewin;
-
- done:
-   if (pnum)
-      *pnum = nfound;
-   if (pflags)
-      *pflags = flags;
-   return lst;
-}
-
-static EWin        *
-IpcFindEwin(const char *match)
-{
-   EWin               *ewin, **lst;
-
-   lst = IpcFindEwins(match, NULL, NULL);
-   if (!lst)
-      return NULL;
-   ewin = lst[0];
-   Efree(lst);
-   return ewin;
 }
 
 static int
@@ -454,7 +323,7 @@ IPC_WinList(const char *params, Client * c __UNUSED__)
    if (!match || !match[0])
       match = "all";
 
-   lst = IpcFindEwins(match, &num, NULL);
+   lst = EwinsFindByExpr(match, &num, NULL);
    if (!lst)
      {
 	IpcPrintf("No windows matching %s\n", match);
@@ -972,7 +841,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	return;
      }
 
-   lst = IpcFindEwins(match, &num, &flags);
+   lst = EwinsFindByExpr(match, &num, &flags);
    if (!lst)
      {
 	IpcPrintf("No windows matching %s\n", match);
@@ -1245,7 +1114,7 @@ IPC_EwinInfo(const char *params, Client * c __UNUSED__)
 
    sscanf(params, "%1000s", match);
 
-   lst = IpcFindEwins(match, &num, NULL);
+   lst = EwinsFindByExpr(match, &num, NULL);
    if (!lst)
      {
 	IpcPrintf("No windows matching %s\n", match);
@@ -1302,8 +1171,8 @@ IPC_Reparent(const char *params, Client * c __UNUSED__)
 
    sscanf(params, "%100s %100s", param1, param2);
 
-   ewin = IpcFindEwin(param1);
-   enew = IpcFindEwin(param2);
+   ewin = EwinFindByExpr(param1);
+   enew = EwinFindByExpr(param2);
    if (!ewin || !enew)
       IpcPrintf("No matching client or target EWin found\n");
    else
