@@ -39,7 +39,7 @@ typedef struct Ewl_Filepicker Ewl_Filepicker;
 #define EWL_FILEPICKER(fp) ((Ewl_Filepicker *)fp)
 
 /**
- * Creates a widget for selecting files
+ * @brief Inherits from Ewl_Box and extends to provide a filepicker.
  */
 struct Ewl_Filepicker
 {

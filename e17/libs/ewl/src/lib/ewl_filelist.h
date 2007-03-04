@@ -41,7 +41,7 @@ typedef struct Ewl_Filelist Ewl_Filelist;
 #define EWL_FILELIST(fl) ((Ewl_Filelist *)fl)
 
 /**
- * Base class for the file lists
+ * @brief Inherits from Ewl_Box and extends to display a file list.
  */
 struct Ewl_Filelist
 {

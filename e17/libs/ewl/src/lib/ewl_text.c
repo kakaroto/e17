@@ -5,7 +5,14 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+/**
+ * Ewl_Text_Fmt
+ */
 typedef struct Ewl_Text_Fmt Ewl_Text_Fmt;
+
+/**
+ * @brief Text formatting information 
+ */
 struct Ewl_Text_Fmt
 {
 	Ewl_Text_Context *tx;

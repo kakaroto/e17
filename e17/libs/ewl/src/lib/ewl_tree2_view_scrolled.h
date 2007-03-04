@@ -38,7 +38,7 @@ typedef struct Ewl_Tree2_View_Scrolled Ewl_Tree2_View_Scrolled;
 #define EWL_TREE2_VIEW_SCROLLED(tv) ((Ewl_Tree2_View_Scrolled*)tv)
 
 /**
- * A scrolled view on the tree
+ * @brief Inherits from Ewl_Box and provides a scrolled tree layout
  */
 struct Ewl_Tree2_View_Scrolled
 {

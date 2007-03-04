@@ -5,6 +5,9 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+/**
+ * @brief Provides information on the orientation of a box
+ */
 typedef struct
 {
 	/*

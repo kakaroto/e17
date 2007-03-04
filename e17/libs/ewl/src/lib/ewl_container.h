@@ -82,7 +82,7 @@ typedef void (*Ewl_Child_Hide) (Ewl_Container *c, Ewl_Widget *w);
 typedef Ewl_Widget *(*Ewl_Container_Iterator) (Ewl_Container *c);
 
 /**
- * Inherits from the Ewl_Widget and expands to allow for placing child widgets
+ * @brief Inherits from the Ewl_Widget and expands to allow for placing child widgets
  * within the available space. Also adds notifiers for various child events.
  */
 struct Ewl_Container

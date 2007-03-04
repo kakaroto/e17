@@ -56,8 +56,7 @@ typedef struct Ewl_Scrollbar Ewl_Scrollbar;
 #define EWL_SCROLLBAR(scrollbar) ((Ewl_Scrollbar *) scrollbar)
 
 /**
- * Inherits from Ewl_Box to layout an Ewl_Seeker and two Ewl_Buttons to
- * provide scrollbar functionality.
+ * @brief Inherits from Ewl_Box and extends to provide a scrollbar widget
  */
 struct Ewl_Scrollbar
 {

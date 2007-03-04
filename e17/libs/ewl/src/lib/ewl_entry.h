@@ -50,7 +50,7 @@
 typedef struct Ewl_Entry Ewl_Entry;
 
 /**
- * Inherits from Ewl_Text and extends to allow editing of the text
+ * @brief Inherits from Ewl_Text and extends to allow editing of the text
  */
 struct Ewl_Entry
 {
@@ -111,7 +111,7 @@ void ewl_entry_delete_right(Ewl_Entry *e);
 typedef struct Ewl_Entry_Cursor Ewl_Entry_Cursor;
 
 /**
- * Inherit from Ewl_Widget and extend for the Entry cursor 
+ * @brief Inherit from Ewl_Widget and extend for the Entry cursor 
  */
 struct Ewl_Entry_Cursor
 {

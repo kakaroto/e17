@@ -79,7 +79,8 @@ typedef void (*Ewl_Stock_Image_Set)(Ewl_Stock *s, const char *file, const char *
 typedef void (*Ewl_Stock_Tooltip_Set)(Ewl_Stock *s, const char *tip);
 
 /**
- * @brief An abstract Ewl_Widget to provide the base for Ewl_Icon and Ewl_Button
+ * @brief Inherits from Ewl_Box and provides the base for the other stock
+ * icons
  */
 struct Ewl_Stock
 {
@@ -88,6 +89,10 @@ struct Ewl_Stock
 	Ewl_Stock_Funcs *stock_funcs;	/**< The stock functions */
 };
 
+/**
+ * @brief The function callbacks that an inheriting widget needs to
+ * implement
+ */
 struct Ewl_Stock_Funcs
 {
 	Ewl_Stock_Label_Set label_set;		/**< The label set function */

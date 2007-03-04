@@ -46,7 +46,7 @@ typedef struct Ewl_Table Ewl_Table;
 #define EWL_TABLE(table) ((Ewl_Table *)table)
 
 /**
- * Inherits from Ewl_Container and extends to provide a table layout
+ * @brief Inherits from Ewl_Container and extends to provide a table layout
  */
 struct Ewl_Table
 {

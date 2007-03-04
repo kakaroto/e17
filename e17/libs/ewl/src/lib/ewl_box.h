@@ -43,10 +43,12 @@ typedef struct Ewl_Box Ewl_Box;
 #define EWL_BOX(box) ((Ewl_Box *) box)
 
 /**
- * Inherits from an Ewl_Container to provide layout facilities for child
- * widgets placed inside. Layout is done horizontally (left-to-right), or
- * vertically (top-to-bottom). There is also a flag for homogeneous layout,
- * which gives each child Ewl_Widget equal space inside the Ewl_Box.
+ * @brief Inherits from an Ewl_Container to provide layout facilities for child
+ * widgets placed inside. 
+ * 
+ * Layout is done horizontally (left-to-right), or vertically (top-to-bottom). 
+ * There is also a flag for homogeneous layout, which gives each child Ewl_Widget 
+ * equal space inside the Ewl_Box.
  */
 struct Ewl_Box
 {

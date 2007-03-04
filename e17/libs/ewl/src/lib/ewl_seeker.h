@@ -47,8 +47,7 @@ typedef struct Ewl_Seeker Ewl_Seeker;
 #define EWL_SEEKER(seeker) ((Ewl_Seeker *) seeker)
 
 /**
- * Inherits from Ewl_Container and creates internal Ewl_Widget's to provide a
- * range and a draggable area to select a value from that range.
+ * @brief Inherits from Ewl_Range and extends to provide a seeker widget
  */
 struct Ewl_Seeker
 {

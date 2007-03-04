@@ -37,7 +37,7 @@
 typedef struct Ewl_Colordialog Ewl_Colordialog;
 
 /**
- * Inherit from the Ewl_Dialog to create a color dialog widget
+ * @brief Inherit from the Ewl_Dialog to create a color dialog widget
  */
 struct Ewl_Colordialog
 { 

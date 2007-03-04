@@ -7,9 +7,15 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+/**
+ * Ewl_Filelist_Tree_Data
+ */
 typedef struct Ewl_Filelist_Tree_Data Ewl_Filelist_Tree_Data;
 #define EWL_FILELIST_TREE_DATA(data) ((Ewl_Filelist_Tree_Data *)(data))
 
+/**
+ * @brief Contains information on a filelist tree data
+ */
 struct Ewl_Filelist_Tree_Data
 {
 	Ewl_Filelist_Tree *list;

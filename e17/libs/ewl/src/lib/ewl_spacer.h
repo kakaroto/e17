@@ -36,9 +36,7 @@
 typedef struct Ewl_Spacer Ewl_Spacer;
 
 /**
- * Inherits from Ewl_Widget, and does not provide any further functionality,
- * it is intended to be themed as transparent, and used to tweak spacing in an
- * application.
+ * @brief Inherits from Ewl_Widget and provides as a spacer between widgets
  */
 struct Ewl_Spacer
 {

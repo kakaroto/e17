@@ -41,12 +41,11 @@ typedef struct Ewl_Cell Ewl_Cell;
 #define EWL_CELL(t) ((Ewl_Cell *)t)
 
 /**
- * The cell inherits from the container for packing widgets inside the
- * cell.
+ * @brief Inherits from Ewl_Container for packing widgets inside a cell.
  */
 struct Ewl_Cell
 {
-	Ewl_Container container; /**< Inherit from the Ewl_Container */
+	Ewl_Container container; /**< Inherit from Ewl_Container */
 };
 
 Ewl_Widget 	*ewl_cell_new(void);

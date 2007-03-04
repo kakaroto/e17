@@ -43,7 +43,7 @@ typedef struct Ewl_Datepicker Ewl_Datepicker;
 #define EWL_DATEPICKER(datepicker) ((Ewl_Datepicker *) datepicker)
 
 /** 
- * Inherits from an Ewl_Text 
+ * @brief Inherits from Ewl_Text and extends to provide a date picker
  */
 struct Ewl_Datepicker
 {

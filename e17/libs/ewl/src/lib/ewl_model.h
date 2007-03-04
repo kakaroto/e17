@@ -106,7 +106,7 @@ typedef int (*Ewl_Model_Count)(void *data);
 #define EWL_MODEL(model) ((Ewl_Model *)model)
 
 /**
- * This holds the callbacks needed to define a model
+ * @brief Holds the callbacks needed to define a model
  */
 struct Ewl_Model
 {

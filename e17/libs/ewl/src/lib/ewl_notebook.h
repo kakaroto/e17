@@ -47,7 +47,7 @@
 typedef struct Ewl_Notebook Ewl_Notebook;
 
 /**
- * Inherits from Ewl_Box and extends to provide for a notebook style layout.
+ * @brief Inherits from Ewl_Box and extends to provide for a notebook style layout.
  */
 struct Ewl_Notebook
 {

@@ -89,8 +89,7 @@
 typedef struct Ewl_Tree2 Ewl_Tree2;
 
 /**
- * The tree is a columnar listing, where items in the list may be nested
- * below other items.
+ * @brief Inherits from Ewl_MVC and extends to provide a tree widget.
  */
 struct Ewl_Tree2
 {
@@ -169,7 +168,7 @@ void ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev, void *data);
 typedef struct Ewl_Tree2_Column Ewl_Tree2_Column;
 
 /**
- * Holdes the model and view to use for this column in the tree
+ * @brief Holds the model and view to use for this column in the tree
  */
 struct Ewl_Tree2_Column
 {
@@ -210,7 +209,16 @@ Ewl_Sort_Direction	 ewl_tree2_column_sort_direction_get(Ewl_Tree2_Column *c);
 #define EWL_TREE2_NODE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TREE2_NODE_TYPE))
 
 #define EWL_TREE2_NODE(n) ((Ewl_Tree2_Node *)n)
+
+/**
+ * Ewl_Tree2_Node 
+ */
 typedef struct Ewl_Tree2_Node Ewl_Tree2_Node;
+
+/** 
+ * @brief Inherits from Ewl_Container and extends to hold information on a
+ * row of the tree
+ */
 struct Ewl_Tree2_Node
 {
 	Ewl_Container container;

@@ -44,7 +44,7 @@ typedef int (*Ewl_Freebox_Comparator)(Ewl_Widget *a, Ewl_Widget *b);
 typedef struct Ewl_Freebox Ewl_Freebox;
 
 /**
- * Inherits from Ewl_Container and extends to allow for differnt layout
+ * @brief Inherits from Ewl_Container and extends to allow for differnt layout
  * algorithms 
  */
 struct Ewl_Freebox

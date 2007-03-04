@@ -40,7 +40,7 @@ typedef struct Ewl_Expansion Ewl_Expansion;
 #define EWL_EXPANSION(c) ((Ewl_Expansion *)c)
 
 /**
- * Inherits from Ewl_Widget and extends it to provide a expansioned state.
+ * @brief Inherits from Ewl_Check and extends it to provide a expanded state.
  */
 struct Ewl_Expansion
 {

@@ -82,7 +82,7 @@ typedef struct Ewl_Text_Trigger Ewl_Text_Trigger;
 typedef struct Ewl_Text Ewl_Text;
 
 /**
- * Inherits from the Ewl_Container class and extends it to provide text layout
+ * @brief Inherits from the Ewl_Container class and extends it to provide text layout
  * and formatting
  */
 struct Ewl_Text
@@ -307,7 +307,7 @@ void 		 ewl_text_double_underline_color_get(Ewl_Text *t,
 void 		 ewl_text_fmt_dump(Ewl_Text *t);
 
 /**
- * Inherits from Ewl_Widget and extends to provide a trigger for the text
+ * @brief Inherits from Ewl_Widget and extends to provide a trigger for the text
  * widget
  */
 struct Ewl_Text_Trigger
@@ -376,7 +376,7 @@ void ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
 
 /**
- * Stores context information for the different formatting nodes
+ * @brief Stores context information for the different formatting nodes
  */
 struct Ewl_Text_Context
 {
@@ -427,7 +427,7 @@ typedef struct Ewl_Text_Trigger_Area Ewl_Text_Trigger_Area;
 #define EWL_TEXT_TRIGGER_AREA(area) ((Ewl_Text_Trigger_Area *) area)
 
 /**
- * Inherits from Ewl_Widget and extends to provide a trigger area
+ * @brief Inherits from Ewl_Widget and extends to provide a trigger area
  */
 struct Ewl_Text_Trigger_Area
 {

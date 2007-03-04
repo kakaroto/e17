@@ -7,7 +7,15 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+/**
+ * Ewl_Attach_Tooltip
+ */
 typedef struct Ewl_Attach_Tooltip Ewl_Attach_Tooltip;
+
+/**
+ * @brief Inherits from Ewl_Widget and extends to provide information on a
+ * tooltip
+ */
 struct Ewl_Attach_Tooltip
 {
 	Ewl_Widget *embed;

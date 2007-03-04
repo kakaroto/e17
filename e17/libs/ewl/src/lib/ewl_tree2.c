@@ -13,7 +13,14 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+/**
+ * Ewl_Tree2_Branch_Cache
+ */
 typedef struct Ewl_Tree2_Branch_Cache Ewl_Tree2_Branch_Cache;
+
+/**
+ * @brief Contains information for tree2 branches
+ */
 struct Ewl_Tree2_Branch_Cache
 {
 	Ewl_Model *model;

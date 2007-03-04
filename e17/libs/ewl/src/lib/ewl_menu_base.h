@@ -44,7 +44,7 @@ typedef struct Ewl_Menu_Base Ewl_Menu_Base;
 #define EWL_MENU_BASE(menu) ((Ewl_Menu_Base *) menu)
 
 /**
- * Inherits from Ewl_Menu_Item and extends to create the base menu 
+ * @brief Inherits from Ewl_Menu_Item and extends to create the base menu 
  */
 struct Ewl_Menu_Base
 {

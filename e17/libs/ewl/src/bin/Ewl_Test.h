@@ -24,7 +24,7 @@ typedef enum Ewl_Test_Type Ewl_Test_Type;
 typedef struct Ewl_Unit_Test Ewl_Unit_Test;
 
 /**
- * Contains the information needed to run a unit test
+ * @brief Contains the information needed to run a unit test
  */
 struct Ewl_Unit_Test
 {
@@ -38,7 +38,7 @@ struct Ewl_Unit_Test
 typedef struct Ewl_Test Ewl_Test;
 
 /**
- * Holds information on an Ewl Test set
+ * @brief Holds information on an Ewl Test set
  */
 struct Ewl_Test
 {

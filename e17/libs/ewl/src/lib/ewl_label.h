@@ -42,7 +42,7 @@ typedef struct Ewl_Label Ewl_Label;
 #define EWL_LABEL(label) ((Ewl_Label *)label)
 
 /**
- * Inherits from Ewl_Widget class
+ * @brief Inherits from Ewl_Widget class to provide a simple label
  */
 struct Ewl_Label
 {

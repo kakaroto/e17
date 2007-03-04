@@ -39,7 +39,7 @@
 typedef struct Ewl_Filelist_Column Ewl_Filelist_Column;
 
 /**
- * Inherits from Ewl_Filelist and extends to provide a column view
+ * @brief Inherits from Ewl_Filelist and extends to provide a column view
  */
 struct Ewl_Filelist_Column
 {

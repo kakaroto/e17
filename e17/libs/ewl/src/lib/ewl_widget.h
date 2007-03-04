@@ -35,7 +35,7 @@
 typedef struct Ewl_Attach_List Ewl_Attach_List;
 
 /**
- * A list of things attached to a widget
+ * @brief A list of things attached to a widget
  */
 struct Ewl_Attach_List
 {
@@ -56,7 +56,7 @@ typedef struct Ewl_Pair Ewl_Pair;
 #define EWL_PAIR(p) ((Ewl_Pair *)p)
 
 /**
- * Contains a key and a value pair
+ * @brief Contains a key and a value pair
  */
 struct Ewl_Pair
 {
@@ -70,7 +70,7 @@ struct Ewl_Pair
 typedef struct Ewl_Pair_List Ewl_Pair_List;
 
 /**
- * Contains a list of key value pairs
+ * @brief Contains a list of key value pairs
  */
 struct Ewl_Pair_List
 {
@@ -85,7 +85,7 @@ struct Ewl_Pair_List
 typedef struct Ewl_Callback_Chain Ewl_Callback_Chain;
 
 /**
- * The callback chain contains the length, mask and information on the list 
+ * @brief The callback chain contains the length, mask and information on the list 
  */
 struct Ewl_Callback_Chain
 {
@@ -101,7 +101,7 @@ struct Ewl_Callback_Chain
 typedef struct Ewl_Color_Set Ewl_Color_Set;
 
 /**
- * Contains an RGBA set of colours
+ * @brief Contains an RGBA set of colours
  */
 struct Ewl_Color_Set
 {
@@ -129,7 +129,7 @@ typedef struct Ewl_Widget Ewl_Widget;
 #define EWL_WIDGET(widget) ((Ewl_Widget *) widget)
 
 /**
- * The class inheriting from Ewl_Object that provides appearance, parent, and
+ * @brief Inherits from Ewl_Object and extends to provide appearance, parent, and
  * callback capabilities.
  */
 struct Ewl_Widget

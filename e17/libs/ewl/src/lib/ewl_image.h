@@ -56,7 +56,7 @@ typedef struct Ewl_Image Ewl_Image;
 #define EWL_IMAGE(image) ((Ewl_Image *) image)
 
 /**
- * Inherits from Ewl_Widget and extends to provide an image widget
+ * @brief Inherits from Ewl_Widget and extends to provide an image widget
  */
 struct Ewl_Image
 {
@@ -90,7 +90,7 @@ struct Ewl_Image
 #define EWL_IMAGE_THUMBNAIL_TYPE "image_thumbnail"
 
 /**
- * Inherits from Ewl_Image and extends to provide reference to original image.
+ * @brief Inherits from Ewl_Image and extends to provide reference to original image.
  */
 struct Ewl_Image_Thumbnail
 {

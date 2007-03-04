@@ -38,7 +38,7 @@
 typedef struct Ewl_Icon Ewl_Icon;
 
 /**
- * Inherits from Ewl_Box and extends to provide for an icon layout
+ * @brief Inherits from Ewl_Stock and extends to provide for an icon layout
  */
 struct Ewl_Icon
 {

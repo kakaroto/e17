@@ -56,7 +56,7 @@ typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, int column);
 typedef struct Ewl_View Ewl_View;
 
 /**
- * The view function pointers
+ * @brief The view function pointers
  */
 struct Ewl_View
 {

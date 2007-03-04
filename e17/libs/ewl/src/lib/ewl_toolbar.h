@@ -38,7 +38,7 @@ typedef struct Ewl_Toolbar Ewl_Toolbar;
 #define EWL_TOOLBAR(toolbar) ((Ewl_Toolbar *) toolbar)
 
 /**
- * @brief Inherits from Ewl_Toolbar  
+ * @brief Inherits from Ewl_Menubar and extends to provide a toolbar layout
  */
 struct Ewl_Toolbar
 {

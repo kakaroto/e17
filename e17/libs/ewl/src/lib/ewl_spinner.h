@@ -45,8 +45,7 @@ typedef struct Ewl_Spinner Ewl_Spinner;
 #define EWL_SPINNER(spinner) ((Ewl_Spinner *) spinner)
 
 /**
- * Inherits from Ewl_Range and adds an entry box that can only contain
- * numerical values as well as buttons for manipulating that value.
+ * @brief Inherits from Ewl_Range and extends to provide a spinner widget
  */
 struct Ewl_Spinner
 {

@@ -7,11 +7,18 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+/**
+ * @brief Stores information on the filelist column data
+ */
 struct Ewl_Filelist_Column_Data
 {
 	Ewl_Widget *list;
 	char *dir;
 };
+
+/**
+ * Ewl_Filelist_Column_Data
+ */
 typedef struct Ewl_Filelist_Column_Data Ewl_Filelist_Column_Data;;
 
 static Ewl_View *ewl_filelist_column_view = NULL;

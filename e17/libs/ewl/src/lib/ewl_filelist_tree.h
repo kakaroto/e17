@@ -39,7 +39,7 @@ typedef struct Ewl_Filelist_Tree Ewl_Filelist_Tree;
 #define EWL_FILELIST_TREE(fl) ((Ewl_Filelist_Tree *)fl)
 
 /**
- * Creats a tree view on the files
+ * @brief Inherits from Ewl_Filelist and extends to provide a tree view.
  */
 struct Ewl_Filelist_Tree
 {

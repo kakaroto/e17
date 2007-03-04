@@ -38,7 +38,7 @@
 typedef struct Ewl_List Ewl_List;
 
 /**
- * Inherits from Ewl_MVC and extends to provide a list widget
+ * @brief Inherits from Ewl_MVC and extends to provide a list widget
  */
 struct Ewl_List
 {

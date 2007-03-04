@@ -38,7 +38,7 @@ typedef struct Ewl_Tree2_View_Plain Ewl_Tree2_View_Plain;
 #define EWL_TREE2_VIEW_PLAIN(tv) ((Ewl_Tree2_View_Plain*)tv)
 
 /**
- * Provides a plain view for the tree
+ * @brief Inherits from Ewl_Tree2_View and provides a plain tree layout
  */
 struct Ewl_Tree2_View_Plain
 {

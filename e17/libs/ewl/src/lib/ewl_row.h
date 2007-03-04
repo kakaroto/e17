@@ -40,8 +40,8 @@ typedef struct Ewl_Row Ewl_Row;
  */
 #define EWL_ROW(t) ((Ewl_Row *)t)
 
-/*
- * Inherits from Ewl_Container to create a tree rows that 
+/**
+ * @brief Inherits from Ewl_Container to create a tree row that 
  * lays out cells in a left to right fashion.
  */
 struct Ewl_Row

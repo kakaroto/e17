@@ -17,7 +17,15 @@ static void ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r,
 #define EWL_COLORPICKER_SPINNER_TYPE "colorpicker_spinner"
 #define EWL_COLORPICKER_SPINNER(spinner) ((Ewl_Colorpicker_Spinner *)spinner)
 
+/**
+ * Ewl_Colorpicker_Spinner
+ */
 typedef struct Ewl_Colorpicker_Spinner Ewl_Colorpicker_Spinner;
+
+/**
+ * @brief Inerits from Ewl_Spinner and extneds to provide colorpicker
+ * information
+ */
 struct Ewl_Colorpicker_Spinner
 {
 	Ewl_Spinner spinner;
@@ -27,7 +35,15 @@ struct Ewl_Colorpicker_Spinner
 #define EWL_COLORPICKER_RADIOBUTTON_TYPE "colorpicker_radiobutton"
 #define EWL_COLORPICKER_RADIOBUTTON(button) ((Ewl_Colorpicker_Radiobutton *)button)
 
+/**
+ * Ewl_Colorpicker_Radiobutton
+ */
 typedef struct Ewl_Colorpicker_Radiobutton Ewl_Colorpicker_Radiobutton;
+
+/** 
+ * @brief Inherits from Ewl_Radiobutton and extends to provide colorpicker
+ * information
+ */
 struct Ewl_Colorpicker_Radiobutton
 {
 	Ewl_Radiobutton button;

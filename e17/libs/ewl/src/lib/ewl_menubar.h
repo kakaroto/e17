@@ -44,7 +44,7 @@ typedef struct Ewl_Menubar Ewl_Menubar;
 #define EWL_MENUBAR(menubar) ((Ewl_Menubar *) menubar)
 
 /**
- * Inherits from the Ewl_Box class and extends it to provide for
+ * @brief Inherits from the Ewl_Box class and extends it to provide for
  * a menubar
  */
 struct Ewl_Menubar
@@ -59,7 +59,7 @@ struct Ewl_Menubar
 typedef struct Ewl_Menubar_Info Ewl_Menubar_Info;
 
 /**
- * Provides a simple menu structure for the menubar
+ * @brief Provides a simple menu structure for the menubar
  */
 struct Ewl_Menubar_Info
 {

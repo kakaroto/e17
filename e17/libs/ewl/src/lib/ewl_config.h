@@ -14,7 +14,7 @@
 typedef struct Ewl_Config Ewl_Config;
 
 /**
- * The Ewl_Config stuct holds configuration data
+ * @brief Contains Ewl configuration data
  */
 struct Ewl_Config
 {

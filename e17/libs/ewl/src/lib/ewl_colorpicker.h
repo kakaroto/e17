@@ -37,7 +37,7 @@
 typedef struct Ewl_Colorpicker Ewl_Colorpicker;
 
 /**
- * This inherits from Ewl_Box to produce a color picker widget
+ * @brief Inherits from Ewl_Box to produce a color picker widget
  */
 struct Ewl_Colorpicker
 {

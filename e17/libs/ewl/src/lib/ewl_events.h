@@ -15,7 +15,7 @@
 typedef struct Ewl_Event_Window_Expose Ewl_Event_Window_Expose;
 
 /**
- * Describes the evas region that received an expose notification.
+ * @brief Describes the canvas region that received an expose notification.
  */
 struct Ewl_Event_Window_Expose
 {
@@ -31,7 +31,7 @@ struct Ewl_Event_Window_Expose
 typedef struct Ewl_Event_Key Ewl_Event_Key;
 
 /**
- * Provides the basic information about key events
+ * @brief Provides the basic information about key events
  */
 struct Ewl_Event_Key
 {
@@ -45,7 +45,7 @@ struct Ewl_Event_Key
 typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
 
 /**
- * Provides clients with necessary information about the key press event.
+ * @brief Provides clients with necessary information about the key press event.
  */
 struct Ewl_Event_Key_Down
 {
@@ -58,7 +58,7 @@ struct Ewl_Event_Key_Down
 typedef struct Ewl_Event_Key_Up Ewl_Event_Key_Up;
 
 /**
- * Provides clients with necessary information about the key release event.
+ * @brief Provides clients with necessary information about the key release event.
  */
 struct Ewl_Event_Key_Up
 {
@@ -71,7 +71,7 @@ struct Ewl_Event_Key_Up
 typedef struct Ewl_Event_Mouse Ewl_Event_Mouse;
 
 /**
- * Provides base mouse information
+ * @brief Provides base mouse information
  */
 struct Ewl_Event_Mouse
 {
@@ -86,7 +86,7 @@ struct Ewl_Event_Mouse
 typedef struct Ewl_Event_Mouse_Down Ewl_Event_Mouse_Down;
 
 /**
- * Provides information about the mouse down event.
+ * @brief Provides information about the mouse down event.
  */
 struct Ewl_Event_Mouse_Down
 {
@@ -101,7 +101,7 @@ struct Ewl_Event_Mouse_Down
 typedef struct Ewl_Event_Mouse_Up Ewl_Event_Mouse_Up;
 
 /**
- * Provides information about the mouse up event.
+ * @brief Provides information about the mouse up event.
  */
 struct Ewl_Event_Mouse_Up
 {
@@ -115,7 +115,7 @@ struct Ewl_Event_Mouse_Up
 typedef struct Ewl_Event_Mouse_Move Ewl_Event_Mouse_Move;
 
 /**
- * Provides information about mouse movement
+ * @brief Provides information about mouse movement
  */
 struct Ewl_Event_Mouse_Move
 {
@@ -128,7 +128,7 @@ struct Ewl_Event_Mouse_Move
 typedef struct Ewl_Event_Mouse_In Ewl_Event_Mouse_In;
 
 /**
- * Provides information about the mouse entering
+ * @brief Provides information about the mouse entering
  */
 struct Ewl_Event_Mouse_In
 {
@@ -141,7 +141,7 @@ struct Ewl_Event_Mouse_In
 typedef struct Ewl_Event_Mouse_Out Ewl_Event_Mouse_Out;
 
 /**
- * Provides information about the mouse leaving
+ * @brief Provides information about the mouse leaving
  */
 struct Ewl_Event_Mouse_Out
 {
@@ -154,7 +154,7 @@ struct Ewl_Event_Mouse_Out
 typedef struct Ewl_Event_Mouse_Wheel Ewl_Event_Mouse_Wheel;
 
 /**
- * Provides information about the mouse wheel scrolling
+ * @brief Provides information about the mouse wheel scrolling
  */
 struct Ewl_Event_Mouse_Wheel
 {
@@ -169,7 +169,7 @@ struct Ewl_Event_Mouse_Wheel
 typedef struct Ewl_Dnd_Types Ewl_Dnd_Types;
 
 /**
- * Provides type information about an external DND drag
+ * @brief Provides type information about an external DND drag
  */
 struct Ewl_Dnd_Types
 {
@@ -183,7 +183,7 @@ struct Ewl_Dnd_Types
 typedef struct Ewl_Event_Dnd_Position Ewl_Event_Dnd_Position;
 
 /**
- * Provides information about dnd drops movement
+ * @brief Provides information about dnd drops movement
  */
 struct Ewl_Event_Dnd_Position
 {
@@ -197,7 +197,7 @@ struct Ewl_Event_Dnd_Position
 typedef struct Ewl_Event_Dnd_Drop Ewl_Event_Dnd_Drop;
 
 /**
- * Provides information about dnd drops movement
+ * @brief Provides information about dnd drops movement
  */
 struct Ewl_Event_Dnd_Drop
 {
@@ -212,7 +212,7 @@ struct Ewl_Event_Dnd_Drop
 typedef struct Ewl_Event_Dnd_Data_Received Ewl_Event_Dnd_Data_Received;
 
 /**
- * Provides information about dnd drop data
+ * @brief Provides information about dnd drop data
  */
 struct Ewl_Event_Dnd_Data_Received
 {
@@ -228,7 +228,7 @@ struct Ewl_Event_Dnd_Data_Received
 typedef struct Ewl_Event_Dnd_Data_Request Ewl_Event_Dnd_Data_Request;
 
 /**
- * Provides information about dnd data requests
+ * @brief Provides information about dnd data requests
  */
 struct Ewl_Event_Dnd_Data_Request
 {
@@ -242,7 +242,7 @@ struct Ewl_Event_Dnd_Data_Request
 typedef struct Ewl_Event_Action_Response Ewl_Event_Action_Response;
 
 /**
- * Stores the reponse from a user action
+ * @brief Stores the reponse from a user action
  */
 struct Ewl_Event_Action_Response
 {

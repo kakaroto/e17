@@ -33,7 +33,7 @@
 typedef struct Ewl_Attach Ewl_Attach;
 
 /**
- * Contains the attachment information
+ * @brief Contains information about widget attachments.
  */
 struct Ewl_Attach
 {
@@ -50,7 +50,7 @@ struct Ewl_Attach
 typedef struct Ewl_Attach_Dnd Ewl_Attach_Dnd;
 
 /**
- * DND data associated with the widget.
+ * @brief DND data associated with the widget.
  */
 struct Ewl_Attach_Dnd
 {

@@ -111,9 +111,20 @@ typedef enum Ewl_Engine_Canvas_Hooks Ewl_Engine_Canvas_Hooks;
 typedef enum Ewl_Engine_Pointer_Hooks Ewl_Engine_Pointer_Hooks;
 
 #define EWL_ENGINE(engine) ((Ewl_Engine *)engine)
+
+/**
+ * Ewl_Engine
+ */
 typedef struct Ewl_Engine Ewl_Engine;
 
+/**
+ * Ewl_Engine_Info
+ */
 typedef struct Ewl_Engine_Info Ewl_Engine_Info;
+
+/**
+ * @brief Contains the function pointers provided by an engine
+ */
 struct Ewl_Engine_Info
 {
 	void (*shutdown)(Ewl_Engine *engine);	/**< Shutdown the engine */
@@ -127,6 +138,9 @@ struct Ewl_Engine_Info
 	} hooks;			/**< The engine hooks */
 };
 
+/**
+ * @brief Contains information on an Ewl engine
+ */
 struct Ewl_Engine
 {
 	void *handle;			/**< The dlsym handle */

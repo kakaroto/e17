@@ -56,8 +56,7 @@ typedef struct Ewl_Tree Ewl_Tree;
 #define EWL_TREE(t) ((Ewl_Tree *)t)
 
 /**
- * The tree is a columnar listing, where items in the list may be nested below
- * other items.
+ * @brief Inherits from Ewl_Container and extends to provide a tree layout.
  */
 struct Ewl_Tree
 {
@@ -83,9 +82,9 @@ typedef struct Ewl_Tree_Node Ewl_Tree_Node;
  */
 #define EWL_TREE_NODE(t) ((Ewl_Tree_Node *)t)
 
-/*
- * The tree_node exists for each row, at this level the tree_node contains rows
- * that contain cells which display the data.
+/**
+ * @brief Inherits from Ewl_Container and extends to hold information on a
+ * row of the tree.
  */
 struct Ewl_Tree_Node
 {

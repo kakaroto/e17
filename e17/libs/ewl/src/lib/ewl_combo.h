@@ -45,7 +45,7 @@ typedef struct Ewl_Combo Ewl_Combo;
 #define EWL_COMBO(combo) ((Ewl_Combo *) combo)
 
 /**
- * Inherits from the Ewl_MVC widget 
+ * @brief Inherits from the Ewl_MVC widget to provide a combo widget
  */
 struct Ewl_Combo
 {

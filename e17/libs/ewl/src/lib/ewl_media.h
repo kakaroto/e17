@@ -41,7 +41,7 @@ typedef struct Ewl_Media Ewl_Media;
 #define EWL_MEDIA(media) ((Ewl_Media *) media)
 
 /**
- * Inherits from the Ewl_Widget class and extends it to provide for multi-line
+ * @brief Inherits from the Ewl_Widget class and extends it to provide for multi-line
  * media layout, obstacle wrapping, and a variety of formatting.
  */
 struct Ewl_Media

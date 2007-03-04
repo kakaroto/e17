@@ -2,7 +2,14 @@
 #ifndef EWL_IO_MANAGER_H
 #define EWL_IO_MANAGER_H
 
+/**
+ * Ewl_IO_Manager_Plugin
+ */
 typedef struct Ewl_IO_Manager_Plugin Ewl_IO_Manager_Plugin;
+
+/**
+ * @brief Provides the base structure for IO Manager plugins
+ */
 struct Ewl_IO_Manager_Plugin
 {
 	void *handle;			/**< The libray handle */

@@ -47,7 +47,7 @@
 typedef struct Ewl_Paned Ewl_Paned;
 
 /**
- * Inherits from Ewl_Container and extends to provided the paned widget
+ * @brief Inherits from Ewl_Container and extends to provided the paned widget
  */
 struct Ewl_Paned
 {
@@ -109,7 +109,7 @@ typedef struct Ewl_Paned_Grabber Ewl_Paned_Grabber;
 #define EWL_PANED_GRABBER(g) ((Ewl_Paned_Grabber *)g)
 
 /**
- * Inherits from Ewl_Separator and extends to facilitate the paned grabber
+ * @brief Inherits from Ewl_Separator and extends to facilitate the paned grabber
  */
 struct Ewl_Paned_Grabber
 {

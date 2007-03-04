@@ -45,7 +45,7 @@ typedef struct Ewl_Radiobutton Ewl_Radiobutton;
 #define EWL_RADIOBUTTON(button) ((Ewl_Radiobutton *) button)
 
 /**
- * Inherits from  Ewl_Checkbutton and extends it to provide grouping buttons
+ * @brief Inherits from Ewl_Checkbutton and extends it to provide grouping buttons
  * to limit to a single selection in a group at a given time.
  */
 struct Ewl_Radiobutton

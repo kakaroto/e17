@@ -35,7 +35,7 @@
 typedef struct Ewl_Grid_Info Ewl_Grid_Info;
 
 /**
- * Contains information about a row or column of Ewl_Grid
+ * @brief Contains information about a row or column of Ewl_Grid
  */
 struct Ewl_Grid_Info
 {
@@ -62,7 +62,7 @@ typedef struct Ewl_Grid Ewl_Grid;
 #define EWL_GRID(grid) ((Ewl_Grid *)grid)
 
 /**
- * Inherit from Ewl_Container and extend to privide a grid layout widget
+ * @brief Inherit from Ewl_Container and extend to privide a grid layout widget
  */
 struct Ewl_Grid 
 {
@@ -90,7 +90,7 @@ struct Ewl_Grid
 typedef struct Ewl_Grid_Child Ewl_Grid_Child;
 
 /**
- * Contains information about a grid child
+ * @brief Contains information about a grid child
  */
 struct Ewl_Grid_Child
 {

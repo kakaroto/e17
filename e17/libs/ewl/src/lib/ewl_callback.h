@@ -32,6 +32,9 @@ typedef void (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
  */
 #define EWL_CALLBACK_FUNCTION(cb_func) ((Ewl_Callback_Function) cb_func)
 
+/**
+ * @brief Contains information about a callback
+ */
 struct Ewl_Callback
 {
 	Ewl_Callback_Function func; 	/**< Function executed */
@@ -53,7 +56,7 @@ typedef struct Ewl_Callback_Custom Ewl_Callback_Custom;
 #define EWL_CALLBACK_CUSTOM(cb) ((Ewl_Callback_Custom *)cb)
 
 /**
- * The Ewl_Callback_Custom structure 
+ * @brief Contains information about custom callbacks.
  */
 struct Ewl_Callback_Custom
 {
@@ -132,7 +135,6 @@ struct Ewl_Callback_Custom
  */
 #define EWL_CALLBACK_SET_NODIRECT(w, t) \
 		w->callbacks[EWL_CALLBACK_INDEX(t)].mask &= ~EWL_CALLBACK_TYPE_DIRECT
-
 
 int 		ewl_callbacks_init(void);
 void 		ewl_callbacks_shutdown(void);

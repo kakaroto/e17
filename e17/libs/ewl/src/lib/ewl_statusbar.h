@@ -43,7 +43,7 @@ typedef struct Ewl_Statusbar Ewl_Statusbar;
 #define EWL_STATUSBAR(statusbar) ((Ewl_Statusbar *) statusbar)
 
 /**
- * Inherits from the Ewl_Box class and extends it to provide for
+ * @brief Inherits from the Ewl_Box class and extends it to provide for
  * a simple status bar
  */
 struct Ewl_Statusbar

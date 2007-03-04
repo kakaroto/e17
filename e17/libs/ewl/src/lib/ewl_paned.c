@@ -5,6 +5,9 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+/**
+ * @brief Contains information on a paned layout
+ */
 typedef struct 
 {
 	int (*minimum_size)(Ewl_Object *o);

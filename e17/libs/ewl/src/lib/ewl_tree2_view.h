@@ -39,7 +39,8 @@
 typedef struct Ewl_Tree2_View Ewl_Tree2_View;
 
 /**
- * Ewl_Tree2_View 
+ * @brief Inherits from Ewl_Box and provides the base information for a tree
+ * view
  */
 struct Ewl_Tree2_View
 {

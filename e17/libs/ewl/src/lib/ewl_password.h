@@ -43,7 +43,7 @@ typedef struct Ewl_Password Ewl_Password;
 #define EWL_PASSWORD(password) ((Ewl_Password *) password)
 
 /**
- * Inherits from the Ewl_Entry and extends it to obscure the text.
+ * @brief Inherits from the Ewl_Entry and extends it to obscure the text.
  */
 struct Ewl_Password
 {

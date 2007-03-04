@@ -38,8 +38,8 @@ typedef struct Ewl_Range Ewl_Range;
 #define EWL_RANGE(range) ((Ewl_Range *) range)
 
 /**
- * Inherits from Ewl_Container and creates internal Ewl_Widget's to provide a
- * range and a draggable area to select a value from that range.
+ * @brief Inherits from Ewl_Container and extends to provide a basic range
+ * widget
  */
 struct Ewl_Range
 {

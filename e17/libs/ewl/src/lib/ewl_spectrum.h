@@ -36,7 +36,7 @@
 typedef struct Ewl_Spectrum Ewl_Spectrum;
 
 /**
- * Inherits from Ewl_Overlay and extends to privide a colour spectrum 
+ * @brief Inherits from Ewl_Overlay and extends to provide a colour spectrum 
  */
 struct Ewl_Spectrum 
 {

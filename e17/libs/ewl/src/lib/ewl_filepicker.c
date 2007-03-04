@@ -12,7 +12,14 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+/** 
+ * Ewl_Filepicker_Filter
+ */
 typedef struct Ewl_Filepicker_Filter Ewl_Filepicker_Filter;
+
+/**
+ * @brief Contains information on a filepicker filter
+ */
 struct Ewl_Filepicker_Filter
 {
 	char *name;

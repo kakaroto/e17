@@ -25,7 +25,7 @@ void ewl_backtrace(void);
 typedef struct Ewl_Config_Cache Ewl_Config_Cache;
 
 /**
- * The Ewl_Config_Cache struct holds cached configuration data
+ * @brief Contains cached Ewl configuration data
  */
 struct Ewl_Config_Cache
 {

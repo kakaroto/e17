@@ -44,8 +44,7 @@ typedef struct Ewl_Menu_Item Ewl_Menu_Item;
 #define EWL_MENU_ITEM(mi) ((Ewl_Menu_Item *) mi)
 
 /**
- * Inherits from Ewl_Box to gain it's layout abilities, places policy on top
- * of the box framework to provide a simple menu layout of icon and label.
+ * @brief Inherits from Ewl_Button and provides a basic menu item widget
  */
 struct Ewl_Menu_Item
 {

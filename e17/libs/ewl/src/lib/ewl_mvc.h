@@ -40,7 +40,7 @@
 typedef struct Ewl_Selection Ewl_Selection;
 
 /**
- * Structure to store information on selections
+ * @brief Structure to store information on selections
  */
 struct Ewl_Selection
 {
@@ -63,7 +63,7 @@ struct Ewl_Selection
 typedef struct Ewl_Selection_Idx Ewl_Selection_Idx;
 
 /**
- * Structure to store information on a single index selection
+ * @brief Structure to store information on a single index selection
  */
 struct Ewl_Selection_Idx
 {
@@ -85,7 +85,7 @@ struct Ewl_Selection_Idx
 typedef struct Ewl_Selection_Range Ewl_Selection_Range;
 
 /**
- * Structure to store a range of selected cells
+ * @brief Structure to store a range of selected cells
  */
 struct Ewl_Selection_Range
 {
@@ -111,7 +111,7 @@ typedef struct Ewl_MVC Ewl_MVC;
 #define EWL_MVC(mvc) ((Ewl_MVC *)mvc)
 
 /**
- * Inherits from Ewl_Box and extends to provide mvc functionality
+ * @brief Inherits from Ewl_Box and extends to provide mvc functionality
  */
 struct Ewl_MVC
 {

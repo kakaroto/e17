@@ -45,8 +45,8 @@ typedef struct Ewl_Progressbar Ewl_Progressbar;
 #define EWL_PROGRESSBAR(progressbar) ((Ewl_Progressbar *) progressbar)
 
 /**
- * Inherits from Ewl_Range and creates an internal Ewl_Widget, the
- * statusbar itself.
+ * @brief Inherits from Ewl_Range and extends to provide a progressbar
+ * widget
  */
 struct Ewl_Progressbar
 {

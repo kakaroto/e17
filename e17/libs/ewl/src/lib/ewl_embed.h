@@ -54,8 +54,8 @@ typedef void *Ewl_Embed_Window;
 #define EWL_EMBED_WINDOW(window) ((Ewl_Embed_Window *)window)
 
 /**
- * @brief The class inheriting from Ewl_Container that acts as a top level
- * widget for interacting with the canvas.
+ * @brief Inherits from Ewl_Overlay that acts as a top level widget 
+ * for interacting with the canvas.
  */
 struct Ewl_Embed
 {

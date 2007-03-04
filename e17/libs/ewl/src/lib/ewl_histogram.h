@@ -37,7 +37,7 @@
 typedef struct Ewl_Histogram Ewl_Histogram;
 
 /**
- * Inherit from the Ewl_Image to create a histogram widget
+ * @brief Inherit from the Ewl_Image and extends to create a histogram widget
  */
 struct Ewl_Histogram
 {

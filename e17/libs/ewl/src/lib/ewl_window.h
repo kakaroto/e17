@@ -43,7 +43,7 @@ typedef struct Ewl_Window Ewl_Window;
 #define EWL_WINDOW(win) ((Ewl_Window *) win)
 
 /**
- * Extends the Ewl_Embed class to create it's own window and evas for drawing,
+ * @brief Inherits from Ewl_Embed class to create it's own window and canvas for drawing,
  * sizing and positioning.
  */
 struct Ewl_Window

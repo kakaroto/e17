@@ -44,8 +44,8 @@ typedef struct Ewl_Menu Ewl_Menu;
 #define EWL_MENU(menu) ((Ewl_Menu *) menu)
 
 /**
- * Inherits from the Ewl_Menu_Base and does not extend the structure, but
- * provides policy for drawing on the current evas.
+ * @brief Inherits from the Ewl_Menu_Base and extends to provide a simple
+ * menu
  */
 struct Ewl_Menu
 {
@@ -60,7 +60,7 @@ struct Ewl_Menu
 typedef struct Ewl_Menu_Info Ewl_Menu_Info;
 
 /**
- * Provides a simple structure to contain menu information
+ * @brief Provides a simple structure to contain menu information
  */
 struct Ewl_Menu_Info
 {

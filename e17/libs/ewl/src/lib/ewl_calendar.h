@@ -43,7 +43,8 @@ typedef struct Ewl_Calendar Ewl_Calendar;
 #define EWL_CALENDAR(calendar) ((Ewl_Calendar *) calendar)
 
 /** 
- * Inherits from an Ewl_Box to provide a calendar widget
+ * @brief Inherits from an Ewl_Box to provide a calendar widget
+ * 
  * Layout is either free-form, or auto-arranged to a grid.
  */
 struct Ewl_Calendar

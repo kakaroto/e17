@@ -44,7 +44,7 @@ typedef struct Ewl_Filedialog Ewl_Filedialog;
 #define EWL_FILEDIALOG(fd) ((Ewl_Filedialog *) fd)
 
 /**
- * Creates a dialog for the fileselector
+ * @brief Inherits from Ewl_Dialog and extends to create a filedialog
  */
 struct Ewl_Filedialog
 {

@@ -39,7 +39,7 @@ typedef struct Ewl_Filelist_List Ewl_Filelist_List;
 #define EWL_FILELIST_LIST(fl) ((Ewl_Filelist_List *)fl)
 
 /**
- * Creats a list view on the files
+ * @brief Inherits from Ewl_Filelist and extends to create a list view.
  */
 struct Ewl_Filelist_List
 {

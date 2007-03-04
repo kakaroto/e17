@@ -37,7 +37,7 @@ typedef struct Ewl_Popup Ewl_Popup;
 #define EWL_POPUP(popup) ((Ewl_Popup *) popup)
 
 /**
- * @brief Inherits from Ewl_Window
+ * @brief Inherits from Ewl_Window and extends to provide a popup widget
  */
 struct Ewl_Popup
 {

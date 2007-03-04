@@ -42,7 +42,7 @@ typedef struct Ewl_Scrollpane Ewl_Scrollpane;
 #define EWL_SCROLLPANE(scrollpane) ((Ewl_Scrollpane *) scrollpane)
 
 /**
- * Inherits from Ewl_Container and extends it to enclose a single widget in
+ * @brief Inherits from Ewl_Container and extends it to enclose a single widget in
  * vertical and horizontal scrollbars for panning around displaying different
  * regions of the enclosed widget.
  */

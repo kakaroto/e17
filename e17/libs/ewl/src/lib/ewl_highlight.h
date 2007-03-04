@@ -38,7 +38,8 @@
 typedef struct Ewl_Highlight Ewl_Highlight;
 
 /**
- * Inherit from Ewl_Floater
+ * @brief Inherits from Ewl_Floater and extends to provide a highlight
+ * widget.
  */
 struct Ewl_Highlight
 {

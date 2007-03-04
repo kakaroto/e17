@@ -45,7 +45,7 @@ typedef struct Ewl_Floater Ewl_Floater;
 #define EWL_FLOATER(floater) ((Ewl_Floater *) floater)
 
 /**
- * Inherits from Ewl_Box for layout purposes. Provides a means to layer above
+ * @brief Inherits from Ewl_Box for layout purposes. Provides a means to layer above
  * other widgets and to follow the movement of another widget.
  */
 struct Ewl_Floater

@@ -39,7 +39,7 @@ typedef struct Ewl_Filelist_Icon Ewl_Filelist_Icon;
 #define EWL_FILELIST_ICON(fl) ((Ewl_Filelist_Icon *)fl)
 
 /**
- * Creates the file icon view 
+ * @brief Inherits from Ewl_Filelist and extends for an icon view
  */
 struct Ewl_Filelist_Icon
 {
