@@ -364,8 +364,9 @@ GroupsEwinRemove(EWin * ewin)
 static char       **
 GetWinGroupMemberNames(Group ** groups, int num)
 {
-   int                 i, j;
+   int                 i, j, len;
    char              **group_member_strings;
+   const char         *name;
 
    group_member_strings = ECALLOC(char *, num);
 
@@ -379,12 +380,16 @@ GetWinGroupMemberNames(Group ** groups, int num)
 	if (!group_member_strings[i])
 	   break;
 
-	group_member_strings[i][0] = 0;
+	len = 0;
 	for (j = 0; j < groups[i]->num_members; j++)
 	  {
-	     strcat(group_member_strings[i],
-		    EwinGetTitle(groups[i]->members[j]));
-	     strcat(group_member_strings[i], "\n");
+	     name = EwinGetTitle(groups[i]->members[j]);
+	     if (!name)		/* Should never happen */
+		continue;
+	     len += Esnprintf(group_member_strings[i] + len, 1024 - len,
+			      "%s\n", name);
+	     if (len >= 1024)
+		break;
 	  }
      }
 
@@ -1146,15 +1151,10 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
 	return;
      }
 
-   if (!strcmp(windowid, "*"))
-     {
-	ewin = GetContextEwin();
-	if (!ewin)
-	   ewin = GetFocusEwin();
-     }
+   ewin = EwinFindByExpr(windowid);
    if (!ewin)
      {
-	IpcPrintf("Error: no such window: %8x", win);
+	IpcPrintf("Error: no such window: %s", windowid);
 	return;
      }
 
