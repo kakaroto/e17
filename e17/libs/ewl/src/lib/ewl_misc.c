@@ -31,10 +31,31 @@ static Ecore_List *shutdown_queue = NULL;
  */
 static Ecore_List *obscure_list = NULL;
 static Ecore_List *reveal_list = NULL;
-static Ecore_List *configure_list = NULL;
 static Ecore_List *realize_list = NULL;
 static Ecore_List *destroy_list = NULL;
 static Ecore_List *child_add_list= NULL;
+
+/*
+ * Default size per-buffer in the configure queue management.
+ */
+#define EWL_CONFIGURE_QUEUE_SIZE 4092
+
+/*
+ * Memory buffer for tracking widgets ready for a configure pass
+ */
+typedef struct Ewl_Configure_Queue Ewl_Configure_Queue;
+struct Ewl_Configure_Queue
+{
+	int end;
+	Ewl_Widget *buffer[EWL_CONFIGURE_QUEUE_SIZE];
+};
+
+/*
+ * Lists of active and inactive buffers
+ * FIXME: Need to occassionally reduce the inactive buffer list
+ */
+Ecore_List *configure_active = NULL;
+Ecore_List *configure_available = NULL;
 
 /*
  * Lists for cleaning up evas related memory at convenient times.
@@ -47,7 +68,7 @@ static Ecore_List *shutdown_hooks = NULL;
 static int ewl_idle_render(void *data);
 static void ewl_init_parse_options(int *argc, char **argv);
 static void ewl_init_remove_option(int *argc, char **argv, int i);
-static void ewl_configure_queue(void);
+static void ewl_configure_queue_run(void);
 static void ewl_realize_queue(void);
 static int ewl_garbage_collect_idler(void *data);
 static void ewl_configure_cancel_request(Ewl_Widget *w);
@@ -170,7 +191,8 @@ ewl_init(int *argc, char **argv)
 
 	reveal_list = ecore_list_new();
 	obscure_list = ecore_list_new();
-	configure_list = ecore_list_new();
+	configure_active = ecore_list_new();
+	configure_available = ecore_list_new();
 	realize_list = ecore_list_new();
 	destroy_list = ecore_list_new();
 	free_evas_list = ecore_list_new();
@@ -179,7 +201,8 @@ ewl_init(int *argc, char **argv)
 	ewl_embed_list = ecore_list_new();
 	ewl_window_list = ecore_list_new();
 	shutdown_hooks = ecore_list_new();
-	if ((!reveal_list) || (!obscure_list) || (!configure_list)
+	if ((!reveal_list) || (!obscure_list) || (!configure_active)
+			|| (!configure_available)
 			|| (!realize_list) || (!destroy_list)
 			|| (!free_evas_list) || (!free_evas_object_list)
 			|| (!child_add_list) || (!ewl_embed_list)
@@ -188,6 +211,12 @@ ewl_init(int *argc, char **argv)
 				" Out of memory?\n");
 		goto ERROR;
 	}
+
+	/*
+	 * Cleanup the queue buffers when the management lists get freed.
+	 */
+	ecore_list_set_free_cb(configure_active, free);
+	ecore_list_set_free_cb(configure_available, free);
 
 	if (!ewl_config_init()) {
 		fprintf(stderr, "Could not initilaize Ewl Config.\n");
@@ -313,7 +342,8 @@ ewl_shutdown(void)
 	IF_FREE_LIST(ewl_window_list);
 	IF_FREE_LIST(reveal_list);
 	IF_FREE_LIST(obscure_list);
-	IF_FREE_LIST(configure_list);
+	IF_FREE_LIST(configure_active);
+	IF_FREE_LIST(configure_available);
 	IF_FREE_LIST(realize_list);
 	IF_FREE_LIST(destroy_list);
 	IF_FREE_LIST(free_evas_list);
@@ -405,8 +435,8 @@ ewl_idle_render(void *data __UNUSED__)
 	if (!ecore_list_is_empty(realize_list))
 		ewl_realize_queue();
 
-	while (!ecore_list_is_empty(configure_list)) {
-		ewl_configure_queue();
+	while (!ecore_list_is_empty(configure_active)) {
+		ewl_configure_queue_run();
 
 		/*
 		 * Reclaim obscured objects at this point
@@ -689,8 +719,10 @@ ewl_print_help(void)
 void
 ewl_configure_request(Ewl_Widget * w)
 {
+	Ewl_Object *o;
 	Ewl_Embed *emb;
 	Ewl_Widget *search;
+	Ewl_Configure_Queue *queue_buffer;
 
 	DENTER_FUNCTION(DLEVEL_TESTING);
 	DCHECK_PARAM_PTR("w", w);
@@ -699,22 +731,20 @@ ewl_configure_request(Ewl_Widget * w)
 	if (!VISIBLE(w))
 		DRETURN(DLEVEL_STABLE);
 
-	/*
-	 * Widget scheduled for destruction
-	 */
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED))
-		DRETURN(DLEVEL_STABLE);
+	o = EWL_OBJECT(w);
 
 	/*
-	 * Widget already scheduled for configure
+	 * Widget scheduled for destruction, configuration, or is being called
+	 * within a configure callback.
 	 */
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED))
-		DRETURN(DLEVEL_STABLE);
-
 	/*
-	 * Widget already in configure callback
-	 */
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_CPROCESS))
+	if (ewl_object_queued_has(o, EWL_FLAG_QUEUED_DSCHEDULED) ||
+			ewl_object_queued_has(o, EWL_FLAG_QUEUED_CSCHEDULED) ||
+			ewl_object_queued_has(o, EWL_FLAG_QUEUED_CPROCESS))
+			*/
+	if (ewl_object_queued_has(o, EWL_FLAG_QUEUED_DSCHEDULED |
+				EWL_FLAG_QUEUED_CSCHEDULED |
+				EWL_FLAG_QUEUED_CPROCESS))
 		DRETURN(DLEVEL_STABLE);
 
 	emb = ewl_embed_widget_find(w);
@@ -736,9 +766,80 @@ ewl_configure_request(Ewl_Widget * w)
 	 * children widgets should have been removed by this point.
 	 */
 	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
-	ecore_list_append(configure_list, w);
+
+	queue_buffer = ecore_list_goto_last(configure_active);
+
+	/*
+	 * If the last buffer is full, it's not useful to us and we need a new
+	 * one.
+	 */
+	if (queue_buffer) {
+		if (queue_buffer->end >= EWL_CONFIGURE_QUEUE_SIZE)
+			queue_buffer = NULL;
+	}
+
+	if (!queue_buffer) {
+		/*
+		 * Attempt to use a previously allocated buffer first, fallback
+		 * to allocating one.
+		 */
+		if (!ecore_list_is_empty(configure_available)) {
+			queue_buffer = ecore_list_remove_first(configure_available);
+		}
+		else {
+			queue_buffer = NEW(Ewl_Configure_Queue, 1);
+		}
+		ecore_list_append(configure_active, queue_buffer);
+	}
+
+	/*
+	 * Add the widget to the end of the queue.
+	 */
+	if (queue_buffer)
+		queue_buffer->buffer[queue_buffer->end++] = w;
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
+}
+
+static void
+ewl_configure_queue_widget_run(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (ewl_object_flags_get(EWL_OBJECT(w),
+				 EWL_FLAG_PROPERTY_TOPLEVEL)) {
+		ewl_object_size_request(EWL_OBJECT(w),
+				ewl_object_current_w_get(EWL_OBJECT(w)),
+				ewl_object_current_h_get(EWL_OBJECT(w)));
+	}
+
+	/*
+	 * Remove the flag that the widget is scheduled for
+	 * configuration.
+	 */
+	ewl_object_queued_remove(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
+
+	/*
+	 * Items that are off screen should be queued to give up their
+	 * evas objects for reuse. Items returning from offscreen are
+	 * queued to receive new evas objects.
+	 */
+	if (!ewl_widget_onscreen_is(w)) {
+		if (!OBSCURED(w))
+			ecore_list_prepend(obscure_list, w);
+	}
+	else {
+		if (OBSCURED(w))
+			ecore_list_prepend(reveal_list, w);
+
+		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_CPROCESS);
+		if (REALIZED(w) && VISIBLE(w) && !OBSCURED(w))
+			ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+		ewl_object_queued_remove(EWL_OBJECT(w),
+			EWL_FLAG_QUEUED_CPROCESS);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -747,50 +848,29 @@ ewl_configure_request(Ewl_Widget * w)
  * @brief Configure all the widgets that need to be configured
  */
 static void
-ewl_configure_queue(void)
+ewl_configure_queue_run(void)
 {
-	Ewl_Widget *w;
+	Ewl_Configure_Queue *queue_buffer;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
 	 * Configure any widgets that need it.
 	 */
-	while ((w = ecore_list_remove_first(configure_list))) {
-		if (ewl_object_flags_get(EWL_OBJECT(w),
-					 EWL_FLAG_PROPERTY_TOPLEVEL)) {
-			ewl_object_size_request(EWL_OBJECT(w),
-					ewl_object_current_w_get(EWL_OBJECT(w)),
-					ewl_object_current_h_get(EWL_OBJECT(w)));
+	while ((queue_buffer = ecore_list_remove_first(configure_active))) {
+		int i;
+		for (i = 0; i < queue_buffer->end; i++) {
+			Ewl_Widget *w;
+
+			w = queue_buffer->buffer[i];
+			ewl_configure_queue_widget_run(w);
 		}
 
 		/*
-		 * Remove the flag that the widget is scheduled for
-		 * configuration.
+		 * Add to the available list re-initialized.
 		 */
-		ewl_object_queued_remove(EWL_OBJECT(w),
-				EWL_FLAG_QUEUED_CSCHEDULED);
-
-		/*
-		 * Items that are off screen should be queued to give up their
-		 * evas objects for reuse. Items returning from offscreen are
-		 * queued to receive new evas objects.
-		 */
-		if (!ewl_widget_onscreen_is(w)) {
-			if (!OBSCURED(w))
-				ecore_list_prepend(obscure_list, w);
-		}
-		else {
-			if (OBSCURED(w))
-				ecore_list_prepend(reveal_list, w);
-
-			ewl_object_queued_add(EWL_OBJECT(w),
-				EWL_FLAG_QUEUED_CPROCESS);
-			if (REALIZED(w) && VISIBLE(w) && !OBSCURED(w))
-				ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
-			ewl_object_queued_remove(EWL_OBJECT(w),
-				EWL_FLAG_QUEUED_CPROCESS);
-		}
+		queue_buffer->end = 0;
+		ecore_list_prepend(configure_available, queue_buffer);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -807,13 +887,26 @@ ewl_configure_queue(void)
 static void
 ewl_configure_cancel_request(Ewl_Widget *w)
 {
+	Ewl_Configure_Queue *queue_buffer;
 	DENTER_FUNCTION(DLEVEL_TESTING);
 
-	ecore_list_goto(configure_list, w);
-	if (ecore_list_current(configure_list) == w) {
-		ewl_object_queued_remove(EWL_OBJECT(w),
-					 EWL_FLAG_QUEUED_CSCHEDULED);
-		ecore_list_remove(configure_list);
+	ecore_list_goto_first(configure_active);
+	while ((queue_buffer = ecore_list_next(configure_active))) {
+		int i;
+		for (i = 0; i < queue_buffer->end; i++) {
+			Ewl_Widget *tmp;
+
+			tmp = queue_buffer->buffer[i];
+			if (tmp == w) {
+				ewl_object_queued_remove(EWL_OBJECT(w),
+							 EWL_FLAG_QUEUED_CSCHEDULED);
+				if (i < queue_buffer->end - 1)
+					memmove(queue_buffer->buffer + i,
+						queue_buffer->buffer + i + 1,
+						queue_buffer->end - i - 1);
+				queue_buffer->end--;
+			}
+		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
