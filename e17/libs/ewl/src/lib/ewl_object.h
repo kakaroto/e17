@@ -193,7 +193,7 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * @brief Determines if an object has the requested @a flags set.
  */
 #define ewl_object_flags_has(o, check_flags, mask) \
-	(!!(EWL_OBJECT(o)->flags & (check_flags & mask)))
+	(!!(EWL_OBJECT(o)->flags & ((check_flags) & mask)))
 
 /**
  * @param o: the object to check for a specified flags
