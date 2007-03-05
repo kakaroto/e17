@@ -1458,11 +1458,27 @@ unsigned int ewl_object_flags_get(Ewl_Object *o, unsigned int mask)
  * @param o: the object to check for a specified flags
  * @param flags: the bitmask of flags to check on the object
  * @param mask: get only the flags specified in mask
- * @return Returns TRUE if the specified flags are set, FALSE otherwise.
+ * @return Returns TRUE if any of the specified flags are set, FALSE otherwise.
  * @brief Determines if an object has the requested @a flags set.
  */
 unsigned int
 ewl_object_flags_has(Ewl_Object *o, unsigned int flags, unsigned int mask)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("o", o, 0);
+
+	DRETURN_INT(!!(o->flags & (flags & mask)), DLEVEL_STABLE);
+}
+
+/**
+ * @param o: the object to check for a specified flags
+ * @param flags: the bitmask of flags to check on the object
+ * @param mask: get only the flags specified in mask
+ * @return Returns TRUE if the specified flags are set, FALSE otherwise.
+ * @brief Determines if an object has all of the requested @a flags set.
+ */
+unsigned int
+ewl_object_flags_has_all(Ewl_Object *o, unsigned int flags, unsigned int mask)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("o", o, 0);

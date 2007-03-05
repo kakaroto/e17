@@ -177,6 +177,8 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
 					unsigned int mask);
 unsigned int    ewl_object_flags_has(Ewl_Object *o, unsigned int flags,
 				     unsigned int mask);
+unsigned int    ewl_object_flags_has_all(Ewl_Object *o, unsigned int flags,
+				     unsigned int mask);
 unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
 
 /**
