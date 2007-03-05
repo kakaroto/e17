@@ -175,11 +175,35 @@ void 		ewl_object_flags_add(Ewl_Object *o, unsigned int flags,
 				     unsigned int mask);
 void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
 					unsigned int mask);
-unsigned int    ewl_object_flags_has(Ewl_Object *o, unsigned int flags,
-				     unsigned int mask);
-unsigned int    ewl_object_flags_has_all(Ewl_Object *o, unsigned int flags,
-				     unsigned int mask);
-unsigned int    ewl_object_flags_get(Ewl_Object *o, unsigned int mask);
+
+/**
+ * @param o: the parameter to retrieve the current value of object flags
+ * @param mask: get only the flags specified in mask
+ * @return Returns the current setting of the object flags for @a o.
+ * @brief Retrieves the current setting of the object flags for @a o.
+ */
+#define ewl_object_flags_get(o, mask) \
+	(EWL_OBJECT(o)->flags & mask)
+
+/**
+ * @param o: the object to check for a specified flags
+ * @param check_flags: the bitmask of flags to check on the object
+ * @param mask: get only the flags specified in mask
+ * @return Returns TRUE if any of the specified flags are set, FALSE otherwise.
+ * @brief Determines if an object has the requested @a flags set.
+ */
+#define ewl_object_flags_has(o, check_flags, mask) \
+	(!!(EWL_OBJECT(o)->flags & (check_flags & mask)))
+
+/**
+ * @param o: the object to check for a specified flags
+ * @param check_flags: the bitmask of flags to check on the object
+ * @param mask: get only the flags specified in mask
+ * @return Returns TRUE if the specified flags are set, FALSE otherwise.
+ * @brief Determines if an object has all of the requested @a flags set.
+ */
+#define ewl_object_flags_has_all(o, check_flags, mask) \
+	((EWL_OBJECT(o)->flags & (check_flags & mask)) == (check_flags & mask))
 
 /**
  * @def ewl_object_recursive_set(o)
