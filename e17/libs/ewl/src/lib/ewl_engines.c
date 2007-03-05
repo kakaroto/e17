@@ -51,7 +51,7 @@ ewl_engines_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ecore_hash_destroy(ewl_engines);
+	IF_FREE_HASH(ewl_engines);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -98,7 +98,7 @@ ewl_engine_names_get(void)
 			}
 		}
 	}
-	ecore_list_destroy(files);
+	IF_FREE_LIST(files);
 
 	DRETURN_PTR(names, DLEVEL_STABLE);
 }

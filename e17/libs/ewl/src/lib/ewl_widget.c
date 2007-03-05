@@ -593,11 +593,10 @@ ewl_widget_data_del(Ewl_Widget *w, void *k)
 
 	if (ecore_hash_count(w_data) == 0) {
 		ecore_hash_remove(ewl_widget_data_table, w);
-		ecore_hash_destroy(w_data);
-		if (ecore_hash_count(ewl_widget_data_table) == 0) {
-			ecore_hash_destroy(ewl_widget_data_table);
-			ewl_widget_data_table = NULL;
-		}
+		IF_FREE_HASH(w_data);
+
+		if (ecore_hash_count(ewl_widget_data_table) == 0)
+			IF_FREE_HASH(ewl_widget_data_table);
 	}
 
 	DRETURN_PTR(data, DLEVEL_STABLE);
@@ -2240,10 +2239,7 @@ ewl_widget_free(Ewl_Widget *w)
 		Ecore_Hash *w_data;
 
 		w_data = ecore_hash_remove(ewl_widget_data_table, w);
-		if (w_data) {
-			ecore_hash_destroy(w_data);
-			w_data = NULL;
-		}
+		IF_FREE_HASH(w_data);
 	}
 	
 	FREE(w);
@@ -3401,8 +3397,7 @@ ewl_widget_name_table_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ewl_widget_name_table)
-		ecore_hash_destroy(ewl_widget_name_table);
+	IF_FREE_HASH(ewl_widget_name_table);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

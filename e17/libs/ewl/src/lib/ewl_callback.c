@@ -75,8 +75,7 @@ ewl_callbacks_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (cb_registration)
-		ecore_hash_destroy(cb_registration);
+	IF_FREE_HASH(cb_registration);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

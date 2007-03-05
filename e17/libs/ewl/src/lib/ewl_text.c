@@ -3771,11 +3771,7 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	/* Note, we don't explictly destroy the triggers or the selection
 	 * because they will be cleared as children of the text widget
 	 * itself */
-	if (t->triggers)
-	{
-		ecore_list_destroy(t->triggers);
-		t->triggers = NULL;
-	}
+	IF_FREE_LIST(t->triggers);
 	t->selection = NULL;
 
 	ecore_dlist_destroy(t->formatting.nodes);
@@ -4391,7 +4387,7 @@ ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 		while ((area = ecore_list_remove_first(t->areas)))
 			ewl_widget_destroy(EWL_WIDGET(area));
 
-		ecore_list_destroy(t->areas);
+		IF_FREE_LIST(t->areas);
 	}
 
 	/* remove ourself from the parents trigger list, if needed */
@@ -5232,10 +5228,7 @@ ewl_text_context_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (context_hash) {
-		ecore_hash_destroy(context_hash);
-		context_hash = NULL;
-	}
+	IF_FREE_HASH(context_hash);
 
 	if (ewl_text_default_context)
 	{

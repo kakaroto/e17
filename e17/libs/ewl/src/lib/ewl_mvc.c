@@ -240,9 +240,7 @@ ewl_mvc_selection_mode_set(Ewl_MVC *mvc, Ewl_Selection_Mode mode)
 	mvc->selection_mode = mode;
 	if (mode == EWL_SELECTION_MODE_NONE)
 	{
-		if (mvc->selected)
-			ecore_list_destroy(mvc->selected);
-		mvc->selected = NULL;
+		IF_FREE_LIST(mvc->selected);
 	}
 	else if (!mvc->selected)
 	{
@@ -955,8 +953,7 @@ ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DCHECK_PARAM_PTR("w", w);
 
 	mvc = EWL_MVC(w);
-	if (mvc->selected)
-		ecore_list_destroy(mvc->selected);
+	IF_FREE_LIST(mvc->selected);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1172,7 +1169,7 @@ ewl_mvc_cb_sel_free(void *data)
 			while ((w = ecore_list_remove_first(sel->highlight)))
 				ewl_widget_destroy(w);
 
-			ecore_list_destroy(sel->highlight);
+			IF_FREE_LIST(sel->highlight);
 		}
 		sel->highlight = NULL;
 	}

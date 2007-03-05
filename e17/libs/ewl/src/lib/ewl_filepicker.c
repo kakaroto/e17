@@ -823,8 +823,8 @@ ewl_filepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 		FREE(filter);
 	}
 
-	ecore_list_destroy(fp->path);
-	ecore_list_destroy(fp->filters);
+	IF_FREE_LIST(fp->path);
+	IF_FREE_LIST(fp->filters);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

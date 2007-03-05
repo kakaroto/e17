@@ -64,6 +64,19 @@
 	} \
 }
 
+#undef IF_FREE_HASH
+/**
+ * @def IF_FREE_HASH(list)
+ * If @a hash is non-NULL, free @a hash and set it NULL.
+ */
+#define IF_FREE_HASH(hash) \
+{ \
+	if (hash) { \
+		ecore_hash_destroy(hash); \
+		hash = NULL; \
+	} \
+}
+
 #undef ZERO
 /**
  * @def ZERO(ptr, type, num)

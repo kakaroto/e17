@@ -83,17 +83,8 @@ ewl_io_manager_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ewl_io_manager_ext_icon_map)
-	{
-		ecore_hash_destroy(ewl_io_manager_ext_icon_map);
-		ewl_io_manager_ext_icon_map = NULL;
-	}	
-
-	if (ewl_io_manager_plugins)
-	{
-		ecore_hash_destroy(ewl_io_manager_plugins);
-		ewl_io_manager_plugins = NULL;
-	}
+	IF_FREE_HASH(ewl_io_manager_ext_icon_map);
+	IF_FREE_HASH(ewl_io_manager_plugins);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

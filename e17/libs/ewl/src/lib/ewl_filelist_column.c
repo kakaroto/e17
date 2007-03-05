@@ -228,7 +228,7 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 					ewl_filelist_column_row_add, s);
 	}
 
-	ecore_list_destroy(path_list);
+	IF_FREE_LIST(path_list);
 	FREE(new_path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

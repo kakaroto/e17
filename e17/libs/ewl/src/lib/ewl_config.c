@@ -134,14 +134,9 @@ ewl_config_destroy(Ewl_Config *cfg)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cfg", cfg);
 	
-	if (cfg->data.user) ecore_hash_destroy(cfg->data.user);
-	cfg->data.user = NULL;
-
-	if (cfg->data.system) ecore_hash_destroy(cfg->data.system);
-	cfg->data.system = NULL;
-
-	if (cfg->data.instance) ecore_hash_destroy(cfg->data.instance);
-	cfg->data.instance = NULL;
+	IF_FREE_HASH(cfg->data.user);
+	IF_FREE_HASH(cfg->data.system);
+	IF_FREE_HASH(cfg->data.instance);
 
 	IF_FREE(cfg->app_name);
 	FREE(cfg);
@@ -420,7 +415,7 @@ ewl_config_system_save(Ewl_Config *cfg)
 		ecore_hash_set(hash, key, 
 				ecore_hash_get(cfg->data.system, key)); 
 	}
-	ecore_list_destroy(keys);
+	IF_FREE_LIST(keys);
 
 	/* set the user data over top */
 	keys = ecore_hash_keys(cfg->data.user);
@@ -430,13 +425,13 @@ ewl_config_system_save(Ewl_Config *cfg)
 		ecore_hash_set(hash, key,
 				ecore_hash_get(cfg->data.user, key));
 	}
-	ecore_list_destroy(keys);
+	IF_FREE_LIST(keys);
 
 	fname = ewl_config_file_name_system_get(cfg);
 	ret = ewl_config_save(cfg, hash, fname);
 	FREE(fname);
 
-	ecore_hash_destroy(hash);
+	IF_FREE_HASH(hash);
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }

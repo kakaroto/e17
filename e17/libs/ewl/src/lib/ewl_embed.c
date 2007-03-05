@@ -2064,14 +2064,13 @@ ewl_embed_cache_cleanup(Ewl_Embed *emb)
 			obj_list = ecore_hash_remove(emb->obj_cache, key);
 			while ((obj = ecore_list_remove_first(obj_list)))
 				ewl_canvas_object_destroy(obj);
-			ecore_list_destroy(obj_list);
+			IF_FREE_LIST(obj_list);
 		}
 
-		ecore_list_destroy(key_list);
+		IF_FREE_LIST(key_list);
 	}
 
-	ecore_hash_destroy(emb->obj_cache);
-	emb->obj_cache = NULL;
+	IF_FREE_HASH(emb->obj_cache);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

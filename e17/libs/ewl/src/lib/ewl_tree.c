@@ -817,7 +817,7 @@ ewl_tree_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	tree = EWL_TREE(w);
-	ecore_list_destroy(tree->selected);
+	IF_FREE_LIST(tree->selected);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1002,7 +1002,7 @@ ewl_tree_node_collapse(Ewl_Tree_Node *node)
 		ewl_widget_hide(w);
 	}
 
-	ecore_list_destroy(tmp);
+	IF_FREE_LIST(tmp);
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 
@@ -1055,7 +1055,7 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 		ewl_widget_show(w);
 	}
 
-	ecore_list_destroy(tmp);
+	IF_FREE_LIST(tmp);
 
 	ewl_widget_state_set(EWL_WIDGET(node), "expanded",
 				EWL_STATE_PERSISTENT);

@@ -767,9 +767,9 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
 		FREE(file);
 	}
 
-	ecore_list_destroy(all_files);
-	ecore_list_destroy(files);
-	ecore_list_destroy(dirs);
+	IF_FREE_LIST(all_files);
+	IF_FREE_LIST(files);
+	IF_FREE_LIST(dirs);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1049,7 +1049,7 @@ ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 	fl = EWL_FILELIST(w);
 
-	if (fl->selected) ecore_list_destroy(fl->selected);
+	IF_FREE_LIST(fl->selected);
 	IF_FREE(fl->directory);
 	IF_FREE(fl->filter);
 

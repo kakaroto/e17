@@ -49,10 +49,7 @@ ewl_theme_shutdown(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	IF_FREE_LIST(ewl_theme_font_paths);
-	if (ewl_theme_def_data) {
-		ecore_hash_destroy(ewl_theme_def_data);
-		ewl_theme_def_data = NULL;
-	}
+	IF_FREE_HASH(ewl_theme_def_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -73,7 +70,7 @@ ewl_theme_theme_set(const char *theme_name)
 	DCHECK_PARAM_PTR_RET("theme_name", theme_name, FALSE);
 
 	/* Allocate and clear the default theme */
-	if (ewl_theme_def_data) ecore_hash_destroy(ewl_theme_def_data);
+	IF_FREE_HASH(ewl_theme_def_data);
 
 	ewl_theme_def_data = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	if (!ewl_theme_def_data)
@@ -150,7 +147,7 @@ ewl_theme_widget_shutdown(Ewl_Widget *w)
 	 * We destroy ewl_theme_def_data from else where.. 
 	 */
 	if (w->theme && w->theme != ewl_theme_def_data)
-		ecore_hash_destroy(w->theme);
+		IF_FREE_HASH(w->theme);
 
 	w->theme = NULL;
 
@@ -308,10 +305,7 @@ ewl_theme_data_reset(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (w->theme) {
-		ecore_hash_destroy(w->theme);
-		w->theme = NULL;
-	}
+	IF_FREE_HASH(w->theme);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

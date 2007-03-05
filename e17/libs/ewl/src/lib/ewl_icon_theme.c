@@ -49,8 +49,7 @@ ewl_icon_theme_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ewl_icon_theme_cache) ecore_hash_destroy(ewl_icon_theme_cache);
-	ewl_icon_theme_cache = NULL;
+	IF_FREE_HASH(ewl_icon_theme_cache);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -77,8 +76,7 @@ ewl_icon_theme_theme_change(void)
 		ewl_icon_theme_is_edje = 0;
 
 	/* destroy the cache and re-create it */
-	if (ewl_icon_theme_cache)
-		ecore_hash_destroy(ewl_icon_theme_cache);
+	IF_FREE_HASH(ewl_icon_theme_cache);
 
 	ewl_icon_theme_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	ecore_hash_set_free_key(ewl_icon_theme_cache, ewl_icon_theme_cb_free);

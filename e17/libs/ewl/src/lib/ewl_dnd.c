@@ -86,11 +86,9 @@ ewl_dnd_init(void)
 	 * Error handlers.
 	 */
 accepted_error:
-	ecore_hash_destroy(ewl_dnd_provided_hash);
-	ewl_dnd_provided_hash= NULL;
+	IF_FREE_HASH(ewl_dnd_provided_hash);
 provided_error:
-	ecore_hash_destroy(ewl_dnd_position_hash);
-	ewl_dnd_position_hash = NULL;
+	IF_FREE_HASH(ewl_dnd_position_hash);
 position_error:
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
@@ -105,9 +103,9 @@ ewl_dnd_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ecore_hash_destroy(ewl_dnd_position_hash);
-	ecore_hash_destroy(ewl_dnd_provided_hash);
-	ecore_hash_destroy(ewl_dnd_accepted_hash);
+	IF_FREE_HASH(ewl_dnd_position_hash);
+	IF_FREE_HASH(ewl_dnd_provided_hash);
+	IF_FREE_HASH(ewl_dnd_accepted_hash);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -605,7 +603,7 @@ ewl_dnd_event_mouse_up(void *data __UNUSED__, int type __UNUSED__,
 			EWL_EMBED(val)->dnd_last_position = NULL;
 			ecore_hash_remove(ewl_dnd_position_hash, val);
 		}
-		ecore_list_destroy(pos);
+		IF_FREE_LIST(pos);
 
 		ewl_dragging_current = 0;
 		ewl_widget_dnd_reset();

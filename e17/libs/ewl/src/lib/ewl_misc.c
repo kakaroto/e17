@@ -620,7 +620,7 @@ ewl_init_parse_options(int *argc, char **argv)
 		else
 			i++;
 	}
-	ecore_list_destroy(engines);
+	IF_FREE_LIST(engines);
 
 	DRETURN(DLEVEL_STABLE);
 }
@@ -674,7 +674,7 @@ ewl_print_help(void)
 		printf("\t--ewl-%s\n", name);
 		FREE(name);
 	}
-	ecore_list_destroy(names);
+	IF_FREE_LIST(names);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

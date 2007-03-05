@@ -165,10 +165,8 @@ ewl_radiobutton_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ecore_list_goto(rb->chain, w);
 	ecore_list_remove(rb->chain);
 
-	if (ecore_list_is_empty(rb->chain)) {
-		ecore_list_destroy(rb->chain);
-		rb->chain = NULL;
-	}
+	if (ecore_list_is_empty(rb->chain))
+		IF_FREE_LIST(rb->chain);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

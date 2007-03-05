@@ -474,7 +474,7 @@ ewl_tree2_row_collapse(Ewl_Tree2 *tree, void *data, unsigned int row)
 	if (ecore_list_is_empty(exp))
 	{
 		ecore_hash_remove(tree->expansions, data);
-		ecore_list_destroy(exp);
+		IF_FREE_LIST(exp);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -540,8 +540,8 @@ ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	t = EWL_TREE2(w);
 
-	ecore_list_destroy(t->columns);
-	if (t->expansions) ecore_hash_destroy(t->expansions);
+	IF_FREE_LIST(t->columns);
+	IF_FREE_HASH(t->expansions);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1331,7 +1331,7 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 	while ((child = ecore_list_remove_first(tmp)))
 		ewl_widget_show(child);
 
-	ecore_list_destroy(tmp);
+	IF_FREE_LIST(tmp);
 
 	ewl_tree2_row_expand(EWL_TREE2(node->tree), node->data, node->row_num);
 
@@ -1371,7 +1371,7 @@ ewl_tree2_node_collapse(Ewl_Tree2_Node *node)
 	while ((child = ecore_list_remove_first(tmp)))
 		ewl_widget_hide(child);
 
-	ecore_list_destroy(tmp);
+	IF_FREE_LIST(tmp);
 
 	ewl_tree2_row_collapse(EWL_TREE2(node->tree), node->data, node->row_num);
 
