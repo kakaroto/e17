@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-02-28 21:21+0100\n"
+"POT-Creation-Date: 2007-03-04 21:36+0100\n"
 "PO-Revision-Date: 2007-01-07 14:48+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -894,11 +894,11 @@ msgstr ""
 "Indstillinger for\n"
 "specielle effekter\n"
 
-#: src/groups.c:685
+#: src/groups.c:690
 msgid "Window Group Selection"
 msgstr "Vinduesgruppevalg"
 
-#: src/groups.c:688
+#: src/groups.c:693
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -906,11 +906,11 @@ msgstr ""
 "Enlightenment vinduesgruppe\n"
 "vælger dialog\n"
 
-#: src/groups.c:711 src/groups.c:720 src/groups.c:728 src/groups.c:915
+#: src/groups.c:716 src/groups.c:725 src/groups.c:733 src/groups.c:920
 msgid "Window Group Error"
 msgstr "Vinduesgruppefejl"
 
-#: src/groups.c:713
+#: src/groups.c:718
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -921,7 +921,7 @@ msgstr ""
 "\n"
 "Dette vindue er ikke med i nogen grupper.\n"
 
-#: src/groups.c:721
+#: src/groups.c:726
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -933,7 +933,7 @@ msgstr ""
 "Dette vindue tilhører allerede alle\n"
 "eksisterende grupper\n"
 
-#: src/groups.c:730
+#: src/groups.c:735
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -943,11 +943,11 @@ msgstr ""
 "  Ingen grupper eksisterer for tiden. Du skal starte en gruppe først.\n"
 "\n"
 
-#: src/groups.c:821
+#: src/groups.c:826
 msgid "   Pick the group to configure:   "
 msgstr "   Vælg gruppe at indstille:   "
 
-#: src/groups.c:852
+#: src/groups.c:857
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -955,43 +955,43 @@ msgstr ""
 "  De følgende handlinger vil  \n"
 "  gælde for alle gruppemedlemmer:  "
 
-#: src/groups.c:857 src/groups.c:959
+#: src/groups.c:862 src/groups.c:964
 msgid "Changing Border Style"
 msgstr "Ændrer kantstil"
 
-#: src/groups.c:862 src/groups.c:964
+#: src/groups.c:867 src/groups.c:969
 msgid "Iconifying"
 msgstr "Ikonificerer"
 
-#: src/groups.c:867 src/groups.c:969
+#: src/groups.c:872 src/groups.c:974
 msgid "Killing"
 msgstr "Dræber"
 
-#: src/groups.c:872 src/groups.c:974
+#: src/groups.c:877 src/groups.c:979
 msgid "Moving"
 msgstr "Flytter"
 
-#: src/groups.c:877 src/groups.c:979
+#: src/groups.c:882 src/groups.c:984
 msgid "Raising/Lowering"
 msgstr "Løfter/Sænker"
 
-#: src/groups.c:882 src/groups.c:984
+#: src/groups.c:887 src/groups.c:989
 msgid "Sticking"
 msgstr "Klæber"
 
-#: src/groups.c:887 src/groups.c:989
+#: src/groups.c:892 src/groups.c:994
 msgid "Shading"
 msgstr "Skygger"
 
-#: src/groups.c:892 src/groups.c:994
+#: src/groups.c:897 src/groups.c:999
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Spejl oprulning/minimering/klæbning"
 
-#: src/groups.c:899
+#: src/groups.c:904
 msgid "Window Group Settings"
 msgstr "Vinduegruppeindstillinger"
 
-#: src/groups.c:902
+#: src/groups.c:907
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -999,7 +999,7 @@ msgstr ""
 "Indstillinger for\n"
 "Grupper\n"
 
-#: src/groups.c:917
+#: src/groups.c:922
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1009,27 +1009,27 @@ msgstr ""
 "  Dette vindue hører ikke til i nogen grupper.  \n"
 "\n"
 
-#: src/groups.c:952
+#: src/groups.c:957
 msgid " Per-group settings: "
 msgstr "Gruppeindstillinger"
 
-#: src/groups.c:1003
+#: src/groups.c:1008
 msgid " Global settings: "
 msgstr "Globale indstillinger:"
 
-#: src/groups.c:1007
+#: src/groups.c:1012
 msgid "Swap Window Locations"
 msgstr "Ombyt vinduesplacering"
 
-#: src/groups.c:1013 src/menus-misc.c:772
+#: src/groups.c:1018 src/menus-misc.c:772
 msgid "Groups"
 msgstr "Grupper"
 
-#: src/groups.c:1014
+#: src/groups.c:1019
 msgid "Default Group Control Settings"
 msgstr "Standardgruppeindstillinger"
 
-#: src/groups.c:1017
+#: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1037,17 +1037,17 @@ msgstr ""
 "Indstillinger for\n"
 "standardgrupper\n"
 
-#: src/groups.c:1054
+#: src/groups.c:1059
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  Vælg gruppen som vinduet skal tilhøre:  \n"
 
-#: src/groups.c:1061
+#: src/groups.c:1066
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   Vælg gruppen som vinduet skal fjernes fra.  "
 
-#: src/groups.c:1067
+#: src/groups.c:1072
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  Vælg gruppen som skal brydes  "
@@ -1143,11 +1143,11 @@ msgstr "Ikonboks..."
 msgid "Iconbox Settings"
 msgstr "Ikonboksindstillinger"
 
-#: src/ipc.c:325
+#: src/ipc.c:194
 msgid "Message"
 msgstr "Meddelelse"
 
-#: src/ipc.c:1069
+#: src/ipc.c:938
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1156,11 +1156,11 @@ msgstr ""
 "Enlightenment version : %s\n"
 "kode er fra dato      : %s\n"
 
-#: src/ipc.c:1696
+#: src/ipc.c:1565
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC kommandohjælp\n"
 
-#: src/ipc.c:1700
+#: src/ipc.c:1569
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1170,19 +1170,19 @@ msgstr ""
 "Brug \"help <kommando>\" for en individuel beskrivelse\n"
 "\n"
 
-#: src/ipc.c:1702 src/ipc.c:1722 src/ipc.c:1734
+#: src/ipc.c:1571 src/ipc.c:1591 src/ipc.c:1603
 msgid "Commands currently available:\n"
 msgstr "Kommandoer tilgængelige lige nu:\n"
 
-#: src/ipc.c:1720
+#: src/ipc.c:1589
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Brug \"help full\" for den fulde beskrivelse af alle kommandoer\n"
 
-#: src/ipc.c:1721
+#: src/ipc.c:1590
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Brug \"help <kommando>\" for individuel beskrivelse\n"
 
-#: src/ipc.c:1723 src/ipc.c:1735
+#: src/ipc.c:1592 src/ipc.c:1604
 msgid "         <command>     : <description>\n"
 msgstr "         <kommando> : <beskrivelse>\n"
 

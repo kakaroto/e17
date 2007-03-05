@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-02-28 21:21+0100\n"
+"POT-Creation-Date: 2007-03-04 21:36+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -876,21 +876,21 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:685
+#: src/groups.c:690
 msgid "Window Group Selection"
 msgstr "Venster Groep Selectie"
 
-#: src/groups.c:688
+#: src/groups.c:693
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
 
-#: src/groups.c:711 src/groups.c:720 src/groups.c:728 src/groups.c:915
+#: src/groups.c:716 src/groups.c:725 src/groups.c:733 src/groups.c:920
 msgid "Window Group Error"
 msgstr "Venster groep fout"
 
-#: src/groups.c:713
+#: src/groups.c:718
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -904,7 +904,7 @@ msgstr ""
 " verwijderen via vensters die daadwerkelijk bij minstens een groep behoren\n"
 "\n"
 
-#: src/groups.c:721
+#: src/groups.c:726
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -918,7 +918,7 @@ msgstr ""
 " Je zult eerst andere groepen moeten starten\n"
 "\n"
 
-#: src/groups.c:730
+#: src/groups.c:735
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -928,11 +928,11 @@ msgstr ""
 " Momenteel bestaan er geen groepen, Je zult eerst een groep moeten starten.\n"
 "\n"
 
-#: src/groups.c:821
+#: src/groups.c:826
 msgid "   Pick the group to configure:   "
 msgstr "  Kies de groep om in te stellen:  "
 
-#: src/groups.c:852
+#: src/groups.c:857
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -940,49 +940,49 @@ msgstr ""
 " De volgende acties worden\n"
 " toegepast op alle groepsleden"
 
-#: src/groups.c:857 src/groups.c:959
+#: src/groups.c:862 src/groups.c:964
 msgid "Changing Border Style"
 msgstr "Verander van rand stijl"
 
-#: src/groups.c:862 src/groups.c:964
+#: src/groups.c:867 src/groups.c:969
 msgid "Iconifying"
 msgstr "Minimaliseren"
 
-#: src/groups.c:867 src/groups.c:969
+#: src/groups.c:872 src/groups.c:974
 msgid "Killing"
 msgstr "Afsluiten"
 
-#: src/groups.c:872 src/groups.c:974
+#: src/groups.c:877 src/groups.c:979
 msgid "Moving"
 msgstr "Verplaatsen"
 
-#: src/groups.c:877 src/groups.c:979
+#: src/groups.c:882 src/groups.c:984
 msgid "Raising/Lowering"
 msgstr "Omhoog/Omlaag brengen"
 
-#: src/groups.c:882 src/groups.c:984
+#: src/groups.c:887 src/groups.c:989
 msgid "Sticking"
 msgstr "Sticken"
 
-#: src/groups.c:887 src/groups.c:989
+#: src/groups.c:892 src/groups.c:994
 msgid "Shading"
 msgstr "Shaden"
 
-#: src/groups.c:892 src/groups.c:994
+#: src/groups.c:897 src/groups.c:999
 msgid "Mirror Shade/Iconify/Stick"
 msgstr ""
 
-#: src/groups.c:899
+#: src/groups.c:904
 msgid "Window Group Settings"
 msgstr "Venster Groep Instellingen"
 
-#: src/groups.c:902
+#: src/groups.c:907
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:917
+#: src/groups.c:922
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -992,46 +992,46 @@ msgstr ""
 " Dit venster behoort momenteel niet bij een groep.  \n"
 "\n"
 
-#: src/groups.c:952
+#: src/groups.c:957
 #, fuzzy
 msgid " Per-group settings: "
 msgstr "Pager instellingen"
 
-#: src/groups.c:1003
+#: src/groups.c:1008
 msgid " Global settings: "
 msgstr ""
 
-#: src/groups.c:1007
+#: src/groups.c:1012
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "Venster Opties"
 
-#: src/groups.c:1013 src/menus-misc.c:772
+#: src/groups.c:1018 src/menus-misc.c:772
 #, fuzzy
 msgid "Groups"
 msgstr "Groep %i"
 
-#: src/groups.c:1014
+#: src/groups.c:1019
 msgid "Default Group Control Settings"
 msgstr "Standaard Groep Controle Instellingen"
 
-#: src/groups.c:1017
+#: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:1054
+#: src/groups.c:1059
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "Kies de groep waar het venster bij moet behoren : \n"
 
-#: src/groups.c:1061
+#: src/groups.c:1066
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "  Kies de groep waar het venster van verwijderd moet worden"
 
-#: src/groups.c:1067
+#: src/groups.c:1072
 #, fuzzy
 msgid "Select the group to break:"
 msgstr " Kies de groep om te breken"
@@ -1129,11 +1129,11 @@ msgstr "Icoonbox Opties"
 msgid "Iconbox Settings"
 msgstr "Icoonbox instellingen"
 
-#: src/ipc.c:325
+#: src/ipc.c:194
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:1069
+#: src/ipc.c:938
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1142,34 +1142,34 @@ msgstr ""
 "Enlightenment Versie : %s\n"
 "code is van datum    : %s\n"
 
-#: src/ipc.c:1696
+#: src/ipc.c:1565
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment Inter Process Commandos Hulp"
 
-#: src/ipc.c:1700
+#: src/ipc.c:1569
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1702 src/ipc.c:1722 src/ipc.c:1734
+#: src/ipc.c:1571 src/ipc.c:1591 src/ipc.c:1603
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "commandos die nu beschikbaar zijn:\n"
 
-#: src/ipc.c:1720
+#: src/ipc.c:1589
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1721
+#: src/ipc.c:1590
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1723 src/ipc.c:1735
+#: src/ipc.c:1592 src/ipc.c:1604
 msgid "         <command>     : <description>\n"
 msgstr ""
 

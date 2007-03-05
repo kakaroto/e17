@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-02-28 21:21+0100\n"
+"POT-Creation-Date: 2007-03-04 21:36+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -933,11 +933,11 @@ msgstr ""
 "Enlightenment speciális effektek\n"
 "beállításai\n"
 
-#: src/groups.c:685
+#: src/groups.c:690
 msgid "Window Group Selection"
 msgstr "Ablakcsoport kiválasztása"
 
-#: src/groups.c:688
+#: src/groups.c:693
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -945,11 +945,11 @@ msgstr ""
 "Enlightenment Ablakcsoport\n"
 "kiválasztása\n"
 
-#: src/groups.c:711 src/groups.c:720 src/groups.c:728 src/groups.c:915
+#: src/groups.c:716 src/groups.c:725 src/groups.c:733 src/groups.c:920
 msgid "Window Group Error"
 msgstr "Ablakcsoport hiba"
 
-#: src/groups.c:713
+#: src/groups.c:718
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -963,7 +963,7 @@ msgstr ""
 "  ablakot egy csoportbol kivenni, ami maga is egy csoport tagja.\n"
 "\n"
 
-#: src/groups.c:721
+#: src/groups.c:726
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -977,7 +977,7 @@ msgstr ""
 "  Hozzon létre egy új csoportot elõször.\n"
 "\n"
 
-#: src/groups.c:730
+#: src/groups.c:735
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -987,11 +987,11 @@ msgstr ""
 "  Jelenleg nincsenek csoportok. Elõször létre kell hoznia egy csoportot.\n"
 "\n"
 
-#: src/groups.c:821
+#: src/groups.c:826
 msgid "   Pick the group to configure:   "
 msgstr "   Válasszon ki egy csoportot a beállításhoz:   "
 
-#: src/groups.c:852
+#: src/groups.c:857
 #, fuzzy
 msgid ""
 "  The following actions are  \n"
@@ -1000,43 +1000,43 @@ msgstr ""
 "  Az alábbi tevékenység a csoport \n"
 "  minden tagján vegrehajtódik:  "
 
-#: src/groups.c:857 src/groups.c:959
+#: src/groups.c:862 src/groups.c:964
 msgid "Changing Border Style"
 msgstr "Kerettípus váltás"
 
-#: src/groups.c:862 src/groups.c:964
+#: src/groups.c:867 src/groups.c:969
 msgid "Iconifying"
 msgstr "Kicsinyítés"
 
-#: src/groups.c:867 src/groups.c:969
+#: src/groups.c:872 src/groups.c:974
 msgid "Killing"
 msgstr "Megsemmisítés"
 
-#: src/groups.c:872 src/groups.c:974
+#: src/groups.c:877 src/groups.c:979
 msgid "Moving"
 msgstr "Mozgatás"
 
-#: src/groups.c:877 src/groups.c:979
+#: src/groups.c:882 src/groups.c:984
 msgid "Raising/Lowering"
 msgstr "Följebb/Lejjebb"
 
-#: src/groups.c:882 src/groups.c:984
+#: src/groups.c:887 src/groups.c:989
 msgid "Sticking"
 msgstr "Rögzítés"
 
-#: src/groups.c:887 src/groups.c:989
+#: src/groups.c:892 src/groups.c:994
 msgid "Shading"
 msgstr "Árnyékolás"
 
-#: src/groups.c:892 src/groups.c:994
+#: src/groups.c:897 src/groups.c:999
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Fordított Árnyek/Kicsi/Rögzít"
 
-#: src/groups.c:899
+#: src/groups.c:904
 msgid "Window Group Settings"
 msgstr "Ablakcsoportok beállításai"
 
-#: src/groups.c:902
+#: src/groups.c:907
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -1044,7 +1044,7 @@ msgstr ""
 "Enlightenment Ablakcsoportok\n"
 "beállításai\n"
 
-#: src/groups.c:917
+#: src/groups.c:922
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1054,30 +1054,30 @@ msgstr ""
 "  Ez az ablak nem tartozik egy csoporthoz sem.  \n"
 "\n"
 
-#: src/groups.c:952
+#: src/groups.c:957
 #, fuzzy
 msgid " Per-group settings: "
 msgstr " Lapozó beállításai: "
 
-#: src/groups.c:1003
+#: src/groups.c:1008
 msgid " Global settings: "
 msgstr " Globális beállítások: "
 
-#: src/groups.c:1007
+#: src/groups.c:1012
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "Ablak helyének cseréje"
 
-#: src/groups.c:1013 src/menus-misc.c:772
+#: src/groups.c:1018 src/menus-misc.c:772
 #, fuzzy
 msgid "Groups"
 msgstr "%i. csoport"
 
-#: src/groups.c:1014
+#: src/groups.c:1019
 msgid "Default Group Control Settings"
 msgstr "Csoportok alapbeállításai"
 
-#: src/groups.c:1017
+#: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1085,17 +1085,17 @@ msgstr ""
 "Enlightenment Csoportok\n"
 "alapbeállításai\n"
 
-#: src/groups.c:1054
+#: src/groups.c:1059
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  Válassza ki a csoportot ahova az ablak tartozni fog:  \n"
 
-#: src/groups.c:1061
+#: src/groups.c:1066
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   Válassza ki a csoportot ahonnan az ablak el lesz távolítva.  "
 
-#: src/groups.c:1067
+#: src/groups.c:1072
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  Válassza ki a csoportot a megszakításhoz  "
@@ -1193,11 +1193,11 @@ msgstr "Icondoboz beállításai"
 msgid "Iconbox Settings"
 msgstr "Icondoboz beállításai"
 
-#: src/ipc.c:325
+#: src/ipc.c:194
 msgid "Message"
 msgstr "Üzenet"
 
-#: src/ipc.c:1069
+#: src/ipc.c:938
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1206,12 +1206,12 @@ msgstr ""
 "Enlightenment verzió     : %s\n"
 "a kód utoljára frissítve : %s\n"
 
-#: src/ipc.c:1696
+#: src/ipc.c:1565
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC parancsok súgója"
 
-#: src/ipc.c:1700
+#: src/ipc.c:1569
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1221,24 +1221,24 @@ msgstr ""
 "írja be: \"help all\" az összes parancs leírásának megjelenítéséhez\n"
 "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:1702 src/ipc.c:1722 src/ipc.c:1734
+#: src/ipc.c:1571 src/ipc.c:1591 src/ipc.c:1603
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "elérhetõ parancsok:\n"
 
-#: src/ipc.c:1720
+#: src/ipc.c:1589
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1721
+#: src/ipc.c:1590
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 "Írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:1723 src/ipc.c:1735
+#: src/ipc.c:1592 src/ipc.c:1604
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "         <parancs> : <leírás>\n"

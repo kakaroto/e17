@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-02-28 21:21+0100\n"
+"POT-Creation-Date: 2007-03-04 21:36+0100\n"
 "PO-Revision-Date: 2007-02-12 16:40+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -936,11 +936,11 @@ msgstr ""
 "Enlightenment 特殊効果\n"
 "設定ダイアログ\n"
 
-#: src/groups.c:685
+#: src/groups.c:690
 msgid "Window Group Selection"
 msgstr "ウィンドウグループを選ぶ"
 
-#: src/groups.c:688
+#: src/groups.c:693
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -948,11 +948,11 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "選択ダイアログ\n"
 
-#: src/groups.c:711 src/groups.c:720 src/groups.c:728 src/groups.c:915
+#: src/groups.c:716 src/groups.c:725 src/groups.c:733 src/groups.c:920
 msgid "Window Group Error"
 msgstr "ウィンドウグループエラー"
 
-#: src/groups.c:713
+#: src/groups.c:718
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -966,7 +966,7 @@ msgstr ""
 "  ているウィンドウを使って、グループからウィンドウを削除することだけです。\n"
 "\n"
 
-#: src/groups.c:721
+#: src/groups.c:726
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -980,7 +980,7 @@ msgstr ""
 "  まず他のグループを作成してください。\n"
 "\n"
 
-#: src/groups.c:730
+#: src/groups.c:735
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -989,11 +989,11 @@ msgstr ""
 "\n"
 "  現在、グループはありません。まずグループを作成してください。\n"
 
-#: src/groups.c:821
+#: src/groups.c:826
 msgid "   Pick the group to configure:   "
 msgstr "  設定するグループを選択してください:   "
 
-#: src/groups.c:852
+#: src/groups.c:857
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -1001,43 +1001,43 @@ msgstr ""
 "  グループ内の全ウィンドウに \n"
 "  反映される操作:  "
 
-#: src/groups.c:857 src/groups.c:959
+#: src/groups.c:862 src/groups.c:964
 msgid "Changing Border Style"
 msgstr "ボーダースタイルの変更"
 
-#: src/groups.c:862 src/groups.c:964
+#: src/groups.c:867 src/groups.c:969
 msgid "Iconifying"
 msgstr "アイコン化"
 
-#: src/groups.c:867 src/groups.c:969
+#: src/groups.c:872 src/groups.c:974
 msgid "Killing"
 msgstr "強制終了"
 
-#: src/groups.c:872 src/groups.c:974
+#: src/groups.c:877 src/groups.c:979
 msgid "Moving"
 msgstr "移動"
 
-#: src/groups.c:877 src/groups.c:979
+#: src/groups.c:882 src/groups.c:984
 msgid "Raising/Lowering"
 msgstr "上に出す/下に移す"
 
-#: src/groups.c:882 src/groups.c:984
+#: src/groups.c:887 src/groups.c:989
 msgid "Sticking"
 msgstr "常時表示"
 
-#: src/groups.c:887 src/groups.c:989
+#: src/groups.c:892 src/groups.c:994
 msgid "Shading"
 msgstr "シェード"
 
-#: src/groups.c:892 src/groups.c:994
+#: src/groups.c:897 src/groups.c:999
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "一緒にシェード/アイコン化/常時表示化する"
 
-#: src/groups.c:899
+#: src/groups.c:904
 msgid "Window Group Settings"
 msgstr "ウィンドウグループの設定"
 
-#: src/groups.c:902
+#: src/groups.c:907
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -1045,7 +1045,7 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "設定ダイアログ\n"
 
-#: src/groups.c:917
+#: src/groups.c:922
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1055,28 +1055,28 @@ msgstr ""
 "  このウィンドウは現在どのグループにも属していません。\n"
 "\n"
 
-#: src/groups.c:952
+#: src/groups.c:957
 msgid " Per-group settings: "
 msgstr " グループごとの設定: "
 
-#: src/groups.c:1003
+#: src/groups.c:1008
 msgid " Global settings: "
 msgstr " 全般の設定:  "
 
-#: src/groups.c:1007
+#: src/groups.c:1012
 msgid "Swap Window Locations"
 msgstr "ウィンドウ位置を交換する"
 
 #
-#: src/groups.c:1013 src/menus-misc.c:772
+#: src/groups.c:1018 src/menus-misc.c:772
 msgid "Groups"
 msgstr "グループ"
 
-#: src/groups.c:1014
+#: src/groups.c:1019
 msgid "Default Group Control Settings"
 msgstr "グループ管理のデフォルト設定"
 
-#: src/groups.c:1017
+#: src/groups.c:1022
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1084,17 +1084,17 @@ msgstr ""
 "Enlightenment グループ管理の\n"
 "デフォルト設定ダイアログ\n"
 
-#: src/groups.c:1054
+#: src/groups.c:1059
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr " このウィンドウが参加するグループを選択してください:  \n"
 
-#: src/groups.c:1061
+#: src/groups.c:1066
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "  削除するウィンドウが属しているグループを選択してください。"
 
-#: src/groups.c:1067
+#: src/groups.c:1072
 #, fuzzy
 msgid "Select the group to break:"
 msgstr " 破棄するグループを選択してください。 "
@@ -1228,11 +1228,11 @@ msgstr "アイコンボックスオプション"
 msgid "Iconbox Settings"
 msgstr "アイコンボックスの設定"
 
-#: src/ipc.c:325
+#: src/ipc.c:194
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/ipc.c:1069
+#: src/ipc.c:938
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1242,12 +1242,12 @@ msgstr ""
 "コードバージョン        : %s\n"
 
 #
-#: src/ipc.c:1696
+#: src/ipc.c:1565
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC コマンド ヘルプ\n"
 
 #
-#: src/ipc.c:1700
+#: src/ipc.c:1569
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1258,22 +1258,22 @@ msgstr ""
 "\n"
 
 #
-#: src/ipc.c:1702 src/ipc.c:1722 src/ipc.c:1734
+#: src/ipc.c:1571 src/ipc.c:1591 src/ipc.c:1603
 msgid "Commands currently available:\n"
 msgstr "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:1720
+#: src/ipc.c:1589
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 "\"help full\" ですべてのコマンドについて各々詳しい説明が表示されます。\n"
 
 #
-#: src/ipc.c:1721
+#: src/ipc.c:1590
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で指定されたコマンドの説明が表示されます。\n"
 
 #
-#: src/ipc.c:1723 src/ipc.c:1735
+#: src/ipc.c:1592 src/ipc.c:1604
 msgid "         <command>     : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
