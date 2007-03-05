@@ -46,17 +46,12 @@ static void ewl_box_cb_shutdown(void);
  */
 static Ewl_Box_Orientation *ewl_box_info = NULL;
 
-/*
- * These lists are used to sort children when configured.
- */
-static Ecore_List *ewl_box_spread = NULL;
-
 static void ewl_box_setup(void);
 
-static void ewl_box_configure_calc(Ewl_Box * b, int *fill_size,
-					 int *align_size);
-static void ewl_box_configure_fill(Ewl_Box * b, int *fill_size,
-					 int *align_size);
+static int ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread,
+					 int *fill_size, int *align_size);
+static void ewl_box_configure_fill(Ewl_Object **spread, int fill_count,
+					   int *fill_size);
 static void ewl_box_configure_layout(Ewl_Box * b, int *x, int *y,
 					   int *fill, int *align,
 					   int *align_size);
@@ -143,12 +138,6 @@ ewl_box_init(Ewl_Box * b)
 	DCHECK_PARAM_PTR_RET("b", b, FALSE);
 
 	w = EWL_WIDGET(b);
-
-	/*
-	 * Create the temporary layout lists now that they are needed.
-	 */
-	if (!ewl_box_spread)
-		ewl_box_spread = ecore_list_new();
 
 	/*
 	 * Initialize the container portion of the box
@@ -381,11 +370,13 @@ ewl_box_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	Ewl_Box *b;
 
+	int fill_count;
 	int total_fill = 0;
 	int x, y;
 	int width, height;
 	int *fill, *align;
 	int *fill_size, *align_size;
+	Ewl_Object **spread;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -393,11 +384,15 @@ ewl_box_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	b = EWL_BOX(w);
 
+	fill_count = ecore_dlist_nodes(EWL_CONTAINER(w)->children);
+
 	/*
 	 * Catch the easy case, and return.
 	 */
-	if (ecore_dlist_is_empty(EWL_CONTAINER(w)->children))
+	if (!fill_count)
 		DRETURN(DLEVEL_STABLE);
+
+	spread = alloca(fill_count * sizeof(Ewl_Object *));
 
 	/*
 	 * Get the starting values for the dimensions of the box.
@@ -433,12 +428,12 @@ ewl_box_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Split the children up for configuration based on alignment.
 	 */
-	ewl_box_configure_calc(b, fill_size, align_size);
+	fill_count = ewl_box_configure_calc(b, spread, fill_size, align_size);
 
 	/*
 	 * Spread the fill space if necessary.
 	 */
-	ewl_box_configure_fill(b, fill_size, align_size);
+	ewl_box_configure_fill(spread, fill_count, fill_size);
 
 	/*
 	 * Layout the children in their appropriate positions.
@@ -530,15 +525,16 @@ ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data __UNUSED__,
 /*
  * Split the children into three lists for layout.
  */
-static void
-ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
+static int
+ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread, int *fill_size, int *align_size)
 {
+	int i;
 	Ewl_Object *child;
 	int initial;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
+	DCHECK_PARAM_PTR_RET("b", b, 0);
+	DCHECK_TYPE_RET("b", b, EWL_BOX_TYPE, 0);
 
 	initial = *fill_size / ecore_dlist_nodes(EWL_CONTAINER(b)->children);
 
@@ -546,6 +542,7 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 	 * Sort the children into lists dependant on their alignment within the
 	 * box.
 	 */
+	i = 0;
 	ecore_dlist_goto_first(EWL_CONTAINER(b)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(b)->children))) {
 		int change;
@@ -582,12 +579,14 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 			 */
 			policy = ewl_object_fill_policy_get(child);
 			policy &= ewl_box_info->f_policy;
-			if (policy || change == initial)
-				ecore_dlist_append(ewl_box_spread, child);
+			if (policy || change == initial) {
+				spread[i] = child;
+				i++;
+			}
 		}
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(i, DLEVEL_STABLE);
 }
 
 /*
@@ -595,9 +594,9 @@ ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
  * not be called if @num_fill or *@fill_size are equal to zero.
  */
 static void
-ewl_box_configure_fill(Ewl_Box * b __UNUSED__, int *fill_size, 
-					int *align_size __UNUSED__)
+ewl_box_configure_fill(Ewl_Object **spread, int fill_count, int *fill_size)
 {
+	int i;
 	int space;
 	int temp, remainder;
 	Ewl_Object *c;
@@ -608,17 +607,16 @@ ewl_box_configure_fill(Ewl_Box * b __UNUSED__, int *fill_size,
 	 * Calculate the space to give per child. Safeguard against divide by
 	 * zero.
 	 */
-	space = (ecore_dlist_is_empty(ewl_box_spread) ? 0 :
-		 *fill_size / ecore_dlist_nodes(ewl_box_spread));
+	space = (!fill_count ? 0 : *fill_size / fill_count);
 
 	/*
 	 * As long as children keep accepting more space, we should loop
 	 * through and give them what's available.
 	 */
-	while (space && !ecore_list_is_empty(ewl_box_spread)) {
+	while (space && fill_count) {
 
-		ecore_list_goto_first(ewl_box_spread);
-		while ((c = ecore_list_current(ewl_box_spread))) {
+		i = 0;
+		while ((i < fill_count) && (c = spread[i])) {
 
 			/*
 			 * Save the current size of the child, then
@@ -637,25 +635,30 @@ ewl_box_configure_fill(Ewl_Box * b __UNUSED__, int *fill_size,
 			 * If the child did not accept any of the size, then
 			 * it's at it's max/min and is no longer useful.
 			 */
-			if (!temp)
-				ecore_list_remove(ewl_box_spread);
+			if (!temp) {
+				if (i + 1 < fill_count) {
+					memmove((spread + i), (spread + i + 1),
+							(fill_count - i) *
+							sizeof(Ewl_Object *));
+				}
+				fill_count--;
+			}
 			else {
 				*fill_size -= temp;
-				ecore_list_next(ewl_box_spread);
+				i++;
 			}
 		}
 
 		/*
 		 * Calculate the space to give per child.
 		 */
-		space = (ecore_list_is_empty(ewl_box_spread) ? 0 :
-			 *fill_size / ecore_list_nodes(ewl_box_spread));
+		space = (!fill_count ? 0 : *fill_size / fill_count);
 	}
 
 	/*
 	 * Distribute any remaining fill space.
 	 */
-	while (*fill_size && !ecore_list_is_empty(ewl_box_spread)) {
+	while (*fill_size && fill_count) {
 
 		/*
 		 * Determine the sign of the amount to be incremented.
@@ -665,8 +668,8 @@ ewl_box_configure_fill(Ewl_Box * b __UNUSED__, int *fill_size,
 		/*
 		 * Add the remainder sign to each child.
 		 */
-		ecore_list_goto_first(ewl_box_spread);
-		while (*fill_size && (c = ecore_list_current(ewl_box_spread))) {
+		i = 0;
+		while (*fill_size && (i < fill_count) && (c = spread[i])) {
 
 			/*
 			 * Store the current size of the child.
@@ -688,19 +691,20 @@ ewl_box_configure_fill(Ewl_Box * b __UNUSED__, int *fill_size,
 			 * otherwise subtract the accepted space from the
 			 * total.
 			 */
-			if (!temp || (*fill_size - temp < 0))
-				ecore_list_remove(ewl_box_spread);
+			if (!temp || (*fill_size - temp < 0)) {
+				if (i + 1 < fill_count) {
+					memmove((spread + i), (spread + i + 1),
+							(fill_count - i) *
+							sizeof(Ewl_Object *));
+				}
+				fill_count--;
+			}
 			else {
 				*fill_size -= remainder;
-				ecore_list_next(ewl_box_spread);
+				i++;
 			}
 		}
 	}
-
-	/*
-	 * This contents of the list are no longer needed.
-	 */
-	ecore_list_clear(ewl_box_spread);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1063,8 +1067,6 @@ ewl_box_cb_shutdown(void)
 
 	IF_FREE(ewl_box_horizontal);
 	IF_FREE(ewl_box_vertical);
-
-	if (ewl_box_spread) ecore_list_destroy(ewl_box_spread);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
