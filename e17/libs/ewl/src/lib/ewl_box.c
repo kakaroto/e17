@@ -535,6 +535,7 @@ ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread, int *fill_size, int *al
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("b", b, 0);
 	DCHECK_TYPE_RET("b", b, EWL_BOX_TYPE, 0);
+	DCHECK_PARAM_PTR_RET("spread", spread, 0);
 
 	initial = *fill_size / ecore_dlist_nodes(EWL_CONTAINER(b)->children);
 
@@ -602,6 +603,7 @@ ewl_box_configure_fill(Ewl_Object **spread, int fill_count, int *fill_size)
 	Ewl_Object *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("spread", spread);
 
 	/*
 	 * Calculate the space to give per child. Safeguard against divide by
