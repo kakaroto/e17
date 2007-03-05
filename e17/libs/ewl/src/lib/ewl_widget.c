@@ -1792,36 +1792,64 @@ ewl_widget_onscreen_is(Ewl_Widget *w)
 	 * top level container.
 	 */
 	if (w->parent) {
-		int x, y;
-		int width, height;
+		int x = 0, y = 0;
+		int width = 0, height = 0;
 		Ewl_Widget *p = w->parent;
 
-		ewl_object_current_geometry_get(EWL_OBJECT(w), &x, &y, &width,
-				&height);
-
-		if ((x + width) < CURRENT_X(p))
-			onscreen = FALSE;
-
+		/*
+		 * Check if widget is right of the visible area.
+		 */
+		x = ewl_object_current_x_get(EWL_OBJECT(w));
 		if (x > (CURRENT_X(p) + CURRENT_W(p)))
 			onscreen = FALSE;
 
-		if ((y + height) < CURRENT_Y(p))
-			onscreen = FALSE;
+		if (onscreen) {
+			if (x > (CURRENT_X(emb) + CURRENT_W(emb)))
+				onscreen = FALSE;
+		}
 
-		if (y > (CURRENT_Y(p) + CURRENT_H(p)))
-			onscreen = FALSE;
+		/*
+		 * Check if widget is below the visible area.
+		 */
+		if (onscreen) {
+			y = ewl_object_current_y_get(EWL_OBJECT(w));
+			if (y > (CURRENT_Y(p) + CURRENT_H(p)))
+				onscreen = FALSE;
+		}
 
-		if ((x + width) < CURRENT_X(emb))
-			onscreen = FALSE;
+		if (onscreen) {
+			if (y > (CURRENT_Y(emb) + CURRENT_H(emb)))
+				onscreen = FALSE;
+		}
 
-		if (x > (CURRENT_X(emb) + CURRENT_W(emb)))
-			onscreen = FALSE;
+		/*
+		 * Check if widget is left of visible area.
+		 */
+		if (onscreen) {
+			width = ewl_object_current_w_get(EWL_OBJECT(w));
+			if ((x + width) < CURRENT_X(p))
+				onscreen = FALSE;
+		}
 
-		if ((y + height) < CURRENT_Y(emb))
-			onscreen = FALSE;
+		if (onscreen) {
+			if ((x + width) < CURRENT_X(emb))
+				onscreen = FALSE;
+		}
 
-		if (y > (CURRENT_Y(emb) + CURRENT_H(emb)))
-			onscreen = FALSE;
+		/*
+		 * Check if widget is above visible area.
+		 */
+		if (onscreen) {
+			height = ewl_object_current_h_get(EWL_OBJECT(w));
+			if ((y + height) < CURRENT_Y(p))
+				onscreen = FALSE;
+		}
+
+		if (onscreen) {
+			if ((y + height) < CURRENT_Y(emb))
+				onscreen = FALSE;
+		}
+
 	}
 
 	if (onscreen == TRUE && w->parent) {
