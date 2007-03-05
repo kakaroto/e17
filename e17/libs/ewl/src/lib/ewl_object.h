@@ -203,7 +203,7 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * @brief Determines if an object has all of the requested @a flags set.
  */
 #define ewl_object_flags_has_all(o, check_flags, mask) \
-	((EWL_OBJECT(o)->flags & (check_flags & mask)) == (check_flags & mask))
+	((EWL_OBJECT(o)->flags & ((check_flags) & mask)) == ((check_flags) & mask))
 
 /**
  * @def ewl_object_recursive_set(o)
