@@ -261,6 +261,7 @@ ewl_init(int *argc, char **argv)
 ERROR:
 	if (frozen) edje_thaw();
 	ewl_shutdown();
+
 	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 }
 
@@ -297,9 +298,7 @@ ewl_shutdown(void)
 
 		while (ewl_garbage_collect_idler(NULL) > 0)
 			;
-
-		ecore_list_destroy(ewl_embed_list);
-		ewl_embed_list = NULL;
+		IF_FREE_LIST(ewl_embed_list);
 	}
 
 	if (idle_enterer) 
@@ -324,9 +323,7 @@ ewl_shutdown(void)
 	/* shutdown all the subsystems */
 	while ((shutdown = ecore_list_remove_first(shutdown_queue)))
 		shutdown();
-
-	ecore_list_destroy(shutdown_queue);
-	shutdown_queue = NULL;
+	IF_FREE_LIST(shutdown_queue);
 
 	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 }
@@ -380,7 +377,8 @@ ewl_idle_render(void *data __UNUSED__)
 
 	if (!ewl_embed_list) {
 		DERROR("EWL has not been initialized. Exiting....\n");
-		exit(-1);
+		ewl_main_quit();
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
 	if (ecore_list_is_empty(ewl_embed_list))
@@ -652,6 +650,8 @@ ewl_print_help(void)
 	Ecore_List *names;
 	char *name;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	printf("EWL Help\n"
 		"\t--ewl-backtrace           Print a stack trace warnings occur.\n"
 		"\t--ewl-debug <level>       Set the debugging printf level.\n"
@@ -675,6 +675,8 @@ ewl_print_help(void)
 		FREE(name);
 	}
 	ecore_list_destroy(names);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -808,8 +810,11 @@ ewl_configure_cancel_request(Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_TESTING);
 
 	ecore_list_goto(configure_list, w);
-	if (ecore_list_current(configure_list) == w)
+	if (ecore_list_current(configure_list) == w) {
+		ewl_object_queued_remove(EWL_OBJECT(w),
+					 EWL_FLAG_QUEUED_CSCHEDULED);
 		ecore_list_remove(configure_list);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
@@ -1066,6 +1071,9 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 	if (ewl_config_cache.gc_reap) 
 		printf("Destroyed %d Evas\n---\n", cleanup);
 
+	/* We set the ewl_garbage_collect to NULL because when we return 0
+	 * (because destroy_list is empty) ecore will cleanup the idler
+	 * memory for us. */
 	if (!ecore_list_nodes(destroy_list))
 		ewl_garbage_collect = NULL;
 
