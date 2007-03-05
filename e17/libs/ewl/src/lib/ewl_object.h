@@ -225,8 +225,7 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * @brief Retrieves the current setting of the recursive flag for @a o.
  */
 #define ewl_object_recursive_get(o) \
-	(ewl_object_flags_get(o, EWL_FLAGS_PROPERTY_MASK) & \
-	 EWL_FLAG_PROPERTY_RECURSIVE)
+	(ewl_object_flags_get(o, EWL_FLAG_PROPERTY_RECURSIVE))
 
 /**
  * @def ewl_object_toplevel_set(o, val)
@@ -248,8 +247,7 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * @brief Retrieves the current setting of the top level flag for @a o.
  */
 #define ewl_object_toplevel_get(o) \
-	(ewl_object_flags_get(o, EWL_FLAGS_PROPERTY_MASK) & \
-	 EWL_FLAG_PROPERTY_TOPLEVEL)
+	(ewl_object_flags_get(o, EWL_FLAG_PROPERTY_TOPLEVEL))
 
 /**
  * @def ewl_object_state_add(o, state)
@@ -580,8 +578,7 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * @brief Retrieves the current setting of the in tab list flag for @a o.
  */
 #define ewl_object_in_tab_list_get(o) \
-	(ewl_object_flags_get(o, EWL_FLAGS_PROPERTY_MASK) & \
-	 EWL_FLAG_PROPERTY_IN_TAB_LIST)
+	(ewl_object_flags_get(o, EWL_FLAG_PROPERTY_IN_TAB_LIST))
 
 /**
  * @def ewl_object_in_tab_list_set(o, val)
