@@ -38,9 +38,7 @@ struct Ewl_Config_Cache
 
 extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 
-#define DEBUG 1
-
-#ifdef DEBUG
+#if EWL_ENABLE_DEBUG
 
 #define DEBUGGING(lvl) (ewl_config_cache.enable && (ewl_config_cache.level >= (lvl)))
 

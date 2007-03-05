@@ -241,6 +241,15 @@ AC_PATH_GENERIC(epsilon, 0.3.0,
 
 CFLAGS=$EPSILON_CFLAGS" "$CFLAGS
 
+AC_ARG_ENABLE(debug,
+	[AC_HELP_STRING([--enable-debug],[enable debug support])],
+	[enable_debug=$enableval], [enable_debug="yes"])
+if test "x$enable_debug" = xyes ; then
+    AC_DEFINE(EWL_ENABLE_DEBUG, 1, [Enable debug support])
+else
+    AC_DEFINE(EWL_ENABLE_DEBUG, 0, [Enable debug support])
+fi
+
 ###
 # Define these at the bottom as they are not release versions, but API
 # revisions numbers.
@@ -367,6 +376,8 @@ echo "Optional Components:"
 echo
 echo "  Emotion Support..........................: $have_emotion"
 echo "  Epsilon Support..........................: $have_epsilon"
+echo 
+echo "Debug Support..............................: $enable_debug"
 echo
 echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE."
 echo
