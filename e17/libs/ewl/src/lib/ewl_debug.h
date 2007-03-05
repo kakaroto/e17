@@ -15,10 +15,6 @@ void ewl_print_warning(void);
 void ewl_segv(void);
 void ewl_backtrace(void);
 
-#define DEBUG 1
-
-#ifdef DEBUG
-
 /**
  * The Ewl_Config_Cache structure
  */
@@ -41,6 +37,10 @@ struct Ewl_Config_Cache
 };
 
 extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
+
+// #define DEBUG 1
+
+#ifdef DEBUG
 
 #define DEBUGGING(lvl) (ewl_config_cache.enable && (ewl_config_cache.level >= (lvl)))
 
