@@ -15,6 +15,9 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
+
    item_edd = E_CONFIG_DD_NEW("Config_Item", Config_Item);
    E_CONFIG_VAL(item_edd, Config_Item, id, STR);
    E_CONFIG_VAL(item_edd, Config_Item, device, STR);
@@ -94,7 +97,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m) 
 {
-   e_module_dialog_show(m, _("Network Monitor Module"), 
-			_("Module to monitor network traffic"));
+   e_module_dialog_show(m, D_("Network Monitor Module"), 
+			D_("Module to monitor network traffic"));
    return 1;
 }

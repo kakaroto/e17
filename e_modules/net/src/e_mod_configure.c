@@ -40,7 +40,7 @@ _configure_net_module(void *data)
    
    snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(cfg->mod));
    con = e_container_current_get(e_manager_current_get());
-   cfd = e_config_dialog_new(con, _("Net Module Configuration"), "Net", 
+   cfd = e_config_dialog_new(con, D_("Net Module Configuration"), "Net", 
 			     "_netmod_config_dialog", buf, 0, v, ci);
    cfg->cfd = cfd;
 }
@@ -111,29 +111,29 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    o = e_widget_list_add(evas, 0, 0);
    
    of = e_widget_framelist_add(evas, _("General Settings"), 0);
-   ob = e_widget_check_add(evas, _("Show Text"), &(cfdata->show_text));
+   ob = e_widget_check_add(evas, D_("Show Text"), &(cfdata->show_text));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Show Popup On Mouse-Over"), &(cfdata->show_popup));
+   ob = e_widget_check_add(evas, D_("Show Popup On Mouse-Over"), &(cfdata->show_popup));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_label_add(evas, _("Launch Application On Double-Click"));
+   ob = e_widget_label_add(evas, D_("Launch Application On Double-Click"));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_entry_add(evas, &(cfdata->app));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    
-   of = e_widget_framelist_add(evas, _("Activity Notification Level"), 0);
+   of = e_widget_framelist_add(evas, D_("Activity Notification Level"), 0);
    rg = e_widget_radio_group_new(&(cfdata->limit));
-   ob = e_widget_radio_add(evas, _("High (MB)"), 1048575, rg);
+   ob = e_widget_radio_add(evas, D_("High (MB)"), 1048575, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Middle (KB)"), 1023, rg);
+   ob = e_widget_radio_add(evas, D_("Middle (KB)"), 1023, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Low (B)"), 0, rg);
+   ob = e_widget_radio_add(evas, D_("Low (B)"), 0, rg);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    if (!cfdata->devs) return o;
    
-   of = e_widget_framelist_add(evas, _("Device Settings"), 0);
+   of = e_widget_framelist_add(evas, D_("Device Settings"), 0);
    rg = e_widget_radio_group_new(&(cfdata->num));
    ecore_list_goto_first(cfdata->devs);
    while ((tmp = ecore_list_next(cfdata->devs)) != NULL) 

@@ -121,7 +121,7 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 	cfg->menu = mn;
 	
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Configuration"));
+	e_menu_item_label_set(mi, D_("Configuration"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
 	e_menu_item_callback_set(mi, _cb_configure, inst);
 	
@@ -167,7 +167,7 @@ _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *sou
    if (!e_theme_edje_object_set(bg, "base/theme/modules", 
 				"modules/net/popup"))
      edje_object_file_set(bg, buf, "modules/net/popup");
-   snprintf(buf, sizeof(buf), _("Device - %s"), ci->device);
+   snprintf(buf, sizeof(buf), D_("Device - %s"), ci->device);
    edje_object_part_text_set(bg, "e.text.title", buf);
    evas_object_show(bg);
 
