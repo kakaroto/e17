@@ -417,7 +417,7 @@ void                EwinOpFloatAt(EWin * ewin, int source, int x, int y);
 void                EwinOpUnfloatAt(EWin * ewin, int source, Desk * d,
 				    int x, int y);
 void                EwinOpClose(EWin * ewin, int source);
-void                EwinOpActivate(EWin * ewin, int source);
+void                EwinOpActivate(EWin * ewin, int source, int raise);
 void                EwinOpKill(EWin * ewin, int source);
 void                EwinOpRaise(EWin * ewin, int source);
 void                EwinOpLower(EWin * ewin, int source);

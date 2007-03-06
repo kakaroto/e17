@@ -32,6 +32,7 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "emodule.h"
 #include "ewins.h"
 #include "focus.h"
@@ -112,8 +113,9 @@ WarpFocusWinShow(WarpFocusWin * fw)
 {
    WarplistItem       *wi;
    EImageBorder       *pad;
+   EWin               *ewin;
    int                 i, x, y, w, h, ww, hh;
-   char                s[1024];
+   char                s[1024], ss[32];
    const char         *fmt;
 
    w = 0;
@@ -125,13 +127,23 @@ WarpFocusWinShow(WarpFocusWin * fw)
 	wi = warplist + i;
 	wi->win = ECreateWindow(EoGetWin(fw), 0, 0, 1, 1, 0);
 	EMapWindow(wi->win);
-	if (wi->ewin->state.iconified)
-	   fmt = "[%s]";
-	else if (wi->ewin->state.shaded)
-	   fmt = "=%s=";
+
+	ewin = wi->ewin;
+	if (ewin->state.iconified)
+	   fmt = "%s[%s]";
+	else if (ewin->state.shaded)
+	   fmt = "%s=%s=";
 	else
-	   fmt = "%s";
-	Esnprintf(s, sizeof(s), fmt, EwinGetTitle(wi->ewin));
+	   fmt = "%s%s";
+	ss[0] = '\0';
+	if (Conf.warplist.showalldesks)
+	  {
+	     if (EoIsSticky(ewin) || ewin->state.iconified)
+		strcpy(ss, "[-] ");
+	     else
+		Esnprintf(ss, sizeof(ss), "[%d] ", EoGetDeskNum(ewin));
+	  }
+	Esnprintf(s, sizeof(s), fmt, ss, EwinGetTitle(ewin));
 	wi->txt = strdup(s);
 	TextSize(fw->tc, 0, 0, 0, wi->txt, &ww, &hh, 17);
 	if (ww > w)
@@ -295,7 +307,8 @@ WarpFocus(int delta)
 	  {
 	     ewin = lst[i];
 	     if (		/* Either visible or iconified */
-		   ((EwinIsOnScreen(ewin)) || (ewin->state.iconified)) &&
+		   ((EwinIsOnScreen(ewin)) || (ewin->state.iconified) ||
+		    (Conf.warplist.showalldesks)) &&
 		   /* Exclude windows that explicitely say so */
 		   (!ewin->props.skip_focuslist) &&
 		   (!ewin->props.skip_ext_task) &&
@@ -335,6 +348,9 @@ WarpFocus(int delta)
 
    WarpFocusShow();
 
+   if (!EwinIsOnScreen(ewin))
+      return;
+
    if (Conf.focus.raise_on_next)
       EwinRaise(ewin);
    if (Conf.focus.warp_on_next)
@@ -366,7 +382,8 @@ WarpFocusClick(int ix)
    if (!EwinFindByPtr(ewin))
       return;
 
-   EwinRaise(ewin);
+   if (Conf.focus.raise_on_next)
+      EwinRaise(ewin);
 
    FocusToEWin(ewin, FOCUS_SET);
 }
@@ -383,19 +400,13 @@ WarpFocusFinish(void)
    if (!EwinFindByPtr(ewin))
       return;
 
-   if (ewin->state.iconified)
-      EwinDeIconify(ewin);
-   if (ewin->state.shaded)
-      EwinUnShade(ewin);
-   if (Conf.warplist.raise_on_select)
-      EwinRaise(ewin);
+   EwinOpActivate(ewin, OPSRC_USER, Conf.warplist.raise_on_select);
    if (Conf.warplist.warp_on_select)
       if (ewin != Mode.mouse_over_ewin)
 	{
 	   EXWarpPointer(EoGetXwin(ewin), EoGetW(ewin) / 2, EoGetH(ewin) / 2);
 	   Mode.mouse_over_ewin = ewin;
 	}
-   FocusToEWin(ewin, FOCUS_SET);
 }
 
 static void
@@ -486,7 +497,8 @@ static const CfgItem WarplistCfgItems[] = {
    CFG_ITEM_BOOL(Conf.warplist, enable, 1),
    CFG_ITEM_BOOL(Conf.warplist, showsticky, 1),
    CFG_ITEM_BOOL(Conf.warplist, showshaded, 1),
-   CFG_ITEM_BOOL(Conf.warplist, showiconified, 0),
+   CFG_ITEM_BOOL(Conf.warplist, showiconified, 1),
+   CFG_ITEM_BOOL(Conf.warplist, showalldesks, 0),
    CFG_ITEM_BOOL(Conf.warplist, warpfocused, 1),
    CFG_ITEM_BOOL(Conf.warplist, raise_on_select, 1),
    CFG_ITEM_BOOL(Conf.warplist, warp_on_select, 0),

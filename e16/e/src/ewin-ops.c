@@ -1487,14 +1487,15 @@ EwinMoveToArea(EWin * ewin, int ax, int ay)
 }
 
 void
-EwinOpActivate(EWin * ewin, int source)
+EwinOpActivate(EWin * ewin, int source, int raise)
 {
    if (source == OPSRC_APP && EwinInhGetApp(ewin, focus))
       return;
 
    if (!ewin->state.animated && !ewin->state.iconified)
       DeskGotoByEwin(ewin);
-   EwinOpRaise(ewin, source);
+   if (raise)
+      EwinOpRaise(ewin, source);
    if (ewin->state.iconified)
       EwinOpIconify(ewin, source, 0);
    if (ewin->state.shaded)

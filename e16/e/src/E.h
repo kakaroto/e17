@@ -410,6 +410,7 @@ typedef struct
       char                showsticky;
       char                showshaded;
       char                showiconified;
+      char                showalldesks;
       char                warpfocused;
       char                raise_on_select;
       char                warp_on_select;

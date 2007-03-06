@@ -481,7 +481,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	     IpcPrintf("focused: %s", (ewin == GetFocusEwin())? "yes" : "no");
 	     goto done;
 	  }
-	EwinOpActivate(ewin, OPSRC_USER);
+	EwinOpActivate(ewin, OPSRC_USER, 1);
 	break;
 
      case EWIN_OP_DESK:

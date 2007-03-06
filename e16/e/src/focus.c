@@ -649,6 +649,7 @@ static char         tmp_raise_after_focus;
 static char         tmp_showsticky;
 static char         tmp_showshaded;
 static char         tmp_showiconified;
+static char         tmp_showalldesks;
 static char         tmp_warpfocused;
 static int          tmp_warp_icon_mode;
 
@@ -672,6 +673,7 @@ CB_ConfigureFocus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.warplist.showsticky = tmp_showsticky;
 	Conf.warplist.showshaded = tmp_showshaded;
 	Conf.warplist.showiconified = tmp_showiconified;
+	Conf.warplist.showalldesks = tmp_showalldesks;
 	Conf.warplist.warpfocused = tmp_warpfocused;
 	Conf.warplist.icon_mode = tmp_warp_icon_mode;
 
@@ -700,6 +702,7 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    tmp_showsticky = Conf.warplist.showsticky;
    tmp_showshaded = Conf.warplist.showshaded;
    tmp_showiconified = Conf.warplist.showiconified;
+   tmp_showalldesks = Conf.warplist.showalldesks;
    tmp_warpfocused = Conf.warplist.warpfocused;
    tmp_warp_icon_mode = Conf.warplist.icon_mode;
 
@@ -793,6 +796,11 @@ _DlgFillFocus(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Include iconified windows in focus list"));
    DialogItemCheckButtonSetPtr(di, &tmp_showiconified);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Include windows on other desks in focus list"));
+   DialogItemCheckButtonSetPtr(di, &tmp_showalldesks);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
