@@ -22,7 +22,7 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-	Ewl_Widget *menu1, *menu2, *item;
+	Ewl_Widget *menu1, *menu2, *menu3, *item;
 
 	item = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(item), "");
@@ -35,6 +35,7 @@ create_test(Ewl_Container *box)
 				PACKAGE_DATA_DIR "/ewl/images/Draw.png", NULL);
 	ewl_button_label_set(EWL_BUTTON(menu1), "Test Menu");
 	ewl_container_child_append(EWL_CONTAINER(box), menu1);
+	ewl_object_fill_policy_set(EWL_OBJECT(menu1), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(menu1);
 
 	item = ewl_menu_item_new();
@@ -65,9 +66,7 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(item, EWL_CALLBACK_CLICKED, cb_menu_clicked, NULL);
 	ewl_widget_show(item);
 
-	/*
-	 * Create a sub-menu
-	 */
+	/* Create a sub-menu */
 	menu2 = ewl_menu_new();
 	ewl_button_label_set(EWL_BUTTON(menu2), "Sub Menu");
 	ewl_container_child_append(EWL_CONTAINER(menu1), menu2);
@@ -81,6 +80,42 @@ create_test(Ewl_Container *box)
 
 	item = ewl_menu_item_new();
 	ewl_button_label_set(EWL_BUTTON(item), "Button 2");
+	ewl_container_child_append(EWL_CONTAINER(menu2), item);
+	ewl_callback_append(item, EWL_CALLBACK_CLICKED, cb_menu_clicked, NULL);
+	ewl_widget_show(item);
+
+	/* create a sub-sub-menu */
+	menu3 = ewl_menu_new();
+	ewl_button_label_set(EWL_BUTTON(menu3), "Sub Sub Menu");
+	ewl_container_child_append(EWL_CONTAINER(menu2), menu3);
+	ewl_widget_show(menu3);
+
+	item = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(item), "Sub Button 1");
+	ewl_container_child_append(EWL_CONTAINER(menu3), item);
+	ewl_callback_append(item, EWL_CALLBACK_CLICKED, cb_menu_clicked, NULL);
+	ewl_widget_show(item);
+
+	item = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(item), "Sub Button 2");
+	ewl_container_child_append(EWL_CONTAINER(menu3), item);
+	ewl_callback_append(item, EWL_CALLBACK_CLICKED, cb_menu_clicked, NULL);
+	ewl_widget_show(item);
+
+	/* Create a sub-menu */
+	menu2 = ewl_menu_new();
+	ewl_button_label_set(EWL_BUTTON(menu2), "Sub Menu2");
+	ewl_container_child_append(EWL_CONTAINER(menu1), menu2);
+	ewl_widget_show(menu2);
+
+	item = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(item), "Button 2-1");
+	ewl_container_child_append(EWL_CONTAINER(menu2), item);
+	ewl_callback_append(item, EWL_CALLBACK_CLICKED, cb_menu_clicked, NULL);
+	ewl_widget_show(item);
+
+	item = ewl_menu_item_new();
+	ewl_button_label_set(EWL_BUTTON(item), "Button 2-2");
 	ewl_container_child_append(EWL_CONTAINER(menu2), item);
 	ewl_callback_append(item, EWL_CALLBACK_CLICKED, cb_menu_clicked, NULL);
 	ewl_widget_show(item);
