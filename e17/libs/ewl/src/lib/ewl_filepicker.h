@@ -25,7 +25,7 @@
  * @def EWL_FILEPICKER_IS(w)
  * Returns TRUE if the widget is an Ewl_Filepicker, FALSE otherwise
  */
-#define EWL_FILEPLICKER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_FILEPICKER_TYPE))
+#define EWL_FILEPICKER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_FILEPICKER_TYPE))
 
 /**
  * The Ewl_Filepicker provides a widget for picking files
