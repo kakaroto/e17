@@ -27,6 +27,7 @@ EWLHEADERS = \
 	ewl_combo.h \
 	ewl_config.h \
 	ewl_container.h \
+	ewl_context_menu.h \
 	ewl_cursor.h \
 	ewl_datepicker.h \
 	ewl_debug.h \
@@ -59,7 +60,6 @@ EWLHEADERS = \
 	ewl_media.h \
 	ewl_menu.h \
 	ewl_menubar.h \
-	ewl_menu_base.h \
 	ewl_menu_item.h \
 	ewl_misc.h \
 	ewl_model.h \
@@ -113,6 +113,7 @@ EWLSOURCES= \
 	ewl_combo.c \
 	ewl_config.c \
 	ewl_container.c \
+	ewl_context_menu.c \
 	ewl_cursor.c \
 	ewl_datepicker.c \
 	ewl_dialog.c \
@@ -142,7 +143,6 @@ EWLSOURCES= \
 	ewl_media.c \
 	ewl_menu.c \
 	ewl_menubar.c \
-	ewl_menu_base.c \
 	ewl_menu_item.c \
 	ewl_misc.c \
 	ewl_model.c \

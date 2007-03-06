@@ -297,9 +297,9 @@ extern"C" {
 #include <ewl_histogram.h>
 #include <ewl_spectrum.h>
 #include <ewl_menu_item.h>
-#include <ewl_menu_base.h>
 #include <ewl_menu.h>
 #include <ewl_menubar.h>
+#include <ewl_context_menu.h>
 #include <ewl_toolbar.h>
 #include <ewl_check.h>
 #include <ewl_checkbutton.h>

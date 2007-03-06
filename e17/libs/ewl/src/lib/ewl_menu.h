@@ -2,8 +2,7 @@
 #ifndef EWL_MENU_H
 #define EWL_MENU_H
 
-#include "ewl_menu_base.h"
-
+#include "ewl_menu_item.h"
 /**
  * @addtogroup Ewl_Menu Ewl_Menu: A Simple Windowed Menu
  * Defines a menu used globally. The contents on the menu are drawn outside of
@@ -49,7 +48,8 @@ typedef struct Ewl_Menu Ewl_Menu;
  */
 struct Ewl_Menu
 {
-	Ewl_Menu_Base  base;		/**< Inherit from Ewl_Menu_Base */
+	Ewl_Menu_Item  item;		/**< Inherit from Ewl_Menu_Base */
+	Ewl_Widget *popup;              /**< The popup holding the menu items */
 
 	Ewl_Widget *menubar_parent;	/**< Parent menu bar */
 };
@@ -80,6 +80,7 @@ void		 ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info);
 void ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_cb_hide(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_menu_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_menu_cb_popup_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_menu_cb_expand_mouse_move(Ewl_Widget *w, void *ev_data, 
