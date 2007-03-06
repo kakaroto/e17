@@ -3,6 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = inc
 
 EXTRA_DIST = \
+blank.edc \
 border.edc \
 button.edc \
 combo.edc \

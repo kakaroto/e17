@@ -12,6 +12,7 @@ fonts
 
 collections 
 {
+#include "groups/blank.edc"
 #include "groups/border.edc"
 #include "groups/button.edc"
 #include "groups/combo.edc"
@@ -42,6 +43,9 @@ data
 
 	item: "/radio/group" "ewl/button/radio/item";
 	item: "/check/group" "ewl/button/check/item";
+
+	/* A blank group to be used if you want to remove a theme */
+	item: "/blank/group" "ewl/blank";
 
 	/* border groups */
 	item: "/border/group" "ewl/border";
