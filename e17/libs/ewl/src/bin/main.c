@@ -344,16 +344,13 @@ static int
 ewl_test_setup_tests(void)
 {
 	char buf[PATH_MAX], buf2[PATH_MAX];
-	Ecore_List *list = NULL, *list2;
+	Ecore_List *list = NULL;
 	char *file = NULL;
 
 	tests = ecore_list_new();
 	if (!tests) return 0;
 
 	ecore_list_set_free_cb(tests, ECORE_FREE_CB(free));
-
-	list2 = ecore_list_new();
-	if (!list2) return 0;
 
 	snprintf(buf, sizeof(buf), "%s", PACKAGE_LIB_DIR "/ewl/tests");
 	list = ecore_file_ls(buf);
@@ -368,9 +365,26 @@ ewl_test_setup_tests(void)
 			len = strlen(file);
 			if (!strncmp(file + (len - 3), ".so", 3))
 			{
-				snprintf(buf2, sizeof(buf2), "%s/%s", 
-								buf, file);
-				ecore_list_append(list2, strdup(buf2));
+				void *handle;
+
+				snprintf(buf2, sizeof(buf2), "%s/%s", buf, file);
+				handle = dlopen(buf2, RTLD_LAZY | RTLD_GLOBAL);
+				if (handle)
+				{
+					void (*func_info)(Ewl_Test *test);
+
+					/* the UI test info */
+					func_info = dlsym(handle, "test_info");
+					if (func_info)
+					{
+						Ewl_Test *t;
+				
+						t = calloc(1, sizeof(Ewl_Test));
+						func_info(t);
+						t->handle = handle;
+						ecore_list_append(tests, t);
+					}
+				}
 			}
 			free(file);
 		}
@@ -378,33 +392,7 @@ ewl_test_setup_tests(void)
 	}
 
 	/* no tests found ... */
-	if (ecore_list_nodes(list2) == 0) return 0;
-
-	/* open each test file and get the Test struct from it */
-	while ((file = ecore_list_remove_first(list2)))
-	{
-		void *handle;
-		
-		handle = dlopen(file, RTLD_LAZY | RTLD_GLOBAL);
-		if (handle)
-		{
-			void (*func_info)(Ewl_Test *test);
-
-			/* the UI test info */
-			func_info = dlsym(handle, "test_info");
-			if (func_info)
-			{
-				Ewl_Test *t;
-				
-				t = calloc(1, sizeof(Ewl_Test));
-				func_info(t);
-				t->handle = handle;
-				ecore_list_append(tests, t);
-			}
-		}
-		free(file);
-	}
-	ecore_list_destroy(list2);
+	if (ecore_list_nodes(tests) == 0) return 0;
 
 	return 1;
 }
