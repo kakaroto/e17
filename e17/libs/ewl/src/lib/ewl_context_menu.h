@@ -4,7 +4,7 @@
 
 #include "ewl_popup.h"
 /**
- * @addtogroup Ewl_Context_Menu Ewl_Context_Menu: XXX
+ * @addtogroup Ewl_Context_Menu Ewl_Context_Menu: A context menu
  *
  * @remarks Inherits from Ewl_Popup.
  * @image html Ewl_Context_Menu_inheritance.png
@@ -26,7 +26,7 @@
 							EWL_CONTEXT_MENU_TYPE))
 
 /**
- * XXX
+ * Ewl_Context_Menu
  */
 typedef struct Ewl_Context_Menu Ewl_Context_Menu;
 
@@ -37,7 +37,7 @@ typedef struct Ewl_Context_Menu Ewl_Context_Menu;
 #define EWL_CONTEXT_MENU(context_menu) ((Ewl_Context_Menu *) context_menu)
 
 /**
- * @brief Inherits from Ewl_Popup
+ * @brief Inherits from Ewl_Popup and extends to provide a context menu
  */
 struct Ewl_Context_Menu
 {
