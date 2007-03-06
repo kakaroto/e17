@@ -809,6 +809,9 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Tree2_Branch_Cache *curbranch,
 	DCHECK_PARAM_PTR("curbranch", curbranch);
 	DCHECK_PARAM_PTR("parent", parent);
 
+	if (!curbranch->row_count)
+		DRETURN(DLEVEL_STABLE);
+
 	while (curbranch)
 	{
 		Ewl_Widget *row, *node;
