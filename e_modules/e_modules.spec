@@ -1,7 +1,7 @@
 Summary: Extra Modules for the Enlightenment window manager
 Name: e_modules
 Version: 0.0.1
-Release: 1.20051220
+Release: 0.%(date '+%Y%m%d')
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
