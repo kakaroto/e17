@@ -50,6 +50,7 @@ ewl_icon_theme_shutdown(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	IF_FREE_HASH(ewl_icon_theme_cache);
+	IF_FREE_HASH(ewl_icon_fallback_theme_cache);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

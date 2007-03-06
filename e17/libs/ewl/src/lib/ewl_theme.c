@@ -51,6 +51,8 @@ ewl_theme_shutdown(void)
 	IF_FREE_LIST(ewl_theme_font_paths);
 	IF_FREE_HASH(ewl_theme_def_data);
 
+	FREE(ewl_theme_path);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -84,6 +86,7 @@ ewl_theme_theme_set(const char *theme_name)
 		ecore_list_clear(ewl_theme_font_paths);
 
 	/* get the new theme path and setup the font path */
+	IF_FREE(ewl_theme_path);
 	ewl_theme_path = ewl_theme_path_find(theme_name);
 	if (!ewl_theme_path) DRETURN_INT(FALSE, DLEVEL_STABLE); 
 
