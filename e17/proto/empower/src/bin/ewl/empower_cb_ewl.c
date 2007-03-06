@@ -7,9 +7,9 @@ void key_down_cb(Ewl_Widget *w, void *event, void *data)
 	
 	ev = event;
 	
-	if(!ev->modifiers)
+	if(!ev->base.modifiers)
 	{
-		if(strcmp(ev->keyname, "Escape") == 0)
+		if(strcmp(ev->base.keyname, "Escape") == 0)
 		{
 			ewl_widget_destroy(EWL_WIDGET(win));
 			ewl_main_quit();
