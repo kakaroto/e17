@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-04 21:36+0100\n"
+"POT-Creation-Date: 2007-03-05 22:17+0100\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -546,7 +546,7 @@ msgstr "Iki son da"
 msgid "End"
 msgstr "Son"
 
-#: src/container.c:1682 src/focus.c:835
+#: src/container.c:1682 src/focus.c:843
 msgid "None"
 msgstr "Hiç biri"
 
@@ -798,101 +798,106 @@ msgstr ""
 "\n"
 "Bitiriyorum .\n"
 
-#: src/focus.c:712
+#: src/focus.c:715
 msgid "Focus follows pointer"
 msgstr "Foküs göstergeyi takip ediyor"
 
-#: src/focus.c:718
+#: src/focus.c:721
 msgid "Focus follows pointer sloppily"
 msgstr "Foküs göstergeyi yavaþ takip ediyor"
 
-#: src/focus.c:724
+#: src/focus.c:727
 msgid "Focus follows mouse clicks"
 msgstr "Foküs fare týklamalarýný takip ediyor"
 
-#: src/focus.c:734
+#: src/focus.c:737
 msgid "Clicking in a window always raises it"
 msgstr "Pencereye týklanýnca pencereyi yükselt"
 
-#: src/focus.c:742
+#: src/focus.c:745
 msgid "All new windows first get the focus"
 msgstr "Ilken pencere çikarsa o'nu foküsla"
 
-#: src/focus.c:747
+#: src/focus.c:750
 msgid "Only new dialog windows get the focus"
 msgstr "Sadece yeni diyalok pencereleri foküs alýr"
 
-#: src/focus.c:754
+#: src/focus.c:757
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Sadece sahibi foküslü olan yeni diyalok pencereleri foküs alýr"
 
-#: src/focus.c:759
+#: src/focus.c:762
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Pencere deðiþtirirken pencereleri foküsle"
 
-#: src/focus.c:765
+#: src/focus.c:768
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Foküs deðiþiminde fareyi pencereye gönder"
 
-#: src/focus.c:771
+#: src/focus.c:774
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Foküs deðiþiminde fareyi pencereye gönder"
 
-#: src/focus.c:779
+#: src/focus.c:782
 msgid "Display and use focus list"
 msgstr "Göster ve foküsleme listesini kullan"
 
-#: src/focus.c:784
+#: src/focus.c:787
 msgid "Include sticky windows in focus list"
 msgstr "Yapýþýk pencereleri foküsleme listesinde içer"
 
-#: src/focus.c:789
+#: src/focus.c:792
 msgid "Include shaded windows in focus list"
 msgstr "Toplanmýþ pencereleri foküsleme listesinde içer"
 
-#: src/focus.c:794
+#: src/focus.c:797
 msgid "Include iconified windows in focus list"
 msgstr "Simgeleþtirilmiþ pencereleri foküsleme listesinde içer"
 
-#: src/focus.c:799
+#: src/focus.c:802
+#, fuzzy
+msgid "Include windows on other desks in focus list"
+msgstr "Toplanmýþ pencereleri foküsleme listesinde içer"
+
+#: src/focus.c:807
 msgid "Focus windows while switching"
 msgstr "Pencere deðiþtirirken pencereleri foküsle"
 
-#: src/focus.c:804
+#: src/focus.c:812
 msgid "Raise windows after focus switch"
 msgstr "Foküs deðiþiminden sonra pencereleri yükselt"
 
-#: src/focus.c:809
+#: src/focus.c:817
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Foküs deðiþimden sonra fareyi pencereye gönder"
 
-#: src/focus.c:819
+#: src/focus.c:827
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Ikona resmi gösterme taktiði ( birisi baþarýsýz olursa , baþkasýný dene ):"
 
-#: src/focus.c:823
+#: src/focus.c:831
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:829
+#: src/focus.c:837
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:843
+#: src/focus.c:851
 #, fuzzy
 msgid "Focus"
 msgstr "Katiyyen foküsleme"
 
-#: src/focus.c:844
+#: src/focus.c:852
 msgid "Focus Settings"
 msgstr "Foküsleme ayarlarý"
 
-#: src/focus.c:847
+#: src/focus.c:855
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"

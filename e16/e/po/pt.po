@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-04 21:36+0100\n"
+"POT-Creation-Date: 2007-03-05 22:17+0100\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -544,7 +544,7 @@ msgstr "Ambos os lados"
 msgid "End"
 msgstr "Fim"
 
-#: src/container.c:1682 src/focus.c:835
+#: src/container.c:1682 src/focus.c:843
 msgid "None"
 msgstr "Nenhuma"
 
@@ -789,101 +789,106 @@ msgstr ""
 "\n"
 "A terminar.\n"
 
-#: src/focus.c:712
+#: src/focus.c:715
 msgid "Focus follows pointer"
 msgstr "Foco segue ponteiro"
 
-#: src/focus.c:718
+#: src/focus.c:721
 msgid "Focus follows pointer sloppily"
 msgstr "Foco segue condicionalmente o ponteiro"
 
-#: src/focus.c:724
+#: src/focus.c:727
 msgid "Focus follows mouse clicks"
 msgstr "Foco segue click do rato"
 
-#: src/focus.c:734
+#: src/focus.c:737
 msgid "Clicking in a window always raises it"
 msgstr "Clickar numa janela eleva-a sempre"
 
-#: src/focus.c:742
+#: src/focus.c:745
 msgid "All new windows first get the focus"
 msgstr "Todas as novas janelas ficam com o foco"
 
-#: src/focus.c:747
+#: src/focus.c:750
 msgid "Only new dialog windows get the focus"
 msgstr "Apenas novas janelas de dialogo ganham foco"
 
-#: src/focus.c:754
+#: src/focus.c:757
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Apenas novas caixas de dialogo cujo proprietário tenha foco ganham foco"
 
-#: src/focus.c:759
+#: src/focus.c:762
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Elevar janelas depois de mudança de foco"
 
-#: src/focus.c:765
+#: src/focus.c:768
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Enviar ponteiro do rato para a janela quando há mudança de foco"
 
-#: src/focus.c:771
+#: src/focus.c:774
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Enviar ponteiro do rato para a janela quando há mudança de foco"
 
-#: src/focus.c:779
+#: src/focus.c:782
 msgid "Display and use focus list"
 msgstr "Mostrar e usar lista de foco"
 
-#: src/focus.c:784
+#: src/focus.c:787
 msgid "Include sticky windows in focus list"
 msgstr "Incluir janelas pegadas na lista de foco"
 
-#: src/focus.c:789
+#: src/focus.c:792
 msgid "Include shaded windows in focus list"
 msgstr ""
 
-#: src/focus.c:794
+#: src/focus.c:797
 msgid "Include iconified windows in focus list"
 msgstr ""
 
-#: src/focus.c:799
+#: src/focus.c:802
+#, fuzzy
+msgid "Include windows on other desks in focus list"
+msgstr "Incluir janelas pegadas na lista de foco"
+
+#: src/focus.c:807
 msgid "Focus windows while switching"
 msgstr ""
 
-#: src/focus.c:804
+#: src/focus.c:812
 msgid "Raise windows after focus switch"
 msgstr "Elevar janelas depois de mudança de foco"
 
-#: src/focus.c:809
+#: src/focus.c:817
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Enviar ponteiro do rato até janela depois da mudança de foco"
 
-#: src/focus.c:819
+#: src/focus.c:827
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Ordem de uso de ícones (se uma falha, usa-se a próxima)"
 
-#: src/focus.c:823
+#: src/focus.c:831
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:829
+#: src/focus.c:837
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:843
+#: src/focus.c:851
 #, fuzzy
 msgid "Focus"
 msgstr "Nunca ter foco"
 
-#: src/focus.c:844
+#: src/focus.c:852
 msgid "Focus Settings"
 msgstr "Definições de Foco"
 
-#: src/focus.c:847
+#: src/focus.c:855
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
