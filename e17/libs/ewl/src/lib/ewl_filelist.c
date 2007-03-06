@@ -431,11 +431,11 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 	ewl_container_child_append(EWL_CONTAINER(box), icon);
 	ewl_widget_show(icon);
 
-	free(size);
-	free(perms);
-	free(username);
-	free(groupname);
-	free(time);
+	FREE(size);
+	FREE(perms);
+	FREE(username);
+	FREE(groupname);
+	FREE(time);
 
 	DRETURN_PTR(box, DLEVEL_STABLE);
 }
