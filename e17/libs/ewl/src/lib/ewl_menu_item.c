@@ -55,14 +55,6 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
 	ewl_object_fill_policy_set(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 	ewl_object_fill_policy_set(EWL_OBJECT(EWL_BUTTON(item)->label_object),
 			EWL_FLAG_FILL_HFILL);
-	/*
-	 * Intercept mouse events this will cause callbacks to children of
-	 * this widget.
-	 */
-	//ewl_container_callback_intercept(EWL_CONTAINER(item),
-	//		EWL_CALLBACK_FOCUS_IN);
-	//ewl_container_callback_intercept(EWL_CONTAINER(item),
-	//		EWL_CALLBACK_FOCUS_OUT);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
