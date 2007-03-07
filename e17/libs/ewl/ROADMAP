@@ -12,7 +12,6 @@ EWL ROADMAP
 - bug fixes (see TODO and xcomputerman.net/bugs)
 - any DWARNINGS that are printed out
 - check for memleaks/corruption
-- fixup submenu/menu interaction
 
 
 0.7.0

@@ -70,9 +70,6 @@
      - Menus will activate on tab, but it jumps to the submenu instead of
        each menu item
 
-     - Menu doesn't regain focus if you mouse off a submenu and back onto
-       the parent.
-
 
   Ewl_Notebook
      - Putting a second notebook inside a first can cause memory corruption.
