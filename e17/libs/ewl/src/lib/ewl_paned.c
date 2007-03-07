@@ -127,11 +127,6 @@ ewl_paned_init(Ewl_Paned *p)
 	ewl_container_hide_notify_set(EWL_CONTAINER(p),
 					ewl_paned_cb_child_hide);
 
-	p->new_panes = ecore_list_new();
-
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
-				ewl_paned_cb_destroy, NULL);
-
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_paned_cb_configure, NULL);
 
@@ -217,8 +212,6 @@ ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	ewl_paned_grabber_paned_orientation_set(EWL_PANED_GRABBER(o),
 				ewl_paned_orientation_get(EWL_PANED(c)));
 
-	ecore_list_append(EWL_PANED(c)->new_panes, w);
-
 	/* insert the grabber at the same position as the pane so the
 	 * grabber ends up to the left of the pane in the children list */
 	idx = ewl_container_child_index_get(c, w);
@@ -260,11 +253,6 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx)
 		p->last_grab = NULL;
 
 	ewl_widget_destroy(o);
-
-	/* if this is on the new pane list, remove it */
-	if (ecore_list_goto(EWL_PANED(c)->new_panes, w))
-		ecore_list_remove(EWL_PANED(c)->new_panes);
-
 	ewl_paned_grabbers_update(EWL_PANED(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -290,6 +278,8 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 
 	ewl_object_preferred_size_get(EWL_OBJECT(w), &ww, &wh);
 	ewl_object_preferred_inner_size_get(EWL_OBJECT(c), &cw, &ch);
+
+	EWL_PANED(c)->new_panes = TRUE;
 
 	if (EWL_ORIENTATION_HORIZONTAL == EWL_PANED(c)->orientation)
 	{
@@ -402,7 +392,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	 * we need to move the grabber to the new position. this is important
 	 * because the grabber are also the size setter for the pane
 	 * widget between them */
-	if (!ecore_list_is_empty(p->new_panes)) {
+	if (p->new_panes) {
 		last_size = ewl_paned_widgets_place(p, layout);
 	}
 	else 
@@ -448,7 +438,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 			break;	
 
 		/* give can also be negative, so see it as a can take or give */
-		give = available / resizable;
+		give = available / (resizable + 1);
 		/* reset the resizable pane_num now */
 		resizable = pane_num;
 		/* to prevent rounding errors */
@@ -1053,7 +1043,7 @@ ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Layout *layout)
 		cur_pos += grabber_size;
 	}
 
-	ecore_dlist_clear(p->new_panes);
+	p->new_panes = FALSE;
 
 	DRETURN_INT(cur_pos - main_pos, DLEVEL_STABLE);
 }
@@ -1109,20 +1099,6 @@ ewl_paned_cb_shutdown(void)
 
 	IF_FREE(horizontal_layout);
 	IF_FREE(vertical_layout);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_paned_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
-{
-	Ewl_Paned *p;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	p = EWL_PANED(w);
-	IF_FREE_LIST(p->new_panes);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
