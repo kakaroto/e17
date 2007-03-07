@@ -76,7 +76,8 @@ ewl_label_text_set(Ewl_Label *la, const char *text)
 /**
  * @param la: The Ewl_Label to get the text from
  * @return Returns no value.
- * @brief Gets the current text set into the label
+ * @brief Gets the current text set into the label. Note, this pointer will
+ * only be valid until the next time ewl_label_text_set() is called.
  */
 const char *
 ewl_label_text_get(Ewl_Label *la)

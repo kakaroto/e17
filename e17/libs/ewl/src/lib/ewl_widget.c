@@ -1026,8 +1026,11 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
  * Get the text of a given Edje-define TEXT part.  This is for
  * widgets whose Edje appearance defines TEXT parts, and enables
  * each of those text parts to be retrieved independently.
+ *
+ * The returned string will only be valid until the next time text is set on
+ * this part.
  */
-char *
+const char *
 ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part)
 {
 	int i;
@@ -1061,7 +1064,7 @@ ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part)
 		}
 	}
 
-	DRETURN_PTR((match ? strdup(match->value) : NULL), DLEVEL_STABLE);
+	DRETURN_PTR((match ? match->value : NULL), DLEVEL_STABLE);
 }
 
 /**
@@ -1092,8 +1095,11 @@ ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text)
  * @param w: the widget whose text to retrieve
  * @return Returns the current text on success, NULL on failure.
  * @brief Retrieve the text of the given theme part of a widget
+ * 
+ * Note, the returned value will only be valid until the next time
+ * ewl_widget_appearance_text_set() is called on this widget.
  */
-char *
+const char *
 ewl_widget_appearance_text_get(Ewl_Widget *w)
 {
 	const char *part;
