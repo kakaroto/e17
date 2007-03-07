@@ -5,7 +5,8 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
-static Ewl_Window *ee_current_grab_window = NULL;
+static Ewl_Window *ee_current_pointer_grab_window = NULL;
+static Ewl_Window *ee_current_key_grab_window = NULL;
 
 /*
  * In general all of the X event handlers should find their matching window
@@ -669,9 +670,15 @@ ee_keyboard_grab(Ewl_Window *win)
 	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
 
 	if ((!!(win->flags & EWL_WINDOW_GRAB_KEYBOARD)))
+	{
 		ret = ecore_x_keyboard_grab((Ecore_X_Window)win->window);
-	else
+		ee_current_key_grab_window = win;
+	}
+	else if (ee_current_key_grab_window == win)
+	{
 		ecore_x_keyboard_ungrab();
+		ee_current_key_grab_window = NULL;
+	}
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
@@ -684,7 +691,8 @@ ee_keyboard_ungrab(Ewl_Window *win)
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	ecore_x_keyboard_ungrab();
-	
+	ee_current_key_grab_window = NULL;
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -700,10 +708,13 @@ ee_pointer_grab(Ewl_Window *win)
 	if ((!!(win->flags & EWL_WINDOW_GRAB_POINTER)))
 	{
 		ret = ecore_x_pointer_grab((Ecore_X_Window)win->window);
-		ee_current_grab_window = win;
+		ee_current_pointer_grab_window = win;
 	}
-	else if (ee_current_grab_window == win)
+	else if (ee_current_pointer_grab_window == win)
+	{
 		ecore_x_pointer_ungrab();
+		ee_current_pointer_grab_window = NULL;
+	}
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
@@ -716,7 +727,8 @@ ee_pointer_ungrab(Ewl_Window *win)
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	ecore_x_pointer_ungrab();
-	
+	ee_current_pointer_grab_window = NULL;
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
