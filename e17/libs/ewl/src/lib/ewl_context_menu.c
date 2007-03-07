@@ -95,9 +95,9 @@ ewl_context_menu_init(Ewl_Context_Menu *cm)
  * @param cm: the context menu to attach
  * @param w: a widget that gets the context menu attached
  *
- * This function attach a context menu to a widget. You can attach one
- * context menu to more than one widget, but all widgets have to share
- * the same embed, i.e. they must be in the same window or embed.
+ * This function attaches a context menu to a widget. You can attach one
+ * context menu to more than one widget but all widgets have to share
+ * the same embed. i.e. they must be in the same window or embed.
  */
 void
 ewl_context_menu_attach(Ewl_Context_Menu *cm, Ewl_Widget *w)
@@ -107,13 +107,13 @@ ewl_context_menu_attach(Ewl_Context_Menu *cm, Ewl_Widget *w)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cm", cm);
-	DCHECK_TYPE("cm", cm, EWL_CONTEXT_MENU_TYPE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("cm", cm, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
-
 	if (!emb) {
-		DWARNING("widget w has no embed parent");
+		DWARNING("Provided widget has no embed parent.");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -121,8 +121,9 @@ ewl_context_menu_attach(Ewl_Context_Menu *cm, Ewl_Widget *w)
 
 	if (!follow)
 		ewl_popup_follow_set(EWL_POPUP(cm), EWL_WIDGET(emb));
+
 	else if (follow != EWL_WIDGET(emb)) {
-		DWARNING("Sorry, the context menu doesn't work in multiple windows");
+		DWARNING("Sorry, the context menu doesn't work in multiple embeds.");
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -143,11 +144,12 @@ ewl_context_menu_detach(Ewl_Context_Menu *cm, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cm", cm);
-	DCHECK_TYPE("cm", cm, EWL_CONTEXT_MENU_TYPE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("cm", cm, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, 
-				    ewl_context_menu_cb_attach_mouse_down);
+			    ewl_context_menu_cb_attach_mouse_down);
 
 	DRETURN(DLEVEL_STABLE);
 }
@@ -161,21 +163,25 @@ ewl_context_menu_detach(Ewl_Context_Menu *cm, Ewl_Widget *w)
  * @brief The mouse down callback
  */
 void 
-ewl_context_menu_cb_attach_mouse_down(Ewl_Widget * w, void * ev_data, 
-					void * user_data)
+ewl_context_menu_cb_attach_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data, 
+							void *user_data)
 {
-	Ewl_Context_Menu *cm;
 	Ewl_Event_Mouse_Down *ev;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("ev_data", ev_data);
+	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("user_data", user_data, EWL_POPUP_TYPE);
 
 	ev = ev_data;
 
 	if (ev->button != 3)
 		DRETURN(DLEVEL_STABLE);
 	
-	cm = EWL_CONTEXT_MENU(user_data);
+	ewl_popup_mouse_position_set(EWL_POPUP(user_data), ev->base.x, ev->base.y);
+	ewl_widget_show(EWL_WIDGET(user_data));
 
-	ewl_popup_mouse_position_set(EWL_POPUP(cm), ev->base.x, ev->base.y);
-	ewl_widget_show(EWL_WIDGET(cm));
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -197,12 +203,14 @@ ewl_context_menu_cb_mouse_down(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (w == ewl_embed_focused_widget_get(EWL_EMBED(w))) {
 		while (EWL_POPUP_IS(w)) {
 			ewl_widget_hide(w);
+
 			w = ewl_popup_follow_get(EWL_POPUP(w));
-			if (!w)
-				break;
+			if (!w) break;
+
 			w = EWL_WIDGET(ewl_embed_widget_find(w));
 		}
 	}
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -256,28 +264,30 @@ ewl_context_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev_data", ev_data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ev = ev_data;
 	cm = EWL_CONTEXT_MENU(w);
 	
 	popup_embed = ewl_embed_widget_find(w);
+
 	ewl_object_current_size_get(EWL_OBJECT(w), &width, &height);
 	ewl_embed_window_position_get(EWL_EMBED(w), &ex, &ey);
+
 	ex += ev->x;
 	ey += ev->y;
 
 	if ((ev->x > 0) && (ev->y > 0) && 
 			(ev->x <= width) && (ev->y <= height)) {
 		/* The mouse is actually in the popup, set the
-		 * popup to be active if it isn't be */
+		 * popup to be active if it isn't already */
 		if (ewl_embed_active_embed_get() != popup_embed)
 			ewl_embed_active_set(popup_embed, TRUE);
 
-		return;
+		DRETURN(DLEVEL_STABLE);
 	}
-	else if (cm->open_menu 
-			&& ewl_context_menu_mouse_feed(cm,
+	else if (cm->open_menu && ewl_context_menu_mouse_feed(cm,
 					EWL_EMBED(cm->open_menu), ex, ey)) {
 		DRETURN(DLEVEL_STABLE);
 	}
@@ -290,18 +300,18 @@ ewl_context_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 		popup = EWL_EMBED(w);
 		do {
 			follow = ewl_popup_follow_get(EWL_POPUP(popup));
-			if (!follow)
-				break;
+			if (!follow) break;
+
 			popup = ewl_embed_widget_find(follow);
 
 			if (ewl_context_menu_mouse_feed(cm, popup, ex, ey))
 				break;
+
 		} while (EWL_POPUP_IS(popup));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 /**
  * @internal
@@ -320,7 +330,9 @@ ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (EWL_MENU_ITEM_IS(w)) {
-		Ewl_Widget *cm = ewl_widget_parent_get(EWL_WIDGET(c));
+		Ewl_Widget *cm;
+		
+		cm = ewl_widget_parent_get(EWL_WIDGET(c));
 		EWL_MENU_ITEM(w)->inmenu = cm;
 	}
 	
@@ -329,6 +341,7 @@ ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN, 
 				ewl_context_menu_cb_child_mouse_in, c);
+
 	if (!EWL_MENU_IS(w))
 		ewl_callback_append(w, EWL_CALLBACK_CLICKED,
 				ewl_context_menu_cb_child_clicked,
@@ -347,7 +360,7 @@ ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
  */
 void
 ewl_context_menu_cb_child_mouse_in(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data)
+					void *user_data __UNUSED__)
 {
 	Ewl_Context_Menu *cm;
 	Ewl_Embed *emb;
@@ -383,22 +396,23 @@ ewl_context_menu_cb_child_mouse_in(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The hide callback
  */
 void
-ewl_context_menu_cb_child_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data)
+ewl_context_menu_cb_child_clicked(Ewl_Widget *w __UNUSED__, 
+				void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Widget *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("user_data", user_data, EWL_WIDGET_TYPE);
 	
 	c = EWL_WIDGET(user_data);
 
 	while (EWL_POPUP_IS(c)) {
 		ewl_widget_hide(c);
+
 		c = ewl_popup_follow_get(EWL_POPUP(c));
-		if (!c)
-			break;
+		if (!c) break;
+
 		c = EWL_WIDGET(ewl_embed_widget_find(c));
 	}
 
@@ -411,8 +425,8 @@ ewl_context_menu_mouse_feed(Ewl_Context_Menu *cm, Ewl_Embed *emb, int x, int y)
 	int emb_x = 0, emb_y = 0, emb_w = 0, emb_h = 0;
 
 	DCHECK_PARAM_PTR_RET("cm", cm, FALSE);
-	DCHECK_TYPE_RET("cm", cm, EWL_CONTEXT_MENU_TYPE, FALSE);
 	DCHECK_PARAM_PTR_RET("emb", emb, FALSE);
+	DCHECK_TYPE_RET("cm", cm, EWL_CONTEXT_MENU_TYPE, FALSE);
 	DCHECK_TYPE_RET("emb", emb, EWL_EMBED_TYPE, FALSE);
 
 	ewl_embed_window_position_get(emb, &emb_x, &emb_y);
@@ -420,6 +434,7 @@ ewl_context_menu_mouse_feed(Ewl_Context_Menu *cm, Ewl_Embed *emb, int x, int y)
 
 	x -= emb_x;
 	y -= emb_y;
+
 	if ((x > 0) && (y > 0) && (x <= emb_w) && (y <= emb_h)) {
 		ewl_embed_mouse_move_feed(emb, x, y, 0);
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -455,6 +470,7 @@ ewl_context_menu_grabber_unset(Ewl_Context_Menu *cm)
 	if (cm == ewl_context_menu_grabber) {
 		ewl_window_keyboard_grab_set(EWL_WINDOW(cm), FALSE);
 		ewl_window_pointer_grab_set(EWL_WINDOW(cm), FALSE);
+
 		ewl_context_menu_grabber = NULL;
 	}
 	
