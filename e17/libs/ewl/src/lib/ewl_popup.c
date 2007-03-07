@@ -260,6 +260,31 @@ ewl_popup_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (ewl_window_keyboard_grab_get(EWL_WINDOW(w)))
 		ewl_window_keyboard_grab_set(EWL_WINDOW(w), TRUE);
 
+	/* Popups should be flagged as transient for their parent windows */
+	if (EWL_POPUP(w)->follow) {
+		Ewl_Embed *emb;
+		emb = ewl_embed_widget_find(EWL_POPUP(w)->follow);
+		if (emb) {
+			void *pwin = NULL;
+			/*
+			 * If the followed window is transient, defer to that
+			 * window's parent
+			 */
+			if (EWL_WINDOW_IS(emb)) {
+				Ewl_Window *win = EWL_WINDOW(emb);
+
+				if (win->flags & EWL_WINDOW_TRANSIENT)
+					pwin = win->transient.ewl->window;
+				else if (win->flags & EWL_WINDOW_TRANSIENT_FOREIGN)
+					pwin = win->transient.foreign;
+			}
+
+			if (!pwin)
+				pwin = emb->canvas_window;
+			ewl_window_transient_for_foreign(EWL_WINDOW(w), pwin);
+		}
+	}
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
