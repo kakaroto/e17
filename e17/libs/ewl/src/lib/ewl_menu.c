@@ -138,7 +138,7 @@ ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	
 	if ((parent && (ewl_box_orientation_get(parent) 
 				== EWL_ORIENTATION_VERTICAL))
-		|| EWL_MENU_ITEM(menu)->inmenu)
+			|| EWL_MENU_ITEM(menu)->inmenu)
 		ewl_popup_type_set(EWL_POPUP(menu->popup), 
 					EWL_POPUP_TYPE_MENU_HORIZONTAL);
 	else 
@@ -218,6 +218,7 @@ ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_window_raise(EWL_WINDOW(menu->popup));
 	if (item->inmenu) {
 		Ewl_Context_Menu *cm;
+
 		cm = EWL_CONTEXT_MENU(item->inmenu);
 		cm->open_menu = menu->popup;
 	}
@@ -242,7 +243,10 @@ ewl_menu_cb_popup_destroy(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
 
-	/* XXX do we still need to this */
+	/* We need to set the popup to NULL here in case the popup gets
+	 * freed before the menu does. This makes sure we don't segv in the
+	 * ewl_menu_cb_destroy function when we try to delete the callback
+	 * on the deleted popup widget from our dangling reference */
 	m = data;
 	if (m->popup) m->popup = NULL;
 

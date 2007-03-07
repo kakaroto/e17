@@ -132,6 +132,7 @@ ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w)
 						ewl_popup_cb_follow_configure,
 						p);
 	}
+
 	if (w) {
 		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, 
 					ewl_popup_cb_follow_destroy, p);
@@ -457,9 +458,10 @@ ewl_popup_size_check(Ewl_Popup *p)
 		DRETURN(DLEVEL_STABLE);
 	
 	if (p->type == EWL_POPUP_TYPE_MENU_VERTICAL)
-		ewl_object_w_request(EWL_OBJECT(p), CURRENT_W(p->follow));	
+		ewl_object_w_request(EWL_OBJECT(p), CURRENT_W(p->follow));
+
 	else if (p->type == EWL_POPUP_TYPE_MENU_HORIZONTAL)
-		ewl_object_h_request(EWL_OBJECT(p), CURRENT_H(p->follow));	
+		ewl_object_h_request(EWL_OBJECT(p), CURRENT_H(p->follow));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
