@@ -20,6 +20,7 @@ Etk_Widget* _entropy_etk_context_menu_groups_remove_from = NULL;
 Etk_Widget* _entropy_etk_context_menu_groups_remove_from_item = NULL;
 
 Etk_Widget* _entropy_etk_context_menu_rename_menu_item = NULL;
+Etk_Widget* _entropy_etk_context_menu_view_menu_item = NULL;
 Etk_Widget* _entropy_etk_context_menu_restore_trash_menu_item = NULL;
 
 entropy_generic_file* _entropy_etk_context_menu_current_folder = NULL;
@@ -159,6 +160,30 @@ static void
 _entropy_etk_context_menu_file_rename_cb(Etk_Object *object, void *data)
 {
 	etk_file_rename_dialog_create(_entropy_etk_context_menu_current_file);
+}
+
+static void
+_entropy_etk_context_menu_file_view_cb(Etk_Object *obj, void *data)
+{
+	entropy_generic_file* file;
+
+	file = _entropy_etk_context_menu_current_file;
+
+	strcpy(file->mime_type, "text/plain");
+	int i;
+	entropy_gui_event* gui_event;
+	
+	i = (int)etk_object_data_get(obj, "INDEX");
+
+	if (file) {
+		gui_event = entropy_malloc (sizeof (entropy_gui_event));
+		gui_event->event_type =
+			entropy_core_gui_event_get (ENTROPY_GUI_EVENT_ACTION_FILE);
+		gui_event->data = file;
+		gui_event->key = i;
+		entropy_core_layout_notify_event (_entropy_etk_context_menu_current_instance, 
+			gui_event, ENTROPY_EVENT_GLOBAL);
+	}
 }
 
 static void
@@ -503,6 +528,13 @@ void entropy_etk_context_menu_init()
 		etk_signal_connect("activated", ETK_OBJECT(_entropy_etk_context_menu_rename_menu_item), 
 				ETK_CALLBACK(_entropy_etk_context_menu_file_rename_cb), NULL);
 
+		_entropy_etk_context_menu_view_menu_item = 
+			_entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("View/Edit file"), 
+		ETK_STOCK_ACCESSORIES_TEXT_EDITOR, ETK_MENU_SHELL(menu),NULL);
+
+		etk_signal_connect("activated", ETK_OBJECT(_entropy_etk_context_menu_view_menu_item), 
+				ETK_CALLBACK(_entropy_etk_context_menu_file_view_cb), NULL);
+
 		menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, 
 		_("Properties"), ETK_STOCK_DOCUMENT_PROPERTIES, ETK_MENU_SHELL(menu),NULL);
 		etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_context_menu_properties_cb), NULL);
@@ -537,6 +569,8 @@ void entropy_etk_context_menu_popup(entropy_gui_component_instance* instance, en
         _entropy_etk_context_menu_current_file = current_file;
 	_entropy_etk_context_menu_current_instance = instance;
 
+	entropy_generic_file* file;
+	file = _entropy_etk_context_menu_current_file;
 	
 	if (!_entropy_etk_context_menu) 
 		entropy_etk_context_menu_init();
@@ -544,6 +578,10 @@ void entropy_etk_context_menu_popup(entropy_gui_component_instance* instance, en
 	/*Show*/
 	etk_widget_show_all(_entropy_etk_context_menu_open_with_item);
 	etk_widget_show_all(_entropy_etk_context_menu_rename_menu_item);
+	if (file && (strcmp(file->mime_type, "file/folder")))
+		etk_widget_show_all(_entropy_etk_context_menu_view_menu_item);
+	else
+		etk_widget_hide(_entropy_etk_context_menu_view_menu_item);
 
 	if (!strcmp(current_file->uri_base, "trash"))
   	    etk_widget_show_all(_entropy_etk_context_menu_restore_trash_menu_item);
@@ -565,6 +603,7 @@ void entropy_etk_context_menu_popup_multi(entropy_gui_component_instance* instan
 	/*Hide*/
 	etk_widget_hide(_entropy_etk_context_menu_open_with_item);
 	etk_widget_hide(_entropy_etk_context_menu_rename_menu_item);
+	etk_widget_hide(_entropy_etk_context_menu_view_menu_item);
 	etk_widget_hide(_entropy_etk_context_menu_restore_trash_menu_item);
 
 	if (_entropy_etk_context_menu_selected_files)
