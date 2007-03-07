@@ -53,7 +53,7 @@ ewl_menu_init(Ewl_Menu *menu)
 	 * add the callbacks
 	 */
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_MOUSE_MOVE,
-			    ewl_menu_cb_expand_mouse_move, NULL);
+			    ewl_menu_cb_mouse_move, NULL);
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_FOCUS_IN,
 			    ewl_menu_cb_expand, NULL);
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_CONFIGURE,
@@ -154,10 +154,10 @@ ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @param ev_data: UNUSED
  * @param user_data: UNUSED
  * @return Returns no value
- * @brief The expand mouse move callback
+ * @brief The mouse move callback
  */
 void
-ewl_menu_cb_expand_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
+ewl_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__) 
 {
 	Ewl_Menu *menu;
