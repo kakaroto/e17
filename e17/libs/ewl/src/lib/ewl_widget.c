@@ -1102,8 +1102,7 @@ ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text)
 const char *
 ewl_widget_appearance_text_get(Ewl_Widget *w)
 {
-	const char *part;
-	char *match = NULL;
+	const char *part, *match = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
