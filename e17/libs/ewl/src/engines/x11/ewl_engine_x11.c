@@ -5,6 +5,8 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+static Ewl_Window *ee_current_grab_window = NULL;
+
 /*
  * In general all of the X event handlers should find their matching window
  * with ewl_window_window_find, and not ewl_embed_canvas_window_find. If the
@@ -696,8 +698,11 @@ ee_pointer_grab(Ewl_Window *win)
 	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
 
 	if ((!!(win->flags & EWL_WINDOW_GRAB_POINTER)))
+	{
 		ret = ecore_x_pointer_grab((Ecore_X_Window)win->window);
-	else
+		ee_current_grab_window = win;
+	}
+	else if (ee_current_grab_window == win)
 		ecore_x_pointer_ungrab();
 
 	DRETURN_INT(ret, DLEVEL_STABLE);

@@ -74,6 +74,8 @@ int		 ewl_menu_init(Ewl_Menu *menu);
 
 void		 ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info);
 
+void		 ewl_menu_collapse(Ewl_Menu *menu);
+
 /*
  * Internally used callbacks, override at your own risk.
  */
@@ -84,6 +86,8 @@ void ewl_menu_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_menu_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_menu_cb_popup_destroy(Ewl_Widget *w, void *ev, void *data);
 void ewl_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
+
+int ewl_menu_mouse_feed(Ewl_Menu *menu, int x, int y);
 
 /**
  * @}

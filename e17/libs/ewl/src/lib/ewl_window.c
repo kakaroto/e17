@@ -857,7 +857,6 @@ ewl_window_cb_expose(Ewl_Widget *w, void *ev __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Window *win;
-	int grabval;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -866,7 +865,7 @@ ewl_window_cb_expose(Ewl_Widget *w, void *ev __UNUSED__,
 	win = EWL_WINDOW(w);
 
 	ewl_engine_keyboard_grab(win);
-	grabval = ewl_engine_pointer_grab(win);
+	ewl_engine_pointer_grab(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

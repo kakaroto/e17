@@ -115,6 +115,23 @@ ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info)
 }
 
 /**
+ * @param menu: the menu to work with
+ * @return Returns no value
+ * @brief Collapses the popup portion of the menu
+ */
+void
+ewl_menu_collapse(Ewl_Menu *menu)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("menu", menu);
+	DCHECK_TYPE("menu", menu, EWL_MENU_TYPE);
+
+	ewl_widget_hide(menu->popup);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @internal
  * @param w: The widget to work with
  * @param ev_data: UNUSED
@@ -216,11 +233,12 @@ ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
 	
 	ewl_widget_show(menu->popup);
 	ewl_window_raise(EWL_WINDOW(menu->popup));
+
 	if (item->inmenu) {
 		Ewl_Context_Menu *cm;
 
 		cm = EWL_CONTEXT_MENU(item->inmenu);
-		cm->open_menu = menu->popup;
+		cm->open_menu = EWL_WIDGET(menu);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -276,5 +294,28 @@ ewl_menu_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 						ewl_menu_cb_popup_destroy);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+int 
+ewl_menu_mouse_feed(Ewl_Menu *menu, int x, int y)
+{
+	int emb_x = 0, emb_y = 0, emb_w = 0, emb_h = 0;
+
+	DCHECK_PARAM_PTR_RET("menu", menu, FALSE);
+	DCHECK_TYPE_RET("menu", menu, EWL_MENU_TYPE, FALSE);
+
+	ewl_embed_window_position_get(EWL_EMBED(menu->popup), &emb_x, &emb_y);
+	ewl_object_current_size_get(EWL_OBJECT(menu->popup), &emb_w, &emb_h);
+
+	x -= emb_x;
+	y -= emb_y;
+
+	if ((x > 0) && (y > 0) && (x <= emb_w) && (y <= emb_h)) 
+	{
+		ewl_embed_mouse_move_feed(EWL_EMBED(menu->popup), x, y, 0);
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 

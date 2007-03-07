@@ -259,6 +259,7 @@ ewl_popup_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (ewl_window_keyboard_grab_get(EWL_WINDOW(w)))
 		ewl_window_keyboard_grab_set(EWL_WINDOW(w), TRUE);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
