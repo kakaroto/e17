@@ -8,6 +8,8 @@
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
+#include "etk_selection.h"
+#include "etk_string.h"
 
 /**
  * @addtogroup Etk_Text_View
@@ -26,8 +28,11 @@ static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
 static void _etk_text_view_realize_cb(Etk_Object *object, void *data);
 static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static void _etk_text_view_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_text_view_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
 static void _etk_text_view_scroll(Etk_Widget *widget, int x, int y);
+static void _etk_text_view_selection_copy(Etk_Text_View *tv, Etk_Selection_Type selection, Etk_Bool cut);
+
 
 static Etk_Signal *_etk_text_view_signals[ETK_TEXT_VIEW_NUM_SIGNALS];
 
@@ -129,6 +134,7 @@ static void _etk_text_view_constructor(Etk_Text_View *text_view)
    etk_signal_connect("realize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_realize_cb), NULL);
    etk_signal_connect("unrealize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_unrealize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_key_down_cb), NULL);
+   etk_signal_connect("mouse_up", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_mouse_up_cb), NULL);
 }
 
 /* Destroys the text view */
@@ -269,6 +275,14 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
    }
 }
 
+static void _etk_text_view_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
+{
+   if (event->button == 1)
+   {
+      _etk_text_view_selection_copy(ETK_TEXT_VIEW(object), ETK_SELECTION_PRIMARY, ETK_FALSE);
+   }
+}
+
 /* Size of all the text_view for scrolling ability. */
 static void _etk_text_view_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size)
 {
@@ -293,4 +307,30 @@ static void _etk_text_view_scroll(Etk_Widget *widget, int x, int y)
    etk_widget_redraw_queue( widget );
 }
 
+/* Copies the selected text of the entry to the given selection */
+static void _etk_text_view_selection_copy(Etk_Text_View *tv, Etk_Selection_Type selection, Etk_Bool cut)
+{
+   Etk_Textblock_Iter *cursor_pos, *selection_pos;
+   Etk_Bool selecting;
+   Etk_String *range;
+
+   cursor_pos = etk_textblock_object_cursor_get(tv->textblock_object);
+   selection_pos = etk_textblock_object_selection_bound_get(tv->textblock_object);
+   selecting = etk_textblock_iter_compare(cursor_pos, selection_pos);
+
+   if (!selecting)
+      return;
+
+   range = etk_textblock_range_text_get(tv->textblock, cursor_pos, selection_pos, ETK_FALSE);
+   if (range)
+   {
+      etk_selection_text_set(selection, etk_string_get(range));
+      etk_object_destroy(ETK_OBJECT(range));
+      if (cut)
+      {
+         etk_textblock_delete_range(tv->textblock, cursor_pos, selection_pos);
+         etk_signal_emit(_etk_text_view_signals[ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL], ETK_OBJECT(tv), NULL);
+      }
+   }
+}
 /** @} */
