@@ -85,6 +85,8 @@ ewl_context_menu_init(Ewl_Context_Menu *cm)
 				ewl_context_menu_cb_mouse_move, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_HIDE, 
 				ewl_context_menu_cb_hide, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, 
+				ewl_context_menu_cb_focus_in, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -316,6 +318,27 @@ ewl_context_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 
 		} while (EWL_POPUP_IS(popup));
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The focus in callback
+ */
+void 
+ewl_context_menu_cb_focus_in(Ewl_Widget *w, void *ev_data __UNUSED__, 
+				void *user_data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	ewl_context_menu_grabber_set(EWL_CONTEXT_MENU(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

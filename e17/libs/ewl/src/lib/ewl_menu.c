@@ -240,6 +240,8 @@ ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
 		cm = EWL_CONTEXT_MENU(item->inmenu);
 		cm->open_menu = EWL_WIDGET(menu);
 	}
+	else
+		ewl_widget_focus_send(menu->popup);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -289,9 +291,12 @@ ewl_menu_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	menu = EWL_MENU(w);
-	if (menu->popup)
-		ewl_callback_del(menu->popup, EWL_CALLBACK_DESTROY, 
-						ewl_menu_cb_popup_destroy);
+	if (menu->popup) {
+		ewl_callback_del(menu->popup, EWL_CALLBACK_DESTROY,
+						ewl_menu_cb_popup_destroy);	
+		ewl_widget_destroy(menu->popup);
+		menu->popup = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

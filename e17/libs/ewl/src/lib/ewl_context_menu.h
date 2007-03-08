@@ -58,6 +58,8 @@ void ewl_context_menu_cb_mouse_down(Ewl_Widget *w, void *ev_data,
 							void *user_data);
 void ewl_context_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data, 
 							void *user_data);
+void ewl_context_menu_cb_focus_in(Ewl_Widget *w, void *ev_data, 
+							void *user_data);
 void ewl_context_menu_cb_attach_mouse_down(Ewl_Widget *w, void *ev_data, 
 							void *user_data);
 void ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
