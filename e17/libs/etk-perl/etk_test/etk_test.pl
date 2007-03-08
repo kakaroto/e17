@@ -731,8 +731,8 @@ sub combobox_window_show
     $vbox2->Append($image);
     
     $combobox = Etk::Combobox->new();
-    $combobox->ColumnAdd(ColumnTypeImage, 24, 0, 0, 0, 0.0, 0.5);
-    $combobox->ColumnAdd(ColumnTypeLabel, 75, 1, 0, 0, 0.0, 0.5);
+    $combobox->ColumnAdd(ColumnTypeImage, 24, 0, 0.0);
+    $combobox->ColumnAdd(ColumnTypeLabel, 75, 1, 0.0);
     $combobox->Build();
     
     $vbox2->Append($combobox);
@@ -746,13 +746,13 @@ sub combobox_window_show
 	$item->DataSet($i);
     }
 
-    $combobox->ActiveItemSet($combobox->ActiveItemGet());
+    #$combobox->ActiveItemSet($combobox->ActiveItemGet());
     
     $combobox->SignalConnect("active_item_changed", 
 	sub {
-	    my $item = $combobox->ActiveItemGet();
-	    my $stock_id = $item->DataGet();
-	    $image->SetFromStock($stock_id, SizeBig);
+#	    my $item = $combobox->ActiveItemGet();
+#	    my $stock_id = $item->DataGet();
+#	    $image->SetFromStock($stock_id, SizeBig);
 	}
     );    
     

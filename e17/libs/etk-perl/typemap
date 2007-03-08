@@ -22,6 +22,7 @@ Etk_Colorpicker_Mode				T_IV
 Etk_Combobox *					T_PTROBJ_ETK
 Etk_Combobox_Column_Type			T_IV
 Etk_Combobox_Item *				T_PTROBJ_ETK
+Etk_Combobox_Fill_Policy			T_IV
 Etk_Constructor   				T_PTROBJ
 Etk_Container *					T_PTROBJ_ETK
 Etk_Destructor 					T_PTROBJ

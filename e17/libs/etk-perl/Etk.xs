@@ -881,26 +881,6 @@ new_default()
 	OUTPUT:
 	RETVAL
 
-Etk_Combobox_Item *
-etk_combobox_active_item_get(combobox)
-	Etk_Combobox *	combobox
-      ALIAS:
-	ActiveItemGet=1
-
-Etk_Combobox_Item *
-etk_combobox_nth_item_get(combobox, index)
-	Etk_Combobox *	combobox
-	int	index
-      ALIAS:
-	NthItemGet=1
-
-void
-etk_combobox_active_item_set(combobox, item)
-	Etk_Combobox *	combobox
-	Etk_Combobox_Item *	item
-      ALIAS:
-	ActiveItemSet=1
-
 void
 etk_combobox_build(combobox)
 	Etk_Combobox *	combobox
@@ -914,36 +894,27 @@ etk_combobox_clear(combobox)
 	Clear=1
 
 void
-etk_combobox_column_add(combobox, col_type, size, expand, hfill, vfill, xalign, yalign)
+etk_combobox_column_add(combobox, col_type, width, fill_policy, align)
 	Etk_Combobox *	combobox
 	Etk_Combobox_Column_Type	col_type
-	int	size
-	Etk_Bool	expand
-	Etk_Bool	hfill
-	Etk_Bool	vfill
-	float	xalign
-	float	yalign
+	int	width
+	Etk_Combobox_Fill_Policy	fill_policy
+	float	align
       ALIAS:
 	ColumnAdd=1
 
 void
-etk_combobox_item_height_set(combobox, item_height)
+etk_combobox_items_height_set(combobox, items_height)
 	Etk_Combobox *	combobox
-	int	item_height
+	int	items_height
       ALIAS:
-	ItemHeightSet=1
+	ItemsHeightSet=1
 
 int
-etk_combobox_active_item_nth_get(combobox)
-	Etk_Combobox *  combobox
-	ALIAS:
-	ActiveItemNthGet=1
-	
-int
-etk_combobox_item_height_get(combobox)
+etk_combobox_items_height_get(combobox)
 	Etk_Combobox *	combobox
       ALIAS:
-	ItemHeightGet=1
+	ItemsHeightGet=1
 
 Etk_Combobox_Item *
 etk_combobox_item_append(combobox, ...)
@@ -1093,11 +1064,11 @@ etk_combobox_item_prepend(combobox, ...)
         RETVAL
   
 Etk_Combobox_Item *
-etk_combobox_item_prepend_relative(combobox, relative, ...)
+etk_combobox_item_insert(combobox, after, ...)
         Etk_Combobox * combobox
-        Etk_Combobox_Item * relative
+        Etk_Combobox_Item * after
       ALIAS:
-	ItemPrependRelative=1
+	ItemInsert=1
     CODE:
         int i;
         void **ptr = NULL;
@@ -1118,59 +1089,59 @@ etk_combobox_item_prepend_relative(combobox, relative, ...)
         switch(items)
         {	   
 	   case 2:
-	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
-						       relative, ptr[0]);
+	   RETVAL = etk_combobox_item_insert(combobox, 
+						       after, ptr[0]);
 	   break;
 	   case 3:
-	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
-						       relative, ptr[0], 
+	   RETVAL = etk_combobox_item_insert(combobox, 
+						       after, ptr[0], 
 						       ptr[1]);
 	   break;
 	   case 4:
-	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
-						       relative, ptr[0],
+	   RETVAL = etk_combobox_item_insert(combobox, 
+						       after, ptr[0], 
 						       ptr[1], ptr[2]);
 	   break;
 	   case 5:
-	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
-						       relative, ptr[0],
+	   RETVAL = etk_combobox_item_insert(combobox, 
+						       after, ptr[0], 
 						       ptr[1], ptr[2], ptr[3]);
 	   break;
 	   case 6:
-	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
-						       relative, ptr[0],
+	   RETVAL = etk_combobox_item_insert(combobox, 
+						       after, ptr[0], 
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4]);
 	   break;
 	   case 7:
-	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
-						       relative, ptr[0],
+	   RETVAL = etk_combobox_item_insert(combobox, 
+						       after, ptr[0], 
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5]);
 	   break;
 	   case 8:
-	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
-						       relative, ptr[0],
+	   RETVAL = etk_combobox_item_insert(combobox, 
+						       after, ptr[0], 
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5], ptr[6]);
 	   break;
 	   case 9:
-	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
-						       relative, ptr[0],
+	   RETVAL = etk_combobox_item_insert(combobox, 
+						       after, ptr[0], 
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5], ptr[6],
 						       ptr[7]);
 	   break;
 	   case 10:
-	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
-						       relative, ptr[0],
+	   RETVAL = etk_combobox_item_insert(combobox, 
+						       after, ptr[0], 
 						       ptr[1], ptr[2], ptr[3],
 						       ptr[4], ptr[5], ptr[6],
 						       ptr[7], ptr[8]);
 	   break;
 	   case 11:
-	   RETVAL = etk_combobox_item_prepend_relative(combobox, 
-						       relative, ptr[0],
+	   RETVAL = etk_combobox_item_insert(combobox, 
+						       after, ptr[0], 
 						       ptr[1], ptr[2], ptr[3], 
 						       ptr[4], ptr[5], ptr[6], 
 						       ptr[7], ptr[8], ptr[9]);
@@ -1181,104 +1152,55 @@ etk_combobox_item_prepend_relative(combobox, relative, ...)
     OUTPUT:
         RETVAL
   
-Etk_Combobox_Item *
-etk_combobox_item_append_relative(combobox, relative, ...)
-        Etk_Combobox * combobox
-        Etk_Combobox_Item * relative
-      ALIAS:
-	ItemAppendRelative=1
-    CODE:
-        int i;
-        void **ptr = NULL;
+void
+etk_combobox_active_item_set(combobox, item)
+	Etk_Combobox * combobox
+	Etk_Combobox_Item *     item
+	ALIAS:
+	ActiveItemSet=1
 
-        ptr = calloc(items, sizeof(void *));
-        memset(ptr, 0, items * sizeof(void *));
-        /* the idea here is that we either have a max limit on how many items
-	 * we can have in a combo, or we create "models" like the tree. lets
-	 * see how well this will work.
-	 */
-	 for(i = 0; i < items - 2; i++)
-           {
-	      if(SvPOK(ST(i + 1)))
-		   ptr[i] = SvPV_nolen(ST(i + 1));
-	      else 
-		   ptr[i] = SvObj(ST(i + 1), getClass("Etk_Widget"));
-	   }
-        switch(items)
-        {	   
-	   case 2:
-	   RETVAL = etk_combobox_item_append_relative(combobox, 
-						       relative, ptr[0]);
-	   break;
-	   case 3:
-	   RETVAL = etk_combobox_item_append_relative(combobox, 
-						       relative, ptr[0], 
-						       ptr[1]);
-	   break;
-	   case 4:
-	   RETVAL = etk_combobox_item_append_relative(combobox, 
-						       relative, ptr[0],
-						       ptr[1], ptr[2]);
-	   break;
-	   case 5:
-	   RETVAL = etk_combobox_item_append_relative(combobox, 
-						       relative, ptr[0],
-						       ptr[1], ptr[2], ptr[3]);
-	   break;
-	   case 6:
-	   RETVAL = etk_combobox_item_append_relative(combobox, 
-						       relative, ptr[0],
-						       ptr[1], ptr[2], ptr[3],
-						       ptr[4]);
-	   break;
-	   case 7:
-	   RETVAL = etk_combobox_item_append_relative(combobox, 
-						       relative, ptr[0],
-						       ptr[1], ptr[2], ptr[3],
-						       ptr[4], ptr[5]);
-	   break;
-	   case 8:
-	   RETVAL = etk_combobox_item_append_relative(combobox, 
-						       relative, ptr[0],
-						       ptr[1], ptr[2], ptr[3],
-						       ptr[4], ptr[5], ptr[6]);
-	   break;
-	   case 9:
-	   RETVAL = etk_combobox_item_append_relative(combobox, 
-						       relative, ptr[0],
-						       ptr[1], ptr[2], ptr[3],
-						       ptr[4], ptr[5], ptr[6],
-						       ptr[7]);
-	   break;
-	   case 10:
-	   RETVAL = etk_combobox_item_append_relative(combobox, 
-						       relative, ptr[0],
-						       ptr[1], ptr[2], ptr[3],
-						       ptr[4], ptr[5], ptr[6],
-						       ptr[7], ptr[8]);
-	   break;
-	   case 11:
-	   RETVAL = etk_combobox_item_append_relative(combobox, 
-						       relative, ptr[0],
-						       ptr[1], ptr[2], ptr[3], 
-						       ptr[4], ptr[5], ptr[6], 
-						       ptr[7], ptr[8], ptr[9]);
-	   break;
-	}
-        if(ptr)
-          free(ptr);
-    OUTPUT:
-        RETVAL  
+void
+etk_combobox_active_item_num_get(combobox)
+	Etk_Combobox * combobox
+	ALIAS:
+	ActiveItemNumGet=1
+
+Etk_Combobox_Item *
+etk_combobox_first_item_get(combobox)
+	Etk_Combobox * combobox
+	ALIAS:
+	FirstItemGet=1
+
+Etk_Combobox_Item *
+etk_combobox_last_item_get(combobox)
+	Etk_Combobox * combobox
+	ALIAS:
+	LastItemGet=1
+
+Etk_Combobox_Item *
+etk_combobox_item_prev_get(combobox, item)
+	Etk_Combobox * combobox
+	Etk_Combobox_Item *     item
+	ALIAS:
+	ItemPrevGet=1
+
+Etk_Combobox_Item *
+etk_combobox_item_next_get(combobox, item)
+	Etk_Combobox * combobox
+	Etk_Combobox_Item *     item
+	ALIAS:
+	ItemNextGet=1
+
+Etk_Combobox_Item *
+etk_combobox_nth_item_get(combobox, index)
+	Etk_Combobox * combobox
+	int	index
+	ALIAS:
+	NthItemGet=1
 
 
 MODULE = Etk::Combobox::Item		PACKAGE = Etk::Combobox::Item		PREFIX = etk_combobox_item_
 
-void
-etk_combobox_item_activate(item)
-	Etk_Combobox_Item *	item
-      ALIAS:
-	Activate=1
-  
 SV *
 etk_combobox_item_data_get(item)
 	Etk_Combobox_Item *	item
@@ -1288,6 +1210,12 @@ etk_combobox_item_data_get(item)
 	RETVAL = newSVsv((SV*)etk_combobox_item_data_get(item));
 	OUTPUT:
 	RETVAL
+
+Etk_Combobox *
+etk_combobox_item_combobox_get(item)
+	Etk_Combobox_Item *     item
+	ALIAS:
+	ComboboxGet=1
 
 void
 etk_combobox_item_data_set(item, data)
@@ -1299,8 +1227,7 @@ etk_combobox_item_data_set(item, data)
         etk_combobox_item_data_set(ETK_COMBOBOX_ITEM(item), newSVsv(data));
 
 void
-etk_combobox_item_remove(combobox, item)
-	Etk_Combobox *	combobox
+etk_combobox_item_remove(item)
 	Etk_Combobox_Item *	item
       ALIAS:
 	Remove=1
@@ -5280,43 +5207,6 @@ etk_widget_dnd_types_set(widget, perl_types)
 	}
 	etk_widget_dnd_types_set(widget, types, num);
 
-
-void
-etk_widget_drag_begin(widget)
-	Etk_Widget *	widget
-      ALIAS:
-	DragBegin=1
-
-void
-etk_widget_drag_drop(widget, event)
-	Etk_Widget *	widget
-	Etk_Event_Selection_Request *	event
-      ALIAS:
-	DragDrop=1
-
-void
-etk_widget_drag_end(widget)
-	Etk_Widget *	widget
-      ALIAS:
-	DragEnd=1
-
-void
-etk_widget_drag_enter(widget)
-	Etk_Widget *	widget
-      ALIAS:
-	DragEnter=1
-
-void
-etk_widget_drag_leave(widget)
-	Etk_Widget *	widget
-      ALIAS:
-	DragLeave=1
-
-void
-etk_widget_drag_motion(widget)
-	Etk_Widget *	widget
-      ALIAS:
-	DragMotion=1
 
 void
 etk_widget_enter(widget)
