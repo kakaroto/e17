@@ -746,13 +746,13 @@ sub combobox_window_show
 	$item->DataSet($i);
     }
 
-    #$combobox->ActiveItemSet($combobox->ActiveItemGet());
+    $combobox->ActiveItemSet($combobox->ActiveItemGet());
     
     $combobox->SignalConnect("active_item_changed", 
 	sub {
-#	    my $item = $combobox->ActiveItemGet();
-#	    my $stock_id = $item->DataGet();
-#	    $image->SetFromStock($stock_id, SizeBig);
+	    my $item = $combobox->ActiveItemGet();
+	    my $stock_id = $item->DataGet();
+	    $image->SetFromStock($stock_id, SizeBig);
 	}
     );    
     

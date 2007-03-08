@@ -1159,6 +1159,12 @@ etk_combobox_active_item_set(combobox, item)
 	ALIAS:
 	ActiveItemSet=1
 
+Etk_Combobox_Item *
+etk_combobox_active_item_get(combobox)
+       Etk_Combobox *  combobox
+      ALIAS:
+       ActiveItemGet=1
+
 void
 etk_combobox_active_item_num_get(combobox)
 	Etk_Combobox * combobox
