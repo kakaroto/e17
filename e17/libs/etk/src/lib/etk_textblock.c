@@ -1209,6 +1209,7 @@ void etk_textblock_object_full_geometry_get( Evas_Object *tbo, int *x, int *y, i
    if(!tbo)
       return;
 
+   _etk_textblock_object_update(tbo);
    if(x)
    {
       evas_object_geometry_get( tbo, x, NULL, NULL, NULL );   
