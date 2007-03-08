@@ -36,10 +36,7 @@ program
 	action: STATE_SET "active" 0.0;
 	target: "title_shadow2";
 	transition: LINEAR 0.05;
-	after: "go_active";
 }
-
-#include "glint-programs.edc"
 
 program 
 {

@@ -195,8 +195,6 @@ part
 	}
 }
 
-#include "glint-parts.edc"
-
 part
 {
 	name: "focus";
@@ -206,6 +204,18 @@ part
 	{
 		state: "default" 0.0;
 		visible: 0;
+		rel1
+		{
+			relative: 0.0 0.0;
+			offset: 0 0;
+			to: "title_outline";
+		}
+		rel2
+		{
+			relative: 1.0 1.0;
+			offset: -1 -1;
+			to: "title_outline";
+		}
 		image
 		{
 			normal: "focus.png";
