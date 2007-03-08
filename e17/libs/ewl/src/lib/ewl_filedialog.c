@@ -7,6 +7,7 @@
 #include "ewl_filelist_list.h"
 #include "ewl_filelist_tree.h"
 #include "ewl_menu.h"
+#include "ewl_context_menu.h"
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
@@ -14,7 +15,6 @@
 static void ewl_filedialog_respond(Ewl_Filedialog *fd, unsigned int response);
 static void ewl_filedialog_cb_value_changed(Ewl_Widget *w, void *ev, 
 							void *data);
-static void ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
 static void ewl_filedialog_cb_column_view(Ewl_Widget *w, void *ev, void *data);
 static void ewl_filedialog_cb_icon_view(Ewl_Widget *w, void *ev, void *data);
 static void ewl_filedialog_cb_list_view(Ewl_Widget *w, void *ev, void *data);
@@ -92,8 +92,6 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 
 	ewl_callback_append(EWL_WIDGET(fd), EWL_CALLBACK_DELETE_WINDOW,
 				ewl_filedialog_cb_delete_window, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-				ewl_filedialog_cb_mouse_down, NULL);
 
 	ewl_dialog_active_area_set(EWL_DIALOG(fd), EWL_POSITION_TOP);
 
@@ -110,9 +108,8 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
 	ewl_dialog_has_separator_set(EWL_DIALOG(fd), FALSE);
 	ewl_widget_hide(EWL_DIALOG(fd)->action_area);
 
-	fd->menu = ewl_menu_new();
-	ewl_button_label_set(EWL_BUTTON(fd->menu), " ");
-	ewl_widget_show(fd->menu);
+	fd->menu = ewl_context_menu_new();
+	ewl_context_menu_attach(EWL_CONTEXT_MENU(fd->menu), EWL_WIDGET(fd));
 
 	menu = ewl_menu_new();
 	ewl_button_label_set(EWL_BUTTON(menu), "View");
@@ -484,40 +481,6 @@ ewl_filedialog_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev,
 	e = ev;
 
 	ewl_filedialog_respond(fd, e->response);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_filedialog_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
-{
-	Ewl_Event_Mouse_Down *event;
-	Ewl_Filedialog *fd;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	event = ev;
-	fd = EWL_FILEDIALOG(w);
-
-	if (event->button == 3)
-	{
-		Ewl_Menu *menu;
-		Ewl_Embed *emb;
-		int x, y;
-
-		emb = ewl_embed_widget_find(w);
-		ewl_embed_window_position_get(emb, &x, &y);
-
-		menu = EWL_MENU(fd->menu);
-		ewl_window_move(EWL_WINDOW(menu->popup), 
-					x + event->base.x, y + event->base.y);
-		ewl_widget_show(fd->menu);
-
-		ewl_callback_call(EWL_WIDGET(fd->menu),
-					EWL_CALLBACK_FOCUS_IN);
-		ewl_object_state_remove(EWL_OBJECT(fd->menu),
-						EWL_FLAG_STATE_PRESSED);
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
