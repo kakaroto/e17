@@ -167,7 +167,7 @@ void etk_tree_freeze(Etk_Tree *tree);
 void etk_tree_thaw(Etk_Tree *tree);
 
 Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, int width, float alignment);
-int            etk_tree_num_cols_get(Etk_Tree *tree);
+int           etk_tree_num_cols_get(Etk_Tree *tree);
 Etk_Tree_Col *etk_tree_nth_col_get(Etk_Tree *tree, int nth);
 
 Etk_Tree  *etk_tree_col_tree_get(Etk_Tree_Col *col);
@@ -198,8 +198,8 @@ Etk_Tree_Row *etk_tree_row_append(Etk_Tree *tree, Etk_Tree_Row *parent, ...);
 Etk_Tree_Row *etk_tree_row_insert(Etk_Tree *tree, Etk_Tree_Row *parent, Etk_Tree_Row *after, ...);
 Etk_Tree_Row *etk_tree_row_insert_valist(Etk_Tree *tree, Etk_Tree_Row *parent, Etk_Tree_Row *after, va_list args);
 /* TODO: Etk_Tree_Row *etk_tree_row_insert_sorted(Etk_Tree *tree, Etk_Tree_Row *parent, ...); */
-void           etk_tree_row_delete(Etk_Tree_Row *row);
-void           etk_tree_clear(Etk_Tree *tree);
+void          etk_tree_row_delete(Etk_Tree_Row *row);
+void          etk_tree_clear(Etk_Tree *tree);
 /* TODO: way to insert a separator... */
 
 void etk_tree_row_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...);

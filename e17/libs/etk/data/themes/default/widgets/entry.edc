@@ -38,7 +38,7 @@ group {
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -5 -4;
+               offset: -5 -1;
                to: "entry";
             }
          }

@@ -85,16 +85,6 @@ struct Etk_Widget
    void (*leave)(Etk_Widget *widget);
    void (*focus)(Etk_Widget *widget);
    void (*unfocus)(Etk_Widget *widget);
-   void (*drag_drop)(Etk_Widget *widget);
-   void (*drag_motion)(Etk_Widget *widget);
-   void (*drag_enter)(Etk_Widget *widget);   
-   void (*drag_leave)(Etk_Widget *widget);
-   void (*drag_begin)(Etk_Widget *widget);   
-   void (*drag_end)(Etk_Widget *widget);
-
-   Etk_Widget *drag;
-   char **dnd_types;
-   int dnd_types_num;
 
    unsigned int realized : 1;
    unsigned int swallowed : 1;
@@ -109,10 +99,6 @@ struct Etk_Widget
    unsigned int need_redraw : 1;
    unsigned int need_theme_size_recalc : 1;
    unsigned int emit_theme_parent_signals : 1;
-   unsigned int accepts_dnd : 1;
-   unsigned int dnd_source : 1;
-   unsigned int dnd_dest : 1;
-   unsigned int dnd_internal: 1;
 };
 
 
@@ -209,13 +195,6 @@ void         etk_widget_dnd_types_set(Etk_Widget *widget, const char **types, in
 const char **etk_widget_dnd_types_get(Etk_Widget *widget, int *num);
 Etk_Bool     etk_widget_dnd_internal_get(Etk_Widget *widget);
 void         etk_widget_dnd_internal_set(Etk_Widget *widget, Etk_Bool on);
-  
-void etk_widget_drag_drop(Etk_Widget *widget, Etk_Event_Selection_Request *event);
-void etk_widget_drag_motion(Etk_Widget *widget);
-void etk_widget_drag_enter(Etk_Widget *widget);
-void etk_widget_drag_leave(Etk_Widget *widget);
-void etk_widget_drag_begin(Etk_Widget *widget);
-void etk_widget_drag_end(Etk_Widget *widget);
 
 /** @} */
 

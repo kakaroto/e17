@@ -6,6 +6,13 @@
 #include <Evas.h>
 #include "etk_types.h"
 
+/* TODO/FIXME list:
+ * - Html code somewhere
+ * - Replace sliders' label by spinners? or make slider's label editable?
+ * - Fix the labels of S and V
+ * - Add a "Previous" color-rect below the "Current" color-rect
+ */
+ 
 /**
  * @defgroup Etk_Colorpicker Etk_Colorpicker
  * @brief The colorpicker is a widget that allows the user to select a color

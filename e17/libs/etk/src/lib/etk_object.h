@@ -11,6 +11,7 @@
  * - etk_object_type_get() and etk_object_object_type_get() are confusing: maybe we should rename them
  * - instead of having one list for all the signal-callbacks, we could maybe use one list per type of signal. It
  * would make things more optimized
+ * - Dont use hash for the notification-callbacks, a hash is probably to big just for that
  */
 
 /**
@@ -46,6 +47,7 @@ struct Etk_Notification_Callback
    /* private: */
    void (*callback)(Etk_Object *object, const char *property_name, void *data);
    void *data;
+   Etk_Bool delete_me;
 };
 
 /**
@@ -57,15 +59,17 @@ struct Etk_Object
    /* private: */
    Etk_Type *type;
    char *name;
-   Evas_Hash *data_hash;
-   
-   Evas_List *signal_callbacks;
-   Evas_Hash *notification_callbacks;
-   Evas_List *weak_pointers;
    Etk_Bool destroy_me;
    
    Etk_Object *prev;
    Etk_Object *next;
+   
+   Evas_Hash *data_hash;
+   Evas_List *signal_callbacks;
+   Evas_List *weak_pointers;
+   Evas_Hash *notification_callbacks;
+   Etk_Bool should_delete_cbs;
+   int notifying;
 };
 
 void etk_object_shutdown(void);
@@ -100,9 +104,9 @@ void etk_object_properties_set_valist(Etk_Object *object, const char *first_prop
 void etk_object_properties_get(Etk_Object *object, const char *first_property, ...);
 void etk_object_properties_get_valist(Etk_Object *object, const char *first_property, va_list args);
 
-Etk_Object *etk_object_notify(Etk_Object *object, const char *property_name);
-void        etk_object_notification_callback_add(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data), void *data);
-void        etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data));
+void etk_object_notify(Etk_Object *object, const char *property_name);
+void etk_object_notification_callback_add(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data), void *data);
+void etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data));
 
 /** @} */
 

@@ -835,7 +835,7 @@ static void _etk_editable_cursor_update(Evas_Object *editable)
    evas_object_geometry_get(text_obj, &tx, &ty, NULL, NULL);
    _etk_editable_char_geometry_get_from_pos(editable, sd->cursor_pos, &cx, &cy, NULL, &ch);
    
-   evas_object_move(sd->cursor_object, tx + cx, ty + cy);
+   evas_object_move(sd->cursor_object, tx + cx, ty + cy - 1);
    evas_object_resize(sd->cursor_object, sd->cursor_width, ch);
    
    if (sd->cursor_visible && evas_object_visible_get(editable))
@@ -879,7 +879,7 @@ static void _etk_editable_selection_update(Evas_Object *editable)
       _etk_editable_char_geometry_get_from_pos(editable, end_pos, &cx, NULL, NULL, &sh);
       sw = tx + cx - sx;
       
-      evas_object_move(sd->selection_object, sx, sy);
+      evas_object_move(sd->selection_object, sx, sy - 1);
       evas_object_resize(sd->selection_object, sw, sh);
       evas_object_show(sd->selection_object);
    }

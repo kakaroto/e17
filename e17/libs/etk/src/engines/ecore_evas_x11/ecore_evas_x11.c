@@ -56,23 +56,6 @@ static void _selection_text_request(Etk_Selection_Type selection, Etk_Widget *ta
 static void _selection_clear(Etk_Selection_Type selection);
 static int _selection_notify_handler_cb(void *data, int type, void *event);
 
-
-/* Etk_Drag functions */
-static void _drag_constructor(Etk_Drag *drag);
-static void _drag_begin(Etk_Drag *drag);
-static int  _drag_mouse_up_cb(void *data, int type, void *event);
-static int  _drag_mouse_move_cb(void *data, int type, void *event);
-
-/* Etk_Dnd functions */
-static void _dnd_container_get_widgets_at(Etk_Toplevel *top, int x, int y, int offx, int offy, Evas_List **list);
-static int _dnd_enter_handler(void *data, int type, void *event);
-static int _dnd_position_handler(void *data, int type, void *event);
-static int _dnd_drop_handler(void *data, int type, void *event);
-static int _dnd_leave_handler(void *data, int type, void *event);
-static int _dnd_selection_handler(void *data, int type, void *event);
-static int _dnd_status_handler(void *data, int type, void *event);
-static int _dnd_finished_handler(void *data, int type, void *event);
-
 /* Private functions */
 static void _window_netwm_state_active_set(Etk_Window *window, Ecore_X_Window_State state, Etk_Bool active);
 static Etk_Bool _window_netwm_state_active_get(Etk_Window *window, Ecore_X_Window_State state);
@@ -90,17 +73,6 @@ static Etk_Widget *_selection_widget = NULL;
 static Ecore_Event_Handler *_selection_notify_handler = NULL;
 
 
-static Ecore_Event_Handler *_drag_mouse_move_handler;
-static Ecore_Event_Handler *_drag_mouse_up_handler;
-
-extern Etk_Widget  *_etk_drag_widget;
-static char       **_dnd_types          = NULL;
-static int          _dnd_types_num      = 0;
-static Etk_Widget  *_dnd_widget         = NULL;
-static Evas_List   *_dnd_handlers       = NULL;
-static int          _dnd_widget_accepts = 0;
-
-
 static Etk_Engine engine_info = {
    
    NULL, /* engine specific data */
@@ -112,7 +84,7 @@ static Etk_Engine engine_info = {
    _engine_shutdown,
    
    _window_constructor,
-   _window_destructor,     
+   _window_destructor,
    NULL, /* window_show */
    NULL, /* window_hide */
    NULL, /* window_evas_get */
@@ -165,8 +137,8 @@ static Etk_Engine engine_info = {
    _selection_text_request,
    _selection_clear,
    
-   _drag_constructor,
-   _drag_begin,
+   NULL, /* drag_constructor */
+   NULL, /* drag_begin */
 };
 
 /**************************
@@ -208,14 +180,6 @@ static Etk_Bool _engine_init()
    
    _selection_notify_handler = ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _selection_notify_handler_cb, NULL);
    
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_ENTER, _dnd_enter_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_POSITION, _dnd_position_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_DROP, _dnd_drop_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_LEAVE, _dnd_leave_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_SELECTION_NOTIFY, _dnd_selection_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_STATUS, _dnd_status_handler, NULL));
-   _dnd_handlers = evas_list_append(_dnd_handlers, ecore_event_handler_add(ECORE_X_EVENT_XDND_FINISHED, _dnd_finished_handler, NULL));
-   
    return ETK_TRUE;
 }
 
@@ -235,12 +199,6 @@ static void _engine_shutdown()
    
    ecore_event_handler_del(_selection_notify_handler);
    _selection_notify_handler = NULL;
-   
-   while (_dnd_handlers)
-   {
-      ecore_event_handler_del(_dnd_handlers->data);
-      _dnd_handlers = evas_list_remove_list(_dnd_handlers, _dnd_handlers);
-   }
    
    ecore_x_shutdown();
 }
@@ -651,42 +609,6 @@ static void _selection_clear(Etk_Selection_Type selection)
 
 /**************************
  *
- * Etk_Drag's functions
- *
- **************************/
-
-/* TODOC */
-static void _drag_constructor(Etk_Drag *drag)
-{
-   Etk_Engine_Window_Data *engine_data;
-   Ecore_X_Window x_window;
-   
-   engine_data = ETK_WINDOW(drag)->engine_data;
-   x_window = engine_data->x_window;
-   ecore_x_dnd_aware_set(x_window, 1);
-}
-
-/* TODOC */
-static void _drag_begin(Etk_Drag *drag)
-{
-   Etk_Engine_Window_Data *engine_data;
-   Ecore_Evas *ecore_evas;
-   Ecore_X_Window x_window;
-   
-   engine_data = ETK_WINDOW(drag)->engine_data;   
-   ecore_evas = ETK_ENGINE_ECORE_EVAS_WINDOW_DATA(engine_data)->ecore_evas;
-   x_window = engine_data->x_window;
-   
-   ecore_evas_ignore_events_set(ecore_evas, 1);
-   ecore_x_dnd_types_set(x_window, drag->types, drag->num_types);
-   ecore_x_dnd_begin(x_window, drag->data, drag->data_size);
-
-   _drag_mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _drag_mouse_move_cb, drag);
-   _drag_mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, _drag_mouse_up_cb, drag);
-}
-
-/**************************
- *
  * Callbacks and handlers
  *
  **************************/
@@ -819,355 +741,6 @@ static int _selection_notify_handler_cb(void *data, int type, void *event)
    return 1;
 }
 
-/* TODOC */
-static int _drag_mouse_up_cb(void *data, int type, void *event)
-{
-   Etk_Drag *drag;
-   
-   drag = data;
-   etk_widget_hide_all(ETK_WIDGET(drag));
-   ecore_event_handler_del(_drag_mouse_move_handler);
-   ecore_event_handler_del(_drag_mouse_up_handler);
-   ecore_x_dnd_drop();   
-   etk_widget_drag_end(ETK_WIDGET(drag));   
-   etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(drag->widget), ETK_POINTER_DEFAULT);
-   
-   return 1;
-}
-
-/* TODOC */
-static int _drag_mouse_move_cb(void *data, int type, void *event)
-{
-   Ecore_X_Event_Mouse_Move *ev;
-   Etk_Drag *drag;
-   
-   drag = data;
-   ev = event;
-   
-   etk_window_move(ETK_WINDOW(drag), ev->root.x + 2, ev->root.y + 2);
-   
-   return 1;
-}
-
-/* Searchs the container recursively for the widget that accepts xdnd */
-static void _dnd_container_get_widgets_at(Etk_Toplevel *top, int x, int y, int offx, int offy, Evas_List **list)
-{
-
-   Evas_List *l;
-   int wx, wy, ww, wh;
-   
-   if (!top || !list)
-      return;
-   
-   for (l = etk_widget_dnd_dest_widgets_get(); l; l = l->next)
-   {
-      Etk_Widget *widget;
-      
-      if (!(widget = ETK_WIDGET(l->data)) || etk_widget_toplevel_parent_get(widget) != top)
-         continue;
-      
-      etk_widget_geometry_get(widget, &wx, &wy, &ww, &wh);
-      if (ETK_INSIDE(x, y, wx + offx, wy + offy, ww, wh))
-	 *list = evas_list_append(*list, widget);
-   }
-}
-
-/* The event handler for when a drag enters our window */
-static int _dnd_enter_handler(void *data, int type, void *event)
-{
-   Ecore_X_Event_Xdnd_Enter *ev;
-   int i;
-   
-   ev = event;
-   
-   //printf("enter window!\n");   
-   //for (i = 0; i < ev->num_types; i++)
-   //  printf("type: %s\n", ev->types[i]);   
-   
-   if(_dnd_types != NULL && _dnd_types_num >= 0)
-   {
-      for (i = 0; i < _dnd_types_num; i++)
-         if(_dnd_types[i]) free(_dnd_types[i]);
-   }
-   
-   if(_dnd_types != NULL) free(_dnd_types);
-   _dnd_types_num = 0;
-   
-   if(ev->num_types > 0)
-   {
-      _dnd_types = calloc(ev->num_types, sizeof(char*));
-      for (i = 0; i < ev->num_types; i++)
-	_dnd_types[i] = strdup(ev->types[i]);
-
-      _dnd_types_num = ev->num_types;
-   }
-   
-   return 1;
-}
-
-/* The event handler for when a drag is moving in our window */
-static int _dnd_position_handler(void *data, int type, void *event)
-{
-   Ecore_X_Event_Xdnd_Position *ev;
-   Etk_Window *window;
-   Evas_List *l;
-   Evas_List *children = NULL;
-   Etk_Widget *widget;
-   int x = 0, y = 0;
-   int wx, wy, ww, wh;
-   Etk_Engine_Window_Data *engine_data;
-   Ecore_X_Window x_window;      
-   
-   ev = event;
-
-   //printf("position!\n");
-   
-   /* loop top level widgets (windows) */
-   for (l = etk_toplevel_widgets_get(); l; l = l->next)
-   {
-      if (!ETK_IS_WINDOW(l->data))
-         continue;
-      window = ETK_WINDOW(l->data);
-	
-      /* if this isnt the active window, dont waste time */
-      engine_data = window->engine_data;
-      x_window = engine_data->x_window;
-      if (ev->win != x_window)
-         continue;
-      
-      etk_window_geometry_get(window, &x, &y, NULL, NULL);
-
-      /* find the widget we want to drop on */
-      _dnd_container_get_widgets_at(ETK_TOPLEVEL(window), ev->position.x, ev->position.y, x, y, &children);
-      
-      /* check if we're leaving a widget */
-      if (_dnd_widget)
-      {
-         etk_widget_geometry_get(_dnd_widget, &wx, &wy, &ww, &wh);
-         if (!ETK_INSIDE(ev->position.x, ev->position.y, wx + x, wy + y, ww, wh))
-         {
-            etk_widget_drag_leave(_dnd_widget);
-            _dnd_widget = NULL;
-	    _dnd_widget_accepts = 0;
-         }
-      }
-      
-      break;
-   }
-   
-   /* if we found a widget, emit signals */
-   if (children != NULL)
-   {	
-      Ecore_X_Rectangle rect;
-      int i;
-      
-      widget = (evas_list_last(children))->data;
-      etk_widget_geometry_get(widget, &wx, &wy, &ww, &wh);
-
-      rect.x = wx;
-      rect.y = wy;
-      rect.width = ww;
-      rect.height = wh;
-      
-      if(_dnd_widget == widget && _dnd_widget_accepts)
-      {
-	 etk_widget_drag_motion(widget);
-	 ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
-      }
-      else
-      {      
-	 _dnd_widget = widget;
-      
-	 /* first case - no specific types, so just accept */
-	 if(_dnd_widget->dnd_types == NULL || _dnd_widget->dnd_types_num <= 0)
-	 {
-	    ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
-	    _dnd_widget_accepts = 1;
-	    etk_widget_drag_enter(widget);
-	    return 1;
-	 }
-	 
-	 /* second case - we found matching types, accept */
-	 for(i = 0; i < _dnd_types_num; i++)
-	   {
-	      int j;
-	      
-	      for(j = 0; j < _dnd_widget->dnd_types_num; j++)
-		{
-		   if(!strcmp(_dnd_widget->dnd_types[j], _dnd_types[i]))
-		   {
-		      ecore_x_dnd_send_status(1, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
-		      _dnd_widget_accepts = 1;
-		      etk_widget_drag_enter(widget);
-		      return 1;
-		   }
-		}
-	   }
-	 
-	 /* third case - no matches at all, dont accept */
-	 ecore_x_dnd_send_status(0, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
-	 _dnd_widget_accepts = 0;
-      }
-   }
-   else
-   {
-      /* tell the source we wont accept it here */
-      Ecore_X_Rectangle rect;
-      
-      rect.x = 0;
-      rect.y = 0;
-      rect.width = 0;
-      rect.height = 0;
-      ecore_x_dnd_send_status(0, 1, rect, ECORE_X_DND_ACTION_PRIVATE);
-   }
-   return 1;
-}
-
-/* TODOC */
-static int _dnd_drop_handler(void *data, int type, void *event)
-{
-   Ecore_X_Event_Xdnd_Drop *ev;
-   int i;
-   
-   //printf("drop\n");
-   ev = event;
-   
-	if (!_dnd_widget)
-		return 0;
-
-   /* first case - if we dont have a type preferece, send everyting */
-   if(_dnd_widget->dnd_types == NULL || _dnd_widget->dnd_types_num <= 0)
-   {
-      for(i = 0; i < _dnd_types_num; i++)
-	ecore_x_selection_xdnd_request(ev->win, _dnd_types[i]);
-   }
-   /* second case - send only our preferred types */
-   else
-   {
-      for(i = 0; i < _dnd_widget->dnd_types_num; i++)
-	ecore_x_selection_xdnd_request(ev->win, _dnd_widget->dnd_types[i]);
-   }
-   
-   return 1;
-}
-
-/* TODOC */
-static int _dnd_leave_handler(void *data, int type, void *event)
-{
-   //printf("leave window\n");
-      
-   return 1;
-}
-
-/* TODOC */
-static int _dnd_selection_handler(void *data, int type, void *event)
-{
-   Ecore_X_Event_Selection_Notify *ev;
-   Ecore_X_Selection_Data_Files *files;
-   Ecore_X_Selection_Data_Text *text;
-   //int i;
-
-   //printf("selection\n"); 
-   ev = event;
-   switch (ev->selection) 
-   {
-      case ECORE_X_SELECTION_XDND:
-        if(!strcmp(ev->target, "text/uri-list"))
-	 {
-	    Etk_Event_Selection_Request event;	    
-	    Etk_Selection_Data_Files    event_files;
-	    
-	    files = ev->data;
-	
-	    if (!_dnd_widget || files->num_files < 1)
-	      break;		    
-	    
-	    event_files.files = files->files;
-	    event_files.num_files = files->num_files;
-	    event_files.data.data = files->data.data;
-	    event_files.data.length = files->data.length;
-	    event_files.data.free = files->data.free;
-	    
-	    event.data = &event_files;
-	    event.content = ETK_SELECTION_CONTENT_FILES;	   
-	    
-	    /* emit the drop signal so the widget can react */
-	    etk_widget_drag_drop(_dnd_widget, &event);
-	 }
-         else if(!strcmp(ev->target, "text/plain") || 
-		 !strcmp(ev->target, ECORE_X_SELECTION_TARGET_UTF8_STRING))
-	 {
-	    Etk_Event_Selection_Request event;
-	    Etk_Selection_Data_Text     event_text;
-	    
-	    text = ev->data;
-	   
-	    if (!_dnd_widget)
-	      break;	    
-	    
-	    event_text.text = text->text;
-	    event_text.data.data = text->data.data;
-	    event_text.data.length = text->data.length;
-	    event_text.data.free = text->data.free;
-	    
-	    event.data = &event_text;
-	    event.content = ETK_SELECTION_CONTENT_TEXT;	    
-	    
-	    /* emit the drop signal so the widget can react */
-	    etk_widget_drag_drop(_dnd_widget, &event);
-	 }
-         else
-	 {
-	    /* couldnt find any data type that etk supports, send raw data */
-	    Etk_Event_Selection_Request event;
-	    
-	    event.data = ev->data;
-	    event.content = ETK_SELECTION_CONTENT_CUSTOM;
-	    
-	    /* emit the drop signal so the widget can react */
-	    etk_widget_drag_drop(_dnd_widget, &event);
-	 }
-      
-	 _dnd_widget = NULL;	 
-	 
-         ecore_x_dnd_send_finished();
-         break;
-         
-      default:
-         break;
-   }
-   
-   return 1;
-}
-
-/* TODOC */
-static int _dnd_status_handler(void *data, int type, void *event)
-{
-   Ecore_X_Event_Xdnd_Status *ev;
-   Etk_Engine_Window_Data *engine_data;  
-   Ecore_X_Window x_window;
-   
-   engine_data = ETK_WINDOW(_etk_drag_widget)->engine_data;   
-   x_window = engine_data->x_window;   
-   ev = event;
-   
-   if (ev->win != x_window) return 1;	  
-   if(!ev->will_accept)
-   {
-      etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(etk_drag_parent_widget_get(ETK_DRAG(_etk_drag_widget))), ETK_POINTER_DEFAULT);
-      return 1;
-   }
-   
-   etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(etk_drag_parent_widget_get(ETK_DRAG(_etk_drag_widget))), ETK_POINTER_DND_DROP);
-   return 1;
-}
-
-/* TODOC */
-static int _dnd_finished_handler(void *data, int type, void *event)
-{
-   return 1;
-}
-
 /**************************
  *
  * Private functions
@@ -1192,7 +765,7 @@ static void _window_netwm_state_active_set(Etk_Window *window, Ecore_X_Window_St
       
       root = engine_data->x_window;
       while ((parent = ecore_x_window_parent_get(root)) != 0)
-	 root = parent;
+         root = parent;
       
       ecore_x_netwm_state_request_send(engine_data->x_window, root, state, -1, active);
    }

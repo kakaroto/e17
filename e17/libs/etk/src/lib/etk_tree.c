@@ -370,7 +370,7 @@ void etk_tree_rows_height_set(Etk_Tree *tree, int rows_height)
 int etk_tree_rows_height_get(Etk_Tree *tree)
 {
    if (!tree)
-      return DEFAULT_ROW_HEIGHT;
+      return 0;
    return tree->rows_height;
 }
 

@@ -36,6 +36,7 @@ static void _etk_object_property_set(Etk_Object *object, int property_id, Etk_Pr
 static void _etk_object_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 
 static void _etk_object_free(Etk_Object *object);
+static Evas_Bool _etk_object_notification_callbacks_clean_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
 static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
 static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
 
@@ -171,6 +172,8 @@ void etk_object_destroy(Etk_Object *object)
    if (!object || object->destroy_me)
       return;
 
+   if (!strcmp("Etk_Bin", object->type->name))
+      printf("Bin Destroyed!!\n");
    etk_object_name_set(object, NULL);
    
    /* Sets the weak-pointers to NULL */
@@ -576,40 +579,34 @@ void etk_object_properties_get_valist(Etk_Object *object, const char *first_prop
  * It should be called each time the value of a property is changed
  * @param object an object
  * @param property_name the name of the property
- * @return Returns the object, or NULL if the object has been destroyed by one of the notification callbacks
  * @object_implementation
  */
-Etk_Object *etk_object_notify(Etk_Object *object, const char *property_name)
+void etk_object_notify(Etk_Object *object, const char *property_name)
 {
    Evas_List *l;
-   Evas_List **callbacks, *callbacks_copy;
+   Evas_List **callbacks;
    Etk_Notification_Callback *callback;
-   void *object_ptr;
 
    if (!object || !property_name)
-      return object;
+      return;
    if (!(callbacks = evas_hash_find(object->notification_callbacks, property_name)))
-      return object;
+      return;
    
-   /* We use a copy of the callback list here to avoid potential bugs
-    * if a notification callback is removed while being called */
-   callbacks_copy = NULL;
-   for (l = *callbacks; l; l = l->next)
-      callbacks_copy = evas_list_append(callbacks_copy, l->data);
+   object->notifying++;
 
-   object_ptr = object;
-   etk_object_weak_pointer_add(object, &object_ptr);
-   while (callbacks_copy && object_ptr)
+   for (l = *callbacks; l; l = l->next)
    {
-      callback = callbacks_copy->data;
-      if (callback->callback)
+      callback = l->data;
+      if (callback->callback && !callback->delete_me)
          callback->callback(object, property_name, callback->data);
-      callbacks_copy = evas_list_remove_list(callbacks_copy, callbacks_copy);
    }
-   evas_list_free(callbacks_copy);
-   etk_object_weak_pointer_remove(object, &object_ptr);
    
-   return object_ptr;
+   object->notifying--;
+   if (object->notifying <= 0 && object->should_delete_cbs)
+   {
+      evas_hash_foreach(object->notification_callbacks, _etk_object_notification_callbacks_clean_cb, NULL);
+      object->should_delete_cbs = ETK_FALSE;
+   }
 }
 
 /**
@@ -639,6 +636,7 @@ void etk_object_notification_callback_add(Etk_Object *object, const char *proper
    new_callback = malloc(sizeof(Etk_Notification_Callback));
    new_callback->callback = callback;
    new_callback->data = data;
+   new_callback->delete_me = ETK_FALSE;
    *list = evas_list_append(*list, new_callback);
 }
 
@@ -665,8 +663,19 @@ void etk_object_notification_callback_remove(Etk_Object *object, const char *pro
       l = l->next;
       if (remove_callback->callback == callback)
       {
-         free(remove_callback);
-         *list = evas_list_remove_list(*list, l);
+         /* If the object is calling the notification-callbacks, we can't remove the callback from the list, or it may
+          * segfault. So we remove it only if the object is not notifying. Otherwise, we just mark the callback
+          * as "deleted" and we will actually remove it at the end of the notication process */
+         if (object->notifying == 0)
+         {
+            free(remove_callback);
+            *list = evas_list_remove_list(*list, l);
+         }
+         else
+         {
+            remove_callback->delete_me = ETK_TRUE;
+            object->should_delete_cbs = ETK_TRUE;
+         }
       }
    }
 }
@@ -684,11 +693,13 @@ static void _etk_object_constructor(Etk_Object *object)
       return;
 
    object->name = NULL;
+   object->destroy_me = ETK_FALSE;
    object->data_hash = NULL;
    object->signal_callbacks = NULL;
-   object->notification_callbacks = NULL;
    object->weak_pointers = NULL;
-   object->destroy_me = ETK_FALSE;
+   object->notification_callbacks = NULL;
+   object->should_delete_cbs = ETK_FALSE;
+   object->notifying = 0;
    
    /* Append the new object to the list */
    object->prev = _etk_object_last_object;
@@ -778,6 +789,31 @@ static void _etk_object_free(Etk_Object *object)
       _etk_object_last_object = object->prev;
    
    free(object);
+}
+
+/* Removes the notification-callbacks marked as "deleted" from the list (called by etk_object_notify()) */
+static Evas_Bool _etk_object_notification_callbacks_clean_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
+{
+   Evas_List *l, *next;
+   Evas_List **callbacks;
+   Etk_Notification_Callback *callback;
+   
+   if (!(callbacks = data))
+      return 1;
+   
+   for (l = *callbacks; l; l = next)
+   {
+      next = l->next;
+      callback = l->data;
+      
+      if (callback->delete_me)
+      {
+         free(callback);
+         *callbacks = evas_list_remove_list(*callbacks, l);
+      }
+   }
+   
+   return 1;
 }
 
 /* Frees a list of notification callbacks (called by _etk_object_destructor()) */

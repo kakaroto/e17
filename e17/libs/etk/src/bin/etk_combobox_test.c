@@ -53,8 +53,8 @@ void etk_test_combobox_window_create(void *data)
    etk_box_append(ETK_BOX(vbox2), image, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    combobox = etk_combobox_new();
-   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_IMAGE, 24, ETK_FALSE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
-   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_IMAGE, 24, ETK_COMBOBOX_NONE, 0.0);
+   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_FILL, 0.0);
    etk_combobox_build(ETK_COMBOBOX(combobox));
    etk_box_append(ETK_BOX(vbox2), combobox, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect("active_item_changed", ETK_OBJECT(combobox), ETK_CALLBACK(_etk_test_combobox_active_item_changed_cb), image);
