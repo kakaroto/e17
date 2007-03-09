@@ -10,6 +10,7 @@ convert_mpd_song(mpd_Song * src)
     return NULL;
 
   dest = malloc(sizeof(Emphasis_Song));
+  if(!dest) return NULL;
 
   dest->file     = strdupnull(src->file);
   dest->artist   = strdupnull(src->artist);

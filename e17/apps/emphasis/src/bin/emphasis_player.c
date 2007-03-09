@@ -11,7 +11,7 @@
  enhance_var_get(en,id)
 
 static void _emphasis_enhance_callbacks(Emphasis_Player_Gui *player);
-
+static void _emphasis_init_player_small(Emphasis_Player_Gui *player);
 /* TODO : documentation */
 void
 emphasis_init_player(Emphasis_Player_Gui *player)
@@ -35,8 +35,13 @@ emphasis_init_player(Emphasis_Player_Gui *player)
   /* TODO : check widget? */
 
   EN_VAR_GET(en, player, window);
+  etk_widget_hide(player->small.window);
+  etk_widget_hide(player->full.window);
   EN_VAR_GET(en, player, root);
-  
+
+  player->small.ctr.root = enhance_var_get(en, "small_root_ctrl");
+  player->small.cov.root = enhance_var_get(en, "small_root_cover");
+  _emphasis_init_player_small(player);
   EN_VAR_GET(en, player, cover);
   
   EN_VAR_GET(en, player, stop);
@@ -47,7 +52,8 @@ emphasis_init_player(Emphasis_Player_Gui *player)
   EN_VAR_GET(en, player, info);
 
   EN_VAR_GET(en, player, progress);
-  EN_VAR_GET(en, player, time);
+  //EN_VAR_GET(en, player, time);
+  player->full.time = enhance_var_get(en, "full_time");
 
   EN_VAR_GET(en, player, sound_slider);
   EN_VAR_GET(en, player, sound_low);
@@ -196,6 +202,36 @@ emphasis_init_player(Emphasis_Player_Gui *player)
 }
 
 static void
+_emphasis_init_player_small(Emphasis_Player_Gui *player)
+{
+  Etk_Widget *wid;
+
+  /* controls */
+  wid = etk_window_new();
+  etk_window_wmclass_set(ETK_WINDOW(wid),
+                         "emphasis", "Emphasis");
+  etk_window_title_set(ETK_WINDOW(wid), "Controls");
+  etk_window_resize(ETK_WINDOW(wid), 10, 180);
+  etk_widget_hide(wid);
+  etk_signal_connect("delete_event", ETK_OBJECT(wid),
+                     ETK_CALLBACK(cb_pack_quit), player);
+  player->small.ctr.window = wid;
+  
+  /* controls */
+  wid = etk_window_new();
+  etk_window_wmclass_set(ETK_WINDOW(wid),
+                         "emphasis", "Emphasis");
+  etk_window_title_set(ETK_WINDOW(wid), "Cover");
+  etk_window_resize(ETK_WINDOW(wid), 10, 10);
+  etk_widget_hide(wid);
+  etk_signal_connect("delete_event", ETK_OBJECT(wid),
+                     ETK_CALLBACK(cb_pack_quit), player);
+  player->small.cov.window = wid;
+
+  player->small.packed = ETK_TRUE;
+}
+
+static void
 _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
 {
   Enhance *en;
@@ -266,16 +302,28 @@ _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
   enhance_callback_data_set(en, "cb_tree_mlib_clicked"             , player);
   enhance_callback_data_set(en, "cb_media_pls_save_key_down"       , player);
 
+  enhance_callback_data_set(en, "cb_small_pack", player);
 }
+
 
 /* TODO : documentation */
 void
 emphasis_player_cover_set(Emphasis_Player_Gui *player, const char *path)
 {
-  if(!path) { path = emphasis_cover_haricotmagique(); }
+  const char *cover;
+  if(!path) { cover = emphasis_cover_haricotmagique(); }
+  else      { cover = path;                            }
 
-  etk_image_set_from_file(ETK_IMAGE(player->full.cover) , path, NULL);
-  etk_image_set_from_file(ETK_IMAGE(player->small.cover), path, NULL);
+  etk_image_set_from_file(ETK_IMAGE(player->full.cover) , cover, NULL);
+  etk_image_set_from_file(ETK_IMAGE(player->small.cover), cover, NULL);
+
+  if(!path) { return; }
+
+  if( etk_image_has_error(ETK_IMAGE(player->full.cover))  == ETK_TRUE ||
+      etk_image_has_error(ETK_IMAGE(player->small.cover)) == ETK_TRUE )
+    {
+      emphasis_player_cover_set(player, NULL);
+    }
 }
 
 /* TODO : documentation */
@@ -363,7 +411,7 @@ emphasis_player_info_set(Emphasis_Player_Gui *player,
                    title, artist, album, msg);
           asprintf(&info_textblock,
                    "<b><font size=16>%s </font size></b>\n"
-                   "<font size=11>(%s)</font size>\n"
+                   "<font size=10>   (%s)</font size>\n"
                    "<font size=11><i>by</i></font size> "
                    "<font size=13>%s </font size>\n"
                    "<font size=11><i>in</i></font size> "
@@ -397,10 +445,9 @@ emphasis_player_info_set(Emphasis_Player_Gui *player,
           
         }
     }
-  
-  etk_textblock_object_cursor_visible_set
-   (evas_list_data(ETK_TEXT_VIEW(player->small.info)->textblock->evas_objects),
-    ETK_FALSE);
+
+  etk_textblock_cursor_visible_set
+   (etk_text_view_textblock_get(ETK_TEXT_VIEW(player->small.info)), ETK_FALSE);
 }
 
 /* TODO : update doc */
@@ -427,7 +474,8 @@ emphasis_player_progress_set(Emphasis_Player_Gui *player,
                                        total_time % 60);
 
   etk_label_set(ETK_LABEL(player->full.time) , time);
-  etk_label_set(ETK_LABEL(player->small.time), time);
+//  etk_label_set(ETK_LABEL(player->small.time), time);
+  etk_progress_bar_text_set(ETK_PROGRESS_BAR(player->small.progress), time);
 
   free(time);
 }

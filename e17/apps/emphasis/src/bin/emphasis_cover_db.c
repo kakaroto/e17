@@ -35,7 +35,7 @@ emphasis_cover_thread_process(void *data)
           cover_path = emphasis_cover_db_search(artist, album);
           emphasis_player_cover_set(gui->player, cover_path);
           if (cover_path != NULL) { free(cover_path); }
-          emphasis_player_cover_size_update(gui->player);
+          //emphasis_player_cover_size_update(gui->player);
 
           free(artist);
           free(album);
@@ -122,7 +122,7 @@ emphasis_cover_db_search(const char *artist, const char *album)
   char *cover_path = NULL;
   char *key;
   int size;
-  void *cover;
+  void *cover = NULL;
   Eet_File *ef;
 
   asprintf(&config_path, "%s/.e/apps/emphasis/cover.eet", getenv("HOME"));

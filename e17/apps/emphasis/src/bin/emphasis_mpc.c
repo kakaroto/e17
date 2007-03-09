@@ -264,17 +264,20 @@ status_changed_callback(MpdObj * mo, ChangedStatusType what, void *data)
 void
 mpc_connection_changed(MpdObj * mo, int connect, void *data)
 {
-  UNUSED(mo)
+  UNUSED(mo);
   Emphasis_Gui *gui;
+  static int refresh_info = 1;
   
   gui = data;
 
   if (!connect)
     {
-      emphasis_player_info_set(gui->player, NULL, "Not connected to MPD");
+      if(refresh_info)
+        emphasis_player_info_set(gui->player, NULL, "Not connected to MPD");
       ecore_timer_del(gui->timer);
       gui->timer = ecore_timer_add(0.2, emphasis_try_connect, data);
     }
+  else refresh_info = 0;
 }
 
 /**
@@ -557,7 +560,7 @@ mpc_play_if_stopped(void)
     {
       song =
         mpd_playlist_get_changes(mo, mpd_playlist_get_old_playlist_id(mo));
-      if (!song) return;
+      if(!song) return;
       mpc_play_id(song->song->id);
       mpd_data_free(song);
     }
@@ -641,7 +644,6 @@ mpc_disconnect(void)
 Evas_List *
 mpc_list_playlists(void)
 {
-#if defined(LIBMPD_0_12_4)
   MpdData *data;
   Evas_List *list;
 
@@ -650,15 +652,11 @@ mpc_list_playlists(void)
 
   mpd_data_free(data);
   return list;
-#else
-  return NULL;
-#endif
 }
 
 Evas_List *
 mpc_get_playlist_content(char *playlist_name)
 {
-#if defined(LIBMPD_0_12_4)
   MpdData *data;
   Evas_List *list;
   
@@ -667,16 +665,11 @@ mpc_get_playlist_content(char *playlist_name)
 
   mpd_data_free(data);
   return list;
-#else
-  UNUSED(playlist_name);
-  return NULL;
-#endif
 }
 
 void
 mpc_save_playlist(char *playlist_name)
 {
-#if defined(LIBMPD_0_12_4)
   int mpd_error;
 
   mpd_error = mpd_database_save_playlist(mo, playlist_name);
@@ -687,15 +680,11 @@ mpc_save_playlist(char *playlist_name)
           fprintf(stderr, "A playlist with the same name already exist.\n");
         }
     }
-#else
-  UNUSED(playlist_name);
-#endif
 }
 
 void
 mpc_delete_playlist(char *playlist_name)
 {
-#if defined(LIBMPD_0_12_4)
   int mpd_error;
 
   mpd_error = mpd_database_delete_playlist(mo, playlist_name);
@@ -703,12 +692,8 @@ mpc_delete_playlist(char *playlist_name)
     {
       fprintf(stderr, "An error occur during the playlist deleting\n");
     }
-#else
-  UNUSED(playlist_name);
-#endif
 }
 
-#if defined(LIBMPD_0_12_4)
 MpdData *mpd_database_list_playlist(MpdObj *mi)
 {
 	MpdData *data = NULL;
@@ -746,7 +731,6 @@ MpdData *mpd_database_list_playlist(MpdObj *mi)
 	}
 	return mpd_data_get_first(data);
 }
-#endif
 
 Evas_List *
 mpc_find(Evas_List *query, int exact)

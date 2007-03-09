@@ -2,18 +2,73 @@
 
 #####################################
 Features:
-  Drag and drop between medialib treeview and playlist is supported.
-  Double left click on a row of medialib treeview add it with a search
-  to the playlist, and play it if the server is on status "stop".
-  ex : double left click on an album row will add all this album.
-  Middle click remove them on the same principe,
-  Select a row in the playlist and push "d" to delete it from the playlist.
-  Push "c" or "s" to clear or shuffle the current playlist.
-  Right click open a contextual menu. 
-  A click on the progress bar seek the right time on the song.
-  "Ctrl+r" on artist/album/track tree selects randomly a row.
-  Select a medialib tree and type some letters will search for "pattern.*",
-  Esc to cancel.
+  - Medialib:
+    . Drag and drop between medialib treeview and playlist is supported.
+    . Double left-click or phush "Return" on a row of medialib treeview add it
+      with a search to the playlist, and play it if the server is on
+      status "stop".
+      ex : double left click on an album row will add all this album.
+    . "Ctrl+r" on artist/album/track tree selects randomly a row.
+    . Middle-click remove them on the same principe.
+    . Select a medialib tree and type some letters will search for "pattern.*",
+      "Esc" to cancel.
+  - Playlist:
+    . Select a row in the playlist and push "d" or "Suppr" to delete it from
+      the playlist.
+    . Push "c" to clear the current playlist.
+    . Push "s" to shuffle the current playlist.
+    . Push "u" to update your database.
+    . Right click open a contextual menu. 
+  - Controls:
+    . A click on the progress bar seek the right time on the song.
+  - Tiny and Small mode:
+    . A right-click on cover or textview switch to tiny/small mode.
+  - Tiny mode:
+    . A left-click on cover or textview show/hide concurrent window.
+    . Close window hide it, close both to quit.
+    . A middle-click on cover or textview show/hide medialib window.
+    . Special Cover Zone:
+      , A left-click at bottom-left corner play prev song.
+      , A left-click at bottom-middle zone play/pause song.
+      , A left-click at bootom-right corner play next zone.
+
+#####################################
+  [ Cover window ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯x¯] > hide window .......
+  |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|                     .
+  |                                     |                     .
+  |  switch tiny/small mode             | -> right-click      .
+  |                                     |                     .
+  |                                     |                     .
+  |  show/hide mlib window              | -> middle-click     .
+  |                                     |                     ... both, quit.
+  |                                     | \                   .
+  |  show/hide controls window          | |                   .
+  |                                     |  > left-click       .
+  -  -  -  -  -  -  -  -  -  -  -  -  - | |                   .
+  | prev      | play/pause | next       | /                   .
+  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯                     .
+                                                              .
+  [ Controls window ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯x¯] > hide window .......
+  |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+  | [- - - - - - -                    ] |
+  |                                     |
+  | ----------------------------------- |
+  | | {text_view}                     | |
+  | |                                 | |
+  | | switch tiny/small mode          | | -> right-click
+  | |                                 | |
+  | | show/hide mlib window           | | -> middle-click
+  | |                                 | |
+  | | show/hide cover window          | | -> left-click
+  | |                                 | |
+  | ----------------------------------- |
+  |                                     |
+  | [      ] [      ] [      ] [      ] |
+  |                                     |
+  | ( ) ·····················X····· ( ) |
+  |                                     |
+  | { } ?     { } O     { } ^     { } + |
+  ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 
 #####################################
 Description:

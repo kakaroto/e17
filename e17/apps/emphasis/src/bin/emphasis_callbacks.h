@@ -8,6 +8,8 @@
  */
 Etk_Bool cb_quit(Etk_Object *object, void *data);
 Etk_Bool cb_media_quit(Etk_Object *object, void *data);
+Etk_Bool cb_window_hide(Etk_Object *object, void *data);
+Etk_Bool cb_pack_quit(Etk_Object *object, void *data);
 
 void cb_button_stop_clicked(Etk_Object *object, void *data);
 void cb_button_prev_clicked(Etk_Object *object, void *data);

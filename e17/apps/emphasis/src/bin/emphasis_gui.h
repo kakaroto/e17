@@ -14,7 +14,7 @@
 typedef enum _Emphasis_Type Emphasis_Type;
 enum _Emphasis_Type
 {
-  EMPHASIS_ARTIST,
+  EMPHASIS_ARTIST = 1,
   EMPHASIS_ALBUM,
   EMPHASIS_TRACK
 };

@@ -10,6 +10,11 @@ void
 emphasis_init_gui(Emphasis_Gui *gui)
 {
   gui->player = malloc(sizeof(Emphasis_Player_Gui));
+  if(!gui->player)
+    {
+      fprintf(stderr, "Memory full\n");
+      exit(1);
+    }
   /* TODO : check player */
   /* TODO ; check config, state, etc */
   
@@ -79,6 +84,7 @@ emphasis_init_menu(Emphasis_Gui *gui)
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
 	etk_signal_connect("mouse_down", ETK_OBJECT(player->media.track), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
+
 }
 
 /**
@@ -163,6 +169,7 @@ emphasis_cover_change(Emphasis_Gui *gui, char *artist, char *album)
   Cover_Info *old;
 
   ci = malloc(sizeof(Cover_Info));
+  if(ci == NULL) { return; }
 
   ci->artist = strdupnull(artist);
   ci->album  = strdupnull(album);

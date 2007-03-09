@@ -29,6 +29,17 @@ struct _Emphasis_Player_Gui
       Etk_Widget *window;
       Etk_Widget *root;
 
+      struct
+        {
+          Etk_Widget *window;
+          Etk_Widget *root;
+        } ctr;
+      struct
+        {
+          Etk_Widget *window;
+          Etk_Widget *root;
+        } cov;
+
       Etk_Widget *cover;
       int         cover_size_w;
       int         cover_size_h;
@@ -41,7 +52,6 @@ struct _Emphasis_Player_Gui
       Etk_Widget *info;
 
       Etk_Widget *progress;
-      Etk_Widget *time;
 
       Etk_Widget *sound_slider;
       Etk_Widget *sound_low;
@@ -51,6 +61,8 @@ struct _Emphasis_Player_Gui
       Etk_Widget *repeat;
       Etk_Widget *full;
       Etk_Widget *media;
+
+      Etk_Bool packed;
     }small;
 
   struct /* full mode */

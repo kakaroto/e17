@@ -66,14 +66,17 @@ AC_ARG_WITH(DOWN-exec-prefix,[  --with-]DOWN[-exec-prefix=PFX Exec prefix where 
      UP[]_LIBS="`$UP[]_CONFIG $DOWN[]_config_args --libs`"
      ifelse([$2], , ,[
         DOWN[]_config_major_version=`$UP[]_CONFIG $DOWN[]_config_args \
-         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).*/\1/'`
+         --version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
         DOWN[]_config_minor_version=`$UP[]_CONFIG $DOWN[]_config_args \
-         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).*/\2/'`
+         --version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
         DOWN[]_config_micro_version=`$UP[]_CONFIG $DOWN[]_config_args \
-         --version | sed 's/[[^0-9]]*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).*/\3/'`
+         --version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
+        DOWN[]_config_nano_version=`$UP[]_CONFIG $DOWN[]_config_args \
+         --version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\4/'`
         DOWN[]_wanted_major_version="regexp($2, [\<\([0-9]*\)], [\1])"
         DOWN[]_wanted_minor_version="regexp($2, [\<\([0-9]*\)\.\([0-9]*\)], [\2])"
         DOWN[]_wanted_micro_version="regexp($2, [\<\([0-9]*\).\([0-9]*\).\([0-9]*\)], [\3])"
+        DOWN[]_wanted_nano_version="regexp($2, [\<\([0-9]*\).\([0-9]*\).\([0-9]*\).\([0-9]*\)], [\4])"
 
         # Compare wanted version to what config script returned.
         # If I knew what library was being run, i'd probably also compile
@@ -90,17 +93,28 @@ AC_ARG_WITH(DOWN-exec-prefix,[  --with-]DOWN[-exec-prefix=PFX Exec prefix where 
             -a "$DOWN[]_config_minor_version" -eq \
                         "$DOWN[]_wanted_minor_version" \
             -a "$DOWN[]_config_micro_version" -lt \
-                        "$DOWN[]_wanted_micro_version" \) ; then
-          # older version found
+                        "$DOWN[]_wanted_micro_version" \) \
+          -o \( "$DOWN[]_config_major_version" -eq \
+                        "$DOWN[]_wanted_major_version" \
+            -a "$DOWN[]_config_minor_version" -eq \
+                        "$DOWN[]_wanted_minor_version" \
+            -a "$DOWN[]_config_micro_version" -eq \
+                        "$DOWN[]_wanted_micro_version" \
+            -a "$DOWN[]_config_nano_version" -lt \
+                        "$DOWN[]_wanted_nano_version" \) ; then
+             # older version found
           no_[]DOWN=yes
+		    AC_MSG_RESULT(no)
           echo -n "*** An old version of $1 "
           echo -n "($DOWN[]_config_major_version"
           echo -n ".$DOWN[]_config_minor_version"
-          echo    ".$DOWN[]_config_micro_version) was found."
-          echo -n "*** You need a version of $1 newer than "
+          echo -n ".$DOWN[]_config_micro_version"
+          echo    ".$DOWN[]_config_nano_version) was found."
+          echo -n "*** You need a version of $1 which is least at "
           echo -n "$DOWN[]_wanted_major_version"
           echo -n ".$DOWN[]_wanted_minor_version"
-          echo    ".$DOWN[]_wanted_micro_version."
+          echo -n ".$DOWN[]_wanted_micro_version"
+          echo    ".$DOWN[]_wanted_nano_version"
           echo "***"
           echo "*** If you have already installed a sufficiently new version, this error"
           echo "*** probably means that the wrong copy of the DOWN-config shell script is"
@@ -116,16 +130,16 @@ AC_ARG_WITH(DOWN-exec-prefix,[  --with-]DOWN[-exec-prefix=PFX Exec prefix where 
      AC_MSG_RESULT(yes)
      ifelse([$3], , :, [$3])
   else
-     AC_MSG_RESULT(no)
-     if test "$UP[]_CONFIG" = "no" ; then
-       echo "*** The DOWN-config script installed by $1 could not be found"
-       echo "*** If $1 was installed in PREFIX, make sure PREFIX/bin is in"
-       echo "*** your path, or set the UP[]_CONFIG environment variable to the"
-       echo "*** full path to DOWN-config."
-     fi
-     UP[]_CFLAGS=""
-     UP[]_LIBS=""
-     ifelse([$4], , :, [$4])
+dnl    AC_MSG_RESULT(no)
+    if test "$UP[]_CONFIG" = "no" ; then
+      echo "*** The DOWN-config script installed by $1 could not be found"
+      echo "*** If $1 was installed in PREFIX, make sure PREFIX/bin is in"
+      echo "*** your path, or set the UP[]_CONFIG environment variable to the"
+      echo "*** full path to DOWN-config."
+    fi
+    UP[]_CFLAGS=""
+    UP[]_LIBS=""
+    ifelse([$4], , :, [$4])
   fi
   AC_SUBST(UP[]_CFLAGS)
   AC_SUBST(UP[]_LIBS)

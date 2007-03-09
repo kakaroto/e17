@@ -41,10 +41,11 @@ emphasis_tree_mlib_set(Etk_Tree *tree, Evas_List *list,
       if (tag != NULL)
         {
           album_tag = malloc(sizeof(char *) * 2);
+          if(!album_tag) return;
           album_tag[0] = NULL;
           album_tag[1] = tag;
         }
-      row = etk_tree_row_append(tree, NULL, etk_tree_nth_col_get(tree, 0), "All", NULL);
+      row = etk_tree_row_append(tree, NULL, etk_tree_nth_col_get(tree, 0), LABEL_MLIB_ALL, NULL);
       etk_tree_row_data_set(row, album_tag);
     }
   if (list)
@@ -87,6 +88,7 @@ emphasis_tree_mlib_append(Etk_Tree *tree, Evas_List *list,
           if (et == EMPHASIS_ALBUM)
             {
               album_tag = malloc(sizeof(char *) * 2);
+              if(!album_tag) return;
               album_tag[0] = strdupnull(data->tag);
               album_tag[1] = strdupnull(tag);
               etk_tree_row_data_set(row, album_tag);
@@ -254,14 +256,9 @@ emphasis_pls_list_init(Emphasis_Player_Gui *player)
 
   pls_list = ETK_TREE(player->media.pls_list);
   etk_tree_clear(pls_list);
-#if defined(LIBMPD_0_12_4)
   emphasis_tree_mlib_append(pls_list, 
                             (mpc_list_playlists()),
                             MPD_DATA_TYPE_PLAYLIST,
                             NULL);
-#else
-  etk_tree_row_append(pls_list, NULL, etk_tree_nth_col_get(pls_list, 0),
-                  "You need libmpd 0.12.4 in order to use mpd playlists", NULL);
-#endif
 }
 

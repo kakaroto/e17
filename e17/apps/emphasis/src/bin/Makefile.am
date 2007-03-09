@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 AM_CFLAGS = \
--Wall -W -g -D_GNU_SOURCE $(my_includes)
+-Wall -W -g -D_GNU_SOURCE @ECORE_CFLAGS@ @ETK_CFLAGS@ @ENHANCE_CFLAGS@ @libmpd_CFLAGS@ @XML2_CFLAGS@
 
 bin_PROGRAMS = emphasis
 
@@ -37,6 +37,6 @@ emphasis_convert.c    \
 emphasis_data_list.c  \
 emphasis_search.c
 
-emphasis_LDADD = @my_libs@
+emphasis_LDADD = @ECORE_LIBS@ @ETK_LIBS@ @ENHANCE_LIBS@ @libmpd_LIBS@ @XML2_LIBS@
 
 MAINTAINERCLEANFILES = Makefile.in

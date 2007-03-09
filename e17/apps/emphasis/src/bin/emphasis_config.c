@@ -37,6 +37,7 @@ config_load(void)
   Emphasis_Config *config;
 
   config = malloc(sizeof(Emphasis_Config));
+  if(!config) return NULL;
   set_defaults();
   ecore_config_load();
 

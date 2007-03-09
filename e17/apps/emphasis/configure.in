@@ -57,104 +57,18 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
-#check for ECORE
-AC_PATH_EFL(
-   ecore,
-   0.9.9.022,
-   [
-     AC_DEFINE(HAVE_ECORE, 1, have ECORE)
-     ecore="ECORE "
-     AM_CONDITIONAL(HAVE_ECORE, true)
-     have_ecore="yes"
-     ecore_libs=`ecore-config --libs`
-     ecore_cflags=`ecore-config --cflags`
-   ],
-   [
-     AC_MSG_ERROR([No Ecore, can't build.])
-   ]
-)
-
-#check for ETK
-AC_PATH_EFL(
-   etk,
-   0.1.0.001,
-   [
-     AC_DEFINE(HAVE_ETK, 1, have ETK)
-     etk="ETK "
-     AM_CONDITIONAL(HAVE_ETK, true)
-     have_etk="yes"
-     etk_libs=`etk-config --libs`
-     etk_cflags=`etk-config --cflags`     
-   ],
-   [
-     AC_MSG_ERROR([No Etk, can't build.])
-   ]
-)
-
-#check for Enhance
-AC_PATH_EFL(
-	enhance,
-	0.0.1,
-	[
-	 	AC_DEFINE(HAVE_ENHANCE, 1, have ENHANCE)
-		enhance="ENHANCE "
-		AM_CONDITIONAL(HAVE_ENHANCE, true)
-		have_enhance="yes"
-		enhance_libs=`enhance-config --libs`
-		enhance_cflags=`enhance-config --cflags`
-	],
-	[
-	 	AC_MSG_ERROR([No Enhance, can't build.])
-	]
-)
-
-#check for libmpd
-PKG_CHECK_MODULES(
-   [libmpd], 
-	libmpd >= 0.12.0,
-	[
-	 AC_DEFINE(HAVE_LIBMPD, 1, have LIBMPD)
-	 libmpd="libmpd"
-	 AM_CONDITIONAL(HAVE_LIBMPD, true)
-	 have_libmpd="yes"
-	 libmpd_libs=`pkg-config --libs libmpd`
-	 libmpd_cflags=`pkg-config --cflags libmpd`
-	],
-	[
-	 AC_MSG_ERROR([libmpd not found.])
-	]
-)
-
-if `pkg-config --atleast-version=0.12.4 libmpd`; then
- libmpd_v_cflags="-DLIBMPD_0_12_4"
-else
- libmpd_v_cflags="-DLIBMPD_0_12_0"
-fi
-
-PKG_CHECK_MODULES(XML2, libxml-2.0)
-AC_CHECK_LIB(pthread, pthread_create)
-
 dnl Set ETK_PACKAGE_DATA_DIR in config.h.  
 etk_prefix="\"`etk-config --prefix`/share/etk\""
 AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
 
-
-ecore_libs=`ecore-config --libs`
-ecore_cflags=`ecore-config --cflags`
-etk_libs=`etk-config --libs`
-etk_cflags=`etk-config --cflags`
-enhance_libs=`enhance-config --libs`
-enhance_flags=`enhance-config --cflags`
-libmpd_libs=`pkg-config --libs libmpd`
-libmpd_cflags=`pkg-config --cflags libmpd`
-libxml2_libs=`xml2-config --libs`
-libxml2_cflags=`xml2-config --cflags`
-
-# add your required libs / include here
-my_includes="$ecore_cflags $etk_cflags $enhance_cflags $libmpd_cflags $libxml2_cflags -DHAVE_STRNDUP $libmpd_v_cflags"
-my_libs="$ecore_libs $etk_libs $enhance_libs $libmpd_libs $libxml2_libs -lpthread"
-AC_SUBST(my_includes)
-AC_SUBST(my_libs)
+m4_include(m4/ac_path_efl.m4)
+AC_CHECK_FUNCS(strndup)
+AC_CHECK_LIB(pthread, pthread_create)
+AC_PATH_EFL(ecore, 0.9.9.022, [AM_CONDITIONAL(HAVE_ECORE, true)])
+AC_PATH_EFL(etk, 0.1.0.002, [AM_CONDITIONAL(HAVE_ETK, true)])
+AC_PATH_GENERIC(enhance, 0.0.1, [AM_CONDITIONAL(HAVE_ENHANCE, true)])
+AC_PATH_GENERIC(XML2, 2.6.0, [AM_CONDITIONAL(HAVE_XML2, true)])
+PKG_CHECK_MODULES(libmpd, libmpd >= 0.12.4, [AM_CONDITIONAL(HAVE_LIBMPD, true)]) 
 
 AC_OUTPUT([
 Makefile

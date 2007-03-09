@@ -63,10 +63,8 @@ void mpc_delete_playlist(char *playlist_name);
 
 Evas_List *mpc_find(Evas_List *query, int exact);
 
-#if defined(LIBMPD_0_12_4)
 #include <libmpd/libmpd-internal.h>
 MpdData *mpd_database_list_playlist(MpdObj *mi);
-#endif
 /** @} */
 
 #endif /* EMPHASIS_MPC_H_ */

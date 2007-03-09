@@ -45,8 +45,10 @@ convert_rowlist_in_playlist_with_file(Evas_List *rowlist)
       row = evas_list_data(rowlist);
 
       data = calloc(1, sizeof(Emphasis_Data));
+      if(!data) return NULL;
       data->type = MPD_DATA_TYPE_SONG;
       data->song = calloc(1, sizeof(Emphasis_Song));
+      if(!data->song) { free(data); return NULL; }
       data->song->file = strdup(etk_tree_row_data_get(row));
 
       list = evas_list_append(list, data);
@@ -82,8 +84,10 @@ convert_rowlist_in_playlist_with_id(Evas_List *rowlist)
       id = (int) etk_tree_row_data_get(row);
 
       data = malloc(sizeof(Emphasis_Data));
+      if(!data) return NULL;
       data->type = MPD_DATA_TYPE_SONG;
       data->song = malloc(sizeof(Emphasis_Song));
+      if(!data->song) { free(data); return NULL; }
       data->song->id = id;
 
       list = evas_list_append(list, data);
@@ -326,6 +330,7 @@ char *etk_strescape(const char *str)
 
   size = strlen(str)+1;
   escaped = malloc(sizeof(char)*size);
+  if(!escaped) return NULL;
 
   for( i=0, j=0, c=str[0] ; c!='\0' ; i++, j++, c=str[i])
     {
@@ -410,4 +415,79 @@ etk_tree_unselected_rows_get(Etk_Tree *tree)
     }
   
   return unselected_rows;
+}
+
+Etk_Bool
+etk_image_has_error(Etk_Image *widget)
+{
+  Evas_Object *obj = NULL;
+
+  if(!widget) { return ETK_FALSE; }
+
+  obj = etk_image_evas_object_get(widget);
+  if( obj && !evas_object_image_load_error_get(obj))
+    { return ETK_FALSE; }
+  else
+    { return ETK_TRUE; }
+}
+
+void
+etk_textblock_cursor_visible_set(Etk_Textblock *tb, Etk_Bool visible)
+{
+  Evas_Object *tbo = NULL;
+
+  if(!tb) { return; }
+
+  tbo = evas_list_data(tb->evas_objects);
+
+  if(!tbo) { return; }
+
+  etk_textblock_object_cursor_visible_set(tbo, visible);
+}
+
+Etk_Bool
+etk_textblock_cursor_visible_get(Etk_Textblock *tb)
+{
+  Evas_Object *tbo = NULL;
+
+  if(!tb) { return ETK_FALSE; }
+
+  tbo = evas_list_data(tb->evas_objects);
+
+  if(!tbo) { return ETK_FALSE; }
+
+  return etk_textblock_object_cursor_visible_get(tbo);
+}
+
+Etk_Tree_Row*
+etk_tree_nth_row_get(Etk_Tree *tree, int n)
+{
+  Etk_Tree_Row *row;
+  int i;
+  int len;
+
+  /* TODO modulo list? */
+  if(!tree || (n<0) || (n >= tree->total_rows )) { return NULL; }
+  len = tree->total_rows;
+
+  if(n > len/2)
+    {
+      for(i = len - 1, row = etk_tree_last_row_get(tree) ;
+          row ;
+          i--        , row = etk_tree_row_prev_get(row))
+        {
+          if (i == n) return row;
+        }
+    }
+  else
+    {
+      for(i = 0      , row = etk_tree_first_row_get(tree) ;
+          row ;
+          i++        , row = etk_tree_row_next_get(row))
+        {
+          if (i == n) return row;
+        }
+    }
+
+  return NULL;
 }

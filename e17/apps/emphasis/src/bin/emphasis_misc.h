@@ -25,8 +25,14 @@ void etk_button_make_vertical(Etk_Widget *button);
 void etk_container_inspect(Etk_Container *container, int lvl, int *to_trace);
 char *etk_strescape(const char *str);
 
+
+/* ETK functions++ */
 Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree);
 Evas_List *etk_tree_unselected_rows_get(Etk_Tree *tree);
+Etk_Bool etk_image_has_error(Etk_Image *widget);
+void etk_textblock_cursor_visible_set(Etk_Textblock *tb, Etk_Bool visible);
+Etk_Bool etk_textblock_cursor_visible_get(Etk_Textblock *tb);
+Etk_Tree_Row* etk_tree_nth_row_get(Etk_Tree *tree, int n);
 
 /** @} */
 #endif /* EMPHASIS_MISC_H_ */

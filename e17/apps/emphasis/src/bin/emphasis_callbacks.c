@@ -19,37 +19,44 @@ cb_quit(Etk_Object *object, void *data)
 
   /* Save the current config settings */
   config = config_load();
-  etk_widget_geometry_get(ETK_WIDGET(player->full.window),
-                          &(config->geometry.x), &(config->geometry.y),
-                          &(config->geometry.w), &(config->geometry.h));
-        
-  etk_widget_geometry_get(ETK_WIDGET(player->media.window),
-                          NULL, NULL,
-                          &(config->geometry.media_w),
-                          &(config->geometry.media_h));
-
-  config->colwidth.title  = 
-    etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 0));
-  config->colwidth.time   =
-    etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 1));
-  config->colwidth.artist =
-    etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 2));
-  config->colwidth.album  =
-    etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 3));
-  config->media_paned = etk_paned_position_get(ETK_PANED(player->media.paned));
-
-  config->mode = player->state;
-  config->pls_show =
-    etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(player->small.media));
-  config->crossfade = mpc_get_crossfade();
-
-  if(config->stop_on_exit)
+  if(config)
     {
-      cb_button_stop_clicked(NULL, NULL);
-    }
+      if(player)
+        {
+          etk_widget_geometry_get(ETK_WIDGET(player->full.window),
+                                  &(config->geometry.x), &(config->geometry.y),
+                                  &(config->geometry.w), &(config->geometry.h));
+            
+          etk_widget_geometry_get(ETK_WIDGET(player->media.window),
+                                  NULL, NULL,
+                                  &(config->geometry.media_w),
+                                  &(config->geometry.media_h));
 
-  config_save(config);
-  config_free(config);
+          config->colwidth.title  = 
+            etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 0));
+          config->colwidth.time   =
+            etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 1));
+          config->colwidth.artist =
+            etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 2));
+          config->colwidth.album  =
+            etk_tree_col_width_get(ETK_TREE_COL_GET(player->media.pls, 3));
+          config->media_paned     =
+           etk_paned_position_get(ETK_PANED(player->media.paned));
+
+         config->mode = player->state;
+         config->pls_show =
+          etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(player->small.media));
+        } /* if player */
+      config->crossfade = mpc_get_crossfade();
+
+      if(config->stop_on_exit)
+        {
+          cb_button_stop_clicked(NULL, NULL);
+        }
+
+      config_save(config);
+      config_free(config);
+  } /* if config */
   
   mpc_disconnect();
   ecore_config_shutdown();
@@ -65,8 +72,50 @@ cb_media_quit(Etk_Object *object, void *data)
   Emphasis_Player_Gui *player;
   player = data;
 
-  etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(player->small.media));
+  if(data) etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(player->small.media));
 
+  etk_widget_hide(ETK_WIDGET(object));
+  return ETK_TRUE;
+}
+
+Etk_Bool
+cb_pack_quit(Etk_Object *object, void *data)
+{
+  Emphasis_Player_Gui *player;
+  player = data;
+
+  if(data && player->small.packed == ETK_FALSE)
+    {
+      Etk_Widget *win = NULL;
+
+      win = (object == (Etk_Object*)player->small.cov.window) ?
+            player->small.ctr.window : player->small.cov.window;
+      if (etk_widget_is_visible(win) == ETK_TRUE)
+        { return cb_window_hide(object, data); }
+
+      etk_widget_hide(player->small.cov.window);
+      etk_widget_hide(player->small.ctr.window);
+
+      etk_container_remove(ETK_CONTAINER(player->small.cov.window),
+                           player->small.cov.root);
+      etk_container_remove(ETK_CONTAINER(player->small.ctr.window),
+                           player->small.ctr.root);
+
+      etk_box_append(ETK_BOX(player->small.root), player->small.cov.root,
+                     ETK_BOX_START, ETK_BOX_FILL, 0);
+      etk_box_append(ETK_BOX(player->small.root), player->small.ctr.root,
+                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+      if(player->state == EMPHASIS_SMALL)
+        { cb_quit(NULL, player); }
+    }
+  return ETK_FALSE;
+}
+
+Etk_Bool
+cb_window_hide(Etk_Object *object, void *data)
+{
+  UNUSED(data);
   etk_widget_hide(ETK_WIDGET(object));
   return ETK_TRUE;
 }
@@ -138,6 +187,8 @@ cb_toggle_full(Etk_Object *object, void *data)
   Emphasis_Player_Gui *player;
   player = data;
 
+  if(!data) return;
+
   if (player->state == EMPHASIS_FULL)
     {
       cb_switch_small(object, data);
@@ -156,6 +207,8 @@ cb_toggle_media(Etk_Object *object, void *data)
   Emphasis_Player_Gui *player;
   Etk_Bool checked;
   player = data;
+
+  if(!data) return;
 
   checked =
    etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object));
@@ -180,6 +233,8 @@ cb_seek_time(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
   Etk_Widget *progress;
   int x_click, widget_width;
 
+  if(event->button != 1) { return; }
+
   progress = ETK_WIDGET(object);
   x_click = event->widget.x;
 
@@ -196,7 +251,11 @@ cb_vol_image_clicked(Etk_Object *object,
   UNUSED(event);
   Emphasis_Player_Gui *player;
 
+  if(event->button != 1) { return; }
+
   player = data;
+  if(!data) return;
+
   if (ETK_WIDGET(object) == player->full.sound_low ||
       ETK_WIDGET(object) == player->small.sound_low)
     {
@@ -235,6 +294,7 @@ cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
   char *artist;
 
   player = data;
+  if(!data) return;
 
   artist_sel = etk_tree_selected_rows_get(ETK_TREE(player->media.artist));
   artist     = etk_tree_row_data_get(evas_list_data(artist_sel));
@@ -278,7 +338,7 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
   char *artist_tag;
 
   player = data;
-
+  if(!data) return;
 
   album_sel = etk_tree_selected_rows_get(ETK_TREE(player->media.album));
   album_tag = etk_tree_row_data_get(evas_list_data(album_sel));
@@ -310,7 +370,6 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 }
 
 /* FIXME wait for tree2 to support dnd */
-#if 0
 /**
  * @brief Set a drag widget from a list of artist selected
  * @param data A common drag widget
@@ -318,6 +377,7 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 void
 cb_drag_artist(Etk_Object *object, void *data)
 {
+#if 0
   Etk_Widget *drag_menu, *menu_item;
   Etk_Drag *drag;
   Etk_Tree *tree;
@@ -326,6 +386,8 @@ cb_drag_artist(Etk_Object *object, void *data)
   const char **types;
   unsigned int num_types;
   Evas_List *playlist = NULL, *tmplist;
+
+  if(!data) return;
 
   tree = ETK_TREE(object);
   drag = ETK_DRAG((ETK_WIDGET(tree))->drag);
@@ -344,7 +406,7 @@ cb_drag_artist(Etk_Object *object, void *data)
         }
       else
         {
-          menu_item = etk_menu_item_new_with_label("All");
+          menu_item = etk_menu_item_new_with_label(LABEL_MLIB_ALL);
         }
 
       etk_menu_shell_append(ETK_MENU_SHELL(drag_menu),
@@ -365,6 +427,7 @@ cb_drag_artist(Etk_Object *object, void *data)
   evas_list_free(rowlist);
 
   types = calloc(1, sizeof(char));
+  if(!types) return;
   num_types = 1;
   types[0] = strdup("Emphasis_Playlist");
 
@@ -373,6 +436,7 @@ cb_drag_artist(Etk_Object *object, void *data)
 
   etk_container_add(ETK_CONTAINER(drag), drag_menu);
   ((Emphasis_Player_Gui*)data)->media.drag = ETK_WIDGET(drag);
+#endif
 }
 
 /**
@@ -382,6 +446,7 @@ cb_drag_artist(Etk_Object *object, void *data)
 void
 cb_drag_album(Etk_Object *object, void *data)
 {
+#if 0
   Etk_Widget *drag_menu, *menu_item;
   Etk_Drag *drag;
   Etk_Tree *tree;
@@ -390,6 +455,8 @@ cb_drag_album(Etk_Object *object, void *data)
   const char **types;
   unsigned int num_types;
   Evas_List *playlist = NULL, *tmplist;
+
+  if(!data) return;
 
   tree = ETK_TREE(object);
   drag = ETK_DRAG((ETK_WIDGET(object))->drag);
@@ -410,7 +477,7 @@ cb_drag_album(Etk_Object *object, void *data)
             }
           else
             {
-              menu_item = etk_menu_item_new_with_label("All");
+              menu_item = etk_menu_item_new_with_label(LABEL_MLIB_ALL);
             }
 
           etk_menu_shell_append(ETK_MENU_SHELL(drag_menu),
@@ -444,6 +511,7 @@ cb_drag_album(Etk_Object *object, void *data)
     }
 
   types = calloc(1, sizeof(char));
+  if(!types) return;
   num_types = 1;
   types[0] = strdup("Emphasis_Playlist");
 
@@ -453,6 +521,7 @@ cb_drag_album(Etk_Object *object, void *data)
   etk_container_add(ETK_CONTAINER(drag), drag_menu);
 
   ((Emphasis_Player_Gui*)data)->media.drag = ETK_WIDGET(drag);
+#endif
 }
 
 /**
@@ -463,6 +532,7 @@ cb_drag_album(Etk_Object *object, void *data)
 void
 cb_drag_track(Etk_Object *object, void *data)
 {
+#if 0
   Etk_Widget *drag_menu, *menu_item;
   Etk_Drag *drag;
   Etk_Tree *tree;
@@ -471,6 +541,8 @@ cb_drag_track(Etk_Object *object, void *data)
   const char **types;
   unsigned int num_types;
   Evas_List *playlist;
+
+  if(!data) return;
 
   tree = ETK_TREE(object);
   drag = ETK_DRAG((ETK_WIDGET(object))->drag);
@@ -492,6 +564,7 @@ cb_drag_track(Etk_Object *object, void *data)
     }
 
   types = calloc(1, sizeof(char));
+  if(!types) return;
   num_types = 1;
   types[0] = strdup("Emphasis_Playlist");
 
@@ -504,8 +577,8 @@ cb_drag_track(Etk_Object *object, void *data)
   etk_container_add(ETK_CONTAINER(drag), drag_menu);
 
   ((Emphasis_Player_Gui*)data)->media.drag = ETK_WIDGET(drag);
-}
 #endif
+}
 
 /**
  * @brief Get the playlist draged. Add it to the current playlist.
@@ -515,10 +588,13 @@ cb_drag_track(Etk_Object *object, void *data)
 void
 cb_drop_song(Etk_Object *object, void *event, void *data)
 {
+#if 0
   UNUSED(event)
   Etk_Tree *tree;
   Etk_Drag *drag;
   Evas_List *list;
+
+  if(!data) return;
 
   tree = ETK_TREE(object);
 
@@ -548,6 +624,7 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
      evaslist = evas_list_next(evaslist);
      }
    */
+#endif
 }
 
 /**
@@ -560,6 +637,8 @@ cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
   Emphasis_Player_Gui *player;
   Emphasis_Type et;
   char *str;
+
+  if(!data) return;
 
   player = data;
   et = (Emphasis_Type) etk_object_data_get(object, "Emphasis_Type");
@@ -646,7 +725,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   Emphasis_Player_Gui *player;
   char *str;
 
-  if (!event->string)
+  if (!event->string || !data)
     return;
 
   tree = ETK_TREE(object);
@@ -655,6 +734,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   if (!strcmp(event->key, "a")
       && event->modifiers == ETK_MODIFIER_CTRL)
     {
+      /* CTRL+a select all rows  */
       etk_tree_select_all(tree);
 
       if (object == ETK_OBJECT(player->media.track))
@@ -676,14 +756,12 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   if (!strcmp(event->key, "r")
       && event->modifiers == ETK_MODIFIER_CTRL)
     {
-      int i, r;
+      int r;
+      /* selected randomly a row */
+
       /* We need an accessor here */
       r = xrand(0, ETK_TREE(tree)->total_rows);
-      row = etk_tree_first_row_get(tree);
-      for (i=0; i<r; i++)
-        {
-          row = etk_tree_row_next_get(row);
-        }
+      row = etk_tree_nth_row_get(tree, r);
       etk_tree_row_select(row);
       etk_tree_row_scroll_to(row, ETK_TRUE);
       return;
@@ -695,7 +773,8 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
 
   col = etk_tree_nth_col_get(tree, 0);
 
-/**/ 
+/**/
+  /* fast search section */
   const char *cur_title, *base_title;
   char *title, *filter = NULL;
   int length;
@@ -707,7 +786,23 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   cur_title = etk_tree_col_title_get(col);      
   type = (Emphasis_Type) etk_object_data_get(ETK_OBJECT(tree), "Emphasis_Type");
 
+  if (!strcmp("Return", event->keyname))
+    {
+      /* add selected songs to pls */
+      Emphasis_Type et;
+
+      et = (Emphasis_Type)etk_object_data_get(object, "Emphasis_Type");
+      if(!et) { return; }
+      emphasis_playlist_append_selected(tree, et);
+      mpc_play_if_stopped();
+      emphasis_tree_mlib_init(player, type);
+      if (strcmp(base_title, cur_title))
+        { etk_tree_col_title_set(col, base_title); }
+      return;
+    }
+
   /* FIXME & > < */
+  /* Fast Research */
   if (!strcmp(base_title, cur_title))
     {
       /* FIXME, works with kenjins-like? */
@@ -734,17 +829,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
         }
       else if (!strcmp("Escape", event->keyname))
         {
-          emphasis_tree_mlib_init(player, type);
-          etk_tree_col_title_set(col, base_title);
-          return;
-        }
-      else if (!strcmp("Return", event->keyname))
-        {
-          Emphasis_Type et;
-
-          et = (Emphasis_Type)etk_object_data_get(object, "Emphasis_Type");
-          emphasis_playlist_append_selected(tree, et);
-          mpc_play_if_stopped();
+          /* quit fast search */
           emphasis_tree_mlib_init(player, type);
           etk_tree_col_title_set(col, base_title);
           return;
@@ -762,13 +847,14 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   row = etk_tree_first_row_get(tree);
   while (row)
     {
+      /* show corresponding rows */
       row_next = etk_tree_row_next_get(row);
       etk_tree_row_fields_get(row, col, &str, NULL);
       if (!strncasecmp("The ", str, 4))
         {
           str = str + 4;
         }
-      if (!strcmp("All", str) || (strncasecmp(filter, str, length) != 0))
+      if (!strcmp(LABEL_MLIB_ALL, str) || (strncasecmp(filter, str, length) != 0))
         etk_tree_row_delete(row);
       row = row_next;
     }
@@ -787,6 +873,8 @@ cb_pls_contextual_menu(Etk_Object *object, Etk_Event_Mouse_Down *event,
 {
   UNUSED(object);
   Emphasis_Gui *gui;
+
+  if(!data) return;
 
   gui = data;
   if (event->button == 3)
@@ -833,6 +921,7 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   Evas_List *rowlist;
   Evas_List *list;
 
+  if(!data) return;
   player = data;
 
   if (!strcmp(event->key, "d") || !strcmp(event->key, "Delete"))
@@ -852,12 +941,10 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
     {
       cb_playlist_shuffle(NULL,NULL);
     }
-  /*
   else if(!strcmp(event->key, "u"))
     {
       cb_database_update(NULL, data);
     }
-  */
 }
 
 /**
@@ -871,6 +958,7 @@ cb_playlist_delete(Etk_Object *object, void *data)
   Evas_List *rowlist;
   Evas_List *list;
 
+  if(!data) return;
   player = data;
 
   rowlist = etk_tree_selected_rows_get(ETK_TREE(player->media.pls));
@@ -887,6 +975,8 @@ cb_database_update(Etk_Object *object, void *data)
 {
   UNUSED(object);
   Emphasis_Player_Gui *player;
+
+  if(!data) return;
   player = data;
 
   mpc_database_update();
@@ -907,6 +997,7 @@ cb_small_resize(Etk_Object *object, void *data)
   int w = 0;
 
   UNUSED(object);
+  if(!data) return;
   player = data;
 
   etk_window_geometry_get(ETK_WINDOW(player->small.window),
@@ -924,6 +1015,7 @@ cb_switch_full(Etk_Object *object, void *data)
   UNUSED(object);
 
   Emphasis_Player_Gui *player;
+  if(!data) return;
   player = data;
 
   if(player->state == EMPHASIS_FULL)
@@ -934,6 +1026,8 @@ cb_switch_full(Etk_Object *object, void *data)
 
   etk_widget_hide(player->small.window);
   etk_widget_hide(player->media.window);
+  etk_widget_hide(player->small.cov.window);
+  etk_widget_hide(player->small.ctr.window);
   
   etk_container_remove(ETK_CONTAINER(player->media.window), player->media.root);
   etk_box_append(ETK_BOX(player->full.root),
@@ -952,6 +1046,7 @@ cb_switch_small(Etk_Object *object, void *data)
   UNUSED(object);
 
   Emphasis_Player_Gui *player;
+  if(!data) return;
   player = data;
 
   if(player->state == EMPHASIS_SMALL)
@@ -969,7 +1064,13 @@ cb_switch_small(Etk_Object *object, void *data)
     {
       etk_widget_show(player->media.window);
     }
-  etk_widget_show(player->small.window);
+  if(player->small.packed)
+    { etk_widget_show(player->small.window); }
+  else
+    {
+      etk_widget_show(player->small.cov.window);
+      etk_widget_show(player->small.ctr.window);
+    }
 }
 
 void
@@ -980,6 +1081,7 @@ cb_media_button_lib_clicked(Etk_Object *object,
 
   Emphasis_Player_Gui *player;
   player = data;
+  if(!data) return;
 
   etk_notebook_current_page_set(ETK_NOTEBOOK(player->media.notebook), 0);
 }
@@ -992,6 +1094,7 @@ cb_media_button_search_clicked(Etk_Object *object,
 
   Emphasis_Player_Gui *player;
   player = data;
+  if(!data) return;
 
   etk_notebook_current_page_set(ETK_NOTEBOOK(player->media.notebook), 1);
 }
@@ -1004,6 +1107,7 @@ cb_media_button_playlists_clicked(Etk_Object *object,
 
   Emphasis_Player_Gui *player;
   player = data;
+  if(!data) return;
 
   etk_notebook_current_page_set(ETK_NOTEBOOK(player->media.notebook), 2);
   emphasis_pls_list_init(player);
@@ -1017,6 +1121,7 @@ cb_media_button_stats_clicked(Etk_Object *object,
 
   Emphasis_Player_Gui *player;
   player = data;
+  if(!data) return;
 
   etk_notebook_current_page_set(ETK_NOTEBOOK(player->media.notebook), 3);
 }
@@ -1028,11 +1133,13 @@ cb_config_show(Etk_Object *object, void *data)
   Emphasis_Config_Gui *configgui;
   UNUSED(object);
 
+  if(!data) return;
   gui = data;
 
   if(gui->config_gui == NULL)
     {
       gui->config_gui = malloc(sizeof(Emphasis_Config_Gui));
+      if(!gui->config_gui) return;
       emphasis_init_configgui(gui->config_gui);
       gui->config_gui->data = data;
     }
@@ -1048,6 +1155,7 @@ cb_config_hide(Etk_Object *object, void *data)
   Emphasis_Config_Gui *configgui;
   UNUSED(object);
 
+  if(!data) return ETK_TRUE;
   configgui = data;
 
   etk_widget_hide_all(configgui->window);
@@ -1060,10 +1168,10 @@ cb_config_ok(Etk_Object *object, void *data)
 {
   Emphasis_Config_Gui *configgui;
 
+  if(!data) return;
   configgui = data;
 
   emphasis_configgui_save(configgui);
-  //emphasis_try_connect(configgui->data);
 
   cb_config_hide(object, data);
 }
@@ -1077,6 +1185,7 @@ cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree_Row *row,
   Etk_Tree_Col *col;
   char *playlist_name;
 
+  if(!data) return;
   player = data;
   if (event->button == 1)
     {
@@ -1103,12 +1212,13 @@ void
 cb_media_pls_save_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
-#if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
   Etk_Widget *entry;
-  
+ 
+  if(!data) return; 
   player = data;
   entry = player->media.pls_entry_save;
+  if(!entry) return;
   if (etk_widget_is_visible(entry)) 
     {
       if (etk_entry_text_get(ETK_ENTRY(entry)))
@@ -1124,25 +1234,22 @@ cb_media_pls_save_clicked(Etk_Object *object, void *data)
       etk_widget_focus(entry);
     }
   emphasis_pls_list_init(player);
-#else
-  UNUSED(data);
-#endif
 }
 
 void
 cb_media_pls_load_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
-#if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
   Etk_Tree_Col *col;
   Etk_Tree_Row *row;
   char *playlist_name;
 
+  if(!data) return;
   player = data;
   col = etk_tree_nth_col_get(ETK_TREE(player->media.pls_list), 0);
   row = etk_tree_selected_row_get(ETK_TREE(player->media.pls_list));
-  if (!row) return;
+  if(!row) return;
   etk_tree_row_fields_get(row, ETK_FALSE, col, &playlist_name, NULL);
 
   mpc_playlist_clear();
@@ -1152,21 +1259,18 @@ cb_media_pls_load_clicked(Etk_Object *object, void *data)
                                     EMPHASIS_TRACK);
   etk_tree_unselect_all(ETK_TREE(player->media.pls_content));
   mpc_play_if_stopped();
-#else
-  UNUSED(data);
-#endif
 }
 
 void
 cb_media_pls_del_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
-#if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
   Etk_Tree_Col *col;
   Etk_Tree_Row *row;
   char *playlist_name;
 
+  if(!data) return;
   player = data;
   col = etk_tree_nth_col_get(ETK_TREE(player->media.pls_list), 0);
   row = etk_tree_selected_row_get(ETK_TREE(player->media.pls_list));
@@ -1174,9 +1278,6 @@ cb_media_pls_del_clicked(Etk_Object *object, void *data)
 
   mpc_delete_playlist(playlist_name);
   emphasis_pls_list_init(player);
-#else
-  UNUSED(data);
-#endif
 }
 
 void
@@ -1199,6 +1300,8 @@ cb_media_search_btn_add_clicked(Etk_Object *object, void *data)
   Evas_List *list;
   Etk_Tree_Col *col;
   const char *file;
+
+  if(!data) return;
   player = data;
 
   row = etk_tree_selected_rows_get(ETK_TREE(player->media.search_tree));
@@ -1223,6 +1326,7 @@ cb_media_search_btn_replace_clicked(Etk_Object *object, void *data)
   UNUSED(object);
   Emphasis_Player_Gui *player;
 
+  if(!data) return;
   player = data;
   cb_playlist_clear(NULL,NULL,NULL);
   cb_media_search_btn_add_clicked(object, data);
@@ -1234,6 +1338,7 @@ cb_media_search_btn_add_search_clicked(Etk_Object *object, void *data)
   UNUSED(object);
   Emphasis_Player_Gui *player;
 
+  if(!data) return;
   player = data;
   emphasis_search_row_add(player);
 }
@@ -1245,6 +1350,7 @@ cb_media_search_btn_remove_search_clicked(Etk_Object *object, void *data)
   Etk_Widget *search_query_row;
   Etk_Widget *button;
 
+  if(!data) return;
   search_root = data;
   button = ETK_WIDGET(object);
   search_query_row  = etk_widget_parent_get(button);
@@ -1292,6 +1398,7 @@ cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
   Etk_Widget *widget;
   int index;
 
+  if(!data) return;
   player   = data;
   children = etk_container_children_get(ETK_CONTAINER(player->media.search_root));
 
@@ -1331,4 +1438,123 @@ cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
   /* ^ freed results */
 
   evas_list_free(query);
+}
+
+void
+cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
+{
+  Emphasis_Player_Gui *player;
+  UNUSED(object);
+
+  if(!data) { return; }
+
+  player = data;
+
+  if(event->button == 1) /* left-click, */
+    {
+      /* show/hide concurrent window */
+      Etk_Widget *win = NULL;
+      
+      if(player->small.packed == ETK_TRUE) { return; }
+
+      if(object == (Etk_Object*)player->small.cover)
+        {
+          int w, h;
+          etk_widget_inner_geometry_get
+           (player->small.cov.window, NULL, NULL, &w, &h);
+
+          if( event->widget.y >= h - 30)
+            {
+              /* special sensible cover zone (bottom) */
+              if(event->widget.x <= w * 0.33)
+                {
+                  /* left zone */
+                  mpc_prev();
+                }
+              else if(event->widget.x >= ( w - w * 0.33 ))
+                {
+                  /* middle zone */
+                  mpc_next();
+                }
+              else
+                {
+                  /* right zone */
+                  mpc_toggle_play_pause();
+                }
+              return; /* no show/hide */
+            }
+          win = player->small.ctr.window;
+        }
+      else
+      if(object == (Etk_Object*)player->small.info)
+        {
+          win = player->small.cov.window;
+        }
+      else
+        { return; }
+
+
+      if(etk_widget_is_visible(win) == ETK_TRUE)
+        { etk_widget_hide(win); }
+      else
+        { etk_widget_show(win); }
+    }
+  else if(event->button == 2) /* middle-click */
+    {
+      /* show/hide mlib window */
+      Etk_Widget *toggle = player->small.media;
+
+      cb_toggle_media(ETK_OBJECT(toggle), player);
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(toggle),
+                                   !etk_toggle_button_active_get
+                                   (ETK_TOGGLE_BUTTON(toggle)));
+    }
+  else if(event->button == 3) /* right-click */
+    {
+      /* switch small<->tiny */
+      if(player->small.packed == ETK_TRUE)
+        {
+          /* packing */
+          etk_widget_hide(player->small.window);
+
+          etk_container_add(ETK_CONTAINER(player->small.cov.window),
+                            player->small.cov.root);
+          etk_container_add(ETK_CONTAINER(player->small.ctr.window),
+                            player->small.ctr.root);
+
+          etk_widget_size_request_set(player->small.cover,
+                                      player->small.cover_size_w,
+                                      player->small.cover_size_w);
+
+          etk_widget_show(player->small.cov.window);
+          etk_widget_show(player->small.ctr.window);
+        }
+      else
+        {
+          /* unpacking */
+          etk_widget_hide(player->small.cov.window);
+          etk_widget_hide(player->small.ctr.window);
+
+          etk_container_remove(ETK_CONTAINER(player->small.cov.window),
+                               player->small.cov.root);
+          etk_container_remove(ETK_CONTAINER(player->small.ctr.window),
+                               player->small.ctr.root);
+
+          etk_box_append(ETK_BOX(player->small.root), player->small.cov.root,
+                         ETK_BOX_START, ETK_BOX_FILL, 0);
+          etk_box_append(ETK_BOX(player->small.root), player->small.ctr.root,
+                         ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+          etk_widget_size_request_set(player->small.cover,
+                                      player->small.cover_size_w,
+                                      player->small.cover_size_h);
+          
+          etk_widget_show(player->small.window);
+        }
+
+      etk_textblock_cursor_visible_set
+       (etk_text_view_textblock_get(ETK_TEXT_VIEW(player->small.info)),
+        ETK_FALSE);
+      player->small.packed = !player->small.packed;
+    }
 }

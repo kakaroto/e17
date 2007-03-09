@@ -7,6 +7,7 @@ emphasis_data_new(void)
   Emphasis_Data *data;
 
   data = malloc(sizeof(Emphasis_Data));
+  if(!data) return NULL;
   data->song = NULL;
   data->tag = NULL;
   data->directory = NULL;
