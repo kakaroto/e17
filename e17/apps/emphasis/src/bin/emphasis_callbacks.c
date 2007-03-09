@@ -1307,7 +1307,7 @@ cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
           list = sub_child;
 
           /* Get the id of the tag to search */
-          index = etk_combobox_active_item_nth_get(ETK_COMBOBOX(evas_list_data(sub_child)));
+          index = etk_combobox_active_item_num_get(ETK_COMBOBOX(evas_list_data(sub_child)));
           query = evas_list_append(query, (void *)index);
 
           /* Get the search pattern */
