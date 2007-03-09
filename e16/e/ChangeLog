@@ -4232,3 +4232,22 @@ Add icon to iconbox after in stead of before animation.
 Disable dialog checkbox for non-functional "Button Image" feature.
 Add some checks to avoid imlib warnings.
 
+
+-------------------------------------------------------------------------------
+
+Fri Mar  9 00:47:46 CET 2007
+(Kim)
+
+--- 0.16.8.7 0.01 ---
+gettext should be external.
+Add MAINTAINERCLEANFILES.
+Add icon to xsession .desktop files.
+Fix configure with --x-includes and --x-libraries (thanks to Peter Hyman).
+Don't scan background directory at startup but when needed (menu or config dialog).
+Initial GLX config support.
+Fix some group handling breakage (broken since 0.16.8?).
+French translation update (Tristan D.).
+Correct translators mailing list.
+Disable non-functional group show/hide stuff.
+Add option to show windows on all desks in focus list.
+
