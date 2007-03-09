@@ -353,7 +353,7 @@ Etk_Combobox_Item *etk_combobox_item_insert(Etk_Combobox *combobox, Etk_Combobox
 Etk_Combobox_Item *etk_combobox_item_insert_valist(Etk_Combobox *combobox, Etk_Combobox_Item *after, va_list args)
 {
    Etk_Combobox_Item *item;
-   int i;
+   va_list args2;
    
    if (!combobox)
       return NULL;
@@ -383,30 +383,12 @@ Etk_Combobox_Item *etk_combobox_item_insert_valist(Etk_Combobox *combobox, Etk_C
       combobox->last_item = item;
    
    /* Adds the corresponding widgets to the new item */
-   item->widgets = malloc(sizeof(Etk_Widget *) * combobox->num_cols);
+   item->widgets = calloc(combobox->num_cols, sizeof(Etk_Widget *));
    ETK_WIDGET(item)->size_allocate = _etk_combobox_item_size_allocate;
    
-   for (i = 0; i < combobox->num_cols; i++)
-   {
-      switch (combobox->cols[i]->type)
-      {
-         case ETK_COMBOBOX_LABEL:
-            item->widgets[i] = etk_label_new(va_arg(args, char *));
-            etk_widget_pass_mouse_events_set(item->widgets[i], ETK_TRUE);
-            break;
-         case ETK_COMBOBOX_IMAGE:
-            item->widgets[i] = ETK_WIDGET(va_arg(args, Etk_Widget *));
-            etk_widget_pass_mouse_events_set(item->widgets[i], ETK_TRUE);
-            break;
-         case ETK_COMBOBOX_OTHER:
-            item->widgets[i] = ETK_WIDGET(va_arg(args, Etk_Widget *));
-            break;
-         default:
-            break;
-      }
-      etk_widget_parent_set(item->widgets[i], ETK_WIDGET(item));
-      etk_widget_show(item->widgets[i]);
-   }
+   va_copy(args2, args);
+   etk_combobox_item_fields_set_valist(item, args2);
+   va_end(args2);
    
    etk_signal_connect("enter", ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_item_enter_cb), NULL);
    etk_signal_connect("leave", ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_item_leave_cb), NULL);
@@ -441,6 +423,140 @@ void etk_combobox_clear(Etk_Combobox *combobox)
 
    while (combobox->first_item)
       etk_combobox_item_remove(combobox->first_item);
+}
+
+/**
+ * @brief Sets the values of the cells of the combobox item
+ * @param item a combobox item
+ * @param ... the different widgets to attach to the columns of the item:
+ * there must be as many arguments as the number of columns in the combobox, one for each column. @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget *"
+ * @note The new widgets of the item will be automatically shown
+ */
+void etk_combobox_item_fields_set(Etk_Combobox_Item *item, ...)
+{
+   va_list args;
+   
+   va_start(args, item);
+   etk_combobox_item_fields_set_valist(item, args);
+   va_end(args);
+}
+
+/**
+ * @brief Sets the values of the cells of the combobox item. The current widgets of item will be destroyed
+ * @param item a combobox item
+ * @param args the different widgets to attach to the columns of the item:
+ * there must be as many arguments as the number of columns in the combobox, one for each column. @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget *"
+ * @note The new widgets of the item will be automatically shown
+ */
+void etk_combobox_item_fields_set_valist(Etk_Combobox_Item *item, va_list args)
+{
+   Etk_Combobox *combobox;
+   int i;
+   
+   if (!item || !(combobox = item->combobox))
+      return;
+   
+   for (i = 0; i < combobox->num_cols; i++)
+   {
+      switch (combobox->cols[i]->type)
+      {
+         if (item->widgets[i])
+            etk_object_destroy(ETK_OBJECT(item->widgets[i]));
+         
+         case ETK_COMBOBOX_LABEL:
+            item->widgets[i] = etk_label_new(va_arg(args, char *));
+            etk_widget_pass_mouse_events_set(item->widgets[i], ETK_TRUE);
+            break;
+         case ETK_COMBOBOX_IMAGE:
+            item->widgets[i] = ETK_WIDGET(va_arg(args, Etk_Widget *));
+            etk_widget_pass_mouse_events_set(item->widgets[i], ETK_TRUE);
+            break;
+         case ETK_COMBOBOX_OTHER:
+            item->widgets[i] = ETK_WIDGET(va_arg(args, Etk_Widget *));
+            break;
+         default:
+            item->widgets[i] = NULL;
+            break;
+      }
+      etk_widget_parent_set(item->widgets[i], ETK_WIDGET(item));
+      etk_widget_show(item->widgets[i]);
+   }
+   
+   if (combobox->active_item == item)
+      etk_combobox_active_item_set(combobox, item);
+}
+
+/**
+ * @brief Gets the values of the cells of the combobox item
+ * @param item a combobox item
+ * @param ... the location where to store the different values of the cells of the item:
+ * there must be as many arguments as the number of columns in the combobox, one for each column. @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char **" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image **" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget **"
+ */
+void etk_combobox_item_fields_get(Etk_Combobox_Item *item, ...)
+{
+   va_list args;
+   
+   va_start(args, item);
+   etk_combobox_item_fields_get_valist(item, args);
+   va_end(args);
+}
+
+/**
+ * @brief Gets the values of the cells of the combobox item
+ * @param item a combobox item
+ * @param args the location where to store the different values of the cells of the item:
+ * there must be as many arguments as the number of columns in the combobox, one for each column. @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char **" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image **" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget **"
+ */
+void etk_combobox_item_fields_get_valist(Etk_Combobox_Item *item, va_list args)
+{
+   Etk_Combobox *combobox;
+   int i;
+   
+   if (!item || !(combobox = item->combobox))
+      return;
+   
+   for (i = 0; i < combobox->num_cols; i++)
+   {
+      switch (combobox->cols[i]->type)
+      {
+         case ETK_COMBOBOX_LABEL:
+         {
+            const char **label;
+            if ((label = va_arg(args, const char **)))
+               *label = etk_label_get(ETK_LABEL(item->widgets[i]));
+            break;
+         }
+         case ETK_COMBOBOX_IMAGE:
+         case ETK_COMBOBOX_OTHER:
+         {
+            Etk_Widget **widget;
+            if ((widget = va_arg(args, Etk_Widget **)))
+               *widget = item->widgets[i];
+            break;
+         }
+         default:
+         {
+            void **data;
+            if ((data = va_arg(args, void **)))
+               *data = NULL;
+            break;
+         }
+      }
+      etk_widget_parent_set(item->widgets[i], ETK_WIDGET(item));
+      etk_widget_show(item->widgets[i]);
+   }
 }
 
 /**
