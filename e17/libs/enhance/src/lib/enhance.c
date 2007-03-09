@@ -552,7 +552,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	     char *tok;
 	     char *value;
 	     
-	     etk_combobox_column_add(ETK_COMBOBOX(wid->wid), ETK_COMBOBOX_LABEL, 15, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+	     etk_combobox_column_add(ETK_COMBOBOX(wid->wid), ETK_COMBOBOX_LABEL, 15, ETK_COMBOBOX_EXPAND, 0.0);
 	     etk_combobox_build(ETK_COMBOBOX(wid->wid));
 	     value = strdup(node->value);
 	     tok = strtok(value, "\n");
@@ -1168,7 +1168,7 @@ enhance_file_load(Enhance *en, const char *main_window, const char *file)
    xml = exml_new();
    en->xml = xml;
    
-   if(!exml_file_read(xml, file))
+   if(!exml_file_read(xml, (char *)file))
      {
 	printf("Cant read file: %s\n", file);       
      }
