@@ -10,6 +10,7 @@
  * - Combobox item separator!
  * - selected/unselected signal for items
  * - Should items could have children (i.e sub-windows) ?
+ * - make sure the items' children are not reparented
  */
 
 /**

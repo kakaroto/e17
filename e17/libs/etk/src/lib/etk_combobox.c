@@ -12,6 +12,8 @@
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
 
+/*TODO/FIXME: what if the theme item border are smaller/bigger than usual?!?! (important!!) */
+
 /**
  * @addtogroup Etk_Combobox
  * @{
@@ -36,7 +38,9 @@ static void _etk_combobox_constructor(Etk_Combobox *combobox);
 static void _etk_combobox_destructor(Etk_Combobox *combobox);
 static void _etk_combobox_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_combobox_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
+static void _etk_combobox_item_constructor(Etk_Combobox_Item *item);
 static void _etk_combobox_item_destructor(Etk_Combobox_Item *item);
+static void _etk_combobox_item_destroyed_cb(Etk_Object *object, void *data);
 static void _etk_combobox_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_combobox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_combobox_window_size_request(Etk_Widget *widget, Etk_Size *size);
@@ -55,6 +59,7 @@ static void _etk_combobox_item_enter_cb(Etk_Object *object, void *data);
 static void _etk_combobox_item_leave_cb(Etk_Object *object, void *data);
 static void _etk_combobox_item_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *item);
+static void _etk_combobox_item_cells_render(Etk_Combobox *combobox, Etk_Widget **cells, Etk_Geometry geometry, Etk_Bool ignore_other);
 
 static Etk_Signal *_etk_combobox_signals[ETK_COMBOBOX_NUM_SIGNALS];
 
@@ -105,7 +110,7 @@ Etk_Type *etk_combobox_item_type_get(void)
    if (!combobox_item_type)
    {
       combobox_item_type = etk_type_new("Etk_Combobox_Item", ETK_WIDGET_TYPE, sizeof(Etk_Combobox_Item),
-         NULL, ETK_DESTRUCTOR(_etk_combobox_item_destructor));
+         ETK_CONSTRUCTOR(_etk_combobox_item_constructor), ETK_DESTRUCTOR(_etk_combobox_item_destructor));
    }
 
    return combobox_item_type;
@@ -206,8 +211,7 @@ void etk_combobox_column_add(Etk_Combobox *combobox, Etk_Combobox_Column_Type co
  */
 void etk_combobox_build(Etk_Combobox *combobox)
 {
-   int i, j;
-   int num_children = 0;
+   int i;
    
    if (!combobox || combobox->built)
       return;
@@ -219,37 +223,28 @@ void etk_combobox_build(Etk_Combobox *combobox)
    etk_object_data_set(ETK_OBJECT(combobox->active_item_widget), "_Etk_Combobox_Window::Combobox", combobox);
    etk_container_add(ETK_CONTAINER(combobox->button), combobox->active_item_widget);
    
-   for (i = 0; i < combobox->num_cols; i++)
-   {
-      if (combobox->cols[i]->type != ETK_COMBOBOX_OTHER)
-         num_children++;
-   }
-   
    /* Build the active-item's children */
-   if (num_children > 0)
+   if (combobox->num_cols > 0)
    {
-      combobox->active_item_children = malloc(num_children * sizeof(Etk_Widget *));
-      for (i = 0, j = 0; i < combobox->num_cols; i++)
+      combobox->active_item_children = malloc(combobox->num_cols * sizeof(Etk_Widget *));
+      for (i = 0; i < combobox->num_cols; i++)
       {
-         if (combobox->cols[i]->type == ETK_COMBOBOX_OTHER)
-            continue;
-         
          switch (combobox->cols[i]->type)
          {
             case ETK_COMBOBOX_LABEL:
-               combobox->active_item_children[j] = etk_label_new(NULL);
-               etk_widget_theme_parent_set(combobox->active_item_children[j], combobox->button);
+               combobox->active_item_children[i] = etk_label_new(NULL);
+               etk_widget_theme_parent_set(combobox->active_item_children[i], combobox->button);
                break;
             case ETK_COMBOBOX_IMAGE:
-               combobox->active_item_children[j] = etk_image_new();
+               combobox->active_item_children[i] = etk_image_new();
                break;
             default:
+               combobox->active_item_children[i] = NULL;
                break;
          }
-         etk_widget_parent_set(combobox->active_item_children[j], combobox->active_item_widget);
-         etk_widget_internal_set(combobox->active_item_children[j], ETK_TRUE);
-         etk_widget_show(combobox->active_item_children[j]);
-         j++;
+         etk_widget_internal_set(combobox->active_item_children[i], ETK_TRUE);
+         etk_widget_parent_set(combobox->active_item_children[i], combobox->active_item_widget);
+         etk_widget_show(combobox->active_item_children[i]);
       }
    }
    else 
@@ -352,7 +347,8 @@ Etk_Combobox_Item *etk_combobox_item_insert(Etk_Combobox *combobox, Etk_Combobox
  * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image *" @n
  * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget *"
  * @return Returns the new item
- * @note Unlike other widgets, the new item will be automatically shown, so you won't have to call etk_widget_show() 
+ * @note Unlike other widgets, the new item and its children will be automatically shown, so you won't have
+ * to call etk_widget_show()
  */
 Etk_Combobox_Item *etk_combobox_item_insert_valist(Etk_Combobox *combobox, Etk_Combobox_Item *after, va_list args)
 {
@@ -376,7 +372,6 @@ Etk_Combobox_Item *etk_combobox_item_insert_valist(Etk_Combobox *combobox, Etk_C
    item = ETK_COMBOBOX_ITEM(etk_widget_new(ETK_COMBOBOX_ITEM_TYPE,
       "theme_group", "item", "theme_parent", combobox, "visible", ETK_TRUE, NULL));
    item->combobox = combobox;
-   item->data_free_cb = NULL;
    
    item->prev = after;
    item->next = after ? after->next : NULL;
@@ -397,15 +392,19 @@ Etk_Combobox_Item *etk_combobox_item_insert_valist(Etk_Combobox *combobox, Etk_C
       {
          case ETK_COMBOBOX_LABEL:
             item->widgets[i] = etk_label_new(va_arg(args, char *));
+            etk_widget_pass_mouse_events_set(item->widgets[i], ETK_TRUE);
             break;
          case ETK_COMBOBOX_IMAGE:
+            item->widgets[i] = ETK_WIDGET(va_arg(args, Etk_Widget *));
+            etk_widget_pass_mouse_events_set(item->widgets[i], ETK_TRUE);
+            break;
          case ETK_COMBOBOX_OTHER:
-            item->widgets[i] = va_arg(args, Etk_Widget *);
+            item->widgets[i] = ETK_WIDGET(va_arg(args, Etk_Widget *));
+            break;
          default:
             break;
       }
       etk_widget_parent_set(item->widgets[i], ETK_WIDGET(item));
-      etk_widget_pass_mouse_events_set(item->widgets[i], ETK_TRUE);
       etk_widget_show(item->widgets[i]);
    }
    
@@ -426,34 +425,8 @@ Etk_Combobox_Item *etk_combobox_item_insert_valist(Etk_Combobox *combobox, Etk_C
  * @param item the item to remove from its combobox
  * @note You can also call etk_object_destroy() to remove an item from a combobox, it has the same effect
  */
-/* TODO: destroyed_cb instead of destructor?? */
 void etk_combobox_item_remove(Etk_Combobox_Item *item)
 {
-   Etk_Combobox *combobox;
-   
-   if (!item || !(combobox = item->combobox))
-      return;
-   
-   if (item->combobox->selected_item == item)
-      _etk_combobox_selected_item_set(item->combobox, NULL);
-   if (item->combobox->active_item == item)
-      etk_combobox_active_item_set(item->combobox, NULL);
-
-   if (item->data && item->data_free_cb)
-      item->data_free_cb(item->data);
-   free(item->widgets);
-   
-   if (item->prev)
-      item->prev->next = item->next;
-   if (item->next)
-      item->next->prev = item->prev;
-   if (combobox->first_item == item)
-      combobox->first_item = NULL;
-   if (combobox->last_item == item)
-      combobox->last_item = NULL;
-   
-   /* We set "item->combobox" to NULL to prevent the destructor from calling etk_combobox_item_remove() again */
-   item->combobox = NULL;
    etk_object_destroy(ETK_OBJECT(item));
 }
 
@@ -477,35 +450,34 @@ void etk_combobox_clear(Etk_Combobox *combobox)
  */
 void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *item)
 {
-   if (!combobox || (item && item->combobox != combobox))
+   int i;
+   
+   if (!combobox)
       return;
+   if ((item && item->combobox != combobox) || !combobox->built)
+   {
+      ETK_WARNING("Unable to change the active-item of the combobox. The specified item does not belong "
+         "to the combobox or the combobox is not built yet.");
+      return;
+   }
    
    /* Changes the children of the active-item widget */
-   if (combobox->built)
+   for (i = 0; i < combobox->num_cols; i++)
    {
-      int i, j;
-      
-      for (i = 0, j = 0; i < combobox->num_cols; i++)
+      switch (combobox->cols[i]->type)
       {
-         if (combobox->cols[i]->type == ETK_COMBOBOX_OTHER)
-            continue;
-         
-         switch (combobox->cols[i]->type)
-         {
-            case ETK_COMBOBOX_LABEL:
-               etk_label_set(ETK_LABEL(combobox->active_item_children[j]),
-                  item ? etk_label_get(ETK_LABEL(item->widgets[i])) : NULL);
-               break;
-            case ETK_COMBOBOX_IMAGE:
-               if (item)
-                  etk_image_copy(ETK_IMAGE(combobox->active_item_children[j]), ETK_IMAGE(item->widgets[i]));
-               else
-                  etk_image_set_from_file(ETK_IMAGE(combobox->active_item_children[j]), NULL, NULL);
-               break;
-            default:
-               break;
-         }
-         j++;
+         case ETK_COMBOBOX_LABEL:
+            etk_label_set(ETK_LABEL(combobox->active_item_children[i]),
+               item ? etk_label_get(ETK_LABEL(item->widgets[i])) : NULL);
+            break;
+         case ETK_COMBOBOX_IMAGE:
+            if (item)
+               etk_image_copy(ETK_IMAGE(combobox->active_item_children[i]), ETK_IMAGE(item->widgets[i]));
+            else
+               etk_image_set_from_file(ETK_IMAGE(combobox->active_item_children[i]), NULL, NULL);
+            break;
+         default:
+            break;
       }
    }
    
@@ -784,12 +756,57 @@ static void _etk_combobox_property_get(Etk_Object *object, int property_id, Etk_
    }
 }
 
+/* Initializes the combobox item */
+static void _etk_combobox_item_constructor(Etk_Combobox_Item *item)
+{
+   if (!item)
+      return;
+   
+   item->combobox = NULL;
+   item->prev = NULL;
+   item->next = NULL;
+   item->widgets = NULL;
+   item->data = NULL;
+   item->data_free_cb = NULL;
+   
+   etk_signal_connect("destroyed", ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_item_destroyed_cb), NULL);
+}
+
 /* Destroys the combobox item */
 static void _etk_combobox_item_destructor(Etk_Combobox_Item *item)
 {
    if (!item)
       return;
-   etk_combobox_item_remove(item);
+   
+   if (item->data && item->data_free_cb)
+      item->data_free_cb(item->data);
+   free(item->widgets);
+}
+
+/* Called when a combobox-item is destroyed. We use this function and not the destructor because
+ * the destructor is not called immediately after the etk_object_destroy() call, but we want to remove the item
+ * immediately from the combobox (the destructor is still used the free the memory though) */
+static void _etk_combobox_item_destroyed_cb(Etk_Object *object, void *data)
+{
+   Etk_Combobox_Item *item;
+   Etk_Combobox *combobox;
+   
+   if (!(item = ETK_COMBOBOX_ITEM(object)) || !(combobox = item->combobox))
+      return;
+   
+   if (item->combobox->selected_item == item)
+      _etk_combobox_selected_item_set(item->combobox, NULL);
+   if (item->combobox->active_item == item)
+      etk_combobox_active_item_set(item->combobox, NULL);
+   
+   if (item->prev)
+      item->prev->next = item->next;
+   if (item->next)
+      item->next->prev = item->prev;
+   if (combobox->first_item == item)
+      combobox->first_item = item->next;
+   if (combobox->last_item == item)
+      combobox->last_item = item->prev;
 }
 
 /* Calculates the ideal size of the combobox */
@@ -858,65 +875,16 @@ static void _etk_combobox_window_size_allocate(Etk_Widget *widget, Etk_Geometry 
    }
 }
 
-/*TODO: what if the theme item border are smaller/bigger than usual?!?! (important!!) */
-
 /* Resizes the combobox item to the allocated geometry */
 static void _etk_combobox_item_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Combobox_Item *item;
    Etk_Combobox *combobox;
-   Etk_Geometry col_geometry;
-   Etk_Geometry child_geometry;
-   int num_expandable_cols = 0;
-   int expandable_width = 0;
-   int total_width = 0;
-   int i;
    
    if (!(item = ETK_COMBOBOX_ITEM(widget)) || !(combobox = item->combobox))
       return;
    
-   for (i = 0; i < combobox->num_cols; i++)
-   {
-      if (combobox->cols[i]->fill_policy & ETK_COMBOBOX_EXPAND)
-      {
-         num_expandable_cols++;
-         expandable_width += combobox->cols[i]->width;
-      }
-      total_width += combobox->cols[i]->width;
-   }
-   
-   col_geometry.x = geometry.x;
-   col_geometry.y = geometry.y;
-   col_geometry.h = geometry.h;
-   for (i = 0; i < combobox->num_cols; i++)
-   {
-      if (num_expandable_cols == 0)
-      {
-         if (i != combobox->num_cols - 1)
-            col_geometry.w = combobox->cols[i]->width;
-         else
-            col_geometry.w = geometry.w - (col_geometry.x - geometry.x);
-      }
-      else
-      {
-         if (combobox->cols[i]->fill_policy & ETK_COMBOBOX_EXPAND)
-         {
-            col_geometry.w = (combobox->cols[i]->width / (float)expandable_width) *
-               (geometry.w - (total_width - expandable_width));
-         }
-         else
-            col_geometry.w = combobox->cols[i]->width;
-      }
-      
-      if (item->widgets[i])
-      {
-         memcpy(&child_geometry, &col_geometry, sizeof(Etk_Geometry));
-         etk_container_child_space_fill(item->widgets[i], &child_geometry,
-            combobox->cols[i]->fill_policy & ETK_COMBOBOX_FILL, ETK_TRUE, combobox->cols[i]->align, 0.5);
-         etk_widget_size_allocate(item->widgets[i], child_geometry);
-      }
-      col_geometry.x += col_geometry.w;
-   }
+   _etk_combobox_item_cells_render(combobox, item->widgets, geometry, ETK_FALSE);
 }
 
 /* Calculates the ideal size of the active item of the combobox (the item in the combobox button */
@@ -939,75 +907,17 @@ static void _etk_combobox_active_item_size_request(Etk_Widget *widget, Etk_Size 
    }
 }
 
-/* TODO: can we factorize with above function? */
 /* Resizes the active item of the combobox to the allocated geometry */
 static void _etk_combobox_active_item_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Combobox *combobox;
-   Etk_Geometry col_geometry;
-   Etk_Geometry child_geometry;
-   int num_expandable_cols = 0;
-   int num_children = 0;
-   int expandable_width = 0;
-   int total_width = 0;
-   int i, j;
    
    if (!widget)
       return;
    if (!(combobox = ETK_COMBOBOX(etk_object_data_get(ETK_OBJECT(widget), "_Etk_Combobox_Window::Combobox"))))
       return;
    
-   for (i = 0; i < combobox->num_cols; i++)
-   {
-      if (combobox->cols[i]->type == ETK_COMBOBOX_OTHER)
-         continue;
-      
-      num_children++;
-      if (combobox->cols[i]->fill_policy & ETK_COMBOBOX_EXPAND)
-      {
-         num_expandable_cols++;
-         expandable_width += combobox->cols[i]->width;
-      }
-      total_width += combobox->cols[i]->width;
-   }
-   
-   col_geometry.x = geometry.x;
-   col_geometry.y = geometry.y;
-   col_geometry.h = geometry.h;
-   for (i = 0, j = 0; i < combobox->num_cols; i++)
-   {
-      if (combobox->cols[i]->type == ETK_COMBOBOX_OTHER)
-         continue;
-      
-      if (num_expandable_cols == 0)
-      {
-         if (j != num_children - 1)
-            col_geometry.w = combobox->cols[i]->width;
-         else
-            col_geometry.w = geometry.w - (col_geometry.x - geometry.x);
-      }
-      else
-      {
-         if (combobox->cols[i]->fill_policy & ETK_COMBOBOX_EXPAND)
-         {
-            col_geometry.w = (combobox->cols[i]->width / (float)expandable_width) *
-               (geometry.w - (total_width - expandable_width));
-         }
-         else
-            col_geometry.w = combobox->cols[i]->width;
-      }
-      
-      if (combobox->active_item_children && combobox->active_item_children[j])
-      {
-         memcpy(&child_geometry, &col_geometry, sizeof(Etk_Geometry));
-         etk_container_child_space_fill(combobox->active_item_children[j], &child_geometry,
-            combobox->cols[i]->fill_policy & ETK_COMBOBOX_FILL, ETK_TRUE, combobox->cols[i]->align, 0.5);
-         etk_widget_size_allocate(combobox->active_item_children[j], child_geometry);
-      }
-      
-      col_geometry.x += col_geometry.w;
-      j++;
-   }
+   _etk_combobox_item_cells_render(combobox, combobox->active_item_children, geometry, ETK_TRUE);
 }
 
 /**************************
@@ -1208,6 +1118,68 @@ static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox
    }
 }
 
+/* Renders the different cells of a combobox item */
+static void _etk_combobox_item_cells_render(Etk_Combobox *combobox, Etk_Widget **cells, Etk_Geometry geometry, Etk_Bool ignore_other)
+{
+   Etk_Geometry col_geometry;
+   Etk_Geometry child_geometry;
+   int num_expandable_cols = 0;
+   int expandable_width = 0;
+   int total_width = 0;
+   int last_col = 0;
+   int i;
+   
+   for (i = 0; i < combobox->num_cols; i++)
+   {
+      if (ignore_other && (combobox->cols[i]->type == ETK_COMBOBOX_OTHER))
+         continue;
+      
+      if (combobox->cols[i]->fill_policy & ETK_COMBOBOX_EXPAND)
+      {
+         num_expandable_cols++;
+         expandable_width += combobox->cols[i]->width;
+      }
+      total_width += combobox->cols[i]->width;
+      last_col = i;
+   }
+   
+   col_geometry.x = geometry.x;
+   col_geometry.y = geometry.y;
+   col_geometry.h = geometry.h;
+   for (i = 0; i < combobox->num_cols; i++)
+   {
+      if (ignore_other && (combobox->cols[i]->type == ETK_COMBOBOX_OTHER))
+         continue;
+      
+      if (num_expandable_cols == 0)
+      {
+         if (i == last_col)
+            col_geometry.w = geometry.w - (col_geometry.x - geometry.x);
+         else
+            col_geometry.w = combobox->cols[i]->width;
+      }
+      else
+      {
+         if (combobox->cols[i]->fill_policy & ETK_COMBOBOX_EXPAND)
+         {
+            col_geometry.w = (combobox->cols[i]->width / (float)expandable_width) *
+               (geometry.w - (total_width - expandable_width));
+         }
+         else
+            col_geometry.w = combobox->cols[i]->width;
+      }
+      
+      if (cells[i])
+      {
+         child_geometry = col_geometry;
+         etk_container_child_space_fill(cells[i], &child_geometry,
+            combobox->cols[i]->fill_policy & ETK_COMBOBOX_FILL, ETK_TRUE, combobox->cols[i]->align, 0.5);
+         etk_widget_size_allocate(cells[i], child_geometry);
+      }
+      col_geometry.x += col_geometry.w;
+   }
+}
+
 /** @} */
 
 /**************************
@@ -1227,18 +1199,19 @@ static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox
  * and no columns can be added anymore to the combobox once it is built. @n
  * Items can be added to the combobox with etk_combobox_item_prepend() and etk_combobox_item_append().
  * The parameters of those functions depend on the type of widget of the column. @n @n
- * Here is a simple example, where we create a combobox with two columns (one for the icon, one for the label), and
- * then, we add two items to it:
+ * Here is a simple example, where we create a combobox with three columns (one for the icon, one for the label and
+ * one with a checkbox), and then, we add two items to it:
  * @code
  * Etk_Combobox *combobox;
  *
  * combobox = ETK_COMBOBOX(etk_combobox_new());
- * etk_combobox_column_add(combobox, ETK_COMBOBOX_IMAGE, 24, ETK_FALSE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
- * etk_combobox_column_add(combobox, ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+ * etk_combobox_column_add(combobox, ETK_COMBOBOX_IMAGE, 24, ETK_COMBOBOX_NONE, 0.0);
+ * etk_combobox_column_add(combobox, ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_EXPAND, 0.0);
+ * etk_combobox_column_add(combobox, ETK_COMBOBOX_OTHER, 32, ETK_COMBOBOX_OTHER, 1.0);
  * etk_combobox_build(combobox);
  *
- * etk_combobox_item_append(combobox, image1, "item 1");
- * etk_combobox_item_append(combobox, image2, "item 2");
+ * etk_combobox_item_append(combobox, image1, "item 1", checkbox1);
+ * etk_combobox_item_append(combobox, image2, "item 2", checkbox1);
  * @endcode @n
  * 
  * \par Object Hierarchy:

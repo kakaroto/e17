@@ -4,19 +4,20 @@
 #define STARTING_STOCK_ID ETK_STOCK_DIALOG_APPLY
 #define ENDING_STOCK_ID ETK_STOCK_FOLDER_NEW
 
-static void _etk_test_combobox_active_item_changed_cb(Etk_Object *object, void *data);
+static void _active_item_changed_cb(Etk_Object *object, void *data);
 
 /* Creates the window for the combobox test */
 void etk_test_combobox_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
-   Etk_Widget *vbox, *vbox2;
+   Etk_Widget *vbox;
    Etk_Widget *combobox;
    Etk_Widget *image;
+   Etk_Widget *checkbox;
    Etk_Widget *frame;
    Etk_Combobox_Item *item;
-   int i;
    int *stock_id;
+   int i;
 
    if (win)
    {
@@ -31,38 +32,49 @@ void etk_test_combobox_window_create(void *data)
    
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(win), vbox);
+   
 
-   /* Simple combobox */
+   /*******************
+    * Simple combobox
+    *******************/
    frame = etk_frame_new("Simple combobox");
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
    
+   /* Create a simple combobox containing one column of labels and add 3 items to it */
    combobox = etk_combobox_new_default();
    etk_container_add(ETK_CONTAINER(frame), combobox);
    etk_combobox_item_append(ETK_COMBOBOX(combobox), "Test 1");
    etk_combobox_item_append(ETK_COMBOBOX(combobox), "Test 2");
    etk_combobox_item_append(ETK_COMBOBOX(combobox), "Test 3");
    
-   /* More complex combobox */
+   
+   /*******************
+    * Complex combobox
+    *******************/
    frame = etk_frame_new("Some stock icons");
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
    
-   vbox2 = etk_vbox_new(ETK_FALSE, 3);
-   etk_container_add(ETK_CONTAINER(frame), vbox2);
+   vbox = etk_vbox_new(ETK_FALSE, 3);
+   etk_container_add(ETK_CONTAINER(frame), vbox);
    
    image = etk_image_new_from_stock(STARTING_STOCK_ID, ETK_STOCK_BIG);
-   etk_box_append(ETK_BOX(vbox2), image, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox), image, ETK_BOX_START, ETK_BOX_NONE, 0);
    
+   /* Create a more complex combobox with three columns (an image, a label and a checkbox) */
    combobox = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_IMAGE, 24, ETK_COMBOBOX_NONE, 0.0);
-   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_FILL, 0.0);
+   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_EXPAND, 0.0);
+   etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_OTHER, 24, ETK_COMBOBOX_NONE, 1.0);
    etk_combobox_build(ETK_COMBOBOX(combobox));
-   etk_box_append(ETK_BOX(vbox2), combobox, ETK_BOX_START, ETK_BOX_NONE, 0);
-   etk_signal_connect("active_item_changed", ETK_OBJECT(combobox), ETK_CALLBACK(_etk_test_combobox_active_item_changed_cb), image);
+   etk_box_append(ETK_BOX(vbox), combobox, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_signal_connect("active_item_changed", ETK_OBJECT(combobox), ETK_CALLBACK(_active_item_changed_cb), image);
    
+   /* We fill the combobox with some stock-ids */
    for (i = STARTING_STOCK_ID; i <= ENDING_STOCK_ID; i++)
    {
       image = etk_image_new_from_stock(i, ETK_STOCK_SMALL);
-      item = etk_combobox_item_append(ETK_COMBOBOX(combobox), image, etk_stock_label_get(i));
+      checkbox = etk_check_button_new();
+      item = etk_combobox_item_append(ETK_COMBOBOX(combobox), image, etk_stock_label_get(i), checkbox);
       
       stock_id = malloc(sizeof(int));
       *stock_id = i;
@@ -72,8 +84,14 @@ void etk_test_combobox_window_create(void *data)
    etk_widget_show_all(win);
 }
 
+/**************************
+ *
+ * Callbacks
+ *
+ **************************/
+
 /* Called when the active item of the combobox has been changed */
-static void _etk_test_combobox_active_item_changed_cb(Etk_Object *object, void *data)
+static void _active_item_changed_cb(Etk_Object *object, void *data)
 {
    Etk_Combobox *combobox;
    Etk_Image *image;
