@@ -217,7 +217,7 @@ static void _etk_message_dialog_constructor(Etk_Message_Dialog *dialog)
       return;
 
    dialog->main_area_hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), dialog->main_area_hbox, ETK_FALSE, ETK_FALSE, 4, ETK_FALSE);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), dialog->main_area_hbox, ETK_BOX_START, ETK_BOX_NONE, 4);
    etk_widget_internal_set(dialog->main_area_hbox, ETK_TRUE);
    etk_widget_show(dialog->main_area_hbox);
    

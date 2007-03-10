@@ -150,8 +150,8 @@ int                etk_combobox_active_item_num_get(Etk_Combobox *combobox);
 
 Etk_Combobox_Item *etk_combobox_first_item_get(Etk_Combobox *combobox);
 Etk_Combobox_Item *etk_combobox_last_item_get(Etk_Combobox *combobox);
-Etk_Combobox_Item *etk_combobox_item_prev_get(Etk_Combobox *combobox, Etk_Combobox_Item *item);
-Etk_Combobox_Item *etk_combobox_item_next_get(Etk_Combobox *combobox, Etk_Combobox_Item *item);
+Etk_Combobox_Item *etk_combobox_item_prev_get(Etk_Combobox_Item *item);
+Etk_Combobox_Item *etk_combobox_item_next_get(Etk_Combobox_Item *item);
 Etk_Combobox_Item *etk_combobox_nth_item_get(Etk_Combobox *combobox, int index);
 Etk_Combobox      *etk_combobox_item_combobox_get(Etk_Combobox_Item *item);
 

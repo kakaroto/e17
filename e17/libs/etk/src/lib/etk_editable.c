@@ -12,8 +12,8 @@
  * @{
  */
 
-#define ETK_EDITABLE_CURSOR_MARGIN 5
-#define ETK_EDITABLE_SELECTION_MARGIN 10
+#define CURSOR_MARGIN 5
+#define SELECTION_MARGIN 10
 
 typedef struct Etk_Editable_Smart_Data
 {
@@ -649,9 +649,9 @@ int etk_editable_pos_get_from_coords(Evas_Object *editable, int x, int y)
    canvas_x = ox + x;
    canvas_y = oy + y;
    
-   if (((canvas_y + ETK_EDITABLE_SELECTION_MARGIN) < ty) || (canvas_x < tx))
+   if (((canvas_y + SELECTION_MARGIN) < ty) || (canvas_x < tx))
       pos = 0;
-   else if (((canvas_y - ETK_EDITABLE_SELECTION_MARGIN) > (ty + th)) || (canvas_x > (tx + tw)))
+   else if (((canvas_y - SELECTION_MARGIN) > (ty + th)) || (canvas_x > (tx + tw)))
       pos = sd->unicode_length;
    else
    {
@@ -936,10 +936,10 @@ static void _etk_editable_text_position_update(Evas_Object *editable, int real_w
    
    if (tw <= ow)
       offset_x = ox - tx;
-   else if (cx < (ox + ETK_EDITABLE_CURSOR_MARGIN))
-      offset_x = ox + ETK_EDITABLE_CURSOR_MARGIN - cx;
-   else if ((cx + cw + ETK_EDITABLE_CURSOR_MARGIN) > (ox + ow))
-      offset_x = (ox + ow) - (cx + cw + ETK_EDITABLE_CURSOR_MARGIN);
+   else if (cx < (ox + CURSOR_MARGIN))
+      offset_x = ox + CURSOR_MARGIN - cx;
+   else if ((cx + cw + CURSOR_MARGIN) > (ox + ow))
+      offset_x = (ox + ow) - (cx + cw + CURSOR_MARGIN);
      
    if (tw > ow)
    {

@@ -665,7 +665,7 @@ Etk_Combobox_Item *etk_combobox_last_item_get(Etk_Combobox *combobox)
  * @param item a combobox item
  * @return Returns the item previous to @a item, or NULL if the given item is the first one
  */
-Etk_Combobox_Item *etk_combobox_item_prev_get(Etk_Combobox *combobox, Etk_Combobox_Item *item)
+Etk_Combobox_Item *etk_combobox_item_prev_get(Etk_Combobox_Item *item)
 {
    if (!item)
       return NULL;
@@ -677,7 +677,7 @@ Etk_Combobox_Item *etk_combobox_item_prev_get(Etk_Combobox *combobox, Etk_Combob
  * @param item a combobox item
  * @return Returns the item next to @a item, or NULL if the given item is the last one
  */
-Etk_Combobox_Item *etk_combobox_item_next_get(Etk_Combobox *combobox, Etk_Combobox_Item *item)
+Etk_Combobox_Item *etk_combobox_item_next_get(Etk_Combobox_Item *item)
 {
    if (!item)
       return NULL;
