@@ -20,7 +20,7 @@ void etk_test_filechooser_window_create(void *data)
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), filechooser, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DOCUMENT_OPEN, 1);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CLOSE, 2);
-   //etk_dialog_action_area_alignment_set(ETK_DIALOG(dialog), 1.0);
+   etk_dialog_action_area_alignment_set(ETK_DIALOG(dialog), 1.0);
    
    etk_widget_show_all(dialog);
 }
