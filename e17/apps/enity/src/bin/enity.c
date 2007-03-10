@@ -8,7 +8,7 @@ int _en_fd_stdin_cb (void *data, Ecore_Fd_Handler *fd_handler)
 {
    char input[32];
    int len;
-   int percent;
+   int percent = 0;
    
    len = read(1, &input, sizeof(input));
    if(len > 0)
@@ -160,8 +160,8 @@ static void _en_entry_cb(En_Argument *args, int index)
    if((data = _en_arg_data_get(args, "entry-text")) != NULL)
      etk_entry_text_set(ETK_ENTRY(entry), data->data);
       
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), entry, ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 3);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), entry, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 3);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
    etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), entry);
@@ -383,8 +383,8 @@ static void _en_list_cb(En_Argument *args, int index)
 	  }
      }
             
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), tree, ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 3);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 3);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
    etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), tree);
@@ -477,8 +477,8 @@ static void _en_scale_cb(En_Argument *args, int index)
 	etk_box_append(ETK_BOX(slider_hbox), slider_label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
      }
    
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_FALSE, ETK_FALSE, 3, ETK_FALSE);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), slider_hbox, ETK_FALSE, ETK_FALSE, 3, ETK_FALSE);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_BOX_START, ETK_BOX_NONE, 3);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), slider_hbox, ETK_BOX_NONE, ETK_BOX_EXPAND_FILL, 3);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
    etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), slider);
@@ -510,8 +510,8 @@ static void _en_progress_cb(En_Argument *args, int index)
    
    progress = etk_progress_bar_new();
       
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), progress, ETK_TRUE, ETK_TRUE, 3, ETK_FALSE);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 3);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), progress, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 3);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
    etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_en_ok_print_stdout_cb), progress);
