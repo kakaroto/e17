@@ -7,20 +7,22 @@
 
 /**
  * @defgroup Etk_Embed Etk_Embed
- * @brief The Etk_Embed widget is a toplevel widget that can be embed in an existing Evas and can be
- * manipulated as a normal evas object.
+ * @brief The Etk_Embed widget is a toplevel widget that can be embedded in an existing Evas and can be
+ * manipulated as a normal Evas object.
  * @{
  */
 
-/** @brief Gets the type of an embed widget */
+/** Gets the type of an embed widget */
 #define ETK_EMBED_TYPE       (etk_embed_type_get())
-/** @brief Casts the object to an Etk_Embed */
+/** Casts the object to an Etk_Embed */
 #define ETK_EMBED(obj)       (ETK_OBJECT_CAST((obj), ETK_EMBED_TYPE, Etk_Embed))
-/** @brief Check if the object is an Etk_Embed */
+/** Check if the object is an Etk_Embed */
 #define ETK_IS_EMBED(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_EMBED_TYPE))
 
+
 /**
- * @brief @widget A toplevel widget that can be manipulated as a normal evas object.
+ * @brief @widget A toplevel widget that can be embedded in an existing Evas and
+ * be manipulated as a normal Evas object.
  * @structinfo
  */
 struct Etk_Embed
@@ -29,15 +31,22 @@ struct Etk_Embed
    /* Inherit from Etk_Toplevel */
    Etk_Toplevel toplevel;
    
-   void (*window_position_get)(void *window_data, int *x, int *y);
-   void *window_data;
+   void (*position_get)(void *window_data, int *x, int *y);
+   void *position_data;
+   
+   void (*pointer_set)(void *window_data, Etk_Pointer_Type pointer_type);
+   void *pointer_data;
 };
 
-Etk_Type   *etk_embed_type_get();
-Etk_Widget *etk_embed_new(Evas *evas, void (*window_position_get)(void *window_data, int *x, int *y), void *window_data);
+
+Etk_Type   *etk_embed_type_get(void);
+Etk_Widget *etk_embed_new(Evas *evas);
 
 Evas_Object *etk_embed_object_get(Etk_Embed *embed_widget);
-  
+
+void etk_embed_position_method_set(Etk_Embed *embed, void (*position_get)(void *position_data, int *x, int *y), void *position_data);
+void etk_embed_pointer_method_set(Etk_Embed *embed, void (*pointer_set)(void *pointer_data, Etk_Pointer_Type pointer_type), void *pointer_data);
+
 /** @} */
 
 #endif

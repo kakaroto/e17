@@ -10,6 +10,13 @@ static Etk_Widget *_label = NULL;
 static Etk_Widget *_hslider = NULL;
 static Etk_Widget *_vslider = NULL;
 
+
+/**************************
+ *
+ * Creation of the test-app window
+ *
+ **************************/
+
 /* Creates the window for the slider test */
 void etk_test_slider_window_create(void *data)
 {

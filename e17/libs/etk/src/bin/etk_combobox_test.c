@@ -6,6 +6,13 @@
 
 static void _active_item_changed_cb(Etk_Object *object, void *data);
 
+
+/**************************
+ *
+ * Creation of the test-app window
+ *
+ **************************/
+ 
 /* Creates the window for the combobox test */
 void etk_test_combobox_window_create(void *data)
 {
