@@ -5,6 +5,12 @@
 #include "etk_toplevel.h"
 #include "etk_types.h"
 
+/* TODO/FIXME list:
+ * - Add a method to add copy/paste support
+ * - Maybe create sets of methods (pointer, position, copy/paste) for the most common Evas engines
+ * - There may be a bug of focus when several embeds are packed in the same Evas
+ */
+
 /**
  * @defgroup Etk_Embed Etk_Embed
  * @brief The Etk_Embed widget is a toplevel widget that can be embedded in an existing Evas and can be

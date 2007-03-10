@@ -1,7 +1,7 @@
 #define STYLE(style_class, fn, fb, fi, fbi, fm, size, normal_style, title, subtitle, glow, description) \
 style { \
    name: style_class; \
-   base: "font="fn" font_size="size" text_class="style_class" align=left wrap=word "normal_style; \
+   base: "font="fn" font_size="size" align=left wrap=word "normal_style; \
    tag: "br" "\n"; \
    tag: "tab" "\t"; \
    tag: "left" "+ align=left"; \

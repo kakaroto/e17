@@ -25,7 +25,6 @@ static Etk_Widget *embed;
 static int win_w = 240, win_h = 320;
 static unsigned int starting_time;
 
-
 /**************************
  *
  * Creation of the test-app window

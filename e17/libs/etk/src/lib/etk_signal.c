@@ -454,7 +454,6 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *re
    emitted_signal->object = object;
    emitted_signal->stop_emission = ETK_FALSE;
    _etk_signal_emitted_signals = evas_list_prepend(_etk_signal_emitted_signals, emitted_signal);
-   
 
    /* Calls the default handler */
    if (signal->handler_offset >= 0 && signal->marshaller)

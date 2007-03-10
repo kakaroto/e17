@@ -601,7 +601,7 @@ void etk_widget_parent_set_full(Etk_Widget *widget, Etk_Widget *parent, Etk_Bool
       _etk_widget_toplevel_parent_set(widget, widget->toplevel_parent);
    
    new_evas = etk_widget_toplevel_evas_get(widget);
-   new_theme_file = etk_widget_theme_file_get(widget);;
+   new_theme_file = etk_widget_theme_file_get(widget);
    
    /* Realize/unrealize the widget and its children */
    if (new_evas)
