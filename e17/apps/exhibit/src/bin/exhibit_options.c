@@ -683,9 +683,9 @@ _ex_options_page_3_create()
 
    dialog->default_sort = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(dialog->default_sort), ETK_COMBOBOX_IMAGE, 
-	 24, ETK_FALSE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+	 24, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_column_add(ETK_COMBOBOX(dialog->default_sort), ETK_COMBOBOX_LABEL, 
-	 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+	 75, ETK_COMBOBOX_EXPAND, 0.0);
    etk_combobox_build(ETK_COMBOBOX(dialog->default_sort));
    etk_box_append(ETK_BOX(hbox), dialog->default_sort, ETK_BOX_START, 
 	 ETK_BOX_NONE, 0);

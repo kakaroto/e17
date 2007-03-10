@@ -556,8 +556,8 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
 	 ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), helptext);
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(win), vbox, ETK_TRUE, ETK_TRUE,
-	 0, ETK_FALSE);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(win), vbox,
+	  ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_dialog_button_add(ETK_DIALOG(win), "Close", ETK_RESPONSE_CLOSE);
    etk_container_border_width_set(ETK_CONTAINER(win), 7);
    etk_widget_show_all(win);

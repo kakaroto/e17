@@ -286,7 +286,9 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 
    tab = data;
    tree = ETK_TREE(object);
-   drag = (ETK_WIDGET(tree))->drag;
+   /* TODO: reimplement dnd when it is reimplemented in Etk
+   drag = (ETK_WIDGET(tree))->drag; */
+   drag = NULL;
    
    rows = etk_tree_selected_rows_get(tree);
    

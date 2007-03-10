@@ -60,7 +60,7 @@ _ex_file_download_dialog(char *url, char *file)
    progressbar = etk_progress_bar_new();
    etk_progress_bar_text_set(ETK_PROGRESS_BAR(progressbar), "0% done");
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), progressbar, 
-	 ETK_TRUE, ETK_TRUE, 2, ETK_TRUE);
+	 ETK_BOX_END, ETK_BOX_EXPAND_FILL, 2);
 
    etk_widget_show_all(dialog);
 }

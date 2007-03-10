@@ -808,16 +808,16 @@ _ex_image_rename()
    label = etk_label_new(labeltext);
 
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), ETK_WIDGET(label), 
-	 ETK_FALSE, ETK_FALSE, 5, ETK_FALSE);
+	 ETK_BOX_START, ETK_BOX_NONE, 5);
 
    label = etk_label_new("New filename");
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), ETK_WIDGET(label), 
-	 ETK_FALSE, ETK_FALSE, 2, ETK_FALSE);
+	 ETK_BOX_START, ETK_BOX_NONE, 2);
 
    entry = etk_entry_new();
    
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), ETK_WIDGET(entry), 
-	 ETK_FALSE, ETK_FALSE, 0, ETK_FALSE);
+	 ETK_BOX_START, ETK_BOX_NONE, 0);
    
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_OK, ETK_RESPONSE_OK);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL);
