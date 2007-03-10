@@ -1,5 +1,8 @@
 #include "enhance_private.h"
 
+#define BOX_FILL_POLICY(expand, fill) \
+   (((expand) ? ETK_BOX_EXPAND : ETK_BOX_NONE) | ((fill) ? ETK_BOX_FILL : ETK_BOX_NONE))
+
 static E_Widget *_e_widget_new(Enhance *en, EXML_Node *node, Etk_Widget *etk_widget, char *id);
 static E_Widget *_e_widget_window_handle(Enhance *en, EXML_Node *node);
 static E_Widget *_e_widget_dialog_handle(Enhance *en, EXML_Node *node);
@@ -963,22 +966,26 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
                                             ETK_DIALOG(parent->wid),
                                             ETK_BUTTON(child->wid),
                                             atoi(prop->value),
-                                            expand, fill, padding,
-                                            ETK_FALSE);
+                                            ETK_BOX_START,
+                                            BOX_FILL_POLICY(expand, fill),
+                                            padding);
                     }
                   else
                     {
                       etk_dialog_pack_widget_in_action_area(
                                             ETK_DIALOG(parent->wid), child->wid,
-                                            expand, fill, padding, ETK_FALSE);
+                                            ETK_BOX_START,
+                                            BOX_FILL_POLICY(expand, fill),
+                                            padding);
                     }
                 }
         else
           {
             etk_dialog_pack_in_main_area(ETK_DIALOG(parent->wid), 
                                          child->wid, 
-                                         expand, fill, padding, 
-                                         ETK_FALSE);
+                                         ETK_BOX_START,
+                                         BOX_FILL_POLICY(expand, fill),
+                                         padding);
           }
      }
    if(!strcmp(parent_class, "GtkFrame"))
@@ -1074,8 +1081,7 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 		
 	if(child->packing)
 	  {
-             fill_policy = child->packing->expand ? ETK_BOX_EXPAND : ETK_BOX_NONE;
-             fill_policy |= child->packing->fill ? ETK_BOX_FILL : ETK_BOX_NONE;
+             fill_policy = BOX_FILL_POLICY(child->packing->expand, child->packing->fill);
 	     padding = child->packing->padding;
 	     if (child->packing->box_group) 
 	       box_group = child->packing->box_group;
