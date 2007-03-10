@@ -11,6 +11,7 @@
  * - selected/unselected signal for items
  * - Should items could have children (i.e sub-windows) ?
  * - make sure the items' children are not reparented
+ * - etk_combobox_items_height_set() should maybe use theme-data to calculate the right item-height
  */
 
 /**
@@ -54,9 +55,9 @@ typedef enum Etk_Combobox_Fill_Policy
 
 
 /**
+ * @internal
  * @brief A column of a combobox: a combobox should have at least a column,
  * and each column contains a specific type of widget (see Etk_Combobox_Column_Type)
- * @structinfo
  */
 struct Etk_Combobox_Column
 {

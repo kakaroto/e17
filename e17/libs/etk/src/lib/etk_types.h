@@ -34,6 +34,7 @@ typedef struct Etk_Bin Etk_Bin;
 typedef struct Etk_Box Etk_Box;
 typedef struct Etk_HBox Etk_HBox;
 typedef struct Etk_VBox Etk_VBox;
+typedef struct Etk_Box_Cell Etk_Box_Cell;
 typedef struct Etk_Button Etk_Button;
 typedef struct Etk_Cache Etk_Cache;
 typedef struct Etk_Canvas Etk_Canvas;

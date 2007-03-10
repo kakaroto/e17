@@ -29,7 +29,7 @@ static void _etk_slider_property_get(Etk_Object *object, int property_id, Etk_Pr
 
 static void _etk_slider_realize_cb(Etk_Object *object, void *data);
 static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_slider_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
+static void _etk_slider_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_slider_value_changed_handler(Etk_Range *range, double value);
 static void _etk_slider_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
@@ -256,7 +256,7 @@ static void _etk_slider_constructor(Etk_Slider *slider)
    ETK_RANGE(slider)->value_changed = _etk_slider_value_changed_handler;
    etk_signal_connect("realize", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realize_cb), NULL);
    etk_signal_connect("key_down", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_key_down_cb), NULL);
-   etk_signal_connect("mouse_wheel", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_mouse_wheel), NULL);
+   etk_signal_connect("mouse_wheel", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_mouse_wheel_cb), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(slider), "lower", _etk_slider_range_changed_cb, NULL);
    etk_object_notification_callback_add(ETK_OBJECT(slider), "upper", _etk_slider_range_changed_cb, NULL);
 }
@@ -376,7 +376,7 @@ static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *even
 }
 
 /* Called when the user wants to change the value with the mouse wheel */
-static void _etk_slider_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
+static void _etk_slider_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Range *range;
    int dir;

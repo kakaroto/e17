@@ -171,9 +171,7 @@ void etk_object_destroy(Etk_Object *object)
    
    if (!object || object->destroy_me)
       return;
-
-   if (!strcmp("Etk_Bin", object->type->name))
-      printf("Bin Destroyed!!\n");
+   
    etk_object_name_set(object, NULL);
    
    /* Sets the weak-pointers to NULL */

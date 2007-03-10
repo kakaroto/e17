@@ -58,6 +58,24 @@ typedef enum Etk_Box_Fill_Policy
 
 
 /**
+ * @internal
+ * @brief A column of a combobox: a combobox should have at least a column,
+ * and each column contains a specific type of widget (see Etk_Combobox_Column_Type)
+ */
+struct Etk_Box_Cell
+{
+   /* private: */
+   Etk_Box_Cell *prev;
+   Etk_Box_Cell *next;
+   
+   Etk_Widget *child;
+   Evas_List *focus_node;
+   Etk_Box_Group group;
+   Etk_Box_Fill_Policy fill_policy;
+   int padding;
+};
+
+/**
  * @brief @widget An abstract class for a box
  * @structinfo
  */
@@ -69,7 +87,9 @@ struct Etk_Box
 
    int spacing;
    Etk_Bool homogeneous;
-   Evas_List *cells[2];
+   Etk_Box_Cell *first_cell[2];
+   Etk_Box_Cell *last_cell[2];
+   int cells_count[2];
    int *request_sizes[2];
 };
 

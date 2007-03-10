@@ -12,8 +12,6 @@
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
 
-/*TODO/FIXME: what if the theme item border are smaller/bigger than usual?!?! (important!!) */
-
 /**
  * @addtogroup Etk_Combobox
  * @{
