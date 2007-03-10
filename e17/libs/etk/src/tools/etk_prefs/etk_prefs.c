@@ -78,8 +78,7 @@ void etk_prefs_show()
    etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(_etk_prefs_response_cb), dialog);
    
    etk_container_border_width_set(ETK_CONTAINER(dialog), 5);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), paned, ETK_TRUE, ETK_TRUE,
-				0, ETK_FALSE);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), paned, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    /* create tabs */
    etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Themes", _etk_prefs_theme_tab_create());

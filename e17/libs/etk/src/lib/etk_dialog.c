@@ -138,7 +138,7 @@ void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *butto
 
 /**
  * @brief Creates and packs a button to the dialog's action-area.
- * The button will be packed in the end-group of the action-area's hbox, and will not expand.
+ * The button will be packed in the start-group of the action-area's hbox, and will not expand.
  * @param dialog a dialog
  * @param label the button's label
  * @param response_id the response-id to associate to the button (see Etk_Dialog_Response_ID for common IDs).
@@ -154,14 +154,14 @@ Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int res
       return NULL;
    
    button = etk_button_new_with_label(label);
-   etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_BOX_END, ETK_BOX_NONE, 0);
+   etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_widget_show(button);
    return button;
 }
 
 /**
  * @brief Creates and packs a button to the dialog's action-area. The button is created from the given stock-id,
- * will be packed in the end-group of the action-area's hbox, and will not expand.
+ * will be packed in the start-group of the action-area's hbox, and will not expand.
  * @param dialog a dialog
  * @param stock_id the button's stock id
  * @param response_id the response-id to associate to the button (see Etk_Dialog_Response_ID for common IDs).
@@ -177,7 +177,7 @@ Etk_Widget *etk_dialog_button_add_from_stock(Etk_Dialog *dialog, int stock_id, i
       return NULL;
    
    button = etk_button_new_from_stock(stock_id);
-   etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_BOX_END, ETK_BOX_NONE, 0);
+   etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_widget_show(button);
    return button;
 }
