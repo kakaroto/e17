@@ -17,6 +17,8 @@ AM_PROG_LIBTOOL
 
 AM_WITH_DMALLOC
 
+AM_PROG_CC_C_O
+
 dnl Add the languages which your application supports here.
 ALL_LINGUAS=""
 
@@ -86,7 +88,7 @@ AC_SUBST(ecore_libs)
 
 #PROG="ewl-config";
 #AC_PATH_PROG(EWL_CONFIG, $PROG, "", $PATH)
-#if test -z "$EWL_CONFIG" ; then
+#if test -z "$EWL_CONFIG" ; then.
 #    echo $PROG " is not in your \$PATH. Please ensure it is.";
 #    echo "Read the manual page for your shell as to how to extend your path.";
 #    AC_MSG_ERROR(Cannot find $PROG)
@@ -101,23 +103,48 @@ AC_SUBST(ecore_libs)
 #    AC_MSG_ERROR(Cannot find $PROG)
 #fi
 
-AC_PATH_GENERIC(ewl, 0.0.4, [have_ewl="yes"], [have_ewl="no"])
-if test x$have_ewl ; then
-	ewl_cflags=`$EWL_CONFIG --cflags`
-	ewl_libs=`$EWL_CONFIG --libs`
-	AC_SUBST(ewl_cflags)
-	AC_SUBST(ewl_libs)
-fi
-AM_CONDITIONAL(HAVE_EWL, test x$have_ewl = xyes)
 
-AC_PATH_GENERIC(etk, 0.1.0, [have_etk="yes"], [have_etk="no"])
-if test x$have_etk ; then
-	etk_cflags=`$ETK_CONFIG --cflags`
-	etk_libs=`$ETK_CONFIG --libs`
-	AC_SUBST(etk_cflags)
-	AC_SUBST(etk_libs)
+AC_ARG_ENABLE(ewl,
+        AC_HELP_STRING([--enable-ewl/--disable-ewl],
+        [enable/disable ewl version (default=autodetect)]),
+        [enable_ewl=$enableval ], [ enable_ewl=default])
+
+if test "x$enable_ewl" = "xdefault" || test "x$enable_ewl" = "xyes"; then
+  AC_PATH_GENERIC(ewl, 0.0.4, [enable_ewl="yes"], [enable_ewl="no"])
+  if test x$enable_ewl ; then
+      ewl_cflags=`$EWL_CONFIG --cflags`
+      ewl_libs=`$EWL_CONFIG --libs`
+      AC_SUBST(ewl_cflags)
+      AC_SUBST(ewl_libs)
+  fi
 fi
-AM_CONDITIONAL(HAVE_ETK, test x$have_etk = xyes)
+
+AM_CONDITIONAL(ENABLE_EWL, test x$enable_ewl = xyes)
+
+AC_ARG_ENABLE(etk,
+        AC_HELP_STRING([--enable-etk/--disable-etk],
+        [enable/disable etk version (default=autodetect)]),
+        [enable_etk=$enableval], [enable_etk=default])
+
+if test "x$enable_etk" = "xdefault" || test "x$enable_etk" = "xyes"; then
+  AC_PATH_GENERIC(etk, 0.1.0, [enable_etk="yes"], [enable_etk="no"])
+  if test x$enable_etk ; then
+      etk_cflags=`$ETK_CONFIG --cflags`
+      etk_libs=`$ETK_CONFIG --libs`
+      AC_SUBST(etk_cflags)
+      AC_SUBST(etk_libs)
+  fi
+fi
+
+AM_CONDITIONAL(ENABLE_ETK, test x$enable_etk = xyes)
+
+if test "x$enable_etk" = "xyes" && test "x$enable_ewl" = "xyes"; then
+  build_separate=yes
+else
+  build_separate=no
+fi
+
+AM_CONDITIONAL(BUILD_SEPARATE, test x$build_separate = xyes)
 
 #AC_DEFINE_UNQUOTED(HAVE_EWL, "${have_ewl}", [EWL])
 #AC_DEFINE_UNQUOTED(HAVE_ETK, "${have_etk}", [ETK])
@@ -145,3 +172,16 @@ src/bin/etk/Makefile
 debian/changelog
 ])
 
+echo
+echo "Configuration:"
+echo
+echo "  Install path:                           ${prefix}"
+echo
+echo "  Toolkit Support"
+echo "  ----------------"
+echo "  Build ETK:                              $enable_etk"
+echo "  Build EWL:                              $enable_ewl"
+echo
+echo "  Building Seperate Binaries              $build_separate"
+echo 
+  

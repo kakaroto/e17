@@ -1,13 +1,13 @@
-if HAVE_EWL
-EWL_DIR = ewl
+if ENABLE_EWL
+    EWL_DIR = ewl
 else
-EWL_DIR = 
+    EWL_DIR = 
 endif
 
-if HAVE_ETK
-ETK_DIR = etk
+if ENABLE_ETK
+    ETK_DIR = etk
 else
-ETK_DIR =
+    ETK_DIR =
 endif
 
 SUBDIRS = $(EWL_DIR) $(ETK_DIR)
