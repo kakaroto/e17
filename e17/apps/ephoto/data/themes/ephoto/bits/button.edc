@@ -4,11 +4,79 @@ group
 	min: 16 16;
 	data
 	{
-		item: "inset/left" 14;
-		item: "inset/right" 14;
 		item: "inset/top" 5;
 		item: "inset/bottom" 5;
-		item: "pad" 2;
+		item: "inset/left" 3;
+		item: "inset/right" 3;
+		item: "pad" 4;
+	}
+	parts
+	{
+		part
+		{
+			name: "background";
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 0 0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -1 -1;
+				}
+				image
+				{
+					normal: "button.png";
+					border: 5 5 5 5;
+				}
+			}
+			description
+			{
+				state: "clicked" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "button_clicked.png";
+					border: 5 5 5 5;
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "clicked";
+			signal: "mouse,down,1";
+			source: "EWL";
+			action: STATE_SET "clicked" 1.0;
+			target: "background";
+		}
+		program
+		{
+			name: "unclicked";
+			signal: "mouse,up,1";
+			source: "EWL";
+			action: STATE_SET "default" 1.0;
+			target: "background";
+		}
+	}
+}
+
+group
+{
+	name: "/ephoto/toolbar/button";
+	min: 16 16;
+	data
+	{
+		item: "inset" 2;
+		item: "pad/left" 2;
+		item: "pad/right" 2;	
 	}
 	parts
 	{

@@ -29,9 +29,6 @@ void show_edit_view(Ewl_Widget *w, void *event, void *data)
 {
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->edit_vbox);
 	ecore_dlist_goto_first(em->images);
-	ewl_widget_enable(em->edit_tools);
-        ewl_widget_hide(em->atree);
-        ewl_widget_hide(em->tbar);
         ewl_widget_hide(em->ilabel);
 }
 

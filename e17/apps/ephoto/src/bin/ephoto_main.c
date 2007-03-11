@@ -1,14 +1,12 @@
 #include "ephoto.h"
 
 /*Ewl Callbacks*/
-static void combo_changed(Ewl_Widget *w, void *event, void *data);
 static void destroy(Ewl_Widget *w, void *event, void *data);
 static void populate(Ewl_Widget *w, void *event, void *data);
 static void window_fullscreen(Ewl_Widget *w, void *event, void *data);
 
 /*Ephoto Create Callbacks*/
 static Ewl_Widget *add_atree(Ewl_Widget *c);
-static Ewl_Widget *add_vcombo(Ewl_Widget *c);
 
 /*Ephoto MVC Callbacks*/
 static Ewl_Widget *album_view_new(void);
@@ -16,9 +14,6 @@ static void album_view_assign(Ewl_Widget *w, void *data);
 static Ewl_Widget *album_header_fetch(void *data, int column);
 static void *album_data_fetch(void *data, unsigned int row, unsigned int column);
 static int album_data_count(void *data);
-static Ewl_Widget *views_header_fetch(void *data, int column);
-static void *views_data_fetch(void *data, unsigned int row, unsigned int column);
-static int views_data_count(void *data);
 
 /*Ephoto Global Variables*/
 Ephoto_Main *em;
@@ -55,8 +50,8 @@ static void window_fullscreen(Ewl_Widget *w, void *event, void *data)
 /*Create the Main Ephoto Window*/
 void create_main_gui(void)
 {
-	Ewl_Widget *vbox, *spacer, *entry, *hbox;
-	Ewl_Widget *rvbox, *hsep, *vsep, *image;
+	Ewl_Widget *vbox, *entry, *hbox;
+	Ewl_Widget *rvbox, *hsep, *vsep, *button;
 
 	em = NULL;
 	em = calloc(1, sizeof(Ephoto_Main));
@@ -79,14 +74,6 @@ void create_main_gui(void)
 	ewl_object_alignment_set(EWL_OBJECT(em->tbar), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(vbox), em->tbar);
 	ewl_widget_show(em->tbar);
-
-	em->vcombo = add_vcombo(em->tbar);
-	
-	spacer = ewl_spacer_new();
-	ewl_object_minimum_w_set(EWL_OBJECT(spacer), 100);
-	ewl_object_maximum_w_set(EWL_OBJECT(spacer), 100);
-	ewl_container_child_append(EWL_CONTAINER(em->tbar), spacer);
-	ewl_widget_show(spacer);
 
 	entry = ewl_entry_new();
 	ewl_object_minimum_size_set(EWL_OBJECT(entry), 157, 22);
@@ -135,62 +122,34 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(vbox), em->toolbar);
 	ewl_widget_show(em->toolbar);
 
-        image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/normal_view.png", 0, show_normal_view, NULL);
-        ewl_image_constrain_set(EWL_IMAGE(image), 30);
-	ewl_attach_tooltip_text_set(image, "Normal View");
+        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/normal_view.png", show_normal_view, NULL);
+        ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
+	ewl_attach_tooltip_text_set(button, "Normal View");
 
-        vsep = ewl_vseparator_new();
-        ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
-        ewl_widget_show(vsep);
+        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/list_view.png", show_list_view, NULL);
+        ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
+	ewl_attach_tooltip_text_set(button, "List View");      
 
-        image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/list_view.png", 0, show_list_view, NULL);
-        ewl_image_constrain_set(EWL_IMAGE(image), 30);
-	ewl_attach_tooltip_text_set(image, "List View");      
-
-        vsep = ewl_vseparator_new();
-        ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
-        ewl_widget_show(vsep);
-
-	image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/edit_view.png", 0, show_edit_view, NULL);
-        ewl_image_constrain_set(EWL_IMAGE(image), 30);
-	ewl_attach_tooltip_text_set(image, "Edit View");
+	button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/edit_view.png", show_edit_view, NULL);
+        ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
+	ewl_attach_tooltip_text_set(button, "Single View");
 
 	vsep = ewl_vseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
 	ewl_widget_show(vsep);
 
-        image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/get_exif.png", 0, display_exif_dialog, NULL);
-        ewl_image_constrain_set(EWL_IMAGE(image), 30);
-	ewl_attach_tooltip_text_set(image, "View Exif");
+        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/get_exif.png", display_exif_dialog, NULL);
+        ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
+	ewl_attach_tooltip_text_set(button, "View Exif Data");
 
-        vsep = ewl_vseparator_new();
-        ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
-        ewl_widget_show(vsep);
+        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", window_fullscreen, NULL);
+        ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
+	ewl_attach_tooltip_text_set(button, "Toggle Fullscreen");
 
-        image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", 0, window_fullscreen, NULL);
-        ewl_image_constrain_set(EWL_IMAGE(image), 30);
-	ewl_attach_tooltip_text_set(image, "Fullscreen");
+        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/x-office-presentation.png", NULL, NULL);
+	ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
+	ewl_attach_tooltip_text_set(button, "Start a Slideshow");
 
-        vsep = ewl_vseparator_new();
-        ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
-        ewl_widget_show(vsep);
-
-        image = add_image(em->toolbar, PACKAGE_DATA_DIR "/images/x-office-presentation.png", 0, NULL, NULL);
-        ewl_image_constrain_set(EWL_IMAGE(image), 30);
-	ewl_attach_tooltip_text_set(image, "Slideshow");
-
-        vsep = ewl_vseparator_new();
-        ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
-        ewl_widget_show(vsep);
-
-	em->edit_tools = ewl_hbox_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(em->edit_tools), EWL_FLAG_FILL_HFILL);
-	ewl_container_child_append(EWL_CONTAINER(em->toolbar), em->edit_tools);
-	ewl_widget_show(em->edit_tools);
-
-	add_edit_tools(em->edit_tools);
-	ewl_widget_disable(em->edit_tools);
-	
 	em->albums = ecore_list_new();
 	em->db = ephoto_db_init();
 	em->albums = ephoto_db_list_albums(em->db);
@@ -255,87 +214,6 @@ static void populate(Ewl_Widget *w, void *event, void *data)
 	ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
 	
 	ewl_image_file_set(EWL_IMAGE(em->eimage), ecore_dlist_current(em->images), NULL);
-
-	return;
-}
-
-/*Create the view combo*/
-static Ewl_Widget *add_vcombo(Ewl_Widget *c)
-{
-	Ewl_Widget *combo;
-	Ewl_Model *model;
-	Ewl_View *view;
-
-	em->views = calloc(3, sizeof(char *));
-	em->views[0] = strdup("Normal");
-	em->views[1] = strdup("List");
-	em->views[2] = strdup("Edit");
-
-	model = ewl_model_new();
-	ewl_model_fetch_set(model, views_data_fetch);
-	ewl_model_count_set(model, views_data_count);
-
-	view = ewl_view_new();
-	ewl_view_constructor_set(view, ewl_label_new);
-	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
-	ewl_view_header_fetch_set(view, views_header_fetch);
-
-	combo = ewl_combo_new();
-	ewl_mvc_model_set(EWL_MVC(combo), model);
-	ewl_mvc_view_set(EWL_MVC(combo), view);
-	ewl_mvc_data_set(EWL_MVC(combo), em->views);
-	ewl_object_fill_policy_set(EWL_OBJECT(combo), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(c), combo);
-	ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED, combo_changed, NULL);
-	ewl_widget_show(combo);
-
-	return combo;
-}
-
-/*Create a header for the view combo*/
-static Ewl_Widget *views_header_fetch(void *data, int col)
-{
-	Ewl_Widget *header;
-
-	header = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(header), "Select a View");
-	ewl_widget_show(header);
-
-	return header;
-}
-
-/*Get the data for the view combo*/
-static void *views_data_fetch(void *data, unsigned int row, unsigned int col)
-{
-	if (row < 3) return em->views[row];
-	else return NULL;
-}
-
-/*Show the number of items in the view*/
-static int views_data_count(void *data)
-{
-	return 3;
-}
-
-/*Switch between views when the combo changes*/
-static void combo_changed(Ewl_Widget *w, void *event, void *data)
-{
-	Ewl_Selection_Idx *idx;
-
-	idx = ewl_mvc_selected_get(EWL_MVC(w));
-
-	if (!strcmp(em->views[idx->row], "Normal"))
-	{
-		show_normal_view(NULL, NULL, NULL);
-	}
-	else if (!strcmp(em->views[idx->row], "Edit"))
-	{
-		show_edit_view(NULL, NULL, NULL);
-	}
-	else if (!strcmp(em->views[idx->row], "List"))
-	{
-		show_list_view(NULL, NULL, NULL);
-	}
 
 	return;
 }

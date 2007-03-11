@@ -120,7 +120,6 @@ struct _Ephoto_Main
 	Ewl_Widget *ltree;
 	Ewl_Widget *tbar;
 	Ewl_Widget *toolbar;
-	Ewl_Widget *vcombo;
 	Ewl_Widget *view_box;
 	Ewl_Widget *win;
 	sqlite3 *db;

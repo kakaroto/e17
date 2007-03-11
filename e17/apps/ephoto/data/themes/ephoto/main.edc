@@ -62,6 +62,7 @@ data
         item: "/text/font" "ewl/default";
         item: "/text/font_size" 10;
         item: "/text/style" "none";
+	item: "/htoolbar/hbox/button/group" "/ephoto/toolbar/button";
 	item: "/tooltip/delay" ".2";
 	item: "/tooltip/group" "/ephoto/window";
 	item: "/tooltip/hoffset" "5";
