@@ -5233,8 +5233,7 @@ ewl_text_context_shutdown(void)
 	if (ewl_text_default_context)
 	{
 		IF_FREE(ewl_text_default_context->font);
-		if (ewl_text_default_context->format) 
-			ecore_string_release(ewl_text_default_context->format);
+		IF_RELEASE(ewl_text_default_context->format);
 		FREE(ewl_text_default_context);
 	}
 
@@ -5779,10 +5778,7 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 				new_tx->style_colors.double_underline.b = tx_change->style_colors.double_underline.b;
 				new_tx->style_colors.double_underline.a = tx_change->style_colors.double_underline.a;
 			}
-
-			if (new_tx->format) ecore_string_release(new_tx->format);
-			new_tx->format = NULL;
-
+			IF_RELEASE(new_tx->format);
 			ecore_hash_set(context_hash, new_tx, new_tx);
 		}
 	}
@@ -5828,7 +5824,7 @@ ewl_text_context_release(Ewl_Text_Context *tx)
 	ecore_hash_remove(context_hash, tx);
 
 	IF_FREE(tx->font);
-	if (tx->format) ecore_string_release(tx->format);
+	IF_RELEASE(tx->format);
 	FREE(tx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -175,8 +175,6 @@ void 		 ewl_widget_hide(Ewl_Widget *widget);
 void 	 	 ewl_widget_destroy(Ewl_Widget *widget);
 void 		 ewl_widget_configure(Ewl_Widget *widget);
 
-void 		 ewl_widget_theme_update(Ewl_Widget *w);
-
 void 		 ewl_widget_data_set(Ewl_Widget *w, void *k, void *v);
 void 		*ewl_widget_data_del(Ewl_Widget *w, void *k);
 void 		*ewl_widget_data_get(Ewl_Widget *w, void *k);

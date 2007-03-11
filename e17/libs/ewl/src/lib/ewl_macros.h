@@ -77,6 +77,19 @@
 	} \
 }
 
+#undef IF_RELEASE
+/**
+ * @def IF_RELEASE(item)
+ * If @a item is non-NULL, ecore_string_release @a item and set it NULL.
+ */
+#define IF_RELEASE(item) \
+{ \
+	if (item) { \
+		ecore_string_release(item); \
+		item = NULL; \
+	} \
+}
+
 #undef ZERO
 /**
  * @def ZERO(ptr, type, num)

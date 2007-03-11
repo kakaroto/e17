@@ -20,8 +20,8 @@ static void ewl_embed_smart_cb_clip_set(Evas_Object *obj, Evas_Object *clip);
 static void ewl_embed_smart_cb_clip_unset(Evas_Object *obj);
 
 static void ewl_embed_tab_order_change(Ewl_Embed *e, 
-					 void *(*change)(Ecore_DList *list),
-					 void *(*cycle)(Ecore_DList *list));
+				 void *(*change)(Ecore_DList *list),
+				 void *(*cycle)(Ecore_DList *list));
 
 /*
  * Catch mouse events processed through the evas
@@ -86,12 +86,13 @@ ewl_embed_init(Ewl_Embed *w)
 	 */
 	if (!ewl_overlay_init(EWL_OVERLAY(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
 	ewl_widget_appearance_set(EWL_WIDGET(w), EWL_EMBED_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(w), EWL_EMBED_TYPE);
 
 	if (!ewl_embed_engine_name_set(w, ewl_config_string_get(ewl_config,
 				EWL_CONFIG_ENGINE_NAME)))
-		exit(-1);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_toplevel_set(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
@@ -138,8 +139,7 @@ ewl_embed_engine_name_set(Ewl_Embed *embed, const char *engine)
 		realize = TRUE;
 	}
 
-	if (embed->engine_name)
-		ecore_string_release(embed->engine_name);
+	IF_RELEASE(embed->engine_name);
 	embed->engine_name = ecore_string_instance(engine);
 
 	embed->engine = ewl_engine_new(engine, NULL, NULL);
@@ -242,9 +242,8 @@ ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas, Ewl_Embed_Window *canvas_wind
 
 	paths = ewl_theme_font_path_get();
 	ecore_list_goto_first(paths);
-	while ((font_path = ecore_list_next(paths))) {
+	while ((font_path = ecore_list_next(paths)))
 		evas_font_path_append(canvas, font_path);
-	}
 
 	DRETURN_PTR(emb->smart, DLEVEL_STABLE);
 }
@@ -315,7 +314,7 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 	}
 	else
 	{
-		e = ewl_embed_active_embed;	
+		e = ewl_embed_active_embed;
 		ewl_embed_active_embed = embed;
 	}
 
@@ -330,7 +329,7 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 		
 		ewl_callback_call(e->last.clicked, EWL_CALLBACK_FOCUS_OUT);
 
-		/* Clean the last.clicked up recursively.. */
+		/* Clean the last.clicked up recursively */
 		temp = e->last.clicked;
 		while (temp) {
 			if (!DISABLED(temp))
@@ -553,11 +552,9 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_DOWN, &ev);
 
-			if (ev.clicks > 1) {
+			if (ev.clicks > 1) 
 				ewl_callback_call_with_event_data(temp,
-						EWL_CALLBACK_CLICKED,
-						&ev);
-			}
+					EWL_CALLBACK_CLICKED, &ev);
 		}
 		temp = temp->parent;
 	}
@@ -667,10 +664,8 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	check = EWL_OBJECT(embed->last.mouse_in);
 	if (!check || !ewl_object_state_has(check, EWL_FLAG_STATE_PRESSED)) {
 
-		widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed),
-				x, y);
-		if (!widget)
-			widget = EWL_WIDGET(embed);
+		widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
+		if (!widget) widget = EWL_WIDGET(embed);
 	}
 	else
 		widget = embed->last.mouse_in;

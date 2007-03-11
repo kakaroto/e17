@@ -639,7 +639,7 @@ ewl_theme_data_free(void *data)
 	if (!data || data == (void *)EWL_THEME_KEY_NOMATCH)
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_string_release(data);
+	IF_RELEASE(data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
