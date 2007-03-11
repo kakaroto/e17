@@ -54,10 +54,11 @@ ewl_cursor_init(Ewl_Cursor *cursor)
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_ALL);
 	ewl_object_size_request(EWL_OBJECT(w), 32, 32);
 	ewl_embed_engine_name_set(EWL_EMBED(cursor), "evas_buffer");
+
 	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
-			ewl_cursor_cb_render, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, ewl_cursor_cb_destroy,
-			NULL);
+				ewl_cursor_cb_render, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, 
+				ewl_cursor_cb_destroy, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_UNSTABLE);
 }
@@ -74,9 +75,6 @@ ewl_cursor_cb_render(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_CURSOR_TYPE);
 
-	width = ewl_object_current_w_get(EWL_OBJECT(cursor));
-	height = ewl_object_current_h_get(EWL_OBJECT(cursor));
-
 	/*
 	 * Find the widget setting the current cursor.
 	 */
@@ -89,6 +87,9 @@ ewl_cursor_cb_render(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	if (cursor->handle)
 		ewl_engine_pointer_free(EWL_EMBED(parent), cursor->handle);
+
+	width = ewl_object_current_w_get(EWL_OBJECT(cursor));
+	height = ewl_object_current_h_get(EWL_OBJECT(cursor));
 
 	handle = ewl_engine_pointer_data_new(EWL_EMBED(parent),
 			EWL_EMBED(cursor)->canvas_window, width, height);
@@ -107,10 +108,15 @@ ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	Ewl_Cursor *cursor = EWL_CURSOR(w);
 
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_CURSOR_TYPE);
+
 	/* FIXME: Also needs to be handled for the correct engine refs
 	if (cursor->handle)
 		ewl_engine_pointer_free(parent, cursor->handle);
 		*/
 	cursor->handle = 0;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

@@ -19,13 +19,9 @@ static int ewl_dnd_move_count;
 static Ewl_Widget *ewl_dnd_widget;
 static Ewl_Widget *ewl_dnd_default_cursor;
 
-static Ecore_Hash *ewl_dnd_position_hash;
 static Ecore_Hash *ewl_dnd_provided_hash;
 static Ecore_Hash *ewl_dnd_accepted_hash;
 static int ewl_dnd_status;
-
-Ecore_Event_Handler *ewl_dnd_mouse_up_handler;
-Ecore_Event_Handler *ewl_dnd_mouse_move_handler;
 
 static char *ewl_dnd_types_encode(const char **types);
 static char **ewl_dnd_types_decode(const char *types);
@@ -60,20 +56,15 @@ ewl_dnd_init(void)
 	ewl_dragging_current = 0;
 	ewl_dnd_move_count = 0;
 
-	ewl_dnd_position_hash = ecore_hash_new(ecore_direct_hash, 
-						ecore_direct_compare);
-	if (!ewl_dnd_position_hash)
-		goto position_error;
-
 	ewl_dnd_provided_hash = ecore_hash_new(ecore_direct_hash, 
 						ecore_direct_compare);
 	if (!ewl_dnd_provided_hash)
-		goto provided_error;
+		goto PROVIDED_ERROR;
 
 	ewl_dnd_accepted_hash = ecore_hash_new(ecore_direct_hash, 
 						ecore_direct_compare);
 	if (!ewl_dnd_accepted_hash)
-		goto accepted_error;
+		goto ACCEPTED_ERROR;
 
 	ewl_dnd_default_cursor = NULL;
 
@@ -85,11 +76,9 @@ ewl_dnd_init(void)
 	/*
 	 * Error handlers.
 	 */
-accepted_error:
+ACCEPTED_ERROR:
 	IF_FREE_HASH(ewl_dnd_provided_hash);
-provided_error:
-	IF_FREE_HASH(ewl_dnd_position_hash);
-position_error:
+PROVIDED_ERROR:
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
@@ -103,26 +92,8 @@ ewl_dnd_shutdown(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	IF_FREE_HASH(ewl_dnd_position_hash);
 	IF_FREE_HASH(ewl_dnd_provided_hash);
 	IF_FREE_HASH(ewl_dnd_accepted_hash);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param w: The widget to add
- * @return Returns no value
- * @brief: Adds the given widget @a w to the position hash
- */
-void
-ewl_dnd_position_windows_set(Ewl_Widget *w) 
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	ecore_hash_set(ewl_dnd_position_hash, w, (void *)1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -185,7 +156,6 @@ ewl_dnd_provided_types_contains(Ewl_Widget *w, char *type)
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
-
 /**
  * @param w: The widget to retrieve provided types
  * @return Returns a NULL terminated array of mimetypes widget provides for DND
@@ -201,6 +171,7 @@ ewl_dnd_provided_types_get(Ewl_Widget *w)
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
 	types = ecore_hash_get(ewl_dnd_provided_hash, w);
+
 	DRETURN_PTR(ewl_dnd_types_decode(types), DLEVEL_STABLE);
 }
 
@@ -228,22 +199,24 @@ ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types)
 		ewl_object_flags_add(EWL_OBJECT(w),
 				EWL_FLAG_PROPERTY_DND_TARGET,
 				EWL_FLAGS_PROPERTY_MASK);
+
 		if (REALIZED(w) && !OBSCURED(w)) {
 			Ewl_Embed *emb;
 
 			emb = ewl_embed_widget_find(w);
-			ewl_embed_dnd_aware_set(emb);
+			if (emb) ewl_embed_dnd_aware_set(emb);
 		}
 	}
 	else {
 		ewl_object_flags_remove(EWL_OBJECT(w),
 				EWL_FLAG_PROPERTY_DND_TARGET,
 				EWL_FLAGS_PROPERTY_MASK);
+
 		if (REALIZED(w) && !OBSCURED(w)) {
 			Ewl_Embed *emb;
 
 			emb = ewl_embed_widget_find(w);
-			ewl_embed_dnd_aware_remove(emb);
+			if (emb) ewl_embed_dnd_aware_remove(emb);
 		}
 	}
 
@@ -312,6 +285,7 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	emb = ewl_embed_widget_find(w);
+	if (!emb) DRETURN(DLEVEL_STABLE);
 
 	ewl_dragging_current = 1;
 	ewl_dnd_widget = w;
@@ -321,7 +295,8 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	/*
 	 * Count the number of mime types set on the widget.
 	 */
-	for (i = 0; types && types[i]; i++);
+	for (i = 0; types && types[i]; i++)
+		;
 
 	/*
 	 * Flag the provided DND types on the embed and begin the DND process.
@@ -366,17 +341,17 @@ ewl_dnd_drag_drop(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	emb = ewl_embed_widget_find(w);
-
 	ewl_dragging_current = 0;
 	ewl_dnd_widget = NULL;
 	ewl_dnd_move_count = 0;
+
+	emb = ewl_embed_widget_find(w);
+	if (!emb) DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * FIXME: Reset the cursor here.
 	 */
 	// ewl_embed_mouse_cursor_set(EWL_WIDGET(emb));
-
 	ewl_engine_embed_dnd_drag_drop(emb);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -457,12 +432,10 @@ ewl_dnd_types_encoded_contains(char *types, char *type)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	while (*types) {
-		int len;
-
-		len = strlen(types);
 		if (!(strcmp(types, type)))
 			DRETURN_INT(TRUE, DLEVEL_STABLE);
-		types += len + 1;
+
+		types += strlen(types) + 1;
 	}
 
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -549,67 +522,4 @@ ewl_dnd_type_stpcpy(char *dst, const char *src)
 
 	return dst;
 }
-
-#if 0
-static int
-ewl_dnd_event_dnd_move(void *data __UNUSED__, int type __UNUSED__, 
-							void *event)
-{
-	Ecore_X_Event_Mouse_Move *ev;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("event", event, FALSE);
-
-	ev = event;
-
-	if (!ewl_dnd_status) DRETURN_INT(TRUE, DLEVEL_STABLE);
-
-	ewl_dnd_move_count++;
-	if (ewl_dnd_move_count == 1) 
-		ecore_evas_show(ewl_dnd_drag_canvas);
-
-	if (ewl_dnd_drag_canvas) 
-		ecore_evas_move(ewl_dnd_drag_canvas, ev->x - 15, ev->y - 15);
-
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-
-static int
-ewl_dnd_event_mouse_up(void *data __UNUSED__, int type __UNUSED__, 
-						void *event __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (ewl_dnd_drag_canvas && ewl_dragging_current) {
-		Ecore_List *pos;
-		void *val;
-
-		ecore_x_pointer_ungrab();
-		ecore_x_keyboard_ungrab();
-
-		ecore_event_handler_del(ewl_dnd_mouse_up_handler);
-		ecore_event_handler_del(ewl_dnd_mouse_move_handler);
-
-		ecore_evas_free(ewl_dnd_drag_canvas);
-		ewl_dnd_drag_canvas = NULL;
-		ecore_x_window_del(ewl_dnd_drag_win);
-		ecore_x_dnd_drop();
-
-		/* Kill all last position references so they don't get
-		 * carried over to the next drag */
-		pos = ecore_hash_keys(ewl_dnd_position_hash);
-		ecore_list_goto_first(pos);
-		while ((val = ecore_list_remove_first(pos))) {
-			EWL_EMBED(val)->dnd_last_position = NULL;
-			ecore_hash_remove(ewl_dnd_position_hash, val);
-		}
-		IF_FREE_LIST(pos);
-
-		ewl_dragging_current = 0;
-		ewl_widget_dnd_reset();
-	}
-
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-#endif
 

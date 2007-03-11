@@ -83,7 +83,6 @@ ewl_highlight_follow_set(Ewl_Highlight *h, Ewl_Widget *w)
 	ewl_callback_prepend(EWL_WIDGET(h), EWL_CALLBACK_DESTROY,
 				ewl_highlight_cb_destroy, w);
 
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -136,6 +135,10 @@ static void
 ewl_highlight_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_FLOATER_TYPE);
+	DCHECK_TYPE("data", data, EWL_WIDGET_TYPE);
 
 	ewl_floater_follow_set(EWL_FLOATER(w), NULL);
 	ewl_callback_del(EWL_WIDGET(data), EWL_CALLBACK_CONFIGURE,

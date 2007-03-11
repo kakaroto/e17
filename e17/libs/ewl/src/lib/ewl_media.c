@@ -55,20 +55,20 @@ ewl_media_init(Ewl_Media *m)
 
 	w = EWL_WIDGET(m);
 
-	if (!ewl_widget_init(EWL_WIDGET(w)))
+	if (!ewl_widget_init(w))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(w, EWL_MEDIA_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(w), EWL_MEDIA_TYPE);
 
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_media_cb_realize,
-									NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_media_cb_reveal,
-									NULL);
-	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_media_cb_unrealize,
-									NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_media_cb_configure,
-									NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE, 
+				ewl_media_cb_realize, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_REVEAL, 
+				ewl_media_cb_reveal, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, 
+				ewl_media_cb_unrealize, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
+				ewl_media_cb_configure, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

@@ -22,9 +22,8 @@ ewl_datepicker_new(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ib = NEW(Ewl_Datepicker, 1);
-	if (!ib) {
+	if (!ib)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
 
 	if (!ewl_datepicker_init(ib)) {
 		ewl_widget_destroy(EWL_WIDGET(ib));
@@ -54,8 +53,8 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 							EWL_FLAG_FILL_NONE);
 
 	dp->calendar_window = ewl_popup_new();
-	ewl_widget_appearance_set(dp->calendar_window, EWL_DATEPICKER_TYPE"/"
-							EWL_POPUP_TYPE);
+	ewl_widget_appearance_set(dp->calendar_window, 
+				EWL_DATEPICKER_TYPE"/"EWL_POPUP_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(dp->calendar_window), 
 						EWL_FLAG_FILL_NONE);
 	ewl_popup_type_set(EWL_POPUP(dp->calendar_window), 
@@ -176,5 +175,4 @@ ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 

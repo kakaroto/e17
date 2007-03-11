@@ -13,7 +13,6 @@ extern int EWL_CALLBACK_DND_ENTER;
 extern int EWL_CALLBACK_DND_LEAVE;
 extern int EWL_CALLBACK_DND_DROP;
 extern int EWL_CALLBACK_DND_DATA_RECEIVED;
-
 extern int EWL_CALLBACK_DND_DATA_REQUEST;
 
 int 		  ewl_dnd_init(void);
@@ -25,8 +24,6 @@ void 		  ewl_dnd_drag_widget_clear(void);
 Ewl_Widget	 *ewl_dnd_drag_widget_get(void);
 
 int 		  ewl_dnd_status_get(void);
-
-void 		  ewl_dnd_position_windows_set(Ewl_Widget *w);
 
 void		  ewl_dnd_provided_types_set(Ewl_Widget *w, const char **types);
 int		  ewl_dnd_provided_types_contains(Ewl_Widget *w, char *type);

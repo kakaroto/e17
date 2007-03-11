@@ -46,7 +46,6 @@ ewl_expansion_init(Ewl_Expansion *cb)
 	DCHECK_PARAM_PTR_RET("cb", cb, FALSE);
 
 	w = EWL_WIDGET(cb);
-
 	if (!ewl_check_init(EWL_CHECK(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
@@ -63,7 +62,6 @@ ewl_expansion_init(Ewl_Expansion *cb)
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
-
 
 /**
  * @param cb: the expansion to change the status
