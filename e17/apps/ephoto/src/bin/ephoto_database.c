@@ -11,7 +11,7 @@ static int list_image_ids(void *notused, int argc, char **argv, char **col);
 static int image_id, album_id;
 
 /*Ephoto databasing ecore global variables*/
-static Ecore_List *albums, *images_list, *image_ids;
+static Ecore_List *albums = NULL, *images_list = NULL, *image_ids = NULL;
 
 /*Open the sqlite3 database. Create the database if it does not already exits.*/
 sqlite3 *ephoto_db_init(void)
@@ -162,7 +162,7 @@ static int list_albums(void *notused, int argc, char **argv, char **col)
 /*Return a list of albums in the albums table*/ 
 Ecore_List *ephoto_db_list_albums(sqlite3 *db)
 {
-	if(albums)
+	if(!ecore_list_is_empty(albums))
 	{
 		ecore_list_destroy(albums);
 	}
@@ -208,11 +208,11 @@ Ecore_List *ephoto_db_list_images(sqlite3 *db,  const char *album)
 	char command[PATH_MAX];
 	char *id;
 
-	if(images_list)
+	if(!ecore_list_is_empty(images_list))
 	{
 		ecore_dlist_destroy(images_list);
 	}
-	if(image_ids)
+	if(!ecore_list_is_empty(image_ids))
 	{
 		ecore_list_destroy(image_ids);
 	}
