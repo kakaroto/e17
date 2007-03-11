@@ -58,6 +58,13 @@
 
 #define USE_CLIP_RELATIVE_TO_DESK 1
 
+/* Composite Overlay Window (client) availability */
+#if (1000 * COMPOSITE_MAJOR + COMPOSITE_MINOR) >= 3
+#define USE_COMPOSITE_OVERLAY_WINDOW 1
+#else
+#define USE_COMPOSITE_OVERLAY_WINDOW 0
+#endif
+
 #define ENABLE_DEBUG   1
 #if ENABLE_DEBUG
 #define EDBUG_TYPE_COMPMGR  161
@@ -138,6 +145,9 @@ static struct
    char                enable;
    char                resize_fix_enable;
    char                use_name_pixmap;
+#if USE_COMPOSITE_OVERLAY_WINDOW
+   char                use_cow;
+#endif
    int                 mode;
    struct
    {
@@ -175,6 +185,10 @@ static struct
 
 static struct
 {
+   Window              root;
+#if USE_COMPOSITE_OVERLAY_WINDOW
+   Window              cow;
+#endif
    char                active;
    char                use_pixmap;
    char                reorder;
@@ -407,7 +421,7 @@ EPictureCreateSolid(Bool argb, double a, double r, double g, double b)
    XRenderPictureAttributes pa;
    XRenderColor        c;
 
-   pmap = XCreatePixmap(dpy, VRoot.xwin, 1, 1, argb ? 32 : 8);
+   pmap = XCreatePixmap(dpy, Mode_compmgr.root, 1, 1, argb ? 32 : 8);
    pictfmt = XRenderFindStandardFormat(dpy,
 				       argb ? PictStandardARGB32 :
 				       PictStandardA8);
@@ -526,7 +540,7 @@ ECompMgrDeskConfigure(Desk * dsk)
      {
 	GC                  gc;
 
-	pmap = XCreatePixmap(disp, VRoot.xwin, 1, 1, VRoot.depth);
+	pmap = XCreatePixmap(disp, Mode_compmgr.root, 1, 1, VRoot.depth);
 	gc = EXCreateGC(pmap, 0, NULL);
 	XSetClipMask(disp, gc, 0);
 	XSetFillStyle(disp, gc, FillSolid);
@@ -908,7 +922,7 @@ shadow_picture(double opacity, int width, int height, int *wp, int *hp)
    if (!shadowImage)
       return None;
 
-   shadowPixmap = XCreatePixmap(dpy, VRoot.xwin,
+   shadowPixmap = XCreatePixmap(dpy, Mode_compmgr.root,
 				shadowImage->width, shadowImage->height, 8);
    shadowPicture = XRenderCreatePicture(dpy, shadowPixmap,
 					XRenderFindStandardFormat(dpy,
@@ -2290,10 +2304,35 @@ ECompMgrStart(void)
    Conf_compmgr.override_redirect.opacity =
       OpacityFix(Conf_compmgr.override_redirect.opacity, 100);
 
+   Mode_compmgr.root = VRoot.xwin;
+#if USE_COMPOSITE_OVERLAY_WINDOW
+   if (Conf_compmgr.use_cow && !Mode.wm.window)
+     {
+	Mode_compmgr.cow = XCompositeGetOverlayWindow(disp, VRoot.xwin);
+	if (Mode_compmgr.cow != None)
+	  {
+	     /* Ok, got the cow! */
+	     Mode_compmgr.root = Mode_compmgr.cow;
+	     /* It is possible to get it stacked below others?!? */
+	     XRaiseWindow(disp, Mode_compmgr.cow);
+	     /* Pass all input events through */
+	     XShapeCombineRectangles(disp, Mode_compmgr.cow, ShapeInput, 0, 0,
+				     NULL, 0, ShapeSet, Unsorted);
+	     D1printf("COW/CMroot=%#lx/%#lx\n",
+		      Mode_compmgr.cow, Mode_compmgr.root);
+	  }
+     }
+   else
+     {
+	Mode_compmgr.cow = None;
+     }
+#endif
+
    pa.subwindow_mode = IncludeInferiors;
    pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
    rootPicture =
-      XRenderCreatePicture(disp, VRoot.xwin, pictfmt, CPSubwindowMode, &pa);
+      XRenderCreatePicture(disp, Mode_compmgr.root, pictfmt, CPSubwindowMode,
+			   &pa);
 
    ECompMgrShadowsInit(Conf_compmgr.shadows.mode, 0);
 
@@ -2395,6 +2434,14 @@ ECompMgrStop(void)
       XCompositeUnredirectSubwindows(disp, VRoot.xwin, CompositeRedirectManual);
 
    EventCallbackUnregister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
+
+#if USE_COMPOSITE_OVERLAY_WINDOW
+   if (Mode_compmgr.cow != None)
+     {
+	XCompositeReleaseOverlayWindow(disp, VRoot.xwin);
+	Mode_compmgr.cow = None;
+     }
+#endif
 
 #if !USE_BG_WIN_ON_ALL_DESKS
    DesksBackgroundRefresh(NULL, DESK_BG_RECONFIGURE_ALL);
@@ -2557,6 +2604,10 @@ ECompMgrHandleRootEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
      case MapNotify:
+#if USE_COMPOSITE_OVERLAY_WINDOW
+	if (ev->xmap.window == Mode_compmgr.cow)
+	   break;
+#endif
 	eo = EobjListStackFind(ev->xmap.window);
 	if (!eo)
 	   eo = EobjRegister(ev->xmap.window, EOBJ_TYPE_EXT);
@@ -2725,6 +2776,9 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_INT(Conf_compmgr, shadows.sharp.opacity, 30),
    CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
    CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
+#if USE_COMPOSITE_OVERLAY_WINDOW
+   CFG_ITEM_BOOL(Conf_compmgr, use_cow, 1),
+#endif
    CFG_ITEM_BOOL(Conf_compmgr, fading.enable, 1),
    CFG_ITEM_INT(Conf_compmgr, fading.time, 200),
    CFG_ITEM_INT(Conf_compmgr, override_redirect.mode, 1),
