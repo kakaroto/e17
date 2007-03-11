@@ -56,7 +56,7 @@ Ecore_Hash *get_exif_data(const char *file)
 /*Get the current image*/
 static const char *get_image(void)
 {
-	const char *img;
+	const char *img = NULL;
 
         if (VISIBLE(em->fbox_vbox) && em->currentf)
         {
@@ -70,10 +70,7 @@ static const char *get_image(void)
         {
                 img = ewl_image_file_path_get(EWL_IMAGE(em->eimage));
         }
-	else
-	{
-		return NULL;
-	}
+	if(!img) return NULL;
 	return strdup(img);
 }
 
