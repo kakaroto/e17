@@ -55,8 +55,8 @@ void create_main_gui(void)
 
 	em = NULL;
 	em = calloc(1, sizeof(Ephoto_Main));
-	em->albums = NULL;
-	em->images = NULL;
+	em->albums = ecore_list_new();
+	em->images = ecore_dlist_new();
 
 	em->win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(em->win), "Ephoto!");
@@ -189,7 +189,7 @@ static void populate(Ewl_Widget *w, void *event, void *data)
 		album = data;
 	}
 
-	if (em->images)
+	if (!ecore_list_is_empty(em->images))
 	{
 		ecore_dlist_destroy(em->images);
 	}

@@ -11,7 +11,7 @@ static int list_image_ids(void *notused, int argc, char **argv, char **col);
 static int image_id, album_id;
 
 /*Ephoto databasing ecore global variables*/
-static Ecore_List *albums = NULL, *images_list = NULL, *image_ids = NULL;
+static Ecore_List *albums, *images_list, *image_ids;
 
 /*Open the sqlite3 database. Create the database if it does not already exits.*/
 sqlite3 *ephoto_db_init(void)
@@ -19,6 +19,10 @@ sqlite3 *ephoto_db_init(void)
 	char path[PATH_MAX];
 	char path2[PATH_MAX];
 	sqlite3 *db;
+
+	albums = ecore_list_new();
+	images_list = ecore_dlist_new();
+	image_ids = ecore_list_new();
 
 	snprintf(path, PATH_MAX, "%s/.ephoto/.ephoto_database", getenv("HOME"));
 	snprintf(path2, PATH_MAX, "%s/.ephoto", getenv("HOME"));
@@ -218,7 +222,7 @@ Ecore_List *ephoto_db_list_images(sqlite3 *db,  const char *album)
 	}
 	images_list = ecore_dlist_new();
 	image_ids = ecore_list_new();
-	
+
 	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", album);
         sqlite3_exec(db, command, get_album_id, 0, 0);
 	snprintf(command, PATH_MAX, "SELECT image_id FROM album_images WHERE album_id = '%d';", album_id);
