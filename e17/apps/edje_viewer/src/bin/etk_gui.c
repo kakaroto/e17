@@ -482,7 +482,7 @@ static void _gui_open_edje_file_cb(Gui *gui)
 	     ETK_FILECHOOSER_WIDGET(gui->fm_chooser), cwd);
    FREE(cwd);
    etk_dialog_pack_in_main_area(ETK_DIALOG(gui->fm_dialog), gui->fm_chooser,
-	   ETK_TRUE, ETK_TRUE, 0, ETK_FALSE);
+	   ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    button = etk_dialog_button_add_from_stock(ETK_DIALOG(gui->fm_dialog),
 	   ETK_STOCK_DIALOG_OK, 1);
