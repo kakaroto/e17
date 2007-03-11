@@ -55,6 +55,8 @@ void create_main_gui(void)
 
 	em = NULL;
 	em = calloc(1, sizeof(Ephoto_Main));
+	em->albums = NULL;
+	em->images = NULL;
 
 	em->win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(em->win), "Ephoto!");
