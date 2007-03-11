@@ -107,6 +107,7 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 	ecore_list_set_free_cb(values, free);
 
         img = get_image();
+	if(!img) return;
 	exif_info = get_exif_data(img);
 
         if(ecore_hash_count(exif_info) == 0)
