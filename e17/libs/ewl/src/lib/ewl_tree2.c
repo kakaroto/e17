@@ -1123,7 +1123,6 @@ ewl_tree2_column_mvc_get(Ewl_Tree2_Column *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, NULL);
-	DCHECK_TYPE_RET("c", c, EWL_CONTAINER_TYPE, NULL);
 
 	DRETURN_PTR(c->parent, DLEVEL_STABLE);
 }
