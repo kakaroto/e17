@@ -8,6 +8,7 @@ Etk_Bin *					T_PTROBJ_ETK
 Etk_Bool					T_IV
 Etk_Bool *					T_PV
 Etk_Box *					T_PTROBJ_ETK
+Etk_Box_Cell *					T_PTROBJ_ETK
 Etk_Box_Group					T_IV
 Etk_Box_Fill_Policy				T_IV
 Etk_HBox *					T_PTROBJ_ETK

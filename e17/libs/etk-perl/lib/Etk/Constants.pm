@@ -278,8 +278,8 @@ use constant {
 
 # entry
 use constant {
-   ImagePrimary=>1,
-   ImageSecondary=>2
+   ImagePrimary=>0,
+   ImageSecondary=>1
 };
 
 # popup window
