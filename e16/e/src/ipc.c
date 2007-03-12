@@ -911,7 +911,8 @@ IPC_Exit(const char *params, Client * c __UNUSED__)
 
    param1[0] = 0;
    l = 0;
-   sscanf(params, "%1000s %n", param1, &l);
+   if (params)
+      sscanf(params, "%1000s %n", param1, &l);
    p2 = (l > 0) ? params + l : NULL;
 
    if (!param1[0])
