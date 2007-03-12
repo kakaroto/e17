@@ -16,7 +16,7 @@
  */
  
 /**
- * @brief @widget The structure of an engine regrouping the different methods to call
+ * @brief The structure of an engine regrouping the different methods to call
  * @structinfo
  */
 struct Etk_Engine

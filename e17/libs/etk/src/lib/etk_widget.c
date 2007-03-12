@@ -216,7 +216,7 @@ Etk_Type *etk_widget_type_get(void)
          widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       
       etk_type_property_add(widget_type, "parent", ETK_WIDGET_PARENT_PROPERTY,
-         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE, etk_property_value_pointer(NULL));
+         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
       etk_type_property_add(widget_type, "theme_file", ETK_WIDGET_THEME_FILE_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "theme_group", ETK_WIDGET_THEME_GROUP_PROPERTY,
@@ -1895,6 +1895,9 @@ static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Pr
 
    switch (property_id)
    {
+      case ETK_WIDGET_PARENT_PROPERTY:
+         etk_widget_parent_set(widget, ETK_WIDGET(etk_property_value_pointer_get(value)));
+         break;
       case ETK_WIDGET_THEME_FILE_PROPERTY:
          etk_widget_theme_file_set(widget, etk_property_value_string_get(value));
          break;
@@ -3475,7 +3478,7 @@ static void _etk_widget_content_object_clip_unset_cb(Evas_Object *obj)
  * \par Properties:
  * @prop_name "parent": The parent of the widget
  * @prop_type Pointer (Etk_Widget *)
- * @prop_ro
+ * @prop_rw
  * @prop_val NULL
  * \par
  * @prop_name "theme_file": The path to the theme-file used by the widget (NULL if the widget used

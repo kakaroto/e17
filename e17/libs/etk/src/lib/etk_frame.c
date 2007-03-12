@@ -33,7 +33,7 @@ static void _etk_frame_realize_cb(Etk_Object *object, void *data);
  * @brief Gets the type of an Etk_Frame
  * @return Returns the type of an Etk_Frame
  */
-Etk_Type *etk_frame_type_get()
+Etk_Type *etk_frame_type_get(void)
 {
    static Etk_Type *frame_type = NULL;
 
@@ -75,26 +75,22 @@ void etk_frame_label_set(Etk_Frame *frame, const char *label)
    if (label != frame->label)
    {
       free(frame->label);
-      if (label)
-	  frame->label = strdup(label);
-      else
-	  frame->label = NULL;
-      etk_object_notify(ETK_OBJECT(frame), "label");
+      frame->label = label ? strdup(label) : NULL;
    }
 
-   if (ETK_WIDGET(frame)->theme_object)
+   if (!frame->label || frame->label[0] == '\0')
    {
-      if (!frame->label || *frame->label == '\0')
-      {
-         etk_widget_theme_part_text_set(ETK_WIDGET(frame), "etk.text.label", "");
-         etk_widget_theme_signal_emit(ETK_WIDGET(frame), "etk,action,hide,label", ETK_TRUE);
-      }
-      else
-      {
-         etk_widget_theme_part_text_set(ETK_WIDGET(frame), "etk.text.label", frame->label);
-         etk_widget_theme_signal_emit(ETK_WIDGET(frame), "etk,action,show,label", ETK_TRUE);
-      }
+      etk_widget_theme_part_text_set(ETK_WIDGET(frame), "etk.text.label", "");
+      etk_widget_theme_signal_emit(ETK_WIDGET(frame), "etk,action,hide,label", ETK_TRUE);
    }
+   else
+   {
+      etk_widget_theme_part_text_set(ETK_WIDGET(frame), "etk.text.label", frame->label);
+      etk_widget_theme_signal_emit(ETK_WIDGET(frame), "etk,action,show,label", ETK_TRUE);
+   }
+   
+   if (label != frame->label)
+      etk_object_notify(ETK_OBJECT(frame), "label");
 }
 
 /**

@@ -951,7 +951,7 @@ static void _etk_editable_text_position_update(Evas_Object *editable, int real_w
    else
       offset_x += (ow - tw) * sd->align;
    
-   new_ty = oy + ((oh - th) / 2);
+   new_ty = oy + ((oh - th) / 2) + 1;
    evas_object_move(sd->text_object, tx + offset_x, new_ty);
    evas_object_move(sd->cursor_object, cx + offset_x, cy + (new_ty - ty));
    evas_object_move(sd->selection_object, sx + offset_x, sy + (new_ty - ty));

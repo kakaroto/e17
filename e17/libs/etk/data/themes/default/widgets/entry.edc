@@ -1,6 +1,6 @@
 group {
    name: "etk/entry";
-   min: 120 22;
+   min: 60 22;
    data {
       item: "icon_highlight_color" "242 222 181 255";
    }
@@ -10,12 +10,12 @@ group {
          description {
             state: "default" 0.0;
             rel1 {
-               relative: 0.0 0.5;
-               offset: 0 -11;
+               relative: 0.0 0.0;
+               offset: 0 0;
             }
             rel2 {
-               relative: 1.0 0.5;
-               offset: -1 10;
+               relative: 1.0 1.0;
+               offset: -1 -1;
             }
             image {
                normal: "entry.png";
@@ -33,12 +33,12 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.0;
-               offset: 4 3;
+               offset: 4 2;
                to: "entry";
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -5 -1;
+               offset: -5 -2;
                to: "entry";
             }
          }

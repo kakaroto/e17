@@ -18,6 +18,7 @@
 /**  Checks if the object is an Etk_Frame */
 #define ETK_IS_FRAME(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_FRAME_TYPE))
 
+
 /**
  * @brief @widget A bin container with a label
  * @structinfo
@@ -31,7 +32,8 @@ struct Etk_Frame
    char *label;
 };
 
-Etk_Type   *etk_frame_type_get();
+
+Etk_Type   *etk_frame_type_get(void);
 Etk_Widget *etk_frame_new(const char *label);
 
 void        etk_frame_label_set(Etk_Frame *frame, const char *label);

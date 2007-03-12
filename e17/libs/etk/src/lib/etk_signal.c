@@ -471,7 +471,7 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *re
    }
    
    /* Then we call the corresponding callbacks */
-   if (object_ptr)
+   if (object_ptr && !emitted_signal->stop_emission)
    {
       callbacks = NULL;
       etk_object_signal_callbacks_get(object, signal, &callbacks);
