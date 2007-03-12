@@ -360,7 +360,11 @@ ewl_filelist_modtime_get(time_t st_modtime)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	time = ctime(&st_modtime);
-	if (time) time = strdup(time);
+	if (time) 
+	{
+		time = strdup(time);
+		time[strlen(time) - 1] = '\0';
+	}
 	else time = strdup("unknown");
 
 	DRETURN_PTR(time, DLEVEL_STABLE);
