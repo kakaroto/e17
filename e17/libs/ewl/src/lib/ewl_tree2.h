@@ -221,14 +221,12 @@ typedef struct Ewl_Tree2_Node Ewl_Tree2_Node;
  */
 struct Ewl_Tree2_Node
 {
-	Ewl_Container container;
+	Ewl_MVC mvc;
 
 	Ewl_Widget *tree;		/**< The parent tree */
 	Ewl_Widget *row;		/**< The row this node is for */
 	Ewl_Widget *handle;		/**< the expansion handle */
 
-	Ewl_Model *model;		/**< The model used to make this row */
-	void *data;			/**< The data that this nodes row comes from */
 	unsigned int row_num;		/**< The row number of this row */
 	Ewl_Tree_Node_Flags expanded;
 };

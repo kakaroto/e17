@@ -818,8 +818,8 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Tree2_Branch_Cache *curbranch,
 		node = ewl_tree2_node_new();
 		EWL_TREE2_NODE(node)->tree = EWL_WIDGET(tree);
 		EWL_TREE2_NODE(node)->row_num = i;
-		EWL_TREE2_NODE(node)->model = curbranch->model;
-		EWL_TREE2_NODE(node)->data = curbranch->data;
+		ewl_mvc_model_set(EWL_MVC(node), curbranch->model);
+		ewl_mvc_data_set(EWL_MVC(node), curbranch->data);
 
 		ewl_container_child_append(EWL_CONTAINER(parent), node);
 		if (!hidden) ewl_widget_show(node);
@@ -951,8 +951,8 @@ ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	if (tree->type != EWL_TREE_SELECTION_TYPE_ROW)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_mvc_handle_click(EWL_MVC(tree), node->model,
-				node->data,
+	ewl_mvc_handle_click(EWL_MVC(tree), ewl_mvc_model_get(EWL_MVC(node)),
+				ewl_mvc_data_get(EWL_MVC(node)),
 				node->row_num, -1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -978,9 +978,10 @@ ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	column = ewl_container_child_index_get(EWL_CONTAINER(row), w);
 
-	ewl_mvc_handle_click(EWL_MVC(node->tree), node->model,
-			node->data, node->row_num, 
-			column);
+	ewl_mvc_handle_click(EWL_MVC(node->tree),
+			ewl_mvc_model_get(EWL_MVC(node)),
+			ewl_mvc_data_get(EWL_MVC(node)),
+			node->row_num, column);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1228,7 +1229,7 @@ ewl_tree2_node_init(Ewl_Tree2_Node *node)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("node", node, FALSE);
 
-	if (!ewl_container_init(EWL_CONTAINER(node)))
+	if (!ewl_mvc_init(EWL_MVC(node)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(EWL_WIDGET(node), EWL_TREE2_NODE_TYPE);
@@ -1297,12 +1298,11 @@ ewl_tree2_node_expandable_get(Ewl_Tree2_Node *node)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("node", node, FALSE);
 
-	DRETURN_INT((node->data ? TRUE : FALSE), DLEVEL_STABLE);
+	DRETURN_INT((ewl_mvc_data_get(EWL_MVC(node)) ? TRUE : FALSE), DLEVEL_STABLE);
 }
 
 void
 ewl_tree2_node_expand(Ewl_Tree2_Node *node)
-
 {
 	Ewl_Widget *child;
 	Ecore_List *tmp;
@@ -1333,7 +1333,9 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 
 	IF_FREE_LIST(tmp);
 
-	ewl_tree2_row_expand(EWL_TREE2(node->tree), node->data, node->row_num);
+	ewl_tree2_row_expand(EWL_TREE2(node->tree),
+			ewl_mvc_data_get(EWL_MVC(node)),
+			node->row_num);
 
 	node->expanded = EWL_TREE_NODE_EXPANDED;
 	ewl_check_checked_set(EWL_CHECK(node->handle), TRUE);
@@ -1373,7 +1375,8 @@ ewl_tree2_node_collapse(Ewl_Tree2_Node *node)
 
 	IF_FREE_LIST(tmp);
 
-	ewl_tree2_row_collapse(EWL_TREE2(node->tree), node->data, node->row_num);
+	ewl_tree2_row_collapse(EWL_TREE2(node->tree),
+			ewl_mvc_data_get(EWL_MVC(node)), node->row_num);
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 	ewl_check_checked_set(EWL_CHECK(node->handle), FALSE);
