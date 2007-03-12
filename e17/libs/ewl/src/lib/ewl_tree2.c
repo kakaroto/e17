@@ -736,7 +736,6 @@ ewl_tree2_column_build(Ewl_Row *row, Ewl_Model *model, Ewl_View *view,
 	cell = ewl_cell_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(row), cell);
-	ewl_attach_widget_association_set(cell, row);
 	ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
 				ewl_tree2_cb_cell_clicked, node);
 	ewl_widget_show(cell);
@@ -828,7 +827,6 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Tree2_Branch_Cache *curbranch,
 		row = ewl_row_new();
 		ewl_row_header_set(EWL_ROW(row), EWL_ROW(tree->header));
 		ewl_container_child_append(EWL_CONTAINER(node), row);
-		ewl_attach_widget_association_set(row, tree);
 		ewl_callback_append(row, EWL_CALLBACK_CLICKED,  
 					ewl_tree2_cb_row_clicked, node);
 		EWL_TREE2_NODE(node)->row = row;
@@ -948,11 +946,11 @@ ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	tree = ewl_attach_widget_association_get(w);
+	node = data;
+	tree = EWL_TREE2(node->tree);
 	if (tree->type != EWL_TREE_SELECTION_TYPE_ROW)
 		DRETURN(DLEVEL_STABLE);
 
-	node = data;
 	ewl_mvc_handle_click(EWL_MVC(tree), node->model,
 				node->data,
 				node->row_num, -1);
@@ -972,15 +970,15 @@ ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	row = ewl_attach_widget_association_get(w);
-	tree = ewl_attach_widget_association_get(row);
+	row = EWL_ROW(w->parent);
+	node = EWL_TREE2_NODE(data);
+	tree = EWL_TREE2(node->tree);
 	if (tree->type != EWL_TREE_SELECTION_TYPE_CELL)
 		DRETURN(DLEVEL_STABLE);
 
-	node = data;
 	column = ewl_container_child_index_get(EWL_CONTAINER(row), w);
 
-	ewl_mvc_handle_click(EWL_MVC(tree), node->model,
+	ewl_mvc_handle_click(EWL_MVC(node->tree), node->model,
 			node->data, node->row_num, 
 			column);
 
