@@ -737,29 +737,36 @@ ewl_configure_request(Ewl_Widget * w)
 	 * Widget scheduled for destruction, configuration, or is being called
 	 * within a configure callback.
 	 */
-	/*
-	if (ewl_object_queued_has(o, EWL_FLAG_QUEUED_DSCHEDULED) ||
-			ewl_object_queued_has(o, EWL_FLAG_QUEUED_CSCHEDULED) ||
-			ewl_object_queued_has(o, EWL_FLAG_QUEUED_CPROCESS))
-			*/
-	if (ewl_object_queued_has(o, EWL_FLAG_QUEUED_DSCHEDULED |
+	if (ewl_object_queued_has(o, (EWL_FLAG_QUEUED_DSCHEDULED |
 				EWL_FLAG_QUEUED_CSCHEDULED |
-				EWL_FLAG_QUEUED_CPROCESS))
-		DRETURN(DLEVEL_STABLE);
-
-	emb = ewl_embed_widget_find(w);
-	if (!emb)
+				EWL_FLAG_QUEUED_CPROCESS)))
 		DRETURN(DLEVEL_STABLE);
 
 	/*
-	 * Check for any parent scheduled for configuration.
+	 * Check for any parent scheduled for configuration, and look for the
+	 * top level widget in this branch.
 	 */
 	search = w;
-	while ((search = search->parent)) {
+	while (search->parent) {
+		search = search->parent;
 		if (ewl_object_queued_has(EWL_OBJECT(search),
 					EWL_FLAG_QUEUED_CSCHEDULED))
 			DRETURN(DLEVEL_TESTING);
 	}
+
+	/*
+	 * Verify top level widget is not queued for configure.
+	 */
+	if (ewl_object_queued_has(EWL_OBJECT(search),
+				EWL_FLAG_QUEUED_CSCHEDULED))
+		DRETURN(DLEVEL_TESTING);
+
+	/*
+	 * Stop processing if this widget doesn't have a valid embed parent.
+	 */
+	if (!ewl_object_toplevel_get(EWL_OBJECT(search)))
+		DRETURN(DLEVEL_STABLE);
+	emb = EWL_EMBED(search);
 
 	/*
 	 * No parent of this widget is queued so add it to the queue. All
@@ -806,8 +813,7 @@ ewl_configure_queue_widget_run(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (ewl_object_flags_get(EWL_OBJECT(w),
-				 EWL_FLAG_PROPERTY_TOPLEVEL)) {
+	if (ewl_object_toplevel_get(EWL_OBJECT(w))) {
 		ewl_object_size_request(EWL_OBJECT(w),
 				ewl_object_current_w_get(EWL_OBJECT(w)),
 				ewl_object_current_h_get(EWL_OBJECT(w)));
