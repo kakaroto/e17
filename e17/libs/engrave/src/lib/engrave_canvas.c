@@ -442,7 +442,7 @@ engrave_canvas_part_state_text_setup(Engrave_Part_State *eps)
 {
    int r, g, b, a;
    const char *font_key;
-   const char *font_name;
+   char font_name[4096];
    Engrave_Part *ep = (eps ? eps->parent : NULL);
    Engrave_Group *eg = (ep ? ep->parent : NULL);
    Engrave_File *ef = (eg ? eg->parent : NULL);
@@ -452,10 +452,9 @@ engrave_canvas_part_state_text_setup(Engrave_Part_State *eps)
 
       font_key = engrave_part_state_text_font_get(eps);
       efont = engrave_file_font_by_name_find(ef, font_key);
-      font_name = engrave_font_path_get(efont);
-
-   }else 
-      font_name = "Vera.ttf";
+      snprintf(font_name,4096,"%s/%s",engrave_file_font_dir_get(ef),
+                                       engrave_font_path_get(efont));
+   }
 
    evas_object_text_text_set(ep->object, 
                              engrave_part_state_text_text_get(eps));
