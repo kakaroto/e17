@@ -1973,7 +1973,9 @@ DeskPropertyChange(Desk * dsk, XEvent * ev)
 		   ev->xany.window, pmap);
 	if (ev->xany.window != VRoot.xwin)
 	   return;
+#if 0				/* FIXME - Remove? Or was this here for a reason? */
 	dsk->bg.pmap_set = pmap;
+#endif
 	if (pmap == dsk->bg.pmap)
 	   return;
 	if (pmap == Mode.root.ext_pmap)
