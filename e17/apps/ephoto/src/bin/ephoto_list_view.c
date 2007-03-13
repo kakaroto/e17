@@ -97,7 +97,7 @@ static void list_view_assign(Ewl_Widget *w, void *data)
 	image_pixels_int_get(image, &width, &height);
 	
 	img = add_image(w, image, 1, NULL, NULL);
-	ewl_image_constrain_set(EWL_IMAGE(img), 48);
+	ewl_image_constrain_set(EWL_IMAGE(img), 64);
 	ewl_widget_name_set(w, image);
 	
 	size = ecore_file_size(image);

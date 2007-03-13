@@ -204,6 +204,7 @@ static void populate(Ewl_Widget *w, void *event, void *data)
                 imagef = ecore_dlist_current(em->images);
 
                 thumb = add_image(em->fbox, imagef, 1, set_info, NULL);
+		ewl_image_constrain_set(EWL_IMAGE(thumb), 64);
 		ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_name_set(thumb, imagef);
 
