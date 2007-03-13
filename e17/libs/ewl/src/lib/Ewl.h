@@ -217,7 +217,7 @@
  * other applications to demonstrate EWLs capabilities.
  *
  * If you have questions, corrections, or improvements, please send
- * them to <a href="mailto: rbdpngn@users.sourceforge.net">RbdPngn</a>. 
+ * them to <a href="mailto: enlightenment-devel@lists.sourceforge.net">enlightenment-devel at lists dot sourceforge dot net</a>. 
  */
 
 /**
