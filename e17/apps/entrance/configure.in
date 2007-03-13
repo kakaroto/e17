@@ -18,14 +18,21 @@ AC_DEFINE_UNQUOTED(PREFIX, "${prefix}", [Install prefix])
 
 AC_EXPAND_DIR(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
 AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR", [Shared data directory])
-AC_EXPAND_DIR(PACKAGE_LIB_DIR, "$bindir")
+AC_EXPAND_DIR(PACKAGE_BIN_DIR, "$bindir")
 AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "$PACKAGE_BIN_DIR", [Location of binaries])
 AC_EXPAND_DIR(PACKAGE_LIB_DIR, "$libdir")
 AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "$PACKAGE_LIB_DIR", [Location of libraries])
 
 # Override autosplat's destination dir settings
-test $sysconfdir = '${prefix}/etc' && sysconfdir="/etc"
-test $localstatedir = '${prefix}/var' && localstatedir="/var/lib/${PACKAGE}"
+if test $sysconfdir = '${prefix}/etc'; then
+    if test $prefix = '/usr' -o $prefix = '/usr/local'; then
+        # "make distcheck" does weird shit with $prefix without properly
+        # setting DESTDIR, at least with some autoSPLAT versions.  So only
+        # reset this if we're installing to /usr or /usr/local.
+        sysconfdir="/etc"
+    fi
+fi
+test $localstatedir = '${prefix}/var' && localstatedir="/var/run/${PACKAGE}"
 
 AC_DEFINE_UNQUOTED(PACKAGE_CFG_DIR, "${sysconfdir}", [Config data directory])
 AC_DEFINE_UNQUOTED(PACKAGE_STATE_DIR, "${localstatedir}", [State data directory])
@@ -42,7 +49,8 @@ AC_ARG_WITH(xbin,
             [
                 xbin="$withval"
             ], [
-                xbin="/usr/X11R6/bin";
+                AC_PATH_PROG(xbin, X, /usr/X11R6/bin, $PATH:/usr/X11R6/bin:/usr/X11R7/bin)
+                xbin=`dirname $xbin`
             ])
 AC_DEFINE_UNQUOTED(X_BINARIES, "${xbin}", [Path to X binaries])
 AC_SUBST(xbin)

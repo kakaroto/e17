@@ -2,9 +2,9 @@
 #
 # Originally based on: gdm /etc/init.d script on debian
 #
-# THIS DOESN'T WORK YET atmos - May 6, 2002
-# THIS DOES WORK! atmos - May 27, 2002
-# THIS WORKS WITH LSB! azundris - May 23, 2004
+# chkconfig: - 99 01
+# description: Entrance Display Manager
+# probe: true
 
 # /etc/init.d/entrance
 #
@@ -15,7 +15,7 @@
 # Required-Stop:
 # Default-Start:     5
 # Default-Stop:
-# Description:       X Display Manager
+# Description:       Entrance Display Manager
 ### END INIT INFO
 
 set -e
@@ -23,7 +23,7 @@ set -e
 # HEED_DEFAULT_DISPLAY_MANAGER to "false."
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:@prefix@/sbin:@prefix@/bin
 DAEMON=@prefix@/sbin/entranced
-PIDFILE=/var/run/entranced.pid
+PIDFILE=/var/run/entrance/entranced.pid
 
 test -x $DAEMON || exit 0
 

@@ -3,12 +3,14 @@
 
 /* extern Entranced_Config config; */
 
+int entranced_debug_flag = 0;
+
 void
 entranced_debug(char *fmt, ...)
 {
 /*   if (config.debuglevel > 0) */
-#ifdef DEBUG
-   if (ENTRANCED_DEBUG)
+#ifdef ENTRANCED_DEBUG
+   if (entranced_debug_flag)
    {
       va_list args;
 

@@ -41,20 +41,15 @@ usage(char *name)
    /* This should probably in a separate usage function, but bleh */
    printf("Entranced - Launcher for the Entrance Display Manager\n");
    printf("Usage: %s [OPTION] ...\n\n", name);
-   printf
-      ("--------------------------------------------------------------------------\n");
+   printf("--------------------------------------------------------------------------\n");
    printf("  -c CONFIG          Specify config file for greeter\n");
    printf("  -d DISPLAY         Connect to an existing X server\n");
    printf("  -help              Display this help message\n");
-   /* printf(" -verbose Display extra debugging info\n"); */
-   printf
-      ("  -nodaemon          Don't fork to background (useful for init scripts)\n");
-   printf
-      ("==========================================================================\n\n");
-   printf
-      ("Note: if you're launching Entrance from within an existing X session, don't\n");
-   printf
-      ("try to use entranced or you may get unexpected results. Instead, launch\n");
+   printf("  -verbose           Display extra debugging info\n");
+   printf("  -nodaemon          Don't fork to background (useful for init scripts)\n");
+   printf("==========================================================================\n\n");
+   printf("Note: if you're launching Entrance from within an existing X session, don't\n");
+   printf("try to use entranced or you may get unexpected results. Instead, launch\n");
    printf("entrance directly by typing \"entrance\".\n\n");
    exit(0);
 }
@@ -77,6 +72,7 @@ main(int argc, char **argv)
       {"help", 0, 0, 'h'},
       {"disable-xauth", 0, 0, 'a'},
       {"verbose", 0, 0, 'v'},
+      {"debug", 0, 0, 'D'},
       {0, 0, 0, 0}
    };
    pid_t entranced_pid = getpid();
@@ -99,7 +95,7 @@ main(int argc, char **argv)
    /* Parse command-line options */
    while (1)
    {
-      c = getopt_long_only(argc, argv, "c:d:nhv", d_opt, NULL);
+      c = getopt_long_only(argc, argv, "c:d:nhvD", d_opt, NULL);
       if (c == -1)
          break;
       switch (c)
@@ -118,8 +114,14 @@ main(int argc, char **argv)
            break;
         case 'h':
            usage(argv[0]);
-           /* case 'v': config.debuglevel = 1; */
-
+           break;
+        case 'v':
+           entranced_debug_flag = 1;
+           entranced_debug("Verbose output active.\n");
+           break;
+        case 'D':
+           d->xprog = DEBUG_X_SERVER;
+           break;
       }
    }
 
@@ -135,7 +137,6 @@ main(int argc, char **argv)
 
    entranced_debug("entranced: main: display number is %d\n", d->dispnum);
 
-
    entranced_pid = getpid();
    if (nodaemon)
    {
@@ -143,7 +144,9 @@ main(int argc, char **argv)
       {
          syslog(LOG_CRIT, "%d is the pid, but I couldn't write to %s.",
                 entranced_pid, PIDFILE);
-         exit(1);
+         if (! entranced_debug_flag) {
+             exit(1);
+         }
       }
    }
    else
@@ -154,14 +157,17 @@ main(int argc, char **argv)
    /* Check to make sure entrance binary is executable */
    if (access(ENTRANCE, X_OK))
    {
-      syslog(LOG_CRIT,
-             "Fatal Error: Unable to launch entrance binary. Aborting.");
-      exit(1);
+       entranced_debug("Execute permission denied for " ENTRANCE " binary.\n");
+       syslog(LOG_CRIT, "Fatal Error:  Unable to launch entrance binary.");
+       exit(1);
    }
 
    /* Init IPC */
-   if (!entranced_ipc_init(getpid()))
-      exit(1);
+   if (!entranced_ipc_init(getpid())) {
+       entranced_debug("Unable to initialize IPC.  Aborting.\n");
+       syslog(LOG_CRIT, "Fatal Error:  Unable to initialize IPC.");
+       exit(1);
+   }
 
    /* Daemonize */
    if (!nodaemon)
@@ -175,16 +181,11 @@ main(int argc, char **argv)
    }
 
    /* Event filter */
-   _e_filter =
-      ecore_event_filter_add(_filter_cb_start, _filter_cb_loop,
-                             _filter_cb_end, NULL);
+   _e_filter = ecore_event_filter_add(_filter_cb_start, _filter_cb_loop, _filter_cb_end, NULL);
 
    /* Set up event handlers */
-   _e_handler =
-      ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _event_cb_exited, d);
-   _d_handler =
-      ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _event_cb_signal_exit,
-                              NULL);
+   _e_handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _event_cb_exited, d);
+   _d_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _event_cb_signal_exit, NULL);
 /*    _sigusr1_handler = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER, _sigaction_cb_sigusr, NULL); */
 
    /* Manually add signal handler for SIGUSR1 */
@@ -201,8 +202,7 @@ main(int argc, char **argv)
    {
       free(d);
       syslog(LOG_CRIT, "Could not start X server.");
-      fprintf(stderr,
-              "Entrance could not start the X server. Please check your config.\n");
+      fprintf(stderr, "Entrance could not start the X server. Please check your config.\n");
       exit(1);
    }
 

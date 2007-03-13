@@ -4,12 +4,10 @@ MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = @EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ \
 @ESMART_CFLAGS@
 
-entrancelibdir = $(libdir)/$(PACKAGE)
-
 #bin_PROGRAMS = entrance entrance_edit
 bin_PROGRAMS = entrance
 
-entrancelib_PROGRAMS = entrance_login
+sbin_PROGRAMS = entrance_login
 
 entrance_SOURCES = \
 	entrance_auth.c entrance_auth.h \

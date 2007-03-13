@@ -29,6 +29,7 @@ dream about...and without the bloat.
 %install
 %{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
 test -d ${HOME:-/tmp}/.ecore && %{__rm} -rf ${HOME:-/tmp}/.ecore || :
+%{__mkdir_p} $RPM_BUILD_ROOT%{_var}/run/%{name}
 
 %post
 /sbin/ldconfig || :
@@ -48,9 +49,8 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_bindir}/entrance*
 %{_includedir}/*.h
 %{_libdir}/libentrance*
-%{_libdir}/entrance/entrance_login
-%{_libdir}/entrance/entrance_wrapper
-%{_sbindir}/entranced
+%{_sbindir}/entrance*
 %{_datadir}/%{name}
+%{_var}/run/%{name}
 
 %changelog

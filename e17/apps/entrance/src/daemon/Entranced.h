@@ -20,10 +20,10 @@
 #define ENTRANCED_DEBUG 1
 
 #define DEFAULT_X_SERVER X_BINARIES "/X -quiet -nolisten tcp" ENTRANCE_VT_ARG
-//#define X_SERVER "/usr/X11R6/bin/Xnest -full"
+#define DEBUG_X_SERVER X_BINARIES "/Xnest"
 #define X_DISP ":0"             /* only used if DISPLAY variable is NOT set */
-#define ENTRANCE PACKAGE_LIB_DIR "/" PACKAGE "/entrance_wrapper"
-#define PIDFILE "/var/run/entranced.pid"
+#define ENTRANCE PACKAGE_BIN_DIR "/entrance_wrapper"
+#define PIDFILE PACKAGE_STATE_DIR "/entranced.pid"
 
 /* display->status possible values */
 #define NOT_RUNNING 0

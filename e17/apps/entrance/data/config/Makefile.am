@@ -1,13 +1,12 @@
-MAINTAINERCLEANFILES = Makefile.in
-
 DB = entrance_config.cfg
 SCRIPT = build_config.sh
 
 CLEANFILES = $(DB)
-EXTRA_DIST = $(SCRIPT)
+MAINTAINERCLEANFILES = Makefile.in
 
-configdbdir = $(sysconfdir)
-configdb_DATA = $(DB)
+sysconf_DATA = $(DB)
+
+EXTRA_DIST = $(SCRIPT)
 
 all: $(DB)
 

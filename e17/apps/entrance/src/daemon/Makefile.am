@@ -3,10 +3,8 @@ MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = @X_CFLAGS@ @ECORE_CFLAGS@
 
-entrancelibdir = $(libdir)/$(PACKAGE)
-
 sbin_PROGRAMS = entranced
-entrancelib_SCRIPTS = entrance_wrapper
+bin_SCRIPTS = entrance_wrapper
 
 entranced_SOURCES = \
 	Entranced.h \
