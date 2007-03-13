@@ -793,16 +793,6 @@ UpdateProgFrame(void)
          ETK_CALLBACK(on_Param2Entry_text_changed));
 }
 
-void UpdateWindowTitle(void){
-/*    GString *str;
-   if (EDCFile){
-      str = g_string_new("");
-      g_string_printf(str,"Edje Editor - %s",EDCFile->str);
-      etk_window_title_set(ETK_WINDOW(UI_MainWin), str->str);
-      g_string_free(str,TRUE);
-   } */
-}
-
 void
 ShowFilechooser(int FileChooserType)
 {
@@ -814,18 +804,23 @@ ShowFilechooser(int FileChooserType)
          etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose an EDJ or EDC file to open");
          etk_widget_hide(UI_FilechooserFileNameLabel);
          etk_widget_hide(UI_FilechooserFileNameEntry);
+         etk_widget_hide(UI_FilechooserSaveButton);
       break;
       case FILECHOOSER_IMAGE:
          etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose an image to import");
+         etk_widget_hide(UI_FilechooserSaveButton);
       break;
       case FILECHOOSER_FONT:
          etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose an font to import");
+         etk_widget_hide(UI_FilechooserSaveButton);
       break;
       case FILECHOOSER_SAVE_EDJ:
-          etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose the new edje name");
+         etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose the new edje name");
+         etk_widget_hide(UI_FilechooserLoadButton);
       break;
       case FILECHOOSER_SAVE_EDC:
-          etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose the new edc name");
+         etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose the new edc name");
+         etk_widget_hide(UI_FilechooserLoadButton);
       break;
       default:
       break;
@@ -901,7 +896,7 @@ create_filechooser_dialog(void)
    //etk_signal_connect("row_selected", ETK_OBJECT(fav_tree), ETK_CALLBACK(on_FileChooser_row_selected), NULL);
 
    //label
-   UI_FilechooserFileNameLabel = etk_label_new("<b>File</b>");
+   UI_FilechooserFileNameLabel = etk_label_new("<b>Full file name</b>");
    etk_object_properties_set (ETK_OBJECT(UI_FilechooserFileNameLabel), "xalign",1.0,NULL);
    etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog),UI_FilechooserFileNameLabel,
       ETK_BOX_START, ETK_BOX_NONE,0);
@@ -911,8 +906,10 @@ create_filechooser_dialog(void)
    etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog),
       UI_FilechooserFileNameEntry, ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
 
-   etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),
+   UI_FilechooserLoadButton = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),
       ETK_STOCK_DOCUMENT_OPEN ,ETK_RESPONSE_OK );
+   UI_FilechooserSaveButton = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),
+      ETK_STOCK_DOCUMENT_SAVE ,ETK_RESPONSE_OK );
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),
       ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL );
 
@@ -977,18 +974,26 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPEN);
 
-   //SaveEDJButton
+   //SaveButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Save edc",NULL);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Save",NULL);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDC);
-
+   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE);
+   
    //SaveEDJButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE_AS);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Save edj",NULL);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Save as",NULL);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDJ);
 
+   
+   //SaveEDCButton
+   button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Export edc",NULL);
+   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
+   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDC);
+   
+   
    sep = etk_hseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), sep);
    sep = etk_vseparator_new();

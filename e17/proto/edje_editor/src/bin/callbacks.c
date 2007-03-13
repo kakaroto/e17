@@ -45,8 +45,15 @@ on_AllButton_click(Etk_Button *button, void *data)
          //ShowAlert("Not yet implemented");
          ShowFilechooser(FILECHOOSER_OPEN);
          break;
-      case TOOLBAR_SAVE_EDC:
+      case TOOLBAR_SAVE:
          printf("Clicked signal on Toolbar Button 'Save' EMITTED\n");
+         if (Cur.open_file_name)
+            engrave_edj_output(Cur.ef,Cur.open_file_name);   
+         else
+            ShowFilechooser(FILECHOOSER_SAVE_EDJ);
+         break;
+      case TOOLBAR_SAVE_EDC:
+         printf("Clicked signal on Toolbar Button 'Save edc' EMITTED\n");
          ShowFilechooser(FILECHOOSER_SAVE_EDC);
          break;
       case TOOLBAR_SAVE_EDJ:
@@ -96,13 +103,6 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
       case TOOLBAR_DEBUG:
          DebugInfo(FALSE);
-         //ZOOM TEST :(
-         //int x,y,w,h;
-         //evas_output_size_get (etk_widget_toplevel_evas_get (ETK_canvas), &w, &h);
-         //evas_output_size_set (etk_widget_toplevel_evas_get (ETK_canvas), w+10, h+10);
-         //evas_output_viewport_get (etk_widget_toplevel_evas_get (ETK_canvas), &x, &y, &w, &h);
-         //evas_output_viewport_set (etk_widget_toplevel_evas_get (ETK_canvas), x+20, y+20, w+10, h+10);
-         //printf("ZOOM: %d %d - %d %d\n",x,y,w,h);
          break;
       case TOOLBAR_IMAGE_FILE_ADD:
          if (engrave_file_image_dir_get(Cur.ef)) ShowFilechooser(FILECHOOSER_IMAGE);
