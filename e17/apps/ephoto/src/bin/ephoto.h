@@ -2,6 +2,7 @@
 #define _EPHOTO_H_
 
 #include "config.h"
+#include <Ecore.h>
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
 #include <Evas.h>
@@ -85,8 +86,8 @@ Ewl_Widget *add_ltree(Ewl_Widget *c);
 Ewl_Widget *add_normal_view(Ewl_Widget *c);
 void set_info(Ewl_Widget *w, void *event, void *data);
 
-/* Ephoto Thumbnail */
-void generate_thumbnail(Ewl_Widget *image, char *path);
+/* Ephoto Slideshow */
+void start_slideshow(Ewl_Widget *w, void *event, void *data);
 
 /* Ephoto Utilities*/
 const char *file_size_get(int size);

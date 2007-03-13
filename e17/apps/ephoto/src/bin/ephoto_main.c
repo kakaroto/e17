@@ -143,12 +143,11 @@ void create_main_gui(void)
         button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/get_exif.png", display_exif_dialog, NULL);
         ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
 	ewl_attach_tooltip_text_set(button, "View Exif Data");
-
         button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", window_fullscreen, NULL);
         ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
 	ewl_attach_tooltip_text_set(button, "Toggle Fullscreen");
 
-        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/x-office-presentation.png", NULL, NULL);
+        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/x-office-presentation.png", start_slideshow, NULL);
 	ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
 	ewl_attach_tooltip_text_set(button, "Start a Slideshow");
 
