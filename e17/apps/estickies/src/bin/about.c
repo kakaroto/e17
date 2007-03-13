@@ -82,8 +82,7 @@ _e_about_show()
    etk_container_add(ETK_CONTAINER(frame), helptext);
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);   
 
-   etk_dialog_pack_in_main_area(ETK_DIALOG(win), vbox, ETK_FALSE, ETK_FALSE,
-				0, ETK_FALSE);
+   etk_dialog_pack_in_main_area(ETK_DIALOG(win), vbox, ETK_FALSE, ETK_FALSE, 0);
    etk_dialog_button_add(ETK_DIALOG(win), "Close", ETK_RESPONSE_CLOSE);
    etk_container_border_width_set(ETK_CONTAINER(win), 7);
    etk_widget_show_all(win);
