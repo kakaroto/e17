@@ -1,19 +1,15 @@
 TODO edje_editor (not a complete list...only the first in my mind)
 =======================================
 
+* Better save routines
+
 * Tooltips EVERYWERE  :)
 
 * Up and Down buttons must move the selected part/description up and down
    (have to wait a way to move the row of the tree)
-
-* RelSpinner don't have to stop at 1.0 an 0 but ?? (maybe 100 -100)
-
-* make the interface fit well ats 1024x768
 
 * A new object add must be take a progressive (and unique) number (newrect1, newrect2...etc)
 
 * Text object: GLOW? GLOW2? FAR? ... does edje suport this?
 
 * Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
-
-* Image: border don't do nothing...why?

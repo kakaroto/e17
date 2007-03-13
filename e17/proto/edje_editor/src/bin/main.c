@@ -13,6 +13,7 @@
 
 #define MAIN_EDC_NAME "edje_editor_link.edc"
 
+
 /**
  * engrave_part_state_remove - remove the state from the part.
  * @param ep: The Engrave_Part to remove the state to.
@@ -414,7 +415,7 @@ LoadEDJ(char *file)
  
    //Text_view
    UI_LoadTextView = etk_text_view_new ();
-   etk_textblock_object_cursor_visible_set(ETK_TEXT_VIEW(UI_LoadTextView)->textblock, ETK_FALSE); //TODO questa riga non funziona
+   //etk_textblock_object_cursor_visible_set(ETK_TEXT_VIEW(UI_LoadTextView)->textblock, ETK_FALSE); //TODO questa riga non funziona
    scrolled_view = etk_scrolled_view_new();
    etk_scrolled_view_policy_set(ETK_SCROLLED_VIEW(scrolled_view), ETK_POLICY_HIDE, ETK_POLICY_SHOW);
    etk_bin_child_set( ETK_BIN(scrolled_view), UI_LoadTextView);

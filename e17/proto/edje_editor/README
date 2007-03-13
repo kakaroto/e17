@@ -5,7 +5,7 @@
 Introduction
 =======================================
 
-edje_editor is an editor for the edc file based on efl
+edje_editor is an visual editor for edje file.
 This is a prealpha state, don't expect nothing.
 
 

@@ -453,7 +453,6 @@ UpdateTextFrame(void)
    //int alpha;
    int r, g, b;
    Etk_Combobox_Item *item = NULL;
-   char* font;
    Engrave_Font *ef;
 
    if (Cur.eps){
@@ -986,14 +985,12 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDJ);
 
-   
-   //SaveEDCButton
+/*    //SaveEDCButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
    etk_object_properties_set(ETK_OBJECT(button),"label","Export edc",NULL);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDC);
-   
-   
+ */   
    sep = etk_hseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), sep);
    sep = etk_vseparator_new();
@@ -1020,6 +1017,7 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_AddMenu_item_activated),(void*) NEW_IMAGE);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
+   
    //New Text
    menu_item = etk_menu_item_image_new_with_label("Text");
    image = etk_image_new_from_edje(EdjeFile,"TEXT.PNG");
@@ -1088,7 +1086,7 @@ create_toolbar(Etk_Toolbar_Orientation o)
    //Compile Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_MEDIA_PLAYBACK_START);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_PLAY);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Compile",NULL);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Test in viewer",NULL);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
 
    //DebugButton

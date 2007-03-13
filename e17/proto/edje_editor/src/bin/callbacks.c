@@ -13,12 +13,16 @@ extern void PROTO_engrave_file_group_remove(Engrave_File *ef, Engrave_Group *eg)
 int current_color_object;
 
 /* Called when the window is destroyed */
-void etk_main_quit_cb(void *data){
+void 
+etk_main_quit_cb(void *data)
+{
    etk_main_quit();
 }
 
 /* Called when the canvas change size */
-void on_canvas_geometry_changed(Etk_Object *canvas, const char *property_name, void *data){
+void 
+on_canvas_geometry_changed(Etk_Object *canvas, const char *property_name, void *data)
+{
    int cx, cy, cw, ch;
    //printf("Geometry Changed Signal on Canvas\n");
    //resize canvas bg
@@ -33,7 +37,7 @@ void on_canvas_geometry_changed(Etk_Object *canvas, const char *property_name, v
 void
 on_AllButton_click(Etk_Button *button, void *data)
 {
-   //GList *current,*prev;
+   char cmd[1024];
    switch ((int)data)
    {
       case TOOLBAR_NEW:
@@ -97,9 +101,14 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
       case TOOLBAR_PLAY:
          printf("Clicked signal on Toolbar Button 'Play' EMITTED\n");
-         ShowAlert("Not yet implemented");
-         //SaveEDC(NULL);
-         //PlayEDC();
+         if (Cur.open_file_name) 
+         {
+            snprintf(cmd,1024,"edje_viewer %s &",Cur.open_file_name);
+            printf("TEST IN VIEWER. cmd: %s\n",cmd);
+            system(cmd);
+         }else{
+            ShowAlert("You need to save the file before testing it.");
+         }
          break;
       case TOOLBAR_DEBUG:
          DebugInfo(FALSE);
@@ -1011,7 +1020,6 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             AddStateToTree(new_state);
 
             Cur.ep = part;
-            //Cur.eps = new_state;
 
             etk_tree_row_select(ecore_hash_get(hash,new_state));
             etk_tree_row_unfold(ecore_hash_get(hash,Cur.eg));
@@ -1037,7 +1045,6 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             AddStateToTree(new_state);
 
             Cur.ep = part;
-            //Cur.eps = new_state;
 
             etk_tree_row_select(ecore_hash_get(hash,new_state));
             etk_tree_row_unfold(ecore_hash_get(hash,Cur.eg));
@@ -1059,11 +1066,12 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             engrave_part_state_name_set(new_state, "default", 0.0);
             engrave_part_state_rel1_relative_set(new_state, 0.1, 0.1);
             engrave_part_state_rel2_relative_set(new_state, 0.9, 0.9);
+            engrave_part_state_text_size_set(new_state,16);
+            engrave_part_state_text_text_set(new_state,"something to say...");
             engrave_part_state_add(part,new_state);
             AddStateToTree(new_state);
 
             Cur.ep = part;
-            //Cur.eps = new_state;
 
             etk_tree_row_select(ecore_hash_get(hash,new_state));
             etk_tree_row_unfold(ecore_hash_get(hash,Cur.eg));
@@ -1081,8 +1089,6 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             engrave_part_state_name_set(new_state, "state", 0.0);
             engrave_part_state_add(Cur.ep,new_state);
             AddStateToTree(new_state);
-
-            //Cur.eps = new_state;
 
             etk_tree_row_select(ecore_hash_get(hash,new_state));
             etk_tree_row_unfold(ecore_hash_get(hash,Cur.ep));
