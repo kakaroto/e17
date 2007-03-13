@@ -442,18 +442,21 @@ engrave_canvas_part_state_text_setup(Engrave_Part_State *eps)
 {
    int r, g, b, a;
    const char *font_key;
-   char font_name[4096];
+   char font_name[PATH_MAX];
    Engrave_Part *ep = (eps ? eps->parent : NULL);
    Engrave_Group *eg = (ep ? ep->parent : NULL);
    Engrave_File *ef = (eg ? eg->parent : NULL);
 
-   if (ef) {
-      Engrave_Font * efont;
+   if (ef)
+   {
+      Engrave_Font * efont = NULL;
 
       font_key = engrave_part_state_text_font_get(eps);
       efont = engrave_file_font_by_name_find(ef, font_key);
-      snprintf(font_name,4096,"%s/%s",engrave_file_font_dir_get(ef),
+      snprintf(font_name,PATH_MAX,"%s/%s",engrave_file_font_dir_get(ef),
                                        engrave_font_path_get(efont));
+   }else{
+      strcpy(font_name,"Vera.ttf");
    }
 
    evas_object_text_text_set(ep->object, 
