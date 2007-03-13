@@ -38,23 +38,20 @@ on_AllButton_click(Etk_Button *button, void *data)
    {
       case TOOLBAR_NEW:
          printf("Clicked signal on Toolbar Button 'New' EMITTED\n");
-         //ShowFilechooser(FILECHOOSER_NEW);
-         ShowAlert("Not yet implemented");
+         system("edje_editor &");
          break;
       case TOOLBAR_OPEN:
          printf("Clicked signal on Toolbar Button 'Open' EMITTED\n");
          //ShowAlert("Not yet implemented");
          ShowFilechooser(FILECHOOSER_OPEN);
          break;
-      case TOOLBAR_SAVE:
+      case TOOLBAR_SAVE_EDC:
          printf("Clicked signal on Toolbar Button 'Save' EMITTED\n");
-         //SaveEDC(NULL);
-         ShowAlert("Not yet implemented");
+         ShowFilechooser(FILECHOOSER_SAVE_EDC);
          break;
-      case TOOLBAR_SAVE_AS:
-         printf("Clicked signal on Toolbar Button 'Save as' EMITTED\n");
-         //ShowFilechooser(FILECHOOSER_SAVE_AS);
-         ShowAlert("Not yet implemented");
+      case TOOLBAR_SAVE_EDJ:
+         printf("Clicked signal on Toolbar Button 'Save edj' EMITTED\n");
+         ShowFilechooser(FILECHOOSER_SAVE_EDJ);
          break;
       case TOOLBAR_ADD:
          printf("Clicked signal on Toolbar Button 'Add' EMITTED\n");
@@ -108,16 +105,12 @@ on_AllButton_click(Etk_Button *button, void *data)
          //printf("ZOOM: %d %d - %d %d\n",x,y,w,h);
          break;
       case TOOLBAR_IMAGE_FILE_ADD:
-         ShowAlert("Not yet implemented =)");
-         //printf("INSERT IMAGE\n");
-         //if (EDCFile->len > 0) ShowFilechooser(FILECHOOSER_IMAGE);
-         //e   lse ShowAlert("You have to save the file once for insert image.");
-            break;
+         if (engrave_file_image_dir_get(Cur.ef)) ShowFilechooser(FILECHOOSER_IMAGE);
+         else ShowAlert("You have to save the file once for insert image.");
+         break;
       case TOOLBAR_FONT_FILE_ADD:
-         ShowAlert("Not yet implemented =)");
-         //printf("INSERT FONT\n");
-         //i   f (EDCFile->len > 0) ShowFilechooser(FILECHOOSER_FONT);
-         //else ShowAlert("You have to save the file once for insert font.");
+         if (engrave_file_font_dir_get(Cur.ef)) ShowFilechooser(FILECHOOSER_FONT);
+         else ShowAlert("You have to save the file once for insert font.");
          break;
    }
 }
@@ -240,7 +233,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
       ev_resize_fake(w,h);
       edje_object_part_text_set (EV_fakewin, "title", Cur.eg->name);
 
-      engrave_canvas_current_group_set (ecanvas, Cur.eg);
+      engrave_canvas_current_group_set (engrave_canvas, Cur.eg);
    }
    ev_redraw();
 }
@@ -580,22 +573,20 @@ on_RelOffsetSpinner_value_changed(Etk_Range *range, double value, void *data)
 }
 
 /* Text Frame Callbacks */
-void on_FontComboBox_changed(Etk_Combobox *combobox, void *data){
+void 
+on_FontComboBox_changed(Etk_Combobox *combobox, void *data)
+{
    printf("Changed Signal on FontComboBox EMITTED \n");
-/*    char* font;
-   if ((font = etk_combobox_item_data_get(etk_combobox_active_item_get (combobox)))){
+   Engrave_Font *ef;
+   if ((ef = etk_combobox_item_data_get(etk_combobox_active_item_get(combobox)))){
       //Set an existing font
-      if (selected_desc){
-   g_string_printf(selected_desc->text_font,"%s",font);
-   ev_draw_part(selected_part);
-
+      if (Cur.eps){
+         printf("selected font: %s\n", engrave_font_name_get (ef));
+         engrave_part_state_text_font_set(Cur.eps,engrave_font_name_get(ef));
+         printf("changed font: %s\n", engrave_part_state_text_font_get(Cur.eps));
+         ev_redraw();
       }
    }
-   else{
-      //Insert a new font in EDC
-      printf("INSERT FONT\n");
-      ShowFilechooser(FILECHOOSER_FONT);
-   } */
 }
 
 void 
@@ -618,9 +609,7 @@ void
 on_FontSizeSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on FontSizeSpinner EMITTED (value: %d)\n",(int)etk_range_value_get(range));
-
    engrave_part_state_text_size_set(Cur.eps,(int)etk_range_value_get(range));
-
    ev_redraw();
 }
 
@@ -628,10 +617,7 @@ void
 on_TextEntry_text_changed(Etk_Object *object, void *data)
 {
    printf("Text Changed Signal on TextEntry EMITTED (value %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
-
    engrave_part_state_text_text_set(Cur.eps,etk_entry_text_get(ETK_ENTRY(object)));
-
-
    ev_redraw();
 }
 
@@ -671,7 +657,7 @@ on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
       etk_widget_hide(UI_DurationLabel);
       etk_widget_show(UI_Param1Entry);
       etk_widget_show(UI_Param1Label);
-      etk_label_set(UI_Param1Label, "<b>Signal</b>");
+      etk_label_set(ETK_LABEL(UI_Param1Label), "<b>Signal</b>");
       etk_widget_hide(UI_Param1Spinner);
       etk_widget_show(UI_Param2Label);
       etk_widget_show(UI_Param2Entry);
@@ -686,7 +672,7 @@ on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
       etk_widget_show(UI_DurationLabel);
       etk_widget_show(UI_Param1Entry);
       etk_widget_show(UI_Param1Label);
-      etk_label_set(UI_Param1Label, "<b>State</b>");
+      etk_label_set(ETK_LABEL(UI_Param1Label), "<b>State</b>");
       etk_widget_show(UI_Param1Spinner);
       etk_widget_hide(UI_Param2Label);
       etk_widget_hide(UI_Param2Entry);
@@ -1198,7 +1184,8 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
 void
 on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
 {
-   Etk_String *cmd = etk_string_new("");
+   char cmd[4096];
+   int ret = 0;
 
    printf("Response Signal on Filechooser EMITTED\n");
 
@@ -1206,75 +1193,86 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
 
       switch(FileChooserOperation){
          case FILECHOOSER_OPEN:
-            etk_string_append_printf(cmd,"edje_editor %s/%s &",
+            snprintf(cmd,4096,"edje_editor %s/%s &",
                etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
                etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
-            system(cmd->string);
-
-
+            system(cmd);
          break;
-       /*   case FILECHOOSER_NEW:
-            //printf("new: %s\n",etk_entry_text_get(UI_FilechooserFileNameEntry));
-            ClearAll();
-            CreateBlankEDC();
-            g_string_printf(EDCFile,"%s",etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
-            g_string_printf(EDCFileDir,"%s",g_path_get_dirname(EDCFile->str));
-            UpdateWindowTitle();
+         case FILECHOOSER_SAVE_EDJ:
+            printf("SAVE EDJ\n");
+            engrave_edj_output(Cur.ef,
+            (char*)etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
+         break;
+         case FILECHOOSER_SAVE_EDC:
+            printf("SAVE EDC\n");
+            engrave_edc_output(Cur.ef,
+            (char*)etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
          break;
          case FILECHOOSER_IMAGE:
             printf("new image: %s\n",etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
-            if (selected_desc){
+            if (Cur.eps){
                //If the new image is not in the edc dir
-               if (strcmp(etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),EDCFileDir->str)){
-                  //TODO check if image already exist in the EDCFileDir
-                  //Copy the image to the EDCDir
-                  FileCopy((char*)etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)),EDCFileDir->str);
+               if (strcmp(etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),engrave_file_image_dir_get(Cur.ef))){
+                  //TODO check if image already exist
+                  //Copy the image to the image_dir
+                  snprintf(cmd, 4096, "cp %s %s", etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)), engrave_file_image_dir_get(Cur.ef));
+                  ret = system(cmd);
+                  if (ret < 0) {
+                     ShowAlert("Error: unable to copy image!");
+                     return;
+                  }
                }
-               //Set the image name
-               g_string_printf(selected_desc->image_normal,"%s",etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+               //Set the new image
+               Engrave_Image* eimg;
+               eimg = engrave_image_new(etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),ENGRAVE_IMAGE_TYPE_LOSSY,95);	 
+               engrave_file_image_add(Cur.ef,eimg);	 
+               engrave_part_state_image_normal_set(Cur.eps,eimg);
+               
+               PopulateImagesComboBox();
                UpdateImageFrame();
-               ev_draw_part(selected_part);
-
-               UpdateImageComboBox();
-               UpdateImageFrame();
+               ev_redraw();
             }
          break;
          case FILECHOOSER_FONT:
             printf("new font: %s\n",etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
-            if (selected_desc){
+            if (Cur.eps){
                //If the new font is not in the edc dir
-               if (strcmp(etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),EDCFileDir->str)){
+               if (strcmp(etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),engrave_file_font_dir_get(Cur.ef))){
                   //TODO check if font already exist in the EDCFileDir
                   //Copy the font to the EDCDir
-                  FileCopy((char*)etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)),EDCFileDir->str);
+                  snprintf(cmd, 4096, "cp %s %s", etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)), engrave_file_font_dir_get(Cur.ef));
+                  ret = system(cmd);
+                  if (ret < 0) {
+                     ShowAlert("Error: unable to copy font!");
+                     return;
+                  }
                }
-               //Set the font name
-               g_string_printf(selected_desc->text_font,"%s",etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+               //Set the new font
+               Engrave_Font *efont;
+               efont = engrave_font_new(
+                  etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
+                  etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+               engrave_file_font_add(Cur.ef,efont);	 
+               engrave_part_state_text_font_set(Cur.eps,etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
 
-               UpdateFontComboBox();
-
+               PopulateFontsComboBox();
                UpdateTextFrame();
-               ev_draw_part(selected_part);
+               ev_redraw();
             }
          break;
-         case FILECHOOSER_SAVE_AS:
-            SaveEDC((char*)etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
-         break; */
       }
       etk_widget_hide(ETK_WIDGET(dialog));
    }
    else{
       etk_widget_hide(ETK_WIDGET(dialog));
    }
-   etk_object_destroy(ETK_OBJECT(cmd));
 }
 
 void 
 on_FileChooser_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    Etk_String *str=etk_string_new("");
-
-
+   
    if (etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)))
      etk_string_append_printf(str,"%s/",etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
 
@@ -1283,6 +1281,7 @@ on_FileChooser_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 
 
    etk_entry_text_set(ETK_ENTRY(UI_FilechooserFileNameEntry),str->string);
+   
    etk_object_destroy(ETK_OBJECT(str));
 }
 

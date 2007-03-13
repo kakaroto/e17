@@ -162,8 +162,8 @@ prepare_canvas(void)
    edje_object_file_set(rel2Y_parent_handler, EdjeFile, "Rel2Y_ParentH");
 
    //Create engrave canvas
-   ecanvas = engrave_canvas_new (etk_widget_toplevel_evas_get(ETK_canvas));
-   etk_canvas_object_add (ETK_CANVAS(ETK_canvas), ecanvas);
+   engrave_canvas = engrave_canvas_new (etk_widget_toplevel_evas_get(ETK_canvas));
+   etk_canvas_object_add (ETK_CANVAS(ETK_canvas), engrave_canvas);
 
    // Create Fake win
    EV_fakewin = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
@@ -378,10 +378,10 @@ ev_redraw(void)
       evas_object_geometry_get(EV_fakewin,&x,&y,&w,&h);
 
       //place engrave canvas
-      evas_object_move(ecanvas, x, y);
-      evas_object_resize(ecanvas,w+1,h);  //This make engrave_canvas redraw
+      evas_object_move(engrave_canvas, x, y);
+      evas_object_resize(engrave_canvas,w+1,h);  //This make engrave_canvas redraw
 
-      evas_object_show(ecanvas);
+      evas_object_show(engrave_canvas);
       evas_object_show(EV_fakewin);
       evas_object_show(EV_movebox);
       evas_object_raise(EV_fakewin);
@@ -391,7 +391,7 @@ ev_redraw(void)
 
    }else
    {
-      evas_object_hide(ecanvas);
+      evas_object_hide(engrave_canvas);
       evas_object_hide(EV_fakewin);
       evas_object_hide(EV_movebox);
       evas_object_hide(rel1X_parent_handler);

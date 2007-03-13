@@ -31,17 +31,17 @@
 enum various
 {
    FILECHOOSER_OPEN,
-   FILECHOOSER_NEW,
    FILECHOOSER_IMAGE,
    FILECHOOSER_FONT,
-   FILECHOOSER_SAVE_AS,
+   FILECHOOSER_SAVE_EDC,
+   FILECHOOSER_SAVE_EDJ,
    TOOLBAR_NEW,
    TOOLBAR_OPEN,
    TOOLBAR_ADD,
    TOOLBAR_REMOVE,
    TOOLBAR_DEBUG,
-   TOOLBAR_SAVE,
-   TOOLBAR_SAVE_AS,
+   TOOLBAR_SAVE_EDC,
+   TOOLBAR_SAVE_EDJ,
    TOOLBAR_PLAY,
    TOOLBAR_MOVE_UP,
    TOOLBAR_MOVE_DOWN,
@@ -89,13 +89,16 @@ struct Current_State
    Engrave_Part  *ep;
    Engrave_Program *epr;
    Engrave_Part_State *eps;
+   char *open_file_name;      //Full path to the open edje file
+   char *source_dir;          //Full path to sources
+   char *main_source_file;    //Full path to the main edc file
 }Cur;
 
 /* GLOBALS */
 int            FileChooserOperation;   //The current file chooser operation (FILECHOOSER_OPEN,FILECHOOSER_NEW etc)
 char           *EdjeFile;              //The filename of the edje_editor.edj file (witch contain all the graphics used by the program)
 
-Evas_Object    *ecanvas;               //The engrave canvas
+Evas_Object    *engrave_canvas;        //The engrave canvas
 Etk_Widget     *ETK_canvas;	         //Designer canvas
 Evas_Object    *EV_canvas_bg;          //
 Evas_Object    *EV_canvas_shadow;      //

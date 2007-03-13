@@ -53,6 +53,7 @@ Etk_Widget *UI_FileChooserDialog;
 Etk_Widget *UI_PlayDialog;
 Etk_Widget *UI_PlayTextView;
 Etk_Widget *UI_FilechooserFileNameEntry;
+Etk_Widget *UI_FilechooserFileNameLabel;
 Etk_Widget *UI_tree_vbox;
 Etk_Widget *UI_AlertDialog;
 Etk_Widget *UI_GroupMinWSpinner;
