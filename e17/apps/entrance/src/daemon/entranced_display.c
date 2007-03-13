@@ -30,6 +30,7 @@ edd_new(void)
    d->xprog = ecore_config_string_get("/entranced/xserver");
    d->attempts = ecore_config_int_get("/entranced/attempts");
 
+   d->dispnum = 0;
    d->status = NOT_RUNNING;
    d->auth_en = 1;
    d->auths = ecore_list_new();

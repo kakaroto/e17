@@ -128,11 +128,9 @@ main(int argc, char **argv)
    if (!d->name)
       d->name = strdup(X_DISP);
 
-   str = strstr(d->name, ":");
+   str = strchr(d->name, ':');
 
-   if (!str || str >= (d->name + strlen(d->name) - 1))
-      d->dispnum = 0;
-   else
+   if (str)
       d->dispnum = atoi(str + 1);
 
    entranced_debug("entranced: main: display number is %d\n", d->dispnum);
