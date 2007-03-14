@@ -25,7 +25,6 @@ static int change_picture(void *data)
 	
 	ewl_image_file_set(EWL_IMAGE(image), image_path, NULL);
 	
-	free(image_path);
 	return 1;
 }
 
@@ -46,7 +45,6 @@ static void show_first_image(Ewl_Widget *w, void *event, void *data)
 
 	change = ecore_timer_add(5, change_picture, w);
 	
-	free(image_path);
 	return;
 }
 
