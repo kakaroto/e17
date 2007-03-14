@@ -1493,8 +1493,12 @@ EwinMoveToArea(EWin * ewin, int ax, int ay)
 void
 EwinOpActivate(EWin * ewin, int source, int raise)
 {
+   int                 unshade;
+
    if (source == OPSRC_APP && EwinInhGetApp(ewin, focus))
       return;
+
+   unshade = ewin->state.shaded && !ewin->state.iconified;
 
    if (!ewin->state.animated && !ewin->state.iconified)
       DeskGotoByEwin(ewin);
@@ -1502,7 +1506,7 @@ EwinOpActivate(EWin * ewin, int source, int raise)
       EwinOpRaise(ewin, source);
    if (ewin->state.iconified)
       EwinOpIconify(ewin, source, 0);
-   if (ewin->state.shaded)
+   if (unshade)
       EwinOpShade(ewin, source, 0);
    FocusToEWin(ewin, FOCUS_SET);
 }
