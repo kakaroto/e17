@@ -115,10 +115,10 @@ static int data_test_set_get(char *buf, int len);
 static int data_test_set_remove(char *buf, int len);
 
 static Ewl_Unit_Test widget_unit_tests[] = {
-		{"widget appearance set/get", appearance_test_set_get},	
-		{"widget data set/get", data_test_set_get},	
-		{"widget data set/remove", data_test_set_remove},	
-		{NULL, NULL}
+		{"widget appearance set/get", appearance_test_set_get, -1, NULL},
+		{"widget data set/get", data_test_set_get, -1, NULL},
+		{"widget data set/remove", data_test_set_remove, -1, NULL},
+		{NULL, NULL, -1, NULL}
 	};
 
 void 

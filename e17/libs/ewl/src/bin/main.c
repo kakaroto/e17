@@ -61,6 +61,10 @@ static void *ewl_test_cb_expansion_fetch(void *data, unsigned int row,
 							unsigned int column);
 static void ewl_test_cb_test_selected(Ewl_Widget *w, void *ev, void *data);
 
+static Ewl_Widget *cb_unit_test_headers(void *data, int column);
+static void *cb_unit_test_fetch(void *data, unsigned int row, unsigned int column);
+static int cb_unit_test_count(void *data);
+
 static Ecore_List *tests = NULL;
 static int window_count = 0;
 static int current_unit_test = 0;
@@ -162,7 +166,6 @@ static int
 ewl_test_cb_unit_test_timer(void *data)
 {
 	char buf[1024];
-	char *entries[3];
 	Ewl_Unit_Test *unit_tests;
 	int ret = 1;
 
@@ -181,10 +184,10 @@ ewl_test_cb_unit_test_timer(void *data)
 		tree = ewl_widget_name_find("unit_test_tree");
 		progress = ewl_widget_name_find("unit_test_progress");
 
-		entries[0] = (char *)unit_tests[current_unit_test].name;
-		entries[1] = (val ? "PASS" : "FAIL");
-		entries[2] = (val ? "" : buf);
-		ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
+		unit_tests[current_unit_test].status = val;
+		unit_tests[current_unit_test].failure_reason = (val ? NULL : strdup(buf));
+
+		ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
 
 		ewl_range_value_set(EWL_RANGE(progress),
 				(double)(++current_unit_test));
@@ -404,7 +407,6 @@ create_main_test_window(Ewl_Container *box)
 	Ewl_Widget *menubar, *note, *tree, *o, *o2;
 	Ecore_List *categories;
 	Ecore_List *simple, *adv, *container, *misc, *unit;
-	char *headers[] = {"Test", "Status", "Failure Reason"};
 	Ewl_Model *model;
 	Ewl_View *view;
 
@@ -517,12 +519,24 @@ create_main_test_window(Ewl_Container *box)
 	ewl_widget_name_set(o, "unit_test_box");
 	ewl_widget_show(o);
 
-	o2 = ewl_tree_new(3);
+	model = ewl_model_new();
+	ewl_model_fetch_set(model, cb_unit_test_fetch);
+	ewl_model_count_set(model, cb_unit_test_count);
+
+	o2 = ewl_tree2_new();
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
-	ewl_tree_headers_set(EWL_TREE(o2), headers);
-	ewl_tree_mode_set(EWL_TREE(o2), EWL_SELECTION_MODE_SINGLE);
+	ewl_mvc_model_set(EWL_MVC(o2), model);
 	ewl_widget_name_set(o2, "unit_test_tree");
 	ewl_widget_show(o2);
+
+	view = ewl_view_new();
+	ewl_view_constructor_set(view, ewl_label_new);
+	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+	ewl_view_header_fetch_set(view, cb_unit_test_headers);
+
+	ewl_tree2_column_append(EWL_TREE2(o2), view, FALSE);
+	ewl_tree2_column_append(EWL_TREE2(o2), view, FALSE);
+	ewl_tree2_column_append(EWL_TREE2(o2), view, FALSE);
 
 	o2 = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
@@ -601,27 +615,27 @@ static void
 setup_unit_tests(Ewl_Test *test)
 {
 	Ewl_Widget *button, *tree, *progress;
-	char *entries[3];
 	int i;
 
 	button = ewl_widget_name_find("unit_test_button");
 	tree = ewl_widget_name_find("unit_test_tree");
-
-	ewl_container_reset(EWL_CONTAINER(tree));
 
 	current_test = test;
 
 	/* just clean up if no tests */
 	if (!test->unit_tests) return;
 
+	/* set the mvc widget and reset the test information */
+	ewl_mvc_data_set(EWL_MVC(tree), current_test);
 	for (i = 0; test->unit_tests[i].func; i++)
 	{
-		entries[0] = (char *)test->unit_tests[i].name;
-		entries[1] = "";
-		entries[2] = "";
+		if (test->unit_tests[i].failure_reason) 
+			free(test->unit_tests[i].failure_reason);
+		test->unit_tests[i].failure_reason = NULL;
 
-		ewl_tree_text_row_add(EWL_TREE(tree), NULL, entries);
+		test->unit_tests[i].status = -1;
 	}
+	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
 
 	progress = ewl_widget_name_find("unit_test_progress");
 	ewl_range_maximum_value_set(EWL_RANGE(progress), (double)(i));
@@ -639,8 +653,6 @@ cb_run_unit_tests(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Widget *progress;
 
 	tree = ewl_widget_name_find("unit_test_tree");
-	ewl_container_reset(EWL_CONTAINER(tree));
-
 	test = current_test;
 	if ((!test) || (!test->unit_tests)) return;
 
@@ -1091,6 +1103,55 @@ ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__,
 	free(sel);
 }
 
+static Ewl_Widget *
+cb_unit_test_headers(void *data, int column)
+{
+	Ewl_Widget *label;
+
+	label = ewl_label_new();
+	ewl_widget_show(label);
+
+	if (column == 0)
+		ewl_label_text_set(EWL_LABEL(label), "Test");
+	
+	else if (column == 1)
+		ewl_label_text_set(EWL_LABEL(label), "Status");
+
+	else 
+		ewl_label_text_set(EWL_LABEL(label), "Failure Reason");
+
+	return label;
+}
+
+static void *
+cb_unit_test_fetch(void *data, unsigned int row, unsigned int column)
+{
+	Ewl_Test *t;
+
+	t = data;
+	if (column == 0)
+		return (void *)t->unit_tests[row].name;
+	
+	else if (column == 1)
+		return ((t->unit_tests[row].status < 0) ? "" : 
+			(t->unit_tests[row].status == 0) ? "FAIL" : "PASS");
+	
+	else
+		return t->unit_tests[row].failure_reason;
+}
+
+static int
+cb_unit_test_count(void *data)
+{
+	Ewl_Test *t;
+	int i;
+
+	t = data;
+	for (i = 0; t->unit_tests[i].func; i++) 
+		;
+
+	return i;
+}
 
 
 

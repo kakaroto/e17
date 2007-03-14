@@ -88,10 +88,10 @@ static int text_valid_utf8_set_get(char *buf, int len);
 static int text_invalid_utf8_set_get(char *buf, int len);
 
 static Ewl_Unit_Test text_unit_tests[] = {
-		{"text set/get", text_test_set_get},	
-		{"valid UTF-8 text set/get", text_valid_utf8_set_get},	
-		{"invalid UTF-8 text set/get", text_invalid_utf8_set_get},	
-		{NULL, NULL}
+		{"text set/get", text_test_set_get, -1, NULL},
+		{"valid UTF-8 text set/get", text_valid_utf8_set_get, -1, NULL},
+		{"invalid UTF-8 text set/get", text_invalid_utf8_set_get, -1, NULL},
+		{NULL, NULL, -1, NULL}
 	};
 
 void 

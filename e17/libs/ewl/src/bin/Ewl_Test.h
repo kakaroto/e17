@@ -30,6 +30,9 @@ struct Ewl_Unit_Test
 {
 	const char *name;		 /**< The test name */
 	int (*func)(char *buf, int len); /**< The test function */
+
+	short status;		/**< Test status */
+	char *failure_reason;		/**< Test failure reason */
 };
 
 /**

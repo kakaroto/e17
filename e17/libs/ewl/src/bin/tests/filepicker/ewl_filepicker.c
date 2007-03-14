@@ -74,9 +74,9 @@ static int directory_test_set_get(char *buf, int len);
 static int directory_test_path_split(char *buf, int len);
 
 static Ewl_Unit_Test filepicker_unit_tests[] = {
-		{"directory set/get", directory_test_set_get},
-		{"directory path split", directory_test_path_split},
-		{NULL, NULL}
+		{"directory set/get", directory_test_set_get, -1, NULL},
+		{"directory path split", directory_test_path_split, -1, NULL},
+		{NULL, NULL, -1, NULL}
 	};
 
 void 

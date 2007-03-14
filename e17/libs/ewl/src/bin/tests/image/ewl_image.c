@@ -92,11 +92,11 @@ static int size_test_set_get(char *buf, int len);
 static int constrain_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test image_unit_tests[] = {
-		{"image path set/get", path_test_set_get},	
-		{"image scale set/get", scale_test_set_get},	
-		{"image size set/get", size_test_set_get},	
-		{"image constrain set/get", constrain_test_set_get},	
-		{NULL, NULL}
+		{"image path set/get", path_test_set_get, -1, NULL},
+		{"image scale set/get", scale_test_set_get, -1, NULL},
+		{"image size set/get", size_test_set_get, -1, NULL},
+		{"image constrain set/get", constrain_test_set_get, -1, NULL},
+		{NULL, NULL, -1, NULL}
 	};
 
 void 
