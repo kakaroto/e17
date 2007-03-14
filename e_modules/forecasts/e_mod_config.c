@@ -81,7 +81,7 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
 		       E_Config_Dialog_Data * cfdata)
 {
   Evas_Object *o, *of, *ob;
-  E_Radio_Group *rg, *dg;
+  E_Radio_Group *dg;
   char buf[4096];
 
   o = e_widget_list_add(evas, 0, 0);
@@ -124,7 +124,6 @@ static int
 _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 {
   Config_Item *ci;
-  int len;
 
   ci = cfd->data;
   if (!cfdata->code)

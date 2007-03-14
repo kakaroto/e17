@@ -140,8 +140,6 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
    Forecasts *w;
    Instance *inst;
    Config_Item *ci;
-   int pw, ph;
-   Popup *popup;
 
    inst = E_NEW(Instance, 1);
 
@@ -469,7 +467,6 @@ static Forecasts *
 _forecasts_new(Evas * evas)
 {
    Forecasts *w;
-   const char *file;
    char buf[4096];
 
    w = E_NEW(Forecasts, 1);
@@ -642,7 +639,7 @@ static int
 _forecasts_parse(void *data)
 {
    Instance *inst;
-   char *needle, *ext;
+   char *needle;
    char city[256];
    char region[256];
    char location[512];
