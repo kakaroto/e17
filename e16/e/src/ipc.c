@@ -1249,6 +1249,13 @@ IPC_Compat(const char *params)
 	if (*p == '?')
 	   IpcPrintf("Number of Desks: %d\n", DesksGetNumber());
      }
+#if !USE_COMPOSITE
+   else if (!strcmp(param1, "cm"))
+     {
+	DialogOKstr(_("Message"),
+		    _("Enlightenment was built without composite support"));
+     }
+#endif
    else
      {
 	ok = 0;
