@@ -1441,6 +1441,9 @@ DeskRestack(Desk * dsk)
    int                 i, num, tot;
    EObj               *const *lst, *eo;
 
+   if (!dsk->stack.dirty)
+      return;
+
    /* Special case if only one window needs restacking */
    if (dsk->stack.dirty == 1)
      {

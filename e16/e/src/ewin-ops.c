@@ -985,6 +985,8 @@ EwinShade(EWin * ewin)
    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
       return;
 
+   DeskRestack(EoGetDesk(ewin));	/* Do any pending stacking ops now */
+
    speed = Conf.shading.speed;
 
    x = EoGetX(ewin);
@@ -1158,6 +1160,8 @@ EwinUnShade(EWin * ewin)
       return;
    if (!ewin->state.shaded || ewin->state.iconified)
       return;
+
+   DeskRestack(EoGetDesk(ewin));	/* Do any pending stacking ops now */
 
    speed = Conf.shading.speed;
 
