@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-05 22:17+0100\n"
+"POT-Creation-Date: 2007-03-13 23:13+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -637,67 +637,67 @@ msgstr ""
 "Klikkeljen ide, hogy ez az asztal\n"
 "legalulra kerüljön.\n"
 
-#: src/desktops.c:2341 src/desktops.c:2380
+#: src/desktops.c:2346 src/desktops.c:2385
 #, c-format
 msgid "%i Desktops"
 msgstr "%i asztal"
 
-#: src/desktops.c:2343 src/desktops.c:2382
+#: src/desktops.c:2348 src/desktops.c:2387
 #, c-format
 msgid "%i Desktop"
 msgstr "%i asztal"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2380
 msgid "Number of virtual desktops:\n"
 msgstr "Virtuális asztalok száma:\n"
 
-#: src/desktops.c:2404
+#: src/desktops.c:2409
 msgid "Slide desktops around when changing"
 msgstr "Animáció az asztalok váltásánál"
 
-#: src/desktops.c:2410
+#: src/desktops.c:2415
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Asztal animáció sebessége: (lassú)\n"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2429
 msgid "Wrap desktops around"
 msgstr "Asztalok \"körbecsúszása\""
 
-#: src/desktops.c:2432
+#: src/desktops.c:2437
 msgid "Display desktop dragbar"
 msgstr "Dragbar megjelenítése"
 
-#: src/desktops.c:2438
+#: src/desktops.c:2443
 msgid "Drag bar position:"
 msgstr "Dragbar elhelyezkedése:"
 
-#: src/desktops.c:2442
+#: src/desktops.c:2447
 msgid "Top"
 msgstr "Fent"
 
-#: src/desktops.c:2448
+#: src/desktops.c:2453
 msgid "Bottom"
 msgstr "Lent"
 
-#: src/desktops.c:2454 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
+#: src/desktops.c:2459 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
 msgid "Left"
 msgstr "Bal"
 
-#: src/desktops.c:2460 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2465 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Right"
 msgstr "Jobb"
 
-#: src/desktops.c:2468 src/menus-misc.c:712
+#: src/desktops.c:2473 src/menus-misc.c:712
 #, fuzzy
 msgid "Desks"
 msgstr "Asztal"
 
-#: src/desktops.c:2469
+#: src/desktops.c:2474
 msgid "Multiple Desktop Settings"
 msgstr "Többasztalos üzemmód beállításai"
 
-#: src/desktops.c:2472
+#: src/desktops.c:2477
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -705,7 +705,7 @@ msgstr ""
 "Enlightenment többasztalos üzemmód\n"
 "beállításai\n"
 
-#: src/desktops.c:2555 src/desktops.c:2591
+#: src/desktops.c:2560 src/desktops.c:2596
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -714,7 +714,7 @@ msgstr ""
 "%i x %i\n"
 "képernyõméret"
 
-#: src/desktops.c:2558 src/desktops.c:2594
+#: src/desktops.c:2563 src/desktops.c:2599
 msgid ""
 "1\n"
 "Screen in size"
@@ -722,31 +722,31 @@ msgstr ""
 "1\n"
 "képernyõméret"
 
-#: src/desktops.c:2587
+#: src/desktops.c:2592
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuális asztal mérete:\n"
 
-#: src/desktops.c:2628
+#: src/desktops.c:2633
 msgid "Wrap virtual desktops around"
 msgstr "Virtuális asztalok \"körbecsúszása\""
 
-#: src/desktops.c:2632
+#: src/desktops.c:2637
 msgid "Enable edge flip"
 msgstr "Asztal él-érzékenység"
 
-#: src/desktops.c:2636
+#: src/desktops.c:2641
 msgid "Resistance at edge of screen:\n"
 msgstr "Érzékenység a kép szélén:\n"
 
-#: src/desktops.c:2648
+#: src/desktops.c:2653
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2649
+#: src/desktops.c:2654
 msgid "Virtual Desktop Settings"
 msgstr "Virtuális asztalok beállításai"
 
-#: src/desktops.c:2652
+#: src/desktops.c:2657
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -767,7 +767,7 @@ msgstr "Alkalmaz"
 msgid "Attention !!!"
 msgstr "Figyelem !!!"
 
-#: src/ecompmgr.c:2422
+#: src/ecompmgr.c:2469
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1198,11 +1198,11 @@ msgstr "Icondoboz beállításai"
 msgid "Iconbox Settings"
 msgstr "Icondoboz beállításai"
 
-#: src/ipc.c:194
+#: src/ipc.c:194 src/ipc.c:1255
 msgid "Message"
 msgstr "Üzenet"
 
-#: src/ipc.c:938
+#: src/ipc.c:939
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1211,12 +1211,16 @@ msgstr ""
 "Enlightenment verzió     : %s\n"
 "a kód utoljára frissítve : %s\n"
 
-#: src/ipc.c:1565
+#: src/ipc.c:1256
+msgid "Enlightenment was built without composite support"
+msgstr ""
+
+#: src/ipc.c:1573
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC parancsok súgója"
 
-#: src/ipc.c:1569
+#: src/ipc.c:1577
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1226,24 +1230,24 @@ msgstr ""
 "írja be: \"help all\" az összes parancs leírásának megjelenítéséhez\n"
 "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:1571 src/ipc.c:1591 src/ipc.c:1603
+#: src/ipc.c:1579 src/ipc.c:1599 src/ipc.c:1611
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "elérhetõ parancsok:\n"
 
-#: src/ipc.c:1589
+#: src/ipc.c:1597
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1590
+#: src/ipc.c:1598
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 "Írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:1592 src/ipc.c:1604
+#: src/ipc.c:1600 src/ipc.c:1612
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "         <parancs> : <leírás>\n"

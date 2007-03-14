@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-05 22:17+0100\n"
+"POT-Creation-Date: 2007-03-13 23:13+0100\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -628,68 +628,68 @@ msgstr ""
 "Klicka här för att lägga detta\n"
 "skribord underst.\n"
 
-#: src/desktops.c:2341 src/desktops.c:2380
+#: src/desktops.c:2346 src/desktops.c:2385
 #, c-format
 msgid "%i Desktops"
 msgstr "%i skrivbord"
 
-#: src/desktops.c:2343 src/desktops.c:2382
+#: src/desktops.c:2348 src/desktops.c:2387
 #, c-format
 msgid "%i Desktop"
 msgstr "%i skrivbord"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2380
 msgid "Number of virtual desktops:\n"
 msgstr "Antal virtuella skrivbord:\n"
 
-#: src/desktops.c:2404
+#: src/desktops.c:2409
 msgid "Slide desktops around when changing"
 msgstr "Låt skrivborden glida omkring vid växling"
 
-#: src/desktops.c:2410
+#: src/desktops.c:2415
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Skrivbordets glid fart: (sakta)\n"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2429
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Svep omkring virtuella skrivbord"
 
-#: src/desktops.c:2432
+#: src/desktops.c:2437
 msgid "Display desktop dragbar"
 msgstr "Visa skrivbordens draglist"
 
-#: src/desktops.c:2438
+#: src/desktops.c:2443
 msgid "Drag bar position:"
 msgstr "Draglistens läge:"
 
-#: src/desktops.c:2442
+#: src/desktops.c:2447
 msgid "Top"
 msgstr "Upptill"
 
-#: src/desktops.c:2448
+#: src/desktops.c:2453
 msgid "Bottom"
 msgstr "Nertill"
 
-#: src/desktops.c:2454 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
+#: src/desktops.c:2459 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
 msgid "Left"
 msgstr "Vänster"
 
-#: src/desktops.c:2460 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2465 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Right"
 msgstr "Höger"
 
-#: src/desktops.c:2468 src/menus-misc.c:712
+#: src/desktops.c:2473 src/menus-misc.c:712
 #, fuzzy
 msgid "Desks"
 msgstr "Skrivbord"
 
-#: src/desktops.c:2469
+#: src/desktops.c:2474
 msgid "Multiple Desktop Settings"
 msgstr "Multipla skrivbordsinställningar"
 
-#: src/desktops.c:2472
+#: src/desktops.c:2477
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -697,7 +697,7 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "multipla skrivbordsinställningar\n"
 
-#: src/desktops.c:2555 src/desktops.c:2591
+#: src/desktops.c:2560 src/desktops.c:2596
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -706,7 +706,7 @@ msgstr ""
 "%i x %i\n"
 "skärmar i storlek"
 
-#: src/desktops.c:2558 src/desktops.c:2594
+#: src/desktops.c:2563 src/desktops.c:2599
 msgid ""
 "1\n"
 "Screen in size"
@@ -714,31 +714,31 @@ msgstr ""
 "1\n"
 "skärm i storlek"
 
-#: src/desktops.c:2587
+#: src/desktops.c:2592
 msgid "Virtual Desktop size:\n"
 msgstr "Storlek för virtuella skribord:\n"
 
-#: src/desktops.c:2628
+#: src/desktops.c:2633
 msgid "Wrap virtual desktops around"
 msgstr "Svep omkring virtuella skrivbord"
 
-#: src/desktops.c:2632
+#: src/desktops.c:2637
 msgid "Enable edge flip"
 msgstr "Möjliggör kant flip"
 
-#: src/desktops.c:2636
+#: src/desktops.c:2641
 msgid "Resistance at edge of screen:\n"
 msgstr "Motstånd vid bildskärmskanten:\n"
 
-#: src/desktops.c:2648
+#: src/desktops.c:2653
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2649
+#: src/desktops.c:2654
 msgid "Virtual Desktop Settings"
 msgstr "Virtuella skrivbordsinställningar"
 
-#: src/desktops.c:2652
+#: src/desktops.c:2657
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -759,7 +759,7 @@ msgstr "Använd"
 msgid "Attention !!!"
 msgstr "Uppmärksamhet!!!"
 
-#: src/ecompmgr.c:2422
+#: src/ecompmgr.c:2469
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1222,11 +1222,11 @@ msgstr "Ikonlådeval"
 msgid "Iconbox Settings"
 msgstr "Ikonlådeinställningar"
 
-#: src/ipc.c:194
+#: src/ipc.c:194 src/ipc.c:1255
 msgid "Message"
 msgstr "Meddelande"
 
-#: src/ipc.c:938
+#: src/ipc.c:939
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1235,12 +1235,16 @@ msgstr ""
 "Version av Enlightenment : %s\n"
 "Koden är aktuell till    : %s\n"
 
-#: src/ipc.c:1565
+#: src/ipc.c:1256
+msgid "Enlightenment was built without composite support"
+msgstr ""
+
+#: src/ipc.c:1573
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC kommando hjälp"
 
-#: src/ipc.c:1569
+#: src/ipc.c:1577
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1251,23 +1255,23 @@ msgstr ""
 "använd \"help <kommando>\" för en individuell beskrivning\n"
 "\n"
 
-#: src/ipc.c:1571 src/ipc.c:1591 src/ipc.c:1603
+#: src/ipc.c:1579 src/ipc.c:1599 src/ipc.c:1611
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "kommandon som nu är tillgängliga:\n"
 
-#: src/ipc.c:1589
+#: src/ipc.c:1597
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1590
+#: src/ipc.c:1598
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "använd \"help <kommando>\" för en individuell beskrivning\n"
 
-#: src/ipc.c:1592 src/ipc.c:1604
+#: src/ipc.c:1600 src/ipc.c:1612
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<kommando> : <beskrivning>\n"

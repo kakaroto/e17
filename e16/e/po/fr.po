@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-05 22:17+0100\n"
+"POT-Creation-Date: 2007-03-13 23:13+0100\n"
 "PO-Revision-Date: 2007-02-23 00:04+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
@@ -643,65 +643,65 @@ msgid ""
 "to the bottom.\n"
 msgstr "Cliquez ici pour abaisser ce bureau.\n"
 
-#: src/desktops.c:2341 src/desktops.c:2380
+#: src/desktops.c:2346 src/desktops.c:2385
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Bureaux"
 
-#: src/desktops.c:2343 src/desktops.c:2382
+#: src/desktops.c:2348 src/desktops.c:2387
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Bureau"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2380
 msgid "Number of virtual desktops:\n"
 msgstr "Nombre de bureaux :\n"
 
-#: src/desktops.c:2404
+#: src/desktops.c:2409
 msgid "Slide desktops around when changing"
 msgstr "Faire glisser les bureaux lors des déplacements"
 
-#: src/desktops.c:2410
+#: src/desktops.c:2415
 msgid "Desktop Slide speed:\n"
 msgstr "Vitesse de glissement des bureaux:\n"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2429
 msgid "Wrap desktops around"
 msgstr "Placer les bureaux en boucle"
 
-#: src/desktops.c:2432
+#: src/desktops.c:2437
 msgid "Display desktop dragbar"
 msgstr "Afficher la barre de bureau"
 
-#: src/desktops.c:2438
+#: src/desktops.c:2443
 msgid "Drag bar position:"
 msgstr "Position de la barre de bureau:"
 
-#: src/desktops.c:2442
+#: src/desktops.c:2447
 msgid "Top"
 msgstr "Haut"
 
-#: src/desktops.c:2448
+#: src/desktops.c:2453
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/desktops.c:2454 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
+#: src/desktops.c:2459 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
 msgid "Left"
 msgstr "Gauche"
 
-#: src/desktops.c:2460 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2465 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2468 src/menus-misc.c:712
+#: src/desktops.c:2473 src/menus-misc.c:712
 msgid "Desks"
 msgstr "Bureaux multiples"
 
-#: src/desktops.c:2469
+#: src/desktops.c:2474
 msgid "Multiple Desktop Settings"
 msgstr "Paramètres des Bureaux multiples"
 
-#: src/desktops.c:2472
+#: src/desktops.c:2477
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -709,7 +709,7 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux multiples\n"
 
-#: src/desktops.c:2555 src/desktops.c:2591
+#: src/desktops.c:2560 src/desktops.c:2596
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -718,7 +718,7 @@ msgstr ""
 "%i x %i\n"
 "Écrans"
 
-#: src/desktops.c:2558 src/desktops.c:2594
+#: src/desktops.c:2563 src/desktops.c:2599
 msgid ""
 "1\n"
 "Screen in size"
@@ -726,31 +726,31 @@ msgstr ""
 "1\n"
 "Écran"
 
-#: src/desktops.c:2587
+#: src/desktops.c:2592
 msgid "Virtual Desktop size:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2628
+#: src/desktops.c:2633
 msgid "Wrap virtual desktops around"
 msgstr "Placer les bureaux virtuels en boucle"
 
-#: src/desktops.c:2632
+#: src/desktops.c:2637
 msgid "Enable edge flip"
 msgstr "Activer les bords sensitifs"
 
-#: src/desktops.c:2636
+#: src/desktops.c:2641
 msgid "Resistance at edge of screen:\n"
 msgstr "Sensibilité des bords:\n"
 
-#: src/desktops.c:2648
+#: src/desktops.c:2653
 msgid "Areas"
 msgstr "Bureaux virtuels"
 
-#: src/desktops.c:2649
+#: src/desktops.c:2654
 msgid "Virtual Desktop Settings"
 msgstr "Paramètres des Bureaux virtuels"
 
-#: src/desktops.c:2652
+#: src/desktops.c:2657
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -771,7 +771,7 @@ msgstr "Appliquer"
 msgid "Attention !!!"
 msgstr "Attention !!!"
 
-#: src/ecompmgr.c:2422
+#: src/ecompmgr.c:2469
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1230,11 +1230,11 @@ msgstr "Options de la Boîte à icônes"
 msgid "Iconbox Settings"
 msgstr "Paramètres de la Boîte à icônes"
 
-#: src/ipc.c:194
+#: src/ipc.c:194 src/ipc.c:1255
 msgid "Message"
 msgstr "Message"
 
-#: src/ipc.c:938
+#: src/ipc.c:939
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1243,11 +1243,15 @@ msgstr ""
 "Version d'Enlightenment: %s\n"
 "Code courant:            %s\n"
 
-#: src/ipc.c:1565
+#: src/ipc.c:1256
+msgid "Enlightenment was built without composite support"
+msgstr ""
+
+#: src/ipc.c:1573
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Aide des commandes IPC\n"
 
-#: src/ipc.c:1569
+#: src/ipc.c:1577
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1257,19 +1261,19 @@ msgstr ""
 "Tapez \"help <commande>\" pour une description individuelle\n"
 "\n"
 
-#: src/ipc.c:1571 src/ipc.c:1591 src/ipc.c:1603
+#: src/ipc.c:1579 src/ipc.c:1599 src/ipc.c:1611
 msgid "Commands currently available:\n"
 msgstr "Commandes disponibles actuellement:\n"
 
-#: src/ipc.c:1589
+#: src/ipc.c:1597
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Tapez \"help full\" pour une description de toutes les commandes\n"
 
-#: src/ipc.c:1590
+#: src/ipc.c:1598
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Tapez \"help <commande>\" pour une description individuelle\n"
 
-#: src/ipc.c:1592 src/ipc.c:1604
+#: src/ipc.c:1600 src/ipc.c:1612
 msgid "         <command>     : <description>\n"
 msgstr "      <commande>   : <description>\n"
 

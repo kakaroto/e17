@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-05 22:17+0100\n"
+"POT-Creation-Date: 2007-03-13 23:13+0100\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -740,84 +740,84 @@ msgstr ""
 "ganz nach unten zu bringen.\n"
 
 # src/settings.c:830 src/settings.c:889
-#: src/desktops.c:2341 src/desktops.c:2380
+#: src/desktops.c:2346 src/desktops.c:2385
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktops"
 
 # src/settings.c:832 src/settings.c:891
-#: src/desktops.c:2343 src/desktops.c:2382
+#: src/desktops.c:2348 src/desktops.c:2387
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
 # src/settings.c:882
-#: src/desktops.c:2375
+#: src/desktops.c:2380
 msgid "Number of virtual desktops:\n"
 msgstr "Anzahl virtueller Desktops:\n"
 
 # src/settings.c:1750
-#: src/desktops.c:2404
+#: src/desktops.c:2409
 msgid "Slide desktops around when changing"
 msgstr "Desktops gleiten beim Wechseln herum"
 
 # src/settings.c:1922
-#: src/desktops.c:2410
+#: src/desktops.c:2415
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Desktop-Gleitgeschwindigkeit (langsam)\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2424
+#: src/desktops.c:2429
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1858
-#: src/desktops.c:2432
+#: src/desktops.c:2437
 msgid "Display desktop dragbar"
 msgstr "Desktop-Ziehbalken anzeigen"
 
 # src/settings.c:1867
-#: src/desktops.c:2438
+#: src/desktops.c:2443
 msgid "Drag bar position:"
 msgstr "Position des Ziehbalkens:"
 
 # src/settings.c:1878
-#: src/desktops.c:2442
+#: src/desktops.c:2447
 msgid "Top"
 msgstr "Oben"
 
 # src/settings.c:1885
-#: src/desktops.c:2448
+#: src/desktops.c:2453
 msgid "Bottom"
 msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2454 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
+#: src/desktops.c:2459 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2460 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2465 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Right"
 msgstr "Rechts"
 
 # src/snaps.c:453
-#: src/desktops.c:2468 src/menus-misc.c:712
+#: src/desktops.c:2473 src/menus-misc.c:712
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
 # src/settings.c:856
-#: src/desktops.c:2469
+#: src/desktops.c:2474
 msgid "Multiple Desktop Settings"
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/main.c:89
-#: src/desktops.c:2472
+#: src/desktops.c:2477
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -826,7 +826,7 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:1007 src/settings.c:1072
-#: src/desktops.c:2555 src/desktops.c:2591
+#: src/desktops.c:2560 src/desktops.c:2596
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -836,7 +836,7 @@ msgstr ""
 "Bildschirme groß"
 
 # src/settings.c:1010 src/settings.c:1075
-#: src/desktops.c:2558 src/desktops.c:2594
+#: src/desktops.c:2563 src/desktops.c:2599
 msgid ""
 "1\n"
 "Screen in size"
@@ -845,36 +845,36 @@ msgstr ""
 "Bildschirm groß"
 
 # src/settings.c:1066
-#: src/desktops.c:2587
+#: src/desktops.c:2592
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuelle Desktopgröße:\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2628
+#: src/desktops.c:2633
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1127
-#: src/desktops.c:2632
+#: src/desktops.c:2637
 msgid "Enable edge flip"
 msgstr "Magische Kanten verwenden"
 
 # src/settings.c:1134
-#: src/desktops.c:2636
+#: src/desktops.c:2641
 msgid "Resistance at edge of screen:\n"
 msgstr "Widerstand der Bildschirmkante:\n"
 
-#: src/desktops.c:2648
+#: src/desktops.c:2653
 msgid "Areas"
 msgstr ""
 
 # src/settings.c:1040
-#: src/desktops.c:2649
+#: src/desktops.c:2654
 msgid "Virtual Desktop Settings"
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/settings.c:1040
-#: src/desktops.c:2652
+#: src/desktops.c:2657
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -907,7 +907,7 @@ msgstr "Übernehmen"
 msgid "Attention !!!"
 msgstr "Achtung!"
 
-#: src/ecompmgr.c:2422
+#: src/ecompmgr.c:2469
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1437,12 +1437,12 @@ msgstr "Iconbox-Optionen"
 msgid "Iconbox Settings"
 msgstr "Iconbox-Einstellungen"
 
-#: src/ipc.c:194
+#: src/ipc.c:194 src/ipc.c:1255
 msgid "Message"
 msgstr "Mitteilung"
 
 # src/ipc.c:4890
-#: src/ipc.c:938
+#: src/ipc.c:939
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1451,14 +1451,18 @@ msgstr ""
 "Enlightenment-Version: %s\n"
 "Code aktuell bis     : %s\n"
 
+#: src/ipc.c:1256
+msgid "Enlightenment was built without composite support"
+msgstr ""
+
 # src/ipc.c:4737
-#: src/ipc.c:1565
+#: src/ipc.c:1573
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen"
 
 # src/ipc.c:4743
-#: src/ipc.c:1569
+#: src/ipc.c:1577
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1470,25 +1474,25 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:1571 src/ipc.c:1591 src/ipc.c:1603
+#: src/ipc.c:1579 src/ipc.c:1599 src/ipc.c:1611
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "Momentan verfügbare Befehle:\n"
 
-#: src/ipc.c:1589
+#: src/ipc.c:1597
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
 # src/ipc.c:4781
-#: src/ipc.c:1590
+#: src/ipc.c:1598
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:1592 src/ipc.c:1604
+#: src/ipc.c:1600 src/ipc.c:1612
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
