@@ -303,6 +303,7 @@ _emphasis_enhance_callbacks(Emphasis_Player_Gui *player)
   enhance_callback_data_set(en, "cb_media_pls_save_key_down"       , player);
 
   enhance_callback_data_set(en, "cb_small_pack", player);
+  enhance_callback_data_set(en, "cb_tiny_cover_wheel", player);
 }
 
 

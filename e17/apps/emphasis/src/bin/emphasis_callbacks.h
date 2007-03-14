@@ -86,5 +86,6 @@ void cb_media_search_entry_text_changed(Etk_Object *object,
                                         Etk_Event_Key_Down *event,
                                         void *data);
 void cb_media_search_btn_search_clicked(Etk_Object *object, void *data);
+void cb_tiny_cover_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 /** @} */
 #endif /* EMPHASIS_CALLBACKS_H_ */

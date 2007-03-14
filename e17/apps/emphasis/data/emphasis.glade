@@ -29,6 +29,7 @@
                 <property name="visible">True</property>
                 <property name="stock">gtk-missing-image</property>
                 <signal name="mouse_down" handler="cb_small_pack"/>
+                <signal name="mouse_wheel" handler="cb_tiny_cover_wheel"/>
               </widget>
             </child>
           </widget>

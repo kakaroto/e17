@@ -1558,3 +1558,29 @@ cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
       player->small.packed = !player->small.packed;
     }
 }
+
+
+void
+cb_tiny_cover_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
+{
+  Emphasis_Player_Gui *player;
+  Etk_Event_Mouse_Down event_md;
+  UNUSED(object);
+
+  if(!data) { return; }
+  player = data;
+
+  if(player->small.packed) { return; }
+
+  event_md.button = 1;
+  if(event->z < 0)
+    {
+      cb_vol_image_clicked(ETK_OBJECT(player->full.sound_high),
+                           &event_md, player);
+    }
+  else
+    {
+      cb_vol_image_clicked(ETK_OBJECT(player->full.sound_low),
+                           &event_md, player);
+    }
+}
