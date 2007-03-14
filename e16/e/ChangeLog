@@ -4251,3 +4251,20 @@ Correct translators mailing list.
 Disable non-functional group show/hide stuff.
 Add option to show windows on all desks in focus list.
 
+
+-------------------------------------------------------------------------------
+
+Wed Mar 14 00:25:26 CET 2007
+(Kim)
+
+--- 0.16.8.7 0.02 ---
+The CM now renders to the composite overlay window (if available).
+Fix segv on logout (thanks to Christian Klein). (fixup)
+Fix various updates when external background changes (was disabled?).
+Fix stacking before shade/unshade when "click-raises" is enabled (noted
+ by Sven Faerber).
+Show message when selecting "Composite Settings ..." and e16 is built
+ without composite support (suggested by Mike Frysinger).
+Don't unshade iconified windows on activation (revert to old behavior -
+ requested by Sven Faerber).
+
