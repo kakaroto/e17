@@ -575,9 +575,9 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar1), "Rip: Idle", 0);
    etk_statusbar_message_push(ETK_STATUSBAR(gui->statusbar2), "Encode: Idle", 0);
 
-   etk_combobox_column_add(ETK_COMBOBOX(gui->ripper_combo), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+   etk_combobox_column_add(ETK_COMBOBOX(gui->ripper_combo), ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.5);
    etk_combobox_build(ETK_COMBOBOX(gui->ripper_combo));   
-   etk_combobox_column_add(ETK_COMBOBOX(gui->encoder_combo), ETK_COMBOBOX_LABEL, 75, ETK_TRUE, ETK_FALSE, ETK_FALSE, 0.0, 0.5);
+   etk_combobox_column_add(ETK_COMBOBOX(gui->encoder_combo), ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.5);
    etk_combobox_build(ETK_COMBOBOX(gui->encoder_combo));   
    
    /* create tree for holding track names, times, and rip status */
