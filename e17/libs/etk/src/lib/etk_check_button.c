@@ -25,7 +25,7 @@ Etk_Type *etk_check_button_type_get(void)
    if (!check_button_type)
    {
       check_button_type = etk_type_new("Etk_Check_Button", ETK_TOGGLE_BUTTON_TYPE,
-         sizeof(Etk_Check_Button), NULL, NULL);
+            sizeof(Etk_Check_Button), NULL, NULL);
    }
 
    return check_button_type;
@@ -38,7 +38,7 @@ Etk_Type *etk_check_button_type_get(void)
 Etk_Widget *etk_check_button_new(void)
 {
    return etk_widget_new(ETK_CHECK_BUTTON_TYPE, "theme_group", "check_button",
-      "focusable", ETK_TRUE, "xalign", 0.0, NULL);
+         "focusable", ETK_TRUE, "xalign", 0.0, NULL);
 }
 
 /**
@@ -49,7 +49,7 @@ Etk_Widget *etk_check_button_new(void)
 Etk_Widget *etk_check_button_new_with_label(const char *label)
 {
    return etk_widget_new(ETK_CHECK_BUTTON_TYPE, "theme_group", "check_button",
-      "label", label, "focusable", ETK_TRUE, "xalign", 0.0, NULL);
+         "label", label, "focusable", ETK_TRUE, "xalign", 0.0, NULL);
 }
 
 /** @} */

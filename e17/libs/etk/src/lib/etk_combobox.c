@@ -79,15 +79,15 @@ Etk_Type *etk_combobox_type_get(void)
    if (!combobox_type)
    {
       combobox_type = etk_type_new("Etk_Combobox", ETK_WIDGET_TYPE, sizeof(Etk_Combobox),
-         ETK_CONSTRUCTOR(_etk_combobox_constructor), ETK_DESTRUCTOR(_etk_combobox_destructor));
+            ETK_CONSTRUCTOR(_etk_combobox_constructor), ETK_DESTRUCTOR(_etk_combobox_destructor));
       
       _etk_combobox_signals[ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL] = etk_signal_new("active_item_changed",
-         combobox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+            combobox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
       etk_type_property_add(combobox_type, "items_height", ETK_COMBOBOX_ITEMS_HEIGHT_PROPERTY,
-         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(DEFAULT_ITEM_HEIGHT));
+            ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(DEFAULT_ITEM_HEIGHT));
       etk_type_property_add(combobox_type, "active_item", ETK_COMBOBOX_ACTIVE_ITEM_PROPERTY,
-         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
       
       combobox_type->property_set = _etk_combobox_property_set;
       combobox_type->property_get = _etk_combobox_property_get;
@@ -108,7 +108,7 @@ Etk_Type *etk_combobox_item_type_get(void)
    if (!combobox_item_type)
    {
       combobox_item_type = etk_type_new("Etk_Combobox_Item", ETK_WIDGET_TYPE, sizeof(Etk_Combobox_Item),
-         ETK_CONSTRUCTOR(_etk_combobox_item_constructor), ETK_DESTRUCTOR(_etk_combobox_item_destructor));
+            ETK_CONSTRUCTOR(_etk_combobox_item_constructor), ETK_DESTRUCTOR(_etk_combobox_item_destructor));
    }
 
    return combobox_item_type;
@@ -121,7 +121,7 @@ Etk_Type *etk_combobox_item_type_get(void)
 Etk_Widget *etk_combobox_new(void)
 {
    return etk_widget_new(ETK_COMBOBOX_TYPE, "theme_group", "combobox",
-      "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
+         "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**
@@ -215,7 +215,7 @@ void etk_combobox_build(Etk_Combobox *combobox)
       return;
    
    combobox->active_item_widget = etk_widget_new(ETK_WIDGET_TYPE, "pass_mouse_events", ETK_TRUE,
-      "visible", ETK_TRUE, "internal", ETK_TRUE, NULL);
+         "visible", ETK_TRUE, "internal", ETK_TRUE, NULL);
    combobox->active_item_widget->size_request = _etk_combobox_active_item_size_request;
    combobox->active_item_widget->size_allocate = _etk_combobox_active_item_size_allocate;
    etk_object_data_set(ETK_OBJECT(combobox->active_item_widget), "_Etk_Combobox_Window::Combobox", combobox);
@@ -363,7 +363,7 @@ Etk_Combobox_Item *etk_combobox_item_insert_valist(Etk_Combobox *combobox, Etk_C
    if (after && combobox != after->combobox)
    {
       ETK_WARNING("Unable to add a new item after item %p because this item does not belong to the combobox "
-         "in which the new item should be added", after);
+            "in which the new item should be added", after);
       return NULL;
    }
    
@@ -571,7 +571,7 @@ void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *ite
    if ((item && item->combobox != combobox) || !combobox->built)
    {
       ETK_WARNING("Unable to change the active-item of the combobox. The specified item does not belong "
-         "to the combobox or the combobox is not built yet.");
+            "to the combobox or the combobox is not built yet.");
       return;
    }
    
@@ -770,12 +770,12 @@ static void _etk_combobox_constructor(Etk_Combobox *combobox)
       return;
    
    combobox->button = etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme_group", "button", "theme_parent", combobox,
-      "visible", ETK_TRUE, "repeat_mouse_events", ETK_TRUE, "focusable", ETK_FALSE, "internal", ETK_TRUE, NULL);
+         "visible", ETK_TRUE, "repeat_mouse_events", ETK_TRUE, "focusable", ETK_FALSE, "internal", ETK_TRUE, NULL);
    etk_widget_parent_set(combobox->button, ETK_WIDGET(combobox));
    etk_signal_connect("toggled", ETK_OBJECT(combobox->button), ETK_CALLBACK(_etk_combobox_button_toggled_cb), combobox);
    
    combobox->window = ETK_POPUP_WINDOW(etk_widget_new(ETK_POPUP_WINDOW_TYPE,
-      "theme_group", "window", "theme_parent", combobox, NULL));
+         "theme_group", "window", "theme_parent", combobox, NULL));
    etk_object_data_set(ETK_OBJECT(combobox->window), "_Etk_Combobox_Window::Combobox", combobox);
    etk_signal_connect("popped_down", ETK_OBJECT(combobox->window), ETK_CALLBACK(_etk_combobox_window_popped_down_cb), combobox);
    etk_signal_connect("key_down", ETK_OBJECT(combobox->window), ETK_CALLBACK(_etk_combobox_window_key_down_cb), combobox);
@@ -1113,8 +1113,8 @@ static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data)
       etk_toplevel_evas_position_get(toplevel, &ex, &ey);
       etk_toplevel_screen_position_get(toplevel, &sx, &sy);
       etk_popup_window_popup_at_xy(combobox->window,
-         sx + (bx - ex) + combobox->popup_offset_x,
-         sy + (by - ey) + bh + combobox->popup_offset_y);
+            sx + (bx - ex) + combobox->popup_offset_x,
+            sy + (by - ey) + bh + combobox->popup_offset_y);
       etk_window_resize(ETK_WINDOW(combobox->window), bw + combobox->popup_extra_w, 0);
    }
 }
@@ -1158,7 +1158,7 @@ static void _etk_combobox_window_key_down_cb(Etk_Object *object, Etk_Event_Key_D
          _etk_combobox_selected_item_set(combobox, combobox->selected_item->prev);
    }
    else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "space") == 0
-      || strcmp(event->keyname, "KP_Enter") == 0)
+         || strcmp(event->keyname, "KP_Enter") == 0)
    {
       if (combobox->selected_item)
       {
@@ -1277,7 +1277,7 @@ static void _etk_combobox_item_cells_render(Etk_Combobox *combobox, Etk_Widget *
          if (combobox->cols[i]->fill_policy & ETK_COMBOBOX_EXPAND)
          {
             col_geometry.w = (combobox->cols[i]->width / (float)expandable_width) *
-               (geometry.w - (total_width - expandable_width));
+                  (geometry.w - (total_width - expandable_width));
          }
          else
             col_geometry.w = combobox->cols[i]->width;
@@ -1287,7 +1287,7 @@ static void _etk_combobox_item_cells_render(Etk_Combobox *combobox, Etk_Widget *
       {
          child_geometry = col_geometry;
          etk_container_child_space_fill(cells[i], &child_geometry,
-            combobox->cols[i]->fill_policy & ETK_COMBOBOX_FILL, ETK_TRUE, combobox->cols[i]->align, 0.5);
+               combobox->cols[i]->fill_policy & ETK_COMBOBOX_FILL, ETK_TRUE, combobox->cols[i]->align, 0.5);
          etk_widget_size_allocate(cells[i], child_geometry);
       }
       col_geometry.x += col_geometry.w;

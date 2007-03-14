@@ -47,15 +47,15 @@ Etk_Type *etk_container_type_get(void)
    if (!container_type)
    {
       container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE, sizeof(Etk_Container),
-         ETK_CONSTRUCTOR(_etk_container_constructor), ETK_DESTRUCTOR(_etk_container_destructor));
+            ETK_CONSTRUCTOR(_etk_container_constructor), ETK_DESTRUCTOR(_etk_container_destructor));
    
       _etk_container_signals[ETK_CONTAINER_CHILD_ADDED_SIGNAL] = etk_signal_new("child_added",
-         container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+            container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_container_signals[ETK_CONTAINER_CHILD_REMOVED_SIGNAL] = etk_signal_new("child_removed",
-         container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+            container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
 
       etk_type_property_add(container_type, "border_width", ETK_CONTAINER_BORDER_WIDTH_PROPERTY,
-         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
+            ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
    
       container_type->property_set = _etk_container_property_set;
       container_type->property_get = _etk_container_property_get;
@@ -266,7 +266,7 @@ static void _etk_container_destructor(Etk_Container *container)
       return;
    
    /* We need to do that because Etk_Widget's destructor may
-    * still want to access those methods */
+    * still want to access those methods (TODO: not when parent_set will be fixed...) */
    container->child_add = NULL;
    container->child_remove = NULL;
    container->children_get = NULL;

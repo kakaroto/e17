@@ -53,17 +53,17 @@ Etk_Type *etk_dialog_type_get(void)
    if (!dialog_type)
    {
       dialog_type = etk_type_new("Etk_Dialog", ETK_WINDOW_TYPE, sizeof(Etk_Dialog),
-         ETK_CONSTRUCTOR(_etk_dialog_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_dialog_constructor), NULL);
 
       _etk_dialog_signals[ETK_DIALOG_RESPONSE_SIGNAL] = etk_signal_new("response",
-         dialog_type, -1, etk_marshaller_VOID__INT, NULL, NULL);
+            dialog_type, -1, etk_marshaller_VOID__INT, NULL, NULL);
 
       etk_type_property_add(dialog_type, "has_separator", ETK_DIALOG_HAS_SEPARATOR_PROPERTY,
-         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+            ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(dialog_type, "action_area_homogeneous", ETK_DIALOG_ACTION_AREA_HOMOGENEOUS_PROPERTY,
-         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+            ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(dialog_type, "action_area_align", ETK_DIALOG_ACTION_AREA_ALIGN_PROPERTY,
-         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
+            ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
 
       dialog_type->property_set = _etk_dialog_property_set;
       dialog_type->property_get = _etk_dialog_property_get;

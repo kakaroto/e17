@@ -43,10 +43,10 @@ Etk_Type *etk_bin_type_get(void)
    if (!bin_type)
    {
       bin_type = etk_type_new("Etk_Bin", ETK_CONTAINER_TYPE, sizeof(Etk_Bin),
-         ETK_CONSTRUCTOR(_etk_bin_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_bin_constructor), NULL);
       
       etk_type_property_add(bin_type, "child", ETK_BIN_CHILD_PROPERTY,
-         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
+            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
       
       bin_type->property_set = _etk_bin_property_set;
       bin_type->property_get = _etk_bin_property_get;

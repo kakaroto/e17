@@ -55,12 +55,12 @@ Etk_Type *etk_box_type_get(void)
    if (!box_type)
    {
       box_type = etk_type_new("Etk_Box", ETK_CONTAINER_TYPE, sizeof(Etk_Box),
-         ETK_CONSTRUCTOR(_etk_box_constructor), ETK_DESTRUCTOR(_etk_box_destructor));
+            ETK_CONSTRUCTOR(_etk_box_constructor), ETK_DESTRUCTOR(_etk_box_destructor));
    
       etk_type_property_add(box_type, "spacing", ETK_BOX_SPACING_PROPERTY,
-         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
+            ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
       etk_type_property_add(box_type, "homogeneous", ETK_BOX_HOMOGENEOUS_PROPERTY,
-         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+            ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       
       box_type->property_set = _etk_box_property_set;
       box_type->property_get = _etk_box_property_get;
@@ -81,7 +81,7 @@ Etk_Type *etk_hbox_type_get(void)
    if (!hbox_type)
    {
       hbox_type = etk_type_new("Etk_HBox", ETK_BOX_TYPE, sizeof(Etk_HBox),
-         ETK_CONSTRUCTOR(_etk_hbox_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_hbox_constructor), NULL);
    }
 
    return hbox_type;
@@ -99,7 +99,7 @@ Etk_Type *etk_vbox_type_get(void)
    if (!vbox_type)
    {
       vbox_type = etk_type_new("Etk_VBox", ETK_BOX_TYPE, sizeof(Etk_VBox),
-         ETK_CONSTRUCTOR(_etk_vbox_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_vbox_constructor), NULL);
    }
 
    return vbox_type;
@@ -680,7 +680,8 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                child_geometry.w -= 2 * cell->padding;
                
                etk_container_child_space_fill(child, &child_geometry,
-                  cell->fill_policy & ETK_BOX_FILL, !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), 0.5, 0.5); 
+                     cell->fill_policy & ETK_BOX_FILL,
+                     !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), 0.5, 0.5);
                etk_widget_size_allocate(child, child_geometry);
             }
             
@@ -744,7 +745,8 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                child_geometry.w -= 2 * cell->padding;
                
                etk_container_child_space_fill(child, &child_geometry,
-                  cell->fill_policy & ETK_BOX_FILL, !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), 0.5, 0.5); 
+                     cell->fill_policy & ETK_BOX_FILL,
+                     !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), 0.5, 0.5); 
                etk_widget_size_allocate(child, child_geometry);
             }
             
@@ -902,7 +904,8 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                child_geometry.h -= 2 * cell->padding;
                
                etk_container_child_space_fill(child, &child_geometry,
-                  !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5); 
+                     !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE),
+                     cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5);
                etk_widget_size_allocate(child, child_geometry);
             }
             
@@ -966,7 +969,8 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                child_geometry.h -= 2 * cell->padding;
                
                etk_container_child_space_fill(child, &child_geometry,
-                  !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5); 
+                     !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE),
+                     cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5); 
                etk_widget_size_allocate(child, child_geometry);
             }
             
@@ -1037,7 +1041,7 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
       else
       {
          box_widget->focus_order = evas_list_append_relative_list(box_widget->focus_order,
-            child, box->last_cell[ETK_BOX_START]->focus_node);
+               child, box->last_cell[ETK_BOX_START]->focus_node);
          cell->focus_node = evas_list_next(box->last_cell[ETK_BOX_START]->focus_node);
       }
    }

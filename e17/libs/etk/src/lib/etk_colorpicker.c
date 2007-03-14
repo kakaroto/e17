@@ -110,15 +110,15 @@ Etk_Type *etk_colorpicker_type_get(void)
    if (!cp_type)
    {
       cp_type = etk_type_new("Etk_Colorpicker", ETK_WIDGET_TYPE, sizeof(Etk_Colorpicker),
-         ETK_CONSTRUCTOR(_etk_colorpicker_constructor), ETK_DESTRUCTOR(_etk_colorpicker_destructor));
+            ETK_CONSTRUCTOR(_etk_colorpicker_constructor), ETK_DESTRUCTOR(_etk_colorpicker_destructor));
    
       _etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL] = etk_signal_new("color_changed",
-         cp_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+            cp_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
       etk_type_property_add(cp_type, "color_mode", ETK_CP_MODE_PROPERTY,
-         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_COLORPICKER_H));
+            ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_COLORPICKER_H));
       etk_type_property_add(cp_type, "use_alpha", ETK_CP_USE_ALPHA_PROPERTY,
-         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+            ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
    
       cp_type->property_set = _etk_colorpicker_property_set;
       cp_type->property_get = _etk_colorpicker_property_get;
@@ -201,10 +201,8 @@ Etk_Colorpicker_Mode etk_colorpicker_mode_get(Etk_Colorpicker *cp)
 void etk_colorpicker_current_color_set(Etk_Colorpicker *cp, Etk_Color color)
 {
    if (cp->current_color.r == color.r && cp->current_color.g == color.g
-      && cp->current_color.b == color.b && cp->current_color.a == color.a)
-   {
+         && cp->current_color.b == color.b && cp->current_color.a == color.a)
       return;
-   }
    
    cp->ignore_value_changed = ETK_TRUE;
    etk_range_value_set(ETK_RANGE(cp->sliders[ETK_COLORPICKER_R]), color.r);
@@ -297,7 +295,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    cp->current_color.g = 0;
    cp->current_color.b = 0;
    cp->current_color.a = 255;
-      
+   
    cp->sp_object = NULL;
    cp->sp_image = NULL;
    cp->sp_hcursor = NULL;
@@ -350,7 +348,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
          cp->radios[i] = etk_radio_button_new_with_label_from_widget(labels[i], ETK_RADIO_BUTTON(cp->radios[0]));
       etk_widget_internal_set(cp->radios[i], ETK_TRUE);
       etk_table_attach(ETK_TABLE(cp->component_table), cp->radios[i], 0, 0, i, i,
-         0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
+            0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
       etk_widget_show(cp->radios[i]);
       
       cp->sliders[i] = etk_hslider_new(0.0, _etk_colorpicker_max_values[i], 0.0, steps[i], steps[i] * 5);
@@ -358,19 +356,19 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       etk_widget_theme_parent_set(cp->sliders[i], ETK_WIDGET(cp));
       etk_widget_internal_set(cp->sliders[i], ETK_TRUE);
       etk_table_attach(ETK_TABLE(cp->component_table), cp->sliders[i], 1, 1, i, i,
-         0, 0, ETK_TABLE_HFILL | ETK_TABLE_EXPAND);
+            0, 0, ETK_TABLE_HFILL | ETK_TABLE_EXPAND);
       etk_widget_show(cp->sliders[i]);
       
       cp->sliders_image[i] = NULL;
       
       etk_signal_connect("toggled", ETK_OBJECT(cp->radios[i]),
-         ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
+            ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
       etk_signal_connect("realize", ETK_OBJECT(cp->sliders[i]),
-         ETK_CALLBACK(_etk_colorpicker_slider_realize_cb), cp);
+            ETK_CALLBACK(_etk_colorpicker_slider_realize_cb), cp);
       etk_signal_connect("unrealize", ETK_OBJECT(cp->sliders[i]),
-         ETK_CALLBACK(_etk_colorpicker_slider_unrealize_cb), cp);
+            ETK_CALLBACK(_etk_colorpicker_slider_unrealize_cb), cp);
       etk_signal_connect("value_changed", ETK_OBJECT(cp->sliders[i]),
-         ETK_CALLBACK(_etk_colorpicker_slider_value_changed_cb), cp);
+            ETK_CALLBACK(_etk_colorpicker_slider_value_changed_cb), cp);
    }
    
    /* Alpha slider */
@@ -378,16 +376,16 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       cp->alpha_label = etk_label_new(_("Alpha"));
       etk_widget_internal_set(cp->alpha_label, ETK_TRUE);
       etk_table_attach(ETK_TABLE(cp->component_table), cp->alpha_label, 0, 0, 6, 6,
-         0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
+            0, 0, ETK_TABLE_HFILL | ETK_TABLE_VEXPAND);
       
       cp->alpha_slider = etk_hslider_new(0.0, 255.0, 255.0, 10, 5.0);
       etk_slider_label_set(ETK_SLIDER(cp->alpha_slider), "%.0f");
       etk_widget_internal_set(cp->alpha_slider, ETK_TRUE);
       etk_table_attach(ETK_TABLE(cp->component_table), cp->alpha_slider, 1, 1, 6, 6,
-         0, 0, ETK_TABLE_HFILL | ETK_TABLE_EXPAND);
+            0, 0, ETK_TABLE_HFILL | ETK_TABLE_EXPAND);
       
       etk_signal_connect("value_changed", ETK_OBJECT(cp->alpha_slider),
-         ETK_CALLBACK(_etk_colorpicker_alpha_slider_value_changed_cb), cp);
+            ETK_CALLBACK(_etk_colorpicker_alpha_slider_value_changed_cb), cp);
    }
    
    /* We create the widgets for the color preview */
@@ -395,29 +393,31 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    etk_widget_padding_set(cp->color_table, 3, 3, 3, 3);
    etk_widget_internal_set(cp->color_table, ETK_TRUE);
    etk_table_attach(ETK_TABLE(cp->main_table), cp->color_table, 0, 0, 1, 1,
-      0, 0, ETK_TABLE_FILL | ETK_TABLE_HEXPAND);
+         0, 0, ETK_TABLE_FILL | ETK_TABLE_HEXPAND);
    etk_widget_show(cp->color_table);
    
    /* Current color preview */
    cp->current_color_label = etk_label_new(_("Current"));
    etk_widget_internal_set(cp->current_color_label, ETK_TRUE);
    etk_table_attach(ETK_TABLE(cp->color_table), cp->current_color_label, 0, 0, 0, 0,
-      0, 0, ETK_TABLE_HFILL);
+         0, 0, ETK_TABLE_HFILL);
    etk_widget_show(cp->current_color_label);
    
    cp->current_color_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "color_preview", NULL);
    etk_widget_theme_parent_set(cp->current_color_widget, ETK_WIDGET(cp));
    etk_widget_internal_set(cp->current_color_widget, ETK_TRUE);
    etk_table_attach(ETK_TABLE(cp->color_table), cp->current_color_widget, 1, 1, 0, 0,
-      0, 0, ETK_TABLE_HFILL | ETK_TABLE_HEXPAND);
+         0, 0, ETK_TABLE_HFILL | ETK_TABLE_HEXPAND);
    etk_widget_show(cp->current_color_widget);
    
-   etk_signal_connect("realize", ETK_OBJECT(cp->picker_widget), ETK_CALLBACK(_etk_colorpicker_realize_cb), cp);
-   etk_signal_connect("unrealize", ETK_OBJECT(cp->picker_widget), ETK_CALLBACK(_etk_colorpicker_unrealize_cb), cp);
+   etk_signal_connect("realize", ETK_OBJECT(cp->picker_widget),
+         ETK_CALLBACK(_etk_colorpicker_realize_cb), cp);
+   etk_signal_connect("unrealize", ETK_OBJECT(cp->picker_widget),
+         ETK_CALLBACK(_etk_colorpicker_unrealize_cb), cp);
    etk_signal_connect("realize", ETK_OBJECT(cp->current_color_widget),
-      ETK_CALLBACK(_etk_colorpicker_current_color_realize_cb), cp);
+         ETK_CALLBACK(_etk_colorpicker_current_color_realize_cb), cp);
    etk_signal_connect("unrealize", ETK_OBJECT(cp->current_color_widget),
-      ETK_CALLBACK(_etk_colorpicker_current_color_unrealize_cb), cp);
+         ETK_CALLBACK(_etk_colorpicker_current_color_unrealize_cb), cp);
    
    
    ETK_WIDGET(cp)->size_request = _etk_colorpicker_size_request;
@@ -621,7 +621,9 @@ static void _etk_colorpicker_slider_realize_cb(Etk_Object *object, void *data)
    Evas *evas;
    int i;
    
-   if (!(slider = ETK_WIDGET(object)) || !(cp = ETK_COLORPICKER(data)) || !(evas = etk_widget_toplevel_evas_get(slider)))
+   if (!(slider = ETK_WIDGET(object)) || !(cp = ETK_COLORPICKER(data)))
+      return;
+   if (!(evas = etk_widget_toplevel_evas_get(slider)))
       return;
    
    for (i = 0; i < 6; i++)
@@ -633,7 +635,7 @@ static void _etk_colorpicker_slider_realize_cb(Etk_Object *object, void *data)
          evas_object_image_size_set(cp->sliders_image[i], cp->sliders_res, 1);
          evas_object_show(cp->sliders_image[i]);
          evas_object_event_callback_add(cp->sliders_image[i], EVAS_CALLBACK_RESIZE,
-            _etk_colorpicker_slider_image_resize_cb, NULL);
+               _etk_colorpicker_slider_image_resize_cb, NULL);
          etk_widget_swallow_object(slider, "etk.swallow.image", cp->sliders_image[i]);
          
          _etk_colorpicker_update(cp, ETK_FALSE, ETK_FALSE, ETK_FALSE, ETK_FALSE);
@@ -1104,9 +1106,9 @@ static void _etk_colorpicker_sp_cursor_move(Etk_Colorpicker *cp, float xpercent,
    
    cp->ignore_value_changed = ETK_TRUE;
    etk_range_value_set(ETK_RANGE(cp->sliders[cp->sp_xcomponent]),
-      xpercent * _etk_colorpicker_max_values[cp->sp_xcomponent]);
+         xpercent * _etk_colorpicker_max_values[cp->sp_xcomponent]);
    etk_range_value_set(ETK_RANGE(cp->sliders[cp->sp_ycomponent]),
-      ypercent * _etk_colorpicker_max_values[cp->sp_ycomponent]);
+         ypercent * _etk_colorpicker_max_values[cp->sp_ycomponent]);
    cp->ignore_value_changed = ETK_FALSE;
    
    _etk_colorpicker_update_from_sliders(cp, cp->mode, ETK_FALSE, ETK_FALSE);

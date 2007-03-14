@@ -34,7 +34,7 @@ Etk_Type *etk_canvas_type_get(void)
    if (!canvas_type)
    {
       canvas_type = etk_type_new("Etk_Canvas", ETK_WIDGET_TYPE, sizeof(Etk_Canvas),
-         ETK_CONSTRUCTOR(_etk_canvas_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_canvas_constructor), NULL);
    }
 
    return canvas_type;

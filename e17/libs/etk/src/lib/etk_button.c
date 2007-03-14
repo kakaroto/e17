@@ -69,27 +69,27 @@ Etk_Type *etk_button_type_get(void)
    if (!button_type)
    {
       button_type = etk_type_new("Etk_Button", ETK_BIN_TYPE, sizeof(Etk_Button),
-         ETK_CONSTRUCTOR(_etk_button_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_button_constructor), NULL);
 
       _etk_button_signals[ETK_BUTTON_PRESSED_SIGNAL] = etk_signal_new("pressed",
-         button_type, ETK_MEMBER_OFFSET(Etk_Button, pressed), etk_marshaller_VOID__VOID, NULL, NULL);
+            button_type, ETK_MEMBER_OFFSET(Etk_Button, pressed), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_button_signals[ETK_BUTTON_RELEASED_SIGNAL] = etk_signal_new("released",
-         button_type, ETK_MEMBER_OFFSET(Etk_Button, released), etk_marshaller_VOID__VOID, NULL, NULL);
+            button_type, ETK_MEMBER_OFFSET(Etk_Button, released), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_button_signals[ETK_BUTTON_CLICKED_SIGNAL] = etk_signal_new("clicked",
-         button_type, ETK_MEMBER_OFFSET(Etk_Button, clicked), etk_marshaller_VOID__VOID, NULL, NULL);
+            button_type, ETK_MEMBER_OFFSET(Etk_Button, clicked), etk_marshaller_VOID__VOID, NULL, NULL);
 
       etk_type_property_add(button_type, "label", ETK_BUTTON_LABEL_PROPERTY,
-         ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
+            ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
       etk_type_property_add(button_type, "image", ETK_BUTTON_IMAGE_PROPERTY,
-         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
+            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
       etk_type_property_add(button_type, "xalign", ETK_BUTTON_XALIGN_PROPERTY,
-         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
+            ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
       etk_type_property_add(button_type, "yalign", ETK_BUTTON_YALIGN_PROPERTY,
-         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
+            ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
       etk_type_property_add(button_type, "style", ETK_BUTTON_STYLE_PROPERTY,
-         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_BUTTON_BOTH_HORIZ));
+            ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_BUTTON_BOTH_HORIZ));
       etk_type_property_add(button_type, "stock_size", ETK_BUTTON_STOCK_SIZE_PROPERTY,
-         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_STOCK_SMALL));
+            ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_STOCK_SMALL));
 
       button_type->property_set = _etk_button_property_set;
       button_type->property_get = _etk_button_property_get;
@@ -105,7 +105,7 @@ Etk_Type *etk_button_type_get(void)
 Etk_Widget *etk_button_new(void)
 {
    return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button",
-      "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
+         "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**
@@ -114,8 +114,8 @@ Etk_Widget *etk_button_new(void)
  */
 Etk_Widget *etk_button_new_with_label(const char *label)
 {
-   return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button",
-      "label", label, "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "button", "label", label,
+         "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
 }
 
 /**
@@ -685,7 +685,7 @@ static void _etk_button_rebuild(Etk_Button *button)
          etk_container_add(ETK_CONTAINER(button->alignment), button->box);
          etk_widget_show(button->box);
          etk_signal_connect("child_removed", ETK_OBJECT(button->box),
-            ETK_CALLBACK(_etk_button_image_removed_cb), button);
+               ETK_CALLBACK(_etk_button_image_removed_cb), button);
       }
       else
          etk_container_remove_all(ETK_CONTAINER(button->box));

@@ -250,8 +250,7 @@ Evas_Object *etk_cache_find(Etk_Cache *cache, const char *filename, const char *
    for (l = cache->cached_objects; l; l = l->next)
    {
       item = l->data;
-      if (strcmp(item->filename, filename) == 0
-         && ((!item->key && !key) || (item->key && key && strcmp(item->key, key) == 0)))
+      if (strcmp(item->filename, filename) == 0 && (strcmp(item->key ? item->key : "", key ? key : "") == 0))
       {
          object = item->object;
          

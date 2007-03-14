@@ -39,16 +39,16 @@ Etk_Type *etk_alignment_type_get(void)
    if (!alignment_type)
    {
       alignment_type = etk_type_new("Etk_Alignment", ETK_BIN_TYPE, sizeof(Etk_Alignment),
-         ETK_CONSTRUCTOR(_etk_alignment_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_alignment_constructor), NULL);
 
       etk_type_property_add(alignment_type, "xalign", ETK_ALIGNMENT_XALIGN_PROPERTY,
-         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
+            ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
       etk_type_property_add(alignment_type, "yalign", ETK_ALIGNMENT_YALIGN_PROPERTY,
-         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
+            ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
       etk_type_property_add(alignment_type, "xscale", ETK_ALIGNMENT_XSCALE_PROPERTY,
-         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(1.0));
+            ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(1.0));
       etk_type_property_add(alignment_type, "yscale", ETK_ALIGNMENT_YSCALE_PROPERTY,
-         ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(1.0));
+            ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(1.0));
       
       alignment_type->property_set = _etk_alignment_property_set;
       alignment_type->property_get = _etk_alignment_property_get;
@@ -68,7 +68,7 @@ Etk_Type *etk_alignment_type_get(void)
 Etk_Widget *etk_alignment_new(float xalign, float yalign, float xscale, float yscale)
 {
    return etk_widget_new(ETK_ALIGNMENT_TYPE, "xalign", xalign,
-      "yalign", yalign, "xscale", xscale, "yscale", yscale, NULL);
+         "yalign", yalign, "xscale", xscale, "yscale", yscale, NULL);
 }
 
 /**
