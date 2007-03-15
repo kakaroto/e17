@@ -123,7 +123,7 @@ AM_CONDITIONAL(ENABLE_EWL, test x$enable_ewl = xyes)
 
 AC_ARG_ENABLE(etk,
         AC_HELP_STRING([--enable-etk/--disable-etk],
-        [enable/disable etk version (default=autodetect)]),
+        [enable/disable etk version (default=disabled)]),
         [enable_etk=$enableval], [enable_etk=default])
 
 if test "x$enable_etk" = "xdefault" || test "x$enable_etk" = "xyes"; then

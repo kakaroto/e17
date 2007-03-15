@@ -4,7 +4,7 @@ Version: @VERSION@
 Release: 0.%(date '+%Y%m%d')
 License: 3-clause BSD
 Group: Applications/Admin
-URL: http://www.enlightenment.org.au/
+URL: http://www.satus.net/empower
 Source: %{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Stephen Houston <linux15@assistix.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org.au/)}

@@ -12,5 +12,5 @@ echo "Running libtoolize..." ; (libtoolize --copy --automake || glibtoolize --au
 echo "Running automake..." ; automake --add-missing --copy --gnu || exit 1
 
 if [ -z "$NOCONFIGURE" ]; then
-	./configure "$@"
+	./configure --disable-etk "$@"
 fi
