@@ -16,10 +16,7 @@
 /* module private routines */
 static Flame *_flame_init (E_Module * m);
 static void _flame_shutdown (Flame * f);
-static E_Menu *_flame_config_menu_new (Flame * f);
 static void _flame_config_palette_set (Flame * f, Flame_Palette_Type type);
-static void _flame_menu_cb_configure (void *data, E_Menu * m,
-				      E_Menu_Item * mi);
 
 static int _flame_face_init (Flame_Face * ff);
 static void _flame_face_free (Flame_Face * ff);
@@ -207,21 +204,6 @@ _flame_shutdown (Flame * f)
   f->module = NULL;
   free (f);
   f = NULL;
-}
-
-static E_Menu *
-_flame_config_menu_new (Flame * f)
-{
-  E_Menu *mn;
-  E_Menu_Item *mi;
-
-  mn = e_menu_new ();
-  mi = e_menu_item_new (mn);
-  e_menu_item_label_set (mi, _("Configuration"));
-  e_util_menu_item_edje_icon_set (mi, "enlightenment/configuration");
-  e_menu_item_callback_set (mi, _flame_menu_cb_configure, f);
-  f->config_menu = mn;
-  return mn;
 }
 
 static void
@@ -908,16 +890,4 @@ _flame_cb_config_updated (void *data)
     return;
   /* Update The Palette */
   _flame_config_palette_set (f, f->conf->palette_type);
-}
-
-static void
-_flame_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
-{
-  Flame *f;
-
-  f = (Flame *) data;
-  if (!f)
-    return;
-  /* Call The Config Dialog */
-  _config_flame_module (f->face->con, f);
 }
