@@ -421,9 +421,7 @@ _wlan_cb_check (void *data)
 {
   Instance *inst;
   Config_Item *ci;
-  Edje_Message_Float msg;
 
-   int new_status, new_link, new_level, new_noise;
    unsigned int dummy;
    char iface[64];
    char buf[256];

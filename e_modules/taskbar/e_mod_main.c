@@ -318,8 +318,6 @@ _taskbar_empty_handle(Taskbar *b)
      {
         if (!b->o_empty)
           {
-             Evas_Coord w, h;
-
              b->o_empty = evas_object_rectangle_add(evas_object_evas_get(b->o_box));
              evas_object_event_callback_add(b->o_empty, EVAS_CALLBACK_MOUSE_DOWN, _taskbar_cb_empty_mouse_down, b);
              e_table_pack_options_set(b->o_empty, 1, 1,   /* fill */
@@ -408,7 +406,6 @@ _taskbar_repack(Taskbar *b)
    Evas_List *borders;
    E_Border *bd;
    Taskbar_Icon *ic;
-   int num;
 
    e_table_freeze(b->o_box);
    
@@ -499,7 +496,7 @@ _taskbar_resize_handle(Taskbar *b)
 {
    Taskbar_Icon *ic;
    Evas_Coord w, h, wmin, hmin;
-   int wnum, wnum2, hnum;
+   int wnum;
    int bwmin, bhmin;
 
    evas_object_geometry_get(b->inst->gcc->o_frame, NULL, NULL, &w, &h);
