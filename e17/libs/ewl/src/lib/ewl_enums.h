@@ -256,7 +256,9 @@ enum Ewl_Window_Flags
 	EWL_WINDOW_DIALOG = 0x40,		/**< Window has no max and min buttons */
 	EWL_WINDOW_MODAL = 0x80,		/**< Window is modal */
 	EWL_WINDOW_TRANSIENT = 0x100,		/**< Window is transient for */
-	EWL_WINDOW_TRANSIENT_FOREIGN = 0x200	/**< Window is transient for */
+	EWL_WINDOW_TRANSIENT_FOREIGN = 0x200,	/**< Window is transient for */
+	EWL_WINDOW_SKIP_TASKBAR = 0x400,	/**< Window skips taskbar */
+	EWL_WINDOW_SKIP_PAGER = 0x800		/**< Window skips pager */
 };
 
 /**

@@ -22,9 +22,14 @@ enum Ewl_Engine_Window_Hooks
 	EWL_ENGINE_WINDOW_DIALOG_SET,	/**< Set the dialog setting of the window */
 	EWL_ENGINE_WINDOW_FULLSCREEN_SET,	/**< Set the fullscreen 
 							setting of the window */
+	EWL_ENGINE_WINDOW_SKIP_TASKBAR_SET,	/**< Set the skip taskbar
+							setting of the window */
+	EWL_ENGINE_WINDOW_SKIP_PAGER_SET,	/**< Set the skip pager
+							setting of the window */
 	EWL_ENGINE_WINDOW_TRANSIENT_FOR,	/**< Set the window transient */
 	EWL_ENGINE_WINDOW_MODAL_SET, /**< Set the window modal */
-
+	EWL_ENGINE_WINDOW_ATTENTION_DEMAND, /**< Demand attention 
+					      for the window */
 	EWL_ENGINE_WINDOW_RAISE,	/**< Raise the window */
 	EWL_ENGINE_WINDOW_LOWER,	/**< Lower the window */
 
@@ -179,8 +184,11 @@ void		 ewl_engine_window_name_class_set(Ewl_Window *win);
 void		 ewl_engine_window_borderless_set(Ewl_Window *win);
 void		 ewl_engine_window_dialog_set(Ewl_Window *win);
 void		 ewl_engine_window_fullscreen_set(Ewl_Window *win);
+void		 ewl_engine_window_skip_taskbar_set(Ewl_Window *win);
+void		 ewl_engine_window_skip_pager_set(Ewl_Window *win);
 void		 ewl_engine_window_transient_for(Ewl_Window *win);
 void		 ewl_engine_window_modal_set(Ewl_Window *win);
+void		 ewl_engine_window_attention_demand(Ewl_Window *win);
 
 void		 ewl_engine_window_raise(Ewl_Window *win);
 void		 ewl_engine_window_lower(Ewl_Window *win);
@@ -244,9 +252,14 @@ typedef void (*Ewl_Engine_Cb_Window_Dialog_Set)(Ewl_Window *win);	/**< Set the d
 									setting of the window */
 typedef void (*Ewl_Engine_Cb_Window_Fullscreen_Set)(Ewl_Window *win);	/**< Set the fullscreen 
 							setting of the window */
+typedef void (*Ewl_Engine_Cb_Window_Skip_Taskbar_Set)(Ewl_Window *win);	/**< Set the fullscreen 
+							setting of the window */
+typedef void (*Ewl_Engine_Cb_Window_Skip_Pager_Set)(Ewl_Window *win);	/**< Set the fullscreen 
+							setting of the window */
 typedef void (*Ewl_Engine_Cb_Window_Transient_For)(Ewl_Window *win);	/**< Set the window 
 								transient */
 typedef void (*Ewl_Engine_Cb_Window_Modal_Set)(Ewl_Window *win); /**< Set the window modal */
+typedef void (*Ewl_Engine_Cb_Window_Attention_Demand)(Ewl_Window *win); /**< Set the window modal */
 typedef void (*Ewl_Engine_Cb_Window_Raise)(Ewl_Window *win);	/**< Raise the window */
 typedef void (*Ewl_Engine_Cb_Window_Lower)(Ewl_Window *win);	/**< Lower the window */
 typedef int  (*Ewl_Engine_Cb_Keyboard_Grab)(Ewl_Window *win);	/**< Set the keyboard grab */

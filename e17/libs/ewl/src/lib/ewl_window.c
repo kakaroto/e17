@@ -343,6 +343,92 @@ ewl_window_fullscreen_get(Ewl_Window *win)
 }
 
 /**
+ * @param win: The window to work with
+ * @param skip: If the @p win should not be in the taskbar
+ * @return Returns no value
+ * @brief Sets the skip taskbar setting for the window
+ */
+void 
+ewl_window_skip_taskbar_set(Ewl_Window *win, unsigned int skip)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	/* do nothing if already set */
+	if (skip == ewl_window_skip_taskbar_get(win))
+		DRETURN(DLEVEL_STABLE);
+
+	if (skip)
+		win->flags |= EWL_WINDOW_SKIP_TASKBAR;
+	else
+		win->flags &= ~EWL_WINDOW_SKIP_TASKBAR;
+
+	ewl_engine_window_skip_taskbar_set(win);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: The window to work with
+ * @return Returns TRUE if the window is to be skipped for the taskbar, 
+ *		FALSE otherwise
+ * @brief Retrieve the skip taskbar setting for the window
+ */
+unsigned int
+ewl_window_skip_taskbar_get(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, FALSE);
+	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+
+	DRETURN_INT((!!(win->flags & EWL_WINDOW_SKIP_TASKBAR)), DLEVEL_STABLE);
+}
+
+/**
+ * @param win: The window to work with
+ * @param skip: If the @p win should be visible in the pager
+ * @return Returns no value
+ * @brief Sets the skip pager setting for the window
+ */
+void 
+ewl_window_skip_pager_set(Ewl_Window *win, unsigned int skip)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	/* do nothing if already set */
+	if (skip == ewl_window_skip_pager_get(win))
+		DRETURN(DLEVEL_STABLE);
+
+	if (skip)
+		win->flags |= EWL_WINDOW_SKIP_PAGER;
+	else
+		win->flags &= ~EWL_WINDOW_SKIP_PAGER;
+
+	ewl_engine_window_skip_pager_set(win);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: The window to work with
+ * @return Returns TRUE if the window is to be skipped for the pager, 
+ *		FALSE otherwise
+ * @brief Retrieve the skip pager setting for the window
+ */
+unsigned int
+ewl_window_skip_pager_get(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, FALSE);
+	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+
+	DRETURN_INT((!!(win->flags & EWL_WINDOW_SKIP_PAGER)), DLEVEL_STABLE);
+}
+
+/**
  * @param win: the window to move
  * @param x: the x coordinate of the new position
  * @param y: the y coordinate of the new position
@@ -405,6 +491,24 @@ ewl_window_lower(Ewl_Window *win)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param win: the window to work with.
+ * @return Returns no value.
+ * @brief Request the WM to pay attention to the window
+ *
+ * Demand attention for the window @a win if it is realized.
+ */
+void
+ewl_window_attention_demand(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	ewl_engine_window_attention_demand(win);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 /**
  * @param win: window to set transient
  * @param forwin: the window to be transient for
@@ -689,6 +793,8 @@ ewl_window_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_engine_window_borderless_set(window);
 	ewl_engine_window_dialog_set(window);
 	ewl_engine_window_fullscreen_set(window);
+	ewl_engine_window_skip_taskbar_set(window);
+	ewl_engine_window_skip_pager_set(window);
 	ewl_engine_window_modal_set(window);
 
 	width = ewl_object_maximum_w_get(EWL_OBJECT(window));

@@ -68,8 +68,11 @@ static void ee_window_name_class_set(Ewl_Window *win);
 static void ee_window_borderless_set(Ewl_Window *win);
 static void ee_window_dialog_set(Ewl_Window *win);
 static void ee_window_fullscreen_set(Ewl_Window *win);
+static void ee_window_skip_taskbar_set(Ewl_Window *win);
+static void ee_window_skip_pager_set(Ewl_Window *win);
 static void ee_window_transient_for(Ewl_Window *win);
 static void ee_window_modal_set(Ewl_Window *win);
+static void ee_window_attention_demand(Ewl_Window *win);
 static void ee_window_raise(Ewl_Window *win);
 static void ee_window_lower(Ewl_Window *win);
 static int ee_keyboard_grab(Ewl_Window *win);
@@ -104,8 +107,11 @@ static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
 		ee_window_borderless_set,
 		ee_window_dialog_set,
 		ee_window_fullscreen_set,
+		ee_window_skip_taskbar_set,
+		ee_window_skip_pager_set,
 		ee_window_transient_for,
 		ee_window_modal_set,
+		ee_window_attention_demand,
 		ee_window_raise,
 		ee_window_lower,
 		ee_keyboard_grab,
@@ -590,6 +596,62 @@ ee_window_fullscreen_set(Ewl_Window *win)
 }
 
 static void
+ee_window_skip_taskbar_set(Ewl_Window *win)
+{
+	int skip;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE); 
+
+	skip = (!!(win->flags & EWL_WINDOW_SKIP_TASKBAR));
+
+	if (REALIZED(win))
+		ecore_x_netwm_state_request_send((Ecore_X_Window)win->window,
+				0, ECORE_X_WINDOW_STATE_SKIP_TASKBAR,
+				ECORE_X_WINDOW_STATE_UNKNOWN, skip);
+
+	else if (win->window && skip)
+	{
+		Ecore_X_Window_State states[] =
+				{ECORE_X_WINDOW_STATE_SKIP_TASKBAR};
+
+		ecore_x_netwm_window_state_set((Ecore_X_Window)win->window,
+								states, 1);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_window_skip_pager_set(Ewl_Window *win)
+{
+	int skip;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE); 
+
+	skip = (!!(win->flags & EWL_WINDOW_SKIP_PAGER));
+
+	if (REALIZED(win))
+		ecore_x_netwm_state_request_send((Ecore_X_Window)win->window,
+				0, ECORE_X_WINDOW_STATE_SKIP_PAGER,
+				ECORE_X_WINDOW_STATE_UNKNOWN, skip);
+
+	else if (win->window && skip)
+	{
+		Ecore_X_Window_State states[] =
+				{ECORE_X_WINDOW_STATE_SKIP_PAGER};
+
+		ecore_x_netwm_window_state_set((Ecore_X_Window)win->window,
+								states, 1);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
 ee_window_transient_for(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -628,6 +690,30 @@ ee_window_modal_set(Ewl_Window *win)
 	{
 		Ecore_X_Window_State states[] =
 				{ECORE_X_WINDOW_STATE_MODAL};
+
+		ecore_x_netwm_window_state_set((Ecore_X_Window)win->window,
+								states, 1);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_window_attention_demand(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	if (REALIZED(win)) {
+		ecore_x_netwm_state_request_send((Ecore_X_Window)win->window,
+					0, ECORE_X_WINDOW_STATE_DEMANDS_ATTENTION,
+					ECORE_X_WINDOW_STATE_UNKNOWN, 1);
+	}
+	else if (win->window)
+	{
+		Ecore_X_Window_State states[] =
+				{ECORE_X_WINDOW_STATE_DEMANDS_ATTENTION};
 
 		ecore_x_netwm_window_state_set((Ecore_X_Window)win->window,
 								states, 1);
