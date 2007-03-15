@@ -1,5 +1,6 @@
 #include <e.h>
 #include "e_mod_main.h"
+#include "mbox.h"
 
 struct _E_Config_Dialog_Data
 {
