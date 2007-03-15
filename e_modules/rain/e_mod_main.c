@@ -6,11 +6,9 @@
 /* module private routines */
 static Rain *_rain_init(E_Module *m);
 static void _rain_shutdown(Rain *rain);
-static E_Menu *_rain_config_menu_new(Rain *rain);
 static int _rain_cb_animator(void *data);
 static void _rain_clouds_load(Rain *rain);
 static void _rain_drops_load(char type, Rain *rain);
-static void _rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
 EAPI E_Module_Api e_modapi = {
@@ -208,22 +206,6 @@ _rain_shutdown(Rain *rain)
    rain = NULL;
 }
 
-static E_Menu *
-_rain_config_menu_new(Rain *rain)
-{
-   E_Menu *mn;
-   E_Menu_Item *mi;
-
-   mn = e_menu_new();
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Configuration");
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
-   e_menu_item_callback_set(mi, _rain_menu_cb_configure, rain);
-
-   return mn;
-}
-
 static void
 _rain_canvas_reset(Rain *rain)
 {
@@ -348,19 +330,6 @@ _rain_cb_animator(void *data)
         next = evas_list_next(next);
      }
    return 1;
-}
-
-static void
-_rain_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Rain *r;
-   E_Container *con;
-
-   r = (Rain *)data;
-   if (!r)
-      return;
-   con = e_container_current_get(e_manager_current_get());
-   _config_rain_module(con, r);
 }
 
 void
