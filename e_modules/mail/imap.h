@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #ifndef IMAP_H
 #define IMAP_H
 
@@ -18,6 +21,13 @@ typedef enum
 
 struct _ImapServer
 {
+   int port;
+   unsigned char local;
+   unsigned char ssl;
+   const char *host;
+   const char *user;
+   const char *pass;
+
    Ecore_Con_Server *server;
    Evas_List *clients;
    Evas_List *current;

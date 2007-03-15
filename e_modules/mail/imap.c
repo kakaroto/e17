@@ -1,22 +1,25 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include <e.h>
 #include "e_mod_main.h"
 #include "imap.h"
 
-static ImapServer *_mail_imap_server_get (Ecore_Con_Server * server);
-static ImapClient *_mail_imap_client_get (void *data);
+static ImapServer *_mail_imap_server_find (Ecore_Con_Server *server);
+static ImapServer *_mail_imap_server_get (Config_Box *cb);
+static ImapClient *_mail_imap_client_get (Config_Box *cb);
 static int _mail_imap_server_add (void *data, int type, void *event);
 static int _mail_imap_server_del (void *data, int type, void *event);
 static int _mail_imap_server_data (void *data, int type, void *event);
 static void _mail_imap_server_logout (ImapServer * is);
 
-static Evas_List *iservers;
+static Evas_List *iservers = NULL;
 
 void
 _mail_imap_check_mail (void *data)
 {
    Ecore_Con_Type type;
-   Evas_List *l, *j;
-   ImapClient *ic;
+   Evas_List *l;
 
   for (l = iservers; l; l = l->next)
     {
@@ -39,26 +42,19 @@ _mail_imap_check_mail (void *data)
 	      ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DATA,
 				       _mail_imap_server_data, NULL);
 
-	  for (j = is->clients; j; j = j->next)
-	    {
-	      ic = j->data;
-	      if (!ic->server->server)
-		{
-		   if (ic->config->local)
-		     type = ECORE_CON_LOCAL_SYSTEM;
-		   else
-		     type = ECORE_CON_REMOTE_SYSTEM;
-		     
-		   if (ecore_con_ssl_available_get () && (ic->config->ssl))
-		    type |= ECORE_CON_USE_SSL;
-		  ic->server->state = IMAP_STATE_DISCONNECTED;
-		  ic->server->server =
-		    ecore_con_server_connect (type, ic->config->host,
-					      ic->config->port, NULL);
-		  ic->server->cmd = 0;
-		}
-	       is->current = ic;
-	    }
+	  if (is->local)
+	    type = ECORE_CON_LOCAL_SYSTEM;
+	  else
+	    type = ECORE_CON_REMOTE_SYSTEM;
+
+	  if (ecore_con_ssl_available_get () && (is->ssl))
+	    type |= ECORE_CON_USE_SSL;
+	  is->state = IMAP_STATE_DISCONNECTED;
+	  is->server =
+	     ecore_con_server_connect (type, is->host,
+		   is->port, NULL);
+	  is->cmd = 0;
+	  is->current = is->clients;
 	}
     }
 }
@@ -73,7 +69,6 @@ _mail_imap_add_mailbox (void *data)
   if (!cb)
     return;
   ic = _mail_imap_client_get (cb);
-  ic->server->clients = evas_list_append (ic->server->clients, ic);
 }
 
 void
@@ -112,7 +107,7 @@ _mail_imap_shutdown ()
 
 /* PRIVATES */
 static ImapServer *
-_mail_imap_server_get (Ecore_Con_Server * server)
+_mail_imap_server_find (Ecore_Con_Server * server)
 {
   Evas_List *l;
 
@@ -127,48 +122,67 @@ _mail_imap_server_get (Ecore_Con_Server * server)
   return NULL;
 }
 
-static ImapClient *
-_mail_imap_client_get (void *data)
+static ImapServer *
+_mail_imap_server_get (Config_Box *cb)
 {
-  ImapServer *is;
-  ImapClient *ic;
-  Config_Box *cb;
-  Evas_List *l, *j;
-  int found = 0;
+   ImapServer *is = NULL;
+   Evas_List *l = NULL;
 
-  cb = data;
-  if (!cb)
-    return NULL;
+   for (l = iservers; l; l = l->next)
+     {
+	ImapServer *curr;
 
-  if ((!iservers) || (evas_list_count (iservers) <= 0))
+	curr = l->data;
+	if ((curr->local == cb->local) && (curr->port == cb->port) && (curr->ssl == cb->ssl) &&
+	    (!strcmp(curr->host, cb->host)) &&
+	    (!strcmp(curr->user, cb->user)) &&
+	    (!strcmp(curr->pass, cb->pass)))
+	  {
+	     is = curr;
+	     break;
+	  }
+     }
+  if (!is)
     {
       is = E_NEW (ImapServer, 1);
+      is->local = cb->local;
+      is->port = cb->port;
+      is->ssl = cb->ssl;
+      is->host = cb->host;
+      is->user = cb->user;
+      is->pass = cb->pass;
+
       is->server = NULL;
       is->cmd = 0;
       is->state = IMAP_STATE_DISCONNECTED;
       iservers = evas_list_append (iservers, is);
     }
+  return is;
+}
 
-  for (l = iservers; l; l = l->next)
+static ImapClient *
+_mail_imap_client_get (Config_Box *cb)
+{
+  ImapServer *is;
+  ImapClient *ic;
+  Evas_List *l;
+  int found = 0;
+
+  if (!cb)
+    return NULL;
+
+  is = _mail_imap_server_get(cb);
+
+  for (l = is->clients; l; l = l->next)
     {
-      is = l->data;
-      if (!is->clients)
-	continue;
-      for (j = is->clients; j; j = j->next)
-	{
-	  ic = j->data;
-	  if (!ic->config)
-	    continue;
-	  if ((!strcmp (ic->config->host, cb->host)) &&
-	      (!strcmp (ic->config->user, cb->user)) &&
-	      (!strcmp (ic->config->pass, cb->pass)))
-	    {
-	      found = 1;
-	      break;
-	    }
-	}
-      if (found)
-	break;
+       ic = l->data;
+       if (!ic->config)
+	 continue;
+       if (!strcmp (ic->config->new_path, cb->new_path))
+	 {
+	    found = 1;
+	    break;
+	 }
     }
   if (!found)
     {
@@ -177,6 +191,7 @@ _mail_imap_client_get (void *data)
       ic->server = is;
       ic->config->num_new = 0;
       ic->config->num_total = 0;
+      ic->server->clients = evas_list_append (ic->server->clients, ic);
     }
   return ic;
 }
@@ -187,7 +202,7 @@ _mail_imap_server_add (void *data, int type, void *event)
   Ecore_Con_Event_Server_Add *ev = event;
   ImapServer *is;
 
-  is = _mail_imap_server_get (ev->server);
+  is = _mail_imap_server_find (ev->server);
   if (!is)
     return 1;
 
@@ -202,7 +217,7 @@ _mail_imap_server_del (void *data, int type, void *event)
   Ecore_Con_Event_Server_Del *ev = event;
   ImapServer *is;
 
-  is = _mail_imap_server_get (ev->server);
+  is = _mail_imap_server_find (ev->server);
   if (!is)
     return 1;
 
@@ -228,7 +243,7 @@ _mail_imap_server_data (void *data, int type, void *event)
   char in[1024], out[1024], *spc;
   size_t slen;
 
-  is = _mail_imap_server_get (ev->server);
+  is = _mail_imap_server_find (ev->server);
   if (!is)
     return 1;
   if (is->state == IMAP_STATE_DISCONNECTED)
@@ -258,7 +273,7 @@ _mail_imap_server_data (void *data, int type, void *event)
     }
 
   if (!is->current) return 0;
-  ic = is->current;
+  ic = is->current->data;
   is->state++;
 
   switch (is->state)
@@ -266,18 +281,11 @@ _mail_imap_server_data (void *data, int type, void *event)
     case IMAP_STATE_SERVER_READY:
       len =
 	snprintf (out, sizeof (out), "A%03i LOGIN %s %s\r\n", ++is->cmd,
-		  ic->config->user, ic->config->pass);
-      ecore_con_server_send (ev->server, out, len);
-      break;
-    case IMAP_STATE_LOGGED_IN:
-      len =
-	snprintf (out, sizeof (out), "A%03i STATUS %s (MESSAGES UNSEEN)\r\n",
-		  ++is->cmd, ic->config->new_path);
+		  is->user, is->pass);
       ecore_con_server_send (ev->server, out, len);
       break;
     case IMAP_STATE_STATUS_OK:
-      if (sscanf (in, "* STATUS %*s (MESSAGES %i UNSEEN %i)", &total, &num) ==
-	  2)
+      if (sscanf (in, "* STATUS %*s (MESSAGES %i UNSEEN %i)", &total, &num) == 2)
 	{
 	  ic->config->num_new = num;
 	  ic->config->num_total = total;
@@ -285,18 +293,25 @@ _mail_imap_server_data (void *data, int type, void *event)
 
 	  if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
 	    _mail_start_exe (ic->config);
-
-	  is->current = is->clients->next;
-	  if (is->current)
-	    {
-	      if (is->current->data)
-		  is->state = IMAP_STATE_SERVER_READY;
-	      else
-		  _mail_imap_server_logout (is);
-	    }
-	  else
-	      _mail_imap_server_logout (is);
 	}
+
+      ic = NULL;
+      is->current = is->current->next;
+      if (is->current)
+	{
+	   is->state = IMAP_STATE_LOGGED_IN;
+	   ic = is->current->data;
+	}
+      else
+	_mail_imap_server_logout (is);
+      /* Fall through if we have another mailbox to check */
+      if (!ic)
+	break;
+    case IMAP_STATE_LOGGED_IN:
+      len =
+	snprintf (out, sizeof (out), "A%03i STATUS %s (MESSAGES UNSEEN)\r\n",
+		  ++is->cmd, ic->config->new_path);
+      ecore_con_server_send (ev->server, out, len);
       break;
     default:
       break;
