@@ -1,0 +1,13 @@
+e_dbus v0.01
+
+This is the start of some basic convenience wrappers around dbus to ease integrating dbus with EFL based applications.
+
+When using e_dbus, direct use of the low level dbus api is still heavily required for processing messages.
+
+A few things to note:
+
+e_dbus_bus_get() currently creates a new private connection to whichever bus is passed in, and hooks this into the ecore main loop. At some point, we should implement internal refcounting and sharing of these private connections (one for each bus type) so that e.g. multiple modules in an app can reuse the same connection. libdbus implements its own shared connections (available via dbus_bus_get()), but the final reference is always retained by libdbus iteself, causing any cleanup handlers on the connection to only be called at app exit. Thus, if a module hooks a connection in to the mainloop, there is no way to clean up fully before unloading the module, causing issues. 
+
+This code is still in its infancy, and although works, may have some rough edges. The design is not set in stone, so feel free to propose (and implement) changes / improvements.
+
+Patches can be sent to the enlightenment dev mailing list, or, if you have commit access, feel free to commit.
