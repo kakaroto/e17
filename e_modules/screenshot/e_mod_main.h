@@ -53,7 +53,7 @@ EAPI int   e_modapi_shutdown(E_Module *m);
 EAPI int   e_modapi_save(E_Module *m);
 EAPI int   e_modapi_about(E_Module *m);
 
-void _config_ss_module(Config_Item *ci);
+void _config_screenshot_module(Config_Item *ci);
 extern Config *ss_config;
 
 #endif
