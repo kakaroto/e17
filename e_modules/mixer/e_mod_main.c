@@ -25,10 +25,6 @@ static void             _gc_orient   (E_Gadcon_Client * gcc);
 static char            *_gc_label    (void);
 static Evas_Object     *_gc_icon     (Evas * evas);
 
-void mixer_vol_increase (Instance *inst);
-void mixer_vol_decrease (Instance *inst);
-void mixer_mute_toggle  (Instance *inst);
-
 /* Module Protos */
 static void         _mixer_simple_volume_change (Mixer *mixer, Config_Item *ci, double val);
 static void         _mixer_volume_change        (Mixer *mixer, Config_Item *ci, int channel_id, double val);

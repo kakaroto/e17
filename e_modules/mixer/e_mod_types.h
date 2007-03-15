@@ -107,4 +107,8 @@ enum _Mixer_Mode
      ONEFANG_MODE
 };
 
+void mixer_vol_increase (Instance *inst);
+void mixer_vol_decrease (Instance *inst);
+void mixer_mute_toggle  (Instance *inst);
+
 #endif
