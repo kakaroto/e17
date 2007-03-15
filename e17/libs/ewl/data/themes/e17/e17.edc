@@ -56,6 +56,8 @@ data
 	item: "/combo/cell/group" "ewl/combo/contents";
 	item: "/combo/popup/group" "ewl/menu";
 	item: "/combo/popup/vbox/cell/group" "ewl/combo/popup/contents";
+	item: "/combo/popup/vbox/menu_container/body/group"
+			"ewl/combo/popup/submenu";
 	item: "/combo/button/group" "ewl/combo/button";
 
 	/* dnd groups */
