@@ -1,4 +1,7 @@
 /*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
+/*
  * Copyright (C) 2006 Christopher Michael
  *
  * Portions of this code Copyright (C) 2004 Embrace project.
@@ -70,7 +73,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   Instance *inst;
   Mail *mail;
   Config_Item *ci;
-  Evas_List *l, *j;
+  Evas_List *l;
   int have_pop = 0, have_imap = 0, have_mbox = 0;
 
   inst = E_NEW (Instance, 1);
@@ -100,54 +103,48 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
     edje_object_signal_emit (inst->mail_obj, "label_passive", "");
 
   mail_config->instances = evas_list_append (mail_config->instances, inst);
-  for (l = mail_config->items; l; l = l->next)
+  for (l = ci->boxes; l; l = l->next)
     {
-      Config_Item *ci;
+       Config_Box *cb;
 
-      ci = l->data;
-      for (j = ci->boxes; j; j = j->next)
-	{
-	  Config_Box *cb;
-
-	  cb = j->data;
-	  switch (cb->type)
-	    {
-	    case MAIL_TYPE_IMAP:
-	      have_imap = 1;
-	      _mail_imap_add_mailbox (cb);
-	      if (!inst->check_timer)
-		inst->check_timer =
+       cb = l->data;
+       switch (cb->type)
+	 {
+	  case MAIL_TYPE_IMAP:
+	     have_imap = 1;
+	     _mail_imap_add_mailbox (cb);
+	     if (!inst->check_timer)
+	       inst->check_timer =
 		  ecore_timer_add ((ci->check_time * 60.0), _mail_cb_check,
-				   inst);
-	      break;
-	    case MAIL_TYPE_POP:
-	      have_pop = 1;
-	      _mail_pop_add_mailbox (cb);
-	      if (!inst->check_timer)
-		inst->check_timer =
+			inst);
+	     break;
+	  case MAIL_TYPE_POP:
+	     have_pop = 1;
+	     _mail_pop_add_mailbox (cb);
+	     if (!inst->check_timer)
+	       inst->check_timer =
 		  ecore_timer_add ((ci->check_time * 60.0), _mail_cb_check,
-				   inst);
-	      break;
-	    case MAIL_TYPE_MDIR:
-	      _mail_mdir_add_mailbox (inst, cb);
-	      break;
-	    case MAIL_TYPE_MBOX:
-	      have_mbox = 1;
-	      _mail_mbox_add_mailbox (inst, cb);
-	      if (!inst->check_timer)
-		inst->check_timer =
+			inst);
+	     break;
+	  case MAIL_TYPE_MDIR:
+	     _mail_mdir_add_mailbox (inst, cb);
+	     break;
+	  case MAIL_TYPE_MBOX:
+	     have_mbox = 1;
+	     _mail_mbox_add_mailbox (inst, cb);
+	     if (!inst->check_timer)
+	       inst->check_timer =
 		  ecore_timer_add ((ci->check_time * 60.0), _mail_cb_check,
-				   inst);
-	      break;
-	    }
-	}
-      if (have_pop)
-	_mail_pop_check_mail (inst);
-      if (have_imap)
-	_mail_imap_check_mail (inst);
-      if (have_mbox)
-	_mail_mbox_check_mail (inst);
+			inst);
+	     break;
+	 }
     }
+  if (have_pop)
+    _mail_pop_check_mail (inst);
+  if (have_imap)
+    _mail_imap_check_mail (inst);
+  if (have_mbox)
+    _mail_mbox_check_mail (inst);
   return gcc;
 }
 
