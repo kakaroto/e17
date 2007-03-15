@@ -214,7 +214,6 @@ static int
 _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    Photo_Item *pi;
-   int ret;
 
    pi = cfdata->pi;
 
