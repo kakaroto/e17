@@ -28,6 +28,10 @@ static int cb_signal_event(void *data, int type, void *event);
 void e_dbus_signal_handler_free(E_DBus_Signal_Handler *sh);
 
 
+/**
+ * Initialize the signal subsystem
+ * @internal
+ */
 int
 e_dbus_signal_init(void)
 {
@@ -40,6 +44,10 @@ e_dbus_signal_init(void)
   return init;
 }
 
+/**
+ * Shutdown the signal subsystem
+ * @internal
+ */
 void
 e_dbus_signal_shutdown(void)
 {
@@ -51,6 +59,10 @@ e_dbus_signal_shutdown(void)
   event_handler = NULL;
 }
 
+/**
+ * Free a signal handler
+ * @param sh the signal handler to free
+ */
 void
 e_dbus_signal_handler_free(E_DBus_Signal_Handler *sh)
 {
@@ -63,7 +75,7 @@ e_dbus_signal_handler_free(E_DBus_Signal_Handler *sh)
   free(sh);
 }
 
-void
+static void
 cb_name_owner(void *data, DBusMessage *msg)
 {
   DBusError err;
@@ -91,7 +103,7 @@ cb_name_owner(void *data, DBusMessage *msg)
 
 }
 
-void
+static void
 cb_name_owner_error(void *data, const char *error_name, const char *error_msg)
 {
   E_DBus_Signal_Handler *sh;
@@ -103,7 +115,17 @@ cb_name_owner_error(void *data, const char *error_name, const char *error_msg)
   }
 }
 
-
+/**
+ * Add a signal handler
+ *
+ * @param conn the dbus connection
+ * @param bus name of the signal's sender
+ * @param path the object path of the signal's sender
+ * @param interface the signal's interface
+ * @param memeber the signal's name
+ * @param cb_signal a callback to call when the signal is received
+ * @param data custom data to pass in to the callback
+ */
 E_DBus_Signal_Handler *
 e_dbus_signal_handler_add(DBusConnection *conn, const char *sender, const char *path, const char *interface, const char *member, E_DBus_Signal_Cb cb_signal, void *data)
 {

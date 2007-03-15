@@ -89,6 +89,10 @@ e_dbus_object_init(void)
 #endif
 /**
  * Add a dbus object.
+ *
+ * @param conn the connection on with the object should listen
+ * @param object_path a unique string identifying an object (e.g. org/enlightenment/WindowManager
+ * @param data custom data to set on the object (obj->data XXX this needs an api)
  */
 E_DBus_Object *
 e_dbus_object_add(DBusConnection *conn, const char *object_path, void *data)
@@ -116,6 +120,11 @@ e_dbus_object_add(DBusConnection *conn, const char *object_path, void *data)
   return obj;
 }
 
+/**
+ * Free a dbus object
+ *
+ * @param obj the object to free
+ */
 void
 e_dbus_object_free(E_DBus_Object *obj)
 {

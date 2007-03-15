@@ -397,7 +397,10 @@ e_dbus_idler(void *data)
   return 1;
 }
 
-/* XXX should this be separated from the watch/timeout setup code? what happens when this is called more than once in a single process? */
+/**
+ * Retrieve a connection to the bus and integrate it with the ecore main loop.
+ * @param type the type of bus to connect to, e.g. DBUS_BUS_SYSTEM or DBUS_BUS_SESSION
+ */
 DBusConnection *
 e_dbus_bus_get(DBusBusType type)
 {
@@ -473,6 +476,10 @@ e_dbus_connection_setup(DBusConnection *conn)
 }
 
 
+/**
+ * Close out a connection retrieved with e_dbus_bus_get()
+ * @param conn the connection to close
+ */
 void
 e_dbus_connection_close(DBusConnection *conn)
 {
@@ -501,6 +508,9 @@ e_dbus_connection_close(DBusConnection *conn)
   dbus_connection_unref(conn);
 }
 
+/**
+ * @brief Initialize e_dbus
+ */
 int
 e_dbus_init(void)
 {
@@ -512,6 +522,9 @@ e_dbus_init(void)
   return init;
 }
 
+/**
+ * Shutdown e_dbus.
+ */
 void
 e_dbus_shutdown(void)
 {
