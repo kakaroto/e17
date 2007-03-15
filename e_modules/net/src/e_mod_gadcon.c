@@ -4,6 +4,12 @@
 #include "e_mod_net.h"
 #include "e_mod_config.h"
 
+static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
+static void _gc_shutdown(E_Gadcon_Client *gcc);
+static void _gc_orient(E_Gadcon_Client *gcc);
+static char *_gc_label(void);
+static Evas_Object *_gc_icon(Evas *evas);
+
 static const E_Gadcon_Client_Class _gc_class = 
 {
    GADCON_CLIENT_CLASS_VERSION, "net", 

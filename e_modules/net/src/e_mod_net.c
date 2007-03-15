@@ -145,12 +145,12 @@ _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *sou
    Instance *inst;
    Config_Item *ci;
    E_Container *con;
-   Evas_Object *bg, *box, *icon, *label;
+   Evas_Object *bg;
    Evas_Coord cx, cy, cw, ch;
    Evas_Coord ox, oy, ow, oh;
    Evas_List *l;
    int layer = -1;
-   int top, wx, wy, ww, wh;
+   int wx, wy, ww, wh;
    char buf[PATH_MAX];
 
    inst = data;
