@@ -11,11 +11,9 @@
 /* module private routines */
 static Snow *_snow_init(E_Module *m);
 static void _snow_shutdown(Snow *snow);
-static E_Menu *_snow_config_menu_new(Snow *snow);
 static int _snow_cb_animator(void *data);
 static void _snow_trees_load(Snow *snow);
 static void _snow_flakes_load(char type, Snow *snow);
-static void _snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 /* public module routines. all modules must have these */
 EAPI E_Module_Api e_modapi = {
@@ -211,21 +209,6 @@ _snow_shutdown(Snow *snow)
    snow = NULL;
 }
 
-static E_Menu *
-_snow_config_menu_new(Snow *snow)
-{
-   E_Menu *mn;
-   E_Menu_Item *mi;
-
-   mn = e_menu_new();
-
-   mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, "Configuration");
-   e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
-   e_menu_item_callback_set(mi, _snow_menu_cb_configure, snow);
-   return mn;
-}
-
 static void
 _snow_canvas_reset(Snow *snow)
 {
@@ -349,19 +332,6 @@ _snow_cb_animator(void *data)
         next = evas_list_next(next);
      }
    return 1;
-}
-
-static void
-_snow_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Snow *s;
-   E_Container *con;
-
-   s = (Snow *)data;
-   if (!s)
-      return;
-   con = e_container_current_get(e_manager_current_get());
-   _config_snow_module(con, s);
 }
 
 void
