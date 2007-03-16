@@ -16,7 +16,7 @@ ephoto_SOURCES = ephoto.c \
 		      ephoto_slideshow.c \
 		      ephoto_utils.c
 		     
-ephoto_CFLAGS = @ewl_cflags@ -Wall -Werror
+ephoto_CFLAGS = @ewl_cflags@ @SQLITE_CFLAGS@ @EXIF_CFLAGS@ -Wall -Werror
 
 ephoto_LDADD =  @ewl_libs@ @SQLITE_LIBS@ @EXIF_LIBS@
 
