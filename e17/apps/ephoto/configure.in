@@ -73,7 +73,7 @@ AC_CHECK_HEADERS(sqlite3.h,
 		 )
 AC_SUBST(SQLITE_LIBS)
 
-if pkg-config --exists 'sqlite3 >= 3.3'; then
+if pkg-config --exists sqlite3; then
    have_sqlite3="Yes"
 else
    have_sqlite3="No"
