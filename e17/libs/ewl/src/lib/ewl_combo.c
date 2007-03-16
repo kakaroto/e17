@@ -254,7 +254,7 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 		view->assign(item, model->fetch(mvc_data, idx->row, 0));
 	}
 	else if (view->header_fetch) 
-		item = view->header_fetch(ewl_mvc_model_get(mvc), -1);
+		item = view->header_fetch(ewl_mvc_data_get(mvc), -1);
 
 	if (item)
 	{
