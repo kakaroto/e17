@@ -1147,6 +1147,8 @@ cb_unit_test_count(void *data)
 	int i;
 
 	t = data;
+	if (!data) return 0;
+
 	for (i = 0; t->unit_tests[i].func; i++) 
 		;
 
