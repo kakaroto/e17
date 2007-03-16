@@ -488,12 +488,12 @@ ewl_engine_window_dialog_set(Ewl_Window *win)
 /**
  * @param win: the window to work with
  * @return Returns no value
- * @brief Sets the window fullscreen
+ * @brief Sets the window state values
  */
 void
-ewl_engine_window_fullscreen_set(Ewl_Window *win)
+ewl_engine_window_states_set(Ewl_Window *win)
 {
-	Ewl_Engine_Cb_Window_Fullscreen_Set window_fullscreen_set;
+	Ewl_Engine_Cb_Window_States_Set window_states_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
@@ -502,63 +502,11 @@ ewl_engine_window_fullscreen_set(Ewl_Window *win)
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
 
-	window_fullscreen_set = ewl_engine_hook_get(EWL_EMBED(win),
+	window_states_set = ewl_engine_hook_get(EWL_EMBED(win),
 					EWL_ENGINE_HOOK_TYPE_WINDOW,
-					EWL_ENGINE_WINDOW_FULLSCREEN_SET);
-	if (window_fullscreen_set)
-		window_fullscreen_set(win);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param win: the window to work with
- * @return Returns no value
- * @brief Skips the taskbar
- */
-void
-ewl_engine_window_skip_taskbar_set(Ewl_Window *win)
-{
-	Ewl_Engine_Cb_Window_Skip_Taskbar_Set window_skip_taskbar_set;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-
-	if (!(win->window))
-		DRETURN(DLEVEL_STABLE);
-
-	window_skip_taskbar_set = ewl_engine_hook_get(EWL_EMBED(win),
-					EWL_ENGINE_HOOK_TYPE_WINDOW,
-					EWL_ENGINE_WINDOW_SKIP_TASKBAR_SET);
-	if (window_skip_taskbar_set)
-		window_skip_taskbar_set(win);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param win: the window to work with
- * @return Returns no value
- * @brief Skips the pager
- */
-void
-ewl_engine_window_skip_pager_set(Ewl_Window *win)
-{
-	Ewl_Engine_Cb_Window_Skip_Pager_Set window_skip_pager_set;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-
-	if (!(win->window))
-		DRETURN(DLEVEL_STABLE);
-
-	window_skip_pager_set = ewl_engine_hook_get(EWL_EMBED(win),
-					EWL_ENGINE_HOOK_TYPE_WINDOW,
-					EWL_ENGINE_WINDOW_SKIP_PAGER_SET);
-	if (window_skip_pager_set)
-		window_skip_pager_set(win);
+					EWL_ENGINE_WINDOW_STATES_SET);
+	if (window_states_set)
+		window_states_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -585,58 +533,6 @@ ewl_engine_window_transient_for(Ewl_Window *win)
 					EWL_ENGINE_WINDOW_TRANSIENT_FOR);
 	if (window_transient_for)
 		window_transient_for(win);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param win: the window to work with
- * @return Returns no value
- * @brief Sets the window modal
- */
-void
-ewl_engine_window_modal_set(Ewl_Window *win)
-{
-	Ewl_Engine_Cb_Window_Modal_Set window_modal_set;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-
-	if (!(win->window))
-		DRETURN(DLEVEL_STABLE);
-
-	window_modal_set = ewl_engine_hook_get(EWL_EMBED(win),
-					EWL_ENGINE_HOOK_TYPE_WINDOW,
-					EWL_ENGINE_WINDOW_MODAL_SET);
-	if (window_modal_set)
-		window_modal_set(win);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param win: the window to work with
- * @return Returns no value
- * @brief Sets the window transient
- */
-void
-ewl_engine_window_attention_demand(Ewl_Window *win)
-{
-	Ewl_Engine_Cb_Window_Attention_Demand window_attention_demand;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
-
-	if (!(win->window))
-		DRETURN(DLEVEL_STABLE);
-
-	window_attention_demand = ewl_engine_hook_get(EWL_EMBED(win),
-					EWL_ENGINE_HOOK_TYPE_WINDOW,
-					EWL_ENGINE_WINDOW_ATTENTION_DEMAND);
-	if (window_attention_demand)
-		window_attention_demand(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

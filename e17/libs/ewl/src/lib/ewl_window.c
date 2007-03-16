@@ -322,7 +322,7 @@ ewl_window_fullscreen_set(Ewl_Window *win, unsigned int fullscreen)
 	else
 		win->flags &= ~EWL_WINDOW_FULLSCREEN;
 
-	ewl_engine_window_fullscreen_set(win);
+	ewl_engine_window_states_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -364,7 +364,7 @@ ewl_window_skip_taskbar_set(Ewl_Window *win, unsigned int skip)
 	else
 		win->flags &= ~EWL_WINDOW_SKIP_TASKBAR;
 
-	ewl_engine_window_skip_taskbar_set(win);
+	ewl_engine_window_states_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -407,7 +407,7 @@ ewl_window_skip_pager_set(Ewl_Window *win, unsigned int skip)
 	else
 		win->flags &= ~EWL_WINDOW_SKIP_PAGER;
 
-	ewl_engine_window_skip_pager_set(win);
+	ewl_engine_window_states_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -505,7 +505,7 @@ ewl_window_attention_demand(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	ewl_engine_window_attention_demand(win);
+	ewl_engine_window_states_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -606,7 +606,7 @@ ewl_window_modal_set(Ewl_Window *win, int modal)
 	else
 		win->flags &= ~EWL_WINDOW_MODAL;
 
-	ewl_engine_window_modal_set(win);
+	ewl_engine_window_states_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -792,10 +792,7 @@ ewl_window_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_engine_window_title_set(window);
 	ewl_engine_window_borderless_set(window);
 	ewl_engine_window_dialog_set(window);
-	ewl_engine_window_fullscreen_set(window);
-	ewl_engine_window_skip_taskbar_set(window);
-	ewl_engine_window_skip_pager_set(window);
-	ewl_engine_window_modal_set(window);
+	ewl_engine_window_states_set(window);
 
 	width = ewl_object_maximum_w_get(EWL_OBJECT(window));
 	height = ewl_object_maximum_h_get(EWL_OBJECT(window));

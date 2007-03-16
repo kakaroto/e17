@@ -258,7 +258,8 @@ enum Ewl_Window_Flags
 	EWL_WINDOW_TRANSIENT = 0x100,		/**< Window is transient for */
 	EWL_WINDOW_TRANSIENT_FOREIGN = 0x200,	/**< Window is transient for */
 	EWL_WINDOW_SKIP_TASKBAR = 0x400,	/**< Window skips taskbar */
-	EWL_WINDOW_SKIP_PAGER = 0x800		/**< Window skips pager */
+	EWL_WINDOW_SKIP_PAGER = 0x800,		/**< Window skips pager */
+	EWL_WINDOW_DEMANDS_ATTENTION = 0x1000	/**< Window requires attention */
 };
 
 /**

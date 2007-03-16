@@ -46,6 +46,9 @@ ewl_widget_cb_click(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	Ewl_Embed *emb;
 
 	emb = ewl_embed_widget_find(w);
-	ewl_widget_hide(EWL_WIDGET(emb));
+	if (ewl_window_fullscreen_get(EWL_WINDOW(emb)))
+		ewl_window_fullscreen_set(EWL_WINDOW(emb), FALSE);
+	else
+		ewl_window_fullscreen_set(EWL_WINDOW(emb), TRUE);
 }
 

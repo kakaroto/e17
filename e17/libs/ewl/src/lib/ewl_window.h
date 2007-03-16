@@ -61,6 +61,7 @@ struct Ewl_Window
 	char *classname; /**< Current class on the provided window */
 
 	Ewl_Window_Flags flags; /**< Flags indicating window properties */
+	Ewl_Window_Flags old_flags; /**< Flags used on our last state set call */
 };
 
 Ewl_Widget 	*ewl_window_new(void);
