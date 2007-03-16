@@ -111,6 +111,7 @@ struct _ewin
       unsigned            resizing:1;
       unsigned            show_coords:1;
       unsigned            maximizing:1;
+      unsigned            shading:1;
 
       /* Derived state flags. Change only in EwinStateUpdate() */
       unsigned            no_border:1;

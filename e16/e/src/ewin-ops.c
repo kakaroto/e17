@@ -491,7 +491,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	EwinBorderCalcSizes(ewin, 0);
 
 	/* Clear maximized state on resize */
-	if (!ewin->state.maximizing)
+	if (!ewin->state.maximizing && !ewin->state.shading)
 	  {
 	     if (ewin->state.maximized_horz || ewin->state.maximized_vert)
 	       {
@@ -994,6 +994,8 @@ EwinShade(EWin * ewin)
    w = EoGetW(ewin);
    h = EoGetH(ewin);
 
+   ewin->state.shading = 1;
+
 #if 0
    Eprintf("EwinShade-B %d\n", ewin->border->shadedir);
    EGrabServer();
@@ -1145,6 +1147,8 @@ EwinShade(EWin * ewin)
    Eprintf("EwinShade-E\n");
 #endif
 
+   ewin->state.shading = 0;
+
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
 }
@@ -1169,6 +1173,8 @@ EwinUnShade(EWin * ewin)
    y = EoGetY(ewin);
    w = EoGetW(ewin);
    h = EoGetH(ewin);
+
+   ewin->state.shading = 1;
 
 #if 0
    Eprintf("EwinUnShade-B %d\n", ewin->border->shadedir);
@@ -1351,6 +1357,8 @@ EwinUnShade(EWin * ewin)
    EUngrabServer();
    Eprintf("EwinUnShade-E\n");
 #endif
+
+   ewin->state.shading = 0;
 
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
