@@ -67,25 +67,25 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
-AC_CHECK_HEADERS(sqlite3.h,
-		 SQLITE_LIBS="$SQLITE_LIBS -lsqlite3",
-		 AC_MSG_ERROR([Ephoto needs sqlite3 to compile.])
-		 )
-AC_SUBST(SQLITE_LIBS)
+PKG_CHECK_MODULES([SQLITE], sqlite3,
+   [
+      have_sqlite3="Yes"
+   ],
+   [
+      have_sqlite3="No"
+      AC_MSG_ERROR([Ephoto needs sqlite3 to compile.])
+   ]
+)
 
-if pkg-config --exists sqlite3; then
-   have_sqlite3="Yes"
-else
-   have_sqlite3="No"
-   AC_MSG_ERROR([Ephoto needs sqlite3 to compile.])
-fi
-
-if pkg-config --exists 'libexif >= 0.6.13'; then
-   have_exif="Yes"
-   AC_DEFINE(BUILD_EXIF_SUPPORT, 1, [Enable Exif Support])
-else 
-   have_exif="No"
-fi
+PKG_CHECK_MODULES([EXIF], libexif >= 0.6.13,
+   [
+      have_exif="Yes"
+      AC_DEFINE(BUILD_EXIF_SUPPORT, 1, [Enable Exif Support])
+   ],
+   [
+      have_exif="No"
+   ]
+)
 
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
