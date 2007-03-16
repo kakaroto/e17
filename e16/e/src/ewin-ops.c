@@ -1498,7 +1498,7 @@ EwinOpActivate(EWin * ewin, int source, int raise)
    if (source == OPSRC_APP && EwinInhGetApp(ewin, focus))
       return;
 
-   unshade = ewin->state.shaded && !ewin->state.iconified;
+   unshade = ewin->state.shaded /* && !ewin->state.iconified */ ;
 
    if (!ewin->state.animated && !ewin->state.iconified)
       DeskGotoByEwin(ewin);
