@@ -193,7 +193,7 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
  * @brief Callback for when the button to close the combo is clicked
  */
 void
-ewl_combo_cb_popup_hide(Ewl_Widget *w, 
+ewl_combo_cb_popup_hide(Ewl_Widget *w __UNUSED__, 
 				void *ev __UNUSED__, void *data)
 {
 	Ewl_Combo *combo;
