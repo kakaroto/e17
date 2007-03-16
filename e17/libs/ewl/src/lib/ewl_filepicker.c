@@ -114,6 +114,8 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_mvc_data_set(EWL_MVC(fp->path_combo), fp->path);
 	ewl_callback_append(fp->path_combo, EWL_CALLBACK_VALUE_CHANGED,
 					ewl_filepicker_cb_path_change, fp);
+	ewl_object_fill_policy_set(EWL_OBJECT(fp->path_combo), 
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	ewl_widget_show(fp->path_combo);
 
 	o = ewl_hbox_new();
@@ -169,6 +171,8 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_callback_append(fp->type_combo, EWL_CALLBACK_VALUE_CHANGED,
 					ewl_filepicker_cb_type_change, fp);
 	ewl_container_child_append(EWL_CONTAINER(box), fp->type_combo);
+	ewl_object_fill_policy_set(EWL_OBJECT(fp->type_combo),
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	ewl_widget_show(fp->type_combo);
 
 	box = ewl_vbox_new();
