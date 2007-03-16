@@ -44,6 +44,11 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    if (!ewin)
       return;
 
+   if (ewin->state.inhibit_max_hor && (direction & MAX_HOR))
+      return;
+   if (ewin->state.inhibit_max_ver && (direction & MAX_VER))
+      return;
+
    if (ewin->state.maximized_horz || ewin->state.maximized_vert)
      {
 	EwinMoveResize(ewin, ewin->lx, ewin->ly, ewin->lw, ewin->lh);
@@ -55,11 +60,6 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	ewin->state.maximized_vert = 0;
 	goto done;
      }
-
-   if (ewin->state.inhibit_max_hor && (direction & MAX_HOR))
-      return;
-   if (ewin->state.inhibit_max_ver && (direction & MAX_VER))
-      return;
 
    type = MAX_ABSOLUTE;		/* Select default */
    if (!resize_type)
