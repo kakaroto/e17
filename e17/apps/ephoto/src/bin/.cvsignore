@@ -1,0 +1,8 @@
+.deps
+.libs
+Makefile
+Makefile.in
+config.h
+config.h.in
+ephoto
+stamp-h1
