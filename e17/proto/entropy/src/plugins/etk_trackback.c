@@ -142,15 +142,13 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 				ecore_list_goto_first(trackback->levels);
 				Etk_Widget* last_combo;
 				if (  (last_combo = ecore_list_current(trackback->levels))) {
-					Evas_List* l = ETK_COMBOBOX(last_combo)->items;
-					for (; l; ) {
-						Etk_Combobox_Item* item = l->data;
+					Etk_Combobox_Item* item = NULL;					
+					for ( item = ETK_COMBOBOX(last_combo)->first_item; item; item=item->next) {
 
 						if (etk_combobox_item_data_get(item) == event_file) {
-							etk_combobox_item_activate(item);
+							etk_combobox_active_item_set(ETK_COMBOBOX(last_combo), item);
 						}
 						
-						l = l->next;
 					}
 					
 				}

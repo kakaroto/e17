@@ -257,7 +257,8 @@ static void _entropy_etk_list_viewer_drag_begin_cb(Etk_Object *object, void *dat
    for (iter = etk_tree_first_row_get(tree); iter; iter = etk_tree_row_walk_next(iter, ETK_TRUE))
         if (iter->selected == ETK_TRUE) rows = evas_list_append(rows, iter);   
    
-   drag = (ETK_WIDGET(tree))->drag;
+   //FIXME: Removed until DND works
+   //drag = (ETK_WIDGET(tree))->drag;
 
    table = etk_table_new(5,5,ETK_FALSE);
    count = evas_list_count(rows);
