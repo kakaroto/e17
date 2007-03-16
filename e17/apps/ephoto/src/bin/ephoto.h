@@ -8,8 +8,10 @@
 #include <Evas.h>
 #include <Ewl.h>
 #include <fnmatch.h>
+#ifdef BUILD_EXIF_SUPPORT
 #include <libexif/exif-data.h>
 #include <libexif/exif-loader.h>
+#endif
 #include <libgen.h>
 #include <limits.h>
 #include <sqlite3.h>
@@ -47,8 +49,10 @@ Ecore_List *get_directories(const char *directory);
 Ecore_List *get_images(const char *directory);
 
 /* Ephoto Exif */
+#ifdef BUILD_EXIF_SUPPORT
 Ecore_Hash *get_exif_data(const char *file);
 void display_exif_dialog(Ewl_Widget *w, void *event, void *data);
+#endif
 
 /* Ephoto Databasing */
 sqlite3 *ephoto_db_init(void);

@@ -73,11 +73,19 @@ AC_CHECK_HEADERS(sqlite3.h,
 		 )
 AC_SUBST(SQLITE_LIBS)
 
-AC_CHECK_HEADERS(libexif/exif-data.h,  
-                 EXIF_LIBS="$EXIF_LIBS -lexif",
-                 AC_MSG_ERROR([Ephoto needs libexif to compile.])
-                 )
-AC_SUBST(EXIF_LIBS)
+if pkg-config --exists 'sqlite3 >= 3.3'; then
+   have_sqlite3="Yes"
+else
+   have_sqlite3="No"
+   AC_MSG_ERROR([Ephoto needs sqlite3 to compile.])
+fi
+
+if pkg-config --exists 'libexif >= 0.6.13'; then
+   have_exif="Yes"
+   AC_DEFINE(BUILD_EXIF_SUPPORT, 1, [Enable Exif Support])
+else 
+   have_exif="No"
+fi
 
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
@@ -182,8 +190,8 @@ echo "  Ecore ...........: Yes"
 echo "  Edje ............: Yes"
 echo "  Epsilon .........: Yes"
 echo "  EWL .............: Yes"
-echo "  Libexif .........: Yes"
-echo "  Sqlite3 .........: Yes"
+echo "  Libexif .........: $have_exif"
+echo "  Sqlite3 .........: $have_sqlite3"
 echo
 echo "Installation Path.........: $prefix"
 echo

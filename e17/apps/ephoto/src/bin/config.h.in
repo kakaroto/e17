@@ -1,5 +1,8 @@
 /* src/bin/config.h.in.  Generated from configure.in by autoheader.  */
 
+/* Enable Exif Support */
+#undef BUILD_EXIF_SUPPORT
+
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
@@ -19,9 +22,6 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define to 1 if you have the <libexif/exif-data.h> header file. */
-#undef HAVE_LIBEXIF_EXIF_DATA_H
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H

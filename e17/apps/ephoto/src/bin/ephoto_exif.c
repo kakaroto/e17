@@ -1,5 +1,6 @@
 #include "ephoto.h" 
 
+#ifdef BUILD_EXIF_SUPPORT
 static const char *get_image(void);
 static void close_dialog(Ewl_Widget *w, void *event, void *data);
 static void add_exif_to_container(Ewl_Widget *w, void *event, void *data);
@@ -186,4 +187,4 @@ void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 	
 	return;
 }
-
+#endif

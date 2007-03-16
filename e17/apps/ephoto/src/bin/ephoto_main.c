@@ -116,7 +116,7 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(vbox), hsep);
 	ewl_widget_show(hsep);
 
-	em->toolbar = ewl_toolbar_new();
+	em->toolbar = ewl_htoolbar_new();
 	ewl_box_spacing_set(EWL_BOX(em->toolbar), 5);
 	ewl_object_minimum_h_set(EWL_OBJECT(em->toolbar), 30);
 	ewl_object_alignment_set(EWL_OBJECT(em->toolbar), EWL_FLAG_ALIGN_CENTER);
@@ -140,10 +140,15 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
 	ewl_widget_show(vsep);
 
-        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/get_exif.png", display_exif_dialog, NULL);
+        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/get_exif.png", NULL, NULL);
         ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
+	ewl_attach_tooltip_text_set(button, "You do not have libexif 0.6.13");
+#ifdef BUILD_EXIF_SUPPORT
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, display_exif_dialog, NULL);
 	ewl_attach_tooltip_text_set(button, "View Exif Data");
-        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", window_fullscreen, NULL);
+#endif
+
+	button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", window_fullscreen, NULL);
         ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
 	ewl_attach_tooltip_text_set(button, "Toggle Fullscreen");
 
