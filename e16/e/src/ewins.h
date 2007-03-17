@@ -257,9 +257,17 @@ struct _ewin
    int                 head;	/* Unused? */
 
    int                 vx, vy;	/* Position in virtual root */
-   int                 lx, ly;	/* Last pos */
-   int                 lw, lh;	/* Last size */
-   int                 ll;	/* Last layer */
+   struct
+   {				/* Saved state before maximization */
+      int                 x, y;	/* Position */
+      int                 w, h;	/* Size */
+   } save_max;
+   struct
+   {				/* Saved state before fullscreen */
+      int                 x, y;	/* Position */
+      int                 w, h;	/* Size */
+      int                 layer;	/* Layer */
+   } save_fs;
 
    void               *data;	/* Data hook for internal windows */
    const EWinOps      *ops;

@@ -324,8 +324,8 @@ typedef union
    int                 all:32;
 } EWinInfoFlags;
 
-#define ENL_DATA_ITEMS      8
-#define ENL_DATA_VERSION    0
+#define ENL_DATA_ITEMS      12
+#define ENL_DATA_VERSION     1
 
 void
 EHintsSetInfo(const EWin * ewin)
@@ -346,11 +346,15 @@ EHintsSetInfo(const EWin * ewin)
 
    c[2] = 0;
 
-   c[3] = ewin->lx;
-   c[4] = ewin->ly;
-   c[5] = ewin->lw;
-   c[6] = ewin->lh;
-   c[7] = ewin->ll;
+   c[3] = ewin->save_max.x;
+   c[4] = ewin->save_max.y;
+   c[5] = ewin->save_max.w;
+   c[6] = ewin->save_max.h;
+   c[7] = ewin->save_fs.x;
+   c[8] = ewin->save_fs.y;
+   c[9] = ewin->save_fs.w;
+   c[10] = ewin->save_fs.h;
+   c[11] = ewin->save_fs.layer;
 
    ecore_x_window_prop_card32_set(EwinGetClientXwin(ewin), ENL_WIN_DATA,
 				  (unsigned int *)c, ENL_DATA_ITEMS);
@@ -392,11 +396,15 @@ EHintsGetInfo(EWin * ewin)
 
    EwinFlagsDecode(ewin, c[1]);
 
-   ewin->lx = c[3];
-   ewin->ly = c[4];
-   ewin->lw = c[5];
-   ewin->lh = c[6];
-   ewin->ll = c[7];
+   ewin->save_max.x = c[3];
+   ewin->save_max.y = c[4];
+   ewin->save_max.w = c[5];
+   ewin->save_max.h = c[6];
+   ewin->save_fs.x = c[7];
+   ewin->save_fs.y = c[8];
+   ewin->save_fs.w = c[9];
+   ewin->save_fs.h = c[10];
+   ewin->save_fs.layer = c[11];
 
    str =
       ecore_x_window_prop_string_get(EwinGetClientXwin(ewin), ENL_WIN_BORDER);

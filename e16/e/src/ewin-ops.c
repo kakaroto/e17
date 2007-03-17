@@ -491,7 +491,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	EwinBorderCalcSizes(ewin, 0);
 
 	/* Clear maximized state on resize */
-	if (!ewin->state.maximizing && !ewin->state.shading)
+	if (resize && !ewin->state.maximizing && !ewin->state.shading)
 	  {
 	     if (ewin->state.maximized_horz || ewin->state.maximized_vert)
 	       {
@@ -1381,11 +1381,11 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	  {
 	     if (ewin->state.inhibit_fullscreeen)
 		return;
-	     ewin->lx = EoGetX(ewin);
-	     ewin->ly = EoGetY(ewin);
-	     ewin->lw = ewin->client.w;
-	     ewin->lh = ewin->client.h;
-	     ewin->ll = EoGetLayer(ewin);
+	     ewin->save_fs.x = EoGetX(ewin);
+	     ewin->save_fs.y = EoGetY(ewin);
+	     ewin->save_fs.w = ewin->client.w;
+	     ewin->save_fs.h = ewin->client.h;
+	     ewin->save_fs.layer = EoGetLayer(ewin);
 	  }
 	ScreenGetAvailableArea(EoGetX(ewin), EoGetY(ewin), &x, &y, &w, &h);
 
@@ -1415,25 +1415,27 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	     lst = EwinListTransients(ewin, &num, 0);
 	     for (i = 0; i < num; i++)
 	       {
-		  lst[i]->ll = EoGetLayer(lst[i]);
-		  EoSetLayer(lst[i], lst[i]->ll + EoGetLayer(ewin) - ewin->ll);
+		  lst[i]->save_fs.layer = EoGetLayer(lst[i]);
+		  EoSetLayer(lst[i], lst[i]->save_fs.layer +
+			     EoGetLayer(ewin) - ewin->save_fs.layer);
 	       }
 	     if (lst)
 		Efree(lst);
 	  }
 
 	EwinRaise(ewin);
+	ewin->state.maximizing = 1;
 	EwinMoveResize(ewin, x, y, w, h);
-	ewin->state.maximized_horz = ewin->state.maximized_vert = 0;
+	ewin->state.maximizing = 0;
 	ewin->state.fullscreen = 1;
 	EwinStateUpdate(ewin);
      }
    else
      {
-	x = ewin->lx;
-	y = ewin->ly;
-	w = ewin->lw;
-	h = ewin->lh;
+	x = ewin->save_fs.x;
+	y = ewin->save_fs.y;
+	w = ewin->save_fs.w;
+	h = ewin->save_fs.h;
 	GetOnScreenPos(x, y, w, h, &x, &y);
 	b = ewin->normal_border;
 	EwinBorderSetTo(ewin, b);
@@ -1442,16 +1444,18 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	  {
 	     lst = EwinListTransients(ewin, &num, 0);
 	     for (i = 0; i < num; i++)
-		EoSetLayer(lst[i], lst[i]->ll);
+		EoSetLayer(lst[i], lst[i]->save_fs.layer);
 	     if (lst)
 		Efree(lst);
 	  }
-	EoSetLayer(ewin, ewin->ll);
+	EoSetLayer(ewin, ewin->save_fs.layer);
 
 	ewin->state.fullscreen = 0;
 	EwinStateUpdate(ewin);
 	EwinRaise(ewin);
+	ewin->state.maximizing = 1;
 	EwinMoveResize(ewin, x, y, w, h);
+	ewin->state.maximizing = 0;
      }
 
    HintsSetWindowState(ewin);

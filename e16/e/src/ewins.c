@@ -111,11 +111,10 @@ EwinCreate(int type)
 
    ewin->update.shape = 1;
    ewin->update.border = 1;
-   ewin->lx = -1;
-   ewin->ly = -1;
-   ewin->lw = -1;
-   ewin->lh = -1;
-   ewin->ll = -1;
+   ewin->save_max.x = ewin->save_max.y = ewin->save_max.w = ewin->save_max.h =
+      -1;
+   ewin->save_fs.x = ewin->save_fs.y = ewin->save_fs.w = ewin->save_fs.h = -1;
+   ewin->save_fs.layer = -1;
 
    ewin->icccm.need_input = 1;
 
@@ -161,10 +160,10 @@ EwinGetAttributes(EWin * ewin, Win win, Window xwin)
    EGetWindowAttributes(win, &xwa);
 
    ewin->client.win = win;
-   ewin->client.x = ewin->lx = xwa.x;
-   ewin->client.y = ewin->ly = xwa.y;
-   ewin->client.w = ewin->lw = xwa.width;
-   ewin->client.h = ewin->lh = xwa.height;
+   ewin->client.x = ewin->save_max.x = ewin->save_fs.x = xwa.x;
+   ewin->client.y = ewin->save_max.y = ewin->save_fs.y = xwa.y;
+   ewin->client.w = ewin->save_max.w = ewin->save_fs.w = xwa.width;
+   ewin->client.h = ewin->save_max.h = ewin->save_fs.h = xwa.height;
    ewin->client.bw = xwa.border_width;
    ewin->client.cmap = xwa.colormap;
    ewin->client.grav = NorthWestGravity;
@@ -308,8 +307,8 @@ EwinConfigure(EWin * ewin)
    SnapshotsEwinMatch(ewin);	/* Find a saved settings match */
    SnapshotEwinApply(ewin);	/* Apply saved settings */
 
-   if (ewin->ll < 0)
-      ewin->ll = EoGetLayer(ewin);
+   if (ewin->save_fs.layer < 0)
+      ewin->save_fs.layer = EoGetLayer(ewin);
 
    EwinStateUpdate(ewin);	/* Update after snaps etc. */
 

@@ -51,11 +51,12 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 
    if (ewin->state.maximized_horz || ewin->state.maximized_vert)
      {
-	EwinMoveResize(ewin, ewin->lx, ewin->ly, ewin->lw, ewin->lh);
-	ewin->lx = EoGetX(ewin);
-	ewin->ly = EoGetY(ewin);
-	ewin->lw = ewin->client.w;
-	ewin->lh = ewin->client.h;
+	EwinMoveResize(ewin, ewin->save_max.x, ewin->save_max.y,
+		       ewin->save_max.w, ewin->save_max.h);
+	ewin->save_max.x = EoGetX(ewin);
+	ewin->save_max.y = EoGetY(ewin);
+	ewin->save_max.w = ewin->client.w;
+	ewin->save_max.h = ewin->client.h;
 	ewin->state.maximized_horz = 0;
 	ewin->state.maximized_vert = 0;
 	goto done;
@@ -178,10 +179,10 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    if (h < 10)
       h = 10;
 
-   ewin->lx = EoGetX(ewin);
-   ewin->ly = EoGetY(ewin);
-   ewin->lw = ewin->client.w;
-   ewin->lh = ewin->client.h;
+   ewin->save_max.x = EoGetX(ewin);
+   ewin->save_max.y = EoGetY(ewin);
+   ewin->save_max.w = ewin->client.w;
+   ewin->save_max.h = ewin->client.h;
 
    ewin->state.maximizing = 1;
    EwinMoveResize(ewin, x, y, w, h);
