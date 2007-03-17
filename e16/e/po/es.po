@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-13 23:13+0100\n"
+"POT-Creation-Date: 2007-03-16 02:08+0100\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -1217,12 +1217,12 @@ msgstr ""
 "Deberás cerrar tu Gestor de Ventanas primero, para poder\n"
 "arrancar satisfactoriamente Enlightenment.\n"
 
-#: src/hints.c:539
+#: src/hints.c:547
 #, fuzzy
 msgid "Selection Error!"
 msgstr "Error en Actionclass!"
 
-#: src/hints.c:539
+#: src/hints.c:547
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""

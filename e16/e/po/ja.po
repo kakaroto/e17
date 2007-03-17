@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-13 23:13+0100\n"
+"POT-Creation-Date: 2007-03-16 02:08+0100\n"
 "PO-Revision-Date: 2007-02-12 16:40+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -1203,11 +1203,11 @@ msgstr ""
 "そうすれば Enlightenment が正常に起動できます。\n"
 
 #
-#: src/hints.c:539
+#: src/hints.c:547
 msgid "Selection Error!"
 msgstr "セレクションエラー"
 
-#: src/hints.c:539
+#: src/hints.c:547
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "セレクション %s を獲得できませんでした"

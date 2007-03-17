@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-13 23:13+0100\n"
+"POT-Creation-Date: 2007-03-16 02:08+0100\n"
 "PO-Revision-Date: 2007-02-23 00:04+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
@@ -1200,11 +1200,11 @@ msgstr ""
 "Vous devrez quitter votre gestionnaire de fenêtres actuel avant\n"
 "de pouvoir lancer Enlightenment.\n"
 
-#: src/hints.c:539
+#: src/hints.c:547
 msgid "Selection Error!"
 msgstr "Erreur de sélection !"
 
-#: src/hints.c:539
+#: src/hints.c:547
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "Impossible de faire la sélection : %s"

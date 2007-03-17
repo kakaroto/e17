@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-13 23:13+0100\n"
+"POT-Creation-Date: 2007-03-16 02:08+0100\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -1185,12 +1185,12 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/hints.c:539
+#: src/hints.c:547
 #, fuzzy
 msgid "Selection Error!"
 msgstr "Рабочий стол"
 
-#: src/hints.c:539
+#: src/hints.c:547
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-13 23:13+0100\n"
+"POT-Creation-Date: 2007-03-16 02:08+0100\n"
 "PO-Revision-Date: 2007-01-07 14:48+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -1122,11 +1122,11 @@ msgstr ""
 "\n"
 "Du er nødt til at lukke den ned før du kan bruge Enlightenment.\n"
 
-#: src/hints.c:539
+#: src/hints.c:547
 msgid "Selection Error!"
 msgstr "Fejl i 'Selection'!"
 
-#: src/hints.c:539
+#: src/hints.c:547
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "Kunne ikke få fat i Selection: %s"
