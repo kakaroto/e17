@@ -51,7 +51,6 @@ int
 ewl_context_menu_init(Ewl_Context_Menu *cm)
 {
 	Ewl_Widget *w;
-	Ewl_Widget *box;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cm", cm, FALSE);
@@ -68,15 +67,7 @@ ewl_context_menu_init(Ewl_Context_Menu *cm)
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 	ewl_popup_type_set(EWL_POPUP(cm), EWL_POPUP_TYPE_MOUSE);
 
-	box = ewl_vbox_new();
-	ewl_container_child_append(EWL_CONTAINER(cm), box);
-	ewl_widget_show(box);
-
-	/* redirect the context menu to the inner box */
-	ewl_container_redirect_set(EWL_CONTAINER(cm), EWL_CONTAINER(box));
-	ewl_widget_internal_set(box, TRUE);
-	ewl_container_add_notify_set(EWL_CONTAINER(box), 
-					ewl_context_menu_cb_child_add);
+	ewl_context_menu_container_set(cm, NULL);
 
 	/* add the callbacks */
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, 
@@ -155,6 +146,76 @@ ewl_context_menu_detach(Ewl_Context_Menu *cm, Ewl_Widget *w)
 }
 
 /**
+ * @param cm: the context menu to set the container
+ * @param c: the container to use inside of the context menu, if @a c is
+ *		NULL then this function will use a vbox instead
+ * @brief set a custom container for the context menu
+ *
+ * This function give you the ability to set a custom container as 
+ * the internal used container of the context menu. It is not necessary to
+ * use this function, because the context menu uses a vbox as default,
+ * if you do not add an own one. If you override a previous added container,
+ * this container will be destroyed, but the children will be moved into
+ * the new container.
+ */
+void 
+ewl_context_menu_container_set(Ewl_Context_Menu *cm, Ewl_Container *c)
+{
+	Ewl_Container *old_c = NULL;
+	Ewl_Container *red;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("cm", cm);
+	DCHECK_TYPE("cm", cm, EWL_CONTEXT_MENU_TYPE);
+	
+	/* if there is not a container specified we will create a vbox as
+	 * default */
+	if (!c)
+		c = EWL_CONTAINER(ewl_vbox_new());
+
+	/* remove the old container */
+	if (cm->container) {
+		old_c = EWL_CONTAINER(cm->container);
+		ewl_container_redirect_set(EWL_CONTAINER(cm), NULL);
+		ewl_container_child_remove(EWL_CONTAINER(cm),
+							EWL_WIDGET(old_c));
+		cm->container = NULL;
+	}
+	
+	/* now we can append the new container */
+	ewl_container_child_append(EWL_CONTAINER(cm), EWL_WIDGET(c));
+	ewl_widget_show(EWL_WIDGET(c));
+
+	/* redirect the context menu to the new container */
+	ewl_container_redirect_set(EWL_CONTAINER(cm), c);
+	ewl_widget_internal_set(EWL_WIDGET(c), TRUE);
+	/* add the callbacks to the last container in the redirect list */
+	red = ewl_container_end_redirect_get(c);
+	if (!red)
+		red = c;
+	ewl_container_add_notify_set(red, ewl_context_menu_cb_child_add);
+	ewl_container_remove_notify_set(red, ewl_context_menu_cb_child_remove);
+
+	/* if we already had a container we have to move the existing widgets
+	 * in to the new one.
+	 * Note: We leave internal widgets out because they are part of the 
+	 * container and not of the context menu */
+	if (old_c) {
+		Ewl_Widget *child;
+
+		ewl_container_child_iterate_begin(old_c);
+		while ((child = ewl_container_child_next(old_c))) 
+			ewl_container_child_append(c, child);
+		/* and now destroy the old container */
+		ewl_widget_destroy(EWL_WIDGET(old_c));
+	}
+
+	cm->container = EWL_WIDGET(c);
+
+	DRETURN(DLEVEL_STABLE);
+}
+
+/**
  * @internal
  * @param w: The widget to work with
  * @param ev_data: UNUSED
@@ -178,7 +239,8 @@ ewl_context_menu_cb_attach_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data,
 	if (ev->button != 3)
 		DRETURN(DLEVEL_STABLE);
 	
-	ewl_popup_mouse_position_set(EWL_POPUP(user_data), ev->base.x, ev->base.y);
+	ewl_popup_mouse_position_set(EWL_POPUP(user_data), ev->base.x, 
+								ev->base.y);
 	ewl_widget_show(EWL_WIDGET(user_data));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -353,6 +415,43 @@ ewl_context_menu_cb_focus_in(Ewl_Widget *w, void *ev_data __UNUSED__,
 void
 ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
+	Ewl_Widget *cm;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	if (ewl_widget_internal_is(w) || !ewl_widget_focusable_get(w))
+		DRETURN(DLEVEL_STABLE);
+
+	cm = EWL_WIDGET(ewl_embed_widget_find(EWL_WIDGET(c)));
+	if (EWL_MENU_IS(w)) {
+		
+		EWL_MENU_ITEM(w)->inmenu = cm;
+	}
+	else
+		ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+				ewl_context_menu_cb_child_clicked, cm);
+
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN, 
+				ewl_context_menu_cb_child_mouse_in, NULL);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child remove callback
+ */
+void
+ewl_context_menu_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, 
+					int idx __UNUSED__)
+{
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
@@ -363,18 +462,14 @@ ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	if (EWL_MENU_IS(w)) {
-		Ewl_Widget *cm;
-		
-		cm = ewl_widget_parent_get(EWL_WIDGET(c));
-		EWL_MENU_ITEM(w)->inmenu = cm;
+		EWL_MENU_ITEM(w)->inmenu = NULL;
 	}
 	else
-		ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-				ewl_context_menu_cb_child_clicked,
-				ewl_widget_parent_get(EWL_WIDGET(c)));
+		ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+				ewl_context_menu_cb_child_clicked);
 
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN, 
-				ewl_context_menu_cb_child_mouse_in, c);
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_IN, 
+				ewl_context_menu_cb_child_mouse_in);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

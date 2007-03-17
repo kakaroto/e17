@@ -55,8 +55,8 @@ data
 	item: "/combo/group" "ewl/combo";
 	item: "/combo/cell/group" "ewl/combo/contents";
 	item: "/combo/popup/group" "ewl/menu";
-	item: "/combo/popup/vbox/cell/group" "ewl/combo/popup/contents";
-	item: "/combo/popup/vbox/menu_container/body/group"
+	item: "/combo_cell/group" "ewl/combo/popup/contents";
+	item: "/combo_menu/body/group"
 			"ewl/combo/popup/submenu";
 	item: "/combo/button/group" "ewl/combo/button";
 
@@ -170,8 +170,11 @@ data
 
 	item: "/freebox/auto/padding" 5;
 
+	item: "/combo/popup/height" 130;
+
 	item: "/tooltip/voffset" 10;
 	item: "/tooltip/hoffset" 10;
+	item: "/tooltip/delay" "1.0";
 
 	item: "/spinner/acceleration" 5;
 	item: "/spinner/velocity" 5;
@@ -180,8 +183,6 @@ data
 	item: "/text/font" "ewl/default";
 	item: "/text/font_size" 12;
 	item: "/text/style" "none";
-
-	item: "/tooltip/delay" "1.0";
 
 	/* theme information */
 	item: "/theme/author" "dj2 (www.everburning.com)";

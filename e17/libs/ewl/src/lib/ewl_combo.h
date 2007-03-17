@@ -56,6 +56,7 @@ struct Ewl_Combo
 	Ewl_Widget *button; 	/**< expand/contract button */
 	Ewl_Widget *header; 	/**< The combo header widget */
 	unsigned char editable:1; /**< Is the combo editable */
+	unsigned char scrollable:1; /**< Is the combo scrollable */
 };
 
 Ewl_Widget 	*ewl_combo_new(void);
@@ -64,6 +65,10 @@ int		 ewl_combo_init(Ewl_Combo *combo);
 void		 ewl_combo_editable_set(Ewl_Combo *combo, 
 						unsigned int editable);
 unsigned int	 ewl_combo_editable_get(Ewl_Combo *combo);
+void		 ewl_combo_scrollable_set(Ewl_Combo *combo, 
+						unsigned int scrollable);
+unsigned int	 ewl_combo_scrollable_get(Ewl_Combo *combo);
+
 
 /*
  * Internally used callbacks, override at your own risk.

@@ -4,6 +4,7 @@
 #include "ewl_button.h"
 #include "ewl_cell.h"
 #include "ewl_context_menu.h"
+#include "ewl_scrollpane.h"
 #include "ewl_menu.h"
 #include "ewl_debug.h"
 #include "ewl_macros.h"
@@ -81,7 +82,8 @@ ewl_combo_init(Ewl_Combo *combo)
 	ewl_widget_appearance_set(combo->popup, EWL_COMBO_TYPE
 						"/"EWL_POPUP_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo->popup),
-					EWL_FLAG_FILL_HFILL);
+					EWL_FLAG_FILL_HFILL 
+					| EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(combo->popup),
 				EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 	ewl_callback_append(combo->popup, EWL_CALLBACK_HIDE,
@@ -107,7 +109,7 @@ ewl_combo_editable_set(Ewl_Combo *combo, unsigned int editable)
 	DCHECK_PARAM_PTR("combo", combo);
 	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
 
-	if (combo->editable == editable)
+	if (combo->editable == !!editable)
 		DRETURN(DLEVEL_STABLE);
 
 	combo->editable = !!editable;
@@ -133,6 +135,70 @@ ewl_combo_editable_get(Ewl_Combo *combo)
 	DRETURN_INT(combo->editable, DLEVEL_STABLE);
 }
 
+/**
+ * @param combo: The Ewl_Combo to use
+ * @param editable: Set if the combo is scrollable or not
+ * @return Returns no value
+ *
+ * On true, this functions set the combo to use a scrollpane to view the
+ * widget inside of it. The maximal size of it is set by a theme
+ * defined value.
+ */
+void
+ewl_combo_scrollable_set(Ewl_Combo *combo, unsigned int scrollable)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("combo", combo);
+	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
+
+	if (combo->scrollable == !!scrollable)
+		DRETURN(DLEVEL_STABLE);
+
+	combo->scrollable = !!scrollable;
+
+	if (scrollable) {
+		Ewl_Widget *scroll;
+		int max_h;
+
+		max_h = ewl_theme_data_int_get(EWL_WIDGET(combo), 
+						"/combo/popup/height");
+		/* set it to sane values if it isn't defined in the theme */
+		if (max_h <= 0)
+			max_h = 100;
+
+		/* setup the new scrollpane container */
+		scroll = ewl_scrollpane_new();
+		ewl_object_fill_policy_set(EWL_OBJECT(scroll), 
+						EWL_FLAG_FILL_HFILL
+						| EWL_FLAG_FILL_SHRINK);
+		ewl_object_maximum_h_set(EWL_OBJECT(scroll), max_h);
+		ewl_widget_show(scroll);
+
+		ewl_context_menu_container_set(EWL_CONTEXT_MENU(combo->popup),
+							EWL_CONTAINER(scroll));
+	}
+	else
+		ewl_context_menu_container_set(EWL_CONTEXT_MENU(combo->popup),
+						NULL);
+
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param combo: The Ewl_Combo to use
+ * @return Returns the scrollable status of the combo
+ * @brief Retrieves the scrollable status of the combo
+ */
+unsigned int
+ewl_combo_scrollable_get(Ewl_Combo *combo)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("combo", combo, FALSE);
+	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, FALSE);
+
+	DRETURN_INT(combo->scrollable, DLEVEL_STABLE);
+}
 /**
  * @internal
  * @param w: UNUSED
@@ -287,6 +353,7 @@ ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, void *mvc_data)
 	menu = ewl_menu_new();
 	ewl_widget_appearance_set(EWL_MENU(menu)->popup, EWL_COMBO_TYPE
 						"/"EWL_POPUP_TYPE);
+	ewl_widget_appearance_set(menu, EWL_COMBO_TYPE"_menu");
 
 	/* nothing to do if we have no model/view or data */
 	if (!model || !view)
@@ -397,6 +464,7 @@ ewl_combo_cell_init(Ewl_Combo_Cell *cell)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_inherit(EWL_WIDGET(cell), EWL_COMBO_CELL_TYPE);
+	ewl_widget_appearance_set(EWL_WIDGET(cell), EWL_COMBO_CELL_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_HFILL);
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CLICKED, 
 				ewl_combo_cell_cb_clicked, NULL);
