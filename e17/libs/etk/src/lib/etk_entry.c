@@ -57,6 +57,8 @@ static void _etk_entry_clear_button_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *e
 static void _etk_entry_focus_cb(Etk_Object *object, void *data);
 static void _etk_entry_unfocus_cb(Etk_Object *object, void *data);
 static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, void *data);
+static void _etk_entry_show_cb(Etk_Object *object, void *data);
+static void _etk_entry_hide_cb(Etk_Object *object, void *data);
 static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selection, Etk_Bool cut);
 
 static Etk_Signal *_etk_entry_signals[ETK_ENTRY_NUM_SIGNALS];
@@ -375,6 +377,10 @@ static void _etk_entry_constructor(Etk_Entry *entry)
          ETK_CALLBACK(_etk_entry_unfocus_cb), NULL);
    etk_signal_connect("selection_received", ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_selection_received_cb), NULL);
+   etk_signal_connect("show", ETK_OBJECT(entry),
+         ETK_CALLBACK(_etk_entry_show_cb), NULL);
+   etk_signal_connect("hide", ETK_OBJECT(entry),
+         ETK_CALLBACK(_etk_entry_hide_cb), NULL);
    
 }
 
@@ -970,6 +976,32 @@ static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, vo
       if (changed)
          etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
    }
+}
+
+/* Redirect the show signal to the entry's children */
+static void _etk_entry_show_cb(Etk_Object *object, void *data)
+{
+   Etk_Entry *entry;
+   if (!(entry = object))
+     return;
+
+   etk_widget_show(entry->internal_entry);
+   etk_widget_show(entry->primary_image);
+   etk_widget_show(entry->secondary_image);
+   evas_object_show(entry->editable_object);
+}
+
+/* Redirect the hide signal to the entry's children */
+static void _etk_entry_hide_cb(Etk_Object *object, void *data)
+{
+   Etk_Entry *entry;
+   if (!(entry = object))
+     return;
+
+   etk_widget_hide(entry->internal_entry);
+   etk_widget_hide(entry->primary_image);
+   etk_widget_hide(entry->secondary_image);
+   evas_object_hide(entry->editable_object);
 }
 
 /**************************
