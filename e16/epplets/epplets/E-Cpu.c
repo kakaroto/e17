@@ -20,7 +20,7 @@ int                *load_val = NULL;
 Window              win;
 RGB_buf             buf;
 Epplet_gadget       da, b_close, b_config, b_help, b_nice, pop;
-int                *flame = NULL;
+unsigned int       *flame = NULL;
 int                *vspread, *hspread, *residual;
 unsigned char       rm[255], gm[255], bm[255];
 int                 include_nice = 0;
@@ -115,15 +115,15 @@ static void
 draw_flame(void)
 {
    unsigned char      *rgb, *rptr;
-   int                 x, y, *ptr, val1, val2, val3, i, j;
+   unsigned int       *ptr;
+   int                 x, y, val1, val2, val3, i, j;
 
    if (!flame)
      {
 	vspread = malloc(40 * sizeof(int));
 	hspread = malloc(40 * sizeof(int));
 	residual = malloc(40 * sizeof(int));
-	flame = malloc(sizeof(int) * 40 * 40);
-	memset(flame, 0, sizeof(int) * 40 * 40);
+	flame = calloc(40 * 40, sizeof(unsigned int));
      }
 
    ptr = flame + (39 * 40);

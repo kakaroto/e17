@@ -17,7 +17,7 @@ int                *load_val = NULL;
 Window              win;
 RGB_buf             buf;
 Epplet_gadget       da, b_close, b_config, b_help, pop, pop2, text;
-int                *flame = NULL;
+unsigned int       *flame = NULL;
 int                *vspread, *hspread, *residual;
 unsigned char       rm[255], gm[255], bm[255];
 char               *netdev;
@@ -129,7 +129,8 @@ static void
 draw_flame(void)
 {
    unsigned char      *rgb, *rptr;
-   int                 x, y, *ptr, val1, val2, val3, i, j;
+   unsigned int       *ptr;
+   int                 x, y, val1, val2, val3, i, j;
 
    /* initialize the flame if it isn't done already */
    if (!flame)
@@ -137,7 +138,7 @@ draw_flame(void)
 	vspread = malloc(WIDTH * sizeof(int));
 	hspread = malloc(WIDTH * sizeof(int));
 	residual = malloc(WIDTH * sizeof(int));
-	flame = calloc(WIDTH * HEIGHT, sizeof(int));
+	flame = calloc(WIDTH * HEIGHT, sizeof(unsigned int));
      }
    /* move to the bottom left of the drawing area */
    ptr = flame + ((HEIGHT - 1) * WIDTH);
