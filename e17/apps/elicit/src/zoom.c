@@ -8,6 +8,7 @@ struct _Elicit_Zoom
 {
   Evas_Object *shot;
   Evas_Object *grid;
+  Evas_Object *clip;
 
   Evas_Coord ow, oh; // current object size
   int iw, ih; // how large of a shot to take
@@ -23,6 +24,9 @@ static void _smart_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
 static void _smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
 static void _smart_show(Evas_Object *o);
 static void _smart_hide(Evas_Object *o);
+static void _smart_color_set(Evas_Object *o, int r, int g, int b, int a);
+static void _smart_clip_set(Evas_Object *o, Evas_Object *clip);
+static void _smart_clip_unset(Evas_Object *o);
 
 
 Evas_Object *
@@ -80,6 +84,10 @@ elicit_zoom(Evas_Object *o)
 
   x = px - .5 * z->iw;
   y = py - .5 * z->ih;
+
+  /* get as many pixels as needed to fill area at current zoom */
+  z->iw = (z->ow / z->zoom) + (z->ow % z->zoom ? 1 : 0);
+  z->ih = (z->oh / z->zoom) + (z->oh % z->zoom ? 1 : 0);
 
   /* keep shot within desktop bounds */
   ecore_x_window_size_get(RootWindow(ecore_x_display_get(),0), &dw, &dh);
@@ -140,6 +148,7 @@ elicit_zoom_data_set(Evas_Object *o, void *data, int w, int h)
 
   /* set it to fill at the current zoom level */
   evas_object_image_fill_set(z->shot, 0, 0, z->iw * z->zoom, z->ih * z->zoom);
+  evas_object_resize(z->shot, z->ow, z->oh);
 
   z->has_data = 1;
 }
@@ -157,9 +166,9 @@ _smart_init(void)
 			     _smart_resize,
 			     _smart_show,
 			     _smart_hide,
-           NULL, // color_set
-           NULL, // clip_set
-           NULL, // clip_unset
+           _smart_color_set,
+           _smart_clip_set,
+           _smart_clip_unset,
 			     NULL);
 }
 
@@ -186,6 +195,10 @@ _smart_add(Evas_Object *o)
   evas_object_image_file_set(z->grid, buf, "");
   evas_object_smart_member_add(z->grid, o);
 
+  z->clip = evas_object_rectangle_add(evas);
+  evas_object_clip_set(z->shot, z->clip);
+  evas_object_clip_set(z->grid, z->clip);
+
   elicit_zoom_zoom_set(o, 4);
 }
 
@@ -198,6 +211,7 @@ _smart_del(Evas_Object *o)
 
   if (z->shot) evas_object_del(z->shot);
   if (z->grid) evas_object_del(z->grid);
+  if (z->clip) evas_object_del(z->clip);
 
   free(z);
   evas_object_smart_data_set(o, NULL);
@@ -212,6 +226,7 @@ _smart_move(Evas_Object *o, Evas_Coord x, Evas_Coord y)
 
   evas_object_move(z->grid, x, y);
   evas_object_move(z->shot, x, y);
+  evas_object_move(z->clip, x, y);
 }
 
 static void
@@ -220,14 +235,12 @@ _smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
   Elicit_Zoom *z;
 
   z = evas_object_smart_data_get(o);
-  evas_object_resize(z->shot, w, h);
+  evas_object_resize(z->shot, z->iw * z->zoom, z->ih * z->zoom);
   evas_object_resize(z->grid, w, h);
+  evas_object_resize(z->clip, w, h);
 
   z->ow = w;
   z->oh = h;
-
-  z->iw = (w / z->zoom) + (w % z->zoom ? 1 : 0);
-  z->ih = (h / z->zoom) + (h % z->zoom ? 1 : 0);
 }
 
 static void
@@ -238,6 +251,7 @@ _smart_show(Evas_Object *o)
   z = evas_object_smart_data_get(o);
 
   evas_object_show(z->shot);
+  evas_object_show(z->clip);
   if (z->has_data && elicit_config_grid_visible_get()) evas_object_show(z->grid);
 }
 
@@ -250,8 +264,36 @@ _smart_hide(Evas_Object *o)
 
   evas_object_hide(z->shot);
   evas_object_hide(z->grid);
+  evas_object_hide(z->clip);
 }
 
+static void
+_smart_color_set(Evas_Object *o, int r, int g, int b, int a)
+{
+  Elicit_Zoom *z;
 
+  z = evas_object_smart_data_get(o);
 
+  evas_object_color_set(z->clip, r, g, b, a);
+}
+
+static void
+_smart_clip_set(Evas_Object *o, Evas_Object *clip)
+{
+  Elicit_Zoom *z;
+  
+  z = evas_object_smart_data_get(o);
+
+  evas_object_clip_set(z->clip, clip);
+}
+
+static void
+_smart_clip_unset(Evas_Object *o)
+{
+  Elicit_Zoom *z;
+  
+  z = evas_object_smart_data_get(o);
+
+  evas_object_clip_unset(z->clip);
+}
 

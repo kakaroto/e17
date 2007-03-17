@@ -47,7 +47,7 @@ elicit_spectra_update(Elicit *el)
   int i;
   for (i = 0; i < ELICIT_SPECTRUM_COUNT; i++) {
     Evas_Object *o = NULL;
-    if (o = evas_object_name_find(el->evas, spectrum_names[i])) {
+    if ((o = evas_object_name_find(el->evas, spectrum_names[i]))) {
       elicit_spectrum_color_set(o, el->color.r, el->color.g, el->color.b, el->color.h, el->color.s, el->color.v);
     }
   }

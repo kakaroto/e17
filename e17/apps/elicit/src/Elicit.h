@@ -26,6 +26,7 @@
 #endif
 
 #define DATADIR PACKAGE_DATA_DIR
+#define DEFAULT_THEME "winter"
 
 typedef struct _Elicit Elicit;
 typedef struct _Elicit_Swatch Elicit_Swatch;

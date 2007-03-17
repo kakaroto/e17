@@ -223,6 +223,12 @@ elicit_theme_find(const char *name)
     return eet;
 
   snprintf(eet, sizeof(eet), DATADIR"/themes/%s.edj", name);
+
+  if (!stat(eet, &st))
+    return eet;
+
+  // fallback to default theme
+  snprintf(eet, sizeof(eet), DATADIR"/themes/%s.edj", DEFAULT_THEME);
   return stat(eet, &st) ? NULL : eet;
 }
 
