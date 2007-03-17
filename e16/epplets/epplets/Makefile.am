@@ -205,7 +205,8 @@ E-Wireless.ABOUT/MAIN
 
 # ICONS = `(cd epplets && ls -1d icons/*.icon | grep -v CVS)`
 ICONS = icons/E-Biff.icon icons/E-Clock.icon icons/E-Cpu.icon \
-icons/E-Disk.icon icons/E-Load.icon icons/E-MemWatch.icon icons/E-Mixer.icon \
+icons/E-Disk.icon icons/E-Exec.icon icons/E-Load.icon \
+icons/E-MemWatch.icon icons/E-Mixer.icon \
 icons/E-MoonClock.icon icons/E-Mountbox.icon icons/E-Net.icon \
 icons/E-NetFlame.icon icons/E-Power.icon icons/E-SD.icon \
 icons/E-ScreenSave.icon icons/E-ScreenShoot.icon icons/E-Slides.icon \
