@@ -27,10 +27,8 @@
 #include "config.h"
 
 #if HAVE___ATTRIBUTE__
-#define __UNUSED__ __attribute__((unused))
 #define __PRINTF__ __attribute__((__format__(__printf__, 1, 2)))
 #else
-#define __UNUSED__
 #define __PRINTF__
 #endif
 

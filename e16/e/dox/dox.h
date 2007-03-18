@@ -57,12 +57,6 @@
 #define EAllocColor(pxc) \
 	XAllocColor(disp, VRoot.cmap, pxc)
 
-#if HAVE___ATTRIBUTE__
-#define __UNUSED__ __attribute__((unused))
-#else
-#define __UNUSED__
-#endif
-
 #define FILEPATH_LEN_MAX 4096
 
 #define DEFAULT_LINKCOLOR_R 30
