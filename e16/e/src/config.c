@@ -203,7 +203,7 @@ ConfigFilePreparse(const char *path, const char *dest)
 	     "-D USER_SHELL=%s " "-D ENLIGHTENMENT_VERSION_015=1 "
 	     "%s %s",
 	     epp_path, EDirRoot(), Mode.theme.path, EDirRoot(),
-	     ENLIGHTENMENT_VERSION, EDirRoot(), EDirBin(),
+	     E_PKG_VERSION, EDirRoot(), EDirBin(),
 	     Mode.theme.path, EDirUser(), EDirUserCache(), VRoot.w,
 	     VRoot.h, VRoot.w, VRoot.h, VRoot.depth, def_user, def_home,
 	     def_shell, path, dest);

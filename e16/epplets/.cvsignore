@@ -3,6 +3,7 @@ config.sub
 config.cache
 config.guess
 configure
+depcomp
 ltconfig
 ltmain.sh
 Makefile

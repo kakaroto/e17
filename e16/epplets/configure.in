@@ -1,7 +1,30 @@
-dnl# $Id$
+AC_INIT(configure.in)
 
-AC_INIT(api/epplet.c)
-AM_INIT_AUTOMAKE(epplets, 0.9)
+E_PKG_VERSION=0.10
+E_PKG_REVISION=0.01
+if test "x$E_PKG_REVISION" != "x"; then
+  E_PKG_VER_REV=$E_PKG_VERSION-$E_PKG_REVISION
+  E_RPM_REVISION=$E_PKG_REVISION
+else
+  E_PKG_VER_REV=$E_PKG_VERSION
+  E_RPM_REVISION=1
+fi
+
+AM_INIT_AUTOMAKE(epplets, $E_PKG_VER_REV)
+
+AC_DEFINE_UNQUOTED(E_PKG_VERSION, "$E_PKG_VERSION", [Version])
+AC_SUBST(E_PKG_VERSION)
+AC_DEFINE_UNQUOTED(E_PKG_REVISION, "$E_PKG_REVISION", [Revision])
+AC_SUBST(E_PKG_REVISION)
+AC_SUBST(E_RPM_REVISION)
+
+# reasonable guesses for where stuff is installed
+if test "x$prefix" = "xNONE"; then
+  prefix=$ac_default_prefix
+fi
+if test "x$exec_prefix" = "xNONE"; then
+  exec_prefix=$prefix
+fi
 
 AC_PROG_CC
 AC_PROG_CPP
@@ -195,13 +218,6 @@ else
   GTLIBS=""
 fi
 
-if test "x$prefix" = "xNONE"; then
-  prefix=$ac_default_prefix
-fi
-if test "x$exec_prefix" = "xNONE"; then
-  exec_prefix=$prefix
-fi
-
 # Build test programs?
 AC_ARG_WITH(test-programs, [  --with-test-programs    Builds the test programs [default=no]],
             TEST_PROGS="EppletTest.epplet EppletConfigTest.epplet",TEST_PROGS="")
@@ -298,7 +314,14 @@ AC_SUBST(SGI_DEFINES)
 
 AM_CONFIG_HEADER(config.h)
 
-AC_OUTPUT(Makefile api/Makefile epplets/Makefile debian/Makefile api/epplet.h)
+AC_OUTPUT([
+Makefile
+api/Makefile
+epplets/Makefile
+debian/Makefile
+api/epplet.h
+epplets.spec
+])
 
 echo
 echo "If you are running Enlightenment < 0.16.4, you *must* configure"

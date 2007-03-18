@@ -41,7 +41,12 @@
 #include <time.h>
 
 const char          e_wm_name[] = "Enlightenment";
-const char          e_wm_version[] = ENLIGHTENMENT_REVNAME;
+
+#ifdef E_PKG_REVISION
+const char          e_wm_version[] = E_PKG_VERSION "-" E_PKG_REVISION;
+#else
+const char          e_wm_version[] = E_PKG_VERSION;
+#endif
 const char          e_wm_date[] = E_CHECKOUT_DATE;
 
 Display            *disp;
