@@ -39,15 +39,19 @@ create_test(Ewl_Container *box)
 }
 
 static void
-run_dialog(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
-					void *data __UNUSED__)
+run_dialog(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
-	Ewl_Widget *label, *button, *dialog, *hbox;
+	Ewl_Widget *o, *dialog, *hbox;
+	Ewl_Window *win;
+
+	/* this is a bad cast, but the ewl_test will ever a standalone app */
+	win = EWL_WINDOW(ewl_embed_widget_find(w));
 
 	dialog = ewl_dialog_new();
 	ewl_window_title_set(EWL_WINDOW(dialog), "Dialog Test");
 	ewl_window_name_set(EWL_WINDOW(dialog), "EWL Test Application");
 	ewl_window_class_set(EWL_WINDOW(dialog), "EFL Test Application");
+	ewl_window_transient_for(EWL_WINDOW(dialog), win);
 	ewl_callback_append(dialog, EWL_CALLBACK_DELETE_WINDOW,
 						dialog_delete_cb, NULL);
 	ewl_widget_show(dialog);
@@ -57,37 +61,36 @@ run_dialog(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(dialog), hbox);
 	ewl_widget_show(hbox);
 
-	label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(label), "blah blah blah");
-	ewl_container_child_append(EWL_CONTAINER(hbox), label);
-	ewl_widget_show(label);
+	o = ewl_image_new();
+	ewl_image_file_set(EWL_IMAGE(o), 
+		ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_INFORMATION, 46), 
+		EWL_ICON_DIALOG_INFORMATION);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_object_padding_set(EWL_OBJECT(o), 20, 20, 20, 20);
+	ewl_widget_show(o);
 
-	label = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(label), "This is a test for the Dialog widget");
-	ewl_container_child_append(EWL_CONTAINER(hbox), label);
-	ewl_widget_show(label);
-
-	button = ewl_button_new();
-	ewl_container_child_append(EWL_CONTAINER(hbox), button);
-	ewl_button_label_set(EWL_BUTTON(button), "tooltip");
-	ewl_attach_tooltip_text_set(button, "This is a tooltip");
-	ewl_widget_show(button);
+	o = ewl_text_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_text_text_set(EWL_TEXT(o), "This is a dialog window");
+	ewl_widget_show(o);
 
 	ewl_dialog_active_area_set(EWL_DIALOG(dialog), EWL_POSITION_BOTTOM);
 
-	button = ewl_button_new();
-	ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_OK);
-	ewl_container_child_append(EWL_CONTAINER(dialog), button);
-	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+	o = ewl_button_new();
+	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_OK);
+	ewl_container_child_append(EWL_CONTAINER(dialog), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 			dialog_response_cb, dialog);
-	ewl_widget_show(button);
+	ewl_widget_show(o);
 
-	button = ewl_button_new();
-	ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_CANCEL);
-	ewl_container_child_append(EWL_CONTAINER(dialog), button);
-	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
+	o = ewl_button_new();
+	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_CANCEL);
+	ewl_container_child_append(EWL_CONTAINER(dialog), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 			dialog_response_cb, dialog);
-	ewl_widget_show(button);
+	ewl_widget_show(o);
 
 	ewl_dialog_active_area_set(EWL_DIALOG(dialog), EWL_POSITION_TOP);
 	ewl_widget_show(dialog);
