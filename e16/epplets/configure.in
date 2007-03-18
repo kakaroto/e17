@@ -86,7 +86,9 @@ AC_TYPE_UID_T
 
 dnl# Checks for library functions.
 AC_TYPE_SIGNAL
-dnl#AC_CHECK_FUNCS()
+AC_CHECK_FUNCS(snprintf, x=1, x=0)
+AC_SUBST(HAVE_SNPRINTF, $x)
+AM_CONDITIONAL(BUILD_SNPRINTF, test "x$x" = "x0")
 
 # ok enlightenment d00ds want to ignore civilization and install
 # everything in one place. The rest of use prefer sanity.

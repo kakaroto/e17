@@ -41,18 +41,15 @@
 #define __sun__
 #endif
 
-#if defined(HAVE_VARARGS_H) && !defined(HAVE_STDARG_H)
-#include <varargs.h>
-int                 Evsnprintf(char *str, size_t count, const char *fmt, va_list args);
-int                 Esnprintf(va_alist);
-
+#define HAVE_SNPRINTF @HAVE_SNPRINTF@
+#if HAVE_SNPRINTF
+#define Evsnprintf vsnprintf
+#define Esnprintf snprintf
 #else
-/* If they don't have stdarg.h, they have bigger problems.... */
-#include <stdarg.h>
-int                 Evsnprintf(char *str, size_t count, const char *fmt, va_list args);
-int                 Esnprintf(char *str, size_t count, const char *fmt,...);
-
-#endif
+int                 Evsnprintf(char *str, size_t count, const char *fmt,
+			       va_list args);
+int                 Esnprintf(char *str, size_t count, const char *fmt, ...);
+#endif /* HAVE_SNPRINTF */
 
 /****************************************************************************/
 /* Data structures & primitives                                             */
