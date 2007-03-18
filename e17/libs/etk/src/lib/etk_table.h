@@ -6,6 +6,8 @@
 #include <Evas.h>
 #include "etk_types.h"
 
+/* TODO: a table can be homogeneous vertically but not horizontally.. */
+
 /**
  * @defgroup Etk_Table Etk_Table
  * @brief The Etk_Table widget is a container that can contain several children aligned on a grid

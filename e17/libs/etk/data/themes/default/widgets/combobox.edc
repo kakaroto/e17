@@ -27,6 +27,15 @@ group {
             inherit: "default" 0.0;
             image {
                normal: "button_toggled.png";
+               border: 8 8 8 8;
+            }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "button_disabled.png";
+               border: 8 8 8 8;
             }
          }
       }
@@ -64,6 +73,7 @@ group {
          mouse_events: 0;
          description {
             state: "default" 0.0;
+            color: 255 255 255 255;
             rel1 {
                relative: 1 0.5;
                offset: -22 -10;
@@ -78,6 +88,11 @@ group {
             fill {
                smooth: 0;
             }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 180;
          }
       }
       part {
@@ -101,21 +116,21 @@ group {
    }
    programs {
       program {
-         name: "combo_button_activate";
+         name: "combo_turn_on";
          signal: "etk,state,on";
          source: "etk";
          action: STATE_SET "on" 0.0;
          target: "combo_button";
       }
       program {
-         name: "combo_button_deactivate";
+         name: "combo_turn_off";
          signal: "etk,state,off";
          source: "etk";
          action: STATE_SET "default" 0.0;
          target: "combo_button";
       }
       program {
-         name: "combo_button_pressed";
+         name: "combo_pressed";
          signal: "etk,state,pressed";
          source: "etk";
          action: STATE_SET "down" 0.0;
@@ -123,7 +138,7 @@ group {
          target: "combo_button_down";
       }
       program {
-         name: "combo_button_released";
+         name: "combo_released";
          signal: "etk,state,released";
          source: "etk";
          action: STATE_SET "default" 0.0;
@@ -144,15 +159,32 @@ group {
          after: "combo_focus_prog";
       }
       program {
-         name: "combo_focus_prog";
-         source: "";
-         FOCUS_GLOW_ACTION
-      }
-      program {
          name: "combo_unfocus";
          signal: "etk,state,unfocused";
          source: "etk";
          UNFOCUS_GLOW_ACTION
+      }
+      program {
+         name: "combo_enable";
+         signal: "etk,state,enabled";
+         source: "etk";
+         action: STATE_SET "default" 0.0;
+         target: "combo_button";
+         target: "combo_arrow";
+      }
+      program {
+         name: "combo_disable";
+         signal: "etk,state,disabled";
+         source: "etk";
+         action: STATE_SET "disabled" 0.0;
+         target: "combo_button";
+         target: "combo_arrow";
+      }
+      
+      program {
+         name: "combo_focus_prog";
+         source: "";
+         FOCUS_GLOW_ACTION
       }
       GLINT_PROGRAM
    }

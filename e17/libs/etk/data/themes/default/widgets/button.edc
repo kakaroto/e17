@@ -26,6 +26,14 @@ group {
                normal: "button_down.png";
             }
          }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "button_disabled.png";
+               border: 8 8 8 8;
+            }
+         }
       }
       part {
          name: "etk.swallow.content";
@@ -45,7 +53,6 @@ group {
       }
       GLINT_PART("button")
       FOCUS_GLOW(0.0, 0.0, 0, 0, "button", 1.0, 1.0, -1, -1, "button")
-      DRAG_GLOW(0.0, 0.0, 0, 0, "button", 1.0, 1.0, -1, -1, "button")
    }
    programs {
       program {
@@ -76,33 +83,30 @@ group {
          after: "button_focus_prog";
       }
       program {
-         name: "button_focus_prog";
-         source: "";
-         FOCUS_GLOW_ACTION
-      }
-      program {
          name: "button_unfocus";
          signal: "etk,state,unfocused";
          source: "etk";
          UNFOCUS_GLOW_ACTION
       }
       program {
-         name: "button_drag_enter";
-         signal: "drag_enter";
+         name: "button_enable";
+         signal: "etk,state,enabled";
          source: "etk";
-         DRAG_ENTER_ACTION
+         action: STATE_SET "default" 0.0;
+         target: "button";
       }
       program {
-         name: "button_drag_leave";
-         signal: "drag_leave";
+         name: "button_disable";
+         signal: "etk,state,disabled";
          source: "etk";
-         DRAG_LEAVE_ACTION
+         action: STATE_SET "disabled" 0.0;
+         target: "button";
       }
+      
       program {
-         name: "button_drag_drop";
-         signal: "drag_drop";
-         source: "etk";
-         DRAG_LEAVE_ACTION
+         name: "button_focus_prog";
+         source: "";
+         FOCUS_GLOW_ACTION
       }
       GLINT_PROGRAM
    }

@@ -85,6 +85,7 @@ group {
             min: 32 32;
             max: 32 32;
             fixed: 1 1;
+            color: 255 255 255 255;
             rel1 {
                to: "etk.dragable.slider";
             }
@@ -101,6 +102,11 @@ group {
             image {
                normal: "slider_button2.png";
             }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 150 150 150 150;
          }
       }
       part {
@@ -142,6 +148,7 @@ group {
             align: 1.0 0.5;
             fixed: 1 1;
             min: 30 0;
+            color: 255 255 255 255;
             rel1 {
                relative: 0.0 0.0;
                offset: -6 -5;
@@ -159,6 +166,11 @@ group {
             fill {
                smooth: 0;
             }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 200 200 200 200;
          }
       }
       part {
@@ -185,6 +197,11 @@ group {
                size: 10;
                min: 1 1;
             }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 100 100 100 200;
          }
       }
       part {
@@ -299,6 +316,24 @@ group {
          source: "etk";
          UNFOCUS_GLOW_ACTION
       }
+      program {
+	 name: "enable";
+	 signal: "etk,state,enabled";
+	 source: "etk";
+         action: STATE_SET "default" 0.0;
+	 target: "slider_button";
+	 target: "label_under";
+	 target: "etk.text.label";
+     }
+      program {
+	 name: "disable";
+	 signal: "etk,state,disabled";
+	 source: "etk";
+         action: STATE_SET "disabled" 0.0;
+	 target: "slider_button";
+	 target: "label_under";
+	 target: "etk.text.label";
+      }
    }
 }
 
@@ -389,6 +424,7 @@ group {
             min: 32 32;
             max: 32 32;
             fixed: 1 1;
+            color: 255 255 255 255;
             rel1 {
                to: "etk.dragable.slider";
             }
@@ -405,6 +441,11 @@ group {
             image {
                normal: "slider_button2.png";
             }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 150 150 150 150;
          }
       }
       part {
@@ -446,6 +487,7 @@ group {
             align: 0.5 1.0;
             fixed: 1 1;
             min: 30 0;
+            color: 255 255 255 255;
             rel1 {
                relative: 0.0 0.0;
                offset: -6 -5;
@@ -463,6 +505,11 @@ group {
             fill {
                smooth: 0;
             }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 200 200 200 200;
          }
       }
       part {
@@ -489,6 +536,11 @@ group {
                size: 10;
                min: 1 1;
             }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 100 100 100 200;
          }
       }
       part {
@@ -602,6 +654,24 @@ group {
          signal: "etk,state,unfocused";
          source: "etk";
          UNFOCUS_GLOW_ACTION
+      }
+      program {
+	 name: "enable";
+	 signal: "etk,state,enabled";
+	 source: "etk";
+         action: STATE_SET "default" 0.0;
+	 target: "slider_button";
+	 target: "label_under";
+	 target: "etk.text.label";
+     }
+      program {
+	 name: "disable";
+	 signal: "etk,state,disabled";
+	 source: "etk";
+         action: STATE_SET "disabled" 0.0;
+	 target: "slider_button";
+	 target: "label_under";
+	 target: "etk.text.label";
       }
    }
 }

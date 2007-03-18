@@ -28,6 +28,7 @@ typedef struct Etk_Editable_Smart_Data
    int selection_pos;
    Etk_Bool selection_visible;
    Etk_Bool password_mode;
+   Etk_Bool disabled;
    
    Etk_String *text;
    int unicode_length;
@@ -192,6 +193,41 @@ Etk_Bool etk_editable_password_mode_get(Evas_Object *editable)
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return ETK_FALSE;
    return sd->password_mode;
+}
+
+/**
+ * @brief Sets whether or not the editable object is disabled. This will just emit
+ * the "etk,state,disabled" or "etk,state,enabled" signal to the text-object of the editable
+ * @param editable an editable object
+ * @param disabled ETK_TRUE to disable the editable object, ETK_FALSE to enable it
+ */
+void etk_editable_disabled_set(Evas_Object *editable, Etk_Bool disabled)
+{
+   Etk_Editable_Smart_Data *sd;
+   
+   if (!editable || !(sd = evas_object_smart_data_get(editable)))
+      return;
+   if (sd->disabled == disabled)
+      return;
+   
+   if (disabled)
+      edje_object_signal_emit(sd->text_object, "etk,state,disabled", "etk");
+   else
+      edje_object_signal_emit(sd->text_object, "etk,state,enabled", "etk");
+}
+
+/**
+ * @brief Gets whether or not the editable object is disabled
+ * @param editable an editable object
+ * @return Returns ETK_TRUE if the editable object is disabled, ETK_FALSE otherwise
+ */
+Etk_Bool etk_editable_disabled_get(Evas_Object *editable)
+{
+   Etk_Editable_Smart_Data *sd;
+   
+   if (!editable || !(sd = evas_object_smart_data_get(editable)))
+      return ETK_FALSE;
+   return sd->disabled;
 }
 
 /**

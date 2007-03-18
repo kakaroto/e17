@@ -56,9 +56,9 @@ static void _etk_entry_image_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Up 
 static void _etk_entry_clear_button_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_entry_focus_cb(Etk_Object *object, void *data);
 static void _etk_entry_unfocus_cb(Etk_Object *object, void *data);
+static void _etk_entry_enabled_cb(Etk_Object *object, void *data);
+static void _etk_entry_disabled_cb(Etk_Object *object, void *data);
 static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, void *data);
-static void _etk_entry_show_cb(Etk_Object *object, void *data);
-static void _etk_entry_hide_cb(Etk_Object *object, void *data);
 static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selection, Etk_Bool cut);
 
 static Etk_Signal *_etk_entry_signals[ETK_ENTRY_NUM_SIGNALS];
@@ -357,7 +357,8 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    entry->text = NULL;
    
    entry->internal_entry = etk_widget_new(ETK_WIDGET_TYPE, "repeat_mouse_events", ETK_TRUE,
-         "theme_group", "entry", "theme_parent", entry, "parent", entry, NULL);
+         "theme_group", "entry", "theme_parent", entry, "parent", entry, "internal", ETK_TRUE, NULL);
+   etk_widget_show(entry->internal_entry);
    etk_object_data_set(ETK_OBJECT(entry->internal_entry), "_Etk_Entry::Entry", entry);
    entry->internal_entry->size_request = _etk_entry_internal_size_request;
    entry->internal_entry->size_allocate = _etk_entry_internal_size_allocate;
@@ -375,12 +376,12 @@ static void _etk_entry_constructor(Etk_Entry *entry)
          ETK_CALLBACK(_etk_entry_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_unfocus_cb), NULL);
+   etk_signal_connect("enabled", ETK_OBJECT(entry),
+         ETK_CALLBACK(_etk_entry_enabled_cb), NULL);
+   etk_signal_connect("disabled", ETK_OBJECT(entry),
+         ETK_CALLBACK(_etk_entry_disabled_cb), NULL);
    etk_signal_connect("selection_received", ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_selection_received_cb), NULL);
-   etk_signal_connect("show", ETK_OBJECT(entry),
-         ETK_CALLBACK(_etk_entry_show_cb), NULL);
-   etk_signal_connect("hide", ETK_OBJECT(entry),
-         ETK_CALLBACK(_etk_entry_hide_cb), NULL);
    
 }
 
@@ -500,38 +501,30 @@ static void _etk_entry_internal_size_allocate(Etk_Widget *widget, Etk_Geometry g
    {
       Etk_Image *image;
       Etk_Geometry i_geometry;
-      int x, w;
 
-      x = geometry.x;
-      w = geometry.w;
+      i_geometry.w = i_geometry.h = ETK_MIN(IMAGE_SIZE, geometry.h);
+      i_geometry.y = geometry.y + (geometry.h - i_geometry.h) / 2;
+      
       if (entry->primary_image)
       {
          image = entry->primary_image;
-
          i_geometry.x = geometry.x;
-         i_geometry.y = geometry.y;
-         i_geometry.w = i_geometry.h = ETK_MIN(IMAGE_SIZE, geometry.h);
-         i_geometry.y += (geometry.h - i_geometry.h) / 2;
 
          etk_widget_size_allocate(ETK_WIDGET(image), i_geometry);
-         x += i_geometry.w + entry->image_interspace;
-         w -= i_geometry.w + entry->image_interspace;
+         geometry.x += i_geometry.w + entry->image_interspace;
+         geometry.w -= i_geometry.w + entry->image_interspace;
       }
       if (entry->secondary_image)
       {
          image = entry->secondary_image;
-
          i_geometry.x = geometry.x + geometry.w - i_geometry.w;
-         i_geometry.y = geometry.y;
-         i_geometry.w = i_geometry.h = ETK_MIN(IMAGE_SIZE, geometry.h);
-         i_geometry.y += (geometry.h - i_geometry.h) / 2;
 
          etk_widget_size_allocate(ETK_WIDGET(image), i_geometry);
-         w -= i_geometry.w + entry->image_interspace;
+         geometry.w -= i_geometry.w + entry->image_interspace;
       }
 
-      evas_object_move(entry->editable_object, x, geometry.y);
-      evas_object_resize(entry->editable_object, w, geometry.h);
+      evas_object_move(entry->editable_object, geometry.x, geometry.y);
+      evas_object_resize(entry->editable_object, geometry.w, geometry.h);
    }
 }
 
@@ -554,19 +547,22 @@ static void _etk_entry_internal_realize_cb(Etk_Object *object, void *data)
       return;
 
    entry->editable_object = etk_editable_add(evas);
-   evas_object_repeat_events_set(entry->editable_object, 1);
+   evas_object_show(entry->editable_object);
+   etk_widget_member_object_add(internal_entry, entry->editable_object);
+   
    etk_editable_theme_set(entry->editable_object, etk_widget_theme_file_get(internal_entry),
          etk_widget_theme_group_get(internal_entry));
    etk_editable_text_set(entry->editable_object, entry->text);
    etk_editable_password_mode_set(entry->editable_object, entry->password_mode);
+   
    if (!etk_widget_is_focused(ETK_WIDGET(entry)))
    {
       etk_editable_cursor_hide(entry->editable_object);
       etk_editable_selection_hide(entry->editable_object);
    }
-   evas_object_show(entry->editable_object);
-   etk_widget_member_object_add(internal_entry, entry->editable_object);
-
+   if (etk_widget_disabled_get(ETK_WIDGET(entry)))
+      etk_editable_disabled_set(entry->editable_object, ETK_TRUE);
+   
    evas_object_event_callback_add(entry->editable_object, EVAS_CALLBACK_MOUSE_IN,
          _etk_entry_editable_mouse_in_cb, entry);
    evas_object_event_callback_add(entry->editable_object, EVAS_CALLBACK_MOUSE_OUT,
@@ -595,7 +591,6 @@ static void _etk_entry_internal_realize_cb(Etk_Object *object, void *data)
 
    if (etk_widget_theme_data_get(internal_entry, "icon_interspace", "%d", &entry->image_interspace) != 1)
       entry->image_interspace = 5;
-
 }
 
 /* Called when the entry's internal widget is unrealized */
@@ -944,6 +939,30 @@ static void _etk_entry_unfocus_cb(Etk_Object *object, void *data)
    etk_widget_theme_signal_emit(entry->internal_entry, "etk,state,unfocused", ETK_FALSE);
 }
 
+/* Called when the entry gets enabled */
+static void _etk_entry_enabled_cb(Etk_Object *object, void *data)
+{
+   Etk_Entry *entry;
+
+   if (!(entry = ETK_ENTRY(object)))
+      return;
+   
+   etk_widget_disabled_set(entry->internal_entry, ETK_FALSE);
+   etk_editable_disabled_set(entry->editable_object, ETK_FALSE);
+}
+
+/* Called when the entry gets disabled */
+static void _etk_entry_disabled_cb(Etk_Object *object, void *data)
+{
+   Etk_Entry *entry;
+
+   if (!(entry = ETK_ENTRY(object)))
+      return;
+   
+   etk_widget_disabled_set(entry->internal_entry, ETK_TRUE);
+   etk_editable_disabled_set(entry->editable_object, ETK_TRUE);
+}
+
 /* Called when the selection/clipboard content is received */
 static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, void *data)
 {
@@ -976,32 +995,6 @@ static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, vo
       if (changed)
          etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
    }
-}
-
-/* Redirect the show signal to the entry's children */
-static void _etk_entry_show_cb(Etk_Object *object, void *data)
-{
-   Etk_Entry *entry;
-   if (!(entry = object))
-     return;
-
-   etk_widget_show(entry->internal_entry);
-   etk_widget_show(entry->primary_image);
-   etk_widget_show(entry->secondary_image);
-   evas_object_show(entry->editable_object);
-}
-
-/* Redirect the hide signal to the entry's children */
-static void _etk_entry_hide_cb(Etk_Object *object, void *data)
-{
-   Etk_Entry *entry;
-   if (!(entry = object))
-     return;
-
-   etk_widget_hide(entry->internal_entry);
-   etk_widget_hide(entry->primary_image);
-   etk_widget_hide(entry->secondary_image);
-   evas_object_hide(entry->editable_object);
 }
 
 /**************************

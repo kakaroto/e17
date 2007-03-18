@@ -9,6 +9,7 @@ group {
          name: "entry";
          description {
             state: "default" 0.0;
+            color: 255 255 255 255;
             rel1 {
                relative: 0.0 0.0;
                offset: 0 0;
@@ -24,6 +25,11 @@ group {
             fill {
                smooth: 0;
             }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 160;
          }
       }
       part {
@@ -60,22 +66,18 @@ group {
          UNFOCUS_GLOW_ACTION
       }
       program {
-         name: "drag_enter";
-         signal: "drag_enter";
-         source: "";
-         DRAG_ENTER_ACTION
+         name: "entry_enable";
+         signal: "etk,state,enabled";
+         source: "etk";
+         action: STATE_SET "default" 0.0;
+         target: "entry";
       }
       program {
-         name: "drag_leave";
-         signal: "drag_leave";
-         source: "";
-         DRAG_LEAVE_ACTION
-      }
-      program {
-         name: "drag_drop";
-         signal: "drag_drop";
-         source: "";
-         DRAG_LEAVE_ACTION
+         name: "entry_disable";
+         signal: "etk,state,disabled";
+         source: "etk";
+         action: STATE_SET "disabled" 0.0;
+         target: "entry";
       }
    }
 }
@@ -85,20 +87,41 @@ group {
    parts {
       part {
          name: "etk.text.text";
-	 type: TEXT;
-	 mouse_events: 0;
-	 description {
-	    state: "default" 0.0;
-	    color: 0 0 0 255;
-	    text {
-	       text: "Entry";
-	       font: "Vera";
-	       size: 10;
-	       min: 1 1;
-	       align: 0.0 0.5;
+         type: TEXT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 255;
+            text {
+               text: "Entry";
+               font: "Vera";
+               size: 10;
+               min: 1 1;
+               align: 0.0 0.5;
                text_class: "entry";
-	    }
-	 }
+            }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 0 0 0 128;
+         }
+      }
+   }
+   programs {
+      program {
+         name: "text_enable";
+         signal: "etk,state,enabled";
+         source: "etk";
+         action: STATE_SET "default" 0.0;
+         target: "etk.text.text";
+      }
+      program {
+         name: "text_disable";
+         signal: "etk,state,disabled";
+         source: "etk";
+         action: STATE_SET "disabled" 0.0;
+         target: "etk.text.text";
       }
    }
 }
@@ -125,8 +148,8 @@ group {
    programs {
       program {
          name: "on_cursor_show";
-	 signal:  "etk,action,show,cursor";
-	 source:  "etk";
+         signal:  "etk,action,show,cursor";
+         source:  "etk";
          action: ACTION_STOP;
          target: "cursor_show";
          target: "cursor_hide";

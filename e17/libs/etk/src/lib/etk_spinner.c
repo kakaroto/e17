@@ -36,6 +36,8 @@ static void _etk_spinner_realize_cb(Etk_Object *object, void *data);
 static void _etk_spinner_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_spinner_focus_cb(Etk_Object *object, void *data);
 static void _etk_spinner_unfocus_cb(Etk_Object *object, void *data);
+static void _etk_spinner_enabled_cb(Etk_Object *object, void *data);
+static void _etk_spinner_disabled_cb(Etk_Object *object, void *data);
 
 static void _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_spinner_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data);
@@ -235,10 +237,12 @@ static void _etk_spinner_constructor(Etk_Spinner *spinner)
    etk_signal_connect("key_up", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_up_cb), NULL);
    etk_signal_connect("focus", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_focus_cb), NULL);
    etk_signal_connect("unfocus", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unfocus_cb), NULL);
+   etk_signal_connect("enabled", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_enabled_cb), NULL);
+   etk_signal_connect("disabled", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_disabled_cb), NULL);
    etk_signal_connect("selection_received", ETK_OBJECT(spinner),
-      ETK_CALLBACK(_etk_spinner_selection_received_cb), NULL);
+         ETK_CALLBACK(_etk_spinner_selection_received_cb), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(spinner), "step_increment",
-      _etk_spinner_step_increment_changed_cb, NULL);
+         _etk_spinner_step_increment_changed_cb, NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -321,8 +325,11 @@ static void _etk_spinner_realize_cb(Etk_Object *object, void *data)
 
    /* Create the editable object */
    spinner->editable_object = etk_editable_add(evas);
+   evas_object_show(spinner->editable_object);
+   etk_widget_member_object_add(ETK_WIDGET(spinner), spinner->editable_object);
+   
    etk_editable_theme_set(spinner->editable_object, etk_widget_theme_file_get(ETK_WIDGET(spinner)),
-      etk_widget_theme_group_get(ETK_WIDGET(spinner)));
+         etk_widget_theme_group_get(ETK_WIDGET(spinner)));
    etk_editable_align_set(spinner->editable_object, 1.0);
    
    if (!etk_widget_is_focused(ETK_WIDGET(spinner)))
@@ -330,8 +337,9 @@ static void _etk_spinner_realize_cb(Etk_Object *object, void *data)
       etk_editable_cursor_hide(spinner->editable_object);
       etk_editable_selection_hide(spinner->editable_object);
    }
-   evas_object_show(spinner->editable_object);
-   etk_widget_member_object_add(ETK_WIDGET(spinner), spinner->editable_object);
+   if (etk_widget_disabled_get(ETK_WIDGET(spinner)))
+      etk_editable_disabled_set(spinner->editable_object, ETK_TRUE);
+   
    
    evas_object_event_callback_add(spinner->editable_object, EVAS_CALLBACK_MOUSE_IN,
       _etk_spinner_editable_mouse_in_cb, spinner);
@@ -392,6 +400,26 @@ static void _etk_spinner_unfocus_cb(Etk_Object *object, void *data)
    etk_editable_selection_hide(spinner->editable_object);
    
    _etk_spinner_update_value_from_text(spinner);
+}
+
+/* Called when the spinner gets enabled */
+static void _etk_spinner_enabled_cb(Etk_Object *object, void *data)
+{
+   Etk_Spinner *spinner;
+
+   if (!(spinner = ETK_SPINNER(object)))
+      return;
+   etk_editable_disabled_set(spinner->editable_object, ETK_FALSE);
+}
+
+/* Called when the spinner gets disabled */
+static void _etk_spinner_disabled_cb(Etk_Object *object, void *data)
+{
+   Etk_Spinner *spinner;
+
+   if (!(spinner = ETK_SPINNER(object)))
+      return;
+   etk_editable_disabled_set(spinner->editable_object, ETK_TRUE);
 }
 
 /* Called when the user presses a key */

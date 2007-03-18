@@ -170,7 +170,8 @@ Etk_Widget *etk_toplevel_focused_widget_prev_get(Etk_Toplevel *toplevel)
       return NULL;
    
    prev = toplevel->focused_widget;
-   while ((prev = _etk_toplevel_prev_to_focus_get(toplevel, prev)) && !prev->focusable);
+   while ((prev = _etk_toplevel_prev_to_focus_get(toplevel, prev))
+         && (!prev->focusable || etk_widget_disabled_get(prev)));
    return prev;
 }
 
@@ -188,7 +189,8 @@ Etk_Widget *etk_toplevel_focused_widget_next_get(Etk_Toplevel *toplevel)
       return NULL;
    
    next = toplevel->focused_widget;
-   while ((next = _etk_toplevel_next_to_focus_get(toplevel, next)) && !next->focusable);
+   while ((next = _etk_toplevel_next_to_focus_get(toplevel, next))
+         && (!next->focusable || etk_widget_disabled_get(next)));
    return next;
 }
 

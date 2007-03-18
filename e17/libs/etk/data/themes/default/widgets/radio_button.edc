@@ -28,7 +28,46 @@ group {
          }
       }
       part {
+         name: "enable_clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "radio";
+            }
+            rel2 {
+               to: "radio";
+            }
+            visible: 1;
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+         }
+      }
+      part {
+         name: "disable_clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "radio";
+            }
+            rel2 {
+               to: "radio";
+            }
+            visible: 0;
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+         }
+      }
+      part {
          name: "radio";
+         clip_to: "enable_clip";
          description {
             state: "default" 0.0;
             rel1 {
@@ -54,6 +93,32 @@ group {
             }
          }
       }
+      part {
+         name: "radio_disabled";
+         clip_to: "disable_clip";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: "radio";
+            }
+            rel2 {
+               to: "radio";
+            }
+            image {
+               normal: "radio_off_disabled.png";
+            }
+            fill {
+               smooth: 0;
+            }
+         }
+         description {
+            state: "on" 0.0;
+            inherit: "default" 0.0;
+            image {
+               normal: "radio_on_disabled.png";
+            }
+         }
+      }
       FOCUS_GLOW(0.0, 0.0, 0, 0, "background", 1.0, 1.0, -1, -1, "background")
    }
    programs {
@@ -63,6 +128,7 @@ group {
          source: "etk";
          action: STATE_SET "on" 0.0;
          target: "radio";
+         target: "radio_disabled";
       }
       program {
          name: "radio_button_deactivate";
@@ -70,6 +136,7 @@ group {
          source: "etk";
          action: STATE_SET "default" 0.0;
          target: "radio";
+         target: "radio_disabled";
       }
       program {
          name: "radio_button_focus";
@@ -96,6 +163,22 @@ group {
          source: "etk";
          action: STATE_SET "default" 0.0;
          target: "background";
+      }
+      program {
+         name: "radio_button_enable";
+         signal: "etk,state,enabled";
+         source: "etk";
+         action: STATE_SET "default" 0.0;
+         target: "enable_clip";
+         target: "disable_clip";
+      }
+      program {
+         name: "radio_button_disable";
+         signal: "etk,state,disabled";
+         source: "etk";
+         action: STATE_SET "disabled" 0.0;
+         target: "enable_clip";
+         target: "disable_clip";
       }
    }
 }

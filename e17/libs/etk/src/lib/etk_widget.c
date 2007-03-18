@@ -9,7 +9,6 @@
 #include "etk_theme.h"
 #include "etk_container.h"
 #include "etk_toplevel.h"
-#include "etk_drag.h"
 #include "etk_event.h"
 #include "etk_marshallers.h"
 #include "etk_signal.h"
@@ -56,6 +55,8 @@ enum Etk_Widget_Signal_Id
    ETK_WIDGET_LEAVE_SIGNAL,
    ETK_WIDGET_FOCUS_SIGNAL,
    ETK_WIDGET_UNFOCUS_SIGNAL,
+   ETK_WIDGET_ENABLED_SIGNAL,
+   ETK_WIDGET_DISABLED_SIGNAL,
    ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL,
    ETK_WIDGET_SELECTION_RECEIVED_SIGNAL,
    ETK_WIDGET_NUM_SIGNALS
@@ -72,6 +73,7 @@ enum Etk_Widget_Property_Id
    ETK_WIDGET_WIDTH_REQUEST_PROPERTY,
    ETK_WIDGET_HEIGHT_REQUEST_PROPERTY,
    ETK_WIDGET_VISIBLE_PROPERTY,
+   ETK_WIDGET_DISABLED_PROPERTY,
    ETK_WIDGET_INTERNAL_PROPERTY,
    ETK_WIDGET_REPEAT_MOUSE_EVENTS_PROPERTY,
    ETK_WIDGET_PASS_MOUSE_EVENTS_PROPERTY,
@@ -91,6 +93,8 @@ static void _etk_widget_enter_handler(Etk_Widget *widget);
 static void _etk_widget_leave_handler(Etk_Widget *widget);
 static void _etk_widget_focus_handler(Etk_Widget *widget);
 static void _etk_widget_unfocus_handler(Etk_Widget *widget);
+static void _etk_widget_enabled_handler(Etk_Widget *widget);
+static void _etk_widget_disabled_handler(Etk_Widget *widget);
 
 static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
@@ -208,6 +212,10 @@ Etk_Type *etk_widget_type_get(void)
          widget_type, ETK_MEMBER_OFFSET(Etk_Widget, leave), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_FOCUS_SIGNAL] = etk_signal_new("focus",
          widget_type, ETK_MEMBER_OFFSET(Etk_Widget, focus), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_ENABLED_SIGNAL] = etk_signal_new("enabled",
+         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, enable), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_widget_signals[ETK_WIDGET_DISABLED_SIGNAL] = etk_signal_new("disabled",
+         widget_type, ETK_MEMBER_OFFSET(Etk_Widget, disable), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_UNFOCUS_SIGNAL] = etk_signal_new("unfocus",
          widget_type, ETK_MEMBER_OFFSET(Etk_Widget, unfocus), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_widget_signals[ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL] = etk_signal_new("scroll_size_changed",
@@ -724,7 +732,7 @@ void etk_widget_pass_mouse_events_set(Etk_Widget *widget, Etk_Bool pass_mouse_ev
       return;
 
    widget->pass_mouse_events = pass_mouse_events;
-   if (widget->smart_object)
+   if (widget->smart_object && !widget->disabled)
       evas_object_pass_events_set(widget->smart_object, pass_mouse_events);
    etk_object_notify(ETK_OBJECT(widget), "pass_mouse_events");
 }
@@ -772,6 +780,41 @@ Etk_Bool etk_widget_internal_get(Etk_Widget *widget)
    if (!widget)
       return ETK_FALSE;
    return widget->internal;
+}
+
+/**
+ * @brief Sets whether or not the widget is disabled. When a widget is disabled, the user can't interact
+ * with it anymore until it's enabled again. The widget will also look "disabled"
+ * @param widget a widget
+ * @param disabled ETK_TRUE to disable the widget, ETK_FALSE to enable it
+ */
+void etk_widget_disabled_set(Etk_Widget *widget, Etk_Bool disabled)
+{
+   if (!widget || widget->disabled == disabled)
+      return;
+   
+   widget->disabled = disabled;
+   etk_widget_unfocus(widget);
+
+   if (widget->smart_object && !widget->pass_mouse_events)
+      evas_object_pass_events_set(widget->smart_object, disabled);
+   if (disabled)
+      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DISABLED_SIGNAL], ETK_OBJECT(widget), NULL);
+   else
+      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_ENABLED_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_object_notify(ETK_OBJECT(widget), "disabled");
+}
+
+/**
+ * @brief Gets whether or not the widget is disabled
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the widget is disabled, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_disabled_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return widget->disabled;
 }
 
 /**
@@ -1147,7 +1190,7 @@ void etk_widget_focus(Etk_Widget *widget)
 {
    Etk_Widget *focused;
 
-   if (!widget || !widget->toplevel_parent || !widget->focusable)
+   if (!widget || !widget->toplevel_parent || !widget->focusable || etk_widget_disabled_get(widget))
       return;
    if ((focused = etk_toplevel_focused_widget_get(widget->toplevel_parent)) && (widget == focused))
       return;
@@ -1783,6 +1826,8 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->leave = _etk_widget_leave_handler;
    widget->focus = _etk_widget_focus_handler;
    widget->unfocus = _etk_widget_unfocus_handler;
+   widget->enable = _etk_widget_enabled_handler;
+   widget->disable = _etk_widget_disabled_handler;
 
    widget->inset.left = 0;
    widget->inset.right = 0;
@@ -1818,6 +1863,7 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->internal = ETK_FALSE;
    widget->focusable = ETK_FALSE;
    widget->focus_on_click = ETK_FALSE;
+   widget->disabled = ETK_FALSE;
    widget->has_event_object = ETK_FALSE;
    widget->repeat_mouse_events = ETK_FALSE;
    widget->pass_mouse_events = ETK_FALSE;
@@ -1919,6 +1965,9 @@ static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Pr
          else
             etk_widget_hide(widget);
          break;
+      case ETK_WIDGET_DISABLED_PROPERTY:
+         etk_widget_disabled_set(widget, etk_property_value_bool_get(value));
+         break;
       case ETK_WIDGET_INTERNAL_PROPERTY:
          etk_widget_internal_set(widget, etk_property_value_bool_get(value));
          break;
@@ -1973,6 +2022,9 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_WIDGET_VISIBLE_PROPERTY:
          etk_property_value_bool_set(value, widget->visible);
+         break;
+      case ETK_WIDGET_DISABLED_PROPERTY:
+         etk_property_value_bool_set(value, widget->disabled);
          break;
       case ETK_WIDGET_INTERNAL_PROPERTY:
          etk_property_value_bool_set(value, widget->internal);
@@ -2035,12 +2087,28 @@ static void _etk_widget_unfocus_handler(Etk_Widget *widget)
    etk_widget_theme_signal_emit(widget, "etk,state,unfocused", ETK_FALSE);
 }
 
-/* Sets the widget as visible and queues a visibility update */
+/* Default handler for the "show" signal */
 static void _etk_widget_show_handler(Etk_Widget *widget)
 {
    if (!widget)
       return;
    etk_widget_theme_signal_emit(widget, "etk,state,shown", ETK_FALSE);
+}
+ 
+/* Default handler for the "enabled" signal */
+static void _etk_widget_enabled_handler(Etk_Widget *widget)
+{
+   if (!widget)
+      return;
+   etk_widget_theme_signal_emit(widget, "etk,state,enabled", ETK_FALSE);
+}
+
+/* Default handler for the "disabled" signal */
+static void _etk_widget_disabled_handler(Etk_Widget *widget)
+{
+   if (!widget)
+      return;
+   etk_widget_theme_signal_emit(widget, "etk,state,disabled", ETK_FALSE);
 }
 
 /* Evas Callback: Called when the mouse pointer enters the widget */
@@ -2052,7 +2120,7 @@ static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object,
    if (!(widget = ETK_WIDGET(data)))
       return;
    
-   if (!widget->pass_mouse_events)
+   if (!widget->pass_mouse_events || widget->disabled)
    {
       etk_event_mouse_in_wrap(widget, event_info, &event);
       etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
@@ -2068,7 +2136,7 @@ static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object
    if (!(widget = ETK_WIDGET(data)))
       return;
    
-   if (!widget->pass_mouse_events)
+   if (!widget->pass_mouse_events || widget->disabled)
    {
       etk_event_mouse_out_wrap(widget, event_info, &event);
       etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), NULL, &event);
@@ -2084,7 +2152,7 @@ static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *objec
    if (!(widget = ETK_WIDGET(data)))
       return;
    
-   if (!widget->pass_mouse_events)
+   if (!widget->pass_mouse_events || widget->disabled)
    {
       etk_event_mouse_move_wrap(widget, event_info, &event);
       etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_MOVE_SIGNAL], ETK_OBJECT(widget), NULL, &event);
@@ -2103,7 +2171,7 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
    if (!(widget = ETK_WIDGET(data)))
       return;
    
-   if (!widget->pass_mouse_events)
+   if (!widget->pass_mouse_events || widget->disabled)
    {
       etk_event_mouse_down_wrap(widget, event_info, &event);
       etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
@@ -2122,7 +2190,7 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
    if (!(widget = ETK_WIDGET(data)))
       return;
    
-   if (!widget->pass_mouse_events)
+   if (!widget->pass_mouse_events || widget->disabled)
    {
       etk_event_mouse_up_wrap(widget, event_info, &event);
       etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_UP_SIGNAL], ETK_OBJECT(widget), NULL, &event);
@@ -2145,7 +2213,7 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
    Etk_Event_Mouse_Wheel event;
    Etk_Bool propagate;
 
-   if (!(widget = ETK_WIDGET(data)))
+   if (!(widget = ETK_WIDGET(data)) || etk_widget_disabled_get(widget))
       return;
    
    etk_event_mouse_wheel_wrap(widget, event_info, &event);
@@ -2255,7 +2323,7 @@ static void _etk_widget_realize(Etk_Widget *widget)
       evas_object_hide(widget->smart_object);
 
    evas_object_propagate_events_set(widget->smart_object, 0);
-   evas_object_pass_events_set(widget->smart_object, widget->pass_mouse_events);
+   evas_object_pass_events_set(widget->smart_object, (widget->pass_mouse_events || widget->disabled));
    
    /* Then, we create the theme-object */
    widget->theme_object = edje_object_add(evas);
@@ -2290,6 +2358,10 @@ static void _etk_widget_realize(Etk_Widget *widget)
          widget->inset.top = 0;
          widget->inset.bottom = 0;
       }
+      
+      if (widget->disabled || (widget->emit_theme_parent_signals
+            && widget->theme_parent && widget->theme_parent->disabled))
+         etk_widget_theme_signal_emit(widget, "etk,state,disabled", ETK_FALSE);
    }
    else
    {
@@ -2306,17 +2378,18 @@ static void _etk_widget_realize(Etk_Widget *widget)
          evas_object_lower(widget->event_object);
       }
    }
-
-   widget->need_theme_size_recalc = ETK_TRUE;
-   widget->realized = ETK_TRUE;
-
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_REALIZE_SIGNAL], ETK_OBJECT(widget), NULL);
    
    /* Finally, we clip the widget */
    if (widget->clip)
       evas_object_clip_set(widget->smart_object, widget->clip);
+   
+   widget->need_theme_size_recalc = ETK_TRUE;
+   widget->realized = ETK_TRUE;
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_REALIZE_SIGNAL], ETK_OBJECT(widget), NULL);
    etk_widget_size_recalc_queue(widget);
 }
+
+/* TODO: Fix emission of "etk,state,shown" */
 
 /* Unrealizes the widget: it will unload the theme and free the graphical ressources */
 static void _etk_widget_unrealize(Etk_Widget *widget)

@@ -4,11 +4,14 @@ static void _slider_value_changed_cb(Etk_Object *object, double value, void *dat
 static void _inverted_toggled_cb(Etk_Object *object, void *data);
 static void _show_label_toggled_cb(Etk_Object *object, void *data);
 static void _continuous_toggled_cb(Etk_Object *object, void *data);
+static void _disabled_toggled_cb(Etk_Object *object, void *data);
 static void _maximum_changed_cb(Etk_Object *object, double value, void *data);
 
 static Etk_Widget *_label = NULL;
 static Etk_Widget *_hslider = NULL;
 static Etk_Widget *_vslider = NULL;
+static Etk_Widget *_hspinner = NULL;
+static Etk_Widget *_vspinner = NULL;
 
 
 /**************************
@@ -29,7 +32,6 @@ void etk_test_slider_window_create(void *data)
    Etk_Widget *vbox;
    Etk_Widget *check;
    Etk_Widget *label;
-   Etk_Widget *spinner;
    
    if (win)
    {
@@ -89,13 +91,17 @@ void etk_test_slider_window_create(void *data)
    etk_box_append(ETK_BOX(vbox), check, ETK_BOX_START, ETK_BOX_EXPAND, 0);
    etk_signal_connect("toggled", ETK_OBJECT(check), ETK_CALLBACK(_continuous_toggled_cb), _hslider);
    
+   check = etk_check_button_new_with_label("Disabled");
+   etk_box_append(ETK_BOX(vbox), check, ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_signal_connect("toggled", ETK_OBJECT(check), ETK_CALLBACK(_disabled_toggled_cb), _hslider);
+   
    hbox = etk_hbox_new(ETK_FALSE, 5);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND, 0);
    label = etk_label_new("Maximum:");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-   spinner = etk_spinner_new(10.0, 1000.0, 255.0, 1.0, 10.0);
-   etk_box_append(ETK_BOX(hbox), spinner, ETK_BOX_START, ETK_BOX_NONE, 0);
-   etk_signal_connect("value_changed", ETK_OBJECT(spinner), ETK_CALLBACK(_maximum_changed_cb), _hslider);
+   _hspinner = etk_spinner_new(10.0, 1000.0, 255.0, 1.0, 10.0);
+   etk_box_append(ETK_BOX(hbox), _hspinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_signal_connect("value_changed", ETK_OBJECT(_hspinner), ETK_CALLBACK(_maximum_changed_cb), _hslider);
    
    
    /* Create the settings frame for the vertical slider */
@@ -118,13 +124,17 @@ void etk_test_slider_window_create(void *data)
    etk_box_append(ETK_BOX(vbox), check, ETK_BOX_START, ETK_BOX_EXPAND, 0);
    etk_signal_connect("toggled", ETK_OBJECT(check), ETK_CALLBACK(_continuous_toggled_cb), _vslider);
    
+   check = etk_check_button_new_with_label("Disabled");
+   etk_box_append(ETK_BOX(vbox), check, ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_signal_connect("toggled", ETK_OBJECT(check), ETK_CALLBACK(_disabled_toggled_cb), _vslider);
+   
    hbox = etk_hbox_new(ETK_FALSE, 5);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND, 0);
    label = etk_label_new("Maximum:");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-   spinner = etk_spinner_new(10.0, 1000.0, 255.0, 1.0, 10.0);
-   etk_box_append(ETK_BOX(hbox), spinner, ETK_BOX_START, ETK_BOX_NONE, 0);
-   etk_signal_connect("value_changed", ETK_OBJECT(spinner), ETK_CALLBACK(_maximum_changed_cb), _vslider);
+   _vspinner = etk_spinner_new(10.0, 1000.0, 255.0, 1.0, 10.0);
+   etk_box_append(ETK_BOX(hbox), _vspinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_signal_connect("value_changed", ETK_OBJECT(_vspinner), ETK_CALLBACK(_maximum_changed_cb), _vslider);
    
    
    etk_widget_show_all(win);
@@ -185,6 +195,29 @@ static void _continuous_toggled_cb(Etk_Object *object, void *data)
       etk_slider_update_policy_set(slider, ETK_SLIDER_CONTINUOUS);
    else
       etk_slider_update_policy_set(slider, ETK_SLIDER_DELAYED);
+}
+
+/* Called when one of the "Disabled" check buttons is toggled */
+static void _disabled_toggled_cb(Etk_Object *object, void *data)
+{
+   Etk_Toggle_Button *toggle;
+   Etk_Widget *slider;
+   Etk_Bool disabled;
+   
+   if (!(toggle = ETK_TOGGLE_BUTTON(object)) || !(slider = ETK_WIDGET(data)))
+      return;
+   
+   disabled = etk_toggle_button_active_get(toggle);
+   if (slider == _hslider)
+   {
+      etk_widget_disabled_set(_hslider, disabled);
+      etk_widget_disabled_set(_hspinner, disabled);
+   }
+   else
+   {
+      etk_widget_disabled_set(_vslider, disabled);
+      etk_widget_disabled_set(_vspinner, disabled);
+   }
 }
 
 /* Called when the value of one the "Maximum" spinners is changed */

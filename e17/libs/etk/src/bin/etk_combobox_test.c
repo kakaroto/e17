@@ -49,9 +49,24 @@ void etk_test_combobox_window_create(void *data)
    /* Create a simple combobox containing one column of labels and add 3 items to it */
    combobox = etk_combobox_new_default();
    etk_container_add(ETK_CONTAINER(frame), combobox);
-   etk_combobox_item_append(ETK_COMBOBOX(combobox), "Test 1");
-   etk_combobox_item_append(ETK_COMBOBOX(combobox), "Test 2");
-   etk_combobox_item_append(ETK_COMBOBOX(combobox), "Test 3");
+   etk_combobox_item_append(ETK_COMBOBOX(combobox), "Item 1");
+   etk_combobox_item_append(ETK_COMBOBOX(combobox), "Item 2");
+   etk_combobox_item_append(ETK_COMBOBOX(combobox), "Item 3");
+   
+   
+   /*******************
+    * Disabled combobox
+    *******************/
+   frame = etk_frame_new("Disabled combobox");
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
+   
+   /* Create a simple combobox containing one column of labels and add 3 items to it */
+   combobox = etk_combobox_new_default();
+   etk_container_add(ETK_CONTAINER(frame), combobox);
+   etk_combobox_item_append(ETK_COMBOBOX(combobox), "Disabled text");
+   etk_combobox_item_append(ETK_COMBOBOX(combobox), "Item 2");
+   etk_combobox_item_append(ETK_COMBOBOX(combobox), "Item 3");
+   etk_widget_disabled_set(combobox, ETK_TRUE);
    
    
    /*******************

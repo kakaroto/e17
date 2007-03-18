@@ -6,6 +6,7 @@ group {
          name: "spinner";
          description {
             state: "default" 0.0;
+            color: 255 255 255 255;
             rel1 {
                relative: 0.0 0.5;
                offset: 0 -9;
@@ -21,6 +22,11 @@ group {
             fill {
                smooth: 0;
             }
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 200 200 200 200;
          }
       }
       part {
@@ -61,6 +67,7 @@ group {
          clip_to: "clip";         
          description {
             state: "default" 0.0;
+            color: 255 255 255 255;
             rel1 {
                relative: 1.0 0.0;
                offset: -16 -2;
@@ -82,12 +89,18 @@ group {
                normal: "spinner_button_up2.png";
             }
          }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 200 200 200 200;
+         }
       }
       part {
          name: "down_arrow";
          clip_to: "clip";
          description {
             state: "default" 0.0;
+            color: 255 255 255 255;
             rel1 {
                relative: 1.0 0.0;
                offset: -16 9;
@@ -108,7 +121,12 @@ group {
             image {
                normal: "spinner_button_down2.png";
             }
-         }         
+         }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 200 200 200 200;
+         }
       }
    }
    programs {
@@ -175,7 +193,25 @@ group {
          source: "down_arrow";
          signal: "mouse,up,1"; 
          action: SIGNAL_EMIT "etk,action,decrement,stop" "";
-      }      
+      }
+      program {
+	 name: "enable";
+	 signal: "etk,state,enabled";
+	 source: "etk";
+         action: STATE_SET "default" 0.0;
+	 target: "spinner";
+         target: "up_arrow";
+         target: "down_arrow";
+     }
+      program {
+	 name: "disable";
+	 signal: "etk,state,disabled";
+	 source: "etk";
+         action: STATE_SET "disabled" 0.0;
+	 target: "spinner";
+         target: "up_arrow";
+         target: "down_arrow";
+      }
    }
 }
 
@@ -198,6 +234,27 @@ group {
                text_class: "spinner";
             }
          }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            color: 100 100 100 200;
+         }
+      }
+   }
+   programs {
+      program {
+	 name: "enable";
+	 signal: "etk,state,enabled";
+	 source: "etk";
+         action: STATE_SET "default" 0.0;
+	 target: "etk.text.text";
+     }
+      program {
+	 name: "disable";
+	 signal: "etk,state,disabled";
+	 source: "etk";
+         action: STATE_SET "disabled" 0.0;
+	 target: "etk.text.text";
       }
    }
 }

@@ -3,12 +3,16 @@ EXTRA_DIST = \
             images.edc \
             background.png \
             border.png \
+            button_disabled.png \
             button_down.png \
             button_toggled.png \
+            button_toggled_disabled.png \
             button_up.png \
             checkbox_down.png \
             checkbox_off.png \
             checkbox_on.png \
+            checkbox_off_disabled.png \
+            checkbox_on_disabled.png \
             colorpicker_preview.png \
             colorpicker_slider_drag.png \
             colorpicker_slider_trough.png \
@@ -49,6 +53,8 @@ EXTRA_DIST = \
             notebook_tab_shadow.png \
             radio_off.png \
             radio_on.png \
+            radio_off_disabled.png \
+            radio_on_disabled.png \
             scrollbar_button_down1.png \
             scrollbar_button_down2.png \
             scrollbar_button_left1.png \

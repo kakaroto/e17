@@ -6,6 +6,20 @@ styles
       "color=#ffffff style=soft_shadow shadow_color=#00000020 font=Vera-Bold font_size=12", /* Subtitle */
       "color=#ffffff style=glow glow2_color=#fe87 glow_color=#fa14", /* Glow */
       "color=#111111 font=Vera-Italic") /* Description */
+   
+   STYLE("Label Disabled", "Vera", "Vera-Bold", "Vera-Italic", "Vera-Bold-Italic", "Vera-Mono", "10",
+      "color=#00000080 style=shadow shadow_color=#ffffff40", /* Normal style */
+      "color=#ffffffC8 style=soft_shadow shadow_color=#00000020 font=Vera-Bold font_size=16", /* Title */
+      "color=#ffffffC8 style=soft_shadow shadow_color=#00000020 font=Vera-Bold font_size=12", /* Subtitle */
+      "color=#ffffffC8 style=glow glow2_color=#fe87 glow_color=#fa14", /* Glow */
+      "color=#11111180 font=Vera-Italic") /* Description */
+   
+   STYLE("Combobox Label", "Vera-Bold", "Vera-Bold", "Vera-Bold-Italic", "Vera-Bold-Italic", "Vera-Mono", "10",
+      "color=#ffffffff style=outline outline_color=#00000080", /* Normal style */
+      "", /* Title */
+      "", /* Subtitle */
+      "", /* Glow */
+      "") /* Description */
 }
 
 group {
@@ -19,9 +33,9 @@ group {
    alias: "etk/tree/header_first/label";
    alias: "etk/tree/header_last/label";
    alias: "etk/notebook/tab/label";
-   alias: "etk/combobox/button/label";
    alias: "etk/htoolbar/tool_button/label";
    alias: "etk/vtoolbar/tool_button/label";
+   alias: "etk/combobox/button/label";
    parts {
       part {
          name: "etk.text.label";
@@ -34,6 +48,48 @@ group {
                min: 1 1;
             }
          }
+         description {
+            state: "disabled" 0.0;
+            inherit: "default" 0.0;
+            text {
+               style: "Label Disabled";
+               min: 1 1;
+            }
+         }
+      }
+   }
+   programs {
+      program {
+         name: "label_enable";
+         signal: "etk,state,enabled";
+         source: "etk";
+         action: STATE_SET "default" 0.0;
+         target: "etk.text.label";
+      }
+      program {
+         name: "label_disable";
+         signal: "etk,state,disabled";
+         source: "etk";
+         action: STATE_SET "disabled" 0.0;
+         target: "etk.text.label";
       }
    }
 }
+/*
+group {
+   name: "etk/combobox/button/label";
+   parts {
+      part {
+         name: "etk.text.label";
+         type: TEXTBLOCK;
+         description {
+            state: "default" 0.0;
+            align: 0.0 0.5;
+            text {
+               style: "Combobox Label";
+               min: 1 1;
+            }
+         }
+      }
+   }
+}*/

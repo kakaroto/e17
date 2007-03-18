@@ -85,6 +85,8 @@ struct Etk_Widget
    void (*leave)(Etk_Widget *widget);
    void (*focus)(Etk_Widget *widget);
    void (*unfocus)(Etk_Widget *widget);
+   void (*enable)(Etk_Widget *widget);
+   void (*disable)(Etk_Widget *widget);
 
    unsigned int realized : 1;
    unsigned int swallowed : 1;
@@ -95,6 +97,7 @@ struct Etk_Widget
    unsigned int has_event_object : 1;
    unsigned int focusable : 1;
    unsigned int focus_on_click : 1;
+   unsigned int disabled : 1;
    unsigned int need_size_recalc : 1;
    unsigned int need_redraw : 1;
    unsigned int need_theme_size_recalc : 1;
@@ -133,6 +136,9 @@ Etk_Bool etk_widget_pass_mouse_events_get(Etk_Widget *widget);
 
 void     etk_widget_internal_set(Etk_Widget *widget, Etk_Bool internal);
 Etk_Bool etk_widget_internal_get(Etk_Widget *widget);
+
+void     etk_widget_disabled_set(Etk_Widget *widget, Etk_Bool disabled);
+Etk_Bool etk_widget_disabled_get(Etk_Widget *widget);
 
 void     etk_widget_show(Etk_Widget *widget);
 void     etk_widget_show_all(Etk_Widget *widget);
