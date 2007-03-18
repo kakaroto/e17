@@ -213,7 +213,6 @@ close_cb(void *data)
 static void
 shade_cb(void *data)
 {
-   Epplet_remember();
    Epplet_window_hide(main_win);
    Epplet_window_show(shade_win);
    if (sw_x == (unsigned short)-1 && sw_y == (unsigned short)-1)

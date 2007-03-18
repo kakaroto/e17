@@ -56,7 +56,6 @@ static char        *e16_user_dir = NULL;
 static char        *epplet_name = NULL;
 static char        *epplet_cfg_file = NULL;
 static int          epplet_instance = 0;
-static int          need_remember = 0;
 static char         epplet_visible = 0;
 
 static int          gad_num = 0;
@@ -111,6 +110,10 @@ static Window       Epplet_internal_create_window(int w, int h,
 						  char *title, char vertical,
 						  char decorate);
 static void         remember_stuff(void *data);
+
+#if USE_OLD_REMEMBER
+static int          need_remember = 0;
+#endif
 
 #define MWM_HINTS_DECORATIONS         (1L << 1)
 typedef struct _mwmhints
@@ -611,7 +614,11 @@ Epplet_Init(char *name,
 
    wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
 
+#if USE_OLD_REMEMBER
    Epplet_timer(remember_stuff, NULL, 10, "REMEMBER_TIMER");
+#else
+   Epplet_timer(remember_stuff, NULL, 2, "REMEMBER_TIMER");
+#endif
 
    sa.sa_handler = Epplet_handle_child;
    sa.sa_flags = SA_RESTART;
@@ -981,12 +988,14 @@ Epplet_handle_delete_event(Window xwin)
 static void
 remember_stuff(void *data)
 {
+#if USE_OLD_REMEMBER
    if (need_remember)
       Epplet_remember();
    need_remember = 0;
    Epplet_timer(remember_stuff, NULL, 10, "REMEMBER_TIMER");
-   return;
-   data = NULL;
+#else
+   Epplet_remember();
+#endif
 }
 
 void
@@ -1069,6 +1078,7 @@ Epplet_remember(void)
 {
    char                s[1024];
 
+#if USE_OLD_REMEMBER
    Esnprintf(s, sizeof(s), "remember %x none", (unsigned int)mainwin->win);
    ECommsSend(s);
    Esnprintf(s, sizeof(s), "remember %x layer", (unsigned int)mainwin->win);
@@ -1085,6 +1095,10 @@ Epplet_remember(void)
    ECommsSend(s);
 #ifndef NO_AUTO_RESPAWN
    Esnprintf(s, sizeof(s), "remember %x command", (unsigned int)mainwin->win);
+   ECommsSend(s);
+#endif
+#else
+   Esnprintf(s, sizeof(s), "wop %x snap all auto", (unsigned int)mainwin->win);
    ECommsSend(s);
 #endif
 }
@@ -1704,6 +1718,7 @@ Epplet_prune_events(XEvent * ev, int num)
 	       }
 	  }
      }
+#if USE_OLD_REMEMBER
    /* any reason to remember the window properties? */
    for (i = 0; i < num; i++)
       if (((ev[i].type == ConfigureNotify)
@@ -1711,6 +1726,7 @@ Epplet_prune_events(XEvent * ev, int num)
 	  || ((ev[i].type == PropertyNotify)
 	      && (ev->xproperty.window == mainwin->win)))
 	 need_remember = 1;
+#endif
 }
 
 void
