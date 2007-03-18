@@ -88,6 +88,24 @@ dnl# Checks for library functions.
 AC_TYPE_SIGNAL
 dnl#AC_CHECK_FUNCS()
 
+# ok enlightenment d00ds want to ignore civilization and install
+# everything in one place. The rest of use prefer sanity.
+#
+AC_ARG_ENABLE(fsstd,
+  [  --enable-fsstd          install files following FSSTD @<:@default=yes@:>@],,
+  enable_fsstd=yes)
+if test "x$enable_fsstd" = "xyes"; then
+  ENLIGHTENMENT_ROOT=${datadir}/e16
+  ENLIGHTENMENT_BIN=${bindir}
+  USE_FSSTD=yes
+else
+  ENLIGHTENMENT_ROOT=${prefix}/e16
+  ENLIGHTENMENT_BIN=${prefix}/e16/bin
+  USE_FSSTD=no
+fi
+EROOT=`eval echo $ENLIGHTENMENT_ROOT`
+AC_SUBST(EROOT)
+
 dnl#
 dnl# X LIBRARIES
 dnl#
@@ -103,82 +121,29 @@ echo "        libXext.so installed and that it is located in the X libraries";
 echo "        directory shown above.  If it is in a different directory, try using";
 echo "        the --x-libraries parameter to configure.";
              AC_MSG_ERROR([Fatal:  libXext not found.])], $X_LIBS $SUBLIBS)
-dnl#
-dnl* I hope I'm doing this right
-dnl#
-AC_CHECK_LIB(GL, glXChooseVisual, GL_LIBS="GL", , $X_LIBS $SUBLIBS)
 
-#if test "$GL_LIBS" = "GL"; then
-#  AC_CHECK_LIB(GLU, main, , GL_LIBS="", $X_LIBS $SUBLIBS)
-#fi
-
-GL_PROGS=""
-
-if test "$GL_LIBS" = "GL"; then
-	AC_CHECK_HEADERS(GL/glx.h,[P_GL="GL"], [echo "Warning Will Robinson. No OpenGL headers! Install Mesa our your favorite hardware GLX."])
-	if test "$P_GL" = "GL"; then
-	  X_LIBS="-lGL -lGLU $X_LIBS"
-	  AC_DEFINE(HAVE_LIBGL, 1, [Have OpenGL])
-	  GL_PROGS="E-OpenGL-Demo.epplet"
-	  AC_MSG_WARN([*** Building for GLX. Grab your ankles and kiss your ass goodbye! ***])
-	fi
+AC_ARG_ENABLE(glx,
+  [  --enable-glx            build with GLX support @<:@default=yes@:>@],,
+  enable_glx=yes)
+if test "x$enable_glx" = "xyes"; then
+  AC_CHECK_HEADERS(GL/gl.h GL/glu.h GL/glx.h,, enable_glx=no)
+  AC_CHECK_LIB(GL, glXChooseVisual,, enable_glx=no)
+dnl# AC_CHECK_LIB(GLU, main, , GLX_LIBS="", $X_LIBS)
+fi
+if test "x$enable_glx" = "xyes"; then
+  GLX_LIBS="-lGL -lGLU"
+  GLX_PROGS="E-OpenGL-Demo.epplet"
+  AC_DEFINE(HAVE_GLX, 1, [GLX support])
 else
-  AC_MSG_WARN(Warning Will Robinson. No OpenGL! Install Mesa or you favorite hardware GLX.)
+  AC_MSG_WARN([*** GL epplets will not be built ***])
 fi
+AC_SUBST(GLX_LIBS)
+AC_SUBST(GLX_PROGS)
 
-AC_CHECK_PROG(IMLIB_CONFIG, imlib2-config, imlib2-config, no)
+PKG_CHECK_MODULES(IMLIB2, imlib2 >= 1.2.0)
 
-if test "$IMLIB_CONFIG" != "no"; then
-
-  if test "$prefix" = "NONE"; then
-    AC_MSG_CHECKING(imlib2-config for prefix)
-    prefix="`$IMLIB_CONFIG --prefix`"
-    AC_MSG_RESULT($prefix)
-  fi
-
-  AC_MSG_CHECKING(imlib2-config for the value of CFLAGS)
-  CFLAGS="$CFLAGS `$IMLIB_CONFIG --cflags`"
-  AC_MSG_RESULT($CFLAGS)
-
-  AC_MSG_CHECKING(imlib2-config for the value of GRLIBS)
-  GRLIBS="$GRLIBS `$IMLIB_CONFIG --libs`"
-  AC_MSG_RESULT($GRLIBS)
-
-  SAVE_LIBS="$LIBS"
-  LIBS="$GRLIBS"
-
-  AC_MSG_CHECKING(the sanity of new compile/link flags)
-  AC_TRY_LINK(, , echo "yes", echo "no" ; IMLIB_CONFIG="no" ; 
-              AC_WARN(Compile/link failed.  Reverting to manual method.)
-  )
-
-  LIBS="$SAVE_LIBS"
-
-fi
-
-
-if test "$IMLIB_CONFIG" = "no"; then
-
-  AC_CHECK_LIB(png, png_get_valid, GRLIBS="$GRLIBS -lpng -lz -lm", ,
-               $SUBLIBS $X_LIBS -lz -lm)
-  AC_CHECK_LIB(jpeg, jpeg_read_scanlines, GRLIBS="$GRLIBS -ljpeg", ,
-               $SUBLIBS $X_LIBS)
-  AC_CHECK_LIB(tiff, TIFFOpen, GRLIBS="$GRLIBS -ltiff", ,
-               $SUBLIBS $X_LIBS -lm)
-  AC_CHECK_LIB(gif, DGifOpenFileName, GRLIBS="$GRLIBS -lgif", ,
-               $SUBLIBS $X_LIBS)
-  AC_CHECK_LIB(ungif, DGifOpenFileName, GRLIBS="$GRLIBS -lungif", ,
-               $SUBLIBS $X_LIBS)
-  AC_CHECK_LIB(Imlib2, imlib_create_image, , [
-               echo "WARNING:  Imlib was not found or did not correctly link.";
-               echo "          Please check config.log to see what the error was.";
-               echo "          I will attempt to continue, but things may go wrong.";
-               AC_MSG_WARN([WARNING:  libImlib not found.  Attempting to continue anyway.])],
-               $GRLIBS $SUBLIBS $X_LIBS)
-
-fi
-
-AC_CHECK_LIB(kstat, kstat_open, LIBS="$LIBS -lkstat")
+AC_CHECK_LIB(kstat, kstat_open, KSTAT_LIBS="-lkstat")
+AC_SUBST(KSTAT_LIBS)
 
 AC_MSG_CHECKING(for Linux)
 if test "`uname -s`" != "Linux"; then
@@ -217,37 +182,29 @@ if test "$LIBGTOP_CONFIG" != "no"; then
 else
   GTLIBS=""
 fi
+AC_SUBST(GTLIBS)
 
-# Build test programs?
-AC_ARG_WITH(test-programs, [  --with-test-programs    Builds the test programs [default=no]],
-            TEST_PROGS="EppletTest.epplet EppletConfigTest.epplet",TEST_PROGS="")
 
-# ok enlightenment d00ds want to ignore civilization and install
-# everything in one place. The rest of use prefer sanity.
-#
-AC_ARG_ENABLE(fsstd, [  --enable-fsstd          install files following FSSTD [default=yes]], ,enable_fsstd=yes)
-
-if test "x$enable_fsstd" = "xyes"; then
-  ENLIGHTENMENT_ROOT=${datadir}/e16
-  ENLIGHTENMENT_BIN=${bindir}
-  USE_FSSTD=yes
-else
-  ENLIGHTENMENT_ROOT=${prefix}/e16
-  ENLIGHTENMENT_BIN=${prefix}/e16/bin
-  USE_FSSTD=no
-fi
-
-# Be friendly to gnome-session
-AC_ARG_ENABLE(auto-respawn, [  --disable-auto-respawn  Be gnome-session friendly, and don't respawn
-                          epplets through e by default [default=no]],
+AC_ARG_ENABLE(auto-respawn,
+  [  --disable-auto-respawn  don't respawn epplets through e by default @<:@default=no@:>@],
           no_respawn=yes,)
 if test ! -z "$no_respawn"; then
-AC_DEFINE(NO_AUTO_RESPAWN, 1, [Disable auto-respawning])
+  AC_DEFINE(NO_AUTO_RESPAWN, 1, [Disable auto-respawning])
+fi
+
+AC_ARG_ENABLE(old-remember,
+  [  --enable-old-remember   use if you have a version of enlightenment < 0.16.8 @<:@default=no@:>@],
+  enable_old_remember=no)
+if test "$enable_old_remember" = "yes"; then
+  AC_DEFINE(USE_OLD_REMEMBER, 1, [Use old remember mode])
 fi
 
 
-EROOT=`eval echo $ENLIGHTENMENT_ROOT`
-AC_SUBST(EROOT)
+# Build test programs?
+AC_ARG_WITH(test-programs,
+  [  --with-test-programs    builds the test programs @<:@default=no@:>@],
+  TEST_PROGS="EppletTest.epplet EppletConfigTest.epplet", TEST_PROGS="")
+AC_SUBST(TEST_PROGS)
 
 # Should we install E-Mixer?
 # Probably not ;-) But we may as well check!
@@ -262,6 +219,7 @@ else
   AC_MSG_WARN([*** Mixer epplets will not be built ***])
   MIXER_PROGS=""
 fi
+AC_SUBST(MIXER_PROGS)
 
 SGI=
 AC_CHECK_HEADERS(dmedia/audio.h,[SGI=sgi])
@@ -272,11 +230,24 @@ else
   SGI_LIBS=""
   SGI_DEFINES=""
 fi
+AC_SUBST(SGI_LIBS)
+AC_SUBST(SGI_DEFINES)
 
-AC_CHECK_LIB(cdaudio, cd_advance, PLAYCD_PROGS=E-PlayCD.epplet, PLAYCD_PROGS="")
+
+AC_ARG_ENABLE(cdaudio,
+  [  --enable-cdaudio        build epplets using libcdaudio @<:@default=yes@:>@],,
+  enable_cdaudio=yes)
+if test "x$enable_cdaudio" = "xyes"; then
+  AC_CHECK_LIB(cdaudio, cd_advance, PLAYCD_PROGS=E-PlayCD.epplet, PLAYCD_PROGS="")
+fi
 AC_SUBST(PLAYCD_PROGS)
 
-AC_CHECK_LIB(esd, esd_open_sound, ESD_PROGS=E-SD.epplet, ESD_PROGS="")
+AC_ARG_ENABLE(esd,
+  [  --enable-esd            build epplets using libesd @<:@default=yes@:>@],,
+  enable_esd=yes)
+if test "x$enable_esd" = "xyes"; then
+  AC_CHECK_LIB(esd, esd_open_sound, ESD_PROGS=E-SD.epplet, ESD_PROGS="")
+fi
 AC_SUBST(ESD_PROGS)
 
 # Stuff for E-Mountbox
@@ -286,20 +257,9 @@ AC_PATH_PROG(EJECT, eject)
 AC_DEFINE_UNQUOTED(MOUNT, "$MOUNT", [Location of mount])
 AC_DEFINE_UNQUOTED(UMOUNT, "$UMOUNT", [Location of umount])
 AC_DEFINE_UNQUOTED(EJECT, "$EJECT", [Location of eject])
-
 if test -n "$EJECT"; then
     AC_DEFINE(HAVE_EJECT, 1, [Have eject])
 fi
-
-LIBS="$LIBS $GRLIBS"
-
-AC_SUBST(GTLIBS)
-AC_SUBST(THREADLIBS)
-AC_SUBST(TEST_PROGS)
-AC_SUBST(MIXER_PROGS)
-AC_SUBST(GL_PROGS)
-AC_SUBST(SGI_LIBS)
-AC_SUBST(SGI_DEFINES)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -320,4 +280,4 @@ echo "Now type 'make' to build $PACKAGE $VERSION."
 echo "Then type 'make install' to install."
 echo
 echo "If you are installing epplets for the first time, don't forget"
-echo "to regenerate menus to build your epplets menu"
+echo "to regenerate e16 menus to build your epplets menu"

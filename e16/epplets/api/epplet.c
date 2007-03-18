@@ -5398,7 +5398,7 @@ Epplet_free_rgb_buf(RGB_buf buf)
      }
 }
 
-#ifdef HAVE_LIBGL
+#ifdef HAVE_GLX
 GLXContext
 Epplet_bind_double_GL(Epplet_gadget da, int red, int green, int blue,
 		      int aux_buffers, int alpha, int depth, int stencil,

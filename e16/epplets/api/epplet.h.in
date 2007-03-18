@@ -32,7 +32,7 @@
 #endif
 
 /* preliminary OpenGL Checking */
-#ifdef HAVE_LIBGL
+#ifdef HAVE_GLX
 #include <GL/glut.h>
 #include <GL/glx.h>
 #endif
@@ -536,7 +536,7 @@ void                Epplet_paste_buf(RGB_buf buf, Window win, int x, int y);
 /* free an RGB buffer */
 void                Epplet_free_rgb_buf(RGB_buf buf);
 
-#ifdef HAVE_LIBGL
+#ifdef HAVE_GLX
 /****************************************************************************/
 /* OpenGL (GLX) calls. Use these functions to setup and destroy a OpenGL    */
 /* context for epplets. All glx contexts are linked to an epplet drawing    */

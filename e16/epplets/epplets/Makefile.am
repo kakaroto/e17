@@ -3,23 +3,27 @@
 edatadir = $(EROOT)
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
-E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ \
-@GL_PROGS@ E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet \
+E-Cpu.epplet E-Biff.epplet E-Power.epplet \
+E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet \
 E-Toolbox.epplet E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet \
-E-Slides.epplet E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ \
-@PLAYCD_PROGS@ E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet \
+E-Slides.epplet E-Xss.epplet E-Mountbox.epplet E-Exec.epplet \
+E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet \
 E-UrlWatch.epplet E-LoadMeter.epplet E-Pinger.epplet \
-E-Pants.epplet E-Bandwidth.epplet E-Wireless.epplet
+E-Pants.epplet E-Bandwidth.epplet E-Wireless.epplet \
+@TEST_PROGS@ @MIXER_PROGS@ @ESD_PROGS@ @PLAYCD_PROGS@ @GLX_PROGS@
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
                  Emix.epplet E-PlayCD.epplet E-OpenGL-Demo.epplet \
 		 E-SD.epplet
 
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/api $(IMLIB2_CFLAGS) $(X_CFLAGS) @SGI_DEFINES@
+LDADD = $(top_builddir)/api/libepplet.la $(IMLIB2_LIBS) $(GLX_LIBS) $(X_LIBS) $(KSTAT_LIBS)
+
 ################ Conditional Builds ################
 E_Mixer_epplet_SOURCES = E-Mixer.c
 E_Mixer_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Mixer_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-E_Mixer_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) @SGI_LIBS@
+E_Mixer_epplet_LDADD = $(LDADD) @SGI_LIBS@
 
 Emix_epplet_SOURCES = Emix.c
 Emix_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
@@ -28,7 +32,7 @@ Emix_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_PlayCD_epplet_SOURCES = E-PlayCD.c
 E_PlayCD_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_PlayCD_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-E_PlayCD_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) -lcdaudio
+E_PlayCD_epplet_LDADD = $(LDADD) -lcdaudio
 
 EppletTest_epplet_SOURCES = TestEpplet.c
 EppletTest_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
@@ -54,12 +58,12 @@ E_SD_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) -lesd
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Load_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-E_Load_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
+E_Load_epplet_LDADD = $(LDADD) $(GTLIBS)
 
 E_LoadMeter_epplet_SOURCES = E-LoadMeter.c load.c
 E_LoadMeter_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_LoadMeter_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-E_LoadMeter_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
+E_LoadMeter_epplet_LDADD = $(LDADD) $(GTLIBS)
 
 E_Clock_epplet_SOURCES = E-Clock.c
 E_Clock_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
@@ -104,7 +108,7 @@ E_Wireless_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Cpu_epplet_SOURCES = E-Cpu.c proc.h
 E_Cpu_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Cpu_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-E_Cpu_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
+E_Cpu_epplet_LDADD = $(LDADD) $(GTLIBS)
 
 E_Power_epplet_SOURCES = E-Power.c
 E_Power_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
@@ -117,7 +121,7 @@ E_Biff_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_MemWatch_epplet_SOURCES = E-MemWatch.c
 E_MemWatch_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_MemWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-E_MemWatch_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
+E_MemWatch_epplet_LDADD = $(LDADD) $(GTLIBS)
 
 E_Disk_epplet_SOURCES = E-Disk.c
 E_Disk_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
@@ -126,7 +130,7 @@ E_Disk_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Sys_epplet_SOURCES = E-Sys.c
 E_Sys_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Sys_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-E_Sys_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) $(GTLIBS)
+E_Sys_epplet_LDADD = $(LDADD) $(GTLIBS)
 
 E_Slides_epplet_SOURCES = E-Slides.c
 E_Slides_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
@@ -153,8 +157,7 @@ E_ScreenSave_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_UrlWatch_epplet_SOURCES = E-UrlWatch.c E-UrlWatch.h utils.c utils.h
 E_UrlWatch_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
-E_UrlWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) $(X_LIBS)
-E_UrlWatch_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
+E_UrlWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Mountbox_epplet_SOURCES = E-Mountbox.c
 E_Mountbox_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
@@ -167,9 +170,6 @@ E_Pinger_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Pants_epplet_SOURCES = E-Pants.c
 E_Pants_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Pants_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-
-INCLUDES = -I. -I$(top_builddir)/api -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include -I/usr/local/include $(X_CFLAGS) @SGI_DEFINES@
-LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib -L/usr/local/lib $(LIBS) $(X_LIBS)
 
 # You can use the following command to generate this line:
 # ABOUT_DOCS = `(cd epplets && ls -1d *.ABOUT/* 2>/dev/null | grep -v CVS)`
