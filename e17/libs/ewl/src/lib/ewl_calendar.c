@@ -279,6 +279,8 @@ ewl_calendar_grid_setup(Ewl_Calendar *cal)
 		snprintf(day, sizeof(day), "%d", cur_day + 1); 
 		day_label = ewl_label_new();
 		ewl_label_text_set(EWL_LABEL(day_label), day);
+		ewl_object_alignment_set(EWL_OBJECT(day_label), 
+							EWL_FLAG_ALIGN_RIGHT);
 		ewl_callback_append(EWL_WIDGET(day_label), 
 					EWL_CALLBACK_MOUSE_DOWN, 
 					ewl_calendar_day_select_cb, cal);
@@ -444,6 +446,8 @@ ewl_calendar_add_day_labels(Ewl_Calendar *ib)
 		ewl_label_text_set(EWL_LABEL(day_label), days[i]);
 		ewl_container_child_append(EWL_CONTAINER(ib->grid),
 							day_label);
+		ewl_object_alignment_set(EWL_OBJECT(day_label), 
+							EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(day_label);
 	}
 
