@@ -11,6 +11,8 @@
 
 #define DEPTH() DefaultDepth(disp, DefaultScreen(disp))
 
+#define DEBUG_EVENTS 0
+
 #define SET_HINTS_OLD  1
 #define SET_HINTS_EWM  1
 
@@ -393,6 +395,21 @@ struct _gadpopupbutton
    Pixmap              pmap, mask;
 };
 
+#if DEBUG_EVENTS
+static int
+HandleXError(Display * d, XErrorEvent * ev)
+{
+   char                buf[64];
+
+   XGetErrorText(disp, ev->error_code, buf, 63);
+   printf("*** ERROR: xid=%#lx error=%i req=%i/%i: %s\n",
+	  ev->resourceid, ev->error_code,
+	  ev->request_code, ev->minor_code, buf);
+
+   return 0;
+}
+#endif
+
 void
 Epplet_send_ipc(char *s)
 {
@@ -439,6 +456,12 @@ Epplet_Init(char *name,
 	fprintf(stderr, "Epplet Error: Cannot open display\n");
 	exit(1);
      }
+#if DEBUG_EVENTS
+   XSetErrorHandler(HandleXError);
+#if DEBUG_EVENTS > 1
+   XSynchronize(disp, True);
+#endif
+#endif
 
    imlib_context_set_display(disp);
    imlib_context_set_visual(DefaultVisual(disp, DefaultScreen(disp)));
