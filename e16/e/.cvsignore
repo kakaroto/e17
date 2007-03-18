@@ -18,7 +18,6 @@ e16*.tar.gz
 install-sh
 libtool
 ltmain.sh
-m4
 missing
 mkinstalldirs
 stamp-h
