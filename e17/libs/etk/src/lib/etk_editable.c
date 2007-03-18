@@ -214,6 +214,7 @@ void etk_editable_disabled_set(Evas_Object *editable, Etk_Bool disabled)
       edje_object_signal_emit(sd->text_object, "etk,state,disabled", "etk");
    else
       edje_object_signal_emit(sd->text_object, "etk,state,enabled", "etk");
+   sd->disabled = disabled;
 }
 
 /**
@@ -1082,6 +1083,7 @@ static void _etk_editable_smart_add(Evas_Object *object)
    sd->selection_pos = 0;
    sd->selection_visible = ETK_TRUE;
    sd->password_mode = ETK_FALSE;
+   sd->disabled = ETK_FALSE;
 
    sd->clip_object = evas_object_rectangle_add(evas);
    evas_object_move(sd->clip_object, ox, oy);

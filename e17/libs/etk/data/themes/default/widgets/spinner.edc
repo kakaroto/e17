@@ -43,7 +43,7 @@ group {
                offset: -3 6;
             }
          }
-      }      
+      }
       part {
          name: "etk.swallow.content";
          type: SWALLOW;
@@ -51,12 +51,12 @@ group {
             state: "default" 0.0;
             rel1 {
                relative: 0.0 0.0;
-               offset: 4 3;
+               offset: 4 2;
                to: "spinner";
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -17 -1;
+               offset: -17 -2;
                to: "spinner";
             }
          }
@@ -64,7 +64,7 @@ group {
       FOCUS_GLOW(0.0, 0.0, 0, 0, "spinner", 1.0, 1.0, -1, -1, "spinner")
       part {
          name: "up_arrow";
-         clip_to: "clip";         
+         clip_to: "clip";
          description {
             state: "default" 0.0;
             color: 255 255 255 255;
@@ -113,7 +113,7 @@ group {
             }
             image {
                normal: "spinner_button_down1.png";
-            }            
+            }
          }
          description {
             state: "down" 0.0;
@@ -142,73 +142,73 @@ group {
          source: "etk";
          UNFOCUS_GLOW_ACTION
       }
-      program {  
-         name: "up_arrow_up";  
-         signal: "mouse,up,1";  
-         source: "up_arrow";  
-         action: STATE_SET "default" 0.0;  
-         target: "up_arrow";  
-      }  
-      program {  
-         name: "up_arrow_down";  
-         signal: "mouse,down,1*";  
-         source: "up_arrow";  
-         action: STATE_SET "down" 0.0;  
+      program {
+         name: "up_arrow_up";
+         signal: "mouse,up,1";
+         source: "up_arrow";
+         action: STATE_SET "default" 0.0;
          target: "up_arrow";
-      }        
-      program {  
-         name: "down_arrow_up";  
-         signal: "mouse,up,1";  
+      }
+      program {
+         name: "up_arrow_down";
+         signal: "mouse,down,1*";
+         source: "up_arrow";
+         action: STATE_SET "down" 0.0;
+         target: "up_arrow";
+      }
+      program {
+         name: "down_arrow_up";
+         signal: "mouse,up,1";
          source: "down_arrow";
-         action: STATE_SET "default" 0.0;  
-         target: "down_arrow";  
-      }  
-      program {  
-         name: "down_arrow_down";  
-         signal: "mouse,down,1*";  
-         source: "down_arrow";  
-         action: STATE_SET "down" 0.0;  
+         action: STATE_SET "default" 0.0;
          target: "down_arrow";
       }
-      program {       
-         name: "up_arrow_pressed"; 
-         source: "up_arrow";
-         signal: "mouse,down,1*"; 
-         action: SIGNAL_EMIT "etk,action,increment,start" ""; 
-      } 
       program {
-         name: "up_arrow_released"; 
+         name: "down_arrow_down";
+         signal: "mouse,down,1*";
+         source: "down_arrow";
+         action: STATE_SET "down" 0.0;
+         target: "down_arrow";
+      }
+      program {
+         name: "up_arrow_pressed";
          source: "up_arrow";
-         signal: "mouse,up,1"; 
+         signal: "mouse,down,1*";
+         action: SIGNAL_EMIT "etk,action,increment,start" "";
+      }
+      program {
+         name: "up_arrow_released";
+         source: "up_arrow";
+         signal: "mouse,up,1";
          action: SIGNAL_EMIT "etk,action,increment,stop" "";
       }
-      program {       
-         name: "down_arrow_pressed"; 
-         source: "down_arrow";
-         signal: "mouse,down,1*"; 
-         action: SIGNAL_EMIT "etk,action,decrement,start" ""; 
-      } 
       program {
-         name: "down_arrow_released"; 
+         name: "down_arrow_pressed";
          source: "down_arrow";
-         signal: "mouse,up,1"; 
+         signal: "mouse,down,1*";
+         action: SIGNAL_EMIT "etk,action,decrement,start" "";
+      }
+      program {
+         name: "down_arrow_released";
+         source: "down_arrow";
+         signal: "mouse,up,1";
          action: SIGNAL_EMIT "etk,action,decrement,stop" "";
       }
       program {
-	 name: "enable";
-	 signal: "etk,state,enabled";
-	 source: "etk";
+         name: "enable";
+         signal: "etk,state,enabled";
+         source: "etk";
          action: STATE_SET "default" 0.0;
-	 target: "spinner";
+         target: "spinner";
          target: "up_arrow";
          target: "down_arrow";
      }
       program {
-	 name: "disable";
-	 signal: "etk,state,disabled";
-	 source: "etk";
+         name: "disable";
+         signal: "etk,state,disabled";
+         source: "etk";
          action: STATE_SET "disabled" 0.0;
-	 target: "spinner";
+         target: "spinner";
          target: "up_arrow";
          target: "down_arrow";
       }
@@ -243,18 +243,18 @@ group {
    }
    programs {
       program {
-	 name: "enable";
-	 signal: "etk,state,enabled";
-	 source: "etk";
+         name: "enable";
+         signal: "etk,state,enabled";
+         source: "etk";
          action: STATE_SET "default" 0.0;
-	 target: "etk.text.text";
+         target: "etk.text.text";
      }
       program {
-	 name: "disable";
-	 signal: "etk,state,disabled";
-	 source: "etk";
+         name: "disable";
+         signal: "etk,state,disabled";
+         source: "etk";
          action: STATE_SET "disabled" 0.0;
-	 target: "etk.text.text";
+         target: "etk.text.text";
       }
    }
 }
