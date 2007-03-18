@@ -245,17 +245,6 @@ if test ! -z "$no_respawn"; then
 AC_DEFINE(NO_AUTO_RESPAWN, 1, [Disable auto-respawning])
 fi
 
-AC_ARG_ENABLE(new-remember,
-[  --disable-new-remember  use if you have a version of enlightenment <= 0.16.4],
-            if test "$enableval" = "yes"; then
-	       AC_MSG_RESULT(yes)
-	       else
-               AC_MSG_RESULT(no)
-	       AC_DEFINE(NEW_REMEMBER, 1, [Disable new remember (obsolete)])
-	       fi,
-	       AC_MSG_RESULT(no)
-)
-
 
 EROOT=`eval echo $ENLIGHTENMENT_ROOT`
 AC_SUBST(EROOT)

@@ -1047,18 +1047,6 @@ Epplet_remember(void)
 {
    char                s[1024];
 
-#ifdef NEW_REMEMBER
-#ifndef NO_AUTO_RESPAWN
-   char                commandbuf[] = "command";
-
-#else
-   char                commandbuf[] = "";
-
-#endif
-   Esnprintf(s, sizeof(s), "remember %x none layer border location "
-	     "sticky shade group %s", (unsigned int)mainwin->win, commandbuf);
-   ECommsSend(s);
-#else
    Esnprintf(s, sizeof(s), "remember %x none", (unsigned int)mainwin->win);
    ECommsSend(s);
    Esnprintf(s, sizeof(s), "remember %x layer", (unsigned int)mainwin->win);
@@ -1076,7 +1064,6 @@ Epplet_remember(void)
 #ifndef NO_AUTO_RESPAWN
    Esnprintf(s, sizeof(s), "remember %x command", (unsigned int)mainwin->win);
    ECommsSend(s);
-#endif
 #endif
 }
 
