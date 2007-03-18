@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-16 02:08+0100\n"
-"PO-Revision-Date: 2007-02-23 00:04+0100\n"
+"POT-Creation-Date: 2007-03-13 23:13+0100\n"
+"PO-Revision-Date: 2007-03-17 10:04+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -866,9 +866,8 @@ msgid "Include iconified windows in focus list"
 msgstr "Inclure les fenêtres icônifiées dans la liste de fenêtres"
 
 #: src/focus.c:802
-#, fuzzy
 msgid "Include windows on other desks in focus list"
-msgstr "Inclure les fenêtres masquées dans la liste de fenêtres"
+msgstr "Inclure les fenêtres des autres bureaux dans la liste de fenêtres"
 
 #: src/focus.c:807
 msgid "Focus windows while switching"
@@ -1091,19 +1090,16 @@ msgstr ""
 "par défaut des Groupes\n"
 
 #: src/groups.c:1059
-#, fuzzy
 msgid "Pick the group the window will belong to:"
-msgstr "  Choisissez le groupe auquel cette fenêtre appartiendra:  \n"
+msgstr "Choisissez le groupe auquel cette fenêtre appartiendra:"
 
 #: src/groups.c:1066
-#, fuzzy
 msgid "Select the group to remove the window from:"
-msgstr "   Choisissez le groupe duquel la fenêtre sera retirée:  "
+msgstr "Choisissez le groupe duquel la fenêtre sera retirée:"
 
 #: src/groups.c:1072
-#, fuzzy
 msgid "Select the group to break:"
-msgstr "  Choisissez le groupe à supprimer:  "
+msgstr "Choisissez le groupe à supprimer:  "
 
 #: src/handlers.c:66
 #, c-format
@@ -1200,11 +1196,11 @@ msgstr ""
 "Vous devrez quitter votre gestionnaire de fenêtres actuel avant\n"
 "de pouvoir lancer Enlightenment.\n"
 
-#: src/hints.c:547
+#: src/hints.c:539
 msgid "Selection Error!"
 msgstr "Erreur de sélection !"
 
-#: src/hints.c:547
+#: src/hints.c:539
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "Impossible de faire la sélection : %s"
@@ -1245,7 +1241,7 @@ msgstr ""
 
 #: src/ipc.c:1256
 msgid "Enlightenment was built without composite support"
-msgstr ""
+msgstr "Enlightenment a été compilé sans le support de l'extension Composite"
 
 #: src/ipc.c:1573
 msgid "Enlightenment IPC Commands Help\n"
@@ -1838,7 +1834,7 @@ msgstr "Activer les en-têtes sur les dialogues"
 #: src/settings.c:491
 #, fuzzy
 msgid "Enable Button Images"
-msgstr "Activer les Boutons Image"
+msgstr "Activer les Images de Bouton"
 
 #: src/settings.c:500
 msgid "Enable sliding startup windows"
