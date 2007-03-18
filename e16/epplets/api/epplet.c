@@ -439,7 +439,6 @@ Epplet_Init(char *name,
 	fprintf(stderr, "Epplet Error: Cannot open display\n");
 	exit(1);
      }
-   XSynchronize(disp, True);
 
    imlib_context_set_display(disp);
    imlib_context_set_visual(DefaultVisual(disp, DefaultScreen(disp)));
