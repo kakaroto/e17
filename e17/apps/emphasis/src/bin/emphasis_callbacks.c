@@ -1212,6 +1212,7 @@ void
 cb_media_pls_save_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
+#if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
   Etk_Widget *entry;
  
@@ -1234,12 +1235,16 @@ cb_media_pls_save_clicked(Etk_Object *object, void *data)
       etk_widget_focus(entry);
     }
   emphasis_pls_list_init(player);
+#else
+  UNUSED(data);
+#endif
 }
 
 void
 cb_media_pls_load_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
+#if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
   Etk_Tree_Col *col;
   Etk_Tree_Row *row;
@@ -1259,12 +1264,16 @@ cb_media_pls_load_clicked(Etk_Object *object, void *data)
                                     EMPHASIS_TRACK);
   etk_tree_unselect_all(ETK_TREE(player->media.pls_content));
   mpc_play_if_stopped();
+#else
+  UNUSED(data);
+#endif
 }
 
 void
 cb_media_pls_del_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
+#if defined(LIBMPD_0_12_4)
   Emphasis_Player_Gui *player;
   Etk_Tree_Col *col;
   Etk_Tree_Row *row;
@@ -1278,6 +1287,9 @@ cb_media_pls_del_clicked(Etk_Object *object, void *data)
 
   mpc_delete_playlist(playlist_name);
   emphasis_pls_list_init(player);
+#else
+  UNUSED(data);
+#endif
 }
 
 void
@@ -1483,6 +1495,14 @@ cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
                 }
               return; /* no show/hide */
             }
+          else if( event->widget.y <= 7 )
+            {
+              /* special sensible cover zone (top) */
+              double seek;
+              seek = (double) event->widget.x / (double) w;
+              mpc_seek(seek);
+              return; /* no show/hide */
+            }
           win = player->small.ctr.window;
         }
       else
@@ -1514,7 +1534,7 @@ cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
       /* switch small<->tiny */
       if(player->small.packed == ETK_TRUE)
         {
-          /* packing */
+          /* unpacking */
           etk_widget_hide(player->small.window);
 
           etk_container_add(ETK_CONTAINER(player->small.cov.window),
@@ -1523,15 +1543,16 @@ cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
                             player->small.ctr.root);
 
           etk_widget_size_request_set(player->small.cover,
-                                      player->small.cover_size_w,
-                                      player->small.cover_size_w);
+                                      100, 100);
+                                      //player->small.cover_size_w,
+                                      //player->small.cover_size_w);
 
           etk_widget_show(player->small.cov.window);
           etk_widget_show(player->small.ctr.window);
         }
       else
         {
-          /* unpacking */
+          /* packing */
           etk_widget_hide(player->small.cov.window);
           etk_widget_hide(player->small.ctr.window);
 

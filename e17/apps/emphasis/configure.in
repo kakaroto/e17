@@ -61,6 +61,14 @@ dnl Set ETK_PACKAGE_DATA_DIR in config.h.
 etk_prefix="\"`etk-config --prefix`/share/etk\""
 AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
 
+libmpd_v_cflags=""
+if `pkg-config --atleast-version=0.12.4 libmpd`
+then
+	libmpd_v_cflags="-DLIBMPD_0_12_4"
+fi
+AC_SUBST(libmpd_v_cflags)
+
+
 m4_include(m4/ac_path_efl.m4)
 AC_CHECK_FUNCS(strndup)
 AC_CHECK_LIB(pthread, pthread_create)
@@ -68,7 +76,7 @@ AC_PATH_EFL(ecore, 0.9.9.022, [AM_CONDITIONAL(HAVE_ECORE, true)])
 AC_PATH_EFL(etk, 0.1.0.002, [AM_CONDITIONAL(HAVE_ETK, true)])
 AC_PATH_GENERIC(enhance, 0.0.1, [AM_CONDITIONAL(HAVE_ENHANCE, true)])
 AC_PATH_GENERIC(XML2, 2.6.0, [AM_CONDITIONAL(HAVE_XML2, true)])
-PKG_CHECK_MODULES(libmpd, libmpd >= 0.12.4, [AM_CONDITIONAL(HAVE_LIBMPD, true)]) 
+PKG_CHECK_MODULES(libmpd, libmpd >= 0.12.0, [AM_CONDITIONAL(HAVE_LIBMPD, true)]) 
 
 AC_OUTPUT([
 Makefile

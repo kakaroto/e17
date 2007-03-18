@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 AM_CFLAGS = \
--Wall -W -g -D_GNU_SOURCE @ECORE_CFLAGS@ @ETK_CFLAGS@ @ENHANCE_CFLAGS@ @libmpd_CFLAGS@ @XML2_CFLAGS@
+-Wall -W -g -D_GNU_SOURCE @ECORE_CFLAGS@ @ETK_CFLAGS@ @ENHANCE_CFLAGS@ @libmpd_CFLAGS@ @XML2_CFLAGS@ @libmpd_v_cflags@
 
 bin_PROGRAMS = emphasis
 

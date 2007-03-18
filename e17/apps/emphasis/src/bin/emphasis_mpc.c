@@ -644,6 +644,7 @@ mpc_disconnect(void)
 Evas_List *
 mpc_list_playlists(void)
 {
+#if defined(LIBMPD_0_12_4)
   MpdData *data;
   Evas_List *list;
 
@@ -652,11 +653,15 @@ mpc_list_playlists(void)
 
   mpd_data_free(data);
   return list;
+#else
+  return NULL;
+#endif
 }
 
 Evas_List *
 mpc_get_playlist_content(char *playlist_name)
 {
+#if defined(LIBMPD_0_12_4)
   MpdData *data;
   Evas_List *list;
   
@@ -665,11 +670,15 @@ mpc_get_playlist_content(char *playlist_name)
 
   mpd_data_free(data);
   return list;
+#else
+  return NULL;
+#endif
 }
 
 void
 mpc_save_playlist(char *playlist_name)
 {
+#if defined(LIBMPD_0_12_4)
   int mpd_error;
 
   mpd_error = mpd_database_save_playlist(mo, playlist_name);
@@ -680,11 +689,15 @@ mpc_save_playlist(char *playlist_name)
           fprintf(stderr, "A playlist with the same name already exist.\n");
         }
     }
+#else
+  UNUSED(playerlist_name)
+#endif
 }
 
 void
 mpc_delete_playlist(char *playlist_name)
 {
+#if defined(LIBMPD_0_12_4)
   int mpd_error;
 
   mpd_error = mpd_database_delete_playlist(mo, playlist_name);
@@ -692,6 +705,9 @@ mpc_delete_playlist(char *playlist_name)
     {
       fprintf(stderr, "An error occur during the playlist deleting\n");
     }
+#else
+  UNUSED(playlist_name)
+#endif
 }
 
 MpdData *mpd_database_list_playlist(MpdObj *mi)
