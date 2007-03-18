@@ -744,7 +744,7 @@ EwinDeIconify1(EWin * ewin, int dx, int dy)
       return;
    call_depth++;
 
-   if (ewin->state.state != EWIN_STATE_ICONIC)
+   if (ewin->state.state != EWIN_STATE_ICONIC || !ewin->state.iconified)
       return;
 
    EwinRememberPositionGet(ewin, DesksGetCurrent(), &x, &y);
