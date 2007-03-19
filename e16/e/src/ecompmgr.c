@@ -92,7 +92,9 @@
 #define INV_GEOM    (INV_POS | INV_SIZE)
 #define INV_ALL     (INV_POS | INV_SIZE | INV_CLIP | INV_OPACITY | INV_SHADOW | INV_PIXMAP)
 
-struct _eoci
+typedef struct _cmhook ECmWinInfo;
+
+struct _cmhook
 {
    EObj               *next;	/* Paint order */
    EObj               *prev;	/* Paint order */

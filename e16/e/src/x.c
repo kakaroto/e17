@@ -347,12 +347,33 @@ ECreateWindow(Win parent, int x, int y, int w, int h, int saveunder)
 }
 
 #if USE_COMPOSITE
-Win
-ECreateArgbWindow(Win parent, int x, int y, int w, int h, Win cwin)
+static              Win
+ECreateWindowVDC(Win parent, int x, int y, int w, int h,
+		 Visual * vis, unsigned int depth, Colormap cmap)
 {
    EXID               *win;
    Window              xwin;
    XSetWindowAttributes attr;
+
+   attr.background_pixmap = None;
+   attr.border_pixel = 0;
+   attr.backing_store = NotUseful;
+   attr.save_under = False;
+   attr.override_redirect = False;
+   attr.colormap = cmap;
+
+   xwin = XCreateWindow(disp, parent->xwin, x, y, w, h, 0,
+			depth, InputOutput, vis,
+			CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+			CWColormap | CWBackPixmap | CWBorderPixel, &attr);
+   win = EXidSet(xwin, parent, x, y, w, h, depth, vis, cmap);
+
+   return win;
+}
+
+Win
+ECreateArgbWindow(Win parent, int x, int y, int w, int h, Win cwin)
+{
    int                 depth;
    Visual             *vis;
    Colormap            cmap;
@@ -376,22 +397,23 @@ ECreateArgbWindow(Win parent, int x, int y, int w, int h, Win cwin)
 	cmap = argb_cmap;
      }
 
-   attr.background_pixmap = None;
-   attr.border_pixel = 0;
-   attr.backing_store = NotUseful;
-   attr.save_under = False;
-   attr.override_redirect = False;
-   attr.colormap = cmap;
+   return ECreateWindowVDC(parent, x, y, w, h, vis, depth, cmap);
+}
 
-   xwin = XCreateWindow(disp, parent->xwin, x, y, w, h, 0,
-			depth, InputOutput, vis,
-			CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-			CWColormap | CWBackPixmap | CWBorderPixel, &attr);
-   win = EXidSet(xwin, parent, x, y, w, h, depth, vis, cmap);
+#if USE_GLX
+Win
+ECreateWindowVD(Win parent, int x, int y, int w, int h,
+		Visual * vis, unsigned int depth)
+{
+   Colormap            cmap;
 
-   return win;
+   cmap = XCreateColormap(disp, VRoot.xwin, vis, AllocNone);
+
+   return ECreateWindowVDC(parent, x, y, w, h, vis, depth, cmap);
 }
 #endif
+
+#endif /* USE_COMPOSITE */
 
 Win
 ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,

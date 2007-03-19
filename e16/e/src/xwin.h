@@ -125,6 +125,8 @@ Win                 ECreateWindow(Win parent, int x, int y, int w, int h,
 				  int saveunder);
 Win                 ECreateArgbWindow(Win parent, int x, int y, int w, int h,
 				      Win cwin);
+Win                 ECreateWindowVD(Win parent, int x, int y, int w, int h,
+				    Visual * vis, unsigned int depth);
 Win                 ECreateClientWindow(Win parent, int x, int y, int w, int h);
 Win                 ECreateObjectWindow(Win parent, int x, int y, int w,
 					int h, int saveunder, int type,

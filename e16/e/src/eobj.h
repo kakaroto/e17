@@ -26,10 +26,6 @@
 #include "etypes.h"
 #include "xwin.h"
 
-#if USE_COMPOSITE
-typedef struct _eoci ECmWinInfo;
-#endif
-
 typedef struct _eobj EObj;
 
 struct _eobj
@@ -51,17 +47,20 @@ struct _eobj
    unsigned            noredir:1;	/* Do not redirect */
    unsigned            shadow:1;	/* Enable shadows */
    unsigned            fade:1;	/* Enable fading */
-#if USE_COMPOSITE
-   unsigned int        opacity;
-   ECmWinInfo         *cmhook;
-   unsigned int        serial;
-#endif
    struct
    {
       char               *wm_name;
       char               *wm_res_name;
       char               *wm_res_class;
    } icccm;
+#if USE_COMPOSITE
+   unsigned int        serial;
+   unsigned int        opacity;
+   struct _cmhook     *cmhook;
+#endif
+#if USE_GLX
+   struct _glhook     *glhook;
+#endif
 };
 
 #define EOBJ_TYPE_EWIN      0
@@ -165,6 +164,10 @@ int                 EobjLower(EObj * eo);
 void                EobjShapeUpdate(EObj * eo, int propagate);
 void                EobjsRepaint(void);
 Pixmap              EobjGetPixmap(const EObj * eo);
+
+#if USE_GLX
+struct _etexture   *EobjGetTexture(EObj * eo);
+#endif
 void                EobjChangeOpacity(EObj * eo, unsigned int opacity);
 void                EobjChangeShadow(EObj * eo, int shadow);
 void                EobjSetLayer(EObj * eo, int layer);
