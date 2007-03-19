@@ -262,8 +262,8 @@ emphasis_pls_list_init(Emphasis_Player_Gui *player)
                             MPD_DATA_TYPE_PLAYLIST,
                             NULL);
 #else
-  etk_tree_append(pls_list, etk_tree_nth_col_get(pls_list, 0),
-                  "You need libmpd 0.12.4 order to use mpd playlists", NULL);
+  etk_tree_row_append(pls_list, NULL, etk_tree_nth_col_get(pls_list, 0),
+                      "You need libmpd 0.12.4 order to use mpd playlists", NULL);
 #endif
 }
 

@@ -671,6 +671,7 @@ mpc_get_playlist_content(char *playlist_name)
   mpd_data_free(data);
   return list;
 #else
+  UNUSED(playlist_name)
   return NULL;
 #endif
 }
@@ -690,7 +691,7 @@ mpc_save_playlist(char *playlist_name)
         }
     }
 #else
-  UNUSED(playerlist_name)
+  UNUSED(playlist_name)
 #endif
 }
 
