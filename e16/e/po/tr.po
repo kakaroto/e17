@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-16 02:08+0100\n"
+"POT-Creation-Date: 2007-03-18 23:06+0100\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -766,7 +766,7 @@ msgstr "Uygula"
 msgid "Attention !!!"
 msgstr "Dikkat !!!"
 
-#: src/ecompmgr.c:2469
+#: src/ecompmgr.c:2471
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1282,14 +1282,14 @@ msgstr "\"help <komuta>\" ile komutaya özgü bir yardým görebilirsin\n"
 msgid "         <command>     : <description>\n"
 msgstr "<komuta> : <anlatým>\n"
 
-#: src/main.c:583
+#: src/main.c:588
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:693
+#: src/main.c:698
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1318,7 +1318,7 @@ msgstr ""
 "( yada sen ) bu uygulamayý sildi yada Enlightenment tamamen ve doðruca \n"
 "yüklendmedi .\n"
 
-#: src/main.c:707
+#: src/main.c:712
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"

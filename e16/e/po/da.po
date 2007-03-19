@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-16 02:08+0100\n"
+"POT-Creation-Date: 2007-03-18 23:06+0100\n"
 "PO-Revision-Date: 2007-01-07 14:48+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -733,7 +733,7 @@ msgstr "Anvend"
 msgid "Attention !!!"
 msgstr "Vigtigt !!!"
 
-#: src/ecompmgr.c:2469
+#: src/ecompmgr.c:2471
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1195,7 +1195,7 @@ msgstr "Brug \"help <kommando>\" for individuel beskrivelse\n"
 msgid "         <command>     : <description>\n"
 msgstr "         <kommando> : <beskrivelse>\n"
 
-#: src/main.c:583
+#: src/main.c:588
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
@@ -1204,7 +1204,7 @@ msgstr ""
 "%s skal være et katalog hvor du har\n"
 "læse, skrive og eksekveringsret.\n"
 
-#: src/main.c:693
+#: src/main.c:698
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1221,7 +1221,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/main.c:707
+#: src/main.c:712
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"

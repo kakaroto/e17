@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-16 02:08+0100\n"
+"POT-Creation-Date: 2007-03-18 23:06+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -774,7 +774,7 @@ msgstr "적용"
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
-#: src/ecompmgr.c:2469
+#: src/ecompmgr.c:2471
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1286,14 +1286,14 @@ msgstr "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오
 msgid "         <command>     : <description>\n"
 msgstr "      <명령> : <설명>\n"
 
-#: src/main.c:583
+#: src/main.c:588
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:693
+#: src/main.c:698
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1322,7 +1322,7 @@ msgstr ""
 "손으로 프로그램을 지웠든 지 아니면 인라이튼먼트 인스톨이\n"
 "잘못된 것입니다.\n"
 
-#: src/main.c:707
+#: src/main.c:712
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"

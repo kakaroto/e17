@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-13 23:13+0100\n"
+"POT-Creation-Date: 2007-03-18 23:06+0100\n"
 "PO-Revision-Date: 2007-03-17 10:04+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
@@ -771,7 +771,7 @@ msgstr "Appliquer"
 msgid "Attention !!!"
 msgstr "Attention !!!"
 
-#: src/ecompmgr.c:2469
+#: src/ecompmgr.c:2471
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1196,11 +1196,11 @@ msgstr ""
 "Vous devrez quitter votre gestionnaire de fenêtres actuel avant\n"
 "de pouvoir lancer Enlightenment.\n"
 
-#: src/hints.c:539
+#: src/hints.c:547
 msgid "Selection Error!"
 msgstr "Erreur de sélection !"
 
-#: src/hints.c:539
+#: src/hints.c:547
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "Impossible de faire la sélection : %s"
@@ -1273,7 +1273,7 @@ msgstr "Tapez \"help <commande>\" pour une description individuelle\n"
 msgid "         <command>     : <description>\n"
 msgstr "      <commande>   : <description>\n"
 
-#: src/main.c:583
+#: src/main.c:588
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
@@ -1282,7 +1282,7 @@ msgstr ""
 "%s doit être un répertoire pour lequel vous avez\n"
 "les droits de lecture, d'écriture et d'exécution.\n"
 
-#: src/main.c:693
+#: src/main.c:698
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1311,7 +1311,7 @@ msgstr ""
 "un effacement manuel de ce programme, ou une erreur lors de\n"
 "l'installation d'Enlightenment.\n"
 
-#: src/main.c:707
+#: src/main.c:712
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
