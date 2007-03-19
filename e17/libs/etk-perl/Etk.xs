@@ -5107,6 +5107,20 @@ new(class, lower, upper, value, step_increment, page_increment)
 
 MODULE = Etk::Widget	PACKAGE = Etk::Widget	PREFIX = etk_widget_
 
+
+void
+etk_widget_disabled_set(widget, disabled)
+	Etk_Widget *	widget
+	Etk_Bool	disabled
+	ALIAS:
+	DisabledSet=1
+
+Etk_Bool
+etk_widget_disabled_get(widget)
+	Etk_Widget *    widget
+	ALIAS:
+	DisabledGet=1
+
 Evas_Object *
 etk_widget_clip_get(widget)
 	Etk_Widget *	widget
@@ -6072,6 +6086,19 @@ Evas_Object *
 etk_editable_add(Evas * evas)
 	ALIAS:
 	Add=1
+
+void
+etk_editable_disabled_set(editable, disabled)
+	Evas_Object *	editable
+	Etk_Bool	disabled
+	ALIAS:
+	DisabledSet=1
+
+Etk_Bool
+etk_editable_disabled_get(editable)
+	Evas_Object *   editable
+	ALIAS:
+	DisabledGet=1
 
 void
 etk_editable_theme_set(editable, file, group)
