@@ -1,0 +1,27 @@
+* move file scanners to sub process and ipc to it
+* add dbus support for getting removable devs, getting signals on them being
+  plugged in etc.
+* add photo and audio playback
+* improve video playback
+* improve sexiness of menu animation and transitions
+* add ui to configure remote control/buttons
+* add mouse control
+* add ui to manage genres
+* add ui to change genre of a media file
+* add code for dvd playing
+* add code to detect dvd/media in drive
+* add code to configure drives
+* add code to add/del volumes via ui
+* add code to do ripping via mencoder
+* add code to select wallpaper separate from the theme
+* add code to select theme
+* fix rage thumb generation - if filename contains " chars the quoting will
+  break - as will $something etc. etc. - escape the filename
+* the icons in the default theme are shamelessly stolen from the interweeb
+  from mac osx/vista icon sets - they need to be replaced for licensing
+  reasons
+* remember last played time for video/audio and recently played list
+* support "pick up where you left off" code for playback
+* in general make rage fully rounded for handling video, audio and photos in
+  a very human, easy-to-use manner with style and pazazz
+* sex on a stick

@@ -1,0 +1,49 @@
+Rage 0.2.0
+
+This is a media center designed mostly for use on a television hooked up to
+your pc via a remote control. see the key controls at the end to make your
+remote send the right keystrokes - eventually this will be 100% configurable
+via the gui.
+
+This is a WORK IN PROGRESS - it is NOT COMPLETE. do not expect everything to
+work and do what you want.
+
+Configuration:
+
+mkdir ~/.rage
+
+edit ~/.rage/volumes
+
+1 line in this file is a path to a media volume to use for media. eg:
+
+/home/user/files/my_media
+/media/cdrom
+/media/nfs/server
+
+etc.
+
+just add lines per media volume to scan and add to your media library.
+
+Controls:
+
+Always:
+Escape - quit the program
+f - toggle fullscreen
+
+When in Menu mode:
+
+Up - select menu item above
+Down - select menu item below
+Left/BackSpace/s - go back a menu level
+Right/p/Return - go forward a menu level/activate selected item
+
+When playing a video:
+bracketleft - rewind a step
+bracketright - fast forward a step
+p - play
+space - pause
+Up/Down/Left/Right/Return/n/Prior/Next/0/1/2/3/4/5/6/7/8/9 - Reserved for DVD navigation
+k - audio volume down 10%
+l - audio volume up 10%
+m - toggle audio mute
+Home/s - stop playing video and go back to main menu

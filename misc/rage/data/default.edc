@@ -1,0 +1,1304 @@
+ fonts {
+   font: "Vera.ttf"   "Edje-Vera";
+   font: "VeraBd.ttf" "Edje-Vera-Bold";
+}
+
+images {
+   image: "bg.png" COMP;
+   image: "bg_over.png" COMP;
+   
+   image: "busy-1.png" COMP;
+   image: "busy-2.png" COMP;
+   image: "busy-3.png" COMP;
+   image: "busy-4.png" COMP;
+   image: "busy-5.png" COMP;
+   image: "busy-6.png" COMP;
+   image: "busy-7.png" COMP;
+   image: "busy-8.png" COMP;
+   image: "busy-9.png" COMP;
+   
+   image: "videos.png" COMP;
+   image: "audios.png" COMP;
+   image: "photos.png" COMP;
+   
+   image: "mitem.png" COMP;
+   image: "mitem2.png" COMP;
+   image: "miniover.png" COMP;
+}
+
+collections {
+   
+   group {
+      name: "background";
+      parts {
+	 part {
+	    name: "base";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       aspect_preference: NONE;
+	       aspect: 1.77777778 1.77777778;
+	       image {
+		  normal: "bg.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "over";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       min: 1920 240;
+	       max: 1920 240;
+	       align: 0.5 1.0;
+	       image {
+		  normal: "bg_over.png";
+	       }
+	    }
+	 }
+      }
+   }
+   
+   
+   group {
+      name: "video_container";
+      parts {
+	 part {
+	    name: "base";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       color: 0 0 0 0;
+	       rel1 {
+		  relative: 0.5 0.5;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 0.5 0.5;
+		  offset: -1 -1;
+	       }
+	    }
+	    description {
+	       state: "active0" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: -0.25 -0.25;
+	       }
+	       rel2 {
+		  relative: 1.25 1.25;
+	       }
+	    }
+	    description {
+	       state: "active1" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: 0.15 0.15;
+	       }
+	       rel2 {
+		  relative: 0.85 0.85;
+	       }
+	    }
+	    description {
+	       state: "active2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: -0.07 -0.07;
+	       }
+	       rel2 {
+		  relative: 1.07 1.07;
+	       }
+	    }
+	    description {
+	       state: "active3" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: 0.04 0.04;
+	       }
+	       rel2 {
+		  relative: 0.96 0.96;
+	       }
+	    }
+	    description {
+	       state: "active4" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: -0.02 -0.02;
+	       }
+	       rel2 {
+		  relative: 1.02 1.02;
+	       }
+	    }
+	    description {
+	       state: "active5" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+	       }
+	    }
+	 }
+	 part {
+	    name: "bg";
+	    type: RECT;
+	    mouse_events: 0;
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       color: 0 0 0 255;
+	       rel1 {
+		  to: "base";
+		  relative: 0.0 0.0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  to: "video";
+		  relative: 1.0 0.0;
+		  offset: -1 -1;
+	       }
+	    }
+	 }
+	 part {
+	    name: "bg2";
+	    type: RECT;
+	    mouse_events: 0;
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       color: 0 0 0 255;
+	       rel1 {
+		  to: "video";
+		  relative: 0.0 1.0;
+		  offset: -1 0;
+	       }
+	       rel2 {
+		  to: "base";
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	    }
+	 }
+	 part {
+	    name: "bg3";
+	    type: RECT;
+	    mouse_events: 0;
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       color: 0 0 0 255;
+	       rel1 {
+		  to_x: "base";
+		  to_y: "video";
+		  relative: 0.0 0.0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  to: "video";
+		  relative: 0.0 1.0;
+		  offset: -1 -1;
+	       }
+	    }
+	 }
+	 part {
+	    name: "bg4";
+	    type: RECT;
+	    mouse_events: 0;
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       color: 0 0 0 255;
+	       rel1 {
+		  to: "video";
+		  relative: 1.0 0.0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  to_x: "base";
+		  to_y: "video";
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	    }
+	 }
+	 part {
+	    name: "clip";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part {
+	    name: "video";
+            type: SWALLOW;
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "base";
+	       }
+	       rel2 {
+		  to: "base";
+	       }
+	    }
+	 }
+         part {
+	    name: "position";
+	    type: TEXT;
+	    effect: SOFT_OUTLINE;
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       align: 1.0 1.0;
+	       visible: 0;
+	       rel1 {
+		  relative: 1.0 1.0;
+		  offset:   -20 -20;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset:   -20 -20;
+	       }
+	       color: 255 255 255 0;
+	       color2: 0 0 0 0;
+	       text {
+		  text:     "0:00:00 / 0:00:00";
+		  font:     "Edje-Vera";
+		  size:     20;
+		  min:      1 1;
+		  align:    0.5 0.5;
+	       }
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	       color2: 0 0 0 255;
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name:    "go_active";
+	    signal:  "active";
+	    source:  "";
+	    action:  STATE_SET "active" 0.0;
+	    target:  "position";
+	    after:   "go_passive";
+	 }
+	 program {
+	    name:    "go_passive";
+	    signal:  "passive";                 
+	    source:  "";
+	    action:  STATE_SET "default" 0.0;
+	    transition: DECELERATE 5.0;
+	    target:  "position";
+	 }
+	 
+	 program {
+	    name:    "go_show0";
+	    signal:  "show";
+	    source:  "";
+	    action:  STATE_SET "active" 0.0;
+	    transition: DECELERATE 3.0;
+	    target:  "clip";
+	 }
+	 
+	 program {
+	    name:    "go_show1";
+	    signal:  "show";
+	    source:  "";
+	    action:  STATE_SET "active0" 0.0;
+	    transition: DECELERATE 0.5;
+	    target:  "base";
+	    after:   "go_show2";
+	 }
+	 program {
+	    name:    "go_show2";
+	    action:  STATE_SET "active1" 0.0;
+	    transition: SINUSOIDAL 0.2;
+	    target:  "base";
+	    after:   "go_show3";
+	 }
+	 program {
+	    name:    "go_show3";
+	    action:  STATE_SET "active2" 0.0;
+	    transition: SINUSOIDAL 0.3;
+	    target:  "base";
+	    after:   "go_show4";
+	 }
+	 program {
+	    name:    "go_show4";
+	    action:  STATE_SET "active3" 0.0;
+	    transition: SINUSOIDAL 0.4;
+	    target:  "base";
+	    after:   "go_show5";
+	 }
+	 program {
+	    name:    "go_show5";
+	    action:  STATE_SET "active4" 0.0;
+	    transition: SINUSOIDAL 0.5;
+	    target:  "base";
+	    after:   "go_show6";
+	 }
+	 program {
+	    name:    "go_show6";
+	    action:  STATE_SET "active5" 0.0;
+	    transition: SINUSOIDAL 0.6;
+	    target:  "base";
+	 }
+      }
+   }
+   
+   group {
+      name: "video_container_mini";
+      parts {
+	 part {
+	    name: "base";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       color: 0 0 0 0;
+	       rel1 {
+		  relative: 0.5 0.5;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 0.5 0.5;
+		  offset: -1 -1;
+	       }
+	    }
+	    description {
+	       state: "active0" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: -0.25 -0.25;
+	       }
+	       rel2 {
+		  relative: 1.25 1.25;
+	       }
+	    }
+	    description {
+	       state: "active1" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: 0.15 0.15;
+	       }
+	       rel2 {
+		  relative: 0.85 0.85;
+	       }
+	    }
+	    description {
+	       state: "active2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: -0.07 -0.07;
+	       }
+	       rel2 {
+		  relative: 1.07 1.07;
+	       }
+	    }
+	    description {
+	       state: "active3" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: 0.04 0.04;
+	       }
+	       rel2 {
+		  relative: 0.96 0.96;
+	       }
+	    }
+	    description {
+	       state: "active4" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: -0.02 -0.02;
+	       }
+	       rel2 {
+		  relative: 1.02 1.02;
+	       }
+	    }
+	    description {
+	       state: "active5" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+	       }
+	    }
+	 }
+	 part {
+	    name: "clip";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       color: 255 255 255 0;
+	       rel1 {
+		  relative: -10.0 -10.0;
+	       }
+	       rel2 {
+		  relative: 11.0 11.0;
+	       }
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part {
+	    name: "video";
+            type: SWALLOW;
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "base";
+	       }
+	       rel2 {
+		  to: "base";
+	       }
+	    }
+	 }
+	 part {
+	    name: "_ov";
+	    mouse_events: 0;
+            clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "miniover.png";
+		  border: 18 18 18 18;
+	       }
+	       rel1 {
+		  to: "video";
+		  offset:  -12 -12;
+	       }
+	       rel2 {
+		  to: "video";
+		  offset:  11 11;
+	       }
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name:    "go_show0";
+	    signal:  "show";
+	    source:  "";
+	    action:  STATE_SET "active" 0.0;
+	    transition: DECELERATE 1.0;
+	    target:  "clip";
+	 }
+	 
+	 program {
+	    name:    "go_show1";
+	    signal:  "show";
+	    source:  "";
+	    action:  STATE_SET "active0" 0.0;
+	    transition: DECELERATE 0.2;
+	    target:  "base";
+	    after:   "go_show2";
+	 }
+	 program {
+	    name:    "go_show2";
+	    action:  STATE_SET "active1" 0.0;
+	    transition: SINUSOIDAL 0.2;
+	    target:  "base";
+	    after:   "go_show3";
+	 }
+	 program {
+	    name:    "go_show3";
+	    action:  STATE_SET "active2" 0.0;
+	    transition: SINUSOIDAL 0.3;
+	    target:  "base";
+	    after:   "go_show4";
+	 }
+	 program {
+	    name:    "go_show4";
+	    action:  STATE_SET "active3" 0.0;
+	    transition: SINUSOIDAL 0.4;
+	    target:  "base";
+	    after:   "go_show5";
+	 }
+	 program {
+	    name:    "go_show5";
+	    action:  STATE_SET "active4" 0.0;
+	    transition: SINUSOIDAL 0.5;
+	    target:  "base";
+	    after:   "go_show6";
+	 }
+	 program {
+	    name:    "go_show6";
+	    action:  STATE_SET "active5" 0.0;
+	    transition: SINUSOIDAL 0.6;
+	    target:  "base";
+	 }
+      }
+   }
+   
+   group {
+      name: "mini";
+      parts {
+	 part {
+	    name: "base";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       color: 0 0 0 0;
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: -1.0 -1.0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	    }
+	 }
+	 part {
+	    name: "clip";
+	    type: RECT;
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	       rel1 {
+		  relative: -10.0 -10.0;
+	       }
+	       rel2 {
+		  relative: 11.0 11.0;
+	       }
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part {
+	    name: "video";
+            type: SWALLOW;
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "base";
+	       }
+	       rel2 {
+		  to: "base";
+	       }
+	    }
+	 }
+	 part {
+	    name: "over";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       color: 255 255 255 0;
+	       image {
+		  normal: "miniover.png";
+		  border: 18 18 18 18;
+	       }
+	       rel1 {
+		  to: "video";
+		  offset:  -12 -12;
+	       }
+	       rel2 {
+		  to: "video";
+		  offset:  11 11;
+	       }
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part {
+	    name: "busy";
+	    clip_to: "busy_clip";
+	    description {
+	       state: "default" 0.0;
+	       max: 32 32;
+	       aspect: 1.0 1.0;
+	       rel1 {
+		  to: "video";
+		  offset: 4 4;
+	       }
+	       rel2 {
+		  to: "video";
+		  offset: -3 -3;
+	       }
+	       image {
+		  normal: "busy-9.png";
+		  tween:  "busy-1.png";
+		  tween:  "busy-2.png";
+		  tween:  "busy-3.png";
+		  tween:  "busy-4.png";
+		  tween:  "busy-5.png";
+		  tween:  "busy-6.png";
+		  tween:  "busy-7.png";
+		  tween:  "busy-8.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "busy_clip";
+	    type: RECT;
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	       rel1 {
+		  to: "busy";
+	       }
+	       rel2 {
+		  to: "busy";
+	       }
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name:    "act";
+	    signal:  "select";
+	    source:  "on";
+	    action: STATE_SET "active" 0.0;
+	    transition: SINUSOIDAL 0.2;
+	    target:  "base";
+	 }
+	 program {
+	    name:    "act2";
+	    signal:  "select";
+	    source:  "off";
+	    action: STATE_SET "default" 0.0;
+	    transition: SINUSOIDAL 0.5;
+	    target:  "base";
+	 }
+	 program {
+	    name:    "gen";
+	    signal:  "generate";
+	    source:  "begin";
+	    action: STATE_SET "active" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target:  "busy_clip";
+	 }
+	 program {
+	    name: "gen2";
+	    signal: "generate";
+	    source: "begin";
+	    action: STATE_SET "default" 0.0;
+	    transition: LINEAR 0.5;
+	    target: "busy";
+	    after:  "gen2";
+	 }
+	 
+	 program {
+	    name:    "gen_end";
+	    signal:  "generate";
+	    source:  "done";
+	    action: STATE_SET "default" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target: "busy_clip";
+	    after: "gen_end2";
+	 }
+	 program {
+	    name: "gen_end2";
+	    action: ACTION_STOP;
+	    target: "gen2";
+	 }
+	 
+	 program {
+	    name:    "mini";
+	    signal:  "mini";
+	    source:  "begin";
+	    action:  STATE_SET "active" 0.0;
+	    transition: DECELERATE 1.0;
+	    target:  "over";
+	    target:  "clip";
+	 }
+      }
+   }
+   
+   group {
+      name: "layout";
+      parts {
+	 part {
+	    name: "background";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	    }
+	 }
+	 part {
+	    name: "menu";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	       align: 0.5 0.5;
+	       min: 0 100;
+	       rel1 {
+		  relative: 0.05 0.05;
+		  offset: 16 16;
+	       }
+	       rel2 {
+		  relative: 0.95 0.95;
+		  offset: -17 -17;
+	       }
+	    }
+	 }
+	 part {
+	    name: "video_preview";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	       align: 1.0 0.0;
+	       rel1 {
+		  relative: 0.75 0.05;
+	       }
+	       rel2 {
+		  relative: 0.95 0.25;
+	       }
+	    }
+	 }
+	 part {
+	    name: "video";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	    }
+	 }
+	 part {
+	    name: "video_menu";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	       align: 0.5 0.5;
+	       min: 0 100;
+	       rel1 {
+		  relative: 0.05 0.05;
+		  offset: 16 16;
+	       }
+	       rel2 {
+		  relative: 0.95 0.95;
+		  offset: -17 -17;
+	       }
+	    }
+	 }
+	 part {
+	    name: "busy";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	       min: 32 32;
+	       align: 0.0 0.0;
+	       rel1 {
+		  relative: 0.05 0.05;
+	       }
+	       rel2 {
+		  relative: 0.05 0.05;
+	       }
+	    }
+	 }
+	 part {
+	    name: "status";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	       min: 96 32;
+	       align: 1.0 0.0;
+	       rel1 {
+		  relative: 0.95 0.05;
+	       }
+	       rel2 {
+		  relative: 0.95 0.05;
+	       }
+	    }
+	 }
+      }
+   }
+   
+   group {
+      name: "busy";
+      parts {
+	 part {
+	    name: "base";
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       max: 32 32;
+	       aspect: 1.0 1.0;
+	       image {
+		  normal: "busy-9.png";
+		  tween:  "busy-1.png";
+		  tween:  "busy-2.png";
+		  tween:  "busy-3.png";
+		  tween:  "busy-4.png";
+		  tween:  "busy-5.png";
+		  tween:  "busy-6.png";
+		  tween:  "busy-7.png";
+		  tween:  "busy-8.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "clip";
+	    type: RECT;
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "active" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name: "go1";
+	    signal: "busy";
+	    source: "start";
+	    action: STATE_SET "active" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target:  "clip";
+	 }
+	 program {
+	    name: "go2";
+	    signal: "busy";
+	    source: "start";
+	    action: STATE_SET "default" 0.0;
+	    transition: LINEAR 0.5;
+	    target: "base";
+	    after:  "go2";
+	 }
+	 program {
+	    name: "stop1";
+	    signal: "busy";
+	    source: "stop";
+	    action: STATE_SET "default" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target: "clip";
+	    after: "stop2";
+	 }
+	 program {
+	    name: "stop2";
+	    action: ACTION_STOP;
+	    target: "go2";
+	 }
+      }
+   }
+   
+   group {
+      name: "status";
+      parts {
+	 part {
+	    name: "video_icon";
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       max: 32 32;
+	       aspect: 1.0 1.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+	       }
+	       rel2 {
+		  relative: 0.333 1.0;
+	       }
+	       image {
+		  normal: "videos.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "video_text";
+	    clip_to: "clip";
+	    type: TEXT;
+            effect: SOFT_SHADOW;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "video_icon";
+		  offset: 3 3;
+	       }
+	       rel2 {
+		  to: "video_icon";
+		  offset: 2 2;
+	       }
+	       text {
+		  text: "0";
+		  font: "Edje-Vera";
+		  size: 10;
+		  min: 1 1;
+		  align: 0.5 0.5;
+	       }
+               color: 255 255 255 255;
+               color3: 0 0 0 32;
+	    }
+	 }
+	 part {
+	    name: "audio_icon";
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       max: 32 32;
+	       aspect: 1.0 1.0;
+	       rel1 {
+		  relative: 0.333 0.0;
+	       }
+	       rel2 {
+		  relative: 0.666 1.0;
+	       }
+	       image {
+		  normal: "audios.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "audio_text";
+	    clip_to: "clip";
+	    type: TEXT;
+            effect: SOFT_SHADOW;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "audio_icon";
+		  offset: 3 3;
+	       }
+	       rel2 {
+		  to: "audio_icon";
+		  offset: 2 2;
+	       }
+	       text {
+		  text: "0";
+		  font: "Edje-Vera";
+		  size: 10;
+		  min: 1 1;
+		  align: 0.5 0.5;
+	       }
+               color: 255 255 255 255;
+               color3: 0 0 0 32;
+	    }
+	 }
+	 part {
+	    name: "photo_icon";
+	    clip_to: "clip";
+	    description {
+	       state: "default" 0.0;
+	       max: 32 32;
+	       aspect: 1.0 1.0;
+	       rel1 {
+		  relative: 0.666 0.0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+	       }
+	       image {
+		  normal: "photos.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "photo_text";
+	    clip_to: "clip";
+	    type: TEXT;
+            effect: SOFT_SHADOW;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "photo_icon";
+		  offset: 3 3;
+	       }
+	       rel2 {
+		  to: "photo_icon";
+		  offset: 2 2;
+	       }
+	       text {
+		  text: "0";
+		  font: "Edje-Vera";
+		  size: 10;
+		  min: 1 1;
+		  align: 0.5 0.5;
+	       }
+               color: 255 255 255 255;
+               color3: 0 0 0 32;
+	    }
+	 }
+	 part {
+	    name: "clip";
+	    type: RECT;
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "active" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name: "go1";
+	    signal: "busy";
+	    source: "start";
+	    action: STATE_SET "active" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target:  "clip";
+	 }
+	 program {
+	    name: "stop1";
+	    signal: "busy";
+	    source: "stop";
+	    action: STATE_SET "default" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target: "clip";
+	 }
+      }
+   }
+   
+   group {
+      name: "menu_item";
+      min: 800 40; // size hints for the ui
+      parts {
+	 part {
+	    name: "_bg0";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "mitem2.png";
+		  border: 18 18 18 18;
+	       }
+	       rel1 {
+		  to: "_bg";
+	       }
+	       rel2 {
+		  to: "_bg";
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part {
+	    name: "_bg";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "mitem.png";
+		  border: 18 18 18 18;
+	       }
+	       rel1 {
+		  offset:  -9 -9;
+	       }
+	       rel2 {
+		  offset:  10 10;
+	       }
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  offset:  -19 -19;
+	       }
+	       rel2 {
+		  offset:  20 20;
+	       }
+	    }
+	 }
+	 part {
+	    name: "label";
+	    type: TEXT;
+            effect: SOFT_OUTLINE;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to_x: "_item";
+		  to_y: "_bg";
+		  relative: 1.0 0.0;
+		  offset:  10 20;
+	       }
+	       rel2 {
+		  to_y: "_bg";
+		  to_x: "info";
+		  relative: 0.0 1.0;
+		  offset:  -12 -12;
+	       }
+	       text {
+		  text: "XXX";
+		  font: "Edje-Vera-Bold";
+		  fit: 0 1;
+//		  size: 24;
+//		  min: 1 1;
+		  align: 0.0 0.5;
+	       }
+               color: 235 245 255 120;
+               color2: 180 200 220 80;
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+               color: 255 255 255 255;
+               color2: 220 230 240 240;
+	    }
+	 }
+	 part {
+	    name: "info";
+	    type: TEXT;
+            effect: SOFT_OUTLINE;
+	    description {
+	       state: "default" 0.0;
+	       align: 1.0 0.5;
+	       rel1 {
+		  to: "_bg";
+		  relative: 1.0 0.0;
+		  offset:  -21 11;
+	       }
+	       rel2 {
+		  to: "_bg";
+		  relative: 1.0 1.0;
+		  offset:  -21 -12;
+	       }
+	       text {
+		  text: "XXX";
+		  font: "Edje-Vera-Bold";
+		  fit: 0 1;
+//		  size: 24;
+		  min: 1 0;
+		  align: 0.0 0.5;
+	       }
+               color: 235 245 255 120;
+               color2: 180 200 220 80;
+	    }
+	 }
+	 part {
+	    name: "_item";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       align: 0.0 0.5;
+	       aspect: 1.333333 1.333333;
+	       visible: 0;
+	       rel1 {
+		  to: "_bg";
+		  relative: 0.0 0.0;
+		  offset:  15 15;
+	       }
+	       rel2 {
+		  to: "_bg";
+		  relative: 0.0 1.0;
+		  offset:  15 -16;
+	       }
+	    }
+	 }
+	 part {
+	    name: "item";
+	    type: SWALLOW;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       align: 0.5 0.5;
+	       aspect: 1.333333 1.333333;
+	       rel1 {
+		  to: "_item";
+	       }
+	       rel2 {
+		  to: "_item";
+	       }
+	    }
+	    description {
+	       state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: -0.1 -0.1;
+	       }
+	       rel2 {
+		  relative: 1.1 1.1;
+	       }
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name: "go";
+	    signal: "select";
+	    source: "on";
+	    action: STATE_SET "active" 0.0;
+	    transition: DECELERATE 0.2;
+	    target:  "_bg";
+	    target:  "_bg0";
+	    target:  "label";
+	    target:  "item";
+	 }
+	 program {
+	    name: "stop";
+	    signal: "select";
+	    source: "off";
+	    action: STATE_SET "default" 0.0;
+	    transition: DECELERATE 0.5;
+	    target:  "_bg";
+	    target:  "_bg0";
+	    target:  "label";
+	    target:  "item";
+	 }
+      }
+   }
+   
+   
+   
+   
+   
+   
+   
+#define ICON(n, i) images {image: i LOSSY 96;} group { name: n; parts { part { name: "_"; mouse_events: 0; description { state: "default" 0.0; aspect: 1.0 1.0; image { normal: i; } } } } } 
+   ICON("icon/config", "config.png");
+   ICON("icon/video", "video.png"); 
+   ICON("icon/dvd", "dvd.png");
+   ICON("icon/audio", "audio.png");
+   ICON("icon/photo", "photo.png");
+   ICON("icon/update", "update.png");
+   ICON("icon/book", "book.png");
+   ICON("icon/favorites", "favorites.png");
+   ICON("icon/resume", "resume.png");
+   ICON("icon/bug", "bug.png");
+   ICON("icon/genre", "genre.png");
+}
