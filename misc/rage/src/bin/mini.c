@@ -57,7 +57,7 @@ mini_add(Evas_Object *parent, char *source)
 	buf[(i * 2) + 1] = chmap[(sha[i]     ) & 0xf];
      }
    buf[(i * 2)] = 0;
-   snprintf(file, sizeof(file), "%s/.rage/thumbs/%s.thm", getenv("HOME"), buf);
+   snprintf(file, sizeof(file), "%s/.rage/thumbs/%s.eet", getenv("HOME"), buf);
    mini->file = strdup(file);
    mini->source = strdup(source);
    evas_object_event_callback_add(o, EVAS_CALLBACK_FREE, _mini_free, mini);
