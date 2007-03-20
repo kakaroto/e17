@@ -76,21 +76,28 @@ e_dbus_signal_handler_free(E_DBus_Signal_Handler *sh)
 }
 
 static void
-cb_name_owner(void *data, DBusMessage *msg)
+cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
 {
-  DBusError err;
   const char *unique_name = NULL;
   E_DBus_Signal_Handler *sh;
 
   sh = data;
 
-  dbus_error_init(&err);
-  dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &unique_name, DBUS_TYPE_INVALID);
+  if (dbus_error_is_set(err))
+  {
+    if (ecore_list_goto(signal_handlers, sh))
+      ecore_list_remove(signal_handlers);
+    e_dbus_signal_handler_free(sh);
+    dbus_error_free(err);
+    return;
+  }
 
-  if (dbus_error_is_set(&err))
+  dbus_message_get_args(msg, err, DBUS_TYPE_STRING, &unique_name, DBUS_TYPE_INVALID);
+
+  if (dbus_error_is_set(err))
   {
     DEBUG(1, "Invalid signature in reply to name owner call\n");
-    dbus_error_free(&err);
+    dbus_error_free(err);
     return;
   }
 
@@ -101,18 +108,6 @@ cb_name_owner(void *data, DBusMessage *msg)
   }
   else DEBUG(1, "Error, no unique name?\n");
 
-}
-
-static void
-cb_name_owner_error(void *data, const char *error_name, const char *error_msg)
-{
-  E_DBus_Signal_Handler *sh;
-  sh = ecore_list_goto(signal_handlers, data);
-  if (sh)
-  {
-    ecore_list_remove(signal_handlers);
-    e_dbus_signal_handler_free(sh);
-  }
 }
 
 /**
@@ -169,7 +164,7 @@ e_dbus_signal_handler_add(DBusConnection *conn, const char *sender, const char *
 
   /* if we have a sender, and it is not a unique name, we need to know the unique name to match since signals will have the name owner as ther sender. */
   if (sender && sender[0] != ':')
-    e_dbus_get_name_owner(conn, sender, cb_name_owner, cb_name_owner_error, sh);
+    e_dbus_get_name_owner(conn, sender, cb_name_owner, sh);
 
   return sh;
 }

@@ -17,7 +17,7 @@
  * For method calls, the return structs use the following naming convention:
  *   E_Hal_<Interface>_<Method_Call_Name>_Return
  */
-typedef void (*E_Hal_Callback_Func) (void *user_data, void *method_return);
+typedef void (*E_Hal_Callback_Func) (void *user_data, void *method_return, DBusError *error);
 
 
 /* message return types */

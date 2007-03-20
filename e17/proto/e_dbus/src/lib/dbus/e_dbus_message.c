@@ -7,8 +7,6 @@ struct E_DBus_Pending_Call_Data
   int                     serial;
 
   E_DBus_Method_Return_Cb cb_return;
-  E_DBus_Error_Cb         cb_error;
-
   void                   *data;
 };
 
@@ -25,24 +23,29 @@ cb_pending(DBusPendingCall *pending, void *user_data)
     return;
   }
 
+  dbus_error_init(&err);
   msg = dbus_pending_call_steal_reply(pending);
   if (!msg)
   {
-    if (data->cb_error)
-      data->cb_error(data->data, "E.DBus.NoReply", "There was no reply to this method call.");
+    if (data->cb_return)
+    {
+      dbus_set_error(&err, "org.enlightenment.DBus.NoReply", "There was no reply to this method call.");
+      data->cb_return(data->data, NULL, &err);
+      dbus_error_free(&err);
+    }
     return;
   }
 
-  dbus_error_init(&err);
   if (dbus_set_error_from_message(&err, msg))
   {
-    if (data->cb_error)
-      data->cb_error(data->data, err.name, err.message);
+    if (data->cb_return)
+      data->cb_return(data->data, NULL, &err);
+    dbus_error_free(&err);
   }
   else
   {
     if (data->cb_return)
-      data->cb_return(data->data, msg);
+      data->cb_return(data->data, msg, &err);
   }
 
   dbus_message_unref(msg);
@@ -55,25 +58,23 @@ cb_pending(DBusPendingCall *pending, void *user_data)
  * @param conn The DBus connection
  * @param msg  The message to send
  * @param cb_return A callback function for returns (only used if @a msg is a method-call)
- * @param cb_error  A callback function for errors
  * @param timeout   A timeout in milliseconds, after which a synthetic error will be generated
  * @return a DBusPendingCall that can be used to cancel the current call
  */
 DBusPendingCall *
-e_dbus_message_send(DBusConnection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, E_DBus_Error_Cb cb_error, int timeout, void *data)
+e_dbus_message_send(DBusConnection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, int timeout, void *data)
 {
   DBusPendingCall *pending;
 
   if (!dbus_connection_send_with_reply(conn, msg, &pending, timeout))
     return NULL;
 
-  if (cb_return || cb_error)
+  if (cb_return)
   {
     E_DBus_Pending_Call_Data *pdata;
 
     pdata = calloc(1, sizeof(E_DBus_Pending_Call_Data));
     pdata->cb_return = cb_return;
-    pdata->cb_error = cb_error;
     pdata->data = data;
 
     dbus_pending_call_set_notify(pending, cb_pending, pdata, free);

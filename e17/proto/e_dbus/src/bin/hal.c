@@ -142,11 +142,18 @@ storage_remove(const char *udi)
 }
 
 static void
-cb_storage_properties(void *data, void *reply_data)
+cb_storage_properties(void *data, void *reply_data, DBusError *error)
 {
   Storage *s = data;
   E_Hal_Properties *ret = reply_data;
   int err = 0;
+
+  if (dbus_error_is_set(error)) 
+  {
+    // XXX handle...
+    dbus_error_free(error);
+    goto error;
+  }
 
   s->bus = e_hal_property_string_get(ret, "storage.bus", &err);
   if (err) goto error;
@@ -252,13 +259,20 @@ volume_remove(const char *udi)
 }
 
 static void
-cb_volume_properties(void *data, void *reply_data)
+cb_volume_properties(void *data, void *reply_data, DBusError *error)
 {
   Volume *v = data;
   Storage *s = NULL;
   E_Hal_Device_Get_All_Properties_Return *ret = reply_data;
   int err = 0;
   char *str = NULL;
+
+  if (dbus_error_is_set(error)) 
+  {
+    // XXX handle...
+    dbus_error_free(error);
+    goto error;
+  }
 
   /* skip volumes with volume.ignore set */
   if (e_hal_property_bool_get(ret, "volume.ignore", &err) || err)
@@ -346,12 +360,19 @@ volume_append(const char *udi)
 }
 
 static void
-cb_test_get_all_devices(void *user_data, void *reply_data)
+cb_test_get_all_devices(void *user_data, void *reply_data, DBusError *error)
 {
   E_Hal_Manager_Get_All_Devices_Return *ret = reply_data;
   char *device;
   
   if (!ret || !ret->strings) return;
+
+  if (dbus_error_is_set(error)) 
+  {
+    // XXX handle...
+    dbus_error_free(error);
+    return;
+  }
 
   ecore_list_goto_first(ret->strings);
   while ((device = ecore_list_next(ret->strings)))
@@ -361,12 +382,19 @@ cb_test_get_all_devices(void *user_data, void *reply_data)
 }
 
 static void
-cb_test_find_device_by_capability_storage(void *user_data, void *reply_data)
+cb_test_find_device_by_capability_storage(void *user_data, void *reply_data, DBusError *error)
 {
   E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
   char *device;
   
   if (!ret || !ret->strings) return;
+
+  if (dbus_error_is_set(error)) 
+  {
+    // XXX handle...
+    dbus_error_free(error);
+    return;
+  }
 
   ecore_list_goto_first(ret->strings);
   while ((device = ecore_list_next(ret->strings)))
@@ -374,12 +402,19 @@ cb_test_find_device_by_capability_storage(void *user_data, void *reply_data)
 }
 
 static void
-cb_test_find_device_by_capability_volume(void *user_data, void *reply_data)
+cb_test_find_device_by_capability_volume(void *user_data, void *reply_data, DBusError *error)
 {
   E_Hal_Manager_Find_Device_By_Capability_Return *ret = reply_data;
   char *device;
   
   if (!ret || !ret->strings) return;
+
+  if (dbus_error_is_set(error)) 
+  {
+    // XXX handle...
+    dbus_error_free(error);
+    return;
+  }
 
   ecore_list_goto_first(ret->strings);
   while ((device = ecore_list_next(ret->strings)))
@@ -387,26 +422,42 @@ cb_test_find_device_by_capability_volume(void *user_data, void *reply_data)
 }
 
 static void
-cb_is_storage(void *user_data, void *reply_data)
+cb_is_storage(void *user_data, void *reply_data, DBusError *error)
 {
   char *udi = user_data;
   E_Hal_Device_Query_Capability_Return *ret = reply_data;
+
+  if (dbus_error_is_set(error)) 
+  {
+    // XXX handle...
+    dbus_error_free(error);
+    goto error;
+  }
 
   if (ret && ret->boolean)
     storage_append(udi);
 
+error:
   free(udi);
 }
 
 static void
-cb_is_volume(void *user_data, void *reply_data)
+cb_is_volume(void *user_data, void *reply_data, DBusError *error)
 {
   char *udi = user_data;
   E_Hal_Device_Query_Capability_Return *ret = reply_data;
 
+  if (dbus_error_is_set(error)) 
+  {
+    // XXX handle...
+    dbus_error_free(error);
+    goto error;
+  }
+
   if (ret && ret->boolean)
     volume_append(udi);
 
+error:
   free(udi);
 }
 
@@ -452,18 +503,6 @@ cb_signal_new_capability(void *data, DBusMessage *msg)
     storage_append(udi);
 
 }
-
-static void
-cb_test_device_exists(void *user_data, void *reply_data)
-{
-  E_Hal_Manager_Device_Exists_Return *ret = reply_data;
-  char *device = user_data;
-  
-  if (!ret) return;
-
-  //printf("device %s: %s\n", ret->boolean ? "exists" : "does not exist", device); 
-}
-
 
 /*** gui ***/
 

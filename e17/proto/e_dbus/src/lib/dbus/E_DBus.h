@@ -17,8 +17,7 @@ typedef struct E_DBus_Object E_DBus_Object;
 typedef struct E_DBus_Signal_Handler E_DBus_Signal_Handler;
 
 typedef DBusMessage *(* E_DBus_Object_Method_Cb)(E_DBus_Object *obj, DBusMessage *message);
-typedef void (*E_DBus_Method_Return_Cb) (void *data, DBusMessage *msg);
-typedef void (*E_DBus_Error_Cb) (void *data, const char *error_name, const char *error_msg);
+typedef void (*E_DBus_Method_Return_Cb) (void *data, DBusMessage *msg, DBusError *error);
 typedef void (*E_DBus_Signal_Cb) (void *data, DBusMessage *msg);
 
 int e_dbus_init(void);
@@ -40,7 +39,7 @@ int e_dbus_object_method_add(E_DBus_Object *obj, const char *interface, const ch
 /* sending method calls */
 
 
-DBusPendingCall *e_dbus_message_send(DBusConnection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, E_DBus_Error_Cb cb_error, int timeout, void *data);
+DBusPendingCall *e_dbus_message_send(DBusConnection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, int timeout, void *data);
 
 
 /* signal receiving */
@@ -54,45 +53,45 @@ E_DBus_Signal_Handler *e_dbus_signal_handler_add(DBusConnection *conn, const cha
 void e_dbus_request_name(DBusConnection *conn, const char *name, 
                          unsigned int flags,
                          E_DBus_Method_Return_Cb cb_return,
-                         E_DBus_Error_Cb cb_error, void *data);
+                         void *data);
 void e_dbus_release_name(DBusConnection *conn, const char *name,
                          E_DBus_Method_Return_Cb cb_return,
-                         E_DBus_Error_Cb cb_error, void *data);
+                         void *data);
 
 void e_dbus_get_name_owner(DBusConnection *conn, const char *name,
                            E_DBus_Method_Return_Cb cb_return,
-                           E_DBus_Error_Cb cb_error, void *data);
+                           void *data);
 void e_dbus_list_names(DBusConnection *conn,
                        E_DBus_Method_Return_Cb cb_return,
-                       E_DBus_Error_Cb cb_error, void *data);
+                       void *data);
 void e_dbus_list_activatable_names(DBusConnection *conn,
                                    E_DBus_Method_Return_Cb cb_return,
-                                   E_DBus_Error_Cb cb_error, void *data);
+                                   void *data);
 void e_dbus_name_has_owner(DBusConnection *conn, const char *name,
                            E_DBus_Method_Return_Cb cb_return,
-                           E_DBus_Error_Cb cb_error, void *data);
+                           void *data);
 void e_dbus_start_service_by_name(DBusConnection *conn, const char *name,
                                   E_DBus_Method_Return_Cb cb_return,
-                                  E_DBus_Error_Cb cb_error, void *data);
+                                  void *data);
 
 /* standard methods calls on objects */
 void e_dbus_peer_ping(DBusConnection *conn, const char *destination,
                       const char *path, E_DBus_Method_Return_Cb cb_return,
-                      E_DBus_Error_Cb cb_error, void *data);
+                      void *data);
 void e_dbus_peer_get_machine_id(DBusConnection *conn,
                                 const char *destination, const char *path,
                                 E_DBus_Method_Return_Cb cb_return,
-                                E_DBus_Error_Cb cb_error, void *data);
+                                void *data);
 void e_dbus_properties_get(DBusConnection *conn, const char *destination,
                            const char *path, const char *interface,
                            const char *property,
                            E_DBus_Method_Return_Cb cb_return,
-                           E_DBus_Error_Cb cb_error, void *data);
+                           void *data);
 void e_dbus_properties_set(DBusConnection *conn, const char *destination,
                            const char *path, const char *interface,
                            const char *property, int value_type,
                            void *value, E_DBus_Method_Return_Cb cb_return,
-                           E_DBus_Error_Cb cb_error, void *data);
+                           void *data);
 
 
 

@@ -6,21 +6,21 @@
  */
 
 void
-e_dbus_peer_ping(DBusConnection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, E_DBus_Error_Cb cb_error, void *data)
+e_dbus_peer_ping(DBusConnection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
   msg = dbus_message_new_method_call(destination, path, "org.freedesktop.DBus.Peer", "Ping");
-  e_dbus_message_send(conn, msg, cb_return, cb_error, -1, data);
+  e_dbus_message_send(conn, msg, cb_return, -1, data);
 }
 
 void
-e_dbus_peer_get_machine_id(DBusConnection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, E_DBus_Error_Cb cb_error, void *data)
+e_dbus_peer_get_machine_id(DBusConnection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
   msg = dbus_message_new_method_call(destination, path, "org.freedesktop.DBus.Peer", "GetMachineId");
-  e_dbus_message_send(conn, msg, cb_return, cb_error, -1, data);
+  e_dbus_message_send(conn, msg, cb_return, -1, data);
 }
 
 
@@ -33,17 +33,16 @@ e_dbus_peer_get_machine_id(DBusConnection*conn, const char *destination, const c
  * @param interface the interface name of the property
  * @param property the name of the property
  * @param cb_return a callback for a successful return
- * @param cb_error a callback for errors
  * @param data data to pass to the callbacks
  */
 void
-e_dbus_properties_get(DBusConnection*conn, const char *destination, const char *path, const char *interface, const char *property, E_DBus_Method_Return_Cb cb_return, E_DBus_Error_Cb cb_error, void *data)
+e_dbus_properties_get(DBusConnection*conn, const char *destination, const char *path, const char *interface, const char *property, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
   msg = dbus_message_new_method_call(destination, path, "org.freedesktop.DBus.Properties", "Get");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &interface, DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
-  e_dbus_message_send(conn, msg, cb_return, cb_error, -1, data);
+  e_dbus_message_send(conn, msg, cb_return, -1, data);
 }
 
 /**
@@ -57,18 +56,24 @@ e_dbus_properties_get(DBusConnection*conn, const char *destination, const char *
  * @param value_type the type of the property's value
  * @param value a pointer to the value
  * @param cb_return a callback for a successful return
- * @param cb_error a callback for errors
  * @param data data to pass to the callbacks
  */
 void
-e_dbus_properties_set(DBusConnection*conn, const char *destination, const char *path, const char *interface, const char *property, int value_type, void *value, E_DBus_Method_Return_Cb cb_return, E_DBus_Error_Cb cb_error, void *data)
+e_dbus_properties_set(DBusConnection*conn, const char *destination, const char *path, const char *interface, const char *property, int value_type, void *value, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
   DBusMessageIter iter, sub;
+  DBusError err;
 
   if (!dbus_type_is_basic(value_type)) 
   {
-    cb_error(data, "org.enlightenment.DBus.InvalidType", "Only basic types may be set using e_dbus_properties_set()");
+    if (cb_return)
+    {
+      dbus_error_init(&err);
+      dbus_set_error(&err, "org.enlightenment.DBus.InvalidType", "Only basic types may be set using e_dbus_properties_set()");
+      cb_return(data, NULL, &err);
+
+    }
     return;
   }
 
@@ -80,5 +85,5 @@ e_dbus_properties_set(DBusConnection*conn, const char *destination, const char *
   dbus_message_iter_append_basic(&sub, value_type, &value);
   dbus_message_iter_close_container(&iter, &sub);
 
-  e_dbus_message_send(conn, msg, cb_return, cb_error, -1, data);
+  e_dbus_message_send(conn, msg, cb_return, -1, data);
 }

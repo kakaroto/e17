@@ -6,7 +6,7 @@ INCLUDES =  \
 
 lib_LTLIBRARIES = libehal.la
 
-include_HEADERS = E_Hal.h
+include_HEADERS = E_Hal.h e_hal_private.h
 
 libehal_la_SOURCES = \
 E_Hal.h \
