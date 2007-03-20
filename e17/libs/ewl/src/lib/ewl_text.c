@@ -3029,7 +3029,7 @@ ewl_text_char_is_legal_utf8(const char *c)
 			 * 	Although a character sequences of the length 5 or 6
 			 * 	is possible it is not a legal utf8 character
 			 */
-			return FALSE;
+			DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -3448,7 +3448,7 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
 	cursor = evas_object_textblock_cursor_new(t->textblock);
 	evas_textblock_cursor_node_first(cursor);
 
-	while(1)
+	while (TRUE)
 	{
 		txt = evas_textblock_cursor_node_format_get(cursor);
 
@@ -5819,7 +5819,7 @@ ewl_text_context_release(Ewl_Text_Context *tx)
 	DCHECK_PARAM_PTR("tx", tx);
 
 	tx->ref_count --;
-	if (tx->ref_count > 0) return;
+	if (tx->ref_count > 0) DRETURN(DLEVEL_STABLE);
 
 	ecore_hash_remove(context_hash, tx);
 
