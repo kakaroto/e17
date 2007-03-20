@@ -389,12 +389,12 @@ emphasis_player_info_set(Emphasis_Player_Gui *player,
                    "</left_margin>",
                    title, artist, album);
            asprintf(&info_textblock,
-                    "<b><font size=16>%s </font size></b>"
+                    "<b><font size=16>%s </font></b>"
                     "\n\n"
-                    "<font size=11><i>by</i></font size> "
-                    "<font size=13>%s </font size>\n"
-                    "<font size=11><i>in</i></font size> "
-                    "<font size=13>%s </font size> ",
+                    "<font size=11><i>by</i></font> "
+                    "<font size=13>%s </font>\n"
+                    "<font size=11><i>in</i></font> "
+                    "<font size=13>%s </font> ",
                     title, artist, album);
         }
       else
@@ -411,12 +411,12 @@ emphasis_player_info_set(Emphasis_Player_Gui *player,
                    "</left_margin>",
                    title, artist, album, msg);
           asprintf(&info_textblock,
-                   "<b><font size=16>%s </font size></b>\n"
-                   "<font size=10>   (%s)</font size>\n"
-                   "<font size=11><i>by</i></font size> "
-                   "<font size=13>%s </font size>\n"
-                   "<font size=11><i>in</i></font size> "
-                   "<font size=13>%s </font size>",
+                   "<b><font size=16>%s </font></b>\n"
+                   "<font size=10>   (%s)</font>\n"
+                   "<font size=11><i>by</i></font> "
+                   "<font size=13>%s </font>\n"
+                   "<font size=11><i>in</i></font> "
+                   "<font size=13>%s </font>",
                    title, msg, artist, album);
         }
       
