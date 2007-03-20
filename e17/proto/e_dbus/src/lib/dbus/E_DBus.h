@@ -31,9 +31,6 @@ void e_dbus_connection_close(DBusConnection *conn);
 
 int e_dbus_connection_setup(DBusConnection *conn);
 
-/* bus methods */
-void e_dbus_get_name_owner(DBusConnection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, E_DBus_Error_Cb cb_error, void *data);
-
 /* receiving method calls */
 E_DBus_Object *e_dbus_object_add(DBusConnection *conn, const char *object_path, void *data);
 void e_dbus_object_free(E_DBus_Object *obj);
@@ -51,6 +48,53 @@ DBusPendingCall *e_dbus_message_send(DBusConnection *conn, DBusMessage *msg, E_D
 int  e_dbus_signal_init(void);
 void e_dbus_signal_shutdown(void);
 E_DBus_Signal_Handler *e_dbus_signal_handler_add(DBusConnection *conn, const char *sender, const char *path, const char *interface, const char *member, E_DBus_Signal_Cb cb_signal, void *data);
+
+/* standard dbus method calls */
+
+void e_dbus_request_name(DBusConnection *conn, const char *name, 
+                         unsigned int flags,
+                         E_DBus_Method_Return_Cb cb_return,
+                         E_DBus_Error_Cb cb_error, void *data);
+void e_dbus_release_name(DBusConnection *conn, const char *name,
+                         E_DBus_Method_Return_Cb cb_return,
+                         E_DBus_Error_Cb cb_error, void *data);
+
+void e_dbus_get_name_owner(DBusConnection *conn, const char *name,
+                           E_DBus_Method_Return_Cb cb_return,
+                           E_DBus_Error_Cb cb_error, void *data);
+void e_dbus_list_names(DBusConnection *conn,
+                       E_DBus_Method_Return_Cb cb_return,
+                       E_DBus_Error_Cb cb_error, void *data);
+void e_dbus_list_activatable_names(DBusConnection *conn,
+                                   E_DBus_Method_Return_Cb cb_return,
+                                   E_DBus_Error_Cb cb_error, void *data);
+void e_dbus_name_has_owner(DBusConnection *conn, const char *name,
+                           E_DBus_Method_Return_Cb cb_return,
+                           E_DBus_Error_Cb cb_error, void *data);
+void e_dbus_start_service_by_name(DBusConnection *conn, const char *name,
+                                  E_DBus_Method_Return_Cb cb_return,
+                                  E_DBus_Error_Cb cb_error, void *data);
+
+/* standard methods calls on objects */
+void e_dbus_peer_ping(DBusConnection *conn, const char *destination,
+                      const char *path, E_DBus_Method_Return_Cb cb_return,
+                      E_DBus_Error_Cb cb_error, void *data);
+void e_dbus_peer_get_machine_id(DBusConnection *conn,
+                                const char *destination, const char *path,
+                                E_DBus_Method_Return_Cb cb_return,
+                                E_DBus_Error_Cb cb_error, void *data);
+void e_dbus_properties_get(DBusConnection *conn, const char *destination,
+                           const char *path, const char *interface,
+                           const char *property,
+                           E_DBus_Method_Return_Cb cb_return,
+                           E_DBus_Error_Cb cb_error, void *data);
+void e_dbus_properties_set(DBusConnection *conn, const char *destination,
+                           const char *path, const char *interface,
+                           const char *property, int value_type,
+                           void *value, E_DBus_Method_Return_Cb cb_return,
+                           E_DBus_Error_Cb cb_error, void *data);
+
+
 
 #define DEBUG_LVL 0
 #define DEBUG(lvl, ...) if (lvl <= DEBUG_LVL) printf(__VA_ARGS__)

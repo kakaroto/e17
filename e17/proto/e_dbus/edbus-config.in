@@ -42,11 +42,11 @@ while test $# -gt 0; do
       if test @prefix@/include != /usr/include ; then
         includes="-I@prefix@/include"
       fi
-      echo $includes @EVAS_CFLAGS@ @ECORE_CFLAGS@ -I$prefix/include
+      echo $includes @ECORE_CFLAGS@ -I$prefix/include
       ;;
     --libs)
       libdirs=-L@libdir@
-      echo $libdirs -ledbus @ECORE_LIBS@ @EVAS_LIBS@ | sed 's/ /\n/g' | sort | uniq | sed 'H;$!d;${x;s/\n/ /g;s/^ //}'
+      echo $libdirs -ledbus @ECORE_LIBS@ | sed 's/ /\n/g' | sort | uniq | sed 'H;$!d;${x;s/\n/ /g;s/^ //}'
       ;;
     *)
       echo "${usage}" 1>&2

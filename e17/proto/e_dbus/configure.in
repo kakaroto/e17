@@ -1,6 +1,6 @@
 AC_PREREQ(2.59)
 AC_INIT([e_dbus], [0.1], [rephorm@rephorm.com])
-AM_INIT_AUTOMAKE([1.9 foreign])
+AM_INIT_AUTOMAKE([1.6 foreign])
 
 AC_PROG_CC
 AM_ENABLE_SHARED

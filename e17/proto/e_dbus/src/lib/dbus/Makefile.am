@@ -12,6 +12,7 @@ libedbus_la_SOURCES = \
 	e_dbus.c \
 	e_dbus_message.c \
 	e_dbus_methods.c \
+	e_dbus_interfaces.c \
 	e_dbus_object.c \
 	e_dbus_signal.c
 
