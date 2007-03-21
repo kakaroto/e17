@@ -938,7 +938,7 @@ static void _etk_image_load(Etk_Image *image)
          
          if (image->source == ETK_IMAGE_STOCK)
          {
-            file = etk_theme_icon_get();
+            file = etk_theme_icon_path_get();
             key = etk_stock_key_get(image->info.stock.id, image->info.stock.size);
          }
          else

@@ -97,7 +97,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
       return;
    
    etk_iconbox_clear(iconbox);
-   etk_iconbox_append(iconbox, etk_theme_icon_get(), "actions/go-up_48", "..");
+   etk_iconbox_append(iconbox, etk_theme_icon_path_get(), "actions/go-up_48", "..");
    
    /* First, add the folders */
    ecore_list_goto_first(files);
@@ -110,7 +110,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
       if (!ecore_file_is_dir(file_path))
          continue;
       
-      etk_iconbox_append(iconbox, etk_theme_icon_get(), "places/folder_48", filename);
+      etk_iconbox_append(iconbox, etk_theme_icon_path_get(), "places/folder_48", filename);
    }
    
    /* Then the files */
@@ -140,7 +140,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
          }
       }
       
-      etk_iconbox_append(iconbox, etk_theme_icon_get(), icon ? icon : "mimetypes/text-x-generic_48", filename);
+      etk_iconbox_append(iconbox, etk_theme_icon_path_get(), icon ? icon : "mimetypes/text-x-generic_48", filename);
    }
    
    ecore_list_destroy(files);

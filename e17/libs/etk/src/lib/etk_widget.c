@@ -500,8 +500,8 @@ void etk_widget_theme_group_set(Etk_Widget *widget, const char *theme_group)
  * @brief Gets the full theme-group of the widget
  * @param widget a widget
  * @return Returns the full theme-group of the widget
- * @note The returned value may be different from the theme-group set with etk_widget_theme_group_set(): if
- * @a widget has a theme-parent, this will be taken into account. For example, if @a widget is a row, and
+ * @note The returned value may be different from the theme-group set with etk_widget_theme_group_set() because
+ * if @a widget has a theme-parent, it will be taken into account. For example, if @a widget is a row, and
  * the theme-parent of the widget is a tree, the returned value will be "tree/row", and not just "row". @n
  * To get the value set with etk_widget_theme_group_set(), you can use
  * etk_object_properties_get(ETK_OBJECT(widget), "theme_group", &theme_group);

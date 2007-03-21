@@ -3,60 +3,88 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 #include <Ecore_File.h>
 #include <Edje.h>
 #include "etk_widget.h"
 #include "etk_config.h"
 #include "config.h"
 
+/**
+ * @addtogroup Etk_Theme
+ * @{
+ */
+
 static char *_etk_theme_find(const char *subdir, const char *file);
+
+static int _etk_theme_default_colors[ETK_COLOR_NUM_COLORS][4] =
+{
+   { 0, 0, 0, 255 },
+   { 255, 255, 255, 255 },
+   { 158, 158, 0, 255 },
+   { 255, 255, 255, 255 },
+   { 205, 0, 0, 255 },
+   { 255, 255, 255, 255 },
+   { 0, 0, 205, 255 },
+   { 255, 255, 255, 255 },
+   { 0, 140, 0, 255 },
+   { 255, 255, 255, 255 },
+   { 111, 79, 143, 255 },
+   { 255, 255, 255, 255 },
+   { 205, 0, 205, 255 },
+   { 255, 255, 255, 255 },
+   { 145, 87, 26, 255 },
+   { 255, 255, 255, 255 },
+   { 136, 136, 136, 255 },
+   { 255, 255, 255, 255 }
+};
+
+static char *_etk_theme_color_names[ETK_COLOR_NUM_COLORS] =
+{
+   "etk/color/foreground",
+   "etk/color/background",
+   "etk/color/important/fg",
+   "etk/color/important/bg",
+   "etk/color/warning/fg",
+   "etk/color/warning/bg",
+   "etk/color/info/fg",
+   "etk/color/info/bg",
+   "etk/color/default1/fg",
+   "etk/color/default1/bg",
+   "etk/color/default2/fg",
+   "etk/color/default2/bg",
+   "etk/color/default3/fg",
+   "etk/color/default3/bg",
+   "etk/color/default4/fg",
+   "etk/color/default4/bg",
+   "etk/color/default5/fg",
+   "etk/color/default5/bg"
+};
 
 static char *_etk_theme_widget_default = NULL;
 static char *_etk_theme_widget_current = NULL;
 static char *_etk_theme_icon_default = NULL;
 static char *_etk_theme_icon_current = NULL;
-static char *_etk_theme_colors[ETK_COLOR_NUM_COLORS];
 
 /**
  * @internal
- * @brief Initializes the themz system of Etk
+ * @brief Initializes the theme-system of Etk
  */
-void etk_theme_init()
+void etk_theme_init(void)
 {
    _etk_theme_widget_default = _etk_theme_find("themes", "default");
    _etk_theme_icon_default = _etk_theme_find("icons", "default");
    
-   etk_theme_widget_set(etk_config_widget_theme_get());
-   etk_theme_icon_set("default");
-
-   _etk_theme_colors[ETK_COLOR_FOREGROUND] = strdup("etk/color/foreground");
-   _etk_theme_colors[ETK_COLOR_BACKGROUND] = strdup("etk/color/background");
-   _etk_theme_colors[ETK_COLOR_IMPORTANT_FG] = strdup("etk/color/important/fg");
-   _etk_theme_colors[ETK_COLOR_IMPORTANT_BG] = strdup("etk/color/important/bg");
-   _etk_theme_colors[ETK_COLOR_WARNING_FG] = strdup("etk/color/warning/fg");
-   _etk_theme_colors[ETK_COLOR_WARNING_BG] = strdup("etk/color/warning/bg");
-   _etk_theme_colors[ETK_COLOR_INFO_FG] = strdup("etk/color/info/fg");
-   _etk_theme_colors[ETK_COLOR_INFO_BG] = strdup("etk/color/info/bg");
-   _etk_theme_colors[ETK_COLOR_DEFAULT1_FG] = strdup("etk/color/default1/fg");
-   _etk_theme_colors[ETK_COLOR_DEFAULT1_BG] = strdup("etk/color/default1/bg");
-   _etk_theme_colors[ETK_COLOR_DEFAULT2_FG] = strdup("etk/color/default2/fg");
-   _etk_theme_colors[ETK_COLOR_DEFAULT2_BG] = strdup("etk/color/default2/bg");
-   _etk_theme_colors[ETK_COLOR_DEFAULT3_FG] = strdup("etk/color/default3/fg");
-   _etk_theme_colors[ETK_COLOR_DEFAULT3_BG] = strdup("etk/color/default3/bg");
-   _etk_theme_colors[ETK_COLOR_DEFAULT4_FG] = strdup("etk/color/default4/fg");
-   _etk_theme_colors[ETK_COLOR_DEFAULT4_BG] = strdup("etk/color/default4/bg");
-   _etk_theme_colors[ETK_COLOR_DEFAULT5_FG] = strdup("etk/color/default5/fg");
-   _etk_theme_colors[ETK_COLOR_DEFAULT5_BG] = strdup("etk/color/default5/bg");
+   etk_theme_widget_set_from_name(etk_config_widget_theme_get());
+   etk_theme_icon_set_from_name("default");
 }
 
 /**
  * @internal
  * @brief Shutdowns the theme system of Etk
  */
-void etk_theme_shutdown()
+void etk_theme_shutdown(void)
 {
-   int i;
-
    free(_etk_theme_widget_default);
    free(_etk_theme_widget_current);
    free(_etk_theme_icon_default);
@@ -66,154 +94,252 @@ void etk_theme_shutdown()
    _etk_theme_widget_current = NULL;
    _etk_theme_icon_default = NULL;
    _etk_theme_icon_current = NULL;
+}
 
-   for (i = 0; i < ETK_COLOR_NUM_COLORS; i++)
+/**
+ * @brief Sets the theme that will be used by new widgets, from its path
+ * @param theme_path the path of the widget-theme to use
+ * @return Returns ETK_TRUE if the theme has been found, or ETK_FALSE otherwise
+ */
+Etk_Bool etk_theme_widget_set_from_path(const char *theme_path)
+{
+   if (!theme_path)
+      return ETK_FALSE;
+   
+   if (ecore_file_exists(theme_path))
    {
-      if (_etk_theme_colors[i])
-	 free(_etk_theme_colors[i]);
+      free(_etk_theme_widget_current);
+      _etk_theme_widget_current = strdup(theme_path);
+      return ETK_TRUE;
    }
+   return ETK_FALSE;
+}
+
+/**
+ * @brief Sets the theme that will be used by new widgets, from its name
+ * @param theme_name the name of the widget-theme to use
+ * @return Returns ETK_TRUE if the theme has been found, or ETK_FALSE otherwise
+ */
+Etk_Bool etk_theme_widget_set_from_name(const char *theme_name)
+{
+   return etk_theme_widget_set_from_path(etk_theme_widget_find(theme_name));
 }
 
 /**
  * @brief Gets the path of the current widget-theme file of Etk
  * @return Returns the path of the current widget-theme file
  */
-const char *etk_theme_widget_get()
+const char *etk_theme_widget_path_get(void)
 {
    return _etk_theme_widget_current;
 }
 
 /**
- * @brief Sets the theme that will be used by new widgets
- * @param theme_name the name of the widget-theme to use
+ * @brief Gets the name of the current widget-theme file of Etk
+ * @return Returns the name of the current widget-theme file, or NULL on failure
+ * @note The returned path will have to be freed with free()
+ */
+char *etk_theme_widget_name_get(void)
+{
+   const char *start, *end;
+   char *name;
+   int len;
+   
+   if (!_etk_theme_widget_current)
+      return NULL;
+   
+   if (!(start = strrchr(_etk_theme_widget_current, '/')))
+      start = _etk_theme_widget_current;
+   else
+      start++;
+   
+   if ((end = strrchr(start, '.')))
+   {
+      len = end - start;
+      name = malloc(len + 1);
+      strncpy(name, start, len);
+      name[len] = '\0';
+      return name;
+   }
+   
+   return NULL;
+}
+
+/**
+ * @brief Gets the list of the available widget-themes. The list contains the names of the themes, not the paths
+ * @return Returns an Evas_List of the available widget-themes
+ * @note The returned list should be free with etk_theme_available_themes_free()
+ */
+Evas_List *etk_theme_widget_available_themes_get(void)
+{
+   Ecore_List *files;
+   Evas_List *themes = NULL;
+   char path[2][PATH_MAX];
+   char *home;
+   char *file;
+   int i;
+   
+   if ((home = getenv("HOME")))
+      snprintf(path[0], PATH_MAX, "%s/.e/etk/themes/", home);
+   else
+      path[0][0] = '\0';
+   snprintf(path[1], PATH_MAX, PACKAGE_DATA_DIR "/themes/");
+   
+   for (i = 0; i < 2; i++)
+   {
+      files = ecore_file_ls(path[i]);
+      if (files)
+      {
+         ecore_list_goto_first(files);
+         while ((file = ecore_list_next(files)))
+            themes = evas_list_append(themes, ecore_file_strip_ext(file));
+         ecore_list_destroy(files);
+      }
+   }
+   
+   return themes;
+}
+
+/**
+ * @brief Finds the path of a widget-theme file, from its name
+ * @param theme_name the name of the theme to find
+ * @return Returns the path of the corresponding widget-theme file,
+ * or NULL if there is no corresponding theme
+ * @note The returned value will have to be freed with free()
+ */
+char *etk_theme_widget_find(const char *theme_name)
+{
+   return _etk_theme_find("themes", theme_name);
+}
+
+/**
+ * @brief Sets the theme that will be used by new icons, from its path
+ * @param theme_path the path of the icon-theme to use
  * @return Returns ETK_TRUE if the theme has been found, or ETK_FALSE otherwise
  */
-Etk_Bool etk_theme_widget_set(const char *theme_name)
+Etk_Bool etk_theme_icon_set_from_path(const char *theme_path)
 {
-   char *path;
-   
-   if (!theme_name)
+   if (!theme_path)
       return ETK_FALSE;
    
-   if ((path = _etk_theme_find("themes", theme_name)))
+   if (ecore_file_exists(theme_path))
    {
-      free(_etk_theme_widget_current);
-      _etk_theme_widget_current = path;
+      free(_etk_theme_icon_current);
+      _etk_theme_icon_current = strdup(theme_path);
       return ETK_TRUE;
    }
    return ETK_FALSE;
 }
 
 /**
- * @brief Gets the list of available widget-themes
- * @return Returns an Evas_List of available widget-themes.
- * The items of the list will have to be freed with free(), and the list will have to be freed with evas_list_free()
+ * @brief Sets the theme that will be used by new icons, from its name
+ * @param theme_name the name of the icon-theme to use
+ * @return Returns ETK_TRUE if the theme has been found, or ETK_FALSE otherwise
  */
-Evas_List *etk_theme_widget_available_themes_get()
+Etk_Bool etk_theme_icon_set_from_name(const char *theme_name)
 {
-   Ecore_List *files;
-   Evas_List *themes = NULL;
-   char *home;
-   char *path;
-   char *file;
-   
-   if ((home = getenv("HOME")))
-   {
-      /* TODO: etk_config_dir_get? */
-      path = malloc(strlen(home) + strlen("/.e/etk/themes/") + 1);
-      sprintf(path, "%s/.e/etk/themes/", home);
-      files = ecore_file_ls(path);
-      if (files)
-      {
-	 ecore_list_goto_first(files);
-	 while ((file = ecore_list_next(files)))      
-	    themes = evas_list_append(themes, ecore_file_strip_ext(file));
-         ecore_list_destroy(files);
-      }
-      free(path);
-   }
-   
-   files = ecore_file_ls(PACKAGE_DATA_DIR "/themes/");
-   if (files)
-   {
-      ecore_list_goto_first(files);
-      while ((file = ecore_list_next(files)))
-	 themes = evas_list_append(themes, ecore_file_strip_ext(file));
-      ecore_list_destroy(files);
-   }
-   
-   return themes;
+   return etk_theme_icon_set_from_path(etk_theme_icon_find(theme_name));
 }
 
 /**
  * @brief Gets the path of the current icon-theme file of Etk
  * @return Returns the path of the current icon-theme file
  */
-const char *etk_theme_icon_get()
+const char *etk_theme_icon_path_get(void)
 {
    return _etk_theme_icon_current;
 }
 
 /**
- * @brief Sets the theme that will be used by new icons
- * @param theme_name the name of the icon-theme to use
- * @return Returns ETK_TRUE if the theme has been found, or ETK_FALSE otherwise
+ * @brief Gets the name of the current icon-theme file of Etk
+ * @return Returns the name of the current icon-theme file, or NULL on failure
+ * @note The returned path will have to be freed with free()
  */
-Etk_Bool etk_theme_icon_set(const char *theme_name)
+char *etk_theme_icon_name_get(void)
 {
-   char *path;
+   const char *start, *end;
+   char *name;
+   int len;
    
-   if (!theme_name)
-      return ETK_FALSE;
+   if (!_etk_theme_icon_current)
+      return NULL;
    
-   if ((path = _etk_theme_find("icons", theme_name)))
+   if (!(start = strrchr(_etk_theme_icon_current, '/')))
+      start = _etk_theme_icon_current;
+   else
+      start++;
+   
+   if ((end = strrchr(start, '.')))
    {
-      free(_etk_theme_icon_current);
-      _etk_theme_icon_current = path;
-      return ETK_TRUE;
+      len = end - start;
+      name = malloc(len + 1);
+      strncpy(name, start, len);
+      name[len] = '\0';
+      return name;
    }
-   return ETK_FALSE;
+   
+   return NULL;
 }
 
 /**
- * @brief Gets the list of available icon-themes
- * @return Returns an Evas_List of available icon-themes.
- * The items of the list will have to be freed with free(), and the list will have to be freed with evas_list_free()
+ * @brief Gets the list of the available icon-themes. The list contains the names of the themes, not the paths
+ * @return Returns an Evas_List of the available icon-themes
+ * @note The returned list should be free with etk_theme_available_themes_free()
  */
-Evas_List *etk_theme_icon_available_themes_get()
+Evas_List *etk_theme_icon_available_themes_get(void)
 {
    Ecore_List *files;
    Evas_List *themes = NULL;
+   char path[2][PATH_MAX];
    char *home;
-   char *path;
    char *file;
+   int i;
    
    if ((home = getenv("HOME")))
+      snprintf(path[0], PATH_MAX, "%s/.e/etk/icons/", home);
+   else
+      path[0][0] = '\0';
+   snprintf(path[1], PATH_MAX, PACKAGE_DATA_DIR "/icons/");
+   
+   for (i = 0; i < 2; i++)
    {
-      /* TODO: etk_config_dir_get? */
-      path = malloc(strlen(home) + strlen("/.e/etk/icons/") + 1);
-      sprintf(path, "%s/.e/etk/icons/", home);
-      files = ecore_file_ls(path);
+      files = ecore_file_ls(path[i]);
       if (files)
       {
-	 ecore_list_goto_first(files);
-	 while ((file = ecore_list_next(files)))      
-	    themes = evas_list_append(themes, ecore_file_strip_ext(file));
+         ecore_list_goto_first(files);
+         while ((file = ecore_list_next(files)))
+            themes = evas_list_append(themes, ecore_file_strip_ext(file));
          ecore_list_destroy(files);
       }
-      free(path);
-   }
-   
-   files = ecore_file_ls(PACKAGE_DATA_DIR "/icons/");
-   if (files)
-   {
-      ecore_list_goto_first(files);
-      while ((file = ecore_list_next(files)))
-	 themes = evas_list_append(themes, ecore_file_strip_ext(file));
-      ecore_list_destroy(files);
    }
    
    return themes;
+}
+
+/**
+ * @brief Finds the path of a icon-theme file, from its name
+ * @param theme_name the name of the theme to find
+ * @return Returns the path of the corresponding icon-theme file,
+ * or NULL if there is no corresponding theme
+ * @note The returned value will have to be freed with free()
+ */
+char *etk_theme_icon_find(const char *theme_name)
+{
+   return _etk_theme_find("icons", theme_name);
+}
+
+/**
+ * @brief A function used to free the list returned by etk_theme_widget_available_themes_get() or
+ * etk_theme_icon_available_themes_get()
+ * @param themes the list of themes to free
+ */
+void etk_theme_available_themes_free(Evas_List *themes)
+{
+   while (themes)
+   {
+      free(themes->data);
+      themes = evas_list_remove_list(themes, themes);
+   }
 }
 
 /**
@@ -226,47 +352,19 @@ Evas_List *etk_theme_icon_available_themes_get()
  */
 Etk_Bool etk_theme_group_exists(const char *file, const char *group, const char *parent_group)
 {
-   char *full_group;
+   char full_group[PATH_MAX];
    
    if (!file)
       file = _etk_theme_widget_current ? _etk_theme_widget_current : _etk_theme_widget_default;
-   if (!group || *group == '\0' || !file)
+   if (!group || group[0] == '\0' || !file)
       return ETK_FALSE;
    
-   if (parent_group && *parent_group)
-   {
-      full_group = malloc(strlen("etk//") + strlen(parent_group) + strlen(group) + 1);
-      sprintf(full_group, "etk/%s/%s", parent_group, group);
-   }
+   if (parent_group && parent_group[0] != '\0')
+      snprintf(full_group, PATH_MAX, "etk/%s/%s", parent_group, group);
    else
-   {
-      full_group = malloc(strlen("etk/") + strlen(group) + 1);
-      sprintf(full_group, "etk/%s", group);
-   }
+      snprintf(full_group, PATH_MAX, "etk/%s", group);
    
-   /* Checks if the theme-group exists */
-   if (edje_file_group_exists(file, full_group))
-   {
-      free(full_group);
-      return ETK_TRUE;
-   }
-   else
-   {
-      char *alias;
-      char *alt_group;
-      int ret;
-      
-      alias = malloc(strlen("alias: ") + strlen(full_group) + 1);
-      sprintf(alias, "alias: %s", full_group);
-      alt_group = edje_file_data_get(file, alias);
-      free(full_group);
-      free(alias);
-      
-      ret = edje_file_group_exists(file, alt_group);
-      free(alt_group);
-      
-      return ret;
-   }
+   return edje_file_group_exists(file, full_group);
 }
 
 /**
@@ -280,58 +378,30 @@ Etk_Bool etk_theme_group_exists(const char *file, const char *group, const char 
  */
 Etk_Bool etk_theme_edje_object_set(Evas_Object *object, const char *file, const char *group, const char *parent_group)
 {
-   char *full_group;
+   char full_group[PATH_MAX];
    
    if (!object)
       return ETK_FALSE;
    
    if (!file)
       file = _etk_theme_widget_current ? _etk_theme_widget_current : _etk_theme_widget_default;
-   if (!group || *group == '\0' || !file)
+   if (!group || group[0] == '\0' || !file)
    {
       edje_object_file_set(object, NULL, NULL);
       return ETK_FALSE;
    }
    
-   if (parent_group && *parent_group)
-   {
-      full_group = malloc(strlen("etk//") + strlen(parent_group) + strlen(group) + 1);
-      sprintf(full_group, "etk/%s/%s", parent_group, group);
-   }
+   if (parent_group && parent_group[0] != '\0')
+      snprintf(full_group, PATH_MAX, "etk/%s/%s", parent_group, group);
    else
-   {
-      full_group = malloc(strlen("etk/") + strlen(group) + 1);
-      sprintf(full_group, "etk/%s", group);
-   }
+      snprintf(full_group, PATH_MAX, "etk/%s", group);
    
-   /* Load the object */
    if (edje_object_file_set(object, file, full_group))
-   {
-      free(full_group);
       return ETK_TRUE;
-   }
    else
    {
-      char *alias;
-      char *alt_group;
-      int ret;
-      
-      alias = malloc(strlen("alias: ") + strlen(full_group) + 1);
-      sprintf(alias, "alias: %s", full_group);
-      alt_group = edje_file_data_get(file, alias);
-      free(full_group);
-      free(alias);
-      
-      ret = edje_object_file_set(object, file, alt_group);
-      free(alt_group);
-      
-      if (ret)
-         return ETK_TRUE;
-      else
-      {
-         edje_object_file_set(object, NULL, NULL);
-         return ETK_FALSE;
-      }
+      edje_object_file_set(object, NULL, NULL);
+      return ETK_FALSE;
    }
 }
 
@@ -347,31 +417,51 @@ Etk_Bool etk_theme_edje_object_set_from_parent(Evas_Object *object, const char *
 {
    if (!object)
       return ETK_FALSE;
-   return etk_theme_edje_object_set(object, etk_widget_theme_file_get(parent), group, etk_widget_theme_group_get(parent));
+   
+   return etk_theme_edje_object_set(object, etk_widget_theme_file_get(parent),
+         group, etk_widget_theme_group_get(parent));
 }
 
 /**
- * @brief Gets the color type from the theme-file.
- * @param color_type an Etk_Color_Type
- * @return Returns an Etk_Color with the color filled from the theme-file, or color with -1 if it wasn't found
+ * @brief Gets the components of the given color. The color depends on the theme used
+ * @param file the path to the theme-file where to find the given color. If @a file is NULL,
+ * the current widget-theme file will be used
+ * @param color_type the color whose components will be returned
+ * @param r the location where to store the 'red' component of the color
+ * @param g the location where to store the 'green' component of the color
+ * @param b the location where to store the 'blue' component of the color
+ * @param a the location where to store the 'alpha' component of the color
+ * @return Returns ETK_TRUE if the color has been found, ETK_FALSE otherwise
+ * @note Note that even if the color has not been found (because it is not defined in the theme),
+ * the components will still be set to their default values, so the color will still be usable
  */
-Etk_Color etk_theme_color_get(Etk_Color_Type color_type)
+Etk_Bool etk_theme_color_get(const char *file, Etk_Color_Type color_type, int *r, int *g, int *b, int *a)
 {
-   Etk_Color color;
-   const char *file;
    char *color_string;
 
-   file = _etk_theme_widget_current ? _etk_theme_widget_current : _etk_theme_widget_default;
-   color_string = edje_file_data_get(file, _etk_theme_colors[color_type]);
-   if (!color_string || sscanf(color_string, "%d %d %d %d", &color.r, &color.g, &color.b, &color.a) != 4)
+   if (!file)
+      file = _etk_theme_widget_current ? _etk_theme_widget_current : _etk_theme_widget_default;
+   if (color_type < 0 || color_type >= ETK_COLOR_NUM_COLORS)
+      color_type = ETK_COLOR_FOREGROUND;
+   
+   if (file)
    {
-      Etk_Color color = { .r = -1, .g = -1, .b = -1, .a = -1 };
-      if (color_string) free(color_string);
-      return color;
+      color_string = edje_file_data_get(file, _etk_theme_color_names[color_type]);
+      if (color_string && sscanf(color_string, "%d %d %d %d", r, g, b, a) == 4)
+      {
+         free(color_string);
+         return ETK_TRUE;
+      }
+      free(color_string);
    }
-
-   if (color_string) free(color_string);
-   return color;
+   
+   /* The color has not been found, we set it to its default value */
+   if (r)   *r = _etk_theme_default_colors[color_type][0];
+   if (g)   *g = _etk_theme_default_colors[color_type][1];
+   if (b)   *b = _etk_theme_default_colors[color_type][2];
+   if (a)   *a = _etk_theme_default_colors[color_type][3];
+   
+   return ETK_FALSE;
 }
 
 /**************************
@@ -383,28 +473,36 @@ Etk_Color etk_theme_color_get(Etk_Color_Type color_type)
 /* Finds the theme called "theme_name" in the subdir "subdir" and returns its path, or NULL on failure */
 static char *_etk_theme_find(const char *subdir, const char *theme_name)
 {
+   char path[PATH_MAX];
    char *home;
-   char *path;
    
    if (!theme_name || !subdir)
       return ETK_FALSE;
    
    if ((home = getenv("HOME")))
    {
-      /* TODO: etk_config_dir_get? */
-      path = malloc(strlen(home) + strlen(subdir) + strlen("/.e/etk//.edj") + strlen(theme_name) + 1);
-      sprintf(path, "%s/.e/etk/%s/%s.edj", home, subdir, theme_name);
+      snprintf(path, PATH_MAX, "%s/.e/etk/%s/%s.edj", home, subdir, theme_name);
       if (ecore_file_exists(path))
-         return path;
-      else
-         free(path);
+         return strdup(path);
    }
    
-   path = malloc(strlen(subdir) + strlen(PACKAGE_DATA_DIR"//.edj") + strlen(theme_name) + 1);
-   sprintf(path, PACKAGE_DATA_DIR"/%s/%s.edj", subdir, theme_name);
+   snprintf(path, PATH_MAX, PACKAGE_DATA_DIR"/%s/%s.edj", subdir, theme_name);
    if (ecore_file_exists(path))
-      return path;
+      return strdup(path);
    
-   free(path);
    return NULL;
 }
+
+/** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Theme
+ *
+ * TODOC
+ */
