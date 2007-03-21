@@ -120,9 +120,9 @@
  *
  *      // create the model that'll be used for the first two columns
  *      model = ewl_model_new();
- *      ewl_model_fetch_set(model, test_data_fetch);
- *      ewl_model_sort_set(model, test_data_sort);
- *      ewl_model_count_set(model, test_data_count_get);
+ *      ewl_model_data_fetch_set(model, test_data_fetch);
+ *      ewl_model_data_sort_set(model, test_data_sort);
+ *      ewl_model_data_count_set(model, test_data_count_get);
  *
  *      tree = ewl_tree2_new();
  *      ewl_container_child_append(EWL_CONTAINER(box), tree);
@@ -146,8 +146,8 @@
  *
  *      // we don't want this one sortable
  *      model = ewl_model_new();
- *      ewl_model_fetch_set(model, test_data_fetch);
- *      ewl_model_count_set(model, test_data_count_get);
+ *      ewl_model_data_fetch_set(model, test_data_fetch);
+ *      ewl_model_data_count_set(model, test_data_count_get);
  *
  *      // create a view for the third column that has a custom widget
  *      view = ewl_view_new();
@@ -513,21 +513,21 @@
  * @code
  *      // create the model that'll be used for the first two columns
  *      model = ewl_model_new();
- *      ewl_model_fetch_set(model, test_data_fetch);
- *      ewl_model_sort_set(model, test_data_sort);
- *      ewl_model_count_set(model, test_data_count_get);
+ *      ewl_model_data_fetch_set(model, test_data_fetch);
+ *      ewl_model_data_sort_set(model, test_data_sort);
+ *      ewl_model_data_count_set(model, test_data_count_get);
  * @endcode
  *
  * Our first two columns in the tree will actually use the same data model. I
  * dont want the third column to be sortable so we need to use a slightly
  * different model (although its almost the same). We need to set at a of
  * minimum two pieces of data into the Ewl_Model. These are, the function to
- * fetch the model data, set with ewl_model_fetch_set(), and the function to get
- * a count of the number of rows of data, set with ewl_model_count_set(). Im
- * using the third ewl_model_sort_set() to set a sort function for the first two
- * columns. Each of these calls takes the model and a function pointer. You can
- * see the function signature at the top of the file. Well take a closer look at
- * these functions a bit later.
+ * fetch the model data, set with ewl_model_data_fetch_set(), and the function
+ * to get a count of the number of rows of data, set with
+ * ewl_model_data_count_set(). I'm using the third ewl_model_data_sort_set() to
+ * set a sort function for the first two columns. Each of these calls takes the
+ * model and a function pointer. You can see the function signature at the top
+ * of the file. Well take a closer look at these functions a bit later.
  *
  * @code
  *      tree = ewl_tree2_new();
@@ -584,8 +584,8 @@
  * @code
  *      // we don't want this one sortable
  *      model = ewl_model_new();
- *      ewl_model_fetch_set(model, test_data_fetch);
- *      ewl_model_count_set(model, test_data_count_get);
+ *      ewl_model_data_fetch_set(model, test_data_fetch);
+ *      ewl_model_data_count_set(model, test_data_count_get);
  *
  *      // create a view for the third column that has a custom widget
  *      view = ewl_view_new();
@@ -991,10 +991,10 @@ create_test(Ewl_Container *box)
 	/* the tree will only use one model. We could use a model per
 	 * column, but a single model will work fine for this test */
 	model = ewl_model_new();
-	ewl_model_fetch_set(model, tree2_test_data_fetch);
-	ewl_model_sort_set(model, tree2_test_data_sort);
-	ewl_model_count_set(model, tree2_test_data_count_get);
-	ewl_model_expandable_set(model, tree2_test_data_expandable_get);
+	ewl_model_data_fetch_set(model, tree2_test_data_fetch);
+	ewl_model_data_sort_set(model, tree2_test_data_sort);
+	ewl_model_data_count_set(model, tree2_test_data_count_get);
+	ewl_model_data_expandable_set(model, tree2_test_data_expandable_get);
 	ewl_model_expansion_data_fetch_set(model, 
 					tree2_test_data_expansion_fetch);
 

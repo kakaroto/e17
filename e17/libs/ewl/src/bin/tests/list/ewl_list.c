@@ -103,8 +103,8 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(o);
 
 	model = ewl_model_new();
-	ewl_model_fetch_set(model, list_test_data_fetch);
-	ewl_model_count_set(model, list_test_data_count_get);
+	ewl_model_data_fetch_set(model, list_test_data_fetch);
+	ewl_model_data_count_set(model, list_test_data_count_get);
 
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, ewl_button_new);

@@ -121,10 +121,10 @@ ewl_filelist_tree_init(Ewl_Filelist_Tree *fl)
 
 	/* Setup the tree model */
 	model = ewl_model_new();
-	ewl_model_count_set(model, ewl_filelist_tree_data_count);
-	ewl_model_fetch_set(model, ewl_filelist_tree_data_fetch);
-	ewl_model_sort_set(model, ewl_filelist_tree_data_sort);
-	ewl_model_expandable_set(model, ewl_filelist_tree_data_expandable_get);
+	ewl_model_data_count_set(model, ewl_filelist_tree_data_count);
+	ewl_model_data_fetch_set(model, ewl_filelist_tree_data_fetch);
+	ewl_model_data_sort_set(model, ewl_filelist_tree_data_sort);
+	ewl_model_data_expandable_set(model, ewl_filelist_tree_data_expandable_get);
 	ewl_model_expansion_data_fetch_set(model,
 			ewl_filelist_tree_data_expansion_data_fetch);
 

@@ -17,8 +17,8 @@
  *
  * @code
  * model = ewl_model_new();
- * ewl_model_fetch_set(model, combo_test_data_fetch);
- * ewl_model_count_set(model, combo_test_data_count_get);
+ * ewl_model_data_fetch_set(model, combo_test_data_fetch);
+ * ewl_model_data_count_set(model, combo_test_data_count_get);
 
  * view = ewl_view_new();
  * ewl_view_constructor_set(view, ewl_label_new);
@@ -118,8 +118,8 @@ create_test(Ewl_Container *box)
 
 	/* create the model */
 	model = ewl_model_new();
-	ewl_model_fetch_set(model, combo_test_data_fetch);
-	ewl_model_count_set(model, combo_test_data_count_get);
+	ewl_model_data_fetch_set(model, combo_test_data_fetch);
+	ewl_model_data_count_set(model, combo_test_data_count_get);
 
 	/* create the view for ewl_label widgets */
 	view = ewl_view_new();
@@ -155,8 +155,8 @@ create_test(Ewl_Container *box)
 
 	/* create the editable model/view */
 	model = ewl_model_new();
-	ewl_model_count_set(model, combo_test_data_count_get);
-	ewl_model_fetch_set(model, combo_test_data_fetch);
+	ewl_model_data_count_set(model, combo_test_data_count_get);
+	ewl_model_data_fetch_set(model, combo_test_data_fetch);
 
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, combo_test_editable_new);

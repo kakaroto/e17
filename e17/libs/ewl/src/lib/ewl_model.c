@@ -41,8 +41,8 @@ ewl_model_ecore_list_get(void)
 	model = ewl_model_new();
 	if (model)
 	{
-		ewl_model_fetch_set(model, ewl_model_cb_ecore_list_fetch);
-		ewl_model_count_set(model, ewl_model_cb_ecore_list_count);
+		ewl_model_data_fetch_set(model, ewl_model_cb_ecore_list_fetch);
+		ewl_model_data_count_set(model, ewl_model_cb_ecore_list_count);
 	}
 
 	DRETURN_PTR(model, DLEVEL_STABLE);
@@ -69,7 +69,7 @@ ewl_model_init(Ewl_Model *model)
  * @brief Sets the fetch callback in the model
  */
 void
-ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get)
+ewl_model_data_fetch_set(Ewl_Model *m, Ewl_Model_Data_Fetch get)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
@@ -84,8 +84,8 @@ ewl_model_fetch_set(Ewl_Model *m, Ewl_Model_Fetch get)
  * @return Returns the Ewl_Model_Fetch callback or NULL if none set
  * @brief Gets the fetch callback from the model
  */
-Ewl_Model_Fetch
-ewl_model_fetch_get(Ewl_Model *m)
+Ewl_Model_Data_Fetch
+ewl_model_data_fetch_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
@@ -100,7 +100,7 @@ ewl_model_fetch_get(Ewl_Model *m)
  * @brief Sets the sort callback into the model
  */
 void
-ewl_model_sort_set(Ewl_Model *m, Ewl_Model_Sort sort)
+ewl_model_data_sort_set(Ewl_Model *m, Ewl_Model_Data_Sort sort)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
@@ -115,8 +115,8 @@ ewl_model_sort_set(Ewl_Model *m, Ewl_Model_Sort sort)
  * @return Returns the Ewl_Model_Sort set on the model or NULL if none set
  * @brief Gets the sort callback from the model
  */
-Ewl_Model_Sort
-ewl_model_sort_get(Ewl_Model *m)
+Ewl_Model_Data_Sort
+ewl_model_data_sort_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
@@ -131,7 +131,7 @@ ewl_model_sort_get(Ewl_Model *m)
  * @brief Sets the count callback into the model
  */
 void
-ewl_model_count_set(Ewl_Model *m, Ewl_Model_Count count)
+ewl_model_data_count_set(Ewl_Model *m, Ewl_Model_Data_Count count)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
@@ -147,8 +147,8 @@ ewl_model_count_set(Ewl_Model *m, Ewl_Model_Count count)
  * none set.
  * @brief Gets the count callback from the model
  */
-Ewl_Model_Count
-ewl_model_count_get(Ewl_Model *m)
+Ewl_Model_Data_Count
+ewl_model_data_count_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
@@ -163,7 +163,7 @@ ewl_model_count_get(Ewl_Model *m)
  * @brief Sets the expandable callback on the given model
  */
 void
-ewl_model_expandable_set(Ewl_Model *m, Ewl_Model_Expandable exp)
+ewl_model_data_expandable_set(Ewl_Model *m, Ewl_Model_Data_Expandable exp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("m", m);
@@ -178,8 +178,8 @@ ewl_model_expandable_set(Ewl_Model *m, Ewl_Model_Expandable exp)
  * @return Returns the expandable callback set on the model
  * @brief Retrieves the expandable callback set on the model
  */
-Ewl_Model_Expandable
-ewl_model_expandable_get(Ewl_Model *m)
+Ewl_Model_Data_Expandable
+ewl_model_data_expandable_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);

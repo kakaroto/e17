@@ -154,8 +154,8 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_filepicker_filter_add(fp, "All files", NULL);
 
 	model = ewl_model_new();
-	ewl_model_fetch_set(model, ewl_filepicker_cb_type_fetch);
-	ewl_model_count_set(model, ewl_filepicker_cb_type_count);
+	ewl_model_data_fetch_set(model, ewl_filepicker_cb_type_fetch);
+	ewl_model_data_count_set(model, ewl_filepicker_cb_type_count);
 
 	view = ewl_view_new();
 	ewl_view_constructor_set(view, ewl_label_new);

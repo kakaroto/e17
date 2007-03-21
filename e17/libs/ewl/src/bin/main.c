@@ -459,9 +459,9 @@ create_main_test_window(Ewl_Container *box)
 	ecore_list_append(categories, unit);
 
 	model = ewl_model_new();
-	ewl_model_fetch_set(model, ewl_test_cb_category_fetch);
-	ewl_model_count_set(model, ewl_model_cb_ecore_list_count);
-	ewl_model_expandable_set(model, ewl_test_cb_category_expandable);
+	ewl_model_data_fetch_set(model, ewl_test_cb_category_fetch);
+	ewl_model_data_count_set(model, ewl_model_cb_ecore_list_count);
+	ewl_model_data_expandable_set(model, ewl_test_cb_category_expandable);
 	ewl_model_expansion_data_fetch_set(model, 
 				ewl_test_cb_category_expansion_fetch);
 	ewl_model_expansion_model_fetch_set(model, 
@@ -520,8 +520,8 @@ create_main_test_window(Ewl_Container *box)
 	ewl_widget_show(o);
 
 	model = ewl_model_new();
-	ewl_model_fetch_set(model, cb_unit_test_fetch);
-	ewl_model_count_set(model, cb_unit_test_count);
+	ewl_model_data_fetch_set(model, cb_unit_test_fetch);
+	ewl_model_data_count_set(model, cb_unit_test_count);
 
 	o2 = ewl_tree2_new();
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
@@ -1051,8 +1051,8 @@ ewl_test_cb_category_expansion_model_fetch(void *data __UNUSED__,
 	if (expansion_model) return expansion_model;
 
 	expansion_model = ewl_model_new();
-	ewl_model_fetch_set(expansion_model, ewl_test_cb_expansion_fetch);
-	ewl_model_count_set(expansion_model, ewl_model_cb_ecore_list_count);
+	ewl_model_data_fetch_set(expansion_model, ewl_test_cb_expansion_fetch);
+	ewl_model_data_count_set(expansion_model, ewl_model_cb_ecore_list_count);
 
 	return expansion_model;
 }
