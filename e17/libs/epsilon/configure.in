@@ -23,7 +23,7 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-AC_PATH_GENERIC(imlib2, 1.0.0,
+PKG_CHECK_MODULES(IMLIB2, [imlib2 >= 1.0.0],
   [ have_imlib2="yes" ],
   [
     have_imlib2="no"
@@ -32,7 +32,7 @@ AC_PATH_GENERIC(imlib2, 1.0.0,
 )
 
 dnl Make sure the epeg header/lib is available
-AC_PATH_GENERIC(epeg, 0.9.0,
+PKG_CHECK_MODULES(EPEG, [epeg >= 0.9.0],
   [
     AC_DEFINE(HAVE_EPEG_H, 1, [Epeg.h is available])
     have_epeg="yes"
@@ -58,35 +58,16 @@ PKG_CHECK_MODULES(PNG, libpng12 >= 1.2.0,
 AC_PATH_PROG(PERL, perl, 0)
 AC_SUBST(PERL)
 
-dnl Make sure the Evas header/lib is available
-AC_PATH_GENERIC(evas, 0.9.9,
-  [ have_evas="yes" ],
-  [
-    have_evas="no"
-    AC_MSG_ERROR(Cannot find Evas on your system: jpeg thumbnail suckage!)
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
+
+PKG_CHECK_MODULES(ECORE, [
+    ecore-evas >= 0.9.9
+    ecore-file >= 0.9.9
+    ecore-con >= 0.9.9
   ]
 )
 
-dnl Make sure the Ecore_Evas header/lib is available
-AC_PATH_GENERIC(ecore, 0.9.9,
-  [
-    SAVE_CFLAGS=$CFLAGS;
-    CFLAGS="$CFLAGS $ECORE_CFLAGS"
-    AC_CHECK_HEADER(Ecore_Evas.h, 
-      [
-        have_ecore="yes" 
-      ], [
-        have_ecore="no" 
-        AC_MSG_ERROR(Cannot find Ecore_Evas on your system: edje thumbnail suckage)
-      ]
-    )
-    CFLAGS=$SAVE_CFLAGS
-  ],
-  [
-    have_ecore="no"
-    AC_MSG_ERROR(Cannot find Ecore_Evas on your system: jpeg thumbnail suckage!)
-  ]
-)
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 
 xine=""
 AC_MSG_CHECKING(whether the xine thumbnailer was explicitly disabled)
@@ -118,29 +99,8 @@ AC_SUBST(xine_CFLAGS)
 AC_SUBST(xine_PLUGINS)
 AM_CONDITIONAL(HAVE_XINE, test $xine = "xine")
 
-
-dnl Make sure the Edje header/lib is available
-AC_PATH_GENERIC(edje, 0.5.0,
-  [ have_edje="yes" ],
-  [
-    have_edje="no"
-    AC_MSG_ERROR(Cannot find Edje on your system: edje thumbnail suckage!)
-  ]
-)
-
-# Build the list of required libs for epsilon.pc.in. Only works for libs
-# which install a .pc file of course
-if test "x$`evas-config --libs`" != "x"; then
-  requirements=evas
-fi
-if test "x$`ecore-config --libs`" != "x"; then
-  requirements="$requirements ecore"
-fi
-if test "x$`edje-config --libs`" != "x"; then
-  requirements="$requirements edje"
-fi
-      
-AC_SUBST(requirements)      
+requirements="imlib2 evas ecore-evas ecore-file ecore-con edje"
+AC_SUBST(requirements)
 
 #####################################################################
 ## Output
