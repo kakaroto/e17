@@ -222,6 +222,7 @@ create_main_page(void)
 	for (i = 0; i < (sizeof(alignment) / sizeof(char *)); i++)
 	{
 		o = ewl_radiobutton_new();
+		ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
 		ewl_button_label_set(EWL_BUTTON(o), alignment[i]);
 		ewl_container_child_append(EWL_CONTAINER(border), o);
 		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
@@ -248,6 +249,7 @@ create_main_page(void)
 	for (i = 0; i < (sizeof(position) / sizeof(char *)); i++)
 	{
 		o = ewl_radiobutton_new();
+		ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
 		ewl_button_label_set(EWL_BUTTON(o), position[i]);
 		ewl_container_child_append(EWL_CONTAINER(border), o);
 		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
