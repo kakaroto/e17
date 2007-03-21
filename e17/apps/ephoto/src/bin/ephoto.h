@@ -110,7 +110,6 @@ typedef struct _Ephoto_Main Ephoto_Main;
 
 struct _Ephoto_Main
 {
-	char **views;
 	Ecore_List *albums;
 	Ecore_List *images;
 	Ewl_Widget *atree; 

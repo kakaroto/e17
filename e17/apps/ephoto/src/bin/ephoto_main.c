@@ -25,7 +25,6 @@ static void destroy(Ewl_Widget *w, void *event, void *data)
         ewl_widget_destroy(em->win);
 	ecore_list_destroy(em->albums);
 	ecore_list_destroy(em->images);
-	free(em->views);
 	free(em);
 	ewl_main_quit();
 	return;
