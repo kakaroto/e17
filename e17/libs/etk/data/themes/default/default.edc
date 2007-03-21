@@ -17,16 +17,6 @@ fonts {
 #include "images/images.edc"
 #include "colors.edc"
 
-data {
-   item: "alias: etk/scrolled_view/hscrollbar"           "etk/hscrollbar";
-   item: "alias: etk/scrolled_view/vscrollbar"           "etk/vscrollbar";
-   item: "alias: etk/menu_bar/menu_item/checkbox"        "etk/menu/menu_item/checkbox";
-   item: "alias: etk/menu_bar/menu_item/radiobox"        "etk/menu/menu_item/radiobox";
-   item: "alias: etk/tool_button"                        "etk/htoolbar/tool_button";
-   item: "alias: etk/tool_toggle_button"                 "etk/htoolbar/tool_toggle_button";
-   item: "alias: etk/dialog/hseparator"                  "etk/hseparator";
-}
-
 collections {
    #include "widgets/windows.edc"
    #include "widgets/button.edc"

@@ -95,7 +95,7 @@ void etk_prefs_standard_item_add(Etk_Widget *tree,
    const char *file;
    Etk_Tree_Row *row;
    
-   file = etk_theme_icon_get();   
+   file = etk_theme_icon_path_get();   
    row = etk_tree_row_append(ETK_TREE(tree), NULL,
       etk_tree_nth_col_get(ETK_TREE(tree), 0), file, icon, label,
       NULL);

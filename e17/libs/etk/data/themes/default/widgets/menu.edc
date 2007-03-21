@@ -723,6 +723,7 @@ group {
 
 group {
    name: "etk/menu/menu_item/checkbox";
+   alias: "etk/menu_bar/menu_item/checkbox";
    parts {
       part {
          name: "check";
@@ -771,6 +772,7 @@ group {
 }
 group {
    name: "etk/menu/menu_item/radiobox";
+   name: "etk/menu_bar/menu_item/radiobox";
    parts {
       part {
          name: "radio";
