@@ -42,48 +42,63 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-PKG_CHECK_MODULES(EVAS, evas >= 0.9.9)
+# evas is required by all of the modules anyway :)
 requirements="evas"
+PKG_CHECK_MODULES(CONTAINER, [evas >= 0.9.9])
 
 AC_CHECK_HEADER(ltdl.h, have_esmart_container=yes, have_esmart_container=no)
 
-AC_PATH_GENERIC(ecore, 0.9.9, [
-    have_esmart_draggies=yes
-    requirements="$requirements ecore"
+PKG_CHECK_MODULES(DRAGGIES, [
+    evas >= 0.9.9
+    ecore-evas >= 0.9.9
   ], [
-    have_esmart_draggies=no
+    have_esmart_draggies=yes
+    requirements="$requirements ecore-evas"
   ]
 )
 
-ECORE_LIBS_X=`$ECORE_CONFIG --libs-x`
-ECORE_LIBS_EVAS=`$ECORE_CONFIG --libs-evas`
-AC_SUBST(ECORE_LIBS_X)
-AC_SUBST(ECORE_LIBS_EVAS)
-
-PKG_CHECK_MODULES(IMLIB2, [imlib2 >= 1.0.0], [
+PKG_CHECK_MODULES(TRANSX11, [
+    evas >= 0.9.9
+    ecore-x >= 0.9.9
+    imlib2 >= 1.0.0
+  ], [
     have_esmart_trans_x11=yes
-    have_esmart_thumb=yes
-    requirements="$requirements imlib2"
+    requirements="$requirements ecore-x imlib2"
   ], [
     have_esmart_trans_x11=no
-    have_esmart_thumb=no
   ]
 )
 
-PKG_CHECK_MODULES(EPSILON, [epsilon >= 0.3.0], [
+PKG_CHECK_MODULES(THUMB, [
+    evas >= 0.9.9
+    imlib2 >= 1.0.0
+    epsilon >= 0.3.0
+  ], [
     have_esmart_thumb=yes
-    requirements="$requirements epsilon"
+    requirements="$requirements imlib2 epsilon"
   ], [
     have_esmart_thumb=no
   ]
 )
 
-PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0], [
+PKG_CHECK_MODULES(TEXT_ENTRY, [
+    evas >= 0.9.9
+    edje >= 0.5.0
+  ], [
     have_esmart_text_entry=yes
-    have_esmart_file_dialog=yes
     requirements="$requirements edje"
   ], [
     have_esmart_text_entry=no
+  ]
+)
+
+PKG_CHECK_MODULES(FILE_DIALOG, [
+    evas >= 0.9.9
+    edje >= 0.5.0
+  ], [
+    have_esmart_file_dialog=yes
+    requirements="$requirements edje"
+  ], [
     have_esmart_file_dialog=no
   ]
 )

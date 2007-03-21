@@ -2,10 +2,7 @@ pkgdir = @libdir@
 pkg_LTLIBRARIES = libesmart_file_dialog.la
 
 INCLUDES = -I$(top_srcdir)/src/lib/esmart_dialog \
-			  @IMLIB2_CFLAGS@ \
-			  @EVAS_CFLAGS@ \
-			  @ECORE_CFLAGS@ \
-			  @EDJE_CFLAGS@
+			  @FILE_DIALOG_CFLAGS@
 
 installed_headersdir = $(prefix)/include/Esmart
 installed_headers_DATA = Esmart_File_Dialog.h
@@ -21,7 +18,4 @@ libesmart_file_dialog_la_LDFLAGS = -version-info 0:9:0
 libesmart_file_dialog_la_LIBADD = \
                                  $(top_builddir)/src/lib/esmart_container/libesmart_container.la \
 				 $(top_builddir)/src/lib/esmart_text_entry/libesmart_text_entry.la \
-				 @IMLIB2_LIBS@ \
-				 @EVAS_LIBS@ \
-				 @EDJE_LIBS@
-
+				 @FILE_DIALOG_LIBS@
