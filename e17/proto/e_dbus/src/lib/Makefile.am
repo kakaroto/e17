@@ -1,1 +1,1 @@
-SUBDIRS=dbus hal
+SUBDIRS=dbus hal nm

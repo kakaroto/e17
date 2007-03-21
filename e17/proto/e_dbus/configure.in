@@ -35,6 +35,7 @@ src/Makefile
 src/lib/Makefile
 src/lib/dbus/Makefile
 src/lib/hal/Makefile
+src/lib/nm/Makefile
 src/bin/Makefile
 edbus-config
 ],[
