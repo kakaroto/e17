@@ -8,10 +8,12 @@
 #include <Evas.h>
 #include <Ewl.h>
 #include <fnmatch.h>
+
 #ifdef BUILD_EXIF_SUPPORT
 #include <libexif/exif-data.h>
 #include <libexif/exif-loader.h>
 #endif
+
 #include <libgen.h>
 #include <limits.h>
 #include <sqlite3.h>

@@ -49,8 +49,8 @@ Ewl_Widget *add_ltree(Ewl_Widget *c)
 	Ewl_View *view;
 
 	model = ewl_model_new();
-	ewl_model_fetch_set(model, list_data_fetch);
-	ewl_model_count_set(model, list_data_count);
+	ewl_model_data_fetch_set(model, list_data_fetch);
+	ewl_model_data_count_set(model, list_data_count);
 
 	tree = ewl_tree2_new();
 	ewl_tree2_headers_visible_set(EWL_TREE2(tree), 0);

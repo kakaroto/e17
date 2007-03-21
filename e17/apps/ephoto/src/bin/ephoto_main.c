@@ -143,6 +143,7 @@ void create_main_gui(void)
         button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/get_exif.png", NULL, NULL);
         ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
 	ewl_attach_tooltip_text_set(button, "You do not have libexif 0.6.13");
+
 #ifdef BUILD_EXIF_SUPPORT
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, display_exif_dialog, NULL);
 	ewl_attach_tooltip_text_set(button, "View Exif Data");
@@ -233,8 +234,8 @@ static Ewl_Widget *add_atree(Ewl_Widget *c)
 	Ewl_View *view;
 
 	model = ewl_model_new();
-	ewl_model_fetch_set(model, album_data_fetch);
-	ewl_model_count_set(model, album_data_count);
+	ewl_model_data_fetch_set(model, album_data_fetch);
+	ewl_model_data_count_set(model, album_data_count);
 
 	tree = ewl_tree2_new();
 	ewl_tree2_headers_visible_set(EWL_TREE2(tree), 0);
