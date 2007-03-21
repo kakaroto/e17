@@ -83,15 +83,8 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Src dir])
 
-AC_PATH_GENERIC(ecore, 0.9.9,
-  [ ],
-  [ AC_MSG_ERROR(Ecore isn't installed) ]
-)
-
-AC_PATH_GENERIC(ewl, 0.0.4,
-  [ ],
-  [ AC_MSG_ERROR(Ewl isn't installed) ]
-)
+PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9])
+PKG_CHECK_MODULES(EWL, [ewl >= 0.0.4])
 
 save_CFLAGS="$CFLAGS"
 save_LIBS="$LIBS"

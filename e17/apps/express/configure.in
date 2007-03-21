@@ -60,25 +60,10 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
-AC_PATH_GENERIC(evas, 0.9.9,
- [ ],
- [ AC_MSG_ERROR(Evas isn't installed) ]
-)
-
-AC_PATH_GENERIC(ecore, 0.9.9,
- [ ],
- [ AC_MSG_ERROR(Ecore isn't installed) ]
-)
-
-AC_PATH_GENERIC(edje, 0.5.0,
- [ ],
- [ AC_MSG_ERROR(Edje isn't installed) ]
-)
-
-AC_PATH_GENERIC(esmart, 0.9.0,
- [ ],
- [ AC_MSG_ERROR(Esmart isn't installed) ]
-)
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
+PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9 ecore-evas >= 0.9.9 ecore-con >= 0.9.9 ])
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+PKG_CHECK_MODULES(ESMART, [esmart >= 0.9.0])
 
 AC_OUTPUT([
 Makefile 

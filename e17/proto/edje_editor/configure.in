@@ -85,103 +85,16 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
-AC_PATH_GENERIC(ecore, 0.9.9.037,
-  [ ],
-  [
-    echo "ERROR:"
-    echo "The ecore-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the ecore-devel (or ecore-dev)"
-    echo "   packages."
-    echo "2. You may have ecore installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the ecore-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-engrave-config."
-    AC_MSG_ERROR([Fatal Error: no engrave-config detected.])
-  ]
-)
-
-AC_PATH_GENERIC(etk, 0.1.0.002,
-  [ ],
-  [
-    echo "ERROR:"
-    echo "The etk-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the etk-devel (or etk-dev)"
-    echo "   packages."
-    echo "2. You may have etk installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the etk-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-etk-config."
-    AC_MSG_ERROR([Fatal Error: no etk-config detected.])
-  ]
-)
-
-AC_PATH_GENERIC(edje, 0.5.0,
-  [ ],
-  [
-    echo "ERROR:"
-    echo "The edje-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the edje-devel (or edje-dev)"
-    echo "   packages."
-    echo "2. You may have edje installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the edje-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-edje-config."
-    AC_MSG_ERROR([Fatal Error: no edje-config detected.])
-  ]
-)
-
-AC_PATH_GENERIC(engrave, 0.1.0,
-  [ ],
-  [
-    echo "ERROR:"
-    echo "The engrave-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the engrave-devel (or engrave-dev)"
-    echo "   packages."
-    echo "2. You may have edje installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the engrave-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-engrave-config."
-    AC_MSG_ERROR([Fatal Error: no engrave-config detected.])
-  ]
-)
-
-AC_PATH_GENERIC(evas, 0.9.9,
-  [ ],
-  [
-    echo "ERROR:"
-    echo "The evas-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the evas-devel (or evas-dev)"
-    echo "   packages."
-    echo "2. You may have evas installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the evas-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-evas-config."
-    AC_MSG_ERROR([Fatal Error: no evas-config detected.])
-  ]
-)
+PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9.037])
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+PKG_CHECK_MODULES(ENGRAVE, [engrave >= 0.1.0])
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
+PKG_CHECK_MODULES(ETK, [etk >= 0.1.0.002])
 
 dnl Set ETK_PACKAGE_DATA_DIR in config.h.  
 etk_prefix="\"`etk-config --prefix`/share/etk\""
 AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
 
-requirements="ecore etk edje evas engrave"
-
-AC_SUBST(requirements)
 AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([
