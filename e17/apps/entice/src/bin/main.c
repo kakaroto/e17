@@ -213,7 +213,7 @@ entice_pipe_foo(int argc, const char **argv)
  * 7. for(;;)
  */
 int
-main(int argc, char **argv)
+main(int argc, const char **argv)
 {
    int pnum = -1;
    int x, y, w, h;

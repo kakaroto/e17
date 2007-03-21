@@ -44,9 +44,11 @@ ipc_server_del(void *data, int type, void *event)
 static int
 ipc_server_data(void *data, int type, void *event)
 {
+#if 0
 	Ecore_Ipc_Event_Server_Data *e = (Ecore_Ipc_Event_Server_Data *)event;
-	/* printf("ipc_server_data: %p [%i] [%i] [%i] (%s)\n", 
-	       e->server, e->major, e->minor, e->size, (char *)e->data); */
+	printf("ipc_server_data: %p [%i] [%i] [%i] (%s)\n", 
+	       e->server, e->major, e->minor, e->size, (char *)e->data);
+#endif
 	if (!--entice_ipc_client_request_pending)
 		ecore_main_loop_quit();
 	return 1;
