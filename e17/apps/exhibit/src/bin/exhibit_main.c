@@ -212,7 +212,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
      {
 	snprintf(back, PATH_MAX, "..");
 	etk_tree_row_append(ETK_TREE(e->cur_tab->dtree), NULL, e->cur_tab->dcol,
-	              etk_theme_icon_get(), "actions/go-up_16", back, NULL);
+	              etk_theme_icon_path_get(), "actions/go-up_16", back, NULL);
      }
 
    if (e->cur_tab->monitor)
@@ -255,7 +255,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	     if(S_ISDIR(st.st_mode))
 	       {
 		  etk_tree_row_append(ETK_TREE(e->cur_tab->dtree), NULL, e->cur_tab->dcol,
-			etk_theme_icon_get(),
+			etk_theme_icon_path_get(),
 			"places/folder_16",
 			dir_entry->d_name, NULL);
 		  e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, dir_entry->d_name);
