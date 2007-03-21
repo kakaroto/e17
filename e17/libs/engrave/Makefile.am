@@ -31,7 +31,10 @@ dist-hook:
 	  done \
 	fi
 
-EXTRA_DIST = README AUTHORS COPYING engrave.spec engrave.spec.in \
+EXTRA_DIST = README AUTHORS COPYING engrave.spec engrave.spec.in engrave.pc.in \
 	     debian/control debian/rules debian/copyright \
 	     debian/changelog \
 	     debian/libengrave0.files debian/libengrave0-dev.files
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = engrave.pc

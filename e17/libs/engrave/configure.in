@@ -68,17 +68,17 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
-AC_PATH_GENERIC(evas, 0.9.9, ,
-    AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
+PKG_CHECK_MODULES(ECORE, [ecore-evas >= 0.9.9])
 
-AC_PATH_GENERIC(ecore, 0.9.9, ,
-    AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-
+requirements="evas ecore-evas"
+AC_SUBST(requirements)
 
 AC_OUTPUT([
 Makefile 
 engrave-config
 engrave.spec
+engrave.pc
 src/Makefile 
 src/bin/Makefile
 src/lib/Makefile
