@@ -6,7 +6,6 @@ includedir=@includedir@
 Name: esmart
 Description: A collection of evas smart object
 Version: @VERSION@
-Requires: evas >= 1.0.0 ecore imlib2
+Requires: @requirements@
 Libs: -L${libdir} -lm
 Cflags: -I${includedir} 
-

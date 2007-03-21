@@ -1,9 +1,34 @@
-SUBDIRS = \
-			 esmart_container \
-			 esmart_draggies \
-			 esmart_text_entry \
-			 esmart_file_dialog \
-			 esmart_thumb \
-			 esmart_trans_x11 
+if BUILD_ESMART_CONTAINER
+container_subdir = esmart_container
+endif
 
-#			 esmart_textarea
+if BUILD_ESMART_DRAGGIES
+draggies_subdir = esmart_draggies
+endif
+
+if BUILD_ESMART_FILE_DIALOG
+file_dialog_subdir = esmart_file_dialog
+endif
+
+if BUILD_ESMART_TEXT_ENTRY
+text_entry_subdir = esmart_text_entry
+endif
+
+if BUILD_ESMART_TEXTAREA
+textarea_subdir = esmart_textarea
+endif
+
+if BUILD_ESMART_THUMB
+thumb_subdir = esmart_thumb
+endif
+
+if BUILD_ESMART_TRANS_X11
+trans_subdir = esmart_trans_x11
+endif
+
+SUBDIRS = \
+  $(container_subdir) $(draggies_subdir) $(text_entry_subdir) \
+  $(file_dialog_subdir) $(thumb_subdir) $(trans_subdir)
+
+# adding textarea_subdir breaks distcheck
+# $(textarea_subdir)

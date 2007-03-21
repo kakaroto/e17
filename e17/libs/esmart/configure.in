@@ -42,40 +42,68 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-AC_CHECK_HEADER(ltdl.h,,
-                AC_MSG_ERROR(Cannot find ltdl.h. Please make sure you have the libltdl-dev package installed.))
+PKG_CHECK_MODULES(EVAS, evas >= 0.9.9)
+requirements="evas"
 
-AC_PATH_GENERIC(evas, 0.9.9,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find evas: Is evas-config in path?) ]
+AC_CHECK_HEADER(ltdl.h, have_esmart_container=yes, have_esmart_container=no)
+
+AC_PATH_GENERIC(ecore, 0.9.9, [
+    have_esmart_draggies=yes
+    requirements="$requirements ecore"
+  ], [
+    have_esmart_draggies=no
+  ]
 )
 
-AC_PATH_GENERIC(ecore, 0.9.9,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?) ]
-)
 ECORE_LIBS_X=`$ECORE_CONFIG --libs-x`
 ECORE_LIBS_EVAS=`$ECORE_CONFIG --libs-evas`
 AC_SUBST(ECORE_LIBS_X)
 AC_SUBST(ECORE_LIBS_EVAS)
 
-AC_PATH_GENERIC(imlib2, 1.0.0,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in the path?) ]
+PKG_CHECK_MODULES(IMLIB2, [imlib2 >= 1.0.0], [
+    have_esmart_trans_x11=yes
+    have_esmart_thumb=yes
+    requirements="$requirements imlib2"
+  ], [
+    have_esmart_trans_x11=no
+    have_esmart_thumb=no
+  ]
 )
 
-AC_PATH_GENERIC(epsilon, 0.3.0,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find epsilon: Is epsilon-config in path?) ]
+PKG_CHECK_MODULES(EPSILON, [epsilon >= 0.3.0], [
+    have_esmart_thumb=yes
+    requirements="$requirements epsilon"
+  ], [
+    have_esmart_thumb=no
+  ]
 )
 
-AC_PATH_GENERIC(edje, 0.5.0,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find edje: Is edje-config in path?) ]
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0], [
+    have_esmart_text_entry=yes
+    have_esmart_file_dialog=yes
+    requirements="$requirements edje"
+  ], [
+    have_esmart_text_entry=no
+    have_esmart_file_dialog=no
+  ]
 )
+
+have_esmart_textarea=no
+
+AM_CONDITIONAL(BUILD_ESMART_CONTAINER, test $have_esmart_container = yes)
+AM_CONDITIONAL(BUILD_ESMART_DRAGGIES, test $have_esmart_draggies = yes)
+AM_CONDITIONAL(BUILD_ESMART_FILE_DIALOG, test $have_esmart_file_dialog = yes)
+AM_CONDITIONAL(BUILD_ESMART_TEXT_ENTRY, test $have_esmart_text_entry = yes)
+AM_CONDITIONAL(BUILD_ESMART_TEXTAREA, test $have_esmart_textarea = yes)
+AM_CONDITIONAL(BUILD_ESMART_THUMB, test $have_esmart_thumb = yes)
+AM_CONDITIONAL(BUILD_ESMART_TRANS_X11, test $have_esmart_trans_x11 = yes)
+
+AM_CONDITIONAL(BUILD_TEST_APP, test $have_esmart_container = yes -a $have_esmart_thumb = yes)
 
 AC_PATH_PROG(PERL, perl, 0)
 AC_SUBST(PERL)
+
+AC_SUBST(requirements)
 
 AC_OUTPUT([
 Makefile
@@ -103,3 +131,27 @@ chmod +x esmart-config
 ]
 )
 
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "Components:"
+echo "  Container...............: $have_esmart_container"
+echo "  Draggies................: $have_esmart_draggies"
+echo "  File Dialog.............: $have_esmart_file_dialog"
+echo "  Text Entry..............: $have_esmart_text_entry"
+echo "  Text Area...............: $have_esmart_textarea"
+echo "  Thumb...................: $have_esmart_thumb"
+echo "  Trans X11...............: $have_esmart_trans_x11"
+echo
+echo "------------------------------------------------------------------------"
+echo
+echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE,"
+echo "and then afterwards as root (or the user who will install this), type"
+echo "'make install'. Change users with 'su' or 'sudo' appropriately."
+echo
