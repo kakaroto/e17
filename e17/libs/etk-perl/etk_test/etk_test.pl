@@ -504,7 +504,7 @@ sub tree_window_show
     {
 	my $row = $tree->RowAppend();
 
-	$row->ModelFieldsSet(0, $mod1,  Etk::Theme::IconGet(), 
+	$row->ModelFieldsSet(0, $mod1,  Etk::Theme::IconPathGet(), 
 		Etk::Stock::KeyGet(PlacesUserHome, SizeSmall));
 	$row->ModelFieldsSet(0, $mod2, "Row " . (($i*3)+1));
 	$row->FieldsSet(0, $col2, 10.0);
@@ -513,7 +513,7 @@ sub tree_window_show
 
 
 	my $row2 = $tree->RowAppend($row);
-	$row2->ModelFieldsSet(0, $mod1,  Etk::Theme::IconGet(), 
+	$row2->ModelFieldsSet(0, $mod1,  Etk::Theme::IconPathGet(), 
 		Etk::Stock::KeyGet(PlacesUserHome, SizeSmall));
 	$row2->ModelFieldsSet(0, $mod2, "Row " . (($i*3)+2));
 	
@@ -522,7 +522,7 @@ sub tree_window_show
 	$row2->FieldsSet(0, $col4, 1);
 
 	my $row3 = $tree->RowAppend($row2);
-	$row3->ModelFieldsSet(0, $mod1,  Etk::Theme::IconGet(), 
+	$row3->ModelFieldsSet(0, $mod1,  Etk::Theme::IconPathGet(), 
 		Etk::Stock::KeyGet(PlacesUserHome, SizeSmall));
 	$row3->ModelFieldsSet(0, $mod2, "Row " . (($i*3)+3));
 	$row3->FieldsSet(0, $col2, 30.0);
@@ -803,7 +803,7 @@ sub _iconbox_folder_set
     return if($folder eq "");      
     
     $iconbox->Clear();
-    $iconbox->Append(Etk::Theme::IconGet(), "actions/go-up_48", "..");
+    $iconbox->Append(Etk::Theme::IconPathGet(), "actions/go-up_48", "..");
     
     # Add directories
     opendir(DIR, $_iconbox_folder."/".$folder) or 
@@ -811,7 +811,7 @@ sub _iconbox_folder_set
     while (defined($file = readdir(DIR))) {
 	if (-d "$_iconbox_folder/$folder/$file" && $file  !~ /^\./)
 	{
-	    $iconbox->Append(Etk::Theme::IconGet(), 
+	    $iconbox->Append(Etk::Theme::IconPathGet(), 
 		"places/folder_48", $file);
 	}
     }
@@ -827,12 +827,12 @@ sub _iconbox_folder_set
 	    $parts[-1] =~ tr [A-Z] [a-z];
 	    if($_iconbox_types{$parts[-1]})
 	    {
-		$iconbox->Append(Etk::Theme::IconGet(), 
+		$iconbox->Append(Etk::Theme::IconPathGet(), 
 		    $_iconbox_types{$parts[-1]}, $file);
 	    }
 	    else
 	    {
-		$iconbox->Append(Etk::Theme::IconGet(), 
+		$iconbox->Append(Etk::Theme::IconPathGet(), 
 		    "mimetypes/text-x-generic_48", $file);
 	    }
 	}
@@ -1239,7 +1239,7 @@ sub filechooser_window_show
     $win->TitleSet("Etk-Perl Filechooser Test");
     
     my $fc = Etk::Filechooser->new();
-    $win->PackInMainArea($fc, 1, 1, 0, 0);
+    $win->PackInMainArea($fc, BoxStart, BoxExpandFill, 0);
     $win->ButtonAdd("Open", 1);
     $win->ButtonAdd("Close", 2);
 

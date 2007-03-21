@@ -3989,15 +3989,26 @@ etk_theme_shutdown()
 	Shutdown=1
 
 const char *
-etk_theme_widget_get()
+etk_theme_widget_path_get()
       ALIAS:
-	WidgetGet=1
+	WidgetPathGet=1
+
+const char *
+etk_theme_widget_name_get()
+      ALIAS:
+	WidgetNameGet=1
 
 Etk_Bool
-etk_theme_widget_set(theme_name)
+etk_theme_widget_set_from_name(theme_name)
 	char *	theme_name
       ALIAS:
-	WidgetSet=1
+	WidgetSetFromName=1
+
+Etk_Bool
+etk_theme_widget_set_from_path(theme_path)
+	char *	theme_path
+      ALIAS:
+	WidgetSetFromPath=1
 
 void
 etk_theme_widget_available_themes_get()
@@ -4009,16 +4020,33 @@ etk_theme_widget_available_themes_get()
 	list = etk_theme_widget_available_themes_get();
 	XPUSHs(sv_2mortal(newSVCharEvasList(list)));
 
-const char *
-etk_theme_icon_get()
+char *
+etk_theme_widget_find(theme_name)
+	const char * 	theme_name
 	ALIAS:
-	IconGet=1
+	WidgetFind=1
+
+const char *
+etk_theme_icon_path_get()
+	ALIAS:
+	IconPathGet=1
+
+const char *
+etk_theme_icon_name_get()
+	ALIAS:
+	IconNameGet=1
 
 Etk_Bool
-etk_theme_icon_set(theme)
+etk_theme_icon_set_from_path(theme)
 	const char * theme
 	ALIAS:
-	IconSet=1
+	IconSetFromPath=1
+
+Etk_Bool
+etk_theme_icon_set_from_name(theme)
+	const char * theme
+	ALIAS:
+	IconSetFromName=1
 
 void
 etk_theme_icon_available_themes_get()
@@ -4030,6 +4058,14 @@ etk_theme_icon_available_themes_get()
 	list = etk_theme_icon_available_themes_get();
 	XPUSHs(sv_2mortal(newSVCharEvasList(list)));
 	
+char *
+etk_theme_icon_find(theme_name)
+	const char * 	theme_name
+	ALIAS:
+	IconFind=1
+
+
+
 Etk_Bool
 etk_theme_group_exists(file, group, parent)
 	const char * file
@@ -4037,7 +4073,6 @@ etk_theme_group_exists(file, group, parent)
 	const char * parent
 	ALIAS:
 	GroupExists=1
-
 
 MODULE = Etk::ToggleButton	PACKAGE = Etk::ToggleButton	PREFIX = etk_toggle_button_
 
