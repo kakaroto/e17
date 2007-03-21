@@ -60,40 +60,13 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
-AC_PATH_GENERIC(imlib2, 1.0.0,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find imlib2) ]
-)
-
-AC_PATH_GENERIC(esmart, 0.9.0,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find esmart) ]
-)
-
-AC_PATH_GENERIC(evas, 0.9.9,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find evas) ]
-)
-
-AC_PATH_GENERIC(edb, 1.0.0,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find edb) ]
-)
-
-AC_PATH_GENERIC(ecore, 0.9.9,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find ecore) ]
-)
-
-AC_PATH_GENERIC(edje, 0.5.0,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find edje) ]
-)
-
-AC_PATH_GENERIC(epsilon, 0.3.0,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find epsilon) ]
-)
+PKG_CHECK_MODULES(IMLIB2, [imlib2 >= 1.0.0])
+PKG_CHECK_MODULES(ESMART, [esmart >= 0.9.0])
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
+PKG_CHECK_MODULES(EDB, [edb >= 1.0.0])
+PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9 ecore-ipc >= 0.9.9])
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+PKG_CHECK_MODULES(EPSILON, [epsilon >= 0.3.0])
 
 AC_PATH_PROG(GIMP_REMOTE_BIN, "gimp-remote-2.2", "", $PATH)
 if test -z "$GIMP_REMOTE_BIN" ; then
