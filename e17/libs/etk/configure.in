@@ -111,122 +111,37 @@ function vser
   echo $V
 }
 
-AC_PATH_GENERIC(evas, 0.9.9,
-  [ ],
-  [
-    echo "ERROR:"
-    echo "The evas-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the evas-devel (or evas-dev)"
-    echo "   packages."
-    echo "2. You may have evas installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the evas-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-evas-config."
-    AC_MSG_ERROR([Fatal Error: no evas-config detected.])
-  ]
-)
+requirements="evas ecore ecore-file edje"
 
-AC_PATH_GENERIC(ecore, 0.9.9,
-  [ ],
-  [
-    echo "ERROR:"
-    echo "The ecore-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the ecore-devel (or ecore-dev)"
-    echo "   packages."
-    echo "2. You may have ecore installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the ecore-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-ecore-config."
-    AC_MSG_ERROR([Fatal Error: no ecore-config detected.])
-  ]
-)
-
-CFLAGS=$ECORE_CFLAGS" "$CFLAGS
-AC_PATH_GENERIC(edje, 0.5.0,
-  [ ],
-  [
-    echo "ERROR:"
-    echo "The edje-config development script was not found in your execute"
-    echo "path. This may mean one of several things"
-    echo "1. You may not have installed the edje-devel (or edje-dev)"
-    echo "   packages."
-    echo "2. You may have edje installed somewhere not covered by your path."
-    echo ""
-    echo "If this is the case make sure you have the packages installed, AND"
-    echo "that the edje-config script is in your execute path (see your"
-    echo "shell's manual page on setting the \$PATH environment variable), OR"
-    echo "alternatively, specify the script to use with --with-edje-config."
-    AC_MSG_ERROR([Fatal Error: no edje-config detected.])
-  ]
-)
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
+PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9 ecore-file >= 0.9.9])
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 
 #####################################################################
 ## Ecore_X
-have_ecore_x="no"
-save_CPPFLAGS=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS $ECORE_CFLAGS"
-save_LDFLAGS=$LDFLAGS
-LDFLAGS="$LDFLAGS $ECORE_LIBS"
-AC_CHECK_HEADER(Ecore_X.h,
-  [AC_CHECK_LIB(ecore_x,
-      ecore_x_init,
-      [AC_DEFINE(HAVE_ECORE_X,
-                 1,
-                 [Define to 1 if you have the Ecore_X headers and libraries])
-      have_ecore_x="yes"],
-      [AC_DEFINE(HAVE_ECORE_X,
-                 0,
-         [Define to 1 if you have the Ecore_X headers and libraries])])],
-	 
-  [AC_DEFINE(HAVE_ECORE_X,
-      0,
-      [Define to 1 if you have the Ecore_X headers and libraries])]
-)
-CPPFLAGS=$save_CPPFLAGS
-LDFLAGS=$save_LDFLAGS
+PKG_CHECK_MODULES(ECORE_X, [ecore-x >= 0.9.9], [
+    have_ecore_x=yes
+    AC_DEFINE(HAVE_ECORE_X, 1, [Define to 1 if you have the Ecore_X headers and libraries])
+    requirements="$requirements ecore-x"
+  ], [
+    have_ecore_x=no
+    AC_DEFINE(HAVE_ECORE_X, 0, [Define to 1 if you have the Ecore_X headers and libraries])
+])
 
-if test "x${have_ecore_x}" = 'xyes'; then
-AM_CONDITIONAL(BUILD_ENGINE_EE_S_X11, true)
-else
-AM_CONDITIONAL(BUILD_ENGINE_EE_S_X11, false)
-fi
+AM_CONDITIONAL(BUILD_ENGINE_EE_S_X11, test $have_ecore_x = yes)
 
 #####################################################################
 ## Ecore_FB
-have_ecore_fb="no"
-save_CPPFLAGS=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS $ECORE_CFLAGS"
-save_LDFLAGS=$LDFLAGS
-LDFLAGS="$LDFLAGS $ECORE_LIBS"
-AC_CHECK_HEADER(Ecore_Fb.h,
-  [AC_CHECK_LIB(ecore_fb,
-      ecore_fb_init,
-      [AC_DEFINE(HAVE_ECORE_FB,
-                 1,
-                 [Define to 1 if you have the Ecore_FB headers and libraries])
-      have_ecore_fb="yes"],
-      [AC_DEFINE(HAVE_ECORE_FB,
-                 0,
-         [Define to 1 if you have the Ecore_FB headers and libraries])])],
-	 
-  [AC_DEFINE(HAVE_ECORE_FB,
-      0,
-      [Define to 1 if you have the Ecore_FB headers and libraries])]
-)
-CPPFLAGS=$save_CPPFLAGS
-LDFLAGS=$save_LDFLAGS
+PKG_CHECK_MODULES(ECORE_FB, [ecore-fb >= 0.9.9], [
+    have_ecore_fb=yes
+    AC_DEFINE(HAVE_ECORE_FB, 1, [Define to 1 if you have the Ecore_FB headers and libraries])
+    requirements="$requirements ecore-fb"
+  ], [
+    have_ecore_fb=no
+    AC_DEFINE(HAVE_ECORE_FB, 0, [Define to 1 if you have the Ecore_FB headers and libraries])
+])
 
-if test "x${have_ecore_fb}" = 'xyes'; then
-AM_CONDITIONAL(BUILD_ENGINE_E_FB, true)
-else
-AM_CONDITIONAL(BUILD_ENGINE_E_FB, false)
-fi
+AM_CONDITIONAL(BUILD_ENGINE_E_FB, test $have_ecore_fb = yes)
 
 #####################################################################
 ## Gettext
@@ -238,9 +153,6 @@ AM_GNU_GETTEXT_VERSION(0.14.1)
 
 #####################################################################
 ## Fill in flags
-
-requirements="evas ecore edje"
-
 AC_SUBST(requirements)
 
 AC_SUBST(packagesrcdir)
