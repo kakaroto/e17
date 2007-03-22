@@ -17,6 +17,7 @@ PKG_CHECK_MODULES(EPHYS, [
 
 AC_OUTPUT([
 Makefile
+ephys.pc
 src/Makefile
 src/lib/Makefile
 src/bin/Makefile
