@@ -10,4 +10,4 @@ Description: Enlightenment Foundations Library based toolkit.
 Requires: @requirements@
 Version: @VERSION@
 Libs: -L${libdir} -letk
-Cflags: -I${includedir}
+Cflags: -I${includedir} -I${includedir}/etk
