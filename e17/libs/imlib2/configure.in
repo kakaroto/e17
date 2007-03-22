@@ -167,11 +167,6 @@ fi
 AC_MSG_RESULT($amd64)
 AM_CONDITIONAL(BUILD_AMD64, test x$amd64 = xyes)
 
-
-
-# FIXME: fill in requirements for pc.in - but only ft2 has a pc file!
-requirements="freetype2"
-
 # check for freetype
 AC_ARG_WITH(freetype-config, [  --with-freetype-config=FREETYPE_CONFIG    use freetype-config specified ],
 [ FREETYPE_CONFIG=$withval;
@@ -593,10 +588,6 @@ else
 fi
 AM_CONDITIONAL(BUILD_ID3_LOADER, test "$id3_ok" = yes)
 AC_SUBST(ID3LIBS)
-
-
-
-AC_SUBST(requirements)
 
 AC_OUTPUT([
 Makefile
