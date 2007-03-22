@@ -6,3 +6,6 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       edbus-config
 
 bin_SCRIPTS = edbus-config
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = edbus.pc
