@@ -46,7 +46,7 @@ while test $# -gt 0; do
       ;;
     --libs)
       libdirs=-L@libdir@
-      echo $libdirs -ledbus @ECORE_LIBS@ | sed 's/ /\n/g' | sort | uniq | sed 'H;$!d;${x;s/\n/ /g;s/^ //}'
+      echo $libdirs -ledbus @EDBUS_LIBS@
       ;;
     *)
       echo "${usage}" 1>&2
