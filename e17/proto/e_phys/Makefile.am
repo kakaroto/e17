@@ -6,3 +6,6 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       ephys-config
 
 bin_SCRIPTS = ephys-config
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkconfig_DATA = ephys.pc
