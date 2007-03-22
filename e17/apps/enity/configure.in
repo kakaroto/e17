@@ -85,36 +85,7 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
-#check for ETK
-AC_PATH_EFL(
-   etk,
-   0.1.0.001,
-   [
-     AC_DEFINE(HAVE_ETK, 1, have ETK)
-     etk="ETK "
-     AM_CONDITIONAL(HAVE_ETK, true)
-     have_etk="yes"
-     etk_libs=`etk-config --libs`
-     etk_cflags=`etk-config --cflags`     
-   ],
-   [
-     AC_MSG_ERROR([No Etk, can't build.])
-   ]
-)
-
-dnl Set ETK_PACKAGE_DATA_DIR in config.h.  
-etk_prefix="\"`etk-config --prefix`/share/etk\""
-AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
-
-
-etk_libs=`etk-config --libs`
-etk_cflags=`etk-config --cflags`
-
-# add required libs / include here
-my_includes="$etk_cflags"
-my_libs="$etk_libs"
-AC_SUBST(my_includes)
-AC_SUBST(my_libs)
+PKG_CHECK_MODULES(ENITY, [etk >= 0.1.0.001])
 
 AC_OUTPUT([
 Makefile
