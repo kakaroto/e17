@@ -1,8 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES =  \
-@ECORE_CFLAGS@ \
-@DBUS_CFLAGS@ \
+@EDBUS_CFLAGS@ \
 -I $(top_builddir)/src/lib/dbus
 
 lib_LTLIBRARIES = libenm.la
@@ -17,8 +16,7 @@ e_nm_util.c
 
 
 libenm_la_LIBADD = \
-@ECORE_LIBS@ \
-@DBUS_LIBS@ \
+@EDBUS_LIBS@ \
 $(top_builddir)/src/lib/dbus/libedbus.la
 
 

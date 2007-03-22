@@ -1,6 +1,5 @@
 INCLUDES =  \
-@ECORE_CFLAGS@ \
-@DBUS_CFLAGS@ \
+@EDBUS_CFLAGS@ \
 -I $(top_builddir)/src/lib/dbus
 
 lib_LTLIBRARIES = libehal.la
@@ -14,6 +13,5 @@ e_hal_manager.c \
 e_hal_util.c 
 
 libehal_la_LIBADD = \
-@ECORE_LIBS@ \
-@DBUS_LIBS@ \
+@EDBUS_LIBS@ \
 $(top_builddir)/src/lib/dbus/libedbus.la

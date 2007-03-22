@@ -4,12 +4,10 @@ INCLUDES = \
 -I$(top_srcdir)/src/lib/dbus \
 -I$(top_srcdir)/src/lib/hal \
 -I$(top_srcdir)/src/lib/nm \
-@ECORE_CFLAGS@ \
-@DBUS_CFLAGS@ 
+@EDBUS_CFLAGS@ 
 
 LIBS = \
-@ECORE_LIBS@ \
-@DBUS_LIBS@
+@EDBUS_LIBS@
 
 bin_PROGRAMS = e_dbus_test \
 							 e_dbus_hal \

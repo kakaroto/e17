@@ -8,15 +8,10 @@ AM_PROG_LIBTOOL
 
 AC_HEADER_STDC
 
-AC_PATH_GENERIC([ecore], [0.9.9],
-  [ ],
-  [ AC_MSG_ERROR(Ecore not found.) ],
-)
-
-PKG_CHECK_MODULES([DBUS], [dbus-1],
-  [ ],
-  [ AC_MSG_ERROR(DBus not found.) ]
-)
+PKG_CHECK_MODULES([EDBUS], [
+  dbus-1
+  ecore >= 0.9.9
+])
 
 AC_OUTPUT([
 Makefile
@@ -27,6 +22,7 @@ src/lib/hal/Makefile
 src/lib/nm/Makefile
 src/bin/Makefile
 edbus-config
+edbus.pc
 ],[
 chmod +x edbus-config
 ])
