@@ -21,8 +21,5 @@ src/lib/dbus/Makefile
 src/lib/hal/Makefile
 src/lib/nm/Makefile
 src/bin/Makefile
-edbus-config
 edbus.pc
-],[
-chmod +x edbus-config
 ])
