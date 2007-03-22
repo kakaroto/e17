@@ -419,7 +419,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    if(!strcmp(name, "response_id"))
      {
 	PROPERTY_STR;	
-	etk_object_data_set(ETK_OBJECT(wid->wid), "response_id", value);
+	etk_object_data_set(ETK_OBJECT(wid->wid), "response-id", value);
      }
    
    else if(!strcmp(name, "visible"))
@@ -500,25 +500,25 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    else if(!strcmp(name, "headers_visible"))
      {
 	PROPERTY_BOOL;
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "headers_visible", value, NULL);	
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "headers-visible", value, NULL);	
      }
    
    else if(!strcmp(name, "has_resize_grip"))
      {
 	PROPERTY_BOOL;
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "has_resize_grip", value, NULL);	
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "has-resize-grip", value, NULL);	
      }   
    
    else if(!strcmp(name, "n_columns"))
      {
 	PROPERTY_INT;
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "num_cols", value, NULL);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "num-cols", value, NULL);
      }
    
    else if(!strcmp(name, "n_rows"))
      {
 	PROPERTY_INT;
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "num_rows", value, NULL);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "num-rows", value, NULL);
      }
    
    else if(!strcmp(name, "fraction"))
@@ -530,7 +530,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    else if(!strcmp(name, "pulse_step"))
      {
 	PROPERTY_DOUBLE;
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "pulse_step", value, NULL);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "pulse-step", value, NULL);
      }   
    
    else if(!strcmp(name, "skip_taskbar_hint"))
@@ -568,13 +568,13 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    else if(!strcmp(name, "height_request"))
      {
 	PROPERTY_INT;
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "height_request", value, NULL);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "requested-height", value, NULL);
      }
    
    else if(!strcmp(name, "width_request"))
      {
 	PROPERTY_INT;
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "width_request", value, NULL);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "requested-width", value, NULL);
      }     
 
    else if(!strcmp(name, "default_width"))
@@ -608,7 +608,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	
 	_en_stock_items_hash_init();      
 	id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, value);
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_id", id, NULL);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock-id", id, NULL);
      }
    
    else if(!strcmp(name, "stock_id"))
@@ -659,7 +659,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	     if (size_value <= 2) size = ETK_STOCK_SMALL;
 	     else if (size_value >= 5) size = ETK_STOCK_BIG;
 	  }
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_size", size, NULL);
+	etk_object_properties_set(ETK_OBJECT(wid->wid), "stock-size", size, NULL);
      }
 
    else if(!strcmp(name, "icon_name"))
@@ -671,7 +671,7 @@ _e_property_handle(Enhance *en, EXML_Node *node)
 	id = (Etk_Stock_Id)ecore_hash_get(_en_stock_items_hash, value);
 	IF_PARENT_CLASS("GtkImage")
 	  {
-	    etk_object_properties_set(ETK_OBJECT(wid->wid), "stock_id", id, NULL);
+	    etk_object_properties_set(ETK_OBJECT(wid->wid), "stock-id", id, NULL);
 	  }
 	if ETK_IS_BUTTON(wid->wid)
 	  {
@@ -805,8 +805,8 @@ _e_property_handle(Enhance *en, EXML_Node *node)
                             "value", val, 
                             "lower", lower, 
                             "upper", upper, 
-                            "step_increment", step_incr, 
-                            "page_increment", page_incr, NULL);
+                            "step-increment", step_incr, 
+                            "page-increment", page_incr, NULL);
      }
 
    else if(!strcmp(name, "digits"))
