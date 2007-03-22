@@ -9,6 +9,7 @@ include_HEADERS = E_DBus.h
 
 libedbus_la_SOURCES = \
 	E_DBus.h \
+	e_dbus_private.h \
 	e_dbus.c \
 	e_dbus_message.c \
 	e_dbus_methods.c \
