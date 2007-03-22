@@ -1,4 +1,6 @@
 debian/tmp/usr/lib/libenhance.la
 debian/tmp/usr/lib/libenhance.a
+debian/tmp/usr/lib/libenhance.so
 debian/tmp/usr/include/*
 debian/tmp/usr/bin/*-config
+debian/tmp/usr/lib/pkgconfig/*
