@@ -1,6 +1,6 @@
 #! /bin/sh
 
-echo "Running aclocal..."; aclocal $ACLOCAL_FLAGS -I m4 || exit 1
+echo "Running aclocal..."; aclocal $ACLOCAL_FLAGS || exit 1
 echo "Running libtoolize..."; (libtoolize --copy --automake || glibtoolize --automake) || exit 1
 echo "Running automake..."; automake --gnu --add-missing --copy || exit 1
 echo "Running autoconf..."; autoconf || exit 1
