@@ -21,8 +21,7 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
-#AM_PROG_LIBTOOL
-LIBS=""
+AM_PROG_LIBTOOL
       
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
@@ -72,8 +71,8 @@ AC_SUBST(libmpd_v_cflags)
 m4_include(m4/ac_path_efl.m4)
 AC_CHECK_FUNCS(strndup)
 AC_CHECK_LIB(pthread, pthread_create)
-AC_PATH_EFL(ecore, 0.9.9.022, [AM_CONDITIONAL(HAVE_ECORE, true)])
-AC_PATH_EFL(etk, 0.1.0.002, [AM_CONDITIONAL(HAVE_ETK, true)])
+PKG_CHECK_MODULES(ECORE, ecore >= 0.9.9.022, [AM_CONDITIONAL(HAVE_ECORE, true)])
+PKG_CHECK_MODULES(ETK, etk >= 0.1.0.002, [AM_CONDITIONAL(HAVE_ETK, true)])
 AC_PATH_GENERIC(enhance, 0.0.1, [AM_CONDITIONAL(HAVE_ENHANCE, true)])
 AC_PATH_GENERIC(XML2, 2.6.0, [AM_CONDITIONAL(HAVE_XML2, true)])
 PKG_CHECK_MODULES(libmpd, libmpd >= 0.12.0, [AM_CONDITIONAL(HAVE_LIBMPD, true)]) 
