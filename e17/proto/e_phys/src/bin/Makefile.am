@@ -1,8 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I$(top_srcdir)/src/lib \
-@EPHYS_CFLAGS@ \
--g -Werror
+@EPHYS_CFLAGS@
 
 bin_PROGRAMS = e_phys_demo 
 

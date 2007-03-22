@@ -1,6 +1,4 @@
-INCLUDES =  \
-@EPHYS_CFLAGS@ \
--g -Werror
+INCLUDES = @EPHYS_CFLAGS@
 
 lib_LTLIBRARIES = libephys.la
 
