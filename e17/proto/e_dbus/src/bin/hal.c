@@ -102,15 +102,15 @@ storage_free(Storage *storage)
     v->storage = NULL;
   ecore_list_destroy(storage->volumes);
     
-  if(storage->udi) free(storage->udi);
-  if(storage->bus) free(storage->bus);
-  if(storage->drive_type) free(storage->drive_type);
+  if (storage->udi) free(storage->udi);
+  if (storage->bus) free(storage->bus);
+  if (storage->drive_type) free(storage->drive_type);
 
-  if(storage->model) free(storage->model);
-  if(storage->vendor) free(storage->vendor);
-  if(storage->serial) free(storage->serial);
-  if(storage->icon.drive) free(storage->icon.drive);
-  if(storage->icon.volume) free(storage->icon.volume);
+  if (storage->model) free(storage->model);
+  if (storage->vendor) free(storage->vendor);
+  if (storage->serial) free(storage->serial);
+  if (storage->icon.drive) free(storage->icon.drive);
+  if (storage->icon.volume) free(storage->icon.volume);
 
   free(storage);
 }
