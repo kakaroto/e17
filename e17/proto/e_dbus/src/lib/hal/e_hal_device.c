@@ -62,11 +62,14 @@ e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;
+  int ret;
 
   cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_device_call_new(udi, "GetProperty");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
-  return e_dbus_message_send(conn, msg, cb_device_get_property, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(conn, msg, cb_device_get_property, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 /* Device.GetAllProperties */
@@ -174,10 +177,13 @@ e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_Hal_
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;
+  int ret;
 
   cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_device_call_new(udi, "GetAllProperties");
-  return e_dbus_message_send(conn, msg, cb_device_get_all_properties, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(conn, msg, cb_device_get_all_properties, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 
@@ -221,11 +227,14 @@ e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const ch
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;
+  int ret;
 
   cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_device_call_new(udi, "QueryCapability");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &capability, DBUS_TYPE_INVALID);
-  return e_dbus_message_send(conn, msg, cb_device_query_capability, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(conn, msg, cb_device_query_capability, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 
@@ -261,6 +270,7 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
   E_Hal_Callback *cb;
   DBusMessage *msg;
   DBusMessageIter iter, subiter;
+  int ret;
 
   cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_device_volume_call_new(udi, "Mount");
@@ -281,7 +291,9 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
   }
   dbus_message_iter_close_container(&iter, &subiter) ;
 
-  return e_dbus_message_send(conn, msg, cb_device_volume_mount, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(conn, msg, cb_device_volume_mount, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 /* void Unmount(array{string} options) */
@@ -314,6 +326,7 @@ e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List
   E_Hal_Callback *cb;
   DBusMessage *msg;
   DBusMessageIter iter, subiter;
+  int ret;
 
   cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_device_volume_call_new(udi, "Unmount");
@@ -331,5 +344,7 @@ e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List
   }
   dbus_message_iter_close_container(&iter, &subiter) ;
 
-  return e_dbus_message_send(conn, msg, cb_device_volume_unmount, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(conn, msg, cb_device_volume_unmount, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }

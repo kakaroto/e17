@@ -10,6 +10,7 @@ LIBS = \
 @EDBUS_LIBS@
 
 bin_PROGRAMS = e_dbus_test \
+							 e_dbus_test_client \
 							 e_dbus_hal \
 							 e_dbus_nm 
 
@@ -19,6 +20,11 @@ test.c
 e_dbus_test_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(LIBS)
 e_dbus_test_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la
 
+e_dbus_test_client_SOURCES = \
+test_client.c
+
+e_dbus_test_client_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(LIBS)
+e_dbus_test_client_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la
 
 HALSOURCES = \
 hal.c
@@ -28,7 +34,6 @@ e_dbus_hal_SOURCES = \
 
 e_dbus_hal_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la $(LIBS) 
 e_dbus_hal_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la
-
 
 
 NMSOURCES = \

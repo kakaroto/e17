@@ -12,10 +12,13 @@ e_nm_device_deactivate(E_NM_Context *ctx, const char *device, E_NM_Callback_Func
 {
   E_NM_Callback *cb;
   DBusMessage *msg;
+  int ret;
 
   cb = e_nm_callback_new(cb_func, data);
   msg = e_nm_device_call_new(device, "Deactivate");
-  return e_dbus_message_send(ctx->conn, msg, cb_nm_generic, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(ctx->conn, msg, cb_nm_generic, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 int
@@ -23,6 +26,7 @@ e_nm_device_wired_activate(E_NM_Context *ctx, const char *device, E_NM_Callback_
 {
   E_NM_Callback *cb;
   DBusMessage *msg;
+  int ret;
   dbus_bool_t val;
 
   val = user_requested;
@@ -30,7 +34,9 @@ e_nm_device_wired_activate(E_NM_Context *ctx, const char *device, E_NM_Callback_
   cb = e_nm_callback_new(cb_func, data);
   msg = e_nm_device_wired_call_new(device, "Activate");
   dbus_message_append_args(msg, DBUS_TYPE_BOOLEAN, &val, DBUS_TYPE_INVALID);
-  return e_dbus_message_send(ctx->conn, msg, cb_nm_generic, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(ctx->conn, msg, cb_nm_generic, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 int
@@ -38,10 +44,13 @@ e_nm_device_wireless_get_active_networks(E_NM_Context *ctx, const char *device, 
 {
   E_NM_Callback *cb;
   DBusMessage *msg;
+  int ret;
 
   cb = e_nm_callback_new(cb_func, data);
   msg = e_nm_device_wireless_call_new(device, "GetActiveNetworks");
-  return e_dbus_message_send(ctx->conn, msg, cb_nm_string_list, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(ctx->conn, msg, cb_nm_string_list, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 int
@@ -49,6 +58,7 @@ e_nm_device_wireless_activate(E_NM_Context *ctx, const char *device, E_NM_Callba
 {
   E_NM_Callback *cb;
   DBusMessage *msg;
+  int ret;
   dbus_bool_t val;
 
   val = user_requested;
@@ -56,5 +66,7 @@ e_nm_device_wireless_activate(E_NM_Context *ctx, const char *device, E_NM_Callba
   cb = e_nm_callback_new(cb_func, data);
   msg = e_nm_device_wireless_call_new(device, "Activate");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &access_point, DBUS_TYPE_BOOLEAN, &val, DBUS_TYPE_INVALID);
-  return e_dbus_message_send(ctx->conn, msg, cb_nm_generic, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(ctx->conn, msg, cb_nm_generic, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }

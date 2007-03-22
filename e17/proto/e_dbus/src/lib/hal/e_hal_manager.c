@@ -56,12 +56,15 @@ e_hal_manager_get_all_devices(E_DBus_Connection *conn, E_Hal_Callback_Func cb_fu
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;
+  int ret;
 
   if (!cb_func) return 0;
   cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_manager_call_new("GetAllDevices");
   /* add params here (for method calls that have them) */
-  return e_dbus_message_send(conn, msg, cb_manager_get_all_devices, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(conn, msg, cb_manager_get_all_devices, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 /* Manager.DeviceExists(string udi) */
@@ -101,12 +104,15 @@ int
 e_hal_manager_device_exists(E_DBus_Connection *conn, const char *udi, E_Hal_Callback_Func cb_func, void *data)
 {
   E_Hal_Callback *cb;
+  int ret;
   DBusMessage *msg;
 
   cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_manager_call_new("DeviceExists");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
-  return e_dbus_message_send(conn, msg, cb_manager_device_exists, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(conn, msg, cb_manager_device_exists, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 /* Manager.FindDeviceStringMatch */
@@ -154,11 +160,14 @@ e_hal_manager_find_device_string_match(E_DBus_Connection *conn, const char *key,
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;
+  int ret;
 
   cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_manager_call_new("FindDeviceStringMatch");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &key, DBUS_TYPE_STRING, &value, DBUS_TYPE_INVALID);
-  return e_dbus_message_send(conn, msg, cb_manager_find_device_string_match, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(conn, msg, cb_manager_find_device_string_match, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 /* Manager.FindDeviceByCapability */
@@ -206,9 +215,12 @@ e_hal_manager_find_device_by_capability(E_DBus_Connection *conn, const char *cap
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;
+  int ret;
 
   cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_manager_call_new("FindDeviceByCapability");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &capability, DBUS_TYPE_INVALID);
-  return e_dbus_message_send(conn, msg, cb_manager_find_device_by_capability, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(conn, msg, cb_manager_find_device_by_capability, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }

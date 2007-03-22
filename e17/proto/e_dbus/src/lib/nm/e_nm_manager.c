@@ -17,11 +17,14 @@ e_nm_get_devices(E_NM_Context *ctx, E_NM_Callback_Func cb_func, void *data)
 {
   E_NM_Callback *cb;
   DBusMessage *msg;
+  int ret;
 
   cb = e_nm_callback_new(cb_func, data);
   msg = e_nm_manager_call_new("GetDevices");
 
-  return e_dbus_message_send(ctx->conn, msg, cb_nm_string_list, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(ctx->conn, msg, cb_nm_string_list, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }
 
 /**
@@ -38,11 +41,14 @@ e_nm_sleep(E_NM_Context *ctx, E_NM_Callback_Func cb_func, void *data, int do_sle
 {
   E_NM_Callback *cb;
   DBusMessage *msg;
+  int ret;
   dbus_bool_t var = do_sleep;
 
   cb = e_nm_callback_new(cb_func, data);
   msg = e_nm_manager_call_new("Sleep");
   dbus_message_append_args(msg, DBUS_TYPE_BOOLEAN, &var, DBUS_TYPE_INVALID);
 
-  return e_dbus_message_send(ctx->conn, msg, cb_nm_generic, -1, cb) ? 1 : 0;
+  ret = e_dbus_message_send(ctx->conn, msg, cb_nm_generic, -1, cb) ? 1 : 0;
+  dbus_message_unref(msg);
+  return ret;
 }

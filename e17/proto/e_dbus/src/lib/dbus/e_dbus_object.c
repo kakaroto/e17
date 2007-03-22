@@ -83,7 +83,7 @@ cb_introspect(E_DBus_Object *obj, DBusMessage *msg)
     obj->introspection_data = strdup(ecore_strbuf_string_get(buf));
     ecore_strbuf_free(buf);
   }
-  printf("XML: \n\n%s\n\n", obj->introspection_data);
+  //printf("XML: \n\n%s\n\n", obj->introspection_data);
   ret = dbus_message_new_method_return(msg);
   dbus_message_append_args(ret, DBUS_TYPE_STRING, &(obj->introspection_data), DBUS_TYPE_INVALID);
 
@@ -306,7 +306,7 @@ e_dbus_object_handler(DBusConnection *conn, DBusMessage *message, void *user_dat
     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
   if (m->signature && !dbus_message_has_signature(message, m->signature))
-    reply = dbus_message_new_error_printf(message, "InvalidSignature", "Expected signature: %s", m->signature);
+    reply = dbus_message_new_error_printf(message, "org.enlightenment.InvalidSignature", "Expected signature: %s", m->signature);
   else
     reply = m->func(obj, message);
 
@@ -405,11 +405,9 @@ _introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level)
       method->reply_signature[0] &&
       dbus_signature_validate(method->reply_signature, NULL))
   {
-    printf("valid reply sig: '%s'\n", method->reply_signature);
     dbus_signature_iter_init(&iter, method->reply_signature);
     while ((type = dbus_signature_iter_get_signature(&iter)))
     {
-      printf("got type: '%s'\n", type);
       _introspect_arg_append(buf, type, "out", level);
 
       dbus_free(type);
