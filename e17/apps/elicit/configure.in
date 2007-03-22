@@ -62,7 +62,6 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code director
 
 PKG_CHECK_MODULES(ELICIT, [
   imlib2
-  edb
   evas
   eet
   esmart
@@ -71,6 +70,9 @@ PKG_CHECK_MODULES(ELICIT, [
   ecore-evas
   edje
 ])
+
+dnl edb support is optional:
+PKG_CHECK_MODULES(EDB, edb, AC_DEFINE(HAVE_EDB, 1, [Have edb]), dummy=no)
 
 AC_OUTPUT([
 Makefile 
