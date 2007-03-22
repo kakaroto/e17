@@ -1,6 +1,5 @@
 INCLUDES =  \
-@EVAS_CFLAGS@ \
-@ECORE_CFLAGS@ \
+@EPHYS_CFLAGS@ \
 -g -Werror
 
 lib_LTLIBRARIES = libephys.la
@@ -15,4 +14,4 @@ libephys_la_SOURCES = \
 	e_phys_world.c \
 	e_phys_map.c
 
-libephys_la_LIBADD = @EVAS_LIBS@ @ECORE_LIBS@ -lm
+libephys_la_LIBADD = @EPHYS_LIBS@ -lm

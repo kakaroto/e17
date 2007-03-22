@@ -9,15 +9,11 @@ AM_PROG_LIBTOOL
 AC_HEADER_STDC
 AC_CHECK_HEADERS(math.h)
 
-AC_PATH_GENERIC([evas], [0.9.9],
-  [ ],
-  [ AC_MSG_ERROR(Evas isn't installed) ],
-)
-
-AC_PATH_GENERIC([ecore], [0.9.9],
-  [ ],
-  [ AC_MSG_ERROR(Ecore isn't installed) ],
-)
+PKG_CHECK_MODULES(EPHYS, [
+  evas
+  ecore
+  ecore-evas
+])
 
 AC_OUTPUT([
 Makefile
