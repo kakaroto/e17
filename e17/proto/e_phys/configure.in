@@ -21,7 +21,4 @@ ephys.pc
 src/Makefile
 src/lib/Makefile
 src/bin/Makefile
-ephys-config
-],[
-chmod +x ephys-config
 ])
