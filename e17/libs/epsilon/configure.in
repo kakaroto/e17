@@ -77,26 +77,19 @@ AC_ARG_ENABLE(thumbnailer-xine, AC_HELP_STRING([--enable-thumbnailer-xine],[buil
         )
 if test X"$ac_use_plugin_xine" = Xyes; then
         AC_MSG_RESULT(no)
-        AC_ARG_WITH(libxine,
-           AC_HELP_STRING([--with-libxine=DIR],[use libxine in <DIR>]),
-           [xine_CFLAGS="-I$withval/include"
-            xine_LIBS="-L$withval/lib -lxine"
-            AC_DEFINE(HAVE_LIBXINE, 1, libxine thumbnailer)
-            xine="xine "],
-           [AC_PATH_GENERIC(xine, 1.0.0, [
-              xine_CFLAGS=`xine-config --cflags`
-              xine_LIBS=`xine-config --libs`
-              xine_PLUGINS=`xine-config --plugindir`
-              AC_DEFINE(HAVE_LIBXINE, 1, build xinefile thumbnailer)
-              xine="xine"],[
-              AC_MSG_WARN([libxine too old; no thumbnails for videos...])])])
+        PKG_CHECK_MODULES(XINE, [libxine >= 1.0.0],
+          [
+            AC_DEFINE(HAVE_LIBXINE, 1, build xinefile thumbnailer)
+	    xine="xine"
+	  ],
+          [
+            AC_MSG_WARN([libxine too old; no thumbnails for videos...])
+          ]
+        )
 else
         AC_MSG_RESULT(yes)
         xine=""
 fi
-AC_SUBST(xine_LIBS)
-AC_SUBST(xine_CFLAGS)
-AC_SUBST(xine_PLUGINS)
 AM_CONDITIONAL(HAVE_XINE, test $xine = "xine")
 
 requirements="imlib2 evas ecore-evas ecore-file ecore-con edje"
