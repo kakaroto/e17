@@ -57,14 +57,23 @@ void
 elicit_zoom_grid_visible_set(Evas_Object *o, int visible)
 {
   Elicit_Zoom *z;
+  Evas_Object *gui;
   z = evas_object_smart_data_get(o);
+  gui = evas_object_name_find(evas_object_evas_get(o), "gui");
 
   elicit_config_grid_visible_set(visible);
   if (!z->has_data) return;
   if (visible)
+  {
     evas_object_show(z->grid);
+    edje_object_signal_emit(gui, "grid,on", "Elicit");
+  }
   else
+  {
     evas_object_hide(z->grid);
+    edje_object_signal_emit(gui, "grid,off", "Elicit");
+  }
+
 }
 
 void
