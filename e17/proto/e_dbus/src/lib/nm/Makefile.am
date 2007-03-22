@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES =  \
 @EDBUS_CFLAGS@ \
--I $(top_builddir)/src/lib/dbus
+-I $(top_srcdir)/src/lib/dbus
 
 lib_LTLIBRARIES = libenm.la
 include_HEADERS = E_Nm.h
