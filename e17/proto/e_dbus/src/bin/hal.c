@@ -201,6 +201,7 @@ storage_append(const char *udi)
   ecore_list_append(storage_devices, s);
   e_hal_device_get_all_properties(conn, s->udi, cb_storage_properties, s);
   devices_dirty();
+  return s;
 }
 
 Volume *

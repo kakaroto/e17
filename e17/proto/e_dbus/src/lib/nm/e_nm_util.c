@@ -42,7 +42,6 @@ void
 cb_nm_generic(void *data, DBusMessage *msg, DBusError *err)
 {
   E_NM_Callback *cb;
-  DBusMessageIter iter, sub;
 
   cb = data;
   if (cb->func)
