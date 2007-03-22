@@ -69,20 +69,20 @@ emphasis_init_menu(Emphasis_Gui *gui)
                        NULL);
 	
   /* Do we need all this connect ? */
-	etk_signal_connect("mouse_down", ETK_OBJECT(player->full.window), 
+	etk_signal_connect("mouse-down", ETK_OBJECT(player->full.window), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
-  etk_signal_connect("mouse_down", ETK_OBJECT(player->small.window), 
+  etk_signal_connect("mouse-down", ETK_OBJECT(player->small.window), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
-	etk_signal_connect("mouse_down", ETK_OBJECT(player->media.window),
+	etk_signal_connect("mouse-down", ETK_OBJECT(player->media.window),
                      ETK_CALLBACK(cb_pls_contextual_menu), gui);
 	                   
-	etk_signal_connect("mouse_down", ETK_OBJECT(player->media.pls), 
+	etk_signal_connect("mouse-down", ETK_OBJECT(player->media.pls), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
-	etk_signal_connect("mouse_down", ETK_OBJECT(player->media.artist), 
+	etk_signal_connect("mouse-down", ETK_OBJECT(player->media.artist), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
-	etk_signal_connect("mouse_down", ETK_OBJECT(player->media.album), 
+	etk_signal_connect("mouse-down", ETK_OBJECT(player->media.album), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
-	etk_signal_connect("mouse_down", ETK_OBJECT(player->media.track), 
+	etk_signal_connect("mouse-down", ETK_OBJECT(player->media.track), 
 	                   ETK_CALLBACK(cb_pls_contextual_menu), gui);
 
 }

@@ -162,16 +162,16 @@ emphasis_init_player(Emphasis_Player_Gui *player)
   etk_widget_dnd_source_set(ETK_WIDGET(player->media.track) , ETK_TRUE);
   etk_widget_dnd_dest_set(ETK_WIDGET(player->media.pls), ETK_TRUE);
 
-  etk_signal_connect("row_clicked", ETK_OBJECT(player->media.artist),
+  etk_signal_connect("row-clicked", ETK_OBJECT(player->media.artist),
                      ETK_CALLBACK(cb_tree_mlib_clicked),
                      player);
-  etk_signal_connect("row_clicked", ETK_OBJECT(player->media.album ),
+  etk_signal_connect("row-clicked", ETK_OBJECT(player->media.album ),
                      ETK_CALLBACK(cb_tree_mlib_clicked),
                      player);
-  etk_signal_connect("row_clicked", ETK_OBJECT(player->media.track ),
+  etk_signal_connect("row-clicked", ETK_OBJECT(player->media.track ),
                      ETK_CALLBACK(cb_tree_mlib_clicked),
                      player);
-  etk_signal_connect("row_clicked", ETK_OBJECT(player->media.pls   ),
+  etk_signal_connect("row-clicked", ETK_OBJECT(player->media.pls   ),
                      ETK_CALLBACK(cb_tree_pls_clicked),
                      NULL);
 
@@ -213,7 +213,7 @@ _emphasis_init_player_small(Emphasis_Player_Gui *player)
   etk_window_title_set(ETK_WINDOW(wid), "Controls");
   etk_window_resize(ETK_WINDOW(wid), 10, 180);
   etk_widget_hide(wid);
-  etk_signal_connect("delete_event", ETK_OBJECT(wid),
+  etk_signal_connect("delete-event", ETK_OBJECT(wid),
                      ETK_CALLBACK(cb_pack_quit), player);
   player->small.ctr.window = wid;
   
@@ -224,7 +224,7 @@ _emphasis_init_player_small(Emphasis_Player_Gui *player)
   etk_window_title_set(ETK_WINDOW(wid), "Cover");
   etk_window_resize(ETK_WINDOW(wid), 10, 10);
   etk_widget_hide(wid);
-  etk_signal_connect("delete_event", ETK_OBJECT(wid),
+  etk_signal_connect("delete-event", ETK_OBJECT(wid),
                      ETK_CALLBACK(cb_pack_quit), player);
   player->small.cov.window = wid;
 
