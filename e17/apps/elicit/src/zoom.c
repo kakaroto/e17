@@ -84,9 +84,6 @@ elicit_zoom(Evas_Object *o)
   int x, y;
   int px, py;
   int dw, dh;
-  int tr;
-  Evas_Coord sw, sh;
-  Window dummy;
 
   z = evas_object_smart_data_get(o);
   ecore_x_pointer_last_xy_get(&px, &py);

@@ -17,7 +17,7 @@ elicit_cb_enter(Ecore_Evas *ee)
 {
   Evas_Object *gui;
   gui = evas_object_name_find(ecore_evas_get(ee), "gui");
-  edje_object_signal_emit(gui, "window,enter", "Elicit");
+  edje_object_signal_emit(gui, "elicit,window,enter", "Elicit");
 }
 
 void
@@ -25,7 +25,7 @@ elicit_cb_leave(Ecore_Evas *ee)
 {
   Evas_Object *gui;
   gui = evas_object_name_find(ecore_evas_get(ee), "gui");
-  edje_object_signal_emit(gui, "window,leave", "Elicit");
+  edje_object_signal_emit(gui, "elicit,window,leave", "Elicit");
 }
 
 void 

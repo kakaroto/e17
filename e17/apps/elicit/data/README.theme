@@ -22,6 +22,7 @@ elicit,pick,start
 elicit,pick,stop
 elicit,quit
 
+# saved swatch container signals
 elicit,swatch,scroll,up                 up one step
 elicit,swatch,scroll,up,start           begin animated scroll
 elicit,swatch,scroll,up,stop            end animated scroll
@@ -29,6 +30,7 @@ elicit,swatch,scroll,down
 elicit,swatch,scroll,down,start
 elicit,swatch,scroll,down,stop
 
+# saved shot container signals
 elicit,shot,scroll,up
 elicit,shot,scroll,up,start
 elicit,shot,scroll,up,stop
@@ -40,7 +42,9 @@ elicit,grid,toggle
 elicit,grid,show
 elicit,grid,hide
 
-(for all X in {r, g, b, h, s, v})
+elicit,shot,edit   edit the current shot in the gimp (requires gimp-remote)
+
+(for each X in {r, g, b, h, s, v})
 elicit,color,X,up,start
 elicit,color,X,up,stop
 elicit,color,X,down,start
@@ -53,9 +57,6 @@ elicit,copy,hex
 
 elicit,freeze
 elicit,thaw
-
-elicit,window,enter
-elicit,window,leave
 
 elicit,resize,W,H
 elicit,size,min,W,H
@@ -73,6 +74,9 @@ Signals sent to the GUI
 -----------------------
 
 these are all sent with source "Elicit"
+
+elicit,window,enter
+elicit,window,leave
 
 elicit,grid,shown
 elicit,grid,hidden

@@ -142,6 +142,8 @@ elicit_spectrum_color_set(Evas_Object *o, int r, int g, int b, int h, float s, f
       evas_color_hsv_to_rgb(h, s, 1, &r, &g, &b);
       evas_object_gradient_color_stop_add(sp->grad, r, g, b, 255, 1);
       break;
+    default:
+      break;
   }
 }
 
@@ -168,7 +170,6 @@ _smart_add(Evas_Object *o)
 {
   Elicit_Spectrum *s;
   Evas *evas;
-  char buf[PATH_MAX];
 
   s = calloc(1, sizeof(Elicit_Spectrum));
   if (!s) return;

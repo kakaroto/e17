@@ -11,7 +11,7 @@
       // border color //
       program {
         name, "window.active";
-        signal, "window,enter";
+        signal, "elicit,window,enter";
         source, "Elicit";
         action, STATE_SET "active" 0.0;
         transition, DECELERATE .25;
@@ -21,7 +21,7 @@
       }
       program {
         name, "window.unactive";
-        signal, "window,leave";
+        signal, "elicit,window,leave";
         source, "Elicit";
         action, STATE_SET "default" 0.0;
         transition, DECELERATE .25;
