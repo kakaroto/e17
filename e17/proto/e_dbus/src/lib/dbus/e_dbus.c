@@ -549,6 +549,7 @@ e_dbus_init(void)
 
   E_DBUS_EVENT_SIGNAL = ecore_event_type_new();
   e_dbus_signal_init();
+  e_dbus_object_init();
   return init;
 }
 
@@ -559,5 +560,6 @@ void
 e_dbus_shutdown(void)
 {
   if (--init) return;
+  e_dbus_object_shutdown();
   e_dbus_signal_shutdown();
 }

@@ -85,7 +85,7 @@ cb_introspect(E_DBus_Object *obj, DBusMessage *msg)
   }
   printf("XML: \n\n%s\n\n", obj->introspection_data);
   ret = dbus_message_new_method_return(msg);
-  dbus_message_append_args(msg, DBUS_TYPE_STRING, &(obj->introspection_data), DBUS_TYPE_INVALID);
+  dbus_message_append_args(ret, DBUS_TYPE_STRING, &(obj->introspection_data), DBUS_TYPE_INVALID);
 
   return ret;
 }
@@ -389,7 +389,9 @@ _introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level)
   level++;
 
   /* append args */
-  if (method->signature && dbus_signature_validate(method->signature, NULL))
+  if (method->signature && 
+      method->signature[0] &&
+      dbus_signature_validate(method->signature, NULL))
   {
     dbus_signature_iter_init(&iter, method->signature);
     while ((type = dbus_signature_iter_get_signature(&iter)))
@@ -402,7 +404,9 @@ _introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level)
   }
 
   /* append reply args */
-  if (method->reply_signature && dbus_signature_validate(method->reply_signature, NULL))
+  if (method->reply_signature &&
+      method->reply_signature[0] &&
+      dbus_signature_validate(method->reply_signature, NULL))
   {
     printf("valid reply sig: '%s'\n", method->reply_signature);
     dbus_signature_iter_init(&iter, method->reply_signature);
@@ -429,6 +433,6 @@ _introspect_arg_append(Ecore_Strbuf *buf, const char *type, const char *directio
   ecore_strbuf_append(buf, type);
   ecore_strbuf_append(buf, "\" direction=\"");
   ecore_strbuf_append(buf, direction);
-  ecore_strbuf_append(buf, "\">\n");
+  ecore_strbuf_append(buf, "\"/>\n");
 }
 
