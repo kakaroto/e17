@@ -1,5 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = \
+            images.edc \
             bg_brushed.png \
             bg_overlay.png \
             win_border.png \
