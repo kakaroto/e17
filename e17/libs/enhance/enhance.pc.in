@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+Name: enhance
+Description: Glade bridge for ETK
+Requires: etk exml ecore
+Version: @VERSION@
+Libs: -L${libdir} -lenhance
+Cflags: -I${includedir}

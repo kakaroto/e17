@@ -21,7 +21,6 @@ $(libenhance_la_INCLUDES)
 installed_headersdir = $(prefix)/include
 installed_headers_DATA = $(enhance_headers)
 
-libenhance_la_CFLAGS = @my_includes@
+libenhance_la_CFLAGS = @ENHANCE_CFLAGS@
 libenhance_la_LDFLAGS = -export-dynamic
-libenhance_la_LIBADD = $(INTLLIBS) \
-		       @my_libs@
+libenhance_la_LIBADD = $(INTLLIBS) @ENHANCE_LIBS@

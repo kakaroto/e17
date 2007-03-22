@@ -78,50 +78,11 @@ AC_FUNC_MKTIME
 AC_FUNC_LSTAT
 AC_FUNC_CLOSEDIR_VOID
 
-#check for ecore
-AC_PATH_EFL(
-   ecore,
-   0.9.9,
-   [
-     AC_DEFINE(HAVE_ECORE, 1, have ECORE)
-     ecore="ECORE "
-     ecore_libs=`ecore-config --libs`
-     ecore_includes=`ecore-config --cflags`
-   ],
-   [
-     AC_MSG_ERROR([No ECORE, can't build.])
-   ]
-)
-
-#check for exml
-AC_PATH_EFL(
-   exml,
-   0.1.1,
-   [
-     AC_DEFINE(HAVE_EXML, 1, have EXML)
-     exml="EXML "
-     exml_libs=`exml-config --libs`
-     exml_includes=`exml-config --cflags`
-   ],
-   [
-     AC_MSG_ERROR([No EXML, can't build.])
-   ]
-)
-
-#check for etk
-AC_PATH_EFL(
-   etk,
-   0.1.0,
-   [
-     AC_DEFINE(HAVE_ETK, 1, have ETK)
-     etk="ETK "
-     etk_libs=`etk-config --libs`
-     etk_includes=`etk-config --cflags`
-   ],
-   [
-     AC_MSG_ERROR([No ETK, can't build.])
-   ]
-)
+PKG_CHECK_MODULES(ENHANCE, [
+  ecore >= 0.9.9
+  exml >= 0.1.1
+  etk >= 0.1.0
+])
 
 dnl ###########################################################################
 dnl ###########################################################################
@@ -156,19 +117,13 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-
-my_includes="$ecore_includes $etk_includes $exml_includes"
-my_libs="$ecore_libs $etk_libs $exml_libs"
-
-AC_SUBST(my_includes)
-AC_SUBST(my_libs)
-
 dnl
 dnl Adjust the Makefile.am conditionals accordingly
 dnl
 
 AC_OUTPUT([
 Makefile
+enhance.pc
 src/Makefile
 src/lib/Makefile
 enhance-config

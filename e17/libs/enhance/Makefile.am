@@ -17,3 +17,6 @@ EXTRA_DIST = README AUTHORS \
 SUBDIRS = src
 
 bin_SCRIPTS = enhance-config
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = enhance.pc

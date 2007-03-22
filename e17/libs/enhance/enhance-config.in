@@ -41,11 +41,11 @@ while test $# -gt 0; do
       ;;
     --cflags)
       includes="-I@includedir@"
-      echo $includes @my_includes@ -export-dynamic
+      echo $includes @ENHANCE_CFLAGS@
       ;;		  
     --libs)
       libdirs=-L@libdir@
-      echo $libdirs @my_libs@ -lenhance -export-dynamic
+      echo $libdirs @ENHANCE_LIBS@ -lenhance
       ;;
     *)
       usage
