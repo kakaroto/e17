@@ -1,6 +1,5 @@
 INCLUDES =  \
-@ECORE_CFLAGS@ \
-@DBUS_CFLAGS@
+@EDBUS_CFLAGS@
 
 lib_LTLIBRARIES = libedbus.la
 include_HEADERS = E_DBus.h
@@ -16,5 +15,4 @@ libedbus_la_SOURCES = \
 
 
 libedbus_la_LIBADD = \
-@ECORE_LIBS@ \
-@DBUS_LIBS@ 
+@EDBUS_LIBS@ 

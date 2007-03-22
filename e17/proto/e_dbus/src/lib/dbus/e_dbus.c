@@ -544,7 +544,6 @@ e_dbus_connection_dbus_connection_get(E_DBus_Connection *conn)
 int
 e_dbus_init(void)
 {
-  int i;
   if (++init != 1) return init;
 
   E_DBUS_EVENT_SIGNAL = ecore_event_type_new();

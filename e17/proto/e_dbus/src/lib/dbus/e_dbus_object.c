@@ -30,7 +30,7 @@ static void _introspect_arg_append(Ecore_Strbuf *buf, const char *type, const ch
 //static Ecore_List *standard_methods = NULL;
 
 
-static DBusObjectPathVTable vtable = (DBusObjectPathVTable){
+static DBusObjectPathVTable vtable = {
   e_dbus_object_unregister,
   e_dbus_object_handler,
   NULL,
@@ -93,8 +93,6 @@ cb_introspect(E_DBus_Object *obj, DBusMessage *msg)
 int
 e_dbus_object_init(void)
 {
-  E_DBus_Method *m;
-
   introspectable_interface = e_dbus_interface_new("org.freedesktop.DBus.Introspectable");
   if (!introspectable_interface) return 0;
   e_dbus_interface_method_add(introspectable_interface, "Introspect", "", "s", cb_introspect);
@@ -328,7 +326,6 @@ Ecore_Strbuf *
 e_dbus_object_introspect(E_DBus_Object *obj)
 {
   Ecore_Strbuf *buf;
-  char *current_interface = NULL;
   int level = 0;
   E_DBus_Interface *iface;
 

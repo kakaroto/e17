@@ -18,4 +18,7 @@ struct E_DBus_Connection
   int refcount;
 };
 
+int e_dbus_object_init(void);
+void e_dbus_object_shutdown(void);
+
 #endif
