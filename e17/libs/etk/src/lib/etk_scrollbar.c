@@ -17,7 +17,7 @@
 #define ETK_SCROLLBAR_REPEAT_DELAY 0.05
 
 static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar);
-static void _etk_scrollbar_realize_cb(Etk_Object *object, void *data);
+static void _etk_scrollbar_realized_cb(Etk_Object *object, void *data);
 static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value);
 static void _etk_scrollbar_page_size_changed_cb(Etk_Object *object, const char *property_name, void *data);
@@ -101,8 +101,8 @@ Etk_Type *etk_vscrollbar_type_get()
  */
 Etk_Widget *etk_hscrollbar_new(double lower, double upper, double value, double step_increment, double page_increment, double page_size)
 {
-   return etk_widget_new(ETK_HSCROLLBAR_TYPE, "theme_group", "hscrollbar", "lower", lower, "upper", upper,
-      "value", value, "step_increment", step_increment, "page_increment", page_increment, "page_size", page_size, NULL);
+   return etk_widget_new(ETK_HSCROLLBAR_TYPE, "theme-group", "hscrollbar", "lower", lower, "upper", upper,
+      "value", value, "step-increment", step_increment, "page-increment", page_increment, "page-size", page_size, NULL);
 }
 
 /**
@@ -119,8 +119,8 @@ Etk_Widget *etk_hscrollbar_new(double lower, double upper, double value, double 
  */
 Etk_Widget *etk_vscrollbar_new(double lower, double upper, double value, double step_increment, double page_increment, double page_size)
 {
-   return etk_widget_new(ETK_VSCROLLBAR_TYPE, "theme_group", "vscrollbar", "lower", lower, "upper", upper,
-      "value", value, "step_increment", step_increment, "page_increment", page_increment, "page_size", page_size, NULL);
+   return etk_widget_new(ETK_VSCROLLBAR_TYPE, "theme-group", "vscrollbar", "lower", lower, "upper", upper,
+      "value", value, "step-increment", step_increment, "page-increment", page_increment, "page-size", page_size, NULL);
 }
 
 /**************************
@@ -139,10 +139,10 @@ static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar)
    scrollbar->first_scroll = ETK_FALSE;
 
    scrollbar->dragging = ETK_FALSE;
-   ETK_RANGE(scrollbar)->value_changed = _etk_scrollbar_value_changed_handler;
-   etk_signal_connect("realize", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_realize_cb), NULL);
-   etk_signal_connect("mouse_wheel", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_mouse_wheel_cb), NULL);
-   etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "page_size", _etk_scrollbar_page_size_changed_cb, NULL);
+   ETK_RANGE(scrollbar)->value_changed_handler = _etk_scrollbar_value_changed_handler;
+   etk_signal_connect("realized", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_realized_cb), NULL);
+   etk_signal_connect("mouse-wheel", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_mouse_wheel_cb), NULL);
+   etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "page-size", _etk_scrollbar_page_size_changed_cb, NULL);
    etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "lower", _etk_scrollbar_range_changed_cb, NULL);
    etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "upper", _etk_scrollbar_range_changed_cb, NULL);
 }
@@ -154,7 +154,7 @@ static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar)
  **************************/
 
 /* Called when the hscrollbar is realized */
-static void _etk_scrollbar_realize_cb(Etk_Object *object, void *data)
+static void _etk_scrollbar_realized_cb(Etk_Object *object, void *data)
 {
    Evas_Object *theme_object;
 

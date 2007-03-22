@@ -91,7 +91,7 @@ static void _etk_tree_property_set(Etk_Object *object, int property_id, Etk_Prop
 static void _etk_tree_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_tree_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_tree_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_tree_realize_cb(Etk_Object *object, void *data);
+static void _etk_tree_realized_cb(Etk_Object *object, void *data);
 
 static void _etk_tree_col_constructor(Etk_Tree_Col *tree_col);
 static void _etk_tree_col_destructor(Etk_Tree_Col *tree_col);
@@ -104,13 +104,13 @@ static void _etk_tree_scroll_content_scroll(Etk_Widget *widget, int x, int y);
 static void _etk_tree_scroll_content_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
 static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
-static void _etk_tree_realize_cb(Etk_Object *object, void *data);
-static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data);
-static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data);
+static void _etk_tree_realized_cb(Etk_Object *object, void *data);
+static void _etk_tree_focused_cb(Etk_Object *object, void *event, void *data);
+static void _etk_tree_unfocused_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_tree_scroll_content_realize_cb(Etk_Object *object, void *data);
-static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data);
-static void _etk_tree_grid_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_tree_scroll_content_realized_cb(Etk_Object *object, void *data);
+static void _etk_tree_grid_realized_cb(Etk_Object *object, void *data);
+static void _etk_tree_grid_unrealized_cb(Etk_Object *object, void *data);
 
 static void _etk_tree_headers_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_tree_headers_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -163,34 +163,34 @@ Etk_Type *etk_tree_type_get()
       tree_type = etk_type_new("Etk_Tree", ETK_WIDGET_TYPE, sizeof(Etk_Tree),
          ETK_CONSTRUCTOR(_etk_tree_constructor), ETK_DESTRUCTOR(_etk_tree_destructor));
       
-      _etk_tree_signals[ETK_TREE_ALL_SELECTED_SIGNAL] = etk_signal_new("all_selected",
+      _etk_tree_signals[ETK_TREE_ALL_SELECTED_SIGNAL] = etk_signal_new("all-selected",
          tree_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ALL_UNSELECTED_SIGNAL] = etk_signal_new("all_unselected",
+      _etk_tree_signals[ETK_TREE_ALL_UNSELECTED_SIGNAL] = etk_signal_new("all-unselected",
          tree_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL] = etk_signal_new("row_selected",
+      _etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL] = etk_signal_new("row-selected",
          tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL] = etk_signal_new("row_unselected",
+      _etk_tree_signals[ETK_TREE_ROW_UNSELECTED_SIGNAL] = etk_signal_new("row-unselected",
          tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL] = etk_signal_new("row_clicked",
+      _etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL] = etk_signal_new("row-clicked",
          tree_type, -1, etk_marshaller_VOID__POINTER_POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL] = etk_signal_new("row_activated",
+      _etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL] = etk_signal_new("row-activated",
          tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_UNFOLDED_SIGNAL] = etk_signal_new("row_unfolded",
+      _etk_tree_signals[ETK_TREE_ROW_UNFOLDED_SIGNAL] = etk_signal_new("row-unfolded",
          tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_FOLDED_SIGNAL] = etk_signal_new("row_folded",
+      _etk_tree_signals[ETK_TREE_ROW_FOLDED_SIGNAL] = etk_signal_new("row-folded",
          tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_SHOWN_SIGNAL] = etk_signal_new("row_shown",
+      _etk_tree_signals[ETK_TREE_ROW_SHOWN_SIGNAL] = etk_signal_new("row-shown",
          tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_tree_signals[ETK_TREE_ROW_HIDDEN_SIGNAL] = etk_signal_new("row_hidden",
+      _etk_tree_signals[ETK_TREE_ROW_HIDDEN_SIGNAL] = etk_signal_new("row-hidden",
          tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
 
       etk_type_property_add(tree_type, "mode", ETK_TREE_MODE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TREE_MODE_LIST));
-      etk_type_property_add(tree_type, "multiple_select", ETK_TREE_MULTIPLE_SELECT_PROPERTY,
+      etk_type_property_add(tree_type, "multiple-select", ETK_TREE_MULTIPLE_SELECT_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
-      etk_type_property_add(tree_type, "headers_visible", ETK_TREE_HEADERS_VISIBLE_PROPERTY,
+      etk_type_property_add(tree_type, "headers-visible", ETK_TREE_HEADERS_VISIBLE_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
-      etk_type_property_add(tree_type, "rows_height", ETK_TREE_ROWS_HEIGHT_PROPERTY,
+      etk_type_property_add(tree_type, "rows-height", ETK_TREE_ROWS_HEIGHT_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(DEFAULT_ROW_HEIGHT));
       
       tree_type->property_set = _etk_tree_property_set;
@@ -214,7 +214,7 @@ Etk_Type *etk_tree_col_type_get()
       tree_col_type = etk_type_new("Etk_Tree_Col", ETK_OBJECT_TYPE, sizeof(Etk_Tree_Col),
          ETK_CONSTRUCTOR(_etk_tree_col_constructor), ETK_DESTRUCTOR(_etk_tree_col_destructor));
 
-      _etk_tree_col_signals[ETK_TREE_COL_CELL_VALUE_CHANGED] = etk_signal_new("cell_value_changed",
+      _etk_tree_col_signals[ETK_TREE_COL_CELL_VALUE_CHANGED] = etk_signal_new("cell-value-changed",
          tree_col_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       
       etk_type_property_add(tree_col_type, "title", ETK_TREE_COL_TITLE_PROPERTY,
@@ -247,8 +247,8 @@ Etk_Type *etk_tree_col_type_get()
  */
 Etk_Widget *etk_tree_new()
 {
-   return etk_widget_new(ETK_TREE_TYPE, "theme_group", "tree",
-      "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_TREE_TYPE, "theme-group", "tree",
+      "focusable", ETK_TRUE, "focus-on-click", ETK_TRUE, NULL);
 }
 
 /**
@@ -295,7 +295,7 @@ void etk_tree_multiple_select_set(Etk_Tree *tree, Etk_Bool multiple_select)
    if (!multiple_select)
       etk_tree_unselect_all(tree);
    tree->multiple_select = multiple_select;
-   etk_object_notify(ETK_OBJECT(tree), "multiple_select");
+   etk_object_notify(ETK_OBJECT(tree), "multiple-select");
 }
 
 /**
@@ -321,7 +321,7 @@ void etk_tree_headers_visible_set(Etk_Tree *tree, Etk_Bool headers_visible)
       return;
 
    tree->headers_visible = headers_visible;
-   etk_object_notify(ETK_OBJECT(tree), "headers_visible");
+   etk_object_notify(ETK_OBJECT(tree), "headers-visible");
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
@@ -356,8 +356,8 @@ void etk_tree_rows_height_set(Etk_Tree *tree, int rows_height)
       vscrollbar = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view));
       etk_range_increments_set(vscrollbar, rows_height, 5 * rows_height);
       
-      etk_object_notify(ETK_OBJECT(tree), "rows_height");
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->scroll_content), NULL);
+      etk_object_notify(ETK_OBJECT(tree), "rows-height");
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(tree->scroll_content), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(tree));
    }
 }
@@ -411,7 +411,7 @@ void etk_tree_thaw(Etk_Tree *tree)
       return;
    
    tree->frozen = ETK_FALSE;
-   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->scroll_content), NULL);
+   etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(tree->scroll_content), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
@@ -448,7 +448,7 @@ Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, int width, flo
    new_col->position = tree->num_cols;
 
    /* Creates the header widget */
-   new_header = etk_widget_new(ETK_BUTTON_TYPE, "theme_group", "header","theme_parent", tree,
+   new_header = etk_widget_new(ETK_BUTTON_TYPE, "theme-group", "header","theme-parent", tree,
       "label", title, "xalign", 0.0, "internal", ETK_TRUE, NULL);
    if (tree->tree_contains_headers)
       etk_widget_parent_set(new_header, ETK_WIDGET(tree));
@@ -590,7 +590,7 @@ void etk_tree_col_width_set(Etk_Tree_Col *col, int width)
    
    if (col->tree)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->scroll_content), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(col->tree->scroll_content), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(col->tree));
    }
 }
@@ -621,7 +621,7 @@ void etk_tree_col_min_width_set(Etk_Tree_Col *col, int min_width)
    if (col->width < col->min_width)
       etk_tree_col_width_set(col, col->min_width);
    
-   etk_object_notify(ETK_OBJECT(col), "min_width");
+   etk_object_notify(ETK_OBJECT(col), "min-width");
 }
 
 /**
@@ -734,7 +734,7 @@ void etk_tree_col_visible_set(Etk_Tree_Col *col, Etk_Bool visible)
    if (col->tree)
    {
       _etk_tree_expanders_clip(col->tree);
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(col->tree->scroll_content), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(col->tree->scroll_content), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(col->tree));
    }
 }
@@ -994,7 +994,7 @@ Etk_Tree_Row *etk_tree_row_insert_valist(Etk_Tree *tree, Etk_Tree_Row *parent, E
    
    if (!tree->frozen)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->scroll_content), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(tree->scroll_content), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(tree));
    }
    return new_row;
@@ -1015,7 +1015,7 @@ void etk_tree_row_delete(Etk_Tree_Row *row)
    
    if (!row->tree->frozen)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->scroll_content), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(row->tree->scroll_content), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
    }
 }
@@ -1033,7 +1033,7 @@ void etk_tree_clear(Etk_Tree *tree)
    while (tree->root.first_child)
       _etk_tree_row_move_to_purge_pool(tree->root.first_child);
    
-   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(tree->scroll_content), NULL);
+   etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(tree->scroll_content), NULL);
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
@@ -1393,7 +1393,7 @@ void etk_tree_row_fold(Etk_Tree_Row *row)
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_FOLDED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->scroll_content), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(row->tree->scroll_content), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
    }
 }
@@ -1418,7 +1418,7 @@ void etk_tree_row_unfold(Etk_Tree_Row *row)
    etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_UNFOLDED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
    if (!row->tree->frozen)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(row->tree->scroll_content), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(row->tree->scroll_content), NULL);
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
    }
 }
@@ -1678,25 +1678,25 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    etk_widget_repeat_mouse_events_set(tree->scrolled_view, ETK_TRUE);
    etk_widget_show(tree->scrolled_view);
    
-   tree->scroll_content = etk_widget_new(ETK_WIDGET_TYPE, "repeat_mouse_events", ETK_TRUE,
+   tree->scroll_content = etk_widget_new(ETK_WIDGET_TYPE, "repeat-mouse-events", ETK_TRUE,
       "internal", ETK_TRUE, "visible", ETK_TRUE, NULL);
    etk_container_add(ETK_CONTAINER(tree->scrolled_view), tree->scroll_content);
    etk_object_data_set(ETK_OBJECT(tree->scroll_content), "_Etk_Tree::Tree", tree);
    tree->scroll_content->size_allocate = _etk_tree_scroll_content_size_allocate;
    tree->scroll_content->scroll = _etk_tree_scroll_content_scroll;
    tree->scroll_content->scroll_size_get = _etk_tree_scroll_content_scroll_size_get;
-   etk_signal_connect("realize", ETK_OBJECT(tree->scroll_content),
-      ETK_CALLBACK(_etk_tree_scroll_content_realize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(tree->scroll_content),
+      ETK_CALLBACK(_etk_tree_scroll_content_realized_cb), NULL);
    
-   tree->grid = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "grid", "theme_parent", tree,
-       "repeat_mouse_events", ETK_TRUE, "internal", ETK_TRUE, "visible", ETK_TRUE, NULL);
+   tree->grid = etk_widget_new(ETK_WIDGET_TYPE, "theme-group", "grid", "theme-parent", tree,
+       "repeat-mouse-events", ETK_TRUE, "internal", ETK_TRUE, "visible", ETK_TRUE, NULL);
    etk_widget_parent_set(tree->grid, tree->scroll_content);
    etk_object_data_set(ETK_OBJECT(tree->grid), "_Etk_Tree::Tree", tree);
    tree->grid->size_allocate = _etk_tree_grid_size_allocate;
-   etk_signal_connect("realize", ETK_OBJECT(tree->grid),
-      ETK_CALLBACK(_etk_tree_grid_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(tree->grid),
-      ETK_CALLBACK(_etk_tree_grid_unrealize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(tree->grid),
+      ETK_CALLBACK(_etk_tree_grid_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(tree->grid),
+      ETK_CALLBACK(_etk_tree_grid_unrealized_cb), NULL);
    
    tree->num_cols = 0;
    tree->columns = NULL;
@@ -1742,10 +1742,10 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    ETK_WIDGET(tree)->size_request = _etk_tree_size_request;
    ETK_WIDGET(tree)->size_allocate = _etk_tree_size_allocate;
    
-   etk_signal_connect("realize", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_realize_cb), NULL);
-   etk_signal_connect("focus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_focus_cb), NULL);
-   etk_signal_connect("unfocus", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_unfocus_cb), NULL);
-   etk_signal_connect("key_down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_key_down_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_realized_cb), NULL);
+   etk_signal_connect("focused", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_focused_cb), NULL);
+   etk_signal_connect("unfocused", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_unfocused_cb), NULL);
+   etk_signal_connect("key-down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_tree_key_down_cb), NULL);
 }
 
 /* Destroys the tree */
@@ -2591,7 +2591,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
  **************************/
 
 /* Called when the tree is realized */
-static void _etk_tree_realize_cb(Etk_Object *object, void *data)
+static void _etk_tree_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Tree *tree;
    Evas *evas;
@@ -2637,7 +2637,7 @@ static void _etk_tree_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the tree is focused */
-static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data)
+static void _etk_tree_focused_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Tree *tree;
    
@@ -2649,7 +2649,7 @@ static void _etk_tree_focus_cb(Etk_Object *object, void *event, void *data)
 }
 
 /* Called when the tree is unfocused */
-static void _etk_tree_unfocus_cb(Etk_Object *object, void *event, void *data)
+static void _etk_tree_unfocused_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Tree *tree;
    
@@ -2727,7 +2727,7 @@ static void _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event,
  **************************/
 
 /* Called when the scroll-content is realized */
-static void _etk_tree_scroll_content_realize_cb(Etk_Object *object, void *data)
+static void _etk_tree_scroll_content_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *scroll_content;
    Etk_Tree *tree;
@@ -2745,7 +2745,7 @@ static void _etk_tree_scroll_content_realize_cb(Etk_Object *object, void *data)
  **************************/
 
 /* Called when the tree grid is realized */
-static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data)
+static void _etk_tree_grid_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Tree *tree;
    Evas *evas;
@@ -2762,7 +2762,7 @@ static void _etk_tree_grid_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the tree grid is unrealized */
-static void _etk_tree_grid_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_tree_grid_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Tree *tree;
    int i;

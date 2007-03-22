@@ -58,11 +58,11 @@ Etk_Type *etk_dialog_type_get(void)
       _etk_dialog_signals[ETK_DIALOG_RESPONSE_SIGNAL] = etk_signal_new("response",
             dialog_type, -1, etk_marshaller_VOID__INT, NULL, NULL);
 
-      etk_type_property_add(dialog_type, "has_separator", ETK_DIALOG_HAS_SEPARATOR_PROPERTY,
+      etk_type_property_add(dialog_type, "has-separator", ETK_DIALOG_HAS_SEPARATOR_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
-      etk_type_property_add(dialog_type, "action_area_homogeneous", ETK_DIALOG_ACTION_AREA_HOMOGENEOUS_PROPERTY,
+      etk_type_property_add(dialog_type, "action-area-homogeneous", ETK_DIALOG_ACTION_AREA_HOMOGENEOUS_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
-      etk_type_property_add(dialog_type, "action_area_align", ETK_DIALOG_ACTION_AREA_ALIGN_PROPERTY,
+      etk_type_property_add(dialog_type, "action-area-align", ETK_DIALOG_ACTION_AREA_ALIGN_PROPERTY,
             ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.5));
 
       dialog_type->property_set = _etk_dialog_property_set;
@@ -78,7 +78,7 @@ Etk_Type *etk_dialog_type_get(void)
  */
 Etk_Widget *etk_dialog_new(void)
 {
-   return etk_widget_new(ETK_DIALOG_TYPE, "theme_group", "dialog", NULL);
+   return etk_widget_new(ETK_DIALOG_TYPE, "theme-group", "dialog", NULL);
 }
 
 /**
@@ -194,7 +194,7 @@ void etk_dialog_action_area_homogeneous_set(Etk_Dialog *dialog, Etk_Bool homogen
       return;
 
    etk_box_homogeneous_set(ETK_BOX(dialog->action_area_hbox), homogeneous);
-   etk_object_notify(ETK_OBJECT(dialog), "action_area_homogeneous");
+   etk_object_notify(ETK_OBJECT(dialog), "action-area-homogeneous");
 }
 
 /**
@@ -220,7 +220,7 @@ void etk_dialog_action_area_alignment_set(Etk_Dialog *dialog, float align)
       return;
 
    etk_alignment_set(ETK_ALIGNMENT(dialog->action_area_alignment), align, 0.5, 0.0, 0.0);
-   etk_object_notify(ETK_OBJECT(dialog), "action_area_align");
+   etk_object_notify(ETK_OBJECT(dialog), "action-area-align");
 }
 
 /**
@@ -319,7 +319,7 @@ void etk_dialog_has_separator_set(Etk_Dialog *dialog, Etk_Bool has_separator)
    else
       etk_widget_hide(dialog->separator);
    dialog->has_separator = has_separator;
-   etk_object_notify(ETK_OBJECT(dialog), "has_separator");
+   etk_object_notify(ETK_OBJECT(dialog), "has-separator");
 }
 
 /**
@@ -508,17 +508,17 @@ static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
  * @signal_data
  *
  * \par Properties:
- * @prop_name "has_separator": Whether or not the horizontal separator is visible
+ * @prop_name "has-separator": Whether or not the horizontal separator is visible
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_TRUE
  * \par
- * @prop_name "action_area_homogeneous": Whether or not the widgets of the action-area have all the same size
+ * @prop_name "action-area-homogeneous": Whether or not the widgets of the action-area have all the same size
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_TRUE
  * \par
- * @prop_name "action_area_align": The horizontal alignment of the widgets in the action-area,
+ * @prop_name "action-area-align": The horizontal alignment of the widgets in the action-area,
  * from 0.0 (left) to 1.0 (right)
  * @prop_type Float
  * @prop_rw

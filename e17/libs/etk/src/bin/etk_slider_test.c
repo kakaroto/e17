@@ -42,7 +42,7 @@ void etk_test_slider_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Slider Test");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    table = etk_table_new(2, 3, ETK_FALSE);
    etk_container_add(ETK_CONTAINER(win), table);
@@ -59,13 +59,13 @@ void etk_test_slider_window_create(void *data)
    _hslider = etk_hslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
    etk_slider_label_set(ETK_SLIDER(_hslider), "%.0f");
    etk_table_attach(ETK_TABLE(table2), _hslider, 0, 0, 1, 1, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL);
-   etk_signal_connect("value_changed", ETK_OBJECT(_hslider), ETK_CALLBACK(_slider_value_changed_cb), NULL);
+   etk_signal_connect("value-changed", ETK_OBJECT(_hslider), ETK_CALLBACK(_slider_value_changed_cb), NULL);
    
    /* Create the vertical slider */
    _vslider = etk_vslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
    etk_slider_label_set(ETK_SLIDER(_vslider), "%.0f");
    etk_table_attach(ETK_TABLE(table2), _vslider, 1, 1, 0, 0, 0, 0, ETK_TABLE_VEXPAND | ETK_TABLE_VFILL);
-   etk_signal_connect("value_changed", ETK_OBJECT(_vslider), ETK_CALLBACK(_slider_value_changed_cb), NULL);
+   etk_signal_connect("value-changed", ETK_OBJECT(_vslider), ETK_CALLBACK(_slider_value_changed_cb), NULL);
    
    separator = etk_hseparator_new();
    etk_table_attach(ETK_TABLE(table), separator, 0, 1, 1, 1, 0, 0, ETK_TABLE_HFILL);
@@ -101,7 +101,7 @@ void etk_test_slider_window_create(void *data)
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    _hspinner = etk_spinner_new(10.0, 1000.0, 255.0, 1.0, 10.0);
    etk_box_append(ETK_BOX(hbox), _hspinner, ETK_BOX_START, ETK_BOX_NONE, 0);
-   etk_signal_connect("value_changed", ETK_OBJECT(_hspinner), ETK_CALLBACK(_maximum_changed_cb), _hslider);
+   etk_signal_connect("value-changed", ETK_OBJECT(_hspinner), ETK_CALLBACK(_maximum_changed_cb), _hslider);
    
    
    /* Create the settings frame for the vertical slider */
@@ -134,7 +134,7 @@ void etk_test_slider_window_create(void *data)
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    _vspinner = etk_spinner_new(10.0, 1000.0, 255.0, 1.0, 10.0);
    etk_box_append(ETK_BOX(hbox), _vspinner, ETK_BOX_START, ETK_BOX_NONE, 0);
-   etk_signal_connect("value_changed", ETK_OBJECT(_vspinner), ETK_CALLBACK(_maximum_changed_cb), _vslider);
+   etk_signal_connect("value-changed", ETK_OBJECT(_vspinner), ETK_CALLBACK(_maximum_changed_cb), _vslider);
    
    
    etk_widget_show_all(win);

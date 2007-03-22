@@ -34,7 +34,7 @@ void etk_test_combobox_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Combobox Test");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -88,7 +88,7 @@ void etk_test_combobox_window_create(void *data)
    etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_OTHER, 24, ETK_COMBOBOX_NONE, 1.0);
    etk_combobox_build(ETK_COMBOBOX(combobox));
    etk_box_append(ETK_BOX(vbox), combobox, ETK_BOX_START, ETK_BOX_NONE, 0);
-   etk_signal_connect("active_item_changed", ETK_OBJECT(combobox), ETK_CALLBACK(_active_item_changed_cb), image);
+   etk_signal_connect("active-item-changed", ETK_OBJECT(combobox), ETK_CALLBACK(_active_item_changed_cb), image);
    
    /* We fill the combobox with some stock-ids */
    for (i = STARTING_STOCK_ID; i <= ENDING_STOCK_ID; i++)

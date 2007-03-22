@@ -12,8 +12,8 @@
 
 static void _etk_canvas_constructor(Etk_Canvas *canvas);
 static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_canvas_realize_cb(Etk_Object *object, void *data);
-static void _etk_canvas_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_canvas_realized_cb(Etk_Object *object, void *data);
+static void _etk_canvas_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 /**************************
@@ -174,8 +174,8 @@ static void _etk_canvas_constructor(Etk_Canvas *canvas)
    canvas->objects = NULL;
    ETK_WIDGET(canvas)->size_allocate = _etk_canvas_size_allocate;
    
-   etk_signal_connect("realize", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_unrealize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_unrealized_cb), NULL);
 }
 
 /* Moves and resizes the clip of the canvas */
@@ -197,7 +197,7 @@ static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the canvas is realized */
-static void _etk_canvas_realize_cb(Etk_Object *object, void *data)
+static void _etk_canvas_realized_cb(Etk_Object *object, void *data)
 {
    Evas *evas;
    Etk_Canvas *canvas;
@@ -219,7 +219,7 @@ static void _etk_canvas_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the canvas is unrealized */
-static void _etk_canvas_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_canvas_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Canvas *canvas;
    
@@ -258,11 +258,11 @@ static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj,
  * @image html widgets/canvas.png
  * To add an object to a canvas, the object and the canvas should belong to the same evas. It means the canvas has
  * to be realized when you create the objects. You can for example create the objects in a callback connected to the
- * @b "realize" signal of the canvas widget.
+ * @b "realized" signal of the canvas widget.
  * @code
- * etk_signal_connect("realize", ETK_OBJECT(canvas), ETK_CALLBACK(canvas_realize_cb), NULL),
+ * etk_signal_connect("realized", ETK_OBJECT(canvas), ETK_CALLBACK(canvas_realized_cb), NULL),
  *
- * void canvas_realize_cb(Etk_Widget *canvas, void *data)
+ * void canvas_realized_cb(Etk_Widget *canvas, void *data)
  * {
  *    Evas *evas;
  *    Evas_Object *obj;

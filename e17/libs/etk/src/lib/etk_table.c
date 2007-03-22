@@ -50,9 +50,9 @@ Etk_Type *etk_table_type_get()
       table_type = etk_type_new("Etk_Table", ETK_CONTAINER_TYPE, sizeof(Etk_Table),
          ETK_CONSTRUCTOR(_etk_table_constructor), ETK_DESTRUCTOR(_etk_table_destructor));
    
-      etk_type_property_add(table_type, "num_cols", ETK_TABLE_NUM_COLS_PROPERTY,
+      etk_type_property_add(table_type, "num-cols", ETK_TABLE_NUM_COLS_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
-      etk_type_property_add(table_type, "num_rows", ETK_TABLE_NUM_ROWS_PROPERTY,
+      etk_type_property_add(table_type, "num-rows", ETK_TABLE_NUM_ROWS_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
       etk_type_property_add(table_type, "homogeneous", ETK_TABLE_HOMOGENEOUS_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
@@ -74,7 +74,7 @@ Etk_Type *etk_table_type_get()
 Etk_Widget *etk_table_new(int num_cols, int num_rows, Etk_Bool homogeneous)
 {
    return etk_widget_new(ETK_TABLE_TYPE, "homogeneous", homogeneous,
-      "num_cols", num_cols, "num_rows", num_rows, NULL);
+      "num-cols", num_cols, "num-rows", num_rows, NULL);
 }
 
 /**
@@ -107,7 +107,7 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
 
    table->children = evas_list_remove_list(table->children, l);
    etk_widget_parent_set_full(child, NULL, ETK_FALSE);
-   etk_signal_emit_by_name("child_removed", ETK_OBJECT(table), NULL, child);
+   etk_signal_emit_by_name("child-removed", ETK_OBJECT(table), NULL, child);
 }
 
 /**
@@ -180,8 +180,8 @@ void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
    table->num_rows = num_rows;
 
    etk_widget_size_recalc_queue(ETK_WIDGET(table));
-   etk_object_notify(ETK_OBJECT(table), "num_cols");
-   etk_object_notify(ETK_OBJECT(table), "num_rows");
+   etk_object_notify(ETK_OBJECT(table), "num-cols");
+   etk_object_notify(ETK_OBJECT(table), "num-rows");
 }
 
 /**
@@ -232,7 +232,7 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
 
    table->children = evas_list_append(table->children, child);
    etk_widget_parent_set(child, ETK_WIDGET(table));
-   etk_signal_emit_by_name("child_added", ETK_OBJECT(table), NULL, child);
+   etk_signal_emit_by_name("child-added", ETK_OBJECT(table), NULL, child);
 }
 
 /**

@@ -49,12 +49,12 @@ Etk_Type *etk_container_type_get(void)
       container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE, sizeof(Etk_Container),
             ETK_CONSTRUCTOR(_etk_container_constructor), ETK_DESTRUCTOR(_etk_container_destructor));
    
-      _etk_container_signals[ETK_CONTAINER_CHILD_ADDED_SIGNAL] = etk_signal_new("child_added",
+      _etk_container_signals[ETK_CONTAINER_CHILD_ADDED_SIGNAL] = etk_signal_new("child-added",
             container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_container_signals[ETK_CONTAINER_CHILD_REMOVED_SIGNAL] = etk_signal_new("child_removed",
+      _etk_container_signals[ETK_CONTAINER_CHILD_REMOVED_SIGNAL] = etk_signal_new("child-removed",
             container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
 
-      etk_type_property_add(container_type, "border_width", ETK_CONTAINER_BORDER_WIDTH_PROPERTY,
+      etk_type_property_add(container_type, "border-width", ETK_CONTAINER_BORDER_WIDTH_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
    
       container_type->property_set = _etk_container_property_set;
@@ -120,7 +120,7 @@ void etk_container_border_width_set(Etk_Container *container, int border_width)
 
    container->border_width = border_width;
    etk_widget_size_recalc_queue(ETK_WIDGET(container));
-   etk_object_notify(ETK_OBJECT(container), "border_width");
+   etk_object_notify(ETK_OBJECT(container), "border-width");
 }
 
 /**
@@ -338,20 +338,20 @@ static void _etk_container_property_get(Etk_Object *object, int property_id, Etk
  *     - Etk_Container
  *
  * \par Signals:
- * @signal_name "child_added": Emitted when a child has been added to the container
+ * @signal_name "child-added": Emitted when a child has been added to the container
  * @signal_cb void callback(Etk_Container *container, Etk_Widget *child, void *data)
  * @signal_arg container: the container connected to the callback
  * @signal_arg child: the child which has been added
  * @signal_data
  * \par
- * @signal_name "child_removed": Emitted when a child has been removed from the container
+ * @signal_name "child-removed": Emitted when a child has been removed from the container
  * @signal_cb void callback(Etk_Container *container, Etk_Widget *child, void *data)
  * @signal_arg container: the container connected to the callback
  * @signal_arg child: the child which has been removed
  * @signal_data
  *
  * \par Properties:
- * @prop_name "border_width": The amount of space left around the inside of the container
+ * @prop_name "border-width": The amount of space left around the inside of the container
  * @prop_type Integer
  * @prop_rw
  * @prop_val 0

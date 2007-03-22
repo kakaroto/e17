@@ -51,7 +51,7 @@ Etk_Type *etk_radio_button_type_get()
  */
 Etk_Widget *etk_radio_button_new(Evas_List **group)
 {
-   return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "group", group,
+   return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme-group", "radio_button", "group", group,
       "focusable", ETK_TRUE, "xalign", 0.0, NULL);
 }
 
@@ -62,7 +62,7 @@ Etk_Widget *etk_radio_button_new(Evas_List **group)
  */
 Etk_Widget *etk_radio_button_new_from_widget(Etk_Radio_Button *radio_button)
 {
-   return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "focusable", ETK_TRUE,
+   return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme-group", "radio_button", "focusable", ETK_TRUE,
       "group", etk_radio_button_group_get(radio_button), "xalign", 0.0, NULL);
 }
 
@@ -74,7 +74,7 @@ Etk_Widget *etk_radio_button_new_from_widget(Etk_Radio_Button *radio_button)
  */
 Etk_Widget *etk_radio_button_new_with_label(const char *label, Evas_List **group)
 {
-   return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "label", label,
+   return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme-group", "radio_button", "label", label,
       "focusable", ETK_TRUE, "group", group, "xalign", 0.0, NULL);
 }
 
@@ -86,7 +86,7 @@ Etk_Widget *etk_radio_button_new_with_label(const char *label, Evas_List **group
  */
 Etk_Widget *etk_radio_button_new_with_label_from_widget(const char *label, Etk_Radio_Button *radio_button)
 {
-   return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme_group", "radio_button", "label", label, "focusable", ETK_TRUE,
+   return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme-group", "radio_button", "label", label, "focusable", ETK_TRUE,
       "group", etk_radio_button_group_get(radio_button), "xalign", 0.0, NULL);
 }
 

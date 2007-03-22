@@ -41,8 +41,8 @@ static void _etk_entry_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_entry_internal_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_entry_internal_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
-static void _etk_entry_internal_realize_cb(Etk_Object *object, void *data);
-static void _etk_entry_internal_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_entry_internal_realized_cb(Etk_Object *object, void *data);
+static void _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_entry_editable_mouse_in_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_entry_editable_mouse_out_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
@@ -54,8 +54,8 @@ static void _etk_entry_image_mouse_out_cb(Etk_Widget *widget, Etk_Event_Mouse_Ou
 static void _etk_entry_image_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
 static void _etk_entry_image_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_entry_clear_button_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data);
-static void _etk_entry_focus_cb(Etk_Object *object, void *data);
-static void _etk_entry_unfocus_cb(Etk_Object *object, void *data);
+static void _etk_entry_focused_cb(Etk_Object *object, void *data);
+static void _etk_entry_unfocused_cb(Etk_Object *object, void *data);
 static void _etk_entry_enabled_cb(Etk_Object *object, void *data);
 static void _etk_entry_disabled_cb(Etk_Object *object, void *data);
 static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, void *data);
@@ -84,10 +84,10 @@ Etk_Type *etk_entry_type_get(void)
       entry_type = etk_type_new("Etk_Entry", ETK_WIDGET_TYPE, sizeof(Etk_Entry),
             ETK_CONSTRUCTOR(_etk_entry_constructor), ETK_DESTRUCTOR(_etk_entry_destructor));
 
-      _etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL] = etk_signal_new("text_changed",
+      _etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL] = etk_signal_new("text-changed",
             entry_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
 
-      etk_type_property_add(entry_type, "password_mode", ETK_ENTRY_PASSWORD_MODE_PROPERTY,
+      etk_type_property_add(entry_type, "password-mode", ETK_ENTRY_PASSWORD_MODE_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
 
       entry_type->property_set = _etk_entry_property_set;
@@ -103,7 +103,7 @@ Etk_Type *etk_entry_type_get(void)
  */
 Etk_Widget *etk_entry_new(void)
 {
-   return etk_widget_new(ETK_ENTRY_TYPE, "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_ENTRY_TYPE, "focusable", ETK_TRUE, "focus-on-click", ETK_TRUE, NULL);
 }
 
 /**
@@ -236,7 +236,7 @@ void etk_entry_clear_button_add(Etk_Entry *entry)
 
    image = etk_image_new_from_stock(ETK_STOCK_EDIT_CLEAR, ETK_STOCK_SMALL);
    etk_entry_image_set(entry, ETK_ENTRY_IMAGE_SECONDARY, ETK_IMAGE(image));
-   etk_signal_connect("mouse_click", ETK_OBJECT(image), ETK_CALLBACK(_etk_entry_clear_button_cb), entry);
+   etk_signal_connect("mouse-click", ETK_OBJECT(image), ETK_CALLBACK(_etk_entry_clear_button_cb), entry);
 }
 
 /**
@@ -277,24 +277,24 @@ void etk_entry_image_highlight_set(Etk_Entry *entry, Etk_Entry_Image_Position po
 
    if (highlight)
    {
-      etk_signal_connect("mouse_in", ETK_OBJECT(image),
+      etk_signal_connect("mouse-in", ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_in_cb), entry);
-      etk_signal_connect("mouse_out", ETK_OBJECT(image),
+      etk_signal_connect("mouse-out", ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_out_cb), entry);
-      etk_signal_connect("mouse_down", ETK_OBJECT(image),
+      etk_signal_connect("mouse-down", ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_down_cb), entry);
-      etk_signal_connect("mouse_up", ETK_OBJECT(image),
+      etk_signal_connect("mouse-up", ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_up_cb), entry);
    }
    else
    {
-      etk_signal_disconnect("mouse_in", ETK_OBJECT(image),
+      etk_signal_disconnect("mouse-in", ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_in_cb));
-      etk_signal_disconnect("mouse_out", ETK_OBJECT(image),
+      etk_signal_disconnect("mouse-out", ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_out_cb));
-      etk_signal_disconnect("mouse_down", ETK_OBJECT(image),
+      etk_signal_disconnect("mouse-down", ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_down_cb));
-      etk_signal_disconnect("mouse_up", ETK_OBJECT(image),
+      etk_signal_disconnect("mouse-up", ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_up_cb));
 
       evas_object_color_set(etk_image_evas_object_get(image), 255, 255, 255, 255);
@@ -314,7 +314,7 @@ void etk_entry_password_mode_set(Etk_Entry *entry, Etk_Bool password_mode)
    if (entry->editable_object)
       etk_editable_password_mode_set(entry->editable_object, password_mode);
    entry->password_mode = password_mode;
-   etk_object_notify(ETK_OBJECT(entry), "password_mode");
+   etk_object_notify(ETK_OBJECT(entry), "password-mode");
 }
 
 /**
@@ -356,8 +356,8 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    entry->secondary_image_highlight = ETK_FALSE;
    entry->text = NULL;
    
-   entry->internal_entry = etk_widget_new(ETK_WIDGET_TYPE, "repeat_mouse_events", ETK_TRUE,
-         "theme_group", "entry", "theme_parent", entry, "parent", entry, "internal", ETK_TRUE, NULL);
+   entry->internal_entry = etk_widget_new(ETK_WIDGET_TYPE, "repeat-mouse-events", ETK_TRUE,
+         "theme-group", "entry", "theme-parent", entry, "parent", entry, "internal", ETK_TRUE, NULL);
    etk_widget_show(entry->internal_entry);
    etk_object_data_set(ETK_OBJECT(entry->internal_entry), "_Etk_Entry::Entry", entry);
    entry->internal_entry->size_request = _etk_entry_internal_size_request;
@@ -366,21 +366,21 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    widget->size_request = _etk_entry_size_request;
    widget->size_allocate = _etk_entry_size_allocate;
 
-   etk_signal_connect("realize", ETK_OBJECT(entry->internal_entry),
-         ETK_CALLBACK(_etk_entry_internal_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(entry->internal_entry),
-         ETK_CALLBACK(_etk_entry_internal_unrealize_cb), NULL);
-   etk_signal_connect("key_down", ETK_OBJECT(entry),
+   etk_signal_connect("realized", ETK_OBJECT(entry->internal_entry),
+         ETK_CALLBACK(_etk_entry_internal_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(entry->internal_entry),
+         ETK_CALLBACK(_etk_entry_internal_unrealized_cb), NULL);
+   etk_signal_connect("key-down", ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_key_down_cb), NULL);
-   etk_signal_connect("focus", ETK_OBJECT(entry),
-         ETK_CALLBACK(_etk_entry_focus_cb), NULL);
-   etk_signal_connect("unfocus", ETK_OBJECT(entry),
-         ETK_CALLBACK(_etk_entry_unfocus_cb), NULL);
+   etk_signal_connect("focused", ETK_OBJECT(entry),
+         ETK_CALLBACK(_etk_entry_focused_cb), NULL);
+   etk_signal_connect("unfocused", ETK_OBJECT(entry),
+         ETK_CALLBACK(_etk_entry_unfocused_cb), NULL);
    etk_signal_connect("enabled", ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_enabled_cb), NULL);
    etk_signal_connect("disabled", ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_disabled_cb), NULL);
-   etk_signal_connect("selection_received", ETK_OBJECT(entry),
+   etk_signal_connect("selection-received", ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_selection_received_cb), NULL);
    
 }
@@ -535,7 +535,7 @@ static void _etk_entry_internal_size_allocate(Etk_Widget *widget, Etk_Geometry g
  **************************/
 
 /* Called when the entry's internal widget is realized */
-static void _etk_entry_internal_realize_cb(Etk_Object *object, void *data)
+static void _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
    Etk_Widget *internal_entry;
@@ -594,7 +594,7 @@ static void _etk_entry_internal_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the entry's internal widget is unrealized */
-static void _etk_entry_internal_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
    const char *text;
@@ -912,7 +912,7 @@ static void _etk_entry_clear_button_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *e
 }
 
 /* Called when the entry is focused */
-static void _etk_entry_focus_cb(Etk_Object *object, void *data)
+static void _etk_entry_focused_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
 
@@ -925,7 +925,7 @@ static void _etk_entry_focus_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the entry is unfocused */
-static void _etk_entry_unfocus_cb(Etk_Object *object, void *data)
+static void _etk_entry_unfocused_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
 
@@ -1062,13 +1062,13 @@ static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selec
  *     - Etk_Entry
  *
  * \par Signals:
- * @signal_name "text_changed": Emitted when the text of the entry is changed
+ * @signal_name "text-changed": Emitted when the text of the entry is changed
  * @signal_cb void callback(Etk_Entry *entry, void *data)
  * @signal_arg entry: the entry whose text has been changed
  * @signal_data
  *
  * \par Properties:
- * @prop_name "password_mode": The height of an item of the combobox (should be > 0)
+ * @prop_name "password-mode": The height of an item of the combobox (should be > 0)
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_FALSE

@@ -45,9 +45,9 @@ struct Etk_Button
    Etk_Image *image;
    Etk_Widget *label;
    
-   void (*pressed)(Etk_Button *button);
-   void (*released)(Etk_Button *button);
-   void (*clicked)(Etk_Button *button);
+   void (*pressed_handler)(Etk_Button *button);
+   void (*released_handler)(Etk_Button *button);
+   void (*clicked_handler)(Etk_Button *button);
 
    Etk_Bool is_pressed;
    Etk_Bool ignore_image_remove;

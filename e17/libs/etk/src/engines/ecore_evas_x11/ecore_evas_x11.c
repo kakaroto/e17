@@ -327,7 +327,7 @@ static void _window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_task
      return;
    
    _window_netwm_state_active_set(window, ECORE_X_WINDOW_STATE_SKIP_TASKBAR, skip_taskbar_hint);
-   etk_object_notify(ETK_OBJECT(window), "skip_taskbar");
+   etk_object_notify(ETK_OBJECT(window), "skip-taskbar");
 }
 
 /* Gets whether the window appears in the taskbar */
@@ -343,7 +343,7 @@ static void _window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_
      return;
    
    _window_netwm_state_active_set(window, ECORE_X_WINDOW_STATE_SKIP_PAGER, skip_pager_hint);
-   etk_object_notify(ETK_OBJECT(window), "skip_pager");
+   etk_object_notify(ETK_OBJECT(window), "skip-pager");
 }
 
 /* Gets whether the window appears in the pager */
@@ -735,7 +735,7 @@ static int _selection_notify_handler_cb(void *data, int type, void *event)
       etk_event.type = ETK_SELECTION_TEXT;
       etk_event.data.text = text_data->text;
       
-      etk_signal_emit_by_name("selection_received", ETK_OBJECT(_selection_widget), NULL, &etk_event);
+      etk_signal_emit_by_name("selection-received", ETK_OBJECT(_selection_widget), NULL, &etk_event);
    }
    
    return 1;

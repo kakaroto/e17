@@ -20,7 +20,7 @@ static void _etk_frame_constructor(Etk_Frame *frame);
 static void _etk_frame_destructor(Etk_Frame *frame);
 static void _etk_frame_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_frame_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_frame_realize_cb(Etk_Object *object, void *data);
+static void _etk_frame_realized_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -59,7 +59,7 @@ Etk_Type *etk_frame_type_get(void)
  */
 Etk_Widget *etk_frame_new(const char *label)
 {
-   return etk_widget_new(ETK_FRAME_TYPE, "theme_group", "frame", "label", label, NULL);
+   return etk_widget_new(ETK_FRAME_TYPE, "theme-group", "frame", "label", label, NULL);
 }
 
 /**
@@ -118,7 +118,7 @@ static void _etk_frame_constructor(Etk_Frame *frame)
       return;
 
    frame->label = NULL;
-   etk_signal_connect("realize", ETK_OBJECT(frame), ETK_CALLBACK(_etk_frame_realize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(frame), ETK_CALLBACK(_etk_frame_realized_cb), NULL);
 }
 
 /* Destroys the frame */
@@ -172,7 +172,7 @@ static void _etk_frame_property_get(Etk_Object *object, int property_id, Etk_Pro
  **************************/
 
 /* Called when the frame is realized */
-static void _etk_frame_realize_cb(Etk_Object *object, void *data)
+static void _etk_frame_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Frame *frame;
 

@@ -68,8 +68,8 @@ enum Etk_Tree_Signal_Id
 {
    ETK_ICONBOX_ICON_SELECTED_SIGNAL,
    ETK_ICONBOX_ICON_UNSELECTED_SIGNAL,
-   ETK_ICONBOX_SELECT_ALL_SIGNAL,
-   ETK_ICONBOX_UNSELECT_ALL_SIGNAL,
+   ETK_ICONBOX_ALL_SELECTED_SIGNAL,
+   ETK_ICONBOX_ALL_UNSELECTED_SIGNAL,
    ETK_ICONBOX_NUM_SIGNALS
 };
 
@@ -85,9 +85,9 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
 static void _etk_iconbox_grid_scroll(Etk_Widget *widget, int x, int y);
 static void _etk_iconbox_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
 
-static void _etk_iconbox_realize_cb(Etk_Object *object, void *data);
-static void _etk_iconbox_grid_realize_cb(Etk_Object *object, void *data);
-static void _etk_iconbox_grid_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_iconbox_realized_cb(Etk_Object *object, void *data);
+static void _etk_iconbox_grid_realized_cb(Etk_Object *object, void *data);
+static void _etk_iconbox_grid_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
 static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
@@ -120,13 +120,13 @@ Etk_Type *etk_iconbox_type_get()
       iconbox_type = etk_type_new("Etk_Iconbox", ETK_WIDGET_TYPE, sizeof(Etk_Iconbox),
          ETK_CONSTRUCTOR(_etk_iconbox_constructor), ETK_DESTRUCTOR(_etk_iconbox_destructor));
 
-      _etk_iconbox_signals[ETK_ICONBOX_ICON_SELECTED_SIGNAL] = etk_signal_new("icon_selected",
+      _etk_iconbox_signals[ETK_ICONBOX_ICON_SELECTED_SIGNAL] = etk_signal_new("icon-selected",
          iconbox_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_iconbox_signals[ETK_ICONBOX_ICON_UNSELECTED_SIGNAL] = etk_signal_new("icon_unselected",
+      _etk_iconbox_signals[ETK_ICONBOX_ICON_UNSELECTED_SIGNAL] = etk_signal_new("icon-unselected",
          iconbox_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_iconbox_signals[ETK_ICONBOX_SELECT_ALL_SIGNAL] = etk_signal_new("select_all",
+      _etk_iconbox_signals[ETK_ICONBOX_ALL_SELECTED_SIGNAL] = etk_signal_new("all-selected",
          iconbox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_iconbox_signals[ETK_ICONBOX_UNSELECT_ALL_SIGNAL] = etk_signal_new("unselect_all",
+      _etk_iconbox_signals[ETK_ICONBOX_ALL_UNSELECTED_SIGNAL] = etk_signal_new("all-unselected",
          iconbox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
    }
 
@@ -139,8 +139,8 @@ Etk_Type *etk_iconbox_type_get()
  */
 Etk_Widget *etk_iconbox_new()
 {
-   return etk_widget_new(ETK_ICONBOX_TYPE, "theme_group", "iconbox",
-      "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_ICONBOX_TYPE, "theme-group", "iconbox",
+      "focusable", ETK_TRUE, "focus-on-click", ETK_TRUE, NULL);
 }
 
 /**
@@ -217,7 +217,7 @@ void etk_iconbox_current_model_set(Etk_Iconbox *iconbox, Etk_Iconbox_Model *mode
    etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(iconbox->scrolled_view)),
       model->height * 0.75, model->height * 3.0);
    
-   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(iconbox->grid), NULL);
+   etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
 }
 
@@ -254,7 +254,7 @@ void etk_iconbox_model_geometry_set(Etk_Iconbox_Model *model, int width, int hei
    if (model->iconbox && model->iconbox->current_model == model)
    {
       etk_widget_redraw_queue(model->iconbox->grid);
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(model->iconbox->grid), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(model->iconbox->grid), NULL);
    }
 }
 
@@ -305,7 +305,7 @@ void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y,
    
    if (model->iconbox && model->iconbox->current_model == model)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(model->iconbox->grid), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(model->iconbox->grid), NULL);
       etk_widget_redraw_queue(model->iconbox->grid);
    }
 }
@@ -365,7 +365,7 @@ void etk_iconbox_model_label_geometry_set(Etk_Iconbox_Model *model, int x, int y
    
    if (model->iconbox && model->iconbox->current_model == model)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(model->iconbox->grid), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(model->iconbox->grid), NULL);
       etk_widget_redraw_queue(model->iconbox->grid);
    }
 }
@@ -417,7 +417,7 @@ void etk_iconbox_thaw(Etk_Iconbox *iconbox)
    if (!iconbox || !iconbox->frozen)
       return;
    
-   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(iconbox->grid), NULL);
+   etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
    iconbox->frozen = ETK_FALSE;
 }
@@ -461,7 +461,7 @@ Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename,
    
    if (!iconbox->frozen)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(iconbox->grid), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
       etk_widget_redraw_queue(iconbox->grid);
    }
    
@@ -501,7 +501,7 @@ void etk_iconbox_icon_del(Etk_Iconbox_Icon *icon)
    
    if (!iconbox->frozen)
    {
-      etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(iconbox->grid), NULL);
+      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
       etk_widget_redraw_queue(iconbox->grid);
    }
 }
@@ -518,7 +518,7 @@ void etk_iconbox_clear(Etk_Iconbox *iconbox)
    while (iconbox->first_icon)
       etk_iconbox_icon_del(iconbox->first_icon);
    
-   etk_signal_emit_by_name("scroll_size_changed", ETK_OBJECT(iconbox->grid), NULL);
+   etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
 }
 
@@ -723,7 +723,7 @@ void etk_iconbox_select_all(Etk_Iconbox *iconbox)
       icon->selected = ETK_TRUE;
    
    etk_widget_redraw_queue(iconbox->grid);
-   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_SELECT_ALL_SIGNAL], ETK_OBJECT(iconbox), NULL);
+   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ALL_SELECTED_SIGNAL], ETK_OBJECT(iconbox), NULL);
 }
 
 /**
@@ -741,7 +741,7 @@ void etk_iconbox_unselect_all(Etk_Iconbox *iconbox)
       icon->selected = ETK_FALSE;
    
    etk_widget_redraw_queue(iconbox->grid);
-   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_UNSELECT_ALL_SIGNAL], ETK_OBJECT(iconbox), NULL);
+   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ALL_UNSELECTED_SIGNAL], ETK_OBJECT(iconbox), NULL);
 }
 
 /**
@@ -822,8 +822,8 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
    etk_widget_repeat_mouse_events_set(iconbox->scrolled_view, ETK_TRUE);
    etk_widget_show(iconbox->scrolled_view);
    
-   iconbox->grid = etk_widget_new(ETK_ICONBOX_GRID_TYPE, "theme_group", "grid", "theme_parent", iconbox,
-      "has_event_object", ETK_TRUE, "repeat_mouse_events", ETK_TRUE, "internal", ETK_TRUE, NULL);
+   iconbox->grid = etk_widget_new(ETK_ICONBOX_GRID_TYPE, "theme-group", "grid", "theme-parent", iconbox,
+      "has-event-object", ETK_TRUE, "repeat-mouse-events", ETK_TRUE, "internal", ETK_TRUE, NULL);
    ETK_ICONBOX_GRID(iconbox->grid)->iconbox = iconbox;
    etk_container_add(ETK_CONTAINER(iconbox->scrolled_view), iconbox->grid);
    etk_widget_show(iconbox->grid);
@@ -841,7 +841,7 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
    ETK_WIDGET(iconbox)->size_request = _etk_iconbox_size_request;
    ETK_WIDGET(iconbox)->size_allocate = _etk_iconbox_size_allocate;
    
-   etk_signal_connect("realize", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_iconbox_realize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_iconbox_realized_cb), NULL);
 }
 
 /* Destroys the iconbox */
@@ -913,11 +913,11 @@ static void _etk_iconbox_grid_constructor(Etk_Iconbox_Grid *grid)
    ETK_WIDGET(grid)->size_allocate = _etk_iconbox_grid_size_allocate;
    ETK_WIDGET(grid)->scroll = _etk_iconbox_grid_scroll;
    ETK_WIDGET(grid)->scroll_size_get = _etk_iconbox_grid_scroll_size_get;
-   etk_signal_connect("realize", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_unrealize_cb), NULL);
-   etk_signal_connect("mouse_down", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_down_cb), NULL);
-   etk_signal_connect("mouse_up", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_up_cb), NULL);
-   etk_signal_connect("mouse_move", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_move_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_unrealized_cb), NULL);
+   etk_signal_connect("mouse-down", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_down_cb), NULL);
+   etk_signal_connect("mouse-up", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_up_cb), NULL);
+   etk_signal_connect("mouse-move", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_move_cb), NULL);
 }
 
 /* Destroys the iconbox grid */
@@ -1110,7 +1110,7 @@ static void _etk_iconbox_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrol
  **************************/
 
 /* Called when the iconbox is realized */
-static void _etk_iconbox_realize_cb(Etk_Object *object, void *data)
+static void _etk_iconbox_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Iconbox *iconbox;
 
@@ -1133,7 +1133,7 @@ static void _etk_iconbox_realize_cb(Etk_Object *object, void *data)
  **************************/
 
 /* Called when the iconbox grid is realized */
-static void _etk_iconbox_grid_realize_cb(Etk_Object *object, void *data)
+static void _etk_iconbox_grid_realized_cb(Etk_Object *object, void *data)
 {
    Evas *evas;
    Etk_Iconbox_Grid *grid;
@@ -1153,7 +1153,7 @@ static void _etk_iconbox_grid_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the iconbox grid is unrealized */
-static void _etk_iconbox_grid_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_iconbox_grid_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Iconbox_Grid *grid;
    
@@ -1579,7 +1579,7 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
  *     - Etk_Iconbox
  *
  * \par Signals:
- * @signal_name "icon_selected": Emitted when an icon of the iconbox has been selected.
+ * @signal_name "icon-selected": Emitted when an icon of the iconbox has been selected.
  * If several icons have been selected at the same time (with etk_iconbox_select_all(), or with
  * the selection rectangle), the "icon_selected" signal will only be emitted once, on the last selected icon.
  * @signal_cb void callback(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
@@ -1587,7 +1587,7 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
  * @signal_arg icon: the icon which has been selected
  * @signal_data
  * \par
- * @signal_name "icon_unselected": Emitted when an icon of the iconbox has been unselected.
+ * @signal_name "icon-unselected": Emitted when an icon of the iconbox has been unselected.
  * If several icons have been unselected at the same time (with etk_iconbox_unselect_all(), or with
  * the selection rectangle), the "icon_unselected" signal will only be emitted once, on the last unselected icon.
  * @signal_cb void callback(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
@@ -1595,12 +1595,12 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
  * @signal_arg icon: the icon which has been unselected
  * @signal_data
  * \par
- * @signal_name "select_all": Emitted when all the icons of the iconbox have been selected with etk_iconbox_select_all()
+ * @signal_name "all-selected": Emitted when all the icons of the iconbox have been selected with etk_iconbox_select_all()
  * @signal_cb void callback(Etk_Iconbox *iconbox, void *data)
  * @signal_arg iconbox: the iconbox connected to the callback
  * @signal_data
  * \par
- * @signal_name "unselect_all": Emitted when all the icons of the iconbox have been unselected with etk_iconbox_select_all()
+ * @signal_name "all-unselected": Emitted when all the icons of the iconbox have been unselected with etk_iconbox_select_all()
  * @signal_cb void callback(Etk_Iconbox *iconbox, void *data)
  * @signal_arg iconbox: the iconbox connected to the callback
  * @signal_data

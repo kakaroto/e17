@@ -397,7 +397,7 @@ group {
 
       program {
          name: "go_passive_pre";
-         signal: "etk,state,deselected";
+         signal: "etk,state,unselected";
          source: "etk";
          action: STATE_SET "active" 0.0;
          target: "item_outline";
@@ -688,7 +688,7 @@ group {
 
       program {
          name: "go_passive_pre";
-         signal: "etk,state,deselected";
+         signal: "etk,state,unselected";
          source: "etk";
          action: STATE_SET "active" 0.0;
          target: "item_highlight";

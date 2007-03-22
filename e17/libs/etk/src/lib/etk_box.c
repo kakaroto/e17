@@ -508,7 +508,7 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
       free(cell);
       
       etk_widget_size_recalc_queue(ETK_WIDGET(box));
-      etk_signal_emit_by_name("child_removed", ETK_OBJECT(box), NULL, widget);
+      etk_signal_emit_by_name("child-removed", ETK_OBJECT(box), NULL, widget);
    }
 }
 
@@ -1050,7 +1050,7 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
    
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Box::Cell", cell);
    etk_widget_parent_set(child, ETK_WIDGET(box));
-   etk_signal_emit_by_name("child_added", ETK_OBJECT(box), NULL, child);
+   etk_signal_emit_by_name("child-added", ETK_OBJECT(box), NULL, child);
 }
 
 /* Gets the cell of the box containing the widget */

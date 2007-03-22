@@ -53,8 +53,8 @@ Etk_Type *etk_range_type_get(void)
       range_type = etk_type_new("Etk_Range", ETK_WIDGET_TYPE, sizeof(Etk_Range),
          ETK_CONSTRUCTOR(_etk_range_constructor), NULL);
 
-      _etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL] = etk_signal_new("value_changed",
-         range_type, ETK_MEMBER_OFFSET(Etk_Range, value_changed), etk_marshaller_VOID__DOUBLE, NULL, NULL);
+      _etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL] = etk_signal_new("value-changed",
+         range_type, ETK_MEMBER_OFFSET(Etk_Range, value_changed_handler), etk_marshaller_VOID__DOUBLE, NULL, NULL);
 
       etk_type_property_add(range_type, "lower", ETK_RANGE_LOWER_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
@@ -62,11 +62,11 @@ Etk_Type *etk_range_type_get(void)
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
       etk_type_property_add(range_type, "value", ETK_RANGE_VALUE_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
-      etk_type_property_add(range_type, "step_increment", ETK_RANGE_STEP_INC_PROPERTY,
+      etk_type_property_add(range_type, "step-increment", ETK_RANGE_STEP_INC_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
-      etk_type_property_add(range_type, "page_increment", ETK_RANGE_PAGE_INC_PROPERTY,
+      etk_type_property_add(range_type, "page-increment", ETK_RANGE_PAGE_INC_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
-      etk_type_property_add(range_type, "page_size", ETK_RANGE_PAGE_SIZE_PROPERTY,
+      etk_type_property_add(range_type, "page-size", ETK_RANGE_PAGE_SIZE_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
       
       range_type->property_set = _etk_range_property_set;
@@ -172,12 +172,12 @@ void etk_range_increments_set(Etk_Range *range, double step, double page)
    if (range->step_increment != step)
    {
       range->step_increment = step;
-      etk_object_notify(ETK_OBJECT(range), "step_increment");
+      etk_object_notify(ETK_OBJECT(range), "step-increment");
    }
    if (range->page_increment != page)
    {
       range->page_increment = page;
-      etk_object_notify(ETK_OBJECT(range), "page_increment");
+      etk_object_notify(ETK_OBJECT(range), "page-increment");
    }
 }
 
@@ -209,7 +209,7 @@ void etk_range_page_size_set(Etk_Range *range, double page_size)
    if (page_size != range->page_size)
    {
       range->page_size = page_size;
-      etk_object_notify(ETK_OBJECT(range), "page_size");
+      etk_object_notify(ETK_OBJECT(range), "page-size");
    }
    etk_range_value_set(range, range->value);
 }
@@ -245,7 +245,7 @@ static void _etk_range_constructor(Etk_Range *range)
    range->step_increment = 0.0;
    range->page_increment = 0.0;
    range->page_size = 0.0;
-   range->value_changed = NULL;
+   range->value_changed_handler = NULL;
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -342,7 +342,7 @@ static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Pro
  *     - Etk_Range
  *
  * \par Signals:
- * @signal_name "value_changed": Emitted when the value of the range is changed
+ * @signal_name "value-changed": Emitted when the value of the range is changed
  * @signal_cb void callback(Etk_Range *range, double value, void *data)
  * @signal_arg range: the range whose value has been changed
  * @signal_arg value: the new value of the range
@@ -364,17 +364,17 @@ static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Pro
  * @prop_rw
  * @prop_val 0.0
  * \par
- * @prop_name "step_increment": The step increment value of the range. See the description of Etk_Range for more info
+ * @prop_name "step-increment": The step increment value of the range. See the description of Etk_Range for more info
  * @prop_type Double
  * @prop_rw
  * @prop_val 0.0
  * \par
- * @prop_name "page_increment": The page increment value of the range. See the description of Etk_Range for more info
+ * @prop_name "page-increment": The page increment value of the range. See the description of Etk_Range for more info
  * @prop_type Double
  * @prop_rw
  * @prop_val 0.0
  * \par
- * @prop_name "page_size": The page-size of the range. See the description of Etk_Range for more info
+ * @prop_name "page-size": The page-size of the range. See the description of Etk_Range for more info
  * @prop_type Double
  * @prop_rw
  * @prop_val 0.0

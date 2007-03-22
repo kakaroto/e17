@@ -14,7 +14,7 @@ void etk_test_filechooser_window_create(void *data)
    
    dialog = etk_dialog_new();
    etk_window_title_set(ETK_WINDOW(dialog), "Etk Filechooser Test");
-   etk_signal_connect("delete_event", ETK_OBJECT(dialog), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("delete-event", ETK_OBJECT(dialog), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    filechooser = etk_filechooser_widget_new();
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), filechooser, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);

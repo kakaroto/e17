@@ -32,10 +32,10 @@ static void _etk_spinner_property_set(Etk_Object *object, int property_id, Etk_P
 static void _etk_spinner_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_spinner_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
-static void _etk_spinner_realize_cb(Etk_Object *object, void *data);
-static void _etk_spinner_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_spinner_focus_cb(Etk_Object *object, void *data);
-static void _etk_spinner_unfocus_cb(Etk_Object *object, void *data);
+static void _etk_spinner_realized_cb(Etk_Object *object, void *data);
+static void _etk_spinner_unrealized_cb(Etk_Object *object, void *data);
+static void _etk_spinner_focused_cb(Etk_Object *object, void *data);
+static void _etk_spinner_unfocused_cb(Etk_Object *object, void *data);
 static void _etk_spinner_enabled_cb(Etk_Object *object, void *data);
 static void _etk_spinner_disabled_cb(Etk_Object *object, void *data);
 
@@ -85,7 +85,7 @@ Etk_Type *etk_spinner_type_get()
       
       etk_type_property_add(spinner_type, "digits", ETK_SPINNER_DIGITS_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
-      etk_type_property_add(spinner_type, "snap_to_ticks", ETK_SPINNER_SNAP_TO_TICKS_PROPERTY,
+      etk_type_property_add(spinner_type, "snap-to-ticks", ETK_SPINNER_SNAP_TO_TICKS_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(spinner_type, "wrap", ETK_SPINNER_WRAP_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
@@ -108,10 +108,10 @@ Etk_Type *etk_spinner_type_get()
  */
 Etk_Widget *etk_spinner_new(double lower, double upper, double value, double step_increment, double page_increment)
 {
-   return etk_widget_new(ETK_SPINNER_TYPE, "theme_group", "spinner",
-      "focusable", ETK_TRUE, "focus_on_click", ETK_TRUE,
-      "lower", lower, "upper", upper, "value", value, "step_increment",
-      step_increment, "page_increment", page_increment, NULL);
+   return etk_widget_new(ETK_SPINNER_TYPE, "theme-group", "spinner",
+      "focusable", ETK_TRUE, "focus-on-click", ETK_TRUE,
+      "lower", lower, "upper", upper, "value", value, "step-increment",
+      step_increment, "page-increment", page_increment, NULL);
 }
 
 /**
@@ -163,7 +163,7 @@ void etk_spinner_snap_to_ticks_set(Etk_Spinner *spinner, Etk_Bool snap_to_ticks)
       new_value = _etk_spinner_value_snap(spinner, etk_range_value_get(ETK_RANGE(spinner)));
       etk_range_value_set(ETK_RANGE(spinner), new_value);
    }
-   etk_object_notify(ETK_OBJECT(spinner), "snap_to_ticks");
+   etk_object_notify(ETK_OBJECT(spinner), "snap-to-ticks");
 }
 
 /**
@@ -228,20 +228,20 @@ static void _etk_spinner_constructor(Etk_Spinner *spinner)
    spinner->editable_object = NULL;
    spinner->selection_dragging = ETK_FALSE;
    
-   ETK_RANGE(spinner)->value_changed = _etk_spinner_value_changed_handler;
+   ETK_RANGE(spinner)->value_changed_handler = _etk_spinner_value_changed_handler;
    ETK_WIDGET(spinner)->size_allocate = _etk_spinner_size_allocate;
    
-   etk_signal_connect("realize", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unrealize_cb), NULL);
-   etk_signal_connect("key_down", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_down_cb), NULL);
-   etk_signal_connect("key_up", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_up_cb), NULL);
-   etk_signal_connect("focus", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_focus_cb), NULL);
-   etk_signal_connect("unfocus", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unfocus_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unrealized_cb), NULL);
+   etk_signal_connect("key-down", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_down_cb), NULL);
+   etk_signal_connect("key-up", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_up_cb), NULL);
+   etk_signal_connect("focused", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_focused_cb), NULL);
+   etk_signal_connect("unfocused", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unfocused_cb), NULL);
    etk_signal_connect("enabled", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_enabled_cb), NULL);
    etk_signal_connect("disabled", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_disabled_cb), NULL);
-   etk_signal_connect("selection_received", ETK_OBJECT(spinner),
+   etk_signal_connect("selection-received", ETK_OBJECT(spinner),
          ETK_CALLBACK(_etk_spinner_selection_received_cb), NULL);
-   etk_object_notification_callback_add(ETK_OBJECT(spinner), "step_increment",
+   etk_object_notification_callback_add(ETK_OBJECT(spinner), "step-increment",
          _etk_spinner_step_increment_changed_cb, NULL);
 }
 
@@ -312,7 +312,7 @@ static void _etk_spinner_size_allocate(Etk_Widget *widget, Etk_Geometry geometry
  **************************/
 
 /* Called when the spinner is realized */
-static void _etk_spinner_realize_cb(Etk_Object *object, void *data)
+static void _etk_spinner_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Spinner *spinner;
    Evas_Object *theme_object;
@@ -363,7 +363,7 @@ static void _etk_spinner_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the spinner is unrealized */
-static void _etk_spinner_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_spinner_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Spinner *spinner;
 
@@ -375,7 +375,7 @@ static void _etk_spinner_unrealize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the spinner is focused */
-static void _etk_spinner_focus_cb(Etk_Object *object, void *data)
+static void _etk_spinner_focused_cb(Etk_Object *object, void *data)
 {
    Etk_Spinner *spinner;
 
@@ -387,7 +387,7 @@ static void _etk_spinner_focus_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the spinner is unfocused */
-static void _etk_spinner_unfocus_cb(Etk_Object *object, void *data)
+static void _etk_spinner_unfocused_cb(Etk_Object *object, void *data)
 {
    Etk_Spinner *spinner;
 
@@ -957,7 +957,7 @@ static void _etk_spinner_selection_copy(Etk_Spinner *spinner, Etk_Selection_Type
  * bounds. This setting can be set with etk_spinner_wrap_set(). @n
  *
  * Since Etk_Spinner inherits from Etk_Range, you can be notified when the value is changed with the signal
- * @a "value_changed". You can also call etk_range_value_set() and etk_range_value_get() to set or get the value of the
+ * @a "value-changed". You can also call etk_range_value_set() and etk_range_value_get() to set or get the value of the
  * spinner.
  *
  * 
@@ -973,7 +973,7 @@ static void _etk_spinner_selection_copy(Etk_Spinner *spinner, Etk_Selection_Type
  * @prop_rw
  * @prop_val 0
  * \par
- * @prop_name "snap_to_ticks": Whether or not the value of the spinner should be corrected
+ * @prop_name "snap-to-ticks": Whether or not the value of the spinner should be corrected
  * to the nearest step-increment
  * @prop_type Boolean
  * @prop_rw

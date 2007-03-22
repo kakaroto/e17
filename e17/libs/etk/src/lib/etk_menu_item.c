@@ -17,7 +17,7 @@
 enum Etk_Menu_Item_Signal_Id
 {
    ETK_MENU_ITEM_SELECTED_SIGNAL,
-   ETK_MENU_ITEM_DESELECTED_SIGNAL,
+   ETK_MENU_ITEM_UNSELECTED_SIGNAL,
    ETK_MENU_ITEM_ACTIVATED_SIGNAL,
    ETK_MENU_ITEM_NUM_SIGNALS
 };
@@ -50,11 +50,11 @@ static void _etk_menu_item_check_property_set(Etk_Object *object, int property_i
 static void _etk_menu_item_check_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_menu_item_radio_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_menu_item_radio_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_menu_item_realize_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_check_box_realize_cb(Etk_Object *object, void *data);
+static void _etk_menu_item_realized_cb(Etk_Object *object, void *data);
+static void _etk_menu_item_check_box_realized_cb(Etk_Object *object, void *data);
 static void _etk_menu_item_check_activated_cb(Etk_Object *object, void *data);
 static void _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item);
-static void _etk_menu_item_deselected_handler(Etk_Menu_Item *menu_item);
+static void _etk_menu_item_unselected_handler(Etk_Menu_Item *menu_item);
 static void _etk_menu_item_activated_handler(Etk_Menu_Item *menu_item);
 static void _etk_menu_item_check_toggled_handler(Etk_Menu_Item_Check *check_item);
 static void _etk_menu_item_check_active_set(Etk_Menu_Item_Check *check_item, Etk_Bool active);
@@ -88,11 +88,11 @@ Etk_Type *etk_menu_item_type_get()
          ETK_CONSTRUCTOR(_etk_menu_item_constructor), ETK_DESTRUCTOR(_etk_menu_item_destructor));
 
       _etk_menu_item_signals[ETK_MENU_ITEM_SELECTED_SIGNAL] = etk_signal_new("selected",
-         menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, selected), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_menu_item_signals[ETK_MENU_ITEM_DESELECTED_SIGNAL] = etk_signal_new("deselected",
-         menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, deselected), etk_marshaller_VOID__VOID, NULL, NULL);
+         menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, selected_handler), etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_menu_item_signals[ETK_MENU_ITEM_UNSELECTED_SIGNAL] = etk_signal_new("unselected",
+         menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, unselected_handler), etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_menu_item_signals[ETK_MENU_ITEM_ACTIVATED_SIGNAL] = etk_signal_new("activated",
-         menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, activated), etk_marshaller_VOID__VOID, NULL, NULL);
+         menu_item_type, ETK_MEMBER_OFFSET(Etk_Menu_Item, activated_handler), etk_marshaller_VOID__VOID, NULL, NULL);
       
       etk_type_property_add(menu_item_type, "label", ETK_MENU_ITEM_LABEL_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -113,7 +113,7 @@ Etk_Type *etk_menu_item_type_get()
  */
 Etk_Widget *etk_menu_item_new()
 {
-   return etk_widget_new(ETK_MENU_ITEM_TYPE, "theme_group", "menu_item", "visible", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_MENU_ITEM_TYPE, "theme-group", "menu_item", "visible", ETK_TRUE, NULL);
 }
 
 /**
@@ -124,7 +124,7 @@ Etk_Widget *etk_menu_item_new()
  */
 Etk_Widget *etk_menu_item_new_with_label(const char *label)
 {
-   return etk_widget_new(ETK_MENU_ITEM_TYPE, "theme_group", "menu_item", "visible", ETK_TRUE, "label", label, NULL);
+   return etk_widget_new(ETK_MENU_ITEM_TYPE, "theme-group", "menu_item", "visible", ETK_TRUE, "label", label, NULL);
 }
 
 /**
@@ -214,13 +214,13 @@ void etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu)
    if (menu_item->submenu)
    {
       menu_item->submenu->parent_item = NULL;
-      etk_object_notify(ETK_OBJECT(menu_item->submenu), "parent_item");
+      etk_object_notify(ETK_OBJECT(menu_item->submenu), "parent-item");
    }
    menu_item->submenu = submenu;
    if (menu_item->submenu)
    {
       menu_item->submenu->parent_item = menu_item;
-      etk_object_notify(ETK_OBJECT(menu_item->submenu), "parent_item");
+      etk_object_notify(ETK_OBJECT(menu_item->submenu), "parent-item");
    }
    
    if (menu_item->submenu)
@@ -258,16 +258,16 @@ void etk_menu_item_select(Etk_Menu_Item *menu_item)
 }
 
 /**
- * @brief Deselects the menu-item
+ * @brief Unselects the menu-item
  * @param menu_item a menu-item
  */
-void etk_menu_item_deselect(Etk_Menu_Item *menu_item)
+void etk_menu_item_unselect(Etk_Menu_Item *menu_item)
 {
    if (!menu_item || !menu_item->is_selected)
       return;
    
    menu_item->is_selected = ETK_FALSE;
-   etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_DESELECTED_SIGNAL], ETK_OBJECT(menu_item), NULL);
+   etk_signal_emit(_etk_menu_item_signals[ETK_MENU_ITEM_UNSELECTED_SIGNAL], ETK_OBJECT(menu_item), NULL);
 }
 
 /**
@@ -310,7 +310,7 @@ Etk_Type *etk_menu_item_separator_type_get()
  */
 Etk_Widget *etk_menu_item_separator_new()
 {
-   return etk_widget_new(ETK_MENU_ITEM_SEPARATOR_TYPE, "theme_group", "separator", "visible", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_MENU_ITEM_SEPARATOR_TYPE, "theme-group", "separator", "visible", ETK_TRUE, NULL);
 }
 
 /**************************
@@ -348,7 +348,7 @@ Etk_Type *etk_menu_item_image_type_get()
  */
 Etk_Widget *etk_menu_item_image_new()
 {
-   return etk_widget_new(ETK_MENU_ITEM_IMAGE_TYPE, "theme_group", "menu_item", "visible", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_MENU_ITEM_IMAGE_TYPE, "theme-group", "menu_item", "visible", ETK_TRUE, NULL);
 }
 
 /**
@@ -359,7 +359,7 @@ Etk_Widget *etk_menu_item_image_new()
  */
 Etk_Widget *etk_menu_item_image_new_with_label(const char *label)
 {
-   return etk_widget_new(ETK_MENU_ITEM_IMAGE_TYPE, "theme_group", "menu_item",
+   return etk_widget_new(ETK_MENU_ITEM_IMAGE_TYPE, "theme-group", "menu_item",
       "label", label, "visible", ETK_TRUE, NULL);
 }
 
@@ -433,7 +433,7 @@ Etk_Type *etk_menu_item_check_type_get()
          ETK_CONSTRUCTOR(_etk_menu_item_check_constructor), NULL);
       
       _etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL] = etk_signal_new("toggled",
-         menu_item_check_type, ETK_MEMBER_OFFSET(Etk_Menu_Item_Check, toggled), etk_marshaller_VOID__VOID, NULL, NULL);
+         menu_item_check_type, ETK_MEMBER_OFFSET(Etk_Menu_Item_Check, toggled_handler), etk_marshaller_VOID__VOID, NULL, NULL);
       
       etk_type_property_add(menu_item_check_type, "active", ETK_MENU_ITEM_ACTIVE_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
@@ -452,7 +452,7 @@ Etk_Type *etk_menu_item_check_type_get()
  */
 Etk_Widget *etk_menu_item_check_new()
 {
-   return etk_widget_new(ETK_MENU_ITEM_CHECK_TYPE, "theme_group", "menu_item", "visible", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_MENU_ITEM_CHECK_TYPE, "theme-group", "menu_item", "visible", ETK_TRUE, NULL);
 }
 
 /**
@@ -463,7 +463,7 @@ Etk_Widget *etk_menu_item_check_new()
  */
 Etk_Widget *etk_menu_item_check_new_with_label(const char *label)
 {
-   return etk_widget_new(ETK_MENU_ITEM_CHECK_TYPE, "theme_group", "menu_item",
+   return etk_widget_new(ETK_MENU_ITEM_CHECK_TYPE, "theme-group", "menu_item",
       "label", label, "visible", ETK_TRUE, NULL);
 }
 
@@ -528,7 +528,7 @@ Etk_Type *etk_menu_item_radio_type_get()
  */
 Etk_Widget *etk_menu_item_radio_new(Evas_List **group)
 {
-   return etk_widget_new(ETK_MENU_ITEM_RADIO_TYPE, "theme_group", "menu_item",
+   return etk_widget_new(ETK_MENU_ITEM_RADIO_TYPE, "theme-group", "menu_item",
       "visible", ETK_TRUE, "group", group, NULL);
 }
 
@@ -540,7 +540,7 @@ Etk_Widget *etk_menu_item_radio_new(Evas_List **group)
  */
 Etk_Widget *etk_menu_item_radio_new_from_widget(Etk_Menu_Item_Radio *radio_item)
 {
-   return etk_widget_new(ETK_MENU_ITEM_RADIO_TYPE, "theme_group", "menu_item", "visible", ETK_TRUE,
+   return etk_widget_new(ETK_MENU_ITEM_RADIO_TYPE, "theme-group", "menu_item", "visible", ETK_TRUE,
       "group", etk_menu_item_radio_group_get(radio_item), NULL);
 }
 
@@ -554,7 +554,7 @@ Etk_Widget *etk_menu_item_radio_new_from_widget(Etk_Menu_Item_Radio *radio_item)
  */
 Etk_Widget *etk_menu_item_radio_new_with_label(const char *label, Evas_List **group)
 {
-   return etk_widget_new(ETK_MENU_ITEM_RADIO_TYPE, "theme_group", "menu_item",
+   return etk_widget_new(ETK_MENU_ITEM_RADIO_TYPE, "theme-group", "menu_item",
       "visible", ETK_TRUE, "group", group, "label", label, NULL);
 }
 
@@ -568,7 +568,7 @@ Etk_Widget *etk_menu_item_radio_new_with_label(const char *label, Evas_List **gr
  */
 Etk_Widget *etk_menu_item_radio_new_with_label_from_widget(const char *label, Etk_Menu_Item_Radio *radio_item)
 {
-   return etk_widget_new(ETK_MENU_ITEM_RADIO_TYPE, "theme_group", "menu_item", "visible", ETK_TRUE,
+   return etk_widget_new(ETK_MENU_ITEM_RADIO_TYPE, "theme-group", "menu_item", "visible", ETK_TRUE,
       "group", etk_menu_item_radio_group_get(radio_item), "label", label, NULL);
 }
 
@@ -636,9 +636,9 @@ static void _etk_menu_item_constructor(Etk_Menu_Item *menu_item)
    if (!menu_item)
       return;
 
-   menu_item->selected = _etk_menu_item_selected_handler;
-   menu_item->deselected = _etk_menu_item_deselected_handler;
-   menu_item->activated = _etk_menu_item_activated_handler;
+   menu_item->selected_handler = _etk_menu_item_selected_handler;
+   menu_item->unselected_handler = _etk_menu_item_unselected_handler;
+   menu_item->activated_handler = _etk_menu_item_activated_handler;
    
    menu_item->submenu = NULL;
    menu_item->parent_shell = NULL;
@@ -646,7 +646,7 @@ static void _etk_menu_item_constructor(Etk_Menu_Item *menu_item)
    menu_item->left_widget = NULL;
    menu_item->is_selected = ETK_FALSE;
    
-   etk_signal_connect("realize", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_menu_item_realize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_menu_item_realized_cb), NULL);
 }
 
 /* Menu_Item: Destroys the menu item */
@@ -666,12 +666,12 @@ static void _etk_menu_item_check_constructor(Etk_Menu_Item_Check *check_item)
       return;
    
    check_item->active = ETK_FALSE;
-   check_item->toggled = _etk_menu_item_check_toggled_handler;
+   check_item->toggled_handler = _etk_menu_item_check_toggled_handler;
    check_item->active_set = _etk_menu_item_check_active_set;
    
    menu_item->left_widget = etk_widget_new(ETK_WIDGET_TYPE,
-      "theme_group", ETK_IS_MENU_ITEM_RADIO(check_item) ? "radiobox" : "checkbox",
-      "theme_parent", check_item, "pass_mouse_events", ETK_TRUE, "visible", ETK_TRUE, NULL);
+      "theme-group", ETK_IS_MENU_ITEM_RADIO(check_item) ? "radiobox" : "checkbox",
+      "theme-parent", check_item, "pass-mouse-events", ETK_TRUE, "visible", ETK_TRUE, NULL);
    etk_widget_parent_set(menu_item->left_widget, ETK_WIDGET(menu_item));
    etk_widget_swallow_widget(ETK_WIDGET(menu_item), "etk.swallow.left_widget", menu_item->left_widget);
    
@@ -681,8 +681,8 @@ static void _etk_menu_item_check_constructor(Etk_Menu_Item_Check *check_item)
    else
       etk_widget_theme_signal_emit(menu_item->left_widget, "etk,state,off", ETK_FALSE);
    
-   etk_signal_connect("realize", ETK_OBJECT(menu_item->left_widget),
-      ETK_CALLBACK(_etk_menu_item_check_box_realize_cb), menu_item);
+   etk_signal_connect("realized", ETK_OBJECT(menu_item->left_widget),
+      ETK_CALLBACK(_etk_menu_item_check_box_realized_cb), menu_item);
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
       ETK_CALLBACK(_etk_menu_item_check_activated_cb), menu_item);
 }
@@ -868,7 +868,7 @@ static void _etk_menu_item_radio_property_get(Etk_Object *object, int property_i
  **************************/
 
 /* Called when the menu item is realized */
-static void _etk_menu_item_realize_cb(Etk_Object *object, void *data)
+static void _etk_menu_item_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *menu_item;
    
@@ -882,7 +882,7 @@ static void _etk_menu_item_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the checkbox of the check item is realized */
-static void _etk_menu_item_check_box_realize_cb(Etk_Object *object, void *data)
+static void _etk_menu_item_check_box_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *menu_item;
 
@@ -914,13 +914,13 @@ static void _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item)
    etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "etk,state,selected", ETK_FALSE);
 }
 
-/* Default handler for the "deselected" signal */
-static void _etk_menu_item_deselected_handler(Etk_Menu_Item *menu_item)
+/* Default handler for the "unselected" signal */
+static void _etk_menu_item_unselected_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,state,deselected", ETK_FALSE);
-   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "etk,state,deselected", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,state,unselected", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "etk,state,unselected", ETK_FALSE);
 }
 
 /* Default handler for the "activated" signal */
@@ -1032,9 +1032,9 @@ static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk
  * @signal_arg menu_item: the menu item which has been selected
  * @signal_data
  * \par
- * @signal_name "deselected": Emitted when the menu item is deselected
+ * @signal_name "unselected": Emitted when the menu item is unselected
  * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
- * @signal_arg menu_item: the menu item which has been deselected
+ * @signal_arg menu_item: the menu item which has been unselected
  * @signal_data
  * \par
  * @signal_name "activated": Emitted when the menu item is activated (mainly when it has been clicked)

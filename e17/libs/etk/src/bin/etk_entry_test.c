@@ -32,7 +32,7 @@ void etk_test_entry_window_create(void *data)
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Entry Test");
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -53,7 +53,7 @@ void etk_test_entry_window_create(void *data)
 
    image = etk_image_new_from_stock(ETK_STOCK_DOCUMENT_PRINT, ETK_STOCK_SMALL);
    etk_entry_image_set(ETK_ENTRY(_entry_normal), ETK_ENTRY_IMAGE_PRIMARY, ETK_IMAGE(image));
-   etk_signal_connect("mouse_click", ETK_OBJECT(image), ETK_CALLBACK(_normal_print_cb), NULL);
+   etk_signal_connect("mouse-click", ETK_OBJECT(image), ETK_CALLBACK(_normal_print_cb), NULL);
    etk_entry_clear_button_add(ETK_ENTRY(_entry_normal));
 
    _label_normal = etk_label_new(NULL);
@@ -99,13 +99,13 @@ void etk_test_entry_window_create(void *data)
    etk_widget_show_all(win);
 }
 
-/* Prints the text of the normal entry in the label */
+/* Prints the text of the normal entry in the label when the "print" icon is clicked */
 static void _normal_print_cb(Etk_Object *object, void *data)
 {
    etk_label_set(ETK_LABEL(_label_normal), etk_entry_text_get(ETK_ENTRY(_entry_normal)));
 }
 
-/* Toggles the password mode of the password entry */
+/* Toggles the password mode of the password entry when the "Password Visible" checkbox is toggled */
 static void _password_show_cb(Etk_Object *object, void *data)
 {
    etk_entry_password_mode_set(ETK_ENTRY(data), !etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object)));

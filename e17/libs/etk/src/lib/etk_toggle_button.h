@@ -30,7 +30,7 @@ struct Etk_Toggle_Button
    Etk_Button button;
    
    void (*active_set)(Etk_Toggle_Button *toggle_button, Etk_Bool active);
-   void (*toggled)(Etk_Toggle_Button *toggle_button);
+   void (*toggled_handler)(Etk_Toggle_Button *toggle_button);
    Etk_Bool active;
 };
 

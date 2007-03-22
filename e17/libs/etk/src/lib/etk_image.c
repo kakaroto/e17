@@ -30,7 +30,7 @@ static void _etk_image_constructor(Etk_Image *image);
 static void _etk_image_destructor(Etk_Image *image);
 static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_image_realize_cb(Etk_Object *object, void *data);
+static void _etk_image_realized_cb(Etk_Object *object, void *data);
 static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_image_source_set(Etk_Image *image, Etk_Image_Source source);
@@ -62,15 +62,15 @@ Etk_Type *etk_image_type_get(void)
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(image_type, "key", ETK_IMAGE_KEY_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
-      etk_type_property_add(image_type, "stock_id", ETK_IMAGE_STOCK_ID_PROPERTY,
+      etk_type_property_add(image_type, "stock-id", ETK_IMAGE_STOCK_ID_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_NO_STOCK));
-      etk_type_property_add(image_type, "stock_size", ETK_IMAGE_STOCK_SIZE_PROPERTY,
+      etk_type_property_add(image_type, "stock-size", ETK_IMAGE_STOCK_SIZE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_MEDIUM));
-      etk_type_property_add(image_type, "evas_object", ETK_IMAGE_EVAS_OBJECT_PROPERTY,
+      etk_type_property_add(image_type, "evas-object", ETK_IMAGE_EVAS_OBJECT_PROPERTY,
          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
-      etk_type_property_add(image_type, "keep_aspect", ETK_IMAGE_KEEP_ASPECT_PROPERTY,
+      etk_type_property_add(image_type, "keep-aspect", ETK_IMAGE_KEEP_ASPECT_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
-      etk_type_property_add(image_type, "aspect_ratio", ETK_IMAGE_ASPECT_RATIO_PROPERTY,
+      etk_type_property_add(image_type, "aspect-ratio", ETK_IMAGE_ASPECT_RATIO_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
 
       image_type->property_set = _etk_image_property_set;
@@ -286,12 +286,12 @@ void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id, Etk_Stock
    if (image->info.stock.id != stock_id)
    {
       image->info.stock.id = stock_id;
-      etk_object_notify(ETK_OBJECT(image), "stock_id");
+      etk_object_notify(ETK_OBJECT(image), "stock-id");
    }
    if (image->info.stock.size != stock_size)
    {
       image->info.stock.size = stock_size;
-      etk_object_notify(ETK_OBJECT(image), "stock_size");
+      etk_object_notify(ETK_OBJECT(image), "stock-size");
    }
    
    _etk_image_load(image);
@@ -335,7 +335,7 @@ void etk_image_set_from_evas_object(Etk_Image *image, Evas_Object *evas_object)
    if (image->object != evas_object)
    {
       image->object = evas_object;
-      etk_object_notify(ETK_OBJECT(image), "evas_object");
+      etk_object_notify(ETK_OBJECT(image), "evas-object");
    }
 
    _etk_image_load(image);
@@ -546,7 +546,7 @@ void etk_image_keep_aspect_set(Etk_Image *image, Etk_Bool keep_aspect)
 
    image->keep_aspect = keep_aspect;
    etk_widget_redraw_queue(ETK_WIDGET(image));
-   etk_object_notify(ETK_OBJECT(image), "keep_aspect");
+   etk_object_notify(ETK_OBJECT(image), "keep-aspect");
 }
 
 /**
@@ -574,7 +574,7 @@ void etk_image_aspect_ratio_set(Etk_Image *image, double aspect_ratio)
    
    image->aspect_ratio = aspect_ratio;
    etk_widget_redraw_queue(ETK_WIDGET(image));
-   etk_object_notify(ETK_OBJECT(image), "aspect_ratio");
+   etk_object_notify(ETK_OBJECT(image), "aspect-ratio");
 }
 
 /**
@@ -615,8 +615,8 @@ static void _etk_image_constructor(Etk_Image *image)
    widget->size_request = _etk_image_size_request;
    widget->size_allocate = _etk_image_size_allocate;
 
-   etk_signal_connect("realize", ETK_OBJECT(image), ETK_CALLBACK(_etk_image_realize_cb), NULL);
-   etk_signal_connect_swapped("unrealize", ETK_OBJECT(image), ETK_CALLBACK(etk_callback_set_null), &image->object);
+   etk_signal_connect("realized", ETK_OBJECT(image), ETK_CALLBACK(_etk_image_realized_cb), NULL);
+   etk_signal_connect_swapped("unrealized", ETK_OBJECT(image), ETK_CALLBACK(etk_callback_set_null), &image->object);
 }
 
 /* Destroys the image */
@@ -812,7 +812,7 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the image is realized */
-static void _etk_image_realize_cb(Etk_Object *object, void *data)
+static void _etk_image_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Image *image;
    
@@ -1002,30 +1002,30 @@ static void _etk_image_load(Etk_Image *image)
  * @prop_rw
  * @prop_val NULL
  * \par
- * @prop_name "stock_id": The stock ID used by the image.
+ * @prop_name "stock-id": The stock ID used by the image.
  * It is set to ETK_STOCK_NO_STOCK if the image is not a stock-icon
  * @prop_type Integer
  * @prop_rw
  * @prop_val ETK_STOCK_NO_STOCK
  * \par
- * @prop_name "stock_size": The size of the stock-icon used by the image.
+ * @prop_name "stock-size": The size of the stock-icon used by the image.
  * It is set to ETK_STOCK_MEDIUM if the image is not a stock-icon
  * @prop_type Integer
  * @prop_rw
  * @prop_val ETK_STOCK_MEDIUM
  * \par
- * @prop_name "evas_object": A pointer to the Evas object corresponding to the image. You must be careful if you
+ * @prop_name "evas-object": A pointer to the Evas object corresponding to the image. You must be careful if you
  * manipulate it directly (do not call an Edje function on an Evas image object)
  * @prop_type Pointer (Evas_Object *)
  * @prop_rw
  * @prop_val NULL
  * \par
- * @prop_name "keep_aspect": Whether of not the image keeps its aspect ratio when it is resized
+ * @prop_name "keep-aspect": Whether of not the image keeps its aspect ratio when it is resized
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_TRUE
  * \par
- * @prop_name "aspect_ratio": The aspect-ratio of the image. If it is set to 0.0, Etk calculates it automatically
+ * @prop_name "aspect-ratio": The aspect-ratio of the image. If it is set to 0.0, Etk calculates it automatically
  * @prop_type Double
  * @prop_rw
  * @prop_val 0.0

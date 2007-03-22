@@ -21,7 +21,7 @@ static void _etk_menu_bar_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
 static void _etk_menu_bar_item_added_cb(Etk_Object *object, void *item, void *data);
 static void _etk_menu_bar_item_removed_cb(Etk_Object *object, void *item, void *data);
 static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data);
-static void _etk_menu_bar_item_deselected_cb(Etk_Object *object, void *data);
+static void _etk_menu_bar_item_unselected_cb(Etk_Object *object, void *data);
 static void _etk_menu_bar_item_mouse_up_cb(Etk_Object *object, void *event, void *data);
 static void _etk_menu_bar_mouse_move_cb(Etk_Event_Global event, void *data);
 static void _etk_menu_bar_menu_popped_down_cb(Etk_Object *object, void *event, void *data);
@@ -56,7 +56,7 @@ Etk_Type *etk_menu_bar_type_get()
  */
 Etk_Widget *etk_menu_bar_new()
 {
-   return etk_widget_new(ETK_MENU_BAR_TYPE, "theme_group", "menu_bar", NULL);
+   return etk_widget_new(ETK_MENU_BAR_TYPE, "theme-group", "menu_bar", NULL);
 }
 
 /**************************
@@ -75,8 +75,8 @@ static void _etk_menu_bar_constructor(Etk_Menu_Bar *menu_bar)
    ETK_WIDGET(menu_bar)->size_request = _etk_menu_bar_size_request;
    ETK_WIDGET(menu_bar)->size_allocate = _etk_menu_bar_size_allocate;
    
-   etk_signal_connect("item_added", ETK_OBJECT(menu_bar), ETK_CALLBACK(_etk_menu_bar_item_added_cb), NULL);
-   etk_signal_connect("item_removed", ETK_OBJECT(menu_bar), ETK_CALLBACK(_etk_menu_bar_item_removed_cb), NULL);
+   etk_signal_connect("item-added", ETK_OBJECT(menu_bar), ETK_CALLBACK(_etk_menu_bar_item_added_cb), NULL);
+   etk_signal_connect("item-removed", ETK_OBJECT(menu_bar), ETK_CALLBACK(_etk_menu_bar_item_removed_cb), NULL);
 }
 
 /* Calculates the ideal size of the menu bar */
@@ -143,9 +143,9 @@ static void _etk_menu_bar_item_added_cb(Etk_Object *object, void *item, void *da
       return;
    
    etk_widget_theme_parent_set(ETK_WIDGET(item_object), menu_bar_widget);
-   etk_signal_connect("mouse_up", item_object, ETK_CALLBACK(_etk_menu_bar_item_mouse_up_cb), NULL);
+   etk_signal_connect("mouse-up", item_object, ETK_CALLBACK(_etk_menu_bar_item_mouse_up_cb), NULL);
    etk_signal_connect("selected", item_object, ETK_CALLBACK(_etk_menu_bar_item_selected_cb), NULL);
-   etk_signal_connect("deselected", item_object, ETK_CALLBACK(_etk_menu_bar_item_deselected_cb), NULL);
+   etk_signal_connect("unselected", item_object, ETK_CALLBACK(_etk_menu_bar_item_unselected_cb), NULL);
 }
 
 /* Called when an item is removed from the menu_bar */
@@ -157,9 +157,9 @@ static void _etk_menu_bar_item_removed_cb(Etk_Object *object, void *item, void *
       return;
    
    etk_widget_theme_parent_set(ETK_WIDGET(item_object), NULL);
-   etk_signal_disconnect("mouse_up", item_object, ETK_CALLBACK(_etk_menu_bar_item_mouse_up_cb));
+   etk_signal_disconnect("mouse-up", item_object, ETK_CALLBACK(_etk_menu_bar_item_mouse_up_cb));
    etk_signal_disconnect("selected", item_object, ETK_CALLBACK(_etk_menu_bar_item_selected_cb));
-   etk_signal_disconnect("deselected", item_object, ETK_CALLBACK(_etk_menu_bar_item_deselected_cb));
+   etk_signal_disconnect("unselected", item_object, ETK_CALLBACK(_etk_menu_bar_item_unselected_cb));
 }
 
 /* Called when the item is selected */
@@ -173,12 +173,12 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
    if (!(item = ETK_MENU_ITEM(object)) || !(menu_bar = ETK_MENU_BAR(item->parent_shell)))
       return;
 
-   /* First, we deselect all the items that belong to the same menu bar */
+   /* First, we unselect all the items that belong to the same menu bar */
    for (l = ETK_MENU_SHELL(menu_bar)->items; l; l = l->next)
    {
       if (ETK_MENU_ITEM(l->data) == item)
          continue;
-      etk_menu_item_deselect(ETK_MENU_ITEM(l->data));
+      etk_menu_item_unselect(ETK_MENU_ITEM(l->data));
    }
    
    /* Then we popup the child menu */
@@ -190,7 +190,7 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
       etk_toplevel_evas_position_get(toplevel, &ex, &ey);
       etk_toplevel_screen_position_get(toplevel, &sx, &sy);
       etk_menu_popup_at_xy(item->submenu, sx + (ix - ex), sy + (iy - ey) + ih);
-      etk_signal_connect("popped_down", ETK_OBJECT(item->submenu), ETK_CALLBACK(_etk_menu_bar_menu_popped_down_cb), NULL);
+      etk_signal_connect("popped-down", ETK_OBJECT(item->submenu), ETK_CALLBACK(_etk_menu_bar_menu_popped_down_cb), NULL);
    }
    
    if (!menu_bar->move_callback)
@@ -200,8 +200,8 @@ static void _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
    }
 }
 
-/* Called when the item is deselected */
-static void _etk_menu_bar_item_deselected_cb(Etk_Object *object, void *data)
+/* Called when the item is unselected */
+static void _etk_menu_bar_item_unselected_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *item;
    Etk_Menu_Bar *menu_bar;
@@ -263,8 +263,8 @@ static void _etk_menu_bar_menu_popped_down_cb(Etk_Object *object, void *event, v
    if (!(menu = ETK_MENU(object)))
       return;
    
-   etk_menu_item_deselect(etk_menu_parent_item_get(menu));
-   etk_signal_disconnect("popped_down", ETK_OBJECT(menu), ETK_CALLBACK(_etk_menu_bar_menu_popped_down_cb));
+   etk_menu_item_unselect(etk_menu_parent_item_get(menu));
+   etk_signal_disconnect("popped-down", ETK_OBJECT(menu), ETK_CALLBACK(_etk_menu_bar_menu_popped_down_cb));
 }
 
 /** @} */

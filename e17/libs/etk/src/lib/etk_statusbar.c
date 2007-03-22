@@ -32,7 +32,7 @@ static void _etk_statusbar_constructor(Etk_Statusbar *statusbar);
 static void _etk_statusbar_destructor(Etk_Statusbar *statusbar);
 static void _etk_statusbar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_statusbar_realize_cb(Etk_Object *object, void *data);
+static void _etk_statusbar_realized_cb(Etk_Object *object, void *data);
 static void _etk_statusbar_resize_grip_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_statusbar_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
 static void _etk_statusbar_update(Etk_Statusbar *statusbar);
@@ -57,9 +57,9 @@ Etk_Type *etk_statusbar_type_get()
       statusbar_type = etk_type_new("Etk_Statusbar", ETK_WIDGET_TYPE, sizeof(Etk_Statusbar),
          ETK_CONSTRUCTOR(_etk_statusbar_constructor), ETK_DESTRUCTOR(_etk_statusbar_destructor));
       
-      etk_type_property_add(statusbar_type, "current_message", ETK_STATUSBAR_CURRENT_MESSAGE_PROPERTY,
+      etk_type_property_add(statusbar_type, "current-message", ETK_STATUSBAR_CURRENT_MESSAGE_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE, NULL);
-      etk_type_property_add(statusbar_type, "has_resize_grip", ETK_STATUSBAR_HAS_RESIZE_GRIP_PROPERTY,
+      etk_type_property_add(statusbar_type, "has-resize-grip", ETK_STATUSBAR_HAS_RESIZE_GRIP_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       
       statusbar_type->property_set = _etk_statusbar_property_set;
@@ -75,7 +75,7 @@ Etk_Type *etk_statusbar_type_get()
  */
 Etk_Widget *etk_statusbar_new()
 {
-   return etk_widget_new(ETK_STATUSBAR_TYPE, "theme_group", "statusbar", NULL);
+   return etk_widget_new(ETK_STATUSBAR_TYPE, "theme-group", "statusbar", NULL);
 }
 
 /**
@@ -129,7 +129,7 @@ int etk_statusbar_message_push(Etk_Statusbar *statusbar, const char *message, in
    statusbar->msg_stack = evas_list_prepend(statusbar->msg_stack, new_msg);
    _etk_statusbar_update(statusbar);
    
-   etk_object_notify(ETK_OBJECT(statusbar), "current_message");
+   etk_object_notify(ETK_OBJECT(statusbar), "current-message");
    return new_msg->message_id;
 }
 
@@ -159,7 +159,7 @@ void etk_statusbar_message_pop(Etk_Statusbar *statusbar, int context_id)
       }
    }
    
-   etk_object_notify(ETK_OBJECT(statusbar), "current_message");
+   etk_object_notify(ETK_OBJECT(statusbar), "current-message");
 }
 
 /**
@@ -185,7 +185,7 @@ void etk_statusbar_message_remove(Etk_Statusbar *statusbar, int message_id)
          free(m);
          statusbar->msg_stack = evas_list_remove_list(statusbar->msg_stack, l);
          _etk_statusbar_update(statusbar);
-         etk_object_notify(ETK_OBJECT(statusbar), "current_message");
+         etk_object_notify(ETK_OBJECT(statusbar), "current-message");
          break;
       }
    }
@@ -233,7 +233,7 @@ void etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool has_re
       etk_widget_theme_signal_emit(ETK_WIDGET(statusbar), "etk,action,show,resize_grip", ETK_TRUE);
    else
       etk_widget_theme_signal_emit(ETK_WIDGET(statusbar), "etk,action,hide,resize_grip", ETK_TRUE);
-   etk_object_notify(ETK_OBJECT(statusbar), "has_resize_grip");
+   etk_object_notify(ETK_OBJECT(statusbar), "has-resize-grip");
 }
 
 /**
@@ -265,7 +265,7 @@ static void _etk_statusbar_constructor(Etk_Statusbar *statusbar)
    statusbar->next_message_id = 0;
    statusbar->next_context_id = 0;
    
-   etk_signal_connect("realize", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_realize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_realized_cb), NULL);
 }
 
 /* Destroys the statusbar */
@@ -336,7 +336,7 @@ static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk
  **************************/
 
 /* Called when the statusbar is realized */
-static void _etk_statusbar_realize_cb(Etk_Object *object, void *data)
+static void _etk_statusbar_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Statusbar *statusbar;
    Etk_Widget *statusbar_widget;
@@ -466,12 +466,12 @@ static void _etk_statusbar_update(Etk_Statusbar *statusbar)
  *     - Etk_Statusbar
  *
  * \par Properties:
- * @prop_name "current_message": The message currently displayed in the statusbar
+ * @prop_name "current-message": The message currently displayed in the statusbar
  * @prop_type String (char *)
  * @prop_ro
  * @prop_val NULL
  * \par
- * @prop_name "has_resize_grip": Whether or not the resize-grip of the statusbar is visible
+ * @prop_name "has-resize-grip": Whether or not the resize-grip of the statusbar is visible
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_TRUE;

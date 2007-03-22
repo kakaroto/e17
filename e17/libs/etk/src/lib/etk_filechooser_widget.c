@@ -113,8 +113,8 @@ Etk_Type *etk_filechooser_widget_type_get()
       //_etk_filechooser_widget_signals[ETK_FILECHOOSER_WIDGET_TEXT_POPPED_SIGNAL] = etk_signal_new("text_popped", filechooser_widget_type, -1, etk_marshaller_VOID__INT_POINTER, NULL, NULL);
       
       etk_type_property_add(filechooser_widget_type, "path", ETK_FILECHOOSER_WIDGET_PATH_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
-      etk_type_property_add(filechooser_widget_type, "select_multiple", ETK_FILECHOOSER_WIDGET_SELECT_MULTIPLE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      etk_type_property_add(filechooser_widget_type, "show_hidden", ETK_FILECHOOSER_WIDGET_SHOW_HIDDEN_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(filechooser_widget_type, "select-multiple", ETK_FILECHOOSER_WIDGET_SELECT_MULTIPLE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(filechooser_widget_type, "show-hidden", ETK_FILECHOOSER_WIDGET_SHOW_HIDDEN_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
 
       filechooser_widget_type->property_set = _etk_filechooser_widget_property_set;
       filechooser_widget_type->property_get = _etk_filechooser_widget_property_get;
@@ -306,7 +306,7 @@ void etk_filechooser_widget_show_hidden_set(Etk_Filechooser_Widget *filechooser_
    filechooser_widget->show_hidden = show_hidden;
    /* TODO: !! */
    //etk_filechooser_widget_current_folder_set(filechooser_widget, filechooser_widget->current_folder);
-   etk_object_notify(ETK_OBJECT(filechooser_widget), "show_hidden");
+   etk_object_notify(ETK_OBJECT(filechooser_widget), "show-hidden");
 }
 
 /**
@@ -359,7 +359,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    etk_tree_build(ETK_TREE(fcw->places_tree));
    etk_widget_show(fcw->places_tree);
    etk_widget_internal_set(fcw->places_tree, ETK_TRUE);
-   etk_signal_connect("row_activated", ETK_OBJECT(fcw->places_tree), ETK_CALLBACK(_etk_filechooser_widget_place_activated_cb), fcw);
+   etk_signal_connect("row-activated", ETK_OBJECT(fcw->places_tree), ETK_CALLBACK(_etk_filechooser_widget_place_activated_cb), fcw);
    
    fcw->fav_tree = etk_tree_new();
    etk_widget_size_request_set(fcw->fav_tree, 180, 180);
@@ -370,7 +370,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    etk_tree_build(ETK_TREE(fcw->fav_tree));
    etk_widget_show(fcw->fav_tree);
    etk_widget_internal_set(fcw->fav_tree, ETK_TRUE);
-   etk_signal_connect("row_activated", ETK_OBJECT(fcw->fav_tree), ETK_CALLBACK(_etk_filechooser_widget_fav_activated_cb), fcw);
+   etk_signal_connect("row-activated", ETK_OBJECT(fcw->fav_tree), ETK_CALLBACK(_etk_filechooser_widget_fav_activated_cb), fcw);
    
    fcw->files_tree = etk_tree_new();
    etk_widget_size_request_set(fcw->files_tree, 400, 120);
@@ -384,7 +384,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    etk_tree_build(ETK_TREE(fcw->files_tree));
    etk_widget_show(fcw->files_tree);
    etk_widget_internal_set(fcw->files_tree, ETK_TRUE);
-   etk_signal_connect("row_activated", ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_widget_file_activated_cb), fcw);
+   etk_signal_connect("row-activated", ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_widget_file_activated_cb), fcw);
    
    _etk_filechooser_widget_places_tree_fill(ETK_FILECHOOSER_WIDGET(fcw));
    _etk_filechooser_widget_favs_tree_fill(ETK_FILECHOOSER_WIDGET(fcw));

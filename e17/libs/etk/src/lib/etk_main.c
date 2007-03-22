@@ -96,8 +96,8 @@ int etk_init(int *argc, char ***argv)
       /* Initialize the subsystems of Etk */
       if (!etk_config_init())
       {
-	 ETK_WARNING("Etk_Config initialization failed!");
-	 return 0;
+         ETK_WARNING("Etk_Config initialization failed!");
+         return 0;
       }
       etk_config_load();
       etk_theme_init();

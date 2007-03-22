@@ -31,7 +31,7 @@ void etk_test_tree_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Tree Test");
    etk_window_resize(ETK_WINDOW(win), 440, 500);
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -106,11 +106,11 @@ void etk_test_tree_window_create(void *data)
    statusbar = etk_statusbar_new();
    etk_box_append(ETK_BOX(vbox), statusbar, ETK_BOX_START, ETK_BOX_FILL, 0);
    
-   etk_signal_connect("key_down", ETK_OBJECT(tree),
+   etk_signal_connect("key-down", ETK_OBJECT(tree),
       ETK_CALLBACK(_etk_test_tree_key_down_cb), NULL);
-   etk_signal_connect("row_clicked", ETK_OBJECT(tree),
+   etk_signal_connect("row-clicked", ETK_OBJECT(tree),
       ETK_CALLBACK(_etk_test_tree_row_clicked_cb), statusbar);
-   etk_signal_connect("cell_value_changed", ETK_OBJECT(col5),
+   etk_signal_connect("cell-value-changed", ETK_OBJECT(col5),
       ETK_CALLBACK(_etk_test_tree_checkbox_toggled_cb), statusbar);
    
    etk_widget_show_all(win);

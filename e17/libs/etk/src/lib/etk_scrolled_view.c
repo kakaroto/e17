@@ -70,7 +70,7 @@ Etk_Type *etk_scrolled_view_type_get()
  */
 Etk_Widget *etk_scrolled_view_new()
 {
-   return etk_widget_new(ETK_SCROLLED_VIEW_TYPE, "theme_group", "scrolled_view", NULL);
+   return etk_widget_new(ETK_SCROLLED_VIEW_TYPE, "theme-group", "scrolled_view", NULL);
 }
 
 /**
@@ -197,12 +197,12 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    ETK_WIDGET(scrolled_view)->size_request = _etk_scrolled_view_size_request;
    ETK_WIDGET(scrolled_view)->size_allocate = _etk_scrolled_view_size_allocate;
 
-   etk_signal_connect("key_down", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_key_down_cb), NULL);
-   etk_signal_connect("mouse_wheel", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_wheel), NULL);
-   etk_signal_connect("child_added", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_added_cb), NULL);
-   etk_signal_connect("child_removed", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_removed_cb), NULL);
-   etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
-   etk_signal_connect("value_changed", ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
+   etk_signal_connect("key-down", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_key_down_cb), NULL);
+   etk_signal_connect("mouse-wheel", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_wheel), NULL);
+   etk_signal_connect("child-added", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_added_cb), NULL);
+   etk_signal_connect("child-removed", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_removed_cb), NULL);
+   etk_signal_connect("value-changed", ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
+   etk_signal_connect("value-changed", ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -466,7 +466,7 @@ static void _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, v
 {
    if (!object || !child)
       return;
-   etk_signal_connect("scroll_size_changed", ETK_OBJECT(child),
+   etk_signal_connect("scroll-size-changed", ETK_OBJECT(child),
       ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object); 
 }
 
@@ -475,7 +475,7 @@ static void _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child,
 {
    if (!object || !child)
       return;
-   etk_signal_disconnect("scroll_size_changed", ETK_OBJECT(child), 
+   etk_signal_disconnect("scroll-size-changed", ETK_OBJECT(child), 
       ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb));
 }
 

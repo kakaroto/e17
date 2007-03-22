@@ -41,12 +41,12 @@ static void _etk_colorpicker_property_get(Etk_Object *object, int property_id, E
 static void _etk_colorpicker_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_colorpicker_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
-static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data);
-static void _etk_colorpicker_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_colorpicker_slider_realize_cb(Etk_Object *object, void *data);
-static void _etk_colorpicker_slider_unrealize_cb(Etk_Object *object, void *data);
-static void _etk_colorpicker_current_color_realize_cb(Etk_Object *object, void *data);
-static void _etk_colorpicker_current_color_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_realized_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_unrealized_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_slider_realized_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_slider_unrealized_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_current_color_realized_cb(Etk_Object *object, void *data);
+static void _etk_colorpicker_current_color_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_colorpicker_slider_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_colorpicker_alpha_slider_value_changed_cb(Etk_Object *object, double value, void *data);
 static void _etk_colorpicker_radio_toggled_cb(Etk_Object *object, void *data);
@@ -112,12 +112,12 @@ Etk_Type *etk_colorpicker_type_get(void)
       cp_type = etk_type_new("Etk_Colorpicker", ETK_WIDGET_TYPE, sizeof(Etk_Colorpicker),
             ETK_CONSTRUCTOR(_etk_colorpicker_constructor), ETK_DESTRUCTOR(_etk_colorpicker_destructor));
    
-      _etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL] = etk_signal_new("color_changed",
+      _etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL] = etk_signal_new("color-changed",
             cp_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
-      etk_type_property_add(cp_type, "color_mode", ETK_CP_MODE_PROPERTY,
+      etk_type_property_add(cp_type, "color-mode", ETK_CP_MODE_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_COLORPICKER_H));
-      etk_type_property_add(cp_type, "use_alpha", ETK_CP_USE_ALPHA_PROPERTY,
+      etk_type_property_add(cp_type, "use-alpha", ETK_CP_USE_ALPHA_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
    
       cp_type->property_set = _etk_colorpicker_property_set;
@@ -133,7 +133,7 @@ Etk_Type *etk_colorpicker_type_get(void)
  */
 Etk_Widget *etk_colorpicker_new(void)
 {
-   return etk_widget_new(ETK_COLORPICKER_TYPE, "theme_group", "colorpicker", NULL);
+   return etk_widget_new(ETK_COLORPICKER_TYPE, "theme-group", "colorpicker", NULL);
 }
 
 /**
@@ -178,7 +178,7 @@ void etk_colorpicker_mode_set(Etk_Colorpicker *cp, Etk_Colorpicker_Mode mode)
    
    cp->mode = mode;
    _etk_colorpicker_update_from_sliders(cp, mode, ETK_TRUE, ETK_TRUE);
-   etk_object_notify(ETK_OBJECT(cp), "color_mode");
+   etk_object_notify(ETK_OBJECT(cp), "color-mode");
 }
 
 /**
@@ -255,7 +255,7 @@ void etk_colorpicker_use_alpha_set(Etk_Colorpicker *cp, Etk_Bool use_alpha)
       etk_widget_hide(cp->alpha_label);
       cp->current_color.a = 255;
    }
-   etk_object_notify(ETK_OBJECT(cp), "use_alpha");
+   etk_object_notify(ETK_OBJECT(cp), "use-alpha");
 }
 
 /**
@@ -329,7 +329,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
    etk_widget_parent_set(cp->main_table, ETK_WIDGET(cp));
    etk_widget_show(cp->main_table);
    
-   cp->picker_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "picker", "theme_parent", cp, NULL);
+   cp->picker_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme-group", "picker", "theme-parent", cp, NULL);
    etk_widget_internal_set(cp->picker_widget, ETK_TRUE);
    etk_table_attach_default(ETK_TABLE(cp->main_table), cp->picker_widget, 0, 0, 0, 0);
    etk_widget_show(cp->picker_widget);
@@ -363,11 +363,11 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       
       etk_signal_connect("toggled", ETK_OBJECT(cp->radios[i]),
             ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
-      etk_signal_connect("realize", ETK_OBJECT(cp->sliders[i]),
-            ETK_CALLBACK(_etk_colorpicker_slider_realize_cb), cp);
-      etk_signal_connect("unrealize", ETK_OBJECT(cp->sliders[i]),
-            ETK_CALLBACK(_etk_colorpicker_slider_unrealize_cb), cp);
-      etk_signal_connect("value_changed", ETK_OBJECT(cp->sliders[i]),
+      etk_signal_connect("realized", ETK_OBJECT(cp->sliders[i]),
+            ETK_CALLBACK(_etk_colorpicker_slider_realized_cb), cp);
+      etk_signal_connect("unrealized", ETK_OBJECT(cp->sliders[i]),
+            ETK_CALLBACK(_etk_colorpicker_slider_unrealized_cb), cp);
+      etk_signal_connect("value-changed", ETK_OBJECT(cp->sliders[i]),
             ETK_CALLBACK(_etk_colorpicker_slider_value_changed_cb), cp);
    }
    
@@ -384,7 +384,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       etk_table_attach(ETK_TABLE(cp->component_table), cp->alpha_slider, 1, 1, 6, 6,
             0, 0, ETK_TABLE_HFILL | ETK_TABLE_EXPAND);
       
-      etk_signal_connect("value_changed", ETK_OBJECT(cp->alpha_slider),
+      etk_signal_connect("value-changed", ETK_OBJECT(cp->alpha_slider),
             ETK_CALLBACK(_etk_colorpicker_alpha_slider_value_changed_cb), cp);
    }
    
@@ -403,21 +403,21 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
          0, 0, ETK_TABLE_HFILL);
    etk_widget_show(cp->current_color_label);
    
-   cp->current_color_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "color_preview", NULL);
+   cp->current_color_widget = etk_widget_new(ETK_WIDGET_TYPE, "theme-group", "color_preview", NULL);
    etk_widget_theme_parent_set(cp->current_color_widget, ETK_WIDGET(cp));
    etk_widget_internal_set(cp->current_color_widget, ETK_TRUE);
    etk_table_attach(ETK_TABLE(cp->color_table), cp->current_color_widget, 1, 1, 0, 0,
          0, 0, ETK_TABLE_HFILL | ETK_TABLE_HEXPAND);
    etk_widget_show(cp->current_color_widget);
    
-   etk_signal_connect("realize", ETK_OBJECT(cp->picker_widget),
-         ETK_CALLBACK(_etk_colorpicker_realize_cb), cp);
-   etk_signal_connect("unrealize", ETK_OBJECT(cp->picker_widget),
-         ETK_CALLBACK(_etk_colorpicker_unrealize_cb), cp);
-   etk_signal_connect("realize", ETK_OBJECT(cp->current_color_widget),
-         ETK_CALLBACK(_etk_colorpicker_current_color_realize_cb), cp);
-   etk_signal_connect("unrealize", ETK_OBJECT(cp->current_color_widget),
-         ETK_CALLBACK(_etk_colorpicker_current_color_unrealize_cb), cp);
+   etk_signal_connect("realized", ETK_OBJECT(cp->picker_widget),
+         ETK_CALLBACK(_etk_colorpicker_realized_cb), cp);
+   etk_signal_connect("unrealized", ETK_OBJECT(cp->picker_widget),
+         ETK_CALLBACK(_etk_colorpicker_unrealized_cb), cp);
+   etk_signal_connect("realized", ETK_OBJECT(cp->current_color_widget),
+         ETK_CALLBACK(_etk_colorpicker_current_color_realized_cb), cp);
+   etk_signal_connect("unrealized", ETK_OBJECT(cp->current_color_widget),
+         ETK_CALLBACK(_etk_colorpicker_current_color_unrealized_cb), cp);
    
    
    ETK_WIDGET(cp)->size_request = _etk_colorpicker_size_request;
@@ -527,7 +527,7 @@ static void _etk_colorpicker_size_allocate(Etk_Widget *widget, Etk_Geometry geom
  **************************/
 
 /* Called when the colorpicker is realized */
-static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker *cp;
    Etk_Colorpicker_Picker_SD *picker_sd;
@@ -594,7 +594,7 @@ static void _etk_colorpicker_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the colorpicker is unrealized */
-static void _etk_colorpicker_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker *cp;
    
@@ -614,7 +614,7 @@ static void _etk_colorpicker_unrealize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when a slider of the colorpicker is realized */
-static void _etk_colorpicker_slider_realize_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_slider_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *slider;
    Etk_Colorpicker *cp;
@@ -645,7 +645,7 @@ static void _etk_colorpicker_slider_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when a slider of the colorpicker is unrealized */
-static void _etk_colorpicker_slider_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_slider_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *slider;
    Etk_Colorpicker *cp;
@@ -665,7 +665,7 @@ static void _etk_colorpicker_slider_unrealize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the current color widget of the colorpicker is realized */
-static void _etk_colorpicker_current_color_realize_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_current_color_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker *cp;
    Etk_Color color;
@@ -684,7 +684,7 @@ static void _etk_colorpicker_current_color_realize_cb(Etk_Object *object, void *
 }
 
 /* Called when the current color widget of the colorpicker is unrealized */
-static void _etk_colorpicker_current_color_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_colorpicker_current_color_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Colorpicker *cp;
    
@@ -1452,7 +1452,7 @@ static void _etk_colorpicker_color_calc(Etk_Colorpicker_Mode mode, float sp_xpos
  * etk_colorpicker_use_alpha_set(). @n
  * Most of the time, all you want to do is getting the selected color, and be notified when the selected color is
  * changed. This can be done with etk_colorpicker_current_color_get() and by connecting a callback to the
- * @b "color_changed" signal.
+ * @b "color-changed" signal.
  *
  * \par Object Hierarchy:
  * - Etk_Object
@@ -1460,18 +1460,18 @@ static void _etk_colorpicker_color_calc(Etk_Colorpicker_Mode mode, float sp_xpos
  *     - Etk_Colorpicker
  *
  * \par Signals:
- * @signal_name "color_changed": Emitted when the selected color is changed
+ * @signal_name "color-changed": Emitted when the selected color is changed
  * @signal_cb void callback(Etk_Colorpicker *colorpicker, void *data)
  * @signal_arg button: the colorpicker whose color has been changed
  * @signal_data
  *
  * \par Properties:
- * @prop_name "color_mode": The current color-mode of the colorpicker
+ * @prop_name "color-mode": The current color-mode of the colorpicker
  * @prop_type Integer (Etk_Colorpicker_Mode)
  * @prop_rw
  * @prop_val ETK_COLORPICKER_H
  * \par 
- * @prop_name "use_alpha": Whether or not the alpha slider is visible
+ * @prop_name "use-alpha": Whether or not the alpha slider is visible
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_FALSE

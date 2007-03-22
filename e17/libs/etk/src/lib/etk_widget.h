@@ -80,13 +80,13 @@ struct Etk_Widget
    void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
    void (*scroll)(Etk_Widget *widget, int x, int y);
 
-   void (*show)(Etk_Widget *widget);
-   void (*enter)(Etk_Widget *widget);
-   void (*leave)(Etk_Widget *widget);
-   void (*focus)(Etk_Widget *widget);
-   void (*unfocus)(Etk_Widget *widget);
-   void (*enable)(Etk_Widget *widget);
-   void (*disable)(Etk_Widget *widget);
+   void (*shown_handler)(Etk_Widget *widget);
+   void (*entered_handler)(Etk_Widget *widget);
+   void (*left_handler)(Etk_Widget *widget);
+   void (*focused_handler)(Etk_Widget *widget);
+   void (*unfocused_handler)(Etk_Widget *widget);
+   void (*enabled_handler)(Etk_Widget *widget);
+   void (*disabled_handler)(Etk_Widget *widget);
 
    unsigned int realized : 1;
    unsigned int swallowed : 1;

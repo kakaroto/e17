@@ -25,7 +25,7 @@ static void _etk_progress_bar_destructor(Etk_Progress_Bar *progress_bar);
 static void _etk_progress_bar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar);
-static void _etk_progress_bar_realize_cb(Etk_Object *object, void *data);
+static void _etk_progress_bar_realized_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -51,7 +51,7 @@ Etk_Type *etk_progress_bar_type_get()
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(progress_bar_type, "fraction", ETK_PROGRESS_BAR_FRACTION_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
-      etk_type_property_add(progress_bar_type, "pulse_step", ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY,
+      etk_type_property_add(progress_bar_type, "pulse-step", ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.1));
       
       progress_bar_type->property_set = _etk_progress_bar_property_set;
@@ -67,7 +67,7 @@ Etk_Type *etk_progress_bar_type_get()
  */
 Etk_Widget *etk_progress_bar_new()
 {
-   return etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme_group", "progress_bar", NULL);
+   return etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme-group", "progress_bar", NULL);
 }
 
 /**
@@ -77,7 +77,7 @@ Etk_Widget *etk_progress_bar_new()
  */
 Etk_Widget *etk_progress_bar_new_with_text(const char *text)
 {
-   return etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme_group", "progress_bar", "text", text, NULL);
+   return etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme-group", "progress_bar", "text", text, NULL);
 }
 
 /**
@@ -199,7 +199,7 @@ void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double puls
    if (progress_bar->pulse_step != pulse_step)
    {
       progress_bar->pulse_step = pulse_step;
-      etk_object_notify(ETK_OBJECT(progress_bar), "pulse_step");
+      etk_object_notify(ETK_OBJECT(progress_bar), "pulse-step");
    }
 }
 
@@ -262,7 +262,7 @@ static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar)
    progress_bar->direction = ETK_PROGRESS_BAR_LEFT_TO_RIGHT;
    progress_bar->is_pulsing = ETK_FALSE;
    
-   etk_signal_connect("realize", ETK_OBJECT(progress_bar), ETK_CALLBACK(_etk_progress_bar_realize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(progress_bar), ETK_CALLBACK(_etk_progress_bar_realized_cb), NULL);
 }
 
 /* Destroys the progress bar */
@@ -328,7 +328,7 @@ static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, 
  **************************/
 
 /* Called when the progress bar is realized */
-static void _etk_progress_bar_realize_cb(Etk_Object *object, void *data)
+static void _etk_progress_bar_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Progress_Bar *progress_bar;
    float w;
@@ -416,7 +416,7 @@ static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar)
  * @prop_rw
  * @prop_val ETK_PROGRESS_BAR_LEFT_TO_RIGHT
  * \par
- * @prop_name "pulse_step": The fraction of the total progress to move the filler when the progress bar is pulsed
+ * @prop_name "pulse-step": The fraction of the total progress to move the filler when the progress bar is pulsed
  * @prop_type Double
  * @prop_rw
  * @prop_val 0.1

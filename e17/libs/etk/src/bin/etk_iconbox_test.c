@@ -52,11 +52,11 @@ void etk_test_iconbox_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Iconbox Test");
    etk_window_resize(ETK_WINDOW(win), 600, 330);
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    iconbox = etk_iconbox_new();
    etk_container_add(ETK_CONTAINER(win), iconbox);
-   etk_signal_connect("mouse_down", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_test_iconbox_mouse_down_cb), NULL);
+   etk_signal_connect("mouse-down", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_test_iconbox_mouse_down_cb), NULL);
    
    _etk_test_iconbox_folder_set(ETK_ICONBOX(iconbox), NULL);
    etk_widget_show_all(win);

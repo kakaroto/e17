@@ -16,7 +16,7 @@ static void _etk_viewport_size_request(Etk_Widget *widget, Etk_Size *size_requis
 static void _etk_viewport_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
 static void _etk_viewport_scroll(Etk_Widget *widget, int x, int y);
-static void _etk_viewport_realize_cb(Etk_Object *object, void *data);
+static void _etk_viewport_realized_cb(Etk_Object *object, void *data);
 static void _etk_viewport_child_added_cb(Etk_Object *object, void *child, void *data);
 static void _etk_viewport_child_removed_cb(Etk_Object *object, void *child, void *data);
 
@@ -71,10 +71,10 @@ static void _etk_viewport_constructor(Etk_Viewport *viewport)
    ETK_WIDGET(viewport)->scroll_size_get = _etk_viewport_scroll_size_get;
    ETK_WIDGET(viewport)->scroll = _etk_viewport_scroll;
 
-   etk_signal_connect("realize", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_realize_cb), NULL);
-   etk_signal_connect_swapped("unrealize", ETK_OBJECT(viewport), ETK_CALLBACK(etk_callback_set_null), &viewport->clip);
-   etk_signal_connect("child_added", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_child_added_cb), NULL);
-   etk_signal_connect("child_removed", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_child_removed_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_realized_cb), NULL);
+   etk_signal_connect_swapped("unrealized", ETK_OBJECT(viewport), ETK_CALLBACK(etk_callback_set_null), &viewport->clip);
+   etk_signal_connect("child-added", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_child_added_cb), NULL);
+   etk_signal_connect("child-removed", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_child_removed_cb), NULL);
 }
 
 /* Calculates the ideal size of the viewport */
@@ -161,7 +161,7 @@ static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size scrollvie
  **************************/
 
 /* Called when the viewport is realized */
-static void _etk_viewport_realize_cb(Etk_Object *object, void *data)
+static void _etk_viewport_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Viewport *viewport;
    Etk_Widget *child;

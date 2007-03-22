@@ -62,7 +62,7 @@ Etk_Widget *etk_embed_new(Evas *evas)
    ETK_TOPLEVEL(embed)->pointer_set = _etk_embed_pointer_set;
    
    /* TODO: FIXME: We need that to force the widget to realize... */
-   etk_object_properties_set(ETK_OBJECT(embed), "theme_group", "", NULL);
+   etk_object_properties_set(ETK_OBJECT(embed), "theme-group", "", NULL);
    
    /* If the widget has failed to realize, we destroy it, and we return NULL */
    if (!(ETK_WIDGET(embed)->smart_object))

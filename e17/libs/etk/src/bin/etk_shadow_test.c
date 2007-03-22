@@ -37,7 +37,7 @@ void etk_test_shadow_window_create(void *data)
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Shadow Test");
-   etk_signal_connect("delete_event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    vpaned = etk_vpaned_new();
    etk_container_add(ETK_CONTAINER(win), vpaned);
@@ -108,13 +108,13 @@ void etk_test_shadow_window_create(void *data)
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, ETK_TABLE_HFILL);
    slider = etk_hslider_new(-15.0, 15.0, 3.0, 1.0, 5.0);
    etk_table_attach(ETK_TABLE(table), slider, 1, 1, 0, 0, 0, 0, ETK_TABLE_HFILL | ETK_TABLE_HEXPAND);
-   etk_signal_connect("value_changed", ETK_OBJECT(slider), _etk_test_shadow_offset_x_changed_cb, NULL);
+   etk_signal_connect("value-changed", ETK_OBJECT(slider), _etk_test_shadow_offset_x_changed_cb, NULL);
    
    label = etk_label_new("Y");
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 0, 0, ETK_TABLE_HFILL);
    slider = etk_hslider_new(-15.0, 15.0, 3.0, 1.0, 5.0);
    etk_table_attach(ETK_TABLE(table), slider, 1, 1, 1, 1, 0, 0, ETK_TABLE_HFILL | ETK_TABLE_HEXPAND);
-   etk_signal_connect("value_changed", ETK_OBJECT(slider), _etk_test_shadow_offset_y_changed_cb, NULL);
+   etk_signal_connect("value-changed", ETK_OBJECT(slider), _etk_test_shadow_offset_y_changed_cb, NULL);
    
    etk_box_append(ETK_BOX(hbox), etk_vseparator_new(), ETK_BOX_START, ETK_BOX_NONE, 3);
    
@@ -125,7 +125,7 @@ void etk_test_shadow_window_create(void *data)
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    slider = etk_hslider_new(0.0, 100.0, 15.0, 1.0, 10.0);
    etk_container_add(ETK_CONTAINER(frame), slider);
-   etk_signal_connect("value_changed", ETK_OBJECT(slider), _etk_test_shadow_radius_changed_cb, NULL);
+   etk_signal_connect("value-changed", ETK_OBJECT(slider), _etk_test_shadow_radius_changed_cb, NULL);
    
    check = etk_check_button_new_with_label("Show the border");
    etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(check), ETK_TRUE);

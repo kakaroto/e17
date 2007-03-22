@@ -27,7 +27,7 @@ static void _etk_slider_destructor(Etk_Slider *slider);
 static void _etk_slider_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_slider_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 
-static void _etk_slider_realize_cb(Etk_Object *object, void *data);
+static void _etk_slider_realized_cb(Etk_Object *object, void *data);
 static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_slider_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -57,11 +57,11 @@ Etk_Type *etk_slider_type_get(void)
       slider_type = etk_type_new("Etk_Slider", ETK_RANGE_TYPE, sizeof(Etk_Slider),
          ETK_CONSTRUCTOR(_etk_slider_constructor), ETK_DESTRUCTOR(_etk_slider_destructor));
       
-      etk_type_property_add(slider_type, "label_format", ETK_SLIDER_LABEL_FORMAT_PROPERTY,
+      etk_type_property_add(slider_type, "label-format", ETK_SLIDER_LABEL_FORMAT_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(slider_type, "inverted", ETK_SLIDER_INVERTED_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      etk_type_property_add(slider_type, "update_policy", ETK_SLIDER_UPDATE_POLICY_PROPERTY,
+      etk_type_property_add(slider_type, "update-policy", ETK_SLIDER_UPDATE_POLICY_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SLIDER_CONTINUOUS));
       
       slider_type->property_set = _etk_slider_property_set;
@@ -114,9 +114,9 @@ Etk_Type *etk_vslider_type_get(void)
  */
 Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment)
 {
-   return etk_widget_new(ETK_HSLIDER_TYPE, "theme_group", "hslider", "focusable", ETK_TRUE,
-      "lower", lower, "upper", upper, "value", value, "step_increment", step_increment,
-      "page_increment", page_increment, "focus_on_click", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_HSLIDER_TYPE, "theme-group", "hslider", "focusable", ETK_TRUE,
+      "lower", lower, "upper", upper, "value", value, "step-increment", step_increment,
+      "page-increment", page_increment, "focus-on-click", ETK_TRUE, NULL);
 }
 
 /**
@@ -132,9 +132,9 @@ Etk_Widget *etk_hslider_new(double lower, double upper, double value, double ste
  */
 Etk_Widget *etk_vslider_new(double lower, double upper, double value, double step_increment, double page_increment)
 {
-   return etk_widget_new(ETK_VSLIDER_TYPE, "theme_group", "vslider", "focusable", ETK_TRUE,
-      "lower", lower, "upper", upper, "value", value, "step_increment", step_increment,
-      "page_increment", page_increment, "focus_on_click", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_VSLIDER_TYPE, "theme-group", "vslider", "focusable", ETK_TRUE,
+      "lower", lower, "upper", upper, "value", value, "step-increment", step_increment,
+      "page-increment", page_increment, "focus-on-click", ETK_TRUE, NULL);
 }
 
 /**
@@ -156,7 +156,7 @@ void etk_slider_label_set(Etk_Slider *slider, const char *label_format)
       label_format ? "etk,action,show,label" : "etk,action,hide,label", ETK_TRUE);
    _etk_slider_label_update(slider);
    
-   etk_object_notify(ETK_OBJECT(slider), "label_format");
+   etk_object_notify(ETK_OBJECT(slider), "label-format");
 }
 
 /**
@@ -220,7 +220,7 @@ void etk_slider_update_policy_set(Etk_Slider *slider, Etk_Slider_Update_Policy p
       ecore_timer_del(slider->update_timer);
       slider->update_timer = NULL;
    }
-   etk_object_notify(ETK_OBJECT(slider), "update_policy");
+   etk_object_notify(ETK_OBJECT(slider), "update-policy");
 }
 
 /**
@@ -253,10 +253,10 @@ static void _etk_slider_constructor(Etk_Slider *slider)
    slider->policy = ETK_SLIDER_CONTINUOUS;
    slider->update_timer = NULL;
    
-   ETK_RANGE(slider)->value_changed = _etk_slider_value_changed_handler;
-   etk_signal_connect("realize", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realize_cb), NULL);
-   etk_signal_connect("key_down", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_key_down_cb), NULL);
-   etk_signal_connect("mouse_wheel", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_mouse_wheel_cb), NULL);
+   ETK_RANGE(slider)->value_changed_handler = _etk_slider_value_changed_handler;
+   etk_signal_connect("realized", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realized_cb), NULL);
+   etk_signal_connect("key-down", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_key_down_cb), NULL);
+   etk_signal_connect("mouse-wheel", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_mouse_wheel_cb), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(slider), "lower", _etk_slider_range_changed_cb, NULL);
    etk_object_notification_callback_add(ETK_OBJECT(slider), "upper", _etk_slider_range_changed_cb, NULL);
 }
@@ -327,7 +327,7 @@ static void _etk_slider_property_get(Etk_Object *object, int property_id, Etk_Pr
  **************************/
 
 /* Called when the slider is realized */
-static void _etk_slider_realize_cb(Etk_Object *object, void *data)
+static void _etk_slider_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Slider *slider;
    Evas_Object *theme_object;
@@ -558,7 +558,7 @@ static void _etk_slider_label_update(Etk_Slider *slider)
  * @image html widgets/slider.png
  * Etk_Slider is the base class for Etk_HSlider (for horizontal sliders) and Etk_VSlider (for vertical sliders). @n
  * Since Etk_Slider inherits from Etk_Range, you can use all the @a etk_range_*() functions to get or set the value of
- * a slider, or to change its bounds. You can also use the @a "value_changed" signal to be notified when the value
+ * a slider, or to change its bounds. You can also use the @a "value-changed" signal to be notified when the value
  * of a slider is changed. @n @n
  * A slider can have different update-policies: by default, it uses a continuous update-policy, meaning the value of
  * the slider will be changed each timer the slider's button is moved. But a slider can also use a discontinuous
@@ -583,7 +583,7 @@ static void _etk_slider_label_update(Etk_Slider *slider)
  *         - Etk_VSlider
  *
  * \par Properties:
- * @prop_name "label_format": The format of the slider's label, or NULL if the label is hidden
+ * @prop_name "label-format": The format of the slider's label, or NULL if the label is hidden
  * @prop_type String (char *)
  * @prop_rw
  * @prop_val NULL
@@ -593,7 +593,7 @@ static void _etk_slider_label_update(Etk_Slider *slider)
  * @prop_rw
  * @prop_val ETK_FALSE
  * \par
- * @prop_name "update_policy": The update-policy of the slider (continuous, discontinuous or delayed)
+ * @prop_name "update-policy": The update-policy of the slider (continuous, discontinuous or delayed)
  * @prop_type Integer (Etk_Slider_Update_Policy)
  * @prop_rw
  * @prop_val ETK_SLIDER_CONTINUOUS

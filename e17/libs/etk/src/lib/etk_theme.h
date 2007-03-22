@@ -8,6 +8,7 @@
 /* TODO/FIXME list:
  * - Use etk_config_dir_get() to get the dirs where the themes should be looked for
  * - Better default colors?
+ * - Add prefix to etk_theme_group_exists(), etk_theme_edje_object_set() and etk_theme_edje_object_set_from_parent()
  */
 
 /**

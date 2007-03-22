@@ -64,7 +64,7 @@ Etk_Type *etk_vseparator_type_get()
  */
 Etk_Widget *etk_hseparator_new()
 {
-   return etk_widget_new(ETK_HSEPARATOR_TYPE, "theme_group", "hseparator", NULL);
+   return etk_widget_new(ETK_HSEPARATOR_TYPE, "theme-group", "hseparator", NULL);
 }
 
 /**
@@ -73,7 +73,7 @@ Etk_Widget *etk_hseparator_new()
  */
 Etk_Widget *etk_vseparator_new()
 {
-   return etk_widget_new(ETK_VSEPARATOR_TYPE, "theme_group", "vseparator", NULL);
+   return etk_widget_new(ETK_VSEPARATOR_TYPE, "theme-group", "vseparator", NULL);
 }
 
 /** @} */

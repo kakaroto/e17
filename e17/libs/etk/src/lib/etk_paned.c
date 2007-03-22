@@ -108,7 +108,7 @@ Etk_Type *etk_vpaned_type_get()
  */
 Etk_Widget *etk_hpaned_new()
 {
-   return etk_widget_new(ETK_HPANED_TYPE, "theme_group", "hpaned", NULL);
+   return etk_widget_new(ETK_HPANED_TYPE, "theme-group", "hpaned", NULL);
 }
 
 /**
@@ -117,7 +117,7 @@ Etk_Widget *etk_hpaned_new()
  */
 Etk_Widget *etk_vpaned_new()
 {
-   return etk_widget_new(ETK_VPANED_TYPE, "theme_group", "vpaned", NULL);
+   return etk_widget_new(ETK_VPANED_TYPE, "theme-group", "vpaned", NULL);
 }
 
 /**
@@ -145,7 +145,7 @@ void etk_paned_child1_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
       
       etk_widget_raise(paned->separator);
       
-      etk_signal_emit_by_name("child_added", ETK_OBJECT(paned), NULL, child);
+      etk_signal_emit_by_name("child-added", ETK_OBJECT(paned), NULL, child);
    }
 }
 
@@ -174,7 +174,7 @@ void etk_paned_child2_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
       
       etk_widget_raise(paned->separator);
       
-      etk_signal_emit_by_name("child_added", ETK_OBJECT(paned), NULL, child);
+      etk_signal_emit_by_name("child-added", ETK_OBJECT(paned), NULL, child);
    }
 }
 
@@ -310,15 +310,15 @@ static void _etk_paned_constructor(Etk_Paned *paned)
    ETK_CONTAINER(paned)->child_remove = _etk_paned_child_remove;
    ETK_CONTAINER(paned)->children_get = _etk_paned_children_get;
 
-   paned->separator = etk_widget_new(ETK_WIDGET_TYPE, "theme_group", "separator", "theme_parent", paned, NULL);
+   paned->separator = etk_widget_new(ETK_WIDGET_TYPE, "theme-group", "separator", "theme-parent", paned, NULL);
    etk_widget_parent_set(paned->separator, ETK_WIDGET(paned));
    etk_widget_internal_set(paned->separator, ETK_TRUE);
 
-   etk_signal_connect("mouse_in", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_in_cb), paned);
-   etk_signal_connect("mouse_out", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_out_cb), paned);
-   etk_signal_connect("mouse_move", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_move_cb), paned);
-   etk_signal_connect("mouse_down", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_down_cb), paned);
-   etk_signal_connect("mouse_up", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_up_cb), paned);
+   etk_signal_connect("mouse-in", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_in_cb), paned);
+   etk_signal_connect("mouse-out", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_out_cb), paned);
+   etk_signal_connect("mouse-move", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_move_cb), paned);
+   etk_signal_connect("mouse-down", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_down_cb), paned);
+   etk_signal_connect("mouse-up", ETK_OBJECT(paned->separator), ETK_CALLBACK(_etk_paned_separator_mouse_up_cb), paned);
 }
 
 /* Initializes the hpaned */
@@ -547,7 +547,7 @@ static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget
 
    etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
    etk_widget_size_recalc_queue(ETK_WIDGET(paned));
-   etk_signal_emit_by_name("child_removed", ETK_OBJECT(paned), NULL, widget);
+   etk_signal_emit_by_name("child-removed", ETK_OBJECT(paned), NULL, widget);
 }
 
 /* Returns the children of the paned */

@@ -25,8 +25,8 @@ enum Etk_Text_View_Signal_Id
 static void _etk_text_view_constructor(Etk_Text_View *text_view);
 static void _etk_text_view_destructor(Etk_Text_View *text_view);
 static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_text_view_realize_cb(Etk_Object *object, void *data);
-static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_text_view_realized_cb(Etk_Object *object, void *data);
+static void _etk_text_view_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_text_view_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_text_view_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
@@ -56,7 +56,7 @@ Etk_Type *etk_text_view_type_get()
       text_view_type = etk_type_new("Etk_Text_View", ETK_WIDGET_TYPE, sizeof(Etk_Text_View),
          ETK_CONSTRUCTOR(_etk_text_view_constructor), ETK_DESTRUCTOR(_etk_text_view_destructor));
 
-      _etk_text_view_signals[ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL] = etk_signal_new("text_changed",
+      _etk_text_view_signals[ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL] = etk_signal_new("text-changed",
          text_view_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
    }
 
@@ -69,8 +69,8 @@ Etk_Type *etk_text_view_type_get()
  */
 Etk_Widget *etk_text_view_new()
 {
-   return etk_widget_new(ETK_TEXT_VIEW_TYPE, "theme_group", "text_view", "focusable", ETK_TRUE,
-      "focus_on_click", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_TEXT_VIEW_TYPE, "theme-group", "text_view", "focusable", ETK_TRUE,
+      "focus-on-click", ETK_TRUE, NULL);
 }
 
 /**
@@ -131,10 +131,10 @@ static void _etk_text_view_constructor(Etk_Text_View *text_view)
    ETK_WIDGET(text_view)->scroll = _etk_text_view_scroll;
    ETK_WIDGET(text_view)->scroll_size_get = _etk_text_view_scroll_size_get;
 
-   etk_signal_connect("realize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_unrealize_cb), NULL);
-   etk_signal_connect("key_down", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_key_down_cb), NULL);
-   etk_signal_connect("mouse_up", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_mouse_up_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_unrealized_cb), NULL);
+   etk_signal_connect("key-down", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_key_down_cb), NULL);
+   etk_signal_connect("mouse-up", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_mouse_up_cb), NULL);
 }
 
 /* Destroys the text view */
@@ -164,7 +164,7 @@ static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
  **************************/
 
 /* Called when the text view is realized */
-static void _etk_text_view_realize_cb(Etk_Object *object, void *data)
+static void _etk_text_view_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Text_View *text_view;
    Evas *evas;
@@ -179,7 +179,7 @@ static void _etk_text_view_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the text view is unrealized */
-static void _etk_text_view_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_text_view_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Text_View *text_view;
 

@@ -16,10 +16,10 @@
 
 enum Etk_Widget_Signal_Id
 {
-   ETK_WINDOW_MOVE_SIGNAL,
-   ETK_WINDOW_RESIZE_SIGNAL,
-   ETK_WINDOW_FOCUS_IN_SIGNAL,
-   ETK_WINDOW_FOCUS_OUT_SIGNAL,
+   ETK_WINDOW_MOVED_SIGNAL,
+   ETK_WINDOW_RESIZED_SIGNAL,
+   ETK_WINDOW_FOCUSED_IN_SIGNAL,
+   ETK_WINDOW_FOCUSED_OUT_SIGNAL,
    ETK_WINDOW_DELETE_EVENT_SIGNAL,
    ETK_WINDOW_NUM_SIGNALS
 };
@@ -42,9 +42,9 @@ static void _etk_window_constructor(Etk_Window *window);
 static void _etk_window_destructor(Etk_Window *window);
 static void _etk_window_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_window_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_window_show_cb(Etk_Object *object, void *data);
-static void _etk_window_hide_cb(Etk_Object *object, void *data);
-static void _etk_window_size_request_cb(Etk_Object *object, Etk_Size *requested_size, void *data);
+static void _etk_window_shown_cb(Etk_Object *object, void *data);
+static void _etk_window_hidden_cb(Etk_Object *object, void *data);
+static void _etk_window_size_requested_cb(Etk_Object *object, Etk_Size *requested_size, void *data);
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window);
 static void _etk_window_evas_position_get(Etk_Toplevel *toplevel, int *x, int *y);
 static void _etk_window_screen_position_get(Etk_Toplevel *toplevel, int *x, int *y);
@@ -72,11 +72,11 @@ Etk_Type *etk_window_type_get(void)
    {
        window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_TYPE, sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor), ETK_DESTRUCTOR(_etk_window_destructor));
    
-      _etk_window_signals[ETK_WINDOW_MOVE_SIGNAL] = etk_signal_new("move", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_window_signals[ETK_WINDOW_RESIZE_SIGNAL] = etk_signal_new("resize", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_window_signals[ETK_WINDOW_FOCUS_IN_SIGNAL] = etk_signal_new("focus_in", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_window_signals[ETK_WINDOW_FOCUS_OUT_SIGNAL] = etk_signal_new("focus_out", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete_event", window_type, ETK_MEMBER_OFFSET(Etk_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
+      _etk_window_signals[ETK_WINDOW_MOVED_SIGNAL] = etk_signal_new("moved", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_window_signals[ETK_WINDOW_RESIZED_SIGNAL] = etk_signal_new("resized", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_window_signals[ETK_WINDOW_FOCUSED_IN_SIGNAL] = etk_signal_new("focused-in", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_window_signals[ETK_WINDOW_FOCUSED_OUT_SIGNAL] = etk_signal_new("focused-out", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      _etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete-event", window_type, ETK_MEMBER_OFFSET(Etk_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
    
       etk_type_property_add(window_type, "title", ETK_WINDOW_TITLE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(window_type, "iconified", ETK_WINDOW_ICONIFIED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
@@ -86,8 +86,8 @@ Etk_Type *etk_window_type_get(void)
       etk_type_property_add(window_type, "focused", ETK_WINDOW_FOCUSED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(window_type, "decorated", ETK_WINDOW_DECORATED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(window_type, "shaped", ETK_WINDOW_SHAPED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      etk_type_property_add(window_type, "skip_taskbar", ETK_WINDOW_SKIP_TASKBAR_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      etk_type_property_add(window_type, "skip_pager", ETK_WINDOW_SKIP_PAGER_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "skip-taskbar", ETK_WINDOW_SKIP_TASKBAR_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "skip-pager", ETK_WINDOW_SKIP_PAGER_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       
       window_type->property_set = _etk_window_property_set;
       window_type->property_get = _etk_window_property_get;
@@ -102,7 +102,7 @@ Etk_Type *etk_window_type_get(void)
  */
 Etk_Widget *etk_window_new(void)
 {
-   return etk_widget_new(ETK_WINDOW_TYPE, "theme_group", "window", NULL);
+   return etk_widget_new(ETK_WINDOW_TYPE, "theme-group", "window", NULL);
 }
 
 /**
@@ -559,9 +559,9 @@ static void _etk_window_constructor(Etk_Window *window)
    
    /* TODO: remove the font path */
    evas_font_path_append(ETK_TOPLEVEL(window)->evas, PACKAGE_DATA_DIR "/fonts/");
-   etk_signal_connect("size_request", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_size_request_cb), NULL);
-   etk_signal_connect("show", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_show_cb), NULL);
-   etk_signal_connect("hide", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_hide_cb), NULL);
+   etk_signal_connect("size-requested", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_size_requested_cb), NULL);
+   etk_signal_connect("shown", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_shown_cb), NULL);
+   etk_signal_connect("hidden", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_hidden_cb), NULL);
    etk_object_notify(ETK_OBJECT(window), "evas");
 }
 
@@ -674,7 +674,7 @@ static void _etk_window_property_get(Etk_Object *object, int property_id, Etk_Pr
  **************************/
 
 /* Called when the window is shown */
-static void _etk_window_show_cb(Etk_Object *object, void *data)
+static void _etk_window_shown_cb(Etk_Object *object, void *data)
 {
    Etk_Window *window;
    
@@ -684,7 +684,7 @@ static void _etk_window_show_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the window is hidden */
-static void _etk_window_hide_cb(Etk_Object *object, void *data)
+static void _etk_window_hidden_cb(Etk_Object *object, void *data)
 {
    Etk_Window *window;
    
@@ -693,8 +693,8 @@ static void _etk_window_hide_cb(Etk_Object *object, void *data)
    etk_engine_window_hide(window);
 }
 
-/* Called when the "size_request" signal is emitted */
-static void _etk_window_size_request_cb(Etk_Object *object, Etk_Size *requested_size, void *data)
+/* Called when the "size-requested" signal is emitted */
+static void _etk_window_size_requested_cb(Etk_Object *object, Etk_Size *requested_size, void *data)
 {
    Etk_Window *window;
    

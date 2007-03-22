@@ -25,7 +25,7 @@ static void _etk_label_property_set(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_label_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_label_size_request(Etk_Widget *widget, Etk_Size *requested_size);
 static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_label_realize_cb(Etk_Object *object, void *data);
+static void _etk_label_realized_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -68,7 +68,7 @@ Etk_Type *etk_label_type_get()
  */
 Etk_Widget *etk_label_new(const char *text)
 {
-   return etk_widget_new(ETK_LABEL_TYPE, "label", text, "theme_group", "label", NULL);
+   return etk_widget_new(ETK_LABEL_TYPE, "label", text, "theme-group", "label", NULL);
 }
 
 /**
@@ -181,7 +181,7 @@ static void _etk_label_constructor(Etk_Label *label)
    /* This allows the label to receive the same theme-signals as its theme-parent */
    widget->emit_theme_parent_signals = ETK_TRUE;
 
-   etk_signal_connect("realize", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realized_cb), NULL);
 }
 
 /* Destroys the label */
@@ -279,7 +279,7 @@ static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the label is realized */
-static void _etk_label_realize_cb(Etk_Object *object, void *data)
+static void _etk_label_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Label *label;
 

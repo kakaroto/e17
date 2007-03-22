@@ -23,7 +23,7 @@ static void _etk_toplevel_constructor(Etk_Toplevel *toplevel);
 static void _etk_toplevel_destructor(Etk_Toplevel *toplevel);
 static void _etk_toplevel_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toplevel_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_toplevel_realize_cb(Etk_Object *object, void *data);
+static void _etk_toplevel_realized_cb(Etk_Object *object, void *data);
 static void _etk_toplevel_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_toplevel_key_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_Widget *widget);
@@ -53,7 +53,7 @@ Etk_Type *etk_toplevel_type_get()
       
       etk_type_property_add(toplevel_type, "evas", ETK_TOPLEVEL_EVAS_PROPERTY,
          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE, etk_property_value_pointer(NULL));
-      etk_type_property_add(toplevel_type, "focused_widget", ETK_TOPLEVEL_FOCUSED_WIDGET_PROPERTY,
+      etk_type_property_add(toplevel_type, "focused-widget", ETK_TOPLEVEL_FOCUSED_WIDGET_PROPERTY,
          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
    
       toplevel_type->property_set = _etk_toplevel_property_set;
@@ -141,7 +141,7 @@ void  etk_toplevel_focused_widget_set(Etk_Toplevel *toplevel, Etk_Widget *widget
       return;
 
    toplevel->focused_widget = widget;
-   etk_object_notify(ETK_OBJECT(toplevel), "focused_widget");
+   etk_object_notify(ETK_OBJECT(toplevel), "focused-widget");
 }
 
 /**
@@ -297,7 +297,7 @@ static void _etk_toplevel_constructor(Etk_Toplevel *toplevel)
    toplevel->size_get = NULL;
    toplevel->need_update = ETK_FALSE;
    ETK_WIDGET(toplevel)->toplevel_parent = toplevel;
-   etk_signal_connect("realize", ETK_OBJECT(toplevel), ETK_CALLBACK(_etk_toplevel_realize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(toplevel), ETK_CALLBACK(_etk_toplevel_realized_cb), NULL);
 
    _etk_toplevel_widgets = evas_list_append(_etk_toplevel_widgets, toplevel);
 }
@@ -362,7 +362,7 @@ static void _etk_toplevel_property_get(Etk_Object *object, int property_id, Etk_
  **************************/
 
 /* Called when the toplevel widget is realized */
-static void _etk_toplevel_realize_cb(Etk_Object *object, void *data)
+static void _etk_toplevel_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *widget;
    Evas_Object *obj;
@@ -390,7 +390,7 @@ static void _etk_toplevel_key_down_cb(void *data, Evas *e, Evas_Object *obj, voi
    for (widget = focused; widget && propagate; widget = widget->parent)
    {
       etk_event_key_down_wrap(widget, event_info, &event);
-      propagate = etk_signal_emit_by_name("key_down", ETK_OBJECT(widget), NULL, &event);
+      propagate = etk_signal_emit_by_name("key-down", ETK_OBJECT(widget), NULL, &event);
    }
 }
 
@@ -409,7 +409,7 @@ static void _etk_toplevel_key_up_cb(void *data, Evas *e, Evas_Object *obj, void 
    for (widget = focused; widget && propagate; widget = widget->parent)
    {
       etk_event_key_up_wrap(widget, event_info, &event);
-      propagate = etk_signal_emit_by_name("key_up", ETK_OBJECT(widget), NULL, &event);
+      propagate = etk_signal_emit_by_name("key-up", ETK_OBJECT(widget), NULL, &event);
    }
 }
 
@@ -520,7 +520,7 @@ static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_W
  * For example, to change the mouse pointer when the mouse is above a button:
  * @code
  * //Called when the button is entered: change the mouse pointer to ETK_POINTER_MOVE
- * void _button_enter_cb(Etk_Widget *widget, void *data)
+ * void _button_entered_cb(Etk_Widget *widget, void *data)
  * {
  *    Etk_Toplevel *toplevel;
  *
@@ -530,7 +530,7 @@ static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_W
  * }
  *
  * //Called when the button is left: restore the mouse pointer
- * void _button_leave_cb(Etk_Widget *widget, void *data)
+ * void _button_left_cb(Etk_Widget *widget, void *data)
  * {
  *    Etk_Toplevel *toplevel;
  *
@@ -539,8 +539,8 @@ static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_W
  *    etk_toplevel_pointer_pop(toplevel, ETK_POINTER_MOVE);
  * }
  *
- * etk_signal_connect("enter", ETK_OBJECT(button), ETK_CALLBACK(_button_enter_cb), NULL);
- * etk_signal_connect("leave", ETK_OBJECT(button), ETK_CALLBACK(_button_leave_cb), NULL);
+ * etk_signal_connect("entered", ETK_OBJECT(button), ETK_CALLBACK(_button_entered_cb), NULL);
+ * etk_signal_connect("left", ETK_OBJECT(button), ETK_CALLBACK(_button_left_cb), NULL);
  * @endcode @n
  * 
  * \par Object Hierarchy:
@@ -556,7 +556,7 @@ static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_W
  * @prop_ro
  * @prop_val NULL
  * \par
- * @prop_name "focused_widget": The focused widget of the toplevel widget
+ * @prop_name "focused-widget": The focused widget of the toplevel widget
  * @prop_type Pointer (Etk_Widget *)
  * @prop_rw
  * @prop_val NULL

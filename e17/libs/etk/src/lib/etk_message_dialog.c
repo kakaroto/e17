@@ -43,7 +43,7 @@ Etk_Type *etk_message_dialog_type_get()
       message_dialog_type = etk_type_new("Etk_Message_Dialog", ETK_DIALOG_TYPE, sizeof(Etk_Message_Dialog),
          ETK_CONSTRUCTOR(_etk_message_dialog_constructor), NULL);
 
-      etk_type_property_add(message_dialog_type, "message_type", ETK_MESSAGE_DIALOG_TYPE_PROPERTY,
+      etk_type_property_add(message_dialog_type, "message-type", ETK_MESSAGE_DIALOG_TYPE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_MESSAGE_DIALOG_INFO));
       etk_type_property_add(message_dialog_type, "buttons", ETK_MESSAGE_DIALOG_BUTTONS_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_MESSAGE_DIALOG_NONE));
@@ -63,7 +63,7 @@ Etk_Type *etk_message_dialog_type_get()
  */
 Etk_Widget *etk_message_dialog_new(Etk_Message_Dialog_Type message_type, Etk_Message_Dialog_Buttons buttons, const char *text)
 {
-   return etk_widget_new(ETK_MESSAGE_DIALOG_TYPE, "theme_group", "dialog", "message_type", message_type,
+   return etk_widget_new(ETK_MESSAGE_DIALOG_TYPE, "theme-group", "dialog", "message-type", message_type,
       "buttons", buttons, "text", text, NULL);
 }
 
@@ -99,7 +99,7 @@ void etk_message_dialog_message_type_set(Etk_Message_Dialog *dialog, Etk_Message
    }
    
    dialog->message_type = type;
-   etk_object_notify(ETK_OBJECT(dialog), "message_type");
+   etk_object_notify(ETK_OBJECT(dialog), "message-type");
 }
 
 /**
@@ -133,8 +133,8 @@ void etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, Etk_Message_Dial
    {
       if (dialog->buttons[i])
       {
-	 etk_object_destroy(ETK_OBJECT(dialog->buttons[i]));
-	 dialog->buttons[i] = NULL;
+         etk_object_destroy(ETK_OBJECT(dialog->buttons[i]));
+         dialog->buttons[i] = NULL;
       }
    }
    
@@ -315,7 +315,7 @@ static void _etk_message_dialog_property_get(Etk_Object *object, int property_id
  *               - Etk_Message_Dialog
  *
  * \par Properties:
- * @prop_name "message_type": The type of the dialog's message which defined the title and the icon
+ * @prop_name "message-type": The type of the dialog's message which defined the title and the icon
  * @prop_type Integer (Etk_Message_Dialog_Type)
  * @prop_rw
  * @prop_val ETK_MESSAGE_DIALOG_INFO

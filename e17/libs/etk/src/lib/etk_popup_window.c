@@ -71,9 +71,9 @@ Etk_Type *etk_popup_window_type_get()
       popup_window_type = etk_type_new("Etk_Popup_Window", ETK_WINDOW_TYPE, sizeof(Etk_Popup_Window),
          ETK_CONSTRUCTOR(_etk_popup_window_constructor), NULL);
 
-      _etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_UP_SIGNAL] = etk_signal_new("popped_up",
+      _etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_UP_SIGNAL] = etk_signal_new("popped-up",
          popup_window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL] = etk_signal_new("popped_down",
+      _etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL] = etk_signal_new("popped-down",
          popup_window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
    }
 
@@ -617,12 +617,12 @@ static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_edge_get()
  *             - Etk_Popup_Window
  *
  * \par Signals:
- * @signal_name "popped_up": Emitted when the popup window is popped up
+ * @signal_name "popped-up": Emitted when the popup window is popped up
  * @signal_cb void callback(Etk_Popup_Window *popup_window, void *data)
  * @signal_arg popup_window: the popup window which has been popped up
  * @signal_data
  * \par
- * @signal_name "popped_down": Emitted when the popup window is popped down
+ * @signal_name "popped-down": Emitted when the popup window is popped down
  * @signal_cb void callback(Etk_Popup_Window *popup_window, void *data)
  * @signal_arg popup_window: the popup window which has been popped down
  * @signal_data

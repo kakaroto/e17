@@ -134,10 +134,9 @@ int main(int argc, char *argv[])
 {
    if (!etk_init(&argc, &argv))
    {
-      fprintf(stderr, "Could not init etk. Exiting...\n");
+      fprintf(stderr, "Could not init Etk. Exiting...\n");
       return 1;
    };
-   etk_tooltips_enable();
    _etk_test_main_window();
    etk_main();
    etk_shutdown();
@@ -159,7 +158,7 @@ static void _etk_test_main_window()
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Test Application");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect("destroyed", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_main_quit_cb), NULL);
+   etk_signal_connect_swapped("destroyed", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_main_quit_cb), NULL);
    
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);

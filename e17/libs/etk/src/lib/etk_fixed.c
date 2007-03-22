@@ -23,7 +23,7 @@ static void _etk_fixed_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_fixed_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_fixed_child_remove(Etk_Container *container, Etk_Widget *widget);
 static Evas_List *_etk_fixed_children_get(Etk_Container *container);
-static void _etk_fixed_realize_cb(Etk_Object *object, void *data);
+static void _etk_fixed_realized_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -85,7 +85,7 @@ void etk_fixed_put(Etk_Fixed *fixed, Etk_Widget *widget, int x, int y)
    }
    
    etk_widget_parent_set(widget, ETK_WIDGET(fixed));
-   etk_signal_emit_by_name("child_added", ETK_OBJECT(fixed), NULL, widget);
+   etk_signal_emit_by_name("child-added", ETK_OBJECT(fixed), NULL, widget);
 }
 
 /**
@@ -167,8 +167,8 @@ static void _etk_fixed_constructor(Etk_Fixed *fixed)
    ETK_WIDGET(fixed)->size_request = _etk_fixed_size_request;
    ETK_WIDGET(fixed)->size_allocate = _etk_fixed_size_allocate;
    
-   etk_signal_connect("realize", ETK_OBJECT(fixed), ETK_CALLBACK(_etk_fixed_realize_cb), NULL);
-   etk_signal_connect_swapped("unrealize", ETK_OBJECT(fixed), ETK_CALLBACK(etk_callback_set_null), &fixed->clip);
+   etk_signal_connect("realized", ETK_OBJECT(fixed), ETK_CALLBACK(_etk_fixed_realized_cb), NULL);
+   etk_signal_connect_swapped("unrealized", ETK_OBJECT(fixed), ETK_CALLBACK(etk_callback_set_null), &fixed->clip);
 }
 
 /* Destroys the fixed container */
@@ -277,7 +277,7 @@ static void _etk_fixed_child_remove(Etk_Container *container, Etk_Widget *widget
    }
    
    etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
-   etk_signal_emit_by_name("child_removed", ETK_OBJECT(fixed), NULL, widget);
+   etk_signal_emit_by_name("child-removed", ETK_OBJECT(fixed), NULL, widget);
 }
 
 /* Gets the list of the children */
@@ -306,7 +306,7 @@ static Evas_List *_etk_fixed_children_get(Etk_Container *container)
  **************************/
 
 /* Called when the fixed container is realized */
-static void _etk_fixed_realize_cb(Etk_Object *object, void *data)
+static void _etk_fixed_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Fixed *fixed;
    Etk_Fixed_Child *c;

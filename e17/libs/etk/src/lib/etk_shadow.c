@@ -50,8 +50,8 @@ static void _etk_shadow_property_set(Etk_Object *object, int property_id, Etk_Pr
 static void _etk_shadow_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_shadow_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_shadow_realize_cb(Etk_Object *object, void *data);
-static void _etk_shadow_unrealize_cb(Etk_Object *object, void *data);
+static void _etk_shadow_realized_cb(Etk_Object *object, void *data);
+static void _etk_shadow_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow);
 static void _etk_shadow_border_recalc(Etk_Shadow *shadow);
 static Etk_Bool _etk_shadow_edge_visible(Etk_Shadow *shadow, Etk_Shadow_Object_Id object_id);
@@ -118,23 +118,23 @@ Etk_Type *etk_shadow_type_get()
       shadow_type = etk_type_new("Etk_Shadow", ETK_BIN_TYPE, sizeof(Etk_Shadow),
          ETK_CONSTRUCTOR(_etk_shadow_constructor), NULL);
 
-      etk_type_property_add(shadow_type, "shadow_type", ETK_SHADOW_SHADOW_TYPE_PROPERTY,
+      etk_type_property_add(shadow_type, "shadow-type", ETK_SHADOW_SHADOW_TYPE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SHADOW_NONE));
-      etk_type_property_add(shadow_type, "shadow_edges", ETK_SHADOW_SHADOW_EDGES_PROPERTY,
+      etk_type_property_add(shadow_type, "shadow-edges", ETK_SHADOW_SHADOW_EDGES_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SHADOW_ALL));
-      etk_type_property_add(shadow_type, "shadow_color", ETK_SHADOW_SHADOW_COLOR_PROPERTY,
+      etk_type_property_add(shadow_type, "shadow-color", ETK_SHADOW_SHADOW_COLOR_PROPERTY,
          ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
-      etk_type_property_add(shadow_type, "shadow_offset_x", ETK_SHADOW_SHADOW_OFFSET_X_PROPERTY,
+      etk_type_property_add(shadow_type, "shadow-offset-x", ETK_SHADOW_SHADOW_OFFSET_X_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
-      etk_type_property_add(shadow_type, "shadow_offset_y", ETK_SHADOW_SHADOW_OFFSET_Y_PROPERTY,
+      etk_type_property_add(shadow_type, "shadow-offset-y", ETK_SHADOW_SHADOW_OFFSET_Y_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
-      etk_type_property_add(shadow_type, "shadow_radius", ETK_SHADOW_SHADOW_RADIUS_PROPERTY,
+      etk_type_property_add(shadow_type, "shadow-radius", ETK_SHADOW_SHADOW_RADIUS_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(20));
-      etk_type_property_add(shadow_type, "shadow_opacity", ETK_SHADOW_SHADOW_OPACITY_PROPERTY,
+      etk_type_property_add(shadow_type, "shadow-opacity", ETK_SHADOW_SHADOW_OPACITY_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(155));
       etk_type_property_add(shadow_type, "border", ETK_SHADOW_BORDER_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
-      etk_type_property_add(shadow_type, "border_color", ETK_SHADOW_BORDER_COLOR_PROPERTY,
+      etk_type_property_add(shadow_type, "border-color", ETK_SHADOW_BORDER_COLOR_PROPERTY,
          ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
 
       shadow_type->property_set = _etk_shadow_property_set;
@@ -150,7 +150,7 @@ Etk_Type *etk_shadow_type_get()
  */
 Etk_Widget *etk_shadow_new(void)
 {
-   return etk_widget_new(ETK_SHADOW_TYPE, "theme_group", "shadow", NULL);
+   return etk_widget_new(ETK_SHADOW_TYPE, "theme-group", "shadow", NULL);
 }
 
 /**
@@ -172,32 +172,32 @@ void etk_shadow_shadow_set(Etk_Shadow *shadow, Etk_Shadow_Type type, Etk_Shadow_
    if (shadow->type != type)
    {
       shadow->type = type;
-      etk_object_notify(ETK_OBJECT(shadow), "shadow_type");
+      etk_object_notify(ETK_OBJECT(shadow), "shadow-type");
    }
    if (shadow->edges != edges)
    {
       shadow->edges = edges;
-      etk_object_notify(ETK_OBJECT(shadow), "shadow_edges");
+      etk_object_notify(ETK_OBJECT(shadow), "shadow-edges");
    }
    if (shadow->radius != ETK_CLAMP(radius, 0, 255))
    {
       shadow->radius = ETK_CLAMP(radius, 0, 255);
-      etk_object_notify(ETK_OBJECT(shadow), "shadow_radius");
+      etk_object_notify(ETK_OBJECT(shadow), "shadow-radius");
    }
    if (shadow->offset_x != offset_x)
    {
       shadow->offset_x = offset_x;
-      etk_object_notify(ETK_OBJECT(shadow), "shadow_offset_x");
+      etk_object_notify(ETK_OBJECT(shadow), "shadow-offset-x");
    }
    if (shadow->offset_y != offset_y)
    {
       shadow->offset_y = offset_y;
-      etk_object_notify(ETK_OBJECT(shadow), "shadow_offset_y");
+      etk_object_notify(ETK_OBJECT(shadow), "shadow-offset-y");
    }
    if (shadow->color.a != ETK_CLAMP(opacity, 0, 255))
    {
       shadow->color.a = ETK_CLAMP(opacity, 0, 255);
-      etk_object_notify(ETK_OBJECT(shadow), "shadow_opacity");
+      etk_object_notify(ETK_OBJECT(shadow), "shadow-opacity");
    }
 
    shadow->shadow_need_recalc = ETK_TRUE;
@@ -255,7 +255,7 @@ void etk_shadow_shadow_color_set(Etk_Shadow *shadow, int r, int g, int b)
       }
    }
 
-   etk_object_notify(ETK_OBJECT(shadow), "shadow_color");
+   etk_object_notify(ETK_OBJECT(shadow), "shadow-color");
 }
 
 /**
@@ -334,7 +334,7 @@ void etk_shadow_border_color_set(Etk_Shadow *shadow, int r, int g, int b, int a)
       }
    }
 
-   etk_object_notify(ETK_OBJECT(shadow), "border_color");
+   etk_object_notify(ETK_OBJECT(shadow), "border-color");
 }
 
 /**
@@ -398,8 +398,8 @@ static void _etk_shadow_constructor(Etk_Shadow *shadow)
    ETK_WIDGET(shadow)->size_request = _etk_shadow_size_request;
    ETK_WIDGET(shadow)->size_allocate = _etk_shadow_size_allocate;
 
-   etk_signal_connect("realize", ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_unrealize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_unrealized_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -685,7 +685,7 @@ static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the shadow container is realized */
-static void _etk_shadow_realize_cb(Etk_Object *object, void *data)
+static void _etk_shadow_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Shadow *shadow;
    Evas *evas;
@@ -731,7 +731,7 @@ static void _etk_shadow_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the shadow container is unrealized */
-static void _etk_shadow_unrealize_cb(Etk_Object *object, void *data)
+static void _etk_shadow_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Shadow *shadow;
    int i;

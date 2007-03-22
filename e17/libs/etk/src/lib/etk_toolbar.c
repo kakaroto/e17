@@ -59,7 +59,7 @@ Etk_Type *etk_toolbar_type_get(void)
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_HORIZ));
       etk_type_property_add(toolbar_type, "style", ETK_TOOLBAR_STYLE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_BOTH_VERT));
-      etk_type_property_add(toolbar_type, "stock_size", ETK_TOOLBAR_STOCK_SIZE_PROPERTY,
+      etk_type_property_add(toolbar_type, "stock-size", ETK_TOOLBAR_STOCK_SIZE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_MEDIUM));
       
       toolbar_type->property_set = _etk_toolbar_property_set;
@@ -75,7 +75,7 @@ Etk_Type *etk_toolbar_type_get(void)
  */
 Etk_Widget *etk_toolbar_new(void)
 {
-   return etk_widget_new(ETK_TOOLBAR_TYPE, "theme_group", "htoolbar", NULL);
+   return etk_widget_new(ETK_TOOLBAR_TYPE, "theme-group", "htoolbar", NULL);
 }
 
 /**
@@ -125,8 +125,8 @@ void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, Etk_Toolbar_Orientation o
    etk_widget_internal_set(toolbar->box, ETK_TRUE);
    etk_widget_show(toolbar->box);
    
-   etk_signal_connect("child_added", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
-   etk_signal_connect("child_removed", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
+   etk_signal_connect("child-added", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
+   etk_signal_connect("child-removed", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
    
    
    children = etk_container_children_get(ETK_CONTAINER(prev_box));
@@ -234,7 +234,7 @@ void etk_toolbar_stock_size_set(Etk_Toolbar *toolbar, Etk_Stock_Size size)
    }
    evas_list_free(children);
    
-   etk_object_notify(ETK_OBJECT(toolbar), "stock_size");
+   etk_object_notify(ETK_OBJECT(toolbar), "stock-size");
 }
 
 /**
@@ -277,8 +277,8 @@ static void _etk_toolbar_constructor(Etk_Toolbar *toolbar)
    etk_widget_internal_set(ETK_WIDGET(toolbar->box), ETK_TRUE);
    etk_widget_show(toolbar->box);
    
-   etk_signal_connect("child_added", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
-   etk_signal_connect("child_removed", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
+   etk_signal_connect("child-added", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
+   etk_signal_connect("child-removed", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -466,7 +466,7 @@ static void _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *child,
    
    if (etk_widget_theme_parent_get(child) == ETK_WIDGET(toolbar))
       etk_widget_theme_parent_set(child, NULL);
-   etk_signal_emit_by_name("child_removed", ETK_OBJECT(toolbar), NULL, child);
+   etk_signal_emit_by_name("child-removed", ETK_OBJECT(toolbar), NULL, child);
 }
 
 /** @} */

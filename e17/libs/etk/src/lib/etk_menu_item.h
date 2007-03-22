@@ -57,9 +57,9 @@ struct Etk_Menu_Item
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
    
-   void (*selected)(Etk_Menu_Item *menu_item);
-   void (*deselected)(Etk_Menu_Item *menu_item);
-   void (*activated)(Etk_Menu_Item *menu_item);
+   void (*selected_handler)(Etk_Menu_Item *menu_item);
+   void (*unselected_handler)(Etk_Menu_Item *menu_item);
+   void (*activated_handler)(Etk_Menu_Item *menu_item);
    
    Etk_Menu_Shell *parent_shell;
    Etk_Menu *submenu;
@@ -102,7 +102,7 @@ struct Etk_Menu_Item_Check
    /* Inherit from Etk_Menu_Item */
    Etk_Menu_Item menu_item;
    
-   void (*toggled)(Etk_Menu_Item_Check *check_item);
+   void (*toggled_handler)(Etk_Menu_Item_Check *check_item);
    void (*active_set)(Etk_Menu_Item_Check *check_item, Etk_Bool active);
    Etk_Bool active;
 };
@@ -135,7 +135,7 @@ void        etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submen
 Etk_Menu   *etk_menu_item_submenu_get(Etk_Menu_Item *menu_item);
 
 void etk_menu_item_select(Etk_Menu_Item *menu_item);
-void etk_menu_item_deselect(Etk_Menu_Item *menu_item);
+void etk_menu_item_unselect(Etk_Menu_Item *menu_item);
 void etk_menu_item_activate(Etk_Menu_Item *menu_item);
 
 /* Etk_Menu_Item_Separator */
