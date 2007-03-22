@@ -235,9 +235,9 @@ Etk_Type *etk_widget_type_get(void)
             ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
       etk_type_property_add(widget_type, "geometry", ETK_WIDGET_GEOMETRY_PROPERTY,
             ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
-      etk_type_property_add(widget_type, "width-request", ETK_WIDGET_REQUESTED_WIDTH_PROPERTY, 
+      etk_type_property_add(widget_type, "requested-width", ETK_WIDGET_REQUESTED_WIDTH_PROPERTY, 
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(-1));
-      etk_type_property_add(widget_type, "height-request", ETK_WIDGET_REQUESTED_HEIGHT_PROPERTY,
+      etk_type_property_add(widget_type, "requested-height", ETK_WIDGET_REQUESTED_HEIGHT_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(-1));
       etk_type_property_add(widget_type, "visible", ETK_WIDGET_VISIBLE_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
