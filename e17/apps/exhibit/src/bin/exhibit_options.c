@@ -699,7 +699,7 @@ _ex_options_page_3_create()
    image = etk_image_new_from_stock(ETK_STOCK_UTILITIES_SYSTEM_MONITOR, ETK_STOCK_SMALL);
    dialog->sort_resolution = etk_combobox_item_append(ETK_COMBOBOX(dialog->default_sort), image, "Resolution");
    
-   etk_signal_connect("active_item_changed", ETK_OBJECT(dialog->default_sort), 
+   etk_signal_connect("active-item-changed", ETK_OBJECT(dialog->default_sort), 
 	 ETK_CALLBACK(_ex_options_combobox_active_item_changed_cb), NULL);
    
    frame = etk_frame_new("Filesystem monitoring");
@@ -836,7 +836,7 @@ _ex_options_window_show()
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Exhibit options");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect("delete_event", ETK_OBJECT(win),
+   etk_signal_connect("delete-event", ETK_OBJECT(win),
 		      ETK_CALLBACK(_ex_options_window_delete_cb), win);
    
    vbox = etk_vbox_new(ETK_FALSE, 3);

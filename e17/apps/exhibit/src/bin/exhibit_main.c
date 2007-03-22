@@ -611,7 +611,7 @@ _ex_main_window_fullscreen_toggle(Exhibit *e)
 {
    if (etk_window_fullscreen_get(ETK_WINDOW(e->win)))
      {
-	etk_signal_connect("resize", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb), e);
+	etk_signal_connect("resized", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb), e);
 	etk_container_remove(ETK_CONTAINER(e->win), e->vboxf);
 	etk_container_add(ETK_CONTAINER(e->win), e->vbox);
 	etk_widget_show_all(e->win);
@@ -786,14 +786,14 @@ _ex_main_window_show(char *dir, int fullscreen)
    dnd_types_num = 1;
    dnd_types = calloc(dnd_types_num, sizeof(char*));
    dnd_types[0] = strdup("text/uri-list");
-   etk_signal_connect("drag_drop", ETK_OBJECT(e->win), ETK_CALLBACK(_etk_main_drag_drop_cb), e);
+   etk_signal_connect("drag-drop", ETK_OBJECT(e->win), ETK_CALLBACK(_etk_main_drag_drop_cb), e);
    etk_widget_dnd_types_set(e->win, dnd_types, dnd_types_num);   
    etk_window_title_set(ETK_WINDOW(e->win), WINDOW_TITLE " - Image Viewing the Kewl Way!");
    etk_window_wmclass_set(ETK_WINDOW(e->win), "exhibit", "Exhibit");
    etk_window_resize(ETK_WINDOW(e->win), e->options->last_w, e->options->last_h);
-   etk_signal_connect("delete_event", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_deleted_cb), e);
-   etk_signal_connect("key_down", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_key_down_cb), e);
-   etk_signal_connect("resize", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb), e);
+   etk_signal_connect("delete-event", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_deleted_cb), e);
+   etk_signal_connect("key-down", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_key_down_cb), e);
+   etk_signal_connect("resized", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb), e);
 
    e->vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(e->win), e->vbox);
@@ -944,7 +944,7 @@ _ex_main_window_show(char *dir, int fullscreen)
 
    e->entry[0] = etk_entry_new();
    etk_box_append(ETK_BOX(entry_hbox), e->entry[0], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   etk_signal_connect("key_down", ETK_OBJECT(e->entry[0]), ETK_CALLBACK(_ex_main_entry_dir_key_down_cb), e);
+   etk_signal_connect("key-down", ETK_OBJECT(e->entry[0]), ETK_CALLBACK(_ex_main_entry_dir_key_down_cb), e);
 
    e->entry[1] = etk_button_new_from_stock(ETK_STOCK_GO_NEXT);
    etk_button_label_set(ETK_BUTTON(e->entry[1]), NULL);
@@ -1018,7 +1018,7 @@ _ex_main_window_show(char *dir, int fullscreen)
    e->notebook = etk_notebook_new();
    etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_FALSE);
    etk_container_add(ETK_CONTAINER(e->hpaned_shadow), e->notebook);
-   etk_signal_connect("current_page_changed", ETK_OBJECT(e->notebook), 
+   etk_signal_connect("current-page-changed", ETK_OBJECT(e->notebook), 
 	 ETK_CALLBACK(_ex_main_window_tab_toggled_cb), NULL);
       
    e->hbox = etk_hbox_new(ETK_TRUE, 0);
@@ -1031,7 +1031,7 @@ _ex_main_window_show(char *dir, int fullscreen)
 	Etk_Widget *menu;
 
 	menu = etk_menu_new();
-	etk_signal_connect("mouse_down", ETK_OBJECT(e->sort_bar), ETK_CALLBACK(_ex_sort_label_mouse_down_cb), menu);
+	etk_signal_connect("mouse-down", ETK_OBJECT(e->sort_bar), ETK_CALLBACK(_ex_sort_label_mouse_down_cb), menu);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by name"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by date"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by size"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);

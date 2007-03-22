@@ -656,7 +656,7 @@ _ex_image_save_as(Exhibit *e)
    
    fd->win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit - Save image as ..");
-   etk_signal_connect("delete_event", ETK_OBJECT(fd->win), 
+   etk_signal_connect("delete-event", ETK_OBJECT(fd->win), 
 		      ETK_CALLBACK(etk_window_hide_on_delete), fd->win);
    
    vbox = etk_vbox_new(ETK_FALSE, 0);
@@ -673,7 +673,7 @@ _ex_image_save_as(Exhibit *e)
    fd->entry = etk_entry_new();
    etk_entry_text_set(ETK_ENTRY(fd->entry), e->cur_tab->cur_file);
    etk_box_append(ETK_BOX(vbox), fd->entry, ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_signal_connect("key_down", ETK_OBJECT(fd->entry), 
+   etk_signal_connect("key-down", ETK_OBJECT(fd->entry), 
 		      ETK_CALLBACK(_ex_image_save_as_entry_cb), fd);
    
    hbox = etk_hbox_new(ETK_FALSE, 0);
