@@ -290,19 +290,20 @@ _e_sticky_window_add(E_Sticky *s)
    snprintf(theme, sizeof(theme), PACKAGE_DATA_DIR"/themes/%s", s->theme);
    
    s->win = etk_window_new();
+   etk_window_has_alpha_set(ETK_WINDOW(s->win), ETK_TRUE);
    etk_window_title_set(ETK_WINDOW(s->win), "estickies");
    etk_window_wmclass_set(ETK_WINDOW(s->win), "estickies", "estickies");
    etk_window_decorated_set(ETK_WINDOW(s->win), ETK_FALSE);
    etk_window_shaped_set(ETK_WINDOW(s->win), ETK_TRUE);
    etk_widget_theme_file_set(s->win, theme);
    etk_widget_size_request_set(s->win, 208, 206);
-   etk_signal_connect("key_down", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_key_down_cb), s);
-   etk_signal_connect("mouse_down", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_mouse_down_cb), s);
-   etk_signal_connect("mouse_up", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_mouse_up_cb), s);
-   etk_signal_connect("mouse_move", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_mouse_move_cb), s);
-   etk_signal_connect("move", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_move_cb), s);
-   etk_signal_connect("resize", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_resize_cb), s);
-   etk_signal_connect("delete_event", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_delete_event_cb), s);
+   etk_signal_connect("key-down", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_key_down_cb), s);
+   etk_signal_connect("mouse-down", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_mouse_down_cb), s);
+   etk_signal_connect("mouse-up", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_mouse_up_cb), s);
+   etk_signal_connect("mouse-move", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_mouse_move_cb), s);
+   etk_signal_connect("moved", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_move_cb), s);
+   etk_signal_connect("resized", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_resize_cb), s);
+   etk_signal_connect("delete-event", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_delete_event_cb), s);
    //etk_signal_connect("focus_in", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_focus_in_cb), s);
    //etk_signal_connect("focus_out", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_focus_out_cb), s);
    etk_object_notification_callback_add(ETK_OBJECT(s->win), "sticky", _e_sticky_sticky_cb, s);
@@ -323,7 +324,7 @@ _e_sticky_window_add(E_Sticky *s)
 			      ETK_CALLBACK(_e_sticky_stick_toggle), s);
    //etk_tooltips_tip_set(button, "Make sticky visible on all desktops");
    etk_box_append(ETK_BOX(hbox), s->stick_toggle, ETK_BOX_START, ETK_BOX_NONE, 0);
-   
+
    s->lock_toggle = etk_toggle_button_new();
    etk_object_properties_set(ETK_OBJECT(s->lock_toggle),
 			     "focusable", ETK_FALSE, NULL);   
@@ -358,7 +359,12 @@ _e_sticky_window_add(E_Sticky *s)
    
    etk_container_add(ETK_CONTAINER(s->win), vbox);
    etk_widget_focus(s->textview);
-   etk_signal_connect("selection_received", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_selection_text_request_cb), s);
+   etk_signal_connect("selection-received", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_selection_text_request_cb), s);
+   
+   etk_widget_color_set(s->win, 160, 160, 160, 160);   
+   etk_widget_color_set(s->stick_toggle, 160, 160, 160, 160);
+   etk_widget_color_set(s->lock_toggle, 160, 160, 160, 160);
+   etk_widget_color_set(s->close_button, 160, 160, 160, 160);   
 }
 
 E_Sticky *
@@ -396,7 +402,7 @@ _e_sticky_delete_confirm(E_Sticky *s)
    dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_QUESTION, 
 				   ETK_MESSAGE_DIALOG_YES_NO,
 				   "Are you sure you want to delete this sticky?");
-   etk_signal_connect_swapped("delete_event", ETK_OBJECT(dialog), 
+   etk_signal_connect_swapped("delete-event", ETK_OBJECT(dialog), 
 			      ETK_CALLBACK(etk_object_destroy), dialog);
    etk_signal_connect("response", ETK_OBJECT(dialog), 
 		      ETK_CALLBACK(_e_sticky_delete_confirm_cb), s);

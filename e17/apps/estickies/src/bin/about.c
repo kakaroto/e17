@@ -21,7 +21,7 @@ _e_about_show()
    
    win = etk_dialog_new();
    etk_window_title_set(ETK_WINDOW(win), "About E Stickies");
-   etk_signal_connect_swapped("delete_event", ETK_OBJECT(win),
+   etk_signal_connect_swapped("delete-event", ETK_OBJECT(win),
 			      ETK_CALLBACK(etk_window_hide_on_delete), win);
    etk_signal_connect_swapped("response", ETK_OBJECT(win),
 			      ETK_CALLBACK(etk_window_hide_on_delete), win);
