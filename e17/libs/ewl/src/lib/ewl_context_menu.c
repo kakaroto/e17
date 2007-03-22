@@ -51,6 +51,7 @@ int
 ewl_context_menu_init(Ewl_Context_Menu *cm)
 {
 	Ewl_Widget *w;
+	int oh, ov;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cm", cm, FALSE);
@@ -66,6 +67,9 @@ ewl_context_menu_init(Ewl_Context_Menu *cm)
 	ewl_object_alignment_set(EWL_OBJECT(w),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 	ewl_popup_type_set(EWL_POPUP(cm), EWL_POPUP_TYPE_MOUSE);
+	oh = ewl_theme_data_int_get(w, "/context_menu/hoffset");
+	ov = ewl_theme_data_int_get(w, "/context_menu/voffset");
+	ewl_popup_offset_set(EWL_POPUP(cm), oh, ov);
 
 	ewl_context_menu_container_set(cm, NULL);
 

@@ -176,6 +176,9 @@ data
 	item: "/tooltip/hoffset" 10;
 	item: "/tooltip/delay" "1.0";
 
+	item: "/context_menu/voffset" 1;
+	item: "/context_menu/hoffset" 1;
+
 	item: "/spinner/acceleration" 5;
 	item: "/spinner/velocity" 5;
 
