@@ -141,6 +141,7 @@ static void _etk_widget_smart_object_move_cb(Evas_Object *obj, Evas_Coord x, Eva
 static void _etk_widget_smart_object_resize_cb(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
 static void _etk_widget_smart_object_show_cb(Evas_Object *obj);
 static void _etk_widget_smart_object_hide_cb(Evas_Object *obj);
+static void _etk_widget_smart_object_color_set_cb(Evas_Object *obj, int r, int g, int b, int a);
 static void _etk_widget_smart_object_clip_set_cb(Evas_Object *object, Evas_Object *clip);
 static void _etk_widget_smart_object_clip_unset_cb(Evas_Object *object);
 
@@ -901,6 +902,25 @@ Etk_Bool etk_widget_is_visible(Etk_Widget *widget)
    if (!widget)
       return ETK_FALSE;
    return widget->visible;
+}
+
+/**
+ * @brief Recursively sets the color of the widget and its children
+ * @param widget a widget
+ * @param r red
+ * @param g green
+ * @param b blue
+ * @param a alpha
+ */
+void etk_widget_color_set(Etk_Widget *widget, int r, int g, int b, int a)
+{
+   Evas_List *l;
+   
+   if (!widget)
+      return;
+
+   if (widget->smart_object)
+      evas_object_color_set(widget->smart_object, r, g, b, a);
 }
 
 /**
@@ -3012,7 +3032,7 @@ static Evas_Object *_etk_widget_smart_object_add(Evas *evas, Etk_Widget *widget)
          _etk_widget_smart_object_resize_cb, /* resize */
          _etk_widget_smart_object_show_cb, /* show */
          _etk_widget_smart_object_hide_cb, /* hide */
-         NULL, /* color_set */
+         _etk_widget_smart_object_color_set_cb, /* color_set */
          _etk_widget_smart_object_clip_set_cb, /* clip_set */
          _etk_widget_smart_object_clip_unset_cb, /* clip_unset */
          NULL); /* data*/
@@ -3183,6 +3203,38 @@ static void _etk_widget_smart_object_hide_cb(Evas_Object *obj)
          evas_object_hide(child->smart_object);
    }
 }
+
+/* Called when the smart object's color is set */
+static void _etk_widget_smart_object_color_set_cb(Evas_Object *obj, int r, int g, int b, int a)
+{
+   Evas_List *l;
+   Etk_Widget_Member_Object *m;
+   Etk_Widget *widget, *child;
+   
+   if (!obj || !(widget = ETK_WIDGET(evas_object_smart_data_get(obj))))
+      return;
+   
+   if (widget->theme_object)
+      evas_object_color_set(widget->theme_object, r, g, b, a);
+   
+   /* TODO: Do we want to change the color on this? */
+   if (widget->event_object)
+      evas_object_color_set(widget->event_object, r, g, b, a);
+   for (l = widget->member_objects; l; l = l->next)
+   {
+      m = l->data;      
+      evas_object_color_set(m->object, r, g, b, a);
+   }
+#if 0   
+   for (l = widget->children; l; l = l->next)
+   {
+      child = l->data;
+      if (!child->swallowed)
+         evas_object_color_set(child->smart_object, r, g, b, a);
+   }
+#endif   
+}
+
 
 /* Called when a clip is set to the smart object */
 static void _etk_widget_smart_object_clip_set_cb(Evas_Object *object, Evas_Object *clip)

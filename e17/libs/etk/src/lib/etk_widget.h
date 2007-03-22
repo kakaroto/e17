@@ -146,6 +146,8 @@ void     etk_widget_hide(Etk_Widget *widget);
 void     etk_widget_hide_all(Etk_Widget *widget);
 Etk_Bool etk_widget_is_visible(Etk_Widget *widget);
 
+void etk_widget_color_set(Etk_Widget *widget, int r, int g, int b, int a);
+
 void etk_widget_raise(Etk_Widget *widget);
 void etk_widget_lower(Etk_Widget *widget);
 

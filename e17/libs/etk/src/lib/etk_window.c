@@ -34,6 +34,7 @@ enum Etk_Window_Property_Id
    ETK_WINDOW_FOCUSED_PROPERTY,
    ETK_WINDOW_DECORATED_PROPERTY,
    ETK_WINDOW_SHAPED_PROPERTY,
+   ETK_WINDOW_HAS_ALPHA_PROPERTY,     
    ETK_WINDOW_SKIP_TASKBAR_PROPERTY,
    ETK_WINDOW_SKIP_PAGER_PROPERTY
 };
@@ -86,6 +87,7 @@ Etk_Type *etk_window_type_get(void)
       etk_type_property_add(window_type, "focused", ETK_WINDOW_FOCUSED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(window_type, "decorated", ETK_WINDOW_DECORATED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(window_type, "shaped", ETK_WINDOW_SHAPED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(window_type, "has_alpha", ETK_WINDOW_HAS_ALPHA_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));      
       etk_type_property_add(window_type, "skip-taskbar", ETK_WINDOW_SKIP_TASKBAR_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(window_type, "skip-pager", ETK_WINDOW_SKIP_PAGER_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       
@@ -481,6 +483,30 @@ Etk_Bool etk_window_shaped_get(Etk_Window *window)
 }
 
 /**
+ * @brief Sets wheter the window has an alpha channel (supports translucency)
+ * @param window a window
+ * @param has_alpha the alpha setting
+ */
+void etk_window_has_alpha_set(Etk_Window *window, Etk_Bool has_alpha)
+{
+   if (!window)
+      return;
+   etk_engine_window_has_alpha_set(window, has_alpha);
+}
+
+/**
+ * @brief Gets whether the window has an alpha channel (supports translucency)
+ * @param window a window
+ * @return Returns ETK_TRUE if the window has an alpha channel
+ */
+Etk_Bool etk_window_has_alpha_get(Etk_Window *window)
+{
+   if (!window)
+      return ETK_TRUE;
+   return etk_engine_window_has_alpha_get(window);
+}
+
+/**
  * @brief Sets whether the window should not be shown in the taskbar
  * @param window a window
  * @param skip_taskbar_hint if @a skip_taskbar_hint == ETK_TRUE, the window should not be shown in the taskbar
@@ -611,6 +637,9 @@ static void _etk_window_property_set(Etk_Object *object, int property_id, Etk_Pr
       case ETK_WINDOW_SHAPED_PROPERTY:
          etk_window_shaped_set(window, etk_property_value_bool_get(value));
          break;
+      case ETK_WINDOW_HAS_ALPHA_PROPERTY:
+         etk_window_has_alpha_set(window, etk_property_value_bool_get(value));
+         break;      
       case ETK_WINDOW_SKIP_TASKBAR_PROPERTY:
          etk_window_skip_taskbar_hint_set(window, etk_property_value_bool_get(value));
          break;
@@ -656,6 +685,9 @@ static void _etk_window_property_get(Etk_Object *object, int property_id, Etk_Pr
       case ETK_WINDOW_SHAPED_PROPERTY:
          etk_property_value_bool_set(value, etk_window_shaped_get(window));
          break;
+      case ETK_WINDOW_HAS_ALPHA_PROPERTY:
+         etk_property_value_bool_set(value, etk_window_has_alpha_get(window));
+         break;      
       case ETK_WINDOW_SKIP_TASKBAR_PROPERTY:
          etk_property_value_bool_set(value, etk_window_skip_taskbar_hint_get(window));
          break;

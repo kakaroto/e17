@@ -80,6 +80,8 @@ void     etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated);
 Etk_Bool etk_window_decorated_get(Etk_Window *window);
 void     etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped);
 Etk_Bool etk_window_shaped_get(Etk_Window *window);
+void     etk_window_has_alpha_set(Etk_Window *window, Etk_Bool has_alpha);
+Etk_Bool etk_window_has_alpha_get(Etk_Window *window);
 
 void     etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint);
 Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window);

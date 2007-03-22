@@ -663,6 +663,30 @@ Etk_Bool etk_engine_window_shaped_get(Etk_Window *window)
 }
 
 /**
+ * @brief Calls the engine's method to set whether the window has alpha (supports translucency) or not
+ * @param window a window
+ * @param has_alpha ETK_TRUE to give the window alpha, ETK_FALSE to make it non-translucent
+ */
+void etk_engine_window_has_alpha_set(Etk_Window *window, Etk_Bool has_alpha)
+{
+   if (!_engine || !_engine->window_has_alpha_set || !window)
+      return;   
+   _engine->window_has_alpha_set(window, has_alpha);
+}
+
+/**
+ * @brief Calls the engine's method to get whether the window has alpha (translucency) or not
+ * @param window a window
+ * @return Returns ETK_TRUE if the window has an alpha channel (supports translucency), ETK_FALSE otherwise
+ */
+Etk_Bool etk_engine_window_has_alpha_get(Etk_Window *window)
+{
+   if (!_engine || !_engine->window_has_alpha_get || !window)
+      return ETK_FALSE;   
+   return _engine->window_has_alpha_get(window);
+}
+
+/**
  * @brief Calls the engine's method to set whether or not the window should appear in the taskbar
  * @param window a window
  * @param skip_taskbar_hint ETK_TRUE to prevent the window from appearing in the taskbar, ETK_FALSE otherwise
@@ -901,6 +925,8 @@ static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inhe
    INHERIT(window_decorated_get);
    INHERIT(window_shaped_set);
    INHERIT(window_shaped_get);
+   INHERIT(window_has_alpha_set);
+   INHERIT(window_has_alpha_get);   
    INHERIT(window_skip_taskbar_hint_set);
    INHERIT(window_skip_taskbar_hint_get);
    INHERIT(window_skip_pager_hint_set);

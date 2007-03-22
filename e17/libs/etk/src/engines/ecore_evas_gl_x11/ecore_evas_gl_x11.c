@@ -58,6 +58,8 @@ static Etk_Engine engine_info = {
    NULL, /* window_decorated_get */
    NULL, /* window_shaped_set */
    NULL, /* window_shaped_get */
+   NULL, /* window_has_alpha_set */
+   NULL, /* window_has_alpha_get */     
    NULL, /* window_skip_taskbar_hint_set */
    NULL, /* window_skip_taskbar_hint_ge */
    NULL, /* window_skip_pager_hint_set */
