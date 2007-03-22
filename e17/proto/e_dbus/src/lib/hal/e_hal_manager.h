@@ -13,9 +13,9 @@ typedef struct E_Hal_UDI_Return E_Hal_Manager_Device_Removed;
 typedef struct E_Hal_Capability E_Hal_Manager_New_Capability;
 
 
-int e_hal_manager_get_all_devices(DBusConnection *conn, E_Hal_Callback_Func cb_func, void *data);
-int e_hal_manager_device_exists(DBusConnection *conn, const char *udi, E_Hal_Callback_Func cb_func, void *data);
-int e_hal_manager_find_device_string_match(DBusConnection *conn, const char *key, const char *value, E_Hal_Callback_Func cb_func, void *data);
-int e_hal_manager_find_device_by_capability(DBusConnection *conn, const char *capability, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_manager_get_all_devices(E_DBus_Connection *conn, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_manager_device_exists(E_DBus_Connection *conn, const char *udi, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_manager_find_device_string_match(E_DBus_Connection *conn, const char *key, const char *value, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_manager_find_device_by_capability(E_DBus_Connection *conn, const char *capability, E_Hal_Callback_Func cb_func, void *data);
 
 #endif

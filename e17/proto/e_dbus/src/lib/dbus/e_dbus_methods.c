@@ -1,7 +1,8 @@
 #include "E_DBus.h"
+#include "e_dbus_private.h"
 
 void
-e_dbus_request_name(DBusConnection *conn, const char *name, unsigned int flags, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_request_name(E_DBus_Connection *conn, const char *name, unsigned int flags, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
   dbus_uint32_t u_flags;
@@ -14,7 +15,7 @@ e_dbus_request_name(DBusConnection *conn, const char *name, unsigned int flags, 
 }
 
 void
-e_dbus_release_name(DBusConnection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_release_name(E_DBus_Connection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
@@ -25,7 +26,7 @@ e_dbus_release_name(DBusConnection *conn, const char *name, E_DBus_Method_Return
 
 
 void
-e_dbus_get_name_owner(DBusConnection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_get_name_owner(E_DBus_Connection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
@@ -35,7 +36,7 @@ e_dbus_get_name_owner(DBusConnection *conn, const char *name, E_DBus_Method_Retu
 }
 
 void
-e_dbus_list_names(DBusConnection *conn, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_list_names(E_DBus_Connection *conn, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
@@ -45,7 +46,7 @@ e_dbus_list_names(DBusConnection *conn, E_DBus_Method_Return_Cb cb_return, void 
 
 
 void
-e_dbus_list_activatable_names(DBusConnection *conn, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_list_activatable_names(E_DBus_Connection *conn, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
@@ -54,7 +55,7 @@ e_dbus_list_activatable_names(DBusConnection *conn, E_DBus_Method_Return_Cb cb_r
 }
 
 void
-e_dbus_name_has_owner(DBusConnection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_name_has_owner(E_DBus_Connection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
@@ -65,7 +66,7 @@ e_dbus_name_has_owner(DBusConnection *conn, const char *name, E_DBus_Method_Retu
 
 
 void
-e_dbus_start_service_by_name(DBusConnection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 

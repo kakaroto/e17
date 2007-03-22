@@ -44,8 +44,6 @@ int
 main(int argc, char **argv)
 {
   NM_Manager *app;
-  DBusConnection *conn;
-
   ecore_init();
   ecore_string_init();
   e_dbus_init();
@@ -62,6 +60,9 @@ main(int argc, char **argv)
   e_nm_get_devices(app->ctx, cb_manager_get_devices, app);
 
   ecore_main_loop_begin();
+
+  e_nm_free(app->ctx);
+  free(app);
   e_dbus_shutdown();
   ecore_string_shutdown();
   ecore_shutdown();

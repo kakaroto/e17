@@ -4,3 +4,4 @@ Makefile.in
 .libs
 e_dbus_hal
 e_dbus_test
+e_dbus_nm

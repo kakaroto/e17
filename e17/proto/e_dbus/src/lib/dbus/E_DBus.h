@@ -25,13 +25,15 @@ void e_dbus_shutdown(void);
 
 /* setting up the connection */
 
-DBusConnection *e_dbus_bus_get(DBusBusType type);
-void e_dbus_connection_close(DBusConnection *conn);
+E_DBus_Connection *e_dbus_bus_get(DBusBusType type);
 
-int e_dbus_connection_setup(DBusConnection *conn);
+void e_dbus_connection_ref(E_DBus_Connection *conn);
+void e_dbus_connection_unref(E_DBus_Connection *conn);
+
+E_DBus_Connection *e_dbus_connection_setup(DBusConnection *conn);
 
 /* receiving method calls */
-E_DBus_Object *e_dbus_object_add(DBusConnection *conn, const char *object_path, void *data);
+E_DBus_Object *e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data);
 void e_dbus_object_free(E_DBus_Object *obj);
 int e_dbus_object_method_add(E_DBus_Object *obj, const char *interface, const char *member, const char *signature, const char *reply_signature, E_DBus_Object_Method_Cb func);
 
@@ -39,55 +41,55 @@ int e_dbus_object_method_add(E_DBus_Object *obj, const char *interface, const ch
 /* sending method calls */
 
 
-DBusPendingCall *e_dbus_message_send(DBusConnection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, int timeout, void *data);
+DBusPendingCall *e_dbus_message_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, int timeout, void *data);
 
 
 /* signal receiving */
 
 int  e_dbus_signal_init(void);
 void e_dbus_signal_shutdown(void);
-E_DBus_Signal_Handler *e_dbus_signal_handler_add(DBusConnection *conn, const char *sender, const char *path, const char *interface, const char *member, E_DBus_Signal_Cb cb_signal, void *data);
+E_DBus_Signal_Handler *e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const char *path, const char *interface, const char *member, E_DBus_Signal_Cb cb_signal, void *data);
 
 /* standard dbus method calls */
 
-void e_dbus_request_name(DBusConnection *conn, const char *name, 
+void e_dbus_request_name(E_DBus_Connection *conn, const char *name, 
                          unsigned int flags,
                          E_DBus_Method_Return_Cb cb_return,
                          void *data);
-void e_dbus_release_name(DBusConnection *conn, const char *name,
+void e_dbus_release_name(E_DBus_Connection *conn, const char *name,
                          E_DBus_Method_Return_Cb cb_return,
                          void *data);
 
-void e_dbus_get_name_owner(DBusConnection *conn, const char *name,
+void e_dbus_get_name_owner(E_DBus_Connection *conn, const char *name,
                            E_DBus_Method_Return_Cb cb_return,
                            void *data);
-void e_dbus_list_names(DBusConnection *conn,
+void e_dbus_list_names(E_DBus_Connection *conn,
                        E_DBus_Method_Return_Cb cb_return,
                        void *data);
-void e_dbus_list_activatable_names(DBusConnection *conn,
+void e_dbus_list_activatable_names(E_DBus_Connection *conn,
                                    E_DBus_Method_Return_Cb cb_return,
                                    void *data);
-void e_dbus_name_has_owner(DBusConnection *conn, const char *name,
+void e_dbus_name_has_owner(E_DBus_Connection *conn, const char *name,
                            E_DBus_Method_Return_Cb cb_return,
                            void *data);
-void e_dbus_start_service_by_name(DBusConnection *conn, const char *name,
+void e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name,
                                   E_DBus_Method_Return_Cb cb_return,
                                   void *data);
 
 /* standard methods calls on objects */
-void e_dbus_peer_ping(DBusConnection *conn, const char *destination,
+void e_dbus_peer_ping(E_DBus_Connection *conn, const char *destination,
                       const char *path, E_DBus_Method_Return_Cb cb_return,
                       void *data);
-void e_dbus_peer_get_machine_id(DBusConnection *conn,
+void e_dbus_peer_get_machine_id(E_DBus_Connection *conn,
                                 const char *destination, const char *path,
                                 E_DBus_Method_Return_Cb cb_return,
                                 void *data);
-void e_dbus_properties_get(DBusConnection *conn, const char *destination,
+void e_dbus_properties_get(E_DBus_Connection *conn, const char *destination,
                            const char *path, const char *interface,
                            const char *property,
                            E_DBus_Method_Return_Cb cb_return,
                            void *data);
-void e_dbus_properties_set(DBusConnection *conn, const char *destination,
+void e_dbus_properties_set(E_DBus_Connection *conn, const char *destination,
                            const char *path, const char *interface,
                            const char *property, int value_type,
                            void *value, E_DBus_Method_Return_Cb cb_return,

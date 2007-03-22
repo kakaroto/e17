@@ -4,6 +4,7 @@
 #include <Ecore.h>
 #include <Ecore_Data.h>
 #include "E_DBus.h"
+#include "e_dbus_private.h"
 #include "dbus/dbus.h"
 
 static Ecore_List *signal_handlers = NULL;
@@ -122,7 +123,7 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
  * @param data custom data to pass in to the callback
  */
 E_DBus_Signal_Handler *
-e_dbus_signal_handler_add(DBusConnection *conn, const char *sender, const char *path, const char *interface, const char *member, E_DBus_Signal_Cb cb_signal, void *data)
+e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const char *path, const char *interface, const char *member, E_DBus_Signal_Cb cb_signal, void *data)
 {
   E_DBus_Signal_Handler *sh;
   char match[DBUS_MAXIMUM_MATCH_RULE_LENGTH];
@@ -159,7 +160,7 @@ e_dbus_signal_handler_add(DBusConnection *conn, const char *sender, const char *
   sh->data = data;
 
   dbus_error_init(&err);
-  dbus_bus_add_match(conn, match, NULL);
+  dbus_bus_add_match(conn->conn, match, NULL);
   ecore_list_append(signal_handlers, sh);
 
   /* if we have a sender, and it is not a unique name, we need to know the unique name to match since signals will have the name owner as ther sender. */

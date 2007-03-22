@@ -58,7 +58,7 @@ error:
 }
 
 int
-e_hal_device_get_property(DBusConnection *conn, const char *udi, const char *property, E_Hal_Callback_Func cb_func, void *data)
+e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *property, E_Hal_Callback_Func cb_func, void *data)
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;
@@ -170,7 +170,7 @@ error:
 }
 
 int
-e_hal_device_get_all_properties(DBusConnection *conn, const char *udi, E_Hal_Callback_Func cb_func, void *data)
+e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_Hal_Callback_Func cb_func, void *data)
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;
@@ -217,7 +217,7 @@ error:
 }
 
 int
-e_hal_device_query_capability(DBusConnection *conn, const char *udi, const char *capability, E_Hal_Callback_Func cb_func, void *data)
+e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const char *capability, E_Hal_Callback_Func cb_func, void *data)
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;
@@ -249,14 +249,14 @@ error:
 /**
  * @brief Mount a Volume
  *
- * @param conn the DBusConnection
+ * @param conn the E_DBus_Connection
  * @param udi the udi of the device object
  * @param mount_point the path to mount to, or null for default
  * @param fstype the fstype of the device (e.g. volume.fstype property)
  * @param options a list of additional options (not sure... fstype dependant?)
  */
 int
-e_hal_device_volume_mount(DBusConnection *conn, const char *udi, const char *mount_point, const char *fstype, Ecore_List *options, E_Hal_Callback_Func cb_func, void *data)
+e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *mount_point, const char *fstype, Ecore_List *options, E_Hal_Callback_Func cb_func, void *data)
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;
@@ -304,12 +304,12 @@ error:
 /**
  * @brief Mount a Volume
  *
- * @param conn the DBusConnection
+ * @param conn the E_DBus_Connection
  * @param udi the udi of the device object
  * @param options a list of additional options (not sure... fstype dependant?)
  */
 int
-e_hal_device_volume_unmount(DBusConnection *conn, const char *udi, Ecore_List *options, E_Hal_Callback_Func cb_func, void *data)
+e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List *options, E_Hal_Callback_Func cb_func, void *data)
 {
   E_Hal_Callback *cb;
   DBusMessage *msg;

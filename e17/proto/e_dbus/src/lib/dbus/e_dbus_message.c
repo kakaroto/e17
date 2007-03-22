@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "E_DBus.h"
+#include "e_dbus_private.h"
 
 typedef struct E_DBus_Pending_Call_Data E_DBus_Pending_Call_Data;
 struct E_DBus_Pending_Call_Data
@@ -62,11 +63,11 @@ cb_pending(DBusPendingCall *pending, void *user_data)
  * @return a DBusPendingCall that can be used to cancel the current call
  */
 DBusPendingCall *
-e_dbus_message_send(DBusConnection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, int timeout, void *data)
+e_dbus_message_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, int timeout, void *data)
 {
   DBusPendingCall *pending;
 
-  if (!dbus_connection_send_with_reply(conn, msg, &pending, timeout))
+  if (!dbus_connection_send_with_reply(conn->conn, msg, &pending, timeout))
     return NULL;
 
   if (cb_return)

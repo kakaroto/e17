@@ -17,7 +17,7 @@ struct E_NM_Callback
 
 struct E_NM_Context
 {
-  DBusConnection *conn;
+  E_DBus_Connection *conn;
 
   E_NM_Cb_Manager_State_Change cb_manager_state_change;
   void *data_manager_state_change;

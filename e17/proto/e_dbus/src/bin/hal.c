@@ -10,7 +10,7 @@
 
 /* test app */
 
-static DBusConnection *conn;
+static E_DBus_Connection *conn;
 static int mount_id = 0;
 
 #define DEVICE_TYPE_STORAGE 1
@@ -815,7 +815,7 @@ main(int argc, char **argv)
   ecore_list_destroy(storage_devices);
   ecore_list_destroy(volumes);
   ewl_shutdown();
-  e_dbus_connection_close(conn);
+  e_dbus_connection_unref(conn);
   e_dbus_shutdown();
   ecore_string_shutdown();
   ecore_shutdown();

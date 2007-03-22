@@ -1,4 +1,5 @@
 #include "E_DBus.h"
+#include "e_dbus_private.h"
 #include <Ecore_Data.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,7 +36,7 @@ static DBusObjectPathVTable vtable = (DBusObjectPathVTable){
 
 struct E_DBus_Object
 {
-  DBusConnection *conn;
+  E_DBus_Connection *conn;
   char *path;
   Ecore_List *methods;
 
@@ -61,9 +62,8 @@ cb_introspect(E_DBus_Object *obj, DBusMessage *msg)
   buf = e_dbus_object_introspect(obj);
   if (!buf)
   {
-    ret = dbus_message_new_error(msg, "org.e.NotIntrospectable", "This object does not provide introspection data");
+    ret = dbus_message_new_error(msg, "org.enlightenment.NotIntrospectable", "This object does not provide introspection data");
     return ret;
-    /* XXX send an error */
   }
 
   xml = ecore_strbuf_string_get(buf);
@@ -95,21 +95,21 @@ e_dbus_object_init(void)
  * @param data custom data to set on the object (obj->data XXX this needs an api)
  */
 E_DBus_Object *
-e_dbus_object_add(DBusConnection *conn, const char *object_path, void *data)
+e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data)
 {
   E_DBus_Object *obj;
 
   obj = calloc(1, sizeof(E_DBus_Object));
   if (!obj) return NULL;
 
-  if (!dbus_connection_register_object_path(conn, object_path, &vtable, obj))
+  if (!dbus_connection_register_object_path(conn->conn, object_path, &vtable, obj))
   {
     free(obj);
     return NULL;
   }
 
   obj->conn = conn;
-  dbus_connection_ref(conn);
+  e_dbus_connection_ref(conn);
   obj->path = strdup(object_path);
   obj->data = data;
   obj->methods = ecore_list_new();
@@ -131,8 +131,8 @@ e_dbus_object_free(E_DBus_Object *obj)
   if (!obj) return;
 
   DEBUG(5, "e_dbus_object_free\n");
-  dbus_connection_unregister_object_path(obj->conn, obj->path);
-  dbus_connection_unref(obj->conn);
+  dbus_connection_unregister_object_path(obj->conn->conn, obj->path);
+  e_dbus_connection_unref(obj->conn);
 
   if (obj->path) free(obj->path);
   ecore_list_destroy(obj->methods);
@@ -270,7 +270,7 @@ e_dbus_object_introspect(E_DBus_Object *obj)
   ecore_strbuf_append(buf, obj->path);
   ecore_strbuf_append(buf, "\">\n");
   level++;
-  /* XXX currently assumes methods grouped by interface. should probably sort first */
+  /* XXX currently assumes methods grouped by interface. should probably sort first -- or better, actually group them by interface */
   ecore_list_goto_first(obj->methods);
   while ((method = ecore_list_next(obj->methods))) 
   {

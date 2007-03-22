@@ -1,4 +1,5 @@
 #include "E_DBus.h"
+#include "e_dbus_private.h"
 
 #include <stdbool.h>
 #include <unistd.h>
@@ -23,21 +24,11 @@ static int connection_slot = -1;
 static int init = 0;
 int E_DBUS_EVENT_SIGNAL = 0;
 
+static E_DBus_Connection *shared_connections[2] = {NULL, NULL};
+
 typedef struct E_DBus_Handler_Data E_DBus_Handler_Data;
 typedef struct E_DBus_Timeout_Data E_DBus_Timeout_Data;
 
-struct E_DBus_Connection
-{
-  DBusConnection *conn;
-  char *conn_name;
-
-  Ecore_List *fd_handlers;
-  Ecore_List *timeouts;
-
-  Ecore_Idler *idler;
-
-  int refcount;
-};
 
 struct E_DBus_Handler_Data
 {
@@ -166,6 +157,9 @@ _e_dbus_connection_free(void *data)
   while ((timer = ecore_list_next(cd->timeouts)))
     ecore_timer_del(timer);
   ecore_list_destroy(cd->timeouts);
+
+  if (cd->shared_type != -1)
+    shared_connections[cd->shared_type] = NULL;
 
   free(cd);
 }
@@ -401,11 +395,22 @@ e_dbus_idler(void *data)
  * Retrieve a connection to the bus and integrate it with the ecore main loop.
  * @param type the type of bus to connect to, e.g. DBUS_BUS_SYSTEM or DBUS_BUS_SESSION
  */
-DBusConnection *
+E_DBus_Connection *
 e_dbus_bus_get(DBusBusType type)
 {
   DBusError err;
+  E_DBus_Connection *econn;
   DBusConnection *conn;
+
+  /* each app only needs a single connection to either bus */
+  if (type == DBUS_BUS_SYSTEM || type == DBUS_BUS_SESSION)
+  {
+    if (shared_connections[type]) 
+    {
+      e_dbus_connection_ref(shared_connections[type]);
+      return shared_connections[type];
+    }
+  }
 
   dbus_error_init(&err);
 
@@ -417,15 +422,22 @@ e_dbus_bus_get(DBusBusType type)
     return NULL;
   }
 
-  if (!e_dbus_connection_setup(conn))
+  econn = e_dbus_connection_setup(conn);
+  if (!econn)
   {
     fprintf(stderr, "Error setting up dbus connection.\n");
+    dbus_connection_close(conn);
     dbus_connection_unref(conn);
     return NULL;
   }
 
+  if (type == DBUS_BUS_SYSTEM || type == DBUS_BUS_SESSION)
+  {
+    econn->shared_type = type;
+    shared_connections[type] = econn;
+  }
   dbus_error_free(&err);
-  return conn;
+  return econn;
 }
 
 /**
@@ -433,13 +445,14 @@ e_dbus_bus_get(DBusBusType type)
  *
  * @param conn - a dbus connection
  */
-int
+E_DBus_Connection *
 e_dbus_connection_setup(DBusConnection *conn)
 {
-  E_DBus_Connection *cd;
+  E_DBus_Connection *cd = NULL;
 
   cd = calloc(1, sizeof(E_DBus_Connection));
-  if (!cd) return 0;
+  if (!cd) return NULL;
+  cd->shared_type = -1;
   cd->conn = conn;
 
   cd->fd_handlers = ecore_list_new();
@@ -472,7 +485,7 @@ e_dbus_connection_setup(DBusConnection *conn)
 
   cb_dispatch_status(cd->conn, dbus_connection_get_dispatch_status(cd->conn), cd);
 
-  return 1;
+  return cd;
 }
 
 
@@ -481,31 +494,48 @@ e_dbus_connection_setup(DBusConnection *conn)
  * @param conn the connection to close
  */
 void
-e_dbus_connection_close(DBusConnection *conn)
+e_dbus_connection_close(E_DBus_Connection *conn)
 {
-  E_DBus_Connection *cd;
-  cd = dbus_connection_get_data(conn, connection_slot);
-
   DEBUG(5, "_e_dbus_connection_close\n");
 
   dbus_connection_free_data_slot(&connection_slot);
-  dbus_connection_remove_filter(cd->conn, e_dbus_filter, NULL);
-  dbus_connection_set_watch_functions (conn,
+  dbus_connection_remove_filter(conn->conn, e_dbus_filter, NULL);
+  dbus_connection_set_watch_functions (conn->conn,
                                        NULL,
                                        NULL,
                                        NULL,
                                        NULL, NULL);
 
-  dbus_connection_set_timeout_functions (conn,
+  dbus_connection_set_timeout_functions (conn->conn,
                                          NULL,
                                          NULL,
                                          NULL,
                                          NULL, NULL);
 
-  dbus_connection_set_dispatch_status_function (conn, NULL, NULL, NULL);
+  dbus_connection_set_dispatch_status_function (conn->conn, NULL, NULL, NULL);
 
-  dbus_connection_close(conn);
-  dbus_connection_unref(conn);
+  dbus_connection_close(conn->conn);
+  dbus_connection_unref(conn->conn);
+
+  // Note: the E_DBus_Connection gets freed when the dbus_connection is cleaned up by the previous unref
+}
+
+void
+e_dbus_connection_ref(E_DBus_Connection *conn)
+{
+  conn->refcount++;
+}
+
+void
+e_dbus_connection_unref(E_DBus_Connection *conn)
+{
+  if (--(conn->refcount) == 0) e_dbus_connection_close(conn);
+}
+
+DBusConnection *
+e_dbus_connection_dbus_connection_get(E_DBus_Connection *conn)
+{
+  return conn->conn;
 }
 
 /**

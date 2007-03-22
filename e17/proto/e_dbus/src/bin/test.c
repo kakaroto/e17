@@ -62,7 +62,7 @@ cb_repeat(E_DBus_Object *obj, DBusMessage *msg)
 }
 
 int
-_setup(DBusConnection *conn)
+_setup(E_DBus_Connection *conn)
 {
   E_DBus_Object *repeater;
   repeater = e_dbus_object_add(conn, "/org/e/Repeater", NULL);
@@ -73,7 +73,7 @@ _setup(DBusConnection *conn)
 int
 main (int argc, char ** argv)
 {
-  DBusConnection *conn;
+  E_DBus_Connection *conn;
   ecore_init();
   e_dbus_init();
 
@@ -82,7 +82,7 @@ main (int argc, char ** argv)
   if (conn)
   {
     if (_setup(conn)) ecore_main_loop_begin();
-    e_dbus_connection_close(conn);
+    e_dbus_connection_unref(conn);
   }
 
   e_dbus_shutdown();

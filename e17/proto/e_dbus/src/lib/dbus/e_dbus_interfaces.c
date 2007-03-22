@@ -1,4 +1,5 @@
 #include "E_DBus.h"
+#include "e_dbus_private.h"
 
 /**
  * This file contains wrappers around the standard interfaces that
@@ -6,7 +7,7 @@
  */
 
 void
-e_dbus_peer_ping(DBusConnection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_peer_ping(E_DBus_Connection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
@@ -15,7 +16,7 @@ e_dbus_peer_ping(DBusConnection*conn, const char *destination, const char *path,
 }
 
 void
-e_dbus_peer_get_machine_id(DBusConnection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_peer_get_machine_id(E_DBus_Connection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
@@ -36,7 +37,7 @@ e_dbus_peer_get_machine_id(DBusConnection*conn, const char *destination, const c
  * @param data data to pass to the callbacks
  */
 void
-e_dbus_properties_get(DBusConnection*conn, const char *destination, const char *path, const char *interface, const char *property, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_properties_get(E_DBus_Connection*conn, const char *destination, const char *path, const char *interface, const char *property, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
 
@@ -59,7 +60,7 @@ e_dbus_properties_get(DBusConnection*conn, const char *destination, const char *
  * @param data data to pass to the callbacks
  */
 void
-e_dbus_properties_set(DBusConnection*conn, const char *destination, const char *path, const char *interface, const char *property, int value_type, void *value, E_DBus_Method_Return_Cb cb_return, void *data)
+e_dbus_properties_set(E_DBus_Connection*conn, const char *destination, const char *path, const char *interface, const char *property, int value_type, void *value, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
   DBusMessageIter iter, sub;

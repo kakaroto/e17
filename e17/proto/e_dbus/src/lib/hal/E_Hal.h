@@ -98,15 +98,15 @@ typedef struct E_Hal_UDI_Return E_Hal_Manager_Device_Removed;
 typedef struct E_Hal_Capability E_Hal_Manager_New_Capability;
 
 /* org.freedesktop.Hal.Device */
-int e_hal_device_get_property(DBusConnection *conn, const char *udi, const char *property, E_Hal_Callback_Func cb_func, void *data);
-int e_hal_device_get_all_properties(DBusConnection *conn, const char *udi, E_Hal_Callback_Func cb_func, void *data);
-int e_hal_device_query_capability(DBusConnection *conn, const char *udi, const char *capability, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *property, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const char *capability, E_Hal_Callback_Func cb_func, void *data);
 
 /* org.freedesktop.Hal.Manager */
-int e_hal_manager_get_all_devices(DBusConnection *conn, E_Hal_Callback_Func cb_func, void *data);
-int e_hal_manager_device_exists(DBusConnection *conn, const char *udi, E_Hal_Callback_Func cb_func, void *data);
-int e_hal_manager_find_device_string_match(DBusConnection *conn, const char *key, const char *value, E_Hal_Callback_Func cb_func, void *data);
-int e_hal_manager_find_device_by_capability(DBusConnection *conn, const char *capability, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_manager_get_all_devices(E_DBus_Connection *conn, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_manager_device_exists(E_DBus_Connection *conn, const char *udi, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_manager_find_device_string_match(E_DBus_Connection *conn, const char *key, const char *value, E_Hal_Callback_Func cb_func, void *data);
+int e_hal_manager_find_device_by_capability(E_DBus_Connection *conn, const char *capability, E_Hal_Callback_Func cb_func, void *data);
 
 E_Hal_Callback *e_hal_callback_new(E_Hal_Callback_Func cb_func, void *user_data);
 void e_hal_callback_free(E_Hal_Callback *callback);

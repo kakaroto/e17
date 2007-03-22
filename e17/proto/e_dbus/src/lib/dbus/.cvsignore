@@ -3,6 +3,7 @@ Makefile
 Makefile.in
 .libs
 e_dbus.lo
+e_dbus_interfaces.lo
 e_dbus_message.lo
 e_dbus_methods.lo
 e_dbus_object.lo
