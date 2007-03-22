@@ -61,11 +61,19 @@ cb_repeat(E_DBus_Object *obj, DBusMessage *msg)
   return reply;
 }
 
+void
+cb_request_name(void *data, DBusMessage *msg, DBusError *err)
+{
+  // XXX check that this actually succeeded and handle errors...
+  printf("request name\n");
+}
+
 int
 _setup(E_DBus_Connection *conn)
 {
   E_DBus_Object *repeater;
   E_DBus_Interface *iface;
+  e_dbus_request_name(conn, "org.e.Repeater", 0, cb_request_name, NULL);
   repeater = e_dbus_object_add(conn, "/org/e/Repeater", NULL);
   iface = e_dbus_interface_new("org.e.Repeater");
   e_dbus_interface_method_add(iface, "Repeat", NULL, NULL, cb_repeat);
