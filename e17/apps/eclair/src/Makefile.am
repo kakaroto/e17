@@ -3,14 +3,8 @@
 SUBDIRS = eclair_wsz2edj
 
 INCLUDES = \
-@evas_cflags@ \
-@ecore_cflags@ \
-@edje_cflags@ \
-@emotion_cflags@ \
-@esmart_cflags@ \
-@taglib_cflags@ \
-@XML2_CFLAGS@ \
-@SQLITE_CFLAGS@
+@ECLAIR_CFLAGS@ \
+@taglib_cflags@
 
 AM_CFLAGS = \
 -Wall \
@@ -38,12 +32,7 @@ eclair_video.c eclair_video.h \
 eclair_menu.c eclair_menu.h
 
 eclair_LDADD = \
-@evas_libs@ \
-@ecore_libs@ \
-@edje_libs@ \
-@emotion_libs@ \
-@esmart_libs@ -lesmart_draggies \
-@taglib_libs@ -ltag_c \
-@XML2_LIBS@ \
-@SQLITE_LIBS@ \
+@ECLAIR_LIBS@ \
+-lesmart_draggies \
+-ltag_c \
 -lpthread
