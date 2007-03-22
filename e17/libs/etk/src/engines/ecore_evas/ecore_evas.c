@@ -44,7 +44,7 @@ static void _window_decorated_set(Etk_Window *window, Etk_Bool decorated);
 static Etk_Bool _window_decorated_get(Etk_Window *window);
 static void _window_shaped_set(Etk_Window *window, Etk_Bool shaped);  
 static Etk_Bool _window_shaped_get(Etk_Window *window);
-static void _window_has_alpha_set(Etk_Window *window, Etk_Bool alpha);
+static void _window_has_alpha_set(Etk_Window *window, Etk_Bool has_alpha);
 static Etk_Bool _window_has_alpha_get(Etk_Window *window);
 
 static void _window_move_cb(Ecore_Evas *ecore_evas);
@@ -464,13 +464,13 @@ static Etk_Bool _window_shaped_get(Etk_Window *window)
 }
 
 /* Sets whether or not the window uses alpha (i.e. the window is translucent) */
-static void _window_has_alpha_set(Etk_Window *window, Etk_Bool alpha)
+static void _window_has_alpha_set(Etk_Window *window, Etk_Bool has_alpha)
 {   
    Etk_Engine_Window_Data *engine_data;
    
    engine_data = window->engine_data;
-   ecore_evas_alpha_set(engine_data->ecore_evas, alpha);
-   etk_object_notify(ETK_OBJECT(window), "alpha");
+   ecore_evas_alpha_set(engine_data->ecore_evas, has_alpha);
+   etk_object_notify(ETK_OBJECT(window), "has-alpha");
 }
 
 /* Gets whether or not the window has alpha */
