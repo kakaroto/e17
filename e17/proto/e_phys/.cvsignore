@@ -6,4 +6,8 @@ config.log
 config.status
 configure
 libtool
+depcomp
+install-sh
+ltmain.sh
+missing
 ephys.pc

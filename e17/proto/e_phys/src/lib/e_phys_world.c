@@ -45,13 +45,10 @@ static int
 e_phys_world_timer(void *data)
 {
   E_Phys_World *world;
-  double now;
   int i;
 
   world = data;
-  now = ecore_time_get();
-  world->elapsed = now - world->time;
-  world->time = now;
+  world->time = ecore_time_get();
   e_phys_world_accumulate_forces(world);
   e_phys_world_verlet_integrate(world);
   for (i = 0; i < world->constraint_iter; i++)
@@ -87,7 +84,7 @@ e_phys_world_nearest_particle(E_Phys_World *world, int x, int y)
 {
   Evas_List *l;
   E_Phys_Particle *nearest = NULL;
-  float distance;
+  float distance = 0.0;
 
 
   for (l = world->particles; l; l = l->next)
@@ -155,8 +152,8 @@ e_phys_world_verlet_integrate(E_Phys_World *world)
     tmp.y = p->cur.y;
 
     //printf("force: (%0.2f, %0.2f)\n", p->force.x, p->force.y);
-    p->cur.x = (2 - world->friction) * p->cur.x - (1 - world->friction) * p->prev.x + p->force.x * world->elapsed * world->elapsed / p->m;
-    p->cur.y = (2 - world->friction) * p->cur.y - (1 - world->friction) *p->prev.y + p->force.y * world->elapsed * world->elapsed / p->m;
+    p->cur.x = (2 - world->friction) * p->cur.x - (1 - world->friction) * p->prev.x + p->force.x * world->dt * world->dt / p->m;
+    p->cur.y = (2 - world->friction) * p->cur.y - (1 - world->friction) *p->prev.y + p->force.y * world->dt * world->dt / p->m;
 
     p->prev.x = tmp.x;
     p->prev.y = tmp.y;

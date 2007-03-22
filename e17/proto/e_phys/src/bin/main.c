@@ -1,4 +1,5 @@
 #include "demo.h"
+#include "string.h"
 
 #define INIT_W 600
 #define INIT_H 600
@@ -91,13 +92,16 @@ rand_range_f(float from, float to)
 void
 init_rope(E_Phys_World *world) 
 {
-  int i;
+  int i, j;
   int num_p = 100;
   E_Phys_Particle *prev_p = NULL, *first_p = NULL;
  
   int anchored = 0;
-  world->friction = .001;
+  world->friction = .01;
 
+  for (j = 0; j < 2; j++)
+  {
+    prev_p = NULL;
   for (i = 0; i < num_p; i++)
   {
     E_Phys_Particle *p;
@@ -108,7 +112,7 @@ init_rope(E_Phys_World *world)
     y0 = rand_range(50, INIT_W - 50);
     p = e_phys_particle_add(world, 1, x0, y0, 0, 0);
 
-    e_phys_particle_size_set(p, 2, 2);
+    e_phys_particle_size_set(p, 4, 4);
 
     if (prev_p)
       e_phys_constraint_stick_add(prev_p, p, 5);
@@ -123,9 +127,70 @@ init_rope(E_Phys_World *world)
     e_phys_constraint_anchor_add(first_p, 10, 10);
     e_phys_constraint_anchor_add(prev_p, world->w - 1, world->h - 1);
   }
+  }
+
+//  e_phys_force_gravity_add(world, 1e2);
+  e_phys_force_collision_add(world);
+  e_phys_constraint_boundary_add(world);
+  world->constraint_iter = 1000;
+  world->friction = 0.01;
+}
+
+void
+init_mesh(E_Phys_World *world) 
+{
+  int i, j;
+  E_Phys_Particle **prev_row = NULL;
+  E_Phys_Particle **cur_row = NULL;
+  E_Phys_Particle *prev_p = NULL;
+
+  int mesh_size = 200;
+  int num_p = 20;
+
+  world->friction = .01;
+
+  for (j = 0; j < num_p; j++)
+  {
+    prev_p = NULL;
+    prev_row = cur_row;
+    cur_row = malloc(num_p * sizeof(E_Phys_Particle *));
+    for (i = 0; i < num_p; i++)
+    {
+      E_Phys_Particle *p;
+
+      float x0, y0;
+
+
+      x0 = 50 + mesh_size * (float)i / num_p;
+      y0 = 50 + mesh_size * (float)j / num_p;
+      p = e_phys_particle_add(world, 1, x0, y0, 0, 0);
+
+      e_phys_particle_size_set(p, 4, 4);
+
+      if (i > 0)
+      {
+        e_phys_constraint_stick_add(cur_row[i-1], p, mesh_size / num_p);
+        if (prev_row)
+          e_phys_constraint_stick_add(prev_row[i-1], p, sqrt(2) * mesh_size / num_p);
+      }
+
+      if (prev_row)
+      {
+        e_phys_constraint_stick_add(prev_row[i], p, mesh_size / num_p);
+        if (i < num_p - 1)
+          e_phys_constraint_stick_add(prev_row[i+1], p, sqrt(2) * mesh_size / num_p);
+      }
+
+      cur_row[i] = p;
+    }
+
+  }
+
+//  e_phys_force_gravity_add(world, 1e2);
+  //e_phys_force_collision_add(world);
   e_phys_constraint_boundary_add(world);
   world->constraint_iter = 100;
-  world->friction = 0.01;
+  world->friction = 0.0001;
 }
 
 void
@@ -157,7 +222,6 @@ init_collision_test(E_Phys_World *world)
 {
   E_Phys_Particle *p;
   E_Phys_Particle *center;
-  E_Phys_Constraint_Anchor *a;
 
   int i;
   int num_p = 300;
@@ -323,15 +387,16 @@ setup(App *app, int argc, char **argv)
 
   world = e_phys_world_add(INIT_W, INIT_H);
   app->world = world;
-  world->dt = 1.0 / 40.0;
+  world->dt = 1.0 / 60.0;
 
   struct { 
     char *name;
     void (*init_func) (E_Phys_World *world);
     int use_image;
-  } test[4] = {
+  } test[5] = {
     { "gravity", init_gravity_test, 1 },
     { "rope", init_rope, 0 },
+    { "mesh", init_mesh, 0 },
     { "collision", init_collision_test, 0 },
     { "snow", init_snow_test, 1 }
   };
@@ -339,7 +404,7 @@ setup(App *app, int argc, char **argv)
 
   if (argc > 1)
   {
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < 5; i++)
     {
       if (!strcmp(argv[1], test[i].name))
       {
