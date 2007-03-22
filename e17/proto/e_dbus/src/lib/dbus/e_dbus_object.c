@@ -5,20 +5,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+static E_DBus_Interface *introspectable_interface = NULL;
 
-
-typedef struct E_DBus_Object_Method E_DBus_Object_Method;
-
+typedef struct E_DBus_Method E_DBus_Method;
 
 Ecore_Strbuf * e_dbus_object_introspect(E_DBus_Object *obj);
 
 static void e_dbus_object_unregister(DBusConnection *conn, void *user_data);
 static DBusHandlerResult e_dbus_object_handler(DBusConnection *conn, DBusMessage *message, void *user_data);
-static E_DBus_Object_Method *e_dbus_object_method_new(const char *interface, const char *member, const char *signature, const char *reply_signature, E_DBus_Object_Method_Cb func);
-static void e_dbus_object_method_free(E_DBus_Object_Method *m);
+
+static void e_dbus_interface_ref(E_DBus_Interface *iface);
+static void e_dbus_interface_unref(E_DBus_Interface *iface);
+static void e_dbus_interface_free(E_DBus_Interface *iface);
+
+static E_DBus_Method *e_dbus_method_new(const char *member, const char *signature, const char *reply_signature, E_DBus_Method_Cb func);
+static void e_dbus_object_method_free(E_DBus_Method *m);
 
 static void _introspect_indent_append(Ecore_Strbuf *buf, int level);
-static void _introspect_method_append(Ecore_Strbuf *buf, E_DBus_Object_Method *method, int level);
+static void _introspect_interface_append(Ecore_Strbuf *buf, E_DBus_Interface *iface, int level);
+static void _introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level);
 static void _introspect_arg_append(Ecore_Strbuf *buf, const char *type, const char *direction, int level);
 
 
@@ -38,18 +43,26 @@ struct E_DBus_Object
 {
   E_DBus_Connection *conn;
   char *path;
-  Ecore_List *methods;
+  Ecore_List *interfaces;
+  char *introspection_data;
+  int introspection_dirty;
 
   void *data;
 };
 
-struct E_DBus_Object_Method
+struct E_DBus_Interface
 {
-  char *interface;
+  char *name;
+  Ecore_List *methods;
+  int refcount;
+};
+
+struct E_DBus_Method
+{
   char *member;
   char *signature;
   char *reply_signature;
-  E_DBus_Object_Method_Cb func;
+  E_DBus_Method_Cb func;
 };
 
 static DBusMessage *
@@ -57,35 +70,44 @@ cb_introspect(E_DBus_Object *obj, DBusMessage *msg)
 {
   DBusMessage *ret;
   Ecore_Strbuf *buf;
-  const char *xml;
 
-  buf = e_dbus_object_introspect(obj);
-  if (!buf)
+  if (obj->introspection_dirty || !obj->introspection_data)
   {
-    ret = dbus_message_new_error(msg, "org.enlightenment.NotIntrospectable", "This object does not provide introspection data");
-    return ret;
+    buf = e_dbus_object_introspect(obj);
+    if (!buf)
+    {
+      ret = dbus_message_new_error(msg, "org.enlightenment.NotIntrospectable", "This object does not provide introspection data");
+      return ret;
+    }
+
+    obj->introspection_data = strdup(ecore_strbuf_string_get(buf));
+    ecore_strbuf_free(buf);
   }
-
-  xml = ecore_strbuf_string_get(buf);
-  printf("XML: \n\n%s\n\n", xml);
+  printf("XML: \n\n%s\n\n", obj->introspection_data);
   ret = dbus_message_new_method_return(msg);
-  dbus_message_append_args(msg, DBUS_TYPE_STRING, &xml, DBUS_TYPE_INVALID);
+  dbus_message_append_args(msg, DBUS_TYPE_STRING, &(obj->introspection_data), DBUS_TYPE_INVALID);
 
-  ecore_strbuf_free(buf);
   return ret;
 }
-#if 0
+#if 1
 int
 e_dbus_object_init(void)
 {
   E_DBus_Method *m;
 
-  if (standard_methods) return;
-  standard_methods = ecore_list_new();
-
-  m = e_dbus_object_method_new("org.freedesktop.DBus.Introspectable", "Introspect", "", "s", cb_introspect);
-
+  introspectable_interface = e_dbus_interface_new("org.freedesktop.DBus.Introspectable");
+  if (!introspectable_interface) return 0;
+  e_dbus_interface_method_add(introspectable_interface, "Introspect", "", "s", cb_introspect);
+  return 1;
 }
+
+void
+e_dbus_object_shutdown(void)
+{
+  e_dbus_interface_unref(introspectable_interface);
+  introspectable_interface = NULL;
+}
+
 #endif
 /**
  * Add a dbus object.
@@ -112,10 +134,10 @@ e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data)
   e_dbus_connection_ref(conn);
   obj->path = strdup(object_path);
   obj->data = data;
-  obj->methods = ecore_list_new();
-  ecore_list_set_free_cb(obj->methods, (Ecore_Free_Cb)e_dbus_object_method_free);
+  obj->interfaces = ecore_list_new();
+  ecore_list_set_free_cb(obj->interfaces, (Ecore_Free_Cb)e_dbus_interface_unref);
 
-  e_dbus_object_method_add(obj, "org.freedesktop.DBus.Introspectable", "Introspect", NULL, "s", cb_introspect);
+  e_dbus_object_interface_attach(obj, introspectable_interface);
 
   return obj;
 }
@@ -135,49 +157,96 @@ e_dbus_object_free(E_DBus_Object *obj)
   e_dbus_connection_unref(obj->conn);
 
   if (obj->path) free(obj->path);
-  ecore_list_destroy(obj->methods);
+  ecore_list_destroy(obj->interfaces);
+  if (obj->introspection_data) free(obj->introspection_data);
 
   free(obj);
 }
 
+void
+e_dbus_object_interface_attach(E_DBus_Object *obj, E_DBus_Interface *iface)
+{
+  e_dbus_interface_ref(iface);
+  ecore_list_append(obj->interfaces, iface);
+  obj->introspection_dirty = 1;
+}
+
+static void
+e_dbus_interface_ref(E_DBus_Interface *iface)
+{
+  iface->refcount++;
+}
+
+static void
+e_dbus_interface_unref(E_DBus_Interface *iface)
+{
+  if (--(iface->refcount) == 0)
+    e_dbus_interface_free(iface);
+}
+
+static void
+e_dbus_interface_free(E_DBus_Interface *iface)
+{
+  if (iface->name) free(iface->name);
+  if (iface->methods) ecore_list_destroy(iface->methods);
+  free(iface);
+}
+
+
 /**
  * Add a method to an object
  *
- * @param obj the object
- * @param interface the interface name (e.g. org.freedesktop.DBus)
- * @param member the name of the method (e.g. AddMatch)
+ * @param iface the E_DBus_Interface to which this method belongs
+ * @param member the name of the method
  * @param signature  an optional message signature. if provided, then messages
  *                   with invalid signatures will be automatically rejected 
- *                   (an Error response will be sent)
+ *                   (an Error response will be sent) and introspection data
+ *                   will be available.
  *
  * @return 1 if successful, 0 if failed (e.g. no memory)
  */
 int
-e_dbus_object_method_add(E_DBus_Object *obj, const char *interface, const char *member, const char *signature, const char *reply_signature, E_DBus_Object_Method_Cb func)
+e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, const char *signature, const char *reply_signature, E_DBus_Method_Cb func)
 {
-  E_DBus_Object_Method *m;
+  E_DBus_Method *m;
 
-  m = e_dbus_object_method_new(interface, member, signature, reply_signature, func);
+  m = e_dbus_method_new(member, signature, reply_signature, func);
   if (!m) return 0;
 
-  if (obj)
-    ecore_list_append(obj->methods, m);
+  ecore_list_append(iface->methods, m);
   return 1;
 }
 
-static E_DBus_Object_Method *
-e_dbus_object_method_new(const char *interface, const char *member, const char *signature, const char *reply_signature, E_DBus_Object_Method_Cb func)
+E_DBus_Interface *
+e_dbus_interface_new(const char *interface)
 {
-  E_DBus_Object_Method *m;
+  E_DBus_Interface *iface;
 
-  if (!interface || !member || !func) return NULL;
+  if (!interface) return NULL;
+
+  iface = calloc(1, sizeof(E_DBus_Interface));
+  if (!iface) return NULL;
+
+  iface->refcount = 1;
+  iface->name = strdup(interface);
+  iface->methods = ecore_list_new();
+  ecore_list_set_free_cb(iface->methods, (Ecore_Free_Cb)e_dbus_object_method_free);
+
+  return iface;
+}
+
+static E_DBus_Method *
+e_dbus_method_new(const char *member, const char *signature, const char *reply_signature, E_DBus_Method_Cb func)
+{
+  E_DBus_Method *m;
+
+  if (!member || !func) return NULL;
 
   if (signature && !dbus_signature_validate(signature, NULL)) return NULL;
   if (reply_signature && !dbus_signature_validate(reply_signature, NULL)) return NULL;
-  m = calloc(1, sizeof(E_DBus_Object_Method));
+  m = calloc(1, sizeof(E_DBus_Method));
   if (!m) return NULL;
 
-  m->interface = strdup(interface);
   m->member = strdup(member);
   if (signature)
     m->signature = strdup(signature);
@@ -189,10 +258,9 @@ e_dbus_object_method_new(const char *interface, const char *member, const char *
 }
 
 static void
-e_dbus_object_method_free(E_DBus_Object_Method *m)
+e_dbus_object_method_free(E_DBus_Method *m)
 {
   if (!m) return;
-  if (m->interface) free(m->interface);
   if (m->member) free(m->member);
   if (m->signature) free(m->signature);
   if (m->reply_signature) free(m->reply_signature);
@@ -200,19 +268,22 @@ e_dbus_object_method_free(E_DBus_Object_Method *m)
   free(m);
 }
 
-static E_DBus_Object_Method *
+static E_DBus_Method *
 e_dbus_object_method_find(E_DBus_Object *obj, const char *interface, const char *member)
 {
-  E_DBus_Object_Method *m;
+  E_DBus_Method *m;
+  E_DBus_Interface *iface;
   if (!obj || !member) return NULL;
 
-  ecore_list_goto_first(obj->methods);
-  while ((m = ecore_list_next(obj->methods)))
+  ecore_list_goto_first(obj->interfaces);
+  while ((iface = ecore_list_next(obj->interfaces)))
   {
-    if ( (!interface || !strcmp(interface, m->interface)) &&
-         !strcmp(member, m->member))
+    if (strcmp(interface, iface->name)) continue;
+    ecore_list_goto_first(iface->methods);
+    while ((m = ecore_list_next(iface->methods)))
     {
-      return m;
+      if (!strcmp(member, m->member))
+        return m;
     }
   }
   return NULL;
@@ -222,7 +293,7 @@ static DBusHandlerResult
 e_dbus_object_handler(DBusConnection *conn, DBusMessage *message, void *user_data) 
 {
   E_DBus_Object *obj;
-  E_DBus_Object_Method *m;
+  E_DBus_Method *m;
   DBusMessage *reply;
   dbus_uint32_t serial;
 
@@ -259,7 +330,7 @@ e_dbus_object_introspect(E_DBus_Object *obj)
   Ecore_Strbuf *buf;
   char *current_interface = NULL;
   int level = 0;
-  E_DBus_Object_Method *method;
+  E_DBus_Interface *iface;
 
   buf = ecore_strbuf_new();
 
@@ -271,34 +342,10 @@ e_dbus_object_introspect(E_DBus_Object *obj)
   ecore_strbuf_append(buf, "\">\n");
   level++;
   /* XXX currently assumes methods grouped by interface. should probably sort first -- or better, actually group them by interface */
-  ecore_list_goto_first(obj->methods);
-  while ((method = ecore_list_next(obj->methods))) 
-  {
-    if (current_interface != method->interface)
-    {
-      if (current_interface)
-      {
-        level--;
-        _introspect_indent_append(buf, level);
-        ecore_strbuf_append(buf, "</interface>\n");
-      }
-      _introspect_indent_append(buf, level);
-      ecore_strbuf_append(buf, "<interface name=\"");
-      ecore_strbuf_append(buf, method->interface);
-      ecore_strbuf_append(buf, "\">\n");
-      level++;
+  ecore_list_goto_first(obj->interfaces);
+  while((iface = ecore_list_next(obj->interfaces)))
+    _introspect_interface_append(buf, iface, level);
 
-      current_interface = method->interface;
-    }
-
-    _introspect_method_append(buf, method, level);
-  }
-  if (current_interface)
-  {
-    level--;
-    _introspect_indent_append(buf, level);
-    ecore_strbuf_append(buf, "</interface>\n");
-  }
   ecore_strbuf_append(buf, "</node>\n");
   return buf;
 }
@@ -312,7 +359,25 @@ _introspect_indent_append(Ecore_Strbuf *buf, int level)
     ecore_strbuf_append_char(buf, ' ');
 }
 static void
-_introspect_method_append(Ecore_Strbuf *buf, E_DBus_Object_Method *method, int level)
+_introspect_interface_append(Ecore_Strbuf *buf, E_DBus_Interface *iface, int level)
+{
+  E_DBus_Method *method;
+  _introspect_indent_append(buf, level);
+  ecore_strbuf_append(buf, "<interface name=\"");
+  ecore_strbuf_append(buf, iface->name);
+  ecore_strbuf_append(buf, "\">\n");
+  level++;
+
+  ecore_list_goto_first(iface->methods);
+  while ((method = ecore_list_next(iface->methods))) 
+    _introspect_method_append(buf, method, level);
+
+  level--;
+  _introspect_indent_append(buf, level);
+  ecore_strbuf_append(buf, "</interface>\n");
+}
+static void
+_introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level)
 {
   DBusSignatureIter iter;
   char *type;

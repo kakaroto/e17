@@ -14,9 +14,10 @@ extern int E_DBUS_EVENT_SIGNAL;
 
 typedef struct E_DBus_Connection E_DBus_Connection;
 typedef struct E_DBus_Object E_DBus_Object;
+typedef struct E_DBus_Interface E_DBus_Interface;
 typedef struct E_DBus_Signal_Handler E_DBus_Signal_Handler;
 
-typedef DBusMessage *(* E_DBus_Object_Method_Cb)(E_DBus_Object *obj, DBusMessage *message);
+typedef DBusMessage *(* E_DBus_Method_Cb)(E_DBus_Object *obj, DBusMessage *message);
 typedef void (*E_DBus_Method_Return_Cb) (void *data, DBusMessage *msg, DBusError *error);
 typedef void (*E_DBus_Signal_Cb) (void *data, DBusMessage *msg);
 
@@ -33,9 +34,13 @@ void e_dbus_connection_unref(E_DBus_Connection *conn);
 E_DBus_Connection *e_dbus_connection_setup(DBusConnection *conn);
 
 /* receiving method calls */
+E_DBus_Interface *e_dbus_interface_new(const char *interface);
+void e_dbus_object_interface_attach(E_DBus_Object *obj, E_DBus_Interface *iface);
+int e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, const char *signature, const char *reply_signature, E_DBus_Method_Cb func);
+
 E_DBus_Object *e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data);
 void e_dbus_object_free(E_DBus_Object *obj);
-int e_dbus_object_method_add(E_DBus_Object *obj, const char *interface, const char *member, const char *signature, const char *reply_signature, E_DBus_Object_Method_Cb func);
+
 
 
 /* sending method calls */

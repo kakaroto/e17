@@ -65,8 +65,11 @@ int
 _setup(E_DBus_Connection *conn)
 {
   E_DBus_Object *repeater;
+  E_DBus_Interface *iface;
   repeater = e_dbus_object_add(conn, "/org/e/Repeater", NULL);
-  e_dbus_object_method_add(repeater, "org.e.Repeater", "Repeat", NULL, NULL, cb_repeat);
+  iface = e_dbus_interface_new("org.e.Repeater");
+  e_dbus_interface_method_add(iface, "Repeat", NULL, NULL, cb_repeat);
+  e_dbus_object_interface_attach(repeater, iface);
   return 1;
 }
 

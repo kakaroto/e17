@@ -1,14 +1,11 @@
 INCLUDES =  \
 @ECORE_CFLAGS@ \
-@DBUS_CFLAGS@ \
--g -Werror
+@DBUS_CFLAGS@
 
 lib_LTLIBRARIES = libedbus.la
-
 include_HEADERS = E_DBus.h
 
 libedbus_la_SOURCES = \
-	E_DBus.h \
 	e_dbus_private.h \
 	e_dbus.c \
 	e_dbus_message.c \
@@ -18,4 +15,6 @@ libedbus_la_SOURCES = \
 	e_dbus_signal.c
 
 
-libedbus_la_LIBADD = @ECORE_LIBS@ @DBUS_LIBS@ -lm
+libedbus_la_LIBADD = \
+@ECORE_LIBS@ \
+@DBUS_LIBS@ 

@@ -1,11 +1,9 @@
 INCLUDES =  \
 @ECORE_CFLAGS@ \
 @DBUS_CFLAGS@ \
--I ../ \
--g -Werror
+-I $(top_builddir)/src/lib/dbus
 
 lib_LTLIBRARIES = libehal.la
-
 include_HEADERS = E_Hal.h
 
 libehal_la_SOURCES = \
@@ -15,5 +13,7 @@ e_hal_device.c  \
 e_hal_manager.c \
 e_hal_util.c 
 
-
-libehal_la_LIBADD = @ECORE_LIBS@ @DBUS_LIBS@ -lm -ledbus
+libehal_la_LIBADD = \
+@ECORE_LIBS@ \
+@DBUS_LIBS@ \
+$(top_builddir)/src/lib/dbus/libedbus.la

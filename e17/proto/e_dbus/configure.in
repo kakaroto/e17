@@ -7,21 +7,10 @@ AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
 AC_HEADER_STDC
-AC_CHECK_HEADERS(math.h)
 
 AC_PATH_GENERIC([ecore], [0.9.9],
   [ ],
   [ AC_MSG_ERROR(Ecore not found.) ],
-)
-
-AC_PATH_GENERIC([ewl], [0.0.0],
-  [ ],
-  [ AC_MSG_ERROR(Ewl not found.) ],
-)
-
-AC_PATH_GENERIC([efreet], [0.0.0],
-  [ ],
-  [ AC_MSG_ERROR(Efreet not found.) ],
 )
 
 PKG_CHECK_MODULES([DBUS], [dbus-1],

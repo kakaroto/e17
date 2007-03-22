@@ -5,15 +5,10 @@ INCLUDES = \
 -I$(top_srcdir)/src/lib/hal \
 -I$(top_srcdir)/src/lib/nm \
 @ECORE_CFLAGS@ \
-@EFREET_CFLAGS@ \
-@EWL_CFLAGS@ \
-@DBUS_CFLAGS@ \
--g -Werror
+@DBUS_CFLAGS@ 
 
 LIBS = \
 @ECORE_LIBS@ \
-@EFREET_LIBS@ \
-@EWL_LIBS@ \
 @DBUS_LIBS@
 
 bin_PROGRAMS = e_dbus_test \

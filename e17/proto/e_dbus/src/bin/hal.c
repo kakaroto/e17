@@ -1,11 +1,11 @@
-#define EWL_GUI 1
+#define EWL_GUI 0
 #include "E_Hal.h"
 
 #if EWL_GUI
 #include <Ewl.h>
+#include <Efreet.h>
 #endif
 
-#include <Efreet.h>
 #include <string.h>
 
 /* test app */
@@ -772,9 +772,9 @@ main(int argc, char **argv)
   ecore_init();
   ecore_string_init();
   e_dbus_init();
-  efreet_init();
 
 #if EWL_GUI
+  efreet_init();
   if (!ewl_init(&argc, argv))
   {
     fprintf(stderr, "Unable to init EWL.\n");
@@ -808,13 +808,13 @@ main(int argc, char **argv)
 
 #if EWL_GUI
   ewl_main();
+  efreet_shutdown();
+  ewl_shutdown();
 #else
   ecore_main_loop_begin();
 #endif
-  efreet_shutdown();
   ecore_list_destroy(storage_devices);
   ecore_list_destroy(volumes);
-  ewl_shutdown();
   e_dbus_connection_unref(conn);
   e_dbus_shutdown();
   ecore_string_shutdown();
