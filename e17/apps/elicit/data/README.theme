@@ -36,6 +36,10 @@ elicit,shot,scroll,down
 elicit,shot,scroll,down,start
 elicit,shot,scroll,down,stop
 
+elicit,grid,toggle
+elicit,grid,show
+elicit,grid,hide
+
 (for all X in {r, g, b, h, s, v})
 elicit,color,X,up,start
 elicit,color,X,up,stop
@@ -65,3 +69,10 @@ if (2), then the size will be increased/decreased by that value
 
 note: the size cannot be set to anything less that the min size (which by default is the edje groups min size).
   
+Signals sent to the GUI
+-----------------------
+
+these are all sent with source "Elicit"
+
+elicit,grid,shown
+elicit,grid,hidden

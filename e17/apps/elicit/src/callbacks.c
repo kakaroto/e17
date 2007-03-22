@@ -354,7 +354,7 @@ elicit_cb_grid(void *data, Evas_Object *o, const char *sig, const char *src)
   else if (!strcmp(sig, "elicit,grid,show")) {
     elicit_zoom_grid_visible_set(el->shot, 1);
   }
-  else if (!strcmp(sig, "elicit,grid,show")) {
+  else if (!strcmp(sig, "elicit,grid,hide")) {
     elicit_zoom_grid_visible_set(el->shot, 0);
   }
 }
