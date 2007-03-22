@@ -11,7 +11,9 @@
 /* test app */
 
 static E_DBus_Connection *conn;
+#if EWL_GUI
 static int mount_id = 0;
+#endif
 
 #define DEVICE_TYPE_STORAGE 1
 #define DEVICE_TYPE_VOLUME  2
@@ -360,6 +362,7 @@ volume_append(const char *udi)
   return v;
 }
 
+#if EWL_GUI
 static void
 cb_test_get_all_devices(void *user_data, void *reply_data, DBusError *error)
 {
@@ -381,6 +384,7 @@ cb_test_get_all_devices(void *user_data, void *reply_data, DBusError *error)
     printf("device: %s\n", device);
   }
 }
+#endif
 
 static void
 cb_test_find_device_by_capability_storage(void *user_data, void *reply_data, DBusError *error)

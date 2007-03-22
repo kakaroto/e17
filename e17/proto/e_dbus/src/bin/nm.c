@@ -66,4 +66,5 @@ main(int argc, char **argv)
   e_dbus_shutdown();
   ecore_string_shutdown();
   ecore_shutdown();
+  return 0;
 }
