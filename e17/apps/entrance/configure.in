@@ -72,6 +72,7 @@ PKG_CHECK_MODULES(ECORE, [
   ecore-file >= 0.9.9
   ecore-ipc >= 0.9.9
   ecore-config >= 0.9.9
+  ecore-desktop >= 0.9.9
 ])
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 PKG_CHECK_MODULES(ESMART, [esmart >= 0.9.0])
@@ -218,7 +219,6 @@ AC_PATH_XTRA
 EDJE_DEF=""
 AC_SUBST(EDJE_DEF)
 
-edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
 AC_ARG_WITH(edje-cc,
 	AC_HELP_STRING([--with-edje-cc=PATH],[Specify a specific path to edje_cc]),
 [
@@ -226,7 +226,7 @@ AC_ARG_WITH(edje-cc,
   edje_cc=$v
   echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
 ],[
-  edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+  edje_cc=$(pkg-config --variable=prefix edje)/bin/edje_cc
 ])
 AC_SUBST(edje_cc)
 
