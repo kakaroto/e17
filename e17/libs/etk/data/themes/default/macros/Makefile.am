@@ -4,5 +4,6 @@ EXTRA_DIST = dnd.edc \
 	     glint.edc \
 	     paned.edc \
 	     scrollbar.edc \
+	     style.edc \
              toolbar.edc \
              tree_header.edc
