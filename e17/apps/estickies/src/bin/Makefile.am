@@ -3,9 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = \
 -Wall \
--I/usr/local/include \
--I$(top_srcdir)/lib \
-@my_includes@
+@ESTICKIES_CFLAGS@
 
 bin_PROGRAMS = estickies
 
@@ -22,4 +20,4 @@ theme_chooser.c \
 about.c \
 $(estickies_INCLUDES)
 
-estickies_LDADD = @my_libs@
+estickies_LDADD = @ESTICKIES_LIBS@
