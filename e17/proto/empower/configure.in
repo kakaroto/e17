@@ -62,29 +62,23 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
-PROG="evas-config";
-AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-if test -z "$EVAS_CONFIG" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
+PKG_CHECK_MODULES([EVAS], evas,
+   [
+   ],
+   [
+      echo "Evas was not found by pkg-config!";
+      AC_MSG_ERROR([Empower needs evas to compile.])
+   ]
+)
 
-PROG="ecore-config";
-AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-if test -z "$ECORE_CONFIG" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
+PKG_CHECK_MODULES([ECORE], ecore,
+   [
+   ],
+   [
+      echo "Ecore was not found by pkg-config!";
+      AC_MSG_ERROR([Empower needs ecore to compile.])
+   ]
+)
 
 #PROG="ewl-config";
 #AC_PATH_PROG(EWL_CONFIG, $PROG, "", $PATH)
@@ -110,13 +104,16 @@ AC_ARG_ENABLE(ewl,
         [enable_ewl=$enableval ], [ enable_ewl=default])
 
 if test "x$enable_ewl" = "xdefault" || test "x$enable_ewl" = "xyes"; then
-  AC_PATH_GENERIC(ewl, 0.0.4, [enable_ewl="yes"], [enable_ewl="no"])
-  if test x$enable_ewl ; then
-      ewl_cflags=`$EWL_CONFIG --cflags`
-      ewl_libs=`$EWL_CONFIG --libs`
-      AC_SUBST(ewl_cflags)
-      AC_SUBST(ewl_libs)
-  fi
+PKG_CHECK_MODULES([EWL], ewl >= 0.4.0,
+   [
+      enable_ewl="Yes"
+   ],
+   [
+      enable_ewl="No"
+      echo "Ewl was not found by pkg-config!";
+      AC_MSG_ERROR([Empower needs ewl to compile.])
+   ]
+)
 fi
 
 AM_CONDITIONAL(ENABLE_EWL, test x$enable_ewl = xyes)
@@ -127,13 +124,17 @@ AC_ARG_ENABLE(etk,
         [enable_etk=$enableval], [enable_etk=default])
 
 if test "x$enable_etk" = "xdefault" || test "x$enable_etk" = "xyes"; then
-  AC_PATH_GENERIC(etk, 0.1.0, [enable_etk="yes"], [enable_etk="no"])
-  if test x$enable_etk ; then
-      etk_cflags=`$ETK_CONFIG --cflags`
-      etk_libs=`$ETK_CONFIG --libs`
-      AC_SUBST(etk_cflags)
-      AC_SUBST(etk_libs)
-  fi
+PKG_CHECK_MODULES([ETK], etk >= 0.1.0,
+   [
+      enable_etk="Yes"
+   ],
+   [
+      enable_etk="No"
+      echo "Etk was not found by pkg-config!";
+      AC_MSG_ERROR([Empower needs etk to compile.])
+   ]
+)
+
 fi
 
 AM_CONDITIONAL(ENABLE_ETK, test x$enable_etk = xyes)
@@ -149,18 +150,15 @@ AM_CONDITIONAL(BUILD_SEPARATE, test x$build_separate = xyes)
 #AC_DEFINE_UNQUOTED(HAVE_EWL, "${have_ewl}", [EWL])
 #AC_DEFINE_UNQUOTED(HAVE_ETK, "${have_etk}", [ETK])
 
-PROG="edje-config";
-AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
-if test -z "$EDJE_CONFIG" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-edje_cflags=`$EDJE_CONFIG --cflags`
-edje_libs=`$EDJE_CONFIG --libs`
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_libs)
 
+PKG_CHECK_MODULES([EDJE], edje,
+   [
+   ],
+   [
+      echo "Edje was not found by pkg-config!";
+      AC_MSG_ERROR([Empower needs edje to compile.])
+   ]
+)
 
 AC_OUTPUT([
 Makefile 

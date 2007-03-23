@@ -9,19 +9,19 @@ bin_PROGRAMS = empower_ewl
 
 empower_ewl_SOURCES = empower.c empower_cb_ewl.c empower_gui_ewl.c
 
-empower_ewl_CFLAGS = @ewl_cflags@
+empower_ewl_CFLAGS = @EWL_CFLAGS@
 
 empower_ewl_LDADD =  $(INTLLIBS) \
-		@ewl_libs@
+		@EWL_LIBS@
 else
 bin_PROGRAMS = empower
 
 empower_SOURCES = empower.c empower_cb_ewl.c empower_gui_ewl.c
 
-empower_CFLAGS = @ewl_cflags@
+empower_CFLAGS = @EWL_CFLAGS@
 
 empower_LDADD =  $(INTLLIBS) \
-		@ewl_libs@
+		@EWL_LIBS@
 endif 
 
 EXTRA_DIST = 

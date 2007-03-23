@@ -10,20 +10,20 @@ bin_PROGRAMS = empower_etk
 empower_etk_SOURCES = empower.c \
 		empower_cb_etk.c empower_gui_etk.c
 
-empower_etk_CFLAGS = @etk_cflags@
+empower_etk_CFLAGS = @ETK_CFLAGS@
 
 empower_etk_LDADD =  $(INTLLIBS) \
-		@etk_libs@
+		@ETK_LIBS@
 else
 bin_PROGRAMS = empower
 
 empower_SOURCES = empower.c \
 		empower_cb_etk.c empower_gui_etk.c
 
-empower_CFLAGS = @etk_cflags@
+empower_CFLAGS = @ETK_CFLAGS@
 
 empower_LDADD =  $(INTLLIBS) \
-		@etk_libs@
+		@ETK_LIBS@
 endif
 
 EXTRA_DIST = 
