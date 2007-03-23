@@ -19,7 +19,6 @@ const char	*ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_SIZE_SMALL 16	/**< 16x16 icons */
 #define EWL_ICON_SIZE_MEDIUM 22	/**< 22x22 icons */
 #define EWL_ICON_SIZE_LARGE 24	/**< 24x24 icons */
-#define EWL_ICON_SIZE_HUGE 32	/**< 32x32 icons */
 
 #define EWL_ICON_ADDRESS_BOOK_NEW "address-book-new"	/**< address book icon */
 #define EWL_ICON_APPLICATION_EXIT "application-exit"	/**< application exit */
