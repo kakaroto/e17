@@ -12,26 +12,15 @@
  */
 
 /**
- * @def EWL_VIEW_CONSTRUCTOR(f)
+ * @def EWL_VIEW_WIDGET_FETCH(f)
  * View callback for the constructor for a data row
  */
-#define EWL_VIEW_CONSTRUCTOR(f) ((Ewl_View_Constructor)f)
+#define EWL_VIEW_WIDGET_FETCH(f) ((Ewl_View_Widget_Fetch)f)
 
 /**
- * A typedef to shorten the definition of the view_constructor  callbacks. 
+ * A typedef to shorten the definition of the view_widget_fetch callbacks. 
  */
-typedef Ewl_Widget *(*Ewl_View_Constructor)(void);
-
-/**
- * @def EWL_VIEW_ASSIGN(f)
- * View callback to set data into a given widget
- */
-#define EWL_VIEW_ASSIGN(f) ((Ewl_View_Assign)f)
-
-/**
- * A typedef to shorten the definition of the view_assign callbacks. 
- */
-typedef void (*Ewl_View_Assign)(Ewl_Widget *w, void *data);
+typedef Ewl_Widget *(*Ewl_View_Widget_Fetch)(void *data, int row, int col);
 
 /**
  * @def EWL_VIEW_HEADER_GET(f)
@@ -56,26 +45,39 @@ typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, int column);
 typedef struct Ewl_View Ewl_View;
 
 /**
+ * @def EWL_VIEW_EXPANSION_VIEW_FETCH(f)
+ * View callback to get a view for expanded data on a row
+ */
+#define EWL_VIEW_EXPANSION_VIEW_FETCH_GET(f) ((Ewl_View_Expansion_View_Fetch)f)
+
+/**
+ * A typedef to shorten the definition of the view_expansion_view_fetch
+ * callbacks. 
+ */
+typedef Ewl_View *(*Ewl_View_Expansion_View_Fetch)(void *data, int column);
+
+/**
  * @brief The view function pointers
  */
 struct Ewl_View
 {
-	Ewl_View_Constructor construct; 	/**< Create a widget for display */
-	Ewl_View_Assign assign;			/**< Assign data to a widget */
+	Ewl_View_Widget_Fetch fetch; 	/**< Get a new widget for display */
 	Ewl_View_Header_Fetch header_fetch; 	/**< Get the header for the given column */
+	Ewl_View_Expansion_View_Fetch expansion; 	/**< Get a view for displaying expansion data */
 };
 
 Ewl_View 		*ewl_view_new(void);
 int 			 ewl_view_init(Ewl_View *view);
+Ewl_View		*ewl_view_clone(Ewl_View *src);
 
-void 			 ewl_view_constructor_set(Ewl_View *view, Ewl_View_Constructor construct);
-Ewl_View_Constructor 	 ewl_view_constructor_get(Ewl_View *view);
-
-void 			 ewl_view_assign_set(Ewl_View *view, Ewl_View_Assign assign);
-Ewl_View_Assign 	 ewl_view_assign_get(Ewl_View *view);
+void 			 ewl_view_widget_fetch_set(Ewl_View *view, Ewl_View_Widget_Fetch construct);
+Ewl_View_Widget_Fetch	 ewl_view_widget_fetch_get(Ewl_View *view);
 
 void 			 ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f);
 Ewl_View_Header_Fetch 	 ewl_view_header_fetch_get(Ewl_View *v);
+
+void 			 ewl_view_expansion_view_fetch_set(Ewl_View *v, Ewl_View_Expansion_View_Fetch f);
+Ewl_View_Expansion_View_Fetch	ewl_view_expansion_view_fetch_get(Ewl_View *v);
 
 /**
  * @}

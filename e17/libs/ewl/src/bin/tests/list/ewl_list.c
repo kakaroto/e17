@@ -25,7 +25,7 @@ static void *list_test_data_setup(void);
 static void list_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void list_cb_multi_value_changed(Ewl_Widget *w, void *ev, void *data);
 
-static void list_test_assign_set(Ewl_Widget *w, void *data);
+static Ewl_Widget *list_test_cb_widget_fetch(void *data, int row, int col);
 static void *list_test_data_fetch(void *data, unsigned int row, 
 						unsigned int column);
 static int list_test_data_count_get(void *data);
@@ -107,8 +107,8 @@ create_test(Ewl_Container *box)
 	ewl_model_data_count_set(model, list_test_data_count_get);
 
 	view = ewl_view_new();
-	ewl_view_constructor_set(view, ewl_button_new);
-	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(list_test_assign_set));
+	ewl_view_widget_fetch_set(view, list_test_cb_widget_fetch);
+	ewl_view_header_fetch_set(view, NULL);
 
 	data = list_test_data_setup();
 
@@ -174,14 +174,20 @@ list_test_data_setup(void)
 	return data;
 }
 
-static void
-list_test_assign_set(Ewl_Widget *w, void *data)
+static Ewl_Widget *
+list_test_cb_widget_fetch(void *data, int row, int col)
 {
+	Ewl_Widget *w;
 	List_Test_Row_Data *d;
 
 	d = data;
+
+	w = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(w), d->text);
 	ewl_button_image_set(EWL_BUTTON(w), d->image, NULL);
+	ewl_widget_show(w);
+
+	return w;
 }
 
 static void *

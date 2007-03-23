@@ -651,7 +651,7 @@ ewl_tree2_cb_view_change(Ewl_MVC *mvc)
 	/* destroy the old view, create a new one and redisplay the tree */
 	if (t->rows) ewl_widget_destroy(t->rows);
 
-	t->rows = view->construct();
+	t->rows = view->fetch(NULL, 0, 0);
 	ewl_tree2_view_tree2_set(EWL_TREE2_VIEW(t->rows), t);
 	ewl_container_child_append(EWL_CONTAINER(t), t->rows);
 	ewl_widget_show(t->rows);
@@ -748,8 +748,7 @@ ewl_tree2_column_build(Ewl_Row *row, Ewl_Model *model, Ewl_View *view,
 	}
 	else
 	{
-		child = view->construct();
-		view->assign(child, val);
+		child = view->fetch(val, r, c);
 	}
 	ewl_container_child_append(EWL_CONTAINER(cell), child);
 	ewl_widget_show(child);

@@ -99,8 +99,7 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	{
 		Ewl_Widget *o;
 
-		o = view->construct();
-		view->assign(o, model->fetch(mvc_data, i, 0));
+		o = view->fetch(model->fetch(mvc_data, i, 0), i, 0);
 		ewl_widget_show(o);
 
 		ewl_container_child_append(EWL_CONTAINER(list), o);

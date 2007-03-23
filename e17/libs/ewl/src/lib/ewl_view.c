@@ -27,6 +27,31 @@ ewl_view_new(void)
 }
 
 /**
+ * @param src: An existing view to copy as a basis for a new view
+ * @return Returns a new Ewl_View object on success or NULL on failure
+ * @brief Creates a new Ewl_View object
+ */
+Ewl_View *
+ewl_view_clone(Ewl_View *src)
+{
+	Ewl_View *view;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	view = NEW(Ewl_View, 1);
+	if (!ewl_view_init(view))
+	{
+		FREE(view);
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+
+	memcpy(view, src, sizeof(Ewl_View));
+	/* FIXME: Reset reference count once we add that feature */
+
+	DRETURN_PTR(view, DLEVEL_STABLE);
+}
+
+/**
  * @param view: The Ewl_View to initialize
  * @return Returns TRUEE on success or FALSE on failure
  * @brief Initializes an Ewl_View object to default values
@@ -41,18 +66,18 @@ ewl_view_init(Ewl_View *view)
 }
 
 /**
- * @param v: The Ewl_View to set the constructor into
- * @param construct: The Ewl_View_Constructor to set into the view
+ * @param v: The Ewl_View to set the widget fetch callback into
+ * @param fetch: The Ewl_View_Widget_Fetch to set into the view
  * @return Returns no value.
- * @brief This will set the given constructor into the view
+ * @brief This will set the given widget fetch callback into the view
  */
 void
-ewl_view_constructor_set(Ewl_View *v, Ewl_View_Constructor construct)
+ewl_view_widget_fetch_set(Ewl_View *v, Ewl_View_Widget_Fetch fetch)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("v", v);
 
-	v->construct = construct;
+	v->fetch = fetch;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -63,45 +88,13 @@ ewl_view_constructor_set(Ewl_View *v, Ewl_View_Constructor construct)
  * none set.
  * @brief Get the constructor set on this view
  */
-Ewl_View_Constructor
-ewl_view_constructor_get(Ewl_View *v)
+Ewl_View_Widget_Fetch
+ewl_view_widget_fetch_get(Ewl_View *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("v", v, NULL);
 
-	DRETURN_INT(v->construct, DLEVEL_STABLE);
-}
-
-/**
- * @param v: The Ewl_View to set the assignment function into
- * @param assign: The Ewl_View_Assign assignment function to set
- * @return Returns no value.
- * @brief Set the assign pointer on this view
- */
-void
-ewl_view_assign_set(Ewl_View *v, Ewl_View_Assign assign)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("v", v);
-
-	v->assign = assign;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param v: The Ewl_View to get the assignment function from
- * @return Returns the Ewl_View_Assign set into the Ewl_View or NULL if none
- * set.
- * @brief Get the assign pointer set on this view
- */
-Ewl_View_Assign
-ewl_view_assign_get(Ewl_View *v)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("v", v, NULL);
-
-	DRETURN_INT(v->assign, DLEVEL_STABLE);
+	DRETURN_INT(v->fetch, DLEVEL_STABLE);
 }
 
 /**
@@ -136,3 +129,34 @@ ewl_view_header_fetch_get(Ewl_View *v)
 	DRETURN_INT(v->header_fetch, DLEVEL_STABLE);
 }
 
+/**
+ * @param v: The Ewl_View to set the expansion_view_fetch callback on
+ * @param f: The Ewl_View_Expansion_View_Fetch callback
+ * @return Returns no value.
+ * @brief Sets the expansion view fetch callback into the view 
+ */
+void
+ewl_view_expansion_view_fetch_set(Ewl_View *v, Ewl_View_Expansion_View_Fetch f)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("v", v);
+
+	v->expansion = f;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param v: The Ewl_View to get the Ewl_View_Expansion_View_Fetch function from
+ * @return Returns the Ewl_View_Expansion_View_Fetch callback set on the view,
+ * or NULL on failure.
+ * @brief Gets the expansion view fetch callback from the view
+ */
+Ewl_View_Expansion_View_Fetch
+ewl_view_expansion_view_fetch_get(Ewl_View *v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("v", v, NULL);
+
+	DRETURN_INT(v->expansion, DLEVEL_STABLE);
+}

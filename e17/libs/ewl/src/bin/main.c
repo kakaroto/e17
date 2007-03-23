@@ -61,7 +61,7 @@ static void *ewl_test_cb_expansion_fetch(void *data, unsigned int row,
 							unsigned int column);
 static void ewl_test_cb_test_selected(Ewl_Widget *w, void *ev, void *data);
 
-static Ewl_Widget *cb_unit_test_headers(void *data, int column);
+static Ewl_Widget *cb_unit_test_header_fetch(void *data, int column);
 static void *cb_unit_test_fetch(void *data, unsigned int row, unsigned int column);
 static int cb_unit_test_count(void *data);
 
@@ -529,10 +529,8 @@ create_main_test_window(Ewl_Container *box)
 	ewl_widget_name_set(o2, "unit_test_tree");
 	ewl_widget_show(o2);
 
-	view = ewl_view_new();
-	ewl_view_constructor_set(view, ewl_label_new);
-	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
-	ewl_view_header_fetch_set(view, cb_unit_test_headers);
+	view = ewl_view_clone(ewl_label_view_get());
+	ewl_view_header_fetch_set(view, cb_unit_test_header_fetch);
 
 	ewl_tree2_column_append(EWL_TREE2(o2), view, FALSE);
 	ewl_tree2_column_append(EWL_TREE2(o2), view, FALSE);
@@ -1104,7 +1102,7 @@ ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static Ewl_Widget *
-cb_unit_test_headers(void *data, int column)
+cb_unit_test_header_fetch(void *data, int column)
 {
 	Ewl_Widget *label;
 

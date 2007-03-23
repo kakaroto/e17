@@ -101,9 +101,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 
 	model = ewl_model_ecore_list_get();
 
-	view = ewl_view_new();
-	ewl_view_constructor_set(view, ewl_label_new);
-	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+	view = ewl_label_view_get();
 
 	fp->path = ecore_list_new();
 
@@ -157,9 +155,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_model_data_fetch_set(model, ewl_filepicker_cb_type_fetch);
 	ewl_model_data_count_set(model, ewl_filepicker_cb_type_count);
 
-	view = ewl_view_new();
-	ewl_view_constructor_set(view, ewl_label_new);
-	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+	view = ewl_view_clone(ewl_label_view_get());
 	ewl_view_header_fetch_set(view, ewl_filepicker_cb_type_header);
 
 	fp->type_combo = ewl_combo_new();
@@ -267,7 +263,7 @@ ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
 	old_fl = EWL_FILELIST(fp->file_list);
 
 	/* set the new view */
-	fp->file_list = view->construct();
+	fp->file_list = view->fetch(NULL, 0, 0);
 	ewl_container_child_append(EWL_CONTAINER(fp->file_list_box),
 							fp->file_list);
 	ewl_callback_append(EWL_WIDGET(fp->file_list), 

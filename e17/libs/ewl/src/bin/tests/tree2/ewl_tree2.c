@@ -941,10 +941,8 @@ struct Tree2_Test_Data
 
 static int create_test(Ewl_Container *win);
 static void *tree2_test_data_setup(void);
-static Ewl_Widget *tree2_test_custom_new(void);
-static void tree2_test_custom_assign_set(Ewl_Widget *w, void *data);
-static Ewl_Widget *tree2_test_data_header_fetch(void *data, 
-						int column);
+static Ewl_Widget * tree2_test_cb_widget_fetch(void *data, int row, int column);
+static Ewl_Widget * tree2_test_cb_header_fetch(void *data, int column);
 static void *tree2_test_data_fetch(void *data, unsigned int row, 
 						unsigned int column);
 static void tree2_test_data_sort(void *data, unsigned int column, 
@@ -1012,21 +1010,19 @@ create_test(Ewl_Container *box)
 
 	/* create a view for the first column that just has an ewl label */
 	view = ewl_label_view_get();
-	ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
+	ewl_view_header_fetch_set(view, tree2_test_cb_header_fetch);
 	ewl_tree2_column_append(EWL_TREE2(tree), view, TRUE);
 
 	/* create a view for the second column that just has an ewl image */
 	view = ewl_view_new();
-	ewl_view_constructor_set(view, ewl_image_new);
-	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_image_file_path_set));
-	ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
+	ewl_view_widget_fetch_set(view, tree2_test_cb_widget_fetch);
+	ewl_view_header_fetch_set(view, tree2_test_cb_header_fetch);
 	ewl_tree2_column_append(EWL_TREE2(tree), view, TRUE);
 
 	/* create a view for the third column that has a custom widget */
 	view = ewl_view_new();
-	ewl_view_constructor_set(view, tree2_test_custom_new);
-	ewl_view_assign_set(view, tree2_test_custom_assign_set);
-	ewl_view_header_fetch_set(view, tree2_test_data_header_fetch);
+	ewl_view_widget_fetch_set(view, tree2_test_cb_widget_fetch);
+	ewl_view_header_fetch_set(view, tree2_test_cb_header_fetch);
 	ewl_tree2_column_append(EWL_TREE2(tree), view, FALSE);
 
 	o3 = ewl_vbox_new();
@@ -1146,28 +1142,37 @@ tree2_test_data_setup(void)
 }
 
 static Ewl_Widget *
-tree2_test_custom_new(void)
+tree2_test_cb_widget_fetch(void *data, int row, int column)
 {
-	Ewl_Widget *button;
+	Ewl_Widget *w = NULL;
 
-	button = ewl_button_new();
-	ewl_widget_show(button);
+	switch (column) {
+		case 0:
+			w = ewl_label_new();
+			ewl_label_text_set(EWL_LABEL(w), data);
+			break;
+		case 1:
+			w = ewl_image_new();
+			ewl_image_file_path_set(EWL_IMAGE(w), data);
+			break;
+		case 2:
+			{
+				Tree2_Test_Row_Data *d;
+				d = data;
 
-	return button;
-}
+				w = ewl_button_new();
+				ewl_button_label_set(EWL_BUTTON(w), d->text);
+				ewl_button_image_set(EWL_BUTTON(w), d->image, NULL);
+			}
+			break;
+	}
+	ewl_widget_show(w);
 
-static void
-tree2_test_custom_assign_set(Ewl_Widget *w, void *data)
-{
-	Tree2_Test_Row_Data *d;
-
-	d = data;
-	ewl_button_label_set(EWL_BUTTON(w), d->text);
-	ewl_button_image_set(EWL_BUTTON(w), d->image, NULL);
+	return w;
 }
 
 static Ewl_Widget *
-tree2_test_data_header_fetch(void *data __UNUSED__, int column)
+tree2_test_cb_header_fetch(void *data __UNUSED__, int column)
 {
 	Ewl_Widget *l;
 

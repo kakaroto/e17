@@ -5,6 +5,9 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static Ewl_Widget *ewl_label_view_cb_widget_fetch(void *data, int row, int col);
+static Ewl_Widget *ewl_label_view_cb_header_fetch(void *data, int col);
+
 /**
  * @return Returns a new Ewl_Widget if successful, NULL on failure
  * @brief Creates a new Ewl_Label widget with the @a text text in it
@@ -101,10 +104,34 @@ ewl_label_view_get(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	view = ewl_view_new();
-	ewl_view_constructor_set(view, ewl_label_new);
-	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+	ewl_view_widget_fetch_set(view, ewl_label_view_cb_widget_fetch);
+	ewl_view_header_fetch_set(view, ewl_label_view_cb_header_fetch);
 
 	DRETURN_PTR(view, DLEVEL_STABLE);
 }
 
+static Ewl_Widget *
+ewl_label_view_cb_widget_fetch(void *data, int row __UNUSED__, int col __UNUSED__)
+{
+	Ewl_Widget *label;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(label), data);
+
+	DRETURN_PTR(label, DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_label_view_cb_header_fetch(void *data, int col __UNUSED__)
+{
+	Ewl_Widget *label;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(label), data);
+
+	DRETURN_PTR(label, DLEVEL_STABLE);
+}

@@ -5,6 +5,9 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 
+static Ewl_Widget *ewl_tree2_view_plain_cb_widget_fetch(void *data, int row,
+							int col);
+
 static Ewl_View *ewl_tree2_view_plain_view = NULL;
 
 /**
@@ -19,11 +22,25 @@ ewl_tree2_view_plain_get(void)
 	if (!ewl_tree2_view_plain_view)
 	{
 		ewl_tree2_view_plain_view = ewl_view_new();
-		ewl_view_constructor_set(ewl_tree2_view_plain_view,
-					ewl_tree2_view_plain_new);
+		ewl_view_widget_fetch_set(ewl_tree2_view_plain_view,
+					ewl_tree2_view_plain_cb_widget_fetch);
 	}
 
 	DRETURN_PTR(ewl_tree2_view_plain_view, DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_tree2_view_plain_cb_widget_fetch(void *data __UNUSED__, int row __UNUSED__,
+		int col __UNUSED__)
+{
+	Ewl_Widget *plain;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	plain = ewl_tree2_view_plain_new();
+	ewl_widget_show(plain);
+
+	DRETURN_PTR(plain, DLEVEL_STABLE);
 }
 
 /**

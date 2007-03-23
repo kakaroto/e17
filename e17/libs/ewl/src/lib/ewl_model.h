@@ -63,6 +63,17 @@ typedef int (*Ewl_Model_Data_Expandable)(void *data, unsigned int row);
 typedef void *(*Ewl_Model_Expansion_Data_Fetch)(void *data, unsigned int row);
 
 /**
+ * @def EWL_MODEL_DATA_HEADER_FETCH(f)
+ * Model callback to get the header data for a specific column
+ */
+#define EWL_MODEL_DATA_HEADER_FETCH(f) ((Ewl_Model_Data_Header_Fetch)f)
+
+/**
+ * A typedef to shorten the definition of the model_data_header_fetch callback
+ */
+typedef void *(*Ewl_Model_Data_Header_Fetch)(void *data, unsigned int col);
+
+/**
  * @def EWL_MODEL_EXPANSION_MODEL_FETCH(f)
  * Model callback to get the model to use for the expansion point
  */
@@ -100,6 +111,17 @@ typedef void (*Ewl_Model_Data_Sort)(void *data, unsigned int column,
 typedef int (*Ewl_Model_Data_Count)(void *data);
 
 /**
+ * @def EWL_MODEL_COLUMN_SORTABLE(f)
+ * Model callback to check if a columns data is sortable
+ */
+#define EWL_MODEL_COLUMN_SORTABLE(f) ((Ewl_Model_Column_Sortable)f)
+
+/**
+ * A typedef to shorten the definition of the model_column_sortable callbacks. 
+ */
+typedef int (*Ewl_Model_Column_Sortable)(void *data, int col);
+
+/**
  * @def EWL_MODEL(model)
  * Typecasts a pointer to an Ewl_Model pointer.
  */
@@ -117,6 +139,9 @@ struct Ewl_Model
 		Ewl_Model_Expansion_Model_Fetch model; /**< Get expansion model */
 	} expansion;
 
+	Ewl_Model_Column_Sortable sortable; /**< Is a column sortable */
+
+	Ewl_Model_Data_Header_Fetch header; /**< Retrieve header data */
 	Ewl_Model_Data_Fetch fetch;    /**< Retrieve data for a cell */
 	Ewl_Model_Data_Free data_free; /**< Free data passed to view */
 	Ewl_Model_Data_Count count;    /**< Count of data items */

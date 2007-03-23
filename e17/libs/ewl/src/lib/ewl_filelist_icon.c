@@ -15,6 +15,8 @@ static void ewl_filelist_icon_cb_icon_clicked(Ewl_Widget *w,
 						void *ev, void *data);
 static void ewl_filelist_icon_icon_add(Ewl_Filelist *fl, const char *dir, 
 						char *file, void *data);
+static Ewl_Widget *ewl_filelist_icon_view_cb_widget_fetch(void *data, int row,
+						int col);
 
 /**
  * @return Returns the Ewl_View needed to display the filelist_icon
@@ -28,11 +30,23 @@ ewl_filelist_icon_view_get(void)
 	if (!ewl_filelist_icon_view)
 	{
 		ewl_filelist_icon_view = ewl_view_new();
-		ewl_view_constructor_set(ewl_filelist_icon_view,
-						ewl_filelist_icon_new);
+		ewl_view_widget_fetch_set(ewl_filelist_icon_view,
+						ewl_filelist_icon_view_cb_widget_fetch);
 	}
 
 	DRETURN_PTR(ewl_filelist_icon_view, DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_filelist_icon_view_cb_widget_fetch(void *data __UNUSED__, int row __UNUSED__, int col __UNUSED__)
+{
+	Ewl_Widget *list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	list = ewl_filelist_icon_new();
+
+	DRETURN_PTR(list, DLEVEL_STABLE);
 }
 
 /**

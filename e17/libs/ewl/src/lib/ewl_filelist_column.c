@@ -29,6 +29,8 @@ static void ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *event,
 							void *data);
 static void ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, 
 						char *file, void *data);
+static Ewl_Widget * ewl_filelist_column_view_cb_widget_fetch(void *data,
+						int col, int row);
 
 /**
  * @return Returns the Ewl_View needed to display the filelist_column
@@ -42,11 +44,24 @@ ewl_filelist_column_view_get(void)
 	if (!ewl_filelist_column_view)
 	{
 		ewl_filelist_column_view = ewl_view_new();
-		ewl_view_constructor_set(ewl_filelist_column_view, 
-					ewl_filelist_column_new);
+		ewl_view_widget_fetch_set(ewl_filelist_column_view, 
+					ewl_filelist_column_view_cb_widget_fetch);
 	}
 
 	DRETURN_PTR(ewl_filelist_column_view, DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_filelist_column_view_cb_widget_fetch(void *data, int col, int row)
+{
+	Ewl_Widget *list;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	list = ewl_filelist_column_new();
+	ewl_widget_show(list);
+
+	DRETURN_PTR(list, DLEVEL_STABLE);
 }
 
 /**

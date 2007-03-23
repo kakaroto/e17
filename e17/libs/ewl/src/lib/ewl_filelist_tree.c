@@ -24,9 +24,13 @@ struct Ewl_Filelist_Tree_Data
 
 static Ewl_View *ewl_filelist_tree_view = NULL;
 
+static Ewl_Widget * ewl_filelist_tree_view_widget_fetch(void *data, int row,
+						int col);
 static void ewl_filelist_tree_add(Ewl_Filelist *fl, const char *dir, 
 						char *file, void *data);
 
+static Ewl_Widget *ewl_filelist_tree_cb_widget_fetch(void *data, int row,
+						int column);
 static Ewl_Widget *ewl_filelist_tree_cb_header_fetch(void *data, int column);
 
 /* Model callbacks */
@@ -51,11 +55,19 @@ ewl_filelist_tree_view_get(void)
 	if (!ewl_filelist_tree_view)
 	{
 		ewl_filelist_tree_view = ewl_view_new();
-		ewl_view_constructor_set(ewl_filelist_tree_view,
-						ewl_filelist_tree_new);
+		ewl_view_widget_fetch_set(ewl_filelist_tree_view,
+						ewl_filelist_tree_view_widget_fetch);
 	}
 
 	DRETURN_PTR(ewl_filelist_tree_view, DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_filelist_tree_view_widget_fetch(void *data __UNUSED__, int row __UNUSED__, int col __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
 /**
@@ -135,8 +147,7 @@ ewl_filelist_tree_init(Ewl_Filelist_Tree *fl)
 	ewl_widget_show(fl->tree);
 
 	view = ewl_view_new();
-	ewl_view_constructor_set(view, ewl_label_new);
-	ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
+	ewl_view_widget_fetch_set(view, ewl_filelist_tree_cb_widget_fetch);
 	ewl_view_header_fetch_set(view, ewl_filelist_tree_cb_header_fetch);
 
 	ewl_tree2_column_append(EWL_TREE2(fl->tree), view, TRUE);
@@ -398,10 +409,27 @@ ewl_filelist_tree_data_expansion_data_fetch(void *data, unsigned int parent)
 }
 
 static
+Ewl_Widget *ewl_filelist_tree_cb_widget_fetch(void *data, int row, int column)
+{
+	Ewl_Widget *l;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	l = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(l), data);
+	ewl_widget_show(l);
+
+	DRETURN_PTR(l, DLEVEL_STABLE);
+}
+
+static
 Ewl_Widget *ewl_filelist_tree_cb_header_fetch(void *data __UNUSED__, int column)
 {
 	Ewl_Widget *l;
 	const char *t;
+
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	l = ewl_label_new();
 	if (column == 0) t = "filename";
@@ -414,7 +442,7 @@ Ewl_Widget *ewl_filelist_tree_cb_header_fetch(void *data __UNUSED__, int column)
 	ewl_label_text_set(EWL_LABEL(l), t);
 	ewl_widget_show(l);
 
-	return l;
+	DRETURN_PTR(l, DLEVEL_STABLE);
 }
 
 

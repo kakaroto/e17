@@ -20,6 +20,9 @@ static void ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 static void ewl_image_rotate_180(Ewl_Image *img);
 static void ewl_image_rotate_90(Ewl_Image *img, int cc);
 
+static Ewl_Widget *ewl_image_view_cb_header_fetch(void *data, int col);
+static Ewl_Widget *ewl_image_view_cb_widget_fetch(void *data, int row, int col);
+
 /**
  * @return Returns a pointer to a new image widget on success, NULL on failure.
  * @brief Load an image widget with specified image contents
@@ -44,6 +47,50 @@ ewl_image_new(void)
 	}
 
 	DRETURN_PTR(EWL_WIDGET(image), DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns a view that can be used to display Ewl_Image widgets
+ * @brief Creates and returns a view to be used by Ewl_Image widgets
+ */
+Ewl_View *
+ewl_image_view_get(void)
+{
+	Ewl_View *view;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	view = ewl_view_new();
+	ewl_view_widget_fetch_set(view, ewl_image_view_cb_widget_fetch);
+	ewl_view_header_fetch_set(view, ewl_image_view_cb_header_fetch);
+
+	DRETURN_PTR(view, DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_image_view_cb_widget_fetch(void *data, int row __UNUSED__, int col __UNUSED__)
+{
+	Ewl_Widget *image;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	image = ewl_image_new();
+	ewl_image_file_path_set(EWL_IMAGE(image), data);
+
+	DRETURN_PTR(image, DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_image_view_cb_header_fetch(void *data, int col __UNUSED__)
+{
+	Ewl_Widget *image;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	image = ewl_image_new();
+	ewl_image_file_path_set(EWL_IMAGE(image), data);
+
+	DRETURN_PTR(image, DLEVEL_STABLE);
 }
 
 /**

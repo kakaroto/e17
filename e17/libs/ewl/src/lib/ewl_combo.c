@@ -316,8 +316,8 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 		model = idx->sel.model;
 		mvc_data = idx->sel.data;
 
-		item = view->construct();
-		view->assign(item, model->fetch(mvc_data, idx->row, 0));
+		item = view->fetch(model->fetch(mvc_data, idx->row, 0),
+				idx->row, 0);
 	}
 	else if (view->header_fetch) 
 		item = view->header_fetch(ewl_mvc_data_get(mvc), -1);
@@ -417,8 +417,7 @@ ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model, void 
 		ewl_container_child_append(c, o);
 		ewl_widget_show(o);
 
-		item = view->construct();
-		view->assign(item, model->fetch(mvc_data, i, 0));
+		item = view->fetch(model->fetch(mvc_data, i, 0), i, 0);
 		ewl_container_child_append(EWL_CONTAINER(o), item);
 		ewl_widget_show(item);
 	}

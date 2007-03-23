@@ -2,6 +2,7 @@
 #ifndef EWL_IMAGE_H
 #define EWL_IMAGE_H
 
+#include "ewl_view.h"
 /**
  * @addtogroup Ewl_Image Ewl_Image: An Image Display Widget
  * Provides a widget for displaying evas loadable images, and edjes.
@@ -97,6 +98,7 @@ typedef struct Ewl_Image_Thumbnail Ewl_Image_Thumbnail;
 
 Ewl_Widget	*ewl_image_new(void);
 int		 ewl_image_init(Ewl_Image *i);
+Ewl_View 	*ewl_image_view_get(void);
 
 void		 ewl_image_file_set(Ewl_Image *i, const char *im, 
 						const char *key);

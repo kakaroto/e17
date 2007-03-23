@@ -3,6 +3,7 @@
 #define EWL_BUTTON_H
 
 #include "ewl_stock.h"
+#include "ewl_view.h"
 
 /**
  * @addtogroup Ewl_Button Ewl_Button: The Basic Button
@@ -60,6 +61,7 @@ struct Ewl_Button
 
 Ewl_Widget	*ewl_button_new(void);
 int		 ewl_button_init(Ewl_Button *b);
+Ewl_View	*ewl_button_view_get(void);
 
 void		 ewl_button_label_set(Ewl_Button *b, const char *l);
 const char	*ewl_button_label_get(Ewl_Button *b);
