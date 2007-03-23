@@ -41,7 +41,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
 
    if (MenusActive())
       return;
-   if (!Conf.desks.edge_flip_resistance)
+   if (Conf.desks.edge_flip_mode == EDGE_FLIP_OFF)
       return;
 
    /* Quit if pointer has left screen */
@@ -110,12 +110,17 @@ EdgeEvent(int dir)
 #if 0
    Eprintf("EdgeEvent %d -> %d\n", lastdir, dir);
 #endif
-   if (lastdir == dir || !Conf.desks.edge_flip_resistance)
+   if (lastdir == dir || Conf.desks.edge_flip_mode == EDGE_FLIP_OFF)
+      return;
+
+   if (Conf.desks.edge_flip_mode == EDGE_FLIP_MOVE && Mode.mode != MODE_MOVE)
       return;
 
    RemoveTimerEvent("EDGE_TIMEOUT");
    if (dir >= 0)
      {
+	if (Conf.desks.edge_flip_resistance <= 0)
+	   Conf.desks.edge_flip_resistance = 1;
 	DoIn("EDGE_TIMEOUT",
 	     ((double)Conf.desks.edge_flip_resistance) / 100.0, EdgeTimeout,
 	     dir, NULL);
@@ -181,7 +186,7 @@ EdgeWindowsShow(void)
 {
    int                 ax, ay, cx, cy;
 
-   if (Conf.desks.edge_flip_resistance <= 0)
+   if (Conf.desks.edge_flip_mode == EDGE_FLIP_OFF)
      {
 	EdgeWindowsHide();
 	return;

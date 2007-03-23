@@ -148,6 +148,10 @@
 #define MODE_FOCUS_SLOPPY       1
 #define MODE_FOCUS_CLICK        2
 
+#define EDGE_FLIP_OFF           0
+#define EDGE_FLIP_ON            1
+#define EDGE_FLIP_MOVE          2
+
 #define DOCK_LEFT               0
 #define DOCK_RIGHT              1
 #define DOCK_UP                 2
@@ -283,6 +287,7 @@ typedef struct
       int                 areas_nx;
       int                 areas_ny;
       char                areas_wraparound;
+      int                 edge_flip_mode;
       int                 edge_flip_resistance;
    } desks;
    struct

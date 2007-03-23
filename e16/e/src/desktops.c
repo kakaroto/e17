@@ -2176,6 +2176,10 @@ DesksInit(void)
 
    memset(&desks, 0, sizeof(desks));
 
+   /* Backward compatibility hack */
+   if (Conf.desks.edge_flip_resistance <= 0)
+      Conf.desks.edge_flip_mode = EDGE_FLIP_OFF;
+
    desks.previous = NULL;
 
    for (i = 0; i < Conf.desks.num; i++)
@@ -2481,8 +2485,8 @@ const DialogDef     DlgDesks = {
 
 static int          tmp_area_x;
 static int          tmp_area_y;
+static int          tmp_edge_flip;
 static int          tmp_edge_resist;
-static char         tmp_edge_flip;
 static DItem       *tmp_area_text;
 static char         tmp_area_wraparound;
 
@@ -2493,14 +2497,10 @@ CB_ConfigureAreas(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
      {
 	SetNewAreaSize(tmp_area_x, 9 - tmp_area_y);
 	Conf.desks.areas_wraparound = tmp_area_wraparound;
-	if (tmp_edge_flip)
-	  {
-	     if (tmp_edge_resist < 1)
-		tmp_edge_resist = 1;
-	     Conf.desks.edge_flip_resistance = tmp_edge_resist;
-	  }
-	else
-	   Conf.desks.edge_flip_resistance = 0;
+	Conf.desks.edge_flip_mode = tmp_edge_flip;
+	if (tmp_edge_resist < 1)
+	   tmp_edge_resist = 1;
+	Conf.desks.edge_flip_resistance = tmp_edge_resist;
 	EdgeWindowsShow();
      }
    autosave();
@@ -2574,15 +2574,14 @@ CB_AreaDisplayAreaRedraw(DItem * di, int val __UNUSED__, void *data __UNUSED__)
 static void
 _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
-   DItem              *di, *slider, *slider2, *table2;
+   DItem              *di, *slider, *slider2, *table2, *radio;
    char                s[64];
 
    tmp_area_wraparound = Conf.desks.areas_wraparound;
+
+   tmp_edge_flip = Conf.desks.edge_flip_mode;
    tmp_edge_resist = Conf.desks.edge_flip_resistance;
-   if (tmp_edge_resist == 0)
-      tmp_edge_flip = 0;
-   else
-      tmp_edge_flip = 1;
+
    DesksGetAreaSize(&tmp_area_x, &tmp_area_y);
    tmp_area_y = 9 - tmp_area_y;
 
@@ -2633,9 +2632,27 @@ _DlgFillAreas(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Wrap virtual desktops around"));
    DialogItemCheckButtonSetPtr(di, &tmp_area_wraparound);
 
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetText(di, _("Enable edge flip"));
-   DialogItemCheckButtonSetPtr(di, &tmp_edge_flip);
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemSetText(di, _("Edge Flip Mode:"));
+
+   radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetText(di, _("Off"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, EDGE_FLIP_OFF);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetText(di, _("On"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, EDGE_FLIP_ON);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetText(di, _("Only when moving window"));
+   DialogItemRadioButtonSetFirst(di, radio);
+   DialogItemRadioButtonGroupSetVal(di, EDGE_FLIP_MOVE);
+   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_edge_flip);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetText(di, _("Resistance at edge of screen:\n"));
@@ -2937,6 +2954,8 @@ static const CfgItem DesksCfgItems[] = {
    CFG_FUNC_INT(Conf.desks, areas_nx, 2, AreasCfgFuncSizeX),
    CFG_FUNC_INT(Conf.desks, areas_ny, 1, AreasCfgFuncSizeY),
    CFG_ITEM_BOOL(Conf.desks, areas_wraparound, 0),
+
+   CFG_ITEM_INT(Conf.desks, edge_flip_mode, EDGE_FLIP_ON),
    CFG_ITEM_INT(Conf.desks, edge_flip_resistance, 25),
 };
 #define N_CFG_ITEMS (sizeof(DesksCfgItems)/sizeof(CfgItem))
