@@ -1,4 +1,3 @@
-gcc -g \
-`enhance-config --cflags --libs` \
-`etk-config --cflags --libs` \
+gcc -g -rdynamic \
+`pkg-config --cflags --libs enhance etk` \
 enhance_test.c -o enhance_test

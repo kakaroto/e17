@@ -39,10 +39,14 @@ int main(int argc, char **argv)
    enhance_callback_data_set(en, "rip_only_clicked", &data);
 
    /* if you're trying the dialog test, show it explicitly! */
-   enhance_file_load(en, "window1", "spinner.glade");
+   enhance_file_load(en, "window1", "buttons.glade");
    
    data2 = enhance_callback_data_get(en, "rip_only_clicked");
    *data2 = string2;
+
+   Etk_Widget *entry;
+   entry = enhance_var_get(en, "entry1");
+   etk_widget_show(entry);
    
    etk_main();   
    etk_shutdown();
