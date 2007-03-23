@@ -73,6 +73,7 @@ PKG_CHECK_MODULES([SQLITE], sqlite3,
    ],
    [
       have_sqlite3="No"
+      echo "Sqlite3 was not found by pkg-config!";
       AC_MSG_ERROR([Ephoto needs sqlite3 to compile.])
    ]
 )
@@ -87,66 +88,60 @@ PKG_CHECK_MODULES([EXIF], libexif >= 0.6.13,
    ]
 )
 
-PROG="evas-config";
-AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-if test -z "$EVAS_CONFIG" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
+PKG_CHECK_MODULES([EVAS], evas,
+   [
+      have_evas="Yes"
+   ],
+   [
+      have_evas="No"
+      echo "Evas was not found by pkg-config!";
+      AC_MSG_ERROR([Ephoto needs evas to compile.])
+   ]
+)
 
-PROG="ecore-config";
-AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-if test -z "$ECORE_CONFIG" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
+PKG_CHECK_MODULES([ECORE], ecore,
+   [
+      have_ecore="Yes"
+   ],
+   [
+      have_ecore="No"
+      echo "Ecore was not found by pkg-config!";
+      AC_MSG_ERROR([Ephoto needs ecore to compile.])
+   ]
+)
 
-PROG="ewl-config";
-AC_PATH_PROG(EWL_CONFIG, $PROG, "", $PATH)
-if test -z "$EWL_CONFIG" ; then
-    echo $PROG " is not in your \$PATH. Please ensure it is.";
-    echo "Read the manual page for your shell as to how to extend your path.";
-    AC_MSG_ERROR(Cannot find $PROG)
-fi
-ewl_cflags=`$EWL_CONFIG --cflags`
-ewl_libs=`$EWL_CONFIG --libs`
-AC_SUBST(ewl_cflags)
-AC_SUBST(ewl_libs)
+PKG_CHECK_MODULES([EDJE], edje,
+   [
+      have_edje="Yes"
+   ],
+   [
+      have_edje="No"
+      echo "Edje was not found by pkg-config!";
+      AC_MSG_ERROR([Ephoto needs edje to compile.])
+   ]
+)
 
-PROG="edje-config";
-AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
-if test -z "$EDJE_CONFIG" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-edje_cflags=`$EDJE_CONFIG --cflags`
-edje_libs=`$EDJE_CONFIG --libs`
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_libs)
+PKG_CHECK_MODULES([EWL], ewl,
+   [
+      have_ewl="Yes"
+   ],
+   [
+      have_ewl="No"
+      echo "Ewl was not found by pkg-config!";
+      AC_MSG_ERROR([Ephoto needs ewl to compile.])
+   ]
+)
 
-
-PROG="epsilon-config";
-AC_PATH_PROG(EPSILON_CONFIG, $PROG, "", $PATH)
-if test -z "$EPSILON_CONFIG" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-epsilon_cflags=`$EPSILON_CONFIG --cflags`
-epsilon_libs=`$EPSILON_CONFIG --libs`
-AC_SUBST(epsilon_cflags)
-AC_SUBST(epsilon_libs)
+PKG_CHECK_MODULES([EPSILON], epsilon,
+   [
+      have_epsilon="Yes"
+   ],
+   [
+      have_epsilon="No"
+      echo "Epsilon was not found by pkg-config!";
+      AC_MSG_ERROR([Ephoto needs epsilon to compile.])
+   ]
+)
 
 AC_OUTPUT([
 Makefile 
@@ -185,11 +180,11 @@ echo "------------------------------------------------------------------------"
 echo
 echo "Configuration Options Summary:"
 echo
-echo "  Evas ............: Yes"
-echo "  Ecore ...........: Yes"
-echo "  Edje ............: Yes"
-echo "  Epsilon .........: Yes"
-echo "  EWL .............: Yes"
+echo "  Evas ............: $have_evas"
+echo "  Ecore ...........: $have_ecore"
+echo "  Edje ............: $have_edje"
+echo "  Epsilon .........: $have_epsilon"
+echo "  Ewl .............: $have_ewl"
 echo "  Libexif .........: $have_exif"
 echo "  Sqlite3 .........: $have_sqlite3"
 echo
