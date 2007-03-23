@@ -1,5 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
+MAINTAINERCLEANFILES = Makefile.in Makefile aclocal.m4 config.* \
+                   configure compile depcomp install-sh \
+                   ltconfig ltmain.sh missing mkinstalldirs \
+                   stamp-h.in debian/changelog
+
 SUBDIRS = src data po
 
 EXTRA_DIST = \
@@ -10,13 +15,6 @@ EXTRA_DIST = \
         debian/control \
         debian/copyright \
 	debian/rules
-
-
-MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
-                       config.h.in config.sub configure install-sh \
-		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in  ephoto.spec \
-		       debian/changelog
 
 dist-hook:
 	if test -d data; then \

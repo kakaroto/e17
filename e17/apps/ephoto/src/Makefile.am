@@ -1,4 +1,5 @@
 ## Process this file with automake to produce Makefile.in 
 
-SUBDIRS = bin
+MAINTAINERCLEANFILES = Makefile.in Makefile
 
+SUBDIRS = bin

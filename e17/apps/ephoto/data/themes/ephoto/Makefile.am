@@ -1,4 +1,5 @@
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in Makefile
+
 SUBDIRS = bits fonts images
 
 EDJE_FLAGS = \

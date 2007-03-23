@@ -1,4 +1,4 @@
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in Makefile
 
 EXTRA_DIST = \
 AUTHORS \

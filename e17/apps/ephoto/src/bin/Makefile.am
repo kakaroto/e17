@@ -1,5 +1,8 @@
 ## Process this file with automake to produce Makefile.in 
 
+MAINTAINERCLEANFILES = *.o ephoto config.h.in config.h Makefile.in Makefile \
+		       stamp-h1
+
 bin_PROGRAMS = ephoto
 
 ephoto_SOURCES = ephoto.c \

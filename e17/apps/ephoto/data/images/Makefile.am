@@ -1,4 +1,4 @@
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in Makefile
 
 FILES = add.png \
 	camera-photo.png \

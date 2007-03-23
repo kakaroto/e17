@@ -1,3 +1,3 @@
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in Makefile
 
 SUBDIRS = ephoto
