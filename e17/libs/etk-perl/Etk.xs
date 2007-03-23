@@ -5142,6 +5142,15 @@ new(class, lower, upper, value, step_increment, page_increment)
 
 MODULE = Etk::Widget	PACKAGE = Etk::Widget	PREFIX = etk_widget_
 
+void
+etk_widget_color_set(widget, r, g, b, a)
+	Etk_Widget * 	widget
+	int	r
+	int	g
+	int	b
+	int	a
+	ALIAS:
+	ColorSet=1
 
 void
 etk_widget_disabled_set(widget, disabled)
@@ -5823,6 +5832,19 @@ etk_shadow_border_color_get(shadow)
 
 
 MODULE = Etk::Window	PACKAGE = Etk::Window	PREFIX = etk_window_
+
+void
+etk_window_has_alpha_set(window, has_alpha)
+	Etk_Window *	window
+	Etk_Bool	has_alpha
+	ALIAS:
+	HasAlphaSet=1
+
+Etk_Bool
+etk_window_has_alpha_get(window)
+	Etk_Window *    window
+	ALIAS:
+	HasAlphaGet=1
 
 void
 etk_window_raise(window)

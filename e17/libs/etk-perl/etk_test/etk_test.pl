@@ -213,7 +213,7 @@ while (my ($key, $value) = each %buttons)
     $frames{ $value->{frame} }->{examples}++;
 }
 
-$win->SignalConnect("delete_event", \&main_window_delete);
+$win->SignalConnect("delete-event", \&main_window_delete);
 $win->BorderWidthSet(5);
 $win->ShowAll();
 
@@ -301,7 +301,7 @@ sub entry_window_show
     my $label_normal = Etk::Label->new("");
     $table->Attach($label_normal, 0, 1, 1, 1, 0, 0, TableHExpand | TableHFill);
 
-    $image->SignalConnect("mouse_click", sub {
+    $image->SignalConnect("mouse-click", sub {
 	    $label_normal->Set( $entry_normal->TextGet() )
     });
 
@@ -340,7 +340,7 @@ sub slider_window_show
     $table->AttachDefault($slider1, 0, 0, 0, 0);
     $label1 = Etk::Label->new("128.00");
     $table->Attach($label1, 0, 0, 1, 1, 0, 0, FillNone);
-    $slider1->SignalConnect("value_changed",
+    $slider1->SignalConnect("value-changed",
 	sub {
 	    my $self = shift;
 	    my $value = shift;
@@ -352,7 +352,7 @@ sub slider_window_show
     $table->AttachDefault($slider2, 1, 1, 0, 0);       
     $label2 = Etk::Label->new("128.00");
     $table->Attach($label2, 1, 1, 1, 1, 0, 0, FillNone);
-    $slider2->SignalConnect("value_changed",
+    $slider2->SignalConnect("value-changed",
 	sub {
 	    my $self = shift;
 	    my $value = shift;
@@ -457,7 +457,7 @@ sub tree_window_show
     my $status = Etk::StatusBar->new();
     $vbox->Append($status, BoxStart, BoxFill, 0);
 
-    $tree->SignalConnect("row_clicked",  sub {
+    $tree->SignalConnect("row-clicked",  sub {
 	my $self = shift;
 	my $row = shift;
 	my $event = shift;
@@ -470,7 +470,7 @@ sub tree_window_show
 
     });
 
-    $col4->SignalConnect("cell_value_changed", 
+    $col4->SignalConnect("cell-value-changed", 
 	sub {
 		my $self = shift;
 		my $row = shift;
@@ -481,7 +481,7 @@ sub tree_window_show
 	}
     );
 
-    $tree->SignalConnect("key_down", sub {
+    $tree->SignalConnect("key-down", sub {
     	my $self = shift;
 	my $event = shift;
 	if ($event->{keyname} eq "Delete") {
@@ -592,7 +592,7 @@ sub menu_window_show
     _menu_test_item_new("About", $menu, $statusbar);
    
     $menu = Etk::Menu->new();
-    $win->SignalConnect("mouse_down", sub { $menu->Popup() });
+    $win->SignalConnect("mouse-down", sub { $menu->Popup() });
     
     _menu_test_stock_item_new("Open", DocumentOpen, $menu, $statusbar);
     _menu_test_stock_item_new("Save", DocumentSave, $menu, $statusbar);
@@ -638,7 +638,7 @@ sub _menu_test_item_new
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
     	sub { $statusbar->MessagePush($menu_item->LabelGet(), 0) });
-    $menu_item->SignalConnect("deselected", 
+    $menu_item->SignalConnect("unselected", 
     	sub { $statusbar->MessagePop(0) });
     
     return $menu_item;
@@ -654,7 +654,7 @@ sub _menu_test_stock_item_new
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
     	sub { $statusbar->MessagePush($menu_item->LabelGet(), 0) });
-    $menu_item->SignalConnect("deselected", 
+    $menu_item->SignalConnect("unselected", 
     	sub { $statusbar->MessagePop(0) });
 
     return $menu_item;
@@ -669,7 +669,7 @@ sub _menu_test_check_item_new
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
     	sub { $statusbar->MessagePush($menu_item->LabelGet(), 0) });
-    $menu_item->SignalConnect("deselected", 
+    $menu_item->SignalConnect("unselected", 
     	sub { $statusbar->MessagePop(0) });
 
     return $menu_item;
@@ -691,7 +691,7 @@ sub _menu_test_radio_item_new
     $menubar->Append($menu_item);
     $menu_item->SignalConnect("selected", 
     	sub { $statusbar->MessagePush($menu_item->LabelGet(), 0) });
-    $menu_item->SignalConnect("deselected", 
+    $menu_item->SignalConnect("unselected", 
     	sub { $statusbar->MessagePop(0) });
 
     return $menu_item;
@@ -748,7 +748,7 @@ sub combobox_window_show
 
     $combobox->ActiveItemSet($combobox->ActiveItemGet());
     
-    $combobox->SignalConnect("active_item_changed", 
+    $combobox->SignalConnect("active-item-changed", 
 	sub {
 	    my $item = $combobox->ActiveItemGet();
 	    my $stock_id = $item->DataGet();
@@ -774,7 +774,7 @@ sub iconbox_window_show
     $model->IconGeometrySet(20, 0, 130, 16, 0.0, 0.5);
     _iconbox_folder_set($iconbox, "");
     
-    $iconbox->SignalConnect("mouse_down", 
+    $iconbox->SignalConnect("mouse-down", 
 	sub {
 	    my $self = shift;
 	    my $event = shift;
@@ -953,7 +953,7 @@ sub textview_window_show
 		"<b><font color=#a82f2f>David P:</font></b> "
 	    );
 	    my $num_messages = 0;
-	    $editor_view->SignalConnect("key_down", sub {
+	    $editor_view->SignalConnect("key-down", sub {
 		    my $self = shift->TextblockGet();
 		    my $event = shift;
 		    my $message_tb = shift->TextblockGet();
