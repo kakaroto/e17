@@ -37,6 +37,7 @@ emphasis_convert.c    \
 emphasis_data_list.c  \
 emphasis_search.c
 
-emphasis_LDADD = @EMPHASIS_LIBS@
+emphasis_LDFLAGS = @DLLDFLAGS@
+emphasis_LDADD = @EMPHASIS_LIBS@ 
 
 MAINTAINERCLEANFILES = Makefile.in

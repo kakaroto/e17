@@ -68,6 +68,11 @@ PKG_CHECK_MODULES(EMPHASIS, [
   libmpd >= 0.12.0
 ])
 
+if test X"$enable_shared" = Xyes; then
+ DLLDFLAGS=-export-dynamic
+ AC_SUBST(DLLDFLAGS)
+fi
+
 # now check for the actual version of libmpd -- it seems stupid enough
 # not to publish its version number via the headers or the lib itself.
 libmpd_v_cflags=""

@@ -14,8 +14,8 @@
     <property name="default_width">180</property>
     <property name="default_height">355</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
-    <signal name="resize" handler="cb_small_resize"/>
-    <signal name="delete_event" handler="cb_quit"/>
+    <signal name="resized" handler="cb_small_resize"/>
+    <signal name="delete-event" handler="cb_quit"/>
     <child>
       <widget class="GtkVBox" id="small_root">
         <property name="visible">True</property>
@@ -28,8 +28,8 @@
                 <property name="height_request">180</property>
                 <property name="visible">True</property>
                 <property name="stock">gtk-missing-image</property>
-                <signal name="mouse_down" handler="cb_small_pack"/>
-                <signal name="mouse_wheel" handler="cb_tiny_cover_wheel"/>
+                <signal name="mouse-down" handler="cb_small_pack"/>
+                <signal name="mouse-wheel" handler="cb_tiny_cover_wheel"/>
               </widget>
             </child>
           </widget>
@@ -45,7 +45,7 @@
               <widget class="GtkProgressBar" id="small_progress">
                 <property name="visible">True</property>
                 <property name="pulse_step">0.10000000149011612</property>
-                <signal name="mouse_down" handler="cb_seek_time"/>
+                <signal name="mouse-down" handler="cb_seek_time"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -59,7 +59,7 @@
                 <property name="editable">False</property>
                 <property name="cursor_visible">False</property>
                 <property name="accepts_tab">False</property>
-                <signal name="mouse_down" handler="cb_small_pack"/>
+                <signal name="mouse-down" handler="cb_small_pack"/>
                 <property name="text" translatable="yes">current song info</property>
               </widget>
               <packing>
@@ -147,7 +147,7 @@
                   <widget class="GtkImage" id="small_sound_low">
                     <property name="visible">True</property>
                     <property name="stock">gtk-missing-image</property>
-                    <signal name="mouse_down" handler="cb_vol_image_clicked"/>
+                    <signal name="mouse-down" handler="cb_vol_image_clicked"/>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -159,7 +159,7 @@
                     <property name="can_focus">True</property>
                     <property name="adjustment">1 1 100 1 1 0</property>
                     <property name="draw_value">False</property>
-                    <signal name="value_changed" handler="cb_vol_slider_value_changed"/>
+                    <signal name="value-changed" handler="cb_vol_slider_value_changed"/>
                   </widget>
                   <packing>
                     <property name="position">1</property>
@@ -169,7 +169,7 @@
                   <widget class="GtkImage" id="small_sound_high">
                     <property name="visible">True</property>
                     <property name="stock">gtk-missing-image</property>
-                    <signal name="mouse_down" handler="cb_vol_image_clicked"/>
+                    <signal name="mouse-down" handler="cb_vol_image_clicked"/>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -300,7 +300,7 @@
     <property name="title">Emphasis' playlist</property>
     <property name="default_width">600</property>
     <property name="default_height">493</property>
-    <signal name="delete_event" handler="cb_media_quit"/>
+    <signal name="delete-event" handler="cb_media_quit"/>
     <child>
       <widget class="GtkHBox" id="media_root">
         <property name="visible">True</property>
@@ -367,8 +367,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
 								<!--<signal name="drag_begin" handler="cb_drag_artist"/>-->
-                        <signal name="row_selected" handler="cb_tree_artist_selected"/>
-                        <signal name="key_down" handler="cb_mlib_bindings_key"/>
+                        <signal name="row-selected" handler="cb_tree_artist_selected"/>
+                        <signal name="key-down" handler="cb_mlib_bindings_key"/>
                       </widget>
                     </child>
                     <child>
@@ -376,8 +376,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
 								<!--<signal name="drag_begin" handler="cb_drag_album"/>-->
-                        <signal name="row_selected" handler="cb_tree_album_selected"/>
-                        <signal name="key_down" handler="cb_mlib_bindings_key"/>
+                        <signal name="row-selected" handler="cb_tree_album_selected"/>
+                        <signal name="key-down" handler="cb_mlib_bindings_key"/>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -388,7 +388,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
 								<!--<signal name="drag_begin" handler="cb_drag_track"/>-->
-                        <signal name="key_down" handler="cb_mlib_bindings_key"/>
+                        <signal name="key-down" handler="cb_mlib_bindings_key"/>
                       </widget>
                       <packing>
                         <property name="position">2</property>
@@ -405,7 +405,7 @@
                     <property name="can_focus">True</property>
                     <property name="rules_hint">True</property>
 						  <!--<signal name="drag_drop" handler="cb_drop_song"/>-->
-                    <signal name="key_down" handler="cb_pls_bindings_key"/>
+                    <signal name="key-down" handler="cb_pls_bindings_key"/>
                   </widget>
                 </child>
               </widget>
@@ -457,7 +457,7 @@ Filename</property>
                     <child>
                       <widget class="GtkEntry" id="search_entry">
                         <property name="visible">True</property>
-                        <signal name="key_down" handler="cb_media_search_entry_text_changed"/>
+                        <signal name="key-down" handler="cb_media_search_entry_text_changed"/>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -612,7 +612,7 @@ Filename</property>
                       <widget class="GtkTreeView" id="media_pls_list">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <signal name="row_clicked" handler="cb_media_pls_list_row_clicked"/>
+                        <signal name="row-clicked" handler="cb_media_pls_list_row_clicked"/>
                       </widget>
                       <packing>
                         <property name="resize">False</property>
@@ -622,7 +622,7 @@ Filename</property>
                       <widget class="GtkTreeView" id="media_pls_content">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <signal name="row_clicked" handler="cb_tree_mlib_clicked"/>
+                        <signal name="row-clicked" handler="cb_tree_mlib_clicked"/>
                       </widget>
                     </child>
                   </widget>
@@ -650,7 +650,7 @@ Filename</property>
                         <child>
                           <widget class="GtkEntry" id="media_pls_entry_save">
                             <property name="can_focus">True</property>
-                            <signal name="key_down" handler="cb_media_pls_save_key_down"/>
+                            <signal name="key-down" handler="cb_media_pls_save_key_down"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -748,7 +748,7 @@ Filename</property>
     <property name="title">Emphasis</property>
     <property name="default_width">400</property>
     <property name="default_height">600</property>
-    <signal name="delete_event" handler="cb_quit"/>
+    <signal name="delete-event" handler="cb_quit"/>
     <child>
       <widget class="GtkVBox" id="full_root">
         <property name="visible">True</property>
@@ -847,7 +847,7 @@ Filename</property>
                       <widget class="GtkImage" id="full_sound_low">
                         <property name="visible">True</property>
                         <property name="stock">gtk-missing-image</property>
-                        <signal name="mouse_down" handler="cb_vol_image_clicked"/>
+                        <signal name="mouse-down" handler="cb_vol_image_clicked"/>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -860,7 +860,7 @@ Filename</property>
                         <property name="can_focus">True</property>
                         <property name="adjustment">1 1 100 1 1 0</property>
                         <property name="draw_value">False</property>
-                        <signal name="value_changed" handler="cb_vol_slider_value_changed"/>
+                        <signal name="value-changed" handler="cb_vol_slider_value_changed"/>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -870,7 +870,7 @@ Filename</property>
                       <widget class="GtkImage" id="full_sound_high">
                         <property name="visible">True</property>
                         <property name="stock">gtk-missing-image</property>
-                        <signal name="mouse_down" handler="cb_vol_image_clicked"/>
+                        <signal name="mouse-down" handler="cb_vol_image_clicked"/>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -995,7 +995,7 @@ Filename</property>
                           <widget class="GtkProgressBar" id="full_progress">
                             <property name="visible">True</property>
                             <property name="pulse_step">0.10000000149011612</property>
-                            <signal name="mouse_down" handler="cb_seek_time"/>
+                            <signal name="mouse-down" handler="cb_seek_time"/>
                           </widget>
                         </child>
                       </widget>
