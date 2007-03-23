@@ -9,8 +9,7 @@ static void window_fullscreen(Ewl_Widget *w, void *event, void *data);
 static Ewl_Widget *add_atree(Ewl_Widget *c);
 
 /*Ephoto MVC Callbacks*/
-static Ewl_Widget *album_view_new(void);
-static void album_view_assign(Ewl_Widget *w, void *data);
+static Ewl_Widget *album_view_new(void *data, int column, int row);
 static Ewl_Widget *album_header_fetch(void *data, int column);
 static void *album_data_fetch(void *data, unsigned int row, unsigned int column);
 static int album_data_count(void *data);
@@ -246,8 +245,7 @@ static Ewl_Widget *add_atree(Ewl_Widget *c)
 	ewl_widget_show(tree);
 
 	view = ewl_view_new();
-	ewl_view_constructor_set(view, album_view_new);
-	ewl_view_assign_set(view, album_view_assign);
+	ewl_view_widget_fetch_set(view, album_view_new);
 	ewl_view_header_fetch_set(view, album_header_fetch);
 	ewl_tree2_column_append(EWL_TREE2(tree), view, FALSE);
 
@@ -256,34 +254,27 @@ static Ewl_Widget *add_atree(Ewl_Widget *c)
 
 
 /* The view of the users albums */
-static Ewl_Widget *album_view_new(void)
+static Ewl_Widget *album_view_new(void *data, int column, int row)
 {
+	const char *album;
 	Ewl_Widget *icon;
+
+	album = data;
 
 	icon = ewl_icon_new();
 	ewl_icon_thumbnailing_set(EWL_ICON(icon), FALSE);
+        ewl_icon_image_set(EWL_ICON(icon), PACKAGE_DATA_DIR "/images/image.png", NULL);
+        ewl_icon_label_set(EWL_ICON(icon), album);
+        ewl_icon_constrain_set(EWL_ICON(icon), 25);
 	ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_HORIZONTAL);
 	ewl_object_alignment_set(EWL_OBJECT(icon), EWL_FLAG_ALIGN_LEFT);
 	ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_ALL);
+        ewl_callback_append(icon, EWL_CALLBACK_CLICKED, populate, NULL);
+	ewl_widget_name_set(icon, album);
 	ewl_widget_show(icon);
 
 	return icon;
 }
-
-/*The row that is added to the tree*/
-static void album_view_assign(Ewl_Widget *w, void *data)
-{
-	const char *album;
-
-	album = data;
-	ewl_icon_image_set(EWL_ICON(w), PACKAGE_DATA_DIR "/images/image.png", NULL);
-	ewl_icon_label_set(EWL_ICON(w), album);
-	ewl_icon_constrain_set(EWL_ICON(w), 25);
-	ewl_widget_name_set(w, album);
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED, populate, NULL);
-
-	return;
-}	
 
 /* The header for the tree */
 static Ewl_Widget *album_header_fetch(void *data, int column)

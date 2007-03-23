@@ -1,7 +1,6 @@
 #include "ephoto.h"
 
-static Ewl_Widget *list_view_new(void);
-static void list_view_assign(Ewl_Widget *w, void *data);
+static Ewl_Widget *list_view_new(void *data, int column, int row);
 static Ewl_Widget *list_header_fetch(void *data, int column);
 static void *list_data_fetch(void *data, unsigned int row, unsigned int column);
 static int list_data_count(void *data);
@@ -61,8 +60,7 @@ Ewl_Widget *add_ltree(Ewl_Widget *c)
 	ewl_widget_show(tree);
 
 	view = ewl_view_new();
-	ewl_view_constructor_set(view, list_view_new);
-	ewl_view_assign_set(view, list_view_assign);
+	ewl_view_widget_fetch_set(view, list_view_new);
 	ewl_view_header_fetch_set(view, list_header_fetch);
 	ewl_tree2_column_append(EWL_TREE2(tree), view, FALSE);
 
@@ -71,48 +69,37 @@ Ewl_Widget *add_ltree(Ewl_Widget *c)
 
 
 /* The view of the images */
-static Ewl_Widget *list_view_new(void)
+static Ewl_Widget *list_view_new(void *data, int row, int column)
 {
-	Ewl_Widget *hbox;
+	const char *image;
+	char info[PATH_MAX];
+	int size, width, height;
+	Ewl_Widget *hbox, *img, *text;
+
+        image = data;
+        image_pixels_int_get(image, &width, &height);
+        size = ecore_file_size(image);
+        snprintf(info, PATH_MAX, "Name: %s\nPixels: %s\nSize: %s\n",
+                                                 basename((char *)image),
+                                                 image_pixels_string_get(image),
+                                                 file_size_get(size));
 
 	hbox = ewl_hbox_new();
 	ewl_box_spacing_set(EWL_BOX(hbox), 10);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
 	ewl_callback_append(hbox, EWL_CALLBACK_CLICKED, set_active_list_view, NULL);
+	ewl_widget_name_set(hbox, image);
 	ewl_widget_show(hbox);
+
+        img = add_image(hbox, image, 1, NULL, NULL);
+        ewl_image_constrain_set(EWL_IMAGE(img), 64);
+
+        text = add_text(hbox, info);
+        ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
+        ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_LEFT);
 
 	return hbox;
 }
-
-/*The row that is added to the tree*/
-static void list_view_assign(Ewl_Widget *w, void *data)
-{
-	const char *image;
-	char info[PATH_MAX];
-	int size;
-	int width, height;
-	Ewl_Widget *img, *text;
-
-	image = data;
-	image_pixels_int_get(image, &width, &height);
-	
-	img = add_image(w, image, 1, NULL, NULL);
-	ewl_image_constrain_set(EWL_IMAGE(img), 64);
-	ewl_widget_name_set(w, image);
-	
-	size = ecore_file_size(image);
-
-	snprintf(info, PATH_MAX, "Name: %s\nPixels: %s\nSize: %s\n",
-						 basename((char *)image), 
-						 image_pixels_string_get(image),
-						 file_size_get(size));
-	
-	text = add_text(w, info);
-	ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
-	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_LEFT);
-	
-	return;
-}	
 
 /* The header for the tree */
 static Ewl_Widget *list_header_fetch(void *data, int column)
