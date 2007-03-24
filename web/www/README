@@ -1,0 +1,33 @@
+How this works.
+
+1. there is only 1 "page" - p.php - this is the master script that generates
+   all pages
+   
+2. actual page data is under p/
+3. the default page is ASSUMED to be under index/ - this is a requirement
+4. this supports full internationalization - translations can be provided. the
+   default assumed $lang is "en"
+5. there are other dirs main1, main2, main3 ... main8 - these are for the 8
+   main links at the top of the page. each is a dir. main link dirs contain a
+   $lang-label file (en-label assumed to always exist). this file contains the
+   test to put in the link button. keep it short. you now can have 1 of 2 files
+   in themain link dir. if there is a page file then this file contains the
+   text of a $page link (a dir relative to p/) to link to. if there is a
+   link file - then this contains a fully qualified URL to put in the link.
+6. other pages can use any named directory they want. the main buttons can
+   link to any of these pages. all pages should have a d/ directory for
+   data such as images inlined or thumbnailed. all images you wish to have
+   thumbnails of should also have a file in dir called .t.$filename where
+   filename is the file name of the image. this will be used bu the thm()
+   function.
+7. any page can contain sub-pages. if there is a file "subs" this lists, line
+   by line the sub dirs in order from left-to-right. each sub-page contains
+   a $lang-label to specify the label on this sub-link, a $lang-title for
+   the page title and a $lang-body for the page contents - it is like an
+   other page and can also have subs etc.
+8. the files lang1 and lang2 in p/ are a list of supported languages. the code
+   expects a $lang.png file in i/ to exist for that lang. these 2 files display
+   flags for languages on the left and right of the title area.
+
+don't be afraid of the php - it's tiny and small. we need to add "news" code
+that would probably work in a similar way - but that can come later.

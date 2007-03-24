@@ -1,0 +1,4 @@
+<?php thm("tst.png", "Test image thumb"); ?>
+<p>
+Sub item - woot!
+</p>

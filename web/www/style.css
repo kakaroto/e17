@@ -1,0 +1,427 @@
+body {
+   background             : url("i/b.png");
+   background-repeat      : repeat-x;
+   background-position    : top left;
+   background-color       : #f4f4f4;
+   text-align             : center;
+   padding-top            : 0px;
+   padding-bottom         : 0px;
+   padding-left           : 0px;
+   padding-right          : 0px;
+   margin                 : 0px;
+}
+
+//td.t { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/t.png'); }
+td.t { background-image:url("i/t.gif"); }
+td.t[class] { background-image:url("i/t.png"); }
+//td.tl { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/tl.png'); }
+td.tl { background-image:url("i/tl.gif"); }
+td.tl[class] { background-image:url("i/tl.png"); }
+
+div.bod {
+   column-width           : 15em;
+   -moz-column-width      : 15em;
+   column-gap             : 2em;
+   -moz-column-gap        : 2em;
+   column-rule-style      : solid;
+   -moz-column-rule-style : solid;
+   column-rule-width      : 1px;
+   -moz-column-rule-width : 1px;
+   column-rule-color      : #eeeeee;
+   -moz-column-rule-color : #eeeeee;
+   overflow               : auto;
+   margin                 : 1em;
+   text-align             : left;
+   vertical-align         : top;
+}
+
+hr {
+   width                  : 200px;
+   height                 : 1px;
+   background             : #eeeeee;
+   border                 : 0px;
+}
+
+h1 {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #000000;
+   font-size              : 1.3em;
+}
+
+h2 {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #000000;
+   font-size              : 1.1em;
+}
+
+h3 {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #000000;
+   font-size              : 0.9em;
+}
+
+p {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #444444;
+   font-size              : 0.7em;
+}
+
+p.tiny {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #888888;
+   font-size              : 0.5em;
+}
+
+a:link {
+   color                  : #445566;
+   text-decoration        : underline;
+}
+
+a:visited {
+   color                  : #667788;
+   text-decoration        : underline;
+}
+
+a:active {
+   color                  : #88cccc;
+   text-decoration        : none;
+}
+
+a:hover {
+   color                  : #112266;
+   text-decoration        : underline;
+}
+
+img {
+   vertical-align         : middle;
+   border                 : 0px;
+}
+
+img.thumb {
+   vertical-align         : middle;
+   border                 : 1px solid;
+}
+
+pre {
+   font-family            : "Bitstream Vera Mono", "Vera Mono", "Trebuchet MS Mono", "Trebuchet Mono", "Tahoma Mono", mono;
+   color                  : #000000;
+   font-size              : 1em;
+   border                 : 1px dotted #eeeeee;
+   text-align             : left;
+   vertical-align         : middle;
+   padding                : 2em;
+   overflow               : auto;
+}
+
+blockquote {
+   color                  : #000000;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   font-size              : 1em;
+}
+
+td.lnav {
+   align                  : middle;
+   text-align             : center;
+   vertical-align         : middle;
+   width                  : 100px;
+   height                 : 25px;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #000000;
+   font-size              : 9px;
+   font-weight            : bold;
+   white-space            : no-wrap;
+}
+//td.lnav { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/n.png'); }
+td.lnav { background-image:url("i/n.gif"); }
+td.lnav[class] { background-image:url("i/n.png"); }
+
+td.rnav {
+   align                  : middle;
+   text-align             : center;
+   vertical-align         : middle;
+   width                  : 100px;
+   height                 : 25px;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #000000;
+   font-size              : 9px;
+   font-weight            : bold;
+   white-space            : no-wrap;
+}
+//td.rnav { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/n.png'); }
+td.rnav { background-image:url("i/n.gif"); }
+td.rnav[class] { background-image:url("i/n.png"); }
+
+td.nav {
+   align                  : middle;
+   text-align             : center;
+   vertical-align         : middle;
+   width                  : 100px;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #222222;
+   font-size              : 9px;
+   font-weight            : bold;
+   white-space            : no-wrap;
+}
+
+a.nav:link {
+   color                  : #888888;
+   text-decoration        : none;
+}
+
+a.nav:visited {
+   color                  : #888888;
+   text-decoration        : none;
+}
+
+a.nav:active {
+   color                  : #000000;
+   text-decoration        : none;
+}
+
+a.nav:hover {
+   color                  : #444444;
+   text-decoration        : none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// OLD CSS STUFF TO STEAL FROM
+
+table.main {
+   border                 : 0;
+   cellpadding            : 8;
+   cellspacing            : 0;
+}
+
+td.bx1 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_tlf.png'); }
+td.bx1[class] { background-image:url("i/nav_tlf.png"); }
+td.bx2 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_top.png'); }
+td.bx2[class] { background-image:url("i/nav_top.png"); }
+td.bx3 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_trt.png'); }
+td.bx3[class] { background-image:url("i/nav_trt.png"); }
+td.bx4 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_lef.png'); }
+td.bx4[class] { background-image:url("i/nav_lef.png"); }
+td.bx5 {
+   background             : #fff;
+   text-align             : left;
+   vertical-align         : middle;
+}
+td.bx5b {
+   background             : #fff;
+   background-repeat      : no-repeat;
+   background-image       : url("i/card_bg2.png");
+   background-position    : bottom right;
+   text-align             : left;
+   vertical-align         : middle;
+}
+td.bx6 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_rig.png'); }
+td.bx6[class] { background-image:url("i/nav_rig.png"); }
+td.bx7 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_blf.png'); }
+td.bx7[class] { background-image:url("i/nav_blf.png"); }
+td.bx8 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_bot.png'); }
+td.bx8[class] { background-image:url("i/nav_bot.png"); }
+td.bx9 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_brt.png'); }
+td.bx9[class] { background-image:url("i/nav_brt.png"); }
+
+td.nav {
+   align                  : middle;
+   text-align             : center;
+   vertical-align         : top;
+}
+
+td.navtop, td.navbottom {
+   align             : center;
+   text-align             : center;
+   vertical-align         : middle;
+}
+
+td.nav_img {
+   width                  : 10;
+   text-align             : center;
+   vertical-align         : middle;
+}
+
+td.nav_text {
+   text-align             : left;
+   vertical-align         : middle;
+}
+
+td.xsm_menu_category {
+   text-align             : left;
+   vertical-align         : middle;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #ccc;
+   font-size              : 12px;
+   font-weight            : bold;
+   white-space            : no-wrap;
+}
+
+table.menu {
+   border                 : 0;
+   cellpadding            : 0;
+   cellspacing            : 2;
+}
+
+table.menu2 {
+   border                 : 0;
+   cellpadding            : 0;
+   cellspacing            : 2;
+}
+
+td.title {
+   height                 : 24;
+   text-align             : center;
+   vertical-align         : middle;
+}
+
+td.body {
+   width                  : 100%;
+   height                 : *;
+   text-align             : center;
+   vertical-align         : top;
+}
+
+td.menu {
+   background             : #fff;
+   text-align             : left;
+   vertical-align         : middle;
+}
+
+
+td.nav_text a:link {
+   color                  : #444;
+   text-decoration        : none;
+}
+
+td.nav_text a:visited {
+   color                  : #444;
+   text-decoration        : none;
+}
+
+td.nav_text a:active {
+   color                  : #888;
+   text-decoration        : none;
+}
+
+td.nav_text a:hover {
+   color                  : #000;
+   text-decoration        : none;
+}
+
+font.xsm_menu_item {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #000;
+   font-size              : 11px;
+   white-space            : no-wrap;
+}
+
+font.xsm_menu_item_selected {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #000;
+   font-size              : 15px;
+   font-weight            : bold;
+   white-space            : no-wrap;
+}
+
+div.left {
+   float                  : left;
+   margin                 : 16px;
+   text-align             : center;
+   vertical-align         : middle;
+}
+
+div.right {
+   float                  : right;
+   margin                 : 16px;
+   text-align             : center;
+   vertical-align         : middle;
+}
+
+div.item {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #000;
+   font-size              : 11px;
+   line-height            : 14px;
+   width                  : 100;
+   border                 : 1px solid #ccc;
+   text-align             : center;
+   vertical-align         : middle;
+   padding                : 8px;
+}
+
+div.img {
+   border                 : 1px solid #ccc;
+   text-align             : center;
+   vertical-align         : middle;
+   padding                : 0px;
+}
+
+img.shot  {
+   border                 : 0px;
+}
+
+td.newsdate {
+   background             : #000;
+   color                  : #fff;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   text-align             : left;
+   font-weight            : bold;
+   font-size              : 11px;
+   line-height            : 14px;
+   padding                : 4px;
+}
+
+td.newstitle {
+   background             : #000;
+   color                  : #fff;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   text-align             : right;
+   font-weight            : bold;
+   font-size              : 11px;
+   line-height            : 14px;
+   padding                : 4px;
+}
+
+td.news {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   text-align             : left;
+   font-size              : 11px;
+   line-height            : 14px;
+   padding                : 8px;
+}
+
+div.thumb {
+   float                  : left;
+   border                 : 0px;
+   text-align             : center;
+   vertical-align         : bottom;
+   padding                : 2px;
+   margin                 : 2px;
+}
+
+div.thumbsub {
+   border                 : 0px;
+   text-align             : center;
+   vertical-align         : middle;
+   padding                : 2px;
+   margin                 : 2px;
+}
+
+td.thumb {
+   border                 : 0px;
+   text-align             : center;
+   vertical-align         : bottom;
+   padding                : 0px;
+   margin                 : 2px;
+}
