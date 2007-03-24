@@ -9,7 +9,7 @@ EDJE_FLAGS = -v \
 
 filesdir = $(datadir)
 files_DATA = module.desktop \
-	     module.edj \
+	     e-module-tclock.edj \
 	     tclock.edj
 
 EXTRA_DIST = $(files_DATA) \
