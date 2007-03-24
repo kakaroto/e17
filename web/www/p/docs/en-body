@@ -11,7 +11,7 @@
   available.
  </p>
 
-<h2>Enlightenment Foundataion Libraries :: Beta Manuals</h2>
+<h2>EFL Beta Manuals</h2>
  <p>
   These manuals are still a work in progress. So, while the code examples may
   have become outdated due to code changes the concepts described in the
@@ -74,7 +74,7 @@
   Written by <a href="mailto:benrNO@SPAMcuddletech.com">Ben 'technikolor' Rockwood</a>.
  </p>
 
-<h2>Enlightenment Foundation Libraries :: API Docs</h2>
+<h2>EFL API Docs</h2>
  <p>
   Many of hte libraries in CVS have Doxygen documentation included. You can
   either generate this documentation using the <code>gendoc</code> script in
