@@ -104,16 +104,19 @@
         [<a href="http://docs.enlightenment.org/api/engrave/engrave-reference.pdf">PDF</a>]</li>
    <li>Efreet [<a href="http://docs.enlightenment.org/api/efreet/html">HTML</a>] 
         [<a href="http://docs.enlightenment.org/api/efreet/efreet-reference.pdf">PDF</a>]</li>
+  </ul>
  </p>
 
 <h2>Enlightenment DR16 Documentation</h2>
-There is ample documentation available from Enlightenment itself. eDox is
-DR16's "built in" docuemenation and tutorial system. This system was removed
-from the main distribution with the release of DR16.7 in order to shrink the
-size of the distribution and applications installed disk usage. If you are
-new to Enlightenment, please <a
-href="http://sourceforge.net/project/showfiles.php?group_id=2&package_id=116678&release_id=234365">download
-and install the enlightenment-docs package (aka: eDox)</a>.
+ <p>
+  There is ample documentation available from Enlightenment itself. eDox is
+  DR16's "built in" docuemenation and tutorial system. This system was removed
+  from the main distribution with the release of DR16.7 in order to shrink the
+  size of the distribution and applications installed disk usage. If you are
+  new to Enlightenment, please <a
+  href="http://sourceforge.net/project/showfiles.php?group_id=2&package_id=116678&release_id=234365">download
+  and install the enlightenment-docs package (aka: eDox)</a>.
+ </p>
 
 <h3>EtherDox [<a href="http://etherdoxproject.com">HTML</a>]</h3>
  <p>
