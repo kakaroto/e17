@@ -1,5 +1,5 @@
-#define EWL_GUI 0
 #include "E_Hal.h"
+#include <config.h>
 
 #if EWL_GUI
 #include <Ewl.h>

@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = \
+AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/dbus \
 -I$(top_srcdir)/src/lib/hal \
 -I$(top_srcdir)/src/lib/nm \
@@ -29,10 +29,18 @@ e_dbus_test_client_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la
 HALSOURCES = \
 hal.c
 
+e_dbus_hal_CPPFLAGS = \
+$(AM_CPPFLAGS) \
+@HAL_TEST_GUI_CFLAGS@
+
+e_dbus_hal_LIBS = \
+$(LIBS) \
+@HAL_TEST_GUI_LIBS@
+
 e_dbus_hal_SOURCES = \
 	$(HALSOURCES)
 
-e_dbus_hal_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la $(LIBS) 
+e_dbus_hal_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la $(e_dbus_hal_LIBS) 
 e_dbus_hal_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la
 
 

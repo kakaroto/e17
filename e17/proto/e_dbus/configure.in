@@ -8,10 +8,20 @@ AM_PROG_LIBTOOL
 
 AC_HEADER_STDC
 
+AC_CONFIG_HEADERS(config.h)
+
 PKG_CHECK_MODULES([EDBUS], [
   dbus-1
   ecore >= 0.9.9
 ])
+
+PKG_CHECK_MODULES([HAL_TEST_GUI], [
+  ewl
+  efreet
+],
+[AC_DEFINE([EWL_GUI], 1, [An ewl gui for e_dbus_hal])],
+[AC_DEFINE([EWL_GUI], 0, [An ewl gui for e_dbus_hal])]
+)
 
 AC_OUTPUT([
 Makefile

@@ -21,6 +21,9 @@ typedef DBusMessage *(* E_DBus_Method_Cb)(E_DBus_Object *obj, DBusMessage *messa
 typedef void (*E_DBus_Method_Return_Cb) (void *data, DBusMessage *msg, DBusError *error);
 typedef void (*E_DBus_Signal_Cb) (void *data, DBusMessage *msg);
 
+typedef void (*E_DBus_Object_Property_Get_Cb) (E_DBus_Object *obj, const char *property, int *type, void **value);
+typedef int  (*E_DBus_Object_Property_Set_Cb) (E_DBus_Object *obj, const char *property, int type, void *value);
+
 int e_dbus_init(void);
 void e_dbus_shutdown(void);
 
@@ -40,7 +43,10 @@ int e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, con
 
 E_DBus_Object *e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data);
 void e_dbus_object_free(E_DBus_Object *obj);
+void *e_dbus_object_data_get(E_DBus_Object *obj);
 
+void e_dbus_object_property_get_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Get_Cb func);
+void e_dbus_object_property_set_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Set_Cb func);
 
 
 /* sending method calls */

@@ -6,6 +6,7 @@
 #include <string.h>
 
 static E_DBus_Interface *introspectable_interface = NULL;
+static E_DBus_Interface *properties_interface = NULL;
 
 typedef struct E_DBus_Method E_DBus_Method;
 
@@ -46,6 +47,9 @@ struct E_DBus_Object
   Ecore_List *interfaces;
   char *introspection_data;
   int introspection_dirty;
+
+  E_DBus_Object_Property_Get_Cb cb_property_get;
+  E_DBus_Object_Property_Set_Cb cb_property_set;
 
   void *data;
 };
@@ -89,13 +93,95 @@ cb_introspect(E_DBus_Object *obj, DBusMessage *msg)
 
   return ret;
 }
-#if 1
+
+static DBusMessage *
+cb_properties_get(E_DBus_Object *obj, DBusMessage *msg)
+{
+  DBusMessage *reply;
+  DBusMessageIter iter, sub;
+  DBusError err;
+  int type;
+  void *value;
+  char *property;
+
+  dbus_error_init(&err);
+  dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
+
+  if (dbus_error_is_set(&err))
+  {
+    return dbus_message_new_error(msg, err.name, err.message);
+  }
+
+  obj->cb_property_get(obj, property, &type, &value);
+  if (type == DBUS_TYPE_INVALID)
+  {
+    return dbus_message_new_error_printf(msg, "org.enlightenment.DBus.InvalidProperty", "The property '%s' does not exist on this object.", property);
+  }
+
+  if (dbus_type_is_basic(type))
+  {
+    reply = dbus_message_new_method_return(msg);
+    dbus_message_iter_init_append(msg, &iter);
+    dbus_message_iter_open_container(&iter, DBUS_TYPE_VARIANT, dbus_message_type_to_string(type), &sub);
+    dbus_message_iter_append_basic(&sub, type, &value);
+    dbus_message_iter_close_container(&iter, &sub);
+    return reply;
+  }
+  else
+  {
+    return dbus_message_new_error(msg, "org.enlightenment.DBus.UnsupportedType", "E_DBus currently only supports properties of a basic type.");
+  }
+}
+
+static DBusMessage *
+cb_properties_set(E_DBus_Object *obj, DBusMessage *msg)
+{
+  DBusMessage *reply;
+  DBusMessageIter iter, sub;
+  int type;
+  void *value;
+  char *property;
+
+  dbus_message_iter_init(msg, &iter);
+  dbus_message_iter_get_basic(&sub, &property);
+  dbus_message_iter_recurse(&iter, &sub);
+  type = dbus_message_iter_get_arg_type(&sub);
+  if (dbus_type_is_basic(type))
+  {
+    dbus_message_iter_get_basic(&sub, &value);
+    if (obj->cb_property_set(obj, property, type, value))
+    {
+      return dbus_message_new_method_return(msg);
+    }
+    else
+    {
+      return dbus_message_new_error_printf(msg, "org.enlightenment.DBus.InvalidProperty", "The property '%s' does not exist on this object.", property);
+    }
+  }
+  else
+  {
+    return dbus_message_new_error(msg, "org.enlightenment.DBus.UnsupportedType", "E_DBus currently only supports properties of a basic type.");
+  }
+
+}
+
 int
 e_dbus_object_init(void)
 {
   introspectable_interface = e_dbus_interface_new("org.freedesktop.DBus.Introspectable");
-  if (!introspectable_interface) return 0;
+  properties_interface = e_dbus_interface_new("org.freedesktop.DBus.Properties");
+  if (!introspectable_interface || !properties_interface)
+  {
+    if (introspectable_interface) e_dbus_interface_unref(introspectable_interface);
+    introspectable_interface = NULL;
+    if (properties_interface) e_dbus_interface_unref(introspectable_interface);
+    properties_interface = NULL;
+    return 0;
+  }
+
   e_dbus_interface_method_add(introspectable_interface, "Introspect", "", "s", cb_introspect);
+  e_dbus_interface_method_add(properties_interface, "Get", "s", "v", cb_properties_get);
+  e_dbus_interface_method_add(properties_interface, "Set", "sv", "", cb_properties_set);
   return 1;
 }
 
@@ -106,13 +192,13 @@ e_dbus_object_shutdown(void)
   introspectable_interface = NULL;
 }
 
-#endif
 /**
  * Add a dbus object.
  *
  * @param conn the connection on with the object should listen
  * @param object_path a unique string identifying an object (e.g. org/enlightenment/WindowManager
- * @param data custom data to set on the object (obj->data XXX this needs an api)
+ * @param data custom data to set on the object (retrievable via
+ *             e_dbus_object_data_get())
  */
 E_DBus_Object *
 e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data)
@@ -159,6 +245,38 @@ e_dbus_object_free(E_DBus_Object *obj)
   if (obj->introspection_data) free(obj->introspection_data);
 
   free(obj);
+}
+
+/**
+ * @brief Fetch the data pointer for a dbus object
+ * @param obj the dbus object
+ */
+void *
+e_dbus_object_data_get(E_DBus_Object *obj)
+{
+  return obj->data;
+}
+
+/**
+ * @brief Sets the callback to fetch properties from an object
+ * @param obj the object
+ * @param func the callback
+ */
+void
+e_dbus_object_property_get_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Get_Cb func)
+{
+  obj->cb_property_get = func;
+}
+
+/**
+ * @brief Sets the callback to set properties on an object
+ * @param obj the object
+ * @param func the callback
+ */
+void
+e_dbus_object_property_set_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Set_Cb func)
+{
+  obj->cb_property_set = func;
 }
 
 void
@@ -338,7 +456,7 @@ e_dbus_object_introspect(E_DBus_Object *obj)
   ecore_strbuf_append(buf, obj->path);
   ecore_strbuf_append(buf, "\">\n");
   level++;
-  /* XXX currently assumes methods grouped by interface. should probably sort first -- or better, actually group them by interface */
+
   ecore_list_goto_first(obj->interfaces);
   while((iface = ecore_list_next(obj->interfaces)))
     _introspect_interface_append(buf, iface, level);
