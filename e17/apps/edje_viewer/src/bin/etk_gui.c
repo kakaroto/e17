@@ -50,7 +50,7 @@ void main_window_show(char *file)
 
    gui = calloc(1, sizeof(Gui));
    gui->win = etk_window_new();
-   gui->popup = ETK_POPUP_WINDOW(etk_widget_new(ETK_POPUP_WINDOW_TYPE, "theme_group", "window", NULL));
+   gui->popup = ETK_POPUP_WINDOW(etk_widget_new(ETK_POPUP_WINDOW_TYPE, "theme-group", "window", NULL));
    etk_window_title_set(ETK_WINDOW(gui->win), _(WINDOW_TITLE));
    etk_window_wmclass_set(ETK_WINDOW(gui->win), "edje_viewer", "Edje_viewer");
    etk_container_border_width_set(ETK_CONTAINER(gui->win), 0);
@@ -59,9 +59,9 @@ void main_window_show(char *file)
    gui->search_entry = etk_entry_new();
    etk_container_add(ETK_CONTAINER(gui->popup), gui->search_entry);
    etk_widget_show(gui->search_entry);
-   etk_signal_connect("key_down", ETK_OBJECT(gui->search_entry), 
+   etk_signal_connect("key-down", ETK_OBJECT(gui->search_entry), 
 	 ETK_CALLBACK(_gui_search_entry_key_down_cb), gui);
-   etk_signal_connect("text_changed", ETK_OBJECT(gui->search_entry), 
+   etk_signal_connect("text-changed", ETK_OBJECT(gui->search_entry), 
 	 ETK_CALLBACK(_gui_search_entry_text_changed_cb), gui);
 
    vbox = etk_vbox_new(ETK_FALSE, 0);
@@ -135,7 +135,7 @@ void main_window_show(char *file)
    etk_tree_col_model_add(col2, etk_tree_model_checkbox_new());
    etk_tree_build(ETK_TREE(gui->tree));
    etk_widget_size_request_set(gui->tree, 300, 0);
-   etk_signal_connect("key_down", ETK_OBJECT(gui->tree), ETK_CALLBACK(_gui_tree_key_down_cb), gui);
+   etk_signal_connect("key-down", ETK_OBJECT(gui->tree), ETK_CALLBACK(_gui_tree_key_down_cb), gui);
    etk_paned_child1_set(ETK_PANED(paned), gui->tree, ETK_FALSE);
 
    gui->canvas = etk_canvas_new();
@@ -196,9 +196,9 @@ void main_window_show(char *file)
 	     _open_edje_file(gui);
 	  }
      }
-   etk_signal_connect("delete_event", ETK_OBJECT(gui->win),
+   etk_signal_connect("delete-event", ETK_OBJECT(gui->win),
 	   ETK_CALLBACK(_gui_main_window_deleted_cb), NULL);
-   etk_signal_connect("cell_value_changed", ETK_OBJECT(col2),
+   etk_signal_connect("cell-value-changed", ETK_OBJECT(col2),
 	 ETK_CALLBACK(_gui_tree_checkbox_toggled_cb), gui);
 }
 
@@ -473,7 +473,7 @@ static void _gui_open_edje_file_cb(Gui *gui)
 
    gui->fm_dialog = etk_dialog_new();
    etk_window_title_set(ETK_WINDOW(gui->fm_dialog), _("Choose an edje file"));
-   etk_signal_connect("delete_event", ETK_OBJECT(gui->fm_dialog),
+   etk_signal_connect("delete-event", ETK_OBJECT(gui->fm_dialog),
 	   ETK_CALLBACK(etk_window_hide_on_delete), NULL);	
 
    gui->fm_chooser = etk_filechooser_widget_new();

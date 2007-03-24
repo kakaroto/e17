@@ -85,30 +85,10 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
-PKG_CHECK_MODULES(EDJEVIEWER, [
-  ecore-config
-  evas
-  edje
-  etk
-])
-
-#check for E
-AC_PATH_EFL(
-   enlightenment,
-   0.16.999.022,
-   [
-     e_libs=`enlightenment-config --libs`
-     e_cflags=`enlightenment-config --cflags`     
-   ],
-   [
-     AC_MSG_WARN([No E, can't build E desktop support.])
-     e_libs=""
-     e_cflags=""
-   ]
-)
-
-AC_SUBST(e_cflags)
-AC_SUBST(e_libs)
+PKG_CHECK_MODULES(evas, [evas >= 0.9.9])
+PKG_CHECK_MODULES(ecore, [ecore >= 0.9.9 ecore-config >= 0.9.9.037])
+PKG_CHECK_MODULES(edje, [edje >= 0.5.0])
+PKG_CHECK_MODULES(etk, [etk >= 0.1.0.001])
 
 AC_OUTPUT([
 Makefile
