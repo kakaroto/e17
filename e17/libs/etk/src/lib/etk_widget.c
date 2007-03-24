@@ -20,6 +20,8 @@
  * @{
  */
 
+/* TODO: fixme: color_set() when adding a new child, when adding a swallowed object? */
+
 #define ETK_WIDGET_CONTENT_PART      "etk.swallow.content"
 
 typedef struct Etk_Widget_Member_Object
@@ -73,6 +75,8 @@ enum Etk_Widget_Property_Id
    ETK_WIDGET_REQUESTED_WIDTH_PROPERTY,
    ETK_WIDGET_REQUESTED_HEIGHT_PROPERTY,
    ETK_WIDGET_VISIBLE_PROPERTY,
+   ETK_WIDGET_COLOR_PROPERTY,
+   ETK_WIDGET_PROPAGATE_COLOR_PROPERTY,
    ETK_WIDGET_DISABLED_PROPERTY,
    ETK_WIDGET_INTERNAL_PROPERTY,
    ETK_WIDGET_REPEAT_MOUSE_EVENTS_PROPERTY,
@@ -126,6 +130,7 @@ static void _etk_widget_child_remove(Etk_Widget *parent, Etk_Widget *child);
 static void _etk_widget_object_add_to_smart(Etk_Widget *widget, Evas_Object *object, Etk_Bool clip);
 static void _etk_widget_add_to_clip(Etk_Widget *widget, Evas_Object *clip);
 static void _etk_widget_remove_from_clip(Etk_Widget *widget, Evas_Object *clip);
+static void _etk_widget_real_color_get(Etk_Widget *widget, int *r, int *g, int *b, int *a);
 
 static Evas_List *_etk_widget_member_object_find(Etk_Widget *widget, Evas_Object *object);
 static void _etk_widget_member_object_intercept_show_cb(void *data, Evas_Object *obj);
@@ -242,6 +247,10 @@ Etk_Type *etk_widget_type_get(void)
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(-1));
       etk_type_property_add(widget_type, "visible", ETK_WIDGET_VISIBLE_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(widget_type, "color", ETK_WIDGET_COLOR_PROPERTY,
+            ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
+      etk_type_property_add(widget_type, "propagate_color", ETK_WIDGET_PROPAGATE_COLOR_PROPERTY,
+            ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(widget_type, "internal", ETK_WIDGET_INTERNAL_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "focusable", ETK_WIDGET_FOCUSABLE_PROPERTY,
@@ -288,80 +297,515 @@ Etk_Widget *etk_widget_new(Etk_Type *widget_type, const char *first_property, ..
 }
 
 /**
- * @brief Gets the geometry of the widget, relative to the top-left corner of the Evas where it is drawn
+ * @brief Shows the widget
  * @param widget a widget
- * @param x the location where to store the x position of the widget
- * @param y the location where to store the y position of the widget
- * @param w the location where to store the width of the widget
- * @param h the location where to store the height of the widget
+ * @note The widget will effectively be shown if all its parents are also shown
  */
-void etk_widget_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h)
+void etk_widget_show(Etk_Widget *widget)
 {
-   if (x)   *x = widget ? widget->geometry.x : 0;
-   if (y)   *y = widget ? widget->geometry.y : 0;
-   if (w)   *w = widget ? widget->geometry.w : 0;
-   if (h)   *h = widget ? widget->geometry.h : 0;
+   Etk_Widget *parent;
+   
+   if (!widget || widget->visible)
+      return;
+
+   parent = widget->parent;
+   widget->visible = ETK_TRUE;
+   if (widget->smart_object && (!parent || (parent->smart_object && evas_object_visible_get(parent->smart_object))))
+      evas_object_show(widget->smart_object);
+   etk_widget_size_recalc_queue(widget);
+   
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SHOWN_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_object_notify(ETK_OBJECT(widget), "visible");
 }
 
 /**
- * @brief Gets the inner geometry of the widget, relative to the top-left corner of the Evas where it is drawn. @n
- * The inner geometry corresponds to the rectangle in which the widget's children are rendered. This rectangle may be
- * smaller than the geometry of the widget because inset values can be set by the theme
+ * @brief Recursively shows the widget and its children
  * @param widget a widget
- * @param x the location where to store the inner x position of the widget
- * @param y the location where to store the inner y position of the widget
- * @param w the location where to store the inner width of the widget
- * @param h the location where to store the inner height of the widget
  */
-void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h)
+void etk_widget_show_all(Etk_Widget *widget)
 {
-   if (x)   *x = widget ? widget->inner_geometry.x : 0;
-   if (y)   *y = widget ? widget->inner_geometry.y : 0;
-   if (w)   *w = widget ? widget->inner_geometry.w : 0;
-   if (h)   *h = widget ? widget->inner_geometry.h : 0;
+   Evas_List *l;
+   
+   if (!widget)
+      return;
+
+   if (!widget->internal)
+     etk_widget_show(widget);
+   for (l = widget->children; l; l = l->next)
+      etk_widget_show_all(ETK_WIDGET(l->data));
 }
 
 /**
- * @brief Sets the padding on the different sides of the widget.
- * The padding adds blank space to the sides of the widget
+ * @brief Hides the widget
  * @param widget a widget
- * @param left the padding at the left of the widget
- * @param right the padding at the right of the widget
- * @param top the padding at the top of the widget
- * @param bottom the padding at the bottom of the widget
  */
-void etk_widget_padding_set(Etk_Widget *widget, int left, int right, int top, int bottom)
+void etk_widget_hide(Etk_Widget *widget)
+{
+   if (!widget || !widget->visible)
+      return;
+
+   widget->visible = ETK_FALSE;
+   if (widget->smart_object)
+      evas_object_hide(widget->smart_object);
+   etk_widget_size_recalc_queue(widget);
+   
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_HIDDEN_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_object_notify(ETK_OBJECT(widget), "visible");
+}
+
+/**
+ * @brief Recursively hides the widget and its children
+ * @param widget a widget
+ */
+void etk_widget_hide_all(Etk_Widget *widget)
+{
+   Evas_List *l;
+   
+   if (!widget)
+      return;
+
+   if (!widget->internal)
+      etk_widget_hide(widget);
+   for (l = widget->children; l; l = l->next)
+      etk_widget_hide_all(ETK_WIDGET(l->data));
+}
+
+/**
+ * @brief Checks if the object is visible
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the widget is visible, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_is_visible(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return widget->visible;
+}
+
+/**
+ * @brief Sets whether or not the widget is an internal widget: an internal widget is not affected by
+ * etk_widget_show_all() and etk_widget_hide_all(). It prevents visibility issues when one calls
+ * etk_widget_hide_all(widget) and then etk_widget_show(widget). @n
+ * For example, if the label of a button wasn't an internal widget, calling etk_widget_hide_all(button) would hide the
+ * button and the label, and etk_widget_show(button) would only make the button reappear. The label would be invisible
+ * while it should still be visible
+ * @param widget a widget
+ * @param internal ETK_TRUE to prevent the widget to be affected by etk_widget_show_all() and etk_widget_hide_all()
+ * @widget_implementation
+ */
+void etk_widget_internal_set(Etk_Widget *widget, Etk_Bool internal)
+{
+   if (!widget || widget->internal == internal)
+      return;
+   
+   widget->internal = internal;
+   etk_object_notify(ETK_OBJECT(widget), "internal");
+}
+
+/**
+ * @brief Gets whether the widget is an internal widget. See etk_widget_internal_set() for more info
+ * about internal widgets
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the widget is an internal widget, ETK_FALSE otherwise
+ * @see etk_widget_internal_get()
+ */
+Etk_Bool etk_widget_internal_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return widget->internal;
+}
+
+/**
+ * @brief Focuses the widget. The focused widget is the one which receives the keyboard events
+ * @param widget a widget
+ * @note The widget has to be attached to a toplevel widget, otherwise it will have no effect
+ */
+void etk_widget_focus(Etk_Widget *widget)
+{
+   Etk_Widget *focused;
+
+   if (!widget || !widget->toplevel_parent || !widget->focusable || etk_widget_disabled_get(widget))
+      return;
+   if ((focused = etk_toplevel_focused_widget_get(widget->toplevel_parent)) && (widget == focused))
+      return;
+
+   if (focused)
+      etk_widget_unfocus(focused);
+
+   /* TODO: etk_toplevel_focused_widget_set() should emit the "focused" signal no? */
+   etk_toplevel_focused_widget_set(widget->toplevel_parent, widget);
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_FOCUSED_SIGNAL], ETK_OBJECT(widget), NULL);
+}
+
+/**
+ * @brief Unfocuses the widget
+ * @param widget a widget
+ */
+void etk_widget_unfocus(Etk_Widget *widget)
+{
+   if (!widget || !widget->toplevel_parent || !etk_widget_is_focused(widget))
+      return;
+
+   /* TODO: etk_toplevel_focused_widget_set() should emit the "unfocused" signal no? */
+   etk_toplevel_focused_widget_set(widget->toplevel_parent, NULL);
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_UNFOCUSED_SIGNAL], ETK_OBJECT(widget), NULL);
+}
+
+/**
+ * @brief Gets whether the widget is focused
+ * @param widget a widget
+ * @return Returns ETK_TRUE if @a widget is focused, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_is_focused(Etk_Widget *widget)
+{
+   if (!widget || !widget->toplevel_parent)
+      return ETK_FALSE;
+   return (etk_toplevel_focused_widget_get(widget->toplevel_parent) == widget);
+}
+
+/**
+ * @brief Sets whether or not the widget can be focused
+ * @param widget a widget
+ * @param focusable ETK_TRUE to make @a widget focusable, ETK_FALSE otherwise
+ */
+void etk_widget_focusable_set(Etk_Widget *widget, Etk_Bool focusable)
+{
+   if (!widget || widget->focusable == focusable)
+      return;
+   
+   if (!focusable)
+      etk_widget_unfocus(widget);
+   widget->focusable = focusable;
+   etk_object_notify(ETK_OBJECT(widget), "focusable");
+}
+
+/**
+ * @brief Gets whether the widget can be focused or not
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the widget is focusable, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_focusable_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return widget->focusable;
+}
+
+/**
+ * @brief Sets whether or not the widget is disabled. When a widget is disabled, the user can't interact
+ * with it anymore until it's enabled again. The widget will also look grayed
+ * @param widget a widget
+ * @param disabled ETK_TRUE to disable the widget, ETK_FALSE to enable it
+ */
+void etk_widget_disabled_set(Etk_Widget *widget, Etk_Bool disabled)
+{
+   if (!widget || widget->disabled == disabled)
+      return;
+   
+   widget->disabled = disabled;
+   if (disabled)
+      etk_widget_unfocus(widget);
+
+   if (widget->smart_object && !widget->pass_mouse_events)
+      evas_object_pass_events_set(widget->smart_object, disabled);
+   if (disabled)
+      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DISABLED_SIGNAL], ETK_OBJECT(widget), NULL);
+   else
+      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_ENABLED_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_object_notify(ETK_OBJECT(widget), "disabled");
+}
+
+/**
+ * @brief Gets whether or not the widget is disabled
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the widget is disabled, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_disabled_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return widget->disabled;
+}
+
+/**
+ * @brief Raises a widget: it will be moved above all the other widgets that have the same parent as @a widget
+ * @param widget the widget to raise
+ */
+void etk_widget_raise(Etk_Widget *widget)
+{
+   Evas_List *l;
+   
+   if (!widget || !widget->parent)
+      return;
+   
+   if ((l = evas_list_find_list(widget->parent->children, widget)))
+   {
+      widget->parent->children = evas_list_remove_list(widget->parent->children, l);
+      widget->parent->children = evas_list_append(widget->parent->children, widget);
+   }
+   
+   if (widget->smart_object)
+      evas_object_raise(widget->smart_object);
+}
+
+/**
+ * @brief Lowers a widget: it will be moved below all the other widgets that have the same parent as @a widget
+ * @param widget the widget to lower
+ */
+void etk_widget_lower(Etk_Widget *widget)
+{
+   Evas_List *l;
+   
+   if (!widget || !widget->parent)
+      return;
+   
+   if ((l = evas_list_find_list(widget->parent->children, widget)))
+   {
+      widget->parent->children = evas_list_remove_list(widget->parent->children, l);
+      widget->parent->children = evas_list_prepend(widget->parent->children, widget);
+   }
+   
+   /* Lower the smart-object */
+   if (widget->smart_object)
+   {
+      if (widget->parent->content_object)
+         evas_object_lower(widget->smart_object);
+      else if (widget->parent->theme_object)
+         evas_object_stack_above(widget->smart_object, widget->theme_object);
+      else if (widget->parent->event_object)
+         evas_object_stack_above(widget->smart_object, widget->event_object);
+      else
+         evas_object_lower(widget->smart_object);
+   }
+}
+
+/**
+ * @brief Emits the "entered" signal on the widget. The widget will look like if the mouse had entered the widget
+ * @param widget a widget
+ */
+void etk_widget_enter(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   
-   widget->padding.left = ETK_MAX(0, left);
-   widget->padding.right = ETK_MAX(0, right);
-   widget->padding.top = ETK_MAX(0, top);
-   widget->padding.bottom = ETK_MAX(0, bottom);
-   
-   etk_object_notify(ETK_OBJECT(widget), "padding");
-   etk_widget_size_recalc_queue(widget);
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_ENTERED_SIGNAL], ETK_OBJECT(widget), NULL);
 }
 
 /**
- * @brief Gets the padding on the different sides of the widget
+ * @brief Emits the "left" signal on the widget. The widget will look like if the mouse had left the widget
  * @param widget a widget
- * @param left the location where to store the padding at the left of the widget
- * @param right the location where to store the padding at the right of the widget
- * @param top the location where to store the padding at the top of the widget
- * @param bottom the location where to store the padding at the bottom of the widget
  */
-void etk_widget_padding_get(Etk_Widget *widget, int *left, int *right, int *top, int *bottom)
+void etk_widget_leave(Etk_Widget *widget)
 {
-   if (left)
-      *left = widget ? widget->padding.left : 0;
-   if (right)
-      *right = widget ? widget->padding.right : 0;
-   if (top)
-      *top = widget ? widget->padding.top : 0;
-   if (bottom)
-      *bottom = widget ? widget->padding.bottom : 0;
+   if (!widget)
+      return;
+   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_LEFT_SIGNAL], ETK_OBJECT(widget), NULL);
+}
+
+/**
+ * @brief Sets whether the mouse-events received by the widget should be propagated to its parent. By default,
+ * mouse-events are not propagated (when you click a button, the window containing the button doesn't receive the
+ * click events)
+ * @param widget a widget
+ * @param repeat_mouse_events if @a repeat_mouse_events is ETK_TRUE, the parent
+ * widget will also receive the mouse-events
+ */
+void etk_widget_repeat_mouse_events_set(Etk_Widget *widget, Etk_Bool repeat_mouse_events)
+{
+   if (!widget || widget->repeat_mouse_events == repeat_mouse_events)
+      return;
+
+   widget->repeat_mouse_events = repeat_mouse_events;
+   etk_object_notify(ETK_OBJECT(widget), "repeat-mouse-events");
+}
+
+/**
+ * @brief Checks whether the mouse-events received by the widget are propagated to its parent
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the mouse-events received by the widget are propagated to its parent
+ */
+Etk_Bool etk_widget_repeat_mouse_events_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return widget->repeat_mouse_events;
+}
+
+/**
+ * @brief Sets whether the widget should ignore the mouse-events it receives. In this case,
+ * the mouse-events will be directly passed to its parent
+ * @param widget a widget
+ * @param pass_mouse_events if @a pass_mouse_events is ETK_TRUE, the mouse-events will be
+ * directly passed to the parent. @a widget won't receive mouse-events anymore
+ */
+void etk_widget_pass_mouse_events_set(Etk_Widget *widget, Etk_Bool pass_mouse_events)
+{
+   if (!widget || widget->pass_mouse_events == pass_mouse_events)
+      return;
+
+   widget->pass_mouse_events = pass_mouse_events;
+   if (widget->smart_object && !widget->disabled)
+      evas_object_pass_events_set(widget->smart_object, pass_mouse_events);
+   etk_object_notify(ETK_OBJECT(widget), "pass-mouse-events");
+}
+
+/**
+ * @brief Checks whether the mouse-events received by the widget are ignored by the widget
+ * and passed directly to its parent
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the the mouse-events are passed directly to the widget's parent, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_pass_mouse_events_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return widget->pass_mouse_events;
+}
+
+/**
+ * @brief Sets whether or not the widget has an event-object. An event-object is an invisible rectangle that
+ * is used to grab the mouse events on the widget. It can be useful for example if you want a container
+ * with no theme-object (a table, a box, ...) to receive the mouse events. @n
+ * If @a widget already has a theme-object, this function has no effect (the theme-object is indeed already
+ * used to grab the mouse events)
+ * @param widget a widget
+ * @param has_event_object ETK_TRUE to make the widget have an event-object, ETK_FALSE otherwise
+ */
+void etk_widget_has_event_object_set(Etk_Widget *widget, Etk_Bool has_event_object)
+{
+   Evas *evas;
+   
+   if (!widget || widget->has_event_object == has_event_object)
+      return;
+   
+   widget->has_event_object = has_event_object;
+   
+   if (has_event_object)
+   {
+      if (!widget->theme_object && (evas = etk_widget_toplevel_evas_get(widget)))
+      {
+         widget->event_object = evas_object_rectangle_add(evas);
+         evas_object_color_set(widget->event_object, 0, 0, 0, 0);
+         evas_object_show(widget->event_object);
+         _etk_widget_object_add_to_smart(widget, widget->event_object, ETK_TRUE);
+         evas_object_lower(widget->event_object);
+         etk_widget_redraw_queue(widget);
+      }
+   }
+   else if (widget->event_object)
+   {
+      evas_object_del(widget->event_object);
+      widget->event_object = NULL;
+   }
+   
+   etk_object_notify(ETK_OBJECT(widget), "has-event-object");
+}
+
+/**
+ * @brief Gets whether the widget has an event-object
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the widget has an event-object, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_has_event_object_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return widget->has_event_object;
+}
+
+/**
+ * @brief Sets the parent of the widget. If the widget has already a parent, it will be reparented (TODO: in theory
+ * at least, but it needs to be fixed!!)
+ * @param widget a widget
+ * @param parent the new parent of @a widget
+ * @note etk_widget_parent_set(widget, parent) is equivalent to etk_widget_parent_set_full(widget, parent, ETK_TRUE)
+ * @widget_implementation
+ * @note If you want to add a widget to a container, use etk_container_add() or the appropriate function of
+ * the container's API. Otherwise the widget will not be packed correctly
+ */
+void etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent)
+{
+   etk_widget_parent_set_full(widget, parent, ETK_TRUE);
+}
+
+/**
+ * @brief Sets the parent of the widget. If the widget has already a parent, it will be reparented (TODO: in theory
+ * at least, but it needs to be fixed!!)
+ * @param widget a widget
+ * @param parent the new parent of @a widget
+ * @param remove_from_container if @a remove_from_container is ETK_TRUE and if the current parent of the widget is a
+ * container, the child_remove() function of the parent container will be called. So @a remove_from_container should
+ * most of the time be set to ETK_TRUE, except when etk_widget_parent_set_full() is called from the child_remove()
+ * function of a container, in order to avoid an infinite loop.
+ * @widget_implementation
+ * @note If you want to add a widget to a container, use etk_container_add() or the appropriate function of
+ * the container's API. Otherwise the widget will not be packed correctly
+ */
+void etk_widget_parent_set_full(Etk_Widget *widget, Etk_Widget *parent, Etk_Bool remove_from_container)
+{
+   Etk_Toplevel *prev_toplevel;
+   Evas *new_evas, *prev_evas;
+   Etk_Widget *toplevel;
+   const char *prev_theme_file, *new_theme_file;
+
+   if (!widget || widget->parent == parent || ETK_IS_TOPLEVEL(widget))
+      return;
+   
+   prev_evas = etk_widget_toplevel_evas_get(widget);
+   prev_theme_file = etk_widget_theme_file_get(widget);
+   
+   if (widget->parent)
+   {
+      if (remove_from_container && ETK_IS_CONTAINER(widget->parent))
+         etk_container_remove(ETK_CONTAINER(widget->parent), widget);
+      _etk_widget_child_remove(widget->parent, widget);
+   }
+   if (parent)
+      parent->children = evas_list_append(parent->children, widget);
+   widget->parent = parent;
+   
+   prev_toplevel = widget->toplevel_parent;
+   for (toplevel = widget; toplevel->parent; toplevel = toplevel->parent);
+   if (ETK_IS_TOPLEVEL(toplevel))
+      widget->toplevel_parent = ETK_TOPLEVEL(toplevel);
+   else
+      widget->toplevel_parent = NULL;
+   
+   if ((widget->toplevel_parent != prev_toplevel))
+      _etk_widget_toplevel_parent_set(widget, widget->toplevel_parent);
+   
+   new_evas = etk_widget_toplevel_evas_get(widget);
+   new_theme_file = etk_widget_theme_file_get(widget);
+   
+   /* Realize/unrealize the widget and its children */
+   if (new_evas)
+   {
+      Etk_Bool same_theme_file;
+      
+      same_theme_file = ((prev_theme_file == new_theme_file)
+         || (prev_theme_file && new_theme_file && strcmp(prev_theme_file, new_theme_file) == 0));
+      
+      if ((new_evas != prev_evas))
+         _etk_widget_realize_children(widget, ETK_TRUE, ETK_TRUE);
+      if (!same_theme_file)
+         _etk_widget_realize_theme_children(widget, (new_evas == prev_evas), ETK_FALSE);
+   }
+   else if (widget->realized)
+      _etk_widget_unrealize_all(widget);
+
+   etk_object_notify(ETK_OBJECT(widget), "parent");
+}
+
+/**
+ * @brief Gets the parent of the widget
+ * @param widget a widget
+ * @return Returns the parent of the widget
+ */
+Etk_Widget *etk_widget_parent_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return NULL;
+   return widget->parent;
 }
 
 /**
@@ -553,426 +997,164 @@ Etk_Widget *etk_widget_theme_parent_get(Etk_Widget *widget)
 }
 
 /**
- * @brief Sets the parent of the widget
+ * @brief Sets the color of the widget. By default, the color change is also propagated automatically
+ * to the children of the widget. To change this behavior, see @a etk_widget_propagate_color_set()
  * @param widget a widget
- * @param parent the new parent
- * @note etk_widget_parent_set(widget, parent) is equivalent to etk_widget_parent_set_full(widget, parent, ETK_TRUE)
- * @widget_implementation
- * @note If you want to add a widget to a container, use etk_container_add() instead
- */
-void etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent)
-{
-   etk_widget_parent_set_full(widget, parent, ETK_TRUE);
-}
-
-/**
- * @brief Sets the parent of the widget
- * @param widget a widget
- * @param parent the new parent
- * @param remove_from_container if @a remove_from_container is ETK_TRUE and if the current parent of the widget is a
- * container, the child_remove() function of the parent container will be called. So @a remove_from_container should
- * most of the time be set to ETK_TRUE, except when etk_widget_parent_set_full() is called from the child_remove()
- * function of a container, in order to avoid an infinite loop.
- * @widget_implementation
- * @note If you want to add a widget to a container, use etk_container_add() instead
- */
-void etk_widget_parent_set_full(Etk_Widget *widget, Etk_Widget *parent, Etk_Bool remove_from_container)
-{
-   Etk_Toplevel *prev_toplevel;
-   Evas *new_evas, *prev_evas;
-   Etk_Widget *toplevel;
-   const char *prev_theme_file, *new_theme_file;
-
-   if (!widget || widget->parent == parent || ETK_IS_TOPLEVEL(widget))
-      return;
-   
-   prev_evas = etk_widget_toplevel_evas_get(widget);
-   prev_theme_file = etk_widget_theme_file_get(widget);
-   
-   if (widget->parent)
-   {
-      if (remove_from_container && ETK_IS_CONTAINER(widget->parent))
-         etk_container_remove(ETK_CONTAINER(widget->parent), widget);
-      _etk_widget_child_remove(widget->parent, widget);
-   }
-   if (parent)
-      parent->children = evas_list_append(parent->children, widget);
-   widget->parent = parent;
-   
-   prev_toplevel = widget->toplevel_parent;
-   for (toplevel = widget; toplevel->parent; toplevel = toplevel->parent);
-   if (ETK_IS_TOPLEVEL(toplevel))
-      widget->toplevel_parent = ETK_TOPLEVEL(toplevel);
-   else
-      widget->toplevel_parent = NULL;
-   
-   if ((widget->toplevel_parent != prev_toplevel))
-      _etk_widget_toplevel_parent_set(widget, widget->toplevel_parent);
-   
-   new_evas = etk_widget_toplevel_evas_get(widget);
-   new_theme_file = etk_widget_theme_file_get(widget);
-   
-   /* Realize/unrealize the widget and its children */
-   if (new_evas)
-   {
-      Etk_Bool same_theme_file;
-      
-      same_theme_file = ((prev_theme_file == new_theme_file)
-         || (prev_theme_file && new_theme_file && strcmp(prev_theme_file, new_theme_file) == 0));
-      
-      if ((new_evas != prev_evas))
-         _etk_widget_realize_children(widget, ETK_TRUE, ETK_TRUE);
-      if (!same_theme_file)
-         _etk_widget_realize_theme_children(widget, (new_evas == prev_evas), ETK_FALSE);
-   }
-   else if (widget->realized)
-      _etk_widget_unrealize_all(widget);
-
-   etk_object_notify(ETK_OBJECT(widget), "parent");
-}
-
-/**
- * @brief Gets the parent of the widget
- * @param widget a widget
- * @return Returns the parent of the widget
- */
-Etk_Widget *etk_widget_parent_get(Etk_Widget *widget)
-{
-   if (!widget)
-      return NULL;
-   return widget->parent;
-}
-
-/**
- * @brief Sets whether the widget should use an event-object. An event-object is an invisible rectangle that
- * is used to grab the mouse events on the widget. It can be useful for example if you want a container
- * with no theme-object (a table, a box, ...) to receive the mouse events. @n
- * If @a widget already has a theme-object, this function has no effect (the theme-object is already used to
- * grab the mouse events)
- * @param widget a widget
- * @param has_event_object ETK_TRUE to make the widget use an event-object, ETK_FALSE otherwise
- */
-void etk_widget_has_event_object_set(Etk_Widget *widget, Etk_Bool has_event_object)
-{
-   Evas *evas;
-   
-   if (!widget || widget->has_event_object == has_event_object)
-      return;
-   
-   widget->has_event_object = has_event_object;
-   
-   if (has_event_object)
-   {
-      if (!widget->theme_object && (evas = etk_widget_toplevel_evas_get(widget)))
-      {
-         widget->event_object = evas_object_rectangle_add(evas);
-         evas_object_color_set(widget->event_object, 0, 0, 0, 0);
-         evas_object_show(widget->event_object);
-         _etk_widget_object_add_to_smart(widget, widget->event_object, ETK_TRUE);
-         evas_object_lower(widget->event_object);
-         etk_widget_redraw_queue(widget);
-      }
-   }
-   else if (widget->event_object)
-   {
-      evas_object_del(widget->event_object);
-      widget->event_object = NULL;
-   }
-   
-   etk_object_notify(ETK_OBJECT(widget), "has-event-object");
-}
-
-/**
- * @brief Gets whether the widget uses an event-object
- * @param widget a widget
- * @return Returns ETK_TRUE if the widget uses an event-object
- */
-Etk_Bool etk_widget_has_event_object_get(Etk_Widget *widget)
-{
-   if (!widget)
-      return ETK_FALSE;
-   return widget->has_event_object;
-}
-
-/**
- * @brief Sets whether the mouse-events received by the widget should be propagated to its parent
- * @param widget a widget
- * @param repeat_mouse_events if @a repeat_mouse_events is ETK_TRUE, the parent
- * widget will also receive the mouse-events
- */
-void etk_widget_repeat_mouse_events_set(Etk_Widget *widget, Etk_Bool repeat_mouse_events)
-{
-   if (!widget || widget->repeat_mouse_events == repeat_mouse_events)
-      return;
-
-   widget->repeat_mouse_events = repeat_mouse_events;
-   etk_object_notify(ETK_OBJECT(widget), "repeat-mouse-events");
-}
-
-/**
- * @brief Checks whether the mouse-events received by the widget are propagated to its parent
- * @param widget a widget
- * @return Returns ETK_TRUE if the mouse-events received by the widget are propagated to its parent
- */
-Etk_Bool etk_widget_repeat_mouse_events_get(Etk_Widget *widget)
-{
-   if (!widget)
-      return ETK_FALSE;
-   return widget->repeat_mouse_events;
-}
-
-/**
- * @brief Sets whether the widget should pass directly to its parent the mouse-events it receives
- * @param widget a widget
- * @param pass_mouse_events if @a pass_mouse_events is ETK_TRUE, the mouse-events will be directly sent to the parent.
- * @a widget won't receive mouse-events anymore
- */
-void etk_widget_pass_mouse_events_set(Etk_Widget *widget, Etk_Bool pass_mouse_events)
-{
-   if (!widget || widget->pass_mouse_events == pass_mouse_events)
-      return;
-
-   widget->pass_mouse_events = pass_mouse_events;
-   if (widget->smart_object && !widget->disabled)
-      evas_object_pass_events_set(widget->smart_object, pass_mouse_events);
-   etk_object_notify(ETK_OBJECT(widget), "pass-mouse-events");
-}
-
-/**
- * @brief Checks whether the widget passes directly to its parent the mouse-events it receives
- * @param widget a widget
- * @return Returns ETK_TRUE if the widget passes directly to its parent the mouse-events it receives
- */
-Etk_Bool etk_widget_pass_mouse_events_get(Etk_Widget *widget)
-{
-   if (!widget)
-      return ETK_FALSE;
-   return widget->pass_mouse_events;
-}
-
-/**
- * @brief Sets whether or not the widget is an internal widget: an internal widget is not affected by
- * etk_widget_show_all() and etk_widget_hide_all(). It prevents visibility issues when one calls
- * etk_widget_hide_all(widget) and then etk_widget_show(widget). @n
- * For example, if the label of a button wasn't an internal widget, calling etk_widget_hide_all(button) and then
- * etk_widget_show(button) would make the label disappear since the label is a child of the button.
- * @param widget a widget
- * @param internal ETK_TRUE to prevent the widget to be affected by etk_widget_show_all() and etk_widget_hide_all()
- * @widget_implementation
- */
-void etk_widget_internal_set(Etk_Widget *widget, Etk_Bool internal)
-{
-   if (!widget || widget->internal == internal)
-      return;
-   
-   widget->internal = internal;
-   etk_object_notify(ETK_OBJECT(widget), "internal");
-}
-
-/**
- * @brief Gets whether the widget is an internal widget. See etk_widget_internal_set() for more info
- * about internal widgets
- * @param widget a widget
- * @return Returns ETK_TRUE if the widget is an internal widget, ETK_FALSE otherwise
- * @see etk_widget_internal_get()
- */
-Etk_Bool etk_widget_internal_get(Etk_Widget *widget)
-{
-   if (!widget)
-      return ETK_FALSE;
-   return widget->internal;
-}
-
-/**
- * @brief Sets whether or not the widget is disabled. When a widget is disabled, the user can't interact
- * with it anymore until it's enabled again. The widget will also look "disabled"
- * @param widget a widget
- * @param disabled ETK_TRUE to disable the widget, ETK_FALSE to enable it
- */
-void etk_widget_disabled_set(Etk_Widget *widget, Etk_Bool disabled)
-{
-   if (!widget || widget->disabled == disabled)
-      return;
-   
-   widget->disabled = disabled;
-   etk_widget_unfocus(widget);
-
-   if (widget->smart_object && !widget->pass_mouse_events)
-      evas_object_pass_events_set(widget->smart_object, disabled);
-   if (disabled)
-      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DISABLED_SIGNAL], ETK_OBJECT(widget), NULL);
-   else
-      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_ENABLED_SIGNAL], ETK_OBJECT(widget), NULL);
-   etk_object_notify(ETK_OBJECT(widget), "disabled");
-}
-
-/**
- * @brief Gets whether or not the widget is disabled
- * @param widget a widget
- * @return Returns ETK_TRUE if the widget is disabled, ETK_FALSE otherwise
- */
-Etk_Bool etk_widget_disabled_get(Etk_Widget *widget)
-{
-   if (!widget)
-      return ETK_FALSE;
-   return widget->disabled;
-}
-
-/**
- * @brief Shows the widget
- * @param widget a widget
- * @note The widget will effectively be shown if all its parents are also shown
- */
-void etk_widget_show(Etk_Widget *widget)
-{
-   Etk_Widget *parent;
-   
-   if (!widget || widget->visible)
-      return;
-
-   parent = widget->parent;
-   widget->visible = ETK_TRUE;
-   if (widget->smart_object && (!parent || (parent->smart_object && evas_object_visible_get(parent->smart_object))))
-      evas_object_show(widget->smart_object);
-   etk_widget_size_recalc_queue(widget);
-   
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SHOWN_SIGNAL], ETK_OBJECT(widget), NULL);
-   etk_object_notify(ETK_OBJECT(widget), "visible");
-}
-
-/**
- * @brief Recursively shows the widget and its children
- * @param widget a widget
- */
-void etk_widget_show_all(Etk_Widget *widget)
-{
-   Evas_List *l;
-   
-   if (!widget)
-      return;
-
-   if (!widget->internal)
-     etk_widget_show(widget);
-   for (l = widget->children; l; l = l->next)
-      etk_widget_show_all(ETK_WIDGET(l->data));
-}
-
-/**
- * @brief Hides the widget
- * @param widget a widget
- */
-void etk_widget_hide(Etk_Widget *widget)
-{
-   if (!widget || !widget->visible)
-      return;
-
-   widget->visible = ETK_FALSE;
-   if (widget->smart_object)
-      evas_object_hide(widget->smart_object);
-   etk_widget_size_recalc_queue(widget);
-   
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_HIDDEN_SIGNAL], ETK_OBJECT(widget), NULL);
-   etk_object_notify(ETK_OBJECT(widget), "visible");
-}
-
-/**
- * @brief Recursively hides the widget and its children
- * @param widget a widget
- */
-void etk_widget_hide_all(Etk_Widget *widget)
-{
-   Evas_List *l;
-   
-   if (!widget)
-      return;
-
-   if (!widget->internal)
-      etk_widget_hide(widget);
-   for (l = widget->children; l; l = l->next)
-      etk_widget_hide_all(ETK_WIDGET(l->data));
-}
-
-/**
- * @brief Checks if the object is visible
- * @param widget a widget
- * @return Returns ETK_TRUE if the widget is visible, ETK_FALSE otherwise
- */
-Etk_Bool etk_widget_is_visible(Etk_Widget *widget)
-{
-   if (!widget)
-      return ETK_FALSE;
-   return widget->visible;
-}
-
-/**
- * @brief Recursively sets the color of the widget and its children
- * @param widget a widget
- * @param r red
- * @param g green
- * @param b blue
- * @param a alpha
+ * @param r the red component of the color to set
+ * @param g the green component of the color to set
+ * @param b the blue component of the color to set
+ * @param a the alpha component of the color to set
+ * @note The color should be alpha-premultiplied
  */
 void etk_widget_color_set(Etk_Widget *widget, int r, int g, int b, int a)
 {
-   Evas_List *l;
-   
    if (!widget)
       return;
 
    if (widget->smart_object)
       evas_object_color_set(widget->smart_object, r, g, b, a);
+   else
+   {
+      widget->color.r = r;
+      widget->color.g = g;
+      widget->color.b = b;
+      widget->color.a = a;
+      etk_object_notify(ETK_OBJECT(widget), "color");
+   }
 }
 
 /**
- * @brief Raises a widget: it will be moved above all the other widgets that have the same parent as @a widget
- * @param widget the widget to raise
+ * @brief Gets the current color of the widget
+ * @param widget a widget
+ * @param r the location where to store the red component of the color
+ * @param g the location where to store the green component of the color
+ * @param b the location where to store the blue component of the color
+ * @param a the location where to store the alpha component of the color
+ * @note The returned color is alpha-premultiplied
  */
-void etk_widget_raise(Etk_Widget *widget)
+void etk_widget_color_get(Etk_Widget *widget, int *r, int *g, int *b, int *a)
 {
-   Evas_List *l;
-   
-   if (!widget || !widget->parent)
+   if (!widget)
       return;
-   
-   if ((l = evas_list_find_list(widget->parent->children, widget)))
-   {
-      widget->parent->children = evas_list_remove_list(widget->parent->children, l);
-      widget->parent->children = evas_list_append(widget->parent->children, widget);
-   }
-   
-   if (widget->smart_object)
-      evas_object_raise(widget->smart_object);
+
+   if (r)   *r = widget ? widget->color.r : 255;
+   if (g)   *g = widget ? widget->color.g : 255;
+   if (b)   *b = widget ? widget->color.b : 255;
+   if (a)   *a = widget ? widget->color.a : 255;
 }
 
 /**
- * @brief Lowers a widget: it will be moved below all the other widgets that have the same parent as @a widget
- * @param widget the widget to lower
+ * @brief Sets whether or not a color change on the widget should be propagated to its children.
+ * If the color change is propagated, the color of the widget's children will be multiplied by the color of the widget
+ * @param widget a widget
+ * @param propagate_color ETK_TRUE to "propagate" the color changes on the widget, ETK_FALSE otherwise
  */
-void etk_widget_lower(Etk_Widget *widget)
+void etk_widget_propagate_color_set(Etk_Widget *widget, Etk_Bool propagate_color)
 {
    Evas_List *l;
+   Etk_Widget *child;
    
-   if (!widget || !widget->parent)
+   if (!widget || widget->propagate_color == propagate_color)
       return;
    
-   if ((l = evas_list_find_list(widget->parent->children, widget)))
+   widget->propagate_color = propagate_color;
+   for (l = widget->children; l; l = l->next)
    {
-      widget->parent->children = evas_list_remove_list(widget->parent->children, l);
-      widget->parent->children = evas_list_prepend(widget->parent->children, widget);
+      child = ETK_WIDGET(l->data);
+      if (child->smart_object)
+         evas_object_color_set(child->smart_object, child->color.r, child->color.g, child->color.b, child->color.a);
    }
    
-   /* Lower the smart-object */
-   if (widget->smart_object)
-   {
-      if (widget->parent->content_object)
-         evas_object_lower(widget->smart_object);
-      else if (widget->parent->theme_object)
-         evas_object_stack_above(widget->smart_object, widget->theme_object);
-      else if (widget->parent->event_object)
-         evas_object_stack_above(widget->smart_object, widget->event_object);
-      else
-         evas_object_lower(widget->smart_object);
-   }
+   etk_object_notify(ETK_OBJECT(widget), "propagate-color");
+}
+
+/**
+ * @brief Gets whether or not a color change on the widget is propagated to its children
+ * @param widget a widget
+ * @return Returns ETK_TRUE if the color changes are propagated, ETK_FALSE otherwise
+ */
+Etk_Bool etk_widget_propagate_color_get(Etk_Widget *widget)
+{
+   if (!widget)
+      return ETK_FALSE;
+   return widget->propagate_color;
+}
+
+/**
+ * @brief Sets the padding on the different sides of the widget.
+ * The padding adds blank space to the sides of the widget
+ * @param widget a widget
+ * @param left the padding at the left of the widget
+ * @param right the padding at the right of the widget
+ * @param top the padding at the top of the widget
+ * @param bottom the padding at the bottom of the widget
+ */
+void etk_widget_padding_set(Etk_Widget *widget, int left, int right, int top, int bottom)
+{
+   if (!widget)
+      return;
+   
+   widget->padding.left = ETK_MAX(0, left);
+   widget->padding.right = ETK_MAX(0, right);
+   widget->padding.top = ETK_MAX(0, top);
+   widget->padding.bottom = ETK_MAX(0, bottom);
+   
+   etk_object_notify(ETK_OBJECT(widget), "padding");
+   etk_widget_size_recalc_queue(widget);
+}
+
+/**
+ * @brief Gets the padding on the different sides of the widget
+ * @param widget a widget
+ * @param left the location where to store the padding at the left of the widget
+ * @param right the location where to store the padding at the right of the widget
+ * @param top the location where to store the padding at the top of the widget
+ * @param bottom the location where to store the padding at the bottom of the widget
+ */
+void etk_widget_padding_get(Etk_Widget *widget, int *left, int *right, int *top, int *bottom)
+{
+   if (left)
+      *left = widget ? widget->padding.left : 0;
+   if (right)
+      *right = widget ? widget->padding.right : 0;
+   if (top)
+      *top = widget ? widget->padding.top : 0;
+   if (bottom)
+      *bottom = widget ? widget->padding.bottom : 0;
+}
+
+/**
+ * @brief Gets the geometry of the widget, relative to the top-left corner of the Evas where it is drawn
+ * @param widget a widget
+ * @param x the location where to store the x position of the widget
+ * @param y the location where to store the y position of the widget
+ * @param w the location where to store the width of the widget
+ * @param h the location where to store the height of the widget
+ */
+void etk_widget_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h)
+{
+   if (x)   *x = widget ? widget->geometry.x : 0;
+   if (y)   *y = widget ? widget->geometry.y : 0;
+   if (w)   *w = widget ? widget->geometry.w : 0;
+   if (h)   *h = widget ? widget->geometry.h : 0;
+}
+
+/**
+ * @brief Gets the inner geometry of the widget, relative to the top-left corner of the Evas where it is drawn. @n
+ * The inner geometry corresponds to the rectangle in which the widget's children are rendered. This rectangle may be
+ * smaller than the geometry of the widget because inset values can be set by the theme
+ * @param widget a widget
+ * @param x the location where to store the inner x position of the widget
+ * @param y the location where to store the inner y position of the widget
+ * @param w the location where to store the inner width of the widget
+ * @param h the location where to store the inner height of the widget
+ */
+void etk_widget_inner_geometry_get(Etk_Widget *widget, int *x, int *y, int *w, int *h)
+{
+   if (x)   *x = widget ? widget->inner_geometry.x : 0;
+   if (y)   *y = widget ? widget->inner_geometry.y : 0;
+   if (w)   *w = widget ? widget->inner_geometry.w : 0;
+   if (h)   *h = widget ? widget->inner_geometry.h : 0;
 }
 
 /**
@@ -1152,102 +1334,6 @@ void etk_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 }
 
 /**
- * @brief Emits the "enter" signal on the widget
- * @param widget a widget
- */
-void etk_widget_enter(Etk_Widget *widget)
-{
-   if (!widget)
-      return;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_ENTERED_SIGNAL], ETK_OBJECT(widget), NULL);
-}
-
-/**
- * @brief Emits the "leave" signal on the widget
- * @param widget a widget
- */
-void etk_widget_leave(Etk_Widget *widget)
-{
-   if (!widget)
-      return;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_LEFT_SIGNAL], ETK_OBJECT(widget), NULL);
-}
-
-/**
- * @brief Sets whether or not the widget can be focused
- * @param widget a widget
- * @param focusable ETK_TRUE to make @a widget focusable, ETK_FALSE otherwise
- */
-void etk_widget_focusable_set(Etk_Widget *widget, Etk_Bool focusable)
-{
-   if (!widget || widget->focusable == focusable)
-      return;
-   
-   if (!focusable && etk_widget_is_focused(widget))
-      etk_widget_unfocus(widget);
-   widget->focusable = focusable;
-   etk_object_notify(ETK_OBJECT(widget), "focusable");
-}
-
-/**
- * @brief Gets whether the widget can be focused or not
- * @param widget a widget
- * @return Returns ETK_TRUE if the widget is focusable, ETK_FALSE otherwise
- */
-Etk_Bool etk_widget_focusable_get(Etk_Widget *widget)
-{
-   if (!widget)
-      return ETK_FALSE;
-   return widget->focusable;
-}
-
-/**
- * @brief Focuses the widget. The focused widget is the one which receives the keyboard events
- * @param widget a widget
- * @note The widget has to be attached to a toplevel widget, otherwise it will have no effect
- */
-void etk_widget_focus(Etk_Widget *widget)
-{
-   Etk_Widget *focused;
-
-   if (!widget || !widget->toplevel_parent || !widget->focusable || etk_widget_disabled_get(widget))
-      return;
-   if ((focused = etk_toplevel_focused_widget_get(widget->toplevel_parent)) && (widget == focused))
-      return;
-
-   if (focused)
-      etk_widget_unfocus(focused);
-
-   etk_toplevel_focused_widget_set(widget->toplevel_parent, widget);
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_FOCUSED_SIGNAL], ETK_OBJECT(widget), NULL);
-}
-
-/**
- * @brief Unfocuses the widget
- * @param widget a widget
- */
-void etk_widget_unfocus(Etk_Widget *widget)
-{
-   if (!widget || !widget->toplevel_parent || !etk_widget_is_focused(widget))
-      return;
-
-   etk_toplevel_focused_widget_set(widget->toplevel_parent, NULL);
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_UNFOCUSED_SIGNAL], ETK_OBJECT(widget), NULL);
-}
-
-/**
- * @brief Gets whether the widget is focused
- * @param widget a widget
- * @return Returns ETK_TRUE if @a widget is focused, ETK_FALSE otherwise
- */
-Etk_Bool etk_widget_is_focused(Etk_Widget *widget)
-{
-   if (!widget || !widget->toplevel_parent)
-      return ETK_FALSE;
-   return (etk_toplevel_focused_widget_get(widget->toplevel_parent) == widget);
-}
-
-/**
  * @brief Sends a signal to the theme-object of the widget
  * @param widget a widget
  * @param signal_name the signal to send
@@ -1330,6 +1416,162 @@ int etk_widget_theme_data_get(Etk_Widget *widget, const char *data_name, const c
    va_end(args);
    
    return result;
+}
+
+/**
+ * @brief Adds an evas object to the list of member-objects of the widget. @n
+ * A member-object is an object which is automatically shown/hidden when the widget is shown/hidden,
+ * which is clipped against the clip-object of the widget, and which is used by the widget to receive the mouse
+ * events. A member-object is also stacked on the same level as the widget. @n
+ * The object will be automatically deleted when the object is unrealized, unless you remove it from the list
+ * with etk_widget_member_object_del() before the widget is unrealized.
+ * @param widget a widget
+ * @param object the evas object to add
+ * @return Returns ETK_TRUE on success. ETK_FALSE on failure, probably because the widget and the object do not
+ * belong to the same evas, or because the widget is not realized yet
+ * @note The object has to belong to the same evas as the widget
+ * @widget_implementation
+ */
+Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
+{
+   Etk_Widget_Member_Object *member_object;
+   Etk_Widget *prev_widget;
+   int r, g, b, a;
+   
+   if (!widget || !object || !widget->realized
+      || (evas_object_evas_get(object) != etk_widget_toplevel_evas_get(widget)))
+      return ETK_FALSE;
+   if (_etk_widget_member_object_find(widget, object))
+      return ETK_TRUE;
+   
+   if ((prev_widget = ETK_WIDGET(evas_object_data_get(object, "_Etk_Widget::Parent"))))
+      etk_widget_member_object_del(prev_widget, object);
+   else if ((prev_widget = ETK_WIDGET(evas_object_data_get(object, "_Etk_Widget::Swallower"))))
+      etk_widget_unswallow_object(prev_widget, object);
+   
+   member_object = malloc(sizeof(Etk_Widget_Member_Object));
+   member_object->object = object;
+   member_object->visible = evas_object_visible_get(object);
+   
+   /* TODO: do not do this if the widget has a color_set() method */
+   _etk_widget_real_color_get(widget, &r, &g, &b, &a);
+   evas_object_color_set(object, r, g, b, a);
+   
+   _etk_widget_object_add_to_smart(widget, object, (evas_object_clip_get(object) == NULL));
+   evas_object_intercept_show_callback_add(object, _etk_widget_member_object_intercept_show_cb, widget);
+   evas_object_intercept_hide_callback_add(object, _etk_widget_member_object_intercept_hide_cb, widget);
+   evas_object_event_callback_add(object, EVAS_CALLBACK_FREE, _etk_widget_member_object_deleted_cb, widget);
+   evas_object_data_set(object, "_Etk_Widget::Parent", widget);
+   
+   widget->member_objects = evas_list_append(widget->member_objects, member_object);
+
+   return ETK_TRUE;
+}
+
+/**
+ * @brief Removes an evas object from the list of member-objects of the widget. See etk_widget_member_object_add() for
+ * more info about member-objects.
+ * @param widget a widget
+ * @param object the evas object to remove
+ * @note The object will still be displayed on the Evas after this call
+ * @widget_implementation
+ * @see etk_widget_member_object_add()
+ */
+void etk_widget_member_object_del(Etk_Widget *widget, Evas_Object *object)
+{
+   Evas_List *l;
+   Etk_Widget_Member_Object *member_object;
+
+   if (!widget || !object)
+      return;
+
+   if ((l = _etk_widget_member_object_find(widget, object)))
+   {
+      member_object = l->data;
+      
+      evas_object_smart_member_del(object);
+      if (widget->clip)
+         evas_object_clip_unset(member_object->object);
+      
+      evas_object_intercept_show_callback_del(member_object->object, _etk_widget_member_object_intercept_show_cb);
+      evas_object_intercept_hide_callback_del(member_object->object, _etk_widget_member_object_intercept_hide_cb);
+      evas_object_event_callback_del(object, EVAS_CALLBACK_FREE, _etk_widget_member_object_deleted_cb);
+      evas_object_data_del(object, "_Etk_Widget::Parent");
+      
+      free(member_object);
+      widget->member_objects = evas_list_remove_list(widget->member_objects, l);
+   }
+}
+
+/**
+ * @brief Stacks @a object above all the other member-objects of the widget
+ * @param widget a widget
+ * @param object the object to raise
+ * @widget_implementation
+ */
+void etk_widget_member_object_raise(Etk_Widget *widget, Evas_Object *object)
+{
+   if (!widget || !object)
+      return;
+
+   if (_etk_widget_member_object_find(widget, object))
+      evas_object_raise(object);
+}
+
+/**
+ * @brief Stacks @a object below all the other member-objects of the widget
+ * @param widget a widget
+ * @param object the object to lower
+ * @widget_implementation
+ */
+void etk_widget_member_object_lower(Etk_Widget *widget, Evas_Object *object)
+{
+   if (!widget || !object)
+      return;
+
+   if (_etk_widget_member_object_find(widget, object))
+   {
+      if (widget->content_object)
+         evas_object_lower(object);
+      else if (widget->theme_object)
+         evas_object_stack_above(object, widget->theme_object);
+      else if (widget->event_object)
+         evas_object_stack_above(object, widget->event_object);
+      else
+         evas_object_lower(object);
+   }
+}
+
+/**
+ * @brief Stacks the member-object @a object above the member-object @a above
+ * @param widget a widget
+ * @param object the object to restack
+ * @param above the object above which @a object will be stacked
+ * @widget_implementation
+ */
+void etk_widget_member_object_stack_above(Etk_Widget *widget, Evas_Object *object, Evas_Object *above)
+{
+   if (!widget || !above || (object == above))
+      return;
+
+   if (_etk_widget_member_object_find(widget, object) && _etk_widget_member_object_find(widget, above))
+      evas_object_stack_above(object, above);
+}
+
+/**
+ * @brief Stacks the member-object @a object below the member-object @a below
+ * @param widget a widget
+ * @param object the object to restack
+ * @param below the object below which @a object will be stacked
+ * @widget_implementation
+ */
+void etk_widget_member_object_stack_below(Etk_Widget *widget, Evas_Object *object, Evas_Object *below)
+{
+   if (!widget || !below || (object == below))
+      return;
+   
+   if (_etk_widget_member_object_find(widget, object) && _etk_widget_member_object_find(widget, below))
+      evas_object_stack_below(object, below);
 }
 
 /**
@@ -1473,157 +1715,6 @@ void etk_widget_unswallow_object(Etk_Widget *swallower, Evas_Object *object)
 Etk_Widget_Swallow_Error etk_widget_swallow_error_get(void)
 {
    return _etk_widget_swallow_error;
-}
-
-/**
- * @brief Adds an evas object to the list of member-objects of the widget. @n
- * A member-object is an object which is automatically shown/hidden when the widget is shown/hidden,
- * which is clipped against the clip-object of the widget, and which is used by the widget to receive the mouse
- * events. A member-object is also stacked on the same level as the widget. @n
- * The object will be automatically deleted when the object is unrealized, unless you remove it from the list
- * with etk_widget_member_object_del() before the widget is unrealized.
- * @param widget a widget
- * @param object the evas object to add
- * @return Returns ETK_TRUE on success. ETK_FALSE on failure, probably because the widget and the object do not
- * belong to the same evas, or because the widget is not realized yet
- * @note The object has to belong to the same evas as the widget
- * @widget_implementation
- */
-Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
-{
-   Etk_Widget_Member_Object *member_object;
-   Etk_Widget *prev_widget;
-   
-   if (!widget || !object || !widget->realized
-      || (evas_object_evas_get(object) != etk_widget_toplevel_evas_get(widget)))
-      return ETK_FALSE;
-   if (_etk_widget_member_object_find(widget, object))
-      return ETK_TRUE;
-   
-   if ((prev_widget = ETK_WIDGET(evas_object_data_get(object, "_Etk_Widget::Parent"))))
-      etk_widget_member_object_del(prev_widget, object);
-   else if ((prev_widget = ETK_WIDGET(evas_object_data_get(object, "_Etk_Widget::Swallower"))))
-      etk_widget_unswallow_object(prev_widget, object);
-   
-   member_object = malloc(sizeof(Etk_Widget_Member_Object));
-   member_object->object = object;
-   member_object->visible = evas_object_visible_get(object);
-   
-   _etk_widget_object_add_to_smart(widget, object, (evas_object_clip_get(object) == NULL));
-   evas_object_intercept_show_callback_add(object, _etk_widget_member_object_intercept_show_cb, widget);
-   evas_object_intercept_hide_callback_add(object, _etk_widget_member_object_intercept_hide_cb, widget);
-   evas_object_event_callback_add(object, EVAS_CALLBACK_FREE, _etk_widget_member_object_deleted_cb, widget);
-   evas_object_data_set(object, "_Etk_Widget::Parent", widget);
-   
-   widget->member_objects = evas_list_append(widget->member_objects, member_object);
-
-   return ETK_TRUE;
-}
-
-/**
- * @brief Removes an evas object from the list of member-objects of the widget. See etk_widget_member_object_add() for
- * more info about member-objects.
- * @param widget a widget
- * @param object the evas object to remove
- * @note The object will still be displayed on the Evas after this call
- * @widget_implementation
- * @see etk_widget_member_object_add()
- */
-void etk_widget_member_object_del(Etk_Widget *widget, Evas_Object *object)
-{
-   Evas_List *l;
-   Etk_Widget_Member_Object *member_object;
-
-   if (!widget || !object)
-      return;
-
-   if ((l = _etk_widget_member_object_find(widget, object)))
-   {
-      member_object = l->data;
-      
-      evas_object_smart_member_del(object);
-      if (widget->clip)
-         evas_object_clip_unset(member_object->object);
-      
-      evas_object_intercept_show_callback_del(member_object->object, _etk_widget_member_object_intercept_show_cb);
-      evas_object_intercept_hide_callback_del(member_object->object, _etk_widget_member_object_intercept_hide_cb);
-      evas_object_event_callback_del(object, EVAS_CALLBACK_FREE, _etk_widget_member_object_deleted_cb);
-      evas_object_data_del(object, "_Etk_Widget::Parent");
-      
-      free(member_object);
-      widget->member_objects = evas_list_remove_list(widget->member_objects, l);
-   }
-}
-
-/**
- * @brief Stacks @a object above all the other member-objects of the widget
- * @param widget a widget
- * @param object the object to raise
- * @widget_implementation
- */
-void etk_widget_member_object_raise(Etk_Widget *widget, Evas_Object *object)
-{
-   if (!widget || !object)
-      return;
-
-   if (_etk_widget_member_object_find(widget, object))
-      evas_object_raise(object);
-}
-
-/**
- * @brief Stacks @a object below all the other member-objects of the widget
- * @param widget a widget
- * @param object the object to lower
- * @widget_implementation
- */
-void etk_widget_member_object_lower(Etk_Widget *widget, Evas_Object *object)
-{
-   if (!widget || !object)
-      return;
-
-   if (_etk_widget_member_object_find(widget, object))
-   {
-      if (widget->content_object)
-         evas_object_lower(object);
-      else if (widget->theme_object)
-         evas_object_stack_above(object, widget->theme_object);
-      else if (widget->event_object)
-         evas_object_stack_above(object, widget->event_object);
-      else
-         evas_object_lower(object);
-   }
-}
-
-/**
- * @brief Stacks the member-object @a object above the member-object @a above
- * @param widget a widget
- * @param object the object to restack
- * @param above the object above which @a object will be stacked
- * @widget_implementation
- */
-void etk_widget_member_object_stack_above(Etk_Widget *widget, Evas_Object *object, Evas_Object *above)
-{
-   if (!widget || !above || (object == above))
-      return;
-
-   if (_etk_widget_member_object_find(widget, object) && _etk_widget_member_object_find(widget, above))
-      evas_object_stack_above(object, above);
-}
-
-/**
- * @brief Stacks the member-object @a object below the member-object @a below
- * @param widget a widget
- * @param object the object to restack
- * @param below the object below which @a object will be stacked
- * @widget_implementation
- */
-void etk_widget_member_object_stack_below(Etk_Widget *widget, Evas_Object *object, Evas_Object *below)
-{
-   if (!widget || !below || (object == below))
-      return;
-   
-   if (_etk_widget_member_object_find(widget, object) && _etk_widget_member_object_find(widget, below))
-      evas_object_stack_below(object, below);
 }
 
 /**
@@ -1858,20 +1949,26 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->padding.top = 0;
    widget->padding.bottom = 0;
 
-   widget->geometry.x = -1;
-   widget->geometry.y = -1;
-   widget->geometry.w = -1;
-   widget->geometry.h = -1;
-   widget->inner_geometry.x = -1;
-   widget->inner_geometry.y = -1;
-   widget->inner_geometry.w = -1;
-   widget->inner_geometry.h = -1;
-   widget->size_request = NULL;
-   widget->size_allocate = NULL;
+   widget->geometry.x = 0;
+   widget->geometry.y = 0;
+   widget->geometry.w = 0;
+   widget->geometry.h = 0;
+   widget->inner_geometry.x = 0;
+   widget->inner_geometry.y = 0;
+   widget->inner_geometry.w = 0;
+   widget->inner_geometry.h = 0;
    widget->requested_size.w = -1;
    widget->requested_size.h = -1;
    widget->last_calced_size.w = 0;
    widget->last_calced_size.h = 0;
+   widget->size_request = NULL;
+   widget->size_allocate = NULL;
+   
+   widget->color.r = 255;
+   widget->color.g = 255;
+   widget->color.b = 255;
+   widget->color.a = 255;
+   widget->propagate_color = ETK_TRUE;
 
    widget->scroll_size_get = NULL;
    widget->scroll_margins_get = NULL;
@@ -2399,9 +2496,10 @@ static void _etk_widget_realize(Etk_Widget *widget)
       }
    }
    
-   /* Finally, we clip the widget */
+   /* Finally, we clip the widget and we set the color of the smart object */
    if (widget->clip)
       evas_object_clip_set(widget->smart_object, widget->clip);
+   evas_object_color_set(widget->smart_object, widget->color.r, widget->color.g, widget->color.b, widget->color.a);
    
    widget->need_theme_size_recalc = ETK_TRUE;
    widget->realized = ETK_TRUE;
@@ -2850,6 +2948,27 @@ static void _etk_widget_remove_from_clip(Etk_Widget *widget, Evas_Object *clip)
    }
 }
 
+/* Calculates the real color of the widget according to the color of its parents */
+static void _etk_widget_real_color_get(Etk_Widget *widget, int *r, int *g, int *b, int *a)
+{
+   Etk_Widget *parent;
+   
+   if (!widget)
+      return;
+   
+   *r = widget->color.r;
+   *g = widget->color.g;
+   *b = widget->color.b;
+   *a = widget->color.a;
+   for (parent = widget->parent; parent && parent->propagate_color; parent = parent->parent)
+   {
+      *r = (*r * parent->color.r) / 255;
+      *g = (*g * parent->color.g) / 255;
+      *b = (*b * parent->color.b) / 255;
+      *a = (*a * parent->color.a) / 255;
+   }
+}
+
 /* Finds if an evas object is a member-object of the widget */
 static Evas_List *_etk_widget_member_object_find(Etk_Widget *widget, Evas_Object *object)
 {
@@ -3209,30 +3328,47 @@ static void _etk_widget_smart_object_color_set_cb(Evas_Object *obj, int r, int g
 {
    Evas_List *l;
    Etk_Widget_Member_Object *m;
-   Etk_Widget *widget, *child;
+   Etk_Widget *widget, *parent, *child;
    
    if (!obj || !(widget = ETK_WIDGET(evas_object_smart_data_get(obj))))
       return;
    
+   widget->color.r = r;
+   widget->color.g = g;
+   widget->color.b = b;
+   widget->color.a = a;
+   
+   for (parent = widget->parent; parent && parent->propagate_color; parent = parent->parent)
+   {
+      r = (r * parent->color.r) / 255;
+      g = (g * parent->color.g) / 255;
+      b = (b * parent->color.b) / 255;
+      a = (a * parent->color.a) / 255;
+   }
+   
    if (widget->theme_object)
       evas_object_color_set(widget->theme_object, r, g, b, a);
    
-   /* TODO: Do we want to change the color on this? */
-   if (widget->event_object)
-      evas_object_color_set(widget->event_object, r, g, b, a);
+   /* TODO: we could have a "color_set" method to override this behavior */
    for (l = widget->member_objects; l; l = l->next)
    {
-      m = l->data;      
+      m = l->data;
       evas_object_color_set(m->object, r, g, b, a);
    }
-#if 0   
-   for (l = widget->children; l; l = l->next)
+   if (widget->propagate_color)
    {
-      child = l->data;
-      if (!child->swallowed)
-         evas_object_color_set(child->smart_object, r, g, b, a);
+      for (l = widget->children; l; l = l->next)
+      {
+         child = l->data;
+         if (!child->swallowed)
+         {
+            evas_object_color_set(child->smart_object, widget->color.r,
+                  widget->color.g, widget->color.b, widget->color.a);
+         }
+      }
    }
-#endif   
+   
+   etk_object_notify(ETK_OBJECT(widget), "color");
 }
 
 
@@ -3645,6 +3781,15 @@ static void _etk_widget_content_object_clip_unset_cb(Evas_Object *obj)
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_FALSE
+ * \par
+ * @prop_name "color": The color of the widget
+ * @prop_type Other (quadruplets of integers)
+ * @prop_na
+ * \par
+ * @prop_name "propagate-color": Whether or not the color of the widget should propagated automatically to its children
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
  * \par
  * @prop_name "internal": Whether or not the widget is an internal widget. See etk_widget_internal_set() for more info
  * @prop_type Boolean
