@@ -885,9 +885,6 @@ ewl_grid_row_h_remove(Ewl_Grid *g, int row)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
-
-
 /**
  * @internal
  * @param w: The widget to work with
@@ -1081,7 +1078,6 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *) g);
 		if (c) continue;
 
-
 		/*
 		 * go to the next free place
 		 */
@@ -1105,7 +1101,6 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 
 		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *) g);
 		if (!c) continue;
-
 
 		/* 
 		 * first calculate the current preferred size 
@@ -1136,7 +1131,6 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 	/*
 	 * calculate the preferred size
 	 */
-
 	if (g->homogeneous_h) {
 		int i, size;
 
@@ -1269,9 +1263,11 @@ ewl_grid_resize(Ewl_Grid *g)
 		 */
 		rel = (double)(new_w - fixed) / (double)var;
 		for (i = 0; i < g->cols; i++)
-			if (g->col_size[i].resize_type == EWL_GRID_RESIZE_NORMAL)
+			if (g->col_size[i].resize_type 
+					== EWL_GRID_RESIZE_NORMAL)
 				g->col_size[i].current_size = 
-					(int)(g->col_size[i].preferred_size * rel);
+					(int)(g->col_size[i].preferred_size 
+									* rel);
 	}
 
 	/*
@@ -1321,9 +1317,11 @@ ewl_grid_resize(Ewl_Grid *g)
 		 */
 		rel = (double)(new_h - fixed) / (double)var;
 		for (i = 0; i < g->rows; i++)
-			if (g->row_size[i].resize_type == EWL_GRID_RESIZE_NORMAL)
+			if (g->row_size[i].resize_type 
+					== EWL_GRID_RESIZE_NORMAL)
 				g->row_size[i].current_size = 
-					(int)(g->row_size[i].preferred_size * rel);
+					(int)(g->row_size[i].preferred_size 
+									* rel);
 	}
 
 	/*
