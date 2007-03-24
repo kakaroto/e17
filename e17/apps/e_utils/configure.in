@@ -81,42 +81,47 @@ fi
 #AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 #AC_SUBST(dlopen_libs)
 
-AC_PATH_GENERIC(evas, 0.9.9,
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9],
   [have_evas="yes"],
   [have_evas="no"]
 )
 
-AC_PATH_GENERIC(ecore, 0.9.9,
+PKG_CHECK_MODULES(ECORE, [
+    ecore
+    ecore-evas
+    ecore-file
+    ecore-config dnl FIXME: only exige uses ecore-config
+  ],
   [have_ecore="yes"],
   [have_ecore="no"]
 )
 
-AC_PATH_GENERIC(esmart, 0.9.0,
+PKG_CHECK_MODULES(ESMART, [esmart >= 0.9.0],
   [have_esmart="yes"],
   [have_esmart="no"]
 )
 
-AC_PATH_GENERIC(edje, 0.5.0,
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0],
   [have_edje="yes"],
   [have_edje="no"]
 )
 
-AC_PATH_GENERIC(eet, 0.9.10,
+PKG_CHECK_MODULES(EET, [eet >= 0.9.10],
   [have_eet="yes"],
   [have_eet="no"]
 )
 
-AC_PATH_GENERIC(ewl, 0.0.4,
+PKG_CHECK_MODULES(EWL, [ewl >= 0.0.4],
   [have_ewl="yes"],
   [have_ewl="no"]
 )
 
-AC_PATH_GENERIC(engrave, 0.1.0,
+PKG_CHECK_MODULES(ENGRAVE, [engrave >= 0.1.0],
   [have_engrave="yes"],
   [have_engrave="no"]
 )
 
-AC_PATH_GENERIC(imlib2, 1.0.0,
+PKG_CHECK_MODULES(IMLIB2, [imlib2 >= 1.0.0],
   [have_imlib2="yes"],
   [have_imlib2="no"]
 )
@@ -129,7 +134,7 @@ AC_PATH_GENERIC(enlightenment, 0.16.999,
 e_config_apps_dir=`$ENLIGHTENMENT_CONFIG --config-apps-dir`
 AC_SUBST(e_config_apps_dir)
 	
-AC_PATH_GENERIC(epsilon, 0.3.0,
+PKG_CHECK_MODULES(EPSILON, [epsilon >= 0.3.0],
   [have_epsilon="yes"],
   [have_epsilon="no"]
 )
