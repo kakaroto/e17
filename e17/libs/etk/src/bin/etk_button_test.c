@@ -89,6 +89,7 @@ void etk_test_button_window_create(void *data)
    etk_container_add(ETK_CONTAINER(frame), vbox);
    
    button = etk_check_button_new_with_label("Check button");
+   etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(button));
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    button = etk_check_button_new();
