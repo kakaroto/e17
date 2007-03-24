@@ -1,10 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = \
--Wall -g \
--I/usr/local/include \
--I$(top_srcdir)/lib \
-@my_includes@
+INCLUDES = @EDJEVIEWER_CFLAGS@ @e_cflags@
 
 bin_PROGRAMS = edje_viewer
 
@@ -15,4 +11,4 @@ edje_viewer_SOURCES = \
 edje_etk.c etk_gui.c main.c conf.c \
 $(edje_viewer_INCLUDES)
 
-edje_viewer_LDADD = @my_libs@
+edje_viewer_LDADD = @EDJEVIEWER_LIBS@ @E_LIBS@
