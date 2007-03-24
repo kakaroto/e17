@@ -99,14 +99,22 @@
 		  $fl = fgets($handle, 4096);
 		  $fl = str_replace("\n", "", $fl);
 		  if ($fl != "") {
+		      if (file_exists("p/$page/$fl/link")) {
+			  $h = read_var("p/$page/$fl/link");
+		      }
+                          
 		      if (file_exists("p/$page/$fl/$lang-label")) {
 			  $l = read_var("p/$page/$fl/$lang-label");
-			  $h = "p.php?p=$page/$fl&l=$lang";
+			  if ($h == "") {
+			    $h = "p.php?p=$page/$fl&l=$lang";
+                          }
 			  print("<td class='nav'><a class='nav' href='$h'>$l</a></td>\n");
 		      }
 		      else if (file_exists("p/$page/$fl/en-label")) {
 			  $l = read_var("p/$page/$fl/en-label");
-			  $h = "p.php?p=$page/$fl&l=$lang";
+			  if ($h == "") {
+			    $h = "p.php?p=$page/$fl&l=$lang";
+                          }
 			  print("<td class='nav'><a class='nav' href='$h'>$l</a></td>\n");
 		      }
 		  }
