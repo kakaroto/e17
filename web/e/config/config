@@ -1,5 +1,0 @@
-export news_title="<p><table width=\"100%\"><tr><td class=\"newstitle\">"
-export news_body="</td></tr></table><table width=\"100%\"><tr><td class=\"newsbody\">"
-export news_end="</td></tr></table>"
-export pre="<table><tr><td><pre>"
-export _pre="</pre></td></tr></table>"
