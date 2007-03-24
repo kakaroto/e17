@@ -39,14 +39,14 @@
   This document is available in several languages:<br />
    <ul>
     <li>Spanish: [<a
-       href="http://docs.enlightenment.org/books/cookbook/eflcookbook-es.html">HTML</a>]
-       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook-es.pdf">PDF</a>]</li>
+       href="http://docs.enlightenment.org/books/cookbook/eflcookbook.es.html">HTML</a>]
+       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.es.pdf">PDF</a>]</li>
     <li>French: [<a 
-       href="http://docs.enlightenment.org/books/cookbook/eflcookbook-fr.html">HTML</a>]
-       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook-fr.pdf">PDF</a>]</li>
+       href="http://docs.enlightenment.org/books/cookbook/eflcookbook.fr.html">HTML</a>]
+       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.fr.pdf">PDF</a>]</li>
     <li>Brazillian: [<a 
-       href="http://docs.enlightenment.org/books/cookbook/eflcookbook-pt-BR.html">HTML</a>]
-       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook-pt-BR.pdf">PDF</a>]</li>
+       href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pt-BR.html">HTML</a>]
+       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pt-BR.pdf">PDF</a>]</li>
    </ul>
   Please contact <a href="mailto:benrNO@SPAMcuddletech.com">benr</a> if you are interested in helping.
  </p>
@@ -83,9 +83,9 @@
   <ul>
    <li>Imlib2 [<a href="http://docs.enlightenment.org/api/imlib2/html">HTML</a>] 
         [<a href="http://docs.enlightenment.org/api/imlib2/imlib2-reference.pdf">PDF</a>]</li>
-   <li>EET [<a href="http://docs.enlightenment.org/api/eet/html">HTML</a>] 
+   <li>Eet [<a href="http://docs.enlightenment.org/api/eet/html">HTML</a>] 
         [<a href="http://docs.enlightenment.org/api/eet/eet-reference.pdf">PDF</a>]</li>
-   <li>EVAS [<a href="http://docs.enlightenment.org/api/evas/html">HTML</a>] 
+   <li>Evas [<a href="http://docs.enlightenment.org/api/evas/html">HTML</a>] 
         [<a href="http://docs.enlightenment.org/api/evas/evas-reference.pdf">PDF</a>]</li>
    <li>Ecore [<a href="http://docs.enlightenment.org/api/ecore/html">HTML</a>] 
         [<a href="http://docs.enlightenment.org/api/ecore/ecore-reference.pdf">PDF</a>]</li>
