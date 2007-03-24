@@ -46,7 +46,6 @@ ewl_filelist_list_view_cb_widget_fetch(void *data __UNUSED__, int row __UNUSED__
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	list = ewl_filelist_list_new();
-	ewl_widget_show(list);
 
 	DRETURN_PTR(list, DLEVEL_STABLE);
 }

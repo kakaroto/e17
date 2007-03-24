@@ -65,9 +65,13 @@ ewl_filelist_tree_view_get(void)
 static Ewl_Widget *
 ewl_filelist_tree_view_widget_fetch(void *data __UNUSED__, int row __UNUSED__, int col __UNUSED__)
 {
+	Ewl_Widget *tree;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	DRETURN_PTR(NULL, DLEVEL_STABLE);
+	tree = ewl_filelist_tree_new();
+
+	DRETURN_PTR(tree, DLEVEL_STABLE);
 }
 
 /**

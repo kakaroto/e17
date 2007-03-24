@@ -13,8 +13,7 @@ static Ewl_Stock_Funcs stock_funcs = {
 	NULL
 };
 
-static Ewl_Widget *ewl_button_view_cb_widget_fetch(void *data, int row,
-						int col);
+static Ewl_Widget *ewl_button_view_cb_widget_fetch(void *data, int row, int col);
 static Ewl_Widget *ewl_button_view_cb_header_fetch(void *data, int col);
 
 /**
@@ -30,7 +29,7 @@ ewl_button_new(void)
 
 	b = NEW(Ewl_Button, 1);
 	if (!b)
-		return NULL;
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	if (!ewl_button_init(b)) {
 		ewl_widget_destroy(EWL_WIDGET(b));
@@ -57,9 +56,8 @@ ewl_button_init(Ewl_Button *b)
 
 	w = EWL_WIDGET(b);
 
-	if (!ewl_stock_init(EWL_STOCK(b))) {
+	if (!ewl_stock_init(EWL_STOCK(b)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
 
 	ewl_widget_inherit(w, EWL_BUTTON_TYPE);
 	ewl_stock_functions_set(EWL_STOCK(b), &stock_funcs);

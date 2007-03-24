@@ -61,22 +61,25 @@ typedef Ewl_View *(*Ewl_View_Expansion_View_Fetch)(void *data, int column);
  */
 struct Ewl_View
 {
-	Ewl_View_Widget_Fetch fetch; 	/**< Get a new widget for display */
-	Ewl_View_Header_Fetch header_fetch; 	/**< Get the header for the given column */
-	Ewl_View_Expansion_View_Fetch expansion; 	/**< Get a view for displaying expansion data */
+	Ewl_View_Widget_Fetch fetch;		  /**< Get a new widget for display */
+	Ewl_View_Header_Fetch header_fetch;	  /**< Get the header for the given column */
+	Ewl_View_Expansion_View_Fetch expansion;  /**< Get a view for displaying expansion data */
 };
 
 Ewl_View 		*ewl_view_new(void);
 int 			 ewl_view_init(Ewl_View *view);
 Ewl_View		*ewl_view_clone(Ewl_View *src);
 
-void 			 ewl_view_widget_fetch_set(Ewl_View *view, Ewl_View_Widget_Fetch construct);
+void 			 ewl_view_widget_fetch_set(Ewl_View *view, 
+						Ewl_View_Widget_Fetch construct);
 Ewl_View_Widget_Fetch	 ewl_view_widget_fetch_get(Ewl_View *view);
 
-void 			 ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f);
+void 			 ewl_view_header_fetch_set(Ewl_View *v, 
+						Ewl_View_Header_Fetch f);
 Ewl_View_Header_Fetch 	 ewl_view_header_fetch_get(Ewl_View *v);
 
-void 			 ewl_view_expansion_view_fetch_set(Ewl_View *v, Ewl_View_Expansion_View_Fetch f);
+void 			 ewl_view_expansion_view_fetch_set(Ewl_View *v, 
+						Ewl_View_Expansion_View_Fetch f);
 Ewl_View_Expansion_View_Fetch	ewl_view_expansion_view_fetch_get(Ewl_View *v);
 
 /**

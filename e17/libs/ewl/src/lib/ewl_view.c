@@ -160,3 +160,4 @@ ewl_view_expansion_view_fetch_get(Ewl_View *v)
 
 	DRETURN_INT(v->expansion, DLEVEL_STABLE);
 }
+

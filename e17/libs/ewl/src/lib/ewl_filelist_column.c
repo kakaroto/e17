@@ -59,7 +59,6 @@ ewl_filelist_column_view_cb_widget_fetch(void *data, int col, int row)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	list = ewl_filelist_column_new();
-	ewl_widget_show(list);
 
 	DRETURN_PTR(list, DLEVEL_STABLE);
 }
