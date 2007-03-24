@@ -49,7 +49,7 @@ void etk_prefs_show()
    /* tree to show the possible preferences */
    tree = etk_tree_new();
    etk_tree_headers_visible_set(ETK_TREE(tree), ETK_FALSE);
-   etk_signal_connect("row_clicked", ETK_OBJECT(tree), ETK_CALLBACK(_etk_prefs_row_clicked), notebook);
+   etk_signal_connect("row-clicked", ETK_OBJECT(tree), ETK_CALLBACK(_etk_prefs_row_clicked), notebook);
    etk_widget_size_request_set(tree, 180, 240);
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_LIST);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_FALSE);
@@ -148,7 +148,7 @@ static Etk_Widget *_etk_prefs_theme_tab_create()
    etk_tree_multiple_select_set(ETK_TREE(theme_list), ETK_FALSE);
    etk_tree_rows_height_set(ETK_TREE(theme_list), 60);   
    etk_tree_headers_visible_set(ETK_TREE(theme_list), ETK_FALSE);
-   etk_signal_connect("row_selected", ETK_OBJECT(theme_list), ETK_CALLBACK(_etk_prefs_theme_row_selected_cb), preview);
+   etk_signal_connect("row-selected", ETK_OBJECT(theme_list), ETK_CALLBACK(_etk_prefs_theme_row_selected_cb), preview);
    
    col1 = etk_tree_col_new(ETK_TREE(theme_list), "Themes", 150, 0.0);
    etk_tree_col_model_add(col1, etk_tree_model_text_new());

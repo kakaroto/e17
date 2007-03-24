@@ -772,7 +772,7 @@ group {
 }
 group {
    name: "etk/menu/menu_item/radiobox";
-   name: "etk/menu_bar/menu_item/radiobox";
+   alias: "etk/menu_bar/menu_item/radiobox";
    parts {
       part {
          name: "radio";

@@ -1,6 +1,6 @@
 group {
    name: "etk/hscrollbar";
-   name: "etk/scrolled_view/hscrollbar";
+   alias: "etk/scrolled_view/hscrollbar";
    min: 68 18;
    parts {
       part {
@@ -91,7 +91,7 @@ group {
 
 group {
    name: "etk/vscrollbar";
-   name: "etk/scrolled_view/vscrollbar";
+   alias: "etk/scrolled_view/vscrollbar";
    min: 18 68;
    parts {
       part {
