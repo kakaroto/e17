@@ -13,25 +13,10 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
-/**
- * Ewl_Tree2_Branch_Cache
- */
-typedef struct Ewl_Tree2_Branch_Cache Ewl_Tree2_Branch_Cache;
-
-/**
- * @brief Contains information for tree2 branches
- */
-struct Ewl_Tree2_Branch_Cache
-{
-	Ewl_Model *model;
-	int row_count;
-	void *data;
-};
-
 static void ewl_tree2_cb_view_change(Ewl_MVC *mvc);
 static void ewl_tree2_build_tree(Ewl_Tree2 *tree);
 static void ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, 
-			Ewl_Tree2_Branch_Cache *curbranch, 
+			Ewl_Model *model, void *data,
 			int colour, Ewl_Widget *parent, 
 			int hidden);
 static void ewl_tree2_cb_column_free(void *data);
@@ -763,7 +748,6 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 	int column = 0;
 	void *mvc_data;
 	Ewl_Model *model;
-	Ewl_Tree2_Branch_Cache *head;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
@@ -784,41 +768,35 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 	if (!model)
 		DRETURN(DLEVEL_STABLE);
 
-	head = NEW(Ewl_Tree2_Branch_Cache, 1);
-	head->row_count = model->count(mvc_data);
-	head->data = mvc_data;
-	head->model = model;
-
 	ewl_container_reset(EWL_CONTAINER(tree->rows));
-	ewl_tree2_build_tree_rows(tree, head, 0, tree->rows, FALSE);
-	FREE(head);
+	ewl_tree2_build_tree_rows(tree, model, mvc_data, 0, tree->rows, FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Tree2_Branch_Cache *curbranch, 
+ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, void *data,
 				int colour, Ewl_Widget *parent, int hidden)
 {
 	Ewl_Tree2_Column *col;
-	int i = 0, column;
+	int i = 0, column, row_count = 0;
 
 	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("curbranch", curbranch);
 	DCHECK_PARAM_PTR("parent", parent);
 
-	if (!curbranch->row_count)
+	row_count = model->count(data);
+	if (!row_count)
 		DRETURN(DLEVEL_STABLE);
 
-	while (curbranch)
+	while (1)
 	{
 		Ewl_Widget *row, *node;
 
 		node = ewl_tree2_node_new();
 		EWL_TREE2_NODE(node)->tree = EWL_WIDGET(tree);
 		EWL_TREE2_NODE(node)->row_num = i;
-		ewl_mvc_model_set(EWL_MVC(node), curbranch->model);
-		ewl_mvc_data_set(EWL_MVC(node), curbranch->data);
+		ewl_mvc_model_set(EWL_MVC(node), model);
+		ewl_mvc_data_set(EWL_MVC(node), data);
 
 		ewl_container_child_append(EWL_CONTAINER(parent), node);
 		if (!hidden) ewl_widget_show(node);
@@ -842,21 +820,20 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Tree2_Branch_Cache *curbranch,
 		ecore_list_goto_first(tree->columns);
 		while((col = ecore_list_next(tree->columns)))
 		{
-			ewl_tree2_column_build(EWL_ROW(row),
-					curbranch->model, col->view,
-					curbranch->data, i, column, node);
+			ewl_tree2_column_build(EWL_ROW(row), model, col->view,
+							data, i, column, node);
 			column ++;
 		}
 
 		/* check if this is an expansion point */
 		col = ecore_list_goto_first(tree->columns);
-		if (col && curbranch->model->expansion.is &&
-				curbranch->model->expansion.is(curbranch->data, i))
+		if (col && model->expansion.is && model->expansion.is(data, i))
 		{
-			Ewl_Tree2_Branch_Cache *tmp;
 			int hidden = TRUE;
+			Ewl_Model *tmp_model = NULL;
+			void *tmp_data;
 
-			if (!curbranch->model->expansion.data)
+			if (!model->expansion.data)
 			{
 				DWARNING("In ewl_tree2_build_tree_rows, "
 					"model expandable but without "
@@ -864,43 +841,33 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Tree2_Branch_Cache *curbranch,
 				DRETURN(DLEVEL_STABLE);
 			}
 
-			tmp = NEW(Ewl_Tree2_Branch_Cache, 1);
-			tmp->data = curbranch->model->expansion.data(
-						curbranch->data, i);
-			tmp->row_count = 0;
-			if (curbranch->model->expansion.model)
-				tmp->model =
-					curbranch->model->expansion.model(
-							curbranch->data, i);
+			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), data);
 
-			if (!tmp->model)
-				tmp->model = curbranch->model;
-
-			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), 
-								curbranch->data);
-
-			if (curbranch->model->expansion.data &&
-				ewl_tree2_row_expanded_is(tree, curbranch->data, i))
+			if (model->expansion.data &&
+					ewl_tree2_row_expanded_is(tree, data, i))
 			{
 				ewl_tree2_node_expand(EWL_TREE2_NODE(node));
 				hidden = FALSE;
 			}
 
-			tmp->row_count = tmp->model->count(tmp->data);
-			ewl_tree2_build_tree_rows(tree, tmp, colour, node, hidden);
-			FREE(tmp);
+			tmp_data = model->expansion.data(data, i);
+			if (model->expansion.model)
+				tmp_model = model->expansion.model(data, i);
+
+			if (!tmp_model) tmp_model = model;
+
+			ewl_tree2_build_tree_rows(tree, tmp_model, tmp_data, 
+							colour, node, hidden);
 		}
 		else
-		{
-			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), 
-								NULL);
-		}
+			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), NULL);
+
 		i++;
 
 		/*
 		 * Finished the rows at this level? Jump back up a level.
 		 */
-		if (i >= curbranch->row_count) 
+		if (i >= row_count) 
 			break;
 	}
 
