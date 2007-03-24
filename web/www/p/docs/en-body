@@ -1,0 +1,124 @@
+<h1>Enlightenment Documentation</h1>
+ <p>
+  The Enlightenment Project covers more than simple window management. Whether
+  you're a user, developer, or just someone looking for some good bathroom
+  material, if you are in need of answers, you should find something of
+  interest below.
+ </p>
+  
+ <p>
+  There is also a <a href="http://wiki.enlightenment.org">wiki</a>
+  available.
+ </p>
+
+<h2>Enlightenment Foundataion Libraries :: Beta Manuals</h2>
+ <p>
+  These manuals are still a work in progress. So, while the code examples may
+  have become outdated due to code changes the concepts described in the
+  documents remain valid.
+ </p>
+
+<h3>Introduction to the EFL [<a
+  href="http://homepages.pathfinder.gr/kazanaki/contrib/">HTML</a>] [<a
+  href="http://homepages.pathfinder.gr/kazanaki/contrib/concepts.pdf">PDF</a>]</h3>
+ <p>
+  A high level overview of the EFL libraries. This document describes the
+  general concepts behind EFL. If you are not sure why you should care, this
+  document is for you. <br />
+  Written by <a href="mailto:kkapelonPLEASE@NOSPAMfreemail.gr">Kostis Kapelonisk</a>
+ </p>
+
+<h3>The EFL Cookbook [<a
+  href="http://docs.enlightenment.org/books/cookbook/eflcookbook.html">HTML</a>] [<a
+  href="http://docs.enlightenment.org/books/cookbook/eflcookbook.pdf">PDF</a>]</h3>
+ <p>
+  A developers guide to the EFL in a cookbook style similar to O'Reilly's.
+  Every componant is covered in this guide with complete workable code in each
+  recipe. This is a community document and everyone is welcome to contribute
+  to it.
+  This document is available in several languages:<br />
+   <ul>
+    <li>Spanish: [<a
+       href="http://docs.enlightenment.org/books/cookbook/eflcookbook-es.html">HTML</a>]
+       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook-es.pdf">PDF</a>]</li>
+    <li>French: [<a 
+       href="http://docs.enlightenment.org/books/cookbook/eflcookbook-fr.html">HTML</a>]
+       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook-fr.pdf">PDF</a>]</li>
+    <li>Brazillian: [<a 
+       href="http://docs.enlightenment.org/books/cookbook/eflcookbook-pt-BR.html">HTML</a>]
+       [<a href="http://docs.enlightenment.org/books/cookbook/eflcookbook-pt-BR.pdf">PDF</a>]</li>
+   </ul>
+  Please contact <a href="mailto:benrNO@SPAMcuddletech.com">benr</a> if you are interested in helping.
+ </p>
+
+<h3>The Ewl Book [<a
+  href="http://docs.enlightenment.org/books/ewlbook/ewlbook.pdf">PDF</a>]</h3>
+ <p>
+  The Ewl book is an introduction to the Enlightnened Widget Library (Ewl).
+  It attempts to guide you through your first steps into the EWL and then
+  give a more general overview of the widgets themselves.<br />
+  This document is also avalible in Spanish: [<a
+    href="http://docs.enlightenment.org/books/ewlbook/ewlbook.es.pdf">PDF</a>].<br />
+  Written by <a href="mailto:dj2NO@SPAMeverburning.com">Dan 'dj2' Sinclair</a>.
+ </p>
+
+<h3>Building Interfaces with Edje: The Edje Developers Guide [<a
+  href="http://docs.enlightenment.org/books/edjebook/edjebook.pdf">PDF</a>]</h3>
+ <p>
+  A complete guide to designing interfaces using Edje and utilizing them
+  effectively in your EVAS applications. Includes a complete overview of
+  Edje Data Collections (EDC) and the Edje API, including sample code and
+  reference material. Utilizing Edje effectively can simplify and streamline
+  application development and make nearly any application completely
+  skinable by even non-programmers.<br />
+  Written by <a href="mailto:benrNO@SPAMcuddletech.com">Ben 'technikolor' Rockwood</a>.
+ </p>
+
+<h2>Enlightenment Foundation Libraries :: API Docs</h2>
+ <p>
+  Many of hte libraries in CVS have Doxygen documentation included. You can
+  either generate this documentation using the <code>gendoc</code> script in
+  each library directory, or view the documentation here. <br />
+
+  <ul>
+   <li>Imlib2 [<a href="http://docs.enlightenment.org/api/imlib2/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/imlib2/imlib2-reference.pdf">PDF</a>]</li>
+   <li>EET [<a href="http://docs.enlightenment.org/api/eet/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/eet/eet-reference.pdf">PDF</a>]</li>
+   <li>EVAS [<a href="http://docs.enlightenment.org/api/evas/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/evas/evas-reference.pdf">PDF</a>]</li>
+   <li>Ecore [<a href="http://docs.enlightenment.org/api/ecore/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/ecore/ecore-reference.pdf">PDF</a>]</li>
+   <li>Edje [<a href="http://docs.enlightenment.org/api/edje/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/edje/edje-reference.pdf">PDF</a>]</li>
+   <li>Epeg [<a href="http://docs.enlightenment.org/api/epeg/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/epeg/epeg-reference.pdf">PDF</a>]</li>
+   <li>Epsilon [<a href="http://docs.enlightenment.org/api/epsilon/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/epsilon/epsilon-reference.pdf">PDF</a>]</li>
+   <li>Ewl [<a href="http://docs.enlightenment.org/api/ewl/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/ewl/ewl-reference.pdf">PDF</a>]</li>
+   <li>Etk [<a href="http://docs.enlightenment.org/api/etk/html">HTML</a>]</li>
+   <li>Emotion [<a href="http://docs.enlightenment.org/api/emotion/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/emotion/emotion-reference.pdf">PDF</a>]</li>
+   <li>Engrave [<a href="http://docs.enlightenment.org/api/engrave/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/engrave/engrave-reference.pdf">PDF</a>]</li>
+   <li>Efreet [<a href="http://docs.enlightenment.org/api/efreet/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/efreet/efreet-reference.pdf">PDF</a>]</li>
+ </p>
+
+<h2>Enlightenment DR16 Documentation</h2>
+There is ample documentation available from Enlightenment itself. eDox is
+DR16's "built in" docuemenation and tutorial system. This system was removed
+from the main distribution with the release of DR16.7 in order to shrink the
+size of the distribution and applications installed disk usage. If you are
+new to Enlightenment, please <a
+href="http://sourceforge.net/project/showfiles.php?group_id=2&package_id=116678&release_id=234365">download
+and install the enlightenment-docs package (aka: eDox)</a>.
+
+<h3>EtherDox [<a href="http://etherdoxproject.com">HTML</a>]</h3>
+ <p>
+  Assorted articles on DR16 theming building toward a complete set of
+  documents for the DR16 themer.<br />
+  Written by <a href="mailto:peteNO@SPAMlowatts.demon.co.uk</a>.
+ </p>
+
