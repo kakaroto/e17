@@ -229,6 +229,8 @@ struct Ewl_Tree2_Node
 
 	unsigned int row_num;		/**< The row number of this row */
 	Ewl_Tree_Node_Flags expanded;
+
+	unsigned char built_children:1;	/**< Have we generated child nodes */
 };
 
 Ewl_Widget	*ewl_tree2_node_new(void);
