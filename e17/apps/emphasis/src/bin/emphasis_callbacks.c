@@ -96,10 +96,8 @@ cb_pack_quit(Etk_Object *object, void *data)
       etk_widget_hide(player->small.cov.window);
       etk_widget_hide(player->small.ctr.window);
 
-      etk_container_remove(ETK_CONTAINER(player->small.cov.window),
-                           player->small.cov.root);
-      etk_container_remove(ETK_CONTAINER(player->small.ctr.window),
-                           player->small.ctr.root);
+      etk_container_remove(player->small.cov.root);
+      etk_container_remove(player->small.ctr.root);
 
       etk_box_append(ETK_BOX(player->small.root), player->small.cov.root,
                      ETK_BOX_START, ETK_BOX_FILL, 0);
@@ -619,7 +617,7 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
      evaslist = etk_container_children_get(ETK_CONTAINER(drag));
      while (evaslist)
      {
-     etk_container_remove(ETK_CONTAINER(drag), evas_list_data(evaslist));
+     etk_container_remove(evas_list_data(evaslist));
      etk_object_destroy(ETK_OBJECT(evas_list_data(evaslist)));
      evaslist = evas_list_next(evaslist);
      }
@@ -1029,7 +1027,7 @@ cb_switch_full(Etk_Object *object, void *data)
   etk_widget_hide(player->small.cov.window);
   etk_widget_hide(player->small.ctr.window);
   
-  etk_container_remove(ETK_CONTAINER(player->media.window), player->media.root);
+  etk_container_remove(player->media.root);
   etk_box_append(ETK_BOX(player->full.root),
                      player->media.root,
                      ETK_BOX_START,
@@ -1369,7 +1367,7 @@ cb_media_search_btn_remove_search_clicked(Etk_Object *object, void *data)
 
   etk_widget_unfocus(button);
 
-  etk_container_remove(ETK_CONTAINER(search_root), search_query_row);
+  etk_container_remove(search_query_row);
 
   /* TODO : check for an etk function to replace this */
   Evas_List *children;
@@ -1556,10 +1554,8 @@ cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
           etk_widget_hide(player->small.cov.window);
           etk_widget_hide(player->small.ctr.window);
 
-          etk_container_remove(ETK_CONTAINER(player->small.cov.window),
-                               player->small.cov.root);
-          etk_container_remove(ETK_CONTAINER(player->small.ctr.window),
-                               player->small.ctr.root);
+          etk_container_remove(player->small.cov.root);
+          etk_container_remove(player->small.ctr.root);
 
           etk_box_append(ETK_BOX(player->small.root), player->small.cov.root,
                          ETK_BOX_START, ETK_BOX_FILL, 0);

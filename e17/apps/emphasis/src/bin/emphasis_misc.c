@@ -259,8 +259,8 @@ etk_button_make_vertical(Etk_Widget *button)
   align = evas_list_data(etk_container_children_get(ETK_CONTAINER(button)));
   hbox  = evas_list_data(etk_container_children_get(ETK_CONTAINER(align)));
 
-  etk_container_remove(ETK_CONTAINER(button), align);
-  etk_container_remove(ETK_CONTAINER(align),  hbox);
+  etk_container_remove(align);
+  etk_container_remove(hbox);
 
   vbox = etk_vbox_new(ETK_FALSE, 0);
   etk_widget_show(vbox);
