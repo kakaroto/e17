@@ -122,7 +122,14 @@ Etk_Bool etk_theme_widget_set_from_path(const char *theme_path)
  */
 Etk_Bool etk_theme_widget_set_from_name(const char *theme_name)
 {
-   return etk_theme_widget_set_from_path(etk_theme_widget_find(theme_name));
+   char *path;
+   Etk_Bool result;
+   
+   path = etk_theme_widget_find(theme_name);
+   result = etk_theme_widget_set_from_path(path);
+   free(path);
+   
+   return result;
 }
 
 /**
@@ -238,7 +245,14 @@ Etk_Bool etk_theme_icon_set_from_path(const char *theme_path)
  */
 Etk_Bool etk_theme_icon_set_from_name(const char *theme_name)
 {
-   return etk_theme_icon_set_from_path(etk_theme_icon_find(theme_name));
+   char *path;
+   Etk_Bool result;
+   
+   path = etk_theme_icon_find(theme_name);
+   result = etk_theme_icon_set_from_path(path);
+   free(path);
+   
+   return result;
 }
 
 /**
