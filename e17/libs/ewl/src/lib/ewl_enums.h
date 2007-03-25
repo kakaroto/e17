@@ -16,7 +16,6 @@
  */
 enum Ewl_Callback_Type
 {
-	EWL_CALLBACK_EXPOSE, /**< Triggered when the window needs redrawing */
 	EWL_CALLBACK_REALIZE, /**< Event when a widget is first drawn */
 	EWL_CALLBACK_UNREALIZE, /**< When a widget is no longer drawn */
 	EWL_CALLBACK_SHOW, /**< A widget has been marked visible */
@@ -24,7 +23,6 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_OBSCURE, /**< Widget is offscreen */
 	EWL_CALLBACK_REVEAL, /**< Widget returned to screen */
 	EWL_CALLBACK_DESTROY, /**< The widget is freed */
-	EWL_CALLBACK_DELETE_WINDOW, /**< The window is being closed */
 	EWL_CALLBACK_CONFIGURE, /**< The object is being resized */
 	EWL_CALLBACK_REPARENT, /**< A widget has been placed in a container */
 	EWL_CALLBACK_KEY_DOWN, /**< A key was pressed down */

@@ -250,6 +250,10 @@ ewl_init(int *argc, char **argv)
 	}
 	ecore_list_prepend(shutdown_queue, ewl_callbacks_shutdown);
 
+	/* allocate the two window callbacks */
+	EWL_CALLBACK_EXPOSE = ewl_callback_type_add();
+	EWL_CALLBACK_DELETE_WINDOW = ewl_callback_type_add();
+
 	if (!ewl_theme_init()) {
 		fprintf(stderr, "Could not setup Ewl Theme system.\n");
 		goto ERROR;

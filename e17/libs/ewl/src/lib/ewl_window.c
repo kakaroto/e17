@@ -5,6 +5,8 @@
 #include "ewl_macros.h"
 
 Ecore_List *ewl_window_list = NULL;
+int EWL_CALLBACK_EXPOSE = 0;
+int EWL_CALLBACK_DELETE_WINDOW = 0;
 
 /**
  * @return Returns a new window on success, or NULL on failure.
