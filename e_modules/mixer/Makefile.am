@@ -9,7 +9,7 @@ EDJE_FLAGS = -v \
 
 files_DATA = \
 module.desktop \
-module.edj \
+e-module-mixer.edj \
 mixer.edj
 
 EXTRA_DIST = \
