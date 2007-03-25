@@ -62,6 +62,7 @@ static void *ewl_test_cb_expansion_fetch(void *data, unsigned int row,
 static void ewl_test_cb_test_selected(Ewl_Widget *w, void *ev, void *data);
 
 static Ewl_Widget *cb_unit_test_header_fetch(void *data, int column);
+static void *cb_unit_test_header_data_fetch(void *data, int column);
 static void *cb_unit_test_fetch(void *data, unsigned int row, unsigned int column);
 static int cb_unit_test_count(void *data);
 
@@ -471,15 +472,15 @@ create_main_test_window(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(note), tree);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), tree, "Tests");
 	ewl_tree2_headers_visible_set(EWL_TREE2(tree), FALSE);
+	ewl_tree2_column_count_set(EWL_TREE2(tree), 1);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
 	ewl_mvc_model_set(EWL_MVC(tree), model);
+	ewl_mvc_view_set(EWL_MVC(tree), ewl_label_view_get());
 	ewl_mvc_data_set(EWL_MVC(tree), categories);
 	ewl_callback_append(tree, EWL_CALLBACK_VALUE_CHANGED,
 				ewl_test_cb_test_selected, NULL);
 	ewl_widget_show(tree);
 
-	view = ewl_label_view_get();
-	ewl_tree2_column_append(EWL_TREE2(tree), view, FALSE);
 
 	/* add the tests to the category rows */
 	ecore_list_goto_first(tests);
@@ -521,20 +522,19 @@ create_main_test_window(Ewl_Container *box)
 
 	model = ewl_model_new();
 	ewl_model_data_fetch_set(model, cb_unit_test_fetch);
+	ewl_model_data_header_fetch_set(model, cb_unit_test_header_data_fetch);
 	ewl_model_data_count_set(model, cb_unit_test_count);
-
-	o2 = ewl_tree2_new();
-	ewl_container_child_append(EWL_CONTAINER(o), o2);
-	ewl_mvc_model_set(EWL_MVC(o2), model);
-	ewl_widget_name_set(o2, "unit_test_tree");
-	ewl_widget_show(o2);
 
 	view = ewl_view_clone(ewl_label_view_get());
 	ewl_view_header_fetch_set(view, cb_unit_test_header_fetch);
 
-	ewl_tree2_column_append(EWL_TREE2(o2), view, FALSE);
-	ewl_tree2_column_append(EWL_TREE2(o2), view, FALSE);
-	ewl_tree2_column_append(EWL_TREE2(o2), view, FALSE);
+	o2 = ewl_tree2_new();
+	ewl_tree2_column_count_set(EWL_TREE2(o2), 3);
+	ewl_container_child_append(EWL_CONTAINER(o), o2);
+	ewl_mvc_model_set(EWL_MVC(o2), model);
+	ewl_mvc_view_set(EWL_MVC(o2), view);
+	ewl_widget_name_set(o2, "unit_test_tree");
+	ewl_widget_show(o2);
 
 	o2 = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
@@ -1101,22 +1101,26 @@ ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__,
 	free(sel);
 }
 
+static void *
+cb_unit_test_header_data_fetch(void *data, int column)
+{
+	if (column == 0)
+		return "Test";
+	
+	if (column == 1)
+		return "Status";
+
+	return "Failure Reason";
+}
+
 static Ewl_Widget *
-cb_unit_test_header_fetch(void *data, int column)
+cb_unit_test_header_fetch(void *data, int column __UNUSED__)
 {
 	Ewl_Widget *label;
 
 	label = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(label), data);
 	ewl_widget_show(label);
-
-	if (column == 0)
-		ewl_label_text_set(EWL_LABEL(label), "Test");
-	
-	else if (column == 1)
-		ewl_label_text_set(EWL_LABEL(label), "Status");
-
-	else 
-		ewl_label_text_set(EWL_LABEL(label), "Failure Reason");
 
 	return label;
 }

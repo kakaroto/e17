@@ -63,6 +63,37 @@ ewl_model_init(Ewl_Model *model)
 }
 
 /**
+ * @param m: The model to work with
+ * @param get: The fetch callback to set
+ * @return Returns no value
+ * @brief Sets the fetch callback into the model
+ */
+void
+ewl_model_data_header_fetch_set(Ewl_Model *m, Ewl_Model_Data_Header_Fetch get)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
+
+	m->header = get;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/** 
+ * @param m: The model to work with
+ * @return Returns the header fetch function
+ * @brief Retrieves the header fetch function 
+ */
+Ewl_Model_Data_Header_Fetch
+ewl_model_data_header_fetch_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	
+	DRETURN_PTR(m->header, DLEVEL_STABLE);
+}
+
+/**
  * @param m: The Ewl_Model to set the fetch callback into
  * @param get: The Ewl_Model_Fetch callback to set
  * @return Returns no value.
@@ -91,6 +122,37 @@ ewl_model_data_fetch_get(Ewl_Model *m)
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
 
 	DRETURN_INT(m->fetch, DLEVEL_STABLE);
+}
+
+/**
+ * @param m: the model to work with
+ * @param sortable: the sortable callback to set
+ * @return Returns no value
+ * @brief Sets the sortable callback
+ */
+void
+ewl_model_column_sortable_set(Ewl_Model *m, Ewl_Model_Column_Sortable sortable)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
+
+	m->sortable = sortable;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: the model to work with
+ * @return Returns the sortable callback on the model
+ * @brief Retrieves the sortable callback on the model
+ */
+Ewl_Model_Column_Sortable
+ewl_model_column_sortable_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	
+	DRETURN_PTR(m->sortable, DLEVEL_STABLE);
 }
 
 /**

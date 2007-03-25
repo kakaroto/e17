@@ -941,10 +941,12 @@ struct Tree2_Test_Data
 
 static int create_test(Ewl_Container *win);
 static void *tree2_test_data_setup(void);
-static Ewl_Widget * tree2_test_cb_widget_fetch(void *data, int row, int column);
-static Ewl_Widget * tree2_test_cb_header_fetch(void *data, int column);
+static Ewl_Widget *tree2_test_cb_widget_fetch(void *data, int row, int column);
+static void *tree2_test_cb_header_data_fetch(void *data, unsigned int column);
+static Ewl_Widget *tree2_test_cb_header_fetch(void *data, int column);
 static void *tree2_test_data_fetch(void *data, unsigned int row, 
 						unsigned int column);
+static int tree2_test_column_sortable(void *data, int column);
 static void tree2_test_data_sort(void *data, unsigned int column, 
 						Ewl_Sort_Direction sort);
 static int tree2_test_data_count_get(void *data);
@@ -990,11 +992,18 @@ create_test(Ewl_Container *box)
 	 * column, but a single model will work fine for this test */
 	model = ewl_model_new();
 	ewl_model_data_fetch_set(model, tree2_test_data_fetch);
+	ewl_model_data_header_fetch_set(model,
+				tree2_test_cb_header_data_fetch);
 	ewl_model_data_sort_set(model, tree2_test_data_sort);
+	ewl_model_column_sortable_set(model, tree2_test_column_sortable);
 	ewl_model_data_count_set(model, tree2_test_data_count_get);
 	ewl_model_data_expandable_set(model, tree2_test_data_expandable_get);
 	ewl_model_expansion_data_fetch_set(model, 
-					tree2_test_data_expansion_fetch);
+				tree2_test_data_expansion_fetch);
+
+	view = ewl_view_new();
+	ewl_view_widget_fetch_set(view, tree2_test_cb_widget_fetch);
+	ewl_view_header_fetch_set(view, tree2_test_cb_header_fetch);
 
 	tree = ewl_tree2_new();
 	ewl_container_child_append(EWL_CONTAINER(box), tree);
@@ -1003,27 +1012,12 @@ create_test(Ewl_Container *box)
 					tree2_cb_value_changed, NULL);
 	ewl_mvc_data_set(EWL_MVC(tree), data);
 	ewl_mvc_model_set(EWL_MVC(tree), model);
-	ewl_tree2_row_expand(EWL_TREE2(tree), data, 2);
+	ewl_mvc_view_set(EWL_MVC(tree), view);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_MULTI);
+	ewl_tree2_column_count_set(EWL_TREE2(tree), 3);
+	ewl_tree2_row_expand(EWL_TREE2(tree), data, 2);
 	ewl_widget_name_set(tree, "tree");
 	ewl_widget_show(tree);
-
-	/* create a view for the first column that just has an ewl label */
-	view = ewl_label_view_get();
-	ewl_view_header_fetch_set(view, tree2_test_cb_header_fetch);
-	ewl_tree2_column_append(EWL_TREE2(tree), view, TRUE);
-
-	/* create a view for the second column that just has an ewl image */
-	view = ewl_view_new();
-	ewl_view_widget_fetch_set(view, tree2_test_cb_widget_fetch);
-	ewl_view_header_fetch_set(view, tree2_test_cb_header_fetch);
-	ewl_tree2_column_append(EWL_TREE2(tree), view, TRUE);
-
-	/* create a view for the third column that has a custom widget */
-	view = ewl_view_new();
-	ewl_view_widget_fetch_set(view, tree2_test_cb_widget_fetch);
-	ewl_view_header_fetch_set(view, tree2_test_cb_header_fetch);
-	ewl_tree2_column_append(EWL_TREE2(tree), view, FALSE);
 
 	o3 = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(o2), o3);
@@ -1171,18 +1165,25 @@ tree2_test_cb_widget_fetch(void *data, int row, int column)
 	return w;
 }
 
+static void *
+tree2_test_cb_header_data_fetch(void *data, unsigned int column)
+{
+	if (column == 0)
+		return "Title";
+	
+	if (column == 1)
+		return "Image";
+
+	return "Button";
+}
+
 static Ewl_Widget *
-tree2_test_cb_header_fetch(void *data __UNUSED__, int column)
+tree2_test_cb_header_fetch(void *data, int column __UNUSED__)
 {
 	Ewl_Widget *l;
 
 	l = ewl_label_new();
-	if (column == 0)
-		ewl_label_text_set(EWL_LABEL(l), "Title");
-	else if (column == 1)
-		ewl_label_text_set(EWL_LABEL(l), "Image");
-	else
-		ewl_label_text_set(EWL_LABEL(l), "Button");
+	ewl_label_text_set(EWL_LABEL(l), data);
 	ewl_widget_show(l);
 
 	return l;
@@ -1275,6 +1276,12 @@ tree2_test_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort)
 }
 
 static int
+tree2_test_column_sortable(void *data, int column)
+{
+	return ((column == 0) || (column == 1));
+}
+
+static int
 tree2_test_data_count_get(void *data)
 {
 	Tree2_Test_Data *d;
@@ -1316,7 +1323,7 @@ ewl_tree2_cb_scroll_headers(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	Ewl_Widget *view;
 
 	tree = data;
-	view = ewl_tree2_view_widget_get(tree);
+	view = ewl_tree2_content_widget_get(tree);
 
 	if (EWL_TREE2_VIEW_SCROLLED_IS(view))
 		ewl_tree2_view_scrolled_scroll_headers_set(EWL_TREE2_VIEW(view),
@@ -1349,7 +1356,7 @@ ewl_tree2_cb_plain_view(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	else
 		view = ewl_tree2_view_scrolled_get();
 
-	ewl_mvc_view_set(EWL_MVC(tree), view);
+	ewl_tree2_content_view_set(EWL_TREE2(tree), view);
 }
 
 static void

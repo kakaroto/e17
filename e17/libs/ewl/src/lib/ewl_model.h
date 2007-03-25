@@ -157,9 +157,17 @@ void			 ewl_model_data_fetch_set(Ewl_Model *m,
 					Ewl_Model_Data_Fetch get);
 Ewl_Model_Data_Fetch	 ewl_model_data_fetch_get(Ewl_Model *m);
 
+void			 ewl_model_data_header_fetch_set(Ewl_Model *m,
+					Ewl_Model_Data_Header_Fetch get);
+Ewl_Model_Data_Header_Fetch ewl_model_data_header_fetch_get(Ewl_Model *m);
+
 void			 ewl_model_data_free_set(Ewl_Model *m, 
 					Ewl_Model_Data_Free assign);
 Ewl_Model_Data_Free	 ewl_model_data_free_get(Ewl_Model *m);
+
+void			 ewl_model_column_sortable_set(Ewl_Model *m,
+					Ewl_Model_Column_Sortable sortable);
+Ewl_Model_Column_Sortable ewl_model_column_sortable_get(Ewl_Model *m);
 
 void			 ewl_model_data_sort_set(Ewl_Model *m, 
 					Ewl_Model_Data_Sort sort);

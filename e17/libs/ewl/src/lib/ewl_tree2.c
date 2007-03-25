@@ -13,13 +13,11 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
-static void ewl_tree2_cb_view_change(Ewl_MVC *mvc);
 static void ewl_tree2_build_tree(Ewl_Tree2 *tree);
 static void ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, 
 			Ewl_Model *model, void *data,
 			int colour, Ewl_Widget *parent, 
 			int hidden);
-static void ewl_tree2_cb_column_free(void *data);
 static void ewl_tree2_cb_header_changed(Ewl_Widget *w, void *ev, 
 							void *data);
 
@@ -79,9 +77,6 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), 
 				EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_FILL);
 
-	tree->columns = ecore_list_new();
-	ecore_list_set_free_cb(tree->columns, ewl_tree2_cb_column_free);
-
 	tree->type = EWL_TREE_SELECTION_TYPE_CELL;
 
 	tree->header = ewl_hpaned_new();
@@ -93,8 +88,7 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 	ewl_widget_show(tree->header);
 
 	/* set the default row view */
-	ewl_mvc_view_change_cb_set(EWL_MVC(tree), ewl_tree2_cb_view_change);
-	ewl_mvc_view_set(EWL_MVC(tree), ewl_tree2_view_scrolled_get());
+	ewl_tree2_content_view_set(tree, ewl_tree2_view_scrolled_get());
 
 	ewl_tree2_headers_visible_set(tree, TRUE);
 	ewl_tree2_fixed_rows_set(tree, FALSE);
@@ -107,137 +101,6 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 	ewl_widget_focusable_set(EWL_WIDGET(tree), FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-
-/**
- * @param tree: The Ewl_Tree to append the column too
- * @param view: The view to use for this column
- * @param sortable: Is the column sortable
- * @return Returns no value.
- * @brief Append a new column to the tree
- */
-void
-ewl_tree2_column_append(Ewl_Tree2 *tree, Ewl_View *view, 
-				unsigned int sortable)
-{
-	Ewl_Tree2_Column *c;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("view", view);
-	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
-
-	c = ewl_tree2_column_new();
-	if (!c)
-	{
-		DWARNING("Unable to create new tree column.");
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	ewl_tree2_column_view_set(c, view);
-	ewl_tree2_column_mvc_set(c, EWL_MVC(tree));
-	ewl_tree2_column_sortable_set(c, sortable);
-
-	ecore_list_append(tree->columns, c);
-	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param tree: The Ewl_Tree to prepend the column too
- * @param view: The view to use for this column
- * @param sortable: Is the column sortable
- * @return Returns no value.
- * @brief Prepend a new column to the tree
- */
-void
-ewl_tree2_column_prepend(Ewl_Tree2 *tree, Ewl_View *view, 
-				unsigned int sortable)
-{
-	Ewl_Tree2_Column *c;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("view", view);
-	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
-
-	c = ewl_tree2_column_new();
-	if (!c)
-	{
-		DWARNING("Unable to create new tree column.");
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	ewl_tree2_column_view_set(c, view);
-	ewl_tree2_column_mvc_set(c, EWL_MVC(tree));
-	ewl_tree2_column_sortable_set(c, sortable);
-
-	ecore_list_prepend(tree->columns, c);
-	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param tree: The Ewl_Tree to insert the column into
- * @param view: The view to use for this column
- * @param idx: The index to insert into 
- * @param sortable: Is the column sortable?
- * @return Returns no value.
- * @brief Insert a new column into the tree
- */
-void
-ewl_tree2_column_insert(Ewl_Tree2 *tree, Ewl_View *view, unsigned int idx,
-						unsigned int sortable)
-{
-	Ewl_Tree2_Column *c;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("view", view);
-	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
-
-	c = ewl_tree2_column_new();
-	if (!c)
-	{
-		DWARNING("Unable to create new tree column.");
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	ewl_tree2_column_view_set(c, view);
-	ewl_tree2_column_mvc_set(c, EWL_MVC(tree));
-	ewl_tree2_column_sortable_set(c, sortable);
-
-	ecore_list_goto_index(tree->columns, idx);
-	ecore_list_insert(tree->columns, c);
-	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param tree: The tree to remove the column from
- * @param idx: The column index to remove
- * @return Returns no value
- * @brief Remove a column from the tree
- */
-void
-ewl_tree2_column_remove(Ewl_Tree2 *tree, unsigned int idx)
-{
-	Ewl_Tree2_Column *c;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
-
-	ecore_list_goto_index(tree->columns, idx);
-	c = ecore_list_remove(tree->columns);
-
-	ewl_tree2_column_destroy(c);
-	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -281,6 +144,86 @@ ewl_tree2_headers_visible_get(Ewl_Tree2 *tree)
 	DCHECK_TYPE_RET("tree", tree, EWL_TREE2_TYPE, FALSE);
 
 	DRETURN_INT(tree->headers_visible, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @param count: The number of columns in the tree
+ * @return Returns no value
+ * @brief Sets the number of columns in the tree
+ */
+void
+ewl_tree2_column_count_set(Ewl_Tree2 *tree, unsigned int count)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
+	
+	tree->columns = count;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @return Returns the number of columns in the tree
+ * @brief Retrives the number of columns in the tree
+ */
+unsigned int
+ewl_tree2_column_count_get(Ewl_Tree2 *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, 0);
+	DCHECK_TYPE_RET("tree", tree, EWL_TREE2_TYPE, 0);
+
+	DRETURN_INT(tree->columns, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: the tree to work with
+ * @param view: The view to set to generate the content area
+ * @return Returns no value
+ * @brief Sets the view to use to generate the content area
+ */
+void
+ewl_tree2_content_view_set(Ewl_Tree2 *tree, Ewl_View *view)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_PARAM_PTR("view", view);
+	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
+
+	if (tree->content_view == view)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->content_view = view;
+
+	/* destroy the old view, create a new one and redisplay the tree */
+	if (tree->rows) ewl_widget_destroy(tree->rows);
+
+	tree->rows = view->fetch(NULL, 0, 0);
+	ewl_tree2_view_tree2_set(EWL_TREE2_VIEW(tree->rows), tree);
+	ewl_container_child_append(EWL_CONTAINER(tree), tree->rows);
+	ewl_widget_show(tree->rows);
+
+	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @return Returns the view used to generate the content area
+ * @brief Retrives the view used to generate the tree content area
+ */
+Ewl_View *
+ewl_tree2_content_view_get(Ewl_Tree2 *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
+	DCHECK_TYPE_RET("tree", tree, EWL_TREE2_TYPE, NULL);
+
+	DRETURN_PTR(tree->content_view, DLEVEL_STABLE);
 }
 
 /**
@@ -362,11 +305,9 @@ ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree)
  * @param tree: The tree to work with
  * @return Returns the widget that contains the tree rows
  * @brief Retrieves the widget containing the tree rows
- *
- * XXX This is a badly named function. Too close to the MVC view name
  */
 Ewl_Widget *
-ewl_tree2_view_widget_get(Ewl_Tree2 *tree)
+ewl_tree2_content_widget_get(Ewl_Tree2 *tree)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
@@ -525,7 +466,6 @@ ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	t = EWL_TREE2(w);
 
-	IF_FREE_LIST(t->columns);
 	IF_FREE_HASH(t->expansions);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -571,21 +511,19 @@ ewl_tree2_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Sorts the tree by the given column
  */
 void
-ewl_tree2_cb_column_sort(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
-								void *data)
+ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
-	Ewl_Tree2_Column *c, *col;
-	Ewl_MVC *mvc;
+	Ewl_Tree2 *tree;
 	Ewl_Model *model;
 	int index = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	c = data;
-
-	mvc = ewl_tree2_column_mvc_get(c);
-	model = ewl_mvc_model_get(mvc);
+	/* XXX This is kind of a nasty way to get the tree ... */
+	tree = EWL_TREE2(w->parent->parent);
+	model = ewl_mvc_model_get(EWL_MVC(tree));
 
 	/* sanity check */
 	if (!model || !model->sort)
@@ -594,102 +532,66 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	/* loop over the columns and reset the sort settings */
-	ecore_list_goto_first(EWL_TREE2(mvc)->columns);
-	while ((col = ecore_list_next(EWL_TREE2(mvc)->columns)))
-	{
-		/* skip the current column */
-		if (col == c)
-		{
-			/* we're the index before the one we're now on */
-			index = ecore_list_index(EWL_TREE2(mvc)->columns) - 1;
-			continue;
-		}
-
-		col->sort = EWL_SORT_DIRECTION_NONE;
-	}
-
-	/* update our sort direction and call the sort function, skipping
+	/* update our sort information and call the sort function, skipping
 	 * over SORT_NONE */
-	c->sort = ((c->sort + 1) % EWL_SORT_DIRECTION_MAX);
-	if (!c->sort) c->sort ++;
+	tree->sort.column = (int)data;
+	tree->sort.direction = ((tree->sort.direction + 1) % EWL_SORT_DIRECTION_MAX);
+	if (!tree->sort.direction) tree->sort.direction ++;
 
-	model->sort(ewl_mvc_data_get(mvc), index, c->sort);
-	ewl_mvc_dirty_set(mvc, TRUE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_tree2_cb_view_change(Ewl_MVC *mvc)
-{
-	Ewl_View *view;
-	Ewl_Tree2 *t;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_TREE2_TYPE);
-
-	t = EWL_TREE2(mvc);
-	view = ewl_mvc_view_get(mvc);
-
-	/* destroy the old view, create a new one and redisplay the tree */
-	if (t->rows) ewl_widget_destroy(t->rows);
-
-	t->rows = view->fetch(NULL, 0, 0);
-	ewl_tree2_view_tree2_set(EWL_TREE2_VIEW(t->rows), t);
-	ewl_container_child_append(EWL_CONTAINER(t), t->rows);
-	ewl_widget_show(t->rows);
+	model->sort(ewl_mvc_data_get(EWL_MVC(tree)), index,
+					tree->sort.direction);
+	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_tree2_header_build(Ewl_Tree2 *tree, Ewl_Tree2_Column *col, void *mvc_data, int column)
+ewl_tree2_header_build(Ewl_Tree2 *tree,  Ewl_Model *model, Ewl_View *view, 
+						void *mvc_data, int column)
 {
 	Ewl_Widget *h, *c;
-	Ewl_Model *model;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("col", col);
+	DCHECK_PARAM_PTR("model", model);
+	DCHECK_PARAM_PTR("view", view);
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
 	if (!tree->headers_visible) DRETURN(DLEVEL_STABLE);
 
-	if (!col->view->header_fetch)
+	if (!view->header_fetch)
 	{
 		DWARNING("Missing header_fetch callback.");
 		DRETURN(DLEVEL_STABLE);
 	}
-
-	model = ewl_mvc_model_get(EWL_MVC(tree));
 
 	h = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(tree->header), h);
 	ewl_widget_appearance_set(h, "header");
 	ewl_widget_show(h);
 
-	if (col->sortable)
-		ewl_callback_append(h, EWL_CALLBACK_CLICKED, 
-					ewl_tree2_cb_column_sort, col);
-
-	c = col->view->header_fetch(mvc_data, column);
+	c = view->header_fetch(model->header(mvc_data, column), column);
 	ewl_object_fill_policy_set(EWL_OBJECT(c), 
 			EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(h), c);
+	ewl_widget_show(c);
 
 	/* display the sort arrow if needed */
-	if (col->sortable)
+	if (model->sortable && model->sortable(mvc_data, column)) 
 	{
 		char *state_str;
+
+		ewl_callback_append(h, EWL_CALLBACK_CLICKED, 
+					ewl_tree2_cb_column_sort, (int *)column);
 
 		c = ewl_button_new();
 		ewl_container_child_append(EWL_CONTAINER(h), c);
 
-		if (col->sort == EWL_SORT_DIRECTION_ASCENDING)
+		if ((column == tree->sort.column)
+				&& (tree->sort.direction == EWL_SORT_DIRECTION_ASCENDING))
 			state_str = "ascending";
-		else if (col->sort == EWL_SORT_DIRECTION_DESCENDING)
+		else if ((column == tree->sort.column)
+				&& (tree->sort.direction == EWL_SORT_DIRECTION_DESCENDING))
 			state_str = "descending";
 		else
 			state_str = "default";
@@ -744,8 +646,7 @@ ewl_tree2_column_build(Ewl_Row *row, Ewl_Model *model, Ewl_View *view,
 static void
 ewl_tree2_build_tree(Ewl_Tree2 *tree)
 {
-	Ewl_Tree2_Column *col;
-	int column = 0;
+	int i;
 	void *mvc_data;
 	Ewl_Model *model;
 
@@ -758,12 +659,10 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 
 	/* setup the headers */
 	ewl_container_reset(EWL_CONTAINER(tree->header));
-	ecore_list_goto_first(tree->columns);
-	while ((col = ecore_list_next(tree->columns)))
-	{
-		ewl_tree2_header_build(tree, col, mvc_data, column);
-		column ++;
-	}
+	for (i = 0; i < tree->columns; i++)
+		ewl_tree2_header_build(tree, model,
+				ewl_mvc_view_get(EWL_MVC(tree)), 
+				mvc_data, i);
 
 	if (!model)
 		DRETURN(DLEVEL_STABLE);
@@ -778,7 +677,6 @@ static void
 ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, void *data,
 				int colour, Ewl_Widget *parent, int hidden)
 {
-	Ewl_Tree2_Column *col;
 	int i = 0, column, row_count = 0;
 
 	DCHECK_PARAM_PTR("tree", tree);
@@ -816,18 +714,13 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, void *data,
 		colour = (colour + 1) % 2;
 
 		/* do the current branch */
-		column = 0;
-		ecore_list_goto_first(tree->columns);
-		while((col = ecore_list_next(tree->columns)))
-		{
-			ewl_tree2_column_build(EWL_ROW(row), model, col->view,
-							data, i, column, node);
-			column ++;
-		}
+		for (column = 0; column < tree->columns; column ++)
+			ewl_tree2_column_build(EWL_ROW(row), model, 
+						ewl_mvc_view_get(EWL_MVC(tree)),
+						data, i, column, node);
 
 		/* check if this is an expansion point */
-		col = ecore_list_goto_first(tree->columns);
-		if (col && model->expansion.is && model->expansion.is(data, i))
+		if (model->expansion.is && model->expansion.is(data, i))
 		{
 			int hidden = TRUE;
 
@@ -859,19 +752,6 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, void *data,
 		if (i >= row_count) 
 			break;
 	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_tree2_cb_column_free(void *data)
-{
-	Ewl_Tree2_Column *c;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	c = data;
-	ewl_tree2_column_destroy(c);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -975,189 +855,23 @@ ewl_tree2_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, int row, int column)
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
+static void
+ewl_tree2_create_expansions_hash(Ewl_Tree2 *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
+
+	tree->expansions = ecore_hash_new(NULL, NULL);
+	ecore_hash_set_free_value(tree->expansions, 
+			ECORE_FREE_CB(ecore_list_destroy));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
 /*
- * Ewl_Tree2_Column stuff
+ * Ewl_Tree2_Node Stuff
  */
-
-/**
- * @return Returns a new Ewl_Tree2_Column
- * @brief Creates a new Ewl_Tree2_Column object
- */
-Ewl_Tree2_Column *
-ewl_tree2_column_new(void)
-{
-	Ewl_Tree2_Column *c;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	c = NEW(Ewl_Tree2_Column, 1);
-
-	DRETURN_PTR(c, DLEVEL_STABLE);
-}
-
-/**
- * @param c: The column to work with
- * @return Returns no value
- * @brief Destroys the given column 
- */
-void
-ewl_tree2_column_destroy(Ewl_Tree2_Column *c)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-
-	c->view = NULL;
-	c->parent = NULL;
-	c->sort = EWL_SORT_DIRECTION_NONE;
-
-	FREE(c);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param c: The column to work with
- * @param v: The view to set
- * @return Returns no value
- * @brief Sets the given view @a v into the column @a c
- */
-void
-ewl_tree2_column_view_set(Ewl_Tree2_Column *c, Ewl_View *v)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("v", v);
-
-	c->view = v;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param c: The Ewl_Tree2_Column to work with
- * @return Returns the view set on the given column
- * @brief Retrieves the view for the given column
- */
-Ewl_View *
-ewl_tree2_column_view_get(Ewl_Tree2_Column *c)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, NULL);
-
-	DRETURN_PTR(c->view, DLEVEL_STABLE);
-}
-
-/**
- * @param c: The Ewl_Tree2_Column to work with
- * @param mvc: The parent to set
- * @return Returns no value
- * @brief Sets @a mvc as the parent of the column @a c
- */
-void
-ewl_tree2_column_mvc_set(Ewl_Tree2_Column *c, Ewl_MVC *mvc)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
-
-	c->parent = mvc;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param c: The Ewl_Tree2_Column to work with
- * @return Returns the MVC parent or NULL if none set
- * @brief Retrives the MVC parent
- */
-Ewl_MVC *
-ewl_tree2_column_mvc_get(Ewl_Tree2_Column *c)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, NULL);
-
-	DRETURN_PTR(c->parent, DLEVEL_STABLE);
-}
-
-/**
- * @param c: The column to work with
- * @param sortable: The sortable flag to set
- * @return Returns no value
- * @brief Sets the sortable flag of column @a c to @a sortable
- */
-void
-ewl_tree2_column_sortable_set(Ewl_Tree2_Column *c, unsigned int sortable)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-
-	c->sortable = !!sortable;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param c: The column to work with
- * @return Returns TRUE if the column is sortable, FALSE otherwise
- * @brief Retrieves the sort flag for the column @a c
- */
-unsigned int
-ewl_tree2_column_sortable_get(Ewl_Tree2_Column *c)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-
-	DRETURN_INT(c->sortable, DLEVEL_STABLE);
-}
-
-/**
- * @param c: The Ewl_Tree2_Column to work with
- * @return Returns the parent tree for this column or NULL if none set
- * @brief Retrieves the parent tree for this column or NULL if none set
- */
-Ewl_Tree2 *
-ewl_tree2_column_tree_get(Ewl_Tree2_Column *c)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, NULL);
-
-	DRETURN_PTR(c->parent, DLEVEL_STABLE);
-}
-
-/**
- * @param c: The Ewl_Tree2_Column to work with
- * @param sort: The sort direction to set
- * @return Returns no value
- * @brief Sets the sort direction of the column to the given value
- */
-void
-ewl_tree2_column_sort_direction_set(Ewl_Tree2_Column *c, Ewl_Sort_Direction sort)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-
-	c->sort = sort;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param c: The Ewl_Tree2_Column to get the sort information from
- * @return Returns the current sort direction for the column or
- * EWL_SORT_DIRECTION_NONE if none set
- * @brief Retrieves the current sort information for the Ewl_Tree2_Column
- */
-Ewl_Sort_Direction
-ewl_tree2_column_sort_direction_get(Ewl_Tree2_Column *c)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, EWL_SORT_DIRECTION_NONE);
-
-	DRETURN_INT(c->sort, DLEVEL_STABLE);
-}
-
 Ewl_Widget *
 ewl_tree2_node_new(void)
 {
@@ -1559,20 +1273,6 @@ ewl_tree2_cb_node_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	ewl_tree2_cb_node_child_add(c, w);
-}
-
-static void
-ewl_tree2_create_expansions_hash(Ewl_Tree2 *tree)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
-
-	tree->expansions = ecore_hash_new(NULL, NULL);
-	ecore_hash_set_free_value(tree->expansions, 
-			ECORE_FREE_CB(ecore_list_destroy));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
