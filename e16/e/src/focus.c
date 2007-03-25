@@ -573,6 +573,10 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
 	  }
      }
 
+   if (ev->xcrossing.mode == NotifyUngrab &&
+       ev->xcrossing.detail == NotifyNonlinearVirtual)
+      return;
+
    switch (Conf.focus.mode)
      {
      default:
