@@ -191,7 +191,7 @@ _e_widget_table_handle(Enhance *en, EXML_Node *node)
    id = ecore_hash_get(node->attributes, "id");
    if(!id) return NULL;
    
-   table = _e_widget_new(en, node, etk_table_new(1, 1, ETK_FALSE), id);
+   table = _e_widget_new(en, node, etk_table_new(1, 1, ETK_TABLE_NOT_HOMOGENEOUS), id);
    
    return table;
 }
@@ -1206,7 +1206,7 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 		       
 	etk_table_attach(ETK_TABLE(parent->wid), child->wid, left_attach,
 			 right_attach, top_attach, bottom_attach, 
-			 x_padding, y_padding, fill_policy);
+			 fill_policy, x_padding, y_padding);
      }
    else if(!strcmp(parent_class, "GtkButton") ||
            !strcmp(parent_class, "GtkToggleButton") ||
