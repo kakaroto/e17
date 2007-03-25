@@ -112,3 +112,8 @@ foreach(@changed) {
 
 print MAIL "\n\n";
 close(MAIL);
+
+# flag www to update
+if ($modulename eq "www") {
+    system("wget http://web.enlightenment.org/u.php -O /dev/null");
+}
