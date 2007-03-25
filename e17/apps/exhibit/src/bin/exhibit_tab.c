@@ -146,7 +146,7 @@ _ex_tab_select(Ex_Tab *tab)
       
    etk_table_attach(ETK_TABLE(e->table), tab->dtree,
 		    0, 3, 3, 3,
-		    0, 0, ETK_TABLE_VEXPAND | ETK_TABLE_FILL);
+		    ETK_TABLE_VEXPAND | ETK_TABLE_FILL, 0, 0);
    etk_widget_show(tab->dtree);
    
    etk_paned_child2_set(ETK_PANED(e->vpaned), tab->itree, ETK_TRUE);
@@ -167,8 +167,8 @@ _ex_tab_current_zoom_in(Exhibit *e)
 	if (e->cur_tab->comment.visible)
 	  {
 	     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
-	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
-	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+	     etk_container_remove(e->cur_tab->alignment);
+	     etk_container_remove(e->cur_tab->comment.frame);
 	     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	  }
@@ -197,8 +197,8 @@ _ex_tab_current_zoom_out(Exhibit *e)
 	if (e->cur_tab->comment.visible)
 	  {
 	     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
-	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
-	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+	     etk_container_remove(e->cur_tab->alignment);
+	     etk_container_remove(e->cur_tab->comment.frame);
 	     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	  }
@@ -227,8 +227,8 @@ _ex_tab_current_zoom_one_to_one(Exhibit *e)
 	if (e->cur_tab->comment.visible)
 	  {
 	     etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
-	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->alignment);
-	     etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+	     etk_container_remove(e->cur_tab->alignment);
+	     etk_container_remove(e->cur_tab->comment.frame);
 	     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	     etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
 	  }
@@ -256,8 +256,8 @@ _ex_tab_current_fit_to_window(Exhibit *e)
    if (e->cur_tab->comment.visible)
      {
 	etk_notebook_page_child_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, e->cur_tab->comment.vbox);
-	etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->scrolled_view);
-	etk_container_remove(ETK_CONTAINER(e->cur_tab->comment.vbox), e->cur_tab->comment.frame);
+	etk_container_remove(e->cur_tab->scrolled_view);
+	etk_container_remove(e->cur_tab->comment.frame);
 	etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->alignment, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	etk_box_append(ETK_BOX(e->cur_tab->comment.vbox), e->cur_tab->comment.frame, ETK_BOX_START, ETK_BOX_NONE, 3);
      }
@@ -307,7 +307,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 	else
 	  row_num = 1;
 	
-	table = etk_table_new(EX_DND_COL_NUM, row_num + 1, ETK_TRUE);
+	table = etk_table_new(EX_DND_COL_NUM, row_num + 1, ETK_TABLE_HOMOGENEOUS);
 	drag_data = calloc(PATH_MAX * evas_list_count(rows), sizeof(char));
 	for(ll = rows; ll; ll = ll->next)
 	  {
@@ -322,8 +322,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 		  image = etk_image_new_from_file(icol1_string, NULL);
 		  etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
 		  etk_widget_size_request_set(image, 48, 48);
-		  etk_table_attach(ETK_TABLE(table), image, l, r, t, b, 3, 3,
-				   ETK_TABLE_NONE);
+		  etk_table_attach(ETK_TABLE(table), image, l, r, t, b, ETK_TABLE_NONE, 3, 3);
 		  
 		  ++l; ++r;
 		  

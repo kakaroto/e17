@@ -596,29 +596,23 @@ _ex_options_page_2_create()
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox2);
 
-   table = etk_table_new(2, 3, ETK_FALSE);
+   table = etk_table_new(2, 3, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_box_append(ETK_BOX(vbox2), table, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    label = etk_label_new("Blur thresh"); 
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 0, 0, ETK_TABLE_NONE, 0, 0);
    dialog->blur_thresh = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->blur_thresh, 1, 1, 0, 0, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->blur_thresh, 1, 1, 0, 0, ETK_TABLE_NONE, 0, 0);
    
    label = etk_label_new("Sharpen thresh"); 
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, ETK_TABLE_NONE, 0, 0);
    dialog->sharpen_thresh = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->sharpen_thresh, 1, 1, 1, 1, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->sharpen_thresh, 1, 1, 1, 1, ETK_TABLE_NONE, 0, 0);
 
    label = etk_label_new("Brighten thresh"); 
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2, ETK_TABLE_NONE, 0, 0);
    dialog->brighten_thresh = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->brighten_thresh, 1, 1, 2, 2, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->brighten_thresh, 1, 1, 2, 2, ETK_TABLE_NONE, 0, 0);
 
    frame = etk_frame_new("Rotate");
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
@@ -745,55 +739,41 @@ _ex_options_page_4_create()
    etk_box_append(ETK_BOX(vbox2), label, ETK_BOX_START, ETK_BOX_NONE, 5);
    etk_box_append(ETK_BOX(vbox2), etk_hseparator_new(), ETK_BOX_START, ETK_BOX_NONE, 5);
 
-   table = etk_table_new(3, 5, ETK_FALSE);
+   table = etk_table_new(3, 5, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_box_append(ETK_BOX(vbox2), table, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    label = etk_label_new("Menu display"); 
-   etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 1, 1, 0, 0, ETK_TABLE_NONE, 0, 0);
    label = etk_label_new("Command"); 
-   etk_table_attach(ETK_TABLE(table), label, 2, 2, 0, 0, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 2, 2, 0, 0, ETK_TABLE_NONE, 0, 0);
 
    label = etk_label_new("Application 1"); 
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, 5, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1, ETK_TABLE_NONE, 5, 0);
    dialog->app1 = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->app1, 1, 1, 1, 1, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->app1, 1, 1, 1, 1, ETK_TABLE_NONE, 0, 0);
    dialog->app1_cmd = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->app1_cmd, 2, 2, 1, 1, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->app1_cmd, 2, 2, 1, 1, ETK_TABLE_NONE, 0, 0);
    
    label = etk_label_new("Application 2"); 
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2, ETK_TABLE_NONE, 0, 0);
    dialog->app2 = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->app2, 1, 1, 2, 2, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->app2, 1, 1, 2, 2, ETK_TABLE_NONE, 0, 0);
    dialog->app2_cmd = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->app2_cmd, 2, 2, 2, 2, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->app2_cmd, 2, 2, 2, 2, ETK_TABLE_NONE, 0, 0);
    
    label = etk_label_new("Application 3"); 
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 3, 3, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 3, 3, ETK_TABLE_NONE, 0, 0);
    dialog->app3 = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->app3, 1, 1, 3, 3, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->app3, 1, 1, 3, 3, ETK_TABLE_NONE, 0, 0);
    dialog->app3_cmd = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->app3_cmd, 2, 2, 3, 3, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->app3_cmd, 2, 2, 3, 3, ETK_TABLE_NONE, 0, 0);
 
    label = etk_label_new("Application 4"); 
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 4, 4, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 4, 4, ETK_TABLE_NONE, 0, 0);
    dialog->app4 = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->app4, 1, 1, 4, 4, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->app4, 1, 1, 4, 4, ETK_TABLE_NONE, 0, 0);
    dialog->app4_cmd = etk_entry_new();
-   etk_table_attach(ETK_TABLE(table), dialog->app4_cmd, 2, 2, 4, 4, 0, 0, 
-	 ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), dialog->app4_cmd, 2, 2, 4, 4, ETK_TABLE_NONE, 0, 0);
 
    if (e->options->app1)
 	etk_entry_text_set(ETK_ENTRY(dialog->app1), e->options->app1);

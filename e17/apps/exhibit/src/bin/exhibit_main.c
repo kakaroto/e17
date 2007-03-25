@@ -612,7 +612,7 @@ _ex_main_window_fullscreen_toggle(Exhibit *e)
    if (etk_window_fullscreen_get(ETK_WINDOW(e->win)))
      {
 	etk_signal_connect("resized", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb), e);
-	etk_container_remove(ETK_CONTAINER(e->win), e->vboxf);
+	etk_container_remove(e->vboxf);
 	etk_container_add(ETK_CONTAINER(e->win), e->vbox);
 	etk_widget_show_all(e->win);
 	etk_container_add(ETK_CONTAINER(e->hpaned_shadow), e->notebook);
@@ -631,7 +631,7 @@ _ex_main_window_fullscreen_toggle(Exhibit *e)
 	etk_widget_hide(e->statusbar[2]);
 	etk_widget_hide(e->statusbar[3]);
 	etk_widget_hide(e->sort_bar);
-	etk_container_remove(ETK_CONTAINER(e->win), e->vbox);
+	etk_container_remove(e->vbox);
 	e->vboxf = etk_vbox_new(ETK_FALSE, 0);
 	etk_container_add(ETK_CONTAINER(e->win), e->vboxf);
 	etk_box_append(ETK_BOX(e->vboxf), e->notebook, 
@@ -804,11 +804,11 @@ _ex_main_window_show(char *dir, int fullscreen)
    e->vpaned = etk_vpaned_new();
    etk_paned_child1_set(ETK_PANED(e->hpaned), e->vpaned, ETK_FALSE);
    
-   e->table = etk_table_new(4, 4, ETK_FALSE);
+   e->table = etk_table_new(4, 4, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_paned_child1_set(ETK_PANED(e->vpaned), e->table, ETK_TRUE);
 
    e->menu_bar = etk_menu_bar_new();
-   etk_table_attach(ETK_TABLE(e->table), e->menu_bar, 0, 4, 0, 0, 0, 0, ETK_TABLE_FILL | ETK_TABLE_HEXPAND);
+   etk_table_attach(ETK_TABLE(e->table), e->menu_bar, 0, 4, 0, 0, ETK_TABLE_FILL | ETK_TABLE_HEXPAND, 0, 0);
    
      {
 	Etk_Widget *menu;
@@ -913,7 +913,7 @@ _ex_main_window_show(char *dir, int fullscreen)
    toolbar = etk_toolbar_new();
    etk_table_attach(ETK_TABLE(e->table), toolbar,
 		    0, 3, 1, 1,
-		    0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL);
+		    ETK_TABLE_HEXPAND | ETK_TABLE_HFILL, 0, 0);
      
    e->zoom_in[0] = etk_tool_button_new();
    e->zoom_in[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/gui.edj", "zoom_in");
@@ -940,7 +940,7 @@ _ex_main_window_show(char *dir, int fullscreen)
    etk_toolbar_append(ETK_TOOLBAR(toolbar), e->original[0]);
 
    entry_hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_table_attach(ETK_TABLE(e->table), entry_hbox, 0, 3, 2, 2, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL);
+   etk_table_attach(ETK_TABLE(e->table), entry_hbox, 0, 3, 2, 2, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL, 0, 0);
 
    e->entry[0] = etk_entry_new();
    etk_box_append(ETK_BOX(entry_hbox), e->entry[0], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
