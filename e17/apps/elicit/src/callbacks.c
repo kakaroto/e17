@@ -465,6 +465,7 @@ void _elicit_color_signal_process(Elicit *el)
   {
     el->zoom += dir * 1;
     if (el->zoom < 1) el->zoom = 1;
+    if (el->zoom > 20) el->zoom = 20;
   }
 
   elicit_ui_update(el);
