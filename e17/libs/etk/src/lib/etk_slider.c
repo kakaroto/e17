@@ -438,7 +438,7 @@ static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const ch
    }
 }
 
-/* Default handler for the "value_changed" signal */
+/* Default handler for the "value-changed" signal */
 static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
 {
    Etk_Slider *slider;

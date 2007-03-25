@@ -229,7 +229,7 @@ Etk_Type *etk_tree_col_type_get()
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(tree_col_type, "width", ETK_TREE_COL_WIDTH_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(COL_MIN_WIDTH));
-      etk_type_property_add(tree_col_type, "min_width", ETK_TREE_COL_MIN_WIDTH_PROPERTY,
+      etk_type_property_add(tree_col_type, "min-width", ETK_TREE_COL_MIN_WIDTH_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(COL_MIN_WIDTH));
       etk_type_property_add(tree_col_type, "align", ETK_TREE_COL_ALIGN_PROPERTY,
          ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(0.0));
@@ -1040,7 +1040,7 @@ void etk_tree_clear(Etk_Tree *tree)
 /**
  * @brief Sets the values of the cells of the row
  * @param row a row of the tree
- * @param emit_signal whether or not the "cell_value_changed" signal should be emitted on the modified columns.
+ * @param emit_signal whether or not the "cell-value-changed" signal should be emitted on the modified columns.
  * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have a
  * callback connected on this signal
  * @param ... an "Etk_Tree_Col *" followed by the value of the cell,
@@ -1062,7 +1062,7 @@ void etk_tree_row_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...)
 /**
  * @brief Sets the values of the cells of the row
  * @param row a row of the tree
- * @param emit_signal whether or not the "cell_value_changed" signal should be emitted on the modified columns.
+ * @param emit_signal whether or not the "cell-value-changed" signal should be emitted on the modified columns.
  * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have a
  * callback connected on this signal
  * @param args an "Etk_Tree_Col *" followed by the value of the cell,
@@ -1145,7 +1145,7 @@ void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args)
 /**
  * @brief Sets the values of the models of the row
  * @param row a row of the tree
- * @param emit_signal whether or not the "cell_value_changed" signal should be emitted on the modified columns.
+ * @param emit_signal whether or not the "cell-value-changed" signal should be emitted on the modified columns.
  * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have a
  * callback connected on this signal
  * @param args an "Etk_Tree_Model *" followed by the value of the model, then any number of
@@ -1167,7 +1167,7 @@ void etk_tree_row_model_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...)
 /**
  * @brief Sets the values of the models of the row
  * @param row a row of the tree
- * @param emit_signal whether or not the "cell_value_changed" signal should be emitted on the modified columns.
+ * @param emit_signal whether or not the "cell-value-changed" signal should be emitted on the modified columns.
  * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have a
  * callback connected on this signal
  * @param args an "Etk_Tree_Model *" followed by the value of the model, then any number of
@@ -1298,8 +1298,8 @@ Etk_Tree_Row *etk_tree_selected_row_get(Etk_Tree *tree)
 /**
  * @brief Selects all the rows of the tree
  * @param tree a tree
- * @note When you call etk_tree_select_all(), for performance reasons, the signal "row_selected" is not emitted for
- * each row of the tree. Only the signal "all_selected" is emitted on the tree.
+ * @note When you call etk_tree_select_all(), for performance reasons, the signal "row-selected" is not emitted for
+ * each row of the tree. Only the signal "all-selected" is emitted on the tree.
  */
 void etk_tree_select_all(Etk_Tree *tree)
 {
@@ -1318,8 +1318,8 @@ void etk_tree_select_all(Etk_Tree *tree)
 /**
  * @brief Unselects all the rows of the tree
  * @param tree a tree
- * @note When you call etk_tree_unselect_all(), for performance reasons, the signal "row_unselected" is not emitted for
- * each row of the tree. Only the signal "all_unselected" is emitted on the tree.
+ * @note When you call etk_tree_unselect_all(), for performance reasons, the signal "row-unselected" is not emitted for
+ * each row of the tree. Only the signal "all-unselected" is emitted on the tree.
  */
 void etk_tree_unselect_all(Etk_Tree *tree)
 {
@@ -2319,7 +2319,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
       tree->purge_job = NULL;
    }
    
-   /* Save the rows currently rendered so we could emit the "row_shown/hidden" signals later */
+   /* Save the rows currently rendered so we could emit the "row-shown/hidden" signals later */
    prev_visible_rows = NULL;
    new_visible_rows = NULL;
    for (l = tree->row_objects; l; l = l->next)
@@ -2567,7 +2567,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
       }
    }
    
-   /* Emit the "row_shown/hidden" signals */
+   /* Emit the "row-shown/hidden" signals */
    while (prev_visible_rows)
    {
       etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_HIDDEN_SIGNAL], ETK_OBJECT(tree), NULL, prev_visible_rows->data);

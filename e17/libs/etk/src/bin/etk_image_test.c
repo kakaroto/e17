@@ -1,6 +1,12 @@
 #include "etk_test.h"
 #include "config.h"
 
+/**************************
+ *
+ * Creation of the test-app window
+ *
+ **************************/
+ 
 /* Creates the window for the image test */
 void etk_test_image_window_create(void *data)
 {
@@ -19,6 +25,8 @@ void etk_test_image_window_create(void *data)
    etk_window_title_set(ETK_WINDOW(win), "Etk Image Test");
    etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
+   /* TODO: we need a more complete test-app for Etk_Image */
+   /* Create two images with different "keep-aspect" property and pack theme into a table */
    images[0] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png", NULL);
    etk_image_keep_aspect_set(ETK_IMAGE(images[0]), ETK_TRUE);
    images[1] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png", NULL);
@@ -26,12 +34,12 @@ void etk_test_image_window_create(void *data)
 
    labels[0] = etk_label_new("Keep aspect");
    labels[1] = etk_label_new("Don't keep aspect");
-   table = etk_table_new(2, 2, ETK_FALSE);
+   table = etk_table_new(2, 2, ETK_TABLE_HHOMOGENEOUS);
 
    etk_table_attach_default(ETK_TABLE(table), images[0], 0, 0, 0, 0);
    etk_table_attach_default(ETK_TABLE(table), images[1], 1, 1, 0, 0);
-   etk_table_attach(ETK_TABLE(table), labels[0], 0, 0, 1, 1, 2, 0, ETK_TABLE_HEXPAND);
-   etk_table_attach(ETK_TABLE(table), labels[1], 1, 1, 1, 1, 2, 0, ETK_TABLE_HEXPAND);
+   etk_table_attach(ETK_TABLE(table), labels[0], 0, 0, 1, 1, ETK_TABLE_HEXPAND, 2, 0);
+   etk_table_attach(ETK_TABLE(table), labels[1], 1, 1, 1, 1, ETK_TABLE_HEXPAND, 2, 0);
 
    etk_container_add(ETK_CONTAINER(win), table);
 

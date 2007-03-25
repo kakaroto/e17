@@ -487,7 +487,7 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
    Etk_Box *box;
    Etk_Box_Cell *cell;
 
-   if (!(box = ETK_BOX(container)) || !widget || (widget->parent != ETK_WIDGET(box)))
+   if (!(box = ETK_BOX(container)) || !widget)
       return;
    
    if ((cell = _etk_box_cell_get(widget)))
@@ -504,7 +504,6 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
       
       ETK_WIDGET(box)->focus_order = evas_list_remove_list(ETK_WIDGET(box)->focus_order, cell->focus_node);
       etk_object_data_set(ETK_OBJECT(widget), "_Etk_Box::Cell", NULL);
-      etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
       free(cell);
       
       etk_widget_size_recalc_queue(ETK_WIDGET(box));
@@ -1046,7 +1045,6 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
       }
    }
    box->cells_count[group]++;
-   
    
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Box::Cell", cell);
    etk_widget_parent_set(child, ETK_WIDGET(box));

@@ -77,6 +77,7 @@ void etk_fixed_put(Etk_Fixed *fixed, Etk_Widget *widget, int x, int y)
    child->pos.x = x;
    child->pos.y = y;
    fixed->children = evas_list_append(fixed->children, child);
+   etk_object_data_set(ETK_OBJECT(widget), "_Etk_Fixed::Node", evas_list_last(fixed->children));
    
    if (fixed->clip)
    {
@@ -135,15 +136,11 @@ void etk_fixed_child_position_get(Etk_Fixed *fixed, Etk_Widget *widget, int *x, 
    if (!fixed || !widget)
       return;
    
-   for (l = fixed->children; l; l = l->next)
+   if ((l = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Fixed::Node")))
    {
       c = l->data;
-      if (c->child == widget)
-      {
-         if (x)   *x = c->pos.x;
-         if (y)   *y = c->pos.y;
-         break;
-      }
+      if (x)   *x = c->pos.x;
+      if (y)   *y = c->pos.y;
    }
 }
 
@@ -252,32 +249,26 @@ static void _etk_fixed_child_add(Etk_Container *container, Etk_Widget *widget)
 static void _etk_fixed_child_remove(Etk_Container *container, Etk_Widget *widget)
 {   
    Etk_Fixed *fixed;
-   Etk_Fixed_Child *c;
    Evas_List *l;
 
-   if (!(fixed = ETK_FIXED(container)) || !widget || (widget->parent != ETK_WIDGET(container)))
+   if (!(fixed = ETK_FIXED(container)) || !widget)
       return;
    
-   for (l = fixed->children; l; l = l->next)
+   if ((l = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Fixed::Node")))
    {
-      c = l->data;
-      if (c->child == widget)
+      free(l->data);
+      etk_object_data_set(ETK_OBJECT(widget), "_Etk_Fixed::Node", NULL);
+      fixed->children = evas_list_remove_list(fixed->children, l);
+      
+      if (fixed->clip)
       {
-         free(c);
-         fixed->children = evas_list_remove_list(fixed->children, l);
-         break;
+         etk_widget_clip_unset(widget);
+         if (!fixed->children)
+            evas_object_hide(fixed->clip);
       }
+      
+      etk_signal_emit_by_name("child-removed", ETK_OBJECT(fixed), NULL, widget);
    }
-   
-   if (fixed->clip)
-   {
-      etk_widget_clip_unset(widget);
-      if (!fixed->children)
-         evas_object_hide(fixed->clip);
-   }
-   
-   etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
-   etk_signal_emit_by_name("child-removed", ETK_OBJECT(fixed), NULL, widget);
 }
 
 /* Gets the list of the children */
@@ -354,7 +345,7 @@ static void _etk_fixed_realized_cb(Etk_Object *object, void *data)
  * @endcode @n
  *
  * Etk_Fixed may seem to make widget positioning simpler but you should actually avoid using it as much as possible.
- * Indeed, using fixed positions may make widgets overlap and the result can look different on different configurations
+ * Indeed, using fixed positions may make widgets overlap and the result can look differently on different configurations
  * (different themes, different fonts, different languages, ...). Also, if you'll ever want to remove a child from the
  * fixed container, you will probably have to reposition all the other children of the fixed container. It's heavily
  * advised to use Etk_Box, Etk_Table or any other kind of containers instead of a fixed container.

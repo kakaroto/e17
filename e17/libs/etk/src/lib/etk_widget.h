@@ -45,8 +45,6 @@ struct Etk_Widget
 
    Etk_Toplevel *toplevel_parent;
    Etk_Widget *parent;
-   /* TODO: get rid of child_properties. Only Etk_Table uses this for now */
-   void *child_properties;
    Evas_List *children;
    Evas_List *focus_order;
 
@@ -143,7 +141,6 @@ void          etk_widget_has_event_object_set(Etk_Widget *widget, Etk_Bool has_e
 Etk_Bool      etk_widget_has_event_object_get(Etk_Widget *widget);
 
 void          etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent);
-void          etk_widget_parent_set_full(Etk_Widget *widget, Etk_Widget *parent, Etk_Bool remove_from_container);
 Etk_Widget   *etk_widget_parent_get(Etk_Widget *widget);
 Etk_Toplevel *etk_widget_toplevel_parent_get(Etk_Widget *widget);
 Evas         *etk_widget_toplevel_evas_get(Etk_Widget *widget);

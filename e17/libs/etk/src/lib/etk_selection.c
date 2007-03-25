@@ -23,7 +23,7 @@ void etk_selection_text_set(Etk_Selection_Type selection, const char *text)
  * @brief Requests the text from a selection
  * @param selection the selection you want to request the text from
  * @param target the widget that will receive the selection. When Etk receives the requested text from the selection,
- * it will emit the signal "selection_received" to the widget @a target
+ * it will emit the signal "selection-received" to the widget @a target
  */
 void etk_selection_text_request(Etk_Selection_Type selection, Etk_Widget *target)
 {
@@ -72,12 +72,12 @@ void etk_selection_clear(Etk_Selection_Type selection)
  *    }
  * }
  *
- * //Connect the widget to the signal "selection_received" to be notified
+ * //Connect the widget to the signal "selection-received" to be notified
  * //when the content of the clipboard is received, after a paste (you only need to call this line once)
- * etk_signal_connect("selection_received", ETK_OBJECT(your_widget), ETK_CALLBACK(_selection_received_cb), NULL);
+ * etk_signal_connect("selection-received", ETK_OBJECT(your_widget), ETK_CALLBACK(_selection_received_cb), NULL);
  *
  * //To paste the content of the clipboard into your widget (on CTRL+V for example)
- * //It will emit the signal "selection_received" when the content of the clipboard is received
+ * //It will emit the signal "selection-received" when the content of the clipboard is received
  * etk_selection_text_request(ETK_SELECTION_CLIPBOARD, your_widget);
  *
  * //To set the text of the clipboard (on CTRL+C for example)

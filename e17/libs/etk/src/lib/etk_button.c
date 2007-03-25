@@ -243,7 +243,7 @@ void etk_button_image_set(Etk_Button *button, Etk_Image *image)
       if (button->image_from_stock)
          etk_object_destroy(ETK_OBJECT(button->image));
       else
-         etk_container_remove(ETK_CONTAINER(button->box), ETK_WIDGET(button->image));
+         etk_container_remove(ETK_WIDGET(button->image));
       button->ignore_image_remove = ETK_FALSE;
    }
 

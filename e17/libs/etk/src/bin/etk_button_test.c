@@ -28,7 +28,7 @@ void etk_test_button_window_create(void *data)
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
-   table = etk_table_new(2, 2, ETK_FALSE);
+   table = etk_table_new(2, 2, ETK_TABLE_HHOMOGENEOUS);
    etk_container_add(ETK_CONTAINER(win), table);
    
    
@@ -36,7 +36,7 @@ void etk_test_button_window_create(void *data)
     * Normal buttons
     *******************/
    frame = etk_frame_new("Buttons");
-   etk_table_attach(ETK_TABLE(table), frame, 0, 0, 0, 0, 0, 0, ETK_TABLE_EXPAND_FILL);
+   etk_table_attach_default(ETK_TABLE(table), frame, 0, 0, 0, 0);
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(frame), vbox);
    
@@ -60,7 +60,7 @@ void etk_test_button_window_create(void *data)
     * Toggle buttons
     *******************/
    frame = etk_frame_new("Toggle Buttons");
-   etk_table_attach(ETK_TABLE(table), frame, 1, 1, 0, 0, 0, 0, ETK_TABLE_EXPAND_FILL);
+   etk_table_attach_default(ETK_TABLE(table), frame, 1, 1, 0, 0);
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(frame), vbox);
    
@@ -84,12 +84,12 @@ void etk_test_button_window_create(void *data)
     * Check buttons
     *******************/
    frame = etk_frame_new("Check Buttons");
-   etk_table_attach(ETK_TABLE(table), frame, 0, 0, 1, 1, 0, 0, ETK_TABLE_EXPAND_FILL);
+   etk_table_attach_default(ETK_TABLE(table), frame, 0, 0, 1, 1);
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(frame), vbox);
    
    button = etk_check_button_new_with_label("Check button");
-   etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(button));
+   etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(button), ETK_TRUE);
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    button = etk_check_button_new();
@@ -109,7 +109,7 @@ void etk_test_button_window_create(void *data)
     * Radio buttons
     *******************/
    frame = etk_frame_new("Radio Buttons");
-   etk_table_attach(ETK_TABLE(table), frame, 1, 1, 1, 1, 0, 0, ETK_TABLE_EXPAND_FILL);
+   etk_table_attach_default(ETK_TABLE(table), frame, 1, 1, 1, 1);
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(frame), vbox);
    

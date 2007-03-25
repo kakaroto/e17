@@ -50,17 +50,17 @@ static void _etk_vpaned_position_calc(Etk_Paned *paned);
  * @brief Gets the type of an Etk_Paned
  * @return Returns the type of an Etk_Paned
  */
-Etk_Type *etk_paned_type_get()
+Etk_Type *etk_paned_type_get(void)
 {
    static Etk_Type *paned_type = NULL;
 
    if (!paned_type)
    {
       paned_type = etk_type_new("Etk_Paned", ETK_CONTAINER_TYPE, sizeof(Etk_Paned),
-         ETK_CONSTRUCTOR(_etk_paned_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_paned_constructor), NULL);
       
       etk_type_property_add(paned_type, "position", ETK_PANED_POSITION_PROPERTY,
-         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
+            ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
    }
 
    return paned_type;
@@ -71,14 +71,14 @@ Etk_Type *etk_paned_type_get()
  * @brief Gets the type of an Etk_HPaned
  * @return Returns the type of an Etk_HPaned
  */
-Etk_Type *etk_hpaned_type_get()
+Etk_Type *etk_hpaned_type_get(void)
 {
    static Etk_Type *hpaned_type = NULL;
 
    if (!hpaned_type)
    {
       hpaned_type = etk_type_new("Etk_HPaned", ETK_PANED_TYPE, sizeof(Etk_HPaned),
-         ETK_CONSTRUCTOR(_etk_hpaned_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_hpaned_constructor), NULL);
    }
    
    return hpaned_type;
@@ -89,33 +89,33 @@ Etk_Type *etk_hpaned_type_get()
  * @brief Gets the type of an Etk_VPaned
  * @return Returns the type of an Etk_VPaned
  */
-Etk_Type *etk_vpaned_type_get()
+Etk_Type *etk_vpaned_type_get(void)
 {
    static Etk_Type *vpaned_type = NULL;
 
    if (!vpaned_type)
    {
       vpaned_type = etk_type_new("Etk_VPaned", ETK_PANED_TYPE, sizeof(Etk_VPaned),
-         ETK_CONSTRUCTOR(_etk_vpaned_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_vpaned_constructor), NULL);
    }
    
    return vpaned_type;
 }
 
 /**
- * @brief Creates a new horizontal paned widget
- * @return Returns the horizontal paned widget
+ * @brief Creates a new horizontal paned container
+ * @return Returns the horizontal paned container
  */
-Etk_Widget *etk_hpaned_new()
+Etk_Widget *etk_hpaned_new(void)
 {
    return etk_widget_new(ETK_HPANED_TYPE, "theme-group", "hpaned", NULL);
 }
 
 /**
- * @brief Creates a new vertical paned widget
- * @return Returns the vertical paned widget
+ * @brief Creates a new vertical paned container
+ * @return Returns the vertical paned container
  */
-Etk_Widget *etk_vpaned_new()
+Etk_Widget *etk_vpaned_new(void)
 {
    return etk_widget_new(ETK_VPANED_TYPE, "theme-group", "vpaned", NULL);
 }
@@ -133,18 +133,14 @@ void etk_paned_child1_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
       return;
 
    if (paned->child1)
-      _etk_paned_child_remove(ETK_CONTAINER(paned), paned->child1);
+      etk_container_remove(paned->child1);
    
    paned->child1 = child;
    paned->expand1 = expand;
    if (child)
    {
-      if (child->parent && ETK_IS_CONTAINER(child->parent))
-         etk_container_remove(ETK_CONTAINER(child->parent), child);
       etk_widget_parent_set(child, ETK_WIDGET(paned));
-      
       etk_widget_raise(paned->separator);
-      
       etk_signal_emit_by_name("child-added", ETK_OBJECT(paned), NULL, child);
    }
 }
@@ -162,18 +158,14 @@ void etk_paned_child2_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
       return;
 
    if (paned->child2)
-      _etk_paned_child_remove(ETK_CONTAINER(paned), paned->child2);
+      etk_container_remove(paned->child2);
    
    paned->child2 = child;
    paned->expand2 = expand;
    if (child)
    {
-      if (child->parent && ETK_IS_CONTAINER(child))
-         etk_container_remove(ETK_CONTAINER(child->parent), child);
       etk_widget_parent_set(child, ETK_WIDGET(paned));
-      
       etk_widget_raise(paned->separator);
-      
       etk_signal_emit_by_name("child-added", ETK_OBJECT(paned), NULL, child);
    }
 }
@@ -202,6 +194,53 @@ Etk_Widget *etk_paned_child2_get(Etk_Paned *paned)
    return paned->child2;
 }
 
+/**
+ * @brief Sets whether the first child should expand as much as possible when the paned is resized
+ * @param paned a paned
+ * @param expand ETK_TRUE to make the first child expand, ETK_FALSE otherwise
+ */
+void etk_paned_child1_expand_set(Etk_Paned *paned, Etk_Bool expand)
+{
+   if (!paned)
+      return;
+   paned->expand1 = expand;
+}
+
+/**
+ * @brief Sets whether the second child should expand as much as possible when the paned is resized
+ * @param paned a paned
+ * @param expand ETK_TRUE to make the second child expand, ETK_FALSE otherwise
+ */
+void etk_paned_child2_expand_set(Etk_Paned *paned, Etk_Bool expand)
+{
+   if (!paned)
+      return;
+   paned->expand2 = expand;
+}
+
+/**
+ * @brief Gets whether the first child expands
+ * @param paned a paned
+ * @return Returns ETK_TRUE if the first child expands, ETK_FALSE otherwise
+ */
+Etk_Bool etk_paned_child1_expand_get(Etk_Paned *paned)
+{
+   if (!paned)
+      return ETK_FALSE;
+   return paned->expand1;
+}
+
+/**
+ * @brief Gets whether the second child expands
+ * @param paned a paned
+ * @return Returns ETK_TRUE if the second child expands, ETK_FALSE otherwise
+ */
+Etk_Bool etk_paned_child2_expand_get(Etk_Paned *paned)
+{
+   if (!paned)
+      return ETK_FALSE;
+   return paned->expand2;
+}
 
 /**
  * @brief Sets the position in pixels of the separator of the paned
@@ -239,54 +278,6 @@ int etk_paned_position_get(Etk_Paned *paned)
    if (!paned)
       return 0;
    return paned->position;
-} 
-
-/**
- * @brief Sets whether the first child should expand as much as possible
- * @param paned a paned
- * @param expand ETK_TRUE whether the first child expand as much as possible
- */
-void etk_paned_child1_expand_set(Etk_Paned *paned, Etk_Bool expand)
-{
-   if (!paned)
-      return;
-   paned->expand1 = expand;
-}
-
-/**
- * @brief Sets whether the second child should expand as much as possible
- * @param paned a paned
- * @param expand ETK_TRUE whether the second child should expand as much as possible
- */
-void etk_paned_child2_expand_set(Etk_Paned *paned, Etk_Bool expand)
-{
-   if (!paned)
-      return;
-   paned->expand2 = expand;
-}
-
-/**
- * @brief Gets whether the first child expands
- * @param paned a paned
- * @return Returns ETK_TRUE if the first child expands
- */
-Etk_Bool etk_paned_child1_expand_get(Etk_Paned *paned)
-{
-   if (!paned)
-      return ETK_FALSE;
-   return paned->expand1;
-}
-
-/**
- * @brief Gets whether the second child expands
- * @param paned a paned
- * @return Returns ETK_TRUE if the second child expands
- */
-Etk_Bool etk_paned_child2_expand_get(Etk_Paned *paned)
-{
-   if (!paned)
-      return ETK_FALSE;
-   return paned->expand2;
 }
 
 /**************************
@@ -542,10 +533,14 @@ static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget
 
    if (!(paned = ETK_PANED(container)) || !widget)
       return;
-   if (widget != paned->child1 && widget != paned->child2)
-      return;
 
-   etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
+   if (widget == paned->child1)
+      paned->child1 = NULL;
+   else if (widget == paned->child2)
+      paned->child2 = NULL;
+   else
+      return;
+   
    etk_widget_size_recalc_queue(ETK_WIDGET(paned));
    etk_signal_emit_by_name("child-removed", ETK_OBJECT(paned), NULL, widget);
 }

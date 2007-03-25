@@ -44,9 +44,9 @@ void etk_test_slider_window_create(void *data)
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
-   table = etk_table_new(2, 3, ETK_FALSE);
+   table = etk_table_new(2, 3, ETK_TABLE_HHOMOGENEOUS);
    etk_container_add(ETK_CONTAINER(win), table);
-   table2 = etk_table_new(2, 2, ETK_FALSE);
+   table2 = etk_table_new(2, 2, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_table_attach_default(ETK_TABLE(table), table2, 0, 1, 0, 0);
    
    /* Create the main label */
@@ -58,22 +58,22 @@ void etk_test_slider_window_create(void *data)
    /* Create the horizontal slider */
    _hslider = etk_hslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
    etk_slider_label_set(ETK_SLIDER(_hslider), "%.0f");
-   etk_table_attach(ETK_TABLE(table2), _hslider, 0, 0, 1, 1, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL);
+   etk_table_attach(ETK_TABLE(table2), _hslider, 0, 0, 1, 1, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL, 0, 0);
    etk_signal_connect("value-changed", ETK_OBJECT(_hslider), ETK_CALLBACK(_slider_value_changed_cb), NULL);
    
    /* Create the vertical slider */
    _vslider = etk_vslider_new(0.0, 255.0, 128.0, 1.0, 10.0);
    etk_slider_label_set(ETK_SLIDER(_vslider), "%.0f");
-   etk_table_attach(ETK_TABLE(table2), _vslider, 1, 1, 0, 0, 0, 0, ETK_TABLE_VEXPAND | ETK_TABLE_VFILL);
+   etk_table_attach(ETK_TABLE(table2), _vslider, 1, 1, 0, 0, ETK_TABLE_VEXPAND | ETK_TABLE_VFILL, 0, 0);
    etk_signal_connect("value-changed", ETK_OBJECT(_vslider), ETK_CALLBACK(_slider_value_changed_cb), NULL);
    
    separator = etk_hseparator_new();
-   etk_table_attach(ETK_TABLE(table), separator, 0, 1, 1, 1, 0, 0, ETK_TABLE_HFILL);
+   etk_table_attach(ETK_TABLE(table), separator, 0, 1, 1, 1, ETK_TABLE_HFILL, 0, 0);
    
    
    /* Create the settings frame for the horizontal slider */
    frame = etk_frame_new("HSlider Properties");
-   etk_table_attach(ETK_TABLE(table), frame, 0, 0, 2, 2, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_FILL);
+   etk_table_attach(ETK_TABLE(table), frame, 0, 0, 2, 2, ETK_TABLE_HEXPAND | ETK_TABLE_FILL, 0, 0);
    vbox = etk_vbox_new(ETK_TRUE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox);
    
@@ -106,7 +106,7 @@ void etk_test_slider_window_create(void *data)
    
    /* Create the settings frame for the vertical slider */
    frame = etk_frame_new("VSlider Properties");
-   etk_table_attach(ETK_TABLE(table), frame, 1, 1, 2, 2, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_FILL);
+   etk_table_attach(ETK_TABLE(table), frame, 1, 1, 2, 2, ETK_TABLE_HEXPAND | ETK_TABLE_FILL, 0, 0);
    vbox = etk_vbox_new(ETK_TRUE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox);
    

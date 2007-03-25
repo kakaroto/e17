@@ -41,7 +41,7 @@ struct Etk_Container
 Etk_Type *etk_container_type_get(void);
 
 void etk_container_add(Etk_Container *container, Etk_Widget *widget);
-void etk_container_remove(Etk_Container *container, Etk_Widget *widget);
+void etk_container_remove(Etk_Widget *widget);
 void etk_container_remove_all(Etk_Container *container);
 
 void etk_container_border_width_set(Etk_Container *container, int border_width);

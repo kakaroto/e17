@@ -202,7 +202,7 @@ static void _etk_scrollbar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wh
    etk_signal_stop();
 }
 
-/* Default handler for the "value_changed" signal of a scrollbar */
+/* Default handler for the "value-changed" signal of a scrollbar */
 static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value)
 {
    Etk_Scrollbar *scrollbar;

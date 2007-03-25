@@ -720,7 +720,7 @@ static void _etk_spinner_selection_received_cb(Etk_Object *object, void *event, 
    }
 }
 
-/* Default handler for the "value_changed" signal of a spinner */
+/* Default handler for the "value-changed" signal of a spinner */
 static void _etk_spinner_value_changed_handler(Etk_Range *range, double value)
 {
    Etk_Spinner *spinner;

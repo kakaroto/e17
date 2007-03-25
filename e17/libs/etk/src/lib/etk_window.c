@@ -108,7 +108,7 @@ Etk_Widget *etk_window_new(void)
 }
 
 /**
- * @brief Emits a delete-request on the window: it will call all the callbacks connected to the "delete_event" signal
+ * @brief Emits a delete-request on the window: it will call all the callbacks connected to the "delete-event" signal
  * and if all these callbacks return ETK_FALSE, the window will be destroyed. It has the same effect as if the user
  * had clicked on the "close" button of the window
  * @param window a window
@@ -547,7 +547,7 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
 }
 
 /**
- * @brief A utility function to use as a callback for the "delete_event" signal.
+ * @brief A utility function to use as a callback for the "delete-event" signal.
  * It will hide the window and return ETK_TRUE to prevent the program from quitting
  * @param window the window to hide
  * @param data the data passed when the signal is emitted - unused
@@ -748,7 +748,7 @@ static void _etk_window_size_requested_cb(Etk_Object *object, Etk_Size *requeste
    }
 }
 
-/* Default handler for the "delete_event" signal */
+/* Default handler for the "delete-event" signal */
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window)
 {
    return ETK_FALSE;

@@ -102,7 +102,7 @@ typedef struct Etk_HSlider Etk_HSlider;
 typedef struct Etk_VSlider Etk_VSlider;
 typedef struct Etk_Spinner Etk_Spinner;
 typedef struct Etk_Statusbar Etk_Statusbar;
-typedef struct _Etk_Table Etk_Table;
+typedef struct Etk_Table Etk_Table;
 typedef struct Etk_Text_View Etk_Text_View;
 typedef struct Etk_Textblock Etk_Textblock;
 typedef struct Etk_Textblock_Format Etk_Textblock_Format;

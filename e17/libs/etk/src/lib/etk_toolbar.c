@@ -370,7 +370,7 @@ void _etk_toolbar_child_remove(Etk_Container *container, Etk_Widget *widget)
    
    if (!(toolbar = ETK_TOOLBAR(container)) || !widget)
       return;
-   etk_container_remove(ETK_CONTAINER(toolbar->box), widget);
+   etk_container_remove(widget);
 }
 
 /* Gets the list of the children of the toolbar */
@@ -453,7 +453,7 @@ static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, v
    {
       etk_widget_theme_parent_set(child, ETK_WIDGET(toolbar));
    }
-   //etk_signal_emit_by_name("child_added", ETK_OBJECT(toolbar), NULL, child);
+   //etk_signal_emit_by_name("child-added", ETK_OBJECT(toolbar), NULL, child);
 }
 
 /* Called when a widget is removed from the toolbar's box */

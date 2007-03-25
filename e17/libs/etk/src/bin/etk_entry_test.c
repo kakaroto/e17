@@ -17,9 +17,9 @@ void etk_test_entry_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
    Etk_Widget *vbox;
+   Etk_Widget *vbox2;
    Etk_Widget *frame;
    Etk_Widget *separator;
-   Etk_Widget *table;
    Etk_Widget *button;
    Etk_Widget *entry;
    Etk_Widget *image;
@@ -43,12 +43,12 @@ void etk_test_entry_window_create(void *data)
     *******************/
    frame = etk_frame_new("Normal Entry");
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   table = etk_table_new(1, 2, ETK_FALSE);
-   etk_container_add(ETK_CONTAINER(frame), table);
+   vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
 
    _entry_normal = etk_entry_new();
    etk_entry_text_set(ETK_ENTRY(_entry_normal), "Here is some text");
-   etk_table_attach(ETK_TABLE(table), _entry_normal, 0, 0, 0, 0, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL);
+   etk_box_append(ETK_BOX(vbox2), _entry_normal, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_widget_size_request_set(_entry_normal, 140, -1);
 
    image = etk_image_new_from_stock(ETK_STOCK_DOCUMENT_PRINT, ETK_STOCK_SMALL);
@@ -57,7 +57,7 @@ void etk_test_entry_window_create(void *data)
    etk_entry_clear_button_add(ETK_ENTRY(_entry_normal));
 
    _label_normal = etk_label_new(NULL);
-   etk_table_attach(ETK_TABLE(table), _label_normal, 0, 1, 1, 0, 0, 0, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL);
+   etk_box_append(ETK_BOX(vbox2), _label_normal, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    separator = etk_hseparator_new();
    etk_box_append(ETK_BOX(vbox), separator, ETK_BOX_START, ETK_BOX_NONE, 6);
@@ -84,20 +84,26 @@ void etk_test_entry_window_create(void *data)
     *******************/
    frame = etk_frame_new("Password Entry");
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_container_add(ETK_CONTAINER(frame), vbox);
+   vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
 
    entry = etk_entry_new();
    etk_entry_text_set(ETK_ENTRY(entry), "Password");
    etk_entry_password_mode_set(ETK_ENTRY(entry), ETK_TRUE);
-   etk_box_append(ETK_BOX(vbox), entry, ETK_BOX_START, ETK_BOX_FILL, 0);
+   etk_box_append(ETK_BOX(vbox2), entry, ETK_BOX_START, ETK_BOX_FILL, 0);
 
    button = etk_check_button_new_with_label("Password Visible");
-   etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_FILL, 0);
+   etk_box_append(ETK_BOX(vbox2), button, ETK_BOX_START, ETK_BOX_FILL, 0);
    etk_signal_connect("toggled", ETK_OBJECT(button), ETK_CALLBACK(_password_show_cb), entry);
 
    etk_widget_show_all(win);
 }
+
+/**************************
+ *
+ * Callbacks
+ *
+ **************************/
 
 /* Prints the text of the normal entry in the label when the "print" icon is clicked */
 static void _normal_print_cb(Etk_Object *object, void *data)

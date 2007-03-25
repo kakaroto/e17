@@ -7,7 +7,6 @@
 #include <Evas.h>
 #include <Edje.h>
 #include "etk_theme.h"
-#include "etk_container.h"
 #include "etk_toplevel.h"
 #include "etk_event.h"
 #include "etk_marshallers.h"
@@ -126,7 +125,6 @@ static void _etk_widget_redraw_queue_recursive(Etk_Widget *widget);
 static void _etk_widget_swallow_full(Etk_Widget *swallower, const char *part, Evas_Object *object, Etk_Widget *widget);
 static void _etk_widget_unswallow_full(Etk_Widget *swallower, Evas_List *swo_node);
 
-static void _etk_widget_child_remove(Etk_Widget *parent, Etk_Widget *child);
 static void _etk_widget_object_add_to_smart(Etk_Widget *widget, Evas_Object *object, Etk_Bool clip);
 static void _etk_widget_add_to_clip(Etk_Widget *widget, Evas_Object *clip);
 static void _etk_widget_remove_from_clip(Etk_Widget *widget, Evas_Object *clip);
@@ -249,7 +247,7 @@ Etk_Type *etk_widget_type_get(void)
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "color", ETK_WIDGET_COLOR_PROPERTY,
             ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
-      etk_type_property_add(widget_type, "propagate_color", ETK_WIDGET_PROPAGATE_COLOR_PROPERTY,
+      etk_type_property_add(widget_type, "propagate-color", ETK_WIDGET_PROPAGATE_COLOR_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(widget_type, "internal", ETK_WIDGET_INTERNAL_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
@@ -714,85 +712,76 @@ Etk_Bool etk_widget_has_event_object_get(Etk_Widget *widget)
 }
 
 /**
- * @brief Sets the parent of the widget. If the widget has already a parent, it will be reparented (TODO: in theory
- * at least, but it needs to be fixed!!)
+ * @brief Sets the parent of the widget. If the widget has already a parent, it will be reparented
  * @param widget a widget
  * @param parent the new parent of @a widget
- * @note etk_widget_parent_set(widget, parent) is equivalent to etk_widget_parent_set_full(widget, parent, ETK_TRUE)
  * @widget_implementation
  * @note If you want to add a widget to a container, use etk_container_add() or the appropriate function of
  * the container's API. Otherwise the widget will not be packed correctly
  */
 void etk_widget_parent_set(Etk_Widget *widget, Etk_Widget *parent)
 {
-   etk_widget_parent_set_full(widget, parent, ETK_TRUE);
-}
-
-/**
- * @brief Sets the parent of the widget. If the widget has already a parent, it will be reparented (TODO: in theory
- * at least, but it needs to be fixed!!)
- * @param widget a widget
- * @param parent the new parent of @a widget
- * @param remove_from_container if @a remove_from_container is ETK_TRUE and if the current parent of the widget is a
- * container, the child_remove() function of the parent container will be called. So @a remove_from_container should
- * most of the time be set to ETK_TRUE, except when etk_widget_parent_set_full() is called from the child_remove()
- * function of a container, in order to avoid an infinite loop.
- * @widget_implementation
- * @note If you want to add a widget to a container, use etk_container_add() or the appropriate function of
- * the container's API. Otherwise the widget will not be packed correctly
- */
-void etk_widget_parent_set_full(Etk_Widget *widget, Etk_Widget *parent, Etk_Bool remove_from_container)
-{
-   Etk_Toplevel *prev_toplevel;
+   Etk_Widget *prev_parent;
+   Etk_Toplevel *prev_toplevel, *new_toplevel;
    Evas *new_evas, *prev_evas;
-   Etk_Widget *toplevel;
    const char *prev_theme_file, *new_theme_file;
 
-   if (!widget || widget->parent == parent || ETK_IS_TOPLEVEL(widget))
+   if (!widget || ETK_IS_TOPLEVEL(widget))
       return;
    
+   prev_parent = widget->parent;
+   prev_toplevel = widget->toplevel_parent;
    prev_evas = etk_widget_toplevel_evas_get(widget);
    prev_theme_file = etk_widget_theme_file_get(widget);
    
-   if (widget->parent)
+   new_toplevel = etk_widget_toplevel_parent_get(parent);
+   new_evas = etk_widget_toplevel_evas_get(parent);
+   if (widget->theme_file)
+      new_theme_file = widget->theme_file;
+   else
+      new_theme_file = etk_widget_theme_file_get(widget->theme_parent ? widget->theme_parent : parent);
+   
+   /* Remove the widget from its current parent */
+   if (prev_parent)
    {
-      if (remove_from_container && ETK_IS_CONTAINER(widget->parent))
-         etk_container_remove(ETK_CONTAINER(widget->parent), widget);
-      _etk_widget_child_remove(widget->parent, widget);
+      Evas_List *l;
+
+      if ((l = evas_list_find_list(prev_parent->children, widget)))
+      {
+         if (widget->swallowed)
+            etk_widget_unswallow_widget(prev_parent, widget);
+         if (widget->smart_object)
+            evas_object_smart_member_del(widget->smart_object);
+         if (widget->clip && prev_parent->clip == widget->clip)
+            etk_widget_clip_unset(widget);
+         
+         prev_parent->children = evas_list_remove_list(prev_parent->children, l);
+         etk_widget_size_recalc_queue(prev_parent);
+      }
    }
+   /* And set the new parent of the widget */
    if (parent)
       parent->children = evas_list_append(parent->children, widget);
    widget->parent = parent;
    
-   prev_toplevel = widget->toplevel_parent;
-   for (toplevel = widget; toplevel->parent; toplevel = toplevel->parent);
-   if (ETK_IS_TOPLEVEL(toplevel))
-      widget->toplevel_parent = ETK_TOPLEVEL(toplevel);
-   else
-      widget->toplevel_parent = NULL;
-   
-   if ((widget->toplevel_parent != prev_toplevel))
-      _etk_widget_toplevel_parent_set(widget, widget->toplevel_parent);
-   
-   new_evas = etk_widget_toplevel_evas_get(widget);
-   new_theme_file = etk_widget_theme_file_get(widget);
+   if (new_toplevel != prev_toplevel)
+      _etk_widget_toplevel_parent_set(widget, new_toplevel);
    
    /* Realize/unrealize the widget and its children */
    if (new_evas)
    {
       Etk_Bool same_theme_file;
       
-      same_theme_file = ((prev_theme_file == new_theme_file)
-         || (prev_theme_file && new_theme_file && strcmp(prev_theme_file, new_theme_file) == 0));
-      
-      if ((new_evas != prev_evas))
+      same_theme_file = (strcmp(prev_theme_file ? prev_theme_file : "", new_theme_file ? new_theme_file : "") == 0);
+      if (new_evas != prev_evas)
          _etk_widget_realize_children(widget, ETK_TRUE, ETK_TRUE);
       if (!same_theme_file)
          _etk_widget_realize_theme_children(widget, (new_evas == prev_evas), ETK_FALSE);
+      /* TODO: add the smart-object as a member of the parent's smart-object ? */
    }
    else if (widget->realized)
       _etk_widget_unrealize_all(widget);
-
+   
    etk_object_notify(ETK_OBJECT(widget), "parent");
 }
 
@@ -1912,7 +1901,6 @@ static void _etk_widget_constructor(Etk_Widget *widget)
 
    widget->parent = NULL;
    widget->toplevel_parent = NULL;
-   widget->child_properties = NULL;
    widget->children = NULL;
    widget->focus_order = NULL;
 
@@ -2006,45 +1994,47 @@ static void _etk_widget_destructor(Etk_Widget *widget)
    if (!widget)
       return;
 
-   etk_widget_parent_set(widget, NULL);
-   
-   while (widget->theme_children)
-   {
-      ETK_WIDGET(widget->theme_children->data)->theme_parent = NULL;
-      widget->theme_children = evas_list_remove_list(widget->theme_children, widget->theme_children);
-   }
-   if (widget->theme_parent)
-      widget->theme_parent->theme_children = evas_list_remove(widget->theme_parent->theme_children, widget);
-   
-   if (widget->clip)
-      _etk_widget_remove_from_clip(widget, widget->clip);
-
    free(widget->theme_file);
    free(widget->theme_group);
    free(widget->theme_group_full);
 }
 
-/* Called when etk_object_destroy() is called on the widget.
- * We use this function, and not the destructor, to destroy the children of the widget
- * because destroying a widget requires the widget's parent to be still usable */
+/* Called when etk_object_destroy() is called on a widget. We use this to remove every reference to the
+ * widget (reference from the parent, from the children, ...). We do that in this callback and not in the
+ * destructor because the destructor is not called immediately when the widget is destroyed */
 void _etk_widget_destroyed_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *widget;
    Etk_Widget *child;
+   Etk_Widget *theme_child;
    
    if (!(widget = ETK_WIDGET(object)))
       return;
    
    _etk_widget_unrealize(widget);
    
-   /* Remove the children */
+   /* Unparent the widget and destroy its children */
+   etk_widget_parent_set(widget, NULL);
    while (widget->children)
    {
       child = ETK_WIDGET(widget->children->data);
-      
-      etk_widget_parent_set(child, NULL);
       etk_object_destroy(ETK_OBJECT(child));
    }
+   
+   /* Remove any reference to the widget in the theme-parent/theme-children */
+   while (widget->theme_children)
+   {
+      theme_child = ETK_WIDGET(widget->theme_children->data);
+      theme_child->theme_parent = NULL;
+      widget->theme_children = evas_list_remove_list(widget->theme_children, widget->theme_children);
+      etk_object_notify(ETK_OBJECT(theme_child), "theme_parent");
+      /* TODO: update the theme of the theme-child? */
+   }
+   if (widget->theme_parent)
+      widget->theme_parent->theme_children = evas_list_remove(widget->theme_parent->theme_children, widget);
+   
+   if (widget->clip)
+      _etk_widget_remove_from_clip(widget, widget->clip);
    widget->focus_order = evas_list_free(widget->focus_order);
 }
 
@@ -2854,28 +2844,6 @@ static void _etk_widget_unswallow_full(Etk_Widget *swallower, Evas_List *swo_nod
    swallower->swallowed_objects = evas_list_remove_list(swallower->swallowed_objects, swo_node);
    
    etk_widget_size_recalc_queue(swallower);
-}
-
-/* Removes a child from the widget */
-static void _etk_widget_child_remove(Etk_Widget *parent, Etk_Widget *child)
-{
-   Evas_List *l;
-   
-   if (!parent || !child)
-      return;
-
-   if ((l = evas_list_find_list(parent->children, child)))
-   {
-      if (child->swallowed)
-         etk_widget_unswallow_widget(parent, child);
-      if (child->smart_object)
-         evas_object_smart_member_del(child->smart_object);
-      if (child->clip && parent->clip == child->clip)
-         etk_widget_clip_unset(child);
-      
-      parent->children = evas_list_remove_list(parent->children, l);
-      etk_widget_size_recalc_queue(parent);
-   }
 }
 
 /* Adds an object to the widget smart object */

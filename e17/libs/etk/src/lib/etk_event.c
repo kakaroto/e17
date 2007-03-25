@@ -381,7 +381,7 @@ static void _etk_event_mouse_flags_wrap(Evas_Button_Flags evas_flags, Etk_Mouse_
  * the widget with the given signal. For example:
  * @code
  * //_image_clicked_cb() will be called when the image is clicked
- * etk_signal_connect(ETK_OBJECT(image), "mouse_clicked", _image_clicked_cb, NULL);
+ * etk_signal_connect(ETK_OBJECT(image), "mouse-clicked", _image_clicked_cb, NULL);
  * @endcode
  *   - The global-events that are emitted each time an input event occurs, even if the event was not for a widget: for
  * example, when the user clicks somewhere on the screen, when he moves the mouse... You will rarely have to use these

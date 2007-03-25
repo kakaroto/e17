@@ -200,7 +200,7 @@ static void _etk_menu_destructor(Etk_Menu *menu)
    if (!menu)
       return;
    
-   etk_container_remove(ETK_CONTAINER(menu->window), ETK_WIDGET(menu));
+   etk_container_remove(ETK_WIDGET(menu));
    etk_object_destroy(ETK_OBJECT(menu->window));
 }
 
@@ -410,7 +410,7 @@ static void _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data
    etk_widget_theme_parent_set(ETK_WIDGET(item_object), NULL);
    etk_signal_disconnect("entered", item_object, ETK_CALLBACK(_etk_menu_item_entered_cb));
    etk_signal_disconnect("left", item_object, ETK_CALLBACK(_etk_menu_item_left_cb));
-   etk_signal_disconnect("mouse_up", item_object, ETK_CALLBACK(_etk_menu_item_mouse_up_cb));
+   etk_signal_disconnect("mouse-up", item_object, ETK_CALLBACK(_etk_menu_item_mouse_up_cb));
    etk_signal_disconnect("selected", item_object, ETK_CALLBACK(_etk_menu_item_selected_cb));
    etk_signal_disconnect("unselected", item_object, ETK_CALLBACK(_etk_menu_item_unselected_cb));
    etk_signal_disconnect("activated", item_object, ETK_CALLBACK(_etk_menu_item_activated_cb));

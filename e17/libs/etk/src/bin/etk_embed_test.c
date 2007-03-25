@@ -162,19 +162,19 @@ static Etk_Widget *_embed_widget_new(Evas *evas)
    for (i = 0; i < 6; i++)
       entries[i] = etk_entry_new();
 
-   table = etk_table_new(2, 10, ETK_FALSE);
-   etk_table_attach(ETK_TABLE(table), image, 0, 0, 0, 0, 0, 0, ETK_TABLE_NONE);
-   etk_table_attach(ETK_TABLE(table), combobox, 1, 1, 0, 0, 0, 0, ETK_TABLE_HEXPAND);
+   table = etk_table_new(2, 10, ETK_TABLE_NOT_HOMOGENEOUS);
+   etk_table_attach(ETK_TABLE(table), image, 0, 0, 0, 0, ETK_TABLE_NONE, 0, 0);
+   etk_table_attach(ETK_TABLE(table), combobox, 1, 1, 0, 0, ETK_TABLE_HEXPAND, 0, 0);
    
    for (i = 0; i < 6; i++)
    {
-      etk_table_attach(ETK_TABLE(table), labels[i], 0, 0, 2 + i, 2 + i, 0, 0, ETK_TABLE_HFILL);
+      etk_table_attach(ETK_TABLE(table), labels[i], 0, 0, 2 + i, 2 + i, ETK_TABLE_HFILL, 0, 0);
       etk_table_attach_default(ETK_TABLE(table), entries[i], 1, 1, 2 + i, 2 + i);
    }
    
-   etk_table_attach(ETK_TABLE(table), labels[6], 0, 0, 8, 8, 0, 0, ETK_TABLE_HFILL);
+   etk_table_attach(ETK_TABLE(table), labels[6], 0, 0, 8, 8, ETK_TABLE_HFILL, 0, 0);
    etk_table_attach_default(ETK_TABLE(table), buttons[0], 1, 1, 8, 8);
-   etk_table_attach(ETK_TABLE(table), labels[7], 0, 0, 9, 9, 0, 0, ETK_TABLE_HFILL);
+   etk_table_attach(ETK_TABLE(table), labels[7], 0, 0, 9, 9, ETK_TABLE_HFILL, 0, 0);
    etk_table_attach_default(ETK_TABLE(table), buttons[1], 1, 1, 9, 9);
    
    

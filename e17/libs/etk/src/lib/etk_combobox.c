@@ -1343,7 +1343,7 @@ static void _etk_combobox_item_cells_render(Etk_Combobox *combobox, Etk_Widget *
  * combobox = ETK_COMBOBOX(etk_combobox_new());
  * etk_combobox_column_add(combobox, ETK_COMBOBOX_IMAGE, 24, ETK_COMBOBOX_NONE, 0.0);
  * etk_combobox_column_add(combobox, ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_EXPAND, 0.0);
- * etk_combobox_column_add(combobox, ETK_COMBOBOX_OTHER, 32, ETK_COMBOBOX_OTHER, 1.0);
+ * etk_combobox_column_add(combobox, ETK_COMBOBOX_OTHER, 32, ETK_COMBOBOX_NONE, 1.0);
  * etk_combobox_build(combobox);
  *
  * etk_combobox_item_append(combobox, image1, "item 1", checkbox1);

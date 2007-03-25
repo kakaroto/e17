@@ -1,17 +1,23 @@
 #include "etk_test.h"
 #include "config.h"
 
-static Etk_Widget *_etk_test_notebook_page1_widget_create();
-static Etk_Widget *_etk_test_notebook_page2_widget_create();
-static void _etk_test_notebook_hide_tabs_toggled_cb(Etk_Object *object, void *data);
+static void _hide_tabs_toggled_cb(Etk_Object *object, void *data);
+static Etk_Widget *_page1_widget_create(void);
+static Etk_Widget *_page2_widget_create(void);
 
+
+/**************************
+ *
+ * Creation of the test-app window
+ *
+ **************************/
+ 
 /* Creates the window for the notebook test */
 void etk_test_notebook_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
    Etk_Widget *notebook;
    Etk_Widget *page_widget;
-   Etk_Widget *alignment;
    Etk_Widget *hbox;
    Etk_Widget *vbox;
    Etk_Widget *button;
@@ -21,10 +27,11 @@ void etk_test_notebook_window_create(void *data)
       etk_widget_show_all(ETK_WIDGET(win));
       return;
    }
+   
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Notebook Test");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);	
+   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -33,19 +40,18 @@ void etk_test_notebook_window_create(void *data)
    notebook = etk_notebook_new();
    etk_box_append(ETK_BOX(vbox), notebook, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
-   /* Add the page */
-   page_widget = _etk_test_notebook_page1_widget_create();
-   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Tab 1 - Table test", page_widget);
-   page_widget = _etk_test_notebook_page2_widget_create();
-   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Tab 2 - Button test", page_widget);
+   /* Add the pages */
+   page_widget = _page1_widget_create();
+   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Table test", page_widget);
+   page_widget = _page2_widget_create();
+   etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Button test", page_widget);
    
    etk_box_append(ETK_BOX(vbox), etk_hseparator_new(), ETK_BOX_START, ETK_BOX_NONE, 5);
    
-   /* Create the prev/next buttons */
-   alignment = etk_alignment_new(0.5, 0.5, 0.0, 1.0);
-   etk_box_append(ETK_BOX(vbox), alignment, ETK_BOX_START, ETK_BOX_NONE, 0);
+   
+   /* Create the prev/next buttons and the "Hide tabs" toggle button*/
    hbox = etk_hbox_new(ETK_TRUE, 0);
-   etk_container_add(ETK_CONTAINER(alignment), hbox);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_SHRINK_OPPOSITE, 0);
    
    button = etk_button_new_from_stock(ETK_STOCK_GO_PREVIOUS);
    etk_button_label_set(ETK_BUTTON(button), "Previous");
@@ -57,16 +63,37 @@ void etk_test_notebook_window_create(void *data)
    etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(etk_notebook_page_next), notebook);
    etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_FILL, 0);
    
-   /* Create the "Hide tabs" toggle button */
    button = etk_toggle_button_new_with_label("Hide tabs");
-   etk_signal_connect("toggled", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_notebook_hide_tabs_toggled_cb), notebook);
+   etk_signal_connect("toggled", ETK_OBJECT(button), ETK_CALLBACK(_hide_tabs_toggled_cb), notebook);
    etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_FILL, 0);
+
 
    etk_widget_show_all(win);
 }
 
-/* Creates the widget for the first page */
-static Etk_Widget *_etk_test_notebook_page1_widget_create()
+/**************************
+ *
+ * Callbacks
+ *
+ **************************/
+
+/* Shows/hides the tab bar when the "hide tabs" button is toggled */
+static void _hide_tabs_toggled_cb(Etk_Object *object, void *data)
+{
+   Etk_Bool state;
+   
+   state = etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object));
+   etk_notebook_tabs_visible_set(ETK_NOTEBOOK(data), !state);
+}
+
+/**************************
+ *
+ * Private functions
+ *
+ **************************/
+
+/* Creates the widgets for the first page */
+static Etk_Widget *_page1_widget_create(void)
 {
    Etk_Widget *table;
    Etk_Widget *image;
@@ -94,27 +121,27 @@ static Etk_Widget *_etk_test_notebook_page1_widget_create()
       entries[i] = etk_entry_new();
    
 
-   table = etk_table_new(2, 10, ETK_FALSE);
-   etk_table_attach(ETK_TABLE(table), image, 0, 0, 0, 0, 0, 0, ETK_TABLE_NONE);
-   etk_table_attach(ETK_TABLE(table), buttons[0], 1, 1, 0, 0, 0, 0, ETK_TABLE_HEXPAND);
+   table = etk_table_new(2, 10, ETK_TABLE_NOT_HOMOGENEOUS);
+   etk_table_attach(ETK_TABLE(table), image, 0, 0, 0, 0, ETK_TABLE_NONE, 0, 0);
+   etk_table_attach(ETK_TABLE(table), buttons[0], 1, 1, 0, 0, ETK_TABLE_HEXPAND, 0, 0);
    
    for (i = 0; i < 6; i++)
    {
-      etk_table_attach(ETK_TABLE(table), labels[i], 0, 0, 2 + i, 2 + i, 0, 0, ETK_TABLE_HFILL);
+      etk_table_attach(ETK_TABLE(table), labels[i], 0, 0, 2 + i, 2 + i, ETK_TABLE_HFILL, 0, 0);
       etk_table_attach_default(ETK_TABLE(table), entries[i], 1, 1, 2 + i, 2 + i);
    }
    
-   etk_table_attach(ETK_TABLE(table), labels[6], 0, 0, 8, 8, 0, 0, ETK_TABLE_HFILL);
+   etk_table_attach(ETK_TABLE(table), labels[6], 0, 0, 8, 8, ETK_TABLE_HFILL, 0, 0);
    etk_table_attach_default(ETK_TABLE(table), buttons[1], 1, 1, 8, 8);
-   etk_table_attach(ETK_TABLE(table), labels[7], 0, 0, 9, 9, 0, 0, ETK_TABLE_HFILL);
+   etk_table_attach(ETK_TABLE(table), labels[7], 0, 0, 9, 9, ETK_TABLE_HFILL, 0, 0);
    etk_table_attach_default(ETK_TABLE(table), buttons[2], 1, 1, 9, 9);
    
    
    return table;
 }
 
-/* Creates the widget for the second page */
-static Etk_Widget *_etk_test_notebook_page2_widget_create()
+/* Creates the widgets for the second page */
+static Etk_Widget *_page2_widget_create(void)
 {
    Etk_Widget *alignment;
    Etk_Widget *vbox;
@@ -147,13 +174,4 @@ static Etk_Widget *_etk_test_notebook_page2_widget_create()
    etk_box_append(ETK_BOX(vbox), button_radio, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    return alignment;
-}
-
-/* Shows/hides the tab bar when the "hide tabs" button is toggled */
-static void _etk_test_notebook_hide_tabs_toggled_cb(Etk_Object *object, void *data)
-{
-   Etk_Bool state;
-   
-   state = etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object));
-   etk_notebook_tabs_visible_set(ETK_NOTEBOOK(data), !state);
 }

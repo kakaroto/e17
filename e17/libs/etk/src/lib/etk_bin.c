@@ -65,7 +65,8 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
    if (!bin || bin->child == child)
       return;
 
-   _etk_bin_child_remove(ETK_CONTAINER(bin), bin->child);
+   if (bin->child)
+      etk_container_remove(bin->child);
 
    if (child)
    {
@@ -205,9 +206,7 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
    if (!(bin = ETK_BIN(container)) || !widget || bin->child != widget)
       return;
 
-   etk_widget_parent_set_full(widget, NULL, ETK_FALSE);
    bin->child = NULL;
-   
    etk_signal_emit_by_name("child-removed", ETK_OBJECT(bin), NULL, widget);
    etk_object_notify(ETK_OBJECT(bin), "child");
 }
