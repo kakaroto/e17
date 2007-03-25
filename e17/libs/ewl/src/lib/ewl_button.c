@@ -13,7 +13,8 @@ static Ewl_Stock_Funcs stock_funcs = {
 	NULL
 };
 
-static Ewl_Widget *ewl_button_view_cb_widget_fetch(void *data, int row, int col);
+static Ewl_Widget *ewl_button_view_cb_widget_fetch(void *data, int row, 
+								int col);
 static Ewl_Widget *ewl_button_view_cb_header_fetch(void *data, int col);
 
 /**
@@ -105,7 +106,8 @@ ewl_button_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_button_view_cb_widget_fetch(void *data, int row __UNUSED__, int col __UNUSED__)
+ewl_button_view_cb_widget_fetch(void *data, int row __UNUSED__, 
+						int col __UNUSED__)
 {
 	Ewl_Widget *button;
 
@@ -151,11 +153,12 @@ ewl_button_label_set(Ewl_Button *b, const char *l)
 		Ewl_Container *redir;
 
 		/*
-		 * Save the current redirection and focus on the point where our
-		 * internal widgets belong.
+		 * Save the current redirection and focus on the point where 
+		 * our internal widgets belong.
 		 */
 		redir = ewl_container_redirect_get(EWL_CONTAINER(b));
-		ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
+		ewl_container_redirect_set(EWL_CONTAINER(b), 
+							EWL_CONTAINER(b->body));
 
 		b->label_object = ewl_label_new();
 		ewl_label_text_set(EWL_LABEL(b->label_object), l);
@@ -219,11 +222,12 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 		Ewl_Container *redir;
 
 		/*
-		 * Save the current redirection and focus on the point where our
-		 * internal widgets belong.
+		 * Save the current redirection and focus on the point where 
+		 * our internal widgets belong.
 		 */
 		redir = ewl_container_redirect_get(EWL_CONTAINER(b));
-		ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
+		ewl_container_redirect_set(EWL_CONTAINER(b), 
+							EWL_CONTAINER(b->body));
 		b->image_object = ewl_image_new();
 		ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
 		ewl_widget_internal_set(b->image_object, TRUE);
