@@ -129,7 +129,6 @@ setup(int argc, char **argv, Elicit *el)
   el->zoom_max = elicit_config_zoom_max_get();
 
   /* create the swatch and shot objects */
-  //el->shot = evas_object_image_add(el->evas);
   el->shot = elicit_zoom_add(el->evas);
   evas_object_name_set(el->shot, "shot");
   evas_object_show(el->shot);
@@ -184,6 +183,7 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
   /* swallow and update */ 
   edje_object_part_swallow(el->gui, "shot", el->shot);
   edje_object_part_swallow(el->gui, "swatch", el->swatch);
+  elicit_zoom_grid_visible_set(el->shot, elicit_config_grid_visible_get());
   elicit_ui_update(el);
 
   /* set up edje callbacks */
