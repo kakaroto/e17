@@ -161,26 +161,31 @@ td.nav {
    font-size              : 9px;
    font-weight            : bold;
    white-space            : no-wrap;
+   display                : block;
 }
 
 a.nav:link {
    color                  : #888888;
    text-decoration        : none;
+   display                : block;
 }
 
 a.nav:visited {
    color                  : #888888;
    text-decoration        : none;
+   display                : block;
 }
 
 a.nav:active {
    color                  : #000000;
    text-decoration        : none;
+   display                : block;
 }
 
 a.nav:hover {
    color                  : #444444;
    text-decoration        : none;
+   display                : block;
 }
 
 
