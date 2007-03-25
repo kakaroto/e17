@@ -4268,3 +4268,26 @@ Show message when selecting "Composite Settings ..." and e16 is built
 Don't unshade iconified windows on activation (revert to old behavior -
  requested by Sven Faerber).
 
+
+-------------------------------------------------------------------------------
+
+Sun Mar 25 11:38:23 CEST 2007
+(Kim)
+
+--- 0.16.8.7 0.03 ---
+Revert not unshading iconified windows on activation.
+Inhibit unmaximizing in various situations, e.g. when shaded.
+Fix unmaximizing after shade/unshade (noted by Sven Faerber and Bradley Reed).
+Fix resizing normal->maximized->fullscreen and back.
+Fix preserving maximised state across restart.
+Use same configure.in/spec file setup in e16 and epplets.
+French translation update (Tristan D.).
+Fix "multiple deiconification" seen with e.g. claws-mail (noted by Bradley Reed).
+Move definition of __UNUSED__ to config.h.
+Add some glx support stuff.
+Add option to do edge flipping only when moving window (based on patch by
+ Peter Poulsen).
+Enable focusing windows not containing the pointer in pointer focus modes when
+using the focus list (noted by Peter Poulsen).
+Don't wipe m4/ on maintainer-clean.
+
