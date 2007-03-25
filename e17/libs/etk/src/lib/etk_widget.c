@@ -1450,7 +1450,6 @@ Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
    _etk_widget_object_add_to_smart(widget, object, (evas_object_clip_get(object) == NULL));
    evas_object_intercept_show_callback_add(object, _etk_widget_member_object_intercept_show_cb, widget);
    evas_object_intercept_hide_callback_add(object, _etk_widget_member_object_intercept_hide_cb, widget);
-   evas_object_intercept_hide_callback_add(object, _etk_widget_member_object_intercept_hide_cb, widget);
    evas_object_event_callback_add(object, EVAS_CALLBACK_FREE, _etk_widget_member_object_deleted_cb, widget);
    evas_object_data_set(object, "_Etk_Widget::Parent", widget);
    
