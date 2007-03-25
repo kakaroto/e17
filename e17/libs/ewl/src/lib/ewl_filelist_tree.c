@@ -380,7 +380,8 @@ ewl_filelist_tree_data_expandable_get(void *data, unsigned int row)
 	DCHECK_PARAM_PTR_RET("data", data, 0);
 
 	file = ecore_list_goto_index(td->files, row);
-	if (!strcmp(file, "..")) return 0;
+	if (!strcmp(file, ".."))
+		DRETURN_INT(0, DLEVEL_STABLE);
 
 	path = ewl_filelist_expand_path(EWL_FILELIST(td->list), file);
 	result = ecore_file_is_dir(path);

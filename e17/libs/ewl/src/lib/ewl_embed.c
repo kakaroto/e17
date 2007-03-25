@@ -1191,7 +1191,8 @@ ewl_embed_object_request(Ewl_Embed *e, char *type)
 	DCHECK_PARAM_PTR_RET("type", type, NULL);
 	DCHECK_TYPE_RET("e", e, EWL_EMBED_TYPE, NULL);
 
-	if (!e->obj_cache) return NULL;
+	if (!e->obj_cache)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	obj_list = ecore_hash_get(e->obj_cache, type);
 	if (obj_list) obj = ecore_list_remove_first(obj_list);

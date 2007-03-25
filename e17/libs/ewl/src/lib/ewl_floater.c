@@ -166,7 +166,7 @@ ewl_floater_relative_set(Ewl_Floater *f, Ewl_Widget *w)
 	DCHECK_TYPE("f", f, EWL_FLOATER_TYPE);
 
 	if (f->follows == w)
-		return;
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * Remove the callback attached to the configure event for the
