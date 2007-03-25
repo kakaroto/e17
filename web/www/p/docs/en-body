@@ -76,7 +76,7 @@
 
 <h2>EFL API Docs</h2>
  <p>
-  Many of hte libraries in CVS have Doxygen documentation included. You can
+  Many of the libraries in CVS have Doxygen documentation included. You can
   either generate this documentation using the <code>gendoc</code> script in
   each library directory, or view the documentation here. <br />
 
