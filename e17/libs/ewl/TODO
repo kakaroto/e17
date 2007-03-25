@@ -145,8 +145,8 @@
 
 
   Ewl_Statusbar
-     - Need to return a context when items are pushed onto the status bar so that
-       a context can be removed without popping off the stack
+     - Need to return a context when items are pushed onto the status bar so 
+       that a context can be removed without popping off the stack
 
 
   Ewl_Test
@@ -156,6 +156,8 @@
        to add unit tests for as many functions as we can.
 
 
+  Ewl_Widget
+     - Use a flag instead of the variable Ewl_Widget::toplayered
 
  */
 
