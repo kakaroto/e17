@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-18 23:06+0100\n"
+"POT-Creation-Date: 2007-03-25 11:05+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -544,7 +544,7 @@ msgstr "Obydwa koñce"
 msgid "End"
 msgstr "Koniec"
 
-#: src/container.c:1682 src/focus.c:843
+#: src/container.c:1682 src/focus.c:847
 msgid "None"
 msgstr "¯aden"
 
@@ -630,68 +630,68 @@ msgstr ""
 "Aby schowaæ ten Pulpit na dno,\n"
 "kliknij tutaj\n"
 
-#: src/desktops.c:2346 src/desktops.c:2385
+#: src/desktops.c:2350 src/desktops.c:2389
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Puplpitów"
 
-#: src/desktops.c:2348 src/desktops.c:2387
+#: src/desktops.c:2352 src/desktops.c:2391
 #, c-format
 msgid "%i Desktop"
 msgstr "Pulpit %i"
 
-#: src/desktops.c:2380
+#: src/desktops.c:2384
 msgid "Number of virtual desktops:\n"
 msgstr "Ilo¶æ Pulpitów wirtualnych:\n"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2413
 msgid "Slide desktops around when changing"
 msgstr "Pulpity ¶lizgaj± siê podczas ich zmiany"
 
-#: src/desktops.c:2415
+#: src/desktops.c:2419
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Szybko¶æ ¶lizgania siê Pulpitów: (wolno)\n"
 
-#: src/desktops.c:2429
+#: src/desktops.c:2433
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Zawijaj Wirtulane Pulpity"
 
-#: src/desktops.c:2437
+#: src/desktops.c:2441
 msgid "Display desktop dragbar"
 msgstr "Wy¶wietlaj Pasek Przeci±gania Pulpitu"
 
-#: src/desktops.c:2443
+#: src/desktops.c:2447
 msgid "Drag bar position:"
 msgstr "Pozycja Paska Przeci±gania"
 
-#: src/desktops.c:2447
+#: src/desktops.c:2451
 msgid "Top"
 msgstr "Góra"
 
-#: src/desktops.c:2453
+#: src/desktops.c:2457
 msgid "Bottom"
 msgstr "Dó³"
 
-#: src/desktops.c:2459 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
+#: src/desktops.c:2463 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
 msgid "Left"
 msgstr "Lewo"
 
-#: src/desktops.c:2465 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2469 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Right"
 msgstr "Prawo"
 
-#: src/desktops.c:2473 src/menus-misc.c:712
+#: src/desktops.c:2477 src/menus-misc.c:712
 #, fuzzy
 msgid "Desks"
 msgstr "Pulpit"
 
-#: src/desktops.c:2474
+#: src/desktops.c:2478
 msgid "Multiple Desktop Settings"
 msgstr "Ustawienia Wielu Pulpitów"
 
-#: src/desktops.c:2477
+#: src/desktops.c:2481
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -699,7 +699,7 @@ msgstr ""
 "Okno ustawieñ Wielu Pulpitów\n"
 "Enlightenment\n"
 
-#: src/desktops.c:2560 src/desktops.c:2596
+#: src/desktops.c:2560 src/desktops.c:2595
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -708,7 +708,7 @@ msgstr ""
 "%i x %i\n"
 "Pulpitów"
 
-#: src/desktops.c:2563 src/desktops.c:2599
+#: src/desktops.c:2563 src/desktops.c:2598
 msgid ""
 "1\n"
 "Screen in size"
@@ -716,31 +716,43 @@ msgstr ""
 "1\n"
 "Pulpitu"
 
-#: src/desktops.c:2592
+#: src/desktops.c:2591
 msgid "Virtual Desktop size:\n"
 msgstr "Rozmiar Wirtualnego Pulpitu :\n"
 
-#: src/desktops.c:2633
+#: src/desktops.c:2632
 msgid "Wrap virtual desktops around"
 msgstr "Zawijaj Wirtulane Pulpity"
 
-#: src/desktops.c:2637
-msgid "Enable edge flip"
-msgstr "W³±cz prze³±czanie przy brzegach ekranu"
+#: src/desktops.c:2639
+msgid "Edge Flip Mode:"
+msgstr ""
 
-#: src/desktops.c:2641
+#: src/desktops.c:2642
+msgid "Off"
+msgstr ""
+
+#: src/desktops.c:2647
+msgid "On"
+msgstr ""
+
+#: src/desktops.c:2652
+msgid "Only when moving window"
+msgstr ""
+
+#: src/desktops.c:2658
 msgid "Resistance at edge of screen:\n"
 msgstr "Czu³o¶æ na prze³±czanie przy brzegach ekranu:\n"
 
-#: src/desktops.c:2653
+#: src/desktops.c:2670
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2654
+#: src/desktops.c:2671
 msgid "Virtual Desktop Settings"
 msgstr "Ustawienia Wirtualnego Biurka"
 
-#: src/desktops.c:2657
+#: src/desktops.c:2674
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -761,7 +773,7 @@ msgstr "Zastosuj"
 msgid "Attention !!!"
 msgstr "Uwaga !"
 
-#: src/ecompmgr.c:2471
+#: src/ecompmgr.c:2467
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -793,105 +805,105 @@ msgstr ""
 "\n"
 "Koñczê dzia³anie.\n"
 
-#: src/focus.c:715
+#: src/focus.c:719
 msgid "Focus follows pointer"
 msgstr "Aktywacja pod±¿a za kursorem"
 
-#: src/focus.c:721
+#: src/focus.c:725
 msgid "Focus follows pointer sloppily"
 msgstr "Aktywacja pod±za leniwie za kursorem"
 
-#: src/focus.c:727
+#: src/focus.c:731
 msgid "Focus follows mouse clicks"
 msgstr "Aktywacja pod±¿a za klikniêciami myszy"
 
-#: src/focus.c:737
+#: src/focus.c:741
 msgid "Clicking in a window always raises it"
 msgstr "Klikniêcie w oknie zawsze je Aktywuje"
 
-#: src/focus.c:745
+#: src/focus.c:749
 msgid "All new windows first get the focus"
 msgstr "Wszystkie nowe okna s± najpierw Aktywowane"
 
-#: src/focus.c:750
+#: src/focus.c:754
 msgid "Only new dialog windows get the focus"
 msgstr "Aktywowane s± tylko nowe okna dialogowe"
 
-#: src/focus.c:757
+#: src/focus.c:761
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Aktywowane s± tylko okna dialogowe, których w³a¶ciciel jest aktywny"
 
-#: src/focus.c:762
+#: src/focus.c:766
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Aktywuj okna podczas prze³±czania"
 
-#: src/focus.c:768
+#: src/focus.c:772
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Przesuñ wska¼nik myszy do Aktywowanego okna"
 
-#: src/focus.c:774
+#: src/focus.c:778
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Przesuñ wska¼nik myszy do Aktywowanego okna"
 
-#: src/focus.c:782
+#: src/focus.c:786
 msgid "Display and use focus list"
 msgstr "Wy¶wietl i uzywaj listy Aktywacji"
 
-#: src/focus.c:787
+#: src/focus.c:791
 msgid "Include sticky windows in focus list"
 msgstr "W³±cz okna przyklejone do listy aktywacji"
 
-#: src/focus.c:792
+#: src/focus.c:796
 msgid "Include shaded windows in focus list"
 msgstr "W³±cz onka w cieniu do listy Aktywacji"
 
-#: src/focus.c:797
+#: src/focus.c:801
 msgid "Include iconified windows in focus list"
 msgstr "W³±cz okna zwiniête do ikony do listy Aktywacji"
 
-#: src/focus.c:802
+#: src/focus.c:806
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "W³±cz onka w cieniu do listy Aktywacji"
 
-#: src/focus.c:807
+#: src/focus.c:811
 msgid "Focus windows while switching"
 msgstr "Aktywuj okna podczas prze³±czania"
 
-#: src/focus.c:812
+#: src/focus.c:816
 msgid "Raise windows after focus switch"
 msgstr "Podno¶ okna po prze³±czeniu Aktywacji"
 
-#: src/focus.c:817
+#: src/focus.c:821
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Wy¶lij wska¼nik myszy do okna po prze³±czeniu Aktywacji"
 
-#: src/focus.c:827
+#: src/focus.c:831
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Sposób wy¶wietlania ikon (je¿eli która¶ zawiedzie, spróbuj nastêpnej):"
 
-#: src/focus.c:831
+#: src/focus.c:835
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:837
+#: src/focus.c:841
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:851
+#: src/focus.c:855
 #, fuzzy
 msgid "Focus"
 msgstr "Nigdy Nie Aktywuj"
 
-#: src/focus.c:852
+#: src/focus.c:856
 msgid "Focus Settings"
 msgstr "Ustawienia Aktywacji"
 
-#: src/focus.c:855
+#: src/focus.c:859
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -3002,6 +3014,9 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Wyjd¼ z Enlightenment"
+
+#~ msgid "Enable edge flip"
+#~ msgstr "W³±cz prze³±czanie przy brzegach ekranu"
 
 #~ msgid ""
 #~ "\n"

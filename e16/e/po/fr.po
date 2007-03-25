@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-18 23:06+0100\n"
+"POT-Creation-Date: 2007-03-25 11:05+0200\n"
 "PO-Revision-Date: 2007-03-17 10:04+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
@@ -562,7 +562,7 @@ msgstr "2 cotés"
 msgid "End"
 msgstr "Fin"
 
-#: src/container.c:1682 src/focus.c:843
+#: src/container.c:1682 src/focus.c:847
 msgid "None"
 msgstr "Aucune"
 
@@ -643,65 +643,65 @@ msgid ""
 "to the bottom.\n"
 msgstr "Cliquez ici pour abaisser ce bureau.\n"
 
-#: src/desktops.c:2346 src/desktops.c:2385
+#: src/desktops.c:2350 src/desktops.c:2389
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Bureaux"
 
-#: src/desktops.c:2348 src/desktops.c:2387
+#: src/desktops.c:2352 src/desktops.c:2391
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Bureau"
 
-#: src/desktops.c:2380
+#: src/desktops.c:2384
 msgid "Number of virtual desktops:\n"
 msgstr "Nombre de bureaux :\n"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2413
 msgid "Slide desktops around when changing"
 msgstr "Faire glisser les bureaux lors des déplacements"
 
-#: src/desktops.c:2415
+#: src/desktops.c:2419
 msgid "Desktop Slide speed:\n"
 msgstr "Vitesse de glissement des bureaux:\n"
 
-#: src/desktops.c:2429
+#: src/desktops.c:2433
 msgid "Wrap desktops around"
 msgstr "Placer les bureaux en boucle"
 
-#: src/desktops.c:2437
+#: src/desktops.c:2441
 msgid "Display desktop dragbar"
 msgstr "Afficher la barre de bureau"
 
-#: src/desktops.c:2443
+#: src/desktops.c:2447
 msgid "Drag bar position:"
 msgstr "Position de la barre de bureau:"
 
-#: src/desktops.c:2447
+#: src/desktops.c:2451
 msgid "Top"
 msgstr "Haut"
 
-#: src/desktops.c:2453
+#: src/desktops.c:2457
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/desktops.c:2459 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
+#: src/desktops.c:2463 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
 msgid "Left"
 msgstr "Gauche"
 
-#: src/desktops.c:2465 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2469 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2473 src/menus-misc.c:712
+#: src/desktops.c:2477 src/menus-misc.c:712
 msgid "Desks"
 msgstr "Bureaux multiples"
 
-#: src/desktops.c:2474
+#: src/desktops.c:2478
 msgid "Multiple Desktop Settings"
 msgstr "Paramètres des Bureaux multiples"
 
-#: src/desktops.c:2477
+#: src/desktops.c:2481
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -709,7 +709,7 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux multiples\n"
 
-#: src/desktops.c:2560 src/desktops.c:2596
+#: src/desktops.c:2560 src/desktops.c:2595
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -718,7 +718,7 @@ msgstr ""
 "%i x %i\n"
 "Écrans"
 
-#: src/desktops.c:2563 src/desktops.c:2599
+#: src/desktops.c:2563 src/desktops.c:2598
 msgid ""
 "1\n"
 "Screen in size"
@@ -726,31 +726,44 @@ msgstr ""
 "1\n"
 "Écran"
 
-#: src/desktops.c:2592
+#: src/desktops.c:2591
 msgid "Virtual Desktop size:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2633
+#: src/desktops.c:2632
 msgid "Wrap virtual desktops around"
 msgstr "Placer les bureaux virtuels en boucle"
 
-#: src/desktops.c:2637
-msgid "Enable edge flip"
-msgstr "Activer les bords sensitifs"
+#: src/desktops.c:2639
+#, fuzzy
+msgid "Edge Flip Mode:"
+msgstr "Mode du Pager:"
 
-#: src/desktops.c:2641
+#: src/desktops.c:2642
+msgid "Off"
+msgstr ""
+
+#: src/desktops.c:2647
+msgid "On"
+msgstr ""
+
+#: src/desktops.c:2652
+msgid "Only when moving window"
+msgstr ""
+
+#: src/desktops.c:2658
 msgid "Resistance at edge of screen:\n"
 msgstr "Sensibilité des bords:\n"
 
-#: src/desktops.c:2653
+#: src/desktops.c:2670
 msgid "Areas"
 msgstr "Bureaux virtuels"
 
-#: src/desktops.c:2654
+#: src/desktops.c:2671
 msgid "Virtual Desktop Settings"
 msgstr "Paramètres des Bureaux virtuels"
 
-#: src/desktops.c:2657
+#: src/desktops.c:2674
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -771,7 +784,7 @@ msgstr "Appliquer"
 msgid "Attention !!!"
 msgstr "Attention !!!"
 
-#: src/ecompmgr.c:2471
+#: src/ecompmgr.c:2467
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -807,101 +820,101 @@ msgstr ""
 "\n"
 "Sortie.\n"
 
-#: src/focus.c:715
+#: src/focus.c:719
 msgid "Focus follows pointer"
 msgstr "Le focus suit la souris"
 
-#: src/focus.c:721
+#: src/focus.c:725
 msgid "Focus follows pointer sloppily"
 msgstr "Le focus suit lentement la souris"
 
-#: src/focus.c:727
+#: src/focus.c:731
 msgid "Focus follows mouse clicks"
 msgstr "Le focus suit les clics de souris"
 
-#: src/focus.c:737
+#: src/focus.c:741
 msgid "Clicking in a window always raises it"
 msgstr "Toujours élever une fenêtre qui reçoit un clic"
 
-#: src/focus.c:745
+#: src/focus.c:749
 msgid "All new windows first get the focus"
 msgstr "Toutes les nouvelles fenêtres obtiennent le focus"
 
-#: src/focus.c:750
+#: src/focus.c:754
 msgid "Only new dialog windows get the focus"
 msgstr "Seules les nouvelles fenêtres de dialogue obtiennent le focus"
 
-#: src/focus.c:757
+#: src/focus.c:761
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Seules les nouvelles fenêtres de dialogue dont le parent a le\n"
 "focus obtiennent le focus."
 
-#: src/focus.c:762
+#: src/focus.c:766
 msgid "Raise windows while switching focus"
 msgstr "Élever les fenêtres pendant le changement de focus"
 
-#: src/focus.c:768
+#: src/focus.c:772
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Envoyer la souris sur la fenêtre pendant le changement de focus"
 
-#: src/focus.c:774
+#: src/focus.c:778
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Toujours placer la souris sur la fenêtre qui obtient le focus"
 
-#: src/focus.c:782
+#: src/focus.c:786
 msgid "Display and use focus list"
 msgstr "Afficher et utiliser la liste de fenêtres"
 
-#: src/focus.c:787
+#: src/focus.c:791
 msgid "Include sticky windows in focus list"
 msgstr "Inclure les fenêtres collées dans la liste de fenêtres"
 
-#: src/focus.c:792
+#: src/focus.c:796
 msgid "Include shaded windows in focus list"
 msgstr "Inclure les fenêtres masquées dans la liste de fenêtres"
 
-#: src/focus.c:797
+#: src/focus.c:801
 msgid "Include iconified windows in focus list"
 msgstr "Inclure les fenêtres icônifiées dans la liste de fenêtres"
 
-#: src/focus.c:802
+#: src/focus.c:806
 msgid "Include windows on other desks in focus list"
 msgstr "Inclure les fenêtres des autres bureaux dans la liste de fenêtres"
 
-#: src/focus.c:807
+#: src/focus.c:811
 msgid "Focus windows while switching"
 msgstr "Mettre le focus sur la fenêtre en cours de sélection"
 
-#: src/focus.c:812
+#: src/focus.c:816
 msgid "Raise windows after focus switch"
 msgstr "Élever les fenêtres après l'obtention du focus"
 
-#: src/focus.c:817
+#: src/focus.c:821
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Placer la souris sur la fenêtre après obtention du focus"
 
-#: src/focus.c:827
+#: src/focus.c:831
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Afficher les icônes en respectant l'ordre suivant:"
 
-#: src/focus.c:831
+#: src/focus.c:835
 msgid "First E Icon, then App Icon"
 msgstr "Icône E en premier, puis Icône de l'Application"
 
-#: src/focus.c:837
+#: src/focus.c:841
 msgid "First App Icon, then E Icon"
 msgstr "Icône de l'Application en premier, puis Icône E"
 
-#: src/focus.c:851
+#: src/focus.c:855
 msgid "Focus"
 msgstr "Focus"
 
-#: src/focus.c:852
+#: src/focus.c:856
 msgid "Focus Settings"
 msgstr "Paramètres du Focus"
 
-#: src/focus.c:855
+#: src/focus.c:859
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -2887,6 +2900,9 @@ msgstr "Autres"
 #: config/strings.c:187
 msgid "Enlightenment Epplets"
 msgstr "Epplets d'Enlightenment"
+
+#~ msgid "Enable edge flip"
+#~ msgstr "Activer les bords sensitifs"
 
 #~ msgid ""
 #~ "\n"

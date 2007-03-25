@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-18 23:06+0100\n"
+"POT-Creation-Date: 2007-03-25 11:05+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -552,7 +552,7 @@ msgstr "Mindkét végén"
 msgid "End"
 msgstr "Végén"
 
-#: src/container.c:1682 src/focus.c:843
+#: src/container.c:1682 src/focus.c:847
 msgid "None"
 msgstr "Nincs"
 
@@ -637,67 +637,67 @@ msgstr ""
 "Klikkeljen ide, hogy ez az asztal\n"
 "legalulra kerüljön.\n"
 
-#: src/desktops.c:2346 src/desktops.c:2385
+#: src/desktops.c:2350 src/desktops.c:2389
 #, c-format
 msgid "%i Desktops"
 msgstr "%i asztal"
 
-#: src/desktops.c:2348 src/desktops.c:2387
+#: src/desktops.c:2352 src/desktops.c:2391
 #, c-format
 msgid "%i Desktop"
 msgstr "%i asztal"
 
-#: src/desktops.c:2380
+#: src/desktops.c:2384
 msgid "Number of virtual desktops:\n"
 msgstr "Virtuális asztalok száma:\n"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2413
 msgid "Slide desktops around when changing"
 msgstr "Animáció az asztalok váltásánál"
 
-#: src/desktops.c:2415
+#: src/desktops.c:2419
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Asztal animáció sebessége: (lassú)\n"
 
-#: src/desktops.c:2429
+#: src/desktops.c:2433
 msgid "Wrap desktops around"
 msgstr "Asztalok \"körbecsúszása\""
 
-#: src/desktops.c:2437
+#: src/desktops.c:2441
 msgid "Display desktop dragbar"
 msgstr "Dragbar megjelenítése"
 
-#: src/desktops.c:2443
+#: src/desktops.c:2447
 msgid "Drag bar position:"
 msgstr "Dragbar elhelyezkedése:"
 
-#: src/desktops.c:2447
+#: src/desktops.c:2451
 msgid "Top"
 msgstr "Fent"
 
-#: src/desktops.c:2453
+#: src/desktops.c:2457
 msgid "Bottom"
 msgstr "Lent"
 
-#: src/desktops.c:2459 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
+#: src/desktops.c:2463 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
 msgid "Left"
 msgstr "Bal"
 
-#: src/desktops.c:2465 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2469 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
 msgid "Right"
 msgstr "Jobb"
 
-#: src/desktops.c:2473 src/menus-misc.c:712
+#: src/desktops.c:2477 src/menus-misc.c:712
 #, fuzzy
 msgid "Desks"
 msgstr "Asztal"
 
-#: src/desktops.c:2474
+#: src/desktops.c:2478
 msgid "Multiple Desktop Settings"
 msgstr "Többasztalos üzemmód beállításai"
 
-#: src/desktops.c:2477
+#: src/desktops.c:2481
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -705,7 +705,7 @@ msgstr ""
 "Enlightenment többasztalos üzemmód\n"
 "beállításai\n"
 
-#: src/desktops.c:2560 src/desktops.c:2596
+#: src/desktops.c:2560 src/desktops.c:2595
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -714,7 +714,7 @@ msgstr ""
 "%i x %i\n"
 "képernyõméret"
 
-#: src/desktops.c:2563 src/desktops.c:2599
+#: src/desktops.c:2563 src/desktops.c:2598
 msgid ""
 "1\n"
 "Screen in size"
@@ -722,31 +722,43 @@ msgstr ""
 "1\n"
 "képernyõméret"
 
-#: src/desktops.c:2592
+#: src/desktops.c:2591
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuális asztal mérete:\n"
 
-#: src/desktops.c:2633
+#: src/desktops.c:2632
 msgid "Wrap virtual desktops around"
 msgstr "Virtuális asztalok \"körbecsúszása\""
 
-#: src/desktops.c:2637
-msgid "Enable edge flip"
-msgstr "Asztal él-érzékenység"
+#: src/desktops.c:2639
+msgid "Edge Flip Mode:"
+msgstr ""
 
-#: src/desktops.c:2641
+#: src/desktops.c:2642
+msgid "Off"
+msgstr ""
+
+#: src/desktops.c:2647
+msgid "On"
+msgstr ""
+
+#: src/desktops.c:2652
+msgid "Only when moving window"
+msgstr ""
+
+#: src/desktops.c:2658
 msgid "Resistance at edge of screen:\n"
 msgstr "Érzékenység a kép szélén:\n"
 
-#: src/desktops.c:2653
+#: src/desktops.c:2670
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2654
+#: src/desktops.c:2671
 msgid "Virtual Desktop Settings"
 msgstr "Virtuális asztalok beállításai"
 
-#: src/desktops.c:2657
+#: src/desktops.c:2674
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -767,7 +779,7 @@ msgstr "Alkalmaz"
 msgid "Attention !!!"
 msgstr "Figyelem !!!"
 
-#: src/ecompmgr.c:2471
+#: src/ecompmgr.c:2467
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -799,106 +811,106 @@ msgstr ""
 "\n"
 "Kilépek.\n"
 
-#: src/focus.c:715
+#: src/focus.c:719
 msgid "Focus follows pointer"
 msgstr "A fókusz követi az egérmutatót"
 
-#: src/focus.c:721
+#: src/focus.c:725
 msgid "Focus follows pointer sloppily"
 msgstr "A fókusz lazán követi az egérmutatót"
 
-#: src/focus.c:727
+#: src/focus.c:731
 msgid "Focus follows mouse clicks"
 msgstr "A fókusz követi az egérkattintást"
 
-#: src/focus.c:737
+#: src/focus.c:741
 msgid "Clicking in a window always raises it"
 msgstr "Az ablakok mindig felülre kerülnek egérkattintásnál"
 
-#: src/focus.c:745
+#: src/focus.c:749
 msgid "All new windows first get the focus"
 msgstr "Az új ablakok fókuszt kapnak"
 
-#: src/focus.c:750
+#: src/focus.c:754
 msgid "Only new dialog windows get the focus"
 msgstr "Csak az új ablakok kapnak fókuszt"
 
-#: src/focus.c:757
+#: src/focus.c:761
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 
-#: src/focus.c:762
+#: src/focus.c:766
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Ablakváltás közben fókusz"
 
-#: src/focus.c:768
+#: src/focus.c:772
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltásnál"
 
-#: src/focus.c:774
+#: src/focus.c:778
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltásnál"
 
-#: src/focus.c:782
+#: src/focus.c:786
 msgid "Display and use focus list"
 msgstr "Fókuszlista megjelenítése és használata"
 
-#: src/focus.c:787
+#: src/focus.c:791
 msgid "Include sticky windows in focus list"
 msgstr "Ragadós ablakok bevétele a fókusz listába"
 
-#: src/focus.c:792
+#: src/focus.c:796
 msgid "Include shaded windows in focus list"
 msgstr "Árnyékolt ablakok bevétele a fókusz listába"
 
-#: src/focus.c:797
+#: src/focus.c:801
 msgid "Include iconified windows in focus list"
 msgstr "Ikonizált ablakok bevétele a fókusz listába"
 
-#: src/focus.c:802
+#: src/focus.c:806
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Árnyékolt ablakok bevétele a fókusz listába"
 
-#: src/focus.c:807
+#: src/focus.c:811
 msgid "Focus windows while switching"
 msgstr "Ablakváltás közben fókusz"
 
-#: src/focus.c:812
+#: src/focus.c:816
 msgid "Raise windows after focus switch"
 msgstr "Az ablak felülre kerül fókuszváltás után"
 
-#: src/focus.c:817
+#: src/focus.c:821
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltás után"
 
-#: src/focus.c:827
+#: src/focus.c:831
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Ikonmegjelenítés rendje (ha az egyik nem sikerül, megpróbálja a következõt):"
 
-#: src/focus.c:831
+#: src/focus.c:835
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:837
+#: src/focus.c:841
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:851
+#: src/focus.c:855
 #, fuzzy
 msgid "Focus"
 msgstr "Nem kap fókuszt"
 
-#: src/focus.c:852
+#: src/focus.c:856
 msgid "Focus Settings"
 msgstr "Fókusz beállításai"
 
-#: src/focus.c:855
+#: src/focus.c:859
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -2912,6 +2924,9 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Kilépés"
+
+#~ msgid "Enable edge flip"
+#~ msgstr "Asztal él-érzékenység"
 
 #~ msgid ""
 #~ "\n"
