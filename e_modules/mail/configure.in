@@ -146,7 +146,6 @@ AC_SUBST(e_modules)
 
 AC_OUTPUT([
 Makefile
-module.desktop
 po/Makefile
 e_modules-mail.spec
 ],[
