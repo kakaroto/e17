@@ -69,7 +69,7 @@ mixer_unregister_module_actions()
    e_action_predef_name_del(MIXER_ACTION_GROUP, MIXER_ACTION_DECREASE_VOL);
    e_action_predef_name_del(MIXER_ACTION_GROUP, MIXER_ACTION_INCREASE_VOL);
    e_action_predef_name_del(MIXER_ACTION_GROUP, MIXER_ACTION_MUTE);
-   e_config_save();
+   e_config_save_queue();
 
    return 1;
 }
@@ -116,7 +116,7 @@ mixer_unregister_module_keybindings(void)
    _mixer_unregister_module_keybinding(&(mixer_config->mute_key),      1);
 
    e_managers_keys_grab();
-   e_config_save();
+   e_config_save_queue();
 
    return 1;
 }
