@@ -5,7 +5,7 @@ MAINTAINERCLEANFILES = aclocal.m4 config.* configure depcomp \
 		       Makefile.in */Makefile.in */*/Makefile.in \
 		       po/Makefile.in.in po/Makevars.template po/Rules-quot \
 		       po/*.header po/*.sed po/*.sin po/e16.pot \
-		       m4/*.* *~
+		       *~ */*~
 
 SUBDIRS = dox eesh epp src lib config themes man scripts misc po
 
