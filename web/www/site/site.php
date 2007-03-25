@@ -99,6 +99,7 @@
 		  $fl = fgets($handle, 4096);
 		  $fl = str_replace("\n", "", $fl);
 		  if ($fl != "") {
+		      $h = "";
 		      if (file_exists("p/$page/$fl/link")) {
 			  $h = read_var("p/$page/$fl/link");
 		      }

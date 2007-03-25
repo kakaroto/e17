@@ -18,6 +18,15 @@ td.t[class] { background-image:url("i/t.png"); }
 td.tl { background-image:url("i/tl.gif"); }
 td.tl[class] { background-image:url("i/tl.png"); }
 
+div.main {
+   margin                 : 1em;
+   text-align             : left;
+   vertical-align         : top;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #444444;
+   font-size              : 0.7em;
+}
+
 div.bod {
    column-width           : 15em;
    -moz-column-width      : 15em;

@@ -47,7 +47,9 @@
 </tr></table>
 
 <center>
-<div class="bod"><?php include_once "p/$page/$lang-body" ?></div>
+<div class="main">	
+<?php include_once "p/$page/$lang-body" ?>
+</div>
 </center>
 
 <hr>

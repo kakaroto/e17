@@ -1,3 +1,4 @@
+<div class="bod">
 <h1>A title here</h1>
 <p>
 We are dedicated to <?php a("main1", "providing advanced");?> graphical libraries, tools, and environments. Currently, the project is made up of three different components:	 Enlightenment DR16, The Enlightenment Foundation Libraries, and Enlightenment DR17. While we are best known for the Enlightenment Window Manager itself there is a long history of providing advanced libraries and tools to support the window manager and other applications, such as Imlib, FNLib, and Imlib2, which extend far beyond the window manager itself in scope. Today, in development toward the DR17 Desktop Shell we have created an entirely new set of libraries and tools that provide more power and flexibility than any other group of graphical libraries available, which we refer to collectively as The Enlightenment Foundation Libraries.
@@ -24,3 +25,4 @@ Development Release 17 of the Enlightenment window manager represents an evoluti
 <p>
 Still in heavy development, several applications that will be part of the DR17 release and examples of what is possible are already available in CVS, such as Entice, Entrance, Evidence, Erss, and Eplayer. The desktop shell itself is only a basic framework and not yet ready for CVS, but will be emerging into CVS during the course of this year. As the foundation of DR17, the EFL is currently the first and foremost priority for development.
 </p>
+</div>
