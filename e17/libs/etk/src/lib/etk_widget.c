@@ -1426,6 +1426,7 @@ Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
    Etk_Widget_Member_Object *member_object;
    Etk_Widget *prev_widget;
    int r, g, b, a;
+   int r2, g2, b2, a2;
    
    if (!widget || !object || !widget->realized
       || (evas_object_evas_get(object) != etk_widget_toplevel_evas_get(widget)))
@@ -1442,12 +1443,13 @@ Etk_Bool etk_widget_member_object_add(Etk_Widget *widget, Evas_Object *object)
    member_object->object = object;
    member_object->visible = evas_object_visible_get(object);
    
-   /* TODO: do not do this if the widget has a color_set() method */
    _etk_widget_real_color_get(widget, &r, &g, &b, &a);
-   evas_object_color_set(object, r, g, b, a);
+   evas_object_color_get(object, &r2, &g2, &b2, &a2);
+   evas_object_color_set(object, (r * r2) / 255, (g * g2) / 255, (b * b2) / 255, (a * a2) / 255);
    
    _etk_widget_object_add_to_smart(widget, object, (evas_object_clip_get(object) == NULL));
    evas_object_intercept_show_callback_add(object, _etk_widget_member_object_intercept_show_cb, widget);
+   evas_object_intercept_hide_callback_add(object, _etk_widget_member_object_intercept_hide_cb, widget);
    evas_object_intercept_hide_callback_add(object, _etk_widget_member_object_intercept_hide_cb, widget);
    evas_object_event_callback_add(object, EVAS_CALLBACK_FREE, _etk_widget_member_object_deleted_cb, widget);
    evas_object_data_set(object, "_Etk_Widget::Parent", widget);
@@ -2027,7 +2029,7 @@ void _etk_widget_destroyed_cb(Etk_Object *object, void *data)
       theme_child = ETK_WIDGET(widget->theme_children->data);
       theme_child->theme_parent = NULL;
       widget->theme_children = evas_list_remove_list(widget->theme_children, widget->theme_children);
-      etk_object_notify(ETK_OBJECT(theme_child), "theme_parent");
+      etk_object_notify(ETK_OBJECT(theme_child), "theme-parent");
       /* TODO: update the theme of the theme-child? */
    }
    if (widget->theme_parent)
@@ -3296,7 +3298,7 @@ static void _etk_widget_smart_object_color_set_cb(Evas_Object *obj, int r, int g
 {
    Evas_List *l;
    Etk_Widget_Member_Object *m;
-   Etk_Widget *widget, *parent, *child;
+   Etk_Widget *widget, *child;
    
    if (!obj || !(widget = ETK_WIDGET(evas_object_smart_data_get(obj))))
       return;
@@ -3306,22 +3308,16 @@ static void _etk_widget_smart_object_color_set_cb(Evas_Object *obj, int r, int g
    widget->color.b = b;
    widget->color.a = a;
    
-   for (parent = widget->parent; parent && parent->propagate_color; parent = parent->parent)
+   if (widget->theme_object)
    {
-      r = (r * parent->color.r) / 255;
-      g = (g * parent->color.g) / 255;
-      b = (b * parent->color.b) / 255;
-      a = (a * parent->color.a) / 255;
+      _etk_widget_real_color_get(widget, &r, &g, &b, &a);
+      evas_object_color_set(widget->theme_object, r, g, b, a);
    }
    
-   if (widget->theme_object)
-      evas_object_color_set(widget->theme_object, r, g, b, a);
-   
-   /* TODO: we could have a "color_set" method to override this behavior */
    for (l = widget->member_objects; l; l = l->next)
    {
       m = l->data;
-      evas_object_color_set(m->object, r, g, b, a);
+      evas_object_color_set(m->object, widget->color.r, widget->color.g, widget->color.b, widget->color.a);
    }
    if (widget->propagate_color)
    {
