@@ -832,12 +832,16 @@ ewl_filepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 static void
 ewl_filepicker_filter_free_cb(Ewl_Filepicker_Filter *filter)
 {
-    if (!filter) return;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	
+	if (!filter) DRETURN(DLEVEL_STABLE);
 
-    IF_FREE(filter->name);
-    IF_FREE(filter->filter);
+	IF_FREE(filter->name);
+	IF_FREE(filter->filter);
 
-    FREE(filter);
+	FREE(filter);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 

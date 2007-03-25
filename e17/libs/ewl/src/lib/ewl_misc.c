@@ -1183,11 +1183,14 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 char *
 strdup(const char *str)
 {
-	char *dst = malloc(strlen(str) + 1);
-	if (dst)
-		strcpy(dst, str);
+	char *dst;
 
-	return dst;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	dst = malloc(strlen(str) + 1);
+	if (dst) strcpy(dst, str);
+
+	DRETURN(dst, DLEVEL_STABLE);
 }
 #endif
 

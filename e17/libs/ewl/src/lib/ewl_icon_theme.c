@@ -141,6 +141,9 @@ ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
 {
 	char *ret;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("icon", icon, EWL_THEME_KEY_NOMATCH);
+
 	ret = ecore_hash_get(cache, key);
 	if (!ret)
 	{
@@ -150,7 +153,7 @@ ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
 		ecore_hash_set(cache, strdup(key), ret);
 	}
 
-	return ret;
+	DRETURN_PTR(ret, DLEVEL_STABLE);;
 }
 
 static void

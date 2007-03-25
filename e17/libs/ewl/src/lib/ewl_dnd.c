@@ -513,6 +513,9 @@ ewl_dnd_types_decode(const char *types)
 static char *
 ewl_dnd_type_stpcpy(char *dst, const char *src)
 {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("dst", dst, dst);
+
 	while (*src) {
 		*dst = *src;
 		dst++;
@@ -520,6 +523,6 @@ ewl_dnd_type_stpcpy(char *dst, const char *src)
 	}
 	*dst = '\0';
 
-	return dst;
+	DRETURN_PTR(dst, DLEVEL_STABLE);
 }
 

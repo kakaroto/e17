@@ -413,7 +413,8 @@ ewl_filelist_tree_data_expansion_data_fetch(void *data, unsigned int parent)
 }
 
 static
-Ewl_Widget *ewl_filelist_tree_cb_widget_fetch(void *data, int row, int column)
+Ewl_Widget *ewl_filelist_tree_cb_widget_fetch(void *data, int row __UNUSED__, 
+							int column __UNUSED__)
 {
 	Ewl_Widget *l;
 

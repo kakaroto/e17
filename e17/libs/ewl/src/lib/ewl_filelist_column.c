@@ -52,7 +52,8 @@ ewl_filelist_column_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_filelist_column_view_cb_widget_fetch(void *data, int col, int row)
+ewl_filelist_column_view_cb_widget_fetch(void *data __UNUSED__, 
+					int col __UNUSED__, int row __UNUSED__)
 {
 	Ewl_Widget *list;
 

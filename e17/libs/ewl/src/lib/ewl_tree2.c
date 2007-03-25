@@ -634,9 +634,8 @@ ewl_tree2_column_build(Ewl_Row *row, Ewl_Model *model, Ewl_View *view,
 		ewl_label_text_set(EWL_LABEL(child), " ");
 	}
 	else
-	{
 		child = view->fetch(val, r, c);
-	}
+
 	ewl_container_child_append(EWL_CONTAINER(cell), child);
 	ewl_widget_show(child);
 
@@ -646,7 +645,7 @@ ewl_tree2_column_build(Ewl_Row *row, Ewl_Model *model, Ewl_View *view,
 static void
 ewl_tree2_build_tree(Ewl_Tree2 *tree)
 {
-	int i;
+	unsigned int i;
 	void *mvc_data;
 	Ewl_Model *model;
 
@@ -677,7 +676,8 @@ static void
 ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, void *data,
 				int colour, Ewl_Widget *parent, int hidden)
 {
-	int i = 0, column, row_count = 0;
+	int i = 0, row_count = 0;
+	unsigned int column;
 
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_PARAM_PTR("parent", parent);
