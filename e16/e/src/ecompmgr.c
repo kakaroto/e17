@@ -67,17 +67,13 @@
 
 #define ENABLE_DEBUG   1
 #if ENABLE_DEBUG
-#define EDBUG_TYPE_COMPMGR  161
-#define EDBUG_TYPE_COMPMGR2 162
-#define EDBUG_TYPE_COMPMGR3 163
-#define EDBUG_TYPE_COMPMGR4 164
 #define D1printf(fmt...) if(EDebug(EDBUG_TYPE_COMPMGR))Eprintf(fmt)
 #define D2printf(fmt...) if(EDebug(EDBUG_TYPE_COMPMGR2))Eprintf(fmt)
 #define D3printf(fmt...) if(EDebug(EDBUG_TYPE_COMPMGR3))Eprintf(fmt)
-#define D4printf(fmt...) if(EDebug(EDBUG_TYPE_COMPMGR4))Eprintf(fmt)
 #else
 #define D1printf(fmt...)
 #define D2printf(fmt...)
+#define D3printf(fmt...)
 #endif /* ENABLE_DEBUG */
 
 #define DEBUG_OPACITY 0
@@ -1856,7 +1852,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if (cw->extents == None)
 	   cw->extents = win_extents(eo);
 
-	D4printf(" - %#lx desk=%d shown=%d fading=%d fadeout=%d\n",
+	D3printf(" - %#lx desk=%d shown=%d fading=%d fadeout=%d\n",
 		 EobjGetXwin(eo), eo->desk->num, eo->shown, cw->fading,
 		 cw->fadeout);
 
@@ -1898,7 +1894,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 
 	ECompMgrWinSetPicts(eo);
 
-	D4printf(" - %#lx desk=%d shown=%d dam=%d pict=%#lx\n",
+	D3printf(" - %#lx desk=%d shown=%d dam=%d pict=%#lx\n",
 		 EobjGetXwin(eo), eo->desk->num, eo->shown, cw->damaged,
 		 cw->picture);
 
@@ -1909,7 +1905,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if (cw->picture == None && !eo->noredir)
 	   continue;
 
-	D4printf
+	D3printf
 	   ("ECompMgrDetermineOrder hook in %d - %#lx desk=%d shown=%d\n",
 	    dsk->num, EobjGetXwin(eo), eo->desk->num, eo->shown);
 
@@ -1924,7 +1920,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	  {
 	  case WINDOW_UNREDIR:
 	  case WINDOW_SOLID:
-	     D4printf("-   clip %#lx %#lx %d,%d %dx%d: %s\n", EobjGetXwin(eo),
+	     D3printf("-   clip %#lx %#lx %d,%d %dx%d: %s\n", EobjGetXwin(eo),
 		      cw->clip, EobjGetX(eo), EobjGetY(eo), EobjGetW(eo),
 		      EobjGetH(eo), EobjGetName(eo));
 #if USE_CLIP_RELATIVE_TO_DESK
@@ -1935,7 +1931,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	     break;
 
 	  default:
-	     D4printf("- noclip %#lx %#lx %d,%d %dx%d: %s\n", EobjGetXwin(eo),
+	     D3printf("- noclip %#lx %#lx %d,%d %dx%d: %s\n", EobjGetXwin(eo),
 		      cw->clip, EobjGetX(eo), EobjGetY(eo), EobjGetW(eo),
 		      EobjGetH(eo), EobjGetName(eo));
 	     break;

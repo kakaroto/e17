@@ -49,6 +49,10 @@
 #define EDBUG_TYPE_SELECTION    147
 #define EDBUG_TYPE_FONTS        148
 
+#define EDBUG_TYPE_COMPMGR      161
+#define EDBUG_TYPE_COMPMGR2     162
+#define EDBUG_TYPE_COMPMGR3     163
+
 void                EDebugInit(const char *s);
 void                EDebugSet(unsigned int type, int value);
 int                 EDebug(unsigned int type);
