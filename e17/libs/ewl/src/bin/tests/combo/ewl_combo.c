@@ -140,7 +140,7 @@ create_test(Ewl_Container *box)
 
 	grid = ewl_grid_new();
 	ewl_grid_homogeneous_set(EWL_GRID(grid), TRUE);
-	ewl_grid_dimensions_set(EWL_GRID(grid), 4, 4);
+	ewl_grid_dimensions_set(EWL_GRID(grid), 4, 1);
 
 	combo = ewl_combo_new();
 	ewl_widget_name_set(combo, "combo_image");
