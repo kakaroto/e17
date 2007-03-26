@@ -33,6 +33,7 @@ typedef struct _E_Config_Sticky E_Config_Sticky;
 typedef struct _E_Config_Stickies E_Config_Stickies;
 typedef struct _E_Config_General E_Config_General;
 typedef struct _E_Config_Version E_Config_Version;
+typedef struct _E_Filedialog E_Filedialog;
 typedef struct _E_Sticky E_Sticky;
 typedef struct _E_Stickies E_Stickies;
 
@@ -63,6 +64,15 @@ struct _E_Config_Version
    int major;
    int minor;
    int patch;
+};
+
+struct _E_Filedialog
+{
+   Etk_Widget *dia;
+   Etk_Widget *filechooser;
+   Etk_Widget *entry;
+   Etk_Widget *export_mode;
+   E_Sticky *s;
 };
 
 struct _E_Sticky
@@ -108,6 +118,7 @@ void _e_sticky_lock_set(E_Sticky *s, Etk_Bool on);
 void _e_sticky_properties_set(E_Sticky *s);
 void _e_sticky_theme_apply(E_Sticky *s, char *theme);
 void _e_sticky_theme_apply_all(char *theme);  
+void _e_sticky_export_to(E_Sticky *s);
 void _e_sticky_delete_confirm(E_Sticky *s);
     
 #endif

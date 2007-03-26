@@ -1,2 +1,5 @@
 - make window remember stickiness / locked state
-
+- add config dialog for translucency
+- import / export stickies
+- detect if rgba visuals are present and use them only if they are
+- write plugin system

@@ -1,4 +1,6 @@
 #include "stickies.h"
+#include <fcntl.h>
+#include <unistd.h>
 
 E_Stickies *ss;
 static Etk_Bool _e_sticky_is_moving = ETK_FALSE;
@@ -253,10 +255,11 @@ void
 _e_sticky_menu_show(E_Sticky *s)
 {
    Etk_Widget *menu;
-   
+
    menu = etk_menu_new();
    _etk_menu_stock_item_new("New", ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_sticky_new_show_append), NULL);
    _etk_menu_stock_item_new("Save", ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_config_save), ss);
+   _etk_menu_stock_item_new("Export To File", ETK_STOCK_DOCUMENT_SAVE_AS, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_sticky_export_to), s);
    _etk_menu_stock_item_new("Delete", ETK_STOCK_EDIT_DELETE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_sticky_delete_confirm), s);
    _etk_menu_stock_item_new("Options", ETK_STOCK_PREFERENCES_DESKTOP_THEME, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_theme_chooser_show), s);
    _etk_menu_stock_item_new("About", ETK_STOCK_DIALOG_INFORMATION, ETK_MENU_SHELL(menu), ETK_CALLBACK(_e_about_show), NULL);
@@ -361,7 +364,8 @@ _e_sticky_window_add(E_Sticky *s)
    etk_widget_focus(s->textview);
    etk_signal_connect("selection-received", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_selection_text_request_cb), s);
    
-   etk_widget_color_set(s->win, 160, 160, 160, 160);   
+   etk_widget_propagate_color_set(s->win, ETK_FALSE);   
+   etk_widget_color_set(s->win, 160, 160, 160, 160);
    etk_widget_color_set(s->stick_toggle, 160, 160, 160, 160);
    etk_widget_color_set(s->lock_toggle, 160, 160, 160, 160);
    etk_widget_color_set(s->close_button, 160, 160, 160, 160);   
@@ -383,6 +387,137 @@ _e_sticky_destroy(E_Sticky *s)
 {
    etk_object_destroy(ETK_OBJECT(s->win));
    E_FREE(s);
+}
+
+void
+_e_sticky_export_cb(void *data)
+{
+   E_Filedialog *fd = data;
+   Evas_List *l;
+   E_Sticky *s;
+   FILE *fh;
+   int c = 1;
+   const char *basename;
+   const char *dir;
+   char file[PATH_MAX];
+   char *text;
+
+   basename = etk_entry_text_get(ETK_ENTRY(fd->entry));
+   dir = etk_filechooser_widget_current_folder_get
+     (ETK_FILECHOOSER_WIDGET(fd->filechooser));
+   s = fd->s;
+   
+   if (!dir || !basename || !s) { printf("return!\n"); return;}
+
+   etk_widget_hide(fd->dia);
+
+   snprintf(file, sizeof(file), "%s/%s", dir, basename);
+   if((fh = fopen(file, "w")) == NULL) return;
+   
+   if (!etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(fd->export_mode)))
+     {
+	/* save only current sticky */
+	fprintf(fh, "Sticky %d\n=========================\n", c);
+	text = strdup(etk_string_get(etk_textblock_text_get(
+		      ETK_TEXT_VIEW(s->textview)->textblock, 
+		      ETK_FALSE)));
+	fprintf (fh, "%s\n\n", text);	
+     }
+   else
+     {
+	/* save all stickies */
+	for(l = ss->stickies; l; l = l->next)
+	  {	     
+	     s = l->data;	     
+	     fprintf(fh, "Sticky %d\n=========================\n", c);
+	     text = strdup(etk_string_get(etk_textblock_text_get(
+			   ETK_TEXT_VIEW(s->textview)->textblock, 
+			   ETK_FALSE)));
+	     fprintf (fh, "%s\n\n", text);
+	     ++c;
+	  }	
+     }
+   
+   fclose (fh);   
+}
+
+void
+_e_sticky_export_to_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Key_Down *ev = event;
+
+   if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
+     _e_sticky_export_cb(data);
+}
+
+void
+_e_sticky_export_to(E_Sticky *s)
+{
+   static E_Filedialog *fd = NULL;
+   Etk_Widget *vbox;
+   Etk_Widget *hbox;
+   Etk_Widget *btn;
+   Etk_Widget *label;
+   char dflt_filename[64]; 
+
+   if (!fd)
+     {
+        fd = calloc(1, sizeof(E_Filedialog));
+        if (!fd) return;
+	fd->s = NULL;
+        fd->dia = NULL;
+     }
+   
+   snprintf (dflt_filename, sizeof (dflt_filename), "estickies_export.txt");
+   fd->s = s;
+   
+   /* Don't open more then one window */
+   if (fd->dia)
+     {
+        /* Update the filename when we show the window again */
+        etk_entry_text_set(ETK_ENTRY(fd->entry), dflt_filename);
+        etk_widget_show_all(ETK_WIDGET(fd->dia));
+        return;
+     }
+
+   fd->dia = etk_dialog_new();
+   etk_window_title_set(ETK_WINDOW(fd->dia), "Estickies export to ..");
+   etk_signal_connect("delete-event", ETK_OBJECT(fd->dia),
+                      ETK_CALLBACK(etk_window_hide_on_delete), fd->dia);
+
+   fd->filechooser = etk_filechooser_widget_new();
+   etk_dialog_pack_in_main_area(ETK_DIALOG(fd->dia), fd->filechooser, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   label = etk_label_new("Filename:");
+   etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   fd->entry = etk_entry_new();
+   etk_entry_text_set(ETK_ENTRY(fd->entry), dflt_filename);
+   etk_box_append(ETK_BOX(vbox), fd->entry, ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_signal_connect("key-down", ETK_OBJECT(fd->entry),
+                      ETK_CALLBACK(_e_sticky_export_to_cb), fd);
+
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(vbox), hbox);
+
+   btn = etk_button_new_with_label("Export");
+   etk_box_append(ETK_BOX(hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(btn),
+                              ETK_CALLBACK(_e_sticky_export_cb), fd);
+
+   btn = etk_button_new_with_label("Cancel");
+   etk_box_append(ETK_BOX(hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(btn),
+                              ETK_CALLBACK(etk_widget_hide), fd->dia);
+
+   fd->export_mode = etk_check_button_new_with_label("All Stickies");
+   etk_box_append(ETK_BOX(hbox), fd->export_mode, ETK_BOX_START, ETK_BOX_FILL, 0);
+   
+   etk_dialog_pack_widget_in_action_area(ETK_DIALOG(fd->dia), vbox, 
+					 ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   etk_widget_show_all(fd->dia);
 }
 
 void
