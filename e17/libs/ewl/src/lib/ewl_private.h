@@ -6,7 +6,7 @@
 #include <Edje.h>
 #include <Ecore_Str.h>
 #include <Ecore_File.h>
-#include <Ecore_Desktop.h>
+#include <Efreet.h>
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -147,7 +147,7 @@ ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
 	ret = ecore_hash_get(cache, key);
 	if (!ret)
 	{
-		ret = ecore_desktop_icon_find(icon, size, theme);
+		ret = efreet_icon_path_find(theme, icon, size);
 		if (!ret) ret = EWL_THEME_KEY_NOMATCH;
 
 		ecore_hash_set(cache, strdup(key), ret);

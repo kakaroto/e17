@@ -165,11 +165,11 @@ ewl_init(int *argc, char **argv)
 	}
 	ecore_list_prepend(shutdown_queue, ecore_shutdown);
 
-	if (!ecore_desktop_init()) {
-		fprintf(stderr, "Could not initialize Ecore Desktop.\n");
+	if (!efreet_init()) {
+		fprintf(stderr, "Could not initialize Efreet.\n");
 		goto ERROR;
 	}
-	ecore_list_prepend(shutdown_queue, ecore_desktop_shutdown);
+	ecore_list_prepend(shutdown_queue, efreet_shutdown);
 
 	if (!ecore_string_init()) {
 		fprintf(stderr, "Could not initialize Ecore Strings.\n");

@@ -59,8 +59,10 @@ PCFLAGS=$CFLAGS
 PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
 CFLAGS=$EVAS_CFLAGS" "$CFLAGS
 
+PKG_CHECK_MODULES(ECORE, [efreet >= 0.0.3])
+CFLAGS=$EFREET_CFLAGS" "$CFLAGS
+
 PKG_CHECK_MODULES(ECORE, [
-  ecore-desktop
   ecore-txt
   ecore-file
 ])
