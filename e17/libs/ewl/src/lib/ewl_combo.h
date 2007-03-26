@@ -69,6 +69,9 @@ void		 ewl_combo_scrollable_set(Ewl_Combo *combo,
 						unsigned int scrollable);
 unsigned int	 ewl_combo_scrollable_get(Ewl_Combo *combo);
 
+void		 ewl_combo_popup_container_set(Ewl_Combo *combo, 
+						Ewl_Container *c);
+
 
 /*
  * Internally used callbacks, override at your own risk.

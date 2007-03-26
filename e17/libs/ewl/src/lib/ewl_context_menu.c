@@ -197,6 +197,11 @@ ewl_context_menu_container_set(Ewl_Context_Menu *cm, Ewl_Container *c)
 	red = ewl_container_end_redirect_get(c);
 	if (!red)
 		red = c;
+
+	/* we need to keep a reference to the old callbacks before we
+	 * override them */
+	cm->child_add = red->child_add;
+	cm->child_remove = red->child_remove;
 	ewl_container_add_notify_set(red, ewl_context_menu_cb_child_add);
 	ewl_container_remove_notify_set(red, ewl_context_menu_cb_child_remove);
 
@@ -419,7 +424,7 @@ ewl_context_menu_cb_focus_in(Ewl_Widget *w, void *ev_data __UNUSED__,
 void
 ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
-	Ewl_Widget *cm;
+	Ewl_Context_Menu *cm;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -427,14 +432,17 @@ ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	cm = EWL_CONTEXT_MENU(ewl_embed_widget_find(EWL_WIDGET(c)));
+
+	/* call the overridden callback first */
+	if (cm->child_add)
+		cm->child_add(c, w);
+
 	if (ewl_widget_internal_is(w) || !ewl_widget_focusable_get(w))
 		DRETURN(DLEVEL_STABLE);
 
-	cm = EWL_WIDGET(ewl_embed_widget_find(EWL_WIDGET(c)));
-	if (EWL_MENU_IS(w)) {
-		
-		EWL_MENU_ITEM(w)->inmenu = cm;
-	}
+	if (EWL_MENU_IS(w))
+		EWL_MENU_ITEM(w)->inmenu = EWL_WIDGET(cm);
 	else
 		ewl_callback_append(w, EWL_CALLBACK_CLICKED,
 				ewl_context_menu_cb_child_clicked, cm);
@@ -453,14 +461,20 @@ ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
  * @brief The child remove callback
  */
 void
-ewl_context_menu_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, 
-					int idx __UNUSED__)
+ewl_context_menu_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx)
 {
+	Ewl_Context_Menu *cm;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	
+	cm = EWL_CONTEXT_MENU(ewl_embed_widget_find(EWL_WIDGET(c)));
+	/* call the overridden callback first */
+	if (cm->child_remove)
+		cm->child_remove(c, w, idx);
 
 	if (ewl_widget_internal_is(w) || !ewl_widget_focusable_get(w))
 		DRETURN(DLEVEL_STABLE);

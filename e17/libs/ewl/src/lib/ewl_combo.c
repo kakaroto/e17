@@ -199,6 +199,27 @@ ewl_combo_scrollable_get(Ewl_Combo *combo)
 
 	DRETURN_INT(combo->scrollable, DLEVEL_STABLE);
 }
+
+/**
+ * @param combo: The Ewl_Combo to use
+ * @param editable: The Container to use in the popup
+ * @return Returns no value
+ */
+void
+ewl_combo_popup_container_set(Ewl_Combo *combo, Ewl_Container *c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("combo", combo);
+	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
+
+	if (combo->scrollable)
+		combo->scrollable = FALSE;
+
+	ewl_context_menu_container_set(EWL_CONTEXT_MENU(combo->popup), c);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 /**
  * @internal
  * @param w: UNUSED

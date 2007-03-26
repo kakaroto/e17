@@ -44,6 +44,8 @@ struct Ewl_Context_Menu
 	Ewl_Popup popup; /**< Inherit from Ewl_Popup */
 	Ewl_Widget *open_menu; /**< a pointer to the current open submenu */
 	Ewl_Widget *container; /**< the container holding the children */
+	Ewl_Child_Add child_add; /**< the overridden add cb of the container */
+	Ewl_Child_Remove child_remove; /** < the overridden remove cb */
 };
 
 Ewl_Widget  	*ewl_context_menu_new(void);
