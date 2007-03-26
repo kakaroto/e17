@@ -30,6 +30,7 @@ EAPI Ecore_List *
 _config_devices_get(void) 
 {
    Ecore_List *devs = NULL;
+#ifndef __FreeBSD__
    FILE *f;
    char buf[256];
    char dev[64];
@@ -55,6 +56,23 @@ _config_devices_get(void)
 	ecore_list_append(devs, strdup(dev));
      }
    fclose(f);
+#else
+   DIR *d = NULL;
+   struct dirent *dentry = NULL;
+
+   d = opendir("/dev/net");
+   if (!d) return NULL;
+
+   devs = ecore_list_new();
+   ecore_list_set_free_cb(devs, free);
+   while ((dentry = readdir(d)) != NULL) 
+     {
+	if (strstr(dentry->d_name,".") == NULL)     
+	  ecore_list_append(devs, strdup(dentry->d_name));
+     } 
+   closedir(d);
+#endif
+
    if (devs) ecore_list_goto_first(devs);
    return devs;
 }

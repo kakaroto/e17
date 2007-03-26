@@ -1,28 +1,63 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include <e.h>
 #include "e_mod_main.h"
 #include "e_mod_net.h"
 #include "e_mod_config.h"
 #include "e_mod_configure.h"
+#ifdef __FreeBSD__
+#include <sys/socket.h>
+#include <sys/sysctl.h>
+#include <net/if.h>
+#include <net/if_mib.h>
+#endif
 
 typedef unsigned long bytes_t;
 static void _bytes_to_string(bytes_t bytes, char *string, int size);
 static void _cb_post(void *data, E_Menu *m);
 static void _cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
+#ifdef __FreeBSD__
+static int get_ifmib_general(int row, struct ifmibdata *ifmd); 
+
+static int 
+get_ifmib_general(int row, struct ifmibdata *ifmd) 
+{ 
+   int name[6]; 
+   size_t len; 
+
+   name[0] = CTL_NET; 
+   name[1] = PF_LINK; 
+   name[2] = NETLINK_GENERIC; 
+   name[3] = IFMIB_IFDATA; 
+   name[4] = row; 
+   name[5] = IFDATA_GENERAL; 
+   
+   len = sizeof(*ifmd); 
+   
+   return sysctl(name, 6, ifmd, &len, (void *)0, 0);
+}
+#endif
+
 EAPI int 
 _cb_poll(void *data) 
 {
    Instance *inst;
    Config_Item *ci;
-   FILE *f;
-   char buf[256], popbuf[256], dev[64], tmp[100];
-   int found = 0;
+   char buf[256], popbuf[256], tmp[100];
    long bin, bout;
-   bytes_t in, out, dummy = 0;
-   
+   bytes_t in, out = 0;
+
    inst = data;
    ci = _config_item_get(inst->gcc->id);
-   
+
+#ifndef __FreeBSD__	
+   FILE *f;
+   char dev[64];
+   bytes_t dummy = 0;
+   int found = 0;
+    
    f = fopen("/proc/net/dev", "r");
    if (!f) return 1;
    
@@ -44,14 +79,33 @@ _cb_poll(void *data)
      }
    fclose(f);
    if (!found) return 1;
+#else
+   struct ifmibdata *ifmd;
+   int i, count, len;
    
+   len = sizeof(count);
+   sysctlbyname("net.link.generic.system.ifcount", &count, &len, (void *)0, 0);
+
+   ifmd = malloc(sizeof(struct ifmibdata));
+   for(i=1; i <= count; ++i)
+     { 
+	get_ifmib_general(i, ifmd);
+	if (!strcmp(ifmd->ifmd_name, ci->device)) break;
+     }
+
+   in = ifmd->ifmd_data.ifi_ibytes; 
+   out = ifmd->ifmd_data.ifi_obytes;
+
+   free(ifmd);
+#endif
+
    bin = in - inst->in;
    bout = out - inst->out;
    bin = bin / 0.5;
    bout = bout / 0.5;
    inst->in = in;
    inst->out = out;
-   
+
    if (bin <= ci->limit)
      edje_object_signal_emit(inst->o_net, "e,state,receive,idle", "e");
    else
