@@ -24,7 +24,7 @@ td.t[class] { background-image:url("images/t.png"); }
 td.tl { background-image:url("images/tl.gif"); }
 td.tl[class] { background-image:url("images/tl.png"); }
 
-td.lnav,  td.rnav {
+td.nav, td.lnav,  td.rnav {
    align: middle;
    text-align: center;
    vertical-align: middle;
