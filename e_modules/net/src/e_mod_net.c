@@ -335,9 +335,9 @@ static void
 _bytes_to_string(bytes_t bytes, char *string, int size)
 {
    if (bytes > 1048576)
-     snprintf(string, size, "%lu Mb", (bytes / 1048576));
+     snprintf(string, size, "%.2f MB", ((float) bytes / 1048576));
    else if ((bytes > 1024) && (bytes < 1048576))
-     snprintf(string, size, "%lu Kb", (bytes / 1024));
+     snprintf(string, size, "%lu KB", (bytes / 1024));
    else
      snprintf(string, size, "%lu B", bytes);
 }
