@@ -84,7 +84,7 @@ void etk_container_add(Etk_Container *container, Etk_Widget *widget)
  */
 void etk_container_remove(Etk_Widget *widget)
 {
-   if (widget)
+   if (!widget)
       return;
    etk_widget_parent_set(widget, NULL);
 }
