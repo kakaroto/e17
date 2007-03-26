@@ -101,7 +101,7 @@ a.nav:active { color: #000000; }
 a.nav:hover { color: #444444; }
 a.code:link, a.code:visited { text-decoration: none; }
 
-.fragment {
+div.fragment {
     font-size: 1em;
     border: 1px dotted #cccccc;
     text-align: left;
