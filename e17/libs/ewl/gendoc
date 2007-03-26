@@ -7,4 +7,8 @@ then
 	perl tools/inherit.pl doc/xml
 fi
 
-cp doc/images/hilite.png doc/html
+if [ ! -e doc/html/images ]; then
+    mkdir -p doc/html/images
+fi
+
+cp doc/images/*.png doc/images/*.gif doc/html/images
