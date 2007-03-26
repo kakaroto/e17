@@ -103,7 +103,7 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-	Ewl_Widget *combo, *hbox, *o;
+	Ewl_Widget *combo, *hbox, *o, *grid;
 	Ewl_Model *model;
 	Ewl_View *view;
 	void *data;
@@ -138,14 +138,21 @@ create_test(Ewl_Container *box)
 	view = ewl_view_clone(ewl_image_view_get());
 	ewl_view_header_fetch_set(view, combo_test_data_header_fetch);
 
+	grid = ewl_grid_new();
+	ewl_grid_homogeneous_set(EWL_GRID(grid), TRUE);
+	ewl_grid_dimensions_set(EWL_GRID(grid), 4, 4);
+
 	combo = ewl_combo_new();
 	ewl_widget_name_set(combo, "combo_image");
+	ewl_object_fill_policy_set(EWL_OBJECT(combo), EWL_FLAG_FILL_NONE);
+	ewl_combo_popup_container_set(EWL_COMBO(combo), EWL_CONTAINER(grid));
 	ewl_container_child_append(EWL_CONTAINER(hbox), combo);
 	ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
 					combo_value_changed, NULL);
 	ewl_mvc_model_set(EWL_MVC(combo), model);
 	ewl_mvc_view_set(EWL_MVC(combo), view);
 	ewl_mvc_data_set(EWL_MVC(combo), data);
+	ewl_mvc_selected_set(EWL_MVC(combo), model, data, 0, -1);
 	ewl_widget_show(combo);
 
 	/* create the editable model/view */
@@ -188,14 +195,34 @@ static void *
 combo_test_data_setup(void)
 {
 	Combo_Test_Data *data;
+	int i;
+
+	const char *icons[] = {
+		EWL_ICON_EDIT_COPY,
+		EWL_ICON_EDIT_CUT,
+		EWL_ICON_EDIT_DELETE,
+		EWL_ICON_EDIT_FIND,
+		EWL_ICON_EDIT_FIND_REPLACE,
+		EWL_ICON_EDIT_PASTE,
+		EWL_ICON_EDIT_REDO,
+		EWL_ICON_EDIT_SELECT_ALL,
+		EWL_ICON_EDIT_UNDO,
+		EWL_ICON_FORMAT_INDENT_LESS,
+		EWL_ICON_FORMAT_INDENT_MORE,
+		EWL_ICON_FORMAT_JUSTIFY_CENTER,
+		EWL_ICON_FORMAT_JUSTIFY_FILL,
+		EWL_ICON_FORMAT_JUSTIFY_LEFT,
+		EWL_ICON_FORMAT_JUSTIFY_RIGHT,
+	};
 
 	data = calloc(1, sizeof(Combo_Test_Data));
-	data->count = 3;
+	data->count = sizeof(icons) / sizeof(const char *);
 
-	data->data = calloc(3, sizeof(char *));
-	data->data[0] = strdup(PACKAGE_DATA_DIR "/ewl/images/Draw.png");
-	data->data[1] = strdup(PACKAGE_DATA_DIR "/ewl/images/End.png");
-	data->data[2] = strdup(PACKAGE_DATA_DIR "/ewl/images/World.png");
+	data->data = calloc(data->count, sizeof(char *));
+
+	for (i = 0; i < data->count; i++)
+		data->data[i] = strdup(ewl_icon_theme_icon_path_get(icons[i],
+						EWL_ICON_SIZE_MEDIUM));
 
 	return data;
 }
