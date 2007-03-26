@@ -112,11 +112,6 @@
   - Enabled/Disabled status for ALL applicable widgets.
 
 
-  Ewl_Callback
-    - use the EWL callback mechanism for the containers' notification, too. 
-      So it is possible to have more than one callback per notification.
-
-
   Ewl_Colorpicker
      - Need a slider for choosing alpha too. Need to add _get/_set
        functions to set the alpha parameter that are separate from the
