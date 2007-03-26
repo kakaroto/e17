@@ -24,7 +24,8 @@ static void ewl_tree2_cb_header_changed(Ewl_Widget *w, void *ev,
 static void ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_selected_change(Ewl_MVC *mvc);
-static Ewl_Widget *ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, int row, int column);
+static Ewl_Widget *ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, 
+						int row, int column);
 
 static void ewl_tree2_create_expansions_hash(Ewl_Tree2 *tree);
 

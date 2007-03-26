@@ -14,24 +14,18 @@ int EWL_CALLBACK_DND_DATA_RECEIVED; /**< Data received event **/
 int EWL_CALLBACK_DND_DATA_REQUEST; /**< Data request event **/
 
 static int ewl_dragging_current;
-static int ewl_dnd_move_count;
+static int ewl_dnd_status;
 
 static Ewl_Widget *ewl_dnd_widget;
 static Ewl_Widget *ewl_dnd_default_cursor;
 
 static Ecore_Hash *ewl_dnd_provided_hash;
 static Ecore_Hash *ewl_dnd_accepted_hash;
-static int ewl_dnd_status;
 
 static char *ewl_dnd_types_encode(const char **types);
 static char **ewl_dnd_types_decode(const char *types);
 static char * ewl_dnd_type_stpcpy(char *dst, const char *src);
 static int ewl_dnd_types_encoded_contains(char *types, char *type);
-
-#if 0
-static int ewl_dnd_event_mouse_up(void *data, int type, void *event);
-static int ewl_dnd_event_dnd_move(void *data, int type, void *event);
-#endif
 
 /**
  * @internal
@@ -51,11 +45,6 @@ ewl_dnd_init(void)
 	EWL_CALLBACK_DND_DATA_RECEIVED = ewl_callback_type_add();
 	EWL_CALLBACK_DND_DATA_REQUEST = ewl_callback_type_add();
 
-	ewl_dnd_widget = NULL;
-	ewl_dnd_status = 0;
-	ewl_dragging_current = 0;
-	ewl_dnd_move_count = 0;
-
 	ewl_dnd_provided_hash = ecore_hash_new(ecore_direct_hash, 
 						ecore_direct_compare);
 	if (!ewl_dnd_provided_hash)
@@ -66,8 +55,8 @@ ewl_dnd_init(void)
 	if (!ewl_dnd_accepted_hash)
 		goto ACCEPTED_ERROR;
 
+	ewl_dnd_widget = NULL;
 	ewl_dnd_default_cursor = NULL;
-
 	ewl_dragging_current = 0;
 	ewl_dnd_status = 1;
 
@@ -289,7 +278,6 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 
 	ewl_dragging_current = 1;
 	ewl_dnd_widget = w;
-	ewl_dnd_move_count = 0;
 
 	types = ewl_dnd_provided_types_get(w);
 	/*
@@ -343,7 +331,6 @@ ewl_dnd_drag_drop(Ewl_Widget *w)
 
 	ewl_dragging_current = 0;
 	ewl_dnd_widget = NULL;
-	ewl_dnd_move_count = 0;
 
 	emb = ewl_embed_widget_find(w);
 	if (!emb) DRETURN(DLEVEL_STABLE);

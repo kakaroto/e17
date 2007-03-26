@@ -533,9 +533,8 @@ ewl_grid_column_fixed_w_set(Ewl_Grid *g, int col, int width)
 		DWARNING("parameter 'col' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (col >= g->cols) {
+	else if (col >= g->cols)
 		ewl_grid_dimensions_set(g, col + 1, g->rows);
-	}
 
 	g->col_size[col].resize_type = EWL_GRID_RESIZE_FIXED;
 	g->col_size[col].user.size = width;
@@ -588,9 +587,8 @@ ewl_grid_column_relative_w_set(Ewl_Grid *g, int col, float relw)
 		DWARNING("parameter 'col' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (col >= g->cols) {
+	else if (col >= g->cols)
 		ewl_grid_dimensions_set(g, col + 1, g->rows);
-	}
 
 	g->col_size[col].resize_type = EWL_GRID_RESIZE_RELATIVE;
 	g->col_size[col].user.rel_size = relw;
@@ -642,9 +640,8 @@ ewl_grid_column_preferred_w_use(Ewl_Grid *g, int col)
 		DWARNING("parameter 'col' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (col >= g->cols) {
+	else if (col >= g->cols)
 		ewl_grid_dimensions_set(g, col + 1, g->rows);
-	}
 
 	g->col_size[col].resize_type = EWL_GRID_RESIZE_NONE;
 	g->col_size[col].user.size = 0;
@@ -675,9 +672,8 @@ ewl_grid_column_w_remove(Ewl_Grid *g, int col)
 		DWARNING("parameter 'col' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (col >= g->cols) {
+	else if (col >= g->cols)
 		ewl_grid_dimensions_set(g, col + 1, g->rows);
-	}
 
 	g->col_size[col].resize_type = EWL_GRID_RESIZE_NORMAL;
 	g->col_size[col].user.size = 0;
@@ -730,9 +726,8 @@ ewl_grid_row_fixed_h_set(Ewl_Grid *g, int row, int height)
 		DWARNING("parameter 'row' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (row >= g->rows) {
+	else if (row >= g->rows)
 		ewl_grid_dimensions_set(g, g->cols, row + 1);
-	}
 
 	g->row_size[row].resize_type = EWL_GRID_RESIZE_FIXED;
 	g->row_size[row].user.size = height;
@@ -785,9 +780,8 @@ ewl_grid_row_relative_h_set(Ewl_Grid *g, int row, float relh)
 		DWARNING("parameter 'row' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (row >= g->rows) {
+	else if (row >= g->rows)
 		ewl_grid_dimensions_set(g, g->cols, row + 1);
-	}
 
 	g->row_size[row].resize_type = EWL_GRID_RESIZE_RELATIVE;
 	g->row_size[row].user.rel_size = relh;
@@ -839,9 +833,8 @@ ewl_grid_row_preferred_h_use(Ewl_Grid *g, int row)
 		DWARNING("parameter 'row' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (row >= g->rows) {
+	else if (row >= g->rows)
 		ewl_grid_dimensions_set(g, g->cols, row + 1);
-	}
 
 	g->row_size[row].resize_type = EWL_GRID_RESIZE_NONE;
 	g->row_size[row].user.size = 0;
@@ -872,9 +865,8 @@ ewl_grid_row_h_remove(Ewl_Grid *g, int row)
 		DWARNING("parameter 'row' is out of bounds.");
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
 	}
-	else if (row >= g->rows) {
+	else if (row >= g->rows)
 		ewl_grid_dimensions_set(g, g->cols, row + 1);
-	}
 
 	g->row_size[row].resize_type = EWL_GRID_RESIZE_NORMAL;
 	g->row_size[row].user.size = 0;
@@ -1034,6 +1026,7 @@ ewl_grid_map_recalc(Ewl_Grid *g)
 							&& k < g->rows; k++)
 				g->map[g->cols * k + l]  = 1;
 	}
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1134,9 +1127,9 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 	if (g->homogeneous_h) {
 		int i, size;
 
-		for (i = 0, size = 0; i < g->cols; i++) {
+		for (i = 0, size = 0; i < g->cols; i++)
 			size = MAX(size, g->col_size[i].preferred_size);
-		}
+
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(g), size * g->cols);
 	}
 	else {
@@ -1150,9 +1143,11 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 				case EWL_GRID_RESIZE_RELATIVE:
 					rel += g->col_size[i].user.rel_size;
 					break;
+
 				case EWL_GRID_RESIZE_FIXED:
 					fixed += g->col_size[i].user.size;
 					break;
+
 				default:
 					fixed += g->col_size[i].preferred_size;
 			}
@@ -1180,9 +1175,11 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 				case EWL_GRID_RESIZE_RELATIVE:
 					rel += g->row_size[i].user.rel_size;
 					break;
+
 				case EWL_GRID_RESIZE_FIXED:
 					fixed += g->row_size[i].user.size;
 					break;
+
 				default:
 					fixed += g->row_size[i].preferred_size;
 			}
@@ -1241,16 +1238,19 @@ ewl_grid_resize(Ewl_Grid *g)
 						g->col_size[i].user.rel_size
 								* new_w;
 					break;
+
 				case EWL_GRID_RESIZE_FIXED:
 					fixed += g->col_size[i].user.size;
 					g->col_size[i].current_size =
 						g->col_size[i].user.size;
 					break;
+
 				case EWL_GRID_RESIZE_NONE:
 					fixed += g->col_size[i].preferred_size;
 					g->col_size[i].current_size =
 						g->col_size[i].preferred_size;
 					break;
+
 				default:
 					var += g->col_size[i].preferred_size;
 					
@@ -1295,16 +1295,19 @@ ewl_grid_resize(Ewl_Grid *g)
 						g->row_size[i].user.rel_size
 								* new_h;
 					break;
+
 				case EWL_GRID_RESIZE_FIXED:
 					fixed += g->row_size[i].user.size;
 					g->row_size[i].current_size =
 						g->row_size[i].user.size;
 					break;
+
 				case EWL_GRID_RESIZE_NONE:
 					fixed += g->row_size[i].preferred_size;
 					g->row_size[i].current_size =
 						g->row_size[i].preferred_size;
 					break;
+
 				default:
 					var += g->row_size[i].preferred_size;
 					

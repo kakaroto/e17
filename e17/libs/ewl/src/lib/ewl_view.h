@@ -45,7 +45,7 @@ typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, int column);
 typedef struct Ewl_View Ewl_View;
 
 /**
- * @def EWL_VIEW_EXPANSION_VIEW_FETCH(f)
+ * @def EWL_VIEW_EXPANSION_VIEW_FETCH_GET(f)
  * View callback to get a view for expanded data on a row
  */
 #define EWL_VIEW_EXPANSION_VIEW_FETCH_GET(f) ((Ewl_View_Expansion_View_Fetch)f)
