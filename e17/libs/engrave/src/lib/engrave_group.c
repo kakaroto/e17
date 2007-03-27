@@ -417,7 +417,7 @@ engrave_group_data_by_key_find(Engrave_Group *eg, const char *key)
 /**
  * engrave_group_part_by_name_find - find the Engrave_Part by name
  * @param eg: The Engrave_Group to search
- * @param key: They part name to search for
+ * @param part: They part name to search for
  *
  * @return Returns the Engrave_Part with the matching name or NULL if no such
  * name exists.

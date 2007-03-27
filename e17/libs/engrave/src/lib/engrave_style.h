@@ -30,6 +30,9 @@ struct _Engrave_Style
   void *parent;     /**< Pointer to parent */
 };
 
+/**
+ * @brief Contains the tag information
+ */
 struct _Engrave_Tag
 {
   char * key;

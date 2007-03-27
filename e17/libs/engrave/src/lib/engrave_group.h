@@ -18,7 +18,7 @@
 typedef struct _Engrave_Group Engrave_Group;
 
 /**
- * Stores the needed group information.
+ * @brief Stores the needed group information.
  */
 struct _Engrave_Group
 {

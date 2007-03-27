@@ -31,8 +31,6 @@
 /**
  * @mainpage Engrave Library Documentation
  *
- * @image html e_mini.png
- *
  * @section intro Introduction
  *
  * Engrave is a designed to allow you the ability to easily create and edit
@@ -87,7 +85,7 @@
  * files, be they EDJ or EDC.
  *
  * If you have any questions or comments about Engrave please email
- * dj2 <zero@perplexity.org> or Rephorm <rephorm@rephorm.com>
+ * enlightenment-devel at lists dot sourceforge dot net
  *
  */
 

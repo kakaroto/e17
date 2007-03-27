@@ -18,7 +18,7 @@
 typedef struct _Engrave_Font Engrave_Font;
 
 /**
- * Stores the needed font information.
+ * @brief Stores the needed font information.
  */
 struct _Engrave_Font
 {

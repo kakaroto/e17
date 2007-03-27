@@ -18,7 +18,7 @@
 typedef struct _Engrave_Image Engrave_Image;
 
 /**
- * Contains the needed image values
+ * @brief Contains the needed image values
  */
 struct _Engrave_Image
 {

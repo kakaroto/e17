@@ -18,7 +18,7 @@
 typedef struct _Engrave_File Engrave_File;
 
 /**
- * Structure to hold the file information.
+ * @brief Structure to hold the file information.
  */
 struct _Engrave_File
 {

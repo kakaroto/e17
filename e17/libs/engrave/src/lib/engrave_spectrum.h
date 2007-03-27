@@ -19,7 +19,7 @@ typedef struct _Engrave_Spectrum Engrave_Spectrum;
 typedef struct _Engrave_Spectrum_Color Engrave_Spectrum_Color;
 
 /**
- * Stores the needed spectrum information.
+ * @brief Stores the needed spectrum information.
  */
 struct _Engrave_Spectrum
 {
@@ -28,6 +28,9 @@ struct _Engrave_Spectrum
   Evas_List * colors; /**< The spectrum colors */
 };
 
+/**
+ * @brief Stores the spectrum color information.
+ */
 struct _Engrave_Spectrum_Color
 {
   int r;

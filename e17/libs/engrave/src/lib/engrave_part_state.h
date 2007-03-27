@@ -18,7 +18,7 @@
 typedef struct _Engrave_Part_State Engrave_Part_State;
 
 /**
- * Stores the information for the Engrave_Part_State object.
+ * @brief Stores the information for the Engrave_Part_State object.
  */
 struct _Engrave_Part_State
 {

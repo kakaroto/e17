@@ -20,7 +20,7 @@
 typedef struct _Engrave_Part Engrave_Part;
 
 /**
- * All values needed to define a part 
+ * @brief All values needed to define a part 
  */
 struct _Engrave_Part
 {

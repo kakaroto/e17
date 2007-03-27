@@ -146,7 +146,7 @@ engrave_file_spectrum_add(Engrave_File *e, Engrave_Spectrum *es)
 /**
  * engrave_file_style_add - add the style to the engrave file.
  * @param e: The Engrave_File to add the style too.
- * @param ef: The Engrave_Style to add to the file.
+ * @param es: The Engrave_Style to add to the file.
  *
  * @return Returns no value.
  */

@@ -18,7 +18,7 @@
 typedef struct _Engrave_Program Engrave_Program;
 
 /**
- * Contains all the info to define a program
+ * @brief Contains all the info to define a program
  */
 struct _Engrave_Program 
 {

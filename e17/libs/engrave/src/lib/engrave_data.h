@@ -18,7 +18,7 @@
 typedef struct _Engrave_Data Engrave_Data;
 
 /**
- * Stores the information for the data object 
+ * @brief Stores the information for the data object 
  */
 struct _Engrave_Data
 {
