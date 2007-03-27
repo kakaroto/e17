@@ -54,7 +54,7 @@ typedef struct Ewl_View Ewl_View;
  * A typedef to shorten the definition of the view_expansion_view_fetch
  * callbacks. 
  */
-typedef Ewl_View *(*Ewl_View_Expansion_View_Fetch)(void *data, int column);
+typedef Ewl_View *(*Ewl_View_Expansion_View_Fetch)(void *data, int row);
 
 /**
  * @brief The view function pointers

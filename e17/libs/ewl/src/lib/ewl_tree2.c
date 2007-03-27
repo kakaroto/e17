@@ -15,7 +15,7 @@
 
 static void ewl_tree2_build_tree(Ewl_Tree2 *tree);
 static void ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, 
-			Ewl_Model *model, void *data,
+			Ewl_Model *model, Ewl_View *view, void *data,
 			int colour, Ewl_Widget *parent, 
 			int hidden);
 static void ewl_tree2_cb_header_changed(Ewl_Widget *w, void *ev, 
@@ -668,14 +668,17 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_container_reset(EWL_CONTAINER(tree->rows));
-	ewl_tree2_build_tree_rows(tree, model, mvc_data, 0, tree->rows, FALSE);
+	ewl_tree2_build_tree_rows(tree, model,
+				ewl_mvc_view_get(EWL_MVC(tree)), mvc_data, 
+				0, tree->rows, FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, void *data,
-				int colour, Ewl_Widget *parent, int hidden)
+ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
+				void *data, int colour, Ewl_Widget *parent, 
+				int hidden)
 {
 	int i = 0, row_count = 0;
 	unsigned int column;
@@ -696,6 +699,7 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, void *data,
 		EWL_TREE2_NODE(node)->row_num = i;
 		ewl_mvc_model_set(EWL_MVC(node), model);
 		ewl_mvc_data_set(EWL_MVC(node), data);
+		ewl_mvc_view_set(EWL_MVC(node), view);
 
 		ewl_container_child_append(EWL_CONTAINER(parent), node);
 		if (!hidden) ewl_widget_show(node);
@@ -716,8 +720,7 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, void *data,
 
 		/* do the current branch */
 		for (column = 0; column < tree->columns; column ++)
-			ewl_tree2_column_build(EWL_ROW(row), model, 
-						ewl_mvc_view_get(EWL_MVC(tree)),
+			ewl_tree2_column_build(EWL_ROW(row), model, view,
 						data, i, column, node);
 
 		/* check if this is an expansion point */
@@ -1019,17 +1022,22 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 	if (model->expansion.data && !node->built_children)
 	{
 		Ewl_Model *tmp_model = NULL;
+		Ewl_View *view, *tmp_view = NULL;
 		void *tmp_data;
 
 		tmp_data = model->expansion.data(data, node->row_num);
 		if (model->expansion.model)
-			tmp_model = model->expansion.model(data, 
-							node->row_num);
-
+			tmp_model = model->expansion.model(data, node->row_num);
 		if (!tmp_model) tmp_model = model;
 
-		ewl_tree2_build_tree_rows(EWL_TREE2(node->tree), tmp_model, 
-					tmp_data, 0, EWL_WIDGET(node), FALSE);
+		view = ewl_mvc_view_get(EWL_MVC(node));
+		if (view->expansion)
+			tmp_view = view->expansion(data, node->row_num);
+		if (!tmp_view) tmp_view = view;
+
+		ewl_tree2_build_tree_rows(EWL_TREE2(node->tree), tmp_model,
+						tmp_view, tmp_data, 0, 
+						EWL_WIDGET(node), FALSE);
 
 		node->built_children = TRUE;
 	}
