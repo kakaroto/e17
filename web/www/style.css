@@ -24,7 +24,7 @@ div.main {
    vertical-align         : top;
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #444444;
-   font-size              : 0.7em;
+   font-size              : 0.9em;
 }
 
 div.bod {
@@ -54,31 +54,31 @@ hr {
 h1 {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #000000;
-   font-size              : 1.3em;
+   font-size              : 1.5em;
 }
 
 h2 {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #000000;
-   font-size              : 1.1em;
+   font-size              : 1.3em;
 }
 
 h3 {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #000000;
-   font-size              : 0.9em;
+   font-size              : 1.1em;
 }
 
 p {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #444444;
-   font-size              : 0.7em;
+   font-size              : 0.9em;
 }
 
 p.tiny {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #888888;
-   font-size              : 0.5em;
+   font-size              : 0.7em;
 }
 
 a:link {
@@ -114,7 +114,7 @@ img.thumb {
 pre {
    font-family            : "Bitstream Vera Mono", "Vera Mono", "Trebuchet MS Mono", "Trebuchet Mono", "Tahoma Mono", mono;
    color                  : #000000;
-   font-size              : 1em;
+   font-size              : 0.9em;
    border                 : 1px dotted #eeeeee;
    text-align             : left;
    vertical-align         : middle;
@@ -125,7 +125,7 @@ pre {
 blockquote {
    color                  : #000000;
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   font-size              : 1em;
+   font-size              : 0.9em;
 }
 
 td.lnav {
