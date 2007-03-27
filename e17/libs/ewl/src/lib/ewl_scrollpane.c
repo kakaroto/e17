@@ -401,7 +401,6 @@ ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_widget_hide(s->vscrollbar);
 	}
 
-
 	/*
 	 * Adjust the step and width dependant on scrollbar visibility.
 	 */
