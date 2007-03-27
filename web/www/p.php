@@ -18,10 +18,10 @@
 <td class="t"  width=50% valign=top align=left>
  <table width=100px height=100px border=0 cellpadding=0 cellspacing=0>
   <?php
-    nav_button("main1", "lnav");
-    nav_button("main2", "lnav");
-    nav_button("main3", "lnav");
-    nav_button("main4", "lnav");
+    print(nav_button("main1", "lnav"));
+    print(nav_button("main2", "lnav"));
+    print(nav_button("main3", "lnav"));
+    print(nav_button("main4", "lnav"));
   ?>
  </table>
 <img src="i/_.gif" width=1 height=8><br>
@@ -34,10 +34,10 @@
 <td class="t"  width=50% valign=top align=right>
  <table width=100px height=100px border=0 cellpadding=0 cellspacing=0>
   <?php
-    nav_button("main5", "rnav");
-    nav_button("main6", "rnav");
-    nav_button("main7", "rnav");
-    nav_button("main8", "rnav");
+    print(nav_button("main5", "rnav"));
+    print(nav_button("main6", "rnav"));
+    print(nav_button("main7", "rnav"));
+    print(nav_button("main8", "rnav"));
   ?>
  </table>
 <img src="i/_.gif" width=1 height=8><br>

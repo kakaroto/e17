@@ -85,7 +85,7 @@
       else if (file_exists("p/$b/link")) {
 	  $h = read_var("p/$b/link");
       }
-      print("<tr><td class='$c'><a class='nav' href='$h'>$l</a></td></tr>\n");
+      return "<tr><td class='$c'><a class='nav' href='$h'>$l</a></td></tr>\n";
   }
 
   function nav_subs() {
