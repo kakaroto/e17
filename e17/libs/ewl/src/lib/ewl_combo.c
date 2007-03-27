@@ -11,10 +11,10 @@
 #include "ewl_private.h"
 
 static void ewl_combo_cb_selected_change(Ewl_MVC *mvc);
-Ewl_Widget *ewl_combo_submenu_new(Ewl_Combo *c, Ewl_Model *model, 
-					void *mvc_data);
+Ewl_Widget *ewl_combo_submenu_new(Ewl_Combo *c, Ewl_Model *model,
+					Ewl_View *view, void *mvc_data);
 static void ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, 
-			Ewl_Model *model, void *mvc_data);
+			Ewl_Model *model, Ewl_View *view, void *mvc_data);
 
 /**
  * @return Returns a pointer to a new combo on success, NULL on failure.
@@ -212,8 +212,7 @@ ewl_combo_popup_container_set(Ewl_Combo *combo, Ewl_Container *c)
 	DCHECK_PARAM_PTR("combo", combo);
 	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
 
-	if (combo->scrollable)
-		combo->scrollable = FALSE;
+	combo->scrollable = FALSE;
 
 	ewl_context_menu_container_set(EWL_CONTEXT_MENU(combo->popup), c);
 
@@ -245,12 +244,10 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	view = ewl_mvc_view_get(EWL_MVC(combo));
 	mvc_data = ewl_mvc_data_get(EWL_MVC(combo));
 
-	/* nothing to do if we have no model/view or data */
+	/* nothing to do if we have no model or view
+	 * Note that mvc_data == NULL is legal */
 	if (!model || !view)
 		DRETURN(DLEVEL_STABLE);
-
-	/* XXX put checks to make sure all the needed module and view
-	 * function callbacks are setup */
 
 	ewl_widget_show(combo->popup);
 	ewl_window_raise(EWL_WINDOW(combo->popup));
@@ -263,7 +260,7 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_container_reset(EWL_CONTAINER(combo->popup));
-	ewl_combo_popup_fill(combo, EWL_CONTAINER(combo->popup), model, 
+	ewl_combo_popup_fill(combo, EWL_CONTAINER(combo->popup), model, view,
 				mvc_data);
 
 	ewl_mvc_dirty_set(EWL_MVC(combo), FALSE);
@@ -361,15 +358,13 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
  * @brief Callback for when the button to expand the combo is pressed
  */
 Ewl_Widget *
-ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, void *mvc_data)
+ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, Ewl_View *view, 
+			void *mvc_data)
 {
 	Ewl_Widget *menu;
-	Ewl_View *view;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("combo", combo, NULL);
-
-	view = ewl_mvc_view_get(EWL_MVC(combo));
 
 	menu = ewl_menu_new();
 	ewl_widget_appearance_set(EWL_MENU(menu)->popup, EWL_COMBO_TYPE
@@ -380,7 +375,8 @@ ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, void *mvc_data)
 	if (!model || !view)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_combo_popup_fill(combo, EWL_CONTAINER(menu), model, mvc_data);
+	ewl_combo_popup_fill(combo, EWL_CONTAINER(menu), model, view,
+								mvc_data);
 
 	ewl_button_label_set(EWL_BUTTON(menu), NULL);
 	ewl_button_image_set(EWL_BUTTON(menu), NULL, NULL);
@@ -401,19 +397,18 @@ ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, void *mvc_data)
  * @brief fill the given container with the items
  */
 static void
-ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model, void *mvc_data)
+ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model, 
+			Ewl_View *view, void *mvc_data)
 {
-	Ewl_View *view;
 	int count;
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("combo", combo);
 
-	view = ewl_mvc_view_get(EWL_MVC(combo));
+	if (!model->count)
+		DRETURN(DLEVEL_STABLE);
 
-	/* XXX put checks to make sure all the needed module and view
-	 * function callbacks are setup */
 	count = model->count(mvc_data);
 	for (i = 0; i < count; i++)
 	{
@@ -422,11 +417,28 @@ ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model, void 
 		if (model->expansion.is && model->expansion.is(mvc_data, i))
 		{
 			Ewl_Model *em;
-			void *data;
+			Ewl_View *ev;
+			void *ed;
 
-			em = model->expansion.model(mvc_data, i);
-			data = model->expansion.data(mvc_data, i);
-			o = ewl_combo_submenu_new(combo, em, data);
+			/* if there shouldn't be a model for the expansion 
+			 * we us the current model */
+			if (!model->expansion.model 
+				|| !(em = model->expansion.model(mvc_data, i)))
+				em = model;
+			/* if there shouldm't be a view for the expansion
+			 * we us the current view */
+			if (!view->expansion
+					|| !(ev = view->expansion(mvc_data,i)))
+				ev = view;
+
+			/* if there is no data for the expansion use the
+			 * current mvc data */
+			if (model->expansion.data)
+				ed = model->expansion.data(mvc_data, i);
+			else
+				ed = mvc_data;
+
+			o = ewl_combo_submenu_new(combo, em, ev, ed);
 		}
 		else
 		{
@@ -437,10 +449,13 @@ ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model, void 
 		}
 		ewl_container_child_append(c, o);
 		ewl_widget_show(o);
-
-		item = view->fetch(model->fetch(mvc_data, i, 0), i, 0);
-		ewl_container_child_append(EWL_CONTAINER(o), item);
-		ewl_widget_show(item);
+		
+		if (view->fetch && model->fetch)
+		{
+			item = view->fetch(model->fetch(mvc_data, i, 0), i, 0);
+			ewl_container_child_append(EWL_CONTAINER(o), item);
+			ewl_widget_show(item);
+		}
 	}
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
