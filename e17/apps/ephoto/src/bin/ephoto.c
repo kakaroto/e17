@@ -271,6 +271,9 @@ int main(int argc, char **argv)
 	
 	/*Start the GUI*/
 	create_main_gui();
+	
+	/*Star the ewl loop*/
+	ewl_main();
 
 	return 0;
 }

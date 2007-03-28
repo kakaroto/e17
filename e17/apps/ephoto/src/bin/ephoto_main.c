@@ -141,7 +141,6 @@ void create_main_gui(void)
         button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/get_exif.png", NULL, NULL);
         ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
 	ewl_attach_tooltip_text_set(button, "You do not have libexif 0.6.13");
-
 #ifdef BUILD_EXIF_SUPPORT
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, display_exif_dialog, NULL);
 	ewl_attach_tooltip_text_set(button, "View Exif Data");
@@ -162,8 +161,6 @@ void create_main_gui(void)
 	ewl_mvc_data_set(EWL_MVC(em->atree), em->albums);
 	
 	populate(NULL, NULL, "Complete Library");
-
-	ewl_main();
 
 	return;
 }
@@ -235,19 +232,20 @@ static Ewl_Widget *add_atree(Ewl_Widget *c)
 	ewl_model_data_fetch_set(model, album_data_fetch);
 	ewl_model_data_count_set(model, album_data_count);
 
+        view = ewl_view_new();
+        ewl_view_widget_fetch_set(view, album_view_new);
+        ewl_view_header_fetch_set(view, album_header_fetch);
+
 	tree = ewl_tree2_new();
 	ewl_tree2_headers_visible_set(EWL_TREE2(tree), 0);
 	ewl_tree2_fixed_rows_set(EWL_TREE2(tree), 1);
+	ewl_tree2_column_count_set(EWL_TREE2(tree), 1);
 	ewl_mvc_model_set(EWL_MVC(tree), model);
+	ewl_mvc_view_set(EWL_MVC(tree), view);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(c), tree);
 	ewl_widget_show(tree);
-
-	view = ewl_view_new();
-	ewl_view_widget_fetch_set(view, album_view_new);
-	ewl_view_header_fetch_set(view, album_header_fetch);
-	ewl_tree2_column_append(EWL_TREE2(tree), view, FALSE);
 
 	return tree;
 }
