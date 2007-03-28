@@ -41,8 +41,6 @@
 char *sgettext(const char *msgid);
 #define S_(str) sgettext(str)
 
-#endif
-
 /* Ephoto Main gui callbacks */
 void create_main_gui(void);
 
@@ -133,3 +131,4 @@ struct _Ephoto_Main
 
 extern Ephoto_Main *em;
 
+#endif
