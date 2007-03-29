@@ -78,16 +78,17 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Directory])
 
-if test -z "$EET_CONFIG" ; then EET_CONFIG="eet-config"; fi
-if test -z "$EVAS_CONFIG" ; then EVAS_CONFIG="evas-config"; fi
-if test -z "$EDJE_CONFIG" ; then EDJE_CONFIG="edje-config"; fi
-if test -z "$ECORE_CONFIG" ; then ECORE_CONFIG="ecore-config"; fi
-if test -z "$EMOTION_CONFIG" ; then EMOTION_CONFIG="emotion-config"; fi
-
-my_cflags=`$EVAS_CONFIG --cflags`" "`$ECORE_CONFIG --cflags`" "`$EDJE_CONFIG --cflags`" "`$EMOTION_CONFIG --cflags`
-my_libs="-lm "$dlopen_libs" "`$EVAS_CONFIG --libs`" "`$ECORE_CONFIG --libs`" "`$EDJE_CONFIG --libs`" "`$EMOTION_CONFIG --libs`
-AC_SUBST(my_cflags)
-AC_SUBST(my_libs)
+PKG_CHECK_MODULES([EET], eet)
+PKG_CHECK_MODULES([EVAS], evas)
+PKG_CHECK_MODULES([EDJE], edje)
+PKG_CHECK_MODULES([ECORE], [
+   ecore-con
+   ecore-evas
+   ecore-ipc
+   ecore-job
+   ecore-txt
+   ecore-file])
+PKG_CHECK_MODULES([EMOTION], emotion)
 
 AC_OUTPUT([
 Makefile

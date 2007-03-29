@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src/bin @my_cflags@
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src/bin @EVAS_CFLAGS@ @ECORE_CFLAGS@ @EDJE_CFLAGS@ @EMOTION_CFLAGS@
 
 bin_PROGRAMS = rage rage_thumb
 
@@ -37,9 +37,10 @@ e_layout.h \
 e_flowlayout.c \
 e_flowlayout.h
 
-rage_LDADD = @my_libs@
+rage_LDADD = @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@
 
 rage_thumb_SOURCES = \
 rage_thumb.c
 
-rage_thumb_LDADD = @my_libs@
+rage_thumb_LDADD = @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@
+
