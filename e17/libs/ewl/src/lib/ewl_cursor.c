@@ -1,9 +1,9 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "ewl_base.h"
 #include "ewl_cursor.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static void ewl_cursor_cb_render(Ewl_Widget *w, void *ev, void *data);
 static void ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev, void *data);

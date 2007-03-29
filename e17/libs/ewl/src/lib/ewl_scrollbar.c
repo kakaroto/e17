@@ -3,9 +3,9 @@
 #include "ewl_scrollbar.h"
 #include "ewl_button.h"
 #include "ewl_seeker.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static int ewl_scrollbar_timer(void *data);
 

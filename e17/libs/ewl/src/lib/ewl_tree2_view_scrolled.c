@@ -2,9 +2,9 @@
 #include "ewl_base.h"
 #include "ewl_tree2_view_scrolled.h"
 #include "ewl_scrollpane.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static Ewl_View *ewl_tree2_view_scrolled_view = NULL;
 

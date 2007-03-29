@@ -3,9 +3,9 @@
 #include "ewl_scrollpane.h"
 #include "ewl_box.h"
 #include "ewl_scrollbar.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * @return Returns a new scrollpane on success, NULL on failure.

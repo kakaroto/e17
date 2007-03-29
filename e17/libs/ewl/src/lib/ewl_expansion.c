@@ -2,9 +2,9 @@
 #include "ewl_base.h"
 #include "ewl_check.h"
 #include "ewl_expansion.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * @return Returns the newly allocated expansion on success, NULL on failure.

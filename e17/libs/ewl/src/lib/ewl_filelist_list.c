@@ -3,9 +3,9 @@
 #include "ewl_filelist_list.h"
 #include "ewl_label.h"
 #include "ewl_tree.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static Ewl_View *ewl_filelist_list_view = NULL;
 

@@ -1,9 +1,9 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "ewl_base.h"
 #include "ewl_icon_theme.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static int ewl_icon_theme_is_edje = 0;
 

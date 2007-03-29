@@ -3,9 +3,9 @@
 #include "ewl_dialog.h"
 #include "ewl_box.h"
 #include "ewl_separator.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * @return Returns a pointer to a new dialog on success, NULL on failure.

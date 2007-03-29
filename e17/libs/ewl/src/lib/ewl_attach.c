@@ -3,9 +3,9 @@
 #include "ewl_box.h"
 #include "ewl_popup.h"
 #include "ewl_label.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * Ewl_Attach_Tooltip

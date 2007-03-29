@@ -1,9 +1,9 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "ewl_base.h"
 #include "ewl_histogram.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static void ewl_histogram_cb_data_load(Ewl_Widget *w, void *ev, void *h);
 static void ewl_histogram_draw(Ewl_Histogram *hist);

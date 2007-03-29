@@ -3,9 +3,9 @@
 #include "ewl_filelist_icon.h"
 #include "ewl_freebox.h"
 #include "ewl_icon_theme.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static Ewl_View *ewl_filelist_icon_view = NULL;
 

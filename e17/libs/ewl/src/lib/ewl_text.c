@@ -2,8 +2,8 @@
 #include "ewl_base.h"
 #include "ewl_text.h"
 #include "ewl_private.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_debug.h"
 
 /**
  * Ewl_Text_Fmt

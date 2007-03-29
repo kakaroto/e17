@@ -3,8 +3,8 @@
 #include "ewl_menu.h"
 #include "ewl_context_menu.h"
 #include "ewl_private.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_debug.h"
 
 /**
  * @return Returns a pointer to a new menu on success, NULL on failure.

@@ -3,9 +3,9 @@
 #include "ewl_spectrum.h"
 #include "ewl_image.h"
 #include "ewl_separator.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static void ewl_spectrum_hsv_from_rgb(Ewl_Spectrum *sp);
 static void ewl_spectrum_rgb_from_hsv(Ewl_Spectrum *sp);

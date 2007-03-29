@@ -5,9 +5,9 @@
 #include "ewl_grid.h"
 #include "ewl_icon_theme.h"
 #include "ewl_label.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static void ewl_calendar_grid_setup(Ewl_Calendar *cal);
 static int ewl_calendar_leap_year_detect(unsigned int year);

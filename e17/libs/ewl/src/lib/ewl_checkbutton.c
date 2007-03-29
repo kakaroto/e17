@@ -3,9 +3,9 @@
 #include "ewl_checkbutton.h"
 #include "ewl_button.h"
 #include "ewl_check.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * @return Returns the newly allocated checkbutton on success, NULL on failure.

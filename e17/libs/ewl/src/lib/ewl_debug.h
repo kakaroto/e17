@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define DLEVEL_UNSTABLE 1
+#define DLEVEL_UNSTABLE 0
 #define DLEVEL_TESTING 10
 #define DLEVEL_STABLE 20
 
@@ -47,8 +47,8 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	if (DEBUGGING(lvl)) \
 	  { \
 		ewl_debug_indent_print(1); \
-		fprintf(stderr, "--> %s:%i\tEntering %s();\n", \
-			__FILE__, __LINE__, __func__); \
+		fprintf(stderr, "--> %f - %s:%i\tEntering %s();\n", \
+			ecore_time_get(), __FILE__, __LINE__, __func__); \
 	  } \
 }
 
@@ -57,8 +57,8 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	if (DEBUGGING(lvl)) \
 	  { \
 		ewl_debug_indent_print(-1); \
-		fprintf(stderr, "<--  %s:%i\tLeaving  %s();\n", \
-			__FILE__, __LINE__, __func__); \
+		fprintf(stderr, "<--  %f - %s:%i\tLeaving  %s();\n", \
+			ecore_time_get(), __FILE__, __LINE__, __func__); \
 	  } \
 }
 
@@ -68,8 +68,8 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	if (DEBUGGING(lvl)) \
 	  { \
 		ewl_debug_indent_print(0); \
-		fprintf(stderr, "<--  %s:%i\tReturn in %s();\n", \
-			__FILE__, __LINE__, __func__); \
+		fprintf(stderr, "<-- %f - %s:%i\tReturn in %s();\n", \
+			ecore_time_get(), __FILE__, __LINE__, __func__); \
 	  } \
 	return; \
 }
@@ -80,8 +80,8 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	if (DEBUGGING(lvl)) \
 	  { \
 		ewl_debug_indent_print(0); \
-		fprintf(stderr, "<--  %s:%i\tReturning %p in %s();\n", \
-			__FILE__, __LINE__, (void *) (ptr), __func__); \
+		fprintf(stderr, "<-- %f - %s:%i\tReturning %p in %s();\n", \
+			ecore_time_get(), __FILE__, __LINE__, (void *) (ptr), __func__); \
 	  } \
 	return (void *)(ptr); \
 }
@@ -92,8 +92,8 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	if (DEBUGGING(lvl)) \
 	  { \
 		ewl_debug_indent_print(0); \
-		fprintf(stderr, "<--  %s:%i\tReturning %f in %s();\n", \
-			__FILE__, __LINE__, (float) (num), __func__); \
+		fprintf(stderr, "<-- %f - %s:%i\tReturning %f in %s();\n", \
+			ecore_time_get(), __FILE__, __LINE__, (float) (num), __func__); \
 	  } \
 	return num; \
 }
@@ -104,8 +104,8 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	if (DEBUGGING(lvl)) \
 	  { \
 		ewl_debug_indent_print(0); \
-		fprintf(stderr, "<--  %s:%i\tReturning %i in %s();\n", \
-			__FILE__, __LINE__, (int) (num), __func__); \
+		fprintf(stderr, "<-- %f - %s:%i\tReturning %i in %s();\n", \
+			ecore_time_get(), __FILE__, __LINE__, (int) (num), __func__); \
 	  } \
 	return num; \
 }

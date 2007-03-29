@@ -8,9 +8,9 @@
 #include "ewl_label.h"
 #include "ewl_paned.h"
 #include "ewl_scrollpane.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static int ewl_tree_row_pos = 0;
 

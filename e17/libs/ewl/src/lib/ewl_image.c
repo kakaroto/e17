@@ -2,8 +2,8 @@
 #include "ewl_base.h"
 #include "ewl_image.h"
 #include "ewl_private.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_debug.h"
 
 #ifdef BUILD_EPSILON_SUPPORT
 #include <Epsilon.h>

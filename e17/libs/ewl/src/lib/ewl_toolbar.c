@@ -2,9 +2,9 @@
 #include "ewl_base.h"
 #include "ewl_toolbar.h"
 #include "ewl_icon.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * @return Returns pointer to new toolbar widget on success, NULL on failure.

@@ -2,9 +2,9 @@
 #include "ewl_base.h"
 #include "ewl_notebook.h"
 #include "ewl_label.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * @return Returns a newly allocated notebook on success. NULL on failure

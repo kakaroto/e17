@@ -2,9 +2,9 @@
 #include "ewl_base.h"
 #include "ewl_progressbar.h"
 #include "ewl_label.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static void ewl_progressbar_child_handle(Ewl_Container *c, Ewl_Widget *w);
 

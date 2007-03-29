@@ -4,8 +4,8 @@
 #include "ewl_calendar.h"
 #include "ewl_popup.h"
 #include "ewl_private.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_debug.h"
 
 static void ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev_data, 
 							void *user_data); 

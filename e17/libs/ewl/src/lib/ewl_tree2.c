@@ -10,8 +10,8 @@
 #include "ewl_row.h"
 #include "ewl_tree2_view_scrolled.h"
 #include "ewl_private.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_debug.h"
 
 static void ewl_tree2_build_tree(Ewl_Tree2 *tree);
 static void ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, 

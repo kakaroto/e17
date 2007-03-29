@@ -2,9 +2,9 @@
 #include "ewl_base.h"
 #include "ewl_list.h"
 #include "ewl_highlight.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static Ewl_Widget *ewl_list_widget_at(Ewl_MVC *mvc, void *data, int row, int column);
 

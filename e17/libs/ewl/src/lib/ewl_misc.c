@@ -3,9 +3,9 @@
 #include "ewl_icon_theme.h"
 #include "ewl_io_manager.h"
 #include "ewl_text.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 #ifdef __GLIBC__
 #include <execinfo.h>

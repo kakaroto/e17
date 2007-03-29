@@ -3,9 +3,9 @@
 #include "ewl_entry.h"
 #include <Ecore_Txt.h>
 #include <langinfo.h>
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure

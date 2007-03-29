@@ -2,9 +2,9 @@
 #include "ewl_base.h"
 #include "ewl_statusbar.h"
 #include "ewl_text.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * @return Returns NULL on failure, or a pointer to a new statusbar on success.

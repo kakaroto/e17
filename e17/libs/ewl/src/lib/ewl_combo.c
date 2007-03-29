@@ -6,9 +6,9 @@
 #include "ewl_context_menu.h"
 #include "ewl_scrollpane.h"
 #include "ewl_menu.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static void ewl_combo_cb_selected_change(Ewl_MVC *mvc);
 Ewl_Widget *ewl_combo_submenu_new(Ewl_Combo *c, Ewl_Model *model,

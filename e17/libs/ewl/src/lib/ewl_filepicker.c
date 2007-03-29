@@ -8,9 +8,9 @@
 #include "ewl_label.h"
 #include "ewl_model.h"
 #include "ewl_scrollpane.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /** 
  * Ewl_Filepicker_Filter

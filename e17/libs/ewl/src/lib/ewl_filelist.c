@@ -3,9 +3,9 @@
 #include "ewl_filelist.h"
 #include "ewl_icon_theme.h"
 #include "ewl_io_manager.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static void ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c,
 						int add, const char *signal, 

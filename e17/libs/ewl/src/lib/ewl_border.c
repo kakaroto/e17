@@ -2,9 +2,9 @@
 #include "ewl_base.h"
 #include "ewl_border.h"
 #include "ewl_label.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * @return Returns a new border container on success, NULL on failure.

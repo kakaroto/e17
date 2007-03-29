@@ -2,9 +2,9 @@
 #include "ewl_base.h"
 #include "ewl_stock.h"
 #include "ewl_icon_theme.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /*
  * this array needs to have it's items in the same order as they

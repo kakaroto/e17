@@ -2,9 +2,9 @@
 #include "ewl_base.h"
 #include "ewl_seeker.h"
 #include "ewl_button.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static double ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my);
 static int ewl_seeker_timer(void *data);

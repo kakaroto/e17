@@ -5,8 +5,8 @@
 #include "ewl_button.h"
 #include "ewl_entry.h"
 #include "ewl_private.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
+#include "ewl_debug.h"
 
 static void ewl_spinner_entry_update(Ewl_Spinner *s);
 static int ewl_spinner_timer(void *data);

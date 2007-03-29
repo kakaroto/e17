@@ -3,9 +3,9 @@
 #include "ewl_filelist_column.h"
 #include "ewl_icon_theme.h"
 #include "ewl_scrollpane.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 /**
  * @brief Stores information on the filelist column data

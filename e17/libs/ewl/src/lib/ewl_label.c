@@ -1,9 +1,9 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "ewl_base.h"
 #include "ewl_label.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static Ewl_Widget *ewl_label_view_cb_widget_fetch(void *data, int row, int col);
 static Ewl_Widget *ewl_label_view_cb_header_fetch(void *data, int col);

@@ -6,9 +6,9 @@
 #include "ewl_radiobutton.h"
 #include "ewl_spectrum.h"
 #include "ewl_spinner.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static void ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r,
 				unsigned int g, unsigned int b, double h, 

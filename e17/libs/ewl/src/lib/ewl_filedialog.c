@@ -8,9 +8,9 @@
 #include "ewl_filelist_tree.h"
 #include "ewl_menu.h"
 #include "ewl_context_menu.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static void ewl_filedialog_respond(Ewl_Filedialog *fd, unsigned int response);
 static void ewl_filedialog_cb_value_changed(Ewl_Widget *w, void *ev, 

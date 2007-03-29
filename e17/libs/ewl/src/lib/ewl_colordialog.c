@@ -3,9 +3,9 @@
 #include "ewl_colordialog.h"
 #include "ewl_button.h"
 #include "ewl_colorpicker.h"
-#include "ewl_debug.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#include "ewl_debug.h"
 
 static void ewl_colordialog_respond(Ewl_Colordialog *cd, unsigned int response);
 
