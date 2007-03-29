@@ -9,7 +9,7 @@ EXTRA_DIST = \
 	debian/README.Debian debian/entrance.postinst \
 	debian/entrance.postrm debian/entrance.prerm \
 	debian/entrance.config debian/etc/pam debian/etc/init \
-	debian/etc/Xsession m4/ac_expand_dir.m4 m4/ac_path_generic.m4 \
+	debian/etc/Xsession m4/ac_expand_dir.m4 \
 	debian/entrance.templates entrance.spec.in
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
