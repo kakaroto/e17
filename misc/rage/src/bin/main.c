@@ -256,7 +256,7 @@ main_usage(void)
    printf("Usage:\n");
    printf("  rage "
 	  "[-x11] [-gl] [-fb] [-xr] [-g WxH] [-fs] "
-	  "[-t theme] [-cf dir]"
+	  "[-t theme] [-cf dir]\n"
 	  );
    exit(-1);
 }

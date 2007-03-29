@@ -37,10 +37,10 @@ e_layout.h \
 e_flowlayout.c \
 e_flowlayout.h
 
-rage_LDADD = @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@
+rage_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@
 
 rage_thumb_SOURCES = \
 rage_thumb.c
 
-rage_thumb_LDADD = @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@
+rage_thumb_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@
 
