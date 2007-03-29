@@ -25,7 +25,7 @@ static void ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_selected_change(Ewl_MVC *mvc);
 static Ewl_Widget *ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, 
-						int row, int column);
+					unsigned int row, unsigned int column);
 
 static void ewl_tree2_create_expansions_hash(Ewl_Tree2 *tree);
 
@@ -516,7 +516,7 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Tree2 *tree;
 	Ewl_Model *model;
-	int index = 0;
+	unsigned int index = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -535,7 +535,7 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	/* update our sort information and call the sort function, skipping
 	 * over SORT_NONE */
-	tree->sort.column = (int)data;
+	tree->sort.column = (unsigned int)data;
 	tree->sort.direction = ((tree->sort.direction + 1) % EWL_SORT_DIRECTION_MAX);
 	if (!tree->sort.direction) tree->sort.direction ++;
 
@@ -548,7 +548,7 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 static void
 ewl_tree2_header_build(Ewl_Tree2 *tree,  Ewl_Model *model, Ewl_View *view, 
-						void *mvc_data, int column)
+					void *mvc_data, unsigned int column)
 {
 	Ewl_Widget *h, *c;
 
@@ -583,7 +583,8 @@ ewl_tree2_header_build(Ewl_Tree2 *tree,  Ewl_Model *model, Ewl_View *view,
 		char *state_str;
 
 		ewl_callback_append(h, EWL_CALLBACK_CLICKED, 
-					ewl_tree2_cb_column_sort, (int *)column);
+					ewl_tree2_cb_column_sort, 
+						(unsigned int *)column);
 
 		c = ewl_button_new();
 		ewl_container_child_append(EWL_CONTAINER(h), c);
@@ -609,7 +610,8 @@ ewl_tree2_header_build(Ewl_Tree2 *tree,  Ewl_Model *model, Ewl_View *view,
 
 static void
 ewl_tree2_column_build(Ewl_Row *row, Ewl_Model *model, Ewl_View *view, 
-				void *mvc_data, int r, int c, Ewl_Widget *node)
+				void *mvc_data, unsigned int r, 
+				unsigned int c, Ewl_Widget *node)
 {
 	Ewl_Widget *cell;
 	Ewl_Widget *child;
@@ -680,7 +682,7 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 				void *data, int colour, Ewl_Widget *parent, 
 				int hidden)
 {
-	int i = 0, row_count = 0;
+	unsigned int i = 0, row_count = 0;
 	unsigned int column;
 
 	DCHECK_PARAM_PTR("tree", tree);
@@ -803,7 +805,7 @@ ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	Ewl_Row *row;
 	Ewl_Tree2 *tree;
 	Ewl_Tree2_Node *node;
-	int column;
+	unsigned int column;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -839,7 +841,8 @@ ewl_tree2_cb_selected_change(Ewl_MVC *mvc)
 }
 
 static Ewl_Widget *
-ewl_tree2_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, int row, int column)
+ewl_tree2_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row, 
+			unsigned int column)
 {
 	Ewl_Widget *r, *w;
 	Ewl_Tree2 *tree;

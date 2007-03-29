@@ -30,7 +30,8 @@ static void ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *event,
 static void ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, 
 						char *file, void *data);
 static Ewl_Widget * ewl_filelist_column_view_cb_widget_fetch(void *data,
-						int col, int row);
+							unsigned int col, 
+							unsigned int row);
 
 /**
  * @return Returns the Ewl_View needed to display the filelist_column
@@ -53,7 +54,8 @@ ewl_filelist_column_view_get(void)
 
 static Ewl_Widget *
 ewl_filelist_column_view_cb_widget_fetch(void *data __UNUSED__, 
-					int col __UNUSED__, int row __UNUSED__)
+						unsigned int col __UNUSED__, 
+						unsigned int row __UNUSED__)
 {
 	Ewl_Widget *list;
 
@@ -142,7 +144,7 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 	Ecore_List *path_list;
 	Ewl_Widget *s;
 	char *new_path, *p, *t, *dir, path[PATH_MAX];
-	int i = 0, count = 0;
+	unsigned int i = 0, count = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
@@ -184,7 +186,7 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 	ecore_list_goto_first(path_list);
 	while (1)
 	{
-		int len1, len2;
+		size_t len1, len2;
 
 		d = ecore_list_next(list->dirs);
 		dir = ecore_list_next(path_list);

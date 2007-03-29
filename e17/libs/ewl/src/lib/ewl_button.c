@@ -13,9 +13,10 @@ static Ewl_Stock_Funcs stock_funcs = {
 	NULL
 };
 
-static Ewl_Widget *ewl_button_view_cb_widget_fetch(void *data, int row, 
-								int col);
-static Ewl_Widget *ewl_button_view_cb_header_fetch(void *data, int col);
+static Ewl_Widget *ewl_button_view_cb_widget_fetch(void *data, unsigned int row,
+							unsigned int col);
+static Ewl_Widget *ewl_button_view_cb_header_fetch(void *data, 
+							unsigned int col);
 
 /**
  * @return Returns NULL on failure, a pointer to a new button on success
@@ -106,8 +107,8 @@ ewl_button_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_button_view_cb_widget_fetch(void *data, int row __UNUSED__, 
-						int col __UNUSED__)
+ewl_button_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__, 
+				unsigned int col __UNUSED__)
 {
 	Ewl_Widget *button;
 
@@ -120,7 +121,7 @@ ewl_button_view_cb_widget_fetch(void *data, int row __UNUSED__,
 }
 
 static Ewl_Widget *
-ewl_button_view_cb_header_fetch(void *data, int col __UNUSED__)
+ewl_button_view_cb_header_fetch(void *data, unsigned int col __UNUSED__)
 {
 	Ewl_Widget *button;
 

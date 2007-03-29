@@ -25,10 +25,11 @@ static void *list_test_data_setup(void);
 static void list_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void list_cb_multi_value_changed(Ewl_Widget *w, void *ev, void *data);
 
-static Ewl_Widget *list_test_cb_widget_fetch(void *data, int row, int col);
+static Ewl_Widget *list_test_cb_widget_fetch(void *data, unsigned int row, 
+						unsigned int col);
 static void *list_test_data_fetch(void *data, unsigned int row, 
 						unsigned int column);
-static int list_test_data_count_get(void *data);
+static unsigned int list_test_data_count_get(void *data);
 static void list_cb_select_none(Ewl_Widget *w, void *ev, void *data);
 
 void 
@@ -175,7 +176,7 @@ list_test_data_setup(void)
 }
 
 static Ewl_Widget *
-list_test_cb_widget_fetch(void *data, int row, int col)
+list_test_cb_widget_fetch(void *data, unsigned int row, unsigned int col)
 {
 	Ewl_Widget *w;
 	List_Test_Row_Data *d;
@@ -209,7 +210,7 @@ list_test_data_fetch(void *data, unsigned int row,
 	return d->rows[row];
 }
 
-static int
+static unsigned int
 list_test_data_count_get(void *data)
 {
 	List_Test_Data *d;
@@ -263,7 +264,7 @@ list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 		else
 		{
 			Ewl_Selection_Range *idx;
-			int i;
+			unsigned int i;
 
 			idx = EWL_SELECTION_RANGE(sel);
 			for (i = idx->start.row; i <= idx->end.row; i++)

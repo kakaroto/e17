@@ -5,8 +5,9 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static Ewl_Widget *ewl_label_view_cb_widget_fetch(void *data, int row, int col);
-static Ewl_Widget *ewl_label_view_cb_header_fetch(void *data, int col);
+static Ewl_Widget *ewl_label_view_cb_widget_fetch(void *data, unsigned int row,
+							unsigned int col);
+static Ewl_Widget *ewl_label_view_cb_header_fetch(void *data, unsigned int col);
 
 /**
  * @return Returns a new Ewl_Widget if successful, NULL on failure
@@ -111,7 +112,8 @@ ewl_label_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_label_view_cb_widget_fetch(void *data, int row __UNUSED__, int col __UNUSED__)
+ewl_label_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__, 
+					unsigned int col __UNUSED__)
 {
 	Ewl_Widget *label;
 
@@ -124,7 +126,7 @@ ewl_label_view_cb_widget_fetch(void *data, int row __UNUSED__, int col __UNUSED_
 }
 
 static Ewl_Widget *
-ewl_label_view_cb_header_fetch(void *data, int col __UNUSED__)
+ewl_label_view_cb_header_fetch(void *data, unsigned int col __UNUSED__)
 {
 	Ewl_Widget *label;
 

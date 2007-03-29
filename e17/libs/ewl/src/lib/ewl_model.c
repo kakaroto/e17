@@ -376,7 +376,7 @@ ewl_model_cb_ecore_list_fetch(void *data, unsigned int row,
  * @return Returns the number of elements in the list
  * @brief This will return the number of elements in the ecore_list
  */
-int
+unsigned int
 ewl_model_cb_ecore_list_count(void *data)
 {
 	Ecore_List *list;

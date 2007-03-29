@@ -108,7 +108,7 @@ typedef void (*Ewl_Model_Data_Sort)(void *data, unsigned int column,
 /**
  * A typedef to shorten the definition of the model_count callbacks. 
  */
-typedef int (*Ewl_Model_Data_Count)(void *data);
+typedef unsigned int (*Ewl_Model_Data_Count)(void *data);
 
 /**
  * @def EWL_MODEL_COLUMN_SORTABLE(f)
@@ -119,7 +119,7 @@ typedef int (*Ewl_Model_Data_Count)(void *data);
 /**
  * A typedef to shorten the definition of the model_column_sortable callbacks. 
  */
-typedef int (*Ewl_Model_Column_Sortable)(void *data, int col);
+typedef int (*Ewl_Model_Column_Sortable)(void *data, unsigned int col);
 
 /**
  * @def EWL_MODEL(model)
@@ -194,7 +194,7 @@ Ewl_Model_Expansion_Model_Fetch ewl_model_expansion_model_fetch_get(Ewl_Model *m
  */
 void *ewl_model_cb_ecore_list_fetch(void *data, unsigned int row, 
 						unsigned int col);
-int ewl_model_cb_ecore_list_count(void *data);
+unsigned int ewl_model_cb_ecore_list_count(void *data);
 
 /**
  * @}

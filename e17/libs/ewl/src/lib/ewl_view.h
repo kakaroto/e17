@@ -20,7 +20,8 @@
 /**
  * A typedef to shorten the definition of the view_widget_fetch callbacks. 
  */
-typedef Ewl_Widget *(*Ewl_View_Widget_Fetch)(void *data, int row, int col);
+typedef Ewl_Widget *(*Ewl_View_Widget_Fetch)(void *data, unsigned int row, 
+						unsigned int col);
 
 /**
  * @def EWL_VIEW_HEADER_GET(f)
@@ -31,7 +32,7 @@ typedef Ewl_Widget *(*Ewl_View_Widget_Fetch)(void *data, int row, int col);
 /**
  * A typedef to shorten the definition of the view_header_fetch callbacks. 
  */
-typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, int column);
+typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, unsigned int column);
 
 /**
  * @def EWL_VIEW(view)
@@ -54,7 +55,8 @@ typedef struct Ewl_View Ewl_View;
  * A typedef to shorten the definition of the view_expansion_view_fetch
  * callbacks. 
  */
-typedef Ewl_View *(*Ewl_View_Expansion_View_Fetch)(void *data, int row);
+typedef Ewl_View *(*Ewl_View_Expansion_View_Fetch)(void *data, 
+							unsigned int row);
 
 /**
  * @brief The view function pointers

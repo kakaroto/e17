@@ -100,7 +100,7 @@ struct Ewl_Tree2
 	Ewl_Widget *header; 	/**< The tree header */
 	Ewl_Widget *rows; 	/**< The rows of the tree */
 
-	int *rowcache; 		/**< Cache of row sizes */
+	unsigned int *rowcache; /**< Cache of row sizes */
 
 	Ewl_Tree_Selection_Type type;	 /**< The selection type of the tree */
 
@@ -108,7 +108,7 @@ struct Ewl_Tree2
 
 	struct
 	{
-		int column;	/**< The sort column */
+		unsigned int column;	/**< The sort column */
 		Ewl_Sort_Direction direction; /**< Sort direction */
 	} sort;			/**< The sort information */
 

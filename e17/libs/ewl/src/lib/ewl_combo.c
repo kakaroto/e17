@@ -338,7 +338,7 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 				idx->row, 0);
 	}
 	else if (view->header_fetch) 
-		item = view->header_fetch(ewl_mvc_data_get(mvc), -1);
+		item = view->header_fetch(ewl_mvc_data_get(mvc), 0);
 
 	if (item)
 	{
@@ -628,7 +628,7 @@ ewl_combo_cell_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 	model = ewl_combo_cell_model_get(EWL_COMBO_CELL(w));
 	mvc_data = ewl_combo_cell_data_get(EWL_COMBO_CELL(w));
 	
-	ewl_mvc_selected_set(EWL_MVC(combo), model, mvc_data, i, -1);
+	ewl_mvc_selected_set(EWL_MVC(combo), model, mvc_data, i, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

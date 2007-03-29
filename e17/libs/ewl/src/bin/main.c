@@ -61,10 +61,10 @@ static void *ewl_test_cb_expansion_fetch(void *data, unsigned int row,
 							unsigned int column);
 static void ewl_test_cb_test_selected(Ewl_Widget *w, void *ev, void *data);
 
-static Ewl_Widget *cb_unit_test_header_fetch(void *data, int column);
+static Ewl_Widget *cb_unit_test_header_fetch(void *data, unsigned int column);
 static void *cb_unit_test_header_data_fetch(void *data, unsigned int column);
 static void *cb_unit_test_fetch(void *data, unsigned int row, unsigned int column);
-static int cb_unit_test_count(void *data);
+static unsigned int cb_unit_test_count(void *data);
 
 static Ecore_List *tests = NULL;
 static int window_count = 0;
@@ -1114,7 +1114,7 @@ cb_unit_test_header_data_fetch(void *data, unsigned int column)
 }
 
 static Ewl_Widget *
-cb_unit_test_header_fetch(void *data, int column __UNUSED__)
+cb_unit_test_header_fetch(void *data, unsigned int column __UNUSED__)
 {
 	Ewl_Widget *label;
 
@@ -1142,11 +1142,11 @@ cb_unit_test_fetch(void *data, unsigned int row, unsigned int column)
 		return t->unit_tests[row].failure_reason;
 }
 
-static int
+static unsigned int
 cb_unit_test_count(void *data)
 {
 	Ewl_Test *t;
-	int i;
+	unsigned int i;
 
 	t = data;
 	if (!data) return 0;

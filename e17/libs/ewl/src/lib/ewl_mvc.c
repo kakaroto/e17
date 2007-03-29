@@ -24,7 +24,7 @@ static void ewl_mvc_highlight_do(Ewl_MVC *mvc, Ewl_Container *c,
 				Ewl_Selection *sel, Ewl_Widget *w);
 static void ewl_mvc_selected_change_notify(Ewl_MVC *mvc);
 static void ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, 
-						int row, int column);
+					unsigned int row, unsigned int column);
 static void ewl_mvc_cb_sel_free(void *data);
 
 /**
@@ -363,12 +363,12 @@ ewl_mvc_selected_list_get(Ewl_MVC *mvc)
  */
 void
 ewl_mvc_selected_range_add(Ewl_MVC *mvc, Ewl_Model *model, void *data, 
-					int srow, int scolumn,
-					int erow, int ecolumn)
+				unsigned int srow, unsigned int scolumn,
+				unsigned int erow, unsigned int ecolumn)
 {
 	Ewl_Selection *sel;
 	Ewl_Model *mod;
-	int tmp;
+	unsigned int tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
@@ -419,7 +419,7 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, Ewl_Model *model, void *data,
  */
 void
 ewl_mvc_selected_set(Ewl_MVC *mvc, Ewl_Model *model, void *data, 
-						int row, int column)
+				unsigned int row, unsigned int column)
 {
 	Ewl_Selection *sel;
 
@@ -450,7 +450,7 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, Ewl_Model *model, void *data,
  */
 void
 ewl_mvc_selected_add(Ewl_MVC *mvc, Ewl_Model *model, void *data, 
-						int row, int column)
+			unsigned int row, unsigned int column)
 {
 	Ewl_Selection *si;
 	Ewl_Model *mod;
@@ -527,7 +527,8 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
  * @brief Removes the given index from the list of selected indices
  */
 void
-ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data __UNUSED__, int row, int column)
+ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row, 
+			unsigned int column)
 {
 	Ewl_Selection *sel;
 
@@ -582,10 +583,10 @@ ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data __UNUSED__, int row, int column)
  * @return Returns the number of items selected in the MVC
  * @brief Retrives the number of items selected in the widget
  */
-int
+unsigned int
 ewl_mvc_selected_count_get(Ewl_MVC *mvc)
 {
-	int count = 0;
+	unsigned int count = 0;
 	Ewl_Selection *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -612,7 +613,7 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
 		else if (sel->type == EWL_SELECTION_TYPE_RANGE)
 		{
 			Ewl_Selection_Range *r;
-			int rows = 0, columns = 0;
+			unsigned int rows = 0, columns = 0;
 
 			r = EWL_SELECTION_RANGE(sel);
 			rows = (r->end.row - r->start.row) + 1;
@@ -634,10 +635,11 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
  * @brief Checks if the given index is selected or not.
  */
 unsigned int
-ewl_mvc_selected_is(Ewl_MVC *mvc, void *data __UNUSED__, int row, int column)
+ewl_mvc_selected_is(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row, 
+			unsigned int column)
 {
 	Ewl_Selection *sel;
-	int ret = FALSE;
+	unsigned int ret = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mvc", mvc, FALSE);
@@ -688,7 +690,8 @@ ewl_mvc_selected_is(Ewl_MVC *mvc, void *data __UNUSED__, int row, int column)
  * @brief Creates a new index selection based on given values
  */
 Ewl_Selection *
-ewl_mvc_selection_index_new(Ewl_Model *model, void *data, int row, int column)
+ewl_mvc_selection_index_new(Ewl_Model *model, void *data, unsigned int row, 
+				unsigned int column)
 {
 	Ewl_Selection_Idx *sel;
 
@@ -715,9 +718,9 @@ ewl_mvc_selection_index_new(Ewl_Model *model, void *data, int row, int column)
  * @brief Creates a new range selection based on given values
  */
 Ewl_Selection *
-ewl_mvc_selection_range_new(Ewl_Model *model, void *data, int srow, 
-						int scolumn, int erow, 
-						int ecolumn)
+ewl_mvc_selection_range_new(Ewl_Model *model, void *data, unsigned int srow, 
+				unsigned int scolumn, unsigned int erow, 
+				unsigned int ecolumn)
 {
 	Ewl_Selection_Range *sel;
 
@@ -746,8 +749,8 @@ ewl_mvc_selection_range_new(Ewl_Model *model, void *data, int srow,
  * @brief Handles the click of the given cell
  */
 void
-ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data, int row, 
-							int column)
+ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data, 
+			unsigned int row, unsigned int column)
 {
 	unsigned int modifiers;
 	int multi_select = FALSE;
@@ -771,7 +774,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data, int row,
 		{
 			Ewl_Selection *sel;
 			void *sdata;
-			int srow, scolumn;
+			unsigned int srow, scolumn;
 			Ewl_Model *smod;
 
 			/* A shift will add the current position into a 
@@ -795,7 +798,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data, int row,
 			else
 			{
 				Ewl_Selection_Range *idx;
-				int i, k;
+				unsigned int i, k;
 
 				idx = EWL_SELECTION_RANGE(sel);
 				sdata = sel->data;
@@ -865,7 +868,8 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data, int row,
  */
 void
 ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
-	Ewl_Widget *(*widget)(Ewl_MVC *mvc, void *data, int row, int column))
+	Ewl_Widget *(*widget)(Ewl_MVC *mvc, void *data, unsigned int row, 
+					unsigned int column))
 {
 	Ewl_Selection *sel;
 
@@ -895,7 +899,7 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 		}
 		else
 		{
-			int i, k;
+			unsigned int i, k;
 			Ewl_Selection_Range *idx;
 
 			idx = EWL_SELECTION_RANGE(sel);
@@ -994,7 +998,8 @@ ewl_mvc_selected_change_notify(Ewl_MVC *mvc)
  * needed. Steps can be skipped if they would result in a zero item range.
  */
 static void
-ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
+ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, unsigned int row, 
+				unsigned int column)
 {
 	Ewl_Selection_Range *si;
 
@@ -1035,7 +1040,7 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
 	if (row > si->start.row)
 	{
 		Ewl_Selection *n;
-		int erow;
+		unsigned int erow;
 
 		erow = (row - 1);
 
@@ -1059,7 +1064,7 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
 	if (column > si->start.column)
 	{
 		Ewl_Selection *n;
-		int ecolumn;
+		unsigned int ecolumn;
 
 		ecolumn = (column - 1);
 		if ((((si->end.row - row) + 1) * 
@@ -1079,7 +1084,7 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
 	if (column < si->end.column)
 	{
 		Ewl_Selection *n;
-		int scolumn;
+		unsigned int scolumn;
 
 		scolumn = column + 1;
 		if ((((si->end.row - row) + 1) * 
@@ -1100,7 +1105,7 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, int row, int column)
 	if (row < si->end.row)
 	{
 		Ewl_Selection *n;
-		int srow;
+		unsigned int srow;
 
 		srow = row + 1;
 		if ((((srow - si->end.row) + 1) * 

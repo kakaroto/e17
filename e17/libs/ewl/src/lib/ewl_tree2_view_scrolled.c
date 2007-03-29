@@ -8,8 +8,8 @@
 
 static Ewl_View *ewl_tree2_view_scrolled_view = NULL;
 
-static Ewl_Widget * ewl_tree2_view_cb_widget_fetch(void *data, int col,
-							int row);
+static Ewl_Widget * ewl_tree2_view_cb_widget_fetch(void *data, unsigned int col,
+							unsigned int row);
 
 /**
  * @return Returns the view for this widget
@@ -31,8 +31,9 @@ ewl_tree2_view_scrolled_get(void)
 }
 
 static Ewl_Widget *
-ewl_tree2_view_cb_widget_fetch(void *data __UNUSED__, int col __UNUSED__, 
-						int row __UNUSED__)
+ewl_tree2_view_cb_widget_fetch(void *data __UNUSED__, 
+				unsigned int col __UNUSED__, 
+				unsigned int row __UNUSED__)
 {
 	Ewl_Widget *tree;
 

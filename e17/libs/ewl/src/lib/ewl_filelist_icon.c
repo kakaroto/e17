@@ -15,8 +15,9 @@ static void ewl_filelist_icon_cb_icon_clicked(Ewl_Widget *w,
 						void *ev, void *data);
 static void ewl_filelist_icon_icon_add(Ewl_Filelist *fl, const char *dir, 
 						char *file, void *data);
-static Ewl_Widget *ewl_filelist_icon_view_cb_widget_fetch(void *data, int row,
-						int col);
+static Ewl_Widget *ewl_filelist_icon_view_cb_widget_fetch(void *data, 
+							unsigned int row,
+							unsigned int col);
 
 /**
  * @return Returns the Ewl_View needed to display the filelist_icon
@@ -38,7 +39,9 @@ ewl_filelist_icon_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_filelist_icon_view_cb_widget_fetch(void *data __UNUSED__, int row __UNUSED__, int col __UNUSED__)
+ewl_filelist_icon_view_cb_widget_fetch(void *data __UNUSED__, 
+					unsigned int row __UNUSED__, 
+					unsigned int col __UNUSED__)
 {
 	Ewl_Widget *list;
 

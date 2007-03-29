@@ -72,10 +72,10 @@
  * static Ewl_Widget *test_custom_new(void);
  * static void test_custom_assign_set(Ewl_Widget *w, void *data);
  *
- * static Ewl_Widget *test_data_header_fetch(void *data, int column);
+ * static Ewl_Widget *test_data_header_fetch(void *data, unsigned int column);
  * static void *test_data_fetch(void *data, unsigned int row, unsigned int column);
  * static void test_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort);
- * static int test_data_count_get(void *data);
+ * static unsigned int test_data_count_get(void *data);
  *
  * static void cb_delete_window(Ewl_Widget *w, void *ev, void *data);
  * static void cb_scroll_headers(Ewl_Widget *w, void *ev, void *data);
@@ -233,7 +233,7 @@
  * }
  *
  * static Ewl_Widget *
- * test_data_header_fetch(void *data , int column)
+ * test_data_header_fetch(void *data , unsigned int column)
  * {
  *      Ewl_Widget *l;
  *
@@ -318,7 +318,7 @@
  *      }
  * }
  *
- * static int
+ * static unsigned int
  * test_data_count_get(void *data)
  * {
  *      Test_Data *d;
@@ -400,10 +400,10 @@
  * static Ewl_Widget *test_custom_new(void);
  * static void test_custom_assign_set(Ewl_Widget *w, void *data);
  *
- * static Ewl_Widget *test_data_header_fetch(void *data, int column);
+ * static Ewl_Widget *test_data_header_fetch(void *data, unsigned int column);
  * static void *test_data_fetch(void *data, unsigned int row, unsigned int column);
  * static void test_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort);
- * static int test_data_count_get(void *data);
+ * static unsigned int test_data_count_get(void *data);
  *
  * static void cb_delete_window(Ewl_Widget *w, void *ev, void *data);
  * static void cb_scroll_headers(Ewl_Widget *w, void *ev, void *data);
@@ -842,7 +842,7 @@
  * or descending order based on the sort parameter.
  *
  * @code
- * static int
+ * static unsigned int
  * test_data_count_get(void *data)
  * {
  *      Test_Data *d;
@@ -941,15 +941,16 @@ struct Tree2_Test_Data
 
 static int create_test(Ewl_Container *win);
 static void *tree2_test_data_setup(void);
-static Ewl_Widget *tree2_test_cb_widget_fetch(void *data, int row, int column);
+static Ewl_Widget *tree2_test_cb_widget_fetch(void *data, unsigned int row, 
+						unsigned int column);
 static void *tree2_test_cb_header_data_fetch(void *data, unsigned int column);
-static Ewl_Widget *tree2_test_cb_header_fetch(void *data, int column);
+static Ewl_Widget *tree2_test_cb_header_fetch(void *data, unsigned int column);
 static void *tree2_test_data_fetch(void *data, unsigned int row, 
 						unsigned int column);
-static int tree2_test_column_sortable(void *data, int column);
+static int tree2_test_column_sortable(void *data, unsigned int column);
 static void tree2_test_data_sort(void *data, unsigned int column, 
 						Ewl_Sort_Direction sort);
-static int tree2_test_data_count_get(void *data);
+static unsigned int tree2_test_data_count_get(void *data);
 static int tree2_test_data_expandable_get(void *data, unsigned int row);
 static void *tree2_test_data_expansion_fetch(void *data, unsigned int row);
 
@@ -1136,7 +1137,7 @@ tree2_test_data_setup(void)
 }
 
 static Ewl_Widget *
-tree2_test_cb_widget_fetch(void *data, int row, int column)
+tree2_test_cb_widget_fetch(void *data, unsigned int row, unsigned int column)
 {
 	Ewl_Widget *w = NULL;
 
@@ -1178,7 +1179,7 @@ tree2_test_cb_header_data_fetch(void *data, unsigned int column)
 }
 
 static Ewl_Widget *
-tree2_test_cb_header_fetch(void *data, int column __UNUSED__)
+tree2_test_cb_header_fetch(void *data, unsigned int column __UNUSED__)
 {
 	Ewl_Widget *l;
 
@@ -1276,12 +1277,12 @@ tree2_test_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort)
 }
 
 static int
-tree2_test_column_sortable(void *data, int column)
+tree2_test_column_sortable(void *data, unsigned int column)
 {
 	return ((column == 0) || (column == 1));
 }
 
-static int
+static unsigned int
 tree2_test_data_count_get(void *data)
 {
 	Tree2_Test_Data *d;
@@ -1390,7 +1391,7 @@ tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 		if (sel->type == EWL_SELECTION_TYPE_INDEX)
 		{
 			char *val;
-			int col;
+			unsigned int col;
 			Ewl_Selection_Idx *idx;
 		
 			idx = EWL_SELECTION_IDX(sel);
@@ -1411,7 +1412,7 @@ tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 		else
 		{
 			Ewl_Selection_Range *idx;
-			int i, k;
+			unsigned int i, k;
 
 			idx = EWL_SELECTION_RANGE(sel);
 			for (i = idx->start.row; i <= idx->end.row; i++)

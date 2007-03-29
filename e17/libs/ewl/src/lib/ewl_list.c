@@ -6,7 +6,9 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static Ewl_Widget *ewl_list_widget_at(Ewl_MVC *mvc, void *data, int row, int column);
+static Ewl_Widget *ewl_list_widget_at(Ewl_MVC *mvc, void *data, 
+					unsigned int row, 
+					unsigned int column);
 
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure
@@ -148,7 +150,7 @@ ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 void
 ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
-	int row;
+	unsigned int row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -196,8 +198,8 @@ ewl_list_cb_selected_change(Ewl_MVC *mvc)
 }
 
 static Ewl_Widget *
-ewl_list_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, int row, 
-					int column __UNUSED__)
+ewl_list_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row, 
+					unsigned int column __UNUSED__)
 {
 	Ewl_Widget *w;
 

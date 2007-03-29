@@ -16,8 +16,9 @@ static void ewl_filelist_list_cb_dir_clicked(Ewl_Widget *w, void *ev,
 static void ewl_filelist_list_cb_icon_clicked(Ewl_Widget *w, void *ev, 
 							void *data);
 
-static Ewl_Widget *ewl_filelist_list_view_cb_widget_fetch(void *data, int row,
-							int col);
+static Ewl_Widget *ewl_filelist_list_view_cb_widget_fetch(void *data, 
+							unsigned int row,
+							unsigned int col);
 
 /**
  * @return Returns the view for the filelist list
@@ -39,7 +40,9 @@ ewl_filelist_list_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_filelist_list_view_cb_widget_fetch(void *data __UNUSED__, int row __UNUSED__, int col __UNUSED__)
+ewl_filelist_list_view_cb_widget_fetch(void *data __UNUSED__, 
+					unsigned int row __UNUSED__, 
+					unsigned int col __UNUSED__)
 {
 	Ewl_Widget *list;
 
