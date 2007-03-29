@@ -4,13 +4,14 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
+#include <Efreet.h>
 
 static int ewl_icon_theme_is_edje = 0;
 
 static Ecore_Hash *ewl_icon_theme_cache = NULL;
 static Ecore_Hash *ewl_icon_fallback_theme_cache = NULL;
 static void ewl_icon_theme_cb_free(void *data);
-static char *ewl_icon_theme_icon_path_get_helper(const char *icon, 
+static const char *ewl_icon_theme_icon_path_get_helper(const char *icon, 
 					const char *size, const char *theme, 
 					const char *key, Ecore_Hash *cache);
 
@@ -27,13 +28,10 @@ ewl_icon_theme_init(void)
 	{
 		ewl_icon_theme_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 		ecore_hash_set_free_key(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
-		ecore_hash_set_free_value(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
 
 		ewl_icon_fallback_theme_cache = ecore_hash_new(
 						ecore_str_hash, ecore_str_compare);
 		ecore_hash_set_free_key(ewl_icon_fallback_theme_cache, 
-						ewl_icon_theme_cb_free);
-		ecore_hash_set_free_value(ewl_icon_fallback_theme_cache, 
 						ewl_icon_theme_cb_free);
 	}
 
@@ -96,7 +94,7 @@ ewl_icon_theme_theme_change(void)
 const char *
 ewl_icon_theme_icon_path_get(const char *icon, int size)
 {
-	char *ret;
+	const char *ret;
 	const char *icon_theme;
 	char icon_size[16];
 	char key[256];
@@ -134,12 +132,12 @@ ewl_icon_theme_icon_path_get(const char *icon, int size)
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
-static char *
+static const char *
 ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size, 
 					const char *theme, const char *key,
 					Ecore_Hash *cache)
 {
-	char *ret;
+	const char *ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("icon", icon, EWL_THEME_KEY_NOMATCH);
@@ -150,7 +148,7 @@ ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
 		ret = efreet_icon_path_find(theme, icon, size);
 		if (!ret) ret = EWL_THEME_KEY_NOMATCH;
 
-		ecore_hash_set(cache, strdup(key), ret);
+		ecore_hash_set(cache, strdup(key), (void *)ret);
 	}
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);;

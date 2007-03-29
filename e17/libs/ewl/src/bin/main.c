@@ -62,7 +62,7 @@ static void *ewl_test_cb_expansion_fetch(void *data, unsigned int row,
 static void ewl_test_cb_test_selected(Ewl_Widget *w, void *ev, void *data);
 
 static Ewl_Widget *cb_unit_test_header_fetch(void *data, int column);
-static void *cb_unit_test_header_data_fetch(void *data, int column);
+static void *cb_unit_test_header_data_fetch(void *data, unsigned int column);
 static void *cb_unit_test_fetch(void *data, unsigned int row, unsigned int column);
 static int cb_unit_test_count(void *data);
 
@@ -1102,7 +1102,7 @@ ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void *
-cb_unit_test_header_data_fetch(void *data, int column)
+cb_unit_test_header_data_fetch(void *data, unsigned int column)
 {
 	if (column == 0)
 		return "Test";

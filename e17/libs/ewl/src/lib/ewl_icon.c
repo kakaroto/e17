@@ -9,7 +9,6 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
-#include <Efreet.h>
 
 static Ewl_Stock_Funcs stock_funcs = {
 	EWL_STOCK_LABEL_SET(ewl_icon_label_set),
