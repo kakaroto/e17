@@ -16,18 +16,18 @@ ewl_scrollpane_new(void)
 {
 	Ewl_Scrollpane *s;
 
-	DENTER_FUNCTION(DLEVEL_UNSTABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = NEW(Ewl_Scrollpane, 1);
 	if (!s)
-		DRETURN_PTR(NULL, DLEVEL_UNSTABLE);
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	if (!ewl_scrollpane_init(s)) {
 		ewl_widget_destroy(EWL_WIDGET(s));
 		s = NULL;
 	}
 
-	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_UNSTABLE);
+	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
 /**
@@ -42,7 +42,7 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 {
 	Ewl_Widget *w;
 
-	DENTER_FUNCTION(DLEVEL_UNSTABLE);
+	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	w = EWL_WIDGET(s);

@@ -408,12 +408,7 @@ ewl_scrollbar_value_get(Ewl_Scrollbar *s)
 
 	v = ewl_range_value_get(EWL_RANGE(s->seeker));
 
-	/*
-	if (EWL_BOX(s)->orientation == EWL_ORIENTATION_VERTICAL)
-		v = 1.0 - v;
-		*/
-
-	DRETURN_FLOAT(v, DLEVEL_UNSTABLE);
+	DRETURN_FLOAT(v, DLEVEL_STABLE);
 }
 
 /**
