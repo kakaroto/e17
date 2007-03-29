@@ -347,12 +347,12 @@ combo_test_editable_cb_widget_fetch(void *data,
 	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT);
 
 	o = ewl_image_new();
-	ewl_image_file_path_set(EWL_IMAGE(o), (char *)data);
+	ewl_image_file_path_set(EWL_IMAGE(o), (const char *)data);
 	ewl_container_child_append(EWL_CONTAINER(w), o);
 	ewl_widget_show(o);
 
 	o = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(o), (char *)data);
+	ewl_label_text_set(EWL_LABEL(o), strrchr((const char *)data, '/') + 1);
 	ewl_container_child_append(EWL_CONTAINER(w), o);
 	ewl_widget_show(o);
 
