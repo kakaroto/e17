@@ -6,7 +6,6 @@
 #include <Edje.h>
 #include <Ecore_Str.h>
 #include <Ecore_File.h>
-#include <Efreet.h>
 
 #include <stdio.h>
 #include <stdlib.h>

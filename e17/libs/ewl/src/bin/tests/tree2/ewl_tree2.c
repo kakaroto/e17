@@ -959,7 +959,6 @@ static void ewl_tree2_cb_plain_view(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data);
 static void tree2_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void tree2_cb_select_mode_change(Ewl_Widget *w, void *ev, void *data);
-static void hide_tree(Ewl_Widget *w, void *ev, void *data);
 
 void 
 test_info(Ewl_Test *test)
@@ -1075,15 +1074,6 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 				tree2_cb_select_mode_change, NULL);
 	ewl_widget_show(o);
-
-	o = ewl_button_new();
-	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
-        ewl_button_label_set(EWL_BUTTON(o), "Hide Tree");
-        ewl_container_child_append(EWL_CONTAINER(o2), o);
-        ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-                                hide_tree, NULL);
-        ewl_widget_show(o);
-
 
 	return 1;
 }
@@ -1469,13 +1459,4 @@ tree2_cb_select_mode_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	}
 }
 
-static void
-hide_tree(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
-				void *data __UNUSED__)
-{
-	Ewl_Widget *tree;
-
-	tree = ewl_widget_name_find("tree");
-	ewl_widget_hide(tree);
-}
 

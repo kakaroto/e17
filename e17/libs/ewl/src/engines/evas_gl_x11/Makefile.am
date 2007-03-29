@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/src/lib \
 		-I$(top_builddir)/src/lib \
 		-I$(top_srcdir)/src/engines/evas_gl_x11 \
 		-I$(top_builddir)/src/engines/evas_gl_x11 \
-		@ECORE_CFLAGS@ @EFREET_CFLAGS@
+		@ECORE_CFLAGS@
 
 pkgdir = $(libdir)/ewl/engines
 

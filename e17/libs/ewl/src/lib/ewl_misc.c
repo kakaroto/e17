@@ -6,6 +6,7 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
+#include <Efreet.h>
 
 #ifdef __GLIBC__
 #include <execinfo.h>
