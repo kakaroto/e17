@@ -59,18 +59,7 @@ static const char *get_image(void)
 {
 	const char *img = NULL;
 
-        if (VISIBLE(em->fbox_vbox) && em->currentf)
-        {
-                img = ewl_widget_name_get(em->currentf);
-        }
-        else if (VISIBLE(em->list_vbox) && em->currentl)
-        {
-                img = ewl_widget_name_get(em->currentl);
-        }
-        else if (VISIBLE(em->edit_vbox))
-        {
-                img = ewl_image_file_path_get(EWL_IMAGE(em->eimage));
-        }
+        if (VISIBLE(em->edit_vbox)) img = ewl_image_file_path_get(EWL_IMAGE(em->eimage));
 	if(!img) return NULL;
 	return strdup(img);
 }

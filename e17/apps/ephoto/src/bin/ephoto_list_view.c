@@ -4,7 +4,6 @@ static Ewl_Widget *list_view_new(void *data, int column, int row);
 static Ewl_Widget *list_header_fetch(void *data, int column);
 static void *list_data_fetch(void *data, unsigned int row, unsigned int column);
 static int list_data_count(void *data);
-static void set_active_list_view(Ewl_Widget *w, void *event, void *data);
 
 /*Add the list view*/
 Ewl_Widget *add_list_view(Ewl_Widget *c)
@@ -24,20 +23,6 @@ Ewl_Widget *add_list_view(Ewl_Widget *c)
 void show_list_view(Ewl_Widget *w, void *event, void *data)
 {
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->list_vbox);
-        ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
-	ewl_widget_hide(em->ilabel);
-}
-
-static void set_active_list_view(Ewl_Widget *w, void *event, void *data)
-{
-	if (em->currentl)
-	{
-		ewl_widget_state_set(em->currentl, "unselected", EWL_STATE_PERSISTENT);
-	}
-	em->currentl = w;
-	ewl_widget_state_set(em->currentl, "selected", EWL_STATE_PERSISTENT);
-
-	return;
 }
 
 /*Create and Add a Tree to the Container c*/
@@ -89,7 +74,7 @@ static Ewl_Widget *list_view_new(void *data, int row, int column)
 	hbox = ewl_hbox_new();
 	ewl_box_spacing_set(EWL_BOX(hbox), 10);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
-	ewl_callback_append(hbox, EWL_CALLBACK_CLICKED, set_active_list_view, NULL);
+	ewl_callback_append(hbox, EWL_CALLBACK_CLICKED, show_edit_view, strdup(image));
 	ewl_widget_name_set(hbox, image);
 	ewl_widget_show(hbox);
 

@@ -138,14 +138,6 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
 	ewl_widget_show(vsep);
 
-        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/get_exif.png", NULL, NULL);
-        ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
-	ewl_attach_tooltip_text_set(button, "You do not have libexif 0.6.13");
-#ifdef BUILD_EXIF_SUPPORT
-	ewl_callback_append(button, EWL_CALLBACK_CLICKED, display_exif_dialog, NULL);
-	ewl_attach_tooltip_text_set(button, "View Exif Data");
-#endif
-
 	button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", window_fullscreen, NULL);
         ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
 	ewl_attach_tooltip_text_set(button, "Toggle Fullscreen");
@@ -175,14 +167,6 @@ static void populate(Ewl_Widget *w, void *event, void *data)
 	if (w)
 	{
 		album = (char *)ewl_widget_name_get(w);
-		if (em->currenta) 
-		{
-			ewl_widget_state_set(em->currenta, "unselected", EWL_STATE_PERSISTENT);
-			ewl_widget_state_set(EWL_ICON(em->currenta)->label, "default", EWL_STATE_PERSISTENT);
-		}
-		em->currenta = w;
-		ewl_widget_state_set(em->currenta, "selected", EWL_STATE_PERSISTENT);
-		ewl_widget_state_set(EWL_ICON(em->currenta)->label, "blue", EWL_STATE_PERSISTENT);
 	}
 	else
 	{
@@ -203,20 +187,17 @@ static void populate(Ewl_Widget *w, void *event, void *data)
         {
                 imagef = ecore_dlist_current(em->images);
 
-                thumb = add_image(em->fbox, imagef, 1, set_info, NULL);
+                thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
 		ewl_image_constrain_set(EWL_IMAGE(thumb), 64);
 		ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_name_set(thumb, imagef);
 
 		ecore_dlist_next(em->images);
         }
-
 	ecore_dlist_goto_first(em->images);
 
         ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
 	ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
-	
-	ewl_image_file_set(EWL_IMAGE(em->eimage), ecore_dlist_current(em->images), NULL);
 
 	return;
 }

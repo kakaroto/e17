@@ -18,7 +18,6 @@ EXTRA_DIST = \
 	bits/label.edc \
 	bits/scrollbar.edc \
 	bits/scrollpane.edc \
-	bits/select.edc \
 	bits/spacer.edc \
 	bits/tree.edc \
 	bits/window.edc

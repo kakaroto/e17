@@ -22,7 +22,6 @@ collections
 #include "bits/scrollbar.edc"
 #include "bits/scrollpane.edc"
 #include "bits/seeker.edc"
-#include "bits/select.edc"
 #include "bits/separator.edc"
 #include "bits/shadow.edc"
 #include "bits/spacer.edc"
@@ -37,7 +36,6 @@ data
 	item: "/combo/button/group" "/ephoto/combo/button";
 	item: "/combo/cell/group" "/ephoto/combo/contents";
 	item: "/combo/popup/group" "/ephoto/combo/popup";
-	item: "/combo/popup/vbox/cell/group" "/ephoto/select/highlight";
 	item: "/entry/group" "/ephoto/entry";
 	item: "/entry/cursor/group" "/ephoto/entry/cursor";
 	item: "/freebox/auto/padding" 16;
@@ -48,9 +46,6 @@ data
 	item: "/hseeker/group" "/ephoto/hseeker";
 	item: "/hseeker/hbutton/group" "/ephoto/hseeker/button";
 	item: "/hseparator/group" "/ephoto/hseparator";
-	item: "/icon/group" "/ephoto/select";
-	item: "/image_thumbnail/group" "/ephoto/select";
-	item: "/image/group" "/ephoto/select";
 	item: "/label/group" "/ephoto/label";
 	item: "/label/textpart" "/ephoto/label/text";
 	item: "/notebook/pages/group" "/ephoto/window";

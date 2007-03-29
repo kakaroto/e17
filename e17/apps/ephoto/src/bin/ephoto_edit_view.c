@@ -27,15 +27,29 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
 /*Show the edit view*/
 void show_edit_view(Ewl_Widget *w, void *event, void *data)
 {
+	char *path = data;
+
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->edit_vbox);
-	ecore_dlist_goto_first(em->images);
-        ewl_widget_hide(em->ilabel);
+	if (path) 
+	{
+		ewl_image_file_path_set(EWL_IMAGE(em->eimage), path);
+		free(path);
+	}
+	else ewl_image_file_path_set(EWL_IMAGE(em->eimage), ecore_dlist_current(em->images));
 }
 
 /*Add edit tools to container c*/
 void add_edit_tools(Ewl_Widget *c)
 {
 	Ewl_Widget *image, *sep;
+
+        image = add_image(c, PACKAGE_DATA_DIR "/images/get_exif.png", 0, NULL, NULL);
+        ewl_image_constrain_set(EWL_IMAGE(image), 30);
+        ewl_attach_tooltip_text_set(image, "You do not have libexif 0.6.13");
+#ifdef BUILD_EXIF_SUPPORT
+        ewl_callback_append(image, EWL_CALLBACK_CLICKED, display_exif_dialog, NULL);
+        ewl_attach_tooltip_text_set(image, "View Exif Data");
+#endif
 
 	image = add_image(c, PACKAGE_DATA_DIR "/images/undo.png", 0, rotate_image_left, NULL);
 	ewl_image_constrain_set(EWL_IMAGE(image), 30);

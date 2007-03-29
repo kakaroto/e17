@@ -88,7 +88,7 @@ Ewl_Widget *add_ltree(Ewl_Widget *c);
 
 /* Ephoto Normal View */
 Ewl_Widget *add_normal_view(Ewl_Widget *c);
-void set_info(Ewl_Widget *w, void *event, void *data);
+void freebox_image_clicked(Ewl_Widget *w, void *event, void *data);
 
 /* Ephoto Slideshow */
 void start_slideshow(Ewl_Widget *w, void *event, void *data);
@@ -110,16 +110,12 @@ struct _Ephoto_Main
 {
 	Ecore_List *albums;
 	Ecore_List *images;
-	Ewl_Widget *atree; 
-	Ewl_Widget *currenta;
-	Ewl_Widget *currentf;
-	Ewl_Widget *currentl;
+	Ewl_Widget *atree;
 	Ewl_Widget *edit_tools;
 	Ewl_Widget *edit_vbox;
 	Ewl_Widget *eimage;
 	Ewl_Widget *fbox_vbox;
 	Ewl_Widget *fbox;
-	Ewl_Widget *ilabel;
 	Ewl_Widget *list_vbox;
 	Ewl_Widget *ltree;
 	Ewl_Widget *tbar;
