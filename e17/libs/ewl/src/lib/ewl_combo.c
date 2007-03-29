@@ -535,7 +535,7 @@ ewl_combo_cell_combo_get(Ewl_Combo_Cell *cell)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("cell", cell, NULL);
-	DCHECK_TYPE_RET("cell", cell, EWL_COMBO_TYPE, NULL);
+	DCHECK_TYPE_RET("cell", cell, EWL_COMBO_CELL_TYPE, NULL);
 
 	DRETURN_PTR(cell->combo, DLEVEL_STABLE);
 }
