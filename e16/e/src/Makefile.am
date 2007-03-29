@@ -1,11 +1,14 @@
 SUBDIRS =
 
-EXTRA_DIST = gnome.c ecompmgr.c ecompmgr.h snprintf.c
+EXTRA_DIST = gnome.c eglx.c eglx.h ecompmgr.c ecompmgr.h snprintf.c
 
 bin_PROGRAMS = e16
 
 if ENABLE_GNOME
 SRCS_GNOME = gnome.c
+endif
+if HAVE_GLX
+SRCS_GLX = eglx.c eglx.h
 endif
 if HAVE_COMPOSITE
 SRCS_ECOMPMGR = ecompmgr.c ecompmgr.h
@@ -102,6 +105,7 @@ e16_SOURCES = \
 	x.c                     xwin.h			\
 	zoom.c			\
 	$(SRCS_GNOME) 		\
+	$(SRCS_GLX) 		\
 	$(SRCS_ECOMPMGR)	\
 	$(SRCS_SNPRINTF)
 

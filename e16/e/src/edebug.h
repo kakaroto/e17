@@ -53,6 +53,8 @@
 #define EDBUG_TYPE_COMPMGR2     162
 #define EDBUG_TYPE_COMPMGR3     163
 
+#define EDBUG_TYPE_GLX          170
+
 void                EDebugInit(const char *s);
 void                EDebugSet(unsigned int type, int value);
 int                 EDebug(unsigned int type);
