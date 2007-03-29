@@ -99,7 +99,7 @@ PKG_CHECK_MODULES([EVAS], evas,
    ]
 )
 
-PKG_CHECK_MODULES([ECORE], ecore,
+PKG_CHECK_MODULES([ECORE], ecore-file,
    [
       have_ecore="Yes"
    ],
