@@ -6,7 +6,7 @@ SUBDIRS = po
 filesdir = $(datadir)
 files_DATA = \
 module.desktop \
-module.edj
+e-module-flame.edj
 
 EXTRA_DIST = $(files_DATA) e_modules-flame.spec
 

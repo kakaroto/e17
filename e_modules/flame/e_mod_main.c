@@ -34,8 +34,7 @@ static void _flame_base_random_set (Flame_Face * ff);
 static void _flame_base_random_modify (Flame_Face * ff);
 static void _flame_process (Flame_Face * ff);
 static int _flame_cb_draw (void *data);
-static int _flame_cb_event_container_resize (void *data, int type,
-					     void *event);
+static int _flame_cb_event_container_resize (void *data, int type, void *event);
 
 static int powerof (unsigned int n);
 
