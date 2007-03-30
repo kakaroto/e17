@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Cpu
-Exec=enlightenment
-StartupNotify=false
-X-Enlightenment-WaitExit=false
-X-Enlightenment-IconClass=cpu,gadget
-Icon=./module.edj

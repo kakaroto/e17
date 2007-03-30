@@ -7,15 +7,13 @@ EDJE_FLAGS = -v \
 
 files_DATA = \
 module.desktop \
-module.edj \
+e-module-cpu.edj \
 cpu.edj
 
 EXTRA_DIST = $(files_DATA) \
 cpu.edc \
 VeraMono.ttf \
 cpu.png \
-module.desktop \
-module.edj \
 e_modules-cpu.spec
 
 # data files for the module
