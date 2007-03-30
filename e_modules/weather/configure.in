@@ -148,7 +148,6 @@ AC_SUBST(e_modules)
 
 AC_OUTPUT([
 Makefile
-module.desktop
 images/Makefile
 po/Makefile
 e_modules-weather.spec
