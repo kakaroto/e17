@@ -266,9 +266,9 @@ int main(int argc, char **argv)
 	bind_textdomain_codeset(PACKAGE, "UTF-8");
 	textdomain(PACKAGE);
 #endif
-	/*Use our own custom theme*/
+	/*Use our own theme*/
 	ewl_theme_theme_set(PACKAGE_DATA_DIR "/themes/ephoto.edj");
-	
+
 	/*Start the GUI*/
 	create_main_gui();
 	

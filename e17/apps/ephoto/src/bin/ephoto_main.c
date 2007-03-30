@@ -49,7 +49,7 @@ static void window_fullscreen(Ewl_Widget *w, void *event, void *data)
 void create_main_gui(void)
 {
 	Ewl_Widget *vbox, *hbox, *hsep, *vsep, *button;
-	Ewl_Widget *mb, *menu;
+	Ewl_Widget *mb, *menu, *mi;
 
 	em = NULL;
 	em = calloc(1, sizeof(Ephoto_Main));
@@ -63,6 +63,7 @@ void create_main_gui(void)
 
 	mb = add_menubar(vbox);
 	menu = add_menu(mb, "File");
+	mi = add_menu_item(menu, "Exit", PACKAGE_DATA_DIR "/images/exit.png", destroy, NULL);
 
 	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);

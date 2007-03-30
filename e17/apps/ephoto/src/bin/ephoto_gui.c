@@ -115,11 +115,29 @@ Ewl_Widget *add_menu(Ewl_Widget *c, const char *lbl)
 	Ewl_Widget *menu;
 	
 	menu = ewl_menu_new();
-	if(lbl) ewl_label_text_set(EWL_LABEL(menu), lbl);
+	if(lbl) ewl_button_label_set(EWL_BUTTON(menu), lbl);
+	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	if(c) ewl_container_child_append(EWL_CONTAINER(c), menu);
 	ewl_widget_show(menu);
 
 	return menu;
+}
+
+/*Create and Add a Menu Item to the Container c*/
+Ewl_Widget *add_menu_item(Ewl_Widget *c, const char *lbl, const char *img, void *cb, void *data)
+{
+	Ewl_Widget *mi;
+
+	mi = ewl_menu_item_new();
+	if(img) ewl_button_image_set(EWL_BUTTON(mi), img, NULL);
+	if(lbl) ewl_button_label_set(EWL_BUTTON(mi), lbl);
+	ewl_object_alignment_set(EWL_OBJECT(mi), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(mi), EWL_FLAG_FILL_ALL);
+	if(c) ewl_container_child_append(EWL_CONTAINER(c), mi);
+	if(cb) ewl_callback_append(mi, EWL_CALLBACK_CLICKED, cb, data);
+	ewl_widget_show(mi);
+
+	return mi;
 }
 
 /*Create and Add a Shadow to the Container c*/

@@ -28,13 +28,13 @@ void show_normal_view(Ewl_Widget *w, void *event, void *data)
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->fbox_vbox);
 }
 
-/*Set the info that is in the info label on normal view*/
+/*Action when an image is clicked*/
 void freebox_image_clicked(Ewl_Widget *w, void *event, void *data)
 {
 	const char *path;
 
 	path = ewl_widget_name_get(w);
-	show_edit_view(NULL, NULL, strdup(path));
+//	show_edit_view(NULL, NULL, strdup(path));
 
 	return;
 }

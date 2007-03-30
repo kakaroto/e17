@@ -71,7 +71,7 @@ static Ewl_Widget *list_view_new(void *data, int row, int column)
 
 	hbox = add_box(NULL, EWL_ORIENTATION_HORIZONTAL, 10);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
-	ewl_callback_append(hbox, EWL_CALLBACK_CLICKED, show_edit_view, strdup(image));
+//	ewl_callback_append(hbox, EWL_CALLBACK_CLICKED, show_edit_view, strdup(image));
 	ewl_widget_name_set(hbox, image);
 
         img = add_image(hbox, image, 1, NULL, NULL);

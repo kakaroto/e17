@@ -19,21 +19,21 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
         ewl_object_alignment_set(EWL_OBJECT(em->eimage), EWL_FLAG_ALIGN_CENTER);
         ewl_object_fill_policy_set(EWL_OBJECT(em->eimage), EWL_FLAG_FILL_SHRINK);
 
+        em->edit_tools = add_box(em->edit_vbox, EWL_ORIENTATION_HORIZONTAL, 3);
+        ewl_object_alignment_set(EWL_OBJECT(em->edit_tools), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(em->edit_tools), EWL_FLAG_FILL_SHRINK);
+        add_edit_tools(em->edit_tools);
+
 	return em->edit_vbox;
 }
 
 /*Show the edit view*/
 void show_edit_view(Ewl_Widget *w, void *event, void *data)
 {
-	char *path = data;
-
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->edit_vbox);
-	if (path) 
-	{
-		ewl_image_file_path_set(EWL_IMAGE(em->eimage), path);
-		free(path);
-	}
-	else ewl_image_file_path_set(EWL_IMAGE(em->eimage), ecore_dlist_current(em->images));
+	ecore_dlist_goto_first(em->images);
+	ewl_image_file_path_set(EWL_IMAGE(em->eimage), ecore_dlist_current(em->images));
+	return;
 }
 
 /*Add edit tools to container c*/
@@ -71,14 +71,12 @@ void add_edit_tools(Ewl_Widget *c)
 
         image = add_image(c, PACKAGE_DATA_DIR "/images/media-seek-backward.png", 0, previous_image, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
-	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_RIGHT);
 	ewl_attach_tooltip_text_set(image, "Previous Image");
 
         image = add_image(c, PACKAGE_DATA_DIR "/images/media-seek-forward.png", 0, next_image, NULL);
         ewl_image_constrain_set(EWL_IMAGE(image), 30);
-	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_RIGHT);
 	ewl_attach_tooltip_text_set(image, "Next Image");
-
+       
 	return;
 }
 
@@ -118,8 +116,6 @@ static void next_image(Ewl_Widget *w, void *event, void *data)
 
 	return;
 }
-
-
 
 /*Flip the image 180 degrees horizontally*/
 static void flip_image_horizontal(Ewl_Widget *w, void *event, void *data)

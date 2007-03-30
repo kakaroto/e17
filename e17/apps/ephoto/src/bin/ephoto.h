@@ -72,6 +72,7 @@ Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, v
 Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl);
 Ewl_Widget *add_menubar(Ewl_Widget *c);
 Ewl_Widget *add_menu(Ewl_Widget *c, const char *lbl);
+Ewl_Widget *add_menu_item(Ewl_Widget *c, const char *lbl, const char *img, void *cb, void *data);
 Ewl_Widget *add_text(Ewl_Widget *c, const char *text);
 Ewl_Widget *add_shadow(Ewl_Widget *c);
 Ewl_Widget *add_window(const char *name, int width, int height, void *cb, void *data);

@@ -52,7 +52,7 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
 {
 	Ewl_Widget *cell, *image;
 
-	win = add_window("Ephoto Slideshow!", 600, 400, destroy, NULL);
+	win = add_window("Ephoto Slideshow!", 0, 0, destroy, NULL);
 	ewl_window_fullscreen_set(EWL_WINDOW(win), 1);
 	ewl_callback_append(win, EWL_CALLBACK_CLICKED, destroy, NULL);
 
