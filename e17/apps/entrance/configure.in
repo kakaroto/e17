@@ -34,7 +34,8 @@ if test $sysconfdir = '${prefix}/etc'; then
 fi
 test $localstatedir = '${prefix}/var' && localstatedir="/var/run/${PACKAGE}"
 
-AC_DEFINE_UNQUOTED(PACKAGE_CFG_DIR, "${sysconfdir}", [Config data directory])
+AC_EXPAND_DIR(PACKAGE_CFG_DIR, "$sysconfdir")
+AC_DEFINE_UNQUOTED(PACKAGE_CFG_DIR, "$PACKAGE_CFG_DIR", [Config data directory])
 AC_DEFINE_UNQUOTED(PACKAGE_STATE_DIR, "${localstatedir}", [State data directory])
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
