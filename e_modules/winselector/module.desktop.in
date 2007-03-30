@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Winselector
-Exec=enlightenment
-StartupNotify=false
-X-Enlightenment-WaitExit=false
-X-Enlightenment-IconClass=winselector,gadget
-Icon=./module.edj

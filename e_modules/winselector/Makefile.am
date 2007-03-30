@@ -10,7 +10,7 @@ filesdir =  $(datadir)
 
 files_DATA = module_icon.png \
 			module.desktop \
-			module.edj \
+			e-module-winselector.edj \
 			winselector.edj
 
 EXTRA_DIST = $(files_DATA) \
