@@ -98,7 +98,7 @@ _gc_icon(Evas *evas)
    Evas_Object *o;
    char buf[PATH_MAX];
    
-   snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(cfg->mod));
+   snprintf(buf, sizeof(buf), "%s/e-module-net.edj", e_module_dir_get(cfg->mod));
    o = edje_object_add(evas);
    edje_object_file_set(o, buf, "icon");
    return o;

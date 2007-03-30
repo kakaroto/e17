@@ -91,7 +91,6 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 po/Makefile
-module.desktop
 e_modules-net.spec
 ],[])
 

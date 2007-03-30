@@ -11,11 +11,10 @@ EDJE_FLAGS = -v \
 
 filesdir = $(datadir)
 files_DATA = module.desktop \
-	     module.edj \
+	     e-module-net.edj \
 	     net.edj
 	     
 EXTRA_DIST = $(files_DATA) \
-	     module.desktop.in \
 	     module.edc \
 	     net.edc \
 	     fonts/Vera.ttf \
@@ -30,11 +29,8 @@ EXTRA_DIST = $(files_DATA) \
 %.edj: %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 	
-module.edj: module.edc
-	$(EDJE_CC) $(EDJE_FLAGS) module.edc module.edj
-
 clean-local:
-	rm -rf module.edj net.edj *~
+	rm -rf net.edj *~
 	
 uninstall:
 	rm -rf $(datadir)
