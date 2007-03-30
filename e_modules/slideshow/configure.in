@@ -150,7 +150,6 @@ AC_SUBST(e_modules)
 AC_OUTPUT([
 Makefile
 e_modules-slideshow.spec
-module.desktop
 po/Makefile
 ],[
 ])

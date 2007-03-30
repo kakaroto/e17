@@ -13,7 +13,7 @@ filesdir =  $(datadir)
 files_DATA = \
 module_icon.png \
 module.desktop \
-module.edj \
+e-module-slideshow.edj \
 slideshow.edj
 
 EXTRA_DIST = $(files_DATA) \
