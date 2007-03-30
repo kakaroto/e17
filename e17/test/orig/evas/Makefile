@@ -77,11 +77,11 @@ evas_directfb_window_test: $(evas_directfb_window_test_OBJS)
 	$(CC) $(LIBS) $(LDFLAGS) $(evas_directfb_window_test_OBJS) -lm  -o $@
 
 ## dead engine - useless
-evas_cairo_x11_test_SRCS = evas_test_main.c evas_software_qtopia_main.cpp
+evas_cairo_x11_test_SRCS = evas_test_main.c evas_cairo_x11_main.c
 evas_cairo_x11_test_OBJS = $(evas_cairo_x11_test_SRCS:.c=.o)
 evas_cairo_x11_test: $(evas_cairo_x11_test_OBJS)
 	$(RM) $@
-	$(CC) $(LIBS) $(LDFLAGS) $(evas_cairo_x11_test_OBJS) -lm  -o $@
+	$(CC) $(LIBS) $(LDFLAGS) $(evas_cairo_x11_test_OBJS) -lm -L/usr/X11R6/lib -L/usr/X11R7/lib -L/usr/xorg/lib -lX11 -lXext -o $@
 
 
 
