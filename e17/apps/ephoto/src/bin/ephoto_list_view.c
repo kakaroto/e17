@@ -8,10 +8,8 @@ static int list_data_count(void *data);
 /*Add the list view*/
 Ewl_Widget *add_list_view(Ewl_Widget *c)
 {
-        em->list_vbox = ewl_vbox_new();
+        em->list_vbox = add_box(c, EWL_ORIENTATION_VERTICAL, 5);
         ewl_object_fill_policy_set(EWL_OBJECT(em->list_vbox), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(c), em->list_vbox);
-        ewl_widget_show(em->list_vbox);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(c), em->list_vbox, "List");
 
 	em->ltree = add_ltree(em->list_vbox);
@@ -71,12 +69,10 @@ static Ewl_Widget *list_view_new(void *data, int row, int column)
                                                  image_pixels_string_get(image),
                                                  file_size_get(size));
 
-	hbox = ewl_hbox_new();
-	ewl_box_spacing_set(EWL_BOX(hbox), 10);
+	hbox = add_box(NULL, EWL_ORIENTATION_HORIZONTAL, 10);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
 	ewl_callback_append(hbox, EWL_CALLBACK_CLICKED, show_edit_view, strdup(image));
 	ewl_widget_name_set(hbox, image);
-	ewl_widget_show(hbox);
 
         img = add_image(hbox, image, 1, NULL, NULL);
         ewl_image_constrain_set(EWL_IMAGE(img), 64);
@@ -93,9 +89,7 @@ static Ewl_Widget *list_header_fetch(void *data, int column)
 {
 	Ewl_Widget *label;
 
-	label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(label), "Images");
-	ewl_widget_show(label);
+	label = add_label(NULL, "Images");
 
 	return label;
 }

@@ -25,16 +25,16 @@
 
 /* NLS */
 #ifdef ENABLE_NLS
-# include <libintl.h>
-# include <locale.h>
-# define _(str) gettext(str)
-# define gettext_noop(str) str
-# define N_(str) gettext_noop(str)
+#include <libintl.h>
+#include <locale.h>
+#define _(str) gettext(str)
+#define gettext_noop(str) str
+#define N_(str) gettext_noop(str)
 #else
-# define _(str) (str)
-# define gettext_noop(str) str
-# define N_(str) gettext_noop(str)
-# define gettext(str) ((char*) (str))
+#define _(str) (str)
+#define gettext_noop(str) str
+#define N_(str) gettext_noop(str)
+#define gettext(str) ((char*) (str))
 #endif
 
 /* NLS callbacks */
@@ -65,11 +65,16 @@ Ecore_List *ephoto_db_list_images(sqlite3 *db, const char *album);
 void ephoto_db_close(sqlite3 *db);
 
 /* Ephoto Gui */
+Ewl_Widget *add_box(Ewl_Widget *c, Ewl_Orientation orientation, int spacing);
 Ewl_Widget *add_button(Ewl_Widget *c, const char *txt, const char *img, void *cb, void *data);
+Ewl_Widget *add_entry(Ewl_Widget *c, const char *txt, void *cb, void *data);
 Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, void *data);
 Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl);
+Ewl_Widget *add_menubar(Ewl_Widget *c);
+Ewl_Widget *add_menu(Ewl_Widget *c, const char *lbl);
 Ewl_Widget *add_text(Ewl_Widget *c, const char *text);
 Ewl_Widget *add_shadow(Ewl_Widget *c);
+Ewl_Widget *add_window(const char *name, int width, int height, void *cb, void *data);
 
 /* Ephoto Imaging */
 unsigned int *flip_horizontal(Ewl_Widget *image);
@@ -118,7 +123,6 @@ struct _Ephoto_Main
 	Ewl_Widget *fbox;
 	Ewl_Widget *list_vbox;
 	Ewl_Widget *ltree;
-	Ewl_Widget *tbar;
 	Ewl_Widget *toolbar;
 	Ewl_Widget *view_box;
 	Ewl_Widget *win;

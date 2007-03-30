@@ -52,13 +52,9 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
 {
 	Ewl_Widget *cell, *image;
 
-	win = ewl_window_new();
-	ewl_window_title_set(EWL_WINDOW(win), "Ephoto Slideshow!");
-	ewl_window_name_set(EWL_WINDOW(win), "Ephoto Slideshow!");
+	win = add_window("Ephoto Slideshow!", 600, 400, destroy, NULL);
 	ewl_window_fullscreen_set(EWL_WINDOW(win), 1);
 	ewl_callback_append(win, EWL_CALLBACK_CLICKED, destroy, NULL);
-	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy, NULL);
-	ewl_widget_show(win);
 
 	cell = ewl_cell_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);

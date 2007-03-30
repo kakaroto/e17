@@ -48,60 +48,32 @@ static void window_fullscreen(Ewl_Widget *w, void *event, void *data)
 /*Create the Main Ephoto Window*/
 void create_main_gui(void)
 {
-	Ewl_Widget *vbox, *entry, *hbox;
-	Ewl_Widget *rvbox, *hsep, *vsep, *button;
+	Ewl_Widget *vbox, *hbox, *hsep, *vsep, *button;
+	Ewl_Widget *mb, *menu;
 
 	em = NULL;
 	em = calloc(1, sizeof(Ephoto_Main));
 	em->albums = ecore_list_new();
 	em->images = ecore_dlist_new();
 
-	em->win = ewl_window_new();
-        ewl_window_title_set(EWL_WINDOW(em->win), "Ephoto!");
-        ewl_window_name_set(EWL_WINDOW(em->win), "Ephoto!");
-        ewl_object_size_request(EWL_OBJECT(em->win), 777, 542);
-        ewl_callback_append(em->win, EWL_CALLBACK_DELETE_WINDOW, destroy, NULL);
-	ewl_widget_show(em->win);
+	em->win = add_window("Ephoto!", 775, 540, destroy, NULL);
 
-	vbox = ewl_vbox_new();
-	ewl_box_spacing_set(EWL_BOX(vbox), 5);
+	vbox = add_box(em->win, EWL_ORIENTATION_VERTICAL, 5);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(em->win), vbox);
-	ewl_widget_show(vbox);
 
-	em->tbar = ewl_hbox_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(em->tbar), EWL_FLAG_FILL_SHRINK);
-	ewl_object_alignment_set(EWL_OBJECT(em->tbar), EWL_FLAG_ALIGN_RIGHT);
-	ewl_container_child_append(EWL_CONTAINER(vbox), em->tbar);
-	ewl_widget_show(em->tbar);
+	mb = add_menubar(vbox);
+	menu = add_menu(mb, "File");
 
-	entry = ewl_entry_new();
-	ewl_object_minimum_size_set(EWL_OBJECT(entry), 157, 22);
-	ewl_object_maximum_size_set(EWL_OBJECT(entry), 157, 22);
-	ewl_container_child_append(EWL_CONTAINER(em->tbar), entry);
-	ewl_widget_show(entry);
-
-	add_button(em->tbar, "Find", NULL, NULL, NULL);
-
-	hbox = ewl_hbox_new();
-	ewl_box_spacing_set(EWL_BOX(hbox), 2);
+	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_widget_show(hbox);
 
 	em->atree = add_atree(hbox);
 	ewl_object_maximum_w_set(EWL_OBJECT(em->atree), 172);
 
-	rvbox = ewl_vbox_new();
-	ewl_box_spacing_set(EWL_BOX(rvbox), 1);
-	ewl_object_fill_policy_set(EWL_OBJECT(rvbox), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(hbox), rvbox);
-	ewl_widget_show(rvbox);
-
 	em->view_box = ewl_notebook_new();
 	ewl_notebook_tabbar_visible_set(EWL_NOTEBOOK(em->view_box), 0);
 	ewl_object_fill_policy_set(EWL_OBJECT(em->view_box), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(rvbox), em->view_box);
+	ewl_container_child_append(EWL_CONTAINER(hbox), em->view_box);
 	ewl_widget_show(em->view_box);
 
 	add_normal_view(em->view_box);
@@ -114,13 +86,10 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(vbox), hsep);
 	ewl_widget_show(hsep);
 
-	em->toolbar = ewl_htoolbar_new();
-	ewl_box_spacing_set(EWL_BOX(em->toolbar), 5);
+	em->toolbar = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 1);
 	ewl_object_minimum_h_set(EWL_OBJECT(em->toolbar), 30);
 	ewl_object_alignment_set(EWL_OBJECT(em->toolbar), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(em->toolbar), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(vbox), em->toolbar);
-	ewl_widget_show(em->toolbar);
 
         button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/normal_view.png", show_normal_view, NULL);
         ewl_image_size_set(EWL_IMAGE(EWL_BUTTON(button)->image_object), 30, 30);
@@ -260,9 +229,7 @@ static Ewl_Widget *album_header_fetch(void *data, int column)
 {
 	Ewl_Widget *label;
 
-	label = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(label), "Browser");
-	ewl_widget_show(label);
+	label = add_label(NULL, "Browser");
 
 	return label;
 }

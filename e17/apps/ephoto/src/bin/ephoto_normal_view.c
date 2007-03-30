@@ -5,10 +5,8 @@ Ewl_Widget *add_normal_view(Ewl_Widget *c)
 {
 	Ewl_Widget *sp;
 
-        em->fbox_vbox = ewl_vbox_new();
+        em->fbox_vbox = add_box(c, EWL_ORIENTATION_VERTICAL, 5);
         ewl_object_fill_policy_set(EWL_OBJECT(em->fbox_vbox), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(c), em->fbox_vbox);
-        ewl_widget_show(em->fbox_vbox);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(c), em->fbox_vbox, "Normal");
 
         sp = ewl_scrollpane_new();

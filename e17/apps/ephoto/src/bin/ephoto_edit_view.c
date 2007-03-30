@@ -11,10 +11,8 @@ static void rotate_image_right(Ewl_Widget *w, void *event, void *data);
 /*Add the edit view*/
 Ewl_Widget *add_edit_view(Ewl_Widget *c)
 {
-        em->edit_vbox = ewl_vbox_new();
+        em->edit_vbox = add_box(c, EWL_ORIENTATION_VERTICAL, 5);
         ewl_object_fill_policy_set(EWL_OBJECT(em->edit_vbox), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(c), em->edit_vbox);
-        ewl_widget_show(em->edit_vbox);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(c), em->edit_vbox, "Edit");
 
         em->eimage = add_image(em->edit_vbox, NULL, 0, NULL, NULL);
