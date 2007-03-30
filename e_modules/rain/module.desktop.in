@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Rain
-Exec=enlightenment
-StartupNotify=false
-X-Enlightenment-WaitExit=false
-X-Enlightenment-IconClass=rain,gadget
-Icon=./module.edj

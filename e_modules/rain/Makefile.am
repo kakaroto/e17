@@ -10,7 +10,7 @@ drop-s.png \
 drop-m.png \
 drop-l.png \
 module.desktop \
-module.edj
+e-module-rain.edj
 
 EXTRA_DIST = $(files_DATA) e_modules-rain.spec
 
