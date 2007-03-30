@@ -10,7 +10,7 @@ flake-s.png \
 flake-m.png \
 flake-l.png \
 module.desktop \
-module.edj
+e-module-snow.edj
 
 
 EXTRA_DIST = $(files_DATA) e_modules-snow.spec
