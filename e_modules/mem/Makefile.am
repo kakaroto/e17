@@ -12,7 +12,7 @@ filesdir = $(datadir)
 
 files_DATA = module_icon.png \
 			module.desktop \
-			module.edj \
+			e-module-mem.edj \
 			mem.edj
 
 EXTRA_DIST= e_modules-mem.spec \
