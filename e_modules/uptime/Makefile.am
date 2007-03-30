@@ -12,7 +12,7 @@ filesdir = $(datadir)
 files_DATA = \
 uptime.edj \
 module.desktop \
-module.edj \
+e-module-uptime.edj \
 uptime.png
 
 EXTRA_DIST = $(files_DATA) \
