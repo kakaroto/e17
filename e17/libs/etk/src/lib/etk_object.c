@@ -646,7 +646,7 @@ void etk_object_notification_callback_add(Etk_Object *object, const char *proper
  */
 void etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data))
 {
-   Evas_List *l;
+   Evas_List *l, *next;
    Evas_List **list;
    Etk_Notification_Callback *remove_callback;
 
@@ -655,10 +655,10 @@ void etk_object_notification_callback_remove(Etk_Object *object, const char *pro
    if (!(list = evas_hash_find(object->notification_callbacks, property_name)))
       return;
 
-   for (l = *list; l; )
+   for (l = *list; l; l = next)
    {
       remove_callback = l->data;
-      l = l->next;
+      next = l->next;
       if (remove_callback->callback == callback)
       {
          /* If the object is calling the notification-callbacks, we can't remove the callback from the list, or it may

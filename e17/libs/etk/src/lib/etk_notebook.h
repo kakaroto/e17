@@ -16,7 +16,7 @@
 /**
  * @defgroup Etk_Notebook Etk_Notebook
  * @brief The Etk_Notebook widget is a container that can contain several widgets in different pages
-  * accessible through tabs
+ * accessible through tabs
  * @{
  */
 
@@ -27,12 +27,18 @@
 /** Checks if the object is an Etk_Notebook */
 #define ETK_IS_NOTEBOOK(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_NOTEBOOK_TYPE))
 
-/** @brief A page of a notebook */
+
+/**
+ * @internal
+ * @brief A page of a notebook
+ * @structinfo
+ */
 typedef struct Etk_Notebook_Page
 {
    /* private: */
    Etk_Widget *tab;
    Etk_Widget *frame;
+   Etk_Widget *child;
 } Etk_Notebook_Page;
 
 /**
@@ -53,8 +59,9 @@ struct Etk_Notebook
    Etk_Notebook_Page *current_page;
 };
 
-Etk_Type *etk_notebook_type_get();
-Etk_Widget *etk_notebook_new();
+
+Etk_Type   *etk_notebook_type_get(void);
+Etk_Widget *etk_notebook_new(void);
 
 int         etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);
 int         etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child);

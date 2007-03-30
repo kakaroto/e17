@@ -24,9 +24,9 @@
  * in both directions or not at all */
 typedef enum Etk_Table_Homogeneous
 {
-   ETK_TABLE_NOT_HOMOGENEOUS = 0,       /** The table is not homogeneous: its cells could have different size */
-   ETK_TABLE_HHOMOGENEOUS = 1 << 0,     /** The table is homogeneous horizontally. all its cells have the same width */
-   ETK_TABLE_VHOMOGENEOUS = 1 << 1,     /** The table is homogeneous vertically. all its cells have the same height */
+   ETK_TABLE_NOT_HOMOGENEOUS = 0,       /**< The table is not homogeneous: its cells could have different size */
+   ETK_TABLE_HHOMOGENEOUS = 1 << 0,     /**< The table is homogeneous horizontally. all its cells have the same width */
+   ETK_TABLE_VHOMOGENEOUS = 1 << 1,     /**< The table is homogeneous vertically. all its cells have the same height */
    ETK_TABLE_HOMOGENEOUS = ETK_TABLE_HHOMOGENEOUS | ETK_TABLE_VHOMOGENEOUS   /**< Equivalent to ETK_TABLE_HHOMOGENEOUS | ETK_TABLE_VHOMOGENEOUS */
 } Etk_Table_Homogeneous;
 

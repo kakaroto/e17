@@ -27,6 +27,7 @@ static void _etk_container_destructor(Etk_Container *container);
 static void _etk_container_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_container_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_container_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data);
+static void _etk_container_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
 static void _etk_container_child_parent_changed_cb(Etk_Object *object, const char *property_name, void *data);
 
 static Etk_Signal *_etk_container_signals[ETK_CONTAINER_NUM_SIGNALS];
@@ -257,6 +258,7 @@ static void _etk_container_constructor(Etk_Container *container)
    container->border_width = 0;
    
    etk_signal_connect("child-added", ETK_OBJECT(container), ETK_CALLBACK(_etk_container_child_added_cb), NULL);
+   etk_signal_connect("child-removed", ETK_OBJECT(container), ETK_CALLBACK(_etk_container_child_removed_cb), NULL);
 }
 
 /* Destroys the container */
@@ -324,6 +326,17 @@ static void _etk_container_child_added_cb(Etk_Object *object, Etk_Widget *child,
    
    etk_object_notification_callback_add(ETK_OBJECT(child), "parent",
          _etk_container_child_parent_changed_cb, container);
+}
+
+/* Called when a child is removed from the container */
+static void _etk_container_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
+{
+   Etk_Container *container;
+   
+   if (!(container = ETK_CONTAINER(object)) || !child)
+      return;
+   
+   etk_object_notification_callback_remove(ETK_OBJECT(child), "parent", _etk_container_child_parent_changed_cb);
 }
 
 /* Called when a child of the container is reparented */
