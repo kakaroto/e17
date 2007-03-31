@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-02 21:27+0100\n"
-"PO-Revision-Date: 2007-03-02 21:47+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-03-31 10:10+0200\n"
+"PO-Revision-Date: 2007-03-31 10:16+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -28,11 +28,11 @@ msgstr "Mostra popup al passaggio del mouse"
 
 #: src/e_mod_configure.c:118
 msgid "Launch Application On Double-Click"
-msgstr "Lancia applicazione al doppio clic"
+msgstr "Lancia applicazione al doppio click"
 
 #: src/e_mod_configure.c:124
 msgid "Activity Notification Level"
-msgstr "Livello notifica attività"
+msgstr "Livello di notifica attività"
 
 #: src/e_mod_configure.c:126
 msgid "High (MB)"
@@ -48,25 +48,25 @@ msgstr "Basso (B)"
 
 #: src/e_mod_configure.c:136
 msgid "Device Settings"
-msgstr "Impostazione dispositivo"
+msgstr "Impostazione del dispositivo"
 
-#: src/e_mod_gadcon.c:86
+#: src/e_mod_gadcon.c:92
 msgid "Net"
 msgstr "Net"
 
 #: src/e_mod_main.c:100
 msgid "Network Monitor Module"
-msgstr "Modulo monitoraggio rete"
+msgstr "Modulo monitoraggio di rete"
 
 #: src/e_mod_main.c:101
 msgid "Module to monitor network traffic"
-msgstr "Modulo per monitorare il traffico di rete."
+msgstr "Modulo per il monitoraggio del traffico di rete"
 
-#: src/e_mod_net.c:124
+#: src/e_mod_net.c:178
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: src/e_mod_net.c:170
+#: src/e_mod_net.c:224
 #, c-format
 msgid "Device - %s"
 msgstr "Dispositivo - %s"
