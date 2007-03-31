@@ -8,6 +8,7 @@ rm -Rf  aclocal.m4 autom4te.cache/ ltmain.sh config.log config.status config.cac
 	src/Makefile src/Makefile.in \
 	src/module/Makefile src/module/Makefile.in
 
+echo "Running autopoint..." ; autopoint -f || :
 echo "Running aclocal..." ; aclocal $ACLOCAL_FLAGS -I m4 || exit 1
 echo "Running autoheader..." ; autoheader || exit 1
 echo "Running autoconf..." ; autoconf || exit 1
