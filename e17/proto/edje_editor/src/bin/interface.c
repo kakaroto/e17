@@ -1357,7 +1357,7 @@ create_image_frame(void)
    UI_ImageFrame = etk_frame_new("Image");
 
    //table
-   table = etk_table_new (5, 4, FALSE);
+   table = etk_table_new (5, 4, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_container_add(ETK_CONTAINER(UI_ImageFrame), table);
 
    label = etk_label_new("Image");
@@ -1453,7 +1453,7 @@ create_text_frame(void)
    etk_container_add(ETK_CONTAINER(UI_TextFrame), vbox);
 
    //table
-   table = etk_table_new (5, 4, FALSE);
+   table = etk_table_new (5, 3, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_box_append(ETK_BOX(vbox), table, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    label = etk_label_new("Text");
@@ -1523,9 +1523,6 @@ create_text_frame(void)
       etk_image_new_from_edje (EdjeFile,"NONE.PNG"), "Outline Soft Shadow");
    etk_combobox_item_data_set (ComboItem, (void*)ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW);
    etk_table_attach_default (ETK_TABLE(table),UI_EffectComboBox, 1, 4, 2,2);
-
-   label = etk_label_new("Alpha");
-   etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 3,3);
 
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 10);
@@ -1756,12 +1753,12 @@ create_part_frame(void)
    UI_PartFrame = etk_frame_new("Part property");
 
    //table
-   table = etk_table_new (2, 3, FALSE);
+   table = etk_table_new (2, 3, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_container_add(ETK_CONTAINER(UI_PartFrame), table);
 
    //PartNameEntry
    label = etk_label_new("<b>Name</b>");
-   etk_table_attach (ETK_TABLE(table), label, 0, 0, 0, 0,0,0,ETK_TABLE_NONE);
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 0, 0,ETK_TABLE_NONE,0,0);
    UI_PartNameEntry = etk_entry_new();
    etk_table_attach_default (ETK_TABLE(table),UI_PartNameEntry, 1, 1, 0, 0);
 
@@ -1793,7 +1790,7 @@ create_program_frame(void)
    UI_ProgramFrame = etk_frame_new("Program");
 
    //table
-   table = etk_table_new (4, 10, FALSE);
+   table = etk_table_new (4, 10, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_container_add(ETK_CONTAINER(UI_ProgramFrame), table);
 
    //UI_ProgramEntry
