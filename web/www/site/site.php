@@ -91,10 +91,11 @@
   function nav_subs() {
       global $page;
       global $lang;
+      $item = 0;
       if (file_exists("p/$page/subs")) {
 	  $handle = fopen("p/$page/subs", "r");
 	  if ($handle) {
-	      print("<table border=0 cellpadding=0 cellspacing=4px><tr>\n");
+	      print("<ul class='navul'>\n");
 	      while (!feof($handle)) {
 		  $fl = fgets($handle, 4096);
 		  $fl = str_replace("\n", "", $fl);
@@ -109,18 +110,22 @@
 			  if ($h == "") {
 			    $h = "p.php?p=$page/$fl&l=$lang";
                           }
-			  print("<td class='nav'><a class='nav' href='$h'>$l</a></td>\n");
+			  if ($item > 0) print("|\n");
+			  print("<li class='navul'><a class='navul' href='$h'>$l</a></li>\n");
+			  $item++;
 		      }
 		      else if (file_exists("p/$page/$fl/en-label")) {
 			  $l = read_var("p/$page/$fl/en-label");
 			  if ($h == "") {
 			    $h = "p.php?p=$page/$fl&l=$lang";
                           }
-			  print("<td class='nav'><a class='nav' href='$h'>$l</a></td>\n");
+			  if ($item > 0) print("|\n");
+			  print("<li class='navul'><a class='navul' href='$h'>$l</a></li>\n");
+			  $item++;
 		      }
 		  }
 	      }
-	      print("</tr></table><hr>");
+	      print("</ul><hr>");
 	  }
       }
   }

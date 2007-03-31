@@ -17,6 +17,13 @@ td.t[class] { background-image:url("i/t.png"); }
 //td.tl { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/tl.png'); }
 td.tl { background-image:url("i/tl.gif"); }
 td.tl[class] { background-image:url("i/tl.png"); }
+td.tl {
+   align                  : middle;
+   text-align             : center;
+   vertical-align         : bottom;
+   width                  : 600px;
+   height                 : 250px;
+}
 
 div.main {
    margin                 : 1em;
@@ -160,19 +167,6 @@ td.rnav {
 td.rnav { background-image:url("i/n.gif"); }
 td.rnav[class] { background-image:url("i/n.png"); }
 
-td.nav {
-   align                  : middle;
-   text-align             : center;
-   vertical-align         : middle;
-   width                  : 100px;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #222222;
-   font-size              : 9px;
-   font-weight            : bold;
-   white-space            : no-wrap;
-   display                : block;
-}
-
 a.nav:link {
    color                  : #888888;
    text-decoration        : none;
@@ -197,6 +191,38 @@ a.nav:hover {
    display                : block;
 }
 
+li.navul, ul.navul {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #222222;
+   font-size              : 9px;
+   font-weight            : bold;
+//   white-space            : no-wrap;
+//   text-transform         : none;
+//   list-style-type        : none;
+   list-style             : none;
+   display                : inline;
+}
+
+a.navul:link {
+   color                  : #888888;
+   text-decoration        : none;
+}
+
+a.navul:visited {
+   color                  : #888888;
+   text-decoration        : none;
+}
+
+a.navul:active {
+   color                  : #000000;
+   text-decoration        : none;
+}
+
+a.navul:hover {
+   color                  : #444444;
+   text-decoration        : none;
+}
+
 
 
 
@@ -212,6 +238,7 @@ a.nav:hover {
 
 // OLD CSS STUFF TO STEAL FROM
 
+/*
 table.main {
    border                 : 0;
    cellpadding            : 8;
@@ -439,3 +466,4 @@ td.thumb {
    padding                : 0px;
    margin                 : 2px;
 }
+*/

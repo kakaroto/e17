@@ -28,8 +28,9 @@
 <img src="i/_.gif" width=4 height=4>
   <?php show_langs("p/lang1"); ?>
 </td>
-<td class="tl" width=612 height=250 valign=bottom align=center>
- <img src="i/_.gif" width=612 height=1><?php nav_subs(); ?>
+<td class="tl" width=600 height=250>
+ <img src="i/_.gif" width=600 height=1><br>
+ <?php nav_subs(); ?>
 </td>
 <td class="t"  width=50% valign=top align=right>
  <table width=100px height=100px border=0 cellpadding=0 cellspacing=0>
