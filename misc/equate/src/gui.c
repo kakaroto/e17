@@ -176,16 +176,16 @@ key_press(Ewl_Widget * w, void *ev_data, void *user_data)
 
    ev = ev_data;
 
-   if (ev->keyname && !strcmp(ev->keyname, "q"))
+   if (ev->base.keyname && !strcmp(ev->base.keyname, "q"))
       equate_quit();
    else
-      if ((!strcmp(ev->keyname, "Enter") || !strcmp(ev->keyname, "KP_Enter") ||
-           !strcmp(ev->keyname, "Return") || !strcmp(ev->keyname, "KP_Return")))
+      if ((!strcmp(ev->base.keyname, "Enter") || !strcmp(ev->base.keyname, "KP_Enter") ||
+           !strcmp(ev->base.keyname, "Return") || !strcmp(ev->base.keyname, "KP_Return")))
       calc_exec();
-   else if (!strcmp(ev->keyname, "Escape"))
+   else if (!strcmp(ev->base.keyname, "Escape"))
       calc_clear();
    else
-      do_key(ev->keyname, EWL_CALLBACK_MOUSE_DOWN);
+      do_key(ev->base.keyname, EWL_CALLBACK_MOUSE_DOWN);
 }
 
 void
@@ -194,7 +194,7 @@ key_un_press(Ewl_Widget * w, void *ev_data, void *user_data)
    Ewl_Event_Key_Up *ev;
 
    ev = ev_data;
-   do_key(ev->keyname, EWL_CALLBACK_MOUSE_UP);
+   do_key(ev->base.keyname, EWL_CALLBACK_MOUSE_UP);
 }
 
 int
