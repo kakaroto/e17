@@ -913,7 +913,7 @@ on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (UI_ColorWin) etk_widget_show_all(UI_ColorWin);
    current_color_object = (int)data;
 
-   etk_signal_block("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
+   etk_signal_block("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
    switch (current_color_object)
    {
       case COLOR_OBJECT_RECT:
@@ -937,7 +937,7 @@ on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
    }
-   etk_signal_unblock("color_changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
+   etk_signal_unblock("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
 }
 
 void
