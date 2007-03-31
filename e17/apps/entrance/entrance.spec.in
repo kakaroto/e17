@@ -49,7 +49,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_bindir}/entrance*
 %{_includedir}/*.h
 %{_libdir}/libentrance*
-%{_sbindir}/entrance*
+%{_libdir}/entrance
 %{_datadir}/%{name}
 %{_var}/run/%{name}
 

@@ -58,7 +58,11 @@ main(int argc, char **argv)
    if (argc != 2)
 #endif
    {
-      syslog(LOG_CRIT, "Wrong number of arguments: %d!", argc);
+#ifdef HAVE_PAM
+      syslog(LOG_CRIT, "Wrong number of arguments: %d - expected 4!", argc);
+#else
+      syslog(LOG_CRIT, "Wrong number of arguments: %d - expected 2!", argc);
+#endif      
       return 0;
    }
 
