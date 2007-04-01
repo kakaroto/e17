@@ -187,6 +187,37 @@ ewl_model_data_sort_get(Ewl_Model *m)
 }
 
 /**
+ * @param m: The Ewl_Model to set the callback on
+ * @param highlight: The highlight callback to set on the model
+ * @return Returns no value
+ * @brief Sets the @a highlight callback into the model @a m
+ */
+void
+ewl_model_data_highlight_set(Ewl_Model *m, Ewl_Model_Data_Highlight highlight)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
+
+	m->highlight = highlight;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The model to work with
+ * @return Returns the highlight model set in the model
+ * @brief Retrieves the highlight model set in @a m
+ */
+Ewl_Model_Data_Highlight
+ewl_model_data_highlight_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+
+	DRETURN_PTR(m->highlight, DLEVEL_STABLE);
+}
+
+/**
  * @param m: The Ewl_Model to set the count callback on
  * @param count: The count callback to set on the model
  * @return Returns no value.

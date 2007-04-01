@@ -122,6 +122,18 @@ typedef unsigned int (*Ewl_Model_Data_Count)(void *data);
 typedef int (*Ewl_Model_Column_Sortable)(void *data, unsigned int col);
 
 /**
+ * @def EWL_MODEL_DATA_HIGHLIGHT(f)
+ * Model callback to check if a cell is to be highlighted
+ */
+#define EWL_MODEL_DATA_HIGHLIGHT(f) ((Ewl_Model_Data_Highlight)f)
+
+/**
+ * A typedef to shorten the definition of the data_highlight callbacks.
+ */
+typedef unsigned int (*Ewl_Model_Data_Highlight)(void *data, unsigned int row);
+						
+
+/**
  * @def EWL_MODEL(model)
  * Typecasts a pointer to an Ewl_Model pointer.
  */
@@ -146,6 +158,7 @@ struct Ewl_Model
 	Ewl_Model_Data_Free data_free; /**< Free data passed to view */
 	Ewl_Model_Data_Count count;    /**< Count of data items */
 	Ewl_Model_Data_Sort sort;      /**< Trigger sort on column */
+	Ewl_Model_Data_Highlight highlight; /**< Highlight the cell */
 };
 
 Ewl_Model		*ewl_model_new(void);
@@ -172,6 +185,10 @@ Ewl_Model_Column_Sortable ewl_model_column_sortable_get(Ewl_Model *m);
 void			 ewl_model_data_sort_set(Ewl_Model *m, 
 					Ewl_Model_Data_Sort sort);
 Ewl_Model_Data_Sort	 ewl_model_data_sort_get(Ewl_Model *m);
+
+void			 ewl_model_data_highlight_set(Ewl_Model *m,
+					Ewl_Model_Data_Highlight highlight);
+Ewl_Model_Data_Highlight ewl_model_data_highlight_get(Ewl_Model *m);
 
 void			 ewl_model_data_count_set(Ewl_Model *m, 
 					Ewl_Model_Data_Count count);

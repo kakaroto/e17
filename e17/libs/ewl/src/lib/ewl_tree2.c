@@ -5,6 +5,7 @@
 #include "ewl_cell.h"
 #include "ewl_check.h"
 #include "ewl_expansion.h"
+#include "ewl_highlight.h"
 #include "ewl_label.h"
 #include "ewl_paned.h"
 #include "ewl_row.h"
@@ -22,6 +23,8 @@ static void ewl_tree2_cb_header_changed(Ewl_Widget *w, void *ev,
 							void *data);
 
 static void ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree2_cb_row_highlight(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree2_cb_row_unhighlight(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_tree2_cb_selected_change(Ewl_MVC *mvc);
 static Ewl_Widget *ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, 
@@ -711,6 +714,11 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 		ewl_container_child_append(EWL_CONTAINER(node), row);
 		ewl_callback_append(row, EWL_CALLBACK_CLICKED,  
 					ewl_tree2_cb_row_clicked, node);
+
+		if (!model->highlight || model->highlight(data, i))
+			ewl_callback_append(row, EWL_CALLBACK_MOUSE_IN,
+					ewl_tree2_cb_row_highlight, NULL);
+
 		EWL_TREE2_NODE(node)->row = row;
 		ewl_widget_show(row);
 
@@ -795,6 +803,44 @@ ewl_tree2_cb_row_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	ewl_mvc_handle_click(EWL_MVC(tree), ewl_mvc_model_get(EWL_MVC(node)),
 				ewl_mvc_data_get(EWL_MVC(node)),
 				node->row_num, -1);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree2_cb_row_highlight(Ewl_Widget *w, void *ev __UNUSED__, 
+						void *data __UNUSED__)
+{
+	Ewl_Widget *h;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_ROW_TYPE);
+
+	h = ewl_highlight_new();
+	ewl_highlight_follow_set(EWL_HIGHLIGHT(h), w);
+	ewl_container_child_append(EWL_CONTAINER(w), h);
+	ewl_widget_show(h);
+
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT,
+			ewl_tree2_cb_row_unhighlight, h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree2_cb_row_unhighlight(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_ROW_TYPE);
+	DCHECK_TYPE("data", data, EWL_HIGHLIGHT_TYPE);
+
+	ewl_widget_destroy(EWL_WIDGET(data));
+
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_OUT,
+				ewl_tree2_cb_row_unhighlight);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
