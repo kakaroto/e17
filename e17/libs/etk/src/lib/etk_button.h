@@ -51,36 +51,35 @@ struct Etk_Button
 
    Etk_Bool is_pressed;
    Etk_Bool ignore_image_remove;
-   Etk_Bool image_from_stock;
-   float xalign;
-   float yalign;
    Etk_Button_Style style;
    Etk_Stock_Size stock_size;
+   float xalign;
+   float yalign;
 };
 
 
-Etk_Type   *etk_button_type_get(void);
-Etk_Widget *etk_button_new(void);
-Etk_Widget *etk_button_new_with_label(const char *label);
-Etk_Widget *etk_button_new_from_stock(Etk_Stock_Id stock_id);
+Etk_Type        *etk_button_type_get(void);
+Etk_Widget      *etk_button_new(void);
+Etk_Widget      *etk_button_new_with_label(const char *label);
+Etk_Widget      *etk_button_new_from_stock(Etk_Stock_Id stock_id);
 
-void etk_button_press(Etk_Button *button);
-void etk_button_release(Etk_Button *button);
-void etk_button_click(Etk_Button *button);
+void             etk_button_press(Etk_Button *button);
+void             etk_button_release(Etk_Button *button);
+void             etk_button_click(Etk_Button *button);
 
-void        etk_button_label_set(Etk_Button *button, const char *label);
-const char *etk_button_label_get(Etk_Button *button);
-void        etk_button_image_set(Etk_Button *button, Etk_Image *image);
-Etk_Image  *etk_button_image_get(Etk_Button *button);
-void        etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id);
-
-void etk_button_alignment_set(Etk_Button *button, float xalign, float yalign);
-void etk_button_alignment_get(Etk_Button *button, float *xalign, float *yalign);
+void             etk_button_label_set(Etk_Button *button, const char *label);
+const char      *etk_button_label_get(Etk_Button *button);
+void             etk_button_image_set(Etk_Button *button, Etk_Image *image);
+Etk_Image       *etk_button_image_get(Etk_Button *button);
+void             etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id);
 
 void             etk_button_style_set(Etk_Button *button, Etk_Button_Style style);
 Etk_Button_Style etk_button_style_get(Etk_Button *button);
 void             etk_button_stock_size_set(Etk_Button *button, Etk_Stock_Size size);
 Etk_Stock_Size   etk_button_stock_size_get(Etk_Button *button);
+
+void             etk_button_alignment_set(Etk_Button *button, float xalign, float yalign);
+void             etk_button_alignment_get(Etk_Button *button, float *xalign, float *yalign);
 
 /** @} */
 

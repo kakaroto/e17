@@ -19,6 +19,7 @@
 /** @brief Checks if the object is an Etk_Toggle_Button */
 #define ETK_IS_TOGGLE_BUTTON(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TOGGLE_BUTTON_TYPE))
 
+
 /**
  * @brief @widget A button that can be activated/deactivated
  * @structinfo
@@ -34,13 +35,14 @@ struct Etk_Toggle_Button
    Etk_Bool active;
 };
 
-Etk_Type   *etk_toggle_button_type_get();
-Etk_Widget *etk_toggle_button_new();
+
+Etk_Type   *etk_toggle_button_type_get(void);
+Etk_Widget *etk_toggle_button_new(void);
 Etk_Widget *etk_toggle_button_new_with_label(const char *label);
 
-void     etk_toggle_button_toggle(Etk_Toggle_Button *toggle_button);
-void     etk_toggle_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool active);
-Etk_Bool etk_toggle_button_active_get(Etk_Toggle_Button *toggle_button);
+void        etk_toggle_button_toggle(Etk_Toggle_Button *toggle_button);
+void        etk_toggle_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool active);
+Etk_Bool    etk_toggle_button_active_get(Etk_Toggle_Button *toggle_button);
 
 /** @} */
 

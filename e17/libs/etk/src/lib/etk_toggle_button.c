@@ -24,6 +24,7 @@ static void _etk_toggle_button_constructor(Etk_Toggle_Button *toggle_button);
 static void _etk_toggle_button_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toggle_button_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toggle_button_realized_cb(Etk_Object *object, void *data);
+static void _etk_toggle_button_label_realized_cb(Etk_Object *object, void *data);
 static void _etk_toggle_button_toggled_handler(Etk_Toggle_Button *toggle_button);
 static void _etk_toggle_button_active_set_default(Etk_Toggle_Button *toggle_button, Etk_Bool active);
 
@@ -40,20 +41,20 @@ static Etk_Signal *_etk_toggle_button_signals[ETK_TOGGLE_BUTTON_NUM_SIGNALS];
  * @brief Gets the type of an Etk_Toggle_Button
  * @return Returns the type of an Etk_Toggle_Button
  */
-Etk_Type *etk_toggle_button_type_get()
+Etk_Type *etk_toggle_button_type_get(void)
 {
    static Etk_Type *toggle_button_type = NULL;
 
    if (!toggle_button_type)
    {
       toggle_button_type = etk_type_new("Etk_Toggle_Button", ETK_BUTTON_TYPE, sizeof(Etk_Toggle_Button),
-         ETK_CONSTRUCTOR(_etk_toggle_button_constructor), NULL);
+            ETK_CONSTRUCTOR(_etk_toggle_button_constructor), NULL);
       
       _etk_toggle_button_signals[ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL] = etk_signal_new("toggled",
-         toggle_button_type, ETK_MEMBER_OFFSET(Etk_Toggle_Button, toggled_handler), etk_marshaller_VOID__VOID, NULL, NULL);
+            toggle_button_type, ETK_MEMBER_OFFSET(Etk_Toggle_Button, toggled_handler), etk_marshaller_VOID__VOID, NULL, NULL);
    
       etk_type_property_add(toggle_button_type, "active", ETK_TOGGLE_BUTTON_ACTIVE_PROPERTY,
-         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+            ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       
       toggle_button_type->property_set = _etk_toggle_button_property_set;
       toggle_button_type->property_get = _etk_toggle_button_property_get;
@@ -66,9 +67,9 @@ Etk_Type *etk_toggle_button_type_get()
  * @brief Creates a new toggle button
  * @return Returns the new toggle-button widget
  */
-Etk_Widget *etk_toggle_button_new()
+Etk_Widget *etk_toggle_button_new(void)
 {
-   return etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme-group", "toggle_button", "focusable", ETK_TRUE, NULL);
+   return etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme-group", "toggle_button","focusable", ETK_TRUE, NULL);
 }
 
 /**
@@ -79,7 +80,7 @@ Etk_Widget *etk_toggle_button_new()
 Etk_Widget *etk_toggle_button_new_with_label(const char *label)
 {
    return etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme-group", "toggle_button",
-      "label", label, "focusable", ETK_TRUE, NULL);
+         "label", label, "focusable", ETK_TRUE, NULL);
 }
 
 /**
@@ -133,10 +134,11 @@ static void _etk_toggle_button_constructor(Etk_Toggle_Button *toggle_button)
    toggle_button->active_set = _etk_toggle_button_active_set_default;
 
    etk_signal_connect("realized", ETK_OBJECT(toggle_button),
-      ETK_CALLBACK(_etk_toggle_button_realized_cb), NULL);
-   /* If the button is clicked, we toggle it */
+         ETK_CALLBACK(_etk_toggle_button_realized_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(ETK_BUTTON(toggle_button)->label),
+         ETK_CALLBACK(_etk_toggle_button_label_realized_cb), toggle_button);
    etk_signal_connect_swapped("clicked", ETK_OBJECT(toggle_button),
-      ETK_CALLBACK(etk_toggle_button_toggle), toggle_button);
+         ETK_CALLBACK(etk_toggle_button_toggle), toggle_button);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -181,15 +183,30 @@ static void _etk_toggle_button_property_get(Etk_Object *object, int property_id,
  *
  **************************/
 
-/* Called when the toggle button is realized */
+/* Called when the toggle-button is realized */
 static void _etk_toggle_button_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Toggle_Button *toggle_button;
 
    if (!(toggle_button = ETK_TOGGLE_BUTTON(object)))
       return;
+   
    etk_widget_theme_signal_emit(ETK_WIDGET(toggle_button),
-      toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
+         toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_BUTTON(toggle_button)->label,
+         toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
+}
+
+/* Called when the toggle-button's label is realized */
+static void _etk_toggle_button_label_realized_cb(Etk_Object *object, void *data)
+{
+   Etk_Toggle_Button *toggle_button;
+
+   if (!(toggle_button = ETK_TOGGLE_BUTTON(data)))
+      return;
+   
+   etk_widget_theme_signal_emit(ETK_BUTTON(toggle_button)->label,
+         toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
 }
 
 /* Default handler for the "toggled" signal */
@@ -197,8 +214,11 @@ static void _etk_toggle_button_toggled_handler(Etk_Toggle_Button *toggle_button)
 {
    if (!toggle_button)
       return;
+   
    etk_widget_theme_signal_emit(ETK_WIDGET(toggle_button),
-      toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
+         toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
+   etk_widget_theme_signal_emit(ETK_BUTTON(toggle_button)->label,
+         toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
 }
 
 /**************************
@@ -207,7 +227,7 @@ static void _etk_toggle_button_toggled_handler(Etk_Toggle_Button *toggle_button)
  *
  **************************/
 
-/* Default behavior for the "active_set" function */
+/* This function is called when the toggle-button is turned on: here it just activates it */
 static void _etk_toggle_button_active_set_default(Etk_Toggle_Button *toggle_button, Etk_Bool active)
 {
    if (!toggle_button || toggle_button->active == active)

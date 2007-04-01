@@ -1335,21 +1335,11 @@ void etk_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  */
 void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name, Etk_Bool size_recalc)
 {
-   Etk_Widget *tc;
-   Evas_List *l;
-   
    if (!widget)
       return;
    
    if (widget->theme_object)
       edje_object_signal_emit(widget->theme_object, signal_name, "etk");
-   
-   for (l = widget->theme_children; l; l = l->next)
-   {
-      tc = ETK_WIDGET(l->data);
-      if (tc->emit_theme_parent_signals)
-         etk_widget_theme_signal_emit(tc, signal_name, size_recalc);
-   }
    
    if (size_recalc)
    {
@@ -1977,7 +1967,6 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->need_redraw = ETK_FALSE;
    widget->need_theme_size_recalc = ETK_FALSE;
    widget->swallowed = ETK_FALSE;
-   widget->emit_theme_parent_signals = ETK_FALSE;
    
    etk_signal_connect("destroyed", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_destroyed_cb), NULL);
    etk_signal_connect_swapped("mouse-in", ETK_OBJECT(widget), etk_widget_enter, widget);
@@ -2467,9 +2456,10 @@ static void _etk_widget_realize(Etk_Widget *widget)
          widget->inset.bottom = 0;
       }
       
-      if (widget->disabled || (widget->emit_theme_parent_signals
-            && widget->theme_parent && widget->theme_parent->disabled))
+      if (widget->disabled)
          etk_widget_theme_signal_emit(widget, "etk,state,disabled", ETK_FALSE);
+      if (etk_widget_is_focused(widget))
+         etk_widget_theme_signal_emit(widget, "etk,state,focused", ETK_FALSE);
    }
    else
    {

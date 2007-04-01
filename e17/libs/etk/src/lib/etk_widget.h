@@ -106,7 +106,6 @@ struct Etk_Widget
    unsigned int need_size_recalc : 1;
    unsigned int need_redraw : 1;
    unsigned int need_theme_size_recalc : 1;
-   unsigned int emit_theme_parent_signals : 1;
 };
 
 

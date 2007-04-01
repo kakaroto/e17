@@ -11,8 +11,7 @@
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
 
-/* TODO: parent changed! */
-/* TODO: use etk_widget_color_set() instead of evas_object_color_set(...) when it'll be implemented... */
+/* TODO: what if the image is reparented?! */
 
 /**
  * @addtogroup Etk_Entry
@@ -297,7 +296,7 @@ void etk_entry_image_highlight_set(Etk_Entry *entry, Etk_Entry_Image_Position po
       etk_signal_disconnect("mouse-up", ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_up_cb));
 
-      evas_object_color_set(etk_image_evas_object_get(image), 255, 255, 255, 255);
+      etk_widget_color_set(ETK_WIDGET(image), 255, 255, 255, 255);
    }
 }
 
@@ -857,7 +856,7 @@ static void _etk_entry_image_mouse_in_cb(Etk_Widget *widget, Etk_Event_Mouse_In 
    if (!(entry = ETK_ENTRY(data)) || !(image = ETK_IMAGE(widget)))
       return;
 
-   evas_object_color_set(etk_image_evas_object_get(image),
+   etk_widget_color_set(ETK_WIDGET(image),
          entry->highlight_color.r, entry->highlight_color.g,
          entry->highlight_color.b, entry->highlight_color.a);
 }
@@ -872,7 +871,7 @@ static void _etk_entry_image_mouse_out_cb(Etk_Widget *widget, Etk_Event_Mouse_Ou
       return;
    if (!(image = ETK_IMAGE(widget)))
       return;
-   evas_object_color_set(etk_image_evas_object_get(image), 255, 255, 255, 255);
+   etk_widget_color_set(ETK_WIDGET(image), 255, 255, 255, 255);
 }
 
 /* Called when the mouse is pressed over the image */
@@ -883,8 +882,7 @@ static void _etk_entry_image_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_D
 
    if (!(entry = ETK_ENTRY(data)) || !(image = ETK_IMAGE(widget)))
       return;
-   
-   evas_object_color_set(etk_image_evas_object_get(image), 255, 255, 255, 255);
+   etk_widget_color_set(ETK_WIDGET(image), 255, 255, 255, 255);
 }
 
 /* Called when the mouse released over the image */
@@ -896,7 +894,7 @@ static void _etk_entry_image_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Up 
    if (!(entry = ETK_ENTRY(data)) || !(image = ETK_IMAGE(widget)))
       return;
 
-   evas_object_color_set(etk_image_evas_object_get(image),
+   etk_widget_color_set(ETK_WIDGET(image),
          entry->highlight_color.r, entry->highlight_color.g,
          entry->highlight_color.b, entry->highlight_color.a);
 }

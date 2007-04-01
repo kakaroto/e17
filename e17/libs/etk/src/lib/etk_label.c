@@ -178,8 +178,6 @@ static void _etk_label_constructor(Etk_Label *label)
 
    widget->size_request = _etk_label_size_request;
    widget->size_allocate = _etk_label_size_allocate;
-   /* This allows the label to receive the same theme-signals as its theme-parent */
-   widget->emit_theme_parent_signals = ETK_TRUE;
 
    etk_signal_connect("realized", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realized_cb), NULL);
 }

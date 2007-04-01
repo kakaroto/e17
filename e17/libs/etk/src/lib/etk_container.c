@@ -23,7 +23,6 @@ enum Etk_Container_Property_Id
 };
 
 static void _etk_container_constructor(Etk_Container *container);
-static void _etk_container_destructor(Etk_Container *container);
 static void _etk_container_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_container_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_container_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data);
@@ -50,7 +49,7 @@ Etk_Type *etk_container_type_get(void)
    if (!container_type)
    {
       container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE, sizeof(Etk_Container),
-            ETK_CONSTRUCTOR(_etk_container_constructor), ETK_DESTRUCTOR(_etk_container_destructor));
+            ETK_CONSTRUCTOR(_etk_container_constructor), NULL);
    
       _etk_container_signals[ETK_CONTAINER_CHILD_ADDED_SIGNAL] = etk_signal_new("child-added",
             container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
@@ -259,19 +258,6 @@ static void _etk_container_constructor(Etk_Container *container)
    
    etk_signal_connect("child-added", ETK_OBJECT(container), ETK_CALLBACK(_etk_container_child_added_cb), NULL);
    etk_signal_connect("child-removed", ETK_OBJECT(container), ETK_CALLBACK(_etk_container_child_removed_cb), NULL);
-}
-
-/* Destroys the container */
-static void _etk_container_destructor(Etk_Container *container)
-{
-   if (!container)
-      return;
-   
-   /* We need to do that because Etk_Widget's destructor may
-    * still want to access those methods (TODO: no more need for this?) */
-   container->child_add = NULL;
-   container->child_remove = NULL;
-   container->children_get = NULL;
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */

@@ -464,9 +464,15 @@ static void _etk_menu_item_selected_cb(Etk_Object *object, void *data)
    if (item->submenu)
    {
       int mx, my, mw, item_y;
+      Etk_Menu_Item *first_item;
       
       item_y = ETK_WIDGET(item)->geometry.y;
       etk_window_geometry_get(ETK_WINDOW(menu->window), &mx, &my, &mw, NULL);
+      if (ETK_MENU_SHELL(item->submenu)->items)
+      {
+         first_item = ETK_MENU_ITEM(ETK_MENU_SHELL(item->submenu)->items->data);
+         my -= ETK_WIDGET(first_item)->geometry.y;
+      }
       etk_menu_popup_at_xy(item->submenu, mx + mw, my + item_y);
    }
 }

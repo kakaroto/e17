@@ -38,12 +38,19 @@ static void _etk_button_constructor(Etk_Button *button);
 static void _etk_button_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_button_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_button_realized_cb(Etk_Object *object, void *data);
+static void _etk_button_label_realized_cb(Etk_Object *object, void *data);
 static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
 static void _etk_button_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_button_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data);
 static void _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
 static void _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static void _etk_button_entered_handler(Etk_Widget *widget);
+static void _etk_button_left_handler(Etk_Widget *widget);
+static void _etk_button_focused_handler(Etk_Widget *widget);
+static void _etk_button_unfocused_handler(Etk_Widget *widget);
+static void _etk_button_enabled_handler(Etk_Widget *widget);
+static void _etk_button_disabled_handler(Etk_Widget *widget);
 static void _etk_button_pressed_handler(Etk_Button *button);
 static void _etk_button_released_handler(Etk_Button *button);
 static void _etk_button_clicked_handler(Etk_Button *button);
@@ -227,8 +234,7 @@ const char *etk_button_label_get(Etk_Button *button)
  * @brief Sets the image of the button
  * @param button a button
  * @param image the image to set
- * @note The current image will be destroyed only if it has been set with etk_button_new_from_stock()
- * or with etk_button_set_from_stock(). Otherwise, it will just be unpacked and you'll still be able to use it
+ * @note If the button already has an image, the current image will just be unpacked, it will not be destroyed
  * @note The image will be automatically shown, but you can still manually hide it with calling etk_widget_hide()
  * after having called etk_button_image_set()
  */
@@ -240,15 +246,11 @@ void etk_button_image_set(Etk_Button *button, Etk_Image *image)
    if (button->image)
    {
       button->ignore_image_remove = ETK_TRUE;
-      if (button->image_from_stock)
-         etk_object_destroy(ETK_OBJECT(button->image));
-      else
-         etk_container_remove(ETK_WIDGET(button->image));
+      etk_object_destroy(ETK_OBJECT(button->image));
       button->ignore_image_remove = ETK_FALSE;
    }
 
    button->image = image;
-   button->image_from_stock = ETK_FALSE;
    _etk_button_rebuild(button);
    etk_object_notify(ETK_OBJECT(button), "image");
 }
@@ -285,61 +287,6 @@ void etk_button_set_from_stock(Etk_Button *button, Etk_Stock_Id stock_id)
    image = etk_image_new_from_stock(stock_id, button->stock_size);
    etk_widget_internal_set(image, ETK_TRUE);
    etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
-   button->image_from_stock = ETK_TRUE;
-}
-
-/**
- * @brief Sets the alignment of the child of the button
- * @param button a button
- * @param xalign the horizontal alignment (0.0 = left, 0.5 = center, 1.0 = right, ...)
- * @param yalign the vertical alignment (0.0 = top, 0.5 = center, 1.0 = bottom, ...)
- * @note It only has effect if the child is a label or an alignment
- */
-void etk_button_alignment_set(Etk_Button *button, float xalign, float yalign)
-{
-   Etk_Widget *child;
-
-   if (!button)
-      return;
-
-   if ((child = etk_bin_child_get(ETK_BIN(button))))
-   {
-      if (ETK_IS_LABEL(child))
-         etk_label_alignment_set(ETK_LABEL(child), xalign, yalign);
-      else if (ETK_IS_ALIGNMENT(child))
-      {
-         Etk_Alignment *child_alignment = ETK_ALIGNMENT(child);
-         float xscale, yscale;
-      
-         etk_alignment_get(child_alignment, NULL, NULL, &xscale, &yscale);
-         etk_alignment_set(child_alignment, xalign, yalign, xscale, yscale);
-      }
-   }
-
-   if (button->xalign != xalign)
-   {
-      button->xalign = xalign;
-      etk_object_notify(ETK_OBJECT(button), "xalign");
-   }
-   if (button->yalign != yalign)
-   {
-      button->yalign = yalign;
-      etk_object_notify(ETK_OBJECT(button), "yalign");
-   }
-}
-
-/**
- * @brief Gets the alignment of the button's child
- * @param button a button
- * @param xalign the location where to store the horizontal alignment
- * @param yalign the location where to store the vertical alignment
- */
-void etk_button_alignment_get(Etk_Button *button, float *xalign, float *yalign)
-{
-   if (xalign)
-      *xalign = button ? button->xalign : 0;
-   if (yalign)
-      *yalign = button ? button->yalign : 0;
 }
 
 /**
@@ -414,6 +361,60 @@ Etk_Stock_Size etk_button_stock_size_get(Etk_Button *button)
    return button->stock_size;
 }
 
+/**
+ * @brief Sets the alignment of the child of the button
+ * @param button a button
+ * @param xalign the horizontal alignment (0.0 = left, 0.5 = center, 1.0 = right, ...)
+ * @param yalign the vertical alignment (0.0 = top, 0.5 = center, 1.0 = bottom, ...)
+ * @note It only has effect if the child is a label or an alignment
+ */
+void etk_button_alignment_set(Etk_Button *button, float xalign, float yalign)
+{
+   Etk_Widget *child;
+
+   if (!button)
+      return;
+
+   if ((child = etk_bin_child_get(ETK_BIN(button))))
+   {
+      if (ETK_IS_LABEL(child))
+         etk_label_alignment_set(ETK_LABEL(child), xalign, yalign);
+      else if (ETK_IS_ALIGNMENT(child))
+      {
+         Etk_Alignment *child_alignment = ETK_ALIGNMENT(child);
+         float xscale, yscale;
+      
+         etk_alignment_get(child_alignment, NULL, NULL, &xscale, &yscale);
+         etk_alignment_set(child_alignment, xalign, yalign, xscale, yscale);
+      }
+   }
+
+   if (button->xalign != xalign)
+   {
+      button->xalign = xalign;
+      etk_object_notify(ETK_OBJECT(button), "xalign");
+   }
+   if (button->yalign != yalign)
+   {
+      button->yalign = yalign;
+      etk_object_notify(ETK_OBJECT(button), "yalign");
+   }
+}
+
+/**
+ * @brief Gets the alignment of the button's child
+ * @param button a button
+ * @param xalign the location where to store the horizontal alignment
+ * @param yalign the location where to store the vertical alignment
+ */
+void etk_button_alignment_get(Etk_Button *button, float *xalign, float *yalign)
+{
+   if (xalign)
+      *xalign = button ? button->xalign : 0;
+   if (yalign)
+      *yalign = button ? button->yalign : 0;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -439,17 +440,23 @@ static void _etk_button_constructor(Etk_Button *button)
    etk_widget_pass_mouse_events_set(button->label, ETK_TRUE);
    etk_container_add(ETK_CONTAINER(button), button->label);
 
+   button->ignore_image_remove = ETK_FALSE;
+   button->is_pressed = ETK_FALSE;
+   button->xalign = 0.5;
+   button->yalign = 0.5;
+
+   ETK_WIDGET(button)->entered_handler = _etk_button_entered_handler;
+   ETK_WIDGET(button)->left_handler = _etk_button_left_handler;
+   ETK_WIDGET(button)->focused_handler = _etk_button_focused_handler;
+   ETK_WIDGET(button)->unfocused_handler = _etk_button_unfocused_handler;
+   ETK_WIDGET(button)->enabled_handler = _etk_button_enabled_handler;
+   ETK_WIDGET(button)->disabled_handler = _etk_button_disabled_handler;
    button->pressed_handler = _etk_button_pressed_handler;
    button->released_handler = _etk_button_released_handler;
    button->clicked_handler = _etk_button_clicked_handler;
 
-   button->ignore_image_remove = ETK_FALSE;
-   button->is_pressed = ETK_FALSE;
-   button->image_from_stock = ETK_FALSE;
-   button->xalign = 0.5;
-   button->yalign = 0.5;
-
    etk_signal_connect("realized", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_realized_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(button->label), ETK_CALLBACK(_etk_button_label_realized_cb), button);
    etk_signal_connect("key-down", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_key_down_cb), NULL);
    etk_signal_connect("key-up", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_key_up_cb), NULL);
    etk_signal_connect("mouse-down", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_down_cb), NULL);
@@ -538,7 +545,26 @@ static void _etk_button_realized_cb(Etk_Object *object, void *data)
       return;
    
    if (button->is_pressed)
-      etk_widget_theme_signal_emit(ETK_WIDGET(button), "pressed", ETK_FALSE);
+   {
+      etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,pressed", ETK_FALSE);
+      etk_widget_theme_signal_emit(button->label, "etk,state,pressed", ETK_FALSE);
+   }
+}
+
+/* Called when the button's label is realized */
+static void _etk_button_label_realized_cb(Etk_Object *object, void *data)
+{
+   Etk_Button *button;
+   
+   if (!(button = ETK_BUTTON(data)))
+      return;
+   
+   if (button->is_pressed)
+      etk_widget_theme_signal_emit(button->label, "etk,state,pressed", ETK_FALSE);
+   if (etk_widget_disabled_get(ETK_WIDGET(button)))
+      etk_widget_theme_signal_emit(button->label, "etk,state,disabled", ETK_FALSE);
+   if (etk_widget_is_focused(ETK_WIDGET(button)))
+      etk_widget_theme_signal_emit(button->label, "etk,state,focused", ETK_FALSE);
 }
 
 /* Called when the image is removed from the box */
@@ -630,12 +656,85 @@ static void _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up *e
       etk_button_click(button);
 }
 
+/* Default handler for the "entered" signal. We override this handler
+ * to make the button's label receives the same theme-signals as the button */
+static void _etk_button_entered_handler(Etk_Widget *widget)
+{
+   Etk_Button *button;
+   
+   if (!(button = ETK_BUTTON(widget)))
+      return;
+   etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,enter", ETK_FALSE);
+   etk_widget_theme_signal_emit(button->label, "etk,state,enter", ETK_FALSE);
+}
+
+/* Default handler for the "left" signal. We override this handler
+ * to make the button's label receives the same theme-signals as the button */
+static void _etk_button_left_handler(Etk_Widget *widget)
+{
+   Etk_Button *button;
+   
+   if (!(button = ETK_BUTTON(widget)))
+      return;
+   etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,leave", ETK_FALSE);
+   etk_widget_theme_signal_emit(button->label, "etk,state,leave", ETK_FALSE);
+}
+
+/* Default handler for the "focused" signal. We override this handler
+ * to make the button's label receives the same theme-signals as the button */
+static void _etk_button_focused_handler(Etk_Widget *widget)
+{
+   Etk_Button *button;
+   
+   if (!(button = ETK_BUTTON(widget)))
+      return;
+   etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,focused", ETK_FALSE);
+   etk_widget_theme_signal_emit(button->label, "etk,state,focused", ETK_FALSE);
+}
+
+/* Default handler for the "unfocused" signal. We override this handler
+ * to make the button's label receives the same theme-signals as the button */
+static void _etk_button_unfocused_handler(Etk_Widget *widget)
+{
+   Etk_Button *button;
+   
+   if (!(button = ETK_BUTTON(widget)))
+      return;
+   etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,unfocused", ETK_FALSE);
+   etk_widget_theme_signal_emit(button->label, "etk,state,unfocused", ETK_FALSE);
+}
+ 
+/* Default handler for the "enabled" signal. We override this handler
+ * to make the button's label receives the same theme-signals as the button */
+static void _etk_button_enabled_handler(Etk_Widget *widget)
+{
+   Etk_Button *button;
+   
+   if (!(button = ETK_BUTTON(widget)))
+      return;
+   etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,enabled", ETK_FALSE);
+   etk_widget_theme_signal_emit(button->label, "etk,state,enabled", ETK_FALSE);
+}
+
+/* Default handler for the "disabled" signal. We override this handler
+ * to make the button's label receives the same theme-signals as the button */
+static void _etk_button_disabled_handler(Etk_Widget *widget)
+{
+   Etk_Button *button;
+   
+   if (!(button = ETK_BUTTON(widget)))
+      return;
+   etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,disabled", ETK_FALSE);
+   etk_widget_theme_signal_emit(button->label, "etk,state,disabled", ETK_FALSE);
+}
+
 /* Default handler for the "pressed" signal */
 static void _etk_button_pressed_handler(Etk_Button *button)
 {
    if (!button)
       return;
    etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,pressed", ETK_FALSE);
+   etk_widget_theme_signal_emit(button->label, "etk,state,pressed", ETK_FALSE);
 }
 
 /* Default handler for the "released" signal */
@@ -644,6 +743,7 @@ static void _etk_button_released_handler(Etk_Button *button)
    if (!button)
       return;
    etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,released", ETK_FALSE);
+   etk_widget_theme_signal_emit(button->label, "etk,state,released", ETK_FALSE);
 }
 
 /* Default handler for the "clicked" signal */
@@ -652,7 +752,14 @@ static void _etk_button_clicked_handler(Etk_Button *button)
    if (!button)
       return;
    etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,clicked", ETK_FALSE);
+   etk_widget_theme_signal_emit(button->label, "etk,state,clicked", ETK_FALSE);
 }
+
+/**************************
+ *
+ * Private functions
+ *
+ **************************/
 
 /* Rebuilds the default layout for the button */
 static void _etk_button_rebuild(Etk_Button *button)

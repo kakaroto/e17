@@ -25,17 +25,17 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
  * @brief Gets the type of an Etk_Radio_Button
  * @return Returns the type of an Etk_Radio_Button
  */
-Etk_Type *etk_radio_button_type_get()
+Etk_Type *etk_radio_button_type_get(void)
 {
    static Etk_Type *radio_button_type = NULL;
 
    if (!radio_button_type)
    {
-      radio_button_type = etk_type_new("Etk_Radio_Button", ETK_CHECK_BUTTON_TYPE, sizeof(Etk_Radio_Button),
-         ETK_CONSTRUCTOR(_etk_radio_button_constructor), ETK_DESTRUCTOR(_etk_radio_button_destructor));
+      radio_button_type = etk_type_new("Etk_Radio_Button", ETK_TOGGLE_BUTTON_TYPE, sizeof(Etk_Radio_Button),
+            ETK_CONSTRUCTOR(_etk_radio_button_constructor), ETK_DESTRUCTOR(_etk_radio_button_destructor));
 
       etk_type_property_add(radio_button_type, "group", ETK_RADIO_BUTTON_GROUP_PROPERTY,
-         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
+            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
    
       radio_button_type->property_set = _etk_radio_button_property_set;
       radio_button_type->property_get = _etk_radio_button_property_get;
@@ -45,9 +45,9 @@ Etk_Type *etk_radio_button_type_get()
 }
 
 /**
- * @brief Creates a new radio button
- * @param group the group to which the radio button will be added (NULL if the radio button should create its own group)
- * @return Returns the new radio button widget
+ * @brief Creates a new radio-button
+ * @param group the group to which the radio-button will be added (NULL if the radio-button should create its own group)
+ * @return Returns the new radio-button widget
  */
 Etk_Widget *etk_radio_button_new(Evas_List **group)
 {
@@ -56,9 +56,9 @@ Etk_Widget *etk_radio_button_new(Evas_List **group)
 }
 
 /**
- * @brief Creates a new radio button. It will use the group of another radio button
- * @param radio_button the radio button whose group will be used by the new radio button
- * @return Returns the new radio button widget
+ * @brief Creates a new radio-button. It will use the group of another radio-button
+ * @param radio_button the radio-button whose group will be used by the new radio-button
+ * @return Returns the new radio-button widget
  */
 Etk_Widget *etk_radio_button_new_from_widget(Etk_Radio_Button *radio_button)
 {
@@ -67,10 +67,10 @@ Etk_Widget *etk_radio_button_new_from_widget(Etk_Radio_Button *radio_button)
 }
 
 /**
- * @brief Creates a new radio button with a label
+ * @brief Creates a new radio-button with a label
  * @param label the label
- * @param group the group to which the radio button will be added (NULL if the radio button should create its own group)
- * @return Returns the new radio button widget
+ * @param group the group to which the radio-button will be added (NULL if the radio-button should create its own group)
+ * @return Returns the new radio-button widget
  */
 Etk_Widget *etk_radio_button_new_with_label(const char *label, Evas_List **group)
 {
@@ -79,10 +79,10 @@ Etk_Widget *etk_radio_button_new_with_label(const char *label, Evas_List **group
 }
 
 /**
- * @brief Creates a new radio button with a label. It will use the group of another radio button
+ * @brief Creates a new radio-button with a label. It will use the group of another radio-button
  * @param label the label
- * @param radio_button the radio button whose group will be used by the new radio button
- * @return Returns the new radio button widget
+ * @param radio_button the radio-button whose group will be used by the new radio-button
+ * @return Returns the new radio-button widget
  */
 Etk_Widget *etk_radio_button_new_with_label_from_widget(const char *label, Etk_Radio_Button *radio_button)
 {
@@ -91,8 +91,8 @@ Etk_Widget *etk_radio_button_new_with_label_from_widget(const char *label, Etk_R
 }
 
 /**
- * @brief Sets the group of the radio button
- * @param radio_button a radio button
+ * @brief Sets the group of the radio-button
+ * @param radio_button a radio-button
  * @param group the group to use
  */
 void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **group)
@@ -131,9 +131,9 @@ void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **grou
 }
 
 /**
- * @brief Gets the group of the radio button
- * @param radio_button a radio button
- * @return Returns the group used by the radio button
+ * @brief Gets the group of the radio-button
+ * @param radio_button a radio-button
+ * @return Returns the group used by the radio-button
  */
 Evas_List **etk_radio_button_group_get(Etk_Radio_Button *radio_button)
 {
@@ -148,7 +148,7 @@ Evas_List **etk_radio_button_group_get(Etk_Radio_Button *radio_button)
  *
  **************************/
 
-/* Initializes the radio button */
+/* Initializes the radio-button */
 static void _etk_radio_button_constructor(Etk_Radio_Button *radio_button)
 {
    if (!radio_button)
@@ -159,7 +159,7 @@ static void _etk_radio_button_constructor(Etk_Radio_Button *radio_button)
    ETK_TOGGLE_BUTTON(radio_button)->active_set = _etk_radio_button_active_set;
 }
 
-/* Destroys the radio button */
+/* Destroys the radio-button */
 static void _etk_radio_button_destructor(Etk_Radio_Button *radio_button)
 {
    if (!radio_button || !radio_button->group)
@@ -215,7 +215,8 @@ static void _etk_radio_button_property_get(Etk_Object *object, int property_id, 
  *
  **************************/
 
-/* Deactivates all the other radio buttons of the group when a radio button is activated */
+/* This function is called when the radio-button is turned on: it deactivates all
+ * the other radio-buttons of the group, and activate the given radio-button */
 static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool active)
 {
    Etk_Radio_Button *radio_button;
@@ -233,7 +234,7 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
    
       if (toggle_button->active)
       {
-         /* Uncheck the previously checked button of the group */
+         /* Deactivate the current active button of the group */
          for (l = *radio_button->group; l; l = l->next)
          {
             tb = ETK_TOGGLE_BUTTON(l->data);
@@ -260,17 +261,17 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
  * @addtogroup Etk_Radio_Button
  *
  * @image html widgets/radio_button.png
- * When a radio button is activated, the other radio buttons of the same group are deactivated. This way, in a group,
- * only one radio button can be active. @n
- * Radio buttons are used when the user has to make a choice between several options. @n
+ * When a radio-button is activated, the other radio-buttons of the same group are deactivated. This way, in a group,
+ * only one radio-button can be active. @n
+ * Radio-buttons are used when the user has to make a choice between several options. @n
  *
- * To create several radio buttons belonging to the same group, you can first call etk_radio_button_new_with_label() to
- * create the first radio button, and then use etk_radio_button_new_with_label_from_widget() to create the other radio
+ * To create several radio-buttons belonging to the same group, you can first call etk_radio_button_new_with_label() to
+ * create the first radio-button, and then use etk_radio_button_new_with_label_from_widget() to create the other radio
  * buttons of the group. For example:
  * @code
  * Etk_Widget *radio_buttons[3];
  *
- * //Creates 3 radio buttons belonging to the same group
+ * //Creates 3 radio-buttons belonging to the same group
  * radio_buttons[0] = etk_radio_button_new_with_label("Option 1");
  * radio_buttons[1] = etk_radio_button_new_with_label_from_widget("Option 2", ETK_RADIO_BUTTON(radio_buttons[0]));
  * radio_buttons[2] = etk_radio_button_new_with_label_from_widget("Option 3", ETK_RADIO_BUTTON(radio_buttons[0]));
@@ -283,11 +284,10 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
  *       - Etk_Bin
  *         - Etk_Button
  *           - Etk_Toggle_Button
- *             - Etk_Check_Button
- *               - Etk_Radio_Button
+ *             - Etk_Radio_Button
  *
  * \par Properties:
- * @prop_name "group": The group of the radio button
+ * @prop_name "group": The group of the radio-button
  * @prop_type Pointer (Evas_List **)
  * @prop_rw
  * @prop_val NULL
