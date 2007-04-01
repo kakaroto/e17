@@ -111,16 +111,13 @@ _gc_shutdown (E_Gadcon_Client * gcc)
   inst = gcc->data;
   ss = inst->ss;
 
-  if (inst->filename)
-    evas_stringshare_del (inst->filename);
   ss_config->instances = evas_list_remove (ss_config->instances, inst);
 
   evas_object_event_callback_del (ss->ss_obj, EVAS_CALLBACK_MOUSE_DOWN,
 				  _ss_cb_mouse_down);
 
   _ss_free (ss);
-  free (inst);
-  inst = NULL;
+  E_FREE(inst);
 }
 
 static void
@@ -374,9 +371,6 @@ e_modapi_shutdown (E_Module * m)
       ss_config->menu = NULL;
     }
 
-  if (ss_config->exe_exit_handler)
-    ecore_event_handler_del (ss_config->exe_exit_handler);
-
   while (ss_config->items)
     {
       Config_Item *ci;
@@ -453,8 +447,7 @@ static void
 _ss_free (Screenshot * ss)
 {
   evas_object_del (ss->ss_obj);
-  free (ss);
-  ss = NULL;
+  E_FREE(ss);
 }
 
 static void
