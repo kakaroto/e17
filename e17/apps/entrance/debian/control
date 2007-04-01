@@ -3,7 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>> 4.0.0), automake1.7 | automaken, libtool, libpam0g-dev, libevas-dev, libecore-dev, ecore0-bin, libedje-dev, edje0-bin, libesmart-dev
-Standards-Version: 3.6.1.0
+Standards-Version: 3.7.2
 
 Package: entrance
 Section: x11
