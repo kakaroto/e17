@@ -899,7 +899,7 @@ ewl_grid_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_GRID_TYPE);
 
 	g = EWL_GRID(w);
 
@@ -979,7 +979,7 @@ ewl_grid_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_GRID_TYPE);
 
 	g = EWL_GRID(w);
 
@@ -1500,15 +1500,13 @@ ewl_grid_map_start_position_get(Ewl_Grid *g, int *c, int *r)
  * @brief Notify the grid that a child has been added.
  */
 void 
-ewl_grid_cb_child_add(Ewl_Container *p, Ewl_Widget *c)
+ewl_grid_cb_child_add(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 {
 	Ewl_Grid *g;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("p", p, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("c", c, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("p", p, EWL_GRID_TYPE);
 
 	g = EWL_GRID(p);
 	g->data_dirty = TRUE;
@@ -1542,8 +1540,8 @@ ewl_grid_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("c", c, EWL_GRID_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	g = EWL_GRID(c);
@@ -1572,13 +1570,11 @@ ewl_grid_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
  * @brief Catch notification of child shows.
  */
 void
-ewl_grid_cb_child_show(Ewl_Container *p, Ewl_Widget *child)
+ewl_grid_cb_child_show(Ewl_Container *p, Ewl_Widget *child __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
-	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("p", p, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("p", p, EWL_GRID_TYPE);
 
 	EWL_GRID(p)->data_dirty = TRUE;
 	ewl_grid_child_data_collect(EWL_GRID(p));
@@ -1596,15 +1592,13 @@ ewl_grid_cb_child_show(Ewl_Container *p, Ewl_Widget *child)
  * @brief Catch notification of child resizes.
  */
 void
-ewl_grid_cb_child_resize(Ewl_Container *p, Ewl_Widget *child, 
+ewl_grid_cb_child_resize(Ewl_Container *p, Ewl_Widget *child __UNUSED__, 
 				int size __UNUSED__,
 				Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
-	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("p", p, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("p", p, EWL_GRID_TYPE);
 
 	EWL_GRID(p)->data_dirty = TRUE;
 	ewl_widget_configure(EWL_WIDGET(p));

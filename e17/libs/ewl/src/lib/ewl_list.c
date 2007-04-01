@@ -81,7 +81,7 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_LIST_TYPE);
 
 	list = EWL_LIST(w);
 
@@ -126,7 +126,7 @@ ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_LIST_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (ewl_mvc_selection_mode_get(EWL_MVC(c)) ==
@@ -190,7 +190,7 @@ ewl_list_cb_selected_change(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_TYPE("mvc", mvc, EWL_LIST_TYPE);
 
 	ewl_mvc_highlight(mvc, EWL_CONTAINER(mvc), ewl_list_widget_at);
 

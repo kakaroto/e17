@@ -101,7 +101,7 @@ ewl_datepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_DATEPICKER_TYPE);
 
 	dp = EWL_DATEPICKER(w);
 	ewl_widget_destroy(dp->calendar_window);
@@ -126,6 +126,7 @@ ewl_datepicker_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("user_data", user_data, EWL_DATEPICKER_TYPE);
 
 	dp = EWL_DATEPICKER(user_data);
 	ewl_widget_hide(dp->calendar_window);
@@ -151,7 +152,7 @@ ewl_datepicker_cb_window_mouse_down(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_EMBED_TYPE);
 
 	if (w == ewl_embed_focused_widget_get(EWL_EMBED(w)))
 		ewl_widget_hide(w);
@@ -167,7 +168,7 @@ ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_DATEPICKER_TYPE);
 
 	dp = EWL_DATEPICKER(w);
 	ewl_widget_show(dp->calendar_window);

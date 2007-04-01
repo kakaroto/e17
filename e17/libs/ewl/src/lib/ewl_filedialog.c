@@ -443,7 +443,7 @@ ewl_filedialog_cb_delete_window(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_FILEDIALOG_TYPE);
 
 	fd = EWL_FILEDIALOG(w);
 	ewl_filedialog_respond(fd, EWL_STOCK_CANCEL);
@@ -475,7 +475,7 @@ ewl_filedialog_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("data", data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
 	e = ev;
@@ -493,6 +493,7 @@ ewl_filedialog_cb_column_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
 	ewl_filedialog_list_view_set(fd, ewl_filelist_column_view_get());
@@ -508,6 +509,7 @@ ewl_filedialog_cb_icon_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
 	ewl_filedialog_list_view_set(fd, ewl_filelist_icon_view_get());
@@ -523,6 +525,7 @@ ewl_filedialog_cb_list_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
 	ewl_filedialog_list_view_set(fd, ewl_filelist_list_view_get());
@@ -538,6 +541,7 @@ ewl_filedialog_cb_tree_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
 	ewl_filedialog_list_view_set(fd, ewl_filelist_tree_view_get());
@@ -553,6 +557,7 @@ ewl_filedialog_cb_show_dot(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
 	ewl_filedialog_show_dot_files_set(fd,
@@ -569,6 +574,7 @@ ewl_filedialog_cb_show_favorites(Ewl_Widget *w __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
 	ewl_filedialog_show_favorites_set(fd,

@@ -725,7 +725,7 @@ ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_IMAGE_THUMBNAIL_TYPE);
 
 	thumb = EWL_IMAGE_THUMBNAIL(w);
 	if (thumb->thumb) {
@@ -787,7 +787,7 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
@@ -888,7 +888,7 @@ ewl_image_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
 
 	emb = ewl_embed_widget_find(w);
 
@@ -918,7 +918,7 @@ ewl_image_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 
@@ -944,7 +944,7 @@ ewl_image_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 	if (!i->image)
@@ -1078,7 +1078,7 @@ ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
@@ -1111,7 +1111,7 @@ ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
@@ -1144,7 +1144,7 @@ ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);

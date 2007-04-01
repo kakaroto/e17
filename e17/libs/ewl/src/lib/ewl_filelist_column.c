@@ -365,7 +365,8 @@ ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev", ev);
 	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_ICON_TYPE);
+	DCHECK_TYPE("data", data, EWL_FILELIST_COLUMN_TYPE);
 
 	fl = data;
 	event = ev;
@@ -419,6 +420,7 @@ ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *ev, void *data)
 	DCHECK_PARAM_PTR("ev", ev);
 	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("data", data, EWL_FILELIST_COLUMN_TYPE);
 
 	fl = data;
 

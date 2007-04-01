@@ -613,6 +613,7 @@ ewl_notebook_cb_tab_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("data", data, EWL_NOTEBOOK_TYPE);
 
 	n = data;
 	page = ewl_attach_widget_association_get(w);

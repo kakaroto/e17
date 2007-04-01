@@ -1255,7 +1255,7 @@ ewl_container_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CONTAINER_TYPE);
 
 	if (!EWL_CONTAINER(w)->children)
 		DRETURN(DLEVEL_STABLE);
@@ -1287,7 +1287,7 @@ ewl_container_cb_enable(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CONTAINER_TYPE);
 
 	if (!EWL_CONTAINER(w)->children)
 		DRETURN(DLEVEL_STABLE);
@@ -1319,7 +1319,7 @@ ewl_container_cb_disable(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CONTAINER_TYPE);
 
 	if (!EWL_CONTAINER(w)->children)
 		DRETURN(DLEVEL_STABLE);
@@ -1351,6 +1351,8 @@ ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Container *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_CONTAINER_TYPE);
 
 	c = EWL_CONTAINER(w);
 
@@ -1395,6 +1397,8 @@ ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Container *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_CONTAINER_TYPE);
 
 	c = EWL_CONTAINER(w);
 
@@ -1448,7 +1452,7 @@ ewl_container_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CONTAINER_TYPE);
 
 	c = EWL_CONTAINER(w);
 
@@ -1486,7 +1490,7 @@ ewl_container_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CONTAINER_TYPE);
 
 	if (EWL_CONTAINER(w)->clip_box) {
 		/*
@@ -1519,7 +1523,7 @@ ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CONTAINER_TYPE);
 
 	c = EWL_CONTAINER(w);
 

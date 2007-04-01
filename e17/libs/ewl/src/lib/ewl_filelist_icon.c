@@ -224,6 +224,11 @@ ewl_filelist_icon_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 	Ewl_Event_Mouse_Down *event;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("ev", ev);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_ICON_TYPE);
+	DCHECK_TYPE("data", data, EWL_FILELIST_TYPE);
 
 	icon = EWL_ICON(w);
 	fl = data;
@@ -250,6 +255,7 @@ ewl_filelist_icon_cb_icon_clicked(Ewl_Widget *w, void *ev, void *data)
 	DCHECK_PARAM_PTR("ev", ev);
 	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("data", data, EWL_FILELIST_TYPE);
 
 	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev, 
 					"icon,select", "icon,unselect");

@@ -196,19 +196,17 @@ ewl_floater_relative_set(Ewl_Floater *f, Ewl_Widget *w)
  * parent/window gets configured.
  */
 void
-ewl_floater_cb_follow_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-							void *user_data)
+ewl_floater_cb_follow_configure(Ewl_Widget *w __UNUSED__, 
+				void *ev_data __UNUSED__, void *user_data)
 {
 	int align, x, y;
 	Ewl_Floater *f;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("user_data", user_data, EWL_FLOATER_TYPE);
 
-	w = user_data;
-	f = EWL_FLOATER(w);
+	f = EWL_FLOATER(user_data);
 
 	/*
 	 * Determine actual coordinates based on absolute or relative
@@ -226,30 +224,30 @@ ewl_floater_cb_follow_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Store the alignment in a temporary variable for fast access to
 	 * determine positioning.
 	 */
-	align = ewl_object_alignment_get(EWL_OBJECT(w));
+	align = ewl_object_alignment_get(EWL_OBJECT(f));
 
 	/*
 	 * Determine the horizontal placement of the widget based on alignment
 	 */
 	if (align & EWL_FLAG_ALIGN_RIGHT) {
-		x -= CURRENT_W(w);
+		x -= CURRENT_W(f);
 	} else if (!(align & EWL_FLAG_ALIGN_LEFT)) {
-		x -= CURRENT_W(w) / 2;
+		x -= CURRENT_W(f) / 2;
 	}
 
 	/*
 	 * Determine the vertical placement of the widget based on alignment
 	 */
 	if (align & EWL_FLAG_ALIGN_BOTTOM) {
-		y -= CURRENT_H(w);
+		y -= CURRENT_H(f);
 	} else if (!(align & EWL_FLAG_ALIGN_TOP)) {
-		y -= CURRENT_H(w) / 2;
+		y -= CURRENT_H(f) / 2;
 	}
 
 	/*
 	 * Now request the calculated coordinates for the floater.
 	 */
-	ewl_object_position_request(EWL_OBJECT(w), x, y);
+	ewl_object_position_request(EWL_OBJECT(f), x, y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -268,7 +266,7 @@ ewl_floater_cb_follow_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_FLOATER_TYPE);
 
 	EWL_FLOATER(w)->follows = NULL;
 

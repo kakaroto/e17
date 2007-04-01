@@ -392,6 +392,8 @@ ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	Ewl_Event_Key *event;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_BUTTON_TYPE);
 
 	event = ev;
 	if ((!strcmp(event->keyname, "Return")) 

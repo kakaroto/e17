@@ -286,15 +286,13 @@ ewl_freebox_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Callback for when a child is added
  */
 void
-ewl_freebox_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
+ewl_freebox_cb_child_add(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
 	Ewl_Freebox *fb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("c", c, EWL_FREEBOX_TYPE);
 
 	/* This only does a sorted = FALSE because in the COMPARATOR layout
 	 * it will remove all of the widgets from the container and
@@ -315,15 +313,13 @@ ewl_freebox_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
  * @brief Callback for when a child is shown
  */
 void
-ewl_freebox_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
+ewl_freebox_cb_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
 	Ewl_Freebox *fb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("c", c, EWL_FREEBOX_TYPE);
 
 	fb = EWL_FREEBOX(c);
 	fb->sorted = FALSE;

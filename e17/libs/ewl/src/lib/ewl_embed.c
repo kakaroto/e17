@@ -1770,7 +1770,7 @@ ewl_embed_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_EMBED_TYPE);
 
 	emb = EWL_EMBED(w);
 	ewl_embed_freeze(emb);
@@ -1842,7 +1842,7 @@ ewl_embed_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_EMBED_TYPE);
 
 	emb = EWL_EMBED(w);
 	if (emb->ev_clip) {
@@ -1876,7 +1876,7 @@ ewl_embed_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_EMBED_TYPE);
 
 	emb = EWL_EMBED(w);
 	if (emb->ev_clip) {
@@ -1924,7 +1924,7 @@ ewl_embed_cb_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_EMBED_TYPE);
 
 	emb = EWL_EMBED(w);
 	if (!emb->last.focused)
@@ -1952,7 +1952,7 @@ void ewl_embed_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_EMBED_TYPE);
 
 	emb = EWL_EMBED(w);
 	if (ecore_list_goto(ewl_embed_list, w))

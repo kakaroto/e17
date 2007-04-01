@@ -269,7 +269,7 @@ ewl_context_menu_cb_mouse_down(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CONTEXT_MENU_TYPE);
 
 	if (w == ewl_embed_focused_widget_get(EWL_EMBED(w))) {
 		Ewl_Context_Menu *cm;
@@ -310,7 +310,7 @@ ewl_context_menu_cb_hide(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CONTEXT_MENU_TYPE);
 
 	cm = EWL_CONTEXT_MENU(w);
 
@@ -345,7 +345,7 @@ ewl_context_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CONTEXT_MENU_TYPE);
 
 	ev = ev_data;
 	cm = EWL_CONTEXT_MENU(w);
@@ -407,7 +407,7 @@ ewl_context_menu_cb_focus_in(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CONTEXT_MENU_TYPE);
 
 	ewl_context_menu_grabber_set(EWL_CONTEXT_MENU(w));
 

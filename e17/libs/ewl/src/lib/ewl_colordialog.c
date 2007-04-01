@@ -305,7 +305,9 @@ ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("w", w, EWL_STOCK_TYPE);
+	DCHECK_TYPE("data", data, EWL_COLORDIALOG_TYPE);
 
 	type = ewl_stock_type_get(EWL_STOCK(w));
 	ewl_colordialog_respond(EWL_COLORDIALOG(data), type);
@@ -327,7 +329,7 @@ ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_COLORDIALOG_TYPE);
 
 	ewl_colordialog_respond(EWL_COLORDIALOG(w), EWL_STOCK_CANCEL);
 

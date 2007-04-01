@@ -352,6 +352,7 @@ ewl_calendar_day_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("user_data", user_data, EWL_CALENDAR_TYPE);
 
 	now_tm = time(NULL);
 	now = localtime(&now_tm);
@@ -417,6 +418,7 @@ ewl_calendar_next_month_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("user_data", user_data, EWL_CALENDAR_TYPE);
 
 	ib = EWL_CALENDAR(user_data);
 	ib->cur_month += 1;

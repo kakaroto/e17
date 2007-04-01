@@ -83,7 +83,7 @@ ewl_overlay_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_OVERLAY_TYPE);
 
 	o = EWL_OBJECT(w);
 
@@ -124,7 +124,7 @@ ewl_overlay_cb_child_show(Ewl_Container *o, Ewl_Widget *child)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("o", o, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("o", o, EWL_OVERLAY_TYPE);
 	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
 
 	size = ewl_object_current_x_get(EWL_OBJECT(child));
@@ -161,7 +161,7 @@ ewl_overlay_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_OVERLAY_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	child = EWL_OBJECT(w);

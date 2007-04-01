@@ -683,7 +683,7 @@ ewl_icon_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_ICON_TYPE);
 
 	icon = EWL_ICON(w);
 	IF_FREE(icon->label_text);
@@ -914,8 +914,8 @@ ewl_icon_cb_thumb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Icon *icon;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_ICON_TYPE);
 
 	icon = EWL_ICON(data);
 	if (icon->alt && VISIBLE(icon->alt))

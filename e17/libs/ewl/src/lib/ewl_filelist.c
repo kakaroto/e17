@@ -1049,7 +1049,7 @@ ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_FILELIST_TYPE);
 
 	fl = EWL_FILELIST(w);
 

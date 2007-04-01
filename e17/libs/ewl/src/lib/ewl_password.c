@@ -222,7 +222,7 @@ ewl_password_cb_key_down(Ewl_Widget *w, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_PASSWORD_TYPE);
 
 	e = EWL_PASSWORD(w);
 	ev = ev_data;
@@ -270,7 +270,7 @@ ewl_password_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_PASSWORD_TYPE);
 
 	p = EWL_PASSWORD(w);
 	if (p->real_text) {

@@ -78,7 +78,7 @@ ewl_cell_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_CELL_TYPE);
 
 	c = EWL_CONTAINER(w);
 
@@ -105,7 +105,7 @@ ewl_cell_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_CELL_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/*
@@ -141,7 +141,7 @@ ewl_cell_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_CELL_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c),

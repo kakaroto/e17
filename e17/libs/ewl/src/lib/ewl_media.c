@@ -481,7 +481,7 @@ ewl_media_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_MEDIA_TYPE);
 
 	m = EWL_MEDIA(w);
 
@@ -524,7 +524,7 @@ ewl_media_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_MEDIA_TYPE);
 
 	m = EWL_MEDIA(w);
 
@@ -555,7 +555,7 @@ ewl_media_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_MEDIA_TYPE);
 
 	m = EWL_MEDIA(w);
 
@@ -581,7 +581,7 @@ ewl_media_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_MEDIA_TYPE);
 
 	m = EWL_MEDIA(w);
 
@@ -626,6 +626,7 @@ ewl_media_cb_update_timer(void *data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_MEDIA_TYPE);
 
 	m = data;
 

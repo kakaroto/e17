@@ -117,7 +117,7 @@ ewl_radiobutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_RADIOBUTTON_TYPE);
 
 	cb = EWL_CHECKBUTTON(w);
 	rb = EWL_RADIOBUTTON(w);
@@ -155,7 +155,7 @@ ewl_radiobutton_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_RADIOBUTTON_TYPE);
 
 	rb = EWL_RADIOBUTTON(w);
 

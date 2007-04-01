@@ -238,6 +238,7 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_PARAM_PTR("data", EWL_COMBO_TYPE);
 
 	combo = data;
 	model = ewl_mvc_model_get(EWL_MVC(combo));
@@ -284,6 +285,7 @@ ewl_combo_cb_popup_hide(Ewl_Widget *w __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_COMBO_TYPE);
 
 	combo = EWL_COMBO(data);
 	ewl_widget_state_set(combo->button, "collapsed", EWL_STATE_PERSISTENT);
@@ -301,7 +303,7 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_TYPE("mvc", mvc, EWL_COMBO_TYPE);
 
 	combo = EWL_COMBO(mvc);
 	view = ewl_mvc_view_get(mvc);
@@ -621,6 +623,7 @@ ewl_combo_cell_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_COMBO_CELL_TYPE);
 
 	i = ewl_container_child_index_get(EWL_CONTAINER(w->parent), w);
 

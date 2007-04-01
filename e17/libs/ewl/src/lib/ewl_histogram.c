@@ -199,7 +199,7 @@ ewl_histogram_cb_configure(Ewl_Widget *w, void *event __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_HISTOGRAM_TYPE);
 
 	/* Only bother drawing if we've seen some usable data. */
 	if (EWL_HISTOGRAM(w)->maxv)

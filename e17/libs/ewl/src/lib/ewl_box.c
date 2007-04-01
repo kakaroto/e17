@@ -380,7 +380,7 @@ ewl_box_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_BOX_TYPE);
 
 	b = EWL_BOX(w);
 
@@ -466,7 +466,7 @@ ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_BOX_TYPE);
 
 	if (ecore_dlist_is_empty(EWL_CONTAINER(w)->children))
 		DRETURN(DLEVEL_STABLE);
@@ -800,7 +800,7 @@ ewl_box_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_BOX_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (ecore_dlist_nodes(c->children) > 1)
@@ -889,7 +889,7 @@ ewl_box_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_BOX_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (ecore_dlist_nodes(c->children) > 1)
@@ -933,7 +933,7 @@ ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_BOX_TYPE);
 
 	/*
 	 * Get the appropriate dimension setting functions based on the

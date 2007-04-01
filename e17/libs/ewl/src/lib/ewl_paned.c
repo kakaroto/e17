@@ -201,7 +201,7 @@ ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_PANED_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* if this is a grabber we can skipp it */
@@ -238,7 +238,7 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_PANED_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	p = EWL_PANED(c);
@@ -273,7 +273,7 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_PANED_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_object_preferred_size_get(EWL_OBJECT(w), &ww, &wh);
@@ -313,7 +313,7 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_PANED_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_object_preferred_size_get(EWL_OBJECT(w), &ww, &wh);
@@ -351,7 +351,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_PANED_TYPE);
 
 	p = EWL_PANED(w);
 	c = EWL_CONTAINER(p);

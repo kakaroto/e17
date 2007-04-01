@@ -124,6 +124,7 @@ ewl_highlight_cb_follow_destroy(Ewl_Widget *w __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_HIGHLIGHT_TYPE);
 
 	ewl_floater_follow_set(EWL_FLOATER(data), NULL);
 	ewl_widget_destroy(EWL_WIDGET(data));
