@@ -330,8 +330,7 @@ ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Scrollpane *s;
-	int vs_width = 0;
-	int hs_height = 0;
+	int vs_width = 0, hs_height = 0;
 	int b_width, b_height;
 	int content_w, content_h;
 	unsigned int old_fill, box_fill = EWL_FLAG_FILL_FILL;
