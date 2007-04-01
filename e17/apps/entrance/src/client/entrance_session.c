@@ -389,7 +389,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    char *user = NULL;
    char *session_cmd = NULL;
    char *session_name = NULL;
-   char *monitor_cmd = PACKAGE_LIB_DIR "/" PACKAGE "/entrance_login";
+   char *monitor_cmd = PACKAGE_LIBEXEC_DIR "/" PACKAGE "/entrance_login";
    struct passwd *pwent = NULL;
    Entrance_X_Session *exs = NULL;
 

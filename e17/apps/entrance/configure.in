@@ -20,8 +20,8 @@ AC_EXPAND_DIR(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
 AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR", [Shared data directory])
 AC_EXPAND_DIR(PACKAGE_BIN_DIR, "$bindir")
 AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "$PACKAGE_BIN_DIR", [Location of binaries])
-AC_EXPAND_DIR(PACKAGE_LIB_DIR, "$libdir")
-AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "$PACKAGE_LIB_DIR", [Location of libraries])
+AC_EXPAND_DIR(PACKAGE_LIBEXEC_DIR, "$libexecdir")
+AC_DEFINE_UNQUOTED(PACKAGE_LIBEXEC_DIR, "$PACKAGE_LIBEXEC_DIR", [Location of private executables])
 
 # Override autosplat's destination dir settings
 if test $sysconfdir = '${prefix}/etc'; then
