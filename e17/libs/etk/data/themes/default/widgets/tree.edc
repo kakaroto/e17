@@ -423,11 +423,12 @@ group {
          }
       }
       part {
-         name: "select_clip";
+         name: "select_rect1";
          type: RECT;
          mouse_events: 0;
          description {
             state: "default" 0.0;
+            color: 227 216 182 255;
             visible: 0;
             rel1 {
                relative: 0.0 0.0;
@@ -435,7 +436,7 @@ group {
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -1 -1;
+               offset: -1 0;
             }
          }
          description {
@@ -445,39 +446,26 @@ group {
          }
       }
       part {
-         name: "select_rect1";
-         type: RECT;
-         clip_to: "select_clip";
-         mouse_events: 0;
-         description {
-            state: "default" 0.0;
-            color: 227 216 182 255;
-            rel1 {
-               relative: 0.0 0.0;
-               offset: 0 0;
-            }
-            rel2 {
-               relative: 1.0 1.0;
-               offset: -1 -1;
-            }
-         }
-      }
-      part {
          name: "select_rect2";
          type: RECT;
-         clip_to: "select_clip";
          mouse_events: 0;
          description {
             state: "default" 0.0;
             color: 247 236 202 255;
+            visible: 0;
             rel1 {
                relative: 0.0 0.0;
                offset: 1 1;
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: -2 -2;
+               offset: -2 -1;
             }
+         }
+         description {
+            state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
          }
       }
    }
@@ -501,14 +489,16 @@ group {
          signal: "etk,state,selected";
          source: "etk";
          action: STATE_SET "selected" 0.0;
-         target: "select_clip";
+         target: "select_rect1";
+         target: "select_rect2";
       }
       program {
          name: "row_unselect";
          signal: "etk,state,unselected";
          source: "etk";
          action: STATE_SET "default" 0.0;
-         target: "select_clip";
+         target: "select_rect1";
+         target: "select_rect2";
       }
    }
 }
