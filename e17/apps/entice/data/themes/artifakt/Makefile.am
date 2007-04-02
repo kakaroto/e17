@@ -9,16 +9,16 @@ embryo/globals.edc
 
 THEME = artifakt
 EDC = $(THEME).edc
-EET = $(EDC:%.edc=%.eet)
-SUFFIXES = .edc .eet
+EDJ = $(EDC:%.edc=%.edj)
+SUFFIXES = .edc .edj
 
-CLEANFILES = $(EET)
+CLEANFILES = $(EDJ)
 
 themedir = $(pkgdatadir)/themes
-theme_DATA = $(EET)
+theme_DATA = $(EDJ)
 
 .PHONY: all
 all: $(EDC)
 
-.edc.eet:
+.edc.edj:
 	edje_cc -v -id $(top_srcdir)/data/themes/$(THEME)/images -fd $(top_srcdir)/data/themes/$(THEME) $< $@

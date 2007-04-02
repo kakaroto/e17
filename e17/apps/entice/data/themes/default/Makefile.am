@@ -19,18 +19,18 @@ parts/panel.edc \
 parts/status.edc \
 parts/tooltip.edc
 
-CLEANFILES = $(EET)
+CLEANFILES = $(EDJ)
 
 THEME = default
 EDC = $(THEME).edc
-EET = $(EDC:%.edc=%.eet)
-SUFFIXES = .edc .eet
+EDJ = $(EDC:%.edc=%.edj)
+SUFFIXES = .edc .edj
 
 themedir = $(pkgdatadir)/themes
-theme_DATA = $(EET)
+theme_DATA = $(EDJ)
 
 .PHONY: all
 all: $(EDC)
 
-.edc.eet:
+.edc.edj:
 	edje_cc -v -id $(top_srcdir)/data/images -fd $(top_srcdir)/data/fonts $< $@

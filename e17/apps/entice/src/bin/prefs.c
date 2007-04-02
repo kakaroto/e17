@@ -89,7 +89,7 @@ entice_config_editor_get(void)
 
 /**
  * entice_config_theme_get - get the theme name, DO NOT FREE THIS
- * Returns - absolute path to the theme's eet
+ * Returns - absolute path to the theme's edj
  */
 const char *
 entice_config_theme_get(void)
@@ -109,7 +109,7 @@ entice_config_theme_get(void)
                      econfig->theme);
             if (stat(buf, &status) != 0)
             {
-               snprintf(buf, PATH_MAX, "%s/themes/default.eet",
+               snprintf(buf, PATH_MAX, "%s/themes/default.edj",
                         PACKAGE_DATA_DIR);
             }
          }
@@ -117,7 +117,7 @@ entice_config_theme_get(void)
       }
       else
       {
-         snprintf(buf, PATH_MAX, "%s/themes/default.eet", PACKAGE_DATA_DIR);
+         snprintf(buf, PATH_MAX, "%s/themes/default.edj", PACKAGE_DATA_DIR);
       }
       econfig->theme = strdup(buf);
       return (econfig->theme);
@@ -186,7 +186,7 @@ entice_config_new(void)
       char buf[PATH_MAX];
 
       memset(result, 0, sizeof(Entice_Config));
-      snprintf(buf, PATH_MAX, "%s/default.eet", PACKAGE_DATA_DIR);
+      snprintf(buf, PATH_MAX, "%s/default.edj", PACKAGE_DATA_DIR);
       result->theme = strdup(buf);
       result->w = 320;
       result->h = 240;
@@ -347,7 +347,7 @@ entice_config_generate_original_db(char *filename)
    {
       if ((db = e_db_open(filename)))
       {
-         e_db_str_set(db, "/entice/theme", "default.eet");
+         e_db_str_set(db, "/entice/theme", "default.edj");
          e_db_int_set(db, "/entice/engine", 0);
          e_db_int_set(db, "/entice/auto/orient", 1);
 #ifndef GIMP_REMOTE_BIN
