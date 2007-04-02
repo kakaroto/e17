@@ -445,13 +445,13 @@ group {
          }
       }
       part {
-         name: "select_rect";
+         name: "select_rect1";
          type: RECT;
          clip_to: "select_clip";
          mouse_events: 0;
          description {
             state: "default" 0.0;
-            color: 247 236 202 255;
+            color: 227 216 182 255;
             rel1 {
                relative: 0.0 0.0;
                offset: 0 0;
@@ -461,10 +461,23 @@ group {
                offset: -1 -1;
             }
          }
+      }
+      part {
+         name: "select_rect2";
+         type: RECT;
+         clip_to: "select_clip";
+         mouse_events: 0;
          description {
-            state: "even" 0.0;
-            inherit: "default" 0.0;
-            color: 252 241 207 255;
+            state: "default" 0.0;
+            color: 247 236 202 255;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 1 1;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -2 -2;
+            }
          }
       }
    }
@@ -475,7 +488,6 @@ group {
          source: "etk";
          action: STATE_SET "even" 0.0;
          target: "row";
-         target: "select_rect";
       }
       program {
          name: "row_odd";
@@ -483,7 +495,6 @@ group {
          source: "etk";
          action: STATE_SET "default" 0.0;
          target: "row";
-         target: "select_rect";
       }
       program {
          name: "row_select";
