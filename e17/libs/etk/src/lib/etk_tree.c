@@ -816,13 +816,112 @@ int etk_tree_col_position_get(Etk_Tree_Col *col)
  * same value, and a positive value if the cell of "row2" has a greater value than the cell of "row1"
  * @param data a pointer that will be passed to @a compare_cb when it is called
  */
-void etk_tree_col_sort_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), void *data)
+void etk_tree_col_sort_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), void *data)
 {  
    if (!col)
       return;
    
    col->sort.compare_cb = compare_cb;
    col->sort.data = data;
+}
+
+/* TODOC */
+void etk_tree_col_sort(Etk_Tree_Col *col, Etk_Bool ascendant)
+{
+   if (!col)
+      return;
+   etk_tree_col_sort_full(col, col->sort.compare_cb, col->sort.data, ascendant);
+}
+
+/* Restore the "heap" property of the heap. Used to sort the tree */
+static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int size, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), int asc, Etk_Tree_Col *col, void *data)
+{
+   Etk_Tree_Row *tmp;
+   int left, right, max;
+   
+   if (!heap)
+      return;
+   
+   left = (root * 2) + 1;
+   right = (root * 2) + 2;
+   
+   max = root;
+   if (left < size && (compare_cb(col, heap[left], heap[max], data) * asc) > 0)
+      max = left;
+   if (right < size && (compare_cb(col, heap[right], heap[max], data) * asc) > 0)
+      max = right;
+   
+   if (max != root)
+   {
+      tmp = heap[max];
+      heap[max] = heap[root];
+      heap[root] = tmp;
+      _etk_tree_heapify(tree, heap, max, size, compare_cb, asc, col, data);
+   }
+}
+
+/* TODOC */
+void etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), void *data, Etk_Bool ascendant)
+{
+   Etk_Tree *tree;
+   Etk_Tree_Row *first_row, *r;
+   Etk_Tree_Row **heap;
+   int num_rows;
+   int pos, parent, i;
+   int asc;
+   
+   if (!col || !compare_cb || !(tree = col->tree))
+      return;
+   if (!(first_row = tree->root.first_child))
+      return;
+   
+   asc = ascendant ? -1 : 1;
+   num_rows = tree->root.num_children;
+   heap = malloc(num_rows * sizeof(Etk_Tree_Row *));
+   
+   /* We insert all the rows in the heap */
+   first_row = 
+   heap[0] = first_row;
+   for (i = 1, r = first_row->next; r; r = r->next, i++)
+   {
+      pos = i;
+      parent = (pos - 1) / 2;
+      
+      while (parent >= 0 && (compare_cb(col, heap[parent], r, data) * asc) < 0)
+      {
+         heap[pos] = heap[parent];
+         pos = parent;
+         parent = parent ? (pos - 1) / 2 : -1;
+      }
+      heap[pos] = r;
+   }
+   
+   /* Then we extract them */
+   first_row = heap[0];
+   first_row->prev = NULL;
+   first_row->next = NULL;
+   r = first_row;
+   heap[0] = heap[num_rows - 1];
+   _etk_tree_heapify(tree, heap, 0, num_rows - 1, compare_cb, asc, col, data);
+   for (i = num_rows - 2; i >= 0; i--)
+   {
+      r->next = heap[0];
+      heap[0]->prev = r;
+      r = heap[0];
+      heap[0] = heap[i];
+      _etk_tree_heapify(tree, heap, 0, i, compare_cb, asc, col, data);
+   }
+   r->next = NULL;
+   
+   tree->root.first_child = first_row;
+   tree->root.last_child = r;
+   free(heap);
+   
+   /* TODO: */
+   /*tree->last_sorted_col = col;
+   tree->last_sorted_ascendant = ascendant;*/
+   
+   etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
 /**

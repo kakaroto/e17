@@ -75,7 +75,7 @@ struct Etk_Tree_Col
    
    struct
    {
-      int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
+      int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
       void *data;
    } sort;
 };
@@ -191,9 +191,9 @@ void           etk_tree_col_visible_set(Etk_Tree_Col *col, Etk_Bool visible);
 Etk_Bool       etk_tree_col_visible_get(Etk_Tree_Col *col);
 void           etk_tree_col_position_set(Etk_Tree_Col *col, int position);
 int            etk_tree_col_position_get(Etk_Tree_Col *col);
-void           etk_tree_col_sort_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), void *data);
-/* TODO: void etk_tree_col_sort(Etk_Tree_Col *col); */
-/* TODO: void etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), void *data); */
+void           etk_tree_col_sort_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), void *data);
+void           etk_tree_col_sort(Etk_Tree_Col *col, Etk_Bool ascendant);
+void           etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), void *data, Etk_Bool ascendant);
 
 Etk_Tree_Row  *etk_tree_row_prepend(Etk_Tree *tree, Etk_Tree_Row *parent, ...);
 Etk_Tree_Row  *etk_tree_row_append(Etk_Tree *tree, Etk_Tree_Row *parent, ...);

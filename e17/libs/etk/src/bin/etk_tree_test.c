@@ -6,6 +6,7 @@
 static void _etk_test_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_test_tree_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static int _etk_test_tree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
 
 /* Creates the window for the tree test */
 void etk_test_tree_window_create(void *data)
@@ -101,6 +102,7 @@ void etk_test_tree_window_create(void *data)
          NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));
+   etk_tree_col_sort_full(col1, _etk_test_tree_compare_cb, NULL, ETK_FALSE);
    
    /* Finally we create the statusbar used to display the events on the tree */
    statusbar = etk_statusbar_new();
@@ -189,4 +191,14 @@ static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row 
    
    sprintf(message, "Row \"%s\" has been %s", row_name, checked ? "checked" : "unchecked");
    etk_statusbar_message_push(statusbar, message, 0);
+}
+
+/* Used to sort the first column of the tree... */
+static int _etk_test_tree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data)
+{
+   const char *str1, *str2;
+   
+   etk_tree_row_fields_get(row1, col, NULL, NULL, &str1, NULL);
+   etk_tree_row_fields_get(row2, col, NULL, NULL, &str2, NULL);
+   return strcmp(str1, str2);
 }
