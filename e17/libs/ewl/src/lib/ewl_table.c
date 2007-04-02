@@ -482,7 +482,6 @@ ewl_table_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 *---------------------------------*/
 
 	Ewl_Table *table;
-	Ewl_Widget *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
