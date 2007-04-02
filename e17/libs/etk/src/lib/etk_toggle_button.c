@@ -191,10 +191,8 @@ static void _etk_toggle_button_realized_cb(Etk_Object *object, void *data)
    if (!(toggle_button = ETK_TOGGLE_BUTTON(object)))
       return;
    
-   etk_widget_theme_signal_emit(ETK_WIDGET(toggle_button),
-         toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
-   etk_widget_theme_signal_emit(ETK_BUTTON(toggle_button)->label,
-         toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
+   if (toggle_button->active)
+      etk_widget_theme_signal_emit(ETK_WIDGET(toggle_button), "etk,state,on", ETK_FALSE);
 }
 
 /* Called when the toggle-button's label is realized */
@@ -205,8 +203,8 @@ static void _etk_toggle_button_label_realized_cb(Etk_Object *object, void *data)
    if (!(toggle_button = ETK_TOGGLE_BUTTON(data)))
       return;
    
-   etk_widget_theme_signal_emit(ETK_BUTTON(toggle_button)->label,
-         toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
+   if (toggle_button->active)
+      etk_widget_theme_signal_emit(ETK_WIDGET(toggle_button), "etk,state,on", ETK_FALSE);
 }
 
 /* Default handler for the "toggled" signal */
@@ -216,8 +214,6 @@ static void _etk_toggle_button_toggled_handler(Etk_Toggle_Button *toggle_button)
       return;
    
    etk_widget_theme_signal_emit(ETK_WIDGET(toggle_button),
-         toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
-   etk_widget_theme_signal_emit(ETK_BUTTON(toggle_button)->label,
          toggle_button->active ? "etk,state,on" : "etk,state,off", ETK_FALSE);
 }
 

@@ -1340,6 +1340,8 @@ void etk_widget_theme_signal_emit(Etk_Widget *widget, const char *signal_name, E
    
    if (widget->theme_object)
       edje_object_signal_emit(widget->theme_object, signal_name, "etk");
+   if (widget->theme_signal_emit)
+      widget->theme_signal_emit(widget, signal_name, size_recalc);
    
    if (size_recalc)
    {
@@ -1940,8 +1942,6 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->requested_size.h = -1;
    widget->last_calced_size.w = 0;
    widget->last_calced_size.h = 0;
-   widget->size_request = NULL;
-   widget->size_allocate = NULL;
    
    widget->color.r = 255;
    widget->color.g = 255;
@@ -1949,6 +1949,9 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->color.a = 255;
    widget->propagate_color = ETK_TRUE;
 
+   widget->size_request = NULL;
+   widget->size_allocate = NULL;
+   widget->theme_signal_emit = NULL;
    widget->scroll_size_get = NULL;
    widget->scroll_margins_get = NULL;
    widget->scroll = NULL;

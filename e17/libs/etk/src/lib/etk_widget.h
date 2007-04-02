@@ -80,6 +80,7 @@ struct Etk_Widget
    
    void (*size_request)(Etk_Widget *widget, Etk_Size *size_requisition);
    void (*size_allocate)(Etk_Widget *widget, Etk_Geometry geometry);
+   void (*theme_signal_emit)(Etk_Widget *widget, const char *signal, Etk_Bool size_recalc);
 
    void (*scroll_size_get)(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
    void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
