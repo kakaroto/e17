@@ -318,7 +318,7 @@ ewl_spectrum_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_SPECTRUM_TYPE);
 
 	sp = EWL_SPECTRUM(w);
 	if (!REALIZED(sp))

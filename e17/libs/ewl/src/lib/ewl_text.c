@@ -3554,7 +3554,7 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_TEXT_TYPE);
 
 	/* don't do anything if we're obscured */
 	if (OBSCURED(w)) 
@@ -3606,7 +3606,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_TEXT_TYPE);
 
 	t = EWL_TEXT(w);
 
@@ -3713,7 +3713,7 @@ ewl_text_cb_show(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_TEXT_TYPE);
 
 	t = EWL_TEXT(w);
 	if (t->textblock)
@@ -3740,7 +3740,7 @@ ewl_text_cb_hide(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_TEXT_TYPE);
 
 	t = EWL_TEXT(w);
 	evas_object_hide(t->textblock);
@@ -3764,7 +3764,7 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_TEXT_TYPE);
 
 	t = EWL_TEXT(w);
 
@@ -3803,7 +3803,7 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_TEXT_TYPE);
 
 	event = ev;
 	t = EWL_TEXT(w);
@@ -3873,7 +3873,7 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_TEXT_TYPE);
 
 	event = ev;
 	t = EWL_TEXT(w);
@@ -3913,7 +3913,7 @@ ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_TEXT_TYPE);
 
 	event = ev;
 	t = EWL_TEXT(w);
@@ -3945,13 +3945,15 @@ ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_TEXT_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (!(appearance = ewl_widget_appearance_get(w))) 
+	if (!(appearance = ewl_widget_appearance_get(w)))
 		DRETURN(DLEVEL_STABLE);
 
-	/* if this is a trigger then add it as such */
+	/* if this is a trigger then add it as such
+	 * Note: we cannot do a simple type check here, because a text selection
+	 * is also of the type EWL_TEXT_TRIGGER */
 	if (!strcmp(appearance, EWL_TEXT_TRIGGER_TYPE))
 		ewl_text_trigger_add(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
 
@@ -3976,13 +3978,15 @@ ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("c", c, EWL_TEXT_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!(appearance = ewl_widget_appearance_get(w)))
 		DRETURN(DLEVEL_STABLE);
 
-	/* if this is a trigger, remove it as such */
+	/* if this is a trigger, remove it as such
+	 * Note: we cannot do a simple type check here, because a text selection
+	 * is also of the type EWL_TEXT_TRIGGER */
 	if (!strcmp(appearance, EWL_TEXT_TRIGGER_TYPE))
 		ewl_text_trigger_del(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
 
@@ -5011,6 +5015,7 @@ ewl_text_trigger_cb_mouse_in(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_TEXT_TRIGGER_TYPE);
 
 	trigger = data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger), 
@@ -5034,6 +5039,7 @@ ewl_text_trigger_cb_mouse_out(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_TEXT_TRIGGER_TYPE);
 
 	trigger = data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger), 
@@ -5057,6 +5063,7 @@ ewl_text_trigger_cb_mouse_up(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_TEXT_TRIGGER_TYPE);
 
 	trigger = data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger),
@@ -5080,6 +5087,7 @@ ewl_text_trigger_cb_mouse_down(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
+	DCHECK_TYPE("data", data, EWL_TEXT_TRIGGER_TYPE);
 
 	trigger = data;
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger), 
@@ -5212,7 +5220,8 @@ ewl_text_context_init(void)
 	{
 		context_hash = ecore_hash_new(ewl_text_context_hash_key,
 				ewl_text_context_hash_cmp);
-		ecore_hash_set_free_value(context_hash, ewl_text_context_cb_free);
+		ecore_hash_set_free_value(context_hash, 
+						ewl_text_context_cb_free);
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);

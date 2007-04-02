@@ -483,7 +483,9 @@ ewl_scrollbar_cb_scroll_start(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("user_data", user_data, EWL_SCROLLBAR_TYPE);
 
 	s = EWL_SCROLLBAR(user_data);
 	if (w == s->increment)
@@ -520,6 +522,7 @@ ewl_scrollbar_cb_scroll_stop(Ewl_Widget *w __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("user_data", user_data, EWL_SCROLLBAR_TYPE);
 
 	s = EWL_SCROLLBAR(user_data);
 

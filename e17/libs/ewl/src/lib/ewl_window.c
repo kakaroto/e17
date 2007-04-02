@@ -785,7 +785,7 @@ ewl_window_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
 
 	window = EWL_WINDOW(w);
 
@@ -827,7 +827,7 @@ ewl_window_cb_postrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
 
 	if (EWL_WINDOW(w)->flags & EWL_WINDOW_TRANSIENT)
 		ewl_window_transient_for(EWL_WINDOW(w),
@@ -856,7 +856,8 @@ ewl_window_cb_realize_transient(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
+	DCHECK_TYPE("user_data", user_data, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(user_data);
 	/*
@@ -891,7 +892,7 @@ ewl_window_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
 
 	embed = EWL_EMBED(w);
 	win = EWL_WINDOW(w);
@@ -925,7 +926,7 @@ ewl_window_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(w);
 	if (!win->window)
@@ -965,7 +966,7 @@ ewl_window_cb_expose(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(w);
 
@@ -991,7 +992,7 @@ ewl_window_cb_hide(Ewl_Widget *widget, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("widget", widget);
-	DCHECK_TYPE("widget", widget, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("widget", widget, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(widget);
 
@@ -1021,7 +1022,7 @@ ewl_window_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(w);
 
@@ -1051,7 +1052,7 @@ ewl_window_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(w);
 

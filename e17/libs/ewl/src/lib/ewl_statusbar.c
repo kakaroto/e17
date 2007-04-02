@@ -328,6 +328,7 @@ ewl_statusbar_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_STATUSBAR_TYPE);
 
 	sb = EWL_STATUSBAR(w);
 

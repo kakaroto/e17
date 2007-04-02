@@ -272,7 +272,7 @@ ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_SEEKER_TYPE);
 
 	s = EWL_SEEKER(w);
 	r = EWL_RANGE(w);
@@ -349,6 +349,7 @@ ewl_seeker_cb_button_mouse_down(Ewl_Widget *w, void *ev_data,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w->parent", w->parent, EWL_SEEKER_TYPE);
 
 	ev = ev_data;
 	s = EWL_SEEKER(w->parent);
@@ -378,6 +379,7 @@ ewl_seeker_cb_button_mouse_up(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w->parent", w->parent, EWL_SEEKER_TYPE);
 
 	EWL_SEEKER(w->parent)->dragstart = 0;
 
@@ -404,7 +406,7 @@ ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_SEEKER_TYPE);
 
 	s = EWL_SEEKER(w);
 	r = EWL_RANGE(w);
@@ -463,7 +465,7 @@ ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_SEEKER_TYPE);
 
 	ev = ev_data;
 	s = EWL_SEEKER(w);
@@ -560,7 +562,7 @@ ewl_seeker_cb_key_down(Ewl_Widget *w, void *ev_data,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_SEEKER_TYPE);
 
 	ev = ev_data;
 	r = EWL_RANGE(w);
@@ -612,7 +614,7 @@ ewl_seeker_cb_child_show(Ewl_Container *p, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("p", p, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE("p", p, EWL_SEEKER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	r = EWL_RANGE(p);

@@ -447,7 +447,9 @@ ewl_table_cb_child_select(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("user_data", user_data, EWL_TABLE_TYPE);
 
 	t = EWL_TABLE(user_data);
 	gc = (Ewl_Grid_Child *) ewl_widget_data_get(w, (void *) t->grid);
@@ -480,29 +482,25 @@ ewl_table_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 *---------------------------------*/
 
 	Ewl_Table *table;
-	Ewl_Object *o;
 	Ewl_Widget *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE("w", w, EWL_TABLE_TYPE);
 
 	table = EWL_TABLE(w);
-	o = EWL_OBJECT(w);
 
 	ewl_object_geometry_request(EWL_OBJECT(table->grid),
-					CURRENT_X(o), CURRENT_Y(o),
-					CURRENT_W(o) - INSET_LEFT(o) +
-					INSET_RIGHT(o),
-					CURRENT_H(o) - INSET_TOP(o) +
-					INSET_BOTTOM(o));
+					CURRENT_X(w), CURRENT_Y(w),
+					CURRENT_W(w) - INSET_LEFT(w) +
+					INSET_RIGHT(w),
+					CURRENT_H(w) - INSET_TOP(w) +
+					INSET_BOTTOM(w));
 
+	/* XXX is this really needed? Doesn't the Container do that already? */
 	ecore_dlist_goto_first(EWL_CONTAINER(table->grid)->children);
-	while ((child =
-		ecore_dlist_next(EWL_CONTAINER(table->grid)->children)) != NULL) {
-
+	while ((child = ecore_dlist_next(EWL_CONTAINER(table->grid)->children)))
 		ewl_widget_configure(child);
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
