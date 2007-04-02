@@ -497,11 +497,6 @@ ewl_table_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					CURRENT_H(w) - INSET_TOP(w) +
 					INSET_BOTTOM(w));
 
-	/* XXX is this really needed? Doesn't the Container do that already? */
-	ecore_dlist_goto_first(EWL_CONTAINER(table->grid)->children);
-	while ((child = ecore_dlist_next(EWL_CONTAINER(table->grid)->children)))
-		ewl_widget_configure(child);
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
