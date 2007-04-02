@@ -78,7 +78,7 @@ static Etk_Signal *_etk_menu_item_check_signals[ETK_MENU_ITEM_CHECK_NUM_SIGNALS]
  * @brief Gets the type of an Etk_Menu_Item
  * @return Returns the type of an Etk_Menu_Item
  */
-Etk_Type *etk_menu_item_type_get()
+Etk_Type *etk_menu_item_type_get(void)
 {
    static Etk_Type *menu_item_type = NULL;
 
@@ -111,7 +111,7 @@ Etk_Type *etk_menu_item_type_get()
  * @return Returns the new menu-item widget
  * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
-Etk_Widget *etk_menu_item_new()
+Etk_Widget *etk_menu_item_new(void)
 {
    return etk_widget_new(ETK_MENU_ITEM_TYPE, "theme-group", "menu_item", "visible", ETK_TRUE, NULL);
 }
@@ -290,7 +290,7 @@ void etk_menu_item_activate(Etk_Menu_Item *menu_item)
  * @brief Gets the type of an Etk_Menu_Item_Separator
  * @return Returns the type of an Etk_Menu_Item_Separator
  */
-Etk_Type *etk_menu_item_separator_type_get()
+Etk_Type *etk_menu_item_separator_type_get(void)
 {
    static Etk_Type *menu_item_separator_type = NULL;
 
@@ -308,7 +308,7 @@ Etk_Type *etk_menu_item_separator_type_get()
  * @return Returns the new menu-item widget
  * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
-Etk_Widget *etk_menu_item_separator_new()
+Etk_Widget *etk_menu_item_separator_new(void)
 {
    return etk_widget_new(ETK_MENU_ITEM_SEPARATOR_TYPE, "theme-group", "separator", "visible", ETK_TRUE, NULL);
 }
@@ -322,7 +322,7 @@ Etk_Widget *etk_menu_item_separator_new()
  * @brief Gets the type of an Etk_Menu_Item_Image
  * @return Returns the type of an Etk_Menu_Item_Image
  */
-Etk_Type *etk_menu_item_image_type_get()
+Etk_Type *etk_menu_item_image_type_get(void)
 {
    static Etk_Type *menu_item_image_type = NULL;
 
@@ -346,7 +346,7 @@ Etk_Type *etk_menu_item_image_type_get()
  * @return Returns the new menu-item widget
  * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
-Etk_Widget *etk_menu_item_image_new()
+Etk_Widget *etk_menu_item_image_new(void)
 {
    return etk_widget_new(ETK_MENU_ITEM_IMAGE_TYPE, "theme-group", "menu_item", "visible", ETK_TRUE, NULL);
 }
@@ -423,7 +423,7 @@ void etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image)
  * @brief Gets the type of an Etk_Menu_Item_Check
  * @return Returns the type of an Etk_Menu_Item_Check
  */
-Etk_Type *etk_menu_item_check_type_get()
+Etk_Type *etk_menu_item_check_type_get(void)
 {
    static Etk_Type *menu_item_check_type = NULL;
 
@@ -450,7 +450,7 @@ Etk_Type *etk_menu_item_check_type_get()
  * @return Returns the new menu-item widget
  * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
-Etk_Widget *etk_menu_item_check_new()
+Etk_Widget *etk_menu_item_check_new(void)
 {
    return etk_widget_new(ETK_MENU_ITEM_CHECK_TYPE, "theme-group", "menu_item", "visible", ETK_TRUE, NULL);
 }
@@ -500,7 +500,7 @@ Etk_Bool etk_menu_item_check_active_get(Etk_Menu_Item_Check *check_item)
  * @brief Gets the type of an Etk_Menu_Item_Radio
  * @return Returns the type of an Etk_Menu_Item_Radio
  */
-Etk_Type *etk_menu_item_radio_type_get()
+Etk_Type *etk_menu_item_radio_type_get(void)
 {
    static Etk_Type *menu_item_radio_type = NULL;
 

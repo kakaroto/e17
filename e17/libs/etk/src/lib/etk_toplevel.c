@@ -42,7 +42,7 @@ static Evas_List *_etk_toplevel_widgets = NULL;
  * @brief Gets the type of an Etk_Toplevel
  * @return Returns the type of an Etk_Toplevel
  */
-Etk_Type *etk_toplevel_type_get()
+Etk_Type *etk_toplevel_type_get(void)
 {
    static Etk_Type *toplevel_type = NULL;
 

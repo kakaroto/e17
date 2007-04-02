@@ -31,7 +31,7 @@ static void _etk_viewport_child_removed_cb(Etk_Object *object, void *child, void
  * @brief Gets the type of an Etk_Viewport
  * @return Returns the type on an Etk_Viewport
  */
-Etk_Type *etk_viewport_type_get()
+Etk_Type *etk_viewport_type_get(void)
 {
    static Etk_Type *viewport_type = NULL;
 
@@ -45,7 +45,7 @@ Etk_Type *etk_viewport_type_get()
  * @brief Creates a new viewport
  * @return Returns the new viewport widget
  */
-Etk_Widget *etk_viewport_new()
+Etk_Widget *etk_viewport_new(void)
 {
    return etk_widget_new(ETK_VIEWPORT_TYPE, NULL);
 }

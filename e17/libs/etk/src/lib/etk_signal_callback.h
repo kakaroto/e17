@@ -30,7 +30,7 @@ struct Etk_Signal_Callback
 
 
 Etk_Signal_Callback *etk_signal_callback_new(Etk_Signal *signal, Etk_Callback callback, void *data, Etk_Bool swapped);
-void                 etk_signal_callback_del(Etk_Signal_Callback *signal_callback);
+void     etk_signal_callback_del(Etk_Signal_Callback *signal_callback);
 
 void     etk_signal_callback_call(Etk_Signal_Callback *callback, Etk_Object *object, void *return_value, ...);
 void     etk_signal_callback_call_valist(Etk_Signal_Callback *callback, Etk_Object *object, void *return_value, va_list args);

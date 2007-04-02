@@ -40,8 +40,8 @@ struct Etk_Alignment
 Etk_Type   *etk_alignment_type_get(void);
 Etk_Widget *etk_alignment_new(float xalign, float yalign, float xscale, float yscale);
 
-void etk_alignment_set(Etk_Alignment *alignment, float xalign, float yalign, float xscale, float yscale);
-void etk_alignment_get(Etk_Alignment *alignment, float *xalign, float *yalign, float *xscale, float *yscale);
+void        etk_alignment_set(Etk_Alignment *alignment, float xalign, float yalign, float xscale, float yscale);
+void        etk_alignment_get(Etk_Alignment *alignment, float *xalign, float *yalign, float *xscale, float *yscale);
 
 /** @} */
 

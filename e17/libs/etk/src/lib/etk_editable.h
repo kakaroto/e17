@@ -28,28 +28,28 @@ int          etk_editable_text_length_get(Evas_Object *editable);
 Etk_Bool     etk_editable_insert(Evas_Object *editable, int pos, const char *text);
 Etk_Bool     etk_editable_delete(Evas_Object *editable, int start, int end);
 
-void etk_editable_cursor_pos_set(Evas_Object *editable, int pos);
-int  etk_editable_cursor_pos_get(Evas_Object *editable);
-void etk_editable_cursor_move_to_start(Evas_Object *editable);
-void etk_editable_cursor_move_to_end(Evas_Object *editable);
-void etk_editable_cursor_move_left(Evas_Object *editable);
-void etk_editable_cursor_move_right(Evas_Object *editable);
-void etk_editable_cursor_show(Evas_Object *editable);
-void etk_editable_cursor_hide(Evas_Object *editable);
+void         etk_editable_cursor_pos_set(Evas_Object *editable, int pos);
+int          etk_editable_cursor_pos_get(Evas_Object *editable);
+void         etk_editable_cursor_move_to_start(Evas_Object *editable);
+void         etk_editable_cursor_move_to_end(Evas_Object *editable);
+void         etk_editable_cursor_move_left(Evas_Object *editable);
+void         etk_editable_cursor_move_right(Evas_Object *editable);
+void         etk_editable_cursor_show(Evas_Object *editable);
+void         etk_editable_cursor_hide(Evas_Object *editable);
 
-void etk_editable_selection_pos_set(Evas_Object *editable, int pos);
-int  etk_editable_selection_pos_get(Evas_Object *editable);
-void etk_editable_selection_move_to_start(Evas_Object *editable);
-void etk_editable_selection_move_to_end(Evas_Object *editable);
-void etk_editable_selection_move_left(Evas_Object *editable);
-void etk_editable_selection_move_right(Evas_Object *editable);
-void etk_editable_select_all(Evas_Object *editable);
-void etk_editable_unselect_all(Evas_Object *editable);
-void etk_editable_selection_show(Evas_Object *editable);
-void etk_editable_selection_hide(Evas_Object *editable);
+void         etk_editable_selection_pos_set(Evas_Object *editable, int pos);
+int          etk_editable_selection_pos_get(Evas_Object *editable);
+void         etk_editable_selection_move_to_start(Evas_Object *editable);
+void         etk_editable_selection_move_to_end(Evas_Object *editable);
+void         etk_editable_selection_move_left(Evas_Object *editable);
+void         etk_editable_selection_move_right(Evas_Object *editable);
+void         etk_editable_select_all(Evas_Object *editable);
+void         etk_editable_unselect_all(Evas_Object *editable);
+void         etk_editable_selection_show(Evas_Object *editable);
+void         etk_editable_selection_hide(Evas_Object *editable);
 
-int  etk_editable_pos_get_from_coords(Evas_Object *editable, int x, int y);
-void etk_editable_char_size_get(Evas_Object *editable, int *w, int *h);
+int          etk_editable_pos_get_from_coords(Evas_Object *editable, int x, int y);
+void         etk_editable_char_size_get(Evas_Object *editable, int *w, int *h);
 
 /** @} */
 

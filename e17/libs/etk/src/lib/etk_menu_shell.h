@@ -19,6 +19,7 @@
 /** Check if the object is an Etk_Menu_Shell */
 #define ETK_IS_MENU_SHELL(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_SHELL_TYPE))
 
+
 /**
  * @brief @widget A base class used by Etk_Menu and Etk_Menu_Bar
  * @structinfo
@@ -32,14 +33,15 @@ struct Etk_Menu_Shell
    Evas_List *items;
 };
 
-Etk_Type *etk_menu_shell_type_get();
 
-void etk_menu_shell_prepend(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
-void etk_menu_shell_append(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
-void etk_menu_shell_prepend_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, Etk_Menu_Item *relative);
-void etk_menu_shell_append_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, Etk_Menu_Item *relative);
-void etk_menu_shell_insert(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, int position);
-void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
+Etk_Type  *etk_menu_shell_type_get(void);
+
+void       etk_menu_shell_prepend(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
+void       etk_menu_shell_append(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
+void       etk_menu_shell_prepend_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, Etk_Menu_Item *relative);
+void       etk_menu_shell_append_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, Etk_Menu_Item *relative);
+void       etk_menu_shell_insert(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, int position);
+void       etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
 
 Evas_List *etk_menu_shell_items_get(Etk_Menu_Shell *menu_shell);
 

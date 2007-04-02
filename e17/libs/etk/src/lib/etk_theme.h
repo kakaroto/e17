@@ -42,8 +42,8 @@ typedef enum Etk_Color_Type
 } Etk_Color_Type;
 
 
-void etk_theme_init(void);
-void etk_theme_shutdown(void);
+void        etk_theme_init(void);
+void        etk_theme_shutdown(void);
 
 Etk_Bool    etk_theme_widget_set_from_path(const char *theme_path);
 Etk_Bool    etk_theme_widget_set_from_name(const char *theme_name);
@@ -61,11 +61,11 @@ char       *etk_theme_icon_find(const char *theme_name);
 
 void        etk_theme_available_themes_free(Evas_List *themes);
 
-Etk_Bool etk_theme_group_exists(const char *file, const char *group, const char *parent_group);
-Etk_Bool etk_theme_edje_object_set(Evas_Object *object, const char *file, const char *group, const char *parent_group);
-Etk_Bool etk_theme_edje_object_set_from_parent(Evas_Object *object, const char *group, Etk_Widget *parent);
+Etk_Bool    etk_theme_group_exists(const char *file, const char *group, const char *parent_group);
+Etk_Bool    etk_theme_edje_object_set(Evas_Object *object, const char *file, const char *group, const char *parent_group);
+Etk_Bool    etk_theme_edje_object_set_from_parent(Evas_Object *object, const char *group, Etk_Widget *parent);
 
-Etk_Bool etk_theme_color_get(const char *file, Etk_Color_Type color_type, int *r, int *g, int *b, int *a);
+Etk_Bool    etk_theme_color_get(const char *file, Etk_Color_Type color_type, int *r, int *g, int *b, int *a);
 
 /** @} */
 

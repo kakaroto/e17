@@ -11,20 +11,20 @@
  * @{
  */
  
-Etk_Bool etk_config_init();
-void etk_config_shutdown();
+Etk_Bool    etk_config_init(void);
+void        etk_config_shutdown(void);
 
-Etk_Bool etk_config_load();
-Etk_Bool etk_config_save();
+Etk_Bool    etk_config_load(void);
+Etk_Bool    etk_config_save(void);
 
-const char *etk_config_widget_theme_get();
-void etk_config_widget_theme_set(const char *widget_theme);
+const char *etk_config_widget_theme_get(void);
+void        etk_config_widget_theme_set(const char *widget_theme);
 
-const char *etk_config_font_get();
-void etk_config_font_set(const char *font);
+const char *etk_config_font_get(void);
+void        etk_config_font_set(const char *font);
 
-const char *etk_config_engine_get();
-void etk_config_engine_set(const char *engine);
+const char *etk_config_engine_get(void);
+void        etk_config_engine_set(const char *engine);
 
 /** @} */
 

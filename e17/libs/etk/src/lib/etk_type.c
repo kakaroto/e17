@@ -27,7 +27,7 @@ static Evas_Hash *_etk_type_types_hash = NULL;
  * @brief Deletes all the created types
  * @warning Shouldn't be called manually, etk_shutdown() calls it
  */
-void etk_type_shutdown()
+void etk_type_shutdown(void)
 {
    evas_hash_foreach(_etk_type_types_hash, _etk_type_free_cb, NULL);
    evas_hash_free(_etk_type_types_hash);

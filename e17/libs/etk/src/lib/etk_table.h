@@ -95,16 +95,17 @@ struct Etk_Table
    Etk_Table_Homogeneous homogeneous;
 };
 
+
 Etk_Type   *etk_table_type_get(void);
 Etk_Widget *etk_table_new(int num_cols, int num_rows, Etk_Table_Homogeneous homogeneous);
 
-void etk_table_cell_clear(Etk_Table *table, int col, int row);
-void etk_table_resize(Etk_Table *table, int num_cols, int num_rows);
+void        etk_table_cell_clear(Etk_Table *table, int col, int row);
+void        etk_table_resize(Etk_Table *table, int num_cols, int num_rows);
 
-void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach, int top_attach, int bottom_attach, Etk_Table_Fill_Policy fill_policy, int x_padding, int y_padding);
-void etk_table_attach_default(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach, int top_attach, int bottom_attach);
+void        etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach, int top_attach, int bottom_attach, Etk_Table_Fill_Policy fill_policy, int x_padding, int y_padding);
+void        etk_table_attach_default(Etk_Table *table, Etk_Widget *child, int left_attach, int right_attach, int top_attach, int bottom_attach);
 
-void                  etk_table_homogeneous_set(Etk_Table *table, Etk_Table_Homogeneous homogeneous);
+void        etk_table_homogeneous_set(Etk_Table *table, Etk_Table_Homogeneous homogeneous);
 Etk_Table_Homogeneous etk_table_homogeneous_get(Etk_Table *table);
 
 /** @} */

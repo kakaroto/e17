@@ -38,21 +38,21 @@ struct Etk_Container
 };
 
 
-Etk_Type *etk_container_type_get(void);
+Etk_Type  *etk_container_type_get(void);
 
-void etk_container_add(Etk_Container *container, Etk_Widget *widget);
-void etk_container_remove(Etk_Widget *widget);
-void etk_container_remove_all(Etk_Container *container);
+void       etk_container_add(Etk_Container *container, Etk_Widget *widget);
+void       etk_container_remove(Etk_Widget *widget);
+void       etk_container_remove_all(Etk_Container *container);
 
-void etk_container_border_width_set(Etk_Container *container, int border_width);
-int  etk_container_border_width_get(Etk_Container *container);
+void       etk_container_border_width_set(Etk_Container *container, int border_width);
+int        etk_container_border_width_get(Etk_Container *container);
 
 Evas_List *etk_container_children_get(Etk_Container *container);
 Etk_Bool   etk_container_is_child(Etk_Container *container, Etk_Widget *widget);
 void       etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child));
 void       etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child, void *data), void *data);
 
-void etk_container_child_space_fill(Etk_Widget *child, Etk_Geometry *child_space, Etk_Bool hfill, Etk_Bool vfill, float xalign, float yalign);
+void       etk_container_child_space_fill(Etk_Widget *child, Etk_Geometry *child_space, Etk_Bool hfill, Etk_Bool vfill, float xalign, float yalign);
 
 /** @} */
 

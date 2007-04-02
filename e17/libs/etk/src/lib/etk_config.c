@@ -72,7 +72,7 @@ static Etk_Config_Version * _etk_config_version_parse(char *version);
  * @brief Initializes the config system
  * @return Returns true if initialization was successful, false otherwise
  */
-Etk_Bool etk_config_init()
+Etk_Bool etk_config_init(void)
 {
    char     *home;
    char      buf[PATH_MAX];
@@ -135,7 +135,7 @@ Etk_Bool etk_config_init()
 /**
  * @brief Shutdowns the config system
  */
-void etk_config_shutdown()
+void etk_config_shutdown(void)
 {
    FREED(_etk_config_gen_edd);
    FREED(_etk_config_ver_edd);   
@@ -157,7 +157,7 @@ void etk_config_shutdown()
  * @brief Loads Etk's config from disk
  * @return Returns ETK_TRUE on a successful load, ETK_FALSE otherwise.
  */
-Etk_Bool etk_config_load()
+Etk_Bool etk_config_load(void)
 {
    Eet_File *ef;
    char buf[PATH_MAX];
@@ -237,7 +237,7 @@ Etk_Bool etk_config_load()
  * @brief Saves Etk's config to disk
  * @return Returns ETK_TRUE on a successful save, ETK_FALSE otherwise.
  */
-Etk_Bool etk_config_save()
+Etk_Bool etk_config_save(void)
 {
    Eet_File *ef;
    char buf[PATH_MAX];
@@ -272,7 +272,7 @@ Etk_Bool etk_config_save()
  * @brief Get Etk's current widget theme
  * @return Returns the current widget theme used by Etk
  */
-const char *etk_config_widget_theme_get()
+const char *etk_config_widget_theme_get(void)
 {
    if (!_etk_config || !_etk_config->general)
      return NULL;
@@ -297,7 +297,7 @@ void etk_config_widget_theme_set(const char *widget_theme)
  * @brief Get Etk's current font
  * @return Returns the current font used by Etk
  */
-const char *etk_config_font_get()
+const char *etk_config_font_get(void)
 {
    if (!_etk_config || !_etk_config->general)
      return NULL;
@@ -322,7 +322,7 @@ void etk_config_font_set(const char *font)
  * @brief Get Etk's current engine
  * @return Returns the current engine used by Etk
  */
-const char *etk_config_engine_get()
+const char *etk_config_engine_get(void)
 {
    if (!_etk_config || !_etk_config->general)
      return NULL;
@@ -343,7 +343,7 @@ void etk_config_engine_set(const char *engine)
 }
 
 /* applies the default configuration */
-static void _etk_config_defaults_apply()
+static void _etk_config_defaults_apply(void)
 {
    if (_etk_config)
    {   

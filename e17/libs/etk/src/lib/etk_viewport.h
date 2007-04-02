@@ -10,11 +10,11 @@
  * @{
  */
 
-/** @brief Gets the type of an viewport */
+/** Gets the type of an viewport */
 #define ETK_VIEWPORT_TYPE       (etk_viewport_type_get())
-/** @brief Casts the object to an Etk_Viewport */
+/** Casts the object to an Etk_Viewport */
 #define ETK_VIEWPORT(obj)       (ETK_OBJECT_CAST((obj), ETK_VIEWPORT_TYPE, Etk_Viewport))
-/** @brief Checks if the object is an Etk_Viewport */
+/** Checks if the object is an Etk_Viewport */
 #define ETK_IS_VIEWPORT(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VIEWPORT_TYPE))
 
 /**
@@ -32,8 +32,8 @@ struct _Etk_Viewport
    int xscroll, yscroll;
 };
 
-Etk_Type *etk_viewport_type_get();
-Etk_Widget *etk_viewport_new();
+Etk_Type   *etk_viewport_type_get(void);
+Etk_Widget *etk_viewport_new(void);
 
 /** @} */
 

@@ -18,7 +18,7 @@
  * @brief Gets the type of an Etk_Separator
  * @return Returns the type of an Etk_Separator
  */
-Etk_Type *etk_separator_type_get()
+Etk_Type *etk_separator_type_get(void)
 {
    static Etk_Type *separator_type = NULL;
 
@@ -33,7 +33,7 @@ Etk_Type *etk_separator_type_get()
  * @brief Gets the type of an Etk_HSeparator
  * @return Returns the type of an Etk_HSeparator
  */
-Etk_Type *etk_hseparator_type_get()
+Etk_Type *etk_hseparator_type_get(void)
 {
    static Etk_Type *hseparator_type = NULL;
 
@@ -48,7 +48,7 @@ Etk_Type *etk_hseparator_type_get()
  * @brief Gets the type of an Etk_VSeparator
  * @return Returns the type of an Etk_VSeparator
  */
-Etk_Type *etk_vseparator_type_get()
+Etk_Type *etk_vseparator_type_get(void)
 {
    static Etk_Type *vseparator_type = NULL;
 
@@ -62,7 +62,7 @@ Etk_Type *etk_vseparator_type_get()
  * @brief Creates a new hseparator
  * @return Returns the new hseparator widget
  */
-Etk_Widget *etk_hseparator_new()
+Etk_Widget *etk_hseparator_new(void)
 {
    return etk_widget_new(ETK_HSEPARATOR_TYPE, "theme-group", "hseparator", NULL);
 }
@@ -71,7 +71,7 @@ Etk_Widget *etk_hseparator_new()
  * @brief Creates a new vseparator
  * @return Returns the new vseparator widget
  */
-Etk_Widget *etk_vseparator_new()
+Etk_Widget *etk_vseparator_new(void)
 {
    return etk_widget_new(ETK_VSEPARATOR_TYPE, "theme-group", "vseparator", NULL);
 }

@@ -109,7 +109,7 @@ static int _etk_shadow_num_gaussian_values = sizeof(_etk_shadow_gaussian_values)
  * @brief Gets the type of an Etk_Shadow
  * @return Returns the type of an Etk_Shadow
  */
-Etk_Type *etk_shadow_type_get()
+Etk_Type *etk_shadow_type_get(void)
 {
    static Etk_Type *shadow_type = NULL;
 

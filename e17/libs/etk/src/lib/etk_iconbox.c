@@ -111,7 +111,7 @@ static Etk_Signal *_etk_iconbox_signals[ETK_ICONBOX_NUM_SIGNALS];
  * @brief Gets the type of an Etk_Iconbox
  * @return Returns the type of an Etk_Iconbox
  */
-Etk_Type *etk_iconbox_type_get()
+Etk_Type *etk_iconbox_type_get(void)
 {
    static Etk_Type *iconbox_type = NULL;
 
@@ -137,7 +137,7 @@ Etk_Type *etk_iconbox_type_get()
  * @brief Creates a new iconbox
  * @return Returns the new iconbox widget
  */
-Etk_Widget *etk_iconbox_new()
+Etk_Widget *etk_iconbox_new(void)
 {
    return etk_widget_new(ETK_ICONBOX_TYPE, "theme-group", "iconbox",
       "focusable", ETK_TRUE, "focus-on-click", ETK_TRUE, NULL);

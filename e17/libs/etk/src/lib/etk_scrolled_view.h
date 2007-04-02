@@ -19,6 +19,7 @@
 /** Checks if the object is an Etk_Scrolled_View */
 #define ETK_IS_SCROLLED_VIEW(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_SCROLLED_VIEW_TYPE))
 
+
 /**
  * @brief Etk_Scrolled_View_Policy describes whether the scrollbar should be always visible, always hidden, 
  * or whether it should be shown/hidden automatically
@@ -30,6 +31,7 @@ typedef enum Etk_Scrolled_View_Policy
    ETK_POLICY_SHOW,     /**< The scrollbar is always visible */
    ETK_POLICY_HIDE      /**< The scrollbar is always hidden */
 } Etk_Scrolled_View_Policy;
+
 
 /**
  * @brief @widget The structure of a scrolled view
@@ -48,16 +50,15 @@ struct Etk_Scrolled_View
    Etk_Scrolled_View_Policy vpolicy;
 };
 
-Etk_Type *etk_scrolled_view_type_get();
-Etk_Widget *etk_scrolled_view_new();
 
-Etk_Range *etk_scrolled_view_hscrollbar_get(Etk_Scrolled_View *scrolled_view);
-Etk_Range *etk_scrolled_view_vscrollbar_get(Etk_Scrolled_View *scrolled_view);
+Etk_Type   *etk_scrolled_view_type_get(void);
+Etk_Widget *etk_scrolled_view_new(void);
 
-void etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_Widget *child);
-
-void etk_scrolled_view_policy_set(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy hpolicy, Etk_Scrolled_View_Policy vpolicy);
-void etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy *hpolicy, Etk_Scrolled_View_Policy *vpolicy);
+Etk_Range  *etk_scrolled_view_hscrollbar_get(Etk_Scrolled_View *scrolled_view);
+Etk_Range  *etk_scrolled_view_vscrollbar_get(Etk_Scrolled_View *scrolled_view);
+void        etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_Widget *child);
+void        etk_scrolled_view_policy_set(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy hpolicy, Etk_Scrolled_View_Policy vpolicy);
+void        etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy *hpolicy, Etk_Scrolled_View_Policy *vpolicy);
 
 /** @} */
 

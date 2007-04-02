@@ -18,6 +18,7 @@
 /** Checks if the object is an Etk_Check_Button */
 #define ETK_IS_CHECK_BUTTON(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CHECK_BUTTON_TYPE))
 
+
 /**
  * @brief @widget A toggle button made up of a checkbox and a label
  * @structinfo

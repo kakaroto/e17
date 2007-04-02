@@ -8,15 +8,17 @@
 
 /**
  * @defgroup Etk_Window Etk_Window
+ * @brief The most common toplevel-widget
  * @{
  */
 
-/** @brief Gets the type of a window */
+/** Gets the type of a window */
 #define ETK_WINDOW_TYPE       (etk_window_type_get())
-/** @brief Casts the object to an Etk_Window */
+/** Casts the object to an Etk_Window */
 #define ETK_WINDOW(obj)       (ETK_OBJECT_CAST((obj), ETK_WINDOW_TYPE, Etk_Window))
-/** @brief Check if the object is an Etk_Window */
+/** Check if the object is an Etk_Window */
 #define ETK_IS_WINDOW(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_WINDOW_TYPE))
+
 
 /** @brief Describes how the window is stacked */
 typedef enum Etk_Window_Stacking
@@ -26,9 +28,10 @@ typedef enum Etk_Window_Stacking
    ETK_WINDOW_BELOW        /**< The window is stacked below all the other windows */
 } Etk_Window_Stacking;
 
+
 /**
- * @struct Etk_Window
- * @brief A window which can be borderless, decorated or not, sticky, ...
+ * @brief @widget The most common toplevel-widget
+ * @structinfo
  */
 struct _Etk_Window
 {
@@ -43,8 +46,8 @@ struct _Etk_Window
    Etk_Window *center_on_window;
 };
 
-Etk_Type *etk_window_type_get(void);
 
+Etk_Type   *etk_window_type_get(void);
 Etk_Widget *etk_window_new(void);
 void        etk_window_delete_request(Etk_Window *window);
 
@@ -52,43 +55,43 @@ void        etk_window_title_set(Etk_Window *window, const char *title);
 const char *etk_window_title_get(Etk_Window *window);
 void        etk_window_wmclass_set(Etk_Window *window, const char *window_name, const char *window_class);
 
-void etk_window_move(Etk_Window *window, int x, int y);
-void etk_window_resize(Etk_Window *window, int w, int h);
-void etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
-void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window);
-void etk_window_move_to_mouse(Etk_Window *window);
-void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window);
+void        etk_window_move(Etk_Window *window, int x, int y);
+void        etk_window_resize(Etk_Window *window, int w, int h);
+void        etk_window_geometry_get(Etk_Window *window, int *x, int *y, int *w, int *h);
+void        etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *window);
+void        etk_window_move_to_mouse(Etk_Window *window);
+void        etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window);
 
-void                etk_window_raise(Etk_Window *window);
-void                etk_window_lower(Etk_Window *window);
-void                etk_window_stacking_set(Etk_Window *window, Etk_Window_Stacking stacking);
+void        etk_window_raise(Etk_Window *window);
+void        etk_window_lower(Etk_Window *window);
+void        etk_window_stacking_set(Etk_Window *window, Etk_Window_Stacking stacking);
 Etk_Window_Stacking etk_window_stacking_get(Etk_Window *window);
 
-void     etk_window_iconified_set(Etk_Window *window, Etk_Bool iconified);
-Etk_Bool etk_window_iconified_get(Etk_Window *window);
-void     etk_window_maximized_set(Etk_Window *window, Etk_Bool maximized);
-Etk_Bool etk_window_maximized_get(Etk_Window *window);
-void     etk_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen);
-Etk_Bool etk_window_fullscreen_get(Etk_Window *window);
+void        etk_window_iconified_set(Etk_Window *window, Etk_Bool iconified);
+Etk_Bool    etk_window_iconified_get(Etk_Window *window);
+void        etk_window_maximized_set(Etk_Window *window, Etk_Bool maximized);
+Etk_Bool    etk_window_maximized_get(Etk_Window *window);
+void        etk_window_fullscreen_set(Etk_Window *window, Etk_Bool fullscreen);
+Etk_Bool    etk_window_fullscreen_get(Etk_Window *window);
 
-void     etk_window_focused_set(Etk_Window *window, Etk_Bool focused);
-Etk_Bool etk_window_focused_get(Etk_Window *window);
+void        etk_window_focused_set(Etk_Window *window, Etk_Bool focused);
+Etk_Bool    etk_window_focused_get(Etk_Window *window);
 
-void     etk_window_sticky_set(Etk_Window *window, Etk_Bool sticky);
-Etk_Bool etk_window_sticky_get(Etk_Window *window);
-void     etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated);
-Etk_Bool etk_window_decorated_get(Etk_Window *window);
-void     etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped);
-Etk_Bool etk_window_shaped_get(Etk_Window *window);
-void     etk_window_has_alpha_set(Etk_Window *window, Etk_Bool has_alpha);
-Etk_Bool etk_window_has_alpha_get(Etk_Window *window);
+void        etk_window_sticky_set(Etk_Window *window, Etk_Bool sticky);
+Etk_Bool    etk_window_sticky_get(Etk_Window *window);
+void        etk_window_decorated_set(Etk_Window *window, Etk_Bool decorated);
+Etk_Bool    etk_window_decorated_get(Etk_Window *window);
+void        etk_window_shaped_set(Etk_Window *window, Etk_Bool shaped);
+Etk_Bool    etk_window_shaped_get(Etk_Window *window);
+void        etk_window_has_alpha_set(Etk_Window *window, Etk_Bool has_alpha);
+Etk_Bool    etk_window_has_alpha_get(Etk_Window *window);
 
-void     etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint);
-Etk_Bool etk_window_skip_taskbar_hint_get(Etk_Window *window);
-void     etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
-Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window);
+void        etk_window_skip_taskbar_hint_set(Etk_Window *window, Etk_Bool skip_taskbar_hint);
+Etk_Bool    etk_window_skip_taskbar_hint_get(Etk_Window *window);
+void        etk_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
+Etk_Bool    etk_window_skip_pager_hint_get(Etk_Window *window);
 
-Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data);
+Etk_Bool    etk_window_hide_on_delete(Etk_Object *window, void *data);
 
 /** @} */
 

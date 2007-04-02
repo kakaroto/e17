@@ -123,8 +123,8 @@ struct Etk_Menu_Item_Radio
 
 
 /* Etk_Menu_Item */
-Etk_Type   *etk_menu_item_type_get();
-Etk_Widget *etk_menu_item_new();
+Etk_Type   *etk_menu_item_type_get(void);
+Etk_Widget *etk_menu_item_new(void);
 Etk_Widget *etk_menu_item_new_with_label(const char *label);
 Etk_Widget *etk_menu_item_new_from_stock(Etk_Stock_Id stock_id);
 
@@ -134,30 +134,30 @@ void        etk_menu_item_set_from_stock(Etk_Menu_Item *menu_item, Etk_Stock_Id 
 void        etk_menu_item_submenu_set(Etk_Menu_Item *menu_item, Etk_Menu *submenu);
 Etk_Menu   *etk_menu_item_submenu_get(Etk_Menu_Item *menu_item);
 
-void etk_menu_item_select(Etk_Menu_Item *menu_item);
-void etk_menu_item_unselect(Etk_Menu_Item *menu_item);
-void etk_menu_item_activate(Etk_Menu_Item *menu_item);
+void        etk_menu_item_select(Etk_Menu_Item *menu_item);
+void        etk_menu_item_unselect(Etk_Menu_Item *menu_item);
+void        etk_menu_item_activate(Etk_Menu_Item *menu_item);
 
 /* Etk_Menu_Item_Separator */
-Etk_Type   *etk_menu_item_separator_type_get();
-Etk_Widget *etk_menu_item_separator_new();
+Etk_Type   *etk_menu_item_separator_type_get(void);
+Etk_Widget *etk_menu_item_separator_new(void);
 
 /* Etk_Menu_Item_Image */
-Etk_Type   *etk_menu_item_image_type_get();
-Etk_Widget *etk_menu_item_image_new();
+Etk_Type   *etk_menu_item_image_type_get(void);
+Etk_Widget *etk_menu_item_image_new(void);
 Etk_Widget *etk_menu_item_image_new_with_label(const char *label);
 Etk_Widget *etk_menu_item_image_new_from_stock(Etk_Stock_Id stock_id);
 void        etk_menu_item_image_set(Etk_Menu_Item_Image *image_item, Etk_Image *image);
 
 /* Etk_Menu_Item_Check */
-Etk_Type   *etk_menu_item_check_type_get();
-Etk_Widget *etk_menu_item_check_new();
+Etk_Type   *etk_menu_item_check_type_get(void);
+Etk_Widget *etk_menu_item_check_new(void);
 Etk_Widget *etk_menu_item_check_new_with_label(const char *label);
 void        etk_menu_item_check_active_set(Etk_Menu_Item_Check *check_item, Etk_Bool active);
 Etk_Bool    etk_menu_item_check_active_get(Etk_Menu_Item_Check *check_item);
 
 /* Etk_Menu_Item_Radio */
-Etk_Type   *etk_menu_item_radio_type_get();
+Etk_Type   *etk_menu_item_radio_type_get(void);
 Etk_Widget *etk_menu_item_radio_new(Evas_List **group);
 Etk_Widget *etk_menu_item_radio_new_from_widget(Etk_Menu_Item_Radio *radio_item);
 Etk_Widget *etk_menu_item_radio_new_with_label(const char *label, Evas_List **group);

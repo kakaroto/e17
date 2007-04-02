@@ -37,6 +37,7 @@
 /** Checks if the object is an Etk_VScrollbar */
 #define ETK_IS_VSCROLLBAR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VSCROLLBAR_TYPE))
 
+
 /**
  * @brief @widget The structure of a scrollbar
  * @structinfo
@@ -74,12 +75,12 @@ struct Etk_VScrollbar
    Etk_Scrollbar scrollbar;
 };
 
-Etk_Type *etk_scrollbar_type_get();
 
-Etk_Type *etk_hscrollbar_type_get();
+Etk_Type   *etk_scrollbar_type_get(void);
+Etk_Type   *etk_hscrollbar_type_get(void);
+Etk_Type   *etk_vscrollbar_type_get(void);
+
 Etk_Widget *etk_hscrollbar_new(double lower, double upper, double value, double step_increment, double page_increment, double page_size);
-
-Etk_Type *etk_vscrollbar_type_get();
 Etk_Widget *etk_vscrollbar_new(double lower, double upper, double value, double step_increment, double page_increment, double page_size);
 
 /** @} */

@@ -246,7 +246,7 @@ void etk_button_image_set(Etk_Button *button, Etk_Image *image)
    if (button->image)
    {
       button->ignore_image_remove = ETK_TRUE;
-      etk_object_destroy(ETK_OBJECT(button->image));
+      etk_widget_parent_set(ETK_WIDGET(button->image), NULL);
       button->ignore_image_remove = ETK_FALSE;
    }
 

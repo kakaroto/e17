@@ -41,7 +41,7 @@ static int _etk_popup_window_slide_timer_cb(void *data);
 
 static void _etk_popup_window_slide_timer_update(Etk_Popup_Window *popup_window);
 static Etk_Popup_Window_Screen_Edge _etk_popup_window_edge_get(Etk_Popup_Window *popup_window);
-static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_edge_get();
+static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_edge_get(void);
 
 static unsigned int _etk_popup_window_popup_timestamp = 0;
 static Ecore_Timer *_etk_popup_window_slide_timer = NULL;
@@ -62,7 +62,7 @@ static Etk_Signal *_etk_popup_window_signals[ETK_POPUP_WINDOW_NUM_SIGNALS];
  * @brief Gets the type of an Etk_Popup_Window
  * @return Returns the type of an Etk_Popup_Window
  */
-Etk_Type *etk_popup_window_type_get()
+Etk_Type *etk_popup_window_type_get(void)
 {
    static Etk_Type *popup_window_type = NULL;
 
@@ -169,7 +169,7 @@ void etk_popup_window_focused_window_set(Etk_Popup_Window *popup_window)
  * @brief Gets the focused popup window
  * @return Returns the focused popup window
  */
-Etk_Popup_Window *etk_popup_window_focused_window_get()
+Etk_Popup_Window *etk_popup_window_focused_window_get(void)
 {
    return _etk_popup_window_focused_window;
 }
@@ -324,7 +324,7 @@ void etk_popup_window_popdown(Etk_Popup_Window *popup_window)
 /**
  * @brief Pops down all the popped windows
  */
-void etk_popup_window_popdown_all()
+void etk_popup_window_popdown_all(void)
 {
    while (_etk_popup_window_popped_parents)
       etk_popup_window_popdown(ETK_POPUP_WINDOW(_etk_popup_window_popped_parents->data));
@@ -569,7 +569,7 @@ static Etk_Popup_Window_Screen_Edge _etk_popup_window_edge_get(Etk_Popup_Window 
 
 /* Returns a flag incating on which edges of the screen the mouse pointer is */
 /* TODO: add margin */
-static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_edge_get()
+static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_edge_get(void)
 {
    Etk_Popup_Window_Screen_Edge result = ETK_POPUP_WINDOW_NO_EDGE;
    int sx, sy, sw, sh;

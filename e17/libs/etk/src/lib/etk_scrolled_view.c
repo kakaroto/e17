@@ -43,7 +43,7 @@ static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, 
  * @brief Gets the type of an Etk_Scrolled_View
  * @return Returns the type of an Etk_Scrolled_View
  */
-Etk_Type *etk_scrolled_view_type_get()
+Etk_Type *etk_scrolled_view_type_get(void)
 {
    static Etk_Type *scrolled_view_type = NULL;
 
@@ -68,7 +68,7 @@ Etk_Type *etk_scrolled_view_type_get()
  * @brief Creates a new scrolled view
  * @return Returns the new scrolled view widget
  */
-Etk_Widget *etk_scrolled_view_new()
+Etk_Widget *etk_scrolled_view_new(void)
 {
    return etk_widget_new(ETK_SCROLLED_VIEW_TYPE, "theme-group", "scrolled_view", NULL);
 }

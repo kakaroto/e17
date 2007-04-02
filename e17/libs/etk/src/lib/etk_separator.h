@@ -32,6 +32,7 @@
 /** Checks if the object is an Etk_VSeparator */
 #define ETK_IS_VSEPARATOR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_VSEPARATOR_TYPE))
 
+
 /**
  * @brief @widget The structure of a separator
  * @structinfo
@@ -65,12 +66,13 @@ struct Etk_VSeparator
    Etk_Separator separator;
 };
 
-Etk_Type *etk_separator_type_get();
-Etk_Type *etk_hseparator_type_get();
-Etk_Type *etk_vseparator_type_get();
 
-Etk_Widget *etk_hseparator_new();
-Etk_Widget *etk_vseparator_new();
+Etk_Type   *etk_separator_type_get(void);
+Etk_Type   *etk_hseparator_type_get(void);
+Etk_Type   *etk_vseparator_type_get(void);
+
+Etk_Widget *etk_hseparator_new(void);
+Etk_Widget *etk_vseparator_new(void);
 
 /** @} */
 

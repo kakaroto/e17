@@ -102,7 +102,7 @@ static int _etk_filechooser_num_unsupported_fs = sizeof(_etk_filechooser_unsuppo
  * @brief Gets the type of an Etk_Filechooser_Widget
  * @return Returns the type of an Etk_Filechooser_Widget
  */
-Etk_Type *etk_filechooser_widget_type_get()
+Etk_Type *etk_filechooser_widget_type_get(void)
 {
    static Etk_Type *filechooser_widget_type = NULL;
 
@@ -127,7 +127,7 @@ Etk_Type *etk_filechooser_widget_type_get()
  * @brief Creates a new file chooser widget
  * @return Returns the new file chooser widget
  */
-Etk_Widget *etk_filechooser_widget_new()
+Etk_Widget *etk_filechooser_widget_new(void)
 {
    return etk_widget_new(ETK_FILECHOOSER_WIDGET_TYPE, NULL);
 }

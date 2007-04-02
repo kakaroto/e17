@@ -37,7 +37,7 @@ static void _etk_menu_bar_menu_popped_down_cb(Etk_Object *object, void *event, v
  * @brief Gets the type of an Etk_Menu_Bar
  * @return Returns the type of an Etk_Menu_Bar
  */
-Etk_Type *etk_menu_bar_type_get()
+Etk_Type *etk_menu_bar_type_get(void)
 {
    static Etk_Type *menu_bar_type = NULL;
 
@@ -54,7 +54,7 @@ Etk_Type *etk_menu_bar_type_get()
  * @brief Creates a new menu bar
  * @return Returns the new menu bar widget
  */
-Etk_Widget *etk_menu_bar_new()
+Etk_Widget *etk_menu_bar_new(void)
 {
    return etk_widget_new(ETK_MENU_BAR_TYPE, "theme-group", "menu_bar", NULL);
 }

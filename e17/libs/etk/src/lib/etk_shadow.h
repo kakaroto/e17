@@ -19,6 +19,7 @@
 /** Checks if the object is an Etk_Shadow */
 #define ETK_IS_SHADOW(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_SHADOW_TYPE))
 
+
 /** @brief The different types of shadows */
 typedef enum Etk_Shadow_Type
 {
@@ -39,6 +40,7 @@ typedef enum Etk_Shadow_Edges
    ETK_SHADOW_TOP_BOTTOM = ETK_SHADOW_TOP | ETK_SHADOW_BOTTOM,          /* TODOC */
    ETK_SHADOW_ALL = ETK_SHADOW_LEFT_RIGHT | ETK_SHADOW_TOP_BOTTOM       /* TODOC */
 } Etk_Shadow_Edges;
+
 
 /**
  * @brief @widget A container that can contain one child, and that can cast a shadow or have a border
@@ -68,18 +70,19 @@ struct Etk_Shadow
    Evas_Object *clip;
 };
 
-Etk_Type   *etk_shadow_type_get();
+
+Etk_Type   *etk_shadow_type_get(void);
 Etk_Widget *etk_shadow_new(void);
 
-void etk_shadow_shadow_set(Etk_Shadow *shadow, Etk_Shadow_Type type, Etk_Shadow_Edges edges, int radius, int offset_x, int offset_y, int opacity);
-void etk_shadow_shadow_get(Etk_Shadow *shadow, Etk_Shadow_Type *type, Etk_Shadow_Edges *edges, int *radius, int *offset_x, int *offset_y, int *opacity);
-void etk_shadow_shadow_color_set(Etk_Shadow *shadow, int r, int g, int b);
-void etk_shadow_shadow_color_get(Etk_Shadow *shadow, int *r, int *g, int *b);
+void        etk_shadow_shadow_set(Etk_Shadow *shadow, Etk_Shadow_Type type, Etk_Shadow_Edges edges, int radius, int offset_x, int offset_y, int opacity);
+void        etk_shadow_shadow_get(Etk_Shadow *shadow, Etk_Shadow_Type *type, Etk_Shadow_Edges *edges, int *radius, int *offset_x, int *offset_y, int *opacity);
+void        etk_shadow_shadow_color_set(Etk_Shadow *shadow, int r, int g, int b);
+void        etk_shadow_shadow_color_get(Etk_Shadow *shadow, int *r, int *g, int *b);
 
-void etk_shadow_border_set(Etk_Shadow *shadow, int border_width);
-int  etk_shadow_border_get(Etk_Shadow *shadow);
-void etk_shadow_border_color_set(Etk_Shadow *shadow, int r, int g, int b, int a);
-void etk_shadow_border_color_get(Etk_Shadow *shadow, int *r, int *g, int *b, int *a);
+void        etk_shadow_border_set(Etk_Shadow *shadow, int border_width);
+int         etk_shadow_border_get(Etk_Shadow *shadow);
+void        etk_shadow_border_color_set(Etk_Shadow *shadow, int r, int g, int b, int a);
+void        etk_shadow_border_color_get(Etk_Shadow *shadow, int *r, int *g, int *b, int *a);
 
 /** @} */
 

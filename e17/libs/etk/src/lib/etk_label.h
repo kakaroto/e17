@@ -5,13 +5,6 @@
 #include <Evas.h>
 #include "etk_widget.h"
 
-/*
- * TODO/FIXME list:
- * - Fix bad size_request (evas_textblock bug?): (does this bug still exist?)
- * - Add more style tags
- * - Make labels themeable
- */
-
 /**
  * @defgroup Etk_Label Etk_Label
  * @brief The Etk_Label widget is a simple widget that can display text
@@ -24,6 +17,7 @@
 #define ETK_LABEL(obj)        (ETK_OBJECT_CAST((obj), ETK_LABEL_TYPE, Etk_Label))
 /** Check if the object is an Etk_Label */
 #define ETK_IS_LABEL(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_LABEL_TYPE))
+
 
 /**
  * @brief @widget A simple widget that can display text
@@ -41,14 +35,14 @@ struct Etk_Label
    float yalign;
 };
 
-Etk_Type   *etk_label_type_get();
+
+Etk_Type   *etk_label_type_get(void);
 Etk_Widget *etk_label_new(const char *text);
 
 void        etk_label_set(Etk_Label *label, const char *text);
 const char *etk_label_get(Etk_Label *label);
-
-void etk_label_alignment_set(Etk_Label *label, float xalign, float yalign);
-void etk_label_alignment_get(Etk_Label *label, float *xalign, float *yalign);
+void        etk_label_alignment_set(Etk_Label *label, float xalign, float yalign);
+void        etk_label_alignment_get(Etk_Label *label, float *xalign, float *yalign);
 
 /** @} */
 

@@ -23,6 +23,7 @@
 /** Check if the object is an Etk_Menu_Bar */
 #define ETK_IS_MENU_BAR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_BAR_TYPE))
 
+
 /**
  * @brief @widget The structure of a menu bar
  * @structinfo
@@ -36,8 +37,9 @@ struct Etk_Menu_Bar
    Etk_Bool move_callback;
 };
 
-Etk_Type *etk_menu_bar_type_get();
-Etk_Widget *etk_menu_bar_new();
+
+Etk_Type   *etk_menu_bar_type_get(void);
+Etk_Widget *etk_menu_bar_new(void);
 
 /** @} */
 

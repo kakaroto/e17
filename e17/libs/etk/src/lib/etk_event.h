@@ -239,8 +239,9 @@ struct Etk_Event_Key_Up
    unsigned int timestamp;      /**< The timestamp when the event occured */
 };
 
-void etk_event_init();
-void etk_event_shutdown();
+
+void etk_event_init(void);
+void etk_event_shutdown(void);
 
 void etk_event_mouse_in_wrap(Etk_Widget *widget, Evas_Event_Mouse_In *evas_event, Etk_Event_Mouse_In *etk_event);
 void etk_event_mouse_out_wrap(Etk_Widget *widget, Evas_Event_Mouse_Out *evas_event, Etk_Event_Mouse_Out *etk_event);

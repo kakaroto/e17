@@ -560,6 +560,47 @@ void etk_combobox_item_fields_get_valist(Etk_Combobox_Item *item, va_list args)
 }
 
 /**
+ * @brief Sets the data associated to the combobox item
+ * @param item a combobox item
+ * @param data the data to associate to the combobox item
+ */
+void etk_combobox_item_data_set(Etk_Combobox_Item *item, void *data)
+{
+   if (!item)
+      return;
+   etk_combobox_item_data_set_full(item, data, NULL);
+}
+
+/**
+ * @brief Sets the data associated to the combobox item
+ * @param item a combobox item
+ * @param data the data to associate to the combobox item
+ * @param free_cb a function to call to free the data when the item is destroyed or when the data is changed
+ */
+void etk_combobox_item_data_set_full(Etk_Combobox_Item *item, void *data, void (*free_cb)(void *data))
+{
+   if (!item)
+      return;
+   
+   if (item->data_free_cb && item->data && (item->data != data))
+      item->data_free_cb(item->data);
+   item->data = data;
+   item->data_free_cb = free_cb;
+}
+
+/**
+ * @brief Gets the data associated to the combobox item
+ * @param item a combobox item
+ * @return Returns the data associated to the combobox item
+ */
+void *etk_combobox_item_data_get(Etk_Combobox_Item *item)
+{
+   if (!item)
+      return NULL;
+   return item->data;
+}
+
+/**
  * @brief Sets the active item of the combobox
  * @param combobox a combobox
  * @param item the item to set as active
@@ -716,47 +757,6 @@ Etk_Combobox *etk_combobox_item_combobox_get(Etk_Combobox_Item *item)
    if (!item)
       return NULL;
    return item->combobox;
-}
-
-/**
- * @brief Sets the data associated to the combobox item
- * @param item a combobox item
- * @param data the data to associate to the combobox item
- */
-void etk_combobox_item_data_set(Etk_Combobox_Item *item, void *data)
-{
-   if (!item)
-      return;
-   etk_combobox_item_data_set_full(item, data, NULL);
-}
-
-/**
- * @brief Sets the data associated to the combobox item
- * @param item a combobox item
- * @param data the data to associate to the combobox item
- * @param free_cb a function to call to free the data when the item is destroyed or when the data is changed
- */
-void etk_combobox_item_data_set_full(Etk_Combobox_Item *item, void *data, void (*free_cb)(void *data))
-{
-   if (!item)
-      return;
-   
-   if (item->data_free_cb && item->data && (item->data != data))
-      item->data_free_cb(item->data);
-   item->data = data;
-   item->data_free_cb = free_cb;
-}
-
-/**
- * @brief Gets the data associated to the combobox item
- * @param item a combobox item
- * @return Returns the data associated to the combobox item
- */
-void *etk_combobox_item_data_get(Etk_Combobox_Item *item)
-{
-   if (!item)
-      return NULL;
-   return item->data;
 }
 
 /**************************

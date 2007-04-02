@@ -42,6 +42,7 @@ typedef enum Etk_Slider_Update_Policy
    ETK_SLIDER_DELAYED           /**< The slider will be updated after a brief timeout where no slider motion occurs */
 } Etk_Slider_Update_Policy;
 
+
 /**
  * @brief A widget with a cursor that the user can drag to change its value
  * @structinfo
@@ -81,9 +82,10 @@ struct Etk_VSlider
    Etk_Slider slider;
 };
 
-Etk_Type *etk_slider_type_get(void);
-Etk_Type *etk_vslider_type_get(void);
-Etk_Type *etk_hslider_type_get(void);
+
+Etk_Type   *etk_slider_type_get(void);
+Etk_Type   *etk_vslider_type_get(void);
+Etk_Type   *etk_hslider_type_get(void);
 
 Etk_Widget *etk_hslider_new(double lower, double upper, double value, double step_increment, double page_increment);
 Etk_Widget *etk_vslider_new(double lower, double upper, double value, double step_increment, double page_increment);
@@ -93,7 +95,7 @@ const char *etk_slider_label_get(Etk_Slider *slider);
 void        etk_slider_inverted_set(Etk_Slider *slider, Etk_Bool inverted);
 Etk_Bool    etk_slider_inverted_get(Etk_Slider *slider);
 
-void                     etk_slider_update_policy_set(Etk_Slider *slider, Etk_Slider_Update_Policy policy);
+void        etk_slider_update_policy_set(Etk_Slider *slider, Etk_Slider_Update_Policy policy);
 Etk_Slider_Update_Policy etk_slider_update_policy_get(Etk_Slider *slider);
 
 /** @} */

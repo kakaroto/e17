@@ -30,6 +30,7 @@ typedef enum Etk_Selection_Content_Type
    ETK_SELECTION_TEXT           /**< The content of the selection is a text */
 } Etk_Selection_Content_Type;
 
+
 /**
  * @brief The event structure sent to the target widget when the content
  * of a selection is received after a request (through the signal "selection_received")
@@ -44,6 +45,7 @@ struct Etk_Selection_Event
       const char *text;                 /**< The text corresponding to the type ETK_SELECTION_TEXT */
    } data;                              /**< The content of the selection */
 };
+
 
 void etk_selection_text_set(Etk_Selection_Type selection, const char *text);
 void etk_selection_text_request(Etk_Selection_Type selection, Etk_Widget *target);

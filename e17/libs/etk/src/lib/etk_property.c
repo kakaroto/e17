@@ -110,7 +110,7 @@ Etk_Property_Type etk_property_value_type_get(Etk_Property_Value *value)
  * @brief Creates a new property value with no type
  * @return Returns the new property value
  */
-Etk_Property_Value *etk_property_value_new()
+Etk_Property_Value *etk_property_value_new(void)
 {
    Etk_Property_Value *new_value;
    new_value = malloc(sizeof(Etk_Property_Value));

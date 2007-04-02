@@ -40,7 +40,7 @@ static int _etk_scrollbar_step_increment_cb(void *data);
  * @brief Gets the type of an Etk_Scrollbar
  * @return Returns the type of an Etk_Scrollbar
  */
-Etk_Type *etk_scrollbar_type_get()
+Etk_Type *etk_scrollbar_type_get(void)
 {
    static Etk_Type *scrollbar_type = NULL;
 
@@ -58,7 +58,7 @@ Etk_Type *etk_scrollbar_type_get()
  * @brief Gets the type of an Etk_HScrollbar
  * @return Returns the type on an Etk_HScrollbar
  */
-Etk_Type *etk_hscrollbar_type_get()
+Etk_Type *etk_hscrollbar_type_get(void)
 {
    static Etk_Type *hscrollbar_type = NULL;
 
@@ -75,7 +75,7 @@ Etk_Type *etk_hscrollbar_type_get()
  * @brief Gets the type of an Etk_VScrollbar
  * @return Returns the type of an Etk_VScrollbar
  */
-Etk_Type *etk_vscrollbar_type_get()
+Etk_Type *etk_vscrollbar_type_get(void)
 {
    static Etk_Type *vscrollbar_type = NULL;
 

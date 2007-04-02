@@ -74,7 +74,7 @@ static void _etk_spinner_selection_copy(Etk_Spinner *spinner, Etk_Selection_Type
  * @brief Gets the type of an Etk_Spinner
  * @return Returns the type of an Etk_Spinner
  */
-Etk_Type *etk_spinner_type_get()
+Etk_Type *etk_spinner_type_get(void)
 {
    static Etk_Type *spinner_type = NULL;
 

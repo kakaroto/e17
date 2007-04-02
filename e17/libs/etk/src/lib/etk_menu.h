@@ -24,6 +24,7 @@
 /** Check if the object is an Etk_Menu */
 #define ETK_IS_MENU(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_TYPE))
 
+
 /**
  * @brief @widget A menu shell implemented in a popup window
  * @structinfo
@@ -38,16 +39,16 @@ struct Etk_Menu
    Etk_Menu_Item *parent_item;
 };
 
-Etk_Type   *etk_menu_type_get();
-Etk_Widget *etk_menu_new();
 
+Etk_Type      *etk_menu_type_get(void);
+Etk_Widget    *etk_menu_new(void);
 Etk_Menu_Item *etk_menu_parent_item_get(Etk_Menu *menu);
 
-void etk_menu_popup(Etk_Menu *menu);
-void etk_menu_popup_in_direction(Etk_Menu *menu, Etk_Popup_Direction direction);
-void etk_menu_popup_at_xy(Etk_Menu *menu, int x, int y);
-void etk_menu_popup_at_xy_in_direction(Etk_Menu *menu, int x, int y, Etk_Popup_Direction direction);
-void etk_menu_popdown(Etk_Menu *menu);
+void           etk_menu_popup(Etk_Menu *menu);
+void           etk_menu_popup_in_direction(Etk_Menu *menu, Etk_Popup_Direction direction);
+void           etk_menu_popup_at_xy(Etk_Menu *menu, int x, int y);
+void           etk_menu_popup_at_xy_in_direction(Etk_Menu *menu, int x, int y, Etk_Popup_Direction direction);
+void           etk_menu_popdown(Etk_Menu *menu);
 
 /** @} */
 

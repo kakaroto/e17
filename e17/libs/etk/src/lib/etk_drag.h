@@ -23,7 +23,7 @@ struct _Etk_Drag
    int            data_size;   
 };
 
-Etk_Type   *etk_drag_type_get();  
+Etk_Type   *etk_drag_type_get(void);
 Etk_Widget *etk_drag_new(Etk_Widget *widget);
 void        etk_drag_types_set(Etk_Drag *drag, const char **types, unsigned int num_types);
 void        etk_drag_data_set(Etk_Drag *drag, void *data, int size);

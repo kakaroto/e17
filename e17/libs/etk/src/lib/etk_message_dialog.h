@@ -25,6 +25,7 @@
 
 #define ETK_MESSAGE_DIALOG_MAX_BUTTONS 2
 
+
 /** @brief The type of the message of the dialog */
 typedef enum Etk_Message_Dialog_Type
 {
@@ -43,8 +44,9 @@ typedef enum Etk_Message_Dialog_Buttons
    ETK_MESSAGE_DIALOG_CLOSE,
    ETK_MESSAGE_DIALOG_CANCEL,
    ETK_MESSAGE_DIALOG_YES_NO,
-   ETK_MESSAGE_DIALOG_OK_CANCEL     
+   ETK_MESSAGE_DIALOG_OK_CANCEL
 } Etk_Message_Dialog_Buttons;
+
 
 /**
  * @brief @widget The structure of a message dialog
@@ -65,16 +67,17 @@ struct Etk_Message_Dialog
    Etk_Widget *buttons[ETK_MESSAGE_DIALOG_MAX_BUTTONS];
 };
 
-Etk_Type *etk_message_dialog_type_get();
+
+Etk_Type   *etk_message_dialog_type_get(void);
 Etk_Widget *etk_message_dialog_new(Etk_Message_Dialog_Type message_type, Etk_Message_Dialog_Buttons buttons, const char *text);
 
-void etk_message_dialog_text_set(Etk_Message_Dialog *dialog, const char *text);
+void        etk_message_dialog_text_set(Etk_Message_Dialog *dialog, const char *text);
 const char *etk_message_dialog_text_get(Etk_Message_Dialog *dialog);
 
-void etk_message_dialog_message_type_set(Etk_Message_Dialog *dialog, Etk_Message_Dialog_Type type);
+void        etk_message_dialog_message_type_set(Etk_Message_Dialog *dialog, Etk_Message_Dialog_Type type);
 Etk_Message_Dialog_Type etk_message_dialog_message_type_get(Etk_Message_Dialog *dialog);
 
-void etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, Etk_Message_Dialog_Buttons buttons);
+void        etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, Etk_Message_Dialog_Buttons buttons);
 Etk_Message_Dialog_Buttons etk_message_dialog_buttons_get(Etk_Message_Dialog *dialog);
 
 /** @} */

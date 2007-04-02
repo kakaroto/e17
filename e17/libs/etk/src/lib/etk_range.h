@@ -18,6 +18,7 @@
 /** Checks if the object is an Etk_Range */
 #define ETK_IS_RANGE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_RANGE_TYPE))
 
+
 /**
  * @brief An abstract class used by widgets like scrollbars or sliders
  * @structinfo
@@ -39,19 +40,16 @@ struct Etk_Range
    void (*value_changed_handler)(Etk_Range *range, double value);
 };
 
+
 Etk_Type *etk_range_type_get(void);
-
-Etk_Bool etk_range_value_set(Etk_Range *range, double value);
-double   etk_range_value_get(Etk_Range *range);
-
-void etk_range_range_set(Etk_Range *range, double lower, double upper);
-void etk_range_range_get(Etk_Range *range, double *lower, double *upper);
-
-void etk_range_increments_set(Etk_Range *range, double step, double page);
-void etk_range_increments_get(Etk_Range *range, double *step, double *page);
-
-void etk_range_page_size_set(Etk_Range *range, double page_size);
-double etk_range_page_size_get(Etk_Range *range);
+Etk_Bool  etk_range_value_set(Etk_Range *range, double value);
+double    etk_range_value_get(Etk_Range *range);
+void      etk_range_range_set(Etk_Range *range, double lower, double upper);
+void      etk_range_range_get(Etk_Range *range, double *lower, double *upper);
+void      etk_range_increments_set(Etk_Range *range, double step, double page);
+void      etk_range_increments_get(Etk_Range *range, double *step, double *page);
+void      etk_range_page_size_set(Etk_Range *range, double page_size);
+double    etk_range_page_size_get(Etk_Range *range);
 
 /** @} */
 

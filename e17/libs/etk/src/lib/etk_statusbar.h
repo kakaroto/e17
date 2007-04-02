@@ -19,6 +19,7 @@
 /** Checks if the object is an Etk_Statusbar */
 #define ETK_IS_STATUSBAR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_STATUSBAR_TYPE))
 
+
 /**
  * @brief @widget A horizontal bar that can display various messages
  * @structinfo
@@ -37,18 +38,18 @@ struct Etk_Statusbar
    int window_height;
 };
 
-Etk_Type   *etk_statusbar_type_get();
-Etk_Widget *etk_statusbar_new();
 
-int etk_statusbar_context_id_get(Etk_Statusbar *statusbar, const char *context);
+Etk_Type   *etk_statusbar_type_get(void);
+Etk_Widget *etk_statusbar_new(void);
 
-int  etk_statusbar_message_push(Etk_Statusbar *statusbar, const char *message, int context_id);
-void etk_statusbar_message_pop(Etk_Statusbar *statusbar, int context_id);
-void etk_statusbar_message_remove(Etk_Statusbar *statusbar, int message_id);
-void etk_statusbar_message_get(Etk_Statusbar *statusbar, const char **message, int *message_id, int *context_id);
+int         etk_statusbar_context_id_get(Etk_Statusbar *statusbar, const char *context);
+int         etk_statusbar_message_push(Etk_Statusbar *statusbar, const char *message, int context_id);
+void        etk_statusbar_message_pop(Etk_Statusbar *statusbar, int context_id);
+void        etk_statusbar_message_remove(Etk_Statusbar *statusbar, int message_id);
+void        etk_statusbar_message_get(Etk_Statusbar *statusbar, const char **message, int *message_id, int *context_id);
 
-void     etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool has_resize_grip);
-Etk_Bool etk_statusbar_has_resize_grip_get(Etk_Statusbar *statusbar);
+void        etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool has_resize_grip);
+Etk_Bool    etk_statusbar_has_resize_grip_get(Etk_Statusbar *statusbar);
 
 /** @} */
 

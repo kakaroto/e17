@@ -36,9 +36,9 @@ struct Etk_Fixed
 Etk_Type   *etk_fixed_type_get(void);
 Etk_Widget *etk_fixed_new(void);
 
-void etk_fixed_put(Etk_Fixed *fixed, Etk_Widget *widget, int x, int y);
-void etk_fixed_move(Etk_Fixed *fixed, Etk_Widget *widget, int x, int y);
-void etk_fixed_child_position_get(Etk_Fixed *fixed, Etk_Widget *widget, int *x, int *y);
+void        etk_fixed_put(Etk_Fixed *fixed, Etk_Widget *widget, int x, int y);
+void        etk_fixed_move(Etk_Fixed *fixed, Etk_Widget *widget, int x, int y);
+void        etk_fixed_child_position_get(Etk_Fixed *fixed, Etk_Widget *widget, int *x, int *y);
 
 /** @} */
 

@@ -27,7 +27,7 @@ static char *_etk_string_vprintf(const char *format, va_list args);
  * @brief Gets the type of an Etk_String
  * @return Returns the type of an Etk_String
  */
-Etk_Type *etk_string_type_get()
+Etk_Type *etk_string_type_get(void)
 {
    static Etk_Type *string_type = NULL;
 

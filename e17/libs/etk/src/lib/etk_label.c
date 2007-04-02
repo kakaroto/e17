@@ -38,7 +38,7 @@ static void _etk_label_realized_cb(Etk_Object *object, void *data);
  * @brief Gets the type of an Etk_Label
  * @return Returns the type of an Etk_Label
  */
-Etk_Type *etk_label_type_get()
+Etk_Type *etk_label_type_get(void)
 {
    static Etk_Type *label_type = NULL;
 

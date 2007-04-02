@@ -33,6 +33,7 @@ typedef enum Etk_Widget_Swallow_Error
                                              * in the theme-object of the swallower-widget */
 } Etk_Widget_Swallow_Error;
 
+
 /**
  * @brief @widget The base class for all the widgets of Etk
  * @structinfo
@@ -109,8 +110,8 @@ struct Etk_Widget
 };
 
 
-Etk_Type      *etk_widget_type_get(void);
-Etk_Widget    *etk_widget_new(Etk_Type *widget_type, const char *first_property, ...);
+Etk_Type     *etk_widget_type_get(void);
+Etk_Widget   *etk_widget_new(Etk_Type *widget_type, const char *first_property, ...);
 
 void          etk_widget_show(Etk_Widget *widget);
 void          etk_widget_show_all(Etk_Widget *widget);

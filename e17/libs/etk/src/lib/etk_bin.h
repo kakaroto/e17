@@ -33,8 +33,7 @@ struct Etk_Bin
 };
 
 
-Etk_Type *etk_bin_type_get(void);
-
+Etk_Type    *etk_bin_type_get(void);
 void        etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child);
 Etk_Widget *etk_bin_child_get(Etk_Bin *bin);
 

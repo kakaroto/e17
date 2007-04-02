@@ -18,7 +18,7 @@
  * @brief Gets the type of an Etk_Drag
  * @return Returns the type on an Etk_Drag
  */
-Etk_Type *etk_drag_type_get()
+Etk_Type *etk_drag_type_get(void)
 {
    static Etk_Type *drag_type = NULL;
    

@@ -32,7 +32,7 @@
 
 typedef struct Etk_Tree_Cell_Objects
 {
-   Evas_Object *objects[MAX_MODELS_PER_COL][MAX_OBJECTS_PER_MODEL];
+   Evas_Object *objects[ETK_TREE_MAX_MODELS_PER_COL][ETK_TREE_MAX_OBJECTS_PER_MODEL];
 } Etk_Tree_Cell_Objects;
 
 typedef struct Etk_Tree_Row_Object
@@ -154,7 +154,7 @@ static Etk_Signal *_etk_tree_col_signals[ETK_TREE_COL_NUM_SIGNALS];
  * @brief Gets the type of an Etk_Tree
  * @return Returns the type of an Etk_Tree
  */
-Etk_Type *etk_tree_type_get()
+Etk_Type *etk_tree_type_get(void)
 {
    static Etk_Type *tree_type = NULL;
 
@@ -205,7 +205,7 @@ Etk_Type *etk_tree_type_get()
  * @brief Gets the type of an Etk_Tree_Col
  * @return Returns the type of an Etk_Tree_Col
  */
-Etk_Type *etk_tree_col_type_get()
+Etk_Type *etk_tree_col_type_get(void)
 {
    static Etk_Type *tree_col_type = NULL;
 
@@ -245,7 +245,7 @@ Etk_Type *etk_tree_col_type_get()
  * @brief Creates a new tree
  * @return Returns the new tree
  */
-Etk_Widget *etk_tree_new()
+Etk_Widget *etk_tree_new(void)
 {
    return etk_widget_new(ETK_TREE_TYPE, "theme-group", "tree",
       "focusable", ETK_TRUE, "focus-on-click", ETK_TRUE, NULL);
@@ -517,9 +517,9 @@ void etk_tree_col_model_add(Etk_Tree_Col *col, Etk_Tree_Model *model)
       ETK_WARNING("You cannot add a model to a column once the tree is built");
       return;
    }
-   if (col->num_models >= MAX_MODELS_PER_COL)
+   if (col->num_models >= ETK_TREE_MAX_MODELS_PER_COL)
    {
-      ETK_WARNING("The number of models per column is limited to %d. Unable to add the model", MAX_MODELS_PER_COL);
+      ETK_WARNING("The number of models per column is limited to %d. Unable to add the model", ETK_TREE_MAX_MODELS_PER_COL);
       return;
    }
    if (model->col)
@@ -2477,7 +2477,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
                         /* Objects have been created by the render() method, we add them to the tree */
                         if (objects_created)
                         {
-                           for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+                           for (k = 0; k < ETK_TREE_MAX_OBJECTS_PER_MODEL; k++)
                            {
                               if (row_object->cells[i].objects[j][k]
                                  && !evas_object_smart_parent_get(row_object->cells[i].objects[j][k]))
@@ -2510,7 +2510,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
                   {
                      for (j = 0; j < col->num_models; j++)
                      {
-                        for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+                        for (k = 0; k < ETK_TREE_MAX_OBJECTS_PER_MODEL; k++)
                         {
                            if (row_object->cells[i].objects[j][k])
                            {
@@ -2526,7 +2526,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
                {
                   for (j = 0; j < col->num_models; j++)
                   {
-                     for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+                     for (k = 0; k < ETK_TREE_MAX_OBJECTS_PER_MODEL; k++)
                      {
                         if (row_object->cells[i].objects[j][k])
                            evas_object_hide(row_object->cells[i].objects[j][k]);
@@ -2549,7 +2549,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
             {
                for (j = 0; j < tree->columns[i]->num_models; j++)
                {
-                  for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+                  for (k = 0; k < ETK_TREE_MAX_OBJECTS_PER_MODEL; k++)
                   {
                      if (row_object->cells[i].objects[j][k])
                         evas_object_hide(row_object->cells[i].objects[j][k]);
@@ -3313,7 +3313,7 @@ static Etk_Tree_Row_Object *_etk_tree_row_object_create(Etk_Tree *tree)
          if (col->models[j]->objects_create)
          {
             col->models[j]->objects_create(col->models[j], row_object->cells[i].objects[j], evas);
-            for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+            for (k = 0; k < ETK_TREE_MAX_OBJECTS_PER_MODEL; k++)
             {
                if (row_object->cells[i].objects[j][k]
                   && !evas_object_smart_parent_get(row_object->cells[i].objects[j][k]))
@@ -3342,7 +3342,7 @@ static void _etk_tree_row_object_destroy(Etk_Tree *tree, Etk_Tree_Row_Object *ro
    {
       for (j = 0; j < tree->columns[i]->num_models; j++)
       {
-         for (k = 0; k < MAX_OBJECTS_PER_MODEL; k++)
+         for (k = 0; k < ETK_TREE_MAX_OBJECTS_PER_MODEL; k++)
             evas_object_del(row_object->cells[i].objects[j][k]);
       }
    }

@@ -48,7 +48,7 @@ static void _etk_statusbar_update(Etk_Statusbar *statusbar);
  * @brief Gets the type of an Etk_Statusbar
  * @return Returns the type of an Etk_Statusbar
  */
-Etk_Type *etk_statusbar_type_get()
+Etk_Type *etk_statusbar_type_get(void)
 {
    static Etk_Type *statusbar_type = NULL;
 
@@ -73,7 +73,7 @@ Etk_Type *etk_statusbar_type_get()
  * @brief Creates a new statusbar
  * @return Returns the new statusbar widget
  */
-Etk_Widget *etk_statusbar_new()
+Etk_Widget *etk_statusbar_new(void)
 {
    return etk_widget_new(ETK_STATUSBAR_TYPE, "theme-group", "statusbar", NULL);
 }

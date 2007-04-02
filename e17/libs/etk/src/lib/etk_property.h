@@ -85,49 +85,49 @@ struct Etk_Property_Value
    Etk_Property_Type type;
 };
 
-Etk_Property     *etk_property_new(const char *name, int property_id, Etk_Property_Type type, Etk_Property_Flags flags, Etk_Property_Value *default_value);
-void              etk_property_delete(Etk_Property *property);
-Etk_Bool          etk_property_default_value_set(Etk_Property *property, Etk_Property_Value *default_value);
-Etk_Property_Type etk_property_type_get(Etk_Property *property);
+Etk_Property       *etk_property_new(const char *name, int property_id, Etk_Property_Type type, Etk_Property_Flags flags, Etk_Property_Value *default_value);
+void                etk_property_delete(Etk_Property *property);
+Etk_Bool            etk_property_default_value_set(Etk_Property *property, Etk_Property_Value *default_value);
+Etk_Property_Type   etk_property_type_get(Etk_Property *property);
 
-Etk_Property_Value *etk_property_value_new();
+Etk_Property_Value *etk_property_value_new(void);
 void                etk_property_value_delete(Etk_Property_Value *value);
 Etk_Property_Type   etk_property_value_type_get(Etk_Property_Value *value);
 
-Etk_Property_Value *etk_property_value_create         (Etk_Property_Type type, ...);
-Etk_Property_Value *etk_property_value_create_valist  (Etk_Property_Type type, va_list *arg);
-Etk_Property_Value *etk_property_value_int            (int value);
-Etk_Property_Value *etk_property_value_bool           (Etk_Bool value);
-Etk_Property_Value *etk_property_value_char           (char value);
-Etk_Property_Value *etk_property_value_float          (float value);
-Etk_Property_Value *etk_property_value_double         (double value);
-Etk_Property_Value *etk_property_value_short          (short value);
-Etk_Property_Value *etk_property_value_long           (long value);
-Etk_Property_Value *etk_property_value_pointer        (void *value);
-Etk_Property_Value *etk_property_value_string         (const char *value);
+Etk_Property_Value *etk_property_value_create(Etk_Property_Type type, ...);
+Etk_Property_Value *etk_property_value_create_valist(Etk_Property_Type type, va_list *arg);
+Etk_Property_Value *etk_property_value_int(int value);
+Etk_Property_Value *etk_property_value_bool(Etk_Bool value);
+Etk_Property_Value *etk_property_value_char(char value);
+Etk_Property_Value *etk_property_value_float(float value);
+Etk_Property_Value *etk_property_value_double(double value);
+Etk_Property_Value *etk_property_value_short(short value);
+Etk_Property_Value *etk_property_value_long(long value);
+Etk_Property_Value *etk_property_value_pointer(void *value);
+Etk_Property_Value *etk_property_value_string(const char *value);
 
-void etk_property_value_set         (Etk_Property_Value *property_value, Etk_Property_Type type, ...);
-void etk_property_value_set_valist  (Etk_Property_Value *property_value, Etk_Property_Type type, va_list *arg);
-void etk_property_value_int_set     (Etk_Property_Value *property_value, int value);
-void etk_property_value_bool_set    (Etk_Property_Value *property_value, Etk_Bool value);
-void etk_property_value_char_set    (Etk_Property_Value *property_value, char value);
-void etk_property_value_float_set   (Etk_Property_Value *property_value, float value);
-void etk_property_value_double_set  (Etk_Property_Value *property_value, double value);
-void etk_property_value_short_set   (Etk_Property_Value *property_value, short value);
-void etk_property_value_long_set    (Etk_Property_Value *property_value, long value);
-void etk_property_value_pointer_set (Etk_Property_Value *property_value, void *value);
-void etk_property_value_string_set  (Etk_Property_Value *property_value, const char *value);
+void                etk_property_value_set(Etk_Property_Value *property_value, Etk_Property_Type type, ...);
+void                etk_property_value_set_valist(Etk_Property_Value *property_value, Etk_Property_Type type, va_list *arg);
+void                etk_property_value_int_set(Etk_Property_Value *property_value, int value);
+void                etk_property_value_bool_set(Etk_Property_Value *property_value, Etk_Bool value);
+void                etk_property_value_char_set(Etk_Property_Value *property_value, char value);
+void                etk_property_value_float_set(Etk_Property_Value *property_value, float value);
+void                etk_property_value_double_set(Etk_Property_Value *property_value, double value);
+void                etk_property_value_short_set(Etk_Property_Value *property_value, short value);
+void                etk_property_value_long_set(Etk_Property_Value *property_value, long value);
+void                etk_property_value_pointer_set(Etk_Property_Value *property_value, void *value);
+void                etk_property_value_string_set(Etk_Property_Value *property_value, const char *value);
 
-void        etk_property_value_get(Etk_Property_Value *value, Etk_Property_Type type, void *value_location);
-int         etk_property_value_int_get(Etk_Property_Value *value);
-Etk_Bool    etk_property_value_bool_get(Etk_Property_Value *value);
-char        etk_property_value_char_get(Etk_Property_Value *value);
-float       etk_property_value_float_get(Etk_Property_Value *value);
-double      etk_property_value_double_get(Etk_Property_Value *value);
-short       etk_property_value_short_get(Etk_Property_Value *value);
-long        etk_property_value_long_get(Etk_Property_Value *value);
-void       *etk_property_value_pointer_get(Etk_Property_Value *value);
-const char *etk_property_value_string_get(Etk_Property_Value *value);
+void                etk_property_value_get(Etk_Property_Value *value, Etk_Property_Type type, void *value_location);
+int                 etk_property_value_int_get(Etk_Property_Value *value);
+Etk_Bool            etk_property_value_bool_get(Etk_Property_Value *value);
+char                etk_property_value_char_get(Etk_Property_Value *value);
+float               etk_property_value_float_get(Etk_Property_Value *value);
+double              etk_property_value_double_get(Etk_Property_Value *value);
+short               etk_property_value_short_get(Etk_Property_Value *value);
+long                etk_property_value_long_get(Etk_Property_Value *value);
+void               *etk_property_value_pointer_get(Etk_Property_Value *value);
+const char         *etk_property_value_string_get(Etk_Property_Value *value);
 
 /** @} */
 

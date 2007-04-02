@@ -130,7 +130,7 @@ int etk_init(int *argc, char ***argv)
  * @return Returns the new value of the init-counter. If 0 is returned, it means that the resources has effectively
  * been freed.
  */
-int etk_shutdown()
+int etk_shutdown(void)
 {
    if (_etk_main_init_count <= 0)
       return 0;
@@ -166,7 +166,7 @@ int etk_shutdown()
  * @note It calls ecore_main_loop_begin() so you should not call ecore_main_loop_begin() or ecore_main_loop_quit()
  * if you are using etk_main() in your program.
  */
-void etk_main()
+void etk_main(void)
 {
    if (_etk_main_init_count <= 0 || _etk_main_running)
       return;
@@ -179,7 +179,7 @@ void etk_main()
  * @brief Leaves the main loop of Etk. It will quit the main loop of Ecore (ecore_main_loop_quit())
  * and will make etk_main() return.
  */
-void etk_main_quit()
+void etk_main_quit(void)
 {
    if (!_etk_main_running)
       return;
@@ -192,7 +192,7 @@ void etk_main_quit()
  * @brief Runs an iteration of the main loop: it updates the widgets that need to be updated
  * @note You usually do not need to call it manually, you might want to use etk_main() instead
  */
-void etk_main_iterate()
+void etk_main_iterate(void)
 {
    Evas_List *l;
    Etk_Toplevel *toplevel;

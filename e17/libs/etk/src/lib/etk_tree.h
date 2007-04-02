@@ -15,8 +15,9 @@
  * @{
  */
 
-#define MAX_MODELS_PER_COL 5
-#define MAX_OBJECTS_PER_MODEL 5
+
+#define ETK_TREE_MAX_MODELS_PER_COL 5
+#define ETK_TREE_MAX_OBJECTS_PER_MODEL 5
 
 /** Gets the type of a tree */
 #define ETK_TREE_TYPE       (etk_tree_type_get())
@@ -40,6 +41,7 @@ typedef enum Etk_Tree_Mode
    ETK_TREE_MODE_TREE           /**< The rows of a tree can have children */
 } Etk_Tree_Mode;
 
+
 /**
  * @brief @object A column of a tree
  * @structinfo
@@ -54,7 +56,7 @@ struct Etk_Tree_Col
    Etk_Tree *tree;
    
    int num_models;
-   Etk_Tree_Model *models[MAX_MODELS_PER_COL];
+   Etk_Tree_Model *models[ETK_TREE_MAX_MODELS_PER_COL];
 
    int position;
    Etk_Bool resizable;
@@ -149,12 +151,12 @@ struct Etk_Tree
 };
 
 
-Etk_Type *etk_tree_type_get();
-Etk_Type *etk_tree_col_type_get();
+Etk_Type      *etk_tree_type_get(void);
+Etk_Type      *etk_tree_col_type_get(void);
 
-Etk_Widget    *etk_tree_new();
+Etk_Widget    *etk_tree_new(void);
 void           etk_tree_mode_set(Etk_Tree *tree, Etk_Tree_Mode mode);
-Etk_Tree_Mode etk_tree_mode_get(Etk_Tree *tree);
+Etk_Tree_Mode  etk_tree_mode_get(Etk_Tree *tree);
 void           etk_tree_multiple_select_set(Etk_Tree *tree, Etk_Bool multiple_select);
 Etk_Bool       etk_tree_multiple_select_get(Etk_Tree *tree);
 void           etk_tree_headers_visible_set(Etk_Tree *tree, Etk_Bool headers_visible);
@@ -162,84 +164,84 @@ Etk_Bool       etk_tree_headers_visible_get(Etk_Tree *tree);
 void           etk_tree_rows_height_set(Etk_Tree *tree, int rows_height);
 int            etk_tree_rows_height_get(Etk_Tree *tree);
 
-void etk_tree_build(Etk_Tree *tree);
-void etk_tree_freeze(Etk_Tree *tree);
-void etk_tree_thaw(Etk_Tree *tree);
+void           etk_tree_build(Etk_Tree *tree);
+void           etk_tree_freeze(Etk_Tree *tree);
+void           etk_tree_thaw(Etk_Tree *tree);
 
-Etk_Tree_Col *etk_tree_col_new(Etk_Tree *tree, const char *title, int width, float alignment);
-int           etk_tree_num_cols_get(Etk_Tree *tree);
-Etk_Tree_Col *etk_tree_nth_col_get(Etk_Tree *tree, int nth);
+Etk_Tree_Col  *etk_tree_col_new(Etk_Tree *tree, const char *title, int width, float alignment);
+int            etk_tree_num_cols_get(Etk_Tree *tree);
+Etk_Tree_Col  *etk_tree_nth_col_get(Etk_Tree *tree, int nth);
 
-Etk_Tree  *etk_tree_col_tree_get(Etk_Tree_Col *col);
-void        etk_tree_col_model_add(Etk_Tree_Col *col, Etk_Tree_Model *model);
-Etk_Widget *etk_tree_col_header_get(Etk_Tree_Col *col);
-void        etk_tree_col_title_set(Etk_Tree_Col *col, const char *title);
-const char *etk_tree_col_title_get(Etk_Tree_Col *col);
-void        etk_tree_col_width_set(Etk_Tree_Col *col, int width);
-int         etk_tree_col_width_get(Etk_Tree_Col *col);
-void        etk_tree_col_min_width_set(Etk_Tree_Col *col, int min_width);
-int         etk_tree_col_min_width_get(Etk_Tree_Col *col);
-void        etk_tree_col_resizable_set(Etk_Tree_Col *col, Etk_Bool resizable);
-Etk_Bool    etk_tree_col_resizable_get(Etk_Tree_Col *col);
-void        etk_tree_col_expand_set(Etk_Tree_Col *col, Etk_Bool expand);
-Etk_Bool    etk_tree_col_expand_get(Etk_Tree_Col *col);
-void        etk_tree_col_alignment_set(Etk_Tree_Col *col, float alignment);
-float       etk_tree_col_alignment_get(Etk_Tree_Col *col);
-void        etk_tree_col_visible_set(Etk_Tree_Col *col, Etk_Bool visible);
-Etk_Bool    etk_tree_col_visible_get(Etk_Tree_Col *col);
-void        etk_tree_col_position_set(Etk_Tree_Col *col, int position);
-int         etk_tree_col_position_get(Etk_Tree_Col *col);
-void        etk_tree_col_sort_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), void *data);
+Etk_Tree      *etk_tree_col_tree_get(Etk_Tree_Col *col);
+void           etk_tree_col_model_add(Etk_Tree_Col *col, Etk_Tree_Model *model);
+Etk_Widget    *etk_tree_col_header_get(Etk_Tree_Col *col);
+void           etk_tree_col_title_set(Etk_Tree_Col *col, const char *title);
+const char    *etk_tree_col_title_get(Etk_Tree_Col *col);
+void           etk_tree_col_width_set(Etk_Tree_Col *col, int width);
+int            etk_tree_col_width_get(Etk_Tree_Col *col);
+void           etk_tree_col_min_width_set(Etk_Tree_Col *col, int min_width);
+int            etk_tree_col_min_width_get(Etk_Tree_Col *col);
+void           etk_tree_col_resizable_set(Etk_Tree_Col *col, Etk_Bool resizable);
+Etk_Bool       etk_tree_col_resizable_get(Etk_Tree_Col *col);
+void           etk_tree_col_expand_set(Etk_Tree_Col *col, Etk_Bool expand);
+Etk_Bool       etk_tree_col_expand_get(Etk_Tree_Col *col);
+void           etk_tree_col_alignment_set(Etk_Tree_Col *col, float alignment);
+float          etk_tree_col_alignment_get(Etk_Tree_Col *col);
+void           etk_tree_col_visible_set(Etk_Tree_Col *col, Etk_Bool visible);
+Etk_Bool       etk_tree_col_visible_get(Etk_Tree_Col *col);
+void           etk_tree_col_position_set(Etk_Tree_Col *col, int position);
+int            etk_tree_col_position_get(Etk_Tree_Col *col);
+void           etk_tree_col_sort_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), void *data);
 /* TODO: void etk_tree_col_sort(Etk_Tree_Col *col); */
 /* TODO: void etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data), void *data); */
 
-Etk_Tree_Row *etk_tree_row_prepend(Etk_Tree *tree, Etk_Tree_Row *parent, ...);
-Etk_Tree_Row *etk_tree_row_append(Etk_Tree *tree, Etk_Tree_Row *parent, ...);
-Etk_Tree_Row *etk_tree_row_insert(Etk_Tree *tree, Etk_Tree_Row *parent, Etk_Tree_Row *after, ...);
-Etk_Tree_Row *etk_tree_row_insert_valist(Etk_Tree *tree, Etk_Tree_Row *parent, Etk_Tree_Row *after, va_list args);
+Etk_Tree_Row  *etk_tree_row_prepend(Etk_Tree *tree, Etk_Tree_Row *parent, ...);
+Etk_Tree_Row  *etk_tree_row_append(Etk_Tree *tree, Etk_Tree_Row *parent, ...);
+Etk_Tree_Row  *etk_tree_row_insert(Etk_Tree *tree, Etk_Tree_Row *parent, Etk_Tree_Row *after, ...);
+Etk_Tree_Row  *etk_tree_row_insert_valist(Etk_Tree *tree, Etk_Tree_Row *parent, Etk_Tree_Row *after, va_list args);
 /* TODO: Etk_Tree_Row *etk_tree_row_insert_sorted(Etk_Tree *tree, Etk_Tree_Row *parent, ...); */
-void          etk_tree_row_delete(Etk_Tree_Row *row);
-void          etk_tree_clear(Etk_Tree *tree);
+void           etk_tree_row_delete(Etk_Tree_Row *row);
+void           etk_tree_clear(Etk_Tree *tree);
 /* TODO: way to insert a separator... */
 
-void etk_tree_row_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...);
-void etk_tree_row_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signal, va_list args);
-void etk_tree_row_fields_get(Etk_Tree_Row *row, ...);
-void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args);
+void           etk_tree_row_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...);
+void           etk_tree_row_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signal, va_list args);
+void           etk_tree_row_fields_get(Etk_Tree_Row *row, ...);
+void           etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args);
 
-void etk_tree_row_model_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...);
-void etk_tree_row_model_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signal, va_list args);
-void etk_tree_row_model_fields_get(Etk_Tree_Row *row, ...);
-void etk_tree_row_model_fields_get_valist(Etk_Tree_Row *row, va_list args);
+void           etk_tree_row_model_fields_set(Etk_Tree_Row *row, Etk_Bool emit_signal, ...);
+void           etk_tree_row_model_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signal, va_list args);
+void           etk_tree_row_model_fields_get(Etk_Tree_Row *row, ...);
+void           etk_tree_row_model_fields_get_valist(Etk_Tree_Row *row, va_list args);
 
-void  etk_tree_row_data_set(Etk_Tree_Row *row, void *data);
-void  etk_tree_row_data_set_full(Etk_Tree_Row *row, void *data, void (*free_cb)(void *data));
-void *etk_tree_row_data_get(Etk_Tree_Row *row);
+void           etk_tree_row_data_set(Etk_Tree_Row *row, void *data);
+void           etk_tree_row_data_set_full(Etk_Tree_Row *row, void *data, void (*free_cb)(void *data));
+void          *etk_tree_row_data_get(Etk_Tree_Row *row);
 
-Etk_Tree_Row *etk_tree_selected_row_get(Etk_Tree *tree);
+Etk_Tree_Row  *etk_tree_selected_row_get(Etk_Tree *tree);
 void           etk_tree_select_all(Etk_Tree *tree);
 void           etk_tree_unselect_all(Etk_Tree *tree);
 void           etk_tree_row_select(Etk_Tree_Row *row);
 void           etk_tree_row_unselect(Etk_Tree_Row *row);
 Etk_Bool       etk_tree_row_is_selected(Etk_Tree_Row *row);
 
-void     etk_tree_row_fold(Etk_Tree_Row *row);
-void     etk_tree_row_unfold(Etk_Tree_Row *row);
-Etk_Bool etk_tree_row_is_folded(Etk_Tree_Row *row);
+void           etk_tree_row_fold(Etk_Tree_Row *row);
+void           etk_tree_row_unfold(Etk_Tree_Row *row);
+Etk_Bool       etk_tree_row_is_folded(Etk_Tree_Row *row);
 
-Etk_Tree_Row *etk_tree_first_row_get(Etk_Tree *tree);
-Etk_Tree_Row *etk_tree_last_row_get(Etk_Tree *tree);
-Etk_Tree_Row *etk_tree_row_parent_get(Etk_Tree_Row *row);
-Etk_Tree_Row *etk_tree_row_first_child_get(Etk_Tree_Row *row);
-Etk_Tree_Row *etk_tree_row_last_child_get(Etk_Tree_Row *row);
-Etk_Tree_Row *etk_tree_row_prev_get(Etk_Tree_Row *row);
-Etk_Tree_Row *etk_tree_row_next_get(Etk_Tree_Row *row);
-Etk_Tree_Row *etk_tree_row_walk_prev(Etk_Tree_Row *row, Etk_Bool include_folded);
-Etk_Tree_Row *etk_tree_row_walk_next(Etk_Tree_Row *row, Etk_Bool include_folded);
-Etk_Tree     *etk_tree_row_tree_get(Etk_Tree_Row *row);
+Etk_Tree_Row  *etk_tree_first_row_get(Etk_Tree *tree);
+Etk_Tree_Row  *etk_tree_last_row_get(Etk_Tree *tree);
+Etk_Tree_Row  *etk_tree_row_parent_get(Etk_Tree_Row *row);
+Etk_Tree_Row  *etk_tree_row_first_child_get(Etk_Tree_Row *row);
+Etk_Tree_Row  *etk_tree_row_last_child_get(Etk_Tree_Row *row);
+Etk_Tree_Row  *etk_tree_row_prev_get(Etk_Tree_Row *row);
+Etk_Tree_Row  *etk_tree_row_next_get(Etk_Tree_Row *row);
+Etk_Tree_Row  *etk_tree_row_walk_prev(Etk_Tree_Row *row, Etk_Bool include_folded);
+Etk_Tree_Row  *etk_tree_row_walk_next(Etk_Tree_Row *row, Etk_Bool include_folded);
+Etk_Tree      *etk_tree_row_tree_get(Etk_Tree_Row *row);
 
 Etk_Scrolled_View *etk_tree_scrolled_view_get(Etk_Tree *tree);
-void               etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center);
+void           etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center);
 
 /** @} */
 

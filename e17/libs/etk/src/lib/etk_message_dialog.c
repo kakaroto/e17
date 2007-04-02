@@ -34,7 +34,7 @@ static void _etk_message_dialog_property_get(Etk_Object *object, int property_id
  * @brief Gets the type of an Etk_Message_Dialog
  * @return Returns the type of an Etk_Message_Dialog
  */
-Etk_Type *etk_message_dialog_type_get()
+Etk_Type *etk_message_dialog_type_get(void)
 {
    static Etk_Type *message_dialog_type = NULL;
 

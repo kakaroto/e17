@@ -19,6 +19,7 @@
 /** Checks if the object is an Etk_Toplevel */
 #define ETK_IS_TOPLEVEL(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TOPLEVEL_TYPE))
 
+
 /** @brief The different types of mouse pointer */
 typedef enum Etk_Pointer_Type
 {
@@ -39,6 +40,7 @@ typedef enum Etk_Pointer_Type
    ETK_POINTER_TEXT_EDIT,
    ETK_POINTER_DND_DROP
 } Etk_Pointer_Type;
+
 
 /**
  * @brief @widget A widget that can't have a parent
@@ -64,23 +66,23 @@ struct Etk_Toplevel
 };
 
 
-Etk_Type *etk_toplevel_type_get();
+Etk_Type   *etk_toplevel_type_get(void);
 
-Evas *etk_toplevel_evas_get(Etk_Toplevel *toplevel);
+Evas       *etk_toplevel_evas_get(Etk_Toplevel *toplevel);
 
-void etk_toplevel_evas_position_get(Etk_Toplevel *toplevel, int *x, int *y);
-void etk_toplevel_screen_position_get(Etk_Toplevel *toplevel, int *x, int *y);
-void etk_toplevel_size_get(Etk_Toplevel *toplevel, int *w, int *h);
+void        etk_toplevel_evas_position_get(Etk_Toplevel *toplevel, int *x, int *y);
+void        etk_toplevel_screen_position_get(Etk_Toplevel *toplevel, int *x, int *y);
+void        etk_toplevel_size_get(Etk_Toplevel *toplevel, int *w, int *h);
 
 void        etk_toplevel_focused_widget_set(Etk_Toplevel *toplevel, Etk_Widget *widget);
 Etk_Widget *etk_toplevel_focused_widget_get(Etk_Toplevel *toplevel);
 Etk_Widget *etk_toplevel_focused_widget_next_get(Etk_Toplevel *toplevel);
 Etk_Widget *etk_toplevel_focused_widget_prev_get(Etk_Toplevel *toplevel);
 
-void etk_toplevel_pointer_push(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
-void etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
+void        etk_toplevel_pointer_push(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
+void        etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
 
-Evas_List *etk_toplevel_widgets_get(void);
+Evas_List  *etk_toplevel_widgets_get(void);
 
 
 /** @} */

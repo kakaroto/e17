@@ -116,17 +116,17 @@ struct Etk_VBox
 };
 
 
-Etk_Type *etk_box_type_get(void);
-Etk_Type *etk_hbox_type_get(void);
-Etk_Type *etk_vbox_type_get(void);
+Etk_Type   *etk_box_type_get(void);
+Etk_Type   *etk_hbox_type_get(void);
+Etk_Type   *etk_vbox_type_get(void);
 
 Etk_Widget *etk_hbox_new(Etk_Bool homogeneous, int spacing);
 Etk_Widget *etk_vbox_new(Etk_Bool homogeneous, int spacing);
 
-void etk_box_prepend(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding);
-void etk_box_append(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding);
-void etk_box_insert(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Widget *after, Etk_Box_Fill_Policy fill_policy, int padding);
-void etk_box_insert_at(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, int pos, Etk_Box_Fill_Policy fill_policy, int padding);
+void        etk_box_prepend(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding);
+void        etk_box_append(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding);
+void        etk_box_insert(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Widget *after, Etk_Box_Fill_Policy fill_policy, int padding);
+void        etk_box_insert_at(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, int pos, Etk_Box_Fill_Policy fill_policy, int padding);
 
 Etk_Widget *etk_box_child_get_at(Etk_Box *box, Etk_Box_Group group, int pos);
 void        etk_box_child_position_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, int pos);
@@ -134,10 +134,10 @@ Etk_Bool    etk_box_child_position_get(Etk_Box *box, Etk_Widget *child, Etk_Box_
 void        etk_box_child_packing_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Policy fill_policy, int padding);
 Etk_Bool    etk_box_child_packing_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Policy *fill_policy, int *padding);
 
-void     etk_box_spacing_set(Etk_Box *box, int spacing);
-int      etk_box_spacing_get(Etk_Box *box);
-void     etk_box_homogeneous_set(Etk_Box *box, Etk_Bool homogeneous);
-Etk_Bool etk_box_homogeneous_get(Etk_Box *box);
+void        etk_box_spacing_set(Etk_Box *box, int spacing);
+int         etk_box_spacing_get(Etk_Box *box);
+void        etk_box_homogeneous_set(Etk_Box *box, Etk_Bool homogeneous);
+Etk_Bool    etk_box_homogeneous_get(Etk_Box *box);
 
 /** @} */
 

@@ -19,6 +19,7 @@
 /** Checks if the object is an Etk_Spinner */
 #define ETK_IS_SPINNER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_SPINNER_TYPE))
 
+
 /**
  * @brief @widget A widget that allows the user to set the value of a setting
  * @structinfo
@@ -42,15 +43,15 @@ struct Etk_Spinner
 };
 
 
-Etk_Type   *etk_spinner_type_get();
+Etk_Type   *etk_spinner_type_get(void);
 Etk_Widget *etk_spinner_new(double lower, double upper, double value, double step_increment, double page_increment);
 
-void     etk_spinner_digits_set(Etk_Spinner *spinner, int digits);
-int      etk_spinner_digits_get(Etk_Spinner *spinner);
-void     etk_spinner_snap_to_ticks_set(Etk_Spinner *spinner, Etk_Bool snap_to_ticks);
-Etk_Bool etk_spinner_snap_to_ticks_get(Etk_Spinner *spinner);
-void     etk_spinner_wrap_set(Etk_Spinner *spinner, Etk_Bool wrap);
-Etk_Bool etk_spinner_wrap_get(Etk_Spinner *spinner);
+void        etk_spinner_digits_set(Etk_Spinner *spinner, int digits);
+int         etk_spinner_digits_get(Etk_Spinner *spinner);
+void        etk_spinner_snap_to_ticks_set(Etk_Spinner *spinner, Etk_Bool snap_to_ticks);
+Etk_Bool    etk_spinner_snap_to_ticks_get(Etk_Spinner *spinner);
+void        etk_spinner_wrap_set(Etk_Spinner *spinner, Etk_Bool wrap);
+Etk_Bool    etk_spinner_wrap_get(Etk_Spinner *spinner);
 
 /** @} */
 

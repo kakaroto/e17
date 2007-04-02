@@ -56,7 +56,7 @@ static Etk_Signal *_etk_menu_signals[ETK_MENU_NUM_SIGNALS];
  * @brief Gets the type of an Etk_Menu
  * @return Returns the type of an Etk_Menu
  */
-Etk_Type *etk_menu_type_get()
+Etk_Type *etk_menu_type_get(void)
 {
    static Etk_Type *menu_type = NULL;
 
@@ -84,7 +84,7 @@ Etk_Type *etk_menu_type_get()
  * @brief Creates a new menu
  * @return Returns the new menu widget
  */
-Etk_Widget *etk_menu_new()
+Etk_Widget *etk_menu_new(void)
 {
    return etk_widget_new(ETK_MENU_TYPE, "theme-group", "menu", NULL);
 }

@@ -33,7 +33,7 @@ struct _Etk_String
    int allocated_length;
 };
 
-Etk_Type *etk_string_type_get();
+Etk_Type   *etk_string_type_get(void);
 
 Etk_String *etk_string_new(const char *value);
 Etk_String *etk_string_new_sized(const char *value, int size);

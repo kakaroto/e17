@@ -101,8 +101,8 @@ struct Etk_Colorpicker
 };
 
 
-Etk_Type   *etk_colorpicker_type_get(void);
-Etk_Widget *etk_colorpicker_new(void);
+Etk_Type            *etk_colorpicker_type_get(void);
+Etk_Widget          *etk_colorpicker_new(void);
 
 void                 etk_colorpicker_mode_set(Etk_Colorpicker *cp, Etk_Colorpicker_Mode mode);
 Etk_Colorpicker_Mode etk_colorpicker_mode_get(Etk_Colorpicker *cp);

@@ -23,12 +23,14 @@
 /** Checks if the object is an Etk_Progress_Bar */
 #define ETK_IS_PROGRESS_BAR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_PROGRESS_BAR_TYPE))
 
+
 /** @brief Possible growth directions for the progress bar (left to right by default) */
 typedef enum Etk_Progress_Bar_Direction
 {
    ETK_PROGRESS_BAR_LEFT_TO_RIGHT,      /**< The progress bar grows from left to right */
    ETK_PROGRESS_BAR_RIGHT_TO_LEFT       /**< The progress bar grows from right to left */
 } Etk_Progress_Bar_Direction;
+
 
 /**
  * @brief @widget A widget used to indicates the progress of an operation
@@ -50,21 +52,22 @@ struct Etk_Progress_Bar
    Etk_Bool is_pulsing;
 };
 
-Etk_Type   *etk_progress_bar_type_get();
-Etk_Widget *etk_progress_bar_new();
+
+Etk_Type   *etk_progress_bar_type_get(void);
+Etk_Widget *etk_progress_bar_new(void);
 Etk_Widget *etk_progress_bar_new_with_text(const char *label);
 
 void        etk_progress_bar_text_set(Etk_Progress_Bar *progress_bar, const char *label);
 const char *etk_progress_bar_text_get(Etk_Progress_Bar *progress_bar);
 
-void   etk_progress_bar_fraction_set(Etk_Progress_Bar *progress_bar, double fraction);
-double etk_progress_bar_fraction_get(Etk_Progress_Bar *progress_bar);
+void        etk_progress_bar_fraction_set(Etk_Progress_Bar *progress_bar, double fraction);
+double      etk_progress_bar_fraction_get(Etk_Progress_Bar *progress_bar);
 
-void   etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar);
-void   etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double pulse_step);
-double etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar);
+void        etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar);
+void        etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double pulse_step);
+double      etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar);
 
-void                       etk_progress_bar_direction_set(Etk_Progress_Bar *progress_bar, Etk_Progress_Bar_Direction direction);
+void        etk_progress_bar_direction_set(Etk_Progress_Bar *progress_bar, Etk_Progress_Bar_Direction direction);
 Etk_Progress_Bar_Direction etk_progress_bar_direction_get(Etk_Progress_Bar *progress_bar);
   
 /** @} */

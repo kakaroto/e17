@@ -33,7 +33,7 @@ static char *_etk_event_empty = "";
  * @internal
  * @brief Initializes the event subsystem
  */
-void etk_event_init()
+void etk_event_init(void)
 {
    int i;
    
@@ -46,7 +46,7 @@ void etk_event_init()
  * @internal
  * @brief Shutdowns the event subsystem
  */
-void etk_event_shutdown()
+void etk_event_shutdown(void)
 {
    int i;
    

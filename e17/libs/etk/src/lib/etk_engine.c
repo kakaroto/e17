@@ -40,7 +40,7 @@ static Evas_List *_etk_engines = NULL;
  * @brief Initializes the engine subsystem
  * @return Returns ETK_TRUE on success, ETK_FALSE on failure
  */
-Etk_Bool etk_engine_init()
+Etk_Bool etk_engine_init(void)
 {
    char *file;
    Ecore_List *files;
@@ -73,7 +73,7 @@ Etk_Bool etk_engine_init()
  * @internal
  * @brief Shutdowns the engine subsystem
  */
-void etk_engine_shutdown()
+void etk_engine_shutdown(void)
 {
    /* Shutdowns all the loaded engines */
    while (_loaded_engines)
@@ -109,7 +109,7 @@ void etk_engine_shutdown()
  * @return Returns the list of the available engines
  * @warning The returned list should not be modified or freed
  */
-Evas_List *etk_engine_list_get()
+Evas_List *etk_engine_list_get(void)
 {
    return _etk_engines;
 }
@@ -139,7 +139,7 @@ Etk_Bool etk_engine_exists(const char *engine_name)
  * @brief Gets the engine currently used by Etk
  * @return Returns the engine currently used by Etk or NULL if no engine is loaded yet
  */
-Etk_Engine *etk_engine_get()
+Etk_Engine *etk_engine_get(void)
 {
    return _engine;
 }

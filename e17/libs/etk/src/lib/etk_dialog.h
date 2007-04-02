@@ -61,28 +61,29 @@ struct Etk_Dialog
    Etk_Bool has_separator;
 };
 
+
 Etk_Type   *etk_dialog_type_get(void);
 Etk_Widget *etk_dialog_new(void);
 
-void etk_dialog_pack_in_main_area(Etk_Dialog *dialog, Etk_Widget *widget, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding);
-void etk_dialog_pack_widget_in_action_area(Etk_Dialog *dialog, Etk_Widget *widget, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding);
-void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *button, int response_id, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding);
+void        etk_dialog_pack_in_main_area(Etk_Dialog *dialog, Etk_Widget *widget, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding);
+void        etk_dialog_pack_widget_in_action_area(Etk_Dialog *dialog, Etk_Widget *widget, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding);
+void        etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *button, int response_id, Etk_Box_Group group, Etk_Box_Fill_Policy fill_policy, int padding);
 
 Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int response_id);
 Etk_Widget *etk_dialog_button_add_from_stock(Etk_Dialog *dialog, int stock_id, int response_id);
 
-void     etk_dialog_action_area_homogeneous_set(Etk_Dialog *dialog, Etk_Bool homogeneous);
-Etk_Bool etk_dialog_action_area_homogeneous_get(Etk_Dialog *dialog);
-void     etk_dialog_action_area_alignment_set(Etk_Dialog *dialog, float align);
-float    etk_dialog_action_area_alignment_get(Etk_Dialog *dialog);
+void        etk_dialog_action_area_homogeneous_set(Etk_Dialog *dialog, Etk_Bool homogeneous);
+Etk_Bool    etk_dialog_action_area_homogeneous_get(Etk_Dialog *dialog);
+void        etk_dialog_action_area_alignment_set(Etk_Dialog *dialog, float align);
+float       etk_dialog_action_area_alignment_get(Etk_Dialog *dialog);
 
 Etk_Widget *etk_dialog_main_area_vbox_get(Etk_Dialog *dialog);
 Etk_Widget *etk_dialog_action_area_hbox_get(Etk_Dialog *dialog);
 void        etk_dialog_button_response_id_set(Etk_Dialog *dialog, Etk_Button *button, int response_id);
 int         etk_dialog_button_response_id_get(Etk_Button *button);
 
-void     etk_dialog_has_separator_set(Etk_Dialog *dialog, Etk_Bool has_separator);
-Etk_Bool etk_dialog_has_separator_get(Etk_Dialog *dialog);
+void        etk_dialog_has_separator_set(Etk_Dialog *dialog, Etk_Bool has_separator);
+Etk_Bool    etk_dialog_has_separator_get(Etk_Dialog *dialog);
 
 /** @} */
 

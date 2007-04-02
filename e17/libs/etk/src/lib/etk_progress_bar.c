@@ -38,7 +38,7 @@ static void _etk_progress_bar_realized_cb(Etk_Object *object, void *data);
  * @brief Gets the type of an Etk_Progress_Bar
  * @return Returns the type of an Etk_Progress_Bar
  */
-Etk_Type *etk_progress_bar_type_get()
+Etk_Type *etk_progress_bar_type_get(void)
 {
    static Etk_Type *progress_bar_type = NULL;
 
@@ -65,7 +65,7 @@ Etk_Type *etk_progress_bar_type_get()
  * @brief Creates a new progress bar
  * @return Returns the new progress bar widget
  */
-Etk_Widget *etk_progress_bar_new()
+Etk_Widget *etk_progress_bar_new(void)
 {
    return etk_widget_new(ETK_PROGRESS_BAR_TYPE, "theme-group", "progress_bar", NULL);
 }

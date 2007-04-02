@@ -45,13 +45,11 @@ struct Etk_Embed
 };
 
 
-Etk_Type   *etk_embed_type_get(void);
-Etk_Widget *etk_embed_new(Evas *evas);
-
+Etk_Type    *etk_embed_type_get(void);
+Etk_Widget  *etk_embed_new(Evas *evas);
 Evas_Object *etk_embed_object_get(Etk_Embed *embed_widget);
-
-void etk_embed_position_method_set(Etk_Embed *embed, void (*position_get)(void *position_data, int *x, int *y), void *position_data);
-void etk_embed_pointer_method_set(Etk_Embed *embed, void (*pointer_set)(void *pointer_data, Etk_Pointer_Type pointer_type), void *pointer_data);
+void         etk_embed_position_method_set(Etk_Embed *embed, void (*position_get)(void *position_data, int *x, int *y), void *position_data);
+void         etk_embed_pointer_method_set(Etk_Embed *embed, void (*pointer_set)(void *pointer_data, Etk_Pointer_Type pointer_type), void *pointer_data);
 
 /** @} */
 

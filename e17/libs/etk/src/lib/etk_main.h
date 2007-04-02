@@ -11,12 +11,12 @@
  * @{
  */
 
-int etk_init(int *argc, char ***argv);
-int etk_shutdown();
+int  etk_init(int *argc, char ***argv);
+int  etk_shutdown(void);
 
-void etk_main();
-void etk_main_quit();
-void etk_main_iterate();
+void etk_main(void);
+void etk_main_quit(void);
+void etk_main_iterate(void);
 
 /** @} */
 
