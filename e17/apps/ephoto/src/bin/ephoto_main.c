@@ -9,10 +9,10 @@ static void window_fullscreen(Ewl_Widget *w, void *event, void *data);
 static Ewl_Widget *add_atree(Ewl_Widget *c);
 
 /*Ephoto MVC Callbacks*/
-static Ewl_Widget *album_view_new(void *data, int column, int row);
-static Ewl_Widget *album_header_fetch(void *data, int column);
+static Ewl_Widget *album_view_new(void *data, unsigned int row, unsigned int column);
+static Ewl_Widget *album_header_fetch(void *data, unsigned int column);
 static void *album_data_fetch(void *data, unsigned int row, unsigned int column);
-static int album_data_count(void *data);
+static unsigned int album_data_count(void *data);
 
 /*Ephoto Global Variables*/
 Ephoto_Main *em;
@@ -203,7 +203,7 @@ static Ewl_Widget *add_atree(Ewl_Widget *c)
 
 
 /* The view of the users albums */
-static Ewl_Widget *album_view_new(void *data, int column, int row)
+static Ewl_Widget *album_view_new(void *data, unsigned int row, unsigned int column)
 {
 	const char *album;
 	Ewl_Widget *icon;
@@ -226,7 +226,7 @@ static Ewl_Widget *album_view_new(void *data, int column, int row)
 }
 
 /* The header for the tree */
-static Ewl_Widget *album_header_fetch(void *data, int column)
+static Ewl_Widget *album_header_fetch(void *data, unsigned int column)
 {
 	Ewl_Widget *label;
 
@@ -251,7 +251,7 @@ static void *album_data_fetch(void *data, unsigned int row, unsigned int column)
 }
 
 /* The number of albums the view is displaying */
-static int album_data_count(void *data)
+static unsigned int album_data_count(void *data)
 {
 	int val;
 

@@ -1,9 +1,9 @@
 #include "ephoto.h"
 
-static Ewl_Widget *list_view_new(void *data, int column, int row);
-static Ewl_Widget *list_header_fetch(void *data, int column);
+static Ewl_Widget *list_view_new(void *data, unsigned int row, unsigned int column);
+static Ewl_Widget *list_header_fetch(void *data, unsigned int column);
 static void *list_data_fetch(void *data, unsigned int row, unsigned int column);
-static int list_data_count(void *data);
+static unsigned int list_data_count(void *data);
 
 /*Add the list view*/
 Ewl_Widget *add_list_view(Ewl_Widget *c)
@@ -54,7 +54,7 @@ Ewl_Widget *add_ltree(Ewl_Widget *c)
 
 
 /* The view of the images */
-static Ewl_Widget *list_view_new(void *data, int row, int column)
+static Ewl_Widget *list_view_new(void *data, unsigned int row, unsigned int column)
 {
 	const char *image;
 	char info[PATH_MAX];
@@ -85,7 +85,7 @@ static Ewl_Widget *list_view_new(void *data, int row, int column)
 }
 
 /* The header for the tree */
-static Ewl_Widget *list_header_fetch(void *data, int column)
+static Ewl_Widget *list_header_fetch(void *data, unsigned int column)
 {
 	Ewl_Widget *label;
 
@@ -110,7 +110,7 @@ static void *list_data_fetch(void *data, unsigned int row, unsigned int column)
 }
 
 /* The number of images the view is displaying */
-static int list_data_count(void *data)
+static unsigned int list_data_count(void *data)
 {
 	int val;
 
