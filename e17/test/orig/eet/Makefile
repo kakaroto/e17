@@ -1,5 +1,5 @@
-FLAGS = `eet-config --cflags`
-LIBS  = `eet-config --libs`
+FLAGS = `pkg-config --cflags eet`
+LIBS  = `pkg-config --libs eet`
 
 BINS  = eet eet_bench
 all: $(BINS)

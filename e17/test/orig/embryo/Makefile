@@ -1,5 +1,5 @@
-FLAGS = `embryo-config --cflags`
-LIBS  = `embryo-config --libs`
+FLAGS = `pkg-config --cflags embryo`
+LIBS  = `pkg-config --libs embryo`
 
 BINS  = embryo
 all: $(BINS)

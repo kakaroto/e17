@@ -1,5 +1,5 @@
-FLAGS = `edje-config --cflags` `ecore-config --cflags` `evas-config --cflags` `eet-config --cflags`
-LIBS  = `edje-config --libs` `ecore-config --libs` `evas-config --libs` `eet-config --libs`
+FLAGS = `pkg-config --cflags edje ecore-evas evas eet`
+LIBS = `pkg-config --libs edje ecore-evas evas eet`
 
 BINS  = edje edje_ls edje_test edje_thumb
 all: $(BINS)
