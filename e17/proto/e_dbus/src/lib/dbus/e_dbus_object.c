@@ -136,7 +136,6 @@ cb_properties_get(E_DBus_Object *obj, DBusMessage *msg)
 static DBusMessage *
 cb_properties_set(E_DBus_Object *obj, DBusMessage *msg)
 {
-  DBusMessage *reply;
   DBusMessageIter iter, sub;
   int type;
   void *value;
