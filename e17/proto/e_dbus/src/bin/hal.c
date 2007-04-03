@@ -525,17 +525,17 @@ cb_window_close(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-cb_volume_unmounted(void *data, void *reply_data)
+cb_volume_unmounted(void *user_data, void *method_return, DBusError *error)
 {
-  Volume *vol = data;
+  Volume *vol = user_data;
   vol->mounted = 0;
   printf("Volume unmounted reply: %s\n", vol->udi);
 }
 
 static void
-cb_volume_mounted(void *data, void *reply_data)
+cb_volume_mounted(void *user_data, void *method_return, DBusError *error)
 {
-  Volume *vol = data;
+  Volume *vol = user_data;
   vol->mounted = 1;
   printf("Volume mounted reply: %s\n", vol->udi);
 }
