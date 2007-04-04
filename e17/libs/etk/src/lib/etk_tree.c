@@ -173,6 +173,7 @@ Etk_Type *etk_tree_type_get(void)
          tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_CLICKED_SIGNAL] = etk_signal_new("row-clicked",
          tree_type, -1, etk_marshaller_VOID__POINTER_POINTER, NULL, NULL);
+      /* TODO: do we really need "row-activated" */
       _etk_tree_signals[ETK_TREE_ROW_ACTIVATED_SIGNAL] = etk_signal_new("row-activated",
          tree_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_tree_signals[ETK_TREE_ROW_UNFOLDED_SIGNAL] = etk_signal_new("row-unfolded",
@@ -1247,7 +1248,7 @@ void etk_tree_row_fields_get_valist(Etk_Tree_Row *row, va_list args)
  * @param emit_signal whether or not the "cell-value-changed" signal should be emitted on the modified columns.
  * Most of the time, the signal don't need to be emitted (so @a emit_signal should be ETK_FALSE), except if you have a
  * callback connected on this signal
- * @param args an "Etk_Tree_Model *" followed by the value of the model, then any number of
+ * @param ... an "Etk_Tree_Model *" followed by the value of the model, then any number of
  * "Etk_Tree_Model *"/Value pairs, and terminated by NULL.
  * Note that, according to the models, a cell value can use several parameters
  */
@@ -3578,3 +3579,155 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Tree
+ *
+ * @image html widgets/tree.png
+ * 
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Tree
+ *
+ * <hr>
+ *
+ * \par Signals of Etk_Tree:
+ * @signal_name "row-selected": Emitted when a row is selected
+ * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_arg tree: the tree containing the row that has been selected
+ * @signal_arg row: the row that has been selected
+ * @signal_data
+ * \par
+ * @signal_name "row-unselected": Emitted when a row is unselected
+ * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_arg tree: the tree containing the row that has been unselected
+ * @signal_arg row: the row that has been unselected
+ * @signal_data
+ * \par
+ * @signal_name "all-selected": Emitted when all the rows of a tree are selected with etk_tree_select_all()
+ * @signal_cb void callback(Etk_Tree *tree, void *data)
+ * @signal_arg tree: the tree whose all rows have been selected
+ * @signal_data
+ * \par
+ * @signal_name "all-unselected": Emitted when all the rows of a tree are unselected with etk_tree_unselect_all()
+ * @signal_cb void callback(Etk_Tree *tree, void *data)
+ * @signal_arg tree: the tree whose all rows have been unselected
+ * @signal_data
+ * \par
+ * @signal_name "row-clicked": Emitted when a row of the tree has been clicked
+ * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
+ * @signal_arg tree: the tree containing the row that has been clicked
+ * @signal_arg row: the row that has been clicked
+ * @signal_arg event: the event-structure corresponding to the click event
+ * @signal_data
+ * \par
+ * @signal_name "row-activated": Emitted when a row is double-clicked or when the user presses "space" on a selected row
+ * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_arg tree: the tree containing the row that has been activated
+ * @signal_arg row: the row that has been activated
+ * @signal_data
+ * \par
+ * @signal_name "row-unfolded": Emitted when a row is unfolded
+ * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_arg tree: the tree containing the row that has been unfolded
+ * @signal_arg row: the row that has been unfolded
+ * @signal_data
+ * \par
+ * @signal_name "row-folded": Emitted when a row is folded
+ * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_arg tree: the tree containing the row that has been folded
+ * @signal_arg row: the row that has been folded
+ * @signal_data
+ * \par
+ * @signal_name "row-shown": Emitted when a row becomes visible, i.e when the row enters in the tree's viewport
+ * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_arg tree: the tree containing the row that has hecome visible
+ * @signal_arg row: the row that has hecome visible
+ * @signal_data
+ * \par
+ * @signal_name "row-hidden": Emitted when a row becomes invisible, i.e when the row leaves in the tree's viewport
+ * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_arg tree: the tree containing the row that has hecome invisible
+ * @signal_arg row: the row that has hecome invisible
+ * @signal_data
+ *
+ * \par Properties of Etk_Tree:
+ * @prop_name "mode": The current mode of the tree ("tree" or "list" mode)
+ * @prop_type Integer (Etk_Tree_Mode)
+ * @prop_rw
+ * @prop_val ETK_TREE_MODE_LIST
+ * \par
+ * @prop_name "multiple-select": Whether or not several rows of the tree can be selected
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
+ * \par
+ * @prop_name "headers-visible": Whether or not the headers of the columns are visible
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
+ * \par
+ * @prop_name "rows-height": The height of the rows of the tree
+ * @prop_type Integer
+ * @prop_rw
+ * @prop_val 24
+ *
+ * <hr>
+ *
+ * \par Signals of Etk_Tree_Col:
+ * @signal_name "cell-value-changed": Emitted when the value of a cell of the column is changed
+ * @signal_cb void callback(Etk_Tree_Col *col, Etk_Tree_Row *row, void *data)
+ * @signal_arg col: the column containing the cell whose value has been changed
+ * @signal_arg row: the row containing the cell whose value has been changed
+ * @signal_data
+ *
+ * \par Properties of Etk_Tree_Col:
+ * @prop_name "title": The title of the column
+ * @prop_type String (char *)
+ * @prop_rw
+ * @prop_val NULL
+ * \par
+ * @prop_name "visible": Whether or not the column is visible
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
+ * \par
+ * @prop_name "resizable": Whether or not the column can be resized by the user
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
+ * \par
+ * @prop_name "position": The position of the column inside the tree (between 0 and (num_cols - 1))
+ * @prop_type Integer
+ * @prop_rw
+ * @prop_val 0
+ * \par
+ * @prop_name "expand": Whether the column should expand to take up all available width
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_FALSE
+ * \par
+ * @prop_name "width": The current width of the column
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val 24
+ * \par
+ * @prop_name "min-width": The minimum width of the column
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val 24
+ * \par
+ * @prop_name "align": The horizontal alignment of the objects inside the cells of the column, from 0.0 (left) to 1.0 (right)
+ * @prop_type Float
+ * @prop_rw
+ * @prop_val 0.0
+ *
+ * <hr>
+ */
