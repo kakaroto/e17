@@ -300,8 +300,8 @@ static void _window_constructor(Etk_Window *window)
    window->engine_data = engine_data;
    
    ETK_TOPLEVEL(window)->evas = _evas;
-   etk_signal_connect("realize", ETK_OBJECT(window), ETK_CALLBACK(_window_realized_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(window), ETK_CALLBACK(_window_unrealized_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(window), ETK_CALLBACK(_window_realized_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(window), ETK_CALLBACK(_window_unrealized_cb), NULL);
 }
 
 /* Cleans up the window */
