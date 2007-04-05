@@ -29,9 +29,9 @@ static void _wobbly_model_free(Etk_Tree_Model *model);
 static void _wobbly_cell_data_free(Etk_Tree_Model *model, void *cell_data);
 static void _wobbly_cell_data_set(Etk_Tree_Model *model, void *cell_data, va_list *args);
 static void _wobbly_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_list *args);
-static void _wobbly_objects_cache(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
-static Etk_Bool _wobbly_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas);
-static int _wobbly_width_get(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL]);
+static void _wobbly_objects_cache(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL]);
+static Etk_Bool _wobbly_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL], Evas *evas);
+static int _wobbly_width_get(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL]);
 static void _wobbly_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _wobbly_cache_free_cb(Evas_Object *object, void *data);
 
@@ -126,7 +126,7 @@ static void _wobbly_cell_data_get(Etk_Tree_Model *model, void *cell_data, va_lis
 }
 
 /* Wobbly: objects_cache() */
-static void _wobbly_objects_cache(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
+static void _wobbly_objects_cache(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL])
 {
    Etk_Tree_Model_Wobbly *wobbly_model;
    Etk_Tree_Model_Wobbly_Data *wobbly_data;
@@ -148,7 +148,7 @@ static void _wobbly_objects_cache(Etk_Tree_Model *model, void *cell_data, Evas_O
 }
 
 /* Wobbly: render() */
-static Etk_Bool _wobbly_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL], Evas *evas)
+static Etk_Bool _wobbly_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
    Etk_Tree_Model_Wobbly *wobbly_model;
    Etk_Tree_Model_Wobbly_Data *wobbly_data;
@@ -227,7 +227,7 @@ static Etk_Bool _wobbly_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geo
 }
 
 /* Wobbly: width_get() */
-static int _wobbly_width_get(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[MAX_OBJECTS_PER_MODEL])
+static int _wobbly_width_get(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL])
 {
    Etk_Tree_Model_Wobbly *wobbly_model;
    int w;

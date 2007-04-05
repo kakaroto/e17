@@ -10,7 +10,7 @@ Exhibit *e;
 Evas_List  *event_handlers;
 
 static void _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path);
-static int _ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
+static int _ex_main_dtree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
 static void _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data);
 static void _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data);
 static Etk_Bool _ex_main_window_deleted_cb(void *data);
@@ -187,7 +187,7 @@ _ex_main_image_set(Exhibit *e, char *image)
 }
 
 static int
-_ex_main_dtree_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+_ex_main_dtree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data)
 {
    char *dir1, *dir2;
    
@@ -291,12 +291,9 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	  _ex_sort_resol_cb(NULL, NULL);
      }
 
-#if 0  
-   /* TODO: implement this when tree2 has sorting */
    if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
-     etk_tree_sort(ETK_TREE(e->cur_tab->dtree), _ex_main_dtree_compare_cb, 
-		    ETK_TRUE, e->cur_tab->dcol, NULL);
-#endif   
+     etk_tree_col_sort_full(e->cur_tab->dcol, _ex_main_dtree_compare_cb, 
+			    NULL, ETK_TRUE);
 
    if (!e->cur_tab->monitor)
      {

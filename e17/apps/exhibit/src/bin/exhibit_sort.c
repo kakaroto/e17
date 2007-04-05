@@ -7,22 +7,22 @@ static Ecore_Evas *ee_buf;
 static Evas *evas_buf;
 
 static int
-_ex_sort_itree_name_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+_ex_sort_itree_name_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data)
 {
    char *f1, *f2;
    
    if (!row1 || !row2 || !col)
       return 0;
    
-   etk_tree_row_fields_get(row1, col, NULL, &f1, NULL,NULL);
-   etk_tree_row_fields_get(row2, col, NULL, &f2, NULL,NULL);
-   
+   etk_tree_row_fields_get(row1, col, NULL, NULL, &f1, NULL);
+   etk_tree_row_fields_get(row2, col, NULL, NULL, &f2, NULL);
+      
    return strcasecmp(f1, f2);
 }
 
 
 static int
-_ex_sort_itree_size_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+_ex_sort_itree_size_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data)
 {
    char *f1, *f2;
    struct stat s1, s2;
@@ -30,8 +30,8 @@ _ex_sort_itree_size_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row 
    if (!row1 || !row2 || !col)
       return 0;
    
-   etk_tree_row_fields_get(row1, col, NULL, &f1, NULL,NULL);
-   etk_tree_row_fields_get(row2, col, NULL, &f2, NULL,NULL);
+   etk_tree_row_fields_get(row1, col, NULL, NULL, &f1, NULL);
+   etk_tree_row_fields_get(row2, col, NULL, NULL, &f2, NULL);
    
    stat(f1, &s1);
    stat(f2, &s2);
@@ -43,7 +43,7 @@ _ex_sort_itree_size_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row 
 }
 
 static int
-_ex_sort_itree_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+_ex_sort_itree_date_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data)
 {
    char *f1, *f2;
    struct stat s1, s2;
@@ -51,8 +51,8 @@ _ex_sort_itree_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row 
    if (!row1 || !row2 || !col)
       return 0;
    
-   etk_tree_row_fields_get(row1, col, NULL, &f1, NULL,NULL);
-   etk_tree_row_fields_get(row2, col, NULL, &f2, NULL,NULL);
+   etk_tree_row_fields_get(row1, col, NULL, NULL, &f1, NULL);
+   etk_tree_row_fields_get(row2, col, NULL, NULL, &f2, NULL);
    
    stat(f1, &s1);
    stat(f2, &s2);
@@ -64,7 +64,7 @@ _ex_sort_itree_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row 
 }
 
 static int
-_ex_sort_itree_resol_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+_ex_sort_itree_resol_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data)
 {
    char *f1, *f2;
    Evas_Object *i1, *i2;
@@ -73,8 +73,8 @@ _ex_sort_itree_resol_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row
    if (!row1 || !row2 || !col)
       return 0;
    
-   etk_tree_row_fields_get(row1, col, NULL, &f1, NULL,NULL);
-   etk_tree_row_fields_get(row2, col, NULL, &f2, NULL,NULL);
+   etk_tree_row_fields_get(row1, col, NULL, NULL, &f1, NULL);
+   etk_tree_row_fields_get(row2, col, NULL, NULL, &f2, NULL);
 
    if(!ee_buf)
      {
@@ -117,38 +117,29 @@ _ex_sort_itree_resol_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row
 void 
 _ex_sort_name_cb(Etk_Object *obj, void *data)
 {    
-#if 0
-   /* TODO: implement when this is supported */
-   etk_tree_sort(ETK_TREE(e->cur_tab->itree), _ex_sort_itree_name_compare_cb, 
-			 ETK_TRUE, e->cur_tab->icol, NULL);
-#endif   
+   etk_tree_col_sort_full(etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), _ex_sort_itree_name_compare_cb,
+			  NULL, ETK_TRUE);
 }
 
 void 
 _ex_sort_size_cb(Etk_Object *obj, void *data)
 {    
-#if 0
-   /* TODO: implement when this is supported */
-   etk_tree_sort(ETK_TREE(e->cur_tab->itree), _ex_sort_itree_size_compare_cb, ETK_TRUE, e->cur_tab->icol, NULL);
-#endif   
+   etk_tree_col_sort_full(e->cur_tab->icol, _ex_sort_itree_size_compare_cb,
+			  NULL, ETK_TRUE);
 }
 
 void 
 _ex_sort_resol_cb(Etk_Object *obj, void *data)
 {    
-#if 0
-   /* TODO: implement when this is supported */
-   etk_tree_sort(ETK_TREE(e->cur_tab->itree), _ex_sort_itree_resol_compare_cb, ETK_TRUE, e->cur_tab->icol, NULL);
-#endif   
+   etk_tree_col_sort_full(e->cur_tab->icol, _ex_sort_itree_resol_compare_cb,
+			  NULL, ETK_TRUE);
 }
 
 void 
 _ex_sort_date_cb(Etk_Object *obj, void *data)
 {    
-#if 0
-   /* TODO: implement when this is supported */
-   etk_tree_sort(ETK_TREE(e->cur_tab->itree), _ex_sort_itree_date_compare_cb, ETK_TRUE, e->cur_tab->icol, NULL);
-#endif   
+   etk_tree_col_sort_full(e->cur_tab->icol, _ex_sort_itree_date_compare_cb,
+			  NULL, ETK_TRUE);
 }
 
 void
