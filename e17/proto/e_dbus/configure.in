@@ -19,7 +19,8 @@ PKG_CHECK_MODULES([HAL_TEST_GUI], [
   ewl
   efreet
 ],
-[AC_DEFINE([EWL_GUI], 1, [An ewl gui for e_dbus_hal])],
+# temporarily disable until update to newer tree2 api
+[AC_DEFINE([EWL_GUI], 0, [An ewl gui for e_dbus_hal])],
 [AC_DEFINE([EWL_GUI], 0, [An ewl gui for e_dbus_hal])]
 )
 
