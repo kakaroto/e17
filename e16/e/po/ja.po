@@ -730,21 +730,20 @@ msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
 #: src/desktops.c:2639
-#, fuzzy
 msgid "Edge Flip Mode:"
-msgstr "ページャーモード"
+msgstr "マウスカーソルによるデスクトップの切り替え"
 
 #: src/desktops.c:2642
 msgid "Off"
-msgstr ""
+msgstr "無効"
 
 #: src/desktops.c:2647
 msgid "On"
-msgstr ""
+msgstr "有効"
 
 #: src/desktops.c:2652
 msgid "Only when moving window"
-msgstr ""
+msgstr "ウィンドウ移動時のみ切り替える"
 
 #: src/desktops.c:2658
 msgid "Resistance at edge of screen:\n"
@@ -876,9 +875,8 @@ msgid "Include iconified windows in focus list"
 msgstr "アイコン化されているウィンドウをフォーカスリストに含める"
 
 #: src/focus.c:806
-#, fuzzy
 msgid "Include windows on other desks in focus list"
-msgstr "シェードされているウィンドウをフォーカスリストに含める"
+msgstr "他のデスクトップのウィンドウもフォーカスリストに含める"
 
 #: src/focus.c:811
 msgid "Focus windows while switching"
@@ -1103,19 +1101,16 @@ msgstr ""
 "デフォルト設定ダイアログ\n"
 
 #: src/groups.c:1059
-#, fuzzy
 msgid "Pick the group the window will belong to:"
-msgstr " このウィンドウが参加するグループを選択してください:  \n"
+msgstr "このウィンドウが参加するグループを選択してください:"
 
 #: src/groups.c:1066
-#, fuzzy
 msgid "Select the group to remove the window from:"
-msgstr "  削除するウィンドウが属しているグループを選択してください。"
+msgstr "削除するウィンドウが属しているグループを選択してください。"
 
 #: src/groups.c:1072
-#, fuzzy
 msgid "Select the group to break:"
-msgstr " 破棄するグループを選択してください。 "
+msgstr "破棄するグループを選択してください。 "
 
 #: src/handlers.c:66
 #, c-format
