@@ -1764,7 +1764,7 @@ create_part_frame(void)
 
    //PartClipToComboBox
    label = etk_label_new("<b>Clip_to</b>");
-   etk_table_attach (ETK_TABLE(table), label, 0, 0, 2, 2,0,0,ETK_TABLE_NONE);
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 2, 2,ETK_TABLE_NONE,0,0);
 
    combo = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(combo),
@@ -1795,28 +1795,28 @@ create_program_frame(void)
 
    //UI_ProgramEntry
    label = etk_label_new("<b>Name</b>");
-   etk_table_attach (ETK_TABLE(table), label, 0, 0, 0, 0,0,0,ETK_TABLE_NONE);
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 0, 0,ETK_TABLE_NONE,0,0);
    UI_ProgramEntry = etk_entry_new();
    etk_tooltips_tip_set(UI_ProgramEntry, "Symbolic <b>name</b> of program as a unique identifier.");
    etk_table_attach_default (ETK_TABLE(table),UI_ProgramEntry, 1, 3, 0, 0);
 
    //UI_SourceEntry
    label = etk_label_new("<b>Source</b>");
-   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1,0,0,ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1,ETK_TABLE_NONE,0,0);
    UI_SourceEntry = etk_entry_new();
    etk_tooltips_tip_set(UI_SourceEntry, "<b>Source(s)</b> of the signal.<br>The Part or Program that emit the signal<br>Wildcards can be used to widen the scope, ex: \"button-*\"");
    etk_table_attach_default(ETK_TABLE(table), UI_SourceEntry, 1, 3, 1, 1);
 
    //UI_SignalEntry
    label = etk_label_new("<b>Signal</b>");
-   etk_table_attach (ETK_TABLE(table), label, 0, 0, 2, 2,0,0,ETK_TABLE_NONE);
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 2, 2,ETK_TABLE_NONE,0,0);
    UI_SignalEntry = etk_entry_new();
    etk_tooltips_tip_set(UI_SignalEntry, "The name of the <b>signal</b> that will trigger the program.<br>Wildcards can be used to widen the scope, ex: \"mouse,down,*\"<br>Can be a mouse signal ( mouse,in ; mouse,up,1 )<br>Or a user defined signal (emitted by the application)");
    etk_table_attach_default (ETK_TABLE(table),UI_SignalEntry, 1, 3, 2, 2);
 
    //UI_DelayFromSpinner
    label = etk_label_new("<b>Delay</b>");
-   etk_table_attach (ETK_TABLE(table), label, 0, 0, 3, 3,0,0,ETK_TABLE_NONE);
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 3, 3,ETK_TABLE_NONE,0,0);
    UI_DelayFromSpinner = etk_spinner_new (0.0, 999.0, 0.0, 0.1, 1.0);
    etk_tooltips_tip_set(UI_DelayFromSpinner, "The number of seconds to wait before running the program");
    etk_spinner_digits_set (ETK_SPINNER(UI_DelayFromSpinner), 1);
@@ -1825,7 +1825,7 @@ create_program_frame(void)
 
    //UI_DelayRangeSpinner
    label = etk_label_new("<b> + random</b>");
-   etk_table_attach (ETK_TABLE(table), label, 2, 2, 3, 3,0,0,ETK_TABLE_NONE);
+   etk_table_attach (ETK_TABLE(table), label, 2, 2, 3, 3,ETK_TABLE_NONE,0,0);
    UI_DelayRangeSpinner = etk_spinner_new (0.0, 999.0, 0.0, 0.1, 1.0);
    etk_tooltips_tip_set(UI_DelayRangeSpinner, "The maximum <b>random</b> seconds which is added to <b>Delay</b>");
    etk_spinner_digits_set (ETK_SPINNER(UI_DelayRangeSpinner), 1);
@@ -1834,7 +1834,7 @@ create_program_frame(void)
 
    //UI_AfterEntry
    label = etk_label_new("<b>After(s)</b>");
-   etk_table_attach (ETK_TABLE(table), label, 0, 0, 4, 4,0,0,ETK_TABLE_NONE);
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 4, 4,ETK_TABLE_NONE,0,0);
    UI_AfterEntry = etk_entry_new();
    etk_tooltips_tip_set(UI_AfterEntry, "Specifies program(s) to run after the current program completes.<br>The <i>source</i> and <i>signal</i> parameters of a program run as an <i>after</j> are ignored.<br>Multiple programs can be specified separated by ',' (comma).");
    etk_table_attach_default (ETK_TABLE(table),UI_AfterEntry, 1, 3, 4, 4);
@@ -1842,7 +1842,7 @@ create_program_frame(void)
    //UI_ActionComboBox
    Etk_Combobox_Item *item = NULL;
    label = etk_label_new("<b>Action</b>");
-   etk_table_attach (ETK_TABLE(table), label, 0, 0, 5, 5,0,0,ETK_TABLE_NONE);
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 5, 5,ETK_TABLE_NONE,0,0);
    UI_ActionComboBox = etk_combobox_new();
    //etk_tooltips_tip_set(UI_ActionComboBox, "<b>Action</b> to be performed by the program.<br>STATE_SET is used to change the state of one or more targets parts<br>, ACTION_STOP and SIGNAL_EMIT.<br>");
    etk_combobox_column_add(ETK_COMBOBOX(UI_ActionComboBox),
@@ -1860,14 +1860,14 @@ create_program_frame(void)
 
    //UI_TargetEntry
    UI_TargetLabel = etk_label_new("<b>Target(s)</b>");
-   etk_table_attach(ETK_TABLE(table), UI_TargetLabel, 0, 0, 6, 6,0,0,ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), UI_TargetLabel, 0, 0, 6, 6,ETK_TABLE_NONE,0,0);
    UI_TargetEntry = etk_entry_new();
    etk_tooltips_tip_set(UI_TargetEntry, "Program or part on which the specified action acts.<br>Multiple target keywords may be specified, separated by ','(comma).");
    etk_table_attach_default(ETK_TABLE(table), UI_TargetEntry, 1, 4, 6, 6);
 
    //UI_Param1Entry
    UI_Param1Label = etk_label_new("<b>State</b>");
-   etk_table_attach(ETK_TABLE(table), UI_Param1Label, 0, 0, 7, 7,0,0,ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), UI_Param1Label, 0, 0, 7, 7,ETK_TABLE_NONE,0,0);
    UI_Param1Entry = etk_entry_new();
    etk_tooltips_tip_set(UI_Param1Entry, "Description to set in the specified targets");
    etk_table_attach_default(ETK_TABLE(table), UI_Param1Entry, 1, 2, 7, 7);
@@ -1882,7 +1882,7 @@ create_program_frame(void)
 
    //UI_TransiComboBox
    UI_TransiLabel = etk_label_new("<b>Transition</b>");
-   etk_table_attach(ETK_TABLE(table), UI_TransiLabel, 0, 0, 8, 8,0,0,ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), UI_TransiLabel, 0, 0, 8, 8,ETK_TABLE_NONE,0,0);
    UI_TransiComboBox = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(UI_TransiComboBox),
       ETK_COMBOBOX_IMAGE, 24, ETK_COMBOBOX_NONE, 0.0);
@@ -1901,7 +1901,7 @@ create_program_frame(void)
 
    //DurationSpinner
    UI_DurationLabel = etk_label_new("<b>seconds</b>");
-   etk_table_attach(ETK_TABLE(table), UI_DurationLabel, 2, 2, 8, 8,0,0,ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), UI_DurationLabel, 2, 2, 8, 8,ETK_TABLE_NONE,0,0);
    UI_DurationSpinner = etk_spinner_new (0.0, 999.0, 0.0, 0.1, 1.0);
    etk_tooltips_tip_set(UI_DurationSpinner, "The duration of the transition. In seconds.");
    etk_spinner_digits_set (ETK_SPINNER(UI_DurationSpinner), 1);
@@ -1910,7 +1910,7 @@ create_program_frame(void)
 
    //UI_Param2Entry
    UI_Param2Label = etk_label_new("<b>Source</b>");
-   etk_table_attach(ETK_TABLE(table), UI_Param2Label, 0, 0, 9, 9,0,0,ETK_TABLE_NONE);
+   etk_table_attach(ETK_TABLE(table), UI_Param2Label, 0, 0, 9, 9,ETK_TABLE_NONE,0,0);
    UI_Param2Entry = etk_entry_new();
    etk_tooltips_tip_set(UI_Param2Entry, "!!!!!!");
    etk_table_attach_default(ETK_TABLE(table), UI_Param2Entry, 1, 2, 9, 9);
