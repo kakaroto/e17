@@ -58,6 +58,7 @@ typedef union
 
 typedef struct
 {
+   void                (*Init) (EWin * ewin);
    void                (*Layout) (EWin * ewin, int *px, int *py, int *pw,
 				  int *ph);
    void                (*MoveResize) (EWin * ewin, int resize);
@@ -364,8 +365,7 @@ void                EwinPropagateShapes(EWin * ewin);
 void                EwinStateUpdate(EWin * ewin);
 void                AddToFamily(EWin * ewin, Window win);
 EWin               *AddInternalToFamily(Win win, const char *bname, int type,
-					void *ptr,
-					void (*init) (EWin * ewin, void *ptr));
+					const EWinOps * ops, void *ptr);
 void                EwinReparent(EWin * ewin, Win parent);
 const char         *EwinGetTitle(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);

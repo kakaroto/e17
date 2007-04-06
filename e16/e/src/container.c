@@ -240,7 +240,21 @@ ContainerReconfigure(Container * ct)
 }
 
 static void
-ContainerEwinLayout(EWin * ewin, int *px, int *py, int *pw, int *ph)
+_ContainerEwinInit(EWin * ewin)
+{
+   ewin->props.skip_ext_task = 1;
+   ewin->props.skip_ext_pager = 1;
+   ewin->props.skip_focuslist = 1;
+   ewin->props.skip_winlist = 1;
+   EwinInhSetWM(ewin, focus, 1);
+   EwinInhSetWM(ewin, iconify, 1);
+   ewin->props.autosave = 1;
+
+   EoSetSticky(ewin, 1);
+}
+
+static void
+_ContainerEwinLayout(EWin * ewin, int *px, int *py, int *pw, int *ph)
 {
    Container          *ct = (Container *) ewin->data;
 
@@ -251,7 +265,7 @@ ContainerEwinLayout(EWin * ewin, int *px, int *py, int *pw, int *ph)
 }
 
 static void
-ContainerEwinMoveResize(EWin * ewin, int resize)
+_ContainerEwinMoveResize(EWin * ewin, int resize)
 {
    Container          *ct = (Container *) ewin->data;
 
@@ -266,35 +280,19 @@ ContainerEwinMoveResize(EWin * ewin, int resize)
 }
 
 static void
-ContainerEwinClose(EWin * ewin)
+_ContainerEwinClose(EWin * ewin)
 {
    ContainerDestroy((Container *) ewin->data, 0);
    ewin->client.win = NULL;
    ewin->data = NULL;
 }
 
-static const EWinOps ContainerEwinOps = {
-   ContainerEwinLayout,
-   ContainerEwinMoveResize,
-   ContainerEwinClose,
+static const EWinOps _ContainerEwinOps = {
+   _ContainerEwinInit,
+   _ContainerEwinLayout,
+   _ContainerEwinMoveResize,
+   _ContainerEwinClose,
 };
-
-static void
-ContainerEwinInit(EWin * ewin, void *ptr)
-{
-   ewin->data = (Container *) ptr;
-   ewin->ops = &ContainerEwinOps;
-
-   ewin->props.skip_ext_task = 1;
-   ewin->props.skip_ext_pager = 1;
-   ewin->props.skip_focuslist = 1;
-   ewin->props.skip_winlist = 1;
-   EwinInhSetWM(ewin, focus, 1);
-   EwinInhSetWM(ewin, iconify, 1);
-   ewin->props.autosave = 1;
-
-   EoSetSticky(ewin, 1);
-}
 
 static void
 ContainerShow(Container * ct)
@@ -307,8 +305,8 @@ ContainerShow(Container * ct)
    HintsSetWindowName(ct->win, ct->wm_name);
    HintsSetWindowClass(ct->win, ct->name, "Enlightenment_IconBox");
 
-   ewin = AddInternalToFamily(ct->win, "ICONBOX", EWIN_TYPE_ICONBOX, ct,
-			      ContainerEwinInit);
+   ewin = AddInternalToFamily(ct->win, "ICONBOX", EWIN_TYPE_ICONBOX,
+			      &_ContainerEwinOps, ct);
    ct->ewin = ewin;
    if (!ewin)
       return;

@@ -195,7 +195,28 @@ MenuHide(Menu * m)
 }
 
 static void
-MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
+_MenuEwinInit(EWin * ewin)
+{
+   Menu               *m = (Menu *) ewin->data;
+
+   ewin->props.skip_ext_task = 1;
+   ewin->props.skip_ext_pager = 1;
+   ewin->props.no_actions = 1;
+   ewin->props.skip_focuslist = 1;
+   ewin->props.skip_winlist = 1;
+   ewin->props.ignorearrange = 1;
+   EwinInhSetWM(ewin, focus, 1);
+   ewin->client.grav = StaticGravity;
+
+   ICCCM_SetSizeConstraints(ewin, m->w, m->h, m->w, m->h, 0, 0, 1, 1,
+			    0.0, 65535.0);
+
+   EoSetLayer(ewin, 12);
+   ewin->ewmh.opacity = OpacityFromPercent(Conf.opacity.menus);
+}
+
+static void
+_MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    Menu               *m = (Menu *) ewin->data;
 
@@ -213,7 +234,7 @@ MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 }
 
 static void
-MenuEwinClose(EWin * ewin)
+_MenuEwinClose(EWin * ewin)
 {
    if ((Menu *) (ewin->data) == Mode_menus.active)
      {
@@ -224,35 +245,12 @@ MenuEwinClose(EWin * ewin)
    ewin->data = NULL;
 }
 
-static const EWinOps MenuEwinOps = {
+static const EWinOps _MenuEwinOps = {
+   _MenuEwinInit,
    NULL,
-   MenuEwinMoveResize,
-   MenuEwinClose,
+   _MenuEwinMoveResize,
+   _MenuEwinClose,
 };
-
-static void
-MenuEwinInit(EWin * ewin, void *ptr)
-{
-   Menu               *m = (Menu *) ptr;
-
-   ewin->data = ptr;
-   ewin->ops = &MenuEwinOps;
-
-   ewin->props.skip_ext_task = 1;
-   ewin->props.skip_ext_pager = 1;
-   ewin->props.no_actions = 1;
-   ewin->props.skip_focuslist = 1;
-   ewin->props.skip_winlist = 1;
-   ewin->props.ignorearrange = 1;
-   EwinInhSetWM(ewin, focus, 1);
-   ewin->client.grav = StaticGravity;
-
-   ICCCM_SetSizeConstraints(ewin, m->w, m->h, m->w, m->h, 0, 0, 1, 1,
-			    0.0, 65535.0);
-
-   EoSetLayer(ewin, 12);
-   ewin->ewmh.opacity = OpacityFromPercent(Conf.opacity.menus);
-}
 
 static void         MenuShowMasker(Menu * m);
 
@@ -333,8 +331,8 @@ MenuShow(Menu * m, char noshow)
 
    EMoveWindow(m->win, wx, wy);
 
-   ewin = AddInternalToFamily(m->win, m->style->border_name, EWIN_TYPE_MENU, m,
-			      MenuEwinInit);
+   ewin = AddInternalToFamily(m->win, m->style->border_name, EWIN_TYPE_MENU,
+			      &_MenuEwinOps, m);
    m->ewin = ewin;
    if (ewin)
      {

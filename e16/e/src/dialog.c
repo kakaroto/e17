@@ -503,7 +503,15 @@ DialogRedraw(Dialog * d)
 }
 
 static void
-DialogEwinMoveResize(EWin * ewin, int resize __UNUSED__)
+_DialogEwinInit(EWin * ewin)
+{
+   ewin->props.focus_when_mapped = 1;
+
+   EoSetLayer(ewin, 10);
+}
+
+static void
+_DialogEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    Dialog             *d = (Dialog *) ewin->data;
 
@@ -515,29 +523,19 @@ DialogEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 }
 
 static void
-DialogEwinClose(EWin * ewin)
+_DialogEwinClose(EWin * ewin)
 {
    DialogDestroy((Dialog *) ewin->data);
    ewin->client.win = NULL;
    ewin->data = NULL;
 }
 
-static const EWinOps DialogEwinOps = {
+static const EWinOps _DialogEwinOps = {
+   _DialogEwinInit,
    NULL,
-   DialogEwinMoveResize,
-   DialogEwinClose,
+   _DialogEwinMoveResize,
+   _DialogEwinClose,
 };
-
-static void
-DialogEwinInit(EWin * ewin, void *ptr)
-{
-   ewin->data = ptr;
-   ewin->ops = &DialogEwinOps;
-
-   ewin->props.focus_when_mapped = 1;
-
-   EoSetLayer(ewin, 10);
-}
 
 void
 DialogArrange(Dialog * d, int resize)
@@ -580,8 +578,8 @@ DialogShowArranged(Dialog * d, int center)
 
    HintsSetWindowClass(d->win, d->name, "Enlightenment_Dialog");
 
-   ewin = AddInternalToFamily(d->win, "DIALOG", EWIN_TYPE_DIALOG, d,
-			      DialogEwinInit);
+   ewin = AddInternalToFamily(d->win, "DIALOG", EWIN_TYPE_DIALOG,
+			      &_DialogEwinOps, d);
    d->ewin = ewin;
    if (!ewin)
       return;

@@ -641,7 +641,20 @@ PagerUpdateBg(Pager * p)
 }
 
 static void
-PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
+_PagerEwinInit(EWin * ewin)
+{
+   ewin->props.skip_ext_task = 1;
+   ewin->props.skip_ext_pager = 1;
+   ewin->props.skip_focuslist = 1;
+   ewin->props.skip_winlist = 1;
+   EwinInhSetWM(ewin, focus, 1);
+   ewin->props.autosave = 1;
+
+   EoSetSticky(ewin, 1);
+}
+
+static void
+_PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 {
    Pager              *p = (Pager *) ewin->data;
    int                 w, h;
@@ -685,34 +698,19 @@ PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 }
 
 static void
-PagerEwinClose(EWin * ewin)
+_PagerEwinClose(EWin * ewin)
 {
    PagerDestroy((Pager *) ewin->data);
    ewin->client.win = NULL;
    ewin->data = NULL;
 }
 
-static const EWinOps PagerEwinOps = {
+static const EWinOps _PagerEwinOps = {
+   _PagerEwinInit,
    NULL,
-   PagerEwinMoveResize,
-   PagerEwinClose,
+   _PagerEwinMoveResize,
+   _PagerEwinClose,
 };
-
-static void
-PagerEwinInit(EWin * ewin, void *ptr)
-{
-   ewin->data = ptr;
-   ewin->ops = &PagerEwinOps;
-
-   ewin->props.skip_ext_task = 1;
-   ewin->props.skip_ext_pager = 1;
-   ewin->props.skip_focuslist = 1;
-   ewin->props.skip_winlist = 1;
-   EwinInhSetWM(ewin, focus, 1);
-   ewin->props.autosave = 1;
-
-   EoSetSticky(ewin, 1);
-}
 
 static void
 PagerShow(Pager * p)
@@ -735,8 +733,8 @@ PagerShow(Pager * p)
    Esnprintf(s, sizeof(s), "%i", p->dsk->num);
    HintsSetWindowClass(p->win, s, "Enlightenment_Pager");
 
-   ewin =
-      AddInternalToFamily(p->win, "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
+   ewin = AddInternalToFamily(p->win, "PAGER", EWIN_TYPE_PAGER,
+			      &_PagerEwinOps, p);
    p->ewin = ewin;
    if (!ewin)
       return;

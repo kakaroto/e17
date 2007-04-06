@@ -955,8 +955,8 @@ AddToFamily(EWin * ewin, Window xwin)
 }
 
 EWin               *
-AddInternalToFamily(Win win, const char *bname, int type, void *ptr,
-		    void (*init) (EWin * ewin, void *ptr))
+AddInternalToFamily(Win win, const char *bname, int type,
+		    const EWinOps * ops, void *ptr)
 {
    EWin               *ewin;
 
@@ -970,8 +970,10 @@ AddInternalToFamily(Win win, const char *bname, int type, void *ptr,
    EwinGetHints(ewin);
    EwinManage(ewin);
 
-   if (init)
-      init(ewin, ptr);		/* Type specific initialisation */
+   ewin->data = ptr;
+   ewin->ops = ops;
+   if (ops && ops->Init)
+      ops->Init(ewin);		/* Type specific initialisation */
 
    if (bname)
       ewin->border = BorderFind(bname);
