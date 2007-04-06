@@ -109,12 +109,12 @@ static void
 HiwinRenderImageDrawX(Hiwin * phi, Drawable draw __UNUSED__)
 {
 #if 0
-   EImageRenderOnDrawable(phi->im, EoGetWin(phi), draw, 0, 0,
-			  EoGetW(phi), EoGetH(phi), 0);
+   EImageRenderOnDrawable(phi->im, EoGetWin(phi), draw, 0,
+			  0, 0, EoGetW(phi), EoGetH(phi));
 #else
    Pixmap              pmap, mask;
 
-   EImageRenderPixmaps(phi->im, EoGetWin(phi), &pmap, &mask,
+   EImageRenderPixmaps(phi->im, EoGetWin(phi), EIMAGE_ANTI_ALIAS, &pmap, &mask,
 		       EoGetW(phi), EoGetH(phi));
    ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
    if (mask)

@@ -68,20 +68,20 @@ TextDrawRotTo(Win win, Drawable src, Drawable dst, int x, int y,
      case FONT_TO_UP:
 	im = EImageGrabDrawable(src, 0, y, x, h, w, 0);
 	EImageOrientate(im, 1);
-	EImageRenderOnDrawable(im, win, dst, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, 0, 0, w, h);
 	EImageFree(im);
 	break;
      case FONT_TO_DOWN:
 	EXGetGeometry(src, NULL, NULL, NULL, &win_w, NULL, NULL, NULL);
 	im = EImageGrabDrawable(src, None, win_w - y - h, x, h, w, 0);
 	EImageOrientate(im, 3);
-	EImageRenderOnDrawable(im, win, dst, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, 0, 0, w, h);
 	EImageFree(im);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
 	im = EImageGrabDrawable(src, None, x, y, w, h, 0);
 	EImageOrientate(im, 2);
-	EImageRenderOnDrawable(im, win, dst, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, 0, 0, w, h);
 	EImageFree(im);
 	break;
      default:
@@ -101,20 +101,20 @@ TextDrawRotBack(Win win, Drawable dst, Drawable src, int x, int y,
      case FONT_TO_UP:
 	im = EImageGrabDrawable(src, None, 0, 0, w, h, 0);
 	EImageOrientate(im, 3);
-	EImageRenderOnDrawable(im, win, dst, y, x, h, w, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, y, x, h, w);
 	EImageFree(im);
 	break;
      case FONT_TO_DOWN:
 	EXGetGeometry(dst, NULL, NULL, NULL, &win_w, NULL, NULL, NULL);
-	im = EImageGrabDrawable(src, None, 0, 0, w, h, 0);
+	im = EImageGrabDrawable(src, None, 0, 0, 0, w, h);
 	EImageOrientate(im, 1);
-	EImageRenderOnDrawable(im, win, dst, win_w - y - h, x, h, w, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, win_w - y - h, x, h, w);
 	EImageFree(im);
 	break;
      case FONT_TO_LEFT:	/* Holy carumba! That's for yoga addicts, maybe .... */
 	im = EImageGrabDrawable(src, None, 0, 0, w, h, 0);
 	EImageOrientate(im, 2);
-	EImageRenderOnDrawable(im, win, dst, x, y, w, h, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, x, y, w, h);
 	EImageFree(im);
 	break;
      default:
@@ -164,20 +164,20 @@ TextImagePut(EImage * im, Win win, Drawable dst, int x, int y,
      {
      default:
      case FONT_TO_RIGHT:
-	EImageRenderOnDrawable(im, win, dst, x, y, w, h, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, x, y, w, h);
 	break;
      case FONT_TO_LEFT:
 	EImageOrientate(im, 2);
-	EImageRenderOnDrawable(im, win, dst, x, y, w, h, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, x, y, w, h);
 	break;
      case FONT_TO_UP:
 	EImageOrientate(im, 3);
-	EImageRenderOnDrawable(im, win, dst, y, x, h, w, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, y, x, h, w);
 	break;
      case FONT_TO_DOWN:
 	EXGetGeometry(dst, NULL, NULL, NULL, &win_w, NULL, NULL, NULL);
 	EImageOrientate(im, 1);
-	EImageRenderOnDrawable(im, win, dst, win_w - y - h, x, h, w, 0);
+	EImageRenderOnDrawable(im, win, dst, 0, win_w - y - h, x, h, w);
 	break;
      }
    EImageFree(im);

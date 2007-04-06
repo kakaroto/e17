@@ -49,6 +49,7 @@ EImageInit(Display * dpy)
    imlib_context_set_mask_alpha_threshold(Conf.testing.mask_alpha_threshold);
 #endif
 
+   imlib_context_set_anti_alias(0);
    imlib_context_set_dither(1);
 }
 
@@ -363,9 +364,23 @@ EImageGrabDrawableScaled(Win win, Drawable draw, Pixmap mask,
    return im;
 }
 
+static void
+_EImageFlagsSet(int flags)
+{
+   imlib_context_set_anti_alias((flags & EIMAGE_ANTI_ALIAS) ? 1 : 0);
+   imlib_context_set_blend((flags & EIMAGE_BLEND) ? 1 : 0);
+}
+
+static void
+_EImageFlagsReset(void)
+{
+   imlib_context_set_anti_alias(0);
+   imlib_context_set_blend(0);
+}
+
 void
-EImageRenderOnDrawable(EImage * im, Win win, Drawable draw, int x, int y,
-		       int w, int h, int blend)
+EImageRenderOnDrawable(EImage * im, Win win, Drawable draw, int flags,
+		       int x, int y, int w, int h)
 {
    Visual             *vis;
 
@@ -375,19 +390,19 @@ EImageRenderOnDrawable(EImage * im, Win win, Drawable draw, int x, int y,
    if (vis)
       imlib_context_set_visual(vis);
 
-   if (blend)
-      imlib_context_set_blend(1);
+   if (flags)
+      _EImageFlagsSet(flags);
    imlib_render_image_on_drawable_at_size(x, y, w, h);
-   if (blend)
-      imlib_context_set_blend(0);
+   if (flags)
+      _EImageFlagsReset();
 
    if (vis)
       imlib_context_set_visual(_default_vis);
 }
 
 void
-EImageRenderPixmaps(EImage * im, Win win, Pixmap * pmap, Pixmap * mask,
-		    int w, int h)
+EImageRenderPixmaps(EImage * im, Win win, int flags,
+		    Pixmap * pmap, Pixmap * mask, int w, int h)
 {
    Visual             *vis;
    Pixmap              m;
@@ -404,10 +419,14 @@ EImageRenderPixmaps(EImage * im, Win win, Pixmap * pmap, Pixmap * mask,
    if (mask)
       *mask = None;
 
+   if (flags)
+      _EImageFlagsSet(flags);
    if (w <= 0 || h <= 0)
       imlib_render_pixmaps_for_whole_image(pmap, mask);
    else
       imlib_render_pixmaps_for_whole_image_at_size(pmap, mask, w, h);
+   if (flags)
+      _EImageFlagsReset();
 
    if (vis)
       imlib_context_set_visual(_default_vis);
@@ -430,14 +449,14 @@ ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst, Pixmap * pdst,
 
    im = EImageGrabDrawableScaled(wsrc, src, None, sx, sy, sw, sh,
 				 scale * dw, scale * dh, 0, 0);
-   imlib_context_set_anti_alias(1);
    if (pdst)
      {
-	EImageRenderPixmaps(im, wdst, pdst, None, dw, dh);
+	EImageRenderPixmaps(im, wdst, EIMAGE_ANTI_ALIAS, pdst, None, dw, dh);
      }
    else
      {
-	EImageRenderOnDrawable(im, wdst, dst, dx, dy, dw, dh, 0);
+	EImageRenderOnDrawable(im, wdst, dst, EIMAGE_ANTI_ALIAS,
+			       dx, dy, dw, dh);
      }
    imlib_free_image();
 }

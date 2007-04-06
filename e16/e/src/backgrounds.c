@@ -657,7 +657,7 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
      {
 	/* Window, no fg, no offset, and scale to 100%, or tiled, no trans */
 	pmap = BackgroundCreatePixmap(win, w, h);
-	EImageRenderOnDrawable(bg->bg.im, win, pmap, 0, 0, w, h, 0);
+	EImageRenderOnDrawable(bg->bg.im, win, pmap, 0, 0, 0, w, h);
 
 #if 0				/* FIXME - Remove? */
 	if (x == 0 && y == 0)	/* Hmmm. Always true. */
@@ -723,7 +723,7 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
 	EImageBlend(im, bg->top.im, 1, 0, 0, ww, hh, x, y, w, h, 0, 0);
      }
 
-   EImageRenderOnDrawable(im, win, pmap, 0, 0, rw, rh, 0);
+   EImageRenderOnDrawable(im, win, pmap, 0, 0, 0, rw, rh);
    if (im != bg->bg.im)
       EImageFree(im);
 
@@ -1836,7 +1836,7 @@ BG_RedrawView(void)
 		im = BackgroundCacheMini(bg, 1, 0);
 		if (im)
 		  {
-		     EImageRenderOnDrawable(im, win, pmap, x + 4, 4, 64, 48, 0);
+		     EImageRenderOnDrawable(im, win, pmap, 0, x + 4, 4, 64, 48);
 		     EImageFree(im);
 		  }
 	     }

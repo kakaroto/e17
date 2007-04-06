@@ -281,7 +281,7 @@ PagerHiwinUpdate(Hiwin * phi, Pager * p __UNUSED__, EWin * ewin)
 
    im = EImageGrabDrawable(ewin->mini_pmm.pmap, None, 0, 0,
 			   ewin->mini_w, ewin->mini_h, 0);
-   EImageRenderOnDrawable(im, EoGetWin(phi), 0, 0, EoGetW(phi), EoGetH(phi), 0);
+   EImageRenderOnDrawable(im, EoGetWin(phi), 0, 0, 0, EoGetW(phi), EoGetH(phi));
    EImageDecache(im);
 }
 #endif
@@ -597,7 +597,7 @@ PagerUpdateBg(Pager * p)
 	im = EImageLoad(s);
 	if (im)
 	  {
-	     EImageRenderOnDrawable(im, p->win, pmap, 0, 0, p->dw, p->dh, 0);
+	     EImageRenderOnDrawable(im, p->win, pmap, 0, 0, 0, p->dw, p->dh);
 	     EImageDecache(im);
 	  }
 	else

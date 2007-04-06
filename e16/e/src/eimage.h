@@ -34,6 +34,9 @@ typedef struct
    int                 left, right, top, bottom;
 } EImageBorder;
 
+#define EIMAGE_BLEND            0x01
+#define EIMAGE_ANTI_ALIAS       0x02
+
 void                EImageInit(Display * dpy);
 
 EImage             *EImageCreate(int w, int h);
@@ -79,10 +82,10 @@ EImage             *EImageGrabDrawableScaled(Win win,
 					     int get_mask_from_shape);
 
 void                EImageRenderOnDrawable(EImage * im, Win win, Drawable draw,
-					   int x, int y, int w, int h,
-					   int blend);
+					   int flags,
+					   int x, int y, int w, int h);
 
-void                EImageRenderPixmaps(EImage * im, Win win,
+void                EImageRenderPixmaps(EImage * im, Win win, int flags,
 					Pixmap * pmap, Pixmap * mask,
 					int w, int h);
 void                EImagePixmapFree(Pixmap pmap);

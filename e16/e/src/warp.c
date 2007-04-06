@@ -236,9 +236,9 @@ WarpFocusWinPaint(WarpFocusWin * fw)
 				   Conf.warplist.icon_mode);
 	     if (im)
 	       {
-		  EImageRenderOnDrawable(im, wi->win, None,
+		  EImageRenderOnDrawable(im, wi->win, None, EIMAGE_BLEND,
 					 pad->left + ICON_PAD, ICON_PAD,
-					 icon_size, icon_size, 1);
+					 icon_size, icon_size);
 		  EImageFree(im);
 	       }
 	     iw = fw->mh;

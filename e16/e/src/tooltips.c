@@ -276,7 +276,7 @@ TooltipIclassPaste(ToolTip * tt, const char *ic_name, int x, int y, int *px)
       return;
 
    EImageGetSize(im, &w, &h);
-   EImageRenderOnDrawable(im, tt->TTWIN->win, None, x, y, w, h, 1);
+   EImageRenderOnDrawable(im, tt->TTWIN->win, None, EIMAGE_BLEND, x, y, w, h);
 
    *px = x + w;
 }

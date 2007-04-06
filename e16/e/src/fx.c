@@ -643,7 +643,7 @@ FX_imagespinner_timeout(int val __UNUSED__, void *data __UNUSED__)
 	     sscanf(fx_imagespinner_params, "%*s %i %i ", &x, &y);
 	     x = ((VRoot.w * x) >> 10) - ((w * x) >> 10);
 	     y = ((VRoot.h * y) >> 10) - ((h * y) >> 10);
-	     EImageRenderOnDrawable(im, fx_imagespinner_win, x, y, w, h, 0);
+	     EImageRenderOnDrawable(im, fx_imagespinner_win, 0, x, y, w, h);
 	     EImageFree(im);
 	  }
 	Efree(string);
