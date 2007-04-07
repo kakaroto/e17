@@ -446,7 +446,8 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
 		 db->w - (h + 2 + pad->left + pad->right),
 		 h, h, TextclassGetJustification(db->tclass));
 
-	EImageRenderOnDrawable(im, db->win, None, EIMAGE_BLEND,
+	EImageRenderOnDrawable(im, db->win, None,
+			       EIMAGE_BLEND | EIMAGE_ANTI_ALIAS,
 			       pad->left, pad->top, h, h);
 	EImageFree(im);
      }

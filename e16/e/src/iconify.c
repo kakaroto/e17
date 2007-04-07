@@ -606,8 +606,8 @@ IconboxObjPlace(Container * ct __UNUSED__, ContainerObject * cto, EImage * im)
       return;
 
    EImageGetSize(cto->im, &w, &h);
-   EImageBlend(im, cto->im, 1, 0, 0, w, h,
-	       cto->xi, cto->yi, cto->wi, cto->hi, 1, 1);
+   EImageBlend(im, cto->im, EIMAGE_BLEND | EIMAGE_ANTI_ALIAS, 0, 0, w, h,
+	       cto->xi, cto->yi, cto->wi, cto->hi, 1);
 }
 
 extern const ContainerOps IconboxOps;

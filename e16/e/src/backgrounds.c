@@ -657,7 +657,8 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
      {
 	/* Window, no fg, no offset, and scale to 100%, or tiled, no trans */
 	pmap = BackgroundCreatePixmap(win, w, h);
-	EImageRenderOnDrawable(bg->bg.im, win, pmap, 0, 0, 0, w, h);
+	EImageRenderOnDrawable(bg->bg.im, win, pmap, EIMAGE_ANTI_ALIAS,
+			       0, 0, w, h);
 
 #if 0				/* FIXME - Remove? */
 	if (x == 0 && y == 0)	/* Hmmm. Always true. */
@@ -707,7 +708,8 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
 	     else
 	       {
 		  EImageGetSize(bg->bg.im, &ww, &hh);
-		  EImageBlend(im, bg->bg.im, 0, 0, 0, ww, hh, x, y, w, h, 1, 0);
+		  EImageBlend(im, bg->bg.im, EIMAGE_ANTI_ALIAS, 0, 0, ww, hh,
+			      x, y, w, h, 1);
 	       }
 	  }
      }
@@ -720,10 +722,11 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
 	x = ((rw - w) * bg->top.xjust) >> 10;
 	y = ((rh - h) * bg->top.yjust) >> 10;
 
-	EImageBlend(im, bg->top.im, 1, 0, 0, ww, hh, x, y, w, h, 0, 0);
+	EImageBlend(im, bg->top.im, EIMAGE_BLEND | EIMAGE_ANTI_ALIAS,
+		    0, 0, ww, hh, x, y, w, h, 0);
      }
 
-   EImageRenderOnDrawable(im, win, pmap, 0, 0, 0, rw, rh);
+   EImageRenderOnDrawable(im, win, pmap, EIMAGE_ANTI_ALIAS, 0, 0, rw, rh);
    if (im != bg->bg.im)
       EImageFree(im);
 

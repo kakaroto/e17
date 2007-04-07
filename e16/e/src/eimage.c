@@ -53,6 +53,20 @@ EImageInit(Display * dpy)
    imlib_context_set_dither(1);
 }
 
+static void
+_EImageFlagsSet(int flags)
+{
+   imlib_context_set_anti_alias((flags & EIMAGE_ANTI_ALIAS) ? 1 : 0);
+   imlib_context_set_blend((flags & EIMAGE_BLEND) ? 1 : 0);
+}
+
+static void
+_EImageFlagsReset(void)
+{
+   imlib_context_set_anti_alias(0);
+   imlib_context_set_blend(0);
+}
+
 EImage             *
 EImageLoad(const char *file)
 {
@@ -208,21 +222,17 @@ EImageOrientate(EImage * im, int orientation)
 }
 
 void
-EImageBlend(EImage * im, EImage * src, int blend,
+EImageBlend(EImage * im, EImage * src, int flags,
 	    int sx, int sy, int sw, int sh,
-	    int dx, int dy, int dw, int dh, int merge_alpha, int anti_alias)
+	    int dx, int dy, int dw, int dh, int merge_alpha)
 {
    imlib_context_set_image(im);
-   if (anti_alias)
-      imlib_context_set_anti_alias(1);
-   if (blend)
-      imlib_context_set_blend(1);
+   if (flags)
+      _EImageFlagsSet(flags);
    imlib_blend_image_onto_image(src, merge_alpha, sx, sy, sw, sh,
 				dx, dy, dw, dh);
-   if (blend)
-      imlib_context_set_blend(0);
-   if (anti_alias)
-      imlib_context_set_anti_alias(0);
+   if (flags)
+      _EImageFlagsReset();
 }
 
 void
@@ -248,7 +258,7 @@ EImageBlendCM(EImage * im, EImage * src, EImageColorModifier * icm)
 }
 
 void
-EImageTile(EImage * im, EImage * tile, int blend, int tw, int th,
+EImageTile(EImage * im, EImage * tile, int flags, int tw, int th,
 	   int dx, int dy, int dw, int dh, int ox, int oy)
 {
    Imlib_Image         tim;
@@ -257,6 +267,9 @@ EImageTile(EImage * im, EImage * tile, int blend, int tw, int th,
 
    if (tw <= 0 || th <= 0)
       return;
+
+   if (flags)
+      _EImageFlagsSet(flags);
 
    imlib_context_set_image(tile);
    sw = imlib_image_get_width();
@@ -308,8 +321,7 @@ EImageTile(EImage * im, EImage * tile, int blend, int tw, int th,
 		ww = dw - x;
 	     if (ww <= 0)
 		break;
-	     imlib_blend_image_onto_image(tim, blend, tx, ty, ww, hh,
-					  x, y, ww, hh);
+	     imlib_blend_image_onto_image(tim, 0, tx, ty, ww, hh, x, y, ww, hh);
 	     tx = 0;
 	     x += ww;
 	     ww = tw;
@@ -324,6 +336,9 @@ EImageTile(EImage * im, EImage * tile, int blend, int tw, int th,
 	imlib_free_image();
 	imlib_context_set_image(im);	/* FIXME - Remove */
      }
+
+   if (flags)
+      _EImageFlagsReset();
 }
 
 EImage             *
@@ -362,20 +377,6 @@ EImageGrabDrawableScaled(Win win, Drawable draw, Pixmap mask,
       imlib_context_set_visual(_default_vis);
 
    return im;
-}
-
-static void
-_EImageFlagsSet(int flags)
-{
-   imlib_context_set_anti_alias((flags & EIMAGE_ANTI_ALIAS) ? 1 : 0);
-   imlib_context_set_blend((flags & EIMAGE_BLEND) ? 1 : 0);
-}
-
-static void
-_EImageFlagsReset(void)
-{
-   imlib_context_set_anti_alias(0);
-   imlib_context_set_blend(0);
 }
 
 void

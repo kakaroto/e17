@@ -63,13 +63,13 @@ void                EImageFill(EImage * im, int x, int y, int w, int h, int r,
 			       int g, int b, int a);
 void                EImageOrientate(EImage * im, int orientation);
 
-void                EImageBlend(EImage * im, EImage * src, int blend,
+void                EImageBlend(EImage * im, EImage * src, int flags,
 				int sx, int sy, int sw, int sh,
 				int dx, int dy, int dw, int dh,
-				int merge_alpha, int anti_alias);
+				int merge_alpha);
 void                EImageBlendCM(EImage * im, EImage * src,
 				  EImageColorModifier * icm);
-void                EImageTile(EImage * im, EImage * tile, int blend, int tw,
+void                EImageTile(EImage * im, EImage * tile, int flags, int tw,
 			       int th, int dx, int dy, int dw, int dh, int ox,
 			       int oy);
 

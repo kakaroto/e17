@@ -1156,8 +1156,8 @@ ContainerDraw(Container * ct)
 	if (ct->draw_icon_base && ct->im_item_base)
 	  {
 	     EImageGetSize(ct->im_item_base, &ww, &hh);
-	     EImageBlend(im, ct->im_item_base, 1, 0, 0, ww, hh,
-			 cto->xo, cto->yo, cto->wo, cto->ho, 1, 0);
+	     EImageBlend(im, ct->im_item_base, EIMAGE_BLEND | EIMAGE_ANTI_ALIAS,
+			 0, 0, ww, hh, cto->xo, cto->yo, cto->wo, cto->ho, 1);
 	  }
 
 	ct->ops->ObjPlace(ct, cto, im);
