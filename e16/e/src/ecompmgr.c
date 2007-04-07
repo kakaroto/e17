@@ -1882,8 +1882,8 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 		  if (!eo_first)
 		     eo_first = eo1;
 		  if (eo_prev)
-		     ((ECmWinInfo *) (eo_prev->cmhook))->next = eo1;
-		  ((ECmWinInfo *) (eo1->cmhook))->prev = eo_prev;
+		     eo_prev->cmhook->next = eo1;
+		  eo1->cmhook->prev = eo_prev;
 		  eo_prev = eo2;
 	       }
 
@@ -1925,7 +1925,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	   eo_first = eo;
 	cw->prev = eo_prev;
 	if (eo_prev)
-	   ((ECmWinInfo *) (eo_prev->cmhook))->next = eo;
+	   eo_prev->cmhook->next = eo;
 	eo_prev = eo;
 
 	switch (cw->mode)
@@ -1959,7 +1959,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 #endif
      }
    if (eo_prev)
-      ((ECmWinInfo *) (eo_prev->cmhook))->next = NULL;
+      eo_prev->cmhook->next = NULL;
 
    *first = eo_first;
    *last = eo_prev;
@@ -2174,8 +2174,7 @@ ECompMgrRepaint(void)
 			     &Mode_compmgr.eo_last, dsk, None);
 
    /* Paint opaque windows top down */
-   for (eo = Mode_compmgr.eo_first; eo;
-	eo = ((ECmWinInfo *) (eo->cmhook))->next)
+   for (eo = Mode_compmgr.eo_first; eo; eo = eo->cmhook->next)
       ECompMgrRepaintObj(pbuf, allDamage, eo, 0);
 
 #if 0				/* FIXME - NoBg? */
@@ -2185,7 +2184,7 @@ ECompMgrRepaint(void)
       ERegionShow("after opaque", region);
 
    /* Repaint background, clipped by damage region and opaque windows */
-   pict = ((ECmWinInfo *) (dsk->o.cmhook))->picture;
+   pict = dsk->o.cmhook->picture;
    D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
    XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
    XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
@@ -2193,7 +2192,7 @@ ECompMgrRepaint(void)
 #endif
 
    /* Paint trans windows and shadows bottom up */
-   for (eo = Mode_compmgr.eo_last; eo; eo = ((ECmWinInfo *) (eo->cmhook))->prev)
+   for (eo = Mode_compmgr.eo_last; eo; eo = eo->cmhook->prev)
       ECompMgrRepaintObj(pbuf, allDamage, eo, 1);
 
    /* Paint any ghost windows (adjusting damage region) */
