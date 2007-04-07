@@ -190,6 +190,7 @@ static struct
    char                active;
    char                use_pixmap;
    char                reorder;
+   char                ghosts;
    EObj               *eo_first;
    EObj               *eo_last;
    XserverRegion       rgn_screen;
@@ -438,7 +439,8 @@ EPictureCreateSolid(Bool argb, double a, double r, double g, double b)
 }
 
 static              Picture
-EPictureCreateBuffer(Window win, int w, int h, int depth, Visual * vis)
+EPictureCreateBuffer(Window win, int w, int h, int depth, Visual * vis,
+		     Pixmap * ppmap)
 {
    Picture             pict;
    Pixmap              pmap;
@@ -447,7 +449,10 @@ EPictureCreateBuffer(Window win, int w, int h, int depth, Visual * vis)
    pmap = XCreatePixmap(disp, win, w, h, depth);
    pictfmt = XRenderFindVisualFormat(disp, vis);
    pict = XRenderCreatePicture(disp, pmap, pictfmt, 0, 0);
-   XFreePixmap(disp, pmap);
+   if (ppmap)
+      *ppmap = pmap;
+   else
+      XFreePixmap(disp, pmap);
 
    return pict;
 }
@@ -490,7 +495,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
 
    /* Resizing - grab old contents */
    pict = EPictureCreateBuffer(EobjGetXwin(eo), wo, ho, WinGetDepth(eo->win),
-			       WinGetVisual(eo->win));
+			       WinGetVisual(eo->win), NULL);
    XRenderComposite(disp, PictOpSrc, cw->picture, None, pict, 0, 0, 0, 0, 0, 0,
 		    wo, ho);
 
@@ -1831,6 +1836,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
    /* Determine overall paint order, top to bottom */
    stop = 0;
    eo_first = eo_prev = NULL;
+   Mode_compmgr.ghosts = 0;
 
    for (i = 0; i < num; i++)
      {
@@ -1904,6 +1910,12 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 #endif
 	if (cw->picture == None && !eo->noredir)
 	   continue;
+
+	if (eo->ghost)
+	  {
+	     Mode_compmgr.ghosts = 1;
+	     continue;
+	  }
 
 	D3printf
 	   ("ECompMgrDetermineOrder hook in %d - %#lx desk=%d shown=%d\n",
@@ -2100,6 +2112,36 @@ ECompMgrRepaintObj(Picture pbuf, XserverRegion region, EObj * eo, int mode)
      }
 }
 
+static void
+ECompMgrPaintGhosts(Picture pict, XserverRegion damage)
+{
+   EObj               *eo, *const *lst;
+   int                 i, num;
+
+   lst = EobjListStackGet(&num);
+   for (i = 0; i < num; i++)
+     {
+	eo = lst[i];
+	if (!eo->shown || !eo->ghost)
+	   continue;
+
+	switch (eo->cmhook->mode)
+	  {
+	  case WINDOW_UNREDIR:
+	  case WINDOW_SOLID:
+	     ECompMgrRepaintObj(pict, Mode_compmgr.rgn_screen, eo, 0);
+	     break;
+	  case WINDOW_TRANS:
+	  case WINDOW_ARGB:
+	     ECompMgrRepaintObj(pict, Mode_compmgr.rgn_screen, eo, 1);
+	     break;
+	  }
+
+	/* Subtract window region from damage region */
+	ERegionSubtractOffset(damage, 0, 0, eo->cmhook->shape);
+     }
+}
+
 void
 ECompMgrRepaint(void)
 {
@@ -2120,7 +2162,7 @@ ECompMgrRepaint(void)
 
    if (!rootBuffer)
       rootBuffer = EPictureCreateBuffer(VRoot.xwin, VRoot.w, VRoot.h,
-					VRoot.depth, VRoot.vis);
+					VRoot.depth, VRoot.vis, &VRoot.pmap);
    pbuf = rootBuffer;
 
    if (!dsk)
@@ -2154,6 +2196,10 @@ ECompMgrRepaint(void)
    for (eo = Mode_compmgr.eo_last; eo; eo = ((ECmWinInfo *) (eo->cmhook))->prev)
       ECompMgrRepaintObj(pbuf, allDamage, eo, 1);
 
+   /* Paint any ghost windows (adjusting damage region) */
+   if (Mode_compmgr.ghosts)
+      ECompMgrPaintGhosts(rootPicture, allDamage);
+
    if (pbuf != rootPicture)
      {
 	XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, allDamage);
@@ -2172,30 +2218,31 @@ _ECompMgrIdler(void *data __UNUSED__)
    if (!allDamage /* || Conf_compmgr.mode == ECM_MODE_AUTO */ )
       return;
    ECompMgrRepaint();
-#if 0				/* FIXME - Was here - Why? */
-   XSync(disp, False);
-#endif
+}
+
+static void
+ECompMgrRootBufferDestroy(void)
+{
+   /* Root buffer picture and pixmap */
+   if (rootBuffer != None)
+      XRenderFreePicture(disp, rootBuffer);
+   rootBuffer = None;
+   if (VRoot.pmap != None)
+      XFreePixmap(disp, VRoot.pmap);
+   VRoot.pmap = None;
+
+   /* Screen region */
+   if (Mode_compmgr.rgn_screen != None)
+      ERegionDestroy(Mode_compmgr.rgn_screen);
+   Mode_compmgr.rgn_screen = None;
 }
 
 static void
 ECompMgrRootConfigure(void *prm __UNUSED__, XEvent * ev)
 {
-   Display            *dpy = disp;
-
    D1printf("ECompMgrRootConfigure root\n");
    if (ev->xconfigure.window == VRoot.xwin)
-     {
-	if (rootBuffer != None)
-	  {
-	     XRenderFreePicture(dpy, rootBuffer);
-	     rootBuffer = None;
-	  }
-
-	if (Mode_compmgr.rgn_screen != None)
-	   ERegionDestroy(Mode_compmgr.rgn_screen);
-	Mode_compmgr.rgn_screen = None;
-     }
-   return;
+      ECompMgrRootBufferDestroy();
 }
 
 #if USE_DESK_EXPOSE		/* FIXME - Remove? */
@@ -2396,9 +2443,7 @@ ECompMgrStop(void)
       XRenderFreePicture(disp, rootPicture);
    rootPicture = None;
 
-   if (rootBuffer)
-      XRenderFreePicture(disp, rootBuffer);
-   rootBuffer = None;
+   ECompMgrRootBufferDestroy();
 
    ECompMgrShadowsInit(ECM_SHADOWS_OFF, 0);
 
@@ -2423,10 +2468,6 @@ ECompMgrStop(void)
    if (allDamage != None)
       ERegionDestroy(allDamage);
    allDamage = None;
-
-   if (Mode_compmgr.rgn_screen != None)
-      ERegionDestroy(Mode_compmgr.rgn_screen);
-   Mode_compmgr.rgn_screen = None;
 
    if (Conf_compmgr.mode == ECM_MODE_ROOT)
       XCompositeUnredirectSubwindows(disp, VRoot.xwin, CompositeRedirectManual);

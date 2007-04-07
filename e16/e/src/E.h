@@ -249,6 +249,7 @@ typedef struct
    Colormap            cmap;
    int                 scr;
    int                 w, h;
+   Pixmap              pmap;	/* Compositing buffer */
 }
 VirtRoot;
 

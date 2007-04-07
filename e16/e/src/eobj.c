@@ -115,6 +115,8 @@ EobjSetLayer(EObj * eo, int layer)
       eo->ilayer |= 512;
    else
       eo->ilayer &= ~512;
+   if (eo->ghost)
+      eo->ilayer |= 1024;
 
    if (eo->ilayer != ilayer)
       EobjRaise(eo);

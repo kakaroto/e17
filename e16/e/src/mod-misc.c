@@ -37,6 +37,7 @@ extern const EModule ModButtons;
 
 #if USE_COMPOSITE
 extern const EModule ModCompMgr;
+extern const EModule ModMagwin;
 #endif
 extern const EModule ModCursors;
 extern const EModule ModDesktops;
@@ -68,6 +69,7 @@ const EModule      *p_modules[] = {
    &ModButtons,
 #if USE_COMPOSITE
    &ModCompMgr,
+   &ModMagwin,
 #endif
    &ModCursors,
    &ModDesktops,

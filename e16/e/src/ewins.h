@@ -285,6 +285,7 @@ struct _ewin
 #define EWIN_TYPE_MENU          0x02
 #define EWIN_TYPE_ICONBOX       0x04
 #define EWIN_TYPE_PAGER         0x08
+#define EWIN_TYPE_MISC          0x10
 
 #define EWIN_GRAVITY_NW         0
 #define EWIN_GRAVITY_NE         1

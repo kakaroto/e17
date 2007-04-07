@@ -47,6 +47,7 @@ struct _eobj
    unsigned            noredir:1;	/* Do not redirect */
    unsigned            shadow:1;	/* Enable shadows */
    unsigned            fade:1;	/* Enable fading */
+   unsigned            ghost:1;	/* Ghost window */
    struct
    {
       char               *wm_name;
