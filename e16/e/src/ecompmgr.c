@@ -1292,8 +1292,12 @@ ECompMgrWinFade(EObj * eo, unsigned int op_from, unsigned int op_to)
 {
    ECmWinInfo         *cw = eo->cmhook;
 
-   if (op_from == op_to && op_from == eo->opacity)
-      return;
+   if (op_from == op_to && op_to == eo->opacity)
+     {
+	if (cw->fading)
+	   ECompMgrWinFadeEnd(eo, 0);
+	return;
+     }
 
    if (!cw->anim_fade)
       cw->anim_fade = AnimatorAdd(doECompMgrWinFade, eo);
