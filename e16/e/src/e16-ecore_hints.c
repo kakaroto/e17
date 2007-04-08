@@ -1282,4 +1282,23 @@ ecore_x_netwm_opacity_get(Ecore_X_Window win, unsigned int *opacity)
 					 opacity, 1);
 }
 
+#if 0				/* Not used */
+void
+ecore_x_netwm_startup_id_set(Ecore_X_Window win, const char *id)
+{
+   _ecore_x_window_prop_string_utf8_set(win, ECORE_X_ATOM_NET_STARTUP_ID, id);
+}
+#endif
+
+int
+ecore_x_netwm_startup_id_get(Ecore_X_Window win, char **id)
+{
+   char               *s;
+
+   s = _ecore_x_window_prop_string_utf8_get(win, ECORE_X_ATOM_NET_STARTUP_ID);
+   *id = s;
+
+   return s != NULL;
+}
+
 #endif /* USE_ECORE_X */

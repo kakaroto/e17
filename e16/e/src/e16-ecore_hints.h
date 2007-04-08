@@ -312,6 +312,10 @@ void                ecore_x_netwm_opacity_set(Ecore_X_Window win,
 int                 ecore_x_netwm_opacity_get(Ecore_X_Window win,
 					      unsigned int *opacity);
 
+void                ecore_x_netwm_startup_id_set(Ecore_X_Window win,
+						 const char *id);
+int                 ecore_x_netwm_startup_id_get(Ecore_X_Window win, char **id);
+
 #endif
 
 void                ecore_x_icccm_state_set_iconic(Ecore_X_Window win);
