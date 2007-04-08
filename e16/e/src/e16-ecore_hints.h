@@ -241,6 +241,7 @@ extern Ecore_X_Atom ECORE_X_ATOM_NET_REQUEST_FRAME_EXTENTS;
 #endif
 
 /* Startup notification */
+extern Ecore_X_Atom ECORE_X_ATOM_NET_STARTUP_ID;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN;
 extern Ecore_X_Atom ECORE_X_ATOM_NET_STARTUP_INFO;
 
