@@ -60,36 +60,51 @@ typedef struct
 
 static EGlContext   egl;
 
+#define FBCATTR(fbc, attr, want) _EGlFbcAttrib(fbc, #attr, attr, want)
+static int
+_EGlFbcAttrib(GLXFBConfig fbc, const char *name, int attr, int want)
+{
+   int                 err, value;
+
+   value = 0xabbabeef;
+   err = glXGetFBConfigAttrib(disp, fbc, attr, &value);
+   if (err)
+      Eprintf("  %s *** Error %d ***\n", name, err);
+   else if (want > 0)
+      D2printf("  %s=%#x (want %#x)\n", name, value, want);
+   else
+      D2printf("  %s=%#x\n", name, value);
+
+   return value;
+}
+
 int
 EGlInit(void)
 {
 /* From NV's README.txt (AddARGBGLXVisuals) */
    static const int    attrs[] = {
+      GLX_VISUAL_CAVEAT_EXT, GLX_NONE_EXT,
+      GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT | GLX_PIXMAP_BIT,
       GLX_RENDER_TYPE, GLX_RGBA_BIT,
-      GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
       GLX_RED_SIZE, 1,
       GLX_GREEN_SIZE, 1,
       GLX_BLUE_SIZE, 1,
       GLX_ALPHA_SIZE, 1,
       GLX_DOUBLEBUFFER, True,
       GLX_DEPTH_SIZE, 1,
-      GLX_VISUAL_CAVEAT_EXT, GLX_NONE_EXT,
       0
    };
-   int                 screen = DefaultScreen(disp);
    XVisualInfo        *vi;
-
-   memset(&egl, 0, sizeof(EGlContext));
-
-   Dprintf("EGlInit\n");
-
-   /* Create a GLX context */
    GLXFBConfig        *fbc;
    int                 i, ix, num;
    int                 value;
    char               *s;
    XID                 vid = None;
    XRenderPictFormat  *pictFormat;
+
+   Dprintf("EGlInit\n");
+
+   memset(&egl, 0, sizeof(EGlContext));
 
    s = getenv("EVISUAL");
    if (s)
@@ -98,7 +113,8 @@ EGlInit(void)
 	Eprintf("Want Visual Id=%#lx\n", vid);
      }
 
-   fbc = glXChooseFBConfig(disp, screen, attrs, &num);
+   /* Create a GLX context */
+   fbc = glXChooseFBConfig(disp, DefaultScreen(disp), attrs, &num);
    if (!fbc)
      {
 	Eprintf("No FB configs\n");
@@ -117,47 +133,32 @@ EGlInit(void)
 	if (vid && vi->visualid != vid)
 	   continue;
 
-#if 0
-	glXGetFBConfigAttrib(disp, fbc[i], GLX_VISUAL_CAVEAT_EXT, &value);
-	D2printf("  GLX_VISUAL_CAVEAT_EXT=%#x (want %#x)\n", value,
-		 GLX_NONE_EXT);
-	if (value != GLX_NONE_EXT)
-	   continue;
+#if 1
+	value = FBCATTR(fbc[i], GLX_FBCONFIG_ID, -1);
+	value = FBCATTR(fbc[i], GLX_CONFIG_CAVEAT, GLX_NONE);
+	value = FBCATTR(fbc[i], GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT);
+	value = FBCATTR(fbc[i], GLX_RENDER_TYPE, -1);
+	value = FBCATTR(fbc[i], GLX_X_VISUAL_TYPE, -1);
+	value = FBCATTR(fbc[i], GLX_X_RENDERABLE, -1);
+	value = FBCATTR(fbc[i], GLX_BUFFER_SIZE, -1);
+	value = FBCATTR(fbc[i], GLX_LEVEL, -1);
+	value = FBCATTR(fbc[i], GLX_TRANSPARENT_TYPE, -1);
 #endif
 
-	glXGetFBConfigAttrib(disp, fbc[i], GLX_DRAWABLE_TYPE, &value);
-	D2printf("  GLX_DRAWABLE_TYPE=%#x (want %#x)\n", value, GLX_PIXMAP_BIT);
-#if 0
-	if (!(value & GLX_PIXMAP_BIT))
+#if 1
+	value = FBCATTR(fbc[i], GLX_BIND_TO_TEXTURE_RGBA_EXT, 1);
+	value = FBCATTR(fbc[i], GLX_BIND_TO_TEXTURE_RGB_EXT, 1);
+	if (!value)
 	   continue;
-#endif
-
-	glXGetFBConfigAttrib(disp, fbc[i], GLX_TEXTURE_FORMAT_EXT, &value);
-	D2printf("  GLX_TEXTURE_FORMAT_EXT=%#x\n", value);
-
-	glXGetFBConfigAttrib(disp, fbc[i], GLX_BIND_TO_TEXTURE_TARGETS_EXT,
-			     &value);
-	D2printf("  GLX_BIND_TO_TEXTURE_TARGETS_EXT=%#x (want %#x)\n", value,
-		 GLX_TEXTURE_2D_BIT_EXT);
+	value = FBCATTR(fbc[i], GLX_BIND_TO_MIPMAP_TEXTURE_EXT, -1);
+	value = FBCATTR(fbc[i], GLX_BIND_TO_TEXTURE_TARGETS_EXT,
+			GLX_TEXTURE_2D_BIT_EXT);
 #if 0
 	if (!(value & GLX_TEXTURE_2D_BIT_EXT))
 	   continue;
 #endif
-
-	glXGetFBConfigAttrib(disp, fbc[i], GLX_BIND_TO_TEXTURE_RGBA_EXT,
-			     &value);
-	D2printf("  GLX_BIND_TO_TEXTURE_RGBA_EXT=%x (want %x)\n", value, 1);
-	glXGetFBConfigAttrib(disp, fbc[i], GLX_BIND_TO_TEXTURE_RGB_EXT, &value);
-	D2printf("  GLX_BIND_TO_TEXTURE_RGB_EXT=%x (want %x)\n", value, 1);
-	if (!value)
-	   continue;
-
-	glXGetFBConfigAttrib(disp, fbc[i], GLX_BIND_TO_MIPMAP_TEXTURE_EXT,
-			     &value);
-	D2printf("  GLX_BIND_TO_MIPMAP_TEXTURE_EXT=%x\n", value);
-
-	glXGetFBConfigAttrib(disp, fbc[i], GLX_Y_INVERTED_EXT, &value);
-	D2printf("  GLX_Y_INVERTED_EXT=%x\n", value);
+	value = FBCATTR(fbc[i], GLX_Y_INVERTED_EXT, -1);
+#endif
 
 #if 1
 	/* We want an ARGB visual */
@@ -199,9 +200,9 @@ EGlInit(void)
 void
 EGlExit(void)
 {
-   EobjTexturesFree();
-
    Dprintf("EGlExit\n");
+
+   EobjTexturesFree();
 
    if (egl.vi)
      {
@@ -217,18 +218,23 @@ EGlExit(void)
      }
 }
 
-XVisualInfo        *
-EGlGetVI(void)
+Visual             *
+EGlGetVisual(void)
 {
-   return egl.vi;
+   if (!egl.vi)
+      EGlInit();
+   return egl.vi->visual;
 }
 
-GLXContext
-EGlGetContext(void)
+unsigned int
+EGlGetDepth(void)
 {
-   return egl.ctx;
+   if (!egl.vi)
+      EGlInit();
+   return egl.vi->depth;
 }
 
+#if 0
 Win
 EGlWindowCreate(Win parent, int x, int y, unsigned int width,
 		unsigned int height)
@@ -236,6 +242,7 @@ EGlWindowCreate(Win parent, int x, int y, unsigned int width,
    return ECreateWindowVD(parent, x, y, width, height, egl.vi->visual,
 			  egl.vi->depth);
 }
+#endif
 
 void
 EGlWindowConnect(Window xwin)
@@ -425,15 +432,11 @@ static void
 EobjTexturesFree(void)
 {
    int                 i, num;
-   EObj               *const *eol, *eo;
+   EObj               *const *eol;
 
    eol = EobjListStackGet(&num);
    for (i = 0; i < num; i++)
-     {
-	eo = eol[i];
-	EGlTextureDestroy(eo->glhook);
-	eo->glhook = NULL;
-     }
+      EobjTextureDestroy(eol[i]);
 }
 
 ETexture           *
@@ -451,4 +454,11 @@ EobjGetTexture(EObj * eo)
    eo->glhook = EGlTextureFromDrawable(pmap, 0);
 
    return eo->glhook;
+}
+
+void
+EobjTextureDestroy(EObj * eo)
+{
+   EGlTextureDestroy(eo->glhook);
+   eo->glhook = NULL;
 }

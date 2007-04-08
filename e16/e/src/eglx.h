@@ -25,7 +25,6 @@
 
 #include "eimage.h"
 #include "xwin.h"
-#include <GL/glx.h>
 
 #define _glhook _etexture
 
@@ -42,8 +41,8 @@ struct _etexture
 int                 EGlInit(void);
 void                EGlExit(void);
 
-XVisualInfo        *EGlGetVI(void);
-GLXContext          EGlGetContext(void);
+Visual             *EGlGetVisual(void);
+unsigned int        EGlGetDepth(void);
 
 Win                 EGlWindowCreate(Win parent, int x, int y,
 				    unsigned int width, unsigned int height);
