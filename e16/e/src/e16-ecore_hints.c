@@ -47,14 +47,6 @@ extern Display     *disp;
 
 #ifdef USE_ECORE_X
 
-/* WM identification */
-Ecore_X_Atom        ECORE_X_ATOM_NET_SUPPORTED = 0;
-Ecore_X_Atom        ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK = 0;
-
-/* Startup notification */
-Ecore_X_Atom        ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN;
-Ecore_X_Atom        ECORE_X_ATOM_NET_STARTUP_INFO;
-
 void
 ecore_x_icccm_state_set_iconic(Ecore_X_Window win)
 {
