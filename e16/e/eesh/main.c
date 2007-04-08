@@ -224,7 +224,8 @@ main(int argc, char **argv)
 		       s = CommsGet(me, &ev);
 		       if (!s)
 			  break;
-		       printf("%s\n", s);
+		       if (*s)
+			  printf("%s", s);
 		       fflush(stdout);
 		       Efree(s);
 		       if (mode)
