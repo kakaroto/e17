@@ -902,7 +902,11 @@ BorderWinpartEventMouseUp(EWinBit * wbit, XEvent * ev)
    int                 part = wbit - ewin->bits;
    int                 left = wbit->left;
 
-   GrabPointerRelease();
+   if (ev)
+     {
+	GrabPointerRelease();
+	ActionsEnd(ewin);
+     }
 
    if ((wbit->state == STATE_CLICKED) && (!wbit->left))
       wbit->state = STATE_HILITED;
