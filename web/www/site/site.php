@@ -1,8 +1,15 @@
 <?php
   set_magic_quotes_runtime(0);
 
-  $page = $_GET["p"];
-  $lang = $_GET["l"];
+  if(isset($_GET['p']))
+	$page = $_GET['p'];
+  else
+    $page = '';
+
+  if(isset($_GET['l']))
+    $lang = $_GET['l'];
+  else
+	$lang = '';
 
   $page = str_replace(".", "", $page);
   if ($page == "") $page = "index";
