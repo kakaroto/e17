@@ -1,22 +1,8 @@
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include "common.h"
-#include <stdio.h>
+#include "loader_common.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <string.h>
-
-#include "image.h"
 #include <gif_lib.h>
-
-char                load(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity, char immediate_load);
-char                save(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity);
-void                formats(ImlibLoader * l);
 
 char
 load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,

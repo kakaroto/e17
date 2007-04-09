@@ -112,9 +112,10 @@ struct _imlibloader
    ImlibLoader  *next;
 };
 
-void                     __imlib_AttachTag(ImlibImage *im, const char *key, int val, void *data,
-				    ImlibDataDestructorFunction destructor);
-ImlibImageTag           *__imlib_GetTag(ImlibImage *im, const char *key);
+EAPI     void              __imlib_AttachTag(ImlibImage *im, const char *key,
+					     int val, void *data,
+					     ImlibDataDestructorFunction destructor);
+EAPI     ImlibImageTag    *__imlib_GetTag(ImlibImage *im, const char *key);
 __hidden ImlibImageTag    *__imlib_RemoveTag(ImlibImage *im, const char *key);
 __hidden void              __imlib_FreeTag(ImlibImage *im, ImlibImageTag *t);
 __hidden void              __imlib_FreeAllTags(ImlibImage *im);
@@ -150,7 +151,7 @@ __hidden void              __imlib_ConsumeLoader(ImlibLoader *l);
 __hidden void              __imlib_RescanLoaders(void);
 __hidden void              __imlib_RemoveAllLoaders(void);
 __hidden void              __imlib_LoadAllLoaders(void);
-ImlibLoader             *__imlib_FindBestLoaderForFile(const char *file, int for_save);
+EAPI     ImlibLoader      *__imlib_FindBestLoaderForFile(const char *file, int for_save);
 __hidden ImlibLoader      *__imlib_FindBestLoaderForFileFormat(const char *file, char *format, int for_save);
 __hidden void              __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha);
 __hidden ImlibImage       *__imlib_CreateImage(int w, int h, DATA32 *data);

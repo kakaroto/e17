@@ -1,19 +1,10 @@
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include "loader_common.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
-
-#include "image.h"
-
 #include <id3tag.h>
 
 #if ! defined (__STDC_VERSION__) || __STDC_VERSION__ < 199901L

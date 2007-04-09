@@ -8,22 +8,8 @@
  * - Simplify and make secure RLE encoding
  * - Fix 16 and 32 bit depth (old code was incorrect and it's commented) 
  */
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#include "common.h"
+#include "loader_common.h"
 #include <sys/stat.h>
-#include <string.h>
-
-#include "image.h"
-
-char                load(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity, char immediate_load);
-char                save(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity);
-void                formats(ImlibLoader * l);
 
 typedef struct tagRGBQUAD {
    unsigned char       rgbBlue;

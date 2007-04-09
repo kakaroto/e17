@@ -1,14 +1,6 @@
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include "common.h"
+#include "filter_common.h"
 #include <string.h>
-
 #include <math.h>
-#include "image.h"
-#include "script.h"
-#include "dynamic_filters.h"
 #include "colormod.h"
 #include "blend.h"
 

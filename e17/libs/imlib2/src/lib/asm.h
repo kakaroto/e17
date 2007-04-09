@@ -9,7 +9,7 @@
 # define PR_(sym) __##sym
 #endif
 
-#ifdef USE_HIDDEN_FUNCTION_ATTRIBUTE
+#if defined(__GNUC__) && (__GNUC__ >= 4)
 # define HIDDEN_(sym) .hidden PR_(sym)
 #else
 # define HIDDEN_(sym)

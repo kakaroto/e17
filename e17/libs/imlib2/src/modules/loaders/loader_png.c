@@ -1,11 +1,4 @@
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include "common.h"
-#include <string.h>
-
-#include "image.h"
+#include "loader_common.h"
 #include <png.h>
 
 /* this is a quick sample png loader module... nice and small isnt it? */
@@ -13,13 +6,6 @@
 /* PNG stuff */
 #define PNG_BYTES_TO_CHECK 4
 
-char                load(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity, char immediate_load);
-char                save(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity);
-void                formats(ImlibLoader * l);
-
-static void         comment_free(ImlibImage * im, void *data);
 static void
 comment_free(ImlibImage * im, void *data)
 {

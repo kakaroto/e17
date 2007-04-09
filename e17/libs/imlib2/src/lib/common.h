@@ -15,7 +15,7 @@
 #include <sys/types.h>
 #endif
 
-#ifdef USE_HIDDEN_FUNCTION_ATTRIBUTE
+#if defined(__GNUC__) && (__GNUC__ >= 4)
 #define __hidden __attribute__((visibility("hidden")))
 #else
 #define __hidden

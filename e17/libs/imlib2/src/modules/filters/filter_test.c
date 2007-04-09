@@ -1,16 +1,5 @@
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include "common.h"
+#include "filter_common.h"
 #include <string.h>
-#include "image.h"
-#include "script.h"
-#include "dynamic_filters.h"
-
-void                init(struct imlib_filter_info *info);
-void                deinit(void);
-void               *exec(char *filter, void *im, pIFunctionParam params);
 
 void
 init(struct imlib_filter_info *info)

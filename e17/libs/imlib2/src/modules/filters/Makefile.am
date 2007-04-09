@@ -10,6 +10,8 @@ INCLUDES             = -I. \
 pkgdir                = $(libdir)/imlib2/filters
 pkg_LTLIBRARIES       = testfilter.la bumpmap.la colormod.la
 
+EXTRA_DIST = filter_common.h
+
 testfilter_la_SOURCES = filter_test.c
 testfilter_la_LDFLAGS = -module -avoid-version
 testfilter_la_LIBADD  = $(top_builddir)/src/lib/libImlib2.la

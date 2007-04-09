@@ -12,19 +12,11 @@ AC_C_BIGENDIAN
 AC_PROG_CC
 AM_PROG_AS
 
-case $host_os in
-solaris*)
-  ;;
-*)
-  AC_MSG_CHECKING([if gcc supports __attribute__((visibility("hidden")))])
-  AC_COMPILE_IFELSE([
-  void __attribute__((visibility("hidden"))) func (void) {}
-  ],
-        [AC_MSG_RESULT(yes)
-         AC_DEFINE(USE_HIDDEN_FUNCTION_ATTRIBUTE,1,
-         [Define this to 1 if `hidden' attribute for internal functions is used.])],
-        [AC_MSG_RESULT(no)])
-esac
+dnl Set default visibility to hidden?
+AC_ARG_ENABLE(visibility-hiding,
+  [  --enable-visibility-hiding enable visibility hiding @<:@default=no@:>@],,
+  enable_visibility_hiding=no
+)
 
 AM_PROG_CC_STDC
 AC_HEADER_STDC
@@ -589,6 +581,10 @@ fi
 AM_CONDITIONAL(BUILD_ID3_LOADER, test "$id3_ok" = yes)
 AC_SUBST(ID3LIBS)
 
+if test "x$enable_visibility_hiding" = xyes ; then
+  CPPFLAGS="$CPPFLAGS -fvisibility=hidden"
+fi
+
 AC_OUTPUT([
 Makefile
 imlib2.pc
@@ -635,6 +631,8 @@ echo
 echo
 echo "Use X86 MMX for speed.....: $mmx"
 echo "Use AMD64 for speed.......: $amd64"
+echo
+echo "Use visibility hiding.....: $enable_visibility_hiding"
 echo
 echo
 echo "Installation Path.........: $prefix"

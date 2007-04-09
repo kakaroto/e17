@@ -1,17 +1,9 @@
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
+#include "loader_common.h"
 #include <zlib.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <assert.h>
-
-#include "common.h"
-#include "image.h"
 
 #define OUTBUF_SIZE 16484
 

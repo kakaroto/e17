@@ -46,6 +46,8 @@ xpm.la \
 tga.la \
 lbm.la
 
+EXTRA_DIST = loader_common.h
+
 jpeg_la_SOURCES      = loader_jpeg.c
 jpeg_la_LDFLAGS      = -module -avoid-version
 jpeg_la_LIBADD       = @JPEGLIBS@ $(top_builddir)/src/lib/libImlib2.la

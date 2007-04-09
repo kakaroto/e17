@@ -11,19 +11,7 @@
  * Version: 2004-08-28
  *------------------------------------------------------------------------------*/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include "common.h"
-#include "image.h"
-
-char    load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, char immediate_load);
-#if 0
-char    save(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity);
-#endif
-void    formats(ImlibLoader *l);
-
+#include "loader_common.h"
 
 #define L2RLONG(a) ((((long)((a)[0]) & 0xff) << 24) + (((long)((a)[1]) & 0xff) << 16) + (((long)((a)[2]) & 0xff) << 8) + ((long)((a)[3]) & 0xff))
 #define L2RWORD(a) ((((long)((a)[0]) & 0xff) << 8) + ((long)((a)[1]) & 0xff))
@@ -52,13 +40,6 @@ typedef struct ILBM {
     int     count;
     int     rle;
 } ILBM;
-
-static void freeilbm(ILBM *);
-static int loadchunks(char *, ILBM *, int);
-static void bodyrow(unsigned char *, int, ILBM *);
-static unsigned char scalegun(unsigned char, int);
-static void scalecmap(ILBM *);
-static void deplane(DATA32 *, int, ILBM *, unsigned char **);
 
 
 /*------------------------------------------------------------------------------

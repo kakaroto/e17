@@ -1,17 +1,9 @@
 /* To do: */
 /* o Need code to handle tiff with different orientations */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include "common.h"
-#include <string.h>
-
+#include "loader_common.h"
 #include <setjmp.h>
 #include <stdarg.h>
-#include <stdio.h>
-#include "image.h"
 #include <tiffio.h>
 
 /* This is a wrapper data structure for TIFFRGBAImage, so that data can be */
@@ -31,21 +23,8 @@ struct TIFFRGBAImage_Extra {
 
 typedef struct TIFFRGBAImage_Extra TIFFRGBAImage_Extra;
 
-static void         put_contig_and_raster(TIFFRGBAImage *, uint32 *,
-                                          uint32, uint32, uint32, uint32, int32,
-                                          int32, unsigned char *);
-static void         put_separate_and_raster(TIFFRGBAImage *, uint32 *, uint32,
-                                            uint32, uint32, uint32, int32,
-                                            int32, unsigned char *,
-                                            unsigned char *, unsigned char *,
-                                            unsigned char *);
 static void         raster(TIFFRGBAImage_Extra * img, uint32 * raster, uint32 x,
                            uint32 y, uint32 w, uint32 h);
-char                load(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity, char immediate_load);
-char                save(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity);
-void                formats(ImlibLoader * l);
 
 static void
 put_contig_and_raster(TIFFRGBAImage * img, uint32 * rast,

@@ -9,25 +9,11 @@
  *
  * header/footer structures courtesy of the GIMP Targa plugin 
  */
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
-#include "common.h"
-#include <stdio.h>
-#include <string.h>
+#include "loader_common.h"
 #include <sys/stat.h>
 #include <sys/mman.h>
-#include "image.h"
 #include "colormod.h"
 #include "blend.h"
-
-char                load(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity, char immediate_load);
-char                save(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity);
-void                formats(ImlibLoader * l);
 
 /* flip an inverted image - see RLE reading below */
 static void         tgaflip(DATA32 * in, int w, int h);

@@ -1,11 +1,4 @@
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include "common.h"
-#include <string.h>
-
-#include "image.h"
+#include "loader_common.h"
 #include <jpeglib.h>
 #include <setjmp.h>
 
@@ -15,16 +8,7 @@ struct ImLib_JPEG_error_mgr {
 };
 typedef struct ImLib_JPEG_error_mgr *emptr;
 
-void                _JPEGFatalErrorHandler(j_common_ptr cinfo);
-void                _JPEGErrorHandler(j_common_ptr cinfo);
-void                _JPEGErrorHandler2(j_common_ptr cinfo, int msg_level);
-char                load(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity, char immediate_load);
-char                save(ImlibImage * im, ImlibProgressFunction progress,
-                         char progress_granularity);
-void                formats(ImlibLoader * l);
-
-void
+static void
 _JPEGFatalErrorHandler(j_common_ptr cinfo)
 {
    emptr               errmgr;
@@ -35,7 +19,7 @@ _JPEGFatalErrorHandler(j_common_ptr cinfo)
    return;
 }
 
-void
+static void
 _JPEGErrorHandler(j_common_ptr cinfo)
 {
    emptr               errmgr;
@@ -46,7 +30,7 @@ _JPEGErrorHandler(j_common_ptr cinfo)
    return;
 }
 
-void
+static void
 _JPEGErrorHandler2(j_common_ptr cinfo, int msg_level)
 {
    emptr               errmgr;
