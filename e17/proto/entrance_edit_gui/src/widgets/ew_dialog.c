@@ -51,7 +51,7 @@ void
 ew_dialog_show(Entrance_Dialog ew)
 {
 	etk_dialog_pack_in_main_area(ETK_DIALOG(ew->owner), ew->box, ETK_TRUE, ETK_TRUE, 
-			0, ETK_FALSE);
+			0);
 	etk_widget_show_all(ew->owner);
 }
 
@@ -123,6 +123,6 @@ static void
 _ew_dialog_add_bottom(Entrance_Dialog d, Entrance_Widget ew)
 {
 	if(d && ew)
-		etk_dialog_pack_widget_in_action_area(ETK_DIALOG(d->owner), ETK_WIDGET(ew->owner), ETK_TRUE, ETK_TRUE, 10, ETK_TRUE);
+		etk_dialog_pack_widget_in_action_area(ETK_DIALOG(d->owner), ETK_WIDGET(ew->owner), ETK_TRUE, ETK_TRUE, 10);
 }
 
