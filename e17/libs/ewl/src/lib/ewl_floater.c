@@ -55,8 +55,12 @@ ewl_floater_init(Ewl_Floater *f)
 
 	ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NORMAL);
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT
+					| EWL_FLAG_ALIGN_TOP);
 	ewl_widget_appearance_set(w, EWL_FLOATER_TYPE);
 	ewl_widget_inherit(w, EWL_FLOATER_TYPE);
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, 
+				ewl_floater_cb_destroy, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -80,8 +84,9 @@ ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 	if (f->follows) {
 		ewl_callback_del_with_data(f->follows, EWL_CALLBACK_CONFIGURE,
 				 ewl_floater_cb_follow_configure, f);
-		ewl_callback_del_with_data(EWL_WIDGET(f->follows), EWL_CALLBACK_DESTROY,
-			    ewl_floater_cb_follow_destroy, f);
+		ewl_callback_del_with_data(EWL_WIDGET(f->follows),
+					EWL_CALLBACK_DESTROY,
+					ewl_floater_cb_follow_destroy, f);
 	}
 
 	/*
@@ -192,6 +197,27 @@ ewl_floater_relative_set(Ewl_Floater *f, Ewl_Widget *w)
  * @param ev_data: UNUSED
  * @param user_data: UNUSED
  * @return Returns no value
+ * @brief Callback when the floater widget is destroyed
+ */
+void
+ewl_floater_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
+			void *user_data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_FLOATER_TYPE);
+
+	ewl_floater_follow_set(EWL_FLOATER(w), NULL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
  * @brief Use this to ensure the floater gets configured when the
  * parent/window gets configured.
  */
@@ -261,14 +287,14 @@ ewl_floater_cb_follow_configure(Ewl_Widget *w __UNUSED__,
  * @brief Callback when the followed widget is destroyed
  */
 void
-ewl_floater_cb_follow_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
+ewl_floater_cb_follow_destroy(Ewl_Widget *w __UNUSED__ , 
+				void *ev_data __UNUSED__, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_FLOATER_TYPE);
+	DCHECK_PARAM_PTR("user_data", user_data);
+	DCHECK_TYPE("user_data", user_data, EWL_FLOATER_TYPE);
 
-	EWL_FLOATER(w)->follows = NULL;
+	EWL_FLOATER(user_data)->follows = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
