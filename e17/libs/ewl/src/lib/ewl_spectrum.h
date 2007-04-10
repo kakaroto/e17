@@ -6,7 +6,7 @@
  * @addtogroup Ewl_Spectrum Ewl_Spectrum: The colour spectrum widget
  * Defines a colour spectrum widget
  *
- * @remarks Inherits from Ewl_Overlay.
+ * @remarks Inherits from Ewl_Container.
  * @image html Ewl_Spectrum_inheritance.png
  *
  * @{
@@ -36,11 +36,11 @@
 typedef struct Ewl_Spectrum Ewl_Spectrum;
 
 /**
- * @brief Inherits from Ewl_Overlay and extends to provide a colour spectrum 
+ * @brief Inherits from Ewl_Container and extends to provide a colour spectrum 
  */
 struct Ewl_Spectrum 
 {
-	Ewl_Overlay overlay;		/**< Inherit from Ewl_Overlay */
+	Ewl_Container container;	/**< Inherit from Ewl_Container */
 	Ewl_Widget *canvas;		/**< The canvas to draw on */
 	
 	struct 

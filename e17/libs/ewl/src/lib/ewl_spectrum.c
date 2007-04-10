@@ -72,7 +72,7 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("sp", sp, FALSE);
 
-	if (!ewl_overlay_init(EWL_OVERLAY(sp)))
+	if (!ewl_container_init(EWL_CONTAINER(sp)))
 	{
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
