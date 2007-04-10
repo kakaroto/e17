@@ -419,7 +419,7 @@ ewl_spinner_cb_increase_value(Ewl_Widget *w __UNUSED__, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", w, EWL_SPINNER_TYPE);
+	DCHECK_TYPE("user_data", user_data, EWL_SPINNER_TYPE);
 
 	s = EWL_SPINNER(user_data);
 	r = EWL_RANGE(s);
@@ -487,7 +487,7 @@ ewl_spinner_cb_decrease_value(Ewl_Widget *w __UNUSED__, void *ev_data,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", w, EWL_SPINNER_TYPE);
+	DCHECK_TYPE("user_data", user_data, EWL_SPINNER_TYPE);
 
 	s = EWL_SPINNER(user_data);
 	r = EWL_RANGE(s);
