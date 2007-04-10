@@ -70,6 +70,7 @@ struct Etk_Tree_Col
    int visible_width;
    
    Etk_Widget *header;
+   Evas_Object *header_over;
    Evas_Object *clip;
    Evas_Object *separator;
    
@@ -124,12 +125,12 @@ struct Etk_Tree
    Etk_Tree_Col **columns;
    Etk_Bool headers_visible;
    
-   Evas_Object *headers_rect;
-   Etk_Tree_Col *over_col;
    Etk_Tree_Col *col_to_resize;
    Etk_Bool col_resize_pointer_set;
    int col_resize_orig_width;
    int col_resize_orig_mouse_x;
+   Etk_Tree_Col *sorted_col;
+   Etk_Bool sorted_asc;
    
    int total_rows;
    Etk_Tree_Row root;

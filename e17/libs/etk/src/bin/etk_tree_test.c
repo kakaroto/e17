@@ -102,7 +102,7 @@ void etk_test_tree_window_create(void *data)
          NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));
-   etk_tree_col_sort_full(col1, _etk_test_tree_compare_cb, NULL, ETK_FALSE);
+   etk_tree_col_sort_set(col1, _etk_test_tree_compare_cb, NULL);
    
    /* Finally we create the statusbar used to display the events on the tree */
    statusbar = etk_statusbar_new();
