@@ -137,6 +137,7 @@ static void _etk_tree_row_signal_emit(Etk_Tree_Row *row, Etk_Tree_Row_Object *ro
 static void _etk_tree_expanders_clip(Etk_Tree *tree);
 
 static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifiers modifiers);
+static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int size, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), int asc, Etk_Tree_Col *col, void *data);
 
 
 static Etk_Signal *_etk_tree_signals[ETK_TREE_NUM_SIGNALS];
@@ -826,43 +827,30 @@ void etk_tree_col_sort_set(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *co
    col->sort.data = data;
 }
 
-/* TODOC */
-void etk_tree_col_sort(Etk_Tree_Col *col, Etk_Bool ascendant)
+/**
+ * @brief Sorts the rows of the tree according to the comparison function of the given column. You can set the
+ * comparison function with etk_tree_col_sort_set(). If no comparison function is associated to the column, this
+ * function will have no effect
+ * @param col the column according to which the tree's rows should be sorted
+ * @param ascending Etk_True to perform an ascendant sort, ETK_FALSE to perform a descendant sort
+ */
+void etk_tree_col_sort(Etk_Tree_Col *col, Etk_Bool ascending)
 {
    if (!col)
       return;
-   etk_tree_col_sort_full(col, col->sort.compare_cb, col->sort.data, ascendant);
+   etk_tree_col_sort_full(col, col->sort.compare_cb, col->sort.data, ascending);
 }
 
-/* Restore the "heap" property of the heap. Used to sort the tree */
-static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int size, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), int asc, Etk_Tree_Col *col, void *data)
-{
-   Etk_Tree_Row *tmp;
-   int left, right, max;
-   
-   if (!heap)
-      return;
-   
-   left = (root * 2) + 1;
-   right = (root * 2) + 2;
-   
-   max = root;
-   if (left < size && (compare_cb(col, heap[left], heap[max], data) * asc) > 0)
-      max = left;
-   if (right < size && (compare_cb(col, heap[right], heap[max], data) * asc) > 0)
-      max = right;
-   
-   if (max != root)
-   {
-      tmp = heap[max];
-      heap[max] = heap[root];
-      heap[root] = tmp;
-      _etk_tree_heapify(tree, heap, max, size, compare_cb, asc, col, data);
-   }
-}
-
-/* TODOC */
-void etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), void *data, Etk_Bool ascendant)
+/**
+ * @brief Sorts the rows of the tree according to the given comparison function
+ * @param col the column that will be passed to @a compare_cb when it is called
+ * @param compare_cb the function to call to compare two rows. It should return a negative
+ * value if the cell of "row1" has a lower value than the cell of "row2", 0 if they have the
+ * same value, and a positive value if the cell of "row2" has a greater value than the cell of "row1"
+ * @param data a pointer that will be passed to @a compare_cb when it is called
+ * @param ascending Etk_True to perform an ascendant sort, ETK_FALSE to perform a descendant sort
+ */
+void etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), void *data, Etk_Bool ascending)
 {
    Etk_Tree *tree;
    Etk_Tree_Row *first_row, *r;
@@ -876,7 +864,7 @@ void etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *c
    if (!(first_row = tree->root.first_child))
       return;
    
-   asc = ascendant ? -1 : 1;
+   asc = ascending ? -1 : 1;
    num_rows = tree->root.num_children;
    heap = malloc(num_rows * sizeof(Etk_Tree_Row *));
    
@@ -917,10 +905,6 @@ void etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *c
    tree->root.first_child = first_row;
    tree->root.last_child = r;
    free(heap);
-   
-   /* TODO: */
-   /*tree->last_sorted_col = col;
-   tree->last_sorted_ascendant = ascendant;*/
    
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
@@ -3576,6 +3560,33 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
    
    if (!row->tree->frozen)
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
+}
+
+/* Restore the heap-property of the heap. Used to sort the tree */
+static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int size, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), int asc, Etk_Tree_Col *col, void *data)
+{
+   Etk_Tree_Row *tmp;
+   int left, right, max;
+   
+   if (!heap)
+      return;
+   
+   left = (root * 2) + 1;
+   right = (root * 2) + 2;
+   
+   max = root;
+   if (left < size && (compare_cb(col, heap[left], heap[max], data) * asc) > 0)
+      max = left;
+   if (right < size && (compare_cb(col, heap[right], heap[max], data) * asc) > 0)
+      max = right;
+   
+   if (max != root)
+   {
+      tmp = heap[max];
+      heap[max] = heap[root];
+      heap[root] = tmp;
+      _etk_tree_heapify(tree, heap, max, size, compare_cb, asc, col, data);
+   }
 }
 
 /** @} */
