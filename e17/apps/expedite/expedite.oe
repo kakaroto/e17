@@ -1,0 +1,21 @@
+DESCRIPTION = "Expedite Evas benchmark/test suite"
+HOMEPAGE = "http://www.enlightenment.org"
+MAINTAINER = "Carsten Haitzler (Rasterman) <raster@rasterman.com>"
+SECTION = "e/test"
+PRIORITY = "optional"
+DEPENDS = "evas"
+PV = "0.6.0"
+PR = "1"
+
+do_prepsources () {
+  make clean distclean || true
+}
+addtask prepsources after do_fetch before do_unpack
+SRC_URI = "file://./"
+S = "${WORKDIR}/expedite"
+
+inherit autotools pkgconfig binconfig
+
+EXTRA_OECONF = ""
+
+FILES_${PN} = "${bindir}/* ${datadir}"
