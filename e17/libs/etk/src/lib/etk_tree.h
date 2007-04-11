@@ -241,6 +241,8 @@ Etk_Tree_Row  *etk_tree_row_walk_prev(Etk_Tree_Row *row, Etk_Bool include_folded
 Etk_Tree_Row  *etk_tree_row_walk_next(Etk_Tree_Row *row, Etk_Bool include_folded);
 Etk_Tree      *etk_tree_row_tree_get(Etk_Tree_Row *row);
 
+Etk_Tree_Row  *etk_tree_row_get_at_xy(Etk_Tree *tree, int x, int y);
+
 Etk_Scrolled_View *etk_tree_scrolled_view_get(Etk_Tree *tree);
 void           etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center);
 

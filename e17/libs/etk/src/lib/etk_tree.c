@@ -1681,6 +1681,34 @@ Etk_Tree *etk_tree_row_tree_get(Etk_Tree_Row *row)
 }
 
 /**
+ * @brief Gets the row that is at the absolute position ( @a x, @a y )
+ * @param tree a tree
+ * @param x the x component of the position, relative to the canvas' top-left corner
+ * @param y the y component of the position, relative to the canvas' top-left corner
+ * @return Returns the row of the tree that is at the given position, or NULL if there is no row here
+ */
+Etk_Tree_Row  *etk_tree_row_get_at_xy(Etk_Tree *tree, int x, int y)
+{
+   Etk_Tree_Row *row;
+   int gx, gy, gw, gh;
+   int row_num, i;
+   
+   if (!tree)
+      return NULL;
+   
+   etk_widget_inner_geometry_get(tree->grid, &gx, &gy, &gw, &gh);
+   if (!ETK_INSIDE(x, y, gx, gy, gw, gh))
+      return NULL;
+   
+   y = y - gy + tree->scroll_y;
+   row_num = y / tree->rows_height;
+   for (i = 0, row = etk_tree_first_row_get(tree); i < row_num && row; i++)
+      row = etk_tree_row_walk_next(row, ETK_FALSE);
+   
+   return row;
+}
+
+/**
  * @brief Gets the scrolled view of the tree.
  * It can be used to change the scrollbars' policy, or to get the scroll-value
  * @param tree a tree
