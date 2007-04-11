@@ -57,7 +57,7 @@ group {
          mouse_events: 0;
          description {
             state: "default" 0.0;
-            color: 255 255 255 255;
+            color: 255 255 255 100;
             rel1 {
                to: "label_under_rect";
             }
@@ -73,9 +73,9 @@ group {
             }
          }
          description {
-            state: "inactive" 0.0;
+            state: "active" 0.0;
             inherit: "default" 0.0;
-            color: 255 255 255 100;
+            color: 255 255 255 255;
          }
       }
       part {
@@ -126,7 +126,7 @@ group {
          mouse_events: 0;
          description {
             state: "default" 0.0;
-            color: 255 255 255 0;
+            color: 255 255 255 255;
             rel1 {
                relative: 0.0 1.0;
                offset: 2 -5;
@@ -145,9 +145,9 @@ group {
             }
          }
          description {
-            state: "inactive" 0.0;
+            state: "active" 0.0;
             inherit: "default" 0.0;
-            color: 255 255 255 255;
+            color: 255 255 255 0;
          }
       }
    }
@@ -156,7 +156,7 @@ group {
          name: "tab_activate";
          signal: "etk,state,on";
          source: "etk";
-         action: STATE_SET "default" 0.0;
+         action: STATE_SET "active" 0.0;
          transition: LINEAR 0.2;
          target: "label_under";
          target: "shadow";
@@ -165,7 +165,7 @@ group {
          name: "tab_deactivate";
          signal: "etk,state,off";
          source: "etk";
-         action: STATE_SET "inactive" 0.0;
+         action: STATE_SET "default" 0.0;
          transition: LINEAR 0.2;
          target: "label_under";
          target: "shadow";
