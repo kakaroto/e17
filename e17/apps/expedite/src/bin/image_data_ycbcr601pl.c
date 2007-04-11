@@ -23,7 +23,7 @@ static void _setup(void)
 {
    int i, y;
    FILE *f;
-   unsigned char **data, **lp, *p;
+   unsigned char **data, **lp;
    Evas_Object *o;
    for (i = 0; i < 1; i++)
      {

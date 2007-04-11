@@ -20,7 +20,6 @@ static Evas_Object *o_images[2];
 /* setup */
 static void _setup(void)
 {
-   int i;
    Evas_Object *o;
    
    o = evas_object_image_add(evas);

@@ -1071,6 +1071,7 @@ int
 engine_abort(void)
 {
    go = 0;
+   return go;
 }
 
 void

@@ -64,7 +64,6 @@ static void _cleanup(void)
 static void _loop(double t, int f)
 {
    int i;
-   Evas_Coord x, y, w, h;
    char buf[1024];
    const char *strs[] = {
       "Big", "Smelly", "Fish", "Pants", "Octopus", "Garden", "There", "I",

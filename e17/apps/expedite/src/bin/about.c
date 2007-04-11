@@ -56,7 +56,7 @@ _cleanup(void)
 }
 
 static void
-_loop(void)
+_loop(double t, int f)
 {
 }
 

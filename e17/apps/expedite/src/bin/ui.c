@@ -135,8 +135,8 @@ _ui_key(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static Evas_Coord down_x, down_y;
-static down = 0;
-static dowm_menu_sel = 0;
+static int down = 0;
+static int down_menu_sel = 0;
 
 static void
 _ui_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
@@ -150,7 +150,7 @@ _ui_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	down_x = ev->canvas.x;
 	down_y = ev->canvas.y;
 	down++;
-	dowm_menu_sel = menu_sel;
+	down_menu_sel = menu_sel;
      }
    else
      {
@@ -171,7 +171,7 @@ _ui_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	dx = ev->canvas.x - down_x;
 	dy = ev->canvas.y - down_y;
 	if ((((dx * dx) + (dy * dy)) < (20 * 20)) &&
-	    (menu_sel == dowm_menu_sel))
+	    (menu_sel == down_menu_sel))
 	  _ui_select();
 	down--;
      }
@@ -191,7 +191,7 @@ _ui_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!down) return;
    if (menu_active)
      {
-	menu_sel = dowm_menu_sel + ((ev->cur.canvas.x - down_x) / 25);
+	menu_sel = down_menu_sel + ((ev->cur.canvas.x - down_x) / 25);
 	/* scroll */
 	if (menu_sel < 0) menu_sel = 0;
 	else if (menu_sel >= evas_list_count(menu)) menu_sel = evas_list_count(menu) - 1;
