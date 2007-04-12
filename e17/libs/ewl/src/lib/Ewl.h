@@ -205,7 +205,7 @@
  * simple_viewer.c just use the command:
  *
  * @code
- * gcc -o simple_viewer `ewl-config --cflags --libs` simple_viewer.c
+ * gcc -o simple_viewer `pkg-config --cflags --libs ewl` simple_viewer.c
  * @endcode
  *
  * @section conclusion Conclusion
