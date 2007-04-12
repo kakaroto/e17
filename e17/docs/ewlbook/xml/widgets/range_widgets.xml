@@ -41,9 +41,9 @@
 <title>Creating an EWL seeker</title>
 <programlisting role="C">
     Ewl_Widget *s = ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
-    ewl_seeker_value_set(EWL_SEEKER(s), 5.0);
-    ewl_seeker_range_set(EWL_SEEKER(s), 10.0);
-    ewl_seeker_step_set(EWL_SEEKER(s), 1);
+    ewl_range_value_set(EWL_RANGE(s), 5.0);
+    ewl_range_range_set(EWL_RANGE(s), 10.0);
+    ewl_range_step_set(EWL_RANGE(s), 1);
     ewl_callback_append(s, EWL_CALLBACK_VALUE_CHANGED, seeker_cb, NULL);
     ewl_widget_show(s);
 </programlisting>
@@ -55,7 +55,7 @@
 <title>Ewl_Seeker callback</title>
 <programlisting role="C">
 void seeker_cb(Ewl_Widget *w, void *event, void *data) {
-    double val = ewl_seeker_value_get(EWL_SEEKER(w));
+    double val = ewl_range_value_get(EWL_RANGE(w));
     printf("%f\n", val);
 }
 </programlisting>
