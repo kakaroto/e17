@@ -74,6 +74,7 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
       fprintf(stderr, "Error: Unable to create the gui window\n");
       return 0;
    }
+   eclair_playlist_init(&eclair->playlist, eclair);
    _eclair_create_playlist_window(eclair);
    _eclair_create_equalizer_window(eclair);
    _eclair_create_cover_window(eclair);
@@ -81,7 +82,6 @@ Evas_Bool eclair_init(Eclair *eclair, int *argc, char ***argv)
    _eclair_add_inter_windows_callbacks(eclair);
    eclair_database_init(&eclair->database, eclair);
    eclair_dialogs_init(&eclair->dialogs_manager, eclair);
-   eclair_playlist_init(&eclair->playlist, eclair);
    eclair_playlist_container_set_media_list(eclair->playlist_container, &eclair->playlist.playlist);
    eclair_subtitles_init(&eclair->subtitles);
    eclair_meta_tag_init(&eclair->meta_tag_manager, eclair);
