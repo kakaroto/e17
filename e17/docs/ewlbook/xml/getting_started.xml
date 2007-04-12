@@ -36,6 +36,7 @@ to be displayed on the screen.
 </para>
 
 <programlisting role="C">
+#include &lt;stdio.h&gt;
 #include &lt;Ewl.h&gt;
 
 void destroy_cb(Ewl_Widget *w, void *event, void *data) {
@@ -89,6 +90,7 @@ Now that we know what we're making, lets go over the code in more detail.
 </para>
 
 <programlisting role="C">
+#include &lt;stdio.h&gt;
 #include &lt;Ewl.h&gt;
 </programlisting>
 

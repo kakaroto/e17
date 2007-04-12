@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <Ewl.h>
 
 void destroy_cb(Ewl_Widget *w, void *event, void *data) {
