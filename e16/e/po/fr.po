@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-25 11:05+0200\n"
-"PO-Revision-Date: 2007-03-17 10:04+0100\n"
+"POT-Creation-Date: 2007-03-25 11:42+0200\n"
+"PO-Revision-Date: 2007-04-12 19:12+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -735,21 +735,20 @@ msgid "Wrap virtual desktops around"
 msgstr "Placer les bureaux virtuels en boucle"
 
 #: src/desktops.c:2639
-#, fuzzy
 msgid "Edge Flip Mode:"
-msgstr "Mode du Pager:"
+msgstr "Bords sensitifs et mode de glissement:"
 
 #: src/desktops.c:2642
 msgid "Off"
-msgstr ""
+msgstr "Glissement désactivé"
 
 #: src/desktops.c:2647
 msgid "On"
-msgstr ""
+msgstr "Glissement activé"
 
 #: src/desktops.c:2652
 msgid "Only when moving window"
-msgstr ""
+msgstr "Seulement lors des déplacements de fenêtre"
 
 #: src/desktops.c:2658
 msgid "Resistance at edge of screen:\n"
@@ -826,7 +825,7 @@ msgstr "Le focus suit la souris"
 
 #: src/focus.c:725
 msgid "Focus follows pointer sloppily"
-msgstr "Le focus suit lentement la souris"
+msgstr "Le focus suit la souris (sauf sur une zone vide du bureau)"
 
 #: src/focus.c:731
 msgid "Focus follows mouse clicks"
