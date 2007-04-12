@@ -30,20 +30,20 @@
       global $page;
       global $lang;
       list($width, $height, $type, $attr) = getimagesize("p/$page/d/$src");
-      print("<img src='p/$page/d/$src' width=$width height=$height alt='$alt' border=0>");
+      echo("<img src=\"p/$page/d/$src\" style='width:".$width."px; height:".$height."px; border:0;' alt='$alt'/>");
   }
 
   function thm($src, $alt) {
       global $page;
       global $lang;
       list($width, $height, $type, $attr) = getimagesize("p/$page/d/.t.$src");
-      print("<a href='p/$page/d/$src'><img src='p/$page/d/.t.$src' width=$width height=$height alt='$alt' class='thumb'></a>");
+      echo("<a href='p/$page/d/$src'><img src='p/$page/d/.t.$src' style='width:".$width."px; height:".$height."px;' alt='$alt' class='thumb'/></a>");
   }
 
   function a($pg, $txt) {
       global $page;
       global $lang;
-      print("<a href='p.php?page=$pg?l=$lang'>$txt</a>");
+      echo("<a href='p.php?page=$pg?l=$lang'>$txt</a>");
   }
 
 /* utility functions */
@@ -70,7 +70,7 @@
 		  $fl = fgets($handle, 4096);
 		  $fl = str_replace("\n", "", $fl);
 		  if ($fl != "") {
-		      print("<a href='p.php?p=$page&l=$fl'><img src='i/$fl.png' width=24 height=18></a>\n");
+		      echo("<a href='p.php?p=$page&amp;l=$fl'><img src='i/$fl.png' style='width:24px; height:18px; border:0;' alt='$fl'/></a>\n");
 		  }
 	      }
 	  }
@@ -87,7 +87,7 @@
 	$l = read_var("p/$b/en-label");
       if (file_exists("p/$b/page")) {
 	  $h = read_var("p/$b/page");
-	  $h = "p.php?p=$h&l=$lang";
+	  $h = "p.php?p=$h&amp;l=$lang";
       }
       else if (file_exists("p/$b/link")) {
 	  $h = read_var("p/$b/link");
@@ -102,7 +102,7 @@
       if (file_exists("p/$page/subs")) {
 	  $handle = fopen("p/$page/subs", "r");
 	  if ($handle) {
-	      print("<ul class='navul'>\n");
+	      echo("<ul class='navul'>\n");
 	      while (!feof($handle)) {
 		  $fl = fgets($handle, 4096);
 		  $fl = str_replace("\n", "", $fl);
@@ -115,24 +115,24 @@
 		      if (file_exists("p/$page/$fl/$lang-label")) {
 			  $l = read_var("p/$page/$fl/$lang-label");
 			  if ($h == "") {
-			    $h = "p.php?p=$page/$fl&l=$lang";
+			    $h = "p.php?p=$page/$fl&amp;l=$lang";
                           }
-			  if ($item > 0) print("|\n");
-			  print("<li class='navul'><a class='navul' href='$h'>$l</a></li>\n");
+			  if ($item > 0) echo("|\n");
+			  echo("<li class='navul'><a class='navul' href='$h'>$l</a></li>\n");
 			  $item++;
 		      }
 		      else if (file_exists("p/$page/$fl/en-label")) {
 			  $l = read_var("p/$page/$fl/en-label");
 			  if ($h == "") {
-			    $h = "p.php?p=$page/$fl&l=$lang";
+			    $h = "p.php?p=$page/$fl&amp;l=$lang";
                           }
-			  if ($item > 0) print("|\n");
-			  print("<li class='navul'><a class='navul' href='$h'>$l</a></li>\n");
+			  if ($item > 0) echo("|\n");
+			  echo("<li class='navul'><a class='navul' href='$h'>$l</a></li>\n");
 			  $item++;
 		      }
 		  }
 	      }
-	      print("</ul><hr>");
+	      echo("</ul><hr>");
 	  }
       }
   }

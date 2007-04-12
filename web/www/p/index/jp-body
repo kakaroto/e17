@@ -1,3 +1,3 @@
-<center><?php img("logo.png", "E"); ?></center>
+<div style='text-align:center;'><?php img("logo.png", "E"); ?></div>
 <div class="bod">
 </div>
