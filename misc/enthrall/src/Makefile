@@ -3,11 +3,10 @@ SRC = enthrall.c theora.c rgb2yuv420.c
 OBJ = $(SRC:%.c=%.o)
 PREFIX = /usr/local
 
-LIBS = `ecore-config --libs-x` `imlib2-config --libs` \
-       `pkg-config theora --libs`
+LIBS = `pkg-config --libs ecore-x imlib2 theora`
 
-ECORE_CFLAGS = `ecore-config --cflags`
-IMLIB_CFLAGS = `imlib2-config --cflags`
+ECORE_CFLAGS = `pkg-config --cflags ecore-x`
+IMLIB_CFLAGS = `pkg-config --cflags imlib2`
 THEORA_CFLAGS = `pkg-config theora --cflags`
 
 all: $(BIN)
