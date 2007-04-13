@@ -77,7 +77,7 @@ void entropy_etk_options_dialog_frame_set(Etk_Object* obj, void* data)
 
 	for (children = etk_container_children_get(ETK_CONTAINER(_entropy_etk_options_local_box)); children; ) {
 		widget = children->data;
-		etk_container_remove(ETK_CONTAINER(_entropy_etk_options_local_box), widget);
+		etk_container_remove(ETK_WIDGET(widget));
 			
 		children = children->next;
 	}

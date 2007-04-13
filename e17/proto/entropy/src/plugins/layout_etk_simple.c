@@ -382,7 +382,7 @@ void entropy_etk_layout_trackback_show(entropy_layout_gui* gui, int visible)
 		etk_box_append(ETK_BOX(gui->trackback_shell), gui->trackback->gui_object, ETK_BOX_START, ETK_BOX_NONE,0);
 		etk_widget_show_all(ETK_WIDGET(gui->trackback->gui_object));	
 	} else {
-		etk_container_remove(ETK_CONTAINER(gui->trackback_shell), gui->trackback->gui_object);
+		etk_container_remove(ETK_WIDGET(gui->trackback->gui_object));
 	}
 }
 /*--------*/
@@ -409,7 +409,7 @@ void entropy_etk_layout_tree_show(entropy_layout_gui* gui, int visible)
 		etk_paned_position_set(ETK_PANED(gui->paned), ENTROPY_ETK_WINDOW_PANE_DEFAULT_X);
 	} else {
 		etk_widget_hide(gui->tree);
-		etk_container_remove(ETK_CONTAINER(gui->tree_shell), gui->tree);
+		etk_container_remove(ETK_WIDGET(gui->tree));
 		etk_paned_position_set(ETK_PANED(gui->paned), 0);
 	}
 }
@@ -444,7 +444,7 @@ void entropy_layout_etk_simple_local_view_set(entropy_gui_component_instance* in
 
 	for (children = etk_container_children_get(ETK_CONTAINER(gui->localshell)); children; ) {
 		widget = children->data;
-		etk_container_remove(ETK_CONTAINER(gui->localshell), widget);
+		etk_container_remove(ETK_WIDGET(widget));
 			
 		children = children->next;
 	}
