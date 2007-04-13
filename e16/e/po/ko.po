@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-03-25 11:05+0200\n"
+"POT-Creation-Date: 2007-04-08 19:55+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -65,18 +65,18 @@ msgstr ""
 msgid "%u references remain\n"
 msgstr "%u개의 참조가 남아있습니다\n"
 
-#: src/aclass.c:294 src/backgrounds.c:1147 src/borders.c:1106
-#: src/borders.c:1229 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1774 src/cursors.c:177 src/iclass.c:548 src/menus.c:1731
-#: src/menus.c:1842 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
+#: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
+#: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
+#: src/container.c:1772 src/cursors.c:177 src/iclass.c:548 src/menus.c:1729
+#: src/menus.c:1840 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\"에 있는 더 많은 데이타는 무시합니다\n"
 
-#: src/aclass.c:302 src/backgrounds.c:1155 src/borders.c:1112
-#: src/borders.c:1235 src/buttons.c:740 src/cmclass.c:210 src/config.c:257
-#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1736 src/menus.c:1848
+#: src/aclass.c:302 src/backgrounds.c:1158 src/borders.c:1116
+#: src/borders.c:1239 src/buttons.c:740 src/cmclass.c:210 src/config.c:257
+#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1734 src/menus.c:1846
 #: src/slideout.c:433 src/tclass.c:264 src/tooltips.c:182
 #: src/windowmatch.c:165
 #, c-format
@@ -213,7 +213,7 @@ msgstr "인라이튼먼트 재시작"
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
 
-#: src/backgrounds.c:1648
+#: src/backgrounds.c:1651
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -224,11 +224,11 @@ msgstr ""
 "이름: %s\n"
 "파일: %s\n"
 
-#: src/backgrounds.c:1649
+#: src/backgrounds.c:1652
 msgid "-NONE-"
 msgstr "-없음-"
 
-#: src/backgrounds.c:1828 src/backgrounds.c:1830
+#: src/backgrounds.c:1831 src/backgrounds.c:1833
 msgid ""
 "No\n"
 "Background"
@@ -236,56 +236,56 @@ msgstr ""
 "배경\n"
 "없음"
 
-#: src/backgrounds.c:1910 src/backgrounds.c:2267
+#: src/backgrounds.c:1913 src/backgrounds.c:2270
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "사용되지 않는 배경은 %2i:%2i:%2i후에 해제"
 
-#: src/backgrounds.c:2114
+#: src/backgrounds.c:2117
 msgid "BG Colour\n"
 msgstr "배경 색\n"
 
-#: src/backgrounds.c:2122
+#: src/backgrounds.c:2125
 msgid "Move to Front\n"
 msgstr "앞으로 이동\n"
 
-#: src/backgrounds.c:2127
+#: src/backgrounds.c:2130
 msgid "Duplicate\n"
 msgstr "복제\n"
 
-#: src/backgrounds.c:2131
+#: src/backgrounds.c:2134
 msgid "Unlist\n"
 msgstr "목록에서 삭제\n"
 
-#: src/backgrounds.c:2135
+#: src/backgrounds.c:2138
 msgid "Delete File\n"
 msgstr "파일 삭제\n"
 
-#: src/backgrounds.c:2143
+#: src/backgrounds.c:2146
 msgid "Red:\n"
 msgstr "적색:\n"
 
-#: src/backgrounds.c:2152
+#: src/backgrounds.c:2155
 msgid "Use background image"
 msgstr "배경 이미지 사용"
 
-#: src/backgrounds.c:2158
+#: src/backgrounds.c:2161
 msgid "Green:\n"
 msgstr "녹색:\n"
 
-#: src/backgrounds.c:2167
+#: src/backgrounds.c:2170
 msgid "Keep aspect on scale"
 msgstr "크기조정시 모양 유지"
 
-#: src/backgrounds.c:2173
+#: src/backgrounds.c:2176
 msgid "Blue:\n"
 msgstr "청색:\n"
 
-#: src/backgrounds.c:2182
+#: src/backgrounds.c:2185
 msgid "Tile image across background"
 msgstr "배경에 사용할 타일 이미지"
 
-#: src/backgrounds.c:2193
+#: src/backgrounds.c:2196
 msgid ""
 "Background\n"
 "Image\n"
@@ -299,43 +299,43 @@ msgstr ""
 "그리고\n"
 "위치조정\n"
 
-#: src/backgrounds.c:2257
+#: src/backgrounds.c:2260
 msgid "Use dithering in Hi-Colour"
 msgstr "고색상에서 디더링 사용"
 
-#: src/backgrounds.c:2261
+#: src/backgrounds.c:2264
 msgid "Background overrides theme"
 msgstr "테마의 배경 사용않함"
 
-#: src/backgrounds.c:2304
+#: src/backgrounds.c:2307
 msgid "Pre-scan BG's"
 msgstr "배경 미리 스캔"
 
-#: src/backgrounds.c:2312
+#: src/backgrounds.c:2315
 msgid "Sort by File"
 msgstr "파일로 정렬"
 
-#: src/backgrounds.c:2317
+#: src/backgrounds.c:2320
 msgid "Sort by Attr."
 msgstr "속성으로 정렬"
 
-#: src/backgrounds.c:2322
+#: src/backgrounds.c:2325
 msgid "Sort by Image"
 msgstr "이미지로 정렬"
 
-#: src/backgrounds.c:2351
+#: src/backgrounds.c:2354
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2357 src/mod-trans.c:193
+#: src/backgrounds.c:2360 src/mod-trans.c:193
 msgid "Background"
 msgstr "배경화면"
 
-#: src/backgrounds.c:2358
+#: src/backgrounds.c:2361
 msgid "Desktop Background Settings"
 msgstr "데스크탑 배경 설정"
 
-#: src/backgrounds.c:2361
+#: src/backgrounds.c:2364
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -474,119 +474,119 @@ msgstr ""
 "인라이튼먼트가 기본적인 시스템 설정으로 복구한 후 다시 시도해\n"
 "보기를 원하십니까?\n"
 
-#: src/container.c:1229
+#: src/container.c:1227
 #, fuzzy
 msgid "Settings..."
 msgstr "포커스 설정"
 
-#: src/container.c:1233 src/dialog.c:895 src/pager.c:1000 config/strings.c:30
+#: src/container.c:1231 src/dialog.c:895 src/pager.c:998 config/strings.c:30
 #: config/strings.c:168
 msgid "Close"
 msgstr "닫기"
 
-#: src/container.c:1238 config/strings.c:83
+#: src/container.c:1236 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "새 아이콘상자 생성"
 
-#: src/container.c:1534 src/container.c:1608
+#: src/container.c:1532 src/container.c:1606
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "아이콘 크기"
 
-#: src/container.c:1572
+#: src/container.c:1570
 msgid "Transparent background"
 msgstr "투명 배경"
 
-#: src/container.c:1576
+#: src/container.c:1574
 #, fuzzy
 msgid "Hide inner border"
 msgstr "이 그룹 보여주기/숨기기"
 
-#: src/container.c:1580
+#: src/container.c:1578
 msgid "Draw base image behind Icons"
 msgstr "아이콘 뒤에 기본 이미지 그리기"
 
-#: src/container.c:1584
+#: src/container.c:1582
 msgid "Hide scrollbar when not needed"
 msgstr "필요없을 때 스크롤바 숨기기"
 
-#: src/container.c:1588
+#: src/container.c:1586
 msgid "Automatically resize to fit Icons"
 msgstr "아이콘에 맞추기 위해 자동으로 크기조정"
 
-#: src/container.c:1595
+#: src/container.c:1593
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "자동으로 크기조정시 정렬:"
 
-#: src/container.c:1626
+#: src/container.c:1624
 msgid "Orientation:"
 msgstr "방위:"
 
-#: src/container.c:1631
+#: src/container.c:1629
 msgid "Scrollbar side:"
 msgstr "스크롤바 사이드:"
 
-#: src/container.c:1636
+#: src/container.c:1634
 msgid "Scrollbar arrows:"
 msgstr "스크롤바 방향:"
 
-#: src/container.c:1639
+#: src/container.c:1637
 msgid "Horizontal"
 msgstr "수평"
 
-#: src/container.c:1644
+#: src/container.c:1642
 msgid "Left / Top"
 msgstr "왼쪽 / 위"
 
-#: src/container.c:1649
+#: src/container.c:1647
 msgid "Start"
 msgstr "시작"
 
-#: src/container.c:1654
+#: src/container.c:1652
 msgid "Vertical"
 msgstr "수직"
 
-#: src/container.c:1660
+#: src/container.c:1658
 msgid "Right / Bottom"
 msgstr "오른쪽 / 아래"
 
-#: src/container.c:1666
+#: src/container.c:1664
 msgid "Both ends"
 msgstr "양쪽 끝"
 
-#: src/container.c:1674
+#: src/container.c:1672
 msgid "End"
 msgstr "끝"
 
-#: src/container.c:1682 src/focus.c:847
+#: src/container.c:1680 src/focus.c:847
 msgid "None"
 msgstr "없음"
 
-#: src/container.c:1692
+#: src/container.c:1690
 msgid "Show icon names"
 msgstr "아이콘 이름 보여주기"
 
-#: src/container.c:1696
+#: src/container.c:1694
 msgid "Animate when iconifying to this Iconbox"
 msgstr "이 아이콘상자로 아이콘화할 때 에니메이트"
 
-#: src/container.c:1706
+#: src/container.c:1704
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "아이콘 이미지 표시 정책 (한 동작 실패시 다음 시도):"
 
-#: src/container.c:1711
+#: src/container.c:1709
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "창 스냅샷, 응용프로그램 아이콘 사용, 인라이튼먼트 아이콘 사용"
 
-#: src/container.c:1718
+#: src/container.c:1716
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "응용프로그램 아이콘 사용, 인라이튼먼트 아이콘 사용, 창 스냅샷"
 
-#: src/container.c:1723
+#: src/container.c:1721
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "인라이튼먼트 아이콘 사용, 창 스냅샷"
 
-#: src/container.c:1736
+#: src/container.c:1734
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -687,11 +687,11 @@ msgstr "위"
 msgid "Bottom"
 msgstr "아래"
 
-#: src/desktops.c:2463 src/pager.c:1906 src/pager.c:1931 src/pager.c:1956
+#: src/desktops.c:2463 src/pager.c:1904 src/pager.c:1929 src/pager.c:1954
 msgid "Left"
 msgstr "왼쪽"
 
-#: src/desktops.c:2469 src/pager.c:1918 src/pager.c:1943 src/pager.c:1968
+#: src/desktops.c:2469 src/pager.c:1916 src/pager.c:1941 src/pager.c:1966
 msgid "Right"
 msgstr "오른쪽"
 
@@ -786,7 +786,7 @@ msgstr "적용"
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
-#: src/ecompmgr.c:2467
+#: src/ecompmgr.c:2511
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1213,12 +1213,12 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/hints.c:547
+#: src/hints.c:553
 #, fuzzy
 msgid "Selection Error!"
 msgstr "TextClass 오류!"
 
-#: src/hints.c:547
+#: src/hints.c:553
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""
@@ -1388,29 +1388,29 @@ msgstr "이 그룹 아이콘화"
 msgid "Group %i"
 msgstr "그룹 %i"
 
-#: src/menus.c:2037
+#: src/menus.c:2035
 msgid "Animated display of menus"
 msgstr "메뉴 표시 에니메이트"
 
-#: src/menus.c:2042
+#: src/menus.c:2040
 msgid "Always pop up menus on screen"
 msgstr "항상 화면에 메뉴를 팝업"
 
-#: src/menus.c:2047
+#: src/menus.c:2045
 msgid "Warp pointer after moving menus"
 msgstr "메뉴를 움직인 후에 포인터 뒤집기"
 
-#: src/menus.c:2053
+#: src/menus.c:2051
 #, fuzzy
 msgid "Menus"
 msgstr "메뉴:"
 
-#: src/menus.c:2054
+#: src/menus.c:2052
 #, fuzzy
 msgid "Menu Settings"
 msgstr "기타 설정"
 
-#: src/menus.c:2057
+#: src/menus.c:2055
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1480,125 +1480,125 @@ msgstr ""
 "인라이튼먼트 테마 투명도 설정\n"
 "설정 대화상자\n"
 
-#: src/pager.c:993 config/strings.c:51
+#: src/pager.c:991 config/strings.c:51
 msgid "Window Options"
 msgstr "창 옵션"
 
-#: src/pager.c:996 config/strings.c:53 config/strings.c:170
+#: src/pager.c:994 config/strings.c:53 config/strings.c:170
 msgid "Iconify"
 msgstr "아이콘화"
 
-#: src/pager.c:1004 config/strings.c:169
+#: src/pager.c:1002 config/strings.c:169
 msgid "Annihilate"
 msgstr "전멸시킴"
 
-#: src/pager.c:1008
+#: src/pager.c:1006
 msgid "Stick / Unstick"
 msgstr "고착 / 잡아뗌"
 
-#: src/pager.c:1017
+#: src/pager.c:1015
 msgid "Desktop Options"
 msgstr "데스크탑 옵션"
 
-#: src/pager.c:1019
+#: src/pager.c:1017
 msgid "Pager Settings..."
 msgstr "페이저 설정..."
 
-#: src/pager.c:1024
+#: src/pager.c:1022
 msgid "Snapshotting Off"
 msgstr "스냅샷 사용않함"
 
-#: src/pager.c:1028
+#: src/pager.c:1026
 msgid "High Quality Off"
 msgstr "고해상도 사용않함"
 
-#: src/pager.c:1030
+#: src/pager.c:1028
 msgid "High Quality On"
 msgstr "고해상도 사용"
 
-#: src/pager.c:1035
+#: src/pager.c:1033
 msgid "Snapshotting On"
 msgstr "스냅샷 사용"
 
-#: src/pager.c:1039
+#: src/pager.c:1037
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1041
+#: src/pager.c:1039
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1795 src/pager.c:1886
+#: src/pager.c:1793 src/pager.c:1884
 msgid "Pager scanning speed:"
 msgstr "페이저 스캐닝 속도:"
 
-#: src/pager.c:1796 src/pager.c:1887
+#: src/pager.c:1794 src/pager.c:1885
 msgid "lines per second"
 msgstr "초당 줄수"
 
-#: src/pager.c:1825
+#: src/pager.c:1823
 msgid "Enable pager display"
 msgstr "페이저 표시 가능"
 
-#: src/pager.c:1835
+#: src/pager.c:1833
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1839
+#: src/pager.c:1837
 #, fuzzy
 msgid "Simple"
 msgstr "잔물결"
 
-#: src/pager.c:1845
+#: src/pager.c:1843
 msgid "Make miniature snapshots of the screen"
 msgstr "축소된 화면의 스냅샷 만들기"
 
-#: src/pager.c:1852
+#: src/pager.c:1850
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1863
+#: src/pager.c:1861
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "스냅샷 모드에서 부드러운 고해상도 스냅샷"
 
-#: src/pager.c:1868
+#: src/pager.c:1866
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "마우스가 페이저 안의 창 위에 있을 때 그 창 확대"
 
-#: src/pager.c:1874
+#: src/pager.c:1872
 msgid "Pop up window title when mouse is over the window"
 msgstr "마우스가 페이저 안의 창 위에 있을 때 그 창 제목 보여주기"
 
-#: src/pager.c:1879
+#: src/pager.c:1877
 msgid "Continuously scan screen to update pager"
 msgstr "페이저를 갱신하기 위해 연속적으로 화면 스캔"
 
-#: src/pager.c:1902
+#: src/pager.c:1900
 msgid "Mouse button to select and drag windows:"
 msgstr "창을 선택하고 끌기 위한 마우스 버튼:"
 
-#: src/pager.c:1912 src/pager.c:1937 src/pager.c:1962
+#: src/pager.c:1910 src/pager.c:1935 src/pager.c:1960
 msgid "Middle"
 msgstr "중간"
 
-#: src/pager.c:1927
+#: src/pager.c:1925
 msgid "Mouse button to select desktops:"
 msgstr "데스크탑을 선택할 마우스 버튼"
 
-#: src/pager.c:1952
+#: src/pager.c:1950
 msgid "Mouse button to display pager menu:"
 msgstr "페이저 메뉴를 표시할 마우스 버튼:"
 
-#: src/pager.c:1976
+#: src/pager.c:1974
 #, fuzzy
 msgid "Pagers"
 msgstr "페이저 설정"
 
-#: src/pager.c:1977
+#: src/pager.c:1975
 msgid "Pager Settings"
 msgstr "페이저 설정"
 
-#: src/pager.c:1980
+#: src/pager.c:1978
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
