@@ -142,7 +142,7 @@ main(int argc, char **argv)
 
    iter_screen = xcb_setup_roots_iterator (xcb_get_setup (conn));
    for (; iter_screen.rem; --screen_nbr, xcb_screen_next (&iter_screen))
-      if (screen == 0)
+      if (screen_nbr == 0)
         {
            screen = iter_screen.data;
            break;
