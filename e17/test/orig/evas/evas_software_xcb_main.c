@@ -329,7 +329,7 @@ main(int argc, char **argv)
        e = xcb_poll_for_event(conn);
 
        if (e) {
-	 switch (e->response_type)
+	 switch (e->response_type & ~0x80)
 	   {
 	   case XCB_BUTTON_PRESS: {
 	     xcb_button_press_event_t *ev = (xcb_button_press_event_t *)e;
