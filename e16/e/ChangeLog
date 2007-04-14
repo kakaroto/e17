@@ -4291,3 +4291,24 @@ Enable focusing windows not containing the pointer in pointer focus modes when
 using the focus list (noted by Peter Poulsen).
 Don't wipe m4/ on maintainer-clean.
 
+
+-------------------------------------------------------------------------------
+
+Sat Apr 14 12:40:57 CEST 2007
+(Kim)
+
+--- 0.16.8.7 0.04 ---
+Add some glx bits.
+Japanese translation update (Yasufumi Haga).
+Minor reorganization of internal window ops.
+Use anti-alias only when appropriate.
+Add magnifier window (eesh mag show).
+Handle switching between versions with minor ENL_DATA differences a bit better.
+Remove some unnecessary casts.
+Don't append newline to e16 ipc output (eesh).
+Fix windows sometimes getting stuck to pointer.
+Fix incorrect fading termination in certain situations.
+Add _NET_STARTUP_ID.
+Add ecore_x_netwm_startup_id_get().
+French translation update (Tristan D.).
+
