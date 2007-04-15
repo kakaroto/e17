@@ -27,6 +27,7 @@
 #include "borders.h"		/* FIXME - Should not be here */
 #include "desktops.h"		/* FIXME - Should not be here */
 #include "e16-ecore_hints.h"
+#include "events.h"
 #include "ewins.h"
 #include "hints.h"
 #include "xwin.h"
@@ -268,44 +269,39 @@ HintsProcessPropertyChange(EWin * ewin, Atom atom_change)
 void
 HintsProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 {
-   char               *name;
-
-   name = XGetAtomName(disp, event->message_type);
-   if (name == NULL)
+   if (ICCCM_ProcessClientClientMessage(ewin, event))
       return;
-
-   if (!memcmp(name, "WM_", 3))
-      ICCCM_ProcessClientClientMessage(ewin, event);
-   else if (!memcmp(name, "_NET_", 5))
-      EWMH_ProcessClientClientMessage(ewin, event);
+   if (EWMH_ProcessClientClientMessage(ewin, event))
+      return;
 #if ENABLE_GNOME
-   else if (!memcmp(name, "_WIN_", 5))
-      GNOME_ProcessClientClientMessage(ewin, event);
+   if (GNOME_ProcessClientClientMessage(ewin, event))
+      return;
 #endif
-   XFree(name);
+   if (EDebug(1))
+     {
+	Eprintf("HintsProcessClientClientMessage:\n");
+	EventShow((XEvent *) event);
+     }
 }
 
 void
 HintsProcessRootClientMessage(XClientMessageEvent * event)
 {
-   char               *name;
-
-   name = XGetAtomName(disp, event->message_type);
-   if (name == NULL)
-      return;
-
 #if 0
-   if (!memcmp(name, "WM_", 3))
-      ICCCM_ProcessRootClientMessage(event);
-   else
+   if (ICCCM_ProcessRootClientMessage(event))
+      return;
 #endif
-   if (!memcmp(name, "_NET_", 5))
-      EWMH_ProcessRootClientMessage(event);
+   if (EWMH_ProcessRootClientMessage(event))
+      return;
 #if ENABLE_GNOME
-   else if (!memcmp(name, "_WIN_", 5))
-      GNOME_ProcessRootClientMessage(event);
+   if (GNOME_ProcessRootClientMessage(event))
+      return;
 #endif
-   XFree(name);
+   if (EDebug(1))
+     {
+	Eprintf("HintsProcessRootClientMessage:\n");
+	EventShow((XEvent *) event);
+     }
 }
 
 Pixmap

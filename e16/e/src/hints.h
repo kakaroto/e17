@@ -52,10 +52,10 @@ void                EWMH_SetWindowActions(const EWin * ewin);
 void                EWMH_GetWindowHints(EWin * ewin);
 void                EWMH_DelWindowHints(const EWin * ewin);
 void                EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change);
-void                EWMH_ProcessClientClientMessage(EWin * ewin,
+int                 EWMH_ProcessClientClientMessage(EWin * ewin,
 						    XClientMessageEvent *
 						    event);
-void                EWMH_ProcessRootClientMessage(XClientMessageEvent * event);
+int                 EWMH_ProcessRootClientMessage(XClientMessageEvent * event);
 
 #if ENABLE_GNOME
 /* gnome.c */
@@ -71,10 +71,10 @@ void                GNOME_SetAreaCount(void);
 void                GNOME_GetHints(EWin * ewin, Atom atom_change);
 void                GNOME_DelHints(const EWin * ewin);
 void                GNOME_SetHints(Window win_wm_check);
-void                GNOME_ProcessClientClientMessage(EWin * ewin,
+int                 GNOME_ProcessClientClientMessage(EWin * ewin,
 						     XClientMessageEvent *
 						     event);
-void                GNOME_ProcessRootClientMessage(XClientMessageEvent * event);
+int                 GNOME_ProcessRootClientMessage(XClientMessageEvent * event);
 #endif
 
 /* hints.c */
@@ -119,7 +119,7 @@ void                SelectionRelease(ESelection * sel);
 
 /* icccm.c */
 void                ICCCM_Init(void);
-void                ICCCM_ProcessClientClientMessage(EWin * ewin,
+int                 ICCCM_ProcessClientClientMessage(EWin * ewin,
 						     XClientMessageEvent *
 						     event);
 void                ICCCM_GetTitle(EWin * ewin, Atom atom_change);

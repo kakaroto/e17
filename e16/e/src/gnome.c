@@ -750,7 +750,7 @@ GNOME_SetHints(Window win_wm_check)
    }
 }
 
-void
+int
 GNOME_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 {
    static Atom         a4 = 0, a5 = 0;
@@ -768,7 +768,7 @@ GNOME_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 	EoSetLayer(ewin, val);
 	ecore_x_window_prop_card32_set(EwinGetClientXwin(ewin), a4, &val, 1);
 	EwinRaise(ewin);
-	return;
+	return 1;
      }
    if (event->message_type == a5)
      {
@@ -798,11 +798,13 @@ GNOME_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 			 (event->data.l[1] & WIN_STATE_SHADED) != 0);
 	  }
 	HintsSetWindowState(ewin);
-	return;
+	return 1;
      }
+
+   return 0;
 }
 
-void
+int
 GNOME_ProcessRootClientMessage(XClientMessageEvent * event)
 {
    static Atom         a2 = 0, a3 = 0;
@@ -815,11 +817,13 @@ GNOME_ProcessRootClientMessage(XClientMessageEvent * event)
    if (event->message_type == a2)
      {
 	DeskCurrentGotoArea(event->data.l[0], event->data.l[1]);
-	return;
+	return 1;
      }
    if (event->message_type == a3)
      {
 	DeskGotoNum(event->data.l[0]);
-	return;
+	return 1;
      }
+
+   return 0;
 }

@@ -53,7 +53,7 @@ ICCCM_Init(void)
      }
 }
 
-void
+int
 ICCCM_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 {
    Atom                a;
@@ -64,13 +64,17 @@ ICCCM_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 	  {
 	     EwinIconify(ewin);
 	  }
+	return 1;
      }
-   else if (event->message_type == ECORE_X_ATOM_WM_PROTOCOLS)
+   if (event->message_type == ECORE_X_ATOM_WM_PROTOCOLS)
      {
 	a = event->data.l[0];
 	if (a == ECORE_X_ATOM_WM_DELETE_WINDOW && event->window == VRoot.xwin)
 	   SessionExit(EEXIT_EXIT, NULL);
+	return 1;
      }
+
+   return 0;
 }
 
 void

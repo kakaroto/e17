@@ -846,7 +846,7 @@ do_set(int is_set, int action)
    return -1;
 }
 
-void
+int
 EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 {
    int                 source;
@@ -858,14 +858,16 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	ts = ev->data.l[1];
 /*	cwin = ev->data.l[2]; */
 	EwinOpActivate(ewin, source, 1);
+	return 1;
      }
-   else if (ev->message_type == ECORE_X_ATOM_NET_CLOSE_WINDOW)
+   if (ev->message_type == ECORE_X_ATOM_NET_CLOSE_WINDOW)
      {
 /*	ts = ev->data.l[0]; */
 	source = OPSRC(ev->data.l[1]);
 	EwinOpClose(ewin, source);
+	return 1;
      }
-   else if (ev->message_type == ECORE_X_ATOM_NET_WM_DESKTOP)
+   if (ev->message_type == ECORE_X_ATOM_NET_WM_DESKTOP)
      {
 	source = OPSRC(ev->data.l[1]);
 	if ((unsigned)ev->data.l[0] == 0xFFFFFFFF)
@@ -880,8 +882,9 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	     else
 		EwinMoveToDesktop(ewin, DeskGet(ev->data.l[0]));
 	  }
+	return 1;
      }
-   else if (ev->message_type == ECORE_X_ATOM_NET_WM_STATE)
+   if (ev->message_type == ECORE_X_ATOM_NET_WM_STATE)
      {
 	/*
 	 * It is assumed(!) that only the MAXIMIZE H/V ones can be set
@@ -949,20 +952,18 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 		  maxh = do_set(maxh, action);
 	       }
 
-	     if ((ewin->state.maximized_horz == maxh) &&
-		 (ewin->state.maximized_vert == maxv))
-		goto done;
-
-	     func(ewin, "available");
-	     EWMH_SetWindowState(ewin);
+	     if ((ewin->state.maximized_horz != maxh) ||
+		 (ewin->state.maximized_vert != maxv))
+	       {
+		  func(ewin, "available");
+		  EWMH_SetWindowState(ewin);
+	       }
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN)
 	  {
 	     action = do_set(ewin->state.fullscreen, action);
-	     if (ewin->state.fullscreen == action)
-		goto done;
-
-	     EwinOpFullscreen(ewin, source, action);
+	     if (ewin->state.fullscreen != action)
+		EwinOpFullscreen(ewin, source, action);
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_ABOVE)
 	  {
@@ -986,8 +987,9 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	     ewin->state.attention = action;
 	     EWMH_SetWindowState(ewin);
 	  }
+	return 1;
      }
-   else if (ev->message_type == ECORE_X_ATOM_NET_MOVERESIZE_WINDOW)
+   if (ev->message_type == ECORE_X_ATOM_NET_MOVERESIZE_WINDOW)
      {
 	int                 flags, grav, x, y, w, h;
 
@@ -1001,8 +1003,9 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	h = (flags & 0x0800) ? ev->data.l[4] : ewin->client.h;
 /*	source = OPSRC((flags & 0xF000) >> 12); */
 	EwinMoveResizeWithGravity(ewin, x, y, w, h, grav);
+	return 1;
      }
-   else if (ev->message_type == ECORE_X_ATOM_NET_WM_MOVERESIZE)
+   if (ev->message_type == ECORE_X_ATOM_NET_WM_MOVERESIZE)
      {
 /*	source = OPSRC(ev->data.l[4]); */
 	switch (ev->data.l[2])
@@ -1028,47 +1031,48 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	     /* doMove(NULL); */
 	     break;
 	  }
+	return 1;
      }
-   else if (ev->message_type == ECORE_X_ATOM_NET_RESTACK_WINDOW)
+   if (ev->message_type == ECORE_X_ATOM_NET_RESTACK_WINDOW)
      {
 /*	source = OPSRC(ev->data.l[0]); */
 	/* FIXME - Implement */
+	return 1;
      }
 
- done:
-   ;
+   return 0;
 }
 
-void
+int
 EWMH_ProcessRootClientMessage(XClientMessageEvent * ev)
 {
    if (ev->message_type == ECORE_X_ATOM_NET_CURRENT_DESKTOP)
      {
 	DeskGotoNum(ev->data.l[0]);
-	goto done;
+	return 1;
      }
-   else if (ev->message_type == ECORE_X_ATOM_NET_DESKTOP_VIEWPORT)
+   if (ev->message_type == ECORE_X_ATOM_NET_DESKTOP_VIEWPORT)
      {
 	DeskCurrentGotoArea(ev->data.l[0] / VRoot.w, ev->data.l[1] / VRoot.h);
-	goto done;
+	return 1;
      }
-   else if (ev->message_type == ECORE_X_ATOM_NET_SHOWING_DESKTOP)
+   if (ev->message_type == ECORE_X_ATOM_NET_SHOWING_DESKTOP)
      {
 	EwinsShowDesktop(ev->data.l[0]);
-	goto done;
+	return 1;
      }
 #if 0				/* These messages are sent to dedicated window */
-   else if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN)
+   if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN)
      {
 	Eprintf("ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN: %lx: %s\n",
 		ev->window, (char *)ev->data.l);
-	goto done;
+	return 1;
      }
-   else if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO)
+   if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO)
      {
 	Eprintf("ECORE_X_ATOM_NET_STARTUP_INFO      : %lx: %s\n",
 		ev->window, (char *)ev->data.l);
-	goto done;
+	return 1;
      }
 #endif
 
@@ -1082,6 +1086,7 @@ EWMH_ProcessRootClientMessage(XClientMessageEvent * ev)
 	if (ev->message_type == ECORE_X_ATOM_NET_WM_DESKTOP)
 	  {
 	     ecore_x_netwm_desktop_set(ev->window, ev->data.l[0]);
+	     return 1;
 	  }
 	else if (ev->message_type == ECORE_X_ATOM_NET_WM_STATE)
 	  {
@@ -1096,11 +1101,9 @@ EWMH_ProcessRootClientMessage(XClientMessageEvent * ev)
 						     ECORE_X_ATOM_NET_WM_STATE,
 						     ev->data.l[2],
 						     ev->data.l[0]);
+	     return 1;
 	  }
-	goto done;
      }
 #endif
-
- done:
-   ;
+   return 0;
 }
