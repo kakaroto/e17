@@ -65,6 +65,7 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	Ewl_Widget *w, *vbox, *top_hbox, *o;
 	struct tm *ptr;
 	time_t tm;
+	const char *icon;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("ib", ib, FALSE);
@@ -90,12 +91,12 @@ ewl_calendar_init(Ewl_Calendar* ib)
 
 	o = ewl_icon_new();
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), o);
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
-	ewl_icon_image_set(EWL_ICON(o), 
-			ewl_icon_theme_icon_path_get(EWL_ICON_GO_PREVIOUS, 
-							EWL_ICON_SIZE_SMALL), 
-			EWL_ICON_GO_PREVIOUS);
+	icon = ewl_icon_theme_icon_path_get(EWL_ICON_GO_PREVIOUS, 
+						EWL_ICON_SIZE_SMALL);
+	if (icon)
+		ewl_icon_image_set(EWL_ICON(o), icon, EWL_ICON_GO_PREVIOUS);
 	ewl_icon_alt_text_set(EWL_ICON(o), "<<");
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					ewl_calendar_prev_month_cb, ib);
@@ -103,20 +104,21 @@ ewl_calendar_init(Ewl_Calendar* ib)
 
 	ib->month_label = ewl_label_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(ib->month_label), 
-						EWL_FLAG_FILL_FILL);
+						EWL_FLAG_FILL_HFILL |
+						EWL_FLAG_FILL_VSHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(ib->month_label), 
 						EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), ib->month_label);
 	ewl_widget_show(ib->month_label);
 
 	o = ewl_icon_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), o);	
-	ewl_icon_image_set(EWL_ICON(o),
-				ewl_icon_theme_icon_path_get(EWL_ICON_GO_NEXT, 
-							EWL_ICON_SIZE_SMALL), 
-				EWL_ICON_GO_NEXT);
+	icon = ewl_icon_theme_icon_path_get(EWL_ICON_GO_NEXT, 
+						EWL_ICON_SIZE_SMALL);
+	if (icon)
+		ewl_icon_image_set(EWL_ICON(o), icon, EWL_ICON_GO_NEXT);
 	ewl_icon_alt_text_set(EWL_ICON(o), ">>");
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					ewl_calendar_next_month_cb, ib);
