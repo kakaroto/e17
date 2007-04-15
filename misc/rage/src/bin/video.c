@@ -26,8 +26,6 @@ void
 video_init(char *module, char *file, char *swallow)
 {
    Evas_Object *o;
-   int iw, ih;
-   Evas_Coord w, h;
 
    if (o_video_bg) return;
    o = edje_object_add(evas);
@@ -297,7 +295,7 @@ video_menu_bg_hide_tmer_cb(void *data)
 static void
 video_resize(void)
 {
-   Evas_Coord w, h, w2, h2;
+   Evas_Coord w, h;
    int iw, ih;
    double ratio;
 

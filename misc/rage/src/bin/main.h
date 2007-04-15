@@ -7,6 +7,7 @@
 #include "menu.h"
 #include "video.h"
 #include "mini.h"
+#include "minivid.h"
 #include "sha1.h"
 
 extern Evas *evas;

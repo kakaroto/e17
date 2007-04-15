@@ -85,8 +85,6 @@ main(int argc, char **argv)
 	  }
 	else if (!strcmp(argv[i], "-cf"))
 	  {
-	     char buf[4096];
-	     
 	     config = strdup(argv[i + 1]);
 	     i++;
 	  }
@@ -361,7 +359,7 @@ struct _Genre
 };
 
 static Evas_List *
-list_string_unique_append(Evas_List *list, char *str, int count)
+list_string_unique_append(Evas_List *list, const char *str, int count)
 {
    Evas_List *l;
    Genre *ge;
@@ -399,7 +397,8 @@ list_string_free(Evas_List *list)
 static Evas_List *
 list_video_genres(void)
 {
-   Evas_List *l, *genres = NULL;
+   const Evas_List *l;
+   Evas_List *genres = NULL;
 
    /* determine toplevel genres */
    for (l = volume_items_get(); l; l = l->next)
@@ -521,7 +520,8 @@ main_menu_video_out(void *data)
 static void
 main_menu_video_library(void *data)
 {
-   Evas_List *l, *genres = NULL, *glist = NULL;
+   const Evas_List *l;
+   Evas_List *genres = NULL, *glist = NULL;
    Video_Lib *vl;
    Video_Lib_Item *vli;
 
@@ -562,8 +562,7 @@ main_menu_video_library(void *data)
 		    {
 		       char *s, *p;
 		       
-		       s = ge->label + vlpn + 1;
-		       s = strdup(s);
+		       s = strdup(ge->label + vlpn + 1);
 		       p = strchr(s, '/');
 		       if (p) *p = 0;
 		       printf("APP %s %i\n", s, ge->count);
@@ -575,8 +574,7 @@ main_menu_video_library(void *data)
 	       {
 		  char *s, *p;
 		  
-		  s = ge->label;
-		  s = strdup(s);
+		  s = strdup(ge->label);
 		  p = strchr(s, '/');
 		  if (p) *p = 0;
 		  printf("APP2 %s %i\n", s, ge->count);
@@ -614,7 +612,7 @@ main_menu_video_library(void *data)
 	  }
 	else
 	  {
-	     char *sel = NULL;
+	     const char *sel = NULL;
 	     
 	     for (l = volume_items_get(); l; l = l->next)
 	       {
@@ -627,12 +625,12 @@ main_menu_video_library(void *data)
 			 {
 			    char buf[4096];
 			    
+			    buf[0] = 0;
 			    vli = calloc(1, sizeof(Video_Lib_Item));
 			    vli->label = evas_stringshare_add(vi->name);
 			    vli->path = evas_stringshare_add(vi->rpath);
 			    vli->vi = vi;
 //			    snprintf(buf, sizeof(buf), "3:00:00");
-			    snprintf(buf, sizeof(buf), "");
 			    menu_item_add(vli->path, vli->label,
 					  "", buf,
 					  main_menu_video_view, vli, 
@@ -671,7 +669,7 @@ main_menu_video(void *data)
    menu_item_select("Library");
    
      {
-	Evas_List *l;
+	const Evas_List *l;
 	
 	for (l = volume_items_get(); l; l = l->next)
 	  {

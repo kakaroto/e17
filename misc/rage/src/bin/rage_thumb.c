@@ -205,7 +205,7 @@ static int
 frame_grab(void *data)
 {
    char buf[4096];
-   void *pixels;
+   const void *pixels;
    double p;
 
    if (pos == 0)

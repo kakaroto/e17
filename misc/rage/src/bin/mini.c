@@ -27,7 +27,7 @@ static Evas_List *minis = NULL;
 static int generators = 0;
 
 Evas_Object *
-mini_add(Evas_Object *parent, char *source)
+mini_add(Evas_Object *parent, const char *source)
 {
    Evas_Object *o;
    Mini *mini;

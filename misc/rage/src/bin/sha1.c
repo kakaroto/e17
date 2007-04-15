@@ -14,10 +14,11 @@
  * still generates decent hashes either way... 
  */
 int
-sha1_sum(unsigned char *data, int size, unsigned char *dst)
+sha1_sum(const unsigned char *data, int size, unsigned char *dst)
 {
    unsigned int digest[5], word[80], wa, wb, wc, wd, we, t;
-   unsigned char buf[64], *d;
+   unsigned char buf[64];
+   const unsigned char *d;
    int index, left, i;
    const unsigned int magic[4] = 
      {

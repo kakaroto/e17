@@ -47,8 +47,6 @@ int VOLUME_SCAN_GO = 0;
 void
 volume_init(void)
 {
-   char buf[4096];
-   
    VOLUME_ADD = ecore_event_type_new();
    VOLUME_DEL = ecore_event_type_new();
    VOLUME_TYPE_ADD = ecore_event_type_new();
@@ -394,8 +392,8 @@ static Volume_Item *
 volume_file_scan(char *file)
 {
    Volume_Item *vi;
-   char *ext, *f;
-   
+   char *ext;
+
    vi = calloc(1, sizeof(Volume_Item));
    vi->path = strdup(file);
    vi->rpath = ecore_file_realpath(vi->path);
@@ -462,6 +460,7 @@ volume_file_scan(char *file)
    /* invent the data */
    if (!vi->name)
      {
+	const char *f;
 	/* guess name from filename minus extension with _ converted to space */
 	f = ecore_file_get_file(file);
 	if (f)
@@ -479,11 +478,12 @@ volume_file_scan(char *file)
      }
    if (!vi->genre)
      {
+	char *f;
 	/* guess genre from parent directory name with _ converted to space */
 	f = ecore_file_get_dir(file);
 	if (f)
 	  {
-	     char *c, *ff, *c2;
+	     char *c, *ff;
 	     
 	     ff = ecore_file_get_dir(f);
 	     if (ff)
@@ -518,7 +518,7 @@ static Volume_Item *
 volume_dir_scan(char *dir)
 {
    Volume_Item *vi;
-   char *ext, *f;
+   const char *f;
    
    vi = calloc(1, sizeof(Volume_Item));
    vi->path = strdup(dir);

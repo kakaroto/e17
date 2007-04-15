@@ -17,7 +17,7 @@ struct _Context
 
 struct _Menu
 {
-   char          *name;
+   const char    *name;
    Evas_List     *items;
    unsigned char  selected : 1;
    Evas_Object   *box;
@@ -29,10 +29,10 @@ struct _Menu_Item
 {
    Evas_Object   *base;
    Evas_Object   *ic;
-   char          *label;
-   char          *icon;
-   char          *desc;
-   char          *info;
+   const char    *label;
+   const char    *icon;
+   const char    *desc;
+   const char    *info;
    void         (*func) (void *data);
    void          *data;
    void         (*free_func) (void *data);
@@ -43,12 +43,10 @@ struct _Menu_Item
 };
 
 static void         _menu_init(void);
-static int          _menu_del_timer_cb(void *data);
 static Menu        *_menu_current_get(void);
 static void         _menu_item_select_update(Menu *m, Menu_Item *mi);
 
 static Evas_Object *o_box = NULL;
-static Evas_Object *o_box2 = NULL;
 static Evas_List   *menus   = NULL;
 
 static void
@@ -59,11 +57,6 @@ _menu_init(void)
    e_box_orientation_set(o_box, 1);
    e_box_align_set(o_box, 0.5, 0.5);
    layout_swallow("menu", o_box);
-}
-
-static int
-_menu_del_timer_cb(void *data)
-{
 }
 
 static Menu *
@@ -266,7 +259,7 @@ menu_push(const char *context, const char *name, void (*free_func) (void *data),
 void
 menu_pop(void)
 {
-   Evas_List *l, *ll;
+   Evas_List *l;
    Menu *m, *mm;
     
    for (l = menus; l; l = l->next)
@@ -324,8 +317,7 @@ void
 menu_go(void)
 {
    Menu *m;
-   Evas_List *l;
-   
+ 
    m = _menu_current_get();
    if (!m) return;
    _menu_realize(m);
@@ -427,7 +419,6 @@ menu_item_select_jump(int jump)
    Menu *m;
    Menu_Item *mi, **mia;
    int i, c, n, s;
-   double a;
 
    m = _menu_current_get();
    if (!m) return;
