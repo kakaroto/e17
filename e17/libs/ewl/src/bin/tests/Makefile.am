@@ -27,6 +27,7 @@ SUBDIRS				= \
 	image \
 	image_thumbnail \
 	io_manager \
+	label \
 	layer \
 	list \
 	media \
