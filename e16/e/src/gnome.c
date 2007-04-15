@@ -751,28 +751,6 @@ GNOME_SetHints(Window win_wm_check)
 }
 
 void
-GNOME_ProcessRootClientMessage(XClientMessageEvent * event)
-{
-   static Atom         a2 = 0, a3 = 0;
-
-   if (!a2)
-      a2 = XInternAtom(disp, "_WIN_AREA", False);
-   if (!a3)
-      a3 = XInternAtom(disp, "_WIN_WORKSPACE", False);
-
-   if (event->message_type == a2)
-     {
-	DeskCurrentGotoArea(event->data.l[0], event->data.l[1]);
-	return;
-     }
-   if (event->message_type == a3)
-     {
-	DeskGotoNum(event->data.l[0]);
-	return;
-     }
-}
-
-void
 GNOME_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 {
    static Atom         a4 = 0, a5 = 0;
@@ -820,6 +798,28 @@ GNOME_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 			 (event->data.l[1] & WIN_STATE_SHADED) != 0);
 	  }
 	HintsSetWindowState(ewin);
+	return;
+     }
+}
+
+void
+GNOME_ProcessRootClientMessage(XClientMessageEvent * event)
+{
+   static Atom         a2 = 0, a3 = 0;
+
+   if (!a2)
+      a2 = XInternAtom(disp, "_WIN_AREA", False);
+   if (!a3)
+      a3 = XInternAtom(disp, "_WIN_WORKSPACE", False);
+
+   if (event->message_type == a2)
+     {
+	DeskCurrentGotoArea(event->data.l[0], event->data.l[1]);
+	return;
+     }
+   if (event->message_type == a3)
+     {
+	DeskGotoNum(event->data.l[0]);
 	return;
      }
 }

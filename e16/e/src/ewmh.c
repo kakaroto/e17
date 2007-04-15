@@ -847,72 +847,6 @@ do_set(int is_set, int action)
 }
 
 void
-EWMH_ProcessRootClientMessage(XClientMessageEvent * ev)
-{
-   if (ev->message_type == ECORE_X_ATOM_NET_CURRENT_DESKTOP)
-     {
-	DeskGotoNum(ev->data.l[0]);
-	goto done;
-     }
-   else if (ev->message_type == ECORE_X_ATOM_NET_DESKTOP_VIEWPORT)
-     {
-	DeskCurrentGotoArea(ev->data.l[0] / VRoot.w, ev->data.l[1] / VRoot.h);
-	goto done;
-     }
-   else if (ev->message_type == ECORE_X_ATOM_NET_SHOWING_DESKTOP)
-     {
-	EwinsShowDesktop(ev->data.l[0]);
-	goto done;
-     }
-#if 0				/* These messages are sent to dedicated window */
-   else if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN)
-     {
-	Eprintf("ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN: %lx: %s\n",
-		ev->window, (char *)ev->data.l);
-	goto done;
-     }
-   else if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO)
-     {
-	Eprintf("ECORE_X_ATOM_NET_STARTUP_INFO      : %lx: %s\n",
-		ev->window, (char *)ev->data.l);
-	goto done;
-     }
-#endif
-
-#if 0				/* Obsolete? */
-   EWin               *ewin;
-
-   ewin = EwinFindByClient(ev->window);
-   if (ewin == NULL)
-     {
-	/* Some misbehaving clients go here */
-	if (ev->message_type == ECORE_X_ATOM_NET_WM_DESKTOP)
-	  {
-	     ecore_x_netwm_desktop_set(ev->window, ev->data.l[0]);
-	  }
-	else if (ev->message_type == ECORE_X_ATOM_NET_WM_STATE)
-	  {
-	     ecore_x_window_prop_atom_list_change(ev->window,
-						  ECORE_X_ATOM_NET_WM_STATE,
-						  ev->data.l[1], ev->data.l[0]);
-	     if (ev->data.l[2] ==
-		 (long)ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ ||
-		 ev->data.l[2] ==
-		 (long)ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT)
-		ecore_x_window_prop_atom_list_change(ev->window,
-						     ECORE_X_ATOM_NET_WM_STATE,
-						     ev->data.l[2],
-						     ev->data.l[0]);
-	  }
-	goto done;
-     }
-#endif
-
- done:
-   ;
-}
-
-void
 EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 {
    int                 source;
@@ -1100,6 +1034,72 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 /*	source = OPSRC(ev->data.l[0]); */
 	/* FIXME - Implement */
      }
+
+ done:
+   ;
+}
+
+void
+EWMH_ProcessRootClientMessage(XClientMessageEvent * ev)
+{
+   if (ev->message_type == ECORE_X_ATOM_NET_CURRENT_DESKTOP)
+     {
+	DeskGotoNum(ev->data.l[0]);
+	goto done;
+     }
+   else if (ev->message_type == ECORE_X_ATOM_NET_DESKTOP_VIEWPORT)
+     {
+	DeskCurrentGotoArea(ev->data.l[0] / VRoot.w, ev->data.l[1] / VRoot.h);
+	goto done;
+     }
+   else if (ev->message_type == ECORE_X_ATOM_NET_SHOWING_DESKTOP)
+     {
+	EwinsShowDesktop(ev->data.l[0]);
+	goto done;
+     }
+#if 0				/* These messages are sent to dedicated window */
+   else if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN)
+     {
+	Eprintf("ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN: %lx: %s\n",
+		ev->window, (char *)ev->data.l);
+	goto done;
+     }
+   else if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO)
+     {
+	Eprintf("ECORE_X_ATOM_NET_STARTUP_INFO      : %lx: %s\n",
+		ev->window, (char *)ev->data.l);
+	goto done;
+     }
+#endif
+
+#if 0				/* Obsolete? */
+   EWin               *ewin;
+
+   ewin = EwinFindByClient(ev->window);
+   if (ewin == NULL)
+     {
+	/* Some misbehaving clients go here */
+	if (ev->message_type == ECORE_X_ATOM_NET_WM_DESKTOP)
+	  {
+	     ecore_x_netwm_desktop_set(ev->window, ev->data.l[0]);
+	  }
+	else if (ev->message_type == ECORE_X_ATOM_NET_WM_STATE)
+	  {
+	     ecore_x_window_prop_atom_list_change(ev->window,
+						  ECORE_X_ATOM_NET_WM_STATE,
+						  ev->data.l[1], ev->data.l[0]);
+	     if (ev->data.l[2] ==
+		 (long)ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ ||
+		 ev->data.l[2] ==
+		 (long)ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT)
+		ecore_x_window_prop_atom_list_change(ev->window,
+						     ECORE_X_ATOM_NET_WM_STATE,
+						     ev->data.l[2],
+						     ev->data.l[0]);
+	  }
+	goto done;
+     }
+#endif
 
  done:
    ;
