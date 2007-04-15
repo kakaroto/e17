@@ -5,4 +5,4 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		       install-sh ltmain.sh missing
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = edbus.pc
+pkgconfig_DATA = edbus.pc ehal.pc
