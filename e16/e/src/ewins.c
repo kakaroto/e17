@@ -2268,7 +2268,7 @@ EwinHandleEventsClient(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
      case ClientMessage:
-	HintsProcessClientMessage(&(ev->xclient));
+	HintsProcessClientClientMessage(ewin, &(ev->xclient));
 	break;
 
      case EX_EVENT_SHAPE_NOTIFY:
@@ -2348,7 +2348,7 @@ EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 	break;
 
      case ClientMessage:
-	HintsProcessClientMessage(&(ev->xclient));
+	HintsProcessRootClientMessage(&(ev->xclient));
 	break;
 
      default:

@@ -54,17 +54,12 @@ ICCCM_Init(void)
 }
 
 void
-ICCCM_ProcessClientMessage(XClientMessageEvent * event)
+ICCCM_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 {
-   EWin               *ewin;
    Atom                a;
 
    if (event->message_type == ECORE_X_ATOM_WM_CHANGE_STATE)
      {
-	ewin = EwinFindByClient(event->window);
-	if (ewin == NULL)
-	   return;
-
 	if (event->data.l[0] == IconicState)
 	  {
 	     EwinIconify(ewin);

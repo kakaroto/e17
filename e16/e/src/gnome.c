@@ -751,20 +751,14 @@ GNOME_SetHints(Window win_wm_check)
 }
 
 void
-GNOME_ProcessClientMessage(XClientMessageEvent * event)
+GNOME_ProcessRootClientMessage(XClientMessageEvent * event)
 {
-   static Atom         a2 = 0, a3 = 0, a4 = 0, a5 = 0;
-
-   EWin               *ewin;
+   static Atom         a2 = 0, a3 = 0;
 
    if (!a2)
       a2 = XInternAtom(disp, "_WIN_AREA", False);
    if (!a3)
       a3 = XInternAtom(disp, "_WIN_WORKSPACE", False);
-   if (!a4)
-      a4 = XInternAtom(disp, "_WIN_LAYER", False);
-   if (!a5)
-      a5 = XInternAtom(disp, "_WIN_STATE", False);
 
    if (event->message_type == a2)
      {
@@ -776,26 +770,30 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
 	DeskGotoNum(event->data.l[0]);
 	return;
      }
+}
+
+void
+GNOME_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
+{
+   static Atom         a4 = 0, a5 = 0;
+
+   if (!a4)
+      a4 = XInternAtom(disp, "_WIN_LAYER", False);
+   if (!a5)
+      a5 = XInternAtom(disp, "_WIN_STATE", False);
+
    if (event->message_type == a4)
      {
-	ewin = EwinFindByClient(event->window);
-	if (ewin)
-	  {
-	     unsigned int        val;
+	unsigned int        val;
 
-	     val = event->data.l[0];
-	     EoSetLayer(ewin, val);
-	     ecore_x_window_prop_card32_set(EwinGetClientXwin(ewin), a4,
-					    &val, 1);
-	     EwinRaise(ewin);
-	  }
+	val = event->data.l[0];
+	EoSetLayer(ewin, val);
+	ecore_x_window_prop_card32_set(EwinGetClientXwin(ewin), a4, &val, 1);
+	EwinRaise(ewin);
 	return;
      }
    if (event->message_type == a5)
      {
-	ewin = EwinFindByClient(event->window);
-	if (!ewin)
-	   return;
 	if (event->data.l[0] & WIN_STATE_FIXED_POSITION)
 	  {
 	     if (event->data.l[1] & WIN_STATE_FIXED_POSITION)

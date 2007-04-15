@@ -266,7 +266,7 @@ HintsProcessPropertyChange(EWin * ewin, Atom atom_change)
 }
 
 void
-HintsProcessClientMessage(XClientMessageEvent * event)
+HintsProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 {
    char               *name;
 
@@ -275,12 +275,35 @@ HintsProcessClientMessage(XClientMessageEvent * event)
       return;
 
    if (!memcmp(name, "WM_", 3))
-      ICCCM_ProcessClientMessage(event);
+      ICCCM_ProcessClientClientMessage(ewin, event);
    else if (!memcmp(name, "_NET_", 5))
-      EWMH_ProcessClientMessage(event);
+      EWMH_ProcessClientClientMessage(ewin, event);
 #if ENABLE_GNOME
    else if (!memcmp(name, "_WIN_", 5))
-      GNOME_ProcessClientMessage(event);
+      GNOME_ProcessClientClientMessage(ewin, event);
+#endif
+   XFree(name);
+}
+
+void
+HintsProcessRootClientMessage(XClientMessageEvent * event)
+{
+   char               *name;
+
+   name = XGetAtomName(disp, event->message_type);
+   if (name == NULL)
+      return;
+
+#if 0
+   if (!memcmp(name, "WM_", 3))
+      ICCCM_ProcessRootClientMessage(event);
+   else
+#endif
+   if (!memcmp(name, "_NET_", 5))
+      EWMH_ProcessRootClientMessage(event);
+#if ENABLE_GNOME
+   else if (!memcmp(name, "_WIN_", 5))
+      GNOME_ProcessRootClientMessage(event);
 #endif
    XFree(name);
 }

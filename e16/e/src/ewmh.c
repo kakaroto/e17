@@ -810,6 +810,25 @@ EWMH_DelWindowHints(const EWin * ewin)
 }
 
 /*
+ * Process property change
+ */
+void
+EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
+{
+   if (atom_change == ECORE_X_ATOM_NET_WM_NAME)
+      EWMH_GetWindowName(ewin);
+   else if (atom_change == ECORE_X_ATOM_NET_WM_ICON_NAME)
+      EWMH_GetWindowIconName(ewin);
+   else if (atom_change == ECORE_X_ATOM_NET_WM_STRUT_PARTIAL ||
+	    atom_change == ECORE_X_ATOM_NET_WM_STRUT)
+      EWMH_GetWindowStrut(ewin);
+   else if (atom_change == ECORE_X_ATOM_NET_WM_WINDOW_OPACITY)
+      EWMH_GetWindowOpacity(ewin);
+   else if (atom_change == ECORE_X_ATOM_NET_WM_USER_TIME)
+      EWMH_GetWindowUserTime(ewin);
+}
+
+/*
  * Process configuration requests from clients
  */
 static int
@@ -828,15 +847,8 @@ do_set(int is_set, int action)
 }
 
 void
-EWMH_ProcessClientMessage(XClientMessageEvent * ev)
+EWMH_ProcessRootClientMessage(XClientMessageEvent * ev)
 {
-   EWin               *ewin;
-   int                 source;
-   Time                ts;
-
-   /*
-    * The ones that don't target an application window
-    */
    if (ev->message_type == ECORE_X_ATOM_NET_CURRENT_DESKTOP)
      {
 	DeskGotoNum(ev->data.l[0]);
@@ -852,28 +864,24 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	EwinsShowDesktop(ev->data.l[0]);
 	goto done;
      }
+#if 0				/* These messages are sent to dedicated window */
    else if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN)
      {
-#if 0
-	Eprintf
-	   ("EWMH_ProcessClientMessage: ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN: %lx: %s\n",
-	    ev->window, (char *)ev->data.l);
-#endif
+	Eprintf("ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN: %lx: %s\n",
+		ev->window, (char *)ev->data.l);
 	goto done;
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_STARTUP_INFO)
      {
-#if 0
-	Eprintf
-	   ("EWMH_ProcessClientMessage: ECORE_X_ATOM_NET_STARTUP_INFO      : %lx: %s\n",
-	    ev->window, (char *)ev->data.l);
-#endif
+	Eprintf("ECORE_X_ATOM_NET_STARTUP_INFO      : %lx: %s\n",
+		ev->window, (char *)ev->data.l);
 	goto done;
      }
+#endif
 
-   /*
-    * The ones that do target an application window
-    */
+#if 0				/* Obsolete? */
+   EWin               *ewin;
+
    ewin = EwinFindByClient(ev->window);
    if (ewin == NULL)
      {
@@ -898,6 +906,17 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 	  }
 	goto done;
      }
+#endif
+
+ done:
+   ;
+}
+
+void
+EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
+{
+   int                 source;
+   Time                ts;
 
    if (ev->message_type == ECORE_X_ATOM_NET_ACTIVE_WINDOW)
      {
@@ -1084,23 +1103,4 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
 
  done:
    ;
-}
-
-/*
- * Process received window property change
- */
-void
-EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
-{
-   if (atom_change == ECORE_X_ATOM_NET_WM_NAME)
-      EWMH_GetWindowName(ewin);
-   else if (atom_change == ECORE_X_ATOM_NET_WM_ICON_NAME)
-      EWMH_GetWindowIconName(ewin);
-   else if (atom_change == ECORE_X_ATOM_NET_WM_STRUT_PARTIAL ||
-	    atom_change == ECORE_X_ATOM_NET_WM_STRUT)
-      EWMH_GetWindowStrut(ewin);
-   else if (atom_change == ECORE_X_ATOM_NET_WM_WINDOW_OPACITY)
-      EWMH_GetWindowOpacity(ewin);
-   else if (atom_change == ECORE_X_ATOM_NET_WM_USER_TIME)
-      EWMH_GetWindowUserTime(ewin);
 }

@@ -51,8 +51,11 @@ void                EWMH_SetWindowOpacity(const EWin * ewin);
 void                EWMH_SetWindowActions(const EWin * ewin);
 void                EWMH_GetWindowHints(EWin * ewin);
 void                EWMH_DelWindowHints(const EWin * ewin);
-void                EWMH_ProcessClientMessage(XClientMessageEvent * event);
 void                EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change);
+void                EWMH_ProcessClientClientMessage(EWin * ewin,
+						    XClientMessageEvent *
+						    event);
+void                EWMH_ProcessRootClientMessage(XClientMessageEvent * event);
 
 #if ENABLE_GNOME
 /* gnome.c */
@@ -68,7 +71,10 @@ void                GNOME_SetAreaCount(void);
 void                GNOME_GetHints(EWin * ewin, Atom atom_change);
 void                GNOME_DelHints(const EWin * ewin);
 void                GNOME_SetHints(Window win_wm_check);
-void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
+void                GNOME_ProcessClientClientMessage(EWin * ewin,
+						     XClientMessageEvent *
+						     event);
+void                GNOME_ProcessRootClientMessage(XClientMessageEvent * event);
 #endif
 
 /* hints.c */
@@ -91,7 +97,10 @@ void                HintsSetWindowBorder(const EWin * ewin);
 void                HintsGetWindowHints(EWin * ewin);
 void                HintsDelWindowHints(const EWin * ewin);
 void                HintsProcessPropertyChange(EWin * ewin, Atom atom_change);
-void                HintsProcessClientMessage(XClientMessageEvent * event);
+void                HintsProcessClientClientMessage(EWin * ewin,
+						    XClientMessageEvent *
+						    event);
+void                HintsProcessRootClientMessage(XClientMessageEvent * event);
 
 Pixmap              HintsGetRootPixmap(Win win);
 void                HintsSetRootHints(Win win);
@@ -110,7 +119,9 @@ void                SelectionRelease(ESelection * sel);
 
 /* icccm.c */
 void                ICCCM_Init(void);
-void                ICCCM_ProcessClientMessage(XClientMessageEvent * event);
+void                ICCCM_ProcessClientClientMessage(EWin * ewin,
+						     XClientMessageEvent *
+						     event);
 void                ICCCM_GetTitle(EWin * ewin, Atom atom_change);
 void                ICCCM_Delete(const EWin * ewin);
 void                ICCCM_Save(const EWin * ewin);
