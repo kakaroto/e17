@@ -37,6 +37,8 @@
 #include "timers.h"
 #include "xwin.h"
 
+#define ENABLE_IPC_INSERT_KEYS  0
+
 #define SS(s) ((s) ? (s) : NoText)
 static const char   NoText[] = "-NONE-";
 
@@ -1219,6 +1221,158 @@ IPC_Warp(const char *params, Client * c __UNUSED__)
      }
 }
 
+#if ENABLE_IPC_INSERT_KEYS
+struct _keyset
+{
+   const char         *sym;
+   int                 state;
+   const char         *ch;
+};
+
+static const struct _keyset ks[] = {
+   {"a", 0, "a"},
+   {"b", 0, "b"},
+   {"c", 0, "c"},
+   {"d", 0, "d"},
+   {"e", 0, "e"},
+   {"f", 0, "f"},
+   {"g", 0, "g"},
+   {"h", 0, "h"},
+   {"i", 0, "i"},
+   {"j", 0, "j"},
+   {"k", 0, "k"},
+   {"l", 0, "l"},
+   {"m", 0, "m"},
+   {"n", 0, "n"},
+   {"o", 0, "o"},
+   {"p", 0, "p"},
+   {"q", 0, "q"},
+   {"r", 0, "r"},
+   {"s", 0, "s"},
+   {"t", 0, "t"},
+   {"u", 0, "u"},
+   {"v", 0, "v"},
+   {"w", 0, "w"},
+   {"x", 0, "x"},
+   {"y", 0, "y"},
+   {"z", 0, "z"},
+   {"a", ShiftMask, "A"},
+   {"b", ShiftMask, "B"},
+   {"c", ShiftMask, "C"},
+   {"d", ShiftMask, "D"},
+   {"e", ShiftMask, "E"},
+   {"f", ShiftMask, "F"},
+   {"g", ShiftMask, "G"},
+   {"h", ShiftMask, "H"},
+   {"i", ShiftMask, "I"},
+   {"j", ShiftMask, "J"},
+   {"k", ShiftMask, "K"},
+   {"l", ShiftMask, "L"},
+   {"m", ShiftMask, "M"},
+   {"n", ShiftMask, "N"},
+   {"o", ShiftMask, "O"},
+   {"p", ShiftMask, "P"},
+   {"q", ShiftMask, "Q"},
+   {"r", ShiftMask, "R"},
+   {"s", ShiftMask, "S"},
+   {"t", ShiftMask, "T"},
+   {"u", ShiftMask, "U"},
+   {"v", ShiftMask, "V"},
+   {"w", ShiftMask, "W"},
+   {"x", ShiftMask, "X"},
+   {"y", ShiftMask, "Y"},
+   {"z", ShiftMask, "Z"},
+   {"grave", 0, "`"},
+   {"1", 0, "1"},
+   {"2", 0, "2"},
+   {"3", 0, "3"},
+   {"4", 0, "4"},
+   {"5", 0, "5"},
+   {"6", 0, "6"},
+   {"7", 0, "7"},
+   {"8", 0, "8"},
+   {"9", 0, "9"},
+   {"0", 0, "0"},
+   {"minus", 0, "-"},
+   {"equal", 0, "="},
+   {"bracketleft", 0, "["},
+   {"bracketright", 0, "]"},
+   {"backslash", 0, "\\\\"},
+   {"semicolon", 0, "\\s"},
+   {"apostrophe", 0, "\\a"},
+   {"comma", 0, ","},
+   {"period", 0, "."},
+   {"slash", 0, "/"},
+   {"grave", ShiftMask, "~"},
+   {"1", ShiftMask, "!"},
+   {"2", ShiftMask, "@"},
+   {"3", ShiftMask, "#"},
+   {"4", ShiftMask, "$"},
+   {"5", ShiftMask, "%"},
+   {"6", ShiftMask, "^"},
+   {"7", ShiftMask, "&"},
+   {"8", ShiftMask, "*"},
+   {"9", ShiftMask, "("},
+   {"0", ShiftMask, ")"},
+   {"minus", ShiftMask, "_"},
+   {"equal", ShiftMask, "+"},
+   {"bracketleft", ShiftMask, "{"},
+   {"bracketright", ShiftMask, "}"},
+   {"backslash", ShiftMask, "|"},
+   {"semicolon", ShiftMask, ":"},
+   {"apostrophe", ShiftMask, "\\q"},
+   {"comma", ShiftMask, "<"},
+   {"period", ShiftMask, ">"},
+   {"slash", ShiftMask, "?"},
+   {"space", ShiftMask, " "},
+   {"Return", ShiftMask, "\\n"},
+   {"Tab", ShiftMask, "\\t"}
+};
+
+static void
+IPC_InsertKeys(const char *params, Client * c __UNUSED__)
+{
+   Window              win = 0;
+   int                 i, rev;
+   const char         *s;
+   XKeyEvent           ev;
+
+   if (!params)
+      return;
+
+   s = params;
+   XGetInputFocus(disp, &win, &rev);
+   if (win == None)
+      return;
+
+   SoundPlay("SOUND_INSERT_KEYS");
+   ev.window = win;
+   for (i = 0; i < (int)strlen(s); i++)
+     {
+	int                 j;
+
+	ev.x = Mode.events.x;
+	ev.y = Mode.events.y;
+	ev.x_root = Mode.events.x;
+	ev.y_root = Mode.events.y;
+	for (j = 0; j < (int)(sizeof(ks) / sizeof(struct _keyset)); j++)
+	  {
+	     if (strncmp(ks[j].ch, &(s[i]), strlen(ks[j].ch)))
+		continue;
+
+	     i += strlen(ks[j].ch) - 1;
+	     ev.keycode = XKeysymToKeycode(disp, XStringToKeysym(ks[j].sym));
+	     ev.state = ks[j].state;
+	     ev.type = KeyPress;
+	     XSendEvent(disp, win, False, 0, (XEvent *) & ev);
+	     ev.type = KeyRelease;
+	     XSendEvent(disp, win, False, 0, (XEvent *) & ev);
+	     break;
+	  }
+     }
+}
+#endif /* ENABLE_IPC_INSERT_KEYS */
+
 /*
  * Compatibility stuff - DO NOT USE
  */
@@ -1430,6 +1584,13 @@ static const IpcItem IPCArray[] = {
     "  warp rel <x> <y>     Move pointer relative to current position\n"
     "  warp scr [<i>]       Move pointer to other screen (default next)\n"
     "  warp <x> <y>         Same as \"warp rel\"\n"},
+#if ENABLE_IPC_INSERT_KEYS
+   {
+    IPC_InsertKeys,
+    "keys", NULL,
+    "Send key events to focused window",
+    "  keys <string>\n"},
+#endif
 };
 
 static int          ipc_item_count = 0;
