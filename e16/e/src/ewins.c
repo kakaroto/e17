@@ -182,17 +182,18 @@ EwinGetHints(EWin * ewin)
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinGetHints %#lx\n", EwinGetClientXwin(ewin));
 
-   ICCCM_GetTitle(ewin, 0);
+   ICCCM_GetTitle(ewin);
    if (EwinIsInternal(ewin))
      {
-	ICCCM_GetInfo(ewin, 0);
+	/* FIXME - This should not be needed */
+	ICCCM_GetInfo(ewin);
      }
    else
      {
-	ICCCM_GetHints(ewin, 0);
-	ICCCM_GetGeoms(ewin, 0);
+	ICCCM_GetHints(ewin);
+	ICCCM_GetGeoms(ewin);
 	MWM_GetHints(ewin, 0);
-	ICCCM_GetInfo(ewin, 0);	/* NB! Need group info first */
+	ICCCM_GetInfo(ewin);	/* NB! Need group info first */
 	HintsGetWindowHints(ewin);
 	SessionGetInfo(ewin, 0);
      }
@@ -1326,7 +1327,7 @@ EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
    EGrabServer();
    EwinChangesStart(ewin);
 
-   HintsProcessPropertyChange(ewin, ev->xproperty.atom);
+   HintsProcessPropertyChange(ewin, ev);
    SessionGetInfo(ewin, ev->xproperty.atom);
    EwinStateUpdate(ewin);
 

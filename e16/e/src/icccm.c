@@ -78,11 +78,8 @@ ICCCM_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 }
 
 void
-ICCCM_GetTitle(EWin * ewin, Atom atom_change)
+ICCCM_GetTitle(EWin * ewin)
 {
-   if (atom_change && atom_change != ECORE_X_ATOM_WM_NAME)
-      return;
-
    _EFREE(EwinGetIcccmName(ewin));
 
    EwinGetIcccmName(ewin) = ecore_x_icccm_title_get(EwinGetClientXwin(ewin));
@@ -388,13 +385,10 @@ ICCCM_Focus(const EWin * ewin)
 }
 
 void
-ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
+ICCCM_GetGeoms(EWin * ewin)
 {
    XSizeHints          hint;
    long                mask;
-
-   if (atom_change && atom_change != ECORE_X_ATOM_WM_NORMAL_HINTS)
-      return;
 
    if (XGetWMNormalHints(disp, EwinGetClientXwin(ewin), &hint, &mask))
      {
@@ -531,186 +525,148 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 
 #define TryGroup(e) (((e)->icccm.group != None) && ((e)->icccm.group != EwinGetClientXwin(e)))
 
-void
-ICCCM_GetInfo(EWin * ewin, Atom atom_change)
+static void
+ICCCM_GetWmClass(EWin * ewin)
 {
-   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLASS)
-     {
-	_EFREE(EwinGetIcccmCName(ewin));
-	_EFREE(EwinGetIcccmClass(ewin));
+   _EFREE(EwinGetIcccmCName(ewin));
+   _EFREE(EwinGetIcccmClass(ewin));
 
-	ecore_x_icccm_name_class_get(EwinGetClientXwin(ewin),
-				     &EwinGetIcccmCName(ewin),
-				     &EwinGetIcccmClass(ewin));
-	if (!EwinGetIcccmCName(ewin) && TryGroup(ewin))
-	   ecore_x_icccm_name_class_get(ewin->icccm.group,
-					&EwinGetIcccmCName(ewin),
-					&EwinGetIcccmClass(ewin));
-     }
+   ecore_x_icccm_name_class_get(EwinGetClientXwin(ewin),
+				&EwinGetIcccmCName(ewin),
+				&EwinGetIcccmClass(ewin));
+   if (!EwinGetIcccmCName(ewin) && TryGroup(ewin))
+      ecore_x_icccm_name_class_get(ewin->icccm.group,
+				   &EwinGetIcccmCName(ewin),
+				   &EwinGetIcccmClass(ewin));
+}
 
-   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_COMMAND)
-     {
-	int                 argc;
-	char              **argv, s[4096], *ss;
+static void
+ICCCM_GetWmCommand(EWin * ewin)
+{
+   int                 argc;
+   char              **argv, s[4096], *ss;
 
-	_EFREE(ewin->icccm.wm_command);
+   _EFREE(ewin->icccm.wm_command);
 
-	argc = ecore_x_window_prop_string_list_get(EwinGetClientXwin(ewin),
-						   ECORE_X_ATOM_WM_COMMAND,
-						   &argv);
-	if ((argc < 0) && TryGroup(ewin))
-	   argc = ecore_x_window_prop_string_list_get(ewin->icccm.group,
-						      ECORE_X_ATOM_WM_COMMAND,
-						      &argv);
+   argc = ecore_x_window_prop_string_list_get(EwinGetClientXwin(ewin),
+					      ECORE_X_ATOM_WM_COMMAND, &argv);
+   if ((argc < 0) && TryGroup(ewin))
+      argc = ecore_x_window_prop_string_list_get(ewin->icccm.group,
+						 ECORE_X_ATOM_WM_COMMAND,
+						 &argv);
 
-	ss = StrlistEncodeEscaped(s, sizeof(s), argv, argc);
-	ewin->icccm.wm_command = Estrdup(ss);
-	StrlistFree(argv, argc);
-     }
+   ss = StrlistEncodeEscaped(s, sizeof(s), argv, argc);
+   ewin->icccm.wm_command = Estrdup(ss);
+   StrlistFree(argv, argc);
+}
 
-   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLIENT_MACHINE)
-     {
-	_EFREE(ewin->icccm.wm_machine);
+static void
+ICCCM_GetWmClientMachine(EWin * ewin)
+{
+   _EFREE(ewin->icccm.wm_machine);
 
-	ewin->icccm.wm_machine =
-	   ecore_x_window_prop_string_get(EwinGetClientXwin(ewin),
-					  ECORE_X_ATOM_WM_CLIENT_MACHINE);
-	if (!ewin->icccm.wm_machine && TryGroup(ewin))
-	   ewin->icccm.wm_machine =
-	      ecore_x_window_prop_string_get(ewin->icccm.group,
-					     ECORE_X_ATOM_WM_CLIENT_MACHINE);
-     }
+   ewin->icccm.wm_machine =
+      ecore_x_window_prop_string_get(EwinGetClientXwin(ewin),
+				     ECORE_X_ATOM_WM_CLIENT_MACHINE);
+   if (!ewin->icccm.wm_machine && TryGroup(ewin))
+      ewin->icccm.wm_machine =
+	 ecore_x_window_prop_string_get(ewin->icccm.group,
+					ECORE_X_ATOM_WM_CLIENT_MACHINE);
+}
 
-   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_ICON_NAME)
-     {
-	_EFREE(ewin->icccm.wm_icon_name);
+static void
+ICCCM_GetWmIconName(EWin * ewin)
+{
+   _EFREE(ewin->icccm.wm_icon_name);
 
-	ewin->icccm.wm_icon_name =
-	   ecore_x_window_prop_string_get(EwinGetClientXwin(ewin),
-					  ECORE_X_ATOM_WM_ICON_NAME);
-	if (!ewin->icccm.wm_icon_name && TryGroup(ewin))
-	   ewin->icccm.wm_icon_name =
-	      ecore_x_window_prop_string_get(ewin->icccm.group,
-					     ECORE_X_ATOM_WM_ICON_NAME);
-     }
+   ewin->icccm.wm_icon_name =
+      ecore_x_window_prop_string_get(EwinGetClientXwin(ewin),
+				     ECORE_X_ATOM_WM_ICON_NAME);
+   if (!ewin->icccm.wm_icon_name && TryGroup(ewin))
+      ewin->icccm.wm_icon_name =
+	 ecore_x_window_prop_string_get(ewin->icccm.group,
+					ECORE_X_ATOM_WM_ICON_NAME);
+}
 
-   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_WINDOW_ROLE)
-     {
-	_EFREE(ewin->icccm.wm_role);
-	ewin->icccm.wm_role =
-	   ecore_x_window_prop_string_get(EwinGetClientXwin(ewin),
-					  ECORE_X_ATOM_WM_WINDOW_ROLE);
-     }
+static void
+ICCCM_GetWmWindowRole(EWin * ewin)
+{
+   _EFREE(ewin->icccm.wm_role);
+   ewin->icccm.wm_role =
+      ecore_x_window_prop_string_get(EwinGetClientXwin(ewin),
+				     ECORE_X_ATOM_WM_WINDOW_ROLE);
 }
 
 void
-ICCCM_GetHints(EWin * ewin, Atom atom_change)
+ICCCM_GetInfo(EWin * ewin)
+{
+   ICCCM_GetWmClass(ewin);
+   ICCCM_GetWmCommand(ewin);
+   ICCCM_GetWmClientMachine(ewin);
+   ICCCM_GetWmIconName(ewin);
+   ICCCM_GetWmWindowRole(ewin);
+}
+
+static void
+ICCCM_GetWmHints(EWin * ewin)
 {
    XWMHints           *hint;
-   Window              win;
-   Atom               *prop;
-   int                 i, num;
 
-   hint = NULL;
-   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_HINTS)
-      hint = XGetWMHints(disp, EwinGetClientXwin(ewin));
-   if (hint)
+   hint = XGetWMHints(disp, EwinGetClientXwin(ewin));
+   if (!hint)
+      return;
+
+   /* I have to make sure the thing i'm docking is a dock app */
+   if ((hint->flags & StateHint) && (hint->initial_state == WithdrawnState))
      {
-	/* I have to make sure the thing i'm docking is a dock app */
-	if ((hint->flags & StateHint)
-	    && (hint->initial_state == WithdrawnState))
+	if (hint->flags & (StateHint | IconWindowHint | IconPositionHint |
+			   WindowGroupHint))
 	  {
-	     if (hint->flags & (StateHint | IconWindowHint | IconPositionHint |
-				WindowGroupHint))
-	       {
-		  if ((hint->icon_x == 0) && (hint->icon_y == 0)
-		      && hint->window_group == EwinGetClientXwin(ewin))
-		     ewin->state.docked = 1;
-	       }
-	  }
-
-	ewin->icccm.need_input =
-	   ((hint->flags & InputHint) && (!hint->input)) ? 0 : 1;
-
-	ewin->icccm.start_iconified =
-	   ((hint->flags & StateHint) &&
-	    (hint->initial_state == IconicState)) ? 1 : 0;
-
-	if (hint->flags & IconPixmapHint)
-	  {
-	     if (ewin->icccm.icon_pmap != hint->icon_pixmap)
-	       {
-		  ewin->icccm.icon_pmap = hint->icon_pixmap;
-		  EwinChange(ewin, EWIN_CHANGE_ICON_PMAP);
-	       }
-	  }
-	else
-	  {
-	     ewin->icccm.icon_pmap = None;
-	  }
-
-	ewin->icccm.icon_mask =
-	   (hint->flags & IconMaskHint) ? hint->icon_mask : None;
-
-	ewin->icccm.icon_win =
-	   (hint->flags & IconWindowHint) ? hint->icon_window : None;
-
-	ewin->icccm.group =
-	   (hint->flags & WindowGroupHint) ? hint->window_group : None;
-
-	if (hint->flags & XUrgencyHint)
-	  {
-	     if (!ewin->state.attention)
-		EwinChange(ewin, EWIN_CHANGE_ATTENTION);
-	     ewin->icccm.urgency = 1;
-	     ewin->state.attention = 1;
-	  }
-	else
-	  {
-	     ewin->icccm.urgency = 0;
-	  }
-
-	XFree(hint);
-     }
-
-   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_PROTOCOLS)
-     {
-	if (XGetWMProtocols(disp, EwinGetClientXwin(ewin), &prop, &num))
-	  {
-	     ewin->icccm.take_focus = 0;
-	     ewin->icccm.delete_window = 0;
-	     for (i = 0; i < num; i++)
-	       {
-		  if (prop[i] == ECORE_X_ATOM_WM_TAKE_FOCUS)
-		     ewin->icccm.take_focus = ewin->icccm.need_input = 1;
-		  else if (prop[i] == ECORE_X_ATOM_WM_DELETE_WINDOW)
-		     ewin->icccm.delete_window = 1;
-#if USE_XSYNC
-		  else if (prop[i] == ECORE_X_ATOM_NET_WM_SYNC_REQUEST)
-		    {
-		       unsigned int        c;
-
-		       ewin->ewmh.sync_request_enable = 1;
-		       ecore_x_window_prop_card32_get(EwinGetClientXwin(ewin),
-						      ECORE_X_ATOM_NET_WM_SYNC_REQUEST_COUNTER,
-						      &c, 1);
-		       ewin->ewmh.sync_request_counter = c;
-		    }
-#endif
-	       }
-	     XFree(prop);
+	     if ((hint->icon_x == 0) && (hint->icon_y == 0)
+		 && hint->window_group == EwinGetClientXwin(ewin))
+		ewin->state.docked = 1;
 	  }
      }
 
-   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_TRANSIENT_FOR)
+   ewin->icccm.need_input =
+      ((hint->flags & InputHint) && (!hint->input)) ? 0 : 1;
+
+   ewin->icccm.start_iconified =
+      ((hint->flags & StateHint) &&
+       (hint->initial_state == IconicState)) ? 1 : 0;
+
+   if (hint->flags & IconPixmapHint)
      {
-	ewin->icccm.transient = 0;
-	ewin->icccm.transient_for = None;
-	if (XGetTransientForHint(disp, EwinGetClientXwin(ewin), &win))
+	if (ewin->icccm.icon_pmap != hint->icon_pixmap)
 	  {
-	     ewin->icccm.transient = 1;
-	     ewin->icccm.transient_for = win;
+	     ewin->icccm.icon_pmap = hint->icon_pixmap;
+	     EwinChange(ewin, EWIN_CHANGE_ICON_PMAP);
 	  }
+     }
+   else
+     {
+	ewin->icccm.icon_pmap = None;
+     }
+
+   ewin->icccm.icon_mask =
+      (hint->flags & IconMaskHint) ? hint->icon_mask : None;
+
+   ewin->icccm.icon_win =
+      (hint->flags & IconWindowHint) ? hint->icon_window : None;
+
+   ewin->icccm.group =
+      (hint->flags & WindowGroupHint) ? hint->window_group : None;
+
+   if (hint->flags & XUrgencyHint)
+     {
+	if (!ewin->state.attention)
+	   EwinChange(ewin, EWIN_CHANGE_ATTENTION);
+	ewin->icccm.urgency = 1;
+	ewin->state.attention = 1;
+     }
+   else
+     {
+	ewin->icccm.urgency = 0;
      }
 
    if (ewin->icccm.group == EwinGetClientXwin(ewin))
@@ -722,20 +678,80 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	ewin->icccm.is_group_leader = 0;
      }
 
-   if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLIENT_LEADER)
-     {
-	Ecore_X_Window      cleader;
+   XFree(hint);
+}
 
-	num = ecore_x_window_prop_window_get(EwinGetClientXwin(ewin),
-					     ECORE_X_ATOM_WM_CLIENT_LEADER,
-					     &cleader, 1);
-	if (num > 0)
+static void
+ICCCM_GetWmProtocols(EWin * ewin)
+{
+   Atom               *prop;
+   int                 i, num;
+
+   if (XGetWMProtocols(disp, EwinGetClientXwin(ewin), &prop, &num))
+     {
+	ewin->icccm.take_focus = 0;
+	ewin->icccm.delete_window = 0;
+	for (i = 0; i < num; i++)
 	  {
-	     ewin->icccm.client_leader = cleader;
-	     if (!ewin->icccm.group)
-		ewin->icccm.group = cleader;
+	     if (prop[i] == ECORE_X_ATOM_WM_TAKE_FOCUS)
+		ewin->icccm.take_focus = ewin->icccm.need_input = 1;
+	     else if (prop[i] == ECORE_X_ATOM_WM_DELETE_WINDOW)
+		ewin->icccm.delete_window = 1;
+#if USE_XSYNC
+	     else if (prop[i] == ECORE_X_ATOM_NET_WM_SYNC_REQUEST)
+	       {
+		  unsigned int        c;
+
+		  ewin->ewmh.sync_request_enable = 1;
+		  ecore_x_window_prop_card32_get(EwinGetClientXwin(ewin),
+						 ECORE_X_ATOM_NET_WM_SYNC_REQUEST_COUNTER,
+						 &c, 1);
+		  ewin->ewmh.sync_request_counter = c;
+	       }
+#endif
 	  }
+	XFree(prop);
      }
+}
+
+static void
+ICCCM_GetWmTransientFor(EWin * ewin)
+{
+   Window              win;
+
+   ewin->icccm.transient = 0;
+   ewin->icccm.transient_for = None;
+   if (XGetTransientForHint(disp, EwinGetClientXwin(ewin), &win))
+     {
+	ewin->icccm.transient = 1;
+	ewin->icccm.transient_for = win;
+     }
+}
+
+static void
+ICCCM_GetWmClientLeader(EWin * ewin)
+{
+   int                 num;
+   Ecore_X_Window      cleader;
+
+   num = ecore_x_window_prop_window_get(EwinGetClientXwin(ewin),
+					ECORE_X_ATOM_WM_CLIENT_LEADER,
+					&cleader, 1);
+   if (num > 0)
+     {
+	ewin->icccm.client_leader = cleader;
+	if (!ewin->icccm.group)
+	   ewin->icccm.group = cleader;
+     }
+}
+
+void
+ICCCM_GetHints(EWin * ewin)
+{
+   ICCCM_GetWmHints(ewin);
+   ICCCM_GetWmProtocols(ewin);
+   ICCCM_GetWmTransientFor(ewin);
+   ICCCM_GetWmClientLeader(ewin);
 }
 
 void
@@ -757,14 +773,79 @@ ICCCM_SetIconSizes(void)
 /*
  * Process received window property change
  */
-void
+int
 ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change)
 {
-   ICCCM_GetTitle(ewin, atom_change);
-   ICCCM_GetHints(ewin, atom_change);
-   ICCCM_GetInfo(ewin, atom_change);
-   ICCCM_Cmap(ewin);
-   ICCCM_GetGeoms(ewin, atom_change);
+   if (atom_change == ECORE_X_ATOM_WM_NAME)
+     {
+	ICCCM_GetTitle(ewin);
+	return 1;
+     }
+
+   /* ICCCM_GetHints */
+   if (atom_change == ECORE_X_ATOM_WM_HINTS)
+     {
+	ICCCM_GetWmHints(ewin);
+	return 1;
+     }
+   if (atom_change == ECORE_X_ATOM_WM_PROTOCOLS)
+     {
+	ICCCM_GetWmProtocols(ewin);
+	return 1;
+     }
+   if (atom_change == ECORE_X_ATOM_WM_TRANSIENT_FOR)
+     {
+	ICCCM_GetWmTransientFor(ewin);
+	return 1;
+     }
+   if (atom_change == ECORE_X_ATOM_WM_CLIENT_LEADER)
+     {
+	ICCCM_GetWmClientLeader(ewin);
+	return 1;
+     }
+
+   /* ICCCM_GetInfo */
+   if (atom_change == ECORE_X_ATOM_WM_ICON_NAME)
+     {
+	ICCCM_GetWmIconName(ewin);
+	return 1;
+     }
+#if 1				/* FIXME - Any reason to process these? */
+   if (atom_change == ECORE_X_ATOM_WM_CLASS)
+     {
+	ICCCM_GetWmClass(ewin);
+	return 1;
+     }
+   if (atom_change == ECORE_X_ATOM_WM_COMMAND)
+     {
+	ICCCM_GetWmCommand(ewin);
+	return 1;
+     }
+   if (atom_change == ECORE_X_ATOM_WM_CLIENT_MACHINE)
+     {
+	ICCCM_GetWmClientMachine(ewin);
+	return 1;
+     }
+   if (atom_change == ECORE_X_ATOM_WM_WINDOW_ROLE)
+     {
+	ICCCM_GetWmWindowRole(ewin);
+	return 1;
+     }
+#endif
+
+   if (atom_change == ECORE_X_ATOM_WM_COLORMAP_WINDOWS)
+     {
+	ICCCM_Cmap(ewin);
+	return 1;
+     }
+
+   if (atom_change == ECORE_X_ATOM_WM_NORMAL_HINTS)
+     {
+	ICCCM_GetGeoms(ewin);
+	return 1;
+     }
+
+   return 0;
 }
 
 #if USE_XSYNC

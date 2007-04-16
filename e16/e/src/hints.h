@@ -51,7 +51,7 @@ void                EWMH_SetWindowOpacity(const EWin * ewin);
 void                EWMH_SetWindowActions(const EWin * ewin);
 void                EWMH_GetWindowHints(EWin * ewin);
 void                EWMH_DelWindowHints(const EWin * ewin);
-void                EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change);
+int                 EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 int                 EWMH_ProcessClientClientMessage(EWin * ewin,
 						    XClientMessageEvent *
 						    event);
@@ -96,7 +96,7 @@ void                HintsSetWindowOpacity(const EWin * ewin);
 void                HintsSetWindowBorder(const EWin * ewin);
 void                HintsGetWindowHints(EWin * ewin);
 void                HintsDelWindowHints(const EWin * ewin);
-void                HintsProcessPropertyChange(EWin * ewin, Atom atom_change);
+void                HintsProcessPropertyChange(EWin * ewin, XEvent * ev);
 void                HintsProcessClientClientMessage(EWin * ewin,
 						    XClientMessageEvent *
 						    event);
@@ -122,7 +122,7 @@ void                ICCCM_Init(void);
 int                 ICCCM_ProcessClientClientMessage(EWin * ewin,
 						     XClientMessageEvent *
 						     event);
-void                ICCCM_GetTitle(EWin * ewin, Atom atom_change);
+void                ICCCM_GetTitle(EWin * ewin);
 void                ICCCM_Delete(const EWin * ewin);
 void                ICCCM_Save(const EWin * ewin);
 void                ICCCM_Iconify(const EWin * ewin);
@@ -148,10 +148,10 @@ void                ICCCM_Adopt(const EWin * ewin);
 void                ICCCM_Withdraw(const EWin * ewin);
 void                ICCCM_Cmap(EWin * ewin);
 void                ICCCM_Focus(const EWin * ewin);
-void                ICCCM_GetGeoms(EWin * ewin, Atom atom_change);
-void                ICCCM_GetInfo(EWin * ewin, Atom atom_change);
-void                ICCCM_GetHints(EWin * ewin, Atom atom_change);
-void                ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change);
+void                ICCCM_GetGeoms(EWin * ewin);
+void                ICCCM_GetInfo(EWin * ewin);
+void                ICCCM_GetHints(EWin * ewin);
+int                 ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 
 /* mwm.c */
 void                MWM_GetHints(EWin * ewin, Atom atom_change);

@@ -247,23 +247,23 @@ HintsDelWindowHints(const EWin * ewin)
  */
 
 void
-HintsProcessPropertyChange(EWin * ewin, Atom atom_change)
+HintsProcessPropertyChange(EWin * ewin, XEvent * ev)
 {
-   char               *name;
-
-   name = XGetAtomName(disp, atom_change);
-   if (name == NULL)
+   if (ICCCM_ProcessPropertyChange(ewin, ev->xproperty.atom))
       return;
-
-   if (!memcmp(name, "WM_", 3))
-      ICCCM_ProcessPropertyChange(ewin, atom_change);
-   else if (!memcmp(name, "_NET_", 5))
-      EWMH_ProcessPropertyChange(ewin, atom_change);
+   if (EWMH_ProcessPropertyChange(ewin, ev->xproperty.atom))
+      return;
 #if 0				/* No! - ENABLE_GNOME */
-   else if (!memcmp(name, "_WIN_", 5))
-      GNOME_GetHints(ewin, atom_change);
+   if (GNOME_GetHints(ewin, ev->xproperty.atom))
+      return;
 #endif
-   XFree(name);
+#if 0
+   if (EDebug(1))
+     {
+	Eprintf("HintsProcessPropertyChange:\n");
+	EventShow(ev);
+     }
+#endif
 }
 
 void

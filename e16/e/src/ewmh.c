@@ -812,20 +812,37 @@ EWMH_DelWindowHints(const EWin * ewin)
 /*
  * Process property change
  */
-void
+int
 EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
 {
    if (atom_change == ECORE_X_ATOM_NET_WM_NAME)
-      EWMH_GetWindowName(ewin);
-   else if (atom_change == ECORE_X_ATOM_NET_WM_ICON_NAME)
-      EWMH_GetWindowIconName(ewin);
-   else if (atom_change == ECORE_X_ATOM_NET_WM_STRUT_PARTIAL ||
-	    atom_change == ECORE_X_ATOM_NET_WM_STRUT)
-      EWMH_GetWindowStrut(ewin);
-   else if (atom_change == ECORE_X_ATOM_NET_WM_WINDOW_OPACITY)
-      EWMH_GetWindowOpacity(ewin);
-   else if (atom_change == ECORE_X_ATOM_NET_WM_USER_TIME)
-      EWMH_GetWindowUserTime(ewin);
+     {
+	EWMH_GetWindowName(ewin);
+	return 1;
+     }
+   if (atom_change == ECORE_X_ATOM_NET_WM_ICON_NAME)
+     {
+	EWMH_GetWindowIconName(ewin);
+	return 1;
+     }
+   if (atom_change == ECORE_X_ATOM_NET_WM_STRUT_PARTIAL ||
+       atom_change == ECORE_X_ATOM_NET_WM_STRUT)
+     {
+	EWMH_GetWindowStrut(ewin);
+	return 1;
+     }
+   if (atom_change == ECORE_X_ATOM_NET_WM_WINDOW_OPACITY)
+     {
+	EWMH_GetWindowOpacity(ewin);
+	return 1;
+     }
+   if (atom_change == ECORE_X_ATOM_NET_WM_USER_TIME)
+     {
+	EWMH_GetWindowUserTime(ewin);
+	return 1;
+     }
+
+   return 0;
 }
 
 /*
