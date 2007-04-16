@@ -195,7 +195,7 @@ EwinGetHints(EWin * ewin)
 	MWM_GetHints(ewin, 0);
 	ICCCM_GetInfo(ewin);	/* NB! Need group info first */
 	HintsGetWindowHints(ewin);
-	SessionGetInfo(ewin, 0);
+	SessionGetInfo(ewin);
      }
 }
 
@@ -1328,7 +1328,6 @@ EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
    EwinChangesStart(ewin);
 
    HintsProcessPropertyChange(ewin, ev);
-   SessionGetInfo(ewin, ev->xproperty.atom);
    EwinStateUpdate(ewin);
 
    EwinChangesProcess(ewin);

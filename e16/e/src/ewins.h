@@ -472,9 +472,6 @@ int                 ActionsResume(void);
 void                ActionsHandleMotion(void);
 int                 ActionsEnd(EWin * ewin);
 
-/* session.c */
-void                SessionGetInfo(EWin * ewin, Atom atom_change);
-
 /* size.c */
 void                MaxSize(EWin * ewin, const char *resize_type);
 void                MaxWidth(EWin * ewin, const char *resize_type);

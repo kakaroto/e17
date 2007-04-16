@@ -26,6 +26,7 @@
 #include "e16-ecore_hints.h"
 #include "emodule.h"
 #include "ewins.h"
+#include "hints.h"
 #include "session.h"
 #include "settings.h"
 #include "snaps.h"
@@ -305,7 +306,6 @@ callback_shutdown_cancelled(SmcConn smc_conn, SmPointer client_data __UNUSED__)
 }
 
 static Atom         atom_sm_client_id;
-static Atom         atom_wm_client_leader;
 
 static IceConn      ice_conn;
 
@@ -334,7 +334,6 @@ SessionInit(void)
 
 #ifdef HAVE_X11_SM_SMLIB_H
    atom_sm_client_id = XInternAtom(disp, "SM_CLIENT_ID", False);
-   atom_wm_client_leader = XInternAtom(disp, "WM_CLIENT_LEADER", False);
 
    IceSetIOErrorHandler(ice_io_error_handler);
 
@@ -434,34 +433,22 @@ GetSMfd(void)
 }
 
 void
-SessionGetInfo(EWin * ewin, Atom atom_change)
+SessionGetInfo(EWin * ewin)
 {
+#if 0				/* Unused */
 #ifdef HAVE_X11_SM_SMLIB_H
-   Ecore_X_Window      win;
-   int                 num;
-
-   /* We can comply with the ICCCM because gtk is working correctly */
-   if ((atom_change) &&
-       (!(atom_change == atom_sm_client_id ||
-	  atom_change == atom_wm_client_leader)))
+   if (atom_sm_client_id == None)
       return;
-   if (!atom_sm_client_id || !atom_wm_client_leader)
-      return;
-
-   if (ewin->session_id)
-     {
-	Efree(ewin->session_id);
-	ewin->session_id = NULL;
-     }
-
-   num = ecore_x_window_prop_window_get(EwinGetClientXwin(ewin),
-					atom_wm_client_leader, &win, 1);
-   if (num > 0)
-      ewin->session_id = ecore_x_window_prop_string_get(win, atom_sm_client_id);
+   _EFREE(ewin->session_id);
+   if (ewin->icccm.client_leader != None)
+      ewin->session_id =
+	 ecore_x_window_prop_string_get(ewin->icccm.client_leader,
+					atom_sm_client_id);
 #else
    ewin = NULL;
-   atom_change = 0;
 #endif /* HAVE_X11_SM_SMLIB_H */
+#endif
+   ewin = NULL;
 }
 
 void

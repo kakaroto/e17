@@ -158,4 +158,7 @@ int                 ICCCM_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 void                MWM_GetHints(EWin * ewin, Atom atom_change);
 void                MWM_SetInfo(void);
 
+/* session.c */
+void                SessionGetInfo(EWin * ewin);
+
 #endif /* _HINTS_H_ */
