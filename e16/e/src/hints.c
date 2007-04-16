@@ -287,10 +287,8 @@ HintsProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 void
 HintsProcessRootClientMessage(XClientMessageEvent * event)
 {
-#if 0
    if (ICCCM_ProcessRootClientMessage(event))
       return;
-#endif
    if (EWMH_ProcessRootClientMessage(event))
       return;
 #if ENABLE_GNOME

@@ -56,8 +56,6 @@ ICCCM_Init(void)
 int
 ICCCM_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 {
-   Atom                a;
-
    if (event->message_type == ECORE_X_ATOM_WM_CHANGE_STATE)
      {
 	if (event->data.l[0] == IconicState)
@@ -66,10 +64,19 @@ ICCCM_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * event)
 	  }
 	return 1;
      }
+
+   return 0;
+}
+
+int
+ICCCM_ProcessRootClientMessage(XClientMessageEvent * event)
+{
+   Atom                a;
+
    if (event->message_type == ECORE_X_ATOM_WM_PROTOCOLS)
      {
 	a = event->data.l[0];
-	if (a == ECORE_X_ATOM_WM_DELETE_WINDOW && event->window == VRoot.xwin)
+	if (a == ECORE_X_ATOM_WM_DELETE_WINDOW)
 	   SessionExit(EEXIT_EXIT, NULL);
 	return 1;
      }

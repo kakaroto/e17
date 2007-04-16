@@ -122,6 +122,7 @@ void                ICCCM_Init(void);
 int                 ICCCM_ProcessClientClientMessage(EWin * ewin,
 						     XClientMessageEvent *
 						     event);
+int                 ICCCM_ProcessRootClientMessage(XClientMessageEvent * event);
 void                ICCCM_GetTitle(EWin * ewin);
 void                ICCCM_Delete(const EWin * ewin);
 void                ICCCM_Save(const EWin * ewin);
