@@ -166,6 +166,8 @@ EWMH_Init(Window win_wm_check)
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_FULLSCREEN;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_CHANGE_DESKTOP;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_CLOSE;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_ABOVE;
+   atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_ACTION_BELOW;
 
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STRUT_PARTIAL;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_STRUT;
@@ -755,7 +757,7 @@ EWMH_GetWindowStrut(EWin * ewin)
 void
 EWMH_SetWindowActions(const EWin * ewin)
 {
-   Ecore_X_Atom        aa[10];
+   Ecore_X_Atom        aa[12];
    int                 num;
 
    num = 0;
@@ -779,6 +781,10 @@ EWMH_SetWindowActions(const EWin * ewin)
       aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_CHANGE_DESKTOP;
    if (!ewin->state.inhibit_close)
       aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_CLOSE;
+   if (!ewin->state.inhibit_stacking)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_ABOVE;
+   if (!ewin->state.inhibit_stacking)
+      aa[num++] = ECORE_X_ATOM_NET_WM_ACTION_BELOW;
 
    ecore_x_window_prop_atom_set(EwinGetClientXwin(ewin),
 				ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS, aa, num);

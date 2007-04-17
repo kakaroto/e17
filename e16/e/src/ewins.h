@@ -127,6 +127,7 @@ struct _ewin
       unsigned            inhibit_fullscreeen:1;
       unsigned            inhibit_change_desk:1;
       unsigned            inhibit_close:1;
+      unsigned            inhibit_stacking:1;
 
       unsigned            inhibit_actions:1;
       unsigned            inhibit_focus:1;
