@@ -687,6 +687,22 @@ EWMH_GetWindowUserTime(EWin * ewin)
 }
 
 static void
+EWMH_GetWindowStartupId(EWin * ewin)
+{
+#if 0				/* TBD */
+#define TryGroup(e) (((e)->icccm.group != None) && ((e)->icccm.group != EwinGetClientXwin(e)))
+   char               *str;
+
+   ecore_x_netwm_startup_id_get(EwinGetClientXwin(ewin), &str);
+   if (!str && TryGroup(ewin))
+      ecore_x_netwm_startup_id_get(ewin->icccm.group, &str);
+   Eprintf("Startup id: %s: %s\n", EwinGetTitle(ewin), str);
+#else
+   ewin = NULL;
+#endif
+}
+
+static void
 EWMH_GetWindowMisc(EWin * ewin)
 {
    int                 num;
@@ -803,6 +819,7 @@ EWMH_GetWindowHints(EWin * ewin)
    EWMH_GetWindowIcons(ewin);
    EWMH_GetWindowStrut(ewin);
    EWMH_GetWindowUserTime(ewin);
+   EWMH_GetWindowStartupId(ewin);
 }
 
 /*
