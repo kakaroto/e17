@@ -45,6 +45,22 @@ Ewl_Widget *add_entry(Ewl_Widget *c, const char *txt, void *cb, void *data)
 	return entry;
 }
 
+/*Create and add an icon to the container c*/
+Ewl_Widget *add_icon(Ewl_Widget *c, const char *lbl, const char *img, int thumbnail, void *cb, void *data)
+{
+	Ewl_Widget *icon;
+	
+	icon = ewl_icon_new();
+	if(!thumbnail) ewl_icon_thumbnailing_set(EWL_ICON(icon), FALSE);
+	if (lbl) ewl_icon_label_set(EWL_ICON(icon), lbl);
+	if (img) ewl_icon_image_set(EWL_ICON(icon), img, NULL);
+	if (c) ewl_container_child_append(EWL_CONTAINER(c), icon);
+	if (cb) ewl_callback_append(icon, EWL_CALLBACK_CLICKED, cb, data);
+	ewl_widget_show(icon);
+
+	return icon;
+}
+
 /*Create and Add an Image to the Container c*/
 Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, void *data)
 {

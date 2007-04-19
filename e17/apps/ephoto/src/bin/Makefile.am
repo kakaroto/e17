@@ -16,6 +16,7 @@ ephoto_SOURCES = ephoto.c \
 		      ephoto_main.c \
 		      ephoto_nls.c \
 		      ephoto_normal_view.c \
+		      ephoto_single_view.c \
 		      ephoto_slideshow.c \
 		      ephoto_utils.c
 		     

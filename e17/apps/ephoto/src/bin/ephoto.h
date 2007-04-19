@@ -68,6 +68,7 @@ void ephoto_db_close(sqlite3 *db);
 Ewl_Widget *add_box(Ewl_Widget *c, Ewl_Orientation orientation, int spacing);
 Ewl_Widget *add_button(Ewl_Widget *c, const char *txt, const char *img, void *cb, void *data);
 Ewl_Widget *add_entry(Ewl_Widget *c, const char *txt, void *cb, void *data);
+Ewl_Widget *add_icon(Ewl_Widget *c, const char *lbl, const char *img, int thumbnail, void *cb, void *data);
 Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, void *data);
 Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl);
 Ewl_Widget *add_menubar(Ewl_Widget *c);
@@ -86,7 +87,6 @@ void update_image(Ewl_Widget *image, int w, int h, unsigned int *data);
 
 /* Ephoto Edit View */
 Ewl_Widget *add_edit_view(Ewl_Widget *c);
-void add_edit_tools(Ewl_Widget *c);
 
 /* Ephoto List View */
 Ewl_Widget *add_list_view(Ewl_Widget *c);
@@ -96,6 +96,9 @@ Ewl_Widget *add_ltree(Ewl_Widget *c);
 Ewl_Widget *add_normal_view(Ewl_Widget *c);
 void freebox_image_clicked(Ewl_Widget *w, void *event, void *data);
 
+/* Ephoto Single View */
+Ewl_Widget *add_single_view(Ewl_Widget *c);
+
 /* Ephoto Slideshow */
 void start_slideshow(Ewl_Widget *w, void *event, void *data);
 
@@ -104,27 +107,39 @@ const char *file_size_get(int size);
 const char *image_pixels_string_get(const char *file);
 void image_pixels_int_get(const char *file, int *width, int *height);
 
-/* Ephoto Views */
-void show_normal_view(Ewl_Widget *w, void *event, void *data);
+/* Ephoto Main View */
+void show_main_view(Ewl_Widget *w, void *event, void *data);
 void show_edit_view(Ewl_Widget *w, void *event, void *data);
+
+/* Ephoto Viewer Views */
+void show_normal_view(Ewl_Widget *w, void *event, void *data);
 void show_list_view(Ewl_Widget *w, void *event, void *data);
+void show_single_view(Ewl_Widget *w, void *event, void *data);
 
 /* Ephoto Global Variables */
 typedef struct _Ephoto_Main Ephoto_Main;
 
 struct _Ephoto_Main
 {
+	char *current_directory;
 	Ecore_List *albums;
+	Ecore_List *directories;
 	Ecore_List *images;
 	Ewl_Widget *atree;
-	Ewl_Widget *edit_tools;
+	Ewl_Widget *browser;
+	Ewl_Widget *dtree;
 	Ewl_Widget *edit_vbox;
 	Ewl_Widget *eimage;
 	Ewl_Widget *fbox_vbox;
 	Ewl_Widget *fbox;
 	Ewl_Widget *list_vbox;
 	Ewl_Widget *ltree;
+	Ewl_Widget *main_nb;
+	Ewl_Widget *main_vbox;
+	Ewl_Widget *simage;
+	Ewl_Widget *single_vbox;
 	Ewl_Widget *toolbar;
+	Ewl_Widget *view;
 	Ewl_Widget *view_box;
 	Ewl_Widget *win;
 	sqlite3 *db;
