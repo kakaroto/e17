@@ -437,8 +437,10 @@ _mem_cb_check (void *data)
     {
       snprintf (real_str, sizeof (real_str), "Real: %d/%d MB", (real / 1024),
 		(total_real / 1024));
-      snprintf (swap_str, sizeof (swap_str), "Swap: %d/%d MB", (swap / 1024),
-		(total_swap / 1024));
+      if ( total_swap ) { 
+          snprintf (swap_str, sizeof (swap_str), "Swap: %d/%d MB", (swap / 1024),
+            (total_swap / 1024));
+      }
     }
   else
     {
@@ -446,19 +448,27 @@ _mem_cb_check (void *data)
 
       tr = (((double) real / (double) total_real) * 100);
       snprintf (real_str, sizeof (real_str), "Real: %1.2f%%", tr);
-      tr = (((double) swap / (double) total_swap) * 100);
-      snprintf (swap_str, sizeof (swap_str), "Swap: %1.2f%%", tr);
+      if ( total_swap ) { 
+          tr = (((double) swap / (double) total_swap) * 100);
+          snprintf (swap_str, sizeof (swap_str), "Swap: %1.2f%%", tr);
+      }
     }
   edje_object_part_text_set (inst->mem_obj, "real_label", real_str);
-  edje_object_part_text_set (inst->mem_obj, "swap_label", swap_str);
+  if ( total_swap ) { 
+      edje_object_part_text_set (inst->mem_obj, "swap_label", swap_str);
+  } else {
+      edje_object_part_text_set (inst->mem_obj, "swap_label", "");
+  }
 
   double tr = ((double) real / (double) total_real);
   msg.val = tr;
   edje_object_message_send (inst->mem_obj, EDJE_MESSAGE_FLOAT, 1, &msg);
 
-  double ts = ((double) swap / (double) total_swap);
-  msg.val = ts;
-  edje_object_message_send (inst->mem_obj, EDJE_MESSAGE_FLOAT, 2, &msg);
+  if ( total_swap ) { 
+      double ts = ((double) swap / (double) total_swap);
+      msg.val = ts;
+      edje_object_message_send (inst->mem_obj, EDJE_MESSAGE_FLOAT, 2, &msg);
+  }
 
   return 1;
 }
