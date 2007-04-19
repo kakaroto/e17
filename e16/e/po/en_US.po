@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -2139,8 +2139,8 @@ msgstr ""
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47
-msgid "Shade"
+#: config/strings.c:47 config/strings.c:172
+msgid "Shade/Unshade"
 msgstr ""
 
 #: config/strings.c:52
@@ -2547,10 +2547,6 @@ msgstr ""
 
 #: config/strings.c:165
 msgid "Show/Hide this window's group(s)"
-msgstr ""
-
-#: config/strings.c:172
-msgid "Shade/Unshade"
 msgstr ""
 
 #: config/strings.c:174

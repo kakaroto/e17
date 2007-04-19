@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -2395,10 +2395,10 @@ msgstr "Miniatúra be"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47
+#: config/strings.c:47 config/strings.c:172
 #, fuzzy
-msgid "Shade"
-msgstr "Árnyékolt"
+msgid "Shade/Unshade"
+msgstr "Árnyékolás"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -2858,11 +2858,6 @@ msgstr "  Válassza ki a csoportot ahova az ablak tartozni fog:  \n"
 msgid "Show/Hide this window's group(s)"
 msgstr "Csoport mutatása/elrejtése"
 
-#: config/strings.c:172
-#, fuzzy
-msgid "Shade/Unshade"
-msgstr "Árnyékolás"
-
 #: config/strings.c:174
 #, fuzzy
 msgid "Remember..."
@@ -2906,6 +2901,10 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Kilépés"
+
+#, fuzzy
+#~ msgid "Shade"
+#~ msgstr "Árnyékolt"
 
 #, fuzzy
 #~ msgid "Unshade"

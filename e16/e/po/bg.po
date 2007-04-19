@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -2473,10 +2473,10 @@ msgstr "Включване на снимки на екрана"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47
+#: config/strings.c:47 config/strings.c:172
 #, fuzzy
-msgid "Shade"
-msgstr "Затъмнен"
+msgid "Shade/Unshade"
+msgstr "Навито положение"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -2918,11 +2918,6 @@ msgstr "  Изберете групата в която този прозорец да принадлежи:  \n"
 msgid "Show/Hide this window's group(s)"
 msgstr "Покажи/скрий тази група"
 
-#: config/strings.c:172
-#, fuzzy
-msgid "Shade/Unshade"
-msgstr "Навито положение"
-
 #: config/strings.c:174
 #, fuzzy
 msgid "Remember..."
@@ -2966,6 +2961,10 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Излезте от Enlightenment"
+
+#, fuzzy
+#~ msgid "Shade"
+#~ msgstr "Затъмнен"
 
 #, fuzzy
 #~ msgid "Unshade"

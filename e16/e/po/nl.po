@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -2292,10 +2292,10 @@ msgstr "Shapshots aan"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47
+#: config/strings.c:47 config/strings.c:172
 #, fuzzy
-msgid "Shade"
-msgstr "Shaded"
+msgid "Shade/Unshade"
+msgstr "Shaded staat"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -2755,11 +2755,6 @@ msgstr "Kies de groep waar het venster bij moet behoren : \n"
 msgid "Show/Hide this window's group(s)"
 msgstr "Toon/Verberg deze groep"
 
-#: config/strings.c:172
-#, fuzzy
-msgid "Shade/Unshade"
-msgstr "Shaded staat"
-
 #: config/strings.c:174
 #, fuzzy
 msgid "Remember..."
@@ -2803,6 +2798,10 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Stop Enlightenment"
+
+#, fuzzy
+#~ msgid "Shade"
+#~ msgstr "Shaded"
 
 #, fuzzy
 #~ msgid "Unshade"

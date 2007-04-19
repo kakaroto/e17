@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2007-01-07 14:48+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -2270,9 +2270,9 @@ msgstr "Husk tilstand"
 msgid "This button does nothing interesting."
 msgstr "Denne knap gør ikke noget interessant."
 
-#: config/strings.c:47
-msgid "Shade"
-msgstr "Rul op"
+#: config/strings.c:47 config/strings.c:172
+msgid "Shade/Unshade"
+msgstr "Rul op/ned"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -2680,10 +2680,6 @@ msgstr "Nedlæg en gruppe som dette vindue tilhører"
 msgid "Show/Hide this window's group(s)"
 msgstr "Vis/skjul dette vindues gruppe(r)"
 
-#: config/strings.c:172
-msgid "Shade/Unshade"
-msgstr "Rul op/ned"
-
 #: config/strings.c:174
 msgid "Remember..."
 msgstr "Husk..."
@@ -2719,6 +2715,9 @@ msgstr "Andet"
 #: config/strings.c:186
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment Epplets"
+
+#~ msgid "Shade"
+#~ msgstr "Rul op"
 
 #~ msgid "Shade (roll up) this window."
 #~ msgstr "Rul dette vindue op."

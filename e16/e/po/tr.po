@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -2488,10 +2488,10 @@ msgstr "Ekranlamayý aç"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47
+#: config/strings.c:47 config/strings.c:172
 #, fuzzy
-msgid "Shade"
-msgstr "Gölgeli"
+msgid "Shade/Unshade"
+msgstr "Toplanmýþ"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -2955,11 +2955,6 @@ msgstr " Pencerenin eklencek olduðu kitleyi seç : \n"
 msgid "Show/Hide this window's group(s)"
 msgstr "Bu kitleyi göster/gizle"
 
-#: config/strings.c:172
-#, fuzzy
-msgid "Shade/Unshade"
-msgstr "Toplanmýþ"
-
 #: config/strings.c:174
 #, fuzzy
 msgid "Remember..."
@@ -3003,6 +2998,10 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment'ten çýk"
+
+#, fuzzy
+#~ msgid "Shade"
+#~ msgstr "Gölgeli"
 
 #, fuzzy
 #~ msgid "Unshade"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -2859,11 +2859,11 @@ msgstr "Schnappschüsse ein"
 msgid "This button does nothing interesting."
 msgstr ""
 
-# src/settings.c:698 src/settings.c:705 src/settings.c:1802
-#: config/strings.c:47
+# src/snaps.c:461
+#: config/strings.c:47 config/strings.c:172
 #, fuzzy
-msgid "Shade"
-msgstr "Schattiert"
+msgid "Shade/Unshade"
+msgstr "Rolladenposition"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -3382,12 +3382,6 @@ msgstr "  Wählen Sie die Gruppe aus, zu der das Fenster gehören wird:  \n"
 msgid "Show/Hide this window's group(s)"
 msgstr "Diese Gruppe zeigen/verbergen"
 
-# src/snaps.c:461
-#: config/strings.c:172
-#, fuzzy
-msgid "Shade/Unshade"
-msgstr "Rolladenposition"
-
 # src/pager.c:1301
 #: config/strings.c:174
 #, fuzzy
@@ -3440,6 +3434,11 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment verlassen"
+
+# src/settings.c:698 src/settings.c:705 src/settings.c:1802
+#, fuzzy
+#~ msgid "Shade"
+#~ msgstr "Schattiert"
 
 # src/settings.c:698 src/settings.c:705 src/settings.c:1802
 #, fuzzy

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Å anjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -2493,10 +2493,10 @@ msgstr "Slikanje UkljuÄ«eno"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47
+#: config/strings.c:47 config/strings.c:172
 #, fuzzy
-msgid "Shade"
-msgstr "OsjenÄeno"
+msgid "Shade/Unshade"
+msgstr "Stanje osjenÄenosti"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -2942,11 +2942,6 @@ msgstr "  Izaberite grupu kojoj Äe prozor pripadati:  \n"
 msgid "Show/Hide this window's group(s)"
 msgstr "PokaÅµi/Sakrij ovu grupu"
 
-#: config/strings.c:172
-#, fuzzy
-msgid "Shade/Unshade"
-msgstr "Stanje osjenÄenosti"
-
 #: config/strings.c:174
 #, fuzzy
 msgid "Remember..."
@@ -2990,6 +2985,10 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "IzaÄi iz Enlightenment-a"
+
+#, fuzzy
+#~ msgid "Shade"
+#~ msgstr "OsjenÄeno"
 
 #, fuzzy
 #~ msgid "Unshade"

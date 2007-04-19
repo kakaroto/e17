@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2000-02-24 16:22+0100\n"
 "Last-Translator: Roberto S. Teixeira <robteix@zaz.com.br>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -2459,10 +2459,10 @@ msgstr "Ativar Miniaturas"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47
+#: config/strings.c:47 config/strings.c:172
 #, fuzzy
-msgid "Shade"
-msgstr "Sombreado"
+msgid "Shade/Unshade"
+msgstr "Estado Baixada"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -2923,11 +2923,6 @@ msgstr "  Selecione o grupo ao qual essa janela pertencerá:  \n"
 msgid "Show/Hide this window's group(s)"
 msgstr "Exibir/Esconder esse grupo"
 
-#: config/strings.c:172
-#, fuzzy
-msgid "Shade/Unshade"
-msgstr "Estado Baixada"
-
 #: config/strings.c:174
 #, fuzzy
 msgid "Remember..."
@@ -2971,6 +2966,10 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Sair do Enlightenment"
+
+#, fuzzy
+#~ msgid "Shade"
+#~ msgstr "Sombreado"
 
 #, fuzzy
 #~ msgid "Unshade"

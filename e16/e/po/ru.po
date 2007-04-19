@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -2439,9 +2439,9 @@ msgstr "Включить отображение экрана"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47
+#: config/strings.c:47 config/strings.c:172
 #, fuzzy
-msgid "Shade"
+msgid "Shade/Unshade"
 msgstr "Затененный"
 
 #: config/strings.c:52
@@ -2902,11 +2902,6 @@ msgstr "  Выберите группу, к которой будет принадлежать окно:  \n"
 msgid "Show/Hide this window's group(s)"
 msgstr "Показать/спрятать эту группу"
 
-#: config/strings.c:172
-#, fuzzy
-msgid "Shade/Unshade"
-msgstr "Затененный"
-
 #: config/strings.c:174
 #, fuzzy
 msgid "Remember..."
@@ -2950,6 +2945,10 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Выйти из Enlightenment"
+
+#, fuzzy
+#~ msgid "Shade"
+#~ msgstr "Затененный"
 
 #, fuzzy
 #~ msgid "Unshade"

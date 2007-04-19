@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2007-04-12 19:12+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
@@ -2429,9 +2429,9 @@ msgstr "Capture d'écran"
 msgid "This button does nothing interesting."
 msgstr "Ce boutton ne fait rien d'intéressant."
 
-#: config/strings.c:47
-msgid "Shade"
-msgstr "Masquer"
+#: config/strings.c:47 config/strings.c:172
+msgid "Shade/Unshade"
+msgstr "Masquer/Démasquer"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -2844,10 +2844,6 @@ msgstr "Supprimer un groupe auquel cette fenêtre appartient"
 msgid "Show/Hide this window's group(s)"
 msgstr "Afficher/Masquer le groupe de ce fenêtre"
 
-#: config/strings.c:172
-msgid "Shade/Unshade"
-msgstr "Masquer/Démasquer"
-
 #: config/strings.c:174
 msgid "Remember..."
 msgstr "Mémorisation ..."
@@ -2883,6 +2879,9 @@ msgstr "Autres"
 #: config/strings.c:186
 msgid "Enlightenment Epplets"
 msgstr "Epplets d'Enlightenment"
+
+#~ msgid "Shade"
+#~ msgstr "Masquer"
 
 #~ msgid "Shade (roll up) this window."
 #~ msgstr "Masquer (enrouler) cette fenêtre"

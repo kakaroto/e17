@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-19 20:16+0200\n"
+"POT-Creation-Date: 2007-04-19 20:46+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -2490,10 +2490,10 @@ msgstr "스냅샷 사용"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47
+#: config/strings.c:47 config/strings.c:172
 #, fuzzy
-msgid "Shade"
-msgstr "음영"
+msgid "Shade/Unshade"
+msgstr "쉐이드 상태"
 
 #: config/strings.c:52
 msgid "Iconify (Minimize) this window."
@@ -2939,11 +2939,6 @@ msgstr "  창이 속할 그룹 선택:  \n"
 msgid "Show/Hide this window's group(s)"
 msgstr "이 그룹 보여주기/숨기기"
 
-#: config/strings.c:172
-#, fuzzy
-msgid "Shade/Unshade"
-msgstr "쉐이드 상태"
-
 #: config/strings.c:174
 #, fuzzy
 msgid "Remember..."
@@ -2987,6 +2982,10 @@ msgstr ""
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "인라이튼먼트 종료"
+
+#, fuzzy
+#~ msgid "Shade"
+#~ msgstr "음영"
 
 #, fuzzy
 #~ msgid "Unshade"
