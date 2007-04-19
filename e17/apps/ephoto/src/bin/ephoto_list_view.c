@@ -2,7 +2,9 @@
 
 static Ewl_Widget *list_view_new(void *data, unsigned int row, unsigned int column);
 static Ewl_Widget *list_header_fetch(void *data, unsigned int column);
+static void iterate(char *point2);
 static void *list_data_fetch(void *data, unsigned int row, unsigned int column);
+static void list_item_clicked(Ewl_Widget *w, void *event, void *data);
 static unsigned int list_data_count(void *data);
 
 /*Add the list view*/
@@ -21,6 +23,32 @@ Ewl_Widget *add_list_view(Ewl_Widget *c)
 void show_list_view(Ewl_Widget *w, void *event, void *data)
 {
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->list_vbox);
+}
+
+/*Iterate the list to our spot*/
+static void iterate(char *point2)
+{
+        char *point1;
+
+        ecore_dlist_goto_first(em->images);
+        while(ecore_dlist_current(em->images))
+        {
+                point1 = ecore_dlist_current(em->images);
+                if (!strcmp(point1, point2)) return;
+                ecore_dlist_next(em->images);
+        }
+}
+
+/*Go to single view*/
+static void list_item_clicked(Ewl_Widget *w, void *event, void *data)
+{
+	char *image;
+
+	image = data;
+	iterate(image);
+	show_single_view(NULL, NULL, NULL);
+
+	free(image);
 }
 
 /*Create and Add a Tree to the Container c*/
@@ -71,7 +99,7 @@ static Ewl_Widget *list_view_new(void *data, unsigned int row, unsigned int colu
 
 	hbox = add_box(NULL, EWL_ORIENTATION_HORIZONTAL, 10);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
-//	ewl_callback_append(hbox, EWL_CALLBACK_CLICKED, show_edit_view, strdup(image));
+	ewl_callback_append(hbox, EWL_CALLBACK_CLICKED, list_item_clicked, strdup(image));
 	ewl_widget_name_set(hbox, image);
 
         img = add_image(hbox, image, 1, NULL, NULL);

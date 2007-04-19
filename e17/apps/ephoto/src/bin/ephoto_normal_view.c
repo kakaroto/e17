@@ -1,5 +1,7 @@
 #include "ephoto.h"
 
+static void iterate(char *point2);
+
 /*Add the normal view*/
 Ewl_Widget *add_normal_view(Ewl_Widget *c)
 {
@@ -28,13 +30,29 @@ void show_normal_view(Ewl_Widget *w, void *event, void *data)
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->fbox_vbox);
 }
 
+/*Find our spot in the list*/
+static void iterate(char *point2)
+{
+	char *point1;
+	
+	ecore_dlist_goto_first(em->images);
+	while(ecore_dlist_current(em->images))
+	{
+		point1 = ecore_dlist_current(em->images);
+		if (!strcmp(point1, point2)) return;
+		ecore_dlist_next(em->images);
+	}
+}
+
 /*Action when an image is clicked*/
 void freebox_image_clicked(Ewl_Widget *w, void *event, void *data)
 {
 	const char *path;
+	
 
 	path = ewl_widget_name_get(w);
-//	show_edit_view(NULL, NULL, strdup(path));
+	iterate(strdup(path));
+	show_single_view(NULL, NULL, NULL);
 
 	return;
 }

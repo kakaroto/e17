@@ -221,7 +221,7 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
                 imagef = ecore_dlist_current(em->images);
 
                 thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
-		ewl_image_constrain_set(EWL_IMAGE(thumb), 64);
+		ewl_image_constrain_set(EWL_IMAGE(thumb), 81);
 		ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_name_set(thumb, imagef);
 
@@ -284,7 +284,7 @@ static void populate_directories(Ewl_Widget *w, void *event, void *data)
 			imagef = ecore_dlist_current(em->images);
 	
       		        thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
-	      	        ewl_image_constrain_set(EWL_IMAGE(thumb), 64);
+	      	        ewl_image_constrain_set(EWL_IMAGE(thumb), 81);
        		        ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
 	                ewl_widget_name_set(thumb, imagef);
 
