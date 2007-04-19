@@ -431,7 +431,6 @@ static void
 ewl_freebox_layout_comparator(Ewl_Freebox *fb)
 {
 	Ewl_Container *c;
-	Ewl_Widget *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
@@ -451,21 +450,8 @@ ewl_freebox_layout_comparator(Ewl_Freebox *fb)
 	/* sort the data if needed */
 	if (!fb->sorted)
 	{
-		Ecore_Sheap *sheap;
-		sheap = ecore_sheap_new(ECORE_COMPARE_CB(fb->comparator), 
-				ewl_container_child_count_get(EWL_CONTAINER(fb)));
-
-		/* stick it all in the heap */
-		while ((child = ecore_dlist_remove_first(c->children)))
-			ecore_sheap_insert(sheap, child);
-
-		ecore_sheap_sort(sheap);
-
-		/* pull it from the heap and stick back into the container */
-		while ((child = ecore_sheap_extract(sheap)))
-			ecore_dlist_append(c->children, child);
-
-		ecore_sheap_destroy(sheap);
+		ecore_dlist_sort(c->children, ECORE_COMPARE_CB(fb->comparator), 
+					ECORE_SORT_MIN);
 
 		/* we set sorted to TRUE at the end here as each of those
 		 * inserts into the container will trigger our child_add
@@ -480,5 +466,4 @@ ewl_freebox_layout_comparator(Ewl_Freebox *fb)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
