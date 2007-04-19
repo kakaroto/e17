@@ -57,8 +57,8 @@ Ecore_List *get_images(const char *directory)
         if (ecore_file_is_dir(directory))
         {
                 ls = ecore_list_new();
-                files = ecore_list_new();
-		ecore_list_set_free_cb(files, free);
+                files = ecore_dlist_new();
+		ecore_dlist_set_free_cb(files, free);
 
                 ls = ecore_file_ls(directory);
                 while (!ecore_list_is_empty(ls))
@@ -78,15 +78,15 @@ Ecore_List *get_images(const char *directory)
                                 }
 				if (fnmatch("*.[Jj][Pp][Ee][Gg]", path, 0) == 0)
 				{
-					ecore_list_append(files, strdup(path));
+					ecore_dlist_append(files, strdup(path));
 				}
 				else if (fnmatch("*.[Jj][Pp][Gg]", path, 0) == 0)
 				{
-					ecore_list_append(files, strdup(path));
+					ecore_dlist_append(files, strdup(path));
 				}
 				else if (fnmatch("*.[Pp][Nn][Gg]", path, 0) == 0)
 				{
-					ecore_list_append(files, strdup(path));
+					ecore_dlist_append(files, strdup(path));
 				}
 			}
 		}
@@ -95,6 +95,6 @@ Ecore_List *get_images(const char *directory)
 	{
 		files = NULL;
 	}
-	ecore_list_goto_first(files);
+	ecore_dlist_goto_first(files);
 	return files;
 }

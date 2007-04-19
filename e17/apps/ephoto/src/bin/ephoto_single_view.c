@@ -7,13 +7,16 @@ static void next_image(Ewl_Widget *w, void *event, void *data);
 /*Add the single view*/
 Ewl_Widget *add_single_view(Ewl_Widget *c)
 {
-	Ewl_Widget *hbox, *button;
+	Ewl_Widget *hbox, *ibox, *button;
 
         em->single_vbox = add_box(c, EWL_ORIENTATION_VERTICAL, 5);
         ewl_object_fill_policy_set(EWL_OBJECT(em->single_vbox), EWL_FLAG_FILL_ALL);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(c), em->single_vbox, "Single");
 
-        em->simage = add_image(em->single_vbox, NULL, 0, NULL, NULL);
+	ibox = add_box(em->single_vbox, EWL_ORIENTATION_VERTICAL, 0);
+	ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
+
+        em->simage = add_image(ibox, NULL, 0, NULL, NULL);
         ewl_object_alignment_set(EWL_OBJECT(em->simage), EWL_FLAG_ALIGN_CENTER);
         ewl_object_fill_policy_set(EWL_OBJECT(em->simage), EWL_FLAG_FILL_SHRINK);
 
