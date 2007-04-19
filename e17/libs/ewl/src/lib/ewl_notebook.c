@@ -234,8 +234,18 @@ ewl_notebook_tabbar_visible_set(Ewl_Notebook *n, unsigned int visible)
 	DCHECK_PARAM_PTR("n", n);
 	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
 
-	if (visible) ewl_widget_show(n->body.tabbar);
-	else ewl_widget_hide(n->body.tabbar);
+	if (visible) 
+	{
+		ewl_widget_state_set(EWL_WIDGET(n->body.pages), "tabs", 
+						    EWL_STATE_PERSISTENT);
+		ewl_widget_show(n->body.tabbar);
+	}
+	else 
+	{
+		ewl_widget_state_set(EWL_WIDGET(n->body.pages), "notabs", 
+						    EWL_STATE_PERSISTENT);
+		ewl_widget_hide(n->body.tabbar);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
