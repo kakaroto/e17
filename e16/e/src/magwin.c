@@ -39,6 +39,9 @@
 #include <stdlib.h>
 #include <X11/keysym.h>
 
+#define USE_TIMER    0
+#define USE_ANIMATOR 1
+
 /* Magnifier window */
 typedef struct
 {
@@ -46,11 +49,14 @@ typedef struct
    EImage             *im;
    int                 cx, cy;	/* Center */
    int                 scale;	/* Zoom level */
+   int                 sx, sy;	/* Scene x,y */
    int                 sw, sh;	/* Scene wxh */
    char                mode;
    char                bpress;
    char                filter;
    char                grabbing;
+   unsigned int        damage_count;
+   char                update;
 } MagWindow;
 
 static void         MagwinDestroy(MagWindow * mw);
@@ -110,6 +116,9 @@ MagwinRedraw(MagWindow * mw, int paint)
       sy = 0;
    else if (sy + sh > VRoot.h)
       sy = VRoot.h - sh;
+
+   mw->sx = sx;
+   mw->sy = sy;
    mw->sw = sw;
    mw->sh = sh;
 
@@ -154,23 +163,51 @@ MagwinRedraw(MagWindow * mw, int paint)
    MagwinDrawText(mw, 10, 20, buf);
 }
 
-static void
-_MagwinTimeout(int val, void *data)
+static int
+_MagwinUpdate(MagWindow * mw)
 {
-   MagWindow          *mw = (MagWindow *) data;
-
-   if (val && mw != MagWin)
-      return;
+   if (mw != MagWin)
+      return 0;
 
    /* Validate ewin */
    if (!EwinFindByPtr(mw->ewin))
+      return 0;
+
+   if (!mw->update && Mode.events.damage_count == mw->damage_count)
+      return 1;
+   mw->damage_count = Mode.events.damage_count;
+
+   /* FIXME - Check damage */
+
+   MagwinRedraw(mw, 1);
+
+   mw->update = 0;
+
+   return 1;
+}
+
+#if USE_TIMER
+static void
+_MagwinTimeout(int val __UNUSED__, void *data)
+{
+   MagWindow          *mw = (MagWindow *) data;
+   int                 again;
+
+   again = _MagwinUpdate(mw);
+   if (!again)
       return;
 
    DoIn("magwin", .050, _MagwinTimeout, 0, data);
-
-   /* FIXME - Check damage */
-   MagwinRedraw(mw, 1);
 }
+#elif USE_ANIMATOR
+static int
+_MagwinAnimator(void *data)
+{
+   MagWindow          *mw = (MagWindow *) data;
+
+   return _MagwinUpdate(mw);
+}
+#endif
 
 static int
 MagwinKeyPress(MagWindow * mw, KeySym key)
@@ -249,7 +286,7 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
      case KeyPress:
 	key = XLookupKeysym(&ev->xkey, 0);
 	done = MagwinKeyPress(mw, key);
-	MagwinRedraw(mw, 1);
+	mw->update = 1;
 	break;
 
      case ButtonPress:
@@ -271,6 +308,7 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	     break;
 	  }
 	mw->bpress = 1;
+	mw->update = 1;
 	break;
      case ButtonRelease:
 	mw->bpress = 0;
@@ -281,17 +319,22 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	  {
 	     mw->cx = Mode.events.x;
 	     mw->cy = Mode.events.y;
-	     MagwinRedraw(mw, 1);
+	     mw->update = 1;
 	  }
 	else
 	  {
-	     MagwinRedraw(mw, 0);
+	     mw->update = 1;
 	  }
 	break;
 
      case MapNotify:
 	MagwinKeyPress(mw, XK_g);
+#if USE_TIMER
 	_MagwinTimeout(1, mw);
+#elif USE_ANIMATOR
+	AnimatorAdd(_MagwinAnimator, mw);
+#endif
+	mw->update = 1;
 	break;
      }
 
@@ -372,7 +415,9 @@ MagwinCreate(const char *title, int width, int height)
 static void
 MagwinDestroy(MagWindow * mw)
 {
+#if USE_TIMER
    RemoveTimerEvent("magwin");
+#endif
    EventCallbackUnregister(EwinGetClientWin(mw->ewin), 0, MagwinEvent, mw);
    EDestroyWindow(EwinGetClientWin(mw->ewin));
    if (mw->im)
@@ -396,6 +441,7 @@ MagwinShow(void)
    EwinShow(MagWin->ewin);
 }
 
+#if 0				/* FIXME - Remove? */
 static void
 MagwinHide(void)
 {
@@ -404,6 +450,7 @@ MagwinHide(void)
 
    EwinHide(MagWin->ewin);
 }
+#endif
 
 /*
  * MagWin Module
@@ -425,15 +472,11 @@ MagwinIpc(const char *params, Client * c __UNUSED__)
 	p += len;
      }
 
-   if (!p || cmd[0] == '?')
-     {
-	IpcPrintf("Magwin: ???\n");
-     }
-   else if (!strcmp(cmd, "show"))
+   if (!p || !strcmp(cmd, "show"))
      {
 	MagwinShow();
      }
-#if 1				/* FIXME - Remove? */
+#if 0				/* FIXME - Remove? */
    else if (!strcmp(cmd, "hide"))
      {
 	MagwinHide();

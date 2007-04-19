@@ -473,6 +473,9 @@ typedef struct
       unsigned int        last_keycode;
       char                double_click;
       char                on_screen;
+#if USE_COMPOSITE
+      unsigned int        damage_count;
+#endif
    } events;
    struct
    {

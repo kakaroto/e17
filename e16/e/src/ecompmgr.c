@@ -687,6 +687,8 @@ ECompMgrDamageMergeObject(EObj * eo, XserverRegion damage, int destroy)
    if (cw->clip != None && eo->type != EOBJ_TYPE_DESK)
       ERegionSubtract(damage, cw->clip);
 #endif
+   if (!eo->ghost)
+      Mode.events.damage_count++;
 
    ECompMgrDamageMerge(damage, 1);
 }
