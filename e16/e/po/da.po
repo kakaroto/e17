@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-04-19 20:46+0200\n"
-"PO-Revision-Date: 2007-01-07 14:48+0100\n"
+"PO-Revision-Date: 2007-04-19 20:56+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
 "MIME-Version: 1.0\n"
@@ -697,21 +697,20 @@ msgid "Wrap virtual desktops around"
 msgstr "Virtuelle skriveborde wrapper rundt"
 
 #: src/desktops.c:2639
-#, fuzzy
 msgid "Edge Flip Mode:"
-msgstr "Skærmoversigtsmodus"
+msgstr "Kantflipmodus"
 
 #: src/desktops.c:2642
 msgid "Off"
-msgstr ""
+msgstr "Deaktiveret"
 
 #: src/desktops.c:2647
 msgid "On"
-msgstr ""
+msgstr "Aktiveret"
 
 #: src/desktops.c:2652
 msgid "Only when moving window"
-msgstr ""
+msgstr "Kun når et vindue flyttes"
 
 #: src/desktops.c:2658
 msgid "Resistance at edge of screen:\n"
@@ -838,9 +837,8 @@ msgid "Include iconified windows in focus list"
 msgstr "Inkluder minimerede vinduer i fokuslisten"
 
 #: src/focus.c:806
-#, fuzzy
 msgid "Include windows on other desks in focus list"
-msgstr "Inkluder oprullede vinduer i fokuslisten"
+msgstr "Inkluder vinduer på andre skriveborde i fokuslisten"
 
 #: src/focus.c:811
 msgid "Focus windows while switching"
@@ -1056,19 +1054,16 @@ msgstr ""
 "standardgrupper\n"
 
 #: src/groups.c:1059
-#, fuzzy
 msgid "Pick the group the window will belong to:"
-msgstr "  Vælg gruppen som vinduet skal tilhøre:  \n"
+msgstr "Vælg gruppen som vinduet skal tilhøre:"
 
 #: src/groups.c:1066
-#, fuzzy
 msgid "Select the group to remove the window from:"
-msgstr "   Vælg gruppen som vinduet skal fjernes fra.  "
+msgstr "Vælg gruppen som vinduet skal fjernes fra:"
 
 #: src/groups.c:1072
-#, fuzzy
 msgid "Select the group to break:"
-msgstr "  Vælg gruppen som skal brydes  "
+msgstr "Vælg gruppen som skal brydes:"
 
 #: src/handlers.c:66
 #, c-format
@@ -2715,24 +2710,6 @@ msgstr "Andet"
 #: config/strings.c:186
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment Epplets"
-
-#~ msgid "Shade"
-#~ msgstr "Rul op"
-
-#~ msgid "Shade (roll up) this window."
-#~ msgstr "Rul dette vindue op."
-
-#~ msgid "Unshade"
-#~ msgstr "Rul ned"
-
-#~ msgid "Unshade (unroll) this window."
-#~ msgstr "Rul dette vindue ned."
-
-#~ msgid "Open the Window Options Menu."
-#~ msgstr "Vinduesindstillinger"
-
-#~ msgid "Enable edge flip"
-#~ msgstr "Slå kantflip til"
 
 #~ msgid ""
 #~ "\n"
