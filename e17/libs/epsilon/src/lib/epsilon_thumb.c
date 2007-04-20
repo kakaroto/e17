@@ -150,6 +150,11 @@ epsilon_event_free(void *data, void *ev)
 
 	data = NULL;
 
+	if (!thumb) { 
+		fprintf(stderr,"!!Warning!! NULL pointer (*ev) : epsilon_event_free(void *data, void *ev)\n");
+		return;
+	}
+
 	if (thumb->path)
 		free(thumb->path);
 	if (thumb->dest)

@@ -18,8 +18,11 @@ int thumb_complete_cb(void *data, int type, void *event)
 	Epsilon_Request *thumb = event;
 
 	incomplete_thumbs--;
-	printf("\n! EVENT ! THUMB %s -> %s COMPLETE ! STATUS %d ! %d REMAINING !\n\n",
+	if (thumb) 
+		printf("\n! EVENT ! THUMB %s -> %s COMPLETE ! STATUS %d ! %d REMAINING !\n\n",
 			thumb->path, thumb->dest, thumb->status,  incomplete_thumbs);
+	else
+		fprintf(stderr,"!!Warning!! NULL pointer (*event) : thumb_complete_cb(void *data, int type, void *ev)\n");
 
 	if (incomplete_thumbs < 1)
 		ecore_main_loop_quit();
