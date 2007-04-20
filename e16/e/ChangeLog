@@ -4312,3 +4312,20 @@ Add _NET_STARTUP_ID.
 Add ecore_x_netwm_startup_id_get().
 French translation update (Tristan D.).
 
+
+-------------------------------------------------------------------------------
+
+Sat Apr 21 00:22:48 CEST 2007
+(Kim)
+
+--- 0.16.8.7 0.05 ---
+Mozilla apps have changed WM_CLASS name to gecko.
+Split client message processing into client and root message parts.
+Don't use atom name in client message processing.
+Don't use atom name in property change processing.
+Add some new atoms (_NET_WM_ACTION_ABOVE/BELOW).
+Startup id bits.
+Remove unused ACTION_UNSHADE. Eliminate almost duplicate tooltip strings.
+Update config file string list.
+Danish translation update.
+
