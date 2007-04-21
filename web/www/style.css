@@ -10,20 +10,20 @@ body {
 
 /*td.t { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/t.png'); }*/
 td.t { 
-   background-image:url("i/t.gif"); 
-   width:50%; 
-   vertical-align:top; 
-   padding:0; 
-   margin:0;
+   background-image       : url("i/t.gif"); 
+   width                  : 50%; 
+   vertical-align         : top; 
+   padding                : 0px; 
+   margin                 : 0px;
 }
 td.t[class] { background-image:url("i/t.png"); }
 /*td.tl { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/tl.png'); }*/
 td.tl { 
-   background-image:url("i/tl.gif"); 
-   width:600px; 
-   height:250px;
-   padding:0;
-   margin:0;
+   background-image       : url("i/tl.gif"); 
+   width                  : 600px; 
+   height                 : 250px;
+   padding                : 0;
+   margin                 : 0;
 }
 td.tl[class] { background-image:url("i/tl.png"); }
 td.tl {
@@ -34,12 +34,25 @@ td.tl {
 }
 
 div.main {
-   margin                 : 1em;
    text-align             : left;
    vertical-align         : top;
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #444444;
    font-size              : 0.9em;
+}
+
+table.main {
+   width                  : 100%;
+   border                 : 0px; 
+   margin                 : 0px; 
+   padding                : 4px; 
+}
+
+td.main {
+   width                  : 33%;
+   margin                 : 4px; 
+   text-align             : left;
+   vertical-align         : top;
 }
 
 div.bod {
@@ -230,43 +243,93 @@ a.navul:hover {
 }
 
 table.n {
-   width:100px; 
-   height:100px; 
-   clear:both; 
-   border:0; 
-   margin:0; 
-   padding:0; 
-   border-collapse:collapse;
+   width                  : 100px; 
+   height                 : 100px; 
+   clear                  : both; 
+   border                 : 0px; 
+   margin                 : 0px; 
+   padding                : 0px; 
+   border-collapse        : collapse;
 }
 
 table.nl {
-   float:left; 
+   float                  : left; 
 }
 
 table.nr {
-   float:right; 
+   float                  : right; 
 }
 
 table.h {
-   width:100%; 
-   padding:0; 
-   margin:0; 
-   border-collapse:collapse;
+   width                  : 100%; 
+   padding                : 0px; 
+   margin                 : 0px; 
+   border-collapse        : collapse;
 }
 
 div.l {
-   clear:both; 
-   padding:7px 8px;
+   clear                  : both; 
+   padding                : 7px 8px;
 }
 
 div.ll {
-   float:left;
+   float                  : left;
 }
 
 
 div.lr {
-   float:right;
+   float                  : right;
 }
+
+td.b1 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b1.png'); }
+td.b1[class] { background-image:url("i/b1.png"); }
+td.b2 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b2.png'); }
+td.b2[class] { background-image:url("i/b2.png"); }
+td.b3 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b3.png'); }
+td.b3[class] { background-image:url("i/b3.png"); }
+td.b4 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b4.png'); }
+td.b4[class] { background-image:url("i/b4.png"); }
+td.b5 {
+   background-image       : url("i/b5.png");
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #ffffff;
+   text-align             : left;
+   vertical-align         : middle;
+}
+td.b6 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b6.png'); }
+td.b6[class] { background-image:url("i/b6.png"); }
+td.b7 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b7.png'); }
+td.b7[class] { background-image:url("i/b7.png"); }
+td.b8 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b8.png'); }
+td.b8[class] { background-image:url("i/b8.png"); }
+td.b9 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b9.png'); }
+td.b9[class] { background-image:url("i/b9.png"); }
+
+a.b:link {
+   color                  : #ffffff;
+   text-decoration        : none;
+//   display                : block;
+}
+
+a.b:visited {
+   color                  : #ffffff;
+   text-decoration        : none;
+//   display                : block;
+}
+
+a.b:active {
+   color                  : #ffee88;
+   text-decoration        : none;
+//   display                : block;
+}
+
+a.b:hover {
+   color                  : #cccccc;
+   text-decoration        : none;
+//   display                : block;
+}
+
+
 
 /* OLD CSS STUFF TO STEAL FROM */
 
@@ -277,14 +340,14 @@ table.main {
    cellspacing            : 0;
 }
 
-td.bx1 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_tlf.png'); }
-td.bx1[class] { background-image:url("i/nav_tlf.png"); }
+td.bx1 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b1.png'); }
+td.bx1[class] { background-image:url("i/b1.png"); }
 td.bx2 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_top.png'); }
-td.bx2[class] { background-image:url("i/nav_top.png"); }
+td.bx2[class] { background-image:url("i/b2.png"); }
 td.bx3 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_trt.png'); }
-td.bx3[class] { background-image:url("i/nav_trt.png"); }
+td.bx3[class] { background-image:url("i/b3.png"); }
 td.bx4 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_lef.png'); }
-td.bx4[class] { background-image:url("i/nav_lef.png"); }
+td.bx4[class] { background-image:url("i/b4.png"); }
 td.bx5 {
    background             : #fff;
    text-align             : left;

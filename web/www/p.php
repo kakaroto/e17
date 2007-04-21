@@ -28,7 +28,7 @@
     <div class='l ll'><?php show_langs("p/lang1"); ?></div>
     </td>
     <td class="tl">
-     <img src="i/_.gif" style='width:600px; height:5px;' alt=' '/><br/>
+     <img src="i/_.gif" style='width:600px; height:1px;' alt=' '/><br/>
      <?php nav_subs(); ?>
     </td>
     <td class="t">
@@ -44,11 +44,9 @@
     </td>
   </tr>
 </table>
-
 <div class="main">	
 <?php include "p/$page/$lang-body" ?>
 </div>
-
 <hr/>
 <p class="tiny">Copyright &copy; Enlightenment.org</p>
 </body>
