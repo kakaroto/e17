@@ -276,9 +276,19 @@ div.ll {
    float                  : left;
 }
 
-
 div.lr {
    float                  : right;
+}
+
+table.b {
+   padding                : 0px; 
+   margin                 : 0px; 
+   border                 : 0px; 
+   border-spacing         : 0px;
+   border-style           : none;
+   border-collapse        : collapse;
+   font-size              : 0px;
+   line-height            : 0px;
 }
 
 td.b1 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b1.png'); }
@@ -292,6 +302,7 @@ td.b4[class] { background-image:url("i/b4.png"); }
 td.b5 {
    background-image       : url("i/b5.png");
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   font-size              : 11px;
    color                  : #ffffff;
    text-align             : left;
    vertical-align         : middle;

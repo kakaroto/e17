@@ -58,6 +58,43 @@
       echo("<a href='p.php?p=$pg&l=$lang' class='$cl'>");
   }
 
+  function blink($ic, $txt, $pg) {
+      echo("<table class='b' cellpadding='0'>");
+      echo("<tr><td class='b1'><img src='i/_.gif' width='8' height='8'></td>");
+      echo("<td class='b2'><img src='i/_.gif' width='8' height='8'></td>");
+      echo("<td class='b3'><img src='i/_.gif' width='8' height='8'></td></tr>");
+      echo("<tr><td class='b4'><img src='i/_.gif' width='8' height='24'></td>");
+      echo("<td class='b5'>");
+      acl($pg, "b");
+      echo("<img src='i/_.gif' width='8' height='24'>");
+      list($width, $height, $type, $attr) = getimagesize("$ic");
+      echo("<img src='$ic' width='$width' height='$height'>");
+      echo("<img src='i/_.gif' width='8' height='24'>");
+      echo("<b>$txt</b>");
+      echo("<img src='i/_.gif' width='8' height='24'>");
+      echo("</td>");
+      echo("<td class='b6'><img src='i/_.gif' width='8' height='24'></td></tr>");
+      echo("<tr><td class='b7'><img src='i/_.gif' width='8' height='8'></td>");
+      echo("<td class='b8'><img src='i/_.gif' width='8' height='8'></td>");
+      echo("<td class='b9'><img src='i/_.gif' width='8' height='8'></td></tr>");
+      echo("</table>");
+      echo("");
+      echo("");
+      echo("");
+      echo("");
+      echo("");
+      echo("");
+      echo("");
+      echo("");
+      echo("");
+      echo("");
+      echo("");
+      echo("");
+      global $page;
+      global $lang;
+      echo("<a href='p.php?p=$pg&l=$lang' class='$cl'>");
+  }
+
 /* utility functions */
   function read_var($f) {
       if (file_exists($f)) {

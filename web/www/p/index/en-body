@@ -38,36 +38,10 @@ For more information about what we do please see our
 <center><?php img("logo.png", "E"); ?></center>
 <p>
 *FIXME* Put in links to download directly from here - both e17 and e16
-
+</p>
 <center>
-<table border='0' cellpadding='0' cellspacing='0'>
-<tr>
-<td class='b1'><img src='i/_.gif' width='8' height='8'></td>
-<td class='b2'><img src='i/_.gif' width='8' height='8'></td>
-<td class='b3'><img src='i/_.gif' width='8' height='8'></td>
-</tr>
-<tr>
-<td class='b4'><img src='i/_.gif' width='8' height='24'></td>
-<td class='b5'>
-<?php acl("download", "b");?>
-<img src='i/_.gif' width='8' height='24'>
-<img src='i/logo-s.png' width='18' height='24'>
-<img src='i/_.gif' width='8' height='24'>
-<b>DOWNLOAD E17</b>
-<img src='i/_.gif' width='8' height='24'>
-</a>
-</td>
-<td class='b6'><img src='i/_.gif' width='8' height='24'>
-</td>
-</tr>
-<tr>
-<td class='b7'><img src='i/_.gif' width='8' height='8'></td>
-<td class='b8'><img src='i/_.gif' width='8' height='8'></td>
-<td class='b9'><img src='i/_.gif' width='8' height='8'></td>
-</tr>
-</table>
+<?php blink("i/logo-s.png", "DOWNLOAD E17", "download"); ?>
 </center>
-
 </p><p>
 </p>
 
