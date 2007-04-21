@@ -40,8 +40,7 @@ SCROLLBAR("theme", "left-panel", "left-panel", 1 0, -8 1,
 /* list container */
   part {
     name, "theme.container";
-    mouse_events, 0;
-    type, RECT;
+    type, SWALLOW;
     clip_to, "theme-clip";
     description {
       state, "default" 0.0;
