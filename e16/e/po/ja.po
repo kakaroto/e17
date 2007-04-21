@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-04-20 21:52+0200\n"
-"PO-Revision-Date: 2007-02-12 16:40+0900\n"
+"PO-Revision-Date: 2007-04-21 18:25+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1256,7 +1256,7 @@ msgstr ""
 
 #: src/ipc.c:1410
 msgid "Enlightenment was built without composite support"
-msgstr ""
+msgstr "コンポジットサポートが組み込まれていません."
 
 #
 #: src/ipc.c:1734
@@ -2799,7 +2799,7 @@ msgstr "絶対最大サイズで切替え"
 
 #: config/strings.c:133
 msgid "Span Xinerama Screens"
-msgstr ""
+msgstr "Xineramaスクリーン拡張"
 
 #: config/strings.c:134
 msgid "Height"
@@ -2854,14 +2854,12 @@ msgid "100%"
 msgstr ""
 
 #: config/strings.c:148
-#, fuzzy
 msgid "Focused opacity 100%"
-msgstr "クリックしたウィンドウがフォーカスを得る"
+msgstr "フォーカスがあれば100％不透明にする"
 
 #: config/strings.c:149
-#, fuzzy
 msgid "Focused opacity follows unfocused"
-msgstr "クリックしたウィンドウがフォーカスを得る"
+msgstr "常にフォーカスが無いときの不透明度を適用する"
 
 #: config/strings.c:150
 msgid "Toggle Fading"
