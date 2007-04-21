@@ -621,7 +621,7 @@ _ex_main_window_fullscreen_toggle(Exhibit *e)
      }
    else
      {
-	etk_signal_disconnect("resize", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb));
+	etk_signal_disconnect("resized", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb));
 	etk_window_fullscreen_set(ETK_WINDOW(e->win), ETK_TRUE);
 	etk_widget_hide(e->statusbar[0]);
 	etk_widget_hide(e->statusbar[1]);
