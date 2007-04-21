@@ -25,11 +25,7 @@
         echo(nav_button("main4", "lnav"));
       ?>
      </table>
-    <img src="i/_.gif" style='width:1px; height:8px;' alt=' '/><br/>
-    <img src="i/_.gif" style='width:4px; height:4px;' alt=' '/>
-    <div class='l ll'>
-      <?php show_langs("p/lang1"); ?>
-    </div>
+    <div class='l ll'><?php show_langs("p/lang1"); ?></div>
     </td>
     <td class="tl">
      <img src="i/_.gif" style='width:600px; height:5px;' alt=' '/><br/>
@@ -44,11 +40,7 @@
         echo(nav_button("main8", "rnav"));
       ?>
      </table>
-    <img src="i/_.gif" style='width:1px; height:8px;' alt=' '/><br/>
-      <div class='l lr'>
-        <?php show_langs("p/lang2"); ?>
-      </div>  
-    <img src="i/_.gif" style='width:4px; height:4px;' alt=' '/>
+     <div class='l lr'><?php show_langs("p/lang2"); ?></div>  
     </td>
   </tr>
 </table>
