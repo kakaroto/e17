@@ -3,15 +3,13 @@
 <td class='main'><div class="main">
 <h3>What is Enlightenment?</h3>
 <p>
-<em>Enlightenment</em>. What is <em>Enlightenment</em>?. Some people
-affectionatly refer to <em>Enlightenment</em> as <em>E</em> because typing
-or saying the whole word is a bit of a mouthfull. E was, at one early point
-in its history, which began back in 1996, just a
+<em>Enlightenment</em>. What is <em>Enlightenment</em>?.<br />Some people
+affectionately refer to <em>Enlightenment</em> as <em>E</em> because typing
+or saying the whole word is a bit of a mouthful. Early in its history, which began back in 1996, E was just a
 <a href='http://en.wikipedia.org/wiki/Window_manager'>window manager</a> for
-<a href='http://www.x.org'>X11</a>, but since then has grown to be more, but
-not so well defined.
+<a href='http://www.x.org'>X11</a>.
 </p><p>
-E has now become much more. In the process of building the next generation of
+Since then, E has now become much more. In the process of building the next generation of
 the window manager, we have created a suite of libraries for doing data
 storage and retrieval, scene-graph rendering with a canvas, theme
 encapsulation, compiling and demand-loading, event loop, inter-process
