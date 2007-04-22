@@ -621,12 +621,16 @@ ECompMgrDeskVisibility(EObj * eo, XEvent * ev)
 static void
 ECompMgrDamageMerge(XserverRegion damage)
 {
-   if (Mode_compmgr.damage != None)
+   if (Mode_compmgr.got_damage)
      {
 	if (EDebug(EDBUG_TYPE_COMPMGR3))
 	   ERegionShow("ECompMgrDamageMerge add:", damage);
 
 	ERegionUnion(Mode_compmgr.damage, damage);
+     }
+   else if (Mode_compmgr.damage != None)
+     {
+	ERegionCopy(Mode_compmgr.damage, damage);
      }
    else
      {
