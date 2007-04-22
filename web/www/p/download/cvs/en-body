@@ -1,0 +1,64 @@
+<table class='main'>
+<tr>
+<td class='main'><div class="main">
+<p>
+E17 is developed using CVS as a source code repository system. We even use CVS
+for this website. Anonymous checkouts of any CVS module can be done with the
+following command:
+<pre>
+cvs -z3 -d :pserver:anonymous@anoncvs.enlightenment.org:/var/cvs/e co <b>MODULE</b>
+</pre>
+</p><p>
+There are several modules in CVS - each for different purposes. Below is a
+description of them and their uses:
+</p><p>
+<table class='tab'>
+<tr><th class='tab'>MODULE</th>
+<th class='tab'>DESCRIPTION</th>
+</tr>
+<tr>
+<td class='tab1'>e17</td>
+<td class='tab1'>This is where all the code for E17 and its libraries lives</td>
+</tr>
+<tr>
+<td class='tab2'>e16</td>
+<td class='tab2'>This is where e16's code lives</td>
+</tr>
+<tr>
+<td class='tab1'>misc</td>
+<td class='tab1'>This contains miscellaneous tools and programs</td>
+</tr>
+<tr>
+<td class='tab2'>web</td>
+<td class='tab2'>This is where this website is stored</td>
+</tr>
+<tr>
+<td class='tab1'>devs</td>
+<td class='tab1'>This is information on all developers and this governs their CVS access</td>
+</tr>
+<tr>
+<td class='tab2'>eterm</td>
+<td class='tab2'>This is the Eterm repository</td>
+</tr>
+</table>
+</p><p>
+If you become a developer (get DEV CVS access) Then you will need to use a
+different CVS server. You need to ask permission from an existing developer
+to gain DEV CVS access. To do this you will need to first know what your
+USERNAME will be, have it added by an existing developer and you will need to
+provide your SSH public key for this to happen, then the below will get you
+started:
+</p><p>
+<pre>
+export CVS_RSH=ssh
+cvs -z3 -d <b>USERNAME</b>@cvs.enlightenment.org:/cvs/e co <b>MODULE</b>
+</pre>
+</p><p>
+Once you have the tree you can use the tree as normal and commit, add, remove
+etc. files from CVS. Note that we have a cvs-commits mailing list where all
+CVS commits go to - all developers should subscribe to this list and follow
+it. This is how we know what you do, when and where.
+</p>
+</div></td>
+</tr>
+</table>

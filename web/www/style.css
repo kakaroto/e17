@@ -280,6 +280,33 @@ div.lr {
    float                  : right;
 }
 
+table.tab {
+   padding                : 0px;
+   margin                 : 1px; 
+   border                 : 1px solid #cccccc;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #444444;
+   font-size              : 1.0em;
+}
+
+th.tab {
+   color                  : #ffffff;
+   background-color       : #000000;
+   padding                : 2px;
+}
+
+td.tab1 {
+   color                  : #444444;
+   background-color       : #ffffff;
+   padding                : 2px;
+}
+
+td.tab2 {
+   color                  : #444444;
+   background-color       : #eeeeee;
+   padding                : 2px;
+}
+
 table.b {
    padding                : 0px; 
    margin                 : 0px; 
