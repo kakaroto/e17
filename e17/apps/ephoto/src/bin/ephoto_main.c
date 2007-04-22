@@ -131,7 +131,7 @@ void create_main_gui(void)
 	ewl_box_spacing_set(EWL_BOX(em->toolbar), 5);
 	ewl_object_alignment_set(EWL_OBJECT(em->toolbar), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(em->toolbar), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(em->main_vbox), em->toolbar);
+	ewl_container_child_append(EWL_CONTAINER(vbox), em->toolbar);
 	ewl_widget_show(em->toolbar);
 
         button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/normal_view.png", show_normal_view, NULL);

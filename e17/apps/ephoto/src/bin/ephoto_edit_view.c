@@ -12,7 +12,8 @@ static void rotate_image_right(Ewl_Widget *w, void *event, void *data);
 /*Add the edit view*/
 Ewl_Widget *add_edit_view(Ewl_Widget *c)
 {
-	Ewl_Widget *button, *vbox, *hbox, *nb, *standard, *enhance, *advanced;
+	Ewl_Widget *button, *vbox, *ivbox, *hbox, *bhbox, *nb;
+	Ewl_Widget *standard, *enhance, *advanced;
 
         vbox = add_box(c, EWL_ORIENTATION_VERTICAL, 5);
         ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
@@ -44,22 +45,22 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
         ewl_object_minimum_w_set(EWL_OBJECT(advanced), 172);
         ewl_object_fill_policy_set(EWL_OBJECT(advanced), EWL_FLAG_FILL_VFILL);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(nb), advanced, "Advanced Tools");
+	ivbox = add_box(hbox, EWL_ORIENTATION_VERTICAL, 2);
+	ewl_object_alignment_set(EWL_OBJECT(ivbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(ivbox), EWL_FLAG_FILL_ALL);
 
-        em->eimage = add_image(hbox, NULL, 0, NULL, NULL);
+        em->eimage = add_image(ivbox, NULL, 0, NULL, NULL);
         ewl_object_alignment_set(EWL_OBJECT(em->eimage), EWL_FLAG_ALIGN_CENTER);
         ewl_object_fill_policy_set(EWL_OBJECT(em->eimage), EWL_FLAG_FILL_SHRINK);
+	bhbox = add_box(ivbox, EWL_ORIENTATION_HORIZONTAL, 2);
+	ewl_object_alignment_set(EWL_OBJECT(bhbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(bhbox), EWL_FLAG_FILL_SHRINK);
 
-	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
-	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
-
-	button = add_button(hbox, "Return to main view", NULL, show_main_view, NULL);
-
-        button = add_button(hbox, NULL, PACKAGE_DATA_DIR "/images/media-seek-backward.png", previous_image, NULL);
+        button = add_button(bhbox, NULL, PACKAGE_DATA_DIR "/images/media-seek-backward.png", previous_image, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
         ewl_attach_tooltip_text_set(button, "Previous Image");
 
-        button = add_button(hbox, NULL, PACKAGE_DATA_DIR "/images/media-seek-forward.png", next_image, NULL);
+        button = add_button(bhbox, NULL, PACKAGE_DATA_DIR "/images/media-seek-forward.png", next_image, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
         ewl_attach_tooltip_text_set(button, "Next Image");
 
@@ -125,7 +126,7 @@ static void previous_image(Ewl_Widget *w, void *event, void *data)
 		image = ecore_dlist_current(em->images);
 	}
         ewl_image_file_path_set(EWL_IMAGE(em->eimage), image);
-        ewl_widget_configure(em->eimage->parent);
+        ewl_widget_configure(em->eimage->parent->parent);
 
         return;
 }
