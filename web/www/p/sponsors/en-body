@@ -1,4 +1,16 @@
+<table class='main'>
+<tr>
+<td class='main'><div class="main">
+<h3>Why donate?</h3>
 <p>
+In order to provide better services to our users, the Enlightenment team would like to ask that the Enlightenment user community pull together and help us raise funds for a new server. We are therefore requesting donations so that we may purchase our own dedicated server. If you would like to contribute to the Enlightenment project, but can't code, this is a great way to help out.
+
+We would like to thank our current hosting provider, the cAos Foundation , who have generously donated access to their CVS services.
+
+Long-time Enlightenment users are probably well aware of some of the service issues we've experienced in recent years. The CVS services improved considerably with the move to our current provider, but the web site has remained with SourceForge. The restrictive permissions have prevented us from providing many of the services to our users that we feel are necessary. Services such as integrating CVS content with the website, bug tracking, wiki access, and reasonable CMS services are simply too difficult to provide with the access levels available on SourceForge. In addition, external CMS access to SourceForge has proven to be unreliable and very slow. As a result, the website has gone relatively unmaintained for months, much of the content has moved to edevelop.org and get-e.org, and hosted copies of API documentation have not been updated to reflect significant changes which are documented in CVS. These issues hurt the projects image, discourage new users, and frustrate existing users. We feel a dedicated server is the best way to address these issues with the level of quality expected from this project.
+
+As a last note, we would like to extend our thanks to the people who have already donated the current funds of $1600 to the Enlightenment project. Your charity has not been forgotten, and your donations will be applied towards the server fund. 
+
 *FIXME* Fill in sponsors. The following need to be listed:
 </p><p>
 The community of users<br>
@@ -14,7 +26,7 @@ OSUOSL<br>
 *FIXME* How to donate (paypal etc.) and how to sponsor/help.
 </p><p>
 
-<h2>Help us spread the word!</h2>
+<h3>Help us spread the word!</h3>
 <p>
 Place one of the following banners on your site to help us out.
 </p>
@@ -50,3 +62,8 @@ Place one of the following banners on your site to help us out.
 </pre>
 
 </p>
+
+</div></td>
+</tr>
+</table>
+
