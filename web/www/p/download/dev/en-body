@@ -13,11 +13,12 @@ Development snapshots are packages (archives) with E17 and it's core
 libraries inside. They are being created regularly, usually when some new
 feature is made and, of course when everything is "stable". Please keep in
 mind that these are not official releases and E is still considered
-pre-alpha code. This means that it still have many bugs and some of the features are not implemented yet. The snapshots are currently hosted <a href='http://enlightenment.freedesktop.org/'>here</a>.</p><p>
+pre-alpha code. This means that it may still have bugs and some of the features are not implemented yet. The snapshots are currently hosted <a href='http://enlightenment.freedesktop.org/'>here</a>.</p><p>
 Another (and maybe the most preferable by users) way to have E on your
 computer is to use packages made for your operating system or Linux distribution.
 There are unofficial packages for most distributions, including Debian,
-Ubuntu, Fedora, ArchLinux, Gentoo, and so on. There are ports for E17 and EFL in FreeBSD's port collection. And again, there is no guarantee that those packages will work. If you experience any problems with E using the packages, please first refer to the packager(s), not to the E17 team.
+<a href="http://ubuntuforums.org/showthread.php?t=97199&highlight=E17+cvs">Ubuntu</a>, <a href="http://sps.nus.edu.sg/~didierbe">Fedora</a>, <a
+href="http://wiki.archlinux.org/index.php/E17">ArchLinux</a>, <a href="http://gentoo-wiki.com/HOWTO_emerge_e17">Gentoo</a>, and so on. There are ports for E17 and EFL in FreeBSD's port collection. And again, there is no guarantee that those packages will work. If you experience any problems with E using the packages, please first refer to the packager(s), not to the E17 team.
 </p><p>
 FIXME: should the scripts for getting/installing E go here on in the CVS page?
 </div></td>
