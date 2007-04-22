@@ -148,6 +148,49 @@ the one that is right for you.</p>
 
 <hr />
 
+<p><span class="contentmain">
+
+<hr /> <br />
+  <h2>Related Applications</h2> 
+<p> There are a number of other applications related to Enlightenment, which can be found here: </p>
+   
+<table border="0" height="undefined">    <tbody> 
+
+<tr>      
+<td class="newstitle">Application</td>
+      
+<td class="newstitle">Description and Links</td>
+    </tr>
+    
+<tr class="team-dark">      
+<td valign="top">Eterm</td>
+      
+<td>Eterm is considered the official terminal
+emulator for E, and is a direct replacement for Xterm. It can, however,
+be used on any window manager out there.<br />
+         [<a href="http://www.eterm.org/">Eterm Home</a>]<br />
+
+         [<a href="http://www.eterm.org/download/">Official Eterm &amp; libast RPMs</a>]<br />
+  	[<a href="http://packages.debian.org/eterm">Debian GNU/Linux packages for Eterm</a>]<br />
+         [<a href="http://www.cuddletech.com/download/">Eterm v0.9 Solaris PKG</a>]     </td>
+
+   </tr>
+    
+<tr class="team-light">      
+<td valign="top">Epplets</td>
+       
+<td>Epplets are small desktop utility programs.  Several Epplets have been written, and can be found at:<br />
+         [<a href="http://linuxbrit.co.uk/epplets/">linuxbrit.co.uk</a>]<br />
+         [<a href="http://www.sanity.uklinux.net/epplets.html">sanity.uklinux.net</a>]<br />
+
+         [<a href="http://prdownloads.sourceforge.net/enlightenment/epplet-base-0.5.tar.gz">Epplets Base v0.5 Source</a>]<br />
+          [<a href="http://sourceforge.net/project/showfiles.php?group_id=2">Sample Epplets Archive</a>]<br />
+ 	[<a href="http://packages.debian.org/epplets">Debian GNU/Linux packages for epplets</a>]</td>
+ </tr>
+
+ </tbody></table>
+ </span></p>
+
 </div></td>
 </tr>
 </table>
