@@ -1,1 +1,20 @@
-<p>Body</p>
+<table class='main'>
+<tr>
+<td class='main'><div class="main">
+
+<center><h1>Ewl</h1></center>
+
+<p></p>
+
+<span class="contentmain"><br />   <p>The Enlightened Widget Library, a
+simple-to-use general purpose widget library based on the Evas canvas.
+This library is still in development but already has demo applications
+and solid documentation, so feel free to try the CVS sources.</p>  <p>Here's an example of Ewl usage:</p>  <div class="fragment"> <pre>#include &lt;Ewl.h&gt;<br /><br />/**Declare Ewl Objects**/<br />Ewl_Widget *win;<br />Ewl_Widget *vbox;<br />Ewl_Widget *text;<br />Ewl_Widget *button;<br /><br />/**Declare Callbacks**/<br />static void destroy_cb(Ewl_Widget * w, void *event, void *data);<br />static void clicked_cb(Ewl_Widget * w, void *event, void *data);<br /><br />int<br />main(int argc, char **argv)<br />{<br />	/**Make sure ewl can be used**/<br />	if (!ewl_init(&amp;argc, argv)) {<br />		printf(&quot;Unable to init ewl\n&quot;);<br />		return 1;<br />	}<br />	<br />	/**Setup and Show the Window**/<br />	win = ewl_window_new();<br />	ewl_window_title_set(EWL_WINDOW(win), &quot;Hello World&quot;);<br />	ewl_window_name_set(EWL_WINDOW(win), &quot;Hellow World&quot;);<br />	ewl_object_size_request(EWL_OBJECT(win), 177, 146);<br />	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);<br />	ewl_widget_show(win);<br />	<br />	/**Setup a Vertical Box to Hold Our Widgets**/<br />	vbox = ewl_vbox_new();<br />	ewl_container_child_append(EWL_CONTAINER(win), vbox);<br />	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);<br />	ewl_widget_show(vbox);<br />	<br />	/**Setup and show the text box**/<br />	text = ewl_text_new();<br />	ewl_container_child_append(EWL_CONTAINER(vbox), text);<br />	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);<br />	ewl_widget_show(text);<br />	<br />	/**Setup and show the button**/<br />	button = ewl_button_new();<br />	ewl_button_label_set(EWL_BUTTON(button), &quot;Click Me&quot;);<br />	ewl_container_child_append(EWL_CONTAINER(vbox), button);<br />	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);<br />	ewl_object_maximum_size_set(EWL_OBJECT(button), 60, 15);<br />	ewl_callback_append(button, EWL_CALLBACK_CLICKED, clicked_cb, NULL);<br />	ewl_widget_show(button);<br />	<br />   /**Go Into the Main Ewl Event Loop**/<br />   ewl_main();<br /><br />   return 1;<br />}<br /><br />/**Setup the Callbacks**/</pre><pre><br />void destroy_cb(Ewl_Widget * w, void *event, void *data)<br />{	<br />	/**Destory the Window**/<br />	ewl_widget_destroy(w);<br />	<br />	/**Stop the Ewl Event Loop**/<br />	ewl_main_quit();<br />	<br />	/**Return**/<br />	return;<br />	w = NULL;<br />	event = NULL;<br />	data = NULL;<br />}	<br /><br />void clicked_cb(Ewl_Widget * w, void *event, void *data)<br />{<br />	/**Set the Text on the Text Widget**/<br />	ewl_text_text_set(EWL_TEXT(text), &quot;Hello World&quot;);<br />	<br />	/**Return**/<br />	return;<br />	w = NULL;<br />	event = NULL;<br />	data = NULL; <br />}<br /><br /><ewl.h /></pre> </div>  <p>This code is compiled in the following manner: gcc `ewl-config --libs --cflags` ewl_hello.c -o ewl_hello</p><p>When finished, it should look like this:</p>  <p class="manager"><img src="http://enlightenment.sourceforge.net/Libraries/Ewl/_images/hello_png_thumb.jpeg" /> <br />
+
+</p><p class="manager"><br />
+EWL's project manager is <a target="_self" class="lite" href="http://enlightenment.sourceforge.net/Main/The_Team/">Nathan  &quot;RbdPngn&quot; Ingersoll</a>.</p></span>
+
+
+</div></td>
+</tr>
+</table>

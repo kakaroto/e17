@@ -1,1 +1,32 @@
-<p>Body</p>
+<table class='main'>
+<tr>
+<td class='main'><div class="main">
+
+<center><h1>Embryo</h1></center>
+
+<p></p>
+
+<span class="contentmain"><br />
+
+
+<p>
+Embryo implements a C like scripting language used in various parts of the Enlightenment project, namely Edje.
+Embryo's scripting language is based on <a href="http://www.compuphase.com/">CompuPhase's</a> <a href="http://www.compuphase.com/small.htm">Small</a>
+
+language that was introduced in <a href="http://www.ddj.com/documents/s=898/ddj9910f/">Dr Dobb's Journal in 1999</a>.
+Embryo allows scripting capabilities in places that otherwise wouldn't
+support basic programming structures such as in Edje EDCs.
+</p>
+
+<p>
+Documenation on the Small language itself can be found in several PDF booklets found <a href="http://www.compuphase.com/small.htm">on the
+official small page</a>.
+</p>
+
+
+
+<p class="manager">Embryo's project manager is <a target="_self" class="lite" href="http://enlightenment.sourceforge.net/Main/The_Team/">Carsten &quot;Rasterman&quot; Haitzler</a>.</p></span>
+
+</div></td>
+</tr>
+</table>

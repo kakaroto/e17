@@ -1,1 +1,83 @@
-<p>Body</p>
+<table class='main'>
+<tr>
+<td class='main'><div class="main">
+
+<center><h1>Ecore</h1></center>
+
+<p></p>
+
+<span class="contentmain"><br />
+
+
+<p>What is Ecore? It is the core event abstraction layer and X abstraction
+layer that makes doing selections, Xdnd, general X stuff, and event loops,
+timeouts and idle handlers fast, optimized, and convenient. It's a separate
+library so anyone can make use of the work put into Ecore to make this job
+easy for applications.
+</p>
+
+<p>
+Ecore is completely modular.  At its base is the event handlers and timers, and initialization
+and shutdown functions.  The abstraction modules for Ecore include:</p>
+
+<ul><li>Ecore X 
+</li><li>Ecore FB
+</li><li>Ecore EVAS
+</li><li>Ecore TXT 
+</li><li>Ecore Job
+</li><li>Ecore IPC
+</li><li>Ecore Con
+</li><li>Ecore Config
+</li></ul>
+
+
+<p>
+Ecore's most popular use is to answer the plee &quot;Just give me a damned canvas!&quot;
+Here is an example of Ecore's EVAS module being used to simplify all
+the setup needed to create an X11 EVAS:
+
+</p>
+
+<div class="fragment">
+<pre>#include &lt;stdio.h&gt;
+#include &lt;Ecore_Evas.h&gt;
+#define WIDTH 200
+#define HEIGHT 200
+
+Ecore_Evas  *ee;
+Evas        *evas;
+Evas_Object *base_rect;
+
+int main(int argc, char **argv){
+  ecore_init();
+  ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+  ecore_evas_title_set(ee, &quot;Ecore Template&quot;);
+  ecore_evas_borderless_set(ee, 0);
+  ecore_evas_show(ee);
+  evas = ecore_evas_get(ee);
+
+  evas_font_path_append(evas, &quot;data/&quot;);
+  base_rect = evas_object_rectangle_add(evas);
+  evas_object_resize(base_rect, WIDTH, HEIGHT);
+  evas_object_color_set(base_rect, 244, 243, 242, 255);
+  evas_object_show(base_rect);
+
+  /* More code here... */
+
+  ecore_main_loop_begin();
+  return 0;
+}</pre>
+</div>
+
+<p>
+Ecore is so modular and powerful that it can be extremely useful even in non-graphics
+programing by itself.  As an example, several web servers have been written that
+were based solely on Ecore and the Ecore_Con module that abstracts socket communication.
+For more information on Ecore and its modules, please refer the the documentation.
+</p>
+
+<p class="manager">Ecore's project manager is <a target="_self" class="lite" href="http://enlightenment.sourceforge.net/Main/The_Team/">Carsten &quot;Rasterman&quot; Haitzler</a><span class="lite">.</span></p></span>
+
+</div></td>
+</tr>
+</table>
