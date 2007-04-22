@@ -61,11 +61,11 @@ the one that is right for you.</p>
 
 <table border="0" height="undefined">    <tbody> 
 <tr>      
-<td class="newstitle">Distribution/Platform</td>
+<td class="lnav">Distribution/Platform</td>
 
-<td class="newstitle">File</td>
+<td class="lnav">File</td>
 
-<td class="newstitle">Comments</td>
+<td class="lnav">Comments</td>
 </tr>
 
 <tr class="team-dark">      
@@ -157,9 +157,9 @@ the one that is right for you.</p>
 <table border="0" height="undefined">    <tbody> 
 
 <tr>      
-<td class="newstitle">Application</td>
+<td class="lnav">Application</td>
       
-<td class="newstitle">Description and Links</td>
+<td class="lnav">Description and Links</td>
     </tr>
     
 <tr class="team-dark">      
