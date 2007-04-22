@@ -59,7 +59,7 @@ platforms. Please choose from the list of available distributions
 the one that is right for you.</p>
 </span>
 
-<table border="0" height="undefined">    <tbody> 
+<table class='tab'>    <tbody> 
 <tr>      
 <th class="tab">Distribution/Platform</td>
 
@@ -69,78 +69,78 @@ the one that is right for you.</p>
 </tr>
 
 <tr class="team-dark">      
-<td>Enlightenment Source Code TAR.GZ</td>
+<td class='tab1'>Enlightenment Source Code TAR.GZ</td>
 
-<td><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6.tar.gz?download">e16-0.16.8.6.tar.gz</a></td>
+<td class='tab1'><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6.tar.gz?download">e16-0.16.8.6.tar.gz</a></td>
 
-<td>&nbsp;</td>
+<td class='tab1'>&nbsp;</td>
 </tr>
 
     
 <tr class="team-light">      
-<td>Source Package RPM</td>
+<td class='tab2'>Source Package RPM</td>
 
-<td><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6-1.fc6.src.rpm?download">e16-0.16.8.6-1.fc6.src.rpm</a></td>
+<td class='tab2'><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6-1.fc6.src.rpm?download">e16-0.16.8.6-1.fc6.src.rpm</a></td>
 
-<td>&nbsp;</td>
+<td class='tab2'>&nbsp;</td>
 </tr>
     
 <tr class="team-dark">      
-<td>Linux i386 Binary RPM</td>
+<td class='tab1'>Linux i386 Binary RPM</td>
 
-<td><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6-1.fc6.i386.rpm?download">e16-0.16.8.6-1.fc6.i386.rpm</a></td>
+<td class='tab1'><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6-1.fc6.i386.rpm?download">e16-0.16.8.6-1.fc6.i386.rpm</a></td>
 
-<td>&nbsp;</td>
+<td class='tab1'>&nbsp;</td>
 </tr>
 
 <tr class="team-light">      
-<td>Gentoo Linux</td>
+<td class='tab2'>Gentoo Linux</td>
 
-<td><a href="http://packages.gentoo.org/search/?sstring=enlightenment">Emerge for X86, PPC, HP-PA and Sparc</a></td>
+<td class='tab2'><a href="http://packages.gentoo.org/search/?sstring=enlightenment">Emerge for X86, PPC, HP-PA and Sparc</a></td>
 
-<td>&nbsp;</td>
+<td class='tab2'>&nbsp;</td>
 </tr>
 
 <tr class="team-dark">      
-<td>Debian GNU/Linux DEB</td>
+<td class='tab1'>Debian GNU/Linux DEB</td>
 
-<td><a href="http://packages.debian.org/enlightenment">Packages for &#39;stable&#39;, &#39;testing&#39; and &#39;unstable&#39;</a></td>
+<td class='tab1'><a href="http://packages.debian.org/enlightenment">Packages for &#39;stable&#39;, &#39;testing&#39; and &#39;unstable&#39;</a></td>
 
-<td>&nbsp;</td>
+<td class='tab1'>&nbsp;</td>
 </tr>
     
 <tr class="team-light">
-<td>SUSE Linux</td>
+<td class='tab2'>SUSE Linux</td>
 
-<td><a href="http://packman.links2linux.de/index.php4?action=638">E DR16.8</a></td>
+<td class='tab2'><a href="http://packman.links2linux.de/index.php4?action=638">E DR16.8</a></td>
 
-<td>Unofficial, use at own risk. Contributed by Marcus H&uuml;we.<br />
+<td class='tab2'>Unofficial, use at own risk. Contributed by Marcus H&uuml;we.<br />
 </td>
 </tr>
 
 <tr class="team-dark">      
-<td>Solaris 9 (or higher) SPARC packages</td>
+<td class='tab1'>Solaris 9 (or higher) SPARC packages</td>
 
-<td><a href="http://www.cuddletech.com/download">E DR16.7.1 + All Requirements</a></td>
+<td class='tab1'><a href="http://www.cuddletech.com/download">E DR16.7.1 + All Requirements</a></td>
 
-<td>&nbsp;</td>
+<td class='tab1'>&nbsp;</td>
 
 </tr>
     
 <tr class="team-light">      
-<td>AIX 4.3.3/5L RPMs</td>
+<td class='tab2'>AIX 4.3.3/5L RPMs</td>
 
-<td><a href="http://www-1.ibm.com/servers/aix/products/aixos/linux/download.html">E DR16.5 + All Requirements from IBM</a></td>
+<td class='tab2'><a href="http://www-1.ibm.com/servers/aix/products/aixos/linux/download.html">E DR16.5 + All Requirements from IBM</a></td>
 
-<td>&nbsp;</td>
+<td class='tab2'>&nbsp;</td>
 </tr>
 
 <tr class="team-dark">      
-<td>GNU Darwin</td>
+<td class='tab1'>GNU Darwin</td>
 
-<td><a href="http://gnu-darwin.sourceforge.net/">E DR16.5 + All Requirements</a></td>
+<td class='tab1'><a href="http://gnu-darwin.sourceforge.net/">E DR16.5 + All Requirements</a></td>
 
-<td>&nbsp;</td>
+<td class='tab1'>&nbsp;</td>
 </tr>
     
 </tbody>
@@ -154,7 +154,7 @@ the one that is right for you.</p>
   <h2>Related Applications</h2> 
 <p> There are a number of other applications related to Enlightenment, which can be found here: </p>
    
-<table border="0" height="undefined">    <tbody> 
+<table class='tab'>    <tbody> 
 
 <tr>      
 <th class="tab">Application</td>
@@ -163,9 +163,9 @@ the one that is right for you.</p>
     </tr>
     
 <tr class="team-dark">      
-<td valign="top">Eterm</td>
+<td valign="top" class='tab1'>Eterm</td>
       
-<td>Eterm is considered the official terminal
+<td class='tab1'>Eterm is considered the official terminal
 emulator for E, and is a direct replacement for Xterm. It can, however,
 be used on any window manager out there.<br />
          [<a href="http://www.eterm.org/">Eterm Home</a>]<br />
@@ -177,9 +177,9 @@ be used on any window manager out there.<br />
    </tr>
     
 <tr class="team-light">      
-<td valign="top">Epplets</td>
+<td valign="top" class='tab2'>Epplets</td>
        
-<td>Epplets are small desktop utility programs.  Several Epplets have been written, and can be found at:<br />
+<td class='tab2'>Epplets are small desktop utility programs.  Several Epplets have been written, and can be found at:<br />
          [<a href="http://linuxbrit.co.uk/epplets/">linuxbrit.co.uk</a>]<br />
          [<a href="http://www.sanity.uklinux.net/epplets.html">sanity.uklinux.net</a>]<br />
 
