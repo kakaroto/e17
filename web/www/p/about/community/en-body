@@ -33,7 +33,7 @@ subscription details into the form.
       
 <td><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-announce">Enlightenment Announce</a></td>
       
-<td><a href="http://sourceforge.net/mailarchive/forum.php?forum=enlightenment-announce">SourceForge</a>, <a href="http://marc.theaimsgroup.com/?l=enlightenment-announce&r=1&w=2">MARC</a></td>
+<td><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-announce">SourceForge</a>, <a href="http://marc.theaimsgroup.com/?l=enlightenment-announce&r=1&w=2">MARC</a></td>
       
 <td>Recieve notification of all new releases.</td>
     </tr>
@@ -44,7 +44,7 @@ subscription details into the form.
 <td><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-users">Enlightenment Users List</a></td>
 
       
-<td><a href="http://sourceforge.net/mailarchive/forum.php?forum_id=810">SourceForge</a>, <a href="http://marc.theaimsgroup.com/?l=enlightenment-users&r=1&w=2">MARC</a></td>
+<td><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-users">SourceForge</a>, <a href="http://marc.theaimsgroup.com/?l=enlightenment-users&r=1&w=2">MARC</a></td>
       
 <td>General mailing list for questions, help, comments, feedback and anything E related.</td>
     </tr>
@@ -54,7 +54,7 @@ subscription details into the form.
 
 <td><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-devel">Enlightenment Development List</a></td>
       
-<td><a href="http://sourceforge.net/mailarchive/forum.php?forum=enlightenment-devel">SourceForge</a>, <a href="http://marc.theaimsgroup.com/?l=enlightenment-devel&r=1&w=2">MARC</a></td>
+<td><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-devel">SourceForge</a>, <a href="http://marc.theaimsgroup.com/?l=enlightenment-devel&r=1&w=2">MARC</a></td>
 
       
 <td>Developer only list.  If your message does not directly involve code post to the users group.</td>
@@ -65,9 +65,20 @@ subscription details into the form.
 <td><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-cvs">Enlightenment CVS Commit List</a></td>
 
       
-<td><a href="http://sourceforge.net/mailarchive/forum.php?forum=enlightenment-cvs">SourceForge</a>, <a href="http://marc.theaimsgroup.com/?l=enlightenment-cvs&r=1&w=2">MARC</a></td>
+<td><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-cvs">SourceForge</a>, <a href="http://marc.theaimsgroup.com/?l=enlightenment-cvs&r=1&w=2">MARC</a></td>
       
 <td>Get email notification of all CVS updates.</td>
+
+    </tr>
+    
+<tr class="team-light">
+      
+<td><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-intl">Enlightenment Internationalisation List</a></td>
+
+      
+<td><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-intl">SourceForge</a></td>
+      
+<td>Mailling list for l10n and i18n. Send your translations of E to this list. </td>
 
     </tr>
   </tbody></table>
