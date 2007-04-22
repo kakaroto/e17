@@ -1,9 +1,153 @@
 <table class='main'>
 <tr>
 <td class='main'><div class="main">
-<p>
-*FIXME* Explain here about E16
+
+<span class="contentmain"> 
+<p>The latest stable version of DR16 is 0.16.8.6 which was released on February 20th, 2007. Before
+downloading, review the following list of required dependencies:</p>
+<p>&nbsp;DR16.8 dependencies:</p>
+
+</span>
+
+<span class="contentmain">
+
+</span>
+<ul>
+<li><span class="contentmain">
+<a href="http://sourceforge.net/project/showfiles.php?group_id=2" target="_self">Imlib2 v1.2.0</a> (or greater, v1.3.0 or greater is recommended)
+</span></li>
+<li><span class="contentmain">
+<a href="http://www.freetype.org/">FreeType2 2.1.6</a> (or greater)
+</span></li>
+</ul>
+
+<span class="contentmain">
+
+<p>DR16.7 dependencies [Note: DR16.7 can also use the old dependencies if these are not available]:</p>
+</span>
+<ul>
+<li><span class="contentmain">
+<a href="http://sourceforge.net/project/showfiles.php?group_id=2" target="_self">Imlib2 v1.1.1</a> (or greater)
+</span></li>
+<li><span class="contentmain">
+<a href="http://www.freetype.org/">FreeType2 2.1.6</a> (or greater)
+</span></li>
+</ul>
+
+<span class="contentmain"><p> DR16.6 and earlier dependencies:</p>
+
+</span>
+<ul>
+<li><span class="contentmain">
+<a href="ftp://ftp.gnome.org/pub/gnome/sources/imlib/1.9/imlib-1.9.14.tar.gz">IMLIB v1.9.14</a>(or greater)
+</span></li>
+<li><span class="contentmain">
+<a href="http://prdownloads.sourceforge.net/enlightenment/fnlib-0.5.tar.gz">FNLIB 0.5</a> (or greater)
+</span></li>
+<li><span class="contentmain">
+<a href="http://www.freetype.org/">FreeType 1.3.1</a> (or greater)
+</span></li>
+</ul>
+
+<span class="contentmain"></span><span class="contentmain"><p>Packages for current and previous releases of DR16, core themes,
+epplets, e16menuedit, e16keyedit, and imlib2 can be found on the <a href="http://sourceforge.net/project/showfiles.php?group_id=2" target="_self" title="SourceForge download page">SourceForge download page</a>.<br />
 </p>
+
+<p>
+Enlightenment can be compiled on a number of different *NIX
+platforms. Please choose from the list of available distributions
+the one that is right for you.</p>
+</span>
+
+<table border="0" height="undefined">    <tbody> 
+<tr>      
+<td class="newstitle">Distribution/Platform</td>
+
+<td class="newstitle">File</td>
+
+<td class="newstitle">Comments</td>
+</tr>
+
+<tr class="team-dark">      
+<td>Enlightenment Source Code TAR.GZ</td>
+
+<td><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6.tar.gz?download">e16-0.16.8.6.tar.gz</a></td>
+
+<td>&nbsp;</td>
+</tr>
+
+    
+<tr class="team-light">      
+<td>Source Package RPM</td>
+
+<td><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6-1.fc6.src.rpm?download">e16-0.16.8.6-1.fc6.src.rpm</a></td>
+
+<td>&nbsp;</td>
+</tr>
+    
+<tr class="team-dark">      
+<td>Linux i386 Binary RPM</td>
+
+<td><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6-1.fc6.i386.rpm?download">e16-0.16.8.6-1.fc6.i386.rpm</a></td>
+
+<td>&nbsp;</td>
+</tr>
+
+<tr class="team-light">      
+<td>Gentoo Linux</td>
+
+<td><a href="http://packages.gentoo.org/search/?sstring=enlightenment">Emerge for X86, PPC, HP-PA and Sparc</a></td>
+
+<td>&nbsp;</td>
+</tr>
+
+<tr class="team-dark">      
+<td>Debian GNU/Linux DEB</td>
+
+<td><a href="http://packages.debian.org/enlightenment">Packages for &#39;stable&#39;, &#39;testing&#39; and &#39;unstable&#39;</a></td>
+
+<td>&nbsp;</td>
+</tr>
+    
+<tr class="team-light">
+<td>SUSE Linux</td>
+
+<td><a href="http://packman.links2linux.de/index.php4?action=638">E DR16.8</a></td>
+
+<td>Unofficial, use at own risk. Contributed by Marcus H&uuml;we.<br />
+</td>
+</tr>
+
+<tr class="team-dark">      
+<td>Solaris 9 (or higher) SPARC packages</td>
+
+<td><a href="http://www.cuddletech.com/download">E DR16.7.1 + All Requirements</a></td>
+
+<td>&nbsp;</td>
+
+</tr>
+    
+<tr class="team-light">      
+<td>AIX 4.3.3/5L RPMs</td>
+
+<td><a href="http://www-1.ibm.com/servers/aix/products/aixos/linux/download.html">E DR16.5 + All Requirements from IBM</a></td>
+
+<td>&nbsp;</td>
+</tr>
+
+<tr class="team-dark">      
+<td>GNU Darwin</td>
+
+<td><a href="http://gnu-darwin.sourceforge.net/">E DR16.5 + All Requirements</a></td>
+
+<td>&nbsp;</td>
+</tr>
+    
+</tbody>
+</table>
+
+<hr />
+
 </div></td>
 </tr>
 </table>
