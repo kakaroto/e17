@@ -35,10 +35,20 @@ For more information about what we do please see our
 <td class='main'><div class="main">
 <center><?php img("logo.png", "E"); ?></center>
 <p>
-*FIXME* Put in links to download directly from here - both e17 and e16
-</p>
+Currently <?php a("about/dev", "Enlightenment 0.17 (known as E17)");?> is
+under development with a <b>TODO</b> list that is being worked on for release.
+The base libraries it depends on
+<?php a("about/libs", "EFL (Enlightenment Foundation Libraries)");?> are
+very mature and stable. There are other applications that use these too. E17
+itself is primarily available via CVS.
+</p><p>
+But despite this, the stable release of
+<?php a("about/e16", "Enlightenment (the 0.16 series)");?> is still alive
+and maintained. It is not dead and does undergo feature adds, fixes and
+improvements.
+</p><p>
 <center>
-<?php blink("i/logo-s.png", "DOWNLOAD E17", "download"); ?>
+<?php blink("i/logo-s.png", "DOWNLOAD E", "download"); ?>
 </center>
 </p><p>
 </p>
