@@ -1,11 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
-@edb_cflags@ \
-@evas_cflags@ \
-@edje_cflags@ \
-@ecore_cflags@ \
-@esmart_cflags@ 
+@ICONBAR_CFLAGS@ 
 
 bin_PROGRAMS = iconbar
 
@@ -18,11 +14,7 @@ prefs.c prefs.h \
 main.c
 
 iconbar_LDADD = \
-@edb_libs@ \
-@evas_libs@ \
-@edje_libs@ \
-@ecore_libs@ \
-@esmart_libs@ \
+@ICONBAR_LIBS@ \
 -lesmart_container \
 -lesmart_trans_x11 
 
