@@ -5,8 +5,6 @@
 void _elicit_shots_update_scroll_bar(Elicit *el);
 void _elicit_shots_load_eet(Elicit *el);
 void _elicit_shots_save_eet(Elicit *el);
-void _elicit_shots_load_edb(Elicit *el);
-void _elicit_shots_save_edb(Elicit *el);
 
 int
 elicit_shots_init(Elicit *el)
@@ -113,96 +111,14 @@ _elicit_shots_save_eet(Elicit *el)
 }
 
 void
-_elicit_shots_save_edb(Elicit *el)
-{
-#ifdef HAVE_EDB
-  Evas_List *l;
-  E_DB_File *db;
-  int i = 0;
-  int old_num = 0, cleanup = 0;
-  char buf[PATH_MAX];
-
-  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/shots.db", getenv("HOME"), el->app_name);
-
-  /* open for reading first (to make sure the file exists) */
-  db = e_db_open_read(buf);
-  if (db)
-  {
-    cleanup = e_db_int_get(db, "/shots/num", &old_num);
-    e_db_close(db);
-  }
-
-  db = e_db_open(buf);
-  
-  if (!db) return;
-
-  for (l = esmart_container_elements_get(el->shots.cont); l; l = l->next, i++)
-  {
-    Evas_Object *obj;
-    Elicit_Shot *sh;
-    void *data;
-    int iw, ih;
-
-    obj = (Evas_Object *)(l->data);
-    sh = evas_object_data_get(obj, "shot");
-
-    snprintf(buf, PATH_MAX, "/shots/%d/name", i);
-    e_db_str_set(db, buf, sh->name);
-  
-    evas_object_image_size_get(sh->shot, &iw, &ih);
-    data = evas_object_image_data_get(sh->shot, 1);
-
-    snprintf(buf, PATH_MAX, "/shots/%d/w", i);
-    e_db_int_set(db, buf, iw);
-
-    snprintf(buf, PATH_MAX, "/shots/%d/h", i);
-    e_db_int_set(db, buf, ih);
-
-    snprintf(buf, PATH_MAX, "/shots/%d/shot", i);
-    e_db_data_set(db, buf, data, sizeof(data)*iw*ih);
-  }
-  e_db_int_set(db, "/shots/num", i);
-
-  if (cleanup)
-  {
-    for(; i < old_num; i++)
-    {
-      snprintf(buf, PATH_MAX, "/shots/%d/name", i);
-      e_db_data_del(db, buf);
-   
-      snprintf(buf, PATH_MAX, "/shots/%d/shot", i);
-      e_db_data_del(db, buf);
-
-      snprintf(buf, PATH_MAX, "/shots/%d/w", i);
-      e_db_data_del(db, buf);
-
-      snprintf(buf, PATH_MAX, "/shots/%d/h", i);
-      e_db_data_del(db, buf);
-    }
-  }
-  
-  e_db_close(db);
-  e_db_flush();
-#endif
-}
-
-void
 elicit_shots_load(Elicit *el)
 {
   char buf[PATH_MAX];
 
-  /* upgrade path -- if eet file doesn't exist, load shots from edb */
   snprintf(buf, PATH_MAX, "%s/.e/apps/%s/shots.eet", getenv("HOME"), el->app_name);
 
-  if(!ecore_file_exists(buf))
-  {
-    _elicit_shots_load_edb(el);
-    _elicit_shots_save_eet(el);
-  }
-  else
-  {
+  if(ecore_file_exists(buf))
     _elicit_shots_load_eet(el);
-  }
 }
 
 void
@@ -292,83 +208,6 @@ _elicit_shots_load_eet(Elicit *el)
   eet_close(eet);
 
 }
-
-void
-_elicit_shots_load_edb(Elicit *el)
-{
-#ifdef HAVE_EDB
-  E_DB_File *db;
-  int num, ok;
-  int i;
-  char buf[PATH_MAX];
-
-  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/shots.db", getenv("HOME"), el->app_name);
-
-  db = e_db_open_read(buf);
-  if (db)
-    ok = e_db_int_get(db, "/shots/num", &num);
-  else return;
- 
-  for (i = 0; i < num; i++)
-  {
-    Elicit_Shot *sh;
-    int iw = 0, ih = 0;
-    void *data = NULL;
-    int size = 0;
-    Evas_Coord mw, mh;
-    char *theme;
-  
-    sh = calloc(1, sizeof(Elicit_Shot));
-  
-    snprintf(buf, PATH_MAX, "/shots/%d/name", i);
-    sh->name = e_db_str_get(db, buf);
-     
-    snprintf(buf, PATH_MAX, "/shots/%d/w", i);
-    e_db_int_get(db, buf, &iw);
-  
-    snprintf(buf, PATH_MAX, "/shots/%d/h", i);
-    e_db_int_get(db, buf, &ih);
-  
-    snprintf(buf, PATH_MAX, "/shots/%d/shot", i);
-    data = e_db_data_get(db, buf, &size);
-  
-    sh->obj = edje_object_add(el->evas);
-    sh->shot = evas_object_image_add(el->evas);
- 
-    theme = elicit_config_theme_get(el);
-    edje_object_file_set(sh->obj, 
-                         elicit_theme_find(theme),
-                         "shot");
-    free(theme);
-    edje_object_size_min_get(sh->obj, &mw, &mh);
-    if (mw != 0 && mh != 0)
-      evas_object_resize(sh->obj, mw, mh);
-    else
-      evas_object_resize(sh->obj, 20, 20);
-    
-    evas_object_show(sh->obj);
-    evas_object_data_set(sh->obj, "shot", sh);
-    evas_object_data_set(sh->obj, "elicit", el);
-  
-    edje_object_signal_callback_add(sh->obj, "elicit,shot,load", "", elicit_shot_load_cb, sh);
-    edje_object_signal_callback_add(sh->obj, "elicit,shot,del", "", elicit_shot_del_cb, sh);
-    edje_object_signal_callback_add(sh->obj, "elicit,shot,name,show", "", elicit_shot_name_show_cb, sh);
-  
-    evas_object_image_size_set(sh->shot, iw, ih);
-    evas_object_image_data_copy_set(sh->shot, data);
-    free(data);
-    evas_object_pass_events_set(sh->shot, 1);
-    evas_object_show(sh->shot);
-    edje_object_part_swallow(sh->obj, "shot", sh->shot);
-    esmart_container_element_append(el->shots.cont, sh->obj);
-  }
-
-  el->shots.length = esmart_container_elements_length_get(el->shots.cont);
-  
-  e_db_close(db);
-#endif
-}
-
 
 void
 elicit_shot_free(Elicit_Shot *sh)

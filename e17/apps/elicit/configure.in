@@ -71,9 +71,6 @@ PKG_CHECK_MODULES(ELICIT, [
   edje
 ])
 
-dnl edb support is optional:
-PKG_CHECK_MODULES(EDB, edb, AC_DEFINE(HAVE_EDB, 1, [Have edb]), dummy=no)
-
 AC_OUTPUT([
 Makefile 
 elicit.spec

@@ -33,7 +33,7 @@ elicit_cb_resize(Ecore_Evas *ee)
 {
   int w, h;
   Evas_Coord sw, sh;
-  Evas_Object *gui, *shot, *draggie;
+  Evas_Object *gui, *draggie;
 
   /* keep the gui the same size as the window */
   ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);

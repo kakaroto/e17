@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = @ELICIT_CFLAGS@ @EDB_CFLAGS@
+INCLUDES = @ELICIT_CFLAGS@
 
 bin_PROGRAMS = elicit 
 
@@ -15,5 +15,5 @@ elicit_SOURCES = \
 				spectrum.c spectrum.h \
 				zoom.c zoom.h
 
-elicit_LDADD = @ELICIT_LIBS@ @EDB_LIBS@ -lesmart_draggies -lesmart_container
+elicit_LDADD = @ELICIT_LIBS@ -lesmart_draggies -lesmart_container
 

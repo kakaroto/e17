@@ -4,9 +4,7 @@
 
 
 void _elicit_swatches_update_scroll_bar(Elicit *el);
-void _elicit_swatches_load_edb(Elicit *el);
 void _elicit_swatches_load_gpl(Elicit *el);
-void _elicit_swatches_save_edb(Elicit *el);
 void _elicit_swatches_save_gpl(Elicit *el);
 
 int
@@ -97,87 +95,14 @@ _elicit_swatches_save_gpl(Elicit *el)
 }
 
 void
-_elicit_swatches_save_edb(Elicit *el)
-{
-#ifdef HAVE_EDB
-  Evas_List *l;
-  E_DB_File *db;
-  int i = 0;
-  int cleanup = 0, old_num = 0;
-  char buf[PATH_MAX];
-
-  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.db", getenv("HOME"), el->app_name);
-
-  db = e_db_open_read(buf);
-  if (db)
-  {
-    cleanup = e_db_int_get(db, "/swatches/num", &old_num);
-    e_db_close(db);
-  }
-
-  db = e_db_open(buf);
- 
-  if (!db) return;
-
-  for (l = esmart_container_elements_get(el->swatches.cont); l; l = l->next)
-  {
-    Evas_Object *obj;
-    Elicit_Swatch *sw;
-
-    obj = (Evas_Object *)(l->data);
-    sw = evas_object_data_get(obj, "swatch");
-
-    snprintf(buf, PATH_MAX, "/swatches/%d/name", i);
-    e_db_str_set(db, buf, sw->name);
-    
-    snprintf(buf, PATH_MAX, "/swatches/%d/r", i);
-    e_db_int_set(db, buf, sw->r);
-    snprintf(buf, PATH_MAX, "/swatches/%d/g", i);
-    e_db_int_set(db, buf, sw->g);
-    snprintf(buf, PATH_MAX, "/swatches/%d/b", i);
-    e_db_int_set(db, buf, sw->b);
-
-    i++;
-  }
-  
-  e_db_int_set(db, "/swatches/num", i);
-
-  if (cleanup)
-  {
-    for (; i < old_num; i++)
-    {
-      snprintf(buf, PATH_MAX, "/swatches/%d/name", i);
-      e_db_data_del(db, buf);
-      snprintf(buf, PATH_MAX, "/swatches/%d/r", i);
-      e_db_data_del(db, buf);
-      snprintf(buf, PATH_MAX, "/swatches/%d/g", i);
-      e_db_data_del(db, buf);
-      snprintf(buf, PATH_MAX, "/swatches/%d/b", i);
-      e_db_data_del(db, buf);
-    }
-  }
-  e_db_close(db);
-  e_db_flush();
-#endif
-}
-
-void
 elicit_swatches_load(Elicit *el)
 {
   char buf[PATH_MAX];
 
-  /* upgrade path -- if no gpl file exists, try to load from an old edb file. */
   snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.gpl", getenv("HOME"), el->app_name);
 
-  if (!ecore_file_exists(buf))
-  {
-    _elicit_swatches_load_edb(el);
-    _elicit_swatches_save_gpl(el);
-  }
-  else
-  {
+  if (ecore_file_exists(buf))
     _elicit_swatches_load_gpl(el);
-  }
 }
 
 void
@@ -206,45 +131,6 @@ _elicit_swatches_load_gpl(Elicit *el)
 
   el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
   free(name);
-}
-
-void
-_elicit_swatches_load_edb(Elicit *el)
-{
-#ifdef HAVE_EDB
-  E_DB_File *db;
-  int num;
-  int i;
-  char buf[PATH_MAX];
-  char *name;
-  int r, g, b;
-
-  snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.db", getenv("HOME"), el->app_name);
-
-  db = e_db_open_read(buf);
-  if (db)
-    e_db_int_get(db, "/swatches/num", &num);
-  else return;
-
-  for (i = 0; i < num; i++)
-  {
-    Elicit_Swatch *sw;
-  
-    snprintf(buf, PATH_MAX, "/swatches/%d/name", i);
-    name = e_db_str_get(db, buf);
-     
-    snprintf(buf, PATH_MAX, "/swatches/%d/r", i);
-    e_db_int_get(db, buf, &r);
-    snprintf(buf, PATH_MAX, "/swatches/%d/g", i);
-    e_db_int_get(db, buf, &g);
-    snprintf(buf, PATH_MAX, "/swatches/%d/b", i);
-    e_db_int_get(db, buf, &b);
- 
-    sw = elicit_swatch_new(el, name, r, g, b);
-  }
-  el->swatches.length = esmart_container_elements_length_get(el->swatches.cont);
-  e_db_close(db);
-#endif
 }
 
 void
