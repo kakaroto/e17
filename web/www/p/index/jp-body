@@ -1,3 +1,77 @@
-<div style='text-align:center;'><?php img("logo.png", "E"); ?></div>
-<div class="bod">
-</div>
+<table class='main'>
+<tr>
+<td class='main'><div class="main">
+<h3>What is Enlightenment?</h3>
+<p>
+<em>Enlightenment</em>. What is <em>Enlightenment</em>?.<br />Some people
+affectionately refer to <em>Enlightenment</em> as <em>E</em> because typing
+or saying the whole word is a bit of a mouthful. Early in its history, which began back in 1996, E was just a
+<a href='http://en.wikipedia.org/wiki/Window_manager'>window manager</a> for
+<a href='http://www.x.org'>X11</a>.
+</p><p>
+Since then, E has now become much more. In the process of building the next generation of
+the window manager, we have created a suite of libraries for doing data
+storage and retrieval, scene-graph rendering with a canvas, theme
+encapsulation, compiling and demand-loading, event loop, inter-process
+communication, <a href='http://www.freedesktop.org'>freedesktop.org</a>
+specification handling, virtual machines, video codec abstractions, widget
+sets, and more.
+</p><p>
+This is in addition to the window manager and utilities and apps. There is
+even a prototype media center that uses the same libraries that E is being
+built on, as a demonstration of how powerful the back-end is.
+</p><p>
+We also do not only target desktops, but also work on old systems and
+embedded environments, with our libraries made to be lean and fast, so even
+the most limited of systems can enjoy some eye-candy.
+</p><p>
+
+</p><p>
+For more information about what we do please see our
+<?php a("about", "About page");?>.
+</p>
+
+</div></td>
+<td class='main'><div class="main">
+<center><?php img("logo.png", "E"); ?></center>
+<p>
+Currently <?php a("about/dev", "Enlightenment 0.17 (known as E17)");?> is
+under development with a <b>TODO</b> list that is being worked on for release.
+The base libraries it depends on
+<?php a("about/libs", "EFL (Enlightenment Foundation Libraries)");?> are
+very mature and stable. There are other applications that use these too. E17
+itself is primarily available via CVS.
+</p><p>
+But despite this, the stable release of
+<?php a("about/e16", "Enlightenment (the 0.16 series)");?> is still alive
+and maintained. It is not dead and does undergo feature adds, fixes and
+improvements.
+</p><p>
+<center>
+<?php blink("i/logo-s.png", "DOWNLOAD E", "download"); ?>
+</center>
+</p><p>
+</p>
+
+</div></td>
+<td class='main'><div class="main">
+<h3>News and Updates</h3>
+<p>
+<b>2007/04/22</b> - <em>Website update</em>
+</p><p>
+We have undergone a complete rennovation of this website. We have added
+<a href='http://forum.enlightenment.org'>Forums</a>, a
+<a href='http://bugs.enlightenment.org'>Bug tracker</a>, and a
+<a href='http://wiki.enlightenment.org'>Wiki</a> too for community
+documentation efforts. The main website,
+<a href='http://www.enlightenment.org'>www.enlightenment.org</a> also has
+been completely re-done, with all new content and layout, hopefully showing a
+more useful face to the world of our development efforts.
+</p><p>
+*FIXME* - this needs to become site php to show the most recent 2 or 3 articles
+from the news repository.
+</p>
+
+</div></td>
+</tr>
+</table>

@@ -3,4 +3,7 @@
 Now web.enlightenment.org should auto-update within 1 minute of any CVS commit
 to the www module. I am making this change here to test to see if that actually
 works now.
+</p><p>
+*FIXME* - this needs to become site php to show all items from the news
+repository with the most recent 10 here and older ones linked to.
 </p>
