@@ -40,6 +40,46 @@ In order to provide better services to our users, the Enlightenment
 </p>
 
 <p>
+  <h3>Donate Now!</h3>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+        <input type="hidden" name="cmd" value="_xclick">
+
+        <input type="hidden" name="business" value="ningerso@gmail.com">
+        <input type="hidden" name="item_name" value="donation">
+        <input type="hidden" name="item_number" value="0107">
+        <input type="hidden" name="no_shipping" value="1">
+        <input type="hidden" name="cn" value="Comments">
+        <input type="hidden" name="currency_code" value="USD">
+        
+        <input type="hidden" name="notify_url" value="http://www0.get-e.org/donate/donate_ipn.php">
+        <input type="hidden" name="return" value="http://www0.get-e.org/donate/donate_ipn.php">
+        <input type="hidden" name="cancel_return" value="http://www0.get-e.org/donate">
+
+        
+        <input type="hidden" name="tax" value="0">
+        <input type="hidden" name="pal" value="5NK4VSJNG9D22">
+        <input type="hidden" name="mbr" value="5NK4VSJNG9D22">
+        <input type="hidden" name="bn" value="PP-DonationsBF">
+
+        <b>$</b><input name="amount" type="text" value="" 
+                maxlength="5" style="padding:3px 4px 3px 4px;
+                background:url('http://www0.get-e.org/donate/images/progress_background.png');
+                border:1px solid #b3b3b3; 
+                font-size:14px; font-weight:bold; margin:0;
+                vertical-align:middle; font-family:Arial; width:50px;"/>
+        <input type="submit" name="submit" value="Submit" 
+                style="background:url('http://www0.get-e.org/donate/images/progress_foreground.png');
+                border:1px solid #b3b3b3; font-family:Arial;
+                margin:0; font-weight:bold; height:23px; font-size:14px;
+                vertical-align:middle; padding:0 8px;"/>
+        
+        <img alt="" border="0" 
+            src="http://www.paypal.com/en_US/i/scr/pixel.gif" 
+            width="1" height="1">
+    </form>
+</p>
+
+<p>
 *FIXME* Fill in sponsors. The following need to be listed:
 The community of users<br>
 2 RAD Technologies<br>
