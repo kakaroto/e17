@@ -1,3 +1,63 @@
+<table class='main'>
+<tr>
+<td class='main'><div class="main">
+
+<center><h1>EFL Overview</h1></center>
+
+<h3>An overview of the Enlightenment Fountation Libraries (EFL)</h3>
+
+<span class="contentmain">
 <p>
-All about EFL
+The Enlightenment Foundation Libraries (EFL) are a collection of libraries that make up the foundation 
+of the DR17 window manager.  While their original intent was solely to support the window manager, the libraries
+quickly took on a life of their own, which is a contributing factor to the delays of the window manager itself.
+These libraries are so powerful, flexable, and easy to use that they present a strong platform on which to
+develop nearly any graphical application you could think of.
 </p>
+
+<p>
+The EFL begins with Imlib2, a general image manipulation and rendering
+library, and Evas, our canvas library.
+Because Evas is built on several diffrent selectable engines (Linux
+FrameBuffer, DirectFB, X11, OpenGL, QTopia, etc)
+the platform is extremely portable, which translates thru to all of the
+libraries built on top of it.
+Ecore is a modular convience library that in its base provides timers,
+callback functionality, and loop management for
+event handling. Ecore's various modules can simplify the setup of an
+X11 drawable for general use (Ecore_X11), an X11 drawable for
+use with Evas (Ecore_Evas), manage IPC (Ecore_IPC), manage BSD Sockets
+(Ecore_Con), management of the FrameBuffer (Ecore_FB), and more.
+Because Ecore can simplify so many tasks that are used in conjuction
+with Evas it has lived up to its name as the core componant of nearly
+any EFL application.
+</p>
+
+<p>Edje provides a revolutionary method of absstacting every aspect of
+your interface from the application itself. By passing signals
+between the interface and the application all communication is done in
+an interface neutral way. No longer are &quot;themes&quot; simple changes
+of pixmaps over a fixed area. Using Embryo we can provide scripting
+ability to the interface componant itself to harness even more power
+and flexability.
+</p>
+
+<p>EWL brings all the libs into focus, providing a complete end-to-end
+widget library for fast and easy development of complex graphical
+applications.
+</p>
+
+<p>
+Below is a diagram of how the various componants of the EFL fit together.  Because
+of complexity of the libraries and the fact that so many libraries can be used
+independant of other EFL libraries we have a diagram alittle more complex than
+your standard block diagram.
+</p>
+
+<center>
+<a href="http://enlightenment.sourceforge.net/Libraries/images/_images/efl.png"></a><a href="http://enlightenment.sourceforge.net/Libraries/images/_images/efl.png" target="_self"><img width="300" height="50" src="http://enlightenment.sourceforge.net/Libraries/images/_images/tn2_efl-diagram.png" class="shot" /></a>
+</center>
+
+</div></td>
+</tr>
+</table>
