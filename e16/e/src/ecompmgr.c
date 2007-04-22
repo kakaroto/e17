@@ -301,6 +301,18 @@ ERegionDestroy(XserverRegion rgn)
 }
 
 static void
+ERegionSetRect(XserverRegion rgn, int x, int y, int w, int h)
+{
+   XRectangle          rct;
+
+   rct.x = x;
+   rct.y = y;
+   rct.width = w;
+   rct.height = h;
+   XFixesSetRegion(disp, rgn, &rct, 1);
+}
+
+static void
 ERegionTranslate(XserverRegion rgn, int dx, int dy)
 {
    if (dx == 0 && dy == 0)
@@ -1071,12 +1083,9 @@ win_shape(EObj * eo)
 
    if (1 /* eo->shaped */ )	/* FIXME - Track shaped state */
      {
-	XserverRegion       rgn;
-
 	/* Intersect with window size to get effective bounding region */
-	rgn = ERegionCreateRect(0, 0, EobjGetW(eo), EobjGetH(eo));
-	ERegionIntersect(border, rgn);
-	ERegionDestroy(rgn);
+	ERegionSetRect(rgn_tmp, 0, 0, EobjGetW(eo), EobjGetH(eo));
+	ERegionIntersect(border, rgn_tmp);
      }
 
    /* translate this */
@@ -1708,13 +1717,13 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
 
    if (!cw->damaged)
      {
-	parts = win_extents(eo);
+	parts = cw->extents;
 	XDamageSubtract(dpy, cw->damage, None, None);
 	cw->damaged = 1;
      }
    else
      {
-	parts = ERegionCreate();
+	parts = rgn_tmp;
 	XDamageSubtract(dpy, cw->damage, None, parts);
 	ERegionTranslate(parts, EobjGetX(eo) + EobjGetBW(eo),
 			 EobjGetY(eo) + EobjGetBW(eo));
@@ -1732,7 +1741,6 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
      }
    eo->serial = ev->xany.serial;
    ECompMgrDamageMergeObject(eo, parts);
-   ERegionDestroy(parts);
 }
 
 static void
