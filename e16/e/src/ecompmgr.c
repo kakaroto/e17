@@ -230,11 +230,16 @@ static int          ECompMgrDetermineOrder(EObj * const *lst, int num,
 					   EObj ** first, EObj ** last,
 					   Desk * dsk, XserverRegion clip);
 
+#define PIXMAP_DESTROY(pmap) \
+   if (pmap != None) { XFreePixmap(disp, pmap); pmap = None; }
+#define PICTURE_DESTROY(pict) \
+   if (pict != None) { XRenderFreePicture(disp, pict); pict = None; }
+#define REGION_DESTROY(rgn) \
+   if (rgn != None) { ERegionDestroy(rgn); rgn = None; }
+
 /*
  * Regions
  */
-#define REGION_DESTROY(rgn) \
-   if (rgn != None) { ERegionDestroy(rgn); rgn = None; }
 
 static              XserverRegion
 ERegionCreate(void)
@@ -319,19 +324,6 @@ static void
 ERegionSubtract(XserverRegion dst, XserverRegion src)
 {
    XFixesSubtractRegion(disp, dst, dst, src);
-}
-
-static void
-ERegionLimit(XserverRegion rgn)
-{
-   XserverRegion       screen;
-
-   screen = Mode_compmgr.rgn_screen;
-   if (screen == None)
-      Mode_compmgr.rgn_screen = screen =
-	 ERegionCreateRect(0, 0, VRoot.w, VRoot.h);
-
-   ERegionIntersect(rgn, screen);
 }
 
 static void
@@ -1137,49 +1129,27 @@ ECompMgrWinInvalidate(EObj * eo, int what)
 	   what |= INV_PICTURE;
      }
 
-   if ((what & INV_GEOM) && cw->shape != None)
-     {
-	ERegionDestroy(cw->shape);
-	cw->shape = None;
-     }
+   if (what & INV_GEOM)
+      REGION_DESTROY(cw->shape);
 
-   if ((what & INV_PICTURE) && cw->picture != None)
-     {
-	XRenderFreePicture(dpy, cw->picture);
-	cw->picture = None;
-     }
+   if (what & INV_PICTURE)
+      PICTURE_DESTROY(cw->picture);
 
-   if ((what & INV_OPACITY) && cw->pict_alpha != None)
-     {
-	XRenderFreePicture(dpy, cw->pict_alpha);
-	cw->pict_alpha = None;
-     }
+   if (what & INV_OPACITY)
+      PICTURE_DESTROY(cw->pict_alpha);
 
-   if ((what & (INV_CLIP | INV_GEOM)) && cw->clip != None)
-     {
-	ERegionDestroy(cw->clip);
-	cw->clip = None;
-     }
+   if (what & (INV_CLIP | INV_GEOM))
+      REGION_DESTROY(cw->clip);
 
 #if ENABLE_SHADOWS
-   if ((what & (INV_SIZE | INV_SHADOW)) && cw->shadow_pict != None)
-     {
-	XRenderFreePicture(dpy, cw->shadow_pict);
-	cw->shadow_pict = None;
-	what |= INV_GEOM;
-     }
-   if ((what & (INV_OPACITY | INV_SHADOW)) && cw->shadow_alpha != None)
-     {
-	XRenderFreePicture(dpy, cw->shadow_alpha);
-	cw->shadow_alpha = None;
-     }
+   if (what & (INV_SIZE | INV_SHADOW))
+      PICTURE_DESTROY(cw->shadow_pict);
+   if (what & (INV_OPACITY | INV_SHADOW))
+      PICTURE_DESTROY(cw->shadow_alpha);
 #endif
 
-   if ((what & (INV_GEOM | INV_SHADOW)) && cw->extents != None)
-     {
-	ERegionDestroy(cw->extents);
-	cw->extents = None;
-     }
+   if (what & (INV_GEOM | INV_SHADOW))
+      REGION_DESTROY(cw->extents);
 }
 
 static void
@@ -1805,9 +1775,7 @@ ECompMgrDestroyClip(void)
 	cw = eo->cmhook;
 	if (!cw)
 	   continue;
-	if (cw->clip != None)
-	   ERegionDestroy(cw->clip);
-	cw->clip = None;
+	REGION_DESTROY(cw->clip);
      }
 }
 
@@ -2155,16 +2123,13 @@ ECompMgrRepaint(void)
    if (!Mode_compmgr.active || !Mode_compmgr.got_damage)
       return;
 
-   ERegionLimit(Mode_compmgr.damage);
+   ERegionIntersect(Mode_compmgr.damage, Mode_compmgr.rgn_screen);
 
    D2printf("ECompMgrRepaint rootBuffer=%#lx rootPicture=%#lx\n",
 	    rootBuffer, rootPicture);
    if (EDebug(EDBUG_TYPE_COMPMGR))
       ERegionShow("damage", Mode_compmgr.damage);
 
-   if (!rootBuffer)
-      rootBuffer = EPictureCreateBuffer(VRoot.xwin, VRoot.w, VRoot.h,
-					VRoot.depth, VRoot.vis, &VRoot.pmap);
    pbuf = rootBuffer;
 
    if (!dsk)
@@ -2221,15 +2186,22 @@ _ECompMgrIdler(void *data __UNUSED__)
 }
 
 static void
+ECompMgrRootBufferCreate(unsigned int w, unsigned int h)
+{
+   /* Root buffer picture and pixmap */
+   rootBuffer = EPictureCreateBuffer(VRoot.xwin, w, h,
+				     VRoot.depth, VRoot.vis, &VRoot.pmap);
+
+   /* Screen region */
+   Mode_compmgr.rgn_screen = ERegionCreateRect(0, 0, w, h);
+}
+
+static void
 ECompMgrRootBufferDestroy(void)
 {
    /* Root buffer picture and pixmap */
-   if (rootBuffer != None)
-      XRenderFreePicture(disp, rootBuffer);
-   rootBuffer = None;
-   if (VRoot.pmap != None)
-      XFreePixmap(disp, VRoot.pmap);
-   VRoot.pmap = None;
+   PICTURE_DESTROY(rootBuffer);
+   PIXMAP_DESTROY(VRoot.pmap);
 
    /* Screen region */
    REGION_DESTROY(Mode_compmgr.rgn_screen);
@@ -2239,8 +2211,9 @@ static void
 ECompMgrRootConfigure(void *prm __UNUSED__, XEvent * ev)
 {
    D1printf("ECompMgrRootConfigure root\n");
-   if (ev->xconfigure.window == VRoot.xwin)
-      ECompMgrRootBufferDestroy();
+
+   ECompMgrRootBufferDestroy();
+   ECompMgrRootBufferCreate(ev->xconfigure.width, ev->xconfigure.height);
 }
 
 #if USE_DESK_EXPOSE		/* FIXME - Remove? */
@@ -2308,9 +2281,7 @@ ECompMgrShadowsInit(int mode, int cleanup)
      }
    else
      {
-	if (transBlackPicture)
-	   XRenderFreePicture(disp, transBlackPicture);
-	transBlackPicture = None;
+	PICTURE_DESTROY(transBlackPicture);
      }
 
    if (cleanup)
@@ -2347,6 +2318,8 @@ ECompMgrStart(void)
 
    Conf_compmgr.override_redirect.opacity =
       OpacityFix(Conf_compmgr.override_redirect.opacity, 100);
+
+   ECompMgrRootBufferCreate(VRoot.w, VRoot.h);
 
    Mode_compmgr.root = VRoot.xwin;
 #if USE_COMPOSITE_OVERLAY_WINDOW
@@ -2440,9 +2413,7 @@ ECompMgrStop(void)
    SelectionRelease(wm_cm_sel);
    wm_cm_sel = NULL;
 
-   if (rootPicture)
-      XRenderFreePicture(disp, rootPicture);
-   rootPicture = None;
+   PICTURE_DESTROY(rootPicture);
 
    ECompMgrRootBufferDestroy();
 
