@@ -72,6 +72,18 @@ div.bod {
    vertical-align         : top;
 }
 
+div.fragment, div.code {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #000;
+   font-size              : 11px;
+   line-height            : 14px;
+   border                 : 1px solid #eee;
+   text-align             : left;
+   vertical-align         : middle;
+   padding                : 8px;
+   overflow               : auto;
+}
+
 hr {
    width                  : 200px;
    height                 : 1px;
