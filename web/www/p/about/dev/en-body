@@ -4,27 +4,27 @@
 
 <p><b><center>Enlightenment DR17</center></b></p>
 <center><?php img("logo.png", "E"); ?></center>
-<p>Enlightenment 0.17 is the next generation of UNIX graphical environments. It is not only a window manager, but also a desktop shell.
-A desktop shell includes the following features: window manager, file manager, and configuration utilities. These features are not separated like other common environments. Now, let's take a closer look at what E17 has to offer...</p>
+<p>Enlightenment 0.17 is the next generation of UNIX graphical environments. It is not just a window manager, but it is also a desktop shell.
+A desktop shell means, a window manager plus a file manager, plus configuration utilitys all in one. They are not separated as usual. Now, let's take a closer look at all E17 features...</p>
 <center><?php img("performance.png", "E"); ?></center>
 <p><b><center>Extremely High Performance.</center></b></p>
-<p>Enlightenment is fast. It is known to run well on very slow machines, such as 186 Mhz processors with 128 MB of RAM. This means that you don't have to own the best hardware to get a good desktop experience. Even better, you can control how fast you want it to be by using it's performance configuration panel to change settings such as cache.</p>
+<p>Enlightenment is fast. No, really. It's fast. It is known to run on very slow machines (like 186 Mhz CPU, 128 MB of RAM) well. So you really don't need a modern desktop to see some eye-candy and to use a modern graphical environment. Even more – you can control how fast you want it by using it's Performance configuration panel to change the cahce settings and more.</p>
 <center><?php img("eye_candy.png", "E"); ?></center>
 <p><b><center>Eye Candy On A Higher Level</center></b></p>
-<p>High performance doesn't mean eye candy was sacrificed. Beautiful graphics and smooth effects make up the visual aspect of enlightenment. From animated boot screens and backgrounds, to the animations and effects that themes provide, the possibilities are amazing. Virtual desktops can have their own background (animated or not). Visual effects can be seen from desktop switching, to window minimizing and maximizing. The menus, borders, widgets, and all other parts of a normal window manager can be animated as well. Effects are provided by the theme, so every theme gives E a different look and feel.</p>
+<p>The high performance does not mean that there is no eye candy. There is eye candy that you have never seen before. Starting from the animated boot screen, to continue with the all animations and effects that themes could provide, to end up with fancy animated backgrounds. But not some huge .GIF files, but really nice animations. Every virtual desktop (at the moment you can have 24) can have it's own background (animated or not), so you can put different wallpapers on the different virtual desktops. There are a number of effects that can be shown when you switch from the different virtual desktops. The menus, the borders and all other usual parts of a normal window manager are animated as well as some of the widgets (the sliders, for example). Remember that those effects are provided by the theme, so every theme makes E to look different, with different effects, look and feel and animations.</p>
 <center><?php img("desktop_shell.png", "E"); ?></center>
-<p><b><center>File Manager</center></b></p>
-<p>As we mentioned, E17 provides a file manager as well.  Right now, you can do the basics with it: browse , copy, move, and delete files and directories. It provides thumbnails and will open specified applications based on mimetype.</p>
+<p><b><center>A Desktop Shell</center></b></p>
+<p>As we already mentioned, E17 provides a file manager as well. Of the time of writing, it is not completed and is in active development (as E17 as a whole itself), but after it is finished it will be a very nice, configurable and eye candy. Even right now, you can do the basic things with it – browse, copy, move, delete files. It will provide thumbnails for your pictures and will be able to open your files with the coresponding application of your choice.</p>
 <p><b><center>Configurable</center></b></p>
-<p>E17 is highly configurable. Currently it has a nice configuration panel with 36 configuration dialogs for all of you environment configuration needs. You can change your wallpaper, theme, fonts, screen resolution, screen's power settings, your keyboard and mouse settings and bindings, default language, and much more. You can contol almost every apsect of what E is doing and how.</p>
+<p>E17 is highly configurable. Currently it has a nice configuration panel with 36 configuration dialogs for all kinds of things. You can change your wallpaper or your theme, your fonts, your screen resolution, your screen's power settings, your keyboard and mouse settings, the language that Enlightenment talks to you, and so on. You can contol almost every apsect of what E is doing and how. It will do what you want it to do.</p>
 <p><b><center>Localized</center></b></p>
-<p>Currently, E17 is localized in 20 languages. This includes latin languages like English and French, cyrillic languages like Russian and Bulgarian and even Korean, Chinese, and Japanese. Note that you can change the language on the fly without restarting E or your X server.</p>
+<p>At this moment, E17 is localized in 20 languages, including latin languages like English and French, cyrillic languages like Russian and Bulgarian and even Korean, Chinese, and Japanese. Note that you can change the language on the fly without restarting E or your X server.</p>
 <p><b><center>Full-featured</center></b></p>
-<p>As you already know, Enlightenment 0.17 has many features, but one of the most important is the functionality that you can add and remove with modules. Modules are small applications that extend E17. There are many modules including an application launcher, minimized applications container, pager, battery, temperature, frequency, and clock. Developing a module is simple even for the beggining programmer, and maintained modules are welcomed in the community.</p>
+<p>As you already know, Enlightenment 0.17 has lots of features, but one of the most important is, that you can add and remove functionality by using modules. Modules are small applications that extend E17. There can be modules tho show you the weather outside, or calendar modules, or modules to control your volume or whatever you may think. Developing a module is not that hard, so, if you have programming skills, you are more than welcome to develop and maintain some modules for the community.</p>
 
 <p><b><center>Standardized</center></b></b>
 
-<p>E17 is following most standards and specifications. NetWM, ICCCM, XDG, Freedesktop, and so on.</p> 
+<p>E17 is following all needed standards and specifications. NetWM, ICCCM, XDG and so on.</p> 
 
 </div></td>
 </tr>
