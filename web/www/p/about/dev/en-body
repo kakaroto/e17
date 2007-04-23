@@ -3,6 +3,7 @@
 <td class='main'><div class="main">
 
 <p><b><center>Enlightenment DR17</center></b></p>
+<center><?php img("logo.png", "E"); ?></center>
 <p>Enlightenment 0.17 is the next generation of UNIX graphical environments. It is not only a window manager, but also a desktop shell.
 A desktop shell includes the following features: window manager, file manager, and configuration utilities. These features are not separated like other common environments. Now, let's take a closer look at what E17 has to offer...</p>
 <center><?php img("performance.png", "E"); ?></center>
@@ -11,6 +12,7 @@ A desktop shell includes the following features: window manager, file manager, a
 <center><?php img("eye_candy.png", "E"); ?></center>
 <p><b><center>Eye Candy On A Higher Level</center></b></p>
 <p>High performance doesn't mean eye candy was sacrificed. Beautiful graphics and smooth effects make up the visual aspect of enlightenment. From animated boot screens and backgrounds, to the animations and effects that themes provide, the possibilities are amazing. Virtual desktops can have their own background (animated or not). Visual effects can be seen from desktop switching, to window minimizing and maximizing. The menus, borders, widgets, and all other parts of a normal window manager can be animated as well. Effects are provided by the theme, so every theme gives E a different look and feel.</p>
+center><?php img("desktop_shell.png", "E"); ?></center>
 <p><b><center>File Manager</center></b></p>
 <p>As we mentioned, E17 provides a file manager as well.  Right now, you can do the basics with it: browse , copy, move, and delete files and directories. It provides thumbnails and will open specified applications based on mimetype.</p>
 <p><b><center>Configurable</center></b></p>
