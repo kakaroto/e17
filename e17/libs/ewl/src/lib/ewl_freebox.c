@@ -334,9 +334,10 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 {
 	Ewl_Container *c;
 	Ewl_Widget *child;
-	int max_pos, largest_size = 0, cur_pos = 0, cur_align;
+	int max_pos, cur_pos = 0, cur_align;
 	int base_pos, start_pos, pad = 0, *x, *y;
 	int *stable_dir, *grow_dir, child_h, child_w;
+	int *column_sizes, *col_size;
 
 	void (*pref_inner)(Ewl_Object *obj, int size);
 	int (*current_pos)(Ewl_Object *obj);
@@ -384,28 +385,59 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	cur_align = base_pos;
 
 	c = EWL_CONTAINER(fb);
+
+	/* determine the column sizes first */
+	col_size = column_sizes = NEW(int, ecore_dlist_nodes(c->children) + 1);
+	*col_size = 0;
+
 	ecore_dlist_goto_first(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
 		if (!VISIBLE(child)) continue;
-		ewl_object_current_size_get(EWL_OBJECT(child), 
+		ewl_object_minimum_size_get(EWL_OBJECT(child),
 						&child_w, &child_h);
 
 		/* past end of widget, wrap */
 		if ((cur_align + *stable_dir) > max_pos)
 		{
 			cur_align = base_pos;
-			cur_pos += largest_size + pad;
-			largest_size = 0;
+			cur_pos += *col_size + pad;
+			*(++col_size) = 0;
 		}
 
-		if (*grow_dir > largest_size) 
-			largest_size = *grow_dir;
+		*col_size = MAX(*col_size, *grow_dir);
+		cur_align += *stable_dir + pad;
+	}
+	
+	/* reset the start values */
+	cur_pos = start_pos;
+	cur_align = base_pos;
+	col_size = column_sizes;
+
+	/* and now place the children */
+	ecore_dlist_goto_first(c->children);
+	while ((child = ecore_dlist_next(c->children)))
+	{
+		if (!VISIBLE(child)) continue;
+		ewl_object_minimum_size_get(EWL_OBJECT(child), 
+						&child_w, &child_h);
+
+		/* past end of widget, wrap */
+		if ((cur_align + *stable_dir) > max_pos)
+		{
+			cur_align = base_pos;
+			cur_pos += *col_size + pad;
+			col_size++;
+		}
+
+		*grow_dir = *col_size;
 
 		ewl_object_place(EWL_OBJECT(child), *x, *y, child_w, child_h);
 		cur_align += *stable_dir + pad;
 	}
-	pref_inner(EWL_OBJECT(fb), cur_pos - start_pos + largest_size + pad);
+	pref_inner(EWL_OBJECT(fb), cur_pos - start_pos + *col_size + pad);
+
+	FREE(column_sizes);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
