@@ -5,7 +5,7 @@
 <p><b>Enlightenment DR17</b></p>
 <p>Enlightenment 0.17 is the next generation of the UNIX graphical environments. It is not just a window manager, but it is a desktop shell.
 A desktop shell means, a window manager plus a file manager, plus configuration utilitys all in one. They are not separated as usual. Now, let's take a closer look at all E17 features...</p>
-<left><?php img("d/performance.png", "E"); ?></left>
+<left><?php img("performance.png", "E"); ?></left>
 <p><b>Extremely High Performance.</b></p>
 <p>Enlightenment is fast. No, really. It's fast. It is known to run on very slow machines (like 186 Mhz CPU, 128 MB of RAM) well. So you really don't need a modern desktop to see some eye-candy and to use a modern graphical environment. Even more – you can control how fast you want it by using it's Performance configuration panel to change the cahce settings and more.</p>
 <p><b>Eye Candy On A Higher Level</b></p>
