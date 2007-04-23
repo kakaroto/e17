@@ -234,6 +234,10 @@ li.navul, ul.navul {
    display                : inline;
 }
 
+li.selected {
+   text-decoration: underline;
+}
+
 a.navul:link {
    color                  : #888888;
    text-decoration        : none;

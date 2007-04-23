@@ -148,8 +148,13 @@
       global $page;
       global $lang;
       $item = 0;
-      if (file_exists("p/$page/subs")) {
-	  $handle = fopen("p/$page/subs", "r");
+      $p = $page;
+      if ( strpos($page, "/") ) {
+          $p = substr($page, 0, strpos($page, "/"));
+      }
+
+      if (file_exists("p/$p/subs")) {
+	  $handle = fopen("p/$p/subs", "r");
 	  if ($handle) {
 	      echo("<ul class='navul'>\n");
 	      while (!feof($handle)) {
@@ -157,26 +162,30 @@
 		  $fl = str_replace("\n", "", $fl);
 		  if ($fl != "") {
 		      $h = "";
-		      if (file_exists("p/$page/$fl/link")) {
-			  $h = read_var("p/$page/$fl/link");
+		      if (file_exists("p/$p/$fl/link")) {
+			  $h = read_var("p/$p/$fl/link");
+		      }
+		      $class="";
+		      if ( "$p/$fl" == $page ) {
+                          $class = " selected";
 		      }
                           
-		      if (file_exists("p/$page/$fl/$lang-label")) {
-			  $l = read_var("p/$page/$fl/$lang-label");
+		      if (file_exists("p/$p/$fl/$lang-label")) {
+			  $l = read_var("p/$p/$fl/$lang-label");
 			  if ($h == "") {
-			    $h = "p.php?p=$page/$fl&amp;l=$lang";
+			    $h = "p.php?p=$p/$fl&amp;l=$lang";
                           }
 			  if ($item > 0) echo("|\n");
-			  echo("<li class='navul'><a class='navul' href='$h'>$l</a></li>\n");
+			  echo("<li class='navul$class'><a class='navul' href='$h'>$l</a></li>\n");
 			  $item++;
 		      }
-		      else if (file_exists("p/$page/$fl/en-label")) {
-			  $l = read_var("p/$page/$fl/en-label");
+		      else if (file_exists("p/$p/$fl/en-label")) {
+			  $l = read_var("p/$p/$fl/en-label");
 			  if ($h == "") {
-			    $h = "p.php?p=$page/$fl&amp;l=$lang";
+			    $h = "p.php?p=$p/$fl&amp;l=$lang";
                           }
 			  if ($item > 0) echo("|\n");
-			  echo("<li class='navul'><a class='navul' href='$h'>$l</a></li>\n");
+			  echo("<li class='navul$class'><a class='navul' href='$h'>$l</a></li>\n");
 			  $item++;
 		      }
 		  }
