@@ -148,15 +148,17 @@
       global $page;
       global $lang;
       $item = 0;
-      $p = $page;
-      if ( strpos($page, "/") ) {
-          $p = substr($page, 0, strpos($page, "/"));
-      }
+      $arr = explode("/", $page);
+      $p = "";
+      for ($i=0; $i<count($arr); $i++) {
+	   if ($p != "") $p .= "/";
+           $p .= $arr[$i];
 
       if (file_exists("p/$p/subs")) {
 	  $handle = fopen("p/$p/subs", "r");
 	  if ($handle) {
 	      echo("<ul class='navul'>\n");
+	      $item = 0;
 	      while (!feof($handle)) {
 		  $fl = fgets($handle, 4096);
 		  $fl = str_replace("\n", "", $fl);
@@ -192,6 +194,7 @@
 	      }
 	      echo("</ul><hr>");
 	  }
+      }
       }
   }
 ?>	
