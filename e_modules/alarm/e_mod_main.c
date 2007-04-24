@@ -702,8 +702,6 @@ _alarm_dialog_snooze_delete(E_Dialog *dia, Alarm *al)
 static double
 _epoch_find_date(char *date, int hour, int minute)
 {
-   extern long timezone;
-   extern int daylight;
    struct tm ts;
    time_t t;
    int i;
@@ -737,8 +735,6 @@ _epoch_find_date(char *date, int hour, int minute)
 static double
 _epoch_find_next(int day_monday, int day_tuesday, int day_wenesday, int day_thursday, int day_friday, int day_saturday, int day_sunday, int hour, int minute)
 {
-   extern long timezone;
-   extern int daylight;
    int day_week[7];
    struct tm ts;
    struct tm *ts_today;
