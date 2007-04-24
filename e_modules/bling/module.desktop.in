@@ -1,4 +1,5 @@
 [Desktop Entry]
+Type=Link
 Name=Bling
 Exec=enlightenment
 StartupNotify=false
