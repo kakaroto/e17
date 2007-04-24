@@ -102,17 +102,16 @@ void create_main_gui(void)
 
 	em->browser = ewl_notebook_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(em->browser), EWL_FLAG_FILL_VFILL);
+	ewl_object_preferred_inner_w_set(EWL_OBJECT(em->browser), 175);
 	ewl_container_child_append(EWL_CONTAINER(em->view), em->browser);
 	ewl_widget_show(em->browser);
 
         em->atree = add_atree(em->browser);
-        ewl_object_minimum_w_set(EWL_OBJECT(em->atree), 172);
-	ewl_object_maximum_w_set(EWL_OBJECT(em->atree), 172);
+	ewl_object_maximum_w_set(EWL_OBJECT(em->atree), 175);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(em->browser), em->atree, "Albums");
 
 	em->dtree = add_dtree(em->browser);
-	ewl_object_minimum_w_set(EWL_OBJECT(em->dtree), 172);
-	ewl_object_maximum_w_set(EWL_OBJECT(em->dtree), 172);
+	ewl_object_maximum_w_set(EWL_OBJECT(em->dtree), 175);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(em->browser), em->dtree, "File System");
 
 	em->view_box = ewl_notebook_new();
@@ -348,7 +347,6 @@ static Ewl_Widget *add_dtree(Ewl_Widget *c)
         ewl_tree2_column_count_set(EWL_TREE2(tree), 1);
         ewl_mvc_model_set(EWL_MVC(tree), model);
         ewl_mvc_view_set(EWL_MVC(tree), view);
-        ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
         ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
         ewl_container_child_append(EWL_CONTAINER(c), tree);
         ewl_widget_show(tree);

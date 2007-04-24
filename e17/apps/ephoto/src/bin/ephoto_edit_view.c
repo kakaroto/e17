@@ -15,10 +15,7 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
 	Ewl_Widget *button, *vbox, *ivbox, *hbox, *bhbox, *nb;
 	Ewl_Widget *standard, *enhance, *advanced;
 
-        vbox = add_box(c, EWL_ORIENTATION_VERTICAL, 5);
-        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-
-	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
+	hbox = add_box(c, EWL_ORIENTATION_HORIZONTAL, 2);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
 
 	nb = ewl_notebook_new();
@@ -45,14 +42,18 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
         ewl_object_minimum_w_set(EWL_OBJECT(advanced), 172);
         ewl_object_fill_policy_set(EWL_OBJECT(advanced), EWL_FLAG_FILL_VFILL);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(nb), advanced, "Advanced Tools");
-	ivbox = add_box(hbox, EWL_ORIENTATION_VERTICAL, 2);
-	ewl_object_alignment_set(EWL_OBJECT(ivbox), EWL_FLAG_ALIGN_CENTER);
+
+	vbox = add_box(hbox, EWL_ORIENTATION_VERTICAL, 0);
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+	
+	ivbox = add_box(vbox, EWL_ORIENTATION_VERTICAL, 0);
 	ewl_object_fill_policy_set(EWL_OBJECT(ivbox), EWL_FLAG_FILL_ALL);
 
         em->eimage = add_image(ivbox, NULL, 0, NULL, NULL);
         ewl_object_alignment_set(EWL_OBJECT(em->eimage), EWL_FLAG_ALIGN_CENTER);
         ewl_object_fill_policy_set(EWL_OBJECT(em->eimage), EWL_FLAG_FILL_SHRINK);
-	bhbox = add_box(ivbox, EWL_ORIENTATION_HORIZONTAL, 2);
+	
+	bhbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
 	ewl_object_alignment_set(EWL_OBJECT(bhbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(bhbox), EWL_FLAG_FILL_SHRINK);
 
@@ -64,7 +65,7 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
         ewl_attach_tooltip_text_set(button, "Next Image");
 
-	return vbox;
+	return hbox;
 }
 
 /*Show the edit view*/
@@ -126,7 +127,7 @@ static void previous_image(Ewl_Widget *w, void *event, void *data)
 		image = ecore_dlist_current(em->images);
 	}
         ewl_image_file_path_set(EWL_IMAGE(em->eimage), image);
-        ewl_widget_configure(em->eimage->parent->parent);
+        ewl_widget_configure(em->eimage->parent);
 
         return;
 }
@@ -165,7 +166,6 @@ static void flip_image_horizontal(Ewl_Widget *w, void *event, void *data)
         image->ow = nw;
         image->oh = nh;
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(em->eimage), nw, nh);
-	ewl_widget_configure(em->eimage);
 	ewl_widget_configure(em->eimage->parent);
 
 	return;
@@ -186,7 +186,6 @@ static void flip_image_vertical(Ewl_Widget *w, void *event, void *data)
         image->ow = nw;
         image->oh = nh;
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(em->eimage), nh, nw);
-	ewl_widget_configure(em->eimage);
 	ewl_widget_configure(em->eimage->parent);
 
 	return;
@@ -207,7 +206,6 @@ static void rotate_image_left(Ewl_Widget *w, void *event, void *data)
         image->ow = nw;
         image->oh = nh;
         ewl_object_preferred_inner_size_set(EWL_OBJECT(em->eimage), nw, nh);
-	ewl_widget_configure(em->eimage);
 	ewl_widget_configure(em->eimage->parent);
 
 	return;
@@ -227,7 +225,6 @@ static void rotate_image_right(Ewl_Widget *w, void *event, void *data)
         image->ow = nw;
         image->oh = nh;
         ewl_object_preferred_inner_size_set(EWL_OBJECT(em->eimage), nw, nh);
-	ewl_widget_configure(em->eimage);
 	ewl_widget_configure(em->eimage->parent);
 
 	return;
