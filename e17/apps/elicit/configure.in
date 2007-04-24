@@ -68,6 +68,7 @@ PKG_CHECK_MODULES(ELICIT, [
   ecore
   ecore-config
   ecore-evas
+  ecore-file
   edje
 ])
 
