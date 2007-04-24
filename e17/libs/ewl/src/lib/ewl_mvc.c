@@ -793,7 +793,10 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 				smod = EWL_SELECTION(idx)->model;
 
 				if (sel->highlight)
+				{
 					ewl_widget_destroy(sel->highlight);
+					sel->highlight = NULL;
+				}
 			}
 			else
 			{
@@ -835,7 +838,6 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 				}
 
 			}
-
 			ecore_list_remove(mvc->selected);
 
 			ewl_mvc_selected_range_add(mvc, smod, data, srow, scolumn,
@@ -1015,8 +1017,10 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, unsigned int row,
 	if (sel->type != EWL_SELECTION_TYPE_RANGE)
 	{
 		if (sel->highlight)
+		{
 			ewl_widget_destroy(sel->highlight);
-		sel->highlight = NULL;
+			sel->highlight = NULL;
+		}
 
 		DRETURN(DLEVEL_STABLE);
 	}
@@ -1164,13 +1168,14 @@ ewl_mvc_cb_sel_free(void *data)
 	DCHECK_PARAM_PTR("data", data);
 
 	sel = data;
-	if ((sel->type == EWL_SELECTION_TYPE_INDEX) && sel->highlight)
-		ewl_widget_destroy(sel->highlight);
-	else
+	if (sel->highlight)
 	{
-		if (sel->highlight)
+		if (sel->type == EWL_SELECTION_TYPE_INDEX)
+			ewl_widget_destroy(sel->highlight);
+		else
 		{
 			Ewl_Widget *w;
+
 			while ((w = ecore_list_remove_first(sel->highlight)))
 				ewl_widget_destroy(w);
 
@@ -1178,7 +1183,6 @@ ewl_mvc_cb_sel_free(void *data)
 		}
 		sel->highlight = NULL;
 	}
-
 	FREE(data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
