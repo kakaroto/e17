@@ -15,6 +15,7 @@ A desktop shell means, a window manager plus a file manager, plus configuration 
 <center><?php img("desktop_shell.png", "E"); ?></center>
 <p><b><center>A Desktop Shell</center></b></p>
 <p>As we already mentioned, E17 provides a file manager as well. Of the time of writing, it is not completed and is in active development (as E17 as a whole itself), but after it is finished it will be a very nice, configurable and eye candy. Even right now, you can do the basic things with it – browse, copy, move, delete files. It will provide thumbnails for your pictures and will be able to open your files with the coresponding application of your choice.</p>
+<center><?php img("config.png", "E"); ?></center>
 <p><b><center>Configurable</center></b></p>
 <p>E17 is highly configurable. Currently it has a nice configuration panel with 36 configuration dialogs for all kinds of things. You can change your wallpaper or your theme, your fonts, your screen resolution, your screen's power settings, your keyboard and mouse settings, the language that Enlightenment talks to you, and so on. You can contol almost every apsect of what E is doing and how. It will do what you want it to do.</p>
 <p><b><center>Localized</center></b></p>
