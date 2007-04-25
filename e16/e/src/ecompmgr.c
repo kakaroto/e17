@@ -196,6 +196,7 @@ static struct
    XserverRegion       damage;
    char                got_damage;
    XserverRegion       rgn_screen;
+   XserverRegion       rgn_clip;
    int                 shadow_mode;
    double              opac_blur;	/* 0. -> 1. */
    double              opac_sharp;	/* 0. -> 1. */
@@ -240,11 +241,26 @@ static int          ECompMgrDetermineOrder(EObj * const *lst, int num,
 /*
  * Regions
  */
+#define DEBUG_REGIONS 0
+
+#if DEBUG_REGIONS
+static int          n_rgn_c = 0;
+static int          n_rgn_d = 0;
+#endif
 
 static              XserverRegion
 ERegionCreate(void)
 {
-   return XFixesCreateRegion(disp, NULL, 0);
+   XserverRegion       rgn;
+
+   rgn = XFixesCreateRegion(disp, NULL, 0);
+
+#if DEBUG_REGIONS
+   n_rgn_c++;
+   Eprintf("%s: %#lx %d %d %d\n", __func__, rgn,
+	   n_rgn_c - n_rgn_d, n_rgn_c, n_rgn_d);
+#endif
+   return rgn;
 }
 
 static              XserverRegion
@@ -259,6 +275,11 @@ ERegionCreateRect(int x, int y, int w, int h)
    rct.height = h;
    rgn = XFixesCreateRegion(disp, &rct, 1);
 
+#if DEBUG_REGIONS
+   n_rgn_c++;
+   Eprintf("%s: %#lx %d %d %d\n", __func__, rgn,
+	   n_rgn_c - n_rgn_d, n_rgn_c, n_rgn_d);
+#endif
    return rgn;
 }
 
@@ -266,14 +287,32 @@ ERegionCreateRect(int x, int y, int w, int h)
 static              XserverRegion
 ERegionCreateFromRects(XRectangle * rectangles, int nrectangles)
 {
-   return XFixesCreateRegion(disp, rectangles, nrectangles);
+   XserverRegion       rgn;
+
+   rgn = XFixesCreateRegion(disp, rectangles, nrectangles);
+
+#if DEBUG_REGIONS
+   n_rgn_c++;
+   Eprintf("%s: %#lx %d %d %d\n", __func__, rgn,
+	   n_rgn_c - n_rgn_d, n_rgn_c, n_rgn_d);
+#endif
+   return rgn;
 }
 #endif
 
 static              XserverRegion
 ERegionCreateFromWindow(Window win)
 {
-   return XFixesCreateRegionFromWindow(disp, win, WindowRegionBounding);
+   XserverRegion       rgn;
+
+   rgn = XFixesCreateRegionFromWindow(disp, win, WindowRegionBounding);
+
+#if DEBUG_REGIONS
+   n_rgn_c++;
+   Eprintf("%s: %#lx %d %d %d\n", __func__, rgn,
+	   n_rgn_c - n_rgn_d, n_rgn_c, n_rgn_d);
+#endif
+   return rgn;
 }
 
 static              XserverRegion
@@ -297,7 +336,18 @@ ERegionClone(XserverRegion src)
 static void
 ERegionDestroy(XserverRegion rgn)
 {
+#if DEBUG_REGIONS
+   n_rgn_d++;
+   Eprintf("%s: %#lx %d %d %d\n", __func__, rgn,
+	   n_rgn_c - n_rgn_d, n_rgn_c, n_rgn_d);
+#endif
    XFixesDestroyRegion(disp, rgn);
+}
+
+static void
+ERegionEmpty(XserverRegion rgn)
+{
+   XFixesSetRegion(disp, rgn, NULL, 0);
 }
 
 static void
@@ -1792,7 +1842,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 		       EObj ** last, Desk * dsk, XserverRegion clip)
 {
    EObj               *eo, *eo_prev, *eo_first;
-   int                 i, stop, destroy_clip;
+   int                 i, stop;
    ECmWinInfo         *cw;
 
    D1printf("ECompMgrDetermineOrder %d\n", dsk->num);
@@ -1800,13 +1850,9 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
       lst = EobjListStackGet(&num);
    if (clip == None)
      {
-	destroy_clip = 1;
 	ECompMgrDestroyClip();
-	clip = ERegionCreate();
-     }
-   else
-     {
-	destroy_clip = 0;
+	clip = Mode_compmgr.rgn_clip;
+	ERegionEmpty(clip);
      }
 
    /* Determine overall paint order, top to bottom */
@@ -1942,8 +1988,6 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
    *first = eo_first;
    *last = eo_prev;
 
-   if (destroy_clip)
-      ERegionDestroy(clip);
    Mode_compmgr.reorder = 0;
    return stop;
 }
@@ -2202,17 +2246,19 @@ ECompMgrRootBufferCreate(unsigned int w, unsigned int h)
 
    /* Screen region */
    Mode_compmgr.rgn_screen = ERegionCreateRect(0, 0, w, h);
+
+   /* Overall clip region used while recalculating window clip regions */
+   Mode_compmgr.rgn_clip = ERegionCreate();
 }
 
 static void
 ECompMgrRootBufferDestroy(void)
 {
-   /* Root buffer picture and pixmap */
    PICTURE_DESTROY(rootBuffer);
    PIXMAP_DESTROY(VRoot.pmap);
 
-   /* Screen region */
    REGION_DESTROY(Mode_compmgr.rgn_screen);
+   REGION_DESTROY(Mode_compmgr.rgn_clip);
 }
 
 static void
