@@ -218,17 +218,21 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
         while (ecore_dlist_current(em->images))
         {
                 imagef = ecore_dlist_current(em->images);
-
-                thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
-		ewl_image_constrain_set(EWL_IMAGE(thumb), 81);
-		ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
-		ewl_widget_name_set(thumb, imagef);
+		if(imagef)
+		{
+                	thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
+			ewl_image_constrain_set(EWL_IMAGE(thumb), 81);
+			ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
+			ewl_widget_name_set(thumb, imagef);
+		}
 
 		ecore_dlist_next(em->images);
         }
 	ecore_dlist_goto_first(em->images);
-	ewl_image_file_path_set(EWL_IMAGE(em->simage), ecore_dlist_current(em->images));
-
+	if(ecore_dlist_current(em->images)) 
+	{
+		ewl_image_file_path_set(EWL_IMAGE(em->simage), ecore_dlist_current(em->images));
+	}
         ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
 	ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
 
@@ -281,16 +285,20 @@ static void populate_directories(Ewl_Widget *w, void *event, void *data)
 		while (ecore_dlist_current(em->images))
 		{
 			imagef = ecore_dlist_current(em->images);
-	
-      		        thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
-	      	        ewl_image_constrain_set(EWL_IMAGE(thumb), 81);
-       		        ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
-	                ewl_widget_name_set(thumb, imagef);
-
+			if(imagef)
+			{
+      		        	thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
+	      	        	ewl_image_constrain_set(EWL_IMAGE(thumb), 81);
+       		        	ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
+	                	ewl_widget_name_set(thumb, imagef);
+			}
         	        ecore_dlist_next(em->images);
 		}
 		ecore_dlist_goto_first(em->images);
-		ewl_image_file_path_set(EWL_IMAGE(em->simage), ecore_dlist_current(em->images));
+		if(ecore_dlist_current(em->images))
+		{ 
+			ewl_image_file_path_set(EWL_IMAGE(em->simage), ecore_dlist_current(em->images));
+		}
 		ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
 		ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
 	}
