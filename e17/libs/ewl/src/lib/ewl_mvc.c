@@ -27,6 +27,8 @@ static void ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel,
 					unsigned int row, unsigned int column);
 static void ewl_mvc_cb_sel_free(void *data);
 
+static void ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev, void *data);
+
 /**
  * @param mvc: The MVC to initialize
  * @return Returns TRUE on success or FALSE if unsuccessful
@@ -1144,6 +1146,8 @@ ewl_mvc_highlight_do(Ewl_MVC *mvc __UNUSED__, Ewl_Container *c,
 	h = ewl_highlight_new();
 	ewl_highlight_follow_set(EWL_HIGHLIGHT(h), w);
 	ewl_container_child_append(EWL_CONTAINER(c), h);
+	ewl_callback_prepend(h, EWL_CALLBACK_DESTROY, 
+			ewl_mvc_cb_highlight_destroy, sel);
 	ewl_widget_show(h);
 
 	if (sel->type == EWL_SELECTION_TYPE_INDEX)
@@ -1187,5 +1191,29 @@ ewl_mvc_cb_sel_free(void *data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+static void
+ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Selection *sel;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	sel = data;
+	if (sel->type == EWL_SELECTION_TYPE_INDEX)
+		sel->highlight = NULL;
+	
+	else
+	{
+		Ewl_Widget *cur;
+
+		ecore_list_goto(sel->highlight, w);
+		cur = ecore_list_current(sel->highlight);
+		if (cur == w) ecore_list_remove(sel->highlight);
+	}
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
 
