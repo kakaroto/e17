@@ -66,11 +66,6 @@
 #define EWL_TEXT(x) ((Ewl_Text *)x)
 
 /**
- * A context node for formatting information
- */
-typedef struct Ewl_Text_Context Ewl_Text_Context;
-
-/**
  * A trigger in the text, used for selections and clickable text
  */
 typedef struct Ewl_Text_Trigger Ewl_Text_Trigger;
@@ -107,7 +102,7 @@ struct Ewl_Text
 
 		struct
 		{
-			Ewl_Text_Context *tx; 	/**< The current formatting context */
+			void *tx;		/**< The current formatting context */
 			unsigned int char_idx; 	/**< The current char index */
 			unsigned int byte_idx; 	/**< The current byte index */
 		} current;			/**< Current text info */
@@ -374,46 +369,6 @@ void ewl_text_trigger_cb_mouse_in(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_out(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
-
-/**
- * @brief Stores context information for the different formatting nodes
- */
-struct Ewl_Text_Context
-{
-	char *font;				/**< Font name */
-	char *font_source;			/**< The font source */
-	unsigned int styles;			/**< Styles set in this node */
-	unsigned int align;			/**< Text alignment */
-	Ewl_Text_Wrap wrap;			/**< Text wrap setting */
-	char size;				/**< Font size */
-	Ewl_Color_Set color;			/**< Font colour */
-
-	struct
-	{
-		Ewl_Color_Set bg;		/**< Background colour */
-		Ewl_Color_Set glow;		/**< Glow colour */
-		Ewl_Color_Set outline;		/**< Outline colour */
-		Ewl_Color_Set shadow;		/**< Shadow colour */
-		Ewl_Color_Set strikethrough;	/**< Strikethrough colour */
-		Ewl_Color_Set underline;	/**< Underline colour */
-		Ewl_Color_Set double_underline;	/**< Double underline colour */
-	} style_colors;				/**< Colour information */
-
-	unsigned int ref_count;	/**< Number of references to this context */
-	const char *format;	/**< This context's format string */
-};
-
-int  ewl_text_context_init(void);
-void ewl_text_context_shutdown(void);
-
-Ewl_Text_Context *ewl_text_context_new(void);
-Ewl_Text_Context *ewl_text_context_default_create(Ewl_Text *t);
-
-void ewl_text_context_acquire(Ewl_Text_Context *tx);
-void ewl_text_context_release(Ewl_Text_Context *tx);
-
-int ewl_text_context_compare(Ewl_Text_Context *a, Ewl_Text_Context *b);
-Ewl_Text_Context *ewl_text_context_dup(Ewl_Text_Context *old);
 
 /**
  * Typdef for the Ewl_Text_Trigger_Area struct

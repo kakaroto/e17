@@ -2,7 +2,7 @@
 #include "ewl_base.h"
 #include "ewl_icon_theme.h"
 #include "ewl_io_manager.h"
-#include "ewl_text.h"
+#include "ewl_text_context.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"

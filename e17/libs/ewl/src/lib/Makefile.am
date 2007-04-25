@@ -85,6 +85,7 @@ EWLHEADERS = \
 	ewl_statusbar.h \
 	ewl_stock.h \
 	ewl_text.h \
+	ewl_text_context.h \
 	ewl_table.h \
 	ewl_tree.h \
 	ewl_tree2.h \
@@ -169,6 +170,7 @@ EWLSOURCES= \
 	ewl_stock.c \
 	ewl_table.c \
 	ewl_text.c \
+	ewl_text_context.c \
 	ewl_theme.c \
 	ewl_tree.c \
 	ewl_tree2.c \
