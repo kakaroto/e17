@@ -79,7 +79,7 @@ AC_DEFINE_UNQUOTED(LOCALEDIR, "${localedir}", "Module Locale Directory")
 #
 # Check EFL Libs
 #
-AC_PATH_GENERIC([edje], [0.5.0], [], [AC_MSG_ERROR(Edje is not installed)],)
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 AC_PATH_PROG(EDJE_CC, "edje_cc", "", $PATH)
 
 #

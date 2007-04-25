@@ -25,52 +25,37 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
 # Checks for libraries.
-AC_PATH_GENERIC(eet, 0.9.10, [
-	AC_SUBST(eet_libs)
-	AC_SUBST(eet_cflags) ],
-	AC_MSG_ERROR(Cannot find eet: Is eet-config in path?))
-eet_libs=`eet-config --libs`
-eet_cflags=`eet-config --cflags`
+PKG_CHECK_MODULES(EET, [eet >= 0.9.10])
+eet_libs=$EET_LIBS
+eet_cflags=$EET_CFLAGS
 AC_SUBST(eet_flags)
 AC_SUBST(eet_cflags)
 
-AC_PATH_GENERIC(evas, 0.9.9, [
-	AC_SUBST(evas_libs)
-	AC_SUBST(evas_cflags) ],
-	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
-evas_libs=`evas-config --libs`
-evas_cflags=`evas-config --cflags`
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
+evas_libs=$EVAS_LIBS
+evas_cflags=$EVAS_CFLAGS
 AC_SUBST(evas_libs)
 AC_SUBST(evas_cflags)
 
-AC_PATH_GENERIC(ecore, 0.9.9, [
-	AC_SUBST(ecore_libs)
-	AC_SUBST(ecore_cflags) ],
-	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-ecore_libs=`ecore-config --libs`
-ecore_cflags=`ecore-config --cflags`
+PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9])
+ecore_libs=$ECORE_LIBS
+ecore_cflags=$ECORE_CFLAGS
 AC_SUBST(ecore_libs)
 AC_SUBST(ecore_cflags)
 
-AC_PATH_GENERIC(embryo, 0.5.0, [
-        AC_SUBST(embryo_libs)
-	AC_SUBST(embryo_cflags) ],
-	AC_MSG_ERROR(Cannot find embryo: Is embryo-config in path?))
-embryo_libs=`embryo-config --libs`
-embryo_cflags=`embryo-config --cflags`
+PKG_CHECK_MODULES(EMBRYO, [embryo >= 0.5.0])
+embryo_libs=$EMBRYO_LIBS
+embryo_cflags=$EMBRYO_CFLAGS
 AC_SUBST(embryo_libs)
 AC_SUBST(embryo_cflags)
 
-AC_PATH_GENERIC(edje, 0.5.0, [
-	AC_SUBST(edje_libs)
-	AC_SUBST(edje_cflags) ],
-	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
-edje_libs=`edje-config --libs`
-edje_cflags=`edje-config --cflags`
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+edje_libs=$EDJE_LIBS
+edje_cflags=$EDJE_CFLAGS
 AC_SUBST(edje_libs)
 AC_SUBST(edje_cflags)
 
-edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+edje_cc="$(pkg-config --variable=prefix edje)/bin/edje_cc"
 AC_ARG_WITH(edje-cc,
 [  --with-edje-cc=PATH              specify a specific path to edje_cc],
 [
@@ -78,7 +63,7 @@ AC_ARG_WITH(edje-cc,
   edje_cc=$v
   echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
 ],[
-  edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+  edje_cc="$(pkg-config --variable=prefix edje)/bin/edje_cc"
 ])
 AC_SUBST(edje_cc)
 

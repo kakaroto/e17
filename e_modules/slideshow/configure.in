@@ -104,22 +104,9 @@ AC_DEFINE_UNQUOTED(LOCALEDIR, "${localedir}", [Module Locale Directory])
 #AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 #AC_SUBST(dlopen_libs)
 
-AC_ARG_WITH(edje-config,
-[  --with-edje-config=EDJE_CONFIG      use edje-config specified ],
-[
-  EDJE_CONFIG=$withval;
-  echo "using "$EDJE_CONFIG" for edje-config";
-/
-],[
-  PROG="edje-config";
-  AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
-])
-edje_cflags=`$EDJE_CONFIG --cflags`
-edje_libs=`$EDJE_CONFIG --libs`
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_libs)
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 
-edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+edje_cc="$(pkg-config --variable=prefix edje)/bin/edje_cc"
 AC_ARG_WITH(edje-cc,
 [  --with-edje-cc=PATH              specify a specific path to edje_cc],
 [
@@ -127,7 +114,7 @@ AC_ARG_WITH(edje-cc,
   edje_cc=$v
   echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
 ],[
-  edje_cc="`$EDJE_CONFIG --prefix`/bin/edje_cc"
+  edje_cc="$(pkg-config --variable=prefix edje)/bin/edje_cc"
 ])
 AC_SUBST(edje_cc)
 
