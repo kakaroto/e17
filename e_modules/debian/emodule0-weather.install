@@ -1,4 +1,5 @@
 debian/tmp/usr/lib/enlightenment/modules/weather/*.desktop
 debian/tmp/usr/lib/enlightenment/modules/weather/*.edj
 debian/tmp/usr/lib/enlightenment/modules/weather/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/weather/images/*.png
 debian/tmp/usr/share/locale/*/LC_MESSAGES/weather.*
