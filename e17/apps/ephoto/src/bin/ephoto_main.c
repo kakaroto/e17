@@ -4,6 +4,7 @@
 static void destroy(Ewl_Widget *w, void *event, void *data);
 static void populate_albums(Ewl_Widget *w, void *event, void *data);
 static void populate_directories(Ewl_Widget *w, void *event, void *data);
+static void update_view(Ewl_Widget *w, void *event, void *data);
 static void window_fullscreen(Ewl_Widget *w, void *event, void *data);
 
 /*Ephoto Create Callbacks*/
@@ -31,6 +32,8 @@ static void destroy(Ewl_Widget *w, void *event, void *data)
 	ecore_list_destroy(em->albums);
 	ecore_list_destroy(em->directories);
 	ecore_dlist_destroy(em->images);
+	free(em->current_directory);
+	free(em->current_album);
 	free(em);
 	ewl_main_quit();
 	return;
@@ -53,10 +56,30 @@ static void window_fullscreen(Ewl_Widget *w, void *event, void *data)
 }
 
 /*Show the main view*/
-void show_main_view(Ewl_Widget *c, void *event, void *data)
+void show_main_view(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->main_nb), em->main_vbox);
 	ecore_dlist_goto_first(em->images);
+}
+
+/*Update the images based on the current tab*/
+static void update_view(Ewl_Widget *w, void *event, void *data)
+{
+	const char *text;
+	Ewl_Widget *page;
+
+	page = ewl_notebook_visible_page_get(EWL_NOTEBOOK(w));
+	text = ewl_widget_name_get(page);
+	if (!strcmp(text, "Albums"))
+	{
+		populate_albums(NULL, NULL, NULL);
+	}
+	else
+	{
+		populate_directories(NULL, NULL, NULL);
+	}
+
+	return;
 }
 
 /*Create the Main Ephoto Window*/
@@ -71,7 +94,7 @@ void create_main_gui(void)
 	em->directories = ecore_list_new();
 	em->images = ecore_dlist_new();
 
-	em->win = add_window("Ephoto!", 775, 540, destroy, NULL);
+	em->win = add_window("Ephoto!", 800, 600, destroy, NULL);
 
 	vbox = add_box(em->win, EWL_ORIENTATION_VERTICAL, 5);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
@@ -87,7 +110,7 @@ void create_main_gui(void)
         ewl_notebook_tabbar_visible_set(EWL_NOTEBOOK(em->main_nb), 0);
         ewl_object_fill_policy_set(EWL_OBJECT(em->main_nb), EWL_FLAG_FILL_ALL);
         ewl_container_child_append(EWL_CONTAINER(hbox), em->main_nb);
-        ewl_widget_show(em->main_nb);
+	ewl_widget_show(em->main_nb);
 
 	em->main_vbox = add_box(em->main_nb, EWL_ORIENTATION_VERTICAL, 2);
 	ewl_object_fill_policy_set(EWL_OBJECT(em->main_vbox), EWL_FLAG_FILL_ALL);
@@ -102,16 +125,18 @@ void create_main_gui(void)
 
 	em->browser = ewl_notebook_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(em->browser), EWL_FLAG_FILL_VFILL);
-	ewl_object_preferred_inner_w_set(EWL_OBJECT(em->browser), 175);
+	ewl_object_preferred_inner_w_set(EWL_OBJECT(em->browser), 200);
 	ewl_container_child_append(EWL_CONTAINER(em->view), em->browser);
 	ewl_widget_show(em->browser);
 
         em->atree = add_atree(em->browser);
-	ewl_object_maximum_w_set(EWL_OBJECT(em->atree), 175);
+	ewl_object_maximum_w_set(EWL_OBJECT(em->atree), 200);
+	ewl_widget_name_set(em->atree, "Albums");
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(em->browser), em->atree, "Albums");
 
 	em->dtree = add_dtree(em->browser);
-	ewl_object_maximum_w_set(EWL_OBJECT(em->dtree), 175);
+	ewl_object_maximum_w_set(EWL_OBJECT(em->dtree), 200);
+	ewl_widget_name_set(em->dtree, "File System");
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(em->browser), em->dtree, "File System");
 
 	em->view_box = ewl_notebook_new();
@@ -183,8 +208,11 @@ void create_main_gui(void)
 
 	ewl_mvc_data_set(EWL_MVC(em->atree), em->albums);
 	
-	populate_albums(NULL, NULL, "Complete Library");
-	populate_directories(NULL, NULL, getenv("HOME"));
+	em->current_album = strdup("Complete Library");
+	em->current_directory = strdup(getenv("HOME"));
+
+	populate_albums(NULL, NULL, NULL);
+	ewl_callback_append(em->browser, EWL_CALLBACK_VALUE_CHANGED, update_view, NULL);
 
 	return;
 }
@@ -196,22 +224,20 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
 	char *imagef;
 	Ewl_Widget *thumb;
 
+	album = NULL;
+
 	if (w)
 	{
 		album = ewl_widget_name_get(w);
+		em->current_album = strdup(album);
 	}
-	else
-	{
-		album = data;
-	}
-
 	if (!ecore_list_is_empty(em->images))
 	{
 		ecore_dlist_destroy(em->images);
 	}
 
 	em->images = ecore_dlist_new();
-	em->images = ephoto_db_list_images(em->db, album);
+	em->images = ephoto_db_list_images(em->db, em->current_album);
 
 	ecore_dlist_goto_first(em->images);
 	ewl_container_reset(EWL_CONTAINER(em->fbox));
@@ -246,62 +272,56 @@ static void populate_directories(Ewl_Widget *w, void *event, void *data)
 	char *imagef;
         Ewl_Widget *thumb;
 
+	directory = NULL;
+
 	if (w)
 	{
 		directory = ewl_widget_name_get(w);
-	}
-	else
-	{
-		directory = data;
+		em->current_directory = strdup(directory);
 	}
 	if (!ecore_list_is_empty(em->directories))
 	{
 		ecore_list_destroy(em->directories);
 	}
-
-	if(em->current_directory) free(em->current_directory);
-	em->current_directory = strdup(directory);
-
+	
 	em->directories = ecore_list_new();
-	em->directories = get_directories(directory);
+	em->directories = get_directories(em->current_directory);
 
 	ecore_dlist_goto_first(em->directories);
         ewl_mvc_data_set(EWL_MVC(em->dtree), em->directories);
         ewl_mvc_dirty_set(EWL_MVC(em->dtree), 1);
 
-	if (w)
-	{
-        	if (!ecore_list_is_empty(em->images))
-        	{
-                	ecore_dlist_destroy(em->images);
-        	}
+      	if (!ecore_list_is_empty(em->images))
+       	{
+               	ecore_dlist_destroy(em->images);
+       	}
 
-	        em->images = ecore_dlist_new();
-		em->images = get_images(directory);
+        em->images = ecore_dlist_new();
+	em->images = get_images(em->current_directory);
 	
-		ecore_dlist_goto_first(em->images);
+	ecore_dlist_goto_first(em->images);
 		
-		ewl_container_reset(EWL_CONTAINER(em->fbox));
-		while (ecore_dlist_current(em->images))
+	ewl_container_reset(EWL_CONTAINER(em->fbox));
+	while (ecore_dlist_current(em->images))
+	{
+		imagef = ecore_dlist_current(em->images);
+		if(imagef)
 		{
-			imagef = ecore_dlist_current(em->images);
-			if(imagef)
-			{
-      		        	thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
-	      	        	ewl_image_constrain_set(EWL_IMAGE(thumb), 81);
-       		        	ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
-	                	ewl_widget_name_set(thumb, imagef);
-			}
-        	        ecore_dlist_next(em->images);
+  	        	thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
+		       	ewl_image_constrain_set(EWL_IMAGE(thumb), 81);
+       		      	ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
+	               	ewl_widget_name_set(thumb, imagef);
 		}
-		ecore_dlist_goto_first(em->images);
-		if(ecore_dlist_current(em->images))
-		{ 
-			ewl_image_file_path_set(EWL_IMAGE(em->simage), ecore_dlist_current(em->images));
-		}
-		ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
-		ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
+        	ecore_dlist_next(em->images);
 	}
+	ecore_dlist_goto_first(em->images);
+	if(ecore_dlist_current(em->images))
+	{ 
+		ewl_image_file_path_set(EWL_IMAGE(em->simage), ecore_dlist_current(em->images));
+	}
+	ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
+	ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
+	
 	return;
 } 
 
@@ -384,9 +404,14 @@ static Ewl_Widget *album_view_new(void *data, unsigned int row, unsigned int col
 /* The view of the users directories */
 static Ewl_Widget *directory_view_new(void *data, unsigned int row, unsigned int column)
 {
+	char *current_directory;
         const char *directory;
+	int len;
         Ewl_Widget *icon;
 
+	len = strlen(em->current_directory);
+	current_directory = alloca(len + 1);
+	strcpy(current_directory, em->current_directory);
         directory = data;
 
 	icon = add_icon(NULL, basename((char *)directory), PACKAGE_DATA_DIR "/images/folder.png", 0, populate_directories, NULL);
@@ -397,13 +422,13 @@ static Ewl_Widget *directory_view_new(void *data, unsigned int row, unsigned int
         ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_ALL);
 	if (!strncmp(directory, "..", 2))
 	{
-		ewl_widget_name_set(icon, dirname(em->current_directory));
+		ewl_widget_name_set(icon, dirname(current_directory));
 	}
 	else
 	{
         	ewl_widget_name_set(icon, directory);
         }
-
+	
         return icon;
 }
 

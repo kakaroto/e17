@@ -121,6 +121,7 @@ typedef struct _Ephoto_Main Ephoto_Main;
 
 struct _Ephoto_Main
 {
+	char *current_album;
 	char *current_directory;
 	Ecore_List *albums;
 	Ecore_List *directories;
