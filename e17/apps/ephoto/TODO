@@ -7,18 +7,21 @@ ________/ /__/      /__/ /__/ /_______/    /_/    /_______/
 
 
 TODO-
+===Command Line===
+Get some command line options going!
 ===General===
 Dialogs For Adding/Removing Albums/Images.
 DRAG AND DROP IS A MUST!
+===Layout===
+Ideas and Changes are welcome!
 ===Normal View===
-Multiple Selection.
 Seeker to Resize Thumbnails.
 ===Edit View===
-Add Editing Controls(Rotate/Zoom/Blur/Sharpen/Color/Histogram/etc..).
-===List View===
-Multiple Selection.
+Add Editing Controls(Zooms/Blurs/Sharpens/Color Enhancement/Histogram/Cropping/etc..).
+Add Saving Ability(This will include looking into editing and saving exif data).
+Should we list navigation for other images better?(than using buttons with arrows)
+===Single View===
+Should we list navigation for other images better?(than using buttons with arrwos)
 ===Slideshow===
-Need to Add Slideshow Code.
-===Theme===
-Need to Theme Text to Have a Blue State like Label Does.
-Need a Better Seeker Theme.
+Need to Add Configuration to Slideshows..
+Should Slideshow Backgrounds be black?
