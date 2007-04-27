@@ -304,6 +304,8 @@ ewl_notebook_visible_page_set(Ewl_Notebook *n, Ewl_Widget *page)
 	t = ewl_attach_widget_association_get(n->cur_page);
 	if (t) ewl_widget_state_set(t, "selected", EWL_STATE_PERSISTENT);
 
+	ewl_callback_call(EWL_WIDGET(n), EWL_CALLBACK_VALUE_CHANGED);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
