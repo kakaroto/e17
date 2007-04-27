@@ -118,6 +118,12 @@
        colour _set/_get functions which will just be RBG/HSV functions.
 
 
+  Ewl_Config
+     - Need to monitor the ewl_config files for changes and send a signal to
+       the application when it changes. If this is done we won't need to
+       use something like dbus to signal the config changed.
+
+
   Ewl_Engines
      - For engines that only support a single window (framebuffer for
        example) we need to set it up to override the window creation call to
