@@ -13,8 +13,10 @@ Ewl_Widget *add_single_view(Ewl_Widget *c)
         ewl_object_fill_policy_set(EWL_OBJECT(em->single_vbox), EWL_FLAG_FILL_ALL);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(c), em->single_vbox, "Single");
 
-	ibox = add_box(em->single_vbox, EWL_ORIENTATION_VERTICAL, 0);
+	ibox = ewl_cell_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(em->single_vbox), ibox);
+	ewl_widget_show(ibox);
 
         em->simage = add_image(ibox, NULL, 0, NULL, NULL);
         ewl_object_alignment_set(EWL_OBJECT(em->simage), EWL_FLAG_ALIGN_CENTER);

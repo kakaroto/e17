@@ -12,8 +12,8 @@ static void rotate_image_right(Ewl_Widget *w, void *event, void *data);
 /*Add the edit view*/
 Ewl_Widget *add_edit_view(Ewl_Widget *c)
 {
-	Ewl_Widget *button, *vbox, *ivbox, *hbox, *bhbox, *nb;
-	Ewl_Widget *standard, *enhance, *advanced;
+	Ewl_Widget *button, *vbox, *ibox, *hbox, *bhbox, *nb;
+	Ewl_Widget *standard, *advanced;
 
 	hbox = add_box(c, EWL_ORIENTATION_HORIZONTAL, 2);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
@@ -31,12 +31,6 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
 
 	add_standard_edit_tools(standard);
 
-	enhance = add_box(nb, EWL_ORIENTATION_VERTICAL, 2);
-        ewl_object_maximum_w_set(EWL_OBJECT(enhance), 172);
-        ewl_object_minimum_w_set(EWL_OBJECT(enhance), 172);
-        ewl_object_fill_policy_set(EWL_OBJECT(enhance), EWL_FLAG_FILL_VFILL);
-        ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(nb), enhance, "Enhancing Tools");
-
 	advanced = add_box(nb, EWL_ORIENTATION_VERTICAL, 2);
         ewl_object_maximum_w_set(EWL_OBJECT(advanced), 172);
         ewl_object_minimum_w_set(EWL_OBJECT(advanced), 172);
@@ -46,10 +40,12 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
 	vbox = add_box(hbox, EWL_ORIENTATION_VERTICAL, 0);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 	
-	ivbox = add_box(vbox, EWL_ORIENTATION_VERTICAL, 0);
-	ewl_object_fill_policy_set(EWL_OBJECT(ivbox), EWL_FLAG_FILL_ALL);
+	ibox = ewl_cell_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
+	ewl_widget_show(ibox);
 
-        em->eimage = add_image(ivbox, NULL, 0, NULL, NULL);
+        em->eimage = add_image(ibox, NULL, 0, NULL, NULL);
         ewl_object_alignment_set(EWL_OBJECT(em->eimage), EWL_FLAG_ALIGN_CENTER);
         ewl_object_fill_policy_set(EWL_OBJECT(em->eimage), EWL_FLAG_FILL_SHRINK);
 	
