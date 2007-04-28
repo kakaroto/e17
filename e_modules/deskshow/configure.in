@@ -117,7 +117,6 @@ AC_SUBST(e_modules)
 
 AC_OUTPUT([
 Makefile
-module.desktop
 e_modules-deskshow.spec
 ],[
 ])
