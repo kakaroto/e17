@@ -99,7 +99,7 @@ PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9],
      ecore_includes=$ECORE_CFLAGS
    ],
    [
-     AC_MSG_ERROR([No EVAS, can't build.])
+     AC_MSG_ERROR([No ECORE, can't build.])
    ]
 )
 
