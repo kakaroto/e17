@@ -124,7 +124,7 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 {
 	const char *img;
-	Ewl_Widget *win = NULL, *vbox, *image, *sp, *list, *text;
+	Ewl_Widget *win, *vbox, *image, *sp, *list, *text;
 	Ewl_Model *model;
 	Ewl_View *view;
 	
@@ -134,7 +134,8 @@ void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 		return;
 	}
 
-	win = add_window("Ephoto Exif Info", 310, 460, close_dialog, win);
+	win = add_window("Ephoto Exif Info", 310, 460, NULL, NULL);
+	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, close_dialog, win);
 	ewl_window_dialog_set(EWL_WINDOW(win), 1);
 
 	vbox = add_box(win, EWL_ORIENTATION_VERTICAL, 5);

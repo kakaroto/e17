@@ -124,8 +124,8 @@ static void add_album(Ewl_Widget *w, void *event, void *data)
 {
 	Ewl_Widget *window, *label, *button, *vbox, *hbox;
 	
-	window = NULL;
-	window = add_window("Add Album", 200, 100, cancel, window);
+	window = add_window("Add Album", 200, 100, NULL, NULL);
+	ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, cancel, window);
 
 	vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 3);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
@@ -140,7 +140,9 @@ static void add_album(Ewl_Widget *w, void *event, void *data)
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
 
 	button = add_button(hbox, "Save", PACKAGE_DATA_DIR "/images/stock_save.png", save, window);
+	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
 	button = add_button(hbox, "Cancel", PACKAGE_DATA_DIR "/images/dialog-close.png", cancel, window);
+	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
 }
 
 /*Create the Main Ephoto Window*/
