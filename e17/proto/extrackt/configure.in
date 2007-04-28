@@ -91,63 +91,51 @@ AC_FUNC_MKTIME
 AC_FUNC_LSTAT
 AC_FUNC_CLOSEDIR_VOID
 
-#check for ecore
-AC_PATH_EFL(
-   ecore,
-   0.9.9,
+PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9],
    [
      AC_DEFINE(HAVE_ECORE, 1, have ECORE)
      ecore="ECORE "
-     ecore_libs=`ecore-config --libs`
-     ecore_includes=`ecore-config --cflags`
-   ],
-   [
-     AC_MSG_ERROR([No ECORE, can't build.])
-   ]
-)
-
-#check for evas
-AC_PATH_EFL(
-   evas,
-   0.9.9,
-   [
-     AC_DEFINE(HAVE_EVAS, 1, have EVAS)
-     evas="EVAS "
-     evas_libs=`evas-config --libs`
-     evas_includes=`evas-config --cflags`
+     ecore_libs=$ECORE_LIBS
+     ecore_includes=$ECORE_CFLAGS
    ],
    [
      AC_MSG_ERROR([No EVAS, can't build.])
    ]
 )
 
-#check for eet
-AC_PATH_EFL(
-   eet,
-   0.9.10,
+PKG_CHECK_MODULES(EET, [eet >= 0.9.10],
    [
      AC_DEFINE(HAVE_EET, 1, have EET)
      eet="EET "
-     eet_libs=`eet-config --libs`
-     eet_includes=`eet-config --cflags`
+     eet_libs=$EET_LIBS
+     eet_includes=$EET_CFLAGS
    ],
    [
      AC_MSG_ERROR([No EET, can't build.])
    ]
 )
 
-#check for etk
-AC_PATH_EFL(
-   etk,
-   0.1.0,
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9],
+   [
+     AC_DEFINE(HAVE_EVAS, 1, have EVAS)
+     evas="EVAS "
+     evas_libs=$EVAS_LIBS
+     evas_includes=$EVAS_CFLAGS
+   ],
+   [
+     AC_MSG_ERROR([No EVAS, can't build.])
+   ]
+)
+
+PKG_CHECK_MODULES(ETK, [etk >= 0.1.0],
    [
      AC_DEFINE(HAVE_ETK, 1, have ETK)
      etk="ETK "
      AM_CONDITIONAL(HAVE_ETK, true)
      AM_CONDITIONAL(BUILD_FRONTEND_ETK, true)
      have_etk="yes"
-     etk_libs=`etk-config --libs`
-     etk_includes=`etk-config --cflags`
+     etk_libs=$ETK_LIBS
+     etk_includes=$ETK_CFLAGS
    ],
    [
      AC_DEFINE(HAVE_ETK, 0, no ETK)
@@ -160,22 +148,19 @@ AC_PATH_EFL(
    ]
 )
 
-#check for enhance
-AC_PATH_EFL(
-   enhance,
-   0.0.1,
+PKG_CHECK_MODULES(ENHANCE, [enhance >= 0.0.1],
    [
      AC_DEFINE(HAVE_ENHANCE, 1, have ENHANCE)
      enhance="ENHANCE "
      AM_CONDITIONAL(HAVE_ENHANCE, true)
      have_enhance="yes"
-     enhance_libs=`enhance-config --libs`
-     ehnahce_includes=`enhance-config --cflags`
-     if test "x${have_etk}" = "xyes"; then       
+     enhance_libs=$ENHANCE_LIBS
+     ehnahce_includes=$ENHANCE_CFLAGS
+     if test "x${have_etk}" = "xyes"; then
        AM_CONDITIONAL(BUILD_FRONTEND_ETK, true)
      else
        AM_CONDITIONAL(BUILD_FRONTEND_ETK, false)
-     fi     
+     fi
    ],
    [
      AC_DEFINE(HAVE_ENHANCE, 0, no ENHANCE)
@@ -184,7 +169,7 @@ AC_PATH_EFL(
      AC_MSG_WARN([No Enhance, can't build ETK plugin.])
      have_enhance="no"
      enhance_libs=""
-     enhance_includes=""     
+     enhance_includes=""
    ]
 )
 
