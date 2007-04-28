@@ -86,16 +86,14 @@ packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
 #check for EET
-AC_PATH_EFL(
-   eet,
-   0.9.10.030,
+PKG_CHECK_MODULES(EET, [eet >= 0.9.10.030],
    [
      AC_DEFINE(HAVE_EET, 1, have EET)
      eet="EET "
      AM_CONDITIONAL(HAVE_EET, true)
      have_eet="yes"
-     eet_libs=`eet-config --libs`
-     eet_cflags=`eet-config --cflags`
+     eet_libs=$EET_LIBS
+     eet_cflags=$EET_CFLAGS
    ],
    [
      AC_MSG_ERROR([No Eet, can't build.])
@@ -103,16 +101,14 @@ AC_PATH_EFL(
 )
 
 #check for ECORE
-AC_PATH_EFL(
-   ecore,
-   0.9.9.022,
+PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9.022],
    [
      AC_DEFINE(HAVE_ECORE, 1, have ECORE)
      ecore="ECORE "
      AM_CONDITIONAL(HAVE_ECORE, true)
      have_ecore="yes"
-     ecore_libs=`ecore-config --libs`
-     ecore_cflags=`ecore-config --cflags`
+     ecore_libs=$ECORE_LIBS
+     ecore_cflags=$ECORE_CFLAGS
    ],
    [
      AC_MSG_ERROR([No Ecore, can't build.])
@@ -120,16 +116,14 @@ AC_PATH_EFL(
 )
 
 #check for EVAS
-AC_PATH_EFL(
-   evas,
-   0.9.9.022,
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9.022],
    [
      AC_DEFINE(HAVE_EVAS, 1, have EVAS)
      evas="EVAS "
      AM_CONDITIONAL(HAVE_EVAS, true)
      have_evas="yes"
-     evas_libs=`evas-config --libs`
-     evas_cflags=`evas-config --cflags`
+     evas_libs=$EVAS_LIBS
+     evas_cflags=$EVAS_CFLAGS
    ],
    [
      AC_MSG_ERROR([No Evas, can't build.])
@@ -137,16 +131,14 @@ AC_PATH_EFL(
 )
 
 #check for EDJE
-AC_PATH_EFL(
-   edje,
-   0.5.0.022,
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0.022],
    [
      AC_DEFINE(HAVE_EDJE, 1, have EDJE)
      edje="EDJE "
      AM_CONDITIONAL(HAVE_EDJE, true)
      have_edje="yes"
-     edje_libs=`edje-config --libs`
-     edje_cflags=`edje-config --cflags`     
+     edje_libs=$EDJE_LIBS
+     edje_cflags=$EDJE_CFLAGS
    ],
    [
      AC_MSG_ERROR([No Edje, can't build.])
@@ -154,16 +146,14 @@ AC_PATH_EFL(
 )
 
 #check for ETK
-AC_PATH_EFL(
-   etk,
-   0.1.0.001,
+PKG_CHECK_MODULES(ETK, [etk >= 0.1.0.001],
    [
      AC_DEFINE(HAVE_ETK, 1, have ETK)
      etk="ETK "
      AM_CONDITIONAL(HAVE_ETK, true)
      have_etk="yes"
-     etk_libs=`etk-config --libs`
-     etk_cflags=`etk-config --cflags`     
+     etk_libs=$ETK_LIBS
+     etk_cflags=$ETK_CFLAGS
    ],
    [
      AC_MSG_ERROR([No Etk, can't build.])
@@ -171,16 +161,14 @@ AC_PATH_EFL(
 )
 
 #check for EPSILON
-AC_PATH_EFL(
-   epsilon,
-   0.3.0.004,
+PKG_CHECK_MODULES(EPSILON, [epsilon >= 0.3.0.004],
    [
      AC_DEFINE(HAVE_EPSILON, 1, have EPSILON)
      epsilon="EPSILON "
      AM_CONDITIONAL(HAVE_EPSILON, true)
      have_epsilon="yes"
-     epsilon_libs=`epsilon-config --libs`
-     epsilon_cflags=`epsilon-config --cflags`     
+     epsilon_libs=$EPSILON_LIBS
+     epsilon_cflags=$EPSILON_CFLAGS
    ],
    [
      AC_MSG_ERROR([No Epsilon, can't build.])
@@ -206,16 +194,14 @@ AC_PATH_EFL(
 )
 
 #check for Engrave
-AC_PATH_EFL(
-   engrave,
-   0.1.0,
+PKG_CHECK_MODULES(ENGRAVE, [engrave >= 0.1.0],
    [
      AC_DEFINE(HAVE_ENGRAVE, 1, have Engrave)
      engrave="Engrave "
      AM_CONDITIONAL(HAVE_ENGRAVE, true)
      have_engrave="yes"
-     engrave_libs=`engrave-config --libs`
-     engrave_cflags=`engrave-config --cflags`
+     engrave_libs=$ENGRAVE_LIBS
+     engrave_cflags=$ENGRAVE_CFLAGS
    ],
    [
      AC_DEFINE(HAVE_ENGRAVE, 0, no Engrave)
@@ -229,22 +215,9 @@ AC_PATH_EFL(
 
 
 dnl Set ETK_PACKAGE_DATA_DIR in config.h.  
-etk_prefix="\"`etk-config --prefix`/share/etk\""
+etk_prefix="\"$(pkg-config --variable=prefix etk)/share/etk\""
 AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
 
-
-eet_libs=`eet-config --libs`
-eet_cflags=`eet-config --cflags`
-ecore_libs=`ecore-config --libs`
-ecore_cflags=`ecore-config --cflags`
-evas_libs=`evas-config --libs`
-evas_cflags=`evas-config --cflags`
-edje_libs=`edje-config --libs`
-edje_cflags=`edje-config --cflags`
-etk_libs=`etk-config --libs`
-etk_cflags=`etk-config --cflags`
-epsilon_libs=`epsilon-config --libs`
-epsilon_cflags=`epsilon-config --cflags`
 
 # add your required libs / include here
 my_includes="$eet_cflags $ecore_cflags $evas_cflags $edje_cflags $etk_cflags $epsilon_cflags $engrave_cflags"
