@@ -1,9 +1,12 @@
 #include "ephoto.h"
 
 /*Ewl Callbacks*/
+static void add_album(Ewl_Widget *w, void *event, void *data);
+static void cancel(Ewl_Widget *w, void *event, void *data);
 static void destroy(Ewl_Widget *w, void *event, void *data);
 static void populate_albums(Ewl_Widget *w, void *event, void *data);
 static void populate_directories(Ewl_Widget *w, void *event, void *data);
+static void save(Ewl_Widget *w, void *event, void *data);
 static void update_view(Ewl_Widget *w, void *event, void *data);
 static void window_fullscreen(Ewl_Widget *w, void *event, void *data);
 
@@ -23,6 +26,7 @@ static unsigned int directory_data_count(void *data);
 
 /*Ephoto Global Variables*/
 Ephoto_Main *em;
+Ewl_Widget *ae, *de;
 
 /*Destroy the Main Window*/
 static void destroy(Ewl_Widget *w, void *event, void *data)
@@ -82,6 +86,63 @@ static void update_view(Ewl_Widget *w, void *event, void *data)
 	return;
 }
 
+/*Cancel the Album Dialog*/
+static void cancel(Ewl_Widget *w, void *event, void *data)
+{
+	Ewl_Widget *win;
+	
+	win = data;
+
+	ewl_widget_destroy(win);
+}
+
+/*Save the Album*/
+static void save(Ewl_Widget *w, void *event, void *data)
+{
+	char *album, *description;
+	Ewl_Widget *win;
+	sqlite3 *db;
+
+	win = data;
+
+	album = ewl_text_text_get(EWL_TEXT(ae));
+	description = ewl_text_text_get(EWL_TEXT(de));
+
+	if (album)
+	{
+		db = ephoto_db_init();
+		ephoto_db_add_album(db, album, description);
+		ephoto_db_close(db);
+		ewl_widget_destroy(win);
+		ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->browser), em->atree);
+		populate_albums(NULL, NULL, NULL);
+	}
+}
+
+/*Add an Album to Ephoto*/
+static void add_album(Ewl_Widget *w, void *event, void *data)
+{
+	Ewl_Widget *window, *label, *button, *vbox, *hbox;
+	
+	window = NULL;
+	window = add_window("Add Album", 200, 100, cancel, window);
+
+	vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 3);
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+
+	label = add_label(vbox, "Enter a name for the new album:");
+	ae = add_entry(vbox, NULL, NULL, NULL);
+
+	label = add_label(vbox, "Enter a description for the album:");
+	de = add_entry(vbox, NULL, NULL, NULL);
+
+	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
+
+	button = add_button(hbox, "Save", PACKAGE_DATA_DIR "/images/stock_save.png", save, window);
+	button = add_button(hbox, "Cancel", PACKAGE_DATA_DIR "/images/dialog-close.png", cancel, window);
+}
+
 /*Create the Main Ephoto Window*/
 void create_main_gui(void)
 {
@@ -102,6 +163,8 @@ void create_main_gui(void)
 	mb = add_menubar(vbox);
 	menu = add_menu(mb, "File");
 	mi = add_menu_item(menu, "Exit", PACKAGE_DATA_DIR "/images/exit.png", destroy, NULL);
+	menu = add_menu(mb, "Albums");
+	mi = add_menu_item(menu, "Add Album", PACKAGE_DATA_DIR "/images/add.png", add_album, NULL);
 
 	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
@@ -180,6 +243,16 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
 	ewl_widget_show(vsep);
 
+        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/get_exif.png", NULL, NULL);
+        ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
+        ewl_attach_tooltip_text_set(button, "You do not have libexif 0.6.13");
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
+#ifdef BUILD_EXIF_SUPPORT
+        ewl_callback_append(button, EWL_CALLBACK_CLICKED, display_exif_dialog, NULL);
+        ewl_attach_tooltip_text_set(button, "View Exif Data");
+#endif
+
 	button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", window_fullscreen, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
 	ewl_attach_tooltip_text_set(button, "Toggle Fullscreen");
@@ -202,12 +275,8 @@ void create_main_gui(void)
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
         ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
 
-	em->albums = ecore_list_new();
 	em->db = ephoto_db_init();
-	em->albums = ephoto_db_list_albums(em->db);
 
-	ewl_mvc_data_set(EWL_MVC(em->atree), em->albums);
-	
 	em->current_album = strdup("Complete Library");
 	em->current_directory = strdup(getenv("HOME"));
 
@@ -231,11 +300,20 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
 		album = ewl_widget_name_get(w);
 		em->current_album = strdup(album);
 	}
+	if (!ecore_list_is_empty(em->albums))
+	{
+		ecore_list_destroy(em->albums);
+	}
 	if (!ecore_list_is_empty(em->images))
 	{
 		ecore_dlist_destroy(em->images);
 	}
 
+	em->albums = ecore_list_new();
+	em->albums = ephoto_db_list_albums(em->db);
+	ewl_mvc_data_set(EWL_MVC(em->atree), em->albums);
+	ewl_mvc_dirty_set(EWL_MVC(em->atree), 1);
+	
 	em->images = ecore_dlist_new();
 	em->images = ephoto_db_list_images(em->db, em->current_album);
 

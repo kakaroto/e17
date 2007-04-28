@@ -84,6 +84,7 @@ unsigned int *flip_vertical(Ewl_Widget *image);
 unsigned int *rotate_left(Ewl_Widget *image);
 unsigned int *rotate_right(Ewl_Widget *image);
 void update_image(Ewl_Widget *image, int w, int h, unsigned int *data);
+void save_image(Ewl_Widget *image, const char *file);
 
 /* Ephoto Edit View */
 Ewl_Widget *add_edit_view(Ewl_Widget *c);
@@ -138,6 +139,7 @@ struct _Ephoto_Main
 	Ewl_Widget *main_nb;
 	Ewl_Widget *main_vbox;
 	Ewl_Widget *simage;
+	Ewl_Widget *single_sp;
 	Ewl_Widget *single_vbox;
 	Ewl_Widget *toolbar;
 	Ewl_Widget *view;

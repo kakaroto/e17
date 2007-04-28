@@ -59,7 +59,7 @@ static const char *get_image(void)
 {
 	const char *img = NULL;
 
-        if (VISIBLE(em->edit_vbox)) img = ewl_image_file_path_get(EWL_IMAGE(em->eimage));
+        img = ecore_dlist_current(em->images);
 	if(!img) return NULL;
 	return strdup(img);
 }

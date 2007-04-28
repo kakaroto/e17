@@ -136,3 +136,19 @@ void update_image(Ewl_Widget *image, int w, int h, unsigned int *data)
 		evas_object_image_data_update_add(EWL_IMAGE(image)->image, 0, 0, w, h);
 	}
 }
+
+void save_image(Ewl_Widget *image, const char *file)
+{
+	pid_t pid;
+
+	if(image && file)
+	{
+		pid = fork();
+		if(pid == 0)
+		{
+			evas_object_image_save(EWL_IMAGE(image)->image, file, NULL, NULL);
+			exit(0);
+		}
+	}
+	return;
+}

@@ -77,16 +77,6 @@ static void add_standard_edit_tools(Ewl_Widget *c)
 {
 	Ewl_Widget *button;
 
-        button = add_button(c, "Get Exif", PACKAGE_DATA_DIR "/images/get_exif.png", NULL, NULL);
-        ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
-	ewl_button_label_set(EWL_BUTTON(button), "You do not have libexif 0.6.13");
-	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
-	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
-#ifdef BUILD_EXIF_SUPPORT
-        ewl_callback_append(button, EWL_CALLBACK_CLICKED, display_exif_dialog, NULL);
-        ewl_button_label_set(EWL_BUTTON(button), "View Exif Data");
-#endif
-
 	button = add_button(c, "Rotate Left", PACKAGE_DATA_DIR "/images/undo.png", rotate_image_left, NULL);
 	ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
 	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
