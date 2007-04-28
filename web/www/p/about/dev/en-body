@@ -3,19 +3,15 @@
 <td class='main'><div class="main">
 
 <p><b><center>Enlightenment DR17</center></b></p>
-<center><?php img("logo.png", "E"); ?></center>
+<center><?php img("e17_about.png", "E"); ?></center>
 <p>Enlightenment 0.17 is the next generation of UNIX graphical environments. It is not just a window manager, but it is also a desktop shell.
 A desktop shell means, a window manager plus a file manager, plus configuration utilitys all in one. They are not separated as usual. Now, let's take a closer look at all E17 features...</p>
-<center><?php img("performance.png", "E"); ?></center>
 <p><b><center>Extremely High Performance.</center></b></p>
 <p>Enlightenment is fast. No, really. It's fast. It is known to run on very slow machines (like 186 Mhz CPU, 128 MB of RAM) well. So you really don't need a modern desktop to see some eye-candy and to use a modern graphical environment. Even more – you can control how fast you want it by using it's Performance configuration panel to change the cahce settings and more.</p>
-<center><?php img("eye_candy.png", "E"); ?></center>
 <p><b><center>Eye Candy On A Higher Level</center></b></p>
 <p>The high performance does not mean that there is no eye candy. There is eye candy that you have never seen before. Starting from the animated boot screen, to continue with the all animations and effects that themes could provide, to end up with fancy animated backgrounds. But not some huge .GIF files, but really nice animations. Every virtual desktop (at the moment you can have 24) can have it's own background (animated or not), so you can put different wallpapers on the different virtual desktops. There are a number of effects that can be shown when you switch from the different virtual desktops. The menus, the borders and all other usual parts of a normal window manager are animated as well as some of the widgets (the sliders, for example). Remember that those effects are provided by the theme, so every theme makes E to look different, with different effects, look and feel and animations.</p>
-<center><?php img("desktop_shell.png", "E"); ?></center>
 <p><b><center>A Desktop Shell</center></b></p>
 <p>As we already mentioned, E17 provides a file manager as well. Of the time of writing, it is not completed and is in active development (as E17 as a whole itself), but after it is finished it will be a very nice, configurable and eye candy. Even right now, you can do the basic things with it – browse, copy, move, delete files. It will provide thumbnails for your pictures and will be able to open your files with the coresponding application of your choice.</p>
-<center><?php img("config.png", "E"); ?></center>
 <p><b><center>Configurable</center></b></p>
 <p>E17 is highly configurable. Currently it has a nice configuration panel with 36 configuration dialogs for all kinds of things. You can change your wallpaper or your theme, your fonts, your screen resolution, your screen's power settings, your keyboard and mouse settings, the language that Enlightenment talks to you, and so on. You can contol almost every apsect of what E is doing and how. It will do what you want it to do.</p>
 <p><b><center>Localized</center></b></p>
