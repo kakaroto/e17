@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 }</pre>
 </div>
 
-<p>This code is compiled in the following manner: gcc `eet-config --libs --cflags` eet_example.c -o eet_example</p>
+<p>This code is compiled in the following manner: gcc `pkg-config --libs --cflags eet` eet_example.c -o eet_example</p>
 
 <p>
 EET also provides the CLI &quot;eet&quot; tool which allows for easy EET 
