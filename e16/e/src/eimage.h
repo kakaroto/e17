@@ -36,6 +36,7 @@ typedef struct
 
 #define EIMAGE_BLEND            0x01
 #define EIMAGE_ANTI_ALIAS       0x02
+#define EIMAGE_HIGH_MASK_THR    0x04
 
 void                EImageInit(Display * dpy);
 

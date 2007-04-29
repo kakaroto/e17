@@ -1166,7 +1166,8 @@ ContainerDraw(Container * ct)
    if (im)
      {
 	EMapWindow(ct->icon_win);
-	EImageRenderPixmaps(im, ct->icon_win, 0, &pmap, &mask, 0, 0);
+	EImageRenderPixmaps(im, ct->icon_win, EIMAGE_HIGH_MASK_THR,
+			    &pmap, &mask, 0, 0);
 	ESetWindowBackgroundPixmap(ct->icon_win, pmap);
 	EShapeCombineMask(ct->icon_win, ShapeBounding, 0, 0, mask, ShapeSet);
 	EImagePixmapFree(pmap);
