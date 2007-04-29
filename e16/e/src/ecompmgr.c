@@ -202,8 +202,10 @@ static struct
    double              opac_sharp;	/* 0. -> 1. */
 } Mode_compmgr;
 
-#define _ECM_SET_CLIP_CHANGED()  Mode_compmgr.reorder = 1
-#define _ECM_SET_STACK_CHANGED() Mode_compmgr.reorder = 1
+/* FIXME - Optimize according to what actually changed */
+#define _ECM_SET_CLIP_CHANGED()   Mode_compmgr.reorder = 1
+#define _ECM_SET_STACK_CHANGED()  Mode_compmgr.reorder = 1
+#define _ECM_SET_SHADOW_CHANGED() Mode_compmgr.reorder = 1
 
 static Picture      rootPicture;
 static Picture      rootBuffer;
@@ -2346,6 +2348,7 @@ ECompMgrShadowsInit(int mode, int cleanup)
 	lst = EobjListStackGet(&num);
 	for (i = 0; i < num; i++)
 	   ECompMgrWinInvalidate(lst[i], INV_SHADOW);
+	_ECM_SET_SHADOW_CHANGED();	/* Force extents/shadow update */
      }
 }
 #else
