@@ -411,7 +411,6 @@ ewl_popup_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 static void
 ewl_popup_position_check(Ewl_Popup *p)
 {
-	Ewl_Embed *emb;
 	int x = 0, y = 0;
 	int desk_w = 0, desk_h = 0;
 	int win_x = 0, win_y = 0;
@@ -420,12 +419,18 @@ ewl_popup_position_check(Ewl_Popup *p)
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_TYPE("p", p, EWL_POPUP_TYPE);
 	
-	if (!p->follow || p->type == EWL_POPUP_TYPE_NONE)
+	if (p->type == EWL_POPUP_TYPE_NONE)
 		DRETURN(DLEVEL_STABLE);
 	
-	emb = ewl_embed_widget_find(p->follow);
-	ewl_embed_desktop_size_get(emb, &desk_w, &desk_h);
-	ewl_embed_window_position_get(emb, &win_x, &win_y);
+	if (p->follow) {
+		Ewl_Embed *emb;
+
+		emb = ewl_embed_widget_find(p->follow);
+		ewl_embed_desktop_size_get(emb, &desk_w, &desk_h);
+		ewl_embed_window_position_get(emb, &win_x, &win_y);
+	}
+	else
+		ewl_embed_desktop_size_get(EWL_EMBED(p), &desk_w, &desk_h);
 	
 	if (p->type == EWL_POPUP_TYPE_MOUSE) {
 		x = win_x + p->mouse.x;
