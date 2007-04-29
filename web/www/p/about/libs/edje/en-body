@@ -49,9 +49,9 @@ produce almost any look and feel one could want for basic visual
 elements. Anything more complex is likely the domain of an application
 or widget set that may use Edje as a convenient way of being able to
 configure parts of the display.</p><p>There's
-an alternative Edje compiler, written by E hacker <a href="http://code-monkey.de/">Tilman Sauerbeck</a>, called <a href="http://code-monkey.de/projects/redact">Redact</a>, that allows developers to
+an alternative Edje compiler, written by E hacker <a href="http://code-monkey.de/">Tilman Sauerbeck</a>, called <a href="http://code-monkey.de/pages/redact">Redact</a>, that allows developers to
 write their Edjes using Ruby code instead of the EDC code that edje_cc
-uses. More information available on the <a href="http://code-monkey.de/projects/redact">Redact site</a>.</p>
+uses.</p>
 
 
 
