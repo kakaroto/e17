@@ -1,6 +1,6 @@
 - Bugs
-  - Iconboxes wander off when resizing screen.
-  - Icons in transparent iconbox may get ugly black shadow with default mask alpha threshold.
+  - Autosized iconboxes can wander off when resizing screen.
+    e.g. when anchored right and iconify-change size-deiconify.
   - Occasional segv on second screen when killing e16.
   - Occasional TMP_... droppings in ~/.e16/. Most likely related to latter.
 
