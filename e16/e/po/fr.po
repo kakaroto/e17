@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-28 13:29+0200\n"
+"POT-Creation-Date: 2007-04-29 16:50+0200\n"
 "PO-Revision-Date: 2007-04-12 19:12+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
@@ -783,7 +783,7 @@ msgstr "Appliquer"
 msgid "Attention !!!"
 msgstr "Attention !!!"
 
-#: src/ecompmgr.c:2534
+#: src/ecompmgr.c:2537
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
