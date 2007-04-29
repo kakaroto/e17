@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-20 21:52+0200\n"
+"POT-Creation-Date: 2007-04-28 13:29+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -67,7 +67,7 @@ msgstr "%u개의 참조가 남아있습니다\n"
 
 #: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
 #: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1772 src/cursors.c:177 src/iclass.c:548 src/menus.c:1729
+#: src/container.c:1773 src/cursors.c:177 src/iclass.c:548 src/menus.c:1729
 #: src/menus.c:1840 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
@@ -474,119 +474,119 @@ msgstr ""
 "인라이튼먼트가 기본적인 시스템 설정으로 복구한 후 다시 시도해\n"
 "보기를 원하십니까?\n"
 
-#: src/container.c:1227
+#: src/container.c:1228
 #, fuzzy
 msgid "Settings..."
 msgstr "포커스 설정"
 
-#: src/container.c:1231 src/dialog.c:895 src/pager.c:998 config/strings.c:30
+#: src/container.c:1232 src/dialog.c:895 src/pager.c:998 config/strings.c:30
 #: config/strings.c:167
 msgid "Close"
 msgstr "닫기"
 
-#: src/container.c:1236 config/strings.c:81
+#: src/container.c:1237 config/strings.c:81
 msgid "Create New Iconbox"
 msgstr "새 아이콘상자 생성"
 
-#: src/container.c:1532 src/container.c:1606
+#: src/container.c:1533 src/container.c:1607
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "아이콘 크기"
 
-#: src/container.c:1570
+#: src/container.c:1571
 msgid "Transparent background"
 msgstr "투명 배경"
 
-#: src/container.c:1574
+#: src/container.c:1575
 #, fuzzy
 msgid "Hide inner border"
 msgstr "이 그룹 보여주기/숨기기"
 
-#: src/container.c:1578
+#: src/container.c:1579
 msgid "Draw base image behind Icons"
 msgstr "아이콘 뒤에 기본 이미지 그리기"
 
-#: src/container.c:1582
+#: src/container.c:1583
 msgid "Hide scrollbar when not needed"
 msgstr "필요없을 때 스크롤바 숨기기"
 
-#: src/container.c:1586
+#: src/container.c:1587
 msgid "Automatically resize to fit Icons"
 msgstr "아이콘에 맞추기 위해 자동으로 크기조정"
 
-#: src/container.c:1593
+#: src/container.c:1594
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "자동으로 크기조정시 정렬:"
 
-#: src/container.c:1624
+#: src/container.c:1625
 msgid "Orientation:"
 msgstr "방위:"
 
-#: src/container.c:1629
+#: src/container.c:1630
 msgid "Scrollbar side:"
 msgstr "스크롤바 사이드:"
 
-#: src/container.c:1634
+#: src/container.c:1635
 msgid "Scrollbar arrows:"
 msgstr "스크롤바 방향:"
 
-#: src/container.c:1637
+#: src/container.c:1638
 msgid "Horizontal"
 msgstr "수평"
 
-#: src/container.c:1642
+#: src/container.c:1643
 msgid "Left / Top"
 msgstr "왼쪽 / 위"
 
-#: src/container.c:1647
+#: src/container.c:1648
 msgid "Start"
 msgstr "시작"
 
-#: src/container.c:1652
+#: src/container.c:1653
 msgid "Vertical"
 msgstr "수직"
 
-#: src/container.c:1658
+#: src/container.c:1659
 msgid "Right / Bottom"
 msgstr "오른쪽 / 아래"
 
-#: src/container.c:1664
+#: src/container.c:1665
 msgid "Both ends"
 msgstr "양쪽 끝"
 
-#: src/container.c:1672
+#: src/container.c:1673
 msgid "End"
 msgstr "끝"
 
-#: src/container.c:1680 src/focus.c:847
+#: src/container.c:1681 src/focus.c:847
 msgid "None"
 msgstr "없음"
 
-#: src/container.c:1690
+#: src/container.c:1691
 msgid "Show icon names"
 msgstr "아이콘 이름 보여주기"
 
-#: src/container.c:1694
+#: src/container.c:1695
 msgid "Animate when iconifying to this Iconbox"
 msgstr "이 아이콘상자로 아이콘화할 때 에니메이트"
 
-#: src/container.c:1704
+#: src/container.c:1705
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "아이콘 이미지 표시 정책 (한 동작 실패시 다음 시도):"
 
-#: src/container.c:1709
+#: src/container.c:1710
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "창 스냅샷, 응용프로그램 아이콘 사용, 인라이튼먼트 아이콘 사용"
 
-#: src/container.c:1716
+#: src/container.c:1717
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "응용프로그램 아이콘 사용, 인라이튼먼트 아이콘 사용, 창 스냅샷"
 
-#: src/container.c:1721
+#: src/container.c:1722
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "인라이튼먼트 아이콘 사용, 창 스냅샷"
 
-#: src/container.c:1734
+#: src/container.c:1735
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -786,7 +786,7 @@ msgstr "적용"
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
-#: src/ecompmgr.c:2513
+#: src/ecompmgr.c:2534
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"

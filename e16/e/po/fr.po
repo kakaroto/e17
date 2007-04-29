@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-20 21:52+0200\n"
+"POT-Creation-Date: 2007-04-28 13:29+0200\n"
 "PO-Revision-Date: 2007-04-12 19:12+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
@@ -69,7 +69,7 @@ msgstr "Il reste %u références\n"
 
 #: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
 #: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1772 src/cursors.c:177 src/iclass.c:548 src/menus.c:1729
+#: src/container.c:1773 src/cursors.c:177 src/iclass.c:548 src/menus.c:1729
 #: src/menus.c:1840 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
@@ -480,117 +480,117 @@ msgstr ""
 "Souhaitez vous qu'Enlightenment récupère sa configuration\n"
 "initiale et réessaie ?\n"
 
-#: src/container.c:1227
+#: src/container.c:1228
 msgid "Settings..."
 msgstr "Paramètres..."
 
-#: src/container.c:1231 src/dialog.c:895 src/pager.c:998 config/strings.c:30
+#: src/container.c:1232 src/dialog.c:895 src/pager.c:998 config/strings.c:30
 #: config/strings.c:167
 msgid "Close"
 msgstr "Fermer"
 
-#: src/container.c:1236 config/strings.c:81
+#: src/container.c:1237 config/strings.c:81
 msgid "Create New Iconbox"
 msgstr "Créer une nouvelle Boîte à icônes"
 
-#: src/container.c:1532 src/container.c:1606
+#: src/container.c:1533 src/container.c:1607
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Taille des icônes: %2d"
 
-#: src/container.c:1570
+#: src/container.c:1571
 msgid "Transparent background"
 msgstr "Fond transparent"
 
-#: src/container.c:1574
+#: src/container.c:1575
 msgid "Hide inner border"
 msgstr "Masquer la bordure intérieure"
 
-#: src/container.c:1578
+#: src/container.c:1579
 msgid "Draw base image behind Icons"
 msgstr "Dessiner un fond derrière les icônes"
 
-#: src/container.c:1582
+#: src/container.c:1583
 msgid "Hide scrollbar when not needed"
 msgstr "Cacher la barre de défilement si possible"
 
-#: src/container.c:1586
+#: src/container.c:1587
 msgid "Automatically resize to fit Icons"
 msgstr "Redimensionner automatiquement"
 
-#: src/container.c:1593
+#: src/container.c:1594
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Alignement des icônes lors du redimensionnement automatique:"
 
-#: src/container.c:1624
+#: src/container.c:1625
 msgid "Orientation:"
 msgstr "Orientation:"
 
-#: src/container.c:1629
+#: src/container.c:1630
 msgid "Scrollbar side:"
 msgstr "Position de la barre:"
 
-#: src/container.c:1634
+#: src/container.c:1635
 msgid "Scrollbar arrows:"
 msgstr "Flèches de la barre de défilement:"
 
-#: src/container.c:1637
+#: src/container.c:1638
 msgid "Horizontal"
 msgstr "Horizontale"
 
-#: src/container.c:1642
+#: src/container.c:1643
 msgid "Left / Top"
 msgstr "Gauche / Haut"
 
-#: src/container.c:1647
+#: src/container.c:1648
 msgid "Start"
 msgstr "Début"
 
-#: src/container.c:1652
+#: src/container.c:1653
 msgid "Vertical"
 msgstr "Verticale"
 
-#: src/container.c:1658
+#: src/container.c:1659
 msgid "Right / Bottom"
 msgstr "Droit / Bas"
 
-#: src/container.c:1664
+#: src/container.c:1665
 msgid "Both ends"
 msgstr "2 cotés"
 
-#: src/container.c:1672
+#: src/container.c:1673
 msgid "End"
 msgstr "Fin"
 
-#: src/container.c:1680 src/focus.c:847
+#: src/container.c:1681 src/focus.c:847
 msgid "None"
 msgstr "Aucune"
 
-#: src/container.c:1690
+#: src/container.c:1691
 msgid "Show icon names"
 msgstr "Afficher les noms des icônes"
 
-#: src/container.c:1694
+#: src/container.c:1695
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Animer les icônifications vers cette Boîte à icônes"
 
-#: src/container.c:1704
+#: src/container.c:1705
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Afficher les icônes en respectant l'ordre suivant:)"
 
-#: src/container.c:1709
+#: src/container.c:1710
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Capture de la fenêtre, Icône de l'application, Icône d'Enlightenment"
 
-#: src/container.c:1716
+#: src/container.c:1717
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Icône de l'application, Icône d'Enlightenment, Capture de la fenêtre"
 
-#: src/container.c:1721
+#: src/container.c:1722
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Icône d'Enlightenment, Capture de la fenêtre"
 
-#: src/container.c:1734
+#: src/container.c:1735
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -783,7 +783,7 @@ msgstr "Appliquer"
 msgid "Attention !!!"
 msgstr "Attention !!!"
 
-#: src/ecompmgr.c:2513
+#: src/ecompmgr.c:2534
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"

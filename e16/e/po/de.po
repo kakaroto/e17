@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-20 21:52+0200\n"
+"POT-Creation-Date: 2007-04-28 13:29+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -57,7 +57,7 @@ msgstr "%u Referenzen verbleiben\n"
 # src/config.c:2964 src/config.c:3065 src/config.c:3387
 #: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
 #: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1772 src/cursors.c:177 src/iclass.c:548 src/menus.c:1729
+#: src/container.c:1773 src/cursors.c:177 src/iclass.c:548 src/menus.c:1729
 #: src/menus.c:1840 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
@@ -534,7 +534,7 @@ msgstr ""
 "lassen und es noch einmal versuchen?\n"
 
 # src/settings.c:393
-#: src/container.c:1227
+#: src/container.c:1228
 #, fuzzy
 msgid "Settings..."
 msgstr "Fokus-Einstellungen"
@@ -545,140 +545,140 @@ msgstr "Fokus-Einstellungen"
 # src/settings.c:1524 src/settings.c:1612 src/settings.c:2014
 # src/settings.c:3407 src/settings.c:3752 src/settings.c:4050
 # src/settings.c:4188
-#: src/container.c:1231 src/dialog.c:895 src/pager.c:998 config/strings.c:30
+#: src/container.c:1232 src/dialog.c:895 src/pager.c:998 config/strings.c:30
 #: config/strings.c:167
 msgid "Close"
 msgstr "Schließen"
 
 # src/iconify.c:2432
-#: src/container.c:1236 config/strings.c:81
+#: src/container.c:1237 config/strings.c:81
 msgid "Create New Iconbox"
 msgstr "Neue Iconbox erzeugen"
 
 # src/settings.c:3643
-#: src/container.c:1532 src/container.c:1606
+#: src/container.c:1533 src/container.c:1607
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Icongröße"
 
 # src/settings.c:3530
-#: src/container.c:1570
+#: src/container.c:1571
 msgid "Transparent background"
 msgstr "Transparenter Hintergrund"
 
 # src/menus.c:2027
-#: src/container.c:1574
+#: src/container.c:1575
 #, fuzzy
 msgid "Hide inner border"
 msgstr "Diese Gruppe zeigen/verbergen"
 
 # src/settings.c:3551
-#: src/container.c:1578
+#: src/container.c:1579
 msgid "Draw base image behind Icons"
 msgstr "Hintergrundfliese hinter Icons zeichnen"
 
 # src/settings.c:3558
-#: src/container.c:1582
+#: src/container.c:1583
 msgid "Hide scrollbar when not needed"
 msgstr "Rollbalken verbergen, wenn nicht benötigt"
 
 # src/settings.c:3565
-#: src/container.c:1586
+#: src/container.c:1587
 msgid "Automatically resize to fit Icons"
 msgstr "Größe automatisch auf Icons anpassen"
 
 # src/settings.c:3583
-#: src/container.c:1593
+#: src/container.c:1594
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Ausrichtung der Verankerung bei automatischer Größenänderung:"
 
 # src/settings.c:3666
-#: src/container.c:1624
+#: src/container.c:1625
 msgid "Orientation:"
 msgstr "Ausrichtung:"
 
 # src/settings.c:3672
-#: src/container.c:1629
+#: src/container.c:1630
 msgid "Scrollbar side:"
 msgstr "Seite des Rollbalkens:"
 
 # src/settings.c:3678
-#: src/container.c:1634
+#: src/container.c:1635
 msgid "Scrollbar arrows:"
 msgstr "Pfeile des Rollbalkens:"
 
 # src/settings.c:3683
-#: src/container.c:1637
+#: src/container.c:1638
 msgid "Horizontal"
 msgstr "Waagerecht"
 
 # src/settings.c:3690
-#: src/container.c:1642
+#: src/container.c:1643
 msgid "Left / Top"
 msgstr "Links / Oben"
 
 # src/settings.c:3697
-#: src/container.c:1647
+#: src/container.c:1648
 msgid "Start"
 msgstr "Anfang"
 
 # src/settings.c:3704
-#: src/container.c:1652
+#: src/container.c:1653
 msgid "Vertical"
 msgstr "Vertikal"
 
 # src/settings.c:3712
-#: src/container.c:1658
+#: src/container.c:1659
 msgid "Right / Bottom"
 msgstr "Rechts / Unten"
 
 # src/settings.c:3720
-#: src/container.c:1664
+#: src/container.c:1665
 msgid "Both ends"
 msgstr "Beide Enden"
 
 # src/settings.c:3730
-#: src/container.c:1672
+#: src/container.c:1673
 msgid "End"
 msgstr "Ende"
 
 # src/settings.c:3740
-#: src/container.c:1680 src/focus.c:847
+#: src/container.c:1681 src/focus.c:847
 msgid "None"
 msgstr "-/-"
 
 # src/settings.c:3544
-#: src/container.c:1690
+#: src/container.c:1691
 msgid "Show icon names"
 msgstr "Iconnamen anzeigen"
 
 # src/settings.c:3573
-#: src/container.c:1694
+#: src/container.c:1695
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Beim Verkleinern in diese Iconbox animieren"
 
 # src/settings.c:3605
-#: src/container.c:1704
+#: src/container.c:1705
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Anzeigemethode für Icons (wenn eine Aktion fehlschlägt, die nächste):"
 
 # src/settings.c:3612
-#: src/container.c:1709
+#: src/container.c:1710
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Fensterschnappschüsse, Anwendungsicon, Enlightenments eigenes Icon"
 
 # src/settings.c:3621
-#: src/container.c:1716
+#: src/container.c:1717
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Anwendungsicon, Enlightenments eigenes Icon, Fensterschnappschuss"
 
 # src/settings.c:3629
-#: src/container.c:1721
+#: src/container.c:1722
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenments eigenes Icon, Fensterschnappschuss"
 
 # src/main.c:89
-#: src/container.c:1734
+#: src/container.c:1735
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -918,7 +918,7 @@ msgstr "Übernehmen"
 msgid "Attention !!!"
 msgstr "Achtung!"
 
-#: src/ecompmgr.c:2513
+#: src/ecompmgr.c:2534
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-20 21:52+0200\n"
+"POT-Creation-Date: 2007-04-28 13:29+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -50,7 +50,7 @@ msgstr ""
 
 #: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
 #: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1772 src/cursors.c:177 src/iclass.c:548 src/menus.c:1729
+#: src/container.c:1773 src/cursors.c:177 src/iclass.c:548 src/menus.c:1729
 #: src/menus.c:1840 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
@@ -426,119 +426,119 @@ msgid ""
 "configuration and try again?\n"
 msgstr ""
 
-#: src/container.c:1227
+#: src/container.c:1228
 #, fuzzy
 msgid "Settings..."
 msgstr "Invoer instellingen"
 
-#: src/container.c:1231 src/dialog.c:895 src/pager.c:998 config/strings.c:30
+#: src/container.c:1232 src/dialog.c:895 src/pager.c:998 config/strings.c:30
 #: config/strings.c:167
 msgid "Close"
 msgstr "Sluit"
 
-#: src/container.c:1236 config/strings.c:81
+#: src/container.c:1237 config/strings.c:81
 msgid "Create New Iconbox"
 msgstr "Maak een nieuwe Icoonbox"
 
-#: src/container.c:1532 src/container.c:1606
+#: src/container.c:1533 src/container.c:1607
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Icoon grootte"
 
-#: src/container.c:1570
+#: src/container.c:1571
 msgid "Transparent background"
 msgstr "Transparante achtergrond"
 
-#: src/container.c:1574
+#: src/container.c:1575
 #, fuzzy
 msgid "Hide inner border"
 msgstr "Toon/Verberg deze groep"
 
-#: src/container.c:1578
+#: src/container.c:1579
 msgid "Draw base image behind Icons"
 msgstr "Teken basisplaatje achter iconen"
 
-#: src/container.c:1582
+#: src/container.c:1583
 msgid "Hide scrollbar when not needed"
 msgstr "Toon geen scrollbar als niet nodig"
 
-#: src/container.c:1586
+#: src/container.c:1587
 msgid "Automatically resize to fit Icons"
 msgstr "Grootte automatisch aanpassen om iconen te bevatten"
 
-#: src/container.c:1593
+#: src/container.c:1594
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Plaatsing van ankers als automatisch grootte aanpassen"
 
-#: src/container.c:1624
+#: src/container.c:1625
 msgid "Orientation:"
 msgstr "Orientatie:"
 
-#: src/container.c:1629
+#: src/container.c:1630
 msgid "Scrollbar side:"
 msgstr "Scrollbar kant:"
 
-#: src/container.c:1634
+#: src/container.c:1635
 msgid "Scrollbar arrows:"
 msgstr "Scrollbar pijltjes"
 
-#: src/container.c:1637
+#: src/container.c:1638
 msgid "Horizontal"
 msgstr "Horizontaal"
 
-#: src/container.c:1642
+#: src/container.c:1643
 msgid "Left / Top"
 msgstr "Links/Boven"
 
-#: src/container.c:1647
+#: src/container.c:1648
 msgid "Start"
 msgstr "Start"
 
-#: src/container.c:1652
+#: src/container.c:1653
 msgid "Vertical"
 msgstr "Vertikaal"
 
-#: src/container.c:1658
+#: src/container.c:1659
 msgid "Right / Bottom"
 msgstr "Rechts/Onder"
 
-#: src/container.c:1664
+#: src/container.c:1665
 msgid "Both ends"
 msgstr "Beide zijden"
 
-#: src/container.c:1672
+#: src/container.c:1673
 msgid "End"
 msgstr "Einde"
 
-#: src/container.c:1680 src/focus.c:847
+#: src/container.c:1681 src/focus.c:847
 msgid "None"
 msgstr "Geen"
 
-#: src/container.c:1690
+#: src/container.c:1691
 msgid "Show icon names"
 msgstr "Toon icoon namen"
 
-#: src/container.c:1694
+#: src/container.c:1695
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Animeer wanneer naar deze icconbox geminimaliseerd wordt"
 
-#: src/container.c:1704
+#: src/container.c:1705
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Icoon plaatje instellingen (als de ene niet gaat, probeer volgende):"
 
-#: src/container.c:1709
+#: src/container.c:1710
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Snapshot venster, Applicatie icoon, Enlightenment icoon"
 
-#: src/container.c:1716
+#: src/container.c:1717
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Applicatie icoon, Enlightenment icoon, Snapshot venster"
 
-#: src/container.c:1721
+#: src/container.c:1722
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenment icoon, Snapshot venster"
 
-#: src/container.c:1734
+#: src/container.c:1735
 #, fuzzy
 msgid ""
 "Enlightenment Iconbox\n"
@@ -733,7 +733,7 @@ msgstr "Pas toe"
 msgid "Attention !!!"
 msgstr "Attentie !!!!"
 
-#: src/ecompmgr.c:2513
+#: src/ecompmgr.c:2534
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
