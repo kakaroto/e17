@@ -63,6 +63,11 @@ AC_CHECK_HEADER(Evas_Engine_XRender_X11.h,
   [ dummy=no ],
   [ #include <Evas.h> ]
 )
+AC_CHECK_HEADER(Evas_Engine_Software_16_X11.h,
+  [ AC_DEFINE(HAVE_SOFTWARE_16_X11, 1, [Evas Software 16bit X11 Engine Support]) ],
+  [ dummy=no ],
+  [ #include <Evas.h> ]
+)
 CFLAGS=$PCFLAGS
 
 AC_PATH_XTRA
