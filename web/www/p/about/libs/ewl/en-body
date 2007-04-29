@@ -15,6 +15,7 @@ sources.</span></p>
 <div class="fragment">
 <pre>
 #include &lt;Ewl.h&gt;
+#include &lt;stdio.h&gt;
 
 /**Declare Ewl Objects**/
 Ewl_Widget *win;
