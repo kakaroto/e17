@@ -153,22 +153,7 @@ fi
 
 found_eet=no
 if test "x$eet" != "xno" ; then
-	AC_ARG_WITH(eet-config, [  --with-eet-config=EET_CONFIG    use eet-config specified ],
-	[ EET_CONFIG=$withval;
-	  echo "using "$EET_CONFIG" for eet-config"; ],
-	[ if test -z "$EET_CONFIG"; then
-	    AC_PATH_PROG(EET_CONFIG, "eet-config", "", $PATH)
-	  fi
-	])
-	if test "x$EET_CONFIG" != "x" ; then
-		EET_CFLAGS=`$EET_CONFIG --cflags`
-		EET_LIBS=`$EET_CONFIG --libs`
-
-		SAVE_CFLAGS=$CFLAGS
-		CFLAGS="$CFLAGS $EET_CFLAGS"
-		AC_CHECK_HEADER([Eet.h],[found_eet=yes])
-		CFLAGS=$SAVE_CFLAGS
-	fi
+        PKG_CHECK_MODULES(EET, eet, found_eet=yes, found_eet=no)
 fi
 if test "x$eet$found_eet" = "xyesno" ; then
 	AC_MSG_ERROR(Eet support was requested but not found)

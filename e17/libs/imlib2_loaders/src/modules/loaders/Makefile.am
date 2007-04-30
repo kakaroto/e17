@@ -4,6 +4,7 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 INCLUDES             = -I. \
                        -I$(top_srcdir) \
                        -I$(top_srcdir)/src/modules/loaders \
+		       @EET_CFLAGS@ \
                        @my_includes@
 
 pkgdir               = $(libdir)/imlib2/loaders
