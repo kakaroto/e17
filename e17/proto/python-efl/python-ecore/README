@@ -1,0 +1,19 @@
+                      PYTHON BINDINGS FOR ECORE
+
+REQUIREMENTS
+============
+
+ * Evas >= 0.9.9.037
+ * Ecore >= 0.9.9.037
+ * Pyrex >= 0.9.4.1
+ * Python >= 2.4
+ * Python-setuptools >= 0.6_rc3
+
+
+BUILDING AND INSTALLING
+=======================
+
+This package uses setuptools, so execute:
+
+ * Build: python setup.py build
+ * Install: python setup.py install --prefix=/usr/local
