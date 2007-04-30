@@ -12,6 +12,7 @@ cvs -z3 -d :pserver:anonymous@anoncvs.enlightenment.org:/var/cvs/e co <b>MODULE<
 There are several modules in CVS - each for different purposes. Below is a
 description of them and their uses:
 </p><p>
+<center>
 <table class='tab'>
 <tr><th class='tab'>MODULE</th>
 <th class='tab'>DESCRIPTION</th>
@@ -41,6 +42,7 @@ description of them and their uses:
 <td class='tab2'>This is the Eterm repository</td>
 </tr>
 </table>
+</center>
 </p><p>
 If you become a developer (get DEV CVS access) Then you will need to use a
 different CVS server. You need to ask permission from an existing developer

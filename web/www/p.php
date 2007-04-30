@@ -43,8 +43,10 @@
     </td>
   </tr>
 </table>
+<div class="content">
 <div class="main">	
 <?php include "p/$page/$lang-body" ?>
+</div>
 </div>
 <hr/>
 <p class="tiny">Copyright &copy; Enlightenment.org</p>

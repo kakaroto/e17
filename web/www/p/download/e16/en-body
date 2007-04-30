@@ -59,6 +59,7 @@ platforms. Please choose from the list of available distributions
 the one that is right for you.</p>
 </span>
 
+<center>
 <table class='tab'>    <tbody> 
 <tr>      
 <th class="tab">Distribution/Platform</td>
@@ -145,7 +146,7 @@ the one that is right for you.</p>
     
 </tbody>
 </table>
-
+</center>
 <hr />
 
 <p><span class="contentmain">
@@ -153,7 +154,7 @@ the one that is right for you.</p>
 <hr /> <br />
   <h2>Related Applications</h2> 
 <p> There are a number of other applications related to Enlightenment, which can be found here: </p>
-   
+<center> 
 <table class='tab'>    <tbody> 
 
 <tr>      
@@ -194,3 +195,4 @@ be used on any window manager out there.<br />
 </div></td>
 </tr>
 </table>
+</center>

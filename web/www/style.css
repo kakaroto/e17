@@ -33,6 +33,10 @@ td.tl {
    height                 : 250px;
 }
 
+div.content {
+   margin: 0 40px 0 40px;
+}
+
 div.main {
    text-align             : left;
    vertical-align         : top;
@@ -297,8 +301,9 @@ div.lr {
 }
 
 table.tab {
+   width                  : 90%;
    padding                : 0px;
-   margin                 : 1px; 
+   margin                 : 5px; 
    border                 : 1px solid #cccccc;
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #444444;
