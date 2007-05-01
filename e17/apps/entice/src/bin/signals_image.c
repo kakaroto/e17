@@ -520,7 +520,9 @@ void
 _entice_image_signal_debug(void *data, Evas_Object * o, const char *emission,
                            const char *source)
 {
+#if DEBUG
    fprintf(stderr, "Emission: %s - Source: %s\n", emission, source);
+#endif
 }
 
 void
