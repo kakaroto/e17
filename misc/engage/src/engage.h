@@ -1,5 +1,6 @@
 #ifndef _OD_ENGAGE_H
 #define _OD_ENGAGE_H
+#define HAVE_ETK 1
 
 #include <Ecore.h>
 #include <Ecore_X.h>
