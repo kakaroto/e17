@@ -86,71 +86,19 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [PACKAGE_LIB_DIR])
 fi
 
-AC_PATH_GENERIC(esmart, 0.0.2, [
-	AC_SUBST(esmart_libs)
-	AC_SUBST(esmart_cflags) ],
-	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
-esmart_libs=`esmart-config --libs`
-esmart_cflags=`esmart-config --cflags`
-AC_SUBST(esmart_libs)
-AC_SUBST(esmart_cflags)
+PKG_CHECK_MODULES(ENGAGE, [
+  esmart
+  imlib2
+  edje
+  ecore
+  ecore-config
+  ecore-evas
+  ecore-desktop
+  evas
+  etk
+  embryo
+])
 
-have_imlib="no"
-AC_PATH_GENERIC(imlib2, 1.1.1, [
-	AC_DEFINE(HAVE_IMLIB, [], [Imlib Image Manipulation Support])
-	have_imlib="yes"
-	AC_SUBST(imlib2_libs)
-	AC_SUBST(imlib2_cflags) ],
-	AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in path?))
-imlib2_libs=`imlib2-config --libs`
-imlib2_cflags=`imlib2-config --cflags`
-AC_SUBST(imlib2_libs)
-AC_SUBST(imlib2_cflags)
-
-AC_PATH_GENERIC(edje, 0.5.0, [
-	AC_SUBST(edje_libs)
-	AC_SUBST(edje_cflags) ],
-	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
-edje_libs=`edje-config --libs`
-edje_cflags=`edje-config --cflags`
-edje_cc="`edje-config --prefix`/bin/edje_cc"
-AC_SUBST(edje_libs)
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_cc)
-
-AC_PATH_GENERIC(ecore, 0.9.9, [
-	AC_SUBST(ecore_libs)
-	AC_SUBST(ecore_cflags) ],
-	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-ecore_libs=`ecore-config --libs`
-ecore_cflags=`ecore-config --cflags`
-AC_SUBST(ecore_libs)
-AC_SUBST(ecore_cflags)
-
-AC_PATH_GENERIC(evas, 0.9.9, [
-	AC_SUBST(evas_libs)
-	AC_SUBST(evas_cflags) ],
-	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
-evas_libs=`evas-config --libs`
-evas_cflags=`evas-config --cflags`
-AC_SUBST(evas_libs)
-AC_SUBST(evas_cflags)
-
-have_etk="no"
-AC_PATH_GENERIC(etk, 0.0.1, [
-  AC_DEFINE(HAVE_ETK, [], [ETK Support])
-  have_etk="yes"
-  AC_SUBST(etk_libs)
-  AC_SUBST(etk_cflags) ],
-  AC_MSG_WARN(Cannot find etk: Is etk-config in path?))
-etk_libs=`etk-config --libs`
-etk_cflags=`etk-config --cflags`
-AC_SUBST(etk_libs)
-AC_SUBST(etk_cflags)
-
-dnl Set PACKAGE_SOURCE_DIR in config.h.
-#packagesrcdir=`cd $srcdir && pwd`
-#AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "$packagesrcdir", [PACKAGE_SOURCE_DIR]])
 
 have_esmart_trans="no"
 PCFLAGS=$CFLAGS

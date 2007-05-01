@@ -3,13 +3,7 @@
 INCLUDES = \
 -I../lib \
 -I/usr/local/include \
--I$(top_srcdir)/lib \
-@evas_cflags@ \
-@edje_cflags@ \
-@ecore_cflags@ \
-@esmart_cflags@ \
-@etk_cflags@ \
-@imlib2_cflags@
+-I$(top_srcdir)/lib @ENGAGE_CFLAGS@
 
 bin_PROGRAMS = engage
 
@@ -49,10 +43,8 @@ e_icon.c \
 e_intl.c
 
 if XINERAMA
-engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @imlib2_libs@ @etk_libs@ \
-					@esmart_libs@ -lesmart_trans_x11 -lXinerama
+engage_LDADD = @ENGAGE_LIBS@ -lesmart_trans_x11 -lXinerama
 engage_CFLAGS = -DXINERAMA
 else
-engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @imlib2_libs@ @etk_libs@ \
-          @esmart_libs@ -lesmart_trans_x11
+engage_LDADD = @ENGAGE_LIBS@ -lesmart_trans_x11 
 endif
