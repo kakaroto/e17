@@ -31,7 +31,8 @@ ecore_config_client.h \
 examine.c
 
 examine_LDADD = \
-@EWL_LIBS@
+@EWL_LIBS@ \
+@ECORE_LIBS@
 
 examine_LDFLAGS =
 
