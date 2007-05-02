@@ -9,7 +9,7 @@ class TreeExample < Example
     def initialize
         super()
         self.title = "Etk Tree Test"
-        EtkBase.signal_connect("delete_event", self, Window.function(:hide_on_delete), nil)
+        EtkBase.signal_connect("delete-event", self, Window.function(:hide_on_delete), nil)
     end
     
     def create_widgets
@@ -27,10 +27,20 @@ class TreeExample < Example
 
         tree.mode = Etk::TREE_MODE_TREE
         tree.multiple_select = true
-        col1 = TreeCol.wrap(tree.col_new("Column 1", tree.model_icon_text_new(Etk::TREE_FROM_EDJE), 90))
-        col2 = TreeCol.wrap(tree.col_new("Column 2", tree.model_double_new(), 60))
-        col3 = TreeCol.wrap(tree.col_new("Column 3", tree.model_image_new(Etk::TREE_FROM_FILE), 60))
-        col4 = TreeCol.wrap(tree.col_new("Column 4", tree.model_checkbox_new(), 40))    
+	
+	col1 = TreeCol.wrap(tree.col_new("Column 1", 90, 0.0))
+	col1.model_add(Tree.model_image_new())
+        col1.model_add(Tree.model_text_new())
+	
+	col2 = TreeCol.wrap(tree.col_new("Column 2", 60, 0.0))
+	col2.model_add(Tree.model_double_new())
+	
+	col3 = TreeCol.wrap(tree.col_new("Column 3", 60, 0.0))
+	col3.model_add(Tree.model_image_new())
+	
+	col4 = TreeCol.wrap(tree.col_new("Column 4", 40, 0.0))
+	col4.model_add(Tree.model_checkbox_new())		
+	
         #col4 = etk_tree_col_new(ETK_TREE(tree), "Column 4", etk_tree_model_checkbox_new(ETK_TREE(tree)), 40);
         
         tree.build
@@ -38,25 +48,26 @@ class TreeExample < Example
 
         tree.freeze
         0.upto(1) { |i| 
-            row = TreeRow.wrap(tree.va_call(:append, 'P', 
-                              col1, Theme.icon_theme, "places/user-home_16", "Row1",
-                              col2, 10.0, 
-                              col3, PACKAGE_DATA_DIR + "/images/1star.png", 
-                              col4, false, nil))
-
-            # notice that we are calling Tree.va_call and not tree.va_call (in other words, 
+            row = Tree.wrap(tree.va_call(:row_append, 'P', 
+					 nil,
+					 col1, Theme.icon_path, "places/user-home_16", "Row1",
+					 col2, 10.0, 
+					 col3, PACKAGE_DATA_DIR + "/images/1star.png", nil,
+					 col4, false, nil))
+	    
+            # notice that we are calling Tree.va_call and not tree.va_call (in other words,
             # we're NOT calling an instance method)
             
-            row = TreeRow.wrap(Tree.va_call(:append_to_row, 'P', row, 
-                              col1, Theme.icon_theme, "places/folder_16", "Row2",
-                              col2, 20.0, 
-                              col3, PACKAGE_DATA_DIR + "/images/2stars.png", 
-                              col4, false, nil))
-            Tree.va_call(:append_to_row, 'P', row, 
-                              col1, Theme.icon_theme, "mimetypes/text-x-generic_16", "Row3",
-                              col2, 30.0, 
-                              col3, PACKAGE_DATA_DIR + "/images/3stars.png", 
-                              col4, false, nil)
+            row = Tree.wrap(tree.va_call(:row_append, 'P', row, 
+					 col1, Theme.icon_path, "places/folder_16", "Row2",
+					 col2, 20.0, 
+					 col3, PACKAGE_DATA_DIR + "/images/2stars.png", nil, 
+					 col4, false, nil))
+            row = Tree.wrap(tree.va_call(:row_append, 'P', row, 
+					 col1, Theme.icon_path, "mimetypes/text-x-generic_16", "Row3",
+					 col2, 30.0, 
+					 col3, PACKAGE_DATA_DIR + "/images/3stars.png", nil,
+					 col4, false, nil))
         }
         tree.thaw
         

@@ -3,7 +3,7 @@ class ButtonExample < Example
         super()
         self.title = "Etk Button Test"
         self.border_width = 5
-        EtkBase.signal_connect("delete_event", self, Window.function(:hide_on_delete), nil)
+        EtkBase.signal_connect("delete-event", self, Window.function(:hide_on_delete), nil)
     end
     
     def create_widgets
@@ -16,7 +16,7 @@ class ButtonExample < Example
         button_normal.tooltip = "This is a normal button"
         box.append(button_normal, Etk::BOX_START, Etk::BOX_NONE, 0)
 
-        image = Image.new_from_file(PACKAGE_DATA_DIR + "/images/e_icon.png")
+        image = Image.new_from_file(PACKAGE_DATA_DIR + "/images/e_icon.png", nil)
         button_normal = Button.new_with_label("Button with an image")
         button_normal.tooltip = "This is a normal button with an image"
         button_normal.image = image
@@ -58,3 +58,4 @@ class ButtonExample < Example
         self.show_all
     end
 end
+

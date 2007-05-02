@@ -10,7 +10,7 @@
 	 
 	:external_types => [ 
  	'Evas', 'Evas_Object', 'Evas_Hash', 'Evas_List', 'Evas_Modifier', 'Evas_Lock', 'Evas_Button_Flags',
-        'Ecore_Timer', 'Ecore_Evas', 'Ecore_X_Window',
+        'Ecore_Timer', 'Ecore_Job', 'Ecore_Evas', 'Ecore_X_Window',
         'va_list',
         'Evas_Event_Mouse_In', 'Evas_Event_Mouse_Out', 'Evas_Event_Mouse_Move', 
         'Evas_Event_Mouse_Up', 'Evas_Event_Mouse_Down', 'Evas_Event_Mouse_Wheel',
