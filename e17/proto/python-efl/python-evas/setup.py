@@ -19,10 +19,6 @@ def pkgconfig(*packages, **kw):
     return kw
 
 
-def pkgconfig_version(package):
-    return commands.getoutput('pkg-config --modversion %s' % package).strip()
-
-
 evasmodule = Extension('evas.c_evas',
                        sources=['evas/evas.c_evas.pyx',
                                 ],
