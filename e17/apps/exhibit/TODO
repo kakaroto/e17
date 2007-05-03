@@ -72,7 +72,7 @@ o TODO:
 - when rotating images and saving it doesnt update in the thumb listing.
 - when sorting on name right after adding a new image it doesnt sort correct.
 - fix autocomplete (combobox?)
-- if we're looking at a LOT of images and change dir before they have
++ if we're looking at a LOT of images and change dir before they have
   finished loading, then the images will thumbnail and load in the current dir
   
 + if we're scrolled to the end of the dir tree, clicking on a dir needs to

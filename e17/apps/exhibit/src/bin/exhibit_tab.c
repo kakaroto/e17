@@ -60,6 +60,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_signal_connect("row-selected", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_itree_item_clicked_cb), e);
    etk_signal_connect("key-down", ETK_OBJECT(tab->itree), ETK_CALLBACK(_ex_tab_itree_key_down_cb), e);
    imodel = etk_tree_model_wobbly_new();
+   tab->imodel = imodel;
    //etk_tree_model_image_width_set(imodel, 80, 0.0);
    tab->icol = etk_tree_col_new(ETK_TREE(tab->itree), "Files", 10, 0.0);
    etk_tree_col_model_add(tab->icol, imodel);
@@ -270,6 +271,22 @@ _ex_tab_current_fit_to_window(Exhibit *e)
    _ex_main_statusbar_zoom_update(e);
 }
 
+Ex_Tab *
+_ex_tab_find_by_itree(Etk_Tree *itree)
+{
+   Evas_List *l;
+   
+   for (l = e->tabs; l; l = l->next)
+     {
+	Ex_Tab *tab;
+	
+	tab = l->data;
+	if (ETK_TREE(tab->itree) == itree)
+	  return tab;
+     }
+   return NULL;
+}
+
 static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 {
    Ex_Tab       *tab;
@@ -362,6 +379,7 @@ _ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event
 
    e = data;
    _ex_slideshow_stop(e);
+   _ex_thumb_abort();
    
    tree = ETK_TREE(object);
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, NULL, &dcol_string, NULL);

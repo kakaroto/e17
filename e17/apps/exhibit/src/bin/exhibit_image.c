@@ -21,8 +21,6 @@
 static void _ex_image_delete_dialog_response(Etk_Object *obj, int response_id, void *data);
 static void _ex_image_delete_cb(void *data);
 
-
-
 void
 _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
 {
@@ -1047,11 +1045,9 @@ void
 _ex_image_wallpaper_set(Etk_Image *im)
 {
    pid_t pid;
-   int w, h;
    const char *file;
    char *filename;
    const char *dir;
-   char *edj_file;
    const char *filenoext;
    char *esetroot;
    char esetroot_opt[] = "-s";
@@ -1239,4 +1235,32 @@ _ex_image_is_favorite(Exhibit *e)
    if(ecore_file_exists(path))     
      return ETK_TRUE;
    return ETK_FALSE;
+}
+
+Etk_Tree_Row *
+_ex_image_find_row_from_file(Ex_Tab *tab, const char *filename)
+{
+   Etk_Tree_Row *iter;
+   char *icol_string;
+   char *base;
+   
+   for (iter = etk_tree_first_row_get(ETK_TREE(tab->itree));
+	iter;
+	iter = etk_tree_row_walk_next(iter, ETK_TRUE))
+     {
+	etk_tree_row_fields_get(
+			  iter,
+			  etk_tree_nth_col_get(ETK_TREE(tab->itree), 0),
+			  NULL,
+			  NULL,
+			  &icol_string,
+			  NULL);
+	base = basename(filename);
+	if (!strcmp(icol_string, base))
+	  {
+	     return iter;
+	  }
+     }
+	
+   return NULL;
 }

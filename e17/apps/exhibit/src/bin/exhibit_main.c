@@ -17,16 +17,18 @@ static Etk_Bool _ex_main_window_deleted_cb(void *data);
 static void _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _ex_main_window_resize_cb(Etk_Object *object, void *data);
 
-
 /*******
  * We are defining these here until Tree2 has them
  *******/
+#if 0
+/* This is implemented in etk_tree now */
 Etk_Tree_Row *etk_tree_selected_row_get(Etk_Tree *tree)
 {
    if (!tree || !tree->last_selected_row || !tree->last_selected_row->selected)
      return NULL;
    return tree->last_selected_row;
 }
+#endif
 
 Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree)
 {
@@ -357,7 +359,9 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	thumb->ep = ep;
 	thumb->e = e;
 	thumb->name = strdup(basename((char *) file));
-	thumb_list = evas_list_append(thumb_list, thumb);
+	thumb->tab = e->cur_tab;
+	thumb->is_update = ETK_FALSE;
+	thumb_list = evas_list_append(thumb_list, thumb);	
 	if(selected_file)
 	  {
 	     if(!strcmp(selected_file, file))
@@ -375,10 +379,11 @@ static void
 _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path)
 {
    struct stat st;
+   Etk_Tree_Row *row;
    
    /* TODO: update non-visible tabs too */
    
-   /* Only do changes if tree's are visible */
+   /* Only do changes if trees are visible */
    if (ecore_file_monitor != e->cur_tab->monitor)
      return;
 
@@ -404,6 +409,10 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
 	      break;
 	   case ECORE_FILE_EVENT_MODIFIED:
 	      /* Careful with what to do here.. */
+	      if ((row =  _ex_image_find_row_from_file(e->cur_tab, path)))
+	       {
+		  _ex_thumb_update_at_row(row);
+	       }
 	      break;
 	   case ECORE_FILE_EVENT_DELETED_FILE:
 	      /* TODO: remove the correct item from tree, don't refresh all */
@@ -499,6 +508,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
    if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
      {
 	_ex_slideshow_stop(e);
+	_ex_thumb_abort();
         e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
         etk_tree_clear(ETK_TREE(e->cur_tab->itree));
         etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
@@ -554,8 +564,8 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	     r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
 	     if(!r) return;
 	     
-	     etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), 
-		   NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1), NULL);
+	     etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0),
+		   &icol_string, NULL, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1), NULL);
 	     _ex_favorites_add(e, icol_string);
 	  }
 	else if(!strcmp(ev->key, "x"))

@@ -167,6 +167,8 @@ struct _Ex_Tab
    
    Etk_Tree_Col  *dcol;
    Etk_Tree_Col  *icol;
+
+   Etk_Tree_Model *imodel;
    
    struct {
       Etk_Bool    visible;
@@ -243,6 +245,8 @@ struct _Ex_Thumb
    char     *image;
    Etk_Bool  selected;
    Epsilon  *ep;
+   Ex_Tab   *tab;
+   Etk_Bool  is_update;
 };
 
 struct _Ex_Filedialog
