@@ -38,7 +38,7 @@ headers = ['evas/evas.c_evas.pxd',
 
 setup(name = 'python-evas',
       version = '0.1.0',
-      license = 'LGPL',
+      license = 'BSD',
       description = 'Python bindings for Evas',
       packages = find_packages(),
       headers = headers,
