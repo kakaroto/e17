@@ -4329,3 +4329,16 @@ Remove unused ACTION_UNSHADE. Eliminate almost duplicate tooltip strings.
 Update config file string list.
 Danish translation update.
 
+
+-------------------------------------------------------------------------------
+
+Fri May  4 00:13:57 CEST 2007
+(Kim)
+
+--- 0.16.8.7 ---
+Avoid creating/destroying regions.
+Use some macros to simplify code. Minor reorganization of root stuff.
+Avoid creating/destroying regions - continued.
+Fix ugly black shadows on icons in transparent iconbox (noted by Atom Smasher).
+Fix repaint after changing shadow mode.
+
