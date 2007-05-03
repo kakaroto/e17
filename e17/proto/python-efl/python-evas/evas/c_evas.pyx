@@ -63,6 +63,12 @@ cdef Object Object_from_instance(Evas_Object *obj):
     return o
 
 
+# XXX: this should be C-only, but it would require edje
+# XXX: being able to use it.
+def _Object_from_instance(long ptr):
+    return Object_from_instance(<Evas_Object *>ptr)
+
+
 def color_parse(desc, is_premul=None):
     """Converts a color description to (r, g, b, a) in pre-multiply form.
 
