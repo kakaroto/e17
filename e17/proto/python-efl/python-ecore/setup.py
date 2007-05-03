@@ -56,7 +56,7 @@ include_dirs = [os.path.join(python_inc, "python-evas")]
 
 setup(name = 'python-ecore',
       version = '0.1.0',
-      license = 'LGPL',
+      license = 'BSD',
       description = 'Python bindings for Ecore',
       packages = find_packages(),
       install_requires = ['python-evas>=0.1.0'],
