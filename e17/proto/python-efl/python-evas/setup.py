@@ -32,11 +32,15 @@ evasmodule = Extension('evas.c_evas',
                                 ],
                        **pkgconfig('"evas >= 0.9.9.037"'))
 
+headers = ['evas/evas.c_evas.pxd',
+           'evas/python_evas_utils.h',
+           ]
 
 setup(name = 'python-evas',
       version = '0.1.0',
       license = 'LGPL',
       description = 'Python bindings for Evas',
       packages = find_packages(),
+      headers = headers,
       ext_modules = [evasmodule],
       )
