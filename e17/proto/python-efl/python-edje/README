@@ -1,0 +1,23 @@
+                       PYTHON BINDINGS FOR EDJE
+
+REQUIREMENTS
+============
+
+ * Edje >= 0.5.0.037
+ * Eet >= 0.9.9.037     (indirect, Edje dependency)
+ * Embryo >= 0.9.9.037  (indirect, Edje dependency)
+ * Ecore >= 0.9.9.037   (indirect, Edje dependency)
+ * Evas >= 0.9.9.037
+ * Python-Evas
+ * Pyrex >= 0.9.4.1
+ * Python >= 2.4
+ * Python-setuptools >= 0.6_rc3
+
+
+BUILDING AND INSTALLING
+=======================
+
+This package uses setuptools, so execute:
+
+ * Build: python setup.py build
+ * Install: python setup.py install --prefix=/usr/local
