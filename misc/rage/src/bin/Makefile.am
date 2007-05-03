@@ -4,7 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src/bin @EVAS_CFLAGS@ @ECORE_CFLAGS@ @EDJE_CFLAGS@ @EMOTION_CFLAGS@
 
-bin_PROGRAMS = rage rage_thumb
+bin_PROGRAMS = rage rage_thumb raged
 
 rage_SOURCES = \
 main.c \
@@ -44,3 +44,9 @@ rage_thumb.c
 
 rage_thumb_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@ @EMOTION_LIBS@
 
+raged_SOURCES = \
+raged_main.c \
+sha1.c \
+sha1.h
+
+raged_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EMOTION_LIBS@
