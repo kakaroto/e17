@@ -34,6 +34,7 @@ struct Etk_Tree_Model
    void (*objects_cache)(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL]);
    Etk_Bool (*render)(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL], Evas *evas);
    int (*width_get)(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL]);
+   void (*cache_remove)(Etk_Tree_Model *model, const char *filename, const char *key);
 };
 
 
@@ -44,6 +45,7 @@ Etk_Tree_Model *etk_tree_model_image_new(void);
 Etk_Tree_Model *etk_tree_model_checkbox_new(void);
 Etk_Tree_Model *etk_tree_model_progress_bar_new(void);
 void            etk_tree_model_free(Etk_Tree_Model *model);
+void            etk_tree_model_cache_remove(Etk_Tree_Model *model, const char *filename, const char *key);
 
 void            etk_tree_model_image_width_set(Etk_Tree_Model *model, int width, float alignment);
 void            etk_tree_model_image_width_get(Etk_Tree_Model *model, int *width, float *alignment);

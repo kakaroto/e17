@@ -111,7 +111,7 @@ Etk_Tree_Model *etk_tree_model_text_new(void)
    model->objects_create = _text_objects_create;
    model->render = _text_render;
    model->width_get = _text_width_get;
-   
+   model->cache_remove = NULL;
    return model;
 }
 
@@ -133,6 +133,7 @@ Etk_Tree_Model *etk_tree_model_int_new(void)
    model->objects_create = _text_objects_create;
    model->render = _int_render;
    model->width_get = _text_width_get;
+   model->cache_remove = NULL;
    
    return model;
 }
@@ -155,6 +156,7 @@ Etk_Tree_Model *etk_tree_model_double_new(void)
    model->objects_create = _text_objects_create;
    model->render = _double_render;
    model->width_get = _text_width_get;
+   model->cache_remove = NULL;
    
    return model;
 }
@@ -181,6 +183,7 @@ Etk_Tree_Model *etk_tree_model_image_new(void)
    model->objects_cache = _image_objects_cache;
    model->render = _image_render;
    model->width_get = _image_width_get;
+   model->cache_remove = NULL;
    
    image_model->width = 0;
    image_model->halign = 0.0;
@@ -207,6 +210,7 @@ Etk_Tree_Model *etk_tree_model_checkbox_new(void)
    model->objects_create = _checkbox_objects_create;
    model->render = _checkbox_render;
    model->width_get = _checkbox_width_get;
+   model->cache_remove = NULL;
    
    return model;
 }
@@ -230,6 +234,7 @@ Etk_Tree_Model *etk_tree_model_progress_bar_new(void)
    model->objects_create = _progress_bar_objects_create;
    model->render = _progress_bar_render;
    model->width_get = _progress_bar_width_get;
+   model->cache_remove = NULL;
    
    return model;
 }
@@ -247,6 +252,20 @@ void etk_tree_model_free(Etk_Tree_Model *model)
    if (model->model_free)
       model->model_free(model);
    free(model);
+}
+
+/**
+ * @brief Removes an object from the model's cache.
+ * @param model the model to remove from
+ * @param filename the filename associated with the object
+ * @param key the key associated with the object
+ */
+void etk_tree_model_cache_remove(Etk_Tree_Model *model, const char *filename, const char *key)
+{
+   if (!model || !model->cache_remove)
+      return;
+   
+   model->cache_remove(model, filename, key);
 }
 
 /**
