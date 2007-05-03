@@ -190,6 +190,7 @@ cdef extern from "Evas.h":
     #
     ctypedef int Evas_Coord
     ctypedef int Evas_Bool
+    ctypedef int Evas_Font_Size
     ctypedef void (*evas_event_callback_t)(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
     ####################################################################
