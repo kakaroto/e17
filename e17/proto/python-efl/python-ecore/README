@@ -6,6 +6,7 @@ REQUIREMENTS
  * Evas >= 0.9.9.037
  * Ecore >= 0.9.9.037
  * Pyrex >= 0.9.4.1
+ * Python-Evas
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc3
 
