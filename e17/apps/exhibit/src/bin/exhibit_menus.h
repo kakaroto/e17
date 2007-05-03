@@ -8,7 +8,8 @@ typedef enum _Ex_Menu_Item_Type
 {
    EX_MENU_ITEM_NORMAL,
    EX_MENU_ITEM_CHECK,     
-   EX_MENU_ITEM_SEPERATOR
+   EX_MENU_ITEM_SEPARATOR,
+   EX_MENU_ITEM_RADIO
 } Ex_Menu_Item_Type;
 
 Etk_Widget *_ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label, int stock_id, Etk_Menu_Shell *menu_shell, Etk_Callback callback, void *data);

@@ -837,12 +837,12 @@ _ex_main_window_show(char *dir, int fullscreen)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Tab"), ETK_STOCK_TAB_NEW, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_new_tab_cb), NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image as"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_as_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rename"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_rename_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_X_DIRECTORY_TRASH, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_delete_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Options"), ETK_STOCK_PREFERENCES_SYSTEM, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_options_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Close"), ETK_STOCK_LIST_REMOVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	submenu = etk_menu_new();
@@ -859,7 +859,7 @@ _ex_main_window_show(char *dir, int fullscreen)
 	/* Set the File submenu to the File menu item and populate it */	
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));       	
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Undo"), ETK_STOCK_EDIT_UNDO, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_undo_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	
 	/* Run in submenu */
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Run in ..."), ETK_STOCK_APPLICATION_X_EXECUTABLE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
@@ -869,12 +869,12 @@ _ex_main_window_show(char *dir, int fullscreen)
 	_ex_menu_build_run_menu(NULL);
 
 	/* Continue "Edit" menu */
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rotate clockwise"), ETK_STOCK_GO_NEXT, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_rot_clockwise_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rotate counterclockwise"), ETK_STOCK_GO_PREVIOUS, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_rot_counter_clockwise_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Flip horizontally"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_flip_horizontal_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Flip vertically"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_flip_vertical_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Effects"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	submenu = etk_menu_new();
@@ -882,7 +882,7 @@ _ex_main_window_show(char *dir, int fullscreen)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Blur"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_blur_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sharpen"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_sharpen_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Brighten"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_brighten_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Set as wallpaper"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_set_wallpaper_cb), e);
 	
 	/* Create the "View" menu item */
@@ -902,11 +902,11 @@ _ex_main_window_show(char *dir, int fullscreen)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom out"), EX_IMAGE_ZOOM_OUT, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_out_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom 1:1"), EX_IMAGE_ONE_TO_ONE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_one_to_one_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Fit to window"), EX_IMAGE_FIT_TO_WINDOW, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_fit_to_window_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
+	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Toggle slideshow"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_toggle_slideshow_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Refresh"), ETK_STOCK_VIEW_REFRESH, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_refresh_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Toggle Comments"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_comments_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);		
+	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);		
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Add to favorites"), ETK_STOCK_EMBLEM_PHOTOS, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_add_to_fav_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("View favorites"), ETK_STOCK_EMBLEM_FAVORITE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_go_to_fav_cb), e);
 	
@@ -1043,7 +1043,7 @@ _ex_main_window_show(char *dir, int fullscreen)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by date"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by size"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort by resolution"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPERATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);	
+	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);	
 	_ex_menu_item_new(EX_MENU_ITEM_CHECK, _("Ascending"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
      }
    
