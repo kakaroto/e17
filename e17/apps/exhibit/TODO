@@ -69,7 +69,7 @@ o TODO:
 =======
 * BUGS:
 =======
-- when rotating images and saving it doesnt update in the thumb listing.
++ when rotating images and saving it doesnt update in the thumb listing.
 - when sorting on name right after adding a new image it doesnt sort correct.
 - fix autocomplete (combobox?)
 + if we're looking at a LOT of images and change dir before they have

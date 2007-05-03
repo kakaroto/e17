@@ -76,7 +76,7 @@ _ex_thumb_generate()
 	signal(SIGILL, SIG_DFL);
 	signal(SIGFPE, SIG_DFL);
 	signal(SIGBUS, SIG_DFL);
-
+		
 	thumb = thumb_list->data;
 	if(_ex_file_is_ebg(thumb->name))
 	  epsilon_key_set(thumb->ep, "desktop/background");
@@ -138,6 +138,7 @@ _ex_thumb_update_at_row(Etk_Tree_Row *row)
    Epsilon *ep;
    char file[PATH_MAX];
    char *icol_string;
+   char *old_thumb;   
    Ex_Tab *tab;
    Ex_Thumb *thumb;
    
@@ -147,7 +148,7 @@ _ex_thumb_update_at_row(Etk_Tree_Row *row)
    etk_tree_row_fields_get(
 			   row,
 			   etk_tree_nth_col_get(ETK_TREE(tree), 0),
-			   NULL,
+			   &old_thumb,
 			   NULL,
 			   &icol_string,
 			   NULL);
@@ -158,8 +159,13 @@ _ex_thumb_update_at_row(Etk_Tree_Row *row)
 	    tab->cur_path, icol_string);
    
    ep = epsilon_new(file);
-   if (epsilon_exists(ep))
-     ecore_file_unlink(epsilon_thumb_file_get(ep));
+
+   /* For some reason, if we dont call this, something goes wrong
+    * Need to look into epsilon to see what this function is doing that makes
+    * everything work well.
+    */
+   epsilon_exists(ep);
+   ecore_file_unlink(old_thumb);
    
    thumb = calloc(1, sizeof(Ex_Thumb));
    thumb->ep = ep;
@@ -169,5 +175,6 @@ _ex_thumb_update_at_row(Etk_Tree_Row *row)
    thumb_list = evas_list_append(thumb_list, thumb);
    thumb->selected = ETK_FALSE;
    thumb->is_update = ETK_TRUE;
+   etk_tree_model_cache_remove(thumb->tab->imodel, old_thumb, NULL);
    if(pid == -1) _ex_thumb_generate();   
 }

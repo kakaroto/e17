@@ -34,7 +34,7 @@ static Etk_Bool _wobbly_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geo
 static int _wobbly_width_get(Etk_Tree_Model *model, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL]);
 static void _wobbly_resize_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _wobbly_cache_free_cb(Evas_Object *object, void *data);
-/* static void _wobbly_cache_remove(Etk_Tree_Model *model, Evas_Object *object); */
+static void _wobbly_cache_remove(Etk_Tree_Model *model, const char *filename, const char *key);
 
 /* TODOC */
 Etk_Tree_Model *etk_tree_model_wobbly_new(void)
@@ -53,7 +53,7 @@ Etk_Tree_Model *etk_tree_model_wobbly_new(void)
    model->objects_cache = _wobbly_objects_cache;
    model->render = _wobbly_render;
    model->width_get = _wobbly_width_get;
-/*   model->cache_remove = _wobbly_cache_remove; */
+   model->cache_remove = _wobbly_cache_remove;
    
    wobbly_model->cache = etk_cache_new(50);
    etk_cache_free_callback_set(wobbly_model->cache, _wobbly_cache_free_cb, NULL);
@@ -275,15 +275,13 @@ static void _wobbly_cache_free_cb(Evas_Object *object, void *data)
       evas_object_del(image);
 }
 
-#if 0
 /* Wobbly: delete a certain evas object from the model's cache */
-static void _wobbly_cache_remove(Etk_Tree_Model *model, Evas_Object *object)
+static void _wobbly_cache_remove(Etk_Tree_Model *model, const char *filename, const char *key)
 {
    Etk_Tree_Model_Wobbly *wobbly_model;
       
    if (!(wobbly_model = (Etk_Tree_Model_Wobbly *)model))
      return;
    
-   etk_cache_remove(wobbly_model->cache, object);
+   etk_cache_remove(wobbly_model->cache, etk_cache_find(wobbly_model->cache, filename, key));
 }
-#endif
