@@ -31,5 +31,5 @@ def animator_frametime_set(double frametime):
 def animator_frametime_get():
     return ecore_animator_frametime_get()
 
-include "c_ecore_timer.pyx"
-include "c_ecore_animator.pyx"
+include "ecore.c_ecore_timer.pxi"
+include "ecore.c_ecore_animator.pxi"

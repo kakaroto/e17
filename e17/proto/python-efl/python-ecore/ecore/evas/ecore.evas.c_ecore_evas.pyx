@@ -49,10 +49,10 @@ def engine_type_supported_get(method):
 
 
 
-include "c_ecore_evas_base.pyx"
-include "c_ecore_evas_software_x11.pyx"
-include "c_ecore_evas_gl_x11.pyx"
-include "c_ecore_evas_xrender_x11.pyx"
-include "c_ecore_evas_fb.pyx"
-#include "c_ecore_evas_directfb.pyx"
-include "c_ecore_evas_buffer.pyx"
+include "ecore.evas.c_ecore_evas_base.pxi"
+include "ecore.evas.c_ecore_evas_software_x11.pxi"
+include "ecore.evas.c_ecore_evas_gl_x11.pxi"
+include "ecore.evas.c_ecore_evas_xrender_x11.pxi"
+include "ecore.evas.c_ecore_evas_fb.pxi"
+#include "ecore.evas.c_ecore_evas_directfb.pxi"
+include "ecore.evas.c_ecore_evas_buffer.pxi"
