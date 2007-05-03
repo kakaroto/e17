@@ -19,9 +19,6 @@ def pkgconfig(*packages, **kw):
     return kw
 
 
-def pkgconfig_version(package):
-    return commands.getoutput('pkg-config --modversion %s' % package).strip()
-
 ecoremodule = Extension('ecore.c_ecore',
                         sources=['ecore/c_ecore.pyx'],
                         depends=['ecore/c_ecore_timer.pyx',
