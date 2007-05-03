@@ -1051,7 +1051,9 @@ _ex_image_wallpaper_set(Etk_Image *im)
    const char *filenoext;
    char *esetroot;
    char esetroot_opt[] = "-s";
-#if HAVE_ENGRAVE   
+#if HAVE_ENGRAVE
+   char *edj_file;
+   int w, h;
    Engrave_File *edj;
    Engrave_Image *image;
    Engrave_Group *grp;
