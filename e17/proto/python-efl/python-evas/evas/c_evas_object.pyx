@@ -489,7 +489,9 @@ cdef class Object:
         else:
             self._callbacks[type] = [r]
             cb = evas_event_callbacks[type]
-            evas_object_event_callback_add(self.obj, type, cb, <void*>self)
+            evas_object_event_callback_add(self.obj,
+                                           <Evas_Callback_Type>type,
+                                           cb, <void*>self)
 
     def event_callback_del(self, int type, func):
         cdef evas_event_callback_t cb
@@ -513,7 +515,8 @@ cdef class Object:
         if len(lst) == 0:
             self._callbacks[type] = None
             cb = evas_event_callbacks[type]
-            evas_object_event_callback_del(self.obj, type, cb)
+            evas_object_event_callback_del(self.obj,
+                                           <Evas_Callback_Type>type, cb)
 
     def on_mouse_in_add(self, func, *a, **k):
         self.event_callback_add(EVAS_CALLBACK_MOUSE_IN, func, *a, **k)
