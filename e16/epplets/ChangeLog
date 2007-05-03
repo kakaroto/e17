@@ -1,3 +1,89 @@
+2007-05-03 21:46  kwo
+
+* epplets.spec:
+
+Remove (generated).
+
+2007-03-19 00:59  kwo
+
+* configure.in:
+
+Remove obsolete message.
+
+2007-03-18 23:56  kwo
+
+* configure.in, api/epplet.c, epplets/E-Toolbox.c:
+
+Use e16.8 automatic snapshot updates to avoid client message storms when
+switching viewport/desk.  Old update mode can be selected using
+--enable-old-remember.
+
+2007-03-18 22:54  kwo
+
+* api/epplet.c:
+
+Add some (disabled) debug stuff.
+
+2007-03-18 22:44  kwo
+
+* api/epplet.c:
+
+Oops - Somebody left an XSynchronize in there (bad kwo).
+
+2007-03-18 22:29  kwo
+
+* configure.in, api/Makefile.am, api/epplet.h.in:
+
+Use libc snprintf if available.
+
+2007-03-18 04:49  kwo
+
+* configure.in, api/epplet.c, api/epplet.h.in, epplets/Makefile.am:
+
+Cleanups.
+
+2007-03-18 04:29  kwo
+
+* configure.in, api/epplet.c:
+
+Remove obsolete "new-remember" option.
+
+2007-03-18 01:08  kwo
+
+* .cvsignore, configure.in, epplets.spec, epplets.spec.in:
+
+Use same configure.in/spec file setup in e16 and epplets.
+
+2007-03-17 03:39  kwo
+
+* epplets.spec:
+
+Add vendorsuffix.
+
+2007-03-17 02:42  kwo
+
+* epplets/Makefile.am:
+
+Add missing E-Exec icon.
+
+2007-03-17 02:41  kwo
+
+* epplets/icons/E-GtkRc.icon:
+
+Remove obsolete icon.
+
+2007-03-17 02:38  kwo
+
+* epplets/: E-Cpu.c, E-NetFlame.c:
+
+Fix potential rendering bug (patch by Melvin Meadlin II).
+
+2006-09-28 21:59  kwo
+
+* ChangeLog, Makefile.am:
+
+Update ChangeLog.
+
 2006-09-28 21:03  kwo
 
 * epplets/: E-Cpu.c, E-NetFlame.c:
