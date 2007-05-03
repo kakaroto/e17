@@ -24,14 +24,14 @@ def pkgconfig_version(package):
 
 
 evasmodule = Extension('evas.c_evas',
-                       sources=['evas/c_evas.pyx',
+                       sources=['evas/evas.c_evas.pyx',
                                 ],
-                       depends=['evas/c_evas.pxd',
-                                'evas/c_evas_canvas.pyx',
-                                'evas/c_evas_object.pyx',
-                                'evas/c_evas_object_rectangle.pyx',
-                                'evas/c_evas_object_line.pyx',
-                                'evas/c_evas_object_image.pyx',
+                       depends=['evas/evas.c_evas.pxd',
+                                'evas/evas.c_evas_canvas.pyx',
+                                'evas/evas.c_evas_object.pyx',
+                                'evas/evas.c_evas_object_rectangle.pyx',
+                                'evas/evas.c_evas_object_line.pyx',
+                                'evas/evas.c_evas_object_image.pyx',
                                 'evas/python.pxd',
                                 ],
                        **pkgconfig('"evas >= 0.9.9.037"'))

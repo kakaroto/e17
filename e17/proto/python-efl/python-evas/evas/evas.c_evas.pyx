@@ -157,11 +157,11 @@ def color_rgb_to_hsv(int r, int g, int b):
     return (h, s, v)
 
 
-include "c_evas_rect.pyx"
-include "c_evas_canvas.pyx"
-include "c_evas_object_events.pyx"
-include "c_evas_object_callbacks.pyx"
-include "c_evas_object.pyx"
-include "c_evas_object_rectangle.pyx"
-include "c_evas_object_line.pyx"
-include "c_evas_object_image.pyx"
+include "evas.c_evas_rect.pxi"
+include "evas.c_evas_canvas.pxi"
+include "evas.c_evas_object_events.pxi"
+include "evas.c_evas_object_callbacks.pxi"
+include "evas.c_evas_object.pxi"
+include "evas.c_evas_object_rectangle.pxi"
+include "evas.c_evas_object_line.pxi"
+include "evas.c_evas_object_image.pxi"
