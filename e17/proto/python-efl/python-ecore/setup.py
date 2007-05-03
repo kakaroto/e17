@@ -1,8 +1,12 @@
 import sys
 import os
 
+import distutils.sysconfig
 from setuptools import setup, find_packages, Extension
 import commands
+
+
+python_inc = distutils.sysconfig.get_python_inc()
 
 
 def pkgconfig(*packages, **kw):
@@ -42,10 +46,22 @@ ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                                      ],
                             **pkgconfig('"ecore-evas >= 0.9.9.037"'))
 
+
+headers = ['ecore/ecore.c_ecore.pxd',
+           'ecore/evas/ecore.evas.c_ecore_evas.pxd',
+           ]
+
+include_dirs = [os.path.join(python_inc, "python-evas")]
+
+
 setup(name = 'python-ecore',
       version = '0.1.0',
       license = 'LGPL',
       description = 'Python bindings for Ecore',
       packages = find_packages(),
+      install_requires = ['python-evas>=0.1.0'],
+      setup_requires = ['python-evas>=0.1.0'],
+      headers = headers,
+      include_dirs = include_dirs,
       ext_modules = [ecoremodule, ecoreevasmodule],
       )
