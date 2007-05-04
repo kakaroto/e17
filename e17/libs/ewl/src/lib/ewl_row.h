@@ -47,13 +47,13 @@ typedef struct Ewl_Row Ewl_Row;
 struct Ewl_Row
 {
 	Ewl_Container container;	/**< Inherit from Ewl_Container */
-	Ewl_Row *header;		/**< The header row */
+	Ewl_Container *header;		/**< The header row */
 };
 
 Ewl_Widget 	*ewl_row_new(void);
 int 		 ewl_row_init(Ewl_Row *row);
 
-void 		 ewl_row_header_set(Ewl_Row *row, Ewl_Row *header);
+void 		 ewl_row_header_set(Ewl_Row *row, Ewl_Container *header);
 Ewl_Widget 	*ewl_row_column_get(Ewl_Row *row, short n);
 
 /*

@@ -72,7 +72,7 @@ ewl_row_init(Ewl_Row *row)
  * header.
  */
 void
-ewl_row_header_set(Ewl_Row *row, Ewl_Row *header)
+ewl_row_header_set(Ewl_Row *row, Ewl_Container *header)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("row", row);
@@ -160,13 +160,13 @@ ewl_row_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 		int width;
 		Ewl_Container *hdr;
 
-		hdr = EWL_CONTAINER(row->header);
-		ewl_container_child_iterate_begin(EWL_CONTAINER(hdr));
+		hdr = row->header;
+		ewl_container_child_iterate_begin(hdr);
 
 		/*
 		 * Get the first child of the header.
 		 */
-		align = EWL_OBJECT(ewl_container_child_next(EWL_CONTAINER(hdr)));
+		align = EWL_OBJECT(ewl_container_child_next(hdr));
 		if (align)
 			x = MAX(ewl_object_current_x_get(align), CURRENT_X(w));
 		else
@@ -175,9 +175,9 @@ ewl_row_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 		/*
 		 * Iterate over the children and position the header children.
 		 */
-		ewl_container_child_iterate_begin(EWL_CONTAINER(hdr));
+		ewl_container_child_iterate_begin(hdr);
 		while ((child = EWL_OBJECT(ewl_container_child_next(c)))) {
-			align = EWL_OBJECT(ewl_container_child_next(EWL_CONTAINER(hdr)));
+			align = EWL_OBJECT(ewl_container_child_next(hdr));
 			if (align && VISIBLE(align))
 				width = ewl_object_current_x_get(align) + 
 						ewl_object_current_w_get(align) - x;

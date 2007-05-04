@@ -77,15 +77,15 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 	ewl_mvc_selected_change_cb_set(EWL_MVC(tree), 
 					ewl_tree2_cb_selected_change);
 
-	ewl_object_fill_policy_set(EWL_OBJECT(tree), 
-				EWL_FLAG_FILL_SHRINK | EWL_FLAG_FILL_FILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
 
 	tree->type = EWL_TREE_SELECTION_TYPE_CELL;
 
 	tree->header = ewl_hpaned_new();
 	ewl_container_child_append(EWL_CONTAINER(tree), tree->header);
 	ewl_widget_appearance_set(EWL_WIDGET(tree->header), "tree_header");
-	ewl_object_fill_policy_set(EWL_OBJECT(tree->header), EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(tree->header), 
+							EWL_FLAG_FILL_HFILL);
 	ewl_callback_append(tree->header, EWL_CALLBACK_VALUE_CHANGED,
 					ewl_tree2_cb_header_changed, tree);
 	ewl_widget_show(tree->header);
@@ -119,7 +119,7 @@ ewl_tree2_headers_visible_set(Ewl_Tree2 *tree, unsigned char visible)
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
-	if (tree->headers_visible == visible)
+	if (tree->headers_visible == !!visible)
 		DRETURN(DLEVEL_STABLE);
 
 	tree->headers_visible = !!visible;
@@ -283,7 +283,10 @@ ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, unsigned int fixed)
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
-	tree->fixed = fixed;
+	if (tree->fixed == !!fixed)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->fixed = !!fixed;
 	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -573,7 +576,13 @@ ewl_tree2_header_build(Ewl_Tree2 *tree,  Ewl_Model *model, Ewl_View *view,
 	ewl_widget_appearance_set(h, "header");
 	ewl_widget_show(h);
 
-	c = view->header_fetch(model->header(mvc_data, column), column);
+	if (model->header)
+		c = view->header_fetch(model->header(mvc_data, column), 
+					column);
+	else
+		c = view->header_fetch(NULL, column);
+
+	/* XXX is this really a good idea to override the user's flags ? */
 	ewl_object_fill_policy_set(EWL_OBJECT(c), 
 			EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(h), c);
@@ -668,6 +677,7 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 				ewl_mvc_view_get(EWL_MVC(tree)), 
 				mvc_data, i);
 
+	/* XXX why don't we skip before the headers are build? */
 	if (!model)
 		DRETURN(DLEVEL_STABLE);
 
@@ -688,13 +698,14 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 	unsigned int column;
 
 	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 	DCHECK_PARAM_PTR("parent", parent);
 
 	row_count = model->count(data);
 	if (!row_count)
 		DRETURN(DLEVEL_STABLE);
 
-	while (1)
+	while (TRUE)
 	{
 		Ewl_Widget *row, *node;
 
@@ -709,7 +720,7 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 		if (!hidden) ewl_widget_show(node);
 
 		row = ewl_row_new();
-		ewl_row_header_set(EWL_ROW(row), EWL_ROW(tree->header));
+		ewl_row_header_set(EWL_ROW(row), EWL_CONTAINER(tree->header));
 		ewl_container_child_append(EWL_CONTAINER(node), row);
 		ewl_callback_append(row, EWL_CALLBACK_CLICKED,  
 					ewl_tree2_cb_row_clicked, node);
@@ -888,7 +899,7 @@ ewl_tree2_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
+	DCHECK_TYPE_RET("mvc", mvc, EWL_TREE2_TYPE, NULL);
 
 	tree = EWL_TREE2(mvc);
 	r = ewl_container_child_get(EWL_CONTAINER(tree->rows), row);
@@ -908,6 +919,10 @@ ewl_tree2_create_expansions_hash(Ewl_Tree2 *tree)
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
 
+	if (tree->expansions)
+		DRETURN(DLEVEL_STABLE);
+
+	/* this hash table never get freed */
 	tree->expansions = ecore_hash_new(NULL, NULL);
 	ecore_hash_set_free_value(tree->expansions, 
 			ECORE_FREE_CB(ecore_list_destroy));
@@ -1045,6 +1060,7 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 	 */
 	ewl_widget_configure(node->tree);
 
+	/* XXX is this really necessary, couldn't it be done inplace? */
 	tmp = ecore_list_new();
 
 	ecore_dlist_goto_first(EWL_CONTAINER(node)->children);
@@ -1110,6 +1126,8 @@ ewl_tree2_node_collapse(Ewl_Tree2_Node *node)
 	 */
 	ewl_widget_configure(node->tree);
 
+	/* XXX same here can't we just hide the widgets instead of
+	 * appending them to a list? */
 	tmp = ecore_list_new();
 
 	ecore_dlist_goto_first(EWL_CONTAINER(node)->children);
