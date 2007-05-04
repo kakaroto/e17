@@ -46,6 +46,7 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
 		  void *data)
 {
    Etk_Widget *menu_item = NULL;
+   Etk_Menu_Item_Radio *group_item;
    
    switch (item_type)
      {
@@ -58,28 +59,35 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
       case EX_MENU_ITEM_SEPARATOR:
 	menu_item = etk_menu_item_separator_new();
 	break;
+      case EX_MENU_ITEM_RADIO:
+	group_item = data;
+	menu_item = etk_menu_item_radio_new_with_label_from_widget(label, ETK_MENU_ITEM_RADIO(group_item));
+	break;
       default:
 	return NULL;
      }
-   
-   if (stock_id > ETK_STOCK_NO_STOCK)
-     {
-	Etk_Widget *image;
 
-	image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
-	etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-     }
-   else if (stock_id < ETK_STOCK_NO_STOCK)
-     {	
-	stock_id = abs(stock_id) - 1;
-	if(stock_id >= 0 && stock_id < sizeof(ex_images) / sizeof(char*))
+   if (item_type != EX_MENU_ITEM_RADIO)
+     {
+	if (stock_id > ETK_STOCK_NO_STOCK)
 	  {
 	     Etk_Widget *image;
 	     
-	     image = etk_image_new_from_edje(PACKAGE_DATA_DIR
-					     "/gui.edj",
-					     ex_images[stock_id]);
+	     image = etk_image_new_from_stock(stock_id, ETK_STOCK_SMALL);
 	     etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+	  }
+	else if (stock_id < ETK_STOCK_NO_STOCK)
+	  {	
+	     stock_id = abs(stock_id) - 1;
+	     if(stock_id >= 0 && stock_id < sizeof(ex_images) / sizeof(char*))
+	       {
+		  Etk_Widget *image;
+		  
+		  image = etk_image_new_from_edje(PACKAGE_DATA_DIR
+						  "/gui.edj",
+						  ex_images[stock_id]);
+		  etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+	       }
 	  }
      }
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));

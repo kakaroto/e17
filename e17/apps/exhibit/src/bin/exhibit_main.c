@@ -281,7 +281,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    etk_tree_thaw(ETK_TREE(e->cur_tab->itree));
    etk_tree_thaw(ETK_TREE(e->cur_tab->dtree));
 
-   if (update == EX_TREE_UPDATE_FILES)
+   if (update == EX_TREE_UPDATE_FILES || update == EX_TREE_UPDATE_ALL)
      {
 	if (e->options->default_sort == EX_SORT_BY_DATE)
 	  _ex_sort_date_cb(NULL, NULL);
@@ -893,11 +893,19 @@ _ex_main_window_show(char *dir, int fullscreen)
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sort"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	submenu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(submenu));
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Date"), ETK_STOCK_OFFICE_CALENDAR, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_date_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Size"), ETK_STOCK_DRIVE_HARDDISK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_size_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Name"), ETK_STOCK_TEXT_X_GENERIC, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_name_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Resolution"), ETK_STOCK_UTILITIES_SYSTEM_MONITOR, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_resol_cb), e);
-		
+	menu_item = _ex_menu_item_new(EX_MENU_ITEM_RADIO, _("Date"), ETK_STOCK_OFFICE_CALENDAR, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_date_cb), NULL);
+	if (e->options->default_sort == EX_SORT_BY_DATE)
+	  etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item), ETK_TRUE);
+	menu_item = _ex_menu_item_new(EX_MENU_ITEM_RADIO, _("Size"), ETK_STOCK_DRIVE_HARDDISK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_size_cb), menu_item);
+	if (e->options->default_sort == EX_SORT_BY_SIZE)
+	  etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item), ETK_TRUE);	
+	menu_item = _ex_menu_item_new(EX_MENU_ITEM_RADIO, _("Name"), ETK_STOCK_TEXT_X_GENERIC, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_name_cb), menu_item);
+	if (e->options->default_sort == EX_SORT_BY_NAME)
+	  etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item), ETK_TRUE);	
+	menu_item = _ex_menu_item_new(EX_MENU_ITEM_RADIO, _("Resolution"), ETK_STOCK_UTILITIES_SYSTEM_MONITOR, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_sort_resol_cb), menu_item);
+	if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
+	  etk_menu_item_check_active_set(ETK_MENU_ITEM_CHECK(menu_item), ETK_TRUE);
+	
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom in"), EX_IMAGE_ZOOM_IN, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_in_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom out"), EX_IMAGE_ZOOM_OUT, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_out_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom 1:1"), EX_IMAGE_ONE_TO_ONE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_one_to_one_cb), e);
@@ -910,7 +918,7 @@ _ex_main_window_show(char *dir, int fullscreen)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Add to favorites"), ETK_STOCK_EMBLEM_PHOTOS, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_add_to_fav_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("View favorites"), ETK_STOCK_EMBLEM_FAVORITE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_go_to_fav_cb), e);
 	
-	/* Create the "Help" submenu */
+	/* Create the "Help" menu */
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Help"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu_bar), NULL, NULL);
 	menu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
