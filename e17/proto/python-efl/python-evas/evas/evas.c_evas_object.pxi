@@ -72,6 +72,19 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             raise ValueError("Object already deleted")
         evas_object_del(self.obj)
 
+    def _set_common_params(self, size=None, pos=None, geometry=None,
+                           color=None, name=None):
+        if size:
+            self.size_set(*size)
+        if pos:
+            self.pos_set(*pos)
+        if geometry:
+            self.geometry_set(*geometry)
+        if color:
+            self.color_set(*color_parse(color))
+        if name:
+            self.name_set(name)
+
     def evas_get(self):
         return self._evas
 

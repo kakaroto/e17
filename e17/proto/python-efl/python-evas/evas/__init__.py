@@ -74,16 +74,8 @@ class SmartObject(c_evas.SmartObject):
             raise TypeError("Must not instantiate SmartObject, but subclasses")
         obj = c_evas.SmartObject.__new__(type, canvas)
         obj._new_obj()
-        if size:
-            obj.size_set(*size)
-        if pos:
-            obj.pos_set(*pos)
-        if geometry:
-            obj.geometry_set(*geometry)
-        if color:
-            obj.color_set(*c_evas.color_parse(color))
-        if name:
-            obj.name_set(name)
+        obj._set_common_params(size=size, pos=pos, geometry=geometry,
+                               color=color, name=name)
         return obj
 
 
@@ -92,16 +84,8 @@ class Rectangle(c_evas.Rectangle):
                 name=None):
         obj = c_evas.Rectangle.__new__(type, canvas)
         obj._new_obj()
-        if size:
-            obj.size_set(*size)
-        if pos:
-            obj.pos_set(*pos)
-        if geometry:
-            obj.geometry_set(*geometry)
-        if color:
-            obj.color_set(*c_evas.color_parse(color))
-        if name:
-            obj.name_set(name)
+        obj._set_common_params(size=size, pos=pos, geometry=geometry,
+                               color=color, name=name)
         return obj
 
 
@@ -110,50 +94,8 @@ class Line(c_evas.Line):
                 geometry=None, color=None, name=None):
         obj = c_evas.Line.__new__(type, canvas)
         obj._new_obj()
-
-        if start and end:
-            x1 = start[0]
-            y1 = start[1]
-            x2 = end[0]
-            y2 = end[1]
-
-            w = x2 - x1
-            h = y2 - y1
-            if w < 0:
-                w = -w
-                x = x2
-            else:
-                x = x1
-
-            if h < 0:
-                h = -h
-                y = y2
-            else:
-                y = y1
-
-            obj.xy_set(x1, y1, x2, y2)
-
-            if not geometry:
-                if not size:
-                    obj.size_set(w, h)
-                if not pos:
-                    obj.pos_set(x, y)
-
-        elif start:
-            obj.start_set(*start)
-        elif end:
-            obj.end_set(*end)
-
-        if size:
-            obj.size_set(*size)
-        if pos:
-            obj.pos_set(*pos)
-        if geometry:
-            obj.geometry_set(*geometry)
-        if color:
-            obj.color_set(*c_evas.color_parse(color))
-        if name:
-            obj.name_set(name)
+        obj._set_common_params(start=start, end=end, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
         return obj
 
 
@@ -162,18 +104,6 @@ class Image(c_evas.Image):
                 color=None, name=None):
         obj = c_evas.Image.__new__(type, canvas)
         obj._new_obj()
-        if size:
-            obj.size_set(*size)
-        if pos:
-            obj.pos_set(*pos)
-        if geometry:
-            obj.geometry_set(*geometry)
-        if color:
-            obj.color_set(*c_evas.color_parse(color))
-        if name:
-            obj.name_set(name)
-        if file:
-            if isinstance(file, basestring):
-                file = (file, None)
-            obj.file_set(*file)
+        obj._set_common_params(file=file, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
         return obj

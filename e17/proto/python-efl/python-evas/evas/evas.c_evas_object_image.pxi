@@ -5,6 +5,15 @@ cdef class Image(Object):
         if self.obj == NULL:
             self._set_obj(evas_object_image_add(self._evas.obj))
 
+    def _set_common_params(self, file=None, size=None, pos=None, geometry=None,
+                           color=None, name=None):
+        if file:
+            if isinstance(file, basestring):
+                file = (file, None)
+            self.file_set(*file)
+        Object._set_common_params(self, size=size, pos=pos, geometry=geometry,
+                                  color=color, name=name)
+
     def file_set(self, char *filename, key=None):
         cdef char *k
         if key:
