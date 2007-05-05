@@ -312,3 +312,32 @@ cdef class SmartObject(Object):
             evas_object_clip_unset(<Evas_Object*>itr.data)
             itr = itr.next
         evas_list_free(lst)
+
+    # Factory
+    def Rectangle(self, size=None, pos=None, geometry=None, color=None,
+                  name=None):
+        obj = Rectangle(self.evas)
+        obj._new_obj()
+        obj._set_common_params(size=size, pos=pos, geometry=geometry,
+                               color=color, name=name)
+        self.member_add(obj)
+        return obj
+
+    def Line(self, start=None, end=None, size=None, pos=None,
+             geometry=None, color=None, name=None):
+        obj = Line(self.evas)
+        obj._new_obj()
+        obj._set_common_params(start=start, end=end, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
+        self.member_add(obj)
+        return obj
+
+
+    def Image(self, file=None, size=None, pos=None, geometry=None,
+              color=None, name=None):
+        obj = Image(self.evas)
+        obj._new_obj()
+        obj._set_common_params(file=file, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
+        self.member_add(obj)
+        return obj
