@@ -1,6 +1,6 @@
 # This file is included verbatim by c_evas.pyx
 
-cdef class Rect:
+cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
     """Type to store and manipulate rectangular coordinates.
 
     This class provides the description of a rectangle and means to

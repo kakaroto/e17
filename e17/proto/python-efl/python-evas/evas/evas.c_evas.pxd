@@ -405,7 +405,7 @@ cdef extern from "Evas.h":
 
 
 
-cdef class Rect:
+cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
     cdef int x0, y0, x1, y1, cx, cy, _w, _h
 
 
@@ -477,13 +477,13 @@ cdef class EventKeyUp:
     cdef void _set_obj(self, void *ptr)
 
 
-cdef class Canvas:
+cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     cdef Evas *obj
 
     cdef int _set_obj(self, Evas *obj) except 0
 
 
-cdef class Object:
+cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     cdef Evas_Object *obj
     cdef Canvas _evas
     cdef object _data

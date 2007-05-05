@@ -8,7 +8,7 @@ cdef void obj_free_cb(void *data, Evas *e, Evas_Object *obj, void *event_info):
     python.Py_DECREF(self)
 
 
-cdef class Object:
+cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def __new__(self, Canvas evas):
         self.obj = NULL
         self._evas = evas

@@ -1,6 +1,6 @@
 # This file is included verbatim by c_evas.pyx
 
-cdef class Canvas:
+cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def __new__(self):
         self.obj = NULL
 
