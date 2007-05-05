@@ -436,13 +436,16 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         cdef Evas_Object *clip
         cdef Object o
         if value is None:
-            clip = NULL
+            evas_object_clip_unset(self.obj)
         elif isinstance(value, Object):
             o = <Object>value
             clip = o.obj
+            evas_object_clip_set(self.obj, clip)
         else:
             raise ValueError("clip must be evas.Object or None")
-        evas_object_clip_set(self.obj, clip)
+
+    def clip_unset(self):
+        evas_object_clip_unset(self.obj)
 
     property clip:
         def __get__(self):
