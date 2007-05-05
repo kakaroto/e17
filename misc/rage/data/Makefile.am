@@ -35,7 +35,13 @@ audio.png \
 photo.png \
 mitem.png \
 mitem2.png \
-miniover.png
+miniover.png \
+update.png \
+book.png \
+favorites.png \
+resume.png \
+bug.png \
+genre.png
 
 default.edj: Makefile $(EXTRA_DIST)
 	$(EDJE_CC) $(EDJE_FLAGS) \
