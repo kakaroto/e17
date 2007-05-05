@@ -334,3 +334,29 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
     def freeze_get(self):
         return evas_event_freeze_get(self.obj)
+
+    # Factory
+    def Rectangle(self, size=None, pos=None, geometry=None, color=None,
+                  name=None):
+        obj = Rectangle(self)
+        obj._new_obj()
+        obj._set_common_params(size=size, pos=pos, geometry=geometry,
+                               color=color, name=name)
+        return obj
+
+    def Line(self, start=None, end=None, size=None, pos=None,
+             geometry=None, color=None, name=None):
+        obj = Line(self)
+        obj._new_obj()
+        obj._set_common_params(start=start, end=end, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
+        return obj
+
+
+    def Image(self, file=None, size=None, pos=None, geometry=None,
+              color=None, name=None):
+        obj = Image(self)
+        obj._new_obj()
+        obj._set_common_params(file=file, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
+        return obj
