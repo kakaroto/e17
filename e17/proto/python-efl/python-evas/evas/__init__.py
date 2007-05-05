@@ -67,6 +67,25 @@ class Canvas(c_evas.Canvas):
             obj.viewport_set(*viewport)
         return obj
 
+class SmartObject(c_evas.SmartObject):
+    def __new__(type, canvas, size=None, pos=None, geometry=None, color=None,
+                name=None, *args, **kargs):
+        if type is SmartObject or type is c_evas.SmartObject:
+            raise TypeError("Must not instantiate SmartObject, but subclasses")
+        obj = c_evas.SmartObject.__new__(type, canvas)
+        obj._new_obj()
+        if size:
+            obj.size_set(*size)
+        if pos:
+            obj.pos_set(*pos)
+        if geometry:
+            obj.geometry_set(*geometry)
+        if color:
+            obj.color_set(*c_evas.color_parse(color))
+        if name:
+            obj.name_set(name)
+        return obj
+
 
 class Rectangle(c_evas.Rectangle):
     def __new__(type, canvas, size=None, pos=None, geometry=None, color=None,

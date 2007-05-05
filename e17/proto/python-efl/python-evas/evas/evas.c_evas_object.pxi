@@ -652,3 +652,13 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
         def __set__(self, int value):
             self.propagate_events_set(value)
+
+    def parent_get(self):
+        "Get object's parent, in the case it was added to some SmartObject."
+        cdef Evas_Object *obj
+        obj = evas_object_smart_parent_get(self.obj)
+        return Object_from_instance(obj)
+
+    property parent:
+        def __get__(self):
+            return self.parent_get()

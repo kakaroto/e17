@@ -75,6 +75,8 @@ cdef extern from "Python.h":
     int PyObject_AsReadBuffer(obj, void **buffer, Py_ssize_t *buffer_len) except -1
     int PyObject_AsWriteBuffer(obj, void **buffer, Py_ssize_t *buffer_len) except -1
 
+    # methodobject.h
+    object PyMethod_New(object func, object self, object cls)
 
 
 cdef extern from "Numeric/arrayobject.h":

@@ -74,6 +74,9 @@ cdef extern from "Evas.h":
         EVAS_TEXTBLOCK_TEXT_RAW
         EVAS_TEXTBLOCK_TEXT_PLAIN
 
+    ctypedef enum Evas_Smart_Class_Version:
+        EVAS_SMART_CLASS_VERSION
+
 
     ####################################################################
     # Structures
@@ -98,6 +101,21 @@ cdef extern from "Evas.h":
     ctypedef struct Evas_Lock
     ctypedef struct Evas_Smart
     ctypedef struct Evas_Native_Surface
+
+    ctypedef struct Evas_Smart_Class:
+        char *name
+        int version
+        void (*add)(Evas_Object *o)
+        void (*delete "del")(Evas_Object *o)
+        void (*move)(Evas_Object *o, int x, int y)
+        void (*resize)(Evas_Object *o, int w, int h)
+        void (*show)(Evas_Object *o)
+        void (*hide)(Evas_Object *o)
+        void (*color_set)(Evas_Object *o, int r, int g, int b, int a)
+        void (*clip_set)(Evas_Object *o, Evas_Object *clip)
+        void (*clip_unset)(Evas_Object *o)
+        void *data
+
 
     ctypedef struct Evas_Point:
         int x
@@ -323,6 +341,27 @@ cdef extern from "Evas.h":
     Evas_Bool evas_object_propagate_events_get(Evas_Object *obj)
 
 
+    ####################################################################
+    # Rectangle Object
+    #
+    void evas_smart_free(Evas_Smart *s)
+    Evas_Smart *evas_smart_class_new(Evas_Smart_Class *sc)
+    Evas_Smart_Class *evas_smart_class_get(Evas_Smart *s)
+
+    void *evas_smart_data_get(Evas_Smart *s)
+
+    Evas_Object *evas_object_smart_add(Evas *e, Evas_Smart *s)
+    void evas_object_smart_member_add(Evas_Object *obj, Evas_Object *smart_obj)
+    void evas_object_smart_member_del(Evas_Object *obj)
+    Evas_Object *evas_object_smart_parent_get(Evas_Object *obj)
+    Evas_List *evas_object_smart_members_get(Evas_Object *obj)
+    Evas_Smart *evas_object_smart_smart_get(Evas_Object *obj)
+    void *evas_object_smart_data_get(Evas_Object *obj)
+    void evas_object_smart_data_set(Evas_Object *obj, void *data)
+    void evas_object_smart_callback_add(Evas_Object *obj, char *event, void (*func) (void *data, Evas_Object *obj, void *event_info), void *data)
+    void *evas_object_smart_callback_del(Evas_Object *obj, char *event, void (*func) (void *data, Evas_Object *obj, void *event_info))
+    void evas_object_smart_callback_call(Evas_Object *obj, char *event, void *event_info)
+
 
     ####################################################################
     # Rectangle Object
@@ -491,6 +530,18 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
     cdef int _unset_obj(self) except 0
     cdef int _set_obj(self, Evas_Object *obj) except 0
+
+
+cdef class SmartObject(Object):
+    cdef object _smart_callbacks
+    cdef object _m_delete
+    cdef object _m_move
+    cdef object _m_resize
+    cdef object _m_show
+    cdef object _m_hide
+    cdef object _m_color_set
+    cdef object _m_clip_set
+    cdef object _m_clip_unset
 
 
 cdef class Rectangle(Object):
