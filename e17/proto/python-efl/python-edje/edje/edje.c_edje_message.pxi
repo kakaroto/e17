@@ -15,13 +15,15 @@ cdef class MessageString(Message):
         def __get__(self):
             if self.obj == NULL:
                 raise ValueError("Object uninitialized")
-            return self.obj.str
+            if self.obj.str != NULL:
+                return self.obj.str
 
     property val:  # copy from 'str', to make api consistent
         def __get__(self):
             if self.obj == NULL:
                 raise ValueError("Object uninitialized")
-            return self.obj.str
+            if self.obj.str != NULL:
+                return self.obj.str
 
 
 cdef class MessageInt(Message):
@@ -48,7 +50,8 @@ cdef class MessageStringSet(Message):
                 raise ValueError("Object uninitialized")
             lst = []
             for i from 0 <= i < self.obj.count:
-                lst.append(self.obj.str[i])
+                if self.obj.str[i] != NULL:
+                    lst.append(self.obj.str[i])
             return lst
 
     def __len__(self):
@@ -117,7 +120,8 @@ cdef class MessageStringInt(Message):
         def __get__(self):
             if self.obj == NULL:
                 raise ValueError("Object uninitialized")
-            return self.obj.str
+            if self.obj.str != NULL:
+                return self.obj.str
 
     property val:
         def __get__(self):
@@ -131,7 +135,8 @@ cdef class MessageStringFloat(Message):
         def __get__(self):
             if self.obj == NULL:
                 raise ValueError("Object uninitialized")
-            return self.obj.str
+            if self.obj.str != NULL:
+                return self.obj.str
 
     property val:
         def __get__(self):
@@ -145,7 +150,8 @@ cdef class MessageStringIntSet(Message):
         def __get__(self):
             if self.obj == NULL:
                 raise ValueError("Object uninitialized")
-            return self.obj.str
+            if self.obj.str != NULL:
+                return self.obj.str
 
     property val:
         def __get__(self):
@@ -175,7 +181,8 @@ cdef class MessageStringFloatSet(Message):
         def __get__(self):
             if self.obj == NULL:
                 raise ValueError("Object uninitialized")
-            return self.obj.str
+            if self.obj.str != NULL:
+                return self.obj.str
 
     property val:
         def __get__(self):

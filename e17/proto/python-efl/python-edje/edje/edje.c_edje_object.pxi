@@ -71,7 +71,10 @@ cdef class Edje(evas.c_evas.Object):
             self.size_set(w, h)
 
     def data_get(self, char *key):
-        return edje_object_data_get(self.obj, key)
+        cdef char *s
+        s = edje_object_data_get(self.obj, key)
+        if s != NULL:
+            return s
 
     def file_set(self, char *file, char *part):
         if edje_object_file_set(self.obj, file, part) == 0:
@@ -80,7 +83,15 @@ cdef class Edje(evas.c_evas.Object):
     def file_get(self):
         cdef char *file, *part
         edje_object_file_get(self.obj, &file, &part)
-        return (file, part)
+        if file == NULL:
+            f = None
+        else:
+            f = file
+        if part == NULL:
+            p = None
+        else:
+            p = part
+        return (f, p)
 
     def load_error_get(self):
         return edje_object_load_error_get(self.obj)

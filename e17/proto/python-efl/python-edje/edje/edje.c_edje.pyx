@@ -29,7 +29,10 @@ def fontset_append_set(char *fonts):
 
 
 def fontset_append_get():
-    return edje_fontset_append_get()
+    cdef char *s
+    s = edje_fontset_append_get()
+    if s != NULL:
+        return s
 
 
 def file_collection_list(char *file):
@@ -49,7 +52,10 @@ def file_group_exists(char *file, char *group):
 
 
 def file_data_get(char *file, char *key):
-    return edje_file_data_get(file, key)
+    cdef char *s
+    s = edje_file_data_get(file, key)
+    if s != NULL:
+        return s
 
 
 def file_cache_set(int count):
