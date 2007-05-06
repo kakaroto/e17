@@ -236,4 +236,5 @@ cdef class MessageStringFloatSet(Message):
 cdef class Edje(evas.c_evas.Object):
     cdef object _text_change_cb
     cdef object _message_handler_cb
+    cdef object _signal_callbacks
 

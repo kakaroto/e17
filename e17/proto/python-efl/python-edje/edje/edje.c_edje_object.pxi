@@ -19,6 +19,15 @@ cdef void message_handler_cb(void *data, evas.c_evas.Evas_Object *obj,
     func(self, Message_from_type(type, id, msg), *args, **kargs)
 
 
+cdef void signal_cb(void *data, evas.c_evas.Evas_Object *obj,
+                    char *emission, char *source):
+    cdef Edje self
+    self = <Edje>data
+    lst = self._signal_callbacks[(emission, source)]
+    for func, args, kargs in lst:
+        func(self, emission, source, *args, **kargs)
+
+
 class EdjeLoadError(Exception):
     def __init__(self, int code):
         if code == EDJE_LOAD_ERROR_NONE:
@@ -43,6 +52,9 @@ class EdjeLoadError(Exception):
 
 
 cdef class Edje(evas.c_evas.Object):
+    def __new__(self, evas.c_evas.Canvas evas):
+        self._signal_callbacks = {}
+
     def _new_obj(self):
         if self.obj == NULL:
             self._set_obj(edje_object_add(self._evas.obj))
@@ -264,3 +276,28 @@ cdef class Edje(evas.c_evas.Object):
 
     def message_signal_process(self):
         edje_object_message_signal_process(self.obj)
+
+    def signal_callback_add(self, char *emission, char *source, func,
+                            *args, **kargs):
+        lst = self._signal_callbacks.setdefault((emission, source), [])
+        if not lst:
+            edje_object_signal_callback_add(self.obj, emission, source,
+                                            signal_cb, <void*>self)
+        lst.append((func, args, kargs))
+
+    def signal_callback_del(self, char *emission, char *source, func):
+        key = (emission, source)
+        lst = self._signal_callbacks[key]
+        i = -1
+        for i, (f, a, k) in enumerate(lst):
+            if func == f:
+                break
+        del lst[i]
+        if not lst:
+            del self._signal_callbacks[key]
+            edje_object_signal_callback_del(self.obj, emission, source,
+                                            signal_cb)
+
+    def signal_emit(self, char *emission, char *source):
+        edje_object_signal_emit(self.obj, emission, source)
+
