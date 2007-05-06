@@ -127,10 +127,19 @@ cdef class EcoreEvas:
         cdef char *filename
         cdef int layer, hotx, hoty
         ecore_evas_cursor_get(self.obj, &filename, &layer, &hotx, &hoty)
-        return (filename, layer, hotx, hoty)
+        if filename == NULL:
+            fn = None
+        else:
+            fn = filename
+        return (fn, layer, hotx, hoty)
 
-    def cursor_set(self, char *filename, int layer=0, int hotx=0, int hoty=0):
-        ecore_evas_cursor_set(self.obj, filename, layer, hotx, hoty)
+    def cursor_set(self, filename, int layer=0, int hotx=0, int hoty=0):
+        cdef char *f
+        if filename is None:
+            f = NULL
+        else:
+            f = filename
+        ecore_evas_cursor_set(self.obj, f, layer, hotx, hoty)
 
     def move(self, int x, int y):
         ecore_evas_move(self.obj, x, y)
@@ -288,7 +297,10 @@ cdef class EcoreEvas:
         ecore_evas_title_set(self.obj, t)
 
     def title_get(self):
-        return ecore_evas_title_get(self.obj)
+        cdef char *s
+        s = ecore_evas_title_get(self.obj)
+        if s != NULL:
+            return s
 
     property title:
         def __get__(self):
@@ -303,7 +315,15 @@ cdef class EcoreEvas:
     def name_class_get(self):
         cdef char *n, *c
         ecore_evas_name_class_get(self.obj, &n, &c)
-        return (n, c)
+        if n == NULL:
+            name = None
+        else:
+            name = n
+        if c == NULL:
+            cls = None
+        else:
+            cls = c
+        return (name, cls)
 
     property name_class:
         def __get__(self):
