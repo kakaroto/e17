@@ -423,7 +423,7 @@ ThemePathFind(void)
 
    if (Conf.theme.name)
       Efree(Conf.theme.name);
-   Conf.theme.name = fullfileof(theme);
+   Conf.theme.name = (theme) ? fullfileof(theme) : NULL;
 
    if (Mode.theme.path)
       Efree(Mode.theme.path);
@@ -464,7 +464,7 @@ ThemesIpc(const char *params, Client * c __UNUSED__)
 	IpcPrintf("Name: %s\n", Conf.theme.name);
 	IpcPrintf("Full: %s\n", Mode.theme.path);
 	IpcPrintf("Default: %s\n", ThemeGetDefault());
-	IpcPrintf("Path: %s/themes:%s/themes:%s", EDirUser(), EDirRoot(),
+	IpcPrintf("Path: %s/themes:%s/themes:%s\n", EDirUser(), EDirRoot(),
 		  (Conf.theme.extra_path) ? Conf.theme.extra_path : "");
      }
    else if (!strncmp(cmd, "list", 2))
