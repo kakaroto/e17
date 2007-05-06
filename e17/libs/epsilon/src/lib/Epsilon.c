@@ -120,7 +120,7 @@ epsilon_init (void)
   int i = 0;
   struct stat status;
   char buf[PATH_MAX];
-  char *dirs[] = { ".thumbnails", ".thumbnails/normal",
+  const char *dirs[] = { ".thumbnails", ".thumbnails/normal",
     ".thumbnails/large", ".thumbnails/fail"
   };
 
@@ -203,7 +203,7 @@ epsilon_thumb_file_get (Epsilon * e)
   int i = 0;
   struct stat status;
   char buf[PATH_MAX];
-  char *dirs[] = { ".thumbnails/normal", ".thumbnails/large",
+  const char *dirs[] = { ".thumbnails/normal", ".thumbnails/large",
     ".thumbnails/fail"
   };
 
@@ -404,7 +404,8 @@ epsilon_info_exif_get (Epsilon_Info * info)
 
 /*This needs to be worked into some kind of 'mime-magic' ID 
  * section, to work out what file type we're dealing with*/
-char* epsilon_mime_for_extension_get(char* extension)
+static const char *
+epsilon_mime_for_extension_get(const char* extension)
 {
 	if ((!strcasecmp(extension, "mpg")) ||
 			(!strcasecmp(extension, "mpeg"))) return "video/mpeg";
@@ -420,7 +421,7 @@ epsilon_exists (Epsilon * e)
   int ok = 0, i = 0;
   int filemtime = 0, epsilonmtime = 0;
   struct stat filestatus;
-  char *dirs[] = { "large", "normal", "fail/epsilon" };
+  const char *dirs[] = { "large", "normal", "fail/epsilon" };
   char home[PATH_MAX], buf[PATH_MAX];
 
   char *hash_seed = NULL;
@@ -512,11 +513,10 @@ epsilon_exists (Epsilon * e)
 EAPI int
 epsilon_generate (Epsilon * e)
 {
-  int len = 0;
   int iw, ih;
   int tw, th;
   char outfile[PATH_MAX];
-  char* mime;
+  const char* mime;
   Epsilon_Plugin* plugin;
 
 #ifdef HAVE_EPEG_H
