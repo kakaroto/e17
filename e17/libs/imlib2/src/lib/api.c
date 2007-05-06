@@ -3078,16 +3078,21 @@ imlib_image_tile(void)
  * @return NULL if no font found.
  * 
  * Loads a truetype font from the first directory in the font path that
- * contains that font. The font name @p font_name format is "font_name/size". For
- * example. If there is a font file called blum.ttf somewhere in the
+ * contains that font. The font name @p font_name format is "font_name/size"
+ * or a comma separated list of "font_name/size" elements.
+ * For example: if there is a font file called blum.ttf somewhere in the
  * font path you might use "blum/20" to load a 20 pixel sized font of
- * blum. If the font cannot be found NULL is returned. 
+ * blum;&nbsp; or "blum/20, vera/20, mono/20" to load one or all fonts 
+ * of the comma separated list. If the font cannot be found NULL is returned. 
  * 
  **/
 EAPI Imlib_Font
 imlib_load_font(const char *font_name)
 {
-   return imlib_font_load_joined(font_name);
+	if(strchr(font_name, ',') != NULL)
+	  return imlib_font_load_fontset(font_name);
+	else
+	  return imlib_font_load_joined(font_name);
 }
 
 /**
@@ -3096,11 +3101,20 @@ imlib_load_font(const char *font_name)
 EAPI void
 imlib_free_font(void)
 {
+   ImlibFont *fn;
+
    if (!ctx)
       ctx = imlib_context_new();
    CHECK_PARAM_POINTER("imlib_free_font", "font", ctx->font);
-   imlib_font_free(ctx->font);
-   ctx->font = NULL;
+
+   fn = (ImlibFont*)ctx->font; ctx->font = NULL;
+
+   if(fn->next_in_set == NULL)
+  {
+   imlib_font_free(fn);
+   return;
+  }
+   imlib_font_free_fontset(fn);
 }
 
 /**

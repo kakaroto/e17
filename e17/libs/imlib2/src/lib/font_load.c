@@ -30,13 +30,13 @@ static int          font_flush_free_glyph_cb(Imlib_Hash * hash, const char *key,
 
 /* FIXME now! listdir() from evas_object_text.c */
 
-/* separate fontname and size, find font file, start imlib_font_load() then */
-ImlibFont          *
-imlib_font_load_joined(const char *fontname)
+/* separate fontname and size, find font file 
+*/
+static char*
+imlib_font_find_file(const char *fontname, int *out_size)
 {
    int                 j, size;
    char               *name = NULL, *file = NULL, *tmp = NULL;
-   ImlibFont          *fn;
 
    /* split font name (in format name/size) */
    for (j = strlen(fontname) - 1; (j >= 0) && (fontname[j] != '/'); j--);
@@ -103,7 +103,20 @@ imlib_font_load_joined(const char *fontname)
              free(tmp);
           }
      }
-   free(name);
+   free(name); *out_size = size;
+   return file;
+}
+
+/* find font file, start imlib_font_load() */
+ImlibFont          *
+imlib_font_load_joined(const char *fontname)
+{
+   char       *file;
+   ImlibFont  *fn;
+   int size;
+
+   file = imlib_font_find_file(fontname, &size);
+
    /* didnt find a file? abort */
    if (!file)
       return NULL;
@@ -112,16 +125,12 @@ imlib_font_load_joined(const char *fontname)
    return fn;
 }
 
-ImlibFont          *
-imlib_font_load(const char *name, int size)
+static ImlibFont *
+imlib_font_create_font_struct(const char *name, int size)
 {
    int                 error;
    ImlibFont          *fn;
    char               *file;
-
-   fn = imlib_font_find(name, size);
-   if (fn)
-      return fn;
 
    imlib_font_init();
 
@@ -180,13 +189,191 @@ imlib_font_load(const char *name, int size)
    fn->size = size;
 
    fn->glyphs = NULL;
-
+   fn->next_in_set = NULL;
    fn->usage = 0;
 
    fn->references = 1;
 
-   fonts = imlib_object_list_prepend(fonts, fn);
    return fn;
+}
+
+ImlibFont          *
+imlib_font_load(const char *name, int size)
+{
+   ImlibFont          *fn;
+
+   fn = imlib_font_find(name, size);
+   if (fn)
+      return fn;
+
+   if((fn = imlib_font_create_font_struct(name, size)) != NULL)
+     fonts = imlib_object_list_prepend(fonts, fn);
+
+   return fn;
+}
+
+#define MAX_FONTNAMES 31
+
+static char *skip_white(char *s)
+{
+    while(isspace(*s)) ++s;
+    return s;
+}
+
+/* Skip duplicates */
+static void collect_fontnames(const char *fon_s, char *names[])
+{
+    char *s, *comma, *buf, *last, *name;
+    int i, j;
+
+    buf = strdup(fon_s);
+    i = 0;
+    s = skip_white(buf);
+    while(*s)
+   {
+	names[i] = NULL;
+    if((comma = strchr(s, ',')))
+      *comma = 0;
+    last = s + strlen(s) - 1;
+	while(last > s && isspace(*last)) --last; *++last = 0;
+	j = 0;
+	while((name = names[j]) != NULL)
+  {
+    if(strcmp(name, s) == 0)
+      break;
+    ++j;
+  }
+    if(name == NULL)
+  {
+    names[i] = strdup(s);
+	if(++i > MAX_FONTNAMES)
+	  break;
+  }
+    if(comma == NULL)
+      break;
+    s = skip_white(comma + 1);
+   }
+    names[i] = NULL; free(buf);
+}
+
+/* font_name contains a comma separated list of "name/size" elements.
+ * sets must be disjoint: if two sets begin with the same font,
+ * the existing set's chain would be destroyed.
+*/
+ImlibFont *
+imlib_font_load_fontset(const char *font_name)
+{
+    ImlibFont *head, *tail, *fn;
+    char *name, *file;
+    int i, size;
+    char *names[MAX_FONTNAMES + 1];
+
+    collect_fontnames(font_name, names);
+
+	if(names[0] == NULL)
+	  return NULL;
+    head = tail = NULL; i = 0;
+
+    while((name = names[i]))
+   {
+    if((file = imlib_font_find_file(name, &size)) != NULL)
+  {
+    if((fn = imlib_font_create_font_struct(file, size)) != NULL)
+ {
+    if(tail)
+      tail->next_in_set = fn;
+    else
+      head = fn;
+    tail = fn;
+ }
+    free(file);
+  }
+    free(name); ++i;
+   }
+    return head;
+}
+
+ImlibFont *
+imlib_font_find_face_in_fontset(ImlibFont *fn, ImlibFont *fn_list,
+    unsigned long uni_id, int encoding_id,
+    int force_missing_glyph, FT_UInt *out_glyph_id,
+    int *out_missing)
+{
+    FT_Face face;
+    FT_UInt glyph_id;
+    ImlibFont *first_invalid;
+
+    if(!fn)
+      fn = fn_list;
+    if(out_missing)
+      *out_missing = 0;
+    if(fn->ft.face == NULL)
+   {
+    FT_New_Face(ft_lib, fn->file, 0, &face);
+    fn->ft.face = face;
+   }
+    first_invalid = NULL;
+repeat_upto_invalid:
+    while(fn)
+   {
+    if(fn == first_invalid)
+  {
+    first_invalid = NULL;
+    break;
+  }
+    face = fn->ft.face;
+
+    if(face->charmap != NULL
+    || FT_Select_Charmap(face, encoding_id) == 0
+      )
+  {
+    FT_Set_Char_Size(face, 0, fn->size * 64, 96, 96);
+
+    if(force_missing_glyph)
+      glyph_id = 0;
+    else
+      glyph_id = FT_Get_Char_Index(face, uni_id);
+
+    if(glyph_id || force_missing_glyph)
+ {
+    *out_glyph_id = glyph_id;
+    return fn;
+ }
+    if(first_invalid == NULL)
+      first_invalid = fn;
+  }
+    fn = fn->next_in_set;
+   }/* while(fn) */
+    if(first_invalid)
+   {
+    fn = fn_list;
+    goto repeat_upto_invalid;
+   }
+    if(out_missing)
+      *out_missing = 1;
+    return
+      imlib_font_find_face_in_fontset(NULL, fn_list, 0, encoding_id, 1,
+        out_glyph_id, NULL);
+}
+
+void
+imlib_font_free_fontset(ImlibFont *fn_list)
+{
+   ImlibFont *fn;
+
+   while((fn = fn_list))
+  {
+   fn_list = fn_list->next_in_set;
+/*   imlib_font_free(fn); */
+   imlib_hash_free(fn->glyphs);
+  
+   if (fn->file)
+      free(fn->file);
+   if (fn->name)
+      free(fn->name);
+   FT_Done_Face(fn->ft.face);
+   free(fn);
+  }
 }
 
 void

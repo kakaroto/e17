@@ -67,7 +67,7 @@ imlib_font_cache_glyph_get(ImlibFont * fn, FT_UInt index)
 }
 
 void
-imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
+imlib_render_str(ImlibImage * im, ImlibFont *fn_list, int drx, int dry,
                  const char *text, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
                  char dir, double angle, int *retw, int *reth, int blur,
                  int *nextx, int *nexty, ImlibOp op, int clx, int cly,
@@ -78,8 +78,9 @@ imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
    DATA32             *data, col;
    int                 nx, ny;
 
-   imlib_font_query_advance(fn, text, &w, NULL);
-   h = imlib_font_max_ascent_get(fn) - imlib_font_max_descent_get(fn);
+   imlib_font_query_advance(fn_list, text, &w, NULL);
+   h = imlib_font_max_ascent_get(fn_list) 
+     - imlib_font_max_descent_get(fn_list);
 
    data = malloc(w * h * sizeof(DATA32));
    if (!data)
@@ -97,10 +98,10 @@ imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
    /* TODO check for endianess */
    col = (a << 24) | (r << 16) | (g << 8) | b;
 
-   ascent = imlib_font_max_ascent_get(fn);
+   ascent = imlib_font_max_ascent_get(fn_list);
 
-   imlib_font_draw(im2, col, fn, 0, ascent, text, &nx, &ny, 0, 0, w, h);
-
+ imlib_font_draw(im2, col, fn_list, 0, ascent, text, &nx, &ny, clx, cly,
+		 clw, clh);
    /* OK, now we have small ImlibImage with text rendered, 
     * have to blend it on im */
 
@@ -246,13 +247,13 @@ imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
 }
 
 void
-imlib_font_draw(ImlibImage * dst, DATA32 col, ImlibFont * fn, int x, int y,
+imlib_font_draw(ImlibImage * dst, DATA32 col, ImlibFont *fn_list, int x, int y,
                 const char *text, int *nextx, int *nexty, int clx, int cly,
                 int clw, int clh)
 {
-   int                 use_kerning;
+   ImlibFont          *fn;
    int                 pen_x, pen_y;
-   int                 chr;
+   int                 chr, missing_glyph;
    FT_UInt             prev_index;
    int                 ext_x, ext_y, ext_w, ext_h;
    DATA32             *im;
@@ -304,8 +305,8 @@ imlib_font_draw(ImlibImage * dst, DATA32 col, ImlibFont * fn, int x, int y,
 
    pen_x = x << 8;
    pen_y = y << 8;
-   use_kerning = FT_HAS_KERNING(fn->ft.face);
-   prev_index = 0;
+   prev_index = 0; fn = NULL; missing_glyph = 1;
+
    for (chr = 0; text[chr];)
      {
         FT_UInt             index;
@@ -316,18 +317,24 @@ imlib_font_draw(ImlibImage * dst, DATA32 col, ImlibFont * fn, int x, int y,
         gl = imlib_font_utf8_get_next((unsigned char *)text, &chr);
         if (gl == 0)
            break;
-        index = FT_Get_Char_Index(fn->ft.face, gl);
-        if ((use_kerning) && (prev_index) && (index))
-          {
-             FT_Vector           delta;
+        if(missing_glyph)
+          fn = fn_list;
+        fn =
+          imlib_font_find_face_in_fontset(fn, fn_list, gl, 
+            FT_ENCODING_UNICODE, 0, &index, &missing_glyph);
 
-             FT_Get_Kerning(fn->ft.face, prev_index, index, ft_kerning_default,
-                            &delta);
-             pen_x += delta.x << 2;
+        if(FT_HAS_KERNING(fn->ft.face) && (prev_index) && (index))
+          {
+            FT_Vector delta;
+
+            FT_Get_Kerning(fn->ft.face, prev_index, index, ft_kerning_default,
+              &delta);
+            pen_x += delta.x << 2;
           }
+
         fg = imlib_font_cache_glyph_get(fn, index);
-        if (!fg)
-           continue;
+        if(!fg)
+          continue;
 
         chr_x = (pen_x + (fg->glyph_out->left << 8)) >> 8;
         chr_y = (pen_y + (fg->glyph_out->top << 8)) >> 8;
@@ -418,5 +425,5 @@ imlib_font_draw(ImlibImage * dst, DATA32 col, ImlibFont * fn, int x, int y,
    if (nextx)
       *nextx = (pen_x >> 8) - x;
    if (nexty)
-      *nexty = imlib_font_get_line_advance(fn);
+      *nexty = imlib_font_get_line_advance(fn_list);
 }

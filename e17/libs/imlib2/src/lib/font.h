@@ -50,6 +50,7 @@ struct _Imlib_Font
 
    int                 references;
 
+   struct _Imlib_Font *next_in_set;
 };
 
 struct _Imlib_Font_Glyph
@@ -83,6 +84,12 @@ void                imlib_font_modify_cache_by(ImlibFont * fn, int dir);
 void                imlib_font_modify_cache_by(ImlibFont * fn, int dir);
 void                imlib_font_flush_last(void);
 ImlibFont          *imlib_font_find(const char *name, int size);
+ImlibFont          *imlib_font_load_fontset(const char *font_name);
+void                imlib_font_free_fontset(ImlibFont *fn_list);
+ImlibFont          *imlib_font_find_face_in_fontset(ImlibFont *fn, 
+                         ImlibFont *fn_list, unsigned long uni_id, 
+                         int encoding_id, int force_missing_glyph,
+                         FT_UInt *out_glyph_id, int *out_missing);
 
 void                imlib_font_query_size(ImlibFont * fn, const char *text,
 					  int *w, int *h);

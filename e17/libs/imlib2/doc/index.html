@@ -1468,9 +1468,10 @@ and vertically)</blockquote>
 
 <blockquote>This function will load a truetype font from the first directory
 in the font path that contains that font. The font name format is "font_name/size".
-For example. If there is a font file called blum.ttf somewhere in the font
-path you might use "blum/20" to load a 20 pixel sized font of blum. If
-the font cannot be found NULL is returned.</blockquote>
+For example: if there is a font file called blum.ttf somewhere in the font
+path you might use "blum/20" to load a 20 pixel sized font of blum;&nbsp;
+or "blum/20, vera/20, mono/20" to load one or all fonts of the comma
+separated list. If the font cannot be found NULL is returned.</blockquote>
 
 <b><tt><font color="#660000"><font size=+2>void imlib_free_font(void);</font></font></tt></b>
 

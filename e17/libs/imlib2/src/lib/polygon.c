@@ -536,7 +536,7 @@ __imlib_Polygon_DrawToData(ImlibPoly poly, char close, DATA32 color,
 	while (j < nactive_edges)
 	  {
 	   int          lx, rx;
-           int          e_lx, e_rx;
+           int          e_lx = 0, e_rx = 0;
 	   PolyEdge     *e;
 
 	   e = edge + j;
@@ -760,7 +760,7 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 	while (j < nactive_edges)
 	  {
 	   int          lx, rx;
-           int          e_lx, e_rx;
+           int          e_lx = 0, e_rx = 0;
 	   PolyEdge     *e;
 
 	   e = edge + j;
@@ -1107,8 +1107,8 @@ __imlib_Polygon_FillToData(ImlibPoly poly, DATA32 color,
 	while (j < nactive_edges)
 	  {
 	   int          lx, rx;
-           int          le_lx, le_rx;
-           int          re_lx, re_rx;
+           int          le_lx = 0, le_rx = 0;
+           int          re_lx = 0, re_rx = 0;
 	   PolyEdge     *le, *re;
 
 	   if (j < (nactive_edges - 1))
@@ -1395,8 +1395,8 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 	while (j < nactive_edges)
 	  {
 	   int          lx, rx;
-	   int          le_lx, le_rx;
-	   int          re_lx, re_rx;
+	   int          le_lx = 0, le_rx = 0;
+	   int          re_lx = 0, re_rx = 0;
 	   PolyEdge     *le, *re;
 
 	   if (j < (nactive_edges - 1))

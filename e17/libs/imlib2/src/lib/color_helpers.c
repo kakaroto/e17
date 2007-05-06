@@ -1,3 +1,4 @@
+#include <math.h>
 #include "color_helpers.h"
 /*
  * Color space conversion helper routines
