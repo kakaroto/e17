@@ -522,6 +522,7 @@ epsilon_generate (Epsilon * e)
 #ifdef HAVE_EPEG_H
   Epeg_Image *im;
   Epeg_Thumbnail_Info info;
+  int len;
 #endif
 
   if (!e || !e->src || !e->hash)
