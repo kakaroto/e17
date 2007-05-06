@@ -75,6 +75,7 @@ static struct
 static struct
 {
    int                 zoom;
+   Idler              *idler;
 } Mode_pagers;
 
 typedef struct
@@ -1713,12 +1714,15 @@ PagersShow(int enable)
 	for (i = 0; i < DesksGetNumber(); i++)
 	   PagersForDesktopEnable(DeskGet(i));
 	UpdatePagerSel();
+	Mode_pagers.idler = IdlerAdd(50, _PagersIdler, NULL);
      }
    else if (!enable && Conf_pagers.enable)
      {
 	for (i = 0; i < DesksGetNumber(); i++)
 	   PagersForDesktopDisable(DeskGet(i));
 	Conf_pagers.enable = 0;
+	IdlerDel(Mode_pagers.idler);
+	Mode_pagers.idler = NULL;
      }
 }
 
@@ -2000,7 +2004,6 @@ PagersSighan(int sig, void *prm)
 	   break;
 	Conf_pagers.enable = 0;
 	PagersShow(1);
-	IdlerAdd(50, _PagersIdler, NULL);
 	break;
 
      case ESIGNAL_AREA_CONFIGURED:
