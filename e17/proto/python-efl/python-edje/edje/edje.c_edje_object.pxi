@@ -51,6 +51,17 @@ cdef class Edje(evas.c_evas.Object):
         if self.obj == NULL:
             self._set_obj(edje_object_add(self._evas.obj))
 
+    def _set_common_params(self, file=None, group=None, size=None, pos=None,
+                           geometry=None, color=None, name=None):
+        if file:
+            self.file_set(file, group)
+        evas.c_evas.Object._set_common_params(self, size=size, pos=pos,
+                                              geometry=geometry, color=color,
+                                              name=name)
+        if not size and not geometry:
+            w, h = self.size_min_get()
+            self.size_set(w, h)
+
     def data_get(self, char *key):
         return edje_object_data_get(self.obj, key)
 

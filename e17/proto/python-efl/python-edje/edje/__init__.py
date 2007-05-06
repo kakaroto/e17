@@ -58,19 +58,6 @@ class Edje(c_edje.Edje):
                 size=None, pos=None, geometry=None, color=None, name=None):
         obj = c_edje.Edje.__new__(type, canvas)
         obj._new_obj()
-        if file:
-            obj.file_set(file, group)
-        if size:
-            obj.size_set(*size)
-        if pos:
-            obj.pos_set(*pos)
-        if geometry:
-            obj.geometry_set(*geometry)
-        if color:
-            obj.color_set(*c_evas.color_parse(color))
-        if name:
-            obj.name_set(name)
-        if not size and not geometry:
-            w, h = obj.size_min_get()
-            obj.size_set(w, h)
+        obj._set_common_params(file=file, group=group, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
         return obj
