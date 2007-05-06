@@ -2,25 +2,21 @@
 
 cdef void text_change_cb(void *data, evas.c_evas.Evas_Object *obj, char *part):
     cdef Edje self
-    cdef evas.c_evas.Object o
     self = <Edje>data
     if self._text_change_cb is None:
         return
-    o = evas.c_evas._Object_from_instance(<long>obj)
     func, args, kargs = self._text_change_cb
-    func(self, o, part, *args, **kargs)
+    func(self, part, *args, **kargs)
 
 
 cdef void message_handler_cb(void *data, evas.c_evas.Evas_Object *obj,
                              Edje_Message_Type type, int id, void *msg):
     cdef Edje self
-    cdef evas.c_evas.Object o
     self = <Edje>data
     if self._message_handler_cb is None:
         return
-    o = evas.c_evas._Object_from_instance(<long>obj)
     func, args, kargs = self._message_handler_cb
-    func(self, o, Message_from_type(type, id, msg), *args, **kargs)
+    func(self, Message_from_type(type, id, msg), *args, **kargs)
 
 
 class EdjeLoadError(Exception):
