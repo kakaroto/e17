@@ -3,6 +3,10 @@ cdef extern from "Python.h":
     ctypedef unsigned int size_t
     # string.h
     void *memset(void *b, int c, size_t len)
+    int strcmp(char *a, char *b)
+
+    # stdlib.h
+    void free(void *ptr)
 
     # pyport.h / limits.h
     ctypedef long long PY_LONG_LONG
@@ -74,6 +78,12 @@ cdef extern from "Python.h":
     int PyObject_CheckReadBuffer(obj)
     int PyObject_AsReadBuffer(obj, void **buffer, Py_ssize_t *buffer_len) except -1
     int PyObject_AsWriteBuffer(obj, void **buffer, Py_ssize_t *buffer_len) except -1
+
+    # buffer.h
+    object PyBuffer_FromObject(object, int offset, int size)
+    object PyBuffer_FromMemory(void *ptr, int size)
+    object PyBuffer_FromReadWriteMemory(void *ptr, int size)
+    object PyBuffer_New(int size)
 
     # methodobject.h
     object PyMethod_New(object func, object self, object cls)
