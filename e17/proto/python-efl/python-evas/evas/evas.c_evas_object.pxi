@@ -98,8 +98,11 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
     def type_get(self):
         "Get the Evas object's type"
+        cdef char *s
         if self.obj:
-            return evas_object_type_get(self.obj)
+            s = evas_object_type_get(self.obj)
+            if s != NULL:
+                return s
 
     property type:
         def __get__(self):
@@ -468,7 +471,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             self.clip_set(value)
 
     def name_get(self):
-        return evas_object_name_get(self.obj)
+        cdef char *s
+        s = evas_object_name_get(self.obj)
+        if s != NULL:
+            return s
 
     def name_set(self, char *value):
         evas_object_name_set(self.obj, value)

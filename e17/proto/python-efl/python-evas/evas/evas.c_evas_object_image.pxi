@@ -25,7 +25,15 @@ cdef class Image(Object):
     def file_get(self):
         cdef char *f, *k
         evas_object_image_file_get(self.obj, &f, &k)
-        return (f, k)
+        if f == NULL:
+            file = None
+        else:
+            file = f
+        if k == NULL:
+            key = None
+        else:
+            key = k
+        return (file, key)
 
     property file:
         def __get__(self):
