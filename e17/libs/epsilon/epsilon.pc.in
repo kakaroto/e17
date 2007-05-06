@@ -5,7 +5,6 @@ includedir=@includedir@
 
 Name: epsilon
 Description: Freedesktop standards thumbnailer using the Enlightenment Foundation Libraries.
-Requires: @requirements@
 Version: @VERSION@
 Libs: -L${libdir} -lepsilon
 Cflags: -I${includedir}
