@@ -486,6 +486,7 @@ TextclassSighan(int sig, void *prm __UNUSED__)
 	tc->norm.normal->fontname =
 	   Estrdup("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
 	ESetColor(&(tc->norm.normal->fg_col), 0, 0, 0);
+	TextclassPopulate(tc);
 	break;
      }
 }
