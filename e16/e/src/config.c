@@ -531,23 +531,17 @@ ThemeConfigLoad(void)
       "fonts.cfg",
       "init.cfg",
       "textclasses.cfg",
-      "backup-textclasses.cfg",
 #if ENABLE_COLOR_MODIFIERS
       "colormodifiers.cfg",
-      "backup-colormodifiers.cfg",
 #endif
       "imageclasses.cfg",
-      "backup-imageclasses.cfg",
       "desktops.cfg",
       "actionclasses.cfg",
-      "backup-cursors.cfg",
       "buttons.cfg",
       "slideouts.cfg",
       "borders.cfg",
-      "backup-borders.cfg",
       "windowmatches.cfg",
       "tooltips.cfg",
-      "backup-tooltips.cfg",
       "menustyles.cfg",
    };
    char                s[FILEPATH_LEN_MAX];
