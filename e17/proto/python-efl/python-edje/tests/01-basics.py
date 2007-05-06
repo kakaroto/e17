@@ -18,7 +18,7 @@ class Basics(unittest.TestCase):
 
     def testConstructorNotExist(self):
         def f():
-            o = edje.Edje(self.canvas.evas, file="inexistent", group="abc")
+            o = edje.Edje(self.canvas.evas, file="inexistent", group="")
         self.assertRaises(edje.EdjeLoadError, f)
 
     def testPartExists(self):
