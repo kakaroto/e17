@@ -571,7 +571,7 @@ static struct descrip ccstm_finder[] = {
 
 /* D30/D60 custom functions. */
 
-static struct ccstm canon_d30custom[] = {
+static const struct ccstm canon_d30custom[] = {
 	{ 1, ccstm_offon, "Long exposure noise reduction" },
 	{ 2, ccstm_shutter, "Shutter/AE lock buttons" },
 	{ 3, ccstm_disen, "Mirror lockup" },
@@ -593,7 +593,7 @@ static struct ccstm canon_d30custom[] = {
 
 /* EOS-1D/1Ds custom functions. */
 
-static struct ccstm canon_1dcustom[] = {
+static const struct ccstm canon_1dcustom[] = {
 	{ 0, ccstm_fscr, "Focusing screen" },
 	{ 1, ccstm_finder, "Finder display during exposure" },
 	{ 2, ccstm_yesno, "Shutter release w/o CF card" },
@@ -790,7 +790,7 @@ canon_subval(struct exifprop *prop, struct exiftags *t,
  */
 static void
 canon_custom(struct exifprop *prop, char *off, enum order o,
-    struct ccstm *table)
+             const struct ccstm *table)
 {
 	int i, j = -1;
 	const char *cn;
