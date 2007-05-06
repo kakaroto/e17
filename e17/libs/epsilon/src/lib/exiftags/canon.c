@@ -51,8 +51,8 @@
 
 struct ccstm {
 	int32_t val;
-	const char *descr;
 	struct descrip *table;
+	const char descr[];
 };
 
 
@@ -572,50 +572,50 @@ static struct descrip ccstm_finder[] = {
 /* D30/D60 custom functions. */
 
 static struct ccstm canon_d30custom[] = {
-	{ 1,	"Long exposure noise reduction", ccstm_offon },
-	{ 2,	"Shutter/AE lock buttons", ccstm_shutter },
-	{ 3,	"Mirror lockup", ccstm_disen },
-	{ 4,	"Tv/Av and exposure level", ccstm_explvl },
-	{ 5,	"AF-assist light", ccstm_autooff },
-	{ 6,	"Av mode shutter speed", ccstm_shutspd },
-	{ 7,	"AEB sequence/auto cancellation", ccstm_aebseq },
-	{ 8,	"Shutter curtain sync", ccstm_shutsync },
-	{ 9,	"Lens AF stop button", ccstm_lensaf },
-	{ 10,	"Fill flash auto reduction", ccstm_endis },
-	{ 11,	"Menu button return position", ccstm_menubut },
-	{ 12,	"Shooting Set button function", ccstm_setbut },
-	{ 13,	"Sensor cleaning", ccstm_disen },
-	{ 14,	"Superimposed display", ccstm_onoff },
-	{ 15,	"Shutter release w/o CF card", ccstm_yesno },
-	{ -1,	"Unknown function", NULL },
+	{ 1, ccstm_offon, "Long exposure noise reduction" },
+	{ 2, ccstm_shutter, "Shutter/AE lock buttons" },
+	{ 3, ccstm_disen, "Mirror lockup" },
+	{ 4, ccstm_explvl, "Tv/Av and exposure level" },
+	{ 5, ccstm_autooff, "AF-assist light" },
+	{ 6, ccstm_shutspd, "Av mode shutter speed" },
+	{ 7, ccstm_aebseq, "AEB sequence/auto cancellation" },
+	{ 8, ccstm_shutsync, "Shutter curtain sync" },
+	{ 9, ccstm_lensaf1, "Lens AF stop button" },
+	{ 10, ccstm_endis, "Fill flash auto reduction" },
+	{ 11, ccstm_menubut, "Menu button return position" },
+	{ 12, ccstm_setbut, "Shooting Set button function" },
+	{ 13, ccstm_disen, "Sensor cleaning" },
+	{ 14, ccstm_onoff, "Superimposed display" },
+	{ 15, ccstm_yesno, "Shutter release w/o CF card" },
+	{ -1, NULL, "Unknown function" },
 };
 
 
 /* EOS-1D/1Ds custom functions. */
 
 static struct ccstm canon_1dcustom[] = {
-	{ 0,	"Focusing screen", ccstm_fscr },
-	{ 1,	"Finder display during exposure", ccstm_finder },
-	{ 2,	"Shutter release w/o CF card", ccstm_yesno },
-	{ 3,	"ISO speed expansion", ccstm_yesno },
-	{ 4,	"Shutter button/AEL button", ccstm_shutterael },
-	{ 5,	"Manual Tv/Av for M", ccstm_tvavform },
-	{ 6,	"Exposure level increments", ccstm_explvlinc },
-	{ 7,	"USM lens electronic MF", ccstm_usmmf },
-	{ 8,	"Top/back LCD panels", ccstm_lcdpanels },
-	{ 9,	"AEB sequence/auto cancellation", ccstm_aebseq },
-	{ 10,	"AF point illumination", ccstm_afill },
-	{ 11,	"AF point selection", ccstm_afsel },
-	{ 12,	"Mirror lockup", ccstm_disen },
-	{ 13,	"# AF points/spot metering", ccstm_afspot },
-	{ 14,	"Fill flash auto reduction", ccstm_endis },
-	{ 15,	"Shutter curtain sync", ccstm_shutsync },
-	{ 16,	"Safety shift in Av or Tv", ccstm_endis },
-	{ 17,	"AF point activation area", ccstm_afact },
-	{ 18,	"Switch to registered AF point", ccstm_regaf },
-	{ 19,	"Lens AF stop button", ccstm_lensaf1 },
-	{ 20,	"AI servo tracking sensitivity", ccstm_aisens },
-	{ -1,	"Unknown function", NULL },
+	{ 0, ccstm_fscr, "Focusing screen" },
+	{ 1, ccstm_finder, "Finder display during exposure" },
+	{ 2, ccstm_yesno, "Shutter release w/o CF card" },
+	{ 3, ccstm_yesno, "ISO speed expansion" },
+	{ 4, ccstm_shutterael, "Shutter button/AEL button" },
+	{ 5, ccstm_tvavform, "Manual Tv/Av for M" },
+	{ 6, ccstm_explvlinc, "Exposure level increments" },
+	{ 7, ccstm_usmmf, "USM lens electronic MF" },
+	{ 8, ccstm_lcdpanels, "Top/back LCD panels" },
+	{ 9, ccstm_aebseq, "AEB sequence/auto cancellation" },
+	{ 10, ccstm_afill, "AF point illumination" },
+	{ 11, ccstm_afsel, "AF point selection" },
+	{ 12, ccstm_disen, "Mirror lockup" },
+	{ 13, ccstm_afspot, "# AF points/spot metering" },
+	{ 14, ccstm_endis, "Fill flash auto reduction" },
+	{ 15, ccstm_shutsync, "Shutter curtain sync" },
+	{ 16, ccstm_endis, "Safety shift in Av or Tv" },
+	{ 17, ccstm_afact, "AF point activation area" },
+	{ 18, ccstm_regaf, "Switch to registered AF point" },
+	{ 19, ccstm_lensaf1, "Lens AF stop button" },
+	{ 20, ccstm_aisens, "AI servo tracking sensitivity" },
+	{ -1, NULL, "Unknown function" },
 };
 
 
