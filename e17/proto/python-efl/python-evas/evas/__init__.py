@@ -53,6 +53,7 @@ EVAS_FONT_HINTING_AUTO = 1
 EVAS_FONT_HINTING_BYTECODE = 2
 
 
+EvasLoadError = c_evas.EvasLoadError
 Rect = c_evas.Rect
 
 class Canvas(c_evas.Canvas):

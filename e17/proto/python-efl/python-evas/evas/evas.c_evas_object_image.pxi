@@ -16,11 +16,15 @@ cdef class Image(Object):
 
     def file_set(self, char *filename, key=None):
         cdef char *k
+        cdef int err
         if key:
             k = key
         else:
             k = NULL
         evas_object_image_file_set(self.obj, filename, k)
+        err = evas_object_image_load_error_get(self.obj)
+        if err != EVAS_LOAD_ERROR_NONE:
+            raise EvasLoadError(err)
 
     def file_get(self):
         cdef char *f, *k

@@ -157,6 +157,25 @@ def color_rgb_to_hsv(int r, int g, int b):
     return (h, s, v)
 
 
+class EvasLoadError(Exception):
+    def __init__(self, int code):
+        if code == EVAS_LOAD_ERROR_NONE:
+            msg = "No error on load"
+        elif code == EVAS_LOAD_ERROR_GENERIC:
+            msg = "A non-specific error occured"
+        elif code == EVAS_LOAD_ERROR_DOES_NOT_EXIST:
+            msg = "File (or file path) does not exist"
+        elif code == EVAS_LOAD_ERROR_PERMISSION_DENIED:
+            msg = "Permission deinied to an existing file (or path)"
+        elif code == EVAS_LOAD_ERROR_RESOURCE_ALLOCATION_FAILED:
+            msg = "Allocation of resources failure prevented load"
+        elif code == EVAS_LOAD_ERROR_CORRUPT_FILE:
+            msg = "File corrupt (but was detected as a known format)"
+        elif code == EVAS_LOAD_ERROR_UNKNOWN_FORMAT:
+            msg = "File is not a known format"
+        Exception.__init__(self, msg)
+
+
 include "evas.c_evas_rect.pxi"
 include "evas.c_evas_canvas.pxi"
 include "evas.c_evas_object_events.pxi"
