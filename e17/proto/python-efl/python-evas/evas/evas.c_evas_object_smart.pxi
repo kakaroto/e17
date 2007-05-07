@@ -62,14 +62,17 @@ cdef void _smart_object_clip_unset(Evas_Object *o):
     if obj._m_clip_unset is not None:
         obj._m_clip_unset(obj)
 
+
 cdef void _smart_callback(void *data, Evas_Object *o, void *event_info):
     cdef SmartObject obj
-    cdef object t, ei
+    cdef object event, ei
     obj = <SmartObject>Object_from_instance(o)
-    t = <object>data
+    event = <object>data
     ei = <object>event_info
-    func, args, kargs = t
-    func(obj, ei, *args, **kargs)
+    lst = obj._smart_callbacks[event]
+    for func, args, kargs in lst:
+        func(obj, ei, *args, **kargs)
+
 
 cdef long _smart_object_class_new(char *name) except 0:
     cdef Evas_Smart_Class *cls_def
@@ -222,14 +225,23 @@ cdef class SmartObject(Object):
             return self.members_get()
 
     def callback_add(self, char *event, func, *args, **kargs):
-        t = (func, args, kargs)
-        self._smart_callbacks[event] = t
-        evas_object_smart_callback_add(self.obj, event, _smart_callback,
-                                       <void *>t)
+        e = event
+        lst = self._smart_callbacks.setdefault(e, [])
+        if not lst:
+            evas_object_smart_callback_add(self.obj, event, _smart_callback,
+                                           <void *>e)
+        lst.append((func, args, kargs))
 
-    def callback_del(self, char *event):
-        del self._smart_callbacks[event]
-        evas_object_smart_callback_del(self.obj, event, _smart_callback)
+    def callback_del(self, char *event, func):
+        lst = self._smart_callbacks[event]
+        i = -1
+        for i, (f, a, k) in enumerate(lst):
+            if func == f:
+                break
+        del lst[i]
+        if not lst:
+            del self._smart_callbacks[event]
+            evas_object_smart_callback_del(self.obj, event, _smart_callback)
 
     def callback_call(self, char *event, event_info=None):
         evas_object_smart_callback_call(self.obj, event, <void*>event_info)
