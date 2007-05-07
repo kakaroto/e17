@@ -190,19 +190,19 @@ WindowMatchConfigLoad(FILE * fs)
 	     if (!wm)
 		break;
 	     wm->match = MATCH_TYPE_TITLE;
-	     wm->value = Estrdup(s + len);
+	     wm->value = Estrdup(s2);
 	     break;
 	  case WINDOWMATCH_MATCHNAME:
 	     if (!wm)
 		break;
 	     wm->match = MATCH_TYPE_WM_NAME;
-	     wm->value = Estrdup(s + len);
+	     wm->value = Estrdup(s2);
 	     break;
 	  case WINDOWMATCH_MATCHCLASS:
 	     if (!wm)
 		break;
 	     wm->match = MATCH_TYPE_WM_CLASS;
-	     wm->value = Estrdup(s + len);
+	     wm->value = Estrdup(s2);
 	     break;
 
 	  case WINDOWMATCH_WIDTH:
