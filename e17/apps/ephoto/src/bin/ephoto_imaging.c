@@ -154,12 +154,12 @@ static void save_image(Ewl_Widget *w, void *event, void *data)
 	pid_t pid;
 
 	file = ewl_text_text_get(EWL_TEXT(data)); 
-	snprintf(flags, PATH_MAX, "quality=%f compression=%f", ewl_range_value_get(EWL_RANGE(qseek)), 
+	snprintf(flags, PATH_MAX, "quality=%f compress=%f", ewl_range_value_get(EWL_RANGE(qseek)), 
 							       ewl_range_value_get(EWL_RANGE(cseek)));
 
 	if(!file) return;
 
-	if(VISIBLE(em->eimage) && file)
+	if(VISIBLE(em->eimage))
 	{
 		pid = fork();
 		if(pid == 0)
