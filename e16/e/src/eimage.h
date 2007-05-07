@@ -39,6 +39,7 @@ typedef struct
 #define EIMAGE_HIGH_MASK_THR    0x04
 
 void                EImageInit(Display * dpy);
+int                 EImageSetCacheSize(int size);
 
 EImage             *EImageCreate(int w, int h);
 EImage             *EImageCreateFromData(int w, int h, unsigned int *data);

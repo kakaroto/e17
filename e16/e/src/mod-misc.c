@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "dialog.h"
+#include "eimage.h"
 #include "emodule.h"
 #include "settings.h"
 #include "snaps.h"
@@ -108,6 +109,19 @@ MiscSighan(int sig, void *prm __UNUSED__)
 }
 #endif
 
+static void
+_CfgImageCacheSize(void *item __UNUSED__, const char *value)
+{
+   int                 size_old, size_new;
+
+   if (!value || !value[0])
+      return;
+
+   size_new = atoi(value);
+   size_old = EImageSetCacheSize(size_new);
+   IpcPrintf("Image cache size %u->%u byte\n", size_old, size_new);
+}
+
 static const CfgItem MiscCfgItems[] = {
 
    CFG_ITEM_INT(Conf, animation.step, 10),
@@ -166,6 +180,7 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, testing.argb_internal_clients, 0),
    CFG_ITEM_BOOL(Conf, testing.argb_clients, 0),
    CFG_ITEM_BOOL(Conf, testing.argb_clients_inherit_attr, 0),
+   CFG_FUNC_INT(Conf, testing.image_cache_size, -1, _CfgImageCacheSize),
    CFG_ITEM_INT(Conf, testing.mask_alpha_threshold, 8),
 
    CFG_ITEM_BOOL(Conf, autosave, 1),

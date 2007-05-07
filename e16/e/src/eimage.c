@@ -53,6 +53,17 @@ EImageInit(Display * dpy)
    imlib_context_set_dither(1);
 }
 
+int
+EImageSetCacheSize(int size)
+{
+   int                 size_old;
+
+   size_old = imlib_get_cache_size();
+   imlib_set_cache_size(size);
+
+   return size_old;
+}
+
 static void
 _EImageFlagsSet(int flags)
 {

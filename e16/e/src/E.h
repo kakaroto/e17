@@ -429,6 +429,7 @@ typedef struct
       char                argb_internal_clients;
       char                argb_clients;
       char                argb_clients_inherit_attr;
+      int                 image_cache_size;
       int                 mask_alpha_threshold;
    } testing;
 
