@@ -63,6 +63,7 @@ static void window_fullscreen(Ewl_Widget *w, void *event, void *data)
 void show_main_view(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->main_nb), em->main_vbox);
+	ewl_widget_disable(em->smi);
 	ecore_dlist_goto_first(em->images);
 }
 
@@ -141,6 +142,7 @@ static void add_album(Ewl_Widget *w, void *event, void *data)
 
 	button = add_button(hbox, "Save", PACKAGE_DATA_DIR "/images/stock_save.png", save, window);
 	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
+	
 	button = add_button(hbox, "Cancel", PACKAGE_DATA_DIR "/images/dialog-close.png", cancel, window);
 	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
 }
@@ -164,6 +166,8 @@ void create_main_gui(void)
 
 	mb = add_menubar(vbox);
 	menu = add_menu(mb, "File");
+	em->smi = add_menu_item(menu, "Save Image", PACKAGE_DATA_DIR "/images/stock_save.png", save_dialog, NULL);
+	ewl_widget_disable(em->smi);
 	mi = add_menu_item(menu, "Exit", PACKAGE_DATA_DIR "/images/exit.png", destroy, NULL);
 	menu = add_menu(mb, "Albums");
 	mi = add_menu_item(menu, "Add Album", PACKAGE_DATA_DIR "/images/add.png", add_album, NULL);
