@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: entrance-edit-gui
 Architecture: any
-Depends: ${shlibs:Depends}, libentrance0-edit, libentrance0-widgets
+Depends: ${shlibs:Depends}, libentrance0-edit, libentrance0-widgets, libedje0, libetk0
 Description: Entrance configuration editing tool
  Entrance is a login manager similar to gdm or kdm, it is based on the
  Enlightenment Foundation Libraries.  It is fully themeable via Edje.
@@ -17,7 +17,7 @@ Description: Entrance configuration editing tool
 
 Package: libentrance0-widgets
 Architecture: any
-Depends: ${shlibs:Depends}, libentrance0-edit
+Depends: ${shlibs:Depends}, libentrance0-edit, libedje0, libetk0
 Provides: libentrance-widgets
 Description: Entrance widget library
  Entrance is a login manager similar to gdm or kdm, it is based on the
