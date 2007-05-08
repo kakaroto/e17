@@ -2,7 +2,7 @@ Source: entrance
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>> 4.0.0), automake1.7 | automaken, libtool, libpam0g-dev, libevas-dev, libecore-dev, ecore0-bin, libedje-dev, edje0-bin, libesmart-dev
+Build-Depends: debhelper (>> 4.0.0), automake1.7 | automaken, libtool, libpam0g-dev, libevas-dev, libecore-dev, ecore0-bin, libedje-dev, edje0-bin, libesmart-dev, libxp-dev
 Standards-Version: 3.7.2
 
 Package: entrance
@@ -27,7 +27,7 @@ Description: Entrance configuration editing library
 Package: libentrance0-edit-dev
 Section: x11
 Architecture: any
-Depends: libecore-dev, libentrance0-edit
+Depends: libecore-dev, libentrance0-edit, libpam0g-dev, libxp-dev
 Provides: libentrance-edit-dev
 Description: Entrance configuration editing library development files
  Entrance is a login manager similar to gdm or kdm, it is based on the 
