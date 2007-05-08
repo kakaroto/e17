@@ -2,7 +2,7 @@ Source: entrance-edit-gui
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: cdbs, debhelper (>= 4.1.0), libentrance0-edit-dev
+Build-Depends: cdbs, debhelper (>= 4.1.0), libentrance0-edit-dev, libedje0-dev, libetk0-dev
 Standards-Version: 3.7.2
 
 Package: entrance-edit-gui
@@ -27,7 +27,7 @@ Description: Entrance widget library
 
 Package: libentrance0-widgets-dev
 Architecture: any
-Depends: libentrance0-edit
+Depends: libentrance0-edit, libetk0-dev, libedje0-dev
 Provides: libentrance-widgets-dev
 Description: Entrance widget library
  Entrance is a login manager similar to gdm or kdm, it is based on the
