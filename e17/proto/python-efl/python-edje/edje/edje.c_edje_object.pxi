@@ -22,8 +22,8 @@ cdef void message_handler_cb(void *data, evas.c_evas.Evas_Object *obj,
 cdef void signal_cb(void *data, evas.c_evas.Evas_Object *obj,
                     char *emission, char *source):
     cdef Edje self
-    self = <Edje>data
-    lst = self._signal_callbacks[(emission, source)]
+    self = <Edje>evas.c_evas._Object_from_instance(<long>obj)
+    lst = <object>data
     for func, args, kargs in lst:
         func(self, emission, source, *args, **kargs)
 
@@ -293,7 +293,7 @@ cdef class Edje(evas.c_evas.Object):
         lst = self._signal_callbacks.setdefault((emission, source), [])
         if not lst:
             edje_object_signal_callback_add(self.obj, emission, source,
-                                            signal_cb, <void*>self)
+                                            signal_cb, <void*>lst)
         lst.append((func, args, kargs))
 
     def signal_callback_del(self, char *emission, char *source, func):

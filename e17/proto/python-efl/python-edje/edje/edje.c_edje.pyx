@@ -1,4 +1,5 @@
 cimport python
+import evas.c_evas
 
 def init():
     return edje_init()
