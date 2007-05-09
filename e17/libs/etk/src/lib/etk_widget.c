@@ -249,6 +249,8 @@ Etk_Type *etk_widget_type_get(void)
             ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
       etk_type_property_add(widget_type, "propagate-color", ETK_WIDGET_PROPAGATE_COLOR_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      etk_type_property_add(widget_type, "disabled", ETK_WIDGET_DISABLED_PROPERTY,
+            ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "internal", ETK_WIDGET_INTERNAL_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(widget_type, "focusable", ETK_WIDGET_FOCUSABLE_PROPERTY,
