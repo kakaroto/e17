@@ -13,7 +13,7 @@ group
 
 	data
 	{
-		item: "inset" 2;
+		item: "inset" 1;
 		item: "inset/top" 4;
 		item: "inset/bottom" 0;
 	}
@@ -78,9 +78,10 @@ group
 	name: "ewl/tree/vbox";
 	data
 	{
-		item: "inset" 10;
 		item: "inset/top" 7;
-		item: "inset/bottom" 8;
+		item: "inset/bottom" 5;
+		item: "inset/left" 10;
+		item: "inset/right" 6;
 	}
 }
 
@@ -204,7 +205,7 @@ group
 				}
 				image
 				{
-					normal: "e17_button_sm_disabled.png";
+					normal: "ewl_notebook_tab.png";
 					border: 8 8 8 8;
 				}
 			}
@@ -309,13 +310,13 @@ group
 			{
 				state: "default" 0.0;
 				min: 5 19;
-				color: 255 255 255 255;
+				color: 221 221 221 100;
 			}
 			description
 			{
 				state: "odd" 0.0;
 				inherit: "default" 0.0;
-				color: 221 221 221 100;
+				color: 255 255 255 255;
 			}
 		}
 		part
