@@ -6,7 +6,10 @@ images
 group
 {
 	name: "ewl/window";
-
+	data
+	{
+		item: "inset" 2;
+	}
 	parts
 	{
 		part

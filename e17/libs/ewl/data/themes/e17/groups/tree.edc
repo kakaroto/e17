@@ -205,7 +205,7 @@ group
 				}
 				image
 				{
-					normal: "ewl_notebook_tab.png";
+					normal: "e17_button_sm_disabled.png";
 					border: 8 8 8 8;
 				}
 			}
