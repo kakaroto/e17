@@ -26,9 +26,9 @@ group
 
 	data
 	{
-		item: "inset" 10;
-		item: "inset/bottom" 8;
-		item: "inset/right" 8;
+		item: "inset" 9;
+		item: "inset/bottom" 2;
+		item: "inset/right" 5;
 	}
 
 	parts
