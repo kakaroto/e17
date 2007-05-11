@@ -27,7 +27,7 @@ group
 	data
 	{
 		item: "inset" 9;
-		item: "inset/bottom" 2;
+		item: "inset/bottom" 5;
 		item: "inset/right" 5;
 	}
 
