@@ -50,6 +50,37 @@ ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                             **pkgconfig('"ecore-evas >= 0.9.9.038"'))
 
 
+trove_classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console :: Framebuffer",
+    "Environment :: X11 Applications",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX",
+    "Programming Language :: C",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: User Interfaces",
+    ]
+
+long_description = """\
+Python bindings for Ecore and Ecore/Evas, part of Enlightenment Foundation Libraries.
+
+Ecore is the core event abstraction layer and X abstraction layer that
+makes doing selections, Xdnd, general X stuff, and event loops,
+timeouts and idle handlers fast, optimized, and convenient. It's a
+separate library so anyone can make use of the work put into Ecore to
+make this job easy for applications.
+
+Ecore/Evas binds Evas to its underlying output and event systems, like
+X, Framebuffer, DirectFB, OpenGL and possible more, taking care of
+converting events to an uniform structure and handling them to
+applications, also updating the screen when necessary (expose events,
+for instance), toggling fullscreen, setting window shape, border and
+other parameters.
+"""
+
 setup(name = 'python-ecore',
       version = '0.1.0',
       license = 'BSD',
@@ -57,6 +88,9 @@ setup(name = 'python-ecore',
       author_email = 'barbieri@gmail.com',
       url = 'http://www.enlightenment.org/',
       description = 'Python bindings for Ecore',
+      long_description = long_description,
+      keywords = 'wrapper binding enlightenment abstraction event ecore',
+      classifiers = trove_classifiers,
       packages = find_packages(),
       install_requires = ['python-evas>=0.1.0'],
       setup_requires = ['python-evas>=0.1.0'],
