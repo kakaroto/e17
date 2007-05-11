@@ -1,6 +1,9 @@
 import sys
 import os
 
+from ez_setup import use_setuptools
+use_setuptools('0.6c3')
+
 import distutils.sysconfig
 from setuptools import setup, find_packages, Extension
 import commands
@@ -30,7 +33,7 @@ ecoremodule = Extension('ecore.c_ecore',
                                  'ecore/ecore.c_ecore.pxd',
                                  'ecore/python.pxd',
                                  ],
-                        **pkgconfig('"ecore >= 0.9.9.037"'))
+                        **pkgconfig('"ecore >= 0.9.9.038"'))
 
 ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                             sources=['ecore/evas/ecore.evas.c_ecore_evas.pyx'],
@@ -44,24 +47,19 @@ ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                                      'ecore/evas/ecore.evas.c_ecore_evas_buffer.pxi',
                                      'ecore/python.pxd',
                                      ],
-                            **pkgconfig('"ecore-evas >= 0.9.9.037"'))
-
-
-headers = ['ecore/ecore.c_ecore.pxd',
-           'ecore/evas/ecore.evas.c_ecore_evas.pxd',
-           ]
-
-include_dirs = [os.path.join(python_inc, "python-evas")]
+                            **pkgconfig('"ecore-evas >= 0.9.9.038"'))
 
 
 setup(name = 'python-ecore',
       version = '0.1.0',
       license = 'BSD',
+      author = 'Gustavo Sverzut Barbieri',
+      author_email = 'barbieri@gmail.com',
+      url = 'http://www.enlightenment.org/',
       description = 'Python bindings for Ecore',
       packages = find_packages(),
       install_requires = ['python-evas>=0.1.0'],
       setup_requires = ['python-evas>=0.1.0'],
-      headers = headers,
-      include_dirs = include_dirs,
       ext_modules = [ecoremodule, ecoreevasmodule],
+      zip_safe = False,
       )
