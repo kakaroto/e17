@@ -1,6 +1,9 @@
 import sys
 import os
 
+from ez_setup import use_setuptools
+use_setuptools('0.6c3')
+
 from setuptools import setup, find_packages, Extension
 import commands
 
@@ -31,7 +34,7 @@ evasmodule = Extension('evas.c_evas',
                                 'evas/evas.c_evas_object_image.pxi',
                                 'evas/python.pxd',
                                 ],
-                       **pkgconfig('"evas >= 0.9.9.037"'))
+                       **pkgconfig('"evas >= 0.9.9.038"'))
 
 headers = ['evas/evas.c_evas.pxd',
            'evas/python_evas_utils.h',
@@ -40,8 +43,12 @@ headers = ['evas/evas.c_evas.pxd',
 setup(name = 'python-evas',
       version = '0.1.0',
       license = 'BSD',
+      author='Gustavo Sverzut Barbieri',
+      author_email='barbieri@gmail.com',
+      url='http://www.enlightenment.org/',
       description = 'Python bindings for Evas',
       packages = find_packages(),
       headers = headers,
       ext_modules = [evasmodule],
+      zip_safe=False,
       )

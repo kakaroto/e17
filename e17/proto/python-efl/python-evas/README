@@ -3,7 +3,7 @@
 REQUIREMENTS
 ============
 
- * Evas >= 0.9.9.037
+ * Evas >= 0.9.9.038
  * Pyrex >= 0.9.4.1
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc3
@@ -14,5 +14,22 @@ BUILDING AND INSTALLING
 
 This package uses setuptools, so execute:
 
- * Build: python setup.py build
- * Install: python setup.py install --prefix=/usr/local
+Build::
+
+        python setup.py build
+
+Install::
+
+        python setup.py install
+        python setup.py install_headers
+
+The last step, "install_headers", is required to enable build of other
+modules that depends on this, like python-edje and python-emotion.
+
+You can choose where to install by using command options, see output
+of "python setup.py $COMMAND --help", example:
+
+        python setup.py install --help
+        python setup.py install_headers --help
+
+Options can also be set in file "setup.cfg".
