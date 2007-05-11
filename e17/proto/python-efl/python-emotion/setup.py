@@ -1,6 +1,9 @@
 import sys
 import os
 
+from ez_setup import use_setuptools
+use_setuptools('0.6c3')
+
 import distutils.sysconfig
 from setuptools import setup, find_packages, Extension
 import commands
@@ -30,19 +33,20 @@ emotionmodule = Extension('emotion.c_emotion',
                                    ],
                           **pkgconfig('"emotion >= 0.0.1.005"'))
 
-headers = ['emotion/emotion.c_emotion.pxd',
-           ]
 
 include_dirs = [os.path.join(python_inc, "python-evas")]
 
 setup(name = 'python-emotion',
       version = '0.1.0',
       license = 'BSD',
+      author = 'Gustavo Sverzut Barbieri',
+      author_email = 'barbieri@gmail.com',
+      url = 'http://www.enlightenment.org/',
       description = 'Python bindings for Emotion',
       packages = find_packages(),
-      headers = headers,
       include_dirs = include_dirs,
       install_requires = ['python-evas>=0.1.0'],
       setup_requires = ['python-evas>=0.1.0'],
       ext_modules = [emotionmodule],
+      zip_safe = False,
       )

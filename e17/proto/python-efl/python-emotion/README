@@ -3,9 +3,9 @@
 REQUIREMENTS
 ============
 
- * Emotion >= 0.9.9.037
- * Evas >= 0.9.9.037
- * Ecore >= 0.9.9.037
+ * Emotion >= 0.0.1.005
+ * Evas >= 0.9.9.038  (indirect, Emotion dependency)
+ * Ecore >= 0.9.9.038 (indirect, Emotion dependency)
  * Python-Evas
  * Pyrex >= 0.9.4.1
  * Python >= 2.4
@@ -17,5 +17,41 @@ BUILDING AND INSTALLING
 
 This package uses setuptools, so execute:
 
- * Build: python setup.py build
- * Install: python setup.py install --prefix=/usr/local
+Build::
+
+        python setup.py build_ext
+        python setup.py build
+
+Install::
+
+        python setup.py install
+
+You can choose where to install by using command options, see output
+of "python setup.py $COMMAND --help", example:
+
+        python setup.py install --help
+
+Options can also be set in file "setup.cfg".
+
+
+TROUBLESHOOTING
+===============
+
+If you get the following error during build_ext:
+
+        emotion.c_emotion.pxd:1:8: 'evas.c_evas.pxd' not found
+        emotion.c_emotion.pxd:53:4: 'Evas_Object' is not declared
+
+Means that either evas.c_evas.pxd was not installed or it is placed
+at an non-standard place.
+
+If it's not installed at all, please do so by:
+
+        # copy and extract python-evas to 'src/python-evas', then:
+        cd src/python-evas
+        python setup.py install_headers
+
+If it's installed at a non-standard place, you can specify it with
+"build_ext --include-dirs":
+
+        python setup.py build_ext --include-dirs $EVAS_PXD_PATH
