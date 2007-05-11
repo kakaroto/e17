@@ -135,3 +135,18 @@ class Polygon(c_evas.Polygon):
         obj._set_common_params(points=points, size=size, pos=pos,
                                geometry=geometry, color=color, name=name)
         return obj
+
+
+class Text(c_evas.Text):
+    def __new__(type, canvas, text=None, font=None, font_source=None,
+                style=None, shadow_color=None, glow_color=None,
+                glow2_color=None, outline_color=None, size=None, pos=None,
+                geometry=None, color=None, name=None):
+        obj = c_evas.Text.__new__(type, canvas)
+        obj._new_obj()
+        obj._set_common_params(text=text, font=font, font_source=font_source,
+                               style=style, shadow_color=shadow_color,
+                               glow_color=glow_color, glow2_color=glow2_color,
+                               outline_color=outline_color, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
+        return obj

@@ -487,6 +487,37 @@ cdef extern from "Evas.h":
     void evas_object_polygon_points_clear(Evas_Object *obj)
 
 
+    ####################################################################
+    # Text Object
+    #
+    Evas_Object *evas_object_text_add(Evas *e)
+    void evas_object_text_font_source_set(Evas_Object *obj, char *font)
+    char *evas_object_text_font_source_get(Evas_Object *obj)
+    void evas_object_text_font_set(Evas_Object *obj, char *font, Evas_Font_Size size)
+    void evas_object_text_font_get(Evas_Object *obj, char **font, Evas_Font_Size *size)
+    void evas_object_text_text_set(Evas_Object *obj, char *text)
+    char *evas_object_text_text_get(Evas_Object *obj)
+    Evas_Coord evas_object_text_ascent_get(Evas_Object *obj)
+    Evas_Coord evas_object_text_descent_get(Evas_Object *obj)
+    Evas_Coord evas_object_text_max_ascent_get(Evas_Object *obj)
+    Evas_Coord evas_object_text_max_descent_get(Evas_Object *obj)
+    Evas_Coord evas_object_text_horiz_advance_get(Evas_Object *obj)
+    Evas_Coord evas_object_text_vert_advance_get(Evas_Object *obj)
+    Evas_Coord evas_object_text_inset_get(Evas_Object *obj)
+    int evas_object_text_char_pos_get(Evas_Object *obj, int pos, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch)
+    int evas_object_text_char_coords_get(Evas_Object *obj, Evas_Coord x, Evas_Coord y, Evas_Coord *cx, Evas_Coord *cy, Evas_Coord *cw, Evas_Coord *ch)
+    Evas_Text_Style_Type evas_object_text_style_get(Evas_Object *obj)
+    void evas_object_text_style_set(Evas_Object *obj, Evas_Text_Style_Type type)
+    void evas_object_text_shadow_color_set(Evas_Object *obj, int r, int g, int b, int a)
+    void evas_object_text_shadow_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
+    void evas_object_text_glow_color_set(Evas_Object *obj, int r, int g, int b, int a)
+    void evas_object_text_glow_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
+    void evas_object_text_glow2_color_set(Evas_Object *obj, int r, int g, int b, int a)
+    void evas_object_text_glow2_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
+    void evas_object_text_outline_color_set(Evas_Object *obj, int r, int g, int b, int a)
+    void evas_object_text_outline_color_get(Evas_Object *obj, int *r, int *g, int *b, int *a)
+    void evas_object_text_style_pad_get(Evas_Object *obj, int *l, int *r, int *t, int *b)
+
 
 cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
     cdef int x0, y0, x1, y1, cx, cy, _w, _h
@@ -605,4 +636,8 @@ cdef class Gradient(Object):
 
 
 cdef class Polygon(Object):
+    pass
+
+
+cdef class Text(Object):
     pass

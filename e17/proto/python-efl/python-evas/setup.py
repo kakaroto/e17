@@ -34,6 +34,7 @@ evasmodule = Extension('evas.c_evas',
                                 'evas/evas.c_evas_object_image.pxi',
                                 'evas/evas.c_evas_object_gradient.pxi',
                                 'evas/evas.c_evas_object_polygon.pxi',
+                                'evas/evas.c_evas_object_text.pxi',
                                 'evas/python.pxd',
                                 ],
                        **pkgconfig('"evas >= 0.9.9.038"'))
