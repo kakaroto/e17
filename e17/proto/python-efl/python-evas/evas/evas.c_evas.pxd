@@ -479,6 +479,14 @@ cdef extern from "Evas.h":
     float evas_object_gradient_offset_get(Evas_Object *obj)
 
 
+    ####################################################################
+    # Polygon Object
+    #
+    Evas_Object *evas_object_polygon_add(Evas *e)
+    void evas_object_polygon_point_add(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
+    void evas_object_polygon_points_clear(Evas_Object *obj)
+
+
 
 cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
     cdef int x0, y0, x1, y1, cx, cy, _w, _h
@@ -593,4 +601,8 @@ cdef class Image(Object):
 
 
 cdef class Gradient(Object):
+    pass
+
+
+cdef class Polygon(Object):
     pass

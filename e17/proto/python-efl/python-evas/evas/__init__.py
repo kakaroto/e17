@@ -125,3 +125,13 @@ class Gradient(c_evas.Gradient):
         obj._set_common_params(size=size, pos=pos, geometry=geometry,
                                color=color, name=name)
         return obj
+
+
+class Polygon(c_evas.Polygon):
+    def __new__(type, canvas, points=None, size=None, pos=None, geometry=None,
+                color=None, name=None):
+        obj = c_evas.Polygon.__new__(type, canvas)
+        obj._new_obj()
+        obj._set_common_params(points=points, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
+        return obj

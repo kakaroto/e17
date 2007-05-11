@@ -362,3 +362,12 @@ cdef class SmartObject(Object):
                                color=color, name=name)
         self.member_add(obj)
         return obj
+
+    def Polygon(self, points=None, size=None, pos=None, geometry=None,
+                color=None, name=None):
+        obj = Polygon(self.evas)
+        obj._new_obj()
+        obj._set_common_params(points=points, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
+        self.member_add(obj)
+        return obj

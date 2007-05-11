@@ -368,3 +368,11 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         obj._set_common_params(size=size, pos=pos, geometry=geometry,
                                color=color, name=name)
         return obj
+
+    def Polygon(self, points=None, size=None, pos=None, geometry=None,
+                color=None, name=None):
+        obj = Polygon(self)
+        obj._new_obj()
+        obj._set_common_params(points=points, size=size, pos=pos,
+                               geometry=geometry, color=color, name=name)
+        return obj
