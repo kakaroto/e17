@@ -45,6 +45,13 @@ EVAS_RENDER_TINT_REL = 9
 EVAS_RENDER_MASK = 10
 EVAS_RENDER_MUL = 11
 
+EVAS_TEXTURE_REFLECT = 0
+EVAS_TEXTURE_REPEAT = 1
+EVAS_TEXTURE_RESTRICT = 2
+EVAS_TEXTURE_RESTRICT_REFLECT = 3
+EVAS_TEXTURE_RESTRICT_REPEAT = 4
+EVAS_TEXTURE_PAD = 5
+
 EVAS_COLOR_SPACE_ARGB = 0
 EVAS_COLOR_SPACE_AHSV = 1
 
@@ -107,4 +114,14 @@ class Image(c_evas.Image):
         obj._new_obj()
         obj._set_common_params(file=file, size=size, pos=pos,
                                geometry=geometry, color=color, name=name)
+        return obj
+
+
+class Gradient(c_evas.Gradient):
+    def __new__(type, canvas, size=None, pos=None, geometry=None, color=None,
+                name=None):
+        obj = c_evas.Gradient.__new__(type, canvas)
+        obj._new_obj()
+        obj._set_common_params(size=size, pos=pos, geometry=geometry,
+                               color=color, name=name)
         return obj

@@ -218,6 +218,7 @@ cdef extern from "Evas.h":
     #
     ctypedef int Evas_Coord
     ctypedef int Evas_Bool
+    ctypedef int Evas_Angle
     ctypedef int Evas_Font_Size
     ctypedef void (*evas_event_callback_t)(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
@@ -453,6 +454,31 @@ cdef extern from "Evas.h":
     Evas_Native_Surface *evas_object_image_native_surface_get(Evas_Object *obj)
 
 
+    ####################################################################
+    # Gradient Object
+    #
+    Evas_Object *evas_object_gradient_add(Evas *e)
+    void evas_object_gradient_color_stop_add(Evas_Object *obj, int r, int g, int b, int a, int delta)
+    void evas_object_gradient_alpha_stop_add(Evas_Object *obj, int a, int delta)
+    void evas_object_gradient_color_data_set(Evas_Object *obj, void *color_data, int len, Evas_Bool has_alpha)
+    void evas_object_gradient_alpha_data_set(Evas_Object *obj, void *alpha_data, int len)
+    void evas_object_gradient_clear(Evas_Object *obj)
+    void evas_object_gradient_type_set(Evas_Object *obj, char *type, char *instance_params)
+    void evas_object_gradient_type_get(Evas_Object *obj, char **type, char **instance_params)
+    void evas_object_gradient_fill_set(Evas_Object *obj, Evas_Coord x, Evas_Coord y, Evas_Coord w, Evas_Coord h)
+    void evas_object_gradient_fill_get(Evas_Object *obj, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
+    void evas_object_gradient_fill_angle_set(Evas_Object *obj, Evas_Angle angle)
+    Evas_Angle evas_object_gradient_fill_angle_get(Evas_Object *obj)
+    void evas_object_gradient_fill_spread_set(Evas_Object *obj, int tile_mode)
+    int evas_object_gradient_fill_spread_get(Evas_Object *obj)
+    void evas_object_gradient_angle_set(Evas_Object *obj, Evas_Angle angle)
+    Evas_Angle evas_object_gradient_angle_get(Evas_Object *obj)
+    void evas_object_gradient_direction_set(Evas_Object *obj, int direction)
+    int evas_object_gradient_direction_get(Evas_Object *obj)
+    void evas_object_gradient_offset_set(Evas_Object *obj, float offset)
+    float evas_object_gradient_offset_get(Evas_Object *obj)
+
+
 
 cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
     cdef int x0, y0, x1, y1, cx, cy, _w, _h
@@ -563,4 +589,8 @@ cdef class Line(Object):
 
 
 cdef class Image(Object):
+    pass
+
+
+cdef class Gradient(Object):
     pass
