@@ -280,6 +280,27 @@ cdef extern from "Evas.h":
     void evas_event_thaw(Evas *e)
     int evas_event_freeze_get(Evas *e)
 
+    void evas_font_path_clear(Evas *e)
+    void evas_font_path_append(Evas *e, char *path)
+    void evas_font_path_prepend(Evas *e, char *path)
+    Evas_List  *evas_font_path_list(Evas *e)
+
+    void evas_font_hinting_set(Evas *e, Evas_Font_Hinting_Flags hinting)
+    Evas_Font_Hinting_Flags evas_font_hinting_get(Evas *e)
+    Evas_Bool evas_font_hinting_can_hint(Evas *e, Evas_Font_Hinting_Flags hinting)
+
+    void evas_font_cache_flush(Evas *e)
+    void evas_font_cache_set(Evas *e, int size)
+    int evas_font_cache_get(Evas *e)
+
+    Evas_List *evas_font_available_list(Evas *e)
+    void evas_font_available_list_free(Evas *e, Evas_List *available)
+
+    void evas_image_cache_flush(Evas *e)
+    void evas_image_cache_reload(Evas *e)
+    void evas_image_cache_set(Evas *e, int size)
+    int evas_image_cache_get(Evas *e)
+
 
     ####################################################################
     # Base Object
@@ -350,9 +371,12 @@ cdef extern from "Evas.h":
     void evas_object_propagate_events_set(Evas_Object *obj, Evas_Bool prop)
     Evas_Bool evas_object_propagate_events_get(Evas_Object *obj)
 
+    void evas_object_focus_set(Evas_Object *obj, Evas_Bool focus)
+    Evas_Bool evas_object_focus_get(Evas_Object *obj)
+
 
     ####################################################################
-    # Rectangle Object
+    # Smart Object
     #
     void evas_smart_free(Evas_Smart *s)
     Evas_Smart *evas_smart_class_new(Evas_Smart_Class *sc)
@@ -427,30 +451,6 @@ cdef extern from "Evas.h":
     Evas_Colorspace evas_object_image_colorspace_get(Evas_Object *obj)
     void evas_object_image_native_surface_set(Evas_Object *obj, Evas_Native_Surface *surf)
     Evas_Native_Surface *evas_object_image_native_surface_get(Evas_Object *obj)
-
-    void evas_font_path_clear(Evas *e)
-    void evas_font_path_append(Evas *e, char *path)
-    void evas_font_path_prepend(Evas *e, char *path)
-    Evas_List  *evas_font_path_list(Evas *e)
-
-    void evas_font_hinting_set(Evas *e, Evas_Font_Hinting_Flags hinting)
-    Evas_Font_Hinting_Flags evas_font_hinting_get(Evas *e)
-    Evas_Bool evas_font_hinting_can_hint(Evas *e, Evas_Font_Hinting_Flags hinting)
-
-    void evas_font_cache_flush(Evas *e)
-    void evas_font_cache_set(Evas *e, int size)
-    int evas_font_cache_get(Evas *e)
-
-    Evas_List *evas_font_available_list(Evas *e)
-    void evas_font_available_list_free(Evas *e, Evas_List *available)
-
-    void evas_image_cache_flush(Evas *e)
-    void evas_image_cache_reload(Evas *e)
-    void evas_image_cache_set(Evas *e, int size)
-    int evas_image_cache_get(Evas *e)
-
-    void evas_object_focus_set(Evas_Object *obj, Evas_Bool focus)
-    Evas_Bool evas_object_focus_get(Evas_Object *obj)
 
 
 
