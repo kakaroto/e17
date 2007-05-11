@@ -1,0 +1,5 @@
+recursive-include evas *.pxd *.pyx *.pxi *.py *.h
+recursive-include tests *.py *.png
+include ez_setup.py
+prune evas/evas.c_evas.pxi
+include AUTHORS COPYING-PLAIN COPYING README
