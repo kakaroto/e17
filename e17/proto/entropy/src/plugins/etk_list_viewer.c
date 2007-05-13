@@ -916,10 +916,10 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 	  etk_list_viewer_row_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
   }
 
-  etk_signal_connect("row_clicked", ETK_OBJECT( viewer->tree  ), 
+  etk_signal_connect("row-clicked", ETK_OBJECT( viewer->tree  ), 
 		  ETK_CALLBACK(_etk_list_viewer_row_clicked), NULL);
 
-  etk_signal_connect("key_down", ETK_OBJECT(viewer->tree), 
+  etk_signal_connect("key-down", ETK_OBJECT(viewer->tree), 
 		  ETK_CALLBACK(_etk_entropy_list_viewer_key_down_cb), instance);
   
   printf("Initialising ETK list viewer...%p\n", instance);

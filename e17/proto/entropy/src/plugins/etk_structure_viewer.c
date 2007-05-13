@@ -396,7 +396,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   }
 
   if (!ecore_hash_get(tree_map_hash, ((Etk_Tree_Row*)parent_visual)->tree)) {
-	  etk_signal_connect("row_clicked", ETK_OBJECT( ((Etk_Tree_Row*)parent_visual)->tree  ), 
+	  etk_signal_connect("row-clicked", ETK_OBJECT( ((Etk_Tree_Row*)parent_visual)->tree  ), 
 		  ETK_CALLBACK(_etk_structure_viewer_row_clicked), NULL);
 
 

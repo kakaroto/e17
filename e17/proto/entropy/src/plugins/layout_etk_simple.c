@@ -769,12 +769,12 @@ entropy_plugin_layout_create (entropy_core * core)
   /*Etk related init */
   window = etk_window_new ();
   layout->gui_object = window;
-  etk_signal_connect("key_down", ETK_OBJECT(window), ETK_CALLBACK(_entropy_etk_layout_key_down_cb), layout);
+  etk_signal_connect("key-down", ETK_OBJECT(window), ETK_CALLBACK(_entropy_etk_layout_key_down_cb), layout);
   
   gui->paned = etk_hpaned_new();
   
 
-  etk_signal_connect ("delete_event", ETK_OBJECT (window),
+  etk_signal_connect ("delete-event", ETK_OBJECT (window),
 		      ETK_CALLBACK (_etk_window_deleted_cb), layout);
 
   etk_window_title_set(ETK_WINDOW(window), "Entropy");
@@ -817,7 +817,7 @@ entropy_plugin_layout_create (entropy_core * core)
 
   /*Popup init*/
    gui->popup = etk_menu_new();
-   etk_signal_connect("row_clicked", ETK_OBJECT( gui->tree  ),
+   etk_signal_connect("row-clicked", ETK_OBJECT( gui->tree  ),
           ETK_CALLBACK(_etk_layout_row_clicked), layout);
 
    menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Delete this location"),

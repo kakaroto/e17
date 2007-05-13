@@ -183,7 +183,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 					item = etk_combobox_item_append(ETK_COMBOBOX(combo), buf);
 					etk_combobox_item_data_set(item, file);
 
-					etk_signal_connect("mouse_click", ETK_OBJECT(item),
+					etk_signal_connect("mouse-click", ETK_OBJECT(item),
 						ETK_CALLBACK(_entropy_etk_trackback_combo_cb), comp);
 
 					//printf("      ** Added %s.%p.\n", file->filename, comp);

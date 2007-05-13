@@ -557,7 +557,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   /*Make the slider*/
   viewer->slider = etk_hslider_new(10,128, 48, 1, 1);
   etk_box_append(ETK_BOX(viewer->vbox), viewer->slider, ETK_BOX_START, ETK_BOX_NONE, 0);
-  etk_signal_connect("value_changed", ETK_OBJECT(viewer->slider), 
+  etk_signal_connect("value-changed", ETK_OBJECT(viewer->slider), 
 		  ETK_CALLBACK(_entropy_etk_icon_viewer_slider_cb), instance);
   
   viewer->iconbox = etk_iconbox_new();
@@ -572,7 +572,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 		  0,0,64,64,1,1);*/
 		  
 	  
-  etk_signal_connect("mouse_down", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_entropy_etk_icon_viewer_click_cb), instance);
+  etk_signal_connect("mouse-down", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_entropy_etk_icon_viewer_click_cb), instance);
   
   /*DND Setup*/
   /* dnd_types_num = 1;
