@@ -33,3 +33,6 @@ def animator_frametime_get():
 
 include "ecore.c_ecore_timer.pxi"
 include "ecore.c_ecore_animator.pxi"
+include "ecore.c_ecore_idler.pxi"
+include "ecore.c_ecore_idle_enterer.pxi"
+include "ecore.c_ecore_idle_exiter.pxi"

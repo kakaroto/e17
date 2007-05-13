@@ -16,6 +16,11 @@ animator_add = c_ecore.animator_add
 animator_frametime_set = c_ecore.animator_frametime_set
 animator_frametime_get = c_ecore.animator_frametime_get
 
+idler_add = c_ecore.idler_add
+idle_enterer_add = c_ecore.idle_enterer_add
+idle_exiter_add = c_ecore.idle_exiter_add
+
+
 class MainLoop(object):
     @staticmethod
     def begin():
@@ -40,3 +45,22 @@ class Animator(c_ecore.Animator):
     def __new__(type, func, *args, **kargs):
         obj = animator_add(func, *args, **kargs)
         return obj
+
+
+class Idler(c_ecore.Idler):
+    def __new__(type, func, *args, **kargs):
+        obj = idler_add(func, *args, **kargs)
+        return obj
+
+
+class IdleEnterer(c_ecore.IdleEnterer):
+    def __new__(type, func, *args, **kargs):
+        obj = idle_enterer_add(func, *args, **kargs)
+        return obj
+
+
+class IdleExiter(c_ecore.IdleExiter):
+    def __new__(type, func, *args, **kargs):
+        obj = idle_exiter_add(func, *args, **kargs)
+        return obj
+
