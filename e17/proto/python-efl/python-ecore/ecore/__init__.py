@@ -20,6 +20,13 @@ idler_add = c_ecore.idler_add
 idle_enterer_add = c_ecore.idle_enterer_add
 idle_exiter_add = c_ecore.idle_exiter_add
 
+ECORE_FD_NONE = 0
+ECORE_FD_READ = 1
+ECORE_FD_WRITE = 2
+ECORE_FD_ERROR = 4
+ECORE_FD_ALL = 7
+fd_handler_add = c_ecore.fd_handler_add
+
 
 class MainLoop(object):
     @staticmethod
@@ -64,3 +71,8 @@ class IdleExiter(c_ecore.IdleExiter):
         obj = idle_exiter_add(func, *args, **kargs)
         return obj
 
+
+class FdHandler(c_ecore.FdHandler):
+    def __new__(type, fd, flags, func, *args, **kargs):
+        obj = fd_handler_add(fd, flags, func, *args, **kargs)
+        return obj

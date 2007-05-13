@@ -1,10 +1,16 @@
 cdef extern from "Ecore.h":
+    ctypedef enum Ecore_Fd_Handler_Flags:
+        ECORE_FD_READ = 1
+        ECORE_FD_WRITE = 2
+        ECORE_FD_ERROR = 4
+
 
     cdef struct Ecore_Timer
     cdef struct Ecore_Animator
     cdef struct Ecore_Idler
     cdef struct Ecore_Idle_Enterer
     cdef struct Ecore_Idle_Exiter
+    ctypedef struct Ecore_Fd_Handler
 
     int ecore_init()
     int ecore_shutdown()
@@ -32,6 +38,13 @@ cdef extern from "Ecore.h":
 
     Ecore_Idle_Exiter *ecore_idle_exiter_add(int (*func) (void *data), void *data)
     void *ecore_idle_exiter_del(Ecore_Idle_Exiter *idle_exiter)
+
+    Ecore_Fd_Handler *ecore_main_fd_handler_add(int fd, Ecore_Fd_Handler_Flags flags, int (*func) (void *data, Ecore_Fd_Handler *fd_handler), void *data, int (*buf_func) (void *buf_data, Ecore_Fd_Handler *fd_handler), void *buf_data)
+    void ecore_main_fd_handler_prepare_callback_set(Ecore_Fd_Handler *fd_handler, void (*func) (void *data, Ecore_Fd_Handler *fd_handler), void *data)
+    void *ecore_main_fd_handler_del(Ecore_Fd_Handler *fd_handler)
+    int ecore_main_fd_handler_fd_get(Ecore_Fd_Handler *fd_handler)
+    int ecore_main_fd_handler_active_get(Ecore_Fd_Handler *fd_handler, Ecore_Fd_Handler_Flags flags)
+    void ecore_main_fd_handler_active_set(Ecore_Fd_Handler *fd_handler, Ecore_Fd_Handler_Flags flags)
 
 
 cdef class Timer:
@@ -78,3 +91,13 @@ cdef class IdleExiter:
     cdef object kargs
 
     cdef int _set_obj(self, Ecore_Idle_Exiter *obj) except 0
+
+
+cdef class FdHandler:
+    cdef Ecore_Fd_Handler *obj
+    cdef object func
+    cdef object args
+    cdef object kargs
+    cdef object _prepare_callback
+
+    cdef int _set_obj(self, Ecore_Fd_Handler *obj) except 0
