@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import ecore
+ecore.init()
 
 def cb_true(n, t, a):
     print "cb_true:", n, t, a
@@ -26,3 +27,5 @@ print "after:  i1=", i1
 i0.delete()
 del i0
 del i1 # already deleted since returned false
+
+ecore.shutdown()

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import ecore
+ecore.init()
 
 def cb(n, t, a):
     print "cb:", n, t, a
@@ -25,3 +26,5 @@ del t0
 del t1 # already deleted since returned false
 t2.delete()
 del t2
+
+ecore.shutdown()
