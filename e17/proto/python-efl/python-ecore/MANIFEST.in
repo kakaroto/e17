@@ -1,4 +1,5 @@
 recursive-include ecore *.pxd *.pyx *.pxi *.py
 recursive-include tests *.py
+recursive-include examples *.py
 include ez_setup.py
 include AUTHORS COPYING-PLAIN COPYING README
