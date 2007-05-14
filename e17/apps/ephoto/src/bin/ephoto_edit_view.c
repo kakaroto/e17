@@ -129,12 +129,12 @@ static void add_advanced_edit_tools(Ewl_Widget *c)
 {
 	Ewl_Widget *button;
 
-	button = add_button(c, "Blur Image", PACKAGE_DATA_DIR "", image_blur, NULL);
+	button = add_button(c, "Blur Image", NULL, image_blur, NULL);
 	ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
         ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 
-	button = add_button(c, "Sharpen Image", PACKAGE_DATA_DIR "", image_sharpen, NULL);
+	button = add_button(c, "Sharpen Image", NULL, image_sharpen, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
         ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
