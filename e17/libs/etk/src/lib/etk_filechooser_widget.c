@@ -262,8 +262,11 @@ Evas_List *etk_filechooser_widget_selected_files_get(Etk_Filechooser_Widget *fil
 
    for (row = etk_tree_first_row_get(ETK_TREE(filechooser_widget->files_tree)); row; row = etk_tree_row_next_get(row))
    {
-      etk_tree_row_fields_get(row, filechooser_widget->files_name_col, NULL, NULL, &filename, NULL);
-      files = evas_list_append(files, filename);
+      if (etk_tree_row_is_selected(row))
+      {
+         etk_tree_row_fields_get(row, filechooser_widget->files_name_col, NULL, NULL, &filename, NULL);
+         files = evas_list_append(files, filename);
+      }
    }
 
    return files;
