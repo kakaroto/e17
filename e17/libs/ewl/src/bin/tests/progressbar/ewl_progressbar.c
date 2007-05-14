@@ -12,7 +12,7 @@ static void cb_destroy_progressbar_test(Ewl_Widget *w, void *ev,
 static int cb_increment_progress(void *data);
 
 static Ecore_Timer *progress_timer[3];
-static Ewl_Widget *progressbar[3];
+static Ewl_Widget *progressbar[4];
 
 void 
 test_info(Ewl_Test *test)
@@ -72,7 +72,16 @@ create_test(Ewl_Container *box)
 			(Ewl_Progressbar *) progressbar[2]);
 	
 	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox), progressbar[2]);
-	
+
+	/*
+	 * A bouncy progressbar
+	 */
+	progressbar[3] = ewl_progressbar_new();
+	ewl_progressbar_label_set(EWL_PROGRESSBAR(progressbar[3]), "range unkown");
+	ewl_range_step_set(EWL_RANGE(progressbar[3]), -1);
+	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox), progressbar[3]);	
+	ewl_widget_show(progressbar[3]);	
+
 	/*
 	 * Add buttons at the bottom
 	 */
