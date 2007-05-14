@@ -28,11 +28,11 @@ Ewl_Widget *add_single_view(Ewl_Widget *c)
 
 	button = add_button(hbox, NULL, PACKAGE_DATA_DIR "/images/media-seek-backward.png", previous_image, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
-        ewl_attach_tooltip_text_set(button, "Previous Image");
+        ewl_attach_tooltip_text_set(button, _("Previous Image"));
 
         button = add_button(hbox, NULL, PACKAGE_DATA_DIR "/images/media-seek-forward.png", next_image, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
-        ewl_attach_tooltip_text_set(button, "Next Image");
+        ewl_attach_tooltip_text_set(button, _("Next Image"));
 
 	return em->single_vbox;
 }

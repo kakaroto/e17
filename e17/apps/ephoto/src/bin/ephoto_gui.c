@@ -37,7 +37,7 @@ Ewl_Widget *add_entry(Ewl_Widget *c, const char *txt, void *cb, void *data)
 	Ewl_Widget *entry;
 
 	entry = ewl_entry_new();
-	if(txt) ewl_text_text_set(EWL_TEXT(entry), txt);
+	if(txt) ewl_text_text_set(EWL_TEXT(entry), _(txt));
 	if(c) ewl_container_child_append(EWL_CONTAINER(c), entry);
 	if(cb) ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, cb, data);
 	ewl_widget_show(entry);
@@ -52,7 +52,7 @@ Ewl_Widget *add_icon(Ewl_Widget *c, const char *lbl, const char *img, int thumbn
 	
 	icon = ewl_icon_new();
 	if(!thumbnail) ewl_icon_thumbnailing_set(EWL_ICON(icon), FALSE);
-	if (lbl) ewl_icon_label_set(EWL_ICON(icon), lbl);
+	if (lbl) ewl_icon_label_set(EWL_ICON(icon), _(lbl));
 	if (img) ewl_icon_image_set(EWL_ICON(icon), img, NULL);
 	if (c) ewl_container_child_append(EWL_CONTAINER(c), icon);
 	if (cb) ewl_callback_append(icon, EWL_CALLBACK_CLICKED, cb, data);
@@ -103,7 +103,7 @@ Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl)
 	Ewl_Widget *label;
 
 	label = ewl_label_new();
-	if(lbl) ewl_label_text_set(EWL_LABEL(label), lbl);
+	if(lbl) ewl_label_text_set(EWL_LABEL(label), _(lbl));
 	ewl_object_alignment_set(EWL_OBJECT(label), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(label), EWL_FLAG_FILL_SHRINK);
 	if(c) ewl_container_child_append(EWL_CONTAINER(c), label);
@@ -131,7 +131,7 @@ Ewl_Widget *add_menu(Ewl_Widget *c, const char *lbl)
 	Ewl_Widget *menu;
 	
 	menu = ewl_menu_new();
-	if(lbl) ewl_button_label_set(EWL_BUTTON(menu), lbl);
+	if(lbl) ewl_button_label_set(EWL_BUTTON(menu), _(lbl));
 	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	if(c) ewl_container_child_append(EWL_CONTAINER(c), menu);
 	ewl_widget_show(menu);
@@ -146,7 +146,7 @@ Ewl_Widget *add_menu_item(Ewl_Widget *c, const char *lbl, const char *img, void 
 
 	mi = ewl_menu_item_new();
 	if(img) ewl_button_image_set(EWL_BUTTON(mi), img, NULL);
-	if(lbl) ewl_button_label_set(EWL_BUTTON(mi), lbl);
+	if(lbl) ewl_button_label_set(EWL_BUTTON(mi), _(lbl));
 	ewl_object_alignment_set(EWL_OBJECT(mi), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(mi), EWL_FLAG_FILL_ALL);
 	if(c) ewl_container_child_append(EWL_CONTAINER(c), mi);
@@ -174,7 +174,7 @@ Ewl_Widget *add_text(Ewl_Widget *c, const char *txt)
 	Ewl_Widget *text;
 	
 	text = ewl_text_new();
-	if(txt) ewl_text_text_set(EWL_TEXT(text), txt);
+	if(txt) ewl_text_text_set(EWL_TEXT(text), _(txt));
         ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
         ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_SHRINK);
         if(c) ewl_container_child_append(EWL_CONTAINER(c), text);
@@ -191,8 +191,8 @@ Ewl_Widget *add_window(const char *name, int width, int height, void *cb, void *
         win = ewl_window_new();
 	if(name)
 	{
-        	ewl_window_title_set(EWL_WINDOW(win), name);
-        	ewl_window_name_set(EWL_WINDOW(win), name);
+        	ewl_window_title_set(EWL_WINDOW(win), _(name));
+        	ewl_window_name_set(EWL_WINDOW(win), _(name));
         }
 	if(width && height) ewl_object_size_request(EWL_OBJECT(win), width, height);
         if(cb) ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, cb, data);

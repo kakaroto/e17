@@ -99,7 +99,7 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 
         if(ecore_hash_count(exif_info) == 0)
         {
-		ecore_list_append(values, strdup("No Exif Data Exists"));
+		ecore_list_append(values, strdup(_("No Exif Data Exists")));
         }
 	else
 	{

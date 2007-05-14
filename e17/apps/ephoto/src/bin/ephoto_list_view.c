@@ -73,7 +73,7 @@ Ewl_Widget *add_ltree(Ewl_Widget *c)
 	ewl_tree2_column_count_set(EWL_TREE2(tree), 1);
 	ewl_mvc_model_set(EWL_MVC(tree), model);
 	ewl_mvc_view_set(EWL_MVC(tree), view);
-	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
+	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_NONE);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(c), tree);
 	ewl_widget_show(tree);
@@ -93,10 +93,13 @@ static Ewl_Widget *list_view_new(void *data, unsigned int row, unsigned int colu
         image = data;
         image_pixels_int_get(image, &width, &height);
         size = ecore_file_size(image);
-        snprintf(info, PATH_MAX, "Name: %s\nPixels: %s\nSize: %s\n",
+        snprintf(info, PATH_MAX, "%s: %s\n%s: %s\n%s: %s\n",
+						 _("Name"),
                                                  basename((char *)image),
-                                                 image_pixels_string_get(image),
-                                                 file_size_get(size));
+                                                 _("Pixels"),
+						 image_pixels_string_get(image),
+                                                 _("Size"),
+						 file_size_get(size));
 
 	hbox = add_box(NULL, EWL_ORIENTATION_HORIZONTAL, 10);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);

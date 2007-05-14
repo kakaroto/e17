@@ -5,6 +5,9 @@ static void add_standard_edit_tools(Ewl_Widget *c);
 static void add_advanced_edit_tools(Ewl_Widget *c);
 static void previous_image(Ewl_Widget *w, void *event, void *data);
 static void next_image(Ewl_Widget *w, void *event, void *data);
+static void zoom_in(Ewl_Widget *w, void *event, void *data);
+static void zoom_out(Ewl_Widget *w, void *event, void *data);
+//static void zoom_full(Ewl_Widget *w, void *event, void *data);
 static void flip_image_horizontal(Ewl_Widget *w, void *event, void *data);
 static void flip_image_vertical(Ewl_Widget *w, void *event, void *data);
 static void rotate_image_left(Ewl_Widget *w, void *event, void *data);
@@ -30,7 +33,7 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
 	ewl_object_maximum_w_set(EWL_OBJECT(standard), 172);
 	ewl_object_minimum_w_set(EWL_OBJECT(standard), 172);
 	ewl_object_fill_policy_set(EWL_OBJECT(standard), EWL_FLAG_FILL_VFILL);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(nb), standard, "Standard Tools");	
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(nb), standard, _("Standard Tools"));	
 
 	add_standard_edit_tools(standard);
 
@@ -38,7 +41,7 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
         ewl_object_maximum_w_set(EWL_OBJECT(advanced), 172);
         ewl_object_minimum_w_set(EWL_OBJECT(advanced), 172);
         ewl_object_fill_policy_set(EWL_OBJECT(advanced), EWL_FLAG_FILL_VFILL);
-        ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(nb), advanced, "Advanced Tools");
+        ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(nb), advanced, _("Advanced Tools"));
 
 	add_advanced_edit_tools(advanced);
 
@@ -60,11 +63,11 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
 
         button = add_button(bhbox, NULL, PACKAGE_DATA_DIR "/images/media-seek-backward.png", previous_image, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
-        ewl_attach_tooltip_text_set(button, "Previous Image");
+        ewl_attach_tooltip_text_set(button, _("Previous Image"));
 
         button = add_button(bhbox, NULL, PACKAGE_DATA_DIR "/images/media-seek-forward.png", next_image, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
-        ewl_attach_tooltip_text_set(button, "Next Image");
+        ewl_attach_tooltip_text_set(button, _("Next Image"));
 
 	return hbox;
 }
@@ -82,6 +85,21 @@ void show_edit_view(Ewl_Widget *w, void *event, void *data)
 static void add_standard_edit_tools(Ewl_Widget *c)
 {
 	Ewl_Widget *button;
+
+	button = add_button(c, "Zoom In", PACKAGE_DATA_DIR "/images/search.png", zoom_in, NULL);
+        ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
+
+	button = add_button(c, "Zoom Out", PACKAGE_DATA_DIR "/images/search.png", zoom_out, NULL);
+        ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
+
+	//button = add_button(c, "Zoom 1:1", PACKAGE_DATA_DIR "/images/search.png", zoom_full, NULL);
+        ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 
 	button = add_button(c, "Rotate Left", PACKAGE_DATA_DIR "/images/undo.png", rotate_image_left, NULL);
 	ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
@@ -142,7 +160,6 @@ static void previous_image(Ewl_Widget *w, void *event, void *data)
         return;
 }
 
-
 /*Go to the next image*/
 static void next_image(Ewl_Widget *w, void *event, void *data)
 {
@@ -160,6 +177,33 @@ static void next_image(Ewl_Widget *w, void *event, void *data)
 	
 	return;
 }
+
+/*Zoom in on the image*/
+static void zoom_in(Ewl_Widget *w, void *event, void *data)
+{
+	int ow, oh;
+	
+	ewl_object_current_size_get(EWL_OBJECT(em->eimage), &ow, &oh);
+
+	ewl_image_size_set(EWL_IMAGE(em->eimage), ow*2, oh*2);
+	ewl_widget_configure(em->eimage->parent);
+
+	return;
+}
+
+/*Zoom out the image*/
+static void zoom_out(Ewl_Widget *w, void *event, void *data)
+{
+        int ow, oh;
+
+        ewl_object_current_size_get(EWL_OBJECT(em->eimage), &ow, &oh);
+
+        ewl_image_size_set(EWL_IMAGE(em->eimage), ow/2, oh/2);
+        ewl_widget_configure(em->eimage->parent);
+
+        return;
+}
+
 
 /*Flip the image 180 degrees horizontally*/
 static void flip_image_horizontal(Ewl_Widget *w, void *event, void *data)

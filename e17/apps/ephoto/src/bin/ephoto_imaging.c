@@ -305,8 +305,8 @@ static void save_image(Ewl_Widget *w, void *event, void *data)
 	pid_t pid;
 
 	file = ewl_text_text_get(EWL_TEXT(data)); 
-	snprintf(flags, PATH_MAX, "quality=%f compress=%f", ewl_range_value_get(EWL_RANGE(qseek)), 
-							       ewl_range_value_get(EWL_RANGE(cseek)));
+	snprintf(flags, PATH_MAX, "quality=%i compress=%i", (int)ewl_range_value_get(EWL_RANGE(qseek)), 
+							       (int)ewl_range_value_get(EWL_RANGE(cseek)));
 
 	if(!file) return;
 
