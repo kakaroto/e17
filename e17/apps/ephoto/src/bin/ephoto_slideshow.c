@@ -31,6 +31,7 @@ static int change_picture(void *data)
 static void destroy(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_widget_destroy(win);
+	ecore_timer_del(change);
 }
 
 static void show_first_image(Ewl_Widget *w, void *event, void *data)

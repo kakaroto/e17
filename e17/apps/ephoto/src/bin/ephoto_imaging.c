@@ -3,7 +3,7 @@
 static void close_dialog(Ewl_Widget *w, void *event, void *data);
 static void save_image(Ewl_Widget *w, void *event, void *data);
 
-static Ewl_Widget *save_win, *qseek, *cseek;
+static Ewl_Widget *save_win, *qseek;
 
 unsigned int *flip_horizontal(Ewl_Widget *image)
 {
@@ -305,8 +305,7 @@ static void save_image(Ewl_Widget *w, void *event, void *data)
 	pid_t pid;
 
 	file = ewl_text_text_get(EWL_TEXT(data)); 
-	snprintf(flags, PATH_MAX, "quality=%i compress=%i", (int)ewl_range_value_get(EWL_RANGE(qseek)), 
-							       (int)ewl_range_value_get(EWL_RANGE(cseek)));
+	snprintf(flags, PATH_MAX, "quality=%i", (int)ewl_range_value_get(EWL_RANGE(qseek)));
 
 	if(!file) return;
 
@@ -338,7 +337,7 @@ void save_dialog(const char *file)
 
 	entry = add_entry(vbox, "default.jpg", NULL, NULL);
 
-	add_label(vbox, "Quality:");
+	add_label(vbox, "Quality/Compression:");
 
 	qseek = ewl_hseeker_new();
 	ewl_range_minimum_value_set(EWL_RANGE(qseek), 0);
@@ -348,16 +347,6 @@ void save_dialog(const char *file)
 	ewl_container_child_append(EWL_CONTAINER(vbox), qseek);
 	ewl_widget_show(qseek);
 
-	add_label(vbox, "Compression:");
-
-	cseek = ewl_hseeker_new();
-	ewl_range_minimum_value_set(EWL_RANGE(cseek), 0);
-	ewl_range_maximum_value_set(EWL_RANGE(cseek), 9);
-	ewl_range_step_set(EWL_RANGE(cseek), 1);
-	ewl_range_value_set(EWL_RANGE(cseek), 9);
-	ewl_container_child_append(EWL_CONTAINER(vbox), cseek);
-	ewl_widget_show(cseek);	
-	
 	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 5);
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);

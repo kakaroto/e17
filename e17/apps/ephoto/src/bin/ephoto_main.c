@@ -324,6 +324,7 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
 	em->images = ephoto_db_list_images(em->db, em->current_album);
 
 	ecore_dlist_goto_first(em->images);
+	
 	ewl_container_reset(EWL_CONTAINER(em->fbox));
         while (ecore_dlist_current(em->images))
         {
@@ -337,7 +338,7 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
 		}
 		ecore_dlist_next(em->images);
         }
-	ewl_widget_reparent(em->fbox);
+	ewl_widget_configure(em->fbox);
 	ecore_dlist_goto_first(em->images);
 	if(ecore_dlist_current(em->images)) 
 	{
@@ -398,7 +399,7 @@ static void populate_directories(Ewl_Widget *w, void *event, void *data)
 		}
         	ecore_dlist_next(em->images);
 	}
-	ewl_widget_reparent(em->fbox);
+	ewl_widget_configure(em->fbox);
 	ecore_dlist_goto_first(em->images);
 	if(ecore_dlist_current(em->images))
 	{ 
