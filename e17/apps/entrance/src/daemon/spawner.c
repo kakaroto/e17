@@ -1,5 +1,6 @@
 #include <Ecore.h>
 #include <Ecore_Config.h>
+#include <Ecore_File.h>
 #include "Entranced.h"
 #include "Entranced_Display.h"
 #include "auth.h"
@@ -250,6 +251,7 @@ _write_pidfile(pid_t pid)
    int size, result = 1;
    char buf[PATH_MAX];
 
+   ecore_file_mkpath(PIDDIR);
    size = snprintf(buf, PATH_MAX, "%d", pid);
    if ((fp = fopen(PIDFILE, "w+")))
    {
