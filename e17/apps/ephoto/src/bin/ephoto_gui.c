@@ -78,7 +78,8 @@ Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, v
 		if(w > 75 || h > 75)
 		{
 			image = ewl_image_thumbnail_new();
-			ewl_image_file_path_set(EWL_IMAGE(image), PACKAGE_DATA_DIR "/images/image.png");
+			ewl_image_file_path_set(EWL_IMAGE(image), 
+					PACKAGE_DATA_DIR "/images/image.png");
 			if(img) ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(image), img);
 		}
 		else
@@ -194,7 +195,8 @@ Ewl_Widget *add_window(const char *name, int width, int height, void *cb, void *
         	ewl_window_title_set(EWL_WINDOW(win), _(name));
         	ewl_window_name_set(EWL_WINDOW(win), _(name));
         }
-	if(width && height) ewl_object_size_request(EWL_OBJECT(win), width, height);
+	if(width && height) ewl_object_size_request(EWL_OBJECT(win), width, 
+								     height);
         if(cb) ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, cb, data);
         ewl_widget_show(win);
 

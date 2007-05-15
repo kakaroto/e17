@@ -45,7 +45,8 @@ sqlite3 *ephoto_db_init(void)
 		sqlite3_exec(db, "CREATE TABLE album_images( "
 				 "image_id INTEGER NOT NULL, "
 				 "album_id INTEGER NOT NULL);", 0, 0, 0);
-		ephoto_db_add_album(db, "Complete Library", "Contains every tagged image!");
+		ephoto_db_add_album(db, "Complete Library", 
+					"Contains every tagged image!");
 	}
 	else 
  	{
@@ -85,8 +86,9 @@ void ephoto_db_add_album(sqlite3 *db, const char *name, const char *description)
 {
 	char command[PATH_MAX];
 
-	snprintf(command, PATH_MAX, "INSERT or IGNORE INTO albums(name, description) "
-                                    "VALUES('%s', '%s');", name, description);
+	snprintf(command, PATH_MAX, 
+			  "INSERT or IGNORE INTO albums(name, description) "
+                          "VALUES('%s', '%s');", name, description);
 	sqlite3_exec(db, command, 0, 0, 0);
 
 	return;
@@ -97,11 +99,15 @@ void ephoto_db_delete_album(sqlite3 *db, const char *name)
 {
 	char command[PATH_MAX];
 
-	snprintf(command, PATH_MAX, "DELETE FROM albums WHERE name = '%s';", name);
+	snprintf(command, PATH_MAX, "DELETE FROM albums WHERE name = '%s';", 
+									name);
 	sqlite3_exec(db, command, 0, 0, 0);
-	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", name);
+	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';",
+									name);
 	sqlite3_exec(db, command, get_album_id, 0, 0);
-	snprintf(command, PATH_MAX, "DELETE FROM album_images WHERE album_id = '%d';", album_id);
+	snprintf(command, PATH_MAX, 
+			"DELETE FROM album_images WHERE album_id = '%d';", 
+								album_id);
 	sqlite3_exec(db, command, 0, 0, 0);
 
 	return;
@@ -115,19 +121,24 @@ void ephoto_db_add_image(sqlite3 *db, const char *album, const char *name, const
 	snprintf(command, PATH_MAX, "INSERT or IGNORE INTO images(name, path) "
 			            "VALUES('%s', '%s');", name, path);
 	sqlite3_exec(db, command, 0, 0, 0);
-	snprintf(command, PATH_MAX, "SELECT id FROM images WHERE path = '%s';", path);
+	snprintf(command, PATH_MAX, "SELECT id FROM images WHERE path = '%s';",
+									 path);
 	sqlite3_exec(db, command, get_image_id, 0, 0);
-	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", album);
+	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", 
+									album);
 	sqlite3_exec(db, command, get_album_id, 0, 0);
-	snprintf(command, PATH_MAX, "INSERT or IGNORE into album_images(image_id, album_id) "
-				    "VALUES('%d', '%d');", image_id, album_id);
+	snprintf(command, PATH_MAX, 
+		"INSERT or IGNORE into album_images(image_id, album_id) "
+		"VALUES('%d', '%d');", image_id, album_id);
 	sqlite3_exec(db, command, 0, 0, 0);
 
 	/*This is to make sure the complete library has all images*/
-	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = 'Complete Library';");
+	snprintf(command, PATH_MAX, 
+		"SELECT id FROM albums WHERE name = 'Complete Library';");
 	sqlite3_exec(db, command, get_album_id, 0, 0);
-	snprintf(command, PATH_MAX, "INSERT into album_images(image_id, album_id) "
-				    "VALUES('%d', '%d');", image_id, album_id);
+	snprintf(command, PATH_MAX, 
+			  "INSERT into album_images(image_id, album_id) "
+			  "VALUES('%d', '%d');", image_id, album_id);
 	sqlite3_exec(db, command, 0, 0, 0);
 
 	return;
@@ -138,12 +149,15 @@ void ephoto_db_delete_image(sqlite3 *db, const char *album, const char *path)
 {
 	char command[PATH_MAX];
 
-	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", album);
+	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", 
+									album);
 	sqlite3_exec(db, command, get_album_id, 0, 0);
-	snprintf(command, PATH_MAX, "SELECT id FROM images WHERE path = '%s';", path);
+	snprintf(command, PATH_MAX, "SELECT id FROM images WHERE path = '%s';", 
+									path);
 	sqlite3_exec(db, command, get_image_id, 0, 0);
 	snprintf(command, PATH_MAX, "DELETE FROM album_images WHERE "
-		       	            "image_id = '%d' AND album_id = '%d';", image_id, album_id);
+		       	            "image_id = '%d' AND album_id = '%d';", 
+				    image_id, album_id);
 	sqlite3_exec(db, command, 0, 0, 0);
 	return;
 }	
@@ -223,9 +237,12 @@ Ecore_List *ephoto_db_list_images(sqlite3 *db,  const char *album)
 	images_list = ecore_dlist_new();
 	image_ids = ecore_list_new();
 
-	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", album);
+	snprintf(command, PATH_MAX, "SELECT id FROM albums WHERE name = '%s';", 
+									album);
         sqlite3_exec(db, command, get_album_id, 0, 0);
-	snprintf(command, PATH_MAX, "SELECT image_id FROM album_images WHERE album_id = '%d';", album_id);
+	snprintf(command, PATH_MAX, 
+		"SELECT image_id FROM album_images WHERE album_id = '%d';", 
+								album_id);
 	sqlite3_exec(db, command, list_image_ids, 0, 0);
 
 	while(!ecore_list_is_empty(image_ids))

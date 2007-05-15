@@ -115,7 +115,8 @@ static void save(Ewl_Widget *w, void *event, void *data)
 		ephoto_db_add_album(db, album, description);
 		ephoto_db_close(db);
 		ewl_widget_destroy(win);
-		ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->browser), em->atree);
+		ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->browser), 
+								em->atree);
 		populate_albums(NULL, NULL, NULL);
 	}
 }
@@ -140,10 +141,14 @@ static void add_album(Ewl_Widget *w, void *event, void *data)
 	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
 
-	button = add_button(hbox, "Save", PACKAGE_DATA_DIR "/images/stock_save.png", save, window);
+	button = add_button(hbox, "Save", 
+				PACKAGE_DATA_DIR "/images/stock_save.png", 
+								save, window);
 	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
 	
-	button = add_button(hbox, "Cancel", PACKAGE_DATA_DIR "/images/dialog-close.png", cancel, window);
+	button = add_button(hbox, "Cancel", 
+				PACKAGE_DATA_DIR "/images/dialog-close.png", 
+								cancel, window);
 	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
 }
 
@@ -166,11 +171,17 @@ void create_main_gui(void)
 
 	mb = add_menubar(vbox);
 	menu = add_menu(mb, "File");
-	em->smi = add_menu_item(menu, "Save Image", PACKAGE_DATA_DIR "/images/stock_save.png", save_dialog, NULL);
+	em->smi = add_menu_item(menu, "Save Image", 
+				PACKAGE_DATA_DIR "/images/stock_save.png", 
+							save_dialog, NULL);
 	ewl_widget_disable(em->smi);
-	mi = add_menu_item(menu, "Exit", PACKAGE_DATA_DIR "/images/exit.png", destroy, NULL);
+	mi = add_menu_item(menu, "Exit", 
+				PACKAGE_DATA_DIR "/images/exit.png", 
+							destroy, NULL);
 	menu = add_menu(mb, "Albums");
-	mi = add_menu_item(menu, "Add Album", PACKAGE_DATA_DIR "/images/add.png", add_album, NULL);
+	mi = add_menu_item(menu, "Add Album", 
+				PACKAGE_DATA_DIR "/images/add.png", 
+							add_album, NULL);
 
 	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
@@ -201,12 +212,14 @@ void create_main_gui(void)
         em->atree = add_atree(em->browser);
 	ewl_object_maximum_w_set(EWL_OBJECT(em->atree), 200);
 	ewl_widget_name_set(em->atree, "Albums");
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(em->browser), em->atree, _("Albums"));
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(em->browser), em->atree, 
+								_("Albums"));
 
 	em->dtree = add_dtree(em->browser);
 	ewl_object_maximum_w_set(EWL_OBJECT(em->dtree), 200);
 	ewl_widget_name_set(em->dtree, "File System");
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(em->browser), em->dtree, _("File System"));
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(em->browser), em->dtree, 
+							_("File System"));
 
 	em->view_box = ewl_notebook_new();
 	ewl_notebook_tabbar_visible_set(EWL_NOTEBOOK(em->view_box), 0);
@@ -227,19 +240,25 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(vbox), em->toolbar);
 	ewl_widget_show(em->toolbar);
 
-        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/normal_view.png", show_normal_view, NULL);
+        button = add_button(em->toolbar, NULL, 
+				PACKAGE_DATA_DIR "/images/normal_view.png", 
+							show_normal_view, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
 	ewl_attach_tooltip_text_set(button, _("Normal View"));
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
 
-        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/list_view.png", show_list_view, NULL);
+        button = add_button(em->toolbar, NULL, 
+				PACKAGE_DATA_DIR "/images/list_view.png", 
+							show_list_view, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
 	ewl_attach_tooltip_text_set(button, _("List View"));      
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
         ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
 
-	button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/image.png", show_single_view, NULL);
+	button = add_button(em->toolbar, NULL, 
+				PACKAGE_DATA_DIR "/images/image.png", 
+							show_single_view, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
 	ewl_attach_tooltip_text_set(button, _("Single View"));
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
@@ -249,23 +268,30 @@ void create_main_gui(void)
 	ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
 	ewl_widget_show(vsep);
 
-        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/get_exif.png", NULL, NULL);
+        button = add_button(em->toolbar, NULL, 
+				PACKAGE_DATA_DIR "/images/get_exif.png", 
+								NULL, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
         ewl_attach_tooltip_text_set(button, _("You do not have libexif 0.6.13"));
         ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 #ifdef BUILD_EXIF_SUPPORT
-        ewl_callback_append(button, EWL_CALLBACK_CLICKED, display_exif_dialog, NULL);
+        ewl_callback_append(button, EWL_CALLBACK_CLICKED, display_exif_dialog, 
+									NULL);
         ewl_attach_tooltip_text_set(button, _("View Exif Data"));
 #endif
 
-	button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/stock_fullscreen.png", window_fullscreen, NULL);
+	button = add_button(em->toolbar, NULL, 
+			PACKAGE_DATA_DIR "/images/stock_fullscreen.png",
+						 window_fullscreen, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
 	ewl_attach_tooltip_text_set(button, _("Toggle Fullscreen"));
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
         ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
 
-        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/x-office-presentation.png", start_slideshow, NULL);
+        button = add_button(em->toolbar, NULL, 
+			PACKAGE_DATA_DIR "/images/x-office-presentation.png", 
+							start_slideshow, NULL);
 	ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
 	ewl_attach_tooltip_text_set(button, _("Start a Slideshow"));
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
@@ -275,7 +301,9 @@ void create_main_gui(void)
         ewl_container_child_append(EWL_CONTAINER(em->toolbar), vsep);
         ewl_widget_show(vsep);
 
-        button = add_button(em->toolbar, NULL, PACKAGE_DATA_DIR "/images/edit_view.png", show_edit_view, NULL);
+        button = add_button(em->toolbar, NULL, 
+				PACKAGE_DATA_DIR "/images/edit_view.png", 
+							show_edit_view, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
         ewl_attach_tooltip_text_set(button, _("Move to edit view"));
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
@@ -287,7 +315,8 @@ void create_main_gui(void)
 	em->current_directory = strdup(getenv("HOME"));
 
 	populate_albums(NULL, NULL, NULL);
-	ewl_callback_append(em->browser, EWL_CALLBACK_VALUE_CHANGED, update_view, NULL);
+	ewl_callback_append(em->browser, EWL_CALLBACK_VALUE_CHANGED, 
+							update_view, NULL);
 
 	return;
 }
@@ -331,9 +360,11 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
                 imagef = ecore_dlist_current(em->images);
 		if(imagef)
 		{
-                	thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
+                	thumb = add_image(em->fbox, imagef, 1, 
+						freebox_image_clicked, NULL);
 			ewl_image_constrain_set(EWL_IMAGE(thumb), 81);
-			ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
+			ewl_object_alignment_set(EWL_OBJECT(thumb), 
+							EWL_FLAG_ALIGN_CENTER);
 			ewl_widget_name_set(thumb, imagef);
 		}
 		ecore_dlist_next(em->images);
@@ -342,7 +373,8 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
 	ecore_dlist_goto_first(em->images);
 	if(ecore_dlist_current(em->images)) 
 	{
-		ewl_image_file_path_set(EWL_IMAGE(em->simage), ecore_dlist_current(em->images));
+		ewl_image_file_path_set(EWL_IMAGE(em->simage), 
+					ecore_dlist_current(em->images));
 	}
         ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
 	ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
@@ -392,9 +424,11 @@ static void populate_directories(Ewl_Widget *w, void *event, void *data)
 		imagef = ecore_dlist_current(em->images);
 		if(imagef)
 		{
-  	        	thumb = add_image(em->fbox, imagef, 1, freebox_image_clicked, NULL);
+  	        	thumb = add_image(em->fbox, imagef, 1, 
+						freebox_image_clicked, NULL);
 		       	ewl_image_constrain_set(EWL_IMAGE(thumb), 81);
-       		      	ewl_object_alignment_set(EWL_OBJECT(thumb), EWL_FLAG_ALIGN_CENTER);
+       		      	ewl_object_alignment_set(EWL_OBJECT(thumb), 
+							EWL_FLAG_ALIGN_CENTER);
 	               	ewl_widget_name_set(thumb, imagef);
 		}
         	ecore_dlist_next(em->images);
@@ -403,7 +437,8 @@ static void populate_directories(Ewl_Widget *w, void *event, void *data)
 	ecore_dlist_goto_first(em->images);
 	if(ecore_dlist_current(em->images))
 	{ 
-		ewl_image_file_path_set(EWL_IMAGE(em->simage), ecore_dlist_current(em->images));
+		ewl_image_file_path_set(EWL_IMAGE(em->simage), 
+					ecore_dlist_current(em->images));
 	}
 	ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
 	ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
@@ -477,7 +512,8 @@ static Ewl_Widget *album_view_new(void *data, unsigned int row, unsigned int col
 
 	album = data;
 
-	icon = add_icon(NULL, album, PACKAGE_DATA_DIR "/images/image.png", 0, populate_albums, NULL);
+	icon = add_icon(NULL, album, PACKAGE_DATA_DIR "/images/image.png", 0, 
+							populate_albums, NULL);
 
         ewl_icon_constrain_set(EWL_ICON(icon), 25);
 	ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_HORIZONTAL);
@@ -501,7 +537,9 @@ static Ewl_Widget *directory_view_new(void *data, unsigned int row, unsigned int
 	strcpy(current_directory, em->current_directory);
         directory = data;
 
-	icon = add_icon(NULL, basename((char *)directory), PACKAGE_DATA_DIR "/images/folder.png", 0, populate_directories, NULL);
+	icon = add_icon(NULL, basename((char *)directory), 
+				PACKAGE_DATA_DIR "/images/folder.png", 0, 
+						populate_directories, NULL);
 
         ewl_icon_constrain_set(EWL_ICON(icon), 25);
         ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_HORIZONTAL);

@@ -26,11 +26,15 @@ Ewl_Widget *add_single_view(Ewl_Widget *c)
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
 
-	button = add_button(hbox, NULL, PACKAGE_DATA_DIR "/images/media-seek-backward.png", previous_image, NULL);
+	button = add_button(hbox, NULL, 
+			PACKAGE_DATA_DIR "/images/media-seek-backward.png", 
+							previous_image, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
         ewl_attach_tooltip_text_set(button, _("Previous Image"));
 
-        button = add_button(hbox, NULL, PACKAGE_DATA_DIR "/images/media-seek-forward.png", next_image, NULL);
+        button = add_button(hbox, NULL, 
+			PACKAGE_DATA_DIR "/images/media-seek-forward.png", 
+							next_image, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
         ewl_attach_tooltip_text_set(button, _("Next Image"));
 
@@ -42,7 +46,8 @@ void show_single_view(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->main_nb), em->main_vbox);
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->single_vbox);
-	ewl_image_file_path_set(EWL_IMAGE(em->simage), ecore_dlist_current(em->images));
+	ewl_image_file_path_set(EWL_IMAGE(em->simage), 
+					ecore_dlist_current(em->images));
 
 	return;
 }

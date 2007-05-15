@@ -44,7 +44,8 @@ Ecore_Hash *get_exif_data(const char *file)
 			{
 				exif_entry_ref(entry);
 				exif_entry_get_value(entry, value, sizeof(value));
-				ecore_hash_set(exif_info, strdup(title), strdup(value));
+				ecore_hash_set(exif_info, strdup(title), 
+							  strdup(value));
 				exif_entry_unref(entry);
 			}
 		}

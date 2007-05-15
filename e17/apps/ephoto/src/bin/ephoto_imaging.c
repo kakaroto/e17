@@ -289,7 +289,8 @@ void update_image(Ewl_Widget *image, int w, int h, unsigned int *data)
 	{
 		evas_object_image_size_set(EWL_IMAGE(image)->image, w, h);
 		evas_object_image_data_set(EWL_IMAGE(image)->image, data);
-		evas_object_image_data_update_add(EWL_IMAGE(image)->image, 0, 0, w, h);
+		evas_object_image_data_update_add(EWL_IMAGE(image)->image, 0, 0,
+									 w, h);
 	}
 }
 
@@ -301,11 +302,16 @@ static void close_dialog(Ewl_Widget *w, void *event, void *data)
 static void save_image(Ewl_Widget *w, void *event, void *data)
 {
 	const char *file;
+	char *ext;
 	char flags[PATH_MAX];
 	pid_t pid;
 
 	file = ewl_text_text_get(EWL_TEXT(data)); 
-	snprintf(flags, PATH_MAX, "quality=%i", (int)ewl_range_value_get(EWL_RANGE(qseek)));
+	
+	ext = strrchr(file, '.')+1;
+	printf("%s\n", ext);
+	snprintf(flags, PATH_MAX, "quality=%i", 
+			(int)ewl_range_value_get(EWL_RANGE(qseek))*10);
 
 	if(!file) return;
 
@@ -314,7 +320,8 @@ static void save_image(Ewl_Widget *w, void *event, void *data)
 		pid = fork();
 		if(pid == 0)
 		{
-			evas_object_image_save(EWL_IMAGE(em->eimage)->image, file, NULL, flags);
+			evas_object_image_save(EWL_IMAGE(em->eimage)->image, 
+							file, NULL, flags);
 			exit(0);
 		}
 	}
@@ -351,10 +358,14 @@ void save_dialog(const char *file)
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
 
-	button = add_button(hbox, "Save", PACKAGE_DATA_DIR "/images/stock_save.png", save_image, entry);
+	button = add_button(hbox, "Save", 
+				PACKAGE_DATA_DIR "/images/stock_save.png", 
+							save_image, entry);
 	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);	
 
-	button = add_button(hbox, "Close", PACKAGE_DATA_DIR "/images/dialog-close.png", close_dialog, NULL);
+	button = add_button(hbox, "Close", 
+				PACKAGE_DATA_DIR "/images/dialog-close.png", 
+							close_dialog, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
 
 	return;

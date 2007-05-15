@@ -6,19 +6,23 @@ const char *file_size_get(int size)
         char fsize[256];
 
         dsize = (double)size;
-        if (dsize < 1024.0) snprintf(fsize, sizeof(fsize), _("%'.0f Bytes"), dsize);
+        if (dsize < 1024.0) snprintf(fsize, sizeof(fsize), _("%'.0f Bytes"), 
+									dsize);
         else
         {
                 dsize /= 1024.0;
-                if (dsize < 1024) snprintf(fsize, sizeof(fsize), _("%'.0f KB"), dsize);
+                if (dsize < 1024) snprintf(fsize, sizeof(fsize), _("%'.0f KB"), 
+									dsize);
                 else
                 {
                         dsize /= 1024.0;
-                        if (dsize < 1024) snprintf(fsize, sizeof(fsize), _("%'.0f MB"), dsize);
+                        if (dsize < 1024) snprintf(fsize, sizeof(fsize), 
+							_("%'.0f MB"), dsize);
                         else
                         {
                                 dsize /= 1024.0;
-                                snprintf(fsize, sizeof(fsize), _("%'.1f GB"), dsize);
+                                snprintf(fsize, sizeof(fsize), 
+							_("%'.1f GB"), dsize);
                         }
                 }
         }
