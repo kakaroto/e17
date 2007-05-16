@@ -1,0 +1,12 @@
+/* Init */
+
+program
+{
+	name:	"init";
+	signal:	"load";
+	source:	"";
+	script
+	{
+
+        }
+}

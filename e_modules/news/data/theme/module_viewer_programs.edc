@@ -1,0 +1,10 @@
+program
+{
+	name: "click_close";
+	signal: "mouse,up,1";
+	source: "base";
+	script
+	{
+		emit("close", "viewer");
+	}
+}

@@ -1,0 +1,21 @@
+/* Viewer group */
+
+group
+{
+        name: "modules/news/viewer";
+
+	data
+	{
+		item: "shaped" "1";
+	}
+
+        parts
+        {
+                #include "module_viewer_parts.edc"
+        }
+
+        programs
+        {
+                #include "module_viewer_programs.edc"
+        }
+}
