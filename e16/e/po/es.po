@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-04-29 16:50+0200\n"
+"POT-Creation-Date: 2007-05-12 12:06+0200\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -439,27 +439,27 @@ msgstr ""
 "algún tiempo y que este tema utilize características solo\n"
 "presentes en una versión más avanzada.\n"
 
-#: src/config.c:569
+#: src/config.c:563
 msgid "Enlightenment Starting..."
 msgstr "Iniciando Enlightenment... "
 
-#: src/config.c:604
+#: src/config.c:598
 msgid "Recover system config?"
 msgstr "¿Recuperar la configuración del sistema? "
 
-#: src/config.c:604
+#: src/config.c:598
 msgid "Yes, Attempt recovery"
 msgstr "Si, intentar recuperación "
 
-#: src/config.c:605
+#: src/config.c:599
 msgid "Restart and try again"
 msgstr "Reiniciar e intentar nuevamente "
 
-#: src/config.c:605
+#: src/config.c:599
 msgid "Quit and give up"
 msgstr "Salir y Desistir "
 
-#: src/config.c:607
+#: src/config.c:601
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -484,7 +484,7 @@ msgstr ""
 msgid "Settings..."
 msgstr "Configurar enfoque"
 
-#: src/container.c:1232 src/dialog.c:895 src/pager.c:998 config/strings.c:30
+#: src/container.c:1232 src/dialog.c:895 src/pager.c:999 config/strings.c:30
 #: config/strings.c:167
 msgid "Close"
 msgstr "Cerrar"
@@ -692,11 +692,11 @@ msgstr "Arriba"
 msgid "Bottom"
 msgstr "Abajo"
 
-#: src/desktops.c:2463 src/pager.c:1904 src/pager.c:1929 src/pager.c:1954
+#: src/desktops.c:2463 src/pager.c:1908 src/pager.c:1933 src/pager.c:1958
 msgid "Left"
 msgstr "Izquierdo"
 
-#: src/desktops.c:2469 src/pager.c:1916 src/pager.c:1941 src/pager.c:1966
+#: src/desktops.c:2469 src/pager.c:1920 src/pager.c:1945 src/pager.c:1970
 msgid "Right"
 msgstr "Derecho"
 
@@ -1307,14 +1307,14 @@ msgstr "Use \"Ayuda <comando>\" para obtener una descripción individual\n"
 msgid "         <command>     : <description>\n"
 msgstr "        <comando>   : <descripción>\n"
 
-#: src/main.c:588
+#: src/main.c:583
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:698
+#: src/main.c:693
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1344,7 +1344,7 @@ msgstr ""
 "paquetes mal construidos, la eliminación manual de dicho programa\n"
 "ó un error en la instalación de Enlightenment.\n"
 
-#: src/main.c:712
+#: src/main.c:707
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1486,125 +1486,125 @@ msgstr ""
 "Transparencia Selectiva de Enlightenment\n"
 "Dialogo de Configuracion\n"
 
-#: src/pager.c:991 config/strings.c:49 config/strings.c:166
+#: src/pager.c:992 config/strings.c:49 config/strings.c:166
 msgid "Window Options"
 msgstr "Opciones de Ventanas"
 
-#: src/pager.c:994 config/strings.c:51 config/strings.c:169
+#: src/pager.c:995 config/strings.c:51 config/strings.c:169
 msgid "Iconify"
 msgstr "Iconizar"
 
-#: src/pager.c:1002 config/strings.c:168
+#: src/pager.c:1003 config/strings.c:168
 msgid "Annihilate"
 msgstr "Aniquilar"
 
-#: src/pager.c:1006
+#: src/pager.c:1007
 msgid "Stick / Unstick"
 msgstr "Pegar / Despegar"
 
-#: src/pager.c:1015
+#: src/pager.c:1016
 msgid "Desktop Options"
 msgstr "Opciones de Escritorio"
 
-#: src/pager.c:1017
+#: src/pager.c:1018
 msgid "Pager Settings..."
 msgstr "Configurar Conmutador..."
 
-#: src/pager.c:1022
+#: src/pager.c:1023
 msgid "Snapshotting Off"
 msgstr "Miniaturas Inhabilitadas"
 
-#: src/pager.c:1026
+#: src/pager.c:1027
 msgid "High Quality Off"
 msgstr "Calidad Alta Inhabilitada"
 
-#: src/pager.c:1028
+#: src/pager.c:1029
 msgid "High Quality On"
 msgstr "Calidad Alta Habilitada"
 
-#: src/pager.c:1033
+#: src/pager.c:1034
 msgid "Snapshotting On"
 msgstr "Miniaturas Habilitadas"
 
-#: src/pager.c:1037
+#: src/pager.c:1038
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1039
+#: src/pager.c:1040
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1793 src/pager.c:1884
+#: src/pager.c:1797 src/pager.c:1888
 msgid "Pager scanning speed:"
 msgstr "Velocidad de barrido del Conmutador:"
 
-#: src/pager.c:1794 src/pager.c:1885
+#: src/pager.c:1798 src/pager.c:1889
 msgid "lines per second"
 msgstr "líneas por segundo"
 
-#: src/pager.c:1823
+#: src/pager.c:1827
 msgid "Enable pager display"
 msgstr "Habilitar el uso del Conmutador"
 
-#: src/pager.c:1833
+#: src/pager.c:1837
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1837
+#: src/pager.c:1841
 #, fuzzy
 msgid "Simple"
 msgstr "Ondas"
 
-#: src/pager.c:1843
+#: src/pager.c:1847
 msgid "Make miniature snapshots of the screen"
 msgstr "Hacer Miniaturas de la pantalla"
 
-#: src/pager.c:1850
+#: src/pager.c:1854
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1861
+#: src/pager.c:1865
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Suavizar miniaturas de alta calidad en modo Miniaturas"
 
-#: src/pager.c:1866
+#: src/pager.c:1870
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Realizar acercamiento cuando el ratón está sobre ventanas"
 
-#: src/pager.c:1872
+#: src/pager.c:1876
 msgid "Pop up window title when mouse is over the window"
 msgstr "Mostrar título cuando el ratón está sobre ventanas"
 
-#: src/pager.c:1877
+#: src/pager.c:1881
 msgid "Continuously scan screen to update pager"
 msgstr "Barrer continuamente la pantalla para actualizar el Conmutador"
 
-#: src/pager.c:1900
+#: src/pager.c:1904
 msgid "Mouse button to select and drag windows:"
 msgstr "Botón del ratón para seleccionar y arrastrar ventanas:"
 
-#: src/pager.c:1910 src/pager.c:1935 src/pager.c:1960
+#: src/pager.c:1914 src/pager.c:1939 src/pager.c:1964
 msgid "Middle"
 msgstr "Medio"
 
-#: src/pager.c:1925
+#: src/pager.c:1929
 msgid "Mouse button to select desktops:"
 msgstr "Botón del ratón para seleccionar escritorios:"
 
-#: src/pager.c:1950
+#: src/pager.c:1954
 msgid "Mouse button to display pager menu:"
 msgstr "Botón del ratón para Mostrar menú del Conmutador:"
 
-#: src/pager.c:1974
+#: src/pager.c:1978
 #, fuzzy
 msgid "Pagers"
 msgstr "Configurar Conmutador"
 
-#: src/pager.c:1975
+#: src/pager.c:1979
 msgid "Pager Settings"
 msgstr "Configurar Conmutador"
 
-#: src/pager.c:1978
+#: src/pager.c:1982
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
