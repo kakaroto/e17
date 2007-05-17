@@ -64,6 +64,10 @@ static void _setup(void)
       "Ethiopic: 'ዩኒኮድ'<br>"
       "Georgian: 'უნიკოდი'<br>"
       "Greek: 'Γιούνικοντ'<br>"
+
+      /* also test the html entity stuff a bit */
+      "Greek continued: '&tau;&upsilon;&lambda;&theta;'<br>"
+
       "Gujarati: 'યૂનિકોડ'<br>"
       "Gurmukhi: 'ਯੂਨਿਕੋਡ'<br>"
       "Hindi: 'यूनिकोड'<br>"
