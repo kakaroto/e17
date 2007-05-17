@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/enlightenment/modules/news/*.edj
+debian/tmp/usr/lib/enlightenment/modules/news/images/*
+debian/tmp/usr/lib/enlightenment/modules/news/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/news/*.desktop

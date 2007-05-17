@@ -113,6 +113,13 @@ Description: An E17 network interface monitor module
  - configure poll interval
  - choose device.
  
+Package: emodule0-news
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-news
+Description: The E17 new modules
+ An E17 module to display feeds like Rss or Atom on the desktop.
+ 
 Package: emodule0-photo
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -221,7 +228,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-cpu, emodule0-deskshow, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
+Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-cpu, emodule0-deskshow, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-news, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all, e17-modules
 Description: A dummy package for installing all modules for E17
@@ -240,6 +247,7 @@ Description: A dummy package for installing all modules for E17
  Mixer       : Sound mixer module.
  Moon        : Moon Clock module for Enlightenment.
  Net         : Network activity monitoring module.
+ News        : Displays Rss or Atom feeds on the desktop.
  Photo       : Display, view or set pictures as backgrounds.
  Rain        : Displays rain on the desktop.
  Screenshot  : This module is used to take screenshots. It
