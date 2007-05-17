@@ -4342,3 +4342,20 @@ Avoid creating/destroying regions - continued.
 Fix ugly black shadows on icons in transparent iconbox (noted by Atom Smasher).
 Fix repaint after changing shadow mode.
 
+
+-------------------------------------------------------------------------------
+
+Thu May 17 11:49:39 CEST 2007
+(Kim)
+
+--- 0.16.8.8 ---
+Bump version.
+Fix pagers when enabling after initially being disabled (noted by Dennis Nezic).
+Remove unused backup-....cfg stuff. 
+Fix fallback textclass.
+Don't crash if trying to start when no theme is found. Add missing newline.
+Fix parsing title, name, and class matches in windowmatches.cfg (noted by Ted Baltz).
+Remove trailing dash in release version string.
+Enable setting imlib2 image cache size (debug).
+Eliminate some remainders from Window re-wrapping done a while back.
+
