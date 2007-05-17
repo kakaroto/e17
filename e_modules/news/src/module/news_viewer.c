@@ -591,15 +591,18 @@ _dialog_cb_article_selected(void *data)
    DD(("TRIGGERED cb article ilist (%s)", art->title));
    nv->varticles.selected = art;
 
-   strftime(buf_date, sizeof(buf_date), "%Y-%m-%d %H:%M:%S", &art->date);
+   if (art->date.tm_year != 0)
+     strftime(buf_date, sizeof(buf_date), "%Y-%m-%d %H:%M:%S", &art->date);
    snprintf(buf, sizeof(buf),
             "<underline=on underline_color=%s>%s</><br>"
             "%s<br><br>"
-            "%s<br><br>",
+            "%s<br><br>"
+            "%s",
             news->config->viewer.vcontent.font_color,
             (art->title && art->title[0]) ? art->title : "No title",
             buf_date,
-            (art->description && art->description[0])? art->description : "No description text");
+            (art->description && art->description[0])? art->description : "No description text",
+            (art->url) ? "||click here to open article in a browser||" : "");
    _vcontent_text_set(nv, buf);
 
    if (art->unread)
@@ -747,11 +750,12 @@ _varticles_refresh(News_Viewer *nv)
           {
              News_Feed_Article *art;
              char label[4096];
-             char buf_date[4096] = "-- --:--";
+             char buf_date[4096] = "";
              
              art = l->data;
              /* append the article to the article ilist */
-             strftime(buf_date, sizeof(buf_date), "%d %H:%M", &art->date);
+             if (art->date.tm_year)
+               strftime(buf_date, sizeof(buf_date), "%d %H:%M", &art->date);
              snprintf(label, sizeof(label), "%s %s", buf_date, art->title);
              e_widget_ilist_append(ilist,
                                    _article_icon_get(art, evas_object_evas_get(ilist)), label,
@@ -810,6 +814,7 @@ static void
 _vcontent_feed_infos_set(News_Viewer *nv)
 {
    News_Feed *f;
+   char buf_error[1024] = "";
    char buf_infos[1024] = "";
    char buf_conn[200] = "";
    char buf_unread[1024] = "No unread articles";
@@ -821,6 +826,18 @@ _vcontent_feed_infos_set(News_Viewer *nv)
 
    if (f->doc)
      {
+        switch(f->doc->parse.error)
+          {
+          case NEWS_PARSE_ERROR_NO:
+          case NEWS_PARSE_ERROR_NOT_IMPLEMENTED:
+             break;
+          case NEWS_PARSE_ERROR_BROKEN_FEED:
+          case NEWS_PARSE_ERROR_TYPE_UNKNOWN:
+             snprintf(buf_error, sizeof(buf_error),
+                      "<br><color=#ff0000>An error happend during the parse of this feed !<br>"
+                      "You can report error at ooookiwi@gmail.com to get it fixed</><br><br>");
+             break;
+          }
         if (f->doc->parse.last_time)
           {
              char buf_mtime[200];
@@ -831,7 +848,7 @@ _vcontent_feed_infos_set(News_Viewer *nv)
                case NEWS_FEED_TYPE_RSS:
                   type = "RSS"; break;
                case NEWS_FEED_TYPE_ATOM:
-                  type = "ATOM"; break;
+                  type = "ATOM <color=#ff0000>(not supported for now)</>"; break;
                default:
                   type = "UNKNOWN";
                }
@@ -865,12 +882,14 @@ _vcontent_feed_infos_set(News_Viewer *nv)
      }
    snprintf(buf, sizeof(buf),
             "<underline=on underline_color=%s>%s</> <i>in %s</i><br>"
+            "%s"
             "%s<br><br>"
             "%s%s<br>"
             "%s",
             news->config->viewer.vcontent.font_color,
             f->name,
             f->category->name,
+            buf_error,
             (f->description && f->description[0]) ? f->description : "No description for this feed",
             buf_infos, buf_conn,
             buf_unread);
@@ -886,20 +905,16 @@ _vcontent_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    nv = data;
    ev = event_info;
 
-   if (ev->flags == EVAS_BUTTON_DOUBLE_CLICK)
+   if (nv->varticles.selected)
      {
-        if (nv->varticles.selected)
-          {
-             if (nv->varticles.selected->url)
-               news_util_browser_open(nv->varticles.selected->url);
-          }
-        else if (nv->vfeeds.selected)
-          {
-             if (nv->vfeeds.selected->url_home)
-               news_util_browser_open(nv->vfeeds.selected->url_home);
-          }
+        if (nv->varticles.selected->url)
+          news_util_browser_open(nv->varticles.selected->url);
      }
-
+   else if (nv->vfeeds.selected)
+     {
+        if (nv->vfeeds.selected->url_home)
+          news_util_browser_open(nv->vfeeds.selected->url_home);
+     }
 }
 
 static Evas_Object *

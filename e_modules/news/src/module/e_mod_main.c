@@ -104,7 +104,7 @@ EAPI int
 e_modapi_about(E_Module *m)
 {
    news_util_message_show(_("Module to display information feeds<br>"
-                            "like Rss or Atom, on youre desktop<br><br>"
+                            "like Rss (and soon Atom), on youre desktop<br><br>"
                             "ooookiwi@gmail.com<br>"
                             "http://oooo.zapto.org"));
    return 1;

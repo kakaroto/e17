@@ -284,6 +284,7 @@ _parse_type(News_Feed_Document *doc)
      {
         doc->parse.type = NEWS_FEED_TYPE_ATOM;
         doc->parse.version = 1.0;
+        return 1;
      }
 
    doc->parse.type = NEWS_FEED_TYPE_UNKNOWN;

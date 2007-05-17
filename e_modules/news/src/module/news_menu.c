@@ -207,7 +207,6 @@ static void
 _cb_configure_main(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    if (!news) return;
-   if (news->config_dialog) return;
 
    news_config_dialog_show();
 }
@@ -216,7 +215,6 @@ static void
 _cb_configure_feeds(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    if (!news) return;
-   if (news->config_dialog_feeds) return;
 
    news_config_dialog_feeds_show();
 }

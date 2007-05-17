@@ -300,10 +300,10 @@ news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int lang
    if ( f2 && (f != f2) )
      {
         news_util_message_error_show(_("A feed with the <hilight>name</hilight> %s <hilight>already exists</hilight><br>"
-                                       "in the %s category<br/><br/>"
-                                       "Its not possible to have feeds with the same name<br/>"
+                                       "in the %s category<br><br>"
+                                       "Its not possible to have feeds with the same name<br>"
                                        "in one category."),
-                                     f->name, f->category->name);
+                                     name, category->name);
         return 0;
      }
    if (!language || !language[0])
@@ -1081,21 +1081,15 @@ _feed_category_find(char *name)
 static char *
 _get_host_from_url(const char *url)
 {
-   char *host;
-   char *tmp, *p;
+   char *host, *p;
+   char buf[4096];
 
-   if (strncmp(url, "http://", 7))
+   strncpy(buf, url, sizeof(buf));
+   if (strncmp(buf, "http://", 7))
      return NULL;
-   tmp = strdup(url + 7);
-   p = strchr(tmp, '/');
-   if (!p)
-     {
-        free(tmp);
-        return NULL;
-     }
-   *p = '\0';
-   host = strdup(tmp);
-   free(tmp);
+   p = strchr(buf+7, '/');
+   if (p) *p = '\0';
+   host = strdup(buf+7);
 
    return host;
 }
@@ -1103,8 +1097,7 @@ _get_host_from_url(const char *url)
 static char *
 _get_file_from_url(const char *url)
 {
-   char *file;
-   char *p;
+   char *file, *p;
 
    p = strstr(url, "://");
    if (!p)
@@ -1112,9 +1105,9 @@ _get_file_from_url(const char *url)
    p += 3;
    p = strstr(p, "/");
    if (!p)
-     return NULL;
-
-   file = strdup(p);
+     file = strdup("/");
+   else
+     file = strdup(p);     
 
    return file;
 }
@@ -1307,6 +1300,7 @@ _cb_feed_parse(News_Feed_Document *doc, News_Parse_Error error, int changes)
    doc->parse.last_time = ecore_time_get();
 
    //TODO with popups
+   doc->parse.error = error;
    switch(error)
      {
      case NEWS_PARSE_ERROR_NO:

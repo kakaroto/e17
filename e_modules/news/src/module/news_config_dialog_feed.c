@@ -204,6 +204,8 @@ news_config_dialog_feed_refresh_langs(News_Feed *feed)
      e_widget_ilist_selected_set(ilist, pos_to_select);
    else
      e_widget_ilist_selected_set(ilist, 0);
+   _cb_lang_change(cfdata, NULL);
+   
 
    e_widget_min_size_get(ilist, &w, NULL);
    e_widget_min_size_set(ilist, w, 110);

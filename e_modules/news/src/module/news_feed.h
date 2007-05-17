@@ -279,9 +279,10 @@ struct _News_Feed_Document
       const char    *meta_date;
       const char    *charset;
 
-      News_Parse *parser;
-      int         got_infos : 1;
-      time_t      last_time;
+      News_Parse      *parser;
+      int              got_infos : 1;
+      time_t           last_time;
+      News_Parse_Error error;
    } parse;
 };
 

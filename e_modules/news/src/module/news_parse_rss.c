@@ -42,6 +42,8 @@ _idler(void *data)
 
    parser = data;
 
+   //DD(("%d", parser->oc.action));
+
    switch(parser->oc.action)
      {
      case NEWS_PARSE_OC_DETECT_METAS:
@@ -101,7 +103,7 @@ _idler(void *data)
      }
 
    /* error returned */
-   if (err)
+   if (err) //FIXME: != NEWS_PARSE_ERROR_TYPE_NO
      {
         parser->error = err;
         parser->oc.action = NEWS_PARSE_OC_END;
@@ -142,7 +144,7 @@ _parse_detect_metas(News_Parse *parser)
 {
    News_Feed *feed;
    News_Feed_Document *doc;
-   int ver;
+   float ver;
 
    doc = parser->doc;
    feed = doc->feed;
@@ -334,20 +336,18 @@ _parse_item_title(News_Parse *parser)
    pos = parser->buffer_pos;
 
    p1 = strstr(pos, "<title");
-   p2 = news_parse_meta_block_find(&p1);
-   if (!p2) return NEWS_PARSE_ERROR_BROKEN_FEED;
-
-   if (p2 < art->pos_end)
+   if (p1 && (p1 < art->pos_end))
      {
+        p2 = news_parse_meta_block_find(&p1);
+        if (!p2 || (p2 > art->pos_end))
+          return NEWS_PARSE_ERROR_BROKEN_FEED;
         len = p2 - p1;
         art->title = E_NEW(char, len+1);
         memcpy(art->title, p1, len);
         art->title[len] = '\0';
      }
    else
-     {
-        art->title = strdup("No title");
-     }
+     art->title = strdup("No title");
 
    return NEWS_PARSE_ERROR_NO;
 }
@@ -365,52 +365,53 @@ _parse_item_date(News_Parse *parser)
    pos = parser->buffer_pos;
 
    p1 = strstr(pos, parser->doc->parse.meta_date);
-   p2 = news_parse_meta_block_find(&p1);
-   if (!p2) return NEWS_PARSE_ERROR_BROKEN_FEED;
-   if (p2 >= art->pos_end) return NEWS_PARSE_ERROR_BROKEN_FEED;
-
-   len = p2 - p1;
-   date = p1;
-   tm = &art->date;
-   DD(("DATE LEN %d", len));
-
-   if ((parser->doc->parse.version == 1.0) &&
-       (len >= 22))
+   if (p1 && (p1 < art->pos_end))
      {
-        sscanf(date, "%4d", &i);
-        tm->tm_year = i - 1900;
-        sscanf(date+5, "%2d", &tm->tm_mon);
-        tm->tm_mon--;   /* tm works with 0-11 */
-        sscanf(date+8, "%2d", &tm->tm_mday);
-        sscanf(date+11, "%2d", &tm->tm_hour);
-        sscanf(date+14, "%2d", &tm->tm_min);
-        if (date[16] == ':') /* seconds are precised ? */
-          sscanf(date+17, "%2d", &tm->tm_sec);
-        else
-          tm->tm_sec = 0;
-        DD(("DATE seconds %d", tm->tm_sec));
-     }
-   else if (len >= 25)
-     {
-        sscanf(date+5, "%2d", &tm->tm_mday);
-        if (!strncmp(date+8, "Jan", 3)) tm->tm_mon = 0;
-        else if (!strncmp(date+8, "Feb", 3)) tm->tm_mon = 1;
-        else if (!strncmp(date+8, "Mar", 3)) tm->tm_mon = 2;
-        else if (!strncmp(date+8, "Apr", 3)) tm->tm_mon = 3;
-        else if (!strncmp(date+8, "May", 3)) tm->tm_mon = 4;
-        else if (!strncmp(date+8, "Jun", 3)) tm->tm_mon = 5;
-        else if (!strncmp(date+8, "Jul", 3)) tm->tm_mon = 6;
-        else if (!strncmp(date+8, "Aug", 3)) tm->tm_mon = 7;
-        else if (!strncmp(date+8, "Sep", 3)) tm->tm_mon = 8;
-        else if (!strncmp(date+8, "Oct", 3)) tm->tm_mon = 9;
-        else if (!strncmp(date+8, "Nov", 3)) tm->tm_mon = 10;
-        else if (!strncmp(date+8, "Dec", 3)) tm->tm_mon = 11;
-        else tm->tm_mon = 0;
-        sscanf(date+12, "%4d", &i);
-        tm->tm_year = i - 1900;
-        sscanf(date+17, "%2d", &tm->tm_hour);
-        sscanf(date+20, "%2d", &tm->tm_min);
-        sscanf(date+23, "%2d", &tm->tm_sec);
+        p2 = news_parse_meta_block_find(&p1);
+        if (!p2 || p2 > art->pos_end)
+          return NEWS_PARSE_ERROR_BROKEN_FEED;
+
+        len = p2 - p1;
+        date = p1;
+        tm = &art->date;
+
+        if ((parser->doc->parse.version == 1.0) &&
+            (len >= 22))
+          {
+             sscanf(date, "%4d", &i);
+             tm->tm_year = i - 1900;
+             sscanf(date+5, "%2d", &tm->tm_mon);
+             tm->tm_mon--;   /* tm works with 0-11 */
+             sscanf(date+8, "%2d", &tm->tm_mday);
+             sscanf(date+11, "%2d", &tm->tm_hour);
+             sscanf(date+14, "%2d", &tm->tm_min);
+             if (date[16] == ':') /* seconds are precised ? */
+               sscanf(date+17, "%2d", &tm->tm_sec);
+             else
+               tm->tm_sec = 0;
+          }
+        else if (len >= 25)
+          {
+             sscanf(date+5, "%2d", &tm->tm_mday);
+             if (!strncmp(date+8, "Jan", 3)) tm->tm_mon = 0;
+             else if (!strncmp(date+8, "Feb", 3)) tm->tm_mon = 1;
+             else if (!strncmp(date+8, "Mar", 3)) tm->tm_mon = 2;
+             else if (!strncmp(date+8, "Apr", 3)) tm->tm_mon = 3;
+             else if (!strncmp(date+8, "May", 3)) tm->tm_mon = 4;
+             else if (!strncmp(date+8, "Jun", 3)) tm->tm_mon = 5;
+             else if (!strncmp(date+8, "Jul", 3)) tm->tm_mon = 6;
+             else if (!strncmp(date+8, "Aug", 3)) tm->tm_mon = 7;
+             else if (!strncmp(date+8, "Sep", 3)) tm->tm_mon = 8;
+             else if (!strncmp(date+8, "Oct", 3)) tm->tm_mon = 9;
+             else if (!strncmp(date+8, "Nov", 3)) tm->tm_mon = 10;
+             else if (!strncmp(date+8, "Dec", 3)) tm->tm_mon = 11;
+             else tm->tm_mon = 0;
+             sscanf(date+12, "%4d", &i);
+             tm->tm_year = i - 1900;
+             sscanf(date+17, "%2d", &tm->tm_hour);
+             sscanf(date+20, "%2d", &tm->tm_min);
+             sscanf(date+23, "%2d", &tm->tm_sec);
+          }
      }
 
    return NEWS_PARSE_ERROR_NO;
@@ -436,19 +437,15 @@ _parse_item_link(News_Parse *parser)
    pos = parser->buffer_pos;
 
    p1 = strstr(pos, "<link");
-   p2 = news_parse_meta_block_find(&p1);
-   if (!p2) return NEWS_PARSE_ERROR_BROKEN_FEED;
-
-   if (p2 < art->pos_end)
+   if (p1 && (p1 < art->pos_end))
      {
+        p2 = news_parse_meta_block_find(&p1);
+        if (!p2 || (p2 > art->pos_end))
+          return NEWS_PARSE_ERROR_BROKEN_FEED;
         len = p2 - p1;
         art->url = E_NEW(char, len+1);
         memcpy(art->url, p1, len);
         art->url[len] = '\0';
-     }
-   else
-     {
-        art->url = strdup("No link");
      }
 
    return NEWS_PARSE_ERROR_NO;
@@ -466,19 +463,15 @@ _parse_item_description(News_Parse *parser)
    pos = parser->buffer_pos;
 
    p1 = strstr(pos, "<description");
-   p2 = news_parse_meta_block_find(&p1);
-   if (!p2) return NEWS_PARSE_ERROR_BROKEN_FEED;
-
-   if (p2 < art->pos_end)
+   if (p1 && (p1 < art->pos_end))
      {
+        p2 = news_parse_meta_block_find(&p1);
+        if (!p2 || (p2 > art->pos_end))
+          return NEWS_PARSE_ERROR_BROKEN_FEED;
         len = p2 - p1;
         art->description = E_NEW(char, len+1);
         memcpy(art->description, p1, len);
         art->description[len] = '\0';
-     }
-   else
-     {
-        art->description = strdup("No content");
      }
 
    return NEWS_PARSE_ERROR_NO;

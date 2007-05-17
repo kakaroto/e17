@@ -1,5 +1,7 @@
 #include "News.h"
 
+#define DIALOG_CLASS "_e_mod_news_config_dialog_langs"
+
 struct _Lang_Choice
 {
    News_Feed_Lang *lang;
@@ -30,6 +32,9 @@ news_config_dialog_langs_show(void)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
+   if (e_config_dialog_find("E", DIALOG_CLASS))
+     return 0;
+
    v = E_NEW(E_Config_Dialog_View, 1);
    
    v->create_cfdata = _create_data;
@@ -38,7 +43,7 @@ news_config_dialog_langs_show(void)
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
 			     _("News Feeds Language Configuration"),
-                             "E", "_e_mod_news_config_dialog_langs",
+                             "E", DIALOG_CLASS,
                              news->theme, 0, v, NULL);
    return 1;
 }

@@ -8,6 +8,9 @@ BUGS
 NEEDED (to do more or less in this order)
 ----------------------------------------------------
 
+ - parse html chars (in _item_clean ?)
+ - atom feeds
+
  - feed icons (new file ?)
 Evas_Object *news_feed_icon_add(News_Feed *feed)
 void         news_feed_icon_del(Evas_Object *obj)
@@ -42,9 +45,9 @@ to avoid refresh the ilist
  ---
 
 [Parse]
- - parse html chars (in _item_clean ?)
  - reparse infos every time, if changes ... ?
  - handle the fact that sometimes we loose feeds (connection timeout ...) so sometimes, keep feeds that are READ, to avoid having feeds marked as unread, but wich where read before
+detect when there are less articles then the time before ? if its the case, keep read articles ?
    -> compare description of feed just parsed with suspect precedent one
 its not that slow (use memcmp, keep description_size)
 
