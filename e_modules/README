@@ -46,6 +46,8 @@ moon - A module to display moon phase information.
 
 net - A module to monitor traffic on a network device.
 
+news - A module to display rss feeds.
+
 photo - A module to display pictures on the desktop.
 
 rain - A module to display rain on the desktop.
