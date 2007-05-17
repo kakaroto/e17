@@ -119,7 +119,7 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 
-	printf("Insert 'The first bunch of text\\n'\n");
+	printf("Insert 'The first bunch of text\\n' [24]\n");
 	ewl_text_text_insert(EWL_TEXT(o), "The first bunch of text\n", 0); /* 24 */
 
 	printf("Cursor position\n");
@@ -128,7 +128,7 @@ create_test(Ewl_Container *box)
 	printf("Colour apply\n");
 	ewl_text_color_apply(EWL_TEXT(o), 0, 0, 255, 255, 5);
 
-	printf("Appending 'The second bunch of text\\n'\n");
+	printf("Appending 'The second bunch of text\\n' [49]\n");
 	ewl_text_text_append(EWL_TEXT(o), "The second bunch of text\n"); /* 25 */
 
 	printf("Font size set\n");
@@ -147,13 +147,13 @@ create_test(Ewl_Container *box)
 	printf("Outline colour set\n");
 	ewl_text_outline_color_set(EWL_TEXT(o), 200, 200, 200, 200);
 
-	printf("Appending 'The third bunch of text\\n'\n");
+	printf("Appending 'The third bunch of text\\n' [73]\n");
 	ewl_text_text_append(EWL_TEXT(o), "The third bunch of text\n"); /* 24 */
 
-	printf("Inserting 'The fourth bunch of text\\n'\n");
+	printf("Inserting 'The fourth bunch of text\\n' [98]\n");
 	ewl_text_text_insert(EWL_TEXT(o), "The fourth bunch of text\n", 31); /* 25 */
 
-	printf("Creating trigger\n");
+	printf("Creating trigger [115]\n");
 	trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
 	ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
 	ewl_text_cursor_position_set(EWL_TEXT(o), ewl_text_length_get(EWL_TEXT(o)));
@@ -172,7 +172,7 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_OUT,
 			trigger_cb_mouse_out, NULL);
 
-	printf("Inserting 'The fifth bunch of text\\n'\n");
+	printf("Inserting 'The fifth bunch of text\\n' [139]\n");
 	ewl_text_text_insert(EWL_TEXT(o), "The fifth bunch of text\n", 0); /* 24 */
 
 	printf("Cursor position\n");
@@ -181,7 +181,7 @@ create_test(Ewl_Container *box)
 	printf("Colour apply\n");
 	ewl_text_color_apply(EWL_TEXT(o), 255, 0, 0, 255, 24);
 
-	printf("Inserting 'The sixth bunch of text\\n'\n");
+	printf("Inserting 'The sixth bunch of text\\n' [163]\n");
 	ewl_text_text_insert(EWL_TEXT(o), "The sixth bunch of text\n", 24); /* 24 */
 
 	printf("Cursor position\n");
@@ -196,20 +196,20 @@ create_test(Ewl_Container *box)
 	printf("Colour set\n");
 	ewl_text_color_set(EWL_TEXT(o), 255, 0, 0, 255);
 
-	printf("Appending 'And in red\\n'\n");
+	printf("Appending 'And in red\\n' [174]\n");
 	ewl_text_text_append(EWL_TEXT(o), "And in red\n"); /* 11 */
 
 	printf("Colour set\n");
 	ewl_text_color_set(EWL_TEXT(o), 0, 0, 0, 255);
 
-	printf("Appending 'Once more with feeling. '\n");
-	ewl_text_text_append(EWL_TEXT(o), "Once more with feeling. ");
+	printf("Appending 'Once more with feeling. ' [198]\n");
+	ewl_text_text_append(EWL_TEXT(o), "Once more with feeling. "); /* 24 */
 
 	printf("Trigger\n");
 	trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
 	ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
 
-	printf("Appending 'This is the multi\\n\\nline link.'\n");
+	printf("Appending 'This is the multi\\n\\nline link.' [226]\n");
 	ewl_text_text_append(EWL_TEXT(o), "This is the multi\n\nline link."); /* 28 */
 	len = ewl_text_cursor_position_get(EWL_TEXT(o)) -
 			ewl_text_trigger_start_pos_get(trigger);
@@ -226,26 +226,26 @@ create_test(Ewl_Container *box)
 	printf("Colour set\n");
 	ewl_text_color_set(EWL_TEXT(o), 255, 0, 255, 255);
 
-	printf("Appending 'ONE MORE SEGV\\n\\n'\n");
-	ewl_text_text_append(EWL_TEXT(o), "ONE MORE SEGV\n\n");
+	printf("Appending 'ONE MORE SEGV\\n\\n' [241]\n");
+	ewl_text_text_append(EWL_TEXT(o), "ONE MORE SEGV\n\n"); /* 15 */
 
 	printf("Colour set\n");
 	ewl_text_color_set(EWL_TEXT(o), 0, 0, 0, 255);
 
-	printf("Appending 'Align Left\\n'\n");
-	ewl_text_text_append(EWL_TEXT(o), "Align Left\n");
+	printf("Appending 'Align Left\\n' [252]\n");
+	ewl_text_text_append(EWL_TEXT(o), "Align Left\n");  /* 11 */
 
 	printf("Align set\n");
 	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
 
-	printf("Appending 'Align Center.\\n'\n");
-	ewl_text_text_append(EWL_TEXT(o), "Align Center.\n");
+	printf("Appending 'Align Center.\\n' [266]\n");
+	ewl_text_text_append(EWL_TEXT(o), "Align Center.\n");  /* 14 */
 
 	printf("Align set\n");
 	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_RIGHT);
 
-	printf("Appending 'Align Right.\\n'\n");
-	ewl_text_text_append(EWL_TEXT(o), "Align Right.\n");
+	printf("Appending 'Align Right.\\n' [279]\n");
+	ewl_text_text_append(EWL_TEXT(o), "Align Right.\n");  /* 13 */
 
 	return 1;
 }
