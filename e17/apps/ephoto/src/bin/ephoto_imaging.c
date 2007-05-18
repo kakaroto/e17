@@ -330,7 +330,7 @@ static void save_image(Ewl_Widget *w, void *event, void *data)
 
 		snprintf(flags, PATH_MAX, "quality=%.0f", jvalue);
 	}
-	printf("%s\n", flags);
+
 	if(!file) return;
 
         if(VISIBLE(em->eimage))
