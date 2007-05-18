@@ -1473,8 +1473,11 @@ EwinHide(EWin * ewin)
    if (ewin->ops && ewin->ops->Close)
       ewin->ops->Close(ewin);
 
-   ESelectInput(EwinGetClientWin(ewin), NoEventMask);
-   XShapeSelectInput(disp, EwinGetClientXwin(ewin), NoEventMask);
+   if (EwinGetClientWin(ewin))
+     {
+	ESelectInput(EwinGetClientWin(ewin), NoEventMask);
+	XShapeSelectInput(disp, EwinGetClientXwin(ewin), NoEventMask);
+     }
 
    EwinDestroy(ewin);
 }
