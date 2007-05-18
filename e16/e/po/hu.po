@@ -43,15 +43,15 @@ msgid ""
 msgstr ""
 "Üdvözli az Enlightenment ablakkezelõ %s verziója.\n"
 "Az Enlightenment folyamatosan fejlesztés alatt áll,\n"
-"minden hibát megprobálunk kijavítani benne, amit találunk.\n"
+"minden hibát megpróbálunk kijavítani benne, amit találunk.\n"
 "Ha egy hibát talál a szoftverben, kérjük jelezze felénk!\n"
-"A \"Segítség\" menüpontban további informaciókat talál\n"
+"A \"Segítség\" menüpontban további információkat talál\n"
 "a levelezési listáinkhoz való csatlakozásról.\n"
 "\n"
 "A kód utoljára frissült:\n"
 "%s\n"
 "\n"
-"Bizunk benne, hogy örömét leli majd a szoftverben.\n"
+"Bízunk benne, hogy örömét leli majd a szoftverben.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
@@ -91,9 +91,9 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Figyelem: nem tudom eldönteni, mit tegyek\n"
-"az aktuális ActionClass definició közepén talalható szöveggel:\n"
+"az aktuális ActionClass definíció közepén található szöveggel:\n"
 "%s\n"
-"Figyelmen kivül hagyom...\n"
+"Figyelmen kívül hagyom...\n"
 
 #: src/actions.c:90
 #, c-format
@@ -106,7 +106,7 @@ msgstr ""
 "Hiba történt a program futtatásakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A megadott file nem létezik.\n"
+"A megadott fájl nem létezik.\n"
 
 #: src/actions.c:98
 #, c-format
@@ -137,7 +137,7 @@ msgstr ""
 "Hiba történt a program futtatásakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A hiba okát nem lehet megállapítani. A file létezik,\n"
+"A hiba okát nem lehet megállapítani. A fájl létezik,\n"
 "és van futtatási joga rá. Javasolt, hogy nézzen\n"
 "utána a problémának.\n"
 
@@ -153,7 +153,7 @@ msgstr ""
 "Hiba történt a program futtatásakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A file létezik, de nem futtatható, mert nincs rá futtatási joga.\n"
+"A fájl létezik, de nem futtatható, mert nincs rá futtatási joga.\n"
 
 #: src/actions.c:144
 #, c-format
@@ -166,7 +166,7 @@ msgstr ""
 "Hiba történt a program futtatásakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A megadott file valójában egy könyvtár.\n"
+"A megadott fájl valójában egy könyvtár.\n"
 
 #: src/actions.c:152
 #, c-format
@@ -179,7 +179,7 @@ msgstr ""
 "Hiba történt a program futtatásakor:\n"
 "%s\n"
 "A programot nem lehet futtatni.\n"
-"A megadott file nem hagyományos file.\n"
+"A megadott fájl nem hagyományos fájl.\n"
 
 #: src/actions.c:177
 #, c-format
@@ -217,7 +217,7 @@ msgid ""
 msgstr ""
 "Háttérkép információ:\n"
 "Név: %s\n"
-"File: %s\n"
+"Fájl: %s\n"
 
 #: src/backgrounds.c:1652
 msgid "-NONE-"
@@ -254,7 +254,7 @@ msgstr "Elrejtés\n"
 
 #: src/backgrounds.c:2138
 msgid "Delete File\n"
-msgstr "File törlése\n"
+msgstr "Fájl törlése\n"
 
 #: src/backgrounds.c:2146
 msgid "Red:\n"
@@ -299,7 +299,7 @@ msgstr "Színek elmosása Hi-Color módban"
 
 #: src/backgrounds.c:2264
 msgid "Background overrides theme"
-msgstr "A háttér felülírja a theme beállításait"
+msgstr "A háttér felülírja a téma beállításait"
 
 #: src/backgrounds.c:2307
 msgid "Pre-scan BG's"
@@ -307,11 +307,11 @@ msgstr "Frissítés"
 
 #: src/backgrounds.c:2315
 msgid "Sort by File"
-msgstr "Filenév szerint rendez"
+msgstr "Fájlnév szerint rendez"
 
 #: src/backgrounds.c:2320
 msgid "Sort by Attr."
-msgstr "Attributum szerint rendez"
+msgstr "Attribútum szerint rendez"
 
 #: src/backgrounds.c:2325
 msgid "Sort by Image"
@@ -347,9 +347,9 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Figyelem: nem tudom eldönteni, mit tegyek\n"
-"az aktuális ColorModifier definició közepén talalható szöveggel:\n"
+"az aktuális ColorModifier definíció közepén található szöveggel:\n"
 "%s\n"
-"Figyelmen kivül hagyom...\n"
+"Figyelmen kívül hagyom...\n"
 
 #: src/comms.c:240
 msgid "E IPC Error"
@@ -387,7 +387,7 @@ msgstr "Téma verzió HIBA"
 
 #: src/config.c:266
 msgid "Restart with Defaults"
-msgstr "Újrainditás alapértékekkel"
+msgstr "Újraindítás alapértékekkel"
 
 #: src/config.c:267
 msgid "Abort and Exit"
@@ -424,8 +424,8 @@ msgstr ""
 "az Enlightenment jelen verziójával, frissítenie\n"
 "kell a konfiguráción.\n"
 "\n"
-"Ha a téma verziója nagyobb, mint az Enlightementé,\n"
-"lehet, hogy egy ideje nem frissitette, a téma pedig\n"
+"Ha a téma verziója nagyobb, mint az Enlightenmenté,\n"
+"lehet, hogy egy ideje nem frissítette, a téma pedig\n"
 "kihasználná az új verzió adta lehetõségeke.\n"
 
 #: src/config.c:563
@@ -442,7 +442,7 @@ msgstr "Igen, próbáld visszaállítani"
 
 #: src/config.c:599
 msgid "Restart and try again"
-msgstr "Újraindit és újrapróbál"
+msgstr "Újraindít és újrapróbál"
 
 #: src/config.c:599
 msgid "Quit and give up"
@@ -459,10 +459,10 @@ msgid ""
 "Do you wish Enlightenment to recover its original system\n"
 "configuration and try again?\n"
 msgstr ""
-"Az Enlightenment hibát talált az autómatikusan lementett\n"
+"Az Enlightenment hibát talált az automatikusan lementett\n"
 "konfigurációban.\n"
 "\n"
-"Ez eredménye lehetett filerendszer hibának, kisebb programhibának,\n"
+"Ez eredménye lehetett fájlrendszer hibának, kisebb programhibának,\n"
 "illetve váratlan rendszerleállásnak.\n"
 "\n"
 "Kívánja, hogy az Enlightenment újra próbálkozzon, visszaállítva az\n"
@@ -480,7 +480,7 @@ msgstr "Bezár"
 
 #: src/container.c:1237 config/strings.c:81
 msgid "Create New Iconbox"
-msgstr "Új icondoboz létrehozása"
+msgstr "Új ikondoboz létrehozása"
 
 #: src/container.c:1533 src/container.c:1607
 #, fuzzy, c-format
@@ -510,7 +510,7 @@ msgstr "Automatikus átméretezés, hogy az ikonok elférjenek"
 
 #: src/container.c:1594
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr "Újrarendezõdés autómatikus átméretezésnél:"
+msgstr "Újrarendezõdés automatikus átméretezésnél:"
 
 #: src/container.c:1625
 msgid "Orientation:"
@@ -586,7 +586,7 @@ msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
 msgstr ""
-"Enlightenment icondoboz\n"
+"Enlightenment ikondoboz\n"
 "beállításai\n"
 
 #: src/desktops.c:121
@@ -789,7 +789,7 @@ msgstr ""
 
 #: src/events.c:82
 msgid "X server setup error"
-msgstr "X szerver beállítási hiba"
+msgstr "X-szerver beállítási hiba"
 
 #: src/events.c:83
 msgid ""
@@ -802,12 +802,12 @@ msgid ""
 "\n"
 "Exiting.\n"
 msgstr ""
-"FATALIS HIBA:\n"
+"FATÁLIS HIBA:\n"
 "\n"
-"Az X szerver nem támogatja a Shape kiterjesztést.\n"
+"Az X-szerver nem támogatja a Shape kiterjesztést.\n"
 "Az Enlightenmentnek szüksége van erre.\n"
 "\n"
-"Az Ön X szervere túl öreg, vagy rosszul van konfigurálva.\n"
+"Az Ön X-szervere túl öreg, vagy rosszul van konfigurálva.\n"
 "\n"
 "Kilépek.\n"
 
@@ -924,7 +924,7 @@ msgstr "Effektek"
 
 #: src/fx.c:903
 msgid "Enable Effect: Raindrops"
-msgstr "Effekt bekapcsolasa: Esõcseppek"
+msgstr "Effekt bekapcsolása: Esõcseppek"
 
 #: src/fx.c:907
 msgid "Ripples"
@@ -977,7 +977,7 @@ msgstr ""
 "\n"
 "  Ez az ablak jelenleg egy csoporthoz sem tartozik.\n"
 "  Csak egy olyan ablakkal lehet csoportokat megsemmisíteni vagy\n"
-"  ablakot egy csoportbol kivenni, ami maga is egy csoport tagja.\n"
+"  ablakot egy csoportból kivenni, ami maga is egy csoport tagja.\n"
 "\n"
 
 #: src/groups.c:726
@@ -989,7 +989,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  Nincs letrehozva egy csoport sem, vagy ez az\n"
+"  Nincs létrehozva egy csoport sem, vagy ez az\n"
 "  ablak már minden létezõ csoportnak a tagja.\n"
 "  Hozzon létre egy új csoportot elõször.\n"
 "\n"
@@ -1015,7 +1015,7 @@ msgid ""
 "  applied to all group members:  "
 msgstr ""
 "  Az alábbi tevékenység a csoport \n"
-"  minden tagján vegrehajtódik:  "
+"  minden tagján végrehajtódik:  "
 
 #: src/groups.c:862 src/groups.c:964
 msgid "Changing Border Style"
@@ -1047,7 +1047,7 @@ msgstr "Árnyékolás"
 
 #: src/groups.c:897 src/groups.c:999
 msgid "Mirror Shade/Iconify/Stick"
-msgstr "Fordított Árnyek/Kicsi/Rögzít"
+msgstr "Fordított Árnyék/Kicsi/Rögzít"
 
 #: src/groups.c:904
 msgid "Window Group Settings"
@@ -1180,7 +1180,7 @@ msgid ""
 msgstr ""
 "Már fut egy ablakkezelõ\n"
 "\n"
-"Ki kell lépnie a jelenlegi ablekkezelõbõl, majd azután\n"
+"Ki kell lépnie a jelenlegi ablakkezelõbõl, majd azután\n"
 "indíthatja az Enlightenmentet.\n"
 
 #: src/hints.c:570
@@ -1204,11 +1204,11 @@ msgstr ""
 
 #: src/iconify.c:470
 msgid "Iconbox Options"
-msgstr "Icondoboz beállításai"
+msgstr "Ikondoboz beállításai"
 
 #: src/iconify.c:471
 msgid "Iconbox Settings"
-msgstr "Icondoboz beállításai"
+msgstr "Ikondoboz beállításai"
 
 #: src/ipc.c:196 src/ipc.c:1409
 msgid "Message"
@@ -1304,7 +1304,7 @@ msgstr ""
 #: src/menus-misc.c:584 config/strings.c:117
 #, fuzzy
 msgid "Themes"
-msgstr "Rossz theme"
+msgstr "Rossz téma"
 
 #: src/menus-misc.c:672
 #, fuzzy
@@ -1729,7 +1729,7 @@ msgstr "Animáció az ablakok megjelenésénél"
 
 #: src/settings.c:290
 msgid "Slide windows around when cleaning up"
-msgstr "Animáció az ablakok when cleaning up"
+msgstr ""
 
 #: src/settings.c:295
 msgid "Slide Method:"
@@ -1761,7 +1761,7 @@ msgstr "Hiba átlépése"
 
 #: src/settings.c:376
 msgid "Raise fullscreen windows"
-msgstr "Teljesképernyõs ablakok felemelése"
+msgstr "Teljes képernyõs ablakok felemelése"
 
 #: src/settings.c:384
 #, fuzzy
@@ -1786,7 +1786,7 @@ msgstr ""
 
 #: src/settings.c:427
 msgid "Raise Windows Automatically"
-msgstr "Ablakok autómatikus felemelkedése"
+msgstr "Ablakok automatikus felemelkedése"
 
 #: src/settings.c:433
 msgid "Autoraise delay:"
@@ -1799,14 +1799,14 @@ msgstr "Felemelkedéssel vár:"
 
 #: src/settings.c:445
 msgid "Autoraise Settings"
-msgstr "Autó-felemelkedési beállítások"
+msgstr "Auto-felemelkedési beállítások"
 
 #: src/settings.c:448
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
 msgstr ""
-"Enlightenment Autómatikus ablak\n"
+"Enlightenment Automatikus ablak\n"
 "felemelkedési beállítások\n"
 
 #: src/settings.c:485
@@ -1824,7 +1824,7 @@ msgstr ""
 
 #: src/settings.c:508
 msgid "Use saveunders to reduce window exposures"
-msgstr "Alámentesek használata ablak felfedés gyorsításához"
+msgstr "Alámentések használata ablak felfedés gyorsításához"
 
 #: src/settings.c:514 config/strings.c:180
 #, fuzzy
@@ -1860,7 +1860,7 @@ msgstr "Asztal él-érzékenység"
 
 #: src/settings.c:577
 msgid "Shadows Off"
-msgstr "Árnyekok ki"
+msgstr "Árnyékok ki"
 
 #: src/settings.c:583
 msgid "Shadows Sharp"
@@ -1917,7 +1917,7 @@ msgstr ""
 
 #: src/setup.c:249
 msgid "X server version error"
-msgstr "X szerver verzió hiba"
+msgstr "X-szerver verzió hiba"
 
 #: src/setup.c:249
 msgid "Ignore this error"
@@ -1934,9 +1934,9 @@ msgid ""
 "access to, nor have heard of.\n"
 msgstr ""
 "FIGYELEM:\n"
-"Ez nem egy X11 X szerver, habár az X%i protokolt ismeri.\n"
+"Ez nem egy X11 X-szerver, habár az X%i protokollt ismeri.\n"
 "Ez azt jelenti, hogy az Enlightenment fog mûködni,\n"
-"de legalábbis nem lesz teljesértékû.\n"
+"de legalábbis nem lesz teljes értékû.\n"
 
 #: src/slideout.c:457 src/tclass.c:459
 #, c-format
@@ -1949,7 +1949,7 @@ msgstr ""
 
 #: src/snaps.c:742
 msgid "Title:"
-msgstr "Cim:"
+msgstr "Cím:"
 
 #: src/snaps.c:754
 msgid "Name:"
@@ -2038,12 +2038,12 @@ msgid ""
 msgstr ""
 "Válassza ki a paramétereket,\n"
 "amelyek megmaradjanak ezen ablak\n"
-"következõ idításainál is\n"
+"következõ indításainál is\n"
 
 #: src/snaps.c:1030
 #, fuzzy
 msgid "Delete"
-msgstr "File törlése\n"
+msgstr "Fájl törlése\n"
 
 #: src/snaps.c:1058
 msgid "Remembered Settings..."
@@ -2074,11 +2074,11 @@ msgstr "Enlightenment maradandó ablakbeállítások\n"
 
 #: src/snaps.c:1181
 msgid "Error saving snaps file\n"
-msgstr "Hiba a snap file mentésekor\n"
+msgstr "Hiba a snap fájl mentésekor\n"
 
 #: src/sound.c:85
 msgid "Error finding sound file"
-msgstr "Hiba a hangfile keresésekor"
+msgstr "Hiba a hangfájl keresésekor"
 
 #: src/sound.c:86
 #, c-format
@@ -2090,7 +2090,7 @@ msgid ""
 "may wish to check your configuration settings.\n"
 msgstr ""
 "Vigyázat!  Az Enlightenment nem tudta betölteni\n"
-"az alábbi hangfilet:\n"
+"az alábbi hangfájlt:\n"
 "%s\n"
 "Az Enlightenment folytatja mûködését, de ajánlott\n"
 "ellenõrizni a konfigurációs beállításokat.\n"
@@ -2162,12 +2162,12 @@ msgstr "Asztal beállításai"
 #: src/systray.c:455
 #, fuzzy
 msgid "Systray Settings"
-msgstr "Autó-felemelkedési beállítások"
+msgstr "Auto-felemelkedési beállítások"
 
 #: src/theme.c:67
 #, fuzzy, c-format
 msgid "Theme %s does not contain a %s file\n"
-msgstr "A %s téma nem tartalmazza a %s filet\n"
+msgstr "A %s téma nem tartalmazza a %s fájlt\n"
 
 #: src/theme.c:344
 msgid "Unknown\n"
@@ -2175,7 +2175,7 @@ msgstr "Ismeretlen\n"
 
 #: src/theme.c:389
 msgid "Bad Theme"
-msgstr "Rossz theme"
+msgstr "Rossz téma"
 
 #: src/theme.c:390
 #, c-format
@@ -2602,7 +2602,7 @@ msgstr "Vegyes beállítások"
 #: config/strings.c:102
 #, fuzzy
 msgid "Autoraise Settings ..."
-msgstr "Autó-felemelkedés beállításai..."
+msgstr "Auto-felemelkedés beállításai..."
 
 #: config/strings.c:103
 #, fuzzy
@@ -2652,7 +2652,7 @@ msgstr "Hang beállításai"
 #: config/strings.c:112
 #, fuzzy
 msgid "Miscellaneous Settings ..."
-msgstr "Iconbox beállításai..."
+msgstr "Ikondoboz beállításai..."
 
 #: config/strings.c:113
 #, fuzzy
@@ -2943,7 +2943,7 @@ msgstr "Kilépés"
 #~ msgstr ""
 #~ "A(z) %s könyvtár igazából nem is könyvtár.\n"
 #~ "Ez súlyos hiba.\n"
-#~ "Törölje a filet.\n"
+#~ "Törölje a fájlt.\n"
 
 #~ msgid ""
 #~ "Do not have execute access to %s\n"
@@ -3032,7 +3032,7 @@ msgstr "Kilépés"
 #~ msgstr "Kurzor"
 
 #~ msgid "Starting up Ripples FX..."
-#~ msgstr "A Körhullám effekt inditasa..."
+#~ msgstr "A Körhullám effekt indítása..."
 
 #~ msgid ""
 #~ "\n"
@@ -3049,12 +3049,12 @@ msgstr "Kilépés"
 #~ "\n"
 #~ "Ön épp most indította el a Körhullám effektet.\n"
 #~ "\n"
-#~ "Ha figyelmesen megnézi az asztal alsó részet, és nem egyszinû\n"
+#~ "Ha figyelmesen megnézi az asztal alsó részét, és nem egyszínû\n"
 #~ "hátteret használ, akkor víz szerû hatást láthat, ami a fölötte\n"
 #~ "található dolgokat visszatükrözi, miközben hullámzik - mintha\n"
 #~ "egy követ ejtettek volna bele.\n"
 #~ "\n"
-#~ "Az effektus kikapcsolásához válassza ujra ugyanezt az opciót.\n"
+#~ "Az effektus kikapcsolásához válassza újra ugyanezt az opciót.\n"
 
 #~ msgid "Starting up Raindrops FX..."
 #~ msgstr "Az Esõcseppek effekt indítása"
@@ -3074,12 +3074,12 @@ msgstr "Kilépés"
 #~ "\n"
 #~ "Ön épp most indította el az Esõcseppek effektet.\n"
 #~ "\n"
-#~ "Ha figyelmesen megnézi az asztalt, és nem egyszinû\n"
+#~ "Ha figyelmesen megnézi az asztalt, és nem egyszínû\n"
 #~ "hátteret használ, akkor olyan hatást láthat, mintha\n"
 #~ "esõcseppek hullanának a hátterére.\n"
-#~ "Ez az effektus ERÕSSEN TERHELHETI A CPUT.\n"
+#~ "Ez az effektus ERÕSEN TERHELHETI A CPUT.\n"
 #~ "\n"
-#~ "Az effektus kikapcsolásához válassza ujra ugyanezt az opciót.\n"
+#~ "Az effektus kikapcsolásához válassza újra ugyanezt az opciót.\n"
 
 #~ msgid "Starting up Waves FX..."
 #~ msgstr "A Hullámok effekt indítása"
@@ -3099,14 +3099,14 @@ msgstr "Kilépés"
 #~ "\n"
 #~ "Ön épp most indította el a Hullám effektet.\n"
 #~ "\n"
-#~ "Ha figyelmesen megnézi az asztal alsó részet, és nem egyszinû\n"
+#~ "Ha figyelmesen megnézi az asztal alsó részét, és nem egyszínû\n"
 #~ "hátteret használ, akkor víz szerû hatást láthat, ami a fölötte\n"
 #~ "található dolgokat visszatükrözi, miközben hullámzik.\n"
 #~ "\n"
-#~ "Az effektus kikapcsolásához válassza ujra ugyanezt az opciót.\n"
+#~ "Az effektus kikapcsolásához válassza újra ugyanezt az opciót.\n"
 
 #~ msgid "Starting up imagespinners FX..."
-#~ msgstr "Az Imagespinners effekt inditasa"
+#~ msgstr "Az Imagespinners effekt indítása"
 
 #~ msgid ""
 #~ "\n"
@@ -3118,7 +3118,7 @@ msgstr "Kilépés"
 #~ "\n"
 #~ "Ön épp most indította el az Imagespinners effektet.\n"
 #~ "\n"
-#~ "Az effektus kikapcsolásához válassza ujra ugyanezt az opciót.\n"
+#~ "Az effektus kikapcsolásához válassza újra ugyanezt az opciót.\n"
 
 #~ msgid "Cannot comply"
 #~ msgstr "Nem teljesíthetõ"
@@ -3128,7 +3128,7 @@ msgstr "Kilépés"
 #~ "members of a group. You cannot add these windows\n"
 #~ "to a group.\n"
 #~ msgstr ""
-#~ "Ikondobozok és Lapozók nem lehetnek csoporok\n"
+#~ "Ikondobozok és Lapozók nem lehetnek csoportok\n"
 #~ "tagjai.\n"
 
 #~ msgid "Imageclass Error!"
@@ -3141,14 +3141,14 @@ msgstr "Kilépés"
 #~ msgstr "Tooltip hiba!"
 
 #~ msgid "This Iconbox Settings..."
-#~ msgstr "Icondoboz beállításai..."
+#~ msgstr "Ikondoboz beállításai..."
 
 #~ msgid "Close Iconbox"
-#~ msgstr "Icondoboz bezárása"
+#~ msgstr "Ikondoboz bezárása"
 
 #, fuzzy
 #~ msgid "Systray Settings..."
-#~ msgstr "Autó-felemelkedés beállításai..."
+#~ msgstr "Auto-felemelkedés beállításai..."
 
 #~ msgid "Ignore"
 #~ msgstr "Átlépés"
@@ -3203,7 +3203,7 @@ msgstr "Kilépés"
 #~ msgstr "Hiba: NULL pointer felszabadítására tett kísérlet"
 
 #~ msgid "Ignore this (safe)"
-#~ msgstr "Figyelmen kivül hagy (biztonságos)"
+#~ msgstr "Figyelmen kívül hagy (biztonságos)"
 
 #~ msgid ""
 #~ "Enlightenment Version: %s\n"
@@ -3213,7 +3213,7 @@ msgstr "Kilépés"
 #~ "utoljára frissítve: %s\n"
 
 #~ msgid "Theme file/directory does not exist\n"
-#~ msgstr "A theme file/könyvtás nem létezik\n"
+#~ msgstr "A téma fájl/könyvtár nem létezik\n"
 
 #~ msgid "Legacy E-conf tool ..."
 #~ msgstr "Hagyományos E-conf eszköz"
@@ -3280,37 +3280,37 @@ msgstr "Kilépés"
 #~ msgstr "Üdvözli az "
 
 #~ msgid "Theme does not contain a borders.cfg file\n"
-#~ msgstr "A theme nem tartalmaz borders.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz borders.cfg fájlt\n"
 
 #~ msgid "Theme does not contain a buttons.cfg file\n"
-#~ msgstr "A theme nem tartalmaz buttons.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz buttons.cfg fájlt\n"
 
 #~ msgid "Theme does not contain a colormodifiers.cfg file\n"
-#~ msgstr "A theme nem tartalmaz colormodifiers.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz colormodifiers.cfg fájlt\n"
 
 #~ msgid "Theme does not contain a cursors.cfg file\n"
-#~ msgstr "A theme nem tartalmaz cursors.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz cursors.cfg fájlt\n"
 
 #~ msgid "Theme does not contain a desktops.cfg file\n"
-#~ msgstr "A theme nem tartalmaz desktops.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz desktops.cfg fájlt\n"
 
 #~ msgid "Theme does not contain a imageclasses.cfg file\n"
-#~ msgstr "A theme nem tartalmaz imageclasses.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz imageclasses.cfg fájlt\n"
 
 #~ msgid "Theme does not contain a init.cfg file\n"
-#~ msgstr "A theme nem tartalmaz init.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz init.cfg fájlt\n"
 
 #~ msgid "Theme does not contain a menustyles.cfg file\n"
-#~ msgstr "A theme nem tartalmaz menustyles.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz menustyles.cfg fájlt\n"
 
 #~ msgid "Theme does not contain a slideouts.cfg file\n"
-#~ msgstr "A theme nem tartalmaz slideouts.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz slideouts.cfg fájlt\n"
 
 #~ msgid "Theme does not contain a tooltips.cfg file\n"
-#~ msgstr "A theme nem tartalmaz tooltips.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz tooltips.cfg fájlt\n"
 
 #~ msgid "Theme does not contain a windowmatches.cfg file\n"
-#~ msgstr "A theme nem tartalmaz windowmatches.cfg filet\n"
+#~ msgstr "A téma nem tartalmaz windowmatches.cfg fájlt\n"
 
 #~ msgid "error"
 #~ msgstr "hiba"
