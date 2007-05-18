@@ -1,6 +1,8 @@
 #include "ephoto.h"
 
 static void close_dialog(Ewl_Widget *w, void *event, void *data);
+static void close_progress(Ewl_Widget *w, void *event, void *data);
+static void save_clicked(Ewl_Widget *w, void *event, void *data);
 static void save_image(Ewl_Widget *w, void *event, void *data);
 
 static Ewl_Widget *save_win, *qseek;
@@ -299,34 +301,78 @@ static void close_dialog(Ewl_Widget *w, void *event, void *data)
 	ewl_widget_destroy(save_win);
 }
 
+static void close_progress(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_widget_destroy(w);
+}
+
 static void save_image(Ewl_Widget *w, void *event, void *data)
 {
 	const char *file;
-	char *ext;
 	char flags[PATH_MAX];
-	pid_t pid;
+	char *ext;
+
+	file = data;
+
+	ext = strrchr(file, '.')+1;
+	if (!strncmp(ext, "png", 3))
+	{
+		snprintf(flags, PATH_MAX, "compress=%i",
+                 	       (int)ewl_range_value_get(EWL_RANGE(qseek)));
+	}
+	if (!strncmp(ext, "jpg", 3) || !strncmp(ext, "jpeg", 4))
+	{
+		double svalue;
+		float jvalue;
+
+		svalue = ewl_range_value_get(EWL_RANGE(qseek));
+		jvalue = (svalue / 9) * 100;
+
+		if (jvalue < 10)
+			snprintf(flags, PATH_MAX, "quality=%1.0f", jvalue);
+
+		if (jvalue >= 10 && jvalue < 100)
+			snprintf(flags, PATH_MAX, "quality=%2.0f", jvalue);
+
+		if (jvalue == 100)
+			snprintf(flags, PATH_MAX, "quality=%3.0f", jvalue);
+	}
+	printf("%s\n", flags);
+	if(!file) return;
+
+        if(VISIBLE(em->eimage))
+        {
+        	evas_object_image_save(EWL_IMAGE(em->eimage)->image,
+                                                        file, NULL, flags);
+        }
+	
+	ewl_widget_destroy(EWL_WIDGET(w));
+}
+
+static void save_clicked(Ewl_Widget *w, void *event, void *data)
+{
+	char *file;
+
+	Ewl_Widget *pwin, *vbox, *label, *pbar;
 
 	file = ewl_text_text_get(EWL_TEXT(data)); 
 	
-	ext = strrchr(file, '.')+1;
-	printf("%s\n", ext);
-	snprintf(flags, PATH_MAX, "quality=%i", 
-			(int)ewl_range_value_get(EWL_RANGE(qseek))*10);
-
 	if(!file) return;
 
-	if(VISIBLE(em->eimage))
-	{
-		pid = fork();
-		if(pid == 0)
-		{
-			evas_object_image_save(EWL_IMAGE(em->eimage)->image, 
-							file, NULL, flags);
-			exit(0);
-		}
-	}
-
 	ewl_widget_destroy(save_win);
+
+	pwin = add_window("Save Progress", 200, 75, close_progress, NULL);
+	ewl_callback_append(pwin, EWL_CALLBACK_SHOW, save_image, file);
+
+	vbox = add_box(pwin, EWL_ORIENTATION_VERTICAL, 5);
+
+	label = add_label(vbox, "Save Progress");
+
+	pbar = ewl_progressbar_new();
+	ewl_progressbar_label_set(EWL_PROGRESSBAR(pbar), "Saving...");
+	ewl_range_unknown_set(EWL_RANGE(pbar), 1);
+	ewl_container_child_append(EWL_CONTAINER(vbox), pbar);
+	ewl_widget_show(pbar);
 
 	return;
 }
@@ -347,10 +393,10 @@ void save_dialog(const char *file)
 	add_label(vbox, "Quality/Compression:");
 
 	qseek = ewl_hseeker_new();
-	ewl_range_minimum_value_set(EWL_RANGE(qseek), 0);
-	ewl_range_maximum_value_set(EWL_RANGE(qseek), 100);
-	ewl_range_step_set(EWL_RANGE(qseek), 10);
-	ewl_range_value_set(EWL_RANGE(qseek), 80);
+	ewl_range_minimum_value_set(EWL_RANGE(qseek), 1);
+	ewl_range_maximum_value_set(EWL_RANGE(qseek), 9);
+	ewl_range_step_set(EWL_RANGE(qseek), 1);
+	ewl_range_value_set(EWL_RANGE(qseek), 7);
 	ewl_container_child_append(EWL_CONTAINER(vbox), qseek);
 	ewl_widget_show(qseek);
 
@@ -360,7 +406,7 @@ void save_dialog(const char *file)
 
 	button = add_button(hbox, "Save", 
 				PACKAGE_DATA_DIR "/images/stock_save.png", 
-							save_image, entry);
+							save_clicked, entry);
 	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);	
 
 	button = add_button(hbox, "Close", 
