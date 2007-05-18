@@ -328,14 +328,7 @@ static void save_image(Ewl_Widget *w, void *event, void *data)
 		svalue = ewl_range_value_get(EWL_RANGE(qseek));
 		jvalue = (svalue / 9) * 100;
 
-		if (jvalue < 10)
-			snprintf(flags, PATH_MAX, "quality=%1.0f", jvalue);
-
-		if (jvalue >= 10 && jvalue < 100)
-			snprintf(flags, PATH_MAX, "quality=%2.0f", jvalue);
-
-		if (jvalue == 100)
-			snprintf(flags, PATH_MAX, "quality=%3.0f", jvalue);
+		snprintf(flags, PATH_MAX, "quality=%.0f", jvalue);
 	}
 	printf("%s\n", flags);
 	if(!file) return;
