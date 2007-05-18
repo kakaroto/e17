@@ -644,6 +644,14 @@ PagerUpdateBg(Pager * p)
 static void
 _PagerEwinInit(EWin * ewin)
 {
+   Pager              *p = (Pager *) ewin->data;
+   char                s[128];
+
+   Esnprintf(s, sizeof(s), "Pager-%i", p->dsk->num);
+   EwinSetTitle(ewin, s);
+   Esnprintf(s, sizeof(s), "%i", p->dsk->num);
+   EwinSetClass(ewin, s, "Enlightenment_Menu");
+
    ewin->props.skip_ext_task = 1;
    ewin->props.skip_ext_pager = 1;
    ewin->props.skip_focuslist = 1;
@@ -716,8 +724,7 @@ static const EWinOps _PagerEwinOps = {
 static void
 PagerShow(Pager * p)
 {
-   EWin               *ewin = NULL;
-   char                s[128];
+   EWin               *ewin;
    int                 w, h;
 
    if (!Conf_pagers.enable)
@@ -728,11 +735,6 @@ PagerShow(Pager * p)
 	EwinShow(p->ewin);
 	return;
      }
-
-   Esnprintf(s, sizeof(s), "Pager-%i", p->dsk->num);
-   HintsSetWindowName(p->win, s);
-   Esnprintf(s, sizeof(s), "%i", p->dsk->num);
-   HintsSetWindowClass(p->win, s, "Enlightenment_Pager");
 
    ewin = AddInternalToFamily(p->win, "PAGER", EWIN_TYPE_PAGER,
 			      &_PagerEwinOps, p);

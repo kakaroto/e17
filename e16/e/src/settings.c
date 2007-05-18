@@ -547,8 +547,6 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    static cfg_composite Cfg_composite;
    DItem              *di, *radio;
 
-   DialogSetTitle(d, _("Composite Settings"));
-
    /* Get current settings */
    ECompMgrConfigGet(&Cfg_composite);
    DialogSetData(d, &Cfg_composite);

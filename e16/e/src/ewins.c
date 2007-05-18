@@ -183,20 +183,12 @@ EwinGetHints(EWin * ewin)
       Eprintf("EwinGetHints %#lx\n", EwinGetClientXwin(ewin));
 
    ICCCM_GetTitle(ewin);
-   if (EwinIsInternal(ewin))
-     {
-	/* FIXME - This should not be needed */
-	ICCCM_GetInfo(ewin);
-     }
-   else
-     {
-	ICCCM_GetHints(ewin);
-	ICCCM_GetGeoms(ewin);
-	MWM_GetHints(ewin, 0);
-	ICCCM_GetInfo(ewin);	/* NB! Need group info first */
-	HintsGetWindowHints(ewin);
-	SessionGetInfo(ewin);
-     }
+   ICCCM_GetHints(ewin);
+   ICCCM_GetGeoms(ewin);
+   MWM_GetHints(ewin, 0);
+   ICCCM_GetInfo(ewin);		/* NB! Need group info first */
+   HintsGetWindowHints(ewin);
+   SessionGetInfo(ewin);
 }
 
 static void
@@ -968,7 +960,6 @@ AddInternalToFamily(Win win, const char *bname, int type,
       goto done;
 
    EwinGetAttributes(ewin, win, None);
-   EwinGetHints(ewin);
    EwinManage(ewin);
 
    ewin->data = ptr;
@@ -1324,6 +1315,9 @@ EwinEventCirculateRequest(EWin * ewin, XEvent * ev)
 static void
 EwinEventPropertyNotify(EWin * ewin, XEvent * ev)
 {
+   if (EwinIsInternal(ewin))
+      return;
+
    EGrabServer();
    EwinChangesStart(ewin);
 
@@ -1479,6 +1473,9 @@ EwinHide(EWin * ewin)
    if (ewin->ops && ewin->ops->Close)
       ewin->ops->Close(ewin);
 
+   ESelectInput(EwinGetClientWin(ewin), NoEventMask);
+   XShapeSelectInput(disp, EwinGetClientXwin(ewin), NoEventMask);
+
    EwinDestroy(ewin);
 }
 
@@ -1497,6 +1494,24 @@ EwinKill(EWin * ewin)
 
    EwinDestroy(ewin);
 #endif
+}
+
+void
+EwinSetTitle(EWin * ewin, const char *title)
+{
+   HintsSetWindowName(EwinGetClientWin(ewin), title);
+
+   _EFDUP(ewin->o.icccm.wm_name, title);
+   _EFDUP(ewin->ewmh.wm_name, title);
+}
+
+void
+EwinSetClass(EWin * ewin, const char *name, const char *clss)
+{
+   HintsSetWindowClass(EwinGetClientWin(ewin), name, clss);
+
+   _EFDUP(ewin->o.icccm.wm_res_name, name);
+   _EFDUP(ewin->o.icccm.wm_res_class, clss);
 }
 
 const char         *

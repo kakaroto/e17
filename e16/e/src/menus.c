@@ -199,6 +199,9 @@ _MenuEwinInit(EWin * ewin)
 {
    Menu               *m = (Menu *) ewin->data;
 
+   EwinSetTitle(ewin, _(m->title));
+   EwinSetClass(ewin, m->name, "Enlightenment_Menu");
+
    ewin->props.skip_ext_task = 1;
    ewin->props.skip_ext_pager = 1;
    ewin->props.no_actions = 1;
@@ -663,9 +666,6 @@ MenuRealize(Menu * m)
      {
 	m->win = ECreateClientWindow(VRoot.win, 0, 0, 1, 1);
 	EventCallbackRegister(m->win, 0, MenuHandleEvents, m);
-	if (m->title)
-	   HintsSetWindowName(m->win, _(m->title));
-	HintsSetWindowClass(m->win, m->name, "Enlightenment_Menu");
      }
 
    maxh = maxw = 0;

@@ -46,6 +46,7 @@
 typedef struct
 {
    EWin               *ewin;
+   const char         *title;
    EImage             *im;
    int                 cx, cy;	/* Center */
    int                 scale;	/* Zoom level */
@@ -345,6 +346,11 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 static void
 _MagEwinInit(EWin * ewin)
 {
+   MagWindow          *mw = (MagWindow *) ewin->data;
+
+   EwinSetTitle(ewin, mw->title);
+   EwinSetClass(ewin, "Magnifier", "Enlightenment_Magnifier");
+
    EoSetSticky(ewin, 1);
    EoSetShadow(ewin, 0);
 }
@@ -384,9 +390,7 @@ MagwinCreate(const char *title, int width, int height)
 
    win = ECreateClientWindow(VRoot.win, x, y, w, h);
 
-   HintsSetWindowName(win, title);
-   HintsSetWindowClass(win, "Magnifier", "Enlightenment_Magnifier");
-
+   mw->title = title;
    mw->ewin = AddInternalToFamily(win, NULL, EWIN_TYPE_MISC, &_MagEwinOps, mw);
    if (!mw->ewin)
      {

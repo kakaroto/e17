@@ -224,8 +224,8 @@ ecore_x_window_prop_string_list_set(Ecore_X_Window win, Ecore_X_Atom atom,
 {
    XTextProperty       xtp;
 
-   if (XmbTextListToTextProperty(_ecore_x_disp, (char **)lst, num,
-				 XStringStyle, &xtp) != Success)
+   if (XmbTextListToTextProperty(_ecore_x_disp, lst, num,
+				 XStdICCTextStyle, &xtp) != Success)
       return;
    XSetTextProperty(_ecore_x_disp, win, &xtp, atom);
    XFree(xtp.value);

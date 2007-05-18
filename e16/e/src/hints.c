@@ -159,7 +159,7 @@ void
 HintsSetWindowName(Win win, const char *name)
 {
    if (!name)
-      name = "NoTitle";
+      return;
 
    ecore_x_icccm_title_set(WinGetXwin(win), name);
 

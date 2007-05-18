@@ -369,6 +369,9 @@ void                AddToFamily(EWin * ewin, Window win);
 EWin               *AddInternalToFamily(Win win, const char *bname, int type,
 					const EWinOps * ops, void *ptr);
 void                EwinReparent(EWin * ewin, Win parent);
+void                EwinSetTitle(EWin * ewin, const char *title);
+void                EwinSetClass(EWin * ewin, const char *name,
+				 const char *clss);
 const char         *EwinGetTitle(const EWin * ewin);
 const char         *EwinGetIconName(const EWin * ewin);
 const char         *EwinBorderGetName(const EWin * ewin);

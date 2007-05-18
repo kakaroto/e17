@@ -242,6 +242,11 @@ ContainerReconfigure(Container * ct)
 static void
 _ContainerEwinInit(EWin * ewin)
 {
+   Container          *ct = (Container *) ewin->data;
+
+   EwinSetTitle(ewin, ct->wm_name);
+   EwinSetClass(ewin, ct->name, "Enlightenment_IconBox");
+
    ewin->props.skip_ext_task = 1;
    ewin->props.skip_ext_pager = 1;
    ewin->props.skip_focuslist = 1;
@@ -301,9 +306,6 @@ ContainerShow(Container * ct)
 
    if (!ct)
       return;
-
-   HintsSetWindowName(ct->win, ct->wm_name);
-   HintsSetWindowClass(ct->win, ct->name, "Enlightenment_IconBox");
 
    ewin = AddInternalToFamily(ct->win, "ICONBOX", EWIN_TYPE_ICONBOX,
 			      &_ContainerEwinOps, ct);

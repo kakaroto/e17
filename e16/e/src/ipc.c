@@ -1028,6 +1028,7 @@ EwinShowInfo(const EWin * ewin)
    EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 
    IpcPrintf("WM_NAME                 %s\n"
+	     "_NET_WM_NAME            %s\n"
 	     "WM_ICON_NAME            %s\n"
 	     "WM_CLASS name.class     %s.%s\n"
 	     "WM_WINDOW_ROLE          %s\n"
@@ -1062,6 +1063,7 @@ EwinShowInfo(const EWin * ewin)
 #endif
 	     ,
 	     SS(EwinGetIcccmName(ewin)),
+	     SS(ewin->ewmh.wm_name),
 	     SS(ewin->icccm.wm_icon_name),
 	     SS(EwinGetIcccmCName(ewin)), SS(EwinGetIcccmClass(ewin)),
 	     SS(ewin->icccm.wm_role),

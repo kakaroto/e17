@@ -190,6 +190,7 @@ struct _dialog
    char                update;
    char                resize;
    char                close;
+   char                set_title;
    int                 xu1, yu1, xu2, yu2;
 };
 
@@ -309,7 +310,7 @@ DialogSetTitle(Dialog * d, const char *title)
    if (d->title)
       Efree(d->title);
    d->title = Estrdup(title);
-   HintsSetWindowName(d->win, d->title);
+   d->set_title = 1;
 }
 
 void
@@ -507,6 +508,12 @@ DialogRedraw(Dialog * d)
 static void
 _DialogEwinInit(EWin * ewin)
 {
+   Dialog             *d = (Dialog *) ewin->data;
+
+   EwinSetTitle(ewin, d->title);
+   EwinSetClass(ewin, d->name, "Enlightenment_Dialog");
+   d->set_title = 0;
+
    ewin->props.focus_when_mapped = 1;
 
    EoSetLayer(ewin, 10);
@@ -545,6 +552,12 @@ DialogArrange(Dialog * d, int resize)
    if (resize)
       DialogItemsRealize(d);
 
+   if (d->set_title)
+     {
+	EwinSetTitle(d->ewin, d->title);
+	d->set_title = 0;
+     }
+
    ICCCM_SetSizeConstraints(d->ewin, d->w, d->h, d->w, d->h, 0, 0, 1, 1,
 			    0.0, 65535.0);
 
@@ -577,8 +590,6 @@ DialogShowArranged(Dialog * d, int center)
      }
 
    DialogItemsRealize(d);
-
-   HintsSetWindowClass(d->win, d->name, "Enlightenment_Dialog");
 
    ewin = AddInternalToFamily(d->win, "DIALOG", EWIN_TYPE_DIALOG,
 			      &_DialogEwinOps, d);
