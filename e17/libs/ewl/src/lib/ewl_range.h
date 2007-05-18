@@ -49,8 +49,8 @@ struct Ewl_Range
 	double min_val; /**< Minimal valide value */
 	double max_val; /**< Maximal valide value */
 	double step; /**< Size of increments in the range */
-	unsigned int invert; /**< Invert the axis */
-	unsigned int unknown_range; /**< Unknown range */
+	unsigned int invert:1; /**< Invert the axis */
+	unsigned int unknown_range:1; /**< Unknown range */
 };
 
 int		ewl_range_init(Ewl_Range *r);
