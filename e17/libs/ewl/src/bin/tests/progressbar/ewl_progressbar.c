@@ -77,7 +77,7 @@ create_test(Ewl_Container *box)
 	 * A bouncy progressbar
 	 */
 	progressbar[3] = ewl_progressbar_new();
-	ewl_range_unknown_set(EWL_RANGE(progressbar[3]), 1);
+	ewl_range_unknown_set(EWL_RANGE(progressbar[3]), TRUE);
 	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox), progressbar[3]);	
 	ewl_widget_show(progressbar[3]);	
 
