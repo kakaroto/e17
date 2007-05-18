@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "comms.h"
 #include "cursors.h"
 #include "desktops.h"
 #include "dialog.h"

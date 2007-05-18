@@ -900,7 +900,7 @@ const DialogDef     DlgTooltips = {
 };
 
 static void
-TooltipsIpc(const char *params, Client * c __UNUSED__)
+TooltipsIpc(const char *params)
 {
    if (params && !strncmp(params, "cfg", 3))
      {

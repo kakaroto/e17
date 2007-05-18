@@ -924,7 +924,7 @@ const DialogDef     DlgFx = {
 };
 
 static void
-FxIpc(const char *params, Client * c __UNUSED__)
+FxIpc(const char *params)
 {
    char                word1[1024];
    char                word2[1024];

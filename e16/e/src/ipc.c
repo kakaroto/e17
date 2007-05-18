@@ -24,6 +24,7 @@
 #include "E.h"
 #include "aclass.h"
 #include "borders.h"		/* FIXME - Should not be here */
+#include "comms.h"
 #include "desktops.h"
 #include "emodule.h"
 #include "eobj.h"
@@ -42,38 +43,30 @@
 #define SS(s) ((s) ? (s) : NoText)
 static const char   NoText[] = "-NONE-";
 
-static size_t       bufsiz;
-static char        *bufptr;
-
-static void
-OpacityTimeout(int val, void *data __UNUSED__)
-{
-   EWin               *ewin;
-
-   ewin = EwinFindByClient(val);
-   if (ewin)
-      if (ewin->state.active)
-	 EoChangeOpacity(ewin, ewin->props.focused_opacity);
-}
+static size_t       ipc_bufsiz;
+static char        *ipc_bufptr;
 
 static void
 IpcPrintInit(void)
 {
-   bufsiz = 0;
-   bufptr = NULL;
+   ipc_bufsiz = 0;
+   ipc_bufptr = NULL;
 }
 
 static void
 IpcPrintFlush(Client * c)
 {
-   if (bufptr == NULL)
+   if (ipc_bufptr == NULL)
       return;
 
+   ipc_bufptr[ipc_bufsiz] = '\0';
+
    if (c)
-      CommsSend(c, bufptr);
-   Efree(bufptr);
-   bufsiz = 0;
-   bufptr = NULL;
+      CommsSend(c, ipc_bufptr);
+
+   Efree(ipc_bufptr);
+   ipc_bufsiz = 0;
+   ipc_bufptr = NULL;
 }
 
 void
@@ -87,10 +80,10 @@ IpcPrintf(const char *fmt, ...)
    len = Evsnprintf(tmp, sizeof(tmp), fmt, args);
    va_end(args);
 
-   bufptr = EREALLOC(char, bufptr, bufsiz + len + 1);
+   ipc_bufptr = EREALLOC(char, ipc_bufptr, ipc_bufsiz + len + 1);
 
-   strcpy(bufptr + bufsiz, tmp);
-   bufsiz += len;
+   memcpy(ipc_bufptr + ipc_bufsiz, tmp, len);
+   ipc_bufsiz += len;
 }
 
 static int
@@ -124,7 +117,7 @@ SetEwinBoolean(const char *txt, char *item, const char *value, int set)
 /* The IPC functions */
 
 static void
-IPC_Screen(const char *params, Client * c __UNUSED__)
+IPC_Screen(const char *params)
 {
    char                param[1024];
    int                 l;
@@ -162,7 +155,7 @@ IPC_Screen(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_Nop(const char *params __UNUSED__, Client * c __UNUSED__)
+IPC_Nop(const char *params __UNUSED__)
 {
    IpcPrintf("nop");
 }
@@ -175,7 +168,7 @@ IPC_Border_CB_List(Border * b, void *data __UNUSED__)
 }
 
 static void
-IPC_Border(const char *params, Client * c __UNUSED__)
+IPC_Border(const char *params)
 {
    if (!params)
      {
@@ -190,7 +183,7 @@ IPC_Border(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_DialogOK(const char *params, Client * c __UNUSED__)
+IPC_DialogOK(const char *params)
 {
    if (params)
       DialogOKstr(_("Message"), params);
@@ -222,7 +215,7 @@ static const char  *MovResCfgInfoModes[] = {
 };
 
 static void
-IPC_MoveResize(const char *params, Client * c __UNUSED__)
+IPC_MoveResize(const char *params)
 {
    char                param1[32];
    char                param2[32];
@@ -306,7 +299,7 @@ IPC_MoveResize(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_WinList(const char *params, Client * c __UNUSED__)
+IPC_WinList(const char *params)
 {
    static const char  *const TxtPG[] = { "NW", "NE", "SW", "SE" };
    char                format[8];
@@ -404,6 +397,17 @@ doMoveConstrainedNoGroup(EWin * ewin, const char *params)
    return ActionMoveStart(ewin, params, 1, 1);
 }
 #endif
+
+static void
+OpacityTimeout(int val, void *data __UNUSED__)
+{
+   EWin               *ewin;
+
+   ewin = EwinFindByClient(val);
+   if (ewin)
+      if (ewin->state.active)
+	 EoChangeOpacity(ewin, ewin->props.focused_opacity);
+}
 
 static void
 IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
@@ -810,7 +814,7 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 }
 
 static void
-IPC_WinOps(const char *params, Client * c __UNUSED__)
+IPC_WinOps(const char *params)
 {
    char                match[128];
    char                operation[128];
@@ -862,7 +866,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_Remember(const char *params, Client * c __UNUSED__)
+IPC_Remember(const char *params)
 {
    int                 window, l;
    EWin               *ewin;
@@ -893,19 +897,19 @@ IPC_Remember(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_ForceSave(const char *params __UNUSED__, Client * c __UNUSED__)
+IPC_ForceSave(const char *params __UNUSED__)
 {
    autosave();
 }
 
 static void
-IPC_Restart(const char *params __UNUSED__, Client * c __UNUSED__)
+IPC_Restart(const char *params __UNUSED__)
 {
    SessionExit(EEXIT_RESTART, NULL);
 }
 
 static void
-IPC_Exit(const char *params, Client * c __UNUSED__)
+IPC_Exit(const char *params)
 {
    char                param1[1024];
    const char         *p2;
@@ -930,20 +934,20 @@ IPC_Exit(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_About(const char *params __UNUSED__, Client * c __UNUSED__)
+IPC_About(const char *params __UNUSED__)
 {
    About();
 }
 
 static void
-IPC_Version(const char *params __UNUSED__, Client * c __UNUSED__)
+IPC_Version(const char *params __UNUSED__)
 {
    IpcPrintf(_("Enlightenment Version : %s\n" "code is current to    : %s\n"),
 	     e_wm_version, e_wm_date);
 }
 
 static void
-IPC_Debug(const char *params, Client * c __UNUSED__)
+IPC_Debug(const char *params)
 {
    char                param[1024];
    int                 l;
@@ -1005,13 +1009,13 @@ IPC_Debug(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_Set(const char *params, Client * c __UNUSED__)
+IPC_Set(const char *params)
 {
    ConfigurationSet(params);
 }
 
 static void
-IPC_Show(const char *params, Client * c __UNUSED__)
+IPC_Show(const char *params)
 {
    ConfigurationShow(params);
 }
@@ -1106,7 +1110,7 @@ EwinShowInfo(const EWin * ewin)
 }
 
 static void
-IPC_EwinInfo(const char *params, Client * c __UNUSED__)
+IPC_EwinInfo(const char *params)
 {
    char                match[FILEPATH_LEN_MAX];
    EWin              **lst;
@@ -1135,7 +1139,7 @@ IPC_EwinInfo(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
+IPC_ObjInfo(const char *params __UNUSED__)
 {
    int                 i, num;
    EObj               *const *lst, *eo;
@@ -1163,7 +1167,7 @@ IPC_ObjInfo(const char *params __UNUSED__, Client * c __UNUSED__)
 }
 
 static void
-IPC_Reparent(const char *params, Client * c __UNUSED__)
+IPC_Reparent(const char *params)
 {
    char                param1[FILEPATH_LEN_MAX];
    char                param2[FILEPATH_LEN_MAX];
@@ -1183,7 +1187,7 @@ IPC_Reparent(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_Warp(const char *params, Client * c __UNUSED__)
+IPC_Warp(const char *params)
 {
    int                 x, y;
 
@@ -1440,7 +1444,7 @@ IPC_Compat(const char *params)
  * open the source code.
  * --Mandrake
  */
-static void         IPC_Help(const char *params, Client * c);
+static void         IPC_Help(const char *params);
 
 static const IpcItem IPCArray[] = {
    {
@@ -1656,7 +1660,7 @@ HandleIPC(const char *params, Client * c)
 	if (!(ipc->nick && !strcmp(cmd, ipc->nick)) && strcmp(cmd, ipc->name))
 	   continue;
 
-	ipc->func(prm, c);
+	ipc->func(prm);
 
 	ok = 1;
 	break;
@@ -1667,6 +1671,7 @@ HandleIPC(const char *params, Client * c)
 
    IpcPrintFlush(c);
    CommsFlush(c);
+
    return ok;
 }
 
@@ -1723,7 +1728,7 @@ ipccmp(void *p1, void *p2)
 }
 
 static void
-IPC_Help(const char *params, Client * c __UNUSED__)
+IPC_Help(const char *params)
 {
    int                 i, num;
    const IpcItem     **lst, *ipc;

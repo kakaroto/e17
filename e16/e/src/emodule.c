@@ -72,7 +72,7 @@ EModuleCommand(const EModule * em, const char *cmd, const char *prm)
 	if (strcasecmp(cmd, pi->name) && (!pi->nick || strcmp(cmd, pi->nick)))
 	   continue;
 
-	pi->func(prm, NULL);
+	pi->func(prm);
 	break;
      }
 }

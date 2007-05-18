@@ -456,7 +456,7 @@ const DialogDef     DlgSound = {
  */
 
 static void
-SoundIpc(const char *params, Client * c __UNUSED__)
+SoundIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];

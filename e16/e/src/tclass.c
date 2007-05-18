@@ -492,7 +492,7 @@ TextclassSighan(int sig, void *prm __UNUSED__)
 }
 
 static void
-TextclassIpc(const char *params, Client * c __UNUSED__)
+TextclassIpc(const char *params)
 {
    char                param1[1024];
    char                param2[1024];

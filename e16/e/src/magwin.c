@@ -457,7 +457,7 @@ MagwinHide(void)
  */
 
 static void
-MagwinIpc(const char *params, Client * c __UNUSED__)
+MagwinIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];

@@ -434,7 +434,7 @@ ModifyCMClass(char *name, int rnum, unsigned char *rpx, unsigned char *rpy,
 #if 0				/* Unused */
 
 static void
-IPC_ColorModifierClass(const char *params, Client * c)
+IPC_ColorModifierClass(const char *params)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -496,11 +496,11 @@ IPC_ColorModifierClass(const char *params, Client * c)
      }
 
    if (buf[0])
-      CommsSend(c, buf);
+      IpcPrintf(buf);
 }
 
 static void
-IPC_ColormodifierDelete(const char *params, Client * c __UNUSED__)
+IPC_ColormodifierDelete(const char *params)
 {
    char                param1[FILEPATH_LEN_MAX], buf[FILEPATH_LEN_MAX];
    ColorModifierClass *cm;
@@ -516,7 +516,7 @@ IPC_ColormodifierDelete(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_ColormodifierGet(const char *params, Client * c)
+IPC_ColormodifierGet(const char *params)
 {
    char                param1[FILEPATH_LEN_MAX];
    char                buf[FILEPATH_LEN_MAX], buf2[FILEPATH_LEN_MAX];
@@ -558,11 +558,11 @@ IPC_ColormodifierGet(const char *params, Client * c)
 	     strcat(buf, buf2);
 	  }
      }
-   CommsSend(c, buf);
+   IpcPrintf(buf);
 }
 
 static void
-IPC_ColormodifierSet(const char *params, Client * c __UNUSED__)
+IPC_ColormodifierSet(const char *params)
 {
    char                w[FILEPATH_LEN_MAX];
    ColorModifierClass *cm;

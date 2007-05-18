@@ -2512,7 +2512,7 @@ BackgroundSet2(const char *name, const char *params)
 }
 
 static void
-BackgroundsIpc(const char *params, Client * c __UNUSED__)
+BackgroundsIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[128], buf[4096];
@@ -2633,7 +2633,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
+IPC_BackgroundUse(const char *params)
 {
    char                name[1024];
    const char         *p;
@@ -2665,7 +2665,7 @@ IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
 
 #if ENABLE_COLOR_MODIFIERS
 static void
-IPC_BackgroundColormodifierSet(const char *params, Client * c __UNUSED__)
+IPC_BackgroundColormodifierSet(const char *params)
 {
    Background         *bg;
    ColorModifierClass *cm;
@@ -2696,7 +2696,7 @@ IPC_BackgroundColormodifierSet(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_BackgroundColormodifierGet(const char *params, Client * c)
+IPC_BackgroundColormodifierGet(const char *params)
 {
    char                param1[FILEPATH_LEN_MAX], buf[FILEPATH_LEN_MAX];
    Background         *bg;
@@ -2709,7 +2709,7 @@ IPC_BackgroundColormodifierGet(const char *params, Client * c)
    Esnprintf(buf, sizeof(buf), "(null)");
    if ((bg) && (bg->cmclass))
       Esnprintf(buf, sizeof(buf), "%s", bg->cmclass->name);
-   CommsSend(c, buf);
+   IpcPrintf(buf);
 }
 #endif
 

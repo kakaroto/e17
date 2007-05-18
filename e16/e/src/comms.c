@@ -22,6 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "comms.h"
 #include "e16-ecore_hints.h"
 #include "e16-ecore_list.h"
 #include "xwin.h"
@@ -331,11 +332,10 @@ CommsSend(Client * c, const char *s)
 void
 CommsFlush(Client * c)
 {
-   if (!c)
+   if (!c || c->replied)
       return;
 
-   if (!c->replied)
-      CommsDoSend(WinGetXwin(c->win), "");
+   CommsDoSend(WinGetXwin(c->win), "");
 }
 
 /*

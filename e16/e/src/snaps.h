@@ -63,6 +63,6 @@ void                SnapshotEwinUpdate(const EWin * ewin, unsigned int flags);
 void                SnapshotEwinParse(EWin * ewin, const char *params);
 
 extern const char   SnapIpcText[];
-void                SnapIpcFunc(const char *params, Client * c);
+void                SnapIpcFunc(const char *params);
 
 #endif /* _SNAPS_H_ */

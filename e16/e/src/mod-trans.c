@@ -287,7 +287,7 @@ TransparencySighan(int sig, void *prm __UNUSED__)
 }
 
 static void
-TransparencyIpc(const char *params, Client * c __UNUSED__)
+TransparencyIpc(const char *params)
 {
    if (params && !strncmp(params, "cfg", 3))
      {

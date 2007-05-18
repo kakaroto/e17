@@ -24,6 +24,7 @@
 #define _EMODULE_H_
 
 #include "econfig.h"
+#include "ipc.h"
 
 typedef struct
 {

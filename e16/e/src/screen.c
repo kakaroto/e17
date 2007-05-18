@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "ewins.h"
+#include "ipc.h"
 #include "screen.h"
 #include "xwin.h"
 #ifdef HAVE_XINERAMA

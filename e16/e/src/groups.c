@@ -1105,7 +1105,7 @@ GroupShow(Group * g)
 }
 
 static void
-IPC_GroupInfo(const char *params, Client * c __UNUSED__)
+IPC_GroupInfo(const char *params)
 {
    Group              *group;
 
@@ -1125,7 +1125,7 @@ IPC_GroupInfo(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_GroupOps(const char *params, Client * c __UNUSED__)
+IPC_GroupOps(const char *params)
 {
    Group              *group = Mode_groups.current;
    char                windowid[128];
@@ -1195,7 +1195,7 @@ IPC_GroupOps(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_Group(const char *params, Client * c __UNUSED__)
+IPC_Group(const char *params)
 {
    char                groupid[128];
    char                operation[128];
@@ -1315,7 +1315,7 @@ IPC_Group(const char *params, Client * c __UNUSED__)
 }
 
 static void
-GroupsIpc(const char *params, Client * c __UNUSED__)
+GroupsIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[128];

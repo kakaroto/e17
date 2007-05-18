@@ -29,6 +29,7 @@
 #include "ewins.h"
 #include "file.h"
 #include "groups.h"
+#include "ipc.h"
 #include "settings.h"
 #include "snaps.h"
 #include "timers.h"
@@ -1688,7 +1689,7 @@ _SnapShow(void *data, void *prm)
 }
 
 void
-SnapIpcFunc(const char *params, Client * c __UNUSED__)
+SnapIpcFunc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];

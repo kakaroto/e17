@@ -28,7 +28,7 @@ e16_SOURCES = \
 	borders.c		borders.h		\
 	buttons.c		buttons.h		\
 	cmclass.c		\
-	comms.c			\
+	comms.c			comms.h \
 	conf.h			\
 	config.c		\
 	container.c		container.h		\
@@ -66,7 +66,7 @@ e16_SOURCES = \
 	iclass.c		iclass.h		\
 	iconify.c		\
 	icons.c			icons.h			\
-	ipc.c			\
+	ipc.c			ipc.h \
 	lang.c			lang.h			\
 	main.c			\
 	memory.c		\

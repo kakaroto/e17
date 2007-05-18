@@ -1962,7 +1962,7 @@ ContainersGetList(int *pnum)
  * IPC functions
  */
 static void
-ContainerIpc(const char *params, Client * c __UNUSED__)
+ContainerIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[128];

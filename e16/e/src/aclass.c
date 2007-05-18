@@ -1196,7 +1196,7 @@ AclassSighan(int sig, void *prm __UNUSED__)
 }
 
 static void
-AclassIpc(const char *params, Client * c __UNUSED__)
+AclassIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];
@@ -1258,7 +1258,7 @@ AclassIpc(const char *params, Client * c __UNUSED__)
 
 /* Should only be used via e16keyedit */
 static void
-IPC_KeybindingsGet(const char *params __UNUSED__, Client * c __UNUSED__)
+IPC_KeybindingsGet(const char *params __UNUSED__)
 {
    ActionClass        *ac;
    Action             *aa;
@@ -1331,7 +1331,7 @@ IPC_KeybindingsGet(const char *params __UNUSED__, Client * c __UNUSED__)
 
 /* Should only be used via e16keyedit */
 static void
-IPC_KeybindingsSet(const char *params, Client * c __UNUSED__)
+IPC_KeybindingsSet(const char *params)
 {
    ActionClass        *ac;
    Action             *aa;

@@ -898,7 +898,7 @@ FocusSighan(int sig, void *prm __UNUSED__)
 }
 
 static void
-FocusIpc(const char *params, Client * c __UNUSED__)
+FocusIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];

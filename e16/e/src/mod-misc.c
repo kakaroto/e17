@@ -190,7 +190,7 @@ static const CfgItem MiscCfgItems[] = {
 #define N_CFG_ITEMS ((int)(sizeof(MiscCfgItems)/sizeof(CfgItem)))
 
 static void
-MiscIpcExec(const char *params, Client * c __UNUSED__)
+MiscIpcExec(const char *params)
 {
    if (params)
       execApplication(params, EXEC_SET_LANG);
@@ -199,7 +199,7 @@ MiscIpcExec(const char *params, Client * c __UNUSED__)
 }
 
 static void
-MiscIpcConfig(const char *params, Client * c __UNUSED__)
+MiscIpcConfig(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[128];

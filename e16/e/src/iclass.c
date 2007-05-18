@@ -1466,7 +1466,7 @@ ImageclassSighan(int sig, void *prm __UNUSED__)
 }
 
 static void
-ImageclassIpc(const char *params, Client * c __UNUSED__)
+ImageclassIpc(const char *params)
 {
    char                param1[1024];
    char                param2[1024];

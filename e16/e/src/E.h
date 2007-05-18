@@ -204,29 +204,11 @@
  */
 #include "etypes.h"
 
-typedef struct _client Client;
-
 typedef struct
 {
    int                 min, max;
 }
 Constraints;
-
-typedef struct
-{
-   void                (*func) (const char *line, Client * c);
-   const char         *name;
-   const char         *nick;
-   const char         *help_text;
-   const char         *extended_help_text;
-}
-IpcItem;
-
-typedef struct
-{
-   int                 num;
-   const IpcItem      *lst;
-} IpcItemList;
 
 typedef struct
 {
@@ -577,14 +559,6 @@ int                 execApplication(const char *params, int flags);
 void                Espawn(int argc, char **argv);
 void                EspawnCmd(const char *cmd);
 
-/* comms.c */
-void                CommsInit(void);
-void                CommsSend(Client * c, const char *s);
-void                CommsFlush(Client * c);
-void                CommsSendToMasterWM(const char *s);
-void                CommsBroadcast(const char *s);
-void                CommsBroadcastToSlaveWMs(const char *s);
-
 /* config.c */
 void                SkipTillEnd(FILE * ConfigFile);
 char               *GetLine(char *s, int size, FILE * f);
@@ -633,12 +607,6 @@ void                SignalsSetup(void);
 void                SignalsRestore(void);
 void                HandleXError(Display * d, XErrorEvent * ev);
 void                HandleXIOError(Display * d);
-
-/* ipc.c */
-void __PRINTF__     IpcPrintf(const char *fmt, ...);
-int                 HandleIPC(const char *params, Client * c);
-int                 EFunc(EWin * ewin, const char *params);
-void                EFuncDefer(EWin * ewin, const char *params);
 
 /* main.c */
 void                EExit(int exitcode);

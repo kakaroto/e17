@@ -2716,7 +2716,7 @@ DeskOpDrag(int desk)
 }
 
 static void
-DesksIpcDesk(const char *params, Client * c __UNUSED__)
+DesksIpcDesk(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[128];
@@ -2814,7 +2814,7 @@ DesksIpcDesk(const char *params, Client * c __UNUSED__)
 }
 
 static void
-DesksIpcArea(const char *params, Client * c __UNUSED__)
+DesksIpcArea(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[128];

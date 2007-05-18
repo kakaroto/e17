@@ -350,7 +350,7 @@ CursorSighan(int sig, void *prm __UNUSED__)
 }
 
 static void
-CursorsIpc(const char *params, Client * c __UNUSED__)
+CursorsIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];

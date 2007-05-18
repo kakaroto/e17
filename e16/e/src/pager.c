@@ -2049,7 +2049,7 @@ PagersSighan(int sig, void *prm)
 }
 
 static void
-IPC_Pager(const char *params, Client * c __UNUSED__)
+IPC_Pager(const char *params)
 {
    const char         *p = params;
    char                prm1[128];

@@ -952,7 +952,7 @@ WindowMatchSighan(int sig, void *prm __UNUSED__)
 }
 
 static void
-WindowMatchIpc(const char *params, Client * c __UNUSED__)
+WindowMatchIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096], buf[4096];

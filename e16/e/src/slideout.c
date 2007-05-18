@@ -501,7 +501,7 @@ SlideoutFind(const char *name)
 }
 
 static void
-IPC_Slideout(const char *params, Client * c __UNUSED__)
+IPC_Slideout(const char *params)
 {
    Slideout           *s;
 

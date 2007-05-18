@@ -444,7 +444,7 @@ ThemesSighan(int sig, void *prm __UNUSED__)
 }
 
 static void
-ThemesIpc(const char *params, Client * c __UNUSED__)
+ThemesIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[128];

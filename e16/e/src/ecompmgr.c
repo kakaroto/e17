@@ -2770,7 +2770,7 @@ ECompMgrSighan(int sig, void *prm __UNUSED__)
 }
 
 static void
-CompMgrIpc(const char *params, Client * c __UNUSED__)
+CompMgrIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];

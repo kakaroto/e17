@@ -2058,7 +2058,7 @@ const DialogDef     DlgMenus = {
 };
 
 static void
-MenusIpc(const char *params, Client * c __UNUSED__)
+MenusIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];

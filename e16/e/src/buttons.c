@@ -1098,7 +1098,7 @@ doHideShowButton(const char *params)
 }
 
 static void
-ButtonsIpc(const char *params, Client * c __UNUSED__)
+ButtonsIpc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];
@@ -1134,7 +1134,7 @@ ButtonsIpc(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_ButtonShow(const char *params, Client * c __UNUSED__)
+IPC_ButtonShow(const char *params)
 {
    doHideShowButton(params);
 }
