@@ -73,7 +73,9 @@ static void ee_window_state_handle(Ewl_Window *win, int states,
 				Ewl_Window_Flags ewl_flag,
 				Ecore_X_Window_State ecore_flag);
 static void ee_window_states_set_helper(Ewl_Window *win);
+static void ee_window_hints_set(Ewl_Window *win);
 static void ee_window_transient_for(Ewl_Window *win);
+static void ee_window_leader_set(Ewl_Window *win);
 static void ee_window_raise(Ewl_Window *win);
 static void ee_window_lower(Ewl_Window *win);
 static int ee_keyboard_grab(Ewl_Window *win);
@@ -108,7 +110,9 @@ static void *window_funcs[EWL_ENGINE_WINDOW_MAX] =
 		ee_window_borderless_set,
 		ee_window_dialog_set,
 		ee_window_states_set,
+		ee_window_hints_set,
 		ee_window_transient_for,
+		ee_window_leader_set,
 		ee_window_raise,
 		ee_window_lower,
 		ee_keyboard_grab,
@@ -662,6 +666,36 @@ ee_window_states_set_helper(Ewl_Window *win)
 }
 
 static void
+ee_window_hints_set(Ewl_Window *win)
+{
+	Ewl_Embed_Window *win_group;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE); 
+
+	if (win->flags & EWL_WINDOW_LEADER)
+		win_group = win->leader.ewl->window;
+	else if (win->flags & EWL_WINDOW_LEADER_FOREIGN)
+		win_group = win->leader.foreign;
+	else
+		win_group = NULL;
+
+	printf("window group %p\n", win_group);
+	
+	ecore_x_icccm_hints_set((Ecore_X_Window) win->window,
+				1, // accepts focus
+				0, // initial states
+				0, // icon pixmap
+				0, // icon mask
+				0, // icon window
+				(Ecore_X_Window) win_group, // window group
+				0); // is urgent
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
 ee_window_transient_for(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -676,6 +710,30 @@ ee_window_transient_for(Ewl_Window *win)
 					(Ecore_X_Window)win->transient.foreign);
 	else
 		ecore_x_icccm_transient_for_unset((Ecore_X_Window)win->window);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ee_window_leader_set(Ewl_Window *win)
+{
+	Ewl_Embed_Window *leader;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	if (win->flags & EWL_WINDOW_LEADER)
+		leader = win->leader.ewl->window;
+	else if (win->flags & EWL_WINDOW_LEADER_FOREIGN)
+		leader = win->leader.foreign;
+	else
+		/* according to the icccm specs a client leader 
+		 * sets itself to the leader */
+		leader = win->window;
+
+	ecore_x_icccm_client_leader_set((Ecore_X_Window)win->window, 
+					(Ecore_X_Window)leader);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
