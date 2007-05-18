@@ -231,7 +231,7 @@ CfgItemLoad(E_DB_File * edf, const char *prefix, const CfgItem * ci)
    else
       name = ci->name;
 
-   if (EDebug(EDBUG_TYPE_CONFIG))
+   if (EDebug(EDBUG_TYPE_CONFIG) > 1)
       Eprintf("CfgItemLoad %s\n", name);
 
    if (!ci->ptr)
@@ -274,7 +274,7 @@ CfgItemSave(E_DB_File * edf, const char *prefix, const CfgItem * ci)
    else
       name = ci->name;
 
-   if (EDebug(EDBUG_TYPE_CONFIG))
+   if (EDebug(EDBUG_TYPE_CONFIG) > 1)
       Eprintf("CfgItemSave %s\n", name);
 
    if (!ci->ptr)
@@ -317,6 +317,9 @@ ConfigurationLoad(void)
    char                buf[4096];
    E_DB_File          *edf;
 
+   if (EDebug(EDBUG_TYPE_CONFIG))
+      Eprintf("ConfigurationLoad\n");
+
    memset(&Conf, 0, sizeof(EConf));
 
    edf = e16_db_open_read(ConfigurationGetFile(buf, sizeof(buf)));
@@ -346,6 +349,9 @@ ConfigurationSave(void)
    const CfgItem      *pcl;
    char                buf[4096];
    E_DB_File          *edf;
+
+   if (EDebug(EDBUG_TYPE_CONFIG))
+      Eprintf("ConfigurationSave\n");
 
    edf = e16_db_open(ConfigurationGetFile(buf, sizeof(buf)));
    if (edf == NULL)
