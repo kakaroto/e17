@@ -211,7 +211,7 @@ ewl_range_step_get(Ewl_Range *r)
  * @brief Changes the invert property on the range for inverting it's scale.
  */
 void
-ewl_range_invert_set(Ewl_Range *r, int invert)
+ewl_range_invert_set(Ewl_Range *r, unsigned int invert)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("r", r);
@@ -231,7 +231,7 @@ ewl_range_invert_set(Ewl_Range *r, int invert)
  * @return Returns the current value of the invert property in the range.
  * @brief Retrieve the current invert value from a range.
  */
-int
+unsigned int
 ewl_range_invert_get(Ewl_Range *r)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -240,6 +240,43 @@ ewl_range_invert_get(Ewl_Range *r)
 
 	DRETURN_INT(r->invert, DLEVEL_STABLE);
 }
+
+/**
+ * @param r: range to set unknown property
+ * @param unknown: the new value for the ranges unknown property
+ * @return Returns no value.
+ * @brief Change the unknown property of the range if you do not know the max/min values.
+ */
+void
+ewl_range_unknown_set(Ewl_Range *r, unsigned int unknown)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR("r", r);
+        DCHECK_TYPE("r", r, EWL_RANGE_TYPE);
+
+        if (r->unknown_range != unknown)
+        {
+                r->unknown_range = unknown;
+        }
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param r: the range to retrieve the unknown property value
+ * @return Returns the current value of the unknown property in the range.
+ * @brief Retrieve the current unknown value from a range.
+ */
+unsigned int
+ewl_range_unknown_get(Ewl_Range *r)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET("r", r, FALSE);
+        DCHECK_TYPE_RET("r", r, EWL_RANGE_TYPE, FALSE);
+
+        DRETURN_INT(r->unknown_range, DLEVEL_STABLE);
+}
+
 
 /**
  * @param r: the range to increase

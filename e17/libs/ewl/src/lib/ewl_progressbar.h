@@ -53,7 +53,7 @@ struct Ewl_Progressbar
 	Ewl_Range range;     /**< Inherit from Ewl_Range */
 	Ewl_Widget *bar;       /**< The moving bar on top */
 	Ewl_Widget *label;     /**< text label on the bar */
-	int auto_label;  /**< flag if user is setting label or not */
+	int auto_label;	 /**< flag if user is setting label or not */
 };
 
 
