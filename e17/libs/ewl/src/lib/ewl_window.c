@@ -511,6 +511,7 @@ ewl_window_attention_demand(Ewl_Window *win)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 /**
  * @param win: window to set transient
  * @param forwin: the window to be transient for
@@ -545,7 +546,7 @@ ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 		else
 			ewl_callback_append(EWL_WIDGET(forwin),
 					    EWL_CALLBACK_REALIZE,
-					    ewl_window_cb_realize_transient,
+					    ewl_window_cb_realize_parent,
 					    win);
 	}
 
@@ -573,6 +574,124 @@ ewl_window_transient_for_foreign(Ewl_Window *win, Ewl_Embed_Window *forwin)
 		ewl_engine_window_transient_for(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: window to set leader for
+ * @param leader: the window that is the leader of the window group
+ * @return Returns no value.
+ * @brief Sets the window to be client window of the leader
+ */
+void
+ewl_window_leader_set(Ewl_Window *win, Ewl_Window *leader)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	win->leader.ewl = leader;
+	win->flags &= ~EWL_WINDOW_LEADER_FOREIGN;
+
+	/* if there is no leader remove the leader for state
+	 * and update the window, if it already exists */
+	if (!leader) {
+		win->flags &= ~EWL_WINDOW_LEADER;
+		if (win->window) {
+			ewl_engine_window_leader_set(win);
+			ewl_engine_window_hints_set(win);
+		}
+
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	win->flags |= EWL_WINDOW_LEADER;
+
+	if (win->window) {
+		if (leader->window) {
+			ewl_engine_window_leader_set(win);
+			ewl_engine_window_hints_set(win);
+		}
+		else
+			ewl_callback_append(EWL_WIDGET(leader),
+					    EWL_CALLBACK_REALIZE,
+					    ewl_window_cb_realize_parent,
+					    win);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: window to set leader for
+ * @param leader: the window that is the leader of the window group
+ * @return Returns no value.
+ * @brief Sets the window to be client window of the leader
+ */
+void
+ewl_window_leader_foreign_set(Ewl_Window *win, Ewl_Embed_Window *leader)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	win->leader.foreign = leader;
+	win->flags &= ~EWL_WINDOW_LEADER;
+
+	/* if there is no leader remove the leader for state
+	 * and update the window, if it already exists */
+	if (!leader) 
+		win->flags &= ~EWL_WINDOW_LEADER_FOREIGN;
+	else
+		win->flags |= EWL_WINDOW_LEADER_FOREIGN;
+
+	if (win->window) {
+		ewl_engine_window_leader_set(win);
+		ewl_engine_window_hints_set(win);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: window to get leader for
+ * @return leader of the window or NULL
+ * @brief Gets the leader of this window
+ *
+ * Note: this function returns even NULL if the leader
+ * is a foreign window
+ */
+Ewl_Window *
+ewl_window_leader_get(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, NULL);
+	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, NULL);
+	
+	if (win->flags & EWL_WINDOW_LEADER)
+		DRETURN_PTR(win->leader.ewl, DLEVEL_STABLE);
+
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
+}
+
+/**
+ * @param win: window to get leader for
+ * @return Returns the leader of this window or NULL
+ * @brief Gets the leader of this window
+ *
+ * Note: this function returns even NULL if the leader
+ * is a ewl window
+ */
+Ewl_Embed_Window *
+ewl_window_leader_foreign_get(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, NULL);
+	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, NULL);
+	
+	if (win->flags & EWL_WINDOW_LEADER_FOREIGN)
+		DRETURN_PTR(win->leader.foreign, DLEVEL_STABLE);
+
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
 /**
@@ -795,6 +914,8 @@ ewl_window_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_engine_window_borderless_set(window);
 	ewl_engine_window_dialog_set(window);
 	ewl_engine_window_states_set(window);
+	ewl_engine_window_hints_set(window);
+	ewl_engine_window_leader_set(window);
 
 	width = ewl_object_maximum_w_get(EWL_OBJECT(window));
 	height = ewl_object_maximum_h_get(EWL_OBJECT(window));
@@ -848,8 +969,8 @@ ewl_window_cb_postrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The realize transient callback
  */
 void
-ewl_window_cb_realize_transient(Ewl_Widget *w, void *ev_data __UNUSED__,
-				     void *user_data)
+ewl_window_cb_realize_parent(Ewl_Widget *w, void *ev_data __UNUSED__,
+					void *user_data)
 {
 	Ewl_Window *win;
 
@@ -861,16 +982,22 @@ ewl_window_cb_realize_transient(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	win = EWL_WINDOW(user_data);
 	/*
-	 * Make sure the window is still transient for the realized window.
+	 * Is the window transient for the realized window.
 	 */
 	if (EWL_WIDGET(win->transient.ewl) == w)
 		ewl_window_transient_for(win, EWL_WINDOW(w));
 
 	/*
+	 * Is the window a client of the realized leader window.
+	 */
+	if (EWL_WIDGET(win->leader.ewl) == w)
+		ewl_window_leader_set(win, EWL_WINDOW(w));
+
+	/*
 	 * Both windows realized so no need to keep the callback.
 	 */
 	ewl_callback_del(EWL_WIDGET(win), EWL_CALLBACK_REALIZE,
-			 ewl_window_cb_realize_transient);
+			 ewl_window_cb_realize_parent);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

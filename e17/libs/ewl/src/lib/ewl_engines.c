@@ -514,6 +514,32 @@ ewl_engine_window_states_set(Ewl_Window *win)
 /**
  * @param win: the window to work with
  * @return Returns no value
+ * @brief Sets the window hints 
+ */
+void
+ewl_engine_window_hints_set(Ewl_Window *win)
+{
+	Ewl_Engine_Cb_Window_Hints_Set window_hints_set;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	if (!(win->window))
+		DRETURN(DLEVEL_STABLE);
+
+	window_hints_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_HOOK_TYPE_WINDOW,
+					EWL_ENGINE_WINDOW_HINTS_SET);
+	if (window_hints_set)
+		window_hints_set(win);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to work with
+ * @return Returns no value
  * @brief Sets the window transient
  */
 void
@@ -533,6 +559,32 @@ ewl_engine_window_transient_for(Ewl_Window *win)
 					EWL_ENGINE_WINDOW_TRANSIENT_FOR);
 	if (window_transient_for)
 		window_transient_for(win);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to work with
+ * @return Returns no value
+ * @brief Sets a leader for the window
+ */
+void
+ewl_engine_window_leader_set(Ewl_Window *win)
+{
+	Ewl_Engine_Cb_Window_Leader_Set window_leader_set;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	if (!(win->window))
+		DRETURN(DLEVEL_STABLE);
+
+	window_leader_set = ewl_engine_hook_get(EWL_EMBED(win),
+					EWL_ENGINE_HOOK_TYPE_WINDOW,
+					EWL_ENGINE_WINDOW_LEADER_SET);
+	if (window_leader_set)
+		window_leader_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

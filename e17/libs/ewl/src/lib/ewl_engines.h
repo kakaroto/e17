@@ -15,13 +15,15 @@ enum Ewl_Engine_Window_Hooks
 	EWL_ENGINE_WINDOW_HIDE,	/**< Hide the window */
 
 	EWL_ENGINE_WINDOW_TITLE_SET, /**< Set the window title */
-	EWL_ENGINE_WINDOW_NAME_CLASS_SET,	/**< Set the window name/class */
+	EWL_ENGINE_WINDOW_NAME_CLASS_SET,/**< Set the window name/class */
 
-	EWL_ENGINE_WINDOW_BORDERLESS_SET,	/**< Set the borderless 
+	EWL_ENGINE_WINDOW_BORDERLESS_SET,/**< Set the borderless 
 							 state of the window */
 	EWL_ENGINE_WINDOW_DIALOG_SET,	/**< Set the dialog setting of the window */
 	EWL_ENGINE_WINDOW_STATES_SET,	/**< Set the window state flags */
-	EWL_ENGINE_WINDOW_TRANSIENT_FOR,	/**< Set the window transient */
+	EWL_ENGINE_WINDOW_HINTS_SET,	/**< Set the hints */
+	EWL_ENGINE_WINDOW_TRANSIENT_FOR,/**< Set the window transient */
+	EWL_ENGINE_WINDOW_LEADER_SET,	/**< Set the windo to be a client */
 	EWL_ENGINE_WINDOW_RAISE,	/**< Raise the window */
 	EWL_ENGINE_WINDOW_LOWER,	/**< Lower the window */
 
@@ -176,7 +178,9 @@ void		 ewl_engine_window_name_class_set(Ewl_Window *win);
 void		 ewl_engine_window_borderless_set(Ewl_Window *win);
 void		 ewl_engine_window_dialog_set(Ewl_Window *win);
 void		 ewl_engine_window_states_set(Ewl_Window *win);
+void		 ewl_engine_window_hints_set(Ewl_Window *win);
 void		 ewl_engine_window_transient_for(Ewl_Window *win);
+void		 ewl_engine_window_leader_set(Ewl_Window *win);
 
 void		 ewl_engine_window_raise(Ewl_Window *win);
 void		 ewl_engine_window_lower(Ewl_Window *win);
@@ -240,7 +244,10 @@ typedef void (*Ewl_Engine_Cb_Window_Dialog_Set)(Ewl_Window *win);	/**< Set the d
 									setting of the window */
 typedef void (*Ewl_Engine_Cb_Window_Transient_For)(Ewl_Window *win);	/**< Set the window 
 								transient */
-typedef void (*Ewl_Engine_Cb_Window_States_Set)(Ewl_Window *win); /**< Set the window modal */
+typedef void (*Ewl_Engine_Cb_Window_Leader_Set)(Ewl_Window *win);	/**< Set the window's 
+								 leader */
+typedef void (*Ewl_Engine_Cb_Window_States_Set)(Ewl_Window *win); /**< Set the window states */
+typedef void (*Ewl_Engine_Cb_Window_Hints_Set)(Ewl_Window *win); /**< Set the window hints */
 typedef void (*Ewl_Engine_Cb_Window_Raise)(Ewl_Window *win);	/**< Raise the window */
 typedef void (*Ewl_Engine_Cb_Window_Lower)(Ewl_Window *win);	/**< Lower the window */
 typedef int  (*Ewl_Engine_Cb_Keyboard_Grab)(Ewl_Window *win);	/**< Set the keyboard grab */

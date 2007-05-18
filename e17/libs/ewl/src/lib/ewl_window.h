@@ -55,6 +55,10 @@ struct Ewl_Window
 		Ewl_Window *ewl; 		
 		Ewl_Embed_Window *foreign;
 	} transient; /**< Window to be transient for */
+	union {
+		Ewl_Window *ewl; 		
+		Ewl_Embed_Window *foreign;
+	} leader; /**< the leader of the window group */
 
 	char *title; /**< The current title on the provided window */
 	char *name; /**< Current name on the provided window */
@@ -95,6 +99,11 @@ void 		 ewl_window_lower(Ewl_Window *win);
 void 		 ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin);
 void 		 ewl_window_transient_for_foreign(Ewl_Window *win, 
 						    Ewl_Embed_Window *forwin);
+void 		 ewl_window_leader_set(Ewl_Window *win, Ewl_Window *leader);
+void 		 ewl_window_leader_foreign_set(Ewl_Window *win, 
+						    Ewl_Embed_Window *leader);
+Ewl_Window	*ewl_window_leader_get(Ewl_Window *win);
+Ewl_Embed_Window *ewl_window_leader_foreign_get(Ewl_Window *win);
 int		 ewl_window_modal_get(Ewl_Window *win);
 void		 ewl_window_modal_set(Ewl_Window *win, int modal);
 void 		 ewl_window_keyboard_grab_set(Ewl_Window *win, int grab);
@@ -110,7 +119,7 @@ void 		 ewl_window_selection_text_set(Ewl_Window *win, const char *txt);
  */
 void ewl_window_cb_realize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_window_cb_postrealize(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_window_cb_realize_transient(Ewl_Widget *w, void *ev_data,
+void ewl_window_cb_realize_parent(Ewl_Widget *w, void *ev_data,
 						void *user_data);
 void ewl_window_cb_unrealize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_window_cb_show(Ewl_Widget *w, void *ev_data, void *user_data);
