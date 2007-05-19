@@ -66,17 +66,17 @@ void ephoto_db_close(sqlite3 *db);
 
 /* Ephoto Gui */
 Ewl_Widget *add_box(Ewl_Widget *c, Ewl_Orientation orientation, int spacing);
-Ewl_Widget *add_button(Ewl_Widget *c, const char *txt, const char *img, void *cb, void *data);
-Ewl_Widget *add_entry(Ewl_Widget *c, const char *txt, void *cb, void *data);
-Ewl_Widget *add_icon(Ewl_Widget *c, const char *lbl, const char *img, int thumbnail, void *cb, void *data);
+Ewl_Widget *add_button(Ewl_Widget *c, char *lbl, const char *img, void *cb, void *data);
+Ewl_Widget *add_entry(Ewl_Widget *c, char *txt, void *cb, void *data);
+Ewl_Widget *add_icon(Ewl_Widget *c, char *lbl, const char *img, int thumbnail, void *cb, void *data);
 Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, void *data);
-Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl);
+Ewl_Widget *add_label(Ewl_Widget *c, char *lbl);
 Ewl_Widget *add_menubar(Ewl_Widget *c);
-Ewl_Widget *add_menu(Ewl_Widget *c, const char *lbl);
-Ewl_Widget *add_menu_item(Ewl_Widget *c, const char *lbl, const char *img, void *cb, void *data);
-Ewl_Widget *add_text(Ewl_Widget *c, const char *text);
+Ewl_Widget *add_menu(Ewl_Widget *c, char *lbl);
+Ewl_Widget *add_menu_item(Ewl_Widget *c, char *lbl, const char *img, void *cb, void *data);
+Ewl_Widget *add_text(Ewl_Widget *c, char *text);
 Ewl_Widget *add_shadow(Ewl_Widget *c);
-Ewl_Widget *add_window(const char *name, int width, int height, void *cb, void *data);
+Ewl_Widget *add_window(char *name, int width, int height, void *cb, void *data);
 
 /* Ephoto Imaging */
 unsigned int *flip_horizontal(Ewl_Widget *image);

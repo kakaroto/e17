@@ -15,13 +15,13 @@ Ewl_Widget *add_box(Ewl_Widget *c, Ewl_Orientation orientation, int spacing)
 }
 
 /*Create and Add a Button to the Container c*/
-Ewl_Widget *add_button(Ewl_Widget *c, const char *txt, const char *img, void *cb, void *data)
+Ewl_Widget *add_button(Ewl_Widget *c, char *lbl, const char *img, void *cb, void *data)
 {
 	Ewl_Widget *button;
 
 	button = ewl_button_new();
 	if(img) ewl_button_image_set(EWL_BUTTON(button), img, NULL);
-	if(txt) ewl_button_label_set(EWL_BUTTON(button), _(txt));
+	if(lbl) ewl_button_label_set(EWL_BUTTON(button), _(lbl));
 	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	if(c) ewl_container_child_append(EWL_CONTAINER(c), button);
@@ -32,7 +32,7 @@ Ewl_Widget *add_button(Ewl_Widget *c, const char *txt, const char *img, void *cb
 }
 
 /*Create and Add an Entry to Container c With Text txt and the Callback cb*/
-Ewl_Widget *add_entry(Ewl_Widget *c, const char *txt, void *cb, void *data)
+Ewl_Widget *add_entry(Ewl_Widget *c, char *txt, void *cb, void *data)
 {
 	Ewl_Widget *entry;
 
@@ -46,7 +46,7 @@ Ewl_Widget *add_entry(Ewl_Widget *c, const char *txt, void *cb, void *data)
 }
 
 /*Create and add an icon to the container c*/
-Ewl_Widget *add_icon(Ewl_Widget *c, const char *lbl, const char *img, int thumbnail, void *cb, void *data)
+Ewl_Widget *add_icon(Ewl_Widget *c, char *lbl, const char *img, int thumbnail, void *cb, void *data)
 {
 	Ewl_Widget *icon;
 	
@@ -99,7 +99,7 @@ Ewl_Widget *add_image(Ewl_Widget *c, const char *img, int thumbnail, void *cb, v
 }
 
 /*Create and Add a Label to the Container c, With the Text lbl*/
-Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl)
+Ewl_Widget *add_label(Ewl_Widget *c, char *lbl)
 {
 	Ewl_Widget *label;
 
@@ -127,7 +127,7 @@ Ewl_Widget *add_menubar(Ewl_Widget *c)
 }
 
 /*Create and Add a Menu to the Container c*/
-Ewl_Widget *add_menu(Ewl_Widget *c, const char *lbl)
+Ewl_Widget *add_menu(Ewl_Widget *c, char *lbl)
 {
 	Ewl_Widget *menu;
 	
@@ -141,7 +141,7 @@ Ewl_Widget *add_menu(Ewl_Widget *c, const char *lbl)
 }
 
 /*Create and Add a Menu Item to the Container c*/
-Ewl_Widget *add_menu_item(Ewl_Widget *c, const char *lbl, const char *img, void *cb, void *data)
+Ewl_Widget *add_menu_item(Ewl_Widget *c, char *lbl, const char *img, void *cb, void *data)
 {
 	Ewl_Widget *mi;
 
@@ -170,7 +170,7 @@ Ewl_Widget *add_shadow(Ewl_Widget *c)
 }
 
 /*Create and Add a Text Widget to the Container c*/
-Ewl_Widget *add_text(Ewl_Widget *c, const char *txt)
+Ewl_Widget *add_text(Ewl_Widget *c, char *txt)
 {
 	Ewl_Widget *text;
 	
@@ -185,7 +185,7 @@ Ewl_Widget *add_text(Ewl_Widget *c, const char *txt)
 }
 
 /*Create and Add a Window*/
-Ewl_Widget *add_window(const char *name, int width, int height, void *cb, void *data)
+Ewl_Widget *add_window(char *name, int width, int height, void *cb, void *data)
 {
 	Ewl_Widget *win;
 

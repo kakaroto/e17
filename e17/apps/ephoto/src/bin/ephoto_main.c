@@ -507,7 +507,7 @@ static Ewl_Widget *add_dtree(Ewl_Widget *c)
 /* The view of the users albums */
 static Ewl_Widget *album_view_new(void *data, unsigned int row, unsigned int column)
 {
-	const char *album;
+	char *album;
 	Ewl_Widget *icon;
 
 	album = data;
@@ -527,8 +527,7 @@ static Ewl_Widget *album_view_new(void *data, unsigned int row, unsigned int col
 /* The view of the users directories */
 static Ewl_Widget *directory_view_new(void *data, unsigned int row, unsigned int column)
 {
-	char *current_directory;
-        const char *directory;
+	char *current_directory, *directory;
 	int len;
         Ewl_Widget *icon;
 
@@ -537,7 +536,7 @@ static Ewl_Widget *directory_view_new(void *data, unsigned int row, unsigned int
 	strcpy(current_directory, em->current_directory);
         directory = data;
 
-	icon = add_icon(NULL, basename((char *)directory), 
+	icon = add_icon(NULL, basename(directory), 
 				PACKAGE_DATA_DIR "/images/folder.png", 0, 
 						populate_directories, NULL);
 
