@@ -650,7 +650,7 @@ _PagerEwinInit(EWin * ewin)
    Esnprintf(s, sizeof(s), "Pager-%i", p->dsk->num);
    EwinSetTitle(ewin, s);
    Esnprintf(s, sizeof(s), "%i", p->dsk->num);
-   EwinSetClass(ewin, s, "Enlightenment_Menu");
+   EwinSetClass(ewin, s, "Enlightenment_Pager");
 
    ewin->props.skip_ext_task = 1;
    ewin->props.skip_ext_pager = 1;
