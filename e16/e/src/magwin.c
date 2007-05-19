@@ -435,7 +435,7 @@ MagwinShow(void)
    if (MagWin)
       return;
 
-   MagWin = MagwinCreate("Magnifier", VRoot.w / 4, VRoot.h / 4);
+   MagWin = MagwinCreate(_("Magnifier"), VRoot.w / 4, VRoot.h / 4);
    if (!MagWin)
      {
 	Eprintf("Failed to create magnifier window\n");

@@ -24,6 +24,7 @@ src/iclass.c
 src/iconify.c
 src/ipc.c
 src/main.c
+src/magwin.c
 src/menus-misc.c
 src/menus.c
 src/mod-trans.c
