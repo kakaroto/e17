@@ -46,6 +46,8 @@
 
 #define DEBUG_MENU_EVENTS 0
 
+#define MENU_UNLOAD_CHECK_IMTERVAL 300	/* Seconds */
+
 static struct
 {
    Menu               *first;
@@ -108,6 +110,7 @@ struct _menu
    char                shown;
    char                stuck;
    char                redraw;
+   char                filled;	/* Has been filled */
    Menu               *parent;
    Menu               *child;
    MenuItem           *sel_item;
@@ -578,7 +581,6 @@ MenuDestroy(Menu * m)
       Efree(m->title);
    if (m->data)
       Efree(m->data);
-   FreePmapMask(&m->pmm);
 
    Efree(m);
 }
@@ -618,6 +620,31 @@ MenuEmpty(Menu * m, int destroying)
    m->items = NULL;
    m->num = 0;
    m->sel_item = NULL;
+
+   FreePmapMask(&m->pmm);
+
+   m->filled = 0;
+}
+
+static void
+MenuFreePixmaps(Menu * m)
+{
+   int                 i, j;
+   MenuItem           *mi;
+
+   for (i = 0; i < m->num; i++)
+     {
+	mi = m->items[i];
+	if (!mi)
+	   continue;
+
+	for (j = 0; j < 3; j++)
+	   FreePmapMask(mi->pmm + j);
+     }
+
+   FreePmapMask(&m->pmm);
+
+   m->filled = 0;
 }
 
 void
@@ -711,10 +738,7 @@ MenuRealize(Menu * m)
 		  else if (m->icon_size == 0)
 		     w = h = Conf.menus.icon_size;
 		  if (w <= 0 || h <= 0)
-		    {
-		       EImageGetSize(im, &w, &h);
-		       EImageFree(im);
-		    }
+		     EImageGetSize(im, &w, &h);
 		  m->items[i]->icon_w = w;
 		  m->items[i]->icon_h = h;
 		  m->items[i]->icon_win =
@@ -724,6 +748,7 @@ MenuRealize(Menu * m)
 		     maxh = h;
 		  if (w > maxx2)
 		     maxx2 = w;
+		  EImageFree(im);
 	       }
 	     else
 		m->items[i]->icon_iclass = NULL;
@@ -899,6 +924,8 @@ MenuRedraw(Menu * m)
 	   MenuDrawItem(m, m->items[i], 0, -1);
 	EShapePropagate(m->win);
      }
+
+   m->filled = 1;
 }
 
 static void
@@ -1956,14 +1983,18 @@ MenusTimeout(int val __UNUSED__, void *data __UNUSED__)
    ts = time(0);
    ECORE_LIST_FOR_EACH(menu_list, m)
    {
-      if (!m->loader || m->shown || m->num == 0 || ts - m->last_access < 300)
+      if (m->shown || !m->filled ||
+	  ts - m->last_access < MENU_UNLOAD_CHECK_IMTERVAL)
 	 continue;
 
-      MenuEmpty(m, 0);
+      if (m->loader)
+	 MenuEmpty(m, 0);
+      else
+	 MenuFreePixmaps(m);
       m->last_change = 0;
    }
 
-   DoIn("MenusCheck", 300.0, MenusTimeout, 0, NULL);
+   DoIn("MenusCheck", 1. * MENU_UNLOAD_CHECK_IMTERVAL, MenusTimeout, 0, NULL);
 }
 
 /*
@@ -1980,7 +2011,8 @@ MenusSighan(int sig, void *prm __UNUSED__)
 	break;
 
      case ESIGNAL_START:
-	DoIn("MenusCheck", 300.0, MenusTimeout, 0, NULL);
+	DoIn("MenusCheck", 1. * MENU_UNLOAD_CHECK_IMTERVAL, MenusTimeout, 0,
+	     NULL);
 	break;
 
      case ESIGNAL_AREA_SWITCH_START:
