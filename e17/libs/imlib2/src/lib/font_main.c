@@ -38,130 +38,78 @@ imlib_font_init(void)
 }
 
 int
-imlib_font_ascent_get(ImlibFont *fn_list)
+imlib_font_ascent_get(ImlibFont * fn)
 {
-   ImlibFont *fn;
-   int val;
-   int ret, maxret;
+   int                 val;
+   int                 ret;
 
-   maxret = 0; fn = fn_list;
-
-   while(fn)
-  {
    val = (int)fn->ft.face->ascender;
-   fn->ft.face->units_per_EM = 2048;    /* nasty hack - need to have correct 
+   fn->ft.face->units_per_EM = 2048;    /* nasy hack - need to have correct 
                                          * val */
    ret =
        (val * fn->ft.face->size->metrics.y_scale) /
        (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
-   if(ret > maxret)
-     maxret = ret;
-   fn = fn->next_in_set;
-  }
-   return maxret;
+   return ret;
 }
 
 int
-imlib_font_descent_get(ImlibFont *fn_list)
+imlib_font_descent_get(ImlibFont * fn)
 {
-   ImlibFont *fn;
-   int val;
-   int ret, maxret;
+   int                 val;
+   int                 ret;
 
-   maxret = 0; fn = fn_list;
-
-   while(fn)
-  {
    val = -(int)fn->ft.face->descender;
-   fn->ft.face->units_per_EM = 2048;    /* nasty hack - need to have correct 
+   fn->ft.face->units_per_EM = 2048;    /* nasy hack - need to have correct 
                                          * val */
    ret =
        (val * fn->ft.face->size->metrics.y_scale) /
        (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
-/* NOTE by szukw000: as long as the descent value is positive:
- * 'ret > maxret'; otherwise 'ret < maxret'.
-*/
-   if(ret > maxret)
-     maxret = ret;
-   fn = fn->next_in_set;
-  }
-   return maxret;
+   return ret;
 }
 
 int
-imlib_font_max_ascent_get(ImlibFont *fn_list)
+imlib_font_max_ascent_get(ImlibFont * fn)
 {
-   ImlibFont *fn;
-   int val;
-   int ret, maxret;
+   int                 val;
+   int                 ret;
 
-    maxret = 0; fn = fn_list;
-
-   while(fn)
-  {
    val = (int)fn->ft.face->bbox.yMax;
-   fn->ft.face->units_per_EM = 2048;    /* nasty hack - need to have correct
+   fn->ft.face->units_per_EM = 2048;    /* nasy hack - need to have correct 
                                          * val */
    ret =
        (val * fn->ft.face->size->metrics.y_scale) /
        (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
-   if(ret > maxret)
-     maxret = ret;
-   fn = fn->next_in_set;
-  }
-   return maxret;
+   return ret;
 }
 
 int
-imlib_font_max_descent_get(ImlibFont *fn_list)
+imlib_font_max_descent_get(ImlibFont * fn)
 {
-   ImlibFont *fn;
-   int val;
-   int ret, maxret;
+   int                 val;
+   int                 ret;
 
-   maxret = 0; fn = fn_list;
-
-   while(fn)
-  {
    val = (int)fn->ft.face->bbox.yMin;
-   fn->ft.face->units_per_EM = 2048;    /* nasty hack - need to have correct
+   fn->ft.face->units_per_EM = 2048;    /* nasy hack - need to have correct 
                                          * val */
    ret =
        (val * fn->ft.face->size->metrics.y_scale) /
        (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
-/* NOTE by szukw000: as long as the max_descent value is negative:
- * 'ret < maxret'; otherwise: 'ret > maxret'. 
-*/
-   if(ret < maxret)
-     maxret = ret;
-   fn = fn->next_in_set;
-  }
-   return maxret;
+   return ret;
 }
 
 int
-imlib_font_get_line_advance(ImlibFont * fn_list)
+imlib_font_get_line_advance(ImlibFont * fn)
 {
-    ImlibFont *fn;
-    int val, maxret, ret;
+   int                 val;
+   int                 ret;
 
-    maxret = 0;
-    fn = fn_list;
-    while(fn)
-   {
-    val = (int)fn->ft.face->height;
-/* nasty hack - need to have correct val */
-    fn->ft.face->units_per_EM = 2048;
-
-    ret =
-      (val * fn->ft.face->size->metrics.y_scale) /
-      (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
-
-    if(ret > maxret)
-      maxret = ret;
-    fn = fn->next_in_set;
-   }
-    return maxret;
+   val = (int)fn->ft.face->height;
+   fn->ft.face->units_per_EM = 2048;    /* nasy hack - need to have correct 
+                                         * val */
+   ret =
+       (val * fn->ft.face->size->metrics.y_scale) /
+       (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
+   return ret;
 }
 
 int
