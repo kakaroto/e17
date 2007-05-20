@@ -71,7 +71,12 @@ int main(int argc, char **argv)
 			printf("Are you sure you want to create an album with "
 			       "the name %s and the description %s? ", 
 			       name, description);
-			scanf("%c", &input);
+			int ret = scanf("%c", &input);
+			if(!ret || ret == EOF)
+			{
+				printf("read error\n");
+				return 1;
+			}
 			if(input == 'y' || input == 'Y')
 			{
 				db = ephoto_db_init();
@@ -112,7 +117,12 @@ int main(int argc, char **argv)
 			printf("Are you sure you want to add an image "
 			       "to album %s with a name %s and path %s? ", 
 			       album, name, path);
-			scanf("%c", &input);
+			int ret = scanf("%c", &input);
+			if(!ret || ret == EOF)
+			{
+				printf("read error\n");
+				return 1;
+			}
 			if(input == 'y' || input == 'Y')
 			{
 				db = ephoto_db_init();
@@ -145,7 +155,12 @@ int main(int argc, char **argv)
                         printf("Are you sure you want to add images "
                                "from the directory %s to the album %s? ",
                                path, album);
-                        scanf("%c", &input);
+                        int ret = scanf("%c", &input);
+								if(!ret || ret == EOF)
+								{
+										printf("read error\n");
+										return 1;
+								}
                         if(input == 'y' || input == 'Y')
                         {
 				db = ephoto_db_init();
@@ -211,7 +226,12 @@ int main(int argc, char **argv)
 
 			printf("Are you sure you want to remove the album %s? ", 
 			       name);
-			scanf("%c", &input);
+			int ret = scanf("%c", &input);
+			if(!ret || ret == EOF)
+			{
+				printf("read error\n");
+				return 1;
+			}
 			if(input == 'y' || input == 'Y')
 			{
 				db = ephoto_db_init();
@@ -245,7 +265,12 @@ int main(int argc, char **argv)
 			printf("Are you sure you want to remove the image %s "
 			       "from the album %s? ", 
 			       path, album);
-			scanf("%c", &input);
+			int ret = scanf("%c", &input);
+			if(!ret || ret == EOF)
+			{
+				printf("read error\n");
+				return 1;
+			}
 			if(input == 'y' || input == 'Y')
 			{
 				db = ephoto_db_init();
