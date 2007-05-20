@@ -628,6 +628,8 @@ ee_window_state_request(Ewl_Window *win, int states)
 					ECORE_X_WINDOW_STATE_MODAL);
 	ee_window_state_handle(win, states, EWL_WINDOW_DEMANDS_ATTENTION, 
 					ECORE_X_WINDOW_STATE_DEMANDS_ATTENTION);
+	
+	win->flags &= ~EWL_WINDOW_DEMANDS_ATTENTION;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -669,6 +671,7 @@ static void
 ee_window_hints_set(Ewl_Window *win)
 {
 	Ewl_Embed_Window *win_group;
+	int urgent = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
@@ -681,7 +684,8 @@ ee_window_hints_set(Ewl_Window *win)
 	else
 		win_group = NULL;
 
-	printf("window group %p\n", win_group);
+	if (win->flags & EWL_WINDOW_URGENT)
+		urgent = TRUE;
 	
 	ecore_x_icccm_hints_set((Ecore_X_Window) win->window,
 				1, // accepts focus
@@ -690,7 +694,7 @@ ee_window_hints_set(Ewl_Window *win)
 				0, // icon mask
 				0, // icon window
 				(Ecore_X_Window) win_group, // window group
-				0); // is urgent
+				urgent); // is urgent
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -498,7 +498,11 @@ ewl_window_lower(Ewl_Window *win)
  * @return Returns no value.
  * @brief Request the WM to pay attention to the window
  *
- * Demand attention for the window @a win if it is realized.
+ * Demand attention for the window @a win if it is realized. 
+ * The window manager will then try to draw attention to the
+ * window, e.g. a blinking taskbar entry. When the window
+ * got the wanted attention the window manager will stop
+ * this action itself.
  */
 void
 ewl_window_attention_demand(Ewl_Window *win)
@@ -507,9 +511,54 @@ ewl_window_attention_demand(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
+	win->flags |= EWL_WINDOW_DEMANDS_ATTENTION;
 	ewl_engine_window_states_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to work with.
+ * @param urgent: if the window should have the urgent hint
+ * @return Returns no value.
+ * @brief Set the window to be urgent
+ *
+ * This is similar to a attention demand with the difference, that
+ * it is more urgent and the window manager might even raise the window
+ * and/or let title bar blink. Different from attention demand the
+ * window manager will not reset it to normal state, so it is up
+ * to the application to do this, after it got the needed attention.
+ */
+void
+ewl_window_urgent_set(Ewl_Window *win, unsigned int urgent)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+
+	if (urgent)
+		win->flags |= EWL_WINDOW_URGENT;
+	else
+		win->flags &= ~EWL_WINDOW_URGENT;
+
+	ewl_engine_window_hints_set(win);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: the window to work with.
+ * @return the urgent state
+ * @brief Get the window urgent state
+ */
+unsigned int
+ewl_window_urgent_get(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("win", win, FALSE);
+	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+
+	DRETURN_INT(!!(win->flags & EWL_WINDOW_URGENT), DLEVEL_STABLE);
 }
 
 /**

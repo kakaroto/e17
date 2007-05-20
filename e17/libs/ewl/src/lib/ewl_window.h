@@ -93,6 +93,8 @@ void 		 ewl_window_skip_pager_set(Ewl_Window *win,
 					unsigned int skip);
 unsigned int 	 ewl_window_skip_pager_get(Ewl_Window *win);
 void		 ewl_window_attention_demand(Ewl_Window *win);
+void		 ewl_window_urgent_set(Ewl_Window *win, unsigned int urgent);
+unsigned int 	 ewl_window_urgent_get(Ewl_Window *win);
 void 		 ewl_window_move(Ewl_Window *win, int x, int y);
 void 		 ewl_window_raise(Ewl_Window *win);
 void 		 ewl_window_lower(Ewl_Window *win);
