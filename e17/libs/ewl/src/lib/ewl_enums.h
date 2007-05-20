@@ -259,7 +259,8 @@ enum Ewl_Window_Flags
 	EWL_WINDOW_LEADER_FOREIGN = 0x800,	/**< Window HAS a leader */
 	EWL_WINDOW_SKIP_TASKBAR = 0x1000,	/**< Window skips taskbar */
 	EWL_WINDOW_SKIP_PAGER = 0x2000,		/**< Window skips pager */
-	EWL_WINDOW_DEMANDS_ATTENTION = 0x4000	/**< Window requires attention */
+	EWL_WINDOW_DEMANDS_ATTENTION = 0x4000,	/**< Window requires attention */
+	EWL_WINDOW_URGENT = 0x8000		/**< Window is urgent */
 };
 
 /**
