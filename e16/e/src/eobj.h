@@ -40,7 +40,6 @@ struct _eobj
    char                sticky;
    char                floating;
    unsigned            external:1;
-   unsigned            argb:1;
    unsigned            inputonly:1;
    unsigned            shown:1;
    unsigned            gone:1;
@@ -72,6 +71,7 @@ struct _eobj
 #define EOBJ_TYPE_EXT       5
 #define EOBJ_TYPE_MISC_NR   6	/* Unredirected */
 #define EOBJ_TYPE_ROOT_BG   7
+#define EOBJ_TYPE_GLX       8
 
 #define EobjGetWin(eo)          ((eo)->win)
 #define EobjGetXwin(eo)         WinGetXwin((eo)->win)

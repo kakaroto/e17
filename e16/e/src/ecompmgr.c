@@ -1235,7 +1235,7 @@ ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
 
    if (eo->noredir)
       mode = WINDOW_UNREDIR;
-   else if (eo->argb)
+   else if (eo->win->argb)
       mode = WINDOW_ARGB;
    else if (cw->opacity != OPAQUE)
       mode = WINDOW_TRANS;

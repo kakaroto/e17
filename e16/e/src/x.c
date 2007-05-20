@@ -33,6 +33,9 @@
 #if USE_COMPOSITE
 #include <X11/extensions/Xrender.h>
 #endif
+#if USE_GLX
+#include "eglx.h"
+#endif
 
 #define DEBUG_XWIN 0
 
@@ -413,7 +416,7 @@ ECreateWindowVD(Win parent, int x, int y, int w, int h,
 
 Win
 ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
-		    int type, Win cwin, char *argb_ret)
+		    int type, Win cwin)
 {
    Win                 win;
    int                 argb = 0;
@@ -421,29 +424,35 @@ ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
 #if USE_COMPOSITE
    switch (type)
      {
-     default:
-     case 0:			/* Internal */
-	if (Conf.testing.argb_internal_objects)
-	   argb = 1;
-	break;
-     case 1:			/* Client window */
+     case 0:			/* Client window */
 	if (Conf.testing.argb_clients || EVisualIsARGB(cwin->visual))
 	   argb = 1;
 	break;
+     default:
+     case 1:			/* Internal */
+	if (Conf.testing.argb_internal_objects)
+	   argb = 1;
+	break;
+#if USE_GLX
+     case 2:			/* Internal GL */
+	argb = 1;
+	win =
+	   ECreateWindowVD(parent, x, y, w, h, EGlGetVisual(), EGlGetDepth());
+	win->argb = 1;
+	return win;
+#endif
      }
 
    if (argb)
       win = ECreateArgbWindow(parent, x, y, w, h, cwin);
    else
       win = ECreateWindow(parent, x, y, w, h, saveunder);
+   win->argb = argb;
 #else
    win = ECreateWindow(parent, x, y, w, h, saveunder);
    type = 0;
    cwin = NULL;
 #endif
-
-   if (argb_ret)
-      *argb_ret = argb;
 
    return win;
 }

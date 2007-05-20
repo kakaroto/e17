@@ -158,12 +158,16 @@ EobjIsShaped(const EObj * eo)
 }
 #endif
 
+#if USE_GLX
+#define WINTYPE(t) ((t == EOBJ_TYPE_GLX) ? 2 : 1)
+#else
+#define WINTYPE(t) 1
+#endif
+
 void
 EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
 	 int su, const char *name)
 {
-   char                argb;
-
    if (!eo->desk)
       eo->desk = DeskGet(0);
 
@@ -176,9 +180,8 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
 	  }
 	else
 	  {
-	     win = ECreateObjectWindow(EoGetWin(eo->desk), x, y, w, h, su, 0,
-				       NULL, &argb);
-	     eo->argb = argb;
+	     win = ECreateObjectWindow(EoGetWin(eo->desk), x, y, w, h, su,
+				       WINTYPE(type), NULL);
 	  }
      }
    eo->type = type;

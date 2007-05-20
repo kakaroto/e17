@@ -196,7 +196,6 @@ EwinManage(EWin * ewin)
 {
    XSetWindowAttributes att;
    Win                 frame;
-   char                argb;
 
    if (ewin->client.w <= 0)
       ewin->client.w = 100;
@@ -211,9 +210,8 @@ EwinManage(EWin * ewin)
      {
 	frame =
 	   ECreateObjectWindow(VRoot.win, ewin->client.x, ewin->client.y,
-			       ewin->client.w, ewin->client.h, 0, 1,
-			       EwinGetClientWin(ewin), &argb);
-	ewin->o.argb = argb;
+			       ewin->client.w, ewin->client.h, 0, 0,
+			       EwinGetClientWin(ewin));
 	ewin->win_container =
 	   ECreateWindow(frame, 0, 0, ewin->client.w, ewin->client.h, 0);
 

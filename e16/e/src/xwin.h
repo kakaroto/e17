@@ -68,7 +68,9 @@ struct _xwin
    Window              xwin;
    Win                 parent;
    int                 x, y, w, h;
-   int                 bw;
+   short               depth;
+   unsigned short      bw;
+   char                argb;
    char                mapped;
    char                in_use;
    signed char         do_del;
@@ -77,7 +79,6 @@ struct _xwin
    int                 ord;
    XRectangle         *rects;
    Visual             *visual;
-   int                 depth;
    Colormap            cmap;
    Pixmap              bgpmap;
    unsigned int        bgcol;
@@ -130,7 +131,7 @@ Win                 ECreateWindowVD(Win parent, int x, int y, int w, int h,
 Win                 ECreateClientWindow(Win parent, int x, int y, int w, int h);
 Win                 ECreateObjectWindow(Win parent, int x, int y, int w,
 					int h, int saveunder, int type,
-					Win cwin, char *argb);
+					Win cwin);
 Win                 ECreateEventWindow(Win parent, int x, int y, int w, int h);
 Win                 ECreateFocusWindow(Win parent, int x, int y, int w, int h);
 void                EWindowSync(Win win);
