@@ -2523,7 +2523,7 @@ BackgroundsIpc(const char *params)
    p = params;
    if (p)
      {
-	len = 0;
+	len = len2 = 0;
 	sscanf(p, "%100s %n%100s %n", cmd, &len2, prm, &len);
 	p += len;
      }

@@ -419,9 +419,10 @@ ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
 		    int type, Win cwin)
 {
    Win                 win;
-   int                 argb = 0;
 
 #if USE_COMPOSITE
+   int                 argb = 0;
+
    switch (type)
      {
      case 0:			/* Client window */

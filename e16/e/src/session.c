@@ -305,7 +305,9 @@ callback_shutdown_cancelled(SmcConn smc_conn, SmPointer client_data __UNUSED__)
    SmcSaveYourselfDone(smc_conn, False);
 }
 
+#if 0				/* Unused */
 static Atom         atom_sm_client_id;
+#endif
 
 static IceConn      ice_conn;
 
@@ -333,7 +335,9 @@ SessionInit(void)
       return;
 
 #ifdef HAVE_X11_SM_SMLIB_H
+#if 0				/* Unused */
    atom_sm_client_id = XInternAtom(disp, "SM_CLIENT_ID", False);
+#endif
 
    IceSetIOErrorHandler(ice_io_error_handler);
 
