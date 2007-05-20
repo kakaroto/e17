@@ -2151,7 +2151,7 @@ static const CfgItem PagersCfgItems[] = {
    CFG_ITEM_BOOL(Conf_pagers, zoom, 1),
    CFG_ITEM_BOOL(Conf_pagers, title, 1),
    CFG_ITEM_BOOL(Conf_pagers, hiq, 1),
-   CFG_ITEM_INT(Conf_pagers, mode, PAGER_MODE_SNAP),
+   CFG_ITEM_INT(Conf_pagers, mode, PAGER_MODE_LIVE),
    CFG_ITEM_INT(Conf_pagers, scanspeed, 10),
    CFG_ITEM_INT(Conf_pagers, sel_button, 2),
    CFG_ITEM_INT(Conf_pagers, win_button, 1),
