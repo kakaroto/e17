@@ -8,7 +8,7 @@
 
 
 #define EXCHANGE_POINTS(x0, y0, x1, y1)  \
-{                                        \
+do {                                     \
 	int _tmp = y0;                   \
                                          \
 	y0 = y1;                         \
@@ -17,7 +17,7 @@
 	_tmp = x0;                       \
 	x0 = x1;                         \
 	x1 = _tmp;                       \
-}
+} while (0)
 
 
 ImlibUpdate *
@@ -69,7 +69,7 @@ __imlib_SimpleLine_DrawToData(int x0, int y0, int x1, int y1, DATA32 color,
    if (A_VAL(&color) == 0xff) blend = 0;
 
    if (y0 > y1)
-      EXCHANGE_POINTS(x0, y0, x1, y1)
+      EXCHANGE_POINTS(x0, y0, x1, y1);
 
    dx = x1 - x0;
    dy = y1 - y0;
@@ -223,10 +223,11 @@ __imlib_SimpleLine_DrawToData(int x0, int y0, int x1, int y1, DATA32 color,
 }
 
 
-#define SETUP_LINE_SHALLOW       \
+#define SETUP_LINE_SHALLOW() \
+do { \
 	if (x0 > x1)                                         \
 	  {                                                  \
-	   EXCHANGE_POINTS(x0, y0, x1, y1)                   \
+	   EXCHANGE_POINTS(x0, y0, x1, y1);                  \
 	   dx = -dx;                                         \
 	   dy = -dy;                                         \
 	  }                                                  \
@@ -295,13 +296,15 @@ __imlib_SimpleLine_DrawToData(int x0, int y0, int x1, int y1, DATA32 color,
 	prev_y = (yy >> 16);                                 \
                                                              \
 	rx = MIN(x1 + 1, clw);                               \
-	by = clh - 1;
+	by = clh - 1;                                        \
+} while (0)
 
 
-#define SETUP_LINE_STEEP           \
+#define SETUP_LINE_STEEP() \
+do { \
    if (y0 > y1)                                              \
      {                                                       \
-	EXCHANGE_POINTS(x0, y0, x1, y1)                      \
+	EXCHANGE_POINTS(x0, y0, x1, y1);                     \
 	dx = -dx;                                            \
 	dy = -dy;                                            \
      }                                                       \
@@ -367,7 +370,8 @@ __imlib_SimpleLine_DrawToData(int x0, int y0, int x1, int y1, DATA32 color,
    prev_x = (xx >> 16);                                      \
                                                              \
    by = MIN(y1 + 1, clh);                                    \
-   rx = clw - 1;
+   rx = clw - 1;                                             \
+} while (0)
 
 
 
@@ -406,7 +410,7 @@ __imlib_Line_DrawToData(int x0, int y0, int x1, int y1, DATA32 color,
    /* shallow: x-parametric */
    if (abs(dy) < abs(dx))
      {
-	SETUP_LINE_SHALLOW
+	SETUP_LINE_SHALLOW();
 
 	*cl_x0 = px + clx;
 	*cl_y0 = py + cly;
@@ -444,7 +448,7 @@ __imlib_Line_DrawToData(int x0, int y0, int x1, int y1, DATA32 color,
 
    /* steep: y-parametric */
 
-   SETUP_LINE_STEEP
+   SETUP_LINE_STEEP();
 
    *cl_x0 = px + clx;
    *cl_y0 = py + cly;
@@ -515,7 +519,7 @@ __imlib_Line_DrawToData_AA(int x0, int y0, int x1, int y1, DATA32 color,
    /* shallow: x-parametric */
    if (abs(dy) < abs(dx))
      {
-	SETUP_LINE_SHALLOW
+	SETUP_LINE_SHALLOW();
 
 	*cl_x0 = px + clx;
 	*cl_y0 = py + cly;
@@ -545,7 +549,7 @@ __imlib_Line_DrawToData_AA(int x0, int y0, int x1, int y1, DATA32 color,
 
 		A_VAL(&color) = 255 - aa;
 		if (ca < 255)
-		   MULT(A_VAL(&color), ca, A_VAL(&color), tmp)
+		   MULT(A_VAL(&color), ca, A_VAL(&color), tmp);
 
                 if ((unsigned)(py) < clh)
 		   pfunc(color, p);
@@ -554,7 +558,7 @@ __imlib_Line_DrawToData_AA(int x0, int y0, int x1, int y1, DATA32 color,
 		  {
 		   A_VAL(&color) = aa;
 		   if (ca < 255)
-			MULT(A_VAL(&color), ca, A_VAL(&color), tmp)
+			MULT(A_VAL(&color), ca, A_VAL(&color), tmp);
 		   pfunc(color, p + dstw);
 		  }
 	     }
@@ -572,7 +576,7 @@ __imlib_Line_DrawToData_AA(int x0, int y0, int x1, int y1, DATA32 color,
 
    /* steep: y-parametric */
 
-   SETUP_LINE_STEEP
+   SETUP_LINE_STEEP();
 
    *cl_x0 = px + clx;
    *cl_y0 = py + cly;
@@ -602,7 +606,7 @@ __imlib_Line_DrawToData_AA(int x0, int y0, int x1, int y1, DATA32 color,
 
 	   A_VAL(&color) = 255 - aa;
 	   if (ca < 255)
-	      MULT(A_VAL(&color), ca, A_VAL(&color), tmp)
+	      MULT(A_VAL(&color), ca, A_VAL(&color), tmp);
 
 	   if ((unsigned)(px) < clw)
 	      pfunc(color, p);
@@ -611,7 +615,7 @@ __imlib_Line_DrawToData_AA(int x0, int y0, int x1, int y1, DATA32 color,
 	     {
 	      A_VAL(&color) = aa;
 	      if (ca < 255)
-		 MULT(A_VAL(&color), ca, A_VAL(&color), tmp)
+		 MULT(A_VAL(&color), ca, A_VAL(&color), tmp);
 	      pfunc(color, p + 1);
 	     }
 	  }

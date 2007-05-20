@@ -6,23 +6,31 @@
 
 
 #define ADD_COPY(r, g, b, dest) \
+do { \
                 ADD_COLOR(R_VAL(dest), r, R_VAL(dest)); \
                 ADD_COLOR(G_VAL(dest), g, G_VAL(dest)); \
-                ADD_COLOR(B_VAL(dest), b, B_VAL(dest));
+                ADD_COLOR(B_VAL(dest), b, B_VAL(dest)); \
+} while (0)
 
 #define SUB_COPY(r, g, b, dest) \
+do { \
                 SUB_COLOR(R_VAL(dest), r, R_VAL(dest)); \
                 SUB_COLOR(G_VAL(dest), g, G_VAL(dest)); \
-                SUB_COLOR(B_VAL(dest), b, B_VAL(dest));
+                SUB_COLOR(B_VAL(dest), b, B_VAL(dest)); \
+} while (0)
 
 #define RE_COPY(r, g, b, dest) \
+do { \
                 RESHADE_COLOR(R_VAL(dest), r, R_VAL(dest)); \
                 RESHADE_COLOR(G_VAL(dest), g, G_VAL(dest)); \
-                RESHADE_COLOR(B_VAL(dest), b, B_VAL(dest));
+                RESHADE_COLOR(B_VAL(dest), b, B_VAL(dest)); \
+} while (0)
 
 #define MULT(na, a0, a1, tmp) \
-   tmp = ((a0) * (a1)) + 0x80;  \
-   na = (tmp + (tmp >> 8)) >> 8;
+do { \
+   tmp = ((a0) * (a1)) + 0x80;   \
+   na = (tmp + (tmp >> 8)) >> 8; \
+} while (0)
 
 
 extern DATA8   pow_lut[256][256];
@@ -621,7 +629,7 @@ __imlib_AddCopyShapedSpanToRGB(DATA8 *src, DATA32 color, DATA32 *dst, int len)
 	DATA32 tmp;
 
 	if (*src)
-	  { ADD_COPY(R_VAL(&color), G_VAL(&color), B_VAL(&color), dst) }
+	  { ADD_COPY(R_VAL(&color), G_VAL(&color), B_VAL(&color), dst); }
 
 	src++;  dst++;
     }
@@ -790,7 +798,7 @@ __imlib_SubCopyShapedSpanToRGB(DATA8 *src, DATA32 color, DATA32 *dst, int len)
 	DATA32 tmp;
 
 	if (*src)
-	  { SUB_COPY(R_VAL(&color), G_VAL(&color), B_VAL(&color), dst) }
+	  { SUB_COPY(R_VAL(&color), G_VAL(&color), B_VAL(&color), dst); }
 
 	src++;  dst++;
     }
@@ -959,7 +967,7 @@ __imlib_ReCopyShapedSpanToRGB(DATA8 *src, DATA32 color, DATA32 *dst, int len)
 	DATA32 tmp;
 
         if (*src)
-	   { RE_COPY(R_VAL(&color), G_VAL(&color), B_VAL(&color), dst) }
+	   { RE_COPY(R_VAL(&color), G_VAL(&color), B_VAL(&color), dst); }
 
 	src++;  dst++;
     }

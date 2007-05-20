@@ -250,7 +250,7 @@ poly_edge_sorter(const void *a, const void *b)
 /* general macros */
 
 #define DEL_EDGE(j)		\
-{									\
+do {									\
    int m;								\
    for (m = 0; (m < nactive_edges) && (edge[m].index != (j)); m++);	\
 									\
@@ -261,10 +261,10 @@ poly_edge_sorter(const void *a, const void *b)
 	memmove(edge + m, edge + m + 1,					\
               (nactive_edges - m) * sizeof(PolyEdge));			\
      }									\
-}
+} while (0)
 
-#define DEL_HORZ_EDGES		\
-{									\
+#define DEL_HORZ_EDGES()		\
+do {									\
    int m = 0;								\
 									\
    while (m < nactive_edges)						\
@@ -279,11 +279,11 @@ poly_edge_sorter(const void *a, const void *b)
 	m++;								\
      }									\
    nactive_horz_edges = 0;						\
-}
+} while (0)
 
 
 #define ADD_EDGE(i)		\
-{									\
+do {									\
     int m;								\
 									\
     for (m = 0; (m < nactive_edges) && (edge[m].index != i); m++);	\
@@ -339,10 +339,11 @@ poly_edge_sorter(const void *a, const void *b)
 	ne->v1 = v1;							\
 	nactive_edges++;						\
       }									\
-}
+} while (0)
 
 
 #define GET_EDGE_RANGE(e, elx, erx)   \
+do { \
    switch(e->type)							\
    {									\
     case SHALLOW_EDGE:							\
@@ -367,27 +368,33 @@ poly_edge_sorter(const void *a, const void *b)
       }									\
     default:								\
       break;								\
-   }
+   }                                                                    \
+} while (0)
 
 
 #define CLIP_SPAN(lx, rx, clx, clrx)     \
+do { \
    if (lx < (clx)) lx = (clx);           \
-   if (rx > (clrx)) rx = (clrx);
+   if (rx > (clrx)) rx = (clrx);         \
+} while (0)
 
 
 #define BLEND_ALPHA(dst, a, tmp) \
+do { \
    if (*dst)                                    \
      {                                          \
        tmp = ((a) * (255 - (*(dst)))) + 0x80;   \
        *(dst) += ((tmp + (tmp >> 8)) >> 8);     \
      }                                          \
    else                                         \
-       *(dst) = (a);
+       *(dst) = (a);                            \
+} while (0)
 
 
 /* initializing macro used in drawing/filling functions */
 
-#define INIT_POLY		\
+#define INIT_POLY()		\
+do { \
    sfunc = __imlib_GetShapedSpanDrawFunction(op, dst_alpha, blend);	\
    if (!sfunc)  return;							\
 									\
@@ -397,10 +404,10 @@ poly_edge_sorter(const void *a, const void *b)
    clrx = clx + clw - 1;						\
    clby = cly + clh - 1;						\
 									\
-   CLIP_SPAN(clx, clrx, poly->lx, a_a + poly->rx)			\
+   CLIP_SPAN(clx, clrx, poly->lx, a_a + poly->rx);			\
    if (clrx < clx) return;						\
 									\
-   CLIP_SPAN(cly, clby, poly->ty, poly->by)				\
+   CLIP_SPAN(cly, clby, poly->ty, poly->by);				\
    if (clby < cly) return;						\
 									\
    clw = clrx - clx + 1;						\
@@ -449,16 +456,19 @@ poly_edge_sorter(const void *a, const void *b)
    k = 0;								\
    nactive_edges = 0;							\
    nactive_horz_edges = 0;						\
-   y = ty;
+   y = ty;                                                              \
+} while (0)
 
 
-#define DE_INIT_POLY  \
+#define DE_INIT_POLY()  \
+do { \
    free(edge);        \
    free(ysort);       \
    s0 += clx;         \
    free(s0);          \
    s1 += clx;         \
-   free(s1);
+   free(s1);          \
+} while (0)
 
 
 
@@ -484,7 +494,7 @@ __imlib_Polygon_DrawToData(ImlibPoly poly, char close, DATA32 color,
    DATA32			*p;
    DATA8			*s0, *s1, *ps;
 
-   INIT_POLY
+   INIT_POLY();
 
    while (y <= by)
      {
@@ -501,9 +511,9 @@ __imlib_Polygon_DrawToData(ImlibPoly poly, char close, DATA32 color,
 	   if (j >= 0)
 	     {
 		if (poly->points[j].y < y)
-		   DEL_EDGE(j)
+		   DEL_EDGE(j);
 	   	else
-		   ADD_EDGE(j)
+		   ADD_EDGE(j);
 	     }
 
 	   j = i + 1;
@@ -513,9 +523,9 @@ __imlib_Polygon_DrawToData(ImlibPoly poly, char close, DATA32 color,
 	   if (j < nvertices)
 	     {
 		if (poly->points[j].y < y)
-		   DEL_EDGE(i)
+		   DEL_EDGE(i);
 		else
-		   ADD_EDGE(i)
+		   ADD_EDGE(i);
 	     }
 
 	   k++;
@@ -541,7 +551,7 @@ __imlib_Polygon_DrawToData(ImlibPoly poly, char close, DATA32 color,
 
 	   e = edge + j;
 
-	   GET_EDGE_RANGE(e, e_lx, e_rx)
+	   GET_EDGE_RANGE(e, e_lx, e_rx);
 	   if ((e_lx < e->v0->x) && (e->dxx > 0))
 		e_lx = e->v0->x;
 	   if ((e_rx > e->v0->x) && (e->dxx < 0))
@@ -668,10 +678,10 @@ __imlib_Polygon_DrawToData(ImlibPoly poly, char close, DATA32 color,
 	  }
 
 	if (nactive_horz_edges > 0)
-	    DEL_HORZ_EDGES
+	    DEL_HORZ_EDGES();
 
 	/* draw alpha buffer to dst */
-	CLIP_SPAN(x0, x1, clx, clrx)
+	CLIP_SPAN(x0, x1, clx, clrx);
 	if ((x0 <= x1) && (y >= cly))
 	   sfunc(s0 + x0, color, p + x0, x1 - x0 + 1);
 
@@ -682,7 +692,7 @@ __imlib_Polygon_DrawToData(ImlibPoly poly, char close, DATA32 color,
         p += dstw;
      }
 
-   DE_INIT_POLY
+   DE_INIT_POLY();
 }
 
 
@@ -704,7 +714,7 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
    DATA32			*p;
    DATA8			*s0, *s1, *ps;
 
-   INIT_POLY
+   INIT_POLY();
 
    yy = y << 16;
    prev_y = y - 1;
@@ -725,9 +735,9 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 	   if (j >= 0)
 	     {
 		if (poly->points[j].y < y)
-		   DEL_EDGE(j)
+		   DEL_EDGE(j);
 	   	else
-		   ADD_EDGE(j)
+		   ADD_EDGE(j);
 	     }
 
 	   j = i + 1;
@@ -737,9 +747,9 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 	   if (j < nvertices)
 	     {
 		if (poly->points[j].y <= y)
-		   DEL_EDGE(i)
+		   DEL_EDGE(i);
 		else
-		   ADD_EDGE(i)
+		   ADD_EDGE(i);
 	     }
 
 	   k++;
@@ -765,7 +775,7 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 
 	   e = edge + j;
 
-	   GET_EDGE_RANGE(e, e_lx, e_rx)
+	   GET_EDGE_RANGE(e, e_lx, e_rx);
 	   if ((e_lx < e->v0->x) && (e->dxx > 0))
 		e_lx = e->v0->x;
 	   if ((e_rx > e->v0->x) && (e->dxx < 0))
@@ -783,14 +793,14 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 		if (IN_SEGMENT(rx, clx, clw))
 		  {
 		    ps = s0 + rx;
-		    BLEND_ALPHA(ps, aa, tmp)
+		    BLEND_ALPHA(ps, aa, tmp);
 		    if (rx > x1) x1 = rx;
 		  }
 		if (IN_SEGMENT(e_lx, clx, clw))
 		  {
 		    aa = 255 - aa;
 		    ps = s0 + e_lx;
-		    BLEND_ALPHA(ps, aa, tmp)
+		    BLEND_ALPHA(ps, aa, tmp);
 		    if (e_lx < x0) x0 = e_lx;
 		  }
 
@@ -802,14 +812,14 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 		    if (IN_SEGMENT(rx, clx, clw))
 		      {
 			ps = s1 + rx;
-			BLEND_ALPHA(ps, aa, tmp)
+			BLEND_ALPHA(ps, aa, tmp);
 			if (rx > nx1)  nx1 = rx;
 		      }
 		    if (IN_SEGMENT(lx, clx, clw))
 		      {
 			aa = 255 - aa;
 			ps = s1 + lx;
-			BLEND_ALPHA(ps, aa, tmp)
+			BLEND_ALPHA(ps, aa, tmp);
 			if (lx < nx0)  nx0 = lx;
 		      }
 		  }
@@ -836,7 +846,7 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 			  {
 			    aa = ((eyy - prev_yy) >> 8);
 			    ps = s0 + x;
-			    BLEND_ALPHA(ps, aa, tmp)
+			    BLEND_ALPHA(ps, aa, tmp);
 			  }
 			eyy += e->dyy;
 			ey = eyy >> 16;
@@ -851,7 +861,7 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 			  {
 			    aa = 255 - ((eyy - yy) >> 8);
 			    ps = s0 + x;
-			    BLEND_ALPHA(ps, aa, tmp)
+			    BLEND_ALPHA(ps, aa, tmp);
 			  }
 			eyy += e->dyy;
 			ey = eyy >> 16;
@@ -874,7 +884,7 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 			      {
 				aa = ((eyy - yy) >> 8);
 				ps = s1 + x;
-				BLEND_ALPHA(ps, aa, tmp)
+				BLEND_ALPHA(ps, aa, tmp);
 			      }
 			    eyy += e->dyy;
 			    ey = eyy >> 16;
@@ -894,7 +904,7 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 		      {
 			aa = ((eyy - prev_yy) >> 8);
 			ps = s0 + x;
-			BLEND_ALPHA(ps, aa, tmp)
+			BLEND_ALPHA(ps, aa, tmp);
 		      }
 		    eyy -= e->dyy;
 		    ey = eyy >> 16;
@@ -909,7 +919,7 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 		      {
 			aa = 255 - ((eyy - yy) >> 8);
 			ps = s0 + x;
-			BLEND_ALPHA(ps, aa, tmp)
+			BLEND_ALPHA(ps, aa, tmp);
 		      }
 		    eyy -= e->dyy;
 		    ey = eyy >> 16;
@@ -932,7 +942,7 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 			  {
 			    aa = ((eyy - yy) >> 8);
 			    ps = s1 + x;
-			    BLEND_ALPHA(ps, aa, tmp)
+			    BLEND_ALPHA(ps, aa, tmp);
 			  }
 			eyy -= e->dyy;
 			ey = eyy >> 16;
@@ -965,10 +975,10 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
 	  }
 
 	if (nactive_horz_edges > 0)
-	    DEL_HORZ_EDGES
+	    DEL_HORZ_EDGES();
 
 	/* draw alpha buffer to dst */
-	CLIP_SPAN(x0, x1, clx, clrx)
+	CLIP_SPAN(x0, x1, clx, clrx);
 	if ((x0 <= x1) && (y >= cly))
 	   sfunc(s0 + x0, color, p + x0, x1 - x0 + 1);
 
@@ -984,7 +994,7 @@ __imlib_Polygon_DrawToData_AA(ImlibPoly poly, char close, DATA32 color,
         p += dstw;
      }
 
-   DE_INIT_POLY
+   DE_INIT_POLY();
 }
 
 
@@ -1064,7 +1074,7 @@ __imlib_Polygon_FillToData(ImlibPoly poly, DATA32 color,
    DATA32			*p;
    DATA8			*s0, *s1, *ps;
 
-   INIT_POLY
+   INIT_POLY();
 
    while (y <= by)
      {
@@ -1078,17 +1088,17 @@ __imlib_Polygon_FillToData(ImlibPoly poly, DATA32 color,
 	   else  j = nvertices - 1;
 
 	   if (poly->points[j].y < y)
-		DEL_EDGE(j)
+		DEL_EDGE(j);
 	   else
-		ADD_EDGE(j)
+		ADD_EDGE(j);
 
 	   if (i < (nvertices - 1))  j = i + 1;
 	   else  j = 0;
 
 	   if (poly->points[j].y < y)
-		DEL_EDGE(i)
+		DEL_EDGE(i);
 	   else
-		ADD_EDGE(i)
+		ADD_EDGE(i);
 
 	   k++;
 	  }
@@ -1118,10 +1128,10 @@ __imlib_Polygon_FillToData(ImlibPoly poly, DATA32 color,
 	   else
 	     { re = le = edge; }
 
-	   GET_EDGE_RANGE(le, le_lx, le_rx)
+	   GET_EDGE_RANGE(le, le_lx, le_rx);
 	   if ((le_lx < le->v0->x) && (le->dxx > 0))
 		le_lx = le->v0->x;
-	   GET_EDGE_RANGE(re, re_lx, re_rx)
+	   GET_EDGE_RANGE(re, re_lx, re_rx);
 	   if ((re_rx > re->v0->x) && (re->dxx < 0))
 		re_rx = re->v0->x;
 
@@ -1301,7 +1311,7 @@ __imlib_Polygon_FillToData(ImlibPoly poly, DATA32 color,
 
 	   /* draw span between edges */
 	   lx = le_rx;  rx = re_lx;
-	   CLIP_SPAN(lx, rx, clx, clrx)
+	   CLIP_SPAN(lx, rx, clx, clrx);
 	   if ((lx <= rx) && (y >= cly))
 	      memset(s0 + lx, 255, rx - lx + 1);
 
@@ -1313,10 +1323,10 @@ __imlib_Polygon_FillToData(ImlibPoly poly, DATA32 color,
 	  }
 
 	if (nactive_horz_edges > 0)
-	   DEL_HORZ_EDGES
+	   DEL_HORZ_EDGES();
 
 	/* draw alpha buffer to dst */
-	CLIP_SPAN(x0, x1, clx, clrx)
+	CLIP_SPAN(x0, x1, clx, clrx);
 	if ((x0 <= x1) && (y >= cly))
 	   sfunc(s0 + x0, color, p + x0, x1 - x0 + 1);
 
@@ -1327,7 +1337,7 @@ __imlib_Polygon_FillToData(ImlibPoly poly, DATA32 color,
         p += dstw;
      }
 
-   DE_INIT_POLY
+   DE_INIT_POLY();
 }
 
 
@@ -1349,7 +1359,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
    DATA32			*p;
    DATA8			*s0, *s1, *ps;
 
-   INIT_POLY
+   INIT_POLY();
 
    yy = y << 16;
    prev_y = y - 1;
@@ -1367,17 +1377,17 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 	   else  j = nvertices - 1;
 
 	   if (poly->points[j].y < y)
-		DEL_EDGE(j)
+		DEL_EDGE(j);
 	   else
-		ADD_EDGE(j)
+		ADD_EDGE(j);
 
 	   if (i < (nvertices - 1))  j = i + 1;
 	   else  j = 0;
 
 	   if (poly->points[j].y < y)
-		DEL_EDGE(i)
+		DEL_EDGE(i);
 	   else
-		ADD_EDGE(i)
+		ADD_EDGE(i);
 
 	   k++;
 	  }
@@ -1406,10 +1416,10 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 	   else
 	     { re = le = edge; }
 
-	   GET_EDGE_RANGE(le, le_lx, le_rx)
+	   GET_EDGE_RANGE(le, le_lx, le_rx);
 	   if ((le_lx < le->v0->x) && (le->dxx > 0))
 		le_lx = le->v0->x;
-	   GET_EDGE_RANGE(re, re_lx, re_rx)
+	   GET_EDGE_RANGE(re, re_lx, re_rx);
 	   if ((re_rx > re->v0->x) && (re->dxx < 0))
 		re_rx = re->v0->x;
 
@@ -1427,7 +1437,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 		  {
 		    aa = 255 - ((le->xx - (le_lx << 16)) >> 8);
 		    ps = s0 + le_lx;
-		    BLEND_ALPHA(ps, aa, tmp)
+		    BLEND_ALPHA(ps, aa, tmp);
 		  }
 
 		if ((le->v1->y == (y + 1)) && (y < clby))
@@ -1437,7 +1447,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 		      {
 			aa = 255 - ((le->xx + le->dxx - (lx << 16)) >> 8);
 			ps = s1 + lx;
-			BLEND_ALPHA(ps, aa, tmp)
+			BLEND_ALPHA(ps, aa, tmp);
 			if (lx < nx0)  nx0 = lx;
 		      }
 		  }
@@ -1462,7 +1472,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 			  {
 			    aa = ((eyy - prev_yy) >> 8);
 			    ps = s0 + x;
-			    BLEND_ALPHA(ps, aa, tmp)
+			    BLEND_ALPHA(ps, aa, tmp);
 			  }
 			eyy += le->dyy;
 			ey = eyy >> 16;
@@ -1482,7 +1492,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 			      {
 				aa = ((eyy - yy) >> 8);
 				ps = s1 + x;
-				BLEND_ALPHA(ps, aa, tmp)
+				BLEND_ALPHA(ps, aa, tmp);
 			      }
 			    eyy += le->dyy;
 			    ey = eyy >> 16;
@@ -1500,7 +1510,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 		      {
 			aa = 255 - ((eyy - yy) >> 8);
 			ps = s0 + x;
-			BLEND_ALPHA(ps, aa, tmp)
+			BLEND_ALPHA(ps, aa, tmp);
 		      }
 		    eyy += le->dyy;
 		    ey = eyy >> 16;
@@ -1541,7 +1551,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 		  {
 		    aa = (re->xx - (re_lx << 16)) >> 8;
 		    ps = s0 + rx;
-		    BLEND_ALPHA(ps, aa, tmp)
+		    BLEND_ALPHA(ps, aa, tmp);
 		  }
 
 		if ((re->v1->y == (y + 1)) && (y < clby))
@@ -1551,7 +1561,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 		      {
 			aa = ((re->xx + re->dxx - (lx << 16)) >> 8);
 			ps = s1 + rx;
-			BLEND_ALPHA(ps, aa, tmp)
+			BLEND_ALPHA(ps, aa, tmp);
 			if (rx > nx1)  nx1 = rx;
 		      }
 		  }
@@ -1576,7 +1586,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 			  {
 			    aa = 255 - ((eyy - yy) >> 8);
 			    ps = s0 + x;
-			    BLEND_ALPHA(ps, aa, tmp)
+			    BLEND_ALPHA(ps, aa, tmp);
 			  }
 			eyy -= re->dyy;
 			ey = eyy >> 16;
@@ -1594,7 +1604,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 		      {
 			aa = ((eyy - prev_yy) >> 8);
 			ps = s0 + x;
-			BLEND_ALPHA(ps, aa, tmp)
+			BLEND_ALPHA(ps, aa, tmp);
 		      }
 		    eyy -= re->dyy;
 		    ey = eyy >> 16;
@@ -1614,7 +1624,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 			  {
 			    aa = ((eyy - yy) >> 8);
 			    ps = s1 + x;
-			    BLEND_ALPHA(ps, aa, tmp)
+			    BLEND_ALPHA(ps, aa, tmp);
 			  }
 			eyy -= re->dyy;
 			ey = eyy >> 16;
@@ -1643,7 +1653,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 
 	   /* draw span between edges */
 	   lx = le_rx;  rx = re_lx;
-	   CLIP_SPAN(lx, rx, clx, clrx)
+	   CLIP_SPAN(lx, rx, clx, clrx);
 	   if ((lx <= rx) && (y >= cly))
 	      memset(s0 + lx, 255, rx - lx + 1);
 
@@ -1655,10 +1665,10 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
 	  }
 
 	if (nactive_horz_edges > 0)
-	   DEL_HORZ_EDGES
+	   DEL_HORZ_EDGES();
 
 	/* draw alpha buffer to dst */
-	CLIP_SPAN(x0, x1, clx, clrx)
+	CLIP_SPAN(x0, x1, clx, clrx);
 	if ((x0 <= x1) && (y >= cly))
 	   sfunc(s0 + x0, color, p + x0, x1 - x0 + 1);
 
@@ -1674,7 +1684,7 @@ __imlib_Polygon_FillToData_AA(ImlibPoly poly, DATA32 color,
         p += dstw;
      }
 
-   DE_INIT_POLY
+   DE_INIT_POLY();
 }
 
 

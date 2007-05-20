@@ -25,10 +25,10 @@
 }
 
 #define DIV_255(a, x, tmp) \
-{                              \
+do {                           \
  tmp = (x) + 0x80;             \
  a = (tmp + (tmp >> 8)) >> 8;  \
-}
+} while (0)
 
 #define MULT(na, a0, a1, tmp) \
   DIV_255(na, (a0) * (a1), tmp)

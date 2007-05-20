@@ -4821,14 +4821,15 @@ void imlib_rotate_image_from_buffer(double angle,
      return; // If size is wrong
    else sz = im->w; // update sz with real width
 
-   /* Not neccesary 'cause destination is context
+#if 0 /* Not neccesary 'cause destination is context */
       im = __imlib_CreateImage(sz, sz, NULL);
       im->data = calloc(sz * sz, sizeof(DATA32));
       if (!(im->data))
         {
                __imlib_FreeImage(im);
            return;
-	   }*/
+	   }
+#endif
 
    if (ctx->anti_alias)
      {

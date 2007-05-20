@@ -188,8 +188,8 @@ __imlib_Ellipse_DrawToData_AA(int xc, int yc, int a, int b, DATA32 color,
 
 	if (ca < 255)
 	  {
-	   MULT(A_VAL(&col0), ca, A_VAL(&col0), tmp)
-	   MULT(A_VAL(&col1), ca, A_VAL(&col1), tmp)
+	   MULT(A_VAL(&col0), ca, A_VAL(&col0), tmp);
+	   MULT(A_VAL(&col1), ca, A_VAL(&col1), tmp);
 	  }
 
 	len = rx - lx;
@@ -257,8 +257,8 @@ __imlib_Ellipse_DrawToData_AA(int xc, int yc, int a, int b, DATA32 color,
 
 	if (ca < 255)
 	  {
-	   MULT(A_VAL(&col0), ca, A_VAL(&col0), tmp)
-	   MULT(A_VAL(&col1), ca, A_VAL(&col1), tmp)
+	   MULT(A_VAL(&col0), ca, A_VAL(&col0), tmp);
+	   MULT(A_VAL(&col1), ca, A_VAL(&col1), tmp);
 	  }
 
 	len = rx - lx;
@@ -518,7 +518,7 @@ __imlib_Ellipse_FillToData_AA(int xc, int yc, int a, int b, DATA32 color,
 
 	A_VAL(&col1) = ((yy - (y << 16)) >> 8);
 	if (ca < 255)
-	   MULT(A_VAL(&col1), ca, A_VAL(&col1), tmp)
+	   MULT(A_VAL(&col1), ca, A_VAL(&col1), tmp);
 
 	len = rx - lx;
 
@@ -586,7 +586,7 @@ __imlib_Ellipse_FillToData_AA(int xc, int yc, int a, int b, DATA32 color,
 
 	A_VAL(&col1) = ((xx - (x << 16)) >> 8);
 	if (ca < 255)
-	   MULT(A_VAL(&col1), ca, A_VAL(&col1), tmp)
+	   MULT(A_VAL(&col1), ca, A_VAL(&col1), tmp);
 
 	len = rx - lx;
 
