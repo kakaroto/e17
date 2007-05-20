@@ -69,7 +69,8 @@ __imlib_RotateSampleInside(DATA32 * src, DATA32 * dest, int sow, int dow,
              x += dxh;
              y += dyh;
              dest++;
-        } while (--i >= 0);
+          }
+        while (--i >= 0);
         if (--dh <= 0)
            break;
         /*\ DOWN/LEFT; \ */
@@ -102,7 +103,8 @@ __imlib_RotateAAInside(DATA32 * src, DATA32 * dest, int sow, int dow,
              x += dxh;
              y += dyh;
              dest++;
-        } while (--i >= 0);
+          }
+        while (--i >= 0);
         if (--dh <= 0)
            break;
         /*\ DOWN/LEFT; \ */
@@ -179,7 +181,8 @@ __imlib_RotateSample(DATA32 * src, DATA32 * dest, int sow, int sw, int sh,
              y += dyh;
              dest++;
 
-        } while (--i >= 0);
+          }
+        while (--i >= 0);
         if (--dh <= 0)
            break;
         /*\ DOWN/LEFT; \ */
@@ -312,7 +315,8 @@ __imlib_RotateAA(DATA32 * src, DATA32 * dest, int sow, int sw, int sh,
              y += dyh;
              dest++;
 
-        } while (--i >= 0);
+          }
+        while (--i >= 0);
         if (--dh <= 0)
            break;
         /*\ DOWN/LEFT; \ */

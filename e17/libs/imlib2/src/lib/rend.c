@@ -33,41 +33,41 @@ __imlib_RenderGetPixel(Display * d, Drawable w, Visual * v, Colormap cm,
      {
         switch (ct->palette_type)
           {
-            case 0:            /* 332 */
-               return ct->palette[((r >> 0) & 0xe0) |
-                                  ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
-               break;
-            case 1:            /* 232 */
-               return ct->palette[((r >> 0) & 0xe0) |
-                                  ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
-               break;
-            case 2:            /* 222 */
-               return ct->palette[((r >> 0) & 0xe0) |
-                                  ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
-               break;
-            case 3:            /* 221 */
-               return ct->palette[((r >> 0) & 0xe0) |
-                                  ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
-               break;
-            case 4:            /* 121 */
-               return ct->palette[((r >> 0) & 0xe0) |
-                                  ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
-               break;
-            case 5:            /* 111 */
-               return ct->palette[((r >> 0) & 0xe0) |
-                                  ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
-               break;
-            case 6:            /* 1 */
-               return ct->palette[((r >> 0) & 0xe0) |
-                                  ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
-               break;
-            case 7:            /* 666 */
-               return ct->palette[((int)(((double)r / 255) * 5.0) * 36) +
-                                  ((int)(((double)g / 255) * 5.0) * 6) +
-                                  ((int)(((double)b / 255) * 5.0))];
-               break;
-            default:
-               return 0;
+          case 0:              /* 332 */
+             return ct->palette[((r >> 0) & 0xe0) |
+                                ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
+             break;
+          case 1:              /* 232 */
+             return ct->palette[((r >> 0) & 0xe0) |
+                                ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
+             break;
+          case 2:              /* 222 */
+             return ct->palette[((r >> 0) & 0xe0) |
+                                ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
+             break;
+          case 3:              /* 221 */
+             return ct->palette[((r >> 0) & 0xe0) |
+                                ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
+             break;
+          case 4:              /* 121 */
+             return ct->palette[((r >> 0) & 0xe0) |
+                                ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
+             break;
+          case 5:              /* 111 */
+             return ct->palette[((r >> 0) & 0xe0) |
+                                ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
+             break;
+          case 6:              /* 1 */
+             return ct->palette[((r >> 0) & 0xe0) |
+                                ((g >> 3) & 0x1b) | ((b >> 6) & 0x02)];
+             break;
+          case 7:              /* 666 */
+             return ct->palette[((int)(((double)r / 255) * 5.0) * 36) +
+                                ((int)(((double)g / 255) * 5.0) * 6) +
+                                ((int)(((double)b / 255) * 5.0))];
+             break;
+          default:
+             return 0;
           }
      }
    else
@@ -479,10 +479,10 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
      {
         /* if we changed diplays since last time... free old gc */
         if ((gcm) && (disp != d))
-        {
-           XFreeGC(disp, gcm);
-           gcm = 0;
-        }
+          {
+             XFreeGC(disp, gcm);
+             gcm = 0;
+          }
         if (!gcm)
           {
              gcv.graphics_exposures = False;
@@ -585,7 +585,8 @@ __imlib_RenderImageSkewed(Display * d, ImlibImage * im, Drawable w, Drawable m,
                                    cmod, op, 0, 0, 0, 0);
 
    __imlib_RenderImage(d, back, w, m, v, cm, depth, 0, 0, dw, dh,
-                       dx1, dy1, dw, dh, 0, hiq, 0, dither_mask, mat, 0, OP_COPY);
+                       dx1, dy1, dw, dh, 0, hiq, 0, dither_mask, mat, 0,
+                       OP_COPY);
    __imlib_FreeImage(back);
 }
 

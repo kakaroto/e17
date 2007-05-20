@@ -125,7 +125,8 @@ __imlib_script_add_var(void *ptr)
 IFunctionParam     *
 __imlib_script_parse_parameters(Imlib_Image im, char *parameters)
 {
-   int                 i = 0, in_quote = 0, depth = 0, start = 0, value_start = 0;
+   int                 i = 0, in_quote = 0, depth = 0, start = 0, value_start =
+      0;
    int                 param_len;
    char               *value = NULL;
    IFunctionParam     *rootptr, *ptr;
@@ -150,8 +151,7 @@ __imlib_script_parse_parameters(Imlib_Image im, char *parameters)
            depth--;
         if (!in_quote && parameters[i] == '=' && depth == 0)
            value_start = i + 1;
-        if (!in_quote && (parameters[i] == ',' || i == param_len)
-            && depth == 0)
+        if (!in_quote && (parameters[i] == ',' || i == param_len) && depth == 0)
           {
              ptr->next = malloc(sizeof(IFunctionParam));
              ptr = ptr->next;
@@ -175,9 +175,9 @@ __imlib_script_parse_parameters(Imlib_Image im, char *parameters)
                     {
                        ptr->data = __imlib_script_get_next_var();
                        if (ptr->data == NULL)
-                       {
-                          D("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEK");
-                       }
+                         {
+                            D("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEK");
+                         }
                        /*     printf( "Using pointer variable %p\n", ptr->data ); */
                        ptr->type = VAR_PTR;
                        free(value);
@@ -206,10 +206,10 @@ __imlib_script_parse_function(Imlib_Image im, char *function)
 
    D("(--) ===> Entering __imlib_script_parse_function()");
    funcname =
-       __imlib_copystr(function, 0, __imlib_find_string(function, "(") - 1);
+      __imlib_copystr(function, 0, __imlib_find_string(function, "(") - 1);
    funcparams =
-       __imlib_copystr(function, __imlib_find_string(function, "(") + 1,
-                       strlen(function) - 2);
+      __imlib_copystr(function, __imlib_find_string(function, "(") + 1,
+                      strlen(function) - 2);
 #ifdef FDEBUG
    printf("DEBUG: (?\?)   = function <%s>( \"%s\" )\n", funcname, funcparams);
 #endif
@@ -227,8 +227,8 @@ __imlib_script_parse_function(Imlib_Image im, char *function)
      {
 #ifdef FDEBUG
         printf
-            ("DEBUG: (!!)   Can't find filter \"%s\", returning given image.\n",
-             funcname);
+           ("DEBUG: (!!)   Can't find filter \"%s\", returning given image.\n",
+            funcname);
 #endif
         retval = im;
      }

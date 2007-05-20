@@ -165,7 +165,7 @@ __imlib_free_context(ImlibContext * context)
    ctx = next->context;
 }
 
-EAPI Imlib_Context
+EAPI                Imlib_Context
 imlib_context_new(void)
 {
    ImlibContext       *context = malloc(sizeof(ImlibContext));
@@ -263,7 +263,7 @@ imlib_context_pop(void)
    free(item);
 }
 
-EAPI Imlib_Context
+EAPI                Imlib_Context
 imlib_context_get(void)
 {
    return (Imlib_Context) ctx;
@@ -327,7 +327,7 @@ imlib_context_set_display(Display * display)
  *
  * Returns the current display used for Imlib2's display context.
  */
-EAPI Display            *
+EAPI Display       *
 imlib_context_get_display(void)
 {
    if (!ctx)
@@ -357,7 +357,7 @@ imlib_context_set_visual(Visual * visual)
  *
  * Returns the current visual used for Imlib2's context.
  */
-EAPI Visual             *
+EAPI Visual        *
 imlib_context_get_visual(void)
 {
    if (!ctx)
@@ -385,7 +385,7 @@ imlib_context_set_colormap(Colormap colormap)
  *
  * Returns the current Colormap used for Imlib2's context.
  */
-EAPI Colormap
+EAPI                Colormap
 imlib_context_get_colormap(void)
 {
    if (!ctx)
@@ -413,7 +413,7 @@ imlib_context_set_drawable(Drawable drawable)
  *
  * Returns the current Drawable used for Imlib2's context.
  */
-EAPI Drawable
+EAPI                Drawable
 imlib_context_get_drawable(void)
 {
    if (!ctx)
@@ -441,7 +441,7 @@ imlib_context_set_mask(Pixmap mask)
  *
  * Returns the current pixmap destination to be used to render a mask into.
  */
-EAPI Pixmap
+EAPI                Pixmap
 imlib_context_get_mask(void)
 {
    if (!ctx)
@@ -627,7 +627,7 @@ imlib_context_set_color_modifier(Imlib_Color_Modifier color_modifier)
  *
  * Returns the current color modifier being used.
  */
-EAPI Imlib_Color_Modifier
+EAPI                Imlib_Color_Modifier
 imlib_context_get_color_modifier(void)
 {
    if (!ctx)
@@ -663,7 +663,7 @@ imlib_context_set_operation(Imlib_Operation operation)
  *
  * Returns the current operation mode.
  */
-EAPI Imlib_Operation
+EAPI                Imlib_Operation
 imlib_context_get_operation(void)
 {
    if (!ctx)
@@ -690,7 +690,7 @@ imlib_context_set_font(Imlib_Font font)
  *
  * Returns the current font.
  */
-EAPI Imlib_Font
+EAPI                Imlib_Font
 imlib_context_get_font(void)
 {
    if (!ctx)
@@ -750,7 +750,7 @@ imlib_context_get_angle(void)
  *
  * Returns the current direction to render text in.
  */
-EAPI Imlib_Text_Direction
+EAPI                Imlib_Text_Direction
 imlib_context_get_direction(void)
 {
    if (!ctx)
@@ -805,7 +805,7 @@ imlib_context_get_color(int *red, int *green, int *blue, int *alpha)
  * Returns the current color as a color struct. Do NOT free this
  * pointer. 
  */
-EAPI Imlib_Color        *
+EAPI Imlib_Color   *
 imlib_context_get_imlib_color(void)
 {
    if (!ctx)
@@ -952,7 +952,7 @@ imlib_context_set_color_range(Imlib_Color_Range color_range)
  * 
  * Returns the current color range being used for gradients.
  */
-EAPI Imlib_Color_Range
+EAPI                Imlib_Color_Range
 imlib_context_get_color_range(void)
 {
    if (!ctx)
@@ -980,7 +980,7 @@ imlib_context_set_progress_function(Imlib_Progress_Function progress_function)
  * 
  * Returns the current progress function being used.
  */
-EAPI Imlib_Progress_Function
+EAPI                Imlib_Progress_Function
 imlib_context_get_progress_function(void)
 {
    if (!ctx)
@@ -1036,7 +1036,7 @@ imlib_context_set_image(Imlib_Image image)
  * 
  * Returns the current context image.
  */
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_context_get_image(void)
 {
    if (!ctx)
@@ -1052,7 +1052,7 @@ imlib_context_set_TTF_encoding(Imlib_TTF_Encoding encoding)
    ctx->encoding = encoding;
 }
 
-EAPI Imlib_TTF_Encoding
+EAPI                Imlib_TTF_Encoding
 imlib_context_get_TTF_encoding(void)
 {
    if (!ctx)
@@ -1176,7 +1176,7 @@ imlib_get_visual_depth(Display * display, Visual * visual)
  * will give you the best quality output. @p depth_return should point to
  * an int that will be filled with the depth of that visual too. 
  */
-EAPI Visual             *
+EAPI Visual        *
 imlib_get_best_visual(Display * display, int screen, int *depth_return)
 {
    if (!ctx)
@@ -1197,7 +1197,7 @@ imlib_get_best_visual(Display * display, int screen, int *depth_return)
  * @p file. Please see the section \ref loading for more
  * detail. Returns an image handle on success or NULL on failure. 
  */
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_load_image(const char *file)
 {
    Imlib_Image         im = NULL;
@@ -1222,7 +1222,7 @@ imlib_load_image(const char *file)
  * instead of decoding being deferred until it is needed. Returns an
  * image handle on success or NULL on failure. 
  */
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_load_image_immediately(const char *file)
 {
    Imlib_Image         im = NULL;
@@ -1246,7 +1246,7 @@ imlib_load_image_immediately(const char *file)
  * Loads the image without looking in the cache first. Returns an
  * image handle on success or NULL on failure.
  */
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_load_image_without_cache(const char *file)
 {
    Imlib_Image         im = NULL;
@@ -1271,7 +1271,7 @@ imlib_load_image_without_cache(const char *file)
  * decoded straight away) and without looking in the cache. Returns an
  * image handle on success or NULL on failure. 
  */
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_load_image_immediately_without_cache(const char *file)
 {
    Imlib_Image         im = NULL;
@@ -1297,7 +1297,7 @@ imlib_load_image_immediately_without_cache(const char *file)
  * a valid image handle, if not NULL is returned and @p error_return
  * is set to the detail of the error. 
  */
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_load_image_with_error_return(const char *file,
                                    Imlib_Load_Error * error_return)
 {
@@ -1414,7 +1414,7 @@ imlib_image_get_height(void)
  * processing. Do not free the string pointer returned by this
  * function. 
  */
-EAPI const char         *
+EAPI const char    *
 imlib_image_get_filename(void)
 {
    ImlibImage         *im;
@@ -1445,7 +1445,7 @@ imlib_image_get_filename(void)
  * most to least significant, 8 bits per channel). You must put the
  * data back at some point. 
  */
-EAPI DATA32             *
+EAPI DATA32        *
 imlib_image_get_data(void)
 {
    ImlibImage         *im;
@@ -1471,7 +1471,7 @@ imlib_image_get_data(void)
  * is for inspection purposes only). Writing to this data has undefined
  * results. The data does not need to be put back. 
  */
-EAPI DATA32             *
+EAPI DATA32        *
 imlib_image_get_data_for_reading_only(void)
 {
    ImlibImage         *im;
@@ -1723,7 +1723,7 @@ imlib_image_set_irrelevant_alpha(char irrelevant)
  * Returns the current image's format. Do not free this
  * string. Duplicate it if you need it for later use. 
  */
-EAPI char               *
+EAPI char          *
 imlib_image_format(void)
 {
    ImlibImage         *im;
@@ -1787,7 +1787,8 @@ imlib_render_pixmaps_for_whole_image(Pixmap * pixmap_return,
                                  ctx->depth, ctx->colormap, im, pixmap_return,
                                  mask_return, 0, 0, im->w, im->h, im->w,
                                  im->h, 0, ctx->dither, ctx->dither_mask,
-                                 ctx->mask_alpha_threshold, ctx->color_modifier);
+                                 ctx->mask_alpha_threshold,
+                                 ctx->color_modifier);
 }
 
 /**
@@ -1942,7 +1943,7 @@ imlib_render_image_part_on_drawable_at_size(int source_x, int source_y,
                        0, ctx->color_modifier, ctx->operation);
 }
 
-EAPI DATA32
+EAPI                DATA32
 imlib_render_get_pixel_color(void)
 {
    if (!ctx)
@@ -2028,7 +2029,7 @@ imlib_blend_image_onto_image(Imlib_Image source_image, char merge_alpha,
  * is not cached. On success an image handle is returned - on failure
  * NULL is returned.
  **/
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_create_image(int width, int height)
 {
    DATA32             *data;
@@ -2061,7 +2062,7 @@ imlib_create_image(int width, int height)
  * success or NULL on failure 
  * 
  **/
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_create_image_using_data(int width, int height, DATA32 * data)
 {
    ImlibImage         *im;
@@ -2091,7 +2092,7 @@ imlib_create_image_using_data(int width, int height, DATA32 * data)
  * failure. 
  * 
  **/
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_create_image_using_copied_data(int width, int height, DATA32 * data)
 {
    ImlibImage         *im;
@@ -2138,7 +2139,7 @@ imlib_create_image_using_copied_data(int width, int height, DATA32 * data)
  * success or NULL on failure. 
  * 
  **/
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
                                  int height, char need_to_grab_x)
 {
@@ -2150,25 +2151,25 @@ imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
    if (mask)
      {
         domask = 1;
-        if (mask == (Pixmap)1)
+        if (mask == (Pixmap) 1)
            mask = None;
      }
    im = __imlib_CreateImage(width, height, NULL);
    im->data = malloc(width * height * sizeof(DATA32));
    if (__imlib_GrabDrawableToRGBA(im->data, 0, 0, width, height, ctx->display,
                                   ctx->drawable, mask, ctx->visual,
-				  ctx->colormap, ctx->depth, x, y, width,
-				  height, &domask, need_to_grab_x))
+                                  ctx->colormap, ctx->depth, x, y, width,
+                                  height, &domask, need_to_grab_x))
      {
-	if (domask)
-          SET_FLAG(im->flags, F_HAS_ALPHA);
-	else
-          UNSET_FLAG(im->flags, F_HAS_ALPHA);
+        if (domask)
+           SET_FLAG(im->flags, F_HAS_ALPHA);
+        else
+           UNSET_FLAG(im->flags, F_HAS_ALPHA);
      }
    else
      {
-	__imlib_FreeImage(im);
-	im = NULL;
+        __imlib_FreeImage(im);
+        im = NULL;
      }
 
    return (Imlib_Image) im;
@@ -2186,7 +2187,7 @@ imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
  * 
  * 
  **/
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_create_image_from_ximage(XImage * image, XImage * mask, int x, int y,
                                int width, int height, char need_to_grab_x)
 {
@@ -2230,7 +2231,7 @@ imlib_create_image_from_ximage(XImage * image, XImage * mask, int x, int y,
  * image handle, otherwise NULL is returned. 
  * 
  **/
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
                                         int source_y, int source_width,
                                         int source_height,
@@ -2273,11 +2274,11 @@ imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
 
         tmpmask = 1;
         mask =
-            XCreatePixmap(ctx->display, ctx->drawable, source_width,
-                          source_height, 1);
+           XCreatePixmap(ctx->display, ctx->drawable, source_width,
+                         source_height, 1);
         rect =
-            XShapeGetRectangles(ctx->display, ctx->drawable, ShapeBounding,
-                                &rect_num, &rect_ord);
+           XShapeGetRectangles(ctx->display, ctx->drawable, ShapeBounding,
+                               &rect_num, &rect_ord);
         XFillRectangle(ctx->display, mask, mgc, 0, 0, source_width,
                        source_height);
         if (rect)
@@ -2296,15 +2297,15 @@ imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
         XCopyArea(ctx->display, ctx->drawable, p, gc, source_x + xx, source_y,
                   1, source_height, x, 0);
         if (m != None)
-           XCopyArea(ctx->display, mask, m, mgc, xx, 0, 1, source_height, x,
-                     0);
+           XCopyArea(ctx->display, mask, m, mgc, xx, 0, 1, source_height, x, 0);
      }
    for (x = 0; x < destination_height; x++)
      {
         xx = (source_height * x) / destination_height;
         XCopyArea(ctx->display, p, p, gc, 0, xx, destination_width, 1, 0, x);
         if (m != None)
-           XCopyArea(ctx->display, m, m, mgc, 0, xx, destination_width, 1, 0, x);
+           XCopyArea(ctx->display, m, m, mgc, 0, xx, destination_width, 1, 0,
+                     x);
      }
    im = __imlib_CreateImage(destination_width, destination_height, NULL);
    im->data = malloc(destination_width * destination_height * sizeof(DATA32));
@@ -2367,7 +2368,7 @@ imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height,
    if (mask)
      {
         domask = 1;
-        if (mask == (Pixmap)1)
+        if (mask == (Pixmap) 1)
            mask = None;
      }
    CAST_IMAGE(im, ctx->image);
@@ -2431,7 +2432,7 @@ imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height,
  * image handle on success, or NULL on failure. 
  * 
  **/
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_clone_image(void)
 {
    ImlibImage         *im, *im_old;
@@ -2484,7 +2485,7 @@ imlib_clone_image(void)
  * on failure. 
  * 
  **/
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_create_cropped_image(int x, int y, int width, int height)
 {
    ImlibImage         *im, *im_old;
@@ -2508,19 +2509,19 @@ imlib_create_cropped_image(int x, int y, int width, int height)
    if (IMAGE_HAS_ALPHA(im_old))
      {
         SET_FLAG(im->flags, F_HAS_ALPHA);
-	__imlib_BlendImageToImage(im_old, im, 0, 0, 1, x, y, abs(width),
-				  abs(height), 0, 0, width, height, NULL,
-				  IMLIB_OP_COPY,
-				  ctx->cliprect.x, ctx->cliprect.y,
-				  ctx->cliprect.w, ctx->cliprect.h);
+        __imlib_BlendImageToImage(im_old, im, 0, 0, 1, x, y, abs(width),
+                                  abs(height), 0, 0, width, height, NULL,
+                                  IMLIB_OP_COPY,
+                                  ctx->cliprect.x, ctx->cliprect.y,
+                                  ctx->cliprect.w, ctx->cliprect.h);
      }
    else
      {
-	__imlib_BlendImageToImage(im_old, im, 0, 0, 0, x, y, abs(width),
-				  abs(height), 0, 0, width, height, NULL,
-				  IMLIB_OP_COPY,
-				  ctx->cliprect.x, ctx->cliprect.y,
-				  ctx->cliprect.w, ctx->cliprect.h);
+        __imlib_BlendImageToImage(im_old, im, 0, 0, 0, x, y, abs(width),
+                                  abs(height), 0, 0, width, height, NULL,
+                                  IMLIB_OP_COPY,
+                                  ctx->cliprect.x, ctx->cliprect.y,
+                                  ctx->cliprect.w, ctx->cliprect.h);
      }
    return (Imlib_Image) im;
 }
@@ -2539,7 +2540,7 @@ imlib_create_cropped_image(int x, int y, int width, int height)
  * @p destination_height whilst cropping.  
  * 
  **/
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_create_cropped_scaled_image(int source_x, int source_y,
                                   int source_width, int source_height,
                                   int destination_width, int destination_height)
@@ -2558,7 +2559,7 @@ imlib_create_cropped_scaled_image(int source_x, int source_y,
    im = __imlib_CreateImage(abs(destination_width), abs(destination_height),
                             NULL);
    im->data =
-       malloc(abs(destination_width * destination_height) * sizeof(DATA32));
+      malloc(abs(destination_width * destination_height) * sizeof(DATA32));
    if (!(im->data))
      {
         __imlib_FreeImage(im);
@@ -2592,7 +2593,7 @@ imlib_create_cropped_scaled_image(int source_x, int source_y,
  * 
  * Creates a duplicate of the updates list passed into the function.
  **/
-EAPI Imlib_Updates
+EAPI                Imlib_Updates
 imlib_updates_clone(Imlib_Updates updates)
 {
    ImlibUpdate        *u;
@@ -2616,7 +2617,7 @@ imlib_updates_clone(Imlib_Updates updates)
  * handle to the modified updates list (the handle may be modified so
  * only use the new updates handle returned). 
  **/
-EAPI Imlib_Updates
+EAPI                Imlib_Updates
 imlib_update_append_rect(Imlib_Updates updates, int x, int y, int w, int h)
 {
    ImlibUpdate        *u;
@@ -2639,7 +2640,7 @@ imlib_update_append_rect(Imlib_Updates updates, int x, int y, int w, int h)
  * redrawing. The new updates handle is now valid and the old one
  * passed in is not. 
  **/
-EAPI Imlib_Updates
+EAPI                Imlib_Updates
 imlib_updates_merge(Imlib_Updates updates, int w, int h)
 {
    ImlibUpdate        *u;
@@ -2660,7 +2661,7 @@ imlib_updates_merge(Imlib_Updates updates, int w, int h)
  * on the spacing between update rectangles - if they are very close it
  * amalgamates 2 smaller rectangles into 1 larger one. 
  **/
-EAPI Imlib_Updates
+EAPI                Imlib_Updates
 imlib_updates_merge_for_rendering(Imlib_Updates updates, int w, int h)
 {
    ImlibUpdate        *u;
@@ -2694,7 +2695,7 @@ imlib_updates_free(Imlib_Updates updates)
  * Gets the next update in the updates list relative to the one passed
  * in. 
  **/
-EAPI Imlib_Updates
+EAPI                Imlib_Updates
 imlib_updates_get_next(Imlib_Updates updates)
 {
    ImlibUpdate        *u;
@@ -2806,7 +2807,7 @@ imlib_render_image_updates_on_drawable(Imlib_Updates updates, int x, int y)
  * Initializes an updates list before you add any updates to it or
  * merge it for rendering etc. 
  **/
-EAPI Imlib_Updates
+EAPI                Imlib_Updates
 imlib_updates_init(void)
 {
    if (!ctx)
@@ -2822,7 +2823,7 @@ imlib_updates_init(void)
  * Appends @p appended_updates to the updates list @p updates and
  * returns the new list.  
  **/
-EAPI Imlib_Updates
+EAPI                Imlib_Updates
 imlib_updates_append_updates(Imlib_Updates updates,
                              Imlib_Updates appended_updates)
 {
@@ -2934,30 +2935,30 @@ imlib_image_orientate(int orientation)
    __imlib_DirtyImage(im);
    switch (orientation)
      {
-       default:
-       case 0:
-          break;
-       case 1:
-          __imlib_FlipImageDiagonal(im, 1);
-          break;
-       case 2:
-          __imlib_FlipImageBoth(im);
-          break;
-       case 3:
-          __imlib_FlipImageDiagonal(im, 2);
-          break;
-       case 4:
-          __imlib_FlipImageHoriz(im);
-          break;
-       case 5:
-          __imlib_FlipImageDiagonal(im, 3);
-          break;
-       case 6:
-          __imlib_FlipImageVert(im);
-          break;
-       case 7:
-          __imlib_FlipImageDiagonal(im, 0);
-          break;
+     default:
+     case 0:
+        break;
+     case 1:
+        __imlib_FlipImageDiagonal(im, 1);
+        break;
+     case 2:
+        __imlib_FlipImageBoth(im);
+        break;
+     case 3:
+        __imlib_FlipImageDiagonal(im, 2);
+        break;
+     case 4:
+        __imlib_FlipImageHoriz(im);
+        break;
+     case 5:
+        __imlib_FlipImageDiagonal(im, 3);
+        break;
+     case 6:
+        __imlib_FlipImageVert(im);
+        break;
+     case 7:
+        __imlib_FlipImageDiagonal(im, 0);
+        break;
      }
 }
 
@@ -3084,7 +3085,7 @@ imlib_image_tile(void)
  * blum. If the font cannot be found NULL is returned. 
  * 
  **/
-EAPI Imlib_Font
+EAPI                Imlib_Font
 imlib_load_font(const char *font_name)
 {
    return imlib_font_load_joined(font_name);
@@ -3204,76 +3205,76 @@ imlib_get_text_size(const char *text, int *width_return, int *height_return)
 
    switch (dir)
      {
-       case IMLIB_TEXT_TO_RIGHT:
-       case IMLIB_TEXT_TO_LEFT:
-          if (width_return)
-             *width_return = w;
-          if (height_return)
-             *height_return = h;
-          break;
-       case IMLIB_TEXT_TO_DOWN:
-       case IMLIB_TEXT_TO_UP:
-          if (width_return)
-             *width_return = h;
-          if (height_return)
-             *height_return = w;
-          break;
-       case IMLIB_TEXT_TO_ANGLE:
-          if (width_return || height_return)
-            {
-               double              sa, ca;
+     case IMLIB_TEXT_TO_RIGHT:
+     case IMLIB_TEXT_TO_LEFT:
+        if (width_return)
+           *width_return = w;
+        if (height_return)
+           *height_return = h;
+        break;
+     case IMLIB_TEXT_TO_DOWN:
+     case IMLIB_TEXT_TO_UP:
+        if (width_return)
+           *width_return = h;
+        if (height_return)
+           *height_return = w;
+        break;
+     case IMLIB_TEXT_TO_ANGLE:
+        if (width_return || height_return)
+          {
+             double              sa, ca;
 
-               sa = sin(ctx->angle);
-               ca = cos(ctx->angle);
+             sa = sin(ctx->angle);
+             ca = cos(ctx->angle);
 
-               if (width_return)
-                 {
-                    double              x1, x2, xt;
+             if (width_return)
+               {
+                  double              x1, x2, xt;
 
-                    x1 = x2 = 0.0;
-                    xt = ca * w;
-                    if (xt < x1)
-                       x1 = xt;
-                    if (xt > x2)
-                       x2 = xt;
-                    xt = -(sa * h);
-                    if (xt < x1)
-                       x1 = xt;
-                    if (xt > x2)
-                       x2 = xt;
-                    xt = ca * w - sa * h;
-                    if (xt < x1)
-                       x1 = xt;
-                    if (xt > x2)
-                       x2 = xt;
-                    *width_return = (int)(x2 - x1);
-                 }
-               if (height_return)
-                 {
-                    double              y1, y2, yt;
+                  x1 = x2 = 0.0;
+                  xt = ca * w;
+                  if (xt < x1)
+                     x1 = xt;
+                  if (xt > x2)
+                     x2 = xt;
+                  xt = -(sa * h);
+                  if (xt < x1)
+                     x1 = xt;
+                  if (xt > x2)
+                     x2 = xt;
+                  xt = ca * w - sa * h;
+                  if (xt < x1)
+                     x1 = xt;
+                  if (xt > x2)
+                     x2 = xt;
+                  *width_return = (int)(x2 - x1);
+               }
+             if (height_return)
+               {
+                  double              y1, y2, yt;
 
-                    y1 = y2 = 0.0;
-                    yt = sa * w;
-                    if (yt < y1)
-                       y1 = yt;
-                    if (yt > y2)
-                       y2 = yt;
-                    yt = ca * h;
-                    if (yt < y1)
-                       y1 = yt;
-                    if (yt > y2)
-                       y2 = yt;
-                    yt = sa * w + ca * h;
-                    if (yt < y1)
-                       y1 = yt;
-                    if (yt > y2)
-                       y2 = yt;
-                    *height_return = (int)(y2 - y1);
-                 }
-            }
-          break;
-       default:
-          break;
+                  y1 = y2 = 0.0;
+                  yt = sa * w;
+                  if (yt < y1)
+                     y1 = yt;
+                  if (yt > y2)
+                     y2 = yt;
+                  yt = ca * h;
+                  if (yt < y1)
+                     y1 = yt;
+                  if (yt > y2)
+                     y2 = yt;
+                  yt = sa * w + ca * h;
+                  if (yt < y1)
+                     y1 = yt;
+                  if (yt > y2)
+                     y2 = yt;
+                  *height_return = (int)(y2 - y1);
+               }
+          }
+        break;
+     default:
+        break;
      }
 }
 
@@ -3370,7 +3371,7 @@ imlib_remove_path_from_font_path(const char *path)
  * @p number_return. 
  * 
  **/
-EAPI char              **
+EAPI char         **
 imlib_list_font_path(int *number_return)
 {
    if (!ctx)
@@ -3424,79 +3425,79 @@ imlib_text_get_index_and_location(const char *text, int x, int y,
 
    switch (dir)
      {
-       case IMLIB_TEXT_TO_RIGHT:
-          xx = x;
-          yy = y;
-          break;
-       case IMLIB_TEXT_TO_LEFT:
-          xx = w - x;
-          yy = h - y;
-          break;
-       case IMLIB_TEXT_TO_DOWN:
-          xx = y;
-          yy = w - x;
-          break;
-       case IMLIB_TEXT_TO_UP:
-          xx = h - y;
-          yy = x;
-          break;
-       default:
-          return -1;
+     case IMLIB_TEXT_TO_RIGHT:
+        xx = x;
+        yy = y;
+        break;
+     case IMLIB_TEXT_TO_LEFT:
+        xx = w - x;
+        yy = h - y;
+        break;
+     case IMLIB_TEXT_TO_DOWN:
+        xx = y;
+        yy = w - x;
+        break;
+     case IMLIB_TEXT_TO_UP:
+        xx = h - y;
+        yy = x;
+        break;
+     default:
+        return -1;
      }
 
    cp = imlib_font_query_text_at_pos(fn, text, xx, yy, &cx, &cy, &cw, &ch);
 
    switch (dir)
      {
-       case IMLIB_TEXT_TO_RIGHT:
-          if (char_x_return)
-             *char_x_return = cx;
-          if (char_y_return)
-             *char_y_return = cy;
-          if (char_width_return)
-             *char_width_return = cw;
-          if (char_height_return)
-             *char_height_return = ch;
-          return cp;
-          break;
-       case IMLIB_TEXT_TO_LEFT:
-          cx = 1 + w - cx - cw;
-          if (char_x_return)
-             *char_x_return = cx;
-          if (char_y_return)
-             *char_y_return = cy;
-          if (char_width_return)
-             *char_width_return = cw;
-          if (char_height_return)
-             *char_height_return = ch;
-          return cp;
-          break;
-       case IMLIB_TEXT_TO_DOWN:
-          if (char_x_return)
-             *char_x_return = cy;
-          if (char_y_return)
-             *char_y_return = cx;
-          if (char_width_return)
-             *char_width_return = ch;
-          if (char_height_return)
-             *char_height_return = cw;
-          return cp;
-          break;
-       case IMLIB_TEXT_TO_UP:
-          cy = 1 + h - cy - ch;
-          if (char_x_return)
-             *char_x_return = cy;
-          if (char_y_return)
-             *char_y_return = cx;
-          if (char_width_return)
-             *char_width_return = ch;
-          if (char_height_return)
-             *char_height_return = cw;
-          return cp;
-          break;
-       default:
-          return -1;
-          break;
+     case IMLIB_TEXT_TO_RIGHT:
+        if (char_x_return)
+           *char_x_return = cx;
+        if (char_y_return)
+           *char_y_return = cy;
+        if (char_width_return)
+           *char_width_return = cw;
+        if (char_height_return)
+           *char_height_return = ch;
+        return cp;
+        break;
+     case IMLIB_TEXT_TO_LEFT:
+        cx = 1 + w - cx - cw;
+        if (char_x_return)
+           *char_x_return = cx;
+        if (char_y_return)
+           *char_y_return = cy;
+        if (char_width_return)
+           *char_width_return = cw;
+        if (char_height_return)
+           *char_height_return = ch;
+        return cp;
+        break;
+     case IMLIB_TEXT_TO_DOWN:
+        if (char_x_return)
+           *char_x_return = cy;
+        if (char_y_return)
+           *char_y_return = cx;
+        if (char_width_return)
+           *char_width_return = ch;
+        if (char_height_return)
+           *char_height_return = cw;
+        return cp;
+        break;
+     case IMLIB_TEXT_TO_UP:
+        cy = 1 + h - cy - ch;
+        if (char_x_return)
+           *char_x_return = cy;
+        if (char_y_return)
+           *char_y_return = cx;
+        if (char_width_return)
+           *char_width_return = ch;
+        if (char_height_return)
+           *char_height_return = cw;
+        return cp;
+        break;
+     default:
+        return -1;
+        break;
      }
    return -1;
 }
@@ -3533,55 +3534,55 @@ imlib_text_get_location_at_index(const char *text, int index,
 
    switch (ctx->direction)
      {
-       case IMLIB_TEXT_TO_RIGHT:
-          if (char_x_return)
-             *char_x_return = cx;
-          if (char_y_return)
-             *char_y_return = cy;
-          if (char_width_return)
-             *char_width_return = cw;
-          if (char_height_return)
-             *char_height_return = ch;
-          return;
-          break;
-       case IMLIB_TEXT_TO_LEFT:
-          cx = 1 + w - cx - cw;
-          if (char_x_return)
-             *char_x_return = cx;
-          if (char_y_return)
-             *char_y_return = cy;
-          if (char_width_return)
-             *char_width_return = cw;
-          if (char_height_return)
-             *char_height_return = ch;
-          return;
-          break;
-       case IMLIB_TEXT_TO_DOWN:
-          if (char_x_return)
-             *char_x_return = cy;
-          if (char_y_return)
-             *char_y_return = cx;
-          if (char_width_return)
-             *char_width_return = ch;
-          if (char_height_return)
-             *char_height_return = cw;
-          return;
-          break;
-       case IMLIB_TEXT_TO_UP:
-          cy = 1 + h - cy - ch;
-          if (char_x_return)
-             *char_x_return = cy;
-          if (char_y_return)
-             *char_y_return = cx;
-          if (char_width_return)
-             *char_width_return = ch;
-          if (char_height_return)
-             *char_height_return = cw;
-          return;
-          break;
-       default:
-          return;
-          break;
+     case IMLIB_TEXT_TO_RIGHT:
+        if (char_x_return)
+           *char_x_return = cx;
+        if (char_y_return)
+           *char_y_return = cy;
+        if (char_width_return)
+           *char_width_return = cw;
+        if (char_height_return)
+           *char_height_return = ch;
+        return;
+        break;
+     case IMLIB_TEXT_TO_LEFT:
+        cx = 1 + w - cx - cw;
+        if (char_x_return)
+           *char_x_return = cx;
+        if (char_y_return)
+           *char_y_return = cy;
+        if (char_width_return)
+           *char_width_return = cw;
+        if (char_height_return)
+           *char_height_return = ch;
+        return;
+        break;
+     case IMLIB_TEXT_TO_DOWN:
+        if (char_x_return)
+           *char_x_return = cy;
+        if (char_y_return)
+           *char_y_return = cx;
+        if (char_width_return)
+           *char_width_return = ch;
+        if (char_height_return)
+           *char_height_return = cw;
+        return;
+        break;
+     case IMLIB_TEXT_TO_UP:
+        cy = 1 + h - cy - ch;
+        if (char_x_return)
+           *char_x_return = cy;
+        if (char_y_return)
+           *char_y_return = cx;
+        if (char_width_return)
+           *char_width_return = ch;
+        if (char_height_return)
+           *char_height_return = cw;
+        return;
+        break;
+     default:
+        return;
+        break;
      }
 }
 
@@ -3592,7 +3593,7 @@ imlib_text_get_location_at_index(const char *text, int index,
  * Returns a list of fonts imlib2 can find in its font path.
  * 
  **/
-EAPI char              **
+EAPI char         **
 imlib_list_fonts(int *number_return)
 {
    if (!ctx)
@@ -3724,7 +3725,7 @@ imlib_get_maximum_font_descent(void)
  * valid handle on success. NULL is returned on failure. 
  * 
  **/
-EAPI Imlib_Color_Modifier
+EAPI                Imlib_Color_Modifier
 imlib_create_color_modifier(void)
 {
    if (!ctx)
@@ -3942,7 +3943,7 @@ imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height)
                          (ImlibColorModifier *) ctx->color_modifier);
 }
 
-EAPI Imlib_Updates
+EAPI                Imlib_Updates
 imlib_image_draw_pixel(int x, int y, char make_updates)
 {
    ImlibImage         *im;
@@ -3963,10 +3964,12 @@ imlib_image_draw_pixel(int x, int y, char make_updates)
    G_VAL(&color) = (DATA8) ctx->color.green;
    B_VAL(&color) = (DATA8) ctx->color.blue;
    return (Imlib_Updates) __imlib_Point_DrawToImage(x, y, color, im,
-						    ctx->cliprect.x, ctx->cliprect.y,
-						    ctx->cliprect.w, ctx->cliprect.h,
-						    ctx->operation, ctx->blend,
-						    make_updates);
+                                                    ctx->cliprect.x,
+                                                    ctx->cliprect.y,
+                                                    ctx->cliprect.w,
+                                                    ctx->cliprect.h,
+                                                    ctx->operation, ctx->blend,
+                                                    make_updates);
 }
 
 /**
@@ -3983,7 +3986,7 @@ imlib_image_draw_pixel(int x, int y, char make_updates)
  * returns NULL. 
  * 
  **/
-EAPI Imlib_Updates
+EAPI                Imlib_Updates
 imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
 {
    ImlibImage         *im;
@@ -4003,11 +4006,14 @@ imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
    R_VAL(&color) = (DATA8) ctx->color.red;
    G_VAL(&color) = (DATA8) ctx->color.green;
    B_VAL(&color) = (DATA8) ctx->color.blue;
-   return  (Imlib_Updates) __imlib_Line_DrawToImage(x1, y1, x2, y2, color, im,
-						    ctx->cliprect.x, ctx->cliprect.y,
-						    ctx->cliprect.w, ctx->cliprect.h,
-						    ctx->operation, ctx->blend,
-						    ctx->anti_alias, make_updates);
+   return (Imlib_Updates) __imlib_Line_DrawToImage(x1, y1, x2, y2, color, im,
+                                                   ctx->cliprect.x,
+                                                   ctx->cliprect.y,
+                                                   ctx->cliprect.w,
+                                                   ctx->cliprect.h,
+                                                   ctx->operation, ctx->blend,
+                                                   ctx->anti_alias,
+                                                   make_updates);
 }
 
 /**
@@ -4041,9 +4047,9 @@ imlib_image_draw_rectangle(int x, int y, int width, int height)
    G_VAL(&color) = (DATA8) ctx->color.green;
    B_VAL(&color) = (DATA8) ctx->color.blue;
    __imlib_Rectangle_DrawToImage(x, y, width, height, color,
-				 im, ctx->cliprect.x, ctx->cliprect.y,
-				 ctx->cliprect.w, ctx->cliprect.h,
-				 ctx->operation, ctx->blend);
+                                 im, ctx->cliprect.x, ctx->cliprect.y,
+                                 ctx->cliprect.w, ctx->cliprect.h,
+                                 ctx->operation, ctx->blend);
 }
 
 /**
@@ -4076,9 +4082,9 @@ imlib_image_fill_rectangle(int x, int y, int width, int height)
    G_VAL(&color) = (DATA8) ctx->color.green;
    B_VAL(&color) = (DATA8) ctx->color.blue;
    __imlib_Rectangle_FillToImage(x, y, width, height, color,
-				 im, ctx->cliprect.x, ctx->cliprect.y,
-				 ctx->cliprect.w, ctx->cliprect.h,
-				 ctx->operation, ctx->blend);
+                                 im, ctx->cliprect.x, ctx->cliprect.y,
+                                 ctx->cliprect.w, ctx->cliprect.h,
+                                 ctx->operation, ctx->blend);
 }
 
 /**
@@ -4246,7 +4252,7 @@ imlib_image_copy_rect(int x, int y, int width, int height, int new_x, int new_y)
  * Creates a new empty color range and returns a valid handle to that
  * color range.
  **/
-EAPI Imlib_Color_Range
+EAPI                Imlib_Color_Range
 imlib_create_color_range(void)
 {
    if (!ctx)
@@ -4567,7 +4573,7 @@ imlib_image_attach_data_value(const char *key, void *data, int value,
  * on the current image. 
  * 
  **/
-EAPI void               *
+EAPI void          *
 imlib_image_get_attached_data(const char *key)
 {
    ImlibImageTag      *t;
@@ -4724,7 +4730,7 @@ imlib_save_image_with_error_return(const char *filename,
  * radians. On success it returns a valid image handle, otherwise
  * NULL. 
  **/
-EAPI Imlib_Image
+EAPI                Imlib_Image
 imlib_create_rotated_image(double angle)
 {
    ImlibImage         *im, *im_old;
@@ -4782,8 +4788,8 @@ imlib_create_rotated_image(double angle)
    return (Imlib_Image) im;
 }
 
-void imlib_rotate_image_from_buffer(double angle,
-			Imlib_Image source_image)
+void
+imlib_rotate_image_from_buffer(double angle, Imlib_Image source_image)
 {
    ImlibImage         *im, *im_old;
    int                 x, y, dx, dy, sz;
@@ -4793,18 +4799,18 @@ void imlib_rotate_image_from_buffer(double angle,
       ctx = imlib_context_new();
    // source image (to rotate)
    CHECK_PARAM_POINTER("imlib_rotate_image_from_buffer", "source_image",
-		       source_image);
+                       source_image);
    CAST_IMAGE(im_old, source_image);
 
    // current context image
-   CHECK_PARAM_POINTER("imlib_rotate_image_from_buffer", "image",
-		       ctx->image);
+   CHECK_PARAM_POINTER("imlib_rotate_image_from_buffer", "image", ctx->image);
    CAST_IMAGE(im, ctx->image);
 
    if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
-    im_old->loader->load(im_old, NULL, 0, 1);
+      im_old->loader->load(im_old, NULL, 0, 1);
 
-   if (!(im_old->data)) return;
+   if (!(im_old->data))
+      return;
 
    d = hypot((double)(im_old->w + 4), (double)(im_old->h + 4)) / sqrt(2.0);
 
@@ -4817,18 +4823,19 @@ void imlib_rotate_image_from_buffer(double angle,
    dx = (int)(cos(angle) * _ROTATE_PREC_MAX);
    dy = -(int)(sin(angle) * _ROTATE_PREC_MAX);
 
-   if ( (im->w != im->h) || ((im->w < sz) && (im->h < sz)))  
-     return; // If size is wrong
-   else sz = im->w; // update sz with real width
+   if ((im->w != im->h) || ((im->w < sz) && (im->h < sz)))
+      return;                   // If size is wrong
+   else
+      sz = im->w;               // update sz with real width
 
-#if 0 /* Not neccesary 'cause destination is context */
-      im = __imlib_CreateImage(sz, sz, NULL);
-      im->data = calloc(sz * sz, sizeof(DATA32));
-      if (!(im->data))
-        {
-               __imlib_FreeImage(im);
-           return;
-	   }
+#if 0                           /* Not neccesary 'cause destination is context */
+   im = __imlib_CreateImage(sz, sz, NULL);
+   im->data = calloc(sz * sz, sizeof(DATA32));
+   if (!(im->data))
+     {
+        __imlib_FreeImage(im);
+        return;
+     }
 #endif
 
    if (ctx->anti_alias)
@@ -4850,8 +4857,7 @@ void imlib_rotate_image_from_buffer(double angle,
      }
    SET_FLAG(im->flags, F_HAS_ALPHA);
 
-
-  return;
+   return;
 }
 
 /**
@@ -5081,8 +5087,7 @@ imlib_render_image_on_drawable_at_angle(int source_x, int source_y,
                              destination_x, destination_y, angle_x, angle_y,
                              0, 0, ctx->anti_alias, ctx->dither, ctx->blend,
                              ctx->dither_mask, ctx->mask_alpha_threshold,
-                             ctx->color_modifier,
-                             ctx->operation);
+                             ctx->color_modifier, ctx->operation);
 }
 #endif
 
@@ -5104,7 +5109,7 @@ imlib_image_filter(void)
    __imlib_FilterImage(im, (ImlibFilter *) ctx->filter);
 }
 
-EAPI Imlib_Filter
+EAPI                Imlib_Filter
 imlib_create_filter(int initsize)
 {
    if (!ctx)
@@ -5141,7 +5146,7 @@ imlib_context_set_filter(Imlib_Filter filter)
  *
  * Gets the current context image filter.
  */
-EAPI Imlib_Filter
+EAPI                Imlib_Filter
 imlib_context_get_filter(void)
 {
    if (!ctx)
@@ -5253,7 +5258,7 @@ imlib_apply_filter(char *script, ...)
 /**
  * Returns a new polygon object with no points set.
  **/
-EAPI ImlibPolygon
+EAPI                ImlibPolygon
 imlib_polygon_new(void)
 {
    if (!ctx)
@@ -5322,9 +5327,9 @@ imlib_image_draw_polygon(ImlibPolygon poly, unsigned char closed)
    G_VAL(&color) = (DATA8) ctx->color.green;
    B_VAL(&color) = (DATA8) ctx->color.blue;
    __imlib_Polygon_DrawToImage((ImlibPoly) poly, closed, color,
-				im, ctx->cliprect.x, ctx->cliprect.y,
-				ctx->cliprect.w, ctx->cliprect.h,
-				ctx->operation, ctx->blend, ctx->anti_alias);
+                               im, ctx->cliprect.x, ctx->cliprect.y,
+                               ctx->cliprect.w, ctx->cliprect.h,
+                               ctx->operation, ctx->blend, ctx->anti_alias);
 }
 
 /**
@@ -5353,9 +5358,9 @@ imlib_image_fill_polygon(ImlibPolygon poly)
    G_VAL(&color) = (DATA8) ctx->color.green;
    B_VAL(&color) = (DATA8) ctx->color.blue;
    __imlib_Polygon_FillToImage((ImlibPoly) poly, color,
-				im, ctx->cliprect.x, ctx->cliprect.y,
-				ctx->cliprect.w, ctx->cliprect.h,
-				ctx->operation, ctx->blend, ctx->anti_alias);
+                               im, ctx->cliprect.x, ctx->cliprect.y,
+                               ctx->cliprect.w, ctx->cliprect.h,
+                               ctx->operation, ctx->blend, ctx->anti_alias);
 }
 
 /**
@@ -5395,7 +5400,7 @@ EAPI void
 imlib_image_draw_ellipse(int xc, int yc, int a, int b)
 {
    ImlibImage         *im;
-   DATA32             color;
+   DATA32              color;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -5411,9 +5416,9 @@ imlib_image_draw_ellipse(int xc, int yc, int a, int b)
    G_VAL(&color) = (DATA8) ctx->color.green;
    B_VAL(&color) = (DATA8) ctx->color.blue;
    __imlib_Ellipse_DrawToImage(xc, yc, a, b, color,
-			       im, ctx->cliprect.x, ctx->cliprect.y,
-			       ctx->cliprect.w, ctx->cliprect.h,
-			       ctx->operation, ctx->blend, ctx->anti_alias);
+                               im, ctx->cliprect.x, ctx->cliprect.y,
+                               ctx->cliprect.w, ctx->cliprect.h,
+                               ctx->operation, ctx->blend, ctx->anti_alias);
 }
 
 /**
@@ -5433,7 +5438,7 @@ EAPI void
 imlib_image_fill_ellipse(int xc, int yc, int a, int b)
 {
    ImlibImage         *im;
-   DATA32             color;
+   DATA32              color;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -5449,9 +5454,9 @@ imlib_image_fill_ellipse(int xc, int yc, int a, int b)
    G_VAL(&color) = (DATA8) ctx->color.green;
    B_VAL(&color) = (DATA8) ctx->color.blue;
    __imlib_Ellipse_FillToImage(xc, yc, a, b, color,
-			       im, ctx->cliprect.x, ctx->cliprect.y,
-			       ctx->cliprect.w, ctx->cliprect.h,
-			       ctx->operation, ctx->blend, ctx->anti_alias);
+                               im, ctx->cliprect.x, ctx->cliprect.y,
+                               ctx->cliprect.w, ctx->cliprect.h,
+                               ctx->operation, ctx->blend, ctx->anti_alias);
 }
 
 /**
@@ -5467,7 +5472,8 @@ imlib_polygon_contains_point(ImlibPolygon poly, int x, int y)
 {
    if (!ctx)
       ctx = imlib_context_new();
-   CHECK_PARAM_POINTER_RETURN("imlib_polygon_contains_point", "polygon", poly, 0);
+   CHECK_PARAM_POINTER_RETURN("imlib_polygon_contains_point", "polygon", poly,
+                              0);
    return __imlib_polygon_contains_point((ImlibPoly) poly, x, y);
 }
 

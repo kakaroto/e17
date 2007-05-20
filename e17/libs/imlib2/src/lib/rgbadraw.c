@@ -7,7 +7,6 @@
 #include "updates.h"
 #include "rgbadraw.h"
 
-
 void
 __imlib_FlipImageHoriz(ImlibImage * im)
 {
@@ -100,47 +99,47 @@ __imlib_FlipImageDiagonal(ImlibImage * im, int direction)
    hw = w * im->h;
    switch (direction)
      {
-       default:
-       case 0:                 /*\ DOWN_RIGHT \ */
-          tmp = im->border.top;
-          im->border.top = im->border.left;
-          im->border.left = tmp;
-          tmp = im->border.bottom;
-          im->border.bottom = im->border.right;
-          im->border.right = tmp;
-          to = data;
-          hw = -hw + 1;
-          break;
-       case 1:                 /*\ DOWN_LEFT \ */
-          tmp = im->border.top;
-          im->border.top = im->border.left;
-          im->border.left = im->border.bottom;
-          im->border.bottom = im->border.right;
-          im->border.right = tmp;
-          to = data + w - 1;
-          hw = -hw - 1;
-          break;
-       case 2:                 /*\ UP_RIGHT \ */
-          tmp = im->border.top;
-          im->border.top = im->border.right;
-          im->border.right = im->border.bottom;
-          im->border.bottom = im->border.left;
-          im->border.left = tmp;
-          to = data + hw - w;
-          w = -w;
-          hw = hw + 1;
-          break;
-       case 3:                 /*\ UP_LEFT \ */
-          tmp = im->border.top;
-          im->border.top = im->border.right;
-          im->border.right = tmp;
-          tmp = im->border.bottom;
-          im->border.bottom = im->border.left;
-          im->border.left = tmp;
-          to = data + hw - 1;
-          w = -w;
-          hw = hw - 1;
-          break;
+     default:
+     case 0:                   /*\ DOWN_RIGHT \ */
+        tmp = im->border.top;
+        im->border.top = im->border.left;
+        im->border.left = tmp;
+        tmp = im->border.bottom;
+        im->border.bottom = im->border.right;
+        im->border.right = tmp;
+        to = data;
+        hw = -hw + 1;
+        break;
+     case 1:                   /*\ DOWN_LEFT \ */
+        tmp = im->border.top;
+        im->border.top = im->border.left;
+        im->border.left = im->border.bottom;
+        im->border.bottom = im->border.right;
+        im->border.right = tmp;
+        to = data + w - 1;
+        hw = -hw - 1;
+        break;
+     case 2:                   /*\ UP_RIGHT \ */
+        tmp = im->border.top;
+        im->border.top = im->border.right;
+        im->border.right = im->border.bottom;
+        im->border.bottom = im->border.left;
+        im->border.left = tmp;
+        to = data + hw - w;
+        w = -w;
+        hw = hw + 1;
+        break;
+     case 3:                   /*\ UP_LEFT \ */
+        tmp = im->border.top;
+        im->border.top = im->border.right;
+        im->border.right = tmp;
+        tmp = im->border.bottom;
+        im->border.bottom = im->border.left;
+        im->border.left = tmp;
+        to = data + hw - 1;
+        w = -w;
+        hw = hw - 1;
+        break;
      }
    from = im->data;
    for (x = im->w; --x >= 0;)
@@ -315,7 +314,7 @@ __imlib_TileImageHoriz(ImlibImage * im)
 {
    DATA32             *p1, *p2, *p3, *p, *data;
    int                 x, y, per, tmp, na, nr, ng, nb, mix, a, r, g, b, aa, rr,
-       gg, bb;
+      gg, bb;
 
    data = malloc(im->w * im->h * sizeof(DATA32));
    p1 = im->data;
@@ -389,7 +388,7 @@ __imlib_TileImageVert(ImlibImage * im)
 {
    DATA32             *p1, *p2, *p, *data;
    int                 x, y, tmp, na, nr, ng, nb, mix, a, r, g, b, aa, rr, gg,
-       bb;
+      bb;
 
    data = malloc(im->w * im->h * sizeof(DATA32));
    p = data;
@@ -621,4 +620,3 @@ __imlib_copy_alpha_data(ImlibImage * src, ImlibImage * dst, int x, int y,
           }
      }
 }
-

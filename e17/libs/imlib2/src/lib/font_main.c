@@ -47,8 +47,8 @@ imlib_font_ascent_get(ImlibFont * fn)
    fn->ft.face->units_per_EM = 2048;    /* nasy hack - need to have correct 
                                          * val */
    ret =
-       (val * fn->ft.face->size->metrics.y_scale) /
-       (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
+      (val * fn->ft.face->size->metrics.y_scale) /
+      (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
    return ret;
 }
 
@@ -62,8 +62,8 @@ imlib_font_descent_get(ImlibFont * fn)
    fn->ft.face->units_per_EM = 2048;    /* nasy hack - need to have correct 
                                          * val */
    ret =
-       (val * fn->ft.face->size->metrics.y_scale) /
-       (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
+      (val * fn->ft.face->size->metrics.y_scale) /
+      (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
    return ret;
 }
 
@@ -77,8 +77,8 @@ imlib_font_max_ascent_get(ImlibFont * fn)
    fn->ft.face->units_per_EM = 2048;    /* nasy hack - need to have correct 
                                          * val */
    ret =
-       (val * fn->ft.face->size->metrics.y_scale) /
-       (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
+      (val * fn->ft.face->size->metrics.y_scale) /
+      (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
    return ret;
 }
 
@@ -92,8 +92,8 @@ imlib_font_max_descent_get(ImlibFont * fn)
    fn->ft.face->units_per_EM = 2048;    /* nasy hack - need to have correct 
                                          * val */
    ret =
-       (val * fn->ft.face->size->metrics.y_scale) /
-       (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
+      (val * fn->ft.face->size->metrics.y_scale) /
+      (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
    return ret;
 }
 
@@ -107,8 +107,8 @@ imlib_font_get_line_advance(ImlibFont * fn)
    fn->ft.face->units_per_EM = 2048;    /* nasy hack - need to have correct 
                                          * val */
    ret =
-       (val * fn->ft.face->size->metrics.y_scale) /
-       (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
+      (val * fn->ft.face->size->metrics.y_scale) /
+      (fn->ft.face->units_per_EM * fn->ft.face->units_per_EM);
    return ret;
 }
 
@@ -295,7 +295,7 @@ imlib_hash_add(Imlib_Hash * hash, const char *key, const void *data)
    el->data = (void *)data;
 
    hash->buckets[hash_num] =
-       imlib_object_list_prepend(hash->buckets[hash_num], el);
+      imlib_object_list_prepend(hash->buckets[hash_num], el);
 
    if (imlib_list_alloc_error())
      {
@@ -330,9 +330,9 @@ imlib_hash_find(Imlib_Hash * hash, const char *key)
                {
                   /* FIXME: move to front of list without alloc */
                   hash->buckets[hash_num] =
-                      imlib_object_list_remove(hash->buckets[hash_num], el);
+                     imlib_object_list_remove(hash->buckets[hash_num], el);
                   hash->buckets[hash_num] =
-                      imlib_object_list_prepend(hash->buckets[hash_num], el);
+                     imlib_object_list_prepend(hash->buckets[hash_num], el);
                   if (imlib_list_alloc_error())
                     {
                        _imlib_hash_alloc_error = 1;

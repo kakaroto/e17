@@ -2327,7 +2327,7 @@ dest += 2; src += 2; \
 
 /*****************************************************************************/
 /* MACROS for plain RGBA -> A1 conversion */
-#if 0 /* Old fixed-threshold macros - Remove? */
+#if 0                           /* Old fixed-threshold macros - Remove? */
 
 #ifdef WORDS_BIGENDIAN
 # define WRITE1_RGBA_A1(src, dest)                   \
@@ -2422,22 +2422,22 @@ __imlib_RGBASetupContext(Context * ct)
      {
         switch (_pal_type)
           {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 7:
-               _dither_r8 = (DATA8 *) ct->r_dither;
-               _dither_g8 = (DATA8 *) ct->g_dither;
-               _dither_b8 = (DATA8 *) ct->b_dither;
-               break;
-            case 6:
-               _dither_r8 = (DATA8 *) ct->r_dither;
-               break;
-            default:
-               break;
+          case 0:
+          case 1:
+          case 2:
+          case 3:
+          case 4:
+          case 5:
+          case 7:
+             _dither_r8 = (DATA8 *) ct->r_dither;
+             _dither_g8 = (DATA8 *) ct->g_dither;
+             _dither_b8 = (DATA8 *) ct->b_dither;
+             break;
+          case 6:
+             _dither_r8 = (DATA8 *) ct->r_dither;
+             break;
+          default:
+             break;
           }
      }
    _dither_r8 = (DATA8 *) ct->r_dither;
@@ -2466,10 +2466,10 @@ __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, DATA8 palette_type)
                        if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
                            && (pi < (256 - 128)))
                           _dither_a1[(x << DM_BS1) | (y << DM_BS2) | i] =
-                              (((pi + 128) >> 7) & 0x01);
+                             (((pi + 128) >> 7) & 0x01);
                        else
                           _dither_a1[(x << DM_BS1) | (y << DM_BS2) | i] =
-                              ((pi >> 7) & 0x01);
+                             ((pi >> 7) & 0x01);
                     }
                }
           }
@@ -2479,387 +2479,387 @@ __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, DATA8 palette_type)
       return;
    switch (depth)
      {
-       case 16:
-          rd16 = (DATA16 *) rd;
-          gd16 = (DATA16 *) gd;
-          bd16 = (DATA16 *) bd;
-          for (y = 0; y < 4; y++)
-            {
-               for (x = 0; x < 4; x++)
-                 {
-                    for (i = 0; i < 256; i++)
-                      {
-                         if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
-                            rd16[(x << 10) | (y << 8) | i] =
-                                ((i + 8) & 0xf8) << 8;
-                         else
-                            rd16[(x << 10) | (y << 8) | i] = (i & 0xf8) << 8;
+     case 16:
+        rd16 = (DATA16 *) rd;
+        gd16 = (DATA16 *) gd;
+        bd16 = (DATA16 *) bd;
+        for (y = 0; y < 4; y++)
+          {
+             for (x = 0; x < 4; x++)
+               {
+                  for (i = 0; i < 256; i++)
+                    {
+                       if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
+                          rd16[(x << 10) | (y << 8) | i] =
+                             ((i + 8) & 0xf8) << 8;
+                       else
+                          rd16[(x << 10) | (y << 8) | i] = (i & 0xf8) << 8;
 
-                         if ((_dither_44[x][y] < ((i & 0x3) << 1))
-                             && (i < (256 - 4)))
-                            gd16[(x << 10) | (y << 8) | i] =
-                                (((i + 4) & 0xfc) << 8) >> 5;
-                         else
-                            gd16[(x << 10) | (y << 8) | i] =
-                                ((i & 0xfc) << 8) >> 5;
+                       if ((_dither_44[x][y] < ((i & 0x3) << 1))
+                           && (i < (256 - 4)))
+                          gd16[(x << 10) | (y << 8) | i] =
+                             (((i + 4) & 0xfc) << 8) >> 5;
+                       else
+                          gd16[(x << 10) | (y << 8) | i] =
+                             ((i & 0xfc) << 8) >> 5;
 
-                         if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
-                            bd16[(x << 10) | (y << 8) | i] =
-                                (((i + 8) & 0xf8) << 16) >> 19;
-                         else
-                            bd16[(x << 10) | (y << 8) | i] =
-                                ((i & 0xf8) << 16) >> 19;
-                      }
-                 }
-            }
-          break;
-       case 15:
-          rd16 = (DATA16 *) rd;
-          gd16 = (DATA16 *) gd;
-          bd16 = (DATA16 *) bd;
-          for (y = 0; y < 4; y++)
-            {
-               for (x = 0; x < 4; x++)
-                 {
-                    for (i = 0; i < 256; i++)
-                      {
-                         if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
-                            rd16[(x << 10) | (y << 8) | i] =
-                                (((i + 8) & 0xf8) << 8) >> 1;
-                         else
-                            rd16[(x << 10) | (y << 8) | i] =
-                                ((i & 0xf8) << 8) >> 1;
+                       if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
+                          bd16[(x << 10) | (y << 8) | i] =
+                             (((i + 8) & 0xf8) << 16) >> 19;
+                       else
+                          bd16[(x << 10) | (y << 8) | i] =
+                             ((i & 0xf8) << 16) >> 19;
+                    }
+               }
+          }
+        break;
+     case 15:
+        rd16 = (DATA16 *) rd;
+        gd16 = (DATA16 *) gd;
+        bd16 = (DATA16 *) bd;
+        for (y = 0; y < 4; y++)
+          {
+             for (x = 0; x < 4; x++)
+               {
+                  for (i = 0; i < 256; i++)
+                    {
+                       if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
+                          rd16[(x << 10) | (y << 8) | i] =
+                             (((i + 8) & 0xf8) << 8) >> 1;
+                       else
+                          rd16[(x << 10) | (y << 8) | i] =
+                             ((i & 0xf8) << 8) >> 1;
 
-                         if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
-                            gd16[(x << 10) | (y << 8) | i] =
-                                (((i + 8) & 0xf8) << 8) >> 6;
-                         else
-                            gd16[(x << 10) | (y << 8) | i] =
-                                ((i & 0xf8) << 8) >> 6;
+                       if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
+                          gd16[(x << 10) | (y << 8) | i] =
+                             (((i + 8) & 0xf8) << 8) >> 6;
+                       else
+                          gd16[(x << 10) | (y << 8) | i] =
+                             ((i & 0xf8) << 8) >> 6;
 
-                         if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
-                            bd16[(x << 10) | (y << 8) | i] =
-                                (((i + 8) & 0xf8) << 16) >> 19;
-                         else
-                            bd16[(x << 10) | (y << 8) | i] =
-                                ((i & 0xf8) << 16) >> 19;
-                      }
-                 }
-            }
-          break;
-       default:
-          rd8 = (DATA8 *) rd;
-          gd8 = (DATA8 *) gd;
-          bd8 = (DATA8 *) bd;
-          switch (palette_type)
-            {
-              case 0:
-                 for (y = 0; y < DM_Y; y++)
-                   {
-                      for (x = 0; x < DM_X; x++)
-                        {
-                           for (i = 0; i < 256; i++)
-                             {
-                                int                 pi;
+                       if ((_dither_44[x][y] < (i & 0x7)) && (i < (256 - 8)))
+                          bd16[(x << 10) | (y << 8) | i] =
+                             (((i + 8) & 0xf8) << 16) >> 19;
+                       else
+                          bd16[(x << 10) | (y << 8) | i] =
+                             ((i & 0xf8) << 16) >> 19;
+                    }
+               }
+          }
+        break;
+     default:
+        rd8 = (DATA8 *) rd;
+        gd8 = (DATA8 *) gd;
+        bd8 = (DATA8 *) bd;
+        switch (palette_type)
+          {
+          case 0:
+             for (y = 0; y < DM_Y; y++)
+               {
+                  for (x = 0; x < DM_X; x++)
+                    {
+                       for (i = 0; i < 256; i++)
+                         {
+                            int                 pi;
 
-                                pi = (i * (256 - 32)) / 255;
-                                if ((_dither_88[x][y] < ((pi & 0x1f) << 1))
-                                    && (pi < (256 - 32)))
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi + 32) & 0xe0);
-                                else
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (pi & 0xe0);
+                            pi = (i * (256 - 32)) / 255;
+                            if ((_dither_88[x][y] < ((pi & 0x1f) << 1))
+                                && (pi < (256 - 32)))
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi + 32) & 0xe0);
+                            else
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (pi & 0xe0);
 
-                                pi = (i * (256 - 32)) / 255;
-                                if ((_dither_88[x][y] < ((pi & 0x1f) << 1))
-                                    && (pi < (256 - 32)))
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 32) >> 3) & 0x1c);
-                                else
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 3) & 0x1c);
+                            pi = (i * (256 - 32)) / 255;
+                            if ((_dither_88[x][y] < ((pi & 0x1f) << 1))
+                                && (pi < (256 - 32)))
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 32) >> 3) & 0x1c);
+                            else
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 3) & 0x1c);
 
-                                pi = (i * (256 - 64)) / 255;
-                                if ((_dither_88[x][y] < (pi & 0x3f))
-                                    && (pi < (256 - 64)))
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 64) >> 6) & 0x03);
-                                else
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 6) & 0x03);
-                             }
-                        }
-                   }
-                 break;
-              case 7:          /* 666 8 bit 216 color rgb cube */
-                 if (!_dither_666r)
-                   {
-                      _dither_666r = malloc(256 * sizeof(DATA8));
-                      _dither_666g = malloc(256 * sizeof(DATA8));
-                      _dither_666b = malloc(256 * sizeof(DATA8));
-                   }
-                 for (y = 0; y < 256; y++)
-                   {
-                      _dither_666r[y] = (DATA8) (((y * 6) >> 8) * 6 * 6);
-                      _dither_666g[y] = (DATA8) (((y * 6) >> 8) * 6);
-                      _dither_666b[y] = (DATA8) (((y * 6) >> 8));
-                   }
-                 for (y = 0; y < DM_Y; y++)
-                   {
-                      for (x = 0; x < DM_X; x++)
-                        {
-                           for (i = 0; i < 256; i++)
-                             {
-                                double              pi;
+                            pi = (i * (256 - 64)) / 255;
+                            if ((_dither_88[x][y] < (pi & 0x3f))
+                                && (pi < (256 - 64)))
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 64) >> 6) & 0x03);
+                            else
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 6) & 0x03);
+                         }
+                    }
+               }
+             break;
+          case 7:              /* 666 8 bit 216 color rgb cube */
+             if (!_dither_666r)
+               {
+                  _dither_666r = malloc(256 * sizeof(DATA8));
+                  _dither_666g = malloc(256 * sizeof(DATA8));
+                  _dither_666b = malloc(256 * sizeof(DATA8));
+               }
+             for (y = 0; y < 256; y++)
+               {
+                  _dither_666r[y] = (DATA8) (((y * 6) >> 8) * 6 * 6);
+                  _dither_666g[y] = (DATA8) (((y * 6) >> 8) * 6);
+                  _dither_666b[y] = (DATA8) (((y * 6) >> 8));
+               }
+             for (y = 0; y < DM_Y; y++)
+               {
+                  for (x = 0; x < DM_X; x++)
+                    {
+                       for (i = 0; i < 256; i++)
+                         {
+                            double              pi;
 
-                                pi = 64.0 *
-                                    (((double)i -
-                                      (_dither_666b[i] * (256.0 / 6.0))) /
-                                     (256.0 / 6.0));
-                                if ((_dither_88[x][y] < (DATA8) pi)
-                                    && ((double)i < (256 - (256.0 / 6.0))))
-                                  {
-                                     rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                         (_dither_666b[i] + 1) * 6 * 6;
-                                     gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                         (_dither_666b[i] + 1) * 6;
-                                     bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                         (_dither_666b[i] + 1);
-                                  }
-                                else
-                                  {
-                                     rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                         (_dither_666b[i]) * 6 * 6;
-                                     gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                         (_dither_666b[i]) * 6;
-                                     bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                         (_dither_666b[i]);
-                                  }
-                             }
-                        }
-                   }
-                 break;
-              case 1:
-                 for (y = 0; y < DM_Y; y++)
-                   {
-                      for (x = 0; x < DM_X; x++)
-                        {
-                           for (i = 0; i < 256; i++)
-                             {
-                                int                 pi;
+                            pi = 64.0 *
+                               (((double)i -
+                                 (_dither_666b[i] * (256.0 / 6.0))) /
+                                (256.0 / 6.0));
+                            if ((_dither_88[x][y] < (DATA8) pi)
+                                && ((double)i < (256 - (256.0 / 6.0))))
+                              {
+                                 rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                    (_dither_666b[i] + 1) * 6 * 6;
+                                 gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                    (_dither_666b[i] + 1) * 6;
+                                 bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                    (_dither_666b[i] + 1);
+                              }
+                            else
+                              {
+                                 rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                    (_dither_666b[i]) * 6 * 6;
+                                 gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                    (_dither_666b[i]) * 6;
+                                 bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                    (_dither_666b[i]);
+                              }
+                         }
+                    }
+               }
+             break;
+          case 1:
+             for (y = 0; y < DM_Y; y++)
+               {
+                  for (x = 0; x < DM_X; x++)
+                    {
+                       for (i = 0; i < 256; i++)
+                         {
+                            int                 pi;
 
-                                pi = (i * (256 - 64)) / 255;
-                                if ((_dither_88[x][y] < (pi & 0x3f))
-                                    && (pi < (256 - 64)))
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 64) >> 1) & 0x60);
-                                else
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 1) & 0x60);
+                            pi = (i * (256 - 64)) / 255;
+                            if ((_dither_88[x][y] < (pi & 0x3f))
+                                && (pi < (256 - 64)))
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 64) >> 1) & 0x60);
+                            else
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 1) & 0x60);
 
-                                pi = (i * (256 - 32)) / 255;
-                                if ((_dither_88[x][y] < ((pi & 0x1f) << 1))
-                                    && (pi < (256 - 32)))
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 32) >> 3) & 0x1c);
-                                else
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 3) & 0x1c);
+                            pi = (i * (256 - 32)) / 255;
+                            if ((_dither_88[x][y] < ((pi & 0x1f) << 1))
+                                && (pi < (256 - 32)))
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 32) >> 3) & 0x1c);
+                            else
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 3) & 0x1c);
 
-                                pi = (i * (256 - 64)) / 255;
-                                if ((_dither_88[x][y] < (pi & 0x3f))
-                                    && (pi < (256 - 64)))
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 64) >> 6) & 0x03);
-                                else
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 6) & 0x03);
-                             }
-                        }
-                   }
-                 break;
-              case 2:
-                 for (y = 0; y < DM_Y; y++)
-                   {
-                      for (x = 0; x < DM_X; x++)
-                        {
-                           for (i = 0; i < 256; i++)
-                             {
-                                int                 pi;
+                            pi = (i * (256 - 64)) / 255;
+                            if ((_dither_88[x][y] < (pi & 0x3f))
+                                && (pi < (256 - 64)))
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 64) >> 6) & 0x03);
+                            else
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 6) & 0x03);
+                         }
+                    }
+               }
+             break;
+          case 2:
+             for (y = 0; y < DM_Y; y++)
+               {
+                  for (x = 0; x < DM_X; x++)
+                    {
+                       for (i = 0; i < 256; i++)
+                         {
+                            int                 pi;
 
-                                pi = (i * (256 - 64)) / 255;
-                                if ((_dither_88[x][y] < (pi & 0x3f))
-                                    && (pi < (256 - 64)))
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 64) >> 2) & 0x30);
-                                else
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 2) & 0x30);
+                            pi = (i * (256 - 64)) / 255;
+                            if ((_dither_88[x][y] < (pi & 0x3f))
+                                && (pi < (256 - 64)))
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 64) >> 2) & 0x30);
+                            else
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 2) & 0x30);
 
-                                pi = (i * (256 - 64)) / 255;
-                                if ((_dither_88[x][y] < (pi & 0x3f))
-                                    && (pi < (256 - 64)))
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 64) >> 4) & 0x0c);
-                                else
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 4) & 0x0c);
+                            pi = (i * (256 - 64)) / 255;
+                            if ((_dither_88[x][y] < (pi & 0x3f))
+                                && (pi < (256 - 64)))
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 64) >> 4) & 0x0c);
+                            else
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 4) & 0x0c);
 
-                                pi = (i * (256 - 64)) / 255;
-                                if ((_dither_88[x][y] < (pi & 0x3f))
-                                    && (pi < (256 - 64)))
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 64) >> 6) & 0x03);
-                                else
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 6) & 0x03);
-                             }
-                        }
-                   }
-                 break;
-              case 3:
-                 for (y = 0; y < DM_Y; y++)
-                   {
-                      for (x = 0; x < DM_X; x++)
-                        {
-                           for (i = 0; i < 256; i++)
-                             {
-                                int                 pi;
+                            pi = (i * (256 - 64)) / 255;
+                            if ((_dither_88[x][y] < (pi & 0x3f))
+                                && (pi < (256 - 64)))
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 64) >> 6) & 0x03);
+                            else
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 6) & 0x03);
+                         }
+                    }
+               }
+             break;
+          case 3:
+             for (y = 0; y < DM_Y; y++)
+               {
+                  for (x = 0; x < DM_X; x++)
+                    {
+                       for (i = 0; i < 256; i++)
+                         {
+                            int                 pi;
 
-                                pi = (i * (256 - 64)) / 255;
-                                if ((_dither_88[x][y] < (pi & 0x3f))
-                                    && (pi < (256 - 64)))
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 64) >> 3) & 0x18);
-                                else
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 3) & 0x18);
+                            pi = (i * (256 - 64)) / 255;
+                            if ((_dither_88[x][y] < (pi & 0x3f))
+                                && (pi < (256 - 64)))
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 64) >> 3) & 0x18);
+                            else
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 3) & 0x18);
 
-                                pi = (i * (256 - 64)) / 255;
-                                if ((_dither_88[x][y] < (pi & 0x3f))
-                                    && (pi < (256 - 64)))
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 64) >> 5) & 0x06);
-                                else
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 5) & 0x06);
+                            pi = (i * (256 - 64)) / 255;
+                            if ((_dither_88[x][y] < (pi & 0x3f))
+                                && (pi < (256 - 64)))
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 64) >> 5) & 0x06);
+                            else
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 5) & 0x06);
 
-                                pi = (i * (256 - 128)) / 255;
-                                if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
-                                    && (pi < (256 - 128)))
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 128) >> 7) & 0x01);
-                                else
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 7) & 0x01);
-                             }
-                        }
-                   }
-                 break;
-              case 4:
-                 for (y = 0; y < DM_Y; y++)
-                   {
-                      for (x = 0; x < DM_X; x++)
-                        {
-                           for (i = 0; i < 256; i++)
-                             {
-                                int                 pi;
+                            pi = (i * (256 - 128)) / 255;
+                            if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
+                                && (pi < (256 - 128)))
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 128) >> 7) & 0x01);
+                            else
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 7) & 0x01);
+                         }
+                    }
+               }
+             break;
+          case 4:
+             for (y = 0; y < DM_Y; y++)
+               {
+                  for (x = 0; x < DM_X; x++)
+                    {
+                       for (i = 0; i < 256; i++)
+                         {
+                            int                 pi;
 
-                                pi = (i * (256 - 128)) / 255;
-                                if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
-                                    && (pi < (256 - 128)))
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 128) >> 4) & 0x08);
-                                else
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 4) & 0x08);
+                            pi = (i * (256 - 128)) / 255;
+                            if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
+                                && (pi < (256 - 128)))
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 128) >> 4) & 0x08);
+                            else
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 4) & 0x08);
 
-                                pi = (i * (256 - 64)) / 255;
-                                if ((_dither_88[x][y] < (pi & 0x3f))
-                                    && (pi < (256 - 64)))
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 64) >> 5) & 0x06);
-                                else
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 5) & 0x06);
+                            pi = (i * (256 - 64)) / 255;
+                            if ((_dither_88[x][y] < (pi & 0x3f))
+                                && (pi < (256 - 64)))
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 64) >> 5) & 0x06);
+                            else
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 5) & 0x06);
 
-                                pi = (i * (256 - 128)) / 255;
-                                if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
-                                    && (pi < (256 - 128)))
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 128) >> 7) & 0x01);
-                                else
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 7) & 0x01);
-                             }
-                        }
-                   }
-                 break;
-              case 5:
-                 for (y = 0; y < DM_Y; y++)
-                   {
-                      for (x = 0; x < DM_X; x++)
-                        {
-                           for (i = 0; i < 256; i++)
-                             {
-                                int                 pi;
+                            pi = (i * (256 - 128)) / 255;
+                            if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
+                                && (pi < (256 - 128)))
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 128) >> 7) & 0x01);
+                            else
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 7) & 0x01);
+                         }
+                    }
+               }
+             break;
+          case 5:
+             for (y = 0; y < DM_Y; y++)
+               {
+                  for (x = 0; x < DM_X; x++)
+                    {
+                       for (i = 0; i < 256; i++)
+                         {
+                            int                 pi;
 
-                                pi = (i * (256 - 128)) / 255;
-                                if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
-                                    && (pi < (256 - 128)))
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 128) >> 5) & 0x04);
-                                else
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 5) & 0x04);
+                            pi = (i * (256 - 128)) / 255;
+                            if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
+                                && (pi < (256 - 128)))
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 128) >> 5) & 0x04);
+                            else
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 5) & 0x04);
 
-                                pi = (i * (256 - 128)) / 255;
-                                if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
-                                    && (pi < (256 - 128)))
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 128) >> 6) & 0x02);
-                                else
-                                   gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 6) & 0x02);
+                            pi = (i * (256 - 128)) / 255;
+                            if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
+                                && (pi < (256 - 128)))
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 128) >> 6) & 0x02);
+                            else
+                               gd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 6) & 0x02);
 
-                                pi = (i * (256 - 128)) / 255;
-                                if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
-                                    && (pi < (256 - 128)))
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 128) >> 7) & 0x01);
-                                else
-                                   bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 7) & 0x01);
-                             }
-                        }
-                   }
-                 break;
-              case 6:
-                 for (y = 0; y < DM_Y; y++)
-                   {
-                      for (x = 0; x < DM_X; x++)
-                        {
-                           for (i = 0; i < 256; i++)
-                             {
-                                int                 pi;
+                            pi = (i * (256 - 128)) / 255;
+                            if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
+                                && (pi < (256 - 128)))
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 128) >> 7) & 0x01);
+                            else
+                               bd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 7) & 0x01);
+                         }
+                    }
+               }
+             break;
+          case 6:
+             for (y = 0; y < DM_Y; y++)
+               {
+                  for (x = 0; x < DM_X; x++)
+                    {
+                       for (i = 0; i < 256; i++)
+                         {
+                            int                 pi;
 
-                                pi = (i * (256 - 128)) / 255;
-                                if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
-                                    && (pi < (256 - 128)))
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       (((pi + 128) >> 7) & 0x01);
-                                else
-                                   rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
-                                       ((pi >> 7) & 0x01);
-                             }
-                        }
-                   }
-                 break;
-              default:
-                 break;
-            }
-          break;
+                            pi = (i * (256 - 128)) / 255;
+                            if ((_dither_88[x][y] < ((pi & 0x7f) >> 1))
+                                && (pi < (256 - 128)))
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  (((pi + 128) >> 7) & 0x01);
+                            else
+                               rd8[(x << DM_BS1) | (y << DM_BS2) | i] =
+                                  ((pi >> 7) & 0x01);
+                         }
+                    }
+               }
+             break;
+          default:
+             break;
+          }
+        break;
      }
 }
 
@@ -3486,7 +3486,8 @@ __imlib_RGBA_to_RGB332_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB332(src, dest);
                }
@@ -3584,7 +3585,8 @@ __imlib_RGBA_to_RGB332_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB332_DITHER(src, dest);
                }
@@ -3662,7 +3664,8 @@ __imlib_RGBA_to_RGB666_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB666(src, dest);
                }
@@ -3760,7 +3763,8 @@ __imlib_RGBA_to_RGB666_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB666_DITHER(src, dest);
                }
@@ -3838,7 +3842,8 @@ __imlib_RGBA_to_RGB232_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB232(src, dest);
                }
@@ -3936,7 +3941,8 @@ __imlib_RGBA_to_RGB232_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB232_DITHER(src, dest);
                }
@@ -4014,7 +4020,8 @@ __imlib_RGBA_to_RGB222_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB222(src, dest);
                }
@@ -4112,7 +4119,8 @@ __imlib_RGBA_to_RGB222_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB222_DITHER(src, dest);
                }
@@ -4190,7 +4198,8 @@ __imlib_RGBA_to_RGB221_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB221(src, dest);
                }
@@ -4288,7 +4297,8 @@ __imlib_RGBA_to_RGB221_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB221_DITHER(src, dest);
                }
@@ -4366,7 +4376,8 @@ __imlib_RGBA_to_RGB121_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB121(src, dest);
                }
@@ -4464,7 +4475,8 @@ __imlib_RGBA_to_RGB121_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB121_DITHER(src, dest);
                }
@@ -4542,7 +4554,8 @@ __imlib_RGBA_to_RGB111_fast(DATA32 * src, int src_jump,
      {
         for (y = 0; y < h; y++)
           {
-             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = 0; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB111(src, dest);
                }
@@ -4640,7 +4653,8 @@ __imlib_RGBA_to_RGB111_dither(DATA32 * src, int src_jump,
         for (y = dy; y < h; y++)
           {
              w = width + dx;
-             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest)))); x++)
+             for (x = dx; ((x < w) && (!(IS_ALIGNED_32((unsigned long)dest))));
+                  x++)
                {
                   WRITE1_RGBA_RGB111_DITHER(src, dest);
                }

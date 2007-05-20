@@ -36,9 +36,9 @@ __imlib_BestVisual(Display * d, int screen, int *depth_return)
    XVisualInfo         xvi, *xvir;
    int                 j, i, num, maxd = 0;
    Visual             *v = NULL;
-   const int           visprefs[] =
-       { PseudoColor, TrueColor, DirectColor, StaticColor, GrayScale,
-StaticGray };
+   const int           visprefs[] = {
+      PseudoColor, TrueColor, DirectColor, StaticColor, GrayScale, StaticGray
+   };
 
    xvi.screen = screen;
    maxd = 0;
@@ -381,11 +381,8 @@ __imlib_AllocColors221(Display * d, Colormap cmap, Visual * v)
                   xcl.red = (unsigned short)((val << 8) | (val));
                   val = (g << 6) | (g << 4) | (g << 2) | (g);
                   xcl.green = (unsigned short)((val << 8) | (val));
-                  val =
-                      (b << 7) | (b << 6) | (b << 5) | (b << 4) | (b << 3) | (b
-                                                                              <<
-                                                                              2)
-                      | (b << 1) | (b);
+                  val = (b << 7) | (b << 6) | (b << 5) | (b << 4) |
+                     (b << 3) | (b << 2) | (b << 1) | (b);
                   xcl.blue = (unsigned short)((val << 8) | (val));
                   xcl_in = xcl;
                   ret = XAllocColor(d, cmap, &xcl);
@@ -438,19 +435,13 @@ __imlib_AllocColors121(Display * d, Colormap cmap, Visual * v)
                   int                 val;
                   Status              ret;
 
-                  val =
-                      (r << 7) | (r << 6) | (r << 5) | (r << 4) | (r << 3) | (r
-                                                                              <<
-                                                                              2)
-                      | (r << 1) | (r);
+                  val = (r << 7) | (r << 6) | (r << 5) | (r << 4) |
+                     (r << 3) | (r << 2) | (r << 1) | (r);
                   xcl.red = (unsigned short)((val << 8) | (val));
                   val = (g << 6) | (g << 4) | (g << 2) | (g);
                   xcl.green = (unsigned short)((val << 8) | (val));
-                  val =
-                      (b << 7) | (b << 6) | (b << 5) | (b << 4) | (b << 3) | (b
-                                                                              <<
-                                                                              2)
-                      | (b << 1) | (b);
+                  val = (b << 7) | (b << 6) | (b << 5) | (b << 4) |
+                     (b << 3) | (b << 2) | (b << 1) | (b);
                   xcl.blue = (unsigned short)((val << 8) | (val));
                   xcl_in = xcl;
                   ret = XAllocColor(d, cmap, &xcl);
@@ -503,23 +494,14 @@ __imlib_AllocColors111(Display * d, Colormap cmap, Visual * v)
                   int                 val;
                   Status              ret;
 
-                  val =
-                      (r << 7) | (r << 6) | (r << 5) | (r << 4) | (r << 3) | (r
-                                                                              <<
-                                                                              2)
-                      | (r << 1) | (r);
+                  val = (r << 7) | (r << 6) | (r << 5) | (r << 4) |
+                     (r << 3) | (r << 2) | (r << 1) | (r);
                   xcl.red = (unsigned short)((val << 8) | (val));
-                  val =
-                      (g << 7) | (g << 6) | (g << 5) | (g << 4) | (g << 3) | (g
-                                                                              <<
-                                                                              2)
-                      | (g << 1) | (g);
+                  val = (g << 7) | (g << 6) | (g << 5) | (g << 4) |
+                     (g << 3) | (g << 2) | (g << 1) | (g);
                   xcl.green = (unsigned short)((val << 8) | (val));
-                  val =
-                      (b << 7) | (b << 6) | (b << 5) | (b << 4) | (b << 3) | (b
-                                                                              <<
-                                                                              2)
-                      | (b << 1) | (b);
+                  val = (b << 7) | (b << 6) | (b << 5) | (b << 4) |
+                     (b << 3) | (b << 2) | (b << 1) | (b);
                   xcl.blue = (unsigned short)((val << 8) | (val));
                   xcl_in = xcl;
                   ret = XAllocColor(d, cmap, &xcl);

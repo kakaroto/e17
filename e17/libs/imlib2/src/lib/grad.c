@@ -234,7 +234,7 @@ __imlib_DrawGradient(ImlibImage * im, int x, int y, int w, int h,
 {
    DATA32             *map, *p;
    int                *hlut, *vlut, len = 0, xx, yy, xoff = 0, yoff =
-       0, ww, hh, jump;
+      0, ww, hh, jump;
    int                 tmp, i, divw, divh;
    DATA8               r, g, b, a;
 
@@ -321,98 +321,98 @@ __imlib_DrawGradient(ImlibImage * im, int x, int y, int w, int h,
    p = im->data + (y * im->w) + x;
    switch (op)
      {
-       case OP_COPY:
-          if (IMAGE_HAS_ALPHA(im))
-            {
-               __imlib_build_pow_lut();
-               for (yy = 0; yy < h; yy++)
-                 {
-                    for (xx = 0; xx < w; xx++)
-                      {
-                         i = vlut[yoff + yy] + hlut[xoff + xx];
-                         if (i < 0)
-                            i = 0;
-                         else if (i >= len)
-                            i = len - 1;
-                         READ_RGBA(&(map[i]), r, g, b, a);
-                         BLEND_DST_ALPHA(r, g, b, a, p);
-                         p++;
-                      }
-                    p += jump;
-                 }
-            }
-          else
-            {
-               for (yy = 0; yy < h; yy++)
-                 {
-                    for (xx = 0; xx < w; xx++)
-                      {
-                         i = vlut[yoff + yy] + hlut[xoff + xx];
-                         if (i < 0)
-                            i = 0;
-                         else if (i >= len)
-                            i = len - 1;
-                         READ_RGBA(&(map[i]), r, g, b, a);
-                         BLEND(r, g, b, a, p);
-                         p++;
-                      }
-                    p += jump;
-                 }
-            }
-          break;
-       case OP_ADD:
-          for (yy = 0; yy < h; yy++)
-            {
-               for (xx = 0; xx < w; xx++)
-                 {
-                    i = vlut[yoff + yy] + hlut[xoff + xx];
-                    if (i < 0)
-                       i = 0;
-                    else if (i >= len)
-                       i = len - 1;
-                    READ_RGBA(&(map[i]), r, g, b, a);
-                    BLEND_SUB(r, g, b, a, p);
-                    p++;
-                 }
-               p += jump;
-            }
-          break;
-       case OP_SUBTRACT:
-          for (yy = 0; yy < h; yy++)
-            {
-               for (xx = 0; xx < w; xx++)
-                 {
-                    i = vlut[yoff + yy] + hlut[xoff + xx];
-                    if (i < 0)
-                       i = 0;
-                    else if (i >= len)
-                       i = len - 1;
-                    READ_RGBA(&(map[i]), r, g, b, a);
-                    BLEND_SUB(r, g, b, a, p);
-                    p++;
-                 }
-               p += jump;
-            }
-          break;
-       case OP_RESHADE:
-          for (yy = 0; yy < h; yy++)
-            {
-               for (xx = 0; xx < w; xx++)
-                 {
-                    i = vlut[yoff + yy] + hlut[xoff + xx];
-                    if (i < 0)
-                       i = 0;
-                    else if (i >= len)
-                       i = len - 1;
-                    READ_RGBA(&(map[i]), r, g, b, a);
-                    BLEND_RE(r, g, b, a, p);
-                    p++;
-                 }
-               p += jump;
-            }
-          break;
-       default:
-          break;
+     case OP_COPY:
+        if (IMAGE_HAS_ALPHA(im))
+          {
+             __imlib_build_pow_lut();
+             for (yy = 0; yy < h; yy++)
+               {
+                  for (xx = 0; xx < w; xx++)
+                    {
+                       i = vlut[yoff + yy] + hlut[xoff + xx];
+                       if (i < 0)
+                          i = 0;
+                       else if (i >= len)
+                          i = len - 1;
+                       READ_RGBA(&(map[i]), r, g, b, a);
+                       BLEND_DST_ALPHA(r, g, b, a, p);
+                       p++;
+                    }
+                  p += jump;
+               }
+          }
+        else
+          {
+             for (yy = 0; yy < h; yy++)
+               {
+                  for (xx = 0; xx < w; xx++)
+                    {
+                       i = vlut[yoff + yy] + hlut[xoff + xx];
+                       if (i < 0)
+                          i = 0;
+                       else if (i >= len)
+                          i = len - 1;
+                       READ_RGBA(&(map[i]), r, g, b, a);
+                       BLEND(r, g, b, a, p);
+                       p++;
+                    }
+                  p += jump;
+               }
+          }
+        break;
+     case OP_ADD:
+        for (yy = 0; yy < h; yy++)
+          {
+             for (xx = 0; xx < w; xx++)
+               {
+                  i = vlut[yoff + yy] + hlut[xoff + xx];
+                  if (i < 0)
+                     i = 0;
+                  else if (i >= len)
+                     i = len - 1;
+                  READ_RGBA(&(map[i]), r, g, b, a);
+                  BLEND_SUB(r, g, b, a, p);
+                  p++;
+               }
+             p += jump;
+          }
+        break;
+     case OP_SUBTRACT:
+        for (yy = 0; yy < h; yy++)
+          {
+             for (xx = 0; xx < w; xx++)
+               {
+                  i = vlut[yoff + yy] + hlut[xoff + xx];
+                  if (i < 0)
+                     i = 0;
+                  else if (i >= len)
+                     i = len - 1;
+                  READ_RGBA(&(map[i]), r, g, b, a);
+                  BLEND_SUB(r, g, b, a, p);
+                  p++;
+               }
+             p += jump;
+          }
+        break;
+     case OP_RESHADE:
+        for (yy = 0; yy < h; yy++)
+          {
+             for (xx = 0; xx < w; xx++)
+               {
+                  i = vlut[yoff + yy] + hlut[xoff + xx];
+                  if (i < 0)
+                     i = 0;
+                  else if (i >= len)
+                     i = len - 1;
+                  READ_RGBA(&(map[i]), r, g, b, a);
+                  BLEND_RE(r, g, b, a, p);
+                  p++;
+               }
+             p += jump;
+          }
+        break;
+     default:
+        break;
      }
 
    free(vlut);
@@ -427,7 +427,7 @@ __imlib_DrawHsvaGradient(ImlibImage * im, int x, int y, int w, int h,
 {
    DATA32             *map, *p;
    int                *hlut, *vlut, len = 0, xx, yy, xoff = 0, yoff =
-       0, ww, hh, jump;
+      0, ww, hh, jump;
    int                 tmp, i, divw, divh;
    DATA8               r, g, b, a;
 
@@ -514,98 +514,98 @@ __imlib_DrawHsvaGradient(ImlibImage * im, int x, int y, int w, int h,
    p = im->data + (y * im->w) + x;
    switch (op)
      {
-       case OP_COPY:
-          if (IMAGE_HAS_ALPHA(im))
-            {
-               __imlib_build_pow_lut();
-               for (yy = 0; yy < h; yy++)
-                 {
-                    for (xx = 0; xx < w; xx++)
-                      {
-                         i = vlut[yoff + yy] + hlut[xoff + xx];
-                         if (i < 0)
-                            i = 0;
-                         else if (i >= len)
-                            i = len - 1;
-                         READ_RGBA(&(map[i]), r, g, b, a);
-                         BLEND_DST_ALPHA(r, g, b, a, p);
-                         p++;
-                      }
-                    p += jump;
-                 }
-            }
-          else
-            {
-               for (yy = 0; yy < h; yy++)
-                 {
-                    for (xx = 0; xx < w; xx++)
-                      {
-                         i = vlut[yoff + yy] + hlut[xoff + xx];
-                         if (i < 0)
-                            i = 0;
-                         else if (i >= len)
-                            i = len - 1;
-                         READ_RGBA(&(map[i]), r, g, b, a);
-                         BLEND(r, g, b, a, p);
-                         p++;
-                      }
-                    p += jump;
-                 }
-            }
-          break;
-       case OP_ADD:
-          for (yy = 0; yy < h; yy++)
-            {
-               for (xx = 0; xx < w; xx++)
-                 {
-                    i = vlut[yoff + yy] + hlut[xoff + xx];
-                    if (i < 0)
-                       i = 0;
-                    else if (i >= len)
-                       i = len - 1;
-                    READ_RGBA(&(map[i]), r, g, b, a);
-                    BLEND_SUB(r, g, b, a, p);
-                    p++;
-                 }
-               p += jump;
-            }
-          break;
-       case OP_SUBTRACT:
-          for (yy = 0; yy < h; yy++)
-            {
-               for (xx = 0; xx < w; xx++)
-                 {
-                    i = vlut[yoff + yy] + hlut[xoff + xx];
-                    if (i < 0)
-                       i = 0;
-                    else if (i >= len)
-                       i = len - 1;
-                    READ_RGBA(&(map[i]), r, g, b, a);
-                    BLEND_SUB(r, g, b, a, p);
-                    p++;
-                 }
-               p += jump;
-            }
-          break;
-       case OP_RESHADE:
-          for (yy = 0; yy < h; yy++)
-            {
-               for (xx = 0; xx < w; xx++)
-                 {
-                    i = vlut[yoff + yy] + hlut[xoff + xx];
-                    if (i < 0)
-                       i = 0;
-                    else if (i >= len)
-                       i = len - 1;
-                    READ_RGBA(&(map[i]), r, g, b, a);
-                    BLEND_RE(r, g, b, a, p);
-                    p++;
-                 }
-               p += jump;
-            }
-          break;
-       default:
-          break;
+     case OP_COPY:
+        if (IMAGE_HAS_ALPHA(im))
+          {
+             __imlib_build_pow_lut();
+             for (yy = 0; yy < h; yy++)
+               {
+                  for (xx = 0; xx < w; xx++)
+                    {
+                       i = vlut[yoff + yy] + hlut[xoff + xx];
+                       if (i < 0)
+                          i = 0;
+                       else if (i >= len)
+                          i = len - 1;
+                       READ_RGBA(&(map[i]), r, g, b, a);
+                       BLEND_DST_ALPHA(r, g, b, a, p);
+                       p++;
+                    }
+                  p += jump;
+               }
+          }
+        else
+          {
+             for (yy = 0; yy < h; yy++)
+               {
+                  for (xx = 0; xx < w; xx++)
+                    {
+                       i = vlut[yoff + yy] + hlut[xoff + xx];
+                       if (i < 0)
+                          i = 0;
+                       else if (i >= len)
+                          i = len - 1;
+                       READ_RGBA(&(map[i]), r, g, b, a);
+                       BLEND(r, g, b, a, p);
+                       p++;
+                    }
+                  p += jump;
+               }
+          }
+        break;
+     case OP_ADD:
+        for (yy = 0; yy < h; yy++)
+          {
+             for (xx = 0; xx < w; xx++)
+               {
+                  i = vlut[yoff + yy] + hlut[xoff + xx];
+                  if (i < 0)
+                     i = 0;
+                  else if (i >= len)
+                     i = len - 1;
+                  READ_RGBA(&(map[i]), r, g, b, a);
+                  BLEND_SUB(r, g, b, a, p);
+                  p++;
+               }
+             p += jump;
+          }
+        break;
+     case OP_SUBTRACT:
+        for (yy = 0; yy < h; yy++)
+          {
+             for (xx = 0; xx < w; xx++)
+               {
+                  i = vlut[yoff + yy] + hlut[xoff + xx];
+                  if (i < 0)
+                     i = 0;
+                  else if (i >= len)
+                     i = len - 1;
+                  READ_RGBA(&(map[i]), r, g, b, a);
+                  BLEND_SUB(r, g, b, a, p);
+                  p++;
+               }
+             p += jump;
+          }
+        break;
+     case OP_RESHADE:
+        for (yy = 0; yy < h; yy++)
+          {
+             for (xx = 0; xx < w; xx++)
+               {
+                  i = vlut[yoff + yy] + hlut[xoff + xx];
+                  if (i < 0)
+                     i = 0;
+                  else if (i >= len)
+                     i = len - 1;
+                  READ_RGBA(&(map[i]), r, g, b, a);
+                  BLEND_RE(r, g, b, a, p);
+                  p++;
+               }
+             p += jump;
+          }
+        break;
+     default:
+        break;
      }
 
    free(vlut);

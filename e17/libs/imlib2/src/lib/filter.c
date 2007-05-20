@@ -169,7 +169,7 @@ __imlib_FilterGet(ImlibFilterColor * fil, DATA32 * data,
            off = h - 1;
         p += off * w;
         ret += A_VAL(p) * pix->a + R_VAL(p) * pix->r +
-            G_VAL(p) * pix->g + B_VAL(p) * pix->b;
+           G_VAL(p) * pix->g + B_VAL(p) * pix->b;
         pix++;
      }
    return ret;

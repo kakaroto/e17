@@ -109,23 +109,23 @@ imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
 
    switch (dir)
      {
-       case 0:                 /* to right */
-          angle = 0.0;
-          break;
-       case 1:                 /* to left */
-          angle = 0.0;
-          __imlib_FlipImageBoth(im2);
-          break;
-       case 2:                 /* to down */
-          angle = 0.0;
-          __imlib_FlipImageDiagonal(im2, 1);
-          break;
-       case 3:                 /* to up */
-          angle = 0.0;
-          __imlib_FlipImageDiagonal(im2, 2);
-          break;
-       default:
-          break;
+     case 0:                   /* to right */
+        angle = 0.0;
+        break;
+     case 1:                   /* to left */
+        angle = 0.0;
+        __imlib_FlipImageBoth(im2);
+        break;
+     case 2:                   /* to down */
+        angle = 0.0;
+        __imlib_FlipImageDiagonal(im2, 1);
+        break;
+     case 3:                   /* to up */
+        angle = 0.0;
+        __imlib_FlipImageDiagonal(im2, 2);
+        break;
+     default:
+        break;
      }
    if (angle == 0.0)
      {
@@ -162,84 +162,84 @@ imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
    /* finally deal with return values */
    switch (dir)
      {
-       case 0:
-       case 1:
-          if (retw)
-             *retw = w;
-          if (reth)
-             *reth = h;
-          if (nextx)
-             *nextx = nx;
-          if (nexty)
-             *nexty = ny;
-          break;
-       case 2:
-       case 3:
-          if (retw)
-             *retw = h;
-          if (reth)
-             *reth = w;
-          if (nextx)
-             *nextx = ny;
-          if (nexty)
-             *nexty = nx;
-          break;
-       case 4:
-          {
-             double              sa, ca;
-             double              x1, x2, xt;
-             double              y1, y2, yt;
+     case 0:
+     case 1:
+        if (retw)
+           *retw = w;
+        if (reth)
+           *reth = h;
+        if (nextx)
+           *nextx = nx;
+        if (nexty)
+           *nexty = ny;
+        break;
+     case 2:
+     case 3:
+        if (retw)
+           *retw = h;
+        if (reth)
+           *reth = w;
+        if (nextx)
+           *nextx = ny;
+        if (nexty)
+           *nexty = nx;
+        break;
+     case 4:
+        {
+           double              sa, ca;
+           double              x1, x2, xt;
+           double              y1, y2, yt;
 
-             sa = sin(angle);
-             ca = cos(angle);
+           sa = sin(angle);
+           ca = cos(angle);
 
-             x1 = x2 = 0.0;
-             xt = ca * w;
-             if (xt < x1)
-                x1 = xt;
-             if (xt > x2)
-                x2 = xt;
-             xt = -(sa * h);
-             if (xt < x1)
-                x1 = xt;
-             if (xt > x2)
-                x2 = xt;
-             xt = ca * w - sa * h;
-             if (xt < x1)
-                x1 = xt;
-             if (xt > x2)
-                x2 = xt;
-             w = (int)(x2 - x1);
+           x1 = x2 = 0.0;
+           xt = ca * w;
+           if (xt < x1)
+              x1 = xt;
+           if (xt > x2)
+              x2 = xt;
+           xt = -(sa * h);
+           if (xt < x1)
+              x1 = xt;
+           if (xt > x2)
+              x2 = xt;
+           xt = ca * w - sa * h;
+           if (xt < x1)
+              x1 = xt;
+           if (xt > x2)
+              x2 = xt;
+           w = (int)(x2 - x1);
 
-             y1 = y2 = 0.0;
-             yt = sa * w;
-             if (yt < y1)
-                y1 = yt;
-             if (yt > y2)
-                y2 = yt;
-             yt = ca * h;
-             if (yt < y1)
-                y1 = yt;
-             if (yt > y2)
-                y2 = yt;
-             yt = sa * w + ca * h;
-             if (yt < y1)
-                y1 = yt;
-             if (yt > y2)
-                y2 = yt;
-             h = (int)(y2 - y1);
-          }
-          if (retw)
-             *retw = w;
-          if (reth)
-             *reth = h;
-          if (nextx)
-             *nextx = nx;
-          if (nexty)
-             *nexty = ny;
-          break;
-       default:
-          break;
+           y1 = y2 = 0.0;
+           yt = sa * w;
+           if (yt < y1)
+              y1 = yt;
+           if (yt > y2)
+              y2 = yt;
+           yt = ca * h;
+           if (yt < y1)
+              y1 = yt;
+           if (yt > y2)
+              y2 = yt;
+           yt = sa * w + ca * h;
+           if (yt < y1)
+              y1 = yt;
+           if (yt > y2)
+              y2 = yt;
+           h = (int)(y2 - y1);
+        }
+        if (retw)
+           *retw = w;
+        if (reth)
+           *reth = h;
+        if (nextx)
+           *nextx = nx;
+        if (nexty)
+           *nexty = ny;
+        break;
+     default:
+        break;
      }
 
    /* TODO this function is purely my art -- check once more */
@@ -383,7 +383,7 @@ imlib_font_draw(ImlibImage * dst, DATA32 col, ImlibFont * fn, int x, int y,
                                            /* FIXME Oops! change this op */
                                            if (!*dst_ptr)
                                               *dst_ptr =
-                                                  lut[(unsigned char)*src_ptr];
+                                                 lut[(unsigned char)*src_ptr];
                                            else if (*src_ptr)
                                              {
                                                 /* very rare case - I've never seen symbols 
@@ -391,10 +391,10 @@ imlib_font_draw(ImlibImage * dst, DATA32 col, ImlibFont * fn, int x, int y,
                                                 int                 tmp;
 
                                                 tmp =
-                                                    (*dst_ptr >> 24) +
-                                                    (lut
-                                                     [(unsigned char)*src_ptr]
-                                                     >> 24);
+                                                   (*dst_ptr >> 24) +
+                                                   (lut
+                                                    [(unsigned char)*src_ptr]
+                                                    >> 24);
                                                 tmp = (tmp > 256) ? 256 : tmp;
                                                 *dst_ptr &= 0x00ffffff;
                                                 *dst_ptr |= (tmp << 24);

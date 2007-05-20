@@ -914,7 +914,7 @@ __imlib_ScaleAARGBA(ImlibScaleInfo * isi, DATA32 * dest, int dxx, int dyy,
         for (y = 0; y < dh; y++)
           {
              int                 yap =
-                 (ypoints[dyy + y + 1] - ypoints[dyy + y]) / sow;
+                (ypoints[dyy + y + 1] - ypoints[dyy + y]) / sow;
              /* calculate the source line we'll scan from */
              dptr = dest + dx + ((y + dy) * dow);
              sptr = ypoints[dyy + y];
@@ -1495,7 +1495,7 @@ __imlib_ScaleAARGB(ImlibScaleInfo * isi, DATA32 * dest, int dxx, int dyy,
         for (y = 0; y < dh; y++)
           {
              int                 yap =
-                 (ypoints[dyy + y + 1] - ypoints[dyy + y]) / sow;
+                (ypoints[dyy + y + 1] - ypoints[dyy + y]) / sow;
              /* calculate the source line we'll scan from */
              dptr = dest + dx + ((y + dy) * dow);
              sptr = ypoints[dyy + y];

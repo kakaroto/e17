@@ -661,9 +661,9 @@ __imlib_TrimLoaderList(char **list, int *num)
         ext = strrchr(list[i], '.');
         if ((ext) && (
 #ifdef __CYGWIN__
-            (!strcasecmp(ext, ".dll")) ||
+                        (!strcasecmp(ext, ".dll")) ||
 #endif
-            (!strcasecmp(ext, ".so"))))
+                        (!strcasecmp(ext, ".so"))))
           {
              /* Don't add the same loader multiple times... */
              if (!__imlib_ItemInList(ret, size, list[i]))
@@ -745,7 +745,7 @@ __imlib_RescanLoaders(void)
         current_time = __imlib_FileModDate(SYS_LOADERS_PATH "/loaders/");
 #else
         current_time =
-            __imlib_FileModDate(__XOS2RedirRoot(SYS_LOADERS_PATH "/loaders/"));
+           __imlib_FileModDate(__XOS2RedirRoot(SYS_LOADERS_PATH "/loaders/"));
 #endif
         if (current_time > last_modified_system_time)
           {
@@ -855,14 +855,14 @@ __imlib_FindBestLoaderForFile(const char *file, int for_save)
              /* does it match ? */
              if (!strcmp(l->formats[i], extension))
                {
-                /* does it provide the function we need? */
-                if ((for_save && l->save) || (!for_save && l->load))
-                  {
-                     /* free the memory allocated for the extension */
-                     free(extension);
-                     /* return the loader */
-                     return l;
-                  }
+                  /* does it provide the function we need? */
+                  if ((for_save && l->save) || (!for_save && l->load))
+                    {
+                       /* free the memory allocated for the extension */
+                       free(extension);
+                       /* return the loader */
+                       return l;
+                    }
                }
           }
         l = l->next;
@@ -917,11 +917,11 @@ __imlib_FindBestLoaderForFileFormat(const char *file, char *format,
                   /* does it provide the function we need? */
                   if ((for_save && l->save) || (!for_save && l->load))
                     {
-                     /* free the memory allocated for the extension */
-                     free(extension);
-                     /* return the loader */
-                     return l;
-                  }
+                       /* free the memory allocated for the extension */
+                       free(extension);
+                       /* return the loader */
+                       return l;
+                    }
                }
           }
         l = l->next;
@@ -1025,7 +1025,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
    errno = 0;
    if (best_loader)
       loader_ret =
-          best_loader->load(im, progress, progress_granularity, immediate_load);
+         best_loader->load(im, progress, progress_granularity, immediate_load);
    /* width is still 0 - the loader didnt manage to do anything */
    if (im->w == 0)
      {
@@ -1039,7 +1039,7 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
              /* if its not the best loader that already failed - try load */
              if (l != best_loader)
                 loader_ret =
-                    l->load(im, progress, progress_granularity, immediate_load);
+                   l->load(im, progress, progress_granularity, immediate_load);
              /* if it failed - advance */
              if (im->w == 0)
                {

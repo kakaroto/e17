@@ -116,10 +116,10 @@ __imlib_FlushXImage(Display * d)
                   else
                     {
                        list_xim =
-                           realloc(list_xim, sizeof(XImage *) * list_num);
+                          realloc(list_xim, sizeof(XImage *) * list_num);
                        list_si =
-                           realloc(list_si,
-                                   sizeof(XShmSegmentInfo *) * list_num);
+                          realloc(list_si,
+                                  sizeof(XShmSegmentInfo *) * list_num);
                        list_used = realloc(list_used, sizeof(char) * list_num);
                        list_d = realloc(list_d, sizeof(Display *) * list_num);
                     }
@@ -176,17 +176,16 @@ __imlib_ProduceXImage(Display * d, Visual * v, int depth, int w, int h,
    /* go thru the current image list */
    for (i = 0; i < list_num; i++)
      {
-	  int depth_ok = 0;
+        int                 depth_ok = 0;
 
         /* if the image has the same depth, width and height - recycle it */
         /* as long as its not used */
         if (list_xim[i]->depth == depth)
-            depth_ok = 1;
-	  if ( depth_ok &&
-	     (list_xim[i]->width >= w) &&
-	     (list_xim[i]->height >= h) &&
-	     /*	  (list_d[i] == d) && */
-	     (!list_used[i]))
+           depth_ok = 1;
+        if (depth_ok &&
+            (list_xim[i]->width >= w) && (list_xim[i]->height >= h) &&
+            /*   (list_d[i] == d) && */
+            (!list_used[i]))
           {
              /* mark it as used */
              list_used[i] = 1;
@@ -231,15 +230,15 @@ __imlib_ProduceXImage(Display * d, Visual * v, int depth, int w, int h,
              list_xim[list_num - 1] = xim;
              /* get an shm id of this image */
              list_si[list_num - 1]->shmid =
-                 shmget(IPC_PRIVATE, xim->bytes_per_line * xim->height,
-                        IPC_CREAT | 0777);
+                shmget(IPC_PRIVATE, xim->bytes_per_line * xim->height,
+                       IPC_CREAT | 0777);
              /* if the get succeeds */
              if (list_si[list_num - 1]->shmid != -1)
                {
                   /* set the params for the shm segment */
                   list_si[list_num - 1]->readOnly = False;
                   list_si[list_num - 1]->shmaddr = xim->data =
-                      shmat(list_si[list_num - 1]->shmid, 0, 0);
+                     shmat(list_si[list_num - 1]->shmid, 0, 0);
                   /* get the shm addr for this data chunk */
                   if (xim->data != (char *)-1)
                     {

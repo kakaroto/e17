@@ -54,7 +54,7 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
       iny = oy;
    /* go thru the XImage and convert */
    if ((depth == 24) && (xim->bits_per_pixel == 32))
-      depth = 25;	/* fake depth meaning 24 bit in 32 bpp ximage */
+      depth = 25;               /* fake depth meaning 24 bit in 32 bpp ximage */
    /* data needs swapping */
 #define SWAP32(x) (x) = \
    ((((int)(x) & 0x000000ff ) << 24) |\
@@ -64,100 +64,103 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
 #define SWAP16(x) (x) = \
    ((((short)(x) & 0x00ff ) << 8) |\
        (((short)(x) & 0xff00 ) >> 8))
-   
+
 #ifdef WORDS_BIGENDIAN
    if (xim->bitmap_bit_order == LSBFirst)
 #else
    if (xim->bitmap_bit_order == MSBFirst)
 #endif
-       {
-	  switch (depth)
-	    {
-	     case 0:
-	     case 1:
-	     case 2:
-	     case 3:
-	     case 4:
-	     case 5:
-	     case 6:
-	     case 7:
-	     case 8:
-	       break;
-	     case 15:
-	     case 16:
-	       for (y = 0; y < h; y++)
-		 {
-		    unsigned short *tmp;
-		    tmp = (unsigned short *)(xim->data + (xim->bytes_per_line * y));
-		    for (x = 0; x < w; x++)
-		      {
-			 SWAP16(*tmp);
-			 tmp++;
-		      }
-		 }
-	     case 24:
-	     case 25:
-	     case 32:
-	       for (y = 0; y < h; y++)
-		 {
-		    unsigned int *tmp;
-		    tmp = (unsigned int *)(xim->data + (xim->bytes_per_line * y));
-		    for (x = 0; x < w; x++)
-		      {
-			 SWAP32(*tmp);
-			 tmp++;
-		      }
-		 }
-	       break;
-	     default:
-	       break;
-	    }
-       }
+     {
+        switch (depth)
+          {
+          case 0:
+          case 1:
+          case 2:
+          case 3:
+          case 4:
+          case 5:
+          case 6:
+          case 7:
+          case 8:
+             break;
+          case 15:
+          case 16:
+             for (y = 0; y < h; y++)
+               {
+                  unsigned short     *tmp;
+
+                  tmp =
+                     (unsigned short *)(xim->data + (xim->bytes_per_line * y));
+                  for (x = 0; x < w; x++)
+                    {
+                       SWAP16(*tmp);
+                       tmp++;
+                    }
+               }
+          case 24:
+          case 25:
+          case 32:
+             for (y = 0; y < h; y++)
+               {
+                  unsigned int       *tmp;
+
+                  tmp = (unsigned int *)(xim->data + (xim->bytes_per_line * y));
+                  for (x = 0; x < w; x++)
+                    {
+                       SWAP32(*tmp);
+                       tmp++;
+                    }
+               }
+             break;
+          default:
+             break;
+          }
+     }
    switch (depth)
      {
-       case 0:
-       case 1:
-       case 2:
-       case 3:
-       case 4:
-       case 5:
-       case 6:
-       case 7:
-       case 8:
-          if (mxim)
-            {
-               for (y = 0; y < h; y++)
-                 {
-                    ptr = data + ((y + iny) * ow) + inx;
-                    for (x = 0; x < w; x++)
-                      {
-                         pixel = XGetPixel(xim, x, y);
-                         pixel = (btab[pixel & 0xff]) |
-                                 (gtab[pixel & 0xff] << 8) |
-                                 (rtab[pixel & 0xff] << 16);
-                         if (XGetPixel(mxim, x, y))
-                            pixel |= 0xff000000;
-                         *ptr++ = pixel;
-                      }
-                 }
-            }
-          else
-            {
-               for (y = 0; y < h; y++)
-                 {
-                    ptr = data + ((y + iny) * ow) + inx;
-                    for (x = 0; x < w; x++)
-                      {
-                         pixel = XGetPixel(xim, x, y);
-                         *ptr++ = 0xff000000 |
-                             (btab[pixel & 0xff]) |
-                             (gtab[pixel & 0xff] << 8) |
-                             (rtab[pixel & 0xff] << 16);
-                      }
-                 }
-            }
-          break;
-       case 16:
+     case 0:
+     case 1:
+     case 2:
+     case 3:
+     case 4:
+     case 5:
+     case 6:
+     case 7:
+     case 8:
+        if (mxim)
+          {
+             for (y = 0; y < h; y++)
+               {
+                  ptr = data + ((y + iny) * ow) + inx;
+                  for (x = 0; x < w; x++)
+                    {
+                       pixel = XGetPixel(xim, x, y);
+                       pixel = (btab[pixel & 0xff]) |
+                          (gtab[pixel & 0xff] << 8) |
+                          (rtab[pixel & 0xff] << 16);
+                       if (XGetPixel(mxim, x, y))
+                          pixel |= 0xff000000;
+                       *ptr++ = pixel;
+                    }
+               }
+          }
+        else
+          {
+             for (y = 0; y < h; y++)
+               {
+                  ptr = data + ((y + iny) * ow) + inx;
+                  for (x = 0; x < w; x++)
+                    {
+                       pixel = XGetPixel(xim, x, y);
+                       *ptr++ = 0xff000000 |
+                          (btab[pixel & 0xff]) |
+                          (gtab[pixel & 0xff] << 8) |
+                          (rtab[pixel & 0xff] << 16);
+                    }
+               }
+          }
+        break;
+     case 16:
 #undef MP
 #undef RMSK
 #undef GMSK
@@ -182,58 +185,58 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
 #define B2SH(p)  ((p) >> 13)
 #define P1(p) (R1SH(p) & RMSK) | (G1SH(p) & GMSK) | (B1SH(p) & BMSK)
 #define P2(p) (R2SH(p) & RMSK) | (G2SH(p) & GMSK) | (B2SH(p) & BMSK)
-          if (mxim)
-            {
-               for (y = 0; y < h; y++)
-                 {
-                    src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                    ptr = data + ((y + iny) * ow) + inx;
-                    for (x = 0; x < (w - 1); x += 2)
-                      {
+        if (mxim)
+          {
+             for (y = 0; y < h; y++)
+               {
+                  src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                  ptr = data + ((y + iny) * ow) + inx;
+                  for (x = 0; x < (w - 1); x += 2)
+                    {
 #ifdef WORDS_BIGENDIAN
-                         *ptr++ = MP(x + 1, y) | P2(*src);
-                         *ptr++ = MP(x, y) | P1(*src);
+                       *ptr++ = MP(x + 1, y) | P2(*src);
+                       *ptr++ = MP(x, y) | P1(*src);
 #else
-                         *ptr++ = MP(x, y) | P1(*src);
-                         *ptr++ = MP(x + 1, y) | P2(*src);
+                       *ptr++ = MP(x, y) | P1(*src);
+                       *ptr++ = MP(x + 1, y) | P2(*src);
 #endif
-                         src++;
-                      }
-                    if (x == (w - 1))
-                      {
-                         pixel = XGetPixel(xim, x, y);
-                         *ptr++ = MP(x, y) | P1(pixel);
-                      }
-                 }
-            }
+                       src++;
+                    }
+                  if (x == (w - 1))
+                    {
+                       pixel = XGetPixel(xim, x, y);
+                       *ptr++ = MP(x, y) | P1(pixel);
+                    }
+               }
+          }
 #undef MP
 #define MP(x, y) (0xff000000)
-          else
-            {
-               for (y = 0; y < h; y++)
-                 {
-                    src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                    ptr = data + ((y + iny) * ow) + inx;
-                    for (x = 0; x < (w - 1); x += 2)
-                      {
+        else
+          {
+             for (y = 0; y < h; y++)
+               {
+                  src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                  ptr = data + ((y + iny) * ow) + inx;
+                  for (x = 0; x < (w - 1); x += 2)
+                    {
 #ifdef WORDS_BIGENDIAN
-                         *ptr++ = MP(x + 1, y) | P2(*src);
-                         *ptr++ = MP(x, y) | P1(*src);
+                       *ptr++ = MP(x + 1, y) | P2(*src);
+                       *ptr++ = MP(x, y) | P1(*src);
 #else
-                         *ptr++ = MP(x, y) | P1(*src);
-                         *ptr++ = MP(x + 1, y) | P2(*src);
+                       *ptr++ = MP(x, y) | P1(*src);
+                       *ptr++ = MP(x + 1, y) | P2(*src);
 #endif
-                         src++;
-                      }
-                    if (x == (w - 1))
-                      {
-                         pixel = XGetPixel(xim, x, y);
-                         *ptr++ = MP(x, y) | P1(pixel);
-                      }
-                 }
-            }
-          break;
-       case 15:
+                       src++;
+                    }
+                  if (x == (w - 1))
+                    {
+                       pixel = XGetPixel(xim, x, y);
+                       *ptr++ = MP(x, y) | P1(pixel);
+                    }
+               }
+          }
+        break;
+     case 15:
 #undef MP
 #undef RMSK
 #undef GMSK
@@ -258,268 +261,258 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
 #define B2SH(p)  ((p) >> 13)
 #define P1(p) (R1SH(p) & RMSK) | (G1SH(p) & GMSK) | (B1SH(p) & BMSK)
 #define P2(p) (R2SH(p) & RMSK) | (G2SH(p) & GMSK) | (B2SH(p) & BMSK)
-          if (mxim)
-            {
-               for (y = 0; y < h; y++)
-                 {
-                    src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                    ptr = data + ((y + iny) * ow) + inx;
-                    for (x = 0; x < (w - 1); x += 2)
-                      {
+        if (mxim)
+          {
+             for (y = 0; y < h; y++)
+               {
+                  src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                  ptr = data + ((y + iny) * ow) + inx;
+                  for (x = 0; x < (w - 1); x += 2)
+                    {
 #ifdef WORDS_BIGENDIAN
-                         *ptr++ = MP(x + 1, y) | P2(*src);
-                         *ptr++ = MP(x, y) | P1(*src);
+                       *ptr++ = MP(x + 1, y) | P2(*src);
+                       *ptr++ = MP(x, y) | P1(*src);
 #else
-                         *ptr++ = MP(x, y) | P1(*src);
-                         *ptr++ = MP(x + 1, y) | P2(*src);
+                       *ptr++ = MP(x, y) | P1(*src);
+                       *ptr++ = MP(x + 1, y) | P2(*src);
 #endif
-                         src++;
-                      }
-                    if (x == (w - 1))
-                      {
-                         pixel = XGetPixel(xim, x, y);
-                         *ptr++ = MP(x, y) | P1(pixel);
-                      }
-                 }
-            }
+                       src++;
+                    }
+                  if (x == (w - 1))
+                    {
+                       pixel = XGetPixel(xim, x, y);
+                       *ptr++ = MP(x, y) | P1(pixel);
+                    }
+               }
+          }
 #undef MP
 #define MP(x, y) (0xff000000)
-          else
-            {
-               for (y = 0; y < h; y++)
-                 {
-                    src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                    ptr = data + ((y + iny) * ow) + inx;
-                    for (x = 0; x < (w - 1); x += 2)
-                      {
+        else
+          {
+             for (y = 0; y < h; y++)
+               {
+                  src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                  ptr = data + ((y + iny) * ow) + inx;
+                  for (x = 0; x < (w - 1); x += 2)
+                    {
 #ifdef WORDS_BIGENDIAN
-                         *ptr++ = MP(x + 1, y) | P2(*src);
-                         *ptr++ = MP(x, y) | P1(*src);
+                       *ptr++ = MP(x + 1, y) | P2(*src);
+                       *ptr++ = MP(x, y) | P1(*src);
 #else
-                         *ptr++ = MP(x, y) | P1(*src);
-                         *ptr++ = MP(x + 1, y) | P2(*src);
+                       *ptr++ = MP(x, y) | P1(*src);
+                       *ptr++ = MP(x + 1, y) | P2(*src);
 #endif
-                         src++;
-                      }
-                    if (x == (w - 1))
-                      {
-                         pixel = XGetPixel(xim, x, y);
-                         *ptr++ = MP(x, y) | P1(pixel);
-                      }
-                 }
-            }
-          break;
-       case 24:
-          if (bgr)
-            {
-               if (mxim)
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              pixel = XGetPixel(xim, x, y);
-                              pixel = ((pixel << 16) & 0xff0000) |
-                                      ((pixel) & 0x00ff00) |
-                                      ((pixel >> 16) & 0x0000ff);
-                              if (XGetPixel(mxim, x, y))
-                                 pixel |= 0xff000000;
-                              *ptr++ = pixel;
-                           }
-                      }
-                 }
-               else
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              pixel = XGetPixel(xim, x, y);
-                              *ptr++ = 0xff000000 |
-                                  ((pixel << 16) & 0xff0000) |
-                                  ((pixel) & 0x00ff00) |
-                                  ((pixel >> 16) & 0x0000ff);
-                           }
-                      }
-                 }
-            }
-          else
-            {
-               if (mxim)
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              pixel = XGetPixel(xim, x, y) & 0x00ffffff;
-                              if (XGetPixel(mxim, x, y))
-                                 pixel |= 0xff000000;
-                              *ptr++ = pixel;
-                           }
-                      }
-                 }
-               else
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              pixel = XGetPixel(xim, x, y);
-                              *ptr++ = 0xff000000 | (pixel & 0x00ffffff);
-                           }
-                      }
-                 }
-            }
-          break;
-       case 25:
-          if (bgr)
-            {
-               if (mxim)
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         src =
-                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              pixel = ((*src << 16) & 0xff0000) |
-                                      ((*src) & 0x00ff00) |
-                                      ((*src >> 16) & 0x0000ff);
-                              if (XGetPixel(mxim, x, y))
-                                 pixel |= 0xff000000;
-                              *ptr++ = pixel;
-                              src++;
-                           }
-                      }
-                 }
-               else
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         src =
-                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr++ = 0xff000000 |
-                                  ((*src << 16) & 0xff0000) |
-                                  ((*src) & 0x00ff00) |
-                                  ((*src >> 16) & 0x0000ff);
-                              src++;
-                           }
-                      }
-                 }
-            }
-          else
-            {
-               if (mxim)
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         src =
-                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              pixel = (*src) & 0x00ffffff;
-                              if (XGetPixel(mxim, x, y))
-                                 pixel |= 0xff000000;
-                              *ptr++ = pixel;
-                              src++;
-                           }
-                      }
-                 }
-               else
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         src =
-                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr++ = 0xff000000 | ((*src) & 0x00ffffff);
-                              src++;
-                           }
-                      }
-                 }
-            }
-          break;
-       case 32:
-          if (bgr)
-            {
-               if (mxim)
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         src =
-                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              pixel = SWAP32(*src);
-                              if (!XGetPixel(mxim, x, y))
-                                 pixel &= 0x00ffffff;
-                              *ptr++ = pixel;
-                              src++;
-                           }
-                      }
-                 }
-               else
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         src =
-                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr++ = SWAP32(*src);
-                              src++;
-                           }
-                      }
-                 }
-            }
-          else
-            {
-               if (mxim)
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         src =
-                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              pixel = *src++;
-                              if (!XGetPixel(mxim, x, y))
-                                 pixel &= 0x00ffffff;
-                              *ptr++ = pixel;
-                           }
-                      }
-                 }
-               else
-                 {
-                    for (y = 0; y < h; y++)
-                      {
-                         src =
-                             (DATA32 *) (xim->data + (xim->bytes_per_line * y));
-                         ptr = data + ((y + iny) * ow) + inx;
-                         for (x = 0; x < w; x++)
-                           {
-                              *ptr++ = *src++;
-                           }
-                      }
-                 }
-            }
-          break;
-       default:
-          break;
+                       src++;
+                    }
+                  if (x == (w - 1))
+                    {
+                       pixel = XGetPixel(xim, x, y);
+                       *ptr++ = MP(x, y) | P1(pixel);
+                    }
+               }
+          }
+        break;
+     case 24:
+        if (bgr)
+          {
+             if (mxim)
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            pixel = XGetPixel(xim, x, y);
+                            pixel = ((pixel << 16) & 0xff0000) |
+                               ((pixel) & 0x00ff00) |
+                               ((pixel >> 16) & 0x0000ff);
+                            if (XGetPixel(mxim, x, y))
+                               pixel |= 0xff000000;
+                            *ptr++ = pixel;
+                         }
+                    }
+               }
+             else
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            pixel = XGetPixel(xim, x, y);
+                            *ptr++ = 0xff000000 |
+                               ((pixel << 16) & 0xff0000) |
+                               ((pixel) & 0x00ff00) |
+                               ((pixel >> 16) & 0x0000ff);
+                         }
+                    }
+               }
+          }
+        else
+          {
+             if (mxim)
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            pixel = XGetPixel(xim, x, y) & 0x00ffffff;
+                            if (XGetPixel(mxim, x, y))
+                               pixel |= 0xff000000;
+                            *ptr++ = pixel;
+                         }
+                    }
+               }
+             else
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            pixel = XGetPixel(xim, x, y);
+                            *ptr++ = 0xff000000 | (pixel & 0x00ffffff);
+                         }
+                    }
+               }
+          }
+        break;
+     case 25:
+        if (bgr)
+          {
+             if (mxim)
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            pixel = ((*src << 16) & 0xff0000) |
+                               ((*src) & 0x00ff00) | ((*src >> 16) & 0x0000ff);
+                            if (XGetPixel(mxim, x, y))
+                               pixel |= 0xff000000;
+                            *ptr++ = pixel;
+                            src++;
+                         }
+                    }
+               }
+             else
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr++ = 0xff000000 |
+                               ((*src << 16) & 0xff0000) |
+                               ((*src) & 0x00ff00) | ((*src >> 16) & 0x0000ff);
+                            src++;
+                         }
+                    }
+               }
+          }
+        else
+          {
+             if (mxim)
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            pixel = (*src) & 0x00ffffff;
+                            if (XGetPixel(mxim, x, y))
+                               pixel |= 0xff000000;
+                            *ptr++ = pixel;
+                            src++;
+                         }
+                    }
+               }
+             else
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr++ = 0xff000000 | ((*src) & 0x00ffffff);
+                            src++;
+                         }
+                    }
+               }
+          }
+        break;
+     case 32:
+        if (bgr)
+          {
+             if (mxim)
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            pixel = SWAP32(*src);
+                            if (!XGetPixel(mxim, x, y))
+                               pixel &= 0x00ffffff;
+                            *ptr++ = pixel;
+                            src++;
+                         }
+                    }
+               }
+             else
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr++ = SWAP32(*src);
+                            src++;
+                         }
+                    }
+               }
+          }
+        else
+          {
+             if (mxim)
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            pixel = *src++;
+                            if (!XGetPixel(mxim, x, y))
+                               pixel &= 0x00ffffff;
+                            *ptr++ = pixel;
+                         }
+                    }
+               }
+             else
+               {
+                  for (y = 0; y < h; y++)
+                    {
+                       src = (DATA32 *) (xim->data + (xim->bytes_per_line * y));
+                       ptr = data + ((y + iny) * ow) + inx;
+                       for (x = 0; x < w; x++)
+                         {
+                            *ptr++ = *src++;
+                         }
+                    }
+               }
+          }
+        break;
+     default:
+        break;
      }
 
    if (grab)
@@ -733,7 +726,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
      {
         if (grab)
            XUngrabServer(d);
-	return 0;
+        return 0;
      }
 
    if ((m) && (domask))
@@ -761,7 +754,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                        else
                          {
                             mshminfo.shmaddr = mxim->data =
-                                shmat(mshminfo.shmid, 0, 0);
+                               shmat(mshminfo.shmid, 0, 0);
                             if (mxim->data != (char *)-1)
                               {
                                  mshminfo.readOnly = False;
