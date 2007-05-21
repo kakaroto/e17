@@ -124,7 +124,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
         e_widget_list_object_append(o, ob, 1, 1, 0.5);
         ob = e_widget_label_add(evas, _("Please select the languages that you are able to read"));
         e_widget_list_object_append(o, ob, 1, 1, 0.0);
-        ob = e_widget_label_add(evas, _(""));
+        ob = e_widget_label_add(evas, "");
         e_widget_list_object_append(o, ob, 1, 1, 0.0);
      }
 

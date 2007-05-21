@@ -4,12 +4,30 @@ make install CFLAGS="-g -Wall -Werror -DDEBUG -DDEBUG_MAIN -DDEBUG_CONFIG -DDEBU
 BUGS
 ----------------------------------------------------
 
+ - X - ? rarely, on viewer open, it crashes in news_viewer_refresh, on e_icon_file_set (in evas engine loader func)
+the evas object seems ok, the string passed to the loader too ...
+
+----------------------------------------------------
+FEEDS TO ADD
+----------------------------------------------------
+
+<skyghis> sinon pur les feeds humour : http://www.lelombrik.net/  http://www.bashfr.org/
+<skyghis> pour les feeds info tech: clubic pcimpact
+
+mails juan
+mails ludger
+
 ----------------------------------------------------
 NEEDED (to do more or less in this order)
 ----------------------------------------------------
 
- - parse html chars (in _item_clean ?)
+ - debug html chars parse with test.rss
+  -> add support for & alone in evas_textblock
+
+ - ? merge news_parse_rss.c/h to news_parse.c/h ?
  - atom feeds
+
+ - viewer: a way to set vcontent bg color ?
 
  - feed icons (new file ?)
 Evas_Object *news_feed_icon_add(News_Feed *feed)

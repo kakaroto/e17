@@ -159,6 +159,7 @@ news_config_dialog_feeds_refresh_feeds(void)
           }
      }
    e_widget_ilist_go(ilist);
+   e_widget_ilist_thaw(ilist);
 
    /* select a feed */
    if (pos_to_select != -1)
@@ -176,8 +177,6 @@ news_config_dialog_feeds_refresh_feeds(void)
         e_widget_min_size_get(ilist, &wmw, &wmh);
         e_widget_min_size_set(ilist, wmw, 180);
      }
-   
-   e_widget_ilist_thaw(ilist);
 }
 
 void
@@ -225,11 +224,13 @@ news_config_dialog_feeds_refresh_categories(void)
 	if (cfdata->selected_category == fc)
           pos_to_select = pos;
      }
+   e_widget_ilist_go(ilist);
+   e_widget_ilist_thaw(ilist);
 
    if (pos_to_select != -1)
      {
         e_widget_ilist_selected_set(ilist, pos_to_select);
-        _cb_category_list(cfdata->selected_category);
+        //_cb_category_list(cfdata->selected_category);
      }
 
    if (pos == -1)
@@ -240,9 +241,6 @@ news_config_dialog_feeds_refresh_categories(void)
         e_widget_min_size_get(ilist, &wmw, &wmh);
         e_widget_min_size_set(ilist, wmw, 120);
      }
-   
-   e_widget_ilist_go(ilist);
-   e_widget_ilist_thaw(ilist);
 }
 
 /*
@@ -300,28 +298,31 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_ilist_selector_set(ob, 1);
    cfdata->ilist_categories = ob;
    news_config_dialog_feeds_refresh_categories();
-   e_widget_frametable_object_append(of, ob, 1, 0, 3, 4, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 0, 0, 6, 1, 1, 1, 1, 1);
 
    if (!news->config->feed.sort_name)
      {
-        ob = e_widget_button_add(evas, "", "widget/up_arrow", _cb_category_up, cfdata, NULL);
-        e_widget_frametable_object_append(of, ob, 4, 1, 1, 1, 0, 0, 0, 0);
-        ob = e_widget_button_add(evas, "", "widget/down_arrow", _cb_category_down, cfdata, NULL);
-        e_widget_frametable_object_append(of, ob, 4, 2, 1, 1, 0, 0, 0, 0);
+        ob = e_widget_button_add(evas, "Move", "widget/up_arrow", _cb_category_up, cfdata, NULL);
+        e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 0, 1, 0);
+        ob = e_widget_button_add(evas, "Move", "widget/down_arrow", _cb_category_down, cfdata, NULL);
+        e_widget_frametable_object_append(of, ob, 3, 1, 3, 1, 1, 0, 1, 0);
      }
 
    ob = e_widget_button_add(evas, _("Add"), NULL, _cb_category_add, cfdata, NULL);
-   e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
    ob = e_widget_button_add(evas, _("Delete"), NULL, _cb_category_del, cfdata, NULL);
    e_widget_disabled_set(ob, 1);
    cfdata->button_cat_del = ob;
-   e_widget_frametable_object_append(of, ob, 2, 4, 1, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 2, 2, 2, 1, 1, 0, 1, 0);
    ob = e_widget_button_add(evas, _("Configure"), NULL, _cb_category_config, cfdata, NULL);
    e_widget_disabled_set(ob, 1);
    cfdata->button_cat_conf = ob;
-   e_widget_frametable_object_append(of, ob, 3, 4, 1, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 4, 2, 2, 1, 1, 0, 1, 0);
 
    e_widget_list_object_append(o2, of, 1, 1, 0.5);
+
+   ob = e_widget_label_add(evas, "");
+   e_widget_list_object_append(o2, ob, 0, 0, 0.5);
 
    o3 = e_widget_list_add(evas, 0, 1);
 
@@ -358,33 +359,33 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    cfdata->textblock_feed_infos = ob;
    e_widget_min_size_get(ob, &wmw, &wmh);
    e_widget_min_size_set(ob, wmw, 40);
-   e_widget_frametable_object_append(of, ob, 0, 0, 4, 1, 1, 1, 0, 0);
+   e_widget_frametable_object_append(of, ob, 0, 0, 6, 1, 1, 1, 0, 0);
 
    cfdata->selected_feed = NULL;
    ob = e_widget_ilist_add(evas, 16, 16, NULL);
    e_widget_ilist_selector_set(ob, 1);
    cfdata->ilist_feeds = ob;
    news_config_dialog_feeds_refresh_feeds();
-   e_widget_frametable_object_append(of, ob, 0, 1, 3, 4, 1, 1, 1, 1);
-
-   ob = e_widget_button_add(evas, _("Add"), NULL, _cb_feed_add, cfdata, NULL);
-   e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_button_add(evas, _("Delete"), NULL, _cb_feed_del, cfdata, NULL);
-   e_widget_disabled_set(ob, 1);
-   cfdata->button_feed_del = ob;
-   e_widget_frametable_object_append(of, ob, 1, 5, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_button_add(evas, _("Configure"), NULL, _cb_feed_config, cfdata, NULL);
-   e_widget_disabled_set(ob, 1);
-   cfdata->button_feed_conf = ob;
-   e_widget_frametable_object_append(of, ob, 2, 5, 1, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 0, 1, 6, 1, 1, 1, 1, 1);
 
    if (!news->config->feed.sort_name)
      {
-        ob = e_widget_button_add(evas, "", "widget/up_arrow", _cb_feed_up, cfdata, NULL);
-        e_widget_frametable_object_append(of, ob, 3, 2, 1, 1, 0, 0, 0, 0);
-        ob = e_widget_button_add(evas, "", "widget/down_arrow", _cb_feed_down, cfdata, NULL);
-        e_widget_frametable_object_append(of, ob, 3, 3, 1, 1, 0, 0, 0, 0);
+        ob = e_widget_button_add(evas, "Move", "widget/up_arrow", _cb_feed_up, cfdata, NULL);
+        e_widget_frametable_object_append(of, ob, 0, 2, 3, 1, 1, 0, 1, 0);
+        ob = e_widget_button_add(evas, "Move", "widget/down_arrow", _cb_feed_down, cfdata, NULL);
+        e_widget_frametable_object_append(of, ob, 3, 2, 3, 1, 1, 0, 1, 0);
      }
+
+   ob = e_widget_button_add(evas, _("Add"), NULL, _cb_feed_add, cfdata, NULL);
+   e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 0, 1, 0);
+   ob = e_widget_button_add(evas, _("Delete"), NULL, _cb_feed_del, cfdata, NULL);
+   e_widget_disabled_set(ob, 1);
+   cfdata->button_feed_del = ob;
+   e_widget_frametable_object_append(of, ob, 2, 3, 2, 1, 1, 0, 1, 0);
+   ob = e_widget_button_add(evas, _("Configure"), NULL, _cb_feed_config, cfdata, NULL);
+   e_widget_disabled_set(ob, 1);
+   cfdata->button_feed_conf = ob;
+   e_widget_frametable_object_append(of, ob, 4, 3, 2, 1, 1, 0, 1, 0);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -595,26 +596,29 @@ _cb_category_list(void *data)
    if (cfdata->button_cat_conf)
      e_widget_disabled_set(cfdata->button_cat_conf, 0);
 
-   cfdata->selected_category = c;
-
-   /* select the first feed in this category */
-   if (c->feeds_visible)
+   if (cfdata->selected_category != c)
      {
-        pos = 0;
-        while ((label = e_widget_ilist_nth_label_get(cfdata->ilist_feeds, pos)))
+        cfdata->selected_category = c;
+
+        /* select the first feed in this category */
+        if (c->feeds_visible)
           {
-             if (e_widget_ilist_nth_is_header(cfdata->ilist_feeds, pos))
+             pos = 0;
+             while ((label = e_widget_ilist_nth_label_get(cfdata->ilist_feeds, pos)))
                {
-                  if (!strcmp(label, c->name))
+                  if (e_widget_ilist_nth_is_header(cfdata->ilist_feeds, pos))
                     {
-                       /* trick to call the callback in selected_set */
-                       e_widget_ilist_selector_set(cfdata->ilist_feeds, 0);
-                       e_widget_ilist_selected_set(cfdata->ilist_feeds, pos+1);
-                       e_widget_ilist_selector_set(cfdata->ilist_feeds, 1);
-                       break;
+                       if (!strcmp(label, c->name))
+                         {
+                            /* trick to call the callback in selected_set */
+                            e_widget_ilist_selector_set(cfdata->ilist_feeds, 0);
+                            e_widget_ilist_selected_set(cfdata->ilist_feeds, pos+1);
+                            e_widget_ilist_selector_set(cfdata->ilist_feeds, 1);
+                            break;
+                         }
                     }
+                  pos++;
                }
-             pos++;
           }
      }
 }

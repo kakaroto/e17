@@ -255,7 +255,7 @@ struct _News_Feed_Document
    News_Popup_Warn *popw;
    Evas_List       *articles;
    int              unread_count;
-   int              ui_needrefresh : 1;
+   unsigned char    ui_needrefresh : 1;
 
    struct
    {
@@ -264,10 +264,10 @@ struct _News_Feed_Document
       Ecore_Event_Handler *handler_del;
       Ecore_Event_Handler *handler_data;
 
-      int    waiting_reply : 1;
-      int    nb_tries;
-      char  *buffer;
-      int    buffer_size;
+      unsigned char waiting_reply : 1;
+      int           nb_tries;
+      char         *buffer;
+      int           buffer_size;
    } server;
 
    struct
@@ -280,7 +280,7 @@ struct _News_Feed_Document
       const char    *charset;
 
       News_Parse      *parser;
-      int              got_infos : 1;
+      unsigned char    got_infos : 1;
       time_t           last_time;
       News_Parse_Error error;
    } parse;
@@ -290,8 +290,8 @@ struct _News_Feed_Article
 {
    News_Feed_Document  *doc;
 
-   int          unread : 1;
-   int          reused : 1;
+   unsigned char unread : 1;
+   unsigned char reused : 1;
 
    char        *title;
    char        *url;

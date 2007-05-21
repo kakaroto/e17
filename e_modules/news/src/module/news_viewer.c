@@ -198,6 +198,7 @@ news_viewer_refresh(News_Viewer *nv)
    }
    NEWS_ITEM_FEEDS_FOREACH_END();
    e_widget_ilist_go(ilist);
+   e_widget_ilist_thaw(ilist);
 
    /* select a feed */
    if (toselect_pos != -1)
@@ -230,8 +231,6 @@ news_viewer_refresh(News_Viewer *nv)
    nv->vfeeds.list_own = feed_refs_own;
 
    _vfeeds_buttons_state_refresh(nv);
-
-   e_widget_ilist_thaw(ilist);
 }
 
 int
@@ -767,6 +766,7 @@ _varticles_refresh(News_Viewer *nv)
           }
      }
    e_widget_ilist_go(ilist);
+   e_widget_ilist_thaw(ilist);
 
    /* select a feed,
       of if no articles are selected
@@ -788,7 +788,6 @@ _varticles_refresh(News_Viewer *nv)
    nv->varticles.list = articles;
    nv->varticles.list_own = articles_own;
 
-   e_widget_ilist_thaw(ilist);
    feed->doc->ui_needrefresh = 0;
 }
 

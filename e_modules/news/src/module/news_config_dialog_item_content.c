@@ -134,6 +134,7 @@ news_config_dialog_item_content_refresh_feeds(News_Item *ni)
                e_widget_ilist_multi_select(ilist, pos);
           }
      }
+   e_widget_ilist_thaw(ilist);
 
    e_widget_min_size_get(ilist, &iw, &ih);
    if (iw < 200) iw = 200;
@@ -141,7 +142,6 @@ news_config_dialog_item_content_refresh_feeds(News_Item *ni)
    
    e_widget_ilist_go(ilist);
    _cb_feed_change(cfdata, NULL);
-   e_widget_ilist_thaw(ilist);
    /* restore the callback */
    e_widget_on_change_hook_set(ilist, _cb_feed_change, cfdata);
 }
@@ -195,8 +195,8 @@ news_config_dialog_item_content_refresh_selected_feeds(News_Item *ni)
    e_widget_min_size_set(ilist, iw, 250);
    
    e_widget_ilist_go(ilist);
-   _cb_selected_feed_change(cfdata, NULL);
    e_widget_ilist_thaw(ilist);
+   _cb_selected_feed_change(cfdata, NULL);
    /* restore the callback */
    e_widget_on_change_hook_set(ilist, _cb_selected_feed_change, cfdata);
 }

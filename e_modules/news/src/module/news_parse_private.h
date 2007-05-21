@@ -38,8 +38,8 @@ struct _News_Parse
    Evas_List            *articles;
    Ecore_Idler          *idler;
    News_Parse_Article   *art;
-   int error;
-   int changes : 1;
+   int                   error;
+   unsigned char         changes : 1;
 };
 
 struct _News_Parse_Article

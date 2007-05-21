@@ -261,7 +261,7 @@ _parse_type(News_Feed_Document *doc)
 
    buf = doc->server.buffer;
 
-   p = strstr(buf, "<rss"); // FIXME: valgrind says "Invalid read of size 1" ... ??? maybe valgrind is lost
+   p = strstr(buf, "<rss");
    if (p)
      {
         p = strstr(p, "version");

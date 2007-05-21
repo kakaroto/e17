@@ -11,8 +11,6 @@ struct _E_Config_Dialog_Data
 
       Evas_Object *icon_sel;
       E_Dialog    *icon_sel_dia;
-
-      int in_advanced;
    } gui;
 
    char *name;
@@ -26,7 +24,7 @@ struct _E_Config_Dialog_Data
    char *url_feed;
    char *icon;
    int   icon_ovrw;
-   int urgent;
+   int   urgent;
    News_Feed_Category *category;
 
    News_Feed *feed;
@@ -111,7 +109,6 @@ news_config_dialog_feed_refresh_categories(News_Feed *feed)
         if (!news->config_dialog_feed_new) return;
         cfdata = news->config_dialog_feed_new->cfdata;
      }
-   if (cfdata->gui.in_advanced) return;
 
    ilist = cfdata->gui.ilist_categories;
    e_widget_ilist_freeze(ilist);
@@ -144,6 +141,7 @@ news_config_dialog_feed_refresh_categories(News_Feed *feed)
 	pos++;
      }
    e_widget_ilist_go(ilist);
+   e_widget_ilist_thaw(ilist);
 
    if (pos_to_select != -1)
      {
@@ -153,8 +151,6 @@ news_config_dialog_feed_refresh_categories(News_Feed *feed)
 
    e_widget_min_size_get(ilist, &w, NULL);
    e_widget_min_size_set(ilist, w, 110);
-   
-   e_widget_ilist_thaw(ilist);
 }
 
 void
@@ -177,7 +173,6 @@ news_config_dialog_feed_refresh_langs(News_Feed *feed)
         if (!news->config_dialog_feed_new) return;
         cfdata = news->config_dialog_feed_new->cfdata;
      }
-   if (cfdata->gui.in_advanced) return;
 
    ilist = cfdata->gui.ilist_langs;
    e_widget_ilist_freeze(ilist);
@@ -199,6 +194,7 @@ news_config_dialog_feed_refresh_langs(News_Feed *feed)
         pos++;
      }
    e_widget_ilist_go(ilist);
+   e_widget_ilist_thaw(ilist);
 
    if (pos_to_select != -1)
      e_widget_ilist_selected_set(ilist, pos_to_select);
@@ -209,8 +205,6 @@ news_config_dialog_feed_refresh_langs(News_Feed *feed)
 
    e_widget_min_size_get(ilist, &w, NULL);
    e_widget_min_size_set(ilist, w, 110);
-
-   e_widget_ilist_thaw(ilist);
 }
 
 /*
@@ -311,34 +305,10 @@ static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
    Evas_Object *o;
-   Evas_Object *of, *ob;
 
-   cfdata->gui.in_advanced = 0;
-   
    o = e_widget_table_add(evas, 0);
 
    _common_create_widgets(cfd, evas, cfdata, o);
-
-   of = e_widget_framelist_add(evas, _("Category"), 0);
-
-   ob = e_widget_ilist_add(evas, 16, 16, NULL);
-   e_widget_ilist_selector_set(ob, 1);
-   cfdata->gui.ilist_categories = ob;
-   news_config_dialog_feed_refresh_categories(cfdata->feed);
-   e_widget_framelist_object_append(of, ob);
-
-   e_widget_table_object_append(o, of, 0, 1, 1, 1, 1, 1, 1, 1);
-
-   of = e_widget_framelist_add(evas, _("Language"), 0);
-
-   ob = e_widget_ilist_add(evas, 16, 16, NULL);
-   e_widget_ilist_selector_set(ob, 1);
-   e_widget_on_change_hook_set(ob, _cb_lang_change, cfdata);
-   cfdata->gui.ilist_langs = ob;
-   news_config_dialog_feed_refresh_langs(cfdata->feed);
-   e_widget_framelist_object_append(of, ob);
-
-   e_widget_table_object_append(o, of, 1, 1, 1, 1, 1, 1, 1, 1);
 
    e_dialog_resizable_set(cfd->dia, 1);
 
@@ -350,7 +320,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
 {
    Evas_Object *of, *ob;
 
-   of = e_widget_frametable_add(evas, _("Icon"), 0);
+   of = e_widget_frametable_add(evas, _("Basic informations"), 0);
 
    ob = e_widget_button_add(evas, "", NULL,
                             _icon_select, cfdata, NULL);
@@ -358,34 +328,49 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    if (cfdata->icon)
      _icon_select_changed(cfdata);
    e_widget_min_size_set(ob, 48, 48);
-   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 0, 0);
 
-   ob = e_widget_check_add(evas, _("Get from the server"), &(cfdata->icon_ovrw));
+   //ob = e_widget_check_add(evas, _("Get from the server"), &(cfdata->icon_ovrw));
    //TODO: NOT IMPLEMENTED YET
-   e_widget_check_checked_set(ob, 0);
-   e_widget_disabled_set(ob, 1);
-   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
-
-   e_widget_table_object_append(o, of, 0, 0, 1, 1, 1, 1, 1, 0);
-
-
-   of = e_widget_framelist_add(evas, _("Basic informations"), 0);
+   //e_widget_check_checked_set(ob, 0);
+   //e_widget_disabled_set(ob, 1);
+   //   e_widget_list_object_append(o2, of, 1, 1, 0.5);
 
    ob = e_widget_label_add(evas, _("Name :"));
-   e_widget_framelist_object_append(of, ob);
+   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &(cfdata->name));
-   e_widget_framelist_object_append(of, ob);
+   e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
    ob = e_widget_label_add(evas, _("Feed url :"));
-   e_widget_framelist_object_append(of, ob);
+   e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &(cfdata->url_feed));
-   e_widget_framelist_object_append(of, ob);
-
+   e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 0, 1, 0);
    ob = e_widget_check_add(evas, _("Mark as important feed"), &(cfdata->urgent));
    //TODO: NOT IMPLEMENTED YET
    e_widget_disabled_set(ob, 1);
+   e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 0, 1, 0);
+
+   e_widget_table_object_append(o, of, 0, 0, 2, 1, 1, 1, 1, 1);
+
+   of = e_widget_framelist_add(evas, _("Category"), 0);
+
+   ob = e_widget_ilist_add(evas, 16, 16, NULL);
+   e_widget_ilist_selector_set(ob, 1);
+   cfdata->gui.ilist_categories = ob;
+   news_config_dialog_feed_refresh_categories(cfdata->feed);
    e_widget_framelist_object_append(of, ob);
 
-   e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 0);
+   e_widget_table_object_append(o, of, 2, 0, 2, 1, 1, 1, 1, 1);
+
+   of = e_widget_framelist_add(evas, _("Language"), 0);
+
+   ob = e_widget_ilist_add(evas, 16, 16, NULL);
+   e_widget_ilist_selector_set(ob, 1);
+   e_widget_on_change_hook_set(ob, _cb_lang_change, cfdata);
+   cfdata->gui.ilist_langs = ob;
+   news_config_dialog_feed_refresh_langs(cfdata->feed);
+   e_widget_framelist_object_append(of, ob);
+
+   e_widget_table_object_append(o, of, 4, 0, 2, 1, 1, 1, 1, 1);
 }
 
 static Evas_Object *
@@ -394,8 +379,6 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    Evas_Object *o;
    Evas_Object *of, *ob;
 
-   cfdata->gui.in_advanced = 1;
-   
    o = e_widget_table_add(evas, 0);
 
    _common_create_widgets(cfd, evas, cfdata, o);
@@ -412,7 +395,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ob = e_widget_entry_add(evas, &(cfdata->url_home));
    e_widget_framelist_object_append(of, ob);
 
-   e_widget_table_object_append(o, of, 0, 2, 2, 1, 1, 1, 1, 1);
+   e_widget_table_object_append(o, of, 0, 1, 3, 1, 1, 0, 1, 0);
 
 
    of = e_widget_framelist_add(evas, _("Server informations"), 0);
@@ -429,7 +412,9 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ob = e_widget_check_add(evas, _("Home url"), &(cfdata->url_home_ovrw));
    e_widget_framelist_object_append(of, ob);
 
-   e_widget_table_object_append(o, of, 0, 4, 2, 1, 1, 1, 1, 1);
+   e_widget_table_object_append(o, of, 3, 1, 3, 1, 1, 0, 1, 0);
+
+   e_dialog_resizable_set(cfd->dia, 1);
 
    return o;
 }

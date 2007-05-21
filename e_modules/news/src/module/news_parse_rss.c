@@ -103,7 +103,7 @@ _idler(void *data)
      }
 
    /* error returned */
-   if (err) //FIXME: != NEWS_PARSE_ERROR_TYPE_NO
+   if (err != NEWS_PARSE_ERROR_NO)
      {
         parser->error = err;
         parser->oc.action = NEWS_PARSE_OC_END;
@@ -246,7 +246,7 @@ _parse_article_init(News_Parse *parser)
         return NEWS_PARSE_ERROR_NO;
      }
      
-   p1 = strstr(pos, parser->doc->parse.meta_article); // FIXME: valgrind says "Invalid read of size 1" ... ??? maybe valgrind is lost
+   p1 = strstr(pos, parser->doc->parse.meta_article);
    if (!p1)
      {
         if (evas_list_count(parser->articles))
@@ -506,11 +506,11 @@ _parse_item_clean(News_Parse *parser)
    size = strlen(buf) + 1;
    new_size = size;
 
+   //FIXME use macros for nicer code
    while (*p)
      {
         //DPARSE(("%d %d ------\n%30.30s", size, new_size, p));
-        /* skip metas inside text */
-        if (*p == '<')
+        if (*p == '<') /* meta open, we are going to skip metas inside text */
           {
              char *p2;
 
@@ -519,11 +519,11 @@ _parse_item_clean(News_Parse *parser)
                {
                   if (!strncmp(p, "<![CDATA[", 9))
                     {
-                       memmove(p, p + 9, strlen(p + 9) + 1);
+                       memmove(p, p + 9, (buf + new_size) - (p + 9));
                        new_size -= 9;
                     }
                   else
-                    p++;       /* next char */
+                    p++; /* next char */
                }
              else
                {
@@ -545,7 +545,7 @@ _parse_item_clean(News_Parse *parser)
                   while (*p2 && (*p2 != '>'));
                   if (*p2)
                     {
-                       memmove(p, p2 + 1, strlen(p2 + 1) + 1);
+                       memmove(p, p2 + 1, (buf + new_size) - (p2 + 1));
                        new_size -= ((p2 + 1) - p);
                     }
                   else
@@ -555,21 +555,22 @@ _parse_item_clean(News_Parse *parser)
                     }
                }
           }
-        else if (*p == ']')                       /* skip end cfdata */
+        else if (*p == ']') /* skip end cfdata */
           {
              if (!strncmp(p + 1, "]>", 2))
                {
-                  memmove(p, p + 3, strlen(p + 3) + 1);
+                  memmove(p, p + 3, (buf + new_size) - (p + 3));
                   new_size -= 3;
                }
              else
                p++; /* next char */
           }
-        else if (*p == 0xa)                        /* \n */
+        else if (*p == 0xa) /* \n */
           {
-             if (parser->oc.action == NEWS_PARSE_OC_ITEM_TITLE)
+             if (parser->oc.action == NEWS_PARSE_OC_ITEM_TITLE_CLEAN)
                {
-                  memmove(p, p + 1, strlen(p + 1) + 1);
+                  /* remove \n when in title */
+                  memmove(p, p + 1, (buf + new_size) - (p + 1));
                   new_size -= 1;
                }
              else
@@ -584,8 +585,8 @@ _parse_item_clean(News_Parse *parser)
                        buf = realloc(buf, size);
                        p = buf + diff;
                     }
-                  DPARSE(("buf %p p %p new_size %d strlen(buf) %d strlen(p) %d\np :\n%30.30s\n", buf, p, new_size, (int)strlen(buf), (int)strlen(p), p ));
-                  memmove(p + 3, p, strlen(p) + 1);
+                  DPARSE(("buf %p p %p new_size %d strlen(buf) %d strlen(p) %d\np :\n%30.30s\n", buf, p, new_size, (int)strlen(buf), (int)strlen(p), p));
+                  memmove(p + 3, p, (buf + (new_size - 3)) - (p));
                   *p = '<';
                   *(p + 1) = 'b';
                   *(p + 2) = 'r';
@@ -593,11 +594,12 @@ _parse_item_clean(News_Parse *parser)
                   p = p + 4;
                }
           }
-        else if (*p == 0x9)                        /* \t */
+        else if (*p == 0x9) /* \t */
           {
-             if (parser->oc.action == NEWS_PARSE_OC_ITEM_TITLE)
+             if (parser->oc.action == NEWS_PARSE_OC_ITEM_TITLE_CLEAN)
                {
-                  memmove(p, p + 1, strlen(p + 1) + 1); //FIXME : strlen(p) ? EVERYWHERE ?
+                  /* remove \t when in title */
+                  memmove(p, p + 1, (buf + new_size) - (p + 1));
                   new_size -= 1;
                }
              else
@@ -612,7 +614,7 @@ _parse_item_clean(News_Parse *parser)
                        buf = realloc(buf, size);
                        p = buf + diff;
                     }
-                  memmove(p + 4, p, strlen(p) + 1);
+                  memmove(p + 4, p, (buf + (new_size - 4)) - (p));
                   *p = '<';
                   *(p + 1) = 't';
                   *(p + 2) = 'a';
@@ -621,58 +623,95 @@ _parse_item_clean(News_Parse *parser)
                   p = p + 5;
                }
           }
-        else if (*p == 0xd)                     /* \??? (newline) to nothing */
+        else if (*p == 0xd) /* \<???> (newline) to nothing */
           {
-             memmove(p, p + 1, strlen(p + 1) + 1);
+             memmove(p, p + 1, (buf + new_size) - (p + 1));
              new_size -= 1;
           }
-        else if (*p == '&')                    /* html codes */
+        else if (*p == '&') /* html codes */
           {
-             /* &lt convertion to <
-              * &gt is checked when skipping meta */
-             if (!strncmp(p + 1, "lt;", 3))
-               {
-                  memmove(p + 1, p + 4, strlen(p + 4) + 1);
-                  new_size -= 3;
-                  *p = '<';
-               }
-             else if (0) /* TODO: add html chars convertion */
-               {
-                  
-               }
-             else if (*(p + 1) == '#') /* ascii hexadecimal char */
+             char *p_inc;
+
+             p_inc = p + 1;
+             if (*p_inc == '#') /* html numbers = ascii hexadecimal char */
                {
                   char b[4];
                   unsigned int i;
                   int len;
                   char *p2 = p + 2;
                   
-                  /* dec->hex */
-                  //TODO: FIX !
-                  while (*p2 != ';')
+                  while (*p2 && (*p2 != ';'))
                     p2++;
                   p2++;
-                  if (((p2 - p) == 3) || (p2 - p) > 6)
-                    p = p2; /* next char */
-                  else //TODO: STOPPED HERE
+                  len = p2 - p;
+                  if ((len <= 3) || (len > 7) || !sscanf(p + 2, "%d", &i))
+                    p = p_inc; /* next char (invalid html char number) */
+                  else if ((i == 8216) || (i == 8217)) /* html num ' */
                     {
-                       if (!sscanf(p + 2, "%d", &i))
-                         p = p2 + 1; /* next char */
-                       else
-                         {
-                            snprintf(b, sizeof(b), "%c", i);
-                            len = strlen(b);
-                            memmove(p + 1, p2, strlen(p2) + 1);
-                            new_size -= (p2 - p - 1);
-                            memcpy(p, b, len);
-                         }
+                       memmove(p_inc, p + 7, (buf + new_size) - (p + 7));
+                       new_size -= 6;
+                       *p = '\'';
+                       p = p_inc; /* next char */
+                    }
+                  else if ((i == 171) || (i == 187)) /* html num " */
+                    {
+                       memmove(p_inc, p + 6, (buf + new_size) - (p + 6));
+                       new_size -= 5;
+                       *p = '"';
+                       p = p_inc; /* next char */
+                    }
+                  else /* html code convertion dec->hex */
+                    {  
+                       snprintf(b, sizeof(b), "%c", i);
+                       memmove(p_inc, p2, (buf + new_size) - (p2));
+                       new_size -= (p2 - p - 1);
+                       *p = b[0];
+                       /* stay on the same char, could be the start of meta/html char */
                     }
                }
+             else if (!strncmp(p_inc, "lt;", 3)) /* html < */
+               {
+                  memmove(p_inc, p + 4, (buf + new_size) - (p + 4));
+                  new_size -= 3;
+                  *p = '<';
+                  /* stay on the same char, could be start of a meta */
+               } /* &gt is checked when skipping meta */
+             else if ( !strncmp(p_inc, "amp;", 4) && /* html & */
+                       ( (parser->oc.action != NEWS_PARSE_OC_ITEM_DESCRIPTION_CLEAN) ||
+                         (*(p_inc+4) == '#') ) ) /* but if we are going to write on a tb, we must not convert, except if the next char is an html num char (cause we need to parse it next) */
+               //FIXME thats a quick fix, must fix evas_object_textblock so it supports & alone
+               {
+                  memmove(p_inc, p + 5, (buf + new_size) - (p + 5));
+                  new_size -= 4;
+                  *p = '&';
+                  /* stay on the same char, could be start of an html char */
+               }
+             else if (!strncmp(p_inc, "quot;", 5)) /* html " */
+               {
+                  memmove(p_inc, p + 6, (buf + new_size) - (p + 6));
+                  new_size -= 5;
+                  *p = '"';
+                  p = p_inc; /* next char */
+               }
+             else if (!strncmp(p_inc, "apos;", 5)) /* html ' */
+               {
+                  memmove(p_inc, p + 6, (buf + new_size) - (p + 6));
+                  new_size -= 5;
+                  *p = '\'';
+                  p = p_inc; /* next char */
+               }
+             else if (!strncmp(p_inc, "nbsp;", 5)) /* html space */
+               {
+                  memmove(p_inc, p + 6, (buf + new_size) - (p + 6));
+                  new_size -= 5;
+                  *p = ' ';
+                  p = p_inc; /* next char */
+               }
              else
-               p++; /* next char */
+               p = p_inc; /* next char */
           }
         else
-          p++;                                /* nothing interesting :) next char */
+          p++; /* nothing interesting :) next char */
      }
 
 
