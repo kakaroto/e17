@@ -265,7 +265,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 			    (float)NEWS_FEED_TIMER_MIN, (float)NEWS_FEED_TIMER_MAX,
 			    1.0, 0, NULL, &(cfdata->feed.timer_m), 70);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_check_add(evas, _("Sort lists by name"), &(cfdata->feed.sort_name));
+   ob = e_widget_check_add(evas, _("Sort lists by name (disable Move action)"), &(cfdata->feed.sort_name));
    e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 0);
 
    e_widget_list_object_append(o2, of, 1, 1, 0.5);

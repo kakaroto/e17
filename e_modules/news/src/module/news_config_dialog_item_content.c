@@ -11,6 +11,8 @@ struct _E_Config_Dialog_Data
    int          ilist_selected_feeds_inrefresh;
    Evas_Object *button_add;
    Evas_Object *button_rem;
+   Evas_Object *button_up;
+   Evas_Object *button_down;
 
    News_Item *ni;
 };
@@ -163,7 +165,11 @@ news_config_dialog_item_content_refresh_selected_feeds(News_Item *ni)
 
    e_widget_ilist_clear(ilist);
    if (cfdata->button_rem)
-     e_widget_disabled_set(cfdata->button_rem, 1);
+     {
+        e_widget_disabled_set(cfdata->button_rem, 1);
+        e_widget_disabled_set(cfdata->button_up, 1);
+        e_widget_disabled_set(cfdata->button_down, 1);
+     }
 
    cfdata->ilist_selected_feeds_inrefresh = 1;
    pos = -1;
@@ -276,9 +282,13 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_on_change_hook_set(ob, _cb_selected_feed_change, cfdata);
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 4, 1, 1, 1, 1);
 
-   ob = e_widget_button_add(evas, "", "widget/up_arrow", _cb_feed_up, cfdata, NULL);
+   ob = e_widget_button_add(evas, "Move", "widget/up_arrow", _cb_feed_up, cfdata, NULL);
+   e_widget_disabled_set(ob, 1);
+   cfdata->button_up = ob;
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 0, 0, 0, 0);
-   ob = e_widget_button_add(evas, "", "widget/down_arrow", _cb_feed_down, cfdata, NULL);
+   ob = e_widget_button_add(evas, "Move", "widget/down_arrow", _cb_feed_down, cfdata, NULL);
+   e_widget_disabled_set(ob, 1);
+   cfdata->button_down = ob;
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 0, 0, 0, 0);
 
    ob = e_widget_button_add(evas, _("Remove this Feed"), NULL, _cb_feed_remove, cfdata, NULL);
@@ -480,11 +490,19 @@ _cb_selected_feed_change(void *data, Evas_Object *obj)
    if (e_widget_ilist_selected_get(cfdata->ilist_selected_feeds) >= 0)
      {
         if (cfdata->button_rem)
-          e_widget_disabled_set(cfdata->button_rem, 0);
+          {
+             e_widget_disabled_set(cfdata->button_rem, 0);
+             e_widget_disabled_set(cfdata->button_up, 0);
+             e_widget_disabled_set(cfdata->button_down, 0);
+          }
      }
    else
      {
         if (cfdata->button_rem)
-          e_widget_disabled_set(cfdata->button_rem, 1);
+          {
+             e_widget_disabled_set(cfdata->button_rem, 1);
+             e_widget_disabled_set(cfdata->button_up, 1);
+             e_widget_disabled_set(cfdata->button_down, 1);
+          }
      }
 }

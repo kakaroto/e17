@@ -11,8 +11,12 @@ struct _E_Config_Dialog_Data
    News_Feed_Category *selected_category;
    Evas_Object *button_feed_del;
    Evas_Object *button_feed_conf;
+   Evas_Object *button_feed_up;
+   Evas_Object *button_feed_down;
    Evas_Object *button_cat_del;
    Evas_Object *button_cat_conf;
+   Evas_Object *button_cat_up;
+   Evas_Object *button_cat_down;
    Evas_Object *button_langs;
 
    E_Confirm_Dialog *cd;
@@ -25,6 +29,9 @@ static void         _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdat
 static void         _fill_data(E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int          _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+
+static void         _buttons_feed_update(E_Config_Dialog_Data *cfdata);
+static void         _buttons_category_update(E_Config_Dialog_Data *cfdata);
 
 static void         _cb_feed_up(void *data, void *data2);
 static void         _cb_feed_down(void *data, void *data2);
@@ -108,10 +115,7 @@ news_config_dialog_feeds_refresh_feeds(void)
    e_widget_ilist_freeze(ilist);
 
    e_widget_ilist_clear(ilist);
-   if (cfdata->button_feed_del)
-     e_widget_disabled_set(cfdata->button_feed_del, 1);
-   if (cfdata->button_feed_conf)
-     e_widget_disabled_set(cfdata->button_feed_conf, 1);
+   _buttons_feed_update(cfdata);
 
    pos = -1;
    pos_to_select = -1;
@@ -194,10 +198,7 @@ news_config_dialog_feeds_refresh_categories(void)
    e_widget_ilist_freeze(ilist);
 
    e_widget_ilist_clear(ilist);
-   if (cfdata->button_cat_del)
-     e_widget_disabled_set(cfdata->button_cat_del, 1);
-   if (cfdata->button_cat_conf)
-     e_widget_disabled_set(cfdata->button_cat_conf, 1);
+   _buttons_category_update(cfdata);
 
    pos = -1;
    pos_to_select = -1;
@@ -303,20 +304,26 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    if (!news->config->feed.sort_name)
      {
         ob = e_widget_button_add(evas, "Move", "widget/up_arrow", _cb_category_up, cfdata, NULL);
+        cfdata->button_cat_up = ob;
         e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 0, 1, 0);
         ob = e_widget_button_add(evas, "Move", "widget/down_arrow", _cb_category_down, cfdata, NULL);
+        cfdata->button_cat_down = ob;
         e_widget_frametable_object_append(of, ob, 3, 1, 3, 1, 1, 0, 1, 0);
+     }
+   else
+     {
+        cfdata->button_cat_up = NULL;
+        cfdata->button_cat_down = NULL;
      }
 
    ob = e_widget_button_add(evas, _("Add"), NULL, _cb_category_add, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
    ob = e_widget_button_add(evas, _("Delete"), NULL, _cb_category_del, cfdata, NULL);
-   e_widget_disabled_set(ob, 1);
    cfdata->button_cat_del = ob;
    e_widget_frametable_object_append(of, ob, 2, 2, 2, 1, 1, 0, 1, 0);
    ob = e_widget_button_add(evas, _("Configure"), NULL, _cb_category_config, cfdata, NULL);
-   e_widget_disabled_set(ob, 1);
    cfdata->button_cat_conf = ob;
+   _buttons_category_update(cfdata);
    e_widget_frametable_object_append(of, ob, 4, 2, 2, 1, 1, 0, 1, 0);
 
    e_widget_list_object_append(o2, of, 1, 1, 0.5);
@@ -371,20 +378,26 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    if (!news->config->feed.sort_name)
      {
         ob = e_widget_button_add(evas, "Move", "widget/up_arrow", _cb_feed_up, cfdata, NULL);
+        cfdata->button_feed_up = ob;
         e_widget_frametable_object_append(of, ob, 0, 2, 3, 1, 1, 0, 1, 0);
         ob = e_widget_button_add(evas, "Move", "widget/down_arrow", _cb_feed_down, cfdata, NULL);
+        cfdata->button_feed_down = ob;
         e_widget_frametable_object_append(of, ob, 3, 2, 3, 1, 1, 0, 1, 0);
+     }
+   else
+     {
+        cfdata->button_feed_up = NULL;
+        cfdata->button_feed_down = NULL;
      }
 
    ob = e_widget_button_add(evas, _("Add"), NULL, _cb_feed_add, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 0, 1, 0);
    ob = e_widget_button_add(evas, _("Delete"), NULL, _cb_feed_del, cfdata, NULL);
-   e_widget_disabled_set(ob, 1);
    cfdata->button_feed_del = ob;
    e_widget_frametable_object_append(of, ob, 2, 3, 2, 1, 1, 0, 1, 0);
    ob = e_widget_button_add(evas, _("Configure"), NULL, _cb_feed_config, cfdata, NULL);
-   e_widget_disabled_set(ob, 1);
    cfdata->button_feed_conf = ob;
+   _buttons_feed_update(cfdata);
    e_widget_frametable_object_append(of, ob, 4, 3, 2, 1, 1, 0, 1, 0);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -402,6 +415,44 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 }
 
 static void
+_buttons_feed_update(E_Config_Dialog_Data *cfdata)
+{
+   if (cfdata->selected_feed)
+     {
+        e_widget_disabled_set(cfdata->button_feed_del, 0);
+        e_widget_disabled_set(cfdata->button_feed_conf, 0);
+        e_widget_disabled_set(cfdata->button_feed_up, 0);
+        e_widget_disabled_set(cfdata->button_feed_down, 0);
+     }
+   else
+     {
+        e_widget_disabled_set(cfdata->button_feed_del, 1);
+        e_widget_disabled_set(cfdata->button_feed_conf, 1);
+        e_widget_disabled_set(cfdata->button_feed_up, 1);
+        e_widget_disabled_set(cfdata->button_feed_down, 1);
+     }
+}
+
+static void
+_buttons_category_update(E_Config_Dialog_Data *cfdata)
+{
+   if (cfdata->selected_category)
+     {
+        e_widget_disabled_set(cfdata->button_cat_del, 0);
+        e_widget_disabled_set(cfdata->button_cat_conf, 0);
+        e_widget_disabled_set(cfdata->button_cat_up, 0);
+        e_widget_disabled_set(cfdata->button_cat_down, 0);
+     }
+   else
+     {
+        e_widget_disabled_set(cfdata->button_cat_del, 1);
+        e_widget_disabled_set(cfdata->button_cat_conf, 1);
+        e_widget_disabled_set(cfdata->button_cat_up, 1);
+        e_widget_disabled_set(cfdata->button_cat_down, 1);
+     }
+}
+
+static void
 _cb_feed_up(void *data, void *data2)
 {
    E_Config_Dialog_Data *cfdata;
@@ -414,6 +465,7 @@ _cb_feed_up(void *data, void *data2)
    cfdata = data;
 
    f = cfdata->selected_feed;
+   if (!f) return;
    cat = f->category;
 
    l = evas_list_find_list(cat->feeds_visible, f);
@@ -440,6 +492,7 @@ _cb_feed_down(void *data, void *data2)
    cfdata = data;
 
    f = cfdata->selected_feed;
+   if (!f) return;
    cat = f->category;
 
    l = evas_list_find_list(cat->feeds, f);
@@ -463,12 +516,8 @@ _cb_feed_list(void *data)
    f = data;
    cfdata = news->config_dialog_feeds->cfdata;
 
-   if (cfdata->button_feed_del)
-     e_widget_disabled_set(cfdata->button_feed_del, 0);
-   if (cfdata->button_feed_conf)
-     e_widget_disabled_set(cfdata->button_feed_conf, 0);
-
    cfdata->selected_feed = f;
+   _buttons_feed_update(cfdata);
 
    snprintf(buf, sizeof(buf),
             "%s",
@@ -591,14 +640,10 @@ _cb_category_list(void *data)
    c = data;
    cfdata = news->config_dialog_feeds->cfdata;
 
-   if (cfdata->button_cat_del)
-     e_widget_disabled_set(cfdata->button_cat_del, 0);
-   if (cfdata->button_cat_conf)
-     e_widget_disabled_set(cfdata->button_cat_conf, 0);
-
    if (cfdata->selected_category != c)
      {
         cfdata->selected_category = c;
+        _buttons_category_update(cfdata);
 
         /* select the first feed in this category */
         if (c->feeds_visible)
