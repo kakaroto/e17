@@ -280,6 +280,30 @@ unsigned int *sharpen_image(Ewl_Widget *image)
 	return im_data_new;
 }
 
+unsigned int *grayscale_image(Ewl_Widget *image)
+{
+        unsigned int *im_data, *im_data_new;
+        int gray, i, r, g, b, a, ew, eh;
+
+        im_data = evas_object_image_data_get(EWL_IMAGE(image)->image, FALSE);
+        evas_object_image_size_get(EWL_IMAGE(image)->image, &ew, &eh);
+
+        im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+
+        for (i = 0; i < (ew * eh); i++)
+        {
+	        b = (int)((im_data[i]) & 0xff);
+	        g = (int)((im_data[i] >> 8) & 0xff);
+	        r = (int)((im_data[i] >> 16) & 0xff);
+		a = (int)((im_data[i] >> 24) & 0xff);
+
+		gray = (int)((0.3 * r) + (0.59 * g) + (0.11 * b));
+	
+		im_data_new[i] = (gray << 24) | (gray << 16) | (gray << 8) | gray;
+        }
+        return im_data_new;
+}
+
 void update_image(Ewl_Widget *image, int w, int h, unsigned int *data)
 {
 	if (w && h && !data)

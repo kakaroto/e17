@@ -14,6 +14,7 @@ static void rotate_image_left(Ewl_Widget *w, void *event, void *data);
 static void rotate_image_right(Ewl_Widget *w, void *event, void *data);
 static void image_blur(Ewl_Widget *w, void *event, void *data);
 static void image_sharpen(Ewl_Widget *w, void *event, void *data);
+static void image_grayscale(Ewl_Widget *w, void *event, void *data);
 
 /*Add the edit view*/
 Ewl_Widget *add_edit_view(Ewl_Widget *c)
@@ -136,6 +137,11 @@ static void add_advanced_edit_tools(Ewl_Widget *c)
 
 	button = add_button(c, "Sharpen Image", NULL, image_sharpen, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
+
+	button = add_button(c, "Black and White", NULL, image_grayscale, NULL);
+	ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
         ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 
@@ -313,3 +319,16 @@ static void image_sharpen(Ewl_Widget *w, void *event, void *data)
         return;
 }
 
+/*Convert image to Black and White*/
+static void image_grayscale(Ewl_Widget *w, void *event, void *data)
+{
+	unsigned int *image_data;
+	int nw, nh;
+
+	evas_object_image_size_get(EWL_IMAGE(em->eimage)->image, &nw, &nh);
+	image_data = grayscale_image(em->eimage);
+	update_image(em->eimage, nw, nh, image_data);
+	ewl_widget_configure(em->eimage->parent);
+
+	return;
+}
