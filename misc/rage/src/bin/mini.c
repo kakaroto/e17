@@ -50,7 +50,7 @@ mini_add(Evas_Object *parent, const char *source)
    mini->o_parent = parent;
    snprintf(buf, sizeof(buf), "%s/.rage/thumbs", getenv("HOME"));
    ecore_file_mkpath(buf);
-   sha1_sum(source, strlen(source), sha);
+   sha1_sum((const unsigned char *)source, strlen(source), sha);
    for (i = 0; i < 20; i++)
      {
 	buf[(i * 2) + 0] = chmap[(sha[i] >> 4) & 0xf];
