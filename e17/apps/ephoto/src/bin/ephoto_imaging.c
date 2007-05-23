@@ -1,11 +1,118 @@
 #include "ephoto.h"
 
+static void rgb_to_hsv(int r, int g, int b, float *h, float *s, float *v);
+static void hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b);
+
 static void close_dialog(Ewl_Widget *w, void *event, void *data);
 static void close_progress(Ewl_Widget *w, void *event, void *data);
 static void save_clicked(Ewl_Widget *w, void *event, void *data);
 static void save_image(Ewl_Widget *w, void *event, void *data);
 
 static Ewl_Widget *save_win, *qseek;
+
+static void rgb_to_hsv(int r, int g, int b, float *h, float *s, float *v)
+{
+	int delta, min, max;
+
+	max = (r + g + abs(r - g)) / 2;
+	max = (max + b + abs(max - b)) / 2;
+	min = (r + g - abs(r - g)) / 2;
+	min = (min + b - abs(min - b)) / 2;
+
+	delta = max - min;
+	*v = (float)(100 * max) / 255.0;
+
+	if (max != 0) *s = (float)(100 * delta) / (float)max;
+
+	else
+	{
+		*s = 0.0;
+		*h = 0.0;
+		*v = 0.0;
+	}
+
+	if (r == max) *h = (float)(100 * (g - b)) / (float)(6.0 * delta);
+
+	else
+	{
+		if (g == max) *h = (float)(100 * (2 * delta + b - r)) / (float)(6.0 * delta);
+		else *h = (float)(100 * (4 * delta + r - g)) / (float)(6.0 * delta);
+	}
+	if (*h < 0.0) *h += 100.0;
+	if (*h > 100.0) *h -= 100.0;	
+
+	return;
+}
+
+static void hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b)
+{
+	float hh, f, p, q, t;
+	int i;
+
+	if (s == 0.0)
+	{
+		*r = (int)(((v * 255.0) / 100.0) + 0.5);
+		*g = (int)(((v * 255.0) / 100.0) + 0.5);
+		*b = (int)(((v * 255.0) / 100.0) + 0.5);
+	
+		return;
+	}
+	
+	hh = (h * 6.0) / 100.0;
+	i = floor(hh);
+	f = hh - (float)i;
+
+	p = v * (1.0 - s / 100.0) / 100.0;
+	q = v * (1.0 - (s * f) / 100.0) / 100.0;
+	t = v * (1.0 - s * (1.0 - f) / 100.0) / 100.0;
+
+	switch (i)
+	{
+		case 0:
+		{
+			*r = (int)((v * 255.0 / 100.0) + 0.5);
+			*g = (int)((t * 255.0) + 0.5);
+			*b = (int)((p * 255.0) + 0.5);
+			break;
+		}
+		case 1:
+		{
+			*r = (int)((q * 255.0) + 0.5);
+			*g = (int)((v * 255.0 / 100.0) + 0.5);
+			*b = (int)((p * 255.0) + 0.5);
+			break;
+		}
+		case 2:
+		{
+			*r = (int)((p * 255.0) + 0.5); 
+           		*g = (int)((v * 255.0 / 100.0) + 0.5);
+		        *b = (int)((t * 255.0) + 0.5);
+           		break;
+        	} 
+     		case 3:
+        	{
+           		*r = (int)((p * 255.0) + 0.5);
+           		*g = (int)((q * 255.0) + 0.5);
+           		*b = (int)((v * 255.0 / 100.0) + 0.5);
+           		break;
+        	}
+     		case 4:
+        	{
+           		*r = (int)((t * 255.0) + 0.5);
+           		*g = (int)((p * 255.0) + 0.5);
+          		*b = (int)((v * 255.0 / 100.0) + 0.5);
+           		break;
+        	}
+     		case 5:
+        	{
+           		*r = (int)((v * 255.0 / 100.0) + 0.5);
+           		*g = (int)((p * 255.0) + 0.5);
+           		*b = (int)((q * 255.0) + 0.5);
+           		break;
+        	}
+     	}
+	return;
+}
 
 unsigned int *flip_horizontal(Ewl_Widget *image)
 {
@@ -299,9 +406,35 @@ unsigned int *grayscale_image(Ewl_Widget *image)
 
 		gray = (int)((0.3 * r) + (0.59 * g) + (0.11 * b));
 	
-		im_data_new[i] = (gray << 24) | (gray << 16) | (gray << 8) | gray;
+		im_data_new[i] = (a << 24) | (gray << 16) | (gray << 8) | gray;
         }
         return im_data_new;
+}
+
+unsigned int *sepia_image(Ewl_Widget *image)
+{
+	unsigned int *im_data, *im_data_new;
+	int i, r, g, b, a, ew, eh;
+	float h, s, v;
+
+        im_data = evas_object_image_data_get(EWL_IMAGE(image)->image, FALSE);
+        evas_object_image_size_get(EWL_IMAGE(image)->image, &ew, &eh);
+
+        im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+
+	for (i = 0; i < (ew * eh); i++)
+        {
+                b = (int)((im_data[i]) & 0xff);
+                g = (int)((im_data[i] >> 8) & 0xff);
+                r = (int)((im_data[i] >> 16) & 0xff);
+                a = (int)((im_data[i] >> 24) & 0xff);
+		
+		rgb_to_hsv(r, g, b, &h, &s, &v);
+		hsv_to_rgb(25, s, v, &r, &g, &b);
+
+		im_data_new[i] = (a << 24) | (r << 16) | (g << 8) | b;
+	}
+	return im_data_new;
 }
 
 void update_image(Ewl_Widget *image, int w, int h, unsigned int *data)
@@ -344,11 +477,11 @@ static void save_image(Ewl_Widget *w, void *event, void *data)
 		snprintf(flags, PATH_MAX, "compress=%i",
                  	       (int)ewl_range_value_get(EWL_RANGE(qseek)));
 	}
-	if (!strncmp(ext, "jpg", 3) || !strncmp(ext, "jpeg", 4))
+	else
 	{
 		double svalue;
 		float jvalue;
-
+ 
 		svalue = ewl_range_value_get(EWL_RANGE(qseek));
 		jvalue = (svalue / 9) * 100;
 

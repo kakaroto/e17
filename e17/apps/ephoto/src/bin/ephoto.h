@@ -16,6 +16,7 @@
 
 #include <libgen.h>
 #include <limits.h>
+#include <math.h>
 #include <sqlite3.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -86,6 +87,7 @@ unsigned int *rotate_right(Ewl_Widget *image);
 unsigned int *blur_image(Ewl_Widget *image);
 unsigned int *sharpen_image(Ewl_Widget *image);
 unsigned int *grayscale_image(Ewl_Widget *image);
+unsigned int *sepia_image(Ewl_Widget *image);
 void update_image(Ewl_Widget *image, int w, int h, unsigned int *data);
 void save_dialog(const char *file);
 
