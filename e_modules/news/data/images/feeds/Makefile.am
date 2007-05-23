@@ -20,3 +20,5 @@ files_DATA = afp.png                   \
 	     news.png                  \
 	     osnews.png                \
 	     slashdot.png
+
+EXTRA_DIST = $(files_DATA)

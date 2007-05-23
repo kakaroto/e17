@@ -1,9 +1,12 @@
+ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in
 
-EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
-	-id images \
-	-fd fonts
+	-id $(top_srcdir)/data/theme/images \
+	-fd $(top_srcdir)/data/theme/fonts
+
+filesdir = $(datadir)
+files_DATA = e-module-news.edj
 
 EXTRA_DIST = \
 module.edc \
@@ -22,10 +25,28 @@ module_popw_parts.edc \
 module_popw_programs.edc \
 module_viewer.edc \
 module_viewer_parts.edc \
-module_viewer_programs.edc
-
-filesdir = $(datadir)
-files_DATA = e-module-news.edj
+module_viewer_programs.edc \
+fonts/VeraBd.ttf \
+fonts/Vera.ttf \
+images/feed_background_new.png \
+images/feed_border.png \
+images/feed_loading_1.png \
+images/feed_loading_done.png \
+images/icon_article_read.png \
+images/icon_article_unread.png \
+images/icon_infos.png \
+images/icon_logo.png \
+images/icon_setasread.png \
+images/icon_update.png \
+images/icon_viewer.png \
+images/item_border.png \
+images/item_feed_back.png \
+images/popup_warn_background.png \
+images/popup_warn_disable_clicked.png \
+images/popup_warn_disable.png \
+images/popup_warn_logo_error.png \
+images/popup_warn_logo_info.png \
+images/viewer_background.png
 
 e-module-news.edj: Makefile $(EXTRA_DIST)
 	$(EDJE_CC) $(EDJE_FLAGS) \
