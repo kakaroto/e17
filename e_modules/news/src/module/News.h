@@ -47,10 +47,10 @@
 #else
 # define DBROWSER(x)  ((void) 0)
 #endif
-#ifdef DEBUG_POPUP_WARN
-# define DPOPW(x)  do {printf("POPUP WARN - %s:%d: ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
+#ifdef DEBUG_POPUP
+# define DPOP(x)  do {printf("POPUP - %s:%d: ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)
 #else
-# define DPOPW(x)  ((void) 0)
+# define DPOP(x)  ((void) 0)
 #endif
 #ifdef DEBUG_VIEWER
 # define DVIEWER(x)  do {printf("VIEWER - %s:%d: ", __FILE__, __LINE__); printf x; printf ("\n"); fflush(stdout);} while (0)

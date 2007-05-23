@@ -54,10 +54,13 @@ news_util_browser_open(const char *url)
 
    if (!url) return 0;
 
-   switch(c->browser.wich)
+   switch((News_Util_Browser)c->browser.wich)
      {
      case NEWS_UTIL_BROWSER_FIREFOX:
         snprintf(cmd, sizeof(cmd), "%s", "firefox -new-window");
+        break;
+     case NEWS_UTIL_BROWSER_FIREFOX_TAB:
+        snprintf(cmd, sizeof(cmd), "%s", "firefox -new-tab");
         break;
      case NEWS_UTIL_BROWSER_MOZILLA:
         snprintf(cmd, sizeof(cmd), "%s", "mozilla");

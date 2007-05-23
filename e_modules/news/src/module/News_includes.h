@@ -6,7 +6,7 @@
 #include "news_parse_rss.h"
 #include "news_parse_atom.h"
 #include "news_viewer.h"
-#include "news_popup_warn.h"
+#include "news_popup.h"
 #include "news_menu.h"
 #include "news_config.h"
 #include "news_config_dialog.h"

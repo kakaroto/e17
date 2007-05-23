@@ -126,8 +126,7 @@ news_config_dialog_item_content_refresh_feeds(News_Item *ni)
                   e_icon_file_set(ic, f->icon);
                }
              
-             snprintf(buf, sizeof(buf), "%s", f->name);
-             // TODO : better display of each feed
+             snprintf(buf, sizeof(buf), "%s%s", (f->important) ? "[i] " : "", f->name);
              
              e_widget_ilist_append(ilist, ic, buf, NULL, f, NULL);
 	     pos++;
@@ -184,8 +183,7 @@ news_config_dialog_item_content_refresh_selected_feeds(News_Item *ni)
              e_icon_file_set(ic, _feed->icon);
           }
 
-        snprintf(buf, sizeof(buf), "%s", _feed->name);
-        // TODO : better display of each feed
+        snprintf(buf, sizeof(buf), "%s%s", (_feed->important) ? "[i] " : "", _feed->name);
 
         e_widget_ilist_append(ilist, ic, buf, NULL, _feed, NULL);
 	pos++;

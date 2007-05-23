@@ -1,9 +1,12 @@
+ACLOCAL_AMFLAGS = -I m4
+MAINTAINERCLEANFILES = Makefile.in
+
 INCLUDES              = -I. \
 			-I$(top_srcdir) \
                         -I$(includedir) \
-			@e_cflags@
-pkgdir                 = $(datadir)/$(MODULE_ARCH)
+			@ENLIGHTENMENT_CFLAGS@
 
+pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
                          e_mod_main.h \
@@ -36,8 +39,8 @@ module_la_SOURCES      = e_mod_main.c \
                          news_parse_atom.h \
                          news_parse_rss.c \
                          news_parse_rss.h \
-                         news_popup_warn.c \
-                         news_popup_warn.h \
+                         news_popup.c \
+                         news_popup.h \
                          news_theme.c \
                          news_theme.h \
                          news_utils.c \
@@ -46,6 +49,6 @@ module_la_SOURCES      = e_mod_main.c \
                          news_viewer.h \
                          News.h \
                          News_includes.h
-module_la_LIBADD       = @e_libs@
+module_la_LIBADD       = @ENLIGHTENMENT_LIBS@
 module_la_LDFLAGS      = -module -avoid-version -s
 module_la_DEPENDENCIES = $(top_builddir)/config.h

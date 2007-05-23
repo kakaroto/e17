@@ -1,8 +1,7 @@
 #include "News.h"
 
 static void       _item_refresh_mode_one(News_Item *ni, int changed_order, int changed_state);
-static void       _item_refresh_mode_feed(News_Item *ni, int unread_only, int changed_order, int changed_content, int changed_state);
-static Evas_List *_feedrefs_sort_unreadonly_list_get(News_Item *ni);
+static void       _item_refresh_mode_feed(News_Item *ni, int important_only, int unread_only, int changed_order, int changed_content, int changed_state);
 static void       _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void       _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
@@ -48,7 +47,7 @@ news_item_new(E_Gadcon_Client *gcc, Evas_Object *obj)
    e_box_homogenous_set(view, 1);
    e_box_orientation_set(view, 1);
    edje_object_part_swallow(ni->obj, "view", view);
-   evas_object_show(view); //FIXME: not needed
+   evas_object_show(view);
    ni->view.box = view;
 
    news_item_refresh(ni, 1, 1, 1);
@@ -93,7 +92,7 @@ void
 news_item_refresh(News_Item *ni, int changed_order, int changed_content, int changed_state)
 {
    Evas_Object *box;
-   int mode;
+   News_Item_View_Mode mode;
 
    box = ni->view.box;
    e_box_freeze(box);
@@ -120,10 +119,15 @@ news_item_refresh(News_Item *ni, int changed_order, int changed_content, int cha
         _item_refresh_mode_one(ni, changed_order, changed_state);
         break;
      case NEWS_ITEM_VIEW_MODE_FEED:
-        _item_refresh_mode_feed(ni, 0, changed_order, changed_content, changed_state);
+        _item_refresh_mode_feed(ni, 0, 0, changed_order, changed_content, changed_state);
         break;
      case NEWS_ITEM_VIEW_MODE_FEED_UNREAD:
-        _item_refresh_mode_feed(ni, 1, changed_order, changed_content, changed_state);
+        _item_refresh_mode_feed(ni, 0, 1, changed_order, changed_content, changed_state);
+     case NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT:
+        _item_refresh_mode_feed(ni, 1, 0, changed_order, changed_content, changed_state);
+        break;
+     case NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT_UNREAD:
+        _item_refresh_mode_feed(ni, 1, 1, changed_order, changed_content, changed_state);
         break;
      }
 
@@ -219,28 +223,25 @@ _item_refresh_mode_one(News_Item *ni, int changed_order, int changed_state)
 }
 
 static void
-_item_refresh_mode_feed(News_Item *ni, int unread_only, int changed_order, int changed_content, int changed_state)
+_item_refresh_mode_feed(News_Item *ni, int important_only, int unread_only, int changed_order, int changed_content, int changed_state)
 {
    Evas_Object *box;
    Evas_Object *obj;
-   Evas_List *feed_refs;
-   int feed_refs_free = 0;
 
    if (!evas_list_count(ni->config->feed_refs)) return;
 
    box = ni->view.box;
 
-   if (unread_only)
-     {
-        feed_refs = _feedrefs_sort_unreadonly_list_get(ni);
-        feed_refs_free = 1;
-     }
-   else
-     feed_refs = ni->config->feed_refs;
-
-   NEWS_ITEM_FEEDS_FOREACH_BEG_LIST(feed_refs);
+   NEWS_ITEM_FEEDS_FOREACH_BEG_LIST(ni->config->feed_refs);
    {
       obj = _feed->obj;
+
+      if (important_only &&
+          (!_feed->important))
+        continue;
+      if (unread_only &&
+          (!_feed->doc || !_feed->doc->unread_count))
+        continue;
       
       DITEM(("refresh : feed %s", _feed->name));
       
@@ -268,23 +269,6 @@ _item_refresh_mode_feed(News_Item *ni, int unread_only, int changed_order, int c
       _feed->obj = obj;
    }
    NEWS_ITEM_FEEDS_FOREACH_END();
-
-   if (feed_refs_free)
-     evas_list_free(feed_refs);
-}
-
-static Evas_List *
-_feedrefs_sort_unreadonly_list_get(News_Item *ni)
-{
-   Evas_List *feed_refs;
-
-   feed_refs = NULL;
-   NEWS_ITEM_FEEDS_FOREACH_BEG(ni);
-   if (_feed->doc && _feed->doc->unread_count)
-     feed_refs = evas_list_append(feed_refs, _ref);
-   NEWS_ITEM_FEEDS_FOREACH_END();
-
-   return feed_refs;
 }
 
 static void

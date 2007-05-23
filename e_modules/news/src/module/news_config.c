@@ -31,7 +31,7 @@ news_config_init(void)
    E_CONFIG_VAL(D, T, url_feed, STR);
    E_CONFIG_VAL(D, T, icon, STR);
    E_CONFIG_VAL(D, T, icon_ovrw, SHORT);
-   E_CONFIG_VAL(D, T, urgent, SHORT);
+   E_CONFIG_VAL(D, T, important, SHORT);
    _news_feed_ref_edd = E_CONFIG_DD_NEW("News_Feed_Ref", News_Feed_Ref);
 #undef T
 #undef D
@@ -166,9 +166,9 @@ news_config_init(void)
    E_CONFIG_LIMIT(news->config->viewer.varticles.sort_date, 0, 1);
    E_CONFIG_LIMIT(news->config->viewer.vcontent.font_size, NEWS_VIEWER_VCONTENT_FONT_SIZE_MIN, NEWS_VIEWER_VCONTENT_FONT_SIZE_MAX);
    E_CONFIG_LIMIT(news->config->viewer.vcontent.font_shadow, 0, 1);
-   E_CONFIG_LIMIT(news->config->popup_news.timer_s, NEWS_POPUP_WARN_TIMER_S_MIN, NEWS_POPUP_WARN_TIMER_S_MAX);
+   E_CONFIG_LIMIT(news->config->popup_news.timer_s, NEWS_POPUP_TIMER_S_MIN, NEWS_POPUP_TIMER_S_MAX);
    E_CONFIG_LIMIT(news->config->popup_other.on_timeout, 0, 1);
-   E_CONFIG_LIMIT(news->config->popup_other.timer_s, NEWS_POPUP_WARN_TIMER_S_MIN, NEWS_POPUP_WARN_TIMER_S_MAX);
+   E_CONFIG_LIMIT(news->config->popup_other.timer_s, NEWS_POPUP_TIMER_S_MIN, NEWS_POPUP_TIMER_S_MAX);
 
    return 1;
 }

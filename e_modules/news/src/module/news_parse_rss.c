@@ -218,7 +218,7 @@ _parse_infos(News_Parse *parser)
                        (char *)url_home, feed->url_home_ovrw,
                        (char *)feed->url_feed,
                        (char *)icon, feed->icon_ovrw,
-                       feed->urgent,
+                       feed->important,
                        feed->category,
                        0);
         if (feed->item && feed->item->viewer)

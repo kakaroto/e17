@@ -211,18 +211,20 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    of = e_widget_frametable_add(evas, _("Browser"), 0);
 
    rg = e_widget_radio_group_new(&(cfdata->browser.wich));
-   ob = e_widget_radio_add(evas, _("Firefox"), NEWS_UTIL_BROWSER_FIREFOX, rg);
-   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 0, 1);
+   ob = e_widget_radio_add(evas, _("Firefox (new window)"), NEWS_UTIL_BROWSER_FIREFOX, rg);
+   e_widget_frametable_object_append(of, ob, 0, 0, 3, 1, 1, 1, 0, 1);
+   ob = e_widget_radio_add(evas, _("Firefox (new tab)"), NEWS_UTIL_BROWSER_FIREFOX_TAB, rg);
+   e_widget_frametable_object_append(of, ob, 3, 0, 3, 1, 1, 1, 0, 1);
    ob = e_widget_radio_add(evas, _("Mozilla"), NEWS_UTIL_BROWSER_MOZILLA, rg);
-   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 0, 1);
+   e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 0, 1);
    ob = e_widget_radio_add(evas, _("Opera"), NEWS_UTIL_BROWSER_OPERA, rg);
-   e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 0, 1);
+   e_widget_frametable_object_append(of, ob, 2, 1, 2, 1, 1, 1, 0, 1);
    ob = e_widget_radio_add(evas, _("Dillo"), NEWS_UTIL_BROWSER_DILLO, rg);
-   e_widget_frametable_object_append(of, ob, 3, 0, 1, 1, 1, 1, 0, 1);
+   e_widget_frametable_object_append(of, ob, 4, 1, 2, 1, 1, 1, 0, 1);
    ob = e_widget_radio_add(evas, _("This one"), NEWS_UTIL_BROWSER_OWN, rg);
-   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 0, 1);
+   e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 0, 1);
    ob = e_widget_entry_add(evas, &(cfdata->browser.own));
-   e_widget_frametable_object_append(of, ob, 1, 1, 3, 1, 1, 1, 1, 1);
+   e_widget_frametable_object_append(of, ob, 2, 2, 4, 1, 1, 1, 0, 1);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -273,18 +275,20 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    of = e_widget_frametable_add(evas, _("Browser"), 0);
 
    rg = e_widget_radio_group_new(&(cfdata->browser.wich));
-   ob = e_widget_radio_add(evas, _("Firefox"), NEWS_UTIL_BROWSER_FIREFOX, rg);
-   e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 0, 1);
+   ob = e_widget_radio_add(evas, _("Firefox (new window)"), NEWS_UTIL_BROWSER_FIREFOX, rg);
+   e_widget_frametable_object_append(of, ob, 0, 0, 3, 1, 1, 1, 0, 1);
+   ob = e_widget_radio_add(evas, _("Firefox (new tab)"), NEWS_UTIL_BROWSER_FIREFOX_TAB, rg);
+   e_widget_frametable_object_append(of, ob, 3, 0, 3, 1, 1, 1, 0, 1);
    ob = e_widget_radio_add(evas, _("Mozilla"), NEWS_UTIL_BROWSER_MOZILLA, rg);
-   e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 0, 1);
+   e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 0, 1);
    ob = e_widget_radio_add(evas, _("Opera"), NEWS_UTIL_BROWSER_OPERA, rg);
-   e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 0, 1);
+   e_widget_frametable_object_append(of, ob, 2, 1, 2, 1, 1, 1, 0, 1);
    ob = e_widget_radio_add(evas, _("Dillo"), NEWS_UTIL_BROWSER_DILLO, rg);
-   e_widget_frametable_object_append(of, ob, 3, 0, 1, 1, 1, 1, 0, 1);
+   e_widget_frametable_object_append(of, ob, 4, 1, 2, 1, 1, 1, 0, 1);
    ob = e_widget_radio_add(evas, _("This one"), NEWS_UTIL_BROWSER_OWN, rg);
-   e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 0, 1);
+   e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 0, 1);
    ob = e_widget_entry_add(evas, &(cfdata->browser.own));
-   e_widget_frametable_object_append(of, ob, 1, 1, 3, 1, 1, 1, 1, 1);   
+   e_widget_frametable_object_append(of, ob, 2, 2, 4, 1, 1, 1, 0, 1);
 
    e_widget_list_object_append(o2, of, 1, 1, 0.5);
 
@@ -313,8 +317,8 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ob = e_widget_label_add(evas, _("Timer"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 0);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f s"),
-			    (float)NEWS_POPUP_WARN_TIMER_S_MIN,
-			    (float)NEWS_POPUP_WARN_TIMER_S_MAX,
+			    (float)NEWS_POPUP_TIMER_S_MIN,
+			    (float)NEWS_POPUP_TIMER_S_MAX,
 			    1.0, 0, NULL, &(cfdata->popup_news.timer_s), 70);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 0);
 
@@ -322,14 +326,19 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    of = e_widget_frametable_add(evas, _("Popup On Warning / Error"), 0);
 
+   //TODO: NOT IMPLEMENTED YET
+   news->config->popup_other.on_timeout = 0;
+   cfdata->popup_other.on_timeout = 0;
    ob = e_widget_check_add(evas, _("Show on timeout ?"), &(cfdata->popup_other.on_timeout));
+   //TODO: NOT IMPLEMENTED YET
+   e_widget_disabled_set(ob, 1);
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 0, 1, 0);
 
    ob = e_widget_label_add(evas, _("Timer"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 0);
    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f s"),
-			    (float)NEWS_POPUP_WARN_TIMER_S_MIN,
-			    (float)NEWS_POPUP_WARN_TIMER_S_MAX,
+			    (float)NEWS_POPUP_TIMER_S_MIN,
+			    (float)NEWS_POPUP_TIMER_S_MAX,
 			    1.0, 0, NULL, &(cfdata->popup_other.timer_s), 70);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 0);
 

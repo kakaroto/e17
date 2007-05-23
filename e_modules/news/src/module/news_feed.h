@@ -205,7 +205,7 @@ struct _News_Feed
    const char *url_feed;
    const char *icon;
    int         icon_ovrw;
-   int         urgent;
+   int         important;
 
    /* not saved */
    E_Config_Dialog *config_dialog;
@@ -252,10 +252,10 @@ struct _News_Feed_Document
 {
    News_Feed       *feed;
 
-   News_Popup_Warn *popw;
-   Evas_List       *articles;
-   int              unread_count;
-   unsigned char    ui_needrefresh : 1;
+   News_Popup   *popw;
+   Evas_List    *articles;
+   int           unread_count;
+   unsigned char ui_needrefresh : 1;
 
    struct
    {
@@ -319,7 +319,7 @@ News_Feed          *news_feed_new(char *name, int name_ovrw,
                                   char *url_home, int url_home_ovrw,
                                   char *url_feed,
                                   char *icon, int icon_ovrw,
-                                  int urgent,
+                                  int important,
                                   News_Feed_Category *category);
 int                 news_feed_edit(News_Feed *f,
                                    char *name, int name_ovrw,
@@ -328,7 +328,7 @@ int                 news_feed_edit(News_Feed *f,
                                    char *url_home, int url_home_ovrw,
                                    char *url_feed,
                                    char *icon, int icon_ovrw,
-                                   int urgent,
+                                   int important,
                                    News_Feed_Category *category,
                                    int check_only);
 void                news_feed_free(News_Feed *f);

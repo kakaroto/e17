@@ -24,7 +24,7 @@ struct _E_Config_Dialog_Data
    char *url_feed;
    char *icon;
    int   icon_ovrw;
-   int   urgent;
+   int   important;
    News_Feed_Category *category;
 
    News_Feed *feed;
@@ -57,6 +57,12 @@ news_config_dialog_feed_show(News_Feed *feed)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
+
+   if (!evas_list_count(news->config->feed.categories))
+     {
+        news_util_message_error_show(_("You need to <hilight>create a category</hilight> first"));
+        return 0;
+     }
 
    v = E_NEW(E_Config_Dialog_View, 1);
    
@@ -144,10 +150,10 @@ news_config_dialog_feed_refresh_categories(News_Feed *feed)
    e_widget_ilist_thaw(ilist);
 
    if (pos_to_select != -1)
-     {
-        e_widget_ilist_selected_set(ilist, pos_to_select);
-        _cb_category_list(cfdata);
-     }
+     e_widget_ilist_selected_set(ilist, pos_to_select);
+   else
+     e_widget_ilist_selected_set(ilist, 0);
+   _cb_category_list(cfdata);
 
    e_widget_min_size_get(ilist, &w, NULL);
    e_widget_min_size_set(ilist, w, 110);
@@ -280,7 +286,7 @@ _fill_data(E_Config_Dialog_Data *cfdata, News_Feed *f)
              cfdata->icon = strdup(buf);
           }
         cfdata->icon_ovrw = f->icon_ovrw;
-        cfdata->urgent = f->urgent;
+        cfdata->important = f->important;
      }
    else
      {
@@ -344,9 +350,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &(cfdata->url_feed));
    e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_check_add(evas, _("Mark as important feed"), &(cfdata->urgent));
-   //TODO: NOT IMPLEMENTED YET
-   e_widget_disabled_set(ob, 1);
+   ob = e_widget_check_add(evas, _("Mark as important feed"), &(cfdata->important));
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 0, 1, 0);
 
    e_widget_table_object_append(o, of, 0, 0, 2, 1, 1, 1, 1, 1);
@@ -395,7 +399,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ob = e_widget_entry_add(evas, &(cfdata->url_home));
    e_widget_framelist_object_append(of, ob);
 
-   e_widget_table_object_append(o, of, 0, 1, 3, 1, 1, 0, 1, 0);
+   e_widget_table_object_append(o, of, 0, 1, 3, 1, 1, 1, 1, 1);
 
 
    of = e_widget_framelist_add(evas, _("Server informations"), 0);
@@ -412,7 +416,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ob = e_widget_check_add(evas, _("Home url"), &(cfdata->url_home_ovrw));
    e_widget_framelist_object_append(of, ob);
 
-   e_widget_table_object_append(o, of, 3, 1, 3, 1, 1, 0, 1, 0);
+   e_widget_table_object_append(o, of, 3, 1, 3, 1, 1, 1, 1, 1);
 
    e_dialog_resizable_set(cfd->dia, 1);
 
@@ -437,7 +441,7 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
                             cfdata->url_home, cfdata->url_home_ovrw,
                             cfdata->url_feed,
                             cfdata->icon, cfdata->icon_ovrw,
-                            cfdata->urgent,
+                            cfdata->important,
                             cfdata->category, 0) )
           {
              if (old_cat != cfdata->category)
@@ -466,7 +470,7 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
                           cfdata->url_home, cfdata->url_home_ovrw,
                           cfdata->url_feed,
                           cfdata->icon, cfdata->icon_ovrw,
-                          cfdata->urgent,
+                          cfdata->important,
                           cfdata->category);
         if (!f)
           {
@@ -481,8 +485,6 @@ _common_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      }
 
    news_feed_lists_refresh(1);
-
-   // TODO config dialog to attach to an item
 
    news_config_save();
 

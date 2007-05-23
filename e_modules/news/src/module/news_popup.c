@@ -3,7 +3,7 @@
 static Evas_List *_popups_warn;
 
 static void _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org_y);
-static void _try_close(News_Popup_Warn *popw);
+static void _try_close(News_Popup *popw);
 
 static int  _cb_timer(void *data);
 static void _cb_edje_close(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -13,7 +13,7 @@ static void _cb_edje_desactivate(void *data, Evas_Object *obj, const char *emiss
  */
 
 int
-news_popup_warn_init(void)
+news_popup_init(void)
 {
    _popups_warn = NULL;
 
@@ -21,29 +21,29 @@ news_popup_warn_init(void)
 }
 
 void
-news_popup_warn_shutdown(void)
+news_popup_shutdown(void)
 {
    Evas_List *l;
 
    for (l = _popups_warn; l; l = evas_list_next(l))
      {
-        News_Popup_Warn *p;
+        News_Popup *p;
         p = evas_list_data(l);
-        news_popup_warn_del(p);
+        news_popup_del(p);
      }
    evas_list_free(_popups_warn);
    _popups_warn = NULL;
 }
 
-News_Popup_Warn *
-news_popup_warn_add(int type, const char *title, const char *text, int timer, int (*func_close) (News_Popup_Warn *popw, void *data), void (func_desactivate) (News_Popup_Warn *popw, void *data), void *data)
+News_Popup *
+news_popup_add(int type, const char *title, const char *text, int timer, int (*func_close) (News_Popup *popw, void *data), void (func_desactivate) (News_Popup *popw, void *data), void *data)
 {
   E_Zone *zone;
-  News_Popup_Warn *popw;
+  News_Popup *popw;
   int fw, fh;
   int ecanvas_w, ecanvas_h;
 
-  popw = E_NEW(News_Popup_Warn, 1);
+  popw = E_NEW(News_Popup, 1);
 
   popw->type = type;
   popw->timer_org = timer;
@@ -55,7 +55,7 @@ news_popup_warn_add(int type, const char *title, const char *text, int timer, in
   popw->pop = e_popup_new(zone, 0, 0, 1, 1);
   if (!popw->pop)
     {
-      news_popup_warn_del(popw);
+      news_popup_del(popw);
       return 0;
     }
   evas_event_freeze(popw->pop->evas);
@@ -79,7 +79,7 @@ news_popup_warn_add(int type, const char *title, const char *text, int timer, in
 
   /* type */
   edje_object_message_send(popw->face, EDJE_MESSAGE_INT,
-			   NEWS_POPUP_WARN_EDJE_MESSAGE_TYPE,
+			   NEWS_POPUP_EDJE_MESSAGE_TYPE,
 			   &type);
 
   /* pos */
@@ -100,7 +100,7 @@ news_popup_warn_add(int type, const char *title, const char *text, int timer, in
 
       popw->func_desactivate = func_desactivate;
       edje_object_message_send(popw->face, EDJE_MESSAGE_INT,
-			       NEWS_POPUP_WARN_EDJE_MESSAGE_SHOW_DESACTIVATE,
+			       NEWS_POPUP_EDJE_MESSAGE_SHOW_DESACTIVATE,
 			       &show_desactivate);
     }
 
@@ -125,7 +125,7 @@ news_popup_warn_add(int type, const char *title, const char *text, int timer, in
 }
 
 void
-news_popup_warn_del(News_Popup_Warn *popw)
+news_popup_del(News_Popup *popw)
 {
   if (popw->timer)
     ecore_timer_del(popw->timer);
@@ -151,7 +151,7 @@ static void
 _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org_y)
 {
    Evas_List *l;
-   News_Popup_Warn *p;
+   News_Popup *p;
    int pxw, pyh;
    int p_xw, p_yh;
 
@@ -172,15 +172,15 @@ _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org
              /* try upper, and then on the left */
              /* TODO...: try down and right, maybe placement policy ? */
              DPOPW(("Overlap !"));
-             *py = p->y - (*ph + NEWS_POPUP_WARN_OVERLAP_BORDER);
+             *py = p->y - (*ph + NEWS_POPUP_OVERLAP_BORDER);
              if (*py < 0)
                {
                   *py = org_y;
-                  *px = *px - (*px + NEWS_POPUP_WARN_OVERLAP_BORDER);
+                  *px = *px - (*px + NEWS_POPUP_OVERLAP_BORDER);
                   if (*px < 0) break;
                }
              tries++;
-             if (tries > NEWS_POPUP_WARN_OVERLAP_CHECK_MAX)
+             if (tries > NEWS_POPUP_OVERLAP_CHECK_MAX)
                return;
              else
                _check_overlap(px, py, pw, ph, tries, org_x, org_y);
@@ -190,7 +190,7 @@ _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org
 }
 
 static void
-_try_close(News_Popup_Warn *popw)
+_try_close(News_Popup *popw)
 {
   int del = 1;
 
@@ -201,13 +201,13 @@ _try_close(News_Popup_Warn *popw)
      }
 
    if (del)
-     news_popup_warn_del(popw);
+     news_popup_del(popw);
 }
 
 static int
 _cb_timer(void *data)
 {
-   News_Popup_Warn *popw;
+   News_Popup *popw;
 
    popw = data;
    _try_close(popw);
@@ -218,7 +218,7 @@ _cb_timer(void *data)
 static void
 _cb_edje_close(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
-   News_Popup_Warn *popw;
+   News_Popup *popw;
 
    popw = data;
    _try_close(popw);
@@ -227,7 +227,7 @@ _cb_edje_close(void *data, Evas_Object *obj, const char *emission, const char *s
 static void
 _cb_edje_desactivate(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
-   News_Popup_Warn *popw;
+   News_Popup *popw;
 
    popw = data;
    if (popw->func_desactivate)

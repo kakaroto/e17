@@ -6,7 +6,9 @@ typedef enum _News_Item_View_Mode
    {
       NEWS_ITEM_VIEW_MODE_ONE,
       NEWS_ITEM_VIEW_MODE_FEED,
-      NEWS_ITEM_VIEW_MODE_FEED_UNREAD
+      NEWS_ITEM_VIEW_MODE_FEED_UNREAD,
+      NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT,
+      NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT_UNREAD
    } News_Item_View_Mode;
 
 typedef enum _News_Item_Openmethod
@@ -25,17 +27,6 @@ typedef enum _News_Item_Openmethod
 #define NEWS_ITEM_OPENMETHOD_DEFAULT NEWS_ITEM_OPENMETHOD_VIEWER
 #define NEWS_ITEM_BROWSER_OPEN_HOME_DEFAULT 0
 
-#define NEWS_ITEM_FEEDS_FOREACH_BEG(item) \
-{ \
-Evas_List *_l_feeds; \
-News_Feed_Ref *_ref; \
-News_Feed *_feed; \
-\
-for (_l_feeds=item->config->feed_refs; _l_feeds; _l_feeds=evas_list_next(_l_feeds)) \
-{ \
-   _ref = _l_feeds->data; \
-   _feed = _ref->feed; \
-   if (!_feed) continue;
 #define NEWS_ITEM_FEEDS_FOREACH_BEG_LIST(list) \
 { \
 Evas_List *_l_feeds; \
@@ -47,6 +38,8 @@ for (_l_feeds=list; _l_feeds; _l_feeds=evas_list_next(_l_feeds)) \
    _ref = _l_feeds->data; \
    _feed = _ref->feed; \
    if (!_feed) continue;
+#define NEWS_ITEM_FEEDS_FOREACH_BEG(item) \
+NEWS_ITEM_FEEDS_FOREACH_BEG_LIST(item->config->feed_refs);
 #define NEWS_ITEM_FEEDS_FOREACH_END() \
 } \
 }

@@ -106,9 +106,13 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    rg = e_widget_radio_group_new(&(cfdata->view_mode));
    ob = e_widget_radio_add(evas, _("Show one icon for all feeds"), NEWS_ITEM_VIEW_MODE_ONE, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Show each feed"), NEWS_ITEM_VIEW_MODE_FEED, rg);
+   ob = e_widget_radio_add(evas, _("Show all feeds"), NEWS_ITEM_VIEW_MODE_FEED, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Show unread feeds only"), NEWS_ITEM_VIEW_MODE_FEED_UNREAD, rg);
+   ob = e_widget_radio_add(evas, _("Show unread feeds"), NEWS_ITEM_VIEW_MODE_FEED_UNREAD, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, _("Show all feeds marked as important"), NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT, rg);
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_radio_add(evas, _("Show unread feeds marked as important"), NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT_UNREAD, rg);
    e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(o, of, 1, 1, 0.0);

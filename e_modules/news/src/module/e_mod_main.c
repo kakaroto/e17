@@ -47,7 +47,7 @@ e_modapi_init(E_Module *m)
    if (!news_parse_init())  E_MOD_INIT_FAIL(m, _("Parser init failed"));
    if (!news_feed_init())   E_MOD_INIT_FAIL(m, _("Feeds init failed"));
    if (!news_viewer_init()) E_MOD_INIT_FAIL(m, _("Viewer init failed"));
-   if (!news_popup_warn_init()) E_MOD_INIT_FAIL(m, _("Popup warn subsystem init failed"));
+   if (!news_popup_init()) E_MOD_INIT_FAIL(m, _("Popup subsystem init failed"));
 
    e_gadcon_provider_register((E_Gadcon_Client_Class *)&_gadcon_class);
 
@@ -76,7 +76,7 @@ e_modapi_shutdown(E_Module *m)
    if (news->config_dialog_category_new)
      news_config_dialog_category_hide(NULL);
 
-   news_popup_warn_shutdown();
+   news_popup_shutdown();
    news_viewer_shutdown();
    news_feed_shutdown();
    news_parse_shutdown();
@@ -170,7 +170,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 
    ni = gcc->data;
 
-   switch (ni->config->view_mode)
+   switch ((News_Item_View_Mode)ni->config->view_mode)
      {
      case NEWS_ITEM_VIEW_MODE_ONE:
         nb_feeds = 1;
@@ -178,11 +178,25 @@ _gc_orient(E_Gadcon_Client *gcc)
      case NEWS_ITEM_VIEW_MODE_FEED:
         nb_feeds = evas_list_count(ni->config->feed_refs);
         if (!nb_feeds) nb_feeds = 1;
-        break;
+        break;        
      case NEWS_ITEM_VIEW_MODE_FEED_UNREAD:
         nb_feeds = ni->unread_count;
         if (!nb_feeds) nb_feeds = 1;
         break;
+     case NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT:
+     case NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT_UNREAD:
+        nb_feeds = 0;
+        NEWS_ITEM_FEEDS_FOREACH_BEG(ni);
+        if (_feed->important)
+          {
+             if ((ni->config->view_mode == NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT)
+                 ||
+                 ((ni->config->view_mode == NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT_UNREAD)
+                  && _feed->doc && _feed->doc->unread_count))
+               nb_feeds++;
+          }
+        NEWS_ITEM_FEEDS_FOREACH_END();
+        if (!nb_feeds) nb_feeds = 1;
      }
 
    switch (gcc->gadcon->orient)

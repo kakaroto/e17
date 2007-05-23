@@ -90,7 +90,7 @@ news_feed_init(void)
                        (char *)_feed->url_home, _feed->url_home_ovrw,
                        (char *)_feed->url_feed,
                        (char *)_feed->icon, _feed->icon_ovrw,
-                       _feed->urgent,
+                       _feed->important,
                        _cat, 1))
      _cat->feeds = evas_list_remove_list(_cat->feeds, _l_cats);
    NEWS_FEED_FOREACH_END();
@@ -256,7 +256,7 @@ news_feed_timer_set(int time)
 }
 
 News_Feed *
-news_feed_new(char *name, int name_ovrw, char *language, int language_ovrw, char *description, int description_ovrw, char *url_home, int url_home_ovrw, char *url_feed, char *icon, int icon_ovrw, int urgent, News_Feed_Category *category)
+news_feed_new(char *name, int name_ovrw, char *language, int language_ovrw, char *description, int description_ovrw, char *url_home, int url_home_ovrw, char *url_feed, char *icon, int icon_ovrw, int important, News_Feed_Category *category)
 {
    News_Feed *f;
 
@@ -269,7 +269,7 @@ news_feed_new(char *name, int name_ovrw, char *language, int language_ovrw, char
                        url_home, url_home_ovrw,
                        url_feed,
                        icon, icon_ovrw,
-                       urgent,
+                       important,
                        category, 0))
      {
         free(f);
@@ -280,7 +280,7 @@ news_feed_new(char *name, int name_ovrw, char *language, int language_ovrw, char
 }
 
 int
-news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int language_ovrw, char *description, int description_ovrw, char *url_home, int url_home_ovrw, char *url_feed, char *icon, int icon_ovrw, int urgent, News_Feed_Category *category, int check_only)
+news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int language_ovrw, char *description, int description_ovrw, char *url_home, int url_home_ovrw, char *url_feed, char *icon, int icon_ovrw, int important, News_Feed_Category *category, int check_only)
 {
    News_Feed *f2;
    char *host, *file;
@@ -378,7 +378,16 @@ news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int lang
           }
         f->icon_ovrw = icon_ovrw;
 
-        f->urgent = urgent;
+        if (f->important != important)
+          {
+             f->important = important;
+             if (f->item
+                 && ( (f->item->config->view_mode == NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT)
+                      ||
+                      ((f->item->config->view_mode == NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT_UNREAD)
+                       && f->doc && f->doc->unread_count)))
+               news_item_refresh(f->item, 1, 0, 1);
+          }
 
         f->category = category;
 
@@ -386,12 +395,8 @@ news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int lang
 	  {
              News_Feed_Ref *ref;
 
-             if ((f->item->config->view_mode == NEWS_ITEM_VIEW_MODE_FEED)
-                 &&
-                 (f->icon && !f->obj_icon))
-               {
-                  news_feed_obj_refresh(f, 1, 1);
-               }
+             if (f->icon && !f->obj_icon)
+               news_feed_obj_refresh(f, 1, 1);
 
              /* Feed Ref update */
              ref = news_feed_ref_find(f, f->item);
@@ -416,8 +421,7 @@ news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int lang
    E_FREE(f->file);
    f->file = file;
 
-   //FIXME: update only if attached to an item
-   if (update) news_feed_update(f);
+   if (update && f->item) news_feed_update(f);
 
    return 1;
 }
@@ -763,11 +767,23 @@ news_feed_unread_count_change(News_Feed *feed, int nb)
           news_item_unread_count_change(feed->item, 1);
         else
           news_item_unread_count_change(feed->item, -1);
-
-        if (feed->item->config->view_mode == NEWS_ITEM_VIEW_MODE_FEED)
-          news_feed_obj_refresh(feed, 0, 1);
-        else if (feed->item->config->view_mode == NEWS_ITEM_VIEW_MODE_FEED_UNREAD)
-          news_item_refresh(feed->item, 1, 0, 1);
+        
+        switch ((News_Item_View_Mode)feed->item->config->view_mode)
+          {
+          case NEWS_ITEM_VIEW_MODE_ONE:
+             break;
+          case NEWS_ITEM_VIEW_MODE_FEED:
+          case NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT:
+             news_feed_obj_refresh(feed, 0, 1);
+             break;
+          case NEWS_ITEM_VIEW_MODE_FEED_UNREAD:
+             news_item_refresh(feed->item, 1, 0, 1);
+             break;
+          case NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT_UNREAD:
+             if (feed->important)
+               news_item_refresh(feed->item, 1, 0, 1);
+             break;
+          }
 
         if (feed->item->viewer)
           news_viewer_refresh(feed->item->viewer);
@@ -1021,7 +1037,7 @@ _feed_deactivate(News_Feed *f)
    if (doc->parse.meta_date) evas_stringshare_del(doc->parse.meta_date);
    if (doc->parse.charset) evas_stringshare_del(doc->parse.charset);
 
-   //FIXME: segfault appears if i delete the server ...
+   //FIXME: waiting ecore_con patch to be able to delete the server in all cases
    if (doc->server.conn && doc->server.waiting_reply) ecore_con_server_del(doc->server.conn);
    ecore_event_handler_del(doc->server.handler_add);
    ecore_event_handler_del(doc->server.handler_del);
@@ -1039,7 +1055,7 @@ _feed_deactivate(News_Feed *f)
           }
      }
   
-   if (doc->popw) news_popup_warn_del(doc->popw);
+   if (doc->popw) news_popup_del(doc->popw);
 
    f->doc = NULL;
    free(doc);
@@ -1087,6 +1103,8 @@ _get_host_from_url(const char *url)
    strncpy(buf, url, sizeof(buf));
    if (strncmp(buf, "http://", 7))
      return NULL;
+   if (*(buf+7) == '\0')
+     return NULL;
    p = strchr(buf+7, '/');
    if (p) *p = '\0';
    host = strdup(buf+7);
@@ -1107,7 +1125,7 @@ _get_file_from_url(const char *url)
    if (!p)
      file = strdup("/");
    else
-     file = strdup(p);     
+     file = strdup(p);
 
    return file;
 }

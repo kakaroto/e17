@@ -152,8 +152,7 @@ news_config_dialog_feeds_refresh_feeds(void)
                   e_icon_file_set(ic, f->icon);
                }
 	   
-             snprintf(buf, sizeof(buf), "%s", f->name);
-             // TODO : better display of each feed
+             snprintf(buf, sizeof(buf), "%s%s", (f->important) ? "[i] " : "", f->name);
 	   
              e_widget_ilist_append(ilist, ic, buf, _cb_feed_list, f, NULL);
 	     pos++;
@@ -217,7 +216,6 @@ news_config_dialog_feeds_refresh_categories(void)
           }
 
         snprintf(buf, sizeof(buf), "%s", fc->name);
-        // TODO : better display of each category
 
         e_widget_ilist_append(ilist, ic, buf, _cb_category_list, fc, NULL);
 	pos++;
@@ -229,10 +227,7 @@ news_config_dialog_feeds_refresh_categories(void)
    e_widget_ilist_thaw(ilist);
 
    if (pos_to_select != -1)
-     {
-        e_widget_ilist_selected_set(ilist, pos_to_select);
-        //_cb_category_list(cfdata->selected_category);
-     }
+     e_widget_ilist_selected_set(ilist, pos_to_select);
 
    if (pos == -1)
      e_widget_min_size_set(ilist, 165, 120);

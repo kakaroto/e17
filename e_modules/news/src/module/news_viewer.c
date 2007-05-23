@@ -184,8 +184,6 @@ news_viewer_refresh(News_Viewer *nv)
            ic = e_icon_add(evas_object_evas_get(ilist));
            e_icon_file_set(ic, _feed->icon);
         }
-      //FIXME better unread state display (wait for feed icons)
-      //FIXME show if its an important feed
       if (_feed->doc && _feed->doc->unread_count)
         snprintf(buf, sizeof(buf), "[UNREAD] %s", _feed->name);
         else
