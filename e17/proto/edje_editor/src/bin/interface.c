@@ -1122,7 +1122,10 @@ create_group_frame(void)
    UI_GroupNameEntry = etk_entry_new();
    etk_box_append(ETK_BOX(hbox), UI_GroupNameEntry, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-
+   //CurrentSizeLabel
+   UI_CurrentGroupSizeLabel = etk_label_new("Current size: 0 x 0");
+   etk_box_append(ETK_BOX(vbox), UI_CurrentGroupSizeLabel, ETK_BOX_START, ETK_BOX_NONE, 0);
+   
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);

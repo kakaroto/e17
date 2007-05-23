@@ -90,6 +90,7 @@ Etk_Widget *UI_Param2Entry;
 Etk_Widget *UI_Param2Label;
 Etk_Widget *UI_DelayFromSpinner;
 Etk_Widget *UI_DelayRangeSpinner;
+Etk_Widget *UI_CurrentGroupSizeLabel;
 
 void     create_main_window      (void);
 void     PopulateTree            (void);

@@ -339,7 +339,7 @@ ev_resize_fake(int w, int h)
 
    engrave_group_max_size_get(Cur.eg, &max_w, &max_h);
    engrave_group_min_size_get(Cur.eg, &min_w, &min_h);
-
+  
    if (max_w > 0 && w > max_w) w = max_w;
    if (max_h > 0 && h > max_h) h = max_h;
 
@@ -349,10 +349,12 @@ ev_resize_fake(int w, int h)
    if (w < 0) w = 100;
    if (h < 0) h = 100;
 
-   //printf("RESIZE: %d %d./ed  \n",w,h);
    evas_object_resize(EV_fakewin, w, h);
    evas_object_resize(EV_movebox, w, 10);
    edje_object_part_drag_value_set (EV_fakewin, "miniarrow", (double)w, (double)h);
+   char buf[100];
+   snprintf(buf,100,"Current size: %d x %d",w,h);
+   etk_label_set (UI_CurrentGroupSizeLabel, buf);
 }
 
 void

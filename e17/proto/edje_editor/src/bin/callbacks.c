@@ -52,7 +52,7 @@ on_AllButton_click(Etk_Button *button, void *data)
       case TOOLBAR_SAVE:
          printf("Clicked signal on Toolbar Button 'Save' EMITTED\n");
          if (Cur.open_file_name)
-            engrave_edj_output(Cur.ef,Cur.open_file_name);   
+            engrave_edj_output(Cur.ef,Cur.open_file_name);
          else
             ShowFilechooser(FILECHOOSER_SAVE_EDJ);
          break;
@@ -281,23 +281,23 @@ on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
          case MINW_SPINNER:
             printf("MINW\n");
             engrave_group_min_size_set(Cur.eg,
-                  etk_range_value_get(ETK_RANGE(UI_GroupMinWSpinner)),
+                  value,
                   etk_range_value_get(ETK_RANGE(UI_GroupMinHSpinner)));
             break;
          case MINH_SPINNER:
             engrave_group_min_size_set(Cur.eg,
                   etk_range_value_get(ETK_RANGE(UI_GroupMinWSpinner)),
-                  etk_range_value_get(ETK_RANGE(UI_GroupMinHSpinner)));
+                  value);
             break;
          case MAXW_SPINNER:
             engrave_group_max_size_set(Cur.eg,
-                  etk_range_value_get(ETK_RANGE(UI_GroupMaxWSpinner)),
+                  value,
                   etk_range_value_get(ETK_RANGE(UI_GroupMaxHSpinner)));
             break;
          case MAXH_SPINNER:
             engrave_group_max_size_set(Cur.eg,
                   etk_range_value_get(ETK_RANGE(UI_GroupMaxWSpinner)),
-                  etk_range_value_get(ETK_RANGE(UI_GroupMaxHSpinner)));
+                  value);
             break;
       }
    }
