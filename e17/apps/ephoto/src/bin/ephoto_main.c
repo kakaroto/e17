@@ -1,6 +1,9 @@
 #include "ephoto.h"
 
+
+
 /*Ewl Callbacks*/
+static void about_dialog(Ewl_Widget *w, void *event, void *data);
 static void add_album(Ewl_Widget *w, void *event, void *data);
 static void cancel(Ewl_Widget *w, void *event, void *data);
 static void destroy(Ewl_Widget *w, void *event, void *data);
@@ -87,7 +90,7 @@ static void update_view(Ewl_Widget *w, void *event, void *data)
 	return;
 }
 
-/*Cancel the Album Dialog*/
+/*Cancel the Dialog*/
 static void cancel(Ewl_Widget *w, void *event, void *data)
 {
 	Ewl_Widget *win;
@@ -152,6 +155,37 @@ static void add_album(Ewl_Widget *w, void *event, void *data)
 	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
 }
 
+/*Add an About Dialog*/
+static void about_dialog(Ewl_Widget *w, void *event, void *data)
+{
+	Ewl_Widget *window, *button, *vbox, *text;
+	
+	window = add_window("About Ephoto", 200, 100, NULL, NULL);
+        ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, cancel, window);
+
+        vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 3);
+        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+
+	text = add_text(vbox, "Ephoto is an advanced image viewer that allows\n"
+		       "you to view images in several methods. They\n"
+		       "include an icon view, a list view, and a single\n"
+		       "image view.  You can also view exif data, view\n"
+		       "images in a fullscreen mode, and view images in a\n"
+		       "slideshow.  The edit view offers simple and advanced\n"
+		       "editing options including rotations, flips, blurs,\n"
+		       "sharpens, conversion to black and white, and\n"
+		       "conversions to sepia.");
+
+	ewl_text_wrap_set(EWL_TEXT(text), EWL_TEXT_WRAP_WORD);
+
+	button = add_button(vbox, "Close",
+                                PACKAGE_DATA_DIR "/images/dialog-close.png",
+                                                                cancel, window);
+        ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
+	
+	return;
+}
+
 /*Create the Main Ephoto Window*/
 void create_main_gui(void)
 {
@@ -182,6 +216,11 @@ void create_main_gui(void)
 	mi = add_menu_item(menu, "Add Album", 
 				PACKAGE_DATA_DIR "/images/add.png", 
 							add_album, NULL);
+
+	menu = add_menu(mb, "Help");
+        mi = add_menu_item(menu, "About",
+                                PACKAGE_DATA_DIR "/images/stock_help.png",
+                                                        about_dialog, NULL);
 
 	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);

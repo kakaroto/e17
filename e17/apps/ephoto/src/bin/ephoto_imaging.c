@@ -1,7 +1,20 @@
 #include "ephoto.h"
 
-static void rgb_to_hsv(int r, int g, int b, float *h, float *s, float *v);
-static void hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b);
+#define R_CMOD(r) \
+        red[(int)(r)]
+#define G_CMOD(g) \
+        green[(int)(g)]
+#define B_CMOD(b) \
+        blue[(int)(b)] \
+/*#define A_CMOD(a) \
+        alpha[(int)(a)]*/
+
+#define A_VAL(p) ((unsigned char *)(p))[3]
+#define R_VAL(p) ((unsigned char *)(p))[2]
+#define G_VAL(p) ((unsigned char *)(p))[1]
+#define B_VAL(p) ((unsigned char *)(p))[0]
+
+static unsigned int *set_contrast(unsigned int *data, int ew, int eh, float v);
 
 static void close_dialog(Ewl_Widget *w, void *event, void *data);
 static void close_progress(Ewl_Widget *w, void *event, void *data);
@@ -10,108 +23,51 @@ static void save_image(Ewl_Widget *w, void *event, void *data);
 
 static Ewl_Widget *save_win, *qseek;
 
-static void rgb_to_hsv(int r, int g, int b, float *h, float *s, float *v)
+static unsigned int *set_contrast(unsigned int *data, int ew, int eh, float v)
 {
-	int delta, min, max;
+	int i, val;
+	unsigned int *p;
+	unsigned char red[256], green[256], blue[256], alpha[256];
 
-	max = (r + g + abs(r - g)) / 2;
-	max = (max + b + abs(max - b)) / 2;
-	min = (r + g - abs(r - g)) / 2;
-	min = (min + b - abs(min - b)) / 2;
+        for (i = 0; i < 256; i++)
+        {
+                red[i] = (unsigned char)i;
+                green[i] = (unsigned char)i;
+                blue[i] = (unsigned char)i;
+                alpha[i] = (unsigned char)i;
+        }
+        for (i = 0; i < 256; i++)
+        {
+                val = (int)(((double)red[i] - 127) * v) + 127;
+                if (val < 0) val = 0;
+                if (val > 255) val = 255;
+                red[i] = (unsigned char)val;
 
-	delta = max - min;
-	*v = (float)(100 * max) / 255.0;
+                val = (int)(((double)green[i] - 127) * v) + 127;
+                if (val < 0) val = 0;
+                if (val > 255) val = 255;
+                green[i] = (unsigned char)val;
 
-	if (max != 0) *s = (float)(100 * delta) / (float)max;
+                val = (int)(((double)blue[i] - 127) * v) + 127;
+                if (val < 0) val = 0;
+                if (val > 255) val = 255;
+                blue[i] = (unsigned char)val;
 
-	else
-	{
-		*s = 0.0;
-		*h = 0.0;
-		*v = 0.0;
+                val = (int)(((double)alpha[i] - 127) * v) + 127;
+                if (val < 0) val = 0;
+                if (val > 255) val = 255;
+                alpha[i] = (unsigned char)val;
+        }
+        for (i = 0; i < (ew * eh); i++)
+        {
+                p = &data[i];
+
+                R_VAL(p) = R_CMOD(R_VAL(p));
+                G_VAL(p) = G_CMOD(G_VAL(p));
+                B_VAL(p) = B_CMOD(B_VAL(p));
+  //              A_VAL(p) = A_CMOD(A_VAL(p));
 	}
-
-	if (r == max) *h = (float)(100 * (g - b)) / (float)(6.0 * delta);
-
-	else
-	{
-		if (g == max) *h = (float)(100 * (2 * delta + b - r)) / (float)(6.0 * delta);
-		else *h = (float)(100 * (4 * delta + r - g)) / (float)(6.0 * delta);
-	}
-	if (*h < 0.0) *h += 100.0;
-	if (*h > 100.0) *h -= 100.0;	
-
-	return;
-}
-
-static void hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b)
-{
-	float hh, f, p, q, t;
-	int i;
-
-	if (s == 0.0)
-	{
-		*r = (int)(((v * 255.0) / 100.0) + 0.5);
-		*g = (int)(((v * 255.0) / 100.0) + 0.5);
-		*b = (int)(((v * 255.0) / 100.0) + 0.5);
-	
-		return;
-	}
-	
-	hh = (h * 6.0) / 100.0;
-	i = floor(hh);
-	f = hh - (float)i;
-
-	p = v * (1.0 - s / 100.0) / 100.0;
-	q = v * (1.0 - (s * f) / 100.0) / 100.0;
-	t = v * (1.0 - s * (1.0 - f) / 100.0) / 100.0;
-
-	switch (i)
-	{
-		case 0:
-		{
-			*r = (int)((v * 255.0 / 100.0) + 0.5);
-			*g = (int)((t * 255.0) + 0.5);
-			*b = (int)((p * 255.0) + 0.5);
-			break;
-		}
-		case 1:
-		{
-			*r = (int)((q * 255.0) + 0.5);
-			*g = (int)((v * 255.0 / 100.0) + 0.5);
-			*b = (int)((p * 255.0) + 0.5);
-			break;
-		}
-		case 2:
-		{
-			*r = (int)((p * 255.0) + 0.5); 
-           		*g = (int)((v * 255.0 / 100.0) + 0.5);
-		        *b = (int)((t * 255.0) + 0.5);
-           		break;
-        	} 
-     		case 3:
-        	{
-           		*r = (int)((p * 255.0) + 0.5);
-           		*g = (int)((q * 255.0) + 0.5);
-           		*b = (int)((v * 255.0 / 100.0) + 0.5);
-           		break;
-        	}
-     		case 4:
-        	{
-           		*r = (int)((t * 255.0) + 0.5);
-           		*g = (int)((p * 255.0) + 0.5);
-          		*b = (int)((v * 255.0 / 100.0) + 0.5);
-           		break;
-        	}
-     		case 5:
-        	{
-           		*r = (int)((v * 255.0 / 100.0) + 0.5);
-           		*g = (int)((p * 255.0) + 0.5);
-           		*b = (int)((q * 255.0) + 0.5);
-           		break;
-        	}
-     	}
-	return;
+	return data;
 }
 
 unsigned int *flip_horizontal(Ewl_Widget *image)
@@ -413,14 +369,16 @@ unsigned int *grayscale_image(Ewl_Widget *image)
 
 unsigned int *sepia_image(Ewl_Widget *image)
 {
-	unsigned int *im_data, *im_data_new;
+	unsigned int *data, *im_data, *im_data_new;
 	int i, r, g, b, a, ew, eh;
 	float h, s, v;
 
-        im_data = evas_object_image_data_get(EWL_IMAGE(image)->image, FALSE);
+        data = evas_object_image_data_get(EWL_IMAGE(image)->image, FALSE);
         evas_object_image_size_get(EWL_IMAGE(image)->image, &ew, &eh);
 
         im_data_new = malloc(sizeof(unsigned int) * ew * eh);
+
+	im_data = set_contrast(data, ew, eh, 2);
 
 	for (i = 0; i < (ew * eh); i++)
         {
@@ -428,12 +386,12 @@ unsigned int *sepia_image(Ewl_Widget *image)
                 g = (int)((im_data[i] >> 8) & 0xff);
                 r = (int)((im_data[i] >> 16) & 0xff);
                 a = (int)((im_data[i] >> 24) & 0xff);
-		
-		rgb_to_hsv(r, g, b, &h, &s, &v);
-		hsv_to_rgb(25, s, v, &r, &g, &b);
 
-		im_data_new[i] = (a << 24) | (r << 16) | (g << 8) | b;
-	}
+                evas_color_rgb_to_hsv(r, g, b, &h, &s, &v);
+                evas_color_hsv_to_rgb(35, s, v, &r, &g, &b);
+
+                im_data_new[i] = (a << 24) | (r << 16) | (g << 8) | b;
+        }
 	return im_data_new;
 }
 
