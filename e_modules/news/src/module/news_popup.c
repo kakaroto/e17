@@ -110,8 +110,8 @@ news_popup_add(int type, const char *title, const char *text, int timer, int (*f
   /* check for popup overlaps */
   _check_overlap(&popw->x, &popw->y, &popw->w, &popw->h, 0, popw->x, popw->y);
   e_popup_move_resize(popw->pop, popw->x, popw->y, popw->w, popw->h);
-  DPOPW(("New: %dx%d : %dx%d", popw->x, popw->y, popw->w, popw->h));
-  DPOPW(("New face: %dx%d", fw, fh));
+  DPOP(("New: %dx%d : %dx%d", popw->x, popw->y, popw->w, popw->h));
+  DPOP(("New face: %dx%d", fw, fh));
 
   /* go ! */
   evas_object_show(popw->face);
@@ -171,7 +171,7 @@ _check_overlap(int *px, int *py, int *pw, int *ph, int tries, int org_x, int org
              /* overlap ! correct coords */
              /* try upper, and then on the left */
              /* TODO...: try down and right, maybe placement policy ? */
-             DPOPW(("Overlap !"));
+             DPOP(("Overlap !"));
              *py = p->y - (*ph + NEWS_POPUP_OVERLAP_BORDER);
              if (*py < 0)
                {
