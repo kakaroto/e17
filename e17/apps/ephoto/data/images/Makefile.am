@@ -23,6 +23,7 @@ FILES = add.png \
 	remove.png \
 	search.png \
         stock_fullscreen.png \
+	stock_help.png \
 	stock_save.png \
 	undo.png \
 	x-office-presentation.png
