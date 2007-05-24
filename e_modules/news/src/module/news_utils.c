@@ -121,6 +121,28 @@ news_util_lang_detect(void)
    return list;
 }
 
+int
+news_util_proxy_detect(void)
+{
+   News_Config *c;
+   const char *proxy;
+   char *port;
+   char buf[1024];
+
+   c = news->config;
+   proxy = getenv("HTTP_PROXY");
+   if (!proxy) return 0;
+   strncpy(buf, proxy, sizeof(buf));
+   port = strrchr(buf, ':');
+   if (!port || (port == buf)) return 0;
+   if (!sscanf(port+1, "%d", &c->proxy.port)) return 0;
+   *port = '\0';
+   if (c->proxy.host) evas_stringshare_del(c->proxy.host);
+   c->proxy.host = evas_stringshare_add(buf);
+
+   return 1;
+}
+
 /*
  * Private functions
  *

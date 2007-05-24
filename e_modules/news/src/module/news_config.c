@@ -138,7 +138,13 @@ news_config_init(void)
         c->feed.langs = news_util_lang_detect();
         c->feed.langs_all = NEWS_FEED_LANG_ALL_DEFAULT;
         c->feed.langs_notset = 1;
-        c->proxy.port = NEWS_FEED_PROXY_PORT_DEFAULT;
+        if (news_util_proxy_detect())
+          c->proxy.enable = 1;
+        else
+          {
+             c->proxy.host = NULL;
+             c->proxy.port = NEWS_FEED_PROXY_PORT_DEFAULT;
+          }
 
         c->browser.wich = NEWS_UTIL_BROWSER_DEFAULT;
 
