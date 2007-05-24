@@ -14,7 +14,7 @@
 #define G_VAL(p) ((unsigned char *)(p))[1]
 #define B_VAL(p) ((unsigned char *)(p))[0]
 
-static unsigned int *set_contrast(unsigned int *data, int ew, int eh, float v);
+//static unsigned int *set_contrast(unsigned int *data, int ew, int eh, float v);
 
 static void close_dialog(Ewl_Widget *w, void *event, void *data);
 static void close_progress(Ewl_Widget *w, void *event, void *data);
@@ -23,7 +23,7 @@ static void save_image(Ewl_Widget *w, void *event, void *data);
 
 static Ewl_Widget *save_win, *qseek;
 
-static unsigned int *set_contrast(unsigned int *data, int ew, int eh, float v)
+/*static unsigned int *set_contrast(unsigned int *data, int ew, int eh, float v)
 {
 	int i, val;
 	unsigned int *p;
@@ -68,7 +68,7 @@ static unsigned int *set_contrast(unsigned int *data, int ew, int eh, float v)
   //              A_VAL(p) = A_CMOD(A_VAL(p));
 	}
 	return data;
-}
+}*/
 
 unsigned int *flip_horizontal(Ewl_Widget *image)
 {
@@ -369,16 +369,14 @@ unsigned int *grayscale_image(Ewl_Widget *image)
 
 unsigned int *sepia_image(Ewl_Widget *image)
 {
-	unsigned int *data, *im_data, *im_data_new;
+	unsigned int *im_data, *im_data_new;
 	int i, r, g, b, a, ew, eh;
 	float h, s, v;
 
-        data = evas_object_image_data_get(EWL_IMAGE(image)->image, FALSE);
+        im_data = evas_object_image_data_get(EWL_IMAGE(image)->image, FALSE);
         evas_object_image_size_get(EWL_IMAGE(image)->image, &ew, &eh);
 
         im_data_new = malloc(sizeof(unsigned int) * ew * eh);
-
-	im_data = set_contrast(data, ew, eh, 2);
 
 	for (i = 0; i < (ew * eh); i++)
         {
@@ -388,7 +386,7 @@ unsigned int *sepia_image(Ewl_Widget *image)
                 a = (int)((im_data[i] >> 24) & 0xff);
 
                 evas_color_rgb_to_hsv(r, g, b, &h, &s, &v);
-                evas_color_hsv_to_rgb(35, s, v, &r, &g, &b);
+		evas_color_hsv_to_rgb(35, s, v, &r, &g, &b);
 
                 im_data_new[i] = (a << 24) | (r << 16) | (g << 8) | b;
         }
