@@ -370,10 +370,9 @@ unsigned int *grayscale_image(Ewl_Widget *image)
 unsigned int *sepia_image(Ewl_Widget *image)
 {
 	unsigned int *im_data, *im_data_new;
-	int i, r, g, b, a, ew, eh;
-	float h, s, v;
+	int i, r, rr, g, gg, b, bb, a, ew, eh;
 
-        im_data = evas_object_image_data_get(EWL_IMAGE(image)->image, FALSE);
+        im_data = evas_object_image_data_get(EWL_IMAGE(image)->image, FALSE); 
         evas_object_image_size_get(EWL_IMAGE(image)->image, &ew, &eh);
 
         im_data_new = malloc(sizeof(unsigned int) * ew * eh);
@@ -384,11 +383,18 @@ unsigned int *sepia_image(Ewl_Widget *image)
                 g = (int)((im_data[i] >> 8) & 0xff);
                 r = (int)((im_data[i] >> 16) & 0xff);
                 a = (int)((im_data[i] >> 24) & 0xff);
+		
+		rr = (int)(((r + g + b)/3)+40);
+		if (rr < 0) rr = 0;
+		if (rr > 255) rr = 255;
+		gg = (int)(((r + g + b)/3)+2);
+		if (gg < 0) gg = 0;
+		if (gg > 255) gg = 255;
+		bb = (int)(((r + g + b)/3)+2);              
+		if (bb < 0) bb = 0;
+		if (bb > 255) bb = 255;
 
-                evas_color_rgb_to_hsv(r, g, b, &h, &s, &v);
-		evas_color_hsv_to_rgb(35, s, v, &r, &g, &b);
-
-                im_data_new[i] = (a << 24) | (r << 16) | (g << 8) | b;
+                im_data_new[i] = (a << 24) | (rr << 16) | (gg << 8) | bb;
         }
 	return im_data_new;
 }
