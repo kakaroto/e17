@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
 Build-Depends: debhelper (>= 4.0.0), autotools-dev, libevas-dev, libecore-dev, libedje-dev
-Standards-Version: 3.6.2.2
+Standards-Version: 3.7.2
 
 Package: libetk0
 Architecture: any
@@ -66,7 +66,7 @@ Description: Virtual package provfing all engines for Etk
 Package: libetk0-dev
 Architecture: any
 Section: libdevel
-Depends: libevas, libecore, libedje
+Depends: libevas0-dev, libecore0-dev, libedje0-dev, libetk0
 Provides: libetk-dev
 Description: Etk headers, static libraries and documentation
  Headers, static libraries and documentation for the ETK widget library.
