@@ -1178,6 +1178,7 @@ DeskEnter(Desk * dsk)
    ButtonsMoveStickyToDesk(dsk);
    DesksStackingCheck();
    HintsSetCurrentDesktop();
+   EdgeWindowsShow();
 
    EUngrabServer();
 }
