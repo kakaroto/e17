@@ -172,7 +172,6 @@ struct _dialog
 {
    EWin               *ewin;
    Win                 win;
-   Pixmap              pmap;
    int                 w, h;
    char               *name;
    char               *title;
@@ -286,7 +285,6 @@ DialogDestroy(Dialog * d)
       TextclassDecRefcount(d->tclass);
 
    FreePmapMask(&(d->pmm_bg));
-   EFreePixmap(d->pmap);
    EDestroyWindow(d->win);
 
    Efree(d);
@@ -491,14 +489,8 @@ DialogRedraw(Dialog * d)
    if (d->pmm_bg.pmap == None)
       return;
 
-   if (d->resize || d->pmap == None)
-     {
-	if (d->pmap != None)
-	   EFreePixmap(d->pmap);
-	d->pmap = ECreatePixmap(d->win, d->w, d->h, 0);
-	ESetWindowBackgroundPixmap(d->win, d->pmap);
-     }
-   EXCopyArea(d->pmm_bg.pmap, d->pmap, 0, 0, d->w, d->h, 0, 0);
+   EGetWindowBackgroundPixmap(d->win);
+   EXCopyArea(d->pmm_bg.pmap, WinGetPmap(d->win), 0, 0, d->w, d->h, 0, 0);
 
    d->redraw = 1;
 
@@ -1813,9 +1805,9 @@ DialogDrawItem(Dialog * d, DItem * di)
 	if (!di->text)
 	   break;
 	if (!d->redraw)
-	   EXCopyArea(d->pmm_bg.pmap, d->pmap, di->x, di->y, di->w, di->h,
-		      di->x, di->y);
-	TextDraw(di->tclass, d->win, d->pmap, 0, 0, state, di->text,
+	   EXCopyArea(d->pmm_bg.pmap, WinGetPmap(d->win), di->x, di->y,
+		      di->w, di->h, di->x, di->y);
+	TextDraw(di->tclass, d->win, WinGetPmap(d->win), 0, 0, state, di->text,
 		 x, di->y, w, 99999, 17, TextclassGetJustification(di->tclass));
 	break;
      }

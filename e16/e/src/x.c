@@ -49,6 +49,8 @@ static XContext     xid_context = 0;
 static Win          win_first = NULL;
 static Win          win_last = NULL;
 
+#define WinBgInvalidate(win) if (win->bg_owned > 0) win->bg_owned = -1
+
 #if !EXPOSE_WIN
 Window
 WinGetXwin(const Win win)
@@ -548,6 +550,7 @@ EResizeWindow(Win win, int w, int h)
    if ((w == win->w) && (h == win->h))
       return;
 
+   WinBgInvalidate(win);
    win->w = w;
    win->h = h;
 
@@ -566,6 +569,9 @@ EMoveResizeWindow(Win win, int x, int y, int w, int h)
 #endif
    if ((w == win->w) && (h == win->h) && (x == win->x) && (y == win->y))
       return;
+
+   if (w != win->w || h != win->h)
+      WinBgInvalidate(win);
 
    win->x = x;
    win->y = y;
@@ -608,7 +614,10 @@ EDestroyWindow(Win win)
    Eprintf("ExDestroyWindow: %p %#lx\n", win, win->xwin);
 #endif
    if (win->parent != None)
-      XDestroyWindow(disp, win->xwin);
+     {
+	EFreeWindowBackgroundPixmap(win);
+	XDestroyWindow(disp, win->xwin);
+     }
 
    /* Mark the ones to be deleted */
    nsub = ExDelTree(win);
@@ -962,11 +971,13 @@ EConfigureWindow(Win win, unsigned int mask, XWindowChanges * wc)
      }
    if ((mask & CWWidth) && (wc->width != win->w))
      {
+	WinBgInvalidate(win);
 	win->w = wc->width;
 	doit = 1;
      }
    if ((mask & CWHeight) && (wc->height != win->h))
      {
+	WinBgInvalidate(win);
 	win->h = wc->height;
 	doit = 1;
      }
@@ -981,10 +992,44 @@ ESetWindowBackgroundPixmap(Win win, Pixmap pmap)
    if (!win)
       return;
 
+   if (win->bgpmap && win->bg_owned)
+      EFreeWindowBackgroundPixmap(win);
    win->bgpmap = pmap;
+   win->bg_owned = 0;		/* Don't manage pixmap */
    win->bgcol = 0xffffffff;	/* Hmmm.. */
 
    XSetWindowBackgroundPixmap(disp, win->xwin, pmap);
+}
+
+Pixmap
+EGetWindowBackgroundPixmap(Win win)
+{
+   Pixmap              pmap;
+
+   if (!win)
+      return None;
+
+   if (win->bg_owned < 0)	/* Free if invalidated */
+      EFreeWindowBackgroundPixmap(win);
+   else if (win->bgpmap)
+      return win->bgpmap;
+
+   /* Allocate/set new */
+   pmap = ECreatePixmap(win, win->w, win->h, 0);
+   ESetWindowBackgroundPixmap(win, pmap);
+   win->bg_owned = 1;		/* Manage pixmap */
+
+   return pmap;
+}
+
+void
+EFreeWindowBackgroundPixmap(Win win)
+{
+   if (!win || !win->bgpmap || !win->bg_owned)
+      return;
+
+   EFreePixmap(win->bgpmap);
+   win->bgpmap = 0;
 }
 
 void
@@ -995,7 +1040,7 @@ ESetWindowBackground(Win win, unsigned int col)
 
    if (win->bgpmap)
      {
-	win->bgpmap = 0;
+	EFreeWindowBackgroundPixmap(win);
 	win->bgcol = col;
      }
    else if (win->bgcol != col)

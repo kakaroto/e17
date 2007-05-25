@@ -215,10 +215,8 @@ HiwinRenderPixmapFini(Hiwin * phi, int shown)
 
    if (shown)
      {
-	pmap = ECreatePixmap(EoGetWin(phi), EoGetW(phi), EoGetH(phi), 0);
-	ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
+	pmap = EGetWindowBackgroundPixmap(EoGetWin(phi));
 	HiwinRenderPixmapDrawX(phi, pmap);
-	EFreePixmap(pmap);
 	EClearWindow(EoGetWin(phi));
      }
 

@@ -187,7 +187,6 @@ ZoomMask(int x, int y, int w, int h)
       return 0;
 
    win = ECreateWindow(VRoot.win, x, y, w, h, 0);
-   ESetWindowBackgroundPixmap(win, None);
    ESetWindowBackground(win, BlackPixel(disp, VRoot.scr));
    ERaiseWindow(win);
    EMapWindow(win);

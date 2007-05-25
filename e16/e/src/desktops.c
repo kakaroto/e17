@@ -406,6 +406,7 @@ DeskCreate(int desk, int configure)
    desks.order[desk] = desk;
 
    win = (desk == 0) ? VRoot.win : NoWin;
+
    Esnprintf(buf, sizeof(buf), "Desk-%d", desk);
    EoSetNoRedirect(dsk, 1);
    EoInit(dsk, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, 0, buf);
@@ -2304,16 +2305,18 @@ CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 	if (!wins[i])
 	  {
 	     Background         *bg;
-	     Pixmap              pmap;
 
 	     wins[i] = ECreateWindow(win, 0, 0, 64, 48, 0);
 	     ESetWindowBorderWidth(wins[i], 1);
-	     pmap = ECreatePixmap(wins[i], 64, 48, 0);
-	     ESetWindowBackgroundPixmap(wins[i], pmap);
 
 	     bg = DeskBackgroundGet(DeskGet(i));
 	     if (bg)
-		BackgroundApplyPmap(bg, wins[i], pmap, 64, 48);
+	       {
+		  Pixmap              pmap;
+
+		  pmap = EGetWindowBackgroundPixmap(wins[i]);
+		  BackgroundApplyPmap(bg, wins[i], pmap, 64, 48);
+	       }
 	     else
 	       {
 		  ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 0);
@@ -2321,8 +2324,6 @@ CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 		     ImageclassApply(ic, wins[i], 64, 48, 0, 0, STATE_NORMAL,
 				     ST_SOLID);
 	       }
-
-	     EFreePixmap(pmap);
 	  }
      }
 

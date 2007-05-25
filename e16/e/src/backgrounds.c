@@ -1516,7 +1516,6 @@ static DItem       *bg_filename;
 static DItem       *tmp_w[10];
 
 static Background  *tmp_bg;	/* The background being configured */
-static Pixmap       tmp_bg_mini_pixmap = None;
 static int          tmp_bg_sel_sliderval;
 static int          tmp_bg_sel_sliderval_old;
 static int          tmp_bg_r;
@@ -1545,9 +1544,6 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	memset(tmp_w, 0, sizeof(tmp_w));
 	BackgroundImagesKeep(tmp_bg, 0);
 	tmp_bg = NULL;
-	if (tmp_bg_mini_pixmap != None)
-	   EFreePixmap(tmp_bg_mini_pixmap);
-	tmp_bg_mini_pixmap = None;
 	return;
      }
 
@@ -1596,17 +1592,9 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    win = DialogItemAreaGetWindow(di);
    DialogItemAreaGetSize(di, &w, &h);
 
-   if (tmp_bg_mini_pixmap == None)
-      tmp_bg_mini_pixmap = ECreatePixmap(win, w, h, 0);
-   pmap = tmp_bg_mini_pixmap;
-
    if (val == 1)
      {
-	ESetWindowBackgroundPixmap(win, pmap);
-	BackgroundApplyPmap(tmp_bg, win, pmap, w, h);
-     }
-   else
-     {
+	pmap = EGetWindowBackgroundPixmap(win);
 	fbg = (tmp_bg_image) ? BackgroundGetBgFile(tmp_bg) : NULL;
 	ffg = (tmp_bg_image) ? BackgroundGetFgFile(tmp_bg) : NULL;
 	ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
@@ -1620,8 +1608,8 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 
 	BackgroundApplyPmap(bg, win, pmap, w, h);
 	BackgroundDestroy(bg);
+	EClearWindow(win);
      }
-   EClearWindow(win);
 }
 
 /* Update tmp vars according to the current tmp_bg */
@@ -1681,9 +1669,6 @@ BgDialogSetNewCurrent(Background * bg)
    DialogItemSliderSetVal(tmp_w[7], tmp_bg_yjust);
    DialogItemSliderSetVal(tmp_w[8], tmp_bg_yperc);
    DialogItemSliderSetVal(tmp_w[9], tmp_bg_xperc);
-
-   /* Redraw preview image */
-   CB_DesktopMiniDisplayRedraw(NULL, 1, bg_mini_disp);
 
    /* Redraw scrolling BG list */
    BG_RedrawView();
@@ -1795,14 +1780,13 @@ BG_RedrawView(void)
    win = DialogItemAreaGetWindow(bg_sel);
    DialogItemAreaGetSize(bg_sel, &w, &h);
 
-   pmap = ECreatePixmap(win, w, h, 0);
+   pmap = EGetWindowBackgroundPixmap(win);
    gc = EXCreateGC(pmap, 0, NULL);
 
    ic_button = ImageclassFind("DIALOG_BUTTON", 0);
 
    XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
    XFillRectangle(disp, pmap, gc, 0, 0, w, h);
-   ESetWindowBackgroundPixmap(win, pmap);
 
    x = -(num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num);
 
@@ -1847,7 +1831,6 @@ BG_RedrawView(void)
       x += (64 + 8);
    }
    EXFreeGC(gc);
-   EFreePixmap(pmap);
 
    EClearWindow(win);
 }

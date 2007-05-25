@@ -75,6 +75,7 @@ struct _xwin
    char                in_use;
    signed char         do_del;
    char                attached;
+   signed char         bg_owned;	/* bgpmap "owned" by Win */
    int                 num_rect;
    int                 ord;
    XRectangle         *rects;
@@ -89,6 +90,7 @@ Win                 ELookupXwin(Window xwin);
 
 #if EXPOSE_WIN
 #define             WinGetXwin(win)		((win)->xwin)
+#define             WinGetPmap(win)		((win)->bgpmap)
 #define             WinGetX(win)		((win)->x)
 #define             WinGetY(win)		((win)->y)
 #define             WinGetW(win)		((win)->w)
@@ -155,6 +157,8 @@ void                EGetWindowAttributes(Win win, XWindowAttributes * pxwa);
 void                EConfigureWindow(Win win, unsigned int mask,
 				     XWindowChanges * wc);
 void                ESetWindowBackgroundPixmap(Win win, Pixmap pmap);
+Pixmap              EGetWindowBackgroundPixmap(Win win);
+void                EFreeWindowBackgroundPixmap(Win win);
 void                ESetWindowBackground(Win win, unsigned int col);
 int                 ETranslateCoordinates(Win src_w, Win dst_w,
 					  int src_x, int src_y,

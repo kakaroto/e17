@@ -82,7 +82,6 @@ typedef struct
 {
    EWin               *ewin;
    Win                 win;
-   Pixmap              pmap;
    int                 w, h;
    char               *name;
    Pixmap              bgpmap;
@@ -164,8 +163,6 @@ PagerDestroy(Pager * p)
       Efree(p->name);
    EDestroyWindow(p->win);
    PagerHiwinHide();
-   if (p->pmap != None)
-      EFreePixmap(p->pmap);
    if (p->bgpmap != None)
       EFreePixmap(p->bgpmap);
 
@@ -250,16 +247,16 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % hh;
    y2 = (y * VRoot.h) / hh;
 
-   ScaleRect(VRoot.win, VRoot.xwin, p->win, p->pmap, NULL, 0, y2, VRoot.w,
-	     VRoot.h / hh, xx, yy + y, ww, 1, Conf_pagers.hiq);
+   ScaleRect(VRoot.win, VRoot.xwin, p->win, WinGetPmap(p->win), NULL, 0, y2,
+	     VRoot.w, VRoot.h / hh, xx, yy + y, ww, 1, Conf_pagers.hiq);
    EClearArea(p->win, xx, yy + y, ww, 1, False);
    y2 = p->h;
 #else
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % ww;
    y2 = (y * VRoot.w) / ww;
 
-   ScaleRect(VRoot.win, VRoot.xwin, p->win, p->pmap, NULL, y2, 0, VRoot.w / ww,
-	     VRoot.h, xx + y, yy, 1, hh, Conf_pagers.hiq);
+   ScaleRect(VRoot.win, VRoot.xwin, p->win, WinGetPmap(p->win), NULL, y2, 0,
+	     VRoot.w / ww, VRoot.h, xx + y, yy, 1, hh, Conf_pagers.hiq);
    EClearArea(p->win, xx + y, yy, 1, hh, False);
    y2 = p->w;
 #endif
@@ -378,6 +375,7 @@ doPagerUpdate(Pager * p)
    EWin               *const *lst;
    int                 i, num, update_screen_included, update_screen_only;
    int                 pager_mode = PagersGetMode();
+   Pixmap              pmap;
 
    p->update_phase = 0;
    DesksGetAreaSize(&ax, &ay);
@@ -402,6 +400,8 @@ doPagerUpdate(Pager * p)
    p->x1 = p->y1 = 99999;
    p->x2 = p->y2 = -99999;
 
+   pmap = EGetWindowBackgroundPixmap(p->win);
+
    if (update_screen_only)
       goto do_screen_update;
 
@@ -424,7 +424,7 @@ doPagerUpdate(Pager * p)
       return;
    p->do_update = 0;
 
-   gc = EXCreateGC(p->pmap, 0, NULL);
+   gc = EXCreateGC(pmap, 0, NULL);
    if (gc == None)
       return;
 
@@ -437,7 +437,7 @@ doPagerUpdate(Pager * p)
 	     if (update_screen_included && x == cx && y == cy)
 		continue;
 #endif
-	     XCopyArea(disp, p->bgpmap, p->pmap, gc, 0, 0, p->dw, p->dh,
+	     XCopyArea(disp, p->bgpmap, pmap, gc, 0, 0, p->dw, p->dh,
 		       x * p->dw, y * p->dh);
 	  }
      }
@@ -463,7 +463,7 @@ doPagerUpdate(Pager * p)
 		  XSetClipMask(disp, gc, ewin->mini_pmm.mask);
 		  XSetClipOrigin(disp, gc, wx, wy);
 	       }
-	     XCopyArea(disp, ewin->mini_pmm.pmap, p->pmap, gc, 0, 0,
+	     XCopyArea(disp, ewin->mini_pmm.pmap, pmap, gc, 0, 0,
 		       ww, wh, wx, wy);
 	     if (ewin->mini_pmm.mask)
 		XSetClipMask(disp, gc, None);
@@ -471,9 +471,9 @@ doPagerUpdate(Pager * p)
 	else
 	  {
 	     XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
-	     XDrawRectangle(disp, p->pmap, gc, wx - 1, wy - 1, ww + 1, wh + 1);
+	     XDrawRectangle(disp, pmap, gc, wx - 1, wy - 1, ww + 1, wh + 1);
 	     XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
-	     XFillRectangle(disp, p->pmap, gc, wx, wy, ww, wh);
+	     XFillRectangle(disp, pmap, gc, wx, wy, ww, wh);
 	  }
      }
 
@@ -486,7 +486,7 @@ doPagerUpdate(Pager * p)
  do_screen_update:
    Dprintf("doPagerUpdate %d: Snap screen\n", p->dsk->num);
    /* Update pager area by snapshotting entire screen */
-   ScaleRect(VRoot.win, VRoot.xwin, p->win, p->pmap, NULL, 0, 0,
+   ScaleRect(VRoot.win, VRoot.xwin, p->win, pmap, NULL, 0, 0,
 	     VRoot.w, VRoot.h, cx * p->dw, cy * p->dh, p->dw, p->dh,
 	     Conf_pagers.hiq);
 
@@ -680,9 +680,6 @@ _PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 
    DesksGetAreaSize(&ax, &ay);
 
-   if (p->pmap != None)
-      EFreePixmap(p->pmap);
-
    p->w = w;
    p->h = h;
    p->dw = w / ax;
@@ -691,8 +688,6 @@ _PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    if (p->scale <= 0. || Mode.op_source == OPSRC_USER)
       p->scale = ((float)VRoot.w / p->dw + (float)VRoot.h / p->dh) / 2;
 
-   p->pmap = ECreatePixmap(p->win, p->w, p->h, 0);
-   ESetWindowBackgroundPixmap(p->win, p->pmap);
    p->do_newbg = 1;
    PagerCheckUpdate(p, NULL);
 
@@ -887,7 +882,7 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
       h = 1;
 
    if (!gc)
-      gc = EXCreateGC(p->pmap, 0, NULL);
+      gc = EXCreateGC(WinGetPmap(p->win), 0, NULL);
 
    /* NB! If the pixmap/mask was created by imlib, free it. Due to imlibs */
    /*     image/pixmap cache it may be in use elsewhere. */
@@ -907,7 +902,8 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
    if (!ewin->mini_pmm.pmap)
       return;
 
-   XCopyArea(disp, p->pmap, ewin->mini_pmm.pmap, gc, x, y, w, h, 0, 0);
+   XCopyArea(disp, WinGetPmap(p->win), ewin->mini_pmm.pmap, gc, x, y, w, h, 0,
+	     0);
 
 #if 0				/* FIXME - Remove? */
    if (hiwin && ewin == hiwin->ewin)
