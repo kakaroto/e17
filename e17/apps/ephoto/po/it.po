@@ -5,199 +5,107 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Ephoto\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-30 22:31+0100\n"
-"PO-Revision-Date: 2006-11-01 12:06+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-05-21 18:47+0200\n"
+"PO-Revision-Date: 2007-05-21 18:54+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/ephoto_callbacks.c:218
-msgid "Add an Album"
-msgstr "Aggiungi album"
+#: src/bin/ephoto_edit_view.c:36
+msgid "Standard Tools"
+msgstr "Strumenti standard"
 
-#: src/ephoto_callbacks.c:231
-msgid "Enter the new album name:"
-msgstr "Nome del nuovo album:"
+#: src/bin/ephoto_edit_view.c:44
+msgid "Advanced Tools"
+msgstr "Strumenti avanzati"
 
-#: src/ephoto_callbacks.c:243
-msgid "Enter the new album description:"
-msgstr "Descrizione del nuovo album:"
+#: src/bin/ephoto_edit_view.c:66 src/bin/ephoto_single_view.c:33
+msgid "Previous Image"
+msgstr "Immagine precedente"
 
-#: src/ephoto_callbacks.c:263 src/ephoto_slideshow.c:493
-msgid "save"
-msgstr "salva"
+#: src/bin/ephoto_edit_view.c:70 src/bin/ephoto_single_view.c:39
+msgid "Next Image"
+msgstr "Immagine successiva"
 
-#: src/ephoto_callbacks.c:272 src/ephoto_slideshow.c:503
-msgid "cancel"
-msgstr "annulla"
+#: src/bin/ephoto_exif.c:103
+msgid "No Exif Data Exists"
+msgstr "Nessun dato Exif"
 
-#: src/ephoto.c:52 src/ephoto_viewer.c:253
-msgid "Menu|File"
-msgstr "File"
+#: src/bin/ephoto_list_view.c:97
+msgid "Name"
+msgstr "Nome"
 
-#: src/ephoto.c:60 src/ephoto_viewer.c:271
-msgid "Menu|File|Exit"
-msgstr "Esci"
+#: src/bin/ephoto_list_view.c:99
+msgid "Pixels"
+msgstr "Pixel"
 
-#: src/ephoto.c:68
-msgid "Menu|Albums"
-msgstr "Album"
+#: src/bin/ephoto_list_view.c:101
+msgid "Size"
+msgstr "Dimensione"
 
-#: src/ephoto.c:76
-msgid "Menu|Albums|Add Album"
-msgstr "Aggiungi album"
-
-#: src/ephoto.c:86
-msgid "Menu|Albums|Remove Album"
-msgstr "Elimina album"
-
-#: src/ephoto.c:93
-msgid "Menu|Viewer"
-msgstr "Visualizzatore"
-
-#: src/ephoto.c:101
-msgid "Menu|Viewer|Image Viewer"
-msgstr "Visualizzatore immagini"
-
-#: src/ephoto.c:109
-msgid "Menu|Slideshow"
-msgstr "Presentazione"
-
-#: src/ephoto.c:118
-msgid "Menu|Slideshow|Configure Slideshow"
-msgstr "Configura presentazione"
-
-#: src/ephoto.c:129
-msgid "Menu|Slideshow|Start Slideshow"
-msgstr "Avvia presentazione"
-
-#: src/ephoto.c:170
-msgid "  Location:"
-msgstr "  Posizione:"
-
-#: src/ephoto.c:216
+#: src/bin/ephoto_main.c:216
 msgid "Albums"
 msgstr "Album"
 
-#: src/ephoto_slideshow.c:115
-msgid "Ephoto Slideshow"
-msgstr "Presentazione Ephoto"
+#: src/bin/ephoto_main.c:222
+msgid "File System"
+msgstr "File system"
 
-#: src/ephoto_slideshow.c:329
-msgid "Slideshow Configuration"
-msgstr "Configurazione presentazione"
+#: src/bin/ephoto_main.c:247
+msgid "Normal View"
+msgstr "Vista normale"
 
-#: src/ephoto_slideshow.c:348
-msgid "Window Size"
-msgstr "Dimensione finestra"
+#: src/bin/ephoto_main.c:255
+msgid "List View"
+msgstr "Vista elenco"
 
-#: src/ephoto_slideshow.c:361
-msgid "Fullscreen"
-msgstr "Schermo intero"
+#: src/bin/ephoto_main.c:263
+msgid "Single View"
+msgstr "Vista singola"
 
-#: src/ephoto_slideshow.c:369
-msgid "Custom"
-msgstr "Personalizzata"
+#: src/bin/ephoto_main.c:275
+msgid "You do not have libexif 0.6.13"
+msgstr "Non avete libexif 0.6.13"
 
-#: src/ephoto_slideshow.c:384
-msgid "Width"
-msgstr "Larghezza"
+#: src/bin/ephoto_main.c:281
+msgid "View Exif Data"
+msgstr "Mostra dati Exif"
 
-#: src/ephoto_slideshow.c:398
-msgid "Height"
-msgstr "Altezza"
+#: src/bin/ephoto_main.c:288
+msgid "Toggle Fullscreen"
+msgstr "Schermo intero / Finestra"
 
-#: src/ephoto_slideshow.c:412
-msgid "Order"
-msgstr "Ordinamento"
+#: src/bin/ephoto_main.c:296
+msgid "Start a Slideshow"
+msgstr "Inizia presentazione"
 
-#: src/ephoto_slideshow.c:419
-msgid "Loop Slideshow"
-msgstr "Cicla presentazione"
+#: src/bin/ephoto_main.c:308
+msgid "Move to edit view"
+msgstr "Strumenti di modifica"
 
-#: src/ephoto_slideshow.c:426
-msgid "Random Order"
-msgstr "Ordinamento casuale"
+#: src/bin/ephoto_main.c:314
+msgid "Complete Library"
+msgstr "Libreria completa"
 
-#: src/ephoto_slideshow.c:439
-msgid "Image Size"
-msgstr "Dimensione immagine"
+#: src/bin/ephoto_utils.c:9
+#, c-format
+msgid "%'.0f Bytes"
+msgstr "%'.0f Byte"
 
-#: src/ephoto_slideshow.c:446
-msgid "Zoom Images to Fill Window"
-msgstr "Ingradisci per riempire la finestra"
+#: src/bin/ephoto_utils.c:14
+#, c-format
+msgid "%'.0f KB"
+msgstr "%'.0f KB"
 
-#: src/ephoto_slideshow.c:453
-msgid "Keep Aspect"
-msgstr "Mantieni aspetto"
+#: src/bin/ephoto_utils.c:20
+#, c-format
+msgid "%'.0f MB"
+msgstr "%'.0f MB"
 
-#: src/ephoto_slideshow.c:460
-msgid "Transitions"
-msgstr "Transizioni"
-
-#: src/ephoto_slideshow.c:478
-msgid "Show File Name On Change"
-msgstr "Mostra nome file al cambio"
-
-#: src/ephoto_viewer.c:235
-msgid "Ephoto Image Viewer"
-msgstr "Visualizzatore immagini Ephoto"
-
-#: src/ephoto_viewer.c:261
-msgid "Menu|File|Save Image"
-msgstr "Salva immagine"
-
-#: src/ephoto_viewer.c:279
-msgid "Menu|Actions"
-msgstr "Azioni"
-
-#: src/ephoto_viewer.c:287
-msgid "Menu|Actions|Zoom In"
-msgstr "Diminuisci zoom"
-
-#: src/ephoto_viewer.c:297
-msgid "Menu|Actions|Zoom Out"
-msgstr "Aumenta zoom"
-
-#: src/ephoto_viewer.c:307
-msgid "Menu|Actions|Zoom To Fit"
-msgstr "Adatta alla finestra"
-
-#: src/ephoto_viewer.c:317
-msgid "Menu|Actions|Zoom 1:1"
-msgstr "Zoom 1:1"
-
-#: src/ephoto_viewer.c:328
-msgid "Menu|Actions|Flip Horizontally"
-msgstr "Scorri orizzontalmente"
-
-#: src/ephoto_viewer.c:338
-msgid "Menu|Actions|Flip Vertically"
-msgstr "Scorri verticalmente"
-
-#: src/ephoto_viewer.c:348
-msgid "Menu|Actions|Rotate Left"
-msgstr "Ruota a sinistra"
-
-#: src/ephoto_viewer.c:358
-msgid "Menu|Actions|Rotate Right"
-msgstr "Ruota a destra"
-
-#: src/ephoto_viewer.c:400
-msgid "In"
-msgstr "Diminuisci"
-
-#: src/ephoto_viewer.c:410
-msgid "Out"
-msgstr "Aumenta"
-
-#: src/ephoto_viewer.c:440
-msgid "Left"
-msgstr "Sinistra"
-
-#: src/ephoto_viewer.c:450
-msgid "Right"
-msgstr "Destra"
+#: src/bin/ephoto_utils.c:25
+#, c-format
+msgid "%'.1f GB"
+msgstr "%'.1f GB"
