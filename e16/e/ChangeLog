@@ -4359,3 +4359,23 @@ Remove trailing dash in release version string.
 Enable setting imlib2 image cache size (debug).
 Eliminate some remainders from Window re-wrapping done a while back.
 
+
+-------------------------------------------------------------------------------
+
+Sat May 26 19:46:45 CEST 2007
+(Kim)
+
+--- 0.16.8.9 0.01 ---
+Bump version.
+Eliminate unused parameter in IPC functions. Move some stuff out of E.h.
+Tweak debug message printing.
+Tweak debug messages in configuration settings handling.
+Fix several issues around setting internal window title/class.
+Hungarian translation spelling corrections (Egmont Koblinger).
+Free un-loadable menu pixmaps some time after menu is closed.
+Make magnifier window title translatable.
+Move argb bit from Eobj down to Win struct.
+Set default pager mode to live.
+Move some window background pixmap handling down to Win layer.
+Fix edge flipping after desk switch.
+
