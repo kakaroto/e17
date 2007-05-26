@@ -25,6 +25,7 @@ FILES = add.png \
         stock_fullscreen.png \
 	stock_help.png \
 	stock_save.png \
+	stock_save-as.png \
 	undo.png \
 	x-office-presentation.png
 imagedir = $(pkgdatadir)/images

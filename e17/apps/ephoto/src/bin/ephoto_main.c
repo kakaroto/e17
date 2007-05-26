@@ -205,8 +205,8 @@ void create_main_gui(void)
 
 	mb = add_menubar(vbox);
 	menu = add_menu(mb, "File");
-	em->smi = add_menu_item(menu, "Save Image", 
-				PACKAGE_DATA_DIR "/images/stock_save.png", 
+	em->smi = add_menu_item(menu, "Save Image As", 
+				PACKAGE_DATA_DIR "/images/stock_save-as.png", 
 							save_dialog, NULL);
 	ewl_widget_disable(em->smi);
 	mi = add_menu_item(menu, "Exit", 
@@ -585,6 +585,8 @@ static Ewl_Widget *directory_view_new(void *data, unsigned int row, unsigned int
         ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_ALL);
 	if (!strncmp(directory, "..", 2))
 	{
+		ewl_icon_image_set(EWL_ICON(icon), PACKAGE_DATA_DIR "/images/go-up.png", NULL);
+		ewl_icon_constrain_set(EWL_ICON(icon), 25);
 		ewl_widget_name_set(icon, dirname(current_directory));
 	}
 	else
