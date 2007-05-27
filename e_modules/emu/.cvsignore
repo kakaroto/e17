@@ -6,6 +6,7 @@ config.guess
 config.h
 config.h.in
 config.log
+config.rpath
 config.status
 config.sub
 configure
@@ -14,5 +15,6 @@ e_modules-emu.spec
 install-sh
 libtool
 missing
+mkinstalldirs
 ltmain.sh
 stamp-h1
