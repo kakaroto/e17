@@ -44,19 +44,30 @@
 #include <assert.h>
 
 #include "theora.h"
+#include "rgb2yuv420.h"
 
 void
-enthrall_theora_encode_frame (EnthrallTheora *et,
-                              bool final_frame)
+enthrall_theora_encode_frame (EnthrallTheora *et, uint32_t *data)
 {
 	ogg_page page;
 	ogg_packet op;
+
+	/* If data is NULL, we assume that it's the last frame.
+	 *
+	 * FIXME:
+	 * According to this ticket
+	 * https://trac.xiph.org/changeset/11119
+	 * it seems we can just put in an empty packet to repeat
+	 * the last frame.
+	 */
+	if (data)
+		rgb2yuv420 (data, et->yuv.y_width, et->yuv.y_height, et->yuv.y, et->yuv.u, et->yuv.v);
 
 	/* Theora is a one-frame-in, one-frame-out system;
 	 * submit a frame for compression and pull out the packet.
 	 */
 	theora_encode_YUVin (&et->td, &et->yuv);
-	theora_encode_packetout (&et->td, final_frame, &op);
+	theora_encode_packetout (&et->td, data == NULL, &op);
 
 	ogg_stream_packetin (&et->to, &op);
 
@@ -71,8 +82,7 @@ enthrall_theora_encode_frame (EnthrallTheora *et,
 bool
 enthrall_theora_init (EnthrallTheora *et, const char *filename,
                       int quality, int *width, int *height,
-                      int *offset_x, int *offset_y,
-                      uint8_t **y, uint8_t **u, uint8_t **v)
+                      int *offset_x, int *offset_y)
 {
 	ogg_stream_state vo;
 	ogg_page og; /* one Ogg bitstream page. Vorbis packets are inside */
@@ -144,9 +154,9 @@ enthrall_theora_init (EnthrallTheora *et, const char *filename,
 	if (theora_encode_init (&et->td, &ti))
 		return false;
 
-	et->yuv.y = *y = malloc (ti.width * ti.height);
-	et->yuv.u = *u = malloc (ti.width * ti.height / 4);
-	et->yuv.v = *v = malloc (ti.width * ti.height / 4);
+	et->yuv.y = malloc (ti.width * ti.height);
+	et->yuv.u = malloc (ti.width * ti.height / 4);
+	et->yuv.v = malloc (ti.width * ti.height / 4);
 
 	et->yuv.y_width = ti.width;
 	et->yuv.y_height = ti.height;

@@ -27,8 +27,7 @@ typedef struct {
 
 bool enthrall_theora_init (EnthrallTheora *et, const char *filename,
                            int quality, int *width, int *height,
-                           int *offset_x, int *offset_y,
-                           uint8_t **y, uint8_t **u, uint8_t **v);
+                           int *offset_x, int *offset_y);
 
-void enthrall_theora_encode_frame (EnthrallTheora *et, bool final_frame);
+void enthrall_theora_encode_frame (EnthrallTheora *et, uint32_t *data);
 void enthrall_theora_finish (EnthrallTheora *et);

@@ -36,7 +36,6 @@
 #include <getopt.h>
 
 #include "theora.h"
-#include "rgb2yuv420.h"
 
 #define VERSION "0.0.2"
 
@@ -53,7 +52,7 @@ struct Enthrall {
 
 	struct {
 		Ecore_X_Window id;
-		int w, h, w16, h16;
+		int w, h;
 		int offset_x, offset_y;
 	} window;
 
@@ -70,7 +69,6 @@ struct Enthrall {
 
 	EnthrallTheora theora;
 
-	uint8_t *y, *u, *v;
 	int (*render)(Enthrall *e);
 };
 
@@ -154,7 +152,6 @@ on_timer (void *udata)
 	Bool b;
 	int result;
 	uint32_t *data;
-	bool final_frame;
 	int ptr_x = 0, ptr_y = 0, unused1;
 	unsigned int unused2;
 	Window dw, childw = None;
@@ -164,13 +161,13 @@ on_timer (void *udata)
 	 *        valid window. not sure whether this really should be
 	 *        done every time we enter this function.
 	 */
-	final_frame = false;
 
 	result = e->render(e);
 	if (result < 0) {
-		final_frame = true;
 		fprintf(stderr, "Failed to render frame... exiting.\n");
-		goto out;
+
+		enthrall_theora_encode_frame (&e->theora, NULL);
+		exit (result);
 	}
 
 	/* if we have a cursor, find out where it's at */
@@ -187,19 +184,8 @@ on_timer (void *udata)
 	}
 
 	data = imlib_image_get_data_for_reading_only ();
-	rgb2yuv420 (data, e->window.w16, e->window.h16, e->y, e->u, e->v);
+	enthrall_theora_encode_frame (&e->theora, data);
 	imlib_image_put_back_data (data);
-
-out:
-	/* FIXME:
-	 * According to this ticket
-	 * https://trac.xiph.org/changeset/11119
-	 * it seems we can just put in an empty packet to repeat
-	 * the last frame.
-	 */
-	enthrall_theora_encode_frame (&e->theora, final_frame);
-	if (result < 0)
-		exit(result);
 
 	return 1; /* keep going */
 }
@@ -289,6 +275,7 @@ main (int argc, char **argv)
 	Imlib_Image tmp;
 	char pointer_img[PATH_MAX], output_file[PATH_MAX] = {0};
 	uint32_t *data;
+	int w16, h16;
 	double start;
 	bool s;
 	int fps = 25, quality = 90;
@@ -380,13 +367,12 @@ main (int argc, char **argv)
 
 	init_imlib (&e);
 
-	e.window.w16 = e.window.w;
-	e.window.h16 = e.window.h;
+	w16 = e.window.w;
+	h16 = e.window.h;
 
 	s = enthrall_theora_init (&e.theora, output_file,
-	                          quality, &e.window.w16, &e.window.h16,
-	                          &e.window.offset_x, &e.window.offset_y,
-	                          &e.y, &e.u, &e.v);
+	                          quality, &w16, &h16,
+	                          &e.window.offset_x, &e.window.offset_y);
 	if (!s) {
 		fprintf (stderr, "Error: Cannot initialize theora encoder.\n");
 
@@ -403,12 +389,12 @@ main (int argc, char **argv)
 	e.damage.height = e.window.h;
 	e.damage_valid = true;
 
-	e.prev_img = imlib_create_image (e.window.w16, e.window.h16);
+	e.prev_img = imlib_create_image (w16, h16);
 	imlib_context_set_image (e.prev_img);
 
 	/* init image data */
 	data = imlib_image_get_data ();
-	memset (data, 0, e.window.w16 * e.window.h16 * 4);
+	memset (data, 0, w16 * h16 * 4);
 	imlib_image_put_back_data (data);
 
 	tmp = IMG_FROM_RECT (e.damage);
@@ -420,7 +406,7 @@ main (int argc, char **argv)
 	printf ("Starting recording...\n");
 	ecore_main_loop_begin ();
 
-	enthrall_theora_encode_frame (&e.theora, true);
+	enthrall_theora_encode_frame (&e.theora, NULL);
 	enthrall_theora_finish (&e.theora);
 
 	ecore_x_shutdown ();
