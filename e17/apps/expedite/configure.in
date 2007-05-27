@@ -91,7 +91,7 @@ AC_CHECK_HEADER(Evas_Engine_Software_DDraw.h,
 )
 CFLAGS=$PCFLAGS
 
-if test "x$have_xlib" = "xyes" -o "x$have_xlib_16" = "xyes" -o "x$have_xlib_render" = "xyes" "x$have_xlib_opengl" = "xyes" ; then
+if test "x$have_xlib" = "xyes" -o "x$have_xlib_16" = "xyes" -o "x$have_xlib_render" = "xyes" -o "x$have_xlib_opengl" = "xyes" ; then
 AC_PATH_XTRA
 x_dir=${x_dir:-/usr/X11R6}
 x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
