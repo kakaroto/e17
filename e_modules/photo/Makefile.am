@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = src data
+SUBDIRS = src data po
 
 filesdir = $(datadir)
 files_DATA = module.edj module.desktop

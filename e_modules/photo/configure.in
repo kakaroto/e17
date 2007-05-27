@@ -14,7 +14,7 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-ALL_LINGUAS="fi it ja ru sv"
+ALL_LINGUAS="it"
 AC_SUBST(ALL_LINGUAS)
 
 AM_GNU_GETTEXT([external])
@@ -140,6 +140,7 @@ data/images/Makefile
 data/theme/Makefile
 src/Makefile
 src/module/Makefile
+po/Makefile
 ],[
 ])
 
