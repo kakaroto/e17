@@ -1,0 +1,10 @@
+Enlightenment.sourceforge.net changes CMS again 
+Andrew Elcock
+test@test
+Thanks very much to Jonathan for kindly providing his CMS for e.org for the past few months, it has been fun. All things must come to and though, this time due to sourceforge.net (our host) remounting their web space read only so the CMS no longer worked.
+
+We took this chance to switch to one of the few that work under this circumstance, "XSM" (eXtensible Site Manager). The Rectang.com managed installation we use allows us speedy online editing with a "static" publishing system that renders plain web pages to a remote host. Now we have a content managed read-only website that is much faster to browse than before!
+
+All the content should now be ported over to the colourful new design that raster knocked up last weekend (thanks man!).
+
+Anyone who needs an account on the new system should contact HandyAndE or Rasterman on IRC or by email - happy XSMing. 

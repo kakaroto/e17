@@ -1,0 +1,13 @@
+New CVS Server
+Carsten Haitzler (Rasterman)
+test@test
+We have a new CVS server! Both developer and anonymous CVS servers have changed now.
+The new anonymous server can be checked out from using:
+
+<pre>    cvs -z3 -d :pserver:anonymous@anoncvs.enlightenment.org:/var/cvs/e checkout e17</pre>
+
+And the developer one:
+
+<pre>    cvs -z3 -d USERNAME@cvs.enlightenment.org:/cvs/e checkout e17</pre>
+
+You know the rest. Have fun! 

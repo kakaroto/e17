@@ -1,0 +1,8 @@
+Updated EWL Docs
+Nathan Ingersoll
+test@test
+After a long time between updates because of broken doxygen on SourceForge,
+the API documentation has been updated. If you are interested in getting started with EWL,
+the updated docs are an excellent reference. The test application also includes a series of tutorials
+for some of the more commonly used widgets, and while the EWL book is a little outdated, the concepts
+are still solid.
