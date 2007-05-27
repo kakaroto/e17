@@ -1667,6 +1667,13 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
 	    EobjGetXwin(eo), cw->extents, eo->desk->num, dsk->num,
 	    EobjGetX(eo), EobjGetY(eo), change_xy);
 
+   if (!eo->shown)
+     {
+	if (change_xy)
+	   ECompMgrWinInvalidate(eo, INV_POS);
+	return;
+     }
+
    /* Invalidate old window region */
    if (EDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("old-extents:", cw->extents);

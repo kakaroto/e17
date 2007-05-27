@@ -452,7 +452,7 @@ EobjReparent(EObj * eo, EObj * dst, int x, int y)
 	if (eo->desk != dsk)
 	   DeskSetDirtyStack(dsk, eo);
 #if USE_COMPOSITE
-	if (eo->shown && eo->cmhook)
+	if (eo->cmhook)
 	   ECompMgrWinReparent(eo, dsk, move);
 #endif
 	eo->desk = dsk;
