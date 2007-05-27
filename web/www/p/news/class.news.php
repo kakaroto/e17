@@ -121,7 +121,7 @@ class news {
         if ($i > 13 && $i <= 15)
             $date['second'] .= $name[$i];
     }
-    return mktime($date['hour'], $date['minute'], $date['second'], $date['mounth'], $date['day'], $date['year']);
+    return mktime($date['hour'], $date['minute'], $date['second'], $date['mounth'], $date['day'], $date['year'] + 0);
   }
 
   private function _get_localtime($timestamp) {
