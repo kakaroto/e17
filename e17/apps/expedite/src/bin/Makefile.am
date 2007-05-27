@@ -15,6 +15,7 @@ engine_software_x11.c engine_software_x11.h \
 engine_gl_x11.c engine_gl_x11.h \
 engine_xrender_x11.c engine_xrender_x11.h \
 engine_software_16_x11.c engine_software_16_x11.h \
+engine_software_ddraw.c engine_software_ddraw.h \
 ui.c ui.h \
 about.c about.h \
 tests.h \
@@ -43,4 +44,4 @@ rect_solid.c \
 rect_blend_few.c \
 rect_solid_few.c
 
-expedite_LDFLAGS = @EVAS_LIBS@  @x_libs@ -lm
+expedite_LDFLAGS = @EVAS_LIBS@  @x_libs@ @ddraw_libs@ -lm

@@ -48,34 +48,59 @@ PKG_CHECK_MODULES([EVAS], evas)
 
 PCFLAGS=$CFLAGS
 CFLAGS="$EVAS_CFLAGS $CFLAGS"
+
+have_xlib_opengl="no"
 AC_CHECK_HEADER(Evas_Engine_GL_X11.h,
-  [ AC_DEFINE(HAVE_EVAS_GL, 1, [Evas GL Engine Support]) ],
+  [ AC_DEFINE(HAVE_EVAS_GL, 1, [Evas GL Engine Support])
+    have_xlib_opengl="yes" ],
   [ dummy=no ],
   [ #include <Evas.h> ]
 )
+
+have_xlib="no"
 AC_CHECK_HEADER(Evas_Engine_Software_X11.h,
-  [ AC_DEFINE(HAVE_SOFTWARE_X11, 1, [Evas Software X11 Engine Support]) ],
+  [ AC_DEFINE(HAVE_SOFTWARE_X11, 1, [Evas Software X11 Engine Support])
+    have_xlib="yes" ],
   [ dummy=no ],
   [ #include <Evas.h> ]
 )
+
+have_xlib_render="no"
 AC_CHECK_HEADER(Evas_Engine_XRender_X11.h,
-  [ AC_DEFINE(HAVE_XRENDER_X11, 1, [Evas XRender X11 Engine Support]) ],
+  [ AC_DEFINE(HAVE_XRENDER_X11, 1, [Evas XRender X11 Engine Support])
+    have_xlib_render="yes" ],
   [ dummy=no ],
   [ #include <Evas.h> ]
 )
+
+have_xlib_16="no"
 AC_CHECK_HEADER(Evas_Engine_Software_16_X11.h,
-  [ AC_DEFINE(HAVE_SOFTWARE_16_X11, 1, [Evas Software 16bit X11 Engine Support]) ],
+  [ AC_DEFINE(HAVE_SOFTWARE_16_X11, 1, [Evas Software 16bit X11 Engine Support])
+    have_xlib_16="yes" ],
+  [ dummy=no ],
+  [ #include <Evas.h> ]
+)
+
+have_ddraw="no"
+AC_CHECK_HEADER(Evas_Engine_Software_DDraw.h,
+  [ AC_DEFINE(HAVE_SOFTWARE_DDRAW, 1, [Evas Software DirectDraw Engine Support])
+    have_ddraw="yes"
+    ddraw_libs="-lddraw -ldxguid" ],
   [ dummy=no ],
   [ #include <Evas.h> ]
 )
 CFLAGS=$PCFLAGS
 
+if test "x$have_xlib" = "xyes" -o "x$have_xlib_16" = "xyes" -o "x$have_xlib_render" = "xyes" "x$have_xlib_opengl" = "xyes" ; then
 AC_PATH_XTRA
 x_dir=${x_dir:-/usr/X11R6}
 x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
 x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
+fi
+
 AC_SUBST(x_cflags)
 AC_SUBST(x_libs)
+AC_SUBST(ddraw_libs)
 
 AC_OUTPUT([
 Makefile
@@ -83,3 +108,17 @@ src/Makefile
 src/bin/Makefile
 data/Makefile
 ])
+
+echo
+echo "  $PACKAGE $VERSION"
+echo
+echo "  Engines:"
+echo "    Software Xlib...........: ${have_xlib}"
+echo "    Software Xlib 16 bits...: ${have_xlib_16}"
+echo "    X Render Xlib...........: ${have_xlib_render}"
+echo "    Open GL Xlib............: ${have_xlib_opengl}"
+echo "    Software DirectDraw.....: ${have_ddraw}"
+echo
+echo "  Installation:"
+echo "    prefix..................: ${prefix}"
+echo

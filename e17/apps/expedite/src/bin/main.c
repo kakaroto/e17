@@ -1099,6 +1099,8 @@ _engine_args(int argc, char **argv)
      loop_func = engine_xrender_x11_loop;
    if (engine_software_16_x11_args(argc, argv))
      loop_func = engine_software_16_x11_loop;
+   if (engine_software_ddraw_args(argc, argv))
+     loop_func = engine_software_ddraw_loop;
    if (!loop_func)
      {
 	fprintf(stderr,
@@ -1108,7 +1110,7 @@ _engine_args(int argc, char **argv)
 		"  -e ENGINE\n"
 		"\n"
 		"Where ENGINE can be one of:\n"
-		"  x11 xr gl x11-16\n"
+		"  x11 xr gl x11-16 ddraw\n"
 		);
 	exit(-1);
      }
