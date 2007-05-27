@@ -17,6 +17,7 @@ depcomp
 e_modules-alarm.spec
 install-sh
 libtool
+m4
 missing
 mkinstalldirs
 module.desktop

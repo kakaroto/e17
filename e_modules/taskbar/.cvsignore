@@ -18,6 +18,7 @@ depcomp
 e_modules-taskbar.spec
 install-sh
 libtool
+m4
 missing
 mkinstalldirs
 ltmain.sh
