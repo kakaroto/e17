@@ -86,6 +86,7 @@ static void update_view(Ewl_Widget *w, void *event, void *data)
 	{
 		populate_directories(NULL, NULL, NULL);
 	}
+	ecore_dlist_goto_first(em->images);
 
 	return;
 }
@@ -312,8 +313,8 @@ void create_main_gui(void)
 								NULL, NULL);
         ewl_button_image_size_set(EWL_BUTTON(button), 30, 30);
         ewl_attach_tooltip_text_set(button, _("You do not have libexif 0.6.13"));
-        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 #ifdef BUILD_EXIF_SUPPORT
         ewl_callback_append(button, EWL_CALLBACK_CLICKED, display_exif_dialog, 
 									NULL);
@@ -386,7 +387,6 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
 	em->albums = ecore_list_new();
 	em->albums = ephoto_db_list_albums(em->db);
 	ewl_mvc_data_set(EWL_MVC(em->atree), em->albums);
-	ewl_mvc_dirty_set(EWL_MVC(em->atree), 1);
 	
 	em->images = ecore_dlist_new();
 	em->images = ephoto_db_list_images(em->db, em->current_album);
@@ -410,13 +410,8 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
         }
 	ewl_widget_configure(em->fbox);
 	ecore_dlist_goto_first(em->images);
-	if(ecore_dlist_current(em->images)) 
-	{
-		ewl_image_file_path_set(EWL_IMAGE(em->simage), 
-					ecore_dlist_current(em->images));
-	}
         ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
-	ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
+	ecore_dlist_goto_first(em->images);
 
 	return;
 }
@@ -445,7 +440,6 @@ static void populate_directories(Ewl_Widget *w, void *event, void *data)
 
 	ecore_dlist_goto_first(em->directories);
         ewl_mvc_data_set(EWL_MVC(em->dtree), em->directories);
-        ewl_mvc_dirty_set(EWL_MVC(em->dtree), 1);
 
       	if (!ecore_list_is_empty(em->images))
        	{
@@ -474,14 +468,9 @@ static void populate_directories(Ewl_Widget *w, void *event, void *data)
 	}
 	ewl_widget_configure(em->fbox);
 	ecore_dlist_goto_first(em->images);
-	if(ecore_dlist_current(em->images))
-	{ 
-		ewl_image_file_path_set(EWL_IMAGE(em->simage), 
-					ecore_dlist_current(em->images));
-	}
 	ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
-	ewl_mvc_dirty_set(EWL_MVC(em->ltree), 1);
-	
+	ecore_dlist_goto_first(em->images);	
+
 	return;
 } 
 
