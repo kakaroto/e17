@@ -1,5 +1,5 @@
-FLAGS = `evas-config --cflags` -I/usr/X11R6/include -I/usr/X11R7/include -I/usr/xorg/include
-LIBS  = `evas-config --libs`
+FLAGS = `pkg-config --cflags evas` -I/usr/X11R6/include -I/usr/X11R7/include -I/usr/xorg/include
+LIBS  = `pkg-config --libs evas`
 
 BINS  = evas_software_x11_test \
 evas_software_x11_perf_test \
@@ -15,7 +15,8 @@ evas_software_qtopia_test \
 evas_gl_x11_test \
 evas_cairo_x11_test \
 evas_xrender_x11_test \
-evas_xrender_xcb_test
+evas_xrender_xcb_test \
+evas_software_ddraw_test
 
 all: evas_buffer_test
 
@@ -23,7 +24,7 @@ evas_buffer_test_SRCS = evas_test_main.c evas_buffer_main.c
 evas_buffer_test_OBJS = $(evas_buffer_test_SRCS:.c=.o)
 evas_buffer_test: $(evas_buffer_test_OBJS)
 	$(RM) $@
-	$(CC) $(LIBS) $(LDFLAGS) $(evas_buffer_test_OBJS) -lm -o $@
+	$(CC) $(evas_buffer_test_OBJS) $(LIBS) $(LDFLAGS) -lm -o $@
 
 evas_software_x11_test_SRCS = evas_test_main.c evas_software_x11_main.c
 evas_software_x11_test_OBJS = $(evas_software_x11_test_SRCS:.c=.o)
@@ -83,6 +84,12 @@ evas_cairo_x11_test: $(evas_cairo_x11_test_OBJS)
 	$(RM) $@
 	$(CC) $(LIBS) $(LDFLAGS) $(evas_cairo_x11_test_OBJS) -lm -L/usr/X11R6/lib -L/usr/X11R7/lib -L/usr/xorg/lib -lX11 -lXext -o $@
 
+evas_software_ddraw_test_SRCS = evas_test_main.c evas_software_ddraw_main.c
+evas_software_ddraw_test_OBJS = $(evas_software_ddraw_test_SRCS:.c=.o)
+evas_software_ddraw_test: $(evas_software_ddraw_test_OBJS)
+	$(RM) $@
+	$(CC) $(evas_software_ddraw_test_OBJS) -lddraw -ldxguid $(LIBS) $(LDFLAGS) -lm  -o $@
+
 
 
 ############################################################################
@@ -91,4 +98,3 @@ evas_cairo_x11_test: $(evas_cairo_x11_test_OBJS)
 	$(CC) $(FLAGS) $(CFLAGS) -c $< -o $@
 clean::
 	rm -rf $(BINS) *.o *~
-	
