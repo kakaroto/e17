@@ -3,7 +3,7 @@
 <td class='main'><div class="main">
 
 <span class="contentmain"> 
-<p>The latest stable version of DR16 is 0.16.8.6 which was released on February 20th, 2007. Before
+<p>The latest stable version of DR16 is 0.16.8.8 which was released on May 17th, 2007. Before
 downloading, review the following list of required dependencies:</p>
 <p>&nbsp;DR16.8 dependencies:</p>
 
@@ -14,7 +14,7 @@ downloading, review the following list of required dependencies:</p>
 </span>
 <ul>
 <li><span class="contentmain">
-<a href="http://sourceforge.net/project/showfiles.php?group_id=2" target="_self">Imlib2 v1.2.0</a> (or greater, v1.3.0 or greater is recommended)
+<a href="http://sourceforge.net/project/showfiles.php?group_id=2" target="_self">Imlib2 v1.2.0</a> (or greater, v1.4.0 or greater is recommended)
 </span></li>
 <li><span class="contentmain">
 <a href="http://www.freetype.org/">FreeType2 2.1.6</a> (or greater)
@@ -72,7 +72,7 @@ the one that is right for you.</p>
 <tr class="team-dark">      
 <td class='tab1'>Enlightenment Source Code TAR.GZ</td>
 
-<td class='tab1'><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6.tar.gz?download">e16-0.16.8.6.tar.gz</a></td>
+<td class='tab1'><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.8.tar.gz?download">e16-0.16.8.8.tar.gz</a></td>
 
 <td class='tab1'>&nbsp;</td>
 </tr>
@@ -81,7 +81,7 @@ the one that is right for you.</p>
 <tr class="team-light">      
 <td class='tab2'>Source Package RPM</td>
 
-<td class='tab2'><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6-1.fc6.src.rpm?download">e16-0.16.8.6-1.fc6.src.rpm</a></td>
+<td class='tab2'><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.8-1.fc6.src.rpm?download">e16-0.16.8.8-1.fc6.src.rpm</a></td>
 
 <td class='tab2'>&nbsp;</td>
 </tr>
@@ -89,7 +89,7 @@ the one that is right for you.</p>
 <tr class="team-dark">      
 <td class='tab1'>Linux i386 Binary RPM</td>
 
-<td class='tab1'><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.6-1.fc6.i386.rpm?download">e16-0.16.8.6-1.fc6.i386.rpm</a></td>
+<td class='tab1'><a href="http://prdownloads.sourceforge.net/enlightenment/e16-0.16.8.8-1.fc6.i386.rpm?download">e16-0.16.8.8-1.fc6.i386.rpm</a></td>
 
 <td class='tab1'>&nbsp;</td>
 </tr>
