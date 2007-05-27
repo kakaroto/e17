@@ -389,6 +389,48 @@ a.b:hover {
 }
 
 
+/** NEWS STYLE */
+
+.post {
+   margin                 : 0 0 2.5em 40px;
+   border-left            : 1px solid #DDD;
+   padding-left           : 2ex;
+   position               : relative;
+}
+
+html>body .news-date{
+   left                   : -11ex;
+}
+
+.news-date {
+   margin                 : 0;
+   text-align             : right;
+   width                  : 10ex;
+   position               : absolute;
+   left                   : -13ex;
+   font-size              : 90%;
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
+   color                  : #888888;
+}
+
+.news-title {
+   font-size              : 1.1em;
+   margin-bottom          : -1.2ex;
+}
+
+.news-title a, .news-title a:visited, .news-title a:hover {
+   text-decoration        : none;
+}
+
+.news-title span {
+   font-size              : 0.7em;
+}
+
+.news-content {
+   text-align             : justify;
+}
+
+
 
 /* OLD CSS STUFF TO STEAL FROM */
 
