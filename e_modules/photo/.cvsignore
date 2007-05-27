@@ -1,3 +1,4 @@
+ABOUT-NLS
 Makefile
 Makefile.in
 aclocal.m4
@@ -15,6 +16,7 @@ e_modules-photo.spec
 install-sh
 libtool
 ltmain.sh
+m4
 missing
 mkinstalldirs
 stamp-h1
