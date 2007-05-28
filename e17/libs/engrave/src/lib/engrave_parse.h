@@ -31,7 +31,7 @@ void engrave_parse_base(char *base);
 void engrave_parse_part();
 void engrave_parse_part_name(char *name);
 void engrave_parse_part_type(Engrave_Part_Type type);
-void engrave_parse_state_part_source(char *source);
+void engrave_parse_part_source(char *source);
 void engrave_parse_part_effect(Engrave_Text_Effect effect);
 void engrave_parse_part_mouse_events(int mouse_events);
 void engrave_parse_part_repeat_events(int repeat_events);
