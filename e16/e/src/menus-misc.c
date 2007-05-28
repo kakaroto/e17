@@ -313,29 +313,28 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 
 	if (first)
 	  {
-	     char               *wd;
+	     char               *title;
 
-	     wd = field(s, 0);
-	     if (wd)
-	       {
-		  MenuSetTitle(m, wd);
-		  Efree(wd);
-	       }
 	     first = 0;
+
+	     title = NULL;
+	     parse(s, "%S", &title);
+
+	     if (!title)
+		continue;
+	     MenuSetTitle(m, title);
 	  }
 	else
 	  {
-	     char               *txt = NULL, *icon = NULL, *act = NULL;
-	     char               *params = NULL, wd[4096];
-
+	     char               *txt, *icon, *act, *params;
+	     char                wd[4096];
 	     MenuItem           *mi;
 	     ImageClass         *icc = NULL;
 	     Menu               *mm;
 
-	     txt = field(s, 0);
-	     icon = field(s, 1);
-	     act = field(s, 2);
-	     params = field(s, 3);
+	     txt = icon = act = params = NULL;
+	     parse(s, "%S%T%S%S", &txt, &icon, &act, &params);
+
 	     if (icon && exists(icon))
 	       {
 		  Esnprintf(wd, sizeof(wd), "__FM.%s", icon);
@@ -348,8 +347,8 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 		  sscanf(params, "%4000s", wd);
 		  if (path_canexec(wd))
 		    {
-		       Esnprintf(s, sizeof(s), "exec %s", params);
-		       mi = MenuItemCreate(txt, icc, s, NULL);
+		       Esnprintf(wd, sizeof(wd), "exec %s", params);
+		       mi = MenuItemCreate(txt, icc, wd, NULL);
 		       MenuAddItem(m, mi);
 		    }
 	       }
@@ -368,14 +367,6 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 		  mi = MenuItemCreate(txt, icc, act, NULL);
 		  MenuAddItem(m, mi);
 	       }
-	     if (txt)
-		Efree(txt);
-	     if (icon)
-		Efree(icon);
-	     if (act)
-		Efree(act);
-	     if (params)
-		Efree(params);
 	  }
      }
    fclose(f);

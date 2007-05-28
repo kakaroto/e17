@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2007 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -23,7 +23,6 @@
 #ifndef _PARSE_H_
 #define _PARSE_H_
 
-char               *field(char *s, int fieldno);
-void                fword(char *s, int num, char *wd);
+int                 parse(char *buf, const char *fmt, ...);
 
 #endif /* _PARSE_H_ */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2007 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -21,200 +21,81 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include <ctype.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include "parse.h"
-#include "util.h"
 
-#if 0				/* Unused */
-
-const char         *
-atword(const char *s, int num)
+int
+parse(char *buf, const char *fmt, ...)
 {
-   int                 cnt, i;
+   int                 nitems;
+   char                chi, chf, chq;
+   char               *p, **ps;
+   va_list             args;
 
-   if (!s)
-      return NULL;
-   cnt = 0;
-   i = 0;
+   va_start(args, fmt);
 
-   while (s[i])
+   for (nitems = 0;;)
      {
-	if ((s[i] != ' ') && (s[i] != '\t'))
+	chf = *fmt++;
+	if (chf != '%')
+	   break;
+	chf = *fmt++;
+	if (chf == '\0')
+	   break;
+	/* Strip leading whitespace */
+	while (isspace(*buf))
+	   buf++;
+	if (!*buf)
+	   break;
+	switch (chf)
 	  {
-	     if (i == 0)
-		cnt++;
-	     else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
-		cnt++;
-	     if (cnt == num)
-		return &s[i];
-	  }
-	i++;
-     }
-   return NULL;
-}
-
-void
-word(const char *s, int num, char *wd)
-{
-   int                 cnt, i;
-   const char         *start, *finish, *ss;
-
-   if (!s)
-      return;
-   if (!wd)
-      return;
-   if (num <= 0)
-     {
-	*wd = 0;
-	return;
-     }
-   cnt = 0;
-   i = 0;
-   start = NULL;
-   finish = NULL;
-   ss = NULL;
-
-   while (s[i])
-     {
-	if ((cnt == num) && ((s[i] == ' ') || (s[i] == '\t')))
-	  {
-	     finish = &s[i];
-	     break;
-	  }
-	if ((s[i] != ' ') && (s[i] != '\t'))
-	  {
-	     if (i == 0)
+	  case 'S':		/* Return pointer to string */
+	  case 'T':		/* As S, convert "NULL" to NULL pointer */
+	     chi = *buf;
+	     chq = (chi == '\'' || chi == '"') ? chi : '\0';
+	     if (chq)
 	       {
-		  cnt++;
-		  if (cnt == num)
-		     start = &s[i];
-	       }
-	     else if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
-	       {
-		  cnt++;
-		  if (cnt == num)
-		     start = &s[i];
-	       }
-	  }
-	i++;
-     }
-   if (cnt == num)
-     {
-	if ((start) && (finish))
-	  {
-	     for (ss = start; ss < finish; ss++)
-		*wd++ = *ss;
-	  }
-	else if (start)
-	  {
-	     for (ss = start; *ss != 0; ss++)
-		*wd++ = *ss;
-	  }
-	*wd = 0;
-     }
-}
-
-#endif /* Unused */
-
-/* gets word number [num] in the string [s] and copies it into [wd] */
-/* wd is NULL terminated. If word [num] does not exist wd = "" */
-/* NB: this function now handles quotes so for a line: */
-/* Hello to "Welcome sir - may I Help" Shub Foo */
-/* Word 1 = Hello */
-/* Word 2 = to */
-/* Word 3 = Welcome sir - may I Help */
-/* Word 4 = Shub */
-/* word 5 = Foo */
-void
-fword(char *s, int num, char *wd)
-{
-   char               *cur, *start, *end;
-   int                 count, inword, inquote, len;
-
-   if (!s)
-      return;
-   if (!wd)
-      return;
-   *wd = 0;
-   if (num <= 0)
-      return;
-   cur = s;
-   count = 0;
-   inword = 0;
-   inquote = 0;
-   start = NULL;
-   end = NULL;
-   while ((*cur) && (count < num))
-     {
-	if (inword)
-	  {
-	     if (inquote)
-	       {
-		  if (*cur == '"')
+		  /* Token is quoted */
+		  buf++;
+		  for (p = buf;; p++)
 		    {
-		       inquote = 0;
-		       inword = 0;
-		       end = cur;
-		       count++;
+		       p = strchr(p, chq);
+		       if (p)
+			 {
+			    if (p[1] && !isspace(p[1]))
+			       continue;
+			    *p++ = '\0';	/* Terminate at quote */
+			 }
+		       else
+			 {
+			    p = buf + strlen(buf);	/* Missing end quote */
+			 }
+		       break;
 		    }
 	       }
 	     else
 	       {
-		  if (isspace(*cur))
-		    {
-		       end = cur;
-		       inword = 0;
-		       count++;
-		    }
+		  /* Token is unquoted */
+		  p = buf + 1;
+		  while (*p && !isspace(*p))
+		     p++;
+		  if (*p)
+		     *p++ = '\0';
 	       }
-	  }
-	else
-	  {
-	     if (!isspace(*cur))
-	       {
-		  if (*cur == '"')
-		    {
-		       inquote = 1;
-		       start = cur + 1;
-		    }
-		  else
-		     start = cur;
-		  inword = 1;
-	       }
-	  }
-	if (count == num)
-	   break;
-	cur++;
-     }
-   if (!start)
-      return;
-   if (!end)
-      end = cur;
-   if (end <= start)
-      return;
-   len = (int)(end - start);
-   if (len > 4000)
-      len = 4000;
-   if (len > 0)
-     {
-	strncpy(wd, start, len);
-	wd[len] = 0;
-     }
-}
+	     ps = va_arg(args, char **);
 
-char               *
-field(char *s, int fieldno)
-{
-   char                buf[4096];
-
-   buf[0] = 0;
-   fword(s, fieldno + 1, buf);
-   if (buf[0])
-     {
-	if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
-	   return NULL;
-	return Estrdup(buf);
+	     if (chf == 'T' && (!buf[0] || !strcmp(buf, "NULL")))
+		*ps = NULL;
+	     else
+		*ps = buf;
+	     nitems++;
+	     buf = p;
+	  }
      }
-   return NULL;
+
+   va_end(args);
+
+   return nitems;
 }
