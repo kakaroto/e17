@@ -4,6 +4,9 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+static int ewl_embed_last_mouse_x = 0;
+static int ewl_embed_last_mouse_y = 0;
+
 Ecore_List *ewl_embed_list = NULL;
 static Evas_Smart *embedded_smart = NULL;
 static Ewl_Embed *ewl_embed_active_embed = NULL;
@@ -353,6 +356,29 @@ ewl_embed_active_embed_get(void)
 }
 
 /**
+ * @param x: a pointer to the location to save the x coordinate
+ * @param y: a pointer to the location to save the y coordinate
+ * @return Returns no value.
+ * @brief Get the last tracked mouse position
+ *
+ * Get the last tracked mouse position. Ewl only tracks mouse postion, which
+ * are recognized by EWL that mean it only gives you the last mouse positon
+ * that is recognized inside of an Ewl_Embed.
+ *
+ * The x and y pointer may be NULL.
+ */
+void
+ewl_embed_last_mouse_position_get(int *x, int *y)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (x) *x = ewl_embed_last_mouse_x; 
+	if (y) *y = ewl_embed_last_mouse_y;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param embed: the embed where the key event is to occur
  * @param keyname: the key press to trigger
  * @param mods: the mask of key modifiers currently pressed
@@ -500,6 +526,12 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
+	/* 
+	 * Keep track on the mouse position
+	 */
+	ewl_embed_last_mouse_x = x + embed->x;
+	ewl_embed_last_mouse_y = y + embed->y;
+
 	ewl_embed_active_set(embed, TRUE);
 
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
@@ -603,6 +635,13 @@ ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	
+	/* 
+	 * Keep track on the mouse position
+	 */
+	ewl_embed_last_mouse_x = x + embed->x;
+	ewl_embed_last_mouse_y = y + embed->y;
+
 
 	ewl_embed_active_set(embed, TRUE);
 
@@ -648,6 +687,12 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+
+	/* 
+	 * Keep track on the mouse position
+	 */
+	ewl_embed_last_mouse_x = x + embed->x;
+	ewl_embed_last_mouse_y = y + embed->y;
 
 	ewl_embed_active_set(embed, TRUE);
 
