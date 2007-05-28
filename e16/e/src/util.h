@@ -25,6 +25,7 @@
 #define _UTIL_H_
 
 #include "config.h"
+#include <stdarg.h>
 
 #if HAVE___ATTRIBUTE__
 #define __PRINTF__ __attribute__((__format__(__printf__, 1, 2)))
