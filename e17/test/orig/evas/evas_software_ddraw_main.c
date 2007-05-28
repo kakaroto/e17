@@ -141,6 +141,7 @@ int
 main(int argc, char **argv)
 {
    WNDCLASS            wc;
+   RECT                rect;
    HINSTANCE           hinstance;
    MSG                 msg;
    HWND                window;
@@ -166,12 +167,18 @@ main(int argc, char **argv)
 
    if(!RegisterClass(&wc)) return EXIT_FAILURE;
 
+   rect.left = 0;
+   rect.top = 0;
+   rect.right = win_w;
+   rect.bottom = win_h;
+   AdjustWindowRect (&rect, WS_OVERLAPPEDWINDOW | WS_SIZEBOX, FALSE);
+
    window = CreateWindowEx(0,
 			   "Evas_Software_DDraw_Test",
 			   "Evas_Software_DDraw_Test",
 			   WS_OVERLAPPEDWINDOW | WS_SIZEBOX,
 			   CW_USEDEFAULT, CW_USEDEFAULT,
-			   win_w, win_h,
+                           rect.right - rect.left, rect.bottom - rect.top,
 			   NULL, NULL, hinstance, NULL);
    if (!window) return EXIT_FAILURE;
 
