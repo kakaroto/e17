@@ -134,15 +134,10 @@ MainWndProc(HWND   hwnd,
        HDC hdc; 
 
        hdc = BeginPaint (window, &ps);
-       printf ("WM_WINDOWPOSCHANGED (%d, %d), (%d, %d)\n",
-               ps.rcPaint.left,
-               ps.rcPaint.top,
-               ps.rcPaint.right - ps.rcPaint.left + 1,
-               ps.rcPaint.bottom - ps.rcPaint.top + 1);
        evas_damage_rectangle_add(evas,
                                  ps.rcPaint.left, ps.rcPaint.top,
-                                 ps.rcPaint.right - ps.rcPaint.left + 1,
-                                 ps.rcPaint.bottom - ps.rcPaint.top + 1);
+                                 ps.rcPaint.right - ps.rcPaint.left,
+                                 ps.rcPaint.bottom - ps.rcPaint.top);
        EndPaint(window, &ps);
        return 0;
      }
@@ -150,14 +145,12 @@ MainWndProc(HWND   hwnd,
        {
           PRECT rect = (PRECT)lParam;
 
-          printf ("WM_SIZING\n");
           evas_output_size_set(evas,
-                               rect->right - rect->left + 1,
-                               rect->bottom - rect->top + 1);
+                               rect->right - rect->left,
+                               rect->bottom - rect->top);
           return 0;
        }
      case WM_RBUTTONDOWN:
-       printf ("WM_RBUTTONDOWN\n");
        evas_event_feed_mouse_move(evas, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), 0, NULL);
        evas_event_feed_mouse_down(evas, 3, EVAS_BUTTON_NONE, 0, NULL);
        return 0;
@@ -282,6 +275,7 @@ int
 engine_software_ddraw_args(int argc, char **argv)
 {
    WNDCLASS                         wc;
+   RECT                             rect;
    HINSTANCE                        hinstance;
    MSG                              msg;
    LPDIRECTDRAW                     object;
@@ -317,12 +311,18 @@ engine_software_ddraw_args(int argc, char **argv)
 
    if(!RegisterClass(&wc)) return EXIT_FAILURE;
 
+   rect.left = 0;
+   rect.top = 0;
+   rect.right = win_w;
+   rect.bottom = win_h;
+   AdjustWindowRect (&rect, WS_OVERLAPPEDWINDOW | WS_SIZEBOX, FALSE);
+
    window = CreateWindowEx(0,
                            "Evas_Software_DDraw_Test",
                            "Evas_Software_DDraw_Test",
                            WS_OVERLAPPEDWINDOW | WS_SIZEBOX,
                            CW_USEDEFAULT, CW_USEDEFAULT,
-                           win_w, win_h,
+                           rect.right - rect.left, rect.bottom - rect.top,
                            NULL, NULL, hinstance, NULL);
    if (!window) return EXIT_FAILURE;
 
@@ -371,7 +371,6 @@ engine_software_ddraw_loop(void)
    DispatchMessage (&msg);
 
    goto again;
-   printf ("fin loop\n");
 }
 
 #endif /* HAVE_SOFTWARE_DDRAW */
