@@ -34,7 +34,8 @@ static char *_part_type_string[ENGRAVE_PART_TYPE_NUM] = {
         "TEXTBLOCK",
         "RECT",
         "SWALLOW",
-	"GRADIENT"
+	"GRADIENT",
+	"GROUP"
         };
 
 static char *_text_effect_string[ENGRAVE_TEXT_EFFECT_NUM] = {
@@ -276,6 +277,10 @@ _engrave_output_part(Engrave_Part *part, void *data)
   engrave_out_data(out, "name", "\"%s\"", engrave_part_name_get(part));
   engrave_out_data(out, "type", "%s", 
         _part_type_string[engrave_part_type_get(part)]);
+
+  if(engrave_part_source_get(part))
+  	engrave_out_data(out, "source", "\"%s\"",
+		engrave_part_source_get(part));
 
   if (!engrave_part_mouse_events_get(part))
     engrave_out_data(out, "mouse_events", "%d",

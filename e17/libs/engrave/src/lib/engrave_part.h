@@ -30,6 +30,7 @@ struct _Engrave_Part
   int mouse_events;             /**< The mouse events flag */
   int repeat_events;            /**< The repeat events flag */
   char *clip_to;                /**< The part to clip too */
+  char *source;			/**< The source of the part */
 
   /**
    * The dragable settings for the part 
@@ -81,6 +82,7 @@ EAPI void engrave_part_name_set(Engrave_Part *ep, const char *name);
 EAPI void engrave_part_mouse_events_set(Engrave_Part *ep, int val);
 EAPI void engrave_part_repeat_events_set(Engrave_Part *ep, int val);
 EAPI void engrave_part_type_set(Engrave_Part *ep, Engrave_Part_Type type);
+EAPI void engrave_part_source_set(Engrave_Part *ep, char * source);
 EAPI void engrave_part_effect_set(Engrave_Part *ep, Engrave_Text_Effect effect);
 EAPI void engrave_part_clip_to_set(Engrave_Part *ep, const char *clip_to);
 
@@ -90,11 +92,13 @@ EAPI void engrave_part_dragable_x_set(Engrave_Part *ep, int x, int step, int cou
 EAPI void engrave_part_dragable_y_set(Engrave_Part *ep, int y, int step, int count);
 EAPI void engrave_part_dragable_confine_set(Engrave_Part *ep, const char *confine);
 EAPI void engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps);
+EAPI void engrave_part_state_remove(Engrave_Part *ep, Engrave_Part_State *eps);
 EAPI Engrave_Part_State * engrave_part_state_by_name_value_find(Engrave_Part *ep, 
                                                                 const char *name, double val);
 
 EAPI const char *engrave_part_name_get(Engrave_Part *ep);
 EAPI Engrave_Part_Type engrave_part_type_get(Engrave_Part *ep);
+EAPI char * engrave_part_source_get(Engrave_Part *ep);
 EAPI int engrave_part_mouse_events_get(Engrave_Part *ep);
 EAPI int engrave_part_repeat_events_get(Engrave_Part *ep);
 EAPI Engrave_Text_Effect engrave_part_effect_get(Engrave_Part *ep);

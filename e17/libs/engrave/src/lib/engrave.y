@@ -43,7 +43,7 @@
 %token STYLES STYLE SBASE TAG ELIPSIS
 %token COLON QUOTE SEMICOLON STATE_SET ACTION_STOP SIGNAL_EMIT
 %token DRAG_VAL_SET DRAG_VAL_STEP DRAG_VAL_PAGE LINEAR
-%token SINUSOIDAL ACCELERATE DECELERATE IMAGE RECT SWALLOW GRADIENT
+%token SINUSOIDAL ACCELERATE DECELERATE IMAGE RECT SWALLOW GRADIENT TGROUP
 %token NONE PLAIN OUTLINE SOFT_OUTLINE SHADOW SOFT_SHADOW 
 %token OUTLINE_SHADOW OUTLINE_SOFT_SHADOW VERTICAL HORIZONTAL BOTH
 %token SPECTRA SPECTRUM GRAD
@@ -451,6 +451,7 @@ part_preamble: part_preamble_entry
 
 part_preamble_entry: name
 	| type
+	| part_source
 	| effect
 	| mouse_events
 	| repeat_events
@@ -458,6 +459,12 @@ part_preamble_entry: name
 	| color_class
 	| text_class
     ; 
+
+
+part_source: SOURCE COLON STRING SEMICOLON {
+		engrave_parse_part_source($3);
+	}
+	;
 
 type: TYPE COLON part_type SEMICOLON {
                 engrave_parse_part_type($3);
@@ -470,6 +477,7 @@ part_type: IMAGE { $$ = ENGRAVE_PART_TYPE_IMAGE; }
 	| TEXTBLOCK { $$ = ENGRAVE_PART_TYPE_TEXTBLOCK; }
 	| SWALLOW { $$ = ENGRAVE_PART_TYPE_SWALLOW; }
 	| GRADIENT { $$ = ENGRAVE_PART_TYPE_GRADIENT; }
+	| TGROUP { $$ = ENGRAVE_PART_TYPE_GROUP; }
 	| STRING { /* edje accepts quoted part types. */
 		if (!strcmp($1, "RECT"))
 			$$ = ENGRAVE_PART_TYPE_RECT;
@@ -483,6 +491,8 @@ part_type: IMAGE { $$ = ENGRAVE_PART_TYPE_IMAGE; }
 			$$ = ENGRAVE_PART_TYPE_SWALLOW;
 		else if (!strcmp($1, "GRADIENT"))
 			$$ = ENGRAVE_PART_TYPE_GRADIENT;
+		else if (!strcmp($1, "GROUP"))
+			$$ = ENGRAVE_PART_TYPE_GROUP;
 	}
 	;
 

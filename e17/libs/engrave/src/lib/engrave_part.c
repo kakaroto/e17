@@ -17,6 +17,9 @@ engrave_part_new(Engrave_Part_Type type)
   if (!part) return NULL;
 
   part->type = type;
+  part->name = NULL;
+  part->source = NULL;
+  part->clip_to = NULL;
   return part;
 }
 
@@ -189,6 +192,18 @@ engrave_part_type_get(Engrave_Part *ep)
 }
 
 /**
+ * engrave_part_source_get - Get the source of the part
+ * @param ep: The Engrave_Part to get the source from
+ *
+ * @return Returns the source of the part
+ */
+EAPI char *
+engrave_part_source_get(Engrave_Part *ep)
+{
+  return (ep ? ep->source : NULL);
+}
+
+/**
  * engrave_part_mouse_events_get - Get the mouse events setting
  * @param ep: The Engrave_Part to get the mouse events from
  * 
@@ -323,6 +338,20 @@ engrave_part_type_set(Engrave_Part *ep, Engrave_Part_Type type)
 }
 
 /**
+ * engrave_part_source_set - set the source of the part
+ * @param ep: The Engrave_Part to set the type on.
+ * @param source: The source to set on the part
+ *
+ * @return Returns no value.
+ */
+EAPI void
+engrave_part_source_set(Engrave_Part *ep, char * source)
+{
+  if (!ep) return;
+  ep->source = strdup(source);
+}
+
+/**
  * engrave_part_effect_set - set the effect on the given part.
  * @param ep: The Engrave_Part to set the effect upon.
  * @param effect: The Engrave_Text_Effect to set on the part.
@@ -436,6 +465,27 @@ engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps)
     if (ep->current_state == NULL)
         engrave_part_current_state_set(ep, eps);
   }
+}
+
+/**
+ * engrave_part_state_remove - remove the state from the part.
+ * @param ep: The Engrave_Part to remove the state to.
+ * @param eps: The Engrave_Part_State to remove.
+ *
+ * @return Returns no value.
+ */
+EAPI void
+engrave_part_state_remove(Engrave_Part *ep, Engrave_Part_State *eps)
+{
+   if (!eps || !ep) return;
+
+   //If eps its the current one then set current to NULL
+   if (eps == engrave_part_current_state_get(ep))
+      ep->current_state = NULL;
+
+   engrave_part_state_parent_set(eps, NULL);
+
+   ep->states = evas_list_remove(ep->states, eps);
 }
 
 /**

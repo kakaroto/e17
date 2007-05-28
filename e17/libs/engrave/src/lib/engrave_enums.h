@@ -43,6 +43,7 @@ enum _Engrave_Part_Type
   ENGRAVE_PART_TYPE_RECT, /**< Part is a rectangle */
   ENGRAVE_PART_TYPE_SWALLOW, /**< Part is a swallow */
   ENGRAVE_PART_TYPE_GRADIENT, /**< Part is a gradient */
+  ENGRAVE_PART_TYPE_GROUP, /**< Part is a group */
   ENGRAVE_PART_TYPE_NUM
 };
 

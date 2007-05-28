@@ -227,6 +227,17 @@ engrave_parse_part_type(Engrave_Part_Type type)
 }
 
 void
+engrave_parse_part_source(char * source)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_source_set(part, source);
+}
+
+void
 engrave_parse_part_effect(Engrave_Text_Effect effect)
 {
   Engrave_Group *group;
