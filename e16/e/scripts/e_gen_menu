@@ -57,7 +57,6 @@ $EdirUser = "$ENV{'HOME'}/.e16" unless $EdirUser;
 $EdirRoot = "/usr/share/enlightenment" unless $EdirRoot;
 $EdirBin  = "/usr/bin" unless $EdirBin;
 
-$EdirIcons = "$EdirUser/icons";
 $EdirMenus = "$EdirUser/menus";
 
 $dbg      = "$ENV{'E_MENUGEN_DBG'}";
@@ -66,7 +65,6 @@ $dbg      = "$ENV{'E_MENUGEN_DBG'}";
 $ENV{'PATH'} = "$EdirBin:$ENV{'PATH'}";
 
 # Programs
-$DoConvert = `which convert`;
 $DoIconv = `which iconv`;
 
 @CatsRemove = (
@@ -83,11 +81,11 @@ $DoIconv = `which iconv`;
 
 @MainMenu = (
 	"t:User Menus",
-	"m:User Application List:menus/user_apps.menu",
-	"m:GNOME:menus/menus_GNOME/index.menu",
-	"m:KDE:menus/menus_KDE/index.menu",
-	"m:Other:menus/menus_Other/index.menu",
-	"m:Enlightenment Epplets:menus/epplets.menu",
+	"m:User Application List:user_apps.menu",
+	"m:GNOME:menus_GNOME/index.menu",
+	"m:KDE:menus_KDE/index.menu",
+	"m:Other:menus_Other/index.menu",
+	"m:Enlightenment Epplets:epplets.menu",
 	"c:Restart Enlightenment:exit restart",
 	"c:Log Out:exit logout"
 );
@@ -380,6 +378,7 @@ sub MakeAppsMenu {
 	local $c, $k, $dir;
 
 	$dir = "$EdirMenus/menus_$type";
+	$mdir = "menus_$type";
 	print "Generating Menu: $type in $dir\n" if $dbg ge 1;
 	MkDir($dir);
 
@@ -398,7 +397,7 @@ sub MakeAppsMenu {
 	foreach $m (sort(keys(%menus))) {
 		open(FSubM, ">$dir/$m.menu") or die "*** Couldn't create $dir/$m.menu\n";
 		print "- Submenu: $m\n" if $dbg ge 2;
-		print FTopM "\"$m\" \"\" menu \"$dir/$m.menu\"\n";
+		print FTopM "\"$m\" \"\" menu \"$mdir/$m.menu\"\n";
 		print FSubM "\"$m\"\n";
 		foreach $k (sort(@{$menus{$m}})) {
 			print " - Item: $k\n" if $dbg ge 2;
@@ -459,7 +458,6 @@ foreach $d (split(':', $AppDirs)) {
 
 # Make menu dir and scaled icon dir
 MkDir("$EdirMenus");
-MkDir("$EdirIcons");
 
 # Make the menus
 MakeMenu("file.menu", \@MainMenu);
