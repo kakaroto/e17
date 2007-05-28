@@ -339,45 +339,42 @@ main(int argc, char **argv)
    wx = (VRoot.w - w) / 2;
    wy = (VRoot.h - (h + t)) / 2;
 #ifdef HAVE_XINERAMA
-   {
-      if (XineramaIsActive(disp))
-	{
-	   Window              rt, ch;
-	   int                 d;
-	   unsigned int        ud;
-	   int                 pointer_x, pointer_y;
-	   int                 num;
-	   XineramaScreenInfo *screens;
+   if (VRoot.win == DefaultRootWindow(disp) && XineramaIsActive(disp))
+     {
+	Window              rt, ch;
+	int                 d;
+	unsigned int        ud;
+	int                 pointer_x, pointer_y;
+	int                 num;
+	XineramaScreenInfo *screens;
 
-	   XQueryPointer(disp, VRoot.win, &rt, &ch, &pointer_x, &pointer_y,
-			 &d, &d, &ud);
+	XQueryPointer(disp, VRoot.win, &rt, &ch, &pointer_x, &pointer_y,
+		      &d, &d, &ud);
 
-	   screens = XineramaQueryScreens(disp, &num);
-	   for (i = 0; i < num; i++)
-	     {
-		if (pointer_x >= screens[i].x_org)
-		  {
-		     if (pointer_x <= (screens[i].width + screens[i].x_org))
-		       {
-			  if (pointer_y >= screens[i].y_org)
-			    {
-			       if (pointer_y <= (screens[i].height +
-						 screens[i].y_org))
-				 {
-				    wx = ((screens[i].width - w) / 2)
-				       + screens[i].x_org;
-				    wy = ((screens[i].height - (h + t)) / 2)
-				       + screens[i].y_org;
-				 }
-			    }
-		       }
-		  }
-	     }
+	screens = XineramaQueryScreens(disp, &num);
+	for (i = 0; i < num; i++)
+	  {
+	     if (pointer_x >= screens[i].x_org)
+	       {
+		  if (pointer_x <= (screens[i].width + screens[i].x_org))
+		    {
+		       if (pointer_y >= screens[i].y_org)
+			 {
+			    if (pointer_y <= (screens[i].height +
+					      screens[i].y_org))
+			      {
+				 wx = ((screens[i].width - w) / 2)
+				    + screens[i].x_org;
+				 wy = ((screens[i].height - (h + t)) / 2)
+				    + screens[i].y_org;
+			      }
+			 }
+		    }
+	       }
+	  }
 
-	   XFree(screens);
-	}
-
-   }
+	XFree(screens);
+     }
 #endif
    win_main = CreateWindow(VRoot.win, wx, wy, w, h + t);
    win_title =
