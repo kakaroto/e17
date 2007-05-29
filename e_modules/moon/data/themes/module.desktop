@@ -1,5 +1,6 @@
 [Desktop Entry]
+Type=Link
 Name=Moon
 GenericName=gadget
 Comment=Moon phase module for e17
-Icon=./module.edj
+Icon=e-module-moon

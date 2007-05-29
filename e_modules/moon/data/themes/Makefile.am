@@ -13,7 +13,7 @@ EDJE_FLAGS = \
 filesdir = $(moduledir)/$(PACKAGE)
 files_DATA = \
 module.desktop \
-module.edj \
+e-module-moon.edj \
 moon.edj
 
 EXTRA_DIST = \
@@ -25,11 +25,10 @@ moon.edj: Makefile $(EXTRA_DIST)
 	 $(top_srcdir)/data/themes/moon.edc \
 	 moon.edj
 
-module.edj: Makefile $(EXTRA_DIST)
+e-module-moon.edj: Makefile $(EXTRA_DIST)
 	 $(EDJE_CC) $(EDJE_FLAGS) \
 	 $(top_srcdir)/data/themes/icon.edc \
-	 module.edj
+	 e-module-moon.edj
 
 clean-local:
-	 rm -rf moon.edj; rm -rf *.desktop
-
+	 rm -rf moon.edj

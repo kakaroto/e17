@@ -116,7 +116,6 @@ AC_CONFIG_FILES([Makefile
                  e_modules-moon.spec
                  data/Makefile
                  data/themes/Makefile
-                 data/themes/module.desktop
                  data/themes/images/Makefile
                  po/Makefile
                  src/Makefile])
