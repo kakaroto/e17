@@ -4,6 +4,4 @@ Makefile
 Makefile.in
 *.lo
 *.la
-*.desktop
 *.edj
-*.eap
