@@ -1,7 +1,8 @@
 [Desktop Entry]
+Type=Link
 Name=Photo
 Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=photo,gadget
-Icon=./module.edj
+Icon=e-module-photo
