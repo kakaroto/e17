@@ -16,6 +16,7 @@ e_modules-moon.spec
 install-sh
 libtool
 ltmain.sh
+m4
 missing
 mkinstalldirs
 stamp-h1
