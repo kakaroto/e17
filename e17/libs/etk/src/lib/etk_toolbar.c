@@ -103,6 +103,19 @@ void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget)
 }
 
 /**
+ * @brief Adds an item to the toolbar at a specified position
+ * @param toolbar a toolbar
+ * @param widget the item to add
+ * @param pos the position to add the item at
+ */
+void etk_toolbar_insert_at(Etk_Toolbar *toolbar, Etk_Widget *widget, int pos)
+{
+   if (!toolbar || !widget)
+      return;
+   etk_box_insert_at(ETK_BOX(toolbar->box), widget, ETK_BOX_START, pos, ETK_BOX_NONE, 0);
+}
+
+/**
  * @brief Sets the toolbar's orientation (horizontal or vertical)
  * @param toolbar a toolbar
  * @param orientation the orientation to set

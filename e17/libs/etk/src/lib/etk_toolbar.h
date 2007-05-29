@@ -66,6 +66,7 @@ Etk_Widget *etk_toolbar_new(void);
 
 void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget);
 void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget);
+void etk_toolbar_insert_at(Etk_Toolbar *toolbar, Etk_Widget *widget, int pos);
 
 void                    etk_toolbar_orientation_set(Etk_Toolbar *toolbar, Etk_Toolbar_Orientation orientation);
 Etk_Toolbar_Orientation etk_toolbar_orientation_get(Etk_Toolbar *toolbar);
