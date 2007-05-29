@@ -1,5 +1,5 @@
 [Desktop Entry]
+Type=Link
 Name=Taskbar
-Exec=enlightenment
 X-Enlightenment-IconClass=taskbar,gadget
-Icon=./module.edj
+Icon=e-module-taskbar

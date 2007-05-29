@@ -4,7 +4,7 @@ SUBDIRS = data po
 
 # data files for the module
 filesdir = $(datadir)
-files_DATA = module.desktop module.edj
+files_DATA = module.desktop e-module-taskbar.edj
 
 EXTRA_DIST = $(files_DATA) \
 	     e_modules-taskbar.spec
