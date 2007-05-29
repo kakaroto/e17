@@ -67,14 +67,21 @@ AC_ARG_WITH(edje-cc,
 ])
 AC_SUBST(edje_cc)
 
-AC_PATH_GENERIC(enlightenment, 0.16.999, [
-	AC_SUBST(e_libs)
-	AC_SUBST(e_cflags) ],
-	AC_MSG_ERROR(Cannot find enlightenment: Is enlightenment-config in path?))
-e_libs=`enlightenment-config --libs`
-e_cflags=`enlightenment-config --cflags`
-AC_SUBST(e_libs)
+AC_ARG_WITH(enlightenment-config,
+[  --with-enlightenment-config=E_CONFIG    use enlightenment-config specified ],
+[
+  E_CONFIG=$withval;
+  echo "using "$E_CONFIG" for enlightenment-config";
+],[
+  PROG="enlightenment-config";
+  AC_PATH_PROG(E_CONFIG, $PROG, "", $PATH)
+])
+e_cflags=`$E_CONFIG --cflags`
+e_libs=`$E_CONFIG --libs`
+e_modules=`$E_CONFIG --module-dir`
 AC_SUBST(e_cflags)
+AC_SUBST(e_libs)
+AC_SUBST(e_modules)
 
 MODULE_ARCH="$host_os-$host_cpu"
 AC_SUBST(MODULE_ARCH)
