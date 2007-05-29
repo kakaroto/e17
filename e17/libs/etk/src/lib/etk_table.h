@@ -108,6 +108,8 @@ void        etk_table_attach_default(Etk_Table *table, Etk_Widget *child, int le
 void        etk_table_homogeneous_set(Etk_Table *table, Etk_Table_Homogeneous homogeneous);
 Etk_Table_Homogeneous etk_table_homogeneous_get(Etk_Table *table);
 
+void etk_table_child_position_get(Etk_Table *table, Etk_Widget *child, int *left_attach, int *right_attach, int *top_attach, int *bottom_attach);
+
 /** @} */
 
 #endif

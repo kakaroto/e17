@@ -277,6 +277,53 @@ Etk_Table_Homogeneous etk_table_homogeneous_get(Etk_Table *table)
    return table->homogeneous;
 }
 
+/**
+ * @brief Gets the col and row of the given child
+ * @param table a table
+ * @param left_attach the variable to store the left_attach
+ * @param right_attach the variable to store the right_attach
+ * @param top_attach the variable to store the top_attach
+ * @param bottom_attach the variable to store the bottom_attach
+ */
+void etk_table_child_position_get(Etk_Table *table, Etk_Widget *child, int *left_attach, int *right_attach, int *top_attach, int *bottom_attach)
+{
+   int i, j;
+   
+   if (left_attach)
+      *left_attach = -1;
+   if (right_attach)
+      *right_attach = -1;
+   if (top_attach)
+      *top_attach = -1;
+   if (bottom_attach)
+      *bottom_attach = -1;
+   
+   if (!table || !child)   
+      return;   
+   
+   for (i = 0; i < table->num_cols; i++)
+   {
+      for (j = 0; j < table->num_rows; j++)
+      {
+	 Etk_Table_Cell *cell = NULL;
+	 
+         cell = table->cells[CELL_INDEX(table, i, j)];
+	 if (cell && cell->child == child)
+	 {
+	    if (left_attach)
+	       *left_attach = cell->left_attach;
+	    if (right_attach)
+	       *right_attach = cell->right_attach;
+	    if (top_attach)
+	       *top_attach = cell->top_attach;
+	    if (bottom_attach)
+	       *bottom_attach = cell->bottom_attach;
+	    return;
+	 }
+      }
+   }   
+}
+
 /**************************
  *
  * Etk specific functions
