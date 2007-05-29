@@ -404,6 +404,7 @@ static int
 _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    News_Config *c;
+   int update_feeds = 0;
 
    c = news->config;
 
@@ -416,7 +417,11 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
           news_feed_lists_refresh(1);
      }
 
-   c->proxy.enable = cfdata->proxy.enable;
+   if (c->proxy.enable != cfdata->proxy.enable)
+     {
+        c->proxy.enable = cfdata->proxy.enable;
+        update_feeds = 1;
+     }
    if (c->proxy.host)
      {
         evas_stringshare_del(c->proxy.host);
@@ -487,6 +492,15 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    c->popup_other.on_timeout = cfdata->popup_other.on_timeout;
    c->popup_other.timer_s = cfdata->popup_other.timer_s;
+
+   /* update feeds */
+   if (update_feeds)
+     {
+        NEWS_FEED_FOREACH_BEG();
+        if (_feed->doc)
+          news_feed_update(_feed);
+        NEWS_FEED_FOREACH_END();
+     }
 
    news_config_save();
    return 1;

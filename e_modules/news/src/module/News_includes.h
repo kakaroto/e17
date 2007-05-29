@@ -3,8 +3,6 @@
 #include "news_item.h"
 #include "news_feed.h"
 #include "news_parse.h"
-#include "news_parse_rss.h"
-#include "news_parse_atom.h"
 #include "news_viewer.h"
 #include "news_popup.h"
 #include "news_menu.h"

@@ -68,7 +68,7 @@ news_feed_init(void)
    int i;
 
    /* create dynamic languages list from static one
-      we create thislist so its accessible from everywhere */
+      we create this list so language are accessible from everywhere */
    l = NULL;
    i = 0;
    while (_feed_langs[i].key)
@@ -81,7 +81,7 @@ news_feed_init(void)
      }
    news->langs = l;
 
-   /* validate each feed (+ create host and file strings + attach to category) */
+   /* validate each feed and create host and file strings + attach to category */
    NEWS_FEED_FOREACH_BEG();
    if (!news_feed_edit(_feed,
                        (char *)_feed->name, _feed->name_ovrw,

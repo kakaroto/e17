@@ -18,9 +18,9 @@ program
 	name: "new_set";
 	signal: "e,state,new,set";
 	source: "e";
-	action: STATE_SET "new" 0.0;
-	target: "background";
+	action: STATE_SET "active" 0.0;
 	transition: SINUSOIDAL 0.5;
+	target: "unread";
 }
 program
 {
@@ -28,8 +28,8 @@ program
 	signal: "e,state,new,unset";
 	source: "e";
 	action: STATE_SET "default" 0.0;
-	target: "background";
 	transition: SINUSOIDAL 0.5;
+	target: "unread";
 }
 
 /* Mouse in/out */

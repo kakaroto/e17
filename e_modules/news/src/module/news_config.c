@@ -166,7 +166,7 @@ news_config_init(void)
    E_CONFIG_LIMIT(news->config->feed.timer_m, NEWS_FEED_TIMER_MIN, NEWS_FEED_TIMER_MAX);
    E_CONFIG_LIMIT(news->config->feed.sort_name, 0, 1);
    E_CONFIG_LIMIT(news->config->proxy.enable, 0, 1);
-   E_CONFIG_LIMIT(news->config->proxy.port, 1024, 65535);
+   E_CONFIG_LIMIT(news->config->proxy.port, 1, 65535);
    E_CONFIG_LIMIT(news->config->viewer.vfeeds.unread_first, 0, 1);
    E_CONFIG_LIMIT(news->config->viewer.varticles.unread_first, 0, 1);
    E_CONFIG_LIMIT(news->config->viewer.varticles.sort_date, 0, 1);

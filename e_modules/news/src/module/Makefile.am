@@ -34,11 +34,6 @@ module_la_SOURCES      = e_mod_main.c \
                          news_menu.h \
                          news_parse.c \
                          news_parse.h \
-                         news_parse_private.h \
-                         news_parse_atom.c \
-                         news_parse_atom.h \
-                         news_parse_rss.c \
-                         news_parse_rss.h \
                          news_popup.c \
                          news_popup.h \
                          news_theme.c \

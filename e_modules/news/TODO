@@ -7,6 +7,8 @@ BUGS
  - X - ? rarely, on viewer open, it crashes in news_viewer_refresh, on e_icon_file_set (in evas engine loader func)
 the evas object seems ok, the string passed to the loader too ...
 
+ - X - ? proxy works SoMeTiMeS only ?
+
  - M - sometimes there are false parse errors returned
 
  - M - maybe a BUG with add / remove feeds in an item (MODE_FEED)
@@ -33,10 +35,24 @@ http://www.kozlika.org/kozeries/feed/rss2
 NEEDED (to do more or less in this order)
 ----------------------------------------------------
 
+ - make a difference in item ui, depending on the gadon gadget inset/freee appearance
+
+ - item: open feeds in menu ?
+each menu item would be an article of the feed you clicked on
+it would open the article in the viewer (viewer-article_set)
+
+news_menu_viewer, in news_menu :
+going over a menu item would fire up a viewer near the menu
+the position of this small viewer is fixed, next to the menu. side to side. the same way that a submenu sticks to the menu. we are always on the side of the menu where there is the most much space
+maybe that could replace the normal viewer ? smaller are easier to use, more quick to get to the info ... but normal viewer is maybe better when you want to look at all the feeds, reading here and there, doing other sings at the same time ...
+
+the menu has a title, the feeds name
+
+the viewer near the menu gets its content by the same function than the full viewer
+
  - debug html chars parse with test.rss
   -> add support for & alone in evas_textblock
 
- - merge news_parse_rss.c/h to news_parse.c/h
  - atom feeds
 
  - viewer: a way to set vcontent bg color ?
