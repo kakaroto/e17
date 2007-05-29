@@ -1,7 +1,8 @@
 [Desktop Entry]
+Type=Link
 Name=Language
 Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=language,gadget
-Icon=./module.edj
+Icon=e-module-language
