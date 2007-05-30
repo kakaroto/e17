@@ -38,7 +38,11 @@ ReadleShort(FILE * file, unsigned short *ret)
    if (fread(b, sizeof(unsigned char), 2, file) != 2)
       return 0;
 
-   *ret = (b[1] << 8) | b[0];
+#ifdef WORDS_BIGENDIAN
+   *ret = (b[0] << 8) | b[1];   
+#else
+   *ret = (b[1] << 8) | b[0];   
+#endif
    return 1;
 }
 
@@ -50,7 +54,11 @@ ReadleLong(FILE * file, unsigned long *ret)
    if (fread(b, sizeof(unsigned char), 4, file) != 4)
       return 0;
 
+#ifdef WORDS_BIGENDIAN
    *ret = (b[3] << 24) | (b[2] << 16) | (b[1] << 8) | b[0];
+#else
+   *ret = (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3];
+#endif
    return 1;
 }
 
@@ -71,12 +79,21 @@ WriteleShort(FILE * file, unsigned short val)
 {
    int rc;
 
+#ifdef WORDS_BIGENDIAN
    rc = fputc ((int) (val & 0xff), file);
    if (rc == EOF)
       return 0;
    rc = fputc ((int) ((val >> 8) & 0xff), file);
    if (rc == EOF)
       return 0;
+#else
+   rc = fputc ((int) ((val >> 8) & 0xff), file);
+   if (rc == EOF)
+      return 0;
+   rc = fputc ((int) (val & 0xff), file);
+   if (rc == EOF)
+      return 0;
+#endif
 
    return 1;
 }
@@ -86,6 +103,7 @@ WriteleLong(FILE * file, unsigned long val)
 {
    int rc;
 
+#ifdef WORDS_BIGENDIAN
    rc = fputc ((int) (val & 0xff), file);
    if (rc == EOF)
       return 0;
@@ -98,6 +116,20 @@ WriteleLong(FILE * file, unsigned long val)
    rc = fputc ((int) ((val >> 24) & 0xff), file);
    if (rc == EOF)
       return 0;
+#else
+   rc = fputc ((int) ((val >> 24) & 0xff), file);
+   if (rc == EOF)
+      return 0;
+   rc = fputc ((int) ((val >> 16) & 0xff), file);
+   if (rc == EOF)
+      return 0;
+   rc = fputc ((int) ((val >> 8) & 0xff), file);
+   if (rc == EOF)
+      return 0;
+   rc = fputc ((int) (val & 0xff), file);
+   if (rc == EOF)
+      return 0;
+#endif
 
    return 1;
 }
@@ -120,6 +152,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    RGBQUAD             rgbQuads[256];
    unsigned long       rmask = 0xff, gmask = 0xff, bmask = 0xff;
    unsigned long       rshift = 0, gshift = 0, bshift = 0;
+   unsigned long       rleftshift = 0, gleftshift = 0, bleftshift = 0;
 
    /*
     * 21.3.2006:
@@ -221,16 +254,28 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              {
                 int                 bit;
 
-                ReadleLong(f, &bmask);
-                ReadleLong(f, &gmask);
                 ReadleLong(f, &rmask);
+                ReadleLong(f, &gmask);
+                ReadleLong(f, &bmask);
                 for (bit = bitcount - 1; bit >= 0; bit--)
                   {
                      if (bmask & (1 << bit)) bshift = bit;
                      if (gmask & (1 << bit)) gshift = bit;
                      if (rmask & (1 << bit)) rshift = bit;
                   }
-             }
+                while(((((0xffffL & bmask) >> bshift) << bleftshift) & 0x80) == 0)
+                  {
+                     bleftshift++;
+                  }
+                while(((((0xffffL & gmask) >> gshift) << gleftshift) & 0x80) == 0)
+                  {
+                     gleftshift++;
+                  }
+                while(((((0xffffL & rmask) >> rshift) << rleftshift) & 0x80) == 0)
+                  {
+                     rleftshift++;
+                  }
+              }
            else if (bitcount == 16)
              {
                 rmask = 0x7C00;
@@ -239,6 +284,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                 rshift = 10;
                 gshift = 5;
                 bshift = 0;
+                rleftshift = gleftshift = bleftshift = 3;
              }
            else if (bitcount == 32)
              {
@@ -656,13 +702,10 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                         *   bshift;
                         * *ptr++ = 0xff000000 | (r << 16) | (g << 8) | b;
                         */
-                       /* TODO: I don't know if [rgb]shift are calculated correctly, because we
-                        * 16 bit depth losses some values (bits).
-                        */
                        unsigned short pix = *(unsigned short *)buffer_ptr;
-                       *ptr++ = 0xff000000 | (((pix & rmask) >> rshift) << 16) |
-                                             (((pix & gmask) >> gshift) <<  8) |
-                                             (((pix & bmask) >> bshift)      ) ;
+                       *ptr++ = 0xff000000 | ((((pix & rmask) >> rshift) << rleftshift) << 16) |
+                                             ((((pix & gmask) >> gshift) << gleftshift) <<  8) |
+                                             ((((pix & bmask) >> bshift) << bleftshift)      ) ;
                        buffer_ptr += 2;
                     }
                   ptr -= w * 2;
