@@ -69,7 +69,7 @@ been completely re-done, with all new content and layout, hopefully showing a
 more useful face to the world of our development efforts.
 </p>
 <p>
-<?php include 'latestnews.php' ?> 
+<?php include 'p/news/latestnews.php' ?> 
 </p>
 
 </div></td>
