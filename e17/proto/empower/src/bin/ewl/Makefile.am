@@ -7,7 +7,8 @@
 if BUILD_SEPARATE
 bin_PROGRAMS = empower_ewl
 
-empower_ewl_SOURCES = empower.c empower_cb_ewl.c empower_gui_ewl.c
+empower_ewl_SOURCES = empower.c empower_cb_ewl.c empower_gui_ewl.c \
+						empower_helper_ewl.c
 
 empower_ewl_CFLAGS = @EWL_CFLAGS@
 
@@ -16,7 +17,8 @@ empower_ewl_LDADD =  $(INTLLIBS) \
 else
 bin_PROGRAMS = empower
 
-empower_SOURCES = empower.c empower_cb_ewl.c empower_gui_ewl.c
+empower_SOURCES = empower.c empower_cb_ewl.c empower_gui_ewl.c \
+					empower_helper_ewl.c
 
 empower_CFLAGS = @EWL_CFLAGS@
 

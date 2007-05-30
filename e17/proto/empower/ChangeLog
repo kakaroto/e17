@@ -1,3 +1,10 @@
+5-29-07 -- Version 1.0
+	- Empower now behaves much more like sudo itself.  It respects the timeout
+	  and also will reask if you mistype your password.  The amount of retries
+	  is all based on your settings in the sudoers file.
+	- Also, command line options can be passed to sudo as well as EWL on the
+	  empower command line.
+	- With the massive changes and cleanups, this release deserves a 1.0 :)
 4-5-06
 	- Added etk version coded mostly by CodeWarrior
 	- Added username into the gui and did some cleaning of the interface

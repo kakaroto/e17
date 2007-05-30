@@ -1,14 +1,7 @@
 #include "Empower.h"
 
-void display_window(int argc, char** argv)
-{	
-	if(!ewl_init(&argc, argv))
-	{
-		printf("Unable to init ewl\n");
-		return;
-	}
-	
-	Ewl_Widget *entry = NULL;
+void setup_window()
+{		
 	Ewl_Widget *ok_button = NULL;
 	Ewl_Widget *cancel_button = NULL;
 	Ewl_Widget *progtext = NULL;
@@ -29,12 +22,10 @@ void display_window(int argc, char** argv)
 	ewl_window_name_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_class_set(EWL_WINDOW(win), "Empower!");
 	ewl_window_dialog_set(EWL_WINDOW(win), 1);
-	ewl_window_keyboard_grab_set(EWL_WINDOW(win), 1);
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, destroy_cb, NULL);
 	ewl_callback_prepend(win, EWL_CALLBACK_REVEAL, reveal_cb, NULL);
 	ewl_callback_append(win, EWL_CALLBACK_KEY_DOWN, key_down_cb, NULL);
-	ewl_widget_show(win);
-	
+	ewl_window_keyboard_grab_set(EWL_WINDOW(win), 1);	
 	ewl_dialog_active_area_set(EWL_DIALOG(win), EWL_POSITION_TOP);
 
 	hbox = ewl_hbox_new();
@@ -66,7 +57,7 @@ void display_window(int argc, char** argv)
 	
 	entry = ewl_password_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), entry);
-	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, pipe_to_sudo_cb, 
+	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, check_pass_cb, 
 					    entry);
 	ewl_widget_focus_send(entry);
 	ewl_widget_show(entry);
@@ -78,7 +69,7 @@ void display_window(int argc, char** argv)
 	ewl_object_fill_policy_set(EWL_OBJECT(ok_button), EWL_FLAG_FILL_NONE
 					| EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(win), ok_button);
-	ewl_callback_append(ok_button, EWL_CALLBACK_CLICKED, pipe_to_sudo_cb, 
+	ewl_callback_append(ok_button, EWL_CALLBACK_CLICKED, check_pass_cb, 
 	                    entry);
 	ewl_widget_show(ok_button);
 	
@@ -90,6 +81,10 @@ void display_window(int argc, char** argv)
 	ewl_callback_append(cancel_button, EWL_CALLBACK_CLICKED, destroy_cb, 
 				NULL);
 	ewl_widget_show(cancel_button);
-	
-	ewl_main();	
+}
+
+void display_window()
+{
+	setup_window();
+	ewl_widget_show(win);
 }

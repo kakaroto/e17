@@ -13,3 +13,6 @@ By default, this will be determined based on which toolkits are installed.
 To override pass one or more of the following to ./autogen.sh:
 	--enable-etk/--disable-etk     Enable/Disable ETK
 	--enable-ewl/--disable-ewl     Enable/Disable EWL
+	
+Note:
+Recently the etk version has been disabled by default due to compilation errors.
