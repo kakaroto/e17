@@ -1,5 +1,5 @@
 <?php
-require_once 'p/news/class.news.php';
+require_once 'class.news.php';
 
 setlocale(LC_ALL, 'en_EN');
 
