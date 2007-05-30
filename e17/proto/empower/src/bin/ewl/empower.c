@@ -2,8 +2,19 @@
 
 int main(int argc, char** argv)
 {
-	--argc; ++argv;		//pop off program name
 	sudo = NULL;
+	
+	if(!strcmp(*argv,"empower-askpass"))
+		mode = PASS;
+	else if(!strcmp(*argv, "./empower-askpass"))
+		mode = PASS;
+	else
+		mode = SUDO;
+
+	--argc; ++argv;		//pop off program name
+	
+	if(mode != PASS && !strcmp(*argv, "-p"))
+		mode = PASS;
 	
 	if(!ecore_init())
 	{
@@ -11,21 +22,25 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	
-	if(argc)	//commands
+	if(argc || mode == PASS)	//commands
 	{		
 		int i;
 
 		ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,exit_cb,NULL);
 		
-		snprintf(cmd, 1024, "sudo");
+		if(mode == SUDO)
+			snprintf(cmd, 1024, "sudo");
 		
 		while(argc)
 		{
-			if(strcmp(*argv, "--"))		//-- is used to stop sudo options, lets use that
+			if(strcmp(*argv, "--"))
 			{
-				strncat(cmd, " ", 1024);
-				strncat(cmd, *argv, 1024);
-				--argc; ++argv;		//pop these options off so ewl just gets its options
+				if(mode == SUDO)
+				{
+					strncat(cmd, " ", 1024);
+					strncat(cmd, *argv, 1024);
+					--argc; ++argv;
+				}
 			}
 			else
 				break;
@@ -37,15 +52,21 @@ int main(int argc, char** argv)
 			return;
 		}
 		
-		ecore_job_add(check_sudo_timeout_job, NULL);
+		if(mode == SUDO)
+			ecore_job_add(check_sudo_timeout_job, NULL);
+		else if(mode == PASS)
+			display_window();
 		
 		ewl_main();
 	
-		ecore_exe_run(cmd,NULL);
+		if(mode == SUDO)
+			ecore_exe_run(cmd,NULL);
 	}
 	else
 	{
-		printf("Usage: ./empower [SUDO OPTIONS] <program name> [PROGRAM OPTIONS] -- [EWL OPTIONS]\n");
+		printf("-=Usage=-\n");
+		printf("    Sudo:  empower [SUDO OPTIONS] <program> [PROGRAM OPTIONS] -- [EWL OPTIONS]\n");
+		printf("    AskPass:  empower-askpass -- [EWL OPTIONS] or empower -p -- [EWL OPTIONS]\n");
 		return 1;
 	}
 	

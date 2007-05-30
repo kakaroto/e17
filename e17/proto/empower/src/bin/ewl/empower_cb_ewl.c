@@ -34,8 +34,18 @@ void check_pass_cb(Ewl_Widget *w, void *event, void *data)
 {	
 	char *pass = ewl_password_text_get(EWL_PASSWORD(data));
 
-	authorize(pass);
-	ewl_widget_disable(win);
+	if(pass && strlen(pass))
+	{
+		ewl_widget_disable(win);
+		
+		if(mode == SUDO)
+			authorize(pass);
+		else
+		{
+			printf("%s",pass);
+			ewl_main_quit();
+		}
+	}
 }
 
 int sudo_done_cb(void *data, int type, void *event)

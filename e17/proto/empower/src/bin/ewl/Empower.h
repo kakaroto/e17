@@ -18,6 +18,8 @@ Ewl_Widget *entry;
 char cmd[1024];
 Ecore_Exe *sudo;
 
+enum{SUDO,PASS} mode;
+
 /* empower_cb prototypes */
 void key_down_cb(Ewl_Widget *w, void *event, void *data);
 void destroy_cb(Ewl_Widget *w, void *event, void *data);
