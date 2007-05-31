@@ -146,8 +146,10 @@ struct _Ephoto_Main
 	Ewl_Widget *eimage;
 	Ewl_Widget *fbox_vbox;
 	Ewl_Widget *fbox;
+	Ewl_Widget *fthumb_size;
 	Ewl_Widget *list_vbox;
 	Ewl_Widget *ltree;
+	Ewl_Widget *lthumb_size;
 	Ewl_Widget *main_nb;
 	Ewl_Widget *main_vbox;
 	Ewl_Widget *simage;
