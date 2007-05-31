@@ -220,6 +220,18 @@ const char *etk_type_name_get(Etk_Type *type)
 }
 
 /**
+ * @brief Gets the Etk_Type from the type's name
+ * @param name the type's name
+ * @return Returns the Etk_Type of the type's name, or NULL on failure
+ */
+Etk_Type *etk_type_get_from_name(const char *name)
+{
+   if (!name)
+      return NULL;
+   return evas_hash_find(_etk_type_types_hash, name);
+}
+
+/**
  * @brief Adds a signal associated to the type
  * @param type the type to add the signal to
  * @param signal the signal to add

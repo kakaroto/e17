@@ -48,6 +48,7 @@ void          etk_type_destructors_call(Etk_Type *type, Etk_Object *object);
 Etk_Bool      etk_type_inherits_from(Etk_Type *type, Etk_Type *parent);
 Etk_Type     *etk_type_parent_type_get(Etk_Type *type);
 const char   *etk_type_name_get(Etk_Type *type);
+Etk_Type     *etk_type_get_from_name(const char *name);
 
 void          etk_type_signal_add(Etk_Type *type, Etk_Signal *signal);
 void          etk_type_signal_remove(Etk_Type *type, Etk_Signal *signal);
