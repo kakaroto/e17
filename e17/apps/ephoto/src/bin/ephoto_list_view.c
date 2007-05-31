@@ -14,7 +14,7 @@ Ewl_Widget *add_list_view(Ewl_Widget *c)
         ewl_object_fill_policy_set(EWL_OBJECT(em->list_vbox), EWL_FLAG_FILL_ALL);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(c), em->list_vbox, "List");
 
-	em->ltree = add_ltree(em->list_vbox);
+	em->ltree = add_ltree(em->list_vbox);	
 
 	return em->list_vbox;
 }
@@ -22,7 +22,7 @@ Ewl_Widget *add_list_view(Ewl_Widget *c)
 /*Show the list view*/
 void show_list_view(Ewl_Widget *w, void *event, void *data)
 {
-	ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->main_nb), em->main_vbox);
+	show_main_view(NULL, NULL, NULL);
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->list_vbox);
 }
 
@@ -132,7 +132,7 @@ static void *list_data_fetch(void *data, unsigned int row, unsigned int column)
 	const char *image;
 	void *val = NULL;
 
-	image = ecore_list_goto_index(em->images, row);
+	image = ecore_dlist_goto_index(em->images, row);
 	if (image)
 	{
 		val = (void *)image;

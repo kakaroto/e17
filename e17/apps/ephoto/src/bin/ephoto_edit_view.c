@@ -7,7 +7,6 @@ static void previous_image(Ewl_Widget *w, void *event, void *data);
 static void next_image(Ewl_Widget *w, void *event, void *data);
 static void zoom_in(Ewl_Widget *w, void *event, void *data);
 static void zoom_out(Ewl_Widget *w, void *event, void *data);
-//static void zoom_full(Ewl_Widget *w, void *event, void *data);
 static void flip_image_horizontal(Ewl_Widget *w, void *event, void *data);
 static void flip_image_vertical(Ewl_Widget *w, void *event, void *data);
 static void rotate_image_left(Ewl_Widget *w, void *event, void *data);
@@ -16,8 +15,8 @@ static void image_blur(Ewl_Widget *w, void *event, void *data);
 static void image_sharpen(Ewl_Widget *w, void *event, void *data);
 static void image_grayscale(Ewl_Widget *w, void *event, void *data);
 static void image_sepia(Ewl_Widget *w, void *event, void *data);
-//static void close_channel(Ewl_Widget *w, void *event, void *data);
-//static void channel_mixer(Ewl_Widget *w, void *event, void *data);
+static void close_channel(Ewl_Widget *w, void *event, void *data);
+static void channel_mixer(Ewl_Widget *w, void *event, void *data);
 
 /*Add the edit view*/
 Ewl_Widget *add_edit_view(Ewl_Widget *c)
@@ -100,11 +99,6 @@ static void add_standard_edit_tools(Ewl_Widget *c)
         ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 
-	//button = add_button(c, "Zoom 1:1", PACKAGE_DATA_DIR "/images/search.png", zoom_full, NULL);
-        ewl_button_image_size_set(EWL_BUTTON(button), 20, 20);
-        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
-
 	button = add_button(c, "Rotate Left", PACKAGE_DATA_DIR "/images/undo.png", rotate_image_left, NULL);
 	ewl_button_image_size_set(EWL_BUTTON(button), 20, 20);
 	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
@@ -153,9 +147,9 @@ static void add_advanced_edit_tools(Ewl_Widget *c)
         ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 
-/*	button = add_button(c, "Channel Editor", NULL, channel_mixer, NULL);
+	button = add_button(c, "Channel Editor", NULL, channel_mixer, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);*/
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_HFILL);
 
 	return;
 }
@@ -203,7 +197,7 @@ static void zoom_in(Ewl_Widget *w, void *event, void *data)
 	
 	ewl_object_current_size_get(EWL_OBJECT(em->eimage), &ow, &oh);
 
-	ewl_image_size_set(EWL_IMAGE(em->eimage), ow*2, oh*2);
+	ewl_image_size_set(EWL_IMAGE(em->eimage), ow*1.5, oh*1.5);
 	ewl_widget_configure(em->eimage->parent);
 
 	return;
@@ -216,7 +210,7 @@ static void zoom_out(Ewl_Widget *w, void *event, void *data)
 
         ewl_object_current_size_get(EWL_OBJECT(em->eimage), &ow, &oh);
 
-        ewl_image_size_set(EWL_IMAGE(em->eimage), ow/2, oh/2);
+        ewl_image_size_set(EWL_IMAGE(em->eimage), ow/1.5, oh/1.5);
         ewl_widget_configure(em->eimage->parent);
 
         return;
@@ -360,56 +354,84 @@ static void image_sepia(Ewl_Widget *w, void *event, void *data)
 }
 
 /*Close the Channel Mixer*/
-/*static void close_channel(Ewl_Widget *w, void *event, void *data)
+static void close_channel(Ewl_Widget *w, void *event, void *data)
 {
-	Ewl_Widget *win;
+/*	Ewl_Widget *win;
 
 	win = data;
 
-	ewl_widget_destroy(win);
-}*/
+	ewl_widget_destroy(win);*/
+}
 
 /*Add a Channel Mixer*/
-/*static void channel_mixer(Ewl_Widget *w, void *event, void *data)
+static void channel_mixer(Ewl_Widget *w, void *event, void *data)
 {
-	Ewl_Widget *window, *vbox, *ol, *image, *hist;
+	close_channel(NULL, NULL, NULL);
+/*	Ewl_Widget *window, *vbox, *seek;
 
-	window = add_window("Channel Editor", 200, 400, NULL, NULL);
+	window = add_window("Channel Editor", 400, 400, NULL, NULL);
 	ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, close_channel, window);
 
-	vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 5);
+	vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 1);
+	
+	add_label(vbox, "Hue");
 
-        ol = ewl_overlay_new();
-        ewl_object_alignment_set(EWL_OBJECT(ol), EWL_FLAG_ALIGN_CENTER);
-        ewl_object_fill_policy_set(EWL_OBJECT(ol), EWL_FLAG_FILL_SHRINK);
-        ewl_container_child_append(EWL_CONTAINER(vbox), ol);
-        ewl_widget_show(ol);
+	seek = ewl_hseeker_new();
+        ewl_range_minimum_value_set(EWL_RANGE(seek), -100);
+        ewl_range_maximum_value_set(EWL_RANGE(seek), 100);
+        ewl_range_step_set(EWL_RANGE(seek), 10);
+        ewl_range_value_set(EWL_RANGE(seek), 0);
+        ewl_container_child_append(EWL_CONTAINER(vbox), seek);
+        ewl_widget_show(seek);
 
-        image = add_image(ol, ewl_image_file_path_get(EWL_IMAGE(em->eimage)),
-                                                                0, NULL, NULL);
-	ewl_image_size_set(EWL_IMAGE(image), 175, 175);
-	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
+	add_label(vbox, "Saturation");
 
-        hist = ewl_histogram_new();
-        ewl_histogram_channel_set(EWL_HISTOGRAM(hist), EWL_HISTOGRAM_CHANNEL_R);
-        ewl_histogram_image_set(EWL_HISTOGRAM(hist), EWL_IMAGE(image));
-        ewl_object_fill_policy_set(EWL_OBJECT(hist), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(ol), hist);
-        ewl_widget_show(hist);
+	seek = ewl_hseeker_new();
+        ewl_range_minimum_value_set(EWL_RANGE(seek), -100);
+        ewl_range_maximum_value_set(EWL_RANGE(seek), 100);
+        ewl_range_step_set(EWL_RANGE(seek), 10);
+        ewl_range_value_set(EWL_RANGE(seek), 0);
+        ewl_container_child_append(EWL_CONTAINER(vbox), seek);
+        ewl_widget_show(seek);
 
-        hist = ewl_histogram_new();
-        ewl_histogram_channel_set(EWL_HISTOGRAM(hist), EWL_HISTOGRAM_CHANNEL_G);
-        ewl_histogram_image_set(EWL_HISTOGRAM(hist), EWL_IMAGE(image));
-        ewl_object_fill_policy_set(EWL_OBJECT(hist), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(ol), hist);
-        ewl_widget_show(hist);
+	add_label(vbox, "Value");
 
-        hist = ewl_histogram_new();
-        ewl_histogram_channel_set(EWL_HISTOGRAM(hist), EWL_HISTOGRAM_CHANNEL_B);
-        ewl_histogram_image_set(EWL_HISTOGRAM(hist), EWL_IMAGE(image));
-        ewl_object_fill_policy_set(EWL_OBJECT(hist), EWL_FLAG_FILL_ALL);
-        ewl_container_child_append(EWL_CONTAINER(ol), hist);
-        ewl_widget_show(hist);
+	seek = ewl_hseeker_new();
+        ewl_range_minimum_value_set(EWL_RANGE(seek), -100);
+        ewl_range_maximum_value_set(EWL_RANGE(seek), 100);
+        ewl_range_step_set(EWL_RANGE(seek), 10);
+        ewl_range_value_set(EWL_RANGE(seek), 0);
+        ewl_container_child_append(EWL_CONTAINER(vbox), seek);
+        ewl_widget_show(seek);
 
-}*/
+	add_label(vbox, "Light");
+
+        seek = ewl_hseeker_new();
+        ewl_range_minimum_value_set(EWL_RANGE(seek), -100);
+        ewl_range_maximum_value_set(EWL_RANGE(seek), 100);
+        ewl_range_step_set(EWL_RANGE(seek), 10);
+        ewl_range_value_set(EWL_RANGE(seek), 0);
+        ewl_container_child_append(EWL_CONTAINER(vbox), seek);
+        ewl_widget_show(seek);
+
+	add_label(vbox, "Brightness");
+
+        seek = ewl_hseeker_new();
+        ewl_range_minimum_value_set(EWL_RANGE(seek), -100);
+        ewl_range_maximum_value_set(EWL_RANGE(seek), 100);
+        ewl_range_step_set(EWL_RANGE(seek), 10);
+        ewl_range_value_set(EWL_RANGE(seek), 0);
+        ewl_container_child_append(EWL_CONTAINER(vbox), seek);
+        ewl_widget_show(seek);
+
+        add_label(vbox, "Contrast");
+
+        seek = ewl_hseeker_new();
+        ewl_range_minimum_value_set(EWL_RANGE(seek), -100);
+        ewl_range_maximum_value_set(EWL_RANGE(seek), 100);
+        ewl_range_step_set(EWL_RANGE(seek), 10);
+        ewl_range_value_set(EWL_RANGE(seek), 0);
+        ewl_container_child_append(EWL_CONTAINER(vbox), seek);
+        ewl_widget_show(seek);*/
+}
 

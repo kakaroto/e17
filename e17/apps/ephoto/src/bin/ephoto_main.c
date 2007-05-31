@@ -1,15 +1,7 @@
 #include "ephoto.h"
 
-
-
 /*Ewl Callbacks*/
-static void about_dialog(Ewl_Widget *w, void *event, void *data);
-static void add_album(Ewl_Widget *w, void *event, void *data);
-static void cancel(Ewl_Widget *w, void *event, void *data);
 static void destroy(Ewl_Widget *w, void *event, void *data);
-static void populate_albums(Ewl_Widget *w, void *event, void *data);
-static void populate_directories(Ewl_Widget *w, void *event, void *data);
-static void save(Ewl_Widget *w, void *event, void *data);
 static void update_view(Ewl_Widget *w, void *event, void *data);
 static void window_fullscreen(Ewl_Widget *w, void *event, void *data);
 
@@ -29,7 +21,6 @@ static unsigned int directory_data_count(void *data);
 
 /*Ephoto Global Variables*/
 Ephoto_Main *em;
-Ewl_Widget *ae, *de;
 
 /*Destroy the Main Window*/
 static void destroy(Ewl_Widget *w, void *event, void *data)
@@ -91,105 +82,10 @@ static void update_view(Ewl_Widget *w, void *event, void *data)
 	return;
 }
 
-/*Cancel the Dialog*/
-static void cancel(Ewl_Widget *w, void *event, void *data)
-{
-	Ewl_Widget *win;
-	
-	win = data;
-
-	ewl_widget_destroy(win);
-}
-
-/*Save the Album*/
-static void save(Ewl_Widget *w, void *event, void *data)
-{
-	char *album, *description;
-	Ewl_Widget *win;
-	sqlite3 *db;
-
-	win = data;
-
-	album = ewl_text_text_get(EWL_TEXT(ae));
-	description = ewl_text_text_get(EWL_TEXT(de));
-
-	if (album)
-	{
-		db = ephoto_db_init();
-		ephoto_db_add_album(db, album, description);
-		ephoto_db_close(db);
-		ewl_widget_destroy(win);
-		ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->browser), 
-								em->atree);
-		populate_albums(NULL, NULL, NULL);
-	}
-}
-
-/*Add an Album to Ephoto*/
-static void add_album(Ewl_Widget *w, void *event, void *data)
-{
-	Ewl_Widget *window, *label, *button, *vbox, *hbox;
-	
-	window = add_window("Add Album", 200, 100, NULL, NULL);
-	ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, cancel, window);
-
-	vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 3);
-	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-
-	label = add_label(vbox, "Enter a name for the new album:");
-	ae = add_entry(vbox, NULL, NULL, NULL);
-
-	label = add_label(vbox, "Enter a description for the album:");
-	de = add_entry(vbox, NULL, NULL, NULL);
-
-	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 2);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
-
-	button = add_button(hbox, "Save", 
-				PACKAGE_DATA_DIR "/images/stock_save.png", 
-								save, window);
-	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
-	
-	button = add_button(hbox, "Cancel", 
-				PACKAGE_DATA_DIR "/images/dialog-close.png", 
-								cancel, window);
-	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
-}
-
-/*Add an About Dialog*/
-static void about_dialog(Ewl_Widget *w, void *event, void *data)
-{
-	Ewl_Widget *window, *button, *vbox, *text;
-	
-	window = add_window("About Ephoto", 200, 100, NULL, NULL);
-        ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, cancel, window);
-
-        vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 3);
-        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-
-	text = add_text(vbox, "Ephoto is an advanced image viewer that allows\n"
-		       "you to view images in several methods. They\n"
-		       "include an icon view, a list view, and a single\n"
-		       "image view.  You can also view exif data, view\n"
-		       "images in a fullscreen mode, and view images in a\n"
-		       "slideshow.  The edit view offers simple and advanced\n"
-		       "editing options including rotations, flips, blurs,\n"
-		       "sharpens, conversion to black and white, and\n"
-		       "conversions to sepia.");
-
-	ewl_text_wrap_set(EWL_TEXT(text), EWL_TEXT_WRAP_WORD);
-
-	button = add_button(vbox, "Close",
-                                PACKAGE_DATA_DIR "/images/dialog-close.png",
-                                                                cancel, window);
-        ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
-	
-	return;
-}
-
 /*Create the Main Ephoto Window*/
 void create_main_gui(void)
 {
+	char buf[PATH_MAX];
 	Ewl_Widget *vbox, *hbox, *vsep, *button;
 	Ewl_Widget *mb, *menu, *mi;
 
@@ -352,7 +248,7 @@ void create_main_gui(void)
 	em->db = ephoto_db_init();
 
 	em->current_album = strdup(_("Complete Library"));
-	em->current_directory = strdup(getenv("HOME"));
+	em->current_directory = strdup(getcwd(buf, PATH_MAX));
 
 	populate_albums(NULL, NULL, NULL);
 	ewl_callback_append(em->browser, EWL_CALLBACK_VALUE_CHANGED, 
@@ -362,7 +258,7 @@ void create_main_gui(void)
 }
 
 /*Update the Image List*/
-static void populate_albums(Ewl_Widget *w, void *event, void *data)
+void populate_albums(Ewl_Widget *w, void *event, void *data)
 {
 	const char *album;
 	char *imagef;
@@ -417,7 +313,7 @@ static void populate_albums(Ewl_Widget *w, void *event, void *data)
 }
 
 /*Update the Image List*/
-static void populate_directories(Ewl_Widget *w, void *event, void *data)
+void populate_directories(Ewl_Widget *w, void *event, void *data)
 {
 	const char *directory;
 	char *imagef;

@@ -80,6 +80,10 @@ Ewl_Widget *add_text(Ewl_Widget *c, char *text);
 Ewl_Widget *add_shadow(Ewl_Widget *c);
 Ewl_Widget *add_window(char *name, int width, int height, void *cb, void *data);
 
+/* Ephoto Dialogs */
+void about_dialog(Ewl_Widget *w, void *event, void *data);
+void add_album(Ewl_Widget *w, void *event, void *data);
+
 /* Ephoto Imaging */
 unsigned int *flip_horizontal(Ewl_Widget *image);
 unsigned int *flip_vertical(Ewl_Widget *image);
@@ -117,6 +121,8 @@ void image_pixels_int_get(const char *file, int *width, int *height);
 /* Ephoto Main View */
 void show_main_view(Ewl_Widget *w, void *event, void *data);
 void show_edit_view(Ewl_Widget *w, void *event, void *data);
+void populate_albums(Ewl_Widget *w, void *event, void *data);
+void populate_directories(Ewl_Widget *w, void *event, void *data);
 
 /* Ephoto Viewer Views */
 void show_normal_view(Ewl_Widget *w, void *event, void *data);
