@@ -6,9 +6,11 @@
 <h1>Etk</h1>
 </center>
 <span class="contentmain"><br></span>
-<p><span class="contentmain">ETK is another toolkit library based upon the EFL.
-It API is very similar to GTK, which make it fast to learn if you already know
-GTK. It also dispose of a Glade library named Enhance.</span></p>
+<p><span class="contentmain">ETK is another toolkit library based on 
+EFL.
+Its API is very similar to GTK, which makes it faster to learn if you're 
+already familiar with GTK. It 
+replaces a Glade library called Enhance.</span></p>
 <p>Here's an example of Etk usage:</p>
 <div class="fragment">
 <pre>
