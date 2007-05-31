@@ -90,7 +90,7 @@ cb_window_deleted(Etk_Widget *window, void *data)
 etk_hello.c -o etk_hello</p>
 <p>And run: ./etk_hello</p>
 <p class="manager">
-<img src="http://enlightenment.net/i/hello_etk.jpg">
+<img src="http://enlightenment.org/i/hello_etk.jpg">
 </p>
 <p class="manager">
 ETK's project manager is 
