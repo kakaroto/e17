@@ -1,67 +1,102 @@
-<table class='main'> <tr> <td class='main'> <div class="main"> <center> 
-<h1>Etk</h1> </center> <span class="contentmain"><br></span> <p><span 
-class="contentmain">ETK is another toolkit library based upon the EFL. 
-It API is very similar to GTK, which make it fast to learn if you 
-already know GTK. It also dispose of a Glade library named 
-Enhance.</span></p> <p>Here's an example of Etk usage:</p> <div 
-class="fragment"> <pre>
-#include &lt;stdio.h&gt; include &lt;stdlib.h&gt; include &lt;Etk.h&gt;
-int count = 0; void cb_button_clicked(Etk_Widget *button, void *data); 
-void cb_window_deleted(Etk_Widget *window, void *data); int main(int 
-argc, char **argv) {
+<table class='main'>
+<tr>
+<td class='main'>
+<div class="main">
+<center>
+<h1>Etk</h1>
+</center>
+<span class="contentmain"><br></span>
+<p><span class="contentmain">ETK is another toolkit library based upon the EFL.
+It API is very similar to GTK, which make it fast to learn if you already know
+GTK. It also dispose of a Glade library named Enhance.</span></p>
+<p>Here's an example of Etk usage:</p>
+<div class="fragment">
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+#include &lt;Etk.h&gt;
+
+int count = 0;
+
+void cb_button_clicked(Etk_Widget *button, void *data);
+void cb_window_deleted(Etk_Widget *window, void *data);
+
+int
+main(int argc, char **argv)
+{
   Etk_Widget *window;
   Etk_Widget *vbox;
   Etk_Widget *label;
   Etk_Widget *button;
+
   if (!etk_init(&amp;argc, &amp;argv))
     {
       fprintf(stderr, "Error during ETK initialization.");
       return EXIT_FAILURE;
     }
+
   /* We create a simple window */
   window = etk_window_new();
   etk_window_title_set(ETK_WINDOW(window), "Hello World");
-  etk_window_wmclass_set(ETK_WINDOW(window), "etk_example", 
-"Etk_Example");
+  etk_window_wmclass_set(ETK_WINDOW(window), "etk_example", "Etk_Example");
   etk_window_resize(ETK_WINDOW(window), 200, 200);
-  /* Setting up a small label */
+
+  /* Setup a small label */
   label = etk_label_new("Hello World !");
   etk_label_alignment_set(ETK_LABEL(label), 0.5, 0.5);
+
   /* And a button */
   button = etk_button_new_with_label("Click me");
   
-  /* Seting up a vertical box and packing the previous widgets */
+  /* Setup a vertical box and packing the previous widgets in it */
   vbox = etk_vbox_new(ETK_FALSE, 0);
-  etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, 
-ETK_BOX_EXPAND_FILL, 0);
-  etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 
-20);
-  /* And put the vbox inside the window and make all visible */
+  etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+  etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 20);
+
+  /* We put the vbox inside the window and make all visible */
   etk_container_add(ETK_CONTAINER(window), vbox);
   etk_widget_show_all(window);
-  /* Setting up the callbacks */
-  etk_signal_connect("clicked", ETK_OBJECT(button), cb_button_clicked, 
-label);
-  etk_signal_connect("destroyed", ETK_OBJECT(window), cb_window_deleted, 
-NULL);
+
+  /* Setup the callbacks */
+  etk_signal_connect("clicked", ETK_OBJECT(button), cb_button_clicked, label);
+  etk_signal_connect("destroyed", ETK_OBJECT(window), cb_window_deleted, NULL);
+
   etk_main();
+
   etk_shutdown();
   return EXIT_SUCCESS;
 }
-void cb_button_clicked(Etk_Widget *button, void *data) {
+
+void
+cb_button_clicked(Etk_Widget *button, void *data)
+{
   Etk_Label *label = ETK_LABEL(data);
   char txt[128];
+
   count++;
   sprintf(txt, "Click number %d", count);
   etk_label_set(label, txt);
 }
-void cb_window_deleted(Etk_Widget *window, void *data) {
+
+void
+cb_window_deleted(Etk_Widget *window, void *data)
+{
   etk_main_quit();
 }
-</pre></div> <p>Now all you have to do is to compile: gcc `pkg-config 
---libs --cflags etk` etk_hello.c -o etk_hello</p> <p>And run: 
-./etk_hello</p> <p class="manager"> <img 
-src="http://enlightenment.org/i/hello_etk.jpg"> </p> <p class="manager"> 
-ETK's project manager is <a target="_self" class="lite" 
-href="http://enlightenment.sourceforge.net/Main/The_Team/">Simon "MoOm" 
-Treny</a>. </p> </div> </td> </tr> </table>
+
+</pre></div>
+<p>Now all you have to do is to compile: gcc `pkg-config --libs --cflags etk` 
+etk_hello.c -o etk_hello</p>
+<p>And run: ./etk_hello</p>
+<p class="manager">
+<img src="http://enlightenment.net/i/hello_etk.jpg">
+</p>
+<p class="manager">
+ETK's project manager is 
+<a target="_self" class="lite" href="http://enlightenment.sourceforge.net/Main/The_Team/">Simon "MoOm" Treny</a>.
+</p>
+</div>
+</td>
+</tr>
+</table>
