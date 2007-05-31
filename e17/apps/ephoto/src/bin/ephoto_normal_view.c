@@ -1,6 +1,24 @@
 #include "ephoto.h"
 
+static void change_size(Ewl_Widget *w, void *event, void *data);
 static void iterate(char *point2);
+
+/*Change the thumb size*/
+static void change_size(Ewl_Widget *w, void *event, void *data)
+{
+	Ewl_Widget *child;
+
+	ewl_container_child_iterate_begin(EWL_CONTAINER(em->fbox));
+
+	while ((child = ewl_container_child_next(EWL_CONTAINER(em->fbox))))
+	{
+		ewl_image_constrain_set(EWL_IMAGE(child), 
+				ewl_range_value_get(EWL_RANGE(em->fthumb_size)));
+		ewl_widget_reparent(child);
+	}
+
+	return;
+}
 
 /*Add the normal view*/
 Ewl_Widget *add_normal_view(Ewl_Widget *c)
@@ -20,6 +38,15 @@ Ewl_Widget *add_normal_view(Ewl_Widget *c)
         ewl_object_fill_policy_set(EWL_OBJECT(em->fbox), EWL_FLAG_FILL_ALL);
         ewl_container_child_append(EWL_CONTAINER(sp), em->fbox);
         ewl_widget_show(em->fbox);
+
+	em->fthumb_size = ewl_hseeker_new();
+	ewl_range_minimum_value_set(EWL_RANGE(em->fthumb_size), 8);
+	ewl_range_maximum_value_set(EWL_RANGE(em->fthumb_size), 128);
+	ewl_range_step_set(EWL_RANGE(em->fthumb_size), 8);
+	ewl_range_value_set(EWL_RANGE(em->fthumb_size), 64);
+	ewl_container_child_append(EWL_CONTAINER(em->fbox_vbox), em->fthumb_size);
+	ewl_callback_append(em->fthumb_size, EWL_CALLBACK_VALUE_CHANGED, change_size, NULL);
+	ewl_widget_show(em->fthumb_size);
 
 	return em->fbox_vbox;
 }
