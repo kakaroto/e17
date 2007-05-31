@@ -13,7 +13,7 @@ DR16 has been the choice of power users and artists due to its low overhead, hig
 <a href="http://sourceforge.net/project/showfiles.php?group_id=2">e16keyedit</a>. It also remains highly portable, with ports avalible for Linux on all platforms, FreeBSD, IRIX, Solaris X86 and Sparc, HP-UX, AIX, OS/2, and more. </p>          
 <p> Imlib has lived a long life, still in heavy usage today, as one of the most popular image manipulation and rendering libs available. 
 Its development was taken over by the GNOME project and used as GNOMEs rendering engine until it was replaced with GdkPixbuf in GNOME 2.0. It&#39;s popularity surpasses just development in C thanks to bindings for several scripting languages including PERL, Python, and Ruby. </p>          
-<center>    <p><a href="http://enlightenment.org/i/sbenr-desktop.png"><img src="http://enlightenment.org/i/tn2_benr-desktop.png" class="shot" height="50" width="300" /></a></p>    </center>
+<center>    <p><a href="http://enlightenment.org/i/benr-desktop.png"><img src="http://enlightenment.org/i/tn2_benr-desktop.png" class="shot" height="50" width="300" /></a></p>    </center>
 <h2>Enlightenment Foundation Libraries</h2>
 <p> In developing DR17 it was made clear that we needed an entirely new set of libraries and tools. Raster had a bold vision of what was possible and where he wanted the next release to go, starting with Imlib2 and EVAS, and eventually growing into new libraries largely based on or around EVAS. 
 It became clear that the usefulness of these libraries and tools went far beyond the DR17 release itself, just as Imlib did in DR16. Thus the collective library back-end of DR17 was given the independent title: the Enlightenment Foundation Libraries, or EFL for short. </p>          
