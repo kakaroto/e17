@@ -5,10 +5,14 @@ class news {
   var $list = array();
   var $dirnews;
   var $limit = 0;
+  var $lang = "en";
 
   function __construct() {
     $i = 0;
-    $this->dirnews = "p/news/".$_GET['l'];
+    if (isset($_GET['l']) && (strlen($_GET['l']) == 2)) {
+      $this->lang = $_GET['l'];
+    }
+    $this->dirnews = "p/news/" . $this->lang;
 
     if(!($dp = opendir($this->dirnews)))
         return NULL;
