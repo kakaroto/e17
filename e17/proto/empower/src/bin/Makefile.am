@@ -4,12 +4,6 @@ else
     EWL_DIR = 
 endif
 
-if ENABLE_ETK
-    ETK_DIR = etk
-else
-    ETK_DIR =
-endif
-
-SUBDIRS = $(EWL_DIR) $(ETK_DIR)
+SUBDIRS = $(EWL_DIR)
 
 MAINTAINERCLEANFILES = Makefile.in config.h.in

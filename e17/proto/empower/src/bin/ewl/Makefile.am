@@ -8,7 +8,7 @@ if BUILD_SEPARATE
 bin_PROGRAMS = empower_ewl
 
 empower_ewl_SOURCES = empower.c empower_cb_ewl.c empower_gui_ewl.c \
-						empower_helper_ewl.c
+	empower_helper_ewl.c Empower.h
 
 empower_ewl_CFLAGS = @EWL_CFLAGS@
 
@@ -38,5 +38,5 @@ install-exec-hook:
 endif 
 
 EXTRA_DIST = 
-		
+
 MAINTAINERCLEANFILES = Makefile.in config.h.in

@@ -105,24 +105,6 @@ fi
 
 AM_CONDITIONAL(ENABLE_EWL, test x$enable_ewl = xyes)
 
-AC_ARG_ENABLE(etk,
-        AC_HELP_STRING([--enable-etk/--disable-etk],
-        [enable/disable etk version (default=disabled)]),
-        [enable_etk=$enableval], [enable_etk=default])
-
-if test "x$enable_etk" = "xdefault" || test "x$enable_etk" = "xyes"; then
-   PKG_CHECK_MODULES([ETK], etk >= 0.1.0,
-      [  enable_etk="yes"  ],
-      [
-         enable_etk="no"
-         echo "Could not find Etk.  If it is installed, \nplease make sure its path is in PKG_CONFIG_PATH";
-         AC_MSG_ERROR([Empower needs Etk to compile the Etk version.])
-      ]
-)
-fi
-
-AM_CONDITIONAL(ENABLE_ETK, test x$enable_etk = xyes)
-
 if test "x$enable_etk" = "xyes" && test "x$enable_ewl" = "xyes"; then
   build_separate=yes
 else
@@ -137,7 +119,6 @@ empower.spec
 src/Makefile
 src/bin/Makefile
 src/bin/ewl/Makefile
-src/bin/etk/Makefile
 debian/changelog
 ])
 
