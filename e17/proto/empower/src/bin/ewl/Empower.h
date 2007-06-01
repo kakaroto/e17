@@ -14,14 +14,21 @@
 #define WIDTH 0
 #define HEIGHT 85
 Ewl_Widget *win;
+Ewl_Widget *exec;
 Ewl_Widget *entry;
 char cmd[1024];
 Ecore_Exe *sudo;
+int auth_passed;
+int exec_empty;
+int startup;
+int failure;
 
-enum{SUDO,PASS} mode;
+enum{SUDO,PASS,SUDOPROG,HELP} mode;
 
 /* empower_cb prototypes */
 void key_down_cb(Ewl_Widget *w, void *event, void *data);
+void focus_cb(Ewl_Widget *w, void *event, void *data);
+void unfocus_cb(Ewl_Widget *w, void *event, void *data);
 void destroy_cb(Ewl_Widget *w, void *event, void *data);
 void reveal_cb(Ewl_Widget *w, void *event, void *data);
 void check_pass_cb(Ewl_Widget *w, void *event, void *data);

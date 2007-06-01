@@ -2,8 +2,17 @@ Empower - A graphical sudo tool based on the Enlightenment Foundation Libraries
 Version 1.0
 
 Usage: 
-    Sudo: empower [SUDO OPTIONS] <program> [PROGRAM OPTIONS] -- [EWL OPTIONS]
-    AskPass: empower-askpass -- [EWL OPTIONS] or empower -p -- [EWL OPTIONS]
+    Sudo: empower [SUDO OPTIONS] [program] [PROGRAM OPTIONS] [EWL OPTIONS]
+    AskPass: empower-askpass [EWL OPTIONS] or empower -p [EWL OPTIONS]
+
+Usage Note:
+    If no options are passed to empower, you will be prompted to provide an 
+    executable and your password (if not authenticated already).  You can 
+    specify sudo options as well as program args by following this format in
+    the execute entry:
+        
+        [SUDO OPTIONS] <program> [PROGRAM OPTIONS]
+        
 
 See INSTALL for installation instructions
 See COPYING and COPYING-PLAIN for license information

@@ -1,3 +1,15 @@
+5-31-07 -- Version 1.5
+	- Starting empower with no options will allow you to specify a command in
+	  the window.  If you need to authenticate, you will also type in your
+	  password.
+	- There are labels on the entries now so you know what you need to type in.
+	  They are dynamic and will disappear when you focus the entry, and reappear
+	  if you have not typed anything on unfocus.  On startup all you need to do
+	  is start typing and the proper entry will start accepting your key 
+	  presses.
+	- Empower askpass support is final with the addition of the empower-askpass
+	  symlink.  Using the symlink will start empower in askpass mode.
+	- Requires a version of EWL after 5-31-07
 5-29-07 -- Version 1.0
 	- Empower now behaves much more like sudo itself.  It respects the timeout
 	  and also will reask if you mistype your password.  The amount of retries

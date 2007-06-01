@@ -1,20 +1,51 @@
 #include "Empower.h"
 
+void parse_options(int argc, char** argv)
+{
+	/*FIXME: Parse options here so we can properly handle everything*/
+	
+	/*Do initial mode guessing based on executable name and number of args*/
+	if(!strcmp(*argv,"empower-askpass") || !strcmp(*argv,"./empower-askpass"))
+		mode = PASS;
+	else if(argc > 1)
+		mode = SUDO;
+	else
+		mode = SUDOPROG;
+	
+	--argc; ++argv; //move to the next argument
+	
+	if(mode == SUDO || mode == SUDOPROG)
+		snprintf(cmd, 1024, "sudo");
+	
+	while(argc--)
+	{
+		if(!strcmp(*argv,"-h") || !strcmp(*argv, "-help"))	//help mode
+		{
+			mode = HELP;
+			break;
+		}
+		else if(!strcmp(*argv, "-a") || !strcmp(*argv, "-askpass"))	//ssh-askpass mode
+		{
+			mode = PASS;
+			break;
+		}
+		else
+		{
+			if(mode == SUDO || mode == SUDOPROG)
+			{
+				strncat(cmd, " ", 1024);
+				strncat(cmd, *argv, 1024);
+			}
+		}
+		
+		argv++;
+	}
+}
+
 int main(int argc, char** argv)
 {
+	int i;
 	sudo = NULL;
-	
-	if(!strcmp(*argv,"empower-askpass"))
-		mode = PASS;
-	else if(!strcmp(*argv, "./empower-askpass"))
-		mode = PASS;
-	else
-		mode = SUDO;
-
-	--argc; ++argv;		//pop off program name
-	
-	if(mode != PASS && !strcmp(*argv, "-p"))
-		mode = PASS;
 	
 	if(!ecore_init())
 	{
@@ -22,53 +53,34 @@ int main(int argc, char** argv)
 		return 1;
 	}
 	
-	if(argc || mode == PASS)	//commands
-	{		
-		int i;
-
-		ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,exit_cb,NULL);
-		
-		if(mode == SUDO)
-			snprintf(cmd, 1024, "sudo");
-		
-		while(argc)
-		{
-			if(strcmp(*argv, "--"))
-			{
-				if(mode == SUDO)
-				{
-					strncat(cmd, " ", 1024);
-					strncat(cmd, *argv, 1024);
-					--argc; ++argv;
-				}
-			}
-			else
-				break;
-		}	
-		
-		if(!ewl_init(&argc, argv))
-		{
-			printf("Unable to init ewl\n");
-			return;
-		}
-		
-		if(mode == SUDO)
-			ecore_job_add(check_sudo_timeout_job, NULL);
-		else if(mode == PASS)
-			display_window();
-		
-		ewl_main();
-	
-		if(mode == SUDO)
-			ecore_exe_run(cmd,NULL);
+	if(!ewl_init(&argc, argv))
+	{
+		printf("Unable to init ewl\n");
+		return;
 	}
-	else
+	
+	parse_options(argc,argv);
+	
+	if(mode == HELP)
 	{
 		printf("-=Usage=-\n");
-		printf("    Sudo:  empower [SUDO OPTIONS] <program> [PROGRAM OPTIONS] -- [EWL OPTIONS]\n");
-		printf("    AskPass:  empower-askpass -- [EWL OPTIONS] or empower -p -- [EWL OPTIONS]\n");
-		return 1;
+		printf("    Sudo:  empower [SUDO OPTIONS] [PROGRAM] [PROGRAM OPTIONS] [EWL OPTIONS]\n");
+		printf("    AskPass:  empower-askpass [EWL OPTIONS] or empower -p [EWL OPTIONS]\n");
+		return 0;	
 	}
+
+	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,exit_cb,NULL);
+	
+	if(mode == SUDO || mode == SUDOPROG)
+		ecore_job_add(check_sudo_timeout_job, NULL);
+	else if(mode == PASS)
+		display_window();
+	
+	ewl_main();
+	
+	if(mode == SUDO || mode == SUDOPROG)
+		ecore_exe_run(cmd,NULL);
 	
 	return 0;
 }
+

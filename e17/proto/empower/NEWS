@@ -1,2 +1,12 @@
+5-31-07:
+	Version 1.5 released
+		- This version should hopefully appease alot of the people who have
+		  been asking for new features.  If anyone needs it, I might add some
+		  support for opening things in a terminal.  It would probably be a 
+		  command line option/symlink since having a check would ruin the nice
+		  interface :)  For now though this could be a achieved by running your
+		  term with the correct args to open a program.
+5-29-07:
+	Version 1.0 released
 3-31-06:
 	Initial release <version 0.1>

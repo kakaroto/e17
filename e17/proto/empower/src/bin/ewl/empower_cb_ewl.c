@@ -2,9 +2,7 @@
 
 void key_down_cb(Ewl_Widget *w, void *event, void *data)
 {
-	Ewl_Event_Key_Down *ev;
-	
-	ev = event;
+	Ewl_Event_Key_Down *ev = event;
 	
 	if(!ev->base.modifiers)
 	{
@@ -14,6 +12,59 @@ void key_down_cb(Ewl_Widget *w, void *event, void *data)
 			ewl_main_quit();
 			exit(-1);
 		}
+		else
+		{
+			if(!(startup++))
+			{
+				if(mode != SUDOPROG || failure)
+				{
+					ewl_widget_focus_send(entry);
+					/*Check for single alpha or numeric value*/
+					if(ev->base.keyname[1] == '\0' && 
+						(isalpha(*(ev->base.keyname)) || 
+							isdigit(*(ev->base.keyname))))
+						ewl_password_text_set(EWL_PASSWORD(entry),ev->base.keyname);
+					failure = 0;
+				}
+				else
+				{
+					ewl_widget_focus_send(exec);
+					/*Check for single alpha or numeric value*/
+					if(ev->base.keyname[1] == '\0' && 
+						(isalpha(*(ev->base.keyname)) || 
+							isdigit(*(ev->base.keyname))))
+						ewl_text_text_set(EWL_TEXT(exec),ev->base.keyname);
+				}
+			}
+		}
+	}
+}
+
+void focus_cb(Ewl_Widget *w, void *event, void *data)
+{
+	const char* text = (char*)data;
+	if(EWL_PASSWORD_IS(w))
+	{
+		if(!ewl_password_text_get(EWL_PASSWORD(w)))
+			ewl_password_clear(EWL_PASSWORD(w));
+	}
+	else if(EWL_ENTRY_IS(w))
+	{
+		if(ewl_text_text_get(EWL_TEXT(w)) && 
+			!strcmp(ewl_text_text_get(EWL_TEXT(w)),text))
+			ewl_text_clear(EWL_TEXT(w));
+	}
+}
+
+void unfocus_cb(Ewl_Widget *w, void *event, void *data)
+{
+	const char* text = (char*)data;
+
+	if(!ewl_text_text_get(EWL_TEXT(w)))
+	{
+		ewl_text_text_set(EWL_TEXT(w),text);			
+		ewl_text_cursor_position_set(EWL_TEXT(w),0);
+		ewl_text_color_apply(EWL_TEXT(w),100,100,100,200,strlen(text));
 	}
 }
 
@@ -32,13 +83,15 @@ void reveal_cb(Ewl_Widget *w, void *event, void *data)
 
 void check_pass_cb(Ewl_Widget *w, void *event, void *data)
 {	
-	char *pass = ewl_password_text_get(EWL_PASSWORD(data));
+	char *pass;
+	
+	if(data && !auth_passed) pass = ewl_password_text_get(EWL_PASSWORD(data));
 
 	if(pass && strlen(pass))
 	{
 		ewl_widget_disable(win);
 		
-		if(mode == SUDO)
+		if(mode == SUDO || mode == SUDOPROG)
 			authorize(pass);
 		else
 		{
@@ -54,10 +107,28 @@ int sudo_done_cb(void *data, int type, void *event)
 	int* code = data;
 	
 	sudo = NULL;
-	ewl_main_quit();
 	
 	if((ev->exit_code))
+	{
+		ewl_main_quit();
 		exit(-1);
+	}
+	else if(mode == SUDOPROG)
+	{
+		if(exec && strlen(ewl_text_text_get(EWL_TEXT(exec))))
+		{
+			ewl_main_quit();
+			strncat(cmd, " ", 1024);
+			strncat(cmd, ewl_text_text_get(EWL_TEXT(exec)), 1024);
+		}
+		else
+		{
+			auth_passed = 1;
+			display_window();
+		}
+	}
+	else
+		ewl_main_quit();
 	
 	return 0;
 }

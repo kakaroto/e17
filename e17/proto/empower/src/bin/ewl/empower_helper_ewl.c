@@ -25,5 +25,6 @@ int authorize(char* password)
 
 void check_sudo_timeout_job(void *data)
 {
+    auth_passed = 0;
     authorize(NULL);
 }
