@@ -10,7 +10,7 @@ void key_down_cb(Ewl_Widget *w, void *event, void *data)
 		{
 			ewl_widget_destroy(EWL_WIDGET(win));
 			ewl_main_quit();
-			exit(-1);
+			exit(0);
 		}
 		else
 		{
@@ -73,7 +73,7 @@ void destroy_cb(Ewl_Widget *w, void *event, void *data)
 	ewl_widget_destroy(EWL_WIDGET(win));
 	ewl_main_quit();
 	
-	exit(-1);
+	exit(0);
 }
 
 void reveal_cb(Ewl_Widget *w, void *event, void *data)
@@ -111,7 +111,7 @@ int sudo_done_cb(void *data, int type, void *event)
 	if((ev->exit_code))
 	{
 		ewl_main_quit();
-		exit(-1);
+		exit(0);
 	}
 	else if(mode == SUDOPROG)
 	{
@@ -148,5 +148,5 @@ int exit_cb(void *data, int type, void *event)
 {	
 	ewl_main_quit();
 	
-	exit(-1);
+	exit(0);
 }
