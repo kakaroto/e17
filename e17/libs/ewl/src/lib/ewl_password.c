@@ -6,6 +6,7 @@
 #include "ewl_debug.h"
 
 static void ewl_password_text_insert(Ewl_Password *e, const char *s);
+void ewl_password_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__);
 
 /**
  * @return Returns a new password widget on success, NULL on failure.
@@ -63,6 +64,8 @@ ewl_password_init(Ewl_Password *e)
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_entry_cb_mouse_down);
 	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, ewl_password_cb_key_down,
 			    NULL);
+	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE,
+				ewl_password_cb_enable, NULL);
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_password_cb_destroy,
 			    NULL);
 
@@ -73,7 +76,7 @@ ewl_password_init(Ewl_Password *e)
  * @param e: the password widget to change the text
  * @param t: the text to set for the password widget
  * @return Returns no value.
- * @brief Set the text for an password widget
+ * @brief Set the text for a password widget
  *
  * Change the text of the password widget @a e to the string @a t.
  */
@@ -97,7 +100,10 @@ ewl_password_text_set(Ewl_Password *e, const char *t)
 		FREE(e->real_text);
 	}
 
-	if (t) {
+	/*
+	 * If t is NULL or empty, the password will be cleared.
+	 */
+	if (t && t[0] != '\0') {
 		len = strlen(t);
 		e->real_text = strdup(t);
 		vis = NEW(char, len + 1);
@@ -112,7 +118,7 @@ ewl_password_text_set(Ewl_Password *e, const char *t)
 /**
  * @param e: the password widget to retrieve the text
  * @return Returns the password text on success, NULL on failure.
- * @brief Get the text from an password widget
+ * @brief Get the text from a password widget
  */
 char *
 ewl_password_text_get(Ewl_Password *e)
@@ -127,6 +133,27 @@ ewl_password_text_get(Ewl_Password *e)
 
 	DRETURN_PTR((e->real_text ? strdup(e->real_text) : NULL),
 			DLEVEL_STABLE);
+}
+
+/**
+ * @param e: the password widget to clear the text
+ * @return Returns no value.
+ * @brief Clears the text from a password widget
+ */
+void
+ewl_password_clear(Ewl_Password *e)
+{
+	Ewl_Widget *w;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+	DCHECK_TYPE("e", e, EWL_PASSWORD_TYPE);
+	
+	w = EWL_WIDGET(e);
+	
+	ewl_password_text_set(e,NULL);
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -228,7 +255,10 @@ ewl_password_cb_key_down(Ewl_Widget *w, void *ev_data,
 	ev = ev_data;
 
 	if (!strcmp(ev->keyname, "BackSpace")) {
-		if ((len = ewl_text_length_get(EWL_TEXT(e))) > 0)
+		/*
+		 * Only delete real_text if it exists.
+		 */
+		if (e->real_text && (len = ewl_text_length_get(EWL_TEXT(e))) > 0)
 			e->real_text[len - 1] = '\0';
 
 		ewl_entry_delete_left(EWL_ENTRY(e));
@@ -253,6 +283,32 @@ ewl_password_cb_key_down(Ewl_Widget *w, void *ev_data,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The enable callback
+ */
+void
+ewl_password_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+
+	/* 
+	 * Entry re-enables its callbacks when enabled, so we 
+	 * must disable them again.
+	 */
+	ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN, ewl_entry_cb_key_down);
+	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_entry_cb_mouse_down);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
 /**
  * @internal
