@@ -38,6 +38,7 @@ void        _ex_menu_zoom_in_cb(Etk_Object *obj, void *data);
 void        _ex_menu_zoom_out_cb(Etk_Object *obj, void *data);
 void        _ex_menu_zoom_one_to_one_cb(Etk_Object *obj, void *data);
 void        _ex_menu_fit_to_window_cb(Etk_Object *obj, void *data);
+void        _ex_menu_window_fullscreen_toggle_cb(Etk_Object *obj, void *data);
 void        _ex_menu_toggle_slideshow_cb(Etk_Object *obj, void *data);
 void        _ex_menu_refresh_cb(Etk_Object *obj, void *data);
 void        _ex_menu_comments_cb(Etk_Object *obj, void *data);

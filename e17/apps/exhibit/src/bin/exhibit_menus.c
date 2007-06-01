@@ -185,12 +185,12 @@ _ex_menu_options_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_quit_cb(Etk_Object *obj, void *data)
 {
+   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (e)
      {
        _ex_options_save(e);
-       E_FREE(e);     
      }
 
    etk_main_quit();   
@@ -375,6 +375,16 @@ void
 _ex_menu_fit_to_window_cb(Etk_Object *obj, void *data)
 {
    _ex_tab_current_fit_to_window(data);
+}
+
+void
+_ex_menu_window_fullscreen_toggle_cb(Etk_Object *obj, void *data)
+{
+   Exhibit      *e;   
+   EX_MENU_ITEM_GET_RETURN(obj);
+   
+   e = data;   
+   _ex_main_window_fullscreen_toggle(e);
 }
 
 void

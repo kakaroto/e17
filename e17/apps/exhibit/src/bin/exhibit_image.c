@@ -73,16 +73,23 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
    
    if(ev->button == 1)
      {
-	e->mouse.down = 1;
-	e->mouse.x = ev->canvas.x;
-	e->mouse.y = ev->canvas.y;
+	if (ev->flags != ETK_MOUSE_DOUBLE_CLICK)
+	  {
+	     e->mouse.down = 1;
+	     e->mouse.x = ev->canvas.x;
+	     e->mouse.y = ev->canvas.y;
 	
-        etk_toplevel_pointer_push(ETK_TOPLEVEL(e->win), ETK_POINTER_MOVE);
+             etk_toplevel_pointer_push(ETK_TOPLEVEL(e->win), ETK_POINTER_MOVE);
+	  }
+	else
+          _ex_main_window_fullscreen_toggle(e);
      }
    else if(ev->button == 2)
      {
-	/* TODO Make this function configurable in options */
-	_ex_tab_current_fit_to_window(e);
+	if (e->cur_tab->fit_window)
+	   _ex_tab_current_zoom_one_to_one(e);
+	else   
+	   _ex_tab_current_fit_to_window(e);
      }
    else if(ev->button == 3)
      {

@@ -147,7 +147,7 @@ _ex_main_image_set(Exhibit *e, char *image)
      {
 	/* can we do this without the size request? it doesnt look good */
 	etk_widget_size_request_set(ETK_WIDGET(e->cur_tab->image), 800, 600);	
-	etk_image_set_from_edje(ETK_IMAGE(e->cur_tab->image), image, "desktop/background");
+	etk_image_set_from_edje(ETK_IMAGE(e->cur_tab->image), image, "e/desktop/background");
      }
    else
      {
@@ -208,6 +208,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    DIR *dir;
    struct dirent *dir_entry;
 
+   _ex_main_image_unset();
    chdir(e->cur_tab->dir);
    
    if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
@@ -245,8 +246,12 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	char imagereal[PATH_MAX];
 	struct stat st;
 
-        /* Do not include hidden files */
-	if (dir_entry->d_name[0] == '.')
+        /* Do not include current dir/above dir */
+	if ((!strcmp (dir_entry->d_name, ".")) || (!strcmp (dir_entry->d_name, "..")))
+	  continue;
+
+        /* Show hidden files and directories? */
+	if ((!e->options->list_hidden) && (dir_entry->d_name[0] == '.'))
 	  continue;
 
 	snprintf(image, PATH_MAX, "%s", dir_entry->d_name);
@@ -269,7 +274,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	if (update == EX_TREE_UPDATE_DIRS)
 	  continue;
 
-	if(!_ex_file_is_viewable(dir_entry->d_name))
+	if ((!e->options->show_all_filetypes) && (!_ex_file_is_viewable(dir_entry->d_name)))
 	  continue;
 
 	if(!realpath(image, imagereal))
@@ -744,7 +749,7 @@ _ex_main_dialog_show(char *text, Etk_Message_Dialog_Type type)
 
 
 void
-_ex_main_window_show(char *dir, int fullscreen)
+_ex_main_window_show(char *dir, int fullscreen, int slideshow)
 {
    Ex_Tab *tab;
    Etk_Widget *entry_hbox, *toolbar;
@@ -837,11 +842,10 @@ _ex_main_window_show(char *dir, int fullscreen)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Tab"), ETK_STOCK_TAB_NEW, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_new_tab_cb), NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image as"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_as_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Set as wallpaper"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_set_wallpaper_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rename"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_rename_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_X_DIRECTORY_TRASH, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_delete_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Options"), ETK_STOCK_PREFERENCES_SYSTEM, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_options_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Close"), ETK_STOCK_LIST_REMOVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
@@ -883,8 +887,8 @@ _ex_main_window_show(char *dir, int fullscreen)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Sharpen"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_sharpen_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Brighten"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_brighten_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Set as wallpaper"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_set_wallpaper_cb), e);
-	
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Options"), ETK_STOCK_PREFERENCES_SYSTEM, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_options_cb), e);
+
 	/* Create the "View" menu item */
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("View"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(e->menu_bar), NULL, NULL);
 	menu = etk_menu_new();
@@ -910,6 +914,7 @@ _ex_main_window_show(char *dir, int fullscreen)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom out"), EX_IMAGE_ZOOM_OUT, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_out_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Zoom 1:1"), EX_IMAGE_ONE_TO_ONE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_zoom_one_to_one_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Fit to window"), EX_IMAGE_FIT_TO_WINDOW, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_fit_to_window_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Fullscreen"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_window_fullscreen_toggle_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Toggle slideshow"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_toggle_slideshow_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Refresh"), ETK_STOCK_VIEW_REFRESH, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_refresh_cb), e);
@@ -1083,24 +1088,27 @@ _ex_main_window_show(char *dir, int fullscreen)
    
    if(fullscreen)
      _ex_main_window_fullscreen_toggle(e);
+   if (slideshow)
+     _ex_main_window_slideshow_toggle();
 }
 
 int
 main(int argc, char *argv[])
 {
    int i;
-   int fullscreen = 0;
+   int fullscreen = 0, slideshow = 0;
    
    for (i = 1; i < argc; i++)
      {
 	if (((!strcmp(argv[i], "-h")) ||
 		 (!strcmp(argv[i], "--help"))))
 	  {
-	     printf("Usage\n");
-	     printf("  %s <image>\n", PACKAGE);
-	     printf("  %s <path>\n", PACKAGE);
-	     printf("  %s <url>\n\n", PACKAGE);
-	     printf("  -f, --fullscreen\t\t start Exhibit in fullscreen mode\n");
+	     printf("Usage:\n");
+	     printf("  %s <image> <options>\n", PACKAGE);
+	     printf("  %s <path> <options>\n", PACKAGE);
+	     printf("  %s <url> <options>\n\n", PACKAGE);
+	     printf("  -f, --fullscreen\t start Exhibit in fullscreen mode\n");
+	     printf("  -s, --slideshow\t start Exhibit in slideshow mode\n");
 	     printf("  -h, --help\t\t display this help and exit\n");
 	     printf("  -v, --version\t\t output version information and exit\n\n");
 	     exit(1);
@@ -1114,6 +1122,9 @@ main(int argc, char *argv[])
 	else if (((!strcmp(argv[i], "-f")) ||
 		 (!strcmp(argv[i], "--fullscreen"))))
 	  fullscreen = 1;
+	else if (((!strcmp(argv[i], "-s")) ||
+		 (!strcmp(argv[i], "--slideshow"))))
+	  slideshow = 1;
      }
    
    if (!etk_init(&argc, &argv))
@@ -1131,9 +1142,9 @@ main(int argc, char *argv[])
    
    epsilon_init();
    if(argc > 1)
-     _ex_main_window_show(argv[1], fullscreen);
+     _ex_main_window_show(argv[1], fullscreen, slideshow);
    else
-     _ex_main_window_show(NULL, fullscreen);   
+     _ex_main_window_show(NULL, fullscreen, slideshow);   
      
    etk_main();
    if(e)

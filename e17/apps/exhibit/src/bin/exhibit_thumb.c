@@ -79,7 +79,7 @@ _ex_thumb_generate()
 		
 	thumb = thumb_list->data;
 	if(_ex_file_is_ebg(thumb->name))
-	  epsilon_key_set(thumb->ep, "desktop/background");
+	  epsilon_key_set(thumb->ep, "e/desktop/background");
 	if(epsilon_generate(thumb->ep))
 	  {
 	     thumb->image = (char*)epsilon_thumb_file_get(thumb->ep);

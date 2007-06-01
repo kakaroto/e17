@@ -151,7 +151,7 @@ _ex_file_is_ebg(char *file)
    
    for (l = groups; l; l = l->next)
      {
-	if (!strcmp(l->data, "desktop/background"))
+	if (!strcmp(l->data, "e/desktop/background"))
 	  {
 	     val = 1;
 	     break;

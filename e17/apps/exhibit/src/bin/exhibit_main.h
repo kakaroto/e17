@@ -13,7 +13,7 @@ void         _ex_main_window_fullscreen_toggle();
 void         _ex_main_window_tab_append(Ex_Tab *tab);
 void         _ex_main_window_tab_remove(Ex_Tab *tab);
 void         _ex_main_dialog_show(char *text, Etk_Message_Dialog_Type type);
-void         _ex_main_window_show(char *dir, int fullscreen);
+void         _ex_main_window_show(char *dir, int fullscreen, int slideshow);
 void         _ex_main_image_unset();
 void         _ex_main_image_set(Exhibit *e, char *image);
 void         _ex_main_button_fit_to_window_cb(Etk_Object *obj, void *data);

@@ -116,6 +116,8 @@ _ex_options_init()
    CFG_OPTIONS_NEWI("mf", monitor_focus, EET_T_INT);
    CFG_OPTIONS_NEWI("dv", default_view, EET_T_INT);
    CFG_OPTIONS_NEWI("ds", default_sort, EET_T_INT);
+   CFG_OPTIONS_NEWI("saft", show_all_filetypes, EET_T_INT);
+   CFG_OPTIONS_NEWI("lh", list_hidden, EET_T_INT);
    CFG_OPTIONS_NEWI("lw", last_w, EET_T_INT);
    CFG_OPTIONS_NEWI("lh", last_h, EET_T_INT);
    
@@ -196,11 +198,11 @@ _ex_options_default(Exhibit *e)
    /* TODO: free values before allocating if e->options != NULL */
    
    e->options->app1 = strdup("The Gimp");
-   e->options->app1_cmd = strdup("gimp %s");
+   e->options->app1_cmd = strdup("gimp \"%s\"");
    e->options->app2 = strdup("Xv");
-   e->options->app2_cmd = strdup("xv %s");
+   e->options->app2_cmd = strdup("xv \"%s\"");
    e->options->app3 = strdup("Xpaint");
-   e->options->app3_cmd = strdup("xpaint %s");
+   e->options->app3_cmd = strdup("xpaint \"%s\"");
    e->options->app4 =     NULL;
    e->options->app4_cmd =     NULL;
    e->options->fav_path = NULL;   
@@ -212,10 +214,12 @@ _ex_options_default(Exhibit *e)
    e->options->comments_visible = EX_DEFAULT_COMMENTS_HIDDEN;
    e->options->default_view     = EX_IMAGE_ONE_TO_ONE;
    e->options->default_sort     = EX_SORT_BY_NAME;
+   e->options->show_all_filetypes = ETK_FALSE;
+   e->options->list_hidden	= ETK_FALSE;
    e->options->last_w           = EX_DEFAULT_WINDOW_WIDTH;
    e->options->last_h           = EX_DEFAULT_WINDOW_HEIGHT;
    e->options->rotate_autosave  = ETK_FALSE;
-   e->options->monitor_focus  = ETK_FALSE;
+   e->options->monitor_focus    = ETK_FALSE;
    e->version = _ex_options_version_parse(VERSION);        
 }
 
@@ -479,13 +483,24 @@ _ex_options_set()
    e->options->default_sort = e->options->default_sort_tmp;
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-   _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 
    /* MONITOR FOCUS */
    if (IS_SELECTED(dialog->monitor_focus))
 	e->options->monitor_focus = ETK_TRUE;
    else 
 	e->options->monitor_focus = ETK_FALSE;
+
+   /* SHOW ALL FILETYPESS */
+   if (IS_SELECTED(dialog->show_all_filetypes))
+	e->options->show_all_filetypes = ETK_TRUE;
+   else 
+	e->options->show_all_filetypes = ETK_FALSE;
+
+   /* LIST HIDDEN FILES AND DIRECTORIES*/
+   if (IS_SELECTED(dialog->list_hidden))
+	e->options->list_hidden = ETK_TRUE;
+   else 
+	e->options->list_hidden = ETK_FALSE;
 
    /* RUN IN */
    APP_NEW(dialog->app1, e->options->app1);
@@ -497,12 +512,13 @@ _ex_options_set()
    APP_NEW(dialog->app4, e->options->app4);
    APP_NEW(dialog->app4_cmd, e->options->app4_cmd);
 
-   /* Rebuild the possible new menu */
+   /* REGENERATE EVERYTHING */
    etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app1_menu));
    etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app2_menu));
    etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app3_menu));
    etk_menu_shell_remove(ETK_MENU_SHELL(e->submenu), ETK_MENU_ITEM(e->app4_menu));
    _ex_menu_build_run_menu(NULL);
+   _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 }
 
 static Etk_Widget *
@@ -658,6 +674,7 @@ static Etk_Widget *
 _ex_options_page_3_create()
 {
    Etk_Widget *vbox, *hbox;
+   Etk_Widget *vbox2;
    Etk_Widget *frame, *label;
    Etk_Widget *image;
    Ex_Options_Dialog *dialog = e->opt_dialog;
@@ -696,16 +713,24 @@ _ex_options_page_3_create()
    etk_signal_connect("active-item-changed", ETK_OBJECT(dialog->default_sort), 
 	 ETK_CALLBACK(_ex_options_combobox_active_item_changed_cb), NULL);
    
-   frame = etk_frame_new("Filesystem monitoring");
+   frame = etk_frame_new("Directory listing");
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
-   hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_container_add(ETK_CONTAINER(frame), hbox);
+   vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    dialog->monitor_focus = etk_check_button_new_with_label("Autofocus new images added to your current dir");
-   etk_box_append(ETK_BOX(hbox), dialog->monitor_focus, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox2), dialog->monitor_focus, ETK_BOX_START, ETK_BOX_NONE, 0);
+   dialog->show_all_filetypes = etk_check_button_new_with_label("Show all kind of filetypes");
+   etk_box_append(ETK_BOX(vbox2), dialog->show_all_filetypes, ETK_BOX_START, ETK_BOX_NONE, 0);
+   dialog->list_hidden = etk_check_button_new_with_label("List hidden files and directories");
+   etk_box_append(ETK_BOX(vbox2), dialog->list_hidden, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    if (e->options->monitor_focus)
      etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->monitor_focus));
+   if (e->options->show_all_filetypes)
+     etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->show_all_filetypes));
+   if (e->options->list_hidden)
+     etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->list_hidden));
 
    if (e->options->default_sort == EX_SORT_BY_DATE)
       etk_combobox_active_item_set(ETK_COMBOBOX(dialog->default_sort), dialog->sort_date);

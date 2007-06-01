@@ -103,6 +103,8 @@ struct _Ex_Options
    int default_view;   
    int default_sort;
    int default_sort_tmp;
+   int show_all_filetypes;
+   int list_hidden;
    int monitor_focus;
    
    int last_w;
@@ -122,6 +124,8 @@ struct _Ex_Options_Dialog
    Etk_Widget *comments_visible;
    Etk_Widget *rotate_autosave;
    Etk_Widget *default_sort;
+   Etk_Widget *show_all_filetypes;
+   Etk_Widget *list_hidden;
    Etk_Widget *monitor_focus;
    Etk_Widget *dl_path;
    Etk_Combobox_Item *sort_date;
