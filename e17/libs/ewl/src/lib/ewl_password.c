@@ -6,7 +6,6 @@
 #include "ewl_debug.h"
 
 static void ewl_password_text_insert(Ewl_Password *e, const char *s);
-void ewl_password_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__);
 
 /**
  * @return Returns a new password widget on success, NULL on failure.
@@ -151,7 +150,7 @@ ewl_password_clear(Ewl_Password *e)
 	
 	w = EWL_WIDGET(e);
 	
-	ewl_password_text_set(e,NULL);
+	ewl_password_text_set(e, NULL);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

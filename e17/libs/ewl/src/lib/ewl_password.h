@@ -57,6 +57,7 @@ int		 ewl_password_init(Ewl_Password *e);
 
 void		 ewl_password_text_set(Ewl_Password *e, const char *t);
 char		*ewl_password_text_get(Ewl_Password *e);
+void         ewl_password_clear(Ewl_Password *e);
 
 void		 ewl_password_obscure_set(Ewl_Password *e, char o);
 char		 ewl_password_obscure_get(Ewl_Password *e);
@@ -65,6 +66,7 @@ char		 ewl_password_obscure_get(Ewl_Password *e);
  * Internally used callbacks, override at your own risk.
  */
 void ewl_password_cb_key_down(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_password_cb_enable(Ewl_Widget *w, void *ev, void *data);
 void ewl_password_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
