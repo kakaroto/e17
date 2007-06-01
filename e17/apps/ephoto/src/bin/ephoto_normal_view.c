@@ -16,6 +16,7 @@ static void change_size(Ewl_Widget *w, void *event, void *data)
 				ewl_range_value_get(EWL_RANGE(em->fthumb_size)));
 		ewl_widget_reparent(child);
 	}
+	ewl_widget_configure(em->fbox_vbox);
 
 	return;
 }
@@ -42,7 +43,7 @@ Ewl_Widget *add_normal_view(Ewl_Widget *c)
 	em->fthumb_size = ewl_hseeker_new();
 	ewl_range_minimum_value_set(EWL_RANGE(em->fthumb_size), 8);
 	ewl_range_maximum_value_set(EWL_RANGE(em->fthumb_size), 128);
-	ewl_range_step_set(EWL_RANGE(em->fthumb_size), 8);
+	ewl_range_step_set(EWL_RANGE(em->fthumb_size), 16);
 	ewl_range_value_set(EWL_RANGE(em->fthumb_size), 64);
 	ewl_container_child_append(EWL_CONTAINER(em->fbox_vbox), em->fthumb_size);
 	ewl_callback_append(em->fthumb_size, EWL_CALLBACK_VALUE_CHANGED, change_size, NULL);

@@ -58,7 +58,6 @@ void show_main_view(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->main_nb), em->main_vbox);
 	ewl_widget_disable(em->smi);
-	ecore_dlist_goto_first(em->images);
 }
 
 /*Update the images based on the current tab*/
@@ -169,12 +168,9 @@ void create_main_gui(void)
 
 	add_list_view(em->view_box);	
 
-	em->toolbar = ewl_hbox_new();
-	ewl_box_spacing_set(EWL_BOX(em->toolbar), 5);
+	em->toolbar = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 5);
 	ewl_object_alignment_set(EWL_OBJECT(em->toolbar), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(em->toolbar), EWL_FLAG_FILL_SHRINK);
-	ewl_container_child_append(EWL_CONTAINER(vbox), em->toolbar);
-	ewl_widget_show(em->toolbar);
 
         button = add_button(em->toolbar, NULL, 
 				PACKAGE_DATA_DIR "/images/normal_view.png", 
@@ -248,12 +244,14 @@ void create_main_gui(void)
 	em->db = ephoto_db_init();
 
 	em->current_album = strdup(_("Complete Library"));
-	em->current_directory = strdup(getcwd(buf, PATH_MAX));
+
+	getcwd(buf, PATH_MAX);
+	buf[sizeof(buf)-1] = '\0';
+	em->current_directory = strdup(buf);
 
 	populate_albums(NULL, NULL, NULL);
 	ewl_callback_append(em->browser, EWL_CALLBACK_VALUE_CHANGED, 
 							update_view, NULL);
-
 	return;
 }
 
@@ -275,14 +273,15 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
 	{
 		ecore_list_destroy(em->albums);
 	}
-	if (!ecore_list_is_empty(em->images))
-	{
-		ecore_dlist_destroy(em->images);
-	}
 
 	em->albums = ecore_list_new();
 	em->albums = ephoto_db_list_albums(em->db);
 	ewl_mvc_data_set(EWL_MVC(em->atree), em->albums);
+
+        if (!ecore_dlist_is_empty(em->images))
+        {
+                ecore_dlist_destroy(em->images);
+        }
 	
 	em->images = ecore_dlist_new();
 	em->images = ephoto_db_list_images(em->db, em->current_album);
@@ -297,18 +296,24 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
 		{
                 	thumb = add_image(em->fbox, imagef, 1, 
 						freebox_image_clicked, NULL);
-			ewl_image_constrain_set(EWL_IMAGE(thumb), 
-					ewl_range_value_get(EWL_RANGE(em->fthumb_size))); 
+			ewl_image_constrain_set(EWL_IMAGE(thumb), 81); 
 			ewl_object_alignment_set(EWL_OBJECT(thumb), 
 							EWL_FLAG_ALIGN_CENTER);
 			ewl_widget_name_set(thumb, imagef);
 		}
 		ecore_dlist_next(em->images);
         }
-	ewl_widget_configure(em->fbox);
+	ewl_widget_configure(em->fbox_vbox);
+	
+	ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
 	ecore_dlist_goto_first(em->images);
-        ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
-	ecore_dlist_goto_first(em->images);
+
+	if (ecore_dlist_current(em->images))
+        {
+                ewl_image_file_path_set(EWL_IMAGE(em->simage),
+                                        ecore_dlist_current(em->images));
+        }
+
 
 	return;
 }
@@ -356,8 +361,7 @@ void populate_directories(Ewl_Widget *w, void *event, void *data)
 		{
   	        	thumb = add_image(em->fbox, imagef, 1, 
 						freebox_image_clicked, NULL);
-		       	ewl_image_size_set(EWL_IMAGE(thumb), 
-					ewl_range_value_get(EWL_RANGE(em->fthumb_size)), 
+		       	ewl_image_constrain_set(EWL_IMAGE(thumb), 
 					ewl_range_value_get(EWL_RANGE(em->fthumb_size)));
        		      	ewl_object_alignment_set(EWL_OBJECT(thumb), 
 							EWL_FLAG_ALIGN_CENTER);
@@ -365,10 +369,16 @@ void populate_directories(Ewl_Widget *w, void *event, void *data)
 		}
         	ecore_dlist_next(em->images);
 	}
-	ewl_widget_configure(em->fbox);
-	ecore_dlist_goto_first(em->images);
+	ewl_widget_configure(em->fbox_vbox);
+
 	ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
 	ecore_dlist_goto_first(em->images);	
+
+	if (ecore_dlist_current(em->images)) 
+	{
+		ewl_image_file_path_set(EWL_IMAGE(em->simage), 
+					ecore_dlist_current(em->images));
+	}
 
 	return;
 } 
