@@ -26,11 +26,10 @@ struct _News_Viewer
    struct
    {
       E_Dialog    *dia;
+      int x, y, w, h;
       
       Evas_Object *tab;
       Evas_Object *ftab_feeds, *ftab_articles, *ftab_content;
-
-      int x, y, w, h;
    } dialog;
   
    /* view of the feeds list */

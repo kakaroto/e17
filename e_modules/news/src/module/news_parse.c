@@ -879,7 +879,6 @@ _meta_block_find(char **buf)
    *buf = p1;
 
    p2 = _meta_block_end(*buf, 0, 1);
-   if (!p2) return NULL;
 
    return p2;
 }

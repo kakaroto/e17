@@ -19,8 +19,8 @@ program
 	signal: "e,state,new,set";
 	source: "e";
 	action: STATE_SET "active" 0.0;
-	transition: SINUSOIDAL 0.5;
-	target: "unread";
+	transition: SINUSOIDAL 0.7;
+	target: "unread_clip";
 }
 program
 {
@@ -29,7 +29,7 @@ program
 	source: "e";
 	action: STATE_SET "default" 0.0;
 	transition: SINUSOIDAL 0.5;
-	target: "unread";
+	target: "unread_clip";
 }
 
 /* Mouse in/out */
@@ -39,8 +39,9 @@ program
 	name:	"mouse_in";
 	signal:	"mouse,in";
 	source:	"inout";
-        action: STATE_SET "selected" 0.0;
-        target: "border";
+        action: STATE_SET "active" 0.0;
+	transition: SINUSOIDAL 0.1;
+        target: "border_clip";
 }
 
 program
@@ -49,7 +50,8 @@ program
 	signal:	"mouse,out";
 	source:	"inout";
         action: STATE_SET "default" 0.0;
-        target: "border";
+	transition: SINUSOIDAL 0.5;
+        target: "border_clip";
 }
 
 program

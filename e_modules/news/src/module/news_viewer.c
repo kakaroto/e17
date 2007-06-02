@@ -422,10 +422,16 @@ _dialog_content_create(News_Viewer *nv)
                  news->config->viewer.vcontent.font_shadow_color);
      }
    snprintf(buf, sizeof(buf),
-            "DEFAULT='font=Vera font_size=%d align=left color=%s%s wrap=word'" "br='\n'",
+            "DEFAULT='font=Vera font_size=%d align=left color=%s%s wrap=word'"
+            "br='\n'"
+            "hilight='+ font=Vera-Bold font_size=%d'"
+            "small='+ font_size=%d'"
+            "italic='+ font=Vera-Italic'",
             news->config->viewer.vcontent.font_size,
             news->config->viewer.vcontent.font_color,
-            buf2);
+            buf2,
+            news->config->viewer.vcontent.font_size + 1,
+            news->config->viewer.vcontent.font_size - 1);
    evas_textblock_style_set(tb_style, buf);
    evas_object_textblock_style_set(ob, tb_style);
    evas_textblock_style_free(tb_style);
@@ -591,11 +597,10 @@ _dialog_cb_article_selected(void *data)
    if (art->date.tm_year != 0)
      strftime(buf_date, sizeof(buf_date), "%Y-%m-%d %H:%M:%S", &art->date);
    snprintf(buf, sizeof(buf),
-            "<underline=on underline_color=%s>%s</><br>"
+            "<hilight>%s</hilight><br>"
+            "<small>%s</small><br><br>"
             "%s<br><br>"
-            "%s<br><br>"
-            "%s",
-            news->config->viewer.vcontent.font_color,
+            "<small>%s</small>",
             (art->title && art->title[0]) ? art->title : "No title",
             buf_date,
             (art->description && art->description[0])? art->description : "No description text",
@@ -878,12 +883,11 @@ _vcontent_feed_infos_set(News_Viewer *nv)
           }
      }
    snprintf(buf, sizeof(buf),
-            "<underline=on underline_color=%s>%s</> <i>in %s</i><br>"
+            "<hilight>%s</hilight> <small>in %s</small><br><br>"
             "%s"
             "%s<br><br>"
-            "%s%s<br>"
-            "%s",
-            news->config->viewer.vcontent.font_color,
+            "<italic>%s%s<br>"
+            "%s</italic>",
             f->name,
             f->category->name,
             buf_error,
