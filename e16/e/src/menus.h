@@ -44,7 +44,7 @@ void                MenuHide(Menu * m);
 void                MenuEmpty(Menu * m, int destroying);
 void                MenuRepack(Menu * m);
 int                 MenuLoad(Menu * m);
-Menu               *MenuFind(const char *name);
+Menu               *MenuFind(const char *name, const char *param);
 MenuItem           *MenuItemCreate(const char *text, ImageClass * ic,
 				   const char *action_params, Menu * child);
 void                MenuSetInternal(Menu * m);

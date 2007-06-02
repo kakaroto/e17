@@ -37,8 +37,6 @@
 
 static char         menu_scan_recursive = 0;
 
-static Menu        *MenuCreateFromFlatFile(const char *name, Menu * parent,
-					   MenuStyle * ms, const char *file);
 static Menu        *MenuCreateFromDirectory(const char *name, Menu * parent,
 					    MenuStyle * ms, const char *dir);
 
@@ -277,12 +275,12 @@ void
 ScanBackgroundMenu(void)
 {
    menu_scan_recursive = 1;
-   MenuLoad(MenuFind("BACKGROUNDS_MENU"));
+   MenuLoad(MenuFind("BACKGROUNDS_MENU", NULL));
    menu_scan_recursive = 0;
 }
 
 static void
-FillFlatFileMenu(Menu * m, const char *name, const char *file)
+FillFlatFileMenu(Menu * m, const char *file)
 {
    FILE               *f;
    char                first = 1;
@@ -354,8 +352,7 @@ FillFlatFileMenu(Menu * m, const char *name, const char *file)
 	       }
 	     else if ((act) && (!strcmp(act, "menu")) && (params))
 	       {
-		  Esnprintf(wd, sizeof(wd), "__FM.%s.%i", name, count++);
-		  mm = MenuCreateFromFlatFile(wd, m, NULL, params);
+		  mm = MenuFind(params, NULL);
 		  if (mm)
 		    {
 		       mi = MenuItemCreate(txt, icc, NULL, mm);
@@ -385,7 +382,7 @@ MenuLoadFromFlatFile(Menu * m)
    MenuSetTimestamp(m, lastmod);
 
    MenuEmpty(m, 0);
-   FillFlatFileMenu(m, MenuGetName(m), ff);
+   FillFlatFileMenu(m, ff);
 
    return 1;
 }
@@ -402,19 +399,27 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
       return NULL;
    calls++;
 
-   ff = FindFile(file, NULL, 0);
-   if (!ff)
+   if (!file)
+      file = name;
+
+   if (isabspath(file))
      {
-	if (isabspath(file))
-	   goto done;
-	/* Check also menus subdir */
+	ff = FindFile(file, NULL, 0);
+     }
+   else
+     {
+	/* Check menus subdir first */
 	Esnprintf(buf, sizeof(buf), "menus/%s", file);
 	ff = FindFile(buf, NULL, 0);
 	if (!ff)
-	   goto done;
+	   ff = FindFile(file, NULL, 0);
      }
+   if (!ff)
+      goto done;
 
-   m = MenuCreate(name, NULL, parent, ms);
+   m = MenuCreate(file, NULL, parent, ms);
+   if (name != file)
+      MenuSetAlias(m, name);
    MenuSetData(m, ff);
    MenuSetLoader(m, MenuLoadFromFlatFile);
 
@@ -598,6 +603,7 @@ MenuCreateFromBorders(const char *name, MenuStyle * ms)
    MenuItem           *mi;
 
    m = MenuCreate(name, NULL, NULL, ms);
+   MenuSetTitle(m, _("Border"));
 
    lst = BordersGetList(&num);
    if (lst)
@@ -804,7 +810,13 @@ MenusCreateInternal(const char *type, const char *name, const char *style,
    if (style)
       ms = MenuStyleFind(style);
 
-   if (!strcmp(type, "file"))
+   if (!type)
+     {
+	if (!strstr(name, ".menu"))
+	   type = name;
+     }
+
+   if (!type || !strcmp(type, "file"))
      {
 	m = MenuCreateFromFlatFile(name, NULL, ms, prm);
      }

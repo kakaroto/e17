@@ -460,10 +460,6 @@ void
 MenuSetName(Menu * m, const char *name)
 {
    _EFDUP(m->name, name);
-
-   if (!menu_list)
-      menu_list = ecore_list_new();
-   ecore_list_prepend(menu_list, m);
 }
 
 void
@@ -552,6 +548,10 @@ MenuCreate(const char *name, const char *title, Menu * parent, MenuStyle * ms)
    MenuSetTitle(m, title);
    MenuSetStyle(m, ms);
    m->icon_size = -1;		/* Use image size */
+
+   if (!menu_list)
+      menu_list = ecore_list_new();
+   ecore_list_prepend(menu_list, m);
 
    return m;
 }
@@ -1075,7 +1075,7 @@ _MenuMatchName(const void *data, const void *match)
 }
 
 Menu               *
-MenuFind(const char *name)
+MenuFind(const char *name, const char *param)
 {
    Menu               *m;
 
@@ -1084,13 +1084,13 @@ MenuFind(const char *name)
       return (m);
 
    /* Not in list - try if we can load internal */
-   m = MenusCreateInternal(name, name, NULL, NULL);
+   m = MenusCreateInternal(NULL, name, NULL, param);
 
    return m;
 }
 
 static void
-MenusShowNamed(const char *name)
+MenusShowNamed(const char *name, const char *param)
 {
    Menu               *m;
 
@@ -1098,7 +1098,7 @@ MenusShowNamed(const char *name)
    if (MenusActive())
       MenusHide();
 
-   m = MenuFind(name);
+   m = MenuFind(name, param);
    if (!m)
       return;
 
@@ -1846,7 +1846,6 @@ MenuConfigLoad(FILE * fs)
    int                 i1, i2;
    Menu               *m = NULL, *mm;
    MenuItem           *mi;
-   MenuStyle          *ms;
    ImageClass         *ic = NULL;
    int                 fields, len2, len;
 
@@ -1901,13 +1900,10 @@ MenuConfigLoad(FILE * fs)
 		MenuSetName(m, s2);
 	     break;
 	  case MENU_USE_STYLE:
-	     ms = MenuStyleFind(s2);
-	     if (ms)
-		MenuSetStyle(m, ms);
+	     MenuSetStyle(m, MenuStyleFind(s2));
 	     break;
 	  case MENU_TITLE:
-	     if (m)
-		MenuSetTitle(m, s + len2);
+	     MenuSetTitle(m, s + len2);
 	     break;
 	  case MENU_ITEM:
 #if 0				/* FIXME - Why ? */
@@ -1951,7 +1947,7 @@ MenuConfigLoad(FILE * fs)
 	     ic = NULL;
 	     if (strcmp("NULL", s3))
 		ic = ImageclassFind(s3, 0);
-	     mm = MenuFind(s2);
+	     mm = MenuFind(s2, NULL);
 #if 0				/* FIXME - Remove? */
 	     /* if submenu empty - dont put it in - only if menu found */
 	     if (MenuIsEmpty(mm))
@@ -2116,7 +2112,9 @@ MenusIpc(const char *params)
      }
    else if (!strncmp(cmd, "list", 2))
      {
-	ECORE_LIST_FOR_EACH(menu_list, m) IpcPrintf("%s\n", m->name);
+#define SS(s) ((s) ? (s) : "-")
+	ECORE_LIST_FOR_EACH(menu_list, m)
+	   IpcPrintf("%s(%s): %s\n", m->name, SS(m->alias), SS(m->title));
      }
    else if (!strncmp(cmd, "reload", 2))
      {
@@ -2125,10 +2123,12 @@ MenusIpc(const char *params)
      }
    else if (!strncmp(cmd, "show", 2))
      {
-	if (strcmp(prm, "named"))
-	   p = prm;
+	if (*p == '\0')
+	   p = NULL;
+	if (p && !strcmp(prm, "named"))
+	   Esnprintf(prm, sizeof(prm), "%s", p);
 	SoundPlay("SOUND_MENU_SHOW");
-	MenusShowNamed(p);
+	MenusShowNamed(prm, p);
      }
 }
 
