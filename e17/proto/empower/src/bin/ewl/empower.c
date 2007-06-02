@@ -2,10 +2,16 @@
 
 void parse_options(int argc, char** argv)
 {
-	/*FIXME: Parse options here so we can properly handle everything*/
+	regex_t regexp;
+	
+	if(regcomp(&regexp, "empower-askpass", 0))
+	{
+		printf("Failed to create regular expression\n");
+		return;
+	}
 	
 	/*Do initial mode guessing based on executable name and number of args*/
-	if(!strcmp(*argv,"empower-askpass") || !strcmp(*argv,"./empower-askpass"))
+	if(!regexec (&regexp, *argv, 0, NULL, 0))
 		mode = PASS;
 	else if(argc > 1)
 		mode = SUDO;
