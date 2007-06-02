@@ -32,6 +32,7 @@ image_quality_scale.c \
 image_data_argb.c \
 image_data_argb_alpha.c \
 image_data_ycbcr601pl.c \
+image_data_ycbcr601pl_wide_stride.c \
 image_crossfade.c \
 text_basic.c \
 text_styles.c \
@@ -42,6 +43,19 @@ textblock_intl.c \
 rect_blend.c \
 rect_solid.c \
 rect_blend_few.c \
-rect_solid_few.c
+rect_solid_few.c \
+image_blend_occlude1_few.c \
+image_blend_occlude2_few.c \
+image_blend_occlude3_few.c \
+image_blend_occlude1.c \
+image_blend_occlude2.c \
+image_blend_occlude3.c \
+image_blend_occlude1_many.c \
+image_blend_occlude2_many.c \
+image_blend_occlude3_many.c \
+image_blend_occlude1_very_many.c \
+image_blend_occlude2_very_many.c \
+image_blend_occlude3_very_many.c
+
 
 expedite_LDFLAGS = @EVAS_LIBS@  @x_libs@ @ddraw_libs@ -lm
