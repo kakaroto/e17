@@ -311,16 +311,20 @@ FillFlatFileMenu(Menu * m, const char *file)
 
 	if (first)
 	  {
-	     char               *title;
+	     char               *title, *style, *alias;
 
 	     first = 0;
 
-	     title = NULL;
-	     parse(s, "%S", &title);
+	     title = style = alias = NULL;
+	     parse(s, "%S%S%S", &title, &style, &alias);
 
-	     if (!title)
-		continue;
-	     MenuSetTitle(m, title);
+	     if (title)
+		MenuSetTitle(m, title);
+	     if (!style)
+		style = (char *)"ROOT";
+	     MenuSetStyle(m, MenuStyleFind(style));
+	     if (alias)
+		MenuSetAlias(m, alias);
 	  }
 	else
 	  {

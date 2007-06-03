@@ -278,7 +278,7 @@ MenuShow(Menu * m, char noshow)
    int                 w, h, mw, mh;	/* from appearing offscreen */
    int                 head_num = 0;
 
-   if (m->shown || !m->style)
+   if (m->shown)
       return;
 
    if (MenuLoad(m))
@@ -289,6 +289,9 @@ MenuShow(Menu * m, char noshow)
 
    if (!m->win)
       MenuRealize(m);
+
+   if (!m->style)
+      return;
 
    ewin = m->ewin;
    if (ewin)
@@ -546,7 +549,8 @@ MenuCreate(const char *name, const char *title, Menu * parent, MenuStyle * ms)
    m->parent = parent;
    MenuSetName(m, name);
    MenuSetTitle(m, title);
-   MenuSetStyle(m, ms);
+   if (ms)
+      MenuSetStyle(m, ms);
    m->icon_size = -1;		/* Use image size */
 
    if (!menu_list)
@@ -687,7 +691,11 @@ MenuRealize(Menu * m)
    char                has_i, has_s;
 
    if (!m->style)
-      return;
+     {
+	MenuSetStyle(m, NULL);
+	if (!m->style)
+	   return;
+     }
 
    if (!m->win)
      {
@@ -716,7 +724,7 @@ MenuRealize(Menu * m)
 	ESelectInput(m->items[i]->win, MENU_ITEM_EVENT_MASK);
 	EMapWindow(m->items[i]->win);
 
-	if ((m->style) && (m->style->tclass) && (m->items[i]->text))
+	if ((m->style->tclass) && (m->items[i]->text))
 	  {
 	     TextSize(m->style->tclass, 0, 0, 0, _(m->items[i]->text), &w, &h,
 		      17);
@@ -1832,6 +1840,33 @@ MenuStyleConfigLoad(FILE * ConfigFile)
    return err;
 }
 
+/*
+ * Aliases for "well-known" menus for backward compatibility.
+ */
+static const char  *const menu_aliases[] = {
+   "APPS_SUBMENU", "file.menu",
+   "CONFIG_SUBMENU", "settings.menu",
+   "DESKTOP_SUBMENU", "desktop.menu",
+   "MAINT_SUBMENU", "maintenance.menu",
+   "ROOT_2", "enlightenment.menu",
+   "WINOPS_MENU", "winops.menu",
+};
+#define N_MENU_ALIASES (sizeof(menu_aliases)/sizeof(char*)/2)
+
+static void
+_MenuCheckAlias(Menu * m)
+{
+   unsigned int        i;
+
+   for (i = 0; i < N_MENU_ALIASES; i++)
+     {
+	if (strcmp(m->name, menu_aliases[2 * i]))
+	   continue;
+	MenuSetAlias(m, menu_aliases[2 * i + 1]);
+	break;
+     }
+}
+
 int
 MenuConfigLoad(FILE * fs)
 {
@@ -1898,6 +1933,7 @@ MenuConfigLoad(FILE * fs)
 		m = MenuCreate(s2, NULL, NULL, NULL);
 	     else
 		MenuSetName(m, s2);
+	     _MenuCheckAlias(m);
 	     break;
 	  case MENU_USE_STYLE:
 	     MenuSetStyle(m, MenuStyleFind(s2));
@@ -2113,8 +2149,10 @@ MenusIpc(const char *params)
    else if (!strncmp(cmd, "list", 2))
      {
 #define SS(s) ((s) ? (s) : "-")
+#define ST(s) ((s) ? (s->name) : "-")
 	ECORE_LIST_FOR_EACH(menu_list, m)
-	   IpcPrintf("%s(%s): %s\n", m->name, SS(m->alias), SS(m->title));
+	   IpcPrintf("%s(%s/%s): %s\n", m->name, SS(m->alias), ST(m->style),
+		     SS(m->title));
      }
    else if (!strncmp(cmd, "reload", 2))
      {
