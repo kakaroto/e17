@@ -4,6 +4,7 @@ static void       _item_refresh_mode_one(News_Item *ni, int changed_order, int c
 static void       _item_refresh_mode_feed(News_Item *ni, int important_only, int unread_only, int changed_order, int changed_content, int changed_state);
 static void       _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void       _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void       _cb_item_open(void *data, Evas_Object *obj, const char *emission, const char *source);
 
 
 /*
@@ -194,6 +195,8 @@ _item_refresh_mode_one(News_Item *ni, int changed_order, int changed_state)
      {
         obj = edje_object_add(ni->gcc->gadcon->evas);
         news_theme_edje_set(obj, NEWS_THEME_FEEDONE);
+        edje_object_signal_callback_add(obj, "e,action,open", "e",
+                                        _cb_item_open, ni);
      }
 
    if (!ni->view.obj_mode_one || changed_order)
@@ -286,33 +289,6 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      {
         int cx, cy, cw, ch;
 
-     case 1:
-        switch (ni->config->openmethod)
-          {
-          case NEWS_ITEM_OPENMETHOD_VIEWER:
-             if (!ni->viewer)
-               news_viewer_create(ni);
-             else
-               news_viewer_destroy(ni->viewer);
-             break;
-          case NEWS_ITEM_OPENMETHOD_BROWSER:
-             /* if we are not in view mode one,
-                we assume its an error click */
-             if (ni->config->view_mode !=  NEWS_ITEM_VIEW_MODE_ONE)
-               break;
-             news_menu_browser_show(ni);
-             e_gadcon_canvas_zone_geometry_get(ni->gcc->gadcon,
-                                               &cx, &cy, &cw, &ch);
-             e_menu_activate_mouse(ni->menu_browser,
-                                   e_util_zone_current_get(e_manager_current_get()),
-                                   cx + ev->output.x, cy + ev->output.y, 1, 1,
-                                   E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-             evas_event_feed_mouse_up(ni->gcc->gadcon->evas, ev->button,
-                                      EVAS_BUTTON_NONE, ev->timestamp, NULL);
-             break;
-          }
-        break;
-       
      case 3:
         if (ni->menu) break;
         news_menu_item_show(ni);
@@ -339,4 +315,36 @@ _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    DITEM(("Mouse out"));
 
+}
+
+static void
+_cb_item_open(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   News_Item *ni;
+   E_Manager *man;
+   E_Zone *zone;
+   int cx, cy;
+
+   ni = data;
+
+   switch (ni->config->openmethod)
+     {
+     case NEWS_ITEM_OPENMETHOD_VIEWER:
+        if (!ni->viewer)
+          news_viewer_create(ni);
+        else
+          news_viewer_destroy(ni->viewer);
+        break;
+     case NEWS_ITEM_OPENMETHOD_BROWSER:
+        news_menu_browser_show(ni);
+        man = e_manager_current_get();
+        zone = e_util_zone_current_get(man);
+        ecore_x_pointer_xy_get(man->root, &cx, &cy);
+        e_menu_activate_mouse(ni->menu_browser, zone,
+                              cx, cy, 1, 1,
+                              E_MENU_POP_DIRECTION_DOWN, 
+                              ecore_x_current_time_get());
+        e_util_container_fake_mouse_up_all_later(zone->container);
+        break;
+     }
 }

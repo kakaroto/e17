@@ -604,7 +604,7 @@ _dialog_cb_article_selected(void *data)
             (art->title && art->title[0]) ? art->title : "No title",
             buf_date,
             (art->description && art->description[0])? art->description : "No description text",
-            (art->url) ? "||click here to open article in a browser||" : "");
+            (art->url) ? "||click on the text to open article in a browser||" : "");
    _vcontent_text_set(nv, buf);
 
    if (art->unread)

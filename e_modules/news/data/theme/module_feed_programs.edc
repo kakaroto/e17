@@ -1,16 +1,3 @@
-/* Init */
-
-program
-{
-	name:	"init";
-	signal:	"load";
-	source:	"";
-	script
-	{
-
-        }
-}
-
 /* Signals for new state */
 
 program

@@ -1075,18 +1075,22 @@ _update_doc(News_Parse *parser)
    evas_list_free(parser->articles);
    parser->articles = NULL;
 
-   /* remove old articles,
+   /* remove old articles
     * except unread articles, we keep them */
-   pos = evas_list_count(parser->doc->articles) - 1;
-   while ((fa = evas_list_nth(parser->doc->articles, pos)))
+   if ((parser->error != NEWS_PARSE_ERROR_BROKEN_FEED) ||
+       (parser->doc->unread_count > NEWS_FEED_UNREAD_COUNT_MAX))
      {
-        if (!fa->unread ||
-            (parser->doc->unread_count > NEWS_FEED_UNREAD_COUNT_MAX))
+        pos = evas_list_count(parser->doc->articles) - 1;
+        while ((fa = evas_list_nth(parser->doc->articles, pos)))
           {
-             news_feed_article_del(fa);
-             parser->changes = 1;
+             /* if unread count max reached, remove even if unread */
+             if (!fa->unread || (parser->doc->unread_count > NEWS_FEED_UNREAD_COUNT_MAX))
+               {
+                  news_feed_article_del(fa);
+                  parser->changes = 1;
+               }
+             pos--;
           }
-        pos--;
      }
 
    /* append the old articles list to the new one */
@@ -1100,6 +1104,7 @@ _update_doc(News_Parse *parser)
    parser->doc->articles = list;
 
    /* DEBUG : list the articles */
+#ifdef DPARSE
    DPARSE(("-- New articles list for feed %s", parser->doc->feed->name));
    for (l=parser->doc->articles; l; l=evas_list_next(l))
      {
@@ -1107,11 +1112,7 @@ _update_doc(News_Parse *parser)
         DPARSE(("- %s", fa->title));
      }
    DPARSE(("---------"));
-
-   /*
-     FIXME:
-     if sorting, no need to KEEP THE ORDER upper, so can optimize
-   */
+#endif
 }
 
 static void
