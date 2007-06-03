@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-05-26 01:03+0200\n"
+"POT-Creation-Date: 2007-06-03 14:09+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -67,8 +67,8 @@ msgstr "%u개의 참조가 남아있습니다\n"
 
 #: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
 #: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1775 src/cursors.c:177 src/iclass.c:548 src/menus.c:1756
-#: src/menus.c:1867 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
+#: src/container.c:1775 src/cursors.c:177 src/iclass.c:548 src/menus.c:1764
+#: src/menus.c:1901 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -76,7 +76,7 @@ msgstr "CONFIG: \"%s\"에 있는 더 많은 데이타는 무시합니다\n"
 
 #: src/aclass.c:302 src/backgrounds.c:1158 src/borders.c:1116
 #: src/borders.c:1239 src/buttons.c:740 src/cmclass.c:210 src/config.c:257
-#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1761 src/menus.c:1873
+#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1769 src/menus.c:1907
 #: src/slideout.c:433 src/tclass.c:264 src/tooltips.c:182
 #: src/windowmatch.c:165
 #, c-format
@@ -695,7 +695,7 @@ msgstr "왼쪽"
 msgid "Right"
 msgstr "오른쪽"
 
-#: src/desktops.c:2479 src/menus-misc.c:712
+#: src/desktops.c:2479 src/menus-misc.c:713
 #, fuzzy
 msgid "Desks"
 msgstr "데스크탑"
@@ -786,7 +786,7 @@ msgstr "적용"
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
-#: src/ecompmgr.c:2537
+#: src/ecompmgr.c:2544
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1088,7 +1088,7 @@ msgstr " 공통 설정: "
 msgid "Swap Window Locations"
 msgstr "창 위치 바꿈"
 
-#: src/groups.c:1018 src/menus-misc.c:772
+#: src/groups.c:1018 src/menus-misc.c:773
 #, fuzzy
 msgid "Groups"
 msgstr "그룹 %i"
@@ -1364,57 +1364,62 @@ msgstr ""
 msgid "Themes"
 msgstr "잘못된 테마"
 
-#: src/menus-misc.c:672
+#: src/menus-misc.c:610
+#, fuzzy
+msgid "Border"
+msgstr "테두리"
+
+#: src/menus-misc.c:673
 #, fuzzy
 msgid "Window List"
 msgstr "창 목록 건너뜀"
 
-#: src/menus-misc.c:694
+#: src/menus-misc.c:695
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "이 데스크탑으로 가기"
 
-#: src/menus-misc.c:698 src/menus-misc.c:794
+#: src/menus-misc.c:699 src/menus-misc.c:795
 #, c-format
 msgid "Desktop %i"
 msgstr "데스크탑 %i"
 
-#: src/menus-misc.c:741
+#: src/menus-misc.c:742
 msgid "Show/Hide this group"
 msgstr "이 그룹 보여주기/숨기기"
 
-#: src/menus-misc.c:746
+#: src/menus-misc.c:747
 msgid "Iconify this group"
 msgstr "이 그룹 아이콘화"
 
-#: src/menus-misc.c:757
+#: src/menus-misc.c:758
 #, c-format
 msgid "Group %i"
 msgstr "그룹 %i"
 
-#: src/menus.c:2067
+#: src/menus.c:2099
 msgid "Animated display of menus"
 msgstr "메뉴 표시 에니메이트"
 
-#: src/menus.c:2072
+#: src/menus.c:2104
 msgid "Always pop up menus on screen"
 msgstr "항상 화면에 메뉴를 팝업"
 
-#: src/menus.c:2077
+#: src/menus.c:2109
 msgid "Warp pointer after moving menus"
 msgstr "메뉴를 움직인 후에 포인터 뒤집기"
 
-#: src/menus.c:2083
+#: src/menus.c:2115
 #, fuzzy
 msgid "Menus"
 msgstr "메뉴:"
 
-#: src/menus.c:2084
+#: src/menus.c:2116
 #, fuzzy
 msgid "Menu Settings"
 msgstr "기타 설정"
 
-#: src/menus.c:2087
+#: src/menus.c:2119
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -3094,10 +3099,6 @@ msgstr "인라이튼먼트 종료"
 #, fuzzy
 #~ msgid "Menu"
 #~ msgstr "메뉴:"
-
-#, fuzzy
-#~ msgid "Border"
-#~ msgstr "테두리"
 
 #, fuzzy
 #~ msgid "Button"

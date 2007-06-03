@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-05-26 01:03+0200\n"
+"POT-Creation-Date: 2007-06-03 14:09+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -50,8 +50,8 @@ msgstr ""
 
 #: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
 #: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1775 src/cursors.c:177 src/iclass.c:548 src/menus.c:1756
-#: src/menus.c:1867 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
+#: src/container.c:1775 src/cursors.c:177 src/iclass.c:548 src/menus.c:1764
+#: src/menus.c:1901 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -59,7 +59,7 @@ msgstr "CONFIGURATIE: negeer extra gegevens in \"%s\"\n"
 
 #: src/aclass.c:302 src/backgrounds.c:1158 src/borders.c:1116
 #: src/borders.c:1239 src/buttons.c:740 src/cmclass.c:210 src/config.c:257
-#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1761 src/menus.c:1873
+#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1769 src/menus.c:1907
 #: src/slideout.c:433 src/tclass.c:264 src/tooltips.c:182
 #: src/windowmatch.c:165
 #, c-format
@@ -646,7 +646,7 @@ msgstr "Links"
 msgid "Right"
 msgstr "Rechts"
 
-#: src/desktops.c:2479 src/menus-misc.c:712
+#: src/desktops.c:2479 src/menus-misc.c:713
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
@@ -733,7 +733,7 @@ msgstr "Pas toe"
 msgid "Attention !!!"
 msgstr "Attentie !!!!"
 
-#: src/ecompmgr.c:2537
+#: src/ecompmgr.c:2544
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1023,7 +1023,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr "Venster Opties"
 
-#: src/groups.c:1018 src/menus-misc.c:772
+#: src/groups.c:1018 src/menus-misc.c:773
 #, fuzzy
 msgid "Groups"
 msgstr "Groep %i"
@@ -1239,57 +1239,62 @@ msgstr ""
 msgid "Themes"
 msgstr ""
 
-#: src/menus-misc.c:672
+#: src/menus-misc.c:610
+#, fuzzy
+msgid "Border"
+msgstr "Rand stijl"
+
+#: src/menus-misc.c:673
 #, fuzzy
 msgid "Window List"
 msgstr "Venster Opties"
 
-#: src/menus-misc.c:694
+#: src/menus-misc.c:695
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Ga naar deze desktop"
 
-#: src/menus-misc.c:698 src/menus-misc.c:794
+#: src/menus-misc.c:699 src/menus-misc.c:795
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
-#: src/menus-misc.c:741
+#: src/menus-misc.c:742
 msgid "Show/Hide this group"
 msgstr "Toon/Verberg deze groep"
 
-#: src/menus-misc.c:746
+#: src/menus-misc.c:747
 msgid "Iconify this group"
 msgstr "Minimaliseer deze groep"
 
-#: src/menus-misc.c:757
+#: src/menus-misc.c:758
 #, c-format
 msgid "Group %i"
 msgstr "Groep %i"
 
-#: src/menus.c:2067
+#: src/menus.c:2099
 msgid "Animated display of menus"
 msgstr "Geanimeerd tonen van menus"
 
-#: src/menus.c:2072
+#: src/menus.c:2104
 msgid "Always pop up menus on screen"
 msgstr "Toon menus altijd op het scherm"
 
-#: src/menus.c:2077
+#: src/menus.c:2109
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2083
+#: src/menus.c:2115
 #, fuzzy
 msgid "Menus"
 msgstr "Rand stijl"
 
-#: src/menus.c:2084
+#: src/menus.c:2116
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Audio Instellingen"
 
-#: src/menus.c:2087
+#: src/menus.c:2119
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -2843,10 +2848,6 @@ msgstr "Stop Enlightenment"
 
 #, fuzzy
 #~ msgid "Menu style"
-#~ msgstr "Rand stijl"
-
-#, fuzzy
-#~ msgid "Border"
 #~ msgstr "Rand stijl"
 
 #, fuzzy

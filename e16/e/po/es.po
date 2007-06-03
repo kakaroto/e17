@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-05-26 01:03+0200\n"
+"POT-Creation-Date: 2007-06-03 14:09+0200\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -64,8 +64,8 @@ msgstr "%u referencias restantes\n"
 
 #: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
 #: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1775 src/cursors.c:177 src/iclass.c:548 src/menus.c:1756
-#: src/menus.c:1867 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
+#: src/container.c:1775 src/cursors.c:177 src/iclass.c:548 src/menus.c:1764
+#: src/menus.c:1901 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -73,7 +73,7 @@ msgstr "CONFIG: ignorando datos extras en \"%s\"\n"
 
 #: src/aclass.c:302 src/backgrounds.c:1158 src/borders.c:1116
 #: src/borders.c:1239 src/buttons.c:740 src/cmclass.c:210 src/config.c:257
-#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1761 src/menus.c:1873
+#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1769 src/menus.c:1907
 #: src/slideout.c:433 src/tclass.c:264 src/tooltips.c:182
 #: src/windowmatch.c:165
 #, c-format
@@ -700,7 +700,7 @@ msgstr "Izquierdo"
 msgid "Right"
 msgstr "Derecho"
 
-#: src/desktops.c:2479 src/menus-misc.c:712
+#: src/desktops.c:2479 src/menus-misc.c:713
 #, fuzzy
 msgid "Desks"
 msgstr "Escritorio"
@@ -791,7 +791,7 @@ msgstr "Aplicar"
 msgid "Attention !!!"
 msgstr "Atención !!! "
 
-#: src/ecompmgr.c:2537
+#: src/ecompmgr.c:2544
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1095,7 +1095,7 @@ msgstr "Configuraciones Globales: "
 msgid "Swap Window Locations"
 msgstr "Solapar posiciones de Ventanas"
 
-#: src/groups.c:1018 src/menus-misc.c:772
+#: src/groups.c:1018 src/menus-misc.c:773
 #, fuzzy
 msgid "Groups"
 msgstr "Grupo %i"
@@ -1374,56 +1374,60 @@ msgstr ""
 msgid "Themes"
 msgstr "Tema defectuoso"
 
-#: src/menus-misc.c:672
+#: src/menus-misc.c:610
+msgid "Border"
+msgstr "Borde"
+
+#: src/menus-misc.c:673
 #, fuzzy
 msgid "Window List"
 msgstr "Saltar Lista de Ventanas"
 
-#: src/menus-misc.c:694
+#: src/menus-misc.c:695
 msgid "Go to this Desktop"
 msgstr "Ir a este Escritorio"
 
-#: src/menus-misc.c:698 src/menus-misc.c:794
+#: src/menus-misc.c:699 src/menus-misc.c:795
 #, c-format
 msgid "Desktop %i"
 msgstr "Escritorio %i"
 
-#: src/menus-misc.c:741
+#: src/menus-misc.c:742
 msgid "Show/Hide this group"
 msgstr "Mostrar/Ocultar este grupo"
 
-#: src/menus-misc.c:746
+#: src/menus-misc.c:747
 msgid "Iconify this group"
 msgstr "Iconizar este grupo"
 
-#: src/menus-misc.c:757
+#: src/menus-misc.c:758
 #, c-format
 msgid "Group %i"
 msgstr "Grupo %i"
 
-#: src/menus.c:2067
+#: src/menus.c:2099
 msgid "Animated display of menus"
 msgstr "Mostrar animación de menús"
 
-#: src/menus.c:2072
+#: src/menus.c:2104
 msgid "Always pop up menus on screen"
 msgstr "Siempre hacer aparecer menús en la pantalla"
 
-#: src/menus.c:2077
+#: src/menus.c:2109
 msgid "Warp pointer after moving menus"
 msgstr "Torcer el puntero tras mover los Menus"
 
-#: src/menus.c:2083
+#: src/menus.c:2115
 #, fuzzy
 msgid "Menus"
 msgstr "Menus:"
 
-#: src/menus.c:2084
+#: src/menus.c:2116
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Miscelanea Configuraciones"
 
-#: src/menus.c:2087
+#: src/menus.c:2119
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -3083,9 +3087,6 @@ msgstr "Salir de Enlightenment "
 
 #~ msgid "Menu"
 #~ msgstr "Menu"
-
-#~ msgid "Border"
-#~ msgstr "Borde"
 
 #~ msgid "Button"
 #~ msgstr "Botón"
