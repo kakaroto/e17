@@ -49,7 +49,8 @@ struct Ewl_Popup
 		int x;			/**< The x position */
 		int y;			/**< The y position */
 	} mouse, offset;
-	int fit_to_follow;	/**< if the popup fits the size to its follow*/
+	int fit_to_follow:1;	/**< if the popup fits the size to its follow*/
+	int moving:1;		/**< if the popup is currently moving */
 };
 
 Ewl_Widget  	*ewl_popup_new(void);
@@ -68,6 +69,7 @@ void		 ewl_popup_offset_set(Ewl_Popup *p, int x, int y);
  * Internal, override at your own risk
  */
 void ewl_popup_cb_show(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_popup_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_popup_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size, 
 					Ewl_Orientation o);

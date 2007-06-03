@@ -7,6 +7,10 @@
 
 static void ewl_popup_position_check(Ewl_Popup *p);
 static void ewl_popup_size_check(Ewl_Popup *p);
+static int ewl_popup_move_timer(void *data);
+static unsigned int ewl_popup_move_direction_get(Ewl_Popup *p, int *dx, int *dy);
+static void ewl_popup_move(Ewl_Popup *p, int dx, int dy);
+static void ewl_popup_move_stop(Ewl_Popup *p);
 
 /**
  * @return Returns pointer to new popup widget on success, NULL on failure.
@@ -67,6 +71,8 @@ ewl_popup_init(Ewl_Popup *p)
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, ewl_popup_cb_show, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_popup_cb_show, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, ewl_popup_cb_mouse_move,
+									NULL);
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_popup_cb_destroy, 
 									NULL);
 
@@ -294,6 +300,185 @@ ewl_popup_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @param ev_data: UNUSED
  * @param user_data: UNUSED
  * @return Returns no value
+ * @brief The mouse move callback
+ */
+void
+ewl_popup_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
+				void *user_data __UNUSED__)
+{
+	Ewl_Popup *p;
+	int dx, dy;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_POPUP_TYPE);
+
+	p = EWL_POPUP(w);
+
+	/* do we need to move the window? */
+	if (p->moving || !ewl_popup_move_direction_get(p, &dx, &dy))
+		DRETURN(DLEVEL_STABLE);
+
+	/* FIXME the time  schouldn't be a hardcoded value */
+	ecore_timer_add(0.02, ewl_popup_move_timer, p);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param data: The popup widget
+ * @return Returns true to keep the callback, else false
+ * @brief The timer to slide the popup
+ */
+static int
+ewl_popup_move_timer(void *data)
+{
+	Ewl_Popup *p;
+	int dx, dy;
+	int ex, ey, mx, my;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("data", data, FALSE);
+	DCHECK_TYPE_RET("data", data, EWL_POPUP_TYPE, FALSE);
+
+	p = EWL_POPUP(data);
+
+	if (!ewl_popup_move_direction_get(p, &dx, &dy)) {
+		ewl_popup_move_stop(p);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+
+	/* FIXME the velocity should be configurable and not hardcoded */
+	ewl_popup_move(p, dx * 10, dy * 10);
+	/* since the window now gets moved we have to feed the mouse position
+	 * again, because the widgets under the mouse could now be
+	 * different */
+	ewl_embed_last_mouse_position_get(&mx, &my);
+	ewl_embed_window_position_get(EWL_EMBED(p), &ex, &ey);
+	ewl_embed_mouse_move_feed(EWL_EMBED(p), mx - ex, my - ey, 0);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);	
+}
+
+/**
+ * @internal
+ * @param p: The popup widget
+ * @param dx: The x direction (1, -1 or 0)
+ * @param dy: The y direction (1, -1 or 0)
+ * @return Returns true if the window needs to be moved
+ * @brief determine the move direction
+ */
+static unsigned int
+ewl_popup_move_direction_get(Ewl_Popup *p, int *dx, int *dy)
+{
+	int dw = 0, dh = 0;
+	int x, y, mx, my;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("p", p, FALSE);
+	DCHECK_TYPE_RET("p", p, EWL_POPUP_TYPE, FALSE);
+
+	ewl_embed_desktop_size_get(EWL_EMBED(p), &dw, &dh);
+	ewl_embed_window_position_get(EWL_EMBED(p), &x, &y);
+	ewl_embed_last_mouse_position_get(&mx, &my);
+
+	/* this x and y values are the mouse position relative to the embed */
+	x = mx - x;
+	y = my - y;
+
+	/* check if the mouse is inside of the popup */
+	if (x < 0 || y < 0 || x > CURRENT_W(p) || y > CURRENT_H(p))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	/* and now determine the directions of the move */
+	if (mx <= 0)
+		*dx = 1;
+	else if (mx >= dw - 1)
+		*dx = -1;
+	else
+		*dx = 0;
+	
+	if (my <= 0)
+		*dy = 1;
+	else if (my >= dh - 1)
+		*dy = -1;
+	else
+		*dy = 0;
+
+	/* if both are 0 the window doesn't need to be moved */
+	DRETURN_INT((*dx != 0 || *dy != 0), DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param p: The popup widget
+ * @param dx: The x direction 
+ * @param dy: The y direction
+ * @return Returns nothing
+ * @brief move the popup and its follow if this is also a popup
+ */
+static void 
+ewl_popup_move(Ewl_Popup *p, int dx, int dy)
+{
+	int x, y;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, EWL_POPUP_TYPE);
+
+	ewl_embed_window_position_get(EWL_EMBED(p), &x, &y);
+	x += dx;
+	y += dy;
+
+	p->moving = TRUE;
+	/* move the follow, too, if it is a popup child */
+	if (p->follow) {
+		Ewl_Embed *e;
+		
+		e = ewl_embed_widget_find(EWL_WIDGET(p->follow));
+		if (EWL_POPUP_IS(e))
+			ewl_popup_move(EWL_POPUP(e), dx, dy);
+	}
+
+	ewl_window_move(EWL_WINDOW(p), x, y);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param p: The popup widget
+ * @return Returns nothing
+ * @brief set the popup to be not moving and its follow if this is also a popup
+ */
+static void
+ewl_popup_move_stop(Ewl_Popup *p)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, EWL_POPUP_TYPE);
+
+	p->moving = FALSE;
+	
+	/* stop moving the follow, too, if it is a popup child */
+	if (p->follow) {
+		Ewl_Embed *e;
+		
+		e = ewl_embed_widget_find(EWL_WIDGET(p->follow));
+		if (EWL_POPUP_IS(e))
+			ewl_popup_move_stop(EWL_POPUP(e));
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
  * @brief The destroy callback
  */
 void
@@ -419,7 +604,7 @@ ewl_popup_position_check(Ewl_Popup *p)
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_TYPE("p", p, EWL_POPUP_TYPE);
 	
-	if (p->type == EWL_POPUP_TYPE_NONE)
+	if (p->type == EWL_POPUP_TYPE_NONE || p->moving)
 		DRETURN(DLEVEL_STABLE);
 	
 	if (p->follow) {
@@ -451,10 +636,11 @@ ewl_popup_position_check(Ewl_Popup *p)
 		x = win_x + CURRENT_X(p->follow);
 		y = win_y + CURRENT_Y(p->follow);
 		
-		if (x + CURRENT_W(p) > desk_w)
+		if (x + CURRENT_W(p) > desk_w && x > desk_w / 2)
 			x = desk_w - CURRENT_W(p);
 		
-		if (y + CURRENT_H(p->follow) + CURRENT_H(p) > desk_h)
+		if (y + CURRENT_H(p->follow) + CURRENT_H(p) > desk_h
+				&& y > desk_h / 2)
 			y -= CURRENT_H(p);
 		else
 			y += CURRENT_H(p->follow);
@@ -464,12 +650,13 @@ ewl_popup_position_check(Ewl_Popup *p)
 		x = win_x + CURRENT_X(p->follow);
 		y = win_y + CURRENT_Y(p->follow);
 
-		if (x + CURRENT_W(p->follow) + CURRENT_W(p) > desk_w)
+		if (x + CURRENT_W(p->follow) + CURRENT_W(p) > desk_w
+				&& x > desk_w / 2)
 			x -= CURRENT_W(p);
 		else
 			x += CURRENT_W(p->follow);
 
-		if (y + CURRENT_H(p) > desk_h)
+		if (y + CURRENT_H(p) > desk_h && y > desk_h / 2)
 			y = desk_h - CURRENT_H(p);
 	}
 
