@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: uptime\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-06-04 17:48+0100\n"
+"Last-Translator: Antoine Giniès <aginies.cooker@gmail.com>\n"
+"Language-Team: none <aginies.cooker@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: e_mod_config.c:52
+msgid "Uptime Configuration"
+msgstr "Configuration de l'uptime"
+
+#: e_mod_config.c:105
+msgid "Uptime Settings"
+msgstr "Paramètres de l'uptime"
+
+#: e_mod_config.c:107
+msgid "Update Interval:"
+msgstr "Intervalle de mise à jour:"
+
+#: e_mod_config.c:114
+msgid "Check Interval:"
+msgstr "Intervalle pour vérifier:"
+
+#: e_mod_main.c:161
+msgid "Uptime"
+msgstr "Uptime"
+
+#: e_mod_main.c:201
+msgid "Configuration"
+msgstr "Configuration"
+
+#: e_mod_main.c:402
+msgid "Enlightenment Uptime Monitor Module"
+msgstr "Module d'affichage d'uptime"
+
+#: e_mod_main.c:403
+msgid "This module is used to monitor uptime."
+msgstr "Ce module sert à afficher l'uptime."
+
+#: e_mod_main.c:574
+#, c-format
+msgid "up: %d days, %d:%02d:%02ld"
+msgstr "%d jours, %d:%02d:%02ld"
+
+#: e_mod_main.c:581
+#, c-format
+msgid "la: %.2f %.2f %.2f"
+msgstr "%.2f %.2f %.2f"
+
+#: e_mod_main.c:586
+#, c-format
+msgid "users: %d"
+msgstr "utilisateurs: %d"
+

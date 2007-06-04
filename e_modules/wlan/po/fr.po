@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: wlan\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-06-04 17:10+0100\n"
+"Last-Translator: Antoine Giniès <aginies.cooker@gmail.com>\n"
+"Language-Team: none <aginies.cooker@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: e_mod_config.c:44
+msgid "Wlan Configuration"
+msgstr "Configuration réseau sans fil"
+
+#: e_mod_config.c:117
+msgid "General Settings"
+msgstr "Configuration générale"
+
+#: e_mod_config.c:119
+msgid "Always Show Text"
+msgstr "Toujours afficher le texte"
+
+#: e_mod_config.c:121
+msgid "Show Text On Mouse Over"
+msgstr "Afficher le texte (souris au dessus)"
+
+#: e_mod_config.c:124
+msgid "Show Text As Percent"
+msgstr "Afficher le texte en pourcentage"
+
+#: e_mod_config.c:128
+msgid "Check Interval:"
+msgstr "Délai d'actualisation:"
+
+#: e_mod_config.c:138
+msgid "Device Settings"
+msgstr "Interface"
+
+#: e_mod_main.c:108
+msgid "Wlan"
+msgstr "Réseau sans fil"
+
+#: e_mod_main.c:157
+msgid "Configuration"
+msgstr "Configuration"
+
+#: e_mod_main.c:366
+msgid "Enlightenment Wlan Monitor Module"
+msgstr "Module de surveillance Réseau Sans fil"
+
+#: e_mod_main.c:367
+msgid "This module is used to monitor wireless devices."
+msgstr "Ce module sert a surveiller le réseau sans fil."
+

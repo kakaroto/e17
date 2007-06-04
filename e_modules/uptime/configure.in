@@ -20,7 +20,7 @@ AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
 AC_CHECK_FUNCS(getloadavg, [], [])
-ALL_LINGUAS="bg eo fi it ja sv"
+ALL_LINGUAS="bg eo fi it ja sv fr"
 AC_SUBST(ALL_LINGUAS)
 
 AM_GNU_GETTEXT([external])

@@ -1,0 +1,90 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Language\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-06-04 17:05+0100\n"
+"Last-Translator: Antoine Giniès <aginies.cooker@gmail.com>\n"
+"Language-Team: none <aginies.cooker@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: src/module/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Paramètres du module des Langes"
+
+#: src/module/e_mod_config.c:174
+#: src/module/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Langes disponibles"
+
+#: src/module/e_mod_config.c:182
+#: src/module/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Sélection de la lange"
+
+#: src/module/e_mod_config.c:198
+#: src/module/e_mod_config.c:273
+msgid "Up"
+msgstr "Haut"
+
+#: src/module/e_mod_config.c:203
+#: src/module/e_mod_config.c:278
+msgid "Down"
+msgstr "Bas"
+
+#: src/module/e_mod_config.c:211
+#: src/module/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr "Politique de changement de Lange"
+
+#: src/module/e_mod_config.c:214
+#: src/module/e_mod_config.c:307
+msgid "Global"
+msgstr "Globale"
+
+#: src/module/e_mod_config.c:217
+#: src/module/e_mod_config.c:310
+msgid "Window"
+msgstr "Fenêtre"
+
+#: src/module/e_mod_config.c:220
+#: src/module/e_mod_config.c:313
+msgid "Application"
+msgstr "Application"
+
+#: src/module/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Modèle du clavier"
+
+#: src/module/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr "Disposition alternative"
+
+#: src/module/e_mod_main.c:112
+msgid "Language"
+msgstr "Langage"
+
+#: src/module/e_mod_main.c:290
+msgid "Enlightenment Language Enhancment Module"
+msgstr "Module amélioré de gestion des langes d'Enlightenment"
+
+#: src/module/e_mod_main.c:291
+msgid "This module is used to switch between input languages."
+msgstr "Ce module sert à changé la lange saisie du clavier"
+
+#: src/module/e_mod_main.c:408
+msgid "Configuration"
+msgstr "Configuration"
+
+#: src/module/e_mod_main.c:413
+msgid "Configure Key Bindings"
+msgstr "Configuration des raccourcis clavier"
+
+#: src/module/e_mod_main.c:430
+msgid "Module Configuration"
+msgstr "Configuration du module"
+
