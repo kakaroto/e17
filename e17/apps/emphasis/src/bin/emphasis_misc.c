@@ -249,29 +249,6 @@ pack_in_vbox(Etk_Widget *child, void *data)
   etk_box_append(ETK_BOX(vbox), child, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 }
 
-void
-etk_button_make_vertical(Etk_Widget *button)
-{
-  Etk_Widget *align;
-  Etk_Widget *hbox;
-  Etk_Widget *vbox;
-
-  align = evas_list_data(etk_container_children_get(ETK_CONTAINER(button)));
-  hbox  = evas_list_data(etk_container_children_get(ETK_CONTAINER(align)));
-
-  etk_container_remove(align);
-  etk_container_remove(hbox);
-
-  vbox = etk_vbox_new(ETK_FALSE, 0);
-  etk_widget_show(vbox);
-  etk_container_for_each_data(ETK_CONTAINER(hbox), pack_in_vbox, (void *)vbox);
-  etk_container_add(ETK_CONTAINER(align),  vbox);
-  etk_container_add(ETK_CONTAINER(button), align);
-
-  etk_widget_pass_mouse_events_set(align, ETK_TRUE);
-  etk_object_destroy(ETK_OBJECT(hbox));
-}
-
 /* Used for debug tiem to time */
 void etk_container_inspect(Etk_Container *container, int lvl, int *to_trace)
 { 

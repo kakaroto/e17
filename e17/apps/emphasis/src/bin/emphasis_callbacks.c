@@ -617,7 +617,7 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
      evaslist = etk_container_children_get(ETK_CONTAINER(drag));
      while (evaslist)
      {
-     etk_container_remove(evas_list_data(evaslist));
+     etk_container_remove(ETK_CONTAINER(drag), evas_list_data(evaslist));
      etk_object_destroy(ETK_OBJECT(evas_list_data(evaslist)));
      evaslist = evas_list_next(evaslist);
      }

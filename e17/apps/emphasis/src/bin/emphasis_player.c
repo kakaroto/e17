@@ -193,11 +193,11 @@ emphasis_init_player(Emphasis_Player_Gui *player)
 
   /* TEMP configuration, need to add this to enhance */
   etk_window_wmclass_set(ETK_WINDOW(player->full.window),
-                         "emphasis", "Emphasis");
+                         "emphasis full", "Emphasis");
   etk_window_wmclass_set(ETK_WINDOW(player->small.window),
-                         "emphasis", "Emphasis");
+                         "emphasis small", "Emphasis");
   etk_window_wmclass_set(ETK_WINDOW(player->media.window),
-                         "emphasis", "Emphasis");
+                         "emphasis mlib", "Emphasis");
   etk_container_border_width_set(ETK_CONTAINER(player->full.window), 5);
 }
 
@@ -209,7 +209,7 @@ _emphasis_init_player_small(Emphasis_Player_Gui *player)
   /* controls */
   wid = etk_window_new();
   etk_window_wmclass_set(ETK_WINDOW(wid),
-                         "emphasis", "Emphasis");
+                         "emphasis controls", "Emphasis");
   etk_window_title_set(ETK_WINDOW(wid), "Controls");
   etk_window_resize(ETK_WINDOW(wid), 10, 180);
   etk_widget_hide(wid);
@@ -220,9 +220,9 @@ _emphasis_init_player_small(Emphasis_Player_Gui *player)
   /* controls */
   wid = etk_window_new();
   etk_window_wmclass_set(ETK_WINDOW(wid),
-                         "emphasis", "Emphasis");
+                         "emphasis cover", "Emphasis");
   etk_window_title_set(ETK_WINDOW(wid), "Cover");
-  etk_window_resize(ETK_WINDOW(wid), 10, 10);
+  etk_window_resize(ETK_WINDOW(wid), 180, 180);
   etk_widget_hide(wid);
   etk_signal_connect("delete-event", ETK_OBJECT(wid),
                      ETK_CALLBACK(cb_pack_quit), player);
