@@ -31,41 +31,46 @@ in exploring keybinds using EVAS event callbacks.  It creates a black
 <programlisting>
 #include &lt;Ecore_Evas.h&gt;
 #include &lt;Ecore.h&gt;
+#include &lt;stdio.h&gt;
 
 #define WIDTH 100
 #define HEIGHT 100
 
-        Ecore_Evas  *   ee;
-        Evas        *   evas;
-        Evas_Object *   base_rect;
+Ecore_Evas  *   ee;
+Evas        *   evas;
+Evas_Object *   base_rect;
 
 static int main_signal_exit(void *data, int ev_type, void *ev)
 {
-   ecore_main_loop_quit();
-   return 1;
+        ecore_main_loop_quit();
+        return 1;
 }
 
-void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) 
+{
         Evas_Event_Key_Down *ev;
 
         ev = (Evas_Event_Key_Down *)event_info;
         printf("You hit key: %s\n", ev->keyname);
 }
 
-int main(){
+int main()
+{
         ecore_init();
+	ecore_evas_init();
+
         ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, 
 			main_signal_exit, NULL);
 
-   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+        ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
         ecore_evas_title_set(ee, "EVAS KeyBind Example");
         ecore_evas_borderless_set(ee, 0);
         ecore_evas_show(ee);
 
-   evas = ecore_evas_get(ee);
+        evas = ecore_evas_get(ee);
 
-   base_rect = evas_object_rectangle_add(evas);
-        evas_object_resize(base_rect, (double)WIDTH, (double)HEIGHT);
+        base_rect = evas_object_rectangle_add(evas);
+        evas_object_resize(base_rect, WIDTH, HEIGHT);
         evas_object_color_set(base_rect, 0, 0, 0, 255);
         evas_object_focus_set(base_rect, 1);
         evas_object_show(base_rect);
@@ -90,7 +95,7 @@ You can compile this example in the following manner:
 <example>
 <title>EVAS Keybind Compile</title>
 <programlisting>
-gcc `evas-config --libs --cflags` `ecore-config --libs --cflags` \
+gcc `pkg-config --libs --cflags evas ecore ecore-evas` \
 > key_test.c -o key_test
 </programlisting>
 </example>
@@ -120,7 +125,8 @@ The most common problem encountered with Evas callbacks is forgetting to set foc
 </para>
 
 <programlisting>
-void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) 
+{
         Evas_Event_Key_Down *ev;
 
         ev = (Evas_Event_Key_Down *)event_info;

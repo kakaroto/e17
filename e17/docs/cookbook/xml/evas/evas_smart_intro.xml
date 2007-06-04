@@ -100,11 +100,6 @@ static Evas_Smart *_foo_object_smart_get();
 static Evas_Object *foo_object_new(Evas *evas);
 static void _foo_object_add(Evas_Object *o);
 static void _foo_object_del(Evas_Object *o);
-static void _foo_object_layer_set(Evas_Object *o, int l);
-static void _foo_object_raise(Evas_Object *o);
-static void _foo_object_lower(Evas_Object *o);
-static void _foo_object_stack_above(Evas_Object *o, Evas_Object *above);
-static void _foo_object_stack_below(Evas_Object *o, Evas_Object *below);
 static void _foo_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
 static void _foo_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
 static void _foo_object_show(Evas_Object *o);
@@ -171,11 +166,11 @@ static Evas_Smart *_foo_object_smart_get() {
     smart = evas_smart_new("foo_object",
                             _foo_object_add,
                             _foo_object_del,
-                            _foo_object_layer_set,
-                            _foo_object_raise,
-                            _foo_object_lower,
-                            _foo_object_stack_above,
-                            _foo_object_stack_below,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
+                            NULL,
                             _foo_object_move,
                             _foo_object_resize,
                             _foo_object_show,
@@ -202,6 +197,8 @@ The smart object itself is created through the call to
 <function>evas_smart_new()</function>. To this function we pass in the name
 of the smart object, all of the callback routines for the smart object, 
 and any user data. In this case we don't have user data so we set it to NULL.
+Futher you see some NULLs between the callbacks. There used to more callbacks
+to define, but they are historical and no longer used by evas.
 </para>
 
 <para>
@@ -273,68 +270,8 @@ static void _foo_object_del(Evas_Object *o) {
 </programlisting>
 The <function>_foo_object_del()</function> callback will be executed if the
 user calls <function>evas_object_del()</function> on our object. For this
-object its as simple as <function>evas_object_del</function>ing our three
+object it's as simple as <function>evas_object_del</function>ing our three
 rectangles and freeing our <literal>Foo_Object</literal> data structure.
-</para>
-
-<para>
-<programlisting>
-static void _foo_object_layer_set(Evas_Object *o, int l) {
-    Foo_Object *data;
-
-    if ((data = evas_object_smart_data_get(o))) {
-        evas_object_layer_set(data-&gt;clip, l);
-    }
-}
-
-static void _foo_object_raise(Evas_Object *o) {
-    Foo_Object *data;
-
-    if ((data = evas_object_smart_data_get(o))) {
-        evas_object_raise(data-&gt;clip);
-    }
-}
-
-static void _foo_object_lower(Evas_Object *o) {
-    Foo_Object *data;
-
-    if ((data = evas_object_smart_data_get(o))) {
-        evas_object_lower(data-&gt;clip);
-    }
-}
-
-static void _foo_object_stack_above(Evas_Object *o, Evas_Object *above) {
-    Foo_Object *data;
-
-    if ((data = evas_object_smart_data_get(o))) {
-        evas_object_stack_above(data-&gt;clip, above);
-    }
-}
-
-static void _foo_object_stack_below(Evas_Object *o, Evas_Object *below) {
-    Foo_Object *data;
-
-    if ((data = evas_object_smart_data_get(o))) {
-        evas_object_stack_below(data-&gt;clip, below);
-    }
-}
-</programlisting>
-This group of functions: <function>_foo_object_layer_set()</function>,
-<function>_foo_object_raise()</function>,
-<function>_foo_object_lower()</function>,
-<function>_foo_object_stack_above()</function>, and
-<function>_foo_object_stack_below()</function> all work in the same fashion,
-applying the required <function>evas_object_*</function> function on the
-<literal>data-&gt;clip</literal> object.
-</para>
-
-<para>
-These functions are triggered through the use of:
-<function>evas_object_layer_set()</function>,
-<function>evas_object_raise()</function>,
-<function>evas_object_lower()</function>,
-<function>evas_object_stack_above()</function>, and
-<function>evas_object_stack_below()</function> respectively.
 </para>
 
 <para>
@@ -386,7 +323,7 @@ static void _foo_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) {
     }
 }
 </programlisting>
-The <function>_foo_object_resize()</function> calback will be triggered when
+The <function>_foo_object_resize()</function> callback will be triggered when
 the user calls <function>evas_object_resize()</function> on our object. So,
 for our object, we need to resize <literal>data-&gt;clip</literal> and
 <literal>data-&gt;outer</literal> to the full size available for our object.
@@ -499,6 +436,7 @@ int main() {
     Evas_Object *o;
 
     ecore_init();
+    ecore_evas_init();
 
     ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, WIDTH, HEIGHT);
     ecore_evas_title_set(ee, "Smart Object Example");
@@ -515,7 +453,7 @@ int main() {
 
     o = foo_new(evas);
     evas_object_move(o, 0, 0);
-    evas_object_resize(o, (double)WIDTH, (double)HEIGHT);
+    evas_object_resize(o, WIDTH, HEIGHT);
     evas_object_layer_set(o, 0);
     evas_object_show(o);
 
@@ -550,7 +488,7 @@ code snippet:
 <programlisting>
     o = foo_new(evas);
     evas_object_move(o, 0, 0);
-    evas_object_resize(o, (double)WIDTH, (double)HEIGHT);
+    evas_object_resize(o, WIDTH, HEIGHT);
     evas_object_layer_set(o, 0);
     evas_object_show(o);
 </programlisting>
@@ -573,7 +511,7 @@ Compiling this example is as simple as:
 <title>Compilation</title>
 <screen>
 zero@oberon [evas_smart] -&gt; gcc -o foo foo.c main.c \
-    `ecore-config --cflags --libs` `evas-config --cflags --libs`
+    `pkg-config --cflags --libs evas ecore ecore-evas`
 </screen>
 </example>
 </para>
