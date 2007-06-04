@@ -1,5 +1,7 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
+#include "ewl_text_fmt.h"
+#include "ewl_text_trigger.h"
 #include "ewl_test_private.h"
 #include <stdio.h>
 #include <string.h>
@@ -153,8 +155,9 @@ create_test(Ewl_Container *box)
 	printf("Inserting 'The fourth bunch of text\\n' [98]\n");
 	ewl_text_text_insert(EWL_TEXT(o), "The fourth bunch of text\n", 31); /* 25 */
 
+
 	printf("Creating trigger [115]\n");
-	trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
+	trigger = EWL_TEXT_TRIGGER(ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER));
 	ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
 	ewl_text_cursor_position_set(EWL_TEXT(o), ewl_text_length_get(EWL_TEXT(o)));
 	ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_NONE);
@@ -206,11 +209,11 @@ create_test(Ewl_Container *box)
 	ewl_text_text_append(EWL_TEXT(o), "Once more with feeling. "); /* 24 */
 
 	printf("Trigger\n");
-	trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
+	trigger = EWL_TEXT_TRIGGER(ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER));
 	ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
 
 	printf("Appending 'This is the multi\\n\\nline link.' [226]\n");
-	ewl_text_text_append(EWL_TEXT(o), "This is the multi\n\nline link."); /* 28 */
+	ewl_text_text_append(EWL_TEXT(o), "This is the multi\n\nline link."); /* 29 */
 	len = ewl_text_cursor_position_get(EWL_TEXT(o)) -
 			ewl_text_trigger_start_pos_get(trigger);
 	ewl_text_trigger_length_set(trigger, len);

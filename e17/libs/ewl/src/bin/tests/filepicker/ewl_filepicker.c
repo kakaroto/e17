@@ -1,6 +1,8 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
+#include "ewl_filepicker.h"
+
 #include <stdio.h>
 #include <string.h>
 

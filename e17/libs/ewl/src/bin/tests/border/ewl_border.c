@@ -1,6 +1,10 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
+#include "ewl_border.h"
+#include "ewl_label.h"
+#include "ewl_radiobutton.h"
+#include "ewl_separator.h"
 
 static Ewl_Widget *button_aleft, *button_acenter;
 static Ewl_Widget *button_aright, *button_atop, *button_abottom;

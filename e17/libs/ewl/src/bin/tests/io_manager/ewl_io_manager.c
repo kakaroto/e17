@@ -1,8 +1,13 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
+#include "ewl_test_private.h"
+#include "ewl_button.h"
+#include "ewl_filedialog.h"
+#include "ewl_io_manager.h"
+#include "ewl_scrollpane.h"
+
 #include <stdio.h>
 #include <stdlib.h>
-#include "ewl_test_private.h"
 
 static int create_test(Ewl_Container *box);
 

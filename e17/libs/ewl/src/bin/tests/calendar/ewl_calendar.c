@@ -1,6 +1,7 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
+#include "ewl_calendar.h"
 #include <stdio.h>
 #include <stdlib.h>
 

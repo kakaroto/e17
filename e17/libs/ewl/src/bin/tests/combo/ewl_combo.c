@@ -1,6 +1,13 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
+#include "ewl_button.h"
+#include "ewl_combo.h"
+#include "ewl_entry.h"
+#include "ewl_grid.h"
+#include "ewl_image.h"
+#include "ewl_icon_theme.h"
+#include "ewl_label.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

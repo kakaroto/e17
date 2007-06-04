@@ -1,6 +1,17 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
+#include "ewl_io_manager.h"
+#include "ewl_label.h"
+#include "ewl_menu.h"
+#include "ewl_menubar.h"
+#include "ewl_notebook.h"
+#include "ewl_progressbar.h"
+#include "ewl_scrollpane.h"
+#include "ewl_statusbar.h"
+#include "ewl_text.h"
+#include "ewl_tree2.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -22,7 +33,7 @@ static Ewl_Model *expansion_model = NULL;
 static char *ewl_test_about_body = 
 		"The EWL Test application services two purposes\n"
 		"The first is to allow us to test the different\n"
-		"pices of EWL as we develop and work on them.\n\n"
+		"pieces of EWL as we develop and work on them.\n\n"
 		"The second piece is to allow deveopers to see\n"
 		"tutorials and source listings for the different\n"
 		"widgets in the system.\n\n"
@@ -995,9 +1006,11 @@ ewl_test_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_window_name_set(EWL_WINDOW(win), "ewl_test");
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
 					ewl_test_cb_delete_window, NULL);
+	ewl_object_size_request(EWL_OBJECT(win), 400, 400);
+	ewl_object_fill_policy_set(EWL_OBJECT(win), EWL_FLAG_FILL_ALL);
 	ewl_widget_show(win);
 
-	vbox = ewl_vbox_new();
+	vbox = ewl_scrollpane_new();
 	ewl_container_child_append(EWL_CONTAINER(win), vbox);
 	ewl_widget_show(vbox);
 

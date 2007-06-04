@@ -2,7 +2,7 @@
 #ifndef EWL_TEST_H
 #define EWL_TEST_H
 
-#include <Ewl.h>
+#include "ewl_base.h"
 
 /**
  * @enum Ewl_Test_Type

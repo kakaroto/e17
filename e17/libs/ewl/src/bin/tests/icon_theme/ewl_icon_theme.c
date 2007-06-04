@@ -1,6 +1,11 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
+#include "ewl_freebox.h"
+#include "ewl_icon.h"
+#include "ewl_icon_theme.h"
+#include "ewl_scrollpane.h"
+
 #include <stdio.h>
 
 #define EWL_ICON_THEME_PER_LOOP 20

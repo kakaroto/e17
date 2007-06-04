@@ -1,6 +1,17 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
+#include "ewl_combo.h"
+#include "ewl_entry.h"
+#include "ewl_icon.h"
+#include "ewl_icon_theme.h"
+#include "ewl_label.h"
+#include "ewl_scrollpane.h"
+#include "ewl_spacer.h"
+#include "ewl_spinner.h"
+#include "ewl_text_trigger.h"
+#include "ewl_toolbar.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -184,6 +195,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(scroll);
 
 	o = ewl_entry_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
 	ewl_container_child_append(EWL_CONTAINER(scroll), o);
 	ewl_widget_name_set(o, "entry");
 	ewl_entry_multiline_set(EWL_ENTRY(o), TRUE);
@@ -247,7 +259,7 @@ ete_style_apply(Ewl_Text *t, Ewl_Text_Style s)
 	{
 		Ewl_Text_Trigger *selection;
 
-		selection = ewl_text_selection_get(t);
+		selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(t));
 		ewl_text_cursor_position_set(t,
 				ewl_text_trigger_start_pos_get(selection));
 
@@ -329,7 +341,7 @@ ete_align_apply(unsigned int align)
 
 		cursor_pos = ewl_text_cursor_position_get(t);
 
-		selection = ewl_text_selection_get(t);
+		selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(t));
 		ewl_text_cursor_position_set(t,
 				ewl_text_trigger_start_pos_get(selection));
 
@@ -376,7 +388,7 @@ ete_font_apply(char *font)
 	if (ewl_text_has_selection(EWL_TEXT(t)))
 		of = ewl_text_font_get(EWL_TEXT(t),
 				ewl_text_trigger_start_pos_get(
-					ewl_text_selection_get(EWL_TEXT(t))));
+					EWL_TEXT_TRIGGER(ewl_text_selection_get(EWL_TEXT(t)))));
 	else
 		of = ewl_text_font_get(EWL_TEXT(t), 
 				ewl_text_cursor_position_get(EWL_TEXT(t)));
@@ -402,7 +414,7 @@ ete_font_apply(char *font)
 
 		cursor_pos = ewl_text_cursor_position_get(t);
 
-		selection = ewl_text_selection_get(t);
+		selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(t));
 		ewl_text_cursor_position_set(t,
 				ewl_text_trigger_start_pos_get(selection));
 
@@ -442,7 +454,8 @@ ete_cb_font_size(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		Ewl_Text_Trigger *selection;
 
 		cursor_pos = ewl_text_cursor_position_get(EWL_TEXT(entry));
-		selection = ewl_text_selection_get(EWL_TEXT(entry));
+		selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(
+					EWL_TEXT(entry)));
 		ewl_text_cursor_position_set(EWL_TEXT(entry),
 					ewl_text_trigger_start_pos_get(selection));
 		ewl_text_font_size_apply(EWL_TEXT(entry),
