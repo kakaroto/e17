@@ -2,10 +2,22 @@
 <tr>
 <td class='main'><div class="main">
 <p>
-You can get access to Enlightenment and software in many ways. See the above
-links
+<h2>Enlightenment 0.17 & EFL</h2>
 </p><p>
-*FIXME* Explain more in detail how CVS, releases, development works
+The main line of development for new releases of Enlightenment is in the "E17"
+work. This code is only partly for the window manager, and mostly contains code
+for libraries and utilities that were written to support Enlightenment, but
+have grown to be much more. Please see <?php a("download/dev", "here");?> for
+more information, as well as <?php a("download/libs", "here");?>
+</p><p>
+<h2>Enlightenment 0.16</h2>
+</p><p>
+Older releases of Enlightenment (Enlightenment 0.16 series), Epplets and
+Imlib2 can be obtained here:
+</p><p>
+<a href='http://sourceforge.net/project/showfiles.php?group_id=2'>Sourceforge</a>
+</p><p>
+Please remember to look <?php a("download/e16", "here");?> for information.
 </p>
 </div></td>
 </tr>

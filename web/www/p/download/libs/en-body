@@ -2,7 +2,16 @@
 <tr>
 <td class='main'><div class="main">
 <p>
-*FIXME* Explain here about EFL
+Enlightenment started life as just a window manager for X11, but has grown
+to be much larger and now is split up into several libraries, other utilities
+and applications as well as Enlightenment itself. The libraries are stand-alone
+and useful for many things other than Enlightenment. They let anyone make use
+of the same code, files and back-end that Enlightenment does for its graphics
+and other functions.
+</p><p>
+Snapshots are available <a href='http://download.enlightenment.org/'>here</a>
+and see the <?php a("download/cvs", "CVS Download page");?> to see how to
+access the "current" code from CVS.
 </p>
 </div></td>
 </tr>
