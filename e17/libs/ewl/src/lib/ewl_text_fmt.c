@@ -6,6 +6,12 @@
 
 static void ewl_text_fmt_node_free(void *node);
 
+/**
+ * @param t: The parent Ewl_Text widget
+ * @return Returns a new Ewl_Text_Fmt structure on success or NULL on
+ * failure
+ * @brief Creates and initializes a new Ewl_Text_Fmt structure
+ */
 Ewl_Text_Fmt *
 ewl_text_fmt_new(Ewl_Text *t)
 {
@@ -30,6 +36,11 @@ ewl_text_fmt_new(Ewl_Text *t)
 	DRETURN_PTR(fmt, DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to destroy
+ * @return Returns no value
+ * @brief Cleans up the memory used by the Ewl_Text_Fmt structure
+ */
 void
 ewl_text_fmt_destroy(Ewl_Text_Fmt *fmt)
 {
@@ -42,6 +53,11 @@ ewl_text_fmt_destroy(Ewl_Text_Fmt *fmt)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @return Returns no value
+ * @brief Clears the formatting information
+ */
 void
 ewl_text_fmt_clear(Ewl_Text_Fmt *fmt)
 {
@@ -65,6 +81,14 @@ ewl_text_fmt_clear(Ewl_Text_Fmt *fmt)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @param tx: The context to prepend
+ * @param char_len: The character length being prepended
+ * @param byte_len: The byte length being prepended
+ * @return Returns no value
+ * @brief Prepends the @a tx for @a char_len bytes to @a fmt
+ */
 void
 ewl_text_fmt_node_prepend(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
 			unsigned int char_len, unsigned int byte_len)
@@ -97,6 +121,14 @@ ewl_text_fmt_node_prepend(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @param tx: The context to append
+ * @param char_len: The character length to append
+ * @param byte_len: The byte length to append
+ * @return Returns no value
+ * @brief Appends @a tx for @a char_len bytes to @a fmt.
+ */
 void
 ewl_text_fmt_node_append(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
 			unsigned int char_len, unsigned int byte_len)
@@ -134,6 +166,15 @@ ewl_text_fmt_node_append(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @param idx: The index to insert into
+ * @param tx: The context to append
+ * @param char_len: The character length to append
+ * @param byte_len: The byte length to append
+ * @return Returns no value
+ * @brief Inserts @a tx at @a idx for @a char_len bytes to @a fmt.
+ */
 void
 ewl_text_fmt_node_insert(Ewl_Text_Fmt *fmt, unsigned int idx,
 			Ewl_Text_Context *tx, unsigned int char_len,
@@ -222,6 +263,13 @@ ewl_text_fmt_node_insert(Ewl_Text_Fmt *fmt, unsigned int idx,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @param idx: The index to delete from
+ * @param char_len: The character length to delete 
+ * @return Returns no value
+ * @brief Removes any formatting for @a char_len bytes starting at @a idx
+ */
 void
 ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx, 
 					unsigned int char_len)
@@ -275,6 +323,11 @@ ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @return Returns the number of formatting nodes
+ * @brief Retrives the number of nodes in the formatting information
+ */
 unsigned int
 ewl_text_fmt_node_count_get(Ewl_Text_Fmt *fmt)
 {
@@ -284,6 +337,11 @@ ewl_text_fmt_node_count_get(Ewl_Text_Fmt *fmt)
 	DRETURN_INT(ecore_dlist_nodes(fmt->nodes), DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @return Returns the last node in the formatting information
+ * @brief Retrives the last formatting node 
+ */
 Ewl_Text_Fmt_Node *
 ewl_text_fmt_get_last(Ewl_Text_Fmt *fmt)
 {
@@ -293,6 +351,11 @@ ewl_text_fmt_get_last(Ewl_Text_Fmt *fmt)
 	DRETURN_PTR(ecore_dlist_goto_last(fmt->nodes),DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @return Returns the first node in the formatting information
+ * @brief Retrives the first formatting node 
+ */
 Ewl_Text_Fmt_Node *
 ewl_text_fmt_get_first(Ewl_Text_Fmt *fmt)
 {
@@ -302,6 +365,11 @@ ewl_text_fmt_get_first(Ewl_Text_Fmt *fmt)
 	DRETURN_PTR(ecore_dlist_goto_first(fmt->nodes),DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @return Returns the current node in the formatting information
+ * @brief Retrives the current formatting node 
+ */
 Ewl_Text_Fmt_Node *
 ewl_text_fmt_get_current(Ewl_Text_Fmt *fmt)
 {
@@ -311,6 +379,12 @@ ewl_text_fmt_get_current(Ewl_Text_Fmt *fmt)
 	DRETURN_PTR(ecore_dlist_current(fmt->nodes),DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @param idx: The index to get the node for
+ * @return Returns the node containing the character index @a idx
+ * @brief Returns the character index @a idx node from @a fmt
+ */
 Ewl_Text_Fmt_Node *
 ewl_text_fmt_get(Ewl_Text_Fmt *fmt, unsigned int idx)
 {
@@ -334,6 +408,12 @@ ewl_text_fmt_get(Ewl_Text_Fmt *fmt, unsigned int idx)
 	DRETURN_PTR(node, DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_fmt to work with
+ * @param idx: The index to go to
+ * @return Returns no value
+ * @brief Positions the last at character index @a idx
+ */
 void
 ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 {
@@ -447,9 +527,9 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 }
 
 /**
- * @param t: The text to dump the formatting from
+ * @param fmt: The Ewl_Text_Fmt to dump the formatting from
  * @return Returns no value
- * @brief Prints out the formatting information for the given text object
+ * @brief Prints out the formatting information
  */
 void
 ewl_text_fmt_dump(Ewl_Text_Fmt *fmt)
@@ -474,12 +554,17 @@ ewl_text_fmt_dump(Ewl_Text_Fmt *fmt)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-
-/* This will determine the number of bytes to get to char_pos in the text
- * and, if needed will get the number of bytes between char_pos and 
- * char_pos + char_len 
- *
- * This _HAS_ to leave the list with the same current pointer is when it
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @param char_idx: The character index to convert
+ * @param char_len: The cahracter length to convert 
+ * @param byte_idx: Where to store the byte index
+ * @param byte_len: Where to store the byte length
+ * @return Returns no value
+ * @brief Calculates the byte index for the given @a char_idx and stores
+ * into @a byte_idx. Also calculates the @a byte_len for @a char_len
+ */
+/* This _HAS_ to leave the list with the same current pointer is when it
  * started */
 void
 ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt, 
@@ -586,9 +671,16 @@ ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/* This will determine the number of chars to get to byte_idx in the text
- * and, if needed will get the number of chars between byte_idx and 
- * byte_idx + byte_len */
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @param byte_idx: Where to store the byte index
+ * @param byte_len: Where to store the byte length
+ * @param char_idx: The character index to convert
+ * @param char_len: The cahracter length to convert 
+ * @return Returns no value
+ * @brief Calculates the char index for the given @a byte_idx and stores
+ * into @a char_idx. Also calculates the @a char_len for @a byte_len
+ */
 void
 ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt, 
 			unsigned int byte_idx, unsigned int byte_len, 
@@ -694,6 +786,12 @@ ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @param cb: The function to call for each formatting node
+ * @return Returns no value
+ * @brief Walks the formatting information and calls @a cb for each node
+ */
 void
 ewl_text_fmt_walk(Ewl_Text_Fmt *fmt, 
 	void (*cb)(Ewl_Text_Fmt_Node *, Ewl_Text *, unsigned int byte_idx))
@@ -717,6 +815,16 @@ ewl_text_fmt_walk(Ewl_Text_Fmt *fmt,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param fmt: The Ewl_Text_Fmt to work with
+ * @param context_mask: The set of changes in this context
+ * @param change: The context containing the changes
+ * @param char_idx: The character index to apply too
+ * @param char_len: The character length to apply too
+ * @return Returns no value
+ * @brief Applies the @a change set to @a fmt starting at @a char_idx for @a
+ * char_len characters
+ */
 void
 ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask, 
 			Ewl_Text_Context *change, unsigned int char_idx,
@@ -878,6 +986,14 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
 
 /*
  * Ewl_Text_Fmt_Node stuff
+ */
+
+/**
+ * @param tx: The context to set
+ * @param char_len: The length of this node
+ * @param byte_len: The byte length of this node
+ * @return Returns a new Ewl_Text_Fmt_Node no success or NULL on failure
+ * @brief Creates a new Ewl_Text_Fmt_Node structure
  */
 Ewl_Text_Fmt_Node *
 ewl_text_fmt_node_new(Ewl_Text_Context *tx, unsigned int char_len, 

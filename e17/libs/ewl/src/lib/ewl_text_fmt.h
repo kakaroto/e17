@@ -24,9 +24,9 @@ typedef struct Ewl_Text_Fmt_Node Ewl_Text_Fmt_Node;
  */
 struct Ewl_Text_Fmt_Node
 {
-	Ewl_Text_Context *tx;
-	unsigned int char_len;
-	unsigned int byte_len;
+	Ewl_Text_Context *tx;		/**< Nodes formatting context */
+	unsigned int char_len;		/**< Node character length */
+	unsigned int byte_len;		/**< Node byte length */
 };
 
 /**
@@ -39,20 +39,20 @@ typedef struct Ewl_Text_Fmt Ewl_Text_Fmt;
  */
 struct Ewl_Text_Fmt
 {
-	Ecore_DList *nodes;
-	void *text;
+	Ecore_DList *nodes;		/**< List of formatting nodes */
+	void *text;			/**< Parent Ewl_Text pointer */
 
 	struct 
 	{
-		unsigned int char_idx;
-		unsigned int byte_idx;
-	} current_node;
+		unsigned int char_idx;	/**< Character index of the current node pointer */
+		unsigned int byte_idx;	/**< Byte index of the current node pointer */
+	} current_node;			/**< Current node information */
 	
 	struct
 	{
-		unsigned int char_len;
-		unsigned int byte_len;
-	} length;
+		unsigned int char_len;	/**< Text character length */
+		unsigned int byte_len;	/**< Text byte length */
+	} length;			/**< Length information for this formatting list */
 };
 
 Ewl_Text_Fmt	*ewl_text_fmt_new(Ewl_Text *t);
