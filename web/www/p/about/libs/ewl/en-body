@@ -105,10 +105,10 @@ void clicked_cb(Ewl_Widget * w, void *event, void *data)
 --libs --cflags ewl` ewl_hello.c -o ewl_hello</p>
 <p>When finished, it should look like this:</p>
 <p class="manager"><img src=
-"http://enlightenment.sourceforge.net/Libraries/Ewl/_images/hello_png_thumb.jpeg"><br></p>
+"http://enlightenment.org/i/hello_png_thumb.jpg"><br></p>
 <p class="manager"><br>
 EWL's project manager is <a target="_self" class="lite" href=
-"http://enlightenment.sourceforge.net/Main/The_Team/">Nathan
+"http://enlightenment.org/p.php?p=about/people&l=en">Nathan
 "RbdPngn" Ingersoll</a>.</p>
 </div>
 </td>
