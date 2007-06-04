@@ -308,6 +308,8 @@ compmgr.shadows.sharp.opacity = 30
 compmgr.resize_fix_enable = 0
 # [bool] Experimental - leave at 0
 compmgr.use_name_pixmap = 0
+# [bool] Use composite overlay window
+compmgr.use_cow = 1
 # [bool] Enable fading
 compmgr.fading.enable = 1
 # [int] Fading time(ms)
@@ -340,6 +342,8 @@ desktops.areas_nx = 2
 desktops.areas_ny = 1
 # [bool] Wrap around on area switch (last <-> first on next/prev)
 desktops.areas_wraparound = 0
+# [int] Edge flip mode (0: off, 1: on, 2: only when moving window)
+desktops.edge_flip_mode = 1
 # [int] Edge flip resistance(pixels)
 desktops.edge_flip_resistance = 25
 
@@ -447,6 +451,8 @@ misc.movres.mode_info = 1
 # [bool] Send synthetic ConfigureNotify's while moving
 # Causes pseudotransparent apps to update while moving (expensive)
 misc.movres.update_while_moving = 0
+# [bool] Use SYNC_REQUEST's to synchronize move/resize with client
+misc.movres.enable_sync_request = 0
 
 # [int] Composite opacity of menu windows
 misc.opacity.menus = 85
@@ -509,7 +515,7 @@ misc.testing.argb_internal_objects = 0
 misc.testing.argb_internal_clients = 0
 misc.testing.argb_clients = 0
 misc.testing.argb_clients_inherit_attr = 0
-misc.testing.use_sync = 0
+misc.testing.image_cache_size = -1
 misc.testing.mask_alpha_threshold = 8
 
 # [bool] Save configuration changes
@@ -528,7 +534,7 @@ pagers.title = 1
 # [bool] Enable high quality snapshots
 pagers.hiq = 1
 # [int] Pager mode (0: simple, 1: snap, 2: live)
-pagers.mode = 1
+pagers.mode = 2
 # [int] Scan/update speed (lines/updates per second. Used only in snap or live mode)
 pagers.scanspeed = 10
 # [int] Pager buttons
@@ -580,7 +586,9 @@ warplist.showsticky = 1
 # [bool] Show shaded windows
 warplist.showshaded = 1
 # [bool] Show iconified windows
-warplist.showiconified = 0
+warplist.showiconified = 1
+# [bool] Show windows on all desks
+warplist.showalldesks = 0
 # [bool] Warp pointer to focused window
 warplist.warpfocused = 1
 # [bool] Raise window while selecting
