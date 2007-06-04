@@ -260,6 +260,16 @@ ewl_text_trigger_base_get(Ewl_Text_Trigger *t)
 	DRETURN_INT(t->char_base, DLEVEL_STABLE);
 }
 
+/**
+ * @param t: The Ewl_Text parent
+ * @param cur: The trigger to work with
+ * @param x: The x position
+ * @param y: The y position
+ * @param w: The width
+ * @param h: The height
+ * @return Returns no value
+ * @brief Creates a trigger area at the given co-ordinates
+ */
 void
 ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur, 
 					int x, int y, int w, int h)
@@ -293,6 +303,11 @@ ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param trig: The trigger to work with
+ * @return Returns no value
+ * @brief Cleans up the trigger areas for @a trig
+ */
 void
 ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig)
 {
@@ -311,7 +326,12 @@ ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-		
+
+/**
+ * @param trig:
+ * @return Returns no value
+ * @brief Configures the areas associated with @a trig
+ */
 void 
 ewl_text_trigger_areas_configure(Ewl_Text_Trigger *trig)
 {
