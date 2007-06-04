@@ -104,6 +104,13 @@
 
      - new theme keys for the align/wrap stuff
 
+     - Fill in the unit test cases for the text widget including formatting
+
+     - Finish abstracting the text triggers into a separate file.
+
+     - Fix ewl_text_fmt_goto so we don't walk the full list to get the proper
+       position.
+
 
  *
  * @section todo TODO
