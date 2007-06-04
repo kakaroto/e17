@@ -284,6 +284,7 @@ src/bin/tests/spinner/Makefile
 src/bin/tests/statusbar/Makefile
 src/bin/tests/table/Makefile
 src/bin/tests/text/Makefile
+src/bin/tests/text_fmt/Makefile
 src/bin/tests/text_editor/Makefile
 src/bin/tests/theme/Makefile
 src/bin/tests/toolbar/Makefile

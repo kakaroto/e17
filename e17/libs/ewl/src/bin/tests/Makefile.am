@@ -49,6 +49,7 @@ SUBDIRS				= \
 	statusbar \
 	table \
 	text \
+	text_fmt \
 	text_editor \
 	theme \
 	toolbar \
