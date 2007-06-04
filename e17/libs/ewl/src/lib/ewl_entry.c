@@ -1,6 +1,7 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "ewl_base.h"
 #include "ewl_entry.h"
+#include "ewl_text_trigger.h"
 #include <Ecore_Txt.h>
 #include <langinfo.h>
 #include "ewl_macros.h"
@@ -206,7 +207,7 @@ ewl_entry_selection_clear(Ewl_Entry *e)
 	DCHECK_PARAM_PTR_RET("e", e, FALSE);
 	DCHECK_TYPE_RET("e", e, EWL_ENTRY_TYPE, FALSE);
 
-	sel = ewl_text_selection_get(EWL_TEXT(e));
+	sel = EWL_TEXT_TRIGGER(ewl_text_selection_get(EWL_TEXT(e)));
 	if (sel)
 	{
 		int len, pos;

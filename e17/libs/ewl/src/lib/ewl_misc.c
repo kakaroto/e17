@@ -1195,7 +1195,7 @@ strdup(const char *str)
 	dst = malloc(strlen(str) + 1);
 	if (dst) strcpy(dst, str);
 
-	DRETURN(dst, DLEVEL_STABLE);
+	DRETURN_PTR(dst, DLEVEL_STABLE);
 }
 #endif
 

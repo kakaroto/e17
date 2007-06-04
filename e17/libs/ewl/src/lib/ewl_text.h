@@ -36,18 +36,6 @@
 #define EWL_TEXT_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TEXT_TYPE))
 
 /**
- * @def EWL_TEXT_TRIGGER_TYPE
- * The type name for the Ewl_Text_Trigger widget
- */
-#define EWL_TEXT_TRIGGER_TYPE "trigger"
-
-/**
- * @def EWL_TEXT_TRIGGER_IS(w)
- * Returns TRUE if the widget is an Ewl_Text_Trigger, FALSE otherwise
- */
-#define EWL_TEXT_TRIGGER_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TEXT_TRIGGER_TYPE))
-
-/**
  * @def EWL_TEXT_SELECTION_TYPE
  * The type name for the Ewl_Text_Selection widget
  */
@@ -64,11 +52,6 @@
  * Typecasts a pointer to an Ewl_Text pointer.
  */
 #define EWL_TEXT(x) ((Ewl_Text *)x)
-
-/**
- * A trigger in the text, used for selections and clickable text
- */
-typedef struct Ewl_Text_Trigger Ewl_Text_Trigger;
 
 /**
  * Provides for layout of text as well as formatting portions of the text in
@@ -98,24 +81,18 @@ struct Ewl_Text
 
 	struct
 	{
-		Ecore_DList *nodes;	/**< The formatting nodes */
+		void *nodes;	/**< The formatting nodes */
+		void *tx;	/**< The current formatting context */
+	} formatting;	  	/**< Holds the formatting information */
 
-		struct
-		{
-			void *tx;		/**< The current formatting context */
-			unsigned int char_idx; 	/**< The current char index */
-			unsigned int byte_idx; 	/**< The current byte index */
-		} current;			/**< Current text info */
-	} formatting;	  			/**< Holds the formatting information */
-
-	Ecore_List *triggers;	  	  /**< The list of triggers */
-	Ewl_Text_Trigger *selection;	  /**< The current selection */
+	Ecore_List *triggers;  	  /**< The list of triggers */
+	Ewl_Widget *selection;	  /**< The current selection */
 
 	struct
 	{
 		int x; 			/**< X offset for layout */
 		int y; 			/**< Y offset for layout */
-	} offset;				  /**< Layout offset values */
+	} offset;			/**< Layout offset values */
 
 	unsigned char delete_count;	  /**< Number of deletes */
 	unsigned char in_select;	  /**< Are we in select mode? */
@@ -153,7 +130,7 @@ unsigned int	 ewl_text_selectable_get(Ewl_Text *t);
 
 char 		*ewl_text_selection_text_get(Ewl_Text *t);
 unsigned int 	 ewl_text_has_selection(Ewl_Text *t);
-Ewl_Text_Trigger *ewl_text_selection_get(Ewl_Text *t);
+Ewl_Widget	*ewl_text_selection_get(Ewl_Text *t);
 
 void		 ewl_text_cursor_position_set(Ewl_Text *t, 
 						unsigned int char_pos);
@@ -299,57 +276,11 @@ void 		 ewl_text_double_underline_color_get(Ewl_Text *t,
 					unsigned int *b, unsigned int *a,
 					unsigned int char_idx);
 
-void 		 ewl_text_fmt_dump(Ewl_Text *t);
-
-/**
- * @brief Inherits from Ewl_Widget and extends to provide a trigger for the text
- * widget
- */
-struct Ewl_Text_Trigger
-{
-	Ewl_Widget widget;		/**< Inherit from widget */
-	Ewl_Text_Trigger_Type type; 	/**< Trigger type */
-
-	unsigned int char_pos;	/**< Trigger start position */
-	unsigned int char_len;	/**< Trigger length */
-	unsigned int char_base;	/**< Used for the selection. Start position */
-
-	Ewl_Text *text_parent;	/**< The parent text area */
-	Ecore_List *areas;	/**< The list of objects for the trigger */
-};
-
-/**
- * @def EWL_TEXT_TRIGGER(trigger)
- * Typecasts a pointer to an Ewl_Text_Trigger pointer
- */
-#define EWL_TEXT_TRIGGER(trigger) ((Ewl_Text_Trigger *) trigger)
-
-Ewl_Text_Trigger *ewl_text_trigger_new(Ewl_Text_Trigger_Type type);
-int 		 ewl_text_trigger_init(Ewl_Text_Trigger *trigger, 
-					Ewl_Text_Trigger_Type type);
-
-Ewl_Text_Trigger_Type ewl_text_trigger_type_get(Ewl_Text_Trigger *t);
-
-void 		 ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, 
-						unsigned int char_pos);
-unsigned int 	 ewl_text_trigger_start_pos_get(Ewl_Text_Trigger *t);
-
-void 		 ewl_text_trigger_base_set(Ewl_Text_Trigger *t, 
-						unsigned int char_pos);
-unsigned int 	 ewl_text_trigger_base_get(Ewl_Text_Trigger *t);
-
-void 		 ewl_text_trigger_length_set(Ewl_Text_Trigger *t, 
-						unsigned int char_len);
-unsigned int 	 ewl_text_trigger_length_get(Ewl_Text_Trigger *t);
+char 		*ewl_text_text_next_char(const char *text, unsigned int *idx);
 
 /*
  * Internal stuff
  */
-void ewl_text_triggers_configure(Ewl_Text *t);
-void ewl_text_triggers_realize(Ewl_Text *t);
-void ewl_text_triggers_unrealize(Ewl_Text *t);
-void ewl_text_triggers_show(Ewl_Text *t);
-void ewl_text_triggers_hide(Ewl_Text *t);
 
 void ewl_text_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_reveal(Ewl_Widget *w, void *ev, void *data);
@@ -365,34 +296,6 @@ void ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
 void ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx);
 
 void ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev, void *data);
-void ewl_text_trigger_cb_mouse_in(Ewl_Widget *w, void *ev, void *data);
-void ewl_text_trigger_cb_mouse_out(Ewl_Widget *w, void *ev, void *data);
-void ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
-void ewl_text_trigger_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
-
-/**
- * Typdef for the Ewl_Text_Trigger_Area struct
- */
-typedef struct Ewl_Text_Trigger_Area Ewl_Text_Trigger_Area;
-
-/**
- * @def EWL_TEXT_TRIGGER_AREA(area)
- * Typecasts a pointer to an Ewl_Text_Trigger_Area pointer
- */
-#define EWL_TEXT_TRIGGER_AREA(area) ((Ewl_Text_Trigger_Area *) area)
-
-/**
- * @brief Inherits from Ewl_Widget and extends to provide a trigger area
- */
-struct Ewl_Text_Trigger_Area
-{
-	Ewl_Widget widget;		/**< Inherits from Ewl_Widget */
-	unsigned int deleted;	/**< Is this area deleted */
-};
-
-Ewl_Widget *ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type);
-int ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
-				Ewl_Text_Trigger_Type type);
 
 /**
  * @}

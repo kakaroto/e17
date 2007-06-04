@@ -282,6 +282,7 @@ extern"C" {
 #include <ewl_popup.h>
 
 #include <ewl_text.h>
+#include <ewl_text_trigger.h>
 #include <ewl_entry.h>
 
 #include <ewl_colorpicker.h>
