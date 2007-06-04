@@ -29,7 +29,9 @@ background image processing for web sites or servers - it only requires
 the X libraries to be installed - that is all - it does not require
 an XServer to run unless you wish to display images.
 
-</p><p class="manager">Imlib2's project manager is <a class="lite" href="http://enlightenment.sourceforge.net/Main/The_Team/" target="_self">Carsten &quot;Rasterman&quot; Haitzler</a>.</p></span>
+</p><p class="manager">Imlib2's project manager is <a class="lite" 
+href="http://enlightenment.org/p.php?p=about/people&l=en" 
+target="_self">Carsten &quot;Rasterman&quot; Haitzler</a>.</p></span>
 
 </div></td>
 </tr>
