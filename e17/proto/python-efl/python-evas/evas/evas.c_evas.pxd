@@ -617,6 +617,14 @@ cdef class SmartObject(Object):
     cdef object _m_color_set
     cdef object _m_clip_set
     cdef object _m_clip_unset
+    cdef object _m_old_delete
+    cdef object _m_old_move
+    cdef object _m_old_resize
+    cdef object _m_old_show
+    cdef object _m_old_hide
+    cdef object _m_old_color_set
+    cdef object _m_old_clip_set
+    cdef object _m_old_clip_unset
 
 
 cdef class Rectangle(Object):

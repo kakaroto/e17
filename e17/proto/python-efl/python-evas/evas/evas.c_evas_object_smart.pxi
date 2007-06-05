@@ -12,14 +12,14 @@ cdef void _smart_object_delete(Evas_Object *o):
     if obj._m_delete is not None:
         obj._m_delete(obj)
     obj._smart_callbacks = None
-    obj.delete = obj._m_delete or getattr(Object, "delete")
-    obj.move = obj._m_move or getattr(Object, "move")
-    obj.resize = obj._m_resize or getattr(Object, "resize")
-    obj.show = obj._m_show or getattr(Object, "show")
-    obj.hide = obj._m_hide or getattr(Object, "hide")
-    obj.color_set = obj._m_color_set or getattr(Object, "color_set")
-    obj.clip_set = obj._m_clip_set or getattr(Object, "clip_set")
-    obj.clip_unset = obj._m_clip_unset or getattr(Object, "clip_unset")
+    obj.delete = obj._m_old_delete
+    obj.move = obj._m_old_move
+    obj.resize = obj._m_old_resize
+    obj.show = obj._m_old_show
+    obj.hide = obj._m_old_hide
+    obj.color_set = obj._m_old_color_set
+    obj.clip_set = obj._m_old_clip_set
+    obj.clip_unset = obj._m_old_clip_unset
 
 
 cdef void _smart_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y):
@@ -179,27 +179,35 @@ cdef class SmartObject(Object):
     def __new__(self, Canvas evas):
         self._smart_callbacks = dict()
         cls = self.__class__
+        self._m_old_delete = self.delete
         self._m_delete = _smart_class_get_impl_method(cls, "delete")
         if self._m_delete is not None:
             self.delete = python.PyMethod_New(Object.delete, self, cls)
+        self._m_old_move = self.move
         self._m_move = _smart_class_get_impl_method(cls, "move")
         if self._m_move is not None:
             self.move = python.PyMethod_New(Object.move, self, cls)
+        self._m_old_resize = self.resize
         self._m_resize = _smart_class_get_impl_method(cls, "resize")
         if self._m_resize is not None:
             self.resize = python.PyMethod_New(Object.resize, self, cls)
+        self._m_old_show = self.show
         self._m_show = _smart_class_get_impl_method(cls, "show")
         if self._m_show is not None:
             self.show = python.PyMethod_New(Object.show, self, cls)
+        self._m_old_hide = self.hide
         self._m_hide = _smart_class_get_impl_method(cls, "hide")
         if self._m_hide is not None:
             self.hide = python.PyMethod_New(Object.hide, self, cls)
+        self._m_old_color_set = self.color_set
         self._m_color_set = _smart_class_get_impl_method(cls, "color_set")
         if self._m_color_set is not None:
             self.color_set = python.PyMethod_New(Object.color_set, self, cls)
+        self._m_old_clip_set = self.clip_set
         self._m_clip_set = _smart_class_get_impl_method(cls, "clip_set")
         if self._m_clip_set is not None:
             self.clip_set = python.PyMethod_New(Object.clip_set, self, cls)
+        self._m_old_clip_unset = self.clip_unset
         self._m_clip_unset = _smart_class_get_impl_method(cls, "clip_unset")
         if self._m_clip_unset is not None:
             self.clip_unset = python.PyMethod_New(Object.clip_unset, self, cls)
