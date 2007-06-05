@@ -2,6 +2,7 @@
 
 cdef object _smart_objects
 _smart_objects = dict()
+cdef object _smart_classes
 _smart_classes = list()
 
 
@@ -10,6 +11,15 @@ cdef void _smart_object_delete(Evas_Object *o):
     obj = <SmartObject>Object_from_instance(o)
     if obj._m_delete is not None:
         obj._m_delete(obj)
+    obj._smart_callbacks = None
+    obj.delete = obj._m_delete or getattr(Object, "delete")
+    obj.move = obj._m_move or getattr(Object, "move")
+    obj.resize = obj._m_resize or getattr(Object, "resize")
+    obj.show = obj._m_show or getattr(Object, "show")
+    obj.hide = obj._m_hide or getattr(Object, "hide")
+    obj.color_set = obj._m_color_set or getattr(Object, "color_set")
+    obj.clip_set = obj._m_clip_set or getattr(Object, "clip_set")
+    obj.clip_unset = obj._m_clip_unset or getattr(Object, "clip_unset")
 
 
 cdef void _smart_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y):
@@ -67,6 +77,8 @@ cdef void _smart_callback(void *data, Evas_Object *o, void *event_info):
     cdef SmartObject obj
     cdef object event, ei
     obj = <SmartObject>Object_from_instance(o)
+    if obj is <SmartObject>None or obj._smart_callbacks is None:
+        return
     event = <object>data
     ei = <object>event_info
     lst = obj._smart_callbacks[event]
