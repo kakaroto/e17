@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-06-03 14:09+0200\n"
+"POT-Creation-Date: 2007-06-05 11:50+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -50,8 +50,8 @@ msgstr ""
 
 #: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
 #: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1775 src/cursors.c:177 src/iclass.c:548 src/menus.c:1764
-#: src/menus.c:1901 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
+#: src/container.c:1775 src/cursors.c:177 src/iclass.c:548 src/menus.c:1794
+#: src/menus.c:1904 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
@@ -59,7 +59,7 @@ msgstr "CONFIGURATIE: negeer extra gegevens in \"%s\"\n"
 
 #: src/aclass.c:302 src/backgrounds.c:1158 src/borders.c:1116
 #: src/borders.c:1239 src/buttons.c:740 src/cmclass.c:210 src/config.c:257
-#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1769 src/menus.c:1907
+#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1799 src/menus.c:1910
 #: src/slideout.c:433 src/tclass.c:264 src/tooltips.c:182
 #: src/windowmatch.c:165
 #, c-format
@@ -184,7 +184,7 @@ msgstr "Enlightenment Bericht Dialoog"
 msgid "Ignore this"
 msgstr "Negeer dit"
 
-#: src/alert.c:574 config/strings.c:122 config/strings.c:187
+#: src/alert.c:574 config/strings.c:95 config/strings.c:198
 msgid "Restart Enlightenment"
 msgstr "Herstart Enlightenment"
 
@@ -432,11 +432,11 @@ msgid "Settings..."
 msgstr "Invoer instellingen"
 
 #: src/container.c:1234 src/dialog.c:898 src/pager.c:997 config/strings.c:30
-#: config/strings.c:167
+#: config/strings.c:131
 msgid "Close"
 msgstr "Sluit"
 
-#: src/container.c:1239 config/strings.c:81
+#: src/container.c:1239 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Maak een nieuwe Icoonbox"
 
@@ -1023,7 +1023,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr "Venster Opties"
 
-#: src/groups.c:1018 src/menus-misc.c:773
+#: src/groups.c:1018 src/menus-misc.c:773 config/strings.c:146
 #, fuzzy
 msgid "Groups"
 msgstr "Groep %i"
@@ -1235,7 +1235,7 @@ msgstr ""
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:584 config/strings.c:117
+#: src/menus-misc.c:584 config/strings.c:90
 msgid "Themes"
 msgstr ""
 
@@ -1272,29 +1272,29 @@ msgstr "Minimaliseer deze groep"
 msgid "Group %i"
 msgstr "Groep %i"
 
-#: src/menus.c:2099
+#: src/menus.c:2104
 msgid "Animated display of menus"
 msgstr "Geanimeerd tonen van menus"
 
-#: src/menus.c:2104
+#: src/menus.c:2109
 msgid "Always pop up menus on screen"
 msgstr "Toon menus altijd op het scherm"
 
-#: src/menus.c:2109
+#: src/menus.c:2114
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2115
+#: src/menus.c:2120
 #, fuzzy
 msgid "Menus"
 msgstr "Rand stijl"
 
-#: src/menus.c:2116
+#: src/menus.c:2121
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Audio Instellingen"
 
-#: src/menus.c:2119
+#: src/menus.c:2124
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1361,15 +1361,15 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Enlightenment Bericht Dialoog"
 
-#: src/pager.c:990 config/strings.c:49 config/strings.c:166
+#: src/pager.c:990 config/strings.c:49 config/strings.c:130
 msgid "Window Options"
 msgstr "Venster Opties"
 
-#: src/pager.c:993 config/strings.c:51 config/strings.c:169
+#: src/pager.c:993 config/strings.c:51 config/strings.c:133
 msgid "Iconify"
 msgstr "Minimaliseer"
 
-#: src/pager.c:1001 config/strings.c:168
+#: src/pager.c:1001 config/strings.c:132
 msgid "Annihilate"
 msgstr "Annihileer"
 
@@ -1748,7 +1748,7 @@ msgstr ""
 msgid "Use saveunders to reduce window exposures"
 msgstr "Gebruik saveunders om vensters minder te tonen"
 
-#: src/settings.c:514 config/strings.c:180
+#: src/settings.c:514 config/strings.c:144 config/strings.c:160
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Instellingen van deze Icoonbox"
@@ -1894,11 +1894,11 @@ msgstr "Locatie"
 msgid "Border style"
 msgstr "Rand stijl"
 
-#: src/snaps.c:849 config/strings.c:136
+#: src/snaps.c:849 config/strings.c:180
 msgid "Size"
 msgstr "Grootte"
 
-#: src/snaps.c:854 config/strings.c:115
+#: src/snaps.c:854 config/strings.c:88
 msgid "Desktop"
 msgstr "Desktop"
 
@@ -1918,7 +1918,7 @@ msgstr "Laag van het venster"
 msgid "Window List Skip"
 msgstr ""
 
-#: src/snaps.c:880 config/strings.c:179
+#: src/snaps.c:880 config/strings.c:143 config/strings.c:169
 msgid "Opacity"
 msgstr ""
 
@@ -2301,7 +2301,7 @@ msgstr "Shapshots aan"
 msgid "This button does nothing interesting."
 msgstr ""
 
-#: config/strings.c:47 config/strings.c:172
+#: config/strings.c:47 config/strings.c:136
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Shaded staat"
@@ -2319,7 +2319,7 @@ msgstr "Onder"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:56 config/strings.c:170
+#: config/strings.c:56 config/strings.c:134
 msgid "Raise"
 msgstr ""
 
@@ -2330,7 +2330,7 @@ msgstr ""
 "Klik hier om deze desktop naar\n"
 "boven te brengen\n"
 
-#: config/strings.c:58 config/strings.c:171
+#: config/strings.c:58 config/strings.c:135
 msgid "Lower"
 msgstr ""
 
@@ -2338,7 +2338,7 @@ msgstr ""
 msgid "Lower this window."
 msgstr ""
 
-#: config/strings.c:60 config/strings.c:173
+#: config/strings.c:60 config/strings.c:137
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Stick / Unstick"
@@ -2390,423 +2390,421 @@ msgstr "Ga naar deze desktop"
 msgid "Go Forward a Desktop"
 msgstr "Ga naar deze desktop"
 
-#: config/strings.c:75 config/strings.c:77
+#: config/strings.c:76 config/strings.c:79
 #, fuzzy
 msgid "Backgrounds"
 msgstr ""
 "Nee\n"
 "Achtergrond"
 
-#: config/strings.c:76
+#: config/strings.c:78
 #, fuzzy
 msgid "Desktop Operations"
 msgstr "Desktop opties"
 
-#: config/strings.c:78
+#: config/strings.c:80
 #, fuzzy
 msgid "Cleanup Desktop"
 msgstr "%i Desktop"
 
-#: config/strings.c:79
+#: config/strings.c:81
 #, fuzzy
 msgid "Goto Next Desktop"
 msgstr "Ga naar deze desktop"
 
-#: config/strings.c:80
+#: config/strings.c:82
 #, fuzzy
 msgid "Goto Previous Desktop"
 msgstr "Ga naar deze desktop"
 
-#: config/strings.c:82
+#: config/strings.c:84
 msgid "Create Systray"
 msgstr ""
 
-#: config/strings.c:83 config/strings.c:118
-msgid "Maintenance"
-msgstr ""
-
-#: config/strings.c:84
-msgid "Purge config file cache"
-msgstr ""
-
-#: config/strings.c:85
-#, fuzzy
-msgid "Purge pager background cache"
-msgstr "Gebruik achtergrond plaatje"
-
 #: config/strings.c:86
-msgid "Purge background selector cache"
-msgstr ""
-
-#: config/strings.c:87
-msgid "Purge all caches"
-msgstr ""
-
-#: config/strings.c:88
-msgid "Query config file cache usage"
-msgstr ""
-
-#: config/strings.c:89
-msgid "Query pager background cache usage"
-msgstr ""
-
-#: config/strings.c:90
-msgid "Query background selector cache usage"
-msgstr ""
-
-#: config/strings.c:91
-msgid "Query all cache usage"
-msgstr ""
-
-#: config/strings.c:92
-msgid "Regenerate Menus"
-msgstr ""
-
-#: config/strings.c:93 config/strings.c:116
-#, fuzzy
-msgid "Settings"
-msgstr "Invoer instellingen"
-
-#: config/strings.c:94
-#, fuzzy
-msgid "Enlightenment Settings ..."
-msgstr "Enlightenment start op"
-
-#: config/strings.c:95
-#, fuzzy
-msgid "Focus Settings ..."
-msgstr "Invoer instellingen"
-
-#: config/strings.c:96
-#, fuzzy
-msgid "Move & Resize Settings ..."
-msgstr "Verplaats en Vergroot/Verklein instellingen"
-
-#: config/strings.c:97
-#, fuzzy
-msgid "Window Placement Settings ..."
-msgstr "Venster Plaatsing Instellingen"
-
-#: config/strings.c:98
-#, fuzzy
-msgid "Multiple Desktop Settings ..."
-msgstr "Meerdere Desktop Instellingen"
-
-#: config/strings.c:99
-#, fuzzy
-msgid "Virtual Desktop Settings ..."
-msgstr "Virtuele Dektop Instellingen"
-
-#: config/strings.c:100
-#, fuzzy
-msgid "Pager Settings ..."
-msgstr "Pager instellingen..."
-
-#: config/strings.c:101
-#, fuzzy
-msgid "Menu Settings ..."
-msgstr "Audio Instellingen"
-
-#: config/strings.c:102
-#, fuzzy
-msgid "Autoraise Settings ..."
-msgstr "Automatisch Omhoogbrengen Instelling"
-
-#: config/strings.c:103
-#, fuzzy
-msgid "Tooltip Settings ..."
-msgstr "Tooltip instellingen"
-
-#: config/strings.c:104
-#, fuzzy
-msgid "Audio Settings ..."
-msgstr "Audio Instellingen"
-
-#: config/strings.c:105
-#, fuzzy
-msgid "Group Settings ..."
-msgstr "Pager instellingen..."
-
-#: config/strings.c:106
-#, fuzzy
-msgid "Remember Settings ..."
-msgstr "Pager instellingen..."
-
-#: config/strings.c:107
-#, fuzzy
-msgid "Special FX Settings ..."
-msgstr "Speciale Effect Instellingen"
-
-#: config/strings.c:108
-#, fuzzy
-msgid "Desktop Background Settings ..."
-msgstr "Desktop Achtergrond Instellingen"
-
-#: config/strings.c:109
-#, fuzzy
-msgid "Theme Transparency Settings ..."
-msgstr "Pager instellingen..."
-
-#: config/strings.c:110
-#, fuzzy
-msgid "Composite Settings ..."
-msgstr "Tooltip instellingen"
-
-#: config/strings.c:111
-#, fuzzy
-msgid "Session Settings ..."
-msgstr "Audio Instellingen"
-
-#: config/strings.c:112
-#, fuzzy
-msgid "Miscellaneous Settings ..."
-msgstr "Instellingen van deze Icoonbox"
-
-#: config/strings.c:113
 #, fuzzy
 msgid "Enlightenment"
 msgstr "Stop Enlightenment"
 
-#: config/strings.c:114 config/strings.c:183
+#: config/strings.c:87 config/strings.c:194
 #, fuzzy
 msgid "User Menus"
 msgstr "Rand stijl"
 
-#: config/strings.c:119
+#: config/strings.c:89 config/strings.c:109
+#, fuzzy
+msgid "Settings"
+msgstr "Invoer instellingen"
+
+#: config/strings.c:91 config/strings.c:98
+msgid "Maintenance"
+msgstr ""
+
+#: config/strings.c:92
 msgid "Help"
 msgstr ""
 
-#: config/strings.c:120
+#: config/strings.c:93
 #, fuzzy
 msgid "About Enlightenment"
 msgstr "Over Enlightenment %s"
 
-#: config/strings.c:121
+#: config/strings.c:94
 msgid "About this theme"
 msgstr ""
 
-#: config/strings.c:123 config/strings.c:188
+#: config/strings.c:96 config/strings.c:199
 #, fuzzy
 msgid "Log Out"
 msgstr "  Ja, log uit   "
 
-#: config/strings.c:124
-msgid "Max Height Toggle"
+#: config/strings.c:99
+msgid "Purge config file cache"
 msgstr ""
+
+#: config/strings.c:100
+#, fuzzy
+msgid "Purge pager background cache"
+msgstr "Gebruik achtergrond plaatje"
+
+#: config/strings.c:101
+msgid "Purge background selector cache"
+msgstr ""
+
+#: config/strings.c:102
+msgid "Purge all caches"
+msgstr ""
+
+#: config/strings.c:103
+msgid "Query config file cache usage"
+msgstr ""
+
+#: config/strings.c:104
+msgid "Query pager background cache usage"
+msgstr ""
+
+#: config/strings.c:105
+msgid "Query background selector cache usage"
+msgstr ""
+
+#: config/strings.c:106
+msgid "Query all cache usage"
+msgstr ""
+
+#: config/strings.c:107
+msgid "Regenerate Menus"
+msgstr ""
+
+#: config/strings.c:110
+#, fuzzy
+msgid "Enlightenment Settings ..."
+msgstr "Enlightenment start op"
+
+#: config/strings.c:111
+#, fuzzy
+msgid "Focus Settings ..."
+msgstr "Invoer instellingen"
+
+#: config/strings.c:112
+#, fuzzy
+msgid "Move & Resize Settings ..."
+msgstr "Verplaats en Vergroot/Verklein instellingen"
+
+#: config/strings.c:113
+#, fuzzy
+msgid "Window Placement Settings ..."
+msgstr "Venster Plaatsing Instellingen"
+
+#: config/strings.c:114
+#, fuzzy
+msgid "Multiple Desktop Settings ..."
+msgstr "Meerdere Desktop Instellingen"
+
+#: config/strings.c:115
+#, fuzzy
+msgid "Virtual Desktop Settings ..."
+msgstr "Virtuele Dektop Instellingen"
+
+#: config/strings.c:116
+#, fuzzy
+msgid "Pager Settings ..."
+msgstr "Pager instellingen..."
+
+#: config/strings.c:117
+#, fuzzy
+msgid "Menu Settings ..."
+msgstr "Audio Instellingen"
+
+#: config/strings.c:118
+#, fuzzy
+msgid "Autoraise Settings ..."
+msgstr "Automatisch Omhoogbrengen Instelling"
+
+#: config/strings.c:119
+#, fuzzy
+msgid "Tooltip Settings ..."
+msgstr "Tooltip instellingen"
+
+#: config/strings.c:120
+#, fuzzy
+msgid "Audio Settings ..."
+msgstr "Audio Instellingen"
+
+#: config/strings.c:121
+#, fuzzy
+msgid "Group Settings ..."
+msgstr "Pager instellingen..."
+
+#: config/strings.c:122
+#, fuzzy
+msgid "Remember Settings ..."
+msgstr "Pager instellingen..."
+
+#: config/strings.c:123
+#, fuzzy
+msgid "Special FX Settings ..."
+msgstr "Speciale Effect Instellingen"
+
+#: config/strings.c:124
+#, fuzzy
+msgid "Desktop Background Settings ..."
+msgstr "Desktop Achtergrond Instellingen"
 
 #: config/strings.c:125
-msgid "Available Max Height Toggle"
-msgstr ""
+#, fuzzy
+msgid "Theme Transparency Settings ..."
+msgstr "Pager instellingen..."
 
 #: config/strings.c:126
-msgid "Absolute Max Height Toggle"
-msgstr ""
+#, fuzzy
+msgid "Composite Settings ..."
+msgstr "Tooltip instellingen"
 
 #: config/strings.c:127
-msgid "Max Width Toggle"
-msgstr ""
+#, fuzzy
+msgid "Session Settings ..."
+msgstr "Audio Instellingen"
 
 #: config/strings.c:128
-msgid "Available Max Width Toggle"
-msgstr ""
-
-#: config/strings.c:129
-msgid "Absolute Max Width Toggle"
-msgstr ""
-
-#: config/strings.c:130
-msgid "Max Size Toggle"
-msgstr ""
-
-#: config/strings.c:131
-msgid "Available Max Size Toggle"
-msgstr ""
-
-#: config/strings.c:132
-msgid "Absolute Max Size Toggle"
-msgstr ""
-
-#: config/strings.c:133
-msgid "Span Xinerama Screens"
-msgstr ""
-
-#: config/strings.c:134
 #, fuzzy
-msgid "Height"
-msgstr "Rechts"
-
-#: config/strings.c:135
-msgid "Width"
-msgstr ""
-
-#: config/strings.c:137
-msgid "Fullscreen/Normal"
-msgstr ""
+msgid "Miscellaneous Settings ..."
+msgstr "Instellingen van deze Icoonbox"
 
 #: config/strings.c:138
-msgid "Zoom/Unzoom"
-msgstr ""
-
-#: config/strings.c:139
-msgid "Below"
-msgstr ""
-
-#: config/strings.c:140
-msgid "Normal"
-msgstr ""
-
-#: config/strings.c:141
-msgid "Above"
-msgstr ""
-
-#: config/strings.c:142
-#, fuzzy
-msgid "On Top"
-msgstr "Boven"
-
-#: config/strings.c:143
-msgid "20%"
-msgstr ""
-
-#: config/strings.c:144
-msgid "40%"
-msgstr ""
-
-#: config/strings.c:145
-msgid "60%"
-msgstr ""
-
-#: config/strings.c:146
-msgid "80%"
-msgstr ""
-
-#: config/strings.c:147
-msgid "100%"
-msgstr ""
-
-#: config/strings.c:148
-msgid "Focused opacity 100%"
-msgstr ""
-
-#: config/strings.c:149
-#, fuzzy
-msgid "Focused opacity follows unfocused"
-msgstr "Invoer volgt muis klikken"
-
-#: config/strings.c:150
-#, fuzzy
-msgid "Toggle Fading"
-msgstr "Ga aan de rand van het sherm naar volgende deel"
-
-#: config/strings.c:151
-msgid "Toggle Shadows"
-msgstr ""
-
-#: config/strings.c:152
-msgid "Toggle Skip Window Lists"
-msgstr ""
-
-#: config/strings.c:153
-msgid "Toggle Fixed Position"
-msgstr ""
-
-#: config/strings.c:154
-msgid "Toggle Fixed Size"
-msgstr ""
-
-#: config/strings.c:155
-msgid "Toggle Never Focus"
-msgstr ""
-
-#: config/strings.c:156
-msgid "Toggle Click to Focus"
-msgstr ""
-
-#: config/strings.c:157
-msgid "Toggle Never Use Area"
-msgstr ""
-
-#: config/strings.c:158
-#, fuzzy
-msgid "Toggle Button Grabs"
-msgstr "Onder"
-
-#: config/strings.c:159
-#, fuzzy
-msgid "Configure this window's group(s)"
-msgstr "Herinner de groepen van dit venster"
-
-#: config/strings.c:160
-msgid "Start a new group"
-msgstr ""
-
-#: config/strings.c:161
-msgid "Add this window to the current group"
-msgstr ""
-
-#: config/strings.c:162
-#, fuzzy
-msgid "Select group to add this window to"
-msgstr "  Kies de groep waar het venster van verwijderd moet worden"
-
-#: config/strings.c:163
-#, fuzzy
-msgid "Remove this window from a group"
-msgstr "Herinner de groepen van dit venster"
-
-#: config/strings.c:164
-#, fuzzy
-msgid "Destroy a group this window belongs to"
-msgstr "Kies de groep waar het venster bij moet behoren : \n"
-
-#: config/strings.c:165
-#, fuzzy
-msgid "Show/Hide this window's group(s)"
-msgstr "Toon/Verberg deze groep"
-
-#: config/strings.c:174
 #, fuzzy
 msgid "Remember..."
 msgstr "Pager instellingen..."
 
-#: config/strings.c:175
+#: config/strings.c:139
 #, fuzzy
 msgid "Window Size"
 msgstr "Venster Opties"
 
-#: config/strings.c:176
+#: config/strings.c:140
 #, fuzzy
 msgid "Set Stacking"
 msgstr "Invoer instellingen"
 
-#: config/strings.c:177
+#: config/strings.c:141
 #, fuzzy
 msgid "Set Border Style"
 msgstr "Rand stijl"
 
-#: config/strings.c:178
+#: config/strings.c:142
 #, fuzzy
 msgid "Window Groups"
 msgstr "Venster groep fout"
 
-#: config/strings.c:181
+#: config/strings.c:147
 #, fuzzy
-msgid "Remember State"
-msgstr "Pager instellingen..."
+msgid "Configure this window's group(s)"
+msgstr "Herinner de groepen van dit venster"
+
+#: config/strings.c:148
+msgid "Start a new group"
+msgstr ""
+
+#: config/strings.c:149
+msgid "Add this window to the current group"
+msgstr ""
+
+#: config/strings.c:150
+#, fuzzy
+msgid "Select group to add this window to"
+msgstr "  Kies de groep waar het venster van verwijderd moet worden"
+
+#: config/strings.c:151
+#, fuzzy
+msgid "Remove this window from a group"
+msgstr "Herinner de groepen van dit venster"
+
+#: config/strings.c:152
+#, fuzzy
+msgid "Destroy a group this window belongs to"
+msgstr "Kies de groep waar het venster bij moet behoren : \n"
+
+#: config/strings.c:154
+#, fuzzy
+msgid "Stacking"
+msgstr "Sticken"
+
+#: config/strings.c:155
+msgid "Below"
+msgstr ""
+
+#: config/strings.c:156
+msgid "Normal"
+msgstr ""
+
+#: config/strings.c:157
+msgid "Above"
+msgstr ""
+
+#: config/strings.c:158
+#, fuzzy
+msgid "On Top"
+msgstr "Boven"
+
+#: config/strings.c:161
+msgid "Toggle Skip Window Lists"
+msgstr ""
+
+#: config/strings.c:162
+msgid "Toggle Fixed Position"
+msgstr ""
+
+#: config/strings.c:163
+msgid "Toggle Fixed Size"
+msgstr ""
+
+#: config/strings.c:164
+msgid "Toggle Never Focus"
+msgstr ""
+
+#: config/strings.c:165
+msgid "Toggle Click to Focus"
+msgstr ""
+
+#: config/strings.c:166
+msgid "Toggle Never Use Area"
+msgstr ""
+
+#: config/strings.c:167
+#, fuzzy
+msgid "Toggle Button Grabs"
+msgstr "Onder"
+
+#: config/strings.c:170
+msgid "20%"
+msgstr ""
+
+#: config/strings.c:171
+msgid "40%"
+msgstr ""
+
+#: config/strings.c:172
+msgid "60%"
+msgstr ""
+
+#: config/strings.c:173
+msgid "80%"
+msgstr ""
+
+#: config/strings.c:174
+msgid "100%"
+msgstr ""
+
+#: config/strings.c:175
+msgid "Focused opacity 100%"
+msgstr ""
+
+#: config/strings.c:176
+#, fuzzy
+msgid "Focused opacity follows unfocused"
+msgstr "Invoer volgt muis klikken"
+
+#: config/strings.c:177
+#, fuzzy
+msgid "Toggle Fading"
+msgstr "Ga aan de rand van het sherm naar volgende deel"
+
+#: config/strings.c:178
+msgid "Toggle Shadows"
+msgstr ""
+
+#: config/strings.c:181
+msgid "Max Size Toggle"
+msgstr ""
+
+#: config/strings.c:182
+msgid "Available Max Size Toggle"
+msgstr ""
+
+#: config/strings.c:183
+msgid "Absolute Max Size Toggle"
+msgstr ""
 
 #: config/strings.c:184
+msgid "Span Xinerama Screens"
+msgstr ""
+
+#: config/strings.c:185
+msgid "Max Height Toggle"
+msgstr ""
+
+#: config/strings.c:186
+msgid "Available Max Height Toggle"
+msgstr ""
+
+#: config/strings.c:187
+msgid "Absolute Max Height Toggle"
+msgstr ""
+
+#: config/strings.c:188
+msgid "Max Width Toggle"
+msgstr ""
+
+#: config/strings.c:189
+msgid "Available Max Width Toggle"
+msgstr ""
+
+#: config/strings.c:190
+msgid "Absolute Max Width Toggle"
+msgstr ""
+
+#: config/strings.c:191
+msgid "Fullscreen/Normal"
+msgstr ""
+
+#: config/strings.c:192
+msgid "Zoom/Unzoom"
+msgstr ""
+
+#: config/strings.c:195
 #, fuzzy
 msgid "User Application List"
 msgstr "Herstart applicatie bij inloggen"
 
-#: config/strings.c:185
+#: config/strings.c:196
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:186
+#: config/strings.c:197
 #, fuzzy
 msgid "Enlightenment Epplets"
 msgstr "Stop Enlightenment"
+
+#, fuzzy
+#~ msgid "Height"
+#~ msgstr "Rechts"
+
+#, fuzzy
+#~ msgid "Show/Hide this window's group(s)"
+#~ msgstr "Toon/Verberg deze groep"
+
+#, fuzzy
+#~ msgid "Remember State"
+#~ msgstr "Pager instellingen..."
 
 #, fuzzy
 #~ msgid "Shade"
