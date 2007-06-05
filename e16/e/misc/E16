@@ -1,2 +1,0 @@
-#!/bin/sh
-exec /etc/X11/xdm/Xsession e16

@@ -1,10 +1,10 @@
 #!/bin/sh
 case "$1" in
-GNOME)
+gnome|GNOME)
 	export WINDOW_MANAGER=e16
 	exec gnome-session
 	;;
-KDE)
+kde|KDE)
 	export KDEWM=e16
 	exec startkde
 	;;
