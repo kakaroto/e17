@@ -1097,10 +1097,40 @@ MenuFind(const char *name, const char *param)
    return m;
 }
 
+/*
+ * Aliases for "well-known" menus for backward compatibility.
+ */
+static const char  *const menu_aliases[] = {
+   "APPS_SUBMENU", "file.menu",
+   "CONFIG_SUBMENU", "settings.menu",
+   "DESKTOP_SUBMENU", "desktop.menu",
+   "MAINT_SUBMENU", "maintenance.menu",
+   "ROOT_2", "enlightenment.menu",
+   "WINOPS_MENU", "winops.menu",
+};
+#define N_MENU_ALIASES (sizeof(menu_aliases)/sizeof(char*)/2)
+
+static const char  *
+_MenuCheckAlias(const char *name)
+{
+   unsigned int        i;
+
+   for (i = 0; i < N_MENU_ALIASES; i++)
+      if (!strcmp(name, menu_aliases[2 * i]))
+	 return menu_aliases[2 * i + 1];
+
+   return NULL;
+}
+
 static void
 MenusShowNamed(const char *name, const char *param)
 {
    Menu               *m;
+   const char         *name2;
+
+   name2 = _MenuCheckAlias(name);
+   if (name2)
+      name = name2;
 
    /* Hide any menus currently up */
    if (MenusActive())
@@ -1840,33 +1870,6 @@ MenuStyleConfigLoad(FILE * ConfigFile)
    return err;
 }
 
-/*
- * Aliases for "well-known" menus for backward compatibility.
- */
-static const char  *const menu_aliases[] = {
-   "APPS_SUBMENU", "file.menu",
-   "CONFIG_SUBMENU", "settings.menu",
-   "DESKTOP_SUBMENU", "desktop.menu",
-   "MAINT_SUBMENU", "maintenance.menu",
-   "ROOT_2", "enlightenment.menu",
-   "WINOPS_MENU", "winops.menu",
-};
-#define N_MENU_ALIASES (sizeof(menu_aliases)/sizeof(char*)/2)
-
-static void
-_MenuCheckAlias(Menu * m)
-{
-   unsigned int        i;
-
-   for (i = 0; i < N_MENU_ALIASES; i++)
-     {
-	if (strcmp(m->name, menu_aliases[2 * i]))
-	   continue;
-	MenuSetAlias(m, menu_aliases[2 * i + 1]);
-	break;
-     }
-}
-
 int
 MenuConfigLoad(FILE * fs)
 {
@@ -1933,7 +1936,9 @@ MenuConfigLoad(FILE * fs)
 		m = MenuCreate(s2, NULL, NULL, NULL);
 	     else
 		MenuSetName(m, s2);
-	     _MenuCheckAlias(m);
+	     params = _MenuCheckAlias(s2);
+	     if (params)
+		MenuSetAlias(m, params);
 	     break;
 	  case MENU_USE_STYLE:
 	     MenuSetStyle(m, MenuStyleFind(s2));

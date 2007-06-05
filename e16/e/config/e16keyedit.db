@@ -89,8 +89,8 @@
 "Remember Window Stickyness", 0, "wop * snap sticky"
 "Remember Window Shadedness", 0, "wop * snap shade"
 
-"Show Root Menu", 0, "menus show ROOT_2"
-"Show Winops Menu", 0, "menus show WINOPS_MENU"
+"Show Root Menu", 0, "menus show enlightenment.menu"
+"Show Winops Menu", 0, "menus show winops.menu"
 "Show Named Menu", 1, "menus show "
 
 "Goto Linear Area", 0, NULL

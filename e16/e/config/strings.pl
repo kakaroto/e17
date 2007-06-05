@@ -60,6 +60,11 @@ sub x() {
     $t = "$1";
     print "_($t),\n";
   }
+
+  # *.menu
+  if (/^"([^"]+)"/) {
+    print "_(\"$1\"),\n";
+  }
 }
 
 # From e_gen_menu
