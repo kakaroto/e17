@@ -55,6 +55,7 @@ struct _imagestate
 {
    char               *im_file;
    char               *real_file;
+   char                got_colors;
    char                unloadable;
    char                transparent;
    EImage             *im;
@@ -193,31 +194,30 @@ ThemeImageLoad(const char *file)
    return NULL;
 }
 
+static void
+ImagestateColorsSetGray(ImageState * is,
+			unsigned int hihi, unsigned int hi,
+			unsigned int bg, unsigned int lo, unsigned int lolo)
+{
+   ESetColor(&(is->hihi), hihi, hihi, hihi);
+   ESetColor(&(is->hi), hi, hi, hi);
+   ESetColor(&(is->bg), bg, bg, bg);
+   ESetColor(&(is->lo), lo, lo, lo);
+   ESetColor(&(is->lolo), lolo, lolo, lolo);
+}
+
 static ImageState  *
 ImagestateCreate(void)
 {
    ImageState         *is;
 
-   is = EMALLOC(ImageState, 1);
+   is = ECALLOC(ImageState, 1);
    if (!is)
       return NULL;
 
-   is->im_file = NULL;
-   is->real_file = NULL;
-   is->unloadable = 0;
-   is->transparent = 0;
-   is->im = NULL;
-   is->border = NULL;
    is->pixmapfillstyle = FILL_STRETCH;
-   ESetColor(&(is->bg), 160, 160, 160);
-   ESetColor(&(is->hi), 200, 200, 200);
-   ESetColor(&(is->lo), 120, 120, 120);
-   ESetColor(&(is->hihi), 255, 255, 255);
-   ESetColor(&(is->lolo), 64, 64, 64);
+   ImagestateColorsSetGray(is, 255, 200, 160, 120, 64);
    is->bevelstyle = BEVEL_NONE;
-#if ENABLE_COLOR_MODIFIERS
-   is->colmod = NULL;
-#endif
 
    return is;
 }
@@ -258,17 +258,18 @@ FreeImageStateArray(ImageStateArray * isa)
 }
 
 static void
-ImagestatePopulate(ImageState * is)
+ImagestateColorsAlloc(ImageState * is)
 {
-   if (!is)
+   if (!is || is->got_colors)
       return;
 
-   /* FIXME - Should be done elsewhere (ImagestateDrawBevel?) */
    EAllocColor(VRoot.cmap, &is->bg);
    EAllocColor(VRoot.cmap, &is->hi);
    EAllocColor(VRoot.cmap, &is->lo);
    EAllocColor(VRoot.cmap, &is->hihi);
    EAllocColor(VRoot.cmap, &is->lolo);
+
+   is->got_colors = 1;
 }
 
 static void
@@ -426,8 +427,7 @@ ImageclassFind(const char *name, int fallback)
 }
 
 #define ISTATE_SET_STATE(which, fallback) \
-   if (ic->which) ImagestatePopulate(ic->which); \
-   else ic->which = ic->fallback;
+   if (!ic->which) ic->which = ic->fallback;
 
 #if ENABLE_COLOR_MODIFIERS
 #define ISTATE_SET_CM(which, fallback) \
@@ -450,7 +450,6 @@ ImageclassPopulate(ImageClass * ic)
    if (!ic->norm.normal)
       return;
 
-   ImagestatePopulate(ic->norm.normal);
    ISTATE_SET_STATE(norm.hilited, norm.normal);
    ISTATE_SET_STATE(norm.clicked, norm.normal);
    ISTATE_SET_STATE(norm.disabled, norm.normal);
@@ -1088,6 +1087,8 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 static void
 ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 {
+   ImagestateColorsAlloc(is);
+
    switch (is->bevelstyle)
      {
      case BEVEL_AMIGA:
@@ -1255,6 +1256,8 @@ ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
    else
      {
 	/* FIXME - No text */
+	ImagestateColorsAlloc(is);
+
 	ESetWindowBackground(win, is->bg.pixel);
 	EClearWindow(win);
      }
@@ -1354,6 +1357,8 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
      {
 	Pixmap              pmap;
 
+	ImagestateColorsAlloc(is);
+
 	if (pmm->pmap)
 	   Eprintf("ImageclassApplyCopy: Hmm... pmm->pmap already set\n");
 
@@ -1383,51 +1388,30 @@ ImageclassSetupFallback(void)
    ic = ImageclassCreate("__FALLBACK_ICLASS");
 
    ic->norm.normal = ImagestateCreate();
-   ESetColor(&(ic->norm.normal->hihi), 255, 255, 255);
-   ESetColor(&(ic->norm.normal->hi), 255, 255, 255);
-   ESetColor(&(ic->norm.normal->bg), 160, 160, 160);
-   ESetColor(&(ic->norm.normal->lo), 0, 0, 0);
-   ESetColor(&(ic->norm.normal->lolo), 0, 0, 0);
+   ImagestateColorsSetGray(ic->norm.normal, 255, 255, 160, 0, 0);
    ic->norm.normal->bevelstyle = BEVEL_AMIGA;
 
    ic->norm.hilited = ImagestateCreate();
-   ESetColor(&(ic->norm.hilited->hihi), 255, 255, 255);
-   ESetColor(&(ic->norm.hilited->hi), 255, 255, 255);
-   ESetColor(&(ic->norm.hilited->bg), 192, 192, 192);
-   ESetColor(&(ic->norm.hilited->lo), 0, 0, 0);
-   ESetColor(&(ic->norm.hilited->lolo), 0, 0, 0);
+   ImagestateColorsSetGray(ic->norm.hilited, 255, 255, 192, 0, 0);
    ic->norm.hilited->bevelstyle = BEVEL_AMIGA;
 
    ic->norm.clicked = ImagestateCreate();
-   ESetColor(&(ic->norm.clicked->hihi), 0, 0, 0);
-   ESetColor(&(ic->norm.clicked->hi), 0, 0, 0);
-   ESetColor(&(ic->norm.clicked->bg), 192, 192, 192);
-   ESetColor(&(ic->norm.clicked->lo), 255, 255, 255);
-   ESetColor(&(ic->norm.clicked->lolo), 255, 255, 255);
+   ImagestateColorsSetGray(ic->norm.clicked, 0, 0, 192, 255, 255);
    ic->norm.clicked->bevelstyle = BEVEL_AMIGA;
 
    ic->active.normal = ImagestateCreate();
-   ESetColor(&(ic->active.normal->hihi), 255, 255, 255);
-   ESetColor(&(ic->active.normal->hi), 255, 255, 255);
+   ImagestateColorsSetGray(ic->active.normal, 255, 255, 0, 0, 0);
    ESetColor(&(ic->active.normal->bg), 180, 140, 160);
-   ESetColor(&(ic->active.normal->lo), 0, 0, 0);
-   ESetColor(&(ic->active.normal->lolo), 0, 0, 0);
    ic->active.normal->bevelstyle = BEVEL_AMIGA;
 
    ic->active.hilited = ImagestateCreate();
-   ESetColor(&(ic->active.hilited->hihi), 255, 255, 255);
-   ESetColor(&(ic->active.hilited->hi), 255, 255, 255);
+   ImagestateColorsSetGray(ic->active.hilited, 255, 255, 0, 0, 0);
    ESetColor(&(ic->active.hilited->bg), 230, 190, 210);
-   ESetColor(&(ic->active.hilited->lo), 0, 0, 0);
-   ESetColor(&(ic->active.hilited->lolo), 0, 0, 0);
    ic->active.hilited->bevelstyle = BEVEL_AMIGA;
 
    ic->active.clicked = ImagestateCreate();
-   ESetColor(&(ic->active.clicked->hihi), 0, 0, 0);
-   ESetColor(&(ic->active.clicked->hi), 0, 0, 0);
+   ImagestateColorsSetGray(ic->active.clicked, 0, 0, 0, 255, 255);
    ESetColor(&(ic->active.clicked->bg), 230, 190, 210);
-   ESetColor(&(ic->active.clicked->lo), 255, 255, 255);
-   ESetColor(&(ic->active.clicked->lolo), 255, 255, 255);
    ic->active.clicked->bevelstyle = BEVEL_AMIGA;
 
    ic->padding.left = 8;
@@ -1441,11 +1425,7 @@ ImageclassSetupFallback(void)
    ic = ImageclassCreate("__BLACK");
 
    ic->norm.normal = ImagestateCreate();
-   ESetColor(&(ic->norm.normal->hihi), 0, 0, 0);
-   ESetColor(&(ic->norm.normal->hi), 0, 0, 0);
-   ESetColor(&(ic->norm.normal->bg), 0, 0, 0);
-   ESetColor(&(ic->norm.normal->lo), 0, 0, 0);
-   ESetColor(&(ic->norm.normal->lolo), 0, 0, 0);
+   ImagestateColorsSetGray(ic->norm.normal, 0, 0, 0, 0, 0);
 
    ImageclassPopulate(ic);
 }
