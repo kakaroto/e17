@@ -200,20 +200,19 @@ news_viewer_refresh(News_Viewer *nv)
 
    /* select a feed */
    if (toselect_pos != -1)
-     {
-        e_widget_ilist_selected_set(ilist, toselect_pos);
-        if ((nv->vfeeds.selected->doc && nv->vfeeds.selected->doc->ui_needrefresh) ||
-            !nv->varticles.selected)
-          _dialog_cb_feed_selected(nv->vfeeds.selected);
-     }
-   else if (!nv->vfeeds.selected && pos)
-     {
-        NEWS_ITEM_FEEDS_FOREACH_BEG_LIST(feed_refs);
-        e_widget_ilist_selected_set(ilist, 0);
-        _dialog_cb_feed_selected(_feed);
-        break;
-        NEWS_ITEM_FEEDS_FOREACH_END();
-     }
+   {
+     e_widget_ilist_selected_set(ilist, toselect_pos);
+   }
+
+   /* ilist size */
+   if (pos == -1)
+     e_widget_min_size_set(ilist, 100, 70);
+   else
+   {
+      int wmw;
+      e_widget_min_size_get(ilist, &wmw, NULL);
+      e_widget_min_size_set(ilist, wmw, 110);
+   }
    
    if (nv->vfeeds.list_own)
      {
@@ -353,7 +352,7 @@ _dialog_geometry_update(News_Viewer *nv)
    nv->dialog.x = dia_x;
    nv->dialog.y = dia_y;
    e_dialog_show(nv->dialog.dia);
-   e_dialog_border_icon_set(nv->dialog.dia, news->theme);
+   e_dialog_border_icon_set(nv->dialog.dia, news_theme_file_get(NEWS_THEME_CAT_ICON));
 }
 
 static int
@@ -361,14 +360,15 @@ _dialog_content_create(News_Viewer *nv)
 {
    Evas_Textblock_Style *tb_style;
    Evas *evas;
-   Evas_Object *o, *ob, *of, *icon;
+   Evas_Object *o, *o2, *ob, *of, *icon;
    char buf[4096];
    char buf2[1024] = "";
    int w, h;
 
    evas = evas_object_evas_get(nv->dialog.dia->bg_object);
 
-   o = e_widget_table_add(evas, 0);
+   o = e_widget_list_add(evas, 0, 0);
+   o2 = e_widget_list_add(evas, 0, 1);
    nv->dialog.tab = o;
 
    of = e_widget_frametable_add(evas, _("Feeds in this gadget"), 0);
@@ -397,24 +397,13 @@ _dialog_content_create(News_Viewer *nv)
 
    ob = e_widget_ilist_add(evas, 16, 16, NULL);
    e_widget_ilist_selector_set(ob, 1);
-   e_widget_min_size_set(ob, 100, 70);
    nv->vfeeds.ilist = ob;
+   news_viewer_refresh(nv);
    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
 
-   e_widget_table_object_append(o, of, 0, 0, 1, 1, 1, 1, 1, 0);
+   e_widget_list_object_append(o2, of, 1, 0, 0.0);
 
-   of = e_widget_framelist_add(evas, _("Articles in selected feed"), 0);
-   nv->dialog.ftab_articles = of;
-
-   ob = e_widget_ilist_add(evas, 16, 16, NULL);
-   e_widget_ilist_selector_set(ob, 1);
-   e_widget_min_size_set(ob, 250, 140);
-   nv->varticles.ilist = ob;
-   e_widget_framelist_object_append(of, ob);
-
-   e_widget_table_object_append(o, of, 0, 1, 2, 1, 1, 1, 1, 1);
-
-   ob = evas_object_textblock_add(evas_object_evas_get(nv->dialog.dia->bg_object));
+  ob = evas_object_textblock_add(evas_object_evas_get(nv->dialog.dia->bg_object));
    tb_style = evas_textblock_style_new();
    if (news->config->viewer.vcontent.font_shadow)
      {
@@ -445,8 +434,20 @@ _dialog_content_create(News_Viewer *nv)
                                   _vcontent_cb_mouse_down, nv);
    nv->vcontent.scrollframe = ob;
 
-   e_widget_table_object_append(o, ob, 1, 0, 1, 1, 1, 1, 1, 1);
+   e_widget_list_object_append(o2, ob, 1, 1, 0.5);
+   e_widget_list_object_append(o, o2, 1, 1, 0.5);
 
+   of = e_widget_framelist_add(evas, _("Articles in selected feed"), 0);
+   nv->dialog.ftab_articles = of;
+
+   ob = e_widget_ilist_add(evas, 16, 16, NULL);
+   e_widget_ilist_selector_set(ob, 1);
+   e_widget_min_size_set(ob, 250, 140);
+   nv->varticles.ilist = ob;
+   e_widget_framelist_object_append(of, ob);
+
+   e_widget_list_object_append(o, of, 1, 1, 1.0);
+ 
    /* apply */
    e_widget_min_size_get(o, &w, &h);
    e_dialog_content_set(nv->dialog.dia, o, w, h);

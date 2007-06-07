@@ -43,7 +43,6 @@ e_modapi_init(E_Module *m)
    DMAIN(("Initialisation ..."));
 
    if (!news_config_init()) E_MOD_INIT_FAIL(m, _("Config init failed"));
-   if (!news_theme_init())  E_MOD_INIT_FAIL(m, _("Theme init failed"));
    if (!news_parse_init())  E_MOD_INIT_FAIL(m, _("Parser init failed"));
    if (!news_feed_init())   E_MOD_INIT_FAIL(m, _("Feeds init failed"));
    if (!news_viewer_init()) E_MOD_INIT_FAIL(m, _("Viewer init failed"));
@@ -80,7 +79,6 @@ e_modapi_shutdown(E_Module *m)
    news_viewer_shutdown();
    news_feed_shutdown();
    news_parse_shutdown();
-   news_theme_shutdown();
    news_config_shutdown();
 
    free(news);
@@ -242,6 +240,6 @@ _gc_icon(Evas *evas)
    Evas_Object *o;
 
    o = edje_object_add(evas);
-   edje_object_file_set(o, news->theme, "icon");
+   edje_object_file_set(o, news_theme_file_get(NULL), "icon");
    return o;
 }

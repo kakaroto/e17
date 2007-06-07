@@ -81,7 +81,7 @@ news_config_dialog_feeds_show(void)
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
 			     _("News Feeds Configuration"),
                              "E", DIALOG_CLASS,
-                             news->theme, 0, v, NULL);
+                             news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, NULL);
 
    if (news->config->feed.langs_notset)
      {

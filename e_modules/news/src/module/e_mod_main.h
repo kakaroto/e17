@@ -10,7 +10,6 @@ typedef struct _News News;
 struct _News
 {
    E_Module *module;
-   char *theme;
 
    News_Config *config;
    E_Config_Dialog *config_dialog;

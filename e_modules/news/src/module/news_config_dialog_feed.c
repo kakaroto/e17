@@ -76,7 +76,7 @@ news_config_dialog_feed_show(News_Feed *feed)
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
 			     _("News Feed Configuration"),
                              "E", "_e_mod_news_config_dialog_feed",
-                             news->theme, 0, v, feed);
+                             news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, feed);
 
    return 1;
 }

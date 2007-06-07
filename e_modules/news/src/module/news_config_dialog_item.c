@@ -39,7 +39,7 @@ news_config_dialog_item_show(News_Item *ni)
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
 			     _("News Gadget Configuration"),
                              "E", DIALOG_CLASS,
-                             news->theme, 0, v, ni);
+                             news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, ni);
 
    return 1;
 }
