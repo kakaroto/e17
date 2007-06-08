@@ -1,0 +1,1227 @@
+images {
+	image: "00.png" LOSSY 95;
+	image: "01.png" LOSSY 95;
+	image: "02.png" LOSSY 95;
+	image: "03.png" LOSSY 95;
+	image: "04.png" LOSSY 95;
+	image: "05.png" LOSSY 95;
+	image: "06.png" LOSSY 95;
+	image: "07.png" LOSSY 95;
+	image: "08.png" LOSSY 95;
+	image: "09.png" LOSSY 95;
+	image: "10.png" LOSSY 95;
+	image: "11.png" LOSSY 95;
+	image: "12.png" LOSSY 95;
+	image: "13.png" LOSSY 95;
+	image: "14.png" LOSSY 95;
+	image: "15.png" LOSSY 95;
+	image: "16.png" LOSSY 95;
+	image: "17.png" LOSSY 95;
+	image: "18.png" LOSSY 95;
+	image: "19.png" LOSSY 95;
+	image: "20.png" LOSSY 95;
+	image: "21.png" LOSSY 95;
+	image: "22.png" LOSSY 95;
+	image: "23.png" LOSSY 95;
+	image: "24.png" LOSSY 95;
+	image: "25.png" LOSSY 95;
+	image: "26.png" LOSSY 95;
+	image: "27.png" LOSSY 95;
+	image: "28.png" LOSSY 95;
+	image: "29.png" LOSSY 95;
+	image: "30.png" LOSSY 95;
+	image: "31.png" LOSSY 95;
+	image: "32.png" LOSSY 95;
+	image: "33.png" LOSSY 95;
+	image: "34.png" LOSSY 95;
+	image: "35.png" LOSSY 95;
+	image: "36.png" LOSSY 95;
+	image: "37.png" LOSSY 95;
+	image: "38.png" LOSSY 95;
+	image: "39.png" LOSSY 95;
+	image: "40.png" LOSSY 95;
+	image: "41.png" LOSSY 95;
+	image: "42.png" LOSSY 95;
+	image: "43.png" LOSSY 95;
+	image: "44.png" LOSSY 95;
+	image: "45.png" LOSSY 95;
+	image: "46.png" LOSSY 95;
+	image: "47.png" LOSSY 95;
+	image: "48.png" LOSSY 95;
+	image: "49.png" LOSSY 95;
+	image: "50.png" LOSSY 95;
+	image: "51.png" LOSSY 95;
+	image: "bg.png" LOSSY 95;
+	image: "ALL.png" LOSSY 95;
+	image: "LAST.png" LOSSY 95;
+	image: "shadow.png" LOSSY 95;
+}
+collections {           
+    
+    group {
+        name: "00";
+        min: 39 61;
+        max: 158 246;
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "00.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+	
+    }
+    group {
+        name: "01";
+
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "01.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "02";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "02.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "03";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "03.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "02";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "02.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "03";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "03.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "04";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "04.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "05";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "05.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "06";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "06.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "07";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "07.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "08";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "08.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "09";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "09.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "10";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "10.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "11";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "11.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "12";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "12.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "13";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "13.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "14";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "14.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "15";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "15.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "16";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "16.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "17";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "17.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "18";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "18.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "19";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "19.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "20";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "20.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "21";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "21.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "22";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "22.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "23";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "23.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "24";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "24.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "25";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "25.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "26";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "26.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "27";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "27.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "28";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "28.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "29";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "29.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "30";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "30.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "31";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "31.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "32";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "32.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "33";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "33.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "34";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "34.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "35";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "35.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "36";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "36.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "37";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "37.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "38";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "38.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "39";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "39.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "40";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "40.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "41";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "41.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "42";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "42.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "43";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "43.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "44";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "44.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "45";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "45.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "46";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "46.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "47";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "47.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "48";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "48.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "49";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "49.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "50";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "50.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "51";
+        
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "51.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "bg";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "bg.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "ALL";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "ALL.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "LAST";
+
+        parts {
+            part {
+                name: "0";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "LAST.png";
+			}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+    group {
+        name: "shadow";
+
+        parts {
+            part {
+                name: "1";
+                type: IMAGE;
+		description {
+			state: "default" 0.0;
+			image {
+				normal: "shadow.png";
+			}
+			rel1{ relative: -0.1 -0.04;}
+			rel2{ relative: 1.06 1.04;}
+		}
+ 
+                
+            }
+        }
+
+      
+    }
+   
+}
+

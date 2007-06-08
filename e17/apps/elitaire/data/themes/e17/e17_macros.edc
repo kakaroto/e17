@@ -1,0 +1,409 @@
+#define ARROW_L( _relto)\
+part {\
+ name:          "h1a1";\
+ mouse_events:  0;\
+ description {\
+	state:    "default" 0.0;\
+	align:    1.0 0.5;\
+	min:      21 29;\
+	max:      21 29;\
+	visible:  0;\
+	color:    255 255 255 0;\
+	rel1 {\
+	   relative: 0.0  0.0;\
+	   offset:   -1   0;\
+	   to: _relto;\
+	}\
+	rel2 {\
+	   relative: 0.0  1.0;\
+	   offset:   -1   -1;\
+	   to: _relto;\
+	}\
+	image {\
+	   normal: "e17_ibar_arrow_l.png";\
+	}\
+ }\
+ description {\
+	state:    "default2" 0.0;\
+	inherit:  "default" 0.0;\
+	visible:  1;\
+	color:    255 255 255 255;\
+ }\
+}\
+part {\
+ name:          "h1a2";\
+ mouse_events:  0;\
+ description {\
+	state:    "default" 0.0;\
+	align:    1.0 0.5;\
+	min:      21 29;\
+	max:      21 29;\
+	visible:  0;\
+	color:    255 255 255 0;\
+	rel1 {\
+	   relative: 0.0  0.0;\
+	   offset:   -1   0;\
+	   to: "h1a1";\
+	}\
+	rel2 {\
+	   relative: 0.0  1.0;\
+	   offset:   -1   -1;\
+	   to: "h1a1";\
+	}\
+	image {\
+	   normal: "e17_ibar_arrow_l.png";\
+	}\
+ }\
+ description {\
+	state:    "default2" 0.0;\
+	inherit:  "default" 0.0;\
+	visible:  1;\
+	color:    255 255 255 255;\
+ }\
+}\
+part {\
+ name:          "h1a3";\
+ mouse_events:  0;\
+ description {\
+	state:    "default" 0.0;\
+	align:    1.0 0.5;\
+	min:      21 29;\
+	max:      21 29;\
+	visible:  0;\
+	color:    255 255 255 0;\
+	rel1 {\
+	   relative: 0.0  0.0;\
+	   offset:   -1   0;\
+	   to: "h1a2";\
+	}\
+	rel2 {\
+	   relative: 0.0  1.0;\
+	   offset:   -1   -1;\
+	   to: "h1a2";\
+	}\
+	image {\
+	   normal: "e17_ibar_arrow_l.png";\
+	}\
+ }\
+ description {\
+	state:    "default2" 0.0;\
+	inherit:  "default" 0.0;\
+	visible:  1;\
+	color:    255 255 255 255;\
+ }\
+}\
+part {\
+ name:          "h1a4";\
+ mouse_events:  0;\
+ description {\
+	state:    "default" 0.0;\
+	align:    1.0 0.5;\
+	min:      21 29;\
+	max:      21 29;\
+	visible:  0;\
+	color:    255 255 255 0;\
+	rel1 {\
+	   relative: 0.0  0.0;\
+	   offset:   -1   0;\
+	   to: "h1a3";\
+	}\
+	rel2 {\
+	   relative: 0.0  1.0;\
+	   offset:   -1   -1;\
+	   to: "h1a3";\
+	}\
+	image {\
+	   normal: "e17_ibar_arrow_l.png";\
+	}\
+ }\
+ description {\
+	state:    "default2" 0.0;\
+	inherit:  "default" 0.0;\
+	visible:  1;\
+	color:    255 255 255 255;\
+ }\
+}
+
+#define ARROW_R( _relto)\
+part {      \
+ name:          "h2a1";\
+ mouse_events:  0;\
+ description {\
+	state:    "default" 0.0;\
+	align:    0.0 0.5;\
+	min:      21 29;\
+	max:      21 29;\
+	visible:  0;\
+	color:    255 255 255 0;\
+	rel1 {\
+	   relative: 1.0  0.0;\
+	   offset:   0    0;\
+	   to: _relto;\
+	}\
+	rel2 {\
+	   relative: 1.0  1.0;\
+	   offset:   0   -1;\
+	   to: _relto;\
+	}\
+	image {\
+	   normal: "e17_ibar_arrow_r.png";\
+	}\
+ }\
+ description {\
+	state:    "default2" 0.0;\
+	inherit:  "default" 0.0;\
+	visible:  1;\
+	color:    255 255 255 255;\
+ }\
+}\
+part {\
+ name:          "h2a2";\
+ mouse_events:  0;\
+ description {\
+	state:    "default" 0.0;\
+	align:    0.0 0.5;\
+	min:      21 29;\
+	max:      21 29;\
+	visible:  0;\
+	color:    255 255 255 0;\
+	rel1 {\
+	   relative: 1.0  0.0;\
+	   offset:   0    0;\
+	   to: "h2a1";\
+	}\
+	rel2 {\
+	   relative: 1.0  1.0;\
+	   offset:   0    -1;\
+	   to: "h2a1";\
+	}\
+	image {\
+	   normal: "e17_ibar_arrow_r.png";\
+	}\
+ }\
+ description {\
+	state:    "default2" 0.0;\
+	inherit:  "default" 0.0;\
+	visible:  1;\
+	color:    255 255 255 255;\
+ }\
+}\
+part {\
+ name:          "h2a3";\
+ mouse_events:  0;\
+ description {\
+	state:    "default" 0.0;\
+	align:    0.0 0.5;\
+	min:      21 29;\
+	max:      21 29;\
+	visible:  0;\
+	color:    255 255 255 0;\
+	rel1 {\
+	   relative: 1.0  0.0;\
+	   offset:   0    0;\
+	   to: "h2a2";\
+	}\
+	rel2 {\
+	   relative: 1.0  1.0;\
+	   offset:   0    -1;\
+	   to: "h2a2";\
+	}\
+	image {\
+	   normal: "e17_ibar_arrow_r.png";\
+	}\
+ }\
+ description {\
+	state:    "default2" 0.0;\
+	inherit:  "default" 0.0;\
+	visible:  1;\
+	color:    255 255 255 255;\
+ }\
+}\
+part {\
+ name:          "h2a4";\
+ mouse_events:  0;\
+ description {\
+	state:    "default" 0.0;\
+	align:    0.0 0.5;\
+	min:      21 29;\
+	max:      21 29;\
+	visible:  0;\
+	color:    255 255 255 0;\
+	rel1 {\
+	   relative: 1.0  0.0;\
+	   offset:   0    0;\
+	   to: "h2a3";\
+	}\
+	rel2 {\
+	   relative: 1.0  1.0;\
+	   offset:   0    -1;\
+	   to: "h2a3";\
+	}\
+	image {\
+	   normal: "e17_ibar_arrow_r.png";\
+	}\
+ }\
+ description {\
+	state:    "default2" 0.0;\
+	inherit:  "default" 0.0;\
+	visible:  1;\
+	color:    255 255 255 255;\
+ }\
+}
+
+#define ARROW_L_PROGS( _source )\
+program {\
+ name:    "h1_in";\
+ signal:  "mouse,in";\
+ source:  _source;\
+ action:  STATE_SET "default" 0.0;\
+ target:  "h1a1";\
+ target:  "h1a2";\
+ target:  "h1a3";\
+ target:  "h1a4";\
+ after:   "h1_h_in1a";\
+}\
+program {\
+ name:    "h1_out";\
+ signal:  "mouse,out";\
+ source:  _source;\
+ action:  STATE_SET "default" 0.0;\
+ target:  "h1a1";\
+ target:  "h1a2";\
+ target:  "h1a3";\
+ target:  "h1a4";\
+}\
+program {      \
+ name:    "h1_h_in1a";\
+ action:  STATE_SET "default2" 0.0;\
+ transition: SINUSOIDAL 0.25;\
+ target:  "h1a1";\
+ after:   "h1_h_in2a";\
+ after:   "h1_h_in2b";\
+}\
+program {\
+ name:    "h1_h_in1b";\
+ action:  STATE_SET "default" 0.0;\
+ transition: DECELERATE 0.75;\
+ target:  "h1a4";\
+}\
+program {\
+ name:    "h1_h_in2a";\
+ action:  STATE_SET "default2" 0.0;\
+ transition: SINUSOIDAL 0.25;\
+ target:  "h1a2";\
+ after:   "h1_h_in3a";\
+ after:   "h1_h_in3b";\
+}\
+program {\
+ name:    "h1_h_in2b";\
+ action:  STATE_SET "default" 0.0;\
+ transition: DECELERATE 0.75;\
+ target:  "h1a1";\
+}\
+program {\
+ name:    "h1_h_in3a";\
+ action:  STATE_SET "default2" 0.0;\
+ transition: SINUSOIDAL 0.25;\
+ target:  "h1a3";\
+ after:   "h1_h_in4a";\
+ after:   "h1_h_in4b";\
+}\
+program {\
+ name:    "h1_h_in3b";\
+ action:  STATE_SET "default" 0.0;\
+ transition: DECELERATE 0.75;\
+ target:  "h1a2";\
+}\
+program {\
+ name:    "h1_h_in4a";\
+ action:  STATE_SET "default2" 0.0;\
+ transition: SINUSOIDAL 0.25;\
+ target:  "h1a4";\
+ after:   "h1_h_in1a";\
+ after:   "h1_h_in1b";\
+}\
+program {\
+ name:    "h1_h_in4b";\
+ action:  STATE_SET "default" 0.0;\
+ transition: DECELERATE 0.75;\
+ target:  "h1a3";\
+}
+
+#define ARROW_R_PROGS( _source)\
+program {\
+ name:    "h2_in";\
+ signal:  "mouse,in";\
+ source:  _source;\
+ action:  STATE_SET "default" 0.0;\
+ target:  "h2a1";\
+ target:  "h2a2";\
+ target:  "h2a3";\
+ target:  "h2a4";\
+ after:   "h2_h_in1a";\
+}\
+program {\
+ name:    "h2_out";\
+ signal:  "mouse,out";\
+ source:  _source;\
+ action:  STATE_SET "default" 0.0;\
+ target:  "h2a1";\
+ target:  "h2a2";\
+ target:  "h2a3";\
+ target:  "h2a4";\
+}\
+program {      \
+ name:    "h2_h_in1a";\
+ action:  STATE_SET "default2" 0.0;\
+ transition: SINUSOIDAL 0.25;\
+ target:  "h2a1";\
+ after:   "h2_h_in2a";\
+ after:   "h2_h_in2b";\
+}\
+program {\
+ name:    "h2_h_in1b";\
+ action:  STATE_SET "default" 0.0;\
+ transition: DECELERATE 0.75;\
+ target:  "h2a4";\
+}\
+program {\
+ name:    "h2_h_in2a";\
+ action:  STATE_SET "default2" 0.0;\
+ transition: SINUSOIDAL 0.25;\
+ target:  "h2a2";\
+ after:   "h2_h_in3a";\
+ after:   "h2_h_in3b";\
+}\
+program {\
+ name:    "h2_h_in2b";\
+ action:  STATE_SET "default" 0.0;\
+ transition: DECELERATE 0.75;\
+ target:  "h2a1";\
+}\
+program {\
+ name:    "h2_h_in3a";\
+ action:  STATE_SET "default2" 0.0;\
+ transition: SINUSOIDAL 0.25;\
+ target:  "h2a3";\
+ after:   "h2_h_in4a";\
+ after:   "h2_h_in4b";\
+}\
+program {\
+ name:    "h2_h_in3b";\
+ action:  STATE_SET "default" 0.0;\
+ transition: DECELERATE 0.75;\
+ target:  "h2a2";\
+}\
+program {\
+ name:    "h2_h_in4a";\
+ action:  STATE_SET "default2" 0.0;\
+ transition: SINUSOIDAL 0.25;\
+ target:  "h2a4";\
+ after:   "h2_h_in1a";\
+ after:   "h2_h_in1b";\
+}\
+program {\
+ name:    "h2_h_in4b";\
+ action:  STATE_SET "default" 0.0;\
+ transition: DECELERATE 0.75;\
+ target:  "h2a3";\
+}

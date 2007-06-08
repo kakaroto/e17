@@ -1,0 +1,7 @@
+SUBDIRS = data src po 
+
+#ACLOCAL_AMFLAGS = -I m4
+
+EXTRA_DIST = config.rpath ABOUT-NLS COPYING-PLAIN
+
+ACLOCAL_AMFLAGS = -I m4
