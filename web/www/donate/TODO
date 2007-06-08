@@ -1,0 +1,8 @@
+o Move existing info to the sponsers page 
+o Make the "why donate?" a bit more general now that we have the 
+server... It might be nice to still put a mention about the server 
+donation drive being successful and that we now reside on those servers.
+o Ditch the meter all together
+o Order the donors by date NOT by donation amount
+o Write the information to a plain file instead of a mysql db
+
