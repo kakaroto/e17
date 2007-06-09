@@ -637,7 +637,7 @@ EventsMain(void)
 
    time1 = GetTime();
 
-   for (; !Mode.wm.exit_mode;)
+   for (;;)
      {
 	pfetch = 0;
 	count = EventsProcess(&evq_ptr, &evq_alloc, &pfetch);
@@ -670,6 +670,9 @@ EventsMain(void)
 	time2 = TimersRun(time2);
 	if (XPending(disp))
 	   continue;
+
+	if (Mode.wm.exit_mode)
+	   break;
 
 	FD_ZERO(&fdset);
 	xfd = ConnectionNumber(disp);
