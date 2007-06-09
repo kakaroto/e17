@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-06-05 11:50+0200\n"
+"POT-Creation-Date: 2007-06-06 22:49+0200\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -43,7 +43,7 @@ msgid ""
 msgstr ""
 
 #: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:651 src/buttons.c:193
-#: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:356 src/tclass.c:97
+#: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:357 src/tclass.c:97
 #: src/tooltips.c:140
 #, c-format
 msgid "%u references remain\n"
@@ -51,7 +51,7 @@ msgstr ""
 
 #: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
 #: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1775 src/cursors.c:177 src/iclass.c:548 src/menus.c:1794
+#: src/container.c:1775 src/cursors.c:177 src/iclass.c:547 src/menus.c:1794
 #: src/menus.c:1904 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:176
 #: src/windowmatch.c:160
 #, c-format
@@ -60,7 +60,7 @@ msgstr "CONFIG: a ignorar dados extra em \"%s\"\n"
 
 #: src/aclass.c:302 src/backgrounds.c:1158 src/borders.c:1116
 #: src/borders.c:1239 src/buttons.c:740 src/cmclass.c:210 src/config.c:257
-#: src/cursors.c:183 src/iclass.c:553 src/menus.c:1799 src/menus.c:1910
+#: src/cursors.c:183 src/iclass.c:552 src/menus.c:1799 src/menus.c:1910
 #: src/slideout.c:433 src/tclass.c:264 src/tooltips.c:182
 #: src/windowmatch.c:165
 #, c-format
@@ -1201,7 +1201,7 @@ msgstr "Opções do Desktop"
 msgid "Could not acquire selection: %s"
 msgstr ""
 
-#: src/iclass.c:717
+#: src/iclass.c:716
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
