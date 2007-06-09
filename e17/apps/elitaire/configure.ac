@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(elitaire, 0.1-pre01, [Peter Wehrfritz <peter.wehrfritz@web.de>])
+AC_INIT(elitaire, 0.1, [Peter Wehrfritz <peter.wehrfritz@web.de>])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE
