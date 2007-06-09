@@ -1650,7 +1650,8 @@ HandleIPC(const char *params, Client * c)
 
    cmd[0] = 0;
    num = 0;
-   sscanf(params, "%100s %n", cmd, &num);
+   if (params)
+      sscanf(params, "%100s %n", cmd, &num);
    prm = (num > 0 && params[num]) ? params + num : NULL;
 
    lst = IPC_GetList(&num);
@@ -1668,7 +1669,7 @@ HandleIPC(const char *params, Client * c)
 	break;
      }
 
-   if (!ok)
+   if (!ok && params)
       ok = IPC_Compat(params);
 
    IpcPrintFlush(c);
