@@ -296,7 +296,8 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
 		{
                 	thumb = add_image(em->fbox, imagef, 1, 
 						freebox_image_clicked, NULL);
-			ewl_image_constrain_set(EWL_IMAGE(thumb), 81); 
+			ewl_image_constrain_set(EWL_IMAGE(thumb), 
+					ewl_range_value_get(EWL_RANGE(em->fthumb_size))); 
 			ewl_object_alignment_set(EWL_OBJECT(thumb), 
 							EWL_FLAG_ALIGN_CENTER);
 			ewl_widget_name_set(thumb, imagef);
