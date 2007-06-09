@@ -4379,3 +4379,20 @@ Set default pager mode to live.
 Move some window background pixmap handling down to Win layer.
 Fix edge flipping after desk switch.
 
+
+-------------------------------------------------------------------------------
+
+Sat Jun  9 11:35:20 CEST 2007
+(Kim)
+
+--- 0.16.8.9 0.02 ---
+Fix extents invalidation when reparenting+moving while unmapped.
+Avoid area switch when activating window that is mostly offscreen (noted by Mike Frysinger).
+edox: Fix centering when running e16 in window.
+Change generated menu file references to be relative to ~/.e16/menus/. 
+Use new destructive line parser to avoid a lot of strdup/free's.
+Move menus in menus.cfg to simple files (preserving backward compatibility).
+Make xsession stuff work - at least on Fedora.
+Japanese translation update (Yasufumi Haga).
+Defer image class color allocation until needed (most likely never).
+
