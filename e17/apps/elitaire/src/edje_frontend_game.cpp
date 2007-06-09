@@ -139,7 +139,6 @@ static int _eli_app_wait_for_end(void * data)
 {
     _Eli_App_End * eend;
 
-    printf("_app_wait\n");
     eend = (_Eli_App_End *) data;
     if (eli_highscore_accept(eend->eap->current.game, 
 			       eend->points, eend->type)) 

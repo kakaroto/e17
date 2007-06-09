@@ -161,7 +161,6 @@ void eli_app_game_new(Eli_App * eap, const char * game)
     if (eap->next.game) return;
 
     eap->next.game = strdup(game);
-    printf("%s\n",game);
     /* end current game */
     eli_app_game_end(eap);
 }
@@ -329,8 +328,8 @@ int eli_app_theme_init(Eli_App * eap)
     l = eli_theme_names_get();
 
     /* selecting the gui theme */
-    while (l->current) {
-        name = (char *) l->current->data;
+    ecore_list_goto_first(l);
+    while ((name = (char *) ecore_list_next(l))) {
         file = ecore_config_theme_with_path_from_name_get(name);
 
         /* selecting the gui theme */
@@ -341,9 +340,8 @@ int eli_app_theme_init(Eli_App * eap)
             ecore_list_append(cards, name);
 
         free(file);
-        ecore_list_next(l);
     }
-    l->current = l->first;
+    ecore_list_goto_first(l);
 
     eap->theme.gui.list = gui;
     eap->theme.cards.list = cards;
@@ -366,9 +364,9 @@ Ecore_List * eli_theme_names_get()
     dir_list = eli_theme_dir_get();
 
     if (!dir_list) {
-	fprintf(stderr, "Warning: there are no possible theme paths\n"
-			"I'm unsure why this happens :(\n");
-	return NULL;
+        fprintf(stderr, "Warning: there are no possible theme paths\n"
+                        "I'm unsure why this happens :(\n");
+        return NULL;
     }
 
     out_l = ecore_list_new();
@@ -380,7 +378,7 @@ Ecore_List * eli_theme_names_get()
         file_l = ecore_file_ls(dir);
 
         if (file_l) {
-	    char * file;
+            char * file;
 
             while ((file = (char *) ecore_list_next(file_l))) {
                 if (ecore_str_has_suffix(file, ".edj"))
@@ -402,9 +400,13 @@ Ecore_List * eli_theme_names_get()
 char ** eli_theme_dir_get()
 {
     char * dirs;
+    char ** dirs_array;
 
     dirs = ecore_config_theme_search_path_get();
-    return ecore_str_split(dirs, "|", -1);
+    dirs_array = ecore_str_split(dirs, "|", -1);
+    free(dirs);
+
+    return dirs_array;
 }
 
 static char * theme_cut_off_suffix(const char * file)

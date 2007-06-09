@@ -150,8 +150,6 @@ Evas_Bool eli_highscore_entry_add(const char * game, const char * username,
 
     if (!game || !username || !eet_file_name) return 0;
 
-    printf("e_add: %s %s %f\n", game, username, points);
-    
     entry = _eli_entry_new(username, points, type);
 
     l = eli_highscore_get(game);

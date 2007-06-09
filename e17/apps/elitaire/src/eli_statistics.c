@@ -120,7 +120,6 @@ int _eli_statistics_write(const char * game, Eli_Statistics *stats)
 {
     Eet_File * file;
 
-    printf("%s\n", game);
     if (ecore_file_exists(eet_file_name)) {
         file = eet_open(eet_file_name, EET_FILE_MODE_READ_WRITE);
     }
@@ -132,11 +131,8 @@ int _eli_statistics_write(const char * game, Eli_Statistics *stats)
 	}
     }
 
-    printf("%s %p %p\n", game, edd_statistics, stats);
     eet_data_write(file, edd_statistics, game, stats, 1);
-    printf("%s %p %p\n", game, edd_statistics, stats);
     eet_close(file);
-    printf("%s %p %p\n", game, edd_statistics, stats);
 
     return 1;
 }

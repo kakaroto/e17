@@ -24,7 +24,6 @@ int main(int argc, char ** argv)
     setlocale(LC_MONETARY, "");
     setlocale(LC_CTYPE, "");
     bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
-    printf("%s\n", PACKAGE_LOCALE_DIR);
     bind_textdomain_codeset(PACKAGE, "UTF-8");
     textdomain(PACKAGE);
 #endif

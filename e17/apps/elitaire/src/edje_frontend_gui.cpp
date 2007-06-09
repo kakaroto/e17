@@ -77,6 +77,7 @@ void _eli_edje_frontend_del(Eli_App * eap)
 
 void _eli_edje_frontend_state_notify(Eli_App * eap)
 {
+#if 0
     switch (eap->state) {
         case ELI_STATE_PLAYING:
 	    printf("playing\n");
@@ -97,6 +98,7 @@ void _eli_edje_frontend_state_notify(Eli_App * eap)
 	    printf("rest\n");
 	    break;
     }
+#endif
 }	    
 
 /* init Ecore_Evas stuff */
@@ -507,8 +509,6 @@ static void _key_down_cb(void * data, Evas * e, Evas_Object * obj, void * event_
     eef = (Eli_Edje_Frontend *) data;
     ev = (Evas_Event_Key_Down *) event_info;
     
-    printf("You hit key: %s \n", ev->key);
-
     if (!strcmp(ev->key, "Control_L") || !strcmp(ev->key, "Control_R")) {
         eef->key.ctrl_down = true;
         return;
@@ -641,8 +641,6 @@ static void _eli_edje_frontend_cards_container_fill(Eli_App * eap,
         Evas_Object * item;
 
         item = edje_object_add(evas_object_evas_get(container));
-	printf("cards %s\n", cards_name);
-
         if (edje_object_file_set(item, file, "element")) {
             Evas_Coord w, h;
 
@@ -674,10 +672,9 @@ static void _eli_edje_frontend_cards_container_fill(Eli_App * eap,
                     file);
             evas_object_del(item);
         }
-        ecore_list_next(l);
     }
+    ecore_list_goto_first(l);
 
-    l->current = l->first;
     if (file)
         free(file);
 }

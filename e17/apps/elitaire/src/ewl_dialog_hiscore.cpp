@@ -302,8 +302,6 @@ void _win_highscore_clicked_cb(Ewl_Widget * w, void * event, void * data)
     
     text = ewl_text_text_get(EWL_TEXT(wh_entry));
     wh_entry = NULL;
-    printf("%p - %p - %p \n", wh->eap->current.game, wh->eap, wh);
-    printf("%s - %s - %f\n", wh->eap->current.game, text, wh->points);
     eli_highscore_entry_add(wh->eap->current.game, text, wh->points,
                             wh->type);
     eli_app_highscore_open(wh->eap, wh->eap->current.game);

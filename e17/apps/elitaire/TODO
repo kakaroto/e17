@@ -11,4 +11,3 @@
 - if you open a dialog through the context menu, edje seems to be frozen.
   This is probably a EWL bug. A work around at the moment is to open
   and close the context menu with a right click.
-- the card theme selector seems not to show all installed themes  
