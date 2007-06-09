@@ -668,11 +668,12 @@ EventsMain(void)
 
 	/* Run all expired timers, get time to first non-expired (0. means none) */
 	time2 = TimersRun(time2);
-	if (XPending(disp))
-	   continue;
 
 	if (Mode.wm.exit_mode)
 	   break;
+
+	if (XPending(disp))
+	   continue;
 
 	FD_ZERO(&fdset);
 	xfd = ConnectionNumber(disp);
