@@ -4,38 +4,58 @@
 <h3>Why donate?</h3>
 <p>
 In order to provide better services to our users, the Enlightenment 
-	team would like to ask that the Enlightenment user community pull 
+	team would like to ask that the Enlightenment user community 
+pull 
     together and help us raise funds for a new server. We are therefore
-    requesting donations so that we may purchase our own dedicated server.
-    If you would like to contribute to the Enlightenment project, but can't
+    requesting donations so that we may purchase our own dedicated 
+server.
+    If you would like to contribute to the Enlightenment project, but 
+can't
     code, this is a great way to help out.
     <br/><br/>
     We would like to thank our current hosting provider, 
-    <a href="http://www.caosity.org" target="_blank">the cAos Foundation</a>
+    <a href="http://www.caosity.org" target="_blank">the cAos 
+Foundation</a>
 
     , who have generously donated access to their CVS
     services.
     <br/><br/>
-	Long-time Enlightenment users are probably well aware of some of the 
-	service issues we've experienced in recent years. The CVS services improved
-	considerably with the move to our current provider, but the web site has 
-	remained with SourceForge.  The restrictive permissions have prevented us 
-	from providing many of the services to our users that we feel are 
-	necessary. Services such as integrating CVS content with the website, bug 
-	tracking, wiki access, and reasonable CMS services are simply too 
-	difficult to provide with the access levels available on SourceForge. In 
-	addition, external CMS access to SourceForge has proven to be unreliable 
-	and very slow. As a result, the website has gone relatively unmaintained 
-	for months, much of the content has moved to edevelop.org and get-e.org, 
-	and hosted copies of API documentation have not been updated to reflect 
-	significant changes which are documented in CVS. These issues hurt the 
-	projects image, discourage new users, and frustrate existing users. We 
-	feel a dedicated server is the best way to address these issues with the 
+	Long-time Enlightenment users are probably well aware of some of 
+the 
+	service issues we've experienced in recent years. The CVS 
+services improved
+	considerably with the move to our current provider, but the web 
+site has 
+	remained with SourceForge.  The restrictive permissions have 
+prevented us 
+	from providing many of the services to our users that we feel 
+are 
+	necessary. Services such as integrating CVS content with the 
+website, bug 
+	tracking, wiki access, and reasonable CMS services are simply 
+too 
+	difficult to provide with the access levels available on 
+SourceForge. In 
+	addition, external CMS access to SourceForge has proven to be 
+unreliable 
+	and very slow. As a result, the website has gone relatively 
+unmaintained 
+	for months, much of the content has moved to edevelop.org and 
+get-e.org, 
+	and hosted copies of API documentation have not been updated to 
+reflect 
+	significant changes which are documented in CVS. These issues 
+hurt the 
+	projects image, discourage new users, and frustrate existing 
+users. We 
+	feel a dedicated server is the best way to address these issues 
+with the 
 	level of quality expected from this project.
 	<br/><br/>
     As a last note, we would like to extend our thanks to the people who
     have already donated the current funds of $1600 to the Enlightenment 
-	project.  Your charity has not been forgotten, and your donations will be 
+	project.  Your charity has not been forgotten, and your 
+donations will be 
 	applied towards the server fund.
 </p>
 
@@ -51,9 +71,12 @@ In order to provide better services to our users, the Enlightenment
         <input type="hidden" name="cn" value="Comments">
         <input type="hidden" name="currency_code" value="USD">
         
-        <input type="hidden" name="notify_url" value="http://www0.get-e.org/donate/donate_ipn.php">
-        <input type="hidden" name="return" value="http://www0.get-e.org/donate/donate_ipn.php">
-        <input type="hidden" name="cancel_return" value="http://www0.get-e.org/donate">
+        <input type="hidden" name="notify_url" 
+value="http://www0.get-e.org/donate/donate_ipn.php">
+        <input type="hidden" name="return" 
+value="http://www0.get-e.org/donate/donate_ipn.php">
+        <input type="hidden" name="cancel_return" 
+value="http://www0.get-e.org/donate">
 
         
         <input type="hidden" name="tax" value="0">
@@ -63,12 +86,14 @@ In order to provide better services to our users, the Enlightenment
 
         <b>$</b><input name="amount" type="text" value="" 
                 maxlength="5" style="padding:3px 4px 3px 4px;
-                background:url('http://www0.get-e.org/donate/images/progress_background.png');
+                
+background:url('http://www0.get-e.org/donate/images/progress_background.png');
                 border:1px solid #b3b3b3; 
                 font-size:14px; font-weight:bold; margin:0;
                 vertical-align:middle; font-family:Arial; width:50px;"/>
         <input type="submit" name="submit" value="Submit" 
-                style="background:url('http://www0.get-e.org/donate/images/progress_foreground.png');
+                
+style="background:url('http://www0.get-e.org/donate/images/progress_foreground.png');
                 border:1px solid #b3b3b3; font-family:Arial;
                 margin:0; font-weight:bold; height:23px; font-size:14px;
                 vertical-align:middle; padding:0 8px;"/>
@@ -80,58 +105,69 @@ In order to provide better services to our users, the Enlightenment
 </p>
 
 <p>
-*FIXME* Fill in sponsors. The following need to be listed:
-The community of users<br>
-2 RAD Technologies<br>
-RedHat<br>
-VA Software<br>
-Fluffy Spider Technologies<br>
-VA Linux Systems Japan<br>
-EasyDNS<br>
-Terrasoft Solutions<br>
-OSUOSL<br>
+<h2>Sponsors</h2>
+The Enlightenment would like to thank the following groups for their 
+support of the project. Without their help we would not be where we are 
+at today.
+<h3>The community of users</h3>
+<p>The users are a large part of the project without them there would 
+not be much of a point to development. 
+They are involved in the testing and development of Enlightenment and 
+provide donations for things such as our new servers.
+</p>
+<h3><a href="http://www.micropact.com/" title="2rad">Micropact (formerly 
+2 RAD Technologies)</a></h3>
+2RAD helpd host E stuff for a while till we outgrew them<br>
+<h3><a href="http://www.redhat.com/" title="Redhat">Redhat</a></h3>
+Red Hat helped in the early days of Enlightenment<br>
+<h3><a href="http://www.vasoftware.com/" title="Va software">VA 
+Software</a></h3>
+VA Software (formerly VA Linux) helped a lot for getting E 0.16 out and 
+prototype work for E17 (EFM, Imlib2).<br>
+<h3><a href="http://www.fluffyspider.com.au/" title="Fluffy 
+Spider">Fluffy Spider Technologies</a></h3>
+FST helped by using E technology (Evas, Eet, Ecore etc.) and helping in 
+development to improve it further.<br>
+<h3><a href="http://www.valinux.co.jp/" title="Va Linux">VA Linux 
+Systems Japan</a></h3>
+VA Linux Systems Japan allowed some time to be spent working on E.<br>
+
+<h3><a href="http://www.easydns.com/" title="EasyDNS">EasyDNS</a></h3>
+EasyDNS helped us regain control over the enlightenment.org domain after 
+the dev in control went MIA
+<br>
+<h3><a href="http://www.terrasoftsolutions.com/" 
+title="Terrasoft">Terrasoft Solutions</a></h3>
+ Terrasoft donated money to help enlightenment achieve usability for 
+their release of Yellow Dog Linux for Playstation 3
+<br>
+<h3><a href="http://osuosl.org/" title="OSUOSL">OSUOSL</a></h3>
+OSUOSL currently hosts our 2 main servers (anoncvs and web).
+
 </p><p>
 *FIXME* How to donate (paypal etc.) and how to sponsor/help.
 </p><p>
 
+
 <h3>Help us spread the word!</h3>
 <p>
-Place one of the following banners on your site to help us out.
+Place the following banner on your site to help us out.
 </p>
 
-<img src="http://farm1.static.flickr.com/145/372687288_615fbdc4ca.jpg?v=0" alt="banner"/>
+<img 
+src="http://farm1.static.flickr.com/186/372687294_6826d35202.jpg?v=0" 
+alt="banner"/>
 <pre>
 &lt;a href="http://www.enlightenment.org/donate"&gt;
-&lt;img src="http://farm1.static.flickr.com/145/372687288_615fbdc4ca.jpg?v=0"&gt;
-&lt;/a&gt;
-
-</pre>
-
-<img src="http://farm1.static.flickr.com/186/372687294_6826d35202.jpg?v=0" alt="banner"/>
-<pre>
-&lt;a href="http://www.enlightenment.org/donate"&gt;
-&lt;img src="http://farm1.static.flickr.com/186/372687294_6826d35202.jpg?v=0"&gt;
+&lt;img 
+src="http://farm1.static.flickr.com/186/372687294_6826d35202.jpg?v=0"&gt;
 &lt;/a&gt;
 </pre>
 
-<img src="http://farm1.static.flickr.com/188/372687360_9b90305899.jpg?v=0" alt="banner"/>
-<pre>
-&lt;a href="http://www.enlightenment.org/donate"&gt;
-&lt;img src="http://farm1.static.flickr.com/188/372687360_9b90305899.jpg?v=0"&gt;
 
-&lt;/a&gt;
-</pre>
-
-<img src="http://farm1.static.flickr.com/151/372687243_f980a895c1.jpg?v=0" alt="banner"/>
-<pre>
-&lt;a href="http://www.enlightenment.org/donate"&gt;
-&lt;img src="http://farm1.static.flickr.com/151/372687243_f980a895c1.jpg?v=0"&gt;
-&lt;/a&gt;
-</pre>
 
 </p>
 
 </div></td>
 </tr>
 </table>
-
