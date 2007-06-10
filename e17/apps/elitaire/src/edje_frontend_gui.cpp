@@ -34,10 +34,14 @@ static void _elitaire_scroll_left_start_cb(void * data, Evas_Object * o,
                           const char * emission, const char * source);
 static void _elitaire_scroll_right_start_cb(void * data, Evas_Object * o,
                           const char * emission, const char * source);
+static void _elitaire_scroll_left_cb(void * data, Evas_Object * o,
+                          const char * emission, const char * source);
+static void _elitaire_scroll_right_cb(void * data, Evas_Object * o,
+                          const char * emission, const char * source);
 static void _key_down_cb(void * data, Evas * e, Evas_Object * obj,
                           void * event_info);
 static void _key_up_cb(void * data, Evas * e, Evas_Object * obj,
-		          void * event_info);
+                          void * event_info);
 
 /*
  * frontend initialation
@@ -135,10 +139,10 @@ static void win_del_cb(Ecore_Evas * ee)
 {
     if (ee) {
         Eli_App * eap;
-	Eli_Edje_Frontend * eef;
+        Eli_Edje_Frontend * eef;
 
         eap = (Eli_App *) ecore_evas_data_get(ee, "eap");
-	eef = eli_app_edje_frontend_get(eap);
+        eef = eli_app_edje_frontend_get(eap);
 	
         if (eef->elitaire) {
             eap->next.game = strdup("exit");
@@ -238,6 +242,7 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
         _eli_app_gui_swallow(eef->gui, "elitaire_cards_box", container);
         _eli_edje_frontend_cards_container_fill(eap, container);
 
+        /* for timer based scrolling, i.e. pressed button scrolling */
         edje_object_signal_callback_add(eef->gui, "scroll,stop",
                                         "elitaire_cards_box",
                                         _elitaire_scroll_stop_cb, container);
@@ -248,6 +253,16 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
         edje_object_signal_callback_add(eef->gui, "scroll,right,start",
                                         "elitaire_cards_box",
                                         _elitaire_scroll_right_start_cb,
+                                        container);
+
+        /* for interval scrolling, i.e. mouse wheel */
+        edje_object_signal_callback_add(eef->gui, "scroll,left",
+                                        "elitaire_cards_box",
+                                        _elitaire_scroll_left_cb,
+                                        container);
+        edje_object_signal_callback_add(eef->gui, "scroll,right",
+                                        "elitaire_cards_box",
+                                        _elitaire_scroll_right_cb,
                                         container);
     }
 
@@ -264,6 +279,7 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
         _eli_app_gui_swallow(eef->gui, "elitaire_theme_box", container);
         _eli_edje_frontend_theme_container_fill(eap, container);
 
+        /* for timer based scrolling, i.e. pressed button scrolling */
         edje_object_signal_callback_add(eef->gui, "scroll,stop",
                                         "elitaire_theme_box",
                                         _elitaire_scroll_stop_cb, container);
@@ -274,6 +290,16 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
         edje_object_signal_callback_add(eef->gui, "scroll,right,start",
                                         "elitaire_theme_box",
                                         _elitaire_scroll_right_start_cb,
+                                        container);
+
+        /* for interval scrolling, i.e. mouse wheel */
+        edje_object_signal_callback_add(eef->gui, "scroll,left",
+                                        "elitaire_theme_box",
+                                        _elitaire_scroll_left_cb,
+                                        container);
+        edje_object_signal_callback_add(eef->gui, "scroll,right",
+                                        "elitaire_theme_box",
+                                        _elitaire_scroll_right_cb,
                                         container);
     }
 
@@ -300,6 +326,16 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
         edje_object_signal_callback_add(eef->gui, "scroll,right,start",
                                         "elitaire_new_box",
                                         _elitaire_scroll_right_start_cb,
+                                        container);
+        
+        /* for interval scrolling, i.e. mouse wheel */
+        edje_object_signal_callback_add(eef->gui, "scroll,left",
+                                        "elitaire_new_box",
+                                        _elitaire_scroll_left_cb,
+                                        container);
+        edje_object_signal_callback_add(eef->gui, "scroll,right",
+                                        "elitaire_new_box",
+                                        _elitaire_scroll_right_cb,
                                         container);
 
     }
@@ -499,6 +535,26 @@ static void _elitaire_scroll_right_start_cb(void * data, Evas_Object * o,
 
     container = (Evas_Object *) data;
     esmart_container_scroll_start(container, 2.0);
+}
+
+static void _elitaire_scroll_left_cb(void * data, Evas_Object * o,
+                                     const char * emission, const char * source)
+{
+    Evas_Object * container;
+
+    container = (Evas_Object *) data;
+    /* XXX this value shouldn't be hardcoded */
+    esmart_container_scroll(container, -10);
+}
+
+static void _elitaire_scroll_right_cb(void * data, Evas_Object * o,
+                                     const char * emission, const char * source)
+{
+    Evas_Object * container;
+
+    container = (Evas_Object *) data;
+    /* XXX this value shouldn't be hardcoded */
+    esmart_container_scroll(container, 10);
 }
 
 static void _key_down_cb(void * data, Evas * e, Evas_Object * obj, void * event_info)

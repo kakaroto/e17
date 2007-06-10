@@ -253,6 +253,23 @@ program {\
 		}\
 	}\
 }\
+\
+program {\
+	name: _rel"_mouse_wheel_up";\
+	signal: "mouse,wheel,0,-1";\
+	source: _flag;\
+	script {\
+		  emit("scroll,right", _flag);\
+	}\
+}\
+program {\
+	name: _rel"_mouse_wheel_down";\
+	signal: "mouse,wheel,0,1";\
+	source: _flag;\
+	script {\
+		  emit("scroll,left", _flag);\
+	}\
+}\
 SCROLL_PROGS( _rel"_scroll_up_part", "scroll,stop", _flag, "scroll,right,start", _flag)\
 SCROLL_PROGS( _rel"_scroll_down_part", "scroll,stop", _flag , "scroll,left,start", _flag)
 
