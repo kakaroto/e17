@@ -148,11 +148,6 @@ Makefile
 ephoto.spec
 data/Makefile
 data/images/Makefile
-data/themes/Makefile
-data/themes/ephoto/Makefile
-data/themes/ephoto/bits/Makefile
-data/themes/ephoto/fonts/Makefile
-data/themes/ephoto/images/Makefile
 po/Makefile
 src/Makefile
 src/bin/Makefile

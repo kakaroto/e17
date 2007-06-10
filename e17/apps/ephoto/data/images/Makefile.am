@@ -1,6 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in Makefile
 
 FILES = add.png \
+	black.png \
 	camera-photo.png \
 	dialog-close.png \
 	edit_view.png \
@@ -22,7 +23,7 @@ FILES = add.png \
 	redo.png \
 	remove.png \
 	search.png \
-        stock_fullscreen.png \
+	stock_fullscreen.png \
 	stock_help.png \
 	stock_save.png \
 	stock_save-as.png \
