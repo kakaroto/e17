@@ -8,188 +8,320 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-10-03 02:26+0200\n"
-"PO-Revision-Date: 2006-10-16 15:27+0100\n"
+"PO-Revision-Date: 2007-06-10 20:17+0100\n"
 "Last-Translator: Peter Wehrfritz <peter.wehrfritz@web.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/ephoto_slideshow.c:115
-msgid "Ephoto Slideshow"
-msgstr "Ephoto Diavorführung"
+#: src/bin/ephoto_exif.c:103
+msgid "No Exif Data Exists"
+msgstr "Es sind keine Exif Daten vorhanden"
 
-#: src/ephoto_slideshow.c:329
-msgid "Slideshow Configuration"
-msgstr "Diavorführung Konfiguration"
-
-#: src/ephoto_slideshow.c:348
-msgid "Window Size"
-msgstr "Fenstergröße"
-
-#: src/ephoto_slideshow.c:361
-msgid "Fullscreen"
-msgstr "Vollbild"
-
-#: src/ephoto_slideshow.c:369
-msgid "Custom"
-msgstr "Benutzerdefiniert"
-
-#: src/ephoto_slideshow.c:384
-msgid "Width"
-msgstr "Weite"
-
-#: src/ephoto_slideshow.c:398
-msgid "Height"
-msgstr "Höhe"
-
-#: src/ephoto_slideshow.c:412
-msgid "Order"
-msgstr "Reihenfolge"
-
-#: src/ephoto_slideshow.c:419
-msgid "Loop Slideshow"
+#: src/bin/ephoto_list_view.c:97
+#, c-format
+msgid ""
+"Name: %s\n"
+"Pixels: %s\n"
+"Size: %s\n"
 msgstr ""
+"Name: %s\n"
+"Auflösung: %s\n"
+"Größe: %s\n"
 
-#: src/ephoto_slideshow.c:426
-msgid "Random Order"
-msgstr "Zufallsfolge"
+#: src/bin/ephoto_list_view.c:100
+msgid "Name"
+msgstr "Name"
 
-#: src/ephoto_slideshow.c:439
-msgid "Image Size"
-msgstr "Bildgröße"
+#: src/bin/ephoto_list_view.c:103
+msgid "Pixels"
+msgstr "Pixel"
 
-#: src/ephoto_slideshow.c:446
-msgid "Zoom Images to Fill Window"
-msgstr "Bild in Fenster einpassen"
+#: src/bin/ephoto_list_view.c:105
+msgid "Size"
+msgstr "Größe"
 
-#: src/ephoto_slideshow.c:453
-msgid "Keep Aspect"
-msgstr "Behalte Proportionen"
-
-#: src/ephoto_slideshow.c:460
-msgid "Transitions"
-msgstr "Übergänge"
-
-#: src/ephoto_slideshow.c:478
-msgid "Show File Name On Change"
-msgstr "Zeige Dateinamen beim Wechsel"
-
-#: src/ephoto_slideshow.c:493
-msgid "save"
-msgstr "Speichern"
-
-#: src/ephoto_slideshow.c:503
-msgid "cancel"
-msgstr "Abrechen"
-
-#: src/ephoto.c:50
-#: src/ephoto_viewer.c:253
-msgid "Menu|File"
-msgstr "Datei"
-
-#: src/ephoto.c:58
-#: src/ephoto_viewer.c:271
-msgid "Menu|File|Exit"
-msgstr "Beenden"
-
-#: src/ephoto.c:66
-msgid "Menu|Albums"
-msgstr "Alben"
-
-#: src/ephoto.c:74
-msgid "Menu|Albums|Add Album"
-msgstr "Diavorführung"
-
-#: src/ephoto.c:83
-msgid "Menu|Albums|Remove Album"
-msgstr "Album entfernen"
-
-#: src/ephoto.c:90
-msgid "Menu|Viewer"
-msgstr "Bildbetrachter"
-
-#: src/ephoto.c:98
-msgid "Menu|Viewer|Image Viewer"
-msgstr "Bildbetrachter"
-
-#: src/ephoto.c:106
-msgid "Menu|Slideshow"
-msgstr "Diavorführung"
-
-#: src/ephoto.c:115
-msgid "Menu|Slideshow|Configure Slideshow"
-msgstr "Diavorführung Konfigurieren"
-
-#: src/ephoto.c:126
-msgid "Menu|Slideshow|Start Slideshow"
-msgstr "Diavorführung starten"
-
-#: src/ephoto.c:167
-msgid "  Location:"
-msgstr "  Ort:"
-
-#: src/ephoto.c:214
+#: src/bin/ephoto_main.c:151
 msgid "Albums"
 msgstr "Alben"
 
-#: src/ephoto_viewer.c:235
-msgid "Ephoto Image Viewer"
-msgstr "Ephoto Bildbetrachter"
+#: src/bin/ephoto_main.c:157
+msgid "File System"
+msgstr "Dateisystem"
 
-#: src/ephoto_viewer.c:261
-msgid "Menu|File|Save Image"
-msgstr "Bild speichern"
+#: src/bin/ephoto_main.c:179
+msgid "Normal View"
+msgstr "normale Ansicht"
 
-#: src/ephoto_viewer.c:279
-msgid "Menu|Actions"
-msgstr "Ansicht"
+#: src/bin/ephoto_main.c:187
+msgid "List View"
+msgstr "Listenansicht"
 
-#: src/ephoto_viewer.c:287
-msgid "Menu|Actions|Zoom In"
-msgstr "Vergrößern"
+#: src/bin/ephoto_main.c:195
+msgid "Single View"
+msgstr "einfache Ansicht"
 
-#: src/ephoto_viewer.c:297
-msgid "Menu|Actions|Zoom Out"
-msgstr "Verkleinern"
+#: src/bin/ephoto_main.c:207
+msgid "You do not have libexif 0.6.13"
+msgstr "Sie haben nicht libexif 0.6.13"
 
-#: src/ephoto_viewer.c:307
-msgid "Menu|Actions|Zoom To Fit"
-msgstr "ins Fenster einpassen"
+#: src/bin/ephoto_main.c:213
+msgid "View Exif Data"
+msgstr "Zeige Exif Daten"
 
-#: src/ephoto_viewer.c:317
-msgid "Menu|Actions|Zoom 1:1"
-msgstr "Originalgröße"
+#: src/bin/ephoto_main.c:220
+msgid "Toggle Fullscreen"
+msgstr "Vollbild"
 
-#: src/ephoto_viewer.c:328
-msgid "Menu|Actions|Flip Horizontally"
-msgstr "Horizontal spiegeln"
+#: src/bin/ephoto_main.c:228
+msgid "Start a Slideshow"
+msgstr "Starte Diavorführung"
 
-#: src/ephoto_viewer.c:338
-msgid "Menu|Actions|Flip Vertically"
-msgstr "Vertikal spiegeln"
+#: src/bin/ephoto_main.c:240
+msgid "Move to edit view"
+msgstr "Gehe zu der bearbeitenden Ansicht"
 
-#: src/ephoto_viewer.c:348
-msgid "Menu|Actions|Rotate Left"
-msgstr "90° drehen (links)"
+#: src/bin/ephoto_main.c:246
+msgid "Complete Library"
+msgstr "Komplete Sammlung"
 
-#: src/ephoto_viewer.c:358
-msgid "Menu|Actions|Rotate Right"
-msgstr "90° drehen (rechts)"
+#: src/bin/ephoto_normal_view.c:31
+msgid "Normal"
+msgstr "Normal"
 
-#: src/ephoto_viewer.c:400
-msgid "In"
+#: src/bin/ephoto_slideshow.c:56
+msgid "Ephoto Slideshow!"
+msgstr "Ephoto Diavorführung"
+
+#: src/bin/ephoto_utils.c:9
+#, c-format
+msgid "%'.0f Bytes"
+msgstr "%'.0f Bytes"
+
+#: src/bin/ephoto_utils.c:14
+#, c-format
+msgid "%'.0f KB"
+msgstr "%'.0f KB"
+
+#: src/bin/ephoto_utils.c:20
+#, c-format
+msgid "%'.0f MB"
+msgstr "%'.0f MB"
+
+#: src/bin/ephoto_utils.c:25
+#, c-format
+msgid "%'.1f GB"
+msgstr "%'.1f GB"
+
+#: src/bin/ephoto_single_view.c:14
+msgid "Single"
+msgstr "Einseln"
+
+#: src/bin/ephoto_single_view.c:33
+#: src/bin/ephoto_edit_view.c:69
+msgid "Previous Image"
+msgstr "vorheriges Bild"
+
+#: src/bin/ephoto_single_view.c:39
+#: src/bin/ephoto_edit_view.c:73
+msgid "Next Image"
+msgstr "nächstes Bild"
+
+#: src/bin/ephoto.c:21
+#, c-format
+msgid "Ewl is not usable, please check your installation!\n"
+msgstr "Ewl ist nicht gebrauchbar, bitte überprüfen Sie Ihre installation!\n"
+
+#: src/bin/ephoto.c:29
+#, c-format
+msgid "Ephoto Version %s Help Page\n"
+msgstr "Ephoto Version %s Hilfseite\n"
+
+#: src/bin/ephoto.c:30
+#, c-format
+msgid ""
+"Long Commands: \n"
+" --help\t\t\t-\tThis Screen\n"
+" --add-album %%s %%s\t-\tAdds Album\n"
+"\t\t\t \targ1 = name of album\n"
+"\t\t\t\targ2 = description of album\n"
+" --add-image %%s %%s %%s\t-\tAdds Image\n"
+"\t\t\t\targ1 = name of album to add image to\n"
+"\t\t\t\targ2 = descriptive name for image\n"
+"\t\t\t\targ3 = path to the image\n"
+" --add-image-dir %%s %%s\t-\tAdds All Images From Directory\n"
+"\t\t\t\targ1 = name of album to add images to\n"
+"\t\t\t\targ2 = directory to get images from\n"
+" --list-albums\t\t-\tList Albums\n"
+" --list-images %%s\t-\tList Images in Album\n"
+"\t\t\t\targ1 = name of album to list images from\n"
+" --remove-album\t%%s\t-\tRemoves Album\n"
+"\t\t\t\targ1 = name of album\n"
+" --remove-image\t%%s %%s\t-\tRemoves Image\n"
+"\t\t\t\targ1 = name of album to remove image from\n"
+"\t\t\t\targ2 = path of the image to be removed\n"
 msgstr ""
+"Lange Befehle: \n"
+" --help\t\t\t-\tDiese Seite\n"
+" --add-album %%s %%s\t-\tFüge ein Album hinzu\n"
+"\t\t\t \targ1 = Name des Albums\n"
+"\t\t\t\targ2 = Beschreibung des Albums\n"
+" --add-image %%s %%s %%s\t-\tFüge ein Bild hinzu\n"
+"\t\t\t\targ1 = Name des Albums zu dem das Bild hinzugefügt werden soll\n"
+"\t\t\t\targ2 = beschreibender Name für das Bild\n"
+"\t\t\t\targ3 = Pfad zum Bild\n"
+" --add-image-dir %%s %%s\t-\tFügt ein Bild aus einem Verzeichnis hinzu\n"
+"\t\t\t\targ1 = Name des Albums zu dem das Bild hinzugefügt werden soll\n"
+"\t\t\t\targ2 = das Verzeichnis in dem sich das Bild befindet\n"
+" --list-albums\t\t-\tzeige eine List der Alben\n"
+" --list-images %%s\t-\tzeige eine List der Bilder\n"
+"\t\t\t\targ1 = name of album to list images from\n"
+" --remove-album\t%%s\t-\tRemoves Album\n"
+"\t\t\t\targ1 = name of album\n"
+" --remove-image\t%%s %%s\t-\tRemoves Image\n"
+"\t\t\t\targ1 = name of album to remove image from\n"
+"\t\t\t\targ2 = path of the image to be removed\n"
 
-#: src/ephoto_viewer.c:410
-msgid "Out"
+#: src/bin/ephoto.c:50
+#, c-format
+msgid ""
+"Short Commands: \n"
+" -h\t\t\t-\tThis Screen\n"
+" -a %%s %%s\t\t-\tAdds Album\n"
+" -i %%s %%s %%s\t\t-\tAdds Image\n"
+" -id %%s %%s\t\t-\tAdds all Images From Directory\n"
+" -la\t\t\t-\tList Albums\n"
+" -li %%s\t\t\t-\tList Images in Album\n"
+" -ra %%s\t\t\t-\tRemoves Album\n"
+" -ri %%s %%s\t\t-\tRemoves Image\n"
 msgstr ""
+"Kurzbefehle: \n"
+" -h\t\t\t-\tDiese Seite\n"
+" -a %%s %%s\t\t-\tfüge Album hinzu\n"
+" -i %%s %%s %%s\t\t-\tfüge Bild hinzu\n"
+" -id %%s %%s\t\t-\tFüge alle Bilder des Verzeichnisses hinzu\n"
+" -la\t\t\t-\tList Albums\n"
+" -li %%s\t\t\t-\tList Images in Album\n"
+" -ra %%s\t\t\t-\tRemoves Album\n"
+" -ri %%s %%s\t\t-\tRemoves Image\n"
 
-#: src/ephoto_viewer.c:440
-msgid "Left"
-msgstr "links"
+#: src/bin/ephoto.c:67
+#, c-format
+msgid "Please specify a name for the album\n"
+msgstr "Bitte geben Sie einen Namen für das Album an\n"
 
-#: src/ephoto_viewer.c:450
-msgid "Right"
-msgstr "rechts"
+#: src/bin/ephoto.c:75
+#, c-format
+msgid "Please specify a description for the album\n"
+msgstr "Bitte geben Sie eine Bezeichnung für das Album an\n"
+
+#: src/bin/ephoto.c:79
+#, c-format
+msgid "Are you sure you want to create an album with the name %s and the description %s? "
+msgstr "Sind Sie sicher, dass Sie ein Album mit dem Namen %s und der Beschreibung %s erstellen wollen?"
+
+#: src/bin/ephoto.c:105
+#: src/bin/ephoto.c:151
+#, c-format
+msgid "Please specify the album you wish to add to\n"
+msgstr "Bitte geben Sie das Album an, dass Sie hinzufügen wollen\n"
+
+#: src/bin/ephoto.c:113
+#, c-format
+msgid "Please specify a descriptive name for the image\n"
+msgstr "Bitte geben Sie einen beschreibenden Namen für das Bild an\n"
+
+#: src/bin/ephoto.c:121
+#, c-format
+msgid "Please specify a valid path to the image\n"
+msgstr "Bitte geben Sie den Pfad zu dem Bild an\n"
+
+#: src/bin/ephoto.c:125
+#, c-format
+msgid "Are you sure you want to add an image to album %s with a name %s and path %s? "
+msgstr "Sind Sie sicher, dass sie ein Bild zum dem Album %s mit dem Namen %s und dem Pfad %s hinzufügen wollen?"
+
+#: src/bin/ephoto.c:139
+#, c-format
+msgid "Image was added\n"
+msgstr "Bild wurde hinzugefügt\n"
+
+#: src/bin/ephoto.c:141
+#, c-format
+msgid "Image was not added\n"
+msgstr "Bild wurde nicht hinzugefügt\n"
+
+#: src/bin/ephoto.c:159
+#, c-format
+msgid "Please specify a valid path to the image directory\n"
+msgstr "Bitte geben Sie den Pfad zu dem Verzeichnis des Bildes an\n"
+
+#: src/bin/ephoto.c:163
+#, c-format
+msgid "Are you sure you want to add images from the directory %s to the album %s? "
+msgstr "Sind Sie sicher, dass Sie Bilder aus dem Verzeichnis %s in das Album %s hinzufügen wollen?"
+
+#: src/bin/ephoto.c:184
+#, c-format
+msgid "Images were added\n"
+msgstr "Bilder wurden hinzugefügt\n"
+
+#: src/bin/ephoto.c:186
+#, c-format
+msgid "Images were not added\n"
+msgstr "Bilder wurden nicht hinzugefügt\n"
+
+#: src/bin/ephoto.c:211
+#, c-format
+msgid "Please specify the album to list images from\n"
+msgstr "Bitte geben Sie ein Album an, um die Bild aufzulisten\n"
+
+#: src/bin/ephoto.c:231
+#, c-format
+msgid "Please specify the name of the album\n"
+msgstr "Bitte geben Sie den Namen des Albums an\n"
+
+#: src/bin/ephoto.c:235
+#, c-format
+msgid "Are you sure you want to remove the album %s? "
+msgstr "Sind Sie sicher, dass das Album %s entfernt werden soll?"
+
+#: src/bin/ephoto.c:248
+#, c-format
+msgid "Album was removed\n"
+msgstr "Album wurde entfernt\n"
+
+#: src/bin/ephoto.c:260
+#, c-format
+msgid "Please specify the name of the album the image belongs to.\n"
+msgstr "Bitte geben Sie den Namen des zum Bild gehörigen Albums an.\n"
+
+#: src/bin/ephoto.c:269
+#, c-format
+msgid "Please specify the path of the image\n"
+msgstr "Bitte geben Sie den Pfad zu dem Bild an\n"
+
+#: src/bin/ephoto.c:273
+#, c-format
+msgid "Are you sure you want to remove the image %s from the album %s? "
+msgstr "Sind Sie sicher, dass sie Bild %s aus dem Album %s entfernen wollen?"
+
+#: src/bin/ephoto.c:287
+#, c-format
+msgid "Image was removed\n"
+msgstr "Bild wurde entfernt\n"
+
+#: src/bin/ephoto.c:289
+#, c-format
+msgid "Image was not removed\n"
+msgstr "Bild wurde nicht entfernt\n"
+
+#: src/bin/ephoto_edit_view.c:39
+msgid "Standard Tools"
+msgstr "Standardwerkzeuge"
+
+#: src/bin/ephoto_edit_view.c:47
+msgid "Advanced Tools"
+msgstr "Erweiterte Werkzeuge"
 
