@@ -135,7 +135,7 @@ void create_main_gui(void)
 	
 	add_edit_view(em->edit_vbox);
 
-	em->view = add_box(em->main_vbox, EWL_ORIENTATION_HORIZONTAL, 2);
+	em->view = add_box(em->main_vbox, EWL_ORIENTATION_HORIZONTAL, 1);
 	ewl_object_fill_policy_set(EWL_OBJECT(em->view), EWL_FLAG_FILL_ALL);
 
 	em->browser = ewl_notebook_new();
