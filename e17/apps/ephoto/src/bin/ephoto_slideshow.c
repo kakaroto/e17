@@ -41,7 +41,6 @@ static void show_first_image(Ewl_Widget *w, void *event, void *data)
 	ecore_dlist_goto_first(em->images);
 	image_path = ecore_dlist_current(em->images);
 
-	ewl_container_reset(EWL_CONTAINER(w));
 	ewl_image_file_set(EWL_IMAGE(w), image_path, NULL);
 
 	change = ecore_timer_add(5, change_picture, w);
@@ -56,6 +55,10 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
 	win = add_window("Ephoto Slideshow!", 0, 0, destroy, NULL);
 	ewl_window_fullscreen_set(EWL_WINDOW(win), 1);
 	ewl_callback_append(win, EWL_CALLBACK_CLICKED, destroy, NULL);
+
+	image = add_image(win, PACKAGE_DATA_DIR "/images/black.png", 0, NULL, NULL);
+	ewl_image_proportional_set(EWL_IMAGE(image), FALSE);
+        ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_ALL);
 
 	cell = ewl_cell_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
