@@ -10,6 +10,6 @@
 "Window Size"       NULL menu winops_size.menu
 "Set Stacking"      NULL menu winops_layer.menu
 "Set Border Style"  NULL menu borders
-"Window Groups"     NULL menu winops_group.menu
+"Window Groups"     NULL menu winops_groups.menu
 "Opacity"           NULL menu winops_opacity.menu
 "Miscellaneous"     NULL menu winops_misc.menu
