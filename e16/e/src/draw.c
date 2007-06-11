@@ -656,7 +656,8 @@ EBlendPixImg(Win win, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
       XFillRectangle(disp, _dr, _gc, _a, _b, _c + bl + br, _d + bt + bb);
 
 void
-DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
+DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
+	      int firstlast, int seqno)
 {
    static GC           gc = 0;
    static Pixmap       b2 = 0, b3 = 0;
@@ -811,7 +812,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		       Conf.movres.mode_move = 0;
 		       EUngrabServer();
 		       DrawEwinShape(ewin, Conf.movres.mode_move, x, y, w, h,
-				     firstlast);
+				     firstlast, seqno);
 		       return;
 		    }
 		  EFillPixmap(root, root_pi->pmap, x1, y1, EoGetW(ewin),

@@ -147,7 +147,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 	   EoMove(ewin, tmpx, tmpy);
 	else
 	   DrawEwinShape(ewin, Conf.place.slidemode, tmpx, tmpy,
-			 ewin->client.w, ewin->client.h, firstlast);
+			 ewin->client.w, ewin->client.h, firstlast, 0);
 	if (firstlast == 0)
 	   firstlast = 1;
 
@@ -159,7 +159,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 
    if (Conf.place.slidemode)
       DrawEwinShape(ewin, Conf.place.slidemode, tx, ty,
-		    ewin->client.w, ewin->client.h, 2);
+		    ewin->client.w, ewin->client.h, 2, 0);
    EwinOpMove(ewin, OPSRC_USER, tx, ty);
 
    FocusEnable(1);
@@ -211,7 +211,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 	     if (ewin[i]->type == EWIN_TYPE_MENU)
 		EoMove(ewin[i], tmpx, tmpy);
 	     else
-		DrawEwinShape(ewin[i], 0, tmpx, tmpy, tmpw, tmph, firstlast);
+		DrawEwinShape(ewin[i], 0, tmpx, tmpy, tmpw, tmph, firstlast, i);
 	     if (firstlast == 0)
 		firstlast = 1;
 	  }
@@ -224,7 +224,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 	if (ewin[i])
 	  {
 	     DrawEwinShape(ewin[i], 0, x[i], y[i], ewin[i]->client.w,
-			   ewin[i]->client.h, 2);
+			   ewin[i]->client.h, 2, i);
 	     EwinMove(ewin[i], tx[i], ty[i]);
 	  }
      }

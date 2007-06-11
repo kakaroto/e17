@@ -42,7 +42,16 @@ static struct
    int                 swapcoord_x, swapcoord_y;
    int                 resize_detail;
    char                nogroup;
+   char                grab_server;
 } Mode_mr;
+
+static int
+_NeedServerGrab(int mode)
+{
+   if (mode == 0)
+      return 0;
+   return 1;
+}
 
 void
 EwinShapeSet(EWin * ewin)
@@ -96,6 +105,7 @@ ActionMoveStart(EWin * ewin, char constrained, int nogroup)
    Mode_mr.mode = Conf.movres.mode_move;
    if (num > 1 && Conf.movres.mode_move == 5)
       Mode_mr.mode = 0;
+   Mode_mr.grab_server = _NeedServerGrab(Mode_mr.mode);
 
    for (i = 0; i < num; i++)
      {
@@ -143,7 +153,7 @@ ActionMoveEnd(EWin * ewin)
 	for (i = 0; i < num; i++)
 	   DrawEwinShape(gwins[i], Mode_mr.mode,
 			 gwins[i]->shape_x, gwins[i]->shape_y,
-			 gwins[i]->client.w, gwins[i]->client.h, 2);
+			 gwins[i]->client.w, gwins[i]->client.h, 2, i);
      }
    Mode.mode = MODE_NONE;
 
@@ -175,7 +185,7 @@ ActionMoveEnd(EWin * ewin)
    Mode.move.swap = 0;
    Mode.place.doing_manual = 0;
 
-   if (Mode_mr.mode > 0)
+   if (Mode_mr.grab_server)
      {
 	FocusEnable(1);
 	EUngrabServer();
@@ -199,7 +209,7 @@ ActionMoveSuspend(void)
       return 0;
 
    /* If non opaque undraw our boxes */
-   if (Mode_mr.mode > 0)
+   if (Mode_mr.grab_server)
      {
 	lst = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE,
 					 Mode_mr.nogroup, &num);
@@ -207,7 +217,7 @@ ActionMoveSuspend(void)
 	  {
 	     ewin = lst[i];
 	     DrawEwinShape(ewin, Mode_mr.mode, ewin->shape_x,
-			   ewin->shape_y, ewin->client.w, ewin->client.h, 3);
+			   ewin->shape_y, ewin->client.w, ewin->client.h, 3, i);
 	  }
 	if (lst)
 	   Efree(lst);
@@ -238,7 +248,7 @@ ActionMoveResume(void)
 	fl = 0;			/* This is the first time we draw it */
      }
 
-   if (Mode_mr.mode > 0)
+   if (Mode_mr.grab_server)
       EGrabServer();
 
    dx = Mode.events.x - Mode_mr.win_x - EoGetX(EoGetDesk(ewin)) - ewin->shape_x;
@@ -257,7 +267,7 @@ ActionMoveResume(void)
 	x = ewin->shape_x + dx;
 	y = ewin->shape_y + dy;
 	DrawEwinShape(ewin, Mode_mr.mode, x, y,
-		      ewin->client.w, ewin->client.h, fl);
+		      ewin->client.w, ewin->client.h, fl, i);
      }
    if (lst)
       Efree(lst);
@@ -280,14 +290,16 @@ ActionResizeStart(EWin * ewin, int hv)
 
    if (Conf.movres.mode_resize < 0 || Conf.movres.mode_resize > 4)
       Conf.movres.mode_resize = 0;
-   if (Conf.movres.mode_resize > 0)
+   Mode_mr.mode = Conf.movres.mode_resize;
+   Mode_mr.grab_server = _NeedServerGrab(Mode_mr.mode);
+   if (Mode_mr.grab_server)
      {
 	EGrabServer();
 	ModulesSignal(ESIGNAL_ANIMATION_SUSPEND, NULL);
 	/* Run idlers (stacking, border updates, ...) before drawing lines */
 	IdlersRun();
      }
-   else
+   if (Mode_mr.mode == 0)
      {
 	ewin->state.resizing = 1;
 	EwinUpdateOpacity(ewin);
@@ -391,7 +403,7 @@ ActionResizeStart(EWin * ewin, int hv)
    EwinShapeSet(ewin);
    ewin->state.show_coords = 1;
    DrawEwinShape(ewin, Conf.movres.mode_resize, EoGetX(ewin), EoGetY(ewin),
-		 ewin->client.w, ewin->client.h, 0);
+		 ewin->client.w, ewin->client.h, 0, 0);
 
    return 0;
 }
@@ -414,9 +426,9 @@ ActionResizeEnd(EWin * ewin)
 
    ewin->state.show_coords = 0;
    DrawEwinShape(ewin, Conf.movres.mode_resize, ewin->shape_x, ewin->shape_y,
-		 ewin->client.w, ewin->client.h, 2);
+		 ewin->client.w, ewin->client.h, 2, 0);
 
-   if (Conf.movres.mode_resize == 0)
+   if (Mode_mr.mode == 0)
      {
 	ewin->state.resizing = 0;
 	EwinUpdateOpacity(ewin);
@@ -433,7 +445,7 @@ ActionResizeEnd(EWin * ewin)
    ESync();
 
  done:
-   if (Conf.movres.mode_resize > 0)
+   if (Mode_mr.grab_server)
      {
 	EUngrabServer();
 	ModulesSignal(ESIGNAL_ANIMATION_RESUME, NULL);
@@ -464,7 +476,7 @@ ActionMoveHandleMotion(void)
 
    if (Mode.mode == MODE_MOVE_PENDING)
      {
-	if (Mode_mr.mode > 0)
+	if (Mode_mr.grab_server)
 	  {
 	     EGrabServer();
 	     FocusEnable(0);
@@ -478,7 +490,8 @@ ActionMoveHandleMotion(void)
 	  {
 	     ewin1 = gwins[i];
 	     DrawEwinShape(ewin1, Mode_mr.mode, EoGetX(ewin1),
-			   EoGetY(ewin1), ewin1->client.w, ewin1->client.h, 0);
+			   EoGetY(ewin1), ewin1->client.w, ewin1->client.h, 0,
+			   i);
 	  }
 	Mode.mode = MODE_MOVE;
      }
@@ -603,7 +616,7 @@ ActionMoveHandleMotion(void)
 	/* draw the new position of the window */
 	DrawEwinShape(ewin1, Mode_mr.mode,
 		      ewin1->shape_x + ndx, ewin1->shape_y + ndy,
-		      ewin1->client.w, ewin1->client.h, 1);
+		      ewin1->client.w, ewin1->client.h, 1, i);
 
 	/* if we didnt jump the window after a resist at the edge */
 	/* reset the requested x to be the prev. requested + delta */
@@ -675,9 +688,11 @@ ActionResizeHandleMotion(void)
 
    switch (Mode.mode)
      {
+     default:
      case MODE_RESIZE:
 	switch (Mode_mr.resize_detail)
 	  {
+	  default:
 	  case 0:
 	     pw = ewin->client.w;
 	     ph = ewin->client.h;
@@ -700,7 +715,6 @@ ActionResizeHandleMotion(void)
 		y = Mode_mr.win_y + Mode_mr.win_h - h;
 	     ewin->client.w = pw;
 	     ewin->client.h = ph;
-	     DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1);
 	     break;
 	  case 1:
 	     ph = ewin->client.h;
@@ -716,7 +730,6 @@ ActionResizeHandleMotion(void)
 	     else
 		y = Mode_mr.win_y + Mode_mr.win_h - h;
 	     ewin->client.h = ph;
-	     DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1);
 	     break;
 	  case 2:
 	     pw = ewin->client.w;
@@ -732,16 +745,12 @@ ActionResizeHandleMotion(void)
 	     else
 		x = Mode_mr.win_x + Mode_mr.win_w - w;
 	     ewin->client.w = pw;
-	     DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1);
 	     break;
 	  case 3:
 	     w = Mode_mr.win_w + (Mode.events.x - Mode_mr.start_x);
 	     h = Mode_mr.win_h + (Mode.events.y - Mode_mr.start_y);
 	     x = ewin->shape_x;
 	     y = ewin->shape_y;
-	     DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1);
-	     break;
-	  default:
 	     break;
 	  }
 	break;
@@ -749,6 +758,7 @@ ActionResizeHandleMotion(void)
      case MODE_RESIZE_H:
 	switch (Mode_mr.resize_detail)
 	  {
+	  default:
 	  case 0:
 	     pw = ewin->client.w;
 	     w = Mode_mr.win_w - (Mode.events.x - Mode_mr.start_x);
@@ -763,16 +773,12 @@ ActionResizeHandleMotion(void)
 	     else
 		x = Mode_mr.win_x + Mode_mr.win_w - w;
 	     ewin->client.w = pw;
-	     DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1);
 	     break;
 	  case 1:
 	     w = Mode_mr.win_w + (Mode.events.x - Mode_mr.start_x);
 	     h = ewin->client.h;
 	     x = ewin->shape_x;
 	     y = ewin->shape_y;
-	     DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1);
-	     break;
-	  default:
 	     break;
 	  }
 	break;
@@ -780,6 +786,7 @@ ActionResizeHandleMotion(void)
      case MODE_RESIZE_V:
 	switch (Mode_mr.resize_detail)
 	  {
+	  default:
 	  case 0:
 	     ph = ewin->client.h;
 	     w = ewin->client.w;
@@ -794,23 +801,17 @@ ActionResizeHandleMotion(void)
 	     else
 		y = Mode_mr.win_y + Mode_mr.win_h - h;
 	     ewin->client.h = ph;
-	     DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1);
 	     break;
 	  case 1:
 	     w = ewin->client.w;
 	     h = Mode_mr.win_h + (Mode.events.y - Mode_mr.start_y);
 	     x = ewin->shape_x;
 	     y = ewin->shape_y;
-	     DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1);
-	     break;
-	  default:
 	     break;
 	  }
 	break;
-
-     default:
-	break;
      }
+   DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1, 0);
 }
 
 void

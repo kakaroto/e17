@@ -334,7 +334,7 @@ void                DockIt(EWin * ewin);
 
 /* draw.c */
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
-				  int h, char firstlast);
+				  int h, int firstlast, int seqno);
 
 /* ewins.c */
 #define EWIN_CHANGE_NAME        (1<<0)
