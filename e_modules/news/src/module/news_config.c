@@ -79,8 +79,6 @@ news_config_init(void)
    E_CONFIG_VAL(D, T, proxy.enable, SHORT);
    E_CONFIG_VAL(D, T, proxy.host, STR);
    E_CONFIG_VAL(D, T, proxy.port, INT);
-   E_CONFIG_VAL(D, T, browser.wich, SHORT);
-   E_CONFIG_VAL(D, T, browser.own, STR);
    E_CONFIG_VAL(D, T, viewer.vfeeds.unread_first, SHORT);
    E_CONFIG_VAL(D, T, viewer.varticles.unread_first, SHORT);
    E_CONFIG_VAL(D, T, viewer.varticles.sort_date, SHORT);
@@ -146,8 +144,6 @@ news_config_init(void)
              c->proxy.port = NEWS_FEED_PROXY_PORT_DEFAULT;
           }
 
-        c->browser.wich = NEWS_UTIL_BROWSER_DEFAULT;
-
         c->viewer.vfeeds.unread_first = NEWS_VIEWER_VFEEDS_UNREAD_FIRST_DEFAULT;
         c->viewer.varticles.unread_first = NEWS_VIEWER_VARTICLES_UNREAD_FIRST_DEFAULT;
         c->viewer.varticles.sort_date = NEWS_VIEWER_VARTICLES_SORT_DATE_DEFAULT;
@@ -192,7 +188,6 @@ news_config_shutdown(void)
    news_feed_lang_list_free(news->config->feed.langs);
 
    if (c->proxy.host) evas_stringshare_del(c->proxy.host);
-   if (c->browser.own) evas_stringshare_del(c->browser.own);
 
    while ( (nic = evas_list_data(c->items)) )
      news_config_item_del(nic);

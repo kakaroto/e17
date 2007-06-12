@@ -34,8 +34,6 @@ science : http://www.eurekalert.org/rss.xml
 NEEDED (to do more or less in this order)
 ----------------------------------------------------
 
- - ? make a difference in item ui, depending on the gadon gadget inset/freee appearance ?
-
  - debug html chars parse with test.rss
   -> add support for & alone in evas_textblock
 
@@ -43,7 +41,7 @@ NEEDED (to do more or less in this order)
 
  - save unread articles on shutdown
 
- - if the shelf is hidden, show it on news
+ - if the shelf is hidden, show it on news (configurable)
 
  - viewer: a way to set vcontent bg color ?
 

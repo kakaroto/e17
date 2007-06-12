@@ -1,21 +1,9 @@
 #ifdef E_MOD_NEWS_TYPEDEFS
 
-typedef enum _News_Util_Browser
-   {
-      NEWS_UTIL_BROWSER_FIREFOX,
-      NEWS_UTIL_BROWSER_FIREFOX_TAB,
-      NEWS_UTIL_BROWSER_MOZILLA,
-      NEWS_UTIL_BROWSER_OPERA,
-      NEWS_UTIL_BROWSER_DILLO,
-      NEWS_UTIL_BROWSER_OWN
-   } News_Util_Browser;
-
 #else
 
 #ifndef NEWS_UTILS_H_INCLUDED
 #define NEWS_UTILS_H_INCLUDED
-
-#define NEWS_UTIL_BROWSER_DEFAULT NEWS_UTIL_BROWSER_FIREFOX
 
 #define news_util_debug(args...)                             \
 {                                                            \

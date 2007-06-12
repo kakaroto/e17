@@ -47,45 +47,33 @@ news_util_datecmp(struct tm *t1, struct tm *t2)
 int
 news_util_browser_open(const char *url)
 {
-   News_Config *c = news->config;
    Ecore_Exe *exe;
-   char cmd[4096];
    char buf[4096];
 
    if (!url) return 0;
 
-   switch((News_Util_Browser)c->browser.wich)
-     {
-     case NEWS_UTIL_BROWSER_FIREFOX:
-        snprintf(cmd, sizeof(cmd), "%s", "firefox -new-window");
-        break;
-     case NEWS_UTIL_BROWSER_FIREFOX_TAB:
-        snprintf(cmd, sizeof(cmd), "%s", "firefox -new-tab");
-        break;
-     case NEWS_UTIL_BROWSER_MOZILLA:
-        snprintf(cmd, sizeof(cmd), "%s", "mozilla");
-        break;
-     case NEWS_UTIL_BROWSER_OPERA:
-        snprintf(cmd, sizeof(cmd), "%s", "opera");
-        break;
-     case NEWS_UTIL_BROWSER_DILLO:
-        snprintf(cmd, sizeof(cmd), "%s", "dillo");
-        break;
-     case NEWS_UTIL_BROWSER_OWN:
-        snprintf(cmd, sizeof(cmd), "%s", c->browser.own);
-        break;
-     }
+   if(!ecore_file_app_installed("xdg-open"))
+   {
+      news_util_message_error_show("<hilight>xdg-open not found !</hilight><br><vr>"
+            "News module uses the xdg-open script from freedesktop.org<br>"
+            "to open urls.<br>"
+            "You need to install the <hilight>xdg-utils package</hilight>, wich includes that script.");
+      return 0;
+   }
 
-   DBROWSER(("Exec %s with %s command", url, cmd));
-   snprintf(buf, sizeof(buf), "%s \"%s\"", cmd, url);
+   snprintf(buf, sizeof(buf), "xdg-open \"%s\"", url);
+   DBROWSER(("Exec %s", buf));
    exe = ecore_exe_pipe_run(buf, ECORE_EXE_USE_SH, NULL);
    if (exe > 0)
-     ecore_exe_free(exe);
+     {
+        ecore_exe_free(exe);
+     }
    else
      {
-        news_util_message_error_show(_("<hilight>Error</hilight> when executing the command"
-                                       "for youre <hilight>browser</hilight> :<br><br>"
-                                       "%s"), cmd);
+        news_util_message_error_show("<hilight>Error when opening youre browser.</hilight><br><br>"
+              "News module uses the <hilight>xdg-open</hilight> script (xdg-utils package) from freedesktop.org<br>"
+              "to open urls. The script seems to be present, but maybe it is not"
+              "<hilight>configured corectly ?</hilight>");
         return 0;
      }
 

@@ -22,12 +22,6 @@ struct _E_Config_Dialog_Data
 
    struct
    {
-      int wich;
-      char *own;
-   } browser;
-
-   struct
-   {
       struct
       {
          int unread_first;
@@ -129,7 +123,6 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
    free(cfdata->proxy.host);
-   free(cfdata->browser.own);
 
    news->config_dialog = NULL;
    free(cfdata);
@@ -158,12 +151,6 @@ _fill_data(E_Config_Dialog_Data *cfdata)
      }
    else
      cfdata->proxy.port = strdup("");
-
-   cfdata->browser.wich = c->browser.wich;
-   if (c->browser.own)
-     cfdata->browser.own = strdup(c->browser.own);
-   else
-     cfdata->browser.own = strdup("");
 
    cfdata->viewer.vfeeds.unread_first = c->viewer.vfeeds.unread_first;
    cfdata->viewer.varticles.unread_first = c->viewer.varticles.unread_first;
@@ -197,7 +184,6 @@ static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
    Evas_Object *o, *of, *ob;
-   E_Radio_Group *rg;
 
    o = e_widget_list_add(evas, 0, 0);
 
@@ -205,26 +191,6 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    ob = e_widget_check_add(evas, _("Sort lists by name (disable Move action)"), &(cfdata->feed.sort_name));
    e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 0);
-
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
-
-   of = e_widget_frametable_add(evas, _("Browser"), 0);
-
-   rg = e_widget_radio_group_new(&(cfdata->browser.wich));
-   ob = e_widget_radio_add(evas, _("Firefox (new window)"), NEWS_UTIL_BROWSER_FIREFOX, rg);
-   e_widget_frametable_object_append(of, ob, 0, 0, 3, 1, 1, 1, 0, 1);
-   ob = e_widget_radio_add(evas, _("Firefox (new tab)"), NEWS_UTIL_BROWSER_FIREFOX_TAB, rg);
-   e_widget_frametable_object_append(of, ob, 3, 0, 3, 1, 1, 1, 0, 1);
-   ob = e_widget_radio_add(evas, _("Mozilla"), NEWS_UTIL_BROWSER_MOZILLA, rg);
-   e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 0, 1);
-   ob = e_widget_radio_add(evas, _("Opera"), NEWS_UTIL_BROWSER_OPERA, rg);
-   e_widget_frametable_object_append(of, ob, 2, 1, 2, 1, 1, 1, 0, 1);
-   ob = e_widget_radio_add(evas, _("Dillo"), NEWS_UTIL_BROWSER_DILLO, rg);
-   e_widget_frametable_object_append(of, ob, 4, 1, 2, 1, 1, 1, 0, 1);
-   ob = e_widget_radio_add(evas, _("This one"), NEWS_UTIL_BROWSER_OWN, rg);
-   e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 0, 1);
-   ob = e_widget_entry_add(evas, &(cfdata->browser.own));
-   e_widget_frametable_object_append(of, ob, 2, 2, 4, 1, 1, 1, 0, 1);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -272,23 +238,10 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    e_widget_list_object_append(o2, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, _("Browser"), 0);
+   of = e_widget_framelist_add(evas, _("Browser"), 0);
 
-   rg = e_widget_radio_group_new(&(cfdata->browser.wich));
-   ob = e_widget_radio_add(evas, _("Firefox (new window)"), NEWS_UTIL_BROWSER_FIREFOX, rg);
-   e_widget_frametable_object_append(of, ob, 0, 0, 3, 1, 1, 1, 0, 1);
-   ob = e_widget_radio_add(evas, _("Firefox (new tab)"), NEWS_UTIL_BROWSER_FIREFOX_TAB, rg);
-   e_widget_frametable_object_append(of, ob, 3, 0, 3, 1, 1, 1, 0, 1);
-   ob = e_widget_radio_add(evas, _("Mozilla"), NEWS_UTIL_BROWSER_MOZILLA, rg);
-   e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 0, 1);
-   ob = e_widget_radio_add(evas, _("Opera"), NEWS_UTIL_BROWSER_OPERA, rg);
-   e_widget_frametable_object_append(of, ob, 2, 1, 2, 1, 1, 1, 0, 1);
-   ob = e_widget_radio_add(evas, _("Dillo"), NEWS_UTIL_BROWSER_DILLO, rg);
-   e_widget_frametable_object_append(of, ob, 4, 1, 2, 1, 1, 1, 0, 1);
-   ob = e_widget_radio_add(evas, _("This one"), NEWS_UTIL_BROWSER_OWN, rg);
-   e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 0, 1);
-   ob = e_widget_entry_add(evas, &(cfdata->browser.own));
-   e_widget_frametable_object_append(of, ob, 2, 2, 4, 1, 1, 1, 0, 1);
+   ob = e_widget_label_add(evas, _("Uses xdg-open script, from freedesktop.org"));
+   e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(o2, of, 1, 1, 0.5);
 
@@ -432,15 +385,6 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    if (cfdata->proxy.port && cfdata->proxy.port[0])
      sscanf(cfdata->proxy.port, "%d", &c->proxy.port);
 
-   c->browser.wich = cfdata->browser.wich;
-   if (c->browser.own)
-     {
-        evas_stringshare_del(c->browser.own);
-        c->browser.own = NULL;
-     }
-   if (cfdata->browser.own)
-     c->browser.own = evas_stringshare_add(cfdata->browser.own);
-   
    if ( (c->viewer.vfeeds.unread_first != cfdata->viewer.vfeeds.unread_first) ||
         (c->viewer.varticles.unread_first != cfdata->viewer.varticles.unread_first) ||
         (c->viewer.varticles.sort_date != cfdata->viewer.varticles.sort_date) ||

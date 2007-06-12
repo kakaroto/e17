@@ -33,12 +33,6 @@ struct _News_Config
 
    struct
    {
-      int         wich;
-      const char *own;
-   } browser;
-
-   struct
-   {
       struct
       {
          int unread_first;
