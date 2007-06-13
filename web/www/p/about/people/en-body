@@ -1,7 +1,8 @@
 <?php
-$devspath = "/home/mekius_/System/e17/devs"; 
-$exclude = array('ewww');
+$devspath = "/dev"; 
 
+//Exclude accounts that aren't actually devs
+$exclude = array('ewww');
 
 class dev 
 { 
