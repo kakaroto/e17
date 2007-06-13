@@ -6,15 +6,16 @@
 # Tristan D. <trinine@free.fr>, 2007
 msgid ""
 msgstr ""
-"Project-Id-Version: fr\n"
+"Project-Id-Version: e16-0.16.8.9-0.02-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-06-06 22:49+0200\n"
-"PO-Revision-Date: 2007-04-12 19:12+0200\n"
+"PO-Revision-Date: 2007-06-12 23:22+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: français <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: src/about.c:33
 #, c-format
@@ -328,6 +329,7 @@ msgid "Sort by Image"
 msgstr "Trier par Image"
 
 #: src/backgrounds.c:2337
+#, fuzzy
 msgid "Enable background transparency compatibility mode"
 msgstr "Activer le mode de compatibilité avec la transparence d'arrière-plan"
 
@@ -1346,16 +1348,15 @@ msgstr ""
 
 #: src/magwin.c:438
 msgid "Magnifier"
-msgstr ""
+msgstr "Loupe"
 
 #: src/menus-misc.c:584 config/strings.c:90
 msgid "Themes"
 msgstr "Thèmes"
 
 #: src/menus-misc.c:610
-#, fuzzy
 msgid "Border"
-msgstr "Bordures:"
+msgstr "Bordures"
 
 #: src/menus-misc.c:673
 msgid "Window List"
@@ -2733,9 +2734,8 @@ msgid "Destroy a group this window belongs to"
 msgstr "Supprimer un groupe auquel cette fenêtre appartient"
 
 #: config/strings.c:154
-#, fuzzy
 msgid "Stacking"
-msgstr "Collage"
+msgstr "Empilement"
 
 #: config/strings.c:155
 msgid "Below"
@@ -2878,51 +2878,3 @@ msgstr "Autres"
 msgid "Enlightenment Epplets"
 msgstr "Epplets d'Enlightenment"
 
-#~ msgid "Height"
-#~ msgstr "Hauteur"
-
-#~ msgid "Width"
-#~ msgstr "Largeur"
-
-#~ msgid "Show/Hide this window's group(s)"
-#~ msgstr "Afficher/Masquer le groupe de ce fenêtre"
-
-#~ msgid "Remember State"
-#~ msgstr "Mémoriser l'état"
-
-#~ msgid "Shade"
-#~ msgstr "Masquer"
-
-#~ msgid "Shade (roll up) this window."
-#~ msgstr "Masquer (enrouler) cette fenêtre"
-
-#~ msgid "Unshade"
-#~ msgstr "Démasquer"
-
-#~ msgid "Unshade (unroll) this window."
-#~ msgstr "Démasquer (dérouler) cette fenêtre"
-
-#~ msgid "Open the Window Options Menu."
-#~ msgstr "Ouvrir le menu Options de Fenêtre"
-
-#~ msgid "Enable edge flip"
-#~ msgstr "Activer les bords sensitifs"
-
-#~ msgid ""
-#~ "\n"
-#~ "  There's no current group at the moment.  \n"
-#~ "  The current group is the last one you created,  \n"
-#~ "  and it exists until you create a new one or break  \n"
-#~ "  the latest one.  \n"
-#~ "\n"
-#~ "  Pick another group that the window will belong to here:  \n"
-#~ "\n"
-#~ msgstr ""
-#~ "\n"
-#~ "  Il n'y a aucun groupe courant pour le moment.  \n"
-#~ "  Le groupe courant est le dernier que vous avez créé,  \n"
-#~ "  il existera jusqu'à ce que vous ayez créé un nouveau groupe ou\n"
-#~ "  détruit le dernier.  \n"
-#~ "\n"
-#~ "  Choisissez un autre groupe auquel la fenêtre appartiendra:  \n"
-#~ "\n"
