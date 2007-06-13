@@ -95,9 +95,7 @@ ksort($developers);
       $class='tab2';
   
     echo "<tr>";
-    echo "<td class='$class'>
-            <a href='mailto:".$val->e_mail."'>".$val->name.
-         "</a></td>";
+    echo "<td class='$class'>".$val->name."</td>";
     echo "<td class='$class'>".$val->managing."</td>";
     echo "<td class='$class'>".$val->irc_nick."</td>";
     echo "<td class='$class'>".$val->location."</td>";
@@ -105,7 +103,7 @@ ksort($developers);
     if(strstr($val->www, "http://"))
     {
       if($val->www[strlen($val->www)-1] == '/')
-        $val->www[strlen($val->www)-1] = 0;
+        $val->www = substr($val->www, 0, -1);
         
       echo "<a href='".$val->www."'>".
         str_replace(array('http://', 'www.'),'',$val->www)."</a>";
