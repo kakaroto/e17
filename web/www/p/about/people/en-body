@@ -1,472 +1,264 @@
+<?php
+$devspath = "/home/mekius_/System/e17/devs"; 
+$exclude = array('ewww');
+
+
+class dev 
+{ 
+    var $login, $irc_nick, $name, $location, $e_mail, $www, $managing; 
+    
+    public function dev ($infopath) 
+    { 
+        if (!($content = file ($infopath, FILE_IGNORE_NEW_LINES|FILE_SKIP_EMPTY_LINES))) return; 
+
+        while (list (, $line) = each ($content)) 
+        { 
+            $delimiter = strpos ($line, ":"); 
+            $desc = strtolower (trim (substr ($line, 0, $delimiter))); 
+            $info = trim (substr ($line, $delimiter+1)); 
+            switch ($desc) 
+            { 
+                case "login":        $this->login = $info;        break; 
+                case "irc nick":    $this->irc_nick = $info;    break; 
+                case "name":        $this->name = $info;        break; 
+                case "location":    $this->location = $info;    break; 
+                case "e-mail":        $this->e_mail = $info;        break; 
+                case "www":            $this->www = $info;            break; 
+                case "managing":    $this->managing = $info;    break; 
+            } 
+        } 
+    } 
+} 
+
+if ($dh = opendir ($devspath)) 
+{ 
+    while ($dir = readdir ($dh)) 
+    {    
+        if (($dir[0] == ".") || $dir == "CVS") continue; 
+        if (is_dir ($devspath."/".$dir) && !in_array($dir,$exclude)) 
+            $devdirs [] = $dir; 
+    } 
+    closedir ($dh); 
+} 
+
+//sort ($devdirs); 
+while (list (, $dev) = each ($devdirs)) 
+{    $infopath = "$devspath/$dev/info.txt"; 
+    if (file_exists ($infopath)) 
+    {
+        $newdev = new dev ($infopath);
+        $developers [strtolower($newdev->irc_nick)] = $newdev;
+    }
+}
+
+//sort by the irc nick which is the key
+ksort($developers);
+
+// output! 
+/*while (list ($key, $val) = each ($developers)) 
+{ 
+    echo "<br/>=================<br/>"; 
+    echo "LOGIN    = ".$val->login."<br/>"; 
+    echo "IRC      = ".$val->irc_nick."<br/>"; 
+    echo "NAME    = ".$val->name."<br/>"; 
+    echo "LOCATION = ".$val->location."<br/>"; 
+    echo "EMAIL    = ".$val->e_mail."<br/>"; 
+    echo "WWW      = ".$val->www."<br/>"; 
+    echo "MANAGING = ".$val->managing."<br/><br/>"; 
+} */
+?>
+
 <table class='main'>
 <tr>
 <td class='main'><div class="main">
 
-<center><h1>The People behind Enlightenment</h1></center>
+<center><h1>The People Behind Enlightenment</h1></center>
 
-<h2>Core Developer Team</h2>
 <center>
 <table class='tab'>
 <tr>
-<th class='tab' width='130px'>NAME</th>
-<th class='tab' width='30px'>WEB</th>
-<th class='tab'>COMPONENT</th>
-<th class='tab' width='130px'>NICKNAME</th>
+<th class='tab' width='100px'>Name</th>
+<th class='tab'>Managing</th>
+<th class='tab' width='100px'>IRC Nick</th>
+<th class='tab' width='160px'>Location</th>
+<th class='tab' width='100px'>Website</th>
 </tr>
-<tr>
-<td class='tab1'><a href="mailto:raster@rasterman.com">Rasterman</a></td>
-<td class='tab1'><center><a href="http://www.rasterman.com/">Y</a></center></td>
-<td class='tab1'>Lead Developer, owner of Evas, Imlib2, Edb, Ebits, Ecore, EET and Enlightenment.</td>
-<td class='tab1'>raster</td>
-</tr>
-<tr> 
-<td class='tab2'><a href="mailto:rbdpngn@users.sourceforge.net">Nathan Ingersoll</a></td>
-<td class='tab2'><center><a href="http://ningerso.atmos.org/">Y</a></center></td>
-<td class='tab2'>Ewl Owner, Ewd, Etox Owner, Estyle </td>
-<td class='tab2'>rbdpngn</td>
-</tr>
-<tr> 
-<td class='tab1'><a href="mailto:atmosNO@SPAMatmos.org">Corey Donohoe</a></td>
-<td class='tab1'><center><a href="http://www.atmos.org/">Y</a></center></td>
-<td class='tab1'>Ebony Owner, Entice Owner, Entrance</td>
-<td class='tab1'>atmos</td>
-</tr>
-<tr> 
-<td class='tab2'><a href="mailto:bmattern@mail.utexas.edu">Brian Mattern</a></td>
-<td class='tab2'><center><a href="http://www.rephorm.com/">Y</a></center></td>
-<td class='tab2'>Elicit, Iconbar, Esmart</td>
-<td class='tab2'>rephorm</td>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:evidence@azundris.com">Azundris</a></td>
-<td class='tab1'><center><a href="http://www.azundris.com/">Y</a></center></td>
-<td class='tab1'><a href="http://evidence.sourceforge.net/">Evidence</a>, Eterm Escreen support, EFSd contributions</td>
-<td class='tab1'>Azundris</td>
-</tr>
-<tr> 
-<td class='tab2'><a href="mailto:xcomputermanNO@SPAMxcomputerman.com">Ibukun Olumuyiwa</a></td><td class='tab2'><center><a href="http://xcomputerman.com/">Y</a></center></td>
-<td class='tab2'>Entrance owner</td>
-<td class='tab2'>xcomputerman</td>
-</tr>
-<tr> 
-<td class='tab1'><a href="mailto:kim@NO.SPAMwoelders.dk">Kim Woelders</a></td>
-<td class='tab1'><center>N</center></td>
-<td class='tab1'>E DR16 Owner</td>
-<td class='tab1'>kwo</td>
-</tr>
-<tr> 
-<td class='tab2'><a href="mailto:glassy_ape@users.sourceforge.net">Yuri Hudobin</a></td>
-<td class='tab2'><center><a href="http://engy.sourceforge.net/engy/index.html">Y</a></center></td>
-<td class='tab2'><a href="http://engy.sourceforge.net/engy/index.html">Engy</a></td><td class='tab2'>glassy_ape</td>
-</tr>
-<tr> 
-<td class='tab1'><a href="mailto:andyNO@SPAMhandyande.co.uk" target="_self">Andrew Williams</a></td>
-<td class='tab1'><center><a href="http://andy.elcock.org/">Y</a></center></td>
-<td class='tab1'>Engage Owner, Examine Owner, Equate Owner</td>
-<td class='tab1'>HandyAndE</td>
-</tr>
-<tr> 
-<td class='tab2'><a href="mailto:benr@cuddletech.com">Ben Rockwood</a></td>
-<td class='tab2'><center><a href="http://www.cuddletech.com/">Y</a></center></td>
-<td class='tab2'>Eplayer</td>
-<td class='tab2'>benr</td>
-</tr>
-<tr> 
-<td class='tab1'><a href="mailto:msNO@SPAMklmoberg.no">Martin Sarajervi</a></td>
-<td class='tab1'><center>N</center></td>
-<td class='tab1'>eRSS owner</td>
-<td class='tab1'>sarajervi|balony</td>
-</tr>
-<tr> 
-<td class='tab2'><a href="mailto:tilmanNO@SPAMcode-monkey.de">Tilman Sauerbeck</a></td>
-<td class='tab2'><center><a href="http://code-monkey.de/">Y</a></center></td>
-<td class='tab2'>Euphoria, Embrace, Redact, Ruby bindings<br /></td>
-<td class='tab2'>tilman</td>
-</tr>
-<tr> 
-<td class='tab1'><a target="_self" href="mailto:esharpNO@SPAMpacketmonkey.org">Evan Sharp</a></td>
-<td class='tab1'><center><a href="http://packetmonkey.org/">Y</a></center></td>
-<td class='tab1'>&quot;General Patch Monkey&quot;</td>
-<td class='tab1'>digitalfallout</td>
-</tr>
-<tr> 
-<td class='tab2'><a href="mailto:zeroNO@SPAMeverburning.com">Dan Sinclair</a></td><td class='tab2'><center><a href="http://everburning.com/">Y</a></center></td>
-<td class='tab2'>Owner EKE, Owner Emblem, EWL Patch Monkey</td>
-<td class='tab2'>dj2</td>
-</tr>
-<tr> 
-<td class='tab1'><a href="mailto:sebastid@NPSPAMstud.ntnu.no" target="_self">Sebastian Dransfeld</a></td>
-<td class='tab1'><center>N</center></td>
-<td class='tab1'> General contributions, (Ecore, E, ...) and cleanups.</td>
-<td class='tab1'>engelbass </td>
-</tr>
-<tr> 
-<td class='tab2'><a href="mailto:hisham.mardambey@NOSPAMgmail.com" target="_self">Hisham Mardam Bey</a></td>
-<td class='tab2'><center><a href="http://hisham.cc/" target="_self">Y</a></center></td>
-<td class='tab2'>E File Manager (Efm), Eclips, Enterminus, EFL#, Notes (module)</td>
-<td class='tab2'>CodeWarrior </td>
-</tr>
+
+<?php
+  $i=0;
+  while (list ($key, $val) = each ($developers))
+  {
+    if($i++%2)
+      $class='tab1';
+    else
+      $class='tab2';
+  
+    echo "<tr>";
+    echo "<td class='$class'>
+            <a href='mailto:".$val->e_mail."'>".$val->name.
+         "</a></td>";
+    echo "<td class='$class'>".$val->managing."</td>";
+    echo "<td class='$class'>".$val->irc_nick."</td>";
+    echo "<td class='$class'>".$val->location."</td>";
+    echo "<td class='$class'>";
+    if(strstr($val->www, "http://"))
+    {
+      if($val->www[strlen($val->www)-1] == '/')
+        $val->www[strlen($val->www)-1] = '';
+      echo "<a href='".$val->www."'>".
+        str_replace(array('http://', 'www.'),'',$val->www)."</a>";
+    }
+    echo "</td>";
+    echo "</tr>";
+  }
+?>  
 </table>
-</center>
-<p align="center">
-<b>NOTE: Core Developers are all responsable for looking at the project as a whole, they work on everything, not just
-the projects they are owners and maintainers of as noted above.</b>
-</p>
-
-<h2>Themes and Graphics Team</h2> 
-<center>
-<table class='tab'>
-<th class='tab' width='130px'>NAME</th>
-<th class='tab' width='30px'>WEB</th>
-<th class='tab'>ROLE/POSITION</th>
-<th class='tab' width='130px'>NICKNAME</th>
-</tr>
-<tr> 
-<td class='tab1'><a href="mailto:vandango@toenda.com">Jonathan Naumann</a></td>
-<td class='tab1'><center><a href="http://vandango.toenda.com/">Y</a></center></td>
-<td class='tab1'>Themes and Graphics</td>
-<td class='tab1'>vandango, toenda</td>
-</tr>
-<tr> 
-<td class='tab2'><a href="mailto:bmattern@mail.utexas.edu">Brian Mattern</a></td>
-<td class='tab2'><center><a href="http://www.rephorm.com/">Y</a></center></td>
-<td class='tab2'>Themes and Graphics</td>
-<td class='tab2'>rephorm</td>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:tokyoNO@SPAMcored.org">Al Castro</a></td>
-<td class='tab1'><center><a href="http://tokyo.cored.org/">Y</a></center></td>
-<td class='tab1'>Themes and Graphics</td>
-<td class='tab1'>tokyo</td>
-</tr>
-<tr>
-<td class='tab2'><a href="mailto:pixelheadNO@SPAMlostmypants.net">Nathan Baxter</a></td>
-<td class='tab2'><center><a href="http://pixelhead.lostmypants.net/">Y</a></center></td>
-<td class='tab2'>Themes and Graphics</td>
-<td class='tab2'>pixelhead</td>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:raster@rasterman.com">Rasterman</a></td>
-<td class='tab1'><center><a href="http://www.rasterman.com/">Y</a></center></td>
-<td class='tab1'>Themes and Graphics</td>
-<td class='tab1'>raster</td>
-</tr>
-</table>
-</center>
-
-
-<h2>TechPubs</h2>
-<center>
-<table class='tab'>
-<th class='tab' width='130px'>NAME</th>
-<th class='tab' width='30px'>WEB</th>
-<th class='tab'>ROLE/POSITION</th>
-<th class='tab' width='130px'>NICKNAME</th>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:benr@cuddletech.com">Ben Rockwood</a></td>
-<td class='tab1'><center><a href="http://www.cuddletech.com/">Y</a></center></td>
-<td class='tab1'>EdjeBook, EFL CookBook</td>
-<td class='tab1'>benr</td>
-</tr>
-<tr>
-<td class='tab2'><a href="mailto:zeroNO@SPAMeverburning.com">Dan Sinclair</a></td>
-<td class='tab2'><center><a href="http://everburning.com/">Y</a></center></td>
-<td class='tab2'>EWLBook, EFL CookBook</td>
-<td class='tab2'>dj2</td>
-</tr>
-</table>
-</center>
-
-
-<h2>Porting and Package Team</h2>
-<center>
-<table class='tab'>
-<th class='tab' width='130px'>NAME</th>
-<th class='tab' width='30px'>WEB</th>
-<th class='tab'>ROLE/POSITION</th>
-<th class='tab' width='130px'>NICKNAME</th>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:benr@cuddletech.com">Ben Rockwood</a></td>
-<td class='tab1'><center><a href="http://www.cuddletech.com/">Y</a></center></td>
-<td class='tab1'>Solaris Porting and Packaging</td>
-<td class='tab1'>benr</td>
-</tr>
-<tr>
-<td class='tab2'><a href="mailto:vacuum@users.sourceforge.net">Kirby Kuehl</a></td>
-<td class='tab2'><center><a href="http://winfingerprint.sourceforge.net/">Y</a></center></td>
-<td class='tab2'>BSD Ports</td>
-<td class='tab2'>vac</td>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:swielinga@users.sourceforge.net">Sytse Wielinga</a></td>
-<td class='tab1'><center>N</center></td>
-<td class='tab1'>Debian Packaging</td>
-<td class='tab1'>swielinga</td>
-</tr>
-<tr>
-<td class='tab2'><a target="_self" href="mailto:shadoi@soulmachine.net">Blake Barnett</a></td>
-<td class='tab2'><center><a target="_self" href="http://shadoi.soulmachine.net/">Y</a></center></td>
-<td class='tab2'>Debian Packaging</td>
-<td class='tab2'>shadoi</td>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:vapier@gentoo.org">Mike Frysinger</a></td>
-<td class='tab1'><center><a href="http://wh0rd.org/">Y</a></center></td>
-<td class='tab1'>Gentoo Ebuilds</td>
-<td class='tab1'>SpanKY</td>
-</tr>
-<tr>
-<td class='tab2'><a href="mailto:didierbe@sps.nus.edu.sg">Didier Casse</a></td>
-<td class='tab2'><center><a href="http://web.microtronyx.com/">Y</a></center></td>
-<td class='tab2'>Fedora Core 1 &amp; 2</td>
-<td class='tab2'>Prodigy</td>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:lcoghill@charter.net">John Coghill</a></td>
-<td class='tab1'><center>N</center></td>
-<td class='tab1'>Slackware</td>
-<td class='tab1'>liberion</td>
-</tr>
-<tr>
-<td class='tab2'><a href="mailto:xstasi@gmail.com">Alessandro Grassi</a></td>
-<td class='tab2'><center><a href="http://www.edevelop.org/%7Exstasi">Y</a></center></td>
-<td class='tab2'>Debian Packaging</td>
-<td class='tab2'>xstasi</td>
-</tr>
-</table>
-</center>
-
-
-<h2>Additional Development + Contributors</h2>
-<center>
-<table class='tab'>
-<th class='tab' width='130px'>NAME</th>
-<th class='tab' width='30px'>WEB</th>
-<th class='tab'>ROLE/POSITION</th>
-<th class='tab' width='130px'>NICKNAME</th>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:boris@users.sourceforge.net">Chris Ross</a></td>
-<td class='tab1'><center><a href="http://www.darkrock.co.uk/">Y</a></center></td>
-<td class='tab1'><a href="http://www.ferite.org/">Ferite</a></td>
-<td class='tab1'>ctr / boris</td>
-</tr>
-<tr>
-<td class='tab2'><a href="mailto:glassy_ape@users.sourceforge.net">Yuri Hudobin</a></td>
-<td class='tab2'><center><a href="http://engy.sourceforge.net/engy/index.html">Y</a></center></td>
-<td class='tab2'><a href="http://engy.sourceforge.net/engy/index.html">Engy</a></td>
-<td class='tab2'>glassy_ape</td>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:sleuth@users.sourceforge.net">Kevin Brosius</a></td>
-<td class='tab1'><center><a href="http://www.user1.netcarrier.com/%7Ekbrosius/pages/main.html">Y</a></center></td>
-<td class='tab1'><a href="http://www.user1.netcarrier.com/%7Ekbrosius/pages/e_med.html">med</a> Owner, E17, Etcher, Ebits</td>
-<td class='tab1'>sleuth|cobra</td>
-</tr>
-<tr>
-<td class='tab2'><a href="mailto:mej@users.sourceforge.net">Michael Jennings</a></td>
-<td class='tab2'><center><a href="http://www.kainx.org/">Y</a></center></td>
-<td class='tab2'><a href="http://www.eterm.org/">Eterm</a> owner</td>
-<td class='tab2'>mej / KainX</td>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:monkeyiq@users.sourceforge.net">MonkeyIQ</a></td>
-<td class='tab1'><center>N</center></td>
-<td class='tab1'>Gevas, Gevas-examples, Gevas2 owner</td>
-<td class='tab1'>monkey </td>
-</tr>
-<tr>
-<td class='tab2'><a href="mailto:werkt@users.sourceforge.net">George Gensure</a></td>
-<td class='tab2'><center>N</center></td>
-<td class='tab2'>ewler</td>
-<td class='tab2'>werkt</td>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:onefang@gmail.com">David Seikel</a></td>
-<td class='tab1'><center><a href="http://matrix-rad.net/">Y</a></center></td>
-<td class='tab1'>Lots of testing and debugging, FAQS and website</td>
-<td class='tab1'>onefang</td>
-</tr>
-</table>
-</center>
-
-<h2>Website Team</h2>
-<center>
-<table class='tab'>
-<th class='tab' width='130px'>NAME</th>
-<th class='tab' width='30px'>WEB</th>
-<th class='tab'>ROLE/POSITION</th>
-<th class='tab' width='130px'>NICKNAME</th>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:benr@cuddletech.com">Ben Rockwood</a></td>
-<td class='tab1'><center><a href="http://www.cuddletech.com/">Y</a></center></td>
-<td class='tab1'>Maintanance and Documentation</td>
-<td class='tab1'>benr</td>
-</tr>
-<tr>
-<td class='tab2'><a target="_self" href="mailto:andy@elcock.org">Andrew Elcock</a></td>
-<td class='tab2'><center><a target="_self" href="http://rectang.com/">Y</a></center></td>
-<td class='tab2'>Rectang.com XSM (Content Management)</td>
-<td class='tab2'>handyande</td>
-</tr>
-<tr>
-<td class='tab1'><a href="mailto:raster@rasterman.com">Rasterman</a></td>
-<td class='tab1'><center><a href="http://www.rasterman.com/">Y</a></center></td>
-<td class='tab1'>Occasional web graphics, some of the content &amp; documentation</td>
-<td class='tab1'>raster </td>
-</tr>
-</table>
-</center>
-
 
 <h2>Inactive List</h2>
 <center>
 <table class='tab'>
-<th class='tab' width='130px'>NAME</th>
-<th class='tab' width='30px'>WEB</th>
-<th class='tab'>ROLE/POSITION</th>
-<th class='tab' width='130px'>NICKNAME</th>
+<th class='tab' width='130'>Name</th>
+<th class='tab'>Managed</th>
+<th class='tab' width='130px'>IRC Nick</th>
+<th class='tab' width='130px'>Website</th>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:mandrake@user.sourceforge.net">Mandrake</a></td>
-<td class='tab1'><center><a href="http://www.mandrake.net/">Y</a></center></td>
 <td class='tab1'>Core Dev Team</td>
 <td class='tab1'>mandrake</td>
+<td class='tab1'><a href="http://www.mandrake.net/">mandrake.net</a></td>
 </tr>
 <tr>
 <td class='tab2'><a href="mailto:crosendahl@trustlab.com">Christopher Rosendahl</a></td>
-<td class='tab2'><center>N</center></td>
 <td class='tab2'>Ewl, Ewd, Etcher</td>
 <td class='tab2'>smugg</td>
+<td class='tab2'>N</td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:enilsenNO@SPAMportalen.no">Espen Nilsen</a></td>
-<td class='tab1'><center>N</center></td>
 <td class='tab1'>EWL Contribs</td>
 <td class='tab1'>ymer|SpNlsn</td>
+<td class='tab1'>N</td>
 </tr>
 <tr>
 <td class='tab2'><a href="mailto:tillsan@users.sourceforge.net">Till Adam</a></td>
-<td class='tab2'><center>N</center></td>
 <td class='tab2'>E17, EVAS DFB</td>
 <td class='tab2'>tillsan</td>
+<td class='tab2'>N</td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:redalb@users.sourceforge.net">Klaas Bosteels</a></td>
-<td class='tab1'><center>N</center></td>
 <td class='tab1'>Etox</td>
 <td class='tab1'>redalb</td>
+<td class='tab1'>N</td>
 </tr>
 <tr>
 <td class='tab2'><a href="mailto:lofwyrm@users.sourceforge.net">Adam Kisiel</a></td>
-<td class='tab2'><center>N</center></td>
 <td class='tab2'>Etox</td>
 <td class='tab2'>lofwyrm</td>
+<td class='tab2'>N</td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:burra@users.sourceforge.net">Burra</a></td>
-<td class='tab1'><center>N</center></td>
 <td class='tab1'>Ecore</td>
 <td class='tab1'>burra</td>
+<td class='tab1'>N</td>
 </tr>
 <tr>
 <td class='tab2'><a href="mailto:marini@pcmenelao.mi.infn.it%3E">Franz Marini</a></td>
-<td class='tab2'><center>N</center></td>
 <td class='tab2'>Imlib2 Contributions</td>
 <td class='tab2'></td>
+<td class='tab2'>N</td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:horms@users.sourceforge.net">Horms</a></td>
-<td class='tab1'><center>N</center></td>
 <td class='tab1'>Dev Team</td>
 <td class='tab1'>horms</td>
+<td class='tab1'>N</td>
 </tr>
 <tr>
 <td class='tab2'><a href="mailto:dphase@users.sourceforge.net">Joshua Deere</a></td>
-<td class='tab2'><center>N</center></td>
 <td class='tab2'>Retina</td>
 <td class='tab2'>dphase</td>
+<td class='tab2'>N</td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:x5rings@users.sourceforge.net">Chris Thomas</a></td>
-<td class='tab1'><center>N</center></td>
 <td class='tab1'>Elogin</td>
 <td class='tab1'>x5rings</td>
+<td class='tab1'>N</td>
 </tr>
 <tr>
 <td class='tab2'><a href="mailto:muhri@users.sourceforge.net">Maher Awamy</a></td>
-<td class='tab2'><center><a href="http://www.muhri.net/">Y</a></center></td>
 <td class='tab2'>Imlib/Evas perl bindings</td>
 <td class='tab2'>muhri</td>
+<td class='tab2'><a href="http://www.muhri.net/">muhri.net</a></td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:gilbertt@users.sourceforge.net">Tom Gilbert</a></td>
-<td class='tab1'><center><a href="http://www.linuxbrit.co.uk/">Y</a></center></td>
 <td class='tab1'>Epplets API, Giblib, Feh, CamE, Geist, Gozer, Gom, Scrot</td>
 <td class='tab1'>gilbertt</td>
+<td class='tab1'><a href="http://www.linuxbrit.co.uk/">linuxbrit.co.uk</a></td>
 </tr>
 <tr>
 <td class='tab2'><a href="mailto:kirth@hole.org">Kirth</a></td>
-<td class='tab2'><center>N</center></td>
 <td class='tab2'>Ports and Package Team</td>
 <td class='tab2'>kirth</td>
+<td class='tab2'>N</td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:ljlane@users.sourceforge.net">Laurence J. Lane</a></td>
-<td class='tab1'><center>N</center></td>
 <td class='tab1'>Ports and Package Team</td>
 <td class='tab1'>ljlane</td>
+<td class='tab1'>N</td>
 </tr>
 <tr>
 <td class='tab2'><a href="mailto:stauff@users.sourceforge.net">Platon Fomichev</a></td>
-<td class='tab2'><center>N</center></td>
 <td class='tab2'>Ports and Package Team</td>
 <td class='tab2'>stauff</td>
+<td class='tab2'>N</td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:sfrost@users.sourceforge.net">Stephen Frost</a></td>
-<td class='tab1'><center>N</center></td>
 <td class='tab1'>Ports and Package Team</td>
 <td class='tab1'>sfrost</td>
+<td class='tab1'>N</td>
 </tr>
 <tr>
 <td class='tab2'><a href="mailto:andrew@neep.com.au">Andrew</a></td>
-<td class='tab2'><center>N</center></td>
 <td class='tab2'>Web and Doc Team </td>
 <td class='tab2'>Andrew </td>
+<td class='tab2'>N</td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:cK@whoop.org">Christian Kreibich</a></td>
-<td class='tab1'><center><a href="http://www.whoop.org/">Y</a></center></td>
 <td class='tab1'>EFSD Owner,  Web Team</td>
 <td class='tab1'>cK </td>
+<td class='tab1'><a href="http://www.whoop.org/">whoop.org</a></td>
 </tr>
 <tr>
 <td class='tab2'><a href="mailto:winterlight@hendryx.com">Hendryx</a></td>
-<td class='tab2'><center><a href="http://www.hendyrx.com/">Y</a></center></td>
 <td class='tab2'>Web and Doc Team</td>
 <td class='tab2'>Hendryx</td>
+<td class='tab2'><a href="http://www.hendyrx.com/">hendyrx.com</a></td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:alphafemale@radiant.net">S. J. Black</a></td>
-<td class='tab1'><center>N</center></td>
 <td class='tab1'>Doc Team</td>
 <td class='tab1'>alpha female</td>
+<td class='tab1'>N</td>
 </tr>
 <tr>
 <td class='tab2'><a target="_self" href="mailto:term@NOSPAM-THANKSusers.sourceforge.net">Term</a></td>
-<td class='tab2'><center><a href="http://www.twistedpath.org/">Y</a></center></td>
 <td class='tab2'>Web Team</td>
 <td class='tab2'>term</td>
+<td class='tab2'><a href="http://www.twistedpath.org/">twistedpath.org</a></td>
 </tr>
 <tr>
 <td class='tab1'><a href="mailto:trip@ga.prestige.net">Tim Fabiniak</a></td>
-<td class='tab1'><center>N</center></td>
 <td class='tab1'>Web Team</td>
 <td class='tab1'>minion2</td>
+<td class='tab1'>N</td>
 </tr>
 </table>
 </center>

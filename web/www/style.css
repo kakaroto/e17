@@ -308,24 +308,28 @@ table.tab {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #444444;
    font-size              : 1.0em;
+   border-collapse        : collapse;
 }
 
 th.tab {
    color                  : #ffffff;
    background-color       : #000000;
-   padding                : 2px;
+   padding                : 3px;
+   text-align             : left;
 }
 
 td.tab1 {
    color                  : #444444;
    background-color       : #ffffff;
-   padding                : 2px;
+   padding                : 3px;
+   text-align             : left;
 }
 
 td.tab2 {
    color                  : #444444;
    background-color       : #eeeeee;
-   padding                : 2px;
+   padding                : 3px;
+   text-align             : left;
 }
 
 table.b {
