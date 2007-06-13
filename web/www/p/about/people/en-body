@@ -105,7 +105,8 @@ ksort($developers);
     if(strstr($val->www, "http://"))
     {
       if($val->www[strlen($val->www)-1] == '/')
-        $val->www[strlen($val->www)-1] = '';
+        $val->www[strlen($val->www)-1] = 0;
+        
       echo "<a href='".$val->www."'>".
         str_replace(array('http://', 'www.'),'',$val->www)."</a>";
     }
