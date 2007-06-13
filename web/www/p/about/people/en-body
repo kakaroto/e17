@@ -1,5 +1,5 @@
 <?php
-$devspath = "/dev"; 
+$devspath = "/devs"; 
 
 //Exclude accounts that aren't actually devs
 $exclude = array('ewww');
@@ -48,7 +48,7 @@ while (list (, $dev) = each ($devdirs))
     if (file_exists ($infopath)) 
     {
         $newdev = new dev ($infopath);
-        $developers [strtolower($newdev->irc_nick)] = $newdev;
+        $developers[strtolower($newdev->irc_nick)] = $newdev;
     }
 }
 
