@@ -1,5 +1,5 @@
 <?php
-$devspath = $_SERVER['DOCUMENT_ROOT'] . "devs"; 
+$devspath = "/var/www/web/web/www/devs"; 
 
 //Exclude accounts that aren't actually devs
 $exclude = array('ewww');
