@@ -23,14 +23,10 @@ images
 group
 {
 	name: "ewl/scrollpane/background";
-
 	data
 	{
-		item: "inset" 9;
-		item: "inset/bottom" 5;
-		item: "inset/right" 5;
+		item: "inset" 4;
 	}
-
 	parts
 	{
 		part
@@ -78,6 +74,17 @@ group
 				}
 			}
 		}
+	}
+}
+
+group
+{
+	name: "ewl/scrollpane/overlay/box";
+	data
+	{
+		item: "inset" 5;
+		item: "inset/right" 2;
+		item: "inset/bottom" 2;
 	}
 }
 
@@ -316,7 +323,7 @@ group
 				rel1
 				{
 					relative: 0.0 0.0;
-					offset: 0 -1;
+					offset: 0 0;
 				}
 				rel2
 				{
@@ -381,7 +388,7 @@ group
 				rel1
 				{
 					relative: 0.0 0.0;
-					offset: 0 -1;
+					offset: 0 0;
 				}
 				rel2
 				{
@@ -446,7 +453,7 @@ group
 				rel1
 				{
 					relative: 0.0 0.0;
-					offset: 0 -1;
+					offset: 0 0;
 				}
 				rel2
 				{
