@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: e16-0.16.8.9-0.02-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-06-06 22:49+0200\n"
-"PO-Revision-Date: 2007-06-12 23:22+0200\n"
+"PO-Revision-Date: 2007-06-14 18:36+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
-"Language-Team: français <fr@li.org>\n"
+"Language-Team: French <http://www.linuxmao.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -127,7 +127,7 @@ msgstr ""
 "%s\n"
 "Ce programme ne peut être exécuté.\n"
 "Le programme n'est probablement pas dans le chemin d'exécution\n"
-"de votre shell qui est %s. Je vous suggère de lire le manuel\n"
+"(Path) de votre shell qui est %s. Je vous suggère de lire le manuel\n"
 "de votre shell afin de trouver comment modifier votre chemin\n"
 "d'exécution.\n"
 
@@ -144,9 +144,9 @@ msgstr ""
 "Il y a eu une erreur durant l'exécution du programme:\n"
 "%s\n"
 "Ce programme ne peut être exécuté.\n"
-"Je ne suis pas sûr de la raison. Le fichier existe, est bien un fichier,\n"
-"et vous en avez les droits d'exécution. Je vous suggère\n"
-"d'y jeter un oeil.\n"
+"Je ne suis pas sûr de la raison. Le fichier existe, est bien de type\n"
+"\"fichier\", et vous en avez les droits d'exécution. Je vous suggère\n"
+"de le regarder plus en détail.\n"
 
 #: src/actions.c:129
 #, c-format
@@ -160,8 +160,8 @@ msgstr ""
 "Il y a eu une erreur durant l'exécution du programme:\n"
 "%s\n"
 "Ce programme ne peut être exécuté.\n"
-"Le fichier existe, est bien un fichier, mais vous ne pouvez pas\n"
-"l'exécuter car vous n'en avez pas les droits.\n"
+"Le fichier existe, est bien de type \"fichier\", mais vous ne pouvez pas\n"
+"l'exécuter car vous n'avez pas les droits suffisants.\n"
 
 #: src/actions.c:144
 #, c-format
@@ -298,15 +298,15 @@ msgid ""
 "and\n"
 "Alignment\n"
 msgstr ""
-"Dimensionnement\n"
-" \n"
-"et alignement\n"
-" \n"
-"du fond d'écran\n"
+"Dimensions\n"
+"et\n"
+"alignement\n"
+"du fond\n"
+"d'écran\n"
 
 #: src/backgrounds.c:2243
 msgid "Use dithering in Hi-Colour"
-msgstr "Utiliser le tramage (dithering)"
+msgstr "Utiliser le tramage (dithering) en mode Couleur (16 bits)"
 
 #: src/backgrounds.c:2247
 msgid "Background overrides theme"
@@ -329,9 +329,8 @@ msgid "Sort by Image"
 msgstr "Trier par Image"
 
 #: src/backgrounds.c:2337
-#, fuzzy
 msgid "Enable background transparency compatibility mode"
-msgstr "Activer le mode de compatibilité avec la transparence d'arrière-plan"
+msgstr "Activer le mode de compatibilité pour la pseudo-transparence"
 
 #: src/backgrounds.c:2343 src/mod-trans.c:193
 msgid "Background"
@@ -428,10 +427,10 @@ msgstr ""
 "\n"
 "La configuration du thème que vous utilisez est\n"
 "incompatible. Son numéro de révision est %i.\n"
-"Il devrait être %i\n"
+"Il devrait être <= %i\n"
 "\n"
 "Veuillez contacter l'auteur ou le responsable de ce\n"
-"thème et l'informer qu'afin que son thème fonctionne\n"
+"thème et l'informer que pour que son thème fonctionne\n"
 "avec cette version d'Enlightenment, il devra le mettre\n"
 "à jour en respectant le nouveau format et ensuite en\n"
 "changer le numéro de version.\n"
@@ -578,7 +577,7 @@ msgstr "Animer les icônifications vers cette Boîte à icônes"
 
 #: src/container.c:1707
 msgid "Icon image display policy (if one operation fails, try the next):"
-msgstr "Afficher les icônes en respectant l'ordre suivant:)"
+msgstr "Afficher les icônes dans cet ordre (en cas d'erreur, la suivante est utilisée):"
 
 #: src/container.c:1712
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
@@ -795,7 +794,7 @@ msgstr ""
 "Impossible d'activer le gestionnaire Composite.\n"
 "Utilisez xdpyinfo pour vérifier que\n"
 "les extensions Composite, Damage,\n"
-"Fixes, et Render sont chargées."
+"Fixes, et Render sont bien chargées."
 
 #: src/events.c:82
 msgid "X server setup error"
@@ -897,7 +896,7 @@ msgstr "Placer la souris sur la fenêtre après obtention du focus"
 
 #: src/focus.c:831
 msgid "Focuslist image display policy (if one operation fails, try the next):"
-msgstr "Afficher les icônes en respectant l'ordre suivant:"
+msgstr "Afficher les icônes dans la liste de fenêtres dans l'ordre suivant:"
 
 #: src/focus.c:835
 msgid "First E Icon, then App Icon"
@@ -1006,7 +1005,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  Il n'y a aucun groupe existant. Vous devez en créer un.  \n"
+"  Il n'y a aucun groupe existant. Vous devez en créer un.\n"
 "\n"
 
 #: src/groups.c:826
@@ -1133,7 +1132,7 @@ msgstr ""
 "d'Enlightenment compilé pour une autre architecture\n"
 "(AMD, Pentium II, Cyrix, 486) que votre machine.\n"
 "Veuillez obtenir le paquet correct ou bien recompiler\n"
-"Enlightenment, et éventuellement les librairies qu'il utilise.\n"
+"Enlightenment, et éventuellement les bibliothèques qu'il utilise.\n"
 
 #: src/handlers.c:80
 msgid ""
@@ -1150,7 +1149,7 @@ msgid ""
 msgstr ""
 "Enlightenment a causé une exception de virgule flottante.\n"
 "\n"
-"Cela signifie qu'Enlightenment ou une des librairies utilisées a\n"
+"Cela signifie qu'Enlightenment (ou une des bibliothèques associées) a\n"
 "effectué une opération mathématique illégale (ex : division par zéro).\n"
 "Il s'agit sûrement d'un bogue, il est recommandé de redémarrer\n"
 "Enlightenment maintenant. Si vous souhaitez aider à corriger ce bogue,\n"
@@ -1173,7 +1172,7 @@ msgid ""
 msgstr ""
 "Enlightenment a causé une erreur de segmentation (Segfault)\n"
 "\n"
-"Cela signifie qu'Enlightenment ou une des librairies utilisées a\n"
+"Cela signifie qu'Enlightenment (ou une des bibliothèques associées) a\n"
 "accédé à une zone de mémoire système qui ne lui était pas autorisée.\n"
 "Il s'agit sûrement d'un bogue, il est recommandé de redémarrer\n"
 "Enlightenment maintenant. Si vous souhaitez aider à corriger ce bogue,\n"
@@ -1191,8 +1190,9 @@ msgid ""
 msgstr ""
 "Enlightenment a causé une erreur de bus.\n"
 "\n"
-"Il est suggéré de vérifier vos installations matérielle et système.\n"
-"Ce type d'erreur est très rare sur un matériel opérationnel.\n"
+"Il est suggéré de vérifier votre matériel et l'installation de votre\n"
+"système d'exploitation. Ce type d'erreur est très rare sur du matériel\n"
+"fonctionnant correctement.\n"
 
 #: src/handlers.c:193
 msgid "Another Window Manager is already running"
@@ -1609,15 +1609,15 @@ msgid ""
 msgstr ""
 "ERREUR !\n"
 "\n"
-"Perte du gestionnaire de session qui était ici ?\n"
+"Le gestionnaire de session qui était ici est perdu ?\n"
 "Au pied gestionnaire de session, au pied ! Tu veux un os ?\n"
-"Bon viens maintenant, çà suffit ! Tant pis, on continue sans\n"
+"Bon viens maintenant, ça suffit ! Tant pis, on continue sans\n"
 "gestionnaire de session.\n"
 "\n"
 "Je survivrai quand même.\n"
 "\n"
 "\n"
-"... Enfin j'espère.\n"
+"... Enfin j'espère. (Les traducteurs ne sont pas responsables de de délire)\n"
 
 #: src/session.c:643
 msgid "Are you sure?"
@@ -1854,9 +1854,8 @@ msgid "Enable Dialog Headers"
 msgstr "Activer les en-têtes sur les dialogues"
 
 #: src/settings.c:491
-#, fuzzy
 msgid "Enable Button Images"
-msgstr "Activer les Images de Bouton"
+msgstr "Images de Bouton (fonction désormais désactivée)"
 
 #: src/settings.c:500
 msgid "Enable sliding startup windows"
@@ -1947,10 +1946,10 @@ msgstr ""
 "la variable d'environnement DISPLAY de votre shell. Vous pouvez\n"
 "changer cette variable pour indiquer sur quel affichage Enlightenment\n"
 "doit se connecter. Il est possible que vous n'ayez aucun serveur X\n"
-"démarré et donc en mesure de répondre à la demande de connexion ou\n"
+"démarré (et donc en mesure de répondre à la demande de connexion), ou\n"
 "encore que vous ne soyez pas autorisé à vous connecter à l'affichage\n"
 "défini dans la variable. Vous pouvez démarrer un serveur X en tapant\n"
-"xdm, startx ou vous pouvez contacter votre administrateur ou encore\n"
+"xdm, startx, ou vous pouvez contacter votre administrateur, ou encore\n"
 "lire la documentation (man startx, man xdm, man X).\n"
 
 #: src/setup.c:249
@@ -1973,7 +1972,7 @@ msgid ""
 msgstr ""
 "ATTENTION:\n"
 "Il n'y a pas de serveur X11. Le serveur utilise le protocole X%i.\n"
-"Enlightenment pourrait ne pas fonctionner ou fonctionner incorrectement.\n"
+"Enlightenment pourrait ne pas fonctionner, ou fonctionner incorrectement.\n"
 "Si votre serveur est plus récent que X11, il s'agit d'un serveur dont\n"
 "les auteurs d'Enlightenment n'ont jamais entendu parlé, ou auquel ils\n"
 "n'ont jamais eu accès.\n"
@@ -2477,9 +2476,7 @@ msgstr "Coller / Décoller"
 
 #: config/strings.c:61
 msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
-msgstr ""
-"Basculer l'état d'omniprésence (visibilité sur tous les bureaux) de cette "
-"fenêtre."
+msgstr "Basculer l'état d'omniprésence (visibilité sur tous les bureaux) de cette fenêtre."
 
 #: config/strings.c:63
 msgid ""
@@ -2711,7 +2708,7 @@ msgstr "Groupes de fenêtre"
 
 #: config/strings.c:147
 msgid "Configure this window's group(s)"
-msgstr "Configurer les groupes de cette fenêtre"
+msgstr "Configurer le(s) groupe(s) de cette fenêtre"
 
 #: config/strings.c:148
 msgid "Start a new group"
@@ -2778,9 +2775,8 @@ msgid "Toggle Never Use Area"
 msgstr "Ne jamais utiliser de zones (On/Off)"
 
 #: config/strings.c:167
-#, fuzzy
 msgid "Toggle Button Grabs"
-msgstr "Capture Bouton (On/Off)"
+msgstr "Déplacement de fenêtre par Alt+clic gauche (On/Off)"
 
 #: config/strings.c:170
 msgid "20%"
