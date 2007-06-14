@@ -9,6 +9,84 @@ images
 
 group
 {
+	name: "ewl/tree";
+
+	data
+	{
+		item: "inset" 1;
+		item: "inset/top" 4;
+		item: "inset/bottom" 0;
+	}
+
+	parts
+	{
+		part
+		{
+			name: "bg";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				image
+				{
+					normal: "e17_ibar_bg_v.png";
+					border: 7 7 7 7;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+		part
+		{
+			name: "overlay";
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				rel1
+				{
+					to: "bg";
+				}
+				rel2
+				{
+					to: "bg";
+				}
+				image
+				{
+					normal: "e17_ibar_over_v.png";
+					border: 13 13 13 13;
+					middle: 0;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+		}
+	}
+}
+
+group
+{
+    name: "ewl/tree/scrollpane/background";
+}
+
+group
+{
+	name: "ewl/tree/vbox";
+	data
+	{
+		item: "inset/top" 7;
+		item: "inset/bottom" 5;
+		item: "inset/left" 10;
+		item: "inset/right" 6;
+	}
+}
+
+group
+{
 	name: "ewl/tree/expansion";
 	min: 12 12;
 	parts
