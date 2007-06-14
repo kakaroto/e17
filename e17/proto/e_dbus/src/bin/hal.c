@@ -362,7 +362,6 @@ volume_append(const char *udi)
   return v;
 }
 
-#if EWL_GUI
 static void
 cb_test_get_all_devices(void *user_data, void *reply_data, DBusError *error)
 {
@@ -384,7 +383,6 @@ cb_test_get_all_devices(void *user_data, void *reply_data, DBusError *error)
     printf("device: %s\n", device);
   }
 }
-#endif
 
 static void
 cb_test_find_device_by_capability_storage(void *user_data, void *reply_data, DBusError *error)
@@ -804,6 +802,7 @@ main(int argc, char **argv)
   ewl_widget_show(win);
 #endif
 
+  e_hal_manager_get_all_devices(conn, cb_test_get_all_devices, NULL);
   e_hal_manager_find_device_by_capability(conn, "storage", cb_test_find_device_by_capability_storage, NULL);
   e_hal_manager_find_device_by_capability(conn, "volume", cb_test_find_device_by_capability_volume, NULL);
   
