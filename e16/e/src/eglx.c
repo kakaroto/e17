@@ -48,6 +48,63 @@
 #define TEXTURE_TARGET GLX_TEXTURE_RECTANGLE_EXT
 #endif
 
+#ifdef HAVE_GLX_glXBindTexImageEXT
+
+#define _glXBindTexImageEXT    glXBindTexImageEXT
+#define _glXReleaseTexImageEXT glXReleaseTexImageEXT
+
+#else
+
+#include <dlfcn.h>
+
+/* GL functions and helper */
+typedef void        (*glXBindTexImageEXT_func) (Display * dpy,
+						GLXDrawable drawable,
+						int buffer,
+						const int *attrib_list);
+typedef void        (*glXReleaseTexImageEXT_func) (Display * dpy,
+						   GLXDrawable drawable,
+						   int buffer);
+typedef void        (*glXFuncPtr) (void);
+typedef             glXFuncPtr(*glXGetProcAddress_func) (const GLubyte *);
+
+static glXBindTexImageEXT_func _glXBindTexImageEXT;
+static glXReleaseTexImageEXT_func _glXReleaseTexImageEXT;
+static glXGetProcAddress_func glx_get_proc_address;
+
+static              glXFuncPtr
+get_func_addr(const char *name)
+{
+   glXFuncPtr          ret = NULL;
+
+   if (glx_get_proc_address)
+      ret = glx_get_proc_address((const GLubyte *)name);
+   if (!ret)
+      ret = (glXFuncPtr) dlsym(RTLD_DEFAULT, name);
+
+   return ret;
+}
+
+static int
+glx_funcs_init(void)
+{
+   glx_get_proc_address = (glXGetProcAddress_func)
+      get_func_addr("glXGetProcAddress");
+   if (!glx_get_proc_address)
+      glx_get_proc_address = (glXGetProcAddress_func)
+	 get_func_addr("glXGetProcAddressARB");
+
+   _glXBindTexImageEXT = (glXBindTexImageEXT_func)
+      get_func_addr("glXBindTexImageEXT");
+
+   _glXReleaseTexImageEXT = (glXReleaseTexImageEXT_func)
+      get_func_addr("glXReleaseTexImageEXT");
+
+   return !_glXBindTexImageEXT || !_glXReleaseTexImageEXT;
+}
+
+#endif /* HAVE_GLX_glXBindTexImageEXT */
+
 static void         EobjTexturesFree(void);
 
 typedef struct
@@ -185,6 +242,14 @@ EGlInit(void)
 	Eprintf("No FB config match\n");
 	return -1;
      }
+
+#ifndef HAVE_GLX_glXBindTexImageEXT
+   if (glx_funcs_init())
+     {
+	Eprintf("glXBindTexImageEXT or glXReleaseTexImageEXT not available\n");
+	return -1;
+     }
+#endif
 
    egl.vi = glXGetVisualFromFBConfig(disp, egl.fbc);
 
@@ -376,12 +441,12 @@ EGlTextureFromDrawable(Drawable draw, int mode)
    switch (mode & 0xff)
      {
      case 0:
-	glXBindTexImageEXT(disp, glxpixmap, GLX_FRONT_LEFT_EXT, NULL);
+	_glXBindTexImageEXT(disp, glxpixmap, GLX_FRONT_LEFT_EXT, NULL);
 	glTexParameteri(et->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(et->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	break;
      case 1:
-	glXBindTexImageEXT(disp, glxpixmap, GLX_FRONT_LEFT_EXT, NULL);
+	_glXBindTexImageEXT(disp, glxpixmap, GLX_FRONT_LEFT_EXT, NULL);
 	glTexParameteri(et->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(et->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	break;
@@ -413,7 +478,7 @@ EGlTextureDestroy(ETexture * et)
      case ETEX_TYPE_PIXMAP:
 	if (!et->glxpmap)
 	   break;
-	glXReleaseTexImageEXT(disp, et->glxpmap, GLX_FRONT_LEFT_EXT);
+	_glXReleaseTexImageEXT(disp, et->glxpmap, GLX_FRONT_LEFT_EXT);
 	glBindTexture(et->target, 0);
 	glDisable(et->target);
 	glXDestroyPixmap(disp, et->glxpmap);

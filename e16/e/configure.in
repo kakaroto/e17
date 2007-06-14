@@ -165,6 +165,8 @@ if test "x$enable_glx" = "xyes"; then
     ],[
       AC_MSG_ERROR([Cannot find GLX libraries])
     ])
+  AC_CHECK_LIB(GL, glXBindTexImageEXT,
+      AC_DEFINE(HAVE_GLX_glXBindTexImageEXT, 1, [glXBindTexImageEXT is available]))
   AC_SUBST(GLX_LIBS)
 fi
 AM_CONDITIONAL(HAVE_GLX, test "x$enable_glx" = "xyes")
