@@ -434,12 +434,11 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	ecore_dlist_goto_first(fmt->nodes);
+	node = ecore_dlist_goto_first(fmt->nodes);
 	fmt->current_node.char_idx = 0;
 	fmt->current_node.byte_idx = 0;
 
-	node = ecore_dlist_current(fmt->nodes);
-	while ((fmt->current_node.char_idx + node->char_len) <= idx)
+	while ((fmt->current_node.char_idx + node->char_len) < idx)
 	{
 		fmt->current_node.char_idx += node->char_len;
 		fmt->current_node.byte_idx += node->byte_len;
