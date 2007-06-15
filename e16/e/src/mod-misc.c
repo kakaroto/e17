@@ -40,6 +40,9 @@ extern const EModule ModButtons;
 extern const EModule ModCompMgr;
 extern const EModule ModMagwin;
 #endif
+#if USE_GLX
+extern const EModule ModGlwin;
+#endif
 extern const EModule ModCursors;
 extern const EModule ModDesktops;
 extern const EModule ModEffects;
@@ -77,6 +80,9 @@ const EModule      *p_modules[] = {
    &ModEwins,
    &ModEffects,
    &ModFocus,
+#if USE_GLX
+   &ModGlwin,
+#endif
    &ModGroups,
    &ModIconboxes,
    &ModImageclass,

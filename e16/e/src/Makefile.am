@@ -1,6 +1,6 @@
 SUBDIRS =
 
-EXTRA_DIST = gnome.c eglx.c eglx.h ecompmgr.c ecompmgr.h magwin.c snprintf.c
+EXTRA_DIST = gnome.c eglx.c eglx.h glwin.c ecompmgr.c ecompmgr.h magwin.c snprintf.c
 
 bin_PROGRAMS = e16
 
@@ -8,7 +8,7 @@ if ENABLE_GNOME
 SRCS_GNOME = gnome.c
 endif
 if HAVE_GLX
-SRCS_GLX = eglx.c eglx.h
+SRCS_GLX = eglx.c eglx.h glwin.c
 endif
 if HAVE_COMPOSITE
 SRCS_ECOMPMGR = ecompmgr.c ecompmgr.h magwin.c
