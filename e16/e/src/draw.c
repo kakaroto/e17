@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include "desktops.h"
+#include "eobj.h"
 #include "ewins.h"
 #include "hints.h"
 #include "xwin.h"
@@ -655,6 +656,51 @@ EBlendPixImg(Win win, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
       XSetStipple(disp, _gc, b2); \
       XFillRectangle(disp, _dr, _gc, _a, _b, _c + bl + br, _d + bt + bb);
 
+#define _SHAPE_SET_RECT(rl, _x, _y, _w, _h) \
+do { \
+    rl[0].x = _x;          rl[0].y = _y;          rl[0].width = _w; rl[0].height = 1; \
+    rl[1].x = _x;          rl[1].y = _y + _h - 1; rl[1].width = _w; rl[1].height = 1; \
+    rl[2].x = _x;          rl[2].y = _y + 1;      rl[2].width = 1;  rl[2].height = _h - 2; \
+    rl[3].x = _x + _w - 1; rl[3].y = _y + 1;      rl[3].width = 1;  rl[3].height = _h - 2; \
+} while(0)
+
+static EObj        *
+_ShapeCreateWin(void)
+{
+   EObj               *eo;
+
+   eo = EobjWindowCreate(EOBJ_TYPE_MISC, 0, 0, VRoot.w, VRoot.h, 0, "Wires");
+   if (!eo)
+      return NULL;
+   eo->shadow = 0;
+   eo->fade = 0;
+   ESetWindowBackground(EobjGetWin(eo), 0xff0000);	/* FIXME - Allocate color */
+#ifdef xxShapeInput		/* Should really check server too */
+   XShapeCombineRectangles(disp, EobjGetXwin(eo),
+			   ShapeInput, 0, 0, NULL, 0, ShapeSet, Unsorted);
+#endif
+   return eo;
+}
+
+static void
+_ShapeSetBox(EObj * eo, int x, int y, int w, int h,
+	     int bl, int br, int bt, int bb, int seqno)
+{
+   int                 w2, h2;
+
+   w2 = w + bl + br;
+   h2 = h + bt + bb;
+
+   XRectangle          rl[8];
+
+   _SHAPE_SET_RECT((&rl[0]), x, y, w2, h2);
+   _SHAPE_SET_RECT((&rl[4]), x + bl + 1, y + bt + 1, w - 2, h - 2);
+
+   EShapeCombineRectangles(EobjGetWin(eo), ShapeBounding, 0, 0, rl,
+			   8, (seqno == 0) ? ShapeSet : ShapeUnion, Unsorted);
+   EobjShapeUpdate(eo, 0);
+}
+
 void
 DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	      int firstlast, int seqno)
@@ -747,6 +793,27 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_1(root, gc, x, y, w, h);
+	       }
+	  }
+	else if (md == 2 && !Conf.movres.old_mode)
+	  {
+	     static EObj        *shape_win = NULL;
+
+	     if (!shape_win)
+	       {
+		  shape_win = _ShapeCreateWin();
+		  if (!shape_win)
+		     return;
+	       }
+
+	     _ShapeSetBox(shape_win, x, y, w, h, bl, br, bt, bb, seqno);
+	     EobjMap(shape_win, 0);
+
+	     CoordsShow(ewin);
+	     if (firstlast == 2)
+	       {
+		  EobjDestroy(shape_win);
+		  shape_win = NULL;
 	       }
 	  }
 	else if (md == 2)

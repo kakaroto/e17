@@ -320,6 +320,7 @@ typedef struct
       int                 mode_move;
       int                 mode_resize;
       int                 mode_info;
+      char                old_mode;
       char                update_while_moving;
       char                enable_sync_request;
    } movres;
