@@ -48,7 +48,7 @@ Ewl_Widget *add_normal_view(Ewl_Widget *c)
 	ewl_container_child_append(EWL_CONTAINER(em->fbox_vbox), em->fthumb_size);
 	ewl_callback_append(em->fthumb_size, EWL_CALLBACK_VALUE_CHANGED, change_size, NULL);
 	ewl_object_alignment_set(EWL_OBJECT(em->fthumb_size), EWL_FLAG_ALIGN_RIGHT);
-	ewl_object_maximum_size_set(EWL_OBJECT(em->fthumb_size), 100, 25);
+	ewl_object_maximum_size_set(EWL_OBJECT(em->fthumb_size), 160, 20);
 	ewl_widget_show(em->fthumb_size);
 
 	return em->fbox_vbox;
