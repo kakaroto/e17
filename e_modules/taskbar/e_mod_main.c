@@ -692,11 +692,7 @@ _taskbar_icon_fill(Taskbar_Icon *ic)
    evas_object_pass_events_set(ic->o_icon2, 1);
    evas_object_show(ic->o_icon2);
 
-   ic->label = ic->border->client.netwm.name;
-   if (!ic->label)
-      ic->label = ic->border->client.icccm.title;
-   if (!ic->label)
-      ic->label = "?";
+   ic->label = e_border_name_get(ic->border);
    edje_object_part_text_set(ic->o_holder, "label", ic->label);
    edje_object_part_text_set(ic->o_holder2, "label", ic->label);
 }
@@ -1203,11 +1199,7 @@ _taskbar_cb_event_border_property(void *data, int type, void *event)
         inst = l->data;
         ic = _taskbar_icon_find(inst->taskbar, bd);
         if (ic) {
-	     ic->label = bd->client.netwm.name;
-	     if (!ic->label)
-	       ic->label = bd->client.icccm.title;
-	     if (!ic->label)
-	       ic->label = "?";
+	     ic->label = e_border_name_get(bd);
 	     edje_object_part_text_set(ic->o_holder, "label", ic->label);
 	     edje_object_part_text_set(ic->o_holder2, "label", ic->label);
 	     _gc_orient(inst->gcc);
