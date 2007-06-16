@@ -235,7 +235,8 @@ part {\
 	}\
 }\
 SCROLL_DOWN_PART( _rel, 0.5 , 0.4, _rel"_scroll_down_box")\
-SCROLL_UP_PART( _rel, 0.5, 0.6, _rel"_scroll_up_box")
+SCROLL_UP_PART( _rel, 0.5, 0.6, _rel"_scroll_up_box")\
+TOOLTIP( _rel"_bg_top", _name)
 
 #define BAR_PROGS( _sig, _flag, _rel , _var) \
 program {\
@@ -271,7 +272,8 @@ program {\
 	}\
 }\
 SCROLL_PROGS( _rel"_scroll_up_part", "scroll,stop", _flag, "scroll,right,start", _flag)\
-SCROLL_PROGS( _rel"_scroll_down_part", "scroll,stop", _flag , "scroll,left,start", _flag)
+SCROLL_PROGS( _rel"_scroll_down_part", "scroll,stop", _flag , "scroll,left,start", _flag)\
+TOOLTIP_PROGS( _rel"_bg_top", _flag, _var)
 
 #define SCROLL_PROGS( _name, _emitup1, _emitup2, _emitdown1, _emitdown2)\
 		program {\

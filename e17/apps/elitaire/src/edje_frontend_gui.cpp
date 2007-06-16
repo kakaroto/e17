@@ -397,6 +397,14 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
 
     if (eef->elitaire)
         _eli_app_gui_swallow(eef->gui, "elitaire_card_field", eef->elitaire);
+
+    /* set the label text */
+    const char * labels[] = {N_("Games"), N_("Themes"), N_("Cards"), NULL};
+    const char * label_parts[] = {"elitaire_new_box_label",
+                                "elitaire_theme_box_label",
+                                "elitaire_cards_box_label", NULL};
+    for (int i = 0; labels[i] != NULL;  i++)
+        edje_object_part_text_set(eef->gui, label_parts[i], labels[i]);
 }
 
 void _eli_edje_frontend_gui_del(Eli_App * eap)

@@ -1,409 +1,381 @@
-#define ARROW_L( _relto)\
+#define ARROWS(_rel, _ext, _image) \
 part {\
- name:          "h1a1";\
- mouse_events:  0;\
- description {\
-	state:    "default" 0.0;\
-	align:    1.0 0.5;\
-	min:      21 29;\
-	max:      21 29;\
-	visible:  0;\
-	color:    255 255 255 0;\
-	rel1 {\
-	   relative: 0.0  0.0;\
-	   offset:   -1   0;\
-	   to: _relto;\
+	name:          _rel"_arrow1"_ext;\
+	mouse_events:  0;\
+	description {\
+		state:    "default" 0.0;\
+		align:    0.0 0.5;\
+		min:      21 20;\
+		max:      21 20;\
+		visible:  0;\
+		color:    255 255 255 0;\
+		rel1 {\
+			relative: 1.0  0.0;\
+			offset:   0    0;\
+			to: _rel"_label_clip";\
+		}\
+		rel2 {\
+			relative: 1.0  1.0;\
+			offset:   0   -1;\
+			to: _rel"_label_clip";\
+		}\
+		image {\
+			normal: _image;\
+		}\
+	 }\
+	 description {\
+		state:    "on" 0.0;\
+		inherit:  "default" 0.0;\
+		visible:  1;\
+		color:    255 255 255 255;\
 	}\
-	rel2 {\
-	   relative: 0.0  1.0;\
-	   offset:   -1   -1;\
-	   to: _relto;\
-	}\
-	image {\
-	   normal: "e17_ibar_arrow_l.png";\
-	}\
- }\
- description {\
-	state:    "default2" 0.0;\
-	inherit:  "default" 0.0;\
-	visible:  1;\
-	color:    255 255 255 255;\
- }\
 }\
 part {\
- name:          "h1a2";\
- mouse_events:  0;\
- description {\
-	state:    "default" 0.0;\
-	align:    1.0 0.5;\
-	min:      21 29;\
-	max:      21 29;\
-	visible:  0;\
-	color:    255 255 255 0;\
-	rel1 {\
-	   relative: 0.0  0.0;\
-	   offset:   -1   0;\
-	   to: "h1a1";\
+	name:          _rel"_arrow2"_ext;\
+	mouse_events:  0;\
+	description {\
+		state:    "default" 0.0;\
+		align:    0.0 0.5;\
+		min:      21 20;\
+		max:      21 20;\
+		visible:  0;\
+		color:    255 255 255 0;\
+		rel1 {\
+			relative: 1.0  0.0;\
+			offset:   0    0;\
+			to: _rel"_arrow1"_ext;\
+		}\
+		rel2 {\
+			relative: 1.0  1.0;\
+			offset:   0  -1;\
+			to: _rel"_arrow1"_ext;\
+		}\
+		image {\
+			normal: _image;\
+		}\
 	}\
-	rel2 {\
-	   relative: 0.0  1.0;\
-	   offset:   -1   -1;\
-	   to: "h1a1";\
+	description {\
+		state:    "on" 0.0;\
+		inherit:  "default" 0.0;\
+		visible:  1;\
+		color:    255 255 255 255;\
 	}\
-	image {\
-	   normal: "e17_ibar_arrow_l.png";\
-	}\
- }\
- description {\
-	state:    "default2" 0.0;\
-	inherit:  "default" 0.0;\
-	visible:  1;\
-	color:    255 255 255 255;\
- }\
 }\
 part {\
- name:          "h1a3";\
- mouse_events:  0;\
- description {\
-	state:    "default" 0.0;\
-	align:    1.0 0.5;\
-	min:      21 29;\
-	max:      21 29;\
-	visible:  0;\
-	color:    255 255 255 0;\
-	rel1 {\
-	   relative: 0.0  0.0;\
-	   offset:   -1   0;\
-	   to: "h1a2";\
+	name:          _rel"_arrow3"_ext;\
+	mouse_events:  0;\
+	description {\
+		state:    "default" 0.0;\
+		align:    0.0 0.5;\
+		min:      21 20;\
+		max:      21 20;\
+		visible:  0;\
+		color:    255 255 255 0;\
+		rel1 {\
+			relative: 1.0  0.0;\
+			offset:   0    0;\
+			to: _rel"_arrow2"_ext;\
+		}\
+		rel2 {\
+			relative: 1.0  1.0;\
+			offset:   0   -1;\
+			to: _rel"_arrow2"_ext;\
+		}\
+		image {\
+			normal: _image;\
+		}\
 	}\
-	rel2 {\
-	   relative: 0.0  1.0;\
-	   offset:   -1   -1;\
-	   to: "h1a2";\
+	description {\
+		state:    "on" 0.0;\
+		inherit:  "default" 0.0;\
+		visible:  1;\
+		color:    255 255 255 255;\
 	}\
-	image {\
-	   normal: "e17_ibar_arrow_l.png";\
-	}\
- }\
- description {\
-	state:    "default2" 0.0;\
-	inherit:  "default" 0.0;\
-	visible:  1;\
-	color:    255 255 255 255;\
- }\
 }\
 part {\
- name:          "h1a4";\
- mouse_events:  0;\
- description {\
-	state:    "default" 0.0;\
-	align:    1.0 0.5;\
-	min:      21 29;\
-	max:      21 29;\
-	visible:  0;\
-	color:    255 255 255 0;\
-	rel1 {\
-	   relative: 0.0  0.0;\
-	   offset:   -1   0;\
-	   to: "h1a3";\
+	name:          _rel"_arrow4"_ext;\
+	mouse_events:  0;\
+	description {\
+		state:    "default" 0.0;\
+		align:    0.0 0.5;\
+		min:      21 20;\
+		max:      21 20;\
+		visible:  0;\
+		color:    255 255 255 0;\
+		rel1 {\
+			relative: 1.0  0.0;\
+			offset:   0    0;\
+			to: _rel"_arrow3"_ext;\
+		}\
+		rel2 {\
+			relative: 1.0  1.0;\
+			offset:   0   -1;\
+			to: _rel"_arrow3"_ext;\
+		}\
+		image {\
+			normal: _image;\
+		}\
 	}\
-	rel2 {\
-	   relative: 0.0  1.0;\
-	   offset:   -1   -1;\
-	   to: "h1a3";\
+	description {\
+		state:    "on" 0.0;\
+		inherit:  "default" 0.0;\
+		visible:  1;\
+		color:    255 255 255 255;\
 	}\
-	image {\
-	   normal: "e17_ibar_arrow_l.png";\
-	}\
- }\
- description {\
-	state:    "default2" 0.0;\
-	inherit:  "default" 0.0;\
-	visible:  1;\
-	color:    255 255 255 255;\
- }\
 }
 
-#define ARROW_R( _relto)\
-part {      \
- name:          "h2a1";\
- mouse_events:  0;\
- description {\
-	state:    "default" 0.0;\
-	align:    0.0 0.5;\
-	min:      21 29;\
-	max:      21 29;\
-	visible:  0;\
-	color:    255 255 255 0;\
-	rel1 {\
-	   relative: 1.0  0.0;\
-	   offset:   0    0;\
-	   to: _relto;\
+
+#define TOOLTIP(_rel, _name) \
+part {\
+	name: _rel"_label_clip";\
+	mouse_events: 0;\
+	type: RECT;\
+	description {\
+		state: "default" 0.0;\
+		rel1 {\
+			relative: 0.0 0.0;\
+			to: _name"_label";\
+		}\
+		rel2 {\
+			relative: 0.0 1.0;\
+			to: _name"_label";\
+		}\
 	}\
-	rel2 {\
-	   relative: 1.0  1.0;\
-	   offset:   0   -1;\
-	   to: _relto;\
+	description {\
+		state: "on" 0.0;\
+		rel1 {\
+			relative: 0.0 0.0;\
+			to: _name"_label";\
+		}\
+		rel2 {\
+			relative: 1.0 1.0;\
+			to: _name"_label";\
+		}\
 	}\
-	image {\
-	   normal: "e17_ibar_arrow_r.png";\
-	}\
- }\
- description {\
-	state:    "default2" 0.0;\
-	inherit:  "default" 0.0;\
-	visible:  1;\
-	color:    255 255 255 255;\
- }\
 }\
 part {\
- name:          "h2a2";\
- mouse_events:  0;\
- description {\
-	state:    "default" 0.0;\
-	align:    0.0 0.5;\
-	min:      21 29;\
-	max:      21 29;\
-	visible:  0;\
-	color:    255 255 255 0;\
-	rel1 {\
-	   relative: 1.0  0.0;\
-	   offset:   0    0;\
-	   to: "h2a1";\
+	name: _name"_label";\
+	clip_to: _rel"_label_clip";\
+	mouse_events: 0;\
+	type: TEXT;\
+	description {\
+		state: "default" 0.0;\
+		color:    0 0 0 0;\
+		align: 0.0 0.0;\
+		visible: 0;\
+		rel1 {\
+			relative: 1.0 1.0;\
+			offset: 5 -20;\
+			to: _rel;\
+		}\
+		rel2 {\
+			relative: 1.0 1.0;\
+			offset: 5  -20;\
+			to: _rel;\
+		}\
+		text {\
+			text: "Games";\
+			font: "Vera";\
+			size: 16;\
+			min: 1 1;\
+		}\
 	}\
-	rel2 {\
-	   relative: 1.0  1.0;\
-	   offset:   0    -1;\
-	   to: "h2a1";\
+	description {\
+		state: "on" 0.0;\
+		inherit: "default" 0.0;\
+		color: 123 0 0 255;\
+		visible: 1;\
 	}\
-	image {\
-	   normal: "e17_ibar_arrow_r.png";\
-	}\
- }\
- description {\
-	state:    "default2" 0.0;\
-	inherit:  "default" 0.0;\
-	visible:  1;\
-	color:    255 255 255 255;\
- }\
 }\
-part {\
- name:          "h2a3";\
- mouse_events:  0;\
- description {\
-	state:    "default" 0.0;\
-	align:    0.0 0.5;\
-	min:      21 29;\
-	max:      21 29;\
-	visible:  0;\
-	color:    255 255 255 0;\
-	rel1 {\
-	   relative: 1.0  0.0;\
-	   offset:   0    0;\
-	   to: "h2a2";\
+ARROWS(_rel, "_right", "e17_ibar_arrow_r.png")\
+ARROWS(_rel, "_left", "e17_ibar_arrow_l.png")
+
+#define TOOLTIP_PROGS(_rel, _name, _var) \
+program {\
+	name: _rel"_go";\
+	signal: "mouse,in";\
+	source: _rel;\
+	script {\
+		if(get_int(_var) == 0) {\
+			emit("show,right arrow", _rel);\
+		}\
+		else {\
+			emit("show,left arrow", _rel);\
+		}\
 	}\
-	rel2 {\
-	   relative: 1.0  1.0;\
-	   offset:   0    -1;\
-	   to: "h2a2";\
-	}\
-	image {\
-	   normal: "e17_ibar_arrow_r.png";\
-	}\
- }\
- description {\
-	state:    "default2" 0.0;\
-	inherit:  "default" 0.0;\
-	visible:  1;\
-	color:    255 255 255 255;\
- }\
+	after: _rel"_show_label";\
 }\
-part {\
- name:          "h2a4";\
- mouse_events:  0;\
- description {\
-	state:    "default" 0.0;\
-	align:    0.0 0.5;\
-	min:      21 29;\
-	max:      21 29;\
-	visible:  0;\
-	color:    255 255 255 0;\
-	rel1 {\
-	   relative: 1.0  0.0;\
-	   offset:   0    0;\
-	   to: "h2a3";\
-	}\
-	rel2 {\
-	   relative: 1.0  1.0;\
-	   offset:   0    -1;\
-	   to: "h2a3";\
-	}\
-	image {\
-	   normal: "e17_ibar_arrow_r.png";\
-	}\
- }\
- description {\
-	state:    "default2" 0.0;\
-	inherit:  "default" 0.0;\
-	visible:  1;\
-	color:    255 255 255 255;\
- }\
+program {\
+	name: _rel"_go2_right";\
+	source: _rel;\
+	signal: "show,right arrow";\
+	action: STATE_SET "on" 0.0;\
+	target: _name"_label";\
+	after: _rel"_r1a";\
+}\
+program {\
+	name: _rel"_go2_left";\
+	signal: "show,left arrow";\
+	source: _rel;\
+	action: STATE_SET "on" 0.0;\
+	target: _name"_label";\
+	after: _rel"_l1a";\
+}\
+program {\
+	name: _rel"_show_label";\
+	action: STATE_SET "on" 0.0;\
+	target: _rel"_label_clip";\
+	transition: LINEAR 0.25;\
+}\
+program {\
+	name: _rel"_stop";\
+	signal: "mouse,out";\
+	source: _rel;\
+	action: ACTION_STOP;\
+	target: _rel"_l1a";\
+	target: _rel"_l1b";\
+	target: _rel"_l2a";\
+	target: _rel"_l2b";\
+	target: _rel"_l3a";\
+	target: _rel"_l3b";\
+	target: _rel"_l4a";\
+	target: _rel"_l4b";\
+	target: _rel"_r1a";\
+	target: _rel"_r1b";\
+	target: _rel"_r2a";\
+	target: _rel"_r2b";\
+	target: _rel"_r3a";\
+	target: _rel"_r3b";\
+	target: _rel"_r4a";\
+	target: _rel"_r4b";\
+	after: _rel"_arrow_stop";\
+}\
+program {\
+	name:    _rel"_arrow_stop";\
+	action:  STATE_SET "default" 0.0;\
+	transition: SINUSOIDAL 0.25;\
+	target:  _rel"_label_clip";\
+	target:  _name"_label";\
+	target:  _rel"_arrow1_left";\
+	target:  _rel"_arrow2_left";\
+	target:  _rel"_arrow3_left";\
+	target:  _rel"_arrow4_left";\
+	target:  _rel"_arrow1_right";\
+	target:  _rel"_arrow2_right";\
+	target:  _rel"_arrow3_right";\
+	target:  _rel"_arrow4_right";\
+}\
+program {\
+	name:    _rel"_r1a";\
+	action:  STATE_SET "on" 0.0;\
+	transition: SINUSOIDAL 0.25;\
+	target:  _rel"_arrow1_right";\
+	after:   _rel"_r1b";\
+	after:   _rel"_r2a";\
+}\
+program {\
+	name:    _rel"_r1b";\
+	action:  STATE_SET "default" 0.0;\
+	transition: DECELERATE 0.75;\
+	target:  _rel"_arrow1_right";\
+}\
+program {\
+	name:    _rel"_r2a";\
+	action:  STATE_SET "on" 0.0;\
+	transition: SINUSOIDAL 0.25;\
+	target:  _rel"_arrow2_right";\
+	after:   _rel"_r2b";\
+	after:   _rel"_r3a";\
+}\
+program {\
+	name:    _rel"_r2b";\
+	action:  STATE_SET "default" 0.0;\
+	transition: DECELERATE 0.75;\
+	target:  _rel"_arrow2_right";\
+}\
+program {\
+	name:    _rel"_r3a";\
+	action:  STATE_SET "on" 0.0;\
+	transition: SINUSOIDAL 0.25;\
+	target:  _rel"_arrow3_right";\
+	after:   _rel"_r3b";\
+	after:   _rel"_r4a";\
+}\
+program {\
+	name:    _rel"_r3b";\
+	action:  STATE_SET "default" 0.0;\
+	transition: DECELERATE 0.75;\
+	target:  _rel"_arrow3_right";\
+}\
+program {\
+	name:    _rel"_r4a";\
+	action:  STATE_SET "on" 0.0;\
+	transition: SINUSOIDAL 0.25;\
+	target:  _rel"_arrow4_right";\
+	after:   _rel"_r4b";\
+	after:   _rel"_r1a";\
+}\
+program {\
+	name:    _rel"_r4b";\
+	action:  STATE_SET "default" 0.0;\
+	transition: DECELERATE 0.75;\
+	target:  _rel"_arrow4_right";\
+}\
+program {\
+	name:    _rel"_l1a";\
+	action:  STATE_SET "on" 0.0;\
+	transition: SINUSOIDAL 0.25;\
+	target:  _rel"_arrow4_left";\
+	after:   _rel"_l1b";\
+	after:   _rel"_l2a";\
+}\
+program {\
+	name:    _rel"_l1b";\
+	action:  STATE_SET "default" 0.0;\
+	transition: DECELERATE 0.75;\
+	target:  _rel"_arrow4_left";\
+}\
+program {\
+	name:    _rel"_l2a";\
+	action:  STATE_SET "on" 0.0;\
+	transition: SINUSOIDAL 0.25;\
+	target:  _rel"_arrow3_left";\
+	after:   _rel"_l2b";\
+	after:   _rel"_l3a";\
+}\
+program {\
+	name:    _rel"_l2b";\
+	action:  STATE_SET "default" 0.0;\
+	transition: DECELERATE 0.75;\
+	target:  _rel"_arrow3_left";\
+}\
+program {\
+	name:    _rel"_l3a";\
+	action:  STATE_SET "on" 0.0;\
+	transition: SINUSOIDAL 0.25;\
+	target:  _rel"_arrow2_left";\
+	after:   _rel"_l3b";\
+	after:   _rel"_l4a";\
+}\
+program {\
+	name:    _rel"_l3b";\
+	action:  STATE_SET "default" 0.0;\
+	transition: DECELERATE 0.75;\
+	target:  _rel"_arrow2_left";\
+}\
+program {\
+	name:    _rel"_l4a";\
+	action:  STATE_SET "on" 0.0;\
+	transition: SINUSOIDAL 0.25;\
+	target:  _rel"_arrow1_left";\
+	after:   _rel"_l4b";\
+	after:   _rel"_l1a";\
+}\
+program {\
+	name:    _rel"_l4b";\
+	action:  STATE_SET "default" 0.0;\
+	transition: DECELERATE 0.75;\
+	target:  _rel"_arrow1_left";\
 }
 
-#define ARROW_L_PROGS( _source )\
-program {\
- name:    "h1_in";\
- signal:  "mouse,in";\
- source:  _source;\
- action:  STATE_SET "default" 0.0;\
- target:  "h1a1";\
- target:  "h1a2";\
- target:  "h1a3";\
- target:  "h1a4";\
- after:   "h1_h_in1a";\
-}\
-program {\
- name:    "h1_out";\
- signal:  "mouse,out";\
- source:  _source;\
- action:  STATE_SET "default" 0.0;\
- target:  "h1a1";\
- target:  "h1a2";\
- target:  "h1a3";\
- target:  "h1a4";\
-}\
-program {      \
- name:    "h1_h_in1a";\
- action:  STATE_SET "default2" 0.0;\
- transition: SINUSOIDAL 0.25;\
- target:  "h1a1";\
- after:   "h1_h_in2a";\
- after:   "h1_h_in2b";\
-}\
-program {\
- name:    "h1_h_in1b";\
- action:  STATE_SET "default" 0.0;\
- transition: DECELERATE 0.75;\
- target:  "h1a4";\
-}\
-program {\
- name:    "h1_h_in2a";\
- action:  STATE_SET "default2" 0.0;\
- transition: SINUSOIDAL 0.25;\
- target:  "h1a2";\
- after:   "h1_h_in3a";\
- after:   "h1_h_in3b";\
-}\
-program {\
- name:    "h1_h_in2b";\
- action:  STATE_SET "default" 0.0;\
- transition: DECELERATE 0.75;\
- target:  "h1a1";\
-}\
-program {\
- name:    "h1_h_in3a";\
- action:  STATE_SET "default2" 0.0;\
- transition: SINUSOIDAL 0.25;\
- target:  "h1a3";\
- after:   "h1_h_in4a";\
- after:   "h1_h_in4b";\
-}\
-program {\
- name:    "h1_h_in3b";\
- action:  STATE_SET "default" 0.0;\
- transition: DECELERATE 0.75;\
- target:  "h1a2";\
-}\
-program {\
- name:    "h1_h_in4a";\
- action:  STATE_SET "default2" 0.0;\
- transition: SINUSOIDAL 0.25;\
- target:  "h1a4";\
- after:   "h1_h_in1a";\
- after:   "h1_h_in1b";\
-}\
-program {\
- name:    "h1_h_in4b";\
- action:  STATE_SET "default" 0.0;\
- transition: DECELERATE 0.75;\
- target:  "h1a3";\
-}
 
-#define ARROW_R_PROGS( _source)\
-program {\
- name:    "h2_in";\
- signal:  "mouse,in";\
- source:  _source;\
- action:  STATE_SET "default" 0.0;\
- target:  "h2a1";\
- target:  "h2a2";\
- target:  "h2a3";\
- target:  "h2a4";\
- after:   "h2_h_in1a";\
-}\
-program {\
- name:    "h2_out";\
- signal:  "mouse,out";\
- source:  _source;\
- action:  STATE_SET "default" 0.0;\
- target:  "h2a1";\
- target:  "h2a2";\
- target:  "h2a3";\
- target:  "h2a4";\
-}\
-program {      \
- name:    "h2_h_in1a";\
- action:  STATE_SET "default2" 0.0;\
- transition: SINUSOIDAL 0.25;\
- target:  "h2a1";\
- after:   "h2_h_in2a";\
- after:   "h2_h_in2b";\
-}\
-program {\
- name:    "h2_h_in1b";\
- action:  STATE_SET "default" 0.0;\
- transition: DECELERATE 0.75;\
- target:  "h2a4";\
-}\
-program {\
- name:    "h2_h_in2a";\
- action:  STATE_SET "default2" 0.0;\
- transition: SINUSOIDAL 0.25;\
- target:  "h2a2";\
- after:   "h2_h_in3a";\
- after:   "h2_h_in3b";\
-}\
-program {\
- name:    "h2_h_in2b";\
- action:  STATE_SET "default" 0.0;\
- transition: DECELERATE 0.75;\
- target:  "h2a1";\
-}\
-program {\
- name:    "h2_h_in3a";\
- action:  STATE_SET "default2" 0.0;\
- transition: SINUSOIDAL 0.25;\
- target:  "h2a3";\
- after:   "h2_h_in4a";\
- after:   "h2_h_in4b";\
-}\
-program {\
- name:    "h2_h_in3b";\
- action:  STATE_SET "default" 0.0;\
- transition: DECELERATE 0.75;\
- target:  "h2a2";\
-}\
-program {\
- name:    "h2_h_in4a";\
- action:  STATE_SET "default2" 0.0;\
- transition: SINUSOIDAL 0.25;\
- target:  "h2a4";\
- after:   "h2_h_in1a";\
- after:   "h2_h_in1b";\
-}\
-program {\
- name:    "h2_h_in4b";\
- action:  STATE_SET "default" 0.0;\
- transition: DECELERATE 0.75;\
- target:  "h2a3";\
-}

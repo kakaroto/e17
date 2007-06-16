@@ -29,3 +29,5 @@ image: "e17_ibar_bg_h.png"             COMP;
 image: "e17_ibar_arrow_d.png"          COMP;
 image: "e17_ibar_arrow_u.png"          COMP;
 image: "e17_gadman_overlay.png"        COMP;
+image: "e17_ibar_arrow_r.png"          COMP;
+image: "e17_ibar_arrow_l.png"          COMP;

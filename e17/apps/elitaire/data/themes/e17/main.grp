@@ -37,7 +37,7 @@ group {
 			}
             description {
 				state, "alpha" 0.0;
-                color: 255 255 255 0;
+				color: 255 255 255 0;
 				rel1 {
 					relative, 0.0 0.0;
 					offset, 0 0;
