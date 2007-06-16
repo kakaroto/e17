@@ -1843,7 +1843,7 @@ EwinSlideIn(int val __UNUSED__, void *data)
       goto done;
 
    SlideEwinTo(ewin, EoGetX(ewin), EoGetY(ewin), ewin->req_x, ewin->req_y,
-	       Conf.place.slidespeedmap);
+	       Conf.place.slidespeedmap, Conf.place.slidemode);
 
  done:
    Mode.place.doing_slide = 0;

@@ -400,9 +400,9 @@ void                EwinsMoveStickyToDesk(Desk * d);
 
 /* ewin-ops.c */
 void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
-				int speed);
+				int speed, int mode);
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
-				 int *ty, int num_wins, int speed);
+				 int *ty, int num_wins, int speed, int mode);
 void                EwinFixPosition(EWin * ewin);
 void                EwinMove(EWin * ewin, int x, int y);
 void                EwinResize(EWin * ewin, int w, int h);

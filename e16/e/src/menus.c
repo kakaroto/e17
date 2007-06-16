@@ -1475,7 +1475,7 @@ MenusHandleMotion(void)
 			      }
 			    SlideEwinsTo(menus, fx, fy, tx, ty,
 					 Mode_menus.current_depth,
-					 Conf.shadespeed);
+					 Conf.shadespeed, 0);
 			    if (((xdist != 0) || (ydist != 0))
 				&& (Conf.menus.warp))
 			       EXWarpPointer(None, xdist, ydist);
@@ -1634,7 +1634,7 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 
 	     /* Disable menu item events while sliding */
 	     MenusSetEvents(0);
-	     SlideEwinsTo(menus, fx, fy, tx, ty, i, Conf.shading.speed);
+	     SlideEwinsTo(menus, fx, fy, tx, ty, i, Conf.shading.speed, 0);
 	     MenusSetEvents(1);
 
 	     if (Conf.menus.warp)

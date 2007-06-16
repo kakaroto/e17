@@ -897,3 +897,70 @@ ActionsEnd(EWin * ewin)
 
    return did_end;
 }
+
+void
+SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed, int mode)
+{
+   SlideEwinsTo(&ewin, &fx, &fy, &tx, &ty, 1, speed, mode);
+}
+
+void
+SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
+	     int speed, int mode)
+{
+   int                 k, x, y, w, h, i;
+   char                firstlast;
+
+   if (num_wins <= 0)
+      return;
+
+   firstlast = 0;
+   FocusEnable(0);
+   SoundPlay("SOUND_WINDOW_SLIDE");
+
+   Mode_mr.grab_server = _NeedServerGrab(mode);
+   if (Mode_mr.grab_server)
+      EGrabServer();
+
+   ETimedLoopInit(0, 1024, speed);
+   for (k = 0; k <= 1024;)
+     {
+	for (i = 0; i < num_wins; i++)
+	  {
+	     if (!ewin[i])
+		continue;
+
+	     x = ((fx[i] * (1024 - k)) + (tx[i] * k)) >> 10;
+	     y = ((fy[i] * (1024 - k)) + (ty[i] * k)) >> 10;
+	     w = ewin[i]->client.w;
+	     h = ewin[i]->client.h;
+	     if (mode == 0)
+		EoMove(ewin[i], x, y);
+	     else
+		DrawEwinShape(ewin[i], mode, x, y, w, h, firstlast, i);
+	     firstlast = 1;
+	  }
+	/* We may loop faster here than originally intended */
+	k = ETimedLoopNext();
+     }
+
+   for (i = 0; i < num_wins; i++)
+     {
+	if (!ewin[i])
+	   continue;
+
+	ewin[i]->state.animated = 0;
+
+	if (mode > 0)
+	   DrawEwinShape(ewin[i], mode, tx[i], ty[i], ewin[i]->client.w,
+			 ewin[i]->client.h, 2, i);
+	EwinMove(ewin[i], tx[i], ty[i]);
+     }
+
+   FocusEnable(1);
+
+   if (Mode_mr.grab_server)
+      EUngrabServer();
+
+   SoundPlay("SOUND_WINDOW_SLIDE_END");
+}

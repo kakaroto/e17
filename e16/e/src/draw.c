@@ -799,12 +799,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	  {
 	     static EObj        *shape_win = NULL;
 
+	     if (firstlast == 0 && !shape_win)
+		shape_win = _ShapeCreateWin();
 	     if (!shape_win)
-	       {
-		  shape_win = _ShapeCreateWin();
-		  if (!shape_win)
-		     return;
-	       }
+		return;
 
 	     _ShapeSetBox(shape_win, x, y, w, h, bl, br, bt, bb, seqno);
 	     EobjMap(shape_win, 0);
