@@ -664,6 +664,31 @@ do { \
     rl[3].x = _x + _w - 1; rl[3].y = _y + 1;      rl[3].width = 1;  rl[3].height = _h - 2; \
 } while(0)
 
+#define _R(x) (((x) >> 16) & 0xff)
+#define _G(x) (((x) >>  8) & 0xff)
+#define _B(x) (((x)      ) & 0xff)
+
+static unsigned int
+_ShapeGetColor(void)
+{
+   static char         color_valid = 0;
+   static unsigned int color_value = 0;
+   static unsigned int color_pixel;
+   XColor              xc;
+
+   if (color_valid && color_value == Conf.movres.color)
+      goto done;
+
+   color_value = Conf.movres.color;
+   ESetColor(&xc, _R(color_value), _G(color_value), _B(color_value));
+   EAllocColor(VRoot.cmap, &xc);
+   color_pixel = xc.pixel;
+   color_valid = 1;
+
+ done:
+   return color_pixel;
+}
+
 static EObj        *
 _ShapeCreateWin(void)
 {
@@ -674,7 +699,7 @@ _ShapeCreateWin(void)
       return NULL;
    eo->shadow = 0;
    eo->fade = 0;
-   ESetWindowBackground(EobjGetWin(eo), 0xff0000);	/* FIXME - Allocate color */
+   ESetWindowBackground(EobjGetWin(eo), _ShapeGetColor());
 #ifdef xxShapeInput		/* Should really check server too */
    XShapeCombineRectangles(disp, EobjGetXwin(eo),
 			   ShapeInput, 0, 0, NULL, 0, ShapeSet, Unsorted);
