@@ -98,7 +98,6 @@ Eli_Statistics eli_statistics_get(const char * game)
     pstats = (Eli_Statistics *) eet_data_read(file, edd_statistics, game);
     if (pstats) {
         stats = *pstats;
-	printf("%s: %d %d\n", game, stats.won_games, stats.lost_games);
         free(pstats);
     }
     eet_close(file);
