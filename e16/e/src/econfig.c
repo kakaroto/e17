@@ -399,6 +399,7 @@ CfgItemSetFromString(const CfgItem * ci, const char *str)
 	*((char *)ci->ptr) = ival;
 	break;
      case ITEM_TYPE_INT:
+     case ITEM_TYPE_HEX:
 	n = sscanf(str, "%i", &ival);
 	if (n <= 0)
 	   break;
