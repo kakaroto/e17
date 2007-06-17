@@ -999,6 +999,8 @@ shadow_picture(double opacity, int width, int height, int *wp, int *hp)
 
 #endif /* ENABLE_SHADOWS */
 
+static XserverRegion win_shape(EObj * eo);
+
 /* Region of window in screen coordinates, including shadows */
 static              XserverRegion
 win_extents(EObj * eo)
@@ -1099,13 +1101,20 @@ win_extents(EObj * eo)
    if (sr.y + sr.height > r.y + r.height)
       r.height = sr.y + sr.height - r.y;
 
+   rgn = ERegionCreateRect(r.x, r.y, r.width, r.height);
+   goto done;
+
  skip_shadow:
 #endif
 
+   /* No shadow - extents = shape */
+   if (cw->shape == None)
+      cw->shape = win_shape(eo);
+   rgn = ERegionClone(cw->shape);
+
+ done:
    D2printf("extents %#lx %d %d %d %d\n", EobjGetXwin(eo), r.x, r.y, r.width,
 	    r.height);
-
-   rgn = ERegionCreateRect(r.x, r.y, r.width, r.height);
 
    if (EDebug(EDBUG_TYPE_COMPMGR3))
       ERegionShow("extents", rgn);
@@ -1706,11 +1715,14 @@ ECompMgrWinChangeShape(EObj * eo)
    ECmWinInfo         *cw = eo->cmhook;
 
    D1printf("ECompMgrWinChangeShape %#lx\n", EobjGetXwin(eo));
+   if (cw->extents == None)
+      return;
 
    ECompMgrDamageMergeObject(eo, cw->extents);
-
+   ECompMgrWinInvalidate(eo, INV_POS);	/* Invalidate extents and shape */
+   cw->extents = win_extents(eo);
+   ECompMgrDamageMergeObject(eo, cw->extents);
    _ECM_SET_CLIP_CHANGED();
-   ECompMgrWinInvalidate(eo, INV_SIZE);
 }
 
 void
