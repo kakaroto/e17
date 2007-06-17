@@ -277,6 +277,10 @@ ActionMoveResume(void)
    return 0;
 }
 
+#define RD(h, v) (((h) << 8) + (v))
+#define RD_H(hv) (((hv) >> 8) & 0xff)
+#define RD_V(hv) (((hv)     ) & 0xff)
+
 int
 ActionResizeStart(EWin * ewin, int hv)
 {
@@ -322,22 +326,22 @@ ActionResizeStart(EWin * ewin, int hv)
 	csr = ECSR_ACT_RESIZE;
 	if ((x < w) && (y < h))
 	  {
-	     Mode_mr.resize_detail = 0;
+	     Mode_mr.resize_detail = RD(1, 1);
 	     csr = ECSR_ACT_RESIZE_TL;
 	  }
 	else if ((x >= w) && (y < h))
 	  {
-	     Mode_mr.resize_detail = 1;
+	     Mode_mr.resize_detail = RD(2, 1);
 	     csr = ECSR_ACT_RESIZE_TR;
 	  }
 	else if ((x < w) && (y >= h))
 	  {
-	     Mode_mr.resize_detail = 2;
+	     Mode_mr.resize_detail = RD(1, 2);
 	     csr = ECSR_ACT_RESIZE_BL;
 	  }
 	else if ((x >= w) && (y >= h))
 	  {
-	     Mode_mr.resize_detail = 3;
+	     Mode_mr.resize_detail = RD(2, 2);
 	     csr = ECSR_ACT_RESIZE_BR;
 	  }
 
@@ -347,25 +351,25 @@ ActionResizeStart(EWin * ewin, int hv)
 	if ((abs(x - w) < (w >> 1)) && (y < hh))
 	  {
 	     Mode.mode = MODE_RESIZE_V;
-	     Mode_mr.resize_detail = 0;
+	     Mode_mr.resize_detail = RD(0, 1);
 	     csr = ECSR_ACT_RESIZE_V;
 	  }
 	else if ((abs(x - w) < (w >> 1)) && (y > (EoGetH(ewin) - hh)))
 	  {
 	     Mode.mode = MODE_RESIZE_V;
-	     Mode_mr.resize_detail = 1;
+	     Mode_mr.resize_detail = RD(0, 2);
 	     csr = ECSR_ACT_RESIZE_V;
 	  }
 	else if ((abs(y - h) < (h >> 1)) && (x < ww))
 	  {
 	     Mode.mode = MODE_RESIZE_H;
-	     Mode_mr.resize_detail = 0;
+	     Mode_mr.resize_detail = RD(1, 0);
 	     csr = ECSR_ACT_RESIZE_H;
 	  }
 	else if ((abs(y - h) < (h >> 1)) && (x > (EoGetW(ewin) - ww)))
 	  {
 	     Mode.mode = MODE_RESIZE_H;
-	     Mode_mr.resize_detail = 1;
+	     Mode_mr.resize_detail = RD(2, 0);
 	     csr = ECSR_ACT_RESIZE_H;
 	  }
 	break;
@@ -375,9 +379,9 @@ ActionResizeStart(EWin * ewin, int hv)
 	x = Mode.events.x - EoGetX(ewin);
 	w = EoGetW(ewin) >> 1;
 	if (x < w)
-	   Mode_mr.resize_detail = 0;
+	   Mode_mr.resize_detail = RD(1, 0);
 	else
-	   Mode_mr.resize_detail = 1;
+	   Mode_mr.resize_detail = RD(2, 0);
 	csr = ECSR_ACT_RESIZE_H;
 	break;
 
@@ -386,9 +390,9 @@ ActionResizeStart(EWin * ewin, int hv)
 	y = Mode.events.y - EoGetY(ewin);
 	h = EoGetH(ewin) >> 1;
 	if (y < h)
-	   Mode_mr.resize_detail = 0;
+	   Mode_mr.resize_detail = RD(0, 1);
 	else
-	   Mode_mr.resize_detail = 1;
+	   Mode_mr.resize_detail = RD(0, 2);
 	csr = ECSR_ACT_RESIZE_V;
 	break;
      }
@@ -428,7 +432,7 @@ ActionResizeEnd(EWin * ewin)
 
    ewin->state.show_coords = 0;
    DrawEwinShape(ewin, Conf.movres.mode_resize, ewin->shape_x, ewin->shape_y,
-		 ewin->client.w, ewin->client.h, 2, 0);
+		 ewin->shape_w, ewin->shape_h, 2, 0);
 
    if (Mode_mr.mode == 0)
      {
@@ -680,7 +684,6 @@ ActionMoveHandleMotion(void)
 void
 ActionResizeHandleMotion(void)
 {
-   int                 pw, ph;
    int                 x, y, w, h;
    EWin               *ewin;
 
@@ -688,131 +691,41 @@ ActionResizeHandleMotion(void)
    if (!ewin)
       return;
 
-   switch (Mode.mode)
+   w = ewin->client.w;
+   h = ewin->client.h;
+   x = ewin->shape_x;
+   y = ewin->shape_y;
+
+   switch (RD_H(Mode_mr.resize_detail))
      {
      default:
-     case MODE_RESIZE:
-	switch (Mode_mr.resize_detail)
-	  {
-	  default:
-	  case 0:
-	     pw = ewin->client.w;
-	     ph = ewin->client.h;
-	     w = Mode_mr.win_w - (Mode.events.x - Mode_mr.start_x);
-	     h = Mode_mr.win_h - (Mode.events.y - Mode_mr.start_y);
-	     x = Mode_mr.win_x + (Mode.events.x - Mode_mr.start_x);
-	     y = Mode_mr.win_y + (Mode.events.y - Mode_mr.start_y);
-	     ewin->client.w = w;
-	     ewin->client.h = h;
-	     ICCCM_MatchSize(ewin);
-	     w = ewin->client.w;
-	     h = ewin->client.h;
-	     if (pw == ewin->client.w)
-		x = ewin->shape_x;
-	     else
-		x = Mode_mr.win_x + Mode_mr.win_w - w;
-	     if (ph == ewin->client.h)
-		y = ewin->shape_y;
-	     else
-		y = Mode_mr.win_y + Mode_mr.win_h - h;
-	     ewin->client.w = pw;
-	     ewin->client.h = ph;
-	     break;
-	  case 1:
-	     ph = ewin->client.h;
-	     w = Mode_mr.win_w + (Mode.events.x - Mode_mr.start_x);
-	     h = Mode_mr.win_h - (Mode.events.y - Mode_mr.start_y);
-	     x = ewin->shape_x;
-	     y = Mode_mr.win_y + (Mode.events.y - Mode_mr.start_y);
-	     ewin->client.h = h;
-	     ICCCM_MatchSize(ewin);
-	     h = ewin->client.h;
-	     if (ph == ewin->client.h)
-		y = ewin->shape_y;
-	     else
-		y = Mode_mr.win_y + Mode_mr.win_h - h;
-	     ewin->client.h = ph;
-	     break;
-	  case 2:
-	     pw = ewin->client.w;
-	     w = Mode_mr.win_w - (Mode.events.x - Mode_mr.start_x);
-	     h = Mode_mr.win_h + (Mode.events.y - Mode_mr.start_y);
-	     x = Mode_mr.win_x + (Mode.events.x - Mode_mr.start_x);
-	     y = ewin->shape_y;
-	     ewin->client.w = w;
-	     ICCCM_MatchSize(ewin);
-	     w = ewin->client.w;
-	     if (pw == ewin->client.w)
-		x = ewin->shape_x;
-	     else
-		x = Mode_mr.win_x + Mode_mr.win_w - w;
-	     ewin->client.w = pw;
-	     break;
-	  case 3:
-	     w = Mode_mr.win_w + (Mode.events.x - Mode_mr.start_x);
-	     h = Mode_mr.win_h + (Mode.events.y - Mode_mr.start_y);
-	     x = ewin->shape_x;
-	     y = ewin->shape_y;
-	     break;
-	  }
 	break;
-
-     case MODE_RESIZE_H:
-	switch (Mode_mr.resize_detail)
-	  {
-	  default:
-	  case 0:
-	     pw = ewin->client.w;
-	     w = Mode_mr.win_w - (Mode.events.x - Mode_mr.start_x);
-	     h = ewin->client.h;
-	     x = Mode_mr.win_x + (Mode.events.x - Mode_mr.start_x);
-	     y = ewin->shape_y;
-	     ewin->client.w = w;
-	     ICCCM_MatchSize(ewin);
-	     w = ewin->client.w;
-	     if (pw == ewin->client.w)
-		x = ewin->shape_x;
-	     else
-		x = Mode_mr.win_x + Mode_mr.win_w - w;
-	     ewin->client.w = pw;
-	     break;
-	  case 1:
-	     w = Mode_mr.win_w + (Mode.events.x - Mode_mr.start_x);
-	     h = ewin->client.h;
-	     x = ewin->shape_x;
-	     y = ewin->shape_y;
-	     break;
-	  }
+     case 1:			/* Left */
+	w = Mode_mr.win_w - (Mode.events.x - Mode_mr.start_x);
+	ICCCM_SizeMatch(ewin, w, h, &w, &h);
+	x = Mode_mr.win_x + (Mode_mr.win_w - w);
 	break;
-
-     case MODE_RESIZE_V:
-	switch (Mode_mr.resize_detail)
-	  {
-	  default:
-	  case 0:
-	     ph = ewin->client.h;
-	     w = ewin->client.w;
-	     h = Mode_mr.win_h - (Mode.events.y - Mode_mr.start_y);
-	     x = ewin->shape_x;
-	     y = Mode_mr.win_y + (Mode.events.y - Mode_mr.start_y);
-	     ewin->client.h = h;
-	     ICCCM_MatchSize(ewin);
-	     h = ewin->client.h;
-	     if (ph == ewin->client.h)
-		y = ewin->shape_y;
-	     else
-		y = Mode_mr.win_y + Mode_mr.win_h - h;
-	     ewin->client.h = ph;
-	     break;
-	  case 1:
-	     w = ewin->client.w;
-	     h = Mode_mr.win_h + (Mode.events.y - Mode_mr.start_y);
-	     x = ewin->shape_x;
-	     y = ewin->shape_y;
-	     break;
-	  }
+     case 2:			/* Right */
+	w = Mode_mr.win_w + (Mode.events.x - Mode_mr.start_x);
+	ICCCM_SizeMatch(ewin, w, h, &w, &h);
 	break;
      }
+
+   switch (RD_V(Mode_mr.resize_detail))
+     {
+     default:
+	break;
+     case 1:			/* Top */
+	h = Mode_mr.win_h - (Mode.events.y - Mode_mr.start_y);
+	ICCCM_SizeMatch(ewin, w, h, &w, &h);
+	y = Mode_mr.win_y + (Mode_mr.win_h - h);
+	break;
+     case 2:			/* Bottom */
+	h = Mode_mr.win_h + (Mode.events.y - Mode_mr.start_y);
+	ICCCM_SizeMatch(ewin, w, h, &w, &h);
+	break;
+     }
+
    DrawEwinShape(ewin, Conf.movres.mode_resize, x, y, w, h, 1, 0);
 }
 

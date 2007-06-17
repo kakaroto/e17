@@ -785,14 +785,11 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	x += dx;
 	y += dy;
 
-	if ((w != ewin->client.w) || (h != ewin->client.h))
+	if (!ewin->state.shaded)
 	  {
-	     if (!ewin->state.shaded)
-		ICCCM_SizeMatch(ewin, w, h, &ewin->shape_w, &ewin->shape_h);
+	     ewin->shape_w = w;
+	     ewin->shape_h = h;
 	  }
-
-	w = ewin->shape_w;
-	h = ewin->shape_h;
 
 	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 
