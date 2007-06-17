@@ -290,7 +290,16 @@ unsigned int *grayscale_image(Ewl_Widget *image)
 	        r = (int)((im_data[i] >> 16) & 0xff);
 		a = (int)((im_data[i] >> 24) & 0xff);
 
+		if (a > 0 && a < 255)
+		{
+			b = b * (255 / a);
+			g = g * (255 / a);
+			r = r * (255 / a);
+		}
+
 		gray = (int)((0.3 * r) + (0.59 * g) + (0.11 * b));
+
+		if (a >= 0 && a < 255) gray = (gray * a) / 255;
 	
 		im_data_new[i] = (a << 24) | (gray << 16) | (gray << 8) | gray;
         }
@@ -313,6 +322,13 @@ unsigned int *sepia_image(Ewl_Widget *image)
                 g = (int)((im_data[i] >> 8) & 0xff);
                 r = (int)((im_data[i] >> 16) & 0xff);
                 a = (int)((im_data[i] >> 24) & 0xff);
+
+		if (a > 0 && a < 255)
+		{
+			b = b * (255 / a);
+			g = g * (255 / a);
+			r = r * (255 / a);
+		}
 		
 		rr = (int)(((r + g + b)/3)+40);
 		if (rr < 0) rr = 0;
@@ -323,6 +339,13 @@ unsigned int *sepia_image(Ewl_Widget *image)
 		bb = (int)(((r + g + b)/3)+2);              
 		if (bb < 0) bb = 0;
 		if (bb > 255) bb = 255;
+
+		if (a >= 0 && a < 255)
+		{
+			rr = (rr * a) / 255;
+			gg = (gg * a) / 255;
+			bb = (bb * a) / 255;
+		}
 
                 im_data_new[i] = (a << 24) | (rr << 16) | (gg << 8) | bb;
         }
