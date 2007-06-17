@@ -212,8 +212,11 @@ FocusEwinSetGrabs(EWin * ewin)
 {
    int                 set = 0;
 
-   if (((Conf.focus.mode == MODE_FOCUS_CLICK || ewin->props.focusclick) &&
-	!ewin->state.active) ||
+   if ((
+#if 0				/* FIXME - Remove? */
+	  (Conf.focus.mode == MODE_FOCUS_CLICK || ewin->props.focusclick) &&
+#endif
+	  !ewin->state.active) ||
        (Conf.focus.clickraises && !EwinListStackIsRaised(ewin)))
       set = 1;
 
@@ -620,7 +623,9 @@ FocusHandleClick(EWin * ewin, Win win)
    if (Conf.focus.clickraises)
       EwinRaise(ewin);
 
+#if 0				/* FIXME - Remove? */
    if (Conf.focus.mode == MODE_FOCUS_CLICK || ewin->props.focusclick)
+#endif
       FocusToEWin(ewin, FOCUS_CLICK);
 
    /* Allow click to pass thorugh */
