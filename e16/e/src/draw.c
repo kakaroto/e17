@@ -790,6 +790,11 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	     ewin->shape_w = w;
 	     ewin->shape_h = h;
 	  }
+	else
+	  {
+	     w = ewin->shape_w;
+	     h = ewin->shape_h;
+	  }
 
 	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 
