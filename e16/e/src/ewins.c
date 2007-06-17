@@ -797,7 +797,7 @@ AddToFamily(EWin * ewin, Window xwin)
    EwinResize(ewin, ewin->client.w, ewin->client.h);
 
    doslide = manplace = 0;
-   if (Mode.place.enable_features)
+   if (Mode.place.enable_features > 0)
      {
 	/* if set for borderless then dont slide it in */
 	if (Conf.place.slidein && !Mode.place.doing_slide &&

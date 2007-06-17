@@ -542,7 +542,7 @@ FocusInit(void)
    FocusSet();
 
    /* Enable window placement features */
-   Mode.place.enable_features = 1;
+   Mode.place.enable_features++;
 }
 
 static void

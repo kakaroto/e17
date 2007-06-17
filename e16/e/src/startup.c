@@ -150,6 +150,7 @@ doStartupWindowsOpen(void *data __UNUSED__)
    if (kk < 1024)
       return 1;
 
+   Mode.place.enable_features++;
    EobjWindowDestroy(init_win1);
    EobjWindowDestroy(init_win2);
    init_win1 = NULL;
@@ -164,6 +165,7 @@ StartupWindowsOpen(void)
    if (init_win1 == NULL || init_win2 == NULL)
       return;
 
+   Mode.place.enable_features--;
    ESync();
    AnimatorAdd(doStartupWindowsOpen, NULL);
 }

@@ -487,7 +487,7 @@ typedef struct
    } move;
    struct
    {
-      char                enable_features;
+      signed char         enable_features;
       char                doing_manual;
       char                doing_slide;
    } place;
