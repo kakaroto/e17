@@ -55,7 +55,7 @@ image_blend_occlude2_many.c \
 image_blend_occlude3_many.c \
 image_blend_occlude1_very_many.c \
 image_blend_occlude2_very_many.c \
-image_blend_occlude3_very_many.c
-
+image_blend_occlude3_very_many.c \
+poly_blend.c
 
 expedite_LDFLAGS = @EVAS_LIBS@  @x_libs@ @ddraw_libs@ -lm

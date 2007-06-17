@@ -35,3 +35,4 @@
 #include "image_blend_occlude1_very_many.c"
 #include "image_blend_occlude2_very_many.c"
 #include "image_blend_occlude3_very_many.c"
+#include "poly_blend.c"
