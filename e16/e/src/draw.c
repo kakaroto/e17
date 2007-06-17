@@ -711,15 +711,16 @@ static void
 _ShapeSetBox(EObj * eo, int x, int y, int w, int h,
 	     int bl, int br, int bt, int bb, int seqno)
 {
+   XRectangle          rl[8];
    int                 w2, h2;
 
    w2 = w + bl + br;
    h2 = h + bt + bb;
 
-   XRectangle          rl[8];
-
    _SHAPE_SET_RECT((&rl[0]), x, y, w2, h2);
-   _SHAPE_SET_RECT((&rl[4]), x + bl + 1, y + bt + 1, w - 2, h - 2);
+   w = (w > 5) ? w - 2 : 3;
+   h = (h > 5) ? h - 2 : 3;
+   _SHAPE_SET_RECT((&rl[4]), x + bl + 1, y + bt + 1, w, h);
 
    EShapeCombineRectangles(EobjGetWin(eo), ShapeBounding, 0, 0, rl,
 			   8, (seqno == 0) ? ShapeSet : ShapeUnion, Unsorted);
