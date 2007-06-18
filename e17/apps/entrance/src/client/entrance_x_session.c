@@ -17,9 +17,9 @@ entrance_x_session_new(char *name, char *icon, char *session)
    if ((e = malloc(sizeof(Entrance_X_Session))))
    {
       memset(e, 0, sizeof(Entrance_X_Session));
-      e->name = name;
+      e->name = strdup(name);
       if (icon)
-         e->icon = icon;
+         e->icon = strdup(icon);
       else
          e->icon = strdup("default.png");
       e->session = session;

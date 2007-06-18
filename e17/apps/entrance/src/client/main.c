@@ -14,7 +14,7 @@
 #include <Esmart/Esmart_Text_Entry.h>
 #include <Esmart/Esmart_Container.h>
 #include <Ecore_Config.h>
-#include <Ecore_Desktop.h>
+#include <Efreet.h>
 #include "entrance.h"
 #include "entrance_session.h"
 #include "entrance_x_session.h"
@@ -712,7 +712,7 @@ main(int argc, char *argv[])
       return -1;
    }
 
-   if (!ecore_desktop_init())
+   if (!efreet_init())
    {
       ecore_shutdown();
       ecore_config_shutdown();
@@ -891,7 +891,7 @@ main(int argc, char *argv[])
       edje_shutdown();
       ecore_evas_shutdown();
       ecore_x_shutdown();
-      ecore_desktop_shutdown();
+      efreet_shutdown();
       ecore_config_shutdown();
       ecore_shutdown();
    }

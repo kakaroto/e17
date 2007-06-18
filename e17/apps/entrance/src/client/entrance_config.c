@@ -1,7 +1,7 @@
 #include <Ecore_File.h>
 #include <Ecore_Data.h>
 #include <Ecore_Config.h>
-#include <Ecore_Desktop.h>
+#include <Efreet.h>
 
 #include "entrance.h"
 #include "entrance_config.h"
@@ -19,6 +19,9 @@ struct _Entrance_Config_And_Path
 
 static void _cb_xsessions_foreach(void *list_data, void *data);
 static void _cb_desktop_xsessions_foreach(void *list_data, void *data);
+static void _entrance_xsessions_dir_scan(const char *dir, Entrance_Config *e);
+static Evas_Bool _cb_users_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _cb_x_sessions_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
 
 /**
 @file entrance_config.c
@@ -92,12 +95,9 @@ entrance_config_populate(Entrance_Config * e)
    char *icon = NULL;
    char *session = NULL;
 
-   char *title = NULL;
-   Entrance_X_Session *exs;
-
-   int i, num_session, num_user;
+   int i, num_user;
    char buf[PATH_MAX];
-   struct _Entrance_Config_And_Path ep;
+   int num_session;
 
    if (!e)
       return;
@@ -157,19 +157,21 @@ entrance_config_populate(Entrance_Config * e)
    }
 
    /* Search the local session directory first. */
-   ep.e = e;
-   ep.path = ENTRANCE_SESSIONS_DIR;
-   Ecore_List *xsessions = ecore_file_ls(ENTRANCE_SESSIONS_DIR);
+   _entrance_xsessions_dir_scan(ENTRANCE_SESSIONS_DIR, e);
 
-   if (xsessions)
-      ecore_list_for_each(xsessions, _cb_xsessions_foreach, &ep);
-   /* Search all the relevant FDO paths second. */
-   ecore_desktop_paths_for_each(ECORE_DESKTOP_PATHS_XSESSIONS,
-                                _cb_desktop_xsessions_foreach, &ep);
+   /* now the user and system XDG dirs (XXX does anything actually store xsession files here?) */
+   snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
+   _entrance_xsessions_dir_scan(buf, e);
+   ecore_list_for_each(efreet_data_dirs_get(), _cb_desktop_xsessions_foreach, e);
+
+   /* check the system session dir */
+   _entrance_xsessions_dir_scan("/etc/X11/sessions", e);
 
    num_session = ecore_config_int_get("/entrance/session/count");
    for (i = 0; i < num_session; i++)
    {
+      Entrance_X_Session *exs;
+      char *title;
       snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
       title = ecore_config_string_get(buf);
       snprintf(buf, PATH_MAX, "/entrance/session/%d/session", i);
@@ -184,17 +186,6 @@ entrance_config_populate(Entrance_Config * e)
       }
    }
 
-
-#if 0
-   if (!e_db_int_get(db, "/entrance/xinerama/screens/w", &(e->screens.w)))
-      e->screens.w = 1;
-   if (!e_db_int_get(db, "/entrance/xinerama/screens/h", &(e->screens.h)))
-      e->screens.h = 1;
-   if (!e_db_int_get(db, "/entrance/xinerama/on/w", &(e->display.w)))
-      e->display.w = 1;
-   if (!e_db_int_get(db, "/entrance/xinerama/on/h", &(e->display.h)))
-      e->display.h = 1;
-#endif
 
    /* auth info */
    e->auth = ecore_config_int_get("/entrance/auth");
@@ -416,6 +407,20 @@ entrance_config_free(Entrance_Config * e)
          free(e->after.string);
       if (e->autologin.username)
          free(e->autologin.username);
+      if (e->users.hash)
+      {
+         evas_hash_foreach(e->users.hash, _cb_users_free, NULL);
+         evas_hash_free(e->users.hash);
+      }
+      if (e->users.keys)
+         evas_list_free(e->users.keys);
+      if (e->sessions.hash)
+      {
+         evas_hash_foreach(e->sessions.hash, _cb_x_sessions_free, NULL);
+         evas_hash_free(e->sessions.hash);
+      }
+      if (e->sessions.keys)
+         evas_list_free(e->sessions.keys);
       free(e);
    }
 }
@@ -495,32 +500,37 @@ _cb_xsessions_foreach(void *list_data, void *data)
 
    snprintf(path, PATH_MAX, "%s/%s", ep->path, filename);
 
-   Ecore_Desktop *ed = ecore_desktop_get(path, NULL);
+   Efreet_Desktop *ed = efreet_desktop_get(path);
 
    if (!ed)
       return;
 
    /* Get the full command. */
    /* We are not passing a list of files, so we only expect one command. */
-   commands = ecore_desktop_get_command(ed, NULL, 1);
+   commands = efreet_desktop_command_local_get(ed, NULL);
    if (commands)
    {
       char *temp;
       
       temp = ecore_list_first(commands);
       if (temp)
-	command = strdup(temp);
+      {
+         command = strdup(temp);
+         free(temp);
+      }
       ecore_list_destroy(commands);
    }
    if (!command)
      return;
+
+
    if ((exs = entrance_x_session_new(ed->name, ed->icon, command)))
    {
       /* Sessions found earlier in the FDO search sequence override those
          found later. */
       if (evas_hash_find(e->sessions.hash, exs->name) == NULL)
       {
-         e->sessions.keys = evas_list_append(e->sessions.keys, ed->name);
+         e->sessions.keys = evas_list_append(e->sessions.keys, exs->name);
          e->sessions.hash = evas_hash_add(e->sessions.hash, exs->name, exs);
       }
       else
@@ -529,25 +539,54 @@ _cb_xsessions_foreach(void *list_data, void *data)
       }
    }
 
-   ecore_desktop_destroy(ed);
+   efreet_desktop_free(ed);
+}
+
+static void
+_entrance_xsessions_dir_scan(const char *dir, Entrance_Config *e)
+{
+   struct _Entrance_Config_And_Path ep;
+   Ecore_List *xsessions;
+
+   if (!dir) return;
+
+   ep.e = e;
+   ep.path = dir; 
+
+   xsessions = ecore_file_ls(dir);
+   if (xsessions)
+   {
+      ecore_list_for_each(xsessions, _cb_xsessions_foreach, &ep);
+      ecore_list_destroy(xsessions);
+   }
 }
 
 static void
 _cb_desktop_xsessions_foreach(void *list_data, void *data)
 {
    const char *path = list_data;
-   struct _Entrance_Config_And_Path *ep = data;
-   Ecore_List *xsessions;
+   char buf[PATH_MAX];
+   Entrance_Config *e = data;
 
-   if (!path)
-      return;
-
-   ep->path = path;
-   xsessions = ecore_file_ls(path);
-   if (xsessions)
-      ecore_list_for_each(xsessions, _cb_xsessions_foreach, ep);
+   snprintf(buf, sizeof(buf), "%s/xsessions", path);
+   _entrance_xsessions_dir_scan(buf, e);
 }
 
+static Evas_Bool
+_cb_users_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
+{
+  Entrance_User *user = data;
+  entrance_user_free(user);
+  return TRUE;
+}
+
+static Evas_Bool
+_cb_x_sessions_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
+{
+  Entrance_X_Session *x_session = data;
+  entrance_x_session_free(x_session);
+  return TRUE;
+}
 
 #if 0
 int
