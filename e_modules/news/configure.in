@@ -107,7 +107,6 @@ AC_SUBST(e_modules)
 
 AC_OUTPUT([
 e_modules-news.spec
-module.desktop
 Makefile
 data/Makefile
 data/images/Makefile
