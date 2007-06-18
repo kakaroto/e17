@@ -68,7 +68,7 @@ struct _Taskbar_Icon
    Evas_Object *o_holder2;      // Overlay theme object
    Evas_Object *o_icon2;        // Overlay icon
    E_Border *border;            // The border this icon points to
-   char *label;                 // label taken from the border
+   const char *label;           // label taken from the border
 };
 
 static Taskbar *_taskbar_new(Evas *evas, E_Zone *zone);
