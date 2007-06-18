@@ -1,0 +1,56 @@
+collections
+{
+   images {
+      image: "images/tiles.png" COMP;
+   }
+     
+   group {
+      name: "etk/checkered_button";
+      parts {
+	 part {
+	    name: "border";
+	    type: RECT;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
+	       }
+	       color: 0 0 0 255;
+	    }
+	 }	 
+	 part {
+	    name: "image_bg";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 1 1;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -2 -2;
+	       }
+	       image {
+		  normal: "images/tiles.png";
+	       }
+	       fill {
+		  smooth: 0;
+		  origin {
+		     relative: 0.0 0.0;
+		     offset: 0 0;
+		  }
+		  size {
+		     relative: 0.0 0.0;
+		     offset: 128 128;
+		  }
+	       }
+	    }
+	 }      
+      }
+   }
+}
