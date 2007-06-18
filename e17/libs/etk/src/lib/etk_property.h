@@ -67,11 +67,10 @@ struct Etk_Property
  * and etk_object_properties_get() to set and get the value of a property of an object.
  * @structinfo
  */
-struct Etk_Property_Value
+
+typedef struct _Etk_Property_Value_Value Etk_Property_Value_Value;
+struct _Etk_Property_Value_Value
 {
-   /* private: */
-   union
-   {
       int int_value;
       Etk_Bool bool_value;
       char char_value;
@@ -81,7 +80,12 @@ struct Etk_Property_Value
       long long_value;
       void *pointer_value;
       char *string_value;
-   } value;
+};
+
+struct Etk_Property_Value
+{
+   /* private: */
+   Etk_Property_Value_Value *value;
    Etk_Property_Type type;
 };
 
