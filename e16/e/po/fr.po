@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.9-0.02-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-06-06 22:49+0200\n"
+"POT-Creation-Date: 2007-06-17 12:37+0200\n"
 "PO-Revision-Date: 2007-06-14 18:36+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
@@ -563,7 +563,7 @@ msgstr "2 cotés"
 msgid "End"
 msgstr "Fin"
 
-#: src/container.c:1683 src/focus.c:847
+#: src/container.c:1683 src/focus.c:852
 msgid "None"
 msgstr "Aucune"
 
@@ -577,7 +577,9 @@ msgstr "Animer les icônifications vers cette Boîte à icônes"
 
 #: src/container.c:1707
 msgid "Icon image display policy (if one operation fails, try the next):"
-msgstr "Afficher les icônes dans cet ordre (en cas d'erreur, la suivante est utilisée):"
+msgstr ""
+"Afficher les icônes dans cet ordre (en cas d'erreur, la suivante est "
+"utilisée):"
 
 #: src/container.c:1712
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
@@ -784,7 +786,7 @@ msgstr "Appliquer"
 msgid "Attention !!!"
 msgstr "Attention !!!"
 
-#: src/ecompmgr.c:2544
+#: src/ecompmgr.c:2556
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -820,101 +822,101 @@ msgstr ""
 "\n"
 "Sortie.\n"
 
-#: src/focus.c:719
+#: src/focus.c:724
 msgid "Focus follows pointer"
 msgstr "Le focus suit la souris"
 
-#: src/focus.c:725
+#: src/focus.c:730
 msgid "Focus follows pointer sloppily"
 msgstr "Le focus suit la souris (sauf sur une zone vide du bureau)"
 
-#: src/focus.c:731
+#: src/focus.c:736
 msgid "Focus follows mouse clicks"
 msgstr "Le focus suit les clics de souris"
 
-#: src/focus.c:741
+#: src/focus.c:746
 msgid "Clicking in a window always raises it"
 msgstr "Toujours élever une fenêtre qui reçoit un clic"
 
-#: src/focus.c:749
+#: src/focus.c:754
 msgid "All new windows first get the focus"
 msgstr "Toutes les nouvelles fenêtres obtiennent le focus"
 
-#: src/focus.c:754
+#: src/focus.c:759
 msgid "Only new dialog windows get the focus"
 msgstr "Seules les nouvelles fenêtres de dialogue obtiennent le focus"
 
-#: src/focus.c:761
+#: src/focus.c:766
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Seules les nouvelles fenêtres de dialogue dont le parent a le\n"
 "focus obtiennent le focus."
 
-#: src/focus.c:766
+#: src/focus.c:771
 msgid "Raise windows while switching focus"
 msgstr "Élever les fenêtres pendant le changement de focus"
 
-#: src/focus.c:772
+#: src/focus.c:777
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Envoyer la souris sur la fenêtre pendant le changement de focus"
 
-#: src/focus.c:778
+#: src/focus.c:783
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Toujours placer la souris sur la fenêtre qui obtient le focus"
 
-#: src/focus.c:786
+#: src/focus.c:791
 msgid "Display and use focus list"
 msgstr "Afficher et utiliser la liste de fenêtres"
 
-#: src/focus.c:791
+#: src/focus.c:796
 msgid "Include sticky windows in focus list"
 msgstr "Inclure les fenêtres collées dans la liste de fenêtres"
 
-#: src/focus.c:796
+#: src/focus.c:801
 msgid "Include shaded windows in focus list"
 msgstr "Inclure les fenêtres masquées dans la liste de fenêtres"
 
-#: src/focus.c:801
+#: src/focus.c:806
 msgid "Include iconified windows in focus list"
 msgstr "Inclure les fenêtres icônifiées dans la liste de fenêtres"
 
-#: src/focus.c:806
+#: src/focus.c:811
 msgid "Include windows on other desks in focus list"
 msgstr "Inclure les fenêtres des autres bureaux dans la liste de fenêtres"
 
-#: src/focus.c:811
+#: src/focus.c:816
 msgid "Focus windows while switching"
 msgstr "Mettre le focus sur la fenêtre en cours de sélection"
 
-#: src/focus.c:816
+#: src/focus.c:821
 msgid "Raise windows after focus switch"
 msgstr "Élever les fenêtres après l'obtention du focus"
 
-#: src/focus.c:821
+#: src/focus.c:826
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Placer la souris sur la fenêtre après obtention du focus"
 
-#: src/focus.c:831
+#: src/focus.c:836
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Afficher les icônes dans la liste de fenêtres dans l'ordre suivant:"
 
-#: src/focus.c:835
+#: src/focus.c:840
 msgid "First E Icon, then App Icon"
 msgstr "Icône E en premier, puis Icône de l'Application"
 
-#: src/focus.c:841
+#: src/focus.c:846
 msgid "First App Icon, then E Icon"
 msgstr "Icône de l'Application en premier, puis Icône E"
 
-#: src/focus.c:855
+#: src/focus.c:860
 msgid "Focus"
 msgstr "Focus"
 
-#: src/focus.c:856
+#: src/focus.c:861
 msgid "Focus Settings"
 msgstr "Paramètres du Focus"
 
-#: src/focus.c:859
+#: src/focus.c:864
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1257,11 +1259,11 @@ msgstr ""
 msgid "Enlightenment was built without composite support"
 msgstr "Enlightenment a été compilé sans le support de l'extension Composite"
 
-#: src/ipc.c:1741
+#: src/ipc.c:1742
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Aide des commandes IPC\n"
 
-#: src/ipc.c:1745
+#: src/ipc.c:1746
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1271,19 +1273,19 @@ msgstr ""
 "Tapez \"help <commande>\" pour une description individuelle\n"
 "\n"
 
-#: src/ipc.c:1747 src/ipc.c:1767 src/ipc.c:1779
+#: src/ipc.c:1748 src/ipc.c:1768 src/ipc.c:1780
 msgid "Commands currently available:\n"
 msgstr "Commandes disponibles actuellement:\n"
 
-#: src/ipc.c:1765
+#: src/ipc.c:1766
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Tapez \"help full\" pour une description de toutes les commandes\n"
 
-#: src/ipc.c:1766
+#: src/ipc.c:1767
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Tapez \"help <commande>\" pour une description individuelle\n"
 
-#: src/ipc.c:1768 src/ipc.c:1780
+#: src/ipc.c:1769 src/ipc.c:1781
 msgid "         <command>     : <description>\n"
 msgstr "      <commande>   : <description>\n"
 
@@ -2476,7 +2478,9 @@ msgstr "Coller / Décoller"
 
 #: config/strings.c:61
 msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
-msgstr "Basculer l'état d'omniprésence (visibilité sur tous les bureaux) de cette fenêtre."
+msgstr ""
+"Basculer l'état d'omniprésence (visibilité sur tous les bureaux) de cette "
+"fenêtre."
 
 #: config/strings.c:63
 msgid ""
@@ -2873,4 +2877,3 @@ msgstr "Autres"
 #: config/strings.c:197
 msgid "Enlightenment Epplets"
 msgstr "Epplets d'Enlightenment"
-
