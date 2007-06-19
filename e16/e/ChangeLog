@@ -4396,3 +4396,21 @@ Make xsession stuff work - at least on Fedora.
 Japanese translation update (Yasufumi Haga).
 Defer image class color allocation until needed (most likely never).
 
+
+-------------------------------------------------------------------------------
+
+Tue Jun 19 20:52:47 CEST 2007
+(Kim)
+
+--- 0.16.8.9 0.03 ---
+French translation update (Tristan D.).
+Fix building with glx when glXBind/ReleaseTexImageEXT are not directly available
+ (based on patch by bene42).
+Use shaped window in stead of server grab/line draws for boxed move/resize mode
+ (old mode available with "eesh set misc.movres.old_mode 1").
+Disable slide-in until startup windows are gone.
+Use extents equal shape for objects without shadow.
+Correct damage update on shape change.
+Always focus unfocused window when clicked.
+Fix bug in left/top resizing when returning to starting point.
+
