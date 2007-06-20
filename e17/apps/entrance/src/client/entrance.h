@@ -14,4 +14,5 @@
 #define X_TESTING 0
 #define EXITCODE 42
 
+extern int ENTRANCE_DESKTOP_TYPE_XSESSION;
 #endif

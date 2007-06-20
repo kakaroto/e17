@@ -25,6 +25,8 @@
 
 static Entrance_Session *session = NULL;
 
+int ENTRANCE_DESKTOP_TYPE_XSESSION = -1;
+
 Ecore_Evas *setup_ecore_evas(int wx, int wy, int ww, int wh, int fullscreen);
 
 static int
@@ -718,6 +720,8 @@ main(int argc, char *argv[])
       ecore_config_shutdown();
       return -1;
    }
+
+   ENTRANCE_DESKTOP_TYPE_XSESSION = efreet_desktop_type_alias(EFREET_DESKTOP_TYPE_APPLICATION, "XSession");
 
    ecore_app_args_set(argc, (const char **) argv);
 
