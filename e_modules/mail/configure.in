@@ -131,6 +131,9 @@ AC_SUBST(e_cflags)
 AC_SUBST(e_libs)
 AC_SUBST(e_modules)
 
+# uncomment this for new imap code
+#AM_CONDITIONAL(IMAP2, true)
+
 AC_OUTPUT([
 Makefile
 po/Makefile

@@ -34,10 +34,14 @@ module_la_SOURCES      = e_mod_main.c \
 			 e_mod_config.c \
 			 e_mod_config_box.h \
 			 e_mod_config_box.c \
-			 imap.h imap.c \
 			 pop.h pop.c \
 			 mdir.h mdir.c \
 			 mbox.h mbox.c
+if IMAP2
+module_la_SOURCES     += imap2.h imap2.c
+else
+module_la_SOURCES     += imap.h imap.c
+endif
 			 
 module_la_LIBADD       = @e_libs@
 module_la_LDFLAGS      = -module -avoid-version

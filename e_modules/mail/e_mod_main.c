@@ -22,7 +22,11 @@
 
 #include <e.h>
 #include "e_mod_main.h"
+#ifdef IMAP2
+#include "imap2.h"
+#else
 #include "imap.h"
+#endif
 #include "pop.h"
 #include "mdir.h"
 #include "mbox.h"
