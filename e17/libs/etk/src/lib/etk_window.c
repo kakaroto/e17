@@ -51,6 +51,8 @@ static void _etk_window_evas_position_get(Etk_Toplevel *toplevel, int *x, int *y
 static void _etk_window_screen_position_get(Etk_Toplevel *toplevel, int *x, int *y);
 static void _etk_window_size_get(Etk_Toplevel *toplevel, int *w, int *h);
 static void _etk_window_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
+static void _etk_window_disable(Etk_Window *window);
+static void _etk_window_enable(Etk_Window *window);
 
 static Etk_Signal *_etk_window_signals[ETK_WINDOW_NUM_SIGNALS];
 
@@ -266,6 +268,28 @@ void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window
    if (!window_to_modal)
       return;
    etk_engine_window_modal_for_window(window_to_modal, window);
+   
+   if (window)     
+     {
+	etk_signal_connect_swapped("shown", ETK_OBJECT(window_to_modal),
+				   ETK_CALLBACK(_etk_window_disable),
+				   window);	
+	etk_signal_connect_swapped("hidden", ETK_OBJECT(window_to_modal),
+				   ETK_CALLBACK(_etk_window_enable),
+				   window);	
+	etk_signal_connect_swapped("delete-event", ETK_OBJECT(window_to_modal),
+				   ETK_CALLBACK(_etk_window_enable),
+				   window);
+     }
+   else
+     {
+	etk_signal_disconnect("shown", ETK_OBJECT(window_to_modal),
+			      ETK_CALLBACK(_etk_window_disable));
+	etk_signal_disconnect("hidden", ETK_OBJECT(window_to_modal),
+			      ETK_CALLBACK(_etk_window_enable));
+	etk_signal_disconnect("delete-event", ETK_OBJECT(window_to_modal),
+			      ETK_CALLBACK(_etk_window_enable));
+     }
 }
 
 /**
@@ -776,6 +800,24 @@ static void _etk_window_size_get(Etk_Toplevel *toplevel, int *w, int *h)
 static void _etk_window_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type)
 {
    etk_engine_window_pointer_set(ETK_WINDOW(toplevel), pointer_type);
+}
+
+/* Disable a window */
+static void _etk_window_disable(Etk_Window *window)
+{
+   if (!window)
+      return;
+   
+   etk_widget_disabled_set(ETK_WIDGET(window), ETK_TRUE);
+}
+
+/* Enable a window */
+static void _etk_window_enable(Etk_Window *window)
+{
+   if (!window)
+      return;
+   
+   etk_widget_disabled_set(ETK_WIDGET(window), ETK_FALSE);
 }
 
 /** @} */
