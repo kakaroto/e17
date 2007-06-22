@@ -133,6 +133,7 @@ AC_SUBST(e_modules)
 
 # uncomment this for new imap code
 #AM_CONDITIONAL(IMAP2, true)
+AM_CONDITIONAL(IMAP2, false)
 
 AC_OUTPUT([
 Makefile
