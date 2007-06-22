@@ -15,4 +15,5 @@ XRenderX11 = c_ecore_evas.XRenderX11
 FB = c_ecore_evas.FB
 DirectFB = c_ecore_evas.DirectFB
 Buffer = c_ecore_evas.Buffer
+SoftwareX11_16 = c_ecore_evas.SoftwareX11_16
 

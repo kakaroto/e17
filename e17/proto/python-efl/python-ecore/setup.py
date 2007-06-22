@@ -49,6 +49,7 @@ ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                                      'ecore/evas/ecore.evas.c_ecore_evas_fb.pxi',
 #                                     'ecore/evas/ecore.evas.c_ecore_evas_directfb.pxi',
                                      'ecore/evas/ecore.evas.c_ecore_evas_buffer.pxi',
+                                     'ecore/evas/ecore.evas.c_ecore_evas_software_x11_16.pxi',
                                      'ecore/python.pxd',
                                      ],
                             **pkgconfig('"ecore-evas >= 0.9.9.038"'))
