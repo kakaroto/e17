@@ -5,12 +5,18 @@
 #include "e_mod_main.h"
 #include "imap2.h"
 
+/*
+ * TODO:
+ * * Make it possible to get Unseen mail
+ * * Let the user select between Unseen and Recent mail
+ */
+
 static ImapClient *_mail_imap_client_find (Ecore_Con_Server *server);
 static ImapClient *_mail_imap_client_get (Config_Box *cb);
 static int _mail_imap_server_add (void *data, int type, void *event);
 static int _mail_imap_server_del (void *data, int type, void *event);
 static int _mail_imap_server_data (void *data, int type, void *event);
-static int _mail_imap_server_data_parse (ImapClient *ic, char *line, int length);
+static int _mail_imap_server_data_parse (ImapClient *ic, char *line);
 static void _mail_imap_client_logout (ImapClient *ic);
 static void _mail_imap_server_idle (ImapClient *ic);
 static void _mail_imap_server_noop (ImapClient *ic);
@@ -245,7 +251,7 @@ _mail_imap_server_data (void *data, int type, void *event)
 	     return 0;
 	  }
 	/* parse data */
-	if (!_mail_imap_server_data_parse (ic, p, pp - p))
+	if (!_mail_imap_server_data_parse (ic, p))
 	  {
 	     _mail_imap_client_logout (ic);
 	     return 0;
@@ -297,7 +303,7 @@ _mail_imap_server_data (void *data, int type, void *event)
 }
 
 static int
-_mail_imap_server_data_parse (ImapClient *ic, char *line, int length)
+_mail_imap_server_data_parse (ImapClient *ic, char *line)
 {
    if (line[0] == 'A')
      {
