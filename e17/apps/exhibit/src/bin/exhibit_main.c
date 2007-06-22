@@ -1141,8 +1141,8 @@ main(int argc, char *argv[])
 	 ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _ex_thumb_exe_exit, NULL));
    
    epsilon_init();
-   if(argc > 1)
-     _ex_main_window_show(argv[1], fullscreen, slideshow);
+   if(argc > 1 + fullscreen + slideshow)
+     _ex_main_window_show(argv[1 + fullscreen + slideshow], fullscreen, slideshow);
    else
      _ex_main_window_show(NULL, fullscreen, slideshow);   
      
