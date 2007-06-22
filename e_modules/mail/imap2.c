@@ -52,12 +52,16 @@ _mail_imap_check_mail (void *data)
 	     if (ecore_con_ssl_available_get () && (ic->config->ssl))
 	       type |= ECORE_CON_USE_SSL;
 	     ic->state = IMAP_STATE_DISCONNECTED;
-	     printf ("Connect: %s %d %d\n", ic->config->host, ic->config->port, ic->config->ssl);
 	     ic->server =
 		ecore_con_server_connect (type, ic->config->host,
 					  ic->config->port, NULL);
 	     ic->cmd = 1;
 	     ic->idle = -1;
+	  }
+	else
+	  {
+	     /* Need to set this to revert the state of the icon */
+	     _mail_set_text (ic->data);
 	  }
      }
 }
@@ -188,13 +192,16 @@ _mail_imap_server_del (void *data, int type, void *event)
    if (!ic)
      return 1;
 
-   if (ic->state == IMAP_STATE_DISCONNECTED)
-     printf ("Imap Server Disconnected\n");
-   else
-     ic->state = IMAP_STATE_DISCONNECTED;
+   if (ic->state != IMAP_STATE_DISCONNECTED)
+     {
+	printf ("The Imap Server disconnected us, consider reducing the check time.\n");
+	ic->state = IMAP_STATE_DISCONNECTED;
+     }
 
    ecore_con_server_del (ic->server);
    ic->server = NULL;
+   if (ic->timer) ecore_timer_del (ic->timer);
+   ic->timer = NULL;
 
    _mail_set_text (ic->data);
    return 0;
@@ -234,16 +241,16 @@ _mail_imap_server_data (void *data, int type, void *event)
 	else
 	  {
 	     printf ("Imap Failure: Couldn't find eol\n");
+	     _mail_imap_client_logout (ic);
 	     return 0;
 	  }
-	printf ("Server data |%s|\n", p);
 	/* parse data */
 	if (!_mail_imap_server_data_parse (ic, p, pp - p))
 	  {
 	     _mail_imap_client_logout (ic);
 	     return 0;
 	  }
-	/* cleanup */
+	/* next */
 	p = pp + 2;
      }
 
@@ -281,12 +288,14 @@ _mail_imap_server_data (void *data, int type, void *event)
 		{
 		   len = snprintf (out, sizeof (out), "A%04i IDLE\r\n", ic->cmd++);
 		   ecore_con_server_send (ic->server, out, len);
-		   ic->timer = ecore_timer_add (29 * 60.0, _mail_imap_server_idle, ic);
+		   ic->timer = ecore_timer_add (ic->config->item->check_time * 60.0,
+						_mail_imap_server_idle, ic);
 		}
 	   }
 	 else if (ic->idle == 0)
 	   {
-	      if (!ic->timer) ic->timer = ecore_timer_add (5 * 60.0, _mail_imap_server_noop, ic);
+	      if (!ic->timer) ic->timer = ecore_timer_add (ic->config->item->check_time * 60.0,
+							   _mail_imap_server_noop, ic);
 	   }
 	 break;
      }
@@ -384,6 +393,10 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line, int length)
 	else if (!strcmp (result, "OK"))
 	  {
 	     printf ("Result OK: %s\n", value);
+	  }
+	else if (!strcmp (result, "FLAGS"))
+	  {
+	     printf ("Flags: %s\n", value);
 	  }
 	else
 	  {
@@ -486,7 +499,7 @@ _mail_imap_client_logout (ImapClient *ic)
 	ecore_con_server_del (ic->server);
      }
    ic->server = NULL;
-   if (ic->timer) ecore_timer_del(ic->timer);
+   if (ic->timer) ecore_timer_del (ic->timer);
    ic->timer = NULL;
    ic->state = IMAP_STATE_DISCONNECTED;
 }

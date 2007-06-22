@@ -277,11 +277,12 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   if (!cb)
     {
       cb = E_NEW (Config_Box, 1);
+      cb->item = mail_ci;
       cb->type = 0;
       cb->port = 110;
       cb->monitor = 1;
       cb->ssl = 0;
-       cb->local = 0;
+      cb->local = 0;
       is_new = 1;
     }
 
@@ -296,7 +297,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   cb->port = atoi (cfdata->port);
   cb->monitor = cfdata->monitor;
   cb->ssl = cfdata->ssl;
-   cb->local = cfdata->local;
+  cb->local = cfdata->local;
    
   cb->use_exec = cfdata->use_exec;
 
