@@ -112,7 +112,6 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
        Config_Box *cb;
 
        cb = l->data;
-       cb->item = ci;
        switch (cb->type)
 	 {
 	  case MAIL_TYPE_IMAP:

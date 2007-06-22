@@ -26,11 +26,11 @@ struct _ImapClient
    int               cmd;
    ImapState         state;
    int               idle;
+   unsigned char     idling : 1;
  
    Ecore_Event_Handler *add_handler;
    Ecore_Event_Handler *del_handler;
    Ecore_Event_Handler *data_handler;
-   Ecore_Timer         *timer;
 
    void *data;
 };

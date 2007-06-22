@@ -277,7 +277,6 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   if (!cb)
     {
       cb = E_NEW (Config_Box, 1);
-      cb->item = mail_ci;
       cb->type = 0;
       cb->port = 110;
       cb->monitor = 1;

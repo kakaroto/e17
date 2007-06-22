@@ -12,8 +12,8 @@ static int _mail_imap_server_del (void *data, int type, void *event);
 static int _mail_imap_server_data (void *data, int type, void *event);
 static int _mail_imap_server_data_parse (ImapClient *ic, char *line, int length);
 static void _mail_imap_client_logout (ImapClient *ic);
-static int _mail_imap_server_idle (void *data);
-static int _mail_imap_server_noop (void *data);
+static void _mail_imap_server_idle (ImapClient *ic);
+static void _mail_imap_server_noop (ImapClient *ic);
 
 static Evas_List *iclients = NULL;
 
@@ -60,6 +60,8 @@ _mail_imap_check_mail (void *data)
 	  }
 	else
 	  {
+	     if (ic->idle == 1) _mail_imap_server_idle (ic);
+	     else _mail_imap_server_noop (ic);
 	     /* Need to set this to revert the state of the icon */
 	     _mail_set_text (ic->data);
 	  }
@@ -194,14 +196,12 @@ _mail_imap_server_del (void *data, int type, void *event)
 
    if (ic->state != IMAP_STATE_DISCONNECTED)
      {
-	printf ("The Imap Server disconnected us, consider reducing the check time.\n");
+	printf ("The connection was unexpectedly shut down, consider reducing the check time.\n");
 	ic->state = IMAP_STATE_DISCONNECTED;
      }
 
    ecore_con_server_del (ic->server);
    ic->server = NULL;
-   if (ic->timer) ecore_timer_del (ic->timer);
-   ic->timer = NULL;
 
    _mail_set_text (ic->data);
    return 0;
@@ -282,25 +282,17 @@ _mail_imap_server_data (void *data, int type, void *event)
 	 ic->state++;
 	 break;
       case IMAP_STATE_SELECTED:
-	 if (ic->idle == 1)
+	 if ((ic->idle == 1) && (!ic->idling))
 	   {
-	      if (!ic->timer)
-		{
-		   len = snprintf (out, sizeof (out), "A%04i IDLE\r\n", ic->cmd++);
-		   ecore_con_server_send (ic->server, out, len);
-		   ic->timer = ecore_timer_add (ic->config->item->check_time * 60.0,
-						_mail_imap_server_idle, ic);
-		}
-	   }
-	 else if (ic->idle == 0)
-	   {
-	      if (!ic->timer) ic->timer = ecore_timer_add (ic->config->item->check_time * 60.0,
-							   _mail_imap_server_noop, ic);
+	      len = snprintf (out, sizeof (out), "A%04i IDLE\r\n", ic->cmd++);
+	      ecore_con_server_send (ic->server, out, len);
+	      ic->idling = 1;
 	   }
 	 break;
      }
    if (ic->cmd > 9999)
      ic->cmd = 1;
+   _mail_set_text (ic->data);
    return 0;
 }
 
@@ -409,13 +401,11 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line, int length)
 	       {
 		  printf ("Recent mails: %d\n", atoi (result));
 		  ic->config->num_new = atoi (result);
-		  _mail_set_text (ic->data);
 	       }
 	     else if (!strcmp (value, "EXISTS"))
 	       {
 		  printf ("Existing mails: %d\n", atoi (result));
 		  ic->config->num_total = atoi (result);
-		  _mail_set_text (ic->data);
 	       }
 	     else
 	       {
@@ -431,55 +421,6 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line, int length)
      {
 	printf ("Unknown reply: %s\n", line);
      }
-#if 0
-
-  if (!is->current) return 0;
-  ic = is->current->data;
-  is->state++;
-
-  printf ("IMAP data: |%s|\n", in);
-  printf ("|%s|\n", strstr (in, "\r\n"));
-  switch (is->state)
-    {
-    case IMAP_STATE_SERVER_READY:
-      len =
-	snprintf (out, sizeof (out), "A%04i LOGIN %s %s\r\n", ++is->cmd,
-		  is->user, is->pass);
-      ecore_con_server_send (ev->server, out, len);
-      break;
-    case IMAP_STATE_STATUS_OK:
-      if (sscanf (in, "* STATUS %*s (MESSAGES %i UNSEEN %i)", &total, &num) == 2)
-	{
-	  ic->config->num_new = num;
-	  ic->config->num_total = total;
-	  _mail_set_text (is->data);
-
-	  if ((num > 0) && (ic->config->use_exec) && (ic->config->exec))
-	    _mail_start_exe (ic->config);
-	}
-
-      ic = NULL;
-      is->current = is->current->next;
-      if (is->current)
-	{
-	   is->state = IMAP_STATE_LOGGED_IN;
-	   ic = is->current->data;
-	}
-      else
-	_mail_imap_server_logout (is);
-      /* Fall through if we have another mailbox to check */
-      if (!ic)
-	break;
-    case IMAP_STATE_LOGGED_IN:
-      len =
-	snprintf (out, sizeof (out), "A%04i STATUS %s (MESSAGES UNSEEN)\r\n",
-		  ++is->cmd, ic->config->new_path);
-      ecore_con_server_send (ev->server, out, len);
-      break;
-    default:
-      break;
-    }
-#endif
   return 1;
 }
 
@@ -499,34 +440,27 @@ _mail_imap_client_logout (ImapClient *ic)
 	ecore_con_server_del (ic->server);
      }
    ic->server = NULL;
-   if (ic->timer) ecore_timer_del (ic->timer);
-   ic->timer = NULL;
    ic->state = IMAP_STATE_DISCONNECTED;
 }
 
-static int
-_mail_imap_server_idle (void *data)
+static void
+_mail_imap_server_idle (ImapClient *ic)
 {
-   ImapClient *ic;
    char out[1024];
    int len;
 
-   ic = data;
+   if (!ic->idling) return;
    len = snprintf (out, sizeof (out), "DONE\r\n");
    ecore_con_server_send (ic->server, out, len);
-   ic->timer = NULL;
-   return 0;
+   ic->idling = 0;
 }
 
-static int
-_mail_imap_server_noop (void *data)
+static void
+_mail_imap_server_noop (ImapClient *ic)
 {
-   ImapClient *ic;
    char out[1024];
    int len;
 
-   ic = data;
    len = snprintf (out, sizeof (out), "A%04i NOOP\r\n", ic->cmd++);
    ecore_con_server_send (ic->server, out, len);
-   return 1;
 }

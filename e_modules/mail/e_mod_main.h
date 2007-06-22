@@ -58,7 +58,6 @@ struct _Config_Item
 struct _Config_Box 
 {
    const char *name;
-   Config_Item *item;
 
    int type;   
    int port;
