@@ -817,6 +817,11 @@ static void _window_netwm_state_active_set(Etk_Window *window, Ecore_X_Window_St
          }
          
          free(cur_state);
+      } else {
+	 new_state = malloc(sizeof(Ecore_X_Window_State));
+	 new_state[0] = state;
+	 ecore_x_netwm_window_state_set(engine_data->x_window, new_state, 1);
+	 free(new_state);
       }
    }
 }
