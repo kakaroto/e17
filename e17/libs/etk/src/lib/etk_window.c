@@ -263,7 +263,7 @@ void etk_window_move_to_mouse(Etk_Window *window)
 /* TODO: grab the input */
 void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window)
 {
-   if (window_to_modal)
+   if (!window_to_modal)
       return;
    etk_engine_window_modal_for_window(window_to_modal, window);
 }
