@@ -9,6 +9,9 @@
  * TODO:
  * * Make it possible to get Unseen mail
  * * Let the user select between Unseen and Recent mail
+ * * When a client reads the mailbox we don't always get <n> EXISTS
+ *   and <n> RECENT updates. Need to parse f.eks.
+ *   '* 71 FETCH (FLAGS (\Seen \Deleted \Recent NonJunk))'
  */
 
 static ImapClient *_mail_imap_client_find (Ecore_Con_Server *server);
