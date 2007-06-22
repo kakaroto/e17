@@ -865,8 +865,8 @@ _ex_main_window_show(char *dir, int fullscreen, int slideshow)
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Undo"), ETK_STOCK_EDIT_UNDO, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_undo_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	
-	/* Run in submenu */
-	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Run in ..."), ETK_STOCK_APPLICATION_X_EXECUTABLE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
+	/* Open With submenu */
+	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Open With..."), ETK_STOCK_APPLICATION_X_EXECUTABLE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);
 	e->submenu = etk_menu_new();
 	etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(e->submenu));
 
