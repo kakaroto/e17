@@ -1,0 +1,190 @@
+fonts {
+   font: "VeraBd.ttf" "Sans";
+}
+
+images {
+   image: "background.jpeg" LOSSY 95;
+   image: "audio_player.png" COMP;
+   image: "image_viewer.png" COMP;
+   image: "video_player.png" COMP;
+   image: "web_browser.png" COMP;
+}
+
+collections {
+   group {
+      name: "main";
+      min: 800 480;
+
+      script {
+         public pulsing;
+      }
+
+      parts {
+         part {
+            name: "background";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 { relative: 0.0 0.0; }
+               rel2 { relative: 1.0 1.0; offset: -1 -1; }
+               image { normal: "background.jpeg"; }
+            }
+         }
+
+#define ICON(part_name, relx, rely, part_label)                         \
+         part {                                                         \
+            name: part_name"_area";                                     \
+            type: RECT;                                                 \
+            mouse_events: 1;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               rel1 { relative: relx rely; offset: -96 -96; }           \
+               rel2 { relative: relx rely; offset:  95  95; }           \
+               color: 0 0 0 0;                                          \
+            }                                                           \
+         }                                                              \
+         part {                                                         \
+            name: part_name"_pulser";                                   \
+            type: IMAGE;                                                \
+            mouse_events: 0;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               rel1 { relative: 0.5 0.5; offset: -64 -64; }             \
+               rel2 { relative: 0.5 0.5; offset:  63  63; }             \
+               color: 0 0 0 0;                                          \
+               image { normal: part_name".png"; }                       \
+            }                                                           \
+            description {                                               \
+               state: "selected" 0.0;                                   \
+               inherit: "default" 0.0;                                  \
+               rel1 { relative: 0.5 0.5; offset: -64 -64; }             \
+               rel2 { relative: 0.5 0.5; offset:  63  63; }             \
+               color: 255 255 255 128;                                  \
+            }                                                           \
+            description {                                               \
+               state: "selected" 1.0;                                   \
+               inherit: "default" 0.0;                                  \
+               rel1 { relative: 0.5 0.5; offset: -96 -96; }             \
+               rel2 { relative: 0.5 0.5; offset:  95  95; }             \
+               color: 255 255 255 0;                                    \
+            }                                                           \
+         }                                                              \
+         part {                                                         \
+            name: part_name;                                            \
+            type: IMAGE;                                                \
+            mouse_events: 0;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               rel1 { relative: relx rely; offset: -32 -32; }           \
+               rel2 { relative: relx rely; offset:  31  31; }           \
+               image { normal: part_name".png"; }                       \
+            }                                                           \
+            description {                                               \
+               state: "selected" 0.0;                                   \
+               inherit: "default" 0.0;                                  \
+               rel1 { relative: 0.5 0.5; offset: -64 -64; }             \
+               rel2 { relative: 0.5 0.5; offset:  63  63; }             \
+            }                                                           \
+         }                                                              \
+         part {                                                         \
+            name: part_name"_label";                                    \
+            type: TEXT;                                                 \
+            effect: SHADOW;                                             \
+            mouse_events: 0;                                            \
+            description {                                               \
+               state: "default" 0.0;                                    \
+               rel1 { relative: relx rely; offset: -100  33; }          \
+               rel2 { relative: relx rely; offset:   99  53; }          \
+               align: 0.5 0.5;                                          \
+               color: 255 255 255 255;                                  \
+               color2: 0 0 0 255;                                       \
+               color3: 0 0 0 255;                                       \
+               text {                                                   \
+                  font: "Sans";                                         \
+                  size: 18;                                             \
+                  text: part_label;                                     \
+                  min: 1 1;                                             \
+                  fit: 1 1;                                             \
+               }                                                        \
+            }                                                           \
+            description {                                               \
+               state: "selected" 0.0;                                   \
+               inherit: "default" 0.0;                                  \
+               rel1 { relative: 0.5 0.5; offset: -128 -25; }            \
+               rel2 { relative: 0.5 0.5; offset:  127  24; }            \
+            }                                                           \
+         }
+
+         ICON("web_browser", 0.25, 0.25, "Web Browser")
+         ICON("audio_player", 0.75, 0.25, "Audio Player")
+         ICON("image_viewer", 0.25, 0.75, "Image Viewer")
+         ICON("video_player", 0.75, 0.75, "Video Player")
+      }
+      programs {
+
+#define ICON_PROGRAMS(part_name)                                        \
+         program {                                                      \
+            name: "select_"part_name;                                   \
+            signal: "select_"part_name;                                 \
+            action: STATE_SET "selected" 0.0;                           \
+            target: part_name;                                          \
+            target: part_name"_label";                                  \
+            transition: LINEAR 0.2;                                     \
+            after: "start_pulse_"part_name;                             \
+         }                                                              \
+         program {                                                      \
+            name: "start_pulse_"part_name;                              \
+            script {                                                    \
+               set_int(pulsing, 1);                                     \
+               run_program(PROGRAM:"unpulse_"part_name);                \
+            }                                                           \
+         }                                                              \
+         program {                                                      \
+            name: "pulse_"part_name;                                    \
+            action: STATE_SET "selected" 1.0;                           \
+            target: part_name"_pulser";                                 \
+            transition: LINEAR 0.5;                                     \
+            after: "check_pulse_"part_name;                             \
+         }                                                              \
+         program {                                                      \
+            name: "unpulse_"part_name;                                  \
+            action: STATE_SET "selected" 0.0;                           \
+            target: part_name"_pulser";                                 \
+            after: "pulse_"part_name;                                   \
+         }                                                              \
+         program {                                                      \
+            name: "check_pulse_"part_name;                              \
+            script {                                                    \
+               new tmp[1000];                                           \
+               snprintf(tmp, 1000, "%d", get_int(pulsing));             \
+               if (get_int(pulsing) == 1)                               \
+                  run_program(PROGRAM:"unpulse_"part_name);             \
+               else                                                     \
+                  set_state(PART:part_name"_pulser", "default", 0.0);   \
+            }                                                           \
+         }                                                              \
+         program {                                                      \
+            name: "stop_pulsing_"part_name;                             \
+            signal: "stop_pulsing_"part_name;                           \
+            script {                                                    \
+               set_int(pulsing, 0);                                     \
+            }                                                           \
+         }                                                              \
+         program {                                                      \
+            name: "unselect_"part_name;                                 \
+            signal: "unselect_"part_name;                               \
+            action: STATE_SET "default" 0.0;                            \
+            target: part_name;                                          \
+            target: part_name"_label";                                  \
+            target: part_name"_pulser";                                 \
+            transition: LINEAR 0.2;                                     \
+         }
+
+         ICON_PROGRAMS("web_browser")
+         ICON_PROGRAMS("audio_player")
+         ICON_PROGRAMS("image_viewer")
+         ICON_PROGRAMS("video_player")
+      }
+   }
+}
