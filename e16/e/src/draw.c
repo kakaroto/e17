@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2007 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -30,6 +31,15 @@
 
 #include <X11/bitmaps/gray>
 #include <X11/bitmaps/gray3>
+
+typedef struct
+{
+   EObj                o;
+   Pixmap              mask;
+   GC                  gc;
+} ShapeWin;
+
+static Font         font = None;	/* Used in mode 1 (technical) */
 
 #define DRAW_H_ARROW(_dr, _gc, x1, x2, y1) \
     if (((x2) - (x1)) >= 12) \
@@ -145,42 +155,90 @@ _ShapeGetColor(void)
    return color_pixel;
 }
 
-static EObj        *
-_ShapeCreateWin(void)
+static void
+_ShapeWinDestroy(ShapeWin * sw)
 {
-   EObj               *eo;
+   EoUnmap(sw);
+   EoFini(sw);
+   if (sw->gc)
+      EXFreeGC(sw->gc);
+   if (sw->mask != None)
+      EFreePixmap(sw->mask);
+   Efree(sw);
+}
 
-   eo = EobjWindowCreate(EOBJ_TYPE_MISC, 0, 0, VRoot.w, VRoot.h, 0, "Wires");
-   if (!eo)
+static ShapeWin    *
+_ShapeWinCreate(int md)
+{
+   ShapeWin           *sw;
+
+   sw = ECALLOC(ShapeWin, 1);
+   if (!sw)
       return NULL;
-   eo->shadow = 0;
-   eo->fade = 0;
-   ESetWindowBackground(EobjGetWin(eo), _ShapeGetColor());
-#ifdef xxShapeInput		/* Should really check server too */
-   XShapeCombineRectangles(disp, EobjGetXwin(eo),
+
+   EoInit(sw, EOBJ_TYPE_MISC, None, 0, 0, VRoot.w, VRoot.h, 1, "Wires");
+   if (!EoGetWin(sw))
+      goto bail_out;
+
+   EoSetShadow(sw, 0);
+   EoSetFade(sw, 0);
+   EoSetFloating(sw, 1);
+   EoSetLayer(sw, 18);
+   ESetWindowBackground(EoGetWin(sw), _ShapeGetColor());
+#ifdef ShapeInput		/* Should really check server too */
+   XShapeCombineRectangles(disp, EoGetXwin(sw),
 			   ShapeInput, 0, 0, NULL, 0, ShapeSet, Unsorted);
 #endif
-   return eo;
+
+   if (md == 1)
+     {
+	sw->mask = ECreatePixmap(EoGetWin(sw), VRoot.w, VRoot.h, 1);
+	sw->gc = EXCreateGC(sw->mask, 0, NULL);
+	if (sw->mask == None || !sw->gc)
+	   goto bail_out;
+     }
+
+   return sw;
+
+ bail_out:
+   _ShapeWinDestroy(sw);
+   return NULL;
 }
 
 static void
-_ShapeSetBox(EObj * eo, int x, int y, int w, int h,
-	     int bl, int br, int bt, int bb, int seqno)
+_ShapeSet(ShapeWin * sw, int md, int x, int y, int w, int h,
+	  int bl, int br, int bt, int bb, int seqno)
 {
-   XRectangle          rl[8];
    int                 w2, h2;
 
    w2 = w + bl + br;
    h2 = h + bt + bb;
 
-   _SHAPE_SET_RECT((&rl[0]), x, y, w2, h2);
-   w = (w > 5) ? w - 2 : 3;
-   h = (h > 5) ? h - 2 : 3;
-   _SHAPE_SET_RECT((&rl[4]), x + bl + 1, y + bt + 1, w, h);
+   if (md == 1)
+     {
+	char                str[32];
 
-   EShapeCombineRectangles(EobjGetWin(eo), ShapeBounding, 0, 0, rl,
-			   8, (seqno == 0) ? ShapeSet : ShapeUnion, Unsorted);
-   EobjShapeUpdate(eo, 0);
+	XSetForeground(disp, sw->gc, 0);
+	XFillRectangle(disp, sw->mask, sw->gc, 0, 0, VRoot.w, VRoot.h);
+	XSetForeground(disp, sw->gc, 1);
+	DO_DRAW_MODE_1(sw->mask, sw->gc, x, y, w, h);
+	EShapeCombineMask(EoGetWin(sw), ShapeBounding, 0, 0, sw->mask,
+			  (seqno == 0) ? ShapeSet : ShapeUnion);
+     }
+   else
+     {
+	XRectangle          rl[8];
+
+	_SHAPE_SET_RECT((&rl[0]), x, y, w2, h2);
+	w = (w > 5) ? w - 2 : 3;
+	h = (h > 5) ? h - 2 : 3;
+	_SHAPE_SET_RECT((&rl[4]), x + bl + 1, y + bt + 1, w, h);
+
+	EShapeCombineRectangles(EoGetWin(sw), ShapeBounding, 0, 0, rl,
+				8, (seqno == 0) ? ShapeSet : ShapeUnion,
+				Unsorted);
+     }
+   EoShapeUpdate(sw, 0);
 }
 
 void
@@ -189,7 +247,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 {
    static GC           gc = 0;
    static Pixmap       b2 = 0, b3 = 0;
-   static Font         font = 0;
    Window              root = VRoot.xwin;
    int                 x1, y1, w1, h1, i, j, dx, dy;
    int                 bl, br, bt, bb;
@@ -256,22 +313,23 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 
    EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 
-   if (md == 2 && !Conf.movres.old_mode)
+   if (md <= 2 && !Conf.movres.old_mode)
      {
-	static EObj        *shape_win = NULL;
+	static ShapeWin    *shape_win = NULL;
 
 	if (firstlast == 0 && !shape_win)
-	   shape_win = _ShapeCreateWin();
+	   shape_win = _ShapeWinCreate(md);
 	if (!shape_win)
 	   return;
 
-	_ShapeSetBox(shape_win, x, y, w, h, bl, br, bt, bb, seqno);
-	EobjMap(shape_win, 0);
+	_ShapeSet(shape_win, md, x, y, w, h, bl, br, bt, bb, seqno);
+	EoMap(shape_win, 0);
 
 	CoordsShow(ewin);
+
 	if (firstlast == 2)
 	  {
-	     EobjDestroy(shape_win);
+	     _ShapeWinDestroy(shape_win);
 	     shape_win = NULL;
 	  }
 	goto done;

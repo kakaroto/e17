@@ -50,7 +50,7 @@ _NeedServerGrab(int mode)
 {
    if (mode == 0)
       return 0;
-   if (mode == 2)
+   if (mode <= 2)
       return Conf.movres.old_mode;
    return 1;
 }
