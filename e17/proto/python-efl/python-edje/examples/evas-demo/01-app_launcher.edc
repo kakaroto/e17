@@ -17,6 +17,12 @@ collections {
 
       script {
          public pulsing;
+         public pulsing_id = 0;
+
+         public stop_pulsing_cb(val) {
+            run_program(val);
+            return 0;
+         }
       }
 
       parts {
@@ -134,9 +140,22 @@ collections {
             after: "start_pulse_"part_name;                             \
          }                                                              \
          program {                                                      \
+            name: "stop_pulse_"part_name;                               \
+            script {                                                    \
+               set_int(pulsing, 0);                                     \
+               set_int(pulsing_id, 0);                                  \
+            }                                                           \
+         }                                                              \
+         program {                                                      \
             name: "start_pulse_"part_name;                              \
             script {                                                    \
                set_int(pulsing, 1);                                     \
+               new p_id;                                                \
+               p_id = get_int(pulsing_id);                              \
+               if (p_id != 0) cancel_timer(p_id);                       \
+               p_id = timer(10.0, "stop_pulsing_cb",                    \
+                            PROGRAM:"stop_pulse_"part_name);            \
+               set_int(pulsing_id, p_id);                               \
                run_program(PROGRAM:"unpulse_"part_name);                \
             }                                                           \
          }                                                              \
@@ -156,19 +175,10 @@ collections {
          program {                                                      \
             name: "check_pulse_"part_name;                              \
             script {                                                    \
-               new tmp[1000];                                           \
-               snprintf(tmp, 1000, "%d", get_int(pulsing));             \
                if (get_int(pulsing) == 1)                               \
                   run_program(PROGRAM:"unpulse_"part_name);             \
                else                                                     \
                   set_state(PART:part_name"_pulser", "default", 0.0);   \
-            }                                                           \
-         }                                                              \
-         program {                                                      \
-            name: "stop_pulsing_"part_name;                             \
-            signal: "stop_pulsing_"part_name;                           \
-            script {                                                    \
-               set_int(pulsing, 0);                                     \
             }                                                           \
          }                                                              \
          program {                                                      \
