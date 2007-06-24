@@ -604,6 +604,8 @@ GlwinCreate(const char *title __UNUSED__, int width, int height)
    y = ((win->h - height) / 2);
 
    GLWin.eo = EobjWindowCreate(EOBJ_TYPE_GLX, x, y, width, height, 0, "GLwin");
+   if (!GLWin.eo)
+      return -1;
    win = EobjGetWin(GLWin.eo);
 
    EventCallbackRegister(win, 0, GlwinEvent, &GLWin);

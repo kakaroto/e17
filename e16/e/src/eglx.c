@@ -288,7 +288,7 @@ EGlGetVisual(void)
 {
    if (!egl.vi)
       EGlInit();
-   return egl.vi->visual;
+   return (egl.vi) ? egl.vi->visual : NULL;
 }
 
 unsigned int
@@ -296,7 +296,7 @@ EGlGetDepth(void)
 {
    if (!egl.vi)
       EGlInit();
-   return egl.vi->depth;
+   return (egl.vi) ? egl.vi->depth : 0;
 }
 
 #if 0

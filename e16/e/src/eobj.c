@@ -187,6 +187,8 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
    eo->type = type;
    eo->win = win;
    eo->shaped = -1;
+   if (!win)
+      return;
 
    if (type == EOBJ_TYPE_EXT)
      {

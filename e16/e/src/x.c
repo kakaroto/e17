@@ -408,6 +408,9 @@ ECreateWindowVD(Win parent, int x, int y, int w, int h,
 {
    Colormap            cmap;
 
+   if (!vis || depth == 0)
+      return 0;
+
    cmap = XCreateColormap(disp, VRoot.xwin, vis, AllocNone);
 
    return ECreateWindowVDC(parent, x, y, w, h, vis, depth, cmap);
@@ -441,7 +444,8 @@ ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
 	argb = 1;
 	win =
 	   ECreateWindowVD(parent, x, y, w, h, EGlGetVisual(), EGlGetDepth());
-	win->argb = 1;
+	if (win)
+	   win->argb = 1;
 	return win;
 #endif
      }
