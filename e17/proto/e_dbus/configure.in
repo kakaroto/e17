@@ -36,4 +36,5 @@ src/lib/nm/Makefile
 src/bin/Makefile
 edbus.pc
 ehal.pc
+debian/changelog
 ])
