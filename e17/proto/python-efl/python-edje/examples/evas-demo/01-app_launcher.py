@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-STOP_PULSING_TIMEOUT = 10.0
-
 import ecore
 import ecore.evas
 import edje
