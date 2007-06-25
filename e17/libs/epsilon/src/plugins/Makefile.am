@@ -14,13 +14,23 @@ else
 XINE_L = 
 endif
 
+if HAVE_EPDF
+EPDF_L = 
+else
+EPDF_L =
+endif
 
 
-
-pkg_LTLIBRARIES = $(XINE_L)
+pkg_LTLIBRARIES = $(XINE_L) $(EPDF_L)
 
 xine_thumbnailer_la_SOURCES = xine_thumbnailer.c
 xine_thumbnailer_la_LDFLAGS = -module -avoid-version
 xine_thumbnailer_la_LIBADD = @XINE_LIBS@ @IMLIB2_LIBS@
 xine_thumbnailer_la_CFLAGS = @XINE_CFLAGS@ @IMLIB2_CFLAGS@
+
+epdf_thumbnailer_la_SOURCES = pdf_thumbnailer.c
+epdf_thumbnailer_la_LDFLAGS = -module -avoid-version
+epdf_thumbnailer_la_LIBADD = @EPDF_LIBS@ @IMLIB2_LIBS@
+epdf_thumbnailer_la_CFLAGS = @EPDF_CFLAGS@ @IMLIB2_CFLAGS@
+
 

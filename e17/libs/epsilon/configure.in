@@ -67,7 +67,10 @@ PKG_CHECK_MODULES(ECORE, [
   ]
 )
 
+epdf=""
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+PKG_CHECK_MODULES(EPDF, [epdf >= 0.1], epdf="yes",epdf="no")
+AM_CONDITIONAL(HAVE_EPDF, test $epdf = "yes")
 
 xine=""
 AC_MSG_CHECKING(whether the xine thumbnailer was explicitly disabled)
