@@ -29,7 +29,7 @@ main (int argc, char *argv[])
 		       "Thumbnail for %s needs to be generated: ",
 		       argv[argc]);
 	      if (epsilon_generate (e) == EPSILON_OK)
-		fprintf (stderr, "OK\n");
+		fprintf (stderr, "OK - thumb is %s\n", (char*)epsilon_thumb_file_get(e));
 	      else
 		fprintf (stderr, "FAILED\n");
 	    }

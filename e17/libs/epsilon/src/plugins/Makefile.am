@@ -15,7 +15,7 @@ XINE_L =
 endif
 
 if HAVE_EPDF
-EPDF_L = 
+EPDF_L = epdf_thumbnailer.la
 else
 EPDF_L =
 endif

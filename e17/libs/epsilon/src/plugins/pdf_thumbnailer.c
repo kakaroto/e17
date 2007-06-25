@@ -65,7 +65,7 @@ clip (int val)
 Imlib_Image
 epsilon_generate_thumb (Epsilon * e)
 {
-  Imlib_Image img;
+  Imlib_Image img = NULL;
   Ecore_Evas    *ee;
   Evas          *evas;
   Evas_Object   *o;
@@ -86,18 +86,16 @@ epsilon_generate_thumb (Epsilon * e)
   ecore_evas_resize (ee, epdf_page_width_get (page), epdf_page_height_get (page));
 
   pixels = ecore_evas_buffer_pixels_get (ee);
-  img = imlib_create_image_using_data (w, h, (DATA32 *) pixels);
+  img = imlib_create_image_using_data (epdf_page_width_get (page),
+                                       epdf_page_height_get (page),
+                                       (DATA32 *) pixels);
 
-  imlib_context_set_image(tmp);
+  imlib_context_set_image(img);
 
   epdf_page_delete (page);
   epdf_document_delete (document);
 
 
-  printf("Thumbnailing %s", e->src);
-
-
-	
   return img;
 }
 

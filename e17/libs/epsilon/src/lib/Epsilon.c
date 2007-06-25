@@ -584,6 +584,18 @@ epsilon_generate (Epsilon * e)
 
     len = strlen (e->src);
 
+   if (!evas_init()) return -1;
+   if (!ecore_init()) {
+     evas_shutdown ();
+     return -1;
+   }
+
+   if (!ecore_evas_init()) {
+     evas_shutdown ();
+     ecore_shutdown ();
+     return -1;
+    }
+
     if ((len > 4) && (!strcmp (&e->src[len - 3], "edj")))
       {
 	Evas *evas = NULL;
@@ -688,9 +700,9 @@ epsilon_generate (Epsilon * e)
 		return (EPSILON_OK);
 	      }
 	    imlib_free_image_and_decache ();
-	  }
+	  } 
 
-      }
+      } 
 #endif
     if (ee) ecore_evas_free(ee);
   }
