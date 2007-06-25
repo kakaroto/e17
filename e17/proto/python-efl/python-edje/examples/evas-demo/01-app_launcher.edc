@@ -158,6 +158,7 @@ collections {
                const pid = PROGRAM:"unselect_"part_name;                \
                if (get_int(selected) == pid)                            \
                   return;                                               \
+               stop_pulsing();                                          \
                unselect();                                              \
                set_int(selected, pid);                                  \
                emit("selected", part_name);                             \
@@ -180,27 +181,27 @@ collections {
                set_int(pulsing, PART:part_name"_pulser");               \
                new i = timer(pulse_timeout, "stop_pulsing_cb", 0);      \
                set_int(pulsing_id, i);                                  \
-               run_program(PROGRAM:"unpulse_"part_name);                \
+               run_program(PROGRAM:"shrink_"part_name);                 \
             }                                                           \
          }                                                              \
          program {                                                      \
-            name: "unpulse_"part_name;                                  \
+            name: "shrink_"part_name;                                   \
             action: STATE_SET "selected" 0.0;                           \
             target: part_name"_pulser";                                 \
-            after: "pulse_"part_name;                                   \
+            after: "grow_"part_name;                                    \
          }                                                              \
          program {                                                      \
-            name: "pulse_"part_name;                                    \
+            name: "grow_"part_name;                                     \
             action: STATE_SET "selected" 1.0;                           \
             target: part_name"_pulser";                                 \
             transition: LINEAR 0.5;                                     \
-            after: "check_pulse_"part_name;                             \
+            after: "check_continue_pulsing_"part_name;                  \
          }                                                              \
          program {                                                      \
-            name: "check_pulse_"part_name;                              \
+            name: "check_continue_pulsing_"part_name;                   \
             script {                                                    \
                if (get_int(pulsing) == PART:part_name"_pulser")         \
-                  run_program(PROGRAM:"unpulse_"part_name);             \
+                  run_program(PROGRAM:"shrink_"part_name);              \
                else                                                     \
                   set_state(PART:part_name"_pulser", "default", 0.0);   \
             }                                                           \
