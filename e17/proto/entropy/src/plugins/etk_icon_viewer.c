@@ -227,6 +227,8 @@ void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, voi
   event = event_info;
   selected_count = 0;
 
+  printf("Button 1, but not double click - %d\n",event->flags);
+
  if (!(icon = etk_iconbox_icon_get_at_xy(ETK_ICONBOX(viewer->iconbox), 
    	event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
   return;

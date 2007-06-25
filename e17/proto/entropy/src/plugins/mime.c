@@ -55,6 +55,7 @@ entropy_plugin_init (entropy_core * core)
   ecore_hash_set (mime_hash, ".mov", "video/quicktime");
   ecore_hash_set (mime_hash, ".asf", "video/x-ms-asf");
   ecore_hash_set (mime_hash, ".tga" ,"image/tga");
+  ecore_hash_set (mime_hash, ".pdf", "application/pdf");
 
   plugin = entropy_malloc(sizeof(Entropy_Plugin_Mime));
 
