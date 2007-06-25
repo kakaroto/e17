@@ -123,16 +123,16 @@ evfs_client_disconnect(evfs_client * client)
    char *key;
    Ecore_List *watched_keys = ecore_list_new();
 
-   printf("Received disconnect for client at evfs_fs_posix.c for client %lu\n",
+   /*printf("Received disconnect for client at evfs_fs_posix.c for client %lu\n",
           client->id);
-   printf("Scanning monitors for client and removing...\n");
+   printf("Scanning monitors for client and removing...\n");*/
 
    mon_list = ecore_hash_keys(posix_monitor_hash);
    if (mon_list)
      {
         while ((key = ecore_list_remove_first(mon_list)))
           {
-             printf("Looking for clients for '%s'\n", key);
+             /*printf("Looking for clients for '%s'\n", key);*/
 
              indiv_list = ecore_hash_get(posix_monitor_hash, key);
              ecore_list_goto_first(indiv_list);
@@ -149,7 +149,7 @@ evfs_client_disconnect(evfs_client * client)
      }
    else
      {
-        printf("No directories/files monitored by any client\n");
+        /*printf("No directories/files monitored by any client\n");*/
      }
 
    while ((key = ecore_list_remove_first(watched_keys)))

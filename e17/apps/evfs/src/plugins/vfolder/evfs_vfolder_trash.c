@@ -89,9 +89,10 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 		
 				/*First check if this is a complete uri path in .info*/
 				snprintf(parser, PATH_MAX, "trash:///%s", pos+1);
-				printf("Parsing %s\n", parser);
+				printf("Parsing %s --", parser);
 				ref = evfs_parse_uri_single(parser);
 				ref->attach = file_dup;
+				printf ("   %s    %s\n", ref->plugin_uri, ref->path);
 		
 				if (ref) 
 					ecore_list_append(*list, ref);

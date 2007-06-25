@@ -357,8 +357,8 @@ evfs_client_disconnect(evfs_client * client)
 {
    /*Temp, move to plugin unloading when avaliable.  Closes the curl library, and
     * resets the connection cache.  This will just destroy the cache when moved. */
-   printf("Received disconnect for client at evfs_fs_ftp.c for client %ld\n",
-          client->id);
+   /*printf("Received disconnect for client at evfs_fs_ftp.c for client %ld\n",
+          client->id);*/
    curl_global_cleanup();
    ecore_hash_destroy(connections);
    ecore_hash_new(ecore_str_hash, ecore_str_compare);

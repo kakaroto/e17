@@ -68,8 +68,8 @@ int evfs_file_remove(char *file);
 int
 evfs_client_disconnect(evfs_client * client)
 {
-   printf("Received disconnect for client at evfs_fs_samba.c for client %d\n",
-          client->id);
+   /*printf("Received disconnect for client at evfs_fs_samba.c for client %d\n",
+          client->id);*/
 }
 
 void

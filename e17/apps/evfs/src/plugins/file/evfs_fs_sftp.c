@@ -808,8 +808,8 @@ int evfs_file_stat(evfs_command* command, struct stat *dst_stat, int);
 int
 evfs_client_disconnect(evfs_client * client)
 {
-   printf("Received disconnect for client at evfs_fs_sftp.c for client %lu\n",
-          client->id);
+   /*printf("Received disconnect for client at evfs_fs_sftp.c for client %lu\n",
+          client->id);*/
 	return 1;
 }
 
