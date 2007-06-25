@@ -16,9 +16,17 @@ collections {
       min: 800 480;
 
       script {
+         public selected = 0;
          public pulsing = 0;
          public pulsing_id = 0;
          const Float:pulse_timeout = 10.0;
+
+         public unselect() {
+            if (get_int(selected) == 0)
+               return;
+            run_program(get_int(selected));
+            set_int(selected, 0);
+         }
 
          public stop_pulsing() {
             if (get_int(pulsing) == 0)
@@ -143,8 +151,22 @@ collections {
 
 #define ICON_PROGRAMS(part_name)                                        \
          program {                                                      \
+            name: "set_selected_"part_name;                             \
+            signal: "mouse,clicked,1";                                  \
+            source: part_name"_area";                                   \
+            script {                                                    \
+               const pid = PROGRAM:"unselect_"part_name;                \
+               if (get_int(selected) == pid)                            \
+                  return;                                               \
+               unselect();                                              \
+               set_int(selected, pid);                                  \
+               emit("selected", part_name);                             \
+            }                                                           \
+         }                                                              \
+         program {                                                      \
             name: "select_"part_name;                                   \
-            signal: "select_"part_name;                                 \
+            signal: "selected";                                         \
+            source: part_name;                                          \
             action: STATE_SET "selected" 0.0;                           \
             target: part_name;                                          \
             target: part_name"_label";                                  \
