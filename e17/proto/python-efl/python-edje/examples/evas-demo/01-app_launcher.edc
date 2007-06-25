@@ -18,7 +18,7 @@ collections {
       script {
          public selected = 0;
          public pulsing = 0;
-         public pulsing_id = 0;
+         public stop_pulsing_timer_id = 0;
          const Float:pulse_timeout = 10.0;
 
          public unselect() {
@@ -33,9 +33,9 @@ collections {
                return;
             set_state(get_int(pulsing), "default", 0.0);
             set_int(pulsing, 0);
-            if (get_int(pulsing_id) != 0) {
-               cancel_timer(get_int(pulsing_id));
-               set_int(pulsing_id, 0);
+            if (get_int(stop_pulsing_timer_id) != 0) {
+               cancel_timer(get_int(stop_pulsing_timer_id));
+               set_int(stop_pulsing_timer_id, 0);
             }
          }
 
@@ -180,7 +180,7 @@ collections {
                stop_pulsing();                                          \
                set_int(pulsing, PART:part_name"_pulser");               \
                new i = timer(pulse_timeout, "stop_pulsing_cb", 0);      \
-               set_int(pulsing_id, i);                                  \
+               set_int(stop_pulsing_timer_id, i);                       \
                run_program(PROGRAM:"shrink_"part_name);                 \
             }                                                           \
          }                                                              \
