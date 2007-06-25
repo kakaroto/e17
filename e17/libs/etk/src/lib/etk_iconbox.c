@@ -1380,6 +1380,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
          }
          icon_object->use_edje = ETK_FALSE;
          evas_object_image_size_get(icon_object->image, &icon_w, &icon_h);
+	 evas_object_pass_events_set(icon_object->image, 1);
       }
       else
       {
