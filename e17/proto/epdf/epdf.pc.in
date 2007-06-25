@@ -8,4 +8,4 @@ Description: Enlightenment Foundations Library based pdf renderer, based on Popl
 Requires: @requirements@
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lepdf
-Cflags: -I${includedir}
+Cflags: -I${includedir}/epdf
