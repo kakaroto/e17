@@ -1,9 +1,8 @@
 /* vim: set sw=4 ts=4 sts=4 expandtab: */
 #include "edje_frontend.h"
-#include <Ecore_Evas.h>
-#include <Edje.h>
 #include <Esmart/Esmart_Container.h>
-#include "ewl_context_menu.h"
+#include <Esmart/Esmart_Resize.h>
+#include <Esmart/Esmart_Draggies.h>
 
 /* internal functions */
 static void _eli_app_gui_swallow(Evas_Object * gui, 

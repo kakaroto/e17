@@ -1,8 +1,7 @@
 #include <Ewl.h>
+#include <Ecore_Evas.h>
 #include "Eli_App.h"
-#include "Esmart_Resize.h"
 #include "Elitaire.h"
-#include <Esmart/Esmart_Draggies.h>
 #include <Edje.h>
 #include <stdio.h>
 #include <stdlib.h>

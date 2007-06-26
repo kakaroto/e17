@@ -45,9 +45,6 @@ elitaire_SOURCES = \
   elitaire_job.c\
   elitaire_private.cpp\
   \
-  Esmart_Resize.h\
-  esmart_resize.c\
-  \
   eli_hiscore.h\
   eli_hiscore.c\
   \
@@ -56,6 +53,6 @@ elitaire_SOURCES = \
 
 elitaire_LDFLAGS = @ELITAIRE_LIBS@
 
-elitaire_LDADD =  -lesmart_draggies -lesmart_container
+elitaire_LDADD =  -lesmart_draggies -lesmart_container -lesmart_resize
 
 top_srcdir = @top_srcdir@
