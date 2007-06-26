@@ -308,13 +308,14 @@ int evfs_metadata_db_id_for_file(sqlite3* db, evfs_filereference* ref, int creat
 
 void evfs_metadata_db_file_keyword_add(sqlite3* db, int file, char* key, char* value)
 {
-	char query[512];
+	char query[1024];
 	int ret;
 	char* errMsg = 0;
 	int cnt;
 	sqlite3_stmt *pStmt;
 
 	/*Check we don't already have a match for this file/keyword/value triplet*/
+	/*FIXME: This is bad - what if the filename is >1024 chars*/
 	snprintf(query, sizeof(query), "select count(*) from FileMeta where file=%d and keyword='%s' and value='%s'", file,key,value);
 	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
 	if (ret == SQLITE_OK) {
@@ -341,3 +342,26 @@ void evfs_metadata_db_file_keyword_add(sqlite3* db, int file, char* key, char* v
 	}
 
 }
+
+void evfs_metadata_db_delete_file(sqlite3* db, int file)
+{
+	char query[1024];
+	int ret;
+	char* errMsg = 0;
+
+	/*First delete the file parent reference*/
+	snprintf(query, sizeof(query), "delete from File where id = %d", file);
+	ret = sqlite3_exec(db, query, NULL,0,&errMsg);
+	if (errMsg) printf("ERROR: %s\n", errMsg);
+
+	/*Now delete any meta for this file*/
+	snprintf(query, sizeof(query), "delete from FileMeta where File = %d", file);
+	ret = sqlite3_exec(db, query, NULL,0,&errMsg);
+	if (errMsg) printf("ERROR: %s\n", errMsg);
+
+	/*...And any group memberships*/
+	snprintf(query, sizeof(query), "delete from FileGroup where File = %d", file);
+	ret = sqlite3_exec(db, query, NULL,0,&errMsg);
+	if (errMsg) printf("ERROR: %s\n", errMsg);		
+}
+

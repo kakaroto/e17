@@ -55,6 +55,9 @@ static Ecore_DList* evfs_metdata_db_results = NULL;
 /*Directory scan queue*/
 static Ecore_List* evfs_metadata_directory_scan_queue = NULL;
 
+/*Deleted scan queue*/
+static int deletedPage = 0;
+
 /*--*/
 static Ecore_List* evfs_metadata_queue = NULL;
 pid_t _metadata_fork= 0;
@@ -73,6 +76,7 @@ typedef struct {
 
 int evfs_metadata_extract_runner(void* data);
 int evfs_metadata_scan_runner(void* data);
+int evfs_metadata_scan_deleted(void* data);
 
 
 /*DB Helper functions*/
@@ -120,28 +124,6 @@ void evfs_metadata_db_response_setup()
 {
 	_evfs_metadata_db_wait = 1;
 }
-
-static int evfs_metadata_db_callback(void *NotUsed, int argc, char **argv, char **azColName){
-  int i;
-  evfs_metadata_db_result* result;
-
-  result = calloc(1, sizeof(evfs_metadata_db_result));
-  result->fields = calloc(argc, sizeof(evfs_metadata_db_item*));
-  result->fieldcount = argc;
-  
-  for(i=0; i<argc; i++){
-	evfs_metadata_db_item* item = calloc(1, sizeof(evfs_metadata_db_item));
-	item->name = strdup(azColName[i]);
-	item->value = strdup(argv[i]);
-	result->fields[i] = item;
-  }
-
-  ecore_dlist_append(evfs_metdata_db_results, result);
-
-   _evfs_metadata_db_wait = 0;
-  return 0;
-}
-/*-------------*/
 
 Eet_Data_Descriptor* _evfs_metadata_edd_create(char* desc, int size) 
 {
@@ -391,6 +373,7 @@ void evfs_metadata_initialise(int forker)
 
 		if (forker) {
 			ecore_timer_add(0.5, evfs_metadata_scan_runner, NULL);
+			ecore_timer_add(5, evfs_metadata_scan_deleted, NULL);
 			ecore_timer_add(0.5, evfs_metadata_extract_runner, NULL);
 		}
 	}
@@ -425,12 +408,6 @@ Evas_List* evfs_metadata_groups_get() {
 	sqlite3_finalize(pStmt);
 	
 	return ret_list;
-}
-
-void evfs_metadata_file_set_key_value_edd(evfs_filereference* ref, char* key, 
-		void* value, Eet_Data_Descriptor* edd) 
-{
-
 }
 
 Ecore_List*
@@ -724,6 +701,90 @@ int evfs_metadata_scan_runner(void* data)
 		}
 	}
 	
+	return 1;
+}
+
+int evfs_metadata_scan_deleted(void* data) 
+{
+	sqlite3* dbi;
+	int handleCount=0;
+	sqlite3_stmt* pStmt;
+	char query[1024];
+	int pageSize=30;
+	int ret;
+	unsigned const char* str;
+	int res = 0;
+	Ecore_List* delList;
+
+	delList = ecore_list_new();
+	
+	ret = sqlite3_open(metadata_db, &dbi);
+	if( ret ){
+	    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(dbi));
+	    sqlite3_close(dbi);
+	    return 0;
+	}
+
+	/*Wait up to 10 seconds in this fork for the db to be available*/
+	sqlite3_busy_timeout(dbi,10000);
+
+	snprintf(query,sizeof(query), "select filename,id from File order by id limit %d offset %d", pageSize, deletedPage);
+	
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+        if (ret == SQLITE_OK) {
+		while ( (ret = sqlite3_step(pStmt) == SQLITE_ROW)) {
+			str = sqlite3_column_text(pStmt,0);
+			handleCount++;
+			/*printf("Filename: %s - ", str);*/
+
+			evfs_filereference* file = evfs_parse_uri_single((char*)str);
+			if (file) {
+				evfs_command* proxy;
+				struct stat file_stat;
+
+				proxy = evfs_file_command_single_build(file);
+				res = (*EVFS_PLUGIN_FILE(file->plugin)->functions->evfs_file_stat)(proxy, &file_stat,0);
+
+				if (res == 0) {
+					/*printf("*\n");*/
+				} else {
+					/*printf("DELETED\n");*/
+
+					ecore_list_append(delList, (int*)sqlite3_column_int(pStmt,1));
+				}
+				evfs_cleanup_command(proxy, EVFS_CLEANUP_FREE_COMMAND);
+			}
+		}
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+		
+		/*If we saw no rows, we're at the end - go back
+		 * to the start*/
+		if (handleCount ==0) {
+			deletedPage = 0;
+		} else {
+			if (ecore_list_nodes(delList) > 0) {
+				int id;
+				ecore_list_goto_first(delList);
+				while ( (id = (int)ecore_list_next(delList))) {
+					evfs_metadata_db_delete_file(db,id);
+				}
+			} else {
+				/*Only advance page if we didn't delete
+				 * This may result in dupe scans - but there's no
+				 * way to avoid this, because the position of all the rows
+				 * will have changed */
+				deletedPage += pageSize;
+				/*printf("No deletes, next page\n");*/
+			}
+		}
+	} else {
+		printf("Query failed..\n");
+	}
+
+	ecore_list_destroy(delList);
+	sqlite3_close(dbi);	
+
 	return 1;
 }
 
