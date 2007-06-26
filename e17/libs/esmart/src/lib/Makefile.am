@@ -6,6 +6,10 @@ if BUILD_ESMART_DRAGGIES
 draggies_subdir = esmart_draggies
 endif
 
+if BUILD_ESMART_RESIZE
+resize_subdir = esmart_resize
+endif
+
 if BUILD_ESMART_FILE_DIALOG
 file_dialog_subdir = esmart_file_dialog
 endif
@@ -28,7 +32,7 @@ endif
 
 SUBDIRS = \
   $(container_subdir) $(draggies_subdir) $(text_entry_subdir) \
-  $(file_dialog_subdir) $(thumb_subdir) $(trans_subdir)
+  $(file_dialog_subdir) $(thumb_subdir) $(trans_subdir) $(resize_subdir)
 
 # adding textarea_subdir breaks distcheck
 # $(textarea_subdir)

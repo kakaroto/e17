@@ -57,6 +57,15 @@ PKG_CHECK_MODULES(DRAGGIES, [
   ]
 )
 
+PKG_CHECK_MODULES(RESIZE, [
+    evas >= 0.9.9
+    ecore-evas >= 0.9.9
+  ], [
+    have_esmart_resize=yes
+    requirements="$requirements ecore-evas"
+  ]
+)
+
 PKG_CHECK_MODULES(TRANSX11, [
     evas >= 0.9.9
     ecore-x >= 0.9.9
@@ -107,6 +116,7 @@ have_esmart_textarea=no
 
 AM_CONDITIONAL(BUILD_ESMART_CONTAINER, test $have_esmart_container = yes)
 AM_CONDITIONAL(BUILD_ESMART_DRAGGIES, test $have_esmart_draggies = yes)
+AM_CONDITIONAL(BUILD_ESMART_RESIZE, test $have_esmart_resize = yes)
 AM_CONDITIONAL(BUILD_ESMART_FILE_DIALOG, test $have_esmart_file_dialog = yes)
 AM_CONDITIONAL(BUILD_ESMART_TEXT_ENTRY, test $have_esmart_text_entry = yes)
 AM_CONDITIONAL(BUILD_ESMART_TEXTAREA, test $have_esmart_textarea = yes)
@@ -137,6 +147,7 @@ src/lib/esmart_file_dialog/Makefile
 src/lib/esmart_thumb/Makefile
 src/lib/esmart_trans_x11/Makefile
 src/lib/esmart_draggies/Makefile
+src/lib/esmart_resize/Makefile
 src/bin/Makefile
 data/Makefile
 data/images/Makefile
@@ -158,6 +169,7 @@ echo
 echo "Components:"
 echo "  Container...............: $have_esmart_container"
 echo "  Draggies................: $have_esmart_draggies"
+echo "  Resize..................: $have_esmart_resize"
 echo "  File Dialog.............: $have_esmart_file_dialog"
 echo "  Text Entry..............: $have_esmart_text_entry"
 echo "  Text Area...............: $have_esmart_textarea"
