@@ -49,7 +49,7 @@ void eli_statistics_init(const char * app)
 	    home = "/tmp";
 
     snprintf(buffer, sizeof(buffer), 
-		    "/%s/.e/apps/%s/statistics.eet", home, app);
+		    "%s/.e/apps/%s/statistics.eet", home, app);
 
     eet_file_name = strdup(buffer);
 }
