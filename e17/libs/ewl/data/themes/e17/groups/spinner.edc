@@ -9,7 +9,7 @@ images
 group
 {
 	name: "ewl/spinner/decrement";
-	min: 10 10;
+	min: 14 14;
 	parts
 	{
 		part
@@ -74,7 +74,7 @@ group
 group
 {
 	name: "ewl/spinner/increment";
-	min: 10 10;
+	min: 14 14;
 	parts
 	{
 		part
