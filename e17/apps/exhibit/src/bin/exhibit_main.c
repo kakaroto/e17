@@ -589,6 +589,12 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	     _ex_main_window_fullscreen_toggle(e);
 	  }		   
      }
+   
+   /* extra keyboard shortcuts, regardless of modifiders */
+   if (!strcmp(ev->key, "KP_Add") || !strcmp(ev->key, "plus"))
+     _ex_tab_current_zoom_in(e);
+   else if (!strcmp(ev->key, "KP_Subtract") || !strcmp(ev->key, "minus"))
+     _ex_tab_current_zoom_out(e);
 
    /* only active when in full screen mode */
    if(etk_window_fullscreen_get(ETK_WINDOW(e->win)))
