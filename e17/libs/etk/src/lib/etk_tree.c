@@ -3441,6 +3441,8 @@ static void _etk_tree_row_object_destroy(Etk_Tree *tree, Etk_Tree_Row_Object *ro
 /* Emits a theme-signal to all the row objects (background, expander, model-objects) */
 static void _etk_tree_row_signal_emit(Etk_Tree_Row *row, Etk_Tree_Row_Object *row_object, const char *signal)
 {
+   int i, j, k;
+
    if (!row || !row_object || !signal)
       return;
    
@@ -3448,6 +3450,16 @@ static void _etk_tree_row_signal_emit(Etk_Tree_Row *row, Etk_Tree_Row_Object *ro
       edje_object_signal_emit(row_object->background, signal, "etk");
    if (row_object->expander)
       edje_object_signal_emit(row_object->expander, signal, "etk");
+
+   for (i = 0; i < row->tree->num_cols; i++)
+   {
+      for (j = 0; j < row->tree->columns[i]->num_models; j++)
+      {
+         for (k = 0; k < ETK_TREE_MAX_OBJECTS_PER_MODEL; k++)
+            edje_object_signal_emit(row_object->cells[i].objects[j][k], signal, "etk");
+      }
+   }
+ 
 }
 
 /* Clips all the expanders against the clip object of the first visible column */
