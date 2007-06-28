@@ -17,11 +17,13 @@ struct _Win_Hi_Points {
     pointsType type;
 };
 
-static Ewl_Widget * _win_highscore_page_new(char * game);
+static Ewl_Widget * _win_highscore_page_new(const char * game);
 static void _destroy_cb(Ewl_Widget * w, void * event, void * data);
 static void _name_destroy_cb(Ewl_Widget * w, void * event, void * data);
+static void _highscore_key_down_cb(Ewl_Widget * w, void * event, void * data);
 void _win_highscore_clicked_cb(Ewl_Widget * w, void * event, 
                                                           void * data);
+void _highscore_add(Ewl_Window * win, _Win_Hi_Points * wh);
 static void * highscore_data_fetch(void * data, unsigned int row, 
 		                                  unsigned int col);
 static unsigned int highscore_data_count(void * data);
@@ -76,18 +78,14 @@ void ewl_frontend_dialog_highscore_open(Eli_App * eap, const char * game)
 
     for (i = 0; games[i][0]; i++) {
         Ewl_Widget * page;
-        char * labeltext;
 
-        labeltext = strdup(games[i]);
-
-        page = _win_highscore_page_new(labeltext);
+        page = _win_highscore_page_new(games[i]);
         ewl_widget_show(page);
         ewl_container_child_append(EWL_CONTAINER(notebook), page);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), page,
-                                       labeltext);
+                                       games[i]);
 
-        if (!strcmp(labeltext, game)) selected_page = page;
-        free(labeltext);
+        if (!strcmp(games[i], game)) selected_page = page;
     }
 
     if (selected_page)
@@ -152,7 +150,10 @@ void ewl_frontend_dialog_highscore_add(Eli_App * eap, float points, pointsType t
     ewl_container_child_append(EWL_CONTAINER(vbox), o);
     ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
     ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
+    ewl_widget_focus_send(o);
     ewl_object_padding_set(EWL_OBJECT(o), 15, 15, 2, 15);
+    ewl_callback_append(EWL_WIDGET(o), EWL_CALLBACK_KEY_DOWN, 
+                        _highscore_key_down_cb, wh);
     ewl_widget_show(o);
 
     wh_entry = o;
@@ -180,11 +181,10 @@ static void _name_destroy_cb(Ewl_Widget * w, void * event, void * data)
     free(wh);
 }
 
-static Ewl_Widget * _win_highscore_page_new(char * game)
+static Ewl_Widget * _win_highscore_page_new(const char * game)
 {
     Ewl_Widget * page;
     Ewl_Widget * tree;
-    //Ewl_Widget * hbox;
     Ewl_Widget * grid;
     Ewl_Widget * w;
     Ewl_Model * model;
@@ -291,23 +291,42 @@ static Ewl_Widget * _win_highscore_page_new(char * game)
     return page;
 }
 
+static void _highscore_key_down_cb(Ewl_Widget * w, void * event, void * data)
+{
+    Ewl_Event_Key * ev;
 
+    ev = EWL_EVENT_KEY(event);
+    if ((!strcmp(ev->keyname, "Return")) 
+            || (!strcmp(ev->keyname, "KP_Return"))
+            || (!strcmp(ev->keyname, "Enter"))
+            || (!strcmp(ev->keyname, "KP_Enter"))
+            || (!strcmp(ev->keyname, "\n")))
+    {
+        Ewl_Embed *win;
+
+        win = ewl_embed_widget_find(w);
+        _highscore_add(EWL_WINDOW(win), (_Win_Hi_Points *) data);
+    }
+}
 
 void _win_highscore_clicked_cb(Ewl_Widget * w, void * event, void * data)
 {
-    _Win_Hi_Points * wh;
-    char * text;
+    Ewl_Embed *win;
 
-    wh = (_Win_Hi_Points *) data;
+    win = ewl_embed_widget_find(w);
+    _highscore_add(EWL_WINDOW(win), (_Win_Hi_Points *) data);
+}
+
+void _highscore_add(Ewl_Window * win, _Win_Hi_Points * wh)
+{
+    const char * text;
     
     text = ewl_text_text_get(EWL_TEXT(wh_entry));
     wh_entry = NULL;
     eli_highscore_entry_add(wh->eap->current.game, text, wh->points,
                             wh->type);
     eli_app_highscore_open(wh->eap, wh->eap->current.game);
-
-    ewl_widget_destroy(EWL_WIDGET(ewl_embed_widget_find(w)));
-
+    ewl_widget_destroy(EWL_WIDGET(win));
     eli_app_state_leave(wh->eap);
     free(wh);
 }
@@ -318,7 +337,6 @@ static void * highscore_data_fetch(void * data, unsigned int row,
     Evas_List * l;
 
     l = (Evas_List *) data;
-    
     return evas_list_nth(l, row);
 }
 
