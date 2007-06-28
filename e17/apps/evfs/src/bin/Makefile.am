@@ -31,10 +31,10 @@ evfscopy_SOURCES = \
         evfscopy.c
 	
 
-evfs_LDADD = $(top_builddir)/src/lib/libevfs.la @ecore_libs@ @xml2_libs@ @eet_libs@ @SQLITE_LIBS@
+evfs_LDADD = $(top_builddir)/src/lib/libevfs.la @ecore_libs@ @xml2_libs@ @eet_libs@ @SQLITE_LIBS@ @evas_libs@
 
-evfscat_LDADD = $(top_builddir)/src/lib/libevfs.la @ecore_libs@ @xml2_libs@ @eet_libs@
+evfscat_LDADD = $(top_builddir)/src/lib/libevfs.la @ecore_libs@ @xml2_libs@ @eet_libs@ @evas_libs@
 
-evfscopy_LDADD = $(top_builddir)/src/lib/libevfs.la @ecore_libs@ @xml2_libs@ @eet_libs@
+evfscopy_LDADD = $(top_builddir)/src/lib/libevfs.la @ecore_libs@ @xml2_libs@ @eet_libs@  @evas_libs@
 
 
