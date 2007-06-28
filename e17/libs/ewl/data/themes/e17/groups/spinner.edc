@@ -20,14 +20,14 @@ group
 			description
 			{
 				state: "default" 0.0;
-				align: 0.5 1.0;
+				align: 0.5 0.5;
 				aspect: 1.0 1.0;
 				aspect_preference: HORIZONTAL;
 	
 				rel1
 				{
 					relative: 0.0 0.0;
-					offset: 0 -1;
+					offset: 0 -2;
 				}
 				rel2
 				{
@@ -85,14 +85,14 @@ group
 			description
 			{
 				state: "default" 0.0;
-				align: 0.5 1.0;
+				align: 0.5 0.5;
 				aspect: 1.0 1.0;
 				aspect_preference: HORIZONTAL;
 	
 				rel1
 				{
 					relative: 0.0 0.0;
-					offset: 0 -1;
+					offset: 0 0;
 				}
 				rel2
 				{

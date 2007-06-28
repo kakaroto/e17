@@ -2,7 +2,6 @@ images
 {
 	image: "e17_button_detail_up.png" COMP;
 	image: "e17_button_detail_down.png" COMP;
-	image: "e17_button_sm_disabled.png" COMP;
 	image: "e17_icon_right_arrow.png" COMP;
 	image: "e17_icon_down_arrow.png" COMP;
 }
@@ -13,9 +12,7 @@ group
 
 	data
 	{
-		item: "inset" 1;
-		item: "inset/top" 4;
-		item: "inset/bottom" 0;
+		item: "inset" 2;
 	}
 
 	parts
@@ -30,7 +27,7 @@ group
 				image
 				{
 					normal: "e17_ibar_bg_v.png";
-					border: 7 7 7 7;
+					border: 2 2 2 2;
 				}
 				fill
 				{
@@ -40,23 +37,15 @@ group
 		}
 		part
 		{
-			name: "overlay";
+			name: "over";
 			mouse_events: 0;
 			description
 			{
 				state: "default" 0.0;
-				rel1
-				{
-					to: "bg";
-				}
-				rel2
-				{
-					to: "bg";
-				}
 				image
 				{
 					normal: "e17_ibar_over_v.png";
-					border: 13 13 13 13;
+					border: 6 6 6 6;
 					middle: 0;
 				}
 				fill
@@ -70,7 +59,7 @@ group
 
 group
 {
-    name: "ewl/tree/scrollpane/background";
+	name: "ewl/tree/scrollpane/background";
 }
 
 group
@@ -78,10 +67,7 @@ group
 	name: "ewl/tree/vbox";
 	data
 	{
-		item: "inset/top" 7;
-		item: "inset/bottom" 5;
-		item: "inset/left" 10;
-		item: "inset/right" 6;
+		item: "inset" 1;
 	}
 }
 
@@ -104,8 +90,8 @@ group
 			}
 			description
 			{
-			state: "hidden" 0.0;
-			visible: 0;
+				state: "hidden" 0.0;
+				visible: 0;
 			}
 		}
 		part
@@ -113,7 +99,6 @@ group
 			name: "expansion";
 			mouse_events: 1;
 			clip_to: "clip";
-
 			description
 			{
 				state: "default" 0.0;
@@ -181,6 +166,7 @@ group
 	data
 	{
 		item: "pad" 0;
+		item: "pad/bottom" 2;
 		item: "inset" 4;
 	}
 
@@ -197,12 +183,12 @@ group
 				rel1
 				{
 					relative: 0.0 0.0;
-					offset: 0 0;
+					offset: -1 -1;
 				}
 				rel2
 				{
 					relative: 1.0 1.0;
-					offset: -1 -1;
+					offset: 1 -1;
 				}
 				image
 				{

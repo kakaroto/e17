@@ -118,6 +118,9 @@ data
 	item: "/vseeker/vbutton/group" "ewl/seeker/vertical/button";
 	item: "/hseeker/hbutton/group" "ewl/seeker/horizontal/button";
 
+	item: "/hscrollbar/hseeker/hbutton/group" "ewl/scrollbar/horizontal/button";
+	item: "/vscrollbar/vseeker/vbutton/group" "ewl/scrollbar/vertical/button";
+
 	/* separator groups */
 	item: "/hseparator/group" "ewl/separator/horizontal";
 	item: "/vseparator/group" "ewl/separator/vertical";
@@ -144,7 +147,7 @@ data
 
 	item: "/tree2/group" "ewl/tree";
 	item: "/tree2/vbox/group" "ewl/tree/vbox";
-	item: "/tree2/vbox/scrollpane/group" "ewl/tree/scrollpane/background";
+	item: "/tree2/vbox/scrollpane/group" "ewl/tree/scrollpane/background";	
 
 	item: "/tree_header/group" "ewl/tree/header";
 	item: "/tree_header/button/group" "ewl/tree/header/button";

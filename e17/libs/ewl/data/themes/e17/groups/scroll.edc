@@ -2,6 +2,12 @@ images
 {
 	image: "e17_ibar_bg_v.png" COMP;
 	image: "e17_ibar_over_v.png" COMP;
+	image: "e17_ibar_handle_h.png" COMP;
+	image: "e17_ibar_handle_h2.png" COMP;
+	image: "e17_ibar_handle_thumb_h.png" COMP;
+	image: "e17_ibar_handle_thumb_v.png" COMP;
+	image: "e17_ibar_handle_v.png" COMP;
+	image: "e17_ibar_handle_v2.png" COMP;
 	image: "e17_menu_separator.png" COMP;
 	image: "e17_menu_separator_vert.png" COMP;
 	image: "e17_scrollbar_vdrag_thumb.png" COMP;
@@ -26,9 +32,7 @@ group
 
 	data
 	{
-		item: "inset" 9;
-		item: "inset/bottom" 5;
-		item: "inset/right" 5;
+		item: "inset" 2;
 	}
 
 	parts
@@ -43,7 +47,7 @@ group
 				image
 				{
 					normal: "e17_ibar_bg_v.png";
-					border: 7 7 7 7;
+					border: 2 2 2 2;
 				}
 				fill
 				{
@@ -53,24 +57,15 @@ group
 		}
 		part
 		{
-			name: "overlay";
+			name: "over";
 			mouse_events: 0;
 			description
 			{
 				state: "default" 0.0;
-				rel1
-				{
-					to: "bg";
-				}
-				rel2
-				{
-					to: "bg";
-				}
 				image
 				{
 					normal: "e17_ibar_over_v.png";
-					border: 13 13 13 13;
-					middle: 0;
+					border: 6 6 6 6;
 				}
 				fill
 				{
@@ -128,6 +123,102 @@ group
 group
 {
 	name: "ewl/seeker/vertical/button";
+	min: 20 30;
+
+	parts
+	{
+		part
+		{
+			name: "drag";
+			description
+			{
+				state: "default" 0.0;
+				min: 18 30;
+				max: 18 99999;
+				image
+				{
+					normal: "e17_ibar_handle_h.png";
+					border: 8 8 8 8;
+				}
+				fill
+				{
+					smooth: 0;
+				}
+			}
+			description
+			{
+				state: "down" 0.0;
+				inherit: "default" 0.0;
+				image
+				{
+					normal: "e17_ibar_handle_h2.png";
+				}
+			}
+		}
+		part
+                {
+                        name: "drag_thumb";
+                        mouse_events: 0;
+                        description
+                        {
+                                state: "default" 0.0;
+                                max: 6 16;
+                                min: 6 16;
+
+                                rel1
+                                {
+                                        relative: 0.5 0.5;
+                                        offset: -4 -9;
+                                        to: "drag";
+                                }
+                                rel2
+                                {
+                                        relative: 0.5 0.5;
+                                        offset: 1 6;
+                                        to: "drag";
+                                }
+                                image
+                                {
+                                        normal: "e17_ibar_handle_thumb_h.png";
+                                }
+                        }
+			description
+			{
+				state: "down" 0.0;
+				inherit: "default" 0.0;
+				rel1
+				{
+					offset: -2 -9;
+				}
+			}
+		}
+	}
+	programs
+        {
+                program
+                {
+                        name: "drag_down";
+                        signal: "mouse,down,*";
+                        source: "EWL";
+                        action: STATE_SET "down" 0.0;
+                        target: "drag";
+                	target: "drag_thumb";
+		}
+                program
+                {
+                        name: "drag_up";
+                        signal: "mouse,up,*";
+                        source: "EWL";
+                        action: STATE_SET "default" 0.0;
+                        target: "drag";
+			target: "drag_thumb";
+                }
+        }
+}
+
+group
+{
+	name: "ewl/scrollbar/vertical/button";
 	min: 18 18;
 
 	parts
@@ -213,6 +304,102 @@ group
 group
 {
 	name: "ewl/seeker/horizontal/button";
+	min: 30 20;
+
+	parts
+	{
+		part
+		{
+			name: "drag";
+			description
+			{
+				state: "default" 0.0;
+				min: 30 18;
+                                max: 99999 18;
+                                image
+                                {
+                                        normal: "e17_ibar_handle_v.png";
+                                        border: 8 8 8 8;
+                                }
+                                fill
+                                {
+                                        smooth: 0;
+                                }
+                        }
+                        description
+                        {
+                                state: "down" 0.0;
+                                inherit: "default" 0.0;
+                                image
+                                {
+                                        normal: "e17_ibar_handle_v2.png";
+                                }
+                        }
+                }
+		part
+		{
+                        name: "drag_thumb";
+                        mouse_events: 0;
+                        description
+                        {
+                                state: "default" 0.0;
+                                max: 16 6;
+                                min: 16 6;
+
+                                rel1
+                                {
+                                        relative: 0.5 0.5;
+                                        offset: -9 -4;
+                                        to: "drag";
+                                }
+                                rel2
+                                {
+                                        relative: 0.5 0.5;
+                                        offset: 6 1;
+                                        to: "drag";
+                                }
+                                image
+                                {
+                                        normal: "e17_ibar_handle_thumb_v.png";
+                                }
+                        }
+			description
+			{
+				state: "down" 0.0;
+				inherit: "default" 0.0;
+				rel1
+				{
+					offset: -9 -2;
+				}
+			}
+                }
+	}
+	programs
+        {
+                program
+                {
+                        name: "drag_down";
+                        signal: "mouse,down,*";
+                        source: "EWL";
+                        action: STATE_SET "down" 0.0;
+                        target: "drag";
+			target: "drag_thumb";
+                }
+                program
+                {
+                        name: "drag_up";
+                        signal: "mouse,up,*";
+                        source: "EWL";
+                        action: STATE_SET "default" 0.0;
+                        target: "drag";
+			target: "drag_thumb";
+                }
+        }
+}
+
+group
+{
+	name: "ewl/scrollbar/horizontal/button";
 	min: 18 18;
 
 	parts

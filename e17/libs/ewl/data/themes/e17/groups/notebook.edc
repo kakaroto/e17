@@ -1,11 +1,14 @@
 images
 {
-	image: "e17_button_sm_disabled.png" COMP;
 	image: "e17_frame_outline.png" COMP;
-	image: "ewl_notebook_tab_top_selected.png" COMP;
+	image: "ewl_notebook_tab_bottom.png" COMP;
 	image: "ewl_notebook_tab_bottom_selected.png" COMP;
+	image: "ewl_notebook_tab_left.png" COMP;
 	image: "ewl_notebook_tab_left_selected.png" COMP;
+	image: "ewl_notebook_tab_right.png" COMP;
 	image: "ewl_notebook_tab_right_selected.png" COMP;
+	image: "ewl_notebook_tab_top.png" COMP;
+	image: "ewl_notebook_tab_top_selected.png" COMP;
 }
 
 group
@@ -100,7 +103,8 @@ group
 
 	data
 	{
-		item: "pad" 0;
+		item: "pad" 2;
+		item: "pad/bottom" 0;
 		item: "inset" 4;
 		item: "inset/top" 2;
 		item: "inset/bottom" 0;
@@ -119,28 +123,26 @@ group
 				rel1
 				{
 					relative: 0.0 0.0;
-					offset: -2 0;
+					offset: 0 0;
 				}
 				rel2
 				{
 					relative: 1.0 1.0;
-					offset: 2 4;
+					offset: -1 -1;
 				}
 				image
 				{
-					normal: "e17_button_sm_disabled.png";
-					border: 8 8 8 8;
+					normal: "ewl_notebook_tab_top.png";
+					border: 4 4 4 1;
 				}
 			}
 			description
 			{
 				state: "selected" 0.0;
-				inherit: "default" 0.0;
-				visible: 1;
 				image
 				{
 					normal: "ewl_notebook_tab_top_selected.png";
-					border: 8 8 8 8;
+					border: 4 4 4 1;
 				}
 			}
 		}
@@ -172,7 +174,8 @@ group
 
 	data
 	{
-		item: "pad" 0;
+		item: "pad" 2;
+		item: "pad/top" 0;
 		item: "inset" 4;
 		item: "inset/top" 0;
 		item: "inset/bottom" 4;
@@ -191,28 +194,27 @@ group
 				rel1
 				{
 					relative: 0.0 0.0;
-					offset: -2 -5;
+					offset: 0 0;
 				}
 				rel2
 				{
 					relative: 1.0 1.0;
-					offset: 2 -1;
+					offset: -1 -1;
 				}
 				image
 				{
-					normal: "e17_button_sm_disabled.png";
-					border: 8 8 8 8;
+					normal: "ewl_notebook_tab_bottom.png";
+					border: 4 4 1 4;
 				}
 			}
 			description
 			{
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
-				visible: 1;
 				image
 				{
 					normal: "ewl_notebook_tab_bottom_selected.png";
-					border: 8 8 8 8;
+					border: 4 4 1 4;
 				}
 			}
 		}
@@ -257,7 +259,8 @@ group
 
 	data
 	{
-		item: "pad" 0;
+		item: "pad" 2;
+		item: "pad/right" 0;
 		item: "inset" 4;
 		item: "inset/left" 2;
 		item: "inset/right" 0;
@@ -281,23 +284,22 @@ group
 				rel2
 				{
 					relative: 1.0 1.0;
-					offset: 8 -1;
+					offset: -1 -1;
 				}
 				image
 				{
-					normal: "e17_button_sm_disabled.png";
-					border: 8 8 8 8;
+					normal: "ewl_notebook_tab_left.png";
+					border: 4 1 4 4;
 				}
 			}
 			description
 			{
 				state: "selected" 0.0;
 				inherit: "default" 0.0;
-				visible: 1;
 				image
 				{
 					normal: "ewl_notebook_tab_left_selected.png";
-					border: 8 8 8 8;
+					border: 4 1 4 4;
 				}
 			}
 		}
@@ -329,7 +331,8 @@ group
 
 	data
 	{
-		item: "pad" 0;
+		item: "pad" 2;
+		item: "pad/left" 0;
 		item: "inset" 4;
 		item: "inset/left" 0;
 		item: "inset/right" 2;
@@ -348,7 +351,7 @@ group
 				rel1
 				{
 					relative: 0.0 0.0;
-					offset: -18 0;
+					offset: 0 0;
 				}
 				rel2
 				{
@@ -357,8 +360,8 @@ group
 				}
 				image
 				{
-					normal: "e17_button_sm_disabled.png";
-					border: 8 8 8 8;
+					normal: "ewl_notebook_tab_right.png";
+					border: 1 4 4 4;
 				}
 			}
 			description
@@ -369,7 +372,7 @@ group
 				image
 				{
 					normal: "ewl_notebook_tab_right_selected.png";
-					border: 8 8 8 8;
+					border: 1 4 4 4;
 				}
 			}
 		}
