@@ -149,7 +149,10 @@ void etk_popup_window_focused_window_set(Etk_Popup_Window *popup_window)
       _etk_popup_window_focused_window = pop;
    }
    
-   /* Raise the new focused window */
+   /* Raise the new focused window - if its a normal window, dont */
+   if (popup_window && !ETK_IS_POPUP_WINDOW(popup_window))
+     return;
+   
    for (pop = popup_window; pop; pop = pop->parent)
    {
       if ((l = evas_list_find_list(_etk_popup_window_popped_parents, pop)))

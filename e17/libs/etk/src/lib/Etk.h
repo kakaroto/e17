@@ -31,6 +31,7 @@ extern "C" {
 #include "etk_check_button.h"
 #include "etk_colorpicker.h"
 #include "etk_combobox.h"
+#include "etk_combobox_entry.h"   
 #include "etk_dialog.h"
 #include "etk_dnd.h"
 #include "etk_drag.h"

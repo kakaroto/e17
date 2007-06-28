@@ -27,6 +27,7 @@ etk_canvas.h \
 etk_check_button.h \
 etk_colorpicker.h \
 etk_combobox.h \
+etk_combobox_entry.h \
 etk_config.h \
 etk_container.h \
 etk_dialog.h \
@@ -99,6 +100,7 @@ etk_canvas.c \
 etk_check_button.c \
 etk_colorpicker.c \
 etk_combobox.c \
+etk_combobox_entry.c \
 etk_config.c \
 etk_container.c \
 etk_dialog.c \

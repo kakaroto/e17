@@ -37,6 +37,7 @@ collections {
    #include "widgets/notebook.edc"
    #include "widgets/progress_bar.edc"
    #include "widgets/combobox.edc"
+   #include "widgets/combobox_entry.edc"   
    #include "widgets/tooltips.edc"
    #include "widgets/iconbox.edc"
    #include "widgets/colorpicker.edc"
