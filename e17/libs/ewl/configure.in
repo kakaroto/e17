@@ -86,6 +86,24 @@ if test "x$enable_software_x11" != "xno" ; then
 fi
 AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_X11, test "x$have_software_x11" = xyes)
 
+AC_ARG_ENABLE(software-16-x11,
+	[AC_HELP_STRING([--enable-software-16-x11],[enable software X11 support])],
+	[enable_software_16_x11=$enableval], [enable_software_16_x11="auto"])
+have_software_16_x11=no
+if test "x$enable_software_16_x11" != "xno" ; then
+	AC_CHECK_HEADER(Evas_Engine_Software_16_X11.h,
+		[AC_CHECK_HEADER(Ecore_X.h,
+			[have_software_16_x11=yes],
+			[], [#include <Ecore.h>])],
+		[], [#include <Evas.h>])
+	if test "x$have_software_16_x11" = "xyes" ; then
+		AC_DEFINE(ENABLE_EWL_SOFTWARE_16_X11, 1, [Enable X11 Software])
+	elif test "x$enable_software_16_x11" = "xyes" ; then
+		AC_MSG_ERROR(software X11 requested but no evas/ecore support found)
+	fi
+fi
+AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_16_X11, test "x$have_software_16_x11" = xyes)
+
 AC_ARG_ENABLE(xrender-x11,
 	[AC_HELP_STRING([--enable-xrender-x11],[enable xrender X11 support])],
 	[enable_xrender_x11=$enableval], [enable_xrender_x11="auto"])
@@ -144,10 +162,14 @@ AM_CONDITIONAL(EWL_ENABLE_EVAS_FB, test "x$have_fbcon" = xyes)
 if test "x$have_software_x11" = "xyes"; then
 	AM_CONDITIONAL(EWL_ENABLE_X11, true)
 else
-	if test "x$have_opengl_x11" = "xyes"; then
+	if test "x$have_software_16_x11" = "xyes"; then
 		AM_CONDITIONAL(EWL_ENABLE_X11, true)
 	else
-		AM_CONDITIONAL(EWL_ENABLE_X11, false)
+		if test "x$have_opengl_x11" = "xyes"; then
+			AM_CONDITIONAL(EWL_ENABLE_X11, true)
+		else
+			AM_CONDITIONAL(EWL_ENABLE_X11, false)
+		fi
 	fi
 fi
 
@@ -298,6 +320,7 @@ src/plugins/Makefile
 src/engines/x11/Makefile
 src/engines/evas/Makefile
 src/engines/evas_software_x11/Makefile
+src/engines/evas_software_16_x11/Makefile
 src/engines/evas_xrender_x11/Makefile
 src/engines/evas_gl_x11/Makefile
 src/engines/evas_fb/Makefile
@@ -327,6 +350,7 @@ echo
 echo "Engines:"
 echo
 echo "  Software X11.............................: $have_software_x11"
+echo "  Software 16 X11..........................: $have_software_16_x11"
 echo "  OpenGL X11...............................: $have_opengl_x11" 
 echo "  XRender X11..............................: $have_xrender_x11"
 echo "  Framebuffer..............................: $have_fbcon"
