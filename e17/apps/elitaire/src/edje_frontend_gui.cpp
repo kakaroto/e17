@@ -576,18 +576,20 @@ static void _key_down_cb(void * data, Evas * e, Evas_Object * obj, void * event_
         eef->key.ctrl_down = true;
         return;
     }
-    if (!strcmp(ev->key, "Alt_L")) {
+    else if (!strcmp(ev->key, "Alt_L")) {
         eef->key.alt_down = true;
         return;
     }
+    else if (!strcmp(ev->key, "F2"))
+        edje_object_signal_emit(eef->gui, "new_game", "");
 
     if (eef->key.ctrl_down && !eef->key.alt_down) {
         if (!strcmp(ev->key, "z")) 
-	    edje_object_signal_emit(eef->gui, "undo", "");
+            edje_object_signal_emit(eef->gui, "undo", "");
         else if (!strcmp(ev->key, "r")) 
-	    edje_object_signal_emit(eef->gui, "restart", "");
+            edje_object_signal_emit(eef->gui, "restart", "");
         else if (!strcmp(ev->key, "n")) 
-	    edje_object_signal_emit(eef->gui, "new_game", "");
+            edje_object_signal_emit(eef->gui, "new_game", "");
         else if (!strcmp(ev->key, "a")) {
             if (ecore_evas_alpha_get(eef->ee)) {
                 ecore_evas_alpha_set(eef->ee, 0);
@@ -599,7 +601,6 @@ static void _key_down_cb(void * data, Evas * e, Evas_Object * obj, void * event_
             }
         }
     }
-    
 }
 
 static void _key_up_cb(void *data, Evas * e, Evas_Object * obj, 
