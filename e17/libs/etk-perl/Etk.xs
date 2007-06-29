@@ -280,8 +280,7 @@ callback_timer(void *data)
 }
 
 int
-tree_compare_alpha_cb(Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2,
-		Etk_Tree_Col * col, void * data )
+tree_compare_alpha_cb(Etk_Tree_Col * col, Etk_Tree_Row * row1, Etk_Tree_Row *row2, void * data )
 {
    dSP;
    int ret, cmp;
@@ -290,7 +289,7 @@ tree_compare_alpha_cb(Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2,
    ENTER;
    SAVETMPS;
    
-   if (! (tree && row1 && row2 && col) ) {
+   if (! (row1 && row2 && col) ) {
 	   ret = 0;
    } else {
 
@@ -313,8 +312,7 @@ tree_compare_alpha_cb(Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2,
 }
 
 int
-tree_compare_numeric_cb(Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2,
-		Etk_Tree_Col * col, void * data )
+tree_compare_numeric_cb(Etk_Tree_Col * col, Etk_Tree_Row * row1, Etk_Tree_Row *row2, void * data )
 {
    dSP;
    int r1, r2, ret;
@@ -322,7 +320,7 @@ tree_compare_numeric_cb(Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2
    ENTER;
    SAVETMPS;
    
-   if (! (tree && row1 && row2 && col) ) {
+   if (! (row1 && row2 && col) ) {
 	   ret = 0;
    } else {
 
@@ -344,8 +342,7 @@ tree_compare_numeric_cb(Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2
 }
 
 int
-tree_compare_cb( Etk_Tree * tree, Etk_Tree_Row * row1, Etk_Tree_Row *row2,
-Etk_Tree_Col * col, void * data )
+tree_compare_cb( Etk_Tree_Col * col, Etk_Tree_Row * row1, Etk_Tree_Row *row2, void * data )
 {
    dSP;
    Callback_Tree_Compare_Data *cbd;
@@ -358,10 +355,9 @@ Etk_Tree_Col * col, void * data )
    cbd = data;
    
    PUSHMARK(SP);  	  
-   XPUSHs(sv_2mortal(newSVObj(tree, getClass("Etk_Tree"))));
+   XPUSHs(sv_2mortal(newSVObj(col, getClass("Etk_Tree_Col"))));
    XPUSHs(sv_2mortal(newSVObj(row1, getClass("Etk_Tree_Row"))));
    XPUSHs(sv_2mortal(newSVObj(row2, getClass("Etk_Tree_Row"))));
-   XPUSHs(sv_2mortal(newSVObj(col, getClass("Etk_Tree_Col"))));
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));
    PUTBACK;
 
@@ -1319,8 +1315,7 @@ etk_container_is_child(container, widget)
 	IsChild=1
 
 void
-etk_container_remove(container, widget)
-	Etk_Container *	container
+etk_container_remove(widget)
 	Etk_Widget *	widget
       ALIAS:
 	Remove=1

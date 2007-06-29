@@ -457,6 +457,7 @@ sub tree_window_show
     my $status = Etk::StatusBar->new();
     $vbox->Append($status, BoxStart, BoxFill, 0);
 
+
     $tree->SignalConnect("row-clicked",  sub {
 	my $self = shift;
 	my $row = shift;
@@ -469,6 +470,7 @@ sub tree_window_show
 	$status->MessagePush($msg, 0);
 
     });
+
 
     $col4->SignalConnect("cell-value-changed", 
 	sub {
@@ -532,6 +534,13 @@ sub tree_window_show
     }
 
     $tree->Thaw();
+
+    $col1->SortSet(  sub {
+	my ($col, $row1, $row2) = @_;
+	my $a = $row1->ModelFieldsGet($mod2);
+	my $b = $row2->ModelFieldsGet($mod2);
+	return $a cmp $b;
+    }, undef);
     
     $win->ShowAll();
 }
