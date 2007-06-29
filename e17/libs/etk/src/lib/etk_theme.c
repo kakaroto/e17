@@ -491,7 +491,7 @@ static char *_etk_theme_find(const char *subdir, const char *theme_name)
    char *home;
    
    if (!theme_name || !subdir)
-      return ETK_FALSE;
+      return NULL;
    
    if ((home = getenv("HOME")))
    {

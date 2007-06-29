@@ -292,5 +292,8 @@ static void _etk_prefs_response_cb(Etk_Object *object, int response_id, void *da
 static void _etk_prefs_apply()
 {
    if (_etk_prefs_widget_theme)
+   {
+     etk_config_wm_theme_set(_etk_prefs_widget_theme);
      etk_config_widget_theme_set(_etk_prefs_widget_theme);
+   }
 }

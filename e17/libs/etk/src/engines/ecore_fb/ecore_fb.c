@@ -3,17 +3,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <Evas.h>
 #include <Edje.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Fb.h>
+#include <Ecore_File.h>
 #if ENGINE_E_FB_X11_SUPPORT
 #include <Ecore_X.h>
 #endif
 #include <Etk.h>
 #include "Etk_Engine_Ecore_Fb.h"
 
-#define WM_THEME_FILE     (PACKAGE_DATA_DIR "/wm/default.edj")
 #define DEFAULT_FB_WIDTH  1024
 #define DEFAULT_FB_HEIGHT 768
 
@@ -74,7 +75,7 @@ static int _mouse_move_X_handler_cb(void *data, int ev_type, void *ev);
 /* Private functions */
 Etk_Window *_window_focus_find_other(Etk_Window *current);
 static Etk_Cache *_pointer_cache_build(void);
-
+static char *_theme_find(const char *theme_name);
 
 /* Private vars */
 static Etk_Bool _use_x11 = ETK_FALSE;
@@ -83,6 +84,7 @@ static Evas *_evas = NULL;
 static int _fb_width = DEFAULT_FB_WIDTH;
 static int _fb_height = DEFAULT_FB_HEIGHT;
 
+static char *_wm_theme_file = NULL;
 static Evas_Object *_background_object = NULL;
 static Evas_Object *_pointer_object = NULL;
 static Etk_Cache *_pointer_cache = NULL;
@@ -182,6 +184,17 @@ static Etk_Engine engine_info = {
 /* Called when the engine is loaded */
 Etk_Engine *engine_open(int *argc, char ***argv)
 {
+   _wm_theme_file = _theme_find(etk_config_wm_theme_get());
+   if (!_wm_theme_file)
+   {
+      /* fallback to default theme */
+      _wm_theme_file = _theme_find("default");
+      if (!_wm_theme_file)
+      {
+         return NULL;
+      }
+   }
+
    engine_info.engine_data = NULL;
    engine_info.engine_name = strdup("ecore_fb");
 
@@ -225,6 +238,7 @@ Etk_Engine *engine_open(int *argc, char ***argv)
 void engine_close(void)
 {
    free(engine_info.engine_name);
+   free(_wm_theme_file);
 }
 
 /* Initializes the engine */
@@ -285,7 +299,7 @@ static Etk_Bool _engine_init(void)
    
    /* Create the background */
    _background_object = edje_object_add(_evas);
-   edje_object_file_set(_background_object, WM_THEME_FILE, "etk/wm_background");
+   edje_object_file_set(_background_object, _wm_theme_file, "etk/wm_background");
    evas_object_resize(_background_object, _fb_width, _fb_height);
    evas_object_show(_background_object);
    
@@ -708,13 +722,13 @@ static void _window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_typ
    }
    
    if (_pointer_object)
-      etk_cache_add(_pointer_cache, _pointer_object, WM_THEME_FILE, _pointer_group);
+      etk_cache_add(_pointer_cache, _pointer_object, _wm_theme_file, _pointer_group);
    free(_pointer_group);
    _pointer_group = NULL;
    
-   if ((_pointer_object = etk_cache_find(_pointer_cache, WM_THEME_FILE, group)))
+   if ((_pointer_object = etk_cache_find(_pointer_cache, _wm_theme_file, group)))
       _pointer_group = strdup(group);
-   else if ((_pointer_object = etk_cache_find(_pointer_cache, WM_THEME_FILE, "etk/wm_pointer_default")))
+   else if ((_pointer_object = etk_cache_find(_pointer_cache, _wm_theme_file, "etk/wm_pointer_default")))
       _pointer_group = strdup("etk/wm_pointer_default");
    
    if (_pointer_object)
@@ -772,9 +786,9 @@ static void _window_realized_cb(Etk_Object *object, void *data)
    
    engine_data->border = edje_object_add(_evas);
    if (engine_data->borderless)
-      edje_object_file_set(engine_data->border, WM_THEME_FILE, "etk/wm_borderless");
+      edje_object_file_set(engine_data->border, _wm_theme_file, "etk/wm_borderless");
    else
-      edje_object_file_set(engine_data->border, WM_THEME_FILE, "etk/wm_border");
+      edje_object_file_set(engine_data->border, _wm_theme_file, "etk/wm_border");
    edje_object_part_text_set(engine_data->border, "etk.text.title", engine_data->title ? engine_data->title : "");
    
    edje_extern_object_min_size_set(ETK_WIDGET(window)->smart_object, engine_data->size.w, engine_data->size.h);
@@ -1003,7 +1017,7 @@ static Etk_Cache *_pointer_cache_build(void)
    int w, h;
    
    cache = etk_cache_new(50);
-   groups = edje_file_collection_list(WM_THEME_FILE);
+   groups = edje_file_collection_list(_wm_theme_file);
    for (l = groups; l; l = l->next)
    {
       group = l->data;
@@ -1012,13 +1026,36 @@ static Etk_Cache *_pointer_cache_build(void)
          pointer = edje_object_add(_evas);
          evas_object_pass_events_set(pointer, 1);
    
-         edje_object_file_set(pointer, WM_THEME_FILE, group);
+         edje_object_file_set(pointer, _wm_theme_file, group);
          edje_object_size_min_get(pointer, &w, &h);
          evas_object_resize(pointer, w, h);
-         etk_cache_add(cache, pointer, WM_THEME_FILE, group);
+         etk_cache_add(cache, pointer, _wm_theme_file, group);
       }
    }
    edje_file_collection_list_free(groups);
    
    return cache;
+}
+
+/* Finds the theme called "theme_name" in the subdir wm and returns its path, or NULL on failure */
+static char *_theme_find(const char *theme_name)
+{
+   char path[PATH_MAX];
+   char *home;
+
+   if (!theme_name)
+      return NULL;
+
+   if ((home = getenv("HOME")))
+   {
+      snprintf(path, PATH_MAX, "%s/.e/etk/wm/%s.edj", home, theme_name);
+      if (ecore_file_exists(path))
+         return strdup(path);
+   }
+
+   snprintf(path, PATH_MAX, PACKAGE_DATA_DIR "/wm/%s.edj", theme_name);
+   if (ecore_file_exists(path))
+      return strdup(path);
+
+   return NULL;
 }

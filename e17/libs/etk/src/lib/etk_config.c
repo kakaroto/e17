@@ -15,6 +15,7 @@
 
 typedef struct _Etk_Config_General
 {
+   char *wm_theme;
    char *widget_theme;
    char *font;
    char *engine;   
@@ -119,6 +120,7 @@ Etk_Bool etk_config_init(void)
    }
    
    _etk_config_gen_edd = NEWD("Etk_Config_General", Etk_Config_General);
+   CFG_GEN_NEWI("wmt", wm_theme, EET_T_STRING);
    CFG_GEN_NEWI("wt", widget_theme, EET_T_STRING);
    CFG_GEN_NEWI("fn", font, EET_T_STRING);
    CFG_GEN_NEWI("en", engine, EET_T_STRING);
@@ -144,6 +146,7 @@ void etk_config_shutdown(void)
       free(_etk_config->version);
       if (_etk_config->general);
       {
+         free(_etk_config->general->wm_theme);
          free(_etk_config->general->widget_theme);
          free(_etk_config->general->font);
          free(_etk_config->general->engine);
@@ -193,6 +196,7 @@ Etk_Bool etk_config_load(void)
       free(_etk_config->version);
       if (_etk_config->general)
       {
+	 free(_etk_config->general->wm_theme);
 	 free(_etk_config->general->widget_theme);
 	 free(_etk_config->general->font);
 	 free(_etk_config->general->engine);
@@ -266,6 +270,31 @@ Etk_Bool etk_config_save(void)
       
    eet_close(ef);
    return ret;
+}
+
+/**
+ * @brief Get Etk's current wm theme
+ * @return Returns the current wm theme used by Etk
+ */
+const char *etk_config_wm_theme_get(void)
+{
+   if (!_etk_config || !_etk_config->general)
+     return NULL;
+   return _etk_config->general->wm_theme;
+}
+
+/**
+ * @brief Sets Etk's wm theme (will not be applied on the fly)
+ * @param theme The wm theme file to use
+ */
+void etk_config_wm_theme_set(const char *wm_theme)
+{
+   if (!_etk_config || !_etk_config->general)
+     return;
+   
+   /* TODO: make sure the theme exists */
+   free(_etk_config->general->wm_theme);
+   _etk_config->general->wm_theme = strdup(wm_theme);
 }
 
 /**
@@ -350,6 +379,7 @@ static void _etk_config_defaults_apply(void)
       free(_etk_config->version);
       if (_etk_config->general)
       {
+	 free(_etk_config->general->wm_theme);
 	 free(_etk_config->general->widget_theme);
 	 free(_etk_config->general->font);
 	 free(_etk_config->general->engine);
@@ -361,6 +391,7 @@ static void _etk_config_defaults_apply(void)
    
    _etk_config->version = _etk_config_version_parse(VERSION);
    _etk_config->general = malloc(sizeof(Etk_Config_General));
+   _etk_config->general->wm_theme = strdup("default");
    _etk_config->general->widget_theme = strdup("default");
    _etk_config->general->font = strdup("Vera");
    _etk_config->general->engine = strdup("ecore_evas_software_x11");

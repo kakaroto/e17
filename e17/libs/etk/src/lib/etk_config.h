@@ -17,6 +17,9 @@ void        etk_config_shutdown(void);
 Etk_Bool    etk_config_load(void);
 Etk_Bool    etk_config_save(void);
 
+const char *etk_config_wm_theme_get(void);
+void        etk_config_wm_theme_set(const char *wm_theme);
+
 const char *etk_config_widget_theme_get(void);
 void        etk_config_widget_theme_set(const char *widget_theme);
 
