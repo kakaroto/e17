@@ -106,7 +106,7 @@ int etk_init(int *argc, char ***argv)
          ETK_WARNING("Etk_Engine initialization failed!");
          return 0;
       }
-      if (!etk_engine_load(engine_name ? engine_name : "ecore_evas_software_x11"))
+      if (!etk_engine_load(engine_name ? engine_name : "ecore_evas_software_x11", argc, argv))
       {
          ETK_WARNING("Etk can not load the requested engine!");
          return 0;

@@ -27,8 +27,8 @@ struct Etk_Engine
    Etk_Engine *super;
    void *handle;
    
-   Etk_Bool (*engine_init)();
-   void (*engine_shutdown)();
+   Etk_Bool (*engine_init)(void);
+   void (*engine_shutdown)(void);
    
    void (*window_constructor)(Etk_Window *window);
    void (*window_destructor)(Etk_Window *window);
@@ -98,9 +98,9 @@ Evas_List   *etk_engine_list_get(void);
 Etk_Bool     etk_engine_exists(const char *engine_name);
 Etk_Engine  *etk_engine_get(void);
 
-Etk_Engine  *etk_engine_load(const char *engine_name);
+Etk_Engine  *etk_engine_load(const char *engine_name, int *argc, char ***argv);
 void         etk_engine_unload(Etk_Engine *engine);
-Etk_Bool     etk_engine_inherit_from(Etk_Engine *engine, const char * inherit_name);
+Etk_Bool     etk_engine_inherit_from(Etk_Engine *engine, const char * inherit_name, int *argc, char ***argv);
 
 void         etk_engine_window_constructor(Etk_Window *window);
 void         etk_engine_window_destructor(Etk_Window *window);
