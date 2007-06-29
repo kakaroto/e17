@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -5,27 +7,24 @@
 #include <Edje.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Fb.h>
+#if ENGINE_E_FB_X11_SUPPORT
+#include <Ecore_X.h>
+#endif
 #include <Etk.h>
 #include "Etk_Engine_Ecore_Fb.h"
-#include "config.h"
 
-/* TODO: debug */
-#define USE_X11 0
-
-#if USE_X11
-   #include <Ecore_X.h>
-#endif
-
-#define WM_THEME_FILE   (PACKAGE_DATA_DIR "/wm/default.edj")
+#define WM_THEME_FILE     (PACKAGE_DATA_DIR "/wm/default.edj")
+#define DEFAULT_FB_WIDTH  1024
+#define DEFAULT_FB_HEIGHT 768
 
 typedef Etk_Engine_Ecore_Fb_Window_Data Etk_Engine_Window_Data;
 
 /* General engine functions */
-Etk_Engine *engine_open();
-void engine_close();
+Etk_Engine *engine_open(int *argc, char ***argv);
+void engine_close(void);
 
-static Etk_Bool _engine_init();
-static void _engine_shutdown();
+static Etk_Bool _engine_init(void);
+static void _engine_shutdown(void);
 
 /* Etk_Window functions */
 static void _window_constructor(Etk_Window *window);
@@ -68,7 +67,9 @@ static void _event_callback_set(void (*callback)(Etk_Event_Type event, Etk_Event
 static void _mouse_position_get(int *x, int *y);
 static void _mouse_screen_geometry_get(int *x, int *y, int *w, int *h);
 static int _mouse_move_handler_cb(void *data, int ev_type, void *ev);
+#if ENGINE_E_FB_X11_SUPPORT
 static int _mouse_move_X_handler_cb(void *data, int ev_type, void *ev);
+#endif
 
 /* Private functions */
 Etk_Window *_window_focus_find_other(Etk_Window *current);
@@ -76,10 +77,11 @@ static Etk_Cache *_pointer_cache_build(void);
 
 
 /* Private vars */
+static Etk_Bool _use_x11 = ETK_FALSE;
 static Ecore_Evas *_ecore_evas = NULL;
 static Evas *_evas = NULL;
-static int _fb_width = 0;
-static int _fb_height = 0;
+static int _fb_width = DEFAULT_FB_WIDTH;
+static int _fb_height = DEFAULT_FB_HEIGHT;
 
 static Evas_Object *_background_object = NULL;
 static Evas_Object *_pointer_object = NULL;
@@ -178,58 +180,96 @@ static Etk_Engine engine_info = {
  **************************/
 
 /* Called when the engine is loaded */
-Etk_Engine *engine_open()
+Etk_Engine *engine_open(int *argc, char ***argv)
 {
    engine_info.engine_data = NULL;
    engine_info.engine_name = strdup("ecore_fb");
+
+#if ENGINE_E_FB_X11_SUPPORT
+   /* Parse the arguments */
+   if (argc && argv)
+   {
+      char *use_x11_arg = NULL;
+      char *fb_width_arg = NULL;
+      char *fb_height_arg = NULL;
+
+      etk_argument_value_get(argc, argv, "ecore-fb-use-x11", 0, ETK_TRUE, &use_x11_arg);
+      if (use_x11_arg)
+      {
+         _use_x11 = ETK_TRUE;
+
+         /* Note that this values are only used when X11 is enabled */
+         etk_argument_value_get(argc, argv, "ecore-fb-width", 0, ETK_TRUE, &fb_width_arg);
+         if (fb_width_arg)
+         {
+            _fb_width = (int) strtol(fb_width_arg, (char **) NULL, 10);
+            if (_fb_width <= 0)
+               _fb_width = DEFAULT_FB_WIDTH;
+         }
+
+         etk_argument_value_get(argc, argv, "ecore-fb-height", 0, ETK_TRUE, &fb_height_arg);
+         if (fb_height_arg)
+         {
+            _fb_height = (int) strtol(fb_height_arg, (char **) NULL, 10);
+            if (_fb_height <= 0)
+               _fb_height = DEFAULT_FB_HEIGHT;
+         }
+      }
+   }
+#endif
+
    return &engine_info;
 }
 
 /* Called when the engine is unloaded */
-void engine_close()
+void engine_close(void)
 {
    free(engine_info.engine_name);
 }
 
 /* Initializes the engine */
-static Etk_Bool _engine_init()
+static Etk_Bool _engine_init(void)
 {
-#if USE_X11
-   if (!ecore_x_init(NULL))
+#if ENGINE_E_FB_X11_SUPPORT
+   if (_use_x11)
    {
-      ETK_WARNING("Ecore_X initialization failed!");
-      return ETK_FALSE;
+      if (!ecore_x_init(NULL))
+      {
+         ETK_WARNING("Ecore_X initialization failed!");
+         return ETK_FALSE;
+      }
+      if (!ecore_evas_init())
+      {
+         ETK_WARNING("Ecore_Evas initialization failed!");
+         return ETK_FALSE;
+      }
+
+      ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _mouse_move_X_handler_cb, NULL);
+
+      /* Create the evas where all the windows will be drawn */
+      _ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, _fb_width, _fb_height);
    }
-   if (!ecore_evas_init())
-   {
-      ETK_WARNING("Ecore_Evas initialization failed!");
-      return ETK_FALSE;
-   }
-   
-   ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _mouse_move_X_handler_cb, NULL);
-   _fb_width = 1024;
-   _fb_height = 768;
-   
-   /* Create the evas where all the windows will be drawn */
-   _ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, _fb_width, _fb_height);
-#else
-   if (!ecore_fb_init(NULL))
-   {
-      ETK_WARNING("Ecore_FB initialization failed!");
-      return ETK_FALSE;
-   }
-   if (!ecore_evas_init())
-   {
-      ETK_WARNING("Ecore_Evas initialization failed!");
-      return ETK_FALSE;
-   }
-   
-   ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_MOVE, _mouse_move_handler_cb, NULL);
-   ecore_fb_size_get(&_fb_width, &_fb_height);
-   
-   /* Create the evas where all the windows will be drawn */
-   _ecore_evas = ecore_evas_fb_new(NULL, 0, _fb_width, _fb_height);
+   else
 #endif
+   {
+      if (!ecore_fb_init(NULL))
+      {
+         ETK_WARNING("Ecore_FB initialization failed!");
+         return ETK_FALSE;
+      }
+      if (!ecore_evas_init())
+      {
+         ETK_WARNING("Ecore_Evas initialization failed!");
+         return ETK_FALSE;
+      }
+
+      ecore_event_handler_add(ECORE_FB_EVENT_MOUSE_MOVE, _mouse_move_handler_cb, NULL);
+      ecore_fb_size_get(&_fb_width, &_fb_height);
+
+      /* Create the evas where all the windows will be drawn */
+      _ecore_evas = ecore_evas_fb_new(NULL, 0, _fb_width, _fb_height);
+   }
+
    if (!_ecore_evas)
    {
       ETK_WARNING("Unable to create a FB Ecore_Evas");
@@ -252,7 +292,7 @@ static Etk_Bool _engine_init()
    /* Cache the different mouse pointers and use the default one */
    _pointer_cache = _pointer_cache_build();
    _window_pointer_set(NULL, ETK_POINTER_DEFAULT);
-#if USE_X11
+#if ENGINE_E_FB_X11_SUPPORT
    ecore_evas_cursor_set(_ecore_evas, "", 1000, 32, 32);
 #endif
   
@@ -260,18 +300,23 @@ static Etk_Bool _engine_init()
 }
 
 /* Shutdowns the engine */
-static void _engine_shutdown()
+static void _engine_shutdown(void)
 {
    etk_cache_destroy(_pointer_cache);
    free(_pointer_group);
    ecore_evas_free(_ecore_evas);
    
    ecore_evas_shutdown();
-#if USE_X11
-   ecore_x_shutdown();
-#else
-   ecore_fb_shutdown();
+#if ENGINE_E_FB_X11_SUPPORT
+   if (_use_x11)
+   {
+      ecore_x_shutdown();
+   }
+   else
 #endif
+   {
+      ecore_fb_shutdown();
+   }
 }
 
 /**************************
@@ -900,7 +945,7 @@ static int _mouse_move_handler_cb(void *data, int ev_type, void *ev)
    return 1;
 }
 
-#if USE_X11
+#if ENGINE_E_FB_X11_SUPPORT
 /* Called when the mouse is moved (X11 debug version) */
 static int _mouse_move_X_handler_cb(void *data, int ev_type, void *ev)
 {
