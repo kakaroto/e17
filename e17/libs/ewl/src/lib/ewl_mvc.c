@@ -1193,7 +1193,7 @@ ewl_mvc_cb_sel_free(void *data)
 }
 
 static void
-ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev, void *data)
+ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Selection *sel;
 

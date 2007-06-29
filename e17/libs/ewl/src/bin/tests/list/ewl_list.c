@@ -181,7 +181,8 @@ list_test_data_setup(void)
 }
 
 static Ewl_Widget *
-list_test_cb_widget_fetch(void *data, unsigned int row, unsigned int col)
+list_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__, 
+					unsigned int col __UNUSED__)
 {
 	Ewl_Widget *w;
 	List_Test_Row_Data *d;

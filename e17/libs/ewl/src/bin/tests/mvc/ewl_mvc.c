@@ -855,7 +855,7 @@ ewl_mvc_is_index(char *buf, int len, Ewl_Selection *sel,
 	}
 
 	idx = EWL_SELECTION_IDX(sel);
-	if ((idx->row != row) || (idx->column != column))
+	if (((int)idx->row != row) || ((int)idx->column != column))
 	{
 		snprintf(buf, len, "Incorrect indices in index "
 					"([%d %d] vs [%d %d])",
@@ -881,7 +881,7 @@ ewl_mvc_is_range(char *buf, int len, Ewl_Selection *sel,
 	}
 
 	rng = EWL_SELECTION_RANGE(sel);
-	if ((rng->start.row != srow) || (rng->start.column != scolumn))
+	if (((int)rng->start.row != srow) || ((int)rng->start.column != scolumn))
 	{
 		snprintf(buf, len, "Start row/column incorrect "
 					"([%d %d] vs [%d %d])",
@@ -890,7 +890,7 @@ ewl_mvc_is_range(char *buf, int len, Ewl_Selection *sel,
 		return FALSE;
 	}
 
-	if ((rng->end.row != erow) || (rng->end.column != ecolumn))
+	if (((int)rng->end.row != erow) || ((int)rng->end.column != ecolumn))
 	{
 		snprintf(buf, len, "End row/column incorrect "
 					"([%d %d] vs [%d %d])",

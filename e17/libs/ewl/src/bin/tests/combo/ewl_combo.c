@@ -313,7 +313,7 @@ combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static Ewl_Widget *
-combo_test_editable_cb_header_fetch(void *data, unsigned int col)
+combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__)
 {
 	Combo_Test_Data *d;
 	Ewl_Widget *w, *o;
@@ -321,17 +321,7 @@ combo_test_editable_cb_header_fetch(void *data, unsigned int col)
 
 	d = data;
 	w = ewl_hbox_new();
-	if (col > -1)
-	{
-		o = ewl_image_new();
-		ewl_image_file_path_set(EWL_IMAGE(o), d->data[col]);
-		ewl_container_child_append(EWL_CONTAINER(w), o);
-		ewl_widget_show(o);
-
-		val = d->data[col];
-	}
-	else
-		val = "Please select an option.";
+	val = "Please select an option.";
 
 	o = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(o), val);
@@ -344,8 +334,8 @@ combo_test_editable_cb_header_fetch(void *data, unsigned int col)
 }
 
 static Ewl_Widget *
-combo_test_editable_cb_widget_fetch(void *data, 
-					unsigned int row, unsigned int col)
+combo_test_editable_cb_widget_fetch(void *data, unsigned int row __UNUSED__, 
+						unsigned int col __UNUSED__)
 {
 	Ewl_Widget *w;
 	Ewl_Widget *o;

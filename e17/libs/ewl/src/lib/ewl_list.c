@@ -97,7 +97,7 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	/* create all the widgets and pack into the container */
 	ewl_container_reset(EWL_CONTAINER(list));
-	for (i = 0; i < model->count(mvc_data); i++)
+	for (i = 0; i < (int)model->count(mvc_data); i++)
 	{
 		Ewl_Widget *o;
 
@@ -150,6 +150,7 @@ ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 void
 ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
+	Ewl_Model *model;
 	unsigned int row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -158,8 +159,9 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 	DCHECK_TYPE("data", data, EWL_LIST_TYPE);
 
+	model = ewl_mvc_model_get(EWL_MVC(data));
 	row = ewl_container_child_index_get(EWL_CONTAINER(data), w);
-	if (row == -1) 
+	if (row > model->count(data)) 
 	{
 		if (!EWL_HIGHLIGHT_IS(w))
 		{

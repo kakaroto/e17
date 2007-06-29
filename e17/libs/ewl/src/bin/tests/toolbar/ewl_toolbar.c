@@ -80,7 +80,7 @@ create_test(Ewl_Container *box)
 }
 
 void
-cb_click(Ewl_Widget *w, void *e __UNUSED__, void *data)
+cb_click(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *data)
 {
 	ewl_toolbar_icon_part_hide(EWL_TOOLBAR(data), EWL_ICON_PART_NONE);
 }

@@ -65,7 +65,7 @@ ewl_engine_dependancies(void)
 }
 
 Ewl_Engine *
-ewl_engine_create(int *argc, char ** argv)
+ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
 {
 	Ewl_Engine_Evas *engine;
 

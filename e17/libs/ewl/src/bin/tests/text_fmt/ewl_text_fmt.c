@@ -191,85 +191,85 @@ tf_count_empty(char *buf, int len)
 }
 
 static int 
-tf_count_non_empty(char *buf, int len)
+tf_count_non_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_prepend_empty(char *buf, int len)
+tf_prepend_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_prepend_non_empty(char *buf, int len)
+tf_prepend_non_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_append_empty(char *buf, int len)
+tf_append_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_append_non_empty(char *buf, int len)
+tf_append_non_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_insert_empty(char *buf, int len)
+tf_insert_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_insert_non_empty(char *buf, int len)
+tf_insert_non_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_delete_empty(char *buf, int len)
+tf_delete_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_delete_non_empty(char *buf, int len)
+tf_delete_non_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_delete_past_end(char *buf, int len)
+tf_delete_past_end(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_delete_all(char *buf, int len)
+tf_delete_all(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_delete_full_node(char *buf, int len)
+tf_delete_full_node(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int 
-tf_delete_partial_node(char *buf, int len)
+tf_delete_partial_node(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int
-tf_apply_empty_text(char *buf, int len)
+tf_apply_empty_text(char *buf __UNUSED__, int len __UNUSED__)
 {
 	Ewl_Widget *t;
 
@@ -280,7 +280,7 @@ tf_apply_empty_text(char *buf, int len)
 }
 
 static int
-tf_apply_full_text(char *buf, int len)
+tf_apply_full_text(char *buf __UNUSED__, int len __UNUSED__)
 {
 	Ewl_Widget *t;
 
@@ -292,7 +292,7 @@ tf_apply_full_text(char *buf, int len)
 }
 
 static int
-tf_apply_past_end_text(char *buf, int len)
+tf_apply_past_end_text(char *buf __UNUSED__, int len __UNUSED__)
 {
 	Ewl_Widget *t;
 
@@ -304,13 +304,13 @@ tf_apply_past_end_text(char *buf, int len)
 }
 
 static int
-tf_apply_full_node_text(char *buf, int len)
+tf_apply_full_node_text(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
 static int
-tf_apply_partial_node_text(char *buf, int len)
+tf_apply_partial_node_text(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }

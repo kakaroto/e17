@@ -151,7 +151,8 @@ cb_apply_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 }
 
 static void
-cb_default_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
+cb_default_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+					void *data __UNUSED__)
 {
 	Ewl_Widget *db = w;
 

@@ -1115,7 +1115,7 @@ ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void *
-cb_unit_test_header_data_fetch(void *data, unsigned int column)
+cb_unit_test_header_data_fetch(void *data __UNUSED__, unsigned int column)
 {
 	if (column == 0)
 		return "Test";
