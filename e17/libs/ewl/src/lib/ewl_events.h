@@ -75,7 +75,7 @@ struct Ewl_Event_Key_Down
  * @def EWL_EVENT_KEY_UP(e)
  * Typedcasts a pointer to an Ewl_Event_Key_Up pointer
  */
-#define EWL_EVENT_KEY_DOWN(e) ((Ewl_Event_Key_Up *)(e))
+#define EWL_EVENT_KEY_UP(e) ((Ewl_Event_Key_Up *)(e))
 
 /**
  * The Ewl_Event_Key_Up structure
