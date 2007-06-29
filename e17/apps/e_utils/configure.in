@@ -111,10 +111,11 @@ PKG_CHECK_MODULES(EET, [eet >= 0.9.10],
   [have_eet="no"]
 )
 
-PKG_CHECK_MODULES(EWL, [ewl >= 0.0.4],
-  [have_ewl="yes"],
-  [have_ewl="no"]
-)
+# Disable eap editor, no longer needed
+#PKG_CHECK_MODULES(EWL, [ewl >= 0.0.4],
+#  [have_ewl="yes"],
+#  [have_ewl="no"]
+#)
 
 PKG_CHECK_MODULES(ENGRAVE, [engrave >= 0.1.0],
   [have_engrave="yes"],
