@@ -119,7 +119,7 @@ void _location_add_next_cb(Etk_Object *obj, void *data)
 
 		strcat(buffer, path);		
 	
-		printf("Final URI: '%s'\n", buffer);
+		/*printf("Final URI: '%s'\n", buffer);*/
 
 		structure = entropy_config_standard_structures_add((char*)name, buffer);
 		(*dialog->add_callback)(dialog->instance, structure);

@@ -327,6 +327,8 @@ void layout_etk_simple_add_header(entropy_gui_component_instance* instance, Entr
 
    /*Add to tracker*/
   ecore_hash_set(_etk_layout_row_reference, row, structure_obj);
+
+  printf ("LOADED: %s/%s\n", file->path, file->filename);
   
   /*Add to layout/plugin tracker - this is to destroy if the user removes a location*/
   if (! (layouts = ecore_hash_get(_etk_layout_structure_plugin_reference, structure_obj))) {

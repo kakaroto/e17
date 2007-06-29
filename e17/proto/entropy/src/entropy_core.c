@@ -1339,6 +1339,8 @@ entropy_generic_file* entropy_core_parse_uri(char* uri) {
 	file = entropy_generic_file_new();
 	uri_path = evfs_parse_uri(uri);
 
+	/*printf("Direct after evfs: %s \n", uri_path->files[0]->path);*/
+
 	/*Get the last "/", after this is the filename (or dir name, or whatever)*/
 	/*printf("Path: '%s'\n", uri_path->files[0]->path);*/
 	pos = rindex(uri_path->files[0]->path, '/');
@@ -1359,6 +1361,8 @@ entropy_generic_file* entropy_core_parse_uri(char* uri) {
 	}
 	
 	strcpy(file->uri_base, uri_path->files[0]->plugin_uri);
+
+	/*printf("After EVFS: %s/%s\n", file->path,file->filename);*/
 
 	/*Cache the file*/
 	listener = entropy_malloc(sizeof(entropy_file_listener));

@@ -229,6 +229,9 @@ void etk_mime_dialog_populate_nth_binding_apps(int record)
 	Etk_Widget* tree = _etk_mime_dialog_sub_tree;
 	Etk_Tree_Row* row;
 
+	/*Do we have a valid record?*/
+	if (record < 0) return;
+
 
 	
 	binding = evas_list_nth(entropy_core_get_core()->config->Loaded_Config->mime_bindings, record);
@@ -510,7 +513,7 @@ void etk_mime_dialog_create()
 	etk_tree_build(ETK_TREE(tree));
 	etk_box_append(ETK_BOX(hbox), tree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-	etk_signal_connect("row_selected", ETK_OBJECT( tree  ), 
+	etk_signal_connect("row-clicked", ETK_OBJECT( tree  ), 
 		  ETK_CALLBACK(_etk_mime_dialog_main_row_clicked), NULL);
 
 	etk_mime_dialog_tree_populate();
