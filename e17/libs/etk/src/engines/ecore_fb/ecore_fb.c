@@ -79,6 +79,7 @@ static char *_theme_find(const char *theme_name);
 
 /* Private vars */
 static Etk_Bool _use_x11 = ETK_FALSE;
+static char *_x11_engine = NULL;
 static Ecore_Evas *_ecore_evas = NULL;
 static Evas *_evas = NULL;
 static int _fb_width = DEFAULT_FB_WIDTH;
@@ -211,6 +212,12 @@ Etk_Engine *engine_open(int *argc, char ***argv)
       {
          _use_x11 = ETK_TRUE;
 
+         etk_argument_value_get(argc, argv, "ecore-fb-x11-engine", 0, ETK_TRUE, &_x11_engine);
+         if (!_x11_engine)
+         {
+            _x11_engine = strdup("ecore_evas_software_x11");
+         }
+
          /* Note that this values are only used when X11 is enabled */
          etk_argument_value_get(argc, argv, "ecore-fb-width", 0, ETK_TRUE, &fb_width_arg);
          if (fb_width_arg)
@@ -239,6 +246,7 @@ void engine_close(void)
 {
    free(engine_info.engine_name);
    free(_wm_theme_file);
+   free(_x11_engine);
 }
 
 /* Initializes the engine */
@@ -261,7 +269,27 @@ static Etk_Bool _engine_init(void)
       ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, _mouse_move_X_handler_cb, NULL);
 
       /* Create the evas where all the windows will be drawn */
-      _ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, _fb_width, _fb_height);
+
+      if (strcmp(_x11_engine, "ecore_evas_software_x11") == 0)
+      {
+        _ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, _fb_width, _fb_height);
+      }
+      else if (strcmp(_x11_engine, "ecore_evas_gl_x11") == 0)
+      {
+        _ecore_evas = ecore_evas_gl_x11_new(NULL, 0, 0, 0, _fb_width, _fb_height);
+      }
+      else if (strcmp(_x11_engine, "ecore_evas_xrender_x11") == 0)
+      {
+        _ecore_evas = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, _fb_width, _fb_height);
+      }
+      else if (strcmp(_x11_engine, "ecore_evas_software_x11_16") == 0)
+      {
+        _ecore_evas = ecore_evas_software_x11_16_new(NULL, 0, 0, 0, _fb_width, _fb_height);
+      }
+      else
+      {
+        _ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, _fb_width, _fb_height);
+      }
    }
    else
 #endif
