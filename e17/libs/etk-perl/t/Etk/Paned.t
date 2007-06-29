@@ -20,8 +20,11 @@ is($b->Child1ExpandGet(), 1, "Expand Get");
 $b->Child2ExpandSet(1);
 is($b->Child2ExpandGet(), 1, "Expand Set");
 
+SKIP: {
+	skip "..", 1;
 $b->PositionSet(123);
 
 is($b->PositionGet(), 123, "Position Set/Get");
+}
 
 

@@ -6,10 +6,10 @@ my $b = Etk::Combobox->new();
 ok( defined $b, 	"Combobox new()");
 ok( $b->isa("Etk::Combobox"),	"Class Check");
 
-$b->ItemHeightSet(100);
-is($b->ItemHeightGet(), 100, 	"Item Height");
+$b->ItemsHeightSet(100);
+is($b->ItemsHeightGet(), 100, 	"Items Height");
 
-$b->ColumnAdd(0, 1, 1, 1, 1, 1.0, 1.0);
+$b->ColumnAdd(0, 1, 1, 1.0);
 $b->Build();
 
 my $item = $b->ItemAppend("bleh");
@@ -27,7 +27,7 @@ $i = $b->ItemAppend("bleh");
 $i = $b->ItemAppend("bleh");
 
 
-$item->Activate();
+$b->ActiveItemSet($item);
 
 $i = $b->ActiveItemGet();
 ok( ref $i, 	"ActiveItemGet ");

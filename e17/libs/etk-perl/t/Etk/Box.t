@@ -13,7 +13,6 @@ is($hb->HomogeneousGet(), 0,	"Homo Get");
 $hb->HomogeneousSet(5);
 is($hb->HomogeneousGet(), 5,	"Homo Set");
 
-
 my $button = Etk::Button->new();
 $hb->Append($button, 0, 0, 5);
 my ($fill, $padding) = $hb->ChildPackingGet($button);
@@ -36,21 +35,22 @@ my $button3 = $hb->ChildGetAt(0, 1);
 
 is ($button3->{ETK}, $button->{ETK}, "ChildGetAt");
 
-$hb = Etk::VBox->new(0, 1);
+my $hb2 = Etk::VBox->new(0, 1);
 
-ok( defined $hb, 	"VBox new()");
-ok( $hb->isa("Etk::VBox"),	"Class Check");
+ok( defined $hb2, 	"VBox new()");
+ok( $hb2->isa("Etk::VBox"),	"Class Check");
 
-is($hb->SpacingGet(), 1,	"Spacing Get");
-$hb->SpacingSet(4);
-is($hb->SpacingGet(), 4,	"Spacing Set");
-is($hb->HomogeneousGet(), 0,	"Homo Get");
-$hb->HomogeneousSet(5);
-is($hb->HomogeneousGet(), 5,	"Homo Set");
+is($hb2->SpacingGet(), 1,	"Spacing Get");
+$hb2->SpacingSet(4);
+is($hb2->SpacingGet(), 4,	"Spacing Set");
+is($hb2->HomogeneousGet(), 0,	"Homo Get");
+$hb2->HomogeneousSet(5);
+is($hb2->HomogeneousGet(), 5,	"Homo Set");
 
+my $button4 = Etk::Button->new();
 
-$hb->Append($button, 0, 0, 5);
-($fill, $padding) = $hb->ChildPackingGet($button);
+$hb2->Append($button4, 0, 0, 5);
+($fill, $padding) = $hb2->ChildPackingGet($button4);
 
 is($padding, 5, 	"Padding set");
 is($fill, 0, 	"Fill set");
