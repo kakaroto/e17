@@ -13,6 +13,12 @@ e17_frame_label_over.png \
 e17_frame_label_under.png \
 e17_frame_outline.png \
 e17_ibar_bg_v.png \
+e17_ibar_handle_h.png \
+e17_ibar_handle_h2.png \
+e17_ibar_handle_thumb_h.png \
+e17_ibar_handle_v.png \
+e17_ibar_handle_v2.png \
+e17_ibar_handle_thumb_v.png \
 e17_ibar_over_v.png \
 e17_icon_down_arrow.png \
 e17_icon_right_arrow.png \
@@ -55,9 +61,13 @@ e17_winlist_bottom.png \
 entry_disabled.png \
 entry.png \
 ewl_combo_button_sm.png \
+ewl_notebook_tab_bottom.png \
 ewl_notebook_tab_bottom_selected.png \
+ewl_notebook_tab_left.png \
 ewl_notebook_tab_left_selected.png \
+ewl_notebook_tab_right.png \
 ewl_notebook_tab_right_selected.png \
+ewl_notebook_tab_top.png \
 ewl_notebook_tab_top_selected.png \
 focus.png \
 pointer.png \
