@@ -137,7 +137,7 @@ ewl_combo_editable_get(Ewl_Combo *combo)
 
 /**
  * @param combo: The Ewl_Combo to use
- * @param editable: Set if the combo is scrollable or not
+ * @param scrollable: Set if the combo is scrollable or not
  * @return Returns no value
  *
  * On true, this functions set the combo to use a scrollpane to view the
@@ -202,7 +202,7 @@ ewl_combo_scrollable_get(Ewl_Combo *combo)
 
 /**
  * @param combo: The Ewl_Combo to use
- * @param editable: The Container to use in the popup
+ * @param c: The Container to use in the popup
  * @return Returns no value
  */
 void
@@ -487,7 +487,7 @@ ewl_combo_cell_new(void)
 }
 
 /**
- * @param combo: The Ewl_Combo_Cell to initialize
+ * @param cell: The Ewl_Combo_Cell to initialize
  * @return Returns TRUE on success or FALSE on failure
  * @brief Initializes a combo cell to default values 
  */
