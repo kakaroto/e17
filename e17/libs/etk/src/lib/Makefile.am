@@ -170,3 +170,4 @@ libetk_la_LIBADD  = @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@
 libetk_la_DEPENDENCIES = 
 
 libetk_la_LDFLAGS = -version-info 1:0:0
+
