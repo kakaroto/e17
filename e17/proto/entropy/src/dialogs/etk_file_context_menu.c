@@ -457,7 +457,7 @@ void entropy_etk_context_menu_init()
 		menu = etk_menu_new();
 		_entropy_etk_context_menu = menu;
 		
-		etk_signal_connect("popped_up", ETK_OBJECT(menu), ETK_CALLBACK(_entropy_etk_context_menu_popup_cb), NULL);
+		etk_signal_connect("popped-up", ETK_OBJECT(menu), ETK_CALLBACK(_entropy_etk_context_menu_popup_cb), NULL);
 
 		_entropy_etk_context_menu_open_with_item =  
 		   _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL,
