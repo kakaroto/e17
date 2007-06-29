@@ -8,7 +8,7 @@
  * Defines a menu used globally. The contents on the menu are drawn outside of
  * the canvas.
  *
- * @remarks Inherits from Ewl_Menu_Base.
+ * @remarks Inherits from Ewl_Menu_Item.
  * @image html Ewl_Menu_inheritance.png
  *
  * @{

@@ -42,7 +42,7 @@ foreach my $widget (keys (%widgets))
 	print OUT "\n}\n\n";
 	close(OUT);
 
-	`dot -Tpng -o $dir/../html/${widget}_inheritance.png /tmp/$widget.dot`;
+	`dot -Tpng -o $dir/../images/${widget}_inheritance.png /tmp/$widget.dot`;
 	unlink("/tmp/$widget.dot");
 }
 
