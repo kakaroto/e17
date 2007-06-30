@@ -20,8 +20,7 @@ entropy_SOURCES = \
 	entropy_config.c \
 	entropy_gui.c \
 	entropy_alert.c \
-	entropy_gui_event_handlers.c
-
+	entropy_gui_event_handlers.c 
 
 entropy_CC	= cc
 entropy_CFLAGS  = @EWL_CFLAGS@ @EVFS_CFLAGS@ \
