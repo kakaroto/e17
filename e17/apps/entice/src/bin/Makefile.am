@@ -25,10 +25,6 @@ main.c
 
 entice_LDADD = \
 @ESMART_LIBS@ \
--lesmart_container \
--lesmart_draggies \
--lesmart_thumb \
--lesmart_trans_x11 \
 @EVAS_LIBS@ \
 @EDB_LIBS@ \
 @ECORE_LIBS@ \
