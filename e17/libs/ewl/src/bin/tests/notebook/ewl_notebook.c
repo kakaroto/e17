@@ -91,6 +91,17 @@ notebook_cb_toggle_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
+notebook_cb_homogeneous_toggle_clicked(Ewl_Widget *w __UNUSED__, 
+				void *ev __UNUSED__, void *data __UNUSED__)
+{
+	Ewl_Widget *n;
+
+	n = ewl_widget_name_find("notebook");
+	ewl_notebook_tabbar_homogeneous_set(EWL_NOTEBOOK(n),
+			!ewl_notebook_tabbar_homogeneous_get(EWL_NOTEBOOK(n)));
+}
+
+static void
 notebook_change_align(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
 							void *data)
 {
@@ -271,11 +282,23 @@ create_main_page(void)
 		o2 = o;
 	}
 
-	o = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o), "Toggle tabbar");
+	o = ewl_checkbutton_new();
+	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
+	ewl_button_label_set(EWL_BUTTON(o), "Show tabbar");
 	ewl_container_child_append(EWL_CONTAINER(body), o);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, notebook_cb_toggle_clicked, NULL);
+	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+				notebook_cb_toggle_clicked, NULL);
+	ewl_widget_show(o);
+
+	o = ewl_checkbutton_new();
+	ewl_button_label_set(EWL_BUTTON(o), "homogeneous tabbar");
+	ewl_container_child_append(EWL_CONTAINER(body), o);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+				notebook_cb_homogeneous_toggle_clicked, NULL);
+	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(o);
 
 	return body;
