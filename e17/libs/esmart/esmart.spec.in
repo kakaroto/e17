@@ -71,6 +71,14 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_libdir}/esmart/layout/*.a
 %{_includedir}/Esmart/Esmart_*
 %{_bindir}/esmart-config
-%{_libdir}/pkgconfig/esmart.pc
+%{_libdir}/pkgconfig/esmart_container.pc
+%{_libdir}/pkgconfig/esmart_draggies.pc
+%{_libdir}/pkgconfig/esmart_file_dialog.pc
+%{_libdir}/pkgconfig/esmart_resize.pc
+%{_libdir}/pkgconfig/esmart_textarea.pc
+%{_libdir}/pkgconfig/esmart_text_entry.pc
+%{_libdir}/pkgconfig/esmart_thumb.pc
+%{_libdir}/pkgconfig/esmart_trans_x11.pc
+
 
 %changelog

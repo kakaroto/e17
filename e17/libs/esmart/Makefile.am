@@ -9,13 +9,29 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess esmart-config.h.in \
 
 bin_SCRIPTS = esmart-config
 
-EXTRA_DIST = README AUTHORS COPYING esmart.pc.in esmart.spec esmart.spec.in \
+EXTRA_DIST = README AUTHORS COPYING esmart.spec esmart.spec.in \
 	     debian/control debian/copyright debian/rules \
 	     debian/changelog \
 	     debian/changelog.in \
 	     debian/libesmart0-dev.files debian/esmart0-bin.files \
-	     debian/libesmart0.files debian/esmart0-bin.files
+	     debian/libesmart0.files debian/esmart0-bin.files \
+	     esmart_container.pc.in \
+	     esmart_draggies.pc.in \
+	     esmart_file_dialog.pc.in \
+	     esmart_resize.pc.in \
+	     esmart_textarea.pc.in \
+	     esmart_text_entry.pc.in \
+	     esmart_thumb.pc.in \
+	     esmart_trans_x11.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = esmart.pc
+pkgconfig_DATA = esmart_container.pc \
+		 esmart_draggies.pc \
+		 esmart_file_dialog.pc \
+		 esmart_resize.pc \
+		 esmart_textarea.pc \
+		 esmart_text_entry.pc \
+		 esmart_thumb.pc \
+		 esmart_trans_x11.pc
+
 
