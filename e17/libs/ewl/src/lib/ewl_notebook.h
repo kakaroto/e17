@@ -76,6 +76,9 @@ Ewl_Position	 ewl_notebook_tabbar_position_get(Ewl_Notebook *n);
 void		 ewl_notebook_tabbar_visible_set(Ewl_Notebook *n,
 						unsigned int visible);
 unsigned int 	 ewl_notebook_tabbar_visible_get(Ewl_Notebook *n);
+void		 ewl_notebook_tabbar_homogeneous_set(Ewl_Notebook *n, 
+						unsigned int h);
+unsigned int	 ewl_notebook_tabbar_homogeneous_get(Ewl_Notebook *n);
 
 void		 ewl_notebook_visible_page_set(Ewl_Notebook *n, 
 						Ewl_Widget *page);

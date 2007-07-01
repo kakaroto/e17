@@ -271,37 +271,89 @@ ewl_box_orientation_get(Ewl_Box *b)
 void
 ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
 {
+	Ewl_Container *c;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
 
-	if (b->homogeneous == h)
+	if (b->homogeneous == !!h)
 		DRETURN(DLEVEL_STABLE);
 
-	b->homogeneous = h;
+	b->homogeneous = !!h;
+	c = EWL_CONTAINER(b);
 
 	if (h) {
 		ewl_callback_del(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
 				ewl_box_cb_configure);
 		ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
 				ewl_box_cb_configure_homogeneous, NULL);
-		ewl_container_show_notify_set(EWL_CONTAINER(b),
+		ewl_container_show_notify_set(c,
 					  ewl_box_cb_child_homogeneous_show);
-		ewl_container_hide_notify_set(EWL_CONTAINER(b),
+		ewl_container_hide_notify_set(c,
 					  ewl_box_cb_child_homogeneous_show);
+		ewl_container_resize_notify_set(c,
+					  ewl_box_cb_child_homogeneous_resize);
+		/*
+		 * calculate the new preferred size, we use here the show cb
+		 * since it does exactly what we need to do
+		 */
+		ewl_box_cb_child_homogeneous_show(c, NULL);
 	}
 	else {
+		int nodes, space;
+
 		ewl_callback_del(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
 				ewl_box_cb_configure_homogeneous);
 		ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
 				ewl_box_cb_configure, NULL);
-		ewl_container_show_notify_set(EWL_CONTAINER(b),
+		ewl_container_show_notify_set(c,
 					  ewl_box_cb_child_show);
-		ewl_container_hide_notify_set(EWL_CONTAINER(b),
+		ewl_container_hide_notify_set(c,
 					  ewl_box_cb_child_hide);
+		ewl_container_resize_notify_set(c,
+					  ewl_box_cb_child_resize);
+		/*
+		 * calculate the new preferred size
+		 */
+		nodes = ecore_dlist_nodes(c->children) - 1;
+		space = (nodes > 1) ? b->spacing : 0;
+		if (b->orientation == EWL_ORIENTATION_HORIZONTAL) {
+			ewl_container_largest_prefer(c, 
+						EWL_ORIENTATION_VERTICAL);
+			ewl_container_sum_prefer(c,
+						EWL_ORIENTATION_HORIZONTAL);
+			ewl_object_preferred_inner_w_set(EWL_OBJECT(b),
+					PREFERRED_W(b) + space * nodes);
+		}
+		else {
+			ewl_container_largest_prefer(c, 
+						EWL_ORIENTATION_HORIZONTAL);
+			ewl_container_sum_prefer(c,
+						EWL_ORIENTATION_VERTICAL);
+			ewl_object_preferred_inner_h_set(EWL_OBJECT(b),
+					PREFERRED_H(b) + space * nodes);
+		}
 	}
 
+	ewl_widget_configure(EWL_WIDGET(b));
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param b: the box to retrieve layout
+ * @return Returns the homogeneous layout  value of the box @a b.
+ * @brief Retrieves the layout of the box
+ */
+unsigned int
+ewl_box_homogeneous_get(Ewl_Box *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("b", b, 0);
+	DCHECK_TYPE_RET("b", b, EWL_BOX_TYPE, 0);
+
+	DRETURN_INT(b->homogeneous, DLEVEL_STABLE);
 }
 
 /**
@@ -855,8 +907,7 @@ ewl_box_cb_child_homogeneous_show(Ewl_Container *c,
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 
 	numc = ecore_dlist_nodes(c->children);
-	numc--;
-	if (numc)
+	if (numc > 1)
 		space = EWL_BOX(c)->spacing;
 
 	ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
@@ -915,6 +966,38 @@ ewl_box_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param c: The Ewl_Container containing the widget
+ * @param w: The widget being resized
+ * @param size: The size of the widget
+ * @param o: The orientation of the widget
+ * @return Returns no value
+ * @brief The container resize callback used by the box 
+ */
+void
+ewl_box_cb_child_homogeneous_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
+			int size __UNUSED__, Ewl_Orientation o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+	DCHECK_TYPE("c", c, EWL_BOX_TYPE);
+
+	/*
+	 * If the change is in the orientation direction, we do the same
+	 * like in the show cb
+	 */
+	if (EWL_BOX(c)->orientation == o)
+		ewl_box_cb_child_homogeneous_show(c, NULL);
+
+	/*
+	 * Find the new largest widget in the alignment direction
+	 */
+	else
+		ewl_container_largest_prefer(c, o);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 /**
  * @internal
  * @param c: The Ewl_Container containing the widget

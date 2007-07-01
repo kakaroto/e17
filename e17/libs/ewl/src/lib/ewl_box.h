@@ -68,12 +68,15 @@ void 		 ewl_box_orientation_set(Ewl_Box *b, Ewl_Orientation o);
 Ewl_Orientation  ewl_box_orientation_get(Ewl_Box *b);
 void 		 ewl_box_spacing_set(Ewl_Box *b, int spacing);
 void 	 	 ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h);
+unsigned int 	 ewl_box_homogeneous_get(Ewl_Box *b);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
 void ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size, 
 							Ewl_Orientation o);
+void ewl_box_cb_child_homogeneous_resize(Ewl_Container *c, 
+				Ewl_Widget *w, int size, Ewl_Orientation o);
 void ewl_box_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_box_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 void ewl_box_cb_child_homogeneous_show(Ewl_Container *c, Ewl_Widget *w);

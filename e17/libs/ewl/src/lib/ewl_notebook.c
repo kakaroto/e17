@@ -460,6 +460,40 @@ ewl_notebook_page_tab_widget_get(Ewl_Notebook *n, Ewl_Widget *page)
 }
 
 /**
+ * @param n: The Ewl_Notebook to make homogeneous
+ * @param h: Boolean value to set the notebook's homogeneous value
+ * @return Returns no value
+ * @brief Sets the tabs in the notebook to be the same size
+ **/
+void
+ewl_notebook_tabbar_homogeneous_set(Ewl_Notebook *n, unsigned int h)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("n", n);
+	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
+
+	ewl_box_homogeneous_set(EWL_BOX(n->body.tabbar), !!h);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param n: The Ewl_Notebook to check for homogeneous
+ * @return Returns the homgeneous value of the notebook @a n
+ * @brief Retrieves the homogeneous value of the notebook
+ **/
+unsigned int
+ewl_notebook_tabbar_homogeneous_get(Ewl_Notebook *n)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("n", n, 0);
+	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, 0);
+
+	DRETURN_INT(ewl_box_homogeneous_get(EWL_BOX(n->body.tabbar)),
+		       	DLEVEL_STABLE);
+}
+
+/**
  * @internal
  * @param c: The container to work with
  * @param w: The widget to work with
