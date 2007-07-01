@@ -64,7 +64,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_libdir}/*.so
 %{_libdir}/*.a
-%{_bindir}/etk-config
 %{_libdir}/pkgconfig/etk.pc
 %{_includedir}/*
 

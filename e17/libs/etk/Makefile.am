@@ -10,7 +10,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		etk.pc \
 		debian/changelog
 
-bin_SCRIPTS = etk-config
+bin_SCRIPTS = 
 
 EXTRA_DIST = \
 AUTHORS \
