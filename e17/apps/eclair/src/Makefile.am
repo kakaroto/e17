@@ -33,6 +33,5 @@ eclair_menu.c eclair_menu.h
 
 eclair_LDADD = \
 @ECLAIR_LIBS@ \
--lesmart_draggies \
 -ltag_c \
 -lpthread

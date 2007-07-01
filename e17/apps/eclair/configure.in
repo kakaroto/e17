@@ -96,7 +96,7 @@ PKG_CHECK_MODULES(ECLAIR, [
   ecore-file
   edje
   emotion
-  esmart
+  esmart_draggies
 ])
 
 AC_OUTPUT([
