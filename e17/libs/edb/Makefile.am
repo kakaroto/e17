@@ -15,7 +15,7 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 
 SUBDIRS		     = src test tools
 
-bin_SCRIPTS = edb-config
+bin_SCRIPTS = 
 
 EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN \
              README.in README \

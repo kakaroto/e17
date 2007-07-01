@@ -448,10 +448,7 @@ test/Makefile
 src/edb_common.h
 src/edb_int.h
 src/edb_185.h
-edb-config
 README
 edb.spec
 debian/changelog
-], [
-chmod +x edb-config
 ])

@@ -86,7 +86,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{_libdir}/*.so
 %{_libdir}/*.a
-%{_bindir}/%{name}-config
 %{_libdir}/pkgconfig/*
 %{_includedir}/*
 
