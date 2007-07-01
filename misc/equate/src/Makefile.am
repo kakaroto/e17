@@ -4,9 +4,7 @@ INCLUDES = \
 -I../lib \
 -I/usr/local/include \
 -I$(top_srcdir)/lib \
-@ewl_cflags@ \
-@edje_cflags@ \
-@ecore_cflags@
+@ewl_CFLAGS@ @ecore_CFLAGS@ @edje_CFLAGS@
 
 bin_PROGRAMS = equate
 
@@ -16,5 +14,5 @@ calc_parse.c \
 edje.c \
 main.c
 
-equate_LDADD = @ewl_libs@ @edje_libs@ @ecore_libs@
+equate_LDADD = @ewl_LIBS@ @ecore_LIBS@ @edje_LIBS@
 

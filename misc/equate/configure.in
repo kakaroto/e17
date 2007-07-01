@@ -83,20 +83,9 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
-ewl_cflags=`ewl-config --cflags`
-ewl_libs=`ewl-config --libs`
-AC_SUBST(ewl_cflags)
-AC_SUBST(ewl_libs)
-
-edje_cflags=`edje-config --cflags`
-edje_libs=`edje-config --libs`
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_libs)
-
-ecore_cflags=`ecore-config --cflags`
-ecore_libs=`ecore-config --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
+PKG_CHECK_MODULES(ewl, [ewl >= 0.5.1.009])
+PKG_CHECK_MODULES(edje, [edje >= 0.5.0.039])
+PKG_CHECK_MODULES(ecore, [ecore >= 0.9.9 ecore-config >= 0.9.9])
 
 AC_OUTPUT([
 Makefile
