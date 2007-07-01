@@ -25,7 +25,7 @@ dist-hook:
 	  done \
 	fi
 
-bin_SCRIPTS = epeg-config
+bin_SCRIPTS = 
 
 EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN \
 	     epeg.spec epeg.spec.in epeg.c.in gendoc \
