@@ -8,7 +8,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess engrave.spec \
 		       ltconfig ltmain.sh missing mkinstalldirs \
 		       stamp-h.in debian/changelog
 
-bin_SCRIPTS = engrave-config
+bin_SCRIPTS = 
 
 #install-data-local:
 #	@$(NORMAL_INSTALL)
