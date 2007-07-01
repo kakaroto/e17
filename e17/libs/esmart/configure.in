@@ -141,7 +141,6 @@ esmart_text_entry.pc
 esmart_thumb.pc
 esmart_trans_x11.pc
 esmart.spec
-esmart-config
 src/Makefile
 src/lib/Makefile
 src/lib/esmart_container/Makefile
@@ -159,10 +158,7 @@ src/bin/Makefile
 data/Makefile
 data/images/Makefile
 debian/changelog
-], [
-chmod +x esmart-config
-]
-)
+])
 
 echo
 echo

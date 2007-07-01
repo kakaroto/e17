@@ -70,7 +70,6 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libesmart_*.a
 %{_libdir}/esmart/layout/*.a
 %{_includedir}/Esmart/Esmart_*
-%{_bindir}/esmart-config
 %{_libdir}/pkgconfig/esmart_container.pc
 %{_libdir}/pkgconfig/esmart_draggies.pc
 %{_libdir}/pkgconfig/esmart_file_dialog.pc
