@@ -76,7 +76,7 @@ struct _Epsilon_Response
 };
 
 static int client_id = 1;
-static int debug = 1;
+static int debug = 0;
 static double idle_time = 0;
 static int running_workers = 0;
 
