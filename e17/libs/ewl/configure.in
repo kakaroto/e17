@@ -255,7 +255,6 @@ AC_OUTPUT([
 Makefile
 ewl.spec
 ewl.pc
-ewl-config
 src/Makefile
 src/bin/Makefile
 src/bin/tests/Makefile
@@ -339,10 +338,7 @@ data/themes/ewl_embed_test/images/Makefile
 tools/Makefile
 tools/ewl_config/Makefile
 debian/changelog
-], [
-chmod +x ewl-config
-]
-)
+])
 
 echo
 echo "$PACKAGE $VERSION"

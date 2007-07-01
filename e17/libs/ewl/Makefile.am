@@ -8,7 +8,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 		   ltconfig ltmain.sh missing mkinstalldirs \
 		   stamp-h.in debian/changelog
 
-bin_SCRIPTS = ewl-config
+bin_SCRIPTS = 
 
 EXTRA_DIST = README AUTHORS COPYING ewl.m4 ewl.spec ewl.pc.in \
 	     debian/rules \
