@@ -105,10 +105,10 @@ typedef struct Ewl_Color_Set Ewl_Color_Set;
  */
 struct Ewl_Color_Set
 {
-	int r, 	/**< The red value */
-	    g, 	/**< The green value */
-	    b, 	/**< The blue value */
-	    a;	/**< The alpha value */
+	unsigned char r, 	/**< The red value */
+		      g, 	/**< The green value */
+		      b, 	/**< The blue value */
+		      a;	/**< The alpha value */
 };
 
 /**

@@ -83,10 +83,10 @@ struct Ewl_Object
 
 	struct
 	{
-		int l, /**< Left value */
-		    r, /**< Right value */
-		    t, /**< Top value */
-		    b; /**< Bottom value */
+		short l, /**< Left value */
+		      r, /**< Right value */
+		      t, /**< Top value */
+		      b; /**< Bottom value */
 	} pad, /**< The space padded around the outside of the object. */
 	insets; /**< The space inside where children should not be laid out. */
 
