@@ -76,8 +76,9 @@ struct _Epsilon_Response
 };
 
 static int client_id = 1;
-static int debug = 0;
+static int debug = 1;
 static double idle_time = 0;
+static int running_workers = 0;
 
 static int worker_limit = EPSILON_WORKERS;
 
@@ -90,6 +91,7 @@ static Ecore_Event_Handler *worker_del = NULL;
 static Ecore_Event_Handler *worker_data = NULL;
 
 static Ecore_List *queued_workers;
+static Ecore_List *gworkers = NULL;
 
 static Ecore_Con_Server *thumb_server = NULL;
 static Ecore_Con_Server *thumbd_server = NULL;
@@ -100,6 +102,49 @@ static char *epsilond_socket_path(char *name);
 /* static int epsilond_entry_free(Epsilon_Entry *thumb); */
 static int epsilond_client_clean(Epsilon_Client *cl);
 static int epsilond_worker_clean(Epsilon_Worker *worker);
+
+int epsilond_cb_worker_add(void *data, int type, void *event);
+int epsilond_cb_worker_del(void *data, int type, void *event);
+int epsilond_cb_worker_data(void *data, int type, void *event);
+
+
+void epsilond_init_thumbd_server(Ecore_List* workers) 
+{
+	char* buf;
+	
+	/*
+	 * Retrieve the safe socket name for the server.
+	 */
+	buf = epsilond_socket_path(EPSILOND_SOCK);
+
+	if (debug) printf("socket name %s\n", buf);
+
+	/*
+	 * Setup the IPC server to handle completed notifications
+	 */
+	thumbd_server = ecore_con_server_add(ECORE_CON_LOCAL_USER, buf, 0, NULL);
+
+	free(buf);
+
+	/*
+	 * Prepare the handlers for worker IPC events
+	 */
+	worker_add = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, epsilond_cb_worker_add, workers);
+	worker_del = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, epsilond_cb_worker_del, workers);
+	worker_data = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, epsilond_cb_worker_data, workers);
+}
+
+void epsilond_shutdown_thumbd_server()
+{
+	if (thumbd_server)
+		ecore_con_server_del(thumbd_server);
+	
+	ecore_event_handler_del(worker_add);
+	ecore_event_handler_del(worker_del);
+	ecore_event_handler_del(worker_data);
+}
+
+
 
 /*
  * Handle a client connect and add the new client to the list of clients.
@@ -195,6 +240,9 @@ epsilond_cb_client_del(void *data, int type, void *event)
 		}
 		ecore_list_next(clients);
 	}
+
+	running_workers--;
+	if (!running_workers) epsilond_shutdown_thumbd_server();
 
 	return 1;
 }
@@ -633,6 +681,10 @@ epsilond_idle_enterer(void *data)
 		if (!worker->child) {
 			if (ecore_list_nodes(worker->thumbs)) {
 				idle--;
+
+				if (!running_workers) epsilond_init_thumbd_server(gworkers);
+				running_workers++;
+				
 				if (!epsilond_worker_fork(worker))
 					return 0;
 			}
@@ -664,7 +716,6 @@ epsilond_init()
 	int wi;
 	char *buf;
 	Ecore_List *clients = NULL;
-	Ecore_List *workers = NULL;
 
 	epsilon_init();
 
@@ -672,7 +723,7 @@ epsilond_init()
 	 * Create the accounting data for the clients and thumbnail queue.
 	 */
 	clients = ecore_list_new();
-	workers = ecore_list_new();
+	gworkers = ecore_list_new();
 	response_queue = ecore_list_new();
 	queued_workers = ecore_list_new();
 
@@ -696,27 +747,6 @@ epsilond_init()
 	client_add = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, epsilond_cb_client_add, clients);
 	client_del = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, epsilond_cb_client_del, clients);
 	client_data = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, epsilond_cb_client_data, clients);
-
-	/*
-	 * Retrieve the safe socket name for the server.
-	 */
-	buf = epsilond_socket_path(EPSILOND_SOCK);
-
-	if (debug) printf("socket name %s\n", buf);
-
-	/*
-	 * Setup the IPC server to handle completed notifications
-	 */
-	thumbd_server = ecore_con_server_add(ECORE_CON_LOCAL_USER, buf, 0, NULL);
-
-	free(buf);
-
-	/*
-	 * Prepare the handlers for worker IPC events
-	 */
-	worker_add = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, epsilond_cb_worker_add, workers);
-	worker_del = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, epsilond_cb_worker_del, workers);
-	worker_data = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, epsilond_cb_worker_data, workers);
 
 	/*
 	 * Initialize the worker threads
