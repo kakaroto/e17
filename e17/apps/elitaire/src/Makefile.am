@@ -53,6 +53,4 @@ elitaire_SOURCES = \
 
 elitaire_LDFLAGS = @ELITAIRE_LIBS@
 
-elitaire_LDADD =  -lesmart_draggies -lesmart_container -lesmart_resize
-
 top_srcdir = @top_srcdir@

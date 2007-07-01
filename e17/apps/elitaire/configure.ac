@@ -76,7 +76,9 @@ PKG_CHECK_MODULES(ELITAIRE, [
   ecore-evas
   ecore-file
   edje
-  esmart
+  esmart_container
+  esmart_draggies
+  esmart_resize
   ewl
 ])
 
