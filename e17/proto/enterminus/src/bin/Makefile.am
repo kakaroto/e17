@@ -3,7 +3,7 @@
 INCLUDES = \
 -I/usr/local/include \
 -I$(top_srcdir)/lib \
-@my_includes@
+@evas_CFLAGS@ @ecore_CFLAGS@
 
 bin_PROGRAMS = enterminus
 
@@ -19,4 +19,4 @@ handlers.c \
 smart.c \
 enterm.c
 
-enterminus_LDADD = @my_libs@
+enterminus_LDADD = @evas_LIBS@ @ecore_LIBS@

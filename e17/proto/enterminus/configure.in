@@ -79,10 +79,8 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", "Package dir")
 
 
 # add your required libs / include here
-my_includes=`evas-config --cflags`" "`ecore-config --cflags`
-my_libs=`evas-config --libs`" "`ecore-config --libs`" "${LIBS}
-AC_SUBST(my_includes)
-AC_SUBST(my_libs)
+PKG_CHECK_MODULES(evas, [evas >= 0.9.9 ecore-evas >= 0.9.9])
+PKG_CHECK_MODULES(ecore, [ecore >= 0.9.9])
 
 CFLAGS="-Wall $CFLAGS"
 
