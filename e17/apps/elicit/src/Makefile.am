@@ -15,5 +15,5 @@ elicit_SOURCES = \
 				spectrum.c spectrum.h \
 				zoom.c zoom.h
 
-elicit_LDADD = @ELICIT_LIBS@ -lesmart_draggies -lesmart_container
+elicit_LDADD = @ELICIT_LIBS@
 

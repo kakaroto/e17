@@ -64,7 +64,8 @@ PKG_CHECK_MODULES(ELICIT, [
   imlib2
   evas
   eet
-  esmart
+  esmart_draggies
+  esmart_container
   ecore
   ecore-config
   ecore-evas
