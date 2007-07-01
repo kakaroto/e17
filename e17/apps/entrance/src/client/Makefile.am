@@ -23,7 +23,7 @@ entrance_SOURCES = \
 	entrance.h main.c 
 
 entrance_LDADD = @EDJE_LIBS@ @EFREET_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ \
-@ESMART_LIBS@ -lesmart_container -lesmart_text_entry
+@ESMART_LIBS@
 
 entrance_login_SOURCES = \
 	entrance_login.c \

@@ -75,7 +75,10 @@ PKG_CHECK_MODULES(ECORE, [
   ecore-config >= 0.9.9
 ])
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-PKG_CHECK_MODULES(ESMART, [esmart >= 0.9.0])
+PKG_CHECK_MODULES(ESMART, [
+  esmart_container >= 0.9.0
+  esmart_text_entry >= 0.9.0
+])
 PKG_CHECK_MODULES(EFREET, [efreet >= 0.0.3.004])
 
 
