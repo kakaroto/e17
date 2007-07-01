@@ -58,8 +58,9 @@ static void ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger);
 static void ewl_text_selection_select_to(Ewl_Text_Trigger *s, 
 						unsigned int char_idx);
 
-static void ewl_text_theme_color_get(Ewl_Text *t, int *r, int *g, 
-					int *b, int *a, char *name);
+static void ewl_text_theme_color_get(Ewl_Text *t, unsigned char *r, 
+					unsigned char *g, unsigned char *b, 
+					unsigned char *a, char *name);
 static Ewl_Text_Context *ewl_text_context_default_create(Ewl_Text *t);
 
 
@@ -2536,8 +2537,8 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 }
 
 static void
-ewl_text_theme_color_get(Ewl_Text *t, int *r, int *g, 
-				int *b, int *a, char *name)
+ewl_text_theme_color_get(Ewl_Text *t, unsigned char *r, unsigned char *g, 
+			unsigned char *b, unsigned char *a, char *name)
 {
 	char buf[128];
 	int pos;

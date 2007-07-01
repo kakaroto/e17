@@ -49,7 +49,12 @@ struct Ewl_Spectrum
 		Ewl_Widget *horizontal; /**< Horizontal portion of the crosshairs */
 	} cross_hairs;			/**< Selection crosshairs */
 
-	Ewl_Color_Set rgb;		/**< Current RBG colour of the spectrum */
+	struct {
+		int r;
+		int g;
+		int b;
+	} rgb;				/**< Current RBG colour of the spectrum */
+
 	struct {
 		double h;		/**< The current hue */
 		double s;		/**< The current saturation */
