@@ -105,7 +105,10 @@ on_AllButton_click(Etk_Button *button, void *data)
          {
             snprintf(cmd,1024,"edje_viewer %s &",Cur.open_file_name);
             printf("TEST IN VIEWER. cmd: %s\n",cmd);
-            system(cmd);
+            if (!system("type edje_viewer"))
+               system(cmd);
+            else
+               ShowAlert("<b>Could not find 'edje_viewer'.</b><br>Check that the executable is in your path.");
          }else{
             ShowAlert("You need to save the file before testing it.");
          }
