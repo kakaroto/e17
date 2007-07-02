@@ -6,6 +6,7 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+#include <Efreet_Mime.h>
 #include <dlfcn.h>
 
 static Ecore_Hash *ewl_io_manager_plugins = NULL;
@@ -132,44 +133,16 @@ ewl_io_manager_mime_type_icon_name_get(const char *mime)
 const char *
 ewl_io_manager_uri_mime_type_get(const char *uri)
 {
-	char *ptr = NULL;
+	const char *mime = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("uri", uri, NULL);
 
-	/* XXX i'm cheating for now, fix this up later to use something like
-	 * xdgmime */
+	mime = efreet_mime_get(uri, EFREET_MIME_FLAG_GLOB |
+					EFREET_MIME_FLAG_TYPES |
+					EFREET_MIME_FLAG_MAGIC);
 
-	ptr = strrchr(uri, '.');
-	if (!ptr) DRETURN_PTR(NULL, DLEVEL_STABLE);
-
-	if (!strcasecmp(ptr, ".txt")) 
-	{
-		DRETURN_PTR("text/plain", DLEVEL_STABLE);
-	}
-	if (!strcasecmp(ptr, ".c") || !strcasecmp(ptr, ".h")
-		|| !strcasecmp(ptr, ".cpp"))
-	{
-		DRETURN_PTR("text/c", DLEVEL_STABLE);
-	}
-	else if (!strcasecmp(ptr, ".rtf"))
-	{
-		DRETURN_PTR("application/rtf", DLEVEL_STABLE);
-	}
-	else if (!strcasecmp(ptr, ".html"))
-	{
-		DRETURN_PTR("text/html", DLEVEL_STABLE);
-	}
-	else if (!strcasecmp(ptr, ".png"))
-	{
-		DRETURN_PTR("image/png", DLEVEL_STABLE);
-	}
-	else if (!strcasecmp(ptr, ".jpeg") || !strcasecmp(ptr, ".jpg"))
-	{
-		DRETURN_PTR("image/jpeg", DLEVEL_STABLE);
-	}
-
-	DRETURN_PTR(NULL, DLEVEL_STABLE);
+	DRETURN_PTR(mime, DLEVEL_STABLE);
 }
 
 /**

@@ -7,6 +7,7 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 #include <Efreet.h>
+#include <Efreet_Mime.h>
 
 #ifdef __GLIBC__
 #include <execinfo.h>
@@ -171,6 +172,12 @@ ewl_init(int *argc, char **argv)
 		goto ERROR;
 	}
 	ecore_list_prepend(shutdown_queue, efreet_shutdown);
+
+	if (!efreet_mime_init()) {
+		fprintf(stderr, "Could not initialize Efreet_Mime.\n");
+		goto ERROR;
+	}
+	ecore_list_prepend(shutdown_queue, efreet_mime_shutdown);
 
 	if (!ecore_string_init()) {
 		fprintf(stderr, "Could not initialize Ecore Strings.\n");
