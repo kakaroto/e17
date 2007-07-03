@@ -394,7 +394,6 @@ on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
          ShowAlert("You can't rename default 0.0");
       }
       //Update PartTree
-      //Update PartTree
       col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
       snprintf(buf,4095,"%s %.2f",Cur.eps->name,Cur.eps->value);
       etk_tree_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,

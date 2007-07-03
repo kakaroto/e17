@@ -80,7 +80,7 @@ on_Drag(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
       //Get the position of the bottom parent handler
       evas_object_geometry_get (rel2X_parent_handler, &parentx, &parenty, &parentw, &parenth);
-      //Calc the rel1_relative_x value
+      //Calc the rel2_relative_x value
       Cur.eps->rel2.relative.x = (float)(x - parentx)/(float)parentw;
 
 
