@@ -114,6 +114,7 @@ ewl_icon_init(Ewl_Icon *icon)
 	 */
 	icon->thumbnailing = TRUE;
 	icon->complex_label = TRUE;
+	icon->constrain = 16;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -198,7 +199,6 @@ void
 ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 {
 	Ewl_Widget *img;
-	int constrain = 16;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("icon", icon);
@@ -206,23 +206,21 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
 	if (icon->image)
-	{
-		constrain = ewl_icon_constrain_get(icon);
 		ewl_widget_destroy(icon->image);
-	}
 
 	img = ewl_image_new();
 	ewl_image_file_set(EWL_IMAGE(img), file, key);
 
-	if (icon->thumbnailing) {
+	if (icon->thumbnailing)
+	{
 		icon->image = ewl_image_thumbnail_get(EWL_IMAGE(img));
 		ewl_callback_append(icon->image, EWL_CALLBACK_VALUE_CHANGED,
 					ewl_icon_cb_thumb_value_changed, icon);
-		ewl_icon_constrain_set(icon, constrain);
 	}
 	else
 		icon->image = img;
 
+	ewl_icon_constrain_set(icon, icon->constrain);
 	ewl_image_proportional_set(EWL_IMAGE(icon->image), TRUE);
 	ewl_object_alignment_set(EWL_OBJECT(icon->image), 
 						EWL_FLAG_ALIGN_CENTER);
@@ -461,6 +459,7 @@ ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
 
+	icon->constrain = val;
 	if (icon->image)
 		ewl_image_constrain_set(EWL_IMAGE(icon->image), val);
 
@@ -475,15 +474,11 @@ ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
 unsigned int
 ewl_icon_constrain_get(Ewl_Icon *icon)
 {
-	unsigned int constrain = 0;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("icon", icon, 0);
 	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, 0);
 
-	constrain = ewl_image_constrain_get(EWL_IMAGE(icon->image));
-
-	DRETURN_INT(constrain, DLEVEL_STABLE);
+	DRETURN_INT(icon->constrain, DLEVEL_STABLE);
 }
 
 /**

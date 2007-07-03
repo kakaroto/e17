@@ -51,6 +51,8 @@ struct Ewl_Icon
 
 	char *label_text;	/**< The label text */
 
+	unsigned int constrain;		/**< The image constrain value */
+
 	Ewl_Icon_Type type;		/**< The icons type */
 	Ewl_Icon_Part hidden;		/**< The hidden part */
 	unsigned char editable:1;	/**< Is the icon editable? */
