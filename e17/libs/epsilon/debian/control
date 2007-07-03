@@ -2,16 +2,17 @@ Source: epsilon
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>> 3.0.0), automake1.7 | automaken, libtool, zlib1g-dev, libepeg0-dev, libevas0-dev, libecore0-dev, libedje0-dev, libimlib2-dev, libpng12-dev, automake1.7 | automaken, libtool
-Standards-Version: 3.5.7.0
+Build-Depends: cdbs, debhelper (>= 5), zlib1g-dev, libepeg-dev, libevas-dev, libecore-dev, libedje-dev, libimlib2-dev, libpng12-dev
+Standards-Version: 3.7.2
 
 Package: libepsilon0-dev
 Section: libdevel
 Architecture: any
 Depends: libepsilon0 (= ${Source-Version})
 Provides: libepsilon-dev
-Conflicts: libepsilon-dev
 Description: Enlightenment thumbnailing library development files
+ This is a small, display independent, and quick thumbnailing library.
+ .
  This package contains headers and static libraries for development with
  libepeg.
 
@@ -23,6 +24,8 @@ Recommends: epsilon-bin
 Provides: libepsilon
 Description: Enlightenment thumbnailing library API
  This is a small, display independent, and quick thumbnailing library.
+ .
+ This package contains the shared library.
 
 Package: epsilon0-bin
 Section: libs
@@ -31,3 +34,5 @@ Depends: ${shlibs:Depends}
 Provides: epsilon-bin
 Description: Enlightenment thumbnailing binary
  This is a small, display independent, and quick thumbnailing library.
+ .
+ This package contains the Epsilon binary program.
