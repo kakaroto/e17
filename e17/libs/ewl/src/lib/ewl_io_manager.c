@@ -138,9 +138,7 @@ ewl_io_manager_uri_mime_type_get(const char *uri)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("uri", uri, NULL);
 
-	mime = efreet_mime_get(uri, EFREET_MIME_FLAG_GLOB |
-					EFREET_MIME_FLAG_TYPES |
-					EFREET_MIME_FLAG_MAGIC);
+	mime = efreet_mime_type_get(uri);
 
 	DRETURN_PTR(mime, DLEVEL_STABLE);
 }
