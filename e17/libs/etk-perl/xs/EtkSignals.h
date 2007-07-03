@@ -6,7 +6,7 @@
 #include "XSUB.h"
 
 #define NEED_newRV_noinc
-#include "ppport.h"
+#include "../ppport.h"
 
 #ifdef _
 #undef _

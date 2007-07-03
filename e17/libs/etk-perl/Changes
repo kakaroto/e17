@@ -1,5 +1,11 @@
 Revision history for Perl extension Etk.
 
+0.07  Tue Jul  3 21:39:49 GMT+2 2007
+	- follow some changes in Etk
+	- Split the single XS file into multiple files
+	- Some changes to the build system
+	- Better signal handling
+
 0.06  Mon Jan 29 10:29:04 EET 2007
 	- move to the new Etk_Tree widget
 	- Various fixes to the event system
