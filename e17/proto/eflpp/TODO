@@ -1,0 +1,4 @@
+* memory handling, it leaks like hell
+* parent/child chaining
+* callback handling needs more thinking
+* much more :/
