@@ -53,7 +53,7 @@ cb_device_get_property(void *data, DBusMessage *msg, DBusError *err)
     cb->func(cb->user_data, ret, err);
 
 error:
-  free(ret);
+  if (ret) free(ret);
   e_hal_callback_free(cb);
 }
 
@@ -167,8 +167,11 @@ cb_device_get_all_properties(void *data, DBusMessage *msg, DBusError *err)
     cb->func(cb->user_data, ret, err);
 
 error:
-  ecore_hash_destroy(ret->properties);
-  free(ret);
+  if (ret) 
+  {
+    if (ret->properties) ecore_hash_destroy(ret->properties);
+    free(ret);
+  }
   e_hal_callback_free(cb);
 }
 
@@ -218,7 +221,7 @@ cb_device_query_capability(void *data, DBusMessage *msg, DBusError *err)
     cb->func(cb->user_data, ret, err);
 
 error:
-  free(ret);
+  if(ret) free(ret);
   e_hal_callback_free(cb);
 }
 

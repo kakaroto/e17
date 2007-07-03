@@ -46,8 +46,11 @@ cb_manager_get_all_devices(void *data, DBusMessage *msg, DBusError *err)
   cb->func(cb->user_data, ret, err);
 
 error:
-  if (ret && ret->strings) ecore_list_destroy(ret->strings);
-  free(ret);
+  if (ret)
+  {
+    if (ret->strings) ecore_list_destroy(ret->strings);
+    free(ret);
+  }
   e_hal_callback_free(cb);
 }
 
@@ -96,7 +99,7 @@ cb_manager_device_exists(void *data, DBusMessage *msg, DBusError *err)
   cb->func(cb->user_data, ret, err);
 
 error:
-  free(ret);
+  if (ret) free(ret);
   e_hal_callback_free(cb);
 }
 
@@ -150,8 +153,11 @@ cb_manager_find_device_string_match(void *data, DBusMessage *msg, DBusError *err
   cb->func(cb->user_data, ret, err);
 
 error:
-  if (ret && ret->strings) ecore_list_destroy(ret->strings);
-  free(ret);
+  if (ret)
+  {
+    if (ret->strings) ecore_list_destroy(ret->strings);
+    free(ret);
+  }
   e_hal_callback_free(cb);
 }
 
@@ -205,8 +211,11 @@ cb_manager_find_device_by_capability(void *data, DBusMessage *msg, DBusError *er
   cb->func(cb->user_data, ret, err);
 
 error:
-  if (ret && ret->strings) ecore_list_destroy(ret->strings);
-  free(ret);
+  if (ret)
+  {
+    if (ret->strings) ecore_list_destroy(ret->strings);
+    free(ret);
+  }
   e_hal_callback_free(cb);
 }
 
