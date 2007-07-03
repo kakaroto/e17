@@ -261,7 +261,7 @@ engrave_canvas_part_recalc(Engrave_Canvas *ec, Engrave_Part *ep,
 
     if (rel2_to_x)
         ep->pos.w = eps->rel2.offset.x + ((Engrave_Part*)(rel2_to_x->parent))->pos.x 
-                    + (eps->rel2.relative.x * ((Engrave_Part*)(rel2_to_x->parent))->pos.y) 
+                    + (eps->rel2.relative.x * ((Engrave_Part*)(rel2_to_x->parent))->pos.w) 
                     - ep->pos.x + 1;
     else
         ep->pos.w = eps->rel2.offset.x + (eps->rel2.relative.x * ec->w) 
