@@ -262,8 +262,8 @@ ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
 	 * Load the new image if widget has been realized
 	 */
 	if (REALIZED(w)) {
-		ewl_widget_unrealize(w);
-		ewl_widget_realize(w);
+		ewl_widget_obscure(w);
+		ewl_widget_reveal(w);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
