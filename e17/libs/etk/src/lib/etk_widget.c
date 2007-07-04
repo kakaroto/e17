@@ -517,6 +517,24 @@ void etk_widget_disabled_set(Etk_Widget *widget, Etk_Bool disabled)
 }
 
 /**
+ * @brief Recursively disables or enables the widget and its children
+ * @param widget a widget
+ * @param disabled ETK_TRUE to disable the widget and its children, ETK_FALSE to enable them
+ */
+void etk_widget_disabled_set_all(Etk_Widget *widget, Etk_Bool disabled)
+{
+   Evas_List *l;
+
+   if (!widget)
+      return;
+
+   if (!widget->internal)
+      etk_widget_disabled_set(widget, disabled);
+   for (l = widget->children; l; l = l->next)
+      etk_widget_disabled_set_all(ETK_WIDGET(l->data), disabled);
+}
+
+/**
  * @brief Gets whether or not the widget is disabled
  * @param widget a widget
  * @return Returns ETK_TRUE if the widget is disabled, ETK_FALSE otherwise

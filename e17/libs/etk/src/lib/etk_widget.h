@@ -128,6 +128,7 @@ Etk_Bool      etk_widget_is_focused(Etk_Widget *widget);
 void          etk_widget_focusable_set(Etk_Widget *widget, Etk_Bool focusable);
 Etk_Bool      etk_widget_focusable_get(Etk_Widget *widget);
 void          etk_widget_disabled_set(Etk_Widget *widget, Etk_Bool disabled);
+void          etk_widget_disabled_set_all(Etk_Widget *widget, Etk_Bool disabled);
 Etk_Bool      etk_widget_disabled_get(Etk_Widget *widget);
 void          etk_widget_enter(Etk_Widget *widget);
 void          etk_widget_leave(Etk_Widget *widget);
