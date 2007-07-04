@@ -119,29 +119,15 @@ dnl Checking for Perl:
 AC_PATH_PROG(PERL,perl,0)
 AC_SUBST(PERL)
 
-PROG="ecore-config";
-AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-if test -z "$ECORE_CONFIG" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
+dnl Check for pkg-config stuff
+PKG_CHECK_MODULES(ECORE, [ecore ecore-desktop ecore-ipc])
+AC_SUBST(ECORE_CFLAGS)
+AC_SUBST(ECORE_LIBS)
 
-PROG="evas-config";
-AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-if test -z "$EVAS_CONFIG" ; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  AC_MSG_ERROR(Cannot find $PROG)
-fi
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
+dnl Check for pkg-config stuff
+PKG_CHECK_MODULES(EVAS, [evas])
+AC_SUBST(EVAS_CFLAGS)
+AC_SUBST(EVAS_LIBS)
 
 
 PROG="curl-config";
@@ -176,20 +162,10 @@ AC_CHECK_HEADERS(sqlite3.h,
         )
 AC_SUBST(SQLITE_LIBS)
 
-AC_ARG_WITH(eet-config,
-[  --with-eet-config=EET_CONFIG      use eet-config specified ],
-[
-  EET_CONFIG=$withval;
-  echo "using "$EET_CONFIG" for eet-config";
-],[
-  PROG="eet-config";
-  AC_PATH_PROG(EET_CONFIG, $PROG, "", $PATH)
-])
-eet_cflags=`$EET_CONFIG --cflags`
-eet_libs=`$EET_CONFIG --libs`
-AC_SUBST(eet_cflags)
-AC_SUBST(eet_libs)
-
+dnl Check for pkg-config stuff
+PKG_CHECK_MODULES(EET, [eet])
+AC_SUBST(EET_CFLAGS)
+AC_SUBST(EET_LIBS)
 
 PROG="taglib-config";
 AC_PATH_PROG(TAGLIB_CONFIG, $PROG, "", $PATH)
@@ -240,9 +216,6 @@ fi
 AC_SUBST(extractor_libs)
 AC_SUBST(extractor_cflags)
 AM_CONDITIONAL(HAVE_EXTRACTOR, test $extractor = yes)
-
-
-
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
@@ -318,7 +291,6 @@ AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h sys/m
 dnl Various conditionals
 AM_CONDITIONAL(BUILD_ECORE_DEPENDENT,      test "$ecore" != "no")
 AC_DEFINE(HAVE_ECORE, 1, [Build with ecore])
-
 
 AC_OUTPUT([
 Makefile

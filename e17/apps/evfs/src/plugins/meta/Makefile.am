@@ -31,12 +31,12 @@ extractor_tagger_la_SOURCES = evfs_meta_extractor.c \
                         $(top_srcdir)/src/common/evfs_misc.c
 
 			
-audio_tagger_la_CFLAGS =  @ecore_cflags@ @taglib_cflags@
+audio_tagger_la_CFLAGS =  @ECORE_CFLAGS@ @taglib_cflags@
 audio_tagger_la_LDFLAGS = -module -avoid-version
-audio_tagger_la_LIBADD =  @ecore_libs@ @taglib_libs@ -L$(top_builddir)/src/lib -levfs
+audio_tagger_la_LIBADD =  @ECORE_LIBS@ @taglib_libs@ -L$(top_builddir)/src/lib -levfs
 
-extractor_tagger_la_CFLAGS =  @ecore_cflags@ @extractor_cflags@
+extractor_tagger_la_CFLAGS =  @ECORE_CFLAGS@ @extractor_cflags@
 extractor_tagger_la_LDFLAGS = -module -avoid-version
-extractor_tagger_la_LIBADD =  @ecore_libs@ @extractor_libs@ -L$(top_builddir)/src/lib -levfs
+extractor_tagger_la_LIBADD =  @ECORE_LIBS@ @extractor_libs@ -L$(top_builddir)/src/lib -levfs
 
 

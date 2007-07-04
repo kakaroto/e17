@@ -41,7 +41,7 @@ while test $# -gt 0; do
       ;;
     --cflags)
       includes="-I@includedir@ -I@includedir@/evfs"
-      echo $includes @ecore_cflags@
+      echo $includes @ECORE_CFLAGS@
       ;;		  
     --libs)
       libdirs=-L@libdir@

@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS     = 1.7 foreign
 
 lib_LTLIBRARIES = libevfs.la
 
-INCLUDES = -I$(top_srcdir)/src/include @eet_cflags@ @ecore_cflags@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) \
+INCLUDES = -I$(top_srcdir)/src/include @EET_CFLAGS@ @ECORE_CFLAGS@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) \
 	   -DBINDIR=\""$(bindir)"\"
 
 libevfs_la_SOURCES   = \
@@ -41,8 +41,8 @@ libevfs_la_SOURCES   = \
 	
 
 libevfs_la_LIBADD = \
-	@ecore_libs@ \
-	@eet_libs@ \
+	@ECORE_LIBS@ \
+	@EET_LIBS@ \
 	@SQLITE_LIBS@
 
 libevfs_la_CFLAGS = -DLIB $(AM_CFLAGS)

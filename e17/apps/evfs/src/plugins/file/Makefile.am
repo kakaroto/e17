@@ -89,41 +89,41 @@ ftp_la_SOURCES = evfs_fs_ftp.c \
 
 
 	
-posix_la_CFLAGS =  @ecore_cflags@
+posix_la_CFLAGS =  @ECORE_CFLAGS@
 posix_la_LDFLAGS = -module -avoid-version
-posix_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
+posix_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
-vfolder_la_CFLAGS =  @ecore_cflags@
+vfolder_la_CFLAGS =  @ECORE_CFLAGS@
 vfolder_la_LDFLAGS = -module -avoid-version
-vfolder_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
+vfolder_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
-samba_la_CFLAGS =  @ecore_cflags@
+samba_la_CFLAGS =  @ECORE_CFLAGS@
 samba_la_LDFLAGS = -module -avoid-version -lsmbclient
-samba_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
+samba_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
-tar_la_CFLAGS =  @ecore_cflags@
+tar_la_CFLAGS =  @ECORE_CFLAGS@
 tar_la_LDFLAGS = -module -avoid-version
-tar_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
+tar_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
-bzip2_la_CFLAGS =  @ecore_cflags@
+bzip2_la_CFLAGS =  @ECORE_CFLAGS@
 bzip2_la_LDFLAGS = -module -avoid-version
-bzip2_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs @BZ2_LIBS@
+bzip2_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs @BZ2_LIBS@
 
-gzip_la_CFLAGS =  @ecore_cflags@
+gzip_la_CFLAGS =  @ECORE_CFLAGS@
 gzip_la_LDFLAGS = -module -avoid-version
-gzip_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs -lz
+gzip_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs -lz
 
 
-ftp_la_CFLAGS =  @ecore_cflags@ @curl_cflags@
+ftp_la_CFLAGS =  @ECORE_CFLAGS@ @curl_cflags@
 ftp_la_LDFLAGS = -module -avoid-version
-ftp_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs @curl_libs@
+ftp_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs @curl_libs@
 
-sftp_la_CFLAGS =  @ecore_cflags@
+sftp_la_CFLAGS =  @ECORE_CFLAGS@
 sftp_la_LDFLAGS = -module -avoid-version
-sftp_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
+sftp_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
-trash_la_CFLAGS =  @ecore_cflags@
+trash_la_CFLAGS =  @ECORE_CFLAGS@
 trash_la_LDFLAGS = -module -avoid-version
-trash_la_LIBADD =  @ecore_libs@ -L$(top_builddir)/src/lib -levfs
+trash_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
 
