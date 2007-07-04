@@ -18,17 +18,41 @@ AC_PROG_CXX
 AC_HEADER_STDC
 AC_PROG_LIBTOOL
 
-dnl Check for option to enable debug
-AC_MSG_CHECKING(whether to enable debugging)
-AC_ARG_ENABLE(debug,
-        [  --enable-debug=[no/yes]        enables debug build (default=no)],,
-                 enable_debug=no)
+dnl Check for option to enable esmart
+AC_MSG_CHECKING(whether to enable esmart)
+AC_ARG_ENABLE(emotion,
+        [  --enable-esmart=[no/yes]        enables esmart build (default=yes)],,
+                 enable_esmart=yes)
+
+if [ ! test "x$enable_esmart" != "xyes"]; then
+  AC_DEFINE(EFL_SUPPORT_ESMART, 1, [Define to enable esmart support])
+  esmart_modules="esmart_container esmart_text_entry"
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+fi
+
+dnl Check for option to enable emotion
+AC_MSG_CHECKING(whether to enable emotion)
+AC_ARG_ENABLE(emotion,
+        [  --enable-emotion=[no/yes]        enables emotion build (default=yes)],,
+                 enable_emotion=yes)
+
+if [ ! test "x$enable_emotion" != "xyes"]; then
+  AC_DEFINE(EFL_SUPPORT_EMOTION, 1, [Define to enable emotion support])
+  emotion_modules="emotion"
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+fi
+
 
 dnl Check for programs
 
 dnl Checks for libraries
+
 dnl Check for pkg-config stuff
-pkg_modules="evas ecore ecore-config ecore-evas sigc++-2.0 esmart_container etk esmart_text_entry ewl"
+pkg_modules="$esmart_modules $emotion_modules evas ecore ecore-config ecore-evas sigc++-2.0 etk ewl"
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)
