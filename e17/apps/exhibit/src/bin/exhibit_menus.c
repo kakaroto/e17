@@ -489,6 +489,7 @@ _ex_menu_go_to_fav_cb(Etk_Object *obj, void *data)
    e->cur_tab->dir = strdup(e->options->fav_path);
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 }
 

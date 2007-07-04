@@ -388,6 +388,7 @@ _ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event
    e->cur_tab->dir = strdup(dcol_string);
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
    etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), etk_notebook_current_page_get(ETK_NOTEBOOK(e->notebook)), _ex_file_get(e->cur_tab->cur_path));
 }
@@ -422,9 +423,10 @@ _ex_tab_itree_key_down_cb(Etk_Object *object, void *event, void *data)
 
    if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
      {
-        e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
+        e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry)))));
         etk_tree_clear(ETK_TREE(e->cur_tab->itree));
         etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
         _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
      }
 }

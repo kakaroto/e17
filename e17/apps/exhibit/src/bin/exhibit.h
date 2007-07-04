@@ -201,7 +201,7 @@ struct _Exhibit
    Etk_Widget    *hpaned;
    Etk_Widget    *vpaned;
    Etk_Widget    *hpaned_shadow;
-   Etk_Widget    *entry[2];
+   Etk_Widget    *combobox_entry;
    Etk_Widget    *zoom_in[2];
    Etk_Widget    *zoom_out[2];
    Etk_Widget    *fit[2];

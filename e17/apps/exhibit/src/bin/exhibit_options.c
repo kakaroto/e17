@@ -483,6 +483,7 @@ _ex_options_set()
    e->options->default_sort = e->options->default_sort_tmp;
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
 
    /* MONITOR FOCUS */
    if (IS_SELECTED(dialog->monitor_focus))

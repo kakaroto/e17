@@ -13,6 +13,7 @@ static void _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_moni
 static int _ex_main_dtree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
 static void _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data);
 static void _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data);
+static void _ex_main_combobox_entry_changed_cb(Etk_Object *object, void *data);
 static Etk_Bool _ex_main_window_deleted_cb(void *data);
 static void _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _ex_main_window_resize_cb(Etk_Object *object, void *data);
@@ -238,7 +239,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	e->cur_tab->cur_path[len] = '/';
 	e->cur_tab->cur_path[len + 1] = '\0';
      }
-   etk_entry_text_set(ETK_ENTRY(e->entry[0]), e->cur_tab->cur_path);
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))), e->cur_tab->cur_path);
    
    while ((dir_entry = readdir(dir)) != NULL)
      {
@@ -265,6 +266,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 			etk_theme_icon_path_get(),
 			"places/folder_16",
 			dir_entry->d_name, NULL);
+		  etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(e->combobox_entry), dir_entry->d_name, NULL);
 		  e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, dir_entry->d_name);
 		  continue;
 	       }
@@ -401,15 +403,18 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
 	  {
 	   case ECORE_FILE_EVENT_CREATED_DIRECTORY:
 	      etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	      etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
 	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_DIRS);
 	      break;
 	   case ECORE_FILE_EVENT_DELETED_DIRECTORY:
 	      etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	      etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
 	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_DIRS);
 	      break;
 	   case ECORE_FILE_EVENT_DELETED_SELF:
 	      etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
 	      etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+	      etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
 	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 	      break;
 	   case ECORE_FILE_EVENT_MODIFIED:
@@ -454,7 +459,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
         /* Stop the propagation of the signal so the focus won't be passed to the next widget */
         etk_signal_stop();
 	
-	path = etk_entry_text_get(ETK_ENTRY(e->entry[0]));
+	path = etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))));
 	dir = ecore_file_get_dir((char*)path);
 	file = ecore_file_get_file(path);
 	
@@ -503,7 +508,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	       {
 		  char fullpath[PATH_MAX];
 		  snprintf(fullpath, PATH_MAX, "%s/%s/", dir, (char*)l->data);
-		  etk_entry_text_set(ETK_ENTRY(e->entry[0]), fullpath);
+		  etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))), fullpath);
 		  break;
 	       }	
 	  }
@@ -512,21 +517,42 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
    
    if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
      {
+	Etk_Widget *entry;
+	
+	entry = etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry));
+	
 	_ex_slideshow_stop(e);
 	_ex_thumb_abort();
-        e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
+        e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(entry)));
         etk_tree_clear(ETK_TREE(e->cur_tab->itree));
         etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
         _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
      }
+}
+
+static void _ex_main_combobox_entry_changed_cb(Etk_Object *object, void *data)
+{
+   char *dir;
+   
+   etk_combobox_entry_item_fields_get(etk_combobox_entry_active_item_get(ETK_COMBOBOX_ENTRY(e->combobox_entry)),
+				      &dir, NULL);   
+   _ex_slideshow_stop(e);
+   _ex_thumb_abort();
+   e->cur_tab->dir = strdup(dir);
+   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
+   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
+   _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);   
 }
 
 static void
 _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data)
 {
-   e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(e->entry[0])));
+   e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry)))));
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 }
 
@@ -679,7 +705,7 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
 
    D(("Selecting tab %d\n", e->cur_tab->num));
    _ex_tab_select(tab);
-   etk_entry_text_set(ETK_ENTRY(e->entry[0]), e->cur_tab->cur_path);   
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))), e->cur_tab->cur_path);
 }
 
 void
@@ -731,6 +757,7 @@ _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 	e->cur_tab->dir = strdup(dir);
 	etk_tree_clear(ETK_TREE(e->cur_tab->itree));
 	etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
+	etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
 	_ex_main_populate_files(ecore_file_get_file(file), EX_TREE_UPDATE_ALL);
 	if (ecore_file_exists(file) && !ecore_file_is_dir(file))
 	  _ex_main_image_set(e, file);
@@ -968,14 +995,10 @@ _ex_main_window_show(char *dir, int fullscreen, int slideshow)
    entry_hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_table_attach(ETK_TABLE(e->table), entry_hbox, 0, 3, 2, 2, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL, 0, 0);
 
-   e->entry[0] = etk_entry_new();
-   etk_box_append(ETK_BOX(entry_hbox), e->entry[0], ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   etk_signal_connect("key-down", ETK_OBJECT(e->entry[0]), ETK_CALLBACK(_ex_main_entry_dir_key_down_cb), e);
-
-   e->entry[1] = etk_button_new_from_stock(ETK_STOCK_GO_NEXT);
-   etk_button_label_set(ETK_BUTTON(e->entry[1]), NULL);
-   etk_box_append(ETK_BOX(entry_hbox), e->entry[1], ETK_BOX_START, ETK_BOX_FILL, 0);
-   etk_signal_connect("clicked", ETK_OBJECT(e->entry[1]), ETK_CALLBACK(_ex_main_goto_dir_clicked_cb), e);
+   e->combobox_entry = etk_combobox_entry_new_default();   
+   etk_box_append(ETK_BOX(entry_hbox), e->combobox_entry, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_signal_connect("key-down", ETK_OBJECT(e->combobox_entry), ETK_CALLBACK(_ex_main_entry_dir_key_down_cb), e);
+   etk_signal_connect("active-item-changed", ETK_OBJECT(e->combobox_entry), ETK_CALLBACK(_ex_main_combobox_entry_changed_cb), e);
 
    /* create first tab but dont place it in notebook */
    if (dir)
