@@ -5,6 +5,7 @@ includedir=@includedir@
 enginesdir=@libdir@/ewl/engines
 pluginsdir=@libdir@/ewl/plugins
 testsdir=@libdir@/ewl/tests
+testssrcdir=@prefix@/share/ewl/examples
 
 Name: ewl
 Description: Ewl enlightened widget library
