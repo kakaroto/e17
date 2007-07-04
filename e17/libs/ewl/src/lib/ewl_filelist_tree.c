@@ -448,7 +448,7 @@ Ewl_Widget *ewl_filelist_tree_cb_header_fetch(void *data __UNUSED__,
 	else if (column == 1) t = "size";
 	else if (column == 2) t = "modifed";
 	else if (column == 3) t = "permissions";
-	else if (column == 4) t ="group";
+	else if (column == 4) t = "group";
 	else t = "";
 
 	ewl_label_text_set(EWL_LABEL(l), t);
