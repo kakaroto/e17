@@ -146,6 +146,9 @@ examples/ecore/stars/Makefile
 examples/ecore/timers/Makefile
 examples/angstrom/Makefile
 examples/angstrom/bootmanager/Makefile
+examples/evas/Makefile
+examples/evas/hash/Makefile
+examples/evas/list/Makefile
 data/Makefile
 data/edjes/Makefile
 data/fonts/Makefile
