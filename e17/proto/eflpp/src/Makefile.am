@@ -11,26 +11,17 @@ lib_LTLIBRARIES = libeflpp.la
 
 libeflpp_la_SOURCES = 
 
-libeflpp_la_LDFLAGS = @PACKAGE_LIBS@ 
-
-libeflpp_la_LIBADD = 	common/libeflpp_common.la\
-		     	ecore/libeflpp_ecore.la\
-		     	edb/libeflpp_edb.la\
-		     	edje/libeflpp_edje.la\
+libeflpp_la_LDFLAGS =	common/libeflpp_common.la\
+			ecore/libeflpp_ecore.la\
+			edb/libeflpp_edb.la\
+			edje/libeflpp_edje.la\
 			eet/libeflpp_eet.la\
 			emotion/libeflpp_emotion.la\
 			esmart/libeflpp_esmart.la\
 			etk/libeflpp_etk.la\
 			evas/libeflpp_evas.la\
 			ewl/libeflpp_ewl.la\
-			misc/libeflpp_misc.la		     
+			misc/libeflpp_misc.la
+ 
 
-#libeflpp_includedir = $(pkgincludedir)
-
-# libeflpp_include_DATA = \
-#	eflcommon.h\
-#	efldebug.h\
-#	efldebug_internal.h\
-#	eflsys.h
-
-#EXTRA_DIST = $(libeflpp_include_DATA)
+libeflpp_la_LIBADD = 	@PACKAGE_LIBS@
