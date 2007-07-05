@@ -121,13 +121,9 @@ AC_SUBST(PERL)
 
 dnl Check for pkg-config stuff
 PKG_CHECK_MODULES(ECORE, [ecore ecore-desktop ecore-ipc])
-AC_SUBST(ECORE_CFLAGS)
-AC_SUBST(ECORE_LIBS)
 
 dnl Check for pkg-config stuff
 PKG_CHECK_MODULES(EVAS, [evas])
-AC_SUBST(EVAS_CFLAGS)
-AC_SUBST(EVAS_LIBS)
 
 
 PROG="curl-config";
@@ -164,8 +160,6 @@ AC_SUBST(SQLITE_LIBS)
 
 dnl Check for pkg-config stuff
 PKG_CHECK_MODULES(EET, [eet])
-AC_SUBST(EET_CFLAGS)
-AC_SUBST(EET_LIBS)
 
 PROG="taglib-config";
 AC_PATH_PROG(TAGLIB_CONFIG, $PROG, "", $PATH)
