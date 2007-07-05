@@ -4,8 +4,8 @@
    } \
    group { \
       name: icon_name; \
-      min: 33 27; \
-      max: 33 27; \
+      min: 32 32; \
+      max: 32 32; \
       parts { \
 	 part { \
 	    name: "icon"; \
