@@ -2,8 +2,8 @@ Source: evfs
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: automake1.7, libtool, autotools-dev, debhelper (>= 4.0.0), libsmbclient-dev, libxml2-dev, libecore-dev, libcurl3-dev, libbz2-dev, libeet-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxp-dev, zlib1g-dev, libsqlite3-dev, libextractor-dev
-Standards-Version: 3.6.2
+Build-Depends: cdbs, debhelper (>= 5), libsmbclient-dev, libxml2-dev, libecore-dev, libcurl3-dev, libbz2-dev, libeet-dev, libx11-dev, libxrender-dev, libssl-dev, libxcursor-dev, libxss-dev, libxinerama-dev, libxrandr-dev, libxp-dev, zlib1g-dev, libsqlite3-dev, libextractor-dev
+Standards-Version: 3.7.2
 
 Package: libevfs0
 Architecture: any
