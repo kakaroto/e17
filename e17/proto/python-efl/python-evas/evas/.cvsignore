@@ -1,0 +1,3 @@
+*.pyc
+*.pyo
+evas.c_evas.c
