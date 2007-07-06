@@ -434,7 +434,7 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	
 	row = etk_tree_row_append(ETK_TREE(e->cur_tab->itree), NULL, 
 				  e->cur_tab->icol,
-				  NULL, NULL, 
+				  PACKAGE_DATA_DIR"/gui.edj", "thumb_loading",
 				  basename((char *) file), NULL);	
 	
 	if(pid == -1) _ex_thumb_generate();

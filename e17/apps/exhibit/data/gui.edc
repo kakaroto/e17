@@ -34,6 +34,7 @@ images {
    image: "tiles.png" COMP;
    image: "e17_fileman_thumb_bg.png" COMP;
    image: "e17_mini_button_shadow2.png" COMP;
+   image: "exhibit_thumb_loading.png" COMP;
 }
 
 collections {
@@ -41,7 +42,35 @@ collections {
    ICON("one_to_one");
    ICON("zoom_in");
    ICON("zoom_out");
-
+   
+   group {
+      min: 32 32;
+      max: 64 64;
+      name: "thumb_loading";
+      parts { 
+	 part { 
+	    name: "icon"; 
+	    description { 
+	       state: "default" 0.0; 
+	       rel1 { 
+		  relative: 0.0 0.0; 
+		  offset: 0 0; 
+	       } 
+	       rel2 { 
+		  relative: 1.0 1.0; 
+		  offset: -1 -1; 
+	       } 
+	       image { 
+		  normal: "exhibit_thumb_loading.png";
+	       } 
+	       fill { 
+		  smooth: 0; 
+	       } 
+	    } 
+	 } 
+      } 
+   }   
+   
    group {
       name: "image_bg";
       parts {
