@@ -128,11 +128,9 @@ _ex_menu_delete_tab_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_save_image_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;
    Etk_Tree_Row *r;
    EX_MENU_ITEM_GET_RETURN(obj);
    
-   e = data;
    r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
 
    if(!r) return;
@@ -142,19 +140,17 @@ _ex_menu_save_image_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_save_image_as_cb(Etk_Object *obj, void *data)
 {   
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (!e->cur_tab->image_loaded)
      return;
 
-   _ex_image_save_as(e);
+   _ex_image_save_as();
 }
 
 void
 _ex_menu_rename_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
@@ -166,13 +162,23 @@ _ex_menu_rename_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_delete_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (!e->cur_tab->image_loaded)
      return;
 
    _ex_image_delete(e);
+}
+
+void
+_ex_menu_move_cb(Etk_Object *obj, void *data)
+{
+   EX_MENU_ITEM_GET_RETURN(obj);
+
+   if (!e->cur_tab->image_loaded)
+     return;
+
+   _ex_image_move();
 }
 
 void
@@ -185,7 +191,6 @@ _ex_menu_options_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_quit_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (e)
@@ -211,7 +216,6 @@ _ex_menu_run_in_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_undo_cb(Etk_Object *obj, void *data)
 {
-   Exhibit *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
@@ -224,7 +228,6 @@ _ex_menu_undo_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_rot_clockwise_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    int           w, h;
    char          size[30];
    EX_MENU_ITEM_GET_RETURN(obj);
@@ -242,7 +245,6 @@ _ex_menu_rot_clockwise_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_rot_counter_clockwise_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    int           w, h;
    char          size[30];   
    EX_MENU_ITEM_GET_RETURN(obj);
@@ -260,7 +262,6 @@ _ex_menu_rot_counter_clockwise_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_flip_horizontal_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
@@ -272,7 +273,6 @@ _ex_menu_flip_horizontal_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_flip_vertical_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
@@ -284,7 +284,6 @@ _ex_menu_flip_vertical_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_blur_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
@@ -296,7 +295,6 @@ _ex_menu_blur_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_sharpen_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
@@ -308,7 +306,6 @@ _ex_menu_sharpen_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_brighten_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
@@ -329,7 +326,6 @@ _ex_menu_brighten_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_darken_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
@@ -344,7 +340,6 @@ _ex_menu_darken_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_set_wallpaper_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (!e->cur_tab->image_loaded)
@@ -380,7 +375,6 @@ _ex_menu_fit_to_window_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_window_fullscreen_toggle_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;   
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;   
@@ -390,7 +384,6 @@ _ex_menu_window_fullscreen_toggle_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_toggle_slideshow_cb(Etk_Object *obj, void *data)
 {
-   Exhibit      *e;   
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;   
@@ -411,7 +404,6 @@ _ex_menu_refresh_cb(Etk_Object *obj, void *data)
 void
 _ex_menu_comments_cb(Etk_Object *obj, void *data)
 {   
-   Exhibit      *e = data;
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)

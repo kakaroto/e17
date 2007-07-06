@@ -589,7 +589,7 @@ _ex_options_page_1_create()
      etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->comments_visible));
 
 
-   sprintf(string, "%.2f", e->options->slide_interval);
+   snprintf(string, sizeof(string), "%.2f", e->options->slide_interval);
    etk_entry_text_set(ETK_ENTRY(dialog->slide_interval), string);
    
    etk_entry_text_set(ETK_ENTRY(dialog->dl_path), e->options->dl_path);
@@ -640,11 +640,11 @@ _ex_options_page_2_create()
    etk_box_append(ETK_BOX(vbox2), dialog->rotate_autosave, ETK_BOX_START,
          ETK_BOX_NONE, 0);
 
-   sprintf(string, "%.2f", e->options->blur_thresh);
+   snprintf(string, sizeof(string), "%.2f", e->options->blur_thresh);
    etk_entry_text_set(ETK_ENTRY(dialog->blur_thresh), string);
-   sprintf(string, "%.2f", e->options->sharpen_thresh);
+   snprintf(string, sizeof(string), "%.2f", e->options->sharpen_thresh);
    etk_entry_text_set(ETK_ENTRY(dialog->sharpen_thresh), string);
-   sprintf(string, "%.2f", e->options->brighten_thresh);
+   snprintf(string, sizeof(string), "%.2f", e->options->brighten_thresh);
    etk_entry_text_set(ETK_ENTRY(dialog->brighten_thresh), string);
 
    if (e->options->rotate_autosave)

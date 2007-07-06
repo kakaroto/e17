@@ -152,8 +152,8 @@ _ex_main_image_set(Exhibit *e, char *image)
    e->cur_tab->cur_file = malloc(PATH_MAX);
    memset(e->cur_tab->cur_file, 0, PATH_MAX);
    
-   sprintf(e->cur_tab->set_img_path, "%s", e->cur_tab->cur_path);
-   sprintf(e->cur_tab->cur_file, "%s", image);
+   snprintf(e->cur_tab->set_img_path, PATH_MAX, "%s", e->cur_tab->cur_path);
+   snprintf(e->cur_tab->cur_file, PATH_MAX, "%s", image);
 
    e->cur_tab->image_loaded = ETK_TRUE;
    etk_widget_show(ETK_WIDGET(e->cur_tab->image));
@@ -934,11 +934,12 @@ _ex_main_window_show(char *dir, int fullscreen, int slideshow)
 	
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Tab"), ETK_STOCK_TAB_NEW, ETK_MENU_SHELL(submenu), ETK_CALLBACK(_ex_menu_new_tab_cb), NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_cb), e);
-	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image as"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_as_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Save image as"), ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_save_image_as_cb), NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Set as wallpaper"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_set_wallpaper_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Rename"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_rename_cb), e);
 	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Delete"), ETK_STOCK_X_DIRECTORY_TRASH, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_delete_cb), e);
+	_ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Move"), ETK_STOCK_FORMAT_INDENT_MORE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_move_cb), NULL);
 	_ex_menu_item_new(EX_MENU_ITEM_SEPARATOR, NULL, ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menu), NULL, NULL);
 	
 	menu_item = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _("Close"), ETK_STOCK_LIST_REMOVE, ETK_MENU_SHELL(menu), ETK_CALLBACK(_ex_menu_run_in_cb), e);

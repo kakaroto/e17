@@ -599,15 +599,37 @@ _ex_image_save(Etk_Image *im)
 }
 
 void
-_ex_image_save_as_entry_cb(Etk_Object *object, void *event, void *data) 
+_ex_image_move_entry_cb(Etk_Object *object, Etk_Event_Key_Down *ev, void *data)
 {
-   Etk_Event_Key_Down *ev = event;
-   
+   if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
+     _ex_image_move_cb(data);   
+}
+
+void
+_ex_image_move_cb(void *data)
+{
+   Ex_Filedialog *fd = data;
+   char *basename;
+   int ret;
+
+   basename = strdup(etk_entry_text_get(ETK_ENTRY(fd->entry)));
+   ret = _ex_image_save_as_cb(data);
+   if (basename)
+     {
+	if (ret)
+	  ecore_file_unlink(basename);
+	free(basename);
+     }
+}
+
+void
+_ex_image_save_as_entry_cb(Etk_Object *object, Etk_Event_Key_Down *ev, void *data) 
+{
    if (!strcmp(ev->key, "Return") || !strcmp(ev->key, "KP_Enter"))
      _ex_image_save_as_cb(data);   
 }
 
-void
+int
 _ex_image_save_as_cb(void *data)
 {
    Ex_Filedialog *fd = data;
@@ -615,52 +637,55 @@ _ex_image_save_as_cb(void *data)
    const char *basename;
    const char *dir;
    Etk_Image *im = ETK_IMAGE(fd->e->cur_tab->image);
+   int res = 0;
 
    basename = etk_entry_text_get(ETK_ENTRY(fd->entry));
    dir = etk_filechooser_widget_current_folder_get
       (ETK_FILECHOOSER_WIDGET(fd->filechooser));
-   
+
   if (!dir || !basename)
-    return;
+    goto destroy;
+
+    {
+       char *r1, *r2;
+       int ret;
+
+       r1 = ecore_file_realpath(dir);
+       r2 = ecore_file_realpath(e->cur_tab->cur_path);
+
+       ret = strcmp(r1, r2);
+       free(r1);
+       free(r2);
+
+       if (!ret)
+	 goto destroy;;
+    }
   
-   sprintf(file, "%s/%s", dir, basename);
-   D(("Saving: %s\n", file));
+  snprintf(file, sizeof(file), "%s/%s", dir, basename);
+  D(("Saving: %s\n", file));
 
-   /* Dont fork for the tree polulating to work */
-   evas_object_image_save(etk_image_evas_object_get(im), file, NULL, NULL);
+  /* Dont fork for the tree polulating to work */
+  evas_object_image_save(etk_image_evas_object_get(im), file, NULL, NULL);
+  res = 1;
 
-   etk_widget_hide(fd->win);
+destroy:
+  _ex_image_file_dialog_destroy(fd);
+  return res;
 }
 
-void
-_ex_image_save_as(Exhibit *e)
+Ex_Filedialog *
+_ex_image_file_dialog_new()
 {
-   static Ex_Filedialog *fd = NULL;
+   Ex_Filedialog *fd;
    Etk_Widget *vbox;
-   Etk_Widget *hbox;
-   Etk_Widget *btn;
    Etk_Widget *label;
    
-   if (!fd) 
-     {
-	fd = calloc(1, sizeof(Ex_Filedialog));
-	if (!fd) return;
-	fd->e = e;
-	fd->win = NULL;
-     }
-   
-   /* Don't open more then one window */
-   if (fd->win) 
-     {
-	/* Update the filename when we show the window again */
-	etk_entry_text_set(ETK_ENTRY(fd->entry), e->cur_tab->cur_file);
-	etk_widget_show_all(ETK_WIDGET(fd->win));
-	return;
-     }
-
+   fd = calloc(1, sizeof(Ex_Filedialog));
+   if (!fd) return NULL;
+   fd->e = e;
+   fd->win = NULL;
    
    fd->win = etk_window_new();
-   etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit - Save image as ..");
    etk_signal_connect("delete-event", ETK_OBJECT(fd->win), 
 		      ETK_CALLBACK(etk_window_hide_on_delete), fd->win);
    
@@ -677,23 +702,71 @@ _ex_image_save_as(Exhibit *e)
    
    fd->entry = etk_entry_new();
    etk_entry_text_set(ETK_ENTRY(fd->entry), e->cur_tab->cur_file);
-   etk_box_append(ETK_BOX(vbox), fd->entry, ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_box_append(ETK_BOX(vbox), fd->entry, ETK_BOX_START, ETK_BOX_EXPAND, 0); 
+   
+   fd->hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(vbox), fd->hbox);
+
+   return fd;
+}
+
+void
+_ex_image_file_dialog_destroy(Ex_Filedialog *fd)
+{
+   if (!fd)
+     return;
+
+   if (fd->win)
+     etk_object_destroy(ETK_OBJECT(fd->win));
+
+   free(fd);
+}
+
+void
+_ex_image_move()
+{
+   Ex_Filedialog *fd;
+   Etk_Widget *btn;
+
+   fd = _ex_image_file_dialog_new();
+   etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit - Move image...");
    etk_signal_connect("key-down", ETK_OBJECT(fd->entry), 
-		      ETK_CALLBACK(_ex_image_save_as_entry_cb), fd);
+	 ETK_CALLBACK(_ex_image_move_entry_cb), fd);
+
+   btn = etk_button_new_with_label("Move");
+   etk_box_append(ETK_BOX(fd->hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(btn), 
+	 ETK_CALLBACK(_ex_image_move_cb), fd);
    
-   hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_container_add(ETK_CONTAINER(vbox), hbox);
-   
+   btn = etk_button_new_with_label("Cancel");
+   etk_box_append(ETK_BOX(fd->hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_signal_connect_swapped("clicked", ETK_OBJECT(btn), 
+	 ETK_CALLBACK(_ex_image_file_dialog_destroy), fd);
+
+   etk_widget_show_all(fd->win);
+}
+
+void
+_ex_image_save_as()
+{
+   Ex_Filedialog *fd;
+   Etk_Widget *btn;
+
+   fd = _ex_image_file_dialog_new();
+   etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit - Save image as...");
+   etk_signal_connect("key-down", ETK_OBJECT(fd->entry), 
+	 ETK_CALLBACK(_ex_image_move_entry_cb), fd);
+
    btn = etk_button_new_with_label("Save");
-   etk_box_append(ETK_BOX(hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(fd->hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect_swapped("clicked", ETK_OBJECT(btn), 
 			      ETK_CALLBACK(_ex_image_save_as_cb), fd);
    
    btn = etk_button_new_with_label("Cancel");
-   etk_box_append(ETK_BOX(hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(fd->hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_signal_connect_swapped("clicked", ETK_OBJECT(btn), 
-			      ETK_CALLBACK(etk_widget_hide), fd->win);
-   
+	 ETK_CALLBACK(_ex_image_file_dialog_destroy), fd);
+
    etk_widget_show_all(fd->win);
 }
 
@@ -705,7 +778,7 @@ _ex_image_delete_cb(void *data)
    char string[PATH_MAX];
    int ret;
 
-   sprintf(string, "%s%s", tab->set_img_path, tab->cur_file);
+   snprintf(string, sizeof(string), "%s%s", tab->set_img_path, tab->cur_file);
 
    ret = remove(string);
    if (ret == -1) 
@@ -742,7 +815,8 @@ _ex_image_delete(Exhibit *e)
    Ex_Tab *tab = e->cur_tab;
    char string[PATH_MAX];
 
-   sprintf(string, "Are you sure you want to delete this image? <br>%s%s<br> ", 
+   snprintf(string, sizeof(string),
+	 "Are you sure you want to delete this image? <br>%s%s<br> ", 
 	 tab->set_img_path, tab->cur_file);
 
    tab->dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_QUESTION, 
@@ -775,8 +849,8 @@ _ex_image_rename_dialog_response(Etk_Object *obj, int response_id, void *data)
 	 string = etk_entry_text_get(ETK_ENTRY(data));
 	 newpath = malloc(PATH_MAX);
 	 oldpath = malloc(PATH_MAX);
-	 sprintf(newpath, "%s%s", tab->set_img_path, string);
-	 sprintf(oldpath, "%s%s", tab->set_img_path, tab->cur_file);
+	 snprintf(newpath, PATH_MAX, "%s%s", tab->set_img_path, string);
+	 snprintf(oldpath, PATH_MAX, "%s%s", tab->set_img_path, tab->cur_file);
 	 D(("Renaming from %s -> %s\n", oldpath, newpath));
 
 	 ret = rename(oldpath, newpath);
@@ -805,10 +879,10 @@ _ex_image_rename()
    char string[PATH_MAX];
    char labeltext[PATH_MAX + 100];
 
-   sprintf(string, "%s%s", tab->set_img_path, tab->cur_file);
+   snprintf(string, sizeof(PATH_MAX), "%s%s", tab->set_img_path, tab->cur_file);
    dialog = etk_dialog_new();
 
-   sprintf(labeltext, "Rename file '%s'", string);
+   snprintf(labeltext, sizeof(labeltext), "Rename file '%s'", string);
 
    label = etk_label_new(labeltext);
 
@@ -841,7 +915,7 @@ _ex_image_refresh()
 {
    char file[PATH_MAX];
 
-   sprintf(file, "%s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
+   snprintf(file, sizeof(file), "%s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
    _ex_main_image_set(e, file);
 }
 
@@ -858,8 +932,8 @@ _ex_image_run(const char *app)
    if (!tmp)
      return;
    
-   sprintf(str, "%s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
-   sprintf(tmp, app, str);
+   snprintf(str, sizeof(str), "%s%s", e->cur_tab->set_img_path, e->cur_tab->cur_file);
+   snprintf(tmp, PATH_MAX, app, str);
 
    if (strlen(tmp) <= 0) 
      return;

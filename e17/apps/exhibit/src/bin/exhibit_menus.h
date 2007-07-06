@@ -21,6 +21,7 @@ void        _ex_menu_save_image_cb(Etk_Object *obj, void *data);
 void        _ex_menu_save_image_as_cb(Etk_Object *obj, void *data);
 void        _ex_menu_rename_cb(Etk_Object *obj, void *data);
 void        _ex_menu_delete_cb(Etk_Object *obj, void *data);
+void        _ex_menu_move_cb(Etk_Object *obj, void *data);
 void        _ex_menu_options_cb(Etk_Object *obj, void *data);
 void        _ex_menu_quit_cb(Etk_Object *obj, void *data);
 void        _ex_menu_run_in_cb(Etk_Object *obj, void *data);

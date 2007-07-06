@@ -50,7 +50,7 @@ _ex_slideshow_next(void *data)
 
    i = etk_tree_num_rows_get(ETK_TREE(e->cur_tab->itree));
    n = 1 + etk_tree_row_num_get(ETK_TREE(e->cur_tab->itree), row);
-   sprintf(string, "Slideshow picture %d of %d", n, i);
+   snprintf(string, sizeof(string), "Slideshow picture %d of %d", n, i);
    etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[3]), string, 0);
 
    return 1; 
@@ -77,7 +77,7 @@ _ex_slideshow_prev(void *data)
 
    i = etk_tree_num_rows_get(ETK_TREE(e->cur_tab->itree));
    n = 1 + etk_tree_row_num_get(ETK_TREE(e->cur_tab->itree), row);
-   sprintf(string, "Slideshow picture %d of %d", n, i);
+   snprintf(string, sizeof(string), "Slideshow picture %d of %d", n, i);
    etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[3]), string, 0);
 
    return 1; 

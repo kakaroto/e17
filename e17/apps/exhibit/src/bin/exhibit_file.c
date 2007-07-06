@@ -26,7 +26,6 @@ char *mimes[] =
 static Etk_Widget *dialog;
 static Etk_Widget *progressbar;
 
-
 static void
 _ex_file_download_dialog_response(Etk_Object *obj, int response_id, void *data)
 {
@@ -48,7 +47,7 @@ _ex_file_download_dialog(char *url, char *file)
 {
    char string[PATH_MAX + 16];
 
-   sprintf(string, "Downloading %s", url);
+   snprintf(string, sizeof(string), "Downloading %s", url);
 
    dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_INFO,
 	 ETK_MESSAGE_DIALOG_CANCEL,
@@ -113,7 +112,6 @@ _ex_file_download_complete_cb(void *data, const char *file, int status)
    etk_object_destroy(ETK_OBJECT(dialog));
    E_FREE(data);
    D(("Download of file %s is done\n", file));
-
 }
 
 int
@@ -121,7 +119,7 @@ _ex_file_is_viewable(char *file)
 {
    char *ext;
    int i = 0;
-   char *mime = NULL;
+   const char *mime = NULL;
 
    if (!(mime = efreet_mime_type_get(file)))
      {
@@ -178,15 +176,15 @@ _ex_file_is_ebg(char *file)
 int
 _ex_file_is_jpg(char *file)
 {
-   char        *ext;
+   const char *mime;
 
-   ext = strrchr(file, '.');
-   if (!ext) return 0;
+   if (!(mime = efreet_mime_type_get(file)))
+     return 0;
 
-   if (strcasecmp(ext, ".jpg") && strcasecmp(ext, ".jpeg"))
-      return 0;
+   if (!strcasecmp(mime, "image/jpeg"))
+     return 1;
 
-   return 1;
+   return 0;
 }
 
 char *
