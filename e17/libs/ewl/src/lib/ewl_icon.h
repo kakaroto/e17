@@ -46,7 +46,6 @@ struct Ewl_Icon
 	Ewl_Widget *label;	/**< The icons label */
 	Ewl_Widget *image;	/**< The icons image */
 	Ewl_Widget *alt;	/**< The icons alt text */
-	Ewl_Widget *menu;	/**< The icons menu */
 	Ewl_Widget *extended;	/**< The icons extended information */
 
 	char *label_text;	/**< The label text */
@@ -99,9 +98,6 @@ unsigned int     ewl_icon_label_complex_get(Ewl_Icon *icon);
 
 void		 ewl_icon_extended_data_set(Ewl_Icon *icon, Ewl_Widget *ext);
 Ewl_Widget	*ewl_icon_extended_data_get(Ewl_Icon *icon);
-
-void		 ewl_icon_menu_set(Ewl_Icon *icon, Ewl_Widget *menu);
-Ewl_Widget	*ewl_icon_menu_get(Ewl_Icon *icon);
 
 /*
  * Internal stuff

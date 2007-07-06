@@ -363,43 +363,6 @@ ewl_icon_label_get(Ewl_Icon *icon)
 }
 
 /**
- * @param icon: The icon to set the menu into
- * @param menu: The mneu to set on the icon
- * @return Returns no value
- * @brief Set the menu for the icon
- */
-void
-ewl_icon_menu_set(Ewl_Icon *icon, Ewl_Widget *menu)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_PARAM_PTR("menu", menu);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
-	DCHECK_TYPE("menu", menu, EWL_MENU_TYPE);
-
-	printf("FIXME: MENUS NOT HOOKED INTO ICONS YET\n");
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/** 
- * @param icon: The icon to get the menu from
- * @return Returns the menu set on this icon, or NULL if none set 
- * @brief Retrieve the menu from the icon
- */
-Ewl_Widget *
-ewl_icon_menu_get(Ewl_Icon *icon)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, NULL);
-
-	printf("FIXME: MENUS NOT HOOKED INTO ICONS YET\n");
-
-	DRETURN_PTR(NULL, DLEVEL_STABLE);
-}
-
-/**
  * @param icon: The icon to set the extended data into
  * @param ext: The extended data to set in the icon
  * @return Returns no value
