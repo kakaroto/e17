@@ -28,23 +28,13 @@ _ex_thumb_exe_exit(void *data, int type, void *event)
 	Etk_Tree_Row *row;
 	
 	thumb->image = (char*)epsilon_thumb_file_get(thumb->ep);
-	if (thumb->is_update)
-	  {
-	     row = _ex_image_find_row_from_file(thumb->tab, thumb->name);
-	     etk_tree_row_fields_set(row,
-				     ETK_FALSE,
-				     thumb->tab->icol, 
-				     thumb->image, NULL,
-				     thumb->name, NULL);
-	  }
-	else
-	  {
-	     row = etk_tree_row_append(ETK_TREE(thumb->tab->itree),
-				       NULL,
-				       thumb->tab->icol, 
-				       thumb->image, NULL,
-				       thumb->name, NULL);
-	  }
+	row = _ex_image_find_row_from_file(thumb->tab, thumb->name);
+	etk_tree_row_fields_set(row,
+				ETK_FALSE,
+				thumb->tab->icol, 
+				thumb->image, NULL,
+				thumb->name, NULL);
+	
 	if(thumb->selected)
 	  {
 	     etk_tree_row_select(row);
@@ -174,7 +164,6 @@ _ex_thumb_update_at_row(Etk_Tree_Row *row)
    thumb->tab = e->cur_tab;
    thumb_list = evas_list_append(thumb_list, thumb);
    thumb->selected = ETK_FALSE;
-   thumb->is_update = ETK_TRUE;
    etk_tree_model_cache_remove(thumb->tab->imodel, old_thumb, NULL);
    if(pid == -1) _ex_thumb_generate();   
 }

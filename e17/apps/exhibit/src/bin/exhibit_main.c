@@ -367,7 +367,6 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	thumb->e = e;
 	thumb->name = strdup(basename((char *) file));
 	thumb->tab = e->cur_tab;
-	thumb->is_update = ETK_FALSE;
 	thumb_list = evas_list_append(thumb_list, thumb);	
 	if(selected_file)
 	  {
@@ -376,6 +375,11 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	  }
 	else
 	  thumb->selected = ETK_FALSE;
+	
+	row = etk_tree_row_append(ETK_TREE(e->cur_tab->itree), NULL, 
+				  e->cur_tab->icol,
+				  NULL, NULL, 
+				  basename((char *) file), NULL);	
 	
 	if(pid == -1) _ex_thumb_generate();
      }

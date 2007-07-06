@@ -250,7 +250,6 @@ struct _Ex_Thumb
    Etk_Bool  selected;
    Epsilon  *ep;
    Ex_Tab   *tab;
-   Etk_Bool  is_update;
 };
 
 struct _Ex_Filedialog
