@@ -133,6 +133,7 @@ _ex_file_is_viewable(char *file)
 	     if(!strcasecmp(ext, viewables[i]))
 	       return 1;
 	  }
+	return 0;
      }
 
    for (i = 0; mimes[i]; i++)
