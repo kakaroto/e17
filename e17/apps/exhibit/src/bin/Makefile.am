@@ -4,7 +4,8 @@ INCLUDES = \
 -Wall -g \
 -I/usr/local/include \
 -I$(top_srcdir)/lib \
-@my_includes@
+@exhibit_cflags@ \
+@optional_cflags@
 
 bin_PROGRAMS = exhibit
 
@@ -31,7 +32,7 @@ exhibit_main.c \
 exhibit_menus.c \
 exhibit_sort.c \
 exhibit_thumb.c \
-exhibit_tab.c \
+exhibit_tab.c	\
 exhibit_slideshow.c \
 exhibit_favorites.c \
 exhibit_options.c \
@@ -40,4 +41,4 @@ exhibit_comment_jpeg.c \
 exhibit_model_wobbly.c \
 $(exhibit_INCLUDES)
 
-exhibit_LDADD = @my_libs@
+exhibit_LDADD = @exhibit_libs@ @optional_libs@

@@ -85,95 +85,18 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
-#check for EET
-PKG_CHECK_MODULES(EET, [eet >= 0.9.10.030],
-   [
-     AC_DEFINE(HAVE_EET, 1, have EET)
-     eet="EET "
-     AM_CONDITIONAL(HAVE_EET, true)
-     have_eet="yes"
-     eet_libs=$EET_LIBS
-     eet_cflags=$EET_CFLAGS
-   ],
-   [
-     AC_MSG_ERROR([No Eet, can't build.])
-   ]
-)
-
-#check for ECORE
-PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9.022],
-   [
-     AC_DEFINE(HAVE_ECORE, 1, have ECORE)
-     ecore="ECORE "
-     AM_CONDITIONAL(HAVE_ECORE, true)
-     have_ecore="yes"
-     ecore_libs=$ECORE_LIBS
-     ecore_cflags=$ECORE_CFLAGS
-   ],
-   [
-     AC_MSG_ERROR([No Ecore, can't build.])
-   ]
-)
-
-#check for EVAS
-PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9.022],
-   [
-     AC_DEFINE(HAVE_EVAS, 1, have EVAS)
-     evas="EVAS "
-     AM_CONDITIONAL(HAVE_EVAS, true)
-     have_evas="yes"
-     evas_libs=$EVAS_LIBS
-     evas_cflags=$EVAS_CFLAGS
-   ],
-   [
-     AC_MSG_ERROR([No Evas, can't build.])
-   ]
-)
-
-#check for EDJE
-PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0.022],
-   [
-     AC_DEFINE(HAVE_EDJE, 1, have EDJE)
-     edje="EDJE "
-     AM_CONDITIONAL(HAVE_EDJE, true)
-     have_edje="yes"
-     edje_libs=$EDJE_LIBS
-     edje_cflags=$EDJE_CFLAGS
-   ],
-   [
-     AC_MSG_ERROR([No Edje, can't build.])
-   ]
-)
-
-#check for ETK
-PKG_CHECK_MODULES(ETK, [etk >= 0.1.0.001],
-   [
-     AC_DEFINE(HAVE_ETK, 1, have ETK)
-     etk="ETK "
-     AM_CONDITIONAL(HAVE_ETK, true)
-     have_etk="yes"
-     etk_libs=$ETK_LIBS
-     etk_cflags=$ETK_CFLAGS
-   ],
-   [
-     AC_MSG_ERROR([No Etk, can't build.])
-   ]
-)
-
-#check for EPSILON
-PKG_CHECK_MODULES(EPSILON, [epsilon >= 0.3.0.004],
-   [
-     AC_DEFINE(HAVE_EPSILON, 1, have EPSILON)
-     epsilon="EPSILON "
-     AM_CONDITIONAL(HAVE_EPSILON, true)
-     have_epsilon="yes"
-     epsilon_libs=$EPSILON_LIBS
-     epsilon_cflags=$EPSILON_CFLAGS
-   ],
-   [
-     AC_MSG_ERROR([No Epsilon, can't build.])
-   ]
-)
+PKG_CHECK_MODULES(EXHIBIT, [
+  evas
+  ecore
+  ecore-evas
+  ecore-file
+  edje
+  eet
+  etk
+  efreet
+  efreet-mime
+  epsilon
+])
 
 #check for E
 AC_PATH_EFL(
@@ -213,17 +136,21 @@ PKG_CHECK_MODULES(ENGRAVE, [engrave >= 0.1.0],
    ]
 )
 
-
 dnl Set ETK_PACKAGE_DATA_DIR in config.h.  
 etk_prefix="\"$(pkg-config --variable=prefix etk)/share/etk\""
 AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
 
+# required libs / cflags
+exhibit_libs=$EXHIBIT_LIBS
+exhibit_cflags=$EXHIBIT_CFLAGS
+AC_SUBST(exhibit_libs)
+AC_SUBST(exhibit_cflags)
 
-# add your required libs / include here
-my_includes="$eet_cflags $ecore_cflags $evas_cflags $edje_cflags $etk_cflags $epsilon_cflags $engrave_cflags"
-my_libs="$eet_libs $ecore_libs $evas_libs $edje_libs $etk_libs $epsilon_libs $engrave_libs"
-AC_SUBST(my_includes)
-AC_SUBST(my_libs)
+#optional libs / cflags
+optional_cflags="$engrave_cflags"
+optional_libs="$engrave_libs"
+AC_SUBST(optional_cflags)
+AC_SUBST(optional_libs)
 
 AC_OUTPUT([
 Makefile

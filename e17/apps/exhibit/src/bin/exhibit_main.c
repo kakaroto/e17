@@ -1165,7 +1165,13 @@ main(int argc, char *argv[])
 	fprintf(stderr, "Could not init etk. Exiting...\n");
 	return 0;
      };
-   
+
+   if (!efreet_mime_init())
+     {
+	fprintf(stderr, "Could not init Efreet. Exiting...\n");
+	return 0;
+     }
+
    ecore_file_init();
    if(!_ex_options_init())
      fprintf(stderr, "WARNING: Exhibit could not set up its options files!\n"
@@ -1184,6 +1190,7 @@ main(int argc, char *argv[])
      _ex_options_save(e);
    _ex_options_shutdown();
    ecore_file_shutdown();
+   efreet_mime_shutdown();
    etk_shutdown();
 
    return 0;

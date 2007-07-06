@@ -6,17 +6,20 @@
 
 static void _ex_file_download_dialog_response(Etk_Object *obj, int response_id, void *data);
 
-char *viewables[] =
+char *viewables[] = 
 {
-   ".jpg",
-   ".jpeg",
-   ".png",
-   ".gif",
-   ".tiff",
    ".edj",
-   ".svg",
-   ".svgz",
-   ".xpm",
+   NULL
+};
+
+char *mimes[] =
+{
+   "image/jpeg",
+   "image/png",
+   "image/gif",
+   "image/tiff",
+   "image/svg+xml",
+   "image/xpm",
    NULL
 };
 
@@ -118,13 +121,23 @@ _ex_file_is_viewable(char *file)
 {
    char *ext;
    int i = 0;
+   char *mime = NULL;
 
-   ext = strrchr(file, '.');
-   if(!ext) return 0;
-
-   for(i = 0; viewables[i]; i++)
+   if (!(mime = efreet_mime_type_get(file)))
      {
-	if(!strcasecmp(ext, viewables[i]))
+	ext = strrchr(file, '.');
+	if(!ext) return 0;
+
+	for(i = 0; viewables[i]; i++)
+	  {
+	     if(!strcasecmp(ext, viewables[i]))
+	       return 1;
+	  }
+     }
+
+   for (i = 0; mimes[i]; i++)
+     {
+	if (!strcasecmp(mime, mimes[i]))
 	  return 1;
      }
 

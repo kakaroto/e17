@@ -13,6 +13,7 @@
 #include <Edje.h>
 #include <Ecore_Evas.h>
 #include <Epsilon.h>
+#include <Efreet_Mime.h>
 #include <etk/Etk.h>
 #include <stdio.h>
 #include <stdlib.h>
