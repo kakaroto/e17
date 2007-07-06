@@ -14,7 +14,7 @@ void etk_test_tree_window_create(void *data)
    static Etk_Widget *win = NULL;
    Etk_Widget *vbox;
    Etk_Widget *tree;
-   Etk_Tree_Col *col1, *col2, *col3, *col4, *col5;
+   Etk_Tree_Col *col1, *col2, *col3, *col4, *col5, *col6;
    Etk_Tree_Row *row;
    Etk_Widget *statusbar;
    Etk_Color c_warn;
@@ -31,7 +31,7 @@ void etk_test_tree_window_create(void *data)
    /* Create the window and the vbox where the widgets will be packed into */
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Tree Test");
-   etk_window_resize(ETK_WINDOW(win), 440, 500);
+   etk_window_resize(ETK_WINDOW(win), 640, 500);
    etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    vbox = etk_vbox_new(ETK_FALSE, 0);
@@ -61,6 +61,9 @@ void etk_test_tree_window_create(void *data)
    col5 = etk_tree_col_new(ETK_TREE(tree), "Column 5", 60, 0.5);
    etk_tree_col_model_add(col5, etk_tree_model_checkbox_new());
    
+   col6 = etk_tree_col_new(ETK_TREE(tree), "Column 6", 60, 0.0);
+   etk_tree_col_model_add(col6, etk_tree_model_progress_bar_new());
+   
    etk_tree_build(ETK_TREE(tree));
    
    /* Then we add the rows to the tree. etk_tree_freeze/thaw() is used to improve
@@ -78,6 +81,7 @@ void etk_test_tree_window_create(void *data)
          col3, 7,
          col4, PACKAGE_DATA_DIR "/images/1star.png", NULL,
          col5, ETK_FALSE,
+         col6, 0.57, "57 %",
          NULL);
       
       sprintf(row_name, "Row %d", (i * 3) + 2);
@@ -88,6 +92,7 @@ void etk_test_tree_window_create(void *data)
          col3, 19,
          col4, PACKAGE_DATA_DIR "/images/2stars.png", NULL,
          col5, ETK_TRUE,
+         col6, 0.20, "20 %",
          NULL);
       
       sprintf(row_name, "<font color=#%.2X%.2X%.2X%.2X>Row %d</font>", 

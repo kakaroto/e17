@@ -893,17 +893,18 @@ static Etk_Bool _progress_bar_render(Etk_Tree_Model *model, Etk_Tree_Row *row, E
    if (!(pbar_data = cell_data) || !cell_objects[0])
       return ETK_FALSE;
    
-   edje_object_part_drag_value_set(cell_objects[0], "etk.dragable.filler", 0.0, 0.0);
-   edje_object_part_drag_size_set(cell_objects[0], "etk.dragable.filler", pbar_data->fraction, 0.0);
-   
-   edje_object_part_text_set(cell_objects[0], "etk.text.label", pbar_data->text ? pbar_data->text : "");
+   edje_object_part_text_set(cell_objects[0], "etk.text.text", pbar_data->text ? pbar_data->text : "");
    
    evas_object_data_set(cell_objects[0], "_Etk_Tree_Model_Progressbar::Row", row);
    edje_object_size_min_get(cell_objects[0], &w, &h);
    evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - h) / 2));
-   evas_object_resize(cell_objects[0], w, h);
-   evas_object_show(cell_objects[0]);
+   evas_object_resize(cell_objects[0], w > geometry.w ? w : geometry.w, h);
+
+   edje_object_part_drag_value_set(cell_objects[0], "etk.dragable.filler", 0.0, 0.0);
+   edje_object_part_drag_size_set(cell_objects[0], "etk.dragable.filler", pbar_data->fraction, 0.0);
    
+   evas_object_show(cell_objects[0]);
+
    return ETK_FALSE;
 }
 
