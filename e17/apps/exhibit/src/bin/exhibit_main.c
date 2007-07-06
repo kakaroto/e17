@@ -3,8 +3,22 @@
  */
 #include "exhibit.h"
 
+/* defines the max number of additions to the tree per timer tick */
+#define MAX_INSERTS_PER_ITERATION 200
+
+/* defines the timer tick interval for tree inserts */
+#define INSERTS_INTERVAL 0.15
+
 extern pid_t pid;
 extern Evas_List *thumb_list;
+
+typedef struct _Ex_Populate_Data Ex_Populate_Data;
+
+struct _Ex_Populate_Data
+{
+   char *selected_file;
+   Ex_Tree_Update update;
+};
 
 Exhibit *e;
 Evas_List  *event_handlers;
@@ -202,13 +216,125 @@ _ex_main_dtree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *r
    return strcasecmp(dir1, dir2);
 }
 
+int
+_ex_main_populate_files_timer_cb(void *fdata)
+{
+   Ex_Populate_Data *data;
+   int i = 0;
+   static DIR *dir = NULL;
+   struct dirent *dir_entry;
+      
+   data = fdata;
+   if (!dir)
+     {
+	if ((dir = opendir(".")) == NULL)
+	  {
+	     if (data)
+	       {
+		  if (data->selected_file)
+		    free(data->selected_file);
+		  free(data);
+	       }
+	     return 0;
+	  }
+     }
+
+   etk_tree_freeze(ETK_TREE(e->cur_tab->itree));
+   etk_tree_freeze(ETK_TREE(e->cur_tab->dtree));   
+   
+   while ((dir_entry = readdir(dir)) != NULL)
+     {
+	char image[PATH_MAX];
+	char imagereal[PATH_MAX];
+	struct stat st;
+
+	++i;
+        /* Do not include current dir/above dir */
+	if ((!strcmp (dir_entry->d_name, ".")) || (!strcmp (dir_entry->d_name, "..")))
+	  continue;
+
+        /* Show hidden files and directories? */
+	if ((!e->options->list_hidden) && (dir_entry->d_name[0] == '.'))
+	  continue;
+	
+	snprintf(image, PATH_MAX, "%s", dir_entry->d_name);
+
+	if (data->update == EX_TREE_UPDATE_ALL || data->update == EX_TREE_UPDATE_DIRS)
+	  {
+	     if(stat(image, &st) == -1) continue;
+	     if(S_ISDIR(st.st_mode))
+	       {
+		  etk_tree_row_append(ETK_TREE(e->cur_tab->dtree), NULL, e->cur_tab->dcol,
+			etk_theme_icon_path_get(),
+			"places/folder_16",
+			dir_entry->d_name, NULL);
+		  etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(e->combobox_entry), dir_entry->d_name, NULL);
+		  e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, dir_entry->d_name);
+		  continue;
+	       }
+	  }
+
+	/* If we don't want to do the rtree updating */
+	if (data->update == EX_TREE_UPDATE_DIRS)
+	  continue;
+
+	if ((!e->options->show_all_filetypes) && (!_ex_file_is_viewable(dir_entry->d_name)))
+	  continue;
+
+	if(!realpath(image, imagereal))
+	  snprintf(imagereal, PATH_MAX, "%s", image);
+
+	_ex_main_itree_add(imagereal, data->selected_file);
+	
+	if (i == MAX_INSERTS_PER_ITERATION)
+	  {
+	     etk_tree_thaw(ETK_TREE(e->cur_tab->itree));
+	     etk_tree_thaw(ETK_TREE(e->cur_tab->dtree));
+	     
+	     ecore_timer_add(INSERTS_INTERVAL, _ex_main_populate_files_timer_cb, data);
+	     return 0;
+	  }
+     }
+
+   if (data->update == EX_TREE_UPDATE_FILES || data->update == EX_TREE_UPDATE_ALL)
+     {
+	if (e->options->default_sort == EX_SORT_BY_DATE)
+	  _ex_sort_date_cb(NULL, NULL);
+	else if (e->options->default_sort == EX_SORT_BY_SIZE)
+	  _ex_sort_size_cb(NULL, NULL);
+	else if (e->options->default_sort == EX_SORT_BY_NAME)
+	  _ex_sort_name_cb(NULL, NULL);
+	else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
+	  _ex_sort_resol_cb(NULL, NULL);
+     }
+
+   if (data->update == EX_TREE_UPDATE_ALL || data->update == EX_TREE_UPDATE_DIRS)
+     etk_tree_col_sort_full(e->cur_tab->dcol, _ex_main_dtree_compare_cb,
+			    NULL, ETK_TRUE);   
+   
+   etk_tree_thaw(ETK_TREE(e->cur_tab->itree));
+   etk_tree_thaw(ETK_TREE(e->cur_tab->dtree));   
+
+   if (!e->cur_tab->monitor)
+     {
+	D(("Adding monitoring to path %s\n", e->cur_tab->cur_path)); 
+	e->cur_tab->monitor = ecore_file_monitor_add(e->cur_tab->cur_path, 
+	      _ex_main_monitor_dir, NULL);
+     }
+      
+   dir = NULL;
+   closedir(dir);
+   free(data->selected_file);
+   free(data);
+   return 0;
+}
+
 void
 _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 {
    char back[PATH_MAX];
-   DIR *dir;
-   struct dirent *dir_entry;
-
+   Ex_Populate_Data *data;
+   
    _ex_main_image_unset();
    chdir(e->cur_tab->dir);
    
@@ -225,12 +351,6 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	ecore_file_monitor_del(e->cur_tab->monitor);
 	e->cur_tab->monitor = NULL;
      }
-
-   if ((dir = opendir(".")) == NULL)
-     return;
-
-   etk_tree_freeze(ETK_TREE(e->cur_tab->itree));
-   etk_tree_freeze(ETK_TREE(e->cur_tab->dtree));
    
    getcwd(e->cur_tab->cur_path, PATH_MAX);
    if (strlen(e->cur_tab->cur_path) < PATH_MAX - 2)
@@ -241,82 +361,18 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
      }
    etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))), e->cur_tab->cur_path);
    
-   while ((dir_entry = readdir(dir)) != NULL)
-     {
-	char image[PATH_MAX];
-	char imagereal[PATH_MAX];
-	struct stat st;
-
-        /* Do not include current dir/above dir */
-	if ((!strcmp (dir_entry->d_name, ".")) || (!strcmp (dir_entry->d_name, "..")))
-	  continue;
-
-        /* Show hidden files and directories? */
-	if ((!e->options->list_hidden) && (dir_entry->d_name[0] == '.'))
-	  continue;
-
-	snprintf(image, PATH_MAX, "%s", dir_entry->d_name);
-
-	if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
-	  {
-	     if(stat(image, &st) == -1) continue;
-	     if(S_ISDIR(st.st_mode))
-	       {
-		  etk_tree_row_append(ETK_TREE(e->cur_tab->dtree), NULL, e->cur_tab->dcol,
-			etk_theme_icon_path_get(),
-			"places/folder_16",
-			dir_entry->d_name, NULL);
-		  etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(e->combobox_entry), dir_entry->d_name, NULL);
-		  e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, dir_entry->d_name);
-		  continue;
-	       }
-	  }
-
-	/* If we don't want to do the rtree updating */
-	if (update == EX_TREE_UPDATE_DIRS)
-	  continue;
-
-	if ((!e->options->show_all_filetypes) && (!_ex_file_is_viewable(dir_entry->d_name)))
-	  continue;
-
-	if(!realpath(image, imagereal))
-	  snprintf(imagereal, PATH_MAX, "%s", image);
-
-	_ex_main_itree_add(imagereal, selected_file);	
-     }
-
-   etk_tree_thaw(ETK_TREE(e->cur_tab->itree));
-   etk_tree_thaw(ETK_TREE(e->cur_tab->dtree));
-
-   if (update == EX_TREE_UPDATE_FILES || update == EX_TREE_UPDATE_ALL)
-     {
-	if (e->options->default_sort == EX_SORT_BY_DATE)
-	  _ex_sort_date_cb(NULL, NULL);
-	else if (e->options->default_sort == EX_SORT_BY_SIZE)
-	  _ex_sort_size_cb(NULL, NULL);
-	else if (e->options->default_sort == EX_SORT_BY_NAME)
-	  _ex_sort_name_cb(NULL, NULL);
-	else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
-	  _ex_sort_resol_cb(NULL, NULL);
-     }
-
-   if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
-     etk_tree_col_sort_full(e->cur_tab->dcol, _ex_main_dtree_compare_cb, 
-			    NULL, ETK_TRUE);
-
-   if (!e->cur_tab->monitor)
-     {
-	D(("Adding monitoring to path %s\n", e->cur_tab->cur_path)); 
-	e->cur_tab->monitor = ecore_file_monitor_add(e->cur_tab->cur_path, 
-	      _ex_main_monitor_dir, NULL);
-     }
-
+   data = calloc(1, sizeof(Ex_Populate_Data));
+   if (selected_file)
+     data->selected_file = strdup(selected_file);
+   else
+     data->selected_file = NULL;
+   data->update = update;
+   ecore_timer_add(0.001, _ex_main_populate_files_timer_cb, data);  
+   
    /* Set the dir to the current dir at the end so we avoid stepdown 
     * like ".." if we just call the refresh on the listing like after a delete
     */
-   e->cur_tab->dir = strdup(".");
-   
-   closedir(dir);
+   e->cur_tab->dir = strdup(".");      
 }
 
 void
