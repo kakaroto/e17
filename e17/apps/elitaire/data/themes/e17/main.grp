@@ -145,12 +145,14 @@ group {
 		part {	
 			name: "elitaire_win_text";
 			type: TEXT;
-			effect: SHADOW;
+			effect: GLOW;
 			repeat_events: 1;
 			
 			description {
 				state: "default" 0.0;
 				color: 0 0 0 0;
+				color2: 255 170 17 255;
+				color3: 255 238 136 119;
 				rel1 { relative: 0.5 0.5; offset: -2 -2; to: "elitaire_card_field";}
 				rel2 { relative: 0.5 0.5; offset: 2 2; to: "elitaire_card_field";}
 				text {
@@ -163,7 +165,10 @@ group {
 			}
 			description {
 				state: "on" 0.0;
-				color: 255 219 103 200;
+				color: 255 255 255 255;
+				color2: 255 170 17 255;
+				color3: 255 238 136 119;
+				
 				rel1 { relative: 0.0 0.3; offset: 25 0; to: "elitaire_card_field";}
 				rel2 { relative: 1.0 0.7; offset: -25 0; to: "elitaire_card_field";}
 				text {
@@ -229,54 +234,6 @@ group {
 	}
 	programs {
 		program {
-			name: "menubar_on";
-			signal: "menubar,on";
-			source: "";
-			action: STATE_SET "visible" 0.0;
-			target: "menu_bar";
-			transition: SINUSOIDAL 0.5;
-		}
-		program {
-			name: "menubar_off";
-			signal: "menubar,off";
-			source: "";
-			action: STATE_SET "default" 0.0;
-			target: "menu_bar";
-			transition: SINUSOIDAL 0.5;
-		}
-		program {
-			name: "themebar_on";
-			signal: "themebar,on";
-			source: "";
-			action: STATE_SET "visible" 0.0;
-			target: "theme_bar";
-			transition: SINUSOIDAL 0.5;
-		}
-		program {
-			name: "themebar_off";
-			signal: "themebar,off";
-			source: "";
-			action: STATE_SET "default" 0.0;
-			target: "theme_bar";
-			transition: SINUSOIDAL 0.5;
-		}
-		program {
-			name: "cardbar_on";
-			signal: "cardbar,on";
-			source: "";
-			action: STATE_SET "visible" 0.0;
-			target: "card_bar";
-			transition: SINUSOIDAL 0.5;
-		}
-		program {
-			name: "cardbar_off";
-			signal: "cardbar,off";
-			source: "";
-			action: STATE_SET "default" 0.0;
-			target: "card_bar";
-			transition: SINUSOIDAL 0.5;
-		}
-		program {
 			name: "win_on";
 			signal: "win,on";
 			source: "";
@@ -312,9 +269,9 @@ group {
 		ICON_PROGS( "undo", "undo", "")
 		ICON_PROGS( "restart", "restart", "br")
 		ICON_PROGS( "newstart", "new_game", "")
-		BAR_PROGS( "cardbar", "elitaire_cards_box", "card_bar", cardbar_state)
-		BAR_PROGS( "themebar", "elitaire_theme_box", "theme_bar", themebar_state)
-		BAR_PROGS( "menubar", "elitaire_new_box", "menu_bar", menubar_state)
+		BAR_PROGS( "cardbar", "elitaire_cards_box", "card_bar", cardbar_state, "cards")
+		BAR_PROGS( "themebar", "elitaire_theme_box", "theme_bar", themebar_state, "theme")
+		BAR_PROGS( "menubar", "elitaire_new_box", "menu_bar", menubar_state, "game")
 	}
 	
 }/*

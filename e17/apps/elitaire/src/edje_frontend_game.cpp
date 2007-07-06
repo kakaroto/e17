@@ -173,7 +173,6 @@ void _eli_edje_frontend_game_end(Eli_App * eap)
     Eli_Edje_Frontend * eef;
 
     eef = eli_app_edje_frontend_get(eap);
-
     elitaire_object_giveup(eef->elitaire);
 }
 
@@ -283,8 +282,10 @@ void _eli_edje_frontend_new_game_cb(void * data, Evas_Object * o, const char * e
                           const char * source)
 {
     Eli_App * eap;
+    Eli_Edje_Frontend * eef;
 
     eap = (Eli_App *) data;
+    eef = eli_app_edje_frontend_get(eap);
 
     if (!strcmp(source, "")) {
         if (eap->current.game) {
@@ -297,7 +298,10 @@ void _eli_edje_frontend_new_game_cb(void * data, Evas_Object * o, const char * e
         const char * game;
 
         game = edje_object_part_text_get(o, "elitaire_element_value");
-        eli_app_game_new(eap, game);
+        if (game) {
+            edje_object_signal_emit(eef->gui, "game,selected", "elitaire");
+            eli_app_game_new(eap, game);
+        }
     }
 }
 
@@ -313,24 +317,33 @@ void _eli_edje_frontend_config_changed(Eli_App * eap, const int tag)
         else {
             char * theme;
 
-            theme = ecore_config_theme_get("/theme/gui");
-            //eli_app_theme_change(eap, theme);
+            if ((theme = ecore_config_theme_get("/theme/gui"))) {
+                /* FIXME: shouldn't we do here some thing? */
+                //eli_app_theme_change(eap, theme);
+                edje_object_signal_emit(eef->gui, "theme,selected", "elitaire");
+                free(theme);
+            }
         }
         break;
 		
     case CARDS:
-        if (!eef->elitaire) break;
-        else {
-            char * cards;
+    {
+        char * cards;
 
-            cards = ecore_config_theme_get("/theme/cards");
+        if ((cards = ecore_config_theme_get("/theme/cards"))) {
             if (eap->theme.cards.current) free(eap->theme.cards.current);                   eap->theme.cards.current = cards;
-            cards = ecore_config_theme_with_path_from_name_get(
-			    eap->theme.cards.current);
+        }
+
+        edje_object_signal_emit(eef->gui, "cards,selected", "elitaire");
+
+        if (eap->theme.cards.current && eef->elitaire
+                && (cards = ecore_config_theme_with_path_from_name_get(
+                        eap->theme.cards.current))) {
             elitaire_object_file_set(eef->elitaire, cards);
+            free(cards);
         }
         break;
-		
+    }	
     case VELOCITY:
     {    
 	    int v;

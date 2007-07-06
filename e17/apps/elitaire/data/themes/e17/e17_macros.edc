@@ -158,9 +158,12 @@ part {\
 	clip_to: _rel"_label_clip";\
 	mouse_events: 0;\
 	type: TEXT;\
+	effect: GLOW;\
 	description {\
 		state: "default" 0.0;\
 		color:    0 0 0 0;\
+		color2: 255 170 17 68;\
+		color3: 255 238 136 119;\
 		align: 0.0 0.0;\
 		visible: 0;\
 		rel1 {\
@@ -183,7 +186,9 @@ part {\
 	description {\
 		state: "on" 0.0;\
 		inherit: "default" 0.0;\
-		color: 123 0 0 255;\
+		color: 255 255 255 255;\
+		color2: 255 170 17 170;\
+		color3: 255 238 136 119;\
 		visible: 1;\
 	}\
 }\

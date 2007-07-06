@@ -238,7 +238,7 @@ SCROLL_DOWN_PART( _rel, 0.5 , 0.4, _rel"_scroll_down_box")\
 SCROLL_UP_PART( _rel, 0.5, 0.6, _rel"_scroll_up_box")\
 TOOLTIP( _rel"_bg_top", _name)
 
-#define BAR_PROGS( _sig, _flag, _rel , _var) \
+#define BAR_PROGS( _sig, _flag, _rel , _var, _event) \
 program {\
 	name: _sig"_clicked";\
 	signal: "mouse,clicked,1";\
@@ -254,7 +254,34 @@ program {\
 		}\
 	}\
 }\
+program {\
+	name: _event"_selected";\
+	signal: _event",selected";\
+	source: "elitaire";\
+	script {\
+		if(get_int(_var) == 1) {\
+			set_int(_var, 0);\
+			emit(_sig",off", "");\
+		}\
+	}\
+}\
 \
+program {\
+	name: _sig"_on";\
+	signal: _sig",on";\
+	source: "";\
+	action: STATE_SET "visible" 0.0;\
+	target: _rel;\
+	transition: SINUSOIDAL 0.5;\
+}\
+program {\
+	name: _sig"_off";\
+	signal: _sig",off";\
+	source: "";\
+	action: STATE_SET "default" 0.0;\
+	target: _rel;\
+	transition: SINUSOIDAL 0.5;\
+}\
 program {\
 	name: _rel"_mouse_wheel_up";\
 	signal: "mouse,wheel,0,-1";\

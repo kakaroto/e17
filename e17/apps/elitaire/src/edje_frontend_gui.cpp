@@ -620,15 +620,19 @@ static void _key_up_cb(void *data, Evas * e, Evas_Object * obj,
 static void _theme_item_selected_cb(void * data, Evas_Object * o,
                              const char * emission, const char * source)
 {
-    ecore_config_theme_set("/theme/gui", 
-		    edje_object_part_text_get(o, "elitaire_element_value"));
+    const char * theme;
+
+    if ((theme = edje_object_part_text_get(o, "elitaire_element_value"))) 
+        ecore_config_theme_set("/theme/gui", theme);
 }
 
 static void _cards_item_selected_cb(void * data, Evas_Object * o,
                              const char * emission, const char * source)
 {
-    ecore_config_theme_set("/theme/cards", 
-		    edje_object_part_text_get(o, "elitaire_element_value"));
+    const char * theme;
+
+    if ((theme = edje_object_part_text_get(o, "elitaire_element_value")))
+        ecore_config_theme_set("/theme/cards", theme);
 }
 
 /* Fill the theme container for selecting the theme */
