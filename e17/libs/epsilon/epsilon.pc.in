@@ -2,6 +2,7 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
+pluginsdir=@libdir@/epsilon/plugins/
 
 Name: epsilon
 Description: Freedesktop standards thumbnailer using the Enlightenment Foundation Libraries.
