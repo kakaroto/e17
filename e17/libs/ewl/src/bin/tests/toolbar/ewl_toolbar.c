@@ -39,26 +39,22 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(o2);
 
 	o = ewl_icon_simple_new();
-	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_ARROW_LEFT);
 	ewl_callback_append(EWL_WIDGET(o), EWL_CALLBACK_CLICKED, cb_click, o2);
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_widget_show(o);
 
 	o = ewl_icon_simple_new();
-	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_ARROW_RIGHT);
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_widget_show(o);
 
 	o = ewl_icon_simple_new();
-	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_STOP);
 	ewl_widget_show(o);
 	
 	o = ewl_icon_simple_new();
-	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_HOME);
 	ewl_widget_show(o);
@@ -68,7 +64,6 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(o);
 	
 	o = ewl_hseeker_new();
-	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_widget_show(o);
 
