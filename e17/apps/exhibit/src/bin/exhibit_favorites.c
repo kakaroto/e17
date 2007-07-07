@@ -19,7 +19,7 @@ _ex_favorites_add(Exhibit *e, char *path)
    
    realpath = ecore_file_realpath(path);
    snprintf(new_path, sizeof(new_path), "%s/%s", e->options->fav_path, path);
-
+   
    ecore_file_symlink(realpath, new_path);
    if(realpath)
      E_FREE(realpath);   

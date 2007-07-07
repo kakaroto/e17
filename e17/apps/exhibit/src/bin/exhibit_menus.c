@@ -36,7 +36,6 @@ _ex_menu_build_run_menu(Etk_Widget *submenu)
      e->app3_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app3), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(w), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app3_cmd);
    if (e->options->app4 && e->options->app4_cmd)
      e->app4_menu = _ex_menu_item_new(EX_MENU_ITEM_NORMAL, _(e->options->app4), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(w), ETK_CALLBACK(_ex_menu_run_in_cb), e->options->app4_cmd);
-   
 }
 
 Etk_Widget *
@@ -223,7 +222,6 @@ _ex_menu_undo_cb(Etk_Object *obj, void *data)
 
    _ex_image_undo(ETK_IMAGE(e->cur_tab->image));   
 }
-
 
 void
 _ex_menu_rot_clockwise_cb(Etk_Object *obj, void *data)
@@ -447,11 +445,13 @@ _ex_menu_add_to_fav_cb(Etk_Object *obj, void *data)
    Etk_Tree_Row *r;
    char         *icol_string;
    EX_MENU_ITEM_GET_RETURN(obj);
-   
+
    r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-      if(!r) return;
+   if(!r) return;
    
-   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
+   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), 
+			   NULL, NULL, &icol_string, NULL);
+
    _ex_favorites_add(e, icol_string);
    //free(icol_string);
 }
@@ -465,8 +465,9 @@ _ex_menu_remove_from_fav_cb(Etk_Object *obj, void *data)
    
    r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
       if(!r) return;
-   
-   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), NULL, &icol_string, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 1),NULL);
+
+   etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), 
+			   NULL, NULL, &icol_string, NULL);
    _ex_favorites_del(e, icol_string);
    //free(icol_string);
 }
