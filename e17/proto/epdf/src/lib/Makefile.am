@@ -13,7 +13,7 @@ endif
 
 INCLUDES = 			\
 -I. -I$(top_srcdir)/src/lib	\
-@EVAS_CFLAGS@ @ECORE_CFLAGS@ @EWL_CFLAGS@ @ETK_CFLAGS@ @POPPLER_CFLAGS@
+@EWL_CFLAGS@ @ETK_CFLAGS@ @EPDF_CFLAGS@
 
 lib_LTLIBRARIES = libepdf.la
 
@@ -41,12 +41,12 @@ poppler_page.cpp \
 poppler_page_transition.cpp \
 poppler_postscript.cpp \
 esmart_pdf.c \
-$(EPDF_EWL_WIDGET) \
-$(EPDF_ETK_WIDGET) \
 $(EPDFHEADERS) \
-poppler_private.h
+poppler_private.h \
+$(EPDF_EWL_WIDGET) \
+$(EPDF_ETK_WIDGET)
 
 installed_headersdir = $(prefix)/include/epdf
 installed_headers_DATA = $(EPDFHEADERS)
 
-libepdf_la_LIBADD = @POPPLER_LIBS@ @ETK_LIBS@ @EWL_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@
+libepdf_la_LIBADD = @ETK_LIBS@ @EWL_LIBS@ @EPDF_LIBS@

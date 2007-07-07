@@ -45,7 +45,7 @@ main (int argc, char *argv[])
 
   window = etk_window_new ();
   etk_window_title_set (ETK_WINDOW (window), "Etk Pdf Test Application");
-  etk_signal_connect ("delete_event", ETK_OBJECT (window),
+  etk_signal_connect ("delete-event", ETK_OBJECT (window),
                       ETK_CALLBACK(_quit_cb), NULL);
 
   table = etk_table_new (2, 2, ETK_FALSE);
@@ -71,7 +71,7 @@ main (int argc, char *argv[])
     epdf_index_delete (index);
 
     /* change page */
-    etk_signal_connect ("row_clicked", ETK_OBJECT (tree),
+    etk_signal_connect ("row-clicked", ETK_OBJECT (tree),
                         ETK_CALLBACK(_change_page_cb), pdf);
 
     /* we attach and show */
@@ -102,7 +102,7 @@ main (int argc, char *argv[])
   }
 
   /* change page */
-  etk_signal_connect ("row_clicked", ETK_OBJECT (list),
+  etk_signal_connect ("row-clicked", ETK_OBJECT (list),
                       ETK_CALLBACK(_change_page_cb), pdf);
 
   /* we attach and show */

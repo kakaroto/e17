@@ -9,7 +9,6 @@
 #include <ErrorCodes.h>
 #include <PDFDocEncoding.h>
 #include <UnicodeMap.h>
-#include <UGooString.h>
 
 #include "poppler_enum.h"
 #include "poppler_private.h"
@@ -30,7 +29,7 @@ epdf_document_new (const char *filename)
     return NULL;
 
   if (!globalParams)
-    globalParams = new GlobalParams("/etc/xpdfrc");
+    globalParams = new GlobalParams();
 
   doc->pdfdoc = new PDFDoc (new GooString (filename), NULL);
   if (doc->pdfdoc->isOk() || doc->pdfdoc->getErrorCode() == errEncrypted) {
@@ -335,14 +334,13 @@ static char *
 epdf_document_property_get (Epdf_Document *document, const char *property)
 {
   Object     obj;
-  UGooString prop_str(property);
   GooString *goo_string;
   char      *title = NULL;
 
   if (!document)
     return NULL;
 
-  if (!document->dict->lookup (prop_str, &obj)->isString ()) {
+  if (!document->dict->lookup ((char *)property, &obj)->isString ()) {
     obj.free ();
 
     return NULL;

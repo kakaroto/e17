@@ -3,7 +3,6 @@
 
 #include <Object.h>
 #include <Dict.h>
-#include <UGooString.h>
 
 #include "poppler_enum.h"
 #include "poppler_private.h"
@@ -34,8 +33,7 @@ epdf_page_transition_new (Object *data)
 
   trans_dict = data->getDict ();
 
-  UGooString trans_str("S");
-  if (trans_dict->lookup (trans_str, &obj)->isName ()) {
+  if (trans_dict->lookup ("S", &obj)->isName ()) {
     const char *s;
 
     s = obj.getName();

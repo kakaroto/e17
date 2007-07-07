@@ -7,8 +7,8 @@
 #include <PDFDoc.h>
 #include <Page.h>
 #include <Gfx.h>
+#include <PDFDocEncoding.h>
 #include <TextOutputDev.h>
-#include <UGooString.h>
 #include <SplashOutputDev.h>
 #include <splash/SplashBitmap.h>
 
@@ -88,10 +88,11 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
   white[0] = 255;
   white[1] = 255;
   white[2] = 255;
+  white[3] = 255;
 
   doc = page->doc;
 
-  output_dev = new SplashOutputDev(splashModeARGB8, 4, gFalse, white);
+  output_dev = new SplashOutputDev(splashModeXBGR8, 4, gFalse, white);
   output_dev->startDoc(doc->pdfdoc->getXRef ());
   switch (orientation) {
   case EPDF_PAGE_ORIENTATION_LANDSCAPE:
@@ -112,14 +113,14 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
                             rotate,
                             false, false,
                             x, y, w, h,
-                            NULL,
+			    false,
                             doc->pdfdoc->getCatalog ());
   color_ptr = output_dev->getBitmap ()->getDataPtr ();
 
   width = output_dev->getBitmap()->getWidth();
   height = output_dev->getBitmap()->getHeight();
 
-//   printf ("%d %d\n", width, height);
+  //   printf ("%d %d\n", width, height);
   t1 = get_time ();
 
   evas_object_image_size_set(o, width, height);
@@ -132,7 +133,7 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
   memcpy (m, color_ptr, height * width * 4);
   evas_object_image_data_update_add(o, 0, 0, width, height);
   evas_object_resize(o, width, height);
-//   evas_object_image_alpha_set (o, 0);
+  //  evas_object_image_alpha_set (o, 0);
 
   t2 = get_time ();
   printf ("temps : %.5f\n", t2 - t1);
@@ -161,10 +162,10 @@ epdf_page_text_output_dev_get (Epdf_Page *page)
 
     page->gfx = page->page->createGfx (page->text_dev,
                                        72.0, 72.0, 0,
-                                       0, /* useMediaBox */
-                                       1, /* Crop */
+                                       false, /* useMediaBox */
+                                       true, /* Crop */
                                        -1, -1, -1, -1,
-                                       NULL, /* links */
+                                       false, /* printing */
                                        page->doc->pdfdoc->getCatalog (),
                                        NULL, NULL, NULL, NULL);
 
@@ -216,24 +217,42 @@ epdf_page_text_find (Epdf_Page    *page,
   double          xMin, yMin, xMax, yMax;
   int             length;
   int             height;
-  UGooString      utext(text);
 
   if (!page || !text)
     return NULL;
+
+  GooString tmp (text);
+  Unicode *s;
+
+  {
+    length = tmp.getLength();
+    s = (Unicode *)gmallocn(length, sizeof(Unicode));
+    bool anyNonEncoded = false;
+    for (int j = 0; j < length && !anyNonEncoded; ++j) {
+      s[j] = pdfDocEncoding[tmp.getChar(j) & 0xff];
+      if (!s[j]) anyNonEncoded = true;
+    }
+    if ( anyNonEncoded )
+      {
+	for (int j = 0; j < length; ++j) {
+	  s[j] = tmp.getChar(j);
+	}
+      }
+  }
 
   length = strlen (text);
 
   output_dev = new TextOutputDev (NULL, 1, 0, 0);
 
   height = epdf_page_height_get (page);
-  page->page->display (output_dev, 72, 72, 0, 0,
-		       1, NULL,
+  page->page->display (output_dev, 72, 72, 0, false,
+		       true, false,
 		       page->doc->pdfdoc->getCatalog());
 
   xMin = 0;
   yMin = 0;
 #warning you probably want to add backwards as parameters
-  while (output_dev->findText (utext.unicode (), utext.getLength (),
+  while (output_dev->findText (s, tmp.getLength (),
 			       0, 1, // startAtTop, stopAtBottom
 			       1, 0, // startAtLast, stopAtLast
 			       is_case_sensitive, 0, // caseSensitive, backwards

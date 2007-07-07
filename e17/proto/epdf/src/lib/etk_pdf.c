@@ -486,8 +486,8 @@ static void _etk_pdf_constructor(Etk_Pdf *pdf)
    widget->size_request = _etk_pdf_size_request;
    widget->size_allocate = _etk_pdf_size_allocate;
 
-   etk_signal_connect("realize", ETK_OBJECT(pdf), ETK_CALLBACK(_etk_pdf_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(pdf), ETK_CALLBACK(_etk_pdf_unrealize_cb), NULL);
+   etk_signal_connect("realized", ETK_OBJECT(pdf), ETK_CALLBACK(_etk_pdf_realize_cb), NULL);
+   etk_signal_connect("unrealized", ETK_OBJECT(pdf), ETK_CALLBACK(_etk_pdf_unrealize_cb), NULL);
 }
 
 /* Destroys the pdf */

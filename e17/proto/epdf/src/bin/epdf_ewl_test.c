@@ -167,17 +167,17 @@ main (int argc, char *argv[])
   hbox = ewl_hbox_new ();
   ewl_box_homogeneous_set (EWL_BOX (hbox), FALSE);
   ewl_container_child_append (EWL_CONTAINER (window), hbox);
+  ewl_object_fill_policy_set (EWL_OBJECT (hbox), EWL_FLAG_FILL_ALL);
   ewl_widget_show (hbox);
 
   vbox = ewl_vbox_new ();
   ewl_box_homogeneous_set (EWL_BOX (vbox), TRUE);
   ewl_container_child_append (EWL_CONTAINER (hbox), vbox);
+  ewl_object_fill_policy_set (EWL_OBJECT (vbox), EWL_FLAG_FILL_ALL);
   ewl_widget_show (vbox);
 
   /* view for both the list and the tree (if the index exists) */
-  view = ewl_view_new();
-  ewl_view_constructor_set (view, ewl_label_new);
-  ewl_view_assign_set (view, EWL_VIEW_ASSIGN (_label_text_set));
+  view = ewl_label_view_get();
 
   if (index) {
     Ewl_Model *model;
@@ -197,17 +197,15 @@ main (int argc, char *argv[])
 
     /* model */
     model = ewl_model_new ();
-    ewl_model_fetch_set (model, tree2_data_fetch);
-    ewl_model_count_set (model, tree2_data_count_get);
-    ewl_model_expandable_set (model, tree2_data_expandable_get);
+    ewl_model_data_fetch_set (model, tree2_data_fetch);
+    ewl_model_data_count_set (model, tree2_data_count_get);
+    ewl_model_data_expandable_set (model, tree2_data_expandable_get);
     ewl_model_expansion_data_fetch_set(model, tree2_data_expansion_fetch);
 
     /* MVC */
     ewl_mvc_data_set (EWL_MVC (tree), data);
     ewl_mvc_model_set (EWL_MVC (tree), model);
-
-    /* view */
-    ewl_tree2_column_append (EWL_TREE2(tree), view, FALSE);
+    ewl_mvc_view_set(EWL_MVC(tree), view);
 
     /* we attach and show */
     ewl_container_child_append (EWL_CONTAINER (vbox), tree);
@@ -216,6 +214,7 @@ main (int argc, char *argv[])
 
   sp = ewl_scrollpane_new ();
   ewl_container_child_append (EWL_CONTAINER (vbox), sp);
+  ewl_object_fill_policy_set (EWL_OBJECT (sp), EWL_FLAG_FILL_ALL);
   ewl_widget_show (sp);
 
   page_count = epdf_document_page_count_get (document);
@@ -231,9 +230,11 @@ main (int argc, char *argv[])
   model = ewl_model_ecore_list_get();
 
   list = ewl_list_new ();
+  ewl_object_fill_policy_set (EWL_OBJECT (list), EWL_FLAG_FILL_ALL);
+
+  ewl_mvc_data_set(EWL_MVC(list), str_data);
   ewl_mvc_model_set(EWL_MVC(list), model);
   ewl_mvc_view_set(EWL_MVC(list), view);
-  ewl_mvc_data_set(EWL_MVC(list), str_data);
   ewl_callback_append (list,
                        EWL_CALLBACK_VALUE_CHANGED,
                        EWL_CALLBACK_FUNCTION (_change_page_cb),

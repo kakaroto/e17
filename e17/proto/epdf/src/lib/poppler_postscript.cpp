@@ -28,9 +28,9 @@ epdf_postscript_new (Epdf_Document *document,
   ps->pdfdoc = document->pdfdoc;
   ps->filename = strdup (filename);
   ps->first_page = (first_page < 1) ? 1 : first_page;
-  ps->last_page = (last_page > epdf_document_page_count_get (document)) ?
-    epdf_document_page_count_get (document) :
-    last_page;
+  ps->last_page = (last_page > epdf_document_page_count_get (document))
+    ? epdf_document_page_count_get (document)
+    : last_page;
 
   ps->width = -1.0;
   ps->height = -1.0;
@@ -80,9 +80,11 @@ epdf_postscript_print (Epdf_Postscript *postscript)
   if (!postscript)
     return;
 
+  // FIXME: fix postscript title
   ps_dev = new PSOutputDev (postscript->filename,
                             postscript->pdfdoc->getXRef(),
                             postscript->pdfdoc->getCatalog(),
+			    "PS title",
                             postscript->first_page,
                             postscript->last_page,
                             psModePS,
