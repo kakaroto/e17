@@ -238,3 +238,14 @@ cdef class Edje(evas.c_evas.Object):
     cdef object _message_handler_cb
     cdef object _signal_callbacks
 
+    cdef void message_send_int(self, int id, int data)
+    cdef void message_send_float(self, int id, float data)
+    cdef void message_send_str(self, int id, char *data)
+    cdef void message_send_str_set(self, int id, data)
+    cdef void message_send_str_int(self, int id, char *s, int i)
+    cdef void message_send_str_float(self, int id, char *s, float f)
+    cdef void message_send_str_int_set(self, int id, char *s, data)
+    cdef void message_send_str_float_set(self, int id, char *s, data)
+    cdef void message_send_int_set(self, int id, data)
+    cdef void message_send_float_set(self, int id, data)
+    cdef message_send_set(self, int id, data)

@@ -273,8 +273,176 @@ cdef class Edje(evas.c_evas.Object):
     def part_drag_page(self, char *part, double dx, double dy):
         edje_object_part_drag_page(self.obj, part, dx, dy)
 
-#    def message_send(self, int type, int id, **kargs):
-#        edje_object_message_send(self.obj, type, id, msg)
+    cdef void message_send_int(self, int id, int data):
+        cdef Edje_Message_Int m
+        m.val = data
+        edje_object_message_send(self.obj, EDJE_MESSAGE_INT, id, <void*>&m)
+
+    cdef void message_send_float(self, int id, float data):
+        cdef Edje_Message_Float m
+        m.val = data
+        edje_object_message_send(self.obj, EDJE_MESSAGE_FLOAT, id, <void*>&m)
+
+    cdef void message_send_str(self, int id, char *data):
+        cdef Edje_Message_String m
+        m.str = data
+        edje_object_message_send(self.obj, EDJE_MESSAGE_STRING, id, <void*>&m)
+
+    cdef void message_send_str_set(self, int id, data):
+        cdef int count, i
+        cdef Edje_Message_String_Set *m
+
+        count = len(data)
+        m = <Edje_Message_String_Set*>python.PyMem_Malloc(
+            sizeof(Edje_Message_String_Set) + (count - 1) * sizeof(char *))
+
+        m.count = count
+        i = 0
+        for s in data:
+            m.str[i] = s
+            i = i + 1
+
+        edje_object_message_send(self.obj, EDJE_MESSAGE_STRING_SET, id,
+                                 <void*>m)
+        python.PyMem_Free(m)
+
+    cdef void message_send_str_int(self, int id, char *s, int i):
+        cdef Edje_Message_String_Int m
+        m.str = s
+        m.val = i
+        edje_object_message_send(self.obj, EDJE_MESSAGE_STRING_INT, id,
+                                 <void*>&m)
+
+    cdef void message_send_str_float(self, int id, char *s, float f):
+        cdef Edje_Message_String_Float m
+        m.str = s
+        m.val = f
+        edje_object_message_send(self.obj, EDJE_MESSAGE_STRING_FLOAT, id,
+                                 <void*>&m)
+
+    cdef void message_send_str_int_set(self, int id, char *s, data):
+        cdef int count, i
+        cdef Edje_Message_String_Int_Set *m
+
+        count = len(data)
+        m = <Edje_Message_String_Int_Set*>python.PyMem_Malloc(
+            sizeof(Edje_Message_String_Int_Set) + (count - 1) * sizeof(int))
+
+        m.str = s
+        m.count = count
+        i = 0
+        for f in data:
+            m.val[i] = f
+            i = i + 1
+
+        edje_object_message_send(self.obj, EDJE_MESSAGE_STRING_INT_SET, id,
+                                 <void*>m)
+        python.PyMem_Free(m)
+
+    cdef void message_send_str_float_set(self, int id, char *s, data):
+        cdef int count, i
+        cdef Edje_Message_String_Float_Set *m
+
+        count = len(data)
+        m = <Edje_Message_String_Float_Set*>python.PyMem_Malloc(
+            sizeof(Edje_Message_String_Float_Set) +
+            (count - 1) * sizeof(double))
+
+        m.str = s
+        m.count = count
+        i = 0
+        for f in data:
+            m.val[i] = f
+            i = i + 1
+
+        edje_object_message_send(self.obj, EDJE_MESSAGE_STRING_FLOAT_SET, id,
+                                 <void*>m)
+        python.PyMem_Free(m)
+
+    cdef void message_send_int_set(self, int id, data):
+        cdef int count, i
+        cdef Edje_Message_Int_Set *m
+
+        count = len(data)
+        m = <Edje_Message_Int_Set*>python.PyMem_Malloc(
+            sizeof(Edje_Message_Int_Set) + (count - 1) * sizeof(int))
+
+        m.count = count
+        i = 0
+        for f in data:
+            m.val[i] = f
+            i = i + 1
+
+        edje_object_message_send(self.obj, EDJE_MESSAGE_INT_SET, id,
+                                 <void*>m)
+        python.PyMem_Free(m)
+
+    cdef void message_send_float_set(self, int id, data):
+        cdef int count, i
+        cdef Edje_Message_Float_Set *m
+
+        count = len(data)
+        m = <Edje_Message_Float_Set*>python.PyMem_Malloc(
+            sizeof(Edje_Message_Float_Set) + (count - 1) * sizeof(double))
+
+        m.count = count
+        i = 0
+        for f in data:
+            m.val[i] = f
+            i = i + 1
+
+        edje_object_message_send(self.obj, EDJE_MESSAGE_FLOAT_SET, id,
+                                 <void*>m)
+        python.PyMem_Free(m)
+
+    cdef message_send_set(self, int id, data):
+        second_item = data[1]
+        item_type = type(second_item)
+        for e in data[2:]:
+            if type(e) != item_type:
+                raise TypeError("every element of data should be the "
+                                "same type '%s'" % item_type.__name__)
+        head = data[0]
+        if isinstance(head, (int, long)):
+            self.message_send_int_set(id, data)
+        elif isinstance(head, float):
+            self.message_send_float_set(id, data)
+        elif isinstance(head, basestring):
+            if issubclass(item_type, basestring):
+                self.message_send_str_set(id, data)
+            elif item_type == int or item_type == long:
+                if len(data) == 2:
+                    self.message_send_str_int(id, head, second_item)
+                else:
+                    self.message_send_str_int_set(id, head, data[2:])
+            elif item_type == float:
+                if len(data) == 2:
+                    self.message_send_str_float(id, head, second_item)
+                else:
+                    self.message_send_str_float_set(id, head, data[2:])
+
+    def message_send(self, int id, data):
+        if isinstance(data, (long, int)):
+            self.message_send_int(id, data)
+        elif isinstance(data, float):
+            self.message_send_float(id, data)
+        elif isinstance(data, basestring):
+            self.message_send_str(id, data)
+        elif isinstance(data, (tuple, list)):
+            if len(data) < 1:
+                return
+            if len(data) < 2:
+                self.message_send(id, data[0])
+                return
+
+            item_type = type(data[0])
+            if item_type not in (long, int, float, str, unicode):
+                raise TypeError("invalid message list type '%s'" %
+                                item_type.__name__)
+
+            self.message_send_set(id, data)
+        else:
+            raise TypeError("invalid message type '%s'" % type(data).__name__)
 
     def message_handler_set(self, func, *args, **kargs):
         if func is None:
