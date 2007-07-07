@@ -101,6 +101,7 @@ ewl_icon_init(Ewl_Icon *icon)
 	ewl_stock_functions_set(EWL_STOCK(icon), &stock_funcs);
 	ewl_stock_type_set(EWL_STOCK(icon), EWL_STOCK_NONE);
 
+	ewl_object_fill_policy_set(EWL_OBJECT(icon), EWL_FLAG_FILL_NONE);
 	ewl_box_orientation_set(EWL_BOX(icon), EWL_ORIENTATION_VERTICAL);
 	ewl_box_spacing_set(EWL_BOX(icon), 4);
 
