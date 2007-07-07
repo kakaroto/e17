@@ -118,6 +118,7 @@ group {
 			type: SWALLOW;
 			
 			description {
+				color: 0 0 0 0;
 				state: "default" 0.0;
 				rel1 { offset: 0 0; to: "background";}
 				rel2 { offset: 0 0; to: "background";}
