@@ -277,7 +277,6 @@ collections {
 		  to:	"title_bar";
 		  offset:	-5 -1;
 	       } 
-	       color: 0 0 0 0;
 	    }
 	    description {
 	       state:   "active" 0.0;
@@ -291,7 +290,6 @@ collections {
 		  to:	"title_bar";
 		  offset:	-5 -1;
 	       }
-	       color: 0 0 0 0;
 	    } 
 	 }
 	 

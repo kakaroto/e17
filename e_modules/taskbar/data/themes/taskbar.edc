@@ -144,7 +144,6 @@ collections {
                   to: "button_image";
                   offset:   7   -9;
                }
-               color: 0 0 0 0;
                // don't let it grow to large
                max: 16 16;
             }
@@ -446,7 +445,6 @@ collections {
                rel2 {
                   to:       "background";
                }
-               color: 0 0 0 0;
             }
          }
          part {      

@@ -39,7 +39,6 @@ collections
 		  description
 		    {
 		       state: "default" 0.0;
-		       color: 0 0 0 0;
 		       rel1
 			 {
 			    relative: 0.0 0.0;
