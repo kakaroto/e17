@@ -465,6 +465,27 @@ ewl_container_child_count_internal_get(Ewl_Container *c)
 	DRETURN_INT(count, DLEVEL_STABLE);
 }
 
+/**
+ * @param c: The container to get the child count from
+ * @return Returns the number of visible child widgets
+ * @brief Returns the number of visible child widgets in the container
+ *
+ * This function return the number of visible child widgets in this container,
+ * no matter if the container is set to redirect or not.
+ * Note: other than ewl_container_count_get() and 
+ * ewl_container_count_internal_get() it does not return the number of
+ * children in the redirection end container.
+ */
+int
+ewl_container_child_count_visible_get(Ewl_Container *c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, 0);
+	DCHECK_TYPE_RET("c", c, EWL_CONTAINER_TYPE, 0);
+
+	DRETURN_INT(c->visible_children, DLEVEL_STABLE);
+}
+
 static Ewl_Widget *
 ewl_container_child_helper_get(Ewl_Container *parent, int index, 
 						unsigned int skip)
@@ -1098,6 +1119,7 @@ ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
+	c->visible_children++;
 	if (c->child_show)
 		c->child_show(c, w);
 
@@ -1131,13 +1153,17 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 	if (DESTROYED(c))
 		DRETURN(DLEVEL_STABLE);
 
+	c->visible_children--; 
+	if (c->visible_children < 0)
+		DWARNING("visible_children is %d\n", c->visible_children);
+
 	if (c->child_hide)
 		c->child_hide(c, w);
 
 	if (c->clip_box) {
 		const Evas_List *clippees;
 		clippees = evas_object_clipees_get(c->clip_box);
-		if (!clippees)
+		if (!clippees) 
 			evas_object_hide(c->clip_box);
 	}
 

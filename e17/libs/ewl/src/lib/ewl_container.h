@@ -90,6 +90,7 @@ struct Ewl_Container
 	Ewl_Widget widget; /**< Inherit the basics of the widget. */
 
 	Ecore_DList *children; /**< List of children that are contained. */
+	int visible_children; /**< the number of visible children */
 
 	void *clip_box; /**< Clip box to bound widgets inside. */
 
@@ -141,6 +142,7 @@ void 		 ewl_container_child_iterator_set(Ewl_Container *c,
 						 Ewl_Container_Iterator i);
 int 		 ewl_container_child_count_get(Ewl_Container *c);
 int 		 ewl_container_child_count_internal_get(Ewl_Container *c);
+int		 ewl_container_child_count_visible_get(Ewl_Container *c);
 
 void 		 ewl_container_destroy(Ewl_Container *c);
 void 		 ewl_container_reset(Ewl_Container *c);
