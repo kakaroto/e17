@@ -347,7 +347,7 @@ e_db_close(__edb); \
 __edb = e_db_open_read(edb); \
 if (__edb) { \
 str = e_db_str_get(__edb, key); \
-ok = (int)str; \
+ok = str != NULL; \
 e_db_close(__edb); \
 }}
 #define E_DB_FLOAT_GET(edb, key, flt, ok) \
