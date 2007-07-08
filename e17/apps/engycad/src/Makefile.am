@@ -2,7 +2,7 @@
 
 INCLUDES = \
 	-I../lib \
-	@imlib2_cflags@ @evas_cflags@ @edb_cflags@ @ecore_cflags@
+	@ENGY_CFLAGS@
 
 bin_PROGRAMS = engycad
 
@@ -75,4 +75,4 @@ trans.h \
 undo.c \
 undo.h
 
-engycad_LDADD = @imlib2_libs@ @evas_libs@ @pthread_libs@ @edb_libs@ @ecore_libs@ -lm -lc
+engycad_LDADD = @ENGY_LIBS@ -lm
