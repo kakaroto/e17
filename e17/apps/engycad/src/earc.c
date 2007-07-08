@@ -47,7 +47,7 @@ earc_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -67,7 +67,7 @@ earc_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -87,7 +87,7 @@ earc_create(void)
     serv_set_state(ST_ELLIPSE3);
 
     serv_set_hint(DUP(_("enter point on circumference or axis: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     res = get_values(s, x1, y1, &x3, &y3);
     if (res == 1)
       {
@@ -102,7 +102,7 @@ earc_create(void)
     pre_set_x1y1(x1, y1);
 
     serv_set_hint(DUP(_("enter start angle: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     res = get_values(s, x1, y1, &x2, &y2);
     if (res == 1)
       {
@@ -122,7 +122,7 @@ earc_create(void)
       }
 
     serv_set_hint(DUP(_("enter end angle: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     res = get_values(s, x1, y1, &x2, &y2);
     if (res == 1)
       {
@@ -1126,23 +1126,24 @@ _create_scaled_earc(EArc * earc)
                       if (earc->flags & FLAG_VISIBLE)
                         {
                             evas_object_color_set( o,
-                                           earc->color.red,
-                                           earc->color.
-                                           green,
-                                           earc->color.blue, earc->color.alpha);
+				earc->color.red*earc->color.alpha/255,
+				earc->color.green*earc->color.alpha/255,
+				earc->color.blue*earc->color.alpha/255, 
+				earc->color.alpha);
                         }
                       else
                         {
-                            evas_object_color_set( o,
-                                           earc->color.red,
-                                           earc->color.
-                                           green, earc->color.blue, 0);
+                            evas_object_color_set( o, 0, 0, 0, 0);
                         }
 
                       if (earc->flags & FLAG_SELECTED)
-                          evas_object_color_set( o, 255, 50, 50, ALPHA5);
+                          evas_object_color_set( o, 
+					  ALPHA5,
+					  ALPHA5/5,
+					  ALPHA5/5,
+					  ALPHA5);
                       if (earc->flags & FLAG_DELETED)
-                          evas_object_color_set( o, 255, 50, 50, 0);
+                          evas_object_color_set( o, 0, 0, 0, 0);
 
                       x = rad * cos(angle);
                       y = rad * sin(angle);
@@ -1280,23 +1281,24 @@ _create_tiled_earc(EArc * earc)
                       if (earc->flags & FLAG_VISIBLE)
                         {
                             evas_object_color_set( o,
-                                           earc->color.red,
-                                           earc->color.
-                                           green,
-                                           earc->color.blue, earc->color.alpha);
+				earc->color.red*earc->color.alpha/255,
+				earc->color.green*earc->color.alpha/255,
+				earc->color.blue*earc->color.alpha/255,
+				earc->color.alpha);
                         }
                       else
                         {
-                            evas_object_color_set( o,
-                                           earc->color.red,
-                                           earc->color.
-                                           green, earc->color.blue, 0);
+                            evas_object_color_set( o, 0, 0, 0, 0);
                         }
 
                       if (earc->flags & FLAG_SELECTED)
-                          evas_object_color_set( o, 255, 50, 50, ALPHA5);
+                          evas_object_color_set( o, 
+					  ALPHA5, 
+					  ALPHA5/5, 
+					  ALPHA5/5, 
+					  ALPHA5);
                       if (earc->flags & FLAG_DELETED)
-                          evas_object_color_set( o, 255, 50, 50, 0);
+                          evas_object_color_set( o, 0, 0, 0, 0);
                       x = rad * cos(angle);
                       y = rad * sin(angle);
                       y *= ekst;

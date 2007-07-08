@@ -38,13 +38,13 @@ text_create(void)
     serv_set_hint(DUP(_("enter text: ")));
     serv_set_state(ST_TEXT1);
 
-    text = (char *)serv_get_string();
+    text = serv_get_string();
 
     serv_set_state(ST_TEXT2);
 
     serv_set_hint(DUP(_("enter text height: ")));
 
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     res = get_values(s, x, y, &h, &dummy);
 
     serv_set_hint(DUP(_("enter insertion point: ")));
@@ -53,7 +53,7 @@ text_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x, &y);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -68,7 +68,7 @@ text_create(void)
     serv_set_state(ST_ROTATE2);
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           x2 = 0;
           res = get_values(s, x, y, &x2, &y2);
           if (res == 2)
@@ -239,7 +239,7 @@ _refresh_te_evas_object(Text * te)
 
     imlib_context_set_font(fo_curr);
     imlib_context_set_TTF_encoding(textstyle_get_charmap());
-    dec_s = my_iconv((iconv_t) textstyle_get_dcd(), te->text);
+    dec_s = my_iconv(textstyle_get_dcd(), te->text);
     imlib_get_text_size(dec_s, &w, &h);
     a = imlib_get_maximum_font_ascent();
     d = imlib_get_maximum_font_descent();
@@ -404,13 +404,14 @@ text_redraw(Text * te)
     if (te->flags & FLAG_VISIBLE)
       {
           evas_object_color_set(te->item,
-                         te->color.red,
-                         te->color.green, te->color.blue, te->color.alpha);
+		te->color.red*te->color.alpha/255,
+		te->color.green*te->color.alpha/255, 
+		te->color.blue*te->color.alpha/255, 
+		te->color.alpha);
       }
     else
       {
-          evas_object_color_set(te->item,
-                         te->color.red, te->color.green, te->color.blue, 0);
+          evas_object_color_set(te->item, 0, 0, 0, 0);
       }
 
     if (te->flags & FLAG_SELECTED)

@@ -57,7 +57,7 @@ rect_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -77,7 +77,7 @@ rect_create(void)
     serv_set_hint(DUP(_("enter bottom right point: ")));
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -119,10 +119,10 @@ ghost_rect_create(void)
           l2 = evas_object_line_add(e);
           l3 = evas_object_line_add(e);
           l4 = evas_object_line_add(e);
-          evas_object_color_set(l1, 255, 50, 50, ALPHA2);
-          evas_object_color_set(l2, 255, 50, 50, ALPHA2);
-          evas_object_color_set(l3, 255, 50, 50, ALPHA2);
-          evas_object_color_set(l4, 255, 50, 50, ALPHA2);
+          evas_object_color_set(l1, ALPHA2, ALPHA2/5, ALPHA2/5, ALPHA2);
+          evas_object_color_set(l2, ALPHA2, ALPHA2/5, ALPHA2/5, ALPHA2);
+          evas_object_color_set(l3, ALPHA2, ALPHA2/5, ALPHA2/5, ALPHA2);
+          evas_object_color_set(l4, ALPHA2, ALPHA2/5, ALPHA2/5, ALPHA2);
           evas_object_layer_set(l1, 17);
           evas_object_layer_set(l2, 17);
           evas_object_layer_set(l3, 17);

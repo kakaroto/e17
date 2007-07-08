@@ -472,7 +472,7 @@ _get_title_dcd(void)
     ENGY_ASSERT(res);
 
     shell->title_dcd = iconv_open(to, fr);
-    ENGY_ASSERTS(((int)shell->title_dcd != -1), "iconv_open");
+    ENGY_ASSERTS(((long)shell->title_dcd != -1L), "iconv_open");
     FREE(fr);
     FREE(to);
 
@@ -482,7 +482,7 @@ _get_title_dcd(void)
     ENGY_ASSERT(res);
 
     shell->dcd = iconv_open(to, fr);
-    ENGY_ASSERTS(((int)shell->dcd != -1), "iconv_open");
+    ENGY_ASSERTS(((long)shell->dcd != -1L), "iconv_open");
     FREE(fr);
     FREE(to);
 
@@ -590,6 +590,7 @@ create_view(void)
     _get_title_dcd();
 
     shell->title = my_iconv(shell->title_dcd, TITLE);
+    printf("title: %s\n", my_iconv(shell->title_dcd, TITLE));
 
     ecore_evas_title_set(ee, shell->title);
 
@@ -602,7 +603,7 @@ create_view(void)
     // GLS
 //    ecore_set_blank_pointer(win);
 //    ecore_window_set_title(win, shell->title);
-    my_evas_init();
+//  my_evas_init();
     _shell_bg_create();
     menu_init();
     // GLS
@@ -643,7 +644,7 @@ _shell_bg_create(void)
 	ENGY_ASSERT (res);
 	
 	o = evas_object_rectangle_add(e);
-	evas_object_color_set (o, r, g, b, a);
+	evas_object_color_set (o, r*a/255, g*a/255, b*a/255, a);
     }
     else
     {

@@ -104,7 +104,10 @@ menu_init(void)
     mp.state = 0;
     mp.bg = evas_object_rectangle_add(shell->evas);
     evas_object_layer_set(mp.bg, 20);
-    evas_object_color_set(mp.bg, 200, 200, 255, ALPHA2);
+    evas_object_color_set(mp.bg, 
+		    200*ALPHA2/255, 
+		    200*ALPHA2/255, 
+		    ALPHA2, ALPHA2);
     menu_load();
     menu_show();
 }
@@ -372,7 +375,7 @@ _menu_item_normal(Menu_Item * mi)
           evas_object_show(mi->ot);
       }
     evas_object_color_set(mi->ot, 0, 0, 0, ALPHA2);
-    evas_object_color_set(mi->op, 255, 255, 255, ALPHA2);
+    evas_object_color_set(mi->op, ALPHA2, ALPHA2, ALPHA2, ALPHA2);
     evas_object_show(mi->on);
     evas_object_show(mi->om);
     evas_object_show(mi->op);
@@ -408,7 +411,7 @@ _menu_item_hilight(Menu_Item * mi)
       }
 
     evas_object_color_set(mi->ot, 0, 0, 0, ALPHA4);
-    evas_object_color_set(mi->op, 255, 255, 255, ALPHA4);
+    evas_object_color_set(mi->op, ALPHA4, ALPHA4, ALPHA4, ALPHA4);
     evas_object_show(mi->ot);
     evas_object_show(mi->oh);
     evas_object_show(mi->om);

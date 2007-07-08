@@ -11,9 +11,9 @@ enum _Pointers
 
 void                pointer_init(void);
 
-void                pointer_set(int);
+void                pointer_set(long);
 void                pointer_move(int, int);
 
-void                pointer_push_and_set(int);
-void                pointer_pop(int);
-int                 curr_pointer_get(void);
+void                pointer_push_and_set(long);
+void                pointer_pop(long);
+long                curr_pointer_get(void);

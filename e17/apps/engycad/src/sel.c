@@ -154,7 +154,7 @@ sel_rect(void)
     serv_set_state(ST_SEL1);
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, 0.0, 0.0, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -174,7 +174,7 @@ sel_rect(void)
     serv_set_hint(DUP(_("enter bottom-right point: ")));
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -206,7 +206,7 @@ desel_rect(void)
     serv_set_state(ST_SEL1);
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, 0.0, 0.0, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -226,7 +226,7 @@ desel_rect(void)
     serv_set_hint(DUP(_("enter lower right point: ")));
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -368,7 +368,7 @@ sel_box_create(void)
     if (!sel_box)
       {
           sel_box = evas_object_rectangle_add(e);
-          evas_object_color_set(sel_box, 255, 200, 250, 100);
+          evas_object_color_set(sel_box, 100, 80, 90, 100);
           evas_object_layer_set(sel_box, 17);
           evas_object_pass_events_set(sel_box, 1);
           sel1 = evas_object_line_add(e);

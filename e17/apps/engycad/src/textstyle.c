@@ -116,7 +116,7 @@ _ts_load(const char *style)
       }
 
     ts->dcd = iconv_open(to, fr);
-    ENGY_ASSERTS(((int)ts->dcd != -1), "iconv_open");
+    ENGY_ASSERTS(((long)ts->dcd != -1L), "iconv_open");
     FREE(fr);
     FREE(to);
 
@@ -158,11 +158,11 @@ textstyle_get_charmap(void)
     return 0;
 }
 
-int
+iconv_t
 textstyle_get_dcd(void)
 {
     if (ts_current)
-        return (int)ts_current->dcd;
+        return ts_current->dcd;
     return 0;
 }
 

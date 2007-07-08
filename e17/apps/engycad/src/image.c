@@ -38,7 +38,7 @@ image_create(void)
     serv_set_hint(DUP(_("enter image location: ")));
     serv_set_state(ST_IMAGE1);
 
-    name = (char *)serv_get_string();
+    name = serv_get_string();
 
     serv_set_hint(DUP(_("enter insertion point: ")));
 
@@ -46,7 +46,7 @@ image_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x, &y);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -63,7 +63,7 @@ image_create(void)
 
     serv_set_hint(DUP(_("enter scale factor: ")));
 
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     res = get_values(s, x, y, &sc, &dummy);
 
     serv_set_state(ST_NORMAL);
@@ -302,18 +302,17 @@ image_redraw(Image * im)
     if (im->flags & FLAG_VISIBLE)
       {
           evas_object_color_set(im->item,
-                         255 - im->color.red,
-                         255 - im->color.green,
-                         255 - im->color.blue, im->color.alpha);
+		(255 - im->color.red) * im->color.alpha/255,
+		(255 - im->color.green) * im->color.alpha/255,
+		(255 - im->color.blue) * im->color.alpha/255,
+		im->color.alpha);
       }
     else
       {
-          evas_object_color_set(im->item,
-                         255 - im->color.red,
-                         255 - im->color.green, 255 - im->color.blue, 0);
+          evas_object_color_set(im->item, 0, 0, 0, 0);
       }
     if (im->flags & FLAG_SELECTED)
-        evas_object_color_set(im->item, 255, 150, 150, 150);
+        evas_object_color_set(im->item, 150, 70, 70, 150);
     if (im->flags & FLAG_DELETED)
         evas_object_hide(im->item);
 }

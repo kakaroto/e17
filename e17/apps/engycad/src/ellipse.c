@@ -51,7 +51,7 @@ ellipse_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -71,7 +71,7 @@ ellipse_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -91,7 +91,7 @@ ellipse_create(void)
     serv_set_state(ST_ELLIPSE3);
 
     serv_set_hint(DUP(_("enter point on circumference or axis: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     res = get_values(s, x1, y1, &x3, &y3);
     if (res == 1)
       {
@@ -896,14 +896,14 @@ ghost_ell_create(void)
     if (!o1)
       {
           o1 = evas_object_line_add(e);
-          evas_object_color_set(o1, 255, 50, 50, ALPHA2);
+          evas_object_color_set(o1, ALPHA2, ALPHA2/5, ALPHA2/5, ALPHA2);
           evas_object_layer_set(o1, 17);
           evas_object_pass_events_set(o1, 1);
       }
     if (!o2)
       {
           o2 = evas_object_line_add(e);
-          evas_object_color_set(o2, 255, 50, 50, ALPHA2);
+          evas_object_color_set(o2, ALPHA2, ALPHA2/5, ALPHA2/5, ALPHA2);
           evas_object_layer_set(o2, 17);
           evas_object_pass_events_set(o2, 1);
       }
@@ -1115,22 +1115,24 @@ _create_scaled_ell(Ellipse * ell)
                       if (ell->flags & FLAG_VISIBLE)
                         {
                             evas_object_color_set( o,
-                                           ell->color.red,
-                                           ell->color.green,
-                                           ell->color.blue, ell->color.alpha);
+				ell->color.red*ell->color.alpha/255,
+				ell->color.green*ell->color.alpha/255,
+				ell->color.blue*ell->color.alpha/255, 
+				ell->color.alpha);
                         }
                       else
                         {
-                            evas_object_color_set( o,
-                                           ell->color.red,
-                                           ell->color.green,
-                                           ell->color.blue, 0);
+                            evas_object_color_set( o, 0, 0, 0, 0);
                         }
 
                       if (ell->flags & FLAG_SELECTED)
-                          evas_object_color_set( o, 255, 50, 50, ALPHA5);
+                          evas_object_color_set( o, 
+					  ALPHA5, 
+					  ALPHA5/5, 
+					  ALPHA5/5, 
+					  ALPHA5);
                       if (ell->flags & FLAG_DELETED)
-                          evas_object_color_set( o, 255, 50, 50, 0);
+                          evas_object_color_set( o, 0, 0, 0, 0);
                       x = rad * cos(angle);
                       y = rad * sin(angle);
                       y *= ekst;
@@ -1261,22 +1263,24 @@ _create_tiled_ell(Ellipse * ell)
                       if (ell->flags & FLAG_VISIBLE)
                         {
                             evas_object_color_set( o,
-                                           ell->color.red,
-                                           ell->color.green,
-                                           ell->color.blue, ell->color.alpha);
+				ell->color.red*ell->color.alpha/255,
+				ell->color.green*ell->color.alpha/255,
+				ell->color.blue*ell->color.alpha/255, 
+				ell->color.alpha);
                         }
                       else
                         {
-                            evas_object_color_set( o,
-                                           ell->color.red,
-                                           ell->color.green,
-                                           ell->color.blue, 0);
+                            evas_object_color_set( o, 0, 0, 0, 0);
                         }
 
                       if (ell->flags & FLAG_SELECTED)
-                          evas_object_color_set( o, 255, 50, 50, ALPHA5);
+                          evas_object_color_set( o, 
+					  ALPHA5, 
+					  ALPHA5/5, 
+					  ALPHA5/5, 
+					  ALPHA5);
                       if (ell->flags & FLAG_DELETED)
-                          evas_object_color_set( o, 255, 50, 50, 0);
+                          evas_object_color_set( o, 0, 0, 0, 0);
 
                       x = rad * cos(angle);
                       y = rad * sin(angle);

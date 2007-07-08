@@ -136,7 +136,7 @@ panel_item_load(int num)
     evas_object_move(ic->o,
               (ic->x < 0) ? shell->w + ic->x : ic->x,
               (ic->y < 0) ? shell->h + ic->y : ic->y);
-    evas_object_color_set(ic->o, 255, 255, 255, ALPHA2);
+    evas_object_color_set(ic->o, ALPHA2, ALPHA2, ALPHA2, ALPHA2);
     evas_object_layer_set(ic->o, 19);
     evas_object_stack_above(ic->o, oh);
 //    evas_set_pass_events(e, ic->o,1);
@@ -195,7 +195,7 @@ panel_load_oh_and_oa(void)
 	oh = evas_image_load(buf);
 	FREE(s);
     } else {
-	oh = evas_image_load(e);
+	oh = evas_image_load(s);
 	FREE(s);
     }
     ENGY_ASSERT(oh);
@@ -226,7 +226,7 @@ panel_load_oh_and_oa(void)
     evas_object_stack_above(oh, oa);
 
     o_hbg = evas_object_rectangle_add(e);
-    evas_object_color_set(o_hbg, 255, 255, 200, ALPHA3);
+    evas_object_color_set(o_hbg, ALPHA3, ALPHA3, 200*ALPHA3/255, ALPHA3);
     evas_object_pass_events_set(o_hbg, 1);
     evas_object_layer_set(o_hbg, 20);
 
@@ -256,7 +256,7 @@ _panel_mouse_down(void *data, Evas *_e, Evas_Object *_o, void *event_info)
               ic = c;
       }
 
-    evas_object_color_set(_o, 255, 255, 255, ALPHA4);
+    evas_object_color_set(_o, ALPHA4, ALPHA4, ALPHA4, ALPHA4);
     evas_object_move(oa, (ic->x < 0) ? shell->w + ic->x : ic->x,
               (ic->y < 0) ? shell->h + ic->y : ic->y);
     evas_object_hide(oh);
@@ -281,7 +281,7 @@ _panel_mouse_up(void *data, Evas *_e, Evas_Object *_o, void *event_info)
       }
 
     gui_put_string(DUP(ic->cmd));
-    evas_object_color_set(_o, 255, 255, 255, ALPHA3);
+    evas_object_color_set(_o, ALPHA3, ALPHA3, ALPHA3, ALPHA3);
 
     evas_object_show(oh);
     evas_object_hide(oa);
@@ -311,7 +311,7 @@ _panel_mouse_in(void *data, Evas *_e, Evas_Object *_o, void *event_info)
               ic = c;
       }
 
-    evas_object_color_set(_o, 255, 255, 255, ALPHA3);
+    evas_object_color_set(_o, ALPHA3, ALPHA3, ALPHA3, ALPHA3);
     evas_object_move(oh, (ic->x < 0) ? shell->w + ic->x : ic->x,
               (ic->y < 0) ? shell->h + ic->y : ic->y);
     evas_object_hide(oa);
@@ -346,11 +346,10 @@ _panel_mouse_out(void *data, Evas *_e, Evas_Object *_o, void *event_info)
               ic = c;
       }
 
-    evas_object_color_set(_o, 255, 255, 255, ALPHA2);
+    evas_object_color_set(_o, ALPHA2, ALPHA2, ALPHA2, ALPHA2);
     evas_object_hide(oh);
     evas_object_hide(oa);
 
     evas_object_hide(o_hbg);
     evas_object_hide(o_hte);
-
 }

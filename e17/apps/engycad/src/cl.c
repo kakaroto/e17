@@ -77,7 +77,7 @@ void bg_mouse_out(void * data,
 	void *event_info);
 
 
-char * my_iconv(iconv_t dcd, char *s);
+char * my_iconv(iconv_t dcd, const char *s);
 
 
 int engy_cl_init(void)
@@ -104,7 +104,7 @@ int engy_cl_init(void)
 
    o = cl_new(0 | 0x100);
    cl_cursor_pos_set(o, 1000);
-   evas_object_color_set(o, 255, 255, 255, 200);
+   evas_object_color_set(o, 200, 200, 200, 200); // premul
    evas_object_show(o);
    
    o_cl = o;
@@ -221,7 +221,7 @@ Evas_Object * cl_obg_new(Evas * e)
 
    ores = evas_object_rectangle_add(e);
    evas_object_resize(ores, 400, 50);
-   evas_object_color_set(ores, 255, 255, 255, ALPHA1);
+   evas_object_color_set(ores, ALPHA1, ALPHA1, ALPHA1, ALPHA1); // premul
    evas_object_layer_set(ores, 100);
    evas_object_pass_events_set(ores, 1);
    
@@ -410,13 +410,13 @@ void cl_color_set(Evas_Object *o, int r, int g, int b, int a)
 
    switch(trigger)
    {
-       case 3: evas_object_color_set(cl->obg, r, g, b, a);
+       case 3: evas_object_color_set(cl->obg, r*a/255, g*a/255, b*a/255, a);
 	       break;
-       case 2: evas_object_color_set(cl->otext, r, g, b, a);
+       case 2: evas_object_color_set(cl->otext, r*a/255, g*a/255, b*a/255, a);
 	       break;
-       case 1: evas_object_color_set(cl->ocu, r, g, b, a);
+       case 1: evas_object_color_set(cl->ocu, r*a/255, g*a/255, b*a/255, a);
 	       break;
-       case 0: evas_object_color_set(cl->oclip, r, g, b, a);
+       case 0: evas_object_color_set(cl->oclip, r*a/255, g*a/255, b*a/255, a);
 	       break;
    }
 }
@@ -928,14 +928,15 @@ cl_refresh(Evas_Object * _o)
 /*************************************************************/
 
 char *
-my_iconv(iconv_t dcd, char *s)
+my_iconv(iconv_t dcd, const char *s)
 {
-   int                 a, b, tmp;
-   char               buf[4096];
+   size_t              a, b, tmp;
+   char                buf[4096];
    char               *res;
-   char               *p1, *p2;
+   char               *p1;
+   char               *p2;
    
-   if ((int)dcd == -1)
+   if ((long)dcd == -1L)
       return NULL;
    if (!s)
       return NULL;
@@ -949,7 +950,7 @@ my_iconv(iconv_t dcd, char *s)
    
    memset(buf, 0, 4096);
    
-   p1 = s;
+   p1 = (char*) s;
    p2 = buf;
    tmp = iconv(dcd, &p1, &a, &p2, &b);
    res = (char *)malloc(strlen(buf) + 1);
@@ -958,7 +959,7 @@ my_iconv(iconv_t dcd, char *s)
       return NULL;
    
    strcpy(res, buf);
-  
+
    return res;
 }
 

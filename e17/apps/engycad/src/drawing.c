@@ -138,7 +138,7 @@ _read_unit(void)
     int                 i, res;
 
     serv_set_hint(DUP(_("enter dimension units id: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     if (!strcmp(s, "") || !s)
       {
           E_DB_INT_GET(shell->rcfile, "/default/unit", i, res);
@@ -159,7 +159,7 @@ _read_aunit(void)
     int                 i, res = 0;
 
     serv_set_hint(DUP(_("enter dimension angle units id: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     if (!strcmp(s, "") || !s)
       {
           E_DB_INT_GET(shell->rcfile, "/default/aunit", i, res);
@@ -181,7 +181,7 @@ _read_dimscale(void)
     float               scale;
 
     serv_set_hint(DUP(_("enter plot scale: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     if (!strcmp(s, "") || !s)
       {
           E_DB_FLOAT_GET(shell->rcfile, "/default/dimscale", scale, res);
@@ -203,7 +203,7 @@ _read_size(double *w, double *h)
     float               a, b;
 
     serv_set_hint(DUP(_("enter sheet's width and height: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     if (!strcmp(s, "") || !s)
       {
           E_DB_FLOAT_GET(shell->rcfile, "/default/w", a, res);
@@ -271,7 +271,11 @@ _drawing_check_evas_objects(void)
           Evas_Object        *o;
 
           o = evas_object_rectangle_add(e);
-          evas_object_color_set(o, d->r, d->g, d->b, d->a);
+          evas_object_color_set(o, 
+			  d->r*d->a/255, 
+			  d->g*d->a/255, 
+			  d->b*d->a/255, 
+			  d->a);
           evas_object_layer_set(o, 5);
           x1 = (int)(d->x * d->scale);
           y1 = (int)(d->y * d->scale);
@@ -299,7 +303,7 @@ _drawing_check_evas_objects(void)
     o[5] = evas_object_line_add(e);
     o[6] = evas_object_line_add(e);
 
-    evas_object_color_set(o[0], 255, 255, 255, ALPHA5);
+    evas_object_color_set(o[0], ALPHA5, ALPHA5, ALPHA5, ALPHA5);
     evas_object_color_set(o[1], 0, 0, 0, ALPHA2);
     evas_object_color_set(o[2], 0, 0, 0, ALPHA2);
     evas_object_color_set(o[3], 0, 0, 0, ALPHA5);
@@ -387,7 +391,11 @@ drawing_redraw(void)
     w1 = (int)(d->w * d->scale);
     h1 = (int)(d->h * d->scale);
 
-    evas_object_color_set(o[0], d->r, d->g, d->b, d->a);
+    evas_object_color_set(o[0], 
+		    d->r*d->a/255, 
+		    d->g*d->a/255, 
+		    d->b*d->a/255,
+		    d->a);
     evas_object_move(o[0], x1, h + y - (y1 + h1));
     evas_object_resize(o[0], w1, h1);
 

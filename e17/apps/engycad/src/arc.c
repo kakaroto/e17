@@ -45,7 +45,7 @@ arc_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -66,7 +66,7 @@ arc_create(void)
     shell->context.fy = y1;
 
     serv_set_hint(DUP(_("enter point on arcrcumference or radius: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     res = get_values(s, x1, y1, &x2, &y2);
     if (res == 1)
       {
@@ -87,7 +87,7 @@ arc_create(void)
     pre_set_x1y1(x1, y1);
 
     serv_set_hint(DUP(_("enter start angle: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     res = get_values(s, x1, y1, &x2, &y2);
     if (res == 1)
       {
@@ -107,7 +107,7 @@ arc_create(void)
       }
 
     serv_set_hint(DUP(_("enter end angle: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     res = get_values(s, x1, y1, &x2, &y2);
     if (res == 1)
       {
@@ -1036,21 +1036,23 @@ _create_scaled_arc(Arc * arc)
                       if (arc->flags & FLAG_VISIBLE)
                         {
                             evas_object_color_set(o,
-                                           arc->color.red,
-                                           arc->color.green,
-                                           arc->color.blue, arc->color.alpha);
+				(arc->color.red*arc->color.alpha)/255,
+				(arc->color.green*arc->color.alpha)/255,
+				(arc->color.blue*arc->color.alpha)/255,
+				arc->color.alpha);
                         }
                       else
                         {
-                            evas_object_color_set(o,
-                                           arc->color.red,
-                                           arc->color.green,
-                                           arc->color.blue, 0);
+                            evas_object_color_set(o, 0, 0, 0, 0);
                         }
                       if (arc->flags & FLAG_SELECTED)
-                          evas_object_color_set( o, 255, 50, 50, ALPHA5);
+                          evas_object_color_set( o, 
+					  ALPHA5, 
+					  ALPHA5/5, 
+					  ALPHA5/5, 
+					  ALPHA5);
                       if (arc->flags & FLAG_DELETED)
-                          evas_object_color_set( o, 255, 50, 50, 0);
+                          evas_object_color_set( o, 0, 0, 0, 0);
                       x1 = rad * cos(angle) + arc->x;
 		      if(arc->rect.x1>x1) arc->rect.x1 = x1;
 		      if(arc->rect.x2<x1) arc->rect.x2 = x1;
@@ -1164,21 +1166,23 @@ _create_tiled_arc(Arc * arc)
                       if (arc->flags & FLAG_VISIBLE)
                         {
                             evas_object_color_set(o,
-                                           arc->color.red,
-                                           arc->color.green,
-                                           arc->color.blue, arc->color.alpha);
+				(arc->color.red*arc->color.alpha)/255,
+				(arc->color.green*arc->color.alpha)/255,
+				(arc->color.blue*arc->color.alpha)/255, 
+				arc->color.alpha);
                         }
                       else
                         {
-                            evas_object_color_set(o,
-                                           arc->color.red,
-                                           arc->color.green,
-                                           arc->color.blue, 0);
+                            evas_object_color_set(o, 0, 0, 0, 0);
                         }
                       if (arc->flags & FLAG_SELECTED)
-                          evas_object_color_set( o, 255, 50, 50, ALPHA5);
+                          evas_object_color_set( o, 
+					  ALPHA5,
+					  ALPHA5/5,
+					  ALPHA5/5,
+					  ALPHA5);
                       if (arc->flags & FLAG_DELETED)
-                          evas_object_color_set( o, 255, 50, 50, 0);
+                          evas_object_color_set( o, 0, 0, 0, 0);
                       x1 = w2s_x(rad * cos(angle) + arc->x);
                       y1 = w2s_y(rad * sin(angle) + arc->y);
                       x2 = w2s_x((rad + dr) * cos(angle + da) + arc->x);

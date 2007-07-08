@@ -125,7 +125,7 @@ my_iconv(iconv_t dcd, char *s)
     ENGY_ASSERTS(((strlen(res) > 4001) ? 0 : 1), "it's impossible!");
     return res;
 }
-*/
+
 
 void
 my_evas_init(void)
@@ -141,7 +141,7 @@ my_evas_add_text(Evas *e, char *font, int size, char *text)
     char                buf[4096];
     DATA32             *p;
 
-    int                 w, h;
+    long                w, h;
     int                 a, d;
 
     Imlib_Image         im_prev, im_curr;
@@ -321,7 +321,7 @@ my_evas_resize(Evas *e, Evas_Object *o, double w, double h)
     evas_object_resize(o, w, h);
     evas_object_image_fill_set(o, 0, 0, w, h);
 }
-
+*/
 /* name generator */
 char               *
 generate_name(void)

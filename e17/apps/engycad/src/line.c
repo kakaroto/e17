@@ -47,7 +47,7 @@ line_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -71,7 +71,7 @@ line_create(void)
           serv_set_hint(DUP(_("enter next point: ")));
           do
             {
-                s = (char *)serv_get_string();
+                s = serv_get_string();
                 res = get_values(s, x1, y1, &x2, &y2);
                 if (res == 1)
                     serv_set_hint(DUP(_("error, please reenter: ")));
@@ -1178,20 +1178,23 @@ _create_scaled_line(Line * line)
                 if (line->flags & FLAG_VISIBLE)
                   {
                       evas_object_color_set(o,
-                                     line->color.red,
-                                     line->color.green,
-                                     line->color.blue, line->color.alpha);
+			line->color.red*line->color.alpha/255,
+			line->color.green*line->color.alpha/255,
+			line->color.blue*line->color.alpha/255, 
+			line->color.alpha);
                   }
                 else
                   {
-                      evas_object_color_set(o,
-                                     line->color.red,
-                                     line->color.green, line->color.blue, 0);
+                      evas_object_color_set(o, 0, 0, 0, 0);
                   }
                 if (line->flags & FLAG_SELECTED)
-                    evas_object_color_set(o, 255, 50, 50, ALPHA5);
+                    evas_object_color_set(o, 
+				    ALPHA5, 
+				    ALPHA5/5, 
+				    ALPHA5/5, 
+				    ALPHA5);
                 if (line->flags & FLAG_DELETED)
-                    evas_object_color_set(o, 255, 50, 50, 0);
+                    evas_object_color_set(o, 0, 0, 0, 0);
                 _line_item_xy(e, o, x1, y1, x2, y2,
                               line->thickness *
                               shell->context.show_thickness * d->scale);
@@ -1266,21 +1269,24 @@ _create_tiled_line(Line * line)
                 if (line->flags & FLAG_VISIBLE)
                   {
                       evas_object_color_set(o,
-                                     line->color.red,
-                                     line->color.green,
-                                     line->color.blue, line->color.alpha);
+			line->color.red*line->color.alpha/255,
+			line->color.green*line->color.alpha/255,
+			line->color.blue*line->color.alpha/255, 
+			line->color.alpha);
                   }
                 else
                   {
-                      evas_object_color_set(o,
-                                     line->color.red,
-                                     line->color.green, line->color.blue, 0);
+                      evas_object_color_set(o, 0, 0, 0, 0);
                   }
 
                 if (line->flags & FLAG_SELECTED)
-                    evas_object_color_set(o, 255, 50, 50, ALPHA5);
+                    evas_object_color_set(o, 
+				    ALPHA5, 
+				    ALPHA5/5, 
+				    ALPHA5/5, 
+				    ALPHA5);
                 if (line->flags & FLAG_DELETED)
-                    evas_object_color_set(o, 255, 50, 50, 0);
+                    evas_object_color_set(o, 0, 0, 0, 0);
                 _line_item_xy(e, o, x1, y1, x2, y2,
                               line->thickness *
                               shell->context.show_thickness * d->scale);
@@ -1439,7 +1445,7 @@ ghost_line_create(void)
     if (!o_line)
       {
           o_line = evas_object_line_add(e);
-          evas_object_color_set(o_line, 255, 50, 50, ALPHA2);
+          evas_object_color_set(o_line, ALPHA2, ALPHA2/5, ALPHA2/5, ALPHA2);
           evas_object_layer_set(o_line, 17);
           evas_object_pass_events_set(o_line, 1);
       }

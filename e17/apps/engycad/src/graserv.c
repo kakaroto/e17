@@ -671,9 +671,9 @@ gra_save_image(char *file)
 
     {
 	    char *p;
-	    p = imlib_image_get_data();
+	    p = (char*) imlib_image_get_data();
 	    memcpy(p, img_buf, (int)w * (int)h *4);
-	    imlib_image_put_back_data(p);
+	    imlib_image_put_back_data( (DATA32*)p);
     }
 
     imlib_save_image(file);

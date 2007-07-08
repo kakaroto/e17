@@ -4,6 +4,9 @@ int engy_cl_init(void);
 
 Evas_Object * cl_new(int opt);
 
+
+char *my_iconv(iconv_t, const char *);
+
 void cl_text_set(Evas_Object * _o, const char * str);
 void cl_text_get(Evas_Object * _o, char ** str);
 void cl_cursor_pos_set(Evas_Object * _o, int _pos);

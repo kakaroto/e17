@@ -40,7 +40,7 @@ point_create(void)
     serv_set_hint(DUP(_("enter coordinates: ")));
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x, &y);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -125,7 +125,8 @@ create_evas_objects(Point * point)
     Evas               *e;
     Evas_Object        *o;
     char                buf[4096];
-    int                 i, res, cnt, x1, y1, x2, y2;
+    int                 i, res, cnt;
+    int         	x1, y1, x2, y2;
 
     e = shell->evas;
     sprintf(buf, "/pointstyle/%s/count", point->point_style);
@@ -146,14 +147,16 @@ create_evas_objects(Point * point)
           E_DB_INT_GET(shell->point_styles_file, buf, y2, res);
           ENGY_ASSERT(res);
           o = evas_object_line_add(e);
-          evas_object_color_set(o, point->color.red,
-                         point->color.green,
-                         point->color.blue, point->color.alpha);
+          evas_object_color_set(o, 
+		point->color.red*point->color.alpha/255,
+		point->color.green*point->color.alpha/255,
+		point->color.blue*point->color.alpha/255, 
+		point->color.alpha);
           evas_object_layer_set(o, 10);
-          evas_object_data_set(o, "x1", (void *)x1);
-          evas_object_data_set(o, "y1", (void *)y1);
-          evas_object_data_set(o, "x2", (void *)x2);
-          evas_object_data_set(o, "y2", (void *)y2);
+          evas_object_data_set(o, "x1", (void *)(long)x1);
+          evas_object_data_set(o, "y1", (void *)(long)y1);
+          evas_object_data_set(o, "x2", (void *)(long)x2);
+          evas_object_data_set(o, "y2", (void *)(long)y2);
           point->list = evas_list_append(point->list, o);
       }
 }
@@ -295,30 +298,31 @@ point_redraw(Point * point)
     for (l = point->list; l; l = l->next)
       {
           Evas_Object        *o;
-          int                 a, b, c, d;
+          long                 a, b, c, d;
 
           o = l->data;
-          a = (int)evas_object_data_get(o, "x1");
-          b = (int)evas_object_data_get(o, "y1");
-          c = (int)evas_object_data_get(o, "x2");
-          d = (int)evas_object_data_get(o, "y2");
+          a = (long)evas_object_data_get(o, "x1");
+          b = (long)evas_object_data_get(o, "y1");
+          c = (long)evas_object_data_get(o, "x2");
+          d = (long)evas_object_data_get(o, "y2");
           evas_object_line_xy_set(o, x1 + a, y + h - y1 + b, x1 + c,
                            y + h - y1 + d);
           if (point->flags & FLAG_VISIBLE)
             {
-                evas_object_color_set(o, point->color.red,
-                               point->color.green,
-                               point->color.blue, point->color.alpha);
+                evas_object_color_set(o, 
+			point->color.red*point->color.alpha/255,
+			point->color.green*point->color.alpha/255,
+			point->color.blue*point->color.alpha/255,
+			point->color.alpha);
             }
           else
             {
-                evas_object_color_set(o, point->color.red,
-                               point->color.green, point->color.blue, 0);
+                evas_object_color_set(o, 0, 0, 0, 0);
             }
           if (point->flags & FLAG_SELECTED)
-              evas_object_color_set(o, 255, 50, 50, ALPHA5);
+              evas_object_color_set(o, ALPHA5, ALPHA5/5, ALPHA5/5, ALPHA5);
           if (point->flags & FLAG_DELETED)
-              evas_object_color_set(o, 255, 50, 50, 0);
+              evas_object_color_set(o, 0, 0, 0, 0);
           evas_object_show(o);
       }
 }

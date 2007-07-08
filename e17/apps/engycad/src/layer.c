@@ -44,23 +44,23 @@ layer_create(void)
     float               width;
 
     serv_set_hint(DUP(_("enter layer's label: ")));
-    lab = (char *)serv_get_string();
+    lab = serv_get_string();
     do
       {
           serv_set_hint(DUP(_("enter layer's color: ")));
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = sscanf(s, "%d %d %d %d", &r, &g, &b, &a);
           FREE(s);
       }
     while (res != 4);
 
     serv_set_hint(DUP(_("enter layer's line thickness: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     width = 0.2;
     sscanf(s, "%f", &width);
 
     serv_set_hint(DUP(_("enter layer's line style: ")));
-    line_style = (char *)serv_get_string();
+    line_style = serv_get_string();
 
     lock_data();
     _layer_create(lab, r, g, b, a, width, line_style);
@@ -162,9 +162,9 @@ layer_set(char *label)
           drawing->layers = evas_list_append(drawing->layers, layer);
       }
     FREE(label);
-    append_undo_int((void *)&(drawing->current_layer),
-                    (int)drawing->current_layer,
-                    (int)layer, CMD_REDRAW, OBJ_DRAWING, NULL);
+    append_undo_ptr((void *)&(drawing->current_layer),
+                    drawing->current_layer,
+                    layer, CMD_REDRAW, OBJ_DRAWING, NULL);
     drawing->current_layer = layer;
     layer_menu_handling();
 }

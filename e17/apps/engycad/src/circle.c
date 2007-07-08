@@ -63,7 +63,7 @@ circle_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -81,7 +81,7 @@ circle_create(void)
     pre_ci_x1y1(x1, y1);
 
     serv_set_hint(DUP(_("enter point on circumference or radius: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     res = get_values(s, x1, y1, &x2, &y2);
 
     if (res == 1)
@@ -792,7 +792,11 @@ ghost_ci_create(void)
           if (!init_flag)
             {
                 o_ci[i] = evas_object_line_add(e);
-                evas_object_color_set(o_ci[i], 255, 50, 50, ALPHA2);
+                evas_object_color_set(o_ci[i],
+				ALPHA2,
+				ALPHA2/5,
+				ALPHA2/5,
+				ALPHA2);
                 evas_object_layer_set(o_ci[i], 17);
                 evas_object_pass_events_set(o_ci[i], 1);
             }
@@ -983,20 +987,23 @@ _create_scaled_ci(Circle * ci)
                       if (ci->flags & FLAG_VISIBLE)
                         {
                             evas_object_color_set(o,
-                                           ci->color.red,
-                                           ci->color.green,
-                                           ci->color.blue, ci->color.alpha);
+				(ci->color.red*ci->color.alpha)/255,
+				(ci->color.green*ci->color.alpha)/255,
+				(ci->color.blue*ci->color.alpha)/255, 
+				ci->color.alpha);
                         }
                       else
                         {
-                            evas_object_color_set(o,
-                                           ci->color.red,
-                                           ci->color.green, ci->color.blue, 0);
+                            evas_object_color_set(o, 0, 0, 0, 0);
                         }
                       if (ci->flags & FLAG_SELECTED)
-                          evas_object_color_set( o, 255, 50, 50, ALPHA5);
+                          evas_object_color_set( o, 
+					  ALPHA5, 
+					  ALPHA5/5, 
+					  ALPHA5/5, 
+					  ALPHA5);
                       if (ci->flags & FLAG_DELETED)
-                          evas_object_color_set( o, 255, 50, 50, 0);
+                          evas_object_color_set( o, 0, 0, 0, 0);
                       x1 = w2s_x(rad * cos(angle) + ci->x);
                       y1 = w2s_y(rad * sin(angle) + ci->y);
                       x2 = w2s_x((rad + dr) * cos(angle + da) + ci->x);
@@ -1089,21 +1096,24 @@ _create_tiled_ci(Circle * ci)
                       if (ci->flags & FLAG_VISIBLE)
                         {
                             evas_object_color_set(o,
-                                           ci->color.red,
-                                           ci->color.green,
-                                           ci->color.blue, ci->color.alpha);
+				(ci->color.red*ci->color.alpha)/255,
+                                (ci->color.green*ci->color.alpha)/255,
+				(ci->color.blue*ci->color.alpha)/255, 
+				ci->color.alpha);
                         }
                       else
                         {
-                            evas_object_color_set(o,
-                                           ci->color.red,
-                                           ci->color.green, ci->color.blue, 0);
+                            evas_object_color_set(o, 0, 0, 0, 0);
                         }
 
                       if (ci->flags & FLAG_SELECTED)
-                          evas_object_color_set( o, 255, 50, 50, ALPHA5);
+                          evas_object_color_set( o, 
+					  ALPHA5, 
+					  ALPHA5/5, 
+					  ALPHA5/5, 
+					  ALPHA5);
                       if (ci->flags & FLAG_DELETED)
-                          evas_object_color_set( o, 255, 50, 50, 0);
+                          evas_object_color_set( o, 0, 0, 0, 0);
                       x1 = w2s_x(rad * cos(angle) + ci->x);
                       y1 = w2s_y(rad * sin(angle) + ci->y);
                       x2 = w2s_x((rad + dr) * cos(angle + da) + ci->x);

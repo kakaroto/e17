@@ -1,6 +1,8 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
@@ -20,6 +22,7 @@
 #include "misc.h"
 #include "trans.h"
 #include "graserv.h"
+#include "serv.h"
 #include "mouse.h"
 #include "magnet.h"
 #include "globals.h"

@@ -274,7 +274,7 @@ magnet_redraw(MG * mg)
 
           oo = evas_object_rectangle_add(e);
           evas_object_resize(oo, 5, 5);
-          evas_object_color_set(oo, 50, 150, 200, 0);
+          evas_object_color_set(oo, 0, 0, 0, 0);
           evas_object_layer_set(oo, 17);
           evas_object_event_callback_add(oo, EVAS_CALLBACK_MOUSE_DOWN,
 			  _mg_mouse_down, NULL);
@@ -386,7 +386,7 @@ mg_on_off(void *data)
 void
 mg_on(MG * mg)
 {
-    evas_object_color_set(mg->o, 50, 150, 200, 200);
+    evas_object_color_set(mg->o, 40, 120, 160, 200);
     mg->on = 1;
     a_mg = evas_list_append(a_mg, mg);
 }
@@ -394,7 +394,7 @@ mg_on(MG * mg)
 void
 mg_off(MG * mg)
 {
-    evas_object_color_set(mg->o, 50, 150, 200, 0);
+    evas_object_color_set(mg->o, 0, 0, 0, 0);
     mg->on = 0;
     a_mg = evas_list_remove(a_mg, mg);
 }
@@ -628,7 +628,11 @@ mg_check_objects(void)
     if (!hint_bg)
       {
           hint_bg = evas_object_rectangle_add(e);
-          evas_object_color_set(hint_bg, 200, 255, 255, ALPHA2);
+          evas_object_color_set(hint_bg, 
+			  200*ALPHA2/255, 
+			  ALPHA2, 
+			  ALPHA2, 
+			  ALPHA2);
           evas_object_layer_set(hint_bg, 20);
           evas_object_pass_events_set(hint_bg, 1);
       }

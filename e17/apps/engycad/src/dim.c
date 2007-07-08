@@ -47,7 +47,7 @@ dim_h_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -69,7 +69,7 @@ dim_h_create(void)
     serv_set_hint(DUP(_("enter second point: ")));
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -89,7 +89,7 @@ dim_h_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x2, y2, &x3, &y3);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -227,7 +227,7 @@ dim_v_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -249,7 +249,7 @@ dim_v_create(void)
     serv_set_hint(DUP(_("enter second point: ")));
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -269,7 +269,7 @@ dim_v_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x2, y2, &x3, &y3);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -299,7 +299,7 @@ dim_a_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -320,7 +320,7 @@ dim_a_create(void)
     serv_set_hint(DUP(_("enter second point: ")));
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -340,7 +340,7 @@ dim_a_create(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x2, y2, &x3, &y3);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -368,21 +368,21 @@ ghost_dim_create(void)
     if (!ol1)
       {
           ol1 = evas_object_line_add(e);
-          evas_object_color_set( ol1, 255, 50, 50, ALPHA2);
+          evas_object_color_set( ol1, ALPHA2, ALPHA2/5, ALPHA2/5, ALPHA2);
           evas_object_layer_set(ol1, 17);
           evas_object_pass_events_set(ol1, 1);
       }
     if (!ol2)
       {
           ol2 = evas_object_line_add(e);
-          evas_object_color_set( ol2, 255, 50, 50, ALPHA2);
+          evas_object_color_set( ol2, ALPHA2, ALPHA2/5, ALPHA2/5, ALPHA2);
           evas_object_layer_set(ol2, 17);
           evas_object_pass_events_set(ol2, 1);
       }
     if (!ol3)
       {
           ol3 = evas_object_line_add(e);
-          evas_object_color_set(ol3, 255, 50, 50, ALPHA2);
+          evas_object_color_set(ol3, ALPHA2, ALPHA2/5, ALPHA2/5, ALPHA2);
           evas_object_layer_set(ol3, 17);
           evas_object_pass_events_set(ol3, 1);
       }

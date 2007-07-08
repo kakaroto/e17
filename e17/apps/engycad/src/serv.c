@@ -200,6 +200,17 @@ serv_get_string(void)
 }
 
 void
+serv_set_hint(char *s)
+{
+    char               *buf;
+
+    buf = (char *)malloc(strlen(s) + 100);
+    sprintf(buf,"cl_set_hint|%s", s);
+    gui_put_string(buf);
+    FREE(s);
+}
+
+void
 serv_loop(void)
 {
     while (1)
@@ -210,17 +221,6 @@ serv_loop(void)
           s = serv_get_string();
           serv_parser(s);
       }
-}
-
-void
-serv_set_hint(char *s)
-{
-    char               *buf;
-
-    buf = (char *)malloc(strlen(s) + 100);
-    sprintf(buf,"cl_set_hint|%s", s);
-    gui_put_string(buf);
-    FREE(s);
 }
 
 #define IFCMD(a) if(!strcmp(_(s),_(a)))set_flag(); if(!strcmp(_(s),_(a)))
@@ -430,7 +430,7 @@ serv_move(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -450,7 +450,7 @@ serv_move(void)
     serv_set_hint(DUP(_("enter insertion point: ")));
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -482,7 +482,7 @@ serv_clone(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -502,7 +502,7 @@ serv_clone(void)
     serv_set_hint(DUP(_("enter insertion point: ")));
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -534,7 +534,7 @@ serv_rotate(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -553,7 +553,7 @@ serv_rotate(void)
     serv_set_state(ST_ROTATE2);
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 2)
             {
@@ -615,7 +615,7 @@ serv_mirror(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -636,7 +636,7 @@ serv_mirror(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -678,7 +678,7 @@ serv_trim(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x1, &y1);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -699,7 +699,7 @@ serv_trim(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x1, y1, &x2, &y2);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -714,7 +714,7 @@ serv_trim(void)
 
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, x2, y2, &x3, &y3);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -793,7 +793,7 @@ serv_paste(void)
     serv_set_state(ST_LINE1);
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x, &y);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -939,7 +939,7 @@ serv_save_image(void)
     char               *s;
 
     serv_set_hint(DUP(_("enter image filename: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     msg_create_and_send(CMD_SAVE_IMAGE, 0, s);
 }
 
@@ -949,7 +949,7 @@ serv_save_ps(void)
     char               *s;
 
     serv_set_hint(DUP(_("enter postscript filename: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
     msg_create_and_send(CMD_SAVE_PS, 0, s);
 }
 
@@ -960,7 +960,7 @@ serv_gravity(void)
     int                 gr;
 
     serv_set_hint(DUP(_("enter gravity: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
 
     if (strlen(s) != 2)
       {
@@ -1025,7 +1025,7 @@ serv_text_height(void)
     double              h;
 
     serv_set_hint(DUP(_("enter text height: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
 
     h = atof(s);
     if (h == 0.0)
@@ -1047,7 +1047,7 @@ serv_text(void)
     double              h;
 
     serv_set_hint(DUP(_("enter text: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
 
     lock_data();
     common_text(s);
@@ -1061,7 +1061,7 @@ serv_image_scale(void)
     double              h;
 
     serv_set_hint(DUP(_("enter scale value: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
 
     h = atof(s);
     FREE(s);
@@ -1079,7 +1079,7 @@ serv_set_layer(void)
     char               *s;
 
     serv_set_hint(DUP(_("enter layer's name: ")));
-    s = (char *)serv_get_string();
+    s = serv_get_string();
 
     lock_data();
     layer_set(s);
@@ -1167,7 +1167,7 @@ serv_polar(void)
     serv_set_state(ST_LINE1);
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x, &y);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -1211,7 +1211,7 @@ serv_scale(void)
     serv_set_state(ST_LINE1);
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x, &y);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));
@@ -1247,7 +1247,7 @@ serv_scale_xy(void)
     serv_set_state(ST_LINE1);
     do
       {
-          s = (char *)serv_get_string();
+          s = serv_get_string();
           res = get_values(s, shell->context.fx, shell->context.fy, &x, &y);
           if (res == 1)
               serv_set_hint(DUP(_("error, please reenter: ")));

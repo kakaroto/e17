@@ -123,10 +123,12 @@ log_add_string(char *s)
     for (i = 0; i < 10; i++)
       {
           int                 k;
+	  char 		      a;
 
           k = (step - i) % 10;
+	  a = 120 - 12 * i;
           evas_object_move(log_bg[k], 0, shell->h - h * (i + 1) - 18);
-          evas_object_color_set(log_bg[k], 200, 200, 255, 120 - 12 * i);
+          evas_object_color_set(log_bg[k], 200*a/255, 200*a/255, a, a);
 //      evas_object_show(log_bg[k]);
           evas_object_move(log_text[k], 10, shell->h - h * (i + 1) - 18);
           evas_object_color_set(log_text[k], 0, 0, 0, 250 - 25 * i);
@@ -143,7 +145,7 @@ log_configure(void)
 static int
 log_anim_show(void *data)
 {
-    int val = (int)data;
+    long val = (long)data;
     if (val < 11)
       {
           evas_object_show(log_text[(step - val + 1) % 10]);
@@ -163,7 +165,7 @@ log_show(void)
 static int
 log_anim_hide(void *data)
 {
-	int val = (int)data;
+    long val = (long)data;
     if (val < 11)
       {
           evas_object_hide(log_text[(step - val + 1) % 10]);
@@ -237,7 +239,7 @@ info_init(void)
     e = shell->evas;
 
     info_bg = evas_object_rectangle_add(e);
-    evas_object_color_set(info_bg, 200, 200, 255, 120);
+    evas_object_color_set(info_bg, 100, 100, 120, 120);
     evas_object_layer_set(info_bg, 17);
     evas_object_pass_events_set(info_bg, 1);
     evas_object_show(info_bg);
@@ -247,9 +249,10 @@ info_init(void)
 
     info.color = evas_object_rectangle_add(e);
     evas_object_color_set(info.color,
-                   shell->context.color.red,
-                   shell->context.color.green,
-                   shell->context.color.blue, shell->context.color.alpha);
+	shell->context.color.red*shell->context.color.alpha/255,
+	shell->context.color.green*shell->context.color.alpha/255,
+	shell->context.color.blue*shell->context.color.alpha/255, 
+	shell->context.color.alpha);
     evas_object_layer_set(info.color, 17);
     evas_object_pass_events_set(info.color, 1);
     evas_object_resize(info.color, max_width - 16, log_param.fontsize2);
@@ -260,7 +263,10 @@ info_init(void)
 
         info.obj_color = evas_object_rectangle_add(e);
         evas_object_color_set(info.obj_color,
-                       col.red, col.green, col.blue, col.alpha);
+		col.red*col.alpha/255,
+		col.green*col.alpha/255,
+		col.blue*col.alpha/255,
+		col.alpha);
         evas_object_layer_set(info.obj_color, 17);
         evas_object_pass_events_set(info.obj_color, 1);
         evas_object_resize(info.obj_color, max_width - 16, log_param.fontsize2);
@@ -339,9 +345,11 @@ info_sync(void)
 
     e = shell->evas;
 
-    evas_object_color_set(info.color, shell->context.color.red,
-                   shell->context.color.green,
-                   shell->context.color.blue, shell->context.color.alpha);
+    evas_object_color_set(info.color, 
+	shell->context.color.red*shell->context.color.alpha/255,
+	shell->context.color.green*shell->context.color.alpha/255,
+	shell->context.color.blue*shell->context.color.alpha/255, 
+	shell->context.color.alpha);
     buf[0] = 0;
     if (shell->context.line_style)
         sprintf(buf, _("Line style: %s"), shell->context.line_style);
@@ -389,7 +397,10 @@ info_sync(void)
         Color               col = common_get_color();
 
         evas_object_color_set(info.obj_color,
-                       col.red, col.green, col.blue, col.alpha);
+		col.red*col.alpha/255, 
+		col.green*col.alpha/255, 
+		col.blue*col.alpha/255, 
+		col.alpha);
     }
 
     strings = common_get_info();
@@ -482,7 +493,7 @@ info_toggle(void)
 int
 info_anim_show(void *data)
 {
-	int val = (int)data;
+    long val = (long)data;
     if (width < 1.0)
       {
           width = sin(M_PI/2/10*val);
@@ -503,7 +514,7 @@ info_show(void)
 int
 info_anim_hide(void *data)
 {
-	int val = (int)data;
+    long val = (long)data;
     if (width >= 0.0)
       {
           width = sin(M_PI/2 - M_PI/2/10*val);
