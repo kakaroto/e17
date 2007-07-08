@@ -124,7 +124,7 @@ create_dvi_fd_cb(Ewl_Widget *w, void *ev_data,
 static void
 create_dvi_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 {
-  Ewl_Dialog_Event *e;
+  Ewl_Event_Action_Response *e;
   Ewl_Widget *entry;
   
   e = ev;
