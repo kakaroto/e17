@@ -20,7 +20,7 @@ PKG_CHECK_MODULES(EPDF,
 POPPLER_VERSION=`pkg-config --modversion poppler`
 AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
 
-requirements="popler evas ecore"
+requirements="poppler evas ecore"
 
 PKG_CHECK_MODULES(EWL,
    ewl >= 0.5,
