@@ -322,8 +322,8 @@ _ex_main_populate_files_timer_cb(void *fdata)
 	      _ex_main_monitor_dir, NULL);
      }
       
-   dir = NULL;
    closedir(dir);
+   dir = NULL;
    free(data->selected_file);
    free(data);
    return 0;
