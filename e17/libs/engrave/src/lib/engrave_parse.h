@@ -69,6 +69,7 @@ void engrave_parse_state_color(int r, int g, int b, int a);
 void engrave_parse_state_color2(int r, int g, int b, int a);
 void engrave_parse_state_color3(int r, int g, int b, int a);
 void engrave_parse_state_fill_smooth(int smooth);
+void engrave_parse_state_fill_type(int type);
 void engrave_parse_state_fill_origin_relative(double x, double y);
 void engrave_parse_state_fill_size_relative(double x, double y);
 void engrave_parse_state_fill_origin_offset(int x, int y);

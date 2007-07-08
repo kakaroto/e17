@@ -18,6 +18,7 @@ typedef enum _Engrave_Action Engrave_Action;
 typedef enum _Engrave_Transition Engrave_Transition;
 typedef enum _Engrave_Aspect_Preference Engrave_Aspect_Preference;
 typedef enum _Engrave_Parse_Section Engrave_Parse_Section;
+typedef enum _Engrave_Fill_Type Engrave_Fill_Type;
 
 /**
  * @enum Engrave_Image_Type
@@ -96,7 +97,7 @@ enum _Engrave_Transition
 
 /**
  * @enum Engrave_Aspect_Preference
- * The differenty aspect preferences available 
+ * The different aspect preferences available 
  */
 enum _Engrave_Aspect_Preference
 {
@@ -105,6 +106,17 @@ enum _Engrave_Aspect_Preference
   ENGRAVE_ASPECT_PREFERENCE_HORIZONTAL, /**< Horizontal aspect preference */
   ENGRAVE_ASPECT_PREFERENCE_BOTH, /**< Vertical and Horizontal aspect preference */
   ENGRAVE_ASPECT_PREFERENCE_NUM
+};
+
+/**
+ * @enum Engrave_Fill_Type
+ * The different fill types available 
+ */
+enum _Engrave_Fill_Type
+{
+  ENGRAVE_FILL_TYPE_SCALE, /**< Scale type */
+  ENGRAVE_FILL_TYPE_TILE, /**< Tile type */
+  ENGRAVE_FILL_TYPE_NUM
 };
 
 /**

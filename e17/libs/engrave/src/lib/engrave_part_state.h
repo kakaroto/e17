@@ -159,6 +159,8 @@ struct _Engrave_Part_State
       int x;        /**< The x value */
       int y;        /**< The y value */
     } pos_abs, abs;
+
+    int type;	/**< The type of the fill */
   } fill;
 
   /**
@@ -246,6 +248,8 @@ EAPI void engrave_part_state_color3_set(Engrave_Part_State *eps,
                                         int r, int g, int b, int a);
 EAPI void engrave_part_state_fill_smooth_set(Engrave_Part_State *eps,
                                              int smooth);
+EAPI void engrave_part_state_fill_type_set(Engrave_Part_State *eps,
+                                             int type);
 EAPI void engrave_part_state_fill_origin_relative_set(Engrave_Part_State *state,
                                                       double x, double y);
 EAPI void engrave_part_state_fill_size_relative_set(Engrave_Part_State *eps,
@@ -331,6 +335,7 @@ EAPI void engrave_part_state_text_min_get(Engrave_Part_State *eps,
 EAPI void engrave_part_state_text_align_get(Engrave_Part_State *eps,
                                             double *x, double *y);
 EAPI int engrave_part_state_fill_smooth_get(Engrave_Part_State *eps);
+EAPI int engrave_part_state_fill_type_get(Engrave_Part_State *eps);
 EAPI void engrave_part_state_fill_origin_relative_get(Engrave_Part_State *state,
                                                       double *x, double *y);
 EAPI void engrave_part_state_fill_size_relative_get(Engrave_Part_State *eps,

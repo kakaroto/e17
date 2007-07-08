@@ -826,6 +826,19 @@ engrave_parse_state_fill_smooth(int smooth)
 }
 
 void
+engrave_parse_state_fill_type(int type)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+  Engrave_Part_State *state;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_fill_type_set(state, type);
+}
+
+void
 engrave_parse_state_fill_origin_relative(double x, double y)
 {
   Engrave_Group *group;

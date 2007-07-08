@@ -33,6 +33,7 @@ engrave_part_state_new(void)
   state->rel2.offset.x = -1;
   state->rel2.offset.y = -1;
   state->fill.smooth = 1;
+  state->fill.type = 0;
   state->fill.pos_rel.x = 0.0;
   state->fill.pos_abs.x = 0;
   state->fill.rel.x = 1.0;
@@ -555,6 +556,20 @@ engrave_part_state_fill_smooth_set(Engrave_Part_State *eps, int smooth)
 {
   if (!eps) return;
   eps->fill.smooth = smooth;
+}
+
+/**
+ * engrave_part_state_fill_type_set - Set the fill type value of the state.
+ * @param eps: The Engrave_Part_State to set the value too.
+ * @param type: The type value to set.
+ *
+ * @return Returns no value 
+ */
+EAPI void
+engrave_part_state_fill_type_set(Engrave_Part_State *eps, int type)
+{
+  if (!eps) return;
+  eps->fill.type = type;
 }
 
 /**
@@ -1410,6 +1425,12 @@ EAPI int
 engrave_part_state_fill_smooth_get(Engrave_Part_State *eps)
 {
     return (eps ? eps->fill.smooth : 1);
+}
+
+EAPI int
+engrave_part_state_fill_type_get(Engrave_Part_State *eps)
+{
+    return (eps ? eps->fill.type : 0);
 }
 
 EAPI void

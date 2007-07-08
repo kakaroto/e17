@@ -27,13 +27,14 @@
 	Engrave_Image_Type image_type;
 	Engrave_Text_Effect text_effect;
 	Engrave_Aspect_Preference aspect_pref;
+	Engrave_Fill_Type fill_type_type;
 }
 
 %token BASE
 %token STRING FLOAT
 %token ACTION AFTER ALIGN ASPECT ASPECT_PREFERENCE BORDER MIDDLE
 %token CLIP_TO COLLECTIONS COLOR COLOR2 COLOR3 COLOR_CLASS
-%token CONFINE DATA DESCRIPTION DRAGABLE EFFECT FILL FIT
+%token CONFINE DATA DESCRIPTION DRAGABLE EFFECT FILL FIT TILE SCALE
 %token FONT FONTS GROUP GROUPS IMAGE TEXTBLOCK IMAGES IN ITEM MAX MIN FIXED MOUSE_EVENTS
 %token NAME NORMAL OFFSET ORIGIN PART PARTS PROGRAM PROGRAMS ALIAS
 %token REL1 REL2 RELATIVE REPEAT_EVENTS SCRIPT SIGNAL SIZE GRADREL1 GRADREL2
@@ -62,6 +63,7 @@
 %type <text_effect> effect_type
 %type <aspect_pref> aspect_pref_type
 %type <val> exp boolean
+%type <fill_type_type> fill_type_type;
 
 %%
 
@@ -862,6 +864,16 @@ fill_statement: /* empty */
 fill_body: smooth
 	| origin
 	| size
+	| fill_type
+	;
+
+fill_type: TYPE COLON fill_type_type SEMICOLON {
+		engrave_parse_state_fill_type($3);
+	}
+	;
+
+fill_type_type: SCALE { $$ = ENGRAVE_FILL_TYPE_SCALE; }
+	| TILE { $$ = ENGRAVE_FILL_TYPE_TILE; } 
 	;
 
 smooth: SMOOTH COLON boolean SEMICOLON {
