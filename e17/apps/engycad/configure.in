@@ -90,6 +90,9 @@ ecore_libs=`$ECORE_CONFIG --libs`
 AC_SUBST(ecore_cflags)
 AC_SUBST(ecore_libs)
 
+PKG_CHECK_MODULES(ENGY,
+  imlib2 >= 1.3 edb >= 0.9 evas >= 0.9 ecore >= 0.9 ecore-evas >= 0.9)
+
 
 AC_CHECK_LIB(pthread,pthread_mutex_lock,pthread_libs="-lpthread",
 	     AC_MSG_ERROR([ERROR: pthread library not found.]); exit)
