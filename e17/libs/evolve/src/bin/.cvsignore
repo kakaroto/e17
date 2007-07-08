@@ -1,0 +1,8 @@
+.deps
+.libs
+Makefile
+Makefile.in
+evolve
+evolve_cc
+evolve_decc
+evolve_test
