@@ -721,8 +721,8 @@ Ewl_Thumbnail_Size
 ewl_image_thumbnail_size_get(Ewl_Image_Thumbnail *thumb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET("thumb", thumb, EWL_THUMBNAIL_SIZE_NORMAL);
-        
+	DCHECK_PARAM_PTR_RET("thumb", thumb, EWL_THUMBNAIL_SIZE_NORMAL);
+
 	DRETURN_INT(thumb->size, DLEVEL_STABLE);
 }
 

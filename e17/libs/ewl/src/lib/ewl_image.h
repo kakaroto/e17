@@ -129,7 +129,7 @@ Ewl_Widget 	*ewl_image_thumbnail_new(void);
 int 		 ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image);
 void		 ewl_image_thumbnail_size_set(Ewl_Image_Thumbnail *thumb, 
 							Ewl_Thumbnail_Size s);
-Ewl_Thumbnail_Size	 ewl_image_thumbnail_size_get(Ewl_Image_Thumbnail *thumb);
+Ewl_Thumbnail_Size ewl_image_thumbnail_size_get(Ewl_Image_Thumbnail *thumb);
 void 		 ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb,
 						const char *path);
 
