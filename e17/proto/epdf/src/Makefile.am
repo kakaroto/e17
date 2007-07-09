@@ -1,4 +1,4 @@
 
-SUBDIRS = lib bin
+SUBDIRS = lib bin plugins
 
 MAINTAINERCLEANFILES = Makefile.in
