@@ -80,7 +80,7 @@ ewl_filelist_directory_get(Ewl_Filelist *fl)
 	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
 	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
 
-	DRETURN_INT(fl->directory, DLEVEL_STABLE);
+	DRETURN_PTR(fl->directory, DLEVEL_STABLE);
 }
 
 /**
@@ -497,7 +497,7 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 		ecore_list_append(selected, strdup(file));
 	}
 
-	DRETURN_INT(selected, DLEVEL_STABLE);
+	DRETURN_PTR(selected, DLEVEL_STABLE);
 }
 
 /**

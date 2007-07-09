@@ -94,7 +94,7 @@ ewl_view_widget_fetch_get(Ewl_View *v)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("v", v, NULL);
 
-	DRETURN_INT(v->fetch, DLEVEL_STABLE);
+	DRETURN_PTR(v->fetch, DLEVEL_STABLE);
 }
 
 /**
@@ -126,7 +126,7 @@ ewl_view_header_fetch_get(Ewl_View *v)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("v", v, NULL);
 
-	DRETURN_INT(v->header_fetch, DLEVEL_STABLE);
+	DRETURN_PTR(v->header_fetch, DLEVEL_STABLE);
 }
 
 /**
@@ -158,6 +158,6 @@ ewl_view_expansion_view_fetch_get(Ewl_View *v)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("v", v, NULL);
 
-	DRETURN_INT(v->expansion, DLEVEL_STABLE);
+	DRETURN_PTR(v->expansion, DLEVEL_STABLE);
 }
 

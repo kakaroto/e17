@@ -121,7 +121,7 @@ ewl_model_data_fetch_get(Ewl_Model *m)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
 
-	DRETURN_INT(m->fetch, DLEVEL_STABLE);
+	DRETURN_PTR(m->fetch, DLEVEL_STABLE);
 }
 
 /**
@@ -183,7 +183,7 @@ ewl_model_data_sort_get(Ewl_Model *m)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
 
-	DRETURN_INT(m->sort, DLEVEL_STABLE);
+	DRETURN_PTR(m->sort, DLEVEL_STABLE);
 }
 
 /**
@@ -246,7 +246,7 @@ ewl_model_data_count_get(Ewl_Model *m)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
 
-	DRETURN_INT(m->count, DLEVEL_STABLE);
+	DRETURN_PTR(m->count, DLEVEL_STABLE);
 }
 
 /**
@@ -309,7 +309,7 @@ ewl_model_expansion_data_fetch_get(Ewl_Model *m)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
 
-	DRETURN_INT(m->expansion.data, DLEVEL_STABLE);
+	DRETURN_PTR(m->expansion.data, DLEVEL_STABLE);
 }
 
 /**
@@ -345,7 +345,7 @@ ewl_model_data_free_get(Ewl_Model *m)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
 
-	DRETURN_INT(m->data_free, DLEVEL_STABLE);
+	DRETURN_PTR(m->data_free, DLEVEL_STABLE);
 }
 
 /**

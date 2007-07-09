@@ -325,7 +325,7 @@ ewl_filelist_tree_data_fetch(void *data, unsigned int row, unsigned int col)
 
 printf("RET %p %s\n", data, ret);
 
-	DRETURN_INT(ret, DLEVEL_STABLE);
+	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 /**
