@@ -905,12 +905,12 @@ create_filechooser_dialog(void)
    etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog),
       UI_FilechooserFileNameEntry, ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
 
+   etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),
+      ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL );
    UI_FilechooserLoadButton = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),
       ETK_STOCK_DOCUMENT_OPEN ,ETK_RESPONSE_OK );
    UI_FilechooserSaveButton = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),
       ETK_STOCK_DOCUMENT_SAVE ,ETK_RESPONSE_OK );
-   etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),
-      ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL );
 
    return dialog;
 }

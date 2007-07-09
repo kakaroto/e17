@@ -5,7 +5,7 @@
 Introduction
 =======================================
 
-edje_editor is an visual editor for edje file.
+edje_editor is a visual editor for edje file.
 This is a prealpha state, don't expect nothing.
 
 
@@ -47,8 +47,3 @@ Troubleshooting
 For now the only place to found support is the enlightenment-devel list
    
    <enlightenment-devel@lists.sourceforge.net>
-
-When reporting bugs, try to be as precise as possible (which OS, which
-distribution, what plugins you were trying, and so on).
-
-
