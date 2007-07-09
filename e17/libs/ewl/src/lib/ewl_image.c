@@ -679,6 +679,7 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
 
 	ewl_callback_prepend(EWL_WIDGET(image), EWL_CALLBACK_DESTROY,
 			    ewl_image_thumbnail_cb_destroy, NULL);
+	image->size = EWL_THUMBNAIL_SIZE_NORMAL;
 
 #ifdef BUILD_EPSILON_SUPPORT
 	if (!ewl_image_epsilon_handler) {
@@ -693,6 +694,38 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * @param thumb: The image thumbnail to set the size on
+ * @param s: The Ewl_Thumbnail_Size to set for the image
+ * @return Returns no value.
+ * @brief This will set the size of the thumbnails
+ */
+void 
+ewl_image_thumbnail_size_set(Ewl_Image_Thumbnail *thumb, Ewl_Thumbnail_Size s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("thumb", thumb);
+	DCHECK_TYPE("thumb", thumb, EWL_IMAGE_THUMBNAIL_TYPE);
+	
+	thumb->size = s;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param thumb: The image thumbnail to get the size from
+ * @return Returns the size of the thumbnail.
+ * @brief This will return the current size of thumbnails
+ */
+Ewl_Thumbnail_Size
+ewl_image_thumbnail_size_get(Ewl_Image_Thumbnail *thumb)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET("thumb", thumb, EWL_THUMBNAIL_SIZE_NORMAL);
+        
+	DRETURN_INT(thumb->size, DLEVEL_STABLE);
+}
+
 /** 
  * @param thumb: The thumbnail to request
  * @param path: The path to the image
@@ -703,13 +736,19 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
 void
 ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, const char *path)
 {
+	Ewl_Thumbnail_Size size;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("thumb", thumb);
 	DCHECK_TYPE("thumb", thumb, EWL_IMAGE_THUMBNAIL_TYPE);
 	DCHECK_PARAM_PTR("path", path);
 
 #ifdef BUILD_EPSILON_SUPPORT
-	thumb->thumb = epsilon_add((char *)path, NULL, EPSILON_THUMB_NORMAL, thumb);
+	if (thumb->size == EWL_THUMBNAIL_SIZE_NORMAL) 
+		size = EPSILON_THUMB_NORMAL;
+	else size = EPSILON_THUMB_LARGE;
+	
+	thumb->thumb = epsilon_add((char *)path, NULL, size, thumb);
 #else
 	thumb->thumb = NULL;
 #endif

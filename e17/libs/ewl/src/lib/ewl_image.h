@@ -82,6 +82,7 @@ struct Ewl_Image_Thumbnail
 {
 	Ewl_Image image;	/**< Inherit from Ewl_Image */
 	void *thumb; /**< Outstanding request to thumbnail image */
+	Ewl_Thumbnail_Size size; /**< Size of the thumbnails>*/
 	Ewl_Widget *orig;  /**< Reference to image used to create thumb */
 };
 
@@ -117,7 +118,7 @@ void		 ewl_image_size_get(Ewl_Image *i, int *w, int *h);
 void		 ewl_image_tile_set(Ewl_Image *i, int x, int y, 
 						int w, int h);
 void 		 ewl_image_constrain_set(Ewl_Image *i, unsigned int size);
-unsigned int	 ewl_image_constrain_get(Ewl_Image *i);
+Ewl_Thumbnail_Size	 ewl_image_constrain_get(Ewl_Image *i);
 
 void		 ewl_image_flip(Ewl_Image *img, Ewl_Orientation orient);
 void		 ewl_image_rotate(Ewl_Image *i, Ewl_Rotate rotate);
@@ -126,6 +127,9 @@ Ewl_Widget 	*ewl_image_thumbnail_get(Ewl_Image *i);
 
 Ewl_Widget 	*ewl_image_thumbnail_new(void);
 int 		 ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image);
+void		 ewl_image_thumbnail_size_set(Ewl_Image_Thumbnail *thumb, 
+							unsigned int s);
+unsigned int	 ewl_image_thumbnail_size_get(Ewl_Image_Thumbnail *thumb);
 void 		 ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb,
 						const char *path);
 

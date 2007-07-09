@@ -845,6 +845,21 @@ enum Ewl_Image_Type
 typedef enum Ewl_Image_Type Ewl_Image_Type;
 
 /**
+ * @enum Ewl_Thumbnail_Size
+ * The size of thumbnails
+ */
+enum Ewl_Thumbnail_Size
+{
+	EWL_THUMBNAIL_SIZE_NORMAL, /**< Normal size thumbnail */
+	EWL_THUMBNAIL_SIZE_LARGE, /**< A large thumbnail*/
+};
+
+/**
+ * The Ewl_Thumbnail_Size
+ */
+typedef enum Ewl_Thumbnail_Size Ewl_Thumbnail_Size;
+
+/**
  * @}
  */ 
 
