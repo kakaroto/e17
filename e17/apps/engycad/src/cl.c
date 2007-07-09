@@ -969,3 +969,9 @@ void cl_configure(Evas_Coord w, Evas_Coord h)
 	evas_object_move(o_cl, 0, h - 20);
 	evas_object_resize(o_cl, w, 20);
 }
+
+
+void cl_shutdown(void)
+{
+	iconv_close(dcd);
+}

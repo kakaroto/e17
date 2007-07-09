@@ -50,14 +50,16 @@
 #include "menu.h"
 #include "undo.h"
 
-#define TITLE "Engy 0.3.0"
+#define TITLE "Engy 0.3.1"
 
 #define _(a) (a)
 #define DUP(a) (char*)strdup(a)
 #define FREE(a) free(a)
 #define IF_FREE(a) if(a) FREE(a);
 
-#define ENGY_ASSERT(a) if(!(a)){fprintf(stderr,\
+#define ENGY_ASSERT(a) 
+
+#define _ENGY_ASSERT(a) if(!(a)){fprintf(stderr,\
 "Assertion failed in %s, line %d. Program may fall, probably due \
 to lack of memory or corrupped resource file. Bug report is welcome.\n"\
 ,__FILE__,__LINE__); E_DB_FLUSH;}

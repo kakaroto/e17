@@ -601,7 +601,7 @@ ell_delete(Ellipse * ell)
 
     dummy = ell->flags;
     ell->flags |= FLAG_DELETED;
-    append_undo_int((void *)&(ell->flags),
+    append_undo_long((void *)&(ell->flags),
                     dummy, ell->flags, CMD_SYNC, OBJ_ELLIPSE, ell);
     msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
 }
@@ -767,7 +767,7 @@ ell_select_by_click(Ellipse * ell, double x, double y)
 
     dummy = ell->flags;
     ell->flags |= FLAG_SELECTED;
-    append_undo_int((void *)&(ell->flags),
+    append_undo_long((void *)&(ell->flags),
                     dummy, ell->flags, CMD_SYNC, OBJ_ELLIPSE, ell);
     msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
     return 1;
@@ -787,7 +787,7 @@ ell_select_by_rect(Ellipse * ell, double x, double y, double w, double h)
       {
           dummy = ell->flags;
           ell->flags |= FLAG_SELECTED;
-          append_undo_int((void *)&(ell->flags),
+          append_undo_long((void *)&(ell->flags),
                           dummy, ell->flags, CMD_SYNC, OBJ_ELLIPSE, ell);
           msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
       }
@@ -823,7 +823,7 @@ ell_deselect_by_click(Ellipse * ell, double x, double y)
 
     dummy = ell->flags;
     ell->flags ^= FLAG_SELECTED;
-    append_undo_int((void *)&(ell->flags),
+    append_undo_long((void *)&(ell->flags),
                     dummy, ell->flags, CMD_SYNC, OBJ_ELLIPSE, ell);
     msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
     return 1;
@@ -844,7 +844,7 @@ ell_deselect_by_rect(Ellipse * ell, double x, double y, double w, double h)
       {
           dummy = ell->flags;
           ell->flags ^= FLAG_SELECTED;
-          append_undo_int((void *)&(ell->flags),
+          append_undo_long((void *)&(ell->flags),
                           dummy, ell->flags, CMD_SYNC, OBJ_ELLIPSE, ell);
           msg_create_and_send(CMD_SYNC, OBJ_ELLIPSE, ell);
       }

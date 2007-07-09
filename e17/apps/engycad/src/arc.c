@@ -621,7 +621,7 @@ arc_delete(Arc * arc)
 
     dummy = arc->flags;
     arc->flags |= FLAG_DELETED;
-    append_undo_int((void *)&(arc->flags),
+    append_undo_long((void *)&(arc->flags),
                     dummy, arc->flags, CMD_SYNC, OBJ_ARC, arc);
     msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
 }
@@ -795,7 +795,7 @@ arc_select_by_click(Arc * arc, double x, double y)
 
     dummy = arc->flags;
     arc->flags |= FLAG_SELECTED;
-    append_undo_int((void *)&(arc->flags),
+    append_undo_long((void *)&(arc->flags),
                     dummy, arc->flags, CMD_SYNC, OBJ_ARC, arc);
     msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
     return 1;
@@ -816,7 +816,7 @@ arc_select_by_rect(Arc * arc, double x, double y, double w, double h)
       {
           dummy = arc->flags;
           arc->flags |= FLAG_SELECTED;
-          append_undo_int((void *)&(arc->flags),
+          append_undo_long((void *)&(arc->flags),
                           dummy, arc->flags, CMD_SYNC, OBJ_ARC, arc);
           msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
       }
@@ -860,7 +860,7 @@ arc_deselect_by_click(Arc * arc, double x, double y)
 
     dummy = arc->flags;
     arc->flags ^= FLAG_SELECTED;
-    append_undo_int((void *)&(arc->flags),
+    append_undo_long((void *)&(arc->flags),
                     dummy, arc->flags, CMD_SYNC, OBJ_ARC, arc);
     msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
     return 1;
@@ -881,7 +881,7 @@ arc_deselect_by_rect(Arc * arc, double x, double y, double w, double h)
       {
           dummy = arc->flags;
           arc->flags ^= FLAG_SELECTED;
-          append_undo_int((void *)&(arc->flags),
+          append_undo_long((void *)&(arc->flags),
                           dummy, arc->flags, CMD_SYNC, OBJ_ARC, arc);
           msg_create_and_send(CMD_SYNC, OBJ_ARC, arc);
       }

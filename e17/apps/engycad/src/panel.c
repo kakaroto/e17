@@ -353,3 +353,18 @@ _panel_mouse_out(void *data, Evas *_e, Evas_Object *_o, void *event_info)
     evas_object_hide(o_hbg);
     evas_object_hide(o_hte);
 }
+
+
+void panel_shutdown(void)
+{
+    Evas_List *l;
+    for (l = icons; l ; l = l->next)
+      {
+          Icon               *c = l->data;
+	  IF_FREE(c->pic);
+	  IF_FREE(c->cmd);
+	  IF_FREE(c->hint);
+	  FREE(c);
+      }
+    icons = evas_list_free(icons);
+}

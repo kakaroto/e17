@@ -128,7 +128,12 @@ drawing_load(void)
 void
 drawing_free(void)
 {
+	Evas_List *l;
 
+        for (l = drawing->layers; l; l = l->next)
+	{
+		layer_destroy((Layer *) l->data);
+	}
 }
 
 Unit

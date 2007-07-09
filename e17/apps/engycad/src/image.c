@@ -685,7 +685,7 @@ image_delete(Image * im)
 
     dummy = im->flags;
     im->flags |= FLAG_DELETED;
-    append_undo_int((void *)&(im->flags),
+    append_undo_long((void *)&(im->flags),
                     dummy, im->flags, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
 }
@@ -841,7 +841,7 @@ image_gravity(Image * im, int gr)
     if (!im)
         return;
 
-    append_undo_int((void *)&(im->gravity),
+    append_undo_long((void *)&(im->gravity),
                     im->gravity, gr, CMD_SYNC, OBJ_IMAGE, im);
     im->gravity = gr;
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
@@ -877,7 +877,7 @@ image_select_by_click(Image * im, double x, double y)
 
     dummy = im->flags;
     im->flags |= FLAG_SELECTED;
-    append_undo_int((void *)&(im->flags),
+    append_undo_long((void *)&(im->flags),
                     dummy, im->flags, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
     return 1;
@@ -903,7 +903,7 @@ image_select_by_rect(Image * im, double x, double y, double w, double h)
 
     dummy = im->flags;
     im->flags |= FLAG_SELECTED;
-    append_undo_int((void *)&(im->flags),
+    append_undo_long((void *)&(im->flags),
                     dummy, im->flags, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
 }
@@ -926,7 +926,7 @@ image_deselect_by_click(Image * im, double x, double y)
 
     dummy = im->flags;
     im->flags ^= FLAG_SELECTED;
-    append_undo_int((void *)&(im->flags),
+    append_undo_long((void *)&(im->flags),
                     dummy, im->flags, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
     return 1;
@@ -952,7 +952,7 @@ image_deselect_by_rect(Image * im, double x, double y, double w, double h)
 
     dummy = im->flags;
     im->flags ^= FLAG_SELECTED;
-    append_undo_int((void *)&(im->flags),
+    append_undo_long((void *)&(im->flags),
                     dummy, im->flags, CMD_SYNC, OBJ_IMAGE, im);
     msg_create_and_send(CMD_SYNC, OBJ_IMAGE, im);
 }

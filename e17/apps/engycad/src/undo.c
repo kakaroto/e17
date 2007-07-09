@@ -44,8 +44,8 @@ struct _Undo_Item_Int
     int                 minor;
     void               *obj;
     void               *ptr;
-    int                 old;
-    int                 new;
+    long                 old;
+    long                 new;
 };
 
 struct _Undo_Item_Ptr
@@ -81,12 +81,12 @@ struct _Undo_Item_Obj
 
 /* protos */
 void                undo_ptr(Undo_Item_Ptr *);
-void                undo_int(Undo_Item_Int *);
+void                undo_long(Undo_Item_Int *);
 void                undo_double(Undo_Item_Double *);
 void                undo_obj(Undo_Item_Obj *);
 
 void                redo_ptr(Undo_Item_Ptr *);
-void                redo_int(Undo_Item_Int *);
+void                redo_long(Undo_Item_Int *);
 void                redo_double(Undo_Item_Double *);
 void                redo_obj(Undo_Item_Obj *);
 
@@ -177,7 +177,7 @@ append_undo_ptr(void *ptr,
 }
 
 void
-append_undo_int(void *ptr, int old, int new, int major, int minor, void *obj)
+append_undo_long(void *ptr, long old, long new, int major, int minor, void *obj)
 {
     Undo_Item_Int      *it;
 
@@ -259,7 +259,7 @@ apply_undo_backward(void)
                 undo_ptr((Undo_Item_Ptr *) it);
                 break;
             case 11002:
-                undo_int((Undo_Item_Int *) it);
+                undo_long((Undo_Item_Int *) it);
                 break;
             case 11003:
                 undo_double((Undo_Item_Double *) it);
@@ -305,7 +305,7 @@ apply_undo_forward(void)
                 redo_ptr((Undo_Item_Ptr *) it);
                 break;
             case 11002:
-                redo_int((Undo_Item_Int *) it);
+                redo_long((Undo_Item_Int *) it);
                 break;
             case 11003:
                 redo_double((Undo_Item_Double *) it);
@@ -336,11 +336,11 @@ undo_ptr(Undo_Item_Ptr * it)
 }
 
 void
-undo_int(Undo_Item_Int * it)
+undo_long(Undo_Item_Int * it)
 {
-    int                *p;
+    long                *p;
 
-    p = (int *)it->ptr;
+    p = (long *)it->ptr;
     *p = it->old;
     msg_create_and_send(it->major, it->minor, it->obj);
 }
@@ -378,11 +378,11 @@ redo_ptr(Undo_Item_Ptr * it)
 }
 
 void
-redo_int(Undo_Item_Int * it)
+redo_long(Undo_Item_Int * it)
 {
-    int                *p;
+    long                *p;
 
-    p = (int *)it->ptr;
+    p = (long *)it->ptr;
     *p = it->new;
     msg_create_and_send(it->major, it->minor, it->obj);
 }

@@ -49,7 +49,7 @@ static void         ecore_key_down(Ecore_Event *);
 void                _shell_bg_create(void);
 void                create_view(void);
 void                print_help(char *);
-void check_rc_files(void);
+void 		    check_rc_files(void);
 
 
 static void 
@@ -77,13 +77,9 @@ void                shell_drag_stop(int, int);
 void                shell_zoom(int, int);
 void                shell_unzoom(int, int);
 
-/**********  main()  ***************/
+void 		    shell_shutdown(void);
 
-void
-at_exit_app(void)
-{
-    E_DB_FLUSH;
-}
+/**********  main()  ***************/
 
 	int
 handler_signal_exit(void *data, int ev_type, void *ev)
@@ -406,12 +402,9 @@ main(int argc, char *argv[], char *envp[])
     ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,
 		    handler_signal_exit, NULL);
     
-    
-
-    atexit(at_exit_app);
-    
     shell_init();
     ecore_main_loop_begin();
+    shell_shutdown();
     return 0;
 }
 
@@ -590,8 +583,6 @@ create_view(void)
     _get_title_dcd();
 
     shell->title = my_iconv(shell->title_dcd, TITLE);
-    printf("title: %s\n", my_iconv(shell->title_dcd, TITLE));
-
     ecore_evas_title_set(ee, shell->title);
 
     shell->evas = evas;
@@ -1115,4 +1106,39 @@ void check_rc_files(void){
 
 
 
+
+
+
+
+void
+shell_shutdown(void)
+{
+	E_DB_FLUSH;
+
+	cl_shutdown();
+	menu_shutdown();
+	panel_shutdown();
+	drawing_free();
+
+	if((long)shell->title_dcd != -1L)
+		iconv_close(shell->title_dcd);
+
+	if((long)shell->dcd != -1L)
+		iconv_close(shell->dcd);
+
+
+	ecore_evas_free(shell->ee);
+
+	IF_FREE(shell->title);
+	IF_FREE(shell->rcfile);
+	IF_FREE(shell->menu_file);
+	IF_FREE(shell->icons_file);
+	IF_FREE(shell->dim_styles_file);
+	IF_FREE(shell->text_styles_file);
+	IF_FREE(shell->line_styles_file);
+	IF_FREE(shell->point_styles_file);
+	IF_FREE(shell->hatch_styles_file);
+	IF_FREE(shell->home);
+	IF_FREE(shell->aliases);
+}
 

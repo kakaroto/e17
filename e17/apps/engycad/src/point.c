@@ -617,7 +617,7 @@ point_delete(Point * po)
         return;
     dummy = po->flags;
     po->flags |= FLAG_DELETED;
-    append_undo_int((void *)&(po->flags),
+    append_undo_long((void *)&(po->flags),
                     dummy, po->flags, CMD_SYNC, OBJ_POINT, po);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, po);
 }
@@ -752,7 +752,7 @@ point_select_by_click(Point * po, double x0, double y0)
 
     dummy = po->flags;
     po->flags |= FLAG_SELECTED;
-    append_undo_int((void *)&(po->flags),
+    append_undo_long((void *)&(po->flags),
                     dummy, po->flags, CMD_SYNC, OBJ_POINT, po);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, po);
 }
@@ -768,7 +768,7 @@ point_select_by_rect(Point * po, double x, double y, double w, double h)
         return;
     dummy = po->flags;
     po->flags |= FLAG_SELECTED;
-    append_undo_int((void *)&(po->flags),
+    append_undo_long((void *)&(po->flags),
                     dummy, po->flags, CMD_SYNC, OBJ_POINT, po);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, po);
 }
@@ -789,7 +789,7 @@ point_deselect_by_click(Point * po, double x0, double y0)
 
     dummy = po->flags;
     po->flags ^= FLAG_SELECTED;
-    append_undo_int((void *)&(po->flags),
+    append_undo_long((void *)&(po->flags),
                     dummy, po->flags, CMD_SYNC, OBJ_POINT, po);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, po);
 }
@@ -805,7 +805,7 @@ point_deselect_by_rect(Point * po, double x, double y, double w, double h)
         return;
     dummy = po->flags;
     po->flags ^= FLAG_SELECTED;
-    append_undo_int((void *)&(po->flags),
+    append_undo_long((void *)&(po->flags),
                     dummy, po->flags, CMD_SYNC, OBJ_POINT, po);
     msg_create_and_send(CMD_SYNC, OBJ_POINT, po);
 }

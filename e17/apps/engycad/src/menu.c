@@ -121,7 +121,7 @@ menu_item_create_evas_object(Menu_Item * mi)
     int                 res;
 
     e = shell->evas;
-    s1 = my_iconv(shell->dcd, DUP(_(mi->label)));
+    s1 = my_iconv(shell->dcd, _(mi->label));
 
     mi->om = evas_object_rectangle_add(e);
 
@@ -800,3 +800,19 @@ menu_item_reset(char *id, char *label, int ac, char *image, char *param)
 
     IF_FREE(label);
 }
+
+
+void menu_shutdown(void)
+{
+    Evas_List          *l;
+    for (l = items; l; l = l->next)
+    {
+	    Menu_Item *mi = l->data;
+	    IF_FREE(mi->label);
+	    IF_FREE(mi->param);
+	    free(mi);
+    } 
+
+    items = evas_list_free(items);
+}
+

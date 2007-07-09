@@ -561,7 +561,7 @@ ci_delete(Circle * ci)
 
     dummy = ci->flags;
     ci->flags |= FLAG_DELETED;
-    append_undo_int((void *)&(ci->flags),
+    append_undo_long((void *)&(ci->flags),
                     dummy, ci->flags, CMD_SYNC, OBJ_CIRCLE, ci);
     msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
 }
@@ -710,7 +710,7 @@ ci_select_by_click(Circle * ci, double x, double y)
 
     dummy = ci->flags;
     ci->flags |= FLAG_SELECTED;
-    append_undo_int((void *)&(ci->flags),
+    append_undo_long((void *)&(ci->flags),
                     dummy, ci->flags, CMD_SYNC, OBJ_CIRCLE, ci);
     msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
     return 1;
@@ -730,7 +730,7 @@ ci_select_by_rect(Circle * ci, double x, double y, double w, double h)
       {
           dummy = ci->flags;
           ci->flags |= FLAG_SELECTED;
-          append_undo_int((void *)&(ci->flags),
+          append_undo_long((void *)&(ci->flags),
                           dummy, ci->flags, CMD_SYNC, OBJ_CIRCLE, ci);
           msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
       }
@@ -754,7 +754,7 @@ ci_deselect_by_click(Circle * ci, double x, double y)
 
     dummy = ci->flags;
     ci->flags ^= FLAG_SELECTED;
-    append_undo_int((void *)&(ci->flags),
+    append_undo_long((void *)&(ci->flags),
                     dummy, ci->flags, CMD_SYNC, OBJ_CIRCLE, ci);
     msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
 }
@@ -773,7 +773,7 @@ ci_deselect_by_rect(Circle * ci, double x, double y, double w, double h)
       {
           dummy = ci->flags;
           ci->flags ^= FLAG_SELECTED;
-          append_undo_int((void *)&(ci->flags),
+          append_undo_long((void *)&(ci->flags),
                           dummy, ci->flags, CMD_SYNC, OBJ_CIRCLE, ci);
           msg_create_and_send(CMD_SYNC, OBJ_CIRCLE, ci);
       }

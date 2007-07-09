@@ -869,7 +869,7 @@ _common_sel_object(Object * obj)
 	    case OBJ_ELLIPSE: obj->flags |= FLAG_SELECTED;break;
 	    case OBJ_IMAGE: 
     }*/
-    append_undo_int((void *)&(obj->flags),
+    append_undo_long((void *)&(obj->flags),
                     dummy, obj->flags, CMD_SYNC, obj->type, obj);
     msg_create_and_send(CMD_SYNC, obj->type, obj);
 }
@@ -915,7 +915,7 @@ _common_desel_object(Object * obj)
 	    case OBJ_CIRCLE: obj->flags ^=FLAG_SELECTED;break;
 	    case OBJ_ELLIPSE: obj->flags ^=FLAG_SELECTED;break;
     }*/
-    append_undo_int((void *)&(obj->flags),
+    append_undo_long((void *)&(obj->flags),
                     dummy, obj->flags, CMD_SYNC, obj->type, obj);
     msg_create_and_send(CMD_SYNC, obj->type, obj);
     msg_create_and_send(CMD_INFO_SYNC, 0, NULL);
@@ -959,7 +959,7 @@ _common_inv_sel_object(Object * obj)
 	    case OBJ_CIRCLE: obj->flags ^= FLAG_SELECTED;break;
 	    case OBJ_ELLIPSE: obj->flags ^= FLAG_SELECTED;break;
     }                  */
-    append_undo_int((void *)&(obj->flags),
+    append_undo_long((void *)&(obj->flags),
                     dummy, obj->flags, CMD_SYNC, obj->type, obj);
     msg_create_and_send(CMD_SYNC, obj->type, obj);
 }
@@ -1246,10 +1246,10 @@ _common_color_object(Object * obj, int r, int g, int b, int a)
     obj->color.green = g;
     obj->color.blue = b;
     obj->color.alpha = a;
-    append_undo_int((void *)&(obj->color.red), tr, r, CMD_SYNC, obj->type, obj);
-    append_undo_int((void *)&(obj->color.green), tg, g, 0, 0, NULL);
-    append_undo_int((void *)&(obj->color.blue), tb, b, 0, 0, NULL);
-    append_undo_int((void *)&(obj->color.alpha), ta, a, 0, 0, NULL);
+    append_undo_long((void *)&(obj->color.red), tr, r, CMD_SYNC, obj->type, obj);
+    append_undo_long((void *)&(obj->color.green), tg, g, 0, 0, NULL);
+    append_undo_long((void *)&(obj->color.blue), tb, b, 0, 0, NULL);
+    append_undo_long((void *)&(obj->color.alpha), ta, a, 0, 0, NULL);
     msg_create_and_send(CMD_SYNC, obj->type, obj);
 }
 

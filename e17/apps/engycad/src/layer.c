@@ -162,9 +162,9 @@ layer_set(char *label)
           drawing->layers = evas_list_append(drawing->layers, layer);
       }
     FREE(label);
-    append_undo_ptr((void *)&(drawing->current_layer),
-                    drawing->current_layer,
-                    layer, CMD_REDRAW, OBJ_DRAWING, NULL);
+    append_undo_long((void *)&(drawing->current_layer),
+                    (long)drawing->current_layer,
+                    (long)layer, CMD_REDRAW, OBJ_DRAWING, NULL);
     drawing->current_layer = layer;
     layer_menu_handling();
 }
@@ -269,6 +269,23 @@ layer_destroy(Layer * layer)
             case OBJ_LINE:
                 line_destroy((Line *) o);
                 break;
+	    case OBJ_CIRCLE:
+		circle_destroy((Circle *) o);
+		break;
+	    case OBJ_ARC:
+		arc_destroy((Arc *) o);
+		break;
+	    case OBJ_ELLIPSE:
+		ell_destroy((Ellipse *) o);
+		break;
+	    case OBJ_EARC:
+		earc_destroy((EArc *) o);
+		break;
+	    case OBJ_IMAGE:
+		image_destroy((Image *) o);
+	    case OBJ_TEXT:
+		text_destroy((Text *) o);
+		break;
             }
       }
 

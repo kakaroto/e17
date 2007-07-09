@@ -866,7 +866,7 @@ line_delete(Line * line)
 
     dummy = line->flags;
     line->flags |= FLAG_DELETED;
-    append_undo_int((void *)&(line->flags),
+    append_undo_long((void *)&(line->flags),
                     dummy, line->flags, CMD_SYNC, OBJ_LINE, line);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, line);
 }
@@ -1336,7 +1336,7 @@ line_select_by_click(Line * li, double _x, double _y)
 
     dummy = li->flags;
     li->flags |= FLAG_SELECTED;
-    append_undo_int((void *)&(li->flags),
+    append_undo_long((void *)&(li->flags),
 		    dummy, li->flags, CMD_SYNC, OBJ_LINE, li);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, li);
     return 1;
@@ -1381,7 +1381,7 @@ line_deselect_by_click(Line * li, double _x, double _y)
     
     
     li->flags ^= FLAG_SELECTED;
-    append_undo_int((void *)&(li->flags),
+    append_undo_long((void *)&(li->flags),
 		    dummy, li->flags, CMD_SYNC, OBJ_LINE, li);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, li);
     return 1;
@@ -1406,7 +1406,7 @@ line_select_by_rect(Line * line, double x, double y, double w, double h)
 
     dummy = line->flags;
     line->flags |= FLAG_SELECTED;
-    append_undo_int((void *)&(line->flags),
+    append_undo_long((void *)&(line->flags),
                     dummy, line->flags, CMD_SYNC, OBJ_LINE, line);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, line);
 }
@@ -1430,7 +1430,7 @@ line_deselect_by_rect(Line * line, double x, double y, double w, double h)
 
     dummy = line->flags;
     line->flags ^= FLAG_SELECTED;
-    append_undo_int((void *)&(line->flags),
+    append_undo_long((void *)&(line->flags),
                     dummy, line->flags, CMD_SYNC, OBJ_LINE, line);
     msg_create_and_send(CMD_SYNC, OBJ_LINE, line);
 }

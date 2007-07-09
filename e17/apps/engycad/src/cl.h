@@ -24,3 +24,5 @@ void cl_configure(Evas_Coord w, Evas_Coord h);
 void cl_hint_set(Evas_Object *_o, const char *str);
 
 void cl_handle_key(Evas_Object *oparent, void *event_info);
+
+void cl_shutdown(void);

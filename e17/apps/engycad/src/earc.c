@@ -677,7 +677,7 @@ earc_delete(EArc * earc)
 
     dummy = earc->flags;
     earc->flags |= FLAG_DELETED;
-    append_undo_int((void *)&(earc->flags),
+    append_undo_long((void *)&(earc->flags),
                     dummy, earc->flags, CMD_SYNC, OBJ_EARC, earc);
     msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
 }
@@ -860,7 +860,7 @@ earc_select_by_click(EArc * earc, double x, double y)
 
     dummy = earc->flags;
     earc->flags |= FLAG_SELECTED;
-    append_undo_int((void *)&(earc->flags),
+    append_undo_long((void *)&(earc->flags),
                     dummy, earc->flags, CMD_SYNC, OBJ_EARC, earc);
     msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
     return 1;
@@ -881,7 +881,7 @@ earc_select_by_rect(EArc * earc, double x, double y, double w, double h)
       {
           dummy = earc->flags;
           earc->flags |= FLAG_SELECTED;
-          append_undo_int((void *)&(earc->flags),
+          append_undo_long((void *)&(earc->flags),
                           dummy, earc->flags, CMD_SYNC, OBJ_EARC, earc);
           msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
       }
@@ -933,7 +933,7 @@ earc_deselect_by_click(EArc * earc, double x, double y)
 
     dummy = earc->flags;
     earc->flags ^= FLAG_SELECTED;
-    append_undo_int((void *)&(earc->flags),
+    append_undo_long((void *)&(earc->flags),
                     dummy, earc->flags, CMD_SYNC, OBJ_EARC, earc);
     msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
     return 1;
@@ -954,7 +954,7 @@ earc_deselect_by_rect(EArc * earc, double x, double y, double w, double h)
       {
           dummy = earc->flags;
           earc->flags ^= FLAG_SELECTED;
-          append_undo_int((void *)&(earc->flags),
+          append_undo_long((void *)&(earc->flags),
                           dummy, earc->flags, CMD_SYNC, OBJ_EARC, earc);
           msg_create_and_send(CMD_SYNC, OBJ_EARC, earc);
       }
