@@ -12,7 +12,7 @@ INCLUDES	     = @IMLIB2_CFLAGS@ @EPEG_CFLAGS@ @PNG_CFLAGS@ @ECORE_CFLAGS@ @EVAS_
 			-DPACKAGE_LIB_DIR=\""$(libdir)"\"
 
 lib_LTLIBRARIES      = libepsilon.la
-include_HEADERS      = Epsilon.h 
+include_HEADERS      = Epsilon.h Epsilon_Plugin.h
 libepsilon_la_SOURCES = \
 Epsilon.c \
 Epsilon_Exif.c \

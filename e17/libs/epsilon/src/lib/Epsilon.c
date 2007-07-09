@@ -1,8 +1,7 @@
 #include "Epsilon.h"
-#include "epsilon_plugin.h"
-#include "../config.h"
 #define X_DISPLAY_MISSING 1
-#include <Imlib2.h>
+#include "Epsilon_Plugin.h"
+#include "../config.h"
 #ifdef HAVE_PNG_H
 #include <png.h>
 #endif

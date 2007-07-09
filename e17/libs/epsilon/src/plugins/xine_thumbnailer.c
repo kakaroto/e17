@@ -1,5 +1,6 @@
 #include "Epsilon.h"
-#include "epsilon_plugin.h"
+#define X_DISPLAY_MISSING 1
+#include "Epsilon_Plugin.h"
 #include "../config.h"
 
 #include <dlfcn.h>
@@ -12,7 +13,6 @@
 #include <stdlib.h>
 #include <xine.h>
 #include <xine/xineutils.h>
-#include <Imlib2.h>
 
 #define XINE_THUMB_RETRY -10
 #define XINE_THUMB_FAIL -11
