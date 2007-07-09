@@ -1,7 +1,7 @@
-#include <Imlib2.h>
 #include <Evas.h>
 #include <Ecore_Evas.h>
 #include <Epsilon.h>
+#include <Epsilon_Plugin.h>
 #include <Epdf.h>
 
 Imlib_Image
