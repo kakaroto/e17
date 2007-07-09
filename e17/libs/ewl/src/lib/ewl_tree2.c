@@ -471,7 +471,6 @@ ewl_tree2_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DCHECK_TYPE("w", w, EWL_TREE2_TYPE);
 
 	t = EWL_TREE2(w);
-
 	IF_FREE_HASH(t->expansions);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -521,7 +520,6 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Tree2 *tree;
 	Ewl_Model *model;
-	unsigned int index = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -544,7 +542,7 @@ ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	tree->sort.direction = ((tree->sort.direction + 1) % EWL_SORT_DIRECTION_MAX);
 	if (!tree->sort.direction) tree->sort.direction ++;
 
-	model->sort(ewl_mvc_data_get(EWL_MVC(tree)), index,
+	model->sort(ewl_mvc_data_get(EWL_MVC(tree)), tree->sort.column,
 					tree->sort.direction);
 	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
 
@@ -595,7 +593,7 @@ ewl_tree2_header_build(Ewl_Tree2 *tree,  Ewl_Model *model, Ewl_View *view,
 
 		ewl_callback_append(h, EWL_CALLBACK_CLICKED, 
 					ewl_tree2_cb_column_sort, 
-						(unsigned int *)column);
+					(unsigned int *)column);
 
 		c = ewl_button_new();
 		ewl_container_child_append(EWL_CONTAINER(h), c);
@@ -669,6 +667,7 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 
 	mvc_data = ewl_mvc_data_get(EWL_MVC(tree));
 	model = ewl_mvc_model_get(EWL_MVC(tree));
+	if (!model) DRETURN(DLEVEL_STABLE);
 
 	/* setup the headers */
 	ewl_container_reset(EWL_CONTAINER(tree->header));
@@ -676,10 +675,6 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 		ewl_tree2_header_build(tree, model,
 				ewl_mvc_view_get(EWL_MVC(tree)), 
 				mvc_data, i);
-
-	/* XXX why don't we skip before the headers are build? */
-	if (!model)
-		DRETURN(DLEVEL_STABLE);
 
 	ewl_container_reset(EWL_CONTAINER(tree->rows));
 	ewl_tree2_build_tree_rows(tree, model,
@@ -702,8 +697,7 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 	DCHECK_PARAM_PTR("parent", parent);
 
 	row_count = model->count(data);
-	if (!row_count)
-		DRETURN(DLEVEL_STABLE);
+	if (!row_count) DRETURN(DLEVEL_STABLE);
 
 	while (TRUE)
 	{
@@ -776,8 +770,7 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 		/*
 		 * Finished the rows at this level? Jump back up a level.
 		 */
-		if (i >= row_count) 
-			break;
+		if (i >= row_count) break;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -922,7 +915,6 @@ ewl_tree2_create_expansions_hash(Ewl_Tree2 *tree)
 	if (tree->expansions)
 		DRETURN(DLEVEL_STABLE);
 
-	/* this hash table never get freed */
 	tree->expansions = ecore_hash_new(NULL, NULL);
 	ecore_hash_set_free_value(tree->expansions, 
 			ECORE_FREE_CB(ecore_list_destroy));
@@ -1044,7 +1036,6 @@ void
 ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 {
 	Ewl_Widget *child;
-	Ecore_List *tmp;
 	Ewl_Model *model;
 	void *data;
 
@@ -1060,20 +1051,12 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 	 */
 	ewl_widget_configure(node->tree);
 
-	/* XXX is this really necessary, couldn't it be done inplace? */
-	tmp = ecore_list_new();
-
 	ecore_dlist_goto_first(EWL_CONTAINER(node)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
 	{
 		if ((child != node->handle) && (child != node->row))
-			ecore_list_append(tmp, child);
+			ewl_widget_show(child);
 	}
-
-	while ((child = ecore_list_remove_first(tmp)))
-		ewl_widget_show(child);
-
-	IF_FREE_LIST(tmp);
 
 	model = ewl_mvc_model_get(EWL_MVC(node));
 	data = ewl_mvc_data_get(EWL_MVC(node));
@@ -1086,11 +1069,13 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 		tmp_data = model->expansion.data(data, node->row_num);
 		if (model->expansion.model)
 			tmp_model = model->expansion.model(data, node->row_num);
+
 		if (!tmp_model) tmp_model = model;
 
 		view = ewl_mvc_view_get(EWL_MVC(node));
 		if (view->expansion)
 			tmp_view = view->expansion(data, node->row_num);
+
 		if (!tmp_view) tmp_view = view;
 
 		ewl_tree2_build_tree_rows(EWL_TREE2(node->tree), tmp_model,
@@ -1112,7 +1097,6 @@ void
 ewl_tree2_node_collapse(Ewl_Tree2_Node *node)
 {
 	Ewl_Widget *child;
-	Ecore_List *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -1126,21 +1110,12 @@ ewl_tree2_node_collapse(Ewl_Tree2_Node *node)
 	 */
 	ewl_widget_configure(node->tree);
 
-	/* XXX same here can't we just hide the widgets instead of
-	 * appending them to a list? */
-	tmp = ecore_list_new();
-
 	ecore_dlist_goto_first(EWL_CONTAINER(node)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
 	{
 		if ((child != node->handle) && (child != node->row))
-			ecore_list_append(tmp, child);
+			ewl_widget_hide(child);
 	}
-
-	while ((child = ecore_list_remove_first(tmp)))
-		ewl_widget_hide(child);
-
-	IF_FREE_LIST(tmp);
 
 	ewl_tree2_row_collapse(EWL_TREE2(node->tree),
 			ewl_mvc_data_get(EWL_MVC(node)), node->row_num);
@@ -1175,12 +1150,10 @@ ewl_tree2_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_TREE2_NODE_TYPE);
 	
 	node = EWL_TREE2_NODE(w);
-	if (!node->tree)
-		DRETURN(DLEVEL_STABLE);
+	if (!node->tree) DRETURN(DLEVEL_STABLE);
 	
 	c = EWL_CONTAINER(w);
-	if (!c->children)
-		DRETURN(DLEVEL_STABLE);
+	if (!c->children) DRETURN(DLEVEL_STABLE);
 
 	ecore_dlist_goto_first(c->children);
 	x = CURRENT_X(w);
