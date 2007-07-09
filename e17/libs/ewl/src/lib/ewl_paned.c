@@ -37,7 +37,6 @@ static void ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev,
 static void ewl_paned_grabbers_update(Ewl_Paned *p);
 static void ewl_paned_layout_setup(void);
 static Ewl_Widget *ewl_paned_grabber_next(Ewl_Paned *p);
-static int ewl_paned_visible_panes(Ewl_Paned *p);
 static int ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Layout *layout);
 
 /**
@@ -422,7 +421,8 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	/* we need to now the number of panes
 	 * minus one because we cannot change the size of the 
 	 * last pane directly*/	
-	resizable = pane_num = ewl_paned_visible_panes(p) - 1;
+	pane_num = (ewl_container_child_count_visible_get(c) + 1)/2 - 1;
+	resizable = pane_num;
 	/* We now resize the pane areas so that they fit into the new size
 	 * therefor we have to first calculate, how many space is available
 	 * for giving or taking it from the panes */
@@ -1067,29 +1067,6 @@ ewl_paned_grabber_next(Ewl_Paned *p)
 	}
 
 	DRETURN_INT(child, DLEVEL_STABLE);
-}
-
-static int
-ewl_paned_visible_panes(Ewl_Paned *p)
-{
-	Ewl_Container *c;
-	Ewl_Widget *child;
-	int i = 0;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("p", p, 0);
-	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, 0);
-
-	c = EWL_CONTAINER(p);
-
-	ecore_dlist_goto_first(c->children);
-	while ((child = ecore_dlist_next(c->children))) 
-	{
-		if (VISIBLE(child) && !EWL_PANED_GRABBER_IS(child))
-			i++;
-	}
-
-	DRETURN_INT(i, DLEVEL_STABLE);
 }
 
 static void
