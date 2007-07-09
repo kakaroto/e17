@@ -9,5 +9,9 @@ void       _ex_sort_name_cb(Etk_Object *obj, void *data);
 void       _ex_sort_size_cb(Etk_Object *obj, void *data);
 void       _ex_sort_date_cb(Etk_Object *obj, void *data);
 void       _ex_sort_resol_cb(Etk_Object *obj, void *data);
-
+int        _ex_sort_cmp_name(const void *p1, const void *p2);
+int        _ex_sort_cmp_date(const void *p1, const void *p2);
+int        _ex_sort_cmp_size(const void *p1, const void *p2);
+int        _ex_sort_cmp_resol(const void *p1, const void *p2);
+  
 #endif

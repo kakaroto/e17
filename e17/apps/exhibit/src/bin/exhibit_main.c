@@ -9,6 +9,9 @@
 /* defines the timer tick interval for tree inserts */
 #define INSERTS_INTERVAL 0.15
 
+/* defines the initial size and increment size that file list arrays have */
+#define FILELIST_SIZE 5000
+
 extern pid_t pid;
 extern Evas_List *thumb_list;
 
@@ -16,6 +19,8 @@ typedef struct _Ex_Populate_Data Ex_Populate_Data;
 
 struct _Ex_Populate_Data
 {
+   int num;
+   char **entries;
    char *selected_file;
    Ex_Tree_Update update;
 };
@@ -221,43 +226,33 @@ _ex_main_populate_files_timer_cb(void *fdata)
 {
    Ex_Populate_Data *data;
    int i = 0;
-   static DIR *dir = NULL;
-   struct dirent *dir_entry;
-      
+   static int cur = 0;
+
    data = fdata;
-   if (!dir)
-     {
-	if ((dir = opendir(".")) == NULL)
-	  {
-	     if (data)
-	       {
-		  if (data->selected_file)
-		    free(data->selected_file);
-		  free(data);
-	       }
-	     return 0;
-	  }
-     }
 
    etk_tree_freeze(ETK_TREE(e->cur_tab->itree));
    etk_tree_freeze(ETK_TREE(e->cur_tab->dtree));   
    
-   while ((dir_entry = readdir(dir)) != NULL)
+   while (cur < data->num)
      {
 	char image[PATH_MAX];
 	char imagereal[PATH_MAX];
 	struct stat st;
+	char *file;
 
+	file = data->entries[cur];
+
+	++cur;
 	++i;
         /* Do not include current dir/above dir */
-	if ((!strcmp (dir_entry->d_name, ".")) || (!strcmp (dir_entry->d_name, "..")))
+	if ((!strcmp (file, ".")) || (!strcmp (file, "..")))
 	  continue;
 
         /* Show hidden files and directories? */
-	if ((!e->options->list_hidden) && (dir_entry->d_name[0] == '.'))
+	if ((!e->options->list_hidden) && (file[0] == '.'))
 	  continue;
 	
-	snprintf(image, PATH_MAX, "%s", dir_entry->d_name);
+	snprintf(image, PATH_MAX, "%s", file);
 
 	if (data->update == EX_TREE_UPDATE_ALL || data->update == EX_TREE_UPDATE_DIRS)
 	  {
@@ -267,9 +262,9 @@ _ex_main_populate_files_timer_cb(void *fdata)
 		  etk_tree_row_append(ETK_TREE(e->cur_tab->dtree), NULL, e->cur_tab->dcol,
 			etk_theme_icon_path_get(),
 			"places/folder_16",
-			dir_entry->d_name, NULL);
-		  etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(e->combobox_entry), dir_entry->d_name, NULL);
-		  e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, dir_entry->d_name);
+			file, NULL);
+		  etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(e->combobox_entry), file, NULL);
+		  e->cur_tab->dirs = evas_list_append(e->cur_tab->dirs, file);
 		  continue;
 	       }
 	  }
@@ -278,7 +273,7 @@ _ex_main_populate_files_timer_cb(void *fdata)
 	if (data->update == EX_TREE_UPDATE_DIRS)
 	  continue;
 
-	if ((!e->options->show_all_filetypes) && (!_ex_file_is_viewable(dir_entry->d_name)))
+	if ((!e->options->show_all_filetypes) && (!_ex_file_is_viewable(file)))
 	  continue;
 
 	if(!realpath(image, imagereal))
@@ -296,18 +291,6 @@ _ex_main_populate_files_timer_cb(void *fdata)
 	  }
      }
 
-   if (data->update == EX_TREE_UPDATE_FILES || data->update == EX_TREE_UPDATE_ALL)
-     {
-	if (e->options->default_sort == EX_SORT_BY_DATE)
-	  _ex_sort_date_cb(NULL, NULL);
-	else if (e->options->default_sort == EX_SORT_BY_SIZE)
-	  _ex_sort_size_cb(NULL, NULL);
-	else if (e->options->default_sort == EX_SORT_BY_NAME)
-	  _ex_sort_name_cb(NULL, NULL);
-	else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
-	  _ex_sort_resol_cb(NULL, NULL);
-     }
-
    if (data->update == EX_TREE_UPDATE_ALL || data->update == EX_TREE_UPDATE_DIRS)
      etk_tree_col_sort_full(e->cur_tab->dcol, _ex_main_dtree_compare_cb,
 			    NULL, ETK_TRUE);   
@@ -322,8 +305,12 @@ _ex_main_populate_files_timer_cb(void *fdata)
 	      _ex_main_monitor_dir, NULL);
      }
       
-   closedir(dir);
-   dir = NULL;
+   for (cur = 0; cur < data->num; cur++)
+     if (data->entries[cur])
+       free(data->entries[cur]);
+   if (data->entries)
+     free(data->entries);
+   cur = 0;
    free(data->selected_file);
    free(data);
    return 0;
@@ -334,7 +321,13 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 {
    char back[PATH_MAX];
    Ex_Populate_Data *data;
-   
+   char **entries;
+   struct dirent *dir_entry;
+   DIR *dir;
+   int j = 1;
+   int i = 0;
+   int (*cmp)(const void *, const void *) = _ex_sort_cmp_name;
+	
    _ex_main_image_unset();
    chdir(e->cur_tab->dir);
    
@@ -367,6 +360,53 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    else
      data->selected_file = NULL;
    data->update = update;
+	
+   dir = opendir(".");
+   
+   if (!dir)
+     {
+	fprintf(stderr, "Could not open dir!\n");
+	return;
+     }
+   
+   entries = calloc(FILELIST_SIZE, sizeof(char *));
+   
+   while ((dir_entry = readdir(dir)) != NULL)
+     {
+	if (i == FILELIST_SIZE)
+	  {      
+	     i = 0;
+	     ++j;
+	     entries = realloc(entries, j * FILELIST_SIZE * sizeof(char *));        
+	  }
+	
+	entries[(j - 1) * FILELIST_SIZE + i] = strdup(dir_entry->d_name);
+	++i;
+     }
+   
+   if (j == 1)
+     j = 0;
+   else
+     j -= 1;
+   
+   if (data->update == EX_TREE_UPDATE_FILES || data->update == EX_TREE_UPDATE_ALL)
+     {
+	if (e->options->default_sort == EX_SORT_BY_DATE)
+	  cmp = _ex_sort_cmp_date;
+	else if (e->options->default_sort == EX_SORT_BY_SIZE)
+	  cmp = _ex_sort_cmp_size;
+	else if (e->options->default_sort == EX_SORT_BY_NAME)
+	  cmp = _ex_sort_cmp_name;
+	else if (e->options->default_sort == EX_SORT_BY_RESOLUTION)
+	  cmp = _ex_sort_cmp_resol;
+     }
+   
+   qsort(entries, FILELIST_SIZE * j + i, sizeof(char *), cmp);
+   
+   data->entries = entries;
+   data->num = FILELIST_SIZE * j + i;
+   closedir(dir);   
+
    ecore_timer_add(0.001, _ex_main_populate_files_timer_cb, data);  
    
    /* Set the dir to the current dir at the end so we avoid stepdown 
