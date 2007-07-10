@@ -399,10 +399,10 @@ void EvasObject::setVisible( bool visible )
         hide();
 }
 
-void EvasObject::setFocus()
+void EvasObject::setFocus( bool focus )
 {
-    Dout( dc::notice, *this << " setFocus" );
-    evas_object_focus_set( o, true );
+    Dout( dc::notice, *this << " setFocus:" << focus );
+    evas_object_focus_set( o, focus );
 }
 
 bool EvasObject::hasFocus() const

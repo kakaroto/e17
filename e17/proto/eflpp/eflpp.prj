@@ -1,4 +1,4 @@
-# Anjuta Version 1.2.4 
+# Anjuta Version 1.2.4a 
 Compatibility Level: 1 
 
 <PROJECT_DESCRIPTION_START>
@@ -22,7 +22,7 @@ Compatibility Level: 1
 
 props.file.type=project
 
-anjuta.version=1.2.4
+anjuta.version=1.2.4a
 anjuta.compatibility.level=1
 
 project.name=eflpp
@@ -102,7 +102,11 @@ module.source.files=\
 	ewl/eflpp_ewl.cpp\
 	ewl/eflpp_ewl.h\
 	misc/eflpp_housekeeping.cpp\
-	misc/eflpp_housekeeping.h
+	misc/eflpp_housekeeping.h\
+	esmart/eflpp_esmart_container.cpp\
+	esmart/eflpp_esmart_container.h\
+	esmart/eflpp_esmart_textentry.cpp\
+	esmart/eflpp_esmart_textentry.h
 
 module.pixmap.name=pixmaps
 module.pixmap.type=

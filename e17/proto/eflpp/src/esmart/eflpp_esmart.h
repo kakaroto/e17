@@ -2,20 +2,12 @@
 #define ESMART_BASE
 
 #ifdef HAVE_CONFIG_H
-  #include <config.h>
+#include <config.h>
 #endif
 
 /* EFL++ */
 #include <eflpp_common.h>
 #include <eflpp_evas.h>
-
-/* EFL */
-#include <Esmart/Esmart_Container.h>
-#include <Esmart/Esmart_Text_Entry.h>
-
-/* STD */
-#include <iostream>
-using namespace std;
 
 /**
  * C++ Wrapper for the Enlightenment Smart Object Library (ESMART)
@@ -25,94 +17,44 @@ using namespace std;
 
 namespace efl {
 
-class EvasEsmartContainer : public EvasObject
+class EvasEsmart : public EvasObject
 {
-  public:
+public:
+  EvasEsmart( EvasCanvas *canvas,
+              const char* type = "unknown",
+              const char* name = "(null)"  );
+  virtual ~EvasEsmart();
 
-    enum Direction
-    {
-        Horizontal = CONTAINER_DIRECTION_HORIZONTAL,
-        Vertical = CONTAINER_DIRECTION_VERTICAL,
-    };
+protected:
+  Evas_Object *newEsmart( const char *name );
+  Evas_Smart *getEsmart( const char *name );
 
-    enum Alignment
-    {
-        Center = CONTAINER_ALIGN_CENTER,
-        Left = CONTAINER_ALIGN_LEFT,
-        Right = CONTAINER_ALIGN_RIGHT,
-        Bottom = CONTAINER_ALIGN_BOTTOM,
-        Top = CONTAINER_ALIGN_TOP,
-    };
+  // smart object handlers
+  virtual void addHandler() = 0;
+  virtual void delHandler() = 0;
+  virtual void moveHandler( Evas_Coord x, Evas_Coord y ) = 0;
+  virtual void resizeHandler( Evas_Coord w, Evas_Coord h ) = 0;
+  virtual void showHandler() = 0;
+  virtual void hideHandler() = 0;
+  virtual void colorSetHandler( int r, int g, int b, int a ) = 0;
+  // TODO: Evas_Object -> EvasObject?
+  virtual void clipSetHandler( Evas_Object *clip ) = 0;
+  virtual void clipUnsetHandler() = 0;
 
-    enum FillPolicy
-    {
-        None = CONTAINER_FILL_POLICY_NONE,
-        KeepAspect = CONTAINER_FILL_POLICY_KEEP_ASPECT,
-        FillX = CONTAINER_FILL_POLICY_FILL_X,
-        FillY = CONTAINER_FILL_POLICY_FILL_Y,
-        Fill = CONTAINER_FILL_POLICY_FILL,
-        Homogenous = CONTAINER_FILL_POLICY_HOMOGENOUS,
-    };
-
-  public:
-    EvasEsmartContainer( EvasCanvas* canvas, const char* name = 0 );
-    EvasEsmartContainer( Direction dir, EvasCanvas* canvas, const char* name = 0 );
-    EvasEsmartContainer( int x, int y, Direction dir, EvasCanvas* canvas, const char* name = 0 );
-    EvasEsmartContainer( int x, int y, int width, int height, Direction dir, EvasCanvas* canvas, const char* name = 0 );
-    ~EvasEsmartContainer();
-
-  public:
-
-    /* Container Properties */
-    void setDirection( Direction dir );
-    Direction direction() const;
-    void setPadding( double l, double r, double t, double b );
-    /* Padding padding() const; */
-    void setFillPolicy( FillPolicy fill );
-    FillPolicy fillPolicy() const;
-    void setAlignment( Alignment align );
-    Alignment alignment() const;
-    void setSpacing( int spacing );
-    int spacing() const;
-    void setMovingButton( int move );
-    int movingButton() const;
-    void setLayoutPlugin( const char* name );
-
-    /* Adding/Removing Elements */
-    void append( EvasObject* object, EvasObject* after = 0 );
-    void prepend( EvasObject* object, EvasObject* before = 0 );
-    void remove( EvasObject* object );
-    void destroy( EvasObject* object );
-    void clean();
-    //void sort();
-    //EvasList* elements() const;
-
-    /* Scrolling */
-    void startScrolling( double velocity );
-    void stopScrolling();
-    void scroll( int val );
-    void setScrollOffset( int val );
-    int scrollOffset() const;
-    void setScrollPercent( double percent );
-    double scrollPercent() const;
-    void scrollTo( EvasObject* object );
-
-    // double esmart_container_elements_length_get(Evas_Object *container);
-    // double esmart_container_elements_orig_length_get(Evas_Object *container);
-    //int esmart_container_layout_plugin_set(Evas_Object *container, const char *name);
-
+private:
+  static void wrap_add(Evas_Object *o);
+  static void wrap_del(Evas_Object *o);
+  static void wrap_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
+  static void wrap_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
+  static void wrap_show(Evas_Object *o);
+  static void wrap_hide(Evas_Object *o);
+  static void wrap_color_set(Evas_Object *o, int r, int g, int b, int a);
+  // TODO: Evas_Object -> EvasObject?
+  static void wrap_clip_set(Evas_Object *o, Evas_Object *clip);
+  static void wrap_clip_unset(Evas_Object *o);
 
 };
 
-class EvasEsmartTextEntry : public EvasObject
-{
-  public:
-    EvasEsmartTextEntry( EvasCanvas* canvas, const char* name = 0 );
-    EvasEsmartTextEntry( int x, int y, EvasCanvas* canvas, const char* name = 0 );
-    EvasEsmartTextEntry( int x, int y, int width, int height, EvasCanvas* canvas, const char* name = 0 );
-    ~EvasEsmartTextEntry();
-};
-
-}
+} // end namespace efl
 
 #endif

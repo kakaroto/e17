@@ -11,8 +11,7 @@ lib_LTLIBRARIES = libeflpp.la
 
 libeflpp_la_SOURCES = 
 
-libeflpp_la_LDFLAGS =	@PACKAGE_LIBS@\
-			common/libeflpp_common.la\
+libeflpp_la_LDFLAGS =	common/libeflpp_common.la\
 			ecore/libeflpp_ecore.la\
 			edb/libeflpp_edb.la\
 			edje/libeflpp_edje.la\
@@ -25,4 +24,4 @@ libeflpp_la_LDFLAGS =	@PACKAGE_LIBS@\
 			misc/libeflpp_misc.la
  
 
-libeflpp_la_LIBADD =
+libeflpp_la_LIBADD = @PACKAGE_LIBS@

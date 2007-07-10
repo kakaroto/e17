@@ -1,0 +1,143 @@
+// Esmart Text Entry Example EDC
+images 
+{
+        image,  "text_view_bg.png" COMP;
+        image,  "text_view_over.png" COMP;
+        image,  "entry_cursor.png" COMP;
+}
+
+collections {
+   group {
+      name, "text_entry";
+      min, 10 10;
+      max, 1024 768;
+
+      parts {
+
+        part {
+                name,   "back_clip";
+
+                description {
+                        state, "default" 0.0;
+
+                        rel1 {
+                                relative, 0 0;
+                                offset, 0 0;
+                        }
+                }
+        }
+
+        part {
+                name,   "background";
+                type,   IMAGE;
+                mouse_events, 1;
+
+                description {
+                        state, "default" 0.0;
+
+                        rel1 {
+                                relative, 0 0;
+                                offset, 0 0;
+                        }
+
+                       image {
+                                normal, "text_view_bg.png";
+                                border: 10 6 9 7;
+                      }
+                }
+        }
+
+        part {
+                name,   "overlay";
+                type,   IMAGE;
+                mouse_events, 1;
+
+                description {
+                        state, "default" 0.0;
+
+                        rel1 {
+                                relative, 0 0;
+                                offset, 0 0;
+                        }
+
+                       image {
+                                normal, "text_view_over.png";
+                                border: 10 6 9 7;
+                      }
+                }
+        }
+
+    part
+    {
+      name: "text";
+      type: TEXT;
+      mouse_events: 1;
+      effect: SHADOW;
+
+      description
+      {
+        state: "default" 0.0;
+        color: 0 0 0 255;
+        align: 0 0;
+
+        text
+        {
+          font:  "FreeSans";
+          size: 12;
+//          fit: 0 1;
+          min: 1 0;
+          align: 0 0.5;
+        }
+
+        rel1
+        {
+          relative: 0 0;
+          offset: 7 0;
+        }
+
+        rel2
+        {
+          relative: 0 1;
+          offset: 0 0;
+        }
+      }
+    }
+
+        part {
+                name,   "cursor";
+                type,   IMAGE;
+                mouse_events, 1;
+		clip_to: "back_clip";
+
+                description {
+                        state, "default" 0.0;
+                        aspect: 1.0 1.0;
+                        aspect_preference: VERTICAL;
+                        align: 0.0 0.5;
+
+                        rel1 {
+                                relative, 1 0;
+                                offset, 0 5;
+                                to: "text";
+                        }
+
+                        rel2 {
+                                relative, 1 1;
+                                offset, 0 -5;
+                        }
+
+
+                       image {
+                                normal, "entry_cursor.png";
+                      }
+                }
+        }
+
+   } /* Close Parts */
+
+   programs {
+
+   } /* Close Prog */
+ } /* Close Group */
+} /* Close Coll */
+

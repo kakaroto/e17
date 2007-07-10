@@ -147,6 +147,7 @@ examples/edje/simple/Makefile
 examples/esmart/Makefile
 examples/esmart/container/Makefile
 examples/esmart/textentry/Makefile
+examples/esmart/group/Makefile
 examples/etk/Makefile
 examples/etk/embed/Makefile
 examples/etk/simple/Makefile

@@ -26,7 +26,7 @@ public:
     {
         setLayer( 10 );
         setColor( 255, 255, 255, 0 ); // fully transparent, to catch the mouse events
-        setFocus();
+        setFocus( true );
     }
     virtual ~PaintArea() { };
 
@@ -120,5 +120,3 @@ int main( int argc, const char **argv )
 
     return 0;
 }
-
-

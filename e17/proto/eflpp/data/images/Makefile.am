@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+# TODO: not all images need to be installed!
+
 eflpp_pixmapsdir = @PACKAGE_DATA_DIR@/images
 
 eflpp_pixmaps_DATA = \

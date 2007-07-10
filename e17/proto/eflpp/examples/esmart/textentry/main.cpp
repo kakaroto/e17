@@ -1,9 +1,10 @@
 #include <eflpp_ecore.h>
 #include <eflpp_evas.h>
-#include <eflpp_esmart.h>
+#include <eflpp_edje.h>
+#include <eflpp_esmart_textentry.h>
 
-#define WIDTH 240
-#define HEIGHT 320
+#define WIDTH 300
+#define HEIGHT 30
 
 using namespace efl;
 
@@ -25,9 +26,17 @@ int main( int argc, const char **argv )
     rect->setLayer( 0 );
     rect->show();
 
-    EvasEsmartTextEntry* passwd = new EvasEsmartTextEntry( 50, 50, 100, 10, evas );
+    EvasEdje* edje = new EvasEdje( 0, 0, PACKAGE_DATA_DIR "/edjes/esmart_text_entry_test.edj", "text_entry", evas );
+
+    edje->resize( WIDTH, HEIGHT );
+    edje->setLayer( 1 );
+    edje->show();
+
+    EvasEsmartTextEntry* passwd = new EvasEsmartTextEntry( 0, 0, WIDTH, HEIGHT, evas );
+    passwd->setEdjePart (edje, "text");
     passwd->setColor( 0, 0, 0, 255 );
-    passwd->setLayer( 10 );
+    passwd->setLayer( 0 );
+    passwd->setFocus (true);
     passwd->show();
 
     /* Enter the application main loop */
@@ -38,4 +47,3 @@ int main( int argc, const char **argv )
 
     return 0;
 }
-

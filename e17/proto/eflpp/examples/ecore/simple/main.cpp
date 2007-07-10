@@ -22,7 +22,7 @@ int main( int argc, const char **argv )
     image->resize( evas->size() );
     image->setFill( 0, 0, image->trueSize() );
     image->show();
-    image->setFocus();
+    image->setFocus( true );
 
     efl::EvasImage* shadow = new efl::EvasImage( 0, 0, PACKAGE_DATA_DIR "/images/panel_shadow.png", evas );
     shadow->resize( evas->size() );
@@ -45,5 +45,3 @@ int main( int argc, const char **argv )
 
     return 0;
 }
-
-

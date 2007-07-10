@@ -1,6 +1,6 @@
 #include <eflpp_ecore.h>
 #include <eflpp_evas.h>
-#include <eflpp_esmart.h>
+#include <eflpp_esmart_container.h>
 
 #define WIDTH 240
 #define HEIGHT 320

@@ -36,7 +36,7 @@ TimerApp( int argc, const char** argv ) : efl::EcoreApplication( argc, argv, "Ec
     shadow->resize( WIDTH, HEIGHT );
     shadow->setFill( 0, 0, WIDTH, HEIGHT );
     shadow->show();
-    shadow->setFocus();
+    shadow->setFocus( true );
 
     logo = new efl::EvasImage( 40, 20, PACKAGE_DATA_DIR "/images/e_logo.png", evas );
     logo->setColor( 255, 255, 255, 0 );
@@ -100,4 +100,3 @@ int main( int argc, const char **argv )
     delete app;
     return 0;
 }
-

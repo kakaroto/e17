@@ -6,218 +6,98 @@ using namespace std;
 
 namespace efl {
 
+static EvasEsmart *selfEsmartPointer;
+
 //===============================================================================================
-// EvasEsmartContainer
+// EvasEsmart
 //===============================================================================================
+EvasEsmart::EvasEsmart(EvasCanvas *canvas, const char *type, const char *name )
+    :EvasObject( canvas, type, name )
+{
+  selfEsmartPointer = this;
+}
 
-EvasEsmartContainer::EvasEsmartContainer( EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas, "esmart_container", name )
+EvasEsmart::~EvasEsmart()
 {
 }
 
-EvasEsmartContainer::EvasEsmartContainer( Direction dir, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas, "esmart_container", name )
+Evas_Object *EvasEsmart::newEsmart( const char *name )
 {
-    setDirection( dir );
+  Evas_Object *evasobj;
+
+  evasobj = evas_object_smart_add(canvas()->obj(), getEsmart(name));
+
+  return evasobj;
 }
 
-EvasEsmartContainer::EvasEsmartContainer( int x, int y, Direction dir, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas, "esmart_container", name )
+Evas_Smart *EvasEsmart::getEsmart( const char *name )
 {
-    setDirection( dir );
-    move( x, y );
+  Evas_Smart *smart = evas_smart_new (name,
+                          wrap_add,
+                          wrap_del,
+                          NULL, //deprecated
+                          NULL, //deprecated
+                          NULL, //deprecated
+                          NULL, //deprecated
+                          NULL, //deprecated
+                          wrap_move,
+                          wrap_resize,
+                          wrap_show,
+                          wrap_hide,
+                          wrap_color_set,
+                          wrap_clip_set,
+                          wrap_clip_unset,
+                          NULL
+                         );
+
+  return smart;
 }
 
-EvasEsmartContainer::EvasEsmartContainer( int x, int y, int width, int height, Direction dir, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas, "esmart_container", name )
+// C wrapper helpers
+
+void EvasEsmart::wrap_add( Evas_Object *o ) 
 {
-    setDirection( dir );
-    move( x, y );
-    resize( width, height );
+  selfEsmartPointer->addHandler();
 }
 
-EvasEsmartContainer::~EvasEsmartContainer()
+void EvasEsmart::wrap_del(Evas_Object *o) 
 {
+  selfEsmartPointer->delHandler();
 }
 
-void EvasEsmartContainer::setDirection( Direction dir )
+void EvasEsmart::wrap_move(Evas_Object *o, Evas_Coord x, Evas_Coord y) 
 {
-    esmart_container_direction_set( o, static_cast<Container_Direction>( dir ) );
+  selfEsmartPointer->moveHandler( x, y );
 }
 
-EvasEsmartContainer::Direction EvasEsmartContainer::direction() const
+void EvasEsmart::wrap_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) 
 {
-    return static_cast<EvasEsmartContainer::Direction>( esmart_container_direction_get( o ) );
+  selfEsmartPointer->resizeHandler( w, h );
 }
 
-void EvasEsmartContainer::setPadding( double l, double r, double t, double b )
+void EvasEsmart::wrap_show(Evas_Object *o) 
 {
-    esmart_container_padding_set( o, l, r, t, b );
-}
-/* Padding EvasEsmartContainer::padding() const;
-{
-    double l;
-    double r;
-    double t;
-    double b;
-    esmart_container_padding_get( o, &l, &r, &t, &b );
-    return Padding( l, r, t, b );
-}*/
-
-void EvasEsmartContainer::setFillPolicy( FillPolicy fill )
-{
-    esmart_container_fill_policy_set( o, static_cast<Container_Fill_Policy>( fill ) );
+  selfEsmartPointer->showHandler();
 }
 
-EvasEsmartContainer::FillPolicy EvasEsmartContainer::fillPolicy() const
+void EvasEsmart::wrap_hide(Evas_Object *o) 
 {
-    return static_cast<EvasEsmartContainer::FillPolicy>( esmart_container_fill_policy_get( o ) );
+  selfEsmartPointer->hideHandler();
 }
 
-void EvasEsmartContainer::setAlignment( Alignment align )
+void EvasEsmart::wrap_color_set(Evas_Object *o, int r, int g, int b, int a) 
 {
-    esmart_container_alignment_set( o, static_cast<Container_Alignment>( align ) );
+  selfEsmartPointer->colorSetHandler( r, g, b, a );
 }
 
-EvasEsmartContainer::Alignment EvasEsmartContainer::alignment() const
+void EvasEsmart::wrap_clip_set(Evas_Object *o, Evas_Object *clip) 
 {
-    return static_cast<EvasEsmartContainer::Alignment>( esmart_container_alignment_get( o ) );
+  selfEsmartPointer->clipSetHandler( clip );
 }
 
-void EvasEsmartContainer::setSpacing( int spacing )
+void EvasEsmart::wrap_clip_unset(Evas_Object *o)
 {
-    esmart_container_spacing_set( o, spacing );
+  selfEsmartPointer->clipUnsetHandler();
 }
 
-int EvasEsmartContainer::spacing() const
-{
-    return esmart_container_spacing_get( o );
-}
-
-void EvasEsmartContainer::setMovingButton( int move )
-{
-    esmart_container_move_button_set( o, move );
-}
-
-int EvasEsmartContainer::movingButton() const
-{
-    return esmart_container_move_button_get( o );
-}
-
-void EvasEsmartContainer::setLayoutPlugin( const char* name )
-{
-    esmart_container_layout_plugin_set( o, name );
-}
-
-void EvasEsmartContainer::append( EvasObject* object, EvasObject* after )
-{
-    if ( !after )
-        esmart_container_element_append( o, object->obj() );
-    else
-        esmart_container_element_append_relative( o, object->obj(), after->obj() );
-}
-
-void EvasEsmartContainer::prepend( EvasObject* object, EvasObject* before )
-{
-    if ( !before )
-        esmart_container_element_prepend( o, object->obj() );
-    else
-        esmart_container_element_prepend_relative( o, object->obj(), before->obj() );
-}
-
-void EvasEsmartContainer::remove( EvasObject* object )
-{
-    esmart_container_element_remove( o, object->obj() );
-}
-
-void EvasEsmartContainer::destroy( EvasObject* object )
-{
-    esmart_container_element_destroy( o, object->obj() );
-}
-
-void EvasEsmartContainer::clean()
-{
-    esmart_container_empty( o );
-}
-
-/*
-void EvasEsmartContainer::sort( ... )
-{
-    esmart_container_sort( o, ... );
-
-EvasList* children() const
-{
-...
-}
-*/
-
-void EvasEsmartContainer::startScrolling( double velocity )
-{
-    esmart_container_scroll_start( o, velocity );
-}
-
-void EvasEsmartContainer::stopScrolling()
-{
-    esmart_container_scroll_stop( o );
-}
-
-void EvasEsmartContainer::scroll( int val )
-{
-    esmart_container_scroll( o, val );
-}
-
-void EvasEsmartContainer::setScrollOffset( int val )
-{
-    esmart_container_scroll_offset_set( o, val );
-}
-
-int EvasEsmartContainer::scrollOffset() const
-{
-    return esmart_container_scroll_offset_get( o );
-}
-
-void EvasEsmartContainer::setScrollPercent( double percent )
-{
-    esmart_container_scroll_percent_set( o, percent );
-}
-
-double EvasEsmartContainer::scrollPercent() const
-{
-    return esmart_container_scroll_percent_get( o );
-}
-
-void EvasEsmartContainer::scrollTo( EvasObject* object )
-{
-    esmart_container_scroll_to( o, object->obj() );
-}
-
-//===========================================================================//
-// EvasEsmartTextEntry
-//===========================================================================//
-
-EvasEsmartTextEntry::EvasEsmartTextEntry( EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas, "esmart_textentry", name )
-{
-}
-
-EvasEsmartTextEntry::EvasEsmartTextEntry( int x, int y, EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas, "esmart_textentry", name )
-{
-    move( x, y );
-}
-
-EvasEsmartTextEntry::EvasEsmartTextEntry( int x, int y, int width, int height, EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas, "esmart_textentry", name )
-{
-    esmart_text_entry_max_chars_set(o, 32);
-    esmart_text_entry_is_password_set(o, true);
-
-    move( x, y );
-    resize( width, height );
-}
-
-EvasEsmartTextEntry::~EvasEsmartTextEntry()
-{
-}
-
-};
+} // end namespace efl

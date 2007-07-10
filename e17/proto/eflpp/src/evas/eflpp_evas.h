@@ -154,7 +154,7 @@ class EvasObject
     virtual void setVisible( bool visibility );
 
     /* Focus */
-    virtual void setFocus();
+    virtual void setFocus( bool focus );
     virtual bool hasFocus() const;
 
     /* Events */

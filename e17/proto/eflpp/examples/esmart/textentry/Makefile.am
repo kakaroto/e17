@@ -6,6 +6,7 @@ AM_CXXFLAGS =\
          @PACKAGE_CFLAGS@ \
 	 -I$(top_srcdir)/src/ecore/ \
 	 -I$(top_srcdir)/src/evas/ \
+	 -I$(top_srcdir)/src/edje/ \
 	 -I$(top_srcdir)/src/esmart/ \
 	 -I$(top_srcdir)/src/common/ \
 	 -Wall
