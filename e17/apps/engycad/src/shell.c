@@ -169,8 +169,6 @@ main(int argc, char *argv[], char *envp[])
 	    exit(-1);
 	}
 
-        sprintf(buf, "%s/engycad/.engycad.db", home);
-        shell->rcfile = DUP(buf);
 	sprintf(buf, "%s/engycad", home);
 	shell->home = DUP(buf);
     }
@@ -216,7 +214,8 @@ main(int argc, char *argv[], char *envp[])
 */
           if (!strcmp(argv[i], "--rcfile") || !strcmp(argv[i], "-f"))
             {
-                shell->rcfile = argv[i + 1];		
+		IF_FREE(shell->rcfile);
+                shell->rcfile = DUP(argv[i + 1]);		
                 k[i] = 0;
                 k[i + 1] = 0;
             }
@@ -278,6 +277,7 @@ main(int argc, char *argv[], char *envp[])
 	    IF_FREE(shell->home);
 	    shell->home = s;
 	} else {
+	    IF_FREE(shell->home);
 	    shell->home = DUP(PACKAGE_DATA_DIR);
 	}
 	
@@ -573,6 +573,7 @@ create_view(void)
     
     evas = ecore_evas_get(ee);
     evas_font_path_prepend(evas, fontdir);
+    FREE(fontdir);
     ecore_evas_callback_delete_request_set(ee, engy_delete_request);
     ecore_evas_callback_pre_render_set(ee, engy_pre_rend);
     ecore_evas_callback_post_render_set(ee, engy_post_rend);
@@ -607,7 +608,7 @@ create_view(void)
     pointer_init();
     serv_init();
     logo_init();
-    evas_render(shell->evas);
+//    evas_render(shell->evas);
 }
 
 void
@@ -1115,6 +1116,9 @@ shell_shutdown(void)
 {
 	E_DB_FLUSH;
 
+	serv_put_string(DUP("__exit"));
+	usleep(10000);
+	gui_apply();
 	cl_shutdown();
 	menu_shutdown();
 	panel_shutdown();
@@ -1140,5 +1144,6 @@ shell_shutdown(void)
 	IF_FREE(shell->hatch_styles_file);
 	IF_FREE(shell->home);
 	IF_FREE(shell->aliases);
+
 }
 

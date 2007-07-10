@@ -135,7 +135,7 @@ gui_apply(void)
 
           s = _gui_get_string();
           IFCMD("logo") logo_init();
-          IFCMD("_exit") exit(0);
+          IFCMD("_exit") ecore_main_loop_quit();
 	  // GLS
 //          IFCMD("cl_toggle") cl_toggle();
           IFCMD("log_toggle") log_toggle();
@@ -182,7 +182,9 @@ gui_apply(void)
 
           IFCMD("cl_set_hint")
           {
-              cl_hint_set(o_cl, _gui_get_string());
+	      char * hint = _gui_get_string();
+              cl_hint_set(o_cl, hint);
+	      FREE(hint);
               fl2 = 1;
           }
           IFCMD("_clean") evas_damage_rectangle_add(shell->evas, 0, 0, shell->w,
@@ -284,6 +286,10 @@ gui_apply(void)
               log_add_string(DUP(s));
           if (!fl)
               serv_put_string(s);
+	  else
+	  {
+	      FREE(s);
+	  }
           if (!fl2)
               cl_hint_set(o_cl, DUP(_("cmd: ")));
       }

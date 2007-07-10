@@ -42,6 +42,7 @@ char                file[4096];
 Evas_List          *serv_queue = NULL;
 
 int                 parsed_flag;
+int 		    fl_shutdown = FALSE;
 
 /* protos */
 char               *_serv_get_string(void);
@@ -213,7 +214,7 @@ serv_set_hint(char *s)
 void
 serv_loop(void)
 {
-    while (1)
+    while (!fl_shutdown)
       {
           char               *s;
 
@@ -221,6 +222,9 @@ serv_loop(void)
           s = serv_get_string();
           serv_parser(s);
       }
+
+    printf("I quit!!!\n");
+    fl_shutdown = 2;
 }
 
 #define IFCMD(a) if(!strcmp(_(s),_(a)))set_flag(); if(!strcmp(_(s),_(a)))
@@ -304,6 +308,7 @@ serv_parser(char *s)
     IFCMD("save_image") serv_save_image();
     IFCMD("save_ps") serv_save_ps();
     IFCMD("help") serv_help();
+    IFCMD("__exit") fl_shutdown = 1;
     FREE(s);
 }
 

@@ -343,6 +343,7 @@ layer_load(int id)
     ENGY_ASSERT(res);
 
     sprintf(buf, "/layer/%d/label", layer->id);
+    IF_FREE(layer->label);
     E_DB_STR_GET(f, buf, layer->label, res);
     ENGY_ASSERT(res);
     if(layer->label && (strlen(layer->label)>4000))

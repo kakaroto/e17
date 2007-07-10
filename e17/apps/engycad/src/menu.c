@@ -251,6 +251,8 @@ _menu_load_item(int box, int item)
     if(s && (strlen(s)>4000)) s[4000]=0;
     if (strcmp(s, "NULL"))
         mi->pic = s;
+    else 
+	    free(s);
 
     menu_item_create_evas_object(mi);
 
@@ -810,6 +812,7 @@ void menu_shutdown(void)
 	    Menu_Item *mi = l->data;
 	    IF_FREE(mi->label);
 	    IF_FREE(mi->param);
+	    IF_FREE(mi->pic);
 	    free(mi);
     } 
 

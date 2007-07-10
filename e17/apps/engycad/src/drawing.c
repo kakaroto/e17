@@ -61,7 +61,7 @@ drawing_load(void)
     if (fn)
         fn++;
     if (!fn)
-        fn = DUP(shell->drawingfile);
+        fn = shell->drawingfile;
     f = fopen(full, "rb");
     if (!f)
         new_file = 1;
