@@ -128,6 +128,7 @@ AC_SUBST(edje_cc)
 
 
 have_esmart_textarea=no
+have_esmart_file_dialog=no
 
 AM_CONDITIONAL(BUILD_ESMART_CONTAINER, test $have_esmart_container = yes)
 AM_CONDITIONAL(BUILD_ESMART_DRAGGIES, test $have_esmart_draggies = yes)
