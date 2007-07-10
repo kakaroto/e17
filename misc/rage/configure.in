@@ -1,7 +1,7 @@
 rm -f config.cache
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(rage, 0.2.0.003)
+AM_INIT_AUTOMAKE(rage, 0.2.0.004)
 AM_CONFIG_HEADER(config.h)
 
 AC_C_BIGENDIAN
