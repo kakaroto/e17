@@ -16,7 +16,7 @@ static void
 cb_manager_get_all_devices(void *data, DBusMessage *msg, DBusError *err)
 {
   E_Hal_Callback *cb = data;
-  E_Hal_Manager_Get_All_Devices_Return *ret;
+  E_Hal_Manager_Get_All_Devices_Return *ret = NULL;
   DBusMessageIter iter, sub;
 
   if (!cb) return;
@@ -76,7 +76,7 @@ static void
 cb_manager_device_exists(void *data, DBusMessage *msg, DBusError *err)
 {
   E_Hal_Callback *cb = data;
-  E_Hal_Manager_Device_Exists_Return *ret;
+  E_Hal_Manager_Device_Exists_Return *ret = NULL;
   dbus_bool_t val;
 
   if (!cb) return;
@@ -124,7 +124,7 @@ static void
 cb_manager_find_device_string_match(void *data, DBusMessage *msg, DBusError *err)
 {
   E_Hal_Callback *cb = data;
-  E_Hal_Manager_Find_Device_String_Match_Return *ret;
+  E_Hal_Manager_Find_Device_String_Match_Return *ret = NULL;
   DBusMessageIter iter, sub;
 
   if (!cb) return;
@@ -182,7 +182,7 @@ static void
 cb_manager_find_device_by_capability(void *data, DBusMessage *msg, DBusError *err)
 {
   E_Hal_Callback *cb = data;
-  E_Hal_Manager_Find_Device_By_Capability_Return *ret;
+  E_Hal_Manager_Find_Device_By_Capability_Return *ret = NULL;
   DBusMessageIter iter, sub;
 
   if (!cb) return;

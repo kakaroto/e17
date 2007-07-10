@@ -13,7 +13,7 @@ static void
 cb_device_get_property(void *data, DBusMessage *msg, DBusError *err)
 {
   E_Hal_Callback *cb = data;
-  E_Hal_Device_Get_Property_Return *ret;
+  E_Hal_Device_Get_Property_Return *ret = NULL;
   DBusMessageIter iter;
   int type;
 
@@ -78,7 +78,7 @@ static void
 cb_device_get_all_properties(void *data, DBusMessage *msg, DBusError *err)
 {
   E_Hal_Callback *cb = data;
-  E_Hal_Device_Get_All_Properties_Return *ret;
+  E_Hal_Device_Get_All_Properties_Return *ret = NULL;
   DBusMessageIter iter, a_iter, s_iter, v_iter;
 
   if (!cb) return;
@@ -197,7 +197,7 @@ static void
 cb_device_query_capability(void *data, DBusMessage *msg, DBusError *err)
 {
   E_Hal_Callback *cb = data;
-  E_Hal_Device_Query_Capability_Return *ret;
+  E_Hal_Device_Query_Capability_Return *ret = NULL;
   dbus_bool_t val;
 
   if (!cb) return;
