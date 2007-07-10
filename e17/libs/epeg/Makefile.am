@@ -34,9 +34,9 @@ EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN \
              debian/changelog.in \
              debian/control \
              debian/copyright \
-             debian/libepeg0-dev.files \
-    	     debian/epeg0-bin.files \
-             debian/libepeg0.files \
+             debian/libepeg0-dev.install \
+    	     debian/epeg0-bin.install \
+             debian/libepeg0.install \
              debian/rules
 
 pkgconfigdir = $(libdir)/pkgconfig

@@ -21,8 +21,8 @@ bin_SCRIPTS =
 
 EXTRA_DIST = README AUTHORS COPYING epsilon.spec.in epsilon.spec gendoc \
 	     Doxyfile debian/changelog debian/changelog.in debian/rules \
-	     debian/copyright debian/control debian/epsilon0-bin.files \
-	     debian/libepsilon0.files debian/libepsilon0-dev.files \
+	     debian/copyright debian/control debian/epsilon0-bin.install \
+	     debian/libepsilon0.install debian/libepsilon0-dev.install \
 	     epsilon.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
