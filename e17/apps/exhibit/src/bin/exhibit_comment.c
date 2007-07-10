@@ -70,8 +70,8 @@ void
 _ex_comment_load(Exhibit *e)
 {
    char *file;
-   char *comment;
-   unsigned int len;
+   char *comment = NULL;
+   unsigned int len = 0;
 
    file = ((Ex_Tab *) e->cur_tab)->cur_file;
    if (_ex_file_is_jpg(file))

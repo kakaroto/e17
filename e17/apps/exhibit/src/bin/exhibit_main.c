@@ -890,7 +890,9 @@ _ex_main_window_show(char *dir, int fullscreen, int slideshow)
    char *homedir;
    const char **dnd_types;
    int dnd_types_num;
-   
+  
+   memset(file, 0, PATH_MAX);
+
    e = calloc(1, sizeof(Exhibit));
    e->mouse.down = 0;
    e->menu = NULL;
