@@ -91,6 +91,7 @@ Etk_Widget *UI_Param2Label;
 Etk_Widget *UI_DelayFromSpinner;
 Etk_Widget *UI_DelayRangeSpinner;
 Etk_Widget *UI_CurrentGroupSizeLabel;
+Etk_Widget *UI_PartEventsCheck;
 
 void     create_main_window      (void);
 void     PopulateTree            (void);

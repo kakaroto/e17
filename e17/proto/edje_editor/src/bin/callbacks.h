@@ -14,6 +14,7 @@ void on_ColorCanvas_click              (void *data, Evas *e, Evas_Object *obj,
                                        void *event_info);
 void on_ColorDialog_change             (Etk_Object *object, void *data);
 void on_PartNameEntry_text_changed     (Etk_Object *object, void *data);
+void on_PartEventsCheck_toggled        (Etk_Object *object, void *data);
 void on_StateEntry_text_changed        (Etk_Object *object, void *data);
 void on_AllButton_click                (Etk_Button *button, void *data);
 void on_AddMenu_item_activated         (Etk_Object *object, void *data);
@@ -44,6 +45,7 @@ void on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *d
 void on_ActionComboBox_changed         (Etk_Combobox *combobox, void *data);
 void on_ProgramEntry_text_changed      (Etk_Object *object, void *data);
 void on_SourceEntry_text_changed       (Etk_Object *object, void *data);
+void on_SourceEntry_item_changed       (Etk_Combobox_Entry *combo, void *data);
 void on_SignalEntry_text_changed       (Etk_Object *object, void *data);
 void on_DelaySpinners_value_changed    (Etk_Range *range, double value, void *data);
 void on_TargetEntry_text_changed       (Etk_Object *object, void *data);

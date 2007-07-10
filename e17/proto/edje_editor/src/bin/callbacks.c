@@ -230,6 +230,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          etk_widget_hide(UI_PartFrame);
          etk_widget_show(UI_ProgramFrame);
          UpdateProgFrame();
+         PopulateSourceComboBox();
          break;
    }
 
@@ -347,6 +348,15 @@ on_PartNameEntry_text_changed(Etk_Object *object, void *data)
    }
 }
 
+void
+on_PartEventsCheck_toggled(Etk_Object *object, void *data)
+{
+   printf("Toggled Signal on EventsCheck EMITTED\n");
+   if (Cur.ep)
+   {
+      engrave_part_mouse_events_set(Cur.ep,etk_toggle_button_active_get(object));
+   }
+}
 void
 on_StateEntry_text_changed(Etk_Object *object, void *data)
 {
@@ -725,7 +735,23 @@ void
 on_SourceEntry_text_changed(Etk_Object *object, void *data)
 {
    printf("Text Changed Signal on SourceEntry Emitted\n");
-   engrave_program_source_set(Cur.epr,etk_entry_text_get(ETK_ENTRY(UI_SourceEntry)));
+   engrave_program_source_set(Cur.epr,
+            etk_entry_text_get(etk_combobox_entry_entry_get(UI_SourceEntry)));
+}
+void
+on_SourceEntry_item_changed(Etk_Combobox_Entry *combo, void *data)
+{
+   Etk_Combobox_Entry_Item *active_item = NULL;
+   char *pname;
+   
+   printf("Item Changed Signal on SourceEntry Emitted\n");
+   
+   if (!(active_item = etk_combobox_entry_active_item_get(combo)))
+      return;
+   
+   etk_combobox_entry_item_fields_get(active_item, NULL, &pname, NULL); 
+   
+   etk_entry_text_set(etk_combobox_entry_entry_get(UI_SourceEntry),pname);
 }
 void
 on_SignalEntry_text_changed(Etk_Object *object, void *data)
@@ -987,12 +1013,14 @@ on_ColorDialog_change(Etk_Object *object, void *data)
    ev_redraw();
 }
 
+/* Add/Remove Buttons Callbacks */
 void 
 on_AddMenu_item_activated(Etk_Object *object, void *data)
 {
    Engrave_Group *group = NULL;
    Engrave_Part *part;
    Engrave_Part_State *new_state;
+   Engrave_Program *prog = NULL;
 
    printf("Item Activated Signal on AddMenu EMITTED\n");
 
@@ -1083,7 +1111,16 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          }else{
             ShowAlert("You must first select a group.");
          }
-
+         break;
+      case NEW_PROG:
+         if (Cur.eg){
+            prog = engrave_program_new();
+            engrave_program_name_set(prog,"new program");
+            engrave_group_program_add(Cur.eg,prog);
+            AddProgramToTree(prog);
+         }else{
+            ShowAlert("You must first select a group.");
+         }
          break;
       case NEW_DESC:
          if (Cur.ep){

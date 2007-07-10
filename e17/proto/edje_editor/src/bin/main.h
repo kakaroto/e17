@@ -55,6 +55,7 @@ enum various
    NEW_IMAGE,
    NEW_RECT,
    NEW_TEXT,
+   NEW_PROG,
    NEW_DESC,
    NEW_GROUP,
    REMOVE_DESCRIPTION,

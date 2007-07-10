@@ -106,7 +106,8 @@ AddProgramToTree(Engrave_Program* prog)
    col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
    col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
    col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
-
+   
+   //TODO: place the prog after all the parts
    row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
                ecore_hash_get(hash,prog->parent),
                col1, EdjeFile,"PROG.PNG", prog->name,
@@ -265,6 +266,37 @@ PopulateRelComboBoxes(void)
 }
 
 void
+PopulateSourceComboBox(void){
+   Evas_List *l;
+   Engrave_Part *ep;
+
+   //Stop signal propagation
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_SourceEntry),
+                  ETK_CALLBACK(on_SourceEntry_item_changed));
+
+   printf("Populate Source Combobox\n");
+
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(UI_SourceEntry));
+
+   for (l = Cur.eg->parts; l ; l = l->next)
+   {
+      ep = l->data;
+      if (ep->type == ENGRAVE_PART_TYPE_RECT)
+         etk_combobox_entry_item_append(UI_SourceEntry,
+                     etk_image_new_from_edje (EdjeFile,"RECT.PNG"),ep->name);
+      if (ep->type == ENGRAVE_PART_TYPE_TEXT)
+         etk_combobox_entry_item_append(UI_SourceEntry,
+                     etk_image_new_from_edje (EdjeFile,"TEXT.PNG"),ep->name);
+      if (ep->type == ENGRAVE_PART_TYPE_IMAGE)
+          etk_combobox_entry_item_append(UI_SourceEntry,
+                     etk_image_new_from_edje (EdjeFile,"IMAGE.PNG"),ep->name);
+   }
+
+   //Renable  signal propagation
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_SourceEntry),
+                     ETK_CALLBACK(on_SourceEntry_item_changed));
+}
+void
 UpdateGroupFrame(void)
 {
    //Stop signal propagation
@@ -299,14 +331,20 @@ UpdatePartFrame(void)
       //printf("Update Part Frame: %s\n",Cur.ep->name);
 
       //Stop signal propagation
-      etk_signal_block("text-changed",ETK_OBJECT(UI_PartNameEntry),on_PartNameEntry_text_changed);
+      etk_signal_block("text-changed",ETK_OBJECT(UI_PartNameEntry),
+                        on_PartNameEntry_text_changed);
+      etk_signal_block("toggled",ETK_OBJECT(UI_PartEventsCheck),
+                        on_PartEventsCheck_toggled);
 
       //Update Part
       etk_entry_text_set(ETK_ENTRY(UI_PartNameEntry),Cur.ep->name);
+      etk_toggle_button_active_set(UI_PartEventsCheck,Cur.ep->mouse_events);	 
 
       //ReEnable Signal Propagation
-      etk_signal_unblock("text-changed",ETK_OBJECT(UI_PartNameEntry),on_PartNameEntry_text_changed);
-
+      etk_signal_unblock("text-changed",ETK_OBJECT(UI_PartNameEntry),
+                           on_PartNameEntry_text_changed);
+      etk_signal_unblock("toggled",ETK_OBJECT(UI_PartEventsCheck),
+                           on_PartEventsCheck_toggled);
    }
 }
 
@@ -673,7 +711,7 @@ UpdateProgFrame(void)
    //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_ProgramEntry),
          ETK_CALLBACK(on_ProgramEntry_text_changed));
-   etk_signal_block("text-changed", ETK_OBJECT(UI_SourceEntry), 
+   etk_signal_block("text-changed", ETK_OBJECT(etk_combobox_entry_entry_get(UI_SourceEntry)), 
          ETK_CALLBACK(on_SourceEntry_text_changed));
    etk_signal_block("text-changed", ETK_OBJECT(UI_SignalEntry), 
          ETK_CALLBACK(on_SignalEntry_text_changed));
@@ -701,8 +739,8 @@ UpdateProgFrame(void)
    etk_entry_text_set(ETK_ENTRY(UI_ProgramEntry),Cur.epr->name);
 
    //Update Source
-   etk_entry_text_set(ETK_ENTRY(UI_SourceEntry),Cur.epr->source);   
-
+   etk_entry_text_set(etk_combobox_entry_entry_get(UI_SourceEntry),Cur.epr->source);
+   
    //Update Signal
    etk_entry_text_set(ETK_ENTRY(UI_SignalEntry),Cur.epr->signal);
 
@@ -768,7 +806,7 @@ UpdateProgFrame(void)
    //Reenable signal propagation
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_ProgramEntry),
          ETK_CALLBACK(on_ProgramEntry_text_changed));
-   etk_signal_unblock("text-changed", ETK_OBJECT(UI_SourceEntry), 
+   etk_signal_unblock("text-changed", ETK_OBJECT(etk_combobox_entry_entry_get(UI_SourceEntry)), 
          ETK_CALLBACK(on_SourceEntry_text_changed));
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_SignalEntry), 
          ETK_CALLBACK(on_SignalEntry_text_changed));
@@ -778,7 +816,7 @@ UpdateProgFrame(void)
          ETK_CALLBACK(on_DelaySpinners_value_changed));
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_TargetEntry), 
          ETK_CALLBACK(on_TargetEntry_text_changed));
-   etk_signal_unblock("text_changed", ETK_OBJECT(UI_Param1Entry), 
+   etk_signal_unblock("text-changed", ETK_OBJECT(UI_Param1Entry), 
          ETK_CALLBACK(on_Param1Entry_text_changed));
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_Param1Spinner),
          ETK_CALLBACK(on_Param1Spinner_value_changed));
@@ -1023,8 +1061,15 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"TEXT.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_TEXT);
-
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
+   
+   //New Program
+   menu_item = etk_menu_item_image_new_with_label("Program");
+   image = etk_image_new_from_edje(EdjeFile,"PROG.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_PROG);
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
+   
    //Separator
    menu_item = etk_menu_item_separator_new();
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
@@ -1525,6 +1570,7 @@ create_text_frame(void)
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje (EdjeFile,"NONE.PNG"), "Outline Soft Shadow");
    etk_combobox_item_data_set (ComboItem, (void*)ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW);
+   
    etk_table_attach_default (ETK_TABLE(table),UI_EffectComboBox, 1, 4, 2,2);
 
    //hbox
@@ -1765,6 +1811,10 @@ create_part_frame(void)
    UI_PartNameEntry = etk_entry_new();
    etk_table_attach_default (ETK_TABLE(table),UI_PartNameEntry, 1, 1, 0, 0);
 
+   //PartEventsCheck
+   UI_PartEventsCheck = etk_check_button_new_with_label ("<b>Accept mouse events</b>");
+   etk_table_attach_default (ETK_TABLE(table),UI_PartEventsCheck, 0, 1, 1, 1);
+
    //PartClipToComboBox
    label = etk_label_new("<b>Clip_to</b>");
    etk_table_attach (ETK_TABLE(table), label, 0, 0, 2, 2,ETK_TABLE_NONE,0,0);
@@ -1780,6 +1830,7 @@ create_part_frame(void)
    etk_table_attach_default (ETK_TABLE(table), combo, 1, 1, 2, 2);
 
    etk_signal_connect("text-changed", ETK_OBJECT(UI_PartNameEntry), ETK_CALLBACK(on_PartNameEntry_text_changed), NULL);
+   etk_signal_connect("toggled", ETK_OBJECT(UI_PartEventsCheck), ETK_CALLBACK(on_PartEventsCheck_toggled), NULL);
 
    return UI_PartFrame;
 }
@@ -1806,8 +1857,11 @@ create_program_frame(void)
    //UI_SourceEntry
    label = etk_label_new("<b>Source</b>");
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1,ETK_TABLE_NONE,0,0);
-   UI_SourceEntry = etk_entry_new();
-   etk_tooltips_tip_set(UI_SourceEntry, "<b>Source(s)</b> of the signal.<br>The Part or Program that emit the signal<br>Wildcards can be used to widen the scope, ex: \"button-*\"");
+   //etk_tooltips_tip_set(UI_SourceEntry, "<b>Source(s)</b> of the signal.<br>The Part or Program that emit the signal<br>Wildcards can be used to widen the scope, ex: \"button-*\"");
+   UI_SourceEntry = etk_combobox_entry_new();
+   etk_combobox_entry_column_add(UI_SourceEntry, ETK_COMBOBOX_ENTRY_IMAGE, 24, ETK_COMBOBOX_ENTRY_NONE, 0.0);
+   etk_combobox_entry_column_add(UI_SourceEntry, ETK_COMBOBOX_ENTRY_LABEL, 75, ETK_COMBOBOX_ENTRY_EXPAND, 0.0);
+   etk_combobox_entry_build(UI_SourceEntry);
    etk_table_attach_default(ETK_TABLE(table), UI_SourceEntry, 1, 3, 1, 1);
 
    //UI_SignalEntry
@@ -1923,8 +1977,10 @@ create_program_frame(void)
          ETK_CALLBACK(on_ActionComboBox_changed), NULL);
    etk_signal_connect("text-changed", ETK_OBJECT(UI_ProgramEntry), 
          ETK_CALLBACK(on_ProgramEntry_text_changed), NULL);
-   etk_signal_connect("text-changed", ETK_OBJECT(UI_SourceEntry), 
-         ETK_CALLBACK(on_SourceEntry_text_changed), NULL);
+   etk_signal_connect("text-changed", ETK_OBJECT(etk_combobox_entry_entry_get(UI_SourceEntry)), 
+         ETK_CALLBACK(on_SourceEntry_text_changed), UI_SourceEntry);
+   etk_signal_connect("active-item-changed", ETK_OBJECT(UI_SourceEntry), 
+         ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
    etk_signal_connect("text-changed", ETK_OBJECT(UI_SignalEntry), 
          ETK_CALLBACK(on_SignalEntry_text_changed), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_DelayFromSpinner),
