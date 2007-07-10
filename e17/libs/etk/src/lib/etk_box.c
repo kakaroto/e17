@@ -1046,8 +1046,8 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
    }
    box->cells_count[group]++;
    
-   etk_object_data_set(ETK_OBJECT(child), "_Etk_Box::Cell", cell);
    etk_widget_parent_set(child, ETK_WIDGET(box));
+   etk_object_data_set(ETK_OBJECT(child), "_Etk_Box::Cell", cell);
    etk_signal_emit_by_name("child-added", ETK_OBJECT(box), NULL, child);
 }
 
