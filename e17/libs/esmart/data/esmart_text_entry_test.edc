@@ -15,6 +15,19 @@ collections {
       parts {
 
         part {
+                name,   "back_clip";
+
+                description {
+                        state, "default" 0.0;
+
+                        rel1 {
+                                relative, 0 0;
+                                offset, 0 0;
+                        }
+                }
+        }
+
+        part {
                 name,   "background";
                 type,   IMAGE;
                 mouse_events, 1;
@@ -94,11 +107,12 @@ collections {
                 name,   "cursor";
                 type,   IMAGE;
                 mouse_events, 1;
+		clip_to: "back_clip";
 
                 description {
                         state, "default" 0.0;
                         aspect: 1.0 1.0;
-                        aspect_preference: BOTH;
+                        aspect_preference: VERTICAL;
                         align: 0.0 0.5;
 
                         rel1 {
