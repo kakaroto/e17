@@ -17,5 +17,5 @@ libesmart_container_la_SOURCES = esmart_container.c \
 				 esmart_container_smart.c \
 				 esmart_container_util.c
 
-libesmart_container_la_LDFLAGS = -version-info 0:9:0
-libesmart_container_la_LIBADD = @CONTAINER_LIBS@ -lltdl -lm
+libesmart_container_la_LDFLAGS = @CONTAINER_LIBS@ -version-info 0:9:0 
+libesmart_container_la_LIBADD = -lltdl -lm

@@ -10,6 +10,6 @@ installed_headers_DATA = Esmart_Resize.h
 libesmart_resize_la_SOURCES = esmart_resize.c \
 				Esmart_Resize.h
 
-libesmart_resize_la_LDFLAGS = -version-info 0:9:0
-libesmart_resize_la_LIBADD = @RESIZE_LIBS@
+libesmart_resize_la_LDFLAGS = @RESIZE_LIBS@ -version-info 0:9:0
+libesmart_resize_la_LIBADD = 
 

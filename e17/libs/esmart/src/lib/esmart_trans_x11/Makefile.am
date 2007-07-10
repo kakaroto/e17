@@ -10,7 +10,7 @@ installed_headers_DATA = Esmart_Trans_X11.h
 libesmart_trans_x11_la_SOURCES = esmart_trans_x11.c \
 				 Esmart_Trans_X11.h
 
-libesmart_trans_x11_la_LDFLAGS = -version-info 0:9:0 \
+libesmart_trans_x11_la_LDFLAGS = @TRANSX11_LIBS@ -version-info 0:9:0 \
 				 -L/usr/X11R6/lib
-libesmart_trans_x11_la_LIBADD = @TRANSX11_LIBS@
+libesmart_trans_x11_la_LIBADD = 
 

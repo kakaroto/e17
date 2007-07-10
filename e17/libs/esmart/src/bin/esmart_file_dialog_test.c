@@ -17,7 +17,9 @@
 #include <stdio.h>
 #include <limits.h>
 
-#include "../config.h"
+#ifdef HAVE_CONFIG_H
+  #include <config.h>
+#endif
 
 /**
  * the callback signal the file dialog calls when events happen

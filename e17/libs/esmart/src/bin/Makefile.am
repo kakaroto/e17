@@ -9,7 +9,7 @@ AM_CFLAGS = -I$(top_srcdir)/src/lib \
             -I$(top_srcdir)/src/lib/esmart_file_dialog \
             @CONTAINER_CFLAGS@ @THUMB_CFLAGS@
 
-bin_PROGRAMS			= esmart_test esmart_file_dialog_test
+bin_PROGRAMS			= esmart_test esmart_file_dialog_test esmart_text_entry_test
 
 #esmart_test_DEPENDENCIES	= $(top_builddir)/src/lib/libesmart.la
 esmart_test_SOURCES		= esmart_test.c 
@@ -28,3 +28,12 @@ esmart_file_dialog_test_LDADD = \
 		$(top_builddir)/src/lib/esmart_container/libesmart_container.la \
 		$(top_builddir)/src/lib/esmart_file_dialog/libesmart_file_dialog.la \
 		@FILE_DIALOG_LIBS@
+
+esmart_text_entry_test_SOURCES         = esmart_text_entry_test.c
+
+esmart_text_entry_test_LDADD = \
+                $(top_builddir)/src/lib/esmart_text_entry/libesmart_text_entry.la \
+                $(top_builddir)/src/lib/esmart_container/libesmart_container.la \
+                $(top_builddir)/src/lib/esmart_file_dialog/libesmart_file_dialog.la \
+                @TEXT_ENTRY_LIBS@
+

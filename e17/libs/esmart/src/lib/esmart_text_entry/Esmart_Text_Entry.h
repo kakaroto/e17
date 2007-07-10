@@ -28,6 +28,8 @@
 extern "C" {
 #endif
 
+// TODO: No characters Non-ASCII caracters supported! Find out how to use unicode...
+
 /* create a new text entry */
 EAPI Evas_Object *esmart_text_entry_new (Evas * e);
 
@@ -42,6 +44,11 @@ EAPI const char *esmart_text_entry_edje_part_get(Evas_Object * o);
 /* you've gotta free this resut */
 EAPI const char *esmart_text_entry_text_get(Evas_Object *o);
 
+/** Handle key input, text delete and return key (Hint: Set focus to the esmart object).
+  * @param o The Esmart_Text_Entry object to handle.
+  * @param func The callback function.
+  * @param data The data that is passed to the callback function.
+  */
 EAPI void esmart_text_entry_return_key_callback_set (Evas_Object * o,
 						     void (*func) (void *data,
 								   const char *str),

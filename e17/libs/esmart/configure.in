@@ -112,6 +112,21 @@ PKG_CHECK_MODULES(FILE_DIALOG, [
   ]
 )
 
+dnl Check for edce_cc
+EDJE_DEF=""
+AC_SUBST(EDJE_DEF)
+AC_ARG_WITH(edje-cc,
+        AC_HELP_STRING([--with-edje-cc=PATH],[Specify a specific path to edje_cc]),
+[
+  v=$withval;
+  edje_cc=$v
+  echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
+],[
+  edje_cc=$(pkg-config --variable=prefix edje)/bin/edje_cc
+])
+AC_SUBST(edje_cc)
+
+
 have_esmart_textarea=no
 
 AM_CONDITIONAL(BUILD_ESMART_CONTAINER, test $have_esmart_container = yes)

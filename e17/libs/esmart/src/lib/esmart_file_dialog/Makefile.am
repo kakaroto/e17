@@ -14,8 +14,7 @@ libesmart_file_dialog_la_DEPENDENCIES = \
 libesmart_file_dialog_la_SOURCES = esmart_file_dialog.c \
 				   Esmart_File_Dialog.h
 
-libesmart_file_dialog_la_LDFLAGS = -version-info 0:9:0
+libesmart_file_dialog_la_LDFLAGS = @FILE_DIALOG_LIBS@ -version-info 0:9:0
 libesmart_file_dialog_la_LIBADD = \
                                  $(top_builddir)/src/lib/esmart_container/libesmart_container.la \
-				 $(top_builddir)/src/lib/esmart_text_entry/libesmart_text_entry.la \
-				 @FILE_DIALOG_LIBS@
+				 $(top_builddir)/src/lib/esmart_text_entry/libesmart_text_entry.la 

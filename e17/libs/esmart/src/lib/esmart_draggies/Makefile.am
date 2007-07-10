@@ -10,6 +10,6 @@ installed_headers_DATA = Esmart_Draggies.h
 libesmart_draggies_la_SOURCES = esmart_draggies.c \
 				Esmart_Draggies.h
 
-libesmart_draggies_la_LDFLAGS = -version-info 0:9:0
-libesmart_draggies_la_LIBADD = @DRAGGIES_LIBS@
+libesmart_draggies_la_LDFLAGS = @DRAGGIES_LIBS@ -version-info 0:9:0
+libesmart_draggies_la_LIBADD = 
 

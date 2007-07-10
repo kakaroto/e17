@@ -15,5 +15,5 @@ libesmart_textarea_la_SOURCES = esmart_textarea_callbacks.c \
 				Esmart_Textarea.h \
 				esmart_textarea_private.h
 
-libesmart_textarea_la_LDFLAGS = -version-info 0:9:0
-libesmart_textarea_la_LIBADD = @TEXT_AREA_LIBS@
+libesmart_textarea_la_LDFLAGS = @TEXT_AREA_LIBS@ -version-info 0:9:0
+libesmart_textarea_la_LIBADD = 

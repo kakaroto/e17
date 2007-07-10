@@ -17,7 +17,10 @@
 #include <Esmart_Thumb.h>
 #include <Esmart_Trans_X11.h>
 #include <Esmart_Draggies.h>
-#include "../config.h"
+
+#ifdef HAVE_CONFIG_H
+  #include <config.h>
+#endif
 
 #define MOVE_REFRESH 0.06
 #define RESIZE_REFRESH 0.02
