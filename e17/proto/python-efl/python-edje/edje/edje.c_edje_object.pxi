@@ -205,7 +205,12 @@ cdef class Edje(evas.c_evas.Object):
         edje_object_part_text_set(self.obj, part, text)
 
     def part_text_get(self, char *part):
-        return edje_object_part_text_get(self.obj, part)
+        cdef char *s
+        s = edje_object_part_text_get(self.obj, part)
+        if s == NULL:
+            return None
+        else:
+            return s
 
     def part_swallow(self, char *part, obj):
         cdef evas.c_evas.Object o
