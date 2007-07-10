@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-// TODO: No characters Non-ASCII caracters supported! Find out how to use unicode...
+// TODO: No non-ASCII caracters supported! Find out how to use unicode...
 
 /* create a new text entry */
 EAPI Evas_Object *esmart_text_entry_new (Evas * e);
