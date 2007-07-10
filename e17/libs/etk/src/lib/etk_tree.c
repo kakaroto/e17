@@ -137,6 +137,15 @@ static void _etk_tree_expanders_clip(Etk_Tree *tree);
 static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifiers modifiers);
 static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int size, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), int asc, Etk_Tree_Col *col, void *data);
 
+static void _etk_tree_qsort(Etk_Tree_Row *first, Etk_Tree_Row *last, Etk_Tree_Col *col, 
+                            int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), 
+                            void *data, Etk_Bool ascending);
+static void _etk_tree_partition(Etk_Tree_Row **first, Etk_Tree_Row **last, Etk_Tree_Row *pivot, Etk_Tree_Col *col, 
+                                int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), 
+                                void *data, Etk_Bool ascending);
+static void _etk_tree_row_move_relatively(Etk_Tree_Row *center, Etk_Tree_Row *row, Etk_Bool after);
+static void _etk_tree_reverse(Etk_Tree *tree);
+static void _etk_tree_reverse_rows(Etk_Tree_Row *first);
 
 static Etk_Signal *_etk_tree_signals[ETK_TREE_NUM_SIGNALS];
 static Etk_Signal *_etk_tree_col_signals[ETK_TREE_COL_NUM_SIGNALS];
@@ -845,69 +854,46 @@ void etk_tree_col_sort(Etk_Tree_Col *col, Etk_Bool ascending)
  * @param col the column that will be passed to @a compare_cb when it is called
  * @param compare_cb the function to call to compare two rows. It should return a negative
  * value if the cell of "row1" has a lower value than the cell of "row2", 0 if they have the
- * same value, and a positive value if the cell of "row2" has a greater value than the cell of "row1"
+ * same value, and a positive value if the cell of "row1" has a greater value than the cell of "row2"
  * @param data a pointer that will be passed to @a compare_cb when it is called
  * @param ascending Etk_True to perform an ascendant sort, ETK_FALSE to perform a descendant sort
  */
 void etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), void *data, Etk_Bool ascending)
 {
    Etk_Tree *tree;
-   Etk_Tree_Row *first_row, *r;
-   Etk_Tree_Row **heap;
-   int num_rows;
-   int pos, parent, i;
-   int asc;
-   
-   if (!col || !compare_cb || !(tree = col->tree))
+   Etk_Tree_Row *row, *to_sort;
+
+   if (!col || !compare_cb || !(tree = col->tree) || (tree->sorted_col == col && tree->sorted_asc == ascending))
       return;
-   if (!(first_row = tree->root.first_child))
-      return;
-   
-   asc = ascending ? -1 : 1;
-   num_rows = tree->root.num_children;
-   heap = malloc(num_rows * sizeof(Etk_Tree_Row *));
-   
-   /* We insert all the rows in the heap */
-   first_row = 
-   heap[0] = first_row;
-   for (i = 1, r = first_row->next; r; r = r->next, i++)
-   {
-      pos = i;
-      parent = (pos - 1) / 2;
-      
-      while (parent >= 0 && (compare_cb(col, heap[parent], r, data) * asc) < 0)
-      {
-         heap[pos] = heap[parent];
-         pos = parent;
-         parent = parent ? (pos - 1) / 2 : -1;
-      }
-      heap[pos] = r;
-   }
-   
-   /* Then we extract them */
-   first_row = heap[0];
-   first_row->prev = NULL;
-   first_row->next = NULL;
-   r = first_row;
-   heap[0] = heap[num_rows - 1];
-   _etk_tree_heapify(tree, heap, 0, num_rows - 1, compare_cb, asc, col, data);
-   for (i = num_rows - 2; i >= 0; i--)
-   {
-      r->next = heap[0];
-      heap[0]->prev = r;
-      r = heap[0];
-      heap[0] = heap[i];
-      _etk_tree_heapify(tree, heap, 0, i, compare_cb, asc, col, data);
-   }
-   r->next = NULL;
-   
-   tree->root.first_child = first_row;
-   tree->root.last_child = r;
-   free(heap);
-   
+
+   if (tree->sorted_col == col && tree->sorted_asc != ascending)
+     {
+       _etk_tree_reverse(col->tree);
+       return;
+     }
+
+   row = tree->root.first_child;
+
+   to_sort = row; 
+   while (row || to_sort)
+     {
+       Etk_Tree_Row *next;
+       if (to_sort)
+         {
+           Etk_Tree_Row *first = to_sort->parent->first_child;
+           Etk_Tree_Row *last  = to_sort->parent->last_child;
+           _etk_tree_qsort(first, last, col, compare_cb, data, ascending);
+           to_sort = NULL;
+           row = row->parent->first_child;
+         }
+       next = etk_tree_row_walk_next(row, ETK_TRUE);
+       if (next && next->parent == row) to_sort = next;
+       row = next;
+     }
+
    tree->sorted_col = col;
    tree->sorted_asc = ascending;
-   
+
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
@@ -985,6 +971,60 @@ Etk_Tree_Row *etk_tree_row_insert(Etk_Tree *tree, Etk_Tree_Row *parent, Etk_Tree
    row = etk_tree_row_insert_valist(tree, parent, after, args);
    va_end(args);
    
+   return row;
+}
+
+/**
+ * @brief Insert a new row in a sorted column at the right place
+ * @param tree a tree
+ * @param parent the parent row of the row to insert. If @a after is not NULL, @a parent is optionnal (the parent of the
+ * new row will be the parent of @a after)
+ * @param ... an "Etk_Tree_Col *" followed by the value of the cell, then any number of "Etk_Tree_Col *"/Value pairs,
+ * and terminated by NULL. Note that, according to the model used by the column, a cell value can use several parameters
+ * @return Returns the new row, or NULL on failure
+ * @warning It will only work if the tree is already sorted.
+ */
+Etk_Tree_Row *etk_tree_row_insert_sorted(Etk_Tree *tree, Etk_Tree_Row *parent, ...)
+{
+   Etk_Tree_Row *row, *after;
+   Etk_Tree_Col *col;
+   va_list args;
+   int i, j, direction;
+
+   if (!tree || !(col = tree->sorted_col))
+     return NULL;
+
+   va_start(args, parent);
+   if (!parent)
+      parent = &tree->root;
+   row = etk_tree_row_insert_valist(tree, parent, parent->last_child, args);
+   va_end(args);
+
+   after = parent->first_child;
+   j = parent->num_children;
+   direction = 1;
+   do
+     {
+       j = j / 2 + j % 2;
+
+       if (direction == 1)
+         for (i = 0; after && i < j; after = after->next, i++);
+       else if (direction == -1)
+         for (i = 0; after && i < j; after = after->prev, i++);
+       else
+         break;
+
+       direction = col->sort.compare_cb(col, row, after, col->sort.data) * (tree->sorted_asc ? 1 : -1);
+     }
+   while (j != 1);
+
+   if (direction == -1)
+     _etk_tree_row_move_relatively(after, row, ETK_FALSE);
+   else
+     _etk_tree_row_move_relatively(after, row, ETK_TRUE);
+
+   tree->sorted_col = col;
+
    return row;
 }
 
@@ -1078,6 +1118,7 @@ Etk_Tree_Row *etk_tree_row_insert_valist(Etk_Tree *tree, Etk_Tree_Row *parent, E
    va_end(args2);
    
    
+   if (tree->sorted_col) tree->sorted_col = NULL;
    if (!tree->frozen)
    {
       etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(tree->scroll_content), NULL);
@@ -1172,6 +1213,8 @@ void etk_tree_row_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signal, va_
          if (col->models[i]->cell_data_set)
             col->models[i]->cell_data_set(col->models[i], row->cells_data[col->id][i], &args2);
       }
+      if (col == row->tree->sorted_col) 
+         row->tree->sorted_col = NULL;
       if (emit_signal)
          etk_signal_emit(_etk_tree_col_signals[ETK_TREE_COL_CELL_VALUE_CHANGED], ETK_OBJECT(col), NULL, row);
    }
@@ -3600,6 +3643,120 @@ static void _etk_tree_heapify(Etk_Tree *tree, Etk_Tree_Row **heap, int root, int
       heap[root] = tmp;
       _etk_tree_heapify(tree, heap, max, size, compare_cb, asc, col, data);
    }
+}
+
+/* Do a quick sort on a list of rows */
+static void _etk_tree_qsort(Etk_Tree_Row *first, Etk_Tree_Row *last, Etk_Tree_Col *col, 
+                            int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), 
+                            void *data, Etk_Bool ascending)
+{
+   Etk_Tree_Row *pivot;
+
+   if (!first || !last || first == last || last->next == first) return;
+
+   pivot = last;
+   
+   _etk_tree_partition(&first, &last, pivot, col, compare_cb, data, ascending);
+   _etk_tree_qsort(first, pivot->prev, col, compare_cb, data, ascending);
+   _etk_tree_qsort(pivot->next, last, col, compare_cb, data, ascending);
+}
+
+/* Quick sort partition for rows lists */
+static void _etk_tree_partition(Etk_Tree_Row **first, Etk_Tree_Row **last, Etk_Tree_Row *pivot, Etk_Tree_Col *col, 
+                                int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data), 
+                                void *data, Etk_Bool ascending)
+{
+   Etk_Tree_Row *row;
+
+   row = *first;
+
+   while (row != pivot)
+     {
+       Etk_Tree_Row *next;
+       next = row->next;
+       if (compare_cb(col, row, pivot, data) * (ascending ? 1 : -1) > 0)
+         {
+           if (row == *first) *first = row->next;
+           if (pivot == *last) *last = row;
+           _etk_tree_row_move_relatively(pivot, row, ETK_TRUE);
+         }
+       row = next;
+     }
+}
+
+/* Move row before or after center */
+static void _etk_tree_row_move_relatively(Etk_Tree_Row *center, Etk_Tree_Row *row, Etk_Bool after)
+{
+   if (!center || !row || row == center) return;
+   
+   if (row->prev) row->prev->next = row->next;
+   else row->parent->first_child = row->next;
+   if (row->next) row->next->prev = row->prev;
+   else row->parent->last_child = row->prev;
+
+   if (after)
+     {
+       if (center->next) center->next->prev = row;
+       else center->parent->last_child = row;
+       row->next = center->next;
+       center->next = row;
+       row->prev = center;
+     }
+   else
+     {
+       if (center->prev) center->prev->next = row;
+       else center->parent->first_child = row;
+       row->prev = center->prev;
+       center->prev = row;
+       row->next = center;
+     }
+}
+
+/* Reverse the whole tree */
+static void _etk_tree_reverse(Etk_Tree *tree)
+{
+   Etk_Tree_Row *row, *to_reverse;
+
+   if (!tree)
+     return;
+
+   to_reverse = row = tree->root.first_child;
+   while (row || to_reverse)
+     {
+       Etk_Tree_Row *next;
+       if (to_reverse)
+         {
+           _etk_tree_reverse_rows(to_reverse);
+           to_reverse = NULL;
+           row = row->parent->first_child;
+         }
+       next = etk_tree_row_walk_next(row, ETK_TRUE);
+       if (next && next->parent == row) to_reverse = next;
+       row = next;
+     }
+
+   tree->sorted_asc = !(tree->sorted_asc);
+   etk_widget_redraw_queue(ETK_WIDGET(tree));
+}
+
+/* Reverse a list of rows */
+static void _etk_tree_reverse_rows(Etk_Tree_Row *first)
+{
+   Etk_Tree_Row *row = first;
+
+   if (!first || first->parent->num_children < 2) return;
+   
+   row->parent->first_child = row->parent->last_child;
+   row->parent->last_child = row;
+
+   while (row)
+     {
+        Etk_Tree_Row *next;
+        next = row->next;
+        row->next = row->prev;
+        row->prev = next;
+        row = next;
+     }
 }
 
 /** @} */

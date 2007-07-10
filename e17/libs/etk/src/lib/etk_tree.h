@@ -199,8 +199,8 @@ void           etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_T
 Etk_Tree_Row  *etk_tree_row_prepend(Etk_Tree *tree, Etk_Tree_Row *parent, ...);
 Etk_Tree_Row  *etk_tree_row_append(Etk_Tree *tree, Etk_Tree_Row *parent, ...);
 Etk_Tree_Row  *etk_tree_row_insert(Etk_Tree *tree, Etk_Tree_Row *parent, Etk_Tree_Row *after, ...);
+Etk_Tree_Row  *etk_tree_row_insert_sorted(Etk_Tree *tree, Etk_Tree_Row *parent, ...);
 Etk_Tree_Row  *etk_tree_row_insert_valist(Etk_Tree *tree, Etk_Tree_Row *parent, Etk_Tree_Row *after, va_list args);
-/* TODO: Etk_Tree_Row *etk_tree_row_insert_sorted(Etk_Tree *tree, Etk_Tree_Row *parent, ...); */
 void           etk_tree_row_delete(Etk_Tree_Row *row);
 void           etk_tree_clear(Etk_Tree *tree);
 /* TODO: way to insert a separator... */

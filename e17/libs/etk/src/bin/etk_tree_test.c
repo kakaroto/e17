@@ -7,20 +7,24 @@ static void _etk_test_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
 static void _etk_test_tree_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static int _etk_test_tree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
+static int _etk_test_tree_sort_button_cb(Etk_Object *object, void *data);
+static int _etk_test_tree_insert_sorted_button_cb(Etk_Object *object, void *data);
 
 /* Creates the window for the tree test */
 void etk_test_tree_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
    Etk_Widget *vbox;
+   Etk_Widget *hbox;
    Etk_Widget *tree;
+   Etk_Widget *button;
    Etk_Tree_Col *col1, *col2, *col3, *col4, *col5, *col6;
    Etk_Tree_Row *row;
    Etk_Widget *statusbar;
    Etk_Color c_warn;
    char row_name[128];
    const char *stock_key;
-   int i;
+   int i, j;
 
    if (win)
    {
@@ -52,7 +56,7 @@ void etk_test_tree_window_create(void *data)
    col2 = etk_tree_col_new(ETK_TREE(tree), "Column 2", 60, 1.0);
    etk_tree_col_model_add(col2, etk_tree_model_double_new());
    
-   col3 = etk_tree_col_new(ETK_TREE(tree), "Column 3", 60, 0.75);
+   col3 = etk_tree_col_new(ETK_TREE(tree), "Column 3", 80, 0.75);
    etk_tree_col_model_add(col3, etk_tree_model_int_new());
    
    col4 = etk_tree_col_new(ETK_TREE(tree), "Column 4", 60, 0.0);
@@ -78,22 +82,27 @@ void etk_test_tree_window_create(void *data)
       row = etk_tree_row_append(ETK_TREE(tree), NULL,
          col1, etk_theme_icon_path_get(), stock_key, row_name,
          col2, 0.57,
-         col3, 7,
+         col3, rand(),
          col4, PACKAGE_DATA_DIR "/images/1star.png", NULL,
          col5, ETK_FALSE,
          col6, 0.57, "57 %",
          NULL);
       
-      sprintf(row_name, "Row %d", (i * 3) + 2);
-      stock_key = etk_stock_key_get(ETK_STOCK_PLACES_FOLDER, ETK_STOCK_SMALL);
-      row = etk_tree_row_append(ETK_TREE(tree), row,
-         col1, etk_theme_icon_path_get(), stock_key, row_name,
-         col2, 20.0,
-         col3, 19,
-         col4, PACKAGE_DATA_DIR "/images/2stars.png", NULL,
-         col5, ETK_TRUE,
-         col6, 0.20, "20 %",
-         NULL);
+      for (j = 0; j < 3; j++)
+      {
+        Etk_Tree_Row *current;
+        sprintf(row_name, "Row %d", (i * 3) + 2);
+        stock_key = etk_stock_key_get(ETK_STOCK_PLACES_FOLDER, ETK_STOCK_SMALL);
+        current = etk_tree_row_append(ETK_TREE(tree), row,
+                                      col1, etk_theme_icon_path_get(), stock_key, row_name,
+                                      col2, 20.0,
+                                      col3, rand(),
+                                      col4, PACKAGE_DATA_DIR "/images/2stars.png", NULL,
+                                      col5, ETK_TRUE,
+                                      col6, 0.20, "20 %",
+                                      NULL);
+        if (j == 2) row = current;
+      }
       
       sprintf(row_name, "<font color=#%.2X%.2X%.2X%.2X>Row %d</font>", 
             c_warn.r, c_warn.g, c_warn.b, c_warn.a, (i * 3) + 3);
@@ -107,7 +116,20 @@ void etk_test_tree_window_create(void *data)
          NULL);
    }
    etk_tree_thaw(ETK_TREE(tree));
-   etk_tree_col_sort_set(col1, _etk_test_tree_compare_cb, NULL);
+   etk_tree_col_sort_set(col3, _etk_test_tree_compare_cb, NULL);
+
+   hbox = etk_hbox_new(ETK_TRUE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_FILL, 0);
+
+   button = etk_button_new_with_label("Sort the tree");
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+      ETK_CALLBACK(_etk_test_tree_sort_button_cb), col3);
+
+   button = etk_button_new_with_label("Insert a sorted row");
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+      ETK_CALLBACK(_etk_test_tree_insert_sorted_button_cb), ETK_TREE(tree));
    
    /* Finally we create the statusbar used to display the events on the tree */
    statusbar = etk_statusbar_new();
@@ -201,9 +223,48 @@ static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row 
 /* Used to sort the first column of the tree... */
 static int _etk_test_tree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data)
 {
-   const char *str1, *str2;
+   int str1, str2;
    
-   etk_tree_row_fields_get(row1, col, NULL, NULL, &str1, NULL);
-   etk_tree_row_fields_get(row2, col, NULL, NULL, &str2, NULL);
-   return strcmp(str1, str2);
+   etk_tree_row_fields_get(row1, col, &str1, NULL);
+   etk_tree_row_fields_get(row2, col, &str2, NULL);
+   if (str1 < str2)
+     return -1;
+   else if (str1 > str2)
+     return 1;
+   else
+     return 0;
+}
+
+/* Sort the tree with the third column */
+static int _etk_test_tree_sort_button_cb(Etk_Object *object, void *data)
+{
+   Etk_Tree_Col *col = data;
+   etk_tree_col_sort(col, !(col->tree->sorted_asc));
+}
+
+/* Insert a row sorted in the tree */
+static int _etk_test_tree_insert_sorted_button_cb(Etk_Object *object, void *data)
+{
+   Etk_Tree *tree = data;
+   Etk_Tree_Row *row;
+   Etk_Tree_Col *col1, *col2, *col3, *col4, *col5, *col6;
+   const char *stock_key;
+
+   col1 = etk_tree_nth_col_get(tree, 0);
+   col2 = etk_tree_nth_col_get(tree, 1);
+   col3 = etk_tree_nth_col_get(tree, 2);
+   col4 = etk_tree_nth_col_get(tree, 3);
+   col5 = etk_tree_nth_col_get(tree, 4);
+   col6 = etk_tree_nth_col_get(tree, 5);
+   stock_key = etk_stock_key_get(ETK_STOCK_PLACES_USER_HOME, ETK_STOCK_SMALL);
+   row = etk_tree_row_insert_sorted(ETK_TREE(tree), NULL,
+                                    col1, etk_theme_icon_path_get(), stock_key, "Sorted Row",
+                                    col2, 0.42,
+                                    col3, rand(),
+                                    col4, PACKAGE_DATA_DIR "/images/1star.png", NULL,
+                                    col5, ETK_TRUE,
+                                    col6, 0.42, "42 %",
+                                    NULL);
+   etk_tree_row_select(row);
+   etk_tree_row_scroll_to(row, ETK_TRUE);
 }
