@@ -273,9 +273,8 @@ static void
 MenuShow(Menu * m, char noshow)
 {
    EWin               *ewin;
-   int                 x, y;
-   int                 wx = 0, wy = 0;	/* wx, wy added to stop menus */
-   int                 w, h, mw, mh;	/* from appearing offscreen */
+   int                 x, y, w, h;
+   int                 wx, wy, mw, mh;
    int                 head_num = 0;
 
    if (m->shown)
@@ -309,8 +308,9 @@ MenuShow(Menu * m, char noshow)
    mw = m->w;
    mh = m->h;
 
-   wx = Mode.events.x - EoGetX(DesksGetCurrent()) - x - (w / 2);
-   wy = Mode.events.y - EoGetY(DesksGetCurrent()) - y - (h / 2);
+   EQueryPointer(NULL, &wx, &wy, NULL, NULL);
+   wx -= EoGetX(DesksGetCurrent()) + x + (w / 2);
+   wy -= EoGetY(DesksGetCurrent()) + y + (h / 2);
    if (Conf.menus.onscreen)
      {
 	Border             *b;
