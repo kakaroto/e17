@@ -124,6 +124,7 @@ E_DBus_Callback *e_dbus_callback_new(E_DBus_Callback_Func cb_func, void *user_da
 void e_dbus_callback_free(E_DBus_Callback *callback);
 void e_dbus_callback_call(E_DBus_Callback *cb, void *data);
 
+const char *e_dbus_basic_type_as_string(int type);
 
 #define DEBUG_LVL 0
 #define DEBUG(lvl, ...) if (lvl <= DEBUG_LVL) printf(__VA_ARGS__)
