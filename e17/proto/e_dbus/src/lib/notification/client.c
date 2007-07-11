@@ -10,6 +10,11 @@ e_notification_init(void)
 
   if (!e_dbus_init()) return 0;
   client_conn = e_dbus_bus_get(DBUS_BUS_SESSION);
+  if (!client_conn)
+  {
+    e_dbus_shutdown();
+    return 0;
+  }
 
   return ++init_count;
 }
