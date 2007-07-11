@@ -106,6 +106,23 @@ void e_dbus_properties_set(E_DBus_Connection *conn, const char *destination,
                            void *value, E_DBus_Method_Return_Cb cb_return,
                            void *data);
 
+/**
+ * A callback function for a DBus call
+ * @param user_data the data passed in to the method call
+ * @param event_data a struct containing the return data.
+ */
+typedef void (*E_DBus_Callback_Func) (void *user_data, void *method_return);
+
+typedef struct E_DBus_Callback E_DBus_Callback;
+struct E_DBus_Callback
+{
+  E_DBus_Callback_Func func;
+  void *user_data;
+};
+
+E_DBus_Callback *e_dbus_callback_new(E_DBus_Callback_Func cb_func, void *user_data);
+void e_dbus_callback_free(E_DBus_Callback *callback);
+void e_dbus_callback_call(E_DBus_Callback *cb, void *data);
 
 
 #define DEBUG_LVL 0
