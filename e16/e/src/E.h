@@ -634,7 +634,6 @@ void                autosave(void);
 int                 matchregexp(const char *rx, const char *s);
 
 /* setup.c */
-void                MapUnmap(int start);
 void                SetupX(const char *dstr);
 
 /* slideouts.c */

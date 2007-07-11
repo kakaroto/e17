@@ -517,8 +517,6 @@ doSMExit(int mode, const char *params)
      {
 	/* We may get here from HandleXIOError */
 	EwinsSetFree();
-	if (Mode.wm.startup && Mode.wm.exiting)
-	   MapUnmap(1);
 	XSelectInput(disp, VRoot.xwin, 0);
 	ExtInitWinKill();
 	ESync();

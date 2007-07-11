@@ -762,6 +762,7 @@ ERegisterWindow(Window xwin, XWindowAttributes * pxwa)
 #endif
    win = EXidSet(xwin, None, pxwa->x, pxwa->y, pxwa->width, pxwa->height,
 		 pxwa->depth, pxwa->visual, pxwa->colormap);
+   win->mapped = pxwa->map_state != IsUnmapped;
    win->attached = 1;
 
  done:

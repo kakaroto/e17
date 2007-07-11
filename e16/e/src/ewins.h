@@ -394,6 +394,7 @@ EWin              **EwinListTransients(const EWin * ewin, int *num, int group);
 EWin              **EwinListTransientFor(const EWin * ewin, int *num);
 
 void                EwinsEventsConfigure(int mode);
+void                EwinsManage(void);
 void                EwinsSetFree(void);
 void                EwinsShowDesktop(int on);
 void                EwinsMoveStickyToDesk(Desk * d);

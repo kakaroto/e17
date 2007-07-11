@@ -29,6 +29,7 @@
 #include "eimage.h"
 #include "emodule.h"
 #include "events.h"
+#include "ewins.h"
 #include "file.h"
 #include "grabs.h"
 #include "hints.h"
@@ -245,9 +246,6 @@ main(int argc, char **argv)
    Esetenv("ECACHEDIR", EDirUserCache());
    Esetenv("ETHEME", Mode.theme.path);
 
-   /* Unmap the clients */
-   MapUnmap(0);
-
    /* Move elsewhere? */
    EImageInit(disp);
    HintsInit();
@@ -285,9 +283,7 @@ main(int argc, char **argv)
 
    ModulesSignal(ESIGNAL_START, NULL);
    DialogsInit();
-
-   /* Map the clients */
-   MapUnmap(1);
+   EwinsManage();
 
    RunInitPrograms();
    SpawnSnappedCmds();

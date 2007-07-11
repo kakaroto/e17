@@ -1150,10 +1150,15 @@ EwinEventUnmap(EWin * ewin, XEvent * ev)
       Eprintf("EwinEventUnmap %#lx st=%d: %s\n", EwinGetClientXwin(ewin),
 	      ewin->state.state, EwinGetTitle(ewin));
 
-   if (ewin->state.state == EWIN_STATE_NEW)
+   if (ewin->state.state == EWIN_STATE_STARTUP ||
+       ewin->state.state == EWIN_STATE_NEW)
      {
+#if 0
+	/* We get here after reparenting to container and occasionally in
+	 * other(?) situations */
 	Eprintf("EwinEventUnmap %#lx: Ignoring bogus Unmap event\n",
 		EwinGetClientXwin(ewin));
+#endif
 	return;
      }
 
@@ -2075,6 +2080,54 @@ EwinsMoveStickyToDesk(Desk * dsk)
 }
 
 void
+EwinsManage(void)
+{
+   Window             *xwins, xwin, par, rt;
+   XWindowAttributes   attr;
+   unsigned int        i, num;
+
+#ifdef USE_EXT_INIT_WIN
+   Window              init_win = ExtInitWinGet();
+#endif
+
+   xwins = NULL;
+   num = 0;
+   XQueryTree(disp, VRoot.xwin, &rt, &par, &xwins, &num);
+   if (!xwins)
+      return;
+
+   for (i = 0; i < num; i++)
+     {
+	xwin = xwins[i];
+
+	/* Skip if already "known" */
+	if (EobjListStackFind(xwin))
+	   continue;
+
+	if (!XGetWindowAttributes(disp, xwin, &attr))
+	   continue;
+
+	if (attr.map_state == IsUnmapped)
+	   continue;
+
+	if (attr.override_redirect)
+	  {
+	     XUnmapWindow(disp, xwin);	/* Makes the CM catch it on map */
+	     XMapRaised(disp, xwin);
+#ifdef USE_EXT_INIT_WIN
+	     if (init_win)
+		XRaiseWindow(disp, init_win);
+#endif
+	  }
+	else
+	  {
+	     AddToFamily(NULL, xwin);
+	  }
+     }
+   XFree(xwins);
+}
+
+void
 EwinsSetFree(void)
 {
    int                 i, num;
@@ -2388,13 +2441,8 @@ EwinsSighan(int sig, void *prm)
 	EwinsInit();
 	break;
 #if 0
-     case ESIGNAL_CONFIGURE:
-	if (!Conf.mapslide || Mode.wm.restart)
-	   MapUnmap(1);
-	break;
      case ESIGNAL_START:
-	if (Conf.mapslide && !Mode.wm.restart)
-	   MapUnmap(1);
+	EwinsManage();
 	break;
 #endif
      case ESIGNAL_DESK_RESIZE:
