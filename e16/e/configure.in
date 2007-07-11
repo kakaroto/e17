@@ -221,7 +221,7 @@ if test "x$enable_xscrnsaver" = "xyes"; then
     E_X_LIBS="-lXss $E_X_LIBS",
     enable_xscrnsaver=no
     AC_MSG_WARN([ScreenSaver support was requested but not found]),
-    -lXss -lXext -lX11)
+    -lXext -lX11)
 fi
 
 AC_ARG_ENABLE(xrandr,

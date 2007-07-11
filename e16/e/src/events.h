@@ -30,7 +30,8 @@
 #define EX_EVENT_MAPREQUEST_GONE         67
 #define EX_EVENT_REPARENT_GONE           68
 
-#define EX_EVENT_SHAPE_NOTIFY            72
+#define EX_EVENT_SHAPE_NOTIFY            71
+#define EX_EVENT_SAVER_NOTIFY            72
 #define EX_EVENT_SCREEN_CHANGE_NOTIFY    73
 #define EX_EVENT_DAMAGE_NOTIFY           74
 

@@ -72,6 +72,7 @@ static EServerExtData ExtData[8];
 #define event_base_shape ExtData[XEXT_SHAPE].event_base
 #define event_base_randr ExtData[XEXT_RANDR].event_base
 #define event_base_damage ExtData[XEXT_DAMAGE].event_base
+#define event_base_saver  ExtData[XEXT_SCRSAVER].event_base
 
 static void
 ExtInitShape(int available)
@@ -131,6 +132,8 @@ ExtInitSS(int available)
 	Eprintf(" Screen saver window=%#lx\n", xssi->window);
 	XFree(xssi);
      }
+   XScreenSaverSelectInput(disp, VRoot.xwin,
+			   ScreenSaverNotifyMask | ScreenSaverCycleMask);
 }
 #endif
 
@@ -571,6 +574,10 @@ EventsFetch(XEvent ** evq_p, int *evq_n)
 	     else if (ev->type == event_base_damage + XDamageNotify)
 		ev->type = EX_EVENT_DAMAGE_NOTIFY;
 #endif
+#if USE_XSCREENSAVER
+	     else if (ev->type == event_base_saver + ScreenSaverNotify)
+		ev->type = EX_EVENT_SAVER_NOTIFY;
+#endif
 	  }
      }
 
@@ -759,10 +766,18 @@ EventName(unsigned int type)
 	return "Reparent-Gone";
      case EX_EVENT_SHAPE_NOTIFY:
 	return "ShapeNotify";
+#if USE_XSCREENSAVER
+     case EX_EVENT_SAVER_NOTIFY:
+	return "ScreenSaverNotify";
+#endif
+#if USE_XRANDR
      case EX_EVENT_SCREEN_CHANGE_NOTIFY:
 	return "ScreenChangeNotify";
+#endif
+#if USE_COMPOSITE
      case EX_EVENT_DAMAGE_NOTIFY:
 	return "DamageNotify";
+#endif
      }
 
    sprintf(buf, "%d", type);
@@ -914,6 +929,13 @@ EventShow(const XEvent * ev)
 		se->kind, se->shaped, se->x, se->y, se->width, se->height);
 #undef se
 	break;
+#if USE_XSCREENSAVER
+     case EX_EVENT_SAVER_NOTIFY:
+#define se ((XScreenSaverNotifyEvent *)ev)
+	Eprintf("%s state=%d kind=%d\n", buf, se->state, se->kind);
+#undef se
+	break;
+#endif
 #if USE_XRANDR
      case EX_EVENT_SCREEN_CHANGE_NOTIFY:
 	Eprintf("%s\n", buf);
