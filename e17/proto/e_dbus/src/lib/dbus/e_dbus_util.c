@@ -1,4 +1,5 @@
 #include "E_DBus.h"
+#include "e_dbus_private.h"
 
 /**
  * @internal
