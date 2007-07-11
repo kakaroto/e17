@@ -1,4 +1,4 @@
-"Maintenance" "ROOT" "MAINT_SUBMENU"
+"Maintenance" "ROOT"
 "Purge config file cache"               NULL exec "sh $EROOT/scripts/e_cache_clean config"
 "Purge pager background cache"          NULL exec "sh $EROOT/scripts/e_cache_clean pager"
 "Purge background selector cache"       NULL exec "sh $EROOT/scripts/e_cache_clean bgsel"

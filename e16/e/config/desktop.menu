@@ -1,4 +1,4 @@
-"Desktop Operations" "ROOT" "DESKTOP_SUBMENU"
+"Desktop Operations" "ROOT"
 "Backgrounds"           NULL menu BACKGROUNDS_MENU
 "Cleanup Desktop"       NULL "desk arrange"
 "Goto Next Desktop"     NULL "desk next"

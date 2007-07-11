@@ -1,4 +1,4 @@
-"Window Options" "EMPTY" "WINOPS_MENU"
+"Window Options" "EMPTY"
 "Close"             NULL "wop * close"
 "Annihilate"        NULL "wop * kill"
 "Iconify"           NULL "wop * iconify"

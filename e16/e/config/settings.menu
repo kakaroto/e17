@@ -1,4 +1,4 @@
-"Settings" "ROOT" "CONFIG_SUBMENU"
+"Settings" "ROOT"
 "Enlightenment Settings ..."      NULL "misc cfg"
 "Focus Settings ..."              NULL "focus cfg"
 "Move & Resize Settings ..."      NULL "misc cfg moveresize"

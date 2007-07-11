@@ -1,4 +1,4 @@
-"Enlightenment" "ROOT" "ROOT_2"
+"Enlightenment" "ROOT"
 "User Menus"            NULL menu file.menu
 "Desktop"               NULL menu desktop.menu
 "Settings"              NULL menu settings.menu
