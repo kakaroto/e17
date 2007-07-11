@@ -4,12 +4,17 @@
 static dbus_uint32_t msg_num = 0;
 
 void
-cb_sent(void *data, void *ret)
+cb_sent(void *data, void *ret, DBusError *err)
 {
   E_Notification_Return_Notify *notify;
   notify = ret;
-  if (notify) {
+  if (notify) 
+  {
     printf("id: %d\n", notify->notification_id);
+  }
+  else if (dbus_error_is_set(err))
+  {
+    printf("Error: %s\n", err->message);
   }
   ecore_main_loop_quit();
 }

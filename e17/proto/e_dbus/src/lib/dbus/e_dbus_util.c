@@ -32,9 +32,10 @@ e_dbus_callback_free(E_DBus_Callback *callback)
 }
 
 void
-e_dbus_callback_call(E_DBus_Callback *cb, void *data)
+e_dbus_callback_call(E_DBus_Callback *cb, void *data, DBusError *error)
 {
-  cb->func(cb->user_data, data);
+  if (cb && cb->func)
+    cb->func(cb->user_data, data, error);
 }
 
 const char *

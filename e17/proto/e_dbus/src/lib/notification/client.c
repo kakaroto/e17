@@ -35,17 +35,14 @@ static void
 cb_notify(void *data, DBusMessage *msg, DBusError *err)
 {
   E_DBus_Callback *cb;
-  E_Notification_Return_Notify *ret;
-
-  if (dbus_error_is_set(err))
-  {
-    fprintf (stderr, "an error occurred: %s\n", err->message);
-    return;
-  }
+  E_Notification_Return_Notify *ret = NULL;
   cb = data;
   if (!cb) return;
-  ret = e_notify_unmarshal_notify_return(msg);
-  e_dbus_callback_call(cb, ret);
+
+  if (!dbus_error_is_set(err))
+    ret = e_notify_unmarshal_notify_return(msg);
+
+  e_dbus_callback_call(cb, ret, err);
 }
 
 void
@@ -65,16 +62,14 @@ static void
 cb_get_capabilities(void *data, DBusMessage *msg, DBusError *err)
 {
   E_DBus_Callback *cb;
-  E_Notification_Return_Get_Capabilities *ret;
-  if (dbus_error_is_set(err))
-  {
-    fprintf (stderr, "an error occurred: %s\n", err->message);
-    return;
-  }
+  E_Notification_Return_Get_Capabilities *ret = NULL;
   cb = data;
   if (!cb) return;
-  ret = e_notify_unmarshal_get_capabilities_return(msg);
-  e_dbus_callback_call(cb, ret);
+
+  if (!dbus_error_is_set(err))
+    ret = e_notify_unmarshal_get_capabilities_return(msg);
+
+  e_dbus_callback_call(cb, ret, err);
 }
 
 void
@@ -92,15 +87,14 @@ static void
 cb_get_server_information(void *data, DBusMessage *msg, DBusError *err)
 {
   E_DBus_Callback *cb;
-  E_Notification_Return_Get_Server_Information *ret;
-  if (dbus_error_is_set(err))
-  {
-    fprintf (stderr, "an error occurred: %s\n", err->message);
-    return;
-  }
+  E_Notification_Return_Get_Server_Information *ret = NULL;
   cb = data;
-  ret = e_notify_unmarshal_get_server_information_return(msg);
-  e_dbus_callback_call(cb, ret);
+  if (!cb) return;
+
+  if (!dbus_error_is_set(err))
+    ret = e_notify_unmarshal_get_server_information_return(msg);
+
+  e_dbus_callback_call(cb, ret, err);
 }
 
 void
