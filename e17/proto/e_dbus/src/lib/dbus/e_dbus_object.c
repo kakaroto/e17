@@ -15,8 +15,6 @@ Ecore_Strbuf * e_dbus_object_introspect(E_DBus_Object *obj);
 static void e_dbus_object_unregister(DBusConnection *conn, void *user_data);
 static DBusHandlerResult e_dbus_object_handler(DBusConnection *conn, DBusMessage *message, void *user_data);
 
-static void e_dbus_interface_ref(E_DBus_Interface *iface);
-static void e_dbus_interface_unref(E_DBus_Interface *iface);
 static void e_dbus_interface_free(E_DBus_Interface *iface);
 
 static E_DBus_Method *e_dbus_method_new(const char *member, const char *signature, const char *reply_signature, E_DBus_Method_Cb func);
@@ -84,6 +82,7 @@ cb_introspect(E_DBus_Object *obj, DBusMessage *msg)
       return ret;
     }
 
+    if (obj->introspection_data) free(obj->introspection_data);
     obj->introspection_data = strdup(ecore_strbuf_string_get(buf));
     ecore_strbuf_free(buf);
   }
@@ -235,7 +234,7 @@ e_dbus_object_free(E_DBus_Object *obj)
 {
   if (!obj) return;
 
-  DEBUG(5, "e_dbus_object_free\n");
+  DEBUG(5, "e_dbus_object_free (%s)\n", obj->path);
   dbus_connection_unregister_object_path(obj->conn->conn, obj->path);
   e_dbus_connection_unref(obj->conn);
 
@@ -284,17 +283,20 @@ e_dbus_object_interface_attach(E_DBus_Object *obj, E_DBus_Interface *iface)
   e_dbus_interface_ref(iface);
   ecore_list_append(obj->interfaces, iface);
   obj->introspection_dirty = 1;
+  DEBUG(4, "e_dbus_object_interface_attach (%s, %s) ", obj->path, iface->name);
 }
 
-static void
+void
 e_dbus_interface_ref(E_DBus_Interface *iface)
 {
   iface->refcount++;
+  DEBUG(4, "e_dbus_interface_ref (%s) = %d\n", iface->name, iface->refcount);
 }
 
-static void
+void
 e_dbus_interface_unref(E_DBus_Interface *iface)
 {
+  DEBUG(4, "e_dbus_interface_unref (%s) = %d\n", iface->name, iface->refcount - 1);
   if (--(iface->refcount) == 0)
     e_dbus_interface_free(iface);
 }
@@ -326,6 +328,7 @@ e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, const c
   E_DBus_Method *m;
 
   m = e_dbus_method_new(member, signature, reply_signature, func);
+  DEBUG(4, "Add method %s: %p\n", member, m);
   if (!m) return 0;
 
   ecore_list_append(iface->methods, m);
@@ -482,6 +485,7 @@ _introspect_interface_append(Ecore_Strbuf *buf, E_DBus_Interface *iface, int lev
   ecore_strbuf_append(buf, "\">\n");
   level++;
 
+  DEBUG(4, "introspect iface: %s\n", iface->name);
   ecore_list_goto_first(iface->methods);
   while ((method = ecore_list_next(iface->methods))) 
     _introspect_method_append(buf, method, level);
@@ -497,6 +501,7 @@ _introspect_method_append(Ecore_Strbuf *buf, E_DBus_Method *method, int level)
   char *type;
 
   _introspect_indent_append(buf, level);
+  DEBUG(4, "introspect method: %s\n", method->member);
   ecore_strbuf_append(buf, "<method name=\"");
   ecore_strbuf_append(buf, method->member);
   ecore_strbuf_append(buf, "\">\n");

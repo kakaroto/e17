@@ -18,6 +18,13 @@ struct E_DBus_Connection
   int refcount;
 };
 
+struct E_DBus_Callback
+{
+  E_DBus_Callback_Func cb_func;
+  E_DBus_Unmarshal_Func unmarshal_func;
+  void *user_data;
+};
+
 int e_dbus_object_init(void);
 void e_dbus_object_shutdown(void);
 

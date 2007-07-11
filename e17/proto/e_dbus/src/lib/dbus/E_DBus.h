@@ -24,6 +24,17 @@ typedef void (*E_DBus_Signal_Cb) (void *data, DBusMessage *msg);
 typedef void (*E_DBus_Object_Property_Get_Cb) (E_DBus_Object *obj, const char *property, int *type, void **value);
 typedef int  (*E_DBus_Object_Property_Set_Cb) (E_DBus_Object *obj, const char *property, int type, void *value);
 
+/**
+ * A callback function for a DBus call
+ * @param user_data the data passed in to the method call
+ * @param event_data a struct containing the return data.
+ */
+typedef void (*E_DBus_Callback_Func) (void *user_data, void *method_return, DBusError *error);
+typedef DBusMessage *(*E_DBus_Unmarshal_Func) (DBusMessage *msg, DBusError *err);
+
+typedef struct E_DBus_Callback E_DBus_Callback;
+
+
 int e_dbus_init(void);
 void e_dbus_shutdown(void);
 
@@ -38,6 +49,8 @@ E_DBus_Connection *e_dbus_connection_setup(DBusConnection *conn);
 
 /* receiving method calls */
 E_DBus_Interface *e_dbus_interface_new(const char *interface);
+void e_dbus_interface_ref(E_DBus_Interface *iface);
+void e_dbus_interface_unref(E_DBus_Interface *iface);
 void e_dbus_object_interface_attach(E_DBus_Object *obj, E_DBus_Interface *iface);
 int e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, const char *signature, const char *reply_signature, E_DBus_Method_Cb func);
 
@@ -53,6 +66,8 @@ void e_dbus_object_property_set_cb_set(E_DBus_Object *obj, E_DBus_Object_Propert
 
 
 DBusPendingCall *e_dbus_message_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, int timeout, void *data);
+
+DBusPendingCall *e_dbus_method_call_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Callback_Func cb_func, int timeout, void *data);
 
 
 /* signal receiving */
@@ -106,21 +121,6 @@ void e_dbus_properties_set(E_DBus_Connection *conn, const char *destination,
                            void *value, E_DBus_Method_Return_Cb cb_return,
                            void *data);
 
-/**
- * A callback function for a DBus call
- * @param user_data the data passed in to the method call
- * @param event_data a struct containing the return data.
- */
-typedef void (*E_DBus_Callback_Func) (void *user_data, void *method_return, DBusError *error);
-typedef DBusMessage *(*E_DBus_Unmarshal_Func) (DBusMessage *msg, DBusError *err);
-
-typedef struct E_DBus_Callback E_DBus_Callback;
-struct E_DBus_Callback
-{
-  E_DBus_Callback_Func cb_func;
-  E_DBus_Unmarshal_Func unmarshal_func;
-  void *user_data;
-};
 
 E_DBus_Callback *e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmarshal_Func unmarshal_func, void *user_data);
 
