@@ -46,7 +46,8 @@ void                FocusHandleChange(EWin * ewin, XEvent * ev);
 void                FocusHandleClick(EWin * ewin, Win win);
 void                FocusNewDeskBegin(void);
 void                FocusNewDesk(void);
-void                FocusGrabsUpdate(void);
+
+void                ClickGrabsUpdate(void);
 
 /* warp.c */
 void                WarpFocus(int delta);

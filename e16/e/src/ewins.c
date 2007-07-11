@@ -1420,7 +1420,10 @@ EwinRaise(EWin * ewin)
       Efree(lst);
 
    if (call_depth == 1)
-      ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
+     {
+	ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
+	ClickGrabsUpdate();
+     }
 
  done:
    call_depth--;
@@ -1453,7 +1456,10 @@ EwinLower(EWin * ewin)
       Efree(lst);
 
    if (call_depth == 1)
-      ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
+     {
+	ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
+	ClickGrabsUpdate();
+     }
 
  done:
    call_depth--;

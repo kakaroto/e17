@@ -39,7 +39,7 @@
 
 static char         focus_inhibit = 1;
 static char         focus_is_set = 0;
-static char         focus_pending_update_grabs = 0;
+static char         click_pending_update_grabs = 0;
 static int          focus_pending_why = 0;
 static EWin        *focus_pending_ewin = NULL;
 static EWin        *focus_pending_new = NULL;
@@ -208,16 +208,11 @@ FocusGetPrevEwin(void)
 }
 
 static void
-FocusEwinSetGrabs(EWin * ewin)
+ClickGrabsSet(EWin * ewin)
 {
    int                 set = 0;
 
-   if ((
-#if 0				/* FIXME - Remove? */
-	  (Conf.focus.mode == MODE_FOCUS_CLICK || ewin->props.focusclick) &&
-#endif
-	  !ewin->state.active) ||
-       (Conf.focus.clickraises && !EwinListStackIsRaised(ewin)))
+   if (Conf.focus.clickraises && !EwinListStackIsRaised(ewin))
       set = 1;
 
    if (set)
@@ -227,7 +222,7 @@ FocusEwinSetGrabs(EWin * ewin)
 	     GrabButtonSet(AnyButton, AnyModifier, EwinGetContainerWin(ewin),
 			   ButtonPressMask, ECSR_PGRAB, 1);
 	     if (EDebug(EDBUG_TYPE_GRABS))
-		Eprintf("FocusEwinSetGrabs: %#lx set %s\n",
+		Eprintf("ClickGrabsSet: %#lx set %s\n",
 			EwinGetClientXwin(ewin), EwinGetTitle(ewin));
 	     ewin->state.click_grab_isset = 1;
 	  }
@@ -239,7 +234,7 @@ FocusEwinSetGrabs(EWin * ewin)
 	     GrabButtonRelease(AnyButton, AnyModifier,
 			       EwinGetContainerWin(ewin));
 	     if (EDebug(EDBUG_TYPE_GRABS))
-		Eprintf("FocusEwinSetGrabs: %#lx unset %s\n",
+		Eprintf("ClickGrabsSet: %#lx unset %s\n",
 			EwinGetClientXwin(ewin), EwinGetTitle(ewin));
 	     ewin->state.click_grab_isset = 0;
 	  }
@@ -256,8 +251,6 @@ FocusEwinSetActive(EWin * ewin, int active)
    EwinBorderUpdateState(ewin);
    EwinUpdateOpacity(ewin);
 
-   FocusGrabsUpdate();
-
    if (active && ewin->state.attention)
      {
 	ewin->state.attention = 0;
@@ -266,7 +259,7 @@ FocusEwinSetActive(EWin * ewin, int active)
 }
 
 static void
-doFocusGrabsUpdate(void)
+doClickGrabsUpdate(void)
 {
    EWin               *const *lst, *ewin;
    int                 i, num;
@@ -275,15 +268,15 @@ doFocusGrabsUpdate(void)
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
-	FocusEwinSetGrabs(ewin);
+	ClickGrabsSet(ewin);
      }
-   focus_pending_update_grabs = 0;
+   click_pending_update_grabs = 0;
 }
 
 void
-FocusGrabsUpdate(void)
+ClickGrabsUpdate(void)
 {
-   focus_pending_update_grabs = 1;
+   click_pending_update_grabs = 1;
 }
 
 static void
@@ -623,10 +616,7 @@ FocusHandleClick(EWin * ewin, Win win)
    if (Conf.focus.clickraises)
       EwinRaise(ewin);
 
-#if 0				/* FIXME - Remove? */
-   if (Conf.focus.mode == MODE_FOCUS_CLICK || ewin->props.focusclick)
-#endif
-      FocusToEWin(ewin, FOCUS_CLICK);
+   FocusToEWin(ewin, FOCUS_CLICK);
 
    /* Allow click to pass thorugh */
    if (EDebug(EDBUG_TYPE_GRABS))
@@ -687,7 +677,7 @@ CB_ConfigureFocus(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.warplist.icon_mode = tmp_warp_icon_mode;
 
 	Conf.focus.clickraises = tmp_clickalways;
-	FocusGrabsUpdate();
+	ClickGrabsUpdate();
      }
    autosave();
 }
@@ -881,8 +871,8 @@ _FocusIdler(void *data __UNUSED__)
 {
    if (!focus_inhibit && focus_pending_why)
       FocusSet();
-   if (focus_pending_update_grabs)
-      doFocusGrabsUpdate();
+   if (click_pending_update_grabs)
+      doClickGrabsUpdate();
 }
 
 static void
@@ -978,7 +968,7 @@ FocusIpc(const char *params)
 	if (Conf.focus.mode != mode)
 	  {
 	     Conf.focus.mode = mode;
-	     FocusGrabsUpdate();
+	     ClickGrabsUpdate();
 	     autosave();
 	  }
      }
