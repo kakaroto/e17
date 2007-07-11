@@ -157,22 +157,12 @@ MenuFindItemByChild(Menu * m, Menu * mc)
    return NULL;
 }
 
-static void
-MenuHideChildren(Menu * m)
-{
-   if (!m->child)
-      return;
-
-   MenuHide(m->child);
-   m->child = NULL;
-}
-
 void
 MenuHide(Menu * m)
 {
    EWin               *ewin;
 
-   if (!m)
+   if (!m || !m->shown)
       return;
 
    if (m->sel_item)
@@ -192,9 +182,14 @@ MenuHide(Menu * m)
    m->shown = 0;
    m->parent = NULL;
    m->last_access = time(0);
-   MenuHideChildren(m);
+   if (m->child)
+     {
+	MenuHide(m->child);
+	m->child = NULL;
+     }
    if (m->dynamic)
       MenuEmpty(m, 0);
+   m->ref_count--;
 }
 
 static void
@@ -429,6 +424,8 @@ MenuItemCreate(const char *text, ImageClass * iclass,
    mi->text = (text) ? Estrdup((text[0]) ? text : "?!?") : NULL;
    mi->params = Estrdup(action_params);
    mi->child = child;
+   if (child)
+      child->ref_count++;
    mi->state = STATE_NORMAL;
 
    return mi;
@@ -566,11 +563,15 @@ MenuDestroy(Menu * m)
    if (!m)
       return;
 
-   m = (Menu *) ecore_list_remove_node(menu_list, m);
-   if (!m)
+   if (!ecore_list_goto(menu_list, m))
       return;
 
    MenuHide(m);
+
+   if (m->ref_count)
+      return;
+
+   ecore_list_remove_node(menu_list, m);
 
    if (m->win)
       EDestroyWindow(m->win);
@@ -598,26 +599,31 @@ void
 MenuEmpty(Menu * m, int destroying)
 {
    int                 i, j;
+   MenuItem           *mi;
 
    for (i = 0; i < m->num; i++)
      {
-	if (m->items[i])
+	mi = m->items[i];
+	if (!mi)
+	   continue;
+
+	if (mi->child)
 	  {
-	     if (m->items[i]->child)
-		MenuDestroy(m->items[i]->child);
-	     if (m->items[i]->text)
-		Efree(m->items[i]->text);
-	     if (m->items[i]->params)
-		Efree(m->items[i]->params);
-	     for (j = 0; j < 3; j++)
-		FreePmapMask(&(m->items[i]->pmm[j]));
-	     if (!destroying && m->items[i]->win)
-		EDestroyWindow(m->items[i]->win);
-	     if (m->items[i]->icon_iclass)
-		ImageclassDecRefcount(m->items[i]->icon_iclass);
-	     if (m->items[i])
-		Efree(m->items[i]);
+	     mi->child->ref_count--;
+	     MenuDestroy(mi->child);
 	  }
+	if (mi->text)
+	   Efree(mi->text);
+	if (mi->params)
+	   Efree(mi->params);
+	for (j = 0; j < 3; j++)
+	   FreePmapMask(&(mi->pmm[j]));
+	if (!destroying && mi->win)
+	   EDestroyWindow(mi->win);
+	if (mi->icon_iclass)
+	   ImageclassDecRefcount(mi->icon_iclass);
+	if (mi)
+	   Efree(mi);
      }
    if (m->items)
       Efree(m->items);
@@ -1566,6 +1572,8 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
       return;
 
    m = data->m;
+   if (!ecore_list_goto(menu_list, m))
+      return;
    ewin = m->ewin;
    if (!ewin || !EwinFindByPtr(ewin))
       return;
@@ -2024,11 +2032,13 @@ MenusTimeout(int val __UNUSED__, void *data __UNUSED__)
 	  ts - m->last_access < MENU_UNLOAD_CHECK_IMTERVAL)
 	 continue;
 
-      if (m->loader)
+      m->last_change = 0;
+      if (!m->loader)
+	 MenuFreePixmaps(m);
+      else if (m->ref_count)
 	 MenuEmpty(m, 0);
       else
-	 MenuFreePixmaps(m);
-      m->last_change = 0;
+	 MenuDestroy(m);
    }
 
    DoIn("MenusCheck", 1. * MENU_UNLOAD_CHECK_IMTERVAL, MenusTimeout, 0, NULL);
