@@ -1142,7 +1142,7 @@ win_shape(EObj * eo)
 
    border = ERegionCreateFromWindow(EobjGetXwin(eo));
 
-   if (1 /* eo->shaped */ )	/* FIXME - Track shaped state */
+   if (WinIsShaped(EobjGetWin(eo)) > 0)
      {
 	/* Intersect with window size to get effective bounding region */
 	ERegionSetRect(rgn_tmp, 0, 0, EobjGetW(eo), EobjGetH(eo));
