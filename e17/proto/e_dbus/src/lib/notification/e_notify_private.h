@@ -73,6 +73,7 @@ struct E_Notification
   } hints;
 
   int hint_flags;
+  unsigned char closed;
 
   int refcount;
 };

@@ -64,7 +64,7 @@ e_notification_free(E_Notification *n)
   if (n->summary) free(n->summary);
   if (n->body) free(n->body);
 
-  ecore_list_destroy(n->actions);
+  if (n->actions) ecore_list_destroy(n->actions);
 
   if (n->hints.category) free(n->hints.category);
   if (n->hints.desktop) free(n->hints.desktop);
@@ -74,6 +74,11 @@ e_notification_free(E_Notification *n)
 }
 
 /* mutators */
+void
+e_notification_id_set(E_Notification *note, unsigned int id)
+{
+  note->id = id;
+}
 
 void
 e_notification_app_name_set(E_Notification *note, const char *app_name)
@@ -128,8 +133,19 @@ e_notification_timeout_set(E_Notification *note, int timeout)
   note->expire_timeout = timeout;
 }
 
+void
+e_notification_closed_set(E_Notification *note, unsigned char closed)
+{
+  note->closed = closed;
+}
+
 
 /* accessors */
+unsigned int
+e_notification_id_get(E_Notification *note)
+{
+  return note->id;
+}
 
 const char *
 e_notification_app_name_get(E_Notification *note)
@@ -171,6 +187,12 @@ int
 e_notification_timeout_get(E_Notification *note)
 {
   return note->expire_timeout;
+}
+
+unsigned char
+e_notification_closed_get(E_Notification *note)
+{
+  return note->closed;
 }
 
 /***** actions *****/

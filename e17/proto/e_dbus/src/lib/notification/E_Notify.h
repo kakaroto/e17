@@ -114,20 +114,24 @@ E_Notification *e_notification_full_new(const char *app_name,
                                         int expire_timeout);
 
 /* notification mutators */
+void e_notification_id_set(E_Notification *note, unsigned int id);
 void e_notification_app_name_set(E_Notification *n, const char *app_name);
 void e_notification_app_icon_set(E_Notification *n, const char *app_icon);
 void e_notification_summary_set(E_Notification *n, const char *summary);
 void e_notification_body_set(E_Notification *n, const char *body);
 void e_notification_replaces_id_set(E_Notification *n, int replaces_id);
 void e_notification_timeout_set(E_Notification *n, int timeout);
+void e_notification_closed_set(E_Notification *note, unsigned char closed);
 
 /* notification accessors */
+unsigned int e_notification_id_get(E_Notification *note);
 const char *e_notification_app_name_get(E_Notification *n);
 const char *e_notification_app_icon_get(E_Notification *n);
 const char *e_notification_summary_get(E_Notification *n);
 const char *e_notification_body_get(E_Notification *n);
-int e_notification_timeout_get(E_Notification *note);
 int e_notification_replaces_id_get(E_Notification *note);
+int e_notification_timeout_get(E_Notification *note);
+unsigned char e_notification_closed_get(E_Notification *note);
 
 /* actions */
 void e_notification_action_add(E_Notification *n, const char *action_id, const char *action_name);
