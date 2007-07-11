@@ -321,7 +321,7 @@ typedef struct
       int                 mode_resize;
       int                 mode_info;
       unsigned int        color;
-      char                old_mode;
+      char                avoid_server_grab;
       char                update_while_moving;
       char                enable_sync_request;
    } movres;

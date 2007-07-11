@@ -323,7 +323,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 
    EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 
-   if (md <= 2 && !Conf.movres.old_mode)
+   if (md <= 2 && Conf.movres.avoid_server_grab)
      {
 	static ShapeWin    *shape_win = NULL;
 

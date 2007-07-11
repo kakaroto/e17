@@ -51,7 +51,7 @@ _NeedServerGrab(int mode)
    if (mode == 0)
       return 0;
    if (mode <= 2)
-      return Conf.movres.old_mode;
+      return !Conf.movres.avoid_server_grab;
    return 1;
 }
 
