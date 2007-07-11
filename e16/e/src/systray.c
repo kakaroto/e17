@@ -445,8 +445,7 @@ SystrayInit(Container * ct)
      }
 
    win = ct->icon_win;
-   ESelectInputAdd(win,
-		   SubstructureRedirectMask /* | SubstructureNotifyMask */ );
+   ESelectInputChange(win, SubstructureRedirectMask, 0);
    EventCallbackRegister(win, 0, SystrayEvent, ct);
 
    /* Container parameter setup */

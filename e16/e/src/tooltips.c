@@ -47,6 +47,7 @@ static struct
 static struct
 {
    int                 inhibit;
+   char                root_motion_mask_set;
    CB_GetAclass       *ac_func;
    void               *ac_data;
 } Mode_tooltips;
@@ -806,6 +807,23 @@ TooltipsSetPending(int type, CB_GetAclass * func, void *data)
       TooltipHide(ttip);
 
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
+
+   if (Conf_tooltips.showroottooltip)
+     {
+	if (!Mode_tooltips.root_motion_mask_set)
+	  {
+	     Mode_tooltips.root_motion_mask_set = 1;
+	     ESelectInputChange(VRoot.win, PointerMotionMask, 0);
+	  }
+     }
+   else
+     {
+	if (Mode_tooltips.root_motion_mask_set)
+	  {
+	     Mode_tooltips.root_motion_mask_set = 0;
+	     ESelectInputChange(VRoot.win, 0, PointerMotionMask);
+	  }
+     }
 
    if (!func)
       return;

@@ -1113,12 +1113,13 @@ EQueryPointer(Win win, int *px, int *py, Window * pchild, unsigned int *pmask)
 }
 
 void
-ESelectInputAdd(Win win, long mask)
+ESelectInputChange(Win win, long set, long clear)
 {
    XWindowAttributes   xwa;
 
    XGetWindowAttributes(disp, win->xwin, &xwa);
-   xwa.your_event_mask |= mask;
+   xwa.your_event_mask |= set;
+   xwa.your_event_mask &= ~clear;
    XSelectInput(disp, win->xwin, xwa.your_event_mask);
 }
 

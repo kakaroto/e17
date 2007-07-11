@@ -41,17 +41,15 @@
 #include "xwin.h"
 
 #define EWIN_TOP_EVENT_MASK \
-  (ButtonPressMask | ButtonReleaseMask | \
-   EnterWindowMask | LeaveWindowMask | PointerMotionMask /* | \
+  (/* ButtonPressMask | ButtonReleaseMask | */ \
+   EnterWindowMask | LeaveWindowMask /* | PointerMotionMask */ /* | \
    StructureNotifyMask */)
 
 #define EWIN_CONTAINER_EVENT_MASK \
-  (/* ButtonPressMask | ButtonReleaseMask | */ \
-   /* StructureNotifyMask | ResizeRedirectMask | */ \
-   SubstructureNotifyMask | SubstructureRedirectMask)
+  (SubstructureNotifyMask | SubstructureRedirectMask)
 
 #define EWIN_CLIENT_EVENT_MASK \
-  (EnterWindowMask | LeaveWindowMask | FocusChangeMask | \
+  (/* EnterWindowMask | LeaveWindowMask | */ FocusChangeMask | \
    /* StructureNotifyMask | */ ResizeRedirectMask | \
    PropertyChangeMask | ColormapChangeMask | VisibilityChangeMask)
 
@@ -2258,12 +2256,6 @@ EwinHandleEventsClient(Win win __UNUSED__, XEvent * ev, void *prm)
 
    switch (ev->type)
      {
-     case ButtonPress:
-     case ButtonRelease:
-     case MotionNotify:
-     case EnterNotify:
-     case LeaveNotify:
-	break;
      case FocusIn:
      case FocusOut:
 	if (ev->xfocus.detail == NotifyInferior)

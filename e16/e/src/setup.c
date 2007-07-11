@@ -235,9 +235,7 @@ SetupX(const char *dstr)
    /* select all the root window events to start managing */
    Mode.wm.xselect = 1;
    mask =
-      ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
-      ButtonMotionMask | PropertyChangeMask | SubstructureRedirectMask |
-      PointerMotionMask | StructureNotifyMask | SubstructureNotifyMask;
+      StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask;
    ESelectInput(VRoot.win, mask);
    ESync();
 

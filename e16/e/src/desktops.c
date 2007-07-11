@@ -47,7 +47,7 @@
 
 #define EDESK_EVENT_MASK \
   (ButtonPressMask | ButtonReleaseMask | \
-   EnterWindowMask | LeaveWindowMask | PointerMotionMask | ButtonMotionMask | \
+   EnterWindowMask | LeaveWindowMask /* | PointerMotionMask | ButtonMotionMask */ | \
    SubstructureNotifyMask | SubstructureRedirectMask | PropertyChangeMask)
 
 #define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32

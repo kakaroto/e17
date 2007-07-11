@@ -123,7 +123,7 @@ struct _menu
 #define MENU_ITEM_EVENT_MASK \
 	KeyPressMask | KeyReleaseMask | \
 	ButtonPressMask | ButtonReleaseMask | \
-	EnterWindowMask | LeaveWindowMask	/* | PointerMotionMask */
+	EnterWindowMask | LeaveWindowMask
 
 static void         MenuRedraw(Menu * m);
 static void         MenuRealize(Menu * m);

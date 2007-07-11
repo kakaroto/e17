@@ -1565,7 +1565,7 @@ ECompMgrWinNew(EObj * eo)
 
    if (eo->type == EOBJ_TYPE_DESK || eo->type == EOBJ_TYPE_ROOT_BG)
      {
-	ESelectInputAdd(eo->win, VisibilityChangeMask);
+	ESelectInputChange(eo->win, VisibilityChangeMask, 0);
      }
 
    if (eo->type != EOBJ_TYPE_EWIN)
@@ -2452,12 +2452,12 @@ ECompMgrStart(void)
      case ECM_MODE_ROOT:
 	XCompositeRedirectSubwindows(disp, VRoot.xwin, CompositeRedirectManual);
 #if USE_DESK_EXPOSE		/* FIXME - Remove? */
-	ESelectInputAdd(VRoot.xwin, ExposureMask);
+	ESelectInputChange(VRoot.xwin, ExposureMask, 0);
 #endif
 	break;
      case ECM_MODE_WINDOW:
 #if USE_DESK_EXPOSE		/* FIXME - Remove? */
-	ESelectInputAdd(VRoot.xwin, ExposureMask);
+	ESelectInputChange(VRoot.xwin, ExposureMask, 0);
 #endif
 	break;
      case ECM_MODE_AUTO:
