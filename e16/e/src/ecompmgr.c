@@ -1123,10 +1123,10 @@ ECompMgrWinSetExtents(EObj * eo)
  done:
    cw->have_extents = 1;
 
-   D2printf("extents %#lx %d %d %d %d\n", EobjGetXwin(eo), r.x, r.y, r.width,
+   D1printf("extents %#lx %d %d %d %d\n", EobjGetXwin(eo), r.x, r.y, r.width,
 	    r.height);
 
-   if (EDebug(EDBUG_TYPE_COMPMGR3))
+   if (EDebug(EDBUG_TYPE_COMPMGR))
       ERegionShow("extents", cw->extents);
 
 #if 0				/* FIXME - Set picture clip region */
@@ -1174,8 +1174,8 @@ ECompMgrWinSetShape(EObj * eo)
    cw->shape_y = EobjGetY(eo) + EobjGetBW(eo);
    cw->have_shape = 1;
 
-   D2printf("shape %#lx: %d %d\n", EobjGetXwin(eo), x, y);
-   if (EDebug(EDBUG_TYPE_COMPMGR3))
+   D1printf("shape %#lx: %d %d\n", EobjGetXwin(eo), cw->shape_x, cw->shape_y);
+   if (EDebug(EDBUG_TYPE_COMPMGR))
       ERegionShow("shape", cw->shape);
 }
 
@@ -1816,7 +1816,7 @@ ECompMgrWinDamage(EObj * eo, XEvent * ev __UNUSED__)
    XDamageNotifyEvent *de = (XDamageNotifyEvent *) ev;
    XserverRegion       parts;
 
-   D1printf("ECompMgrWinDamage %#lx %#lx damaged=%d %d,%d %dx%d\n",
+   D2printf("ECompMgrWinDamage %#lx %#lx damaged=%d %d,%d %dx%d\n",
 	    ev->xany.window, EobjGetXwin(eo), cw->damaged,
 	    de->area.x, de->area.y, de->area.width, de->area.height);
 
@@ -2228,7 +2228,7 @@ ECompMgrRepaint(void)
 
    D2printf("ECompMgrRepaint rootBuffer=%#lx rootPicture=%#lx\n",
 	    rootBuffer, rootPicture);
-   if (EDebug(EDBUG_TYPE_COMPMGR))
+   if (EDebug(EDBUG_TYPE_COMPMGR2))
       ERegionShow("damage", Mode_compmgr.damage);
 
    pbuf = rootBuffer;
