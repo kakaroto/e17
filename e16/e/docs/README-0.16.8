@@ -448,6 +448,9 @@ misc.movres.mode_move = 0
 misc.movres.mode_resize = 2
 # [int] Geometry indicator mode (0: off, 1: window center, 2: screen corner)
 misc.movres.mode_info = 1
+# [bool] Avoid server grab
+# Use non-server-grabbing line drawing technique in technical and box modes.
+misc.movres.avoid_server_grab = 1
 # [bool] Send synthetic ConfigureNotify's while moving
 # Causes pseudotransparent apps to update while moving (expensive)
 misc.movres.update_while_moving = 0
@@ -632,7 +635,9 @@ $ export WINDOW_MANAGER=e16
 $ gnome-sesssion
 
 Alternatively, add a GNOME/e16 session entry to the display manager login:
-# cp /usr/share/e16/misc/e-gnome.desktop /usr/share/xsessions/
+# cp /usr/share/e16/misc/e16-gnome.desktop /usr/share/xsessions/
+
+Note! The section below is obsolete as of gnome-session-2.16
 
 However, somewhere along the way the script /usr/bin/gnome-wm is called.
 This is supposed to handle differences in all the different WM's out there,
@@ -665,7 +670,7 @@ $ export KDEWM=e16
 $ startkde
 
 Alternatively, add a KDE/e16 session entry to the display manager login:
-# cp /usr/share/e16/misc/e-kde.desktop /usr/share/xsessions/
+# cp /usr/share/e16/misc/e16-kde.desktop /usr/share/xsessions/
 
 
 Migrating from Enlightenment 0.16.7 to 0.16.8 
