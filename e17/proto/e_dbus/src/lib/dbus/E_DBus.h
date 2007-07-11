@@ -112,7 +112,7 @@ void e_dbus_properties_set(E_DBus_Connection *conn, const char *destination,
  * @param event_data a struct containing the return data.
  */
 typedef void (*E_DBus_Callback_Func) (void *user_data, void *method_return, DBusError *error);
-typedef DBusMessage *(*E_DBus_Unmarshal_Func) (DBusMessage *msg);
+typedef DBusMessage *(*E_DBus_Unmarshal_Func) (DBusMessage *msg, DBusError *err);
 
 typedef struct E_DBus_Callback E_DBus_Callback;
 struct E_DBus_Callback
@@ -126,7 +126,7 @@ E_DBus_Callback *e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmars
 
 void e_dbus_callback_free(E_DBus_Callback *callback);
 void e_dbus_callback_call(E_DBus_Callback *cb, void *data, DBusError *error);
-void *e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg);
+void *e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg, DBusError *err);
 
 const char *e_dbus_basic_type_as_string(int type);
 

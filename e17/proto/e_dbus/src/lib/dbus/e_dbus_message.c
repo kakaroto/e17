@@ -89,12 +89,19 @@ cb_method_call(void *data, DBusMessage *msg, DBusError *err)
 {
   E_DBus_Callback *cb = data;
   void *method_return = NULL;
+  DBusError new_err;
   if (!cb) return;
 
+  dbus_error_init(&new_err);
   if (!dbus_error_is_set(err))
-    method_return = e_dbus_callback_unmarshal(cb, msg);
+    method_return = e_dbus_callback_unmarshal(cb, msg, &new_err);
+  else
+    dbus_move_error(err, &new_err);
 
-  e_dbus_callback_call(cb, method_return, err);
+  e_dbus_callback_call(cb, method_return, &new_err);
+
+  if (dbus_error_is_set(&new_err))
+    dbus_error_free(&new_err);
 }
 
 DBusPendingCall *

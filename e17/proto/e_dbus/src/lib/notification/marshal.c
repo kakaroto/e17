@@ -75,7 +75,7 @@ e_notify_marshal_string_list_as_array(DBusMessageIter *iter, Ecore_List *strings
 }
 
 Ecore_List *
-e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter)
+e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter, DBusError *err)
 {
   Ecore_List *strings;
   char *sig;
@@ -126,7 +126,7 @@ e_notify_marshal_get_capabilities_return(DBusMessage *method_call, Ecore_List *c
 }
 
 E_Notification_Return_Get_Capabilities *
-e_notify_unmarshal_get_capabilities_return(DBusMessage *msg)
+e_notify_unmarshal_get_capabilities_return(DBusMessage *msg, DBusError *err)
 {
   DBusMessageIter iter, arr;
   E_Notification_Return_Get_Capabilities *ret;
@@ -136,7 +136,7 @@ e_notify_unmarshal_get_capabilities_return(DBusMessage *msg)
 
   ret = calloc(1, sizeof(E_Notification_Return_Get_Capabilities));
   dbus_message_iter_init(msg, &iter);
-  ret->capabilities = e_notify_unmarshal_string_array_as_list(&iter);
+  ret->capabilities = e_notify_unmarshal_string_array_as_list(&iter, err);
 
   return ret;
 }
@@ -160,23 +160,21 @@ e_notify_marshal_get_server_information_return(DBusMessage *method_call, const c
 }
 
 E_Notification_Return_Get_Server_Information *
-e_notify_unmarshal_get_server_information_return(DBusMessage *msg)
+e_notify_unmarshal_get_server_information_return(DBusMessage *msg, DBusError *err)
 {
   E_Notification_Return_Get_Server_Information *info;
-  DBusError err;
-  dbus_error_init(&err);
   if (!dbus_message_has_signature(msg, "sss")) return NULL;
 
   info = calloc(1, sizeof(E_Notification_Return_Get_Server_Information));
-  dbus_message_get_args(msg, &err,
+  dbus_message_get_args(msg, err,
     DBUS_TYPE_STRING, &(info->name),
     DBUS_TYPE_STRING, &(info->vendor),
     DBUS_TYPE_STRING, &(info->version),
     DBUS_TYPE_INVALID
   );
-  if (dbus_error_is_set(&err))
+  if (dbus_error_is_set(err))
   {
-    dbus_error_free(&err);
+    free(info);
     return NULL;
   }
 
@@ -195,18 +193,14 @@ e_notify_marshal_close_notification(dbus_uint32_t id)
 }
 
 dbus_uint32_t
-e_notify_unmarshal_close_notification(DBusMessage *msg)
+e_notify_unmarshal_close_notification(DBusMessage *msg, DBusError *err)
 {
   dbus_uint32_t id;
-  DBusError err;
-  dbus_error_init(&err);
   if (!dbus_message_has_signature(msg, "u")) return 0;
-  dbus_message_get_args(msg, &err, DBUS_TYPE_UINT32, &id, DBUS_TYPE_INVALID);
-  if (dbus_error_is_set(&err))
-  {
-    dbus_error_free(&err);
+  dbus_message_get_args(msg, err, DBUS_TYPE_UINT32, &id, DBUS_TYPE_INVALID);
+  if (dbus_error_is_set(err))
     return 0;
-  }
+
   return id;
 }
 
@@ -220,20 +214,23 @@ e_notify_marshal_notification_closed_signal(dbus_uint32_t id, dbus_uint32_t reas
 }
 
 E_Notification_Event_Notification_Closed *
-e_notify_unmarshal_notification_closed_signal(DBusMessage *msg)
+e_notify_unmarshal_notification_closed_signal(DBusMessage *msg, DBusError *err)
 {
   E_Notification_Event_Notification_Closed *ev;
-  DBusError err;
-  dbus_error_init(&err);
 
-  if (!dbus_message_has_signature(msg, "uu")) return NULL;
-  ev = calloc(1, sizeof(E_Notification_Event_Notification_Closed));
-  dbus_message_get_args(msg, &err, DBUS_TYPE_UINT32, &(ev->notification_id), DBUS_TYPE_UINT32, &(ev->reason), DBUS_TYPE_INVALID);
-  if (dbus_error_is_set(&err))
+  if (!dbus_message_has_signature(msg, "uu")) 
   {
-    dbus_error_free(&err);
+    dbus_set_error(err, DBUS_ERROR_INVALID_SIGNATURE, "");
     return NULL;
   }
+  ev = calloc(1, sizeof(E_Notification_Event_Notification_Closed));
+  dbus_message_get_args(msg, err, DBUS_TYPE_UINT32, &(ev->notification_id), DBUS_TYPE_UINT32, &(ev->reason), DBUS_TYPE_INVALID);
+  if (dbus_error_is_set(err))
+  {
+    free(ev);
+    return NULL;
+  }
+  return ev;
 }
 
 DBusMessage *
@@ -246,18 +243,20 @@ e_notify_marshal_action_invoked_signal(dbus_uint32_t id, const char *action_id)
 }
 
 E_Notification_Event_Action_Invoked *
-e_notify_unmarshal_action_invoked_signal(DBusMessage *msg)
+e_notify_unmarshal_action_invoked_signal(DBusMessage *msg, DBusError *err)
 {
   E_Notification_Event_Action_Invoked *ev;
-  DBusError err;
-  dbus_error_init(&err);
 
-  if (!dbus_message_has_signature(msg, "us")) return NULL;
-  ev = calloc(1, sizeof(E_Notification_Event_Action_Invoked));
-  dbus_message_get_args(msg, &err, DBUS_TYPE_UINT32, &(ev->notification_id), DBUS_TYPE_STRING, &(ev->action_id), DBUS_TYPE_INVALID);
-  if (dbus_error_is_set(&err))
+  if (!dbus_message_has_signature(msg, "us")) 
   {
-    dbus_error_free(&err);
+    dbus_set_error(err, DBUS_ERROR_INVALID_SIGNATURE, "");
+    return NULL;
+  }
+  ev = calloc(1, sizeof(E_Notification_Event_Action_Invoked));
+  dbus_message_get_args(msg, err, DBUS_TYPE_UINT32, &(ev->notification_id), DBUS_TYPE_STRING, &(ev->action_id), DBUS_TYPE_INVALID);
+  if (dbus_error_is_set(err))
+  {
+    free(ev);
     return NULL;
   }
   return ev;
@@ -319,7 +318,7 @@ e_notify_marshal_notify(E_Notification *n)
 }
 
 E_Notification *
-e_notify_unmarshal_notify(DBusMessage *msg)
+e_notify_unmarshal_notify(DBusMessage *msg, DBusError *err)
 {
   E_Notification *n;
   const char *s_val;
@@ -374,16 +373,14 @@ e_notify_marshal_notify_return(DBusMessage *method_call, dbus_uint32_t notificat
 }
 
 E_Notification_Return_Notify *
-e_notify_unmarshal_notify_return(DBusMessage *msg)
+e_notify_unmarshal_notify_return(DBusMessage *msg, DBusError *err)
 {
   E_Notification_Return_Notify *ret;
-  DBusError err;
-  dbus_error_init(&err);
   ret = calloc(1, sizeof(E_Notification_Return_Notify));
-  dbus_message_get_args(msg, &err, DBUS_TYPE_UINT32, &(ret->notification_id), DBUS_TYPE_INVALID);
-  if (dbus_error_is_set(&err))
+  dbus_message_get_args(msg, err, DBUS_TYPE_UINT32, &(ret->notification_id), DBUS_TYPE_INVALID);
+  if (dbus_error_is_set(err))
   {
-    dbus_error_free(&err);
+    free(ret);
     return NULL;
   }
   return ret;

@@ -39,12 +39,11 @@ e_dbus_callback_call(E_DBus_Callback *cb, void *data, DBusError *error)
     cb->cb_func(cb->user_data, data, error);
 }
 
-//XXX this probably should be passed an error pointer
 void *
-e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg)
+e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg, DBusError *err)
 {
   if (cb && cb->unmarshal_func)
-    return cb->unmarshal_func(msg);
+    return cb->unmarshal_func(msg, err);
   else
     return NULL;
 }
