@@ -1,19 +1,9 @@
 #include "E_Notify.h"
 #include <string.h>
+#include "e_notify_private.h"
 
-
-#define e_notification_call_new(member) dbus_message_new_method_call(E_NOTIFICATION_DESTINATION, E_NOTIFICATION_PATH, E_NOTIFICATION_INTERFACE, member)
-
-Ecore_List *unmarshal_notify_actions(E_Notification *n, DBusMessageIter *iter);
-Ecore_List *unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter);
-void marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img);
-E_Notification_Image *unmarshal_hint_image(DBusMessageIter *iter);
-
-typedef void (*E_DBus_Variant_Marshaller) (DBusMessageIter *iter, void *data);
-#define E_DBUS_VARIANT_MARSHALLER(x) ((E_DBus_Variant_Marshaller)(x))
-
-static void
-marshal_dict_variant(DBusMessageIter *iter, const char *key, char *type_str, E_DBus_Variant_Marshaller func, void *data)
+void
+e_notify_marshal_dict_variant(DBusMessageIter *iter, const char *key, char *type_str, E_DBus_Variant_Marshaller func, void *data)
 {
   DBusMessageIter entry, variant;
 
@@ -26,8 +16,8 @@ marshal_dict_variant(DBusMessageIter *iter, const char *key, char *type_str, E_D
   dbus_message_iter_close_container(iter, &entry);
 }
 
-static void
-marshal_dict_string(DBusMessageIter *iter, const char *key, const char *value)
+void
+e_notify_marshal_dict_string(DBusMessageIter *iter, const char *key, const char *value)
 {
   DBusMessageIter entry, variant;
 
@@ -39,8 +29,8 @@ marshal_dict_string(DBusMessageIter *iter, const char *key, const char *value)
   dbus_message_iter_close_container(iter, &entry);
 }
 
-static void
-marshal_dict_byte(DBusMessageIter *iter, const char *key, char value)
+void
+e_notify_marshal_dict_byte(DBusMessageIter *iter, const char *key, char value)
 {
   DBusMessageIter entry, variant;
 
@@ -54,8 +44,8 @@ marshal_dict_byte(DBusMessageIter *iter, const char *key, char value)
   dbus_message_iter_close_container(iter, &entry);
 }
 
-static void
-marshal_dict_int(DBusMessageIter *iter, const char *key, int value)
+void
+e_notify_marshal_dict_int(DBusMessageIter *iter, const char *key, int value)
 {
   DBusMessageIter entry, variant;
 
@@ -69,8 +59,8 @@ marshal_dict_int(DBusMessageIter *iter, const char *key, int value)
   dbus_message_iter_close_container(iter, &entry);
 }
 
-static void
-marshal_string_list_as_array(DBusMessageIter *iter, Ecore_List *strings)
+void
+e_notify_marshal_string_list_as_array(DBusMessageIter *iter, Ecore_List *strings)
 {
   const char *str;
   DBusMessageIter arr;
@@ -85,7 +75,7 @@ marshal_string_list_as_array(DBusMessageIter *iter, Ecore_List *strings)
 }
 
 Ecore_List *
-unmarshal_string_array_as_list(DBusMessageIter *iter)
+e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter)
 {
   Ecore_List *strings;
   char *sig;
@@ -114,7 +104,7 @@ unmarshal_string_array_as_list(DBusMessageIter *iter)
 
 
 DBusMessage *
-marshal_get_capabilities()
+e_notify_marshal_get_capabilities()
 {
   DBusMessage *msg;
 
@@ -123,20 +113,20 @@ marshal_get_capabilities()
 }
 
 DBusMessage *
-marshal_get_capabilities_return(DBusMessage *method_call, Ecore_List *capabilities)
+e_notify_marshal_get_capabilities_return(DBusMessage *method_call, Ecore_List *capabilities)
 {
   DBusMessage *msg;
   DBusMessageIter iter;
 
   msg = dbus_message_new_method_return(method_call);
   dbus_message_iter_init_append(msg, &iter);
-  marshal_string_list_as_array(&iter, capabilities);
+  e_notify_marshal_string_list_as_array(&iter, capabilities);
 
   return msg;
 }
 
 E_Notification_Return_Get_Capabilities *
-unmarshal_get_capabilities_return(DBusMessage *msg)
+e_notify_unmarshal_get_capabilities_return(DBusMessage *msg)
 {
   DBusMessageIter iter, arr;
   E_Notification_Return_Get_Capabilities *ret;
@@ -146,13 +136,13 @@ unmarshal_get_capabilities_return(DBusMessage *msg)
 
   ret = calloc(1, sizeof(E_Notification_Return_Get_Capabilities));
   dbus_message_iter_init(msg, &iter);
-  ret->capabilities = unmarshal_string_array_as_list(&iter);
+  ret->capabilities = e_notify_unmarshal_string_array_as_list(&iter);
 
   return ret;
 }
 
 DBusMessage *
-marshal_get_server_information()
+e_notify_marshal_get_server_information()
 {
   DBusMessage *msg;
 
@@ -161,7 +151,7 @@ marshal_get_server_information()
 }
 
 DBusMessage *
-marshal_get_server_information_return(DBusMessage *method_call, const char *name, const char *vendor, const char *version)
+e_notify_marshal_get_server_information_return(DBusMessage *method_call, const char *name, const char *vendor, const char *version)
 {
   DBusMessage *msg;
   msg = dbus_message_new_method_return(method_call);
@@ -170,7 +160,7 @@ marshal_get_server_information_return(DBusMessage *method_call, const char *name
 }
 
 E_Notification_Return_Get_Server_Information *
-unmarshal_get_server_information_return(DBusMessage *msg)
+e_notify_unmarshal_get_server_information_return(DBusMessage *msg)
 {
   E_Notification_Return_Get_Server_Information *info;
   DBusError err;
@@ -195,7 +185,7 @@ unmarshal_get_server_information_return(DBusMessage *msg)
 
 
 DBusMessage *
-marshal_close_notification(dbus_uint32_t id)
+e_notify_marshal_close_notification(dbus_uint32_t id)
 {
   DBusMessage *msg;
 
@@ -205,7 +195,7 @@ marshal_close_notification(dbus_uint32_t id)
 }
 
 dbus_uint32_t
-unmarshal_close_notification(DBusMessage *msg)
+e_notify_unmarshal_close_notification(DBusMessage *msg)
 {
   dbus_uint32_t id;
   DBusError err;
@@ -221,7 +211,7 @@ unmarshal_close_notification(DBusMessage *msg)
 }
 
 DBusMessage *
-marshal_notification_closed_signal(dbus_uint32_t id, dbus_uint32_t reason)
+e_notify_marshal_notification_closed_signal(dbus_uint32_t id, dbus_uint32_t reason)
 {
   DBusMessage *msg;
   msg = dbus_message_new_signal(E_NOTIFICATION_PATH, E_NOTIFICATION_INTERFACE, "NotificationClosed");
@@ -230,7 +220,7 @@ marshal_notification_closed_signal(dbus_uint32_t id, dbus_uint32_t reason)
 }
 
 E_Notification_Event_Notification_Closed *
-unmarshal_notification_closed_signal(DBusMessage *msg)
+e_notify_unmarshal_notification_closed_signal(DBusMessage *msg)
 {
   E_Notification_Event_Notification_Closed *ev;
   DBusError err;
@@ -247,7 +237,7 @@ unmarshal_notification_closed_signal(DBusMessage *msg)
 }
 
 DBusMessage *
-marshal_action_invoked_signal(dbus_uint32_t id, const char *action_id)
+e_notify_marshal_action_invoked_signal(dbus_uint32_t id, const char *action_id)
 {
   DBusMessage *msg;
   msg = dbus_message_new_signal(E_NOTIFICATION_PATH, E_NOTIFICATION_INTERFACE, "ActionInvoked");
@@ -256,7 +246,7 @@ marshal_action_invoked_signal(dbus_uint32_t id, const char *action_id)
 }
 
 E_Notification_Event_Action_Invoked *
-unmarshal_action_invoked_signal(DBusMessage *msg)
+e_notify_unmarshal_action_invoked_signal(DBusMessage *msg)
 {
   E_Notification_Event_Action_Invoked *ev;
   DBusError err;
@@ -274,7 +264,7 @@ unmarshal_action_invoked_signal(DBusMessage *msg)
 }
 
 DBusMessage *
-marshal_notify(E_Notification *n)
+e_notify_marshal_notify(E_Notification *n)
 {
   DBusMessage *msg;
   DBusMessageIter iter, sub;
@@ -306,21 +296,21 @@ marshal_notify(E_Notification *n)
   /* hints */
   dbus_message_iter_open_container(&iter, DBUS_TYPE_ARRAY, "{sv}", &sub);
   if (n->hints.urgency) /* we only need to send this if its non-zero*/
-    marshal_dict_byte(&sub, "urgency", n->hints.urgency);
+    e_notify_marshal_dict_byte(&sub, "urgency", n->hints.urgency);
   if (n->hints.category)
-    marshal_dict_string(&sub, "category", n->hints.category);
+    e_notify_marshal_dict_string(&sub, "category", n->hints.category);
   if (n->hints.desktop)
-    marshal_dict_string(&sub, "desktop_entry", n->hints.desktop);
+    e_notify_marshal_dict_string(&sub, "desktop_entry", n->hints.desktop);
   if (n->hints.image_data)
-    marshal_dict_variant(&sub, "image_data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(marshal_hint_image), n->hints.image_data);
+    e_notify_marshal_dict_variant(&sub, "image_data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(e_notify_marshal_hint_image), n->hints.image_data);
   if (n->hints.sound_file)
-    marshal_dict_string(&sub, "sound_file", n->hints.sound_file);
+    e_notify_marshal_dict_string(&sub, "sound_file", n->hints.sound_file);
   if (n->hints.suppress_sound) /* we only need to send this if its true */
-    marshal_dict_byte(&sub, "suppress_sound", n->hints.suppress_sound);
+    e_notify_marshal_dict_byte(&sub, "suppress_sound", n->hints.suppress_sound);
   if (n->hints.x > -1 && n->hints.y > -1)
   {
-    marshal_dict_int(&sub, "x", n->hints.x);
-    marshal_dict_int(&sub, "y", n->hints.y);
+    e_notify_marshal_dict_int(&sub, "x", n->hints.x);
+    e_notify_marshal_dict_int(&sub, "y", n->hints.y);
   }
 
   dbus_message_iter_close_container(&iter, &sub);
@@ -329,7 +319,7 @@ marshal_notify(E_Notification *n)
 }
 
 E_Notification *
-unmarshal_notify(DBusMessage *msg)
+e_notify_unmarshal_notify(DBusMessage *msg)
 {
   E_Notification *n;
   const char *s_val;
@@ -362,10 +352,10 @@ unmarshal_notify(DBusMessage *msg)
   e_notification_body_set(n, s_val); 
   dbus_message_iter_next(&iter);
 
-  unmarshal_notify_actions(n, &iter);
+  e_notify_unmarshal_notify_actions(n, &iter);
   dbus_message_iter_next(&iter);
 
-  unmarshal_notify_hints(n, &iter);
+  e_notify_unmarshal_notify_hints(n, &iter);
   dbus_message_iter_next(&iter);
 
   dbus_message_iter_get_basic(&iter, &i_val);
@@ -375,7 +365,7 @@ unmarshal_notify(DBusMessage *msg)
 }
 
 DBusMessage *
-marshal_notify_return(DBusMessage *method_call, dbus_uint32_t notification_id)
+e_notify_marshal_notify_return(DBusMessage *method_call, dbus_uint32_t notification_id)
 {
   DBusMessage *msg;
   msg = dbus_message_new_method_return(method_call);
@@ -384,7 +374,7 @@ marshal_notify_return(DBusMessage *method_call, dbus_uint32_t notification_id)
 }
 
 E_Notification_Return_Notify *
-unmarshal_notify_return(DBusMessage *msg)
+e_notify_unmarshal_notify_return(DBusMessage *msg)
 {
   E_Notification_Return_Notify *ret;
   DBusError err;
@@ -400,7 +390,7 @@ unmarshal_notify_return(DBusMessage *msg)
 }
 
 Ecore_List *
-unmarshal_notify_actions(E_Notification *n, DBusMessageIter *iter)
+e_notify_unmarshal_notify_actions(E_Notification *n, DBusMessageIter *iter)
 {
   DBusMessageIter arr;
   const char *id, *name;
@@ -416,7 +406,7 @@ unmarshal_notify_actions(E_Notification *n, DBusMessageIter *iter)
 }
 
 Ecore_List *
-unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
+e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
 {
   DBusMessageIter arr;
   const char *key;
@@ -476,7 +466,7 @@ unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
         y_set = 1;
       }
       else if (!strcmp(key, "image_data"))
-        n->hints.image_data = unmarshal_hint_image(&variant);
+        n->hints.image_data = e_notify_unmarshal_hint_image(&variant);
     }
     dbus_message_iter_next(&arr);
   }
@@ -486,7 +476,7 @@ unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
 }
 
 void
-marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img)
+e_notify_marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img)
 {
   DBusMessageIter sub, arr;
   int data_len = 0; 
@@ -505,7 +495,7 @@ marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img)
 }
 
 E_Notification_Image *
-unmarshal_hint_image(DBusMessageIter *iter)
+e_notify_unmarshal_hint_image(DBusMessageIter *iter)
 {
   DBusMessageIter sub, arr;
   dbus_int32_t i_val;
@@ -547,96 +537,12 @@ unmarshal_hint_image(DBusMessageIter *iter)
   return img;
 }
 
-/**** client api ****/
-
-static void
-cb_notify(void *data, DBusMessage *msg, DBusError *err)
-{
-  E_DBus_Callback *cb;
-  E_Notification_Return_Notify *ret;
-
-  if (dbus_error_is_set(err))
-  {
-    fprintf (stderr, "an error occurred: %s\n", err->message);
-    return;
-  }
-  cb = data;
-  if (!cb) return;
-  ret = unmarshal_notify_return(msg);
-  e_dbus_callback_call(cb, ret);
-}
-
-void
-e_notification_send(E_Notification_Context *ctx, E_Notification *n, E_DBus_Callback_Func func, void *data)
-{
-  DBusMessage *msg;
-  E_DBus_Callback *cb;
-
-  cb = e_dbus_callback_new(func, data);
-  msg = marshal_notify(n);
-  printf("msg: %p\n", msg);
-  e_dbus_message_send(ctx->conn, msg, cb_notify, -1, cb);
-}
-
-static void
-cb_get_capabilities(void *data, DBusMessage *msg, DBusError *err)
-{
-  E_DBus_Callback *cb;
-  E_Notification_Return_Get_Capabilities *ret;
-  if (dbus_error_is_set(err))
-  {
-    fprintf (stderr, "an error occurred: %s\n", err->message);
-    return;
-  }
-  cb = data;
-  if (!cb) return;
-  ret = unmarshal_get_capabilities_return(msg);
-  e_dbus_callback_call(cb, ret);
-}
-
-void
-e_notification_get_capabilities(E_Notification_Context *ctx, E_DBus_Callback_Func func, void *data)
-{
-  DBusMessage *msg;
-  E_DBus_Callback *cb;
-
-  cb = e_dbus_callback_new(func, data);
-  msg = marshal_get_capabilities();
-  e_dbus_message_send(ctx->conn, msg, cb_notify, -1, cb);
-}
-
-static void
-cb_get_server_information(void *data, DBusMessage *msg, DBusError *err)
-{
-  E_DBus_Callback *cb;
-  E_Notification_Return_Get_Server_Information *ret;
-  if (dbus_error_is_set(err))
-  {
-    fprintf (stderr, "an error occurred: %s\n", err->message);
-    return;
-  }
-  cb = data;
-  ret = unmarshal_get_server_information_return(msg);
-  e_dbus_callback_call(cb, ret);
-}
-
-void
-e_notification_get_server_information(E_Notification_Context *ctx, E_DBus_Callback_Func func, void *data)
-{
-  DBusMessage *msg;
-  E_DBus_Callback *cb;
-
-  cb = e_dbus_callback_new(func, data);
-  msg = marshal_get_server_information();
-  e_dbus_message_send(ctx->conn, msg, cb_notify, -1, cb);
-}
-
 /**** daemon api ****/
 void
 e_notification_signal_notification_closed(E_Notification_Daemon *daemon, unsigned int id, E_Notification_Closed_Reason reason)
 {
   e_dbus_message_send(daemon->conn, 
-                      marshal_notification_closed_signal(id, reason),
+                      e_notify_marshal_notification_closed_signal(id, reason),
                       NULL, -1, NULL);
 }
 
@@ -644,6 +550,6 @@ void
 e_notification_signal_action_invoked(E_Notification_Daemon *daemon, unsigned int notification_id, const char *action_id)
 {
   e_dbus_message_send(daemon->conn, 
-                      marshal_action_invoked_signal(notification_id, action_id),
+                      e_notify_marshal_action_invoked_signal(notification_id, action_id),
                       NULL, -1, NULL);
 }

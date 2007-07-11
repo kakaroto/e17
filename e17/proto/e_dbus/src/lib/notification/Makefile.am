@@ -8,7 +8,8 @@ include_HEADERS = E_Notify.h
 libenotify_la_SOURCES = \
 E_Notify.h \
 notification.c \
-marshal.c 
+marshal.c \
+client.c
 
 libenotify_la_LIBADD = \
 @EDBUS_LIBS@ \

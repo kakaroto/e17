@@ -251,6 +251,6 @@ E_Notification_View *e_notification_view_add(E_Notification_Daemon *d, E_Notific
 void e_notification_view_close(E_Notification_View *nv);
 Evas_Object * e_notification_view_icon_get(Evas *evas, E_Notification *n);
 
-void e_notification_send(E_Notification_Context *ctx, E_Notification *n, E_DBus_Callback_Func func, void *data);
+void e_notification_send(E_Notification *n, E_DBus_Callback_Func func, void *data);
 
 #endif
