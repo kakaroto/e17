@@ -380,11 +380,11 @@ EobjUnmap(EObj * eo)
    if (!eo->shown)
       return;
 
-   EUnmapWindow(eo->win);
 #if USE_COMPOSITE
    if (eo->cmhook)
       ECompMgrWinUnmap(eo);
 #endif
+   EUnmapWindow(eo->win);
    eo->shown = 0;
 }
 

@@ -114,6 +114,7 @@ CoordsShow(EWin * ewin)
    cx -= x;
    cy -= y;
 #endif
+   md = cw != EobjGetW(eo) || ch != EobjGetH(eo);	/* md is change size flag */
    EobjMoveResize(eo, cx, cy, cw, ch);
 
    if (!eo->shown)
@@ -126,6 +127,9 @@ CoordsShow(EWin * ewin)
 
    ITApply(eo->win, ic, NULL, cw, ch, STATE_NORMAL, 1, 0, ST_SOLID,
 	   tc, NULL, s);
+
+   if (md)			/* Assuming that shape change only happens when size changes too */
+      EobjShapeUpdate(eo, 0);
 
    EFlush();
 }
