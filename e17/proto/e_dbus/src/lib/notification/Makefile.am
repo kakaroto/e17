@@ -3,10 +3,12 @@ INCLUDES =  \
 @EDBUS_CFLAGS@
 
 lib_LTLIBRARIES = libenotify.la
-include_HEADERS = E_Notify.h
+include_HEADERS = E_Notify.h E_Notification_Daemon.h
 
 libenotify_la_SOURCES = \
 E_Notify.h \
+E_Notification_Daemon.h \
+e_notify_private.h \
 notification.c \
 marshal.c \
 client.c \
