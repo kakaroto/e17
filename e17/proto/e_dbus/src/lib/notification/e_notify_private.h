@@ -15,10 +15,11 @@ void e_notify_marshal_dict_string(DBusMessageIter *iter, const char *key, const 
 void e_notify_marshal_dict_byte(DBusMessageIter *iter, const char *key, char value);
 void e_notify_marshal_dict_int(DBusMessageIter *iter, const char *key, int value);
 
+void e_notify_marshal_string_array(DBusMessageIter *iter, const char **strings);
 void e_notify_marshal_string_list_as_array(DBusMessageIter *iter, Ecore_List *strings);
 Ecore_List * e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter, DBusError *err);
 DBusMessage * e_notify_marshal_get_capabilities();
-DBusMessage * e_notify_marshal_get_capabilities_return(DBusMessage *method_call, Ecore_List *capabilities);
+DBusMessage * e_notify_marshal_get_capabilities_return(DBusMessage *method_call, const char **capabilities);
 E_Notification_Return_Get_Capabilities * e_notify_unmarshal_get_capabilities_return(DBusMessage *msg, DBusError *err);
 DBusMessage * e_notify_marshal_get_server_information();
 DBusMessage * e_notify_marshal_get_server_information_return(DBusMessage *method_call, const char *name, const char *vendor, const char *version);

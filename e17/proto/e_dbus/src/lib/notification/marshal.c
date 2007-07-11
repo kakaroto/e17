@@ -60,6 +60,20 @@ e_notify_marshal_dict_int(DBusMessageIter *iter, const char *key, int value)
 }
 
 void
+e_notify_marshal_string_array(DBusMessageIter *iter, const char **strings)
+{
+  const char **str;
+  DBusMessageIter arr;
+
+  dbus_message_iter_open_container(iter, DBUS_TYPE_ARRAY, "s", &arr);
+
+  for (str = strings; *str; str++)
+    dbus_message_iter_append_basic(&arr, DBUS_TYPE_STRING, str);
+
+  dbus_message_iter_close_container(iter, &arr);
+}
+
+void
 e_notify_marshal_string_list_as_array(DBusMessageIter *iter, Ecore_List *strings)
 {
   const char *str;
@@ -113,14 +127,14 @@ e_notify_marshal_get_capabilities()
 }
 
 DBusMessage *
-e_notify_marshal_get_capabilities_return(DBusMessage *method_call, Ecore_List *capabilities)
+e_notify_marshal_get_capabilities_return(DBusMessage *method_call, const char **capabilities)
 {
   DBusMessage *msg;
   DBusMessageIter iter;
 
   msg = dbus_message_new_method_return(method_call);
   dbus_message_iter_init_append(msg, &iter);
-  e_notify_marshal_string_list_as_array(&iter, capabilities);
+  e_notify_marshal_string_array(&iter, capabilities);
 
   return msg;
 }
