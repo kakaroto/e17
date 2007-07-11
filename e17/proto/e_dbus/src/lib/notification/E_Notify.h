@@ -93,7 +93,7 @@ struct E_Notification
   char *app_icon;
   char *summary;
   char *body;
-  unsigned int expire_timeout;
+  int expire_timeout;
 
   Ecore_List *actions;
 
@@ -196,11 +196,12 @@ void e_notification_ref(E_Notification *n);
 void e_notification_unref(E_Notification *n);
 void e_notification_free(E_Notification *n);
 
-E_Notification *e_notification_new2(const char *app_name,
-                                    unsigned int replaces_id,
-                                    const char *app_icon, const char *summary,
-                                    const char *body,
-                                    unsigned int expire_timeout);
+E_Notification *e_notification_full_new(const char *app_name,
+                                        unsigned int replaces_id,
+                                        const char *app_icon,
+                                        const char *summary,
+                                        const char *body,
+                                        int expire_timeout);
 
 /* notification mutators */
 void e_notification_app_name_set(E_Notification *n, const char *app_name);
@@ -250,5 +251,6 @@ E_Notification_View *e_notification_view_add(E_Notification_Daemon *d, E_Notific
 void e_notification_view_close(E_Notification_View *nv);
 Evas_Object * e_notification_view_icon_get(Evas *evas, E_Notification *n);
 
+void e_notification_send(E_Notification_Context *ctx, E_Notification *n, E_DBus_Callback_Func func, void *data);
 
 #endif

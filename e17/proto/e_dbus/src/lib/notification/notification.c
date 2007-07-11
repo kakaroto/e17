@@ -12,7 +12,7 @@ static void e_notification_action_free(E_Notification_Action *act);
 /* (con|de)structor */
 
 E_Notification *
-e_notification_full_new(const char *app_name, unsigned int replaces_id, const char *app_icon, const char *summary, const char *body, unsigned int expire_timeout)
+e_notification_full_new(const char *app_name, unsigned int replaces_id, const char *app_icon, const char *summary, const char *body, int expire_timeout)
 {
   E_Notification *n;
 
@@ -24,6 +24,7 @@ e_notification_full_new(const char *app_name, unsigned int replaces_id, const ch
   if (app_icon) n->app_icon = strdup(app_icon); 
   if (summary) n->summary = strdup(summary); 
   if (body) n->body = strdup(body);
+  n->expire_timeout = expire_timeout;
 
 
   return n;

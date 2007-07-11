@@ -104,7 +104,7 @@ unmarshal_string_array_as_list(DBusMessageIter *iter)
   while(dbus_message_iter_has_next(&arr))
   {
     const char *str;
-    dbus_message_get_basic(&arr, &str);
+    dbus_message_iter_get_basic(&arr, &str);
     ecore_list_append(strings, strdup(str)); //XXX use ecore_string_instance?
     dbus_message_iter_next(&arr);
   }
@@ -313,7 +313,6 @@ marshal_notify(E_Notification *n)
     marshal_dict_string(&sub, "desktop_entry", n->hints.desktop);
   if (n->hints.image_data)
     marshal_dict_variant(&sub, "image_data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(marshal_hint_image), n->hints.image_data);
-    //marshal_hint_image(&sub, "image_data", n->hints.image_data);
   if (n->hints.sound_file)
     marshal_dict_string(&sub, "sound_file", n->hints.sound_file);
   if (n->hints.suppress_sound) /* we only need to send this if its true */
@@ -325,6 +324,7 @@ marshal_notify(E_Notification *n)
   }
 
   dbus_message_iter_close_container(&iter, &sub);
+  dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, &(n->expire_timeout));
   return msg;
 }
 
@@ -343,7 +343,7 @@ unmarshal_notify(DBusMessage *msg)
   dbus_message_iter_init(msg, &iter);
 
   dbus_message_iter_get_basic(&iter, &s_val);
-  e_notification_name_set(n, s_val); 
+  e_notification_app_name_set(n, s_val); 
   dbus_message_iter_next(&iter);
 
   dbus_message_iter_get_basic(&iter, &u_val);
@@ -369,7 +369,7 @@ unmarshal_notify(DBusMessage *msg)
   dbus_message_iter_next(&iter);
 
   dbus_message_iter_get_basic(&iter, &i_val);
-  e_notification_expire_timeout_set(n, i_val);
+  e_notification_timeout_set(n, i_val);
   
   return n;
 }
@@ -379,7 +379,7 @@ marshal_notify_return(DBusMessage *method_call, dbus_uint32_t notification_id)
 {
   DBusMessage *msg;
   msg = dbus_message_new_method_return(method_call);
-  dbus_message_get_append_args(msg, DBUS_TYPE_UINT32, &notification_id, DBUS_TYPE_INVALID);
+  dbus_message_append_args(msg, DBUS_TYPE_UINT32, &notification_id, DBUS_TYPE_INVALID);
   return msg;
 }
 
@@ -404,7 +404,7 @@ unmarshal_notify_actions(E_Notification *n, DBusMessageIter *iter)
 {
   DBusMessageIter arr;
   const char *id, *name;
-  dbus_message_recurse(iter, &arr);
+  dbus_message_iter_recurse(iter, &arr);
   while (dbus_message_iter_has_next(&arr))
   {
     dbus_message_iter_get_basic(&arr, &id);
@@ -422,7 +422,7 @@ unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
   const char *key;
   int x_set = 0, y_set = 0;
   int x, y;
-  dbus_message_recurse(iter, &arr);
+  dbus_message_iter_recurse(iter, &arr);
   while (dbus_message_iter_has_next(&arr))
   {
     DBusMessageIter dict;
@@ -437,7 +437,7 @@ unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
 
       dbus_message_iter_get_basic(&dict, &key);
       dbus_message_iter_next(&dict);
-      dbus_message_recurse(&dict, &variant);
+      dbus_message_iter_recurse(&dict, &variant);
       switch(dbus_message_iter_get_element_type(&variant))
       {
         case DBUS_TYPE_STRING:
@@ -460,7 +460,7 @@ unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
       else if (!strcmp(key, "category"))
         e_notification_hint_category_set(n, s_val);
       else if (!strcmp(key, "desktop-entry"))
-        e_notification_hint_desktop_entry_set(n, s_val);
+        e_notification_hint_desktop_set(n, s_val);
       else if (!strcmp(key, "sound-file"))
         e_notification_hint_sound_file_set(n, s_val);
       else if (!strcmp(key, "suppress-sound"))
@@ -514,8 +514,13 @@ unmarshal_hint_image(DBusMessageIter *iter)
   int array_len;
   E_Notification_Image *img;
   char *sig;
+  int sig_matches;
 
-  if (!dbus_message_iter_has_signature(iter, "(iiibiiay)")) return NULL;
+  sig = dbus_message_iter_get_signature(iter);
+  sig_matches = strcmp(sig, "(iiibiiay)");
+  dbus_free(sig);
+  if (!sig_matches) return NULL;
+
 
   img = e_notification_image_new();
   if (!img) return NULL;
@@ -549,7 +554,14 @@ cb_notify(void *data, DBusMessage *msg, DBusError *err)
 {
   E_DBus_Callback *cb;
   E_Notification_Return_Notify *ret;
+
+  if (dbus_error_is_set(err))
+  {
+    fprintf (stderr, "an error occurred: %s\n", err->message);
+    return;
+  }
   cb = data;
+  if (!cb) return;
   ret = unmarshal_notify_return(msg);
   e_dbus_callback_call(cb, ret);
 }
@@ -562,6 +574,7 @@ e_notification_send(E_Notification_Context *ctx, E_Notification *n, E_DBus_Callb
 
   cb = e_dbus_callback_new(func, data);
   msg = marshal_notify(n);
+  printf("msg: %p\n", msg);
   e_dbus_message_send(ctx->conn, msg, cb_notify, -1, cb);
 }
 
@@ -570,7 +583,13 @@ cb_get_capabilities(void *data, DBusMessage *msg, DBusError *err)
 {
   E_DBus_Callback *cb;
   E_Notification_Return_Get_Capabilities *ret;
+  if (dbus_error_is_set(err))
+  {
+    fprintf (stderr, "an error occurred: %s\n", err->message);
+    return;
+  }
   cb = data;
+  if (!cb) return;
   ret = unmarshal_get_capabilities_return(msg);
   e_dbus_callback_call(cb, ret);
 }
@@ -591,6 +610,11 @@ cb_get_server_information(void *data, DBusMessage *msg, DBusError *err)
 {
   E_DBus_Callback *cb;
   E_Notification_Return_Get_Server_Information *ret;
+  if (dbus_error_is_set(err))
+  {
+    fprintf (stderr, "an error occurred: %s\n", err->message);
+    return;
+  }
   cb = data;
   ret = unmarshal_get_server_information_return(msg);
   e_dbus_callback_call(cb, ret);
@@ -620,6 +644,6 @@ void
 e_notification_signal_action_invoked(E_Notification_Daemon *daemon, unsigned int notification_id, const char *action_id)
 {
   e_dbus_message_send(daemon->conn, 
-                      marshal_notification_action_invoked_signal(notification_id, action_id),
+                      marshal_action_invoked_signal(notification_id, action_id),
                       NULL, -1, NULL);
 }
