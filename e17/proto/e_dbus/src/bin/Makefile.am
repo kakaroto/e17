@@ -14,7 +14,8 @@ bin_PROGRAMS = e_dbus_test \
 							 e_dbus_test_client \
 							 e_dbus_hal \
 							 e_dbus_nm \
-							 e_dbus_notify
+							 e_dbus_notify \
+							 e_dbus_notification_daemon
 
 e_dbus_test_SOURCES = \
 test.c
@@ -61,3 +62,9 @@ e_dbus_notify_SOURCES = \
 
 e_dbus_notify_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la $(LIBS) 
 e_dbus_notify_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
+
+e_dbus_notification_daemon_SOURCES = \
+	notification_daemon.c
+
+e_dbus_notification_daemon_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la $(LIBS) 
+e_dbus_notification_daemon_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
