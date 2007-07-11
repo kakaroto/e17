@@ -1154,7 +1154,7 @@ ECompMgrWinSetShape(EObj * eo)
      {
 	cw->shape = ERegionCreateFromWindow(EobjGetXwin(eo));
 
-	if (WinIsShaped(EobjGetWin(eo)) > 0)
+	if (WinIsShaped(EobjGetWin(eo)))
 	  {
 	     /* Intersect with window size to get effective bounding region */
 	     ERegionSetRect(rgn_tmp, 0, 0, EobjGetW(eo), EobjGetH(eo));
