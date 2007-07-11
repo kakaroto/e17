@@ -1534,6 +1534,7 @@ static char         tmp_root_hint;
 static int          tmp_bg_timeout;
 
 static void         BG_RedrawView(void);
+static void         BGSettingsGoTo(Background * bg);
 
 static void
 CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
@@ -1575,7 +1576,8 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 
 /* Draw the background preview image */
 static void
-CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
+CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val __UNUSED__,
+			    void *data)
 {
    Background         *bg;
    Pixmap              pmap;
@@ -1592,24 +1594,21 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
    win = DialogItemAreaGetWindow(di);
    DialogItemAreaGetSize(di, &w, &h);
 
-   if (val == 1)
-     {
-	pmap = EGetWindowBackgroundPixmap(win);
-	fbg = (tmp_bg_image) ? BackgroundGetBgFile(tmp_bg) : NULL;
-	ffg = (tmp_bg_image) ? BackgroundGetFgFile(tmp_bg) : NULL;
-	ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
-	bg = BackgroundCreate("TEMP", &xclr, fbg, tmp_bg_tile,
-			      tmp_bg_keep_aspect, tmp_bg_xjust,
-			      1024 - tmp_bg_yjust, tmp_bg_xperc,
-			      1024 - tmp_bg_yperc, ffg,
-			      tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
-			      tmp_bg->top.yjust, tmp_bg->top.xperc,
-			      tmp_bg->top.yperc);
+   pmap = EGetWindowBackgroundPixmap(win);
+   fbg = (tmp_bg_image) ? BackgroundGetBgFile(tmp_bg) : NULL;
+   ffg = (tmp_bg_image) ? BackgroundGetFgFile(tmp_bg) : NULL;
+   ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
+   bg = BackgroundCreate("TEMP", &xclr, fbg, tmp_bg_tile,
+			 tmp_bg_keep_aspect, tmp_bg_xjust,
+			 1024 - tmp_bg_yjust, tmp_bg_xperc,
+			 1024 - tmp_bg_yperc, ffg,
+			 tmp_bg->top.keep_aspect, tmp_bg->top.xjust,
+			 tmp_bg->top.yjust, tmp_bg->top.xperc,
+			 tmp_bg->top.yperc);
 
-	BackgroundApplyPmap(bg, win, pmap, w, h);
-	BackgroundDestroy(bg);
-	EClearWindow(win);
-     }
+   BackgroundApplyPmap(bg, win, pmap, w, h);
+   BackgroundDestroy(bg);
+   EClearWindow(win);
 }
 
 /* Update tmp vars according to the current tmp_bg */
@@ -1638,7 +1637,8 @@ BG_DialogSetFileName(DItem * di)
    Esnprintf(s, sizeof(s),
 	     _("Background definition information:\nName: %s\nFile: %s\n"),
 	     BackgroundGetName(tmp_bg), (stmp) ? stmp : _("-NONE-"));
-   _EFREE(stmp);
+   if (stmp)
+      Efree(stmp);
    DialogItemSetText(di, s);
 }
 
@@ -1659,16 +1659,19 @@ BgDialogSetNewCurrent(Background * bg)
    BG_DialogSetFileName(bg_filename);
    DialogDrawItems(bg_sel_dialog, bg_filename, 0, 0, 99999, 99999);
 
-   DialogItemSliderSetVal(tmp_w[0], tmp_bg_r);
-   DialogItemCheckButtonSetState(tmp_w[1], tmp_bg_image);
-   DialogItemSliderSetVal(tmp_w[2], tmp_bg_g);
-   DialogItemCheckButtonSetState(tmp_w[3], tmp_bg_keep_aspect);
-   DialogItemSliderSetVal(tmp_w[4], tmp_bg_b);
-   DialogItemCheckButtonSetState(tmp_w[5], tmp_bg_tile);
+   DialogItemCheckButtonSetState(tmp_w[0], tmp_bg_image);
+   DialogItemCheckButtonSetState(tmp_w[1], tmp_bg_keep_aspect);
+   DialogItemCheckButtonSetState(tmp_w[2], tmp_bg_tile);
+   DialogItemSliderSetVal(tmp_w[3], tmp_bg_r);
+   DialogItemSliderSetVal(tmp_w[4], tmp_bg_g);
+   DialogItemSliderSetVal(tmp_w[5], tmp_bg_b);
    DialogItemSliderSetVal(tmp_w[6], tmp_bg_xjust);
    DialogItemSliderSetVal(tmp_w[7], tmp_bg_yjust);
    DialogItemSliderSetVal(tmp_w[8], tmp_bg_yperc);
    DialogItemSliderSetVal(tmp_w[9], tmp_bg_xperc);
+
+   /* Redraw mini BG display */
+   CB_DesktopMiniDisplayRedraw(NULL, 0, bg_mini_disp);
 
    /* Redraw scrolling BG list */
    BG_RedrawView();
@@ -1758,6 +1761,7 @@ CB_ConfigureFrontBG(Dialog * d __UNUSED__, int val __UNUSED__,
 		    void *data __UNUSED__)
 {
    ecore_list_prepend(bg_list, ecore_list_remove_node(bg_list, tmp_bg));
+   BGSettingsGoTo(tmp_bg);
    BG_RedrawView();
    autosave();
 }
@@ -1873,16 +1877,31 @@ CB_BGAreaEvent(DItem * di __UNUSED__, int val __UNUSED__, void *data)
    switch (ev->type)
      {
      case ButtonPress:
-	num = ecore_list_nodes(bg_list);
-	x = (num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num) +
-	   ev->xbutton.x;
-	bg = (Background *) ecore_list_goto_index(bg_list, x / (64 + 8));
-	if (!bg || bg == DeskBackgroundGet(DesksGetCurrent()))
-	   break;
-	BgDialogSetNewCurrent(bg);
-	DeskBackgroundSet(DesksGetCurrent(), bg);
-	autosave();
-	break;
+	switch (ev->xbutton.button)
+	  {
+	  case 1:
+	     num = ecore_list_nodes(bg_list);
+	     x = (num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num) +
+		ev->xbutton.x;
+	     bg = (Background *) ecore_list_goto_index(bg_list, x / (64 + 8));
+	     if (!bg || bg == DeskBackgroundGet(DesksGetCurrent()))
+		break;
+	     BgDialogSetNewCurrent(bg);
+	     DeskBackgroundSet(DesksGetCurrent(), bg);
+	     autosave();
+	     break;
+	  case 4:
+	     tmp_bg_sel_sliderval += 4;
+	     goto do_slide;
+	  case 5:
+	     tmp_bg_sel_sliderval -= 4;
+	     goto do_slide;
+	   do_slide:
+	     DialogItemSliderSetVal(bg_sel_slider, tmp_bg_sel_sliderval);
+	     CB_BGAreaSlide(NULL, 0, NULL);
+	     DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
+	     break;
+	  }
      }
 }
 
@@ -1945,8 +1964,10 @@ CB_BGNext(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static int
-BG_SortFileCompare(Background * bg1, Background * bg2)
+BG_SortFileCompare(void *_bg1, void *_bg2)
 {
+   Background         *bg1 = (Background *) _bg1;
+   Background         *bg2 = (Background *) _bg2;
    const char         *name1, *name2;
 
    /* return < 0 is b1 <  b2 */
@@ -1957,13 +1978,11 @@ BG_SortFileCompare(Background * bg1, Background * bg2)
    name2 = BackgroundGetBgFile(bg2);
    if (name1 && name2)
       return strcmp(name1, name2);
-
-   name1 = BackgroundGetFgFile(bg1);
-   name2 = BackgroundGetFgFile(bg2);
-   if (name1 && name2)
-      return strcmp(name1, name2);
-
-   return 0;
+   if (name1)
+      return 1;
+   if (name2)
+      return -1;
+   return (bg1 < bg2) ? -1 : 1;
 }
 
 static void
@@ -1979,10 +1998,9 @@ CB_BGSortFile(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
    /* remove them all from the list */
    for (i = 0; i < num; i++)
       ecore_list_remove_node(bg_list, bglist[i]);
-   Quicksort((void **)bglist, 0, num - 1,
-	     (int (*)(void *d1, void *d2))BG_SortFileCompare);
+   Quicksort((void **)bglist, 0, num - 2, BG_SortFileCompare);
    for (i = 0; i < num; i++)
-      ecore_list_prepend(bg_list, bglist[i]);
+      ecore_list_append(bg_list, bglist[i]);
    Efree(bglist);
 
    BGSettingsGoTo(tmp_bg);
@@ -2033,6 +2051,7 @@ CB_BGSortAttrib(Dialog * d __UNUSED__, int val __UNUSED__,
    autosave();
 }
 
+#if 0				/* Doesn't do anything useful */
 static void
 CB_BGSortContent(Dialog * d __UNUSED__, int val __UNUSED__,
 		 void *data __UNUSED__)
@@ -2053,13 +2072,16 @@ CB_BGSortContent(Dialog * d __UNUSED__, int val __UNUSED__,
 
    autosave();
 }
+#endif
 
+#if 0				/* Remove? */
 static void
 CB_DesktopMiniDisplayAreaInit(DItem * di, int val __UNUSED__,
 			      void *data __UNUSED__)
 {
    CB_DesktopMiniDisplayRedraw(DialogItemGetDialog(di), 1, di);
 }
+#endif
 
 static void
 CB_InitView(DItem * di __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
@@ -2072,9 +2094,8 @@ static void
 _DlgFillBackground(Dialog * d, DItem * table, void *data)
 {
    Background         *bg = (Background *) data;
-   DItem              *di, *table2, *area, *slider, *slider2, *label;
-   DItem              *w1, *w2, *w3, *w4, *w5, *w6;
-   int                 num;
+   DItem              *di, *table2, *table3, *area, *label;
+   int                 i, num;
    char                s[1024];
 
    ScanBackgroundMenu();
@@ -2094,15 +2115,33 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
 
    bg_sel_dialog = d;
 
-   DialogItemTableSetOptions(table, 3, 0, 0, 0);
-
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetText(di, _("BG Colour\n"));
-
-   di = DialogAddItem(table, DITEM_NONE);
+   DialogItemTableSetOptions(table, 1, 0, 0, 0);
 
    table2 = DialogAddItem(table, DITEM_TABLE);
-   DialogItemTableSetOptions(table2, 4, 0, 0, 0);
+   DialogItemTableSetOptions(table2, 2, 0, 1, 0);
+
+   di = bg_filename = DialogAddItem(table2, DITEM_TEXT);
+   DialogItemSetFill(di, 1, 0);
+   BG_DialogSetFileName(bg_filename);
+
+   table3 = DialogAddItem(table2, DITEM_TABLE);
+
+   di = tmp_w[0] = DialogAddItem(table3, DITEM_CHECKBUTTON);
+   DialogItemSetText(di, _("Use background image"));
+   DialogItemCheckButtonSetPtr(di, &tmp_bg_image);
+
+   di = tmp_w[1] = DialogAddItem(table3, DITEM_CHECKBUTTON);
+   DialogItemSetText(di, _("Keep aspect on scale"));
+   DialogItemCheckButtonSetPtr(di, &tmp_bg_keep_aspect);
+
+   di = tmp_w[2] = DialogAddItem(table3, DITEM_CHECKBUTTON);
+   DialogItemSetText(di, _("Tile image across background"));
+   DialogItemCheckButtonSetPtr(di, &tmp_bg_tile);
+
+   table2 = DialogAddItem(table, DITEM_TABLE);
+   DialogItemTableSetOptions(table2, 4, 0, 1, 0);
+   DialogItemSetFill(table2, 0, 0);
+   DialogItemSetAlign(table2, 512, 0);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetText(di, _("Move to Front\n"));
@@ -2116,84 +2155,38 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetText(di, _("Unlist\n"));
    DialogItemSetCallback(di, CB_ConfigureDelBG, 0, NULL);
+   DialogBindKey(d, "D", CB_ConfigureDelBG, 0, NULL);
 
    di = DialogAddItem(table2, DITEM_BUTTON);
    DialogItemSetText(di, _("Delete File\n"));
-   DialogItemSetCallback(di, CB_ConfigureDelBG, 0, NULL);
-   DialogBindKey(d, "D", CB_ConfigureDelBG, 0, NULL);
+   DialogItemSetCallback(di, CB_ConfigureDelBG, 1, NULL);
    DialogBindKey(d, "Delete", CB_ConfigureDelBG, 1, NULL);
 
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetAlign(di, 1024, 512);
-   DialogItemSetText(di, _("Red:\n"));
+   table2 = DialogAddItem(table, DITEM_TABLE);
+   DialogItemTableSetOptions(table2, 3, 0, 1, 0);
 
-   di = w1 = tmp_w[0] = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSliderSetBounds(di, 0, 255);
-   DialogItemSliderSetUnits(di, 1);
-   DialogItemSliderSetJump(di, 16);
-   DialogItemSliderSetValPtr(di, &tmp_bg_r);
-
-   di = w2 = tmp_w[1] = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetText(di, _("Use background image"));
-   DialogItemCheckButtonSetPtr(di, &tmp_bg_image);
-
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetAlign(di, 1024, 512);
-   DialogItemSetText(di, _("Green:\n"));
-
-   di = w3 = tmp_w[2] = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSliderSetBounds(di, 0, 255);
-   DialogItemSliderSetUnits(di, 1);
-   DialogItemSliderSetJump(di, 16);
-   DialogItemSliderSetValPtr(di, &tmp_bg_g);
-
-   di = w4 = tmp_w[3] = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetText(di, _("Keep aspect on scale"));
-   DialogItemCheckButtonSetPtr(di, &tmp_bg_keep_aspect);
-
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetAlign(di, 1024, 512);
-   DialogItemSetText(di, _("Blue:\n"));
-
-   di = w5 = tmp_w[4] = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSliderSetBounds(di, 0, 255);
-   DialogItemSliderSetUnits(di, 1);
-   DialogItemSliderSetJump(di, 16);
-   DialogItemSliderSetValPtr(di, &tmp_bg_b);
-
-   di = w6 = tmp_w[5] = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetText(di, _("Tile image across background"));
-   DialogItemCheckButtonSetPtr(di, &tmp_bg_tile);
-
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
-
-   di = DialogAddItem(table, DITEM_TEXT);
+   di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 512, 512);
-   DialogItemSetColSpan(di, 2);
    DialogItemSetText(di,
 		     _("Background\n" "Image\n" "Scaling\n" "and\n"
 		       "Alignment\n"));
 
-   table2 = DialogAddItem(table, DITEM_TABLE);
-   DialogItemTableSetOptions(table2, 3, 0, 0, 0);
+   table3 = DialogAddItem(table2, DITEM_TABLE);
+   DialogItemTableSetOptions(table3, 3, 0, 0, 0);
 
-   di = DialogAddItem(table2, DITEM_NONE);
+   di = DialogAddItem(table3, DITEM_NONE);
 
-   di = slider = tmp_w[6] = DialogAddItem(table2, DITEM_SLIDER);
+   di = tmp_w[6] = DialogAddItem(table3, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 64);
    DialogItemSliderSetValPtr(di, &tmp_bg_xjust);
 
-   di = DialogAddItem(table2, DITEM_NONE);
+   di = DialogAddItem(table3, DITEM_NONE);
 
-   di = slider2 = tmp_w[7] = DialogAddItem(table2, DITEM_SLIDER);
+   di = tmp_w[7] = DialogAddItem(table3, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetOrientation(di, 0);
    DialogItemSetFill(di, 0, 1);
@@ -2202,20 +2195,13 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSliderSetJump(di, 64);
    DialogItemSliderSetValPtr(di, &tmp_bg_yjust);
 
-   di = bg_mini_disp = area = DialogAddItem(table2, DITEM_AREA);
+   di = bg_mini_disp = area = DialogAddItem(table3, DITEM_AREA);
    DialogItemAreaSetSize(di, 64, 48);
+#if 0				/* Remove? */
    DialogItemAreaSetInitFunc(di, CB_DesktopMiniDisplayAreaInit);
+#endif
 
-   DialogItemSetCallback(w1, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
-   DialogItemSetCallback(w2, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
-   DialogItemSetCallback(w3, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
-   DialogItemSetCallback(w4, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
-   DialogItemSetCallback(w5, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
-   DialogItemSetCallback(w6, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
-   DialogItemSetCallback(slider, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
-   DialogItemSetCallback(slider2, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
-
-   di = slider = tmp_w[8] = DialogAddItem(table2, DITEM_SLIDER);
+   di = tmp_w[8] = DialogAddItem(table3, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetOrientation(di, 0);
    DialogItemSetFill(di, 0, 1);
@@ -2223,23 +2209,122 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 64);
    DialogItemSliderSetValPtr(di, &tmp_bg_yperc);
-   DialogItemSetCallback(slider, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
 
-   di = DialogAddItem(table2, DITEM_NONE);
+   di = DialogAddItem(table3, DITEM_NONE);
 
-   di = slider = tmp_w[9] = DialogAddItem(table2, DITEM_SLIDER);
+   di = tmp_w[9] = DialogAddItem(table3, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetBounds(di, 0, 1024);
    DialogItemSliderSetUnits(di, 1);
    DialogItemSliderSetJump(di, 64);
    DialogItemSliderSetValPtr(di, &tmp_bg_xperc);
-   DialogItemSetCallback(slider, CB_DesktopMiniDisplayRedraw, 0, (void *)area);
+
+   table3 = DialogAddItem(table2, DITEM_TABLE);
+   DialogItemTableSetOptions(table3, 2, 0, 0, 0);
+
+   di = DialogAddItem(table3, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 512, 512);
+   DialogItemSetText(di, _("BG Colour\n"));
+
+   di = DialogAddItem(table3, DITEM_TEXT);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 1024, 512);
+   DialogItemSetText(di, _("Red:\n"));
+
+   di = tmp_w[3] = DialogAddItem(table3, DITEM_SLIDER);
+   DialogItemSliderSetBounds(di, 0, 255);
+   DialogItemSliderSetUnits(di, 1);
+   DialogItemSliderSetJump(di, 16);
+   DialogItemSliderSetValPtr(di, &tmp_bg_r);
+
+   di = DialogAddItem(table3, DITEM_TEXT);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 1024, 512);
+   DialogItemSetText(di, _("Green:\n"));
+
+   di = tmp_w[4] = DialogAddItem(table3, DITEM_SLIDER);
+   DialogItemSliderSetBounds(di, 0, 255);
+   DialogItemSliderSetUnits(di, 1);
+   DialogItemSliderSetJump(di, 16);
+   DialogItemSliderSetValPtr(di, &tmp_bg_g);
+
+   di = DialogAddItem(table3, DITEM_TEXT);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 1024, 512);
+   DialogItemSetText(di, _("Blue:\n"));
+
+   di = tmp_w[5] = DialogAddItem(table3, DITEM_SLIDER);
+   DialogItemSliderSetBounds(di, 0, 255);
+   DialogItemSliderSetUnits(di, 1);
+   DialogItemSliderSetJump(di, 16);
+   DialogItemSliderSetValPtr(di, &tmp_bg_b);
+
+   for (i = 0; i < 10; i++)
+      DialogItemSetCallback(tmp_w[i], CB_DesktopMiniDisplayRedraw, 0, area);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
+
+   table2 = DialogAddItem(table, DITEM_TABLE);
+   DialogItemTableSetOptions(table2, 3, 0, 0, 0);
+
+   table3 = DialogAddItem(table2, DITEM_TABLE);
+   DialogItemTableSetOptions(table3, 2, 0, 0, 0);
+
+   di = DialogAddItem(table3, DITEM_BUTTON);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetText(di, "<-");
+   DialogItemSetCallback(di, CB_BGNext, -1, NULL);
+   DialogBindKey(d, "Left", CB_BGNext, -1, NULL);
+
+   di = DialogAddItem(table3, DITEM_BUTTON);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetText(di, "->");
+   DialogItemSetCallback(di, CB_BGNext, 1, NULL);
+   DialogBindKey(d, "Right", CB_BGNext, 1, NULL);
+
+   di = DialogAddItem(table2, DITEM_BUTTON);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetText(di, _("Pre-scan BG's"));
+   DialogItemSetCallback(di, CB_BGScan, 0, NULL);
+
+   table3 = DialogAddItem(table2, DITEM_TABLE);
+   DialogItemTableSetOptions(table3, 3, 0, 0, 0);
+
+   di = DialogAddItem(table3, DITEM_BUTTON);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetText(di, _("Sort by File"));
+   DialogItemSetCallback(di, CB_BGSortFile, 0, NULL);
+
+   di = DialogAddItem(table3, DITEM_BUTTON);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetText(di, _("Sort by Attr."));
+   DialogItemSetCallback(di, CB_BGSortAttrib, 0, NULL);
+
+#if 0				/* Doesn't do anything useful */
+   di = DialogAddItem(table3, DITEM_BUTTON);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetText(di, _("Sort by Image"));
+   DialogItemSetCallback(di, CB_BGSortContent, 0, NULL);
+#endif
+
+   di = bg_sel = DialogAddItem(table, DITEM_AREA);
+   DialogItemAreaSetSize(di, 160, 56);
+   DialogItemAreaSetEventFunc(di, CB_BGAreaEvent);
+   DialogItemAreaSetInitFunc(di, CB_InitView);
+
+   num = ecore_list_nodes(bg_list);
+   di = bg_sel_slider = DialogAddItem(table, DITEM_SLIDER);
+   DialogItemSliderSetBounds(di, 0, num * 4);
+   DialogItemSliderSetUnits(di, 1);
+   DialogItemSliderSetJump(di, 9);
+   DialogItemSliderSetValPtr(di, &tmp_bg_sel_sliderval);
+   DialogItemSetCallback(bg_sel_slider, CB_BGAreaSlide, 0, NULL);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Use dithering in Hi-Colour"));
    DialogItemCheckButtonSetPtr(di, &tmp_hiq);
 
@@ -2247,8 +2332,14 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSetText(di, _("Background overrides theme"));
    DialogItemCheckButtonSetPtr(di, &tmp_userbg);
 
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetText(di,
+		     _("Enable background transparency compatibility mode"));
+   DialogItemCheckButtonSetPtr(di, &tmp_root_hint);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+
    di = label = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetAlign(di, 512, 512);
    Esnprintf(s, sizeof(s), _("Unused backgrounds freed after %2i:%02i:%02i"),
 	     tmp_bg_timeout / 3600,
@@ -2257,85 +2348,12 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemSetText(di, s);
 
    di = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSetColSpan(di, 3);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetBounds(di, 0, 60 * 60 * 4);
    DialogItemSliderSetUnits(di, 30);
    DialogItemSliderSetJump(di, 60);
    DialogItemSliderSetValPtr(di, &tmp_bg_timeout);
-   DialogItemSetCallback(di, CB_DesktopTimeout, 0, (void *)label);
-
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
-
-   table2 = DialogAddItem(table, DITEM_TABLE);
-   DialogItemTableSetOptions(table2, 2, 0, 0, 0);
-
-   di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetText(di, "<-");
-   DialogItemSetCallback(di, CB_BGNext, -1, NULL);
-   DialogBindKey(d, "Left", CB_BGNext, -1, NULL);
-   DialogBindKey(d, "BackSpace", CB_BGNext, -1, NULL);
-
-   di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetText(di, "->");
-   DialogItemSetCallback(di, CB_BGNext, 1, NULL);
-   DialogBindKey(d, "Right", CB_BGNext, 1, NULL);
-   DialogBindKey(d, "space", CB_BGNext, 1, NULL);
-
-   di = DialogAddItem(table, DITEM_BUTTON);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetText(di, _("Pre-scan BG's"));
-   DialogItemSetCallback(di, CB_BGScan, 0, NULL);
-
-   table2 = DialogAddItem(table, DITEM_TABLE);
-   DialogItemTableSetOptions(table2, 3, 0, 0, 0);
-
-   di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetText(di, _("Sort by File"));
-   DialogItemSetCallback(di, CB_BGSortFile, 0, NULL);
-
-   di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetText(di, _("Sort by Attr."));
-   DialogItemSetCallback(di, CB_BGSortAttrib, 0, NULL);
-
-   di = DialogAddItem(table2, DITEM_BUTTON);
-   DialogItemSetFill(di, 0, 0);
-   DialogItemSetText(di, _("Sort by Image"));
-   DialogItemSetCallback(di, CB_BGSortContent, 0, NULL);
-
-   di = bg_sel = DialogAddItem(table, DITEM_AREA);
-   DialogItemSetColSpan(di, 3);
-   DialogItemAreaSetSize(di, 160, 56);
-   DialogItemAreaSetEventFunc(di, CB_BGAreaEvent);
-   DialogItemAreaSetInitFunc(di, CB_InitView);
-
-   num = ecore_list_nodes(bg_list);
-   di = bg_sel_slider = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSetColSpan(di, 3);
-   DialogItemSliderSetBounds(di, 0, num * 4);
-   DialogItemSliderSetUnits(di, 1);
-   DialogItemSliderSetJump(di, 9);
-   DialogItemSliderSetValPtr(di, &tmp_bg_sel_sliderval);
-   DialogItemSetCallback(bg_sel_slider, CB_BGAreaSlide, 0, NULL);
-
-   di = bg_filename = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 3);
-   DialogItemSetAlign(di, 512, 512);
-   BG_DialogSetFileName(bg_filename);
-
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
-
-   di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 3);
-   DialogItemSetText(di,
-		     _("Enable background transparency compatibility mode"));
-   DialogItemCheckButtonSetPtr(di, &tmp_root_hint);
+   DialogItemSetCallback(di, CB_DesktopTimeout, 0, label);
 }
 
 const DialogDef     DlgBackground = {
