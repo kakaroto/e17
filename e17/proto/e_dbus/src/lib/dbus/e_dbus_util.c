@@ -7,7 +7,7 @@
  * @param user_data data to pass to the callback
  */
 E_DBus_Callback *
-e_dbus_callback_new(E_DBus_Callback_Func cb_func, void *user_data)
+e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmarshal_Func unmarshal_func, void *user_data)
 {
   E_DBus_Callback *cb;
 
@@ -15,7 +15,8 @@ e_dbus_callback_new(E_DBus_Callback_Func cb_func, void *user_data)
 
   cb = calloc(1, sizeof(E_DBus_Callback));
   if (!cb) return NULL;
-  cb->func = cb_func;
+  cb->cb_func = cb_func;
+  cb->unmarshal_func = unmarshal_func;
   cb->user_data = user_data;
   return cb;
 }
@@ -34,8 +35,18 @@ e_dbus_callback_free(E_DBus_Callback *callback)
 void
 e_dbus_callback_call(E_DBus_Callback *cb, void *data, DBusError *error)
 {
-  if (cb && cb->func)
-    cb->func(cb->user_data, data, error);
+  if (cb && cb->cb_func)
+    cb->cb_func(cb->user_data, data, error);
+}
+
+//XXX this probably should be passed an error pointer
+void *
+e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg)
+{
+  if (cb && cb->unmarshal_func)
+    return cb->unmarshal_func(msg);
+  else
+    return NULL;
 }
 
 const char *

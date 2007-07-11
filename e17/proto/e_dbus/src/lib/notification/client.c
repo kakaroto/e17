@@ -30,80 +30,29 @@ e_notification_shutdown(void)
 }
 
 /**** client api ****/
-
-static void
-cb_notify(void *data, DBusMessage *msg, DBusError *err)
-{
-  E_DBus_Callback *cb;
-  E_Notification_Return_Notify *ret = NULL;
-  cb = data;
-  if (!cb) return;
-
-  if (!dbus_error_is_set(err))
-    ret = e_notify_unmarshal_notify_return(msg);
-
-  e_dbus_callback_call(cb, ret, err);
-}
-
 void
 e_notification_send(E_Notification *n, E_DBus_Callback_Func func, void *data)
 {
   DBusMessage *msg;
-  E_DBus_Callback *cb;
 
-  cb = e_dbus_callback_new(func, data);
   msg = e_notify_marshal_notify(n);
-  printf("msg: %p\n", msg);
-  e_dbus_message_send(client_conn, msg, cb_notify, -1, cb);
-}
-
-
-static void
-cb_get_capabilities(void *data, DBusMessage *msg, DBusError *err)
-{
-  E_DBus_Callback *cb;
-  E_Notification_Return_Get_Capabilities *ret = NULL;
-  cb = data;
-  if (!cb) return;
-
-  if (!dbus_error_is_set(err))
-    ret = e_notify_unmarshal_get_capabilities_return(msg);
-
-  e_dbus_callback_call(cb, ret, err);
+  e_dbus_method_call_send(client_conn, msg, e_notify_unmarshal_notify_return, func, -1, data);
 }
 
 void
 e_notification_get_capabilities(E_DBus_Callback_Func func, void *data)
 {
   DBusMessage *msg;
-  E_DBus_Callback *cb;
 
-  cb = e_dbus_callback_new(func, data);
   msg = e_notify_marshal_get_capabilities();
-  e_dbus_message_send(client_conn, msg, cb_notify, -1, cb);
-}
-
-static void
-cb_get_server_information(void *data, DBusMessage *msg, DBusError *err)
-{
-  E_DBus_Callback *cb;
-  E_Notification_Return_Get_Server_Information *ret = NULL;
-  cb = data;
-  if (!cb) return;
-
-  if (!dbus_error_is_set(err))
-    ret = e_notify_unmarshal_get_server_information_return(msg);
-
-  e_dbus_callback_call(cb, ret, err);
+  e_dbus_method_call_send(client_conn, msg, e_notify_unmarshal_get_capabilities_return, func, -1, data);
 }
 
 void
 e_notification_get_server_information(E_DBus_Callback_Func func, void *data)
 {
   DBusMessage *msg;
-  E_DBus_Callback *cb;
 
-  cb = e_dbus_callback_new(func, data);
   msg = e_notify_marshal_get_server_information();
-  e_dbus_message_send(client_conn, msg, cb_notify, -1, cb);
+  e_dbus_method_call_send(client_conn, msg, e_notify_unmarshal_get_server_information_return, func, -1, data);
 }

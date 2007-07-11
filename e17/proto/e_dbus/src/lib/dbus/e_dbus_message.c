@@ -83,3 +83,24 @@ e_dbus_message_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Method_Ret
 
   return pending;
 }
+
+static void
+cb_method_call(void *data, DBusMessage *msg, DBusError *err)
+{
+  E_DBus_Callback *cb = data;
+  void *method_return = NULL;
+  if (!cb) return;
+
+  if (!dbus_error_is_set(err))
+    method_return = e_dbus_callback_unmarshal(cb, msg);
+
+  e_dbus_callback_call(cb, method_return, err);
+}
+
+DBusPendingCall *
+e_dbus_method_call_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Callback_Func cb_func, int timeout, void *data)
+{
+  E_DBus_Callback *cb;
+  cb = e_dbus_callback_new(cb_func, unmarshal_func, data);
+  return e_dbus_message_send(conn, msg, cb_method_call, timeout, cb);
+}
