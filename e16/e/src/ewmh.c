@@ -566,7 +566,7 @@ static void
 EWMH_GetWindowType(EWin * ewin)
 {
    Ecore_X_Atom       *p_atoms, atom;
-   int                 n_atoms;
+   int                 n_atoms, i;
 
    ewin->ewmh.type.all = 0;
 
@@ -582,58 +582,27 @@ EWMH_GetWindowType(EWin * ewin)
 	return;
      }
 
-   atom = p_atoms[0];
-   if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DESKTOP)
+   for (i = 0; i < n_atoms; i++)
      {
-	EoSetLayer(ewin, 0);
-	EoSetSticky(ewin, 1);
-	ewin->props.focusclick = 1;
-	ewin->props.skip_focuslist = 1;
-	EwinInhSetUser(ewin, move, 1);
-	EwinInhSetUser(ewin, size, 1);
-	ewin->props.donthide = 1;
-	ewin->props.no_border = 1;
-	ewin->ewmh.type.b.desktop = 1;
+	atom = p_atoms[i];
+	if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DESKTOP)
+	   ewin->ewmh.type.b.desktop = 1;
+	else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK)
+	   ewin->ewmh.type.b.dock = 1;
+	else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_UTILITY)
+	   ewin->ewmh.type.b.utility = 1;
+	else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_TOOLBAR)
+	   ewin->ewmh.type.b.toolbar = 1;
+	else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_MENU)
+	   ewin->ewmh.type.b.menu = 1;
+	else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_SPLASH)
+	   ewin->ewmh.type.b.splash = 1;
+	else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DIALOG)
+	   ewin->ewmh.type.b.dialog = 1;
+	else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_NORMAL)
+	   ewin->ewmh.type.b.normal = 1;
      }
-   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK)
-     {
-	ewin->props.skip_ext_task = 1;
-	ewin->props.skip_winlist = 1;
-	ewin->props.skip_focuslist = 1;
-	EoSetSticky(ewin, 1);
-	ewin->props.donthide = 1;
-	ewin->ewmh.type.b.dock = 1;
-     }
-   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_UTILITY)
-     {
-	/* Epplets hit this */
-	ewin->props.skip_ext_task = 1;
-	ewin->props.skip_winlist = 1;
-	ewin->props.skip_focuslist = 1;
-	ewin->props.never_use_area = 1;
-	ewin->props.donthide = 1;
-	ewin->ewmh.type.b.utility = 1;
-     }
-   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_TOOLBAR)
-     {
-	ewin->ewmh.type.b.toolbar = 1;
-     }
-   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_MENU)
-     {
-	ewin->ewmh.type.b.menu = 1;
-     }
-   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_SPLASH)
-     {
-	ewin->ewmh.type.b.splash = 1;
-     }
-   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DIALOG)
-     {
-	ewin->ewmh.type.b.dialog = 1;
-     }
-   else if (atom == ECORE_X_ATOM_NET_WM_WINDOW_TYPE_NORMAL)
-     {
-	ewin->ewmh.type.b.normal = 1;
-     }
+
    Efree(p_atoms);
 }
 

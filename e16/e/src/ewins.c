@@ -190,6 +190,41 @@ EwinGetHints(EWin * ewin)
 }
 
 static void
+EwinHintsInferProps(EWin * ewin)
+{
+   if (ewin->ewmh.type.b.desktop)
+     {
+	EoSetLayer(ewin, 0);
+	if (!ewin->state.identified)
+	   EoSetSticky(ewin, 1);
+	ewin->props.focusclick = 1;
+	ewin->props.skip_focuslist = 1;
+	EwinInhSetUser(ewin, move, 1);
+	EwinInhSetUser(ewin, size, 1);
+	ewin->props.donthide = 1;
+	ewin->props.no_border = 1;
+     }
+   if (ewin->ewmh.type.b.dock)
+     {
+	ewin->props.skip_ext_task = 1;
+	ewin->props.skip_winlist = 1;
+	ewin->props.skip_focuslist = 1;
+	if (!ewin->state.identified)
+	   EoSetSticky(ewin, 1);
+	ewin->props.donthide = 1;
+     }
+   if (ewin->ewmh.type.b.utility)
+     {
+	/* Epplets hit this */
+	ewin->props.skip_ext_task = 1;
+	ewin->props.skip_winlist = 1;
+	ewin->props.skip_focuslist = 1;
+	ewin->props.never_use_area = 1;
+	ewin->props.donthide = 1;
+     }
+}
+
+static void
 EwinManage(EWin * ewin)
 {
    XSetWindowAttributes att;
@@ -293,6 +328,7 @@ EwinConfigure(EWin * ewin)
    WindowMatchEwinOps(ewin);	/* Window matches */
    if (!EwinIsInternal(ewin) && Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
+   EwinHintsInferProps(ewin);
    SnapshotsEwinMatch(ewin);	/* Find a saved settings match */
    SnapshotEwinApply(ewin);	/* Apply saved settings */
 
