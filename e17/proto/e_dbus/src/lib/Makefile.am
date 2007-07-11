@@ -1,1 +1,1 @@
-SUBDIRS=dbus hal nm
+SUBDIRS=dbus hal nm notification

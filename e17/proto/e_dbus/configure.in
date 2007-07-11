@@ -33,6 +33,7 @@ src/lib/Makefile
 src/lib/dbus/Makefile
 src/lib/hal/Makefile
 src/lib/nm/Makefile
+src/lib/notification/Makefile
 src/bin/Makefile
 edbus.pc
 ehal.pc

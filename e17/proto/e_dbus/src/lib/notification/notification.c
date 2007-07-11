@@ -5,10 +5,9 @@
 #include <Ecore_Data.h>
 
 /* private functions */
-Ecore_List *e_notification_action_list_new();
-E_Notification_Action *e_notification_action_new(const char *id, const char *name);
-void e_notification_action_free(E_Notification_Action *act);
-
+static Ecore_List * e_notification_action_list_new();
+static E_Notification_Action *e_notification_action_new(const char *id, const char *name);
+static void e_notification_action_free(E_Notification_Action *act);
 
 /* (con|de)structor */
 
@@ -36,7 +35,6 @@ e_notification_new()
   E_Notification *n;
   n = calloc(1, sizeof(E_Notification));
   if (!n) return NULL;
-  n->actions = e_notification_action_list_new();
   n->refcount = 1;
 
   return n;
@@ -108,6 +106,9 @@ e_notification_action_add(E_Notification *n, const char *action_id, const char *
 {
   E_Notification_Action *a;
 
+  if (!n->actions) 
+    n->actions = e_notification_action_list_new();
+
   a = e_notification_action_new(action_id, action_name);
   ecore_list_append(n->actions, a);
 }
@@ -172,7 +173,7 @@ e_notification_timeout_get(E_Notification *note)
 
 /***** actions *****/
 
-Ecore_List *
+static Ecore_List *
 e_notification_action_list_new()
 {
   Ecore_List *alist;
@@ -181,9 +182,7 @@ e_notification_action_list_new()
   return alist;
 }
 
-/* actions */
-
-E_Notification_Action *
+static E_Notification_Action *
 e_notification_action_new(const char *id, const char *name)
 {
   E_Notification_Action *act;
@@ -194,7 +193,7 @@ e_notification_action_new(const char *id, const char *name)
 }
 
 
-void
+static void
 e_notification_action_free(E_Notification_Action *act)
 {
   if (!act) return;

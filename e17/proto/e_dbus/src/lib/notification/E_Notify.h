@@ -5,43 +5,52 @@
 #include <Evas.h>
 #include <E_DBus.h>
 
-typedef struct _E_Notification_Daemon E_Notification_Daemon;
+#define E_NOTIFICATION_INTERFACE "org.freedesktop.Notifications"
+#define E_NOTIFICATION_DESTINATION "org.freedesktop.Notifications"
+#define E_NOTIFICATION_PATH "/org/freedesktop/Notifications"
+
+typedef struct E_Notification_Context E_Notification_Daemon;
 
 /* notifications */
 
-typedef struct _E_Notification_Client E_Notification_Client;
+typedef struct E_Notification_Context E_Notification_Context;
 
 typedef struct E_Notification_Image E_Notification_Image;
 typedef struct E_Notification E_Notification;
 typedef struct E_Notification_Action E_Notification_Action;
 
 
-typedef enum _E_Notification_Urgency E_Notification_Urgency;
-typedef enum _E_Notification_Hint_Type E_Notification_Hint_Type;
-typedef enum _E_Notification_Closed_Reason E_Notification_Closed_Reason;
+typedef enum E_Notification_Urgency E_Notification_Urgency;
+typedef enum E_Notification_Hint_Type E_Notification_Hint_Type;
+typedef enum E_Notification_Closed_Reason E_Notification_Closed_Reason;
 
-/* event structs */
-typedef struct _E_Notification_Event_Daemon E_Notification_Event_Daemon;
-typedef struct _E_Notification_Event_Daemon E_Notification_Event_Notify;
-typedef struct _E_Notification_Event_Daemon E_Notification_Event_Close;
-typedef struct _E_Notification_Event_Action_Invoked E_Notification_Event_Action_Invoked;
-typedef struct _E_Notification_Event_Server_Capabilities E_Notification_Event_Server_Capabilities;
-typedef struct _E_Notification_Event_Sent E_Notification_Event_Sent;
-typedef struct _E_Notification_Event_Closed E_Notification_Event_Closed;
+/* method returns */
+typedef struct E_Notification_Return_Notify E_Notification_Return_Notify;
+typedef struct E_Notification_Return_Get_Capabilities E_Notification_Return_Get_Capabilities;
+typedef struct E_Notification_Return_Get_Server_Information E_Notification_Return_Get_Server_Information;
+
+/* daemon events */
+typedef struct E_Notification_Event_Daemon E_Notification_Event_Daemon;
+typedef struct E_Notification_Event_Daemon E_Notification_Event_Notify;
+typedef struct E_Notification_Event_Daemon E_Notification_Event_Close;
+
+/* signal events */
+typedef struct E_Notification_Event_Action_Invoked E_Notification_Event_Action_Invoked;
+typedef struct E_Notification_Event_Notification_Closed E_Notification_Event_Notification_Closed;
 
 /* gui */
-typedef struct _E_Notification_View E_Notification_View;
+typedef struct E_Notification_View E_Notification_View;
 
 /* enums */
 
-enum _E_Notification_Urgency
+enum E_Notification_Urgency
 {
   E_NOTIFICATION_URGENCY_LOW,
   E_NOTIFICATION_URGENCY_NORMAL,
   E_NOTIFICATION_URGENCY_CRITICAL
 };
 
-enum _E_Notification_Closed_Reason
+enum E_Notification_Closed_Reason
 {
   E_NOTIFICATION_CLOSED_EXPIRED,
   E_NOTIFICATION_CLOSED_DISMISSED,
@@ -49,7 +58,7 @@ enum _E_Notification_Closed_Reason
   E_NOTIFICATION_CLOSED_UNDEFINED
 };
 
-enum _E_Notification_Hint_Type
+enum E_Notification_Hint_Type
 {
   E_NOTIFICATION_HINT_URGENCY        = 0x1,
   E_NOTIFICATION_HINT_CATEGORY       = 0x2,
@@ -60,8 +69,9 @@ enum _E_Notification_Hint_Type
   E_NOTIFICATION_HINT_IMAGE_DATA     = 0x40
 };
 
-struct _E_Notification_Client
+struct E_Notification_Context
 {
+  E_DBus_Connection *conn;
 };
 
 struct E_Notification_Image
@@ -110,19 +120,32 @@ struct E_Notification_Action
 };
 
 /* daemon event data */
-struct _E_Notification_Event_Daemon
+struct E_Notification_Event_Daemon
 {
   E_Notification *notification;
 };
 
-/* client event data */
-struct E_Notification_Event_Sent
+/* client method returns */
+struct E_Notification_Return_Notify
 {
-  int notification_id;
+  unsigned int notification_id;
   E_Notification *notification;
 };
 
-struct E_Notification_Event_Closed
+struct E_Notification_Return_Get_Capabilities
+{
+  Ecore_List *capabilities;
+};
+
+struct E_Notification_Return_Get_Server_Information
+{
+  const char *name;
+  const char *vendor;
+  const char *version;
+};
+
+/* signals */
+struct E_Notification_Event_Notification_Closed
 {
   int notification_id;
   E_Notification_Closed_Reason reason;
@@ -134,10 +157,6 @@ struct E_Notification_Event_Action_Invoked
   char *action_id;
 };
 
-struct E_Notification_Event_Server_Capabilities
-{
-  Ecore_List *capabilities; /* list of char* */
-};
 
 
 /* daemon events */
@@ -145,10 +164,8 @@ extern int E_NOTIFICATION_EVENT_NOTIFY;
 extern int E_NOTIFICATION_EVENT_CLOSE;
 
 /* client events */
-extern int E_NOTIFICATION_EVENT_SENT;
 extern int E_NOTIFICATION_EVENT_CLOSED;
 extern int E_NOTIFICATION_EVENT_ACTION_INVOKED;
-extern int E_NOTIFICATION_EVENT_SERVER_CAPABILITIES;
 
 
 int e_notify_init();
@@ -164,11 +181,11 @@ void e_notification_daemon_action_invoke(E_Notification_Daemon *d,
 
 /* client */
 /*
-E_Notification_Client *e_notification_client_add();
-void e_notification_client_shutdown(E_Notification_Client *t);
-void e_notifications_get_capabilities(E_Notification_Client *nc);
-void e_notifications_get_server_info(E_Notification_Client *nc);
-void e_notifications_close_notification(E_Notification_Client *nc, int id);
+E_Notification_Context *e_notification_client_add();
+void e_notification_client_shutdown(E_Notification_Context *t);
+void e_notifications_get_capabilities(E_Notification_Context *nc);
+void e_notifications_get_server_info(E_Notification_Context *nc);
+void e_notifications_close_notification(E_Notification_Context *nc, int id);
 */
 
 
