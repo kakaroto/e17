@@ -480,7 +480,8 @@ DialogRedraw(Dialog * d)
       return;
 
 #if DEBUG_DIALOGS
-   Eprintf("DialogRedraw win=%#lx pmap=%#lx\n", d->win, d->pmap);
+   Eprintf("DialogRedraw win=%#lx pmap=%#lx\n",
+	   WinGetXwin(d->win), WinGetPmap(d->win));
 #endif
 
    FreePmapMask(&(d->pmm_bg));
@@ -1651,10 +1652,10 @@ DialogDrawItem(Dialog * d, DItem * di)
 
 	      pad = ImageclassGetPadding(d->iclass);
 	      gcv.subwindow_mode = IncludeInferiors;
-	      gc = EXCreateGC(d->pmap, GCSubwindowMode, &gcv);
+	      gc = EXCreateGC(WinGetPmap(d->win), GCSubwindowMode, &gcv);
 	      XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
-	      XDrawRectangle(disp, d->pmap, gc, pad->left + di->x,
-			     pad->top + di->y, di->w, di->h);
+	      XDrawRectangle(disp, WinGetPmap(d->win), gc,
+			     pad->left + di->x, pad->top + di->y, di->w, di->h);
 	      EXFreeGC(gc);
 	   }
 #endif
