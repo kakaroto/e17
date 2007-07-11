@@ -188,6 +188,7 @@ static struct
 
 static struct
 {
+   int                 mode;
    Window              root;
 #if USE_COMPOSITE_OVERLAY_WINDOW
    Window              cow;
@@ -1560,9 +1561,21 @@ ECompMgrWinNew(EObj * eo)
 	eo->shadow = 0;
      }
 
-   if (!eo->noredir)
+   if (eo->noredir)
      {
-	if (Conf_compmgr.mode == ECM_MODE_WINDOW)
+	/* If already auto-redirected undo that */
+	if (Mode_compmgr.mode == ECM_MODE_ROOT)
+	  {
+	     XCompositeUnredirectWindow(disp, EobjGetXwin(eo),
+					CompositeRedirectManual);
+	     if (eo->type == EOBJ_TYPE_DESK)
+		XCompositeRedirectSubwindows(disp, EobjGetXwin(eo),
+					     CompositeRedirectManual);
+	  }
+     }
+   else
+     {
+	if (Mode_compmgr.mode == ECM_MODE_WINDOW)
 	   XCompositeRedirectWindow(disp, EobjGetXwin(eo),
 				    CompositeRedirectManual);
 	cw->damage_sequence = NextRequest(disp);
@@ -1787,16 +1800,25 @@ ECompMgrWinDel(EObj * eo)
    EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
 
    if (!eo->gone)
-      ECompMgrWinInvalidate(eo, INV_PICTURE);
-
-   if (!eo->noredir && !eo->gone)
      {
-	if (cw->damage != None)
-	   XDamageDestroy(disp, cw->damage);
+	ECompMgrWinInvalidate(eo, INV_PICTURE);
 
-	if (Conf_compmgr.mode == ECM_MODE_WINDOW)
-	   XCompositeUnredirectWindow(disp, EobjGetXwin(eo),
-				      CompositeRedirectManual);
+	if (eo->noredir)
+	  {
+	     if (Mode_compmgr.mode == ECM_MODE_ROOT &&
+		 eo->type == EOBJ_TYPE_DESK)
+		XCompositeUnredirectSubwindows(disp, EobjGetXwin(eo),
+					       CompositeRedirectManual);
+	  }
+	else
+	  {
+	     if (cw->damage != None)
+		XDamageDestroy(disp, cw->damage);
+
+	     if (Mode_compmgr.mode == ECM_MODE_WINDOW)
+		XCompositeUnredirectWindow(disp, EobjGetXwin(eo),
+					   CompositeRedirectManual);
+	  }
      }
 
    ECompMgrWinInvalidate(eo, INV_ALL);
@@ -2281,7 +2303,7 @@ static void
 _ECompMgrIdler(void *data __UNUSED__)
 {
    /* Do we get here on auto? */
-   if (!Mode_compmgr.got_damage /* || Conf_compmgr.mode == ECM_MODE_AUTO */ )
+   if (!Mode_compmgr.got_damage /* || Mode_compmgr.mode == ECM_MODE_AUTO */ )
       return;
    ECompMgrRepaint();
 }
@@ -2419,6 +2441,7 @@ ECompMgrStart(void)
    if (Mode_compmgr.active || Conf_compmgr.mode == ECM_MODE_OFF)
       return;
    Conf_compmgr.enable = Mode_compmgr.active = 1;
+   Mode_compmgr.mode = Conf_compmgr.mode;
 
    Conf_compmgr.override_redirect.opacity =
       OpacityFix(Conf_compmgr.override_redirect.opacity, 100);
@@ -2459,7 +2482,7 @@ ECompMgrStart(void)
 
    EGrabServer();
 
-   switch (Conf_compmgr.mode)
+   switch (Mode_compmgr.mode)
      {
      case ECM_MODE_ROOT:
 	XCompositeRedirectSubwindows(disp, VRoot.xwin, CompositeRedirectManual);
@@ -2547,7 +2570,7 @@ ECompMgrStop(void)
    REGION_DESTROY(rgn_tmp);
    REGION_DESTROY(rgn_tmp2);
 
-   if (Conf_compmgr.mode == ECM_MODE_ROOT)
+   if (Mode_compmgr.mode == ECM_MODE_ROOT)
       XCompositeUnredirectSubwindows(disp, VRoot.xwin, CompositeRedirectManual);
 
    EventCallbackUnregister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
@@ -2791,9 +2814,6 @@ ECompMgrInit(void)
    if (Conf_compmgr.mode == ECM_MODE_OFF)
       Conf_compmgr.mode = ECM_MODE_ROOT;
 
-   /* FIXME - Hardcode for now. */
-   Conf_compmgr.mode = ECM_MODE_WINDOW;
-
  done:
    if (Conf_compmgr.mode == ECM_MODE_OFF)
       Conf_compmgr.enable = 0;
@@ -2804,7 +2824,7 @@ ECompMgrInit(void)
 static void
 ECompMgrSighan(int sig, void *prm __UNUSED__)
 {
-   if (sig != ESIGNAL_INIT && Conf_compmgr.mode == ECM_MODE_OFF)
+   if (sig != ESIGNAL_INIT && Mode_compmgr.mode == ECM_MODE_OFF)
       return;
 
    switch (sig)
