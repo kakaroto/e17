@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <Ecore_Data.h>
+#include "e_notify_private.h"
 
 /* private functions */
 static Ecore_List * e_notification_action_list_new();

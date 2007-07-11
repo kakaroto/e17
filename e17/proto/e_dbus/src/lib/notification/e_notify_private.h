@@ -1,6 +1,10 @@
 #ifndef E_NOTIFY_PRIVATE_H
 #define E_NOTIFY_PRIVATE_H
 
+#define E_NOTIFICATION_INTERFACE "org.freedesktop.Notifications"
+#define E_NOTIFICATION_DESTINATION "org.freedesktop.Notifications"
+#define E_NOTIFICATION_PATH "/org/freedesktop/Notifications"
+
 #define e_notification_call_new(member) dbus_message_new_method_call(E_NOTIFICATION_DESTINATION, E_NOTIFICATION_PATH, E_NOTIFICATION_INTERFACE, member)
 
 typedef void (*E_DBus_Variant_Marshaller) (DBusMessageIter *iter, void *data);
@@ -33,5 +37,50 @@ Ecore_List * e_notify_unmarshal_notify_actions(E_Notification *n, DBusMessageIte
 Ecore_List * e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter);
 void e_notify_marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img);
 E_Notification_Image * e_notify_unmarshal_hint_image(DBusMessageIter *iter);
+
+struct E_Notification_Image
+{
+  int   width;
+  int   height;
+  int   rowstride;
+  char  has_alpha;
+  int   bits_per_sample;
+  int   channels;
+  int  *data;
+};
+
+struct E_Notification
+{
+  int id;
+  char *app_name;
+  unsigned int replaces_id;
+  char *app_icon;
+  char *summary;
+  char *body;
+  int expire_timeout;
+
+  Ecore_List *actions;
+
+  struct
+  {
+    char urgency;
+    char *category;
+    char *desktop;
+    char *sound_file;
+    char suppress_sound;
+    int x, y;
+    E_Notification_Image *image_data;
+  } hints;
+
+  int hint_flags;
+
+  int refcount;
+};
+
+struct E_Notification_Action 
+{
+  char *id;
+  char *name;
+};
 
 #endif

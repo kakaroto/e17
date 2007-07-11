@@ -9,7 +9,8 @@ libenotify_la_SOURCES = \
 E_Notify.h \
 notification.c \
 marshal.c \
-client.c
+client.c \
+daemon.c
 
 libenotify_la_LIBADD = \
 @EDBUS_LIBS@ \
