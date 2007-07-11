@@ -1,0 +1,7 @@
+.deps
+.libs
+Ecore_Con.h
+Makefile
+Makefile.in
+*.lo
+libecore_dbus.la
