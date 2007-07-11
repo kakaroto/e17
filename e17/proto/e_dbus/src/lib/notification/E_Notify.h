@@ -157,8 +157,6 @@ struct E_Notification_Event_Action_Invoked
   char *action_id;
 };
 
-
-
 /* daemon events */
 extern int E_NOTIFICATION_EVENT_NOTIFY;
 extern int E_NOTIFICATION_EVENT_CLOSE;
