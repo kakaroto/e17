@@ -437,6 +437,7 @@ e_dbus_bus_get(DBusBusType type)
     shared_connections[type] = econn;
   }
   dbus_error_free(&err);
+  e_dbus_connection_ref(econn);
   return econn;
 }
 
