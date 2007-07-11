@@ -102,6 +102,8 @@ cb_method_call(void *data, DBusMessage *msg, DBusError *err)
 
   if (dbus_error_is_set(&new_err))
     dbus_error_free(&new_err);
+
+  e_dbus_callback_free(cb);
 }
 
 DBusPendingCall *
