@@ -176,7 +176,7 @@ _ShapeWinCreate(int md)
    if (!sw)
       return NULL;
 
-   EoInit(sw, EOBJ_TYPE_MISC, None, 0, 0, VRoot.w, VRoot.h, 1, "Wires");
+   EoInit(sw, EOBJ_TYPE_MISC, None, 0, 0, VRoot.w, VRoot.h, 2, "Wires");
    if (!EoGetWin(sw))
       goto bail_out;
 
