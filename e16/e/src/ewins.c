@@ -1205,10 +1205,10 @@ EwinEventUnmap(EWin * ewin, XEvent * ev)
    if (ewin->state.state == EWIN_STATE_WITHDRAWN)
       return;
 
-   if (ewin->state.state == EWIN_STATE_ICONIC || !ewin->state.iconified)
-      ewin->state.state = EWIN_STATE_WITHDRAWN;
-   else
+   if (ewin->state.iconified)
       ewin->state.state = EWIN_STATE_ICONIC;
+   else
+      ewin->state.state = EWIN_STATE_WITHDRAWN;
 
    EwinUnmap1(ewin);
    EWindowSetMapped(EwinGetClientWin(ewin), 0);
