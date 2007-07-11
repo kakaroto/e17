@@ -189,6 +189,7 @@ PagerScanCancel(Pager * p)
 
    if (!p->scan_pending)
       return;
+   p->scan_pending = 0;
 
    Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)WinGetXwin(p->win));
    RemoveTimerEvent(s);
@@ -1018,7 +1019,7 @@ PagerMenuShow(Pager * p, int x, int y)
 
    if (PagersGetMode() != PAGER_MODE_SIMPLE)
      {
-	mi = MenuItemCreate(_("Snapshotting Off"), NULL, "pg snap off", NULL);
+	mi = MenuItemCreate(_("Snapshotting Off"), NULL, "pg mode simp", NULL);
 	MenuAddItem(p_menu, mi);
 
 	if (Conf_pagers.hiq)
@@ -1029,7 +1030,7 @@ PagerMenuShow(Pager * p, int x, int y)
      }
    else
      {
-	mi = MenuItemCreate(_("Snapshotting On"), NULL, "pg snap on", NULL);
+	mi = MenuItemCreate(_("Snapshotting On"), NULL, "pg mode live", NULL);
 	MenuAddItem(p_menu, mi);
      }
    if (Conf_pagers.zoom)
@@ -1266,6 +1267,7 @@ PagerSetHiQ(char onoff)
 static void
 _PagerSetSnap(Pager * p, void *prm __UNUSED__)
 {
+   p->scan_pending = 0;
    PagerScanTrig(p);
 }
 
@@ -2105,12 +2107,14 @@ IPC_Pager(const char *params)
 	else if (!strcmp(p, "off"))
 	   PagerSetHiQ(0);
      }
-   else if (!strcmp(prm1, "snap"))
+   else if (!strcmp(prm1, "mode"))
      {
-	if (!strcmp(p, "on"))
-	   PagersSetMode(1);
-	else if (!strcmp(p, "off"))
-	   PagersSetMode(0);
+	if (!strncmp(p, "si", 2))
+	   PagersSetMode(PAGER_MODE_SIMPLE);
+	else if (!strncmp(p, "sn", 2))
+	   PagersSetMode(PAGER_MODE_SNAP);
+	else if (!strncmp(p, "li", 2))
+	   PagersSetMode(PAGER_MODE_LIVE);
      }
    else if (!strcmp(prm1, "zoom"))
      {
@@ -2132,7 +2136,7 @@ static const IpcItem PagersIpcArray[] = {
     "  pager cfg              Configure pagers\n"
     "  pager hiq <on/off>     Toggle high quality pager\n"
     "  pager scanrate <#>     Toggle number of line updates per second\n"
-    "  pager snap <on/off>    Toggle snapshotting in the pager\n"
+    "  pager mode <mode>      Set pager mode (simple/snapshot/live)\n"
     "  pager title <on/off>   Toggle title display in the pager\n"
     "  pager zoom <on/off>    Toggle zooming in the pager\n"}
    ,
