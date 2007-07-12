@@ -9,19 +9,19 @@ static void cb_device_get_all_properties(void *data, DBusMessage *msg, DBusError
 static void cb_device_query_capability(void *data, DBusMessage *msg, DBusError *err);
 
 /* Device.GetProperty */
-static void 
-cb_device_get_property(void *data, DBusMessage *msg, DBusError *err)
+static E_Hal_Device_Get_Property_Return *
+unmarshal_device_get_property(DBusMessage *msg, DBusError *err)
 {
-  E_Hal_Callback *cb = data;
   E_Hal_Device_Get_Property_Return *ret = NULL;
   DBusMessageIter iter;
   int type;
 
-  if (!cb) return;
-  E_HAL_HANDLE_ERROR(cb, err);
-
   ret = calloc(1, sizeof(E_Hal_Device_Get_Property_Return));
-  if (!ret) return;
+  if (!ret) 
+  {
+    dbus_set_error(err, DBUS_ERROR_NO_MEMORY, "");
+    return NULL;
+  }
 
   dbus_message_iter_init(msg, &iter);
   type = dbus_message_iter_get_arg_type(&iter);
@@ -41,51 +41,42 @@ cb_device_get_property(void *data, DBusMessage *msg, DBusError *err)
       break;
   }
 
-  if (dbus_error_is_set(err))
-  {
-    /* XXX do something with an error */
-    printf("ERROR: %s,  %s!\n", err->name, err->message);
-    dbus_error_free(err);
-    goto error;
-  }
-
-  if (cb->func)
-    cb->func(cb->user_data, ret, err);
-
-error:
-  if (ret) free(ret);
-  e_hal_callback_free(cb);
+  return ret;
 }
 
 int
-e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *property, E_Hal_Callback_Func cb_func, void *data)
+e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *property, E_DBus_Callback_Func cb_func, void *data)
 {
-  E_Hal_Callback *cb;
   DBusMessage *msg;
   int ret;
 
-  cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_device_call_new(udi, "GetProperty");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
-  ret = e_dbus_message_send(conn, msg, cb_device_get_property, -1, cb) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_get_property, cb_func, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
 
 /* Device.GetAllProperties */
 
-static void 
-cb_device_get_all_properties(void *data, DBusMessage *msg, DBusError *err)
+static E_Hal_Device_Get_All_Properties_Return *
+unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
 {
-  E_Hal_Callback *cb = data;
   E_Hal_Device_Get_All_Properties_Return *ret = NULL;
   DBusMessageIter iter, a_iter, s_iter, v_iter;
 
-  if (!cb) return;
-  E_HAL_HANDLE_ERROR(cb, err);
+  if (!dbus_message_has_signature(msg, "a{sv}")) 
+  {
+    dbus_set_error(err, DBUS_ERROR_INVALID_SIGNATURE, "");
+    return NULL;
+  }
 
   ret = calloc(1, sizeof(E_Hal_Device_Get_All_Properties_Return));
-  if (!ret) return;
+  if (!ret) 
+  {
+    dbus_set_error(err, DBUS_ERROR_NO_MEMORY, "");
+    return NULL;
+  }
 
   ret->properties = ecore_hash_new(ecore_str_hash, ecore_str_compare);
   ecore_hash_set_free_key(ret->properties, ECORE_FREE_CB(ecore_string_release));
@@ -93,98 +84,73 @@ cb_device_get_all_properties(void *data, DBusMessage *msg, DBusError *err)
 
 
   dbus_message_iter_init(msg, &iter);
-  if (dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_ARRAY &&
-      dbus_message_iter_get_element_type(&iter) == DBUS_TYPE_DICT_ENTRY)
+  dbus_message_iter_recurse(&iter, &a_iter);
+  while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
   {
-    dbus_message_iter_recurse(&iter, &a_iter);
-    while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+    const char *name;
+    E_Hal_Property *prop = calloc(1, sizeof(E_Hal_Property));
+    dbus_message_iter_recurse(&a_iter, &s_iter);
+    dbus_message_iter_get_basic(&s_iter, &name);
+    dbus_message_iter_next(&s_iter);
+    dbus_message_iter_recurse(&s_iter, &v_iter);
+    
+    switch(dbus_message_iter_get_arg_type(&v_iter))
     {
-      const char *name;
-      E_Hal_Property *prop = calloc(1, sizeof(E_Hal_Property));
-      dbus_message_iter_recurse(&a_iter, &s_iter);
-      dbus_message_iter_get_basic(&s_iter, &name);
-      dbus_message_iter_next(&s_iter);
-      dbus_message_iter_recurse(&s_iter, &v_iter);
-      
-      switch(dbus_message_iter_get_arg_type(&v_iter))
-      {
-        case 's':
-          prop->type = E_HAL_PROPERTY_TYPE_STRING;
-          dbus_message_iter_get_basic(&v_iter, &(prop->val.s));
-          break;
-        case 'i':
-          prop->type = E_HAL_PROPERTY_TYPE_INT;
-          dbus_message_iter_get_basic(&v_iter, &(prop->val.i));
-          break;
-        case 't':
-          prop->type = E_HAL_PROPERTY_TYPE_UINT64;
-          dbus_message_iter_get_basic(&v_iter, &(prop->val.u64));
-          break;
-        case 'b':
-          prop->type = E_HAL_PROPERTY_TYPE_BOOL;
-          dbus_message_iter_get_basic(&v_iter, &(prop->val.b));
-          break;
-        case 'd':
-          prop->type = E_HAL_PROPERTY_TYPE_DOUBLE;
-          dbus_message_iter_get_basic(&v_iter, &(prop->val.d));
-          break;
-        case 'a':
-          prop->type = E_HAL_PROPERTY_TYPE_STRLIST;
+      case 's':
+        prop->type = E_HAL_PROPERTY_TYPE_STRING;
+        dbus_message_iter_get_basic(&v_iter, &(prop->val.s));
+        break;
+      case 'i':
+        prop->type = E_HAL_PROPERTY_TYPE_INT;
+        dbus_message_iter_get_basic(&v_iter, &(prop->val.i));
+        break;
+      case 't':
+        prop->type = E_HAL_PROPERTY_TYPE_UINT64;
+        dbus_message_iter_get_basic(&v_iter, &(prop->val.u64));
+        break;
+      case 'b':
+        prop->type = E_HAL_PROPERTY_TYPE_BOOL;
+        dbus_message_iter_get_basic(&v_iter, &(prop->val.b));
+        break;
+      case 'd':
+        prop->type = E_HAL_PROPERTY_TYPE_DOUBLE;
+        dbus_message_iter_get_basic(&v_iter, &(prop->val.d));
+        break;
+      case 'a':
+        prop->type = E_HAL_PROPERTY_TYPE_STRLIST;
+        {
+          DBusMessageIter list_iter;
+          prop->val.strlist = ecore_list_new();
+          dbus_message_iter_recurse(&v_iter, &list_iter);
+          while (dbus_message_iter_get_arg_type(&list_iter) != DBUS_TYPE_INVALID)
           {
-            DBusMessageIter list_iter;
-            prop->val.strlist = ecore_list_new();
-            dbus_message_iter_recurse(&v_iter, &list_iter);
-            while (dbus_message_iter_get_arg_type(&list_iter) != DBUS_TYPE_INVALID)
-            {
-              char *str;
-              dbus_message_iter_get_basic(&list_iter, &str);
-              ecore_list_append(prop->val.strlist, str);
-              dbus_message_iter_next(&list_iter);
-            }
+            char *str;
+            dbus_message_iter_get_basic(&list_iter, &str);
+            ecore_list_append(prop->val.strlist, str);
+            dbus_message_iter_next(&list_iter);
           }
-          break;
-        default:
-          printf("Error: unexpected property type (%s): %c\n", name, dbus_message_iter_get_arg_type(&v_iter));
-          break;
-      }
-      ecore_hash_set(ret->properties, (void *)ecore_string_instance(name), prop);
-
-
-      dbus_message_iter_next(&a_iter);
+        }
+        break;
+      default:
+        printf("Error: unexpected property type (%s): %c\n", name, dbus_message_iter_get_arg_type(&v_iter));
+        break;
     }
-  }
-  else printf("error, wrong type\n");
+    ecore_hash_set(ret->properties, (void *)ecore_string_instance(name), prop);
 
-  if (dbus_error_is_set(err))
-  {
-    /* XXX do something with an error */
-    printf("ERROR: %s,  %s!\n", err->name, err->message);
-    dbus_error_free(err);
-    goto error;
+    dbus_message_iter_next(&a_iter);
   }
 
-  if (cb->func)
-    cb->func(cb->user_data, ret, err);
-
-error:
-  if (ret) 
-  {
-    if (ret->properties) ecore_hash_destroy(ret->properties);
-    free(ret);
-  }
-  e_hal_callback_free(cb);
+  return ret;
 }
 
 int
-e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_Hal_Callback_Func cb_func, void *data)
+e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data)
 {
-  E_Hal_Callback *cb;
   DBusMessage *msg;
   int ret;
 
-  cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_device_call_new(udi, "GetAllProperties");
-  ret = e_dbus_message_send(conn, msg, cb_device_get_all_properties, -1, cb) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_get_all_properties, cb_func, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -193,49 +159,41 @@ e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_Hal_
 
 /* bool Device.QueryCapability(string udi) */
 
-static void 
-cb_device_query_capability(void *data, DBusMessage *msg, DBusError *err)
+// XXX this is same as Device_Exists in manager.
+static E_Hal_Device_Query_Capability_Return *
+unmarshal_device_query_capability(DBusMessage *msg, DBusError *err)
 {
-  E_Hal_Callback *cb = data;
   E_Hal_Device_Query_Capability_Return *ret = NULL;
   dbus_bool_t val;
 
-  if (!cb) return;
-  E_HAL_HANDLE_ERROR(cb, err);
-
-  ret = calloc(1, sizeof(E_Hal_Device_Query_Capability_Return));
-  if (!ret) return;
+  ret = calloc(1, sizeof(E_Hal_Manager_Device_Exists_Return));
+  if (!ret) 
+  {
+    dbus_set_error(err, DBUS_ERROR_NO_MEMORY, "");
+    return NULL;
+  }
 
   dbus_message_get_args(msg, err, DBUS_TYPE_BOOLEAN, &val, DBUS_TYPE_INVALID);
 
   if (dbus_error_is_set(err))
   {
-    /* XXX do something with an error */
-    printf("ERROR: %s,  %s!\n", err->name, err->message);
-    dbus_error_free(err);
-    goto error;
+    free(ret);
+    return NULL;
   }
 
   ret->boolean = val;
-  if (cb->func)
-    cb->func(cb->user_data, ret, err);
-
-error:
-  if(ret) free(ret);
-  e_hal_callback_free(cb);
+  return ret;
 }
 
 int
-e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const char *capability, E_Hal_Callback_Func cb_func, void *data)
+e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const char *capability, E_DBus_Callback_Func cb_func, void *data)
 {
-  E_Hal_Callback *cb;
   DBusMessage *msg;
   int ret;
 
-  cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_device_call_new(udi, "QueryCapability");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &capability, DBUS_TYPE_INVALID);
-  ret = e_dbus_message_send(conn, msg, cb_device_query_capability, -1, cb) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_query_capability, cb_func, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -243,20 +201,6 @@ e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const ch
 
 
 /* void Device.Mount(string mount_point, string fstype, array{string}options) */
-
-static void 
-cb_device_volume_mount(void *data, DBusMessage *msg, DBusError *err)
-{
-  E_Hal_Callback *cb = data;
-
-  if (!cb) return;
-  E_HAL_HANDLE_ERROR(cb, err);
-  if (cb->func)
-    cb->func(cb->user_data, NULL, err);
-
-error:
-  e_hal_callback_free(cb);
-}
 
 /**
  * @brief Mount a Volume
@@ -268,14 +212,12 @@ error:
  * @param options a list of additional options (not sure... fstype dependant?)
  */
 int
-e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *mount_point, const char *fstype, Ecore_List *options, E_Hal_Callback_Func cb_func, void *data)
+e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *mount_point, const char *fstype, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data)
 {
-  E_Hal_Callback *cb;
   DBusMessage *msg;
   DBusMessageIter iter, subiter;
   int ret;
 
-  cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_device_volume_call_new(udi, "Mount");
 
   dbus_message_iter_init_append(msg, &iter);
@@ -294,27 +236,12 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
   }
   dbus_message_iter_close_container(&iter, &subiter) ;
 
-  ret = e_dbus_message_send(conn, msg, cb_device_volume_mount, -1, cb) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
 
 /* void Unmount(array{string} options) */
-
-static void 
-cb_device_volume_unmount(void *data, DBusMessage *msg, DBusError *err)
-{
-  E_Hal_Callback *cb = data;
-
-  if (!cb) return;
-  E_HAL_HANDLE_ERROR(cb, err);
-
-  if (cb->func)
-    cb->func(cb->user_data, NULL, err);
-
-error:
-  e_hal_callback_free(cb);
-}
 
 /**
  * @brief Mount a Volume
@@ -324,14 +251,12 @@ error:
  * @param options a list of additional options (not sure... fstype dependant?)
  */
 int
-e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List *options, E_Hal_Callback_Func cb_func, void *data)
+e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data)
 {
-  E_Hal_Callback *cb;
   DBusMessage *msg;
   DBusMessageIter iter, subiter;
   int ret;
 
-  cb = e_hal_callback_new(cb_func, data);
   msg = e_hal_device_volume_call_new(udi, "Unmount");
 
   dbus_message_iter_init_append(msg, &iter);
@@ -347,7 +272,7 @@ e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List
   }
   dbus_message_iter_close_container(&iter, &subiter) ;
 
-  ret = e_dbus_message_send(conn, msg, cb_device_volume_unmount, -1, cb) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }

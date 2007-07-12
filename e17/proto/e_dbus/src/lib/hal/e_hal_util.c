@@ -3,37 +3,6 @@
 
 /**
  * @internal
- * @brief Create a callback structure
- * @param cb_func the callback function
- * @param user_data data to pass to the callback
- */
-E_Hal_Callback *
-e_hal_callback_new(E_Hal_Callback_Func cb_func, void *user_data)
-{
-  E_Hal_Callback *cb;
-
-  if (!cb_func) return NULL;
-
-  cb = calloc(1, sizeof(E_Hal_Callback));
-  if (!cb) return NULL;
-  cb->func = cb_func;
-  cb->user_data = user_data;
-  return cb;
-}
-
-/**
- * @internal
- * @brief Free a callback structure
- * @param callback the callback to free
- */
-void
-e_hal_callback_free(E_Hal_Callback *callback)
-{
-  free(callback);
-}
-
-/**
- * @internal
  * @brief free a property structure
  * @param prop the property to free
  */
@@ -127,12 +96,4 @@ e_hal_property_strlist_get(E_Hal_Properties *properties, const char *key, int *e
 
   if (err) *err = 1;
   return NULL;
-}
-
-void 
-cb_error_generic(void *data, const char *name, const char *msg)
-{
-  E_Hal_Callback *cb = data;
-  printf("Error: %s :: %s\n", name, msg);
-  e_hal_callback_free(cb);
 }
