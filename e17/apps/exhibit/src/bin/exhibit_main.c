@@ -429,6 +429,15 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 
    if (ecore_file_size(file) <= 0)
      return;
+
+   if(!e->options->thumbs_show)
+     {
+	row = etk_tree_row_append(ETK_TREE(e->cur_tab->itree), NULL, 
+				   e->cur_tab->icol,
+				   NULL, NULL, 
+				   basename((char *) file), NULL);
+	return;
+     }
    
    ep = epsilon_new(file);
    epsilon_thumb_size(ep, EPSILON_THUMB_NORMAL);

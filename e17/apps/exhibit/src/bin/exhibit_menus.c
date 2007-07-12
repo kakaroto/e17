@@ -533,7 +533,7 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
 
    frame = etk_frame_new("Authors");
    abouttext = etk_text_view_new();
-   etk_widget_size_request_set(abouttext, -1, 75);
+   etk_widget_size_request_set(abouttext, -1, 80);
    etk_object_properties_set(ETK_OBJECT(abouttext),
 	 "focusable", ETK_FALSE, NULL);
    etk_textblock_text_set(ETK_TEXT_VIEW(abouttext)->textblock,
@@ -541,7 +541,8 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
 	 "Hisham '<b>CodeWarrior</b>' Mardam Bey\n"
 	 "Martin '<b>balony</b>' Sarajervi\n"
 	 "Simon '<b>MoOm</b>' Treny\n"
-	 "Friedrich '<b>phriedrich</b>' Preuﬂ",
+	 "Friedrich '<b>phriedrich</b>' Preuﬂ\n"
+	 "Brian '<b>morlenxus</b>' Miculcy",
 	 ETK_TRUE);
    etk_container_add(ETK_CONTAINER(frame), abouttext);
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);

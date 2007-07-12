@@ -98,6 +98,8 @@ struct _Ex_Options
    double sharpen_thresh;
    double brighten_thresh;
    
+   int thumbs_show;
+   
    double slide_interval;   
    int comments_visible;
    int rotate_autosave;
@@ -120,6 +122,8 @@ struct _Ex_Options_Dialog
    Etk_Widget *blur_thresh;
    Etk_Widget *sharpen_thresh;
    Etk_Widget *brighten_thresh;
+
+   Etk_Widget *thumbs_show;
 
    Etk_Widget *slide_interval;
    Etk_Widget *comments_visible;

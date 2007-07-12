@@ -113,6 +113,7 @@ _ex_options_init()
    CFG_OPTIONS_NEWI("lt", slide_interval, EET_T_DOUBLE);
    CFG_OPTIONS_NEWI("cv", comments_visible, EET_T_INT);
    CFG_OPTIONS_NEWI("ra", rotate_autosave, EET_T_INT);
+   CFG_OPTIONS_NEWI("ts", thumbs_show, EET_T_INT);
    CFG_OPTIONS_NEWI("mf", monitor_focus, EET_T_INT);
    CFG_OPTIONS_NEWI("dv", default_view, EET_T_INT);
    CFG_OPTIONS_NEWI("ds", default_sort, EET_T_INT);
@@ -212,6 +213,7 @@ _ex_options_default(Exhibit *e)
    e->options->brighten_thresh  = EX_DEFAULT_BRIGHTEN_THRESH;
    e->options->slide_interval   = EX_DEFAULT_SLIDE_INTERVAL;
    e->options->comments_visible = EX_DEFAULT_COMMENTS_HIDDEN;
+   e->options->thumbs_show      = ETK_TRUE;
    e->options->default_view     = EX_IMAGE_ONE_TO_ONE;
    e->options->default_sort     = EX_SORT_BY_NAME;
    e->options->show_all_filetypes = ETK_FALSE;
@@ -479,6 +481,12 @@ _ex_options_set()
 	      "saving the other options!", ETK_MESSAGE_DIALOG_WARNING);
      }
 
+   /* THUMBS */
+   if (IS_SELECTED(dialog->thumbs_show))
+	e->options->thumbs_show = ETK_TRUE;
+   else 
+	e->options->thumbs_show = ETK_FALSE;
+
    /* SORTING */
    e->options->default_sort = e->options->default_sort_tmp;
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
@@ -674,7 +682,7 @@ _ex_options_combobox_active_item_changed_cb(Etk_Object *object, void *data)
 static Etk_Widget *
 _ex_options_page_3_create()
 {
-   Etk_Widget *vbox, *hbox;
+   Etk_Widget *vbox, *vbox1, *hbox;
    Etk_Widget *vbox2;
    Etk_Widget *frame, *label;
    Etk_Widget *image;
@@ -682,10 +690,24 @@ _ex_options_page_3_create()
 
    vbox = etk_vbox_new(ETK_FALSE, 3);
    
-   frame = etk_frame_new("Thumb sorting");
+   frame = etk_frame_new("Thumbs");
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
+   vbox1 = etk_vbox_new(ETK_FALSE, 3);
+   etk_container_add(ETK_CONTAINER(frame), vbox1);
+
+   dialog->thumbs_show = etk_check_button_new_with_label("Show Thumbnails");
+   etk_box_append(ETK_BOX(vbox1), dialog->thumbs_show, ETK_BOX_START, ETK_BOX_NONE, 0);
+   if (e->options->thumbs_show)
+     etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(dialog->thumbs_show));
+
+   frame = etk_frame_new("Directory listing");
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
+   vbox2 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
+   
    hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_container_add(ETK_CONTAINER(frame), hbox);
+   etk_box_append(ETK_BOX(vbox2), hbox, ETK_BOX_START, 
+	 ETK_BOX_NONE, 0);
 
    label = etk_label_new("Default sort by"); 
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, 
@@ -713,11 +735,6 @@ _ex_options_page_3_create()
    
    etk_signal_connect("active-item-changed", ETK_OBJECT(dialog->default_sort), 
 	 ETK_CALLBACK(_ex_options_combobox_active_item_changed_cb), NULL);
-   
-   frame = etk_frame_new("Directory listing");
-   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 5);
-   vbox2 = etk_vbox_new(ETK_FALSE, 0);
-   etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    dialog->monitor_focus = etk_check_button_new_with_label("Autofocus new images added to your current dir");
    etk_box_append(ETK_BOX(vbox2), dialog->monitor_focus, ETK_BOX_START, ETK_BOX_NONE, 0);
