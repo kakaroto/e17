@@ -95,7 +95,7 @@ Etk_Engine *engine_open(int *argc, char ***argv)
 {
    engine_info.engine_data = NULL;
    engine_info.engine_name = strdup("ecore_evas_software_x11_16");
-   etk_engine_inherit_from(&engine_info, "ecore_evas_software_x11", argc, argv);
+   etk_engine_inherit_from(&engine_info, "ecore_evas_x11", argc, argv);
    return &engine_info;
 }
 
