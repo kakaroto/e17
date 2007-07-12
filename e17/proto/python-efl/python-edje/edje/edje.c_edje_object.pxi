@@ -229,7 +229,7 @@ cdef class Edje(evas.c_evas.Object):
     def part_swallow_get(self, char *part):
         cdef evas.c_evas.Evas_Object *o
         o = edje_object_part_swallow_get(self.obj, part)
-        return evas.c_evas.Object_from_instance(<long>o)
+        return evas.c_evas._Object_from_instance(<long>o)
 
     def part_state_get(self, char *part):
         cdef double sv
