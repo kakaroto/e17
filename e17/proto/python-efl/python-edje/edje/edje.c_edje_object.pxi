@@ -485,3 +485,5 @@ cdef class Edje(evas.c_evas.Object):
     def signal_emit(self, char *emission, char *source):
         edje_object_signal_emit(self.obj, emission, source)
 
+
+evas.c_evas._object_mapping_register("edje", Edje)

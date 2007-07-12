@@ -46,9 +46,33 @@ def _Canvas_from_instance(long ptr):
     return Canvas_from_instance(<Evas *>ptr)
 
 
+cdef object object_mapping
+
+object_mapping = {
+    "image": Image,
+    "text": Text,
+    "rectangle": Rectangle,
+    "line": Line,
+    "gradient": Gradient,
+    "polygon": Polygon,
+    }
+
+
+def _object_mapping_register(char *name, cls):
+    if name in object_mapping:
+        raise ValueError("object type name '%s' already registered." % name)
+    object_mapping[name] = cls
+
+
+def _object_mapping_unregister(char *name):
+    del object_mapping[name]
+
+
 cdef Object Object_from_instance(Evas_Object *obj):
     cdef void *data
     cdef Object o
+    cdef char *t
+    cdef Canvas c
 
     if obj == NULL:
         return None
@@ -57,7 +81,10 @@ cdef Object Object_from_instance(Evas_Object *obj):
     if data != NULL:
         o = <Object>data
     else:
-        o = Object(Canvas_from_instance(evas_object_evas_get(obj)))
+        t = evas_object_type_get(obj)
+        c = Canvas_from_instance(evas_object_evas_get(obj))
+        cls = object_mapping.get(t, Object)
+        o = cls(c)
         o._set_obj(obj)
 
     return o

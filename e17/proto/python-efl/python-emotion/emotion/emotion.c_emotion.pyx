@@ -474,3 +474,6 @@ cdef class Emotion(evas.c_evas.Object):
 
     def on_audio_level_change_del(self, func):
         self.callback_del("audio_level_change", func)
+
+
+evas.c_evas._object_mapping_register("emotion_object", Emotion)
