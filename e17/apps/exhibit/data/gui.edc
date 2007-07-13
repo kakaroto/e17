@@ -35,6 +35,7 @@ images {
    image: "e17_fileman_thumb_bg.png" COMP;
    image: "e17_mini_button_shadow2.png" COMP;
    image: "exhibit_thumb_loading_1.png" COMP;
+   /*
    image: "exhibit_thumb_loading_2.png" COMP;
    image: "exhibit_thumb_loading_3.png" COMP;
    image: "exhibit_thumb_loading_4.png" COMP;
@@ -53,6 +54,7 @@ images {
    image: "exhibit_thumb_loading_17.png" COMP;
    image: "exhibit_thumb_loading_18.png" COMP;
    image: "exhibit_thumb_loading_19.png" COMP;
+   */
 }
 
 collections {
@@ -85,6 +87,7 @@ collections {
 		  smooth: 0; 
 	       } 
 	    } 
+	    /*
 	    description { 
 	       state: "anim" 0.0; 
 	       inherit: "default" 0.0;
@@ -110,8 +113,10 @@ collections {
 		  tween: "exhibit_thumb_loading_19.png";
 	       } 
 	    }
+	    */
 	 } 
       } 
+      /*
       programs {
          program {
 	    name: "animate";
@@ -123,6 +128,7 @@ collections {
 	    after: "animate";
 	 }
       }
+      */
    }   
    
    group {
