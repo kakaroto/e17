@@ -91,10 +91,6 @@ PKG_CHECK_MODULES(ENGRAVE, [engrave >= 0.1.0])
 PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
 PKG_CHECK_MODULES(ETK, [etk >= 0.1.0.002])
 
-dnl Set ETK_PACKAGE_DATA_DIR in config.h.  
-etk_prefix="\"`etk-config --prefix`/share/etk\""
-AC_DEFINE_UNQUOTED(ETK_PACKAGE_DATA_DIR, $etk_prefix, [Data dir for etk lib.])
-
 AC_SUBST(packagesrcdir)
 
 AC_OUTPUT([
