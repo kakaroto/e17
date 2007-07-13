@@ -34,7 +34,25 @@ images {
    image: "tiles.png" COMP;
    image: "e17_fileman_thumb_bg.png" COMP;
    image: "e17_mini_button_shadow2.png" COMP;
-   image: "exhibit_thumb_loading.png" COMP;
+   image: "exhibit_thumb_loading_1.png" COMP;
+   image: "exhibit_thumb_loading_2.png" COMP;
+   image: "exhibit_thumb_loading_3.png" COMP;
+   image: "exhibit_thumb_loading_4.png" COMP;
+   image: "exhibit_thumb_loading_5.png" COMP;
+   image: "exhibit_thumb_loading_6.png" COMP;
+   image: "exhibit_thumb_loading_7.png" COMP;
+   image: "exhibit_thumb_loading_8.png" COMP;
+   image: "exhibit_thumb_loading_9.png" COMP;
+   image: "exhibit_thumb_loading_10.png" COMP;
+   image: "exhibit_thumb_loading_11.png" COMP;
+   image: "exhibit_thumb_loading_12.png" COMP;
+   image: "exhibit_thumb_loading_13.png" COMP;
+   image: "exhibit_thumb_loading_14.png" COMP;
+   image: "exhibit_thumb_loading_15.png" COMP;
+   image: "exhibit_thumb_loading_16.png" COMP;
+   image: "exhibit_thumb_loading_17.png" COMP;
+   image: "exhibit_thumb_loading_18.png" COMP;
+   image: "exhibit_thumb_loading_19.png" COMP;
 }
 
 collections {
@@ -61,14 +79,50 @@ collections {
 		  offset: -1 -1; 
 	       } 
 	       image { 
-		  normal: "exhibit_thumb_loading.png";
+		  normal: "exhibit_thumb_loading_1.png";
 	       } 
 	       fill { 
 		  smooth: 0; 
 	       } 
 	    } 
+	    description { 
+	       state: "anim" 0.0; 
+	       inherit: "default" 0.0;
+	       image { 
+		  normal: "exhibit_thumb_loading_1.png";
+		  tween: "exhibit_thumb_loading_2.png";
+		  tween: "exhibit_thumb_loading_3.png";
+		  tween: "exhibit_thumb_loading_4.png";
+		  tween: "exhibit_thumb_loading_5.png";
+		  tween: "exhibit_thumb_loading_6.png";
+		  tween: "exhibit_thumb_loading_7.png";
+		  tween: "exhibit_thumb_loading_8.png";
+		  tween: "exhibit_thumb_loading_9.png";
+		  tween: "exhibit_thumb_loading_10.png";
+		  tween: "exhibit_thumb_loading_11.png";
+		  tween: "exhibit_thumb_loading_12.png";
+		  tween: "exhibit_thumb_loading_13.png";
+		  tween: "exhibit_thumb_loading_14.png";
+		  tween: "exhibit_thumb_loading_15.png";
+		  tween: "exhibit_thumb_loading_16.png";
+		  tween: "exhibit_thumb_loading_17.png";
+		  tween: "exhibit_thumb_loading_18.png";
+		  tween: "exhibit_thumb_loading_19.png";
+	       } 
+	    }
 	 } 
       } 
+      programs {
+         program {
+	    name: "animate";
+	    signal: "show";
+	    source: "";
+	    action: STATE_SET "anim" 0.0;
+	    transition: LINEAR 1.0;
+	    target: "icon";
+	    after: "animate";
+	 }
+      }
    }   
    
    group {
