@@ -144,6 +144,11 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         o = evas_object_top_at_xy_get(self.obj, x, y, ip, ih)
         return Object_from_instance(o)
 
+    def top_at_pointer_get(self):
+        cdef Evas_Object *o
+        o = evas_object_top_at_pointer_get(self.obj)
+        return Object_from_instance(o)
+
     def top_in_rectangle_get(self, int x, int y, int w, int h,
                              include_pass_events_objects=False,
                              include_hidden_objects=False):
