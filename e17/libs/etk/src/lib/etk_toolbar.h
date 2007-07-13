@@ -5,6 +5,7 @@
 #include "etk_container.h"
 #include "etk_stock.h"
 #include "etk_types.h"
+#include "etk_box.h"
 
 /* TODO/FIXME list:
  * - When the toolbar is too large, we should clip it and add a popup-menu for the clipped tool-items
@@ -64,9 +65,9 @@ struct Etk_Toolbar
 Etk_Type   *etk_toolbar_type_get(void);
 Etk_Widget *etk_toolbar_new(void);
 
-void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget);
-void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget);
-void etk_toolbar_insert_at(Etk_Toolbar *toolbar, Etk_Widget *widget, int pos);
+void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget, Etk_Box_Group group);
+void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget, Etk_Box_Group group);
+void etk_toolbar_insert_at(Etk_Toolbar *toolbar, Etk_Widget *widget, Etk_Box_Group group, int pos);
 
 void                    etk_toolbar_orientation_set(Etk_Toolbar *toolbar, Etk_Toolbar_Orientation orientation);
 Etk_Toolbar_Orientation etk_toolbar_orientation_get(Etk_Toolbar *toolbar);

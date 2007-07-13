@@ -83,11 +83,11 @@ Etk_Widget *etk_toolbar_new(void)
  * @param toolbar a toolbar
  * @param widget the item to append
  */
-void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget)
+void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget, Etk_Box_Group group)
 {
    if (!toolbar || !widget)
       return;
-   etk_box_append(ETK_BOX(toolbar->box), widget, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(toolbar->box), widget, group, ETK_BOX_NONE, 0);
 }
 
 /**
@@ -95,11 +95,11 @@ void etk_toolbar_append(Etk_Toolbar *toolbar, Etk_Widget *widget)
  * @param toolbar a toolbar
  * @param widget the item to append
  */
-void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget)
+void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget, Etk_Box_Group group)
 {
    if (!toolbar || !widget)
       return;
-   etk_box_prepend(ETK_BOX(toolbar->box), widget, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_prepend(ETK_BOX(toolbar->box), widget, group, ETK_BOX_NONE, 0);
 }
 
 /**
@@ -108,11 +108,11 @@ void etk_toolbar_prepend(Etk_Toolbar *toolbar, Etk_Widget *widget)
  * @param widget the item to add
  * @param pos the position to add the item at
  */
-void etk_toolbar_insert_at(Etk_Toolbar *toolbar, Etk_Widget *widget, int pos)
+void etk_toolbar_insert_at(Etk_Toolbar *toolbar, Etk_Widget *widget, Etk_Box_Group group, int pos)
 {
    if (!toolbar || !widget)
       return;
-   etk_box_insert_at(ETK_BOX(toolbar->box), widget, ETK_BOX_START, pos, ETK_BOX_NONE, 0);
+   etk_box_insert_at(ETK_BOX(toolbar->box), widget, group, pos, ETK_BOX_NONE, 0);
 }
 
 /**
@@ -144,7 +144,7 @@ void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, Etk_Toolbar_Orientation o
    
    children = etk_container_children_get(ETK_CONTAINER(prev_box));
    for (l = children; l; l = l->next)
-      etk_toolbar_append(toolbar, ETK_WIDGET(l->data));
+      etk_toolbar_append(toolbar, ETK_WIDGET(l->data), ETK_BOX_START);
    evas_list_free(children);
    etk_object_destroy(ETK_OBJECT(prev_box));
    
@@ -373,7 +373,7 @@ void _etk_toolbar_child_add(Etk_Container *container, Etk_Widget *widget)
    
    if (!(toolbar = ETK_TOOLBAR(container)) || !widget)
       return;
-   etk_toolbar_append(toolbar, widget);
+   etk_toolbar_append(toolbar, widget, ETK_BOX_START);
 }
 
 /* Removes the child from the toolbar */

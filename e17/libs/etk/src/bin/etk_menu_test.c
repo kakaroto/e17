@@ -52,28 +52,28 @@ void etk_test_menu_window_create(void *data)
    etk_box_append(ETK_BOX(vbox), toolbar, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_COPY);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button, ETK_BOX_START);
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_CUT);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button, ETK_BOX_START);
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_PASTE);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button, ETK_BOX_START);
    
    sep = etk_vseparator_new();
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), sep);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), sep, ETK_BOX_START);
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_UNDO);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), button); 
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button, ETK_BOX_START); 
    
    button = etk_tool_button_new_from_stock(ETK_STOCK_EDIT_REDO);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);   
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button, ETK_BOX_START);   
    
    sep = etk_vseparator_new();
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), sep);   
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), sep, ETK_BOX_START);   
    
    button = etk_tool_toggle_button_new_from_stock(ETK_STOCK_EDIT_FIND);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), button);      
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), button, ETK_BOX_START);      
    
    /* Window body */
    label = etk_label_new("Click me! :)");
