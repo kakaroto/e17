@@ -1,5 +1,4 @@
 
-
 /* Called when the window is destroyed */
 void etk_main_quit_cb(void *data);
 
@@ -35,6 +34,7 @@ void on_FileChooser_row_selected       (Etk_Object *object, Etk_Tree_Row *row,
 void on_ColorCanvas_realize            (Etk_Widget *canvas, void *data);
 void on_ImageAlphaSlider_value_changed (Etk_Object *object, double value, void *data);
 void on_ImageComboBox_changed          (Etk_Combobox *combobox, void *data);
+void on_ImageTweenList_row_selected    (Etk_Object *object, Etk_Tree_Row *row, void *data);
 void on_EffectComboBox_changed         (Etk_Combobox *combobox, void *data);
 void on_AlertDialog_response           (Etk_Dialog *dialog, int response_id, void *data);
 void on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data);

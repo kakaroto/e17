@@ -4,6 +4,7 @@
 #include <Engrave.h>
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
+#include <Ecore_Evas.h>
 
 /* DEFINES */
 #define FAKEWIN_BORDER_TOP 16
@@ -81,7 +82,12 @@ enum various
    DRAG_REL1,
    DRAG_REL2,
    DRAG_MOVEBOX,
-   REL_COMBO_INTERFACE
+   REL_COMBO_INTERFACE,
+   IMAGE_TWEEN_UP,
+   IMAGE_TWEEN_DOWN,
+   IMAGE_TWEEN_DELETE,
+   IMAGE_TWEEN_RADIO,
+   IMAGE_NORMAL_RADIO
 };
 
 struct Current_State

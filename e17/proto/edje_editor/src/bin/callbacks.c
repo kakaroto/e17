@@ -38,6 +38,9 @@ void
 on_AllButton_click(Etk_Button *button, void *data)
 {
    char cmd[1024];
+   Etk_Tree_Row *sel_row;
+   int row_num;
+   
    switch ((int)data)
    {
       case TOOLBAR_NEW:
@@ -103,12 +106,13 @@ on_AllButton_click(Etk_Button *button, void *data)
          printf("Clicked signal on Toolbar Button 'Play' EMITTED\n");
          if (Cur.open_file_name) 
          {
-            snprintf(cmd,1024,"edje_viewer %s &",Cur.open_file_name);
-            printf("TEST IN VIEWER. cmd: %s\n",cmd);
-            if (!system("type edje_viewer"))
-               system(cmd);
-            else
-               ShowAlert("<b>Could not find 'edje_viewer'.</b><br>Check that the executable is in your path.");
+            snprintf(cmd,1024,"edje_editor -t %s %s &",Cur.open_file_name,Cur.eg->name);
+            printf("TESTING EDJE. cmd: %s\n",cmd);
+            system(cmd);
+            //if (!system("type edje_viewer"))
+            //   system(cmd);
+            //else
+            //   ShowAlert("<b>Could not find 'edje_viewer'.</b><br>Check that the executable is in your path.");
          }else{
             ShowAlert("You need to save the file before testing it.");
          }
@@ -123,6 +127,35 @@ on_AllButton_click(Etk_Button *button, void *data)
       case TOOLBAR_FONT_FILE_ADD:
          if (engrave_file_font_dir_get(Cur.ef)) ShowFilechooser(FILECHOOSER_FONT);
          else ShowAlert("You have to save the file once for insert font.");
+         break;
+      case IMAGE_TWEEN_UP:
+            ShowAlert("Up not yet implemented.");
+         break;
+      case IMAGE_TWEEN_DOWN:
+            ShowAlert("Down not yet implemented.");
+         break;
+      case IMAGE_TWEEN_DELETE:
+            sel_row = etk_tree_selected_row_get(ETK_TREE(UI_ImageTweenList));
+            if (row_num = (int)etk_tree_row_data_get (sel_row))
+            {
+               PROTO_engrave_part_state_image_tween_remove_nth(Cur.eps,row_num-1);
+               UpdateImageFrame();
+            }
+         break;
+      case IMAGE_TWEEN_RADIO:
+            UpdateImageFrame();
+            etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_ImageTweenRadio), TRUE);
+            etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_ImageNormalRadio), FALSE);
+            etk_widget_show(UI_ImageTweenList);
+            etk_widget_show(UI_MoveUpTweenButton);
+            etk_widget_show(UI_MoveDownTweenButton);
+            etk_widget_show(UI_DeleteTweenButton);
+            etk_combobox_active_item_set (ETK_COMBOBOX(UI_ImageComboBox),
+               etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ImageComboBox),0));
+         break;
+      case IMAGE_NORMAL_RADIO:
+            PROTO_engrave_part_state_image_tween_remove_all(Cur.eps);
+            UpdateImageFrame();
          break;
    }
 }
@@ -452,17 +485,39 @@ void
 on_ImageComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    Engrave_Image *image;
-   printf("Changed signal on Image Combo EMITED\n");
-
+   printf("Changed signal on Image Combo EMITTED\n");
+   
+   
    if ((image = etk_combobox_item_data_get(etk_combobox_active_item_get (combobox)))){
       //Set an existing image
       if (Cur.eps){
-         engrave_part_state_image_normal_set(Cur.eps, image);
+         if (!etk_toggle_button_active_get(UI_ImageTweenRadio))
+         {
+            engrave_part_state_image_normal_set(Cur.eps, image);
+         }else{
+            engrave_part_state_image_tween_add(Cur.eps,image);
+            UpdateImageFrame();
+         }
          ev_redraw();
       }
    }
 }
 
+void
+on_ImageTweenList_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   printf("Row selected signal on ImageTweenList EMITTED\n");
+   if (row != etk_tree_first_row_get (ETK_TREE(UI_ImageTweenList)))
+   {
+      etk_widget_disabled_set(UI_DeleteTweenButton,FALSE);
+      etk_widget_disabled_set(UI_MoveUpTweenButton,FALSE);
+      etk_widget_disabled_set(UI_MoveDownTweenButton,FALSE);
+   }else{
+      etk_widget_disabled_set(UI_DeleteTweenButton,TRUE);
+      etk_widget_disabled_set(UI_MoveUpTweenButton,TRUE);
+      etk_widget_disabled_set(UI_MoveDownTweenButton,TRUE);
+   }
+}
 void
 on_ImageAlphaSlider_value_changed(Etk_Object *object, double va, void *data)
 {
@@ -1238,7 +1293,7 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
 
       switch(FileChooserOperation){
          case FILECHOOSER_OPEN:
-            snprintf(cmd,4096,"edje_editor %s/%s &",
+            snprintf(cmd,4096,"edje_editor \"%s/%s\" &",
                etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
                etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
             system(cmd);
@@ -1258,9 +1313,9 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
             if (Cur.eps){
                //If the new image is not in the edc dir
                if (strcmp(etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),engrave_file_image_dir_get(Cur.ef))){
-                  //TODO check if image already exist
+                  //TODO check if image already exist and is a valid image
                   //Copy the image to the image_dir
-                  snprintf(cmd, 4096, "cp %s %s", etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)), engrave_file_image_dir_get(Cur.ef));
+                  snprintf(cmd, 4096, "cp \"%s\" \"%s\"", etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)), engrave_file_image_dir_get(Cur.ef));
                   ret = system(cmd);
                   if (ret < 0) {
                      ShowAlert("Error: unable to copy image!");
@@ -1270,8 +1325,11 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
                //Set the new image
                Engrave_Image* eimg;
                eimg = engrave_image_new(etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),ENGRAVE_IMAGE_TYPE_LOSSY,95);	 
-               engrave_file_image_add(Cur.ef,eimg);	 
-               engrave_part_state_image_normal_set(Cur.eps,eimg);
+               engrave_file_image_add(Cur.ef,eimg);
+               if (!etk_toggle_button_active_get(UI_ImageTweenRadio))
+                  engrave_part_state_image_normal_set(Cur.eps,eimg);
+               else
+                  engrave_part_state_image_tween_add(Cur.eps,eimg);
                
                PopulateImagesComboBox();
                UpdateImageFrame();

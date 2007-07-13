@@ -194,7 +194,11 @@ PopulateImagesComboBox(void)
    printf("Populate Images Combobox\n");
 
    etk_combobox_clear(ETK_COMBOBOX(UI_ImageComboBox));
-
+   
+   ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_ImageComboBox),
+                     NULL, "<b>Choose an image</b>");
+   etk_combobox_item_data_set (ComboItem, NULL);
+   
    for (l = Cur.ef->images; l ; l = l->next)
    {
       image = l->data;
@@ -266,7 +270,8 @@ PopulateRelComboBoxes(void)
 }
 
 void
-PopulateSourceComboBox(void){
+PopulateSourceComboBox(void)
+{
    Evas_List *l;
    Engrave_Part *ep;
 
@@ -295,6 +300,39 @@ PopulateSourceComboBox(void){
    //Renable  signal propagation
    etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_SourceEntry),
                      ETK_CALLBACK(on_SourceEntry_item_changed));
+}
+void
+PupulateTweenList(void)
+{
+   char buf[4096];
+   Engrave_Image *im;
+   Etk_Tree_Row *row;
+   Evas_List *l;
+   int row_num = 1;
+   Etk_Tree_Col *col1 = etk_tree_nth_col_get (ETK_TREE(UI_ImageTweenList),0);
+   
+   etk_tree_clear(ETK_TREE(UI_ImageTweenList));
+   if (Cur.eps->image.normal)
+   {
+      snprintf(buf,4095,"%s/%s",Cur.ef->im_dir,Cur.eps->image.normal->name);
+      etk_tree_row_append(ETK_TREE(UI_ImageTweenList), NULL,
+                           col1, buf, NULL,Cur.eps->image.normal->name,
+                           NULL);
+   }
+   // for all the frame in the tween
+   for (l = Cur.eps->image.tween; l; l = l->next)
+   {
+      im = l->data;
+      snprintf(buf,4095,"%s/%s",Cur.ef->im_dir,im->name);
+      row = etk_tree_row_append(ETK_TREE(UI_ImageTweenList), NULL,
+                           col1, buf, NULL,im->name,
+                           NULL);
+      etk_tree_row_data_set(row,(void*)row_num);
+      row_num++;
+   }
+   etk_widget_disabled_set(UI_DeleteTweenButton,TRUE);
+   etk_widget_disabled_set(UI_MoveUpTweenButton,TRUE);
+   etk_widget_disabled_set(UI_MoveDownTweenButton,TRUE);
 }
 void
 UpdateGroupFrame(void)
@@ -439,6 +477,9 @@ UpdateImageFrame(void)
    Engrave_Image *image;
    int i;
    Etk_Combobox_Item *item = NULL;
+   Etk_Tree_Col *col1 = etk_tree_nth_col_get (ETK_TREE(UI_ImageTweenList),0);
+   char buf[4096];
+   
    //Stop signal propagation
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderLeftSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderRightSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
@@ -447,25 +488,48 @@ UpdateImageFrame(void)
    etk_signal_block("value-changed",ETK_OBJECT(UI_ImageAlphaSlider),ETK_CALLBACK(on_ImageAlphaSlider_value_changed));
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_changed));
 
-   //Set the images combobox
-   if (Cur.eps->image.normal)
+   PupulateTweenList();
+
+   if (Cur.eps->image.tween)
    {
-      i=0;
-      //Loop for all the item in the Combobox
-      while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ImageComboBox),i)))
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_ImageTweenRadio), TRUE);
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_ImageNormalRadio), FALSE);
+      etk_widget_show(UI_ImageTweenList);
+      etk_widget_show(UI_MoveUpTweenButton);
+      etk_widget_show(UI_MoveDownTweenButton);
+      etk_widget_show(UI_DeleteTweenButton);
+      etk_combobox_active_item_set (ETK_COMBOBOX(UI_ImageComboBox),
+               etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ImageComboBox),0));
+   }else{
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_ImageTweenRadio), FALSE);
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_ImageNormalRadio), TRUE);
+      etk_widget_hide(UI_ImageTweenList);
+      etk_widget_hide(UI_MoveUpTweenButton);
+      etk_widget_hide(UI_MoveDownTweenButton);
+      etk_widget_hide(UI_DeleteTweenButton);
+      //Set the images combobox for normal image
+      if (Cur.eps->image.normal)
       {
-         if ((image = etk_combobox_item_data_get(item)))
+         i=0;
+         //Loop for all the item in the Combobox
+         while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ImageComboBox),i)))
          {
-            //Get the data for the item (should be an char* with the name of the image file)
-            if (image == Cur.eps->image.normal)
+            if ((image = etk_combobox_item_data_get(item)))
             {
-               etk_combobox_active_item_set (ETK_COMBOBOX(UI_ImageComboBox),item);	//If we found the item set active
-               break;
+               //Get the data for the item (should be an char* with the name of the image file)
+               if (image == Cur.eps->image.normal)
+               {
+                  etk_combobox_active_item_set (ETK_COMBOBOX(UI_ImageComboBox),item);	//If we found the item set active
+                  break;
+               }
             }
+            i++;
          }
-         i++;
+      }else{
+         etk_combobox_active_item_set (ETK_COMBOBOX(UI_ImageComboBox),
+               etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ImageComboBox),0));
       }
-   }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_ImageComboBox), etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ImageComboBox),0));}
+   }
 
    etk_range_value_set (ETK_RANGE(UI_BorderTopSpinner), Cur.eps->image.border.t);
    etk_range_value_set (ETK_RANGE(UI_BorderLeftSpinner), Cur.eps->image.border.l);
@@ -1004,30 +1068,35 @@ create_toolbar(Etk_Toolbar_Orientation o)
    //NewButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_NEW);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_NEW);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_NEW);
 
    //OpenButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPEN);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPEN);
 
    //SaveButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
    etk_object_properties_set(ETK_OBJECT(button),"label","Save",NULL);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE);
    
    //SaveEDJButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE_AS);
    etk_object_properties_set(ETK_OBJECT(button),"label","Save as",NULL);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDJ);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDJ);
 
 /*    //SaveEDCButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
    etk_object_properties_set(ETK_OBJECT(button),"label","Export edc",NULL);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDC);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDC);
  */   
    sep = etk_hseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), sep);
@@ -1036,7 +1105,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
 
    //AddButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_LIST_ADD);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_ADD);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                        ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_ADD);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
 
    //AddMenu
@@ -1046,28 +1116,32 @@ create_toolbar(Etk_Toolbar_Orientation o)
    menu_item = etk_menu_item_image_new_with_label("Rectangle");
    image = etk_image_new_from_edje(EdjeFile,"RECT.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_RECT);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_RECT);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
 
    //New Image
    menu_item = etk_menu_item_image_new_with_label("Image");
    image = etk_image_new_from_edje(EdjeFile,"IMAGE.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_AddMenu_item_activated),(void*) NEW_IMAGE);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(on_AddMenu_item_activated),(void*) NEW_IMAGE);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
    
    //New Text
    menu_item = etk_menu_item_image_new_with_label("Text");
    image = etk_image_new_from_edje(EdjeFile,"TEXT.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_TEXT);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_TEXT);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
    
    //New Program
    menu_item = etk_menu_item_image_new_with_label("Program");
    image = etk_image_new_from_edje(EdjeFile,"PROG.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_PROG);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_PROG);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
    
    //Separator
@@ -1075,37 +1149,50 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
 
    //New Description
-   menu_item = etk_menu_item_image_new_with_label("Add a new description");
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_DESC);
+   menu_item = etk_menu_item_image_new_with_label("A new state to part");
+   image = etk_image_new_from_edje(EdjeFile,"DESC.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_DESC);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
 
    //New Group
-   menu_item = etk_menu_item_image_new_with_label("Add a new group");
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_GROUP);
-
+   menu_item = etk_menu_item_image_new_with_label("A new group to edj");
+   image = etk_image_new_from_edje(EdjeFile,"NONE.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_GROUP);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
 
    //RemoveButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_LIST_REMOVE);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_REMOVE);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_REMOVE);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
 
    //RemoveMenu
    UI_RemoveMenu = etk_menu_new();
 
    //description
-   menu_item = etk_menu_item_image_new_with_label("Selected Description");
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_DESCRIPTION);
+   menu_item = etk_menu_item_image_new_with_label("Selected State");
+   image = etk_image_new_from_edje(EdjeFile,"DESC.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+         ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_DESCRIPTION);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
 
    //part
    menu_item = etk_menu_item_image_new_with_label("Selected Part");
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_PART);
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+               ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_PART);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
 
    //group
    menu_item = etk_menu_item_image_new_with_label("Selected Group");
-   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_GROUP);
+   image = etk_image_new_from_edje(EdjeFile,"NONE.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+               ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_GROUP);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
 
    sep = etk_hseparator_new();
@@ -1115,12 +1202,14 @@ create_toolbar(Etk_Toolbar_Orientation o)
 
    //MoveUp Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_UP);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_UP);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_UP);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
 
    //MoveDown Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_DOWN);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_DOWN);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                  ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_DOWN);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
 
    sep = etk_hseparator_new();
@@ -1128,16 +1217,18 @@ create_toolbar(Etk_Toolbar_Orientation o)
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), sep);
 
-   //Compile Button
+   //Test Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_MEDIA_PLAYBACK_START);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_PLAY);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Test in viewer",NULL);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                        ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_PLAY);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Test group",NULL);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
 
    //DebugButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_PROPERTIES);
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_DEBUG);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                        ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_DEBUG);
    etk_object_properties_set(ETK_OBJECT(button),"label","Debug",NULL);
 
    return ToolBar;
@@ -1260,7 +1351,7 @@ create_description_frame(void)
    Etk_Combobox_Item *ComboItem;
 
    //DescriptionFrame
-   UI_DescriptionFrame = etk_frame_new("Description property");
+   UI_DescriptionFrame = etk_frame_new("State");
 
    //vbox
    vbox = etk_vbox_new(ETK_FALSE, 0);
@@ -1367,9 +1458,6 @@ create_description_frame(void)
    etk_widget_size_request_set(UI_StateMaxHSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox),UI_StateMaxHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-
-
-
    etk_signal_connect("text-changed", ETK_OBJECT(UI_StateEntry), ETK_CALLBACK(on_StateEntry_text_changed), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_AspectMinSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
@@ -1400,86 +1488,141 @@ create_image_frame(void)
 {
    Etk_Widget *label;
    Etk_Widget *table;
+   Etk_Tree_Col *col1;
+   Etk_Widget *button;
 
    //ImageFrame
    UI_ImageFrame = etk_frame_new("Image");
 
    //table
-   table = etk_table_new (5, 4, ETK_TABLE_NOT_HOMOGENEOUS);
+   table = etk_table_new (5, 8, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_container_add(ETK_CONTAINER(UI_ImageFrame), table);
 
-   label = etk_label_new("Image");
-   //etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 0, 0);
+   //ImageTweenRadio
+   UI_ImageNormalRadio = etk_radio_button_new_with_label("Normal",NULL);
+   UI_ImageTweenRadio = etk_radio_button_new_with_label_from_widget("Tween", 
+                        ETK_RADIO_BUTTON(UI_ImageNormalRadio));
+   etk_table_attach_default (ETK_TABLE(table),UI_ImageNormalRadio, 1, 2, 0, 0);
+   etk_table_attach_default (ETK_TABLE(table),UI_ImageTweenRadio, 3, 4, 0, 0);
 
    //imageComboBox
    UI_ImageComboBox = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(UI_ImageComboBox), ETK_COMBOBOX_IMAGE, 24, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_column_add(ETK_COMBOBOX(UI_ImageComboBox), ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_ImageComboBox));
-   etk_table_attach_default (ETK_TABLE(table),UI_ImageComboBox, 1, 3, 0, 0);
+   etk_table_attach_default (ETK_TABLE(table),UI_ImageComboBox, 0, 3, 1, 1);
 
    //AddImageButton
    UI_ImageAddButton = etk_button_new_from_stock (ETK_STOCK_DOCUMENT_OPEN);
    etk_object_properties_set (ETK_OBJECT(UI_ImageAddButton), "label","",NULL);
-   etk_table_attach_default (ETK_TABLE(table),UI_ImageAddButton, 4, 4, 0, 0);
+   etk_table_attach_default (ETK_TABLE(table),UI_ImageAddButton, 4, 4, 1, 1);
+
+   //ImageTweenVBox
+   UI_ImageTweenVBox = etk_vbox_new(ETK_TRUE, 2);
+   etk_table_attach_default (ETK_TABLE(table),UI_ImageTweenVBox, 0, 0, 2, 2);
+   
+   //MoveUpTweenButton
+   UI_MoveUpTweenButton = etk_button_new_from_stock (ETK_STOCK_GO_UP);
+   etk_button_style_set(UI_MoveUpTweenButton,  ETK_BUTTON_ICON);
+   etk_signal_connect("clicked", ETK_OBJECT(UI_MoveUpTweenButton), 
+      ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_UP);
+   etk_box_append (UI_ImageTweenVBox, UI_MoveUpTweenButton, 
+                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   //MoveDownTweenButton
+   UI_MoveDownTweenButton = etk_button_new_from_stock (ETK_STOCK_GO_DOWN);
+   etk_button_style_set(UI_MoveDownTweenButton,  ETK_BUTTON_ICON);
+   etk_signal_connect("clicked", ETK_OBJECT(UI_MoveDownTweenButton), 
+      ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_DOWN);
+   etk_box_append (UI_ImageTweenVBox, UI_MoveDownTweenButton, 
+                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+                     
+   //DeleteTweenButton
+   UI_DeleteTweenButton = etk_button_new_from_stock (ETK_STOCK_EDIT_DELETE);
+   etk_button_style_set(UI_DeleteTweenButton, ETK_BUTTON_ICON);
+   etk_signal_connect("clicked", ETK_OBJECT(UI_DeleteTweenButton), 
+      ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_DELETE);
+   etk_box_append (UI_ImageTweenVBox, UI_DeleteTweenButton, 
+                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+                     
+   //ImageTweenList
+   UI_ImageTweenList = etk_tree_new();
+   etk_tree_mode_set(ETK_TREE(UI_ImageTweenList), ETK_TREE_MODE_LIST);
+   etk_tree_headers_visible_set(ETK_TREE(UI_ImageTweenList), FALSE);
+  // etk_tree_multiple_select_set(ETK_TREE(UI_ImageTweenList), ETK_TRUE);
+   col1 = etk_tree_col_new(ETK_TREE(UI_ImageTweenList), "Tween", 130, 0.0);
+   etk_tree_col_model_add(col1, etk_tree_model_image_new());
+   etk_tree_col_model_add(col1, etk_tree_model_text_new());
+   etk_tree_build(ETK_TREE(UI_ImageTweenList));
+   etk_table_attach_default (ETK_TABLE(table),UI_ImageTweenList, 1, 4, 2, 2);	
 
    label = etk_label_new("Alpha");
-   etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 1, 1);
-
-
+   etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 3, 3);
 
    //ImageAlphaSlider
    UI_ImageAlphaSlider = etk_hslider_new (0, 255, 15, 1,20);
-   etk_table_attach_default (ETK_TABLE(table),UI_ImageAlphaSlider, 1, 4, 1, 1);
+   etk_table_attach_default (ETK_TABLE(table),UI_ImageAlphaSlider, 1, 4, 3, 3);
 
    label = etk_label_new("Left");
    etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default (ETK_TABLE(table),label, 1, 1, 2, 2);
+   etk_table_attach_default (ETK_TABLE(table),label, 1, 1, 4, 4);
 
    label = etk_label_new("Right");
    etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default (ETK_TABLE(table),label, 2, 2, 2, 2);
+   etk_table_attach_default (ETK_TABLE(table),label, 2, 2, 4, 4);
 
    label = etk_label_new("Top");
    etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default (ETK_TABLE(table),label, 3, 3, 2, 2);
+   etk_table_attach_default (ETK_TABLE(table),label, 3, 3, 4, 4);
 
    label = etk_label_new("Bottom");
    etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default (ETK_TABLE(table),label, 4, 4, 2, 2);
+   etk_table_attach_default (ETK_TABLE(table),label, 4, 4, 4, 4);
 
    label = etk_label_new("Border");
    //etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 3, 3);
+   etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 5, 5);
 
    //UI_BorderLeftSpinner
    UI_BorderLeftSpinner = etk_spinner_new (0, 500, 0, 1, 10);
    etk_widget_size_request_set(UI_BorderLeftSpinner,45, 20);
-   etk_table_attach_default (ETK_TABLE(table),UI_BorderLeftSpinner, 1, 1, 3, 3);
+   etk_table_attach_default (ETK_TABLE(table),UI_BorderLeftSpinner, 1, 1, 5, 5);
 
    //UI_BorderRightSpinner
    UI_BorderRightSpinner = etk_spinner_new (0, 500, 0, 1, 10);
    etk_widget_size_request_set(UI_BorderRightSpinner,45, 20);
-   etk_table_attach_default (ETK_TABLE(table),UI_BorderRightSpinner, 2, 2, 3, 3);
+   etk_table_attach_default (ETK_TABLE(table),UI_BorderRightSpinner, 2, 2, 5, 5);
 
    //UI_BorderTopSpinner
    UI_BorderTopSpinner = etk_spinner_new (0, 500, 0, 1, 10);
    etk_widget_size_request_set(UI_BorderTopSpinner,45, 20);
-   etk_table_attach_default (ETK_TABLE(table),UI_BorderTopSpinner, 3, 3, 3, 3);
+   etk_table_attach_default (ETK_TABLE(table),UI_BorderTopSpinner, 3, 3, 5, 5);
 
    //UI_BorderBottomSpinner
    UI_BorderBottomSpinner = etk_spinner_new (0, 500, 0, 1, 10);
    etk_widget_size_request_set(UI_BorderBottomSpinner,45, 20);
-   etk_table_attach_default (ETK_TABLE(table),UI_BorderBottomSpinner, 4, 4, 3, 3);
+   etk_table_attach_default (ETK_TABLE(table),UI_BorderBottomSpinner, 4, 4, 5, 5);
 
-   etk_signal_connect("clicked", ETK_OBJECT(UI_ImageAddButton), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_IMAGE_FILE_ADD);
-   etk_signal_connect("active-item-changed", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_changed), NULL);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_ImageAlphaSlider), ETK_CALLBACK(on_ImageAlphaSlider_value_changed), NULL);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderLeftSpinner), ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_LEFT);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderRightSpinner), ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_RIGHT);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderTopSpinner), ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_TOP);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderBottomSpinner), ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_BOTTOM);
+   etk_signal_connect("clicked", ETK_OBJECT(UI_ImageNormalRadio), 
+            ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_NORMAL_RADIO);
+   etk_signal_connect("clicked", ETK_OBJECT(UI_ImageTweenRadio), 
+            ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_RADIO);
+   etk_signal_connect("row-selected", ETK_OBJECT(UI_ImageTweenList),
+            ETK_CALLBACK(on_ImageTweenList_row_selected), NULL);
+   etk_signal_connect("clicked", ETK_OBJECT(UI_ImageAddButton),
+            ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_IMAGE_FILE_ADD);
+   etk_signal_connect("active-item-changed", ETK_OBJECT(UI_ImageComboBox),
+            ETK_CALLBACK(on_ImageComboBox_changed), NULL);
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_ImageAlphaSlider),
+            ETK_CALLBACK(on_ImageAlphaSlider_value_changed), NULL);
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderLeftSpinner),
+            ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_LEFT);
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderRightSpinner),
+            ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_RIGHT);
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderTopSpinner),
+            ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_TOP);
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderBottomSpinner),
+            ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_BOTTOM);
 
    return UI_ImageFrame;
 }

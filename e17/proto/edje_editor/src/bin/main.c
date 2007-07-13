@@ -13,7 +13,54 @@
 
 #define MAIN_EDC_NAME "edje_editor_link.edc"
 
+Evas_Object *EdjeTest_bg;
+Evas_Object *EdjeTest_edje;
 
+void
+on_test_win_resize(Ecore_Evas * ee)
+{
+	int w, h;
+	
+	evas_output_size_get(ecore_evas_get(ee), &w, &h);
+	printf("RESIZE: %d - %d\n", w,h);
+ 
+	//evas_object_move(preview, barwidth, 0);
+	evas_object_resize(EdjeTest_bg, w , h );
+	evas_object_resize(EdjeTest_edje, w , h );
+}
+/**
+ * engrave_part_state_image_tween_remove_nth - Remove the nth image from the tween list.
+ * @param eps: The Engrave_Part_State to remove the image to.
+ * @param tween_num: The number of the image to remove from the tween list.
+ *
+ * @return Returns no value 
+ */
+/*EAPI*/ void
+PROTO_engrave_part_state_image_tween_remove_nth(Engrave_Part_State *eps,
+                                      int tween_num)
+{
+   Evas_List *l;
+
+   if ((!eps) || (tween_num < 0)) return;
+   
+   l = 	evas_list_nth_list (eps->image.tween, tween_num);
+   //printf("Remove tween num: %d (%s)\n",tween_num,((Engrave_Image*)(l->data))->name);
+   if (!l) return;
+
+   eps->image.tween = evas_list_remove_list (eps->image.tween, l);
+}
+/**
+ * engrave_part_state_image_tween_remove_all - Clear the tween list for a state.
+ * @param eps: The Engrave_Part_State that contain the list to clear.
+ *
+ * @return Returns no value 
+ */
+/*EAPI*/ void
+PROTO_engrave_part_state_image_tween_remove_all(Engrave_Part_State *eps)
+{
+   if (!eps && !eps->image.tween) return;
+   eps->image.tween = evas_list_free(eps->image.tween);
+}
 /**
  * engrave_part_state_remove - remove the state from the part.
  * @param ep: The Engrave_Part to remove the state to.
@@ -330,7 +377,7 @@ int Decompile(void *data) //data is the name of the file to open
    Cur.main_source_file = strdup(buf);
    
    //Execute edje_decc through a pipe
-   snprintf(cmd, 4096, "edje_decc %s -main-out "MAIN_EDC_NAME, file);
+   snprintf(cmd, 4096, "edje_decc \"%s\" -main-out "MAIN_EDC_NAME, file);
    snprintf(buf,4096,"<b>Executing: </b>%s\n",cmd);
    etk_textview_append(UI_LoadTextView, buf);
    
@@ -436,6 +483,68 @@ LoadEDJ(char *file)
    etk_widget_hide(win);
 }
 
+
+void
+TestEdjeGroup(char *File,char *Group)
+{
+   Ecore_Evas  *ee;
+   Evas        *evas;
+   
+   printf("Test EdjeFile: %s\nGroup: %s\nTheme: %s\n",File,Group,EdjeFile);
+   
+   /* ecore evas init */
+	ecore_init();      
+	ecore_evas_init();
+	ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 0, 0);
+	ecore_evas_title_set(ee, "Edje Test Application");
+   ecore_evas_callback_resize_set(ee, on_test_win_resize);
+	edje_init();
+   evas = ecore_evas_get(ee);
+   
+   /* Background */
+   EdjeTest_bg = evas_object_image_add(evas);
+   evas_object_image_file_set(EdjeTest_bg, EdjeFile, "images/0");		//TODO Find a method to load by name and not by number
+   evas_object_image_fill_set(EdjeTest_bg,0,0,128,128);
+   evas_object_move(EdjeTest_bg, 0, 0);
+	evas_object_resize(EdjeTest_bg, 300, 300);
+   evas_object_show(EdjeTest_bg);
+
+   /* Edje Goroup */
+   EdjeTest_edje = edje_object_add(evas);
+	edje_object_file_set(EdjeTest_edje,File, Group);
+	evas_object_move(EdjeTest_edje, 0, 0);
+	evas_object_resize(EdjeTest_edje, 300, 300);
+	evas_object_show(EdjeTest_edje);
+   
+   /* Window Size */
+   int minw,minh,maxw,maxh;
+   edje_object_size_min_get(EdjeTest_edje, &minw, &minh);
+   edje_object_size_max_get(EdjeTest_edje, &maxw, &maxh);
+   if (minw <= 0) minw = 30;
+   if (minh <= 0) minh = 30;
+   ecore_evas_size_min_set(ee,minw,minh);
+   ecore_evas_size_max_set(ee,maxw,maxh);
+   ecore_evas_resize(ee, minw, minh);
+   
+   ecore_evas_show(ee);
+   
+   ecore_main_loop_begin();
+}
+void
+PrintUsage(void)
+{
+   printf("\nUsage:\n");
+   printf(" edje_editor [EDC | EDJ] [IMAGE_DIR] [FONT_DIR]\n");
+   printf("\nExample:\n");
+   printf(" edje_editor                #Open an empty file\n");
+   printf(" edje_editor default.edj    #Open the given EDJ\n");
+   printf(" edje_editor default.edc    #Open the given EDC\n");
+   printf("\nTesting Edje file:\n");
+   printf(" edje_editor -t file.edj \"group_name\"\n");
+   printf("\nNote on open an EDC:\n");
+   printf(" To open an EDC file you must pass the IMAGE_DIR and FONT_DIR\n");
+   printf(" parameters. If not given the EDC directory is assumed.\n\n");
+}
 /* main */
 int
 main(int argc, char **argv)
@@ -461,19 +570,22 @@ main(int argc, char **argv)
            (0 == strcmp(argv[1],"--help")) ||
            (0 == strcmp(argv[1],"--usage")) )
       {
-         printf("\nUsage:\n");
-         printf(" edje_editor [EDC | EDJ] [IMAGE_DIR] [FONT_DIR]\n");
-         printf("\nExample:\n");
-         printf(" edje_editor                #Open an empty file\n");
-         printf(" edje_editor default.edj    #Open the given EDJ\n");
-         printf(" edje_editor default.edc    #Open the given EDC\n");
-         printf("\nNote on open an EDC:\n");
-         printf(" To open an EDC file you must pass the IMAGE_DIR and FONT_DIR\n");
-         printf(" parameters. If not given the EDC directory is assumed.\n\n");
-         return 0;
+         PrintUsage();
+         return 1;
       }
    }
 
+   //Test EDJ
+   if (argc > 1 && (0 == strcmp(argv[1],"-t")))
+   {
+      if (argc < 4)
+      {
+         PrintUsage();
+         return 1;
+      }
+      TestEdjeGroup(argv[2],argv[3]);
+      return 0;
+   }
    //Init ETK
    if (!etk_init(&argc, &argv))
    {
