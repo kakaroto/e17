@@ -2510,6 +2510,7 @@ ewl_widget_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * caching.
 	 */
 	if (w->theme_object) {
+		edje_object_file_set(w->theme_object, NULL, NULL);
 		ewl_embed_object_cache(emb, w->theme_object);
 		w->theme_object = NULL;
 	}
