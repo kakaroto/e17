@@ -1,7 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = edje_editor.edc
-SUBDIRS = fonts \
-	  images
+SUBDIRS = fonts
 	  
 EDJE_CC = edje_cc
 EDJE_FLAGS = \
