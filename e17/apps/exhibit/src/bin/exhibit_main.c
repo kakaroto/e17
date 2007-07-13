@@ -4,13 +4,13 @@
 #include "exhibit.h"
 
 /* defines the max number of additions to the tree per timer tick */
-#define MAX_INSERTS_PER_ITERATION 200
+#define MAX_INSERTS_PER_ITERATION 170
 
 /* defines the timer tick interval for tree inserts */
-#define INSERTS_INTERVAL 0.15
+#define INSERTS_INTERVAL 0.3
 
 /* defines the initial size and increment size that file list arrays have */
-#define FILELIST_SIZE 5000
+#define FILELIST_SIZE 3000
 
 extern pid_t pid;
 extern Evas_List *thumb_list;
