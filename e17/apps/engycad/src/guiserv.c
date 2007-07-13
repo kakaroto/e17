@@ -291,7 +291,7 @@ gui_apply(void)
 	      FREE(s);
 	  }
           if (!fl2)
-              cl_hint_set(o_cl, DUP(_("cmd: ")));
+              cl_hint_set(o_cl, _("cmd: "));
       }
 }
 

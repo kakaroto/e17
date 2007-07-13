@@ -32,9 +32,8 @@
 
 /* vars */
 
-pthread_mutex_t     servmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t     datamutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t     quemutex = PTHREAD_MUTEX_INITIALIZER;
+
 pthread_t           thserv;
 char               *ipc_script_name;
 char                file[4096];
@@ -119,22 +118,17 @@ trylock_data(void)
 void
 serv_init(void)
 {
-    pthread_mutex_lock(&servmutex);
+   // pthread_mutex_lock(&servmutex);
     pthread_create(&thserv, NULL, (void *)serv_loop, NULL);
 };
 
 void
 _serv_put_string(char *s)
 {
-    int                 need_to_unlock = 0;
-
     if (!s)
         return;
-    if (!serv_queue)
-        need_to_unlock = 1;
+
     serv_queue = evas_list_append(serv_queue, s);
-    if (need_to_unlock)
-        pthread_mutex_unlock(&servmutex);
 }
 
 void
@@ -148,7 +142,7 @@ serv_put_string(char *s)
     if (strlen(s) > 4000)
         s[4000] = 0;
 
-    pthread_mutex_lock(&quemutex);
+    pthread_mutex_lock(&datamutex);
     for (i = 0, j = 0; s[i]; i++)
       {
           if ((s[i] == '|') || (j == 4095))
@@ -166,22 +160,29 @@ serv_put_string(char *s)
     buf[j] = 0;
     _serv_put_string(DUP(_(buf)));
     FREE(s);
-    pthread_mutex_unlock(&quemutex);
+    pthread_mutex_unlock(&datamutex);
 }
 
 char               *
 _serv_get_string(void)
 {
-    char               *s;
+    char               *s = NULL;
 
-    pthread_mutex_lock(&servmutex);
-    pthread_mutex_lock(&quemutex);
-    ENGY_ASSERTS(serv_queue, "am i an idiot?");
-    s = serv_queue->data;       /* fifo */
-    serv_queue = evas_list_remove(serv_queue, s);
-    pthread_mutex_unlock(&quemutex);
-    if (serv_queue)
-        pthread_mutex_unlock(&servmutex);
+    do
+    {
+	    pthread_mutex_lock(&datamutex);
+	    if(!serv_queue)
+	    {
+		    pthread_mutex_unlock(&datamutex);
+		    usleep(10*1000);
+		    continue;
+	    }
+	    s = serv_queue->data;
+	    serv_queue = evas_list_remove(serv_queue, s);
+	    pthread_mutex_unlock(&datamutex);
+    }
+    while(!s);
+
     return s;
 }
 
@@ -223,8 +224,9 @@ serv_loop(void)
           serv_parser(s);
       }
 
-    printf("I quit!!!\n");
+    pthread_mutex_destroy(&datamutex);
     fl_shutdown = 2;
+
 }
 
 #define IFCMD(a) if(!strcmp(_(s),_(a)))set_flag(); if(!strcmp(_(s),_(a)))
@@ -309,6 +311,10 @@ serv_parser(char *s)
     IFCMD("save_ps") serv_save_ps();
     IFCMD("help") serv_help();
     IFCMD("__exit") fl_shutdown = 1;
+    {
+	    static long death_count = 0;
+	    IFCMD("dummy") printf("%d\n", death_count++);
+    }
     FREE(s);
 }
 

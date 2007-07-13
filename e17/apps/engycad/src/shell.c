@@ -405,6 +405,8 @@ main(int argc, char *argv[], char *envp[])
     shell_init();
     ecore_main_loop_begin();
     shell_shutdown();
+    ecore_evas_free(shell->ee);
+    ecore_evas_shutdown();
     return 0;
 }
 

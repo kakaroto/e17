@@ -295,6 +295,7 @@ _panel_mouse_in(void *data, Evas *_e, Evas_Object *_o, void *event_info)
     Evas_List          *l;
     double              w;
     int			_x, _y;
+    char *s;
     Evas_Event_Mouse_In *em = (Evas_Event_Mouse_In*)event_info;
 
     e = shell->evas;
@@ -317,7 +318,9 @@ _panel_mouse_in(void *data, Evas *_e, Evas_Object *_o, void *event_info)
     evas_object_hide(oa);
     evas_object_show(oh);
 
-    evas_object_text_text_set(o_hte, my_iconv(shell->dcd, DUP(_(ic->hint))));
+    s = my_iconv(shell->dcd, _(ic->hint));
+    evas_object_text_text_set(o_hte, s);
+    FREE(s);
     w = evas_object_text_horiz_advance_get(o_hte);
     evas_object_move(o_hbg, _x + w * ((ic->x >= 0) ? 0 : -1),
               _y + 20 * ((ic->y >= 0) ? 1 : -1));
