@@ -403,7 +403,7 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
                                 "elitaire_theme_box_label",
                                 "elitaire_cards_box_label", NULL};
     for (int i = 0; labels[i] != NULL;  i++)
-        edje_object_part_text_set(eef->gui, label_parts[i], labels[i]);
+        edje_object_part_text_set(eef->gui, label_parts[i], _(labels[i]));
 }
 
 void _eli_edje_frontend_gui_del(Eli_App * eap)
