@@ -188,6 +188,7 @@ void ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
 	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
 
 	if (!pdf->pdf_document ||
+	    (page < 1) ||
 	    (page >= epdf_document_page_count_get (pdf->pdf_document)) ||
 	    (page == pdf->page))
                 DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -126,6 +126,7 @@ void etk_pdf_page_set(Etk_Pdf *pdf, int page)
 {
    if (!pdf ||
        !pdf->pdf_document ||
+       (page < 1) ||
        (page >= epdf_document_page_count_get (pdf->pdf_document)) ||
        (page == pdf->page))
       return;
