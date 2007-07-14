@@ -1084,25 +1084,25 @@ _ex_main_window_show(char *dir, int fullscreen, int slideshow)
    e->zoom_in[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/gui.edj", "zoom_in");
    etk_button_image_set(ETK_BUTTON(e->zoom_in[0]), ETK_IMAGE(e->zoom_in[1]));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->zoom_in[0]), ETK_CALLBACK(_ex_tab_current_zoom_in), e);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), e->zoom_in[0]);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), e->zoom_in[0], ETK_BOX_START);
 
    e->zoom_out[0] = etk_tool_button_new();
    e->zoom_out[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/gui.edj", "zoom_out");
    etk_button_image_set(ETK_BUTTON(e->zoom_out[0]), ETK_IMAGE(e->zoom_out[1]));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->zoom_out[0]), ETK_CALLBACK(_ex_tab_current_zoom_out), e);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), e->zoom_out[0]);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), e->zoom_out[0], ETK_BOX_START);
 
    e->fit[0] = etk_tool_button_new();
    e->fit[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/gui.edj", "fit_to_window");
    etk_button_image_set(ETK_BUTTON(e->fit[0]), ETK_IMAGE(e->fit[1]));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->fit[0]), ETK_CALLBACK(_ex_tab_current_fit_to_window), e);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), e->fit[0]);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), e->fit[0], ETK_BOX_START);
 
    e->original[0] = etk_tool_button_new();
    e->original[1] = etk_image_new_from_edje(PACKAGE_DATA_DIR"/gui.edj", "one_to_one");
    etk_button_image_set(ETK_BUTTON(e->original[0]), ETK_IMAGE(e->original[1]));
    etk_signal_connect_swapped("clicked", ETK_OBJECT(e->original[0]), ETK_CALLBACK(_ex_tab_current_zoom_one_to_one), e);
-   etk_toolbar_append(ETK_TOOLBAR(toolbar), e->original[0]);
+   etk_toolbar_append(ETK_TOOLBAR(toolbar), e->original[0], ETK_BOX_START);
 
    entry_hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_table_attach(ETK_TABLE(e->table), entry_hbox, 0, 3, 2, 2, ETK_TABLE_HEXPAND | ETK_TABLE_HFILL, 0, 0);
