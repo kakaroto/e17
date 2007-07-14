@@ -15,6 +15,75 @@
 #include "EtkTypes.h"
 #include "EtkSignals.h"
 
+MODULE = Etk::Combobox::Entry		PACKAGE = Etk::Combobox::Entry		PREFIX = etk_combobox_entry_
+
+Etk_Combobox_Entry *
+new(class)
+	SV	*class
+	CODE:
+	RETVAL = ETK_COMBOBOX_ENTRY(etk_combobox_entry_new());
+	OUTPUT:
+	RETVAL
+
+Etk_Combobox_Entry *
+new_default(class)
+	SV	*class
+	ALIAS:
+	NewDefault=1
+	CODE:
+	RETVAL = ETK_COMBOBOX_ENTRY(etk_combobox_entry_new_default());
+	OUTPUT:
+	RETVAL
+
+Etk_Widget *
+etk_combobox_entry_entry_get(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	EntryGet=1
+
+void
+etk_combobox_entry_items_height_set(combobox_entry, items_height)
+	Etk_Combobox_Entry *combobox_entry
+	int items_height
+	ALIAS:
+	ItemsHeightSet=1
+
+int
+etk_combobox_entry_items_height_get(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	ItemsHeightGet=1
+	
+void
+etk_combobox_entry_column_add(combobox_entry, col_type, width, fill_policy, align)
+	Etk_Combobox_Entry *combobox_entry
+	Etk_Combobox_Entry_Column_Type col_type
+	int width
+	Etk_Combobox_Entry_Fill_Policy fill_policy
+	float align
+	ALIAS:
+	ColumnAdd=1
+
+void
+etk_combobox_entry_build(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	Build=1
+
+void
+etk_combobox_entry_clear(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	Clear=1
+
+MODULE = Etk::Combobox::Entry::Item	PACKAGE = Etk::Combobox::Entry::Item	PREFIX = etk_combobox_entry_item_
+
+void
+etk_combobox_entry_item_remove(item)
+	Etk_Combobox_Entry_Item *item
+	ALIAS:
+	Remove=1
+
 
 MODULE = Etk::Combobox::Item		PACKAGE = Etk::Combobox::Item		PREFIX = etk_combobox_item_
 
