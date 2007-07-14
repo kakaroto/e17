@@ -328,7 +328,11 @@ static void _gui_menu_item_clicked_cb(Etk_Object *obj, void *data)
    else if (!strcmp(label, "Open"))
      _gui_open_edje_file_cb(gui);
    else if (!strcmp(label, "Reload"))
-     _open_edje_file(gui);
+     {
+	eet_clearcache();
+	edje_file_cache_flush();
+	_open_edje_file(gui);
+     }
    else if (strstr(label, ".edj"))
      {
 	gui->path = strdup(label);

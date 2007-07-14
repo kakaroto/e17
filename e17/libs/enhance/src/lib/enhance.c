@@ -450,9 +450,8 @@ _e_property_handle(Enhance *en, EXML_Node *node)
      {
 	PROPERTY_STR;
 
-        IF_PARENT_CLASS("GtkTextView")
-          return;
-	etk_object_properties_set(ETK_OBJECT(wid->wid), "text", value, NULL);
+	IF_PARENT_CLASS("GtkEntry")
+	  etk_entry_text_set(ETK_ENTRY(wid->wid), value);
      }   
    
    else if (!strcmp(name, "xalign"))

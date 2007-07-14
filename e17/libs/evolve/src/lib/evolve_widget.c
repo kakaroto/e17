@@ -625,14 +625,14 @@ void evolve_widget_reparent(Evolve_Widget *child, Evolve_Widget *parent)
    else if (!strcmp(parent->type, "toolbar"))
      {
 	if (evolve_widget_packing_property_int_find(child, "prepend", 0))	  
-	  etk_toolbar_prepend(ETK_TOOLBAR(parent->widget), child->widget);
+	  etk_toolbar_prepend(ETK_TOOLBAR(parent->widget), child->widget, ETK_BOX_START);
 	/* insert at position */
 	else if (evolve_widget_packing_property_int_find(child, "position",  -1) >= 0)	  
-	  etk_toolbar_insert_at(ETK_TOOLBAR(parent->widget), child->widget,
+	  etk_toolbar_insert_at(ETK_TOOLBAR(parent->widget), child->widget, ETK_BOX_START,
 	   evolve_widget_packing_property_int_find(child, "position", 0));
 	/* append */
 	else
-	  etk_toolbar_append(ETK_TOOLBAR(parent->widget), child->widget);
+	  etk_toolbar_append(ETK_TOOLBAR(parent->widget), child->widget, ETK_BOX_START);
      }
 }
 

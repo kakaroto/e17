@@ -187,7 +187,7 @@ void entropy_etk_options_dialog_create()
 	
 	/*General settings*/
 	button = etk_tool_button_new_from_stock(ETK_STOCK_APPLICATIONS_SYSTEM);
-	etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+	etk_toolbar_append(ETK_TOOLBAR(toolbar), button, ETK_BOX_START);
 
 	/*General frame*/
 	frame = etk_frame_new("General Settings");
@@ -252,13 +252,13 @@ void entropy_etk_options_dialog_create()
 
 	/*Advanced*/
 	button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
-	etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+	etk_toolbar_append(ETK_TOOLBAR(toolbar), button, ETK_BOX_START);
 	frame = etk_frame_new("Advanced Settings");
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);
 
 	/*Thumbnail*/
 	button = etk_tool_button_new_from_stock(ETK_STOCK_IMAGE_X_GENERIC);
-	etk_toolbar_append(ETK_TOOLBAR(toolbar), button);
+	etk_toolbar_append(ETK_TOOLBAR(toolbar), button, ETK_BOX_START);
 
 	frame = etk_frame_new("Thumbnail Settings");
 	etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(entropy_etk_options_dialog_frame_set), frame);	

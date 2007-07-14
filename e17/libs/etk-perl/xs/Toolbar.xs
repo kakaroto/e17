@@ -86,16 +86,18 @@ new(class)
 	RETVAL
 
 void
-etk_toolbar_append(toolbar, widget)
+etk_toolbar_append(toolbar, widget, group=ETK_BOX_START)
 	Etk_Toolbar * toolbar
 	Etk_Widget * widget
+	Etk_Box_Group	group
 	ALIAS:
 	Append=1
 
 void
-etk_toolbar_prepend(toolbar, widget)
+etk_toolbar_prepend(toolbar, widget, group=ETK_BOX_START)
 	Etk_Toolbar * toolbar
 	Etk_Widget * widget
+	Etk_Box_Group	group
 	ALIAS:
 	Prepend=1
 

@@ -505,9 +505,9 @@ Evolve_Widget *evolve_gui_toolbar_new()
 			     "checkered_button");   
 	etk_signal_connect("mouse-down", ETK_OBJECT(button),
 			   ETK_CALLBACK(evolve_gui_mouse_down_new_cb), widget);
-	etk_toolbar_append(ETK_TOOLBAR(widget->widget), button);
+	etk_toolbar_append(ETK_TOOLBAR(widget->widget), button, ETK_BOX_START);
 	if (i == 2)
-	  etk_toolbar_append(ETK_TOOLBAR(widget->widget), etk_vseparator_new());
+	  etk_toolbar_append(ETK_TOOLBAR(widget->widget), etk_vseparator_new(), ETK_BOX_START);
      }
    return widget;
 }

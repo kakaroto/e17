@@ -1221,6 +1221,6 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
      }
    else if(!strcmp(parent_class, "GtkToolbar"))
      {
-	etk_toolbar_append(ETK_TOOLBAR(parent->wid), child->wid);
+	etk_toolbar_append(ETK_TOOLBAR(parent->wid), child->wid, ETK_BOX_START);
      }	
 }
