@@ -1166,14 +1166,9 @@ create_toolbar(Etk_Toolbar_Orientation o)
 
    //RemoveButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_LIST_REMOVE);
-<<<<<<< interface.c
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_REMOVE);
-   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button, ETK_BOX_START);
-=======
    etk_signal_connect("clicked", ETK_OBJECT(button),
                      ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_REMOVE);
-   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
->>>>>>> 1.28
+   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button, ETK_BOX_START);
 
    //RemoveMenu
    UI_RemoveMenu = etk_menu_new();
@@ -1207,25 +1202,15 @@ create_toolbar(Etk_Toolbar_Orientation o)
 
    //MoveUp Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_UP);
-<<<<<<< interface.c
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_UP);
-   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button, ETK_BOX_START);
-=======
    etk_signal_connect("clicked", ETK_OBJECT(button),
                      ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_UP);
-   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
->>>>>>> 1.28
+   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button, ETK_BOX_START);
 
    //MoveDown Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_DOWN);
-<<<<<<< interface.c
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_DOWN);
-   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button, ETK_BOX_START);
-=======
    etk_signal_connect("clicked", ETK_OBJECT(button),
                   ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_DOWN);
-   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
->>>>>>> 1.28
+   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button, ETK_BOX_START);
 
    sep = etk_hseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), sep, ETK_BOX_START);
@@ -1234,27 +1219,16 @@ create_toolbar(Etk_Toolbar_Orientation o)
 
    //Test Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_MEDIA_PLAYBACK_START);
-<<<<<<< interface.c
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_PLAY);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Test in viewer",NULL);
-   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button, ETK_BOX_START);
-=======
    etk_signal_connect("clicked", ETK_OBJECT(button),
                         ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_PLAY);
    etk_object_properties_set(ETK_OBJECT(button),"label","Test group",NULL);
-   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
->>>>>>> 1.28
+   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button, ETK_BOX_START);
 
    //DebugButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_PROPERTIES);
-<<<<<<< interface.c
    etk_toolbar_append(ETK_TOOLBAR(ToolBar), button, ETK_BOX_START);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_DEBUG);
-=======
-   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                         ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_DEBUG);
->>>>>>> 1.28
    etk_object_properties_set(ETK_OBJECT(button),"label","Debug",NULL);
 
    return ToolBar;
