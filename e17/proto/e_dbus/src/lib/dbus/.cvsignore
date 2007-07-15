@@ -8,4 +8,5 @@ e_dbus_message.lo
 e_dbus_methods.lo
 e_dbus_object.lo
 e_dbus_signal.lo
+e_dbus_util.lo
 libedbus.la
