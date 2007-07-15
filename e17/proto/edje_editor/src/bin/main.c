@@ -213,6 +213,10 @@ void DebugInfo(int full)
       printf(" ** Cur state: %s %.2f\n",Cur.eps->name, Cur.eps->value);
    else
       printf(" ** Cur state: (NULL)\n");
+   if (Cur.epr)
+      printf(" ** Cur program: %s\n",Cur.epr->name);
+   else
+      printf(" ** Cur program: (NULL)\n");
 
    if (full)
    {

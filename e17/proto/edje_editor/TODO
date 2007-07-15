@@ -6,10 +6,24 @@ TODO edje_editor (not a complete list...only the first in my mind)
 * Tooltips EVERYWERE  :)
 
 * Up and Down buttons must move the selected part/description up and down
-   (have to wait a way to move the row of the tree)
+   (have to wait a way to move the rows in the etk_tree)
 
 * A new object add must be take a progressive (and unique) number (newrect1, newrect2...etc)
 
 * Text object: GLOW? GLOW2? FAR? ... does edje suport this?
 
 * Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
+
+* Improve programs frame (add more combo entry widget and filter source combo 
+   to only parts that accept mouse events)
+   
+* Duplicate objects (copy/cut/paste??)
+
+* Review and commit some PROTO_engrave functions
+
+* Fix strange alpha premul on text with effect
+
+* Use a value in the edje data field to store the editor version
+  If no version information found alert the user
+  
+* In the Add/Remove menus disable 'not in context' choice

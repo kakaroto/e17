@@ -770,7 +770,7 @@ UpdateProgFrame(void)
    if (!Cur.epr)
       return;
    
-   printf("Update Program: '%s\n",Cur.epr->name);
+   printf("Update Program: %s\n",Cur.epr->name);
    
    //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_ProgramEntry),
@@ -894,6 +894,24 @@ UpdateProgFrame(void)
          ETK_CALLBACK(on_Param2Entry_text_changed));
 }
 
+void
+UpdateScriptFrame(void)
+{
+   //Update ScriptBox
+   if (Cur.epr){
+      printf("Update prog script: %s\n",Cur.epr->script);
+      etk_textblock_text_set(ETK_TEXT_VIEW(UI_ScriptBox)->textblock, 
+                              engrave_program_script_get(Cur.epr), ETK_FALSE);
+      return;
+   }
+   if (Cur.eg){
+      printf("Update group script: %s\n",Cur.eg->script);
+      etk_textblock_text_set (ETK_TEXT_VIEW(UI_ScriptBox)->textblock, 
+                              engrave_group_script_get(Cur.eg), ETK_FALSE);
+      return;
+   }
+   etk_textblock_clear(ETK_TEXT_VIEW(UI_ScriptBox)->textblock);
+}
 void
 ShowFilechooser(int FileChooserType)
 {
@@ -1242,7 +1260,7 @@ create_group_frame(void)
    Etk_Widget *vbox;
 
    //frame
-   UI_GroupFrame = etk_frame_new("Group property");
+   UI_GroupFrame = etk_frame_new("Group");
 
    //vbox
    vbox = etk_vbox_new(ETK_FALSE, 0);
@@ -1942,7 +1960,7 @@ create_part_frame(void)
    Etk_Widget *combo;
 
    //PartFrame
-   UI_PartFrame = etk_frame_new("Part property");
+   UI_PartFrame = etk_frame_new("Part");
 
    //table
    table = etk_table_new (2, 3, ETK_TABLE_NOT_HOMOGENEOUS);
@@ -1983,6 +2001,7 @@ create_program_frame(void)
 {
    Etk_Widget *table;
    Etk_Widget *label;
+   
    //RectFrame
    UI_ProgramFrame = etk_frame_new("Program");
 
@@ -2114,7 +2133,6 @@ create_program_frame(void)
    UI_Param2Entry = etk_entry_new();
    etk_tooltips_tip_set(UI_Param2Entry, "!!!!!!");
    etk_table_attach_default(ETK_TABLE(table), UI_Param2Entry, 1, 2, 9, 9);
-   
  
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_ActionComboBox), 
          ETK_CALLBACK(on_ActionComboBox_changed), NULL);
@@ -2147,12 +2165,44 @@ create_program_frame(void)
 
    return UI_ProgramFrame;
 }
+Etk_Widget*
+create_script_frame(void)
+{
+   Etk_Widget *sv;
+   Etk_Widget *vbox;
+   
+   //RectFrame
+   UI_ScriptFrame = etk_frame_new("Script");
+   
+   //vbox
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(UI_ScriptFrame), vbox);
+
+   //ScriptBox
+   UI_ScriptBox = etk_text_view_new();
+   sv = etk_scrolled_view_new();
+   etk_scrolled_view_policy_set(ETK_SCROLLED_VIEW(sv),
+                                 ETK_POLICY_AUTO, ETK_POLICY_AUTO);
+   etk_bin_child_set(ETK_BIN(sv), UI_ScriptBox);
+   etk_box_append(ETK_BOX(vbox), sv, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   //ScriptSaveButton
+   UI_ScriptSaveButton = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
+   etk_object_properties_set(ETK_OBJECT(UI_ScriptSaveButton),
+                              "label","Save script",NULL);
+   etk_box_append(ETK_BOX(vbox), UI_ScriptSaveButton,
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   etk_signal_connect("clicked", ETK_OBJECT(UI_ScriptSaveButton),
+            ETK_CALLBACK(on_AllButton_click), (void*)SAVE_SCRIPT);
+ 
+   return UI_ScriptFrame;
+}
 
 void
 create_main_window(void)
 {
    Etk_Widget *vbox,*hbox,*vbox0;
-   int NewStyleInterface = TRUE;
    
    etk_tooltips_init ();
    etk_tooltips_enable();
@@ -2180,67 +2230,29 @@ create_main_window(void)
    etk_window_title_set(ETK_WINDOW(UI_MainWin), "Edje Editor");
    etk_container_border_width_set(ETK_CONTAINER(UI_MainWin), 2);
 
-   if (NewStyleInterface){
-      //vbox0
-      vbox0 = etk_vbox_new(ETK_FALSE, 0);
-      etk_container_add(ETK_CONTAINER(UI_MainWin), vbox0);
+   //vbox0
+   vbox0 = etk_vbox_new(ETK_FALSE, 0);
+   etk_container_add(ETK_CONTAINER(UI_MainWin), vbox0);
 
-      //ToolBar
-      etk_box_append(ETK_BOX(vbox0), create_toolbar(ETK_TOOLBAR_HORIZ), ETK_BOX_START, ETK_BOX_NONE, 0);
-      
-      //hbox
-      hbox = etk_hbox_new(ETK_FALSE, 0);
-      etk_box_append(ETK_BOX(vbox0), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-      
-      //Tree Frame
-      etk_box_append(ETK_BOX(hbox), create_tree_frame(), ETK_BOX_START, ETK_BOX_FILL, 0);
-      
+   //ToolBar
+   etk_box_append(ETK_BOX(vbox0), create_toolbar(ETK_TOOLBAR_HORIZ),
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
    
-   }else{
-      //hbox
-      hbox = etk_hbox_new(ETK_FALSE, 0);
-      etk_container_add(ETK_CONTAINER(UI_MainWin), hbox);
-
-      //ToolBar
-      etk_box_append(ETK_BOX(hbox), create_toolbar(ETK_TOOLBAR_VERT), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //vbox
-      vbox = etk_vbox_new(ETK_FALSE, 0);
-      etk_box_append(ETK_BOX(hbox), vbox, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Tree Frame
-      etk_box_append(ETK_BOX(vbox), create_tree_frame(), ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-
-      //Group Frame
-      etk_box_append(ETK_BOX(vbox), create_group_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Part Frame
-      etk_box_append(ETK_BOX(vbox), create_part_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Description Frame
-      etk_box_append(ETK_BOX(vbox), create_description_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Rectangle Frame
-      etk_box_append(ETK_BOX(vbox), create_rectangle_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Image Frame
-      etk_box_append(ETK_BOX(vbox), create_image_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Text Frame
-      etk_box_append(ETK_BOX(vbox), create_text_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Position Frame
-      etk_box_append(ETK_BOX(vbox), create_position_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Program Frame
-      etk_box_append(ETK_BOX(vbox), create_program_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-   }
-
+   //hbox
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox0), hbox, ETK_BOX_START,
+                  ETK_BOX_EXPAND_FILL, 0);
+   
+   //Tree Frame
+   etk_box_append(ETK_BOX(hbox), create_tree_frame(),
+                  ETK_BOX_START, ETK_BOX_FILL, 0);
+      
    //canvas
    ETK_canvas = etk_canvas_new ();
    etk_widget_padding_set(ETK_canvas,4,4,4,4);
    etk_widget_size_request_set(ETK_canvas, 300, 300);
-   etk_box_append(ETK_BOX(hbox), ETK_canvas, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(hbox), ETK_canvas,
+                  ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //canvas bg
    EV_canvas_bg = evas_object_image_add(etk_widget_toplevel_evas_get(ETK_canvas));
@@ -2257,42 +2269,49 @@ create_main_window(void)
    //etk_canvas_object_move (ETK_CANVAS(ETK_canvas), EV_canvas_shadow);
    evas_object_show(EV_canvas_shadow);
 
-   if (NewStyleInterface){      
-      //vbox
-      vbox = etk_vbox_new(ETK_FALSE, 0);
-      etk_box_append(ETK_BOX(hbox), vbox, ETK_BOX_START, ETK_BOX_NONE, 0);
-      
-      //Group Frame
-      etk_box_append(ETK_BOX(vbox), create_group_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
+   //vbox
+   vbox = etk_vbox_new(ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(hbox), vbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+   
+   //Group Frame
+   etk_box_append(ETK_BOX(vbox), create_group_frame(),
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //Part Frame
+   etk_box_append(ETK_BOX(vbox), create_part_frame(),
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //Description Frame
+   etk_box_append(ETK_BOX(vbox), create_description_frame(),
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //Rectangle Frame
+   etk_box_append(ETK_BOX(vbox), create_rectangle_frame(),
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //Image Frame
+   etk_box_append(ETK_BOX(vbox), create_image_frame(),
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //Text Frame
+   etk_box_append(ETK_BOX(vbox), create_text_frame(),
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //Position Frame
+   etk_box_append(ETK_BOX(vbox), create_position_frame(),
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //Program Frame
+   etk_box_append(ETK_BOX(vbox), create_program_frame(),
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //Script Frame
+   etk_box_append(ETK_BOX(vbox), create_script_frame(),
+                  ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-      //Part Frame
-      etk_box_append(ETK_BOX(vbox), create_part_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Description Frame
-      etk_box_append(ETK_BOX(vbox), create_description_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Rectangle Frame
-      etk_box_append(ETK_BOX(vbox), create_rectangle_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Image Frame
-      etk_box_append(ETK_BOX(vbox), create_image_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Text Frame
-      etk_box_append(ETK_BOX(vbox), create_text_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Position Frame
-      etk_box_append(ETK_BOX(vbox), create_position_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-
-      //Program Frame
-      etk_box_append(ETK_BOX(vbox), create_program_frame(), ETK_BOX_START, ETK_BOX_NONE, 0);
-   }
 
    // SIGNALS
    //
-   etk_signal_connect("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change), NULL);
-   etk_signal_connect("delete-event", ETK_OBJECT(UI_ColorWin), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
-   etk_signal_connect("destroyed", ETK_OBJECT(UI_MainWin), ETK_CALLBACK(etk_main_quit_cb), NULL);
-   etk_object_notification_callback_add(ETK_OBJECT(ETK_canvas), "geometry", on_canvas_geometry_changed, NULL);
+   etk_signal_connect("color-changed", ETK_OBJECT(UI_ColorPicker),
+                        ETK_CALLBACK(on_ColorDialog_change), NULL);
+   etk_signal_connect("delete-event", ETK_OBJECT(UI_ColorWin),
+                        ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("destroyed", ETK_OBJECT(UI_MainWin),
+                        ETK_CALLBACK(etk_main_quit_cb), NULL);
+   etk_object_notification_callback_add(ETK_OBJECT(ETK_canvas), "geometry",
+                                          on_canvas_geometry_changed, NULL);
 
    etk_widget_show_all(ETK_WIDGET(UI_MainWin));
 
@@ -2304,4 +2323,5 @@ create_main_window(void)
    etk_widget_hide(UI_TextFrame);
    etk_widget_hide(UI_GroupFrame);
    etk_widget_hide(UI_ProgramFrame);
+   etk_widget_hide(UI_ScriptFrame);
 }

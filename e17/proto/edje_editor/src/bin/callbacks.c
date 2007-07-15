@@ -40,6 +40,7 @@ on_AllButton_click(Etk_Button *button, void *data)
    char cmd[1024];
    Etk_Tree_Row *sel_row;
    int row_num;
+   Etk_String *text;
    
    switch ((int)data)
    {
@@ -106,7 +107,7 @@ on_AllButton_click(Etk_Button *button, void *data)
          printf("Clicked signal on Toolbar Button 'Play' EMITTED\n");
          if (Cur.open_file_name) 
          {
-            snprintf(cmd,1024,"edje_editor -t %s %s &",Cur.open_file_name,Cur.eg->name);
+            snprintf(cmd,1024,"edje_editor -t \"%s\" \"%s\" &",Cur.open_file_name,Cur.eg->name);
             printf("TESTING EDJE. cmd: %s\n",cmd);
             system(cmd);
             //if (!system("type edje_viewer"))
@@ -157,6 +158,20 @@ on_AllButton_click(Etk_Button *button, void *data)
             PROTO_engrave_part_state_image_tween_remove_all(Cur.eps);
             UpdateImageFrame();
          break;
+      case SAVE_SCRIPT:
+            text = etk_textblock_text_get(ETK_TEXT_VIEW(UI_ScriptBox)->textblock,ETK_TRUE);
+            if (Cur.epr)
+            {
+               printf("Save script (in prog %s): %s\n",Cur.epr->name,text->string);
+               engrave_program_script_set (Cur.epr, text->string);
+               
+            }else if (Cur.eg)
+            {
+               printf("Save script (in group %s): %s\n",Cur.eg->name,text->string);
+               engrave_group_script_set(Cur.eg, text->string);
+            }
+            etk_object_destroy(ETK_OBJECT(text));
+         break;
    }
 }
 
@@ -189,6 +204,8 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          etk_widget_hide(UI_PartFrame);
          etk_widget_hide(UI_ProgramFrame);
          etk_widget_show(UI_GroupFrame);
+         etk_widget_show(UI_ScriptFrame);
+         UpdateScriptFrame();
          break;
       case ROW_PART:
          Cur.epr = NULL;
@@ -203,6 +220,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          etk_widget_hide(UI_GroupFrame);
          etk_widget_hide(UI_ProgramFrame);
          etk_widget_show(UI_PartFrame);
+         etk_widget_hide(UI_ScriptFrame);
          UpdatePartFrame();
          break;
       case ROW_DESC: 
@@ -246,6 +264,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          etk_widget_hide(UI_PartFrame);
          etk_widget_hide(UI_GroupFrame);
          etk_widget_hide(UI_ProgramFrame);
+         etk_widget_hide(UI_ScriptFrame);
          etk_widget_show(UI_DescriptionFrame);
          etk_widget_show(UI_PositionFrame);
          break;
@@ -262,6 +281,8 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          etk_widget_hide(UI_GroupFrame);
          etk_widget_hide(UI_PartFrame);
          etk_widget_show(UI_ProgramFrame);
+         etk_widget_show(UI_ScriptFrame);
+         UpdateScriptFrame();
          UpdateProgFrame();
          PopulateSourceComboBox();
          break;
