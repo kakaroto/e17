@@ -26,7 +26,7 @@ _ew_list_new(const char *title, int w, int h, int r_h)
    }
 
    ew->owner = etk_tree_new();
-   etk_signal_connect("row_clicked", ETK_OBJECT(ew->owner), ETK_CALLBACK(_ew_list_cb_row_clicked), NULL);
+   etk_signal_connect("row-selected", ETK_OBJECT(ew->owner), ETK_CALLBACK(_ew_list_cb_row_clicked), NULL);
    etk_widget_size_request_set(ew->owner, w, h);
    etk_tree_mode_set(ETK_TREE(ew->owner), ETK_TREE_MODE_LIST);
    etk_tree_multiple_select_set(ETK_TREE(ew->owner), ETK_FALSE);
