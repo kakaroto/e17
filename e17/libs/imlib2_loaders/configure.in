@@ -125,23 +125,9 @@ my_includes=`$IMLIB2_CONFIG --cflags`
 
 found_edb=no
 if test "x$edb" != "xno" ; then
-	AC_ARG_WITH(edb-config, [  --with-edb-config=EDB_CONFIG    use edb-config specified ],
-	[ EDB_CONFIG=$withval;
-	  echo "using "$EDB_CONFIG" for edb-config"; ],
-	[ if test -z "$EDB_CONFIG"; then
-	    AC_PATH_PROG(EDB_CONFIG, "edb-config", "", $PATH)
-	  fi
-	])
-	if test "x$EDB_CONFIG" != "x" ; then
-		EDB_CFLAGS=`$EDB_CONFIG --cflags`
-		EDB_LIBS=`$EDB_CONFIG --libs`
-
-		SAVE_CFLAGS=$CFLAGS
-		CFLAGS="$CFLAGS $EDB_CFLAGS"
-		AC_CHECK_HEADER([Edb.h],[found_edb=yes])
-		CFLAGS=$SAVE_CFLAGS
-	fi
+        PKG_CHECK_MODULES(EDB, edb, found_edb=yes, found_edb=no)
 fi
+
 if test "x$edb$found_edb" = "xyesno" ; then
 	AC_MSG_ERROR(Edb support was requested but not found)
 elif test "x$found_edb" = "xno" ; then
@@ -149,7 +135,6 @@ elif test "x$found_edb" = "xno" ; then
 	EDB_CFLAGS=""
 	EDB_LIBS=""
 fi
-
 
 found_eet=no
 if test "x$eet" != "xno" ; then
