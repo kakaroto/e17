@@ -873,12 +873,19 @@ EvasTextBlock::~EvasTextBlock()
 // Image
 //===============================================================================================
 
+EvasImage::EvasImage( EvasCanvas* canvas, const char* name )
+      :EvasObject( canvas, "image" )
+{
+    _size = size ();
+    resize( _size );
+}
+
 EvasImage::EvasImage( const char* filename, EvasCanvas* canvas, const char* name )
       :EvasObject( canvas, "image", name ? name : filename )
 {
-       setFile( filename );
-       _size = size();
-       resize( _size );
+    setFile( filename );
+    _size = size();
+    resize( _size );
 }
 
 EvasImage::EvasImage( int x, int y, const char* filename, EvasCanvas* canvas, const char* name )
@@ -954,9 +961,40 @@ const Size& EvasImage::trueSize()
     return _size;
 }
 
+void EvasImage::setImageSize (int w, int h)
+{
+    evas_object_image_size_set (o, w, h);
+}
+
+void EvasImage::getImageSize (int &w, int &h)
+{
+    evas_object_image_size_get (o, &w, &h);
+}
+
 void EvasImage::setBorder( int left, int right, int top, int bottom )
 {
     evas_object_image_border_set( o, left, right, top, bottom );
+}
+
+
+void EvasImage::setData (void *data)
+{
+    evas_object_image_data_set (o, data);
+}
+
+void *EvasImage::getData (bool for_writing)
+{
+    return evas_object_image_data_get (o, for_writing);
+}
+
+void EvasImage::setDataCopy (void *data)
+{
+    evas_object_image_data_copy_set (o, data);
+}
+
+void EvasImage::addDataUpdate (int x, int y, int w, int h)
+{
+    evas_object_image_data_update_add (o, x, y, w, h);
 }
 
 //===============================================================================================

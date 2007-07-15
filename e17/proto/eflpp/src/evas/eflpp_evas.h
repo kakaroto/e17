@@ -289,6 +289,7 @@ class EvasTextBlock : public EvasObject
 class EvasImage : public EvasObject
 {
   public:
+    EvasImage( EvasCanvas* canvas, const char* name = 0 );
     EvasImage( const char* filename, EvasCanvas* canvas, const char* name = 0 );
     EvasImage( int x, int y, const char* filename, EvasCanvas* canvas, const char* name = 0 );
     EvasImage( Evas_Object* object, EvasCanvas* canvas, const char* name = 0 );
@@ -311,8 +312,26 @@ class EvasImage : public EvasObject
     virtual const Size size() const;
     const Size& trueSize();
 
+    /// Sets the size of the image to be display by the given image object.
+    void setImageSize (int w, int h);
+
+    /// Retrieves the size of the image displayed by the given image object.
+    void getImageSize (int &w, int &h);
+
     /* Border */
     void setBorder( int left, int right, int top, int bottom );
+
+    /// Sets the raw image data. 
+    void setData (void *data);
+
+    /// Retrieves the raw image data.
+    void *getData (bool for_writing);
+
+    /// Replaces an image object's internal image data buffer.
+    void setDataCopy (void *data);
+
+    /// Update a rectangle after putting data into the image.
+    void addDataUpdate (int x, int y, int w, int h);
 
     static void setResourcePath( const char* path ) { EvasImage::_resourcePath = (char*) path; };
     static const char* resourcePath()               { return EvasImage::_resourcePath; };
