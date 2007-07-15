@@ -96,7 +96,10 @@ PKG_CHECK_MODULES(ECORE, [
   [have_ecore="no"]
 )
 
-PKG_CHECK_MODULES(ESMART, [esmart >= 0.9.0],
+PKG_CHECK_MODULES(ESMART, [
+    esmart_container >= 0.9.0
+    esmart_text_entry >= 0.9.0
+  ],
   [have_esmart="yes"],
   [have_esmart="no"]
 )
