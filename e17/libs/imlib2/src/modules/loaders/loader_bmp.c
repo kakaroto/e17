@@ -55,9 +55,9 @@ ReadleLong(FILE * file, unsigned long *ret)
       return 0;
 
 #ifdef WORDS_BIGENDIAN
-   *ret = (b[3] << 24) | (b[2] << 16) | (b[1] << 8) | b[0];
-#else
    *ret = (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3];
+#else
+   *ret = (b[3] << 24) | (b[2] << 16) | (b[1] << 8) | b[0];
 #endif
    return 1;
 }
@@ -80,17 +80,17 @@ WriteleShort(FILE * file, unsigned short val)
    int rc;
 
 #ifdef WORDS_BIGENDIAN
-   rc = fputc ((int) (val & 0xff), file);
+   rc = fputc ((int) ((val >> 8) & 0xff), file);
    if (rc == EOF)
       return 0;
-   rc = fputc ((int) ((val >> 8) & 0xff), file);
+   rc = fputc ((int) (val & 0xff), file);
    if (rc == EOF)
       return 0;
 #else
-   rc = fputc ((int) ((val >> 8) & 0xff), file);
+   rc = fputc ((int) (val & 0xff), file);
    if (rc == EOF)
       return 0;
-   rc = fputc ((int) (val & 0xff), file);
+   rc = fputc ((int) ((val >> 8) & 0xff), file);
    if (rc == EOF)
       return 0;
 #endif
@@ -104,29 +104,29 @@ WriteleLong(FILE * file, unsigned long val)
    int rc;
 
 #ifdef WORDS_BIGENDIAN
-   rc = fputc ((int) (val & 0xff), file);
-   if (rc == EOF)
-      return 0;
-   rc = fputc ((int) ((val >> 8) & 0xff), file);
+   rc = fputc ((int) ((val >> 24) & 0xff), file);
    if (rc == EOF)
       return 0;
    rc = fputc ((int) ((val >> 16) & 0xff), file);
    if (rc == EOF)
       return 0;
-   rc = fputc ((int) ((val >> 24) & 0xff), file);
+   rc = fputc ((int) ((val >> 8) & 0xff), file);
+   if (rc == EOF)
+      return 0;
+   rc = fputc ((int) (val & 0xff), file);
    if (rc == EOF)
       return 0;
 #else
-   rc = fputc ((int) ((val >> 24) & 0xff), file);
-   if (rc == EOF)
-      return 0;
-   rc = fputc ((int) ((val >> 16) & 0xff), file);
+   rc = fputc ((int) (val & 0xff), file);
    if (rc == EOF)
       return 0;
    rc = fputc ((int) ((val >> 8) & 0xff), file);
    if (rc == EOF)
       return 0;
-   rc = fputc ((int) (val & 0xff), file);
+   rc = fputc ((int) ((val >> 16) & 0xff), file);
+   if (rc == EOF)
+      return 0;
+   rc = fputc ((int) ((val >> 24) & 0xff), file);
    if (rc == EOF)
       return 0;
 #endif
