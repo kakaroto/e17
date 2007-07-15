@@ -2,5 +2,6 @@
 .libs
 esmart_file_dialog_test
 esmart_test
+esmart_text_entry_test
 Makefile
 Makefile.in
