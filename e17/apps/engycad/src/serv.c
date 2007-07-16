@@ -311,10 +311,6 @@ serv_parser(char *s)
     IFCMD("save_ps") serv_save_ps();
     IFCMD("help") serv_help();
     IFCMD("__exit") fl_shutdown = 1;
-    {
-	    static long death_count = 0;
-	    IFCMD("dummy") printf("%d\n", death_count++);
-    }
     FREE(s);
 }
 

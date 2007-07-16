@@ -283,8 +283,23 @@ ell_destroy(Ellipse * ell)
     Evas               *e;
     Evas_List          *l;
 
-    e = shell->evas;
-    if (!ell)
+    for (l = drawing->layers; l; l = l->next)
+      {
+          Layer              *layer;
+
+          layer = (Layer *) l->data;
+          layer->objects = evas_list_remove(layer->objects, ell);
+      }
+
+    ell_free(ell);
+}
+
+void
+ell_free(Ellipse * ell)
+{
+    Evas_List          *l;
+
+    if(!ell)
         return;
 
     magnet_detach(ell);
@@ -298,13 +313,6 @@ ell_destroy(Ellipse * ell)
         evas_object_del(l->data);
     ell->list = evas_list_free(ell->list);
 
-    for (l = drawing->layers; l; l = l->next)
-      {
-          Layer              *layer;
-
-          layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, ell);
-      }
     FREE(ell);
 }
 

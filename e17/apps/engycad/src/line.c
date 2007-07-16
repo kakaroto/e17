@@ -356,12 +356,25 @@ line_redraw(Line * line)
 }
 
 void
-line_destroy(Line * line)
+line_destroy(Line *line)
 {
-    Evas               *e;
+	Evas_List          *l;
+	for (l = drawing->layers; l; l = l->next)
+	{                                           
+		Layer              *layer;
+		
+		layer = (Layer *) l->data;
+		layer->objects = evas_list_remove(layer->objects, line);
+	}
+
+	line_free(line);
+}
+
+void
+line_free(Line * line)
+{
     Evas_List          *l;
 
-    e = shell->evas;
     if (!line)
         return;
 
@@ -376,13 +389,6 @@ line_destroy(Line * line)
         evas_object_del(l->data);
     line->list = evas_list_free(line->list);
 
-    for (l = drawing->layers; l; l = l->next)
-      {
-          Layer              *layer;
-
-          layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, line);
-      }
     FREE(line);
 }
 

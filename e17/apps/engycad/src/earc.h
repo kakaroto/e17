@@ -6,6 +6,7 @@ void                earc_load(int);
 void                earc_redraw(EArc *);
 void                earc_sync(EArc *);
 void                earc_destroy(EArc *);
+void                earc_free(EArc *);
 
 void                earc_move(EArc *, double, double);
 void                earc_scale(EArc *, double, double, double);

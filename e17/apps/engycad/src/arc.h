@@ -6,6 +6,7 @@ void                arc_load(int);
 void                arc_redraw(Arc *);
 void                arc_sync(Arc *);
 void                arc_destroy(Arc *);
+void                arc_free(Arc *);
 
 void                arc_move(Arc *, double, double);
 void                arc_scale(Arc *, double, double, double);

@@ -5,6 +5,7 @@ void                image_load(int);
 void                image_redraw(Image *);
 void                image_sync(Image *);
 void                image_destroy(Image *);
+void                image_free(Image *);
 
 void                image_move(Image *, double, double);
 void                image_scale(Image *, double, double, double);

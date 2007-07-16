@@ -134,6 +134,11 @@ drawing_free(void)
 	{
 		layer_destroy((Layer *) l->data);
 	}
+
+	evas_list_free(drawing->layers);
+	IF_FREE(drawing->filein);
+	IF_FREE(drawing->fileout);
+	FREE(drawing);
 }
 
 Unit

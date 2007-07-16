@@ -6,6 +6,7 @@ void                ci_load(int);
 void                ci_redraw(Circle *);
 void                ci_sync(Circle *);
 void                ci_destroy(Circle *);
+void                ci_free(Circle *);
 
 void                ci_move(Circle *, double, double);
 void                ci_scale(Circle *, double, double, double);

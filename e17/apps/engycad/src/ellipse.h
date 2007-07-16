@@ -6,6 +6,7 @@ void                ell_load(int);
 void                ell_redraw(Ellipse *);
 void                ell_sync(Ellipse *);
 void                ell_destroy(Ellipse *);
+void                ell_free(Ellipse *);
 
 void                ell_move(Ellipse *, double, double);
 void                ell_scale(Ellipse *, double, double, double);

@@ -250,8 +250,6 @@ layer_destroy(Layer * layer)
 {
     Evas_List          *l;
 
-    return;
-
     if (!layer)
         return;
     for (l = layer->objects; l; l = l->next)
@@ -264,33 +262,36 @@ layer_destroy(Layer * layer)
             case OBJ_NONE:
                 break;
             case OBJ_POINT:
-                point_destroy((Point *) o);
+                point_free((Point *) o);
                 break;
             case OBJ_LINE:
-                line_destroy((Line *) o);
+                line_free((Line *) o);
                 break;
 	    case OBJ_CIRCLE:
-		circle_destroy((Circle *) o);
+		ci_free((Circle *) o);
 		break;
 	    case OBJ_ARC:
-		arc_destroy((Arc *) o);
+		arc_free((Arc *) o);
 		break;
 	    case OBJ_ELLIPSE:
-		ell_destroy((Ellipse *) o);
+		ell_free((Ellipse *) o);
 		break;
 	    case OBJ_EARC:
-		earc_destroy((EArc *) o);
+		earc_free((EArc *) o);
 		break;
 	    case OBJ_IMAGE:
-		image_destroy((Image *) o);
+		image_free((Image *) o);
 	    case OBJ_TEXT:
-		text_destroy((Text *) o);
+		text_free((Text *) o);
 		break;
             }
       }
 
+    evas_list_free(layer->objects);
     FREE(layer->line_style);
     FREE(layer->label);
+    IF_FREE(layer->old.line_style);
+    IF_FREE(layer->old.label);
     FREE(layer);
 }
 

@@ -498,10 +498,25 @@ text_sync(Text * te)
 void
 text_destroy(Text * te)
 {
-    Evas               *e;
     Evas_List          *l;
 
-    e = shell->evas;
+    for (l = drawing->layers; l; l = l->next)
+      {
+          Layer              *layer;
+
+          layer = (Layer *) l->data;
+          layer->objects = evas_list_remove(layer->objects, te);
+      }
+
+    text_free(te);
+}
+
+
+void
+text_free(Text * te)
+{
+    Evas_List          *l;
+
     if (!te)
         return;
 
@@ -515,13 +530,6 @@ text_destroy(Text * te)
 
     evas_object_del(te->item);
 
-    for (l = drawing->layers; l; l = l->next)
-      {
-          Layer              *layer;
-
-          layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, te);
-      }
     FREE(te);
 }
 

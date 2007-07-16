@@ -384,6 +384,22 @@ image_sync(Image * im)
 
 void
 image_destroy(Image * im)
+{    
+	Evas_List          *l;
+	for (l = drawing->layers; l; l = l->next)
+	{                                           
+		Layer              *layer;
+		
+		layer = (Layer *) l->data;
+		layer->objects = evas_list_remove(layer->objects, im);
+	}
+	
+	image_free(im);
+}
+
+
+void
+image_free(Image * im)
 {
     Imlib_Image         prev;
 

@@ -5,6 +5,7 @@ void                text_load(int);
 void                text_redraw(Text *);
 void                text_sync(Text *);
 void                text_destroy(Text *);
+void                text_free(Text *);
 
 void                text_move(Text *, double, double);
 void                text_scale(Text *, double, double, double);

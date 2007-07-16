@@ -327,10 +327,24 @@ point_redraw(Point * point)
       }
 }
 
-void
+void 
 point_destroy(Point * point)
 {
-    Evas               *e;
+	Evas_List          *l;
+	for (l = drawing->layers; l; l = l->next)
+	{
+		Layer              *layer;
+		
+		layer = (Layer *) l->data;
+		layer->objects = evas_list_remove(layer->objects, point);
+	}
+
+	point_free(point);
+}
+
+void
+point_free(Point * point)
+{
     Evas_List          *l;
 
     if (!point)
@@ -338,21 +352,12 @@ point_destroy(Point * point)
 
     magnet_detach(point);
 
-    e = shell->evas;
     IF_FREE(point->line_style);
     FREE(point->point_style);
 
     for (l = point->list; l; l = l->next)
         evas_object_del(l->data);
     point->list = evas_list_free(point->list);
-
-    for (l = drawing->layers; l; l = l->next)
-      {
-          Layer              *layer;
-
-          layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, point);
-      }
     FREE(point);
 }
 

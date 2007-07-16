@@ -299,13 +299,27 @@ arc_sync(Arc * arc)
     arc_redraw(arc);
 }
 
-void
+void 
 arc_destroy(Arc * arc)
 {
-    Evas               *e;
     Evas_List          *l;
 
-    e = shell->evas;
+    for (l = drawing->layers; l; l = l->next)
+      {
+          Layer              *layer;
+
+          layer = (Layer *) l->data;
+          layer->objects = evas_list_remove(layer->objects, arc);
+      }
+
+    arc_free(arc);
+}
+
+void
+arc_free(Arc * arc)
+{
+    Evas_List          *l;
+
     if (!arc)
         return;
 
@@ -320,13 +334,6 @@ arc_destroy(Arc * arc)
         evas_object_del(l->data);
     arc->list = evas_list_free(arc->list);
 
-    for (l = drawing->layers; l; l = l->next)
-      {
-          Layer              *layer;
-
-          layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, arc);
-      }
     FREE(arc);
 }
 

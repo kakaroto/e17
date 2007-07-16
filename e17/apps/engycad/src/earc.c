@@ -332,10 +332,24 @@ earc_sync(EArc * earc)
 void
 earc_destroy(EArc * earc)
 {
-    Evas               *e;
     Evas_List          *l;
 
-    e = shell->evas;
+    for (l = drawing->layers; l; l = l->next)
+      {
+          Layer              *layer;
+
+          layer = (Layer *) l->data;
+          layer->objects = evas_list_remove(layer->objects, earc);
+      }
+
+    earc_free(earc);
+}
+
+void
+earc_free(EArc * earc)
+{
+    Evas_List          *l;
+
     if (!earc)
         return;
 
@@ -350,13 +364,6 @@ earc_destroy(EArc * earc)
         evas_object_del(l->data);
     earc->list = evas_list_free(earc->list);
 
-    for (l = drawing->layers; l; l = l->next)
-      {
-          Layer              *layer;
-
-          layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, earc);
-      }
     FREE(earc);
 }
 

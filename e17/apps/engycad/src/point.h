@@ -4,6 +4,7 @@ void                point_load(int);
 void                point_redraw(Point *);
 void                point_sync(Point *);
 void                point_destroy(Point *);
+void                point_free(Point *);
 
 void                point_move(Point *, double, double);
 void                point_scale(Point *, double, double, double);

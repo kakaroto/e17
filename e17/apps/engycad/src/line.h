@@ -6,6 +6,7 @@ void                line_load(int);
 void                line_redraw(Line *);
 void                line_sync(Line *);
 void                line_destroy(Line *);
+void                line_free(Line *);
 
 void                line_move(Line *, double, double);
 void                line_scale(Line *, double, double, double);

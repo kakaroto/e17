@@ -32,6 +32,8 @@ struct _CL {
 Evas_Object * o_cl;
 iconv_t dcd;
 Evas_Object * current_editbox;
+Evas_List * history = NULL;
+Evas_List * curr_h = NULL;
 
 
 Evas_Smart *smart;
@@ -55,6 +57,10 @@ void cl_hide(Evas_Object *o);
 void cl_color_set(Evas_Object *o, int r, int g, int b, int a);
 void cl_clip_set(Evas_Object *o, Evas_Object *clip);
 void cl_clip_unset(Evas_Object *o);
+
+void cl_history_up(Evas_Object *o);
+void cl_history_down(Evas_Object *o);
+void cl_autocomplete(Evas_Object *o);
 
 void bg_key_down_cb(void * data,  
 	Evas *e, 
@@ -501,11 +507,31 @@ void cl_handle_key(Evas_Object *o, void *event_info)
 	   cl_cursor_pos_set(oparent, 0);
    else if (!strcmp(ee->keyname, "End")) 
 	   cl_cursor_pos_set(oparent, 0xffff);
-//   else if (!strcmp(ee->keyname, "Tab")) engy_panel_feed(ee);
-   else if (!strcmp(ee->keyname, "Return")) 
+   else if (!strcmp(ee->keyname, "Tab")) 
+	   cl_autocomplete(oparent);
+   else if (!strcmp(ee->keyname, "Up"))
+	   cl_history_up(oparent);
+   else if (!strcmp(ee->keyname, "Down"))
+	   cl_history_down(oparent);
+   else if (!strcmp(ee->keyname, "Return") || 
+		   !strcmp(ee->keyname, "KP_Enter")) 
    {
 	char *p, *s, *al;
 	cl_text_get(oparent, &p);
+
+	if(!curr_h)
+	{
+		s = DUP(p);
+		history = evas_list_prepend(history, s);
+	}
+	else
+	{
+		curr_h = history;
+		IF_FREE(curr_h->data);
+		curr_h->data = DUP(p);
+	}
+
+	curr_h = NULL;
 
 	s = DUP(p);
 	al = _alias(s);
@@ -521,10 +547,6 @@ void cl_handle_key(Evas_Object *o, void *event_info)
 
 	cl_text_set(oparent, "");
    }
-//   else if (!strcmp(ee->keyname, "KP_Enter")) engy_panel_feed(ee);
-//   else if (!strcmp(ee->keyname, "Up")) engy_panel_feed(ee);
-//   else if (!strcmp(ee->keyname, "Down")) engy_panel_feed(ee);
-//   else if (! ee->key_compose) engy_panel_feed(ee);
    else 
    {	// insert input
       char * nt;
@@ -596,6 +618,75 @@ cl_text_set(Evas_Object * _o, const char * str)
    cl->cpos = cl->len+1;
    cl->bcpos = evas_string_char_prev_get(cl->text, pos, &d);
 }
+
+void cl_history_up(Evas_Object *_o)
+{
+	char *s, *p;
+	cl_text_get(_o, &p);
+
+	if(!curr_h)
+	{
+		s = DUP(p);
+		history = evas_list_prepend(history, s);
+		curr_h = history;
+	}
+	else
+	{
+		IF_FREE(curr_h->data);
+		curr_h->data = DUP(p);
+	}
+
+	if(!curr_h->next)
+		return;
+	curr_h = curr_h->next;
+	cl_text_set(_o, curr_h->data);
+}
+
+void cl_history_down(Evas_Object *_o)
+{
+	char *s, *p;
+	cl_text_get(_o, &p);
+
+	if(!curr_h)
+	{
+		s = DUP(p);
+		history = evas_list_prepend(history, s);
+		curr_h = history;
+	}
+	else
+	{
+		IF_FREE(curr_h->data);
+		curr_h->data = DUP(p);
+	}
+
+	if(!evas_list_prev(curr_h))
+		return;
+	curr_h = evas_list_prev(curr_h);
+	cl_text_set(_o, curr_h->data);
+}
+
+void cl_autocomplete(Evas_Object *_o)
+{
+	Evas_List *l;
+	char *s, *s1;
+
+	if(!history)
+		return;
+	cl_text_get(_o, &s1);
+	if(!s1)
+		return;
+
+	for(l = history; l; l = l->next)
+	{
+		s = l->data;
+		if(strncpy(s, s1, strlen(s1)))
+			continue;
+
+		cl_text_set(_o, s);
+		return;
+	}
+}
+
 
 void 
 cl_hint_set(Evas_Object * _o, const char * str)
@@ -973,5 +1064,18 @@ void cl_configure(Evas_Coord w, Evas_Coord h)
 
 void cl_shutdown(void)
 {
+	Evas_List *l;
 	iconv_close(dcd);
+
+	for(l = history; l; l = l->next)
+	{
+		IF_FREE(l->data);
+	}
+	
+	evas_list_free(history);
 }
+
+
+
+
+

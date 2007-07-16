@@ -253,13 +253,25 @@ ci_sync(Circle * ci)
     ci_redraw(ci);
 }
 
-void
+void 
 ci_destroy(Circle * ci)
 {
-    Evas               *e;
+	Evas_List          *l;
+	for (l = drawing->layers; l; l = l->next)
+	{
+		Layer              *layer;
+		
+		layer = (Layer *) l->data;
+		layer->objects = evas_list_remove(layer->objects, ci);
+	}
+	ci_free(ci);
+}
+
+void
+ci_free(Circle * ci)
+{
     Evas_List          *l;
 
-    e = shell->evas;
     if (!ci)
         return;
 
@@ -274,13 +286,6 @@ ci_destroy(Circle * ci)
         evas_object_del(l->data);
     ci->list = evas_list_free(ci->list);
 
-    for (l = drawing->layers; l; l = l->next)
-      {
-          Layer              *layer;
-
-          layer = (Layer *) l->data;
-          layer->objects = evas_list_remove(layer->objects, ci);
-      }
     FREE(ci);
 }
 
