@@ -129,6 +129,9 @@ MainWndProc(HWND   hwnd,
      case WM_DESTROY:
        PostQuitMessage(0);
        return 0;
+     case WM_CLOSE:
+       PostQuitMessage(0);
+       return 0;
      case WM_WINDOWPOSCHANGED: {
        PAINTSTRUCT ps; 
        HDC hdc; 
