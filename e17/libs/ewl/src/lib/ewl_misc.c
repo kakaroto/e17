@@ -389,6 +389,21 @@ ewl_main(void)
 }
 
 /**
+ * @return Returns no value.
+ * @brief One iteration of the main execution loop of EWL
+ *
+ * This is one iteration of the main execution loop of ewl. It dispatches
+ * all of the current incoming events and renders updates on the queue to the evas's used by ewl.
+ * Remember to clean up with ewl_shutdown () afterwards.
+ */
+void
+ewl_main_iterate (void)
+{
+  ecore_main_loop_iterate ();
+}
+
+
+/**
  * @internal
  * @param data: this is only necessary for registering this function with ecore
  * @return Returns TRUE to continue the timer.
