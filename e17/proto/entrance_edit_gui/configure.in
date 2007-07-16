@@ -109,16 +109,14 @@ AC_PATH_EFL(
 )
 
 #check for ECORE
-AC_PATH_EFL(
-   ecore,
-   0.1.0.001,
-   [
-     AC_DEFINE(HAVE_ECORE, 1, have ECORE)
-     ecore="ECORE "
-     AM_CONDITIONAL(HAVE_ECORE, true)
+PKG_CHECK_MODULES(ECORE, [
+     ecore >= 0.9.9
+     ecore-evas >= 0.9.9
+     ecore-file >= 0.9.9
+   ], [
      have_ecore="yes"
-     ecore_libs=`ecore-config --libs`
-     ecore_cflags=`ecore-config --cflags`     
+     ecore_libs=`pkg-config --libs ecore ecore-evas ecore-file`
+     ecore_cflags=`pkg-config --cflags ecore ecore-evas ecore-file`
    ],
    [
      AC_MSG_ERROR([No Ecore, can't build!])
@@ -126,16 +124,10 @@ AC_PATH_EFL(
 )
 
 #check for EVAS
-AC_PATH_EFL(
-   evas,
-   0.1.0.001,
-   [
-     AC_DEFINE(HAVE_EVAS, 1, have EVAS)
-     evas="EVAS "
-     AM_CONDITIONAL(HAVE_EVAS, true)
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9], [
      have_evas="yes"
-     evas_libs=`evas-config --libs`
-     evas_cflags=`evas-config --cflags`     
+     evas_libs=`pkg-config --libs evas`
+     evas_cflags=`pkg-config --cflags evas`     
    ],
    [
      AC_MSG_ERROR([No Evas, can't build!])
@@ -143,16 +135,10 @@ AC_PATH_EFL(
 )
 
 #check for EDJE
-AC_PATH_EFL(
-   edje,
-   0.1.0.001,
-   [
-     AC_DEFINE(HAVE_EDJE, 1, have EDJE)
-     edje="EDJE "
-     AM_CONDITIONAL(HAVE_EDJE, true)
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0], [
      have_edje="yes"
-     edje_libs=`edje-config --libs`
-     edje_cflags=`edje-config --cflags`     
+     edje_libs=`pkg-config --libs edje`
+     edje_cflags=`pkg-config --cflags edje`     
    ],
    [
      AC_MSG_ERROR([No Edje, can't build!])
@@ -160,16 +146,10 @@ AC_PATH_EFL(
 )
 
 #check for ETK
-AC_PATH_EFL(
-   etk,
-   0.1.0.001,
-   [
-     AC_DEFINE(HAVE_ETK, 1, have ETK)
-     etk="ETK "
-     AM_CONDITIONAL(HAVE_ETK, true)
+PKG_CHECK_MODULES(ETK, [etk >= 0.1.0], [
      have_etk="yes"
-     etk_libs=`etk-config --libs`
-     etk_cflags=`etk-config --cflags`     
+     etk_libs=`pkg-config --libs etk`
+     etk_cflags=`pkg-config --cflags etk`     
    ],
    [
      AC_MSG_ERROR([No Etk, can't build. Check back when we support another toolkit or just install etk already!])
