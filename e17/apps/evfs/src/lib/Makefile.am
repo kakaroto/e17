@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS     = 1.7 foreign
 
 lib_LTLIBRARIES = libevfs.la
 
-INCLUDES = -I$(top_srcdir)/src/include @EET_CFLAGS@ @ECORE_CFLAGS@ @xml2_cflags@ $(DEBUGFLAGS) -I. -I$(top_srcdir) \
+INCLUDES = -I$(top_srcdir)/src/include @EET_CFLAGS@ @ECORE_CFLAGS@ $(DEBUGFLAGS) -I. -I$(top_srcdir) \
 	   -DBINDIR=\""$(bindir)"\"
 
 libevfs_la_SOURCES   = \
@@ -38,7 +38,6 @@ libevfs_la_SOURCES   = \
 	$(top_srcdir)/src/bin/evfs_metadata_db.c \
 	$(top_srcdir)/src/common/evfs_server.c \
 	$(top_srcdir)/src/bin/evfs_trash.c
-	
 
 libevfs_la_LIBADD = \
 	@ECORE_LIBS@ \

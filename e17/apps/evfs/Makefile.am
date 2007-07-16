@@ -24,8 +24,7 @@ EXTRA_DIST = README AUTHORS COPYING \
 	     debian/libevfs0-plugin-tar.install \
 	     debian/rules \
 	     debian/changelog.in \
-	     debian/changelog 
+	     debian/changelog
 
-bin_SCRIPTS = evfs-config
-
-
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = evfs.pc
