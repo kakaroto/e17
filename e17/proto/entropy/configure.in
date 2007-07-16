@@ -148,18 +148,10 @@ AC_CHECK_HEADER(
 )
 
 
-#check for ecore
-AC_PATH_EFL(
-   ecore,
-   0.9.9,
-   [
-     AC_DEFINE(HAVE_ECORE, 1, have ECORE)
-     ecore="ECORE "
-   ],
-   [
-     AC_MSG_ERROR([No ECORE, can't build.])
-   ]
-)
+#check for efl
+PKG_CHECK_MODULES(ECORE, ecore >= 0.9.9 ecore-config >= 0.9.9)
+PKG_CHECK_MODULES(EPSILON, epsilon >= 0.3.0)
+PKG_CHECK_MODULES(EVFS, evfs >= 0.0.1)
 
 
 dnl ###################
@@ -191,61 +183,29 @@ AM_CONDITIONAL(HAVE_EXTRACTOR, test $extractor = yes)
 
 
 #check for ewl
-AC_PATH_EFL(
-   ewl,
-   0.0.4,
+PKG_CHECK_MODULES(EWL, ewl >= 0.0.4,
+   [ have_ewl="yes" ],
    [
-     AC_DEFINE(HAVE_EWL, 1, have EWL)
-     ewl="EWL "
-     AM_CONDITIONAL(HAVE_EWL, true)
-     have_ewl="yes"
-   ],
-   [
-     AC_DEFINE(HAVE_EWL, 0, no EWL)
-     AM_CONDITIONAL(HAVE_EWL, false)
      AC_MSG_WARN([No EWL, can't build ewl plugins.])
      have_ewl="no"
    ]
 )
+AM_CONDITIONAL(HAVE_EWL, test "x$have_ewl" = "xyes")
 
 #check for etk
-AC_PATH_EFL(
-   etk,
-   0.1.0,
+PKG_CHECK_MODULES(ETK, etk >= 0.1.0,
+   [ have_etk="yes" ],
    [
-     AC_DEFINE(HAVE_ETK, 1, have ETK)
-     etk="ETK "
-     AM_CONDITIONAL(HAVE_ETK, true)
-     have_etk="yes"
-   ],
-   [
-     AC_DEFINE(HAVE_ETK, 0, no ETK)
-     AM_CONDITIONAL(HAVE_ETK, false)
-     AC_MSG_WARN([No ETK, can't build ETK plugin.])
+     AC_MSG_WARN([No ETK, can't build etk plugins.])
      have_etk="no"
    ]
 )
-
-#Check for evfs
-AC_PATH_EFL(
-   evfs,
-   0.0.1,
-   [
-     AC_DEFINE(HAVE_EVFS, 1, have EVFS)
-     evfs="EVFS "
-   ],
-   [
-     AC_MSG_ERROR([No EVFS, can't build.])
-   ]
-)
+AM_CONDITIONAL(HAVE_ETK, test "x$have_etk" = "xyes")
 
 # check for Imlib2
-AC_PATH_EFL(
-   imlib2,
-   1.2.1,
+PKG_CHECK_MODULES(IMLIB2,
+   imlib2 >= 1.2.1,
    [
-     AC_DEFINE(HAVE_IMLIB2, 1, have Imlib2)
-     imlib2="Imlib2 "
      have_imlib2="yes"
    ],
    [
@@ -255,77 +215,15 @@ AC_PATH_EFL(
 )
 
 # check for libpng
-libpng_dir=""
-have_libpng="no"
-AC_ARG_WITH(
-   libpng,
-   AC_HELP_STRING(
-      [--with-libpng=DIR],
-      [use libpng in <DIR>]
-   ),
-   [libpng_dir=$withval],
-   [have_libpng="no"]
+PKG_CHECK_MODULES(
+   PNG,
+   libpng12 >= 1.2.8,
+   [have_libpng="yes"
+    AC_DEFINE(HAVE_LIBPNG,1,[have libpng for thumbnailing])
+    libpng="PNG "
+    have_libpng="yes"],
+   [AC_MSG_WARN([No luck, guy. No pretty thumbnailing for you !])]
 )
-
-if ! test x"$libpng_dir" = x"" ; then
-   saved_CPPFLAGS="${CPPFLAGS}"
-   saved_LDFLAGS="${LDFLAGS}"
-   CPPFLAGS="${CPPFLAGS} -I$libpng_dir/include/libpng12"
-   AC_CHECK_HEADER(
-      [png.h],
-      [LDFLAGS="${LDFLAGS} -L$libpng_dir/lib/ -lz -lm"
-       AC_CHECK_LIB(
-          [png],
-          [main],
-          [libpng_libs="-L$libpng_dir/lib/ -lz -lm"
-           AC_DEFINE(HAVE_LIBPNG,1,[have libpng for thumbnailing])
-           libpng="PNG "
-           have_libpng="yes"],
-          [AC_MSG_WARN(libpng library not in $libpng_dir/lib)]
-       )
-       libpng_cflags="-I$libpng_dir/include/libpng12"],
-      [AC_MSG_WARN(libpng headers not in $libpng_dir/include/libpng12)]
-   )
-   CPPFLAGS="${saved_CPPFLAGS}"
-   LDFLAGS="${saved_LDFLAGS}"
-fi
-
-if test x"$have_libpng" = x"no" ; then
-   AC_PATH_GENERIC(
-      libpng,
-      1.2.8,
-      [have_libpng="yes"
-       libpng_cflags=`libpng-config --cflags`
-       libpng_libs=`libpng-config --libs`
-       AC_DEFINE(HAVE_LIBPNG,1,[have libpng for thumbnailing])
-       libpng="PNG "
-       have_libpng="yes"],
-      [AC_MSG_WARN(libpng-config not in your PATH)]
-   )
-fi
-
-if test x"$have_libpng" = x"no" ; then
-   PKG_CHECK_MODULES(
-      PNG,
-      libpng12 >= 1.2.8,
-      [have_libpng="yes"
-       libpng_cflags=`pkg-config --cflags`
-       libpng_libs=`pkg-config --libs`
-       AC_DEFINE(HAVE_LIBPNG,1,[have libpng for thumbnailing])
-       libpng="PNG "
-       have_libpng="yes"],
-      [AC_MSG_WARN([No luck, guy. No pretty thumbnailing for you !])]
-   )
-fi
-AC_SUBST(libpng_cflags)
-AC_SUBST(libpng_libs)
-
-AC_PATH_GENERIC(epsilon, 0.3.0,
-  [ ],
-  [ AC_MSG_ERROR(Cannot find epsilon) ]
-)
-
-
 
 
 
