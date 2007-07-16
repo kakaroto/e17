@@ -156,7 +156,6 @@ enum Ewl_Flags
 	EWL_FLAG_STATE_FOCUSED 	= 0x10000000,	/**< Widget has focus */
 	EWL_FLAG_STATE_DISABLED = 0x20000000,	/**< Widget is disabled */
 	EWL_FLAG_STATE_DND 	= 0x40000000,	/**< Widget is engaged in DND */
-	EWL_FLAG_STATE_DND_WAIT	= 0x80000000,	/**< Widget is in DND wait state */
 };
 
 /**
@@ -214,7 +213,7 @@ enum Ewl_Flags
 #define EWL_FLAGS_STATE_MASK (EWL_FLAG_STATE_NORMAL | \
 		EWL_FLAG_STATE_MOUSE_IN | EWL_FLAG_STATE_PRESSED | \
 		EWL_FLAG_STATE_FOCUSED | EWL_FLAG_STATE_DND | \
-		EWL_FLAG_STATE_DISABLED | EWL_FLAG_STATE_DND_WAIT)
+		EWL_FLAG_STATE_DISABLED)
 
 /**
  * @enum Ewl_Position

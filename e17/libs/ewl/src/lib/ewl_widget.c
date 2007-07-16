@@ -6,8 +6,6 @@
 
 static Ecore_Hash *ewl_widget_name_table = NULL;
 static Ecore_Hash *ewl_widget_data_table = NULL;
-static int ewl_widget_dnd_drag_move_count = 0;
-static Ewl_Widget *ewl_widget_drag_widget= NULL;
 static Evas_Smart *widget_smart = NULL;
 
 static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
@@ -20,13 +18,6 @@ static void ewl_widget_layer_stack_add(Ewl_Widget *w);
 static void ewl_widget_layer_update(Ewl_Widget *w);
 static Evas_Object *ewl_widget_layer_neighbor_find_above(Ewl_Widget *w);
 static Evas_Object *ewl_widget_layer_neighbor_find_below(Ewl_Widget *w);
-
-static void ewl_widget_cb_drag_move(Ewl_Widget *w, void *ev_data, 
-					void *user_data);
-static void ewl_widget_cb_drag_up(Ewl_Widget *w, void *ev_data, 
-					void *user_data);
-static void ewl_widget_cb_drag_down(Ewl_Widget *w, void *ev_data, 
-					void *user_data);
 
 static void ewl_widget_name_table_shutdown(void);
 
@@ -421,10 +412,6 @@ ewl_widget_destroy(Ewl_Widget *w)
 
 	if (DESTROYED(w))
 		DRETURN(DLEVEL_STABLE);
-
-	/* cleanup any dnd widgets */
-	if (w == ewl_widget_drag_candidate_get())
-		ewl_widget_dnd_reset();
 
 	emb = ewl_embed_widget_find(w);
 	if (emb) ewl_embed_info_widgets_cleanup(emb, w);
@@ -3148,206 +3135,6 @@ ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 
 	key = edje_object_data_get(w->theme_object, "inset/bottom");
 	if (key && b) *b = atoi(key);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: The Ewl_Event_Mouse_Down data
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The mouse down callback
- */
-void
-ewl_widget_cb_drag_down(Ewl_Widget *w, void *ev_data ,
-				void *user_data __UNUSED__)
-{
-	Ewl_Event_Mouse_Down *ev;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("ev_data", ev_data);
-
-	ev = ev_data;
-	if (!ewl_dnd_status_get()) 
-		DRETURN(DLEVEL_STABLE);
-
-	if ((ev->button == 1) && !ewl_object_flags_has(EWL_OBJECT(w), 
-						EWL_FLAG_STATE_DND_WAIT, 
-						EWL_FLAGS_STATE_MASK)) 
-	{
-		ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_STATE_DND_WAIT, 
-							EWL_FLAGS_STATE_MASK);
-		ewl_widget_dnd_drag_move_count = 0;		
-		ewl_widget_drag_widget = w;
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: UNUSED
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The drag move callback
- */
-void
-ewl_widget_cb_drag_move(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-				void *user_data __UNUSED__) 
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (!ewl_dnd_status_get())
-		DRETURN(DLEVEL_STABLE);
-
-	if (ewl_widget_drag_widget 
-			&& ewl_object_flags_has(EWL_OBJECT(ewl_widget_drag_widget), 
-						EWL_FLAG_STATE_DND_WAIT, 
-						EWL_FLAGS_STATE_MASK)) 
-	{
-		ewl_widget_dnd_drag_move_count++;
-
-		if (ewl_widget_dnd_drag_move_count > 2) 
-		{
-			ewl_object_flags_remove(EWL_OBJECT(ewl_widget_drag_widget), 
-						EWL_FLAG_STATE_DND_WAIT, 
-						EWL_FLAGS_STATE_MASK);
-			ewl_object_flags_add(EWL_OBJECT(ewl_widget_drag_widget), 
-						EWL_FLAG_STATE_DND,
-						EWL_FLAGS_STATE_MASK);
-
-			ewl_dnd_drag_start(ewl_widget_drag_widget);	
-		}
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: UNUSED
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The drag up callback
- */
-void
-ewl_widget_cb_drag_up(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__) 
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (ewl_object_flags_has(EWL_OBJECT(ewl_widget_drag_widget), 
-					EWL_FLAG_STATE_DND_WAIT, 
-					EWL_FLAGS_STATE_MASK)) 
-		ewl_object_flags_remove(EWL_OBJECT(ewl_widget_drag_widget), 
-					EWL_FLAG_STATE_DND_WAIT, 
-					EWL_FLAGS_STATE_MASK);
-
-	ewl_widget_dnd_drag_move_count = 0;
-	ewl_widget_drag_widget = NULL;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param w: the widget to set draggable state
- * @param val: the true/false state of draggable
- * @param cb: The drag callback to set
- * @return Returns no value.
- * @brief Set the draggable state, and setup any callbacks
- */
-void
-ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-
-	if (val) { 
-		if (!ewl_object_flags_has(EWL_OBJECT(w), 
-					EWL_FLAG_PROPERTY_DND_SOURCE, 
-					EWL_FLAGS_PROPERTY_MASK)) 
-		{
-			ewl_object_flags_add(EWL_OBJECT(w), 
-						EWL_FLAG_PROPERTY_DND_SOURCE, 
-						EWL_FLAGS_PROPERTY_MASK );
-
-			ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, 
-						ewl_widget_cb_drag_down, NULL);
-			ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, 
-						ewl_widget_cb_drag_move, NULL);
-			ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, 
-						ewl_widget_cb_drag_up, NULL);
-
-			/* XXX I don't like using widget_data for this cb.
-			 * Should be an attach at the least */
-			if (cb) ewl_widget_data_set(w, "DROP_CB", (void *)cb);
-		}
-	} 
-	else 
-	{
-		if (ewl_object_flags_has(EWL_OBJECT(w), 
-						EWL_FLAG_PROPERTY_DND_SOURCE, 
-						EWL_FLAGS_PROPERTY_MASK)) 
-		{
-			ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, 
-						ewl_widget_cb_drag_down);
-			ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, 
-						ewl_widget_cb_drag_move);
-			ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP, 
-						ewl_widget_cb_drag_up);
-
-			ewl_object_flags_remove(EWL_OBJECT(w), 
-						EWL_FLAG_PROPERTY_DND_SOURCE,  
-						EWL_FLAGS_PROPERTY_MASK);
-		}
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @return Returns the current widget that has been clicked or moved 
- * (i.e. drag_wait)
- * @brief Accessor function for the current drag candidate widget
- *
- */
-Ewl_Widget * 
-ewl_widget_drag_candidate_get(void) 
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	DRETURN_PTR(ewl_widget_drag_widget, DLEVEL_STABLE);
-}
-
-/**
- * @return none
- * @brief Cancel any active dnd_wait state widgets
- */
-void
-ewl_widget_dnd_reset(void) 
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	if (ewl_widget_drag_widget) {
-		Ewl_Widget* temp = ewl_widget_drag_widget;
-
-		while (temp) {
-			ewl_object_state_remove(EWL_OBJECT(temp), 
-						EWL_FLAG_STATE_PRESSED);
-			temp = temp->parent;
-		}
-
-		ewl_embed_active_set(ewl_embed_widget_find(
-						ewl_widget_drag_widget), 0);
-	}
-
-	ewl_widget_dnd_drag_move_count = 0;
-	ewl_widget_drag_widget = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

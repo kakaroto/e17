@@ -241,7 +241,6 @@ void 		 ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a);
 
 int 		 ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w);
 
-void		ewl_widget_draggable_set(Ewl_Widget *w, unsigned int val, Ewl_Widget_Drag cb);
 Ewl_Widget     *ewl_widget_drag_candidate_get(void);
 void 		ewl_widget_dnd_reset(void);
 
