@@ -89,7 +89,6 @@ AC_CHECK_HEADER(Evas_Engine_Software_DDraw.h,
   [ dummy=no ],
   [ #include <Evas.h> ]
 )
-CFLAGS=$PCFLAGS
 
 if test "x$have_xlib" = "xyes" -o "x$have_xlib_16" = "xyes" -o "x$have_xlib_render" = "xyes" -o "x$have_xlib_opengl" = "xyes" ; then
 AC_PATH_XTRA
@@ -101,6 +100,35 @@ fi
 AC_SUBST(x_cflags)
 AC_SUBST(x_libs)
 AC_SUBST(ddraw_libs)
+
+#######################################
+## SDL
+AC_ARG_WITH(sdl-config, [  --with-sdl-config=SDL_CONFIG     use sdl-config specified],
+[ SDL_CONFIG=$withval;
+  echo "using "$SDL_CONFIG" for sdl-config"; ],
+[ if test -z "$SDL_CONFIG"; then
+    AC_PATH_PROG(SDL_CONFIG, "sdl-config", "", $PATH)
+  fi
+])
+if test -z "$SDL_CONFIG" ; then SDL_CONFIG="sdl-config"; fi
+
+sdl_cflags=""
+sdl_libs=""
+
+have_sdl="no"
+AC_CHECK_HEADER(Evas_Engine_SDL.h,
+  [ AC_DEFINE(HAVE_SOFTWARE_SDL, 1, [Evas Software SDL Support])
+    have_sdl="yes"
+    sdl_cflags=`$SDL_CONFIG --cflags`
+    sdl_libs=`$SDL_CONFIG --libs` ],
+  [ dummy=no ],
+  [ #include <Evas.h> ]
+)
+
+AC_SUBST(sdl_cflags)
+AC_SUBST(sdl_libs)
+
+CFLAGS=$PCFLAGS
 
 AC_OUTPUT([
 Makefile
@@ -118,6 +146,7 @@ echo "    Software Xlib 16 bits...: ${have_xlib_16}"
 echo "    X Render Xlib...........: ${have_xlib_render}"
 echo "    Open GL Xlib............: ${have_xlib_opengl}"
 echo "    Software DirectDraw.....: ${have_ddraw}"
+echo "    Software SDL............: ${have_sdl}"
 echo
 echo "  Installation:"
 echo "    prefix..................: ${prefix}"

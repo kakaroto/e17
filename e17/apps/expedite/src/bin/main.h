@@ -15,6 +15,7 @@
 #include "engine_xrender_x11.h"
 #include "engine_software_16_x11.h"
 #include "engine_software_ddraw.h"
+#include "engine_software_sdl.h"
 #include "ui.h"
 #include "about.h"
 

@@ -1090,7 +1090,6 @@ static void
 _engine_args(int argc, char **argv)
 {
    /* FIXME: parse args for geometry, engine etc. */
-   
    if (engine_software_x11_args(argc, argv))
      loop_func = engine_software_x11_loop;
    if (engine_gl_x11_args(argc, argv))
@@ -1101,6 +1100,8 @@ _engine_args(int argc, char **argv)
      loop_func = engine_software_16_x11_loop;
    if (engine_software_ddraw_args(argc, argv))
      loop_func = engine_software_ddraw_loop;
+   if (engine_software_sdl_args(argc, argv))
+     loop_func = engine_software_sdl_loop;
    if (!loop_func)
      {
 	fprintf(stderr,
@@ -1110,7 +1111,7 @@ _engine_args(int argc, char **argv)
 		"  -e ENGINE\n"
 		"\n"
 		"Where ENGINE can be one of:\n"
-		"  x11 xr gl x11-16 ddraw\n"
+		"  x11 xr gl x11-16 ddraw sdl\n"
 		);
 	exit(-1);
      }

@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = -I$(includedir) \
 	   -I$(top_srcdir) \
 	   -I$(top_srcdir)/src/bin \
-	   @EVAS_CFLAGS@ @x_cflags@ \
+	   @EVAS_CFLAGS@ @x_cflags@ @sdl_cflags@ \
 	   -DPACKAGE_BIN_DIR=\"@PACKAGE_BIN_DIR@\" \
 	   -DPACKAGE_LIB_DIR=\"@PACKAGE_LIB_DIR@\" \
 	   -DPACKAGE_DATA_DIR=\"@PACKAGE_DATA_DIR@\"
@@ -16,6 +16,7 @@ engine_gl_x11.c engine_gl_x11.h \
 engine_xrender_x11.c engine_xrender_x11.h \
 engine_software_16_x11.c engine_software_16_x11.h \
 engine_software_ddraw.c engine_software_ddraw.h \
+engine_software_sdl.c engine_software_sdl.h \
 ui.c ui.h \
 about.c about.h \
 tests.h \
@@ -58,4 +59,4 @@ image_blend_occlude2_very_many.c \
 image_blend_occlude3_very_many.c \
 poly_blend.c
 
-expedite_LDFLAGS = @EVAS_LIBS@  @x_libs@ @ddraw_libs@ -lm
+expedite_LDFLAGS = @EVAS_LIBS@ @sdl_libs@ @x_libs@ @ddraw_libs@ -lm
