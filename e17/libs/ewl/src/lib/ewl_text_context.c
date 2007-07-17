@@ -114,74 +114,58 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 				if (tx_change->font_source)
 					new_tx->font_source = strdup(tx_change->font_source);
 			}
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_SIZE)
+
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_SIZE)
 				new_tx->size = tx_change->size;
 
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_STYLES)
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_STYLES)
 				new_tx->styles = tx_change->styles;
 
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_ALIGN)
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_ALIGN)
 				new_tx->align = tx_change->align;
 
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_WRAP)
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_WRAP)
 				new_tx->wrap = tx_change->wrap;
 
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_COLOR)
-			{
-				new_tx->color.r = tx_change->color.r;
-				new_tx->color.g = tx_change->color.g;
-				new_tx->color.b = tx_change->color.b;
-				new_tx->color.a = tx_change->color.a;
-			}
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR)
-			{
-				new_tx->style_colors.bg.r = tx_change->style_colors.bg.r;
-				new_tx->style_colors.bg.g = tx_change->style_colors.bg.g;
-				new_tx->style_colors.bg.b = tx_change->style_colors.bg.b;
-				new_tx->style_colors.bg.a = tx_change->style_colors.bg.a;
-			}
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR)
-			{
-				new_tx->style_colors.glow.r = tx_change->style_colors.glow.r;
-				new_tx->style_colors.glow.g = tx_change->style_colors.glow.g;
-				new_tx->style_colors.glow.b = tx_change->style_colors.glow.b;
-				new_tx->style_colors.glow.a = tx_change->style_colors.glow.a;
-			}
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR)
-			{
-				new_tx->style_colors.outline.r = tx_change->style_colors.outline.r;
-				new_tx->style_colors.outline.g = tx_change->style_colors.outline.g;
-				new_tx->style_colors.outline.b = tx_change->style_colors.outline.b;
-				new_tx->style_colors.outline.a = tx_change->style_colors.outline.a;
-			}
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR)
-			{
-				new_tx->style_colors.shadow.r = tx_change->style_colors.shadow.r;
-				new_tx->style_colors.shadow.g = tx_change->style_colors.shadow.g;
-				new_tx->style_colors.shadow.b = tx_change->style_colors.shadow.b;
-				new_tx->style_colors.shadow.a = tx_change->style_colors.shadow.a;
-			}
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR)
-			{
-				new_tx->style_colors.strikethrough.r = tx_change->style_colors.strikethrough.r;
-				new_tx->style_colors.strikethrough.g = tx_change->style_colors.strikethrough.g;
-				new_tx->style_colors.strikethrough.b = tx_change->style_colors.strikethrough.b;
-				new_tx->style_colors.strikethrough.a = tx_change->style_colors.strikethrough.a;
-			}
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR)
-			{
-				new_tx->style_colors.underline.r = tx_change->style_colors.underline.r;
-				new_tx->style_colors.underline.g = tx_change->style_colors.underline.g;
-				new_tx->style_colors.underline.b = tx_change->style_colors.underline.b;
-				new_tx->style_colors.underline.a = tx_change->style_colors.underline.a;
-			}
-			else if (context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR)
-			{
-				new_tx->style_colors.double_underline.r = tx_change->style_colors.double_underline.r;
-				new_tx->style_colors.double_underline.g = tx_change->style_colors.double_underline.g;
-				new_tx->style_colors.double_underline.b = tx_change->style_colors.double_underline.b;
-				new_tx->style_colors.double_underline.a = tx_change->style_colors.double_underline.a;
-			}
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_COLOR)
+				memcpy(&(new_tx->color), &(tx_change->color), 
+							sizeof(Ewl_Color_Set));
+
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_BG_COLOR)
+				memcpy(&(new_tx->style_colors.bg), 
+						&(tx_change->style_colors.bg), 
+						sizeof(Ewl_Color_Set));
+
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_GLOW_COLOR)
+				memcpy(&(new_tx->style_colors.glow), 
+						&(tx_change->style_colors.glow), 
+						sizeof(Ewl_Color_Set));
+
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR)
+				memcpy(&(new_tx->style_colors.outline), 
+						&(tx_change->style_colors.outline), 
+						sizeof(Ewl_Color_Set));
+
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR)
+				memcpy(&(new_tx->style_colors.shadow), 
+						&(tx_change->style_colors.shadow), 
+						sizeof(Ewl_Color_Set));
+
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR)
+				memcpy(&(new_tx->style_colors.strikethrough), 
+						&(tx_change->style_colors.strikethrough), 
+						sizeof(Ewl_Color_Set));
+
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR)
+				memcpy(&(new_tx->style_colors.underline), 
+						&(tx_change->style_colors.underline), 
+						sizeof(Ewl_Color_Set));
+
+			if (context_mask & EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR)
+				memcpy(&(new_tx->style_colors.double_underline), 
+						&(tx_change->style_colors.double_underline), 
+						sizeof(Ewl_Color_Set));
+
 			IF_RELEASE(new_tx->format);
 			ecore_hash_set(context_hash, new_tx, new_tx);
 		}
