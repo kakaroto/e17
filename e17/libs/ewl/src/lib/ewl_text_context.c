@@ -20,7 +20,7 @@ static Ewl_Text_Context *ewl_text_context_dup(Ewl_Text_Context *old);
 static unsigned int ewl_text_context_hash_key(const void *ctx);
 static int ewl_text_context_hash_cmp(const void *ctx1, const void *ctx2);
 
-static char *ewl_text_context_color_string_get(int r, int g, int b, int a);
+static char *ewl_text_context_color_string_get(Ewl_Color_Set *colour);
 
 /**
  * @internal
@@ -310,20 +310,14 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 
 			fmt[pos].key = "underline_color";
 			fmt[pos].val = ewl_text_context_color_string_get(
-					ctx->style_colors.underline.r,
-					ctx->style_colors.underline.g,
-					ctx->style_colors.underline.b,
-					ctx->style_colors.underline.a);
+							&(ctx->style_colors.underline));
 			fmt[pos++].free = TRUE;
 
 			if (ctx->styles & EWL_TEXT_STYLE_DOUBLE_UNDERLINE)
 			{
 				fmt[pos].key = "underline2_color";
 				fmt[pos].val = ewl_text_context_color_string_get(
-						ctx->style_colors.double_underline.r,
-						ctx->style_colors.double_underline.g,
-						ctx->style_colors.double_underline.b,
-						ctx->style_colors.double_underline.a);
+							&(ctx->style_colors.double_underline));
 				fmt[pos++].free = TRUE;
 			}
 		}
@@ -339,10 +333,7 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 
 			fmt[pos].key = "strikethrough_color";
 			fmt[pos].val = ewl_text_context_color_string_get(
-					ctx->style_colors.strikethrough.r,
-					ctx->style_colors.strikethrough.g,
-					ctx->style_colors.strikethrough.b,
-					ctx->style_colors.strikethrough.a);
+						&(ctx->style_colors.strikethrough));
 			fmt[pos++].free = TRUE;
 		}
 		else t = "off";
@@ -359,10 +350,7 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 		{
 			fmt[pos].key = "shadow_color";
 			fmt[pos].val = ewl_text_context_color_string_get(
-					ctx->style_colors.shadow.r,
-					ctx->style_colors.shadow.g,
-					ctx->style_colors.shadow.b,
-					ctx->style_colors.shadow.a);
+						&(ctx->style_colors.shadow));
 			fmt[pos++].free = TRUE;
 
 			if (ctx->styles & EWL_TEXT_STYLE_GLOW)
@@ -371,10 +359,7 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 
 				fmt[pos].key = "glow_color";
 				fmt[pos].val = ewl_text_context_color_string_get(
-						ctx->style_colors.glow.r,
-						ctx->style_colors.glow.g,
-						ctx->style_colors.glow.b,
-						ctx->style_colors.glow.a);
+							&(ctx->style_colors.glow));
 				fmt[pos++].free = TRUE;
 			}
 			else if (ctx->styles & EWL_TEXT_STYLE_OUTLINE)
@@ -387,10 +372,7 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 
 				fmt[pos].key = "outline_color";
 				fmt[pos].val = ewl_text_context_color_string_get(
-						ctx->style_colors.outline.r,
-						ctx->style_colors.outline.g,
-						ctx->style_colors.outline.b,
-						ctx->style_colors.outline.a);
+							&(ctx->style_colors.outline));
 				fmt[pos++].free = TRUE;
 			}
 			else if (ctx->styles & EWL_TEXT_STYLE_SHADOW)
@@ -472,15 +454,11 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 	fmt[pos++].free = TRUE;
 
 	fmt[pos].key = "backing_color";
-	fmt[pos].val = ewl_text_context_color_string_get(
-			ctx->style_colors.bg.r, ctx->style_colors.bg.g,
-			ctx->style_colors.bg.b, ctx->style_colors.bg.a);
+	fmt[pos].val = ewl_text_context_color_string_get(&(ctx->style_colors.bg));
 	fmt[pos++].free = TRUE;
 
 	fmt[pos].key = "color";
-	fmt[pos].val = ewl_text_context_color_string_get(
-			ctx->color.r, ctx->color.g,
-			ctx->color.b, ctx->color.a);
+	fmt[pos].val = ewl_text_context_color_string_get(&(ctx->color));
 	fmt[pos++].free = TRUE;
 
 	/* create the formatting string */
@@ -775,13 +753,13 @@ ewl_text_context_cb_free(void *data)
 }
 
 static char *
-ewl_text_context_color_string_get(int r, int g, int b, int a)
+ewl_text_context_color_string_get(Ewl_Color_Set *colour)
 {
 	char buf[10];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	snprintf(buf, sizeof(buf), "#%02x%02x%02x%02x", r, g, b, a);
+	snprintf(buf, sizeof(buf), "#%02x%02x%02x%02x", colour->r, colour->g, colour->b, colour->a);
 
 	DRETURN_PTR(strdup(buf), DLEVEL_STABLE);
 }
