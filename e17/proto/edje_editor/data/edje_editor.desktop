@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Edje Editor
+Comment=A tool to create edje files
+Exec=edje_editor %F
+Terminal=false
+Type=Application
+Icon=edje_editor
+StartupWMClass=EdjeEditor
+Categories=ENLIGHTENMENT;Application;Development;
+Encoding=UTF-8
