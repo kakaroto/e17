@@ -4,8 +4,8 @@ use Devel::PPPort;
 
 # dependency check
 print "Checking for Etk...";
-my $etklib = `etk-config --version`;
-die "I can't run etk-config, make sure that etk is installed, and that etk-config is in your path" unless $etklib;
+my $etklib = `pkg-config --variable=version etk`;
+die "pkg-config can't find etk, make sure that etk is installed, and that your PKG_CONFIG_PATH is correct" unless $etklib;
 print "Ok\n";
 
 Devel::PPPort::WriteFile();
@@ -18,9 +18,9 @@ WriteMakefile(
     ($] >= 5.005 ?     
       (ABSTRACT       => 'Perl bindings for the Enlightened ToolKit (Etk)',
        AUTHOR         => q|Chady 'Leviathan' Kassouf <chady.kassouf@gmail.com>|) : ()),
-    LIBS              => [`etk-config --libs`], 
+    LIBS              => [`pkg-config --libs etk`], 
     DEFINE            => '', #'-DDEBUG', 
-    INC               => "-g -I. `etk-config --cflags`", 
+    INC               => "-g -I. `pkg-config --cflags etk`", 
     XSPROTOARG        => '-noprototypes',
     test              => {TESTS=>'t/Etk/*.t'},
     clean             => {FILES=>"ppport.h"},

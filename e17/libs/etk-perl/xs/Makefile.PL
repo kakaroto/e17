@@ -34,7 +34,7 @@ WriteMakefile(
        AUTHOR         => q|Chady 'Leviathan' Kassouf <chady.kassouf@gmail.com>|) : ()),
     LIBS              => [`etk-config --libs`], 
     DEFINE            => '', #'-DDEBUG', 
-    INC               => "-g -I. `etk-config --cflags`", 
+    INC               => "-g -I. `pkg-config --cflags etk`", 
     XSPROTOARG        => '-noprototypes',
     OBJECT            => '$(O_FILES)', 
     clean             => {FILES=>"Etk.xs"},
