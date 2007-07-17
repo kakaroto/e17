@@ -518,37 +518,15 @@ ewl_text_context_hash_key(const void *ctx)
 	key ^= (tx->size << 5);
 	key ^= (tx->styles << 7);
 
-#define COLOR_HASH(r, g, b, a) (r << 24 | g << 16 | b << 8 | a)
-	key ^= COLOR_HASH(tx->color.r, tx->color.g, tx->color.b, tx->color.a);
-
-	key ^= (COLOR_HASH(tx->style_colors.bg.r,
-				tx->style_colors.bg.g,
-				tx->style_colors.bg.b,
-				tx->style_colors.bg.a) << 1);
-	key ^= (COLOR_HASH(tx->style_colors.glow.r,
-				tx->style_colors.glow.g,
-				tx->style_colors.glow.b,
-				tx->style_colors.glow.a) >> 1);
-	key ^= (COLOR_HASH(tx->style_colors.outline.r,
-				tx->style_colors.outline.g,
-				tx->style_colors.outline.b,
-				tx->style_colors.outline.a) << 3);
-	key ^= (COLOR_HASH(tx->style_colors.shadow.r,
-				tx->style_colors.shadow.g,
-				tx->style_colors.shadow.b,
-				tx->style_colors.shadow.a) >> 3);
-	key ^= (COLOR_HASH(tx->style_colors.strikethrough.r,
-				tx->style_colors.strikethrough.g,
-				tx->style_colors.strikethrough.b,
-				tx->style_colors.strikethrough.a) << 5);
-	key ^= (COLOR_HASH(tx->style_colors.underline.r,
-				tx->style_colors.underline.g,
-				tx->style_colors.underline.b,
-				tx->style_colors.underline.a) >> 5);
-	key ^= (COLOR_HASH(tx->style_colors.double_underline.r,
-				tx->style_colors.double_underline.g,
-				tx->style_colors.double_underline.b,
-				tx->style_colors.double_underline.a) << 7);
+#define COLOR_HASH(c) (c.r << 24 | c.g << 16 | c.b << 8 | c.a)
+	key ^= COLOR_HASH(tx->color);
+	key ^= (COLOR_HASH(tx->style_colors.bg) << 1);
+	key ^= (COLOR_HASH(tx->style_colors.glow) >> 1);
+	key ^= (COLOR_HASH(tx->style_colors.outline) << 3);
+	key ^= (COLOR_HASH(tx->style_colors.shadow) >> 3);
+	key ^= (COLOR_HASH(tx->style_colors.strikethrough) << 5);
+	key ^= (COLOR_HASH(tx->style_colors.underline) >> 5);
+	key ^= (COLOR_HASH(tx->style_colors.double_underline) << 7);
 
 	DRETURN_INT(key, DLEVEL_STABLE);
 }
