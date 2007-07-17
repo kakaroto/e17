@@ -32,7 +32,7 @@ WriteMakefile(
     ($] >= 5.005 ?     
       (ABSTRACT       => 'Perl bindings for the Enlightened ToolKit (Etk)',
        AUTHOR         => q|Chady 'Leviathan' Kassouf <chady.kassouf@gmail.com>|) : ()),
-    LIBS              => [`etk-config --libs`], 
+    LIBS              => [`pkg-config --libs etk`],
     DEFINE            => '', #'-DDEBUG', 
     INC               => "-g -I. `pkg-config --cflags etk`", 
     XSPROTOARG        => '-noprototypes',
