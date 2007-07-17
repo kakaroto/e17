@@ -58,9 +58,7 @@ static void ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger);
 static void ewl_text_selection_select_to(Ewl_Text_Trigger *s, 
 						unsigned int char_idx);
 
-static void ewl_text_theme_color_get(Ewl_Text *t, unsigned char *r, 
-					unsigned char *g, unsigned char *b, 
-					unsigned char *a, char *name);
+static void ewl_text_theme_color_get(Ewl_Text *t, Ewl_Color_Set *color, char *name);
 static Ewl_Text_Context *ewl_text_context_default_create(Ewl_Text *t);
 
 
@@ -2537,8 +2535,7 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
 }
 
 static void
-ewl_text_theme_color_get(Ewl_Text *t, unsigned char *r, unsigned char *g, 
-			unsigned char *b, unsigned char *a, char *name)
+ewl_text_theme_color_get(Ewl_Text *t, Ewl_Color_Set *color, char *name)
 {
 	char buf[128];
 	int pos;
@@ -2549,16 +2546,16 @@ ewl_text_theme_color_get(Ewl_Text *t, unsigned char *r, unsigned char *g,
 
 	pos = strlen(name) + 1;
 	snprintf(buf, sizeof(buf), "%s/r", name);	
-	if (r) 	*r = ewl_theme_data_int_get(EWL_WIDGET(t), buf);	
+	color->r = ewl_theme_data_int_get(EWL_WIDGET(t), buf);	
 
 	buf[pos] = 'g';
-	if (g) *g = ewl_theme_data_int_get(EWL_WIDGET(t), buf);
+	color->g = ewl_theme_data_int_get(EWL_WIDGET(t), buf);
 
 	buf[pos] = 'b';
-	if (b) *b = ewl_theme_data_int_get(EWL_WIDGET(t), buf);
+	color->b = ewl_theme_data_int_get(EWL_WIDGET(t), buf);
 
 	buf[pos] = 'a';
-	if (a) *a = ewl_theme_data_int_get(EWL_WIDGET(t), buf);
+	color->a = ewl_theme_data_int_get(EWL_WIDGET(t), buf);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2593,17 +2590,12 @@ ewl_text_context_default_create(Ewl_Text *t)
 	tmp->font_source = NULL;
 	tmp->size = ewl_theme_data_int_get(EWL_WIDGET(t), "font_size");
 
-	ewl_text_theme_color_get(t, &(tmp->color.r), &(tmp->color.g),
-			&(tmp->color.b), &(tmp->color.a), "color");
-
+	ewl_text_theme_color_get(t, &(tmp->color), "color");
 	i = ewl_theme_data_int_get(EWL_WIDGET(t), "underline");
 	if (i)
 	{
 		tmp->styles |= EWL_TEXT_STYLE_UNDERLINE;
-		ewl_text_theme_color_get(t, &(tmp->style_colors.underline.r),
-					&(tmp->style_colors.underline.g),
-					&(tmp->style_colors.underline.b),
-					&(tmp->style_colors.underline.a),
+		ewl_text_theme_color_get(t, &(tmp->style_colors.underline),
 					"underline/color");
 	}
 
@@ -2611,10 +2603,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 	if (i)
 	{
 		tmp->styles |= EWL_TEXT_STYLE_DOUBLE_UNDERLINE;
-		ewl_text_theme_color_get(t, &(tmp->style_colors.double_underline.r),
-					&(tmp->style_colors.double_underline.g),
-					&(tmp->style_colors.double_underline.b),
-					&(tmp->style_colors.double_underline.a),
+		ewl_text_theme_color_get(t, &(tmp->style_colors.double_underline),
 					"double_underline/color");
 	}
 
@@ -2622,10 +2611,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 	if (i)
 	{
 		tmp->styles |= EWL_TEXT_STYLE_STRIKETHROUGH;
-		ewl_text_theme_color_get(t, &(tmp->style_colors.strikethrough.r),
-					&(tmp->style_colors.strikethrough.g),
-					&(tmp->style_colors.strikethrough.b),
-					&(tmp->style_colors.strikethrough.a),
+		ewl_text_theme_color_get(t, &(tmp->style_colors.strikethrough),
 					"strikethrough/color");
 	}
 
@@ -2633,10 +2619,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 	if (i)
 	{
 		tmp->styles |= EWL_TEXT_STYLE_SHADOW;
-		ewl_text_theme_color_get(t, &(tmp->style_colors.shadow.r),
-					&(tmp->style_colors.shadow.g),
-					&(tmp->style_colors.shadow.b),
-					&(tmp->style_colors.shadow.a),
+		ewl_text_theme_color_get(t, &(tmp->style_colors.shadow),
 					"shadow/color");
 	}
 
@@ -2644,10 +2627,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 	if (i)
 	{
 		tmp->styles |= EWL_TEXT_STYLE_SOFT_SHADOW;
-		ewl_text_theme_color_get(t, &(tmp->style_colors.shadow.r),
-					&(tmp->style_colors.shadow.g),
-					&(tmp->style_colors.shadow.b),
-					&(tmp->style_colors.shadow.a),
+		ewl_text_theme_color_get(t, &(tmp->style_colors.shadow),
 					"shadow/color");
 	}
 
@@ -2655,10 +2635,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 	if (i)
 	{
 		tmp->styles |= EWL_TEXT_STYLE_FAR_SHADOW;
-		ewl_text_theme_color_get(t, &(tmp->style_colors.shadow.r),
-					&(tmp->style_colors.shadow.g),
-					&(tmp->style_colors.shadow.b),
-					&(tmp->style_colors.shadow.a),
+		ewl_text_theme_color_get(t, &(tmp->style_colors.shadow),
 					"shadow/color");
 	}
 
@@ -2666,10 +2643,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 	if (i)
 	{
 		tmp->styles |= EWL_TEXT_STYLE_OUTLINE;
-		ewl_text_theme_color_get(t, &(tmp->style_colors.outline.r),
-					&(tmp->style_colors.outline.g),
-					&(tmp->style_colors.outline.b),
-					&(tmp->style_colors.outline.a),
+		ewl_text_theme_color_get(t, &(tmp->style_colors.outline),
 					"outline/color");
 	}
 
@@ -2677,10 +2651,7 @@ ewl_text_context_default_create(Ewl_Text *t)
 	if (i)
 	{
 		tmp->styles |= EWL_TEXT_STYLE_GLOW;
-		ewl_text_theme_color_get(t, &(tmp->style_colors.glow.r),
-					&(tmp->style_colors.glow.g),
-					&(tmp->style_colors.glow.b),
-					&(tmp->style_colors.glow.a),
+		ewl_text_theme_color_get(t, &(tmp->style_colors.glow),
 					"glow/color");
 	}
 
