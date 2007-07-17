@@ -524,96 +524,28 @@ ewl_text_context_hash_cmp(const void *ctx1, const void *ctx2)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+#define KEY_BUILD(c) (c.r | c.g | c.b | c.a)
 #define KEY_COMPARE(k1, k2) if (k1 > k2) goto CTX1_LARGER; else if (k2 > k1) goto CTX2_LARGER;
-	key1 = 0;
-	key2 = 0;
 
-	if (tx1->font)
-		key1 = ecore_str_hash(tx1->font);
-	if (tx2->font)
-		key2 = ecore_str_hash(tx2->font);
-
+	key1 = ((tx1->font) ? ecore_str_hash(tx1->font) : 0);
+	key2 = ((tx2->font) ? ecore_str_hash(tx2->font) : 0); 
 	KEY_COMPARE(key1, key2);
 
 	KEY_COMPARE(tx1->size, tx2->size);
 	KEY_COMPARE(tx1->styles, tx2->styles);
-
-	key1 = (tx1->color.r | tx1->color.g | tx1->color.b | tx1->color.a);
-	key2 = (tx2->color.r | tx2->color.g | tx2->color.b | tx2->color.a);
-
-	KEY_COMPARE(key1, key2);
-
-	key1 = (tx1->style_colors.bg.r |
-				tx1->style_colors.bg.g |
-				tx1->style_colors.bg.b |
-				tx1->style_colors.bg.a);
-
-	key2 = (tx2->style_colors.bg.r |
-				tx2->style_colors.bg.g |
-				tx2->style_colors.bg.b |
-				tx2->style_colors.bg.a);
-
-	KEY_COMPARE(key1, key2);
-
-	key1 = (tx1->style_colors.outline.r |
-				tx1->style_colors.outline.g |
-				tx1->style_colors.outline.b |
-				tx1->style_colors.outline.a);
-
-	key2 = (tx2->style_colors.outline.r |
-				tx2->style_colors.outline.g |
-				tx2->style_colors.outline.b |
-				tx2->style_colors.outline.a);
-
-	KEY_COMPARE(key1, key2);
-
-	key1 = (tx1->style_colors.shadow.r |
-				tx1->style_colors.shadow.g |
-				tx1->style_colors.shadow.b |
-				tx1->style_colors.shadow.a);
-
-	key2 = (tx2->style_colors.shadow.r |
-				tx2->style_colors.shadow.g |
-				tx2->style_colors.shadow.b |
-				tx2->style_colors.shadow.a);
-
-	KEY_COMPARE(key1, key2);
-
-	key1 = (tx1->style_colors.strikethrough.r |
-				tx1->style_colors.strikethrough.g |
-				tx1->style_colors.strikethrough.b |
-				tx1->style_colors.strikethrough.a);
-
-	key2 = (tx2->style_colors.strikethrough.r |
-				tx2->style_colors.strikethrough.g |
-				tx2->style_colors.strikethrough.b |
-				tx2->style_colors.strikethrough.a);
-
-	KEY_COMPARE(key1, key2);
-
-	key1 = (tx1->style_colors.underline.r |
-				tx1->style_colors.underline.g |
-				tx1->style_colors.underline.b |
-				tx1->style_colors.underline.a);
-
-	key2 = (tx2->style_colors.underline.r |
-				tx2->style_colors.underline.g |
-				tx2->style_colors.underline.b |
-				tx2->style_colors.underline.a);
-
-	KEY_COMPARE(key1, key2);
-
-	key1 = (tx1->style_colors.double_underline.r |
-				tx1->style_colors.double_underline.g |
-				tx1->style_colors.double_underline.b |
-				tx1->style_colors.double_underline.a);
-
-	key2 = (tx2->style_colors.double_underline.r |
-				tx2->style_colors.double_underline.g |
-				tx2->style_colors.double_underline.b |
-				tx2->style_colors.double_underline.a);
-
-	KEY_COMPARE(key1, key2);
+	KEY_COMPARE(KEY_BUILD(tx1->color), KEY_BUILD(tx2->color));
+	KEY_COMPARE(KEY_BUILD(tx1->style_colors.bg), 
+			KEY_BUILD(tx2->style_colors.bg));
+	KEY_COMPARE(KEY_BUILD(tx1->style_colors.outline),
+			KEY_BUILD(tx2->style_colors.outline));
+	KEY_COMPARE(KEY_BUILD(tx1->style_colors.shadow),
+			KEY_BUILD(tx2->style_colors.shadow));
+	KEY_COMPARE(KEY_BUILD(tx1->style_colors.strikethrough), 
+			KEY_BUILD(tx2->style_colors.strikethrough));
+	KEY_COMPARE(KEY_BUILD(tx1->style_colors.underline),
+			KEY_BUILD(tx2->style_colors.underline));
+	KEY_COMPARE(KEY_BUILD(tx1->style_colors.double_underline),
+			KEY_BUILD(tx2->style_colors.double_underline));
 
 	DRETURN_INT(0, DLEVEL_STABLE);
 CTX1_LARGER:
