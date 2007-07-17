@@ -45,7 +45,14 @@ cdef int idle_exiter_cb(void *_td):
     cdef int r
 
     obj = <IdleExiter>_td
-    r = bool(obj._exec())
+
+    try:
+        r = bool(obj._exec())
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
+        r = 0
+
     if not r:
         obj.delete()
     return r

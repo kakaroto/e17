@@ -110,7 +110,14 @@ cdef int fd_handler_cb(void *_td, Ecore_Fd_Handler *fdh):
     cdef int r
 
     obj = <FdHandler>_td
-    r = bool(obj._exec())
+
+    try:
+        r = bool(obj._exec())
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
+        r = 0
+
     if not r:
         obj.delete()
     return r

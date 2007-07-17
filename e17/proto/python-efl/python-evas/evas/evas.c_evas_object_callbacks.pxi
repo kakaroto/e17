@@ -4,7 +4,11 @@ cdef int cb_dispatcher(Object self, event, Evas_Callback_Type type) except 0:
     # iterate over copy since users may delete callback from callback
     lst = list(self._callbacks[<int>type])
     for func, args, kargs in lst:
-        func(self, event, *args, **kargs)
+        try:
+            func(self, event, *args, **kargs)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
     return 1
 
 
@@ -12,7 +16,11 @@ cdef int cb_dispatcher2(Object self, Evas_Callback_Type type) except 0:
     # iterate over copy since users may delete callback from callback
     lst = list(self._callbacks[<int>type])
     for func, args, kargs in lst:
-        func(self, *args, **kargs)
+        try:
+            func(self, *args, **kargs)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
     return 1
 
 

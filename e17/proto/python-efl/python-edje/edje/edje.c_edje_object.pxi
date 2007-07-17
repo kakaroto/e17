@@ -6,7 +6,11 @@ cdef void text_change_cb(void *data, evas.c_evas.Evas_Object *obj, char *part):
     if self._text_change_cb is None:
         return
     func, args, kargs = self._text_change_cb
-    func(self, part, *args, **kargs)
+    try:
+        func(self, part, *args, **kargs)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 
 cdef void message_handler_cb(void *data, evas.c_evas.Evas_Object *obj,
@@ -16,7 +20,11 @@ cdef void message_handler_cb(void *data, evas.c_evas.Evas_Object *obj,
     if self._message_handler_cb is None:
         return
     func, args, kargs = self._message_handler_cb
-    func(self, Message_from_type(type, id, msg), *args, **kargs)
+    try:
+        func(self, Message_from_type(type, id, msg), *args, **kargs)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 
 cdef void signal_cb(void *data, evas.c_evas.Evas_Object *obj,
@@ -25,7 +33,11 @@ cdef void signal_cb(void *data, evas.c_evas.Evas_Object *obj,
     self = <Edje>evas.c_evas._Object_from_instance(<long>obj)
     lst = <object>data
     for func, args, kargs in lst:
-        func(self, emission, source, *args, **kargs)
+        try:
+            func(self, emission, source, *args, **kargs)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
 
 
 class EdjeLoadError(Exception):

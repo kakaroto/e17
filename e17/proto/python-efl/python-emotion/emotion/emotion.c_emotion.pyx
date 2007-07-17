@@ -7,7 +7,11 @@ cdef void _emotion_callback(void *data, evas.c_evas.Evas_Object *o, void *ei):
     event = <object>data
     lst = obj._emotion_callbacks[event]
     for func, args, kargs in lst:
-        func(obj, *args, **kargs)
+        try:
+            func(obj, *args, **kargs)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
 
 
 class EmotionModuleInitError(Exception):
