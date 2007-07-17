@@ -824,24 +824,7 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
 
 		ev.x = x;
 		ev.y = y;
-
-		if (internal) {
-			Ewl_Widget_Drag cb;
-			
-			/* Retrieve the callback for widget's data */
-			/* FIXME: We shouldn't use widget data like
-			 * this, and there needs to be a data request /
-			 * send protocol with widgets anyways */
-			cb = (Ewl_Widget_Drag)ewl_widget_data_get(widget, "DROP_CB");
-			if (cb) { 
-				void *drop_data;
-				drop_data = (*cb)();
-				ev.data = drop_data;
-			}
-		} else {
-			/* Handle external drops */
-			ev.data = NULL;
-		}
+		ev.data = NULL;
 
 		embed->last.drop_widget = widget;
 		parent = widget;
