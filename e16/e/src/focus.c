@@ -212,7 +212,8 @@ ClickGrabsSet(EWin * ewin)
 {
    int                 set = 0;
 
-   if (Conf.focus.clickraises && !EwinListStackIsRaised(ewin))
+   if ((Conf.focus.clickraises && !EwinListStackIsRaised(ewin)) ||
+       (!ewin->state.active && FocusEwinValid(ewin, 0, 1, 0)))
       set = 1;
 
    if (set)
@@ -423,6 +424,8 @@ doFocusToEwin(EWin * ewin, int why)
 
    SoundPlay("SOUND_FOCUS_SET");
  done:
+
+   ClickGrabsUpdate();
 
    /* Unset old focus window (if any) highlighting */
    if (Mode.focuswin)
