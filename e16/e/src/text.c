@@ -25,6 +25,10 @@
 #include "eimage.h"
 #include "tclass.h"
 #include "xwin.h"
+#ifndef USE_XFT
+#undef FONT_TYPE_XFT
+#define FONT_TYPE_XFT 0
+#endif
 #if FONT_TYPE_XFT
 #include <X11/extensions/Xrender.h>
 #include <X11/Xft/Xft.h>
