@@ -139,17 +139,10 @@ AC_ARG_ENABLE(ecore,
   [  --enable-ecore          use ecore functions (for testing only - DO NOT USE!) @<:@default=no@:>@],,
   enable_ecore=no)
 if test "x$enable_ecore" = "xyes"; then
-  AC_CHECK_LIB(ecore_x, ecore_x_init,
-    [
-      AC_DEFINE(USE_ECORE, 1, [Ecore list support])
-      AC_DEFINE(USE_ECORE_X, 1, [Ecore_x support])
-    ],[
-      AC_MSG_ERROR([Cannot find ecore libraries])
-    ])
-  ECORE_LIBS=`ecore-config --libs-x`
-  ECORE_CFLAGS=`ecore-config --cflags`
-  AC_SUBST(ECORE_LIBS)
-  AC_SUBST(ECORE_CFLAGS)
+  PKG_CHECK_MODULES(ECORE, ecore-x,
+    AC_DEFINE(USE_ECORE, 1, [Use libecore])
+    AC_DEFINE(USE_ECORE_X, 1, [Use libecore_x]),
+    enable_ecore=no)
 fi
 
 # Is this reasonably correct?
