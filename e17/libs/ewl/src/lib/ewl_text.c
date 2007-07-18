@@ -3505,35 +3505,6 @@ ewl_text_current_fmt_set(Ewl_Text *t, unsigned int context_mask,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param t: The ewl_text widget
- * @return Returns no value
- * @brief Configures the position and size of all the triggers within the 
- * text widget @a t.
- */
-void
-ewl_text_triggers_configure(Ewl_Text *t)
-{
-	Ewl_Text_Trigger *cur;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
-
-	if (t->triggers)
-	{
-		ecore_list_goto_first(t->triggers);
-		while ((cur = ecore_list_next(t->triggers)))
-			ewl_text_trigger_areas_configure(cur);
-	}
-
-	if (t->selection)
-		ewl_text_trigger_areas_configure(EWL_TEXT_TRIGGER(t->selection));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 static void
 ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 {
@@ -3739,11 +3710,10 @@ ewl_text_triggers_unrealize(Ewl_Text *t)
 	{
 		ecore_list_goto_first(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
-			ewl_text_trigger_areas_cleanup(cur);
+			ewl_widget_unrealize(EWL_WIDGET(cur));
 	}
 
-	if (t->selection)
-		ewl_text_trigger_areas_cleanup(EWL_TEXT_TRIGGER(t->selection));
+	if (t->selection) ewl_widget_unrealize(t->selection);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3800,6 +3770,34 @@ ewl_text_triggers_hide(Ewl_Text *t)
 
 	/* hide the selection */
 	if (t->selection) ewl_widget_hide(t->selection);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param t: The ewl_text widget
+ * @return Returns no value
+ * @brief Configures the position and size of all the triggers within the 
+ * text widget @a t.
+ */
+void
+ewl_text_triggers_configure(Ewl_Text *t)
+{
+	Ewl_Text_Trigger *cur;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+
+	if (t->triggers)
+	{
+		ecore_list_goto_first(t->triggers);
+		while ((cur = ecore_list_next(t->triggers)))
+			ewl_widget_configure(EWL_WIDGET(cur));
+	}
+
+	if (t->selection) ewl_widget_configure(t->selection);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
