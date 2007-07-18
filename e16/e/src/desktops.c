@@ -1957,8 +1957,6 @@ DeskHandleTooltip(Desk * dsk, XEvent * ev)
 	break;
 
      case MotionNotify:
-	if (ev->xmotion.subwindow != None)
-	   break;
 	TooltipsSetPending(1, DeskGetAclass, dsk);
 	break;
      }

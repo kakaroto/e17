@@ -269,7 +269,8 @@ EwinManage(EWin * ewin)
    EMapWindow(ewin->win_container);
 
    att.event_mask = EWIN_TOP_EVENT_MASK;
-   att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
+   att.do_not_propagate_mask =
+      ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
    EChangeWindowAttributes(EoGetWin(ewin), CWEventMask | CWDontPropagate, &att);
 
    ewin->client.event_mask = EWIN_CLIENT_EVENT_MASK;
