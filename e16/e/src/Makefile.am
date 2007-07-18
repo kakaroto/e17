@@ -119,8 +119,8 @@ LDADD = \
 	$(IMLIB2_LIBS) 		\
 	$(GLX_LIBS) 		\
 	$(XFT_LIBS) 		\
-	$(X_PRE_LIBS) 		\
 	$(X_LIBS) 		\
+	$(SM_LIBS) 		\
 	$(XINERAMA_LIBS) 	\
 	$(X_EXTRA_LIBS) 	\
 	$(E_X_LIBS) 		\

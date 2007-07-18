@@ -39,8 +39,12 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/shape.h>
 
+#ifdef HAVE_SM
+#define USE_SM 1
+#endif
+
 #ifdef HAVE_XSYNC
-#define USE_XSYNC 1		/* Experimental */
+#define USE_XSYNC 1
 #endif
 
 #ifdef HAVE_XSCREENSAVER

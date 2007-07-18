@@ -59,7 +59,7 @@ static int          sm_fd = -1;
 /* True if we are saving state for a doExit("restart") */
 static int          restarting = False;
 
-#ifdef HAVE_X11_SM_SMLIB_H
+#if USE_SM
 
 #include <X11/SM/SMlib.h>
 
@@ -321,12 +321,12 @@ ice_io_error_handler(IceConn connection __UNUSED__)
     * exit(1) instead of closing the losing connection. */
 }
 
-#endif /* HAVE_X11_SM_SMLIB_H */
+#endif /* USE_SM */
 
 void
 SessionInit(void)
 {
-#ifdef HAVE_X11_SM_SMLIB_H
+#if USE_SM
    static SmPointer    context;
    SmcCallbacks        callbacks;
 #endif
@@ -334,7 +334,7 @@ SessionInit(void)
    if (Mode.wm.window)
       return;
 
-#ifdef HAVE_X11_SM_SMLIB_H
+#if USE_SM
 #if 0				/* Unused */
    atom_sm_client_id = XInternAtom(disp, "SM_CLIENT_ID", False);
 #endif
@@ -395,7 +395,7 @@ SessionInit(void)
 	SmcSetProperties(sm_conn, 1, props);
 	fcntl(sm_fd, F_SETFD, fcntl(sm_fd, F_GETFD, 0) | FD_CLOEXEC);
      }
-#endif /* HAVE_X11_SM_SMLIB_H */
+#endif /* USE_SM */
 
    if (!Conf.session.script)
       Conf.session.script = Estrdup("$EROOT/scripts/session.sh");
@@ -408,7 +408,7 @@ SessionInit(void)
 void
 ProcessICEMSGS(void)
 {
-#ifdef HAVE_X11_SM_SMLIB_H
+#if USE_SM
    IceProcessMessagesStatus status;
 
    if (sm_fd < 0)
@@ -427,7 +427,7 @@ ProcessICEMSGS(void)
 	sm_conn = NULL;
 	sm_fd = -1;
      }
-#endif /* HAVE_X11_SM_SMLIB_H */
+#endif /* USE_SM */
 }
 
 int
@@ -440,7 +440,7 @@ void
 SessionGetInfo(EWin * ewin)
 {
 #if 0				/* Unused */
-#ifdef HAVE_X11_SM_SMLIB_H
+#if USE_SM
    if (atom_sm_client_id == None)
       return;
    _EFREE(ewin->session_id);
@@ -450,7 +450,7 @@ SessionGetInfo(EWin * ewin)
 					atom_sm_client_id);
 #else
    ewin = NULL;
-#endif /* HAVE_X11_SM_SMLIB_H */
+#endif /* USE_SM */
 #endif
    ewin = NULL;
 }
@@ -458,11 +458,11 @@ SessionGetInfo(EWin * ewin)
 void
 SetSMID(const char *smid)
 {
-#ifdef HAVE_X11_SM_SMLIB_H
+#if USE_SM
    sm_client_id = Estrdup(smid);
 #else
    smid = NULL;
-#endif /* HAVE_X11_SM_SMLIB_H */
+#endif /* USE_SM */
 }
 
 void
@@ -473,14 +473,14 @@ SessionSave(int shutdown)
 
    /* dont' need anymore */
    /* autosave(); */
-#ifdef HAVE_X11_SM_SMLIB_H
+#if USE_SM
    if (shutdown && sm_conn)
      {
 	SmcCloseConnection(sm_conn, 0, NULL);
 	sm_conn = NULL;
 	sm_fd = -1;
      }
-#endif /* HAVE_X11_SM_SMLIB_H */
+#endif /* USE_SM */
 }
 
 /*
@@ -555,7 +555,7 @@ doSMExit(int mode, const char *params)
 	else if (!Mode.wm.master)
 	   l +=
 	      Esnprintf(s + l, sizeof(s) - l, " -m %d", Mode.wm.master_screen);
-#ifdef HAVE_X11_SM_SMLIB_H
+#if USE_SM
 	if (sm_client_id)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -S %s", sm_client_id);
 #endif
@@ -581,14 +581,14 @@ doSMExit(int mode, const char *params)
 static void
 SessionLogout(void)
 {
-#ifdef HAVE_X11_SM_SMLIB_H
+#if USE_SM
    if (sm_conn)
      {
 	SmcRequestSaveYourself(sm_conn, SmSaveBoth, True, SmInteractStyleAny,
 			       False, True);
      }
    else
-#endif /* HAVE_X11_SM_SMLIB_H */
+#endif /* USE_SM */
      {
 	SessionExit(EEXIT_EXIT, NULL);
      }
@@ -597,13 +597,13 @@ SessionLogout(void)
 static void
 LogoutCB(Dialog * d, int val, void *data __UNUSED__)
 {
-#ifdef HAVE_X11_SM_SMLIB_H
+#if USE_SM
    if (sm_conn)
      {
 	SessionLogout();
      }
    else
-#endif /* HAVE_X11_SM_SMLIB_H */
+#endif /* USE_SM */
      {
 	/* 0:LogOut -: No    -or-        */
 	/* 0:Halt 1:Reboot 2:LogOut -:No */
