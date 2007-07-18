@@ -3757,7 +3757,6 @@ ewl_text_triggers_unrealize(Ewl_Text *t)
 void
 ewl_text_triggers_show(Ewl_Text *t)
 {
-	Ewl_Widget *area;
 	Ewl_Text_Trigger *cur;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -3768,21 +3767,10 @@ ewl_text_triggers_show(Ewl_Text *t)
 	{
 		ecore_list_goto_first(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
-		{
-			if (!cur->areas) continue;
-
-			ecore_list_goto_first(cur->areas);
-			while ((area = ecore_list_next(cur->areas)))
-				ewl_widget_show(area);
-		}
+			ewl_widget_show(EWL_WIDGET(cur));
 	}
 
-	if (t->selection)
-	{
-		ecore_list_goto_first(EWL_TEXT_TRIGGER(t->selection)->areas);
-		while ((area = ecore_list_next(EWL_TEXT_TRIGGER(t->selection)->areas)))
-			ewl_widget_show(area);
-	}
+	if (t->selection) ewl_widget_show(t->selection);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3796,7 +3784,6 @@ ewl_text_triggers_show(Ewl_Text *t)
 void
 ewl_text_triggers_hide(Ewl_Text *t)
 {
-	Ewl_Widget *area;
 	Ewl_Text_Trigger *cur;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -3808,22 +3795,11 @@ ewl_text_triggers_hide(Ewl_Text *t)
 	{
 		ecore_list_goto_first(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
-		{
-			if (!cur->areas) continue;
-
-			ecore_list_goto_first(cur->areas);
-			while ((area = ecore_list_next(cur->areas)))
-				ewl_widget_hide(area);
-		}
+			ewl_widget_hide(EWL_WIDGET(cur));
 	}
 
 	/* hide the selection */
-	if (t->selection && EWL_TEXT_TRIGGER(t->selection)->areas) 
-	{
-		ecore_list_goto_first(EWL_TEXT_TRIGGER(t->selection)->areas);
-		while ((area = ecore_list_next(EWL_TEXT_TRIGGER(t->selection)->areas)))
-			ewl_widget_hide(area);
-	}
+	if (t->selection) ewl_widget_hide(t->selection);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3914,3 +3890,4 @@ ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

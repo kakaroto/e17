@@ -83,7 +83,11 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 	ewl_widget_inherit(EWL_WIDGET(trigger), EWL_TEXT_TRIGGER_TYPE);
 
 	ewl_callback_prepend(EWL_WIDGET(trigger), EWL_CALLBACK_DESTROY,
-			ewl_text_trigger_cb_destroy, NULL);
+					ewl_text_trigger_cb_destroy, NULL);
+	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_SHOW,
+					ewl_text_trigger_cb_show, NULL);
+	ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_HIDE,
+					ewl_text_trigger_cb_hide, NULL);
 
 	trigger->areas = ecore_list_new();
 	trigger->type = type;
@@ -130,7 +134,6 @@ ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ecore_list_remove(t->text_parent->triggers);
 
 	t->text_parent = NULL;
-	t->areas = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -443,6 +446,62 @@ ewl_text_trigger_cb_mouse_down(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 	ewl_callback_call_with_event_data(EWL_WIDGET(trigger), 
 						EWL_CALLBACK_MOUSE_DOWN, ev);
 
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The trigger to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief Hides the trigger
+ */
+void
+ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	Ewl_Widget *area;
+	Ewl_Text_Trigger *trig;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_TYPE);
+
+	trig = EWL_TEXT_TRIGGER(w);
+	if (!trig->areas) DRETURN(DLEVEL_STABLE);;
+
+	ecore_list_goto_first(trig->areas);
+	while ((area = ecore_list_next(trig->areas)))
+		ewl_widget_hide(area);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: The trigger to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief Shows the trigger
+ */
+void
+ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev __UNUSED__, 
+					void *data __UNUSED__)
+{
+	Ewl_Widget *area;
+	Ewl_Text_Trigger *trig;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_TYPE);
+
+	trig = EWL_TEXT_TRIGGER(w);
+	if (!trig->areas) DRETURN(DLEVEL_STABLE);
+
+	ecore_list_goto_first(trig->areas);
+	while ((area = ecore_list_next(trig->areas)))
+		ewl_widget_show(area);
+	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

@@ -86,6 +86,8 @@ void ewl_text_triggers_unrealize(Ewl_Text *t);
 void ewl_text_triggers_show(Ewl_Text *t);
 void ewl_text_triggers_hide(Ewl_Text *t);
 
+void ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_in(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_out(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
