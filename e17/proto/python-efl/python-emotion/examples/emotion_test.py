@@ -409,14 +409,5 @@ def main():
 
 
 if __name__ == "__main__":
-    evas.init()
-    ecore.init()
-    ecore.evas.init()
-    edje.init()
-
     main()
 
-    edje.shutdown()
-    ecore.evas.shutdown()
-    ecore.shutdown()
-    evas.shutdown()

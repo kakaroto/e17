@@ -30,8 +30,6 @@ class Basics(unittest.TestCase):
         self.assertEqual(o.part_exists("bg123"), False)
 
 
-ecore.evas.init()
-edje.init()
 unittest.main()
 edje.shutdown()
 ecore.evas.shutdown()

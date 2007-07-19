@@ -12,7 +12,6 @@ class TestSoftwareX11(unittest.TestCase):
         print self.ee
 
 
-ecore.evas.init()
 if ecore.evas.engine_type_supported_get("software_x11"):
     unittest.main()
 ecore.evas.shutdown()

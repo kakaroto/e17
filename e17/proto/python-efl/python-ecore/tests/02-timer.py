@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import ecore
-ecore.init()
 
 def cb(n, t, a):
     print "cb:", n, t, a

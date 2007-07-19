@@ -31,9 +31,6 @@ def resize_cb(ee):
 
 
 if __name__ == "__main__":
-    ecore.evas.init()
-    ecore.init()
-
     ee = ecore.evas.SoftwareX11(w=800, h=600)
 
     canvas = ee.evas
@@ -57,6 +54,3 @@ if __name__ == "__main__":
     ee.show()
     ecore.animator_frametime_set(1.0 / 60.0)
     ecore.main_loop_begin()
-
-    ecore.shutdown()
-    ecore.evas.shutdown()

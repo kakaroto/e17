@@ -2,7 +2,6 @@
 
 import c_evas
 
-init = c_evas.init
 shutdown = c_evas.shutdown
 render_method_lookup = c_evas.render_method_lookup
 render_method_list = c_evas.render_method_list
@@ -156,3 +155,5 @@ class Text(c_evas.Text):
                                 outline_color=outline_color, size=size,
                                 pos=pos, geometry=geometry, color=color,
                                 name=name)
+
+c_evas.init()

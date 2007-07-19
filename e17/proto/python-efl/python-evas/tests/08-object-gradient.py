@@ -49,6 +49,5 @@ class GradientBasics(unittest.TestCase):
         self.assertEqual(o.fill_spread, evas.EVAS_TEXTURE_RESTRICT_REPEAT)
 
 
-evas.init()
 unittest.main()
 evas.shutdown()

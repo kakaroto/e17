@@ -3,7 +3,6 @@
 import ecore
 import os
 
-ecore.init()
 
 def cb_read1(fd_handler, a, b):
     data = os.read(fd_handler.fd, 50)

@@ -2,7 +2,6 @@
 
 import c_ecore_evas
 
-init = c_ecore_evas.init
 shutdown = c_ecore_evas.shutdown
 
 engine_type_supported_get = c_ecore_evas.engine_type_supported_get
@@ -17,3 +16,4 @@ DirectFB = c_ecore_evas.DirectFB
 Buffer = c_ecore_evas.Buffer
 SoftwareX11_16 = c_ecore_evas.SoftwareX11_16
 
+c_ecore_evas.init()

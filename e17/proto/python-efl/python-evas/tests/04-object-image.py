@@ -15,6 +15,5 @@ class ImageBasics(unittest.TestCase):
         self.assertEqual(o.geometry_get(), (10, 20, 30, 40))
 
 
-evas.init()
 unittest.main()
 evas.shutdown()

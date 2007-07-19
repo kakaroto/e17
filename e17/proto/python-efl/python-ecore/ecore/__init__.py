@@ -2,7 +2,6 @@
 
 import c_ecore
 
-init = c_ecore.init
 shutdown = c_ecore.shutdown
 
 main_loop_begin = c_ecore.main_loop_begin
@@ -76,3 +75,5 @@ class FdHandler(c_ecore.FdHandler):
     def __new__(type, fd, flags, func, *args, **kargs):
         obj = fd_handler_add(fd, flags, func, *args, **kargs)
         return obj
+
+c_ecore.init()

@@ -40,6 +40,5 @@ class CanvasFactory(unittest.TestCase):
                           p[1] + end[1]))
 
 
-evas.init()
 unittest.main()
 evas.shutdown()

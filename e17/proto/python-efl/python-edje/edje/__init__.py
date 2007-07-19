@@ -2,7 +2,6 @@
 
 import c_edje
 
-init = c_edje.init
 shutdown = c_edje.shutdown
 
 frametime_set = c_edje.frametime_set
@@ -60,3 +59,5 @@ class Edje(c_edje.Edje):
         self._new_obj()
         self._set_common_params(file=file, group=group, size=size, pos=pos,
                                 geometry=geometry, color=color, name=name)
+
+c_edje.init()

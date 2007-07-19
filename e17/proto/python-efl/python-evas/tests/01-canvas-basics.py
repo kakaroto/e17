@@ -59,6 +59,5 @@ class CanvasProperties(unittest.TestCase):
         self.assertEqual(self.canvas.size_get(), (200, 300))
 
 
-evas.init()
 unittest.main()
 evas.shutdown()

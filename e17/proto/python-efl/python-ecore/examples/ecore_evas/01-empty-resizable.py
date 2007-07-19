@@ -11,9 +11,6 @@ def resize_bg_cb(ee):
 
 
 if __name__ == "__main__":
-    ecore.evas.init()
-    ecore.init()
-
     ee = ecore.evas.SoftwareX11(w=800, h=600)
 
     canvas = ee.evas # get drawing area created by SoftwareX11
@@ -43,6 +40,3 @@ if __name__ == "__main__":
 
     # enter main loop and wait until window is closed
     ecore.main_loop_begin()
-
-    ecore.shutdown()
-    ecore.evas.shutdown()

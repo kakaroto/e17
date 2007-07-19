@@ -360,6 +360,5 @@ class RectClamp(unittest.TestCase):
         self.assertEqual(self.r.clamp(r2), evas.Rect(-5, -5, 10, 10))
 
 
-evas.init()
 unittest.main()
 evas.shutdown()

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import ecore
-ecore.init()
 
 def cb_true(n, t, a):
     print "cb_true:", n, t, a

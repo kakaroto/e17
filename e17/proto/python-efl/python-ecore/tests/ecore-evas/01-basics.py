@@ -9,6 +9,5 @@ class BasicsTest(unittest.TestCase):
         self.assertEqual(ecore.evas.engine_name_from_type(0), "software_x11")
 
 
-ecore.evas.init()
 unittest.main()
 ecore.evas.shutdown()

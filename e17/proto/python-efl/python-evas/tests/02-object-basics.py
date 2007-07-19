@@ -186,6 +186,5 @@ class ObjectProperties(unittest.TestCase):
         self.assertEqual(self.obj.geometry_get(), (1, 2, 3, 4))
 
 
-evas.init()
 unittest.main()
 evas.shutdown()

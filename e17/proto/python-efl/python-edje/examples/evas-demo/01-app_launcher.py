@@ -6,10 +6,6 @@ import edje
 import sys
 import os
 
-ecore.init()
-ecore.evas.init()
-edje.init()
-
 # Parse command line
 from optparse import OptionParser
 

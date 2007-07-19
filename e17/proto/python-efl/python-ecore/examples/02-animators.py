@@ -78,8 +78,6 @@ def animator_quit_program_after_10():
 
 
 if __name__ == "__main__":
-    ecore.init()
-
     # animators will run in 60 frames per second
     ecore.animator_frametime_set(1.0 / 60.0)
 
@@ -94,5 +92,3 @@ if __name__ == "__main__":
 
     # without a main loop, animators will not work!
     ecore.main_loop_begin()
-
-    ecore.shutdown()

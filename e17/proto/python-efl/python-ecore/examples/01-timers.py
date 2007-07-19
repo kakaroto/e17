@@ -78,8 +78,6 @@ def stop_print_every_300ms(my_timer):
 
 
 if __name__ == "__main__":
-    ecore.init()
-
     # Use C-like API
     ecore.timer_add(0.5, print_every_500ms, "arg1", 1234, q=890, p=567)
     ecore.timer_add(0.6, print_every_600ms_twice)
@@ -97,4 +95,3 @@ if __name__ == "__main__":
 
     # without a main loop, timers will not work
     ecore.main_loop_begin()
-    ecore.shutdown()

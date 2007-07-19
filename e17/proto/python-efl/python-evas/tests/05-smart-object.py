@@ -41,6 +41,5 @@ class SmartObjectTest(unittest.TestCase):
         self.assertEqual(self.obj.r2.geometry, (50, 50, 50, 50))
 
 
-evas.init()
 unittest.main()
 evas.shutdown()

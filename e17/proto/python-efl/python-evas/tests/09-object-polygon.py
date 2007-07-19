@@ -23,6 +23,5 @@ class PolygonBasics(unittest.TestCase):
         self.assertEqual(o.color, (255, 0, 0, 255))
 
 
-evas.init()
 unittest.main()
 evas.shutdown()
