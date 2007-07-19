@@ -1036,6 +1036,7 @@ void
 ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 {
 	Ewl_Widget *child;
+	Ecore_List *tmp;
 	Ewl_Model *model;
 	void *data;
 
@@ -1051,12 +1052,21 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 	 */
 	ewl_widget_configure(node->tree);
 
+	/* This is needed as in the child_show cb we will case a list walk.
+	 * We need this till the lists get iterators */
+	tmp = ecore_list_new();
+
 	ecore_dlist_goto_first(EWL_CONTAINER(node)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
 	{
 		if ((child != node->handle) && (child != node->row))
-			ewl_widget_show(child);
+			ecore_list_append(tmp, child);
 	}
+
+	while ((child = ecore_list_remove_first(tmp)))
+		ewl_widget_show(child);
+
+	IF_FREE_LIST(tmp);
 
 	model = ewl_mvc_model_get(EWL_MVC(node));
 	data = ewl_mvc_data_get(EWL_MVC(node));
@@ -1097,6 +1107,7 @@ void
 ewl_tree2_node_collapse(Ewl_Tree2_Node *node)
 {
 	Ewl_Widget *child;
+	Ecore_List *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -1110,12 +1121,21 @@ ewl_tree2_node_collapse(Ewl_Tree2_Node *node)
 	 */
 	ewl_widget_configure(node->tree);
 
+	/* This is needed becase in our child_hide callback we will cause a
+	 * list iteration. Until we get iterators we need this */
+	tmp = ecore_list_new();
+
 	ecore_dlist_goto_first(EWL_CONTAINER(node)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
 	{
 		if ((child != node->handle) && (child != node->row))
-			ewl_widget_hide(child);
+			ecore_list_append(tmp, child);
 	}
+
+	while ((child = ecore_list_remove_first(tmp)))
+		ewl_widget_hide(child);
+
+	IF_FREE_LIST(tmp);
 
 	ewl_tree2_row_collapse(EWL_TREE2(node->tree),
 			ewl_mvc_data_get(EWL_MVC(node)), node->row_num);
