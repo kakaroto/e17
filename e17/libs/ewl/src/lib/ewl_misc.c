@@ -6,6 +6,8 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
+
+#include <Edje.h>
 #include <Efreet.h>
 #include <Efreet_Mime.h>
 

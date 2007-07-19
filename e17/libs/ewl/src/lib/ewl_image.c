@@ -5,6 +5,8 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+#include <Edje.h>
+
 #ifdef BUILD_EPSILON_SUPPORT
 #include <Epsilon.h>
 #include <Epsilon_Request.h>

@@ -4,6 +4,8 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
+#include <Edje.h>
+
 extern Ecore_List *ewl_embed_list;
 static char *ewl_theme_path = NULL;
 
