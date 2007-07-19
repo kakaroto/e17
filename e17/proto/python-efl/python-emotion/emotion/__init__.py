@@ -38,7 +38,7 @@ class Emotion(c_emotion.Emotion):
                  module_params=None, size=None, pos=None, geometry=None,
                  color=None, name=None):
         c_emotion.Emotion.__init__(self, canvas)
-        self_new_obj()
+        self._new_obj()
         self._set_common_params(module_filename=module_filename,
                                 module_params=module_params,
                                 size=size, pos=pos, geometry=geometry,
