@@ -90,6 +90,11 @@ static Etk_Test_App _test_apps[] =
       DIALOG
    },
    {
+      "Mdi Window",
+      etk_test_mdi_window_window_create,
+      DIALOG
+   },
+   {
       "Notebook",
       etk_test_notebook_window_create,
       CONTAINER
