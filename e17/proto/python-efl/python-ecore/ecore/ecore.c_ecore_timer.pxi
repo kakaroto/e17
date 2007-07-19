@@ -1,7 +1,7 @@
 # This file is included verbatim by c_ecore.pyx
 
 cdef class Timer:
-    def __new__(self, double interval, func, args, kargs):
+    def __init__(self, double interval, func, args, kargs):
         self._interval = interval
         self.func = func
         self.args = args

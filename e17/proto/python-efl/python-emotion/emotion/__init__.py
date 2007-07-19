@@ -34,13 +34,12 @@ EMOTION_EVENT_10 = 27
 EmotionModuleInitError = c_emotion.EmotionModuleInitError
 
 class Emotion(c_emotion.Emotion):
-    def __new__(type, canvas, module_filename="emotion_decoder_xine.so",
-                module_params=None, size=None, pos=None, geometry=None,
-                color=None, name=None):
-        obj = c_emotion.Emotion.__new__(type, canvas)
-        obj._new_obj()
-        obj._set_common_params(module_filename=module_filename,
-                               module_params=module_params,
-                               size=size, pos=pos, geometry=geometry,
-                               color=color, name=name)
-        return obj
+    def __init__(self, canvas, module_filename="emotion_decoder_xine.so",
+                 module_params=None, size=None, pos=None, geometry=None,
+                 color=None, name=None):
+        c_emotion.Emotion.__init__(self, canvas)
+        self_new_obj()
+        self._set_common_params(module_filename=module_filename,
+                                module_params=module_params,
+                                size=size, pos=pos, geometry=geometry,
+                                color=color, name=name)

@@ -74,89 +74,85 @@ EvasLoadError = c_evas.EvasLoadError
 Rect = c_evas.Rect
 
 class Canvas(c_evas.Canvas):
-    def __new__(type, method=None, size=None, viewport=None):
-        obj = c_evas.Canvas.__new__(type)
-        obj._new_evas()
+    def __init__(self, method=None, size=None, viewport=None):
+        c_evas.Canvas.__init__(self)
+        self._new_evas()
         if method:
-            obj.output_method_set(method)
+            self.output_method_set(method)
         if size:
-            obj.size_set(*size)
+            self.size_set(*size)
         if viewport:
-            obj.viewport_set(*viewport)
-        return obj
+            self.viewport_set(*viewport)
+
 
 class SmartObject(c_evas.SmartObject):
-    def __new__(type, canvas, size=None, pos=None, geometry=None, color=None,
-                name=None, *args, **kargs):
-        if type is SmartObject or type is c_evas.SmartObject:
+    def __init__(self, canvas, size=None, pos=None, geometry=None, color=None,
+                 name=None):
+        if type(self) is SmartObject or type(self) is c_evas.SmartObject:
             raise TypeError("Must not instantiate SmartObject, but subclasses")
-        obj = c_evas.SmartObject.__new__(type, canvas)
-        obj._new_obj()
-        obj._set_common_params(size=size, pos=pos, geometry=geometry,
-                               color=color, name=name)
-        return obj
+        c_evas.SmartObject.__init__(self, canvas)
+        self._new_obj()
+        self._set_common_params(size=size, pos=pos, geometry=geometry,
+                                color=color, name=name)
 
 
 class Rectangle(c_evas.Rectangle):
-    def __new__(type, canvas, size=None, pos=None, geometry=None, color=None,
+    def __init__(self, canvas, size=None, pos=None, geometry=None, color=None,
                 name=None):
-        obj = c_evas.Rectangle.__new__(type, canvas)
-        obj._new_obj()
-        obj._set_common_params(size=size, pos=pos, geometry=geometry,
-                               color=color, name=name)
-        return obj
+        c_evas.Rectangle.__init__(self, canvas)
+        self._new_obj()
+        self._set_common_params(size=size, pos=pos, geometry=geometry,
+                                color=color, name=name)
 
 
 class Line(c_evas.Line):
-    def __new__(type, canvas, start=None, end=None, size=None, pos=None,
+    def __init__(self, canvas, start=None, end=None, size=None, pos=None,
                 geometry=None, color=None, name=None):
-        obj = c_evas.Line.__new__(type, canvas)
-        obj._new_obj()
-        obj._set_common_params(start=start, end=end, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
-        return obj
+        c_evas.Line.__init__(self, canvas)
+        self._new_obj()
+        self._set_common_params(start=start, end=end, size=size, pos=pos,
+                                geometry=geometry, color=color, name=name)
 
 
 class Image(c_evas.Image):
-    def __new__(type, canvas, file=None, size=None, pos=None, geometry=None,
-                color=None, name=None):
-        obj = c_evas.Image.__new__(type, canvas)
-        obj._new_obj()
-        obj._set_common_params(file=file, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
-        return obj
+    def __init__(self, canvas, file=None, size=None, pos=None, geometry=None,
+                 color=None, name=None):
+        if not isinstance(canvas, c_evas.Canvas):
+            raise TypeError("First argument must be evas.Canvas")
+        c_evas.Image.__init__(self, canvas)
+        self._new_obj()
+        self._set_common_params(file=file, size=size, pos=pos,
+                                geometry=geometry, color=color, name=name)
 
 
 class Gradient(c_evas.Gradient):
-    def __new__(type, canvas, size=None, pos=None, geometry=None, color=None,
+    def __init__(self, canvas, size=None, pos=None, geometry=None, color=None,
                 name=None):
-        obj = c_evas.Gradient.__new__(type, canvas)
-        obj._new_obj()
-        obj._set_common_params(size=size, pos=pos, geometry=geometry,
-                               color=color, name=name)
-        return obj
+        c_evas.Gradient.__init__(self, canvas)
+        self._new_obj()
+        self._set_common_params(size=size, pos=pos, geometry=geometry,
+                                color=color, name=name)
 
 
 class Polygon(c_evas.Polygon):
-    def __new__(type, canvas, points=None, size=None, pos=None, geometry=None,
+    def __init__(self, canvas, points=None, size=None, pos=None, geometry=None,
                 color=None, name=None):
-        obj = c_evas.Polygon.__new__(type, canvas)
-        obj._new_obj()
-        obj._set_common_params(points=points, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
-        return obj
+        c_evas.Polygon.__init__(self, canvas)
+        self._new_obj()
+        self._set_common_params(points=points, size=size, pos=pos,
+                                geometry=geometry, color=color, name=name)
 
 
 class Text(c_evas.Text):
-    def __new__(type, canvas, text=None, font=None, font_source=None,
+    def __init__(self, canvas, text=None, font=None, font_source=None,
                 style=None, shadow_color=None, glow_color=None,
                 glow2_color=None, outline_color=None, size=None, pos=None,
                 geometry=None, color=None, name=None):
-        obj = c_evas.Text.__new__(type, canvas)
-        obj._new_obj()
-        obj._set_common_params(text=text, font=font, font_source=font_source,
-                               style=style, shadow_color=shadow_color,
-                               glow_color=glow_color, glow2_color=glow2_color,
-                               outline_color=outline_color, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
-        return obj
+        c_evas.Text.__init__(self, canvas)
+        self._new_obj()
+        self._set_common_params(text=text, font=font, font_source=font_source,
+                                style=style, shadow_color=shadow_color,
+                                glow_color=glow_color, glow2_color=glow2_color,
+                                outline_color=outline_color, size=size,
+                                pos=pos, geometry=geometry, color=color,
+                                name=name)

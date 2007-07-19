@@ -1,7 +1,7 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
-    def __new__(self):
+    def __new__(self, *a, **ka):
         self.obj = NULL
 
     def __dealloc__(self):

@@ -1,7 +1,7 @@
 # This file is included verbatim by c_ecore.pyx
 
 cdef class Animator:
-    def __new__(self, func, args, kargs):
+    def __init__(self, func, args, kargs):
         self.func = func
         self.args = args
         self.kargs = kargs

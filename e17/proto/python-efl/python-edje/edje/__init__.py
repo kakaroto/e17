@@ -54,10 +54,9 @@ MessageStringFloatSet = c_edje.MessageStringFloatSet
 
 
 class Edje(c_edje.Edje):
-    def __new__(type, canvas, file=None, group=None,
-                size=None, pos=None, geometry=None, color=None, name=None):
-        obj = c_edje.Edje.__new__(type, canvas)
-        obj._new_obj()
-        obj._set_common_params(file=file, group=group, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
-        return obj
+    def __init__(self, canvas, file=None, group=None,
+                 size=None, pos=None, geometry=None, color=None, name=None):
+        c_edje.Edje.__init__(self, canvas)
+        self._new_obj()
+        self._set_common_params(file=file, group=group, size=size, pos=pos,
+                                geometry=geometry, color=color, name=name)

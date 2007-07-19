@@ -63,7 +63,7 @@ cdef void _smart_object_clip_set(Evas_Object *o, Evas_Object *clip):
     obj = <SmartObject>Object_from_instance(o)
     other = Object_from_instance(clip)
     if obj._m_clip_set is not None:
-        obj._m_clip_set(obj)
+        obj._m_clip_set(obj, other)
 
 
 cdef void _smart_object_clip_unset(Evas_Object *o):
@@ -83,7 +83,11 @@ cdef void _smart_callback(void *data, Evas_Object *o, void *event_info):
     ei = <object>event_info
     lst = obj._smart_callbacks[event]
     for func, args, kargs in lst:
-        func(obj, ei, *args, **kargs)
+        try:
+            func(obj, ei, *args, **kargs)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
 
 
 cdef long _smart_object_class_new(char *name) except 0:
@@ -176,7 +180,7 @@ cdef class SmartObject(Object):
        implementation, you may want to remove and replace it with something
        else.
     """
-    def __new__(self, Canvas evas):
+    def __new__(self, *a, **ka):
         self._smart_callbacks = dict()
         cls = self.__class__
         self._m_old_delete = self.delete

@@ -9,11 +9,14 @@ cdef void obj_free_cb(void *data, Evas *e, Evas_Object *obj, void *event_info):
 
 
 cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
-    def __new__(self, Canvas evas):
+    def __new__(self, *a, **ka):
         self.obj = NULL
-        self._evas = evas
+        self._evas = None
         self._data = dict()
         self._callbacks = [None] * evas_event_callbacks_len
+
+    def __init__(self, Canvas evas not None):
+        self._evas = evas
 
     def __str__(self):
         return "%s(0x%x, type=%r, refcount=%d, Evas_Object=0x%x)" % \

@@ -8,11 +8,15 @@ cdef void fd_handler_prepare_cb(void *_td, Ecore_Fd_Handler *fdh):
     if obj._prepare_callback is None:
         return
     func, args, kargs = obj._prepare_callback
-    func(obj, *args, **kargs)
+    try:
+        func(obj, *args, **kargs)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 
 cdef class FdHandler:
-    def __new__(self, func, args, kargs):
+    def __init__(self, func, args, kargs):
         self.func = func
         self.args = args
         self.kargs = kargs

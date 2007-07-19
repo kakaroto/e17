@@ -35,7 +35,7 @@ cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
      * inflate
     """
 
-    def __new__(self, *args, **kargs):
+    def __init__(self, *args, **kargs):
         cdef Rect other
         self.x0 = 0
         self.y0 = 0

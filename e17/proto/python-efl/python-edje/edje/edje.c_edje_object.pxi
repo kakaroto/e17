@@ -64,7 +64,7 @@ class EdjeLoadError(Exception):
 
 
 cdef class Edje(evas.c_evas.Object):
-    def __new__(self, evas.c_evas.Canvas evas):
+    def __new__(self, *a, **ka):
         self._signal_callbacks = {}
 
     def _new_obj(self):
