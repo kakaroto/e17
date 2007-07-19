@@ -6,6 +6,8 @@
 
 #include "evolve_private.h"
 
+#include <Evas_Engine_Buffer.h>  
+
 #define NEWD(str, typ) \
      eet_data_descriptor_new(str, sizeof(typ), \
 				(void *(*) (void *))evas_list_next, \
@@ -29,7 +31,7 @@
 #define EVOLVE_WIDGET_PROP_NEWS(str, it, type) \
    EET_DATA_DESCRIPTOR_ADD_SUB(_evolve_widget_prop_edd, Etk_Property, str, it, type)
 
-#define PROP_DEF_VAL_NEWI(str, it, type) \	   
+#define PROP_DEF_VAL_NEWI(str, it, type) \
    EET_DATA_DESCRIPTOR_ADD_BASIC(_prop_def_val_edd, Etk_Property_Value, str, it, type)
   
 #define PROP_DEF_VAL_NEWS(str, it, type) \
@@ -354,9 +356,21 @@ int evolve_eet_save(Evolve *evolve, char *file)
 	
 	if (!evas)
 	  {
+	     Evas_Engine_Info_Buffer*        einfo;
+	     
 	     evas = evas_new();
 	     evas_output_method_set(evas, evas_render_method_lookup("buffer"));
-	     
+	     einfo = (Evas_Engine_Info_Buffer *) evas_engine_info_get(evas);
+	     einfo->info.depth_type = EVAS_ENGINE_BUFFER_DEPTH_ARGB32;
+	     einfo->info.dest_buffer = NULL;
+	     einfo->info.dest_buffer_row_bytes = 0;
+	     einfo->info.use_color_key = 0;
+	     einfo->info.alpha_threshold = 128;
+	     einfo->info.color_key_r = 0xff;
+	     einfo->info.color_key_g = 0x00;
+	     /* FIXME: Strange. */
+	     einfo->info.color_key_b = 0xff;
+	     evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);	     
 	  }
 	
 	image = evas_object_image_add(evas);

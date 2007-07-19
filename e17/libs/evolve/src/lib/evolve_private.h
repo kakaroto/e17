@@ -3,6 +3,7 @@
 
 #include <Eet.h>
 #include <Ecore_File.h>
+#include <Evas.h>
 
 #include "config.h"
 
