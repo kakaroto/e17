@@ -719,7 +719,8 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 		ewl_callback_append(row, EWL_CALLBACK_CLICKED,  
 					ewl_tree2_cb_row_clicked, node);
 
-		if (!model->highlight || model->highlight(data, i)) {
+		if (!model->highlight || model->highlight(data, i))
+		{
 			ewl_callback_append(row, EWL_CALLBACK_MOUSE_IN,
 					ewl_tree2_cb_row_highlight, NULL);
 			ewl_callback_append(row, EWL_CALLBACK_MOUSE_OUT,

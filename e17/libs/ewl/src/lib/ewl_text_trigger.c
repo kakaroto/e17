@@ -335,7 +335,9 @@ ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig)
 }
 
 /**
- * @param trig:
+ * @param w: The trigger to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
  * @return Returns no value
  * @brief Configures the areas associated with @a trig
  */
