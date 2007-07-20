@@ -5,6 +5,8 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
+#include <Evas.h>
+
 static void ewl_histogram_cb_data_load(Ewl_Widget *w, void *ev, void *h);
 static void ewl_histogram_draw(Ewl_Histogram *hist);
 

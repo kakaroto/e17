@@ -4,6 +4,8 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+#include <Evas.h>
+
 static Evas_Smart *widget_smart = NULL;
 
 static int ee_init(Ewl_Engine *engine);

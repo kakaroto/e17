@@ -5,6 +5,8 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
+#include <Evas.h>
+
 #ifdef BUILD_EMOTION_SUPPORT
 #include <Emotion.h>
 #endif

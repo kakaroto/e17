@@ -4,6 +4,8 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
+#include <Evas.h>
+
 static void ewl_container_child_insert_helper(Ewl_Container *pc, 
 						Ewl_Widget *child, 
 						int index, 

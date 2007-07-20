@@ -7,6 +7,8 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
+#include <Evas.h>
+
 /**
  * Ewl_Attach_Tooltip
  */

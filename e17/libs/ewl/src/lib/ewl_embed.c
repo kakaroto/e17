@@ -4,6 +4,8 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+#include <Evas.h>
+
 static int ewl_embed_last_mouse_x = 0;
 static int ewl_embed_last_mouse_y = 0;
 

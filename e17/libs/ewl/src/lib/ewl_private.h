@@ -2,7 +2,6 @@
 #ifndef _EWL_PRIVATE_H
 #define _EWL_PRIVATE_H
 
-#include <Evas.h>
 #include <Ecore_Str.h>
 #include <Ecore_File.h>
 

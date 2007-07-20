@@ -8,6 +8,8 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+#include <Evas.h>
+
 static Ewl_Text_Context *ewl_text_default_context = NULL;
 
 /* how much do we extend the text by when we need more space? */

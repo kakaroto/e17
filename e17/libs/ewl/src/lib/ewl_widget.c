@@ -4,6 +4,7 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+#include <Evas.h>
 #include <Edje.h>
 
 static Ecore_Hash *ewl_widget_name_table = NULL;
