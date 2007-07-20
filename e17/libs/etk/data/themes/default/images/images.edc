@@ -99,4 +99,17 @@ images {
    image: "colorpicker_slider_drag.png" COMP;
    image: "colorpicker_preview.png" COMP;
    image: "htoolbar.png" COMP;
+   image: "mdi_window_border.png" COMP;
+   image: "mdi_window_button_close.png" COMP;
+   image: "mdi_window_button_maximize.png" COMP;
+   image: "mdi_window_button.png" COMP;
+   image: "mdi_window_button_shadow1.png" COMP;
+   image: "mdi_window_button_shadow2.png" COMP;
+   image: "mdi_window_glint1.png" COMP;
+   image: "mdi_window_glint2.png" COMP;
+   image: "mdi_window_glint3.png" COMP;
+   image: "mdi_window_shadow.png" COMP;
+   image: "mdi_window_title_highlight.png" COMP;
+   image: "mdi_window_title_shadow1.png" COMP;
+   image: "mdi_window_title_shadow2.png" COMP;
 }

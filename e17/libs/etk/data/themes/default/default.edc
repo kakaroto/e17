@@ -1,6 +1,7 @@
 #include "macros/dnd.edc"
 #include "macros/focus.edc"
 #include "macros/glint.edc"
+#include "macros/mdi_window.edc"
 #include "macros/paned.edc"
 #include "macros/scrollbar.edc"
 #include "macros/style.edc"
@@ -43,4 +44,5 @@ collections {
    #include "widgets/colorpicker.edc"
    #include "widgets/toolbar.edc"
    #include "widgets/label.edc"
+   #include "widgets/mdi_window.edc"
 }
