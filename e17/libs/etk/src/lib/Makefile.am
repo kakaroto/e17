@@ -46,6 +46,7 @@ etk_image.h \
 etk_label.h \
 etk_main.h \
 etk_marshallers.h \
+etk_mdi_area.h \
 etk_mdi_window.h \
 etk_menu.h \
 etk_menu_bar.h \
@@ -120,6 +121,7 @@ etk_image.c \
 etk_label.c \
 etk_main.c \
 etk_marshallers.c \
+etk_mdi_area.c \
 etk_mdi_window.c \
 etk_menu.c \
 etk_menu_bar.c \

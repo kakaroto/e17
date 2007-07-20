@@ -46,6 +46,7 @@ extern "C" {
 #include "etk_iconbox.h"
 #include "etk_image.h"
 #include "etk_label.h"
+#include "etk_mdi_area.h"
 #include "etk_mdi_window.h"
 #include "etk_menu.h"
 #include "etk_menu_bar.h"

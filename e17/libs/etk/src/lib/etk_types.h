@@ -70,6 +70,7 @@ typedef struct Etk_Iconbox_Icon Etk_Iconbox_Icon;
 typedef struct Etk_Iconbox_Model Etk_Iconbox_Model;
 typedef struct Etk_Image Etk_Image;
 typedef struct Etk_Label Etk_Label;
+typedef struct _Etk_Mdi_Area Etk_Mdi_Area;
 typedef struct _Etk_Mdi_Window Etk_Mdi_Window;
 typedef struct Etk_Menu Etk_Menu;
 typedef struct Etk_Menu_Bar Etk_Menu_Bar;
