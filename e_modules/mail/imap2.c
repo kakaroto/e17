@@ -66,6 +66,7 @@ _mail_imap_check_mail (void *data)
 					  ic->config->port, NULL);
 	     ic->cmd = 1;
 	     ic->idle = -1;
+	     ic->idling = 0;
 	  }
 	else
 	  {
