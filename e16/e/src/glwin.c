@@ -170,7 +170,7 @@ DrawBackground(ETexture * et, GLfloat w, GLfloat h)
    if (!et)
       return;
 
-   glBindTexture(GL_TEXTURE_2D, et->texture);
+   glBindTexture(et->target, et->texture);
 
    glBegin(GL_QUADS);
    glNormal3f(0.0f, 0.0f, 1.0f);
@@ -194,7 +194,7 @@ DrawQube(ETexture * et, GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h,
    if (!et)
       return;
 
-   glBindTexture(GL_TEXTURE_2D, et->texture);
+   glBindTexture(et->target, et->texture);
 
    switch (filter)
      {
@@ -310,20 +310,16 @@ DrawQube(ETexture * et, GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h,
 }
 
 static void
-SceneDraw1(double t)
+SceneDraw1(double t, EWin ** ewins, int num)
 {
-   unsigned int        i, j, nx, ny;
+   int                 i, j, k, nx, ny;
    GLfloat             x, y, w, h, dx, dy, sz;
-   EWin               *const *ewins;
    EObj               *eo;
-   int                 k, num;
 
    w = EobjGetW(GLWin.eo);
    h = EobjGetH(GLWin.eo);
 
    DrawBackground(texture[sel_bg], w, h);
-
-   ewins = EwinListGetAll(&num);
 
    i = sqrt(w * h / (1.5 * num));
    ny = h / i;
@@ -377,21 +373,17 @@ SceneDraw1(double t)
 }
 
 static void
-SceneDraw2(double t)
+SceneDraw2(double t, EWin ** ewins, int num)
 {
    static double       t1;
    int                 i;
    GLfloat             w, h, dx, dy, sz, dx1, dy1;
-   EWin               *const *ewins;
    EObj               *eo;
-   int                 num;
 
    w = EobjGetW(GLWin.eo);
    h = EobjGetH(GLWin.eo);
 
    DrawBackground(texture[sel_bg], w, h);
-
-   ewins = EwinListGetAll(&num);
 
    for (i = 0; i < num; i++)
      {
@@ -413,30 +405,57 @@ SceneDraw2(double t)
      }
 }
 
+static EWin       **
+GlwinEwins(int *pnum)
+{
+   int                 i, j, num;
+   EWin               *const *ewins;
+   EWin              **lst;
+
+   ewins = EwinListGetAll(&num);
+   lst = EMALLOC(EWin *, num);
+
+   for (i = j = 0; i < num; i++)
+     {
+	if (!EoIsShown(ewins[i]))
+	   continue;
+	lst[j++] = ewins[i];
+     }
+   *pnum = j;
+
+   return lst;
+}
+
 static void
 SceneDraw(void)
 {
    double              t;
+   EWin              **ewins;
+   int                 num;
 
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glLoadIdentity();
 
    t = GetDTime();
 
+   ewins = GlwinEwins(&num);
+
    switch (Conf_glwin.mode)
      {
      default:
-	SceneDraw1(t);
+	SceneDraw1(t, ewins, num);
 	break;
      case 1:
-	SceneDraw2(t);
+	SceneDraw2(t, ewins, num);
 	break;
      }
 
+   glXSwapBuffers(disp, EobjGetXwin(GLWin.eo));
+
+   Efree(ewins);
+
    rot_x += speed_x;
    rot_y += speed_y;
-
-   glXSwapBuffers(disp, EobjGetXwin(GLWin.eo));
 }
 
 static int

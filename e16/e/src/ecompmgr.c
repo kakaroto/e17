@@ -1228,6 +1228,9 @@ ECompMgrWinInvalidate(EObj * eo, int what)
 	cw->pixmap = None;
 	if (Mode_compmgr.use_pixmap)
 	   what |= INV_PICTURE;
+#if USE_GLX
+	EobjTextureInvalidate(eo);
+#endif
      }
 
    if (what & (INV_SIZE | INV_SHAPE))

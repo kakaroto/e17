@@ -53,5 +53,6 @@ void                EGlWindowDisconnect(void);
 ETexture           *EGlTextureFromImage(EImage * im, int mode);
 ETexture           *EGlTextureFromDrawable(Drawable draw, int mode);
 void                EGlTextureDestroy(ETexture * et);
+void                EGlTextureInvalidate(ETexture * et);
 
 #endif /* _EGLX_H_ */

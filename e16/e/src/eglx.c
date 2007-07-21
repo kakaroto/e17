@@ -318,7 +318,8 @@ EGlWindowConnect(Window xwin)
       return;
 
    /* First time */
-   glEnable(GL_TEXTURE_2D);	/* ??? */
+   glEnable(TEXTURE_TARGET);
+
    glShadeModel(GL_SMOOTH);
    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
    glClearDepth(1.0f);
@@ -352,10 +353,10 @@ EGlTextureFromImage(EImage * im, int mode)
    if (!et)
       return NULL;
 
+   et->type = ETEX_TYPE_IMAGE;
    et->target = TEXTURE_TARGET;
    glGenTextures(1, &et->texture);
    glBindTexture(et->target, et->texture);
-   et->type = ETEX_TYPE_IMAGE;
 
    EImageGetSize(im, &w, &h);
    data = EImageGetData(im);
@@ -407,11 +408,27 @@ GetGlPixmap(Window xwin, Drawable draw)
    return glxpixmap;
 }
 
+static void
+_EGlTextureFromDrawable(ETexture * et, Drawable draw, int mode)
+{
+   if (!et || draw == None)
+      return;
+
+   glBindTexture(et->target, et->texture);
+   et->glxpmap = GetGlPixmap(draw, (mode & 0x100) ? None : draw);
+   if (et->glxpmap == None)
+      return;
+
+   _glXBindTexImageEXT(disp, et->glxpmap, GLX_FRONT_LEFT_EXT, NULL);
+#if 0				/* No! */
+   glXDestroyPixmap(disp, et->glxpmap);
+#endif
+}
+
 ETexture           *
 EGlTextureFromDrawable(Drawable draw, int mode)
 {
    ETexture           *et;
-   GLXPixmap           glxpixmap;
 
    if (draw == None)
       return NULL;
@@ -420,41 +437,12 @@ EGlTextureFromDrawable(Drawable draw, int mode)
    if (!et)
       return NULL;
 
+   et->type = ETEX_TYPE_PIXMAP;
    et->target = TEXTURE_TARGET;
    glGenTextures(1, &et->texture);
-   glEnable(et->target);	/* Why ??? */
    glBindTexture(et->target, et->texture);
-   et->type = ETEX_TYPE_PIXMAP;
 
-   glxpixmap = GetGlPixmap(draw, (mode & 0x100) ? None : draw);
-   if (glxpixmap == None)
-      return NULL;
-   et->glxpmap = glxpixmap;
-
-#if 0
-   unsigned int        trg;
-
-   glXQueryDrawable(disp, et->glxpmap, GLX_TEXTURE_TARGET_EXT, &trg);
-   Dprintf("TARGET: %#x\n", trg);
-#endif
-
-   switch (mode & 0xff)
-     {
-     case 0:
-	_glXBindTexImageEXT(disp, glxpixmap, GLX_FRONT_LEFT_EXT, NULL);
-	glTexParameteri(et->target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(et->target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	break;
-     case 1:
-	_glXBindTexImageEXT(disp, glxpixmap, GLX_FRONT_LEFT_EXT, NULL);
-	glTexParameteri(et->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(et->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	break;
-     }
-#if 0				/* No! */
-   glXDestroyPixmap(disp, glxpixmap);
-#endif
-   glBindTexture(et->target, 0);
+   _EGlTextureFromDrawable(et, draw, mode);
 
    return et;
 }
@@ -468,8 +456,19 @@ EGlTextureDestroy(ETexture * et)
    Dprintf("EGlTextureDestroy %d type=%u pmap=%#x\n", et->texture, et->type,
 	   et->glxpmap);
 
-   glEnable(et->target);	/* Why ??? */
-   glBindTexture(et->target, et->texture);
+   EGlTextureInvalidate(et);
+   glDeleteTextures(1, &et->texture);
+   Efree(et);
+}
+
+void
+EGlTextureInvalidate(ETexture * et)
+{
+   if (!et)
+      return;
+
+   Dprintf("EGlTextureInvalidate %d type=%u pmap=%#x\n", et->texture, et->type,
+	   et->glxpmap);
 
    switch (et->type)
      {
@@ -479,16 +478,10 @@ EGlTextureDestroy(ETexture * et)
 	if (!et->glxpmap)
 	   break;
 	_glXReleaseTexImageEXT(disp, et->glxpmap, GLX_FRONT_LEFT_EXT);
-	glBindTexture(et->target, 0);
-	glDisable(et->target);
 	glXDestroyPixmap(disp, et->glxpmap);
+	et->glxpmap = None;
 	break;
      }
-
-   glBindTexture(et->target, 0);
-   glDeleteTextures(1, &et->texture);
-
-   Efree(et);
 }
 
 #include "eobj.h"
@@ -507,10 +500,22 @@ EobjTexturesFree(void)
 ETexture           *
 EobjGetTexture(EObj * eo)
 {
-   Pixmap              pmap;
-
    if (eo->glhook)
-      return eo->glhook;
+     {
+	if (eo->glhook->glxpmap)
+	   return eo->glhook;
+
+	_EGlTextureFromDrawable(eo->glhook, EobjGetPixmap(eo), 0);
+	return eo->glhook;
+     }
+
+   return EobjTextureCreate(eo);
+}
+
+ETexture           *
+EobjTextureCreate(EObj * eo)
+{
+   Pixmap              pmap;
 
    pmap = EobjGetPixmap(eo);
    if (pmap == None)
@@ -526,4 +531,10 @@ EobjTextureDestroy(EObj * eo)
 {
    EGlTextureDestroy(eo->glhook);
    eo->glhook = NULL;
+}
+
+void
+EobjTextureInvalidate(EObj * eo)
+{
+   EGlTextureInvalidate(eo->glhook);
 }
