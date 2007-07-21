@@ -744,7 +744,8 @@ PagerShow(Pager * p)
    PagerReconfigure(p, 0);
 
    ewin->client.event_mask |=
-      ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
+      ButtonPressMask | ButtonReleaseMask |
+      EnterWindowMask | LeaveWindowMask | PointerMotionMask;
    ESelectInput(p->win, ewin->client.event_mask);
 
    w = ewin->client.w;
