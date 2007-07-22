@@ -75,4 +75,4 @@ trans.h \
 undo.c \
 undo.h
 
-engycad_LDADD = @ENGY_LIBS@ -lm
+engycad_LDADD = @ENGY_LIBS@ @pthread_libs@ -lm
