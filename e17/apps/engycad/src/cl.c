@@ -482,6 +482,41 @@ void cl_clip_unset(Evas_Object *o)
    cl_refresh(oparent);
 }*/
 
+int check_alias(const char *keyname, Evas_Modifier *mods)
+{
+	int mask = 0;
+	char *s;
+	char buf[4096];
+
+	if(evas_key_modifier_is_set(mods, "Shift"))
+		mask |= 1;
+	if(evas_key_modifier_is_set(mods, "Control"))
+		mask |= 2;
+	if(evas_key_modifier_is_set(mods, "Alt"))
+		mask |= 4;
+
+	switch(mask)
+	{
+		case 0: return 0; break;
+		case 1: s = "shift"; break;
+		case 2: s = "ctrl"; break;
+		case 3: s = "ctrl+shift"; break;
+		case 4: s = "alt"; break;
+		case 5: s = "alt+shift"; break;
+		case 6: s = "ctrl+alt"; break;
+		case 7: s = "ctrl+alt+shift"; break;
+	}
+	sprintf(buf, "%s+%s", s, keyname);
+	s = _alias(buf);
+	if(s)
+	{
+		gui_put_string(s);
+		return 1;
+	}
+
+	return 0;
+}
+
 void cl_handle_key(Evas_Object *o, void *event_info)
 {
 	Evas_Object *oparent;
@@ -547,7 +582,7 @@ void cl_handle_key(Evas_Object *o, void *event_info)
 
 	cl_text_set(oparent, "");
    }
-   else 
+   else if(!check_alias(ee->keyname, ee->modifiers)) 
    {	// insert input
       char * nt;
 

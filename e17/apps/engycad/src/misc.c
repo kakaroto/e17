@@ -511,42 +511,58 @@ parse_as_polar(char *s, float x1, float y1, float *x, float *y)
 
 /** aliases **/
 
+Evas_Hash *aliases;
+
+Evas_Bool my_pair_free(Evas_Hash *hash, 
+		const char *key, void *data, void *fdata)
+{
+	FREE(data);
+}
+
+void alias_init()
+{
+	char buf[4096];
+	char *al;
+	FILE *f;
+
+	sprintf(buf,"%s/%s", shell->home, shell->aliases);
+	f = fopen(buf, "r");
+
+	if(!f)
+		return;
+	while(!feof(f))
+	{
+		fgets(buf, 4095, f);
+		if(!buf[0])
+			continue;
+		buf[strlen(buf)-1] = '\0';
+		al = strchr(buf, '=');
+		if(!al)
+			continue;
+		al[0] = '\0';
+		al++;
+		aliases = evas_hash_add(aliases, buf, DUP(al));
+	}
+
+	fclose(f);
+}
+
+void alias_shutdown()
+{
+	evas_hash_foreach(aliases, my_pair_free, NULL);
+	evas_hash_free(aliases);
+}
+
 char               *
 _alias(char *s)
 {
-    char                buf[4096];
-    char               *al;
-    char               *res;
-    FILE               *in;
-    int                 fl = 1;
+	char *res;
+	res = (char*) evas_hash_find(aliases, s);
 
-    sprintf(buf, "%s/%s", shell->home, shell->aliases);
-    in = fopen(buf, "r");
-    ENGY_ASSERT(in);
+	if(res)
+		return DUP(res);
 
-    if (!in)
-        return NULL;
-
-    while ((!feof(in)) && fl)
-      {
-          fgets(buf, 4095, in);
-          if (!buf)
-              continue;
-          buf[strlen(buf) - 1] = 0;
-          al = (char *)strchr(buf, '=');
-          if (!al)
-              continue;
-          al[0] = 0;
-          al++;
-          if (!strcmp(buf, s))
-              fl = 0;
-      }
-    fclose(in);
-
-    if (fl)
-        return NULL;
-
-    return DUP(al);
+	return NULL;
 }
 
 /* screen-to-world */

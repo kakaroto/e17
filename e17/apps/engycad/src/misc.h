@@ -34,7 +34,10 @@ void                my_run(char *);
 void timer(void);
 
 /* usefull aliasing */
+void alias_init(void);
+void alias_shutdown(void);
 char               *_alias(char *);
+
 
 Evas_Object        *evas_image_load(char *file);
 

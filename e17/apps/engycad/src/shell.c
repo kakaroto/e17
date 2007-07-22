@@ -609,6 +609,7 @@ create_view(void)
     pointer_init();
     serv_init();
     logo_init();
+    alias_init();
 //    evas_render(shell->evas);
 }
 
@@ -1120,6 +1121,7 @@ shell_shutdown(void)
 	serv_put_string(DUP("__exit"));
 	usleep(10000);
 	gui_apply();
+	alias_shutdown();
 	cl_shutdown();
 	menu_shutdown();
 	panel_shutdown();

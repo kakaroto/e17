@@ -32,6 +32,7 @@
 
 /* vars */
 
+pthread_mutex_t     queuemutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t     datamutex = PTHREAD_MUTEX_INITIALIZER;
 
 pthread_t           thserv;
@@ -142,7 +143,7 @@ serv_put_string(char *s)
     if (strlen(s) > 4000)
         s[4000] = 0;
 
-    pthread_mutex_lock(&datamutex);
+    pthread_mutex_lock(&queuemutex);
     for (i = 0, j = 0; s[i]; i++)
       {
           if ((s[i] == '|') || (j == 4095))
@@ -160,7 +161,7 @@ serv_put_string(char *s)
     buf[j] = 0;
     _serv_put_string(DUP(_(buf)));
     FREE(s);
-    pthread_mutex_unlock(&datamutex);
+    pthread_mutex_unlock(&queuemutex);
 }
 
 char               *
@@ -170,16 +171,16 @@ _serv_get_string(void)
 
     do
     {
-	    pthread_mutex_lock(&datamutex);
+	    pthread_mutex_lock(&queuemutex);
 	    if(!serv_queue)
 	    {
-		    pthread_mutex_unlock(&datamutex);
-		    usleep(10*1000);
+		    pthread_mutex_unlock(&queuemutex);
+		    usleep(100*1000);
 		    continue;
 	    }
 	    s = serv_queue->data;
 	    serv_queue = evas_list_remove(serv_queue, s);
-	    pthread_mutex_unlock(&datamutex);
+	    pthread_mutex_unlock(&queuemutex);
     }
     while(!s);
 
@@ -224,6 +225,7 @@ serv_loop(void)
           serv_parser(s);
       }
 
+    pthread_mutex_destroy(&queuemutex);
     pthread_mutex_destroy(&datamutex);
     fl_shutdown = 2;
 
