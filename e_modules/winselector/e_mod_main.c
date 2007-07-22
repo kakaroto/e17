@@ -40,13 +40,24 @@ static void _win_menu_item_cb(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _win_menu_icon_cb(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _win_menu_item_drag(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _win_menu_free_hook(void *obj);
-static void _win_menu_item_create(E_Border *bd, E_Menu *m, Instance *inst);
+static void _win_menu_item_create(E_Border *bd, E_Menu *m);
 static int _window_cb_focus_in(void *data, int type, void *event);
 static int _window_cb_focus_out(void *data, int type, void *event);
 static int _window_cb_icon_change(void *data, int type, void *event);
 static int _window_cb_border_remove(void *data, int type, void *event);
 static void _focus_in(E_Border *bd, Instance *inst);
 static void _focus_out(Instance *inst);
+static void _win_menu_fill_separator(E_Menu *m);
+static int _win_menu_fill_normal(Evas_List *normal, E_Menu *m);
+static int _win_menu_fill_alt(Evas_List *alt, E_Menu *m);
+static int _win_menu_fill_iconified  (Evas_List *borders, E_Menu *m);
+static int  _win_menu_sort_alpha_cb (void *d1, void *d2);
+static int  _win_menu_sort_z_order_cb (void *d1, void *d2);
+static int  _win_menu_group_desk_cb (void *d1, void *d2);
+static int  _win_menu_group_class_cb (void *d1, void *d2);
+static void _win_menu_add_by_class (Evas_List *borders, E_Menu *m);
+static void _win_menu_add_by_desk (E_Desk *curr_desk, Evas_List *borders, E_Menu *m, E_Gadcon_Orient orient);
+static void _win_menu_add_by_none (Evas_List *borders, E_Menu *m);
 
 static E_Module *winsel_module = NULL;
 Evas_List *handlers;
@@ -258,47 +269,38 @@ _win_menu_pre_cb(void *data, E_Menu *m)
 	e_menu_item_label_set(mi, _("(No Windows)"));
 	return;
      }
-   for (l = borders; l; l = l->next)
-     {
-	E_Border *bd = l->data;
 
-	if (inst->gcc->gadcon->orient == E_GADCON_ORIENT_BOTTOM 
-	      || inst->gcc->gadcon->orient == E_GADCON_ORIENT_CORNER_BL
-	      || inst->gcc->gadcon->orient == E_GADCON_ORIENT_CORNER_BR
-	      || inst->gcc->gadcon->orient == E_GADCON_ORIENT_CORNER_RB
-	      || inst->gcc->gadcon->orient == E_GADCON_ORIENT_CORNER_LB)
-	  {
-	     if (bd->desk == desk)
-	       {
-		  alt = evas_list_append(alt, bd);
-		  continue;
-	       }
-	  }
-	else 
-	  {
-	     if (bd->desk != desk)
-	       {
-		  alt = evas_list_append(alt, bd);
-		  continue;
-	       }
-	  }
-	_win_menu_item_create(bd, m, inst);
+   /* Sort the borders */
+   if (e_config->clientlist_sort_by == E_CLIENTLIST_SORT_ALPHA)
+     borders = evas_list_sort(borders, evas_list_count(borders), 
+	   _win_menu_sort_alpha_cb);
+
+   if (e_config->clientlist_sort_by == E_CLIENTLIST_SORT_ZORDER)
+     borders = evas_list_sort(borders, evas_list_count(borders),
+	   _win_menu_sort_z_order_cb);
+
+   /* Group the borders */
+   if (e_config->clientlist_group_by == E_CLIENTLIST_GROUP_DESK)
+     { 
+	borders = evas_list_sort(borders, evas_list_count(borders), 
+	      _win_menu_group_desk_cb);
+	_win_menu_add_by_desk(desk, borders, m, inst->gcc->gadcon->orient);
      }
-   mi = e_menu_item_new(m);
-   e_menu_item_separator_set(mi, 1);
-
-   for (l = alt; l; l = l->next)
-     {
-	E_Border *bd = l->data;
-
-	_win_menu_item_create(bd, m, inst);
+   if (e_config->clientlist_group_by == E_CLIENTLIST_GROUP_CLASS) 
+     { 
+	borders = evas_list_sort(borders, evas_list_count(borders), 
+	      _win_menu_group_class_cb); 
+	_win_menu_add_by_class(borders, m);
      }
+   if (e_config->clientlist_group_by == E_CLIENTLIST_GROUP_NONE)
+     _win_menu_add_by_none(borders, m);
+
    e_object_free_attach_func_set(E_OBJECT(m), _win_menu_free_hook);
    e_object_data_set(E_OBJECT(m), borders);
 }
 
 static void
-_win_menu_item_create(E_Border *bd, E_Menu *m, Instance *inst)
+_win_menu_item_create(E_Border *bd, E_Menu *m)
 {
    E_Menu_Item *mi;
    const char *title;
@@ -493,6 +495,317 @@ static void _focus_out(Instance *inst)
    if (inst->bd_icon) evas_object_del(inst->bd_icon);
    inst->bd_icon = NULL;
 
+}
+
+static Evas_List *_win_menu_sort_by_orientation(Evas_List *list, E_Gadcon_Orient orient)
+{
+   if (orient == E_GADCON_ORIENT_BOTTOM 
+	 || orient == E_GADCON_ORIENT_CORNER_BL
+	 || orient == E_GADCON_ORIENT_CORNER_BR
+	 || orient == E_GADCON_ORIENT_CORNER_RB
+	 || orient == E_GADCON_ORIENT_CORNER_LB)
+     return evas_list_reverse(list);
+}
+
+static int _win_menu_sort_alpha_cb(void *d1, void *d2)
+{
+   E_Border *bd1;
+   E_Border *bd2;
+   const char *name1;
+   const char *name2;
+   
+   if (!d1) return 1;
+   if (!d2) return -1;
+
+   bd1 = d1;
+   bd2 = d2;
+   name1 = e_border_name_get(bd1);
+   name2 = e_border_name_get(bd2);
+   
+   if (strcasecmp(name1, name2) > 0) return 1;
+   if (strcasecmp(name1, name2) < 0) return -1;
+   return 0;
+}
+
+static int _win_menu_sort_z_order_cb(void *d1, void *d2)
+{
+   E_Border *bd1;
+   E_Border *bd2;
+
+   if (!d1) return 1;
+   if (!d2) return -1;
+
+   bd1 = d1;
+   bd2 = d2;
+
+   if (bd1->layer < bd2->layer) return 1;
+   if (bd1->layer > bd2->layer) return -1;
+   return 0;   
+}
+
+static int _win_menu_group_desk_cb(void *d1, void *d2)
+{
+   E_Border *bd1;
+   E_Border *bd2;
+   int j,k;
+
+   if (!d1) return 1;
+   if (!d2) return -1;
+
+   bd1 = d1;
+   bd2 = d2;
+
+   j = bd1->desk->y * 12 + bd1->desk->x;
+   k = bd2->desk->y * 12 + bd2->desk->x;
+
+   if (j > k) return 1;
+   if (j < k) return -1;
+   return -1;   /* Returning '-1' on equal is intentional */
+}
+
+static int _win_menu_group_class_cb(void *d1, void *d2)
+{
+   E_Border *bd1;
+   E_Border *bd2;
+
+   if (!d1) return 1;
+   if (!d2) return -1;
+
+   bd1 = d1;
+   bd2 = d2;
+   
+   if (strcmp((const char*)bd1->client.icccm.class, 
+	      (const char*)bd2->client.icccm.class) > 0) 
+     return 1;
+   
+   if (strcmp((const char*)bd1->client.icccm.class, 
+	      (const char*)bd2->client.icccm.class) < 0) 
+     return -1;
+   
+   return -1;   /* Returning '-1' on equal is intentional */
+}
+
+static void _win_menu_add_by_class(Evas_List *borders, E_Menu *m)
+{
+   Evas_List *l = NULL, *ico = NULL;
+   E_Menu *subm = NULL;
+   E_Menu_Item *mi;
+   char *class = NULL;
+
+   class = strdup("");
+   for (l = borders; l; l = l->next) 
+     { 
+	E_Border *bd; 
+	bd = l->data; 
+
+	if ((bd->iconic) && 
+	    (e_config->clientlist_separate_iconified_apps == E_CLIENTLIST_GROUPICONS_SEP))
+	  { 
+	     ico = evas_list_append(ico, bd); 
+	     continue;
+	  }
+
+	if (((strcmp(class, bd->client.icccm.class) != 0) && 
+	    e_config->clientlist_separate_with != E_CLIENTLIST_GROUP_SEP_NONE))
+	  { 
+	     if (e_config->clientlist_separate_with == E_CLIENTLIST_GROUP_SEP_MENU) 
+	       { 
+		  if (subm && mi) 
+		    e_menu_item_submenu_set(mi, subm); 
+		  mi = e_menu_item_new(m); 
+		  e_menu_item_label_set(mi, bd->client.icccm.class); 
+		  e_util_menu_item_edje_icon_set(mi, "enlightenment/windows"); 
+		  subm = e_menu_new(); 
+	       } 
+	     else 
+	       { 
+		  mi = e_menu_item_new(m); 
+		  e_menu_item_separator_set(mi, 1); 
+	       } 
+	     class = strdup(bd->client.icccm.class); 
+	  } 
+	if (e_config->clientlist_separate_with == E_CLIENTLIST_GROUP_SEP_MENU) 
+	  _win_menu_item_create(bd, subm); 
+	else  
+	  _win_menu_item_create(bd, m); 
+     }
+
+   if ((e_config->clientlist_separate_with == E_CLIENTLIST_GROUP_SEP_MENU) 
+       && subm && mi) 
+     e_menu_item_submenu_set(mi, subm);
+
+   _win_menu_fill_iconified(ico, m);
+}
+
+static void _win_menu_add_by_desk(E_Desk *curr_desk, Evas_List *borders, E_Menu *m, E_Gadcon_Orient orient)
+{
+   Evas_List *l = NULL, *normal = NULL, *alt = NULL, *ico = NULL;
+
+   /* Deal with present desk first */
+   for (l = borders; l; l = l->next)
+     {
+	E_Border *bd;
+	
+	bd = l->data; 
+	if (bd->iconic && e_config->clientlist_separate_iconified_apps && E_CLIENTLIST_GROUPICONS_SEP) 
+	  { 
+	     ico = evas_list_append(ico, bd); 
+	     continue; 
+	  }
+
+	if (bd->desk != curr_desk)
+	  {
+	     if ((!bd->iconic) || 
+		 (bd->iconic && e_config->clientlist_separate_iconified_apps == 
+		  E_CLIENTLIST_GROUPICONS_OWNER))
+	       {
+		  alt = evas_list_append(alt, bd); 
+		  continue;
+	       }
+	  }
+	else
+	  normal = evas_list_append(normal, bd);
+     }
+
+   if (orient == E_GADCON_ORIENT_BOTTOM 
+	 || orient == E_GADCON_ORIENT_CORNER_BL
+	 || orient == E_GADCON_ORIENT_CORNER_BR
+	 || orient == E_GADCON_ORIENT_CORNER_RB
+	 || orient == E_GADCON_ORIENT_CORNER_LB)
+     {
+	if (_win_menu_fill_iconified(ico, m))
+	  _win_menu_fill_separator(m);
+	if (_win_menu_fill_alt(alt, m) && evas_list_count(normal) > 0)
+	  _win_menu_fill_separator(m);
+	
+	_win_menu_fill_normal(normal, m);
+     }
+   else
+     {
+	if (_win_menu_fill_normal(normal, m))
+	  _win_menu_fill_separator(m);
+	if (_win_menu_fill_alt(alt, m) && evas_list_count(ico) > 0)
+	  _win_menu_fill_separator(m);
+
+	_win_menu_fill_iconified(ico, m);
+     }
+}
+
+static void _win_menu_add_by_none(Evas_List *borders, E_Menu *m)
+{
+   Evas_List *l = NULL, *ico = NULL;
+   
+   for (l = borders; l; l = l->next)
+     {
+	E_Border *bd;
+
+	bd = l->data;
+	if (bd->iconic && e_config->clientlist_separate_iconified_apps && E_CLIENTLIST_GROUPICONS_SEP) 
+	  { 
+	     ico = evas_list_append(ico, bd); 
+	     continue; 
+	  }
+	_win_menu_item_create(bd, m);
+     }
+
+   _win_menu_fill_iconified(ico, m);
+}
+
+static void _win_menu_fill_separator(E_Menu *m)
+{
+   E_Menu_Item *mi = NULL;
+
+   mi = e_menu_item_new(m);
+   e_menu_item_separator_set(mi, 1);
+}
+
+static int _win_menu_fill_normal(Evas_List *normal, E_Menu *m)
+{
+   Evas_List *l = NULL;
+
+   if (evas_list_count(normal) > 0) 
+     {
+	for (l = normal; l; l = l->next)
+	  { 
+	     E_Border *bd;
+	     
+	     bd = l->data; 
+	     _win_menu_item_create(bd, m);
+	  }
+	return 1;
+     }
+   return 0;
+}
+
+static int _win_menu_fill_alt(Evas_List *alt, E_Menu *m)
+{
+   E_Menu_Item *mi = NULL;
+   E_Menu *subm = NULL;
+   E_Desk *desk = NULL;
+   Evas_List *l = NULL;
+   int first = 1;
+
+   if (evas_list_count(alt) > 0) 
+     {
+	for (l = alt; l; l = l->next)
+	  { 
+	     E_Border *bd;
+	     
+	     bd = l->data; 
+
+	     if (bd->desk != desk && 
+		 e_config->clientlist_separate_with != E_CLIENTLIST_GROUP_SEP_NONE)
+	       {
+		  if (e_config->clientlist_separate_with == E_CLIENTLIST_GROUP_SEP_MENU)
+		    { 
+		       if (subm && mi) 
+			 e_menu_item_submenu_set(mi, subm); 
+		       mi = e_menu_item_new(m); 
+		       e_menu_item_label_set(mi, bd->desk->name); 
+		       e_util_menu_item_edje_icon_set(mi, "enlightenment/desktops"); 
+		       subm = e_menu_new(); 
+		    }
+		  else
+		    { 
+		       if (!first)
+			 {
+			    mi = e_menu_item_new(m); 
+			    e_menu_item_separator_set(mi, 1);
+			 }
+		       first = 0;
+		    }
+		  desk = bd->desk;
+	       } 
+	     if (e_config->clientlist_separate_with == E_CLIENTLIST_GROUP_SEP_MENU) 
+	       _win_menu_item_create(bd, subm); 
+	     else  
+	       _win_menu_item_create(bd, m);
+	  }
+	if (e_config->clientlist_separate_with == E_CLIENTLIST_GROUP_SEP_MENU 
+	    && subm && mi) 
+	  e_menu_item_submenu_set(mi, subm);
+	return 1;
+     }
+   return 0;
+}
+
+static int _win_menu_fill_iconified(Evas_List *borders, E_Menu *m)
+{
+   Evas_List *l;
+   E_Menu_Item *mi;
+
+   if (evas_list_count(borders) > 0)
+     { 
+	for (l = borders; l; l = l->next)
+	  { 
+	     E_Border *bd; 
+	     bd = l->data; 
+	     
+	     _win_menu_item_create(bd, m);
+	  }
+	return 1;
+     }
+   return 0;
 }
 
 /* module setup */
