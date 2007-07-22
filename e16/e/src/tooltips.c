@@ -597,16 +597,13 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    for (i = 0; i < 5; i++)
      {
 	eo = tt->win[i];
-	if (eo)
-	   ImageclassApply(tt->iclass[i], eo->win, EobjGetW(eo), EobjGetH(eo),
-			   0, 0, STATE_NORMAL, ST_TOOLTIP);
+	if (!eo)
+	   continue;
+	ImageclassApply(tt->iclass[i], eo->win, EobjGetW(eo), EobjGetH(eo),
+			0, 0, STATE_NORMAL, ST_TOOLTIP);
+	EobjShapeUpdate(eo, 0);
+	EobjMap(eo, 0);
      }
-
-   for (i = 0; i < 5; i++)
-      if (tt->win[i])
-	 EobjMap(tt->win[i], 0);
-
-   ESync();
 
    xx = pad->left + iw;
 
