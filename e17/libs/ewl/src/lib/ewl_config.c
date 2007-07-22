@@ -4,6 +4,7 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
+#include <Evas.h>
 #include <fcntl.h>
 #include <libgen.h>
 
