@@ -27,6 +27,7 @@
 #include "events.h"
 #include "session.h"
 #include "timers.h"
+#include "tooltips.h"
 #include "xwin.h"
 #include <sys/time.h>
 #if USE_XSYNC
@@ -275,6 +276,7 @@ HandleEvent(XEvent * ev)
 	Mode.events.time = ev->xbutton.time;
 	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 	Mode.events.on_screen = ev->xbutton.same_screen;
+	TooltipsSetPending(0, NULL, NULL);
 	goto do_stuff;
 
      case MotionNotify:
@@ -296,6 +298,7 @@ HandleEvent(XEvent * ev)
 	     if (!Mode.grabs.pointer_grab_active)
 		Mode.grabs.pointer_grab_active = 2;
 	  }
+	TooltipsSetPending(0, NULL, NULL);
 	goto do_stuff;
 
      case LeaveNotify:
@@ -307,6 +310,7 @@ HandleEvent(XEvent * ev)
 	     Mode.grabs.pointer_grab_window = None;
 	     Mode.grabs.pointer_grab_active = 0;
 	  }
+	TooltipsSetPending(0, NULL, NULL);
 	goto do_stuff;
 
      case PropertyNotify:

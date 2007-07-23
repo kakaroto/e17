@@ -1173,8 +1173,6 @@ static void
 DeskSwitchStart(void)
 {
    FocusNewDeskBegin();
-
-   TooltipsSetPending(1, NULL, NULL);
 }
 
 static void
@@ -1909,23 +1907,6 @@ DeskGetAclass(void *data __UNUSED__)
 }
 
 static void
-DeskHandleTooltip(Desk * dsk, XEvent * ev)
-{
-   switch (ev->type)
-     {
-     case ButtonPress:
-     case ButtonRelease:
-     case LeaveNotify:
-	TooltipsSetPending(1, NULL, NULL);
-	break;
-
-     case MotionNotify:
-	TooltipsSetPending(1, DeskGetAclass, dsk);
-	break;
-     }
-}
-
-static void
 DeskPropertyChange(Desk * dsk, XEvent * ev)
 {
    Pixmap              pmap;
@@ -1984,6 +1965,7 @@ DeskHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
      case MotionNotify:
 	/* Motion over desk buttons doesn't go here - We probably don't care much. */
 	DesksSetCurrent(DesktopAt(Mode.events.x, Mode.events.y));
+	TooltipsSetPending(1, DeskGetAclass, dsk);
 	break;
 
      case ConfigureNotify:
@@ -2006,8 +1988,6 @@ DeskHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 #endif
      }
-
-   DeskHandleTooltip(dsk, ev);
 }
 
 /* Settings */

@@ -1024,34 +1024,20 @@ BorderWinpartGetAclass(void *data)
 }
 
 static void
-BorderWinpartHandleTooltip(EWinBit * wbit, int event)
+BorderWinpartHandleTooltip(EWinBit * wbit)
 {
    EWin               *ewin = wbit->ewin;
    int                 part = wbit - ewin->bits;
 
-   switch (event)
-     {
-     case ButtonPress:
-     case LeaveNotify:
-	TooltipsSetPending(0, NULL, NULL);
-	break;
-     case ButtonRelease:
-     case EnterNotify:
-     case MotionNotify:
-	if (!ewin->border->part[part].aclass)
-	   return;
-	TooltipsSetPending(0, BorderWinpartGetAclass, wbit);
-	break;
-     }
+   if (!ewin->border->part[part].aclass)
+      return;
+   TooltipsSetPending(0, BorderWinpartGetAclass, wbit);
 }
 
 static void
 BorderWinpartHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    EWinBit            *wbit = (EWinBit *) prm;
-
-   /* Beware! Actions may destroy the current border */
-   BorderWinpartHandleTooltip(wbit, ev->type);
 
    switch (ev->type)
      {
@@ -1062,10 +1048,15 @@ BorderWinpartHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 	BorderWinpartEventMouseUp(wbit, ev);
 	break;
      case EnterNotify:
+	/* Beware! Actions may destroy the current border */
+	BorderWinpartHandleTooltip(wbit);
 	BorderWinpartEventEnter(wbit, ev);
 	break;
      case LeaveNotify:
 	BorderWinpartEventLeave(wbit, ev);
+	break;
+     case MotionNotify:
+	BorderWinpartHandleTooltip(wbit);
 	break;
      }
 }

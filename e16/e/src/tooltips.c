@@ -797,6 +797,9 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
 void
 TooltipsSetPending(int type, CB_GetAclass * func, void *data)
 {
+   if (!Mode_tooltips.ac_func && !func)
+      return;
+
    Mode_tooltips.ac_func = func;
    Mode_tooltips.ac_data = data;
 

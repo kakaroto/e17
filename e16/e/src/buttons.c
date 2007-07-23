@@ -635,23 +635,6 @@ ButtonGetAclass(void *data)
 }
 
 static void
-ButtonHandleTooltip(Button * b, int event)
-{
-   switch (event)
-     {
-     case ButtonPress:
-     case LeaveNotify:
-	TooltipsSetPending(0, NULL, NULL);
-	break;
-     case ButtonRelease:
-     case EnterNotify:
-     case MotionNotify:
-	TooltipsSetPending(0, ButtonGetAclass, b);
-	break;
-     }
-}
-
-static void
 ButtonHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
    Button             *b = (Button *) prm;
@@ -666,6 +649,8 @@ ButtonHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
      case MotionNotify:
 	ButtonEventMotion(b, ev);
+	if (b->aclass)
+	   TooltipsSetPending(0, ButtonGetAclass, b);
 	break;
      case EnterNotify:
 	ButtonEventMouseIn(b, ev);
@@ -674,9 +659,6 @@ ButtonHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 	ButtonEventMouseOut(b, ev);
 	break;
      }
-
-   if (b->aclass)
-      ButtonHandleTooltip(b, ev->type);
 
    if (b->func)
       b->func(b->owner, ev, NULL);
