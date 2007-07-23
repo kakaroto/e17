@@ -3092,7 +3092,7 @@ imlib_load_font(const char *font_name)
 }
 
 /**
- * Frees the current font.
+ * Removes the current font from any fallback chain it's in and frees it.
  **/
 EAPI void
 imlib_free_font(void)
@@ -3100,8 +3100,56 @@ imlib_free_font(void)
    if (!ctx)
       ctx = imlib_context_new();
    CHECK_PARAM_POINTER("imlib_free_font", "font", ctx->font);
+   imlib_remove_font_from_fallback_chain(ctx->font);
    imlib_font_free(ctx->font);
    ctx->font = NULL;
+}
+
+
+/**
+ * @param font A previously loaded font.
+ * @param fallback_font A previously loaded font to be chained to the given font.
+ * @return 0 on success.
+ *
+ * This arranges for the given fallback font to be used if a glyph does not exist in the given font when text is being rendered.
+ * Fonts can be arranged in an aribitrarily long chain and attempts will be made in order on the chain.
+ * Cycles in the chain are not possible since the given fallback font is removed from any chain it's already in.
+ * A fallback font may be a member of only one chain.  Adding it as the fallback font to another font will remove it from it's first fallback chain.
+ **/
+EAPI int 
+imlib_insert_font_into_fallback_chain(Imlib_Font font, Imlib_Font fallback_font)
+{
+   CHECK_PARAM_POINTER_RETURN("imlib_insert_font_into_fallback_chain", "font", font, 1);
+   CHECK_PARAM_POINTER_RETURN("imlib_insert_font_into_fallback_chain", "fallback_font", fallback_font, 1);
+   return imlib_insert_font_into_fallback_chain_imp(font,fallback_font);
+}
+
+/**
+ * @param fallback_font A font previously added to a fallback chain
+ * @return 0 on success.
+ *
+ * This removes the given font from any fallback chain it may be in.
+ * Removing this font joins its previous and next font together in the fallback chain.
+ **/
+EAPI void 
+imlib_remove_font_from_fallback_chain(Imlib_Font fallback_font)
+{
+   CHECK_PARAM_POINTER("imlib_remove_font_from_fallback_chain", "fallback_font", fallback_font);
+   imlib_remove_font_from_fallback_chain_imp(fallback_font);
+}
+
+EAPI Imlib_Font 
+imlib_get_prev_font_in_fallback_chain(Imlib_Font fn)
+{
+   CHECK_PARAM_POINTER_RETURN("imlib_get_prev_font_in_fallback_chain", "fn", fn, 0);
+   return ((ImlibFont*)fn)->fallback_prev;
+}
+
+EAPI Imlib_Font 
+imlib_get_next_font_in_fallback_chain(Imlib_Font fn)
+{
+   CHECK_PARAM_POINTER_RETURN("imlib_get_next_font_in_fallback_chain", "fn", fn, 0);
+   return ((ImlibFont*)fn)->fallback_next;
 }
 
 /**

@@ -50,6 +50,9 @@ struct _Imlib_Font
 
    int                 references;
 
+   /* using a double-linked list for the fallback chain */
+   struct _Imlib_Font	*fallback_prev;
+   struct _Imlib_Font	*fallback_next;
 };
 
 struct _Imlib_Font_Glyph
@@ -76,6 +79,8 @@ char              **imlib_font_list_fonts(int *num_ret);
 ImlibFont          *imlib_font_load_joined(const char *name);
 ImlibFont          *imlib_font_load(const char *name, int size);
 void                imlib_font_free(ImlibFont * fn);
+int                 imlib_insert_font_into_fallback_chain_imp(ImlibFont * fn, ImlibFont *fallback);
+void                imlib_remove_font_from_fallback_chain_imp(ImlibFont * fn);
 int                 imlib_font_cache_get(void);
 void                imlib_font_cache_set(int size);
 void                imlib_font_flush(void);
