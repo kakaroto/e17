@@ -141,7 +141,7 @@ cb_properties_set(E_DBus_Object *obj, DBusMessage *msg)
   char *property;
 
   dbus_message_iter_init(msg, &iter);
-  dbus_message_iter_get_basic(&sub, &property);
+  dbus_message_iter_get_basic(&iter, &property);
   dbus_message_iter_recurse(&iter, &sub);
   type = dbus_message_iter_get_arg_type(&sub);
   if (dbus_type_is_basic(type))
@@ -284,6 +284,20 @@ e_dbus_object_interface_attach(E_DBus_Object *obj, E_DBus_Interface *iface)
   ecore_list_append(obj->interfaces, iface);
   obj->introspection_dirty = 1;
   DEBUG(4, "e_dbus_object_interface_attach (%s, %s) ", obj->path, iface->name);
+}
+
+void
+e_dbus_object_interface_detach(E_DBus_Object *obj, E_DBus_Interface *iface)
+{
+  E_DBus_Interface *found;
+
+  DEBUG(4, "e_dbus_object_interface_detach (%s, %s) ", obj->path, iface->name);
+  found = ecore_list_goto(obj->interfaces, iface);
+  if (found == NULL) return;
+
+  ecore_dlist_remove(obj->interfaces);
+  obj->introspection_dirty = 1;
+  e_dbus_interface_unref(iface);
 }
 
 void

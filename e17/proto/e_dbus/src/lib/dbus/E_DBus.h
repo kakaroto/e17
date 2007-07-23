@@ -46,12 +46,14 @@ void e_dbus_connection_ref(E_DBus_Connection *conn);
 void e_dbus_connection_unref(E_DBus_Connection *conn);
 
 E_DBus_Connection *e_dbus_connection_setup(DBusConnection *conn);
+void e_dbus_connection_close(E_DBus_Connection *conn);
 
 /* receiving method calls */
 E_DBus_Interface *e_dbus_interface_new(const char *interface);
 void e_dbus_interface_ref(E_DBus_Interface *iface);
 void e_dbus_interface_unref(E_DBus_Interface *iface);
 void e_dbus_object_interface_attach(E_DBus_Object *obj, E_DBus_Interface *iface);
+void e_dbus_object_interface_detach(E_DBus_Object *obj, E_DBus_Interface *iface);
 int e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, const char *signature, const char *reply_signature, E_DBus_Method_Cb func);
 
 E_DBus_Object *e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data);
