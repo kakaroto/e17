@@ -2058,17 +2058,6 @@ EwinListTransientFor(const EWin * ewin, int *num)
    return lst;
 }
 
-void
-EwinsEventsConfigure(int mode)
-{
-   EWin               *const *lst;
-   int                 i, num;
-
-   lst = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-      EwinEventsConfigure(lst[i], mode);
-}
-
 static void
 EwinsTouch(Desk * dsk)
 {

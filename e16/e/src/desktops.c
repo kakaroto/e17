@@ -343,30 +343,6 @@ DeskControlsShow(Desk * dsk, int id)
 }
 
 static void
-DeskEventsConfigure(Desk * dsk, int mode)
-{
-   long                event_mask;
-   XWindowAttributes   xwa;
-   Win                 win;
-
-   win = EobjGetWin(dsk->bg.o);
-
-   if (mode)
-     {
-	event_mask = dsk->event_mask;
-     }
-   else
-     {
-	EXGetWindowAttributes(win, &xwa);
-	dsk->event_mask = xwa.your_event_mask | EDESK_EVENT_MASK;
-	event_mask =
-	   PropertyChangeMask | SubstructureRedirectMask |
-	   ButtonPressMask | ButtonReleaseMask;
-     }
-   ESelectInput(win, event_mask);
-}
-
-static void
 DeskConfigure(Desk * dsk)
 {
    Background         *bg;
@@ -460,6 +436,11 @@ DeskCreate(int desk, int configure)
 
    if (configure)
       DeskConfigure(dsk);
+
+   if (desk == 0)
+      ESelectInputChange(EoGetWin(dsk), EDESK_EVENT_MASK, 0);
+   else
+      ESelectInput(EoGetWin(dsk), EDESK_EVENT_MASK);
 
    return dsk;
 }
@@ -855,15 +836,6 @@ DesksResize(int w, int h)
 }
 
 static void
-DesksEventsConfigure(int mode)
-{
-   unsigned int        i;
-
-   for (i = 0; i < Conf.desks.num; i++)
-      DeskEventsConfigure(_DeskGet(i), mode);
-}
-
-static void
 ChangeNumberOfDesktops(unsigned int quantity)
 {
    unsigned int        i;
@@ -1202,21 +1174,12 @@ DeskSwitchStart(void)
 {
    FocusNewDeskBegin();
 
-   /* we are about to flip desktops or areas - disable enter and leave events
-    * temporarily */
-   EwinsEventsConfigure(0);
-   DesksEventsConfigure(0);
-
    TooltipsSetPending(1, NULL, NULL);
 }
 
 static void
 DeskSwitchDone(void)
 {
-   /* we flipped - re-enable enter and leave events */
-   EwinsEventsConfigure(1);
-   DesksEventsConfigure(1);
-
    FocusNewDesk();
 }
 

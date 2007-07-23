@@ -43,7 +43,6 @@ struct _desk
    Button             *tag;
    int                 current_area_x;
    int                 current_area_y;
-   long                event_mask;
    struct
    {
       Background         *bg;
