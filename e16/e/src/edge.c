@@ -131,35 +131,22 @@ EdgeEvent(int dir)
 static void
 EdgeHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 {
-   static Time         last_time = 0;
    int                 dir;
-   unsigned long       dt;
 
    dir = (long)prm;
 
    switch (ev->type)
      {
+     default:
+	break;
+
      case EnterNotify:
-	/* Avoid excessive flipping */
-	dt = ev->xcrossing.time - last_time;
-	if (dt < 500)
-	   return;
-	last_time = ev->xcrossing.time;
 	EdgeEvent(dir);
 	break;
 
      case LeaveNotify:
 	EdgeEvent(-1);
 	break;
-
-#if 0
-     case MotionNotify:
-	if (Mode.mode != MODE_MOVE_PENDING && Mode.mode != MODE_MOVE)
-	   break;
-
-	EdgeEvent(dir);
-	break;
-#endif
      }
 }
 
