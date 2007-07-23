@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-07-11 11:54+0200\n"
+"POT-Creation-Date: 2007-07-22 22:51+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -48,8 +48,8 @@ msgstr ""
 msgid "%u references remain\n"
 msgstr ""
 
-#: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1110
-#: src/borders.c:1233 src/buttons.c:732 src/cmclass.c:202 src/config.c:249
+#: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1101
+#: src/borders.c:1224 src/buttons.c:714 src/cmclass.c:202 src/config.c:249
 #: src/container.c:1775 src/cursors.c:177 src/iclass.c:547 src/menus.c:1802
 #: src/menus.c:1912 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:177
 #: src/windowmatch.c:160
@@ -57,8 +57,8 @@ msgstr ""
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIGURATIE: negeer extra gegevens in \"%s\"\n"
 
-#: src/aclass.c:302 src/backgrounds.c:1158 src/borders.c:1116
-#: src/borders.c:1239 src/buttons.c:740 src/cmclass.c:210 src/config.c:257
+#: src/aclass.c:302 src/backgrounds.c:1158 src/borders.c:1107
+#: src/borders.c:1230 src/buttons.c:722 src/cmclass.c:210 src/config.c:257
 #: src/cursors.c:183 src/iclass.c:552 src/menus.c:1807 src/menus.c:1918
 #: src/slideout.c:433 src/tclass.c:264 src/tooltips.c:183
 #: src/windowmatch.c:165
@@ -431,7 +431,7 @@ msgstr ""
 msgid "Settings..."
 msgstr "Invoer instellingen"
 
-#: src/container.c:1234 src/dialog.c:899 src/pager.c:998 config/strings.c:30
+#: src/container.c:1234 src/dialog.c:899 src/pager.c:999 config/strings.c:30
 #: config/strings.c:131
 msgid "Close"
 msgstr "Sluit"
@@ -510,7 +510,7 @@ msgstr "Beide zijden"
 msgid "End"
 msgstr "Einde"
 
-#: src/container.c:1683 src/focus.c:842
+#: src/container.c:1683 src/focus.c:845
 msgid "None"
 msgstr "Geen"
 
@@ -595,73 +595,73 @@ msgstr ""
 "Klik hier om deze desktop naar\n"
 "beneden te brengen\n"
 
-#: src/desktops.c:2352 src/desktops.c:2391
+#: src/desktops.c:2293 src/desktops.c:2332
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktops"
 
-#: src/desktops.c:2354 src/desktops.c:2393
+#: src/desktops.c:2295 src/desktops.c:2334
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
-#: src/desktops.c:2386
+#: src/desktops.c:2327
 msgid "Number of virtual desktops:\n"
 msgstr "Aantal virtuele desktops:\n"
 
-#: src/desktops.c:2415
+#: src/desktops.c:2356
 msgid "Slide desktops around when changing"
 msgstr "Schuif desktops bij veranderen"
 
-#: src/desktops.c:2421
+#: src/desktops.c:2362
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Snelheid van desktop schuiven: (langzaam)\n"
 
-#: src/desktops.c:2435
+#: src/desktops.c:2376
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2443
+#: src/desktops.c:2384
 msgid "Display desktop dragbar"
 msgstr "Toon de desktop sleurstrip"
 
-#: src/desktops.c:2449
+#: src/desktops.c:2390
 msgid "Drag bar position:"
 msgstr "Sleurstrip positie:"
 
-#: src/desktops.c:2453
+#: src/desktops.c:2394
 msgid "Top"
 msgstr "Boven"
 
-#: src/desktops.c:2459
+#: src/desktops.c:2400
 msgid "Bottom"
 msgstr "Onder"
 
-#: src/desktops.c:2465 src/pager.c:1908 src/pager.c:1933 src/pager.c:1958
+#: src/desktops.c:2406 src/pager.c:1909 src/pager.c:1934 src/pager.c:1959
 msgid "Left"
 msgstr "Links"
 
-#: src/desktops.c:2471 src/pager.c:1920 src/pager.c:1945 src/pager.c:1970
+#: src/desktops.c:2412 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Right"
 msgstr "Rechts"
 
-#: src/desktops.c:2479 src/menus-misc.c:713
+#: src/desktops.c:2420 src/menus-misc.c:713
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2480
+#: src/desktops.c:2421
 msgid "Multiple Desktop Settings"
 msgstr "Meerdere Desktop Instellingen"
 
-#: src/desktops.c:2483
+#: src/desktops.c:2424
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/desktops.c:2562 src/desktops.c:2597
+#: src/desktops.c:2503 src/desktops.c:2538
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -670,7 +670,7 @@ msgstr ""
 "%i x %i\n"
 "Shermen in grootte"
 
-#: src/desktops.c:2565 src/desktops.c:2600
+#: src/desktops.c:2506 src/desktops.c:2541
 msgid ""
 "1\n"
 "Screen in size"
@@ -678,49 +678,49 @@ msgstr ""
 "1\n"
 "Sherm in grootte"
 
-#: src/desktops.c:2593
+#: src/desktops.c:2534
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuele Desktop grootte:\n"
 
-#: src/desktops.c:2634
+#: src/desktops.c:2575
 msgid "Wrap virtual desktops around"
 msgstr ""
 
-#: src/desktops.c:2641
+#: src/desktops.c:2582
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2644
+#: src/desktops.c:2585
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2649
+#: src/desktops.c:2590
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2654
+#: src/desktops.c:2595
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2660
+#: src/desktops.c:2601
 msgid "Resistance at edge of screen:\n"
 msgstr "Weerstand aan de rand van het scherm:\n"
 
-#: src/desktops.c:2672
+#: src/desktops.c:2613
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2673
+#: src/desktops.c:2614
 msgid "Virtual Desktop Settings"
 msgstr "Virtuele Dektop Instellingen"
 
-#: src/desktops.c:2676
+#: src/desktops.c:2617
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:887 src/dialog.c:2179 src/dialog.c:2210 src/events.c:83
+#: src/dialog.c:887 src/dialog.c:2179 src/dialog.c:2210 src/events.c:84
 #: src/handlers.c:194 src/sound.c:313
 msgid "OK"
 msgstr "OK"
@@ -741,11 +741,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:83
+#: src/events.c:84
 msgid "X server setup error"
 msgstr ""
 
-#: src/events.c:84
+#: src/events.c:85
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -757,106 +757,106 @@ msgid ""
 "Exiting.\n"
 msgstr ""
 
-#: src/focus.c:714
+#: src/focus.c:717
 msgid "Focus follows pointer"
 msgstr "Invoer volgt de muis"
 
-#: src/focus.c:720
+#: src/focus.c:723
 msgid "Focus follows pointer sloppily"
 msgstr "Invoer volgt de muis slordig"
 
-#: src/focus.c:726
+#: src/focus.c:729
 msgid "Focus follows mouse clicks"
 msgstr "Invoer volgt muis klikken"
 
-#: src/focus.c:736
+#: src/focus.c:739
 msgid "Clicking in a window always raises it"
 msgstr "Klikken in een venster brengt het altijd naar boven"
 
-#: src/focus.c:744
+#: src/focus.c:747
 msgid "All new windows first get the focus"
 msgstr "Alle niewe vensters krijgen de invoer"
 
-#: src/focus.c:749
+#: src/focus.c:752
 msgid "Only new dialog windows get the focus"
 msgstr "Alleen nieuwe dialoog vensters krijgen de invoer"
 
-#: src/focus.c:756
+#: src/focus.c:759
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Alleen nieuwe dialoog vensters waarvan de eigenaar de invoer heeft krijgen "
 "de invoer"
 
-#: src/focus.c:761
+#: src/focus.c:764
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Breng vensters naar voren na een invoer wisseling"
 
-#: src/focus.c:767
+#: src/focus.c:770
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Stuur de muis naar het venster bij een invoer wisseling"
 
-#: src/focus.c:773
+#: src/focus.c:776
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Stuur de muis naar het venster bij een invoer wisseling"
 
-#: src/focus.c:781
+#: src/focus.c:784
 msgid "Display and use focus list"
 msgstr "Toon en gebruik een venster lijst"
 
-#: src/focus.c:786
+#: src/focus.c:789
 msgid "Include sticky windows in focus list"
 msgstr ""
 
-#: src/focus.c:791
+#: src/focus.c:794
 msgid "Include shaded windows in focus list"
 msgstr ""
 
-#: src/focus.c:796
+#: src/focus.c:799
 msgid "Include iconified windows in focus list"
 msgstr ""
 
-#: src/focus.c:801
+#: src/focus.c:804
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Plaats vensters met de hand"
 
-#: src/focus.c:806
+#: src/focus.c:809
 msgid "Focus windows while switching"
 msgstr ""
 
-#: src/focus.c:811
+#: src/focus.c:814
 msgid "Raise windows after focus switch"
 msgstr "Breng vensters naar voren na een invoer wisseling"
 
-#: src/focus.c:816
+#: src/focus.c:819
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Stuur de muis naar het vester na een invoer wisseling"
 
-#: src/focus.c:826
+#: src/focus.c:829
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Icoon plaatje instellingen (als de ene niet gaat, probeer volgende):"
 
-#: src/focus.c:830
+#: src/focus.c:833
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:836
+#: src/focus.c:839
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:850
+#: src/focus.c:853
 msgid "Focus"
 msgstr ""
 
-#: src/focus.c:851
+#: src/focus.c:854
 msgid "Focus Settings"
 msgstr "Invoer instellingen"
 
-#: src/focus.c:854
+#: src/focus.c:857
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1361,125 +1361,125 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Enlightenment Bericht Dialoog"
 
-#: src/pager.c:991 config/strings.c:49 config/strings.c:130
+#: src/pager.c:992 config/strings.c:49 config/strings.c:130
 msgid "Window Options"
 msgstr "Venster Opties"
 
-#: src/pager.c:994 config/strings.c:51 config/strings.c:133
+#: src/pager.c:995 config/strings.c:51 config/strings.c:133
 msgid "Iconify"
 msgstr "Minimaliseer"
 
-#: src/pager.c:1002 config/strings.c:132
+#: src/pager.c:1003 config/strings.c:132
 msgid "Annihilate"
 msgstr "Annihileer"
 
-#: src/pager.c:1006
+#: src/pager.c:1007
 msgid "Stick / Unstick"
 msgstr "Stick / Unstick"
 
-#: src/pager.c:1015
+#: src/pager.c:1016
 msgid "Desktop Options"
 msgstr "Desktop opties"
 
-#: src/pager.c:1017
+#: src/pager.c:1018
 msgid "Pager Settings..."
 msgstr "Pager instellingen..."
 
-#: src/pager.c:1022
+#: src/pager.c:1023
 msgid "Snapshotting Off"
 msgstr "Snapshots uit"
 
-#: src/pager.c:1026
+#: src/pager.c:1027
 msgid "High Quality Off"
 msgstr "Hoge kwaliteit uit"
 
-#: src/pager.c:1028
+#: src/pager.c:1029
 msgid "High Quality On"
 msgstr "Hoge kwaliteit aan"
 
-#: src/pager.c:1033
+#: src/pager.c:1034
 msgid "Snapshotting On"
 msgstr "Shapshots aan"
 
-#: src/pager.c:1037
+#: src/pager.c:1038
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1039
+#: src/pager.c:1040
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1797 src/pager.c:1888
+#: src/pager.c:1798 src/pager.c:1889
 msgid "Pager scanning speed:"
 msgstr "Pager scan snelheid:"
 
-#: src/pager.c:1798 src/pager.c:1889
+#: src/pager.c:1799 src/pager.c:1890
 msgid "lines per second"
 msgstr "lijnen per seconde"
 
-#: src/pager.c:1827
+#: src/pager.c:1828
 msgid "Enable pager display"
 msgstr "Toon pager"
 
-#: src/pager.c:1837
+#: src/pager.c:1838
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1841
+#: src/pager.c:1842
 #, fuzzy
 msgid "Simple"
 msgstr "Grootte"
 
-#: src/pager.c:1847
+#: src/pager.c:1848
 msgid "Make miniature snapshots of the screen"
 msgstr "Maak miniatuur snapshots van het scherm"
 
-#: src/pager.c:1854
+#: src/pager.c:1855
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1865
+#: src/pager.c:1866
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Verbeter hoge kwaliteits snapshots in snapshot modus"
 
-#: src/pager.c:1870
+#: src/pager.c:1871
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoom in op pager vensters als de muis boven ze is"
 
-#: src/pager.c:1876
+#: src/pager.c:1877
 msgid "Pop up window title when mouse is over the window"
 msgstr "Toon venster titel als de muis boven het venster is"
 
-#: src/pager.c:1881
+#: src/pager.c:1882
 msgid "Continuously scan screen to update pager"
 msgstr "Scan het scherm continu om de pager bij te werken"
 
-#: src/pager.c:1904
+#: src/pager.c:1905
 msgid "Mouse button to select and drag windows:"
 msgstr "Muisknop op vensters te selecteren en slepen"
 
-#: src/pager.c:1914 src/pager.c:1939 src/pager.c:1964
+#: src/pager.c:1915 src/pager.c:1940 src/pager.c:1965
 msgid "Middle"
 msgstr "Midden"
 
-#: src/pager.c:1929
+#: src/pager.c:1930
 msgid "Mouse button to select desktops:"
 msgstr "Muisknop om desktops te selecteren"
 
-#: src/pager.c:1954
+#: src/pager.c:1955
 msgid "Mouse button to display pager menu:"
 msgstr "Muisknop om pager menu te tonen"
 
-#: src/pager.c:1978
+#: src/pager.c:1979
 #, fuzzy
 msgid "Pagers"
 msgstr "Pager instellingen"
 
-#: src/pager.c:1979
+#: src/pager.c:1980
 msgid "Pager Settings"
 msgstr "Pager instellingen"
 
-#: src/pager.c:1982
+#: src/pager.c:1983
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
