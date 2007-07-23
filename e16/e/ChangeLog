@@ -4414,3 +4414,45 @@ Correct damage update on shape change.
 Always focus unfocused window when clicked.
 Fix bug in left/top resizing when returning to starting point.
 
+
+-------------------------------------------------------------------------------
+
+Mon Jul 23 22:11:58 CEST 2007
+(Kim)
+
+--- 0.16.8.9 0.04 ---
+Fix some potential segv's.
+Add shaped window version of technical move/resize mode.
+Avoid move/resize updates when nothing has changed.
+Disable some code that should be redundant.
+CM: Minor optimisation for unshaped windows.
+Don't look up well-known atoms.
+CM: Avoid creating/destroying regions.
+No need for aliases in .menu files.
+Eliminate some pointer event processing.
+CM: Make it less likely that X-errors occur when window is unmapped.
+Simplify initial window management at startup.
+Fix incorrect menu placement in certain situations.
+CM: Debug tweaks.
+CM: Fix alternative composite manager mode of operation (compmgr.mode = 1).
+    Using this mode fixes a number of problems seen with override-redirect
+    client windows, e.g. xlock not receiving key presses.
+    Not sure if there are any problems with this or if it simply should be
+    the default.
+Move some window property derivation to allow tweaking stuff in snapshots.
+Add dialog option to select non-grabbing move/resize modes.
+Fix set/unset of raise/focus grabs in certain situations.
+Fix some dialog debug stuff.
+Fix some background dialog issues + tweak layout.
+Destroy unused top-level menus.
+Fix changing pager mode.
+Minor doc updates.
+Fix build without Xft.
+Use pkg-config for ecore stuff.
+Enable building without session management support.
+CM: Fix tooltip shape change in certain situations.
+Don't mask off events while switching area/desk. The amount of enter/leave
+ events during switches has been reduced considerably, and changing the event
+ masks causes more trouble than worth while (I think...).
+Get rid of spurious tooltips.
+Remove the "excessive flip check" limiting minimum time between edge flips.
