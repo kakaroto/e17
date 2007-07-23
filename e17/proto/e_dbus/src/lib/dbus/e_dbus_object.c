@@ -295,7 +295,7 @@ e_dbus_object_interface_detach(E_DBus_Object *obj, E_DBus_Interface *iface)
   found = ecore_list_goto(obj->interfaces, iface);
   if (found == NULL) return;
 
-  ecore_dlist_remove(obj->interfaces);
+  ecore_list_remove(obj->interfaces);
   obj->introspection_dirty = 1;
   e_dbus_interface_unref(iface);
 }
@@ -474,7 +474,7 @@ e_dbus_object_introspect(E_DBus_Object *obj)
   level++;
 
   ecore_list_goto_first(obj->interfaces);
-  while((iface = ecore_list_next(obj->interfaces)))
+  while ((iface = ecore_list_next(obj->interfaces)))
     _introspect_interface_append(buf, iface, level);
 
   ecore_strbuf_append(buf, "</node>\n");
