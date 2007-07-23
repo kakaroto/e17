@@ -41,7 +41,7 @@
 %token SMOOTH SOURCE STATE STEP TARGET TEXT TEXT_CLASS TEXT_SOURCE TO
 %token TO_X TO_Y TRANSITION TWEEN TYPE VISIBLE X Y
 %token OPEN_BRACE CLOSE_BRACE RAW COMP LOSSY
-%token STYLES STYLE SBASE TAG ELIPSIS
+%token STYLES STYLE SBASE TAG ELIPSIS PRECISE_IS_INSIDE
 %token COLON QUOTE SEMICOLON STATE_SET ACTION_STOP SIGNAL_EMIT
 %token DRAG_VAL_SET DRAG_VAL_STEP DRAG_VAL_PAGE LINEAR
 %token SINUSOIDAL ACCELERATE DECELERATE IMAGE RECT SWALLOW GRADIENT TGROUP
@@ -457,6 +457,7 @@ part_preamble_entry: name
 	| effect
 	| mouse_events
 	| repeat_events
+	| precise_is_inside
 	| clip_to
 	| color_class
 	| text_class
@@ -535,6 +536,12 @@ repeat_events: REPEAT_EVENTS COLON boolean SEMICOLON {
                 engrave_parse_part_repeat_events((int)$3);
 	}
 	;
+
+precise_is_inside: PRECISE_IS_INSIDE COLON boolean SEMICOLON {
+                engrave_parse_part_precise_is_inside((int)$3);
+	}
+	;
+
 
 clip_to: CLIP_TO COLON STRING SEMICOLON {
                 engrave_parse_part_clip_to($3);

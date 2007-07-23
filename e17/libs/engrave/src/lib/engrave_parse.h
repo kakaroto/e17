@@ -35,6 +35,7 @@ void engrave_parse_part_source(char *source);
 void engrave_parse_part_effect(Engrave_Text_Effect effect);
 void engrave_parse_part_mouse_events(int mouse_events);
 void engrave_parse_part_repeat_events(int repeat_events);
+void engrave_parse_part_precise_is_inside(int precise);
 void engrave_parse_part_clip_to(char *clip_to);
 void engrave_parse_part_dragable_x(int x, int step, int count);
 void engrave_parse_part_dragable_y(int y, int step, int count);

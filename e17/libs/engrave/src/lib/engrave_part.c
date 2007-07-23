@@ -76,6 +76,20 @@ engrave_part_repeat_events_set(Engrave_Part *ep, int val)
 }
 
 /**
+ * engrave_part_precise_is_inside_set - set the precise event flag for the part.
+ * @param ep: The Engrave_Part to set the precise event flag on.
+ * @param val: The value to set the precise event flag too.
+ *
+ * @return Returns no value.
+ */
+EAPI void
+engrave_part_precise_is_inside_set(Engrave_Part *ep, int val)
+{
+  if (!ep) return;
+  ep->precise_is_inside = val;
+}
+
+/**
  * engrave_part_name_set - set the name of the part.
  * @param ep: The Engrave_Part to set the name off
  * @param name: The name to attach to the part.
@@ -227,6 +241,19 @@ engrave_part_repeat_events_get(Engrave_Part *ep)
 {
   if (!ep) return 0;
   return ep->repeat_events;
+}
+
+/**
+ * engrave_part_precise_is_inside_get - Get the precise event setting 
+ * @param ep: The Engrave_Part to get the precise event setting from
+ * 
+ * @return Returns the precise event setting of the part
+ */
+EAPI int
+engrave_part_precise_is_inside_get(Engrave_Part *ep)
+{
+  if (!ep) return 0;
+  return ep->precise_is_inside;
 }
 
 /**
