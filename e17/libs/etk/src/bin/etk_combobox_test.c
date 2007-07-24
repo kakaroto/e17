@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include "etk_test.h"
 #include <stdlib.h>
 #include <unistd.h>
@@ -202,7 +203,7 @@ static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, cha
    cur_dir = strdup(dir_stripped);
    
    files = ecore_file_ls(dir_stripped);
-   ecore_list_sort(files, strcasecmp, 'a');
+   ecore_list_sort(files, (Ecore_Compare_Cb)strcasecmp, 'a');
    ecore_list_goto_first(files);
    etk_combobox_entry_clear(combobox_entry);
    etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(combobox_entry)), 
@@ -288,7 +289,7 @@ static void _etk_combobox_entry_text_changed_cb(Etk_Object *object, void *data)
    if (!etk_combobox_entry_is_popped_up(combobox))
      {
 	etk_combobox_entry_pop_up(combobox);
-	etk_popup_window_focused_window_set(win);
+	etk_popup_window_focused_window_set(ETK_POPUP_WINDOW(win));
      }
    
    entry_text = etk_entry_text_get(entry);
@@ -314,7 +315,7 @@ brk:
 	continue;
      }
    etk_combobox_entry_pop_up(combobox);
-   etk_popup_window_focused_window_set(win);   
+   etk_popup_window_focused_window_set(ETK_POPUP_WINDOW(win));
    if (words)
       free(words);
 }

@@ -240,6 +240,7 @@ static int _etk_test_tree_sort_button_cb(Etk_Object *object, void *data)
 {
    Etk_Tree_Col *col = data;
    etk_tree_col_sort(col, !(col->tree->sorted_asc));
+   return 0;
 }
 
 /* Insert a row sorted in the tree */
@@ -267,4 +268,5 @@ static int _etk_test_tree_insert_sorted_button_cb(Etk_Object *object, void *data
                                     NULL);
    etk_tree_row_select(row);
    etk_tree_row_scroll_to(row, ETK_TRUE);
+   return 0;
 }

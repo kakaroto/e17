@@ -1,4 +1,5 @@
 /** @file etk_widget.c */
+#define _XOPEN_SOURCE 600
 #include "etk_widget.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -1411,7 +1412,6 @@ int etk_widget_theme_data_get(Etk_Widget *widget, const char *data_name, const c
    if (!(data_string = edje_object_data_get(widget->theme_object, data_name)))
       return 0;
    
-   /* TODO: remove that vsscanf compiler warning */
    va_start(args, format);
    result = vsscanf(data_string, format, args);
    va_end(args);
