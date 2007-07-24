@@ -3,13 +3,13 @@
 REQUIREMENTS
 ============
 
- * Edje >= 0.5.0.038
- * Eet >= 0.9.9.038     (indirect, Edje dependency)
- * Embryo >= 0.9.9.038  (indirect, Edje dependency)
- * Ecore >= 0.9.9.038   (indirect, Edje dependency)
- * Evas >= 0.9.9.038
+ * Edje >= 0.5.0.040
+ * Eet >= 0.9.9.040     (indirect, Edje dependency)
+ * Embryo >= 0.9.9.040  (indirect, Edje dependency)
+ * Ecore >= 0.9.9.040   (indirect, Edje dependency)
+ * Evas >= 0.9.9.040
  * Python-Evas
- * Pyrex >= 0.9.4.1
+ * Pyrex >= 0.9.5
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc3
 

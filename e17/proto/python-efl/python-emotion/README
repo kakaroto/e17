@@ -4,10 +4,10 @@ REQUIREMENTS
 ============
 
  * Emotion >= 0.0.1.005
- * Evas >= 0.9.9.038  (indirect, Emotion dependency)
- * Ecore >= 0.9.9.038 (indirect, Emotion dependency)
+ * Evas >= 0.9.9.040  (indirect, Emotion dependency)
+ * Ecore >= 0.9.9.040 (indirect, Emotion dependency)
  * Python-Evas
- * Pyrex >= 0.9.4.1
+ * Pyrex >= 0.9.5
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc3
 

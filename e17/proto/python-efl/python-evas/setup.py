@@ -37,7 +37,7 @@ evasmodule = Extension('evas.c_evas',
                                 'evas/evas.c_evas_object_text.pxi',
                                 'evas/python.pxd',
                                 ],
-                       **pkgconfig('"evas >= 0.9.9.038"'))
+                       **pkgconfig('"evas >= 0.9.9.040"'))
 
 headers = ['evas/evas.c_evas.pxd',
            'evas/python_evas_utils.h',
@@ -80,7 +80,7 @@ only terminal to 16 color VGA to 256 color and all the way up through
 """
 
 setup(name = 'python-evas',
-      version = '0.1.0',
+      version = '0.1.1',
       license = 'BSD',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',

@@ -37,7 +37,7 @@ ecoremodule = Extension('ecore.c_ecore',
                                  'ecore/ecore.c_ecore.pxd',
                                  'ecore/python.pxd',
                                  ],
-                        **pkgconfig('"ecore >= 0.9.9.038"'))
+                        **pkgconfig('"ecore >= 0.9.9.040"'))
 
 ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                             sources=['ecore/evas/ecore.evas.c_ecore_evas.pyx'],
@@ -52,7 +52,7 @@ ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                                      'ecore/evas/ecore.evas.c_ecore_evas_software_x11_16.pxi',
                                      'ecore/python.pxd',
                                      ],
-                            **pkgconfig('"ecore-evas >= 0.9.9.038"'))
+                            **pkgconfig('"ecore-evas >= 0.9.9.040"'))
 
 
 trove_classifiers = [

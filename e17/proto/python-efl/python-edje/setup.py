@@ -33,7 +33,7 @@ edjemodule = Extension('edje.c_edje',
                        depends=['edje/edje.c_edje.pxd',
                                 'edje/python.pxd',
                                 ],
-                       **pkgconfig('"edje >= 0.5.0.038"'))
+                       **pkgconfig('"edje >= 0.5.0.040"'))
 
 include_dirs = [os.path.join(python_inc, "python-evas")]
 
