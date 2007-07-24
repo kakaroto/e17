@@ -78,6 +78,11 @@ static char *_fill_type_string[ENGRAVE_FILL_TYPE_NUM] = {
         "TILE"
         };
 
+static char *_pointer_mode_string[ENGRAVE_POINTER_NUM] = {
+        "AUTOGRAB",
+        "NOGRAB"
+        };
+
 static char *
 engrave_output_mk_tabs(void)
 {
@@ -294,6 +299,14 @@ _engrave_output_part(Engrave_Part *part, void *data)
   if (engrave_part_repeat_events_get(part))
     engrave_out_data(out, "repeat_events", "%d",
                     engrave_part_repeat_events_get(part));
+
+  if (engrave_part_precise_is_inside_get(part))
+    engrave_out_data(out, "precise_is_inside", "%d",
+                    engrave_part_precise_is_inside_get(part));
+
+  if (engrave_part_pointer_mode_get(part))
+    engrave_out_data(out, "pointer_mode", "%s",
+                    _pointer_mode_string[engrave_part_pointer_mode_get(part)]);
 
   if (engrave_part_effect_get(part) != ENGRAVE_TEXT_EFFECT_NONE)
     engrave_out_data(out, "effect", "%s", 

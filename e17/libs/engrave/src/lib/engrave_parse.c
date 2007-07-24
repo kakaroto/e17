@@ -282,6 +282,17 @@ engrave_parse_part_precise_is_inside(int precise)
 }
 
 void
+engrave_parse_part_pointer_mode(int mode)
+{
+  Engrave_Group *group;
+  Engrave_Part *part;
+
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_pointer_mode_set(part, mode);
+}
+
+void
 engrave_parse_part_clip_to(char *clip_to)
 {
   Engrave_Group *group;

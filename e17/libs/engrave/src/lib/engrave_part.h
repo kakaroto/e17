@@ -30,6 +30,7 @@ struct _Engrave_Part
   int mouse_events;             /**< The mouse events flag */
   int repeat_events;            /**< The repeat events flag */
   int precise_is_inside;        /**< The precise event flag */
+  int pointer_mode;             /**< The pointer mode flag */
   char *clip_to;                /**< The part to clip too */
   char *source;			/**< The source of the part */
 
@@ -83,6 +84,7 @@ EAPI void engrave_part_name_set(Engrave_Part *ep, const char *name);
 EAPI void engrave_part_mouse_events_set(Engrave_Part *ep, int val);
 EAPI void engrave_part_repeat_events_set(Engrave_Part *ep, int val);
 EAPI void engrave_part_precise_is_inside_set(Engrave_Part *ep, int val);
+EAPI void engrave_part_pointer_mode_set(Engrave_Part *ep, int val);
 EAPI void engrave_part_type_set(Engrave_Part *ep, Engrave_Part_Type type);
 EAPI void engrave_part_source_set(Engrave_Part *ep, char * source);
 EAPI void engrave_part_effect_set(Engrave_Part *ep, Engrave_Text_Effect effect);
@@ -104,6 +106,7 @@ EAPI char * engrave_part_source_get(Engrave_Part *ep);
 EAPI int engrave_part_mouse_events_get(Engrave_Part *ep);
 EAPI int engrave_part_repeat_events_get(Engrave_Part *ep);
 EAPI int engrave_part_precise_is_inside_get(Engrave_Part *ep);
+EAPI int engrave_part_pointer_mode_get(Engrave_Part *ep);
 EAPI Engrave_Text_Effect engrave_part_effect_get(Engrave_Part *ep);
 EAPI const char *engrave_part_clip_to_get(Engrave_Part *ep);
 EAPI void engrave_part_dragable_x_get(Engrave_Part *ep, int *x, int *step, int *count);

@@ -90,6 +90,20 @@ engrave_part_precise_is_inside_set(Engrave_Part *ep, int val)
 }
 
 /**
+ * engrave_part_pointer_mode_set - set the pointer mode flag for the part.
+ * @param ep: The Engrave_Part to set the pointer mode flag on.
+ * @param val: The value to set the pointer mode flag too.
+ *
+ * @return Returns no value.
+ */
+EAPI void
+engrave_part_pointer_mode_set(Engrave_Part *ep, int val)
+{
+  if (!ep) return;
+  ep->pointer_mode = val;
+}
+
+/**
  * engrave_part_name_set - set the name of the part.
  * @param ep: The Engrave_Part to set the name off
  * @param name: The name to attach to the part.
@@ -254,6 +268,19 @@ engrave_part_precise_is_inside_get(Engrave_Part *ep)
 {
   if (!ep) return 0;
   return ep->precise_is_inside;
+}
+
+/**
+ * engrave_part_pointer_mode_get - Get the pointer mode setting 
+ * @param ep: The Engrave_Part to get the pointer mode setting from
+ * 
+ * @return Returns the pointer mode setting of the part
+ */
+EAPI int
+engrave_part_pointer_mode_get(Engrave_Part *ep)
+{
+  if (!ep) return 0;
+  return ep->pointer_mode;
 }
 
 /**

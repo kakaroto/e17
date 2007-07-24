@@ -28,6 +28,7 @@
 	Engrave_Text_Effect text_effect;
 	Engrave_Aspect_Preference aspect_pref;
 	Engrave_Fill_Type fill_type_type;
+	Engrave_Pointer_Mode pointer_mode;
 }
 
 %token BASE
@@ -47,7 +48,7 @@
 %token SINUSOIDAL ACCELERATE DECELERATE IMAGE RECT SWALLOW GRADIENT TGROUP
 %token NONE PLAIN OUTLINE SOFT_OUTLINE SHADOW SOFT_SHADOW 
 %token OUTLINE_SHADOW OUTLINE_SOFT_SHADOW VERTICAL HORIZONTAL BOTH
-%token SPECTRA SPECTRUM GRAD
+%token SPECTRA SPECTRUM GRAD POINTER_MODE NOGRAB AUTOGRAB
 %left MINUS PLUS
 %left TIMES DIVIDE
 %left NEG     /* negation--unary minus */
@@ -64,6 +65,7 @@
 %type <aspect_pref> aspect_pref_type
 %type <val> exp boolean
 %type <fill_type_type> fill_type_type;
+%type <pointer_mode> pointer_mode grabmode;
 
 %%
 
@@ -458,6 +460,7 @@ part_preamble_entry: name
 	| mouse_events
 	| repeat_events
 	| precise_is_inside
+	| pointer_mode
 	| clip_to
 	| color_class
 	| text_class
@@ -542,6 +545,14 @@ precise_is_inside: PRECISE_IS_INSIDE COLON boolean SEMICOLON {
 	}
 	;
 
+pointer_mode: POINTER_MODE COLON grabmode SEMICOLON {
+                engrave_parse_part_pointer_mode((int)$3);
+	}
+	;
+
+grabmode: NOGRAB { $$ = ENGRAVE_POINTER_NOGRAB; }
+	| AUTOGRAB { $$ = ENGRAVE_POINTER_AUTOGRAB; }
+	;
 
 clip_to: CLIP_TO COLON STRING SEMICOLON {
                 engrave_parse_part_clip_to($3);

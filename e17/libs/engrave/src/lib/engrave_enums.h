@@ -19,6 +19,7 @@ typedef enum _Engrave_Transition Engrave_Transition;
 typedef enum _Engrave_Aspect_Preference Engrave_Aspect_Preference;
 typedef enum _Engrave_Parse_Section Engrave_Parse_Section;
 typedef enum _Engrave_Fill_Type Engrave_Fill_Type;
+typedef enum _Engrave_Pointer_Mode Engrave_Pointer_Mode;
 
 /**
  * @enum Engrave_Image_Type
@@ -118,6 +119,18 @@ enum _Engrave_Fill_Type
   ENGRAVE_FILL_TYPE_TILE, /**< Tile type */
   ENGRAVE_FILL_TYPE_NUM
 };
+
+/**
+ * @enum Engrave_Pointer_Mode
+ * The different pointer gran modes available
+ */
+enum _Engrave_Pointer_Mode
+{
+  ENGRAVE_POINTER_AUTOGRAB, /**< Auto Grab */
+  ENGRAVE_POINTER_NOGRAB, /**< No Grab */
+  ENGRAVE_POINTER_NUM
+};
+
 
 /**
  * @}
