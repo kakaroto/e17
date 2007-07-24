@@ -3,12 +3,14 @@
 #define e_hal_device_call_new(udi, member) dbus_message_new_method_call(E_HAL_SENDER, udi, E_HAL_DEVICE_INTERFACE, member)
 #define e_hal_device_volume_call_new(udi, member) dbus_message_new_method_call(E_HAL_SENDER, udi, E_HAL_DEVICE_VOLUME_INTERFACE, member)
 
+#if 0
 static void cb_device_get_property(void *data, DBusMessage *msg, DBusError *err);
 static void cb_device_get_all_properties(void *data, DBusMessage *msg, DBusError *err);
 static void cb_device_query_capability(void *data, DBusMessage *msg, DBusError *err);
+#endif
 
 /* Device.GetProperty */
-static E_Hal_Device_Get_Property_Return *
+static void *
 unmarshal_device_get_property(DBusMessage *msg, DBusError *err)
 {
   E_Hal_Device_Get_Property_Return *ret = NULL;
@@ -58,7 +60,7 @@ e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *
 
 /* Device.GetAllProperties */
 
-static E_Hal_Device_Get_All_Properties_Return *
+static void *
 unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
 {
   E_Hal_Device_Get_All_Properties_Return *ret = NULL;
@@ -159,7 +161,7 @@ e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus
 /* bool Device.QueryCapability(string udi) */
 
 // XXX this is same as Device_Exists in manager.
-static E_Hal_Device_Query_Capability_Return *
+static void *
 unmarshal_device_query_capability(DBusMessage *msg, DBusError *err)
 {
   E_Hal_Device_Query_Capability_Return *ret = NULL;

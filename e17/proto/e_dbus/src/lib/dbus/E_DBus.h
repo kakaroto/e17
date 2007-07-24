@@ -30,7 +30,7 @@ typedef int  (*E_DBus_Object_Property_Set_Cb) (E_DBus_Object *obj, const char *p
  * @param event_data a struct containing the return data.
  */
 typedef void (*E_DBus_Callback_Func) (void *user_data, void *method_return, DBusError *error);
-typedef DBusMessage *(*E_DBus_Unmarshal_Func) (DBusMessage *msg, DBusError *err);
+typedef void *(*E_DBus_Unmarshal_Func) (DBusMessage *msg, DBusError *err);
 
 typedef struct E_DBus_Callback E_DBus_Callback;
 

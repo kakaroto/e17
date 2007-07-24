@@ -4,7 +4,7 @@
 
 /* GetAllDevices */
 
-static E_Hal_String_List_Return *
+static void *
 unmarshal_string_list(DBusMessage *msg, DBusError *err)
 {
   E_Hal_String_List_Return *ret = NULL;
@@ -59,7 +59,7 @@ e_hal_manager_get_all_devices(E_DBus_Connection *conn, E_DBus_Callback_Func cb_f
 
 /* Manager.DeviceExists(string udi) */
 
-static E_Hal_Manager_Device_Exists_Return *
+static void *
 unmarshal_manager_device_exists(DBusMessage *msg, DBusError *err)
 {
   E_Hal_Manager_Device_Exists_Return *ret = NULL;
