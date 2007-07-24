@@ -678,6 +678,19 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         def __set__(self, int value):
             self.propagate_events_set(value)
 
+    def pointer_mode_get(self):
+        return <int>evas_object_pointer_mode_get(self.obj)
+
+    def pointer_mode_set(self, int value):
+        evas_object_pointer_mode_set(self.obj, <Evas_Object_Pointer_Mode>value)
+
+    property pointer_mode:
+        def __get__(self):
+            return self.pointer_mode_get()
+
+        def __set__(self, int value):
+            self.pointer_mode_set(value)
+
     def parent_get(self):
         "Get object's parent, in the case it was added to some SmartObject."
         cdef Evas_Object *obj

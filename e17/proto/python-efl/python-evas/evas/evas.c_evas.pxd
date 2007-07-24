@@ -88,6 +88,11 @@ cdef extern from "Evas.h":
         EVAS_SMART_CLASS_VERSION
 
 
+    ctypedef enum Evas_Object_Pointer_Mode:
+        EVAS_OBJECT_POINTER_MODE_AUTOGRAB
+        EVAS_OBJECT_POINTER_MODE_NOGRAB
+
+
     ####################################################################
     # Structures
     #
@@ -371,6 +376,8 @@ cdef extern from "Evas.h":
     Evas_Bool evas_object_repeat_events_get(Evas_Object *obj)
     void evas_object_propagate_events_set(Evas_Object *obj, Evas_Bool prop)
     Evas_Bool evas_object_propagate_events_get(Evas_Object *obj)
+    void evas_object_pointer_mode_set(Evas_Object *obj, Evas_Object_Pointer_Mode setting)
+    Evas_Object_Pointer_Mode evas_object_pointer_mode_get(Evas_Object *obj)
 
     void evas_object_focus_set(Evas_Object *obj, Evas_Bool focus)
     Evas_Bool evas_object_focus_get(Evas_Object *obj)
