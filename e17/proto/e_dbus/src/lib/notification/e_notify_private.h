@@ -20,10 +20,10 @@ void e_notify_marshal_string_list_as_array(DBusMessageIter *iter, Ecore_List *st
 Ecore_List * e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter, DBusError *err);
 DBusMessage * e_notify_marshal_get_capabilities();
 DBusMessage * e_notify_marshal_get_capabilities_return(DBusMessage *method_call, const char **capabilities);
-E_Notification_Return_Get_Capabilities * e_notify_unmarshal_get_capabilities_return(DBusMessage *msg, DBusError *err);
+void * e_notify_unmarshal_get_capabilities_return(DBusMessage *msg, DBusError *err);
 DBusMessage * e_notify_marshal_get_server_information();
 DBusMessage * e_notify_marshal_get_server_information_return(DBusMessage *method_call, const char *name, const char *vendor, const char *version);
-E_Notification_Return_Get_Server_Information * e_notify_unmarshal_get_server_information_return(DBusMessage *msg, DBusError *err);
+void * e_notify_unmarshal_get_server_information_return(DBusMessage *msg, DBusError *err);
 DBusMessage * e_notify_marshal_close_notification(dbus_uint32_t id);
 dbus_uint32_t e_notify_unmarshal_close_notification(DBusMessage *msg, DBusError *err);
 DBusMessage * e_notify_marshal_notification_closed_signal(dbus_uint32_t id, dbus_uint32_t reason);
@@ -33,9 +33,9 @@ E_Notification_Event_Action_Invoked * e_notify_unmarshal_action_invoked_signal(D
 DBusMessage * e_notify_marshal_notify(E_Notification *n);
 E_Notification * e_notify_unmarshal_notify(DBusMessage *msg, DBusError *err);
 DBusMessage * e_notify_marshal_notify_return(DBusMessage *method_call, dbus_uint32_t notification_id);
-E_Notification_Return_Notify * e_notify_unmarshal_notify_return(DBusMessage *msg, DBusError *err);
-Ecore_List * e_notify_unmarshal_notify_actions(E_Notification *n, DBusMessageIter *iter);
-Ecore_List * e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter);
+void * e_notify_unmarshal_notify_return(DBusMessage *msg, DBusError *err);
+void e_notify_unmarshal_notify_actions(E_Notification *n, DBusMessageIter *iter);
+void e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter);
 void e_notify_marshal_hint_image(DBusMessageIter *iter, E_Notification_Image *img);
 E_Notification_Image * e_notify_unmarshal_hint_image(DBusMessageIter *iter);
 

@@ -1,8 +1,6 @@
 #include <E_DBus.h>
 #include <E_Notify.h>
 
-static dbus_uint32_t msg_num = 0;
-
 void
 cb_sent(void *data, void *ret, DBusError *err)
 {

@@ -3,7 +3,8 @@
 #include "e_notify_private.h"
 #include <string.h>
 
-static int next_id = 0;
+static int e_notification_daemon_bus_init(E_Notification_Daemon *daemon);
+static int e_notification_daemon_object_init(E_Notification_Daemon *daemon);
 
 DBusMessage *
 method_get_capabilities(E_DBus_Object *obj, DBusMessage *message)
@@ -166,7 +167,7 @@ cb_request_name(void *data, DBusMessage *msg, DBusError *err)
   }
 }
 
-int
+static int
 e_notification_daemon_bus_init(E_Notification_Daemon *daemon)
 {
   daemon->conn = e_dbus_bus_get(DBUS_BUS_SESSION);
@@ -174,14 +175,13 @@ e_notification_daemon_bus_init(E_Notification_Daemon *daemon)
 
   // this blocks... make it async, and handle failure, etc
   e_dbus_request_name(daemon->conn, E_NOTIFICATION_BUS_NAME, DBUS_NAME_FLAG_REPLACE_EXISTING, cb_request_name, daemon);
+
+  return 1;
 }
 
-int
+static int
 e_notification_daemon_object_init(E_Notification_Daemon *daemon)
 {
-  E_DBus_Object *obj = NULL;
-  E_DBus_Interface *iface = NULL;
-
   if (!daemon || !daemon->conn) return 0;
   daemon->obj = e_dbus_object_add(daemon->conn, E_NOTIFICATION_PATH, daemon);
   if (!daemon->obj) return 0;

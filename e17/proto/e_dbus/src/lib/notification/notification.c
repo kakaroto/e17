@@ -388,4 +388,5 @@ e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img)
   {
   }
 #endif 
+  return NULL;
 }

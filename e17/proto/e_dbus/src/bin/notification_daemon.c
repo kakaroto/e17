@@ -99,6 +99,10 @@ E_Notification *
 daemon_note_history_find(Daemon_Data *d, int id)
 {
   if (id < d->history_start) return NULL;
+
+  // TODO
+
+  return NULL;
 }
 
 

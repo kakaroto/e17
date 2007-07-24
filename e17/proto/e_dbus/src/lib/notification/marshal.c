@@ -139,12 +139,11 @@ e_notify_marshal_get_capabilities_return(DBusMessage *method_call, const char **
   return msg;
 }
 
-E_Notification_Return_Get_Capabilities *
+void *
 e_notify_unmarshal_get_capabilities_return(DBusMessage *msg, DBusError *err)
 {
-  DBusMessageIter iter, arr;
+  DBusMessageIter iter;
   E_Notification_Return_Get_Capabilities *ret;
-  Ecore_List *capabilities;
 
   if (!dbus_message_has_signature(msg, "as")) return NULL;
 
@@ -173,7 +172,7 @@ e_notify_marshal_get_server_information_return(DBusMessage *method_call, const c
   return msg;
 }
 
-E_Notification_Return_Get_Server_Information *
+void *
 e_notify_unmarshal_get_server_information_return(DBusMessage *msg, DBusError *err)
 {
   E_Notification_Return_Get_Server_Information *info;
@@ -338,7 +337,7 @@ e_notify_unmarshal_notify(DBusMessage *msg, DBusError *err)
   const char *s_val;
   dbus_uint32_t u_val;
   dbus_int32_t i_val;
-  DBusMessageIter iter, arr;
+  DBusMessageIter iter;
   if (!dbus_message_has_signature(msg, "susssasa{sv}i")) return NULL;
 
   n = e_notification_new();
@@ -386,7 +385,7 @@ e_notify_marshal_notify_return(DBusMessage *method_call, dbus_uint32_t notificat
   return msg;
 }
 
-E_Notification_Return_Notify *
+void *
 e_notify_unmarshal_notify_return(DBusMessage *msg, DBusError *err)
 {
   E_Notification_Return_Notify *ret;
@@ -400,7 +399,7 @@ e_notify_unmarshal_notify_return(DBusMessage *msg, DBusError *err)
   return ret;
 }
 
-Ecore_List *
+void
 e_notify_unmarshal_notify_actions(E_Notification *n, DBusMessageIter *iter)
 {
   DBusMessageIter arr;
@@ -416,7 +415,7 @@ e_notify_unmarshal_notify_actions(E_Notification *n, DBusMessageIter *iter)
   }
 }
 
-Ecore_List *
+void
 e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
 {
   DBusMessageIter arr;
@@ -509,8 +508,6 @@ E_Notification_Image *
 e_notify_unmarshal_hint_image(DBusMessageIter *iter)
 {
   DBusMessageIter sub, arr;
-  dbus_int32_t i_val;
-  char b_val;
   char *byte_array;
   int array_len;
   E_Notification_Image *img;
@@ -521,7 +518,6 @@ e_notify_unmarshal_hint_image(DBusMessageIter *iter)
   sig_matches = strcmp(sig, "(iiibiiay)");
   dbus_free(sig);
   if (!sig_matches) return NULL;
-
 
   img = e_notification_image_new();
   if (!img) return NULL;
