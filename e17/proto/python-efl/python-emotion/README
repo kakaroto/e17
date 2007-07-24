@@ -3,7 +3,7 @@
 REQUIREMENTS
 ============
 
- * Emotion >= 0.0.1.005
+ * Emotion >= 0.0.1.007
  * Evas >= 0.9.9.040  (indirect, Emotion dependency)
  * Ecore >= 0.9.9.040 (indirect, Emotion dependency)
  * Python-Evas

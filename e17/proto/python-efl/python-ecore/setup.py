@@ -87,7 +87,7 @@ other parameters.
 """
 
 setup(name = 'python-ecore',
-      version = '0.1.0',
+      version = '0.1.1',
       license = 'BSD',
       author = 'Gustavo Sverzut Barbieri',
       author_email = 'barbieri@gmail.com',
@@ -97,8 +97,8 @@ setup(name = 'python-ecore',
       keywords = 'wrapper binding enlightenment abstraction event ecore',
       classifiers = trove_classifiers,
       packages = find_packages(),
-      install_requires = ['python-evas>=0.1.0'],
-      setup_requires = ['python-evas>=0.1.0'],
+      install_requires = ['python-evas>=0.1.1'],
+      setup_requires = ['python-evas>=0.1.1'],
       ext_modules = [ecoremodule, ecoreevasmodule],
       zip_safe = False,
       )

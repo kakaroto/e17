@@ -31,7 +31,7 @@ emotionmodule = Extension('emotion.c_emotion',
                                    ],
                           depends=['emotion/emotion.c_emotion.pxd',
                                    ],
-                          **pkgconfig('"emotion >= 0.0.1.005"'))
+                          **pkgconfig('"emotion >= 0.0.1.007"'))
 
 
 include_dirs = [os.path.join(python_inc, "python-evas")]
@@ -62,7 +62,7 @@ MPEG2, etc) is avalible using Emotion.
 """
 
 setup(name = 'python-emotion',
-      version = '0.1.0',
+      version = '0.1.1',
       license = 'BSD',
       author = 'Gustavo Sverzut Barbieri',
       author_email = 'barbieri@gmail.com',
@@ -73,8 +73,8 @@ setup(name = 'python-emotion',
       classifiers = trove_classifiers,
       packages = find_packages(),
       include_dirs = include_dirs,
-      install_requires = ['python-evas>=0.1.0'],
-      setup_requires = ['python-evas>=0.1.0'],
+      install_requires = ['python-evas>=0.1.1'],
+      setup_requires = ['python-evas>=0.1.1'],
       ext_modules = [emotionmodule],
       zip_safe = False,
       )
