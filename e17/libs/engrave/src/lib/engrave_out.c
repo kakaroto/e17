@@ -362,7 +362,7 @@ _engrave_output_program(Engrave_Program *program, void *data)
         double duration;
 
         engrave_out_data(out, "action", "%s \"%s\" %.2f",
-              _action_string[action], state ? state : "", value);
+              _action_string[action], state, value);
 
         engrave_program_transition_get(program, &transition, &duration);
         engrave_out_data(out, "transition", "%s %.2f",
