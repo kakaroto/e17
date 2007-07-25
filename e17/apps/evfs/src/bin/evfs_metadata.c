@@ -93,9 +93,9 @@ void evfs_metadata_db_results_init()
 void evfs_metadata_db_results_free()
 {
 	evfs_metadata_db_result* result;
-	ecore_dlist_goto_first(evfs_metdata_db_results);
+	ecore_dlist_first_goto(evfs_metdata_db_results);
 
-	while ( (result = ecore_dlist_remove_first(evfs_metdata_db_results))) {
+	while ( (result = ecore_dlist_first_remove(evfs_metdata_db_results))) {
 		int i;
 		evfs_metadata_db_item* item;
 		
@@ -654,7 +654,7 @@ int evfs_metadata_scan_runner(void* data)
 	evfs_filereference* ref;
 	evfs_filereference* iref;
 
-	if ((ref = ecore_list_remove_first(
+	if ((ref = ecore_list_first_remove(
 		evfs_metadata_directory_scan_queue))) {
 
 		evfs_filereference_sanitise(ref);
@@ -667,8 +667,8 @@ int evfs_metadata_scan_runner(void* data)
 
 			evfs_cleanup_file_command(c);
 
-			ecore_list_goto_first(dir_list);
-			while ( (iref = ecore_list_remove_first(dir_list))) {
+			ecore_list_first_goto(dir_list);
+			while ( (iref = ecore_list_first_remove(dir_list))) {
 				struct stat file_stat;
 				char* pos = strrchr(iref->path, '/');
 
@@ -763,9 +763,9 @@ int evfs_metadata_scan_deleted(void* data)
 		if (handleCount ==0) {
 			deletedPage = 0;
 		} else {
-			if (ecore_list_nodes(delList) > 0) {
+			if (ecore_list_count(delList) > 0) {
 				int id;
-				ecore_list_goto_first(delList);
+				ecore_list_first_goto(delList);
 				while ( (id = (int)ecore_list_next(delList))) {
 					evfs_metadata_db_delete_file(db,id);
 				}
@@ -795,7 +795,7 @@ int evfs_metadata_extract_runner(void* data)
 	int ret;
 	
 	if (!_metadata_fork) {
-		ecore_list_goto_first(evfs_metadata_queue);
+		ecore_list_first_goto(evfs_metadata_queue);
 		if ( (ref = ecore_list_current(evfs_metadata_queue))) {
 			/*printf("..item on queue..\n");*/
 			evfs_metadata_extract_fork(ref);
@@ -808,12 +808,12 @@ int evfs_metadata_extract_runner(void* data)
 			_metadata_fork = 0;
 
 			
-			ecore_list_goto_first(evfs_metadata_queue);
+			ecore_list_first_goto(evfs_metadata_queue);
 			ref = ecore_list_current(evfs_metadata_queue);
 				
 			if (ref) {
 				evfs_cleanup_filereference(ref);
-				ecore_list_remove_first(evfs_metadata_queue);
+				ecore_list_first_remove(evfs_metadata_queue);
 			} else {
 				printf("EVFS: ugh? no file, and we just processed it for meta? : %d\n", getpid());
 			}

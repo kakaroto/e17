@@ -197,7 +197,7 @@ Evas_List *etk_theme_widget_available_themes_get(void)
       files = ecore_file_ls(path[i]);
       if (files)
       {
-         ecore_list_goto_first(files);
+         ecore_list_first_goto(files);
          while ((file = ecore_list_next(files)))
             themes = evas_list_append(themes, ecore_file_strip_ext(file));
          ecore_list_destroy(files);
@@ -320,7 +320,7 @@ Evas_List *etk_theme_icon_available_themes_get(void)
       files = ecore_file_ls(path[i]);
       if (files)
       {
-         ecore_list_goto_first(files);
+         ecore_list_first_goto(files);
          while ((file = ecore_list_next(files)))
             themes = evas_list_append(themes, ecore_file_strip_ext(file));
          ecore_list_destroy(files);

@@ -7,7 +7,7 @@ void entropy_thumbnailer_plugin_print(Ecore_Hash* mime_register) {
 	char* mime_type;
 	
 	Ecore_List* keys = ecore_hash_keys(mime_register);
-	ecore_list_goto_first(keys);
+	ecore_list_first_goto(keys);
 	while ( (mime_type = ecore_list_next(keys)) ) {
 		printf ("We have a handler for '%s', it is: %s\n", mime_type, 
 		((entropy_plugin*)ecore_hash_get(mime_register, mime_type))->filename );
@@ -65,7 +65,7 @@ entropy_plugin* entropy_plugin_gui_get_by_name_toolkit(char* toolkit, char* name
 
 	Ecore_List* plugins = entropy_core_get_core()->plugin_list;
 
-        ecore_list_goto_first(plugins);
+        ecore_list_first_goto(plugins);
         while ( (list_item = ecore_list_next(plugins)) ) {
 		/*printf("Scanning '%s' for first\n", list_item->filename);*/
                 if (list_item->toolkit && list_item->name) {
@@ -83,7 +83,7 @@ entropy_plugin* entropy_plugins_type_get_first(int type, int subtype) {
 
 	Ecore_List* plugins = entropy_core_get_core()->plugin_list;
 
-        ecore_list_goto_first(plugins);
+        ecore_list_first_goto(plugins);
         while ( (list_item = ecore_list_next(plugins)) ) {
 		/*printf("Scanning '%s' for first\n", list_item->filename);*/
                 if (list_item->type == type && (subtype == ENTROPY_PLUGIN_SUB_TYPE_ALL || subtype == list_item->subtype)
@@ -118,7 +118,7 @@ Ecore_List* entropy_plugins_type_get(int type, int subtype) {
 
 	plugin_list = ecore_list_new();
 	
-	ecore_list_goto_first(plugins);
+	ecore_list_first_goto(plugins);
 	while ( (list_item = ecore_list_next(plugins)) ) {
 		/*printf("Scanning plugin: %s\n", list_item->filename);*/
 		if (list_item->type == type && 

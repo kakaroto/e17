@@ -158,7 +158,7 @@ ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o)
 
 	/* loop over all the children and change the orientation of all
  	 * of the grabbers */
-	ecore_dlist_goto_first(EWL_CONTAINER(p)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(p)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(p)->children)))
 	{
 		if (EWL_PANED_GRABBER_IS(child))
@@ -385,7 +385,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	pos_diff = p->last_pos - main_dir;
 	p->last_pos = main_dir;
 
-	if (ecore_dlist_is_empty(c->children))
+	if (ecore_dlist_empty_is(c->children))
 		DRETURN(DLEVEL_STABLE);
 	/* if there are new widgets we have to place them first else
 	 * we need to move the grabber to the new position. this is important
@@ -397,7 +397,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	else 
 	{
 		/* move the grabber to the new position */		
-		ecore_dlist_goto_first(c->children);
+		ecore_dlist_first_goto(c->children);
 		while ((child = ewl_paned_grabber_next(p)))
 		{
 			int pos;
@@ -445,13 +445,13 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		if (give == 0) {
 			give = (available > 0) ? 1 : -1;
 			if (!p->last_grab) {
-				ecore_dlist_goto_first(c->children);
+				ecore_dlist_first_goto(c->children);
 			}
 			else
 				ecore_dlist_goto(c->children, p->last_grab);
 		}
 		else
-			ecore_list_goto_first(c->children);
+			ecore_list_first_goto(c->children);
 
 		while ((child = ecore_list_next(c->children)))
 		{
@@ -508,7 +508,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	/* now that all of the space is filled we can go and layout all of
 	 * the available widgets */
 	cur_pos = main_dir;
-	ecore_dlist_goto_first(c->children);
+	ecore_dlist_first_goto(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
 		Ewl_Widget *grab;
@@ -558,7 +558,7 @@ ewl_paned_grabbers_update(Ewl_Paned *p)
 	p->updating_grabbers = 1;
 
 	c = EWL_CONTAINER(p);
-	ecore_dlist_goto_first(c->children);
+	ecore_dlist_first_goto(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
 		/* internal means grabber */
@@ -1012,7 +1012,7 @@ ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Layout *layout)
 	}
 
 	cur_pos = main_pos;
-	ecore_dlist_goto_first(c->children);
+	ecore_dlist_first_goto(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
 		Ewl_Widget *grab;

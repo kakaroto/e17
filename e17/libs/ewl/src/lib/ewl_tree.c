@@ -456,7 +456,7 @@ ewl_tree_row_remove(Ewl_Tree *tree, Ewl_Row *row)
 	c = EWL_CONTAINER(row);
 
 	if (c->children) {
-		while ((w = ecore_dlist_goto_first(c->children)))
+		while ((w = ecore_dlist_first_goto(c->children)))
 			ewl_container_child_remove(c, w);
 	}
 
@@ -618,7 +618,7 @@ ewl_tree_selected_clear(Ewl_Tree *tree)
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
 
-	while ((w = ecore_list_remove_first(tree->selected)))
+	while ((w = ecore_list_first_remove(tree->selected)))
 		ewl_widget_state_set(w, "tree-deselect", EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -668,9 +668,9 @@ ewl_tree_row_column_get(Ewl_Row *row, int i)
 	children = EWL_CONTAINER(row)->children;
 
 	w = NULL;
-	cell = ecore_dlist_goto_index(children, i);
+	cell = ecore_dlist_index_goto(children, i);
 	if( cell )
-		w = ecore_dlist_goto_first(EWL_CONTAINER(cell)->children);
+		w = ecore_dlist_first_goto(EWL_CONTAINER(cell)->children);
 
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
@@ -993,13 +993,13 @@ ewl_tree_node_collapse(Ewl_Tree_Node *node)
 
 	tmp = ecore_list_new();
 
-	ecore_dlist_goto_first(EWL_CONTAINER(node)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
 	while ((w = ecore_dlist_next(EWL_CONTAINER(node)->children))) {
 		if (w != node->row && w != node->handle)
 			ecore_list_append(tmp, w);
 	}
 
-	while ((w = ecore_list_remove_first(tmp))) {
+	while ((w = ecore_list_first_remove(tmp))) {
 		ewl_widget_hide(w);
 	}
 
@@ -1046,13 +1046,13 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 
 	tmp = ecore_list_new();
 
-	ecore_dlist_goto_first(EWL_CONTAINER(node)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
 	while ((w = ecore_dlist_next(EWL_CONTAINER(node)->children))) {
 		if (w != node->row && w != node->handle)
 			ecore_list_append(tmp, w);
 	}
 
-	while ((w = ecore_list_remove_first(tmp))) {
+	while ((w = ecore_list_first_remove(tmp))) {
 		ewl_widget_show(w);
 	}
 
@@ -1094,7 +1094,7 @@ ewl_tree_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (!c->children)
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_dlist_goto_first(c->children);
+	ecore_dlist_first_goto(c->children);
 	x = CURRENT_X(w);
 	y = CURRENT_Y(w);
 
@@ -1202,7 +1202,7 @@ ewl_tree_cb_node_child_add(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	if (w != node->handle && !node->row)
 		node->row = node->handle;
 
-	if (ecore_dlist_nodes(c->children) > 2 ) {
+	if (ecore_dlist_count(c->children) > 2 ) {
 		if (node->handle && HIDDEN(node->handle))
 			ewl_widget_show(node->handle);
 	}
@@ -1300,7 +1300,7 @@ ewl_tree_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	if (w == node->handle)
 		DRETURN(DLEVEL_STABLE);
 
-	if (ecore_dlist_nodes(c->children) < 3) {
+	if (ecore_dlist_count(c->children) < 3) {
 		if (node->handle && VISIBLE(node->handle))
 			ewl_widget_hide(node->handle);
 	}

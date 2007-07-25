@@ -96,7 +96,7 @@ ewl_window_window_find(void *window)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("window", window, NULL);
 
-	ecore_list_goto_first(ewl_window_list);
+	ecore_list_first_goto(ewl_window_list);
 	while ((retwin = ecore_list_next(ewl_window_list)))
 		if (retwin->window == window)
 			DRETURN_PTR(retwin, DLEVEL_STABLE);

@@ -138,7 +138,7 @@ ewl_filelist_tree_init(Ewl_Filelist_Tree *fl)
 	data = NEW(Ewl_Filelist_Tree_Data, 1);
 	data->list = fl;
 	data->files = ecore_list_new();
-	ecore_list_set_free_cb(data->files, ECORE_FREE_CB(free));
+	ecore_list_free_cb_set(data->files, ECORE_FREE_CB(free));
 
 	/* Setup the tree model */
 	model = ewl_model_new();
@@ -224,7 +224,7 @@ ewl_filelist_tree_filename_get(Ewl_Filelist *fl, void *item)
 
 	/* XXX Don't think this is right */
 
-	DRETURN_PTR(ecore_list_goto_index(data->files, selected->row), DLEVEL_STABLE);
+	DRETURN_PTR(ecore_list_index_goto(data->files, selected->row), DLEVEL_STABLE);
 }
 
 /**
@@ -297,7 +297,7 @@ ewl_filelist_tree_data_count(void *data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, 0);
 
-	DRETURN_INT(ecore_list_nodes(td->files), DLEVEL_STABLE);
+	DRETURN_INT(ecore_list_count(td->files), DLEVEL_STABLE);
 }
 
 /**
@@ -313,7 +313,7 @@ ewl_filelist_tree_data_fetch(void *data, unsigned int row, unsigned int col)
 	DCHECK_PARAM_PTR_RET("data", data, 0);
 
 	td = data;
-	tmp = ecore_list_goto_index(td->files, row);
+	tmp = ecore_list_index_goto(td->files, row);
 	if (col == 0)
 	{
 		ret = tmp;
@@ -347,11 +347,11 @@ ewl_filelist_tree_data_sort(void *data, unsigned int column __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	/* Similar to ecore_file_ls, sort using a temporary heap. */
-	count = ecore_list_nodes(td->files);
+	count = ecore_list_count(td->files);
 	sorttmp = ecore_sheap_new(ECORE_COMPARE_CB(strcmp), count);
 
 	/* Remove from list and push into sorted heap */
-	while ((file = ecore_list_remove_first(td->files)))
+	while ((file = ecore_list_first_remove(td->files)))
 		ecore_sheap_insert(sorttmp, file);
 
 	/* Handle sort order by switching between append and prepend */
@@ -383,7 +383,7 @@ ewl_filelist_tree_data_expandable_get(void *data, unsigned int row)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, 0);
 
-	file = ecore_list_goto_index(td->files, row);
+	file = ecore_list_index_goto(td->files, row);
 	if (!strcmp(file, ".."))
 		DRETURN_INT(0, DLEVEL_STABLE);
 
@@ -408,7 +408,7 @@ ewl_filelist_tree_data_expansion_data_fetch(void *data, unsigned int parent)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, NULL);
 
-	file = ecore_list_goto_index(td->files, parent);
+	file = ecore_list_index_goto(td->files, parent);
 	path = ewl_filelist_expand_path(EWL_FILELIST(td->list), file);
 
 //	subdir = ecore_file_ls(path);

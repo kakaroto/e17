@@ -94,7 +94,7 @@ evfs_auth_cache_get(Ecore_List * cache, char *path)
 
    printf("Looking for match for '%s' in auth cache\n", path);
 
-   ecore_list_goto_first(cache);
+   ecore_list_first_goto(cache);
    while ((obj = ecore_list_next(cache)))
      {
         if (!strncmp(obj->path, path, strlen(path)))

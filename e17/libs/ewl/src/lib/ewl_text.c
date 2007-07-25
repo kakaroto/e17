@@ -3563,7 +3563,7 @@ ewl_text_triggers_remove(Ewl_Text *t)
 	if (!t->triggers) 
 		DRETURN(DLEVEL_STABLE);
 
-	while ((trig = ecore_list_remove_first(t->triggers))) 
+	while ((trig = ecore_list_first_remove(t->triggers))) 
 	{
 		trig->text_parent = NULL;
 		ewl_widget_destroy(EWL_WIDGET(trig));
@@ -3588,7 +3588,7 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int char_pos,
 	if (!t->triggers)
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_list_goto_first(t->triggers);
+	ecore_list_first_goto(t->triggers);
 	while ((cur = ecore_list_next(t->triggers)))
 	{
 		/* check if the change is after the trigger */
@@ -3624,9 +3624,9 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int char_pos,
 					/* remove the node before the
 					 * current one as _next will put us
 					 * on the next node */
-					ecore_list_goto_index(t->triggers, index);
+					ecore_list_index_goto(t->triggers, index);
 					ecore_list_remove(t->triggers);
-					ecore_list_goto_index(t->triggers, index);
+					ecore_list_index_goto(t->triggers, index);
 				}
 				continue;
 			}
@@ -3682,7 +3682,7 @@ ewl_text_triggers_realize(Ewl_Text *t)
 	{
 		Ewl_Text_Trigger *cur;
 
-		ecore_list_goto_first(t->triggers);
+		ecore_list_first_goto(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
 			ewl_text_trigger_position(t, cur);
 	}
@@ -3710,7 +3710,7 @@ ewl_text_triggers_unrealize(Ewl_Text *t)
 
 	if (t->triggers)
 	{
-		ecore_list_goto_first(t->triggers);
+		ecore_list_first_goto(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
 			ewl_widget_unrealize(EWL_WIDGET(cur));
 	}
@@ -3737,7 +3737,7 @@ ewl_text_triggers_show(Ewl_Text *t)
 
 	if (t->triggers)
 	{
-		ecore_list_goto_first(t->triggers);
+		ecore_list_first_goto(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
 			ewl_widget_show(EWL_WIDGET(cur));
 	}
@@ -3765,7 +3765,7 @@ ewl_text_triggers_hide(Ewl_Text *t)
 	/* hide the triggers */
 	if (t->triggers)
 	{
-		ecore_list_goto_first(t->triggers);
+		ecore_list_first_goto(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
 			ewl_widget_hide(EWL_WIDGET(cur));
 	}
@@ -3794,7 +3794,7 @@ ewl_text_triggers_configure(Ewl_Text *t)
 
 	if (t->triggers)
 	{
-		ecore_list_goto_first(t->triggers);
+		ecore_list_first_goto(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
 			ewl_widget_configure(EWL_WIDGET(cur));
 	}
@@ -3831,7 +3831,7 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	 * selection) */
 	if (trigger->type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
 	{
-		ecore_list_goto_first(t->triggers);
+		ecore_list_first_goto(t->triggers);
 		while ((cur = ecore_list_next(t->triggers)))
 		{
 			if (trigger->char_pos < cur->char_pos)
@@ -3861,7 +3861,7 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 		 * are on because the _next call in the while will have
 		 * advanced us to the next node, but we want to insert
 	 	 * at the one before that */
-		ecore_list_goto_index(t->triggers, ecore_list_index(t->triggers) - 1);
+		ecore_list_index_goto(t->triggers, ecore_list_index(t->triggers) - 1);
 		ecore_list_insert(t->triggers, trigger);
 	}
 	else 

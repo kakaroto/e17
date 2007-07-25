@@ -195,7 +195,7 @@ static void
 _ecore_dbus_message_unmarshal_array_end(Ecore_DBus_Message *msg,
 					Ecore_DBus_Message_Field_Array *arr __UNUSED__)
 {
-   ecore_list_remove_first(msg->recurse);
+   ecore_list_first_remove(msg->recurse);
 }
 
 static void *
@@ -226,7 +226,7 @@ static void
 _ecore_dbus_message_unmarshal_struct_end(Ecore_DBus_Message *msg,
 					 Ecore_DBus_Message_Field_Struct *s __UNUSED__)
 {
-   ecore_list_remove_first(msg->recurse);
+   ecore_list_first_remove(msg->recurse);
 }
 
 static void *
@@ -300,7 +300,7 @@ _ecore_dbus_message_unmarshal_variant(Ecore_DBus_Message *msg, int *size)
 	printf("[ecore_dbus] unknown/unhandled data type %c\n", type);
 	break;
      }
-   ecore_list_remove_first(msg->recurse);
+   ecore_list_first_remove(msg->recurse);
    return f;
 }
 
@@ -400,7 +400,7 @@ _ecore_dbus_message_unmarshal(Ecore_DBus_Server *svr, unsigned char *message, in
 	_ecore_dbus_message_unmarshal_struct_end(msg, s);
      }
    _ecore_dbus_message_unmarshal_array_end(msg, arr);
-   msg->header = ecore_list_remove_first(msg->fields);
+   msg->header = ecore_list_first_remove(msg->fields);
    sig = ecore_dbus_message_header_field_get(msg, ECORE_DBUS_HEADER_FIELD_SIGNATURE);
    old_length = msg->length;
    _ecore_dbus_message_padding_skip(msg, 8);

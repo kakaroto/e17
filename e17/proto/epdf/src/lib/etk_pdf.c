@@ -283,7 +283,7 @@ etk_pdf_search_next (Etk_Pdf *pdf)
                                              pdf->search.text,
                                              pdf->search.is_case_sensitive);
      if (pdf->search.list)
-        ecore_list_goto_first (pdf->search.list);
+        ecore_list_first_goto (pdf->search.list);
      epdf_page_delete (page);
    }
 

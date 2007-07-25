@@ -89,7 +89,7 @@ evfs_dir_list(evfs_client * client, evfs_filereference* file,
 	   char* key;
 	   char path[MAX_GROUP_LENGTH];
 
-	   ecore_list_goto_first(keys);
+	   ecore_list_first_goto(keys);
 	   while ((key = ecore_list_next(keys))) {
 		   snprintf(path,sizeof(path),"/%s",key); 
 

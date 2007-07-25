@@ -473,7 +473,7 @@ ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *w,
 		/*
 		 * and now find the current position
 		 */
-		ecore_dlist_goto_first(EWL_CONTAINER(g)->children);
+		ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
 		while ((c = ecore_dlist_next(EWL_CONTAINER(g)->children))
 				&& c != w) {
 			if (!ewl_widget_data_get(c, g))
@@ -921,7 +921,7 @@ ewl_grid_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	else
 		go_next = ewl_grid_vmap_position_next;
 
-	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
 		c = (Ewl_Grid_Child *)ewl_widget_data_get(child, (void *) g);
 		if (c) {
@@ -1013,7 +1013,7 @@ ewl_grid_map_recalc(Ewl_Grid *g)
 	IF_FREE(g->map);
 	g->map = NEW(char, g->cols * g->rows);
 	
-	ecore_dlist_goto_first(EWL_CONTAINER(g)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
 		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *)g);
 		if (!c) continue;
@@ -1064,7 +1064,7 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 	/*
 	 * First collect the data of the non-fixed postion widgets
 	 */
-	ecore_dlist_goto_first(EWL_CONTAINER(g)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
 		int pref_w, pref_h;
 
@@ -1087,7 +1087,7 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 	/*
 	 *  and now collect the data of the fixed postion widgets
 	 */
-	ecore_dlist_goto_first(EWL_CONTAINER(g)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
 		int pref_w = 0, pref_h = 0;
 		int i;

@@ -66,7 +66,7 @@ static void iterate(char *point2)
 {
 	char *point1;
 	
-	ecore_dlist_goto_first(em->images);
+	ecore_dlist_first_goto(em->images);
 	while(ecore_dlist_current(em->images))
 	{
 		point1 = ecore_dlist_current(em->images);

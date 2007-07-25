@@ -169,7 +169,7 @@ evfs_plugin_init()
    posix_plugin = evfs_get_plugin_for_uri(evfs_server_get(), "file");
 
    trash_dir_mapping = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-   ecore_hash_set_free_key(trash_dir_mapping, free);
+   ecore_hash_free_key_cb_set(trash_dir_mapping, free);
 
    next_trash_file = NULL;
    

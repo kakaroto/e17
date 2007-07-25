@@ -198,7 +198,7 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance,
 
 
 	filesystems = ecore_hash_keys(entropy_evfs_filesystems);
-	while ( (key = ecore_list_remove_first(filesystems)) ) {
+	while ( (key = ecore_list_first_remove(filesystems)) ) {
 		Etk_Widget* button;
 		system = ecore_hash_get(entropy_evfs_filesystems, key);
 

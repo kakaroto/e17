@@ -262,7 +262,7 @@ ecore_dbus_message_print(Ecore_DBus_Message *msg)
    _ecore_dbus_message_header_field_print(msg->header);
    /* body fields */
    printf("[ecore_dbus] body fields:\n");
-   ecore_list_goto_first(msg->fields);
+   ecore_list_first_goto(msg->fields);
    while ((f = ecore_list_next(msg->fields)))
      _ecore_dbus_message_field_print(f);
 }
@@ -273,7 +273,7 @@ ecore_dbus_message_header_field_get(Ecore_DBus_Message *m,
 {
    Ecore_DBus_Message_Field_Container *s;
 
-   ecore_list_goto_first(ECORE_DBUS_MESSAGE_FIELD_CONTAINER(m->header)->values);
+   ecore_list_first_goto(ECORE_DBUS_MESSAGE_FIELD_CONTAINER(m->header)->values);
    while ((s = ecore_list_next(ECORE_DBUS_MESSAGE_FIELD_CONTAINER(m->header)->values)))
      {
 	Ecore_DBus_Message_Field_Byte *b;
@@ -305,7 +305,7 @@ EAPI void *
 ecore_dbus_message_body_field_get(Ecore_DBus_Message *m, unsigned int pos)
 {
    Ecore_DBus_Message_Field *f;
-   f = ecore_list_goto_index(m->fields, pos);
+   f = ecore_list_index_goto(m->fields, pos);
 
    if (f)
      return _ecore_dbus_message_field_value_get(f);
@@ -336,7 +336,7 @@ _ecore_dbus_message_new(Ecore_DBus_Server *svr)
    msg->buffer = calloc(msg->size, sizeof(unsigned char));
 
    msg->all = ecore_list_new();
-   ecore_list_set_free_cb(msg->all, _ecore_dbus_message_field_free);
+   ecore_list_free_cb_set(msg->all, _ecore_dbus_message_field_free);
    msg->fields = ecore_list_new();
    msg->recurse = ecore_list_new();
 
@@ -420,7 +420,7 @@ _ecore_dbus_message_field_new(Ecore_DBus_Message *msg, Ecore_DBus_Data_Type type
    if (!f) return NULL;
 
    f->type = type;
-   if (!ecore_list_is_empty(msg->recurse))
+   if (!ecore_list_empty_is(msg->recurse))
      {
 	Ecore_DBus_Message_Field_Container *c;
 
@@ -529,7 +529,7 @@ _ecore_dbus_message_header(Ecore_DBus_Message *msg, int type, int flags,
    _ecore_dbus_message_marshal_array_end(msg, arr);
 
    /* move the header fields to the header */
-   msg->header = ecore_list_remove_last(msg->fields);
+   msg->header = ecore_list_last_remove(msg->fields);
 
    /* pad to an 8 bit boundary */
    _ecore_dbus_message_padding(msg, 8);
@@ -630,7 +630,7 @@ _ecore_dbus_message_field_print(Ecore_DBus_Message_Field *f)
 		 ("[ecore_dbus] field ARRAY: value offset = %d length = %u\n",
 		  f->offset, (unsigned int)*(f->buffer));
 	      printf("[ecore_dbus] * ARRAY elements begin *\n");
-	      ecore_list_goto_first(c->values);
+	      ecore_list_first_goto(c->values);
 	      while ((s = ecore_list_next(c->values)))
 		_ecore_dbus_message_field_print(s);
 	      printf("[ecore_dbus] * ARRAY elements end *\n");
@@ -646,7 +646,7 @@ _ecore_dbus_message_field_print(Ecore_DBus_Message_Field *f)
 		 ("[ecore_dbus] field STRUCT: value offset = %d\n",
 		  f->offset);
 	      printf("[ecore_dbus] * STRUCT elements begin *\n");
-	      ecore_list_goto_first(c->values);
+	      ecore_list_first_goto(c->values);
 	      while ((s = ecore_list_next(c->values)))
 		_ecore_dbus_message_field_print(s);
 	      printf("[ecore_dbus] * STRUCT elements end *\n");
@@ -696,7 +696,7 @@ _ecore_dbus_message_header_field_print(Ecore_DBus_Message_Field_Container *arr)
 	"REPLY_SERIAL", "DESTINATION", "SENDER", "SIGNATURE"
    };
 
-   ecore_list_goto_first(arr->values);
+   ecore_list_first_goto(arr->values);
    while ((s = ecore_list_next(arr->values)))
      {
 	Ecore_DBus_Message_Field_Byte *b;

@@ -130,12 +130,12 @@ evfs_client_disconnect(evfs_client * client)
    mon_list = ecore_hash_keys(posix_monitor_hash);
    if (mon_list)
      {
-        while ((key = ecore_list_remove_first(mon_list)))
+        while ((key = ecore_list_first_remove(mon_list)))
           {
              /*printf("Looking for clients for '%s'\n", key);*/
 
              indiv_list = ecore_hash_get(posix_monitor_hash, key);
-             ecore_list_goto_first(indiv_list);
+             ecore_list_first_goto(indiv_list);
 
              while ((mon = ecore_list_next(indiv_list)))
                {
@@ -152,7 +152,7 @@ evfs_client_disconnect(evfs_client * client)
         /*printf("No directories/files monitored by any client\n");*/
      }
 
-   while ((key = ecore_list_remove_first(watched_keys)))
+   while ((key = ecore_list_first_remove(watched_keys)))
      {
         evfs_posix_monitor_remove(client, key);
      }
@@ -201,7 +201,7 @@ evfs_file_monitor_fam_handler(void *data, Ecore_File_Monitor * em,
      {
         evfs_file_monitor *mon;
 
-        ecore_list_goto_first(mon_list);
+        ecore_list_first_goto(mon_list);
         while ((mon = ecore_list_next(mon_list)))
           {
              printf("  Notifying client at id %ld of %s\n", mon->client->id,
@@ -220,7 +220,7 @@ client_already_monitoring(evfs_client * client, Ecore_List * mon_list)
 {
    evfs_file_monitor *mon;
 
-   ecore_list_goto_first(mon_list);
+   ecore_list_first_goto(mon_list);
 
    while ((mon = ecore_list_next(mon_list)))
      {
@@ -272,7 +272,7 @@ posix_monitor_add(evfs_client * client, evfs_command * command)
         if (!client_already_monitoring(client, mon_list))
           {
              /*We assume there is something already in the list.  This is probably bad a bad assumption */
-             ecore_list_goto_first(mon_list);
+             ecore_list_first_goto(mon_list);
              old = ecore_list_current(mon_list);
 
              /*Make sure we have the ecore ref, so the last monitor can nuke it */
@@ -322,7 +322,7 @@ evfs_posix_monitor_remove(evfs_client * client, char *path)
         evfs_file_monitor *mon = NULL;
         evfs_file_monitor *check_last = NULL;
 
-        ecore_list_goto_first(mon_list);
+        ecore_list_first_goto(mon_list);
         while ((mon = ecore_list_current(mon_list)))
           {
              if (mon->client == client)
@@ -337,7 +337,7 @@ evfs_posix_monitor_remove(evfs_client * client, char *path)
         goto out;
 
       final:
-        ecore_list_goto_first(mon_list);
+        ecore_list_first_goto(mon_list);
         check_last = ecore_list_current(mon_list);
         if (!check_last)
           {

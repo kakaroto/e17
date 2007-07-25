@@ -202,7 +202,7 @@ e_notification_action_list_new()
 {
   Ecore_List *alist;
   alist = ecore_list_new();
-  ecore_list_set_free_cb(alist, (Ecore_Free_Cb)e_notification_action_free);
+  ecore_list_free_cb_set(alist, (Ecore_Free_Cb)e_notification_action_free);
   return alist;
 }
 

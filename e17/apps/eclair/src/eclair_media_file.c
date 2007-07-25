@@ -54,7 +54,7 @@ void eclair_media_file_update(Eclair *eclair, Eclair_Media_File *media_file)
          }
          else if (media_file->path && eclair_utils_uri_is_mrl(media_file->path))
             edje_object_part_text_set(container_object->text, "playlist_entry_name", media_file->path);
-         else if (media_file->path && (filename = ecore_file_get_file(media_file->path)))
+         else if (media_file->path && (filename = ecore_file_file_get(media_file->path)))
             edje_object_part_text_set(container_object->text, "playlist_entry_name", filename);
          else
             edje_object_part_text_set(container_object->text, "playlist_entry_name", "Media");

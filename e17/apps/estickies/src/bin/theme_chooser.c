@@ -75,9 +75,9 @@ _e_theme_chooser_show(E_Sticky *s)
    
    /* scan for themes and add them to the list */
    themes = ecore_file_ls(PACKAGE_DATA_DIR"/themes");
-   if(!themes || ecore_list_is_empty(themes))
+   if(!themes || ecore_list_empty_is(themes))
      return;
-   ecore_list_goto_first(themes);
+   ecore_list_first_goto(themes);
    while((theme = ecore_list_next(themes)))
      {
 	char *theme_no_ext;
@@ -219,13 +219,13 @@ _e_theme_apply_now(E_Sticky *s)
 			   &icol_string, NULL, NULL, NULL);   
    
    if(_e_theme_apply == STICKY_ONLY)
-     _e_sticky_theme_apply(s, ecore_file_get_file(icol_string));
+     _e_sticky_theme_apply(s, ecore_file_file_get(icol_string));
    else if(_e_theme_apply == STICKIES_ALL)
-     _e_sticky_theme_apply_all(ecore_file_get_file(icol_string));
+     _e_sticky_theme_apply_all(ecore_file_file_get(icol_string));
 
    if(_e_theme_default)
      {
 	E_FREE(ss->theme);
-	ss->theme = strdup(ecore_file_get_file(icol_string));	
+	ss->theme = strdup(ecore_file_file_get(icol_string));	
      }   
 }

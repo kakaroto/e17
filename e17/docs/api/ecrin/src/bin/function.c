@@ -51,7 +51,7 @@ ecrin_function_display (Ecrin_Function *function)
   printf ("%s", str);
   memset (space, ' ', 4096);
   space[strlen (str)] = '\0';
-  ecore_list_goto_first (function->params);
+  ecore_list_first_goto (function->params);
   while ((param = ecore_list_next (function->params)))
     {
       if (ecore_list_index (function->params) != 1)
@@ -59,7 +59,7 @@ ecrin_function_display (Ecrin_Function *function)
       printf ("%s", param->type);
       if (param->name)
         printf (" %s", param->name);
-      if (ecore_list_index (function->params) != ecore_list_nodes (function->params))
+      if (ecore_list_index (function->params) != ecore_list_count (function->params))
 	printf (",\n");
       else
         printf (")\n");
@@ -132,7 +132,7 @@ ecrin_function_free (Ecrin_Function *function)
     free (function->return_type);
 
   /* free the list */
-  ecore_list_goto_first (function->params);
+  ecore_list_first_goto (function->params);
   while ((param = ecore_list_next (function->params)))
     {
       ecrin_function_param_free (param);

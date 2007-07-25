@@ -76,7 +76,7 @@ static void update_view(Ewl_Widget *w, void *event, void *data)
 	{
 		populate_directories(NULL, NULL, NULL);
 	}
-	ecore_dlist_goto_first(em->images);
+	ecore_dlist_first_goto(em->images);
 
 	return;
 }
@@ -269,7 +269,7 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
 		album = ewl_widget_name_get(w);
 		em->current_album = strdup(album);
 	}
-	if (!ecore_list_is_empty(em->albums))
+	if (!ecore_list_empty_is(em->albums))
 	{
 		ecore_list_destroy(em->albums);
 	}
@@ -278,7 +278,7 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
 	em->albums = ephoto_db_list_albums(em->db);
 	ewl_mvc_data_set(EWL_MVC(em->atree), em->albums);
 
-        if (!ecore_dlist_is_empty(em->images))
+        if (!ecore_dlist_empty_is(em->images))
         {
                 ecore_dlist_destroy(em->images);
         }
@@ -286,7 +286,7 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
 	em->images = ecore_dlist_new();
 	em->images = ephoto_db_list_images(em->db, em->current_album);
 
-	ecore_dlist_goto_first(em->images);
+	ecore_dlist_first_goto(em->images);
 	
 	ewl_container_reset(EWL_CONTAINER(em->fbox));
         while (ecore_dlist_current(em->images))
@@ -307,7 +307,7 @@ void populate_albums(Ewl_Widget *w, void *event, void *data)
 	ewl_widget_configure(em->fbox_vbox);
 	
 	ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
-	ecore_dlist_goto_first(em->images);
+	ecore_dlist_first_goto(em->images);
 
 	if (ecore_dlist_current(em->images))
         {
@@ -333,7 +333,7 @@ void populate_directories(Ewl_Widget *w, void *event, void *data)
 		directory = ewl_widget_name_get(w);
 		em->current_directory = strdup(directory);
 	}
-	if (!ecore_list_is_empty(em->directories))
+	if (!ecore_list_empty_is(em->directories))
 	{
 		ecore_list_destroy(em->directories);
 	}
@@ -341,10 +341,10 @@ void populate_directories(Ewl_Widget *w, void *event, void *data)
 	em->directories = ecore_list_new();
 	em->directories = get_directories(em->current_directory);
 
-	ecore_dlist_goto_first(em->directories);
+	ecore_dlist_first_goto(em->directories);
         ewl_mvc_data_set(EWL_MVC(em->dtree), em->directories);
 
-      	if (!ecore_list_is_empty(em->images))
+      	if (!ecore_list_empty_is(em->images))
        	{
                	ecore_dlist_destroy(em->images);
        	}
@@ -352,7 +352,7 @@ void populate_directories(Ewl_Widget *w, void *event, void *data)
         em->images = ecore_dlist_new();
 	em->images = get_images(em->current_directory);
 	
-	ecore_dlist_goto_first(em->images);
+	ecore_dlist_first_goto(em->images);
 		
 	ewl_container_reset(EWL_CONTAINER(em->fbox));
 	while (ecore_dlist_current(em->images))
@@ -373,7 +373,7 @@ void populate_directories(Ewl_Widget *w, void *event, void *data)
 	ewl_widget_configure(em->fbox_vbox);
 
 	ewl_mvc_data_set(EWL_MVC(em->ltree), em->images);
-	ecore_dlist_goto_first(em->images);	
+	ecore_dlist_first_goto(em->images);	
 
 	if (ecore_dlist_current(em->images)) 
 	{
@@ -523,7 +523,7 @@ static void *album_data_fetch(void *data, unsigned int row, unsigned int column)
 	const char *album;
 	void *val = NULL;
 
-	album = ecore_list_goto_index(em->albums, row);
+	album = ecore_list_index_goto(em->albums, row);
 	if (album)
 	{
 		val = (void *)album;
@@ -538,7 +538,7 @@ static void *directory_data_fetch(void *data, unsigned int row, unsigned int col
         const char *directory;
         void *val = NULL;
 
-        directory = ecore_list_goto_index(em->directories, row);
+        directory = ecore_list_index_goto(em->directories, row);
         if (directory)
         {
                 val = (void *)directory;
@@ -552,7 +552,7 @@ static unsigned int album_data_count(void *data)
 {
 	int val;
 
-	val = ecore_list_nodes(em->albums);
+	val = ecore_list_count(em->albums);
 
 	return val;
 }
@@ -562,7 +562,7 @@ static unsigned int directory_data_count(void *data)
 {
         int val;
 
-        val = ecore_list_nodes(em->directories);
+        val = ecore_list_count(em->directories);
 
         return val;
 }

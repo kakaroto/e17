@@ -1139,7 +1139,7 @@ evfs_dir_list(evfs_client * client, evfs_filereference* iref,
 	printf("Directory list finished!\n");
 
 	*directory_list = ecore_list_new();
-	while ( (file = ecore_list_remove_first(rhandle->file_list))) {
+	while ( (file = ecore_list_first_remove(rhandle->file_list))) {
 		evfs_filereference* ref = NEW(evfs_filereference);
 		ref->path = malloc(strlen(host) + 1 + strlen(schar) + strlen(file->filename) + 2);
 		snprintf(ref->path, strlen(host) + 1 + strlen(schar) + strlen(file->filename) + 2, "/%s%s/%s", host, schar, file->filename);

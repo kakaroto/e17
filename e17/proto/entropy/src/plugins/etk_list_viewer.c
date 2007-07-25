@@ -369,7 +369,7 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 
   list = ecore_hash_keys (gui_hash);
 
-  ecore_list_goto_first (list);
+  ecore_list_first_goto (list);
   while ((obj = ecore_list_next (list))) {
 
 
@@ -389,8 +389,8 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
   ecore_list_destroy (list);
 
 
-  ecore_list_goto_first(view->files);
-  while ((row = ecore_list_remove_first(view->files))) {
+  ecore_list_first_goto(view->files);
+  while ((row = ecore_list_first_remove(view->files))) {
 	  ecore_hash_remove(etk_list_viewer_row_hash, row);
   }
 
@@ -629,7 +629,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	      printf("Clearing tree..\n");
 	      etk_tree_clear(ETK_TREE(viewer->tree));
 
-		ecore_list_goto_first (el);
+		ecore_list_first_goto (el);
 		while ((file = ecore_list_next (el))) {
 
 		  /*We need the file's mime type, 
@@ -638,7 +638,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		      list_viewer_add_row (comp, file);
 		}
 
-		while ( (ref = ecore_list_remove_first(remove_ref)))  {
+		while ( (ref = ecore_list_first_remove(remove_ref)))  {
 			entropy_core_file_cache_remove_reference (ref);
 		}
 		ecore_list_destroy(remove_ref);
@@ -761,7 +761,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	entropy_core_selection_type_set(ENTROPY_SELECTION_COPY);
 	selected = entropy_etk_list_viewer_selected_get(viewer);
 
-	ecore_list_goto_first(selected);
+	ecore_list_first_goto(selected);
 	while ( (file = ecore_list_next(selected))) {
 		entropy_core_selected_file_add(file);
 	}
@@ -779,7 +779,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	entropy_core_selection_type_set(ENTROPY_SELECTION_CUT);
 	selected = entropy_etk_list_viewer_selected_get(viewer);
 
-	ecore_list_goto_first(selected);
+	ecore_list_first_goto(selected);
 	while ( (file = ecore_list_next(selected))) {
 		entropy_core_selected_file_add(file);
 	}

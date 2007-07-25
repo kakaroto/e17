@@ -63,7 +63,7 @@ ecore_dbus_event_server_add(void *udata, int ev_type, void *ev)
 				ecore_dbus_method_error_cb, NULL);
 
    ids = ecore_list_new();
-   ecore_list_set_free_cb(ids, free);
+   ecore_list_free_cb_set(ids, free);
    for(i = 0; i < 5; i++)
      {
  	unsigned int *id;
@@ -119,7 +119,7 @@ ecore_dbus_method_list_names_cb(void *data,
    if (names)
      {
 	char *name;
-	ecore_list_goto_first(names);
+	ecore_list_first_goto(names);
 	while ((name = ecore_list_next(names)))
 	  {
 	     printf("Name: %s\n", name);

@@ -97,7 +97,7 @@ ewl_list_file_paste_cb (Ewl_Widget * w, void *ev_data, void *user_data)
   //printf("Paste the following files:\n");
 
   selected = entropy_core_selected_files_get (instance->core);
-  ecore_list_goto_first (selected);
+  ecore_list_first_goto (selected);
 
   while ((file = ecore_list_next (selected))) {
     //printf("File '%s'\n", file->filename);
@@ -126,7 +126,7 @@ ewl_list_file_copy_cb (Ewl_Widget * w, void *ev_data, void *user_data)
 
   icon_list = ewl_tree_selected_get( EWL_TREE(((entropy_icon_viewer*)instance->data)->list) );
 
-  ecore_list_goto_first (icon_list);
+  ecore_list_first_goto (icon_list);
   while ((list_item = ecore_list_next (icon_list))) {
     file =
       ecore_hash_get (((entropy_icon_viewer *) instance->data)->icon_hash,
@@ -265,7 +265,7 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 
   list = ecore_hash_keys (gui_hash);
 
-  ecore_list_goto_first (list);
+  ecore_list_first_goto (list);
   while ((obj = ecore_list_next (list))) {
 
 
@@ -317,7 +317,7 @@ ewl_icon_local_viewer_delete_cb (Ewl_Widget * w, void *ev_data,
 
     printf ("Selected delete\n");
 
-    ecore_list_goto_first (file_list);
+    ecore_list_first_goto (file_list);
 
     /*As mentioned below, this is awkward,
      * but we avoid a sep. data structure here,
@@ -404,7 +404,7 @@ ewl_icon_local_viewer_delete_selected (entropy_gui_component_instance *
   //////////////////////
   icon_list = ewl_tree_selected_get(EWL_TREE(viewer->list) );
 
-  ecore_list_goto_first (icon_list);
+  ecore_list_first_goto (icon_list);
   while ((list_item = ecore_list_next (icon_list))) {
     local_file = ecore_hash_get (viewer->icon_hash, list_item);
     if (local_file) {
@@ -705,7 +705,7 @@ idle_add_icons (void *data)
   /*data = file list */
 
 
-  while (i < ICON_ADD_COUNT && (file = ecore_list_remove_first (el))) {
+  while (i < ICON_ADD_COUNT && (file = ecore_list_first_remove (el))) {
     //printf("Adding '%s'\n", file->filename);
     ewl_icon_local_viewer_add_icon (proc->requestor, file, DONT_DO_MIME);
 
@@ -720,7 +720,7 @@ idle_add_icons (void *data)
     term = 1;
 
   events = ecore_list_new ();
-  while ((file = ecore_list_remove_first (added_list))) {
+  while ((file = ecore_list_first_remove (added_list))) {
     mime =
       (char *) entropy_mime_file_identify (file);
 
@@ -803,7 +803,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *ret,
 
 
 
-      ecore_list_goto_first (ret);
+      ecore_list_first_goto (ret);
       while ((event_file = ecore_list_next (ret))) {
 	//printf("Populating with '%s'\n", event_file->filename);
 	

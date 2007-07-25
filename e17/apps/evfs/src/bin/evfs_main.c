@@ -101,8 +101,8 @@ ipc_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 
    /*Notify the plugins that this client has disconnected */
    keys = ecore_hash_keys(server->plugin_uri_hash);
-   ecore_list_goto_first(keys);
-   while ((key = ecore_list_remove_first(keys)))
+   ecore_list_first_goto(keys);
+   while ((key = ecore_list_first_remove(keys)))
      {
         plugin = ecore_hash_get(server->plugin_uri_hash, key);
         (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_client_disconnect) (client);
@@ -329,7 +329,7 @@ evfs_load_plugin_meta(char *filename)
 			  
 			  types = (*evfs_plugin_meta_types_get)();
 			  /*Register..*/
-			 while ( (type = ecore_list_remove_first(types))) {
+			 while ( (type = ecore_list_first_remove(types))) {
 				 ecore_hash_set(evfs_server_get()->plugin_meta_hash, type, plugin);
 				 printf("  Registered meta plugin for '%s'...\n", type);
 			 }
@@ -500,7 +500,7 @@ incoming_command_cb(__UNUSED__ void *data)
    int clean =0;
 
    evfs_command_client *com_cli =
-      ecore_list_remove_first(server->incoming_command_list);
+      ecore_list_first_remove(server->incoming_command_list);
 
    if (com_cli)
      {

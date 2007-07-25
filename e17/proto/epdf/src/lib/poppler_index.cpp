@@ -47,7 +47,7 @@ epdf_index_item_delete (Epdf_Index_Item *item)
   if (item->children) {
     Epdf_Index_Item *i;
 
-    ecore_list_goto_first (item->children);
+    ecore_list_first_goto (item->children);
     while ((i = (Epdf_Index_Item *)ecore_list_next (item->children))) {
       epdf_index_item_delete (i);
     }
@@ -210,7 +210,7 @@ epdf_index_unfill (Ecore_List *items)
   if (!items)
     return;
 
-  ecore_list_goto_first (items);
+  ecore_list_first_goto (items);
   while ((item = (Epdf_Index_Item *)ecore_list_next (items))) {
     if (item->title)
       free (item->title);

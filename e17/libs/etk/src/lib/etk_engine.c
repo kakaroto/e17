@@ -49,10 +49,10 @@ Etk_Bool etk_engine_init(void)
       return ETK_FALSE;
    
    files = ecore_file_ls(PACKAGE_LIB_DIR "/etk/engines");
-   if (!files || (ecore_list_nodes(files) == 0))
+   if (!files || (ecore_list_count(files) == 0))
       return ETK_FALSE;
    
-   ecore_list_goto_first(files);
+   ecore_list_first_goto(files);
    while ((file = ecore_list_next(files)))
    {
       int len;

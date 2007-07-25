@@ -163,7 +163,7 @@ static void previous_image(Ewl_Widget *w, void *event, void *data)
         image = ecore_dlist_current(em->images);
 	if(!image)
 	{
-		ecore_dlist_goto_last(em->images);
+		ecore_dlist_last_goto(em->images);
 		image = ecore_dlist_current(em->images);
 	}
 	ewl_image_file_path_set(EWL_IMAGE(em->eimage), image);
@@ -181,7 +181,7 @@ static void next_image(Ewl_Widget *w, void *event, void *data)
 	image = ecore_dlist_current(em->images);
 	if(!image)
 	{
-		ecore_dlist_goto_first(em->images);
+		ecore_dlist_first_goto(em->images);
 		image = ecore_dlist_current(em->images);
 	}
 	ewl_image_file_path_set(EWL_IMAGE(em->eimage), image);

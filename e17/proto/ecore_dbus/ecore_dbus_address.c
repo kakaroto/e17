@@ -30,9 +30,9 @@ ecore_dbus_address_new()
    if (!a) return NULL;
 
    a->keys = ecore_list_new();
-   ecore_list_set_free_cb(a->keys, _ecore_dbus_address_list_free_cb);
+   ecore_list_free_cb_set(a->keys, _ecore_dbus_address_list_free_cb);
    a->vals = ecore_list_new();
-   ecore_list_set_free_cb(a->vals, _ecore_dbus_address_list_free_cb);
+   ecore_list_free_cb_set(a->vals, _ecore_dbus_address_list_free_cb);
 
    return a;
 }
@@ -69,7 +69,7 @@ ecore_dbus_address_parse(const char *address)
    int error = 0;
 
    alist = ecore_list_new();
-   ecore_list_set_free_cb(alist, ECORE_FREE_CB(ecore_dbus_address_free));
+   ecore_list_free_cb_set(alist, ECORE_FREE_CB(ecore_dbus_address_free));
 
    while(1)
      {
@@ -144,13 +144,13 @@ ecore_dbus_address_value_get(Ecore_DBus_Address *address, const char *key)
    char *s;
    if (!key) return NULL;
 
-   ecore_list_goto_first(address->keys);
+   ecore_list_first_goto(address->keys);
    i = 0;
    while((s = ecore_list_next(address->keys)))
      {
 	if (!strcmp(key, s))
 	  {
-	     return ecore_list_goto_index(address->vals, i);
+	     return ecore_list_index_goto(address->vals, i);
 	  }
 	i++;
      }
@@ -168,8 +168,8 @@ ecore_dbus_address_string(Ecore_DBus_Address *address)
   
    snprintf(buf, PATH_MAX, "%s:", address->transport);
    left -= strlen(address->transport) + 1;
-   ecore_list_goto_first(address->keys);
-   ecore_list_goto_first(address->vals);
+   ecore_list_first_goto(address->keys);
+   ecore_list_first_goto(address->vals);
    while ((key = ecore_list_next(address->keys)) && (val = ecore_list_next(address->vals)))
      {
 	char *encval;
@@ -192,7 +192,7 @@ EAPI Ecore_DBus_Server *
 ecore_dbus_address_list_connect(Ecore_List *addrs, const void *data)
 {
   Ecore_DBus_Address *addr;
-  ecore_list_goto_first(addrs);
+  ecore_list_first_goto(addrs);
   /* try each listed address in turn */
   while ((addr = ecore_list_next(addrs))) 
     {
@@ -249,14 +249,14 @@ ecore_dbus_print_address_list(Ecore_List *addresses)
 {
    Ecore_DBus_Address *a;
 
-   ecore_list_goto_first(addresses);
+   ecore_list_first_goto(addresses);
    while((a = ecore_list_next(addresses)))
      {
 	char *k, *v;
 	printf("Transport: %s\n", a->transport);
 
-	ecore_list_goto_first(a->keys);
-	ecore_list_goto_first(a->vals);
+	ecore_list_first_goto(a->keys);
+	ecore_list_first_goto(a->vals);
 	k = ecore_list_next(a->keys); 
 	v = ecore_list_next(a->vals);
 	while (k || v)

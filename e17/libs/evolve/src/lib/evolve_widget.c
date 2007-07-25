@@ -260,7 +260,7 @@ int evolve_widget_internal_property_apply(Evolve_Widget *widget, Etk_Property *p
 	  {
 	     char *dir;
 	     
-	     if ((dir = ecore_file_get_dir(_evolve_ev->eet_filename)))
+	     if ((dir = ecore_file_dir_get(_evolve_ev->eet_filename)))
 	       {
 		  snprintf(file, sizeof(file), "%s/%s", dir, etk_property_value_string_get(prop->default_value));
 		  free(dir);

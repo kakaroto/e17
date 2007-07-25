@@ -224,7 +224,7 @@ char *eclair_cover_file_get_from_local(Eclair_Cover_Manager *cover_manager, cons
       for (j = 0; j < NUM_EXTENSIONS; j++)
       {
          if ((cover_filename = _eclair_cover_build_cover_filename(cover_names[i], cover_extensions[j]))
-            && (cover_path = eclair_utils_search_file(cover_filename, ecore_file_get_dir(file_path))))
+            && (cover_path = eclair_utils_search_file(cover_filename, ecore_file_dir_get(file_path))))
          {
             free(cover_filename);
             return cover_path;

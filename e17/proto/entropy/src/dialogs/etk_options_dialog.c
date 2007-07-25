@@ -98,7 +98,7 @@ void entropy_etk_options_dialog_close(Etk_Object* obj, void* data)
 		printf("Save config selected..\n");
 
 		keys = ecore_hash_keys(_entropy_global_options_hash);
-		while ((key = ecore_list_remove_first(keys))) {
+		while ((key = ecore_list_first_remove(keys))) {
 			c_obj = ecore_hash_get(_entropy_global_options_hash, key);
 			
 			if (c_obj->value) {

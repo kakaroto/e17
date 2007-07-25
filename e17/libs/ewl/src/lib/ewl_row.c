@@ -109,7 +109,7 @@ ewl_row_column_get(Ewl_Row *row, short n)
 	DCHECK_PARAM_PTR_RET("row", row, NULL);
 	DCHECK_TYPE_RET("row", row, EWL_ROW_TYPE, NULL);
 
-	found = ecore_dlist_goto_index(EWL_CONTAINER(row)->children, n + 1);
+	found = ecore_dlist_index_goto(EWL_CONTAINER(row)->children, n + 1);
 
 	DRETURN_PTR(found, DLEVEL_STABLE);
 }
@@ -223,8 +223,8 @@ ewl_row_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 		/* Divvy up remaining space */
 		if (remains) {
 			tx = x;
-			nodes = ecore_dlist_nodes(c->children);
-		       	ecore_dlist_goto_first(c->children);
+			nodes = ecore_dlist_count(c->children);
+		       	ecore_dlist_first_goto(c->children);
 			while ((child = ecore_dlist_next(c->children))) {
 				int portion;
 				int width = ewl_object_current_w_get(child);

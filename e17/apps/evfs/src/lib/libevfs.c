@@ -27,7 +27,7 @@ evfs_get_connection_for_id(int id)
 {
    evfs_connection *conn;
 
-   ecore_list_goto_first(client_list);
+   ecore_list_first_goto(client_list);
 
    while ((conn = ecore_list_next(client_list)))
      {
@@ -55,7 +55,7 @@ evfs_server_data(void *data, int type, void *event)
 
              evfs_connection *client;
 
-             ecore_list_goto_first(client_list);
+             ecore_list_first_goto(client_list);
              if ((client = ecore_list_next(client_list)))
                {
 
@@ -290,7 +290,7 @@ evfs_tokenize_uri(char *uri)
         //printf("Current token is: '%s'\n", tmp_tok);
 
         /*Check if it's an operator */
-        ecore_dlist_goto_first(reserved);
+        ecore_dlist_first_goto(reserved);
         while ((cmp = ecore_dlist_next(reserved)))
           {
              if (!strncmp(tmp_tok, cmp, strlen(cmp)))
@@ -316,7 +316,7 @@ evfs_tokenize_uri(char *uri)
         tmp_tok[i] = '\0';
         //printf("Current token (keyword match) is: '%s'\n", tmp_tok);
 
-        ecore_dlist_goto_first(plugin);
+        ecore_dlist_first_goto(plugin);
         while ((cmp = ecore_dlist_next(plugin)))
           {
              if (!strncmp(tmp_tok, cmp, strlen(cmp)))
@@ -426,7 +426,7 @@ evfs_token_list_free(Ecore_DList * tokens)
 {
    evfs_uri_token *token;
 
-   ecore_dlist_goto_first(tokens);
+   ecore_dlist_first_goto(tokens);
    while ((token = ecore_dlist_next(tokens)))
      {
         free(token->token_s);
@@ -468,12 +468,12 @@ evfs_parse_uri_single(char *uri)
     * } */
 
    tokens = evfs_tokenize_uri(uri);
-   ecore_dlist_goto_first(tokens);
+   ecore_dlist_first_goto(tokens);
    while ((token = ecore_dlist_next(tokens)))
      {
         //printf("Token str: '%s'\n", token->token_s);
      }
-   ecore_dlist_goto_first(tokens);
+   ecore_dlist_first_goto(tokens);
 
  start_uri_section:
 
@@ -612,7 +612,7 @@ evfs_filereference_to_string(evfs_filereference * ref)
    length += 1;
    uri = calloc(length, sizeof(char));
 
-   while ((parent = ecore_list_remove_first(parent_list)))
+   while ((parent = ecore_list_first_remove(parent_list)))
      {
         strcat(uri, parent->plugin_uri);
         strcat(uri, "://");

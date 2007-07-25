@@ -166,9 +166,9 @@ int main(int argc, char **argv)
 				db = ephoto_db_init();
 				images = ecore_list_new();
 				images = get_images(path);
-				while (!ecore_list_is_empty(images))
+				while (!ecore_list_empty_is(images))
 				{
-					name = ecore_list_remove_first(images);
+					name = ecore_list_first_remove(images);
 					ephoto_db_add_image(db, album, basename(name), name);
 				}
 				ephoto_db_close(db);
@@ -185,9 +185,9 @@ int main(int argc, char **argv)
 			albums = ecore_list_new();
 			albums = ephoto_db_list_albums(db);
 			ephoto_db_close(db);
-			while(!ecore_list_is_empty(albums))
+			while(!ecore_list_empty_is(albums))
 			{
-				album = ecore_list_remove_first(albums);
+				album = ecore_list_first_remove(albums);
 				printf("%s\n", album);
 			}
 			ecore_list_destroy(albums);
@@ -207,9 +207,9 @@ int main(int argc, char **argv)
 			db = ephoto_db_init();
 			images = ephoto_db_list_images(db, album);
 			ephoto_db_close(db);
-			while(!ecore_list_is_empty(images))
+			while(!ecore_list_empty_is(images))
 			{
-				path = ecore_list_remove_first(images);
+				path = ecore_list_first_remove(images);
 				printf("%s\n", path);
 			}
 			return 0;

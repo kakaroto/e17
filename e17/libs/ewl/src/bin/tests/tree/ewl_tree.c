@@ -112,6 +112,6 @@ cb_get_rows(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 	
 	tree = data;
 	selected = ewl_tree_selected_get(tree);
-	printf("Selected %d rows\n", ecore_list_nodes(selected));
+	printf("Selected %d rows\n", ecore_list_count(selected));
 }
 

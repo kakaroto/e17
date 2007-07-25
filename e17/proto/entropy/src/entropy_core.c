@@ -54,13 +54,13 @@ ipc_client_data(void *data, int type, void *event)
 	if (e->major == ENTROPY_IPC_EVENT_CORE) {
 		entropy_notify_event* eevent;
 
-		ecore_list_goto_first(core->notify->exe_queue);
+		ecore_list_first_goto(core->notify->exe_queue);
 		if ( (eevent = ecore_list_next(core->notify->exe_queue)) ) {
 			if (!eevent->processed) {
 				printf("Pulled an unprocessed event off the queue!\n");
 			}
 			
-			ecore_list_remove_first(core->notify->exe_queue);
+			ecore_list_first_remove(core->notify->exe_queue);
 			
 				
 			/*If the return struct is null, don't call the callbacks.  The requester has taken responsibility
@@ -69,7 +69,7 @@ ipc_client_data(void *data, int type, void *event)
 			if (eevent->return_struct) {
 
 				/*printf("******* PROCESSING %p\n", eevent);*/
-				ecore_list_goto_first(eevent->cb_list);
+				ecore_list_first_goto(eevent->cb_list);
 				while ( (cb_data = ecore_list_next(eevent->cb_list)) ) {
 					(*cb_data->cb)(eevent, eevent->requestor_data, eevent->return_struct, cb_data->data);
 				}
@@ -245,7 +245,7 @@ entropy_core* entropy_core_init(int argc, char** argv) {
         core->mime_plugins = entropy_mime_register_init();
 
         /*Load plugins*/
-        ecore_list_goto_first(core->plugin_list);
+        ecore_list_first_goto(core->plugin_list);
         while ( (plugin = ecore_list_current(core->plugin_list)) ) {
                 int res = entropy_plugin_load(core, plugin);
 		if (res) {
@@ -264,8 +264,8 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 		char* mime= NULL;
 		Ecore_List* keys = ecore_hash_keys(core->entropy_thumbnailers_child);
 
-		ecore_list_goto_first(keys);
-		while ( (mime = ecore_list_remove_first(keys))) {
+		ecore_list_first_goto(keys);
+		while ( (mime = ecore_list_first_remove(keys))) {
 			ecore_hash_set(core->entropy_thumbnailers, mime, distrib_plugin);
 		}
 	}
@@ -539,7 +539,7 @@ void entropy_core_destroy(entropy_core* core) {
 	entropy_notification_engine_destroy(core->notify);
 
 
-	ecore_list_goto_first(core->plugin_list);
+	ecore_list_first_goto(core->plugin_list);
 	while ( (plugin = ecore_list_next(core->plugin_list) )) {
 		void (*entropy_plugin_destroy)(void* data);
 
@@ -570,7 +570,7 @@ void entropy_core_destroy(entropy_core* core) {
 	//printf("Destroying file objects...\n");
 	/*Kill the file list*/
 	hash_keys = ecore_hash_keys(core->file_interest_list);
-	ecore_list_goto_first(hash_keys);
+	ecore_list_first_goto(hash_keys);
 	while ( (key = ecore_list_next(hash_keys)) ) {
 		listener = ecore_hash_get(core->file_interest_list, key);
 
@@ -824,7 +824,7 @@ void entropy_plugin_thumbnailer_register(entropy_core* core, entropy_plugin* plu
 
         entropy_thumbnailer_plugin_mime_types_get = dlsym(plugin->dl_ref, "entropy_thumbnailer_plugin_mime_types_get");
         mime_types = (*entropy_thumbnailer_plugin_mime_types_get)();
-        ecore_list_goto_first(mime_types);
+        ecore_list_first_goto(mime_types);
         while ( (mime_type = ecore_list_next(mime_types)) ) {
 		if (type == THUMBNAILER_DISTRIBUTION) { 
 			distrib_plugin = plugin;
@@ -919,7 +919,7 @@ Ecore_List* entropy_core_selected_files_get() {
 void entropy_core_selected_files_clear() {
 	entropy_generic_file* file;
 		
-	while ( (file = ecore_list_remove_first(core_core->selected_files))) {
+	while ( (file = ecore_list_first_remove(core_core->selected_files))) {
 		entropy_core_file_cache_remove_reference(file->md5);
 	}
 	
@@ -995,7 +995,7 @@ void entropy_core_component_event_register(entropy_gui_component_instance* comp,
 			event_list = ecore_list_new();
 			ecore_hash_set(event_hash, event, event_list);
 		} else {
-			ecore_list_goto_first(event_list);
+			ecore_list_first_goto(event_list);
 			while ((iter = ecore_list_next(event_list))) {
 				if (iter == comp) {
 					found = 1;
@@ -1033,7 +1033,7 @@ void entropy_core_component_event_deregister(entropy_gui_component_instance* com
 		Ecore_List* event_list = ecore_hash_get(event_hash, event);
 
 		if (event_list) {
-			ecore_list_goto_first(event_list);
+			ecore_list_first_goto(event_list);
 			while ((iter = ecore_list_current(event_list))) {
 				if (iter == comp) {
 					ecore_list_remove(event_list);
@@ -1097,13 +1097,13 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	if (handlers) {
 		Entropy_Gui_Event_Handler_Instance_Data* data = NULL;	
 		
-		ecore_list_goto_first(handlers);
+		ecore_list_first_goto(handlers);
 		while ( (handler = ecore_list_next(handlers))) {
 
 			data = (*handler->notify_event_cb)(event,instance);
 			
 			if (data->notify) {
-				ecore_list_goto_first(el);
+				ecore_list_first_goto(el);
 				while ( (iter = ecore_list_next(el)) ) {
 					if (iter->active && data->notify->return_struct) {
 						(*iter->plugin->gui_event_callback_p)
@@ -1139,7 +1139,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 	
 		/*The first thing in the calling event data (an ecore_list) is the original request*/
 		file_list = event->data;
-		ecore_list_goto_first(file_list);
+		ecore_list_first_goto(file_list);
 		request = ecore_list_next(file_list);
 
 		//printf("Path of the file inside the request inside the list: '%s'\n", request->file->path);
@@ -1149,7 +1149,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		ev->return_struct = file_list;
 
 		/*Now get rid of the request, so we're left with a virginal list of files*/
-		ecore_list_remove_first(file_list);
+		ecore_list_first_remove(file_list);
 
 		/*Register this folder as being the current for this layout*/
 		if (((entropy_gui_component_instance*)request->requester)->layout_parent)  {
@@ -1159,7 +1159,7 @@ void entropy_core_layout_notify_event(entropy_gui_component_instance* instance, 
 		}
 		
 		/*Call the requestors*/
-		ecore_list_goto_first(el);
+		ecore_list_first_goto(el);
 		while ( (iter = ecore_list_next(el)) ) {
 			//printf( "Calling callback at : %p\n", iter->plugin->gui_event_callback_p);
 			

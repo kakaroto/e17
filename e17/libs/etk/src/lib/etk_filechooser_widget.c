@@ -158,7 +158,7 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
    etk_tree_clear(ETK_TREE(filechooser_widget->files_tree));
    
    /* TODO: Do not walk through the list twice!! */
-   ecore_list_goto_first(files);
+   ecore_list_first_goto(files);
    while ((filename = ecore_list_next(files)))
    {
       if (!filechooser_widget->show_hidden) 
@@ -181,7 +181,7 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
          filechooser_widget->files_date_col, mod_time_string, NULL);
    }
    
-   ecore_list_goto_first(files);
+   ecore_list_first_goto(files);
    while ((filename = ecore_list_next(files)))
    {
       const char *ext;
@@ -587,7 +587,7 @@ static void _etk_filechooser_widget_places_tree_fill(Etk_Filechooser_Widget *fcw
                continue;
             
             row = etk_tree_row_append(ETK_TREE(fcw->places_tree), NULL,
-               fcw->places_col, etk_theme_icon_path_get(), "devices/drive-harddisk_16", ecore_file_get_file(mount_point->mnt_dir), NULL);
+               fcw->places_col, etk_theme_icon_path_get(), "devices/drive-harddisk_16", ecore_file_file_get(mount_point->mnt_dir), NULL);
             etk_tree_row_data_set_full(row, strdup(mount_point->mnt_dir), free);
          }
          endmntent(mtab);
@@ -621,7 +621,7 @@ static void _etk_filechooser_widget_places_tree_fill(Etk_Filechooser_Widget *fcw
             continue;
          
          row = etk_tree_row_append(ETK_TREE(fcw->places_tree), NULL,
-            fcw->places_col, etk_theme_icon_path_get(), "devices/drive-harddisk_16", ecore_file_get_file(mount_points[i].f_mntonname), NULL);
+            fcw->places_col, etk_theme_icon_path_get(), "devices/drive-harddisk_16", ecore_file_file_get(mount_points[i].f_mntonname), NULL);
          etk_tree_row_data_set_full(row, strdup(mount_points[i].f_mntonname), free);
       }
    }
@@ -656,7 +656,7 @@ static void _etk_filechooser_widget_favs_tree_fill(Etk_Filechooser_Widget *fcw)
       if (sscanf(line, "file://%s", fav) == 1)
       {
          row = etk_tree_row_append(ETK_TREE(fcw->fav_tree), NULL,
-            fcw->fav_col, etk_theme_icon_path_get(), "places/folder_16", ecore_file_get_file(fav), NULL);
+            fcw->fav_col, etk_theme_icon_path_get(), "places/folder_16", ecore_file_file_get(fav), NULL);
          etk_tree_row_data_set_full(row, strdup(fav), free);
       }
    }

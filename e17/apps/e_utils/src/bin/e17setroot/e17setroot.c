@@ -176,11 +176,11 @@ void _e_bg_bg_edj_gen(char *filename) {
    /* make sure we got a file name */
    if (!filename || strlen(filename) <= 4) return;
 
-   file = (char *)ecore_file_get_file(filename);
-   dir = ecore_file_get_dir(filename);
+   file = (char *)ecore_file_file_get(filename);
+   dir = ecore_file_dir_get(filename);
 
    filenoext = _e_bg_bg_file_stripext(filename);
-   filenoext = (char *)ecore_file_get_file(filenoext);
+   filenoext = (char *)ecore_file_file_get(filenoext);
 
    if (strcmp(filename + strlen(filename) - 4, ".edj") == 0) {
       int w, h, num;

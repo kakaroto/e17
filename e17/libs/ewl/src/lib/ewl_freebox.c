@@ -387,10 +387,10 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	c = EWL_CONTAINER(fb);
 
 	/* determine the column sizes first */
-	col_size = column_sizes = NEW(int, ecore_dlist_nodes(c->children) + 1);
+	col_size = column_sizes = NEW(int, ecore_dlist_count(c->children) + 1);
 	*col_size = 0;
 
-	ecore_dlist_goto_first(c->children);
+	ecore_dlist_first_goto(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
 		if (!VISIBLE(child)) continue;
@@ -415,7 +415,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	col_size = column_sizes;
 
 	/* and now place the children */
-	ecore_dlist_goto_first(c->children);
+	ecore_dlist_first_goto(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
 		if (!VISIBLE(child)) continue;

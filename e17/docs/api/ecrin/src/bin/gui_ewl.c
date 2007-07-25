@@ -35,12 +35,12 @@ _list_keys_order (Ecore_List *keys)
   char       *key;
 
   l = ecore_list_new ();
-  ecore_list_goto_first(keys);
+  ecore_list_first_goto(keys);
   while ((key = ecore_list_next(keys)))
     {
       char *str;
 
-      ecore_list_goto_first (l);
+      ecore_list_first_goto (l);
       while ((str = ecore_list_next(l)) &&
              (strcasecmp (key, str) >= 0)) { }
 
@@ -48,7 +48,7 @@ _list_keys_order (Ecore_List *keys)
         ecore_list_append (l, key);
       else
         {
-          ecore_list_goto_index (l, ecore_list_index (l) - 1);
+          ecore_list_index_goto (l, ecore_list_index (l) - 1);
           ecore_list_insert (l, key);
         }
     }
@@ -67,7 +67,7 @@ _list_display_cb (Ewl_Widget *w, void *ev_data, void *user_data)
   aiguille = ewl_text_text_get (EWL_TEXT (w));
 
   /* We clear the list */
-  ecore_list_goto_first(list_rows);
+  ecore_list_first_goto(list_rows);
   while ((row = ecore_list_next(list_rows)))
     {
       ewl_tree_row_destroy (EWL_TREE (list), row);
@@ -75,7 +75,7 @@ _list_display_cb (Ewl_Widget *w, void *ev_data, void *user_data)
 
   ecrin_ewl_list_fill_package (aiguille);
 
-/*   ecore_list_goto_first(list_rows); */
+/*   ecore_list_first_goto(list_rows); */
 /*   while ((row = ecore_list_next(list_rows))) */
 /*     { */
 /*       Ewl_Widget *child; */
@@ -113,7 +113,7 @@ _enum_display (Ewl_Widget *w, void *ev_data, void *user_data)
   snprintf (str, 4096, "enum %s\n", e->name);
   ewl_text_text_append (EWL_TEXT (text), str);
   ewl_text_text_append (EWL_TEXT (text), "{\n");
-  ecore_list_goto_first (e->items);
+  ecore_list_first_goto (e->items);
   while ((item = ecore_list_next (e->items)))
     {
       snprintf (str, 4096, "  %s", item->name);
@@ -121,7 +121,7 @@ _enum_display (Ewl_Widget *w, void *ev_data, void *user_data)
       if (item->value)
 	snprintf (str, 4096, " = %s", item->value);
       ewl_text_text_append (EWL_TEXT (text), str);
-      if (ecore_list_index (e->items) != ecore_list_nodes (e->items))
+      if (ecore_list_index (e->items) != ecore_list_count (e->items))
         ewl_text_text_append (EWL_TEXT (text), ",");
       ewl_text_text_append (EWL_TEXT (text), "\n");
     }
@@ -187,7 +187,7 @@ _function_display (Ewl_Widget *w, void *ev_data, void *user_data)
   ewl_text_text_append (EWL_TEXT (text), str);
   memset (space, ' ', 4096);
   space[strlen (str)] = '\0';
-  ecore_list_goto_first (function->params);
+  ecore_list_first_goto (function->params);
   while ((param = ecore_list_next (function->params)))
     {
       if (ecore_list_index (function->params) != 1)
@@ -199,7 +199,7 @@ _function_display (Ewl_Widget *w, void *ev_data, void *user_data)
           snprintf (str, 4096, " %s", param->name);
           ewl_text_text_append (EWL_TEXT (text), str);
         }
-      if (ecore_list_index (function->params) != ecore_list_nodes (function->params))
+      if (ecore_list_index (function->params) != ecore_list_count (function->params))
         {
           snprintf (str, 4096, ",\n");
           ewl_text_text_append (EWL_TEXT (text), str);
@@ -237,7 +237,7 @@ ecrin_ewl_tree_fill_package (void)
                                         &label);
 
 
-  ecore_list_goto_first(sorted_keys);
+  ecore_list_first_goto(sorted_keys);
   while ((key = ecore_list_next(sorted_keys)))
     {
       Ewl_Widget      *prow;
@@ -284,7 +284,7 @@ ecrin_ewl_list_fill_package (char *aiguille)
   if (!aiguille)
     aiguille = "";
 
-  ecore_list_goto_first(sorted_keys);
+  ecore_list_first_goto(sorted_keys);
   while ((key = ecore_list_next(sorted_keys)))
     {
       Ecrin_Hash_Data *data;

@@ -69,7 +69,7 @@ callback (evfs_event * data, void *obj)
 
 
       watchers = ecore_hash_keys (folder_monitor_hash);
-      ecore_list_goto_first (watchers);
+      ecore_list_first_goto (watchers);
       while ((key = ecore_list_next (watchers))) {
 	printf("Scanning watcher... %s:%s\n", ((evfs_file_uri_path *)
 	      ecore_hash_get (folder_monitor_hash, key))->files[0]->path, folder );
@@ -274,7 +274,7 @@ callback (evfs_event * data, void *obj)
 	      /*folder = data->resp_command.file_command.files[0]->path;*/
 
 	      if (data->file_list.list) {
-		      ecore_list_goto_first (data->file_list.list);
+		      ecore_list_first_goto (data->file_list.list);
 		      while ((ref = ecore_list_next (data->file_list.list))) {
 			/*printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type); */
 
@@ -391,7 +391,7 @@ callback (evfs_event * data, void *obj)
 
       request->identifier = data->resp_command.client_identifier;
 
-      ecore_list_goto_first(data->file_list.list);
+      ecore_list_first_goto(data->file_list.list);
       if (ecore_list_current(data->file_list.list)) {
         	request->file_from = evfs_filereference_to_entropy_generic_file(ecore_list_current(data->file_list.list));
                 ecore_list_next(data->file_list.list);
@@ -506,7 +506,7 @@ callback (evfs_event * data, void *obj)
 
 	if (metadata_groups) {
 		char* obj;
-		while ((obj = ecore_list_remove_first(metadata_groups))) {
+		while ((obj = ecore_list_first_remove(metadata_groups))) {
 			free(obj);
 		}
 	}
@@ -553,7 +553,7 @@ filesystem_demonitor_directory (void *requester)
 
     /*Now check if anyone else is monitoring this dir - if not, remove the evfs listener*/
     keys = ecore_hash_keys(folder_monitor_hash);  
-    while ( (key = ecore_list_remove_first(keys))) {
+    while ( (key = ecore_list_first_remove(keys))) {
 	    compare = ecore_hash_get(folder_monitor_hash, key);
 	    if (compare && evfs_filereference_equal_is(dir->files[0], compare->files[0]))
 		    found = 1;
@@ -930,7 +930,7 @@ entropy_filesystem_file_copy_multi (Ecore_List* files, char *path_to,
   Ecore_List* evfs_files;
 
   evfs_files = ecore_list_new();
-  ecore_list_goto_first(files);
+  ecore_list_first_goto(files);
   while ( (file = ecore_list_next(files)) ) { 
 	  printf("Parsing %s for multi copy\n", file->uri);
 	  ecore_list_append(evfs_files, evfs_parse_uri_single(file->uri));
@@ -951,7 +951,7 @@ entropy_filesystem_file_move_multi (Ecore_List* files, char *path_to,
   Ecore_List* evfs_files;
 
   evfs_files = ecore_list_new();
-  ecore_list_goto_first(files);
+  ecore_list_first_goto(files);
   while ( (file = ecore_list_next(files)) ) { 
 	  printf("Parsing %s for multi move\n", file->uri);
 	  ecore_list_append(evfs_files, evfs_parse_uri_single(file->uri));
@@ -1144,7 +1144,7 @@ void entropy_filesystem_file_trash_restore (Ecore_List* files, entropy_gui_compo
   flag = 0;
 
   evfs_files = ecore_list_new();
-  ecore_list_goto_first(files);
+  ecore_list_first_goto(files);
   while ( (file = ecore_list_next(files)) ) { 
 	  if (file->attach) {
 		  snprintf(path, PATH_MAX, "%s%s%s", URI_POSIX, "://", file->attach);

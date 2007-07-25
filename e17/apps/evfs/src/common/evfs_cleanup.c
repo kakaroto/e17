@@ -83,8 +83,8 @@ evfs_cleanup_file_list_event(evfs_event * event)
 
    if (event->file_list.list)
      {
-        ecore_list_goto_first(event->file_list.list);
-        while ((file = ecore_list_remove_first(event->file_list.list)))
+        ecore_list_first_goto(event->file_list.list);
+        while ((file = ecore_list_first_remove(event->file_list.list)))
           {
              evfs_cleanup_filereference(file);
           }
@@ -122,8 +122,8 @@ evfs_cleanup_progress_event(evfs_event * event)
 
    if (event->file_list.list)
      {
-        ecore_list_goto_first(event->file_list.list);
-        while ((file = ecore_list_remove_first(event->file_list.list)))
+        ecore_list_first_goto(event->file_list.list);
+        while ((file = ecore_list_first_remove(event->file_list.list)))
           {
              evfs_cleanup_filereference(file);
           }
@@ -166,7 +166,7 @@ evfs_cleanup_metadata_event(evfs_event* event)
 		Ecore_List* keys;
 		char* key;
 		keys = ecore_hash_keys(event->meta->meta_hash);
-		while ( (key = ecore_list_remove_first(keys))) {
+		while ( (key = ecore_list_first_remove(keys))) {
 			ecore_hash_remove(event->meta->meta_hash, key);
 			free(key);
 		}

@@ -31,7 +31,7 @@ static void iterate(char *point2)
 {
         char *point1;
 
-        ecore_dlist_goto_first(em->images);
+        ecore_dlist_first_goto(em->images);
         while(ecore_dlist_current(em->images))
         {
                 point1 = ecore_dlist_current(em->images);
@@ -132,7 +132,7 @@ static void *list_data_fetch(void *data, unsigned int row, unsigned int column)
 	const char *image;
 	void *val = NULL;
 
-	image = ecore_dlist_goto_index(em->images, row);
+	image = ecore_dlist_index_goto(em->images, row);
 	if (image)
 	{
 		val = (void *)image;
@@ -146,7 +146,7 @@ static unsigned int list_data_count(void *data)
 {
 	int val;
 
-	val = ecore_list_nodes(em->images);
+	val = ecore_list_count(em->images);
 
 	return val;
 }

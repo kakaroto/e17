@@ -94,7 +94,7 @@ selected_set(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 1, 2);
-	idx = ecore_list_goto_first(m->selected);
+	idx = ecore_list_first_goto(m->selected);
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_INDEX)
 	{
@@ -154,7 +154,7 @@ selected_range_single_add(char *buf, int len)
 	m = EWL_MVC(t);
 
 	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
-	idx = ecore_list_goto_first(m->selected);
+	idx = ecore_list_first_goto(m->selected);
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_INDEX)
 	{
@@ -183,7 +183,7 @@ selected_range_multi_add(char *buf, int len)
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
 	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
-	idx = ecore_list_goto_first(m->selected);
+	idx = ecore_list_first_goto(m->selected);
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_RANGE)
 	{
@@ -420,7 +420,7 @@ selected_rm_2x1_bottom(char *buf, int len)
 		return FALSE;
 	}
 
-	sel = ecore_list_goto_first(m->selected);
+	sel = ecore_list_first_goto(m->selected);
 
 	/* should have 1 index [(1,1)] */
 	if (!ewl_mvc_is_index(buf, len, sel, 1, 1))
@@ -455,7 +455,7 @@ selected_rm_2x1_top(char *buf, int len)
 		return FALSE;
 	}
 
-	sel = ecore_list_goto_first(m->selected);
+	sel = ecore_list_first_goto(m->selected);
 
 	/* should have 1 index [(2,1)] */
 	if (!ewl_mvc_is_index(buf, len, sel, 2, 1))
@@ -490,7 +490,7 @@ selected_rm_1x2_left(char *buf, int len)
 		return FALSE;
 	}
 
-	sel = ecore_list_goto_first(m->selected);
+	sel = ecore_list_first_goto(m->selected);
 
 	/* should have 1 index [(1,2)] */
 	if (!ewl_mvc_is_index(buf, len, sel, 1, 2))
@@ -525,7 +525,7 @@ selected_rm_1x2_right(char *buf, int len)
 		return FALSE;
 	}
 
-	sel = ecore_list_goto_first(m->selected);
+	sel = ecore_list_first_goto(m->selected);
 
 	/* should have 1 index [(1,1)] */
 	if (!ewl_mvc_is_index(buf, len, sel, 1, 1))
@@ -562,11 +562,11 @@ selected_rm_from_range_top_left_point(char *buf, int len)
 	}
 
 	/* should have 2 ranges [(1,3)(6,8)] [(2,2)(6,2)] */
-	sel = ecore_list_goto_index(m->selected, 0);
+	sel = ecore_list_index_goto(m->selected, 0);
 	if (!ewl_mvc_is_range(buf, len, sel, 1, 3, 6, 8))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 1);
+	sel = ecore_list_index_goto(m->selected, 1);
 	if (!ewl_mvc_is_range(buf, len, sel, 2, 2, 6, 2))
 		return FALSE;
 
@@ -601,11 +601,11 @@ selected_rm_from_range_bottom_right_point(char *buf, int len)
 	}
 
 	/* should have 2 ranges [(1,2)(5,8)] [(6,2)(6,7)] */
-	sel = ecore_list_goto_index(m->selected, 0);
+	sel = ecore_list_index_goto(m->selected, 0);
 	if (!ewl_mvc_is_range(buf, len, sel, 1, 2, 5, 8))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 1);
+	sel = ecore_list_index_goto(m->selected, 1);
 	if (!ewl_mvc_is_range(buf, len, sel, 6, 2, 6, 7))
 		return FALSE;
 
@@ -643,19 +643,19 @@ selected_rm_from_range_middle_point(char *buf, int len)
 				 [(4,2)(6,4)] 
 				 [(4,6)(6,8)]
 				 [(5,5)(6,5)] */
-	sel = ecore_list_goto_index(m->selected, 0);
+	sel = ecore_list_index_goto(m->selected, 0);
 	if (!ewl_mvc_is_range(buf, len, sel, 1, 2, 3, 8))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 1);
+	sel = ecore_list_index_goto(m->selected, 1);
 	if (!ewl_mvc_is_range(buf, len, sel, 4, 2, 6, 4))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 2);
+	sel = ecore_list_index_goto(m->selected, 2);
 	if (!ewl_mvc_is_range(buf, len, sel, 4, 6, 6, 8))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 3);
+	sel = ecore_list_index_goto(m->selected, 3);
 	if (!ewl_mvc_is_range(buf, len, sel, 5, 5, 6, 5))
 		return FALSE;
 
@@ -692,15 +692,15 @@ selected_rm_from_range_left_edge_point(char *buf, int len)
 	/* should have 3 ranges: [(1,2)(3,8)] 
 				 [(4,3)(6,8)]
 				 [(5,2)(6,2)] */
-	sel = ecore_list_goto_index(m->selected, 0);
+	sel = ecore_list_index_goto(m->selected, 0);
 	if (!ewl_mvc_is_range(buf, len, sel, 1, 2, 3, 8))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 1);
+	sel = ecore_list_index_goto(m->selected, 1);
 	if (!ewl_mvc_is_range(buf, len, sel, 4, 3, 6, 8))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 2);
+	sel = ecore_list_index_goto(m->selected, 2);
 	if (!ewl_mvc_is_range(buf, len, sel, 5, 2, 6, 2))
 		return FALSE;
 
@@ -737,15 +737,15 @@ selected_rm_from_range_right_edge_point(char *buf, int len)
 	/* should have 3 ranges: [(1,2)(2,8)] 
 				 [(3,2)(6,7)] 
 				 [(4,8)(6,8)] */
-	sel = ecore_list_goto_index(m->selected, 0);
+	sel = ecore_list_index_goto(m->selected, 0);
 	if (!ewl_mvc_is_range(buf, len, sel, 1, 2, 2, 8))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 1);
+	sel = ecore_list_index_goto(m->selected, 1);
 	if (!ewl_mvc_is_range(buf, len, sel, 3, 2, 6, 7))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 2);
+	sel = ecore_list_index_goto(m->selected, 2);
 	if (!ewl_mvc_is_range(buf, len, sel, 4, 8, 6, 8))
 		return FALSE;
 
@@ -782,15 +782,15 @@ selected_rm_from_range_top_edge_point(char *buf, int len)
 	/* should have 3 ranges: [(1,2)(6,4)] 
 				 [(1,6)(6,8)]
 				 [(2,5)(6,5)] */
-	sel = ecore_list_goto_index(m->selected, 0);
+	sel = ecore_list_index_goto(m->selected, 0);
 	if (!ewl_mvc_is_range(buf, len, sel, 1, 2, 6, 4))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 1);
+	sel = ecore_list_index_goto(m->selected, 1);
 	if (!ewl_mvc_is_range(buf, len, sel, 1, 6, 6, 8))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 2);
+	sel = ecore_list_index_goto(m->selected, 2);
 	if (!ewl_mvc_is_range(buf, len, sel, 2, 5, 6, 5))
 		return FALSE;
 
@@ -827,15 +827,15 @@ selected_rm_from_range_bottom_edge_point(char *buf, int len)
 	/* should have 3 ranges: [(1,2)(5,8)] 
 				 [(2,6)]
 				 [(6,4)(6,8)] */
-	sel = ecore_list_goto_index(m->selected, 0);
+	sel = ecore_list_index_goto(m->selected, 0);
 	if (!ewl_mvc_is_range(buf, len, sel, 1, 2, 5, 8))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 1);
+	sel = ecore_list_index_goto(m->selected, 1);
 	if (!ewl_mvc_is_index(buf, len, sel, 6, 2))
 		return FALSE;
 
-	sel = ecore_list_goto_index(m->selected, 2);
+	sel = ecore_list_index_goto(m->selected, 2);
 	if (!ewl_mvc_is_range(buf, len, sel, 6, 4, 6, 8))
 		return FALSE;
 

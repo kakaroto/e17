@@ -21,8 +21,8 @@ evfs_file_list_sort(Ecore_List * file_list)
     */
    heap =
       ecore_sheap_new(ECORE_COMPARE_CB(evfs_file_path_compare),
-                      ecore_list_nodes(file_list));
-   while ((f = ecore_list_remove_first(file_list)))
+                      ecore_list_count(file_list));
+   while ((f = ecore_list_first_remove(file_list)))
      {
         ecore_sheap_insert(heap, f);
      }
@@ -35,7 +35,7 @@ evfs_file_list_sort(Ecore_List * file_list)
         ecore_list_append(file_list, f);
      }
 
-   ecore_list_goto_first(file_list);
+   ecore_list_first_goto(file_list);
    ecore_sheap_destroy(heap);
 
    return file_list;

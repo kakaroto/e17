@@ -96,7 +96,7 @@ void eli_highscore_init(const char * app)
      * setup the hiscore hash
      */
     hiscore_tree = ecore_tree_new(ecore_str_compare);
-    ecore_tree_set_free_key(hiscore_tree, free);
+    ecore_tree_free_key_cb_set(hiscore_tree, free);
 
     /*
      * fill the hash
@@ -123,7 +123,7 @@ void eli_highscore_init(const char * app)
 void eli_highscore_shutdown(void)
 {
     /* free the data */
-    ecore_tree_set_free_value(hiscore_tree, 
+    ecore_tree_free_value_cb_set(hiscore_tree, 
 		                      ECORE_FREE_CB(_eli_highscore_list_free));
     ecore_tree_destroy(hiscore_tree);
     eet_data_descriptor_free(edd_hiscore);

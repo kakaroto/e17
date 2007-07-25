@@ -53,7 +53,7 @@ void ewl_entropy_tip_window_create_tips()
 char* ewl_entropy_tip_window_tip_next() {
 	char* next = ecore_list_next(tool_tips);
 	if (!next) {
-		ecore_list_goto_first(tool_tips);
+		ecore_list_first_goto(tool_tips);
 		next = ecore_list_next(tool_tips);
 	}
 	return next;

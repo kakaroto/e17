@@ -42,14 +42,14 @@ _tree2_fill (Ewl_Widget *pdf, Ecore_List *items)
   if (!data)
     return NULL;
 
-  data->count = ecore_list_nodes (items);
+  data->count = ecore_list_count (items);
   data->rows = (Tree_Row_Data **)calloc (data->count, sizeof (Tree_Row_Data *));
   if (!data->rows) {
     free (data);
     return NULL;
   }
   
-  ecore_list_goto_first (items);
+  ecore_list_first_goto (items);
   while ((item = ecore_list_next (items))) {
     Ecore_List *c;
     int         page;
@@ -144,7 +144,7 @@ main (int argc, char *argv[])
 
   ewl_init (&argc, (char **)argv);
   str_data = ecore_list_new();
-  ecore_list_set_free_cb (str_data, free);
+  ecore_list_free_cb_set (str_data, free);
 
   /* We open the pdf file */
   pdf = ewl_pdf_new ();
@@ -285,7 +285,7 @@ _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data)
     Tree_Data     *data;
 
     el = ewl_mvc_selected_list_get (EWL_MVC (widget));
-    sel = ecore_list_goto_first (el);
+    sel = ecore_list_first_goto (el);
     idx = EWL_SELECTION_IDX(sel);
     if (!idx) printf ("pas de idx\n");
     data = (Tree_Data *)ewl_mvc_data_get (EWL_MVC (widget));

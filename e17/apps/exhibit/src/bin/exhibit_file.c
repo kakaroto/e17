@@ -227,5 +227,5 @@ _ex_file_get(char *path)
 	  }
 	return path;	
      }
-   else return ecore_file_get_file(path);
+   else return ecore_file_file_get(path);
 }

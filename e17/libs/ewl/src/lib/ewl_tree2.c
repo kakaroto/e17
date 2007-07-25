@@ -356,7 +356,7 @@ ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, unsigned int row)
 		if (!exp) exp = ecore_list_new();
 	}
 
-	ecore_list_goto_first(exp);
+	ecore_list_first_goto(exp);
 	while ((i = (int)ecore_list_next(exp)))
 	{
 		if (i > (int)row) break;
@@ -403,7 +403,7 @@ ewl_tree2_row_collapse(Ewl_Tree2 *tree, void *data, unsigned int row)
 	ecore_list_remove(exp);
 
 	/* no expansions left we can remove this data from the hash */
-	if (ecore_list_is_empty(exp))
+	if (ecore_list_empty_is(exp))
 	{
 		ecore_hash_remove(tree->expansions, data);
 		IF_FREE_LIST(exp);
@@ -439,7 +439,7 @@ ewl_tree2_row_expanded_is(Ewl_Tree2 *tree, void *data, unsigned int row)
 	if (!exp) DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/* search for this row in the expansions */
-	ecore_list_goto_first(exp);
+	ecore_list_first_goto(exp);
 	while ((i = (int)ecore_list_current(exp)))
 	{
 		if (i == (int)row)
@@ -917,7 +917,7 @@ ewl_tree2_create_expansions_hash(Ewl_Tree2 *tree)
 		DRETURN(DLEVEL_STABLE);
 
 	tree->expansions = ecore_hash_new(NULL, NULL);
-	ecore_hash_set_free_value(tree->expansions, 
+	ecore_hash_free_value_cb_set(tree->expansions, 
 			ECORE_FREE_CB(ecore_list_destroy));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1057,14 +1057,14 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 	 * We need this till the lists get iterators */
 	tmp = ecore_list_new();
 
-	ecore_dlist_goto_first(EWL_CONTAINER(node)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
 	{
 		if ((child != node->handle) && (child != node->row))
 			ecore_list_append(tmp, child);
 	}
 
-	while ((child = ecore_list_remove_first(tmp)))
+	while ((child = ecore_list_first_remove(tmp)))
 		ewl_widget_show(child);
 
 	IF_FREE_LIST(tmp);
@@ -1126,14 +1126,14 @@ ewl_tree2_node_collapse(Ewl_Tree2_Node *node)
 	 * list iteration. Until we get iterators we need this */
 	tmp = ecore_list_new();
 
-	ecore_dlist_goto_first(EWL_CONTAINER(node)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
 	{
 		if ((child != node->handle) && (child != node->row))
 			ecore_list_append(tmp, child);
 	}
 
-	while ((child = ecore_list_remove_first(tmp)))
+	while ((child = ecore_list_first_remove(tmp)))
 		ewl_widget_hide(child);
 
 	IF_FREE_LIST(tmp);
@@ -1176,7 +1176,7 @@ ewl_tree2_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	c = EWL_CONTAINER(w);
 	if (!c->children) DRETURN(DLEVEL_STABLE);
 
-	ecore_dlist_goto_first(c->children);
+	ecore_dlist_first_goto(c->children);
 	x = CURRENT_X(w);
 	y = CURRENT_Y(w);
 
@@ -1274,7 +1274,7 @@ ewl_tree2_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	if (w == node->handle)
 		DRETURN(DLEVEL_STABLE);
 
-	if (ecore_dlist_nodes(c->children) < 3)
+	if (ecore_dlist_count(c->children) < 3)
 	{
 		if (node->handle && VISIBLE(node->handle))
 			ewl_widget_hide(node->handle);
@@ -1316,7 +1316,7 @@ ewl_tree2_cb_node_child_add(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 
 	node = EWL_TREE2_NODE(c);
 	
-	if (ecore_list_nodes(c->children) > 2)
+	if (ecore_list_count(c->children) > 2)
 	{
 		/* XXX what do we do if !node->handle? */
 		if (node->handle && HIDDEN(node->handle))

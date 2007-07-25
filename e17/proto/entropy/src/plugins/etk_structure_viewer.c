@@ -243,7 +243,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 
 		      done:
 		      if (hit) {
-			    while ((traverse_file = ecore_list_remove_first(traverse_stack))) {
+			    while ((traverse_file = ecore_list_first_remove(traverse_stack))) {
 				    row = structure_viewer_add_row(comp, traverse_file, row);
 				    entropy_core_file_cache_add_reference (traverse_file->md5);
 			    }
@@ -259,7 +259,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 		      etk_tree_row_select(row);
 	      
 	      if (row) {
-			ecore_list_goto_first (el);
+			ecore_list_first_goto (el);
 			while ((file = ecore_list_next (el))) {
 
 			  if (!ecore_hash_get(viewer->row_folder_hash, file)) {

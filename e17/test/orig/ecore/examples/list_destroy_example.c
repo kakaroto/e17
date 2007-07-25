@@ -19,7 +19,7 @@ int main (int argc, char *argv[]) {
 
   list = ecore_list_new();
   alloc_data(list);
-  ecore_list_set_free_cb(list, destroy_cb);
+  ecore_list_free_cb_set(list, destroy_cb);
   ecore_list_destroy(list);
 
   return 0;

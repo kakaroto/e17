@@ -648,7 +648,7 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	list = ewl_mvc_data_get(EWL_MVC(o));
 	v = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_NAME);
 
-	ecore_list_goto_first(list);
+	ecore_list_first_goto(list);
 	while ((lval = ecore_list_next(list)))
 	{
 		if (!strcmp(v, lval))
@@ -765,7 +765,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	idx = ewl_mvc_selected_get(EWL_MVC(o));
 	if (idx)
 	{
-		ecore_list_goto_index(list, idx->row);
+		ecore_list_index_goto(list, idx->row);
 		v = ecore_list_current(list);
 
 		if (strcmp(v, ewl_config_string_get(ewl_config,

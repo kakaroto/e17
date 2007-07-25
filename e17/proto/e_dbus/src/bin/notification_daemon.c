@@ -59,10 +59,10 @@ daemon_note_show(Daemon_Data *d, E_Notification *n)
   ecore_list_append(d->history, n); 
 
   // adjust history
-  if (ecore_list_nodes(d->history) > d->max_history_length)
+  if (ecore_list_count(d->history) > d->max_history_length)
   {
     E_Notification *old;
-    old = ecore_list_remove_first(d->history);
+    old = ecore_list_first_remove(d->history);
     d->history_start = e_notification_id_get(old) + 1;
     e_notification_unref(old);
   }
@@ -88,7 +88,7 @@ E_Notification *
 daemon_note_open_find(Daemon_Data *d, int id)
 {
   E_Notification *n;
-  ecore_list_goto_first(d->open_notes);
+  ecore_list_first_goto(d->open_notes);
   while ((n = ecore_list_next(d->open_notes)))
     if (e_notification_id_get(n) == id) return n;
 
@@ -153,8 +153,8 @@ main(int argc, char **argv)
   dd = calloc(1, sizeof(Daemon_Data));
   dd->open_notes = ecore_list_new();
   dd->history = ecore_list_new();
-  ecore_list_set_free_cb(dd->open_notes, ECORE_FREE_CB(e_notification_unref));
-  ecore_list_set_free_cb(dd->history, ECORE_FREE_CB(e_notification_unref));
+  ecore_list_free_cb_set(dd->open_notes, ECORE_FREE_CB(e_notification_unref));
+  ecore_list_free_cb_set(dd->history, ECORE_FREE_CB(e_notification_unref));
   dd->next_id = dd->history_start = 1;
   dd->max_history_length = 5;
   dd->default_timeout = 5;

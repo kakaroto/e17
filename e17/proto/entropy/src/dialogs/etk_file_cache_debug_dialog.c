@@ -53,7 +53,7 @@ void etk_file_cache_dialog_refresh(Etk_Widget* tree)
 	etk_tree_freeze(ETK_TREE(tree));
 	
 	keys = entropy_core_file_cache_keys_retrieve();
-	while ( (key = ecore_list_remove_first(keys))) {
+	while ( (key = ecore_list_first_remove(keys))) {
 		  entropy_file_listener* listen = entropy_core_file_cache_retrieve(key);
 		  
 		  if (listen) {

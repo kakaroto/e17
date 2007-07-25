@@ -150,7 +150,7 @@ epsilon_init (void)
 
 			   if ((plugin = epsilon_plugin_load(plugin_path))) {
 				   /*Append the mime types for this plugin*/
-				   ecore_list_goto_first(plugin->mime_types);
+				   ecore_list_first_goto(plugin->mime_types);
 				   while ( (type = ecore_list_next(plugin->mime_types))) {
 					ecore_hash_set(plugins_mime, type, plugin);
 				   }

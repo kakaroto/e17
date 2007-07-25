@@ -38,7 +38,7 @@ entangle_eapps_init()
 
     entangle_eapps = ecore_hash_new(ecore_str_hash, ecore_str_compare);
     entangle_eapp_list = ecore_list_new();
-    ecore_hash_set_free_value(entangle_eapps, entangle_eapps_cb_free);
+    ecore_hash_free_value_cb_set(entangle_eapps, entangle_eapps_cb_free);
     while ((name = ecore_list_next(eapps)))
     {
         char *ret;

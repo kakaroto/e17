@@ -62,13 +62,13 @@ ecrin_enum_display (Ecrin_Enum *e)
   printf ("\n");
   printf ("enum %s\n", e->name);
   printf ("{\n");
-  ecore_list_goto_first (e->items);
+  ecore_list_first_goto (e->items);
   while ((item = ecore_list_next (e->items)))
     {
       printf ("  %s", item->name);
       if (item->value)
 	printf (" = %s", item->value);
-      if (ecore_list_index (e->items) != ecore_list_nodes (e->items))
+      if (ecore_list_index (e->items) != ecore_list_count (e->items))
 	printf (",");
       printf ("\n");
     }
@@ -130,7 +130,7 @@ ecrin_enum_free (Ecrin_Enum *e)
     free (e->name);
 
   /* free the list */
-  ecore_list_goto_first (e->items);
+  ecore_list_first_goto (e->items);
   while ((item = ecore_list_next (e->items)))
     {
       ecrin_enum_item_free (item);

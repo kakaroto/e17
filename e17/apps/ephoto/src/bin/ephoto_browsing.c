@@ -11,15 +11,15 @@ Ecore_List *get_directories(const char *directory)
 	{
 		ls = ecore_list_new();
 		files = ecore_list_new();
-		ecore_list_set_free_cb(files, free);
+		ecore_list_free_cb_set(files, free);
 		if (strcmp(directory, "/"))
 		{
 			ecore_list_append(files, strdup(".."));
 		}
 		ls = ecore_file_ls(directory);
-		while (!ecore_list_is_empty(ls))
+		while (!ecore_list_empty_is(ls))
 		{
-			file = ecore_list_remove_first(ls);
+			file = ecore_list_first_remove(ls);
 			if (strncmp(file, ".", 1))
 			{
 				if (strcmp(directory, "/"))
@@ -43,7 +43,7 @@ Ecore_List *get_directories(const char *directory)
 	{
 		files = NULL;
 	}
-	ecore_list_goto_first(files);
+	ecore_list_first_goto(files);
 	return files;
 }
 
@@ -58,12 +58,12 @@ Ecore_List *get_images(const char *directory)
         {
                 ls = ecore_list_new();
                 files = ecore_dlist_new();
-		ecore_dlist_set_free_cb(files, free);
+		ecore_dlist_free_cb_set(files, free);
 
                 ls = ecore_file_ls(directory);
-                while (!ecore_list_is_empty(ls))
+                while (!ecore_list_empty_is(ls))
                 {
-                        file = ecore_list_remove_first(ls);
+                        file = ecore_list_first_remove(ls);
                         if (strncmp(file, ".", 1))
                         {
                                 if (strcmp(directory, "/"))
@@ -95,6 +95,6 @@ Ecore_List *get_images(const char *directory)
 	{
 		files = NULL;
 	}
-	ecore_dlist_goto_first(files);
+	ecore_dlist_first_goto(files);
 	return files;
 }

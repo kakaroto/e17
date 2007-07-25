@@ -99,7 +99,7 @@ storage_free(Storage *storage)
   printf("storage_free: %s\n", storage->udi);
 
   /* disconnect storage from volume */
-  ecore_list_goto_first(storage->volumes);
+  ecore_list_first_goto(storage->volumes);
   while ((v = ecore_list_next(storage->volumes)))
     v->storage = NULL;
   ecore_list_destroy(storage->volumes);
@@ -377,7 +377,7 @@ cb_test_get_all_devices(void *user_data, void *reply_data, DBusError *error)
     return;
   }
 
-  ecore_list_goto_first(ret->strings);
+  ecore_list_first_goto(ret->strings);
   while ((device = ecore_list_next(ret->strings)))
   {
     printf("device: %s\n", device);
@@ -399,7 +399,7 @@ cb_test_find_device_by_capability_storage(void *user_data, void *reply_data, DBu
     return;
   }
 
-  ecore_list_goto_first(ret->strings);
+  ecore_list_first_goto(ret->strings);
   while ((device = ecore_list_next(ret->strings)))
     storage_append(device);
 }
@@ -419,7 +419,7 @@ cb_test_find_device_by_capability_volume(void *user_data, void *reply_data, DBus
     return;
   }
 
-  ecore_list_goto_first(ret->strings);
+  ecore_list_first_goto(ret->strings);
   while ((device = ecore_list_next(ret->strings)))
     volume_append(device);
 }
@@ -656,13 +656,13 @@ cb_device_tree_expandable_get(void *data, unsigned int row)
   devices = data;
   if (!devices) return FALSE;
 
-  dev = ecore_list_goto_index(devices, row);
+  dev = ecore_list_index_goto(devices, row);
   if (!dev) return FALSE;
 
   if (dev->type == DEVICE_TYPE_STORAGE)
   {
     Storage *s = (Storage *)dev;
-    if (ecore_list_nodes(s->volumes) > 0)
+    if (ecore_list_count(s->volumes) > 0)
       return TRUE;
   }
 
@@ -680,7 +680,7 @@ cb_device_tree_expansion_data_fetch(void *data, unsigned int parent)
   devices = data;
   if (!devices) return NULL;
 
-  dev = ecore_list_goto_index(devices, parent);
+  dev = ecore_list_index_goto(devices, parent);
   
   if (!dev) return NULL;
   if (dev->type != DEVICE_TYPE_STORAGE) return NULL;
@@ -793,9 +793,9 @@ main(int argc, char **argv)
   }
 
   storage_devices = ecore_list_new();
-  ecore_list_set_free_cb(storage_devices, ECORE_FREE_CB(storage_free));
+  ecore_list_free_cb_set(storage_devices, ECORE_FREE_CB(storage_free));
   volumes = ecore_list_new();
-  ecore_list_set_free_cb(volumes, ECORE_FREE_CB(volume_free));
+  ecore_list_free_cb_set(volumes, ECORE_FREE_CB(volume_free));
 
 #if EWL_GUI
   win = mountbox_mainwin_new();

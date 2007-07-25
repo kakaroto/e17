@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
 	start = ecore_time_get();
 
-	ecore_list_goto_first(files);
+	ecore_list_first_goto(files);
 	while ((file = ecore_list_next(files))) {
 		char *realpath;
 		char fullpath[PATH_MAX];
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
 	sleep(5);
 
 	start = ecore_time_get();
-	ecore_list_goto_first(files);
+	ecore_list_first_goto(files);
 	while ((file = ecore_list_next(files))) {
 		pid_t pid;
 		char *realpath;

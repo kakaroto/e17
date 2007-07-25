@@ -410,7 +410,7 @@ ewl_config_system_save(Ewl_Config *cfg)
 
 	/* add all the system data */
 	keys = ecore_hash_keys(cfg->data.system);
-	ecore_list_goto_first(keys);
+	ecore_list_first_goto(keys);
 	while ((key = ecore_list_next(keys)))
 	{
 		ecore_hash_set(hash, key, 
@@ -420,7 +420,7 @@ ewl_config_system_save(Ewl_Config *cfg)
 
 	/* set the user data over top */
 	keys = ecore_hash_keys(cfg->data.user);
-	ecore_list_goto_first(keys);
+	ecore_list_first_goto(keys);
 	while ((key = ecore_list_next(keys)))
 	{
 		ecore_hash_set(hash, key,
@@ -485,7 +485,7 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
 	}
 	
 	keys = ecore_hash_keys(hash);
-	ecore_list_goto_first(keys);
+	ecore_list_first_goto(keys);
 	while ((key = ecore_list_next(keys)))
 	{
 		int len;
@@ -597,11 +597,11 @@ ewl_config_load(Ewl_Config *cfg)
 	 * on all config inits, we just want this to happen on EWL config
 	 * init ... */
 	/* update the evas info for the embeds */
-	if (ewl_embed_list && !ecore_list_is_empty(ewl_embed_list)) 
+	if (ewl_embed_list && !ecore_list_empty_is(ewl_embed_list)) 
 	{
 		Ewl_Embed *e;
 
-		ecore_list_goto_first(ewl_embed_list);
+		ecore_list_first_goto(ewl_embed_list);
 		while ((e = ecore_list_next(ewl_embed_list)) != NULL) 
 		{
 			if (!e->canvas) continue;
@@ -629,8 +629,8 @@ ewl_config_create_hash(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-	ecore_hash_set_free_key(hash, free);
-	ecore_hash_set_free_value(hash, free);
+	ecore_hash_free_key_cb_set(hash, free);
+	ecore_hash_free_value_cb_set(hash, free);
 
 	DRETURN_PTR(hash, DLEVEL_STABLE);
 }

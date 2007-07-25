@@ -217,9 +217,9 @@ _gd_process_dir(Egui_Graphics_Dialog egd, char *dir)
    Ecore_List *glist = ecore_file_ls(dir);
    char* first;
 
-   if(glist && !ecore_list_is_empty(glist))
+   if(glist && !ecore_list_empty_is(glist))
    {
-	   ecore_list_goto_first(glist);
+	   ecore_list_first_goto(glist);
 
 	   char* graphic;
 	   first = strdup(ecore_list_first(glist));

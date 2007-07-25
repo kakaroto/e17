@@ -182,8 +182,8 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 		ecore_list_append(path_list, strdup(p));
 
 	/* find the point at which the two lists differ */
-	ecore_list_goto_first(list->dirs);
-	ecore_list_goto_first(path_list);
+	ecore_list_first_goto(list->dirs);
+	ecore_list_first_goto(path_list);
 	while (1)
 	{
 		size_t len1, len2;
@@ -209,7 +209,7 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 	}
 
 	/* remove all of the nodes after this one */
-	ecore_list_goto_index(list->dirs, i);
+	ecore_list_index_goto(list->dirs, i);
 	while((d = ecore_list_remove(list->dirs)))
 	{
 		ewl_widget_destroy(d->list);
@@ -218,7 +218,7 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 	}
 
 	/* build up our base path */
-	ecore_list_goto_first(path_list);
+	ecore_list_first_goto(path_list);
 	while(count != i)
 	{
 		strcat(path, ecore_list_next(path_list));
@@ -331,7 +331,7 @@ ewl_filelist_column_shift_handle(Ewl_Filelist *fl, Ewl_Widget *clicked)
 	list = EWL_FILELIST_COLUMN(fl);
 	parent = clicked->parent;
 
-	ecore_list_goto_first(list->dirs);
+	ecore_list_first_goto(list->dirs);
 	while ((d = ecore_list_next(list->dirs)))
 	{
 		dir_parent = EWL_CONTAINER(d->list);
@@ -383,7 +383,7 @@ ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 	 * the parent widget. we can assemble a path from that */
 	parent = w->parent;
 
-	ecore_list_goto_first(fl->dirs);
+	ecore_list_first_goto(fl->dirs);
 	while ((d = ecore_list_next(fl->dirs)))
 	{
 		strcat(path, d->dir);
@@ -429,7 +429,7 @@ ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *ev, void *data)
 	memset(path, '\0', PATH_MAX);
 
 	parent = w->parent;
-	ecore_list_goto_first(fl->dirs);
+	ecore_list_first_goto(fl->dirs);
 	while ((d = ecore_list_next(fl->dirs)))
 	{
 		strcat(path, d->dir);

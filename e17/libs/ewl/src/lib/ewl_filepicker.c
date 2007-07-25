@@ -147,7 +147,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_widget_show(fp->file_entry);
 
 	fp->filters = ecore_list_new();
-	ecore_list_set_free_cb(fp->filters, 
+	ecore_list_free_cb_set(fp->filters, 
 				ECORE_FREE_CB(ewl_filepicker_filter_free_cb));
 	ewl_filepicker_filter_add(fp, "All files", NULL);
 
@@ -662,7 +662,7 @@ ewl_filepicker_cb_type_fetch(void *data, unsigned int row,
 	DCHECK_PARAM_PTR_RET("data", data, NULL);
 
 	fp = data;
-	ecore_list_goto_index(fp->filters, row);
+	ecore_list_index_goto(fp->filters, row);
 	filter = ecore_list_current(fp->filters);
 
 	DRETURN_PTR(filter->name, DLEVEL_STABLE);
@@ -678,7 +678,7 @@ ewl_filepicker_cb_type_count(void *data)
 
 	fp = data;
 
-	DRETURN_INT(ecore_list_nodes(fp->filters), DLEVEL_STABLE);
+	DRETURN_INT(ecore_list_count(fp->filters), DLEVEL_STABLE);
 }
 
 static Ewl_Widget *
@@ -692,7 +692,7 @@ ewl_filepicker_cb_type_header(void *data, unsigned int col)
 	DCHECK_PARAM_PTR_RET("data", data, NULL);
 
 	fp = data;
-	ecore_list_goto_index(fp->filters, col);
+	ecore_list_index_goto(fp->filters, col);
 	filter = ecore_list_current(fp->filters);
 
 	w = ewl_entry_new();
@@ -751,7 +751,7 @@ ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev __UNUSED__,
 
 	fp = data;
 	idx = ewl_mvc_selected_get(EWL_MVC(w));
-	ecore_list_goto_index(fp->path, idx->row);
+	ecore_list_index_goto(fp->path, idx->row);
 			
 	ewl_filepicker_directory_set(fp, ecore_list_current(fp->path));
 
@@ -791,7 +791,7 @@ ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev __UNUSED__,
 	idx = ewl_mvc_selected_get(EWL_MVC(w));
 	if (idx)
 	{
-		ecore_list_goto_index(fp->filters, idx->row);
+		ecore_list_index_goto(fp->filters, idx->row);
 		filter = ecore_list_current(fp->filters);
 		ewl_filepicker_filter_set(fp, filter->filter);
 	}
@@ -813,10 +813,10 @@ ewl_filepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 	fp = EWL_FILEPICKER(w);
 
-	while ((file = ecore_list_remove_first(fp->path)))
+	while ((file = ecore_list_first_remove(fp->path)))
 		FREE(file);
 
-	while ((filter = ecore_list_remove_first(fp->filters)))
+	while ((filter = ecore_list_first_remove(fp->filters)))
 	{
 		FREE(filter->name);
 		IF_FREE(filter->filter);

@@ -242,7 +242,7 @@ ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas, Ewl_Embed_Window *canvas_wind
 		ewl_realize_request(EWL_WIDGET(emb));
 
 	paths = ewl_theme_font_path_get();
-	ecore_list_goto_first(paths);
+	ecore_list_first_goto(paths);
 	while ((font_path = ecore_list_next(paths)))
 		evas_font_path_append(canvas, font_path);
 
@@ -433,7 +433,7 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
 		else
 		{
 			ewl_embed_focused_widget_set(embed, 
-				ecore_dlist_goto_first(embed->tab_order));
+				ecore_dlist_first_goto(embed->tab_order));
 
 			if (!embed->last.focused)
 				ewl_embed_focused_widget_set(embed, 
@@ -1103,7 +1103,7 @@ ewl_embed_font_path_add(char *path)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("path", path);
 
-	ecore_list_goto_first(ewl_embed_list);
+	ecore_list_first_goto(ewl_embed_list);
 	while ((e = ecore_list_next(ewl_embed_list))) {
 		if (REALIZED(e))
 			evas_font_path_append(e->canvas, path);
@@ -1127,7 +1127,7 @@ ewl_embed_canvas_window_find(Ewl_Embed_Window *window)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("window", window, NULL);
 
-	ecore_list_goto_first(ewl_embed_list);
+	ecore_list_first_goto(ewl_embed_list);
 	while ((retemb = ecore_list_next(ewl_embed_list)) != NULL) {
 		if (retemb->canvas_window == window)
 			DRETURN_PTR(retemb, DLEVEL_STABLE);
@@ -1225,7 +1225,7 @@ ewl_embed_object_request(Ewl_Embed *e, char *type)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	obj_list = ecore_hash_get(e->obj_cache, type);
-	if (obj_list) obj = ecore_list_remove_first(obj_list);
+	if (obj_list) obj = ecore_list_first_remove(obj_list);
 
 	DRETURN_PTR(obj, DLEVEL_STABLE);
 }
@@ -1265,7 +1265,7 @@ ewl_embed_tab_order_append(Ewl_Embed *e, Ewl_Widget *w)
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	ewl_embed_tab_order_insert(e, w, ecore_list_nodes(e->tab_order));
+	ewl_embed_tab_order_insert(e, w, ecore_list_count(e->tab_order));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1310,13 +1310,13 @@ ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, unsigned int idx)
 		ecore_dlist_remove(e->tab_order);
 	}
 	
-	ecore_dlist_goto_index(e->tab_order, idx);
+	ecore_dlist_index_goto(e->tab_order, idx);
 	ecore_dlist_insert(e->tab_order, w);
 
 	/* if we inserted before or at our currently focused item then we
 	 * need to advance our current item to the correct spot */
 	if (current_idx <= (int)idx) current_idx ++;
-	ecore_dlist_goto_index(e->tab_order, current_idx);
+	ecore_dlist_index_goto(e->tab_order, current_idx);
 
 	ewl_object_in_tab_list_set(EWL_OBJECT(w), TRUE);
 
@@ -1352,7 +1352,7 @@ ewl_embed_tab_order_insert_after(Ewl_Embed *e, Ewl_Widget *w,
 	}
 
 	idx = ecore_dlist_index(e->tab_order);
-	ecore_dlist_goto_index(e->tab_order, cur_idx);
+	ecore_dlist_index_goto(e->tab_order, cur_idx);
 
 	ewl_embed_tab_order_insert(e, w, idx + 1);
 
@@ -1388,7 +1388,7 @@ ewl_embed_tab_order_insert_before(Ewl_Embed *e, Ewl_Widget *w,
 	}
 
 	idx = ecore_dlist_index(e->tab_order);
-	ecore_dlist_goto_index(e->tab_order, cur_idx);
+	ecore_dlist_index_goto(e->tab_order, cur_idx);
 
 	ewl_embed_tab_order_insert(e, w, idx);
 
@@ -1430,7 +1430,7 @@ void ewl_embed_tab_order_next(Ewl_Embed *e)
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
 	ewl_embed_tab_order_change(e, ecore_dlist_next, 
-					ecore_dlist_goto_first);
+					ecore_dlist_first_goto);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1449,7 +1449,7 @@ ewl_embed_tab_order_previous(Ewl_Embed *e)
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
 	ewl_embed_tab_order_change(e, ecore_dlist_previous, 
-					ecore_dlist_goto_last);
+					ecore_dlist_last_goto);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1919,7 +1919,7 @@ ewl_embed_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Configure each of the child widgets.
 	 */
-	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
 		int size;
 
@@ -2064,12 +2064,12 @@ ewl_embed_cache_cleanup(Ewl_Embed *emb)
 		 * Iterate over all object types destroying them as we go. No
 		 * need to free the key string.
 		 */
-		while ((key = ecore_list_remove_first(key_list))) {
+		while ((key = ecore_list_first_remove(key_list))) {
 			/*
 			 * Now queue all objects for destruction.
 			 */
 			obj_list = ecore_hash_remove(emb->obj_cache, key);
-			while ((obj = ecore_list_remove_first(obj_list)))
+			while ((obj = ecore_list_first_remove(obj_list)))
 				ewl_canvas_object_destroy(obj);
 
 			IF_FREE_LIST(obj_list);

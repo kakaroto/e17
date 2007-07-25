@@ -143,7 +143,7 @@ parse_ls_line(ftp_conn * conn, char *line, int is_stat)
      }
    if (!(conn->filled))
      {
-        int columns = ecore_list_nodes(fields);
+        int columns = ecore_list_count(fields);
 
         if (columns == 4)
           {
@@ -177,9 +177,9 @@ parse_ls_line(ftp_conn * conn, char *line, int is_stat)
           }
         conn->filled = 1;
      }
-   ref->path = ecore_list_goto_index(fields, conn->file);
-   if (!(strncmp(ecore_list_goto_index(fields, conn->type), "d", 1))
-       || strstr(ecore_list_goto_index(fields, conn->type), "DIR"))
+   ref->path = ecore_list_index_goto(fields, conn->file);
+   if (!(strncmp(ecore_list_index_goto(fields, conn->type), "d", 1))
+       || strstr(ecore_list_index_goto(fields, conn->type), "DIR"))
      {
         ref->file_type = EVFS_FILE_DIRECTORY;
      }
@@ -294,7 +294,7 @@ evfs_ftp_dir_list(evfs_client * client, evfs_command * command,
      }
    else
      {
-        printf("Listed %i files.\n", ecore_list_nodes(files));
+        printf("Listed %i files.\n", ecore_list_count(files));
 
         /*Set out return pointer.. */
         *directory_list = files;

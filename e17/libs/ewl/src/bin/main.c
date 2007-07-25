@@ -128,7 +128,7 @@ main(int argc, char **argv)
 		{
 			Ewl_Test *t;
 
-			ecore_list_goto_first(tests);
+			ecore_list_first_goto(tests);
 			while ((t = ecore_list_next(tests)))
 				run_window_test(t, MAIN_WIDTH, MAIN_HEIGHT);
 		}
@@ -136,7 +136,7 @@ main(int argc, char **argv)
 			unit_test = 1;
 
 		/* see if this thing was a test to run */
-		ecore_list_goto_first(tests);
+		ecore_list_first_goto(tests);
 		while ((t = ecore_list_next(tests)))
 		{
 			if (!strcasecmp(argv[i], t->name))
@@ -237,7 +237,7 @@ ewl_test_print_tests(void)
 	Ewl_Test *t;
 
 	printf("Ewl_Test Test List:\n");
-	ecore_list_goto_first(tests);
+	ecore_list_first_goto(tests);
 	while ((t = ecore_list_next(tests)))
 		printf("  %s\n", t->name);
 }
@@ -365,14 +365,14 @@ ewl_test_setup_tests(void)
 	tests = ecore_list_new();
 	if (!tests) return 0;
 
-	ecore_list_set_free_cb(tests, ECORE_FREE_CB(free));
+	ecore_list_free_cb_set(tests, ECORE_FREE_CB(free));
 
 	snprintf(buf, sizeof(buf), "%s", PACKAGE_LIB_DIR "/ewl/tests");
 	list = ecore_file_ls(buf);
-	if (list && ecore_list_nodes(list) > 0)
+	if (list && ecore_list_count(list) > 0)
 	{
-		ecore_list_goto_first(list);
-		while ((file = ecore_list_remove_first(list)))
+		ecore_list_first_goto(list);
+		while ((file = ecore_list_first_remove(list)))
 		{
 			int len;
 
@@ -407,7 +407,7 @@ ewl_test_setup_tests(void)
 	}
 
 	/* no tests found ... */
-	if (ecore_list_nodes(tests) == 0) return 0;
+	if (ecore_list_count(tests) == 0) return 0;
 
 	return 1;
 }
@@ -494,7 +494,7 @@ create_main_test_window(Ewl_Container *box)
 
 
 	/* add the tests to the category rows */
-	ecore_list_goto_first(tests);
+	ecore_list_first_goto(tests);
 	while ((t = ecore_list_next(tests)))
 	{
 		Ecore_List *parent = NULL;
@@ -1051,7 +1051,7 @@ ewl_test_cb_category_expandable(void *data __UNUSED__,
 static void *
 ewl_test_cb_category_expansion_fetch(void *data, unsigned int row)
 {
-	ecore_list_goto_index(data, row);
+	ecore_list_index_goto(data, row);
 	return ecore_list_current(data);
 }
 
@@ -1074,7 +1074,7 @@ ewl_test_cb_expansion_fetch(void *data, unsigned int row,
 {
 	Ewl_Test *test;
 
-	ecore_list_goto_index(data, row);
+	ecore_list_index_goto(data, row);
 	test = ecore_list_current(data);
 
 	return (char *)test->name;
@@ -1099,12 +1099,12 @@ ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__,
 	}
 
 	/* get the test */
-	ecore_list_goto_index(sel->sel.data, sel->row);
+	ecore_list_index_goto(sel->sel.data, sel->row);
 	test = ecore_list_current(sel->sel.data);
 
 	/* we need to determine if this is the unit test case. if it is we
 	 * need to treat it specially */
-	ecore_list_goto_last(tree_data);
+	ecore_list_last_goto(tree_data);
 	unit = ecore_list_current(tree_data);
 	if (unit == sel->sel.data)
 		run_unit_test_boxed(test);

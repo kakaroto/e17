@@ -27,11 +27,11 @@ ewl_icon_theme_init(void)
 	if (!ewl_icon_theme_cache)
 	{
 		ewl_icon_theme_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-		ecore_hash_set_free_key(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
+		ecore_hash_free_key_cb_set(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
 
 		ewl_icon_fallback_theme_cache = ecore_hash_new(
 						ecore_str_hash, ecore_str_compare);
-		ecore_hash_set_free_key(ewl_icon_fallback_theme_cache, 
+		ecore_hash_free_key_cb_set(ewl_icon_fallback_theme_cache, 
 						ewl_icon_theme_cb_free);
 	}
 
@@ -78,8 +78,8 @@ ewl_icon_theme_theme_change(void)
 	IF_FREE_HASH(ewl_icon_theme_cache);
 
 	ewl_icon_theme_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-	ecore_hash_set_free_key(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
-	ecore_hash_set_free_value(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
+	ecore_hash_free_key_cb_set(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
+	ecore_hash_free_value_cb_set(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

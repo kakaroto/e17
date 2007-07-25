@@ -98,8 +98,8 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 
 		   flist = evfs_metadata_file_group_list(group_name);
 
-		   ecore_list_goto_first(flist);
-		   while ( (item = ecore_list_remove_first(flist))) {
+		   ecore_list_first_goto(flist);
+		   while ( (item = ecore_list_first_remove(flist))) {
 			   path = evfs_parse_uri(item);
 			   ecore_list_append(*list, path->files[0]);
 

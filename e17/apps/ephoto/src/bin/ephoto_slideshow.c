@@ -38,7 +38,7 @@ static void show_first_image(Ewl_Widget *w, void *event, void *data)
 {
 	char *image_path;
 	
-	ecore_dlist_goto_first(em->images);
+	ecore_dlist_first_goto(em->images);
 	image_path = ecore_dlist_current(em->images);
 
 	ewl_image_file_set(EWL_IMAGE(w), image_path, NULL);

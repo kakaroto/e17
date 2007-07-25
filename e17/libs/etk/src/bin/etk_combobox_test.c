@@ -204,13 +204,13 @@ static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, cha
    
    files = ecore_file_ls(dir_stripped);
    ecore_list_sort(files, (Ecore_Compare_Cb)strcasecmp, 'a');
-   ecore_list_goto_first(files);
+   ecore_list_first_goto(files);
    etk_combobox_entry_clear(combobox_entry);
    etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(combobox_entry)), 
 		      dir_stripped);
 
    /* add navigation link to parent level dir if possible */
-   parent = ecore_file_get_dir(dir_stripped);
+   parent = ecore_file_dir_get(dir_stripped);
    if (ecore_file_is_dir(parent))
      etk_combobox_entry_item_prepend(combobox_entry,
 				     etk_image_new_from_stock(ETK_STOCK_PLACES_FOLDER,
@@ -257,7 +257,7 @@ static void _etk_combobox_entry_active_item_changed_cb(Etk_Object *object, void 
    if (!strcmp(file, ".."))
      {
 	char *parent;
-	parent = ecore_file_get_dir(cur_dir);
+	parent = ecore_file_dir_get(cur_dir);
 	snprintf(path, sizeof(path), "%s", parent);
 	free(parent);
      }

@@ -148,7 +148,7 @@ _entropy_etk_context_menu_file_delete_cb(Etk_Object *object, void *data)
 	} else {
 		entropy_generic_file* file;
 
-		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
+		ecore_list_first_goto(_entropy_etk_context_menu_selected_files);
 		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
 			entropy_plugin_filesystem_file_remove(file,
 				_entropy_etk_context_menu_current_instance);			
@@ -231,7 +231,7 @@ _entropy_etk_context_menu_group_file_copy_cb(Etk_Object *object, void *data)
 	} else {
 		entropy_generic_file* file;
 
-		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
+		ecore_list_first_goto(_entropy_etk_context_menu_selected_files);
 		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
 			entropy_core_selected_file_add(file);
 		}
@@ -251,7 +251,7 @@ _entropy_etk_context_menu_group_file_cut_cb(Etk_Object *object, void *data)
 	} else {
 		entropy_generic_file* file;
 
-		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
+		ecore_list_first_goto(_entropy_etk_context_menu_selected_files);
 		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
 			entropy_core_selected_file_add(file);
 		}
@@ -269,14 +269,14 @@ _entropy_etk_context_menu_trash_copy_cb(Etk_Object *object, void *data)
 	} else {
 		entropy_generic_file* file;
 
-		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
+		ecore_list_first_goto(_entropy_etk_context_menu_selected_files);
 		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
 			ecore_list_append(files,file);
 		}
 		
 	}
 
-	if (ecore_list_nodes(files) > 0) {
+	if (ecore_list_count(files) > 0) {
 		entropy_plugin_filesystem_file_move_multi(files, "trash:///", 
 			_entropy_etk_context_menu_current_instance);	
 	}
@@ -319,7 +319,7 @@ _entropy_etk_context_menu_group_file_add_remove_cb(Etk_Object *object, void *dat
 	} else {
 		entropy_generic_file* file;
 
-		ecore_list_goto_first(_entropy_etk_context_menu_selected_files);
+		ecore_list_first_goto(_entropy_etk_context_menu_selected_files);
 		while ( (file = ecore_list_next(_entropy_etk_context_menu_selected_files))) {
 			if (!mode) 
 				entropy_plugin_filesystem_file_group_add(file, (char*)label);
@@ -365,7 +365,7 @@ entropy_etk_context_menu_metadata_groups_populate()
        
 
        l = entropy_plugin_filesystem_metadata_groups_retrieve();
-       ecore_list_goto_first(l);
+       ecore_list_first_goto(l);
        while ( (str = ecore_list_next(l))) {
 	       printf("Adding %s\n", str);
 
@@ -611,7 +611,7 @@ void entropy_etk_context_menu_popup_multi(entropy_gui_component_instance* instan
 	_entropy_etk_context_menu_selected_files = NULL;
 
 	_entropy_etk_context_menu_selected_files = ecore_list_new();
-	ecore_list_goto_first(current_files);
+	ecore_list_first_goto(current_files);
 	while ( (file = ecore_list_next(current_files))) {
 		ecore_list_append(_entropy_etk_context_menu_selected_files, file);
 	}

@@ -126,7 +126,7 @@ ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	{
 		Ewl_Text_Trigger_Area *area;
 
-		while ((area = ecore_list_remove_first(t->areas)))
+		while ((area = ecore_list_first_remove(t->areas)))
 			ewl_widget_destroy(EWL_WIDGET(area));
 
 		IF_FREE_LIST(t->areas);
@@ -211,7 +211,7 @@ ewl_text_trigger_length_set(Ewl_Text_Trigger *t, unsigned int char_len)
 		if (t->areas)
 		{
 			Ewl_Text_Trigger_Area *area;
-			while ((area = ecore_list_remove_first(t->areas)))
+			while ((area = ecore_list_first_remove(t->areas)))
 				ewl_widget_destroy(EWL_WIDGET(area));
 		}
 	}
@@ -327,7 +327,7 @@ ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig)
 	{
 		Ewl_Text_Trigger_Area *area;
 
-		while ((area = ecore_list_remove_first(trig->areas)))
+		while ((area = ecore_list_first_remove(trig->areas)))
 			ewl_widget_destroy(EWL_WIDGET(area));
 	}
 
@@ -356,7 +356,7 @@ ewl_text_trigger_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	if (!trig->areas) DRETURN(DLEVEL_STABLE);
 
-	ecore_list_goto_first(trig->areas);
+	ecore_list_first_goto(trig->areas);
 	while ((area = ecore_list_next(trig->areas)))
 		ewl_widget_configure(EWL_WIDGET(area));
 
@@ -480,7 +480,7 @@ ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev __UNUSED__,
 	trig = EWL_TEXT_TRIGGER(w);
 	if (!trig->areas) DRETURN(DLEVEL_STABLE);;
 
-	ecore_list_goto_first(trig->areas);
+	ecore_list_first_goto(trig->areas);
 	while ((area = ecore_list_next(trig->areas)))
 		ewl_widget_hide(area);
 
@@ -508,7 +508,7 @@ ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev __UNUSED__,
 	trig = EWL_TEXT_TRIGGER(w);
 	if (!trig->areas) DRETURN(DLEVEL_STABLE);
 
-	ecore_list_goto_first(trig->areas);
+	ecore_list_first_goto(trig->areas);
 	while ((area = ecore_list_next(trig->areas)))
 		ewl_widget_show(area);
 	

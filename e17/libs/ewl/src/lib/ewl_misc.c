@@ -227,8 +227,8 @@ ewl_init(int *argc, char **argv)
 	/*
 	 * Cleanup the queue buffers when the management lists get freed.
 	 */
-	ecore_list_set_free_cb(configure_active, free);
-	ecore_list_set_free_cb(configure_available, free);
+	ecore_list_free_cb_set(configure_active, free);
+	ecore_list_free_cb_set(configure_available, free);
 
 	if (!ewl_config_init()) {
 		fprintf(stderr, "Could not initilaize Ewl Config.\n");
@@ -327,7 +327,7 @@ ewl_shutdown(void)
 	if (--ewl_init_count)
 		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 
-	while ((hook = ecore_list_remove_first(shutdown_hooks)))
+	while ((hook = ecore_list_first_remove(shutdown_hooks)))
 		hook();
 	IF_FREE_LIST(shutdown_hooks);
 
@@ -338,7 +338,7 @@ ewl_shutdown(void)
 	{
 		Ewl_Widget *emb;
 
-		while ((emb = ecore_list_remove_first(ewl_embed_list)))
+		while ((emb = ecore_list_first_remove(ewl_embed_list)))
 			ewl_widget_destroy(emb);
 
 		while (ewl_garbage_collect_idler(NULL) > 0)
@@ -367,7 +367,7 @@ ewl_shutdown(void)
 	IF_FREE_LIST(child_add_list);
 
 	/* shutdown all the subsystems */
-	while ((shutdown = ecore_list_remove_first(shutdown_queue)))
+	while ((shutdown = ecore_list_first_remove(shutdown_queue)))
 		shutdown();
 	IF_FREE_LIST(shutdown_queue);
 
@@ -442,13 +442,13 @@ ewl_idle_render(void *data __UNUSED__)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	if (ecore_list_is_empty(ewl_embed_list))
+	if (ecore_list_empty_is(ewl_embed_list))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
 	 * Freeze events on the evases to reduce overhead
 	 */
-	ecore_list_goto_first(ewl_embed_list);
+	ecore_list_first_goto(ewl_embed_list);
 	while ((emb = ecore_list_next(ewl_embed_list)) != NULL)
 		ewl_embed_freeze(emb);
 
@@ -457,22 +457,22 @@ ewl_idle_render(void *data __UNUSED__)
 	 * unnecessary work done from configuration. Then display new widgets,
 	 * finally layout the widgets.
 	 */
-	if (!ecore_list_is_empty(destroy_list) ||
-			!ecore_list_is_empty(free_evas_list) ||
-			!ecore_list_is_empty(free_evas_object_list))
+	if (!ecore_list_empty_is(destroy_list) ||
+			!ecore_list_empty_is(free_evas_list) ||
+			!ecore_list_empty_is(free_evas_object_list))
 		ewl_garbage_collect = ecore_idler_add(ewl_garbage_collect_idler,
 						      NULL);
 
-	if (!ecore_list_is_empty(realize_list))
+	if (!ecore_list_empty_is(realize_list))
 		ewl_realize_queue();
 
-	while (!ecore_list_is_empty(configure_active)) {
+	while (!ecore_list_empty_is(configure_active)) {
 		ewl_configure_queue_run();
 
 		/*
 		 * Reclaim obscured objects at this point
 		 */
-		while ((w = ecore_list_remove_first(obscure_list))) {
+		while ((w = ecore_list_first_remove(obscure_list))) {
 			/*
 			 * Ensure the widget is still obscured, then mark it
 			 * revealed so that the obscure will succeed (and mark
@@ -485,7 +485,7 @@ ewl_idle_render(void *data __UNUSED__)
 		/*
 		 * Allocate objects to revealed widgets.
 		 */
-		while ((w = ecore_list_remove_first(reveal_list))) {
+		while ((w = ecore_list_first_remove(reveal_list))) {
 			/*
 			 * Follow the same logic as the obscure loop.
 			 */
@@ -502,7 +502,7 @@ ewl_idle_render(void *data __UNUSED__)
 	/*
 	 * Allow each embed to render itself, this requires thawing the evas.
 	 */
-	ecore_list_goto_first(ewl_embed_list);
+	ecore_list_first_goto(ewl_embed_list);
 	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
 		ewl_embed_thaw(emb);
 
@@ -654,7 +654,7 @@ ewl_init_parse_options(int *argc, char **argv)
 				while ((name = strchr(eng, '-')))
 					*name = '_';
 
-				ecore_list_goto_first(engines);
+				ecore_list_first_goto(engines);
 				while ((name = ecore_list_next(engines)))
 				{
 					if (!strcmp(eng, name))
@@ -726,7 +726,7 @@ ewl_print_help(void)
 		" AVAILABLE ENGINES\n");
 			
 	names = ewl_engine_names_get();
-	while ((name = ecore_list_remove_first(names)))
+	while ((name = ecore_list_first_remove(names)))
 	{
 		char *t;
 		while ((t = strchr(name, '_')))
@@ -805,7 +805,7 @@ ewl_configure_request(Ewl_Widget * w)
 	 */
 	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
 
-	queue_buffer = ecore_list_goto_last(configure_active);
+	queue_buffer = ecore_list_last_goto(configure_active);
 
 	/*
 	 * If the last buffer is full, it's not useful to us and we need a new
@@ -821,8 +821,8 @@ ewl_configure_request(Ewl_Widget * w)
 		 * Attempt to use a previously allocated buffer first, fallback
 		 * to allocating one.
 		 */
-		if (!ecore_list_is_empty(configure_available)) {
-			queue_buffer = ecore_list_remove_first(configure_available);
+		if (!ecore_list_empty_is(configure_available)) {
+			queue_buffer = ecore_list_first_remove(configure_available);
 		}
 		else {
 			queue_buffer = NEW(Ewl_Configure_Queue, 1);
@@ -894,7 +894,7 @@ ewl_configure_queue_run(void)
 	/*
 	 * Configure any widgets that need it.
 	 */
-	while ((queue_buffer = ecore_list_remove_first(configure_active))) {
+	while ((queue_buffer = ecore_list_first_remove(configure_active))) {
 		int i;
 		for (i = 0; i < queue_buffer->end; i++) {
 			Ewl_Widget *w;
@@ -927,7 +927,7 @@ ewl_configure_cancel_request(Ewl_Widget *w)
 	Ewl_Configure_Queue *queue_buffer;
 	DENTER_FUNCTION(DLEVEL_TESTING);
 
-	ecore_list_goto_first(configure_active);
+	ecore_list_first_goto(configure_active);
 	while ((queue_buffer = ecore_list_next(configure_active))) {
 		int i;
 		for (i = 0; i < queue_buffer->end; i++) {
@@ -1029,7 +1029,7 @@ ewl_realize_queue(void)
 	 * can't be placed on this list unless their parent has been realized
 	 * or they are a toplevel widget.
 	 */
-	while ((w = ecore_list_remove_first(realize_list))) {
+	while ((w = ecore_list_first_remove(realize_list))) {
 		if (VISIBLE(w) && !REALIZED(w)) {
 			ewl_object_queued_add(EWL_OBJECT(w), 
 						EWL_FLAG_QUEUED_RPROCESS);
@@ -1044,7 +1044,7 @@ ewl_realize_queue(void)
 	 * Work our way back up the chain of widgets to resize from bottom to
 	 * top.
 	 */
-	while ((w = ecore_list_remove_first(child_add_list))) {
+	while ((w = ecore_list_first_remove(child_add_list))) {
 		/*
 		 * Check visibility in case the realize callback changed it.
 		 */
@@ -1164,7 +1164,7 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 	if (ewl_config_cache.gc_reap) printf("---\n");
 
 	while ((cleanup < EWL_GC_LIMIT) &&
-			(w = ecore_list_remove_first(destroy_list))) {
+			(w = ecore_list_first_remove(destroy_list))) {
 		if (ewl_object_queued_has(EWL_OBJECT(w),
 					  EWL_FLAG_QUEUED_CSCHEDULED))
 			ewl_configure_cancel_request(w);
@@ -1179,7 +1179,7 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		printf("Destroyed %d EWL objects\n", cleanup);
 	cleanup = 0;
 
-	while ((obj = ecore_list_remove_first(free_evas_object_list))) {
+	while ((obj = ecore_list_first_remove(free_evas_object_list))) {
 		evas_object_del(obj);
 		cleanup++;
 	}
@@ -1190,9 +1190,9 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 
 	/* make sure the widget and object lists are clear before trying to
 	 * remove the evas canvas */
-	if ((ecore_list_nodes(free_evas_object_list) == 0)
-			&& (ecore_list_nodes(destroy_list) == 0)) {
-		while ((evas = ecore_list_remove_first(free_evas_list))) {
+	if ((ecore_list_count(free_evas_object_list) == 0)
+			&& (ecore_list_count(destroy_list) == 0)) {
+		while ((evas = ecore_list_first_remove(free_evas_list))) {
 			evas_free(evas);
 			cleanup++;
 		}
@@ -1204,10 +1204,10 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 	/* We set the ewl_garbage_collect to NULL because when we return 0
 	 * (because destroy_list is empty) ecore will cleanup the idler
 	 * memory for us. */
-	if (!ecore_list_nodes(destroy_list))
+	if (!ecore_list_count(destroy_list))
 		ewl_garbage_collect = NULL;
 
-	DRETURN_INT(ecore_list_nodes(destroy_list), DLEVEL_STABLE);
+	DRETURN_INT(ecore_list_count(destroy_list), DLEVEL_STABLE);
 }
 
 #ifdef DEBUG_MALLOCDEBUG

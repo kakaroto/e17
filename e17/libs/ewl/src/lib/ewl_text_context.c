@@ -36,7 +36,7 @@ ewl_text_context_init(void)
 	{
 		context_hash = ecore_hash_new(ewl_text_context_hash_key,
 				ewl_text_context_hash_cmp);
-		ecore_hash_set_free_value(context_hash, 
+		ecore_hash_free_value_cb_set(context_hash, 
 						ewl_text_context_cb_free);
 	}
 

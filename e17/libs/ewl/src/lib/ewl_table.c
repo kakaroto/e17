@@ -197,7 +197,7 @@ ewl_table_col_row_get(Ewl_Table *t, Ewl_Cell *cell,
 
 	children = EWL_CONTAINER(t->grid)->children;
 
-	ecore_dlist_goto_first(children);
+	ecore_dlist_first_goto(children);
 	while ((child = ecore_dlist_next(children)) != NULL)
 	{
 		if (child == EWL_WIDGET(cell)) {
@@ -250,7 +250,7 @@ ewl_table_find(Ewl_Table *t, int start_col, int end_col,
 	list = ecore_list_new();
 	children = EWL_CONTAINER(t->grid)->children;
 
-	ecore_dlist_goto_first(children);
+	ecore_dlist_first_goto(children);
 	while ((child = ecore_dlist_next(children)) != NULL) {
 		gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
 						(void *) t->grid);
@@ -410,7 +410,7 @@ ewl_table_selected_get(Ewl_Table *t)
 	DCHECK_TYPE_RET("t", t, EWL_TABLE_TYPE, strdup(""));
 
 	children = EWL_CONTAINER(t->grid)->children;
-	ecore_dlist_goto_first(children);
+	ecore_dlist_first_goto(children);
 	while ((child = ecore_dlist_next(children)) != NULL) {
 		gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
 						(void *) t->grid);
@@ -420,7 +420,7 @@ ewl_table_selected_get(Ewl_Table *t)
 				t->selected.end_c == gc->end_col &&
 				t->selected.end_r == gc->end_row) {
 			
-			tw = (Ewl_Text *) ecore_dlist_goto_first(
+			tw = (Ewl_Text *) ecore_dlist_first_goto(
 					EWL_CONTAINER(child)->children);
 
 			DRETURN_PTR(ewl_text_text_get(tw), DLEVEL_STABLE);

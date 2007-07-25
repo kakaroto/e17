@@ -201,7 +201,7 @@ void get_theme_list() {
 	Ecore_List *list;
 	list = ecore_file_ls(path);
 	
-	ecore_list_goto_first(list);
+	ecore_list_first_goto(list);
 	char * data;
 	themes = NULL;
 	while ((data = (char *)ecore_list_next(list)))

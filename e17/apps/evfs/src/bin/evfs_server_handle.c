@@ -184,7 +184,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
                                                        &directory_list);
                   if (directory_list)
                     {
-                       while ((file = ecore_list_remove_first(directory_list)))
+                       while ((file = ecore_list_first_remove(directory_list)))
                          {
                             evfs_command *recursive_command = NEW(evfs_command);
 
@@ -561,7 +561,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 	             if (directory_list) {
         	          evfs_filereference *file = NULL;
 
-                	  while ((file = ecore_list_remove_first(directory_list))) {
+                	  while ((file = ecore_list_first_remove(directory_list))) {
 	                       evfs_filereference *source = NEW(evfs_filereference);
 	                       evfs_filereference *dest = NEW(evfs_filereference);
 	                       evfs_command *recursive_command = NEW(evfs_command);

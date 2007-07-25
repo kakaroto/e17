@@ -39,7 +39,7 @@ main (int argc, char *argv[])
 
   ewl_init (&argc, (char **)argv);
   str_data = ecore_list_new();
-  ecore_list_set_free_cb (str_data, free);
+  ecore_list_free_cb_set (str_data, free);
 
   /* We open the dvi file */
   dvi = ewl_dvi_new ();

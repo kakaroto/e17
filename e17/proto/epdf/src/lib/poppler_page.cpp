@@ -259,7 +259,7 @@ epdf_page_text_find (Epdf_Page    *page,
 			       &xMin, &yMin, &xMax, &yMax)) {
     if (!matches)
       matches = ecore_list_new ();
-    ecore_list_set_free_cb (matches, ECORE_FREE_CB (free));
+    ecore_list_free_cb_set (matches, ECORE_FREE_CB (free));
     match = (Epdf_Rectangle *)malloc (sizeof (Epdf_Rectangle));
     match->x1 = xMin;
     match->y1 = yMin;//height - yMax;

@@ -180,7 +180,7 @@ static int list_albums(void *notused, int argc, char **argv, char **col)
 /*Return a list of albums in the albums table*/ 
 Ecore_List *ephoto_db_list_albums(sqlite3 *db)
 {
-	if(!ecore_list_is_empty(albums))
+	if(!ecore_list_empty_is(albums))
 	{
 		ecore_list_destroy(albums);
 	}
@@ -226,11 +226,11 @@ Ecore_List *ephoto_db_list_images(sqlite3 *db,  const char *album)
 	char command[PATH_MAX];
 	char *id;
 
-	if(!ecore_list_is_empty(images_list))
+	if(!ecore_list_empty_is(images_list))
 	{
 		ecore_dlist_destroy(images_list);
 	}
-	if(!ecore_list_is_empty(image_ids))
+	if(!ecore_list_empty_is(image_ids))
 	{
 		ecore_list_destroy(image_ids);
 	}
@@ -245,9 +245,9 @@ Ecore_List *ephoto_db_list_images(sqlite3 *db,  const char *album)
 								album_id);
 	sqlite3_exec(db, command, list_image_ids, 0, 0);
 
-	while(!ecore_list_is_empty(image_ids))
+	while(!ecore_list_empty_is(image_ids))
 	{
-		id = ecore_list_remove_first(image_ids);
+		id = ecore_list_first_remove(image_ids);
 		snprintf(command, PATH_MAX, "SELECT path FROM images WHERE id"
 					    " = '%s'", id);			            
 	    	sqlite3_exec(db, command, list_images, 0, 0);

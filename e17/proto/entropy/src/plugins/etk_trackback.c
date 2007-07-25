@@ -111,7 +111,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			entropy_generic_file* traverse_file = 
 				entropy_core_parent_folder_file_get(event_file);
 
-			ecore_list_goto_first(trackback->levels);
+			ecore_list_first_goto(trackback->levels);
 			while ( ecore_list_current(trackback->levels) ) {
 				  entropy_generic_file* combo_file = 
 				       etk_object_data_get(ETK_OBJECT(ecore_list_current(trackback->levels)),"FILE");
@@ -139,7 +139,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			/*Check if new dir is a direct descendent...*/
 			if (hit == 1) {
 				/*HACK - We access combobox internals here..*/
-				ecore_list_goto_first(trackback->levels);
+				ecore_list_first_goto(trackback->levels);
 				Etk_Widget* last_combo;
 				if (  (last_combo = ecore_list_current(trackback->levels))) {
 					Etk_Combobox_Item* item = NULL;					
@@ -174,7 +174,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			
 			combo = etk_combobox_new_default();
 			
-			ecore_list_goto_first(fl);
+			ecore_list_first_goto(fl);
 			while ( (file = ecore_list_next(fl) )) {
 				Etk_Combobox_Item* item;
 				

@@ -32,7 +32,7 @@ cb_manager_get_devices(void *data, void *reply, DBusError *err)
   }
 
   devices = reply;
-  ecore_list_goto_first(devices);
+  ecore_list_first_goto(devices);
   printf("Got devices:\n");
   while ((dev = ecore_list_next(devices)))
   {

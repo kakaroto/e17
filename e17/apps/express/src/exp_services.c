@@ -12,7 +12,7 @@ exp_services_init(void)
     if (!services) 
     {
         services = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-        ecore_hash_set_free_value(services, exp_service_node_free);
+        ecore_hash_free_value_cb_set(services, exp_service_node_free);
     }
     return init_count;
 }

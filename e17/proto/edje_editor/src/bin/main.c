@@ -629,7 +629,7 @@ main(int argc, char **argv)
          LoadEDJ(file);
       if (strstr(file, ".edc"))
       {
-         char *edc_dir =  ecore_file_get_dir(file);
+         char *edc_dir =  ecore_file_dir_get(file);
          if (argc == 2)
             Cur.ef = engrave_load_edc(file, edc_dir, edc_dir);
          if (argc == 3)

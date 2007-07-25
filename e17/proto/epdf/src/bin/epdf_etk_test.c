@@ -141,7 +141,7 @@ _tree_fill (Etk_Pdf *pdf, Etk_Tree *tree, Etk_Tree_Col *col, Etk_Tree_Row *row, 
   if (!items)
     return;
   
-  ecore_list_goto_first (items);
+  ecore_list_first_goto (items);
   while ((item = ecore_list_next (items))) {
     char       *buf;
     Ecore_List *c;

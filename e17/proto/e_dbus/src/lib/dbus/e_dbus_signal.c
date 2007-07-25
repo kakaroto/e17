@@ -39,7 +39,7 @@ e_dbus_signal_init(void)
   if (++init != 1) return init;
   signal_handlers = ecore_list_new();
   if (!signal_handlers) {--init; return 0;};
-  ecore_list_set_free_cb(signal_handlers, ECORE_FREE_CB(e_dbus_signal_handler_free));
+  ecore_list_free_cb_set(signal_handlers, ECORE_FREE_CB(e_dbus_signal_handler_free));
 
   event_handler = ecore_event_handler_add(E_DBUS_EVENT_SIGNAL, cb_signal_event, NULL);
   return init;
@@ -176,7 +176,7 @@ cb_signal_event(void *data, int type, void *event)
   DBusMessage *msg = event;
   E_DBus_Signal_Handler *sh;
 
-  ecore_list_goto_first(signal_handlers);
+  ecore_list_first_goto(signal_handlers);
   while ((sh = ecore_list_next(signal_handlers)))
   {
     if (!sh->cb_signal) continue;

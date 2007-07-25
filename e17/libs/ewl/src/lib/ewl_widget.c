@@ -140,7 +140,7 @@ ewl_widget_name_set(Ewl_Widget *w, const char *name)
 	{
 		ewl_widget_name_table = ecore_hash_new(ecore_str_hash, 
 							ecore_str_compare);
-		ecore_hash_set_free_key(ewl_widget_name_table, 
+		ecore_hash_free_key_cb_set(ewl_widget_name_table, 
 						ECORE_FREE_CB(free));
 		ewl_shutdown_add(ewl_widget_name_table_shutdown);
 	}

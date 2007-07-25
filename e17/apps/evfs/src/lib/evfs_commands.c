@@ -150,13 +150,13 @@ evfs_client_multi_file_command(evfs_connection * conn, Ecore_List* files, evfs_f
    long cfile = 0;
    evfs_filereference* ref;
 
-   count = ecore_list_nodes(files);
+   count = ecore_list_count(files);
 
    command->type = type;
    command->file_command.num_files = count+1;
    command->file_command.files = malloc(sizeof(evfs_filereference *) * (count+1));
  
-   ecore_list_goto_first(files);
+   ecore_list_first_goto(files);
    while ((ref = ecore_list_next(files))) {
 	   command->file_command.files[cfile] = ref;
 	   cfile++;

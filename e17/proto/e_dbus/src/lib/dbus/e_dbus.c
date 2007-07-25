@@ -148,12 +148,12 @@ _e_dbus_connection_free(void *data)
 
   if (cd->conn_name) free(cd->conn_name);
 
-  ecore_list_goto_first(cd->fd_handlers);
+  ecore_list_first_goto(cd->fd_handlers);
   while ((fd_handler = ecore_list_next(cd->fd_handlers)))
     ecore_main_fd_handler_del(fd_handler);
   ecore_list_destroy(cd->fd_handlers);
 
-  ecore_list_goto_first(cd->timeouts);
+  ecore_list_first_goto(cd->timeouts);
   while ((timer = ecore_list_next(cd->timeouts)))
     ecore_timer_del(timer);
   ecore_list_destroy(cd->timeouts);

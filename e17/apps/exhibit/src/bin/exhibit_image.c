@@ -1154,11 +1154,11 @@ _ex_image_wallpaper_set(Etk_Image *im)
 	if (!filename) exit(0);
 	if(strlen(filename) <= 4) exit(0);
 	
-	file = ecore_file_get_file(filename);
-	dir = ecore_file_get_dir(filename);
+	file = ecore_file_file_get(filename);
+	dir = ecore_file_dir_get(filename);
 	
 	filenoext = _ex_file_strip_extention(filename);
-	filenoext = ecore_file_get_file(filenoext);
+	filenoext = ecore_file_file_get(filenoext);
 
 	D(("Setting bg: dir: %s \tfile: %s\n", dir, file));
 

@@ -275,7 +275,7 @@ int eli_app_config_init(Eli_App * eap)
         /* take the first theme if the wanted doesnt exists */
         char * src;
 
-        src = (char *) ecore_list_goto_first(eap->theme.gui.list);
+        src = (char *) ecore_list_first_goto(eap->theme.gui.list);
         if (!src) {
 	    fprintf(stderr, _("Elitaire Error: No theme file in %s!\n"),
              			  ecore_config_theme_search_path_get());
@@ -291,7 +291,7 @@ int eli_app_config_init(Eli_App * eap)
         /* take the first theme if the wanted doesnt exists */
         char *src;
 
-        src = (char *) ecore_list_goto_first(eap->theme.cards.list);
+        src = (char *) ecore_list_first_goto(eap->theme.cards.list);
         if (!src)
             fprintf(stderr, _("Elitaire Error: No cards file in %s!\n"),
                     ecore_config_theme_search_path_get());
@@ -328,7 +328,7 @@ int eli_app_theme_init(Eli_App * eap)
     l = eli_theme_names_get();
 
     /* selecting the gui theme */
-    ecore_list_goto_first(l);
+    ecore_list_first_goto(l);
     while ((name = (char *) ecore_list_next(l))) {
         file = ecore_config_theme_with_path_from_name_get(name);
 
@@ -341,7 +341,7 @@ int eli_app_theme_init(Eli_App * eap)
 
         free(file);
     }
-    ecore_list_goto_first(l);
+    ecore_list_first_goto(l);
 
     eap->theme.gui.list = gui;
     eap->theme.cards.list = cards;
@@ -392,7 +392,7 @@ Ecore_List * eli_theme_names_get()
     free(*dir_list);
     free(dir_list);
 
-    ecore_list_goto_first(out_l);
+    ecore_list_first_goto(out_l);
 
     return out_l;
 }
@@ -435,14 +435,14 @@ _eli_theme_exists(Ecore_List * l, const char * theme)
     
     if (!l) return false;
 
-    ecore_list_goto_first(l);
+    ecore_list_first_goto(l);
     while ((data = (char *) ecore_list_next(l))) {
         if (!strcmp(theme, data)) {
             return true;
         }
     }
 
-    ecore_list_goto_first(l);
+    ecore_list_first_goto(l);
     return false;
 }
 

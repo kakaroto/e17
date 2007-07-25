@@ -239,7 +239,7 @@ static void _etk_layout_location_delete_confirm_cb(Etk_Object * object, void *da
 		structure = ecore_hash_get(_etk_layout_row_reference, row);
 		row_refs = ecore_hash_get(_etk_layout_structure_plugin_reference, structure);
 		if (row_refs) {	
-			while ( (ref = ecore_list_remove_first(row_refs))) {
+			while ( (ref = ecore_list_first_remove(row_refs))) {
 				etk_tree_row_delete(ref->row);
 				IF_FREE(ref);
 			}
@@ -655,11 +655,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 			char* f_uri = 	cfolder->uri;
 			if (f_uri) {
 				if (stype == ENTROPY_SELECTION_COPY) {
-					printf("Copy type..: %d:%s\n", ecore_list_nodes(files), f_uri);
+					printf("Copy type..: %d:%s\n", ecore_list_count(files), f_uri);
 					entropy_plugin_filesystem_file_copy_multi(files, f_uri, 
 						comp);
 				} else if (stype == ENTROPY_SELECTION_CUT) {
-					printf("Cut type..:%d:%s\n", ecore_list_nodes(files), f_uri);
+					printf("Cut type..:%d:%s\n", ecore_list_count(files), f_uri);
 					entropy_plugin_filesystem_file_move_multi(files, f_uri, 
 						comp);					
 				} else {

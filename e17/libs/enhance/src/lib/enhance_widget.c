@@ -47,7 +47,7 @@ static EXML_Node *find_node(EXML_Node *node, char *key, char *value)
    EXML_Node  *prop;
    
    props = node->children;
-   ecore_list_goto_first(props);
+   ecore_list_first_goto(props);
    prop = ecore_list_current(props);
    while(prop != NULL)
      {
@@ -351,7 +351,7 @@ _e_widget_radio_button_handle(Enhance *en, EXML_Node *node)
    if(!id) return NULL;
    
    props = node->children;
-   ecore_list_goto_first(props);
+   ecore_list_first_goto(props);
    prop = ecore_list_current(props);
    while(prop != NULL)
      {
@@ -376,7 +376,7 @@ _e_widget_radio_button_handle(Enhance *en, EXML_Node *node)
 	prop = ecore_list_next(props);	
      }
    
-   ecore_list_goto_first(props);   
+   ecore_list_first_goto(props);   
       
    if(group)     	
      w = evas_hash_find(en->radio_groups, group);   
@@ -570,7 +570,7 @@ _e_widget_hslider_handle(Enhance *en, EXML_Node *node)
    if(!id) return NULL;
    
    props = node->children;
-   ecore_list_goto_first(props);
+   ecore_list_first_goto(props);
    prop = ecore_list_current(props);
    while(prop != NULL)
      {
@@ -597,7 +597,7 @@ _e_widget_hslider_handle(Enhance *en, EXML_Node *node)
 	prop = ecore_list_next(props);
      }
 
-   ecore_list_goto_first(props);
+   ecore_list_first_goto(props);
    
    slider = _e_widget_new(en, node, etk_hslider_new((double)min, (double)max, 
 						    (double)value,
@@ -624,7 +624,7 @@ _e_widget_vslider_handle(Enhance *en, EXML_Node *node)
    if(!id) return NULL;
    
    props = node->children;
-   ecore_list_goto_first(props);
+   ecore_list_first_goto(props);
    prop = ecore_list_current(props);
    while(prop != NULL)
      {
@@ -651,7 +651,7 @@ _e_widget_vslider_handle(Enhance *en, EXML_Node *node)
 	prop = ecore_list_next(props);
      }
    
-   ecore_list_goto_first(props);
+   ecore_list_first_goto(props);
       
    slider = _e_widget_new(en, node, etk_vslider_new(min, max, 
 						    value,
@@ -762,7 +762,7 @@ _e_widget_spinner_handle(Enhance *en, EXML_Node *node)
    if(!id) return NULL;
    
    props = node->children;
-   ecore_list_goto_first(props);
+   ecore_list_first_goto(props);
    prop = ecore_list_current(props);
    while(prop != NULL)
      {
@@ -789,7 +789,7 @@ _e_widget_spinner_handle(Enhance *en, EXML_Node *node)
 	prop = ecore_list_next(props);
      }
 
-   ecore_list_goto_first(props);
+   ecore_list_first_goto(props);
    
    spinner = _e_widget_new(en, node, etk_spinner_new(min, max, 
 						     value,
@@ -921,13 +921,13 @@ _e_widget_parent_add(E_Widget *parent, E_Widget *child)
 
         /* Go the <packing> node */
         props = child->node->parent->parent->parent->children;
-        ecore_list_goto_last(props);
+        ecore_list_last_goto(props);
         prop = ecore_list_current(props);
         if (!strcmp(prop->tag, "packing"))
           {
             /* Take the packing properties */
             props = prop->children;
-            ecore_list_goto_first(props);
+            ecore_list_first_goto(props);
             prop = ecore_list_current(props);
 
             /* Parse the packing properties */

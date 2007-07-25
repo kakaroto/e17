@@ -485,7 +485,7 @@ void entropy_config_eet_config_save()
 
 	config->Loaded_Config->Misc_Config_Load = NULL;
 	keys = ecore_hash_keys(config->Loaded_Config->Misc_Config);
-	while ((key = ecore_list_remove_first(keys))) {
+	while ((key = ecore_list_first_remove(keys))) {
 		item = ecore_hash_get(config->Loaded_Config->Misc_Config,key);
 		
 		if (item && item->name && item->value) {
@@ -704,8 +704,8 @@ void entropy_config_misc_item_str_set(char* item, char* value, int loc)
 		if (c_item) {
 			if (c_item->callback_hash) {
 				keys = ecore_hash_keys(c_item->callback_hash);
-				ecore_list_goto_first(keys);
-				while ((cb = ecore_list_remove_first(keys))) {
+				ecore_list_first_goto(keys);
+				while ((cb = ecore_list_first_remove(keys))) {
 					(*cb)(item, ecore_hash_get(c_item->callback_hash, cb));
 				}
 				ecore_list_destroy(keys);

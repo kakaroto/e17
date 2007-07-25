@@ -10,7 +10,7 @@ char* entropy_mime_file_identify(entropy_generic_file* file) {
 	if (strlen(file->mime_type) > 0) return file->mime_type;
 	
 	/*printf("Identifying a file..\n");	*/
-	ecore_list_goto_first(entropy_core_get_core()->mime_plugins);
+	ecore_list_first_goto(entropy_core_get_core()->mime_plugins);
 	while ((plugin = ecore_list_next(entropy_core_get_core()->mime_plugins)) != NULL) {
 		/*printf ("Querying '%s' for MIME\n", plugin->filename);*/
 		entropy_mime_plugin_identify_file = dlsym(plugin->dl_ref, "entropy_mime_plugin_identify_file");

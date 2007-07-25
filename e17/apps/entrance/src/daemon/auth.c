@@ -74,7 +74,7 @@ _entranced_auth_purge(Entranced_Display * d, FILE * auth_file)
    fseek(auth_file, 0L, SEEK_SET);
 
    auth_keep = ecore_list_new();
-   ecore_list_set_free_cb(auth_keep, ECORE_FREE_CB(XauDisposeAuth));
+   ecore_list_free_cb_set(auth_keep, ECORE_FREE_CB(XauDisposeAuth));
 
    /* Read each auth entry and check if it matches one for this display */
    while ((auth = XauReadAuth(auth_file)))
@@ -305,7 +305,7 @@ _entranced_auth_entry_add(Entranced_Display * d, FILE * auth_file,
    if (!d->auths)
    {
       d->auths = ecore_list_new();
-      ecore_list_set_free_cb(d->auths, ECORE_FREE_CB(XauDisposeAuth));
+      ecore_list_free_cb_set(d->auths, ECORE_FREE_CB(XauDisposeAuth));
    }
 
    if (!ecore_list_append(d->auths, auth))
@@ -356,7 +356,7 @@ entranced_auth_display_secure(Entranced_Display * d)
 
    /* XXX: This code assumes X server is running on localhost and may need to 
       be modified for Xdmcp */
-   ecore_list_goto_first(d->auths);
+   ecore_list_first_goto(d->auths);
    while (d->auths->nodes)
    {
       Xauth *tmp;

@@ -108,7 +108,7 @@ _ecore_dbus_message_marshal_array_begin(Ecore_DBus_Message *msg,
 void
 _ecore_dbus_message_marshal_array_end(Ecore_DBus_Message *msg, Ecore_DBus_Message_Field_Array *arr)
 {
-   ecore_list_remove_first(msg->recurse);
+   ecore_list_first_remove(msg->recurse);
    arr->end = msg->length;
    *(unsigned int *)ECORE_DBUS_MESSAGE_FIELD(arr)->buffer = arr->end - arr->start;
 }
@@ -121,7 +121,7 @@ _ecore_dbus_message_marshal_array(Ecore_DBus_Message *msg, const char *contained
 
    printf("[ecore_dbus] marshal array %c\n", *contained_type);
    arr = _ecore_dbus_message_marshal_array_begin(msg, *contained_type);
-   ecore_list_goto_first(data);
+   ecore_list_first_goto(data);
    while ((el = ecore_list_next(data)))
 	_ecore_dbus_message_marshal(msg, contained_type, el);
    _ecore_dbus_message_marshal_array_end(msg, arr);
@@ -144,7 +144,7 @@ _ecore_dbus_message_marshal_struct_begin(Ecore_DBus_Message *msg)
 void
 _ecore_dbus_message_marshal_struct_end(Ecore_DBus_Message *msg, Ecore_DBus_Message_Field_Struct *s __UNUSED__)
 {
-   ecore_list_remove_first(msg->recurse);
+   ecore_list_first_remove(msg->recurse);
 }
 
 Ecore_DBus_Message_Field_Variant *
@@ -163,7 +163,7 @@ _ecore_dbus_message_marshal_variant(Ecore_DBus_Message *msg, Ecore_DBus_Data_Typ
    _ecore_dbus_message_append_byte(msg, '\0');
 
    f->value = _ecore_dbus_message_marshal(msg, (char *)&type, data);
-   ecore_list_remove_first(msg->recurse);
+   ecore_list_first_remove(msg->recurse);
    return f;
 }
 

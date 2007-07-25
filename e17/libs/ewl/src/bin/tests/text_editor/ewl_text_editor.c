@@ -281,7 +281,7 @@ ete_cb_styles_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	char *str;
 
 	idx = ewl_mvc_selected_get(EWL_MVC(w));
-	str = ecore_list_goto_index(ewl_mvc_data_get(EWL_MVC(w)), idx->row);
+	str = ecore_list_index_goto(ewl_mvc_data_get(EWL_MVC(w)), idx->row);
 
 	entry = ewl_widget_name_find("entry");
 	if (!strcmp(str, "None"))

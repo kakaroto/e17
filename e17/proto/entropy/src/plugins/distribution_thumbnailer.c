@@ -73,9 +73,9 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
     entropy_plugin *plugin;
 
 
-    /*printf("Received %d thumbnailers for '%s'\n", ecore_list_nodes(thumbnailers), request->file->filename); */
+    /*printf("Received %d thumbnailers for '%s'\n", ecore_list_count(thumbnailers), request->file->filename); */
 
-    ecore_list_goto_first (thumbnailers);
+    ecore_list_first_goto (thumbnailers);
     while (!thumb && (plugin = ecore_list_next (thumbnailers))) {
       get = dlsym (plugin->dl_ref, "entropy_thumbnailer_thumbnail_get");
       thumb = (*get) (request);

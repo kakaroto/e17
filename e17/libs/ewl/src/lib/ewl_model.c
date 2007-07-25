@@ -397,7 +397,7 @@ ewl_model_cb_ecore_list_fetch(void *data, unsigned int row,
 	DCHECK_PARAM_PTR_RET("data", data, NULL);
 
 	list = data;
-	ecore_list_goto_index(list, row);
+	ecore_list_index_goto(list, row);
 
 	DRETURN_PTR(ecore_list_current(list), DLEVEL_STABLE);
 }
@@ -417,6 +417,6 @@ ewl_model_cb_ecore_list_count(void *data)
 
 	list = data;
 
-	DRETURN_INT(ecore_list_nodes(list), DLEVEL_STABLE);
+	DRETURN_INT(ecore_list_count(list), DLEVEL_STABLE);
 }
 

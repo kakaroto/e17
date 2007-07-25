@@ -35,12 +35,12 @@ entangle_apps_init(void)
     entangle_apps_startup = ecore_list_new();
     entangle_apps_deleted_dirs = ecore_list_new();
 
-    ecore_list_set_free_cb(entangle_apps_bar, entangle_apps_free_cb);
-    ecore_list_set_free_cb(entangle_apps_engage, entangle_apps_free_cb);
-    ecore_list_set_free_cb(entangle_apps_favorite, entangle_apps_free_cb);
-    ecore_list_set_free_cb(entangle_apps_restart, entangle_apps_free_cb);
-    ecore_list_set_free_cb(entangle_apps_startup, entangle_apps_free_cb);
-    ecore_list_set_free_cb(entangle_apps_deleted_dirs, entangle_apps_free_cb);
+    ecore_list_free_cb_set(entangle_apps_bar, entangle_apps_free_cb);
+    ecore_list_free_cb_set(entangle_apps_engage, entangle_apps_free_cb);
+    ecore_list_free_cb_set(entangle_apps_favorite, entangle_apps_free_cb);
+    ecore_list_free_cb_set(entangle_apps_restart, entangle_apps_free_cb);
+    ecore_list_free_cb_set(entangle_apps_startup, entangle_apps_free_cb);
+    ecore_list_free_cb_set(entangle_apps_deleted_dirs, entangle_apps_free_cb);
 
     entangle_apps_dir_init(entangle_apps_bar, "bar/default");
     entangle_apps_dir_init(entangle_apps_engage, "bar/engage");
@@ -67,10 +67,10 @@ entangle_apps_save(void)
 {
     int i;
 
-    for (i = 0; i < ecore_list_nodes(entangle_apps_deleted_dirs); i++)
+    for (i = 0; i < ecore_list_count(entangle_apps_deleted_dirs); i++)
     {
         Entangle_App *app;
-        app = ecore_list_goto_index(entangle_apps_deleted_dirs, i);
+        app = ecore_list_index_goto(entangle_apps_deleted_dirs, i);
         entangle_apps_dir_delete(app->eapp->path);
     }
 
@@ -208,11 +208,11 @@ entangle_apps_dir_save(Ecore_List *dir, const char *name)
 
     snprintf(path, PATH_MAX, "%s/.order", dir_path);
     fp = fopen(path, "w");
-    for (i = 0; i < ecore_list_nodes(dir); i++)
+    for (i = 0; i < ecore_list_count(dir); i++)
     {
         Entangle_App *app;
 
-        app = ecore_list_goto_index(dir, i);
+        app = ecore_list_index_goto(dir, i);
         snprintf(path, PATH_MAX, "%s\n", app->eapp->eapp_name);
         fwrite(path, sizeof(char), strlen(path), fp);
 
@@ -250,11 +250,11 @@ entangle_apps_dir_dump(Ecore_List *dir, const char *indent)
     int i;
     char buf[1024];
 
-    for (i = 0; i < ecore_list_nodes(dir); i++)
+    for (i = 0; i < ecore_list_count(dir); i++)
     {
         Entangle_App *app;
         
-        app = ecore_list_goto_index(dir, i);
+        app = ecore_list_index_goto(dir, i);
         printf("%s%s [%s]\n", indent, app->eapp->name, app->eapp->eapp_name);
         if (app->children != NULL)
         {

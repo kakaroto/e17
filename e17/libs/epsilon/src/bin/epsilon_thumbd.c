@@ -226,7 +226,7 @@ epsilond_cb_client_del(void *data, int type, void *event)
 	/*
 	 * Search for the disconnecting client
 	 */
-	ecore_list_goto_first(clients);
+	ecore_list_first_goto(clients);
 	while ((cl = ecore_list_current(clients))) {
 		if (cl->client == e->client) {
 			ecore_list_remove(clients);
@@ -264,7 +264,7 @@ epsilond_cb_worker_del(void *data, int type, void *event)
 	/*
 	 * Search for the disconnecting client
 	 */
-	ecore_list_goto_first(workers);
+	ecore_list_first_goto(workers);
 	while ((cl = ecore_list_current(workers))) {
 		if (cl->client == e->client) {
 			ecore_list_remove(workers);
@@ -321,7 +321,7 @@ epsilond_cb_client_data(void *data, int type, void *event)
 	/*
 	 * Match the client sending the data.
 	 */
-	ecore_list_goto_first(clients);
+	ecore_list_first_goto(clients);
 	while ((cl = ecore_list_next(clients))) {
 		if (cl->client == e->client)
 			break;
@@ -368,7 +368,7 @@ epsilond_cb_worker_data(void *data, int type, void *event)
 	/*
 	 * Match the client data.
 	 */
-	ecore_list_goto_first(workers);
+	ecore_list_first_goto(workers);
 	while ((cl = ecore_list_next(workers))) {
 		if (cl->client == e->client)
 			break;
@@ -409,22 +409,22 @@ epsilond_client_dispatch(Epsilon_Client *cl)
 	/*
 	 * Iterate over the thumbnails splitting them between threads.
 	 */
-	while (ecore_list_nodes(cl->thumbs) > 0) {
-		available = ecore_list_nodes(queued_workers);
+	while (ecore_list_count(cl->thumbs) > 0) {
+		available = ecore_list_count(queued_workers);
 
 		while ((worker = ecore_list_current(queued_workers))) {
 
 			/*
 			 * Don't dispatch work to active workers.
 			 */
-			if (!worker->child && !ecore_list_nodes(worker->thumbs)) {
+			if (!worker->child && !ecore_list_count(worker->thumbs)) {
 				Epsilon_Message *msg;
 
 				/*
 				 * Get the next message on the queue and break
 				 * out of the inner loop if NULL.
 				 */
-				msg = ecore_list_remove_first(cl->thumbs);
+				msg = ecore_list_first_remove(cl->thumbs);
 				if (!msg)
 					break;
 
@@ -449,7 +449,7 @@ epsilond_client_dispatch(Epsilon_Client *cl)
 		 * Only start over in the list if we reached the end.
 		 */
 		if (!worker)
-			ecore_list_goto_first(queued_workers);
+			ecore_list_first_goto(queued_workers);
 
 		if (!available)
 			break;
@@ -466,14 +466,14 @@ epsilond_worker_run(void *data)
 
 	worker = data;
 	if (debug) printf("Running worker thread %p for %d thumbnails\n", worker,
-			ecore_list_nodes(worker->thumbs));
+			ecore_list_count(worker->thumbs));
 
 	/* FIXME: Do we want the fast exit point here?
-	if (!ecore_list_nodes(worker->thumbs))
+	if (!ecore_list_count(worker->thumbs))
 		exit(0);
 		*/
 
-	while ((msg = ecore_list_remove_first(worker->thumbs))) {
+	while ((msg = ecore_list_first_remove(worker->thumbs))) {
 		int status = 0;
 		char *path;
 		Epsilon *ep;
@@ -531,7 +531,7 @@ epsilond_worker_fork(Epsilon_Worker *worker)
 	/*
 	 * Begin iteration of the thumb list.
 	 */
-	ecore_list_goto_first(worker->thumbs);
+	ecore_list_first_goto(worker->thumbs);
 
 	worker->child = fork();
 
@@ -598,11 +598,11 @@ epsilond_idle_enterer(void *data)
 	 * Send responses for completed thumbnails
 	 */
 	if (debug) printf("Preparing %d responses\n",
-			ecore_list_nodes(response_queue));
-	while ((response = ecore_list_remove_first(response_queue))) {
+			ecore_list_count(response_queue));
+	while ((response = ecore_list_first_remove(response_queue))) {
 		Epsilon_Message *msg = response->msg;
 
-		ecore_list_goto_first(clients);
+		ecore_list_first_goto(clients);
 		while ((cl = ecore_list_next(clients))) {
 			if (cl->id == msg->nid)
 				break;
@@ -625,7 +625,7 @@ epsilond_idle_enterer(void *data)
 	/*
 	 * Collect completed worker threads.
 	 */
-	ecore_list_goto_first(queued_workers);
+	ecore_list_first_goto(queued_workers);
 	while ((worker = ecore_list_next(queued_workers))) {
 		int status = 0;
 
@@ -655,11 +655,11 @@ epsilond_idle_enterer(void *data)
 	 * hope of spreading the workload evenly and avoid stalling any one
 	 * particular client longer than others.
 	 */
-	ecore_list_goto_first(clients);
+	ecore_list_first_goto(clients);
 	while ((cl = ecore_list_next(clients))) {
-		int available = ecore_list_nodes(queued_workers);
+		int available = ecore_list_count(queued_workers);
 
-		if (cl->thumbs && ecore_list_nodes(cl->thumbs)) {
+		if (cl->thumbs && ecore_list_count(cl->thumbs)) {
 			available = epsilond_client_dispatch(cl);
 		}
 
@@ -671,15 +671,15 @@ epsilond_idle_enterer(void *data)
 
 	}
 
-	idle = ecore_list_nodes(queued_workers);
+	idle = ecore_list_count(queued_workers);
 
 	/*
 	 * Fork off worker threads to begin thumbnailing.
 	 */
-	ecore_list_goto_first(queued_workers);
+	ecore_list_first_goto(queued_workers);
 	while ((worker = ecore_list_next(queued_workers))) {
 		if (!worker->child) {
-			if (ecore_list_nodes(worker->thumbs)) {
+			if (ecore_list_count(worker->thumbs)) {
 				idle--;
 
 				if (!running_workers) epsilond_init_thumbd_server(gworkers);
@@ -697,7 +697,7 @@ epsilond_idle_enterer(void *data)
 	/*
 	 * FIXME: Detect idle time and exit after a specified interval
 	 */
-	if (idle == ecore_list_nodes(queued_workers)) {
+	if (idle == ecore_list_count(queued_workers)) {
 		double now = ecore_time_get();
 	       	if (!idle_time)
 			idle_time = now;
@@ -799,7 +799,7 @@ epsilond_client_clean(Epsilon_Client *cl)
 	if (cl->thumbs) {
 		Epsilon_Message *msg;
 
-		while ((msg = ecore_list_remove_first(cl->thumbs))) {
+		while ((msg = ecore_list_first_remove(cl->thumbs))) {
 			free(msg);
 		}
 		ecore_list_destroy(cl->thumbs);
@@ -814,7 +814,7 @@ epsilond_worker_clean(Epsilon_Worker *worker)
 {
 	Epsilon_Message *msg;
 	worker->child = 0;
-	while ((msg = ecore_list_remove_first(worker->thumbs)))
+	while ((msg = ecore_list_first_remove(worker->thumbs)))
 		free(msg);
 	return 1;
 }

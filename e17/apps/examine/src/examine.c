@@ -341,7 +341,7 @@ draw_tree(examine_prop * prop_item)
             continue;
 
           theme_seen = 0;
-          ecore_list_goto_first(themes);
+          ecore_list_first_goto(themes);
           while((theme_item = (char*)ecore_list_next(themes)) != NULL) {
             if (!strcmp(theme_item, next->d_name)) {
               theme_seen = 1;

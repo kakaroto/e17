@@ -569,8 +569,8 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
         etk_signal_stop();
 	
 	path = etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))));
-	dir = ecore_file_get_dir((char*)path);
-	file = ecore_file_get_file(path);
+	dir = ecore_file_dir_get((char*)path);
+	file = ecore_file_file_get(path);
 	
 	if(!dir || !strcmp(dir, ""))
 	  dir = strdup("/");
@@ -854,7 +854,7 @@ _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 	  continue;
 			
 	file += strlen("file://");	
-	dir = ecore_file_get_dir(file);
+	dir = ecore_file_dir_get(file);
 	
 	if(!ecore_file_is_dir(dir))
 	  continue;
@@ -867,7 +867,7 @@ _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 	etk_tree_clear(ETK_TREE(e->cur_tab->itree));
 	etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
 	etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
-	_ex_main_populate_files(ecore_file_get_file(file), EX_TREE_UPDATE_ALL);
+	_ex_main_populate_files(ecore_file_file_get(file), EX_TREE_UPDATE_ALL);
 	if (ecore_file_exists(file) && !ecore_file_is_dir(file))
 	  _ex_main_image_set(e, file);
 	etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, 
@@ -1121,7 +1121,7 @@ _ex_main_window_show(char *dir, int fullscreen, int slideshow)
 	  {	     
 	     char *dir2;
 	     
-	     dir2 = ecore_file_get_dir(dir);
+	     dir2 = ecore_file_dir_get(dir);
 	     tab = _ex_tab_new(e, dir2);
 	     E_FREE(dir2);
 	     realpath(dir, file);

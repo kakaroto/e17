@@ -238,7 +238,7 @@ list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	el = ewl_mvc_data_get(EWL_MVC(list));
 	idx = ewl_mvc_selected_get(EWL_MVC(list));
 
-	ecore_list_goto_index(el, idx->row);
+	ecore_list_index_goto(el, idx->row);
 	printf("Selected (%d) (%s)\n", idx->row, 
 			(char *)ecore_list_current(el));
 }
@@ -255,7 +255,7 @@ list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	el = ewl_mvc_data_get(EWL_MVC(w));
 	selected = ewl_mvc_selected_list_get(EWL_MVC(w));
 
-	ecore_list_goto_first(selected);
+	ecore_list_first_goto(selected);
 	while ((sel = ecore_list_next(selected)))
 	{
 		if (sel->type == EWL_SELECTION_TYPE_INDEX)
@@ -263,7 +263,7 @@ list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 			Ewl_Selection_Idx *idx;
 
 			idx = EWL_SELECTION_IDX(sel);
-			ecore_list_goto_index(el, idx->row);
+			ecore_list_index_goto(el, idx->row);
 			printf("    %d (%s)\n", idx->row, 
 					(char *)ecore_list_current(el));
 		}
@@ -275,7 +275,7 @@ list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 			idx = EWL_SELECTION_RANGE(sel);
 			for (i = idx->start.row; i <= idx->end.row; i++)
 			{
-				ecore_list_goto_index(el, i);
+				ecore_list_index_goto(el, i);
 				printf("    %d (%s)\n", i, 
 					(char *)ecore_list_current(el));
 			}

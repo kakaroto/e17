@@ -31,7 +31,7 @@ callback(evfs_event * data, void *obj)
 
         printf("Received a directory listing..\nFiles:\n\n");
 
-        ecore_list_goto_first(data->file_list.list);
+        ecore_list_first_goto(data->file_list.list);
         while ((ref = ecore_list_next(data->file_list.list)))
           {
              printf("(%s) Received file type for file: %d\n", ref->path,

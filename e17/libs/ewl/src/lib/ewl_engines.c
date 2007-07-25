@@ -36,8 +36,8 @@ ewl_engines_init(void)
 	if (!ewl_engines)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ecore_hash_set_free_key(ewl_engines, ECORE_FREE_CB(free));
-	ecore_hash_set_free_value(ewl_engines, ECORE_FREE_CB(ewl_engine_free));
+	ecore_hash_free_key_cb_set(ewl_engines, ECORE_FREE_CB(free));
+	ecore_hash_free_value_cb_set(ewl_engines, ECORE_FREE_CB(ewl_engine_free));
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -74,15 +74,15 @@ ewl_engine_names_get(void)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	files = ecore_file_ls(dir);
-	if (!files || (ecore_list_nodes(files) == 0))
+	if (!files || (ecore_list_count(files) == 0))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	names = ecore_list_new();
 	if (!names)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	ecore_list_set_free_cb(names, ECORE_FREE_CB(free));
+	ecore_list_free_cb_set(names, ECORE_FREE_CB(free));
 
-	ecore_list_goto_first(files);
+	ecore_list_first_goto(files);
 	while ((file = ecore_list_next(files)))
 	{
 		char *ext;
@@ -171,7 +171,7 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
 		 * the engines are cached and the _shutdown() function will
 		 * cleanup the cache */
 		deps = ecore_dlist_new();
-		while ((dep_name = ecore_list_remove_first(dep_list)))
+		while ((dep_name = ecore_list_first_remove(dep_list)))
 		{
 			Ewl_Engine *parent;
 
@@ -1517,7 +1517,7 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook_Type type, int hook)
 		Ecore_DList *deps;
 
 		deps = caller->dependancies;
-		ecore_dlist_goto_first(deps);
+		ecore_dlist_first_goto(deps);
 		while ((caller = ecore_dlist_next(deps)))
 		{
 			hooks = ewl_engine_hooks_get(caller, type);

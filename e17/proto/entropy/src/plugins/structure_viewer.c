@@ -112,7 +112,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
       if (row && !ecore_hash_get (viewer->loaded_dirs, row)) {
 
 
-	ecore_list_goto_first (el);
+	ecore_list_first_goto (el);
 	while ((file = ecore_list_next (el))) {
 
 	  /*We need the file's mime type, 
@@ -197,8 +197,8 @@ dnd_drop_callback (Ewl_Widget * w, void *ev_data, void *user_data)
 		event->file->path, event->file->filename);
 
 
-      ecore_list_goto_first (sel_list);
-      while ((icon = ecore_list_remove_first (sel_list))) {
+      ecore_list_first_goto (sel_list);
+      while ((icon = ecore_list_first_remove (sel_list))) {
 	if ((file = entropy_core_object_file_association_get (icon))) {
 	  printf ("Filename: '%s' - '%s/%s'\n", file->uri_base, file->path,
 		  file->filename);

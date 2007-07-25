@@ -80,8 +80,8 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
   }
 
   ret->properties = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-  ecore_hash_set_free_key(ret->properties, ECORE_FREE_CB(ecore_string_release));
-  ecore_hash_set_free_value(ret->properties, ECORE_FREE_CB(e_hal_property_free));
+  ecore_hash_free_key_cb_set(ret->properties, ECORE_FREE_CB(ecore_string_release));
+  ecore_hash_free_value_cb_set(ret->properties, ECORE_FREE_CB(e_hal_property_free));
 
 
   dbus_message_iter_init(msg, &iter);
@@ -229,7 +229,7 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
   if (options)
   {
     const char *opt;
-    ecore_list_goto_first(options);
+    ecore_list_first_goto(options);
     while ((opt = ecore_list_next(options)))
     {
       dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);
@@ -265,7 +265,7 @@ e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List
   if (options)
   {
     const char *opt;
-    ecore_list_goto_first(options);
+    ecore_list_first_goto(options);
     while ((opt = ecore_list_next(options)))
     {
       dbus_message_iter_append_basic(&subiter, DBUS_TYPE_STRING, &opt);

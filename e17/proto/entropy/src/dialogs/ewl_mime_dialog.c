@@ -164,7 +164,7 @@ void entropy_ewl_mime_dialog_display() {
 	ewl_widget_show(box);
 
 	keys = ecore_hash_keys(core->mime_action_hint);
-	while ((key = ecore_list_remove_first(keys))) {
+	while ((key = ecore_list_first_remove(keys))) {
 		Ewl_Widget* row;
 		
 		entries[0] = key;

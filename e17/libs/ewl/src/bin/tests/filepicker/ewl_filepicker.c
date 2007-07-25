@@ -175,7 +175,7 @@ directory_test_path_split(char *buf, int len)
 	ewl_filepicker_directory_set(EWL_FILEPICKER(fp),
 					"/foo/bar/baz/test/");
 
-	ecore_list_goto_first(EWL_FILEPICKER(fp)->path);
+	ecore_list_first_goto(EWL_FILEPICKER(fp)->path);
 	while ((t = ecore_list_next(EWL_FILEPICKER(fp)->path)))
 	{
 		if (strcmp(rez[i], t))

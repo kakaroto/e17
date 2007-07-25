@@ -307,11 +307,11 @@ ewl_statusbar_pop(Ewl_Statusbar *sb)
 	DCHECK_PARAM_PTR("sb", sb);
 	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
 
-	current = ecore_list_remove_first(sb->stack);
+	current = ecore_list_first_remove(sb->stack);
 	if (current) 
 		ewl_widget_destroy(current);
 
-	current = ecore_list_goto_first(sb->stack);
+	current = ecore_list_first_goto(sb->stack);
 	if (current)
 		ewl_widget_show(current);
 

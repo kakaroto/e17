@@ -29,12 +29,12 @@ void entropy_notification_engine_destroy_thread(entropy_notification_engine* eng
 	printf("Waiting for notify thread to finish..\n");
 	printf("..Terminated\n");
 
-	ecore_list_goto_first(engine->op_queue);
+	ecore_list_first_goto(engine->op_queue);
 	while ( (ev = ecore_list_next(engine->op_queue)) ) {
 		//printf("Freeing an event..\n");
 	
 		if (ev->cb_list) {
-			ecore_list_goto_first(ev->cb_list);
+			ecore_list_first_goto(ev->cb_list);
 			while ( (cb_data = ecore_list_next(ev->cb_list)) ) {
 				entropy_free(cb_data);
 			}
@@ -43,7 +43,7 @@ void entropy_notification_engine_destroy_thread(entropy_notification_engine* eng
 		}
 		
 		if (ev->cleanup_list) {
-                        ecore_list_goto_first(ev->cleanup_list);
+                        ecore_list_first_goto(ev->cleanup_list);
                         while ( (clean = ecore_list_next(ev->cleanup_list)) ) {
                                 entropy_free(clean);
                         }
@@ -89,7 +89,7 @@ int entropy_notify_loop(void* data) {
 	
 	void* (*call_func)(void* arg);
 
-	ecore_list_goto_first (notify->op_queue);
+	ecore_list_first_goto (notify->op_queue);
 	if ( (next = ecore_list_next(notify->op_queue)) ) {
 		next->processed = 1;
 
@@ -100,7 +100,7 @@ int entropy_notify_loop(void* data) {
 		next->return_struct = (*call_func)(next->data);
 
 		/*Relock to remove next*/
-		ecore_list_remove_first(notify->op_queue);
+		ecore_list_first_remove(notify->op_queue);
 
 		ecore_list_append(notify->exe_queue, next);
 
@@ -123,7 +123,7 @@ void entropy_notify_event_expire_requestor_layout(void* requestor)
 	entropy_notify_event* ev;
 
 
-	ecore_list_goto_first(engine->op_queue);
+	ecore_list_first_goto(engine->op_queue);
 	ev = ecore_list_current(engine->op_queue);
 	while ( ev) {
 		if (  ((entropy_gui_component_instance*)ev->requestor_data)->layout_parent == layout) {
@@ -232,7 +232,7 @@ void entropy_notify_event_destroy(entropy_notify_event* eevent) {
 					//printf("Freeing files at return struct for filelist..\n");
 					
 					/*It's a filelist request - return is an ecore list - destroy*/
-					while ((file = ecore_list_remove_first(list))) {
+					while ((file = ecore_list_first_remove(list))) {
 						entropy_core_file_cache_remove_reference (file->md5);
 					}
 					ecore_list_destroy(eevent->return_struct);
@@ -255,14 +255,14 @@ void entropy_notify_event_destroy(entropy_notify_event* eevent) {
 	}
 
 		/*This is potentially bad - we need some way to identify what we are freeing*/	
-                ecore_list_goto_first(eevent->cb_list);
+                ecore_list_first_goto(eevent->cb_list);
                 while ( (cb_data = ecore_list_next(eevent->cb_list)) ) {
                         entropy_free(cb_data);
                 }
 
 
                 /*Nuke our cleanup objs*/
-                ecore_list_goto_first(eevent->cleanup_list);
+                ecore_list_first_goto(eevent->cleanup_list);
                 while ( (clean = ecore_list_next(eevent->cleanup_list))) {
                         entropy_free(clean);
                 }
@@ -300,7 +300,7 @@ void entropy_notify_event_commit(entropy_notify_event* ev) {
 void entropy_notify_event_bulk_commit(entropy_notification_engine* engine, Ecore_List* list) {
 	entropy_notify_event* ev;
 	
-	while ( (ev = ecore_list_remove_first(list))) {
+	while ( (ev = ecore_list_first_remove(list))) {
 		ecore_list_append(engine->op_queue, ev);
 	}
 

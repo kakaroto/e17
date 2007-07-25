@@ -100,7 +100,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
    etk_iconbox_append(iconbox, etk_theme_icon_path_get(), "actions/go-up_48", "..");
    
    /* First, add the folders */
-   ecore_list_goto_first(files);
+   ecore_list_first_goto(files);
    while ((filename = ecore_list_next(files)))
    {      
       if (filename[0] == '.')
@@ -114,7 +114,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
    }
    
    /* Then the files */
-   ecore_list_goto_first(files);
+   ecore_list_first_goto(files);
    while ((filename = ecore_list_next(files)))
    {
       const char *ext;

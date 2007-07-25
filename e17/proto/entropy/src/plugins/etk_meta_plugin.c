@@ -104,7 +104,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 			col2 = etk_tree_nth_col_get(ETK_TREE(view->list), 1);
 
 			etk_tree_clear(ETK_TREE(view->list));
-			ecore_list_goto_first(list);
+			ecore_list_first_goto(list);
 			while ( (object = ecore_list_next(list))) {
 				etk_tree_row_append(ETK_TREE(view->list), NULL,
 						col1, object->key,

@@ -276,7 +276,7 @@ epdf_document_scan_for_fonts (Epdf_Document *document, int page_count)
 
   length = items->getLength();
   fonts = ecore_list_new ();
-  ecore_list_set_free_cb (fonts, ECORE_FREE_CB (epdf_font_info_delete));
+  ecore_list_free_cb_set (fonts, ECORE_FREE_CB (epdf_font_info_delete));
 
   for ( int i = 0; i < length; ++i ) {
     Epdf_Font_Info_Type type;

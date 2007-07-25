@@ -65,7 +65,7 @@ _ecore_dbus_event_method_call_cb(void *udata __UNUSED__, int evtype __UNUSED__, 
      }
 
    printf("[ecore_dbus] got object %s\n", event->header.path);
-   ecore_list_goto_first(obj->methods);
+   ecore_list_first_goto(obj->methods);
    printf("[ecore_dbus] looking for method %s.%s\n", event->header.interface, event->header.member);
    while((method = ecore_list_next(obj->methods)))
      {
@@ -108,7 +108,7 @@ ecore_dbus_object_add(Ecore_DBus_Server *server, const char *path)
    obj->server = server;
    obj->path = strdup(path);
    obj->methods = ecore_list_new();
-   ecore_list_set_free_cb(obj->methods, ECORE_FREE_CB(_ecore_dbus_object_method_free));
+   ecore_list_free_cb_set(obj->methods, ECORE_FREE_CB(_ecore_dbus_object_method_free));
    printf("[ecore_dbus] adding obj %d to key %s\n", (int)obj, path);
    key = strdup(path);
    ecore_hash_set(server->objects, key, obj);

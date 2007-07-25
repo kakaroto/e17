@@ -649,7 +649,7 @@ static void _eli_edje_frontend_theme_container_fill(Eli_App * eap,
     file = ecore_config_theme_with_path_from_name_get(eap->theme.gui.current);
     l = eap->theme.gui.list;
 
-    ecore_list_goto_first(l);
+    ecore_list_first_goto(l);
     while ((theme_name = (const char *) ecore_list_next(l))) {
         Evas_Object * item;
 
@@ -687,7 +687,7 @@ static void _eli_edje_frontend_theme_container_fill(Eli_App * eap,
             evas_object_del(item);
         }
     }
-    ecore_list_goto_first(l);
+    ecore_list_first_goto(l);
 
     if (file) 
         free(file);
@@ -704,7 +704,7 @@ static void _eli_edje_frontend_cards_container_fill(Eli_App * eap,
     file = ecore_config_theme_with_path_from_name_get(eap->theme.gui.current);
     l = eap->theme.cards.list;
 
-    ecore_list_goto_first(l);
+    ecore_list_first_goto(l);
     while ((cards_name = (const char *) ecore_list_next(l))) {
         Evas_Object * item;
 
@@ -741,7 +741,7 @@ static void _eli_edje_frontend_cards_container_fill(Eli_App * eap,
             evas_object_del(item);
         }
     }
-    ecore_list_goto_first(l);
+    ecore_list_first_goto(l);
 
     if (file)
         free(file);

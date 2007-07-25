@@ -190,7 +190,7 @@ epsilon_cb_server_data(void *data, int type, void *event)
 		/*
 		 * Find the thumbnail request matching this message response.
 		 */
-		ecore_dlist_goto_first(epsilon_request_queue);
+		ecore_dlist_first_goto(epsilon_request_queue);
 		while ((thumb = ecore_dlist_current(epsilon_request_queue))) {
 			if (thumb->id == msg->mid) {
 				ecore_dlist_remove(epsilon_request_queue);
@@ -357,7 +357,7 @@ epsilon_del(Epsilon_Request *thumb)
 	 * remove it, at this point we don't bother cancelling the outstanding
 	 * request to the daemon.
 	 */
-	ecore_dlist_goto_first(epsilon_request_queue);
+	ecore_dlist_first_goto(epsilon_request_queue);
 	while ((temp = ecore_dlist_current(epsilon_request_queue))) {
 		if (temp->id == thumb->id) {
 			ecore_dlist_remove(epsilon_request_queue);

@@ -217,7 +217,7 @@ e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data)
   obj->path = strdup(object_path);
   obj->data = data;
   obj->interfaces = ecore_list_new();
-  ecore_list_set_free_cb(obj->interfaces, (Ecore_Free_Cb)e_dbus_interface_unref);
+  ecore_list_free_cb_set(obj->interfaces, (Ecore_Free_Cb)e_dbus_interface_unref);
 
   e_dbus_object_interface_attach(obj, introspectable_interface);
 
@@ -362,7 +362,7 @@ e_dbus_interface_new(const char *interface)
   iface->refcount = 1;
   iface->name = strdup(interface);
   iface->methods = ecore_list_new();
-  ecore_list_set_free_cb(iface->methods, (Ecore_Free_Cb)e_dbus_object_method_free);
+  ecore_list_free_cb_set(iface->methods, (Ecore_Free_Cb)e_dbus_object_method_free);
 
   return iface;
 }
@@ -407,11 +407,11 @@ e_dbus_object_method_find(E_DBus_Object *obj, const char *interface, const char 
   E_DBus_Interface *iface;
   if (!obj || !member) return NULL;
 
-  ecore_list_goto_first(obj->interfaces);
+  ecore_list_first_goto(obj->interfaces);
   while ((iface = ecore_list_next(obj->interfaces)))
   {
     if (strcmp(interface, iface->name)) continue;
-    ecore_list_goto_first(iface->methods);
+    ecore_list_first_goto(iface->methods);
     while ((m = ecore_list_next(iface->methods)))
     {
       if (!strcmp(member, m->member))
@@ -473,7 +473,7 @@ e_dbus_object_introspect(E_DBus_Object *obj)
   ecore_strbuf_append(buf, "\">\n");
   level++;
 
-  ecore_list_goto_first(obj->interfaces);
+  ecore_list_first_goto(obj->interfaces);
   while ((iface = ecore_list_next(obj->interfaces)))
     _introspect_interface_append(buf, iface, level);
 
@@ -500,7 +500,7 @@ _introspect_interface_append(Ecore_Strbuf *buf, E_DBus_Interface *iface, int lev
   level++;
 
   DEBUG(4, "introspect iface: %s\n", iface->name);
-  ecore_list_goto_first(iface->methods);
+  ecore_list_first_goto(iface->methods);
   while ((method = ecore_list_next(iface->methods))) 
     _introspect_method_append(buf, method, level);
 

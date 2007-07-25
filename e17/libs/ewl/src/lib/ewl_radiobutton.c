@@ -123,10 +123,10 @@ ewl_radiobutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
 	rb = EWL_RADIOBUTTON(w);
 	oc = ewl_checkbutton_is_checked(cb);
 
-	if (rb->chain && !ecore_list_is_empty(rb->chain)) {
+	if (rb->chain && !ecore_list_empty_is(rb->chain)) {
 		Ewl_Checkbutton *c;
 
-		ecore_list_goto_first(rb->chain);
+		ecore_list_first_goto(rb->chain);
 		while ((c = ecore_list_next(rb->chain))) {
 			ewl_checkbutton_checked_set(c, 0);
 		}
@@ -165,7 +165,7 @@ ewl_radiobutton_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ecore_list_goto(rb->chain, w);
 	ecore_list_remove(rb->chain);
 
-	if (ecore_list_is_empty(rb->chain))
+	if (ecore_list_empty_is(rb->chain))
 		IF_FREE_LIST(rb->chain);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

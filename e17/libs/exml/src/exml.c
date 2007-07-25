@@ -59,7 +59,7 @@ int exml_init(EXML *xml)
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 
 	xml->buffers = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-	ecore_hash_set_free_value(xml->buffers, ECORE_FREE_CB(xmlBufferFree));
+	ecore_hash_free_value_cb_set(xml->buffers, ECORE_FREE_CB(xmlBufferFree));
 
 	return TRUE;
 }
@@ -215,7 +215,7 @@ int exml_tag_remove(EXML *xml)
 		ecore_list_goto( c_list, xml->current );
 		ecore_list_remove_destroy( c_list );
 		if ((n_cur = ecore_list_current( c_list )) == NULL)
-			if ((n_cur = ecore_list_goto_last( c_list )) == NULL)
+			if ((n_cur = ecore_list_last_goto( c_list )) == NULL)
 				n_cur = c_parent;
 	} else {
 		/* we're removing the top level node */
@@ -322,7 +322,7 @@ char *exml_goto_node(EXML *xml, EXML_Node *node)
 	if (n != l)
 		return NULL;
 
-	while( (n = ecore_list_remove_first(stack)) ) {
+	while( (n = ecore_list_first_remove(stack)) ) {
 		l = ecore_list_goto(l->children, n);
 
 		if (!l)
@@ -438,7 +438,7 @@ char *exml_down(EXML *xml)
 	CHECK_PARAM_POINTER_RETURN("xml", xml, NULL);
 
 	if (exml_has_children(xml))
-		xml->current = ecore_list_goto_first( xml->current->children );
+		xml->current = ecore_list_first_goto( xml->current->children );
 	else
 		return NULL;
 
@@ -471,7 +471,7 @@ int exml_has_children(EXML *xml)
 	CHECK_PARAM_POINTER_RETURN("xml", xml, FALSE);
 	
 	if (xml->current && xml->current->children)
-		return !ecore_list_is_empty(xml->current->children);
+		return !ecore_list_empty_is(xml->current->children);
 
 	return FALSE;
 }
@@ -735,7 +735,7 @@ static void _exml_write_element(EXML_Node *node, xmlTextWriterPtr writer)
 	xmlTextWriterStartElement( writer, (xmlChar *) node->tag );
 
 	keys = ecore_hash_keys( node->attributes );
-	ecore_list_goto_first( keys );
+	ecore_list_first_goto( keys );
 
 	while( (name = ecore_list_next( keys )) ) {
 		xmlChar *value = ecore_hash_get( node->attributes, name );
@@ -747,7 +747,7 @@ static void _exml_write_element(EXML_Node *node, xmlTextWriterPtr writer)
 	if (node->value)
 		xmlTextWriterWriteString( writer, (xmlChar *) node->value );
 
-	ecore_list_goto_first( node->children );
+	ecore_list_first_goto( node->children );
 	
 	while( (child = ecore_list_next( node->children )) )
 		_exml_write_element( child, writer );
@@ -808,7 +808,7 @@ int exml_xsl_init( EXML_XSL *xsl, char *filename )
 	xmlLoadExtDtdDefaultValue = 1;
 
 	xsl->buffers = ecore_list_new();
-	ecore_list_set_free_cb(xsl->buffers, ECORE_FREE_CB(xmlFree));
+	ecore_list_free_cb_set(xsl->buffers, ECORE_FREE_CB(xmlFree));
 
 	xsl->cur = xsltParseStylesheetFile((const xmlChar *) filename);
 
@@ -1015,10 +1015,10 @@ int exml_node_init(EXML_Node *node)
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
 
 	node->attributes = ecore_hash_new( ecore_str_hash, ecore_str_compare );
-	ecore_hash_set_free_value( node->attributes, free );
-	ecore_hash_set_free_key( node->attributes, free );
+	ecore_hash_free_value_cb_set( node->attributes, free );
+	ecore_hash_free_key_cb_set( node->attributes, free );
 	node->children = ecore_list_new();
-	ecore_list_set_free_cb( node->children, _exml_node_destroy );
+	ecore_list_free_cb_set( node->children, _exml_node_destroy );
 
 	return TRUE;
 }

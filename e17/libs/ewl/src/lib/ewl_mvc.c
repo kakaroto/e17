@@ -247,7 +247,7 @@ ewl_mvc_selection_mode_set(Ewl_MVC *mvc, Ewl_Selection_Mode mode)
 	else if (!mvc->selected)
 	{
 		mvc->selected = ecore_list_new();
-		ecore_list_set_free_cb(mvc->selected, ewl_mvc_cb_sel_free);
+		ecore_list_free_cb_set(mvc->selected, ewl_mvc_cb_sel_free);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -285,7 +285,7 @@ ewl_mvc_selected_clear(Ewl_MVC *mvc)
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);	
 
-	while ((sel = ecore_list_remove_first(mvc->selected)))
+	while ((sel = ecore_list_first_remove(mvc->selected)))
 		ewl_mvc_cb_sel_free(sel);
 
 	ewl_mvc_selected_change_notify(mvc);
@@ -312,18 +312,18 @@ ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list)
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
 
-	while ((sel = ecore_list_remove_first(mvc->selected)))
+	while ((sel = ecore_list_first_remove(mvc->selected)))
 		ewl_mvc_cb_sel_free(sel);
 
-	if (!list || (ecore_list_nodes(list) == 0))
+	if (!list || (ecore_list_count(list) == 0))
 		DRETURN(DLEVEL_STABLE);
 
-	sel = ecore_list_remove_first(list);
+	sel = ecore_list_first_remove(list);
 	ecore_list_append(mvc->selected, sel);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_MULTI)
 	{
-		while ((sel = ecore_list_remove_first(list)))
+		while ((sel = ecore_list_first_remove(list)))
 			ecore_list_append(mvc->selected, sel);
 	}
 
@@ -432,7 +432,7 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);	
 
-	while ((sel = ecore_list_remove_first(mvc->selected)))
+	while ((sel = ecore_list_first_remove(mvc->selected)))
 		ewl_mvc_cb_sel_free(sel);
 
 	ewl_mvc_selected_add(mvc, model, data, row, column);
@@ -492,7 +492,7 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ecore_list_goto_last(mvc->selected);
+	ecore_list_last_goto(mvc->selected);
 	sel = ecore_list_current(mvc->selected);
 	if (!sel) DRETURN_PTR(NULL, DLEVEL_STABLE);
 
@@ -545,7 +545,7 @@ ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
 	 * the same cell in the list multiple times. This can happen if
 	 * they've single selected something, then did a multiselection over
 	 * top of it again. */
-	ecore_list_goto_first(mvc->selected);
+	ecore_list_first_goto(mvc->selected);
 	while ((sel = ecore_list_current(mvc->selected)))
 	{
 		if (sel->type == EWL_SELECTION_TYPE_INDEX)
@@ -601,13 +601,13 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
 	/* make sure we only return 1 or 0 for the single select case */
 	if (mvc->selection_mode == EWL_SELECTION_MODE_SINGLE)
 	{
-		if (ecore_list_nodes(mvc->selected))
+		if (ecore_list_count(mvc->selected))
 			DRETURN_INT(1, DLEVEL_STABLE);
 
 		DRETURN_INT(0, DLEVEL_STABLE);
 	}
 
-	ecore_list_goto_first(mvc->selected);
+	ecore_list_first_goto(mvc->selected);
 	while ((sel = ecore_list_next(mvc->selected)))
 	{
 		if (sel->type == EWL_SELECTION_TYPE_INDEX)
@@ -650,7 +650,7 @@ ewl_mvc_selected_is(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);	
 
-	ecore_list_goto_first(mvc->selected);
+	ecore_list_first_goto(mvc->selected);
 	while ((sel = ecore_list_next(mvc->selected)))
 	{
 		if (sel->type == EWL_SELECTION_TYPE_INDEX)
@@ -783,7 +783,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 			 * range with the last selected item. If the 
 			 * last selected is a range, it will take the 
 			 * start position */
-			sel = ecore_list_goto_last(mvc->selected);
+			sel = ecore_list_last_goto(mvc->selected);
 			if (sel->type == EWL_SELECTION_TYPE_INDEX)
 			{
 				Ewl_Selection_Idx *idx;
@@ -815,7 +815,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 				{
 					Ewl_Widget *w;
 
-					while ((w = ecore_list_remove_first(
+					while ((w = ecore_list_first_remove(
 								sel->highlight)))
 						ewl_widget_destroy(w);
 				}
@@ -885,7 +885,7 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 	if (!mvc->selected || !REALIZED(mvc)) 
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_list_goto_first(mvc->selected);
+	ecore_list_first_goto(mvc->selected);
 	while ((sel = ecore_list_next(mvc->selected)))
 	{
 		Ewl_Widget *w;
@@ -938,7 +938,7 @@ ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc))
 	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
 
 	mvc->cb.selected_change = cb;
-	if (mvc->selected && (ecore_list_nodes(mvc->selected) > 0))
+	if (mvc->selected && (ecore_list_count(mvc->selected) > 0))
 		cb(mvc);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1036,7 +1036,7 @@ ewl_mvc_selected_rm_item(Ewl_MVC *mvc, Ewl_Selection *sel, unsigned int row,
 	{
 		Ewl_Widget *w;
 
-		while ((w = ecore_list_remove_first(sel->highlight)))
+		while ((w = ecore_list_first_remove(sel->highlight)))
 			ewl_widget_destroy(w);
 	}
 
@@ -1180,7 +1180,7 @@ ewl_mvc_cb_sel_free(void *data)
 		{
 			Ewl_Widget *w;
 
-			while ((w = ecore_list_remove_first(sel->highlight)))
+			while ((w = ecore_list_first_remove(sel->highlight)))
 				ewl_widget_destroy(w);
 
 			IF_FREE_LIST(sel->highlight);

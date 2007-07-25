@@ -471,7 +471,7 @@ evfs_dir_list(evfs_client * client, evfs_filereference *ref,
           {
              printf("Got node..%s/%s\n", ele->path, ele->name);
              keys = ecore_hash_keys(ele->children);
-             ecore_list_goto_first(keys);
+             ecore_list_first_goto(keys);
              while ((key = ecore_list_next(keys)))
                {
                   evfs_filereference *reference = NEW(evfs_filereference);

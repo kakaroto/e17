@@ -118,7 +118,7 @@ _test_object_test(void *data, Ecore_DBus_Event_Method_Call *event)
    }
 
    printf("	params: i = %d, s1 = \"%s\", l = (", i ? *i : 0, s1);
-   ecore_list_goto_first(l);
+   ecore_list_first_goto(l);
    first = 1;
    while((i = ecore_list_next(l)))
      {

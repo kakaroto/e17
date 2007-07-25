@@ -27,7 +27,7 @@ void open_with_cb(Ewl_Widget *w , void *ev_data , void *user_data )  {
 	if (e->response == EWL_STOCK_OPEN) {
 		Ecore_List* l;
 		l = ewl_filedialog_selected_files_get(EWL_FILEDIALOG(w));
-		ecore_list_goto_first(l);
+		ecore_list_first_goto(l);
 		file = ecore_list_current(l);
 		
 		if (action) {

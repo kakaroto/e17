@@ -67,8 +67,8 @@ ewl_io_manager_init(void)
 
 		ewl_io_manager_plugins = ecore_hash_new(ecore_str_hash, 
 							ecore_str_compare);
-		ecore_hash_set_free_key(ewl_io_manager_plugins, free);
-		ecore_hash_set_free_value(ewl_io_manager_plugins,
+		ecore_hash_free_key_cb_set(ewl_io_manager_plugins, free);
+		ecore_hash_free_value_cb_set(ewl_io_manager_plugins,
 						ewl_io_manager_cb_free_plugin);
 	}
 

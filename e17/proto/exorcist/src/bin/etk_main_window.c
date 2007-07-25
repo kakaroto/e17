@@ -75,7 +75,7 @@ _exo_etk_tree_fill (Etk_Pdf *pdf, Etk_Tree *tree, Etk_Tree_Col *col, Etk_Tree_Ro
   if (!items)
     return;
 
-  ecore_list_goto_first (items);
+  ecore_list_first_goto (items);
   while ((item = ecore_list_next (items))) {
     char       *buf;
     Ecore_List *c;
@@ -728,7 +728,7 @@ _exo_etk_document_info_cb (Etk_Object *object __UNUSED__, void *user_data)
     etk_tree_freeze (ETK_TREE (list));
 
     fonts = epdf_document_fonts_get (doc);
-    ecore_list_goto_first (fonts);
+    ecore_list_first_goto (fonts);
     while ((font = ecore_list_next (fonts))) {
       etk_tree_append (ETK_TREE (list),
                        col_name, epdf_font_info_font_name_get (font),

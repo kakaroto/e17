@@ -225,7 +225,7 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
 	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, 0);
 
-	ecore_list_goto_first(fl->selected);
+	ecore_list_first_goto(fl->selected);
 	widget = ecore_list_current(fl->selected);
 	if (widget && fl->file_name_get) file = fl->file_name_get(fl, widget);
 
@@ -464,7 +464,7 @@ ewl_filelist_selected_files_set(Ewl_Filelist *fl, Ecore_List *files)
 	if (fl->selected_unselect) fl->selected_unselect(fl);
 	ecore_list_clear(fl->selected);
 
-	ecore_list_goto_first(files);
+	ecore_list_first_goto(files);
 	while ((file = ecore_list_next(files)))
 		if (fl->selected_file_add) fl->selected_file_add(fl, file);
 
@@ -489,7 +489,7 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
 
 	selected = ecore_list_new();
-	ecore_list_goto_first(fl->selected);
+	ecore_list_first_goto(fl->selected);
 	while ((item = ecore_list_next(fl->selected)))
 	{
 		const char *file;
@@ -538,7 +538,7 @@ ewl_filelist_selected_signal_all(Ewl_Filelist *fl, const char *signal)
 	DCHECK_PARAM_PTR("signal", signal);
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
 
-	ecore_list_goto_first(fl->selected);
+	ecore_list_first_goto(fl->selected);
 	while ((item = ecore_list_next(fl->selected)))
 		ewl_widget_state_set(item, signal, EWL_STATE_PERSISTENT);
 
@@ -739,7 +739,7 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
 	if (strcmp(dir, "/") && !skip_dot_dot)
 		ecore_list_append(dirs, strdup(".."));
 
-	while ((file = ecore_list_remove_first(all_files)))
+	while ((file = ecore_list_first_remove(all_files)))
 	{
 		int is_dir;
 
@@ -759,13 +759,13 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
 	}
 
 	/* XXX will need to do sorting here ... */
-	while ((file = ecore_list_remove_first(dirs)))
+	while ((file = ecore_list_first_remove(dirs)))
 	{
 		func(fl, dir, file, data);
 		FREE(file);
 	}
 	
-	while ((file = ecore_list_remove_first(files)))
+	while ((file = ecore_list_first_remove(files)))
 	{
 		func(fl, dir, file, data);
 		FREE(file);

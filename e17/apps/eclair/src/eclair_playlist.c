@@ -219,7 +219,7 @@ Evas_Bool eclair_playlist_add_m3u(Eclair_Playlist *playlist, char *m3u_path, Eva
    if (!playlist || !m3u_path || !(m3u_file = fopen(m3u_path, "rt")))
       return 0;
 
-   m3u_dir = ecore_file_get_dir(m3u_path);
+   m3u_dir = ecore_file_dir_get(m3u_path);
 
    while (fgets(line, MAX_PATH_LEN, m3u_file))
    {

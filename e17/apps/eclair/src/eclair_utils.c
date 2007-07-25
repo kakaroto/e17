@@ -121,7 +121,7 @@ char *eclair_utils_file_get_extension(char *file)
 {
    char *ext;
 
-   if (!file || !(ext = ecore_file_get_file(file)))
+   if (!file || !(ext = ecore_file_file_get(file)))
       return NULL;
 
    if ((ext = strrchr(ext, '.')))
@@ -140,7 +140,7 @@ char *eclair_utils_file_get_filename_without_ext(char *file)
    char *file_without_ext;
    char *ext_start;
 
-   if (!file || !(file_without_ext = ecore_file_get_file(file)))
+   if (!file || !(file_without_ext = ecore_file_file_get(file)))
       return NULL;
 
    file_without_ext = strdup(file_without_ext);
@@ -177,7 +177,7 @@ char *eclair_utils_search_file(const char *filename, const char *root_dir)
    if (!filename || !root_dir || !(files = ecore_file_ls(root_dir)))
       return NULL;
 
-   ecore_list_goto_first(files);
+   ecore_list_first_goto(files);
    while ((file = ecore_list_next(files)))
    {
       if (strcasecmp(file, filename) == 0)

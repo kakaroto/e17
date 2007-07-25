@@ -123,9 +123,9 @@ destroy_image_test(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 {
 	char *str;
 
-	ecore_dlist_goto_first(images);
+	ecore_dlist_first_goto(images);
 
-	while ((str = ecore_dlist_remove_last(images)) != NULL)
+	while ((str = ecore_dlist_last_remove(images)) != NULL)
 		free(str);
 
 	ecore_dlist_destroy(images);
@@ -154,7 +154,7 @@ image_goto_prev_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 	ecore_dlist_previous(images);
 	img = ecore_dlist_current(images);
 
-	if (!img) img = ecore_dlist_goto_last(images);
+	if (!img) img = ecore_dlist_last_goto(images);
 
 	ewl_text_text_set(EWL_TEXT(entry_path), img);
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
@@ -172,7 +172,7 @@ image_remove_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 
 	img = ecore_dlist_current(images);
 
-	if (!img) img = ecore_dlist_goto_last(images);
+	if (!img) img = ecore_dlist_last_goto(images);
 
 	ewl_text_text_set(EWL_TEXT(entry_path), img);
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
@@ -187,7 +187,7 @@ image_load()
 
 	if (img && image_exists(img)) {
 		ecore_dlist_append(images, img);
-		ecore_dlist_goto_last(images);
+		ecore_dlist_last_goto(images);
 		ewl_image_file_set(EWL_IMAGE(image), img, NULL);
 	} else
 		printf("ERROR: %s does not exist\n", img);
@@ -203,7 +203,7 @@ image_goto_next_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 	img = ecore_dlist_current(images);
 
 	if (!img)
-		img = ecore_dlist_goto_first(images);
+		img = ecore_dlist_first_goto(images);
 
 	ewl_text_text_set(EWL_TEXT(entry_path), img);
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);

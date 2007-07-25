@@ -278,13 +278,13 @@ entangle_ui_eapps_bar_populate(Evas_Object *container)
     eapps = entangle_eapps_key_list_get();
     if (!eapps) return 0;
 
-    for (i = 0; i < ecore_list_nodes(eapps); i++)
+    for (i = 0; i < ecore_list_count(eapps); i++)
     {
         Entangle_Eapp *eapp;
         Evas_Object *o, *o2;
         char *key;
 
-        key = ecore_list_goto_index(eapps, i);
+        key = ecore_list_index_goto(eapps, i);
         eapp = entangle_eapps_get(key);
 
         o = edje_object_add(evas);
@@ -638,13 +638,13 @@ entangle_ui_menu_populate_list(const char *rel_path, Ecore_List *apps,
     evas_object_data_set(container, "list", apps);
     evas_object_data_set(container, "list_rel_path", rel_path);
 
-    for (i = 0; i < ecore_list_nodes(apps); i++)
+    for (i = 0; i < ecore_list_count(apps); i++)
     {
         Entangle_App *app;
         Evas_Object *obj;
         Evas_Object *o = NULL;
 
-        app = ecore_list_goto_index(apps, i);
+        app = ecore_list_index_goto(apps, i);
         obj = edje_object_add(evas);
         edje_object_file_set(obj, file, "menu_item");
         edje_object_part_text_set(obj, "text", app->eapp->name);
@@ -825,7 +825,7 @@ entangle_ui_cb_mouse_up(void *data, Evas *evas,
                                         entangle_ui_cb_menu_item_free, o2);
 
         position = entangle_ui_calc_container_position(container, e->canvas.y);
-        ecore_list_goto_index(apps, position);
+        ecore_list_index_goto(apps, position);
         ecore_list_insert(apps, app);
 
         esmart_container_empty(container);
@@ -1182,7 +1182,7 @@ entangle_ui_cb_menu_item_move_end(void *data, Evas *evas,
 
         apps = evas_object_data_get(container, "list");
         rel_path = evas_object_data_get(container, "list_rel_path");
-        ecore_list_goto_index(apps, position);
+        ecore_list_index_goto(apps, position);
         ecore_list_insert(apps, app);
 
         esmart_container_empty(container);

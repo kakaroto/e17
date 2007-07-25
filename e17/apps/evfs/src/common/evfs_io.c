@@ -273,7 +273,7 @@ evfs_write_list_event(evfs_client * client, evfs_event * event)
    char *data;
    int size_ret = 0;
 
-   ecore_list_goto_first(event->file_list.list);
+   ecore_list_first_goto(event->file_list.list);
    while ((ref = ecore_list_next(event->file_list.list)))
      {
 
@@ -362,7 +362,7 @@ evfs_write_progress_event(evfs_client * client, evfs_event * event)
    free(data);
 
    /*Write "From" file */
-   ref = ecore_list_remove_first(event->file_list.list);
+   ref = ecore_list_first_remove(event->file_list.list);
    data = eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
 
    evfs_write_ecore_ipc_client_message(client->client,
@@ -373,7 +373,7 @@ evfs_write_progress_event(evfs_client * client, evfs_event * event)
    free(data);
 
    /*Write "to" file */
-   ref = ecore_list_remove_first(event->file_list.list);
+   ref = ecore_list_first_remove(event->file_list.list);
    data = eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
 
    evfs_write_ecore_ipc_client_message(client->client,

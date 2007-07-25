@@ -235,7 +235,7 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(b), 0, 0);
 
 	c = EWL_CONTAINER(b);
-	ecore_dlist_goto_first(c->children);
+	ecore_dlist_first_goto(c->children);
 	while((child = ecore_dlist_next(c->children)))
 		ewl_box_cb_child_show(c, child);
 
@@ -518,7 +518,7 @@ ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_BOX_TYPE);
 
-	if (ecore_dlist_is_empty(EWL_CONTAINER(w)->children))
+	if (ecore_dlist_empty_is(EWL_CONTAINER(w)->children))
 		DRETURN(DLEVEL_STABLE);
 
 	num = ewl_container_child_count_visible_get(EWL_CONTAINER(w));
@@ -553,7 +553,7 @@ ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data __UNUSED__,
 	*fill_size = *fill_size / num;
 
 	i = 0;
-	ecore_dlist_goto_first(EWL_CONTAINER(w)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
 		if (VISIBLE(child)) {
 			i++;
@@ -590,7 +590,7 @@ ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread, int *fill_size, int *al
 	 * box.
 	 */
 	i = 0;
-	ecore_dlist_goto_first(EWL_CONTAINER(b)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(b)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(b)->children))) {
 		int change;
 
@@ -770,7 +770,7 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 	/*
 	 * Configure the widgets on the first list.
 	 */
-	ecore_dlist_goto_first(EWL_CONTAINER(b)->children);
+	ecore_dlist_first_goto(EWL_CONTAINER(b)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(b)->children))) {
 
 		if (VISIBLE(child)) {

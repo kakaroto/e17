@@ -26,7 +26,7 @@ _ecore_dbus_message_length_append(Ecore_DBus_Message *msg, unsigned int size)
 	msg->size = size;
 
 	/* Update buffer references */
-	ecore_list_goto_first(msg->all);
+	ecore_list_first_goto(msg->all);
 	while ((f = ecore_list_next(msg->all)))
 	  f->buffer = msg->buffer + f->offset;
      }
@@ -188,7 +188,7 @@ _ecore_dbus_message_field_value_get(Ecore_DBus_Message_Field *f)
 
 	      list = ecore_list_new();
 	      c = ECORE_DBUS_MESSAGE_FIELD_CONTAINER(f);
-	      ecore_list_goto_first(c->values);
+	      ecore_list_first_goto(c->values);
 	      while ((value = ecore_list_next(c->values)))
 		ecore_list_append(list, _ecore_dbus_message_field_value_get(value));
 	      return list;

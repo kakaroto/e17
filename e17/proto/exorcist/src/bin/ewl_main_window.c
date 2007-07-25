@@ -122,7 +122,7 @@ _exo_ewl_tree_fill (Exo_Ewl *data, Ewl_Row *row, Ecore_List *items)
   if (!items)
     return;
 
-  ecore_list_goto_first (items);
+  ecore_list_first_goto (items);
   while ((item = ecore_list_next (items)))
     {
       int         page;
@@ -1146,7 +1146,7 @@ _exo_ewl_document_info_cb (Ewl_Widget *widget __UNUSED__,
     ewl_widget_show (list);
 
     fonts = epdf_document_fonts_get (doc);
-    ecore_list_goto_first (fonts);
+    ecore_list_first_goto (fonts);
     while ((font = ecore_list_next (fonts))) {
       char *row_text[4];
 

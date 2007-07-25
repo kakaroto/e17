@@ -55,8 +55,8 @@ evfs_operation_destroy(evfs_operation * op)
    ecore_hash_remove(evfs_operation_hash, (long *)op->id);
 
    if (op->sub_task) {
-	   ecore_list_goto_first(op->sub_task);
-	   while ( (task = ecore_list_remove_first(op->sub_task))) {
+	   ecore_list_first_goto(op->sub_task);
+	   while ( (task = ecore_list_first_remove(op->sub_task))) {
 		   switch (task->type) {
 			   case EVFS_OPERATION_TASK_TYPE_FILE_COPY:
 				   evfs_cleanup_filereference(EVFS_OPERATION_TASK_FILE_COPY(task)->file_from);
@@ -183,7 +183,7 @@ void evfs_operation_tasks_print(evfs_operation* op)
 
 	printf("Operation subtasks:\n");
 	
-	ecore_list_goto_first(op->sub_task);
+	ecore_list_first_goto(op->sub_task);
 	while ( (task = ecore_list_next(op->sub_task))) {
 		switch (task->type) {
 			case EVFS_OPERATION_TASK_TYPE_FILE_COPY:
@@ -218,7 +218,7 @@ void evfs_operation_queue_run()
 {
 	evfs_operation* op;
 	
-	ecore_list_goto_first(evfs_operation_queue);
+	ecore_list_first_goto(evfs_operation_queue);
 	op = ecore_list_current(evfs_operation_queue);
 
 	if (op) {
@@ -234,7 +234,7 @@ void evfs_operation_queue_run()
 		}
 
 		if (op->status == EVFS_OPERATION_STATUS_COMPLETED || op->status == EVFS_OPERATION_STATUS_ERROR ) {
-			ecore_list_remove_first(evfs_operation_queue);
+			ecore_list_first_remove(evfs_operation_queue);
 			evfs_operation_destroy(op);
 			
 			printf("Finished running operation, and cleaned up!\n");
@@ -328,7 +328,7 @@ void evfs_operation_run_tasks(evfs_operation* op)
 				}
 
 				//FIXME - ther's probably a better place to put this*/
-				if (op->processed_tasks == ecore_list_nodes(op->sub_task) && 
+				if (op->processed_tasks == ecore_list_count(op->sub_task) && 
 				    task->status == EVFS_OPERATION_TASK_STATUS_COMMITTED) {
 			
 					printf("Sending completed progress event...\n");
@@ -365,7 +365,7 @@ void evfs_operation_run_tasks(evfs_operation* op)
 				}
 
 				//FIXME - ther's probably a better place to put this*/
-				if (op->processed_tasks == ecore_list_nodes(op->sub_task) && task->status == EVFS_OPERATION_TASK_STATUS_COMMITTED) {
+				if (op->processed_tasks == ecore_list_count(op->sub_task) && task->status == EVFS_OPERATION_TASK_STATUS_COMMITTED) {
 					evfs_file_progress_event_create(op->client,  EVFS_OPERATION_TASK_FILE_REMOVE(task)->file,
 						evfs_empty_file_get(),
 						op->command, 100, 
@@ -415,6 +415,6 @@ void evfs_operation_run_tasks(evfs_operation* op)
 
 void evfs_operation_queue_pending_add(evfs_operation* op)
 {
-	ecore_list_goto_first(op->sub_task);
+	ecore_list_first_goto(op->sub_task);
 	ecore_list_append(evfs_operation_queue, op);
 }

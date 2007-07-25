@@ -1395,7 +1395,7 @@ tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 
 	printf("Selected:\n");
 	selected = ewl_mvc_selected_list_get(EWL_MVC(w));
-	ecore_list_goto_first(selected);
+	ecore_list_first_goto(selected);
 	while ((sel = ecore_list_next(selected)))
 	{
 		if (sel->type == EWL_SELECTION_TYPE_INDEX)

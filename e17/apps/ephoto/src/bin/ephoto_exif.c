@@ -20,8 +20,8 @@ Ecore_Hash *get_exif_data(const char *file)
 	args[0] = file;
 
 	exif_info = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-	ecore_hash_set_free_key(exif_info, free);
-	ecore_hash_set_free_value(exif_info, free);
+	ecore_hash_free_key_cb_set(exif_info, free);
+	ecore_hash_free_value_cb_set(exif_info, free);
 	
 	loader = exif_loader_new();
 	exif_loader_write_file(loader, *args);
@@ -92,7 +92,7 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 	win = data;
 
 	values = ecore_list_new();
-	ecore_list_set_free_cb(values, free);
+	ecore_list_free_cb_set(values, free);
 
         img = get_image();
 	if(!img) return;
@@ -105,9 +105,9 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 	else
 	{
 		keys = ecore_hash_keys(exif_info);
-		while (!ecore_list_is_empty(keys))
+		while (!ecore_list_empty_is(keys))
 		{
-			key = ecore_list_remove_first(keys);
+			key = ecore_list_first_remove(keys);
 	                value = ecore_hash_get(exif_info, key);
 	
 	                snprintf(text, PATH_MAX, "%s: %s", key, value);

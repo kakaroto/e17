@@ -102,7 +102,7 @@ static void display_index (Epdf_Document *document, Ecore_List *children, int n)
   if (!children)
     return;
 
-  ecore_list_goto_first (children);
+  ecore_list_first_goto (children);
   while ((item = ecore_list_next (children))) {
     char *buf;
     char  buf2[64];
@@ -205,7 +205,7 @@ document_info_print (Epdf_Document *document, Epdf_Page *page)
   printf ("\n");
 
   fonts = epdf_document_fonts_get (document);
-  ecore_list_goto_first (fonts);
+  ecore_list_first_goto (fonts);
   while ((font = ecore_list_next (fonts))) {
     printf ("    %s (", epdf_font_info_font_name_get (font));
     printf ("%s, ", epdf_font_info_font_path_get (font));

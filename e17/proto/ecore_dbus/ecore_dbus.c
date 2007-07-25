@@ -244,10 +244,10 @@ ecore_dbus_server_connect(Ecore_Con_Type con_type, const char *name, int port,
    svr->auth_type = -1;
    svr->auth_type_transaction = 0;
    svr->messages = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-   ecore_hash_set_free_value(svr->messages, ECORE_FREE_CB(_ecore_dbus_message_free));
+   ecore_hash_free_value_cb_set(svr->messages, ECORE_FREE_CB(_ecore_dbus_message_free));
    svr->objects = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-   ecore_hash_set_free_key(svr->objects, free);
-   ecore_hash_set_free_value(svr->objects, ECORE_FREE_CB(ecore_dbus_object_free));
+   ecore_hash_free_key_cb_set(svr->objects, free);
+   ecore_hash_free_value_cb_set(svr->objects, ECORE_FREE_CB(ecore_dbus_object_free));
    servers = _ecore_list2_append(servers, svr);
 
    return svr;
@@ -551,13 +551,13 @@ _ecore_dbus_event_create(Ecore_DBus_Server *svr, Ecore_DBus_Message *msg)
    ev->header.destination = ecore_dbus_message_header_field_get(msg, ECORE_DBUS_HEADER_FIELD_DESTINATION);
    ev->header.sender = ecore_dbus_message_header_field_get(msg, ECORE_DBUS_HEADER_FIELD_SENDER);
    ev->header.signature = ecore_dbus_message_header_field_get(msg, ECORE_DBUS_HEADER_FIELD_SIGNATURE);
-   if (!ecore_list_is_empty(msg->fields))
+   if (!ecore_list_empty_is(msg->fields))
      {
 	Ecore_DBus_Message_Field *f;
 	int i = 0;
 
-	ev->args = malloc(ecore_list_nodes(msg->fields) * sizeof(Ecore_DBus_Message_Arg));
-	ecore_list_goto_first(msg->fields);
+	ev->args = malloc(ecore_list_count(msg->fields) * sizeof(Ecore_DBus_Message_Arg));
+	ecore_list_first_goto(msg->fields);
 	while ((f = ecore_list_next(msg->fields)))
 	  {
 	     ev->args[i].type = f->type;

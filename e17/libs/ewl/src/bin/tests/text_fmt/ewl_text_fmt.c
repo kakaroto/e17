@@ -149,7 +149,7 @@ tf_clear(char *buf, int len)
 	ewl_text_fmt_node_prepend(fmt, tx, 30, 30);
 
 	ewl_text_fmt_clear(fmt);
-	if (ecore_dlist_nodes(fmt->nodes) != 0)
+	if (ecore_dlist_count(fmt->nodes) != 0)
 	{
 		snprintf(buf, len, "_clear left items in -> nodes.");
 		return 0;

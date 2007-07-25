@@ -80,8 +80,8 @@ ewl_theme_theme_set(const char *theme_name)
 	if (!ewl_theme_def_data)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ecore_hash_set_free_key(ewl_theme_def_data, ewl_theme_data_free);
-	ecore_hash_set_free_value(ewl_theme_def_data, ewl_theme_data_free);
+	ecore_hash_free_key_cb_set(ewl_theme_def_data, ewl_theme_data_free);
+	ecore_hash_free_value_cb_set(ewl_theme_def_data, ewl_theme_data_free);
 
 	/* clean up the font path list */
 	if (ewl_theme_font_paths)
@@ -97,7 +97,7 @@ ewl_theme_theme_set(const char *theme_name)
 	/* Hide all embeds. If the embed was previously shown we re-show it
 	 * again. This should cause everything to reset it's theme values to the
 	 * new values */
-	ecore_list_goto_first(ewl_embed_list);
+	ecore_list_first_goto(ewl_embed_list);
 	while ((w = ecore_list_next(ewl_embed_list)))
 	{
 		int vis;
@@ -471,8 +471,8 @@ ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v)
 	if (!w->theme || w->theme == ewl_theme_def_data) {
 		w->theme = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
-		ecore_hash_set_free_key(w->theme, ewl_theme_data_free);
-		ecore_hash_set_free_value(w->theme, ewl_theme_data_free);
+		ecore_hash_free_key_cb_set(w->theme, ewl_theme_data_free);
+		ecore_hash_free_value_cb_set(w->theme, ewl_theme_data_free);
 	}
 
 	if (v && v != EWL_THEME_KEY_NOMATCH)
@@ -603,7 +603,7 @@ ewl_theme_font_path_init(void)
 	ewl_theme_font_paths = ecore_list_new();
 	if (!ewl_theme_font_paths)
 		DRETURN(DLEVEL_STABLE);
-	ecore_list_set_free_cb(ewl_theme_font_paths, free);
+	ecore_list_free_cb_set(ewl_theme_font_paths, free);
 
 	font_path = ewl_theme_data_str_get(NULL, "/theme/font_path");
 	if (!font_path)
