@@ -107,7 +107,7 @@ eke_gui_ewl_feed_change(Eke *eke, Eke_Feed *feed)
     }
     ewl_container_reset(EWL_CONTAINER(disp->page));
 
-    ecore_list_goto_first(feed->items);
+    ecore_list_first_goto(feed->items);
     while ((item = ecore_list_next(feed->items)) != NULL) {
         o = ewl_text_new(NULL);
         ewl_text_wrap_set(EWL_TEXT(o), 1);

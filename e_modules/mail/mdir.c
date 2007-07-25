@@ -100,7 +100,7 @@ _mail_mdir_get_files (const char *path)
   int i = 0;
 
   l = ecore_file_ls (path);
-  ecore_list_goto_first (l);
+  ecore_list_first_goto (l);
   while ((item = (char *) ecore_list_next (l)) != NULL)
     {
       if ((!strcmp (item, ".")) || (!strcmp (item, "..")))

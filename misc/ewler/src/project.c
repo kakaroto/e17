@@ -94,8 +94,8 @@ static EWL_CALLBACK_DEFN(project_key_down)
 	if( !strcmp(ev->keyname, "Delete") ) {
 		selected = ewl_tree_selected_get(EWL_TREE(file_tree));
 
-		if( ecore_list_nodes(selected) > 0 ) {
-			ecore_list_goto_first(selected);
+		if( ecore_list_count(selected) > 0 ) {
+			ecore_list_first_goto(selected);
 
 			while( (row = ecore_list_next(selected)) ) {
 				text = ewl_tree_row_column_get(EWL_ROW(row), 0);
@@ -675,8 +675,8 @@ projects_init( char *filename )
 		return -1;
 	}
 	active_project->files = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-	ecore_hash_set_free_key(active_project->files, free);
-	ecore_hash_set_free_value(active_project->files, free);
+	ecore_hash_free_key_cb_set(active_project->files, free);
+	ecore_hash_free_value_cb_set(active_project->files, free);
 
 	if( !filename || project_open(filename) < 0 ) {
 		project_new();
@@ -705,7 +705,7 @@ project_update( void )
 		return;
 
 	names = ecore_hash_keys(active_project->files);
-	nodes = ecore_list_nodes(names);
+	nodes = ecore_list_count(names);
 	snames = ecore_sheap_new(ecore_str_compare, nodes);
 
 	while( (name = ecore_list_remove(names)) )

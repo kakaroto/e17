@@ -578,7 +578,7 @@ _get_filename (Config_Item * ci)
 	{
 	  ext = ecore_file_strip_ext (ci->filename);
 	  fl = ecore_file_ls (ci->location);
-	  ecore_list_goto_first (fl);
+	  ecore_list_first_goto (fl);
 	  while ((file = ecore_list_next (fl)) != NULL)
 	    if (strstr (file, ext))
 	      c++;
@@ -709,7 +709,7 @@ _cb_entry_ok (char *text, void *data)
 
   ci = _ss_config_item_get (inst->gcc->id);
 
-  t = ecore_file_get_dir (text);
+  t = ecore_file_dir_get (text);
   if (!strcmp (t, text))
     {
       e_module_dialog_show (ss_config->module,
@@ -730,6 +730,6 @@ _cb_entry_ok (char *text, void *data)
       e_config_save_queue ();
     }
 
-  inst->filename = evas_stringshare_add (ecore_file_get_file(text));
+  inst->filename = evas_stringshare_add (ecore_file_file_get(text));
   _ss_take_shot (inst);
 }

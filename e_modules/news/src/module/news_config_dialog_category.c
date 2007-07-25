@@ -204,7 +204,7 @@ _icon_select(void *data1, void *data2)
    dia->data = cfdata;
 
    if (cfdata->icon)
-     dir = ecore_file_get_dir(cfdata->icon);
+     dir = ecore_file_dir_get(cfdata->icon);
    
    if (dir)
      {

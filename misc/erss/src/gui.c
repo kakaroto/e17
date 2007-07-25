@@ -180,7 +180,7 @@ int erss_gui_items_add(Erss_Feed *f) {
     return -1;
 
   if (f->list) {
-    Erss_Article *item = ecore_list_goto_first (f->list);
+    Erss_Article *item = ecore_list_first_goto (f->list);
     while ((item = ecore_list_next(f->list))) {
       if(erss_gui_item_new(f,item)==ERSS_GAI_SUCC)
 	c++;
@@ -225,7 +225,7 @@ int erss_gui_items_drop(Ecore_List **l) {
 	if ((l == NULL) || ((list=*l) == NULL))
 		return FALSE;
 
-	item = ecore_list_goto_first (list);
+	item = ecore_list_first_goto (list);
 	while ((item = ecore_list_next(list))) {
 		if (item->description && item->obj)
 			erss_tooltip_free(item);

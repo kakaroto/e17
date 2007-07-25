@@ -65,7 +65,7 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
    _wlan_config_get_devices(cfdata->devs);
    if (!cfdata->devs) return;
 
-   ecore_list_goto_first(cfdata->devs);
+   ecore_list_first_goto(cfdata->devs);
    while ((tmp = ecore_list_next(cfdata->devs)) != NULL) 
      {
 	if (!strcmp(cfdata->device, tmp)) 
@@ -137,7 +137,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
      {
 	of = e_widget_framelist_add (evas, D_ ("Device Settings"), 0);
 	rg = e_widget_radio_group_new(&(cfdata->dev_num));
-	ecore_list_goto_first(cfdata->devs);
+	ecore_list_first_goto(cfdata->devs);
 	while ((tmp = ecore_list_next(cfdata->devs)) != NULL) 
 	  {
 	     ob = e_widget_radio_add(evas, tmp, i, rg);
@@ -165,7 +165,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
    
    if (cfdata->devs) 
      {
-	tmp = ecore_list_goto_index(cfdata->devs, cfdata->dev_num);
+	tmp = ecore_list_index_goto(cfdata->devs, cfdata->dev_num);
 	if (tmp != NULL) 
 	  {
 	     if (ci->device) evas_stringshare_del(ci->device);

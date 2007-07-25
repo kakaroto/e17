@@ -37,7 +37,7 @@ void erss_list_config_files (int output)
 	if (output)
 		printf ("\n%s processing potential dirs ...\n", PACKAGE);
 
-	ptr = ecore_list_goto_first (paths);
+	ptr = ecore_list_first_goto (paths);
 	while ((ptr = ecore_list_current (paths))) {
 		if (output)
 			printf ("\nprocessing '%s':\n", ptr);
@@ -93,7 +93,7 @@ void erss_list_config_files (int output)
 	 * Finished reading and printing available config files
 	 * now remove the paths list since we don't need it anymore.
 	 */
-	ptr = ecore_list_goto_first (paths);
+	ptr = ecore_list_first_goto (paths);
 	while ((ptr = ecore_list_current (paths))) {
 		if (ptr)
 			free (ptr);

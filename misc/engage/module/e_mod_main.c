@@ -590,7 +590,7 @@ _engage_dotorder_app_del(Engage *e, const char *name)
 	  ecore_list_append(list, strdup(buf));
      }
    fclose(f);
-   ecore_list_goto_first(list);
+   ecore_list_first_goto(list);
 
    if ((f = fopen(dotorder, "w")) == NULL)
      return;
@@ -1258,9 +1258,9 @@ _engage_cb_event_dnd_selection(void *data, int type, void *event)
 	ext = strstr(files->files[i], ".eap");
 	if (!ext)
 	  continue;
-	path = ecore_file_get_dir(files->files[i]);
+	path = ecore_file_dir_get(files->files[i]);
 	/* FIXME test here, we might need to copy it to .../all/ */
-	name = ecore_file_get_file(files->files[i]);
+	name = ecore_file_file_get(files->files[i]);
 
 	_engage_dotorder_app_add(eb->engage, name);
      }
@@ -2518,7 +2518,7 @@ _engage_bar_cb_menu_keep_icon(void *data, E_Menu *m, E_Menu_Item *mi)
    eb = data;
    const char *file;
 
-   file = ecore_file_get_file(eb->selected_ic->app->path);
+   file = ecore_file_file_get(eb->selected_ic->app->path);
    _engage_dotorder_app_add(eb->engage, file);
 }
 
@@ -2529,7 +2529,7 @@ _engage_bar_cb_menu_remove_icon(void *data, E_Menu *m, E_Menu_Item *mi)
    eb = data;
    const char *file;
    
-   file = ecore_file_get_file(eb->selected_ic->app->path);
+   file = ecore_file_file_get(eb->selected_ic->app->path);
    _engage_dotorder_app_del(eb->engage, file);
 }
 

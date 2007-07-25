@@ -391,7 +391,7 @@ eke_feed_data_handle(Eke_Feed *feed)
 
          crypt = eke_crypt_get(ptr);
          if (feed->update.crypt && !strcmp(crypt, feed->update.crypt) 
-                && ecore_list_nodes(feed->items)) {
+                && ecore_list_count(feed->items)) {
             FREE(crypt);
             feed->data.type = EKE_FEED_DATA_RESPONSE_NO_CHANGE;
 
@@ -483,7 +483,7 @@ eke_feed_del(Eke_Feed *feed)
     IF_FREE(feed->link);
     IF_FREE(feed->desc);
 
-    ecore_list_set_free_cb(feed->items, ECORE_FREE_CB(eke_feed_item_free));
+    ecore_list_free_cb_set(feed->items, ECORE_FREE_CB(eke_feed_item_free));
     ecore_list_destroy(feed->items);
 
     FREE(feed);

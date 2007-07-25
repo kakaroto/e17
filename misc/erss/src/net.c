@@ -122,7 +122,7 @@ static int erss_net_server_del (void *data, int type, void *event)
 	ecore_con_server_del (e->server);
 	f->server = NULL;
 	
-	if (ecore_list_is_empty (f->list)) {
+	if (ecore_list_empty_is (f->list)) {
 		if (buf && temp)
 			printf ("%s\n", temp);
 		else 

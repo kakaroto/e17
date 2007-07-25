@@ -462,7 +462,7 @@ volume_file_scan(char *file)
      {
 	const char *f;
 	/* guess name from filename minus extension with _ converted to space */
-	f = ecore_file_get_file(file);
+	f = ecore_file_file_get(file);
 	if (f)
 	  {
 	     char *c;
@@ -480,19 +480,19 @@ volume_file_scan(char *file)
      {
 	char *f;
 	/* guess genre from parent directory name with _ converted to space */
-	f = ecore_file_get_dir(file);
+	f = ecore_file_dir_get(file);
 	if (f)
 	  {
 	     char *c, *ff;
 	     
-	     ff = ecore_file_get_dir(f);
+	     ff = ecore_file_dir_get(f);
 	     if (ff)
 	       {
 		  char buf[4096];
 		  
 		  snprintf(buf, sizeof(buf), "%s/%s", 
-			   ecore_file_get_file(ff),
-			   ecore_file_get_file(f));
+			   ecore_file_file_get(ff),
+			   ecore_file_file_get(f));
 		  for (c = buf; *c; c++)
 		    {
 		       if (*c == '_') *c = ' ';
@@ -530,7 +530,7 @@ volume_dir_scan(char *dir)
 	return NULL;
      }
    vi->type = "directory";
-   f = ecore_file_get_file(dir);
+   f = ecore_file_file_get(dir);
    if (f)
      {
 	char *c;

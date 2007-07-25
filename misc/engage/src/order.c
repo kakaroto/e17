@@ -51,7 +51,7 @@ void _od_dotorder_app_del(const char *name) {
       ecore_list_append(list, strdup(buf));
   }
   fclose(f);
-  ecore_list_goto_first(list);
+  ecore_list_first_goto(list);
 
   if ((f = fopen(dotorder, "w")) == NULL)
     return;

@@ -142,7 +142,7 @@ Erss_Config *erss_parse_config_file (char *file)
 	if (doc == NULL) {
 		erss_list_config_files (FALSE);
 
-		tmp = ecore_list_goto_first (config_files);
+		tmp = ecore_list_first_goto (config_files);
 		while ((tmp = ecore_list_current (config_files))) {
 			if (strstr (tmp, file))  {
 				doc = xmlParseFile (tmp);

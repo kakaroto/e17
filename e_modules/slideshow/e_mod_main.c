@@ -435,11 +435,11 @@ _slide_cb_check(void *data)
    if (inst->index > inst->bg_count) inst->index = 0;
    if (inst->index <= inst->bg_count)
      {
-	bg = ecore_list_goto_index(inst->bg_list, inst->index);
+	bg = ecore_list_index_goto(inst->bg_list, inst->index);
 	if (bg == NULL)
 	  {
 	     inst->index = 0;
-	     bg = ecore_list_goto_index(inst->bg_list, inst->index);
+	     bg = ecore_list_index_goto(inst->bg_list, inst->index);
 	  }
 	if (bg != NULL)
 	  {
@@ -507,7 +507,7 @@ _slide_get_bg_count(void *data)
    if (inst->bg_list) ecore_list_destroy(inst->bg_list);
 
    inst->bg_list = ecore_list_new();
-   ecore_list_set_free_cb(inst->bg_list, free);
+   ecore_list_free_cb_set(inst->bg_list, free);
 
    dirListing = ecore_file_ls(ci->dir);
 
@@ -523,7 +523,7 @@ _slide_get_bg_count(void *data)
 
    ecore_list_destroy(dirListing);
 
-   ecore_list_goto_first(inst->bg_list);
+   ecore_list_first_goto(inst->bg_list);
    while ((item = (char *)ecore_list_next(inst->bg_list)) != NULL)
      inst->bg_count++;
 }
@@ -591,7 +591,7 @@ _slide_set_preview(void *data)
    ci = _slide_config_item_get(inst->gcc->id);
    ss = inst->slide;
 
-   bg = ecore_list_goto_index(inst->bg_list, inst->index);
+   bg = ecore_list_index_goto(inst->bg_list, inst->index);
    snprintf(buf, sizeof (buf), "%s/%s", ci->dir, bg);
    if (!e_util_edje_collection_exists (buf, "e/desktop/background")) return;
    if (ss->bg_obj) evas_object_del(ss->bg_obj);

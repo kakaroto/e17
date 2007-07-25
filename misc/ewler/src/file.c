@@ -376,7 +376,7 @@ file_spec_open( char *filename, Ecore_Hash *hash )
 							if( elem_hash == spec->elems )
 								done = true;
 
-							elem_hash = ecore_list_remove_first(hash_stack);
+							elem_hash = ecore_list_first_remove(hash_stack);
 							exml_up(xml);
 						}
 
@@ -396,7 +396,7 @@ file_spec_open( char *filename, Ecore_Hash *hash )
 		ecore_list_append(new_specs, spec);
 	} while( exml_next_nomove(xml) );
 
-	ecore_list_goto_first(new_specs);
+	ecore_list_first_goto(new_specs);
 
 	/* 2nd pass, set parents */
 	while( (spec = ecore_list_next(new_specs)) ) {
@@ -423,7 +423,7 @@ find_by_parent( Ecore_List *widgets, const char *parent )
 
 	children = ecore_list_new();
 
-	ecore_list_goto_first(widgets);
+	ecore_list_first_goto(widgets);
 	while( (w = ecore_list_next(widgets)) ) {
 		if( !parent && !w->parent )
 			ecore_list_append(children, w);
@@ -432,7 +432,7 @@ find_by_parent( Ecore_List *widgets, const char *parent )
 			ecore_list_append(children, w);
 	}
 
-	ecore_list_goto_first(children);
+	ecore_list_first_goto(children);
 
 	return children;
 }
@@ -462,7 +462,7 @@ has_changed_children( Ewler_Widget_Elem *elem )
 		if( c_elem->changed ) {
 			do {
 				ecore_list_destroy(names);
-			} while( (names = ecore_list_remove_first(names_stack)) );
+			} while( (names = ecore_list_first_remove(names_stack)) );
 			ecore_list_destroy(names_stack);
 			ecore_list_destroy(elems_stack);
 			return true;
@@ -480,8 +480,8 @@ has_changed_children( Ewler_Widget_Elem *elem )
 				elems != elem->info.children ) {
 			ecore_list_destroy(names);
 
-			elems = ecore_list_remove_first(elems_stack);
-			names = ecore_list_remove_first(names_stack);
+			elems = ecore_list_first_remove(elems_stack);
+			names = ecore_list_first_remove(names_stack);
 		}
 	}
 
@@ -500,7 +500,7 @@ file_form_save( Ewler_Form *f )
 	Ewler_Widget *w;
 
 	top_level = find_by_parent(f->widgets, NULL);
-	if( ecore_list_nodes(top_level) != 1 ) {
+	if( ecore_list_count(top_level) != 1 ) {
 		EWLER_ERROR("ewler form does not have a single top level widget\n");
 		return -1;
 	}
@@ -565,8 +565,8 @@ file_form_save( Ewler_Form *f )
 
 				exml_end(xml);
 
-				elems = ecore_list_remove_first(elems_stack);
-				names = ecore_list_remove_first(names_stack);
+				elems = ecore_list_first_remove(elems_stack);
+				names = ecore_list_first_remove(names_stack);
 			}
 		}
 
@@ -580,7 +580,7 @@ file_form_save( Ewler_Form *f )
 			if( !w->callbacks[i] )
 				continue;
 
-			ecore_list_goto_first(w->callbacks[i]);
+			ecore_list_first_goto(w->callbacks[i]);
 			while( (handler = ecore_list_next(w->callbacks[i])) ) {
 				exml_start(xml);
 				exml_tag_set(xml, "callback");
@@ -602,7 +602,7 @@ file_form_save( Ewler_Form *f )
 
 			exml_end(xml);
 
-			children = ecore_list_remove_first(widget_stack);
+			children = ecore_list_first_remove(widget_stack);
 		}
 	}
 
@@ -695,7 +695,7 @@ file_form_open( Ewler_Form *f )
 				if( callback < EWL_CALLBACK_MAX && handler ) {
 					if( !ewler_w->callbacks[callback] ) {
 						ewler_w->callbacks[callback] = ecore_list_new();
-						ecore_list_set_free_cb(ewler_w->callbacks[callback], free);
+						ecore_list_free_cb_set(ewler_w->callbacks[callback], free);
 					}
 
 					ecore_list_append(ewler_w->callbacks[callback], strdup(handler));
@@ -749,9 +749,9 @@ file_form_open( Ewler_Form *f )
 next:
 				while( !(next = exml_next_nomove(xml)) &&
 							 elems != f->overlay->elems ) {
-					if( ecore_list_nodes(elems_stack) == ecore_list_nodes(w_stack) )
-						w = ecore_list_remove_first(w_stack);
-					elems = ecore_list_remove_first(elems_stack);
+					if( ecore_list_count(elems_stack) == ecore_list_count(w_stack) )
+						w = ecore_list_first_remove(w_stack);
+					elems = ecore_list_first_remove(elems_stack);
 					exml_up(xml);
 				}
 				if( !next ) {
@@ -769,7 +769,7 @@ next:
 	exml_destroy(xml);
 
 	/* 2nd pass, set up parent strings */
-	ecore_list_goto_first(f->widgets);
+	ecore_list_first_goto(f->widgets);
 	while( (ewler_w = ecore_list_next(f->widgets)) )
 		if( ewler_w == f->overlay )
 			ewler_w->parent = NULL;

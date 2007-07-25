@@ -121,7 +121,7 @@ e_app_cache_generate(E_App *a)
 	  {
 	     _e_eapp_cache_fill(ac2, a2);
 	     ac2->is_dir = ecore_file_is_dir(a2->path);
-	     snprintf(buf, sizeof(buf), "%s/%s", a->path, ecore_file_get_file(a2->path));
+	     snprintf(buf, sizeof(buf), "%s/%s", a->path, ecore_file_file_get(a2->path));
 	     if (a2->orig) ac2->is_link = 1;
 	     if ((!ac2->is_link) && (!ac2->is_dir))
 	       ac2->file_mod_time = ecore_file_mod_time(buf);
@@ -186,7 +186,7 @@ _e_eapp_cache_fill(E_App_Cache *ac, E_App *a)
    IF_DUP(generic);
    IF_DUP(comment);
    IF_DUP(exe);
-   ac->file = evas_stringshare_add(ecore_file_get_file(a->path));
+   ac->file = evas_stringshare_add(ecore_file_file_get(a->path));
    IF_DUP(win_name);
    IF_DUP(win_class);
    IF_DUP(win_title);

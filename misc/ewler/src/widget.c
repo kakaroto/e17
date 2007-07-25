@@ -293,8 +293,8 @@ widget_clear_ui_hooks( Ewler_Widget *w )
 
 		while( !ecore_list_current(names) && elems != w->elems ) {
 			ecore_list_destroy(names);
-			elems = ecore_list_remove_first(elems_stack);
-			names = ecore_list_remove_first(names_stack);
+			elems = ecore_list_first_remove(elems_stack);
+			names = ecore_list_first_remove(names_stack);
 		}
 	}
 
@@ -454,7 +454,7 @@ static EWL_CALLBACK_DEFN(fg_mouse_move)
 			selected = form_selected();
 
 			if( selected ) {
-				ecore_list_goto_first(selected);
+				ecore_list_first_goto(selected);
 
 				while( (ewler_w = ecore_list_next(selected)) ) {
 					ewl_object_position_request(EWL_OBJECT(ewler_w->bg),
@@ -533,13 +533,13 @@ static EWL_CALLBACK_DEFN(fg_mouse_down)
 	if( ev->button == 1 && multi ) {
 		form_toggle(ewler_w);
 	} else if( ev->button == 1 ||
-						 (!multi && !ecore_list_nodes(form_selected())) ) {
+						 (!multi && !ecore_list_count(form_selected())) ) {
 		Ecore_List *selected;
 
 		selected = form_selected();
 		if( selected &&
-				(ecore_list_nodes(selected) != 1 ||
-				 ecore_list_goto_first(selected) != ewler_w) ) {
+				(ecore_list_count(selected) != 1 ||
+				 ecore_list_first_goto(selected) != ewler_w) ) {
 			form_deselect_all();
 			form_select(ewler_w);
 		}

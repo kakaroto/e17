@@ -180,13 +180,13 @@ inspector_update( Ecore_List *selected )
 	if( !selected )
 		return;
 	/* add support for multiple selections later */
-	w = ecore_list_goto_first(selected);
+	w = ecore_list_first_goto(selected);
 
 	if( !w )
 		return;
 	
 	keys = ecore_hash_keys(w->elems);
-	slist = ecore_sheap_new(ecore_str_compare, ecore_list_nodes(keys));
+	slist = ecore_sheap_new(ecore_str_compare, ecore_list_count(keys));
 
 	while( (key = ecore_list_next(keys)) )
 		ecore_sheap_insert(slist, key);
@@ -278,7 +278,7 @@ inspector_update( Ecore_List *selected )
 
 			/* TODO: check for indexed struct */
 			keys = ecore_hash_keys(elems);
-			sheap = ecore_sheap_new(ecore_str_compare, ecore_list_nodes(keys));
+			sheap = ecore_sheap_new(ecore_str_compare, ecore_list_count(keys));
 
 			while( (key = ecore_list_next(keys)) )
 				ecore_sheap_insert(sheap, key);
@@ -287,12 +287,12 @@ inspector_update( Ecore_List *selected )
 			ecore_sheap_sort(sheap);
 		}
 
-		if( sheap->size == 0 && ecore_list_nodes(sheap_stack) ) {
+		if( sheap->size == 0 && ecore_list_count(sheap_stack) ) {
 			ecore_sheap_destroy(sheap);
 
-			prow = ecore_list_remove_first(prow_stack);
-			sheap = ecore_list_remove_first(sheap_stack);
-			elems = ecore_list_remove_first(elems_stack);
+			prow = ecore_list_first_remove(prow_stack);
+			sheap = ecore_list_first_remove(sheap_stack);
+			elems = ecore_list_first_remove(elems_stack);
 		}
 	}
 

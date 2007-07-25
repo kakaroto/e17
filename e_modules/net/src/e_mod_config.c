@@ -40,7 +40,7 @@ _config_devices_get(void)
    if (!f) return NULL;
 
    devs = ecore_list_new();
-   ecore_list_set_free_cb(devs, free);
+   ecore_list_free_cb_set(devs, free);
    while (fgets(buf, 256, f)) 
      {
 	int i = 0;
@@ -64,7 +64,7 @@ _config_devices_get(void)
    if (!d) return NULL;
 
    devs = ecore_list_new();
-   ecore_list_set_free_cb(devs, free);
+   ecore_list_free_cb_set(devs, free);
    while ((dentry = readdir(d)) != NULL) 
      {
 	if (strstr(dentry->d_name,".") == NULL)     
@@ -73,7 +73,7 @@ _config_devices_get(void)
    closedir(d);
 #endif
 
-   if (devs) ecore_list_goto_first(devs);
+   if (devs) ecore_list_first_goto(devs);
    return devs;
 }
 

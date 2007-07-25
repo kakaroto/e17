@@ -38,7 +38,7 @@ static EWL_CALLBACK_DEFN(callback_add_cb)
 		handler = ewl_text_text_get(EWL_TEXT(entry));
 		if( !selected_widget->callbacks[callback] ) {
 			selected_widget->callbacks[callback] = ecore_list_new();
-			ecore_list_set_free_cb(selected_widget->callbacks[callback], free);
+			ecore_list_free_cb_set(selected_widget->callbacks[callback], free);
 		}
 
 		ecore_list_append(selected_widget->callbacks[callback], handler);
@@ -116,7 +116,7 @@ static EWL_CALLBACK_DEFN(callback_remove_cb)
 
 		name = ewl_text_text_get(EWL_TEXT(name_text));
 
-		ecore_list_goto_first(selected_widget->callbacks[callback]);
+		ecore_list_first_goto(selected_widget->callbacks[callback]);
 
 		while( (handler = ecore_list_next(selected_widget->callbacks[callback])) )
 			if( !strcmp(handler, name) )
@@ -146,8 +146,8 @@ static EWL_CALLBACK_DEFN(callback_remove)
 		return;
 
 	selected = ewl_tree_selected_get(EWL_TREE(callback_tree));
-	if( ecore_list_nodes(selected) == 1 ) {
-		ecore_list_goto_first(selected);
+	if( ecore_list_count(selected) == 1 ) {
+		ecore_list_first_goto(selected);
 
 		while( (row = ecore_list_next(selected)) ) {
 			name_text = ewl_tree_row_column_get(EWL_ROW(row), 0);
@@ -382,15 +382,15 @@ callbacks_update( Ecore_List *selected )
 		return;
 	}
 
-	w = ecore_list_goto_first(selected);
+	w = ecore_list_first_goto(selected);
 
 	selected_widget = w;
 
 	if( !w || !w->callbacks[callback] )
 		return;
 
-	count = ecore_list_nodes(w->callbacks[callback]);
-	ecore_list_goto_first(w->callbacks[callback]);
+	count = ecore_list_count(w->callbacks[callback]);
+	ecore_list_first_goto(w->callbacks[callback]);
 	shandlers = ecore_sheap_new(ecore_str_compare, count);
 
 	while( (handler = ecore_list_next(w->callbacks[callback])) )

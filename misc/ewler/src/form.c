@@ -72,8 +72,8 @@ static EWL_CALLBACK_DEFN(mouse_move)
 	Ewler_Form *form = user_data;
 	Ewler_Widget *ewler_w;
 
-	if( form->selected && ecore_list_nodes(form->selected) ) {
-		ewler_w = ecore_list_goto_first(form->selected);
+	if( form->selected && ecore_list_count(form->selected) ) {
+		ewler_w = ecore_list_first_goto(form->selected);
 
 		ewl_callback_call_with_event_data(ewler_w->fg, EWL_CALLBACK_MOUSE_MOVE,
 																			ev_data);
@@ -96,7 +96,7 @@ static EWL_CALLBACK_DEFN(mouse_down)
 				form_deselect_all();
 			break;
 		case 3:
-			if( ecore_list_nodes(active_form->selected) )
+			if( ecore_list_count(active_form->selected) )
 				form_menu(ev->x, ev->y);
 			break;
 	}
@@ -119,7 +119,7 @@ form_close( Ewler_Form *form )
 	ecore_list_goto(forms, form);
 	ecore_list_remove(forms);
 
-	ecore_list_goto_first(form->widgets);
+	ecore_list_first_goto(form->widgets);
 	while( (w = ecore_list_next(form->widgets)) )
 		w->form = NULL;
 
@@ -131,7 +131,7 @@ form_close( Ewler_Form *form )
 
 	FREE(form);
 
-	active_form = ecore_list_goto_first(forms);
+	active_form = ecore_list_first_goto(forms);
 
 	if( active_form ) {
 		inspector_update(active_form->selected);
@@ -292,11 +292,11 @@ find_minimum( Ecore_List *widgets, int *xp, int *yp )
 	x = (unsigned int) -1;
 	y = (unsigned int) -1;
 
-	if( ecore_list_nodes(widgets) == 0 ) {
+	if( ecore_list_count(widgets) == 0 ) {
 		x = 0;
 		y = 0;
 	} else {
-		ecore_list_goto_first(widgets);
+		ecore_list_first_goto(widgets);
 		while( (w = ecore_list_next(widgets)) ) {
 			int nx, ny;
 
@@ -326,7 +326,7 @@ static EWL_CALLBACK_DEFN(form_menu_cb)
 
 	switch( action ) {
 		case EWLER_WIDGET_BREAK:
-			ecore_list_goto_first(form->selected);
+			ecore_list_first_goto(form->selected);
 			while( (ewler_w = ecore_list_next(form->selected)) ) {
 				ewl_container_child_append(EWL_CONTAINER(form->overlay->w),
 																	 ewler_w->fg);
@@ -341,7 +341,7 @@ static EWL_CALLBACK_DEFN(form_menu_cb)
 			find_minimum(form->selected, &x, &y);
 			ewl_object_position_request(EWL_OBJECT(box->w), x, y);
 
-			ewler_w = ecore_list_goto_first(form->selected);
+			ewler_w = ecore_list_first_goto(form->selected);
 			parent = ewl_widget_name_find(ewler_w->parent);
 			ewl_container_child_append(EWL_CONTAINER(parent), box_w);
 
@@ -363,7 +363,7 @@ static EWL_CALLBACK_DEFN(form_menu_cb)
 			find_minimum(form->selected, &x, &y);
 			ewl_object_position_request(EWL_OBJECT(box->w), x, y);
 
-			ewler_w = ecore_list_goto_first(form->selected);
+			ewler_w = ecore_list_first_goto(form->selected);
 			parent = ewl_widget_name_find(ewler_w->parent);
 			ewl_container_child_append(EWL_CONTAINER(parent), box_w);
 
@@ -379,7 +379,7 @@ static EWL_CALLBACK_DEFN(form_menu_cb)
 			form_deselect_all();
 			break;
 		case EWLER_WIDGET_DELETE:
-			while( (ewler_w = ecore_list_goto_first(form->selected)) )
+			while( (ewler_w = ecore_list_first_goto(form->selected)) )
 				form_destroy(form, ewler_w);
 
 			if( active_form && active_form->selected ) {
@@ -406,7 +406,7 @@ has_widget_in_group( Ecore_List *widgets )
 {
 	Ewler_Widget *w;
 
-	ecore_list_goto_first(widgets);
+	ecore_list_first_goto(widgets);
 	while( (w = ecore_list_next(widgets)) )
 		if( w->grouped )
 			return true;
@@ -420,7 +420,7 @@ at_same_level( Ecore_List *widgets )
 	Ewler_Widget *w;
 	char *parent;
 
-	w = ecore_list_goto_first(widgets);
+	w = ecore_list_first_goto(widgets);
 	parent = w->parent;
 	while( (w = ecore_list_next(widgets)) )
 		if( (w->parent && strcmp(w->parent, parent)) ||
@@ -451,7 +451,7 @@ form_menu( int x, int y )
 		ewl_widget_layer_set(EWL_IMENU(active_form->menu)->base.popup, 1000);
 		ewl_widget_show(active_form->menu);
 
-		if( ecore_list_nodes(active_form->selected) &&
+		if( ecore_list_count(active_form->selected) &&
 				has_widget_in_group(active_form->selected) ) {
 			item = ewl_menu_item_new(NULL, "Break Alignment");
 			/* HACK FOR NON-STRING DATA HASHES */
@@ -460,7 +460,7 @@ form_menu( int x, int y )
 			ewl_callback_append(item, EWL_CALLBACK_SELECT, form_menu_cb, active_form);
 			ewl_container_child_append(EWL_CONTAINER(active_form->menu), item);
 			ewl_widget_show(item);
-		} else if( ecore_list_nodes(active_form->selected) > 1 &&
+		} else if( ecore_list_count(active_form->selected) > 1 &&
 							 at_same_level(active_form->selected) ) {
 			item = ewl_menu_item_new(NULL, "Align Horizontally");
 			/* HACK FOR NON-STRING DATA HASHES */
@@ -479,7 +479,7 @@ form_menu( int x, int y )
 			ewl_widget_show(item);
 		}
 		
-		if( ecore_list_nodes(active_form->selected) ) {
+		if( ecore_list_count(active_form->selected) ) {
 			item = ewl_menu_item_new(NULL, "Delete");
 			/* HACK FOR NON-STRING DATA HASHES */
 			item->data = ecore_hash_new(ecore_str_hash, ecore_str_compare);
@@ -538,11 +538,11 @@ form_deselect_all( void )
 	if( !active_form )
 		return;
 
-	ecore_list_goto_first(active_form->selected);
+	ecore_list_first_goto(active_form->selected);
 	while( (w = ecore_list_remove(active_form->selected)) )
 		widget_deselect(w);
 
-	ecore_list_goto_first(active_form->widgets);
+	ecore_list_first_goto(active_form->widgets);
 	while( (w = ecore_list_next(active_form->widgets)) )
 		widget_deselect(w);
 
@@ -588,7 +588,7 @@ form_toggle( Ewler_Widget *w )
 	widget_toggle(w);
 
 	if( w->selected ) {
-		ecore_list_goto_first(active_form->selected);
+		ecore_list_first_goto(active_form->selected);
 		while( (old_w = ecore_list_next(active_form->selected)) )
 			widget_clear_ui_hooks(old_w);
 
@@ -625,7 +625,7 @@ form_rename_widget( char *old, char *name )
 	if( !active_form || !old || !name )
 		return;
 
-	ecore_list_goto_first(active_form->widgets);
+	ecore_list_first_goto(active_form->widgets);
 	while( (w = ecore_list_next(active_form->widgets)) )
 		if( !strcmp(w->parent, old) ) {
 			FREE(w->parent);
@@ -668,10 +668,10 @@ form_add( Ewl_Widget *w )
 	ewler_w->form = active_form;
 
 	container = active_form->overlay->w;
-	if( ecore_list_nodes(active_form->selected) == 1 ) {
+	if( ecore_list_count(active_form->selected) == 1 ) {
 		Ewler_Widget *sel;
 
-		sel = ecore_list_goto_first(active_form->selected);
+		sel = ecore_list_first_goto(active_form->selected);
 		if( sel->spec->group ) {
 			ewler_w->grouped = true;
 			container = sel->w;

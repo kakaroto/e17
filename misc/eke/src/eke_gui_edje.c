@@ -175,7 +175,7 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
         eke_gui_edje_feed_swap(eke, feed);
 
     esmart_container_empty(disp->body);
-    ecore_list_goto_first(feed->items);
+    ecore_list_first_goto(feed->items);
     edje_object_file_get(eke->gui.edje.edje, &file, NULL);
     while ((item = ecore_list_next(feed->items)) != NULL) {
         if ((obj = eke_gui_edje_item_new(evas, eke->gui.edje.theme, "feed.body.item"))) {
@@ -304,7 +304,7 @@ eke_gui_edje_feed_del_cb(void *data, Evas_Object *obj,
     if (key_list) {
         Eke_Feed *new_feed;
 
-        new_feed = ecore_list_goto_first(key_list);
+        new_feed = ecore_list_first_goto(key_list);
         if (new_feed) eke_gui_edje_feed_swap(eke, new_feed);
 
         ecore_list_destroy(key_list);

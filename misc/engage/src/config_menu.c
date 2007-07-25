@@ -54,7 +54,7 @@ void _od_config_menu_app_keep_cb(Etk_Object *object, void *data) {
     return;
 
   _od_config_menu_icon->launcher = 1;
-  file = ecore_file_get_file(_od_config_menu_icon->a->path);
+  file = ecore_file_file_get(_od_config_menu_icon->a->path);
   _od_dotorder_app_add(file);
 }
 
@@ -65,7 +65,7 @@ void _od_config_menu_app_remove_cb(Etk_Object *object, void *data) {
     return;
 
   _od_config_menu_icon->launcher = 0;
-  file = ecore_file_get_file(_od_config_menu_icon->a->path);
+  file = ecore_file_file_get(_od_config_menu_icon->a->path);
   _od_dotorder_app_del(file);
 }
 

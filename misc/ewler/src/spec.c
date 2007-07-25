@@ -21,12 +21,12 @@ spec_elem_destroy( void *p )
 	switch( elem->type ) {
 		case EWLER_SPEC_ELEM_STRING: IF_FREE(elem->info.sdefault); break;
 		case EWLER_SPEC_ELEM_STRUCT:
-			ecore_hash_set_free_value(elem->info.children, spec_elem_destroy);
+			ecore_hash_free_value_cb_set(elem->info.children, spec_elem_destroy);
 			ecore_hash_destroy(elem->info.children);
 			break;
 		case EWLER_SPEC_ELEM_ENUM:
 			ecore_hash_destroy(elem->info.edata.map);
-			ecore_hash_set_free_key(elem->info.edata.map_rev, free);
+			ecore_hash_free_key_cb_set(elem->info.edata.map_rev, free);
 			ecore_hash_destroy(elem->info.edata.map_rev);
 			break;
 		default:
@@ -50,7 +50,7 @@ spec_destroy( void *p )
 	ecore_hash_destroy(spec->ctor_args);
 
 	IF_FREE(spec->parent);
-	ecore_hash_set_free_value(spec->elems, spec_elem_destroy);
+	ecore_hash_free_value_cb_set(spec->elems, spec_elem_destroy);
 	ecore_hash_destroy(spec->elems);
 
 	memset(spec, 0, sizeof(Ewler_Widget_Spec));
@@ -61,7 +61,7 @@ int
 specs_init( void )
 {
 	widget_specs = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-	ecore_hash_set_free_value(widget_specs, spec_destroy);
+	ecore_hash_free_value_cb_set(widget_specs, spec_destroy);
 
 	if( file_spec_open( INITIAL_EWLER_SPEC, widget_specs ) < 0 ) {
 		ewler_error("error reading base spec file");
@@ -123,7 +123,7 @@ spec_new( char *name )
 
 	w->spec = spec;
 	w->elems = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-	ecore_hash_set_free_value(w->elems, elem_destroy);
+	ecore_hash_free_value_cb_set(w->elems, elem_destroy);
 
 	while( spec ) {
 		Ecore_List *names, *elem_names, *name_stack;
@@ -167,7 +167,7 @@ spec_new( char *name )
 				case EWLER_SPEC_ELEM_STRUCT:
 					elem->info.children = ecore_hash_new(ecore_str_hash,
 																							 ecore_str_compare);
-					ecore_hash_set_free_value(elem->info.children, elem_destroy);
+					ecore_hash_free_value_cb_set(elem->info.children, elem_destroy);
 					ecore_list_prepend(elem_stack, hash);
 					ecore_list_prepend(spec_stack, spec_elems);
 					ecore_list_prepend(name_stack, names);
@@ -190,9 +190,9 @@ spec_new( char *name )
 			if( !ecore_list_current(names) && names != elem_names ) {
 				ecore_list_destroy(names);
 
-				hash = ecore_list_remove_first(elem_stack);
-				spec_elems = ecore_list_remove_first(spec_stack);
-				names = ecore_list_remove_first(name_stack);
+				hash = ecore_list_first_remove(elem_stack);
+				spec_elems = ecore_list_first_remove(spec_stack);
+				names = ecore_list_first_remove(name_stack);
 			}
 		}
 

@@ -135,7 +135,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    
    of = e_widget_framelist_add(evas, D_("Device Settings"), 0);
    rg = e_widget_radio_group_new(&(cfdata->num));
-   ecore_list_goto_first(cfdata->devs);
+   ecore_list_first_goto(cfdata->devs);
    while ((tmp = ecore_list_next(cfdata->devs)) != NULL) 
      {
 	ob = e_widget_radio_add(evas, tmp, i, rg);
@@ -154,7 +154,7 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Config_Item *ci;
    
    ci = cfd->data;
-   tmp = ecore_list_goto_index(cfdata->devs, cfdata->num);
+   tmp = ecore_list_index_goto(cfdata->devs, cfdata->num);
    if (tmp != NULL) 
      {
 	evas_stringshare_del(ci->device);

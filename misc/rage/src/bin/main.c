@@ -537,7 +537,7 @@ main_menu_video_library(void *data)
    else
      {
 	vl = calloc(1, sizeof(Video_Lib));
-	vl->label = evas_stringshare_add(ecore_file_get_file(vli->path));
+	vl->label = evas_stringshare_add(ecore_file_file_get(vli->path));
 	vl->path = evas_stringshare_add(vli->path);
 	menu_push("menu", vl->label, video_lib_free, vl);
      }

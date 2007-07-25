@@ -273,7 +273,7 @@ e_app_new(const char *path, int scan_subdirs)
 		  if (ecore_file_exists(buf))
 		    e_app_fields_fill(a, buf);
 		  else
-		    a->name = evas_stringshare_add(ecore_file_get_file(a->path));
+		    a->name = evas_stringshare_add(ecore_file_file_get(a->path));
 		  if (scan_subdirs) e_app_subdir_scan(a, scan_subdirs);
 		  
 		  a->monitor = ecore_file_monitor_add(a->path, _e_app_cb_monitor, a);
@@ -553,10 +553,10 @@ _e_app_list_prepend_relative(E_App *add, E_App *before, E_App *parent)
 	E_App *a;
 
 	a = l->data;
-	if (a == before) fprintf(f, "%s\n", ecore_file_get_file(add->path));
-	fprintf(f, "%s\n", ecore_file_get_file(a->path));
+	if (a == before) fprintf(f, "%s\n", ecore_file_file_get(add->path));
+	fprintf(f, "%s\n", ecore_file_file_get(a->path));
      }
-   if (before == NULL) fprintf(f, "%s\n", ecore_file_get_file(add->path));
+   if (before == NULL) fprintf(f, "%s\n", ecore_file_file_get(add->path));
    fclose(f);
    snprintf(buf, sizeof(buf), "%s/.eap.cache.cfg", parent->path);
    ecore_file_unlink(buf);
@@ -587,10 +587,10 @@ _e_app_files_list_prepend_relative(Evas_List *files, E_App *before, E_App *paren
 		  char *file;
 		  
 		  file = l2->data;
-		  fprintf(f, "%s\n", ecore_file_get_file(file));
+		  fprintf(f, "%s\n", ecore_file_file_get(file));
 	       }
 	  }
-	fprintf(f, "%s\n", ecore_file_get_file(a->path));
+	fprintf(f, "%s\n", ecore_file_file_get(a->path));
      }
    if (before == NULL)
      {
@@ -600,7 +600,7 @@ _e_app_files_list_prepend_relative(Evas_List *files, E_App *before, E_App *paren
 	     char *file;
 	     
 	     file = l2->data;
-	     fprintf(f, "%s\n", ecore_file_get_file(file));
+	     fprintf(f, "%s\n", ecore_file_file_get(file));
 	  }
      }
    fclose(f);
@@ -622,7 +622,7 @@ _e_app_files_download(Evas_List *files)
 	if (!_e_app_is_eapp(file)) continue;
 // FIXME: onefang, check this for full path compliance.
         snprintf(buf, sizeof(buf), "%s/%s", _e_apps_path_all,
-		 ecore_file_get_file(file));
+		 ecore_file_file_get(file));
 	if (!ecore_file_download(file, buf, NULL, NULL, NULL)) continue;
 	snprintf(buf, sizeof(buf), "%s/.eap.cache.cfg", _e_apps_path_all);
 	ecore_file_unlink(buf);
@@ -681,9 +681,9 @@ e_app_prepend_relative(E_App *add, E_App *before)
      {
 	/* Move to all */
 // FIXME: onefang, check this for full path compliance.
-	snprintf(buf, sizeof(buf), "%s/%s", _e_apps_path_all, ecore_file_get_file(add->path));
+	snprintf(buf, sizeof(buf), "%s/%s", _e_apps_path_all, ecore_file_file_get(add->path));
 	if (ecore_file_exists(buf))
-	  snprintf(buf, sizeof(buf), "%s/%s", before->parent->path, ecore_file_get_file(add->path));
+	  snprintf(buf, sizeof(buf), "%s/%s", before->parent->path, ecore_file_file_get(add->path));
 	ecore_file_mv(add->path, buf);
 	evas_stringshare_del(add->path);
 	add->path = evas_stringshare_add(buf);
@@ -708,9 +708,9 @@ e_app_append(E_App *add, E_App *parent)
      {
 	/* Move to all */
 // FIXME: onefang, check this for full path compliance.
-	snprintf(buf, sizeof(buf), "%s/%s", _e_apps_path_all, ecore_file_get_file(add->path));
+	snprintf(buf, sizeof(buf), "%s/%s", _e_apps_path_all, ecore_file_file_get(add->path));
 	if (ecore_file_exists(buf))
-	  snprintf(buf, sizeof(buf), "%s/%s", parent->path, ecore_file_get_file(add->path));
+	  snprintf(buf, sizeof(buf), "%s/%s", parent->path, ecore_file_file_get(add->path));
 	ecore_file_mv(add->path, buf);
 	evas_stringshare_del(add->path);
 	add->path = evas_stringshare_add(buf);
@@ -755,10 +755,10 @@ e_app_files_prepend_relative(Evas_List *files, E_App *before)
 		       char *file;
 
 		       file = l2->data;
-		       fprintf(f, "%s\n", ecore_file_get_file(file));
+		       fprintf(f, "%s\n", ecore_file_file_get(file));
 		    }
 	       }
-	     fprintf(f, "%s\n", ecore_file_get_file(a->path));
+	     fprintf(f, "%s\n", ecore_file_file_get(a->path));
 	  }
 	fclose(f);
 	snprintf(buf, sizeof(buf), "%s/.eap.cache.cfg", before->parent->path);
@@ -792,7 +792,7 @@ e_app_files_append(Evas_List *files, E_App *parent)
 	     E_App *a;
 
 	     a = l->data;
-	     fprintf(f, "%s\n", ecore_file_get_file(a->path));
+	     fprintf(f, "%s\n", ecore_file_file_get(a->path));
 	  }
 	/* Add the new files */
 	for (l = files; l; l = l->next)
@@ -800,7 +800,7 @@ e_app_files_append(Evas_List *files, E_App *parent)
 	     char *file;
 
 	     file = l->data;
-	     fprintf(f, "%s\n", ecore_file_get_file(file));
+	     fprintf(f, "%s\n", ecore_file_file_get(file));
 	  }
 	fclose(f);
 	snprintf(buf, sizeof(buf), "%s/.eap.cache.cfg", parent->path);
@@ -820,11 +820,11 @@ e_app_remove(E_App *a)
    a->parent->subapps = evas_list_remove(a->parent->subapps, a);
    /* Check if this app is in a repository or in the parents dir */
 // FIXME: onefang, check this for full path compliance.
-   snprintf(buf, sizeof(buf), "%s/%s", a->parent->path, ecore_file_get_file(a->path));
+   snprintf(buf, sizeof(buf), "%s/%s", a->parent->path, ecore_file_file_get(a->path));
    if (ecore_file_exists(buf))
      {
 	/* Move to trash */
-	snprintf(buf, sizeof(buf), "%s/%s", _e_apps_path_trash, ecore_file_get_file(a->path));
+	snprintf(buf, sizeof(buf), "%s/%s", _e_apps_path_trash, ecore_file_file_get(a->path));
 	ecore_file_mv(a->path, buf);
 	evas_stringshare_del(a->path);
 	a->path = evas_stringshare_add(buf);
@@ -1298,7 +1298,7 @@ e_app_fields_save(E_App *a)
 
    /* Check if it's a new one that has not been saved yet. */
    if (a->path)
-      ext = ecore_file_get_file(a->path);
+      ext = ecore_file_file_get(a->path);
    if ( (!a->path) || ((strncmp(ext, "_new_app_", 9) == 0) && (!ecore_file_exists(a->path))) )
       {
          snprintf(buf, sizeof(buf), "%s/%s.desktop", _e_apps_all->path, a->name);
@@ -1507,7 +1507,7 @@ e_app_dir_file_list_get(E_App *a)
    if (f)
      {
 	files2 = ecore_list_new();
-	ecore_list_set_free_cb(files2, free);
+	ecore_list_free_cb_set(files2, free);
 	while (fgets(buf, sizeof(buf), f))
 	  {
 	     int len;
@@ -1524,7 +1524,7 @@ e_app_dir_file_list_get(E_App *a)
 		    {
 		       if (files)
 			 {
-			    ecore_list_goto_first(files);
+			    ecore_list_first_goto(files);
 			    while ((file = ecore_list_current(files)))
 			      {
 				 if (!strcmp(buf, file))
@@ -1549,17 +1549,17 @@ e_app_dir_file_list_get(E_App *a)
      }
    if (files)
      {
-	ecore_list_goto_first(files);
+	ecore_list_first_goto(files);
 	while ((file = ecore_list_next(files)))
 	  {
-	     if (ecore_file_get_file(file)[0] != '.')
+	     if (ecore_file_file_get(file)[0] != '.')
 	       ecore_list_append(files2, strdup(file));
 	  }
 	ecore_list_destroy(files);
      }
    files = files2;
    if (files)
-     ecore_list_goto_first(files);
+     ecore_list_first_goto(files);
    return files;
 }
 
@@ -1733,9 +1733,9 @@ _e_app_new_save(E_App *a)
 	if (a->width <= 0) a->width = EAP_MIN_WIDTH;
 	if (a->height <= 0) a->height = EAP_MIN_HEIGHT;
 	fprintf(out, EAP_EDC_TMPL, 
-		e_util_filename_escape(ecore_file_get_file(a->image)), 
+		e_util_filename_escape(ecore_file_file_get(a->image)), 
 		a->width, a->height, 
-		e_util_filename_escape(ecore_file_get_file(a->image)));
+		e_util_filename_escape(ecore_file_file_get(a->image)));
      }
    else
      fprintf(out, EAP_EDC_TMPL_EMPTY);
@@ -1856,7 +1856,7 @@ _e_app_subapp_file_find(E_App *a, const char *file)
 	
 	a2 = l->data;
 	if ((a2->deleted) || ((a2->orig) && (a2->orig->deleted))) continue;
-	if (!strcmp(ecore_file_get_file(a2->path), ecore_file_get_file(file))) return a2;
+	if (!strcmp(ecore_file_file_get(a2->path), ecore_file_file_get(file))) return a2;
      }
    return NULL;
 }
@@ -1924,7 +1924,7 @@ _e_app_cb_monitor(void *data, Ecore_File_Monitor *em,
    _e_app_print(path, event);
 #endif
 
-   file = (char *)ecore_file_get_file(path);
+   file = (char *)ecore_file_file_get(path);
    if (!strcmp(file, ".order"))
      {
 	if ((event == ECORE_FILE_EVENT_CREATED_FILE) ||
@@ -1957,7 +1957,7 @@ _e_app_cb_monitor(void *data, Ecore_File_Monitor *em,
 	else if (event == ECORE_FILE_EVENT_DELETED_FILE)
 	  {
 	     e_app_fields_empty(app);
-	     app->name = evas_stringshare_add(ecore_file_get_file(app->path));
+	     app->name = evas_stringshare_add(ecore_file_file_get(app->path));
 	  }
 	else
 	  {
@@ -2268,7 +2268,7 @@ _e_app_save_order(E_App *app)
 	E_App *a;
 
 	a = l->data;
-	fprintf(f, "%s\n", ecore_file_get_file(a->path));
+	fprintf(f, "%s\n", ecore_file_file_get(a->path));
      }
    fclose(f);
    if (app->parent)
