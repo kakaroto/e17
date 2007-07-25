@@ -652,7 +652,7 @@ BorderDestroy(Border * b)
 	return;
      }
 
-   ecore_list_remove_node(border_list, b);
+   ecore_list_node_remove(border_list, b);
 
    for (i = 0; i < b->num_winparts; i++)
      {

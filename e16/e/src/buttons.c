@@ -194,7 +194,7 @@ ButtonDestroy(Button * b)
 	return;
      }
 
-   ecore_list_remove_node(button_list, b);
+   ecore_list_node_remove(button_list, b);
 
    EoFini(b);
 
@@ -906,7 +906,7 @@ ButtonsConfigSave(void)
    Button             *b;
    int                 flags;
 
-   if (ecore_list_nodes(button_list) <= 0)
+   if (ecore_list_count(button_list) <= 0)
       return;
 
    Etmp(st);

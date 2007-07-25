@@ -213,7 +213,7 @@ IdlerAdd(int order, IdlerFunc * func, void *data)
 void
 IdlerDel(Idler * id)
 {
-   ecore_list_remove_node(idler_list, id);
+   ecore_list_node_remove(idler_list, id);
    Efree(id);
 }
 
@@ -259,7 +259,7 @@ AnimatorsRun(int val __UNUSED__, void *data __UNUSED__)
 	 AnimatorDel(an);
    }
 
-   if (ecore_list_nodes(animator_list))
+   if (ecore_list_count(animator_list))
       DoIn("Anim", 1e-3 * Conf.animation.step, AnimatorsRun, 0, NULL);
 }
 
@@ -284,7 +284,7 @@ AnimatorAdd(AnimatorFunc * func, void *data)
 
    ecore_list_append(animator_list, an);
 
-   if (ecore_list_nodes(animator_list) == 1)
+   if (ecore_list_count(animator_list) == 1)
      {
 	if (Conf.animation.step <= 0)
 	   Conf.animation.step = 1;
@@ -302,12 +302,12 @@ AnimatorDel(Animator * an)
    Eprintf("AnimatorDel %p func=%p data=%p\n", an, an->func, an->data);
 #endif
 
-   ecore_list_remove_node(animator_list, an);
+   ecore_list_node_remove(animator_list, an);
    if (an->name)
       Efree(an->name);
    Efree(an);
 
-   if (ecore_list_nodes(animator_list) == 0)
+   if (ecore_list_count(animator_list) == 0)
      {
 	/* Animator list was empty - Add to timer qeueue */
 	RemoveTimerEvent("Anim");

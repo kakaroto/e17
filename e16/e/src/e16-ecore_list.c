@@ -91,15 +91,15 @@ static int          _ecore_list_prepend_0(Ecore_List * list,
 
 /* Remove functions */
 static void        *_ecore_list_remove_0(Ecore_List * list);
-static void        *_ecore_list_remove_first(Ecore_List * list);
-static void        *_ecore_list_remove_last(Ecore_List * list);
+static void        *_ecore_list_first_remove(Ecore_List * list);
+static void        *_ecore_list_last_remove(Ecore_List * list);
 
 /* Basic traversal functions */
 static void        *_ecore_list_next(Ecore_List * list);
-static void        *_ecore_list_goto_last(Ecore_List * list);
-static void        *_ecore_list_goto_first(Ecore_List * list);
-static void        *_ecore_list_goto(Ecore_List * list, void *data);
-static void        *_ecore_list_goto_index(Ecore_List * list, int indx);
+static void        *_ecore_list_last_goto(Ecore_List * list);
+static void        *_ecore_list_first_goto(Ecore_List * list);
+static void        *_ecore_list_goto(Ecore_List * list, const void *data);
+static void        *_ecore_list_index_goto(Ecore_List * list, int indx);
 
 /* Iterative function */
 static int          _ecore_list_for_each(Ecore_List * list,
@@ -168,7 +168,7 @@ ecore_list_destroy(Ecore_List * list)
 
    while (list->first)
      {
-	data = _ecore_list_remove_first(list);
+	data = _ecore_list_first_remove(list);
 	if (list->free_func)
 	   list->free_func(data);
      }
@@ -184,7 +184,7 @@ ecore_list_destroy(Ecore_List * list)
  * @return @c TRUE on successful set, @c FALSE otherwise.
  */
 EAPI int
-ecore_list_set_free_cb(Ecore_List * list, Ecore_Free_Cb free_func)
+ecore_list_free_cb_set(Ecore_List * list, Ecore_Free_Cb free_func)
 {
    CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
@@ -199,7 +199,7 @@ ecore_list_set_free_cb(Ecore_List * list, Ecore_Free_Cb free_func)
  * @return @c TRUE if no nodes in list, @c FALSE if the list contains nodes
  */
 EAPI int
-ecore_list_is_empty(Ecore_List * list)
+ecore_list_empty_is(Ecore_List * list)
 {
    int                 ret = TRUE;
 
@@ -234,7 +234,7 @@ ecore_list_index(Ecore_List * list)
  * @return The number of nodes in the list.
  */
 EAPI int
-ecore_list_nodes(Ecore_List * list)
+ecore_list_count(Ecore_List * list)
 {
    int                 ret = 0;
 
@@ -388,7 +388,7 @@ _ecore_list_insert(Ecore_List * list, Ecore_List_Node * new_node)
    new_node->next = list->current;
 
    /* And hook the node into the list */
-   _ecore_list_goto_index(list, ecore_list_index(list) - 1);
+   _ecore_list_index_goto(list, ecore_list_index(list) - 1);
 
    list->current->next = new_node;
 
@@ -434,21 +434,21 @@ _ecore_list_remove_0(Ecore_List * list)
    if (!list)
       return NULL;
 
-   if (ecore_list_is_empty(list))
+   if (ecore_list_empty_is(list))
       return NULL;
 
    if (!list->current)
       return NULL;
 
    if (list->current == list->first)
-      return _ecore_list_remove_first(list);
+      return _ecore_list_first_remove(list);
 
    if (list->current == list->last)
-      return _ecore_list_remove_last(list);
+      return _ecore_list_last_remove(list);
 
    old = list->current;
 
-   _ecore_list_goto_index(list, list->index - 1);
+   _ecore_list_index_goto(list, list->index - 1);
 
    list->current->next = old->next;
    old->next = NULL;
@@ -491,20 +491,20 @@ ecore_list_remove_destroy(Ecore_List * list)
  * @ingroup Ecore_Data_List_Remove_Item_Group
  */
 EAPI void          *
-ecore_list_remove_first(Ecore_List * list)
+ecore_list_first_remove(Ecore_List * list)
 {
    void               *ret;
 
    CHECK_PARAM_POINTER_RETURN("list", list, NULL);
 
-   ret = _ecore_list_remove_first(list);
+   ret = _ecore_list_first_remove(list);
 
    return ret;
 }
 
 /* Remove the first item from the list */
 static void        *
-_ecore_list_remove_first(Ecore_List * list)
+_ecore_list_first_remove(Ecore_List * list)
 {
    void               *ret = NULL;
    Ecore_List_Node    *old;
@@ -512,10 +512,7 @@ _ecore_list_remove_first(Ecore_List * list)
    if (!list)
       return NULL;
 
-   if (ecore_list_is_empty(list))
-      return NULL;
-
-   if (!list->first)
+   if (ecore_list_empty_is(list))
       return NULL;
 
    old = list->first;
@@ -546,20 +543,20 @@ _ecore_list_remove_first(Ecore_List * list)
  * @ingroup Ecore_Data_List_Remove_Item_Group
  */
 EAPI void          *
-ecore_list_remove_last(Ecore_List * list)
+ecore_list_last_remove(Ecore_List * list)
 {
    void               *ret;
 
    CHECK_PARAM_POINTER_RETURN("list", list, NULL);
 
-   ret = _ecore_list_remove_last(list);
+   ret = _ecore_list_last_remove(list);
 
    return ret;
 }
 
 /* Remove the last item from the list */
 static void        *
-_ecore_list_remove_last(Ecore_List * list)
+_ecore_list_last_remove(Ecore_List * list)
 {
    void               *ret = NULL;
    Ecore_List_Node    *old, *prev;
@@ -567,10 +564,7 @@ _ecore_list_remove_last(Ecore_List * list)
    if (!list)
       return NULL;
 
-   if (ecore_list_is_empty(list))
-      return NULL;
-
-   if (!list->last)
+   if (ecore_list_empty_is(list))
       return NULL;
 
    old = list->last;
@@ -583,18 +577,11 @@ _ecore_list_remove_last(Ecore_List * list)
       ;
    list->last = prev;
    if (prev)
-     {
-	prev->next = NULL;
-	if (list->current == old)
-	   list->current = NULL;
-     }
+      prev->next = NULL;
 
-   if (old)
-     {
-	old->next = NULL;
-	ret = old->data;
-	old->data = NULL;
-     }
+   old->next = NULL;
+   ret = old->data;
+   old->data = NULL;
 
    ecore_list_node_destroy(old, NULL);
    list->nodes--;
@@ -616,13 +603,13 @@ Functions that can be used to traverse an Ecore_List.
  * @ingroup Ecore_Data_List_Traverse_Group
  */
 EAPI void          *
-ecore_list_goto_index(Ecore_List * list, int indx)
+ecore_list_index_goto(Ecore_List * list, int indx)
 {
    void               *ret;
 
    CHECK_PARAM_POINTER_RETURN("list", list, NULL);
 
-   ret = _ecore_list_goto_index(list, indx);
+   ret = _ecore_list_index_goto(list, indx);
 
    return ret;
 }
@@ -630,20 +617,20 @@ ecore_list_goto_index(Ecore_List * list, int indx)
 /* This is the non-threadsafe version, use this inside internal functions that
  * already lock the list */
 static void        *
-_ecore_list_goto_index(Ecore_List * list, int indx)
+_ecore_list_index_goto(Ecore_List * list, int indx)
 {
    int                 i;
 
    if (!list)
       return NULL;
 
-   if (ecore_list_is_empty(list))
+   if (ecore_list_empty_is(list))
       return NULL;
 
-   if (indx > ecore_list_nodes(list) || indx < 0)
+   if (indx > ecore_list_count(list) || indx < 0)
       return NULL;
 
-   _ecore_list_goto_first(list);
+   _ecore_list_first_goto(list);
 
    for (i = 0; i < indx && _ecore_list_next(list); i++)
       ;
@@ -664,7 +651,7 @@ _ecore_list_goto_index(Ecore_List * list, int indx)
  * @ingroup Ecore_Data_List_Traverse_Group
  */
 EAPI void          *
-ecore_list_goto(Ecore_List * list, void *data)
+ecore_list_goto(Ecore_List * list, const void *data)
 {
    void               *ret;
 
@@ -677,7 +664,7 @@ ecore_list_goto(Ecore_List * list, void *data)
 
 /* Set the current position to the node containing data */
 static void        *
-_ecore_list_goto(Ecore_List * list, void *data)
+_ecore_list_goto(Ecore_List * list, const void *data)
 {
    int                 indx;
    Ecore_List_Node    *node;
@@ -718,20 +705,20 @@ _ecore_list_goto(Ecore_List * list, void *data)
  * @ingroup Ecore_Data_List_Traverse_Group
  */
 EAPI void          *
-ecore_list_goto_first(Ecore_List * list)
+ecore_list_first_goto(Ecore_List * list)
 {
    void               *ret;
 
    CHECK_PARAM_POINTER_RETURN("list", list, NULL);
 
-   ret = _ecore_list_goto_first(list);
+   ret = _ecore_list_first_goto(list);
 
    return ret;
 }
 
 /* Set the current position to the start of the list */
 static void        *
-_ecore_list_goto_first(Ecore_List * list)
+_ecore_list_first_goto(Ecore_List * list)
 {
    if (!list || !list->first)
       return NULL;
@@ -749,20 +736,20 @@ _ecore_list_goto_first(Ecore_List * list)
  * @ingroup Ecore_Data_List_Traverse_Group
  */
 EAPI void          *
-ecore_list_goto_last(Ecore_List * list)
+ecore_list_last_goto(Ecore_List * list)
 {
    void               *ret;
 
    CHECK_PARAM_POINTER_RETURN("list", list, NULL);
 
-   ret = _ecore_list_goto_last(list);
+   ret = _ecore_list_last_goto(list);
 
    return ret;
 }
 
 /* Set the current position to the end of the list */
 static void        *
-_ecore_list_goto_last(Ecore_List * list)
+_ecore_list_last_goto(Ecore_List * list)
 {
    if (!list || !list->last)
       return NULL;
@@ -854,8 +841,8 @@ ecore_list_clear(Ecore_List * list)
 {
    CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-   while (!ecore_list_is_empty(list))
-      _ecore_list_remove_first(list);
+   while (!ecore_list_empty_is(list))
+      _ecore_list_first_remove(list);
 
    return TRUE;
 }
@@ -889,7 +876,7 @@ _ecore_list_for_each(Ecore_List * list, Ecore_For_Each function,
    if (!list || !function)
       return FALSE;
 
-   _ecore_list_goto_first(list);
+   _ecore_list_first_goto(list);
    while ((value = _ecore_list_next(list)) != NULL)
       function(value, user_data);
 
@@ -922,7 +909,7 @@ _ecore_list_find(Ecore_List * list, Ecore_Compare_Cb function,
    if (!list || !function)
       return NULL;
 
-   _ecore_list_goto_first(list);
+   _ecore_list_first_goto(list);
    while ((value = _ecore_list_next(list)) != NULL)
       if (!function(value, user_data))
 	 return value;
@@ -997,7 +984,7 @@ ecore_list_node_destroy(Ecore_List_Node * node, Ecore_Free_Cb free_func)
  */
 
 EAPI void          *
-ecore_list_remove_node(Ecore_List * list, void *_data)
+ecore_list_node_remove(Ecore_List * list, void *_data)
 {
    void               *data;
 
@@ -1015,7 +1002,7 @@ ecore_list_items_get(Ecore_List * list, int *pnum)
    int                 i, num;
 
    *pnum = 0;
-   num = ecore_list_nodes(list);
+   num = ecore_list_count(list);
    if (num <= 0)
       return NULL;
 
@@ -1023,7 +1010,7 @@ ecore_list_items_get(Ecore_List * list, int *pnum)
    if (!lst)
       return NULL;
 
-   for (i = 0, ecore_list_goto_first(list);
+   for (i = 0, ecore_list_first_goto(list);
 	(b = ecore_list_next(list)) != NULL;)
       lst[i++] = b;
 

@@ -244,7 +244,7 @@ BackgroundDestroy(Background * bg)
 	return -1;
      }
 
-   ecore_list_remove_node(bg_list, bg);
+   ecore_list_node_remove(bg_list, bg);
 
    BackgroundFilesRemove(bg);
    BackgroundPixmapFree(bg);
@@ -1064,11 +1064,11 @@ BackgroundGetRandom(void)
    int                 num;
    unsigned int        rnd;
 
-   num = ecore_list_nodes(bg_list);
+   num = ecore_list_count(bg_list);
    for (;;)
      {
 	rnd = rand();
-	bg = (Background *) ecore_list_goto_index(bg_list, rnd % num);
+	bg = (Background *) ecore_list_index_goto(bg_list, rnd % num);
 	if (num <= 1 || !BackgroundIsNone(bg))
 	   break;
      }
@@ -1331,7 +1331,7 @@ BackgroundsConfigSave(void)
    unsigned int        j;
    int                 i, num, r, g, b;
 
-   num = ecore_list_nodes(bg_list);
+   num = ecore_list_count(bg_list);
    if (num <= 0)
       return;
 
@@ -1342,7 +1342,7 @@ BackgroundsConfigSave(void)
 
    for (i = num - 1; i >= 0; i--)
      {
-	bg = (Background *) ecore_list_goto_index(bg_list, i);
+	bg = (Background *) ecore_list_index_goto(bg_list, i);
 	if (!bg)
 	   continue;
 
@@ -1422,7 +1422,7 @@ BackgroundsCheckDups(void)
 
    for (ix = 0;; ix++)
      {
-	ecore_list_goto_index(bg_list, ix);
+	ecore_list_index_goto(bg_list, ix);
 	bg = (Background *) ecore_list_next(bg_list);
 	if (!bg)
 	   break;
@@ -1722,7 +1722,7 @@ CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
    int                 i, num;
    int                 slider, lower, upper;
 
-   num = ecore_list_nodes(bg_list);
+   num = ecore_list_count(bg_list);
    if (num <= 1)
       return;
 
@@ -1732,7 +1732,7 @@ CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 
    i = ecore_list_index(bg_list);
    bg =
-      (Background *) ecore_list_goto_index(bg_list,
+      (Background *) ecore_list_index_goto(bg_list,
 					   (i < num - 1) ? i + 1 : i - 1);
 
    DeskBackgroundSet(DesksGetCurrent(), bg);
@@ -1760,7 +1760,7 @@ static void
 CB_ConfigureFrontBG(Dialog * d __UNUSED__, int val __UNUSED__,
 		    void *data __UNUSED__)
 {
-   ecore_list_prepend(bg_list, ecore_list_remove_node(bg_list, tmp_bg));
+   ecore_list_prepend(bg_list, ecore_list_node_remove(bg_list, tmp_bg));
    BGSettingsGoTo(tmp_bg);
    BG_RedrawView();
    autosave();
@@ -1777,7 +1777,7 @@ BG_RedrawView(void)
    GC                  gc;
    ImageClass         *ic_button;
 
-   num = ecore_list_nodes(bg_list);
+   num = ecore_list_count(bg_list);
    if (num <= 0)
       return;
 
@@ -1880,10 +1880,10 @@ CB_BGAreaEvent(DItem * di __UNUSED__, int val __UNUSED__, void *data)
 	switch (ev->xbutton.button)
 	  {
 	  case 1:
-	     num = ecore_list_nodes(bg_list);
+	     num = ecore_list_count(bg_list);
 	     x = (num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num) +
 		ev->xbutton.x;
-	     bg = (Background *) ecore_list_goto_index(bg_list, x / (64 + 8));
+	     bg = (Background *) ecore_list_index_goto(bg_list, x / (64 + 8));
 	     if (!bg || bg == DeskBackgroundGet(DesksGetCurrent()))
 		break;
 	     BgDialogSetNewCurrent(bg);
@@ -1933,7 +1933,7 @@ BGSettingsGoTo(Background * bg)
       return;
 
    i = ecore_list_index(bg_list);
-   num = ecore_list_nodes(bg_list);
+   num = ecore_list_count(bg_list);
    i = ((4 * num + 20) * i) / num - 8;
    if (i < 0)
       i = 0;
@@ -1954,7 +1954,7 @@ CB_BGNext(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
       return;
 
    bg =
-      (Background *) ecore_list_goto_index(bg_list,
+      (Background *) ecore_list_index_goto(bg_list,
 					   ecore_list_index(bg_list) + val);
    if (!bg)
       return;
@@ -1997,7 +1997,7 @@ CB_BGSortFile(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 
    /* remove them all from the list */
    for (i = 0; i < num; i++)
-      ecore_list_remove_node(bg_list, bglist[i]);
+      ecore_list_node_remove(bg_list, bglist[i]);
    Quicksort((void **)bglist, 0, num - 2, BG_SortFileCompare);
    for (i = 0; i < num; i++)
       ecore_list_append(bg_list, bglist[i]);
@@ -2021,7 +2021,7 @@ CB_BGSortAttrib(Dialog * d __UNUSED__, int val __UNUSED__,
 
    /* remove them all from the list */
    for (i = 0; i < num; i++)
-      ecore_list_remove_node(bg_list, bglist[i]);
+      ecore_list_node_remove(bg_list, bglist[i]);
    for (i = 0; i < num; i++)
      {
 	Background         *bg;
@@ -2065,7 +2065,7 @@ CB_BGSortContent(Dialog * d __UNUSED__, int val __UNUSED__,
 
    /* remove them all from the list */
    for (i = 0; i < num; i++)
-      ecore_list_remove_node(bg_list, bglist[i]);
+      ecore_list_node_remove(bg_list, bglist[i]);
    for (i = 0; i < num; i++)
       ecore_list_prepend(bg_list, bglist[i]);
    Efree(bglist);
@@ -2314,7 +2314,7 @@ _DlgFillBackground(Dialog * d, DItem * table, void *data)
    DialogItemAreaSetEventFunc(di, CB_BGAreaEvent);
    DialogItemAreaSetInitFunc(di, CB_InitView);
 
-   num = ecore_list_nodes(bg_list);
+   num = ecore_list_count(bg_list);
    di = bg_sel_slider = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetBounds(di, 0, num * 4);
    DialogItemSliderSetUnits(di, 1);

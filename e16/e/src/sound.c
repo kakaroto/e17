@@ -228,7 +228,7 @@ SclassDestroy(SoundClass * sclass)
 {
    if (!sclass)
       return;
-   ecore_list_remove_node(sound_list, sclass);
+   ecore_list_node_remove(sound_list, sclass);
    if (sclass->name)
       Efree(sclass->name);
    if (sclass->file)

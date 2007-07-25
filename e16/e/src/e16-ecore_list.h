@@ -61,22 +61,22 @@ EAPI int            ecore_list_insert(Ecore_List * list, void *_data);
 /* Removing items from the list */
 EAPI int            ecore_list_remove_destroy(Ecore_List * list);
 EAPI void          *ecore_list_remove(Ecore_List * list);
-EAPI void          *ecore_list_remove_first(Ecore_List * list);
-EAPI void          *ecore_list_remove_last(Ecore_List * list);
+EAPI void          *ecore_list_first_remove(Ecore_List * list);
+EAPI void          *ecore_list_last_remove(Ecore_List * list);
 
 /* Retrieve the current position in the list */
 EAPI void          *ecore_list_current(Ecore_List * list);
 EAPI int            ecore_list_index(Ecore_List * list);
-EAPI int            ecore_list_nodes(Ecore_List * list);
+EAPI int            ecore_list_count(Ecore_List * list);
 
 /* Traversing the list */
 EAPI int            ecore_list_for_each(Ecore_List * list,
 					Ecore_For_Each function,
 					void *user_data);
-EAPI void          *ecore_list_goto_first(Ecore_List * list);
-EAPI void          *ecore_list_goto_last(Ecore_List * list);
-EAPI void          *ecore_list_goto_index(Ecore_List * list, int indx);
-EAPI void          *ecore_list_goto(Ecore_List * list, void *_data);
+EAPI void          *ecore_list_first_goto(Ecore_List * list);
+EAPI void          *ecore_list_last_goto(Ecore_List * list);
+EAPI void          *ecore_list_index_goto(Ecore_List * list, int index);
+EAPI void          *ecore_list_goto(Ecore_List * list, const void *_data);
 
 /* Traversing the list and returning data */
 EAPI void          *ecore_list_next(Ecore_List * list);
@@ -85,7 +85,7 @@ EAPI void          *ecore_list_find(Ecore_List * list,
 				    const void *match);
 
 /* Check to see if there is any data in the list */
-EAPI int            ecore_list_is_empty(Ecore_List * list);
+EAPI int            ecore_list_empty_is(Ecore_List * list);
 
 /* Remove every node in the list without freeing the list itself */
 EAPI int            ecore_list_clear(Ecore_List * list);
@@ -101,7 +101,7 @@ EAPI int            ecore_list_node_init(Ecore_List_Node * newNode);
 EAPI int            ecore_list_node_destroy(Ecore_List_Node * _e_node,
 					    Ecore_Free_Cb free_func);
 
-EAPI int            ecore_list_set_free_cb(Ecore_List * list,
+EAPI int            ecore_list_free_cb_set(Ecore_List * list,
 					   Ecore_Free_Cb free_func);
 
 #endif /* USE_ECORE */
@@ -109,13 +109,13 @@ EAPI int            ecore_list_set_free_cb(Ecore_List * list,
 /* e16 additions */
 #if __cplusplus
 #define ECORE_LIST_FOR_EACH(list, p) \
-   for (ecore_list_goto_first(list); (p = (typeof(p))ecore_list_next(list)) != NULL;)
+   for (ecore_list_first_goto(list); (p = (typeof(p))ecore_list_next(list)) != NULL;)
 #else
 #define ECORE_LIST_FOR_EACH(list, p) \
-   for (ecore_list_goto_first(list); (p = ecore_list_next(list)) != NULL;)
+   for (ecore_list_first_goto(list); (p = ecore_list_next(list)) != NULL;)
 #endif
 
-EAPI void          *ecore_list_remove_node(Ecore_List * list, void *_data);
+EAPI void          *ecore_list_node_remove(Ecore_List * list, void *_data);
 EAPI void         **ecore_list_items_get(Ecore_List * list, int *pnum);
 
 #endif /* _E16_ECORE_LIST_H_ */

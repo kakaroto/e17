@@ -156,7 +156,7 @@ PagerCreate(void)
 static void
 PagerDestroy(Pager * p)
 {
-   ecore_list_remove_node(pager_list, p);
+   ecore_list_node_remove(pager_list, p);
 
    PagerScanCancel(p);
    if (p->name)
@@ -811,7 +811,7 @@ PagersUpdate(Desk * dsk, int x1, int y1, int x2, int y2)
 {
    pager_update_data   pud;
 
-   if (ecore_list_nodes(pager_list) <= 0)
+   if (ecore_list_count(pager_list) <= 0)
       return;
 
    pud.x1 = x1;

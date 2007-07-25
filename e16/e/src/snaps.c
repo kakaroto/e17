@@ -95,7 +95,7 @@ static void
 SnapshotDestroy(Snapshot * sn)
 {
    /* Just making sure */
-   sn = (Snapshot *) ecore_list_remove_node(ss_list, sn);
+   sn = (Snapshot *) ecore_list_node_remove(ss_list, sn);
    if (!sn)
       return;
 
@@ -221,7 +221,7 @@ SnapshotEwinFind(EWin * ewin)
    if (ewin->snap)
       return ewin->snap;
 
-   if (ecore_list_nodes(ss_list) <= 0)
+   if (ecore_list_count(ss_list) <= 0)
       return NULL;
 
    /* If exec'ed by snap try matching command exactly */
@@ -1019,7 +1019,7 @@ _DlgFillRemember(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
 
-   num = ecore_list_nodes(ss_list);
+   num = ecore_list_count(ss_list);
    rd_ewin_list = EMALLOC(RememberWinList, num + 1);
 
    if (num > 0)
@@ -1704,7 +1704,7 @@ SnapIpcFunc(const char *params)
 	p += len;
      }
 
-   if (ecore_list_nodes(ss_list) <= 0)
+   if (ecore_list_count(ss_list) <= 0)
      {
 	IpcPrintf("No remembered windows\n");
 	return;

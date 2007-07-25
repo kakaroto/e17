@@ -58,7 +58,7 @@ FontAliasCreate(const char *name, const char *font)
    if (!font_list)
      {
 	font_list = ecore_list_new();
-	ecore_list_set_free_cb(font_list, _FontAliasDestroy);
+	ecore_list_free_cb_set(font_list, _FontAliasDestroy);
      }
    ecore_list_prepend(font_list, fa);
 

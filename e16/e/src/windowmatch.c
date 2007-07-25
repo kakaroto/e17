@@ -121,7 +121,7 @@ WindowMatchDestroy(WindowMatch * wm)
    if (!wm)
       return;
 
-   ecore_list_remove_node(wm_list, wm);
+   ecore_list_node_remove(wm_list, wm);
 
    if (wm->name)
       Efree(wm->name);
@@ -435,7 +435,7 @@ WindowMatchDecode(const char *line)
      }
    else
      {
-	ecore_list_append(wm_list, ecore_list_remove_node(wm_list, wm));
+	ecore_list_append(wm_list, ecore_list_node_remove(wm_list, wm));
      }
    return wm;
 }

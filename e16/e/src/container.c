@@ -169,7 +169,7 @@ ContainerCreate(const char *name)
 static void
 ContainerDestroy(Container * ct, int exiting)
 {
-   ecore_list_remove_node(container_list, ct);
+   ecore_list_node_remove(container_list, ct);
 
    ct->ops->Exit(ct, exiting);
 
@@ -1248,7 +1248,7 @@ ContainersShow(void)
 {
    Container          *ct;
 
-   if (ecore_list_nodes(container_list) > 0)
+   if (ecore_list_count(container_list) > 0)
      {
 	ECORE_LIST_FOR_EACH(container_list, ct) ContainerShow(ct);
      }
@@ -1993,7 +1993,7 @@ ContainerIpc(const char *params)
 
 	if (!prm[0])
 	  {
-	     num = ecore_list_nodes(container_list);
+	     num = ecore_list_count(container_list);
 	     Esnprintf(prm, sizeof(prm), "_IB_%i", num);
 	  }
 	ct = ContainerCreate(prm);

@@ -571,7 +571,7 @@ MenuDestroy(Menu * m)
    if (m->ref_count)
       return;
 
-   ecore_list_remove_node(menu_list, m);
+   ecore_list_node_remove(menu_list, m);
 
    if (m->win)
       EDestroyWindow(m->win);

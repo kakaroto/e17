@@ -98,7 +98,7 @@ GroupDestroy(Group * g)
    if (!g)
       return;
 
-   ecore_list_remove_node(group_list, g);
+   ecore_list_node_remove(group_list, g);
 
    if (g == Mode_groups.current)
       Mode_groups.current = NULL;
@@ -486,7 +486,7 @@ SaveGroups(void)
    FILE               *f;
    char                s[1024];
 
-   if (ecore_list_nodes(group_list) <= 0)
+   if (ecore_list_count(group_list) <= 0)
       return;
 
    Esnprintf(s, sizeof(s), "%s.groups", EGetSavePrefix());
@@ -1119,7 +1119,7 @@ IPC_GroupInfo(const char *params)
      }
    else
      {
-	IpcPrintf("Number of groups: %d\n", ecore_list_nodes(group_list));
+	IpcPrintf("Number of groups: %d\n", ecore_list_count(group_list));
 	ECORE_LIST_FOR_EACH(group_list, group) GroupShow(group);
      }
 }

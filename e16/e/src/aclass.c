@@ -207,7 +207,7 @@ ActionclassDestroy(ActionClass * ac)
 	return;
      }
 
-   ecore_list_remove_node(aclass_list, ac);
+   ecore_list_node_remove(aclass_list, ac);
 
    for (i = 0; i < ac->num; i++)
       ActionDestroy(ac->list[i]);
@@ -333,10 +333,10 @@ AclassConfigLoad(FILE * fs)
 
 	  case CONFIG_CLASSNAME:
 	  case ACLASS_NAME:
-	     ac = (ActionClass *) ecore_list_remove_node(aclass_list,
+	     ac = (ActionClass *) ecore_list_node_remove(aclass_list,
 							 ActionclassFind(s2));
 	     if (!ac)
-		ac = (ActionClass *) ecore_list_remove_node(aclass_list_global,
+		ac = (ActionClass *) ecore_list_node_remove(aclass_list_global,
 							    ActionclassFindGlobal
 							    (s2));
 	     if (ac)
@@ -351,7 +351,7 @@ AclassConfigLoad(FILE * fs)
 	  case ACLASS_TYPE:
 	     if (atoi(s2) == ACLASS_TYPE_ACLASS)
 		break;
-	     ecore_list_remove_node(aclass_list, ActionclassFind(s2));
+	     ecore_list_node_remove(aclass_list, ActionclassFind(s2));
 	     ecore_list_prepend(aclass_list_global, ac);
 	     global = 1;
 
@@ -751,12 +751,12 @@ AclassConfigLoad2(FILE * fs)
 	       }
 	     else
 	       {
-		  ac = (ActionClass *) ecore_list_remove_node(aclass_list,
+		  ac = (ActionClass *) ecore_list_node_remove(aclass_list,
 							      ActionclassFind
 							      (prm2));
 		  if (!ac)
 		     ac = (ActionClass *)
-			ecore_list_remove_node(aclass_list_global,
+			ecore_list_node_remove(aclass_list_global,
 					       ActionclassFindGlobal(prm2));
 		  if (ac)
 		     ActionclassDestroy(ac);
@@ -1345,7 +1345,7 @@ IPC_KeybindingsSet(const char *params)
 
    Mode.keybinds_changed = 1;
 
-   ac = (ActionClass *) ecore_list_remove_node(aclass_list_global,
+   ac = (ActionClass *) ecore_list_node_remove(aclass_list_global,
 					       ActionclassFindGlobal
 					       ("KEYBINDINGS"));
    if (ac)

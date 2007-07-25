@@ -81,7 +81,7 @@ ClientDestroy(Client * c)
    if (!c)
       return;
 
-   ecore_list_remove_node(client_list, c);
+   ecore_list_node_remove(client_list, c);
 
    EventCallbackUnregister(c->win, 0, ClientHandleEvents, c);
    EUnregisterWindow(c->win);

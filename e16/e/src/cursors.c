@@ -128,7 +128,7 @@ ECursorDestroy(ECursor * ec)
 	return;
      }
 
-   ecore_list_remove_node(cursor_list, ec);
+   ecore_list_node_remove(cursor_list, ec);
 
    if (ec->name)
       Efree(ec->name);

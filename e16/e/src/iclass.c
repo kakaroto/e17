@@ -359,7 +359,7 @@ ImageclassDestroy(ImageClass * ic)
 	return;
      }
 
-   ecore_list_remove_node(iclass_list, ic);
+   ecore_list_node_remove(iclass_list, ic);
 
    if (ic->name)
       Efree(ic->name);

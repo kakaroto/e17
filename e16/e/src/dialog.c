@@ -270,7 +270,7 @@ DialogCreate(const char *name)
 static void
 DialogDestroy(Dialog * d)
 {
-   ecore_list_remove_node(dialog_list, d);
+   ecore_list_node_remove(dialog_list, d);
 
    if (d->name)
       Efree(d->name);
