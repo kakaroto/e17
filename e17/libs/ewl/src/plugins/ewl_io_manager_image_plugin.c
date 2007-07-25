@@ -5,6 +5,8 @@
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+#include <Evas.h>
+
 Ewl_Widget *
 ewl_io_manager_plugin_uri_read(const char *uri)
 {
