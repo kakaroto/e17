@@ -15,7 +15,10 @@ typedef enum
    IMAP_STATE_DISCONNECTED,
      IMAP_STATE_CONNECTED,
      IMAP_STATE_AUTHENTICATED,
-     IMAP_STATE_SELECTED
+     IMAP_STATE_IDLING,
+     IMAP_STATE_SEARCH_UNSEEN,
+     IMAP_STATE_SEARCH_RECENT,
+     IMAP_STATE_SEARCH_NEW
 } ImapState;
 
 struct _ImapClient
@@ -23,7 +26,7 @@ struct _ImapClient
    Config_Box *config;
 
    Ecore_Con_Server *server;
-   int               cmd;
+   unsigned int      cmd;
    ImapState         state;
    int               idle;
    unsigned char     idling : 1;
@@ -33,6 +36,11 @@ struct _ImapClient
    Ecore_Event_Handler *data_handler;
 
    void *data;
+
+   struct {
+	char *data;
+	unsigned int size;
+   } old;
 };
 
 void _mail_imap_check_mail(void *data);
@@ -41,8 +49,3 @@ void _mail_imap_del_mailbox(void *data);
 void _mail_imap_shutdown();
 
 #endif
-
-//imap.1and1.com
-//m39988144-2/3
-////testing/2
-//

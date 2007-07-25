@@ -7,11 +7,8 @@
 
 /*
  * TODO:
- * * Make it possible to get Unseen mail
- * * Let the user select between Unseen and Recent mail
- * * When a client reads the mailbox we don't always get <n> EXISTS
- *   and <n> RECENT updates. Need to parse f.eks.
- *   '* 71 FETCH (FLAGS (\Seen \Deleted \Recent NonJunk))'
+ * * Let the user select between Unseen, Recent and New mail
+ * * Don't fail on incomplete data from the server
  */
 
 static ImapClient *_mail_imap_client_find (Ecore_Con_Server *server);
@@ -23,6 +20,9 @@ static int _mail_imap_server_data_parse (ImapClient *ic, char *line);
 static void _mail_imap_client_logout (ImapClient *ic);
 static void _mail_imap_server_idle (ImapClient *ic);
 static void _mail_imap_server_noop (ImapClient *ic);
+
+static int   elements (char *p);
+static char *find_rn (char *data, unsigned int size);
 
 static Evas_List *iclients = NULL;
 
@@ -70,7 +70,7 @@ _mail_imap_check_mail (void *data)
 	  }
 	else
 	  {
-	     if (ic->idle == 1) _mail_imap_server_idle (ic);
+	     if (ic->idling) _mail_imap_server_idle (ic);
 	     else _mail_imap_server_noop (ic);
 	     /* Need to set this to revert the state of the icon */
 	     _mail_set_text (ic->data);
@@ -111,7 +111,6 @@ _mail_imap_del_mailbox (void *data)
    iclients = evas_list_remove (iclients, ic);
    _mail_imap_client_logout (ic);
    E_FREE (ic);
-
 }
 
 void
@@ -130,6 +129,7 @@ _mail_imap_shutdown ()
 	  ecore_event_handler_del (ic->data_handler);
 	iclients = evas_list_remove_list (iclients, iclients);
 	_mail_imap_client_logout (ic);
+	E_FREE (ic->old.data);
 	E_FREE (ic);
      }
 }
@@ -210,6 +210,7 @@ _mail_imap_server_del (void *data, int type, void *event)
 	ic->state = IMAP_STATE_DISCONNECTED;
      }
 
+   E_FREE (ic->old.data);
    ecore_con_server_del (ic->server);
    ic->server = NULL;
 
@@ -224,7 +225,7 @@ _mail_imap_server_data (void *data, int type, void *event)
    ImapClient *ic;
    char *reply, *p, *pp;
    char out[1024];
-   int len;
+   unsigned int len, size;
 
    ic = _mail_imap_client_find (ev->server);
    if (!ic)
@@ -232,36 +233,83 @@ _mail_imap_server_data (void *data, int type, void *event)
    if (ic->state == IMAP_STATE_DISCONNECTED)
      return 1;
 
-   reply = ev->data;
-   /* Check for correct EOD */
-   if ((*(reply + ev->size - 2) != '\r') && (*(reply + ev->size - 1) != '\n'))
+   /* Hijack server data.
+    * We require minimum 2 characters, as the minimum server data is '\r\n' */
+   if ((ic->old.data) || (ev->size < 2))
      {
-	printf ("Imap Failure: Data from imap server has wrong eol termination 0x%x0x%x!\n",
-	        *(reply + ev->size - 2), *(reply + ev->size - 2));
-	_mail_imap_client_logout (ic);
-	return 0;
-     }
+	/* TODO: Check that we don't grow to big! */
+	ic->old.data = realloc (ic->old.data, ic->old.size + ev->size);
+	memcpy (ic->old.data + ic->old.size, ev->data, ev->size);
+	ic->old.size += ev->size;
+	E_FREE (ev->data);
+	if (ic->old.size < 2) return 0;
 
-   p = reply;
-   while ((p) && ((p - reply) < ev->size))
+	reply = ic->old.data;
+	size = ic->old.size;
+	ic->old.data = NULL;
+	ic->old.size = 0;
+     }
+   else
      {
-	/* find eol */
-	pp = strstr (p, "\r\n");
-	if (pp) *pp = '\0';
+	reply = ev->data;
+	size = ev->size;
+     }
+   ev->data = NULL;
+   /* Check for correct EOD */
+   if ((*(reply + size - 2) != '\r') && (*(reply + size - 1) != '\n'))
+     {
+	/* We got incomplete data, search for last EOD */
+	unsigned int pos = 0;
+	char *data;
+
+	data = reply;
+	while (pos < (size - 1))
+	  {
+	     if ((*(reply + pos) == '\r') && (*(reply + pos + 1) == '\n'))
+	       data = reply + pos + 2;
+	     pos++;
+	  }
+	ic->old.size = size - (data - reply);
+	ic->old.data = malloc (ic->old.size);
+	memcpy (ic->old.data, data, ic->old.size);
+
+	/* Remove captured data from reply */
+	if (data == reply)
+	  E_FREE (reply);
 	else
 	  {
-	     printf ("Imap Failure: Couldn't find eol\n");
-	     _mail_imap_client_logout (ic);
-	     return 0;
+	     data -= 2;
+	     data = NULL;
+	     data += 2;
+	     size -= ic->old.size;
 	  }
-	/* parse data */
-	if (!_mail_imap_server_data_parse (ic, p))
+     }
+
+   if (reply)
+     {
+	p = reply;
+	pp = p;
+	while ((p) && ((p - reply) < size))
 	  {
-	     _mail_imap_client_logout (ic);
-	     return 0;
+	     /* find EOL */
+	     pp = find_rn (p, size - (pp - p));
+	     if (!pp)
+	       {
+		  printf ("Imap Failure: Couldn't find EOL\n");
+		  _mail_imap_client_logout (ic);
+		  return 0;
+	       }
+	     *pp = '\0';
+	     /* parse data */
+	     if (!_mail_imap_server_data_parse (ic, p))
+	       {
+		  _mail_imap_client_logout (ic);
+		  return 0;
+	       }
+	     /* next */
+	     p = pp + 2;
 	  }
-	/* next */
-	p = pp + 2;
+	free (reply);
      }
 
    switch (ic->state)
@@ -282,22 +330,41 @@ _mail_imap_server_data (void *data, int type, void *event)
 	      len = snprintf (out, sizeof (out), "A%04i LOGIN %s %s\r\n", ic->cmd++,
 			      ic->config->user, ic->config->pass);
 	      ecore_con_server_send (ic->server, out, len);
-	      ic->state++;
+	      ic->state = IMAP_STATE_AUTHENTICATED;
 	   }
 	 break;
       case IMAP_STATE_AUTHENTICATED:
 	 len = snprintf (out, sizeof (out), "A%04i EXAMINE %s\r\n", ic->cmd++,
 			 ic->config->new_path);
 	 ecore_con_server_send (ic->server, out, len);
-	 ic->state++;
+	 ic->state = IMAP_STATE_SEARCH_UNSEEN;
 	 break;
-      case IMAP_STATE_SELECTED:
+      case IMAP_STATE_IDLING:
 	 if ((ic->idle == 1) && (!ic->idling))
 	   {
+	      printf ("Begin idle\n");
 	      len = snprintf (out, sizeof (out), "A%04i IDLE\r\n", ic->cmd++);
 	      ecore_con_server_send (ic->server, out, len);
 	      ic->idling = 1;
 	   }
+	 break;
+      case IMAP_STATE_SEARCH_UNSEEN:
+	 _mail_imap_server_idle (ic);
+	 len = snprintf (out, sizeof (out), "A%04i SEARCH UNSEEN UNDELETED\r\n", ic->cmd++);
+	 ecore_con_server_send (ic->server, out, len);
+	 ic->state = IMAP_STATE_IDLING;
+	 break;
+      case IMAP_STATE_SEARCH_RECENT:
+	 _mail_imap_server_idle (ic);
+	 len = snprintf (out, sizeof (out), "A%04i SEARCH RECENT UNDELETED\r\n", ic->cmd++);
+	 ecore_con_server_send (ic->server, out, len);
+	 ic->state = IMAP_STATE_IDLING;
+	 break;
+      case IMAP_STATE_SEARCH_NEW:
+	 _mail_imap_server_idle (ic);
+	 len = snprintf (out, sizeof (out), "A%04i SEARCH NEW UNDELETED\r\n", ic->cmd++);
+	 ecore_con_server_send (ic->server, out, len);
+	 ic->state = IMAP_STATE_IDLING;
 	 break;
      }
    if (ic->cmd > 9999)
@@ -400,6 +467,11 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line)
 	  {
 	     printf ("Flags: %s\n", value);
 	  }
+	else if (!strcmp (result, "SEARCH"))
+	  {
+	     ic->config->num_new = elements (value);
+	     printf ("New mail: %d\n", ic->config->num_new);
+	  }
 	else
 	  {
 	     char *p;
@@ -410,16 +482,35 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line)
 	     if (!strcmp (value, "RECENT"))
 	       {
 		  printf ("Recent mails: %d\n", atoi (result));
-		  ic->config->num_new = atoi (result);
+		  //ic->state = IMAP_STATE_SEARCH_UNSEEN;
+		  //ic->state = IMAP_STATE_SEARCH_RECENT;
+		  ic->state = IMAP_STATE_SEARCH_NEW;
 	       }
 	     else if (!strcmp (value, "EXISTS"))
 	       {
 		  printf ("Existing mails: %d\n", atoi (result));
 		  ic->config->num_total = atoi (result);
 	       }
+	     else if (!strcmp (value, "FETCH"))
+	       {
+		  printf ("Reading mail: %d\n", atoi (result));
+		  //ic->state = IMAP_STATE_SEARCH_UNSEEN;
+		  //ic->state = IMAP_STATE_SEARCH_RECENT;
+		  ic->state = IMAP_STATE_SEARCH_NEW;
+	       }
+	     else if (!strcmp (value, "EXPUNGE"))
+	       {
+		  printf ("Deleting mail: %d\n", atoi (result));
+		  //ic->state = IMAP_STATE_SEARCH_UNSEEN;
+		  //ic->state = IMAP_STATE_SEARCH_RECENT;
+		  ic->state = IMAP_STATE_SEARCH_NEW;
+	       }
 	     else
 	       {
 		  printf ("Unknown untagged reply: %s %s\n", line, value);
+		  //ic->state = IMAP_STATE_SEARCH_UNSEEN;
+		  //ic->state = IMAP_STATE_SEARCH_RECENT;
+		  //ic->state = IMAP_STATE_SEARCH_NEW;
 	       }
 	  }
      }
@@ -440,6 +531,7 @@ _mail_imap_client_logout (ImapClient *ic)
    if (!ic)
      return;
 
+   E_FREE (ic->old.data);
    if (ic->server)
      {
 	int len;
@@ -474,3 +566,29 @@ _mail_imap_server_noop (ImapClient *ic)
    len = snprintf (out, sizeof (out), "A%04i NOOP\r\n", ic->cmd++);
    ecore_con_server_send (ic->server, out, len);
 }
+
+static int
+elements (char *p)
+{
+	int count = 0;
+	if (!p) return 0;
+	do {
+		if (*p) count++;
+		p = strchr (p, ' ');
+		if (p) p++;
+	} while (p);
+	return count;
+}
+
+static char *
+find_rn (char *data, unsigned int size)
+{
+   while (size >= 2)
+     {
+	if ((*data == '\r') && (*(data + 1) == '\n')) return data;
+	data++;
+	size--;
+     }
+   return NULL;
+}
+
