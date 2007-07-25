@@ -129,7 +129,7 @@ _mail_imap_shutdown ()
 	  ecore_event_handler_del (ic->data_handler);
 	iclients = evas_list_remove_list (iclients, iclients);
 	_mail_imap_client_logout (ic);
-	E_FREE (ic->old.data);
+	E_FREE (ic->prev.data);
 	E_FREE (ic);
      }
 }
@@ -210,7 +210,7 @@ _mail_imap_server_del (void *data, int type, void *event)
 	ic->state = IMAP_STATE_DISCONNECTED;
      }
 
-   E_FREE (ic->old.data);
+   E_FREE (ic->prev.data);
    ecore_con_server_del (ic->server);
    ic->server = NULL;
 
@@ -235,19 +235,19 @@ _mail_imap_server_data (void *data, int type, void *event)
 
    /* Hijack server data.
     * We require minimum 2 characters, as the minimum server data is '\r\n' */
-   if ((ic->old.data) || (ev->size < 2))
+   if ((ic->prev.data) || (ev->size < 2))
      {
 	/* TODO: Check that we don't grow to big! */
-	ic->old.data = realloc (ic->old.data, ic->old.size + ev->size);
-	memcpy (ic->old.data + ic->old.size, ev->data, ev->size);
-	ic->old.size += ev->size;
+	ic->prev.data = realloc (ic->prev.data, ic->prev.size + ev->size);
+	memcpy (ic->prev.data + ic->prev.size, ev->data, ev->size);
+	ic->prev.size += ev->size;
 	E_FREE (ev->data);
-	if (ic->old.size < 2) return 0;
+	if (ic->prev.size < 2) return 0;
 
-	reply = ic->old.data;
-	size = ic->old.size;
-	ic->old.data = NULL;
-	ic->old.size = 0;
+	reply = ic->prev.data;
+	size = ic->prev.size;
+	ic->prev.data = NULL;
+	ic->prev.size = 0;
      }
    else
      {
@@ -269,9 +269,9 @@ _mail_imap_server_data (void *data, int type, void *event)
 	       data = reply + pos + 2;
 	     pos++;
 	  }
-	ic->old.size = size - (data - reply);
-	ic->old.data = malloc (ic->old.size);
-	memcpy (ic->old.data, data, ic->old.size);
+	ic->prev.size = size - (data - reply);
+	ic->prev.data = malloc (ic->prev.size);
+	memcpy (ic->prev.data, data, ic->prev.size);
 
 	/* Remove captured data from reply */
 	if (data == reply)
@@ -281,7 +281,7 @@ _mail_imap_server_data (void *data, int type, void *event)
 	     data -= 2;
 	     data = NULL;
 	     data += 2;
-	     size -= ic->old.size;
+	     size -= ic->prev.size;
 	  }
      }
 
@@ -531,7 +531,7 @@ _mail_imap_client_logout (ImapClient *ic)
    if (!ic)
      return;
 
-   E_FREE (ic->old.data);
+   E_FREE (ic->prev.data);
    if (ic->server)
      {
 	int len;

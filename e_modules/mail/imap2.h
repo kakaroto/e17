@@ -40,7 +40,7 @@ struct _ImapClient
    struct {
 	char *data;
 	unsigned int size;
-   } old;
+   } prev;
 };
 
 void _mail_imap_check_mail(void *data);
