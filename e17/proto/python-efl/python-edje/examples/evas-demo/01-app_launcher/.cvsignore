@@ -1,1 +1,4 @@
 01-app_launcher.edj
+*~
+*.pyc
+*.pyo
