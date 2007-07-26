@@ -1029,7 +1029,6 @@ collections {
 		  offset: -5 -5;
 		  to: "sessions";
 	       }
-	       color: 255 255 255 0;
 	    }
 	 }
 	 part {
@@ -2002,7 +2001,6 @@ collections {
 		  offset: 6 -7;
 		  to: "bg";
 	       }
-	       color: 0 0 0 0;
 	    }
 	 }
 	 part {
