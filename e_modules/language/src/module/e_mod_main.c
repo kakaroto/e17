@@ -486,7 +486,7 @@ _language_face_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 static void
 _language_face_cb_menu_keybindings_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
-   e_int_config_keybindings(e_container_current_get(e_manager_current_get()));
+   e_int_config_keybindings(e_container_current_get(e_manager_current_get()), NULL);
 }
 static void
 _language_face_cb_menu_switch_language_to(void *data, E_Menu *m, E_Menu_Item *mi)
