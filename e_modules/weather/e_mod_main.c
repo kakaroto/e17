@@ -587,15 +587,14 @@ _weather_parse (void *data)
 
   needle = strstr (needle, ">");
   sscanf (needle, ">%[^<]<", location);
+  E_FREE(inst->location);
   if (location[0])
     {
       char *tmp = strdup (location);
 
       if (strstr (tmp, ","))
-	{
-	  tmp = strtok (tmp, ",");
-	  inst->location = strdup (tmp);
-	}
+	inst->location = strdup (strtok (tmp, ","));
+      free(tmp);
     }
 
   needle = strstr (inst->buffer, "<content:encoded>");
