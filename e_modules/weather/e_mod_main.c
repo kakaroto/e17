@@ -537,8 +537,7 @@ _weather_server_del (void *data, int type, void *event)
 
   inst->bufsize = 0;
   inst->cursize = 0;
-  free (inst->buffer);
-  inst->buffer = NULL;
+  E_FREE (inst->buffer);
 
   return 0;
 }
@@ -587,14 +586,14 @@ _weather_parse (void *data)
 
   needle = strstr (needle, ">");
   sscanf (needle, ">%[^<]<", location);
-  E_FREE(inst->location);
+  E_FREE (inst->location);
   if (location[0])
     {
       char *tmp = strdup (location);
 
       if (strstr (tmp, ","))
 	inst->location = strdup (strtok (tmp, ","));
-      free(tmp);
+      free (tmp);
     }
 
   needle = strstr (inst->buffer, "<content:encoded>");
