@@ -623,7 +623,10 @@ device_view_device_set(Ewl_Icon *icon, Device *dev)
     path = efreet_icon_path_find("Tango", icon_name, "32x32");
     //printf("found: %s\n", path);
     if (path)
+    {
       ewl_icon_image_set(icon, path, NULL);
+      free(path);
+    }
   }
   ewl_callback_append(EWL_WIDGET(icon), EWL_CALLBACK_CLICKED, cb_device_view_clicked, dev);
 

@@ -28,11 +28,14 @@ ewl_icon_theme_init(void)
 	{
 		ewl_icon_theme_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 		ecore_hash_free_key_cb_set(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
+		ecore_hash_free_value_cb_set(ewl_icon_theme_cache, free);
 
 		ewl_icon_fallback_theme_cache = ecore_hash_new(
 						ecore_str_hash, ecore_str_compare);
 		ecore_hash_free_key_cb_set(ewl_icon_fallback_theme_cache, 
 						ewl_icon_theme_cb_free);
+		ecore_hash_free_value_cb_set(ewl_icon_fallback_theme_cache, 
+						free);
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -79,7 +82,7 @@ ewl_icon_theme_theme_change(void)
 
 	ewl_icon_theme_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	ecore_hash_free_key_cb_set(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
-	ecore_hash_free_value_cb_set(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
+	ecore_hash_free_value_cb_set(ewl_icon_theme_cache, free);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -137,7 +140,7 @@ ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
 					const char *theme, const char *key,
 					Ecore_Hash *cache)
 {
-	const char *ret;
+	char *ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("icon", icon, EWL_THEME_KEY_NOMATCH);
@@ -145,10 +148,10 @@ ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
 	ret = ecore_hash_get(cache, key);
 	if (!ret)
 	{
+		/* XXX: How to store NOMATCH in the cache? The cache is strings which must be free'd */
 		ret = efreet_icon_path_find(theme, icon, size);
 		if (!ret) ret = EWL_THEME_KEY_NOMATCH;
-
-		ecore_hash_set(cache, strdup(key), (void *)ret);
+		else ecore_hash_set(cache, strdup(key), (void *)ret);
 	}
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);;
