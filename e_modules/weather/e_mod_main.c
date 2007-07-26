@@ -573,6 +573,8 @@ _weather_parse (void *data)
   char *needle, *ext;
   char location[256];
 
+  location[0] = 0;
+
   inst = data;
   if (!inst)
     return 0;
@@ -585,7 +587,7 @@ _weather_parse (void *data)
 
   needle = strstr (needle, ">");
   sscanf (needle, ">%[^<]<", location);
-  if (location)
+  if (location[0])
     {
       char *tmp = strdup (location);
 
