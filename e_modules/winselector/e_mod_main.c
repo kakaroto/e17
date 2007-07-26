@@ -241,7 +241,7 @@ static void
 _win_menu_pre_cb(void *data, E_Menu *m)
 {
    E_Menu_Item *mi;
-   Evas_List *l, *borders = NULL, *alt = NULL;
+   Evas_List *l, *borders = NULL;
    E_Zone *zone = NULL;
    E_Desk *desk = NULL;
    Instance *inst;
@@ -495,16 +495,6 @@ static void _focus_out(Instance *inst)
    if (inst->bd_icon) evas_object_del(inst->bd_icon);
    inst->bd_icon = NULL;
 
-}
-
-static Evas_List *_win_menu_sort_by_orientation(Evas_List *list, E_Gadcon_Orient orient)
-{
-   if (orient == E_GADCON_ORIENT_BOTTOM 
-	 || orient == E_GADCON_ORIENT_CORNER_BL
-	 || orient == E_GADCON_ORIENT_CORNER_BR
-	 || orient == E_GADCON_ORIENT_CORNER_RB
-	 || orient == E_GADCON_ORIENT_CORNER_LB)
-     return evas_list_reverse(list);
 }
 
 static int _win_menu_sort_alpha_cb(void *d1, void *d2)
@@ -792,7 +782,6 @@ static int _win_menu_fill_alt(Evas_List *alt, E_Menu *m)
 static int _win_menu_fill_iconified(Evas_List *borders, E_Menu *m)
 {
    Evas_List *l;
-   E_Menu_Item *mi;
 
    if (evas_list_count(borders) > 0)
      { 
