@@ -204,14 +204,14 @@ imlib_font_free(ImlibFont * fn)
 }
 
 int
-imlib_insert_font_into_fallback_chain_imp(ImlibFont * fn, ImlibFont * fallback)
+imlib_font_insert_into_fallback_chain_imp(ImlibFont * fn, ImlibFont * fallback)
 {
    /* avoid infinite recursion */
    if (fn == fallback)
       return 1;
 
    /* now remove the given fallback font from any chain it's already in */
-   imlib_remove_font_from_fallback_chain_imp(fallback);
+   imlib_font_remove_from_fallback_chain_imp(fallback);
 
    /* insert fallback into fn's font chain */
    ImlibFont          *tmp = fn->fallback_next;
@@ -225,7 +225,7 @@ imlib_insert_font_into_fallback_chain_imp(ImlibFont * fn, ImlibFont * fallback)
 }
 
 void
-imlib_remove_font_from_fallback_chain_imp(ImlibFont * fn)
+imlib_font_remove_from_fallback_chain_imp(ImlibFont * fn)
 {
    /* if fn has a previous font in its font chain, then make its fallback_next fn's fallback_next since fn is going away */
    if (fn->fallback_prev)

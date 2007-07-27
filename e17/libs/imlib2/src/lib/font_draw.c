@@ -253,7 +253,7 @@ imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
  * ret_index will be set to 0
  */
 ImlibFont          *
-imlib_find_glyph_in_font_chain(ImlibFont * first_fn, int gl, int *ret_index)
+imlib_font_find_glyph(ImlibFont * first_fn, int gl, int *ret_index)
 {
    ImlibFont          *fn = first_fn;
 
@@ -347,7 +347,7 @@ imlib_font_draw(ImlibImage * dst, DATA32 col, ImlibFont * fn, int x, int y,
         gl = imlib_font_utf8_get_next((unsigned char *)text, &chr);
         if (gl == 0)
            break;
-        fn_in_chain = imlib_find_glyph_in_font_chain(fn, gl, &index);
+        fn_in_chain = imlib_font_find_glyph(fn, gl, &index);
         if ((use_kerning) && (prev_index) && (index))
           {
              FT_Vector           delta;

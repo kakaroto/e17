@@ -79,8 +79,9 @@ char              **imlib_font_list_fonts(int *num_ret);
 ImlibFont          *imlib_font_load_joined(const char *name);
 ImlibFont          *imlib_font_load(const char *name, int size);
 void                imlib_font_free(ImlibFont * fn);
-int                 imlib_insert_font_into_fallback_chain_imp(ImlibFont * fn, ImlibFont *fallback);
-void                imlib_remove_font_from_fallback_chain_imp(ImlibFont * fn);
+int                 imlib_font_insert_into_fallback_chain_imp(ImlibFont * fn,
+                                                              ImlibFont * fallback);
+void                imlib_font_remove_from_fallback_chain_imp(ImlibFont * fn);
 int                 imlib_font_cache_get(void);
 void                imlib_font_cache_set(int size);
 void                imlib_font_flush(void);
@@ -88,6 +89,7 @@ void                imlib_font_modify_cache_by(ImlibFont * fn, int dir);
 void                imlib_font_modify_cache_by(ImlibFont * fn, int dir);
 void                imlib_font_flush_last(void);
 ImlibFont          *imlib_font_find(const char *name, int size);
+ImlibFont          *imlib_font_find_glyph(ImlibFont * fn, int gl, int *ret_index);
 
 void                imlib_font_query_size(ImlibFont * fn, const char *text,
 					  int *w, int *h);

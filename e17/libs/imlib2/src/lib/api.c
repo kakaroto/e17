@@ -3118,6 +3118,8 @@ imlib_free_font(void)
  * removed from any chain it's already in.
  * A fallback font may be a member of only one chain. Adding it as the
  * fallback font to another font will remove it from it's first fallback chain.
+ *
+ * @deprecated This function may be removed.
  **/
 EAPI int
 imlib_insert_font_into_fallback_chain(Imlib_Font font, Imlib_Font fallback_font)
@@ -3126,7 +3128,7 @@ imlib_insert_font_into_fallback_chain(Imlib_Font font, Imlib_Font fallback_font)
                               "font", font, 1);
    CHECK_PARAM_POINTER_RETURN("imlib_insert_font_into_fallback_chain",
                               "fallback_font", fallback_font, 1);
-   return imlib_insert_font_into_fallback_chain_imp(font, fallback_font);
+   return imlib_font_insert_into_fallback_chain_imp(font, fallback_font);
 }
 
 /**
@@ -3136,15 +3138,20 @@ imlib_insert_font_into_fallback_chain(Imlib_Font font, Imlib_Font fallback_font)
  * This removes the given font from any fallback chain it may be in.
  * Removing this font joins its previous and next font together in the fallback
  * chain.
+ *
+ * @deprecated This function may be removed.
  **/
 EAPI void
 imlib_remove_font_from_fallback_chain(Imlib_Font fallback_font)
 {
    CHECK_PARAM_POINTER("imlib_remove_font_from_fallback_chain",
                        "fallback_font", fallback_font);
-   imlib_remove_font_from_fallback_chain_imp(fallback_font);
+   imlib_font_remove_from_fallback_chain_imp(fallback_font);
 }
 
+/**
+ * @deprecated This function may be removed.
+ **/
 EAPI                Imlib_Font
 imlib_get_prev_font_in_fallback_chain(Imlib_Font fn)
 {
@@ -3153,6 +3160,9 @@ imlib_get_prev_font_in_fallback_chain(Imlib_Font fn)
    return ((ImlibFont *) fn)->fallback_prev;
 }
 
+/**
+ * @deprecated This function may be removed.
+ **/
 EAPI                Imlib_Font
 imlib_get_next_font_in_fallback_chain(Imlib_Font fn)
 {

@@ -15,8 +15,6 @@
 #include "rgbadraw.h"
 #include "rotate.h"
 
-extern ImlibFont   *imlib_find_glyph_in_font_chain(ImlibFont * first_fn, int gl, int *ret_index);       /* defined in font_draw.c */
-
 extern FT_Library   ft_lib;
 
 /* string extents */
@@ -46,7 +44,7 @@ imlib_font_query_size(ImlibFont * fn, const char *text, int *w, int *h)
         gl = imlib_font_utf8_get_next((unsigned char *)text, &chr);
         if (gl == 0)
            break;
-        fn_in_chain = imlib_find_glyph_in_font_chain(fn, gl, &index);
+        fn_in_chain = imlib_font_find_glyph(fn, gl, &index);
         if ((use_kerning) && (prev_index) && (index))
           {
              FT_Vector           delta;
@@ -93,7 +91,7 @@ imlib_font_query_inset(ImlibFont * fn, const char *text)
    gl = imlib_font_utf8_get_next((unsigned char *)text, &chr);
    if (gl == 0)
       return 0;
-   fn_in_chain = imlib_find_glyph_in_font_chain(fn, gl, &index);
+   fn_in_chain = imlib_font_find_glyph(fn, gl, &index);
    fg = imlib_font_cache_glyph_get(fn_in_chain, index);
    if (!fg)
       return 0;
@@ -127,7 +125,7 @@ imlib_font_query_advance(ImlibFont * fn, const char *text, int *h_adv,
         gl = imlib_font_utf8_get_next((unsigned char *)text, &chr);
         if (gl == 0)
            break;
-        fn_in_chain = imlib_find_glyph_in_font_chain(fn, gl, &index);
+        fn_in_chain = imlib_font_find_glyph(fn, gl, &index);
         if ((use_kerning) && (prev_index) && (index))
           {
              FT_Vector           delta;
@@ -186,7 +184,7 @@ imlib_font_query_char_coords(ImlibFont * fn, const char *text, int pos,
         gl = imlib_font_utf8_get_next((unsigned char *)text, &chr);
         if (gl == 0)
            break;
-        fn_in_chain = imlib_find_glyph_in_font_chain(fn, gl, &index);
+        fn_in_chain = imlib_font_find_glyph(fn, gl, &index);
         kern = 0;
         if ((use_kerning) && (prev_index) && (index))
           {
@@ -269,7 +267,7 @@ imlib_font_query_text_at_pos(ImlibFont * fn, const char *text, int x, int y,
         gl = imlib_font_utf8_get_next((unsigned char *)text, &chr);
         if (gl == 0)
            break;
-        fn_in_chain = imlib_find_glyph_in_font_chain(fn, gl, &index);
+        fn_in_chain = imlib_font_find_glyph(fn, gl, &index);
         kern = 0;
         if ((use_kerning) && (prev_index) && (index))
           {

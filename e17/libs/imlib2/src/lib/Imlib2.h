@@ -327,10 +327,12 @@ extern "C"
 /* fonts and text */
    EAPI Imlib_Font imlib_load_font(const char *font_name);
    EAPI void imlib_free_font(void);
+   /* NB! The four functions below are deprecated. */
    EAPI int imlib_insert_font_into_fallback_chain(Imlib_Font font, Imlib_Font fallback_font);
    EAPI void imlib_remove_font_from_fallback_chain(Imlib_Font fallback_font);
    EAPI Imlib_Font imlib_get_prev_font_in_fallback_chain(Imlib_Font fn);
    EAPI Imlib_Font imlib_get_next_font_in_fallback_chain(Imlib_Font fn);
+   /* NB! The four functions above are deprecated. */
    EAPI void imlib_text_draw(int x, int y, const char *text);
    EAPI void imlib_text_draw_with_return_metrics(int x, int y, const char *text,
                                                  int *width_return,
