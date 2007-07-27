@@ -5,15 +5,14 @@
 #define E_NM_INTERFACE_NETWORK_MANAGER "org.freedesktop.NetworkManager"
 #define E_NM_PATH_NETWORK_MANAGER "/org/freedesktop/NetworkManager"
 #define E_NM_INTERFACE_DEVICE "org.freedesktop.NetworkManager.Device"
-#define E_NM_INTERFACE_DEVICE_WIRED "org.freedesktop.NetworkManager.Device.Wired"
-#define E_NM_INTERFACE_DEVICE_WIRELESS "org.freedesktop.NetworkManager.Device.Wireless"
 
-typedef struct E_NM_Callback E_NM_Callback;
-struct E_NM_Callback
-{
-  E_NM_Callback_Func func;
-  void *user_data;
-};
+
+#define e_nm_manager_call_new(member) dbus_message_new_method_call(E_NM_SERVICE, E_NM_PATH_NETWORK_MANAGER, E_NM_INTERFACE_NETWORK_MANAGER, member)
+
+#define e_nm_device_call_new(path, member) dbus_message_new_method_call(E_NM_SERVICE, path, E_NM_INTERFACE_DEVICE, member)
+
+#define e_nm_network_call_new(member) dbus_message_new_method_call(E_NM_SERVICE, E_NM_PATH_NETWORK_MANAGER, E_NM_INTERFACE_NETWORK_MANAGER, member)
+
 
 struct E_NM_Context
 {
@@ -31,9 +30,16 @@ struct E_NM_Context
 
 
 
-E_NM_Callback * e_nm_callback_new(E_NM_Callback_Func cb_func, void *user_data);
-void e_nm_callback_free(E_NM_Callback *callback);
+int e_nm_get_from_nm(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data,
+                     const char *method, int rettype);
+int e_nm_get_from_device(E_NM_Context *ctx, const char *device,
+                         E_DBus_Callback_Func cb_func, void *data,
+                         const char *method, int rettype);
 
-void cb_nm_generic(void *data, DBusMessage *msg, DBusError *err);
-void cb_nm_string_list(void *data, DBusMessage *msg, DBusError *err);
+void *cb_nm_generic(DBusMessage *msg, DBusError *err);
+void *cb_nm_int32(DBusMessage *msg, DBusError *err);
+void *cb_nm_uint32(DBusMessage *msg, DBusError *err);
+void *cb_nm_string(DBusMessage *msg, DBusError *err);
+void *cb_nm_boolean(DBusMessage *msg, DBusError *err);
+void *cb_nm_string_list(DBusMessage *msg, DBusError *err);
 #endif

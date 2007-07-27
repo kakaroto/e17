@@ -21,9 +21,30 @@ void e_nm_free(E_NM_Context *ctx);
  * For method calls, the return structs use the following naming convention:
  *   E_NM_<Interface>_<Method_Call_Name>_Return
  */
-typedef void (*E_NM_Callback_Func) (void *user_data, void *method_return, DBusError *error);
 
 /* org.freedesktop.NetworkManager api */
-int e_nm_get_devices(E_NM_Context *ctx, E_NM_Callback_Func cb_func, void *data);
-int e_nm_sleep(E_NM_Context *ctx, E_NM_Callback_Func cb_func, void *data, int do_sleep);
+int e_nm_get_devices(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data);
+int e_nm_sleep(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data, int do_sleep);
+
+
+/* org.freedesktop.NetworkManager.Device api */
+int e_nm_device_get_name(E_NM_Context *ctx, const char *device,
+                         E_DBus_Callback_Func cb_func, void *data);
+int e_nm_device_get_type(E_NM_Context *ctx, const char *device, 
+                         E_DBus_Callback_Func cb_func, void *data);
+int e_nm_device_get_hal_udi(E_NM_Context *ctx, const char *device,
+                            E_DBus_Callback_Func cb_func, void *data);
+int e_nm_device_get_ip4_address(E_NM_Context *ctx, const char *device,
+                                E_DBus_Callback_Func cb_func, void *data);
+int e_nm_device_get_link_active(E_NM_Context *ctx, const char *device,
+                                E_DBus_Callback_Func cb_func, void *data);
+int e_nm_device_wireless_get_strength(E_NM_Context *ctx, const char *device,
+                                      E_DBus_Callback_Func cb_func, void *data);
+int e_nm_device_wireless_get_active_network(E_NM_Context *ctx,
+                                            const char *device,
+                                            E_DBus_Callback_Func cb_func,
+                                            void *data);
+int e_nm_device_wireless_get_networks(E_NM_Context *ctx, const char *device, 
+                                      E_DBus_Callback_Func cb_func, void *data);
 #endif
+

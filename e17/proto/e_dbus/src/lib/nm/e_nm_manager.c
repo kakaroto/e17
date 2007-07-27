@@ -1,6 +1,6 @@
 #include "E_Nm.h"
 #include "e_nm_private.h"
-#define e_nm_manager_call_new(member) dbus_message_new_method_call(E_NM_SERVICE, E_NM_PATH_NETWORK_MANAGER, E_NM_INTERFACE_NETWORK_MANAGER, member)
+
 
 /**
  * Get all network devices.
@@ -9,46 +9,68 @@
  * of const char *, and is freed automatically after the callback returns.
  *
  * @param ctx an e_nm context
- * @param cb a callback to call when the method returns (or an error is received)
+ * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
- */
+ **/
 int
-e_nm_get_devices(E_NM_Context *ctx, E_NM_Callback_Func cb_func, void *data)
+e_nm_get_devices(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data)
 {
-  E_NM_Callback *cb;
   DBusMessage *msg;
   int ret;
 
-  cb = e_nm_callback_new(cb_func, data);
-  msg = e_nm_manager_call_new("GetDevices");
+  msg = e_nm_manager_call_new("getDevices");
 
-  ret = e_dbus_message_send(ctx->conn, msg, cb_nm_string_list, -1, cb) ? 1 : 0;
+  ret = e_dbus_method_call_send(ctx->conn, msg, cb_nm_string_list, cb_func, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
 
+
 /**
- * Sleep or wake up network manager.
- *
- * The return_data of the callback will be NULL.
+ * Find the active device that NM has chosen
+ * 
+ * Returns a single string containing the dbus path to the active device
  *
  * @param ctx an e_nm context
- * @param cb a callback to call when the method returns (or an error is received)
+ * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
- */
+ **/
 int
-e_nm_sleep(E_NM_Context *ctx, E_NM_Callback_Func cb_func, void *data, int do_sleep)
+e_nm_get_active_device(E_NM_Context *ctx, E_DBus_Callback_Func cb_func,
+                       void *data)
 {
-  E_NM_Callback *cb;
-  DBusMessage *msg;
-  int ret;
-  dbus_bool_t var = do_sleep;
+  return e_nm_get_from_nm(ctx, cb_func, data,
+                          "getActiveDevice", DBUS_TYPE_STRING);
+}
 
-  cb = e_nm_callback_new(cb_func, data);
-  msg = e_nm_manager_call_new("Sleep");
-  dbus_message_append_args(msg, DBUS_TYPE_BOOLEAN, &var, DBUS_TYPE_INVALID);
 
-  ret = e_dbus_message_send(ctx->conn, msg, cb_nm_generic, -1, cb) ? 1 : 0;
-  dbus_message_unref(msg);
-  return ret;
+/**
+ * Query the current state of the network
+ * 
+ * Returns a single string containing the status:
+ *
+ *  "connecting":  there is a pending network connection (waiting for a DHCP
+ *                  request to complete, waiting for an encryption
+ *                  key/passphrase, waiting for a wireless network, etc)
+ *
+ *  "connected":    there is an active network connection
+ *
+ *  "scanning":     there is no active network connection, but NetworkManager
+ *                  is looking for an access point to associate with
+ *
+ *  "disconnected": there is no network connection
+ * 
+ *
+ *
+ * @param ctx an e_nm context
+ * @param cb a callback, used when the method returns (or an error is received)
+ * @param data user data to pass to the callback function
+ **/
+int
+e_nm_status(E_NM_Context *ctx, E_DBus_Callback_Func cb_func,
+                       void *data)
+{
+
+  return e_nm_get_from_nm(ctx, cb_func, data,
+                          "status", DBUS_TYPE_STRING);
 }
