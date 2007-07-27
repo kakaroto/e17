@@ -6,8 +6,7 @@ static E_Phys_Vector snow_test_wind(float time);
 void
 init_snow_test(E_Phys_World *world)
 {
-  E_Phys_Constraint_Boundary *bound;
-  E_Phys_Particle *p, *c, *w;
+  E_Phys_Particle *p;
   Constraint_Wrap *cw;
   E_Phys_Vector g;
 
