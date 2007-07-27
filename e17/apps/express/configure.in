@@ -63,7 +63,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code director
 PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
 PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9 ecore-evas >= 0.9.9 ecore-con >= 0.9.9 ])
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-PKG_CHECK_MODULES(ESMART, [esmart >= 0.9.0])
+PKG_CHECK_MODULES(ESMART, [esmart_container >= 0.9.0])
 
 AC_OUTPUT([
 Makefile 
