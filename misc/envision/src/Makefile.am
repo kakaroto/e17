@@ -1,7 +1,6 @@
 # $Id$
 
-AM_CFLAGS = @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EDJE_CFLAGS@ \
-	@EMOTION_CFLAGS@
+AM_CFLAGS = @ENVISION_CFLAGS@
 
 bin_PROGRAMS = envision
 
@@ -10,5 +9,4 @@ envision_SOURCES =                      \
 	callbacks.c	      callbacks.h       \
 	config.c 		  config.h
 
-envision_LDADD = @ECORE_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@ \
-	@EMOTION_LIBS@
+envision_LDADD = @ENVISION_LIBS@

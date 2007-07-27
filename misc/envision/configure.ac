@@ -46,17 +46,11 @@ AC_DEFINE_UNQUOTED([DEBUG_LEVEL], $DEBUG_LVL, [
 	Define to 999 if you want much debugging output
 ])
 
-AC_PATH_GENERIC(ecore, , ,
-	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-
-AC_PATH_GENERIC(evas, , ,
-	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
-
-AC_PATH_GENERIC(edje, , ,
-	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
-
-AC_PATH_GENERIC(emotion, , ,
-	AC_MSG_ERROR(Cannot find emotion: Is emotion-config in path?))
+PKG_CHECK_MODULES(ENVISION,
+		  ecore
+		  evas
+		  edje
+		  emotion)
 
 AC_OUTPUT([
 Makefile
