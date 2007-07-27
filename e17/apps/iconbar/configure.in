@@ -55,7 +55,8 @@ packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
 PKG_CHECK_MODULES(ICONBAR, [
-  esmart
+  esmart_container
+  esmart_trans_x11
   evas
   edb
   ecore
