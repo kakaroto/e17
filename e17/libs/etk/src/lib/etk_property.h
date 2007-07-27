@@ -13,7 +13,7 @@
  */
 
 /** @brief The type of a property */
-typedef enum Etk_Property_Type
+typedef enum
 {
    ETK_PROPERTY_NONE,           /**< Used when the property is uninitialized */
    ETK_PROPERTY_INT,            /**< The value of the property is an integer */
@@ -36,7 +36,7 @@ typedef enum Etk_Property_Type
  * You can also specify if the property needs to be initialized to its default value
  * at the constuction of a new object with ETK_PROPERTY_CONSTRUCT.
  */
-typedef enum Etk_Property_Flags
+typedef enum
 {
    ETK_PROPERTY_NO_ACCESS = 1 << 0,     /**< Used when the property type is ETK_PROPERTY_OTHER */
    ETK_PROPERTY_READABLE = 1 << 1,      /**< The value of the property is readable */
@@ -68,8 +68,8 @@ struct Etk_Property
  * @structinfo
  */
 
-typedef struct _Etk_Property_Value_Value Etk_Property_Value_Value;
-struct _Etk_Property_Value_Value
+typedef struct Etk_Property_Value_Value Etk_Property_Value_Value;
+struct Etk_Property_Value_Value
 {
       int int_value;
       Etk_Bool bool_value;

@@ -22,7 +22,7 @@
  * @brief The type of an Etk_Object: it can have a constructor and a destructor and can inherit from another Etk_Type @n
  * It also has a list of properties that will describe the state of the instanciated object
  */
-struct _Etk_Type
+struct Etk_Type
 {
    /* private: */
    char *name;

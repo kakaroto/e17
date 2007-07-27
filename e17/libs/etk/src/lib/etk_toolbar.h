@@ -27,14 +27,14 @@
 #define ETK_IS_TOOLBAR(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TOOLBAR_TYPE))
 
 /** @brief The orientation of a toolbar */
-typedef enum Etk_Toolbar_Orientation
+typedef enum
 {
    ETK_TOOLBAR_HORIZ,           /**< The toolbar is horizontal */
    ETK_TOOLBAR_VERT             /**< The toolbar is vertical */
 } Etk_Toolbar_Orientation;
 
 /** @brief The style of the toolbar's buttons (icon, text, both vertically, both horizontally) */
-typedef enum Etk_Toolbar_Style
+typedef enum
 {
    ETK_TOOLBAR_DEFAULT,          /**< Use Etk's default policy */
    ETK_TOOLBAR_ICON,             /**< Only the icon is visible */

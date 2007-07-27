@@ -27,7 +27,7 @@
 
 
 /** @brief The type of the message of the dialog */
-typedef enum Etk_Message_Dialog_Type
+typedef enum
 {
    ETK_MESSAGE_DIALOG_INFO,         /**< Informational message*/
    ETK_MESSAGE_DIALOG_WARNING,      /**< Warning message */
@@ -37,7 +37,7 @@ typedef enum Etk_Message_Dialog_Type
 
 /** @brief Some common sets of buttons for the message dialog. To use your own buttons, you can use
  * ETK_MESSAGE_DIALOG_NONE and add your buttons with etk_dialog_button_add() */
-typedef enum Etk_Message_Dialog_Buttons
+typedef enum
 {
    ETK_MESSAGE_DIALOG_NONE,
    ETK_MESSAGE_DIALOG_OK,

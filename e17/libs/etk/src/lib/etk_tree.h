@@ -35,7 +35,7 @@
 
 
 /** @brief The different modes of the tree: List (rows can not have children) or tree (rows can have children) */
-typedef enum Etk_Tree_Mode
+typedef enum
 {
    ETK_TREE_MODE_LIST,          /**< The rows of a list can not have children (the rows can not be folded/unfolded) */
    ETK_TREE_MODE_TREE           /**< The rows of a tree can have children */

@@ -21,7 +21,7 @@
 
 
 /** @brief The different sources that an Etk_Image can use */
-typedef enum Etk_Image_Source
+typedef enum
 {
    ETK_IMAGE_FILE,              /**< The image is loaded from an image file */
    ETK_IMAGE_EDJE,              /**< The image is loaded from an Edje file */

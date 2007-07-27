@@ -22,7 +22,7 @@
  * @struct Etk_String
  * @brief An Etk_String is an easy way to manipulate a string
  */
-struct _Etk_String
+struct Etk_String
 {
    /* private: */
    /* Inherit from Etk_Object */

@@ -24,7 +24,7 @@
  * @brief @widget The structure of a tool button
  * @structinfo
  */
-struct _Etk_Tool_Button
+struct Etk_Tool_Button
 {
    /* private: */
    /* Inherit from Etk_Button */
@@ -55,7 +55,7 @@ Etk_Widget *etk_tool_button_new_from_stock(Etk_Stock_Id stock_id);
  * @brief @widget The structure of a tool toggle button
  * @structinfo
  */
-struct _Etk_Tool_Toggle_Button
+struct Etk_Tool_Toggle_Button
 {
    /* private: */
    /* Inherit from Etk_Toggle_Button */

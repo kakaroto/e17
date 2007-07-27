@@ -24,7 +24,7 @@
  * @brief The code corresponding to the error that occured during the last call of
  * etk_widget_swallow_widget() or etk_widget_swallow_object()
  */
-typedef enum Etk_Widget_Swallow_Error
+typedef enum
 {
    ETK_SWALLOW_ERROR_NONE,                  /**< The object has been succesfully swallowed */
    ETK_SWALLOW_ERROR_INCOMPATIBLE_PARENT,   /**< The parent of the widget to swallow was not the swallower-widget */

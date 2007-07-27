@@ -22,7 +22,7 @@
  * @struct Etk_Filechooser_Widget
  * @brief An Etk_Filechooser_Widget is a widget used to select several files
  */
-struct _Etk_Filechooser_Widget
+struct Etk_Filechooser_Widget
 {
    /* private: */
    /* Inherit from Etk_Widget */

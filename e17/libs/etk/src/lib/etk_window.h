@@ -21,7 +21,7 @@
 
 
 /** @brief Describes how the window is stacked */
-typedef enum Etk_Window_Stacking
+typedef enum
 {
    ETK_WINDOW_NORMAL,      /**< The window is stacked in the default layer */
    ETK_WINDOW_ABOVE,       /**< The window is stacked above all the other windows */
@@ -33,7 +33,7 @@ typedef enum Etk_Window_Stacking
  * @brief @widget The most common toplevel-widget
  * @structinfo
  */
-struct _Etk_Window
+struct Etk_Window
 {
    /* private: */
    /* Inherit from Etk_Toplevel */

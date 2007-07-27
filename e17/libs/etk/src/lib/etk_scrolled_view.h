@@ -24,7 +24,7 @@
  * @brief Etk_Scrolled_View_Policy describes whether the scrollbar should be always visible, always hidden, 
  * or whether it should be shown/hidden automatically
  */
-typedef enum Etk_Scrolled_View_Policy
+typedef enum
 {
    ETK_POLICY_AUTO,     /**< The scrollbar is shown and hidden automatically whether or not the child can fit
                          * entirely in the scrolled view */

@@ -25,7 +25,7 @@
 
 
 /** @brief Possible growth directions for the progress bar (left to right by default) */
-typedef enum Etk_Progress_Bar_Direction
+typedef enum
 {
    ETK_PROGRESS_BAR_LEFT_TO_RIGHT,      /**< The progress bar grows from left to right */
    ETK_PROGRESS_BAR_RIGHT_TO_LEFT       /**< The progress bar grows from right to left */

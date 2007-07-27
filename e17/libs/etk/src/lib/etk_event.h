@@ -13,7 +13,7 @@
 
 
 /** @brief The different types of input events */
-typedef enum Etk_Event_Type
+typedef enum
 {
    ETK_EVENT_MOUSE_MOVE,         /**< Emitted when the mouse is moved */
    ETK_EVENT_MOUSE_DOWN,         /**< Emitted when a mouse button is pressed */
@@ -25,7 +25,7 @@ typedef enum Etk_Event_Type
 } Etk_Event_Type;
 
 /** @brief The keyboard modifiers active when the event has been emitted */
-typedef enum Etk_Modifiers
+typedef enum
 {
    ETK_MODIFIER_NONE = 0,               /**< No active modifiers */
    ETK_MODIFIER_CTRL = 1 << 0,          /**< "Control" is pressed */
@@ -35,7 +35,7 @@ typedef enum Etk_Modifiers
 } Etk_Modifiers;
 
 /** @brief The keyboard locks active when the event has been emitted */
-typedef enum Etk_Locks
+typedef enum
 {
    ETK_LOCK_NONE = 0,                   /**< No locks are active */
    ETK_LOCK_NUM = 1 << 0,               /**< "Num" lock is active */
@@ -44,7 +44,7 @@ typedef enum Etk_Locks
 } Etk_Locks;
 
 /** @brief A flag describing whether the click was a single, double or triple click */
-typedef enum Etk_Mouse_Flags
+typedef enum
 {
    ETK_MOUSE_NONE = 0,                  /**< A single click */
    ETK_MOUSE_DOUBLE_CLICK = 1 << 0,     /**< A double click */
@@ -52,7 +52,7 @@ typedef enum Etk_Mouse_Flags
 } Etk_Mouse_Flags;
 
 /** @brief The scroll direction corresponding to the wheel event */
-typedef enum Etk_Wheel_Direction
+typedef enum
 {
    ETK_WHEEL_VERTICAL,                  /**< Vertical scrolling */
    ETK_WHEEL_HORIZONTAL                 /**< Horizontal scrolling */

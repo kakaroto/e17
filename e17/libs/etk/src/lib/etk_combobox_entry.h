@@ -37,7 +37,7 @@
 
 
 /** @brief The different types of widgets that can be contained by  a combobox_entry's column */
-typedef enum Etk_Combobox_Entry_Column_Type
+typedef enum
 {
    ETK_COMBOBOX_ENTRY_LABEL,          /**< The column's widget is a label */
    ETK_COMBOBOX_ENTRY_IMAGE,          /**< The column's widget is an image */
@@ -45,7 +45,7 @@ typedef enum Etk_Combobox_Entry_Column_Type
 } Etk_Combobox_Entry_Column_Type;
 
 /** @brief Indicates how a widget of a combobox_entry-column should fill and expand */
-typedef enum Etk_Combobox_Entry_Fill_Policy
+typedef enum
 {
    ETK_COMBOBOX_ENTRY_NONE = 0,                       /* TODOC */
    ETK_COMBOBOX_ENTRY_EXPAND = 1 << 0,

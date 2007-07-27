@@ -21,7 +21,7 @@
 
 
 /** @brief The different types of mouse pointer */
-typedef enum Etk_Pointer_Type
+typedef enum
 {
    ETK_POINTER_NONE,
    ETK_POINTER_DEFAULT,

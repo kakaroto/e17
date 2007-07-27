@@ -35,7 +35,7 @@
 
 
 /** @brief The different kinds of update policy for a slider */
-typedef enum Etk_Slider_Update_Policy
+typedef enum
 {
    ETK_SLIDER_CONTINUOUS,       /**< The slider will be updated as soon as its button is dragged */
    ETK_SLIDER_DISCONTINUOUS,    /**< The slider will be updated as soon as its button gets released */

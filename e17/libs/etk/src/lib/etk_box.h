@@ -36,7 +36,7 @@
 
 
 /** @brief The two groups where the children can be packed: the start-group and the end-group */
-typedef enum Etk_Box_Group
+typedef enum 
 {
    ETK_BOX_START,    /**< The start-group of children: the children in this group are displayed
                       * at the start (left or top) of the box */
@@ -45,7 +45,7 @@ typedef enum Etk_Box_Group
 } Etk_Box_Group;
 
 /** @brief Describes how a child of the box expands and fills the space */
-typedef enum Etk_Box_Fill_Policy
+typedef enum
 {
    ETK_BOX_NONE = 0,                  /**< The child does not fill or expand */
    ETK_BOX_EXPAND = 1 << 0,           /**< The cell containing the child will expand to take all the available space */

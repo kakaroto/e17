@@ -20,7 +20,7 @@
 #define ETK_IS_TEXTBLOCK(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TEXTBLOCK_TYPE))
 
 /** @brief The different types of wrapping to apply on a textblock object */
-typedef enum Etk_Textblock_Wrap
+typedef enum
 {
    ETK_TEXTBLOCK_WRAP_NONE,     /**< The text is not wrapped */
    ETK_TEXTBLOCK_WRAP_DEFAULT,  /**< TODOC */
@@ -29,7 +29,7 @@ typedef enum Etk_Textblock_Wrap
 } Etk_Textblock_Wrap;
 
 /** @brief The different types of node */
-typedef enum Etk_Textblock_Node_Type
+typedef enum
 {
    ETK_TEXTBLOCK_NODE_ROOT,        /**< The node is the root node */
    ETK_TEXTBLOCK_NODE_PARAGRAPH,   /**< The node is a paragraph node */
@@ -38,7 +38,7 @@ typedef enum Etk_Textblock_Node_Type
 } Etk_Textblock_Node_Type;
 
 /** @brief The different types of tag for a node */
-typedef enum Etk_Textblock_Tag_Type
+typedef enum
 {
    ETK_TEXTBLOCK_TAG_DEFAULT,      /**< The default tag: no formatting */
    ETK_TEXTBLOCK_TAG_BOLD,         /**< The text is bold */
@@ -51,7 +51,7 @@ typedef enum Etk_Textblock_Tag_Type
 } Etk_Textblock_Tag_Type;
 
 /** @brief The different types of style that can be applied on a text */
-typedef enum Etk_Textblock_Style_Type
+typedef enum
 {
    ETK_TEXTBLOCK_STYLE_NONE,                    /**< No style is applied */
    ETK_TEXTBLOCK_STYLE_OUTLINE,                 /**< The text is outlined */
@@ -66,7 +66,7 @@ typedef enum Etk_Textblock_Style_Type
 } Etk_Textblock_Style_Type;
 
 /** @brief The different type of underlining for a text */
-typedef enum Etk_Textblock_Underline_Type
+typedef enum
 {
    ETK_TEXTBLOCK_UNDERLINE_NONE,    /**< The text is not underlined */
    ETK_TEXTBLOCK_UNDERLINE_SINGLE,  /**< The text is underlined by a single line */
@@ -74,7 +74,7 @@ typedef enum Etk_Textblock_Underline_Type
 } Etk_Textblock_Underline_Type;
 
 /** TODOC */
-typedef enum Etk_Textblock_Gravity
+typedef enum
 {
    ETK_TEXTBLOCK_GRAVITY_LEFT,
    ETK_TEXTBLOCK_GRAVITY_RIGHT

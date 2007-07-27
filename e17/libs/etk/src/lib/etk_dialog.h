@@ -26,7 +26,7 @@
 
 
 /** @brief Some common response IDs to use with an Etk_Dialog */
-typedef enum Etk_Dialog_Response_ID
+typedef enum
 {
    ETK_RESPONSE_NONE = -1,              /**< Response: None */
    ETK_RESPONSE_REJECT = -2,            /**< Response: Reject */

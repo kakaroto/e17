@@ -13,7 +13,7 @@
  * @enum Etk_Stock_Size
  * @brief The size of a stock icon
  */
-typedef enum _Etk_Stock_Size
+typedef enum
 {
    ETK_STOCK_SMALL,     /* 16x16 */
    ETK_STOCK_MEDIUM,    /* 22x22 */
@@ -24,7 +24,7 @@ typedef enum _Etk_Stock_Size
  * @enum Etk_Stock_Id
  * @brief The Id of a stock icon
  */
-typedef enum _Etk_Stock_Id
+typedef enum
 {
    ETK_STOCK_NO_STOCK,     
    ETK_STOCK_ADDRESS_BOOK_NEW,

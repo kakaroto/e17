@@ -16,7 +16,7 @@
  */
 
 /** @brief The different types of selection */
-typedef enum Etk_Selection_Type
+typedef enum
 {
    ETK_SELECTION_PRIMARY,       /**< The primary selection: used when a text is selected.
                                  * Its content is traditionally pasted when the middle button of the mouse is pressed */
@@ -25,7 +25,7 @@ typedef enum Etk_Selection_Type
 } Etk_Selection_Type;
 
 /** @brief The different types of content of a selection */
-typedef enum Etk_Selection_Content_Type
+typedef enum
 {
    ETK_SELECTION_TEXT           /**< The content of the selection is a text */
 } Etk_Selection_Content_Type;

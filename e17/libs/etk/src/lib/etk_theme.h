@@ -18,7 +18,7 @@
  */
 
 /** @brief The different types of colors */
-typedef enum Etk_Color_Type
+typedef enum
 {
    ETK_COLOR_FOREGROUND,          /**< The default foreground color */
    ETK_COLOR_BACKGROUND,          /**< The default background color */

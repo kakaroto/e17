@@ -21,7 +21,7 @@
 
 
 /** @brief The directions to which the popup window is popped up */
-typedef enum Etk_Popup_Direction
+typedef enum
 {
    ETK_POPUP_BELOW_RIGHT,       /**< The window is popped up on the right, below the given position (default) */
    ETK_POPUP_BELOW_LEFT,        /**< The window is popped up on the left, below the given position */

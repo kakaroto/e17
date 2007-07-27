@@ -21,7 +21,7 @@
 
 
 /** @brief The button's style (icon, text, both vertically, both horizontally) */
-typedef enum Etk_Button_Style
+typedef enum
 {
    ETK_BUTTON_ICON,             /**< Only the icon is visible */
    ETK_BUTTON_TEXT,             /**< Only the label is visible */

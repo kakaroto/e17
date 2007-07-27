@@ -203,7 +203,7 @@ static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, cha
    cur_dir = strdup(dir_stripped);
    
    files = ecore_file_ls(dir_stripped);
-   ecore_list_sort(files, (Ecore_Compare_Cb)strcasecmp, 'a');
+   ecore_list_sort(files, (Ecore_Compare_Cb)strcasecmp, ECORE_SORT_MIN);
    ecore_list_first_goto(files);
    etk_combobox_entry_clear(combobox_entry);
    etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(combobox_entry)), 

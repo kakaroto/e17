@@ -18,13 +18,13 @@
 /** Check if the object is an Etk_Mdi_Window */
 #define ETK_IS_MDI_WINDOW(obj) (ETK_OBJECT_CHECK_TYPE((obj), ETK_MDI_WINDOW_TYPE))
 
-typedef struct _Etk_Mdi_Window_Data Etk_Mdi_Window_Data;
+typedef struct Etk_Mdi_Window_Data Etk_Mdi_Window_Data;
 
 /**
  * @brief @widget A widget in a mdi area
  * @structinfo
  */
-struct _Etk_Mdi_Window
+struct Etk_Mdi_Window
 {
    /* private: */
    /* Inherit from Etk_Bin */

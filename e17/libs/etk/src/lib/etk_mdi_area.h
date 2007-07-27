@@ -22,7 +22,7 @@
  * @brief A container widget for Etk_Mdi_Window
  * @structinfo
  */
-struct _Etk_Mdi_Area
+struct Etk_Mdi_Area
 {
    /* private: */
    /* Inherit from Etk_Container */

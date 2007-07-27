@@ -9,7 +9,7 @@
 #define ETK_DRAG(obj)       (ETK_OBJECT_CAST((obj), ETK_DRAG_TYPE, Etk_Drag))
 #define ETK_IS_DRAG(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_DRAG_TYPE))
 
-struct _Etk_Drag
+struct Etk_Drag
 {
    /* private: */
    /* Inherit from Etk_Window */

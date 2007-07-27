@@ -28,7 +28,7 @@
 
 
 /** @brief The different color modes that can be used by the colorpicker */
-typedef enum Etk_Colorpicker_Mode
+typedef enum
 {
    ETK_COLORPICKER_H,     /**< The "Hue" mode */
    ETK_COLORPICKER_S,     /**< The "Saturation" mode */

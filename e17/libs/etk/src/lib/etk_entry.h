@@ -21,7 +21,7 @@
 
 
 /** @brief The position of the image in the entry */
-typedef enum Etk_Entry_Image_Position
+typedef enum
 {
    ETK_ENTRY_IMAGE_PRIMARY,        /**< The image is primary, to the left of the editable object */
    ETK_ENTRY_IMAGE_SECONDARY       /**< The image is secondary, to the right of the editable object */

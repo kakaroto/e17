@@ -22,7 +22,7 @@
 
 /** @brief Describes whether the table should be homogenous horizontally, vertically,
  * in both directions or not at all */
-typedef enum Etk_Table_Homogeneous
+typedef enum
 {
    ETK_TABLE_NOT_HOMOGENEOUS = 0,       /**< The table is not homogeneous: its cells could have different size */
    ETK_TABLE_HHOMOGENEOUS = 1 << 0,     /**< The table is homogeneous horizontally. all its cells have the same width */
@@ -31,7 +31,7 @@ typedef enum Etk_Table_Homogeneous
 } Etk_Table_Homogeneous;
 
 /** @brief Describes how a child of the table should fill and expand the space allocated for it */ 
-typedef enum Etk_Table_Fill_Policy
+typedef enum
 {
    ETK_TABLE_NONE = 0,            /**< The child doesn't fill or expand */
    ETK_TABLE_HFILL = 1 << 0,      /**< The child fills all the horizontal space allocated to it */
