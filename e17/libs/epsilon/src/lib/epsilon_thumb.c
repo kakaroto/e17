@@ -1,6 +1,6 @@
 #include <Ecore.h>
 #include <Ecore_Data.h>
-#include <Ecore_Con.h>
+#include <Ecore_Ipc.h>
 #include <Ecore_File.h>
 
 #include "Epsilon_Request.h"
@@ -18,7 +18,7 @@ static int epsilon_mid = 0;
 
 static Ecore_DList *epsilon_request_queue = NULL;
 
-static Ecore_Con_Server *epsilon_server = NULL;
+static Ecore_Ipc_Server *epsilon_server = NULL;
 
 static Epsilon_Ipc_End buffer;
 
@@ -40,7 +40,7 @@ epsilon_thumb_init()
 	 * Init required subsystems.
 	 */
 	if (!ecore_init()) goto init_error;
-	if (!ecore_con_init()) goto con_init_error;
+	if (!ecore_ipc_init()) goto con_init_error;
 
 	/*
 	 * Allocate a list for queueing requests.
@@ -52,13 +52,13 @@ epsilon_thumb_init()
 		/*
 		 * Setup handlers for server events.
 		 */
-		epsilon_server_add = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD, epsilon_cb_server_add, NULL);
+		epsilon_server_add = ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, epsilon_cb_server_add, NULL);
 		if (!epsilon_server_add) goto handler_add_error;
 
-		epsilon_server_del = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DEL, epsilon_cb_server_del, NULL);
+		epsilon_server_del = ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, epsilon_cb_server_del, NULL);
 		if (!epsilon_server_del) goto handler_del_error;
 
-		epsilon_server_data = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA, epsilon_cb_server_data, NULL);
+		epsilon_server_data = ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, epsilon_cb_server_data, NULL);
 		if (!epsilon_server_data) goto handler_data_error;
 
 		/*
@@ -94,7 +94,7 @@ handler_del_error:
 handler_add_error:
 	ecore_dlist_destroy(epsilon_request_queue);
 queue_error:
-	ecore_con_shutdown();
+	ecore_ipc_shutdown();
 con_init_error:
 	ecore_shutdown();
 init_error:
@@ -114,7 +114,7 @@ epsilon_shutdown()
 		ecore_dlist_destroy(epsilon_request_queue);
 	}
 
-	ecore_con_shutdown();
+	ecore_ipc_shutdown();
 	ecore_shutdown();
 
 	return epsilon_init_count;
@@ -167,8 +167,9 @@ epsilon_event_free(void *data, void *ev)
 static int
 epsilon_cb_server_data(void *data, int type, void *event)
 {
-        Ecore_Con_Event_Server_Data *e;
+        Ecore_Ipc_Event_Server_Data *e;
 	Epsilon_Message *msg;
+	int i = 0;
 
 	data = NULL;
 	type = 0;
@@ -180,44 +181,47 @@ epsilon_cb_server_data(void *data, int type, void *event)
 	if (e->server != epsilon_server)
 		return 1;
 
-	epsilon_ipc_push(&buffer, e->data, e->size);
-	while ((msg = epsilon_ipc_consume(&buffer))) {
-		Epsilon_Request *thumb;
+	msg = e->data;
+	Epsilon_Request *thumb;
 
-		if (debug) printf("Received %d response for %s\n", msg->status,
-				((char *)msg) + sizeof(Epsilon_Message));
+	if (debug) printf("Received %d response for %d\n", msg->status,msg->mid);
 
+	/*
+	 * Find the thumbnail request matching this message response.
+	 */
+
+	ecore_dlist_first_goto(epsilon_request_queue);
+	while ((thumb = ecore_dlist_current(epsilon_request_queue))) {
+		if (thumb->id == msg->mid) {
+			if (debug) printf("Removing %d from queue\n", thumb->id);
+			ecore_dlist_remove(epsilon_request_queue);
+			break;
+		}
+		ecore_dlist_next(epsilon_request_queue);
+		if (debug) printf("Cycling %d times looking for %d, current is %d\n", i++, msg->mid, thumb->id);
+	}
+
+	/*If the thumb dest is not set, but the generation was successful,
+	 * try to get the dest now */
+	if ( thumb && (!thumb->dest) && thumb->path && !thumb->status ) {
+		Epsilon* tb;
+		
 		/*
-		 * Find the thumbnail request matching this message response.
+		 * Create a temp thumbnail struct to get the thumbnail
+		 * path, don't actually generate the thumbnail here.
 		 */
-		ecore_dlist_first_goto(epsilon_request_queue);
-		while ((thumb = ecore_dlist_current(epsilon_request_queue))) {
-			if (thumb->id == msg->mid) {
-				ecore_dlist_remove(epsilon_request_queue);
-				break;
-			}
-			ecore_dlist_next(epsilon_request_queue);
-		}
+		tb = epsilon_new(thumb->path);
+		epsilon_exists(tb);
+		thumb->dest = (char *)epsilon_thumb_file_get(tb);
+		if (thumb->dest)
+			thumb->dest = strdup(thumb->dest);
+		epsilon_free(tb);
+	}
 
-		/*If the thumb dest is not set, but the generation was successful,
-		 * try to get the dest now */
-		if ( thumb && (!thumb->dest) && thumb->path && !thumb->status ) {
-			Epsilon* tb;
-			
-			/*
-			 * Create a temp thumbnail struct to get the thumbnail
-			 * path, don't actually generate the thumbnail here.
-			 */
-			tb = epsilon_new(thumb->path);
-			epsilon_exists(tb);
-			thumb->dest = (char *)epsilon_thumb_file_get(tb);
-			if (thumb->dest)
-				thumb->dest = strdup(thumb->dest);
-			epsilon_free(tb);
-		}
-
+	if (thumb) {
 		ecore_event_add(EPSILON_EVENT_DONE, thumb, epsilon_event_free, NULL);
 	}
+	if (debug) printf("Jump out\n");
 
 	return 1;
 }
@@ -238,18 +242,14 @@ epsilon_client_connect()
 	 * Use a socket with the hostname appended to help avoid potential
 	 * conflicts in NFS systems.
 	 */
-	gethostname(sockname, MAXHOSTNAMELEN);
-	buf = malloc((MAXHOSTNAMELEN + strlen(EPSILON_SOCK) + 1));
-	snprintf(buf, MAXHOSTNAMELEN + strlen(EPSILON_SOCK), "%s-%s",
-			EPSILON_SOCK, sockname);
-	if (debug) printf("socket name %s\n", buf);
+	if (debug) printf("socket name %s\n", EPSILON_SOCK);
 
 	/*
 	 * Connect to an existing server instance if available.
 	 */
 	while (!epsilon_server && retries++ < MAX_RETRY) {
-		epsilon_server = ecore_con_server_connect(ECORE_CON_LOCAL_USER,
-						  buf, 0, NULL);
+		epsilon_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER,
+						  EPSILON_SOCK, 0, NULL);
 		if (!epsilon_server) {
 			pid_t child;
 
@@ -270,8 +270,6 @@ epsilon_client_connect()
 			usleep(100000 * retries);
 		}
 	}
-
-	free(buf);
 
 	if (epsilon_server) {
 		if (debug) printf("connect to ipc server: %p\n", epsilon_server);
@@ -328,8 +326,9 @@ epsilon_add(char *path, char *dst, int size, void *data)
 		msg = epsilon_message_new(epsilon_mid++, (char *)path, dst, 0);
 		if (msg) {
 			msg->thumbsize = size;
-			if (debug) printf("!! requesting thumbnail for %s !!\n", path);
-			if (epsilon_ipc_server_send(epsilon_server, msg)) {
+			if (debug) printf("!! requesting thumbnail for %s (request %d)!!, %d\n", path, msg->mid, sizeof(Epsilon_Message)+msg->bufsize);
+			
+			if (ecore_ipc_server_send(epsilon_server, 1,1,1,1,1,msg,sizeof(Epsilon_Message)+msg->bufsize)) {
 				thumb->id = msg->mid;
 				ecore_dlist_append(epsilon_request_queue, thumb);
 			}

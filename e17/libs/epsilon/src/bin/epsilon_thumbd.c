@@ -1,7 +1,7 @@
 #include "epsilon_private.h"
 #include <Ecore.h>
 #include <Ecore_Data.h>
-#include <Ecore_Con.h>
+#include <Ecore_Ipc.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,7 +33,7 @@ typedef struct _Epsilon_Client Epsilon_Client;
 struct _Epsilon_Client
 {
 	unsigned int         id;
-	Ecore_Con_Client    *client;
+	Ecore_Ipc_Client    *client;
 	Ecore_List          *thumbs;
 
 	Epsilon_Ipc_End  ipcend;
@@ -60,7 +60,7 @@ struct _Epsilon_Worker
 {
 	Ecore_List *thumbs;
 	pid_t child;
-	Ecore_Con_Server *server;
+	Ecore_Ipc_Server *server;
 	Epsilon_Ipc_End ipcend;
 };
 
@@ -93,8 +93,8 @@ static Ecore_Event_Handler *worker_data = NULL;
 static Ecore_List *queued_workers;
 static Ecore_List *gworkers = NULL;
 
-static Ecore_Con_Server *thumb_server = NULL;
-static Ecore_Con_Server *thumbd_server = NULL;
+static Ecore_Ipc_Server *thumb_server = NULL;
+static Ecore_Ipc_Server *thumbd_server = NULL;
 
 static Ecore_List *response_queue = NULL;
 
@@ -111,6 +111,8 @@ int epsilond_cb_worker_data(void *data, int type, void *event);
 void epsilond_init_thumbd_server(Ecore_List* workers) 
 {
 	char* buf;
+
+	ecore_init();
 	
 	/*
 	 * Retrieve the safe socket name for the server.
@@ -122,22 +124,23 @@ void epsilond_init_thumbd_server(Ecore_List* workers)
 	/*
 	 * Setup the IPC server to handle completed notifications
 	 */
-	thumbd_server = ecore_con_server_add(ECORE_CON_LOCAL_USER, buf, 0, NULL);
-
-	free(buf);
+	thumbd_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EPSILOND_SOCK, 0, NULL);
 
 	/*
 	 * Prepare the handlers for worker IPC events
 	 */
-	worker_add = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, epsilond_cb_worker_add, workers);
-	worker_del = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, epsilond_cb_worker_del, workers);
-	worker_data = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, epsilond_cb_worker_data, workers);
+	worker_add = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, epsilond_cb_worker_add, workers);
+	worker_del = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, epsilond_cb_worker_del, workers);
+	worker_data = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, epsilond_cb_worker_data, workers);
+
 }
 
 void epsilond_shutdown_thumbd_server()
 {
-	if (thumbd_server)
-		ecore_con_server_del(thumbd_server);
+	if (thumbd_server) {
+		ecore_ipc_server_del(thumbd_server);
+		thumbd_server = NULL;
+	}
 	
 	ecore_event_handler_del(worker_add);
 	ecore_event_handler_del(worker_del);
@@ -153,13 +156,13 @@ int
 epsilond_cb_client_add(void *data, int type, void *event)
 {
 	Epsilon_Client *cl;
-	Ecore_Con_Event_Client_Add *e;
+	Ecore_Ipc_Event_Client_Add *e;
 	Ecore_List *clients = data;
 
 	e = event;
 	type = 0;
 
-	if (ecore_con_client_server_get(e->client) != thumb_server) return 1;
+	if (ecore_ipc_client_server_get(e->client) != thumb_server) return 1;
 
 	if (debug) printf("!!! client %p connected to server!\n", e->client);
 	cl = calloc(1, sizeof(Epsilon_Client));
@@ -184,14 +187,14 @@ int
 epsilond_cb_worker_add(void *data, int type, void *event)
 {
 	Epsilon_Client *cl;
-	Ecore_Con_Event_Client_Add *e;
+	Ecore_Ipc_Event_Client_Add *e;
 	Ecore_List *workers = data;
 
 	e = event;
 	data = NULL;
 	type = 0;
 
-	if (ecore_con_client_server_get(e->client) != thumbd_server) return 1;
+	if (ecore_ipc_client_server_get(e->client) != thumbd_server) return 1;
 
 	if (debug) printf("?? Worker added to %ld ??\n", (long int)getpid());
 	cl = calloc(1, sizeof(Epsilon_Client));
@@ -212,14 +215,14 @@ epsilond_cb_worker_add(void *data, int type, void *event)
 int
 epsilond_cb_client_del(void *data, int type, void *event)
 {
-	Ecore_Con_Event_Client_Del *e;
+	Ecore_Ipc_Event_Client_Del *e;
 	Epsilon_Client *cl;
 	Ecore_List *clients = data;
 
 	e = event;
 	type = 0;
 
-	if (ecore_con_client_server_get(e->client) != thumb_server) return 1;
+	if (ecore_ipc_client_server_get(e->client) != thumb_server) return 1;
 
 	if (debug) printf("!!! client %p disconnected from server!\n", e->client);
 
@@ -241,23 +244,20 @@ epsilond_cb_client_del(void *data, int type, void *event)
 		ecore_list_next(clients);
 	}
 
-	running_workers--;
-	if (!running_workers) epsilond_shutdown_thumbd_server();
-
 	return 1;
 }
 
 int
 epsilond_cb_worker_del(void *data, int type, void *event)
 {
-	Ecore_Con_Event_Client_Del *e;
+	Ecore_Ipc_Event_Client_Del *e;
 	Epsilon_Client *cl;
 	Ecore_List *workers = data;
 
 	e = event;
 	type = 0;
 
-	if (ecore_con_client_server_get(e->client) != thumbd_server) return 1;
+	if (ecore_ipc_client_server_get(e->client) != thumbd_server) return 1;
 
 	if (debug) printf("!!! worker %p disconnected from server!\n", e->client);
 
@@ -278,6 +278,10 @@ epsilond_cb_worker_del(void *data, int type, void *event)
 		}
 		ecore_list_next(workers);
 	}
+
+	running_workers--;
+	/*if (!running_workers) epsilond_shutdown_thumbd_server();
+	else printf ("**** Worker finished - now %d\n", running_workers);*/
 
 	return 1;
 }
@@ -307,14 +311,14 @@ epsilon_client_thumb_add(Epsilon_Client *cl, char *path)
 int
 epsilond_cb_client_data(void *data, int type, void *event)
 {
-	Ecore_Con_Event_Client_Data *e;
+	Ecore_Ipc_Event_Client_Data *e;
 	Epsilon_Client *cl;
 	Ecore_List *clients = data;
 
 	e = event;
 	type = 0;
 
-	if (ecore_con_client_server_get(e->client) != thumb_server) return 1;
+	if (ecore_ipc_client_server_get(e->client) != thumb_server) return 1;
 
 	if (debug) printf("!!! client %p sent data\n", e->client);
 
@@ -329,19 +333,21 @@ epsilond_cb_client_data(void *data, int type, void *event)
 
 	if (cl) {
 		Epsilon_Message *msg;
-		epsilon_ipc_push(&cl->ipcend, e->data, e->size);
+		Epsilon_Message *msg2;
 
 		/*
 		 * Process all messages in the data buffer for this client and
 		 * queue them for processing in the next idle state.
 		 */
-		while ((msg = epsilon_ipc_consume(&cl->ipcend))) {
-			if (debug) printf("** Received %s **\n", ((char *)msg + sizeof(Epsilon_Message)));
-			if (!cl->thumbs)
-				cl->thumbs = ecore_list_new();
-			msg->nid = cl->id;
-			ecore_list_append(cl->thumbs, msg);
-		}
+		msg = e->data;
+		msg2 = calloc(1,sizeof(Epsilon_Message)+msg->bufsize); 
+		memcpy(msg2,msg,sizeof(Epsilon_Message)+msg->bufsize);
+		
+		if (debug) printf("** Received %d : %s **\n",msg->mid,  ((char *)msg + sizeof(Epsilon_Message)));
+		if (!cl->thumbs)
+			cl->thumbs = ecore_list_new();
+		msg2->nid = cl->id;
+		ecore_list_append(cl->thumbs, msg2);
 	}
 	else {
 		if (debug) printf("ERROR: No matching client for data\n");
@@ -353,7 +359,7 @@ epsilond_cb_client_data(void *data, int type, void *event)
 int
 epsilond_cb_worker_data(void *data, int type, void *event)
 {
-	Ecore_Con_Event_Client_Data *e;
+	Ecore_Ipc_Event_Client_Data *e;
 	Epsilon_Client *cl;
 	Ecore_List *workers;
 
@@ -361,7 +367,7 @@ epsilond_cb_worker_data(void *data, int type, void *event)
 	workers = data;
 	type = 0;
 
-	if (ecore_con_client_server_get(e->client) != thumbd_server) return 1;
+	if (ecore_ipc_client_server_get(e->client) != thumbd_server) return 1;
 
 	if (debug) printf("?? Worker data ??\n");
 
@@ -376,21 +382,21 @@ epsilond_cb_worker_data(void *data, int type, void *event)
 
 	if (cl) {
 		Epsilon_Message *msg;
+		msg = (Epsilon_Message*)e->data;
 
-		epsilon_ipc_push(&cl->ipcend, e->data, e->size);
+		if (debug) printf("Onsend to client -> response for %d\n", msg->mid);
 
 		/*
 		 * Process all messages in the data buffer for this client.
 		 */
-		while ((msg = epsilon_ipc_consume(&cl->ipcend))) {
-			Epsilon_Response *response;
+		Epsilon_Response *response;
 
-			response = calloc(1, sizeof(Epsilon_Response));
-			if (response) {
-				response->client = cl;
-				response->msg = msg;
-				ecore_list_append(response_queue, response);
-			}
+		response = calloc(1, sizeof(Epsilon_Response));
+		if (response) {
+			response->client = cl;
+			response->msg = calloc(1,sizeof(Epsilon_Message)+msg->bufsize);
+			memcpy(response->msg, msg, sizeof(Epsilon_Message)+msg->bufsize);
+			ecore_list_append(response_queue, response);
 		}
 	}
 	else {
@@ -481,7 +487,7 @@ epsilond_worker_run(void *data)
 		path = ((char *)msg + sizeof(Epsilon_Message));
 		ep = epsilon_new(path);
 		epsilon_thumb_size(ep, msg->thumbsize);
-		if (debug) printf("Thumbnailing %s\n", path);
+		if (debug) printf("Thumbnailing %d: %s\n", msg->mid, path);
 
 		/*
 		 * Check for an existing thumbnail and generate one if it
@@ -515,11 +521,13 @@ epsilond_worker_run(void *data)
 		 * Notify the daemon of the completed thumbnail.
 		 */
 		msg->status = status;
-		if (epsilon_ipc_server_send(worker->server, msg) < 0) {
+		if (debug) printf("Dispatching response for %d\n", msg->mid);
+		if (ecore_ipc_server_send(worker->server, 1,1,1,1,1,msg,sizeof(Epsilon_Message)+msg->bufsize) < 0) {
 			perror("write");
 		}
+		//ecore_ipc_server_flush(worker->server);
 	}
-
+	//ecore_ipc_server_flush(worker->server);
 	ecore_main_loop_quit();
 
 	return 1;
@@ -549,8 +557,8 @@ epsilond_worker_fork(Epsilon_Worker *worker)
 		ecore_event_handler_del(client_data);
 		client_data = NULL;
 
-		ecore_con_server_del(thumb_server);
-		ecore_con_server_del(thumbd_server);
+		ecore_ipc_server_del(thumb_server);
+		ecore_ipc_server_del(thumbd_server);
 
 		thumb_server = NULL;
 		thumbd_server = NULL;
@@ -558,19 +566,15 @@ epsilond_worker_fork(Epsilon_Worker *worker)
 		/*
 		 * Connect back to the parent process.
 		 */
-		buf = epsilond_socket_path(EPSILOND_SOCK);
-
-		worker->server = ecore_con_server_connect(ECORE_CON_LOCAL_USER, buf, 0, NULL);
+		worker->server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EPSILOND_SOCK, 0, NULL);
 		if (worker->server) {
-			if (debug) printf("Connecting to %s\n", buf);
+			if (debug) printf("Connecting to %s\n", EPSILOND_SOCK);
 		}
 		else {
-			if (debug) printf("Failed connection to %s\n", buf);
+			if (debug) printf("Failed connection to %s\n", EPSILOND_SOCK);
 			exit(1);
 		}
-		free(buf);
 
-		// ecore_idler_add(epsilond_worker_run, worker);
 		epsilond_worker_run(worker);
 		return 0;
 	}
@@ -613,9 +617,11 @@ epsilond_idle_enterer(void *data)
 					(long int)getpid(), cl->id);
 
 			if (debug) printf("Client %p\n", cl->client);
-			if (epsilon_ipc_client_send(cl->client, msg) < 0)
+			if (ecore_ipc_client_send(cl->client, 1,1,1,1,1,msg,sizeof(Epsilon_Message) + msg->bufsize) < 0)
 				perror("write");
 			free(msg);
+		} else {
+			printf("Client: %p, Msg: %p\n",cl,msg);
 		}
 
 		free(response);
@@ -682,7 +688,8 @@ epsilond_idle_enterer(void *data)
 			if (ecore_list_count(worker->thumbs)) {
 				idle--;
 
-				if (!running_workers) epsilond_init_thumbd_server(gworkers);
+				/*if (!running_workers) epsilond_init_thumbd_server(gworkers);
+				else printf ("**** Added worker - now %d\n", running_workers+1);*/
 				running_workers++;
 				
 				if (!epsilond_worker_fork(worker))
@@ -737,16 +744,18 @@ epsilond_init()
 	/*
 	 * Setup the IPC server to handle requests
 	 */
-	thumb_server = ecore_con_server_add(ECORE_CON_LOCAL_USER, buf, 0, clients);
+	thumb_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EPSILON_SOCK, 0, NULL);
 
 	free(buf);
 
 	/*
 	 * Prepare the handlers for client interaction.
 	 */
-	client_add = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD, epsilond_cb_client_add, clients);
-	client_del = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DEL, epsilond_cb_client_del, clients);
-	client_data = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_DATA, epsilond_cb_client_data, clients);
+	client_add = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, epsilond_cb_client_add, clients);
+	client_del = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, epsilond_cb_client_del, clients);
+	client_data = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, epsilond_cb_client_data, clients);
+
+	epsilond_init_thumbd_server(gworkers);
 
 	/*
 	 * Initialize the worker threads
@@ -814,7 +823,7 @@ epsilond_worker_clean(Epsilon_Worker *worker)
 {
 	Epsilon_Message *msg;
 	worker->child = 0;
-	while ((msg = ecore_list_first_remove(worker->thumbs)))
+	while ((msg = ecore_list_remove_first(worker->thumbs))) 
 		free(msg);
 	return 1;
 }
@@ -826,7 +835,7 @@ int main(int argc, const char **argv)
 	 * Initialize ecore internals.
 	 */
 	ecore_init();
-	ecore_con_init();
+	ecore_ipc_init();
 	ecore_app_args_set(argc, argv);
 
 	/*
@@ -842,7 +851,7 @@ int main(int argc, const char **argv)
 	/*
 	 * Request processing complete, cleanup.
 	 */
-	ecore_con_shutdown();
+	ecore_ipc_shutdown();
 	ecore_shutdown();
 
 	if (debug) printf("Process %ld shut down\n", (long int)getpid());
