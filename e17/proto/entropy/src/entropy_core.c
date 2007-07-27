@@ -48,6 +48,9 @@ ipc_client_data(void *data, int type, void *event)
 	entropy_notify_event_cb_data* cb_data;
 	int destroy_struct =0;
 
+	/*If it's not from us, ignore*/
+	if (ecore_ipc_client_server_get(e->client) != core->server) return 1;
+
 	
 	/*printf ("Received message\n");*/
 

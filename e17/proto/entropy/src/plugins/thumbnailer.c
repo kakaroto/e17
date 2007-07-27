@@ -50,6 +50,10 @@ int thumb_complete_cb(void *data, int type, void *event)
 	entropy_file_request* req;
 	char* md5;
 
+	if (!thumb) {
+		printf("Received NULL thumbnail - abort!\n");
+		return 0;
+	}
 
 	md5 = md5_entropy_local_file(thumb->path);
 
