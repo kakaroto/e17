@@ -167,6 +167,7 @@ ColorModifierConfigLoad(FILE * fs)
    int                 err = 0;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
+   char               *p2;
    int                 i1;
    char               *name = NULL;
    const char         *params = NULL;
@@ -180,36 +181,10 @@ ColorModifierConfigLoad(FILE * fs)
    int                 i = 0, tx, ty;
    int                 rnum = 0, gnum = 0, bnum = 0;
    ColorModifierClass *cm;
-   int                 fields, len2;
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i = 0;
-	i1 = CONFIG_INVALID;
-	len2 = 0;
-	fields = sscanf(s, "%i %n%4000s", &i1, &len2, s2);
-
-	if (fields < 1)
-	  {
-	     i1 = CONFIG_INVALID;
-	  }
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-	       {
-		  RecoverUserConfig();
-		  Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	       }
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  RecoverUserConfig();
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-	       }
-	  }
+	i1 = ConfigParseline1(s, s2, &p2, NULL);
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
@@ -231,7 +206,7 @@ ColorModifierConfigLoad(FILE * fs)
 	     name = Estrdup(s2);
 	     break;
 	  case COLORMOD_RED:
-	     params = (s[len2]) ? s + len2 : NULL;
+	     params = p2;
 	     current_param = params;
 	     if (!current_param)
 		goto done;
@@ -263,7 +238,7 @@ ColorModifierConfigLoad(FILE * fs)
 	     rnum = i;
 	     break;
 	  case COLORMOD_GREEN:
-	     params = (s[len2]) ? s + len2 : NULL;
+	     params = p2;
 	     current_param = params;
 	     if (!current_param)
 		goto done;
@@ -295,7 +270,7 @@ ColorModifierConfigLoad(FILE * fs)
 	     gnum = i;
 	     break;
 	  case COLORMOD_BLUE:
-	     params = (s[len2]) ? s + len2 : NULL;
+	     params = p2;
 	     current_param = params;
 	     if (!current_param)
 		goto done;
@@ -327,11 +302,7 @@ ColorModifierConfigLoad(FILE * fs)
 	     bnum = i;
 	     break;
 	  default:
-	     RecoverUserConfig();
-	     Alert(_("Warning: unable to determine what to do with\n"
-		     "the following text in the middle of current "
-		     " ColorModifier definition:\n"
-		     "%s\nWill ignore and continue...\n"), s);
+	     ConfigParseError("ColorModifier", s);
 	     break;
 	  }
      }

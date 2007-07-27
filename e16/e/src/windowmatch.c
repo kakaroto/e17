@@ -127,8 +127,6 @@ WindowMatchDestroy(WindowMatch * wm)
       Efree(wm->name);
    if (wm->value)
       Efree(wm->value);
-   if (wm->border)
-      BorderDecRefcount(wm->border);
    if (wm->args)
       Efree(wm->args);
 
@@ -143,28 +141,10 @@ WindowMatchConfigLoad(FILE * fs)
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 i1;
-   int                 fields, len;
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	len = 0;
-	fields = sscanf(s, "%i %4000s %n", &i1, s2, &len);
-
-	if (fields < 1)
-	   i1 = CONFIG_INVALID;
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-		Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-	  }
-
+	i1 = ConfigParseline1(s, s2, NULL, NULL);
 	switch (i1)
 	  {
 	  case CONFIG_VERSION:
@@ -267,7 +247,6 @@ WindowMatchConfigLoad(FILE * fs)
 	     if (!wm->border)
 		break;
 	     wm->op = MATCH_OP_BORDER;
-	     BorderIncRefcount(wm->border);
 	     break;
 
 	  case WINDOWMATCH_ICON:
@@ -297,10 +276,7 @@ WindowMatchConfigLoad(FILE * fs)
 	     break;
 
 	  default:
-	     Alert(_("Warning: unable to determine what to do with\n"
-		     "the following text in the middle of current "
-		     "WindowMatch definition:\n"
-		     "%s\nWill ignore and continue...\n"), s);
+	     ConfigParseError("WindowMatch", s);
 	     break;
 	  }
      }
@@ -408,7 +384,6 @@ WindowMatchDecode(const char *line)
 	     err = 1;
 	     goto done;
 	  }
-	BorderIncRefcount(wm->border);
 	break;
 
      case MATCH_OP_ICON:

@@ -91,11 +91,10 @@ TooltipRealize(ToolTip * tt)
 }
 
 static ToolTip     *
-TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
-	      ImageClass * ic2, ImageClass * ic3, ImageClass * ic4,
-	      TextClass * tclass, int dist, ImageClass * tooltippic)
+TooltipCreate(const char *name, const char *ic0, const char *ic1,
+	      const char *ic2, const char *ic3, const char *ic4,
+	      const char *tclass, int dist, const char *tooltippic)
 {
-   int                 i;
    ToolTip            *tt;
 
    if (ic0 == NULL || tclass == NULL)
@@ -106,24 +105,18 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
       return NULL;
 
    tt->name = Estrdup(name);
-   tt->iclass[0] = ic1;
-   tt->iclass[1] = ic2;
-   tt->iclass[2] = ic3;
-   tt->iclass[3] = ic4;
-   tt->iclass[4] = ic0;
-   ImageclassIncRefcount(ic0);
-   tt->tclass = tclass;
-   TextclassIncRefcount(tclass);
-   tt->tooltippic = tooltippic;
-   if (tooltippic)
-      ImageclassIncRefcount(tooltippic);
+   tt->iclass[0] = ImageclassAlloc(ic1, 0);
+   tt->iclass[1] = ImageclassAlloc(ic2, 0);
+   tt->iclass[2] = ImageclassAlloc(ic3, 0);
+   tt->iclass[3] = ImageclassAlloc(ic4, 0);
+   tt->iclass[4] = ImageclassAlloc(ic0, 0);
+   tt->tclass = TextclassAlloc(tclass, 1);
+   tt->tooltippic = ImageclassAlloc(tooltippic, 0);
 
    tt->dist = dist;
 
-   for (i = 0; i < 5; i++)
-      if (tt->iclass[i])
-	 ImageclassIncRefcount(tt->iclass[i]);
-
+   if (!tt_list)
+      tt_list = ecore_list_new();
    ecore_list_prepend(tt_list, tt);
 
    return tt;
@@ -144,93 +137,70 @@ TooltipDestroy(ToolTip * tt)
 #endif
 
 int
-TooltipConfigLoad(FILE * ConfigFile)
+TooltipConfigLoad(FILE * fs)
 {
    int                 err = 0;
-   ToolTip            *tt;
-   char               *name = 0;
-   ImageClass         *drawiclass = 0;
-   ImageClass         *bubble1 = 0, *bubble2 = 0, *bubble3 = 0, *bubble4 = 0;
-   TextClass          *tclass = 0;
-   ImageClass         *tooltiphelppic = 0;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
+   char                name[64];
+   char                iclass[64];
+   char                bubble1[64], bubble2[64], bubble3[64], bubble4[64];
+   char                tclass[64];
+   char                tooltiphelppic[64];
    int                 i1;
    int                 distance = 0;
-   int                 fields;
 
-   if (!tt_list)
-      tt_list = ecore_list_new();
+   name[0] = iclass[0] = tclass[0] = '\0';
+   bubble1[0] = bubble2[0] = bubble3[0] = bubble4[0] = '\0';
+   tooltiphelppic[0] = '\0';
 
-   tt = NULL;
-   while (GetLine(s, sizeof(s), ConfigFile))
+   while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
-
-	if (fields < 1)
-	   i1 = CONFIG_INVALID;
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-	       }
-	  }
+	i1 = ConfigParseline1(s, s2, NULL, NULL);
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
-	     if ((drawiclass) && (tclass) && (name))
-		tt = TooltipCreate(name, drawiclass, bubble1, bubble2,
-				   bubble3, bubble4, tclass, distance,
-				   tooltiphelppic);
-	     _EFREE(name);
+	     if (iclass[0] && tclass[0] && name[0])
+		TooltipCreate(name, iclass, bubble1, bubble2,
+			      bubble3, bubble4, tclass, distance,
+			      tooltiphelppic);
 	     goto done;
 
 	  case CONFIG_CLASSNAME:
 	     if (TooltipFind(s2))
 	       {
-		  SkipTillEnd(ConfigFile);
+		  SkipTillEnd(fs);
 		  goto done;
 	       }
-	     _EFDUP(name, s2);
+	     STRCPY(name, s2);
 	     break;
 	  case TOOLTIP_DRAWICLASS:
 	  case CONFIG_IMAGECLASS:
-	     drawiclass = ImageclassFind(s2, 0);
+	     STRCPY(iclass, s2);
 	     break;
 	  case TOOLTIP_BUBBLE1:
-	     bubble1 = ImageclassFind(s2, 0);
+	     STRCPY(bubble1, s2);
 	     break;
 	  case TOOLTIP_BUBBLE2:
-	     bubble2 = ImageclassFind(s2, 0);
+	     STRCPY(bubble2, s2);
 	     break;
 	  case TOOLTIP_BUBBLE3:
-	     bubble3 = ImageclassFind(s2, 0);
+	     STRCPY(bubble3, s2);
 	     break;
 	  case TOOLTIP_BUBBLE4:
-	     bubble4 = ImageclassFind(s2, 0);
+	     STRCPY(bubble4, s2);
 	     break;
 	  case CONFIG_TEXT:
-	     tclass = TextclassFind(s2, 1);
+	     STRCPY(tclass, s2);
 	     break;
 	  case TOOLTIP_DISTANCE:
 	     distance = atoi(s2);
 	     break;
 	  case TOOLTIP_HELP_PIC:
-	     tooltiphelppic = ImageclassFind(s2, 0);
+	     STRCPY(tooltiphelppic, s2);
 	     break;
 	  default:
-	     Alert(_("Warning: unable to determine what to do with\n"
-		     "the following text in the middle of current "
-		     "ToolTip definition:\n"
-		     "%s\nWill ignore and continue...\n"), s);
+	     ConfigParseError("ToolTip", s);
 	     break;
 	  }
      }

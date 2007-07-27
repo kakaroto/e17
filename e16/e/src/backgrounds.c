@@ -1123,7 +1123,6 @@ BackgroundsConfigLoad(FILE * fs)
    char               *bg2 = 0;
    char               *name = 0;
    char                ignore = 0;
-   int                 fields;
    unsigned int        desk;
 
 #if ENABLE_COLOR_MODIFIERS
@@ -1134,31 +1133,7 @@ BackgroundsConfigLoad(FILE * fs)
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	ii1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &ii1, s2);
-
-	if (fields < 1)
-	  {
-	     ii1 = CONFIG_INVALID;
-	  }
-	else if (ii1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-	       {
-		  RecoverUserConfig();
-		  Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	       }
-	  }
-	else if (ii1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  RecoverUserConfig();
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-		  ii1 = CONFIG_INVALID;
-	       }
-	  }
+	ii1 = ConfigParseline1(s, s2, NULL, NULL);
 	switch (ii1)
 	  {
 	  case CONFIG_CLOSE:
@@ -2376,8 +2351,7 @@ BackgroundSet1(const char *name, const char *params)
 {
    const char         *p = params;
    char                type[FILEPATH_LEN_MAX];
-   char                valu[FILEPATH_LEN_MAX];
-   int                 len;
+   int                 len, value;
    Background         *bg;
    XColor              xclr;
 
@@ -2397,10 +2371,11 @@ BackgroundSet1(const char *name, const char *params)
 	  }
      }
 
-   type[0] = valu[0] = '\0';
+   type[0] = '\0';
    len = 0;
-   sscanf(p, "%400s %4000s %n", type, valu, &len);
+   sscanf(p, "%400s %n", type, &len);
    p += len;
+   value = atoi(p);
 
    if (!strcmp(type, "bg.solid"))
      {
@@ -2414,57 +2389,57 @@ BackgroundSet1(const char *name, const char *params)
      {
 	if (bg->bg.file)
 	   Efree(bg->bg.file);
-	bg->bg.file = Estrdup(valu);
+	bg->bg.file = Estrdup(p);
      }
    else if (!strcmp(type, "bg.tile"))
      {
-	bg->bg_tile = atoi(valu);
+	bg->bg_tile = value;
      }
    else if (!strcmp(type, "bg.keep_aspect"))
      {
-	bg->bg.keep_aspect = atoi(valu);
+	bg->bg.keep_aspect = value;
      }
    else if (!strcmp(type, "bg.xjust"))
      {
-	bg->bg.xjust = atoi(valu);
+	bg->bg.xjust = value;
      }
    else if (!strcmp(type, "bg.yjust"))
      {
-	bg->bg.yjust = atoi(valu);
+	bg->bg.yjust = value;
      }
    else if (!strcmp(type, "bg.xperc"))
      {
-	bg->bg.xperc = atoi(valu);
+	bg->bg.xperc = value;
      }
    else if (!strcmp(type, "bg.yperc"))
      {
-	bg->bg.yperc = atoi(valu);
+	bg->bg.yperc = value;
      }
    else if (!strcmp(type, "top.file"))
      {
 	if (bg->top.file)
 	   Efree(bg->top.file);
-	bg->top.file = Estrdup(valu);
+	bg->top.file = Estrdup(p);
      }
    else if (!strcmp(type, "top.keep_aspect"))
      {
-	bg->top.keep_aspect = atoi(valu);
+	bg->top.keep_aspect = value;
      }
    else if (!strcmp(type, "top.xjust"))
      {
-	bg->top.xjust = atoi(valu);
+	bg->top.xjust = value;
      }
    else if (!strcmp(type, "top.yjust"))
      {
-	bg->top.yjust = atoi(valu);
+	bg->top.yjust = value;
      }
    else if (!strcmp(type, "top.xperc"))
      {
-	bg->top.xperc = atoi(valu);
+	bg->top.xperc = value;
      }
    else if (!strcmp(type, "top.yperc"))
      {
-	bg->top.yperc = atoi(valu);
+	bg->top.yperc = value;
      }
    else
      {

@@ -92,11 +92,11 @@ struct _textclass
 
 /* tclass.c */
 int                 TextclassConfigLoad(FILE * fs);
-void                TextclassIncRefcount(TextClass * tc);
-void                TextclassDecRefcount(TextClass * tc);
+TextClass          *TextclassFind(const char *name, int fallback);
+TextClass          *TextclassAlloc(const char *name, int fallback);
+void                TextclassFree(TextClass * tc);
 int                 TextclassGetJustification(TextClass * tc);
 void                TextclassSetJustification(TextClass * tc, int just);
-TextClass          *TextclassFind(const char *name, int fallback);
 
 /* text.c */
 TextState          *TextclassGetTextState(TextClass * tclass, int state,

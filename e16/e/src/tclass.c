@@ -135,16 +135,26 @@ TextclassDestroy(TextClass * tc)
    Efree(tc);
 }
 
-void
-TextclassIncRefcount(TextClass * tc)
+TextClass          *
+TextclassAlloc(const char *name, int fallback)
 {
-   tc->ref_count++;
+   TextClass          *tc;
+
+   if (!name || !name[0])
+      return NULL;
+
+   tc = TextclassFind(name, fallback);
+   if (tc)
+      tc->ref_count++;
+
+   return tc;
 }
 
 void
-TextclassDecRefcount(TextClass * tc)
+TextclassFree(TextClass * tc)
 {
-   tc->ref_count--;
+   if (tc)
+      tc->ref_count--;
 }
 
 int
@@ -213,20 +223,16 @@ _TextclassMatchName(const void *data, const void *match)
 TextClass          *
 TextclassFind(const char *name, int fallback)
 {
-   TextClass          *tc;
+   TextClass          *tc = NULL;
 
    if (name)
-     {
-	tc =
-	   (TextClass *) ecore_list_find(tclass_list, _TextclassMatchName,
+      tc = (TextClass *) ecore_list_find(tclass_list, _TextclassMatchName,
 					 name);
-	if (tc || !fallback)
-	   return tc;
-     }
+   if (tc || !fallback)
+      return tc;
 
-   tc =
-      (TextClass *) ecore_list_find(tclass_list, _TextclassMatchName,
-				    "__FALLBACK_TCLASS");
+   tc = (TextClass *) ecore_list_find(tclass_list, _TextclassMatchName,
+				      "__FALLBACK_TCLASS");
 
    return tc;
 }
@@ -240,31 +246,10 @@ TextclassConfigLoad(FILE * fs)
    int                 i1, r, g, b;
    TextClass          *tc = NULL;
    TextState          *ts = NULL;
-   int                 fields;
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000[^=]", &i1, s2);
-
-	if (fields < 1)
-	  {
-	     i1 = CONFIG_INVALID;
-	  }
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-		  i1 = CONFIG_INVALID;
-	       }
-	  }
+	i1 = ConfigParseline1(s, s2, NULL, NULL);
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
@@ -456,11 +441,9 @@ TextclassConfigLoad(FILE * fs)
 	       }
 	     break;
 	  default:
-	     Alert(_("Warning: unable to determine what to do with\n"
-		     "the following text in the middle of current Text"
-		     " definition:\n" "%s\nWill ignore and continue...\n"), s);
+	     ConfigParseError("TextClass", s);
+	     break;
 	  }
-
      }
    err = -1;
 

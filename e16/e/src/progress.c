@@ -53,17 +53,9 @@ ProgressbarCreate(const char *name, int w, int h)
    plist = EREALLOC(Progressbar *, plist, pnum);
    plist[pnum - 1] = p;
 
-   p->ic = ImageclassFind("PROGRESS_BAR", 1);
-   if (p->ic)
-      ImageclassIncRefcount(p->ic);
-
-   p->tc = TextclassFind("PROGRESS_TEXT", 1);
-   if (p->tc)
-      TextclassIncRefcount(p->tc);
-
-   p->tnc = TextclassFind("PROGRESS_TEXT_NUMBER", 1);
-   if (p->tnc)
-      TextclassIncRefcount(p->tnc);
+   p->ic = ImageclassAlloc("PROGRESS_BAR", 1);
+   p->tc = TextclassAlloc("PROGRESS_TEXT", 1);
+   p->tnc = TextclassAlloc("PROGRESS_TEXT_NUMBER", 1);
 
    pad = ImageclassGetPadding(p->ic);
    TextSize(p->tc, 0, 0, 0, name, &tw, &th, 0);
@@ -123,16 +115,11 @@ ProgressbarDestroy(Progressbar * p)
 	break;
      }
 
-   if (p->ic)
-      ImageclassDecRefcount(p->ic);
+   ImageclassFree(p->ic);
+   TextclassFree(p->tc);
+   TextclassFree(p->tnc);
 
-   if (p->tc)
-      TextclassDecRefcount(p->tc);
-   if (p->tnc)
-      TextclassDecRefcount(p->tnc);
-
-   if (p)
-      Efree(p);
+   Efree(p);
 
    pnum--;
    if (pnum <= 0)

@@ -96,8 +96,8 @@ int                 ImageclassIsTransparent(ImageClass * ic);
 #endif
 
 ImageClass         *ImageclassFind(const char *name, int fallback);
-void                ImageclassIncRefcount(ImageClass * ic);
-void                ImageclassDecRefcount(ImageClass * ic);
+ImageClass         *ImageclassAlloc(const char *name, int fallback);
+void                ImageclassFree(ImageClass * ic);
 const char         *ImageclassGetName(ImageClass * ic);
 EImageBorder       *ImageclassGetPadding(ImageClass * ic);
 ImageState         *ImageclassGetImageState(ImageClass * ic, int state,

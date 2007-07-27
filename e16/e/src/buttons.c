@@ -88,6 +88,7 @@ static struct
 
 static void         ButtonHandleEvents(Win win, XEvent * ev, void *btn);
 
+#if 0				/* Unused */
 void
 ButtonIncRefcount(Button * b)
 {
@@ -99,6 +100,7 @@ ButtonDecRefcount(Button * b)
 {
    b->ref_count--;
 }
+#endif
 
 static int
 ButtonIsFixed(const Button * b)
@@ -113,8 +115,8 @@ ButtonIsInternal(const Button * b)
 }
 
 Button             *
-ButtonCreate(const char *name, int id, ImageClass * iclass,
-	     ActionClass * aclass, TextClass * tclass, const char *label,
+ButtonCreate(const char *name, int id, const char *iclass,
+	     const char *aclass, const char *tclass, const char *label,
 	     char ontop, int flags, int minw, int maxw, int minh, int maxh,
 	     int xo, int yo, int xa, int xr, int ya, int yr, int xsr, int xsa,
 	     int ysr, int ysa, char simg, int desk, char sticky)
@@ -136,21 +138,10 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    b->id = id;
    b->label = Estrdup(label);
 
-   b->iclass = iclass;
-   if (!b->iclass)
-      b->iclass = ImageclassFind(NULL, 0);
-   if (b->iclass)
-      ImageclassIncRefcount(b->iclass);
-
-   b->aclass = aclass;
-   if (b->aclass)
-      ActionclassIncRefcount(b->aclass);
-
-   b->tclass = tclass;
-   if (!b->tclass && b->label)
-      b->tclass = TextclassFind(NULL, 0);
-   if (b->tclass)
-      TextclassIncRefcount(b->tclass);
+   b->iclass = ImageclassAlloc(iclass, 1);
+   b->aclass = ActionclassAlloc(aclass);
+   if (b->label)
+      b->tclass = TextclassAlloc(tclass, 1);
 
    b->flags = flags;
    b->geom.width.min = minw;
@@ -198,14 +189,9 @@ ButtonDestroy(Button * b)
 
    EoFini(b);
 
-   if (b->iclass)
-      ImageclassDecRefcount(b->iclass);
-
-   if (b->aclass)
-      ActionclassDecRefcount(b->aclass);
-
-   if (b->tclass)
-      TextclassDecRefcount(b->tclass);
+   ImageclassFree(b->iclass);
+   ActionclassFree(b->aclass);
+   TextclassFree(b->tclass);
 
    if (b->label)
       Efree(b->label);
@@ -246,7 +232,7 @@ ButtonCalc(Button * b)
 	else
 	  {
 	     if (!b->iclass)
-		b->iclass = ImageclassFind(NULL, 0);
+		b->iclass = ImageclassAlloc(NULL, 1);
 	     w = 32;
 	     h = 32;
 	  }
@@ -670,17 +656,15 @@ ButtonHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 #include "conf.h"
 
 int
-ButtonsConfigLoad(FILE * ConfigFile)
+ButtonsConfigLoad(FILE * fs)
 {
    int                 err = 0;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
-   int                 i1;
-   char               *name = NULL;
-   char               *label = NULL;
-   ActionClass        *ac = NULL;
-   ImageClass         *ic = NULL;
-   TextClass          *tc = NULL;
+   char               *p2;
+   int                 i1, i2;
+   char                name[64], label[64];
+   char                iclass[64], aclass[64], tclass[64];
    Button             *bt = NULL;
    Button             *pbt = NULL;
    char                ontop = 0;
@@ -693,185 +677,136 @@ ButtonsConfigLoad(FILE * ConfigFile)
    char                sticky = 0;
    char                show = 1;
    char                internal = 0;
-   int                 fields, len;
 
-   while (GetLine(s, sizeof(s), ConfigFile))
+   name[0] = label[0] = '\0';
+   iclass[0] = aclass[0] = tclass[0] = '\0';
+
+   while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	len = 0;
-	fields = sscanf(s, "%i %4000s %n", &i1, s2, &len);
-
-	if (fields < 1)
-	  {
-	     i1 = CONFIG_INVALID;
-	  }
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-	       {
-		  RecoverUserConfig();
-		  Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	       }
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  RecoverUserConfig();
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-		  i1 = CONFIG_INVALID;
-	       }
-	  }
+	i1 = ConfigParseline1(s, s2, &p2, NULL);
+	i2 = atoi(s2);
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
 	     if (!pbt && !Mode_buttons.loading_user)
 	       {
-		  bt = ButtonCreate(name, 0, ic, ac, tc, label, ontop, flags,
-				    minw, maxw, minh, maxh, xo, yo, xa, xr,
-				    ya, yr, xsr, xsa, ysr, ysa, simg, desk,
-				    sticky);
+		  bt = ButtonCreate(name, 0, iclass, aclass, tclass, label,
+				    ontop, flags, minw, maxw, minh, maxh,
+				    xo, yo, xa, xr, ya, yr, xsr, xsa, ysr, ysa,
+				    simg, desk, sticky);
 		  bt->default_show = show;
 		  bt->internal = internal;
 	       }
-	     goto done;
-	  case CONFIG_TEXT:
-	     tc = TextclassFind(s2, 1);
-	     if (pbt)
-		pbt->tclass = tc;
-	     break;
-	  case BUTTON_LABEL:
-	     _EFREE(label);
-	     label = Estrdup(s + len);
-	     if (pbt)
+	     else if (pbt)
 	       {
-		  _EFREE(pbt->label);
-		  pbt->label = label;
+		  _EFDUP(pbt->label, label);
+		  EoSetLayer(pbt, ontop);
+		  EoSetSticky(pbt, sticky);
+		  ButtonMoveToDesktop(pbt, DeskGet(desk));
+		  pbt->iclass = ImageclassFind(iclass, 1);
+		  pbt->aclass = ActionclassFind(aclass);
+		  pbt->tclass = TextclassFind(tclass, 1);
+		  pbt->flags = flags;
+		  pbt->internal = internal;
+		  pbt->default_show = show;
+		  pbt->geom.width.min = minw;
+		  pbt->geom.width.max = maxw;
+		  pbt->geom.height.min = minh;
+		  pbt->geom.height.max = maxh;
+		  pbt->geom.xorigin = xo;
+		  pbt->geom.yorigin = yo;
+		  pbt->geom.xabs = xa;
+		  pbt->geom.xrel = xr;
+		  pbt->geom.yabs = ya;
+		  pbt->geom.yrel = yr;
+		  pbt->geom.xsizerel = xsr;
+		  pbt->geom.xsizeabs = xsa;
+		  pbt->geom.ysizerel = ysr;
+		  pbt->geom.ysizeabs = ysa;
+		  pbt->geom.size_from_image = simg;
 	       }
-	     break;
-	  case BORDERPART_ONTOP:
-	     ontop = atoi(s2);
-	     if (pbt)
-		EoSetLayer(pbt, ontop);
-	     break;
+	     goto done;
 	  case CONFIG_CLASSNAME:
 	  case BUTTON_NAME:
-	     _EFREE(name);
-	     name = Estrdup(s2);
+	     STRCPY(name, s2);
 	     pbt = ButtonFind(name);
 	     break;
-	  case CONFIG_ACTIONCLASS:
-	  case BUTTON_ACLASS:
-	     ac = ActionclassFind(s2);
-	     if (pbt)
-		pbt->aclass = ac;
+	  case BUTTON_LABEL:
+	     STRCPY(label, s2);
 	     break;
 	  case CONFIG_IMAGECLASS:
 	  case BUTTON_ICLASS:
-	     ic = ImageclassFind(s2, 1);
-	     if (pbt)
-		pbt->iclass = ic;
+	     STRCPY(iclass, s2);
+	     break;
+	  case CONFIG_ACTIONCLASS:
+	  case BUTTON_ACLASS:
+	     STRCPY(aclass, s2);
+	     break;
+	  case CONFIG_TEXT:
+	     STRCPY(tclass, s2);
+	     break;
+	  case BORDERPART_ONTOP:
+	     ontop = i2;
 	     break;
 	  case BORDERPART_WMIN:
-	     minw = atoi(s2);
-	     if (pbt)
-		pbt->geom.width.min = minw;
+	     minw = i2;
 	     break;
 	  case BORDERPART_WMAX:
-	     maxw = atoi(s2);
-	     if (pbt)
-		pbt->geom.width.max = maxw;
+	     maxw = i2;
 	     break;
 	  case BORDERPART_HMIN:
-	     minh = atoi(s2);
-	     if (pbt)
-		pbt->geom.height.min = minh;
+	     minh = i2;
 	     break;
 	  case BORDERPART_FLAGS:
-	     flags = atoi(s2);
-	     if (pbt)
-		pbt->flags = flags;
+	     flags = i2;
 	     break;
 	  case BORDERPART_HMAX:
-	     maxh = atoi(s2);
-	     if (pbt)
-		pbt->geom.height.max = maxh;
+	     maxh = i2;
 	     break;
 	  case BUTTON_XO:
-	     xo = atoi(s2);
-	     if (pbt)
-		pbt->geom.xorigin = xo;
+	     xo = i2;
 	     break;
 	  case BUTTON_YO:
-	     yo = atoi(s2);
-	     if (pbt)
-		pbt->geom.yorigin = yo;
+	     yo = i2;
 	     break;
 	  case BUTTON_XA:
-	     xa = atoi(s2);
-	     if (pbt)
-		pbt->geom.xabs = xa;
+	     xa = i2;
 	     break;
 	  case BUTTON_XR:
-	     xr = atoi(s2);
-	     if (pbt)
-		pbt->geom.xrel = xr;
+	     xr = i2;
 	     break;
 	  case BUTTON_YA:
-	     ya = atoi(s2);
-	     if (pbt)
-		pbt->geom.yabs = ya;
+	     ya = i2;
 	     break;
 	  case BUTTON_YR:
-	     yr = atoi(s2);
-	     if (pbt)
-		pbt->geom.yrel = yr;
+	     yr = i2;
 	     break;
 	  case BUTTON_XSR:
-	     xsr = atoi(s2);
-	     if (pbt)
-		pbt->geom.xsizerel = xsr;
+	     xsr = i2;
 	     break;
 	  case BUTTON_XSA:
-	     xsa = atoi(s2);
-	     if (pbt)
-		pbt->geom.xsizeabs = xsa;
+	     xsa = i2;
 	     break;
 	  case BUTTON_YSR:
-	     ysr = atoi(s2);
-	     if (pbt)
-		pbt->geom.ysizerel = ysr;
+	     ysr = i2;
 	     break;
 	  case BUTTON_YSA:
-	     ysa = atoi(s2);
-	     if (pbt)
-		pbt->geom.ysizeabs = ysa;
+	     ysa = i2;
 	     break;
 	  case BUTTON_SIMG:
-	     simg = atoi(s2);
-	     if (pbt)
-		pbt->geom.size_from_image = simg;
+	     simg = i2;
 	     break;
 	  case BUTTON_DESK:
-	     desk = atoi(s2);
-	     if (pbt)
-		ButtonMoveToDesktop(pbt, DeskGet(desk));
+	     desk = i2;
 	     break;
 	  case BUTTON_STICKY:
-	     sticky = atoi(s2);
-	     if (pbt)
-		EoSetSticky(pbt, sticky);
+	     sticky = i2;
 	     break;
 	  case BUTTON_INTERNAL:
-	     internal = atoi(s2);
-	     if (pbt)
-		pbt->internal = internal;
+	     internal = i2;
 	     break;
 	  case BUTTON_SHOW:
-	     show = atoi(s2);
-	     if (pbt)
-		pbt->default_show = show;
+	     show = i2;
 	     break;
 	  default:
 	     break;
@@ -880,9 +815,6 @@ ButtonsConfigLoad(FILE * ConfigFile)
    err = -1;
 
  done:
-   _EFREE(name);
-   _EFREE(label);
-
    return err;
 }
 

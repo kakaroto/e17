@@ -406,13 +406,13 @@ EwinBorderCalcSizes(EWin * ewin, int propagate)
       EwinPropagateShapes(ewin);
 }
 
-void
+static void
 BorderIncRefcount(const Border * b)
 {
    ((Border *) b)->ref_count++;
 }
 
-void
+static void
 BorderDecRefcount(const Border * b)
 {
    ((Border *) b)->ref_count--;
@@ -656,14 +656,10 @@ BorderDestroy(Border * b)
 
    for (i = 0; i < b->num_winparts; i++)
      {
-	if (b->part[i].iclass)
-	   ImageclassDecRefcount(b->part[i].iclass);
-	if (b->part[i].tclass)
-	   TextclassDecRefcount(b->part[i].tclass);
-	if (b->part[i].aclass)
-	   ActionclassDecRefcount(b->part[i].aclass);
-	if (b->part[i].ec)
-	   ECursorDecRefcount(b->part[i].ec);
+	ImageclassFree(b->part[i].iclass);
+	ActionclassFree(b->part[i].aclass);
+	TextclassFree(b->part[i].tclass);
+	ECursorFree(b->part[i].ec);
      }
 
    if (b->num_winparts > 0)
@@ -673,8 +669,7 @@ BorderDestroy(Border * b)
       Efree(b->name);
    if (b->group_border_name)
       Efree(b->group_border_name);
-   if (b->aclass)
-      ActionclassDecRefcount(b->aclass);
+   ActionclassFree(b->aclass);
 }
 
 static int
@@ -689,9 +684,27 @@ BorderFind(const char *name)
    return (Border *) ecore_list_find(border_list, _BorderMatchName, name);
 }
 
+Border             *
+BorderAlloc(const char *name)
+{
+   Border             *b;
+
+   b = BorderFind(name);
+   if (b)
+      BorderIncRefcount(b);
+
+   return b;
+}
+
+void
+BorderFree(Border * b)
+{
+   BorderDecRefcount(b);
+}
+
 static void
-BorderWinpartAdd(Border * b, ImageClass * iclass, ActionClass * aclass,
-		 TextClass * tclass, ECursor * ec, char ontop, int flags,
+BorderWinpartAdd(Border * b, const char *iclass, const char *aclass,
+		 const char *tclass, const char *cclass, char ontop, int flags,
 		 char isregion __UNUSED__, int wmin, int wmax, int hmin,
 		 int hmax, int torigin, int txp, int txa, int typ, int tya,
 		 int borigin, int bxp, int bxa, int byp, int bya,
@@ -704,24 +717,10 @@ BorderWinpartAdd(Border * b, ImageClass * iclass, ActionClass * aclass,
 
    b->part = EREALLOC(WinPart, b->part, n);
 
-   if (!iclass)
-      iclass = ImageclassFind(NULL, 0);
-
-   b->part[n - 1].iclass = iclass;
-   if (iclass)
-      ImageclassIncRefcount(iclass);
-
-   b->part[n - 1].aclass = aclass;
-   if (aclass)
-      ActionclassIncRefcount(aclass);
-
-   b->part[n - 1].tclass = tclass;
-   if (tclass)
-      TextclassIncRefcount(tclass);
-
-   b->part[n - 1].ec = ec;
-   if (ec)
-      ECursorIncRefcount(ec);
+   b->part[n - 1].iclass = (iclass) ? ImageclassAlloc(iclass, 1) : NULL;
+   b->part[n - 1].aclass = (aclass) ? ActionclassAlloc(aclass) : NULL;
+   b->part[n - 1].tclass = (tclass) ? TextclassAlloc(tclass, 1) : NULL;
+   b->part[n - 1].ec = (cclass) ? ECursorAlloc(cclass) : NULL;
 
    b->part[n - 1].ontop = ontop;
    b->part[n - 1].flags = flags;
@@ -1072,122 +1071,106 @@ BorderPartLoad(FILE * fs, char type __UNUSED__, Border * b)
    int                 err = 0;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
-   int                 i1;
-   ImageClass         *iclass = 0;
-   ActionClass        *aclass = 0;
-   TextClass          *tclass = 0;
-   ECursor            *ec = NULL;
+   int                 i1, i2;
+   char                iclass[64], aclass[64], tclass[64], cclass[64];
+   char               *piclass, *paclass, *ptclass, *pcclass;
    char                ontop = 1;
    int                 flags = FLAG_BUTTON;
    char                isregion = 0, keepshade = 1;
    int                 wmin = 0, wmax = 0, hmin = 0, hmax = 0, torigin =
       0, txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
    int                 bxp = 0, bxa = 0, byp = 0, bya = 0;
-   int                 fields;
+
+   piclass = paclass = ptclass = pcclass = NULL;
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
-
-	if (fields < 1)
-	  {
-	     i1 = CONFIG_INVALID;
-	  }
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-		  i1 = CONFIG_INVALID;
-	       }
-	  }
+	i1 = ConfigParseline1(s, s2, NULL, NULL);
+	i2 = atoi(s2);
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
-	     BorderWinpartAdd(b, iclass, aclass, tclass, ec, ontop, flags,
-			      isregion, wmin, wmax, hmin, hmax, torigin, txp,
-			      txa, typ, tya, borigin, bxp, bxa, byp, bya,
-			      keepshade);
+	     BorderWinpartAdd(b, piclass, paclass, ptclass, pcclass, ontop,
+			      flags, isregion, wmin, wmax, hmin, hmax,
+			      torigin, txp, txa, typ, tya,
+			      borigin, bxp, bxa, byp, bya, keepshade);
 	     goto done;
 	  case CONFIG_IMAGECLASS:
 	  case BORDERPART_ICLASS:
-	     iclass = ImageclassFind(s2, 1);
+	     STRCPY(iclass, s2);
+	     piclass = iclass;
 	     break;
 	  case CONFIG_ACTIONCLASS:
 	  case BORDERPART_ACLASS:
-	     aclass = ActionclassFind(s2);
+	     STRCPY(aclass, s2);
+	     paclass = aclass;
 	     break;
 	  case CONFIG_TEXT:
 	  case BORDERPART_TEXTCLASS:
-	     tclass = TextclassFind(s2, 1);
+	     STRCPY(tclass, s2);
+	     ptclass = tclass;
 	     break;
 	  case CONFIG_CURSOR:
-	     ec = ECursorFind(s2);
+	     STRCPY(cclass, s2);
+	     pcclass = cclass;
 	     break;
 	  case BORDERPART_ONTOP:
-	     ontop = atoi(s2);
+	     ontop = i2;
 	     break;
 	  case BORDERPART_FLAGS:
-	     flags = atoi(s2);
+	     flags = i2;
 	     break;
 	  case BORDERPART_ISREGION:
-	     isregion = atoi(s2);
+	     isregion = i2;
 	     break;
 	  case BORDERPART_WMIN:
-	     wmin = atoi(s2);
+	     wmin = i2;
 	     if (!wmax)
 		wmax = wmin;
 	     break;
 	  case BORDERPART_WMAX:
-	     wmax = atoi(s2);
+	     wmax = i2;
 	     break;
 	  case BORDERPART_HMIN:
-	     hmin = atoi(s2);
+	     hmin = i2;
 	     if (!hmax)
 		hmax = hmin;
 	     break;
 	  case BORDERPART_HMAX:
-	     hmax = atoi(s2);
+	     hmax = i2;
 	     break;
 	  case BORDERPART_TORIGIN:
-	     torigin = atoi(s2);
+	     torigin = i2;
 	     break;
 	  case BORDERPART_TXP:
-	     txp = atoi(s2);
+	     txp = i2;
 	     break;
 	  case BORDERPART_TXA:
-	     txa = atoi(s2);
+	     txa = i2;
 	     break;
 	  case BORDERPART_TYP:
-	     typ = atoi(s2);
+	     typ = i2;
 	     break;
 	  case BORDERPART_TYA:
-	     tya = atoi(s2);
+	     tya = i2;
 	     break;
 	  case BORDERPART_BORIGIN:
-	     borigin = atoi(s2);
+	     borigin = i2;
 	     break;
 	  case BORDERPART_BXP:
-	     bxp = atoi(s2);
+	     bxp = i2;
 	     break;
 	  case BORDERPART_BXA:
-	     bxa = atoi(s2);
+	     bxa = i2;
 	     break;
 	  case BORDERPART_BYP:
-	     byp = atoi(s2);
+	     byp = i2;
 	     break;
 	  case BORDERPART_BYA:
-	     bya = atoi(s2);
+	     bya = i2;
 	     break;
 	  case BORDERPART_KEEPSHADE:
-	     keepshade = atoi(s2);
+	     keepshade = i2;
 	     break;
 	  default:
 	     break;
@@ -1205,33 +1188,14 @@ BorderConfigLoad(FILE * fs)
    Border             *b = 0;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
-   int                 i1;
-   int                 fields;
+   int                 i1, i2;
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
+	i1 = ConfigParseline1(s, s2, NULL, NULL);
+	i2 = atoi(s2);
 
-	if (fields < 1)
-	  {
-	     i1 = CONFIG_INVALID;
-	  }
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-		  i1 = CONFIG_INVALID;
-	       }
-	  }
-	if (atoi(s2) == CONFIG_OPEN)
+	if (i2 == CONFIG_OPEN)
 	  {
 	     err = BorderPartLoad(fs, i1, b);
 	     if (err)
@@ -1258,22 +1222,22 @@ BorderConfigLoad(FILE * fs)
 		  b->group_border_name = Estrdup(s2);
 		  break;
 	       case BORDER_LEFT:
-		  b->border.left = atoi(s2);
+		  b->border.left = i2;
 		  break;
 	       case BORDER_RIGHT:
-		  b->border.right = atoi(s2);
+		  b->border.right = i2;
 		  break;
 	       case BORDER_TOP:
-		  b->border.top = atoi(s2);
+		  b->border.top = i2;
 		  break;
 	       case BORDER_BOTTOM:
-		  b->border.bottom = atoi(s2);
+		  b->border.bottom = i2;
 		  break;
 	       case SHADEDIR:
-		  b->shadedir = atoi(s2);
+		  b->shadedir = i2;
 		  break;
 	       case BORDER_CHANGES_SHAPE:
-		  b->changes_shape = atoi(s2);
+		  b->changes_shape = i2;
 		  break;
 	       case CONFIG_ACTIONCLASS:
 		  b->aclass = ActionclassFind(s2);
@@ -1293,9 +1257,6 @@ Border             *
 BorderCreateFiller(int left, int right, int top, int bottom)
 {
    Border             *b;
-   ImageClass         *ic;
-
-   ic = ImageclassFind("__BLACK", 1);
 
    b = BorderCreate("__FILLER");
    b->throwaway = 1;
@@ -1306,20 +1267,20 @@ BorderCreateFiller(int left, int right, int top, int bottom)
    b->border.bottom = bottom;
 
    if (top)
-      BorderWinpartAdd(b, ic, NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
+      BorderWinpartAdd(b, "__BLACK", NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
 		       1, 99999, 1, 99999,
 		       -1, 0, 0, 0, 0, -1, 1024, -1, 0, top - 1, 1);
    if (bottom)
-      BorderWinpartAdd(b, ic, NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
+      BorderWinpartAdd(b, "__BLACK", NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
 		       1, 99999, 1, 99999,
 		       -1, 0, 0, 1024, -bottom, -1, 1024, -1, 1024, -1, 1);
    if (left)
-      BorderWinpartAdd(b, ic, NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
+      BorderWinpartAdd(b, "__BLACK", NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
 		       1, 99999, 1, 99999,
 		       -1, 0, 0, 0, top,
 		       -1, 0, left - 1, 1024, -(bottom + 1), 1);
    if (right)
-      BorderWinpartAdd(b, ic, NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
+      BorderWinpartAdd(b, "__BLACK", NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
 		       1, 99999, 1, 99999,
 		       -1, 1024, -right, 0, top,
 		       -1, 1024, -1, 1024, -(bottom + 1), 1);
@@ -1362,12 +1323,16 @@ BordersSetupFallback(void)
    b->border.right = 8;
    b->border.top = 8;
    b->border.bottom = 8;
-   BorderWinpartAdd(b, ic, ac, NULL, NULL, 1, FLAG_BUTTON, 0, 8, 99999, 8,
-		    99999, -1, 0, 0, 0, 0, -1, 1024, -1, 0, 7, 1);
-   BorderWinpartAdd(b, ic, ac, NULL, NULL, 1, FLAG_BUTTON, 0, 8, 99999, 8,
-		    99999, -1, 0, 0, 1024, -8, -1, 1024, -1, 1024, -1, 1);
-   BorderWinpartAdd(b, ic, ac, NULL, NULL, 1, FLAG_BUTTON, 0, 8, 99999, 8,
-		    99999, -1, 0, 0, 0, 8, -1, 0, 7, 1024, -9, 1);
-   BorderWinpartAdd(b, ic, ac, NULL, NULL, 1, FLAG_BUTTON, 0, 8, 99999, 8,
-		    99999, -1, 1024, -8, 0, 8, -1, 1024, -1, 1024, -9, 1);
+   BorderWinpartAdd(b, "__FALLBACK_ICLASS", "__FALLBACK_ACTION", NULL, NULL,
+		    1, FLAG_BUTTON, 0, 8, 99999, 8, 99999, -1, 0, 0, 0, 0,
+		    -1, 1024, -1, 0, 7, 1);
+   BorderWinpartAdd(b, "__FALLBACK_ICLASS", "__FALLBACK_ACTION", NULL, NULL,
+		    1, FLAG_BUTTON, 0, 8, 99999, 8, 99999, -1, 0, 0, 1024,
+		    -8, -1, 1024, -1, 1024, -1, 1);
+   BorderWinpartAdd(b, "__FALLBACK_ICLASS", "__FALLBACK_ACTION", NULL, NULL,
+		    1, FLAG_BUTTON, 0, 8, 99999, 8, 99999, -1, 0, 0, 0, 8,
+		    -1, 0, 7, 1024, -9, 1);
+   BorderWinpartAdd(b, "__FALLBACK_ICLASS", "__FALLBACK_ACTION", NULL, NULL,
+		    1, FLAG_BUTTON, 0, 8, 99999, 8, 99999, -1, 1024, -8, 0,
+		    8, -1, 1024, -1, 1024, -9, 1);
 }

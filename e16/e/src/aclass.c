@@ -237,6 +237,8 @@ ActionclassFindGlobal(const char *name)
 ActionClass        *
 ActionclassFind(const char *name)
 {
+   if (!name)
+      return NULL;
    return (ActionClass *) ecore_list_find(aclass_list, _ActionclassMatchName,
 					  name);
 }
@@ -261,8 +263,9 @@ AclassConfigLoad(FILE * fs)
    ActionClass        *ac = NULL;
    Action             *aa = NULL;
    char                s[FILEPATH_LEN_MAX];
-   int                 i1;
    char                s2[FILEPATH_LEN_MAX];
+   char               *p2;
+   int                 i1, i2;
    char                event = 0;
    char                anymod = 0;
    int                 mod = 0;
@@ -270,47 +273,24 @@ AclassConfigLoad(FILE * fs)
    int                 but = 0;
    int                 first = 1;
    char                anykey = 0;
-   char               *key = NULL;
+   char                key[64];
    char               *aclass_tooltipstring = NULL;
    char               *action_tooltipstring = NULL;
    char global = 0;
-   int                 fields, len2, len;
+
+   key[0] = '\0';
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %n%4000s %n", &i1, &len2, s2, &len);
-
-	if (fields < 1)
-	  {
-	     i1 = CONFIG_INVALID;
-	  }
-	else if (i1 == CONFIG_CLOSE || i1 == CONFIG_NEXT)
-	  {
-	     if (fields != 1)
-	       {
-		  RecoverUserConfig();
-		  Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	       }
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  RecoverUserConfig();
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-	       }
-	  }
-
+	i1 = ConfigParseline1(s, s2, &p2, NULL);
+	i2 = atoi(s2);
 	switch (i1)
 	  {
 	  case CONFIG_VERSION:
 	     break;
 	  case CONFIG_ACTIONCLASS:
 	     err = -1;
-	     i1 = atoi(s2);
-	     if (i1 != CONFIG_OPEN)
+	     if (i2 != CONFIG_OPEN)
 		goto done;
 	     ac = NULL;
 	     aa = NULL;
@@ -319,7 +299,7 @@ AclassConfigLoad(FILE * fs)
 	     mod = 0;
 	     but = 0;
 	     first = 1;
-	     _EFREE(key);
+	     key[0] = '\0';
 	     break;
 	  case CONFIG_CLOSE:
 	     ac->tooltipstring =
@@ -349,7 +329,7 @@ AclassConfigLoad(FILE * fs)
 	     break;
 	  case CONFIG_TYPE:
 	  case ACLASS_TYPE:
-	     if (atoi(s2) == ACLASS_TYPE_ACLASS)
+	     if (i2 == ACLASS_TYPE_ACLASS)
 		break;
 	     ecore_list_node_remove(aclass_list, ActionclassFind(s2));
 	     ecore_list_prepend(aclass_list_global, ac);
@@ -371,7 +351,7 @@ AclassConfigLoad(FILE * fs)
 	      * #define Mod4Mask        (1<<6)
 	      * #define Mod5Mask        (1<<7)
 	      */
-	     switch (atoi(s2))
+	     switch (i2)
 	       {
 	       case MASK_NONE:
 		  mod = 0;
@@ -445,27 +425,25 @@ AclassConfigLoad(FILE * fs)
 	     break;
 	  case CONFIG_ANYMOD:
 	  case ACLASS_ANYMOD:
-	     anymod = atoi(s2);
+	     anymod = i2;
 	     break;
 	  case CONFIG_ANYBUT:
 	  case ACLASS_ANYBUT:
-	     anybut = atoi(s2);
+	     anybut = i2;
 	     break;
 	  case CONFIG_BUTTON:
 	  case ACLASS_BUT:
-	     but = atoi(s2);
+	     but = i2;
 	     break;
 	  case CONFIG_ANYKEY:
 	  case ACLASS_ANYKEY:
-	     anykey = atoi(s2);
+	     anykey = i2;
 	     break;
 	  case ACLASS_KEY:
-	     if (key)
-		Efree(key);
-	     key = Estrdup(s2);
+	     STRCPY(key, s2);
 	     break;
 	  case ACLASS_EVENT_TRIGGER:
-	     event = atoi(s2);
+	     event = i2;
 	     break;
 	  case CONFIG_NEXT:
 	     mod = 0;
@@ -480,28 +458,22 @@ AclassConfigLoad(FILE * fs)
 				    key, action_tooltipstring);
 		  /* the correct place to grab an action key */
 		  _EFREE(action_tooltipstring);
-		  _EFREE(key);
+		  key[0] = '\0';
 		  if (global)
 		     GrabActionKey(aa);
 		  ActionclassAddAction(ac, aa);
 		  first = 0;
 	       }
-	     ActionAddTo(aa, s + len2);
+	     ActionAddTo(aa, p2);
 	     break;
 	  case CONFIG_ACTION_TOOLTIP:
-	     action_tooltipstring =
-		Estrdupcat2(action_tooltipstring, "\n", s + len2);
+	     action_tooltipstring = Estrdupcat2(action_tooltipstring, "\n", p2);
 	     break;
 	  case CONFIG_TOOLTIP:
-	     aclass_tooltipstring =
-		Estrdupcat2(aclass_tooltipstring, "\n", s + len2);
+	     aclass_tooltipstring = Estrdupcat2(aclass_tooltipstring, "\n", p2);
 	     break;
 	  default:
-	     RecoverUserConfig();
-	     Alert(_("Warning: unable to determine what to do with\n"
-		     "the following text in the middle of current "
-		     "ActionClass definition:\n"
-		     "%s\nWill ignore and continue...\n"), s);
+	     ConfigParseError("ActionClass", s);
 	     break;
 	  }
      }
@@ -512,7 +484,6 @@ AclassConfigLoad(FILE * fs)
  done:
    _EFREE(aclass_tooltipstring);
    _EFREE(action_tooltipstring);
-   _EFREE(key);
 
    return err;
 }
@@ -915,15 +886,23 @@ ActionclassSetTooltipString(ActionClass * ac, const char *tts)
    _EFDUP(ac->tooltipstring, tts);
 }
 
-void
-ActionclassIncRefcount(ActionClass * ac)
+ActionClass        *
+ActionclassAlloc(const char *name)
 {
+   ActionClass        *ac;
+
+   if (!name || !name[0])
+      return NULL;
+
+   ac = ActionclassFind(name);
    if (ac)
       ac->ref_count++;
+
+   return ac;
 }
 
 void
-ActionclassDecRefcount(ActionClass * ac)
+ActionclassFree(ActionClass * ac)
 {
    if (ac)
       ac->ref_count--;

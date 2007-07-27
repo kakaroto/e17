@@ -35,9 +35,6 @@ struct _ecursor
    char               *file;
    Cursor              cursor;
    unsigned int        ref_count;
-#if 0				/* Not used */
-   char                inroot;
-#endif
 };
 
 static Ecore_List  *cursor_list = NULL;
@@ -105,9 +102,6 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
    ec->file = Estrdup(image);
    ec->cursor = curs;
    ec->ref_count = 0;
-#if 0				/* Not used */
-   ec->inroot = 0;
-#endif
 
    if (!cursor_list)
       cursor_list = ecore_list_new();
@@ -146,7 +140,31 @@ _ECursorMatchName(const void *data, const void *match)
 ECursor            *
 ECursorFind(const char *name)
 {
+   if (!name || !name[0])
+      return NULL;
    return (ECursor *) ecore_list_find(cursor_list, _ECursorMatchName, name);
+}
+
+ECursor            *
+ECursorAlloc(const char *name)
+{
+   ECursor            *ec;
+
+   if (!name)
+      return NULL;
+
+   ec = ECursorFind(name);
+   if (ec)
+      ec->ref_count++;
+
+   return ec;
+}
+
+void
+ECursorFree(ECursor * ec)
+{
+   if (ec)
+      ec->ref_count--;
 }
 
 static int
@@ -156,35 +174,17 @@ ECursorConfigLoad(FILE * fs)
    XColor              xclr, xclr2;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
+   char               *p2;
    int                 i1, i2, r, g, b;
-   char               *file = NULL, *name = NULL;
+   char                name[FILEPATH_LEN_MAX], *pname;
+   char                file[FILEPATH_LEN_MAX], *pfile;
    int                 native_id = -1;
-   int                 fields;
+
+   pname = pfile = NULL;
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
-
-	if (fields < 1)
-	  {
-	     i1 = CONFIG_INVALID;
-	  }
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-		  continue;
-	       }
-	  }
-
+	i1 = ConfigParseline1(s, s2, &p2, NULL);
 	switch (i1)
 	  {
 	  case CONFIG_CURSOR:
@@ -194,12 +194,11 @@ ECursorConfigLoad(FILE * fs)
 		goto done;
 	     ESetColor(&xclr, 0, 0, 0);
 	     ESetColor(&xclr2, 255, 255, 255);
-	     _EFREE(file);
-	     _EFREE(name);
+	     pname = pfile = NULL;
 	     native_id = -1;
 	     break;
 	  case CONFIG_CLOSE:
-	     ECursorCreate(name, file, native_id, &xclr, &xclr2);
+	     ECursorCreate(pname, pfile, native_id, &xclr, &xclr2);
 	     err = 0;
 	     break;
 
@@ -209,23 +208,25 @@ ECursorConfigLoad(FILE * fs)
 		  SkipTillEnd(fs);
 		  goto done;
 	       }
-	     _EFDUP(name, s2);
+	     strcpy(name, s2);
+	     pname = name;
 	     break;
 	  case CURS_BG_RGB:
 	     r = g = b = 0;
-	     sscanf(s, "%4000s %d %d %d", s2, &r, &g, &b);
+	     sscanf(p2, "%d %d %d", &r, &g, &b);
 	     ESetColor(&xclr, r, g, b);
 	     break;
 	  case CURS_FG_RGB:
 	     r = g = b = 255;
-	     sscanf(s, "%4000s %d %d %d", s2, &r, &g, &b);
+	     sscanf(p2, "%d %d %d", &r, &g, &b);
 	     ESetColor(&xclr2, r, g, b);
 	     break;
 	  case XBM_FILE:
-	     _EFDUP(file, s2);
+	     strcpy(file, s2);
+	     pfile = file;
 	     break;
 	  case NATIVE_ID:
-	     sscanf(s, "%4000s %d", s2, &native_id);
+	     native_id = atoi(s2);
 	     break;
 	  default:
 	     break;
@@ -236,9 +237,6 @@ ECursorConfigLoad(FILE * fs)
    if (err)
       ConfigAlertLoad("Cursor");
 
-   _EFREE(name);
-   _EFREE(file);
-
    return err;
 }
 
@@ -248,10 +246,6 @@ ECursorApply(ECursor * ec, Win win)
    if (!ec)
       return;
    XDefineCursor(disp, WinGetXwin(win), ec->cursor);
-#if 0				/* Not used */
-   if (win == VRoot.xwin)
-      ec->inroot = 1;
-#endif
 }
 
 static              Cursor
@@ -259,39 +253,14 @@ ECursorGetByName(const char *name, const char *name2, unsigned int fallback)
 {
    ECursor            *ec;
 
-   ec = ECursorFind(name);
+   ec = ECursorAlloc(name);
    if (!ec && name2)
-      ec = ECursorFind(name2);
+      ec = ECursorAlloc(name2);
    if (ec)
-     {
-	ECursorIncRefcount(ec);
-	return ec->cursor;
-     }
+      return ec->cursor;
 
    return XCreateFontCursor(disp, fallback);
 }
-
-void
-ECursorIncRefcount(ECursor * ec)
-{
-   if (ec)
-      ec->ref_count++;
-}
-
-void
-ECursorDecRefcount(ECursor * ec)
-{
-   if (ec)
-      ec->ref_count--;
-}
-
-#if 0				/* Not used */
-static int
-ECursorGetRefcount(ECursor * ec)
-{
-   return (ec) ? ec->ref_count : 0;
-}
-#endif
 
 static Cursor       ECsrs[ECSR_COUNT];
 

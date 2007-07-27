@@ -30,9 +30,8 @@
 typedef void        (ButtonCbFunc) (EObj * eo, XEvent * ev, ActionClass * ac);
 
 /* buttons.c */
-Button             *ButtonCreate(const char *name, int id,
-				 ImageClass * ic,
-				 ActionClass * ac, TextClass * tc,
+Button             *ButtonCreate(const char *name, int id, const char *iclass,
+				 const char *aclass, const char *tclass,
 				 const char *label, char ontop, int flags,
 				 int minw, int maxw, int minh, int maxh, int xo,
 				 int yo, int xa, int xr, int ya, int yr,
@@ -44,8 +43,6 @@ void                ButtonShow(Button * b);
 void                ButtonHide(Button * b);
 void                ButtonMoveToCoord(Button * b, int x, int y);
 void                ButtonMoveRelative(Button * b, int dx, int dy);
-void                ButtonIncRefcount(Button * b);
-void                ButtonDecRefcount(Button * b);
 void                ButtonSwallowInto(Button * b, EObj * eo);
 void                ButtonSetCallback(Button * b, ButtonCbFunc * func,
 				      EObj * eo);

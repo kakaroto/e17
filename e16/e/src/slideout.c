@@ -405,35 +405,14 @@ SlideoutsConfigLoad(FILE * fs)
    int                 i1;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
-   char               *name = 0;
-   int                 fields;
+   char                name[FILEPATH_LEN_MAX];
 
    if (!slideout_list)
       slideout_list = ecore_list_new();
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
-
-	if (fields < 1)
-	  {
-	     i1 = CONFIG_INVALID;
-	  }
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-		  i1 = CONFIG_INVALID;
-	       }
-	  }
+	i1 = ConfigParseline1(s, s2, NULL, NULL);
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
@@ -441,24 +420,18 @@ SlideoutsConfigLoad(FILE * fs)
 		ecore_list_prepend(slideout_list, slideout);
 	     goto done;
 	  case CONFIG_CLASSNAME:
-	     if (name)
-		Efree(name);
-	     name = Estrdup(s2);
+	     strcpy(name, s2);
 	     break;
 	  case SLIDEOUT_DIRECTION:
 	     slideout = SlideoutCreate(name, (char)atoi(s2));
-	     if (name)
-		Efree(name);
 	     break;
 	  case CONFIG_BUTTON:
 	     SlideoutAddButton(slideout, ButtonFind(s2));
 	     break;
 	  default:
-	     Alert(_("Warning: unable to determine what to do with\n"
-		     "the following text in the middle of current Text "
-		     "definition:\n" "%s\nWill ignore and continue...\n"), s);
+	     ConfigParseError("Slideout", s);
+	     break;
 	  }
-
      }
    err = -1;
 

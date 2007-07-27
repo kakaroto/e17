@@ -38,8 +38,8 @@ void                ActionclassAddAction(ActionClass * ac, Action * aa);
 void                ActionclassSetTooltipString(ActionClass * ac,
 						const char *tts);
 ActionClass        *ActionclassFind(const char *name);
-void                ActionclassIncRefcount(ActionClass * ac);
-void                ActionclassDecRefcount(ActionClass * ac);
+ActionClass        *ActionclassAlloc(const char *name);
+void                ActionclassFree(ActionClass * ac);
 const char         *ActionclassGetName(ActionClass * ac);
 const char         *ActionclassGetTooltipString(ActionClass * ac);
 int                 ActionclassGetActionCount(ActionClass * ac);

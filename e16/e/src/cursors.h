@@ -42,9 +42,9 @@
 #define ECSR_COUNT         12
 
 ECursor            *ECursorFind(const char *name);
+ECursor            *ECursorAlloc(const char *name);
+void                ECursorFree(ECursor * ec);
 void                ECursorApply(ECursor * ec, Win win);
-void                ECursorIncRefcount(ECursor * ec);
-void                ECursorDecRefcount(ECursor * ec);
 Cursor              ECsrGet(int which);
 void                ECsrApply(int which, Window win);
 

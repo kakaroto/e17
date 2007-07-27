@@ -568,6 +568,8 @@ void                EspawnCmd(const char *cmd);
 /* config.c */
 void                SkipTillEnd(FILE * ConfigFile);
 char               *GetLine(char *s, int size, FILE * f);
+int                 ConfigParseline1(char *str, char *s2, char **p2, char **p3);
+void                ConfigParseError(const char *where, const char *line);
 void                ConfigAlertLoad(const char *txt);
 char               *FindFile(const char *file, const char *themepath,
 			     int localized);
@@ -578,7 +580,6 @@ int                 ConfigFileLoad(const char *name, const char *themepath,
 				   int (*parse) (FILE * fs), int preparse);
 int                 ConfigFileRead(FILE * fs);
 int                 ThemeConfigLoad(void);
-void                RecoverUserConfig(void);
 
 /* dialog.c */
 void                DialogOK(const char *title, const char *fmt, ...);

@@ -38,19 +38,19 @@
 #include "windowmatch.h"
 
 void
-SkipTillEnd(FILE * ConfigFile)
+SkipTillEnd(FILE * fs)
 {
    char                s[FILEPATH_LEN_MAX];
    int                 i1, i2, fields;
 
-   while (GetLine(s, sizeof(s), ConfigFile))
+   while (GetLine(s, sizeof(s), fs))
      {
 	i1 = i2 = 0;
 	fields = sscanf(s, "%i %i", &i1, &i2);
 	if (i1 == CONFIG_CLOSE)
 	   return;
 	if (i2 == CONFIG_OPEN)
-	   SkipTillEnd(ConfigFile);
+	   SkipTillEnd(fs);
      }
 }
 
@@ -170,10 +170,54 @@ GetLine(char *s, int size, FILE * f)
    return s;
 }
 
+int
+ConfigParseline1(char *str, char *s2, char **p2, char **p3)
+{
+   int                 i1, len1, len2, fields;
+
+   i1 = CONFIG_INVALID;
+   len1 = len2 = 0;
+   s2[0] = '\0';
+   fields = sscanf(str, "%i %n%4000s %n", &i1, &len1, s2, &len2);
+   if (p2)
+      *p2 = (len1) ? str + len1 : NULL;
+   if (p3)
+      *p3 = (len2) ? str + len2 : NULL;
+
+   if (fields <= 0)
+     {
+	i1 = CONFIG_INVALID;
+     }
+   else if (i1 == CONFIG_CLOSE || i1 == CONFIG_NEXT)
+     {
+	if (fields != 1)
+	  {
+	     Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), str);
+	  }
+     }
+   else if (i1 != CONFIG_INVALID)
+     {
+	if (fields != 2)
+	  {
+	     i1 = CONFIG_INVALID;
+	     Alert(_("CONFIG: missing required data in \"%s\"\n"), str);
+	  }
+     }
+
+   return i1;
+}
+
+void
+ConfigParseError(const char *where, const char *line)
+{
+   Alert(_("Warning: unable to determine what to do with\n"
+	   "the following text in the middle of current %s definition:\n"
+	   "%s\nWill ignore and continue...\n"), where, line);
+}
+
 void
 ConfigAlertLoad(const char *txt)
 {
-   RecoverUserConfig();
    Alert(_("Warning:  Configuration error in %s block.\n"
 	   "Outcome is likely not good.\n"), txt);
 }
@@ -235,7 +279,9 @@ ConfigFileRead(FILE * fs)
 	fields = sscanf(s, "%i %i", &i1, &i2);
 
 	if (fields < 1)
-	   i1 = CONFIG_INVALID;
+	  {
+	     i1 = CONFIG_INVALID;
+	  }
 	else if (i1 == CONFIG_VERSION)
 	  {
 	     if (fields == 2)
@@ -245,7 +291,6 @@ ConfigFileRead(FILE * fs)
 	  {
 	     if (fields != 1)
 	       {
-		  RecoverUserConfig();
 		  Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	       }
 	  }
@@ -253,8 +298,8 @@ ConfigFileRead(FILE * fs)
 	  {
 	     if (fields != 2)
 	       {
-		  RecoverUserConfig();
 		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
+		  i1 = CONFIG_INVALID;
 	       }
 	  }
 
@@ -584,27 +629,4 @@ ThemeConfigLoad(void)
    BordersSetupFallback();
 
    return 0;
-}
-
-void
-RecoverUserConfig(void)
-{
-   int                 save;
-
-   /* Don't save settings if we restart or quit */
-   save = Conf.autosave;
-   Conf.autosave = 0;
-
-   AlertX(_("Recover system config?"), _("Yes, Attempt recovery"),
-	  _("Restart and try again"), _("Quit and give up"),
-	  _
-	  ("Enlightenment has encountered parsing errors in your autosaved\n"
-	   "configuration.\n" "\n"
-	   "This may be due to filing system errors, Minor bugs or "
-	   "unforeseen\n" "system shutdowns.\n" "\n"
-	   "Do you wish Enlightenment to recover its original system\n"
-	   "configuration and try again?\n"));
-
-   /* Allow settings to be saved if we continue */
-   Conf.autosave = save;
 }

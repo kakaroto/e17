@@ -418,8 +418,10 @@ MenuItemCreate(const char *text, ImageClass * iclass,
    mi = ECALLOC(MenuItem, 1);
 
    mi->icon_iclass = iclass;
+#if 0
    if (iclass)
       ImageclassIncRefcount(iclass);
+#endif
 
    mi->text = (text) ? Estrdup((text[0]) ? text : "?!?") : NULL;
    mi->params = Estrdup(action_params);
@@ -620,8 +622,7 @@ MenuEmpty(Menu * m, int destroying)
 	   FreePmapMask(&(mi->pmm[j]));
 	if (!destroying && mi->win)
 	   EDestroyWindow(mi->win);
-	if (mi->icon_iclass)
-	   ImageclassDecRefcount(mi->icon_iclass);
+	ImageclassFree(mi->icon_iclass);
 	if (mi)
 	   Efree(mi);
      }
@@ -1777,36 +1778,17 @@ MenuMaskerHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 #include "conf.h"
 
 int
-MenuStyleConfigLoad(FILE * ConfigFile)
+MenuStyleConfigLoad(FILE * fs)
 {
    int                 err = 0;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 i1;
    MenuStyle          *ms = NULL;
-   int                 fields;
 
-   while (GetLine(s, sizeof(s), ConfigFile))
+   while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
-
-	if (fields < 1)
-	  {
-	     i1 = CONFIG_INVALID;
-	  }
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-		Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-	  }
-
+	i1 = ConfigParseline1(s, s2, NULL, NULL);
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
@@ -1815,24 +1797,16 @@ MenuStyleConfigLoad(FILE * ConfigFile)
 	     ms = MenuStyleCreate(s2);
 	     break;
 	  case CONFIG_TEXT:
-	     ms->tclass = TextclassFind(s2, 1);
-	     if (ms->tclass)
-		TextclassIncRefcount(ms->tclass);
+	     ms->tclass = TextclassAlloc(s2, 1);
 	     break;
 	  case MENU_BG_ICLASS:
-	     ms->bg_iclass = ImageclassFind(s2, 0);
-	     if (ms->bg_iclass)
-		ImageclassIncRefcount(ms->bg_iclass);
+	     ms->bg_iclass = ImageclassAlloc(s2, 1);
 	     break;
 	  case MENU_ITEM_ICLASS:
-	     ms->item_iclass = ImageclassFind(s2, 0);
-	     if (ms->item_iclass)
-		ImageclassIncRefcount(ms->item_iclass);
+	     ms->item_iclass = ImageclassAlloc(s2, 1);
 	     break;
 	  case MENU_SUBMENU_ICLASS:
-	     ms->sub_iclass = ImageclassFind(s2, 0);
-	     if (ms->sub_iclass)
-		ImageclassIncRefcount(ms->sub_iclass);
+	     ms->sub_iclass = ImageclassAlloc(s2, 1);
 	     break;
 	  case MENU_USE_ITEM_BACKGROUND:
 	     ms->use_item_bg = atoi(s2);
@@ -1840,7 +1814,7 @@ MenuStyleConfigLoad(FILE * ConfigFile)
 	       {
 		  if (ms->bg_iclass)
 		    {
-		       ImageclassDecRefcount(ms->bg_iclass);
+		       ImageclassFree(ms->bg_iclass);
 		       ms->bg_iclass = NULL;
 		    }
 	       }
@@ -1852,21 +1826,7 @@ MenuStyleConfigLoad(FILE * ConfigFile)
 	     ms->maxy = atoi(s2);
 	     break;
 	  case CONFIG_BORDER:
-	     {
-		/* FIXME!!!  I don't think this file is loaded in the
-		 * right order!
-		 */
-		Border             *b;
-
-		if (ms->border_name)
-		   Efree(ms->border_name);
-
-		ms->border_name = Estrdup(s2);
-
-		b = BorderFind(ms->border_name);
-		if (b)
-		   BorderIncRefcount(b);
-	     }
+	     _EFDUP(ms->border_name, s2);
 	     break;
 	  default:
 	     break;
@@ -1887,39 +1847,17 @@ MenuConfigLoad(FILE * fs)
    char                s3[FILEPATH_LEN_MAX];
    char                s4[FILEPATH_LEN_MAX];
    char                s5[FILEPATH_LEN_MAX];
+   char               *p2, *p3;
    char               *txt = NULL;
    const char         *params;
-   int                 i1, i2;
+   int                 i1, i2, len;
    Menu               *m = NULL, *mm;
    MenuItem           *mi;
    ImageClass         *ic = NULL;
-   int                 fields, len2, len;
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	len = 0;
-	fields = sscanf(s, "%i %n%4000s %n", &i1, &len2, s2, &len);
-
-	if (fields < 1)
-	  {
-	     i1 = CONFIG_INVALID;
-	  }
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-	       {
-		  Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-		  continue;
-	       }
-	  }
-
+	i1 = ConfigParseline1(s, s2, &p2, &p3);
 	switch (i1)
 	  {
 	  case CONFIG_MENU:
@@ -1936,7 +1874,7 @@ MenuConfigLoad(FILE * fs)
 	     break;
 
 	  case MENU_PREBUILT:
-	     sscanf(s, "%i %4000s %4000s %4000s %4000s", &i1, s2, s3, s4, s5);
+	     sscanf(p3, "%4000s %4000s %4000s", s3, s4, s5);
 	     m = MenusCreateInternal(s4, s2, s3, s5);
 	     break;
 	  case CONFIG_CLASSNAME:
@@ -1952,21 +1890,15 @@ MenuConfigLoad(FILE * fs)
 	     MenuSetStyle(m, MenuStyleFind(s2));
 	     break;
 	  case MENU_TITLE:
-	     MenuSetTitle(m, s + len2);
+	     MenuSetTitle(m, p2);
 	     break;
 	  case MENU_ITEM:
-#if 0				/* FIXME - Why ? */
-	     if ((txt) || (ic))
-	       {
-		  mi = MenuItemCreate(txt, ic, NULL, NULL);
-		  MenuAddItem(m, mi);
-	       }
-#endif
 	     ic = NULL;
 	     if (strcmp("NULL", s2))
 		ic = ImageclassFind(s2, 0);
-	     params = s + len;
-	     _EFDUP(txt, params);
+	     if (i2 <= 0)
+		break;
+	     _EFDUP(txt, p3);
 	     break;
 	  case MENU_ACTION:
 	     if ((txt) || (ic))
@@ -1977,13 +1909,12 @@ MenuConfigLoad(FILE * fs)
 		   * on your system before adding the menu entry */
 		  if (!strcmp(s2, "exec"))
 		    {
-		       sscanf(s + len, "%1000s", s3);
+		       sscanf(p3, "%1000s", s3);
 		       ok = path_canexec(s3);
 		    }
 		  if (ok)
 		    {
-		       params = s + len2;
-		       mi = MenuItemCreate(txt, ic, params, NULL);
+		       mi = MenuItemCreate(txt, ic, p2, NULL);
 		       MenuAddItem(m, mi);
 		    }
 		  ic = NULL;
@@ -1991,18 +1922,13 @@ MenuConfigLoad(FILE * fs)
 	       }
 	     break;
 	  case MENU_SUBMENU:
-	     len2 = 0;
-	     sscanf(s + len, "%4000s %n", s3, &len2);
+	     len = 0;
+	     sscanf(p3, "%s %n", s3, &len);
 	     ic = NULL;
 	     if (strcmp("NULL", s3))
 		ic = ImageclassFind(s3, 0);
 	     mm = MenuFind(s2, NULL);
-#if 0				/* FIXME - Remove? */
-	     /* if submenu empty - dont put it in - only if menu found */
-	     if (MenuIsEmpty(mm))
-		break;
-#endif
-	     mi = MenuItemCreate(s + len + len2, ic, NULL, mm);
+	     mi = MenuItemCreate(p3 + len, ic, NULL, mm);
 	     MenuAddItem(m, mi);
 	     break;
 	  default:

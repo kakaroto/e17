@@ -77,9 +77,10 @@ static void
 DeskControlsCreate(Desk * dsk)
 {
    char                s[512];
-   ActionClass        *ac, *ac2, *ac3;
-   ImageClass         *ic, *ic2, *ic3;
+   const char         *ic1, *ic2, *ic3;
+   char                ac1[64], ac2[64], ac3[64];
    Button             *b;
+   ActionClass        *ac;
    Action             *a;
    int                 x[3], y[3], w[3], h[3], m, n, o;
    const char         *t;
@@ -97,11 +98,10 @@ DeskControlsCreate(Desk * dsk)
    else if (Conf.desks.dragbar_length > VRoot.w)
       Conf.desks.dragbar_length = VRoot.w;
 
-   Esnprintf(s, sizeof(s), "DRAGBAR_DESKTOP_%i", dsk->num);
-   ac = ActionclassFind(s);
-   if (!ac)
+   Esnprintf(ac1, sizeof(ac1), "DRAGBAR_DESKTOP_%i", dsk->num);
+   if (!ActionclassFind(ac1))
      {
-	ac = ActionclassCreate(s, 0);
+	ac = ActionclassCreate(ac1, 0);
 	a = ActionCreate(EVENT_MOUSE_DOWN, 0, 0, 0, 1, 0, NULL, NULL);
 	ActionclassAddAction(ac, a);
 
@@ -139,50 +139,48 @@ DeskControlsCreate(Desk * dsk)
 	  }
      }
 
-   Esnprintf(s, sizeof(s), "RAISEBUTTON_DESKTOP_%i", dsk->num);
-   ac2 = ActionclassFind(s);
-   if (!ac2)
+   Esnprintf(ac2, sizeof(ac2), "RAISEBUTTON_DESKTOP_%i", dsk->num);
+   if (!ActionclassFind(ac2))
      {
-	ac2 = ActionclassCreate(s, 0);
+	ac = ActionclassCreate(ac2, 0);
 	a = ActionCreate(EVENT_MOUSE_UP, 1, 0, 1, 0, 0, NULL, NULL);
-	ActionclassAddAction(ac2, a);
+	ActionclassAddAction(ac, a);
 
 	Esnprintf(s, sizeof(s), "desk raise %i", dsk->num);
 	ActionAddTo(a, s);
 	t = _("Click here to raise this desktop\nto the top.\n");
-	ActionclassSetTooltipString(ac2, t);
+	ActionclassSetTooltipString(ac, t);
      }
 
-   Esnprintf(s, sizeof(s), "LOWERBUTTON_DESKTOP_%i", dsk->num);
-   ac3 = ActionclassFind(s);
-   if (!ac3)
+   Esnprintf(ac3, sizeof(ac3), "LOWERBUTTON_DESKTOP_%i", dsk->num);
+   if (!ActionclassFind(ac3))
      {
-	ac3 = ActionclassCreate(s, 0);
+	ac = ActionclassCreate(ac3, 0);
 	a = ActionCreate(EVENT_MOUSE_UP, 1, 0, 1, 0, 0, NULL, NULL);
-	ActionclassAddAction(ac3, a);
+	ActionclassAddAction(ac, a);
 
 	Esnprintf(s, sizeof(s), "desk lower %i", dsk->num);
 	ActionAddTo(a, s);
 	t = _("Click here to lower this desktop\nto the bottom.\n");
-	ActionclassSetTooltipString(ac3, t);
+	ActionclassSetTooltipString(ac, t);
      }
 
    if (Conf.desks.dragdir < 2)
      {
-	ic = ImageclassFind("DESKTOP_DRAGBUTTON_VERT", 0);
-	ic2 = ImageclassFind("DESKTOP_RAISEBUTTON_VERT", 0);
-	ic3 = ImageclassFind("DESKTOP_LOWERBUTTON_VERT", 0);
+	ic1 = "DESKTOP_DRAGBUTTON_VERT";
+	ic2 = "DESKTOP_RAISEBUTTON_VERT";
+	ic3 = "DESKTOP_LOWERBUTTON_VERT";
 #if 0
-	ic4 = ImageclassFind("DESKTOP_DESKRAY_VERT", 0);
+	ic4 = "DESKTOP_DESKRAY_VERT";
 #endif
      }
    else
      {
-	ic = ImageclassFind("DESKTOP_DRAGBUTTON_HORIZ", 0);
-	ic2 = ImageclassFind("DESKTOP_RAISEBUTTON_HORIZ", 0);
-	ic3 = ImageclassFind("DESKTOP_LOWERBUTTON_HORIZ", 0);
+	ic1 = "DESKTOP_DRAGBUTTON_HORIZ";
+	ic2 = "DESKTOP_RAISEBUTTON_HORIZ";
+	ic3 = "DESKTOP_LOWERBUTTON_HORIZ";
 #if 0
-	ic4 = ImageclassFind("DESKTOP_DESKRAY_HORIZ", 0);
+	ic4 = "DESKTOP_DESKRAY_HORIZ";
 #endif
      }
 
@@ -284,7 +282,7 @@ DeskControlsCreate(Desk * dsk)
 	b = ButtonCreate("_DESKTOP_DRAG_CONTROL", 1, ic3, ac3, NULL, NULL,
 			 -1, FLAG_FIXED, 1, 99999, 1, 99999, 0, 0, x[1], 0,
 			 y[1], 0, 0, w[1], 0, h[1], 0, dsk->num, 0);
-	b = ButtonCreate("_DESKTOP_DRAG_CONTROL", 1, ic, ac, NULL, NULL,
+	b = ButtonCreate("_DESKTOP_DRAG_CONTROL", 1, ic1, ac1, NULL, NULL,
 			 -1, FLAG_FIXED, 1, 99999, 1, 99999, 0, 0, x[2], 0,
 			 y[2], 0, 0, w[2], 0, h[2], 0, dsk->num, 0);
 	ButtonSetCallback(b, DeskButtonCallback, EoObj(dsk));
@@ -295,14 +293,14 @@ DeskControlsCreate(Desk * dsk)
      {
 	if (Conf.desks.dragdir == 0)
 	  {
-	     b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", 2, ic4, ac,
+	     b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", 2, ic4, ac1,
 			      NULL, NULL, 1, FLAG_FIXED_VERT, 1, 99999, 1,
 			      99999, 0, 0, EoGetX(dsk), 0, EoGetY(dsk),
 			      0, 0, 0, 0, 0, 1, 0, 1);
 	  }
 	else if (Conf.desks.dragdir == 1)
 	  {
-	     b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", 2, ic4, ac,
+	     b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", 2, ic4, ac1,
 			      NULL, NULL, 1, FLAG_FIXED_VERT, 1, 99999, 1,
 			      99999, 0, 0,
 			      EoGetX(dsk) + VRoot.w -
@@ -311,14 +309,14 @@ DeskControlsCreate(Desk * dsk)
 	  }
 	else if (Conf.desks.dragdir == 2)
 	  {
-	     b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", 2, ic4, ac,
+	     b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", 2, ic4, ac1,
 			      NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 			      99999, 0, 0, EoGetX(dsk), 0, EoGetY(dsk),
 			      0, 0, 0, 0, 0, 1, 0, 1);
 	  }
 	else
 	  {
-	     b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", 2, ic4, ac,
+	     b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", 2, ic4, ac1,
 			      NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 			      99999, 0, 0, EoGetX(dsk), 0,
 			      EoGetY(dsk) + VRoot.h - Conf.desks.dragbar_width,

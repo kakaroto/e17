@@ -1752,39 +1752,27 @@ ContainersConfigLoad(void)
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 i1, i2;
-   int                 fields;
-   Container          *ct;
+   Container          *ct, ct_dummy;
 
    Esnprintf(s, sizeof(s), "%s.ibox", EGetSavePrefix());
    fs = fopen(s, "r");
    if (!fs)
       return;
 
-   ct = NULL;
+   ct = &ct_dummy;
    while (fgets(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
-
-	if (fields < 1)
-	   i1 = CONFIG_INVALID;
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-
+	i1 = ConfigParseline1(s, s2, NULL, NULL);
+	i2 = atoi(s2);
 	switch (i1)
 	  {
 	  case CONFIG_IBOX:
 	     err = -1;
-	     i2 = atoi(s2);
 	     if (i2 != CONFIG_OPEN)
 		goto done;
 	     break;
 	  case CONFIG_CLOSE:
-	     ct = NULL;
+	     ct = &ct_dummy;
 	     err = 0;
 	     break;
 
@@ -1795,56 +1783,43 @@ ContainersConfigLoad(void)
 	     ct = ContainerCreate(s2);
 	     break;
 	  case TEXT_ORIENTATION:	/* __ORIENTATION [ __HORIZONTAL | __VERTICAL ] */
-	     if (ct)
-		ct->orientation = (char)atoi(s2);
+	     ct->orientation = i2;
 	     break;
 	  case CONFIG_TRANSPARENCY:	/* __TRANSPARENCY [ __ON | __OFF ] */
-	     if (ct)
-		ct->nobg = (char)atoi(s2);
+	     ct->nobg = i2;
 	     break;
 	  case CONFIG_SHOW_NAMES:	/* __SHOW_NAMES [ __ON | __OFF ] */
-	     if (ct)
-		ct->shownames = (char)atoi(s2);
+	     ct->shownames = i2;
 	     break;
 	  case CONFIG_ICON_SIZE:	/* __ICON_SIZE %i */
-	     if (ct)
-		ct->iconsize = (int)atoi(s2);
+	     ct->iconsize = i2;
 	     break;
 	  case CONFIG_ICON_MODE:	/* __ICON_MODE [ 0 | 1 | 2 | 3 | 4 ] */
-	     if (ct)
-		ct->icon_mode = (int)atoi(s2);
+	     ct->icon_mode = i2;
 	     break;
 	  case CONFIG_SCROLLBAR_SIDE:	/* __SCROLLBAR_SIDE [ __BAR_LEFT/__BAR_TOP | __BAR_RIGHT/__BAR_BOTTOM ] */
-	     if (ct)
-		ct->scrollbar_side = (char)atoi(s2);
+	     ct->scrollbar_side = i2;
 	     break;
 	  case CONFIG_SCROLLBAR_ARROWS:	/* __SCROLLBAR_ARROWS [ __START | __BOTH | __FINISH | __NEITHER ] */
-	     if (ct)
-		ct->arrow_side = (char)atoi(s2);
+	     ct->arrow_side = i2;
 	     break;
 	  case CONFIG_AUTOMATIC_RESIZE:	/* __AUTOMATIC_RESIZE [ __ON | __OFF ] */
-	     if (ct)
-		ct->auto_resize = (char)atoi(s2);
+	     ct->auto_resize = i2;
 	     break;
 	  case CONFIG_SHOW_ICON_BASE:	/* __SHOW_ICON_BASE [ __ON | __OFF ] */
-	     if (ct)
-		ct->draw_icon_base = (char)atoi(s2);
+	     ct->draw_icon_base = i2;
 	     break;
 	  case CONFIG_SCROLLBAR_AUTOHIDE:	/* __SCROLLBAR_AUTOHIDE [ __ON | __OFF ] */
-	     if (ct)
-		ct->scrollbar_hide = (char)atoi(s2);
+	     ct->scrollbar_hide = i2;
 	     break;
 	  case CONFIG_COVER_HIDE:	/* __COVER_HIDE [ __ON | __OFF ] */
-	     if (ct)
-		ct->cover_hide = (char)atoi(s2);
+	     ct->cover_hide = i2;
 	     break;
 	  case CONFIG_RESIZE_ANCHOR:	/* __RESIZE_ANCHOR 0-1024 */
-	     if (ct)
-		ct->auto_resize_anchor = atoi(s2);
+	     ct->auto_resize_anchor = i2;
 	     break;
 	  case CONFIG_IB_ANIMATE:	/* __ICONBOX_ANIMATE [ 0 | 1 | 2 ] */
-	     if (ct)
-		ct->anim_mode = atoi(s2);
+	     ct->anim_mode = i2;
 	     break;
 	  default:
 	     Eprintf("Warning: Iconbox configuration, ignoring: %s\n", s);

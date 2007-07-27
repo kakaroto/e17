@@ -253,13 +253,8 @@ DialogCreate(const char *name)
    d->win = ECreateClientWindow(VRoot.win, -20, -20, 2, 2);
    EventCallbackRegister(d->win, 0, DialogHandleEvents, d);
 
-   d->tclass = TextclassFind("DIALOG", 1);
-   if (d->tclass)
-      TextclassIncRefcount(d->tclass);
-
-   d->iclass = ImageclassFind("DIALOG", 1);
-   if (d->iclass)
-      ImageclassIncRefcount(d->iclass);
+   d->iclass = ImageclassAlloc("DIALOG", 1);
+   d->tclass = TextclassAlloc("DIALOG", 1);
 
    d->xu1 = d->yu1 = 99999;
    d->xu2 = d->yu2 = 0;
@@ -279,10 +274,8 @@ DialogDestroy(Dialog * d)
    DialogKeybindingsDestroy(d);
    if (d->item)
       DialogItemDestroy(d->item, 0);
-   if (d->iclass)
-      ImageclassDecRefcount(d->iclass);
-   if (d->tclass)
-      TextclassDecRefcount(d->tclass);
+   ImageclassFree(d->iclass);
+   TextclassFree(d->tclass);
 
    FreePmapMask(&(d->pmm_bg));
    EDestroyWindow(d->win);
@@ -367,13 +360,8 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
    db->clicked = 0;
    db->close = doclose;
 
-   db->tclass = TextclassFind("DIALOG_BUTTON", 1);
-   if (db->tclass)
-      TextclassIncRefcount(db->tclass);
-
-   db->iclass = ImageclassFind("DIALOG_BUTTON", 1);
-   if (db->iclass)
-      ImageclassIncRefcount(db->iclass);
+   db->tclass = TextclassAlloc("DIALOG_BUTTON", 1);
+   db->iclass = ImageclassAlloc("DIALOG_BUTTON", 1);
 
    TextSize(db->tclass, 0, 0, STATE_NORMAL, text, &w, &h, 17);
    pad = ImageclassGetPadding(db->iclass);
@@ -921,24 +909,6 @@ DialogItemSetCallback(DItem * di, DialogCallbackFunc * func, int val,
    di->data = data;
 }
 
-#if 0				/* Unused */
-void
-DialogItemSetClass(DItem * di, ImageClass * iclass, TextClass * tclass)
-{
-   if (di->iclass)
-      ImageclassDecRefcount(di->iclass);
-   di->iclass = iclass;
-   if (di->iclass)
-      ImageclassIncRefcount(di->iclass);
-
-   if (di->tclass)
-      TextclassDecRefcount(di->tclass);
-   di->tclass = tclass;
-   if (di->tclass)
-      TextclassIncRefcount(di->tclass);
-}
-#endif
-
 void
 DialogItemSetPadding(DItem * di, int left, int right, int top, int bottom)
 {
@@ -1027,15 +997,10 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	def = "DIALOG_WIDGET_BUTTON";
      }
 
-   if (!di->tclass)
-      di->tclass = TextclassFind(def, 1);
    if (!di->iclass)
-      di->iclass = ImageclassFind(def, 1);
-
-   if (di->tclass)
-      TextclassIncRefcount(di->tclass);
-   if (di->iclass)
-      ImageclassIncRefcount(di->iclass);
+      di->iclass = ImageclassAlloc(def, 1);
+   if (!di->tclass)
+      di->tclass = TextclassAlloc(def, 1);
 
    if (di->type == DITEM_TABLE)
      {
@@ -1071,20 +1036,16 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		     ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
 	EventCallbackRegister(di->item.slider.knob_win, 0, DItemHandleEvents,
 			      di);
+
 	if (!di->item.slider.ic_base)
 	  {
 	     if (di->item.slider.horizontal)
-	       {
-		  di->item.slider.ic_base =
-		     ImageclassFind("DIALOG_WIDGET_SLIDER_BASE_HORIZONTAL", 1);
-	       }
+		di->item.slider.ic_base =
+		   ImageclassAlloc("DIALOG_WIDGET_SLIDER_BASE_HORIZONTAL", 1);
 	     else
-	       {
-		  di->item.slider.ic_base =
-		     ImageclassFind("DIALOG_WIDGET_SLIDER_BASE_VERTICAL", 1);
-	       }
+		di->item.slider.ic_base =
+		   ImageclassAlloc("DIALOG_WIDGET_SLIDER_BASE_VERTICAL", 1);
 	  }
-
 	im = ImageclassGetImage(di->item.slider.ic_base, 0, 0, 0);
 	if (im)
 	  {
@@ -1092,25 +1053,16 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			   &di->item.slider.base_orig_h);
 	     EImageFree(im);
 	  }
-	if (di->item.slider.ic_base)
-	   ImageclassIncRefcount(di->item.slider.ic_base);
 
 	if (!di->item.slider.ic_knob)
 	  {
 	     if (di->item.slider.horizontal)
-	       {
-		  di->item.slider.ic_knob =
-		     ImageclassFind("DIALOG_WIDGET_SLIDER_KNOB_HORIZONTAL", 1);
-	       }
+		di->item.slider.ic_knob =
+		   ImageclassAlloc("DIALOG_WIDGET_SLIDER_KNOB_HORIZONTAL", 1);
 	     else
-	       {
-		  di->item.slider.ic_knob =
-		     ImageclassFind("DIALOG_WIDGET_SLIDER_KNOB_VERTICAL", 1);
-	       }
+		di->item.slider.ic_knob =
+		   ImageclassAlloc("DIALOG_WIDGET_SLIDER_KNOB_VERTICAL", 1);
 	  }
-	if (di->item.slider.ic_knob)
-	   ImageclassIncRefcount(di->item.slider.ic_knob);
-
 	im = ImageclassGetImage(di->item.slider.ic_knob, 0, 0, 0);
 	if (im)
 	  {
@@ -1118,34 +1070,27 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			   &di->item.slider.knob_orig_h);
 	     EImageFree(im);
 	  }
+
 	if (!di->item.slider.ic_border)
 	  {
 	     if (di->item.slider.horizontal)
-	       {
-		  di->item.slider.ic_border =
-		     ImageclassFind("DIALOG_WIDGET_SLIDER_BORDER_HORIZONTAL",
-				    0);
-	       }
+		di->item.slider.ic_border =
+		   ImageclassAlloc("DIALOG_WIDGET_SLIDER_BORDER_HORIZONTAL", 1);
 	     else
-	       {
-		  di->item.slider.ic_border =
-		     ImageclassFind("DIALOG_WIDGET_SLIDER_BORDER_VERTICAL", 0);
-	       }
+		di->item.slider.ic_border =
+		   ImageclassAlloc("DIALOG_WIDGET_SLIDER_BORDER_VERTICAL", 1);
 	  }
-	if (di->item.slider.ic_border)
+	im = ImageclassGetImage(di->item.slider.ic_border, 0, 0, 0);
+	if (im)
 	  {
-	     im = ImageclassGetImage(di->item.slider.ic_border, 0, 0, 0);
-	     if (im)
-	       {
-		  EImageGetSize(im, &di->item.slider.border_orig_w,
-				&di->item.slider.border_orig_h);
-		  EImageFree(im);
-		  di->item.slider.border_win =
-		     ECreateWindow(d->win, -20, -20, 2, 2, 0);
-		  EMapWindow(di->item.slider.border_win);
-	       }
-	     ImageclassIncRefcount(di->item.slider.ic_border);
+	     EImageGetSize(im, &di->item.slider.border_orig_w,
+			   &di->item.slider.border_orig_h);
+	     EImageFree(im);
+	     di->item.slider.border_win =
+		ECreateWindow(d->win, -20, -20, 2, 2, 0);
+	     EMapWindow(di->item.slider.border_win);
 	  }
+
 	pad = ImageclassGetPadding(di->item.slider.ic_base);
 	if (di->item.slider.horizontal)
 	  {
@@ -2109,12 +2054,9 @@ DialogItemDestroy(DItem * di, int clean)
 	EDestroyWindow(di->item.radio_button.radio_win);
 	break;
      case DITEM_SLIDER:
-	if (di->item.slider.ic_base)
-	   ImageclassDecRefcount(di->item.slider.ic_base);
-	if (di->item.slider.ic_knob)
-	   ImageclassDecRefcount(di->item.slider.ic_knob);
-	if (di->item.slider.ic_border)
-	   ImageclassDecRefcount(di->item.slider.ic_border);
+	ImageclassFree(di->item.slider.ic_base);
+	ImageclassFree(di->item.slider.ic_knob);
+	ImageclassFree(di->item.slider.ic_border);
 	if (!clean)
 	   break;
 	EDestroyWindow(di->item.slider.base_win);
@@ -2130,10 +2072,8 @@ DialogItemDestroy(DItem * di, int clean)
 
    if (clean && di->win)
       EDestroyWindow(di->win);
-   if (di->iclass)
-      ImageclassDecRefcount(di->iclass);
-   if (di->tclass)
-      TextclassDecRefcount(di->tclass);
+   ImageclassFree(di->iclass);
+   TextclassFree(di->tclass);
 
    Efree(di);
 }

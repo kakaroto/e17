@@ -104,8 +104,6 @@ DItem              *DialogAddItem(DItem * dii, int type);
 Dialog             *DialogItemGetDialog(DItem * di);
 void                DialogItemSetCallback(DItem * di, DialogCallbackFunc * func,
 					  int val, void *data);
-void                DialogItemSetClass(DItem * di, ImageClass * ic,
-				       TextClass * tclass);
 void                DialogItemSetPadding(DItem * di, int left, int right,
 					 int top, int bottom);
 void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);

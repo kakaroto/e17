@@ -375,16 +375,26 @@ ImageclassDestroy(ImageClass * ic)
 #endif
 }
 
-void
-ImageclassIncRefcount(ImageClass * ic)
+ImageClass         *
+ImageclassAlloc(const char *name, int fallback)
 {
-   ic->ref_count++;
+   ImageClass         *ic;
+
+   if (!name || !name[0])
+      return NULL;
+
+   ic = ImageclassFind(name, fallback);
+   if (ic)
+      ic->ref_count++;
+
+   return ic;
 }
 
 void
-ImageclassDecRefcount(ImageClass * ic)
+ImageclassFree(ImageClass * ic)
 {
-   ic->ref_count--;
+   if (ic)
+      ic->ref_count--;
 }
 
 const char         *
@@ -408,20 +418,16 @@ _ImageclassMatchName(const void *data, const void *match)
 ImageClass         *
 ImageclassFind(const char *name, int fallback)
 {
-   ImageClass         *ic;
+   ImageClass         *ic = NULL;
 
    if (name)
-     {
-	ic =
-	   (ImageClass *) ecore_list_find(iclass_list, _ImageclassMatchName,
+      ic = (ImageClass *) ecore_list_find(iclass_list, _ImageclassMatchName,
 					  name);
-	if (ic || !fallback)
-	   return ic;
-     }
+   if (ic || !fallback)
+      return ic;
 
-   ic =
-      (ImageClass *) ecore_list_find(iclass_list, _ImageclassMatchName,
-				     "__FALLBACK_ICLASS");
+   ic = (ImageClass *) ecore_list_find(iclass_list, _ImageclassMatchName,
+				       "__FALLBACK_ICLASS");
 
    return ic;
 }
@@ -526,7 +532,6 @@ ImageclassConfigLoad(FILE * fs)
    int                 i1;
    ImageClass         *ic = NULL;
    ImageState         *ICToRead = NULL;
-   int                 fields;
    int                 l, r, t, b;
 
 #if ENABLE_COLOR_MODIFIERS
@@ -535,42 +540,24 @@ ImageclassConfigLoad(FILE * fs)
 
    while (GetLine(s, sizeof(s), fs))
      {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-	fields = sscanf(s, "%i %4000s", &i1, s2);
-
-	if (fields < 1)
-	   i1 = CONFIG_INVALID;
-	else if (i1 == CONFIG_CLOSE)
-	  {
-	     if (fields != 1)
-		Alert(_("CONFIG: ignoring extra data in \"%s\"\n"), s);
-	  }
-	else if (i1 != CONFIG_INVALID)
-	  {
-	     if (fields != 2)
-		Alert(_("CONFIG: missing required data in \"%s\"\n"), s);
-	  }
-
+	i1 = ConfigParseline1(s, s2, NULL, NULL);
 	switch (i1)
 	  {
 	  case CONFIG_CLOSE:
 	     ImageclassPopulate(ic);
 	     goto done;
 	  case ICLASS_LRTB:
-	     {
-		ICToRead->border = EMALLOC(EImageBorder, 1);
+	     ICToRead->border = EMALLOC(EImageBorder, 1);
 
-		l = r = t = b = 0;
-		sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
-		ICToRead->border->left = l;
-		ICToRead->border->right = r;
-		ICToRead->border->top = t;
-		ICToRead->border->bottom = b;
-		/* Hmmm... imlib2 works better with this */
-		ICToRead->border->right++;
-		ICToRead->border->bottom++;
-	     }
+	     l = r = t = b = 0;
+	     sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
+	     ICToRead->border->left = l;
+	     ICToRead->border->right = r;
+	     ICToRead->border->top = t;
+	     ICToRead->border->bottom = b;
+	     /* Hmmm... imlib2 works better with this */
+	     ICToRead->border->right++;
+	     ICToRead->border->bottom++;
 	     break;
 	  case ICLASS_FILLRULE:
 	     ICToRead->pixmapfillstyle = atoi(s2);
@@ -612,14 +599,12 @@ ImageclassConfigLoad(FILE * fs)
 #endif
 	     break;
 	  case ICLASS_PADDING:
-	     {
-		l = r = t = b = 0;
-		sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
-		ic->padding.left = l;
-		ic->padding.right = r;
-		ic->padding.top = t;
-		ic->padding.bottom = b;
-	     }
+	     l = r = t = b = 0;
+	     sscanf(s, "%*s %i %i %i %i", &l, &r, &t, &b);
+	     ic->padding.left = l;
+	     ic->padding.right = r;
+	     ic->padding.top = t;
+	     ic->padding.bottom = b;
 	     break;
 	  case CONFIG_CLASSNAME:
 	  case ICLASS_NAME:
@@ -713,10 +698,7 @@ ImageclassConfigLoad(FILE * fs)
 	     ICToRead = ic->sticky_active.disabled;
 	     break;
 	  default:
-	     Alert(_("Warning: unable to determine what to do with\n"
-		     "the following text in the middle of current "
-		     "ImageClass definition:\n"
-		     "%s\nWill ignore and continue...\n"), s);
+	     ConfigParseError("ImageClass", s);
 	     break;
 	  }
      }

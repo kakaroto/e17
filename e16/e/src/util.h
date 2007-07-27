@@ -54,6 +54,8 @@
 #define _EFREE(p)    do { if (p) { Efree(p); p = NULL; } } while (0)
 #define _EFDUP(p, s) do { if (p) Efree(p); p = Estrdup(s); } while (0)
 
+#define STRCPY(dst, src) do { src[sizeof(dst)-1] = '\0'; strcpy(dst, src); } while(0)
+
 char               *Estrtrim(char *s);
 
 char               *Estrdup(const char *s);
