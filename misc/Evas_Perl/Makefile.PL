@@ -1,9 +1,9 @@
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
-$libs = `evas-config --libs`;
+$libs = `pkg-config evas --libs`;
 chomp($libs);
-$incs = `evas-config --cflags`;
+$incs = `pkg-config evas --cflags`;
 chomp($incs);
 
 WriteMakefile(
