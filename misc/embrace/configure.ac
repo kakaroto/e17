@@ -95,8 +95,6 @@ AC_ARG_WITH(imap,
 AM_CONDITIONAL(BUILD_IMAP, test x$build_imap = xyes)
 
 PKG_CHECK_MODULES(XML, libxml-2.0, have_xml=yes, have_xml=no)
-AC_SUBST(XML_CFLAGS)
-AC_SUBST(XML_LIBS)
 
 AC_ARG_WITH(sylpheed,
 	[  --with-sylpheed         build the sylpheed plugin (default: yes)],
@@ -104,20 +102,14 @@ AC_ARG_WITH(sylpheed,
 
 AM_CONDITIONAL(BUILD_SYLPHEED, test x$build_sylpheed = xyes)
 
-AC_PATH_GENERIC(ecore, , ,
-	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
-
-AC_PATH_GENERIC(edb, , ,
-	AC_MSG_ERROR(Cannot find edb: Is edb-config in path?))
-
-AC_PATH_GENERIC(evas, , ,
-	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
-
-AC_PATH_GENERIC(edje, , ,
-	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
-
-AC_PATH_GENERIC(esmart, , ,
-	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
+PKG_CHECK_MODULES(EMBRACE,
+	   ecore
+	   edb
+	   evas
+	   edje
+	   esmart_container
+	   esmart_draggies
+	   esmart_trans_x11)
 
 AC_CHECK_LIB(ltdl, lt_dlopen, ,
 	AC_MSG_ERROR(Cannot find libltdl))
@@ -127,20 +119,6 @@ AC_CHECK_HEADERS(ltdl.h, ,
 
 DL_LIBS=-lltdl
 AC_SUBST(DL_LIBS)
-
-have_e17="no"
-AC_PATH_GENERIC(enlightenment, 0.16.999, [
-	have_e17="yes"
-	AC_DEFINE(HAVE_E17, [], [Development Enlightenment WindowManager Support])
-
-	MODULE_ARCH="$host_os-$host_cpu"
-	AC_SUBST(MODULE_ARCH)
-	AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
-
-	e_module_dir=`enlightenment-config --module-dir`
-	AC_SUBST(e_module_dir) ],
-	)
-AM_CONDITIONAL(BUILD_MODULE, test x$have_e17 = xyes)
 
 AC_CONFIG_FILES([
 Makefile
@@ -168,10 +146,6 @@ AC_OUTPUT
 
 echo
 echo "$PACKAGE $VERSION"
-echo
-echo
-echo "Build e17 module......: $have_e17"
-echo
 echo
 echo "Plugins"
 echo

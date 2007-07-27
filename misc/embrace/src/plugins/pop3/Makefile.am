@@ -3,10 +3,7 @@
 if BUILD_POP3
 
 AM_CFLAGS = -I$(top_srcdir)/src/include \
-            @EDB_CFLAGS@   \
-            @EVAS_CFLAGS@  \
-            @ECORE_CFLAGS@ \
-            @EDJE_CFLAGS@
+            @EMBRACE_CFLAGS@
 
 plugin_LTLIBRARIES = libpop3.la
 plugindir = @PLUGIN_DIR@

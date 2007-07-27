@@ -2,11 +2,7 @@
 
 AM_CFLAGS = -I. \
 	    -I$(top_srcdir)/src/include \
-            @EDB_CFLAGS@    \
-            @EVAS_CFLAGS@   \
-            @ECORE_CFLAGS@ \
-            @EDJE_CFLAGS@ \
-	    @ESMART_CFLAGS@
+	    @EMBRACE_CFLAGS@
 
 noinst_LTLIBRARIES = libembrace.la
 
