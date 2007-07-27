@@ -14,8 +14,9 @@ AC_PROG_INSTALL
 
 AC_HEADER_STDC
 
-PKG_CHECK_MODULES(EMBRACE,
+PKG_CHECK_MODULES(ENTHRALL,
 	   ecore
+	   ecore-x
 	   imlib2
 	   theora)
 
