@@ -16,17 +16,25 @@ static void _elitaire_card_fade_in             (Evas_Object* card);
 static Elitaire_Card_Job *	_elitaire_card_job_new(Evas_Object * card);
 static void _elitaire_card_job_timer_add(Elitaire_Job_List * list, void * data, int (*func)(void*));
 
-static Evas_Bool _elitaire_card_job_slide      (Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_del_chain  (Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_flip       (Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_dragged    (Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_dragged    (Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_drag       (Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_drop       (Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_wait_mouse (Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_wait_time  (Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_fade_in    (Elitaire_Job_List * list, void * data);
-static Evas_Bool _elitaire_card_job_fade_out   (Elitaire_Job_List * list, void * data);
+static Evas_Bool _elitaire_card_job_slide(Elitaire_Job_List * list, 
+                                                                void * data);
+static Evas_Bool _elitaire_card_job_del_chain(Elitaire_Job_List * list, 
+                                                                void * data);
+static Evas_Bool _elitaire_card_job_flip(Elitaire_Job_List * list, void * data);
+static Evas_Bool _elitaire_card_job_dragged(Elitaire_Job_List * list, 
+                                                                void * data);
+static Evas_Bool _elitaire_card_job_dragged(Elitaire_Job_List * list, 
+                                                                void * data);
+static Evas_Bool _elitaire_card_job_drag(Elitaire_Job_List * list, void * data);
+static Evas_Bool _elitaire_card_job_drop(Elitaire_Job_List * list, void * data);
+static Evas_Bool _elitaire_card_job_wait_mouse(Elitaire_Job_List * list, 
+                                                                void * data);
+static Evas_Bool _elitaire_card_job_wait_time(Elitaire_Job_List * list, 
+                                                                void * data);
+static Evas_Bool _elitaire_card_job_fade_in(Elitaire_Job_List * list, 
+                                                                void * data);
+static Evas_Bool _elitaire_card_job_fade_out(Elitaire_Job_List * list, 
+                                                                void * data);
 
 /*** callbacks ***/
 static int _elitaire_card_slide_cb             (void * data);
@@ -37,13 +45,13 @@ static int _elitaire_card_drop_cb              (void * data);
 static int _elitaire_card_wait_cb              (void * data);
 static int _elitaire_card_fade_in_cb           (void * data);
 static int _elitaire_card_fade_out_cb          (void * data);
-//static int _elitaire_card_wait_time_cb	       (void * data);
 static int _elitaire_card_wait_time_cb	       (void * data);
 
 /* ****************************************************************************
  * external API 
  * ****************************************************************************/
-void elitaire_card_chain_del(Evas_Object * card)
+void 
+elitaire_card_chain_del(Evas_Object * card)
 {
     Elitaire_Card_Job * job;
     Elitaire_Card * ecard;
@@ -54,7 +62,8 @@ void elitaire_card_chain_del(Evas_Object * card)
 		    				ELITAIRE_JOB_SYNC_WAIT, job);
 }
 
-void elitaire_card_slide(Evas_Object * card, Evas_Coord x, Evas_Coord y)
+void 
+elitaire_card_slide(Evas_Object * card, Evas_Coord x, Evas_Coord y)
 {
     Elitaire_Card_Job * job;
     Elitaire_Card * ecard;
@@ -73,7 +82,8 @@ void elitaire_card_slide(Evas_Object * card, Evas_Coord x, Evas_Coord y)
     if (!ecard->eli->shadow) _elitaire_card_drop(card);
 }
 
-void elitaire_card_flip(Evas_Object * card)
+void 
+elitaire_card_flip(Evas_Object * card)
 {
     Elitaire_Card_Job * job;
     Elitaire_Card * ecard;
@@ -89,7 +99,8 @@ void elitaire_card_flip(Evas_Object * card)
     if (!ecard->eli->shadow) _elitaire_card_drop(card);
 }
 
-void elitaire_card_dragged(Evas_Object * card)
+void 
+elitaire_card_dragged(Evas_Object * card)
 {
     Elitaire_Card_Job * job;
     Evas * e;
@@ -113,7 +124,8 @@ void elitaire_card_dragged(Evas_Object * card)
     if (!ecard->eli->shadow) _elitaire_card_drop(card);
 }
 
-void elitaire_card_fade(Evas_Object * card)
+void 
+elitaire_card_fade(Evas_Object * card)
 {
     _elitaire_card_fade_out(card);
     _elitaire_card_fade_wait(card);
@@ -121,7 +133,8 @@ void elitaire_card_fade(Evas_Object * card)
     elitaire_card_chain_del(card);
 }
 
-void elitaire_card_wait(Evas_Object * card, int t)
+void 
+elitaire_card_wait(Evas_Object * card, int t)
 {
     Elitaire_Card_Job * job;
     Elitaire_Card * ecard;
@@ -141,7 +154,8 @@ void elitaire_card_wait(Evas_Object * card, int t)
  * ***************************************************************************/
 
 /* allocate memory */
-static Elitaire_Card_Job * _elitaire_card_job_new(Evas_Object * card)
+static Elitaire_Card_Job * 
+_elitaire_card_job_new(Evas_Object * card)
 {
     Elitaire_Card_Job * job;
 
@@ -154,7 +168,8 @@ static Elitaire_Card_Job * _elitaire_card_job_new(Evas_Object * card)
     return job;
 }
 
-static double _elitaire_card_job_frametime_get(Elitaire_Card_Job * job)
+static double 
+_elitaire_card_job_frametime_get(Elitaire_Card_Job * job)
 {
     double ft;
 
@@ -176,7 +191,8 @@ static double _elitaire_card_job_frametime_get(Elitaire_Card_Job * job)
     return ft;
 }
 
-Evas_Bool elitaire_card_job_del_cb(Elitaire_Job_List * list, void * data)
+Evas_Bool 
+elitaire_card_job_del_cb(Elitaire_Job_List * list, void * data)
 {
     Elitaire_Card_Job * job;
 
@@ -193,7 +209,8 @@ Evas_Bool elitaire_card_job_del_cb(Elitaire_Job_List * list, void * data)
     return 1;
 }
 
-Evas_Bool elitaire_card_job_clean_up(Elitaire_Job_List * list, void * data)
+Evas_Bool 
+elitaire_card_job_clean_up(Elitaire_Job_List * list, void * data)
 {
     Elitaire_Card * ecard;
     Evas_Object * card;
@@ -211,7 +228,8 @@ Evas_Bool elitaire_card_job_clean_up(Elitaire_Job_List * list, void * data)
     return 0;
 }
 
-static void _elitaire_card_job_timer_add(Elitaire_Job_List * list, void * data,
+static void 
+_elitaire_card_job_timer_add(Elitaire_Job_List * list, void * data,
                                   int (*func) (void *))
 {
     Elitaire_Card_Job * job;
@@ -220,13 +238,15 @@ static void _elitaire_card_job_timer_add(Elitaire_Job_List * list, void * data,
     job->timer = ecore_animator_add(func, data);
 }
 
-static Evas_Bool _elitaire_card_job_slide(Elitaire_Job_List * list, void * data)
+static Evas_Bool 
+_elitaire_card_job_slide(Elitaire_Job_List * list, void * data)
 {
     _elitaire_card_job_timer_add(list, data, _elitaire_card_slide_cb);
     return 0;
 }
 
-static Evas_Bool _elitaire_card_job_del_chain(Elitaire_Job_List * list, void * data)
+static Evas_Bool 
+_elitaire_card_job_del_chain(Elitaire_Job_List * list, void * data)
 {
     Elitaire_Card_Job * job;
 
@@ -236,7 +256,8 @@ static Evas_Bool _elitaire_card_job_del_chain(Elitaire_Job_List * list, void * d
     return 1;
 }
 
-static Evas_Bool _elitaire_card_job_flip(Elitaire_Job_List * list, void * data)
+static Evas_Bool 
+_elitaire_card_job_flip(Elitaire_Job_List * list, void * data)
 {
     Elitaire_Card_Job * job;
     Evas_Object * image;
@@ -254,13 +275,15 @@ static Evas_Bool _elitaire_card_job_flip(Elitaire_Job_List * list, void * data)
     return 0;
 }
 
-static Evas_Bool _elitaire_card_job_dragged(Elitaire_Job_List * list, void * data)
+static Evas_Bool 
+_elitaire_card_job_dragged(Elitaire_Job_List * list, void * data)
 {
     _elitaire_card_job_timer_add(list, data, _elitaire_card_dragged_cb);
     return 0;
 }
 
-static Evas_Bool _elitaire_card_job_drag(Elitaire_Job_List * list, void * data)
+static Evas_Bool 
+_elitaire_card_job_drag(Elitaire_Job_List * list, void * data)
 {
     int fr;
     Elitaire_Card * ecard;
@@ -286,7 +309,8 @@ static Evas_Bool _elitaire_card_job_drag(Elitaire_Job_List * list, void * data)
     return 0;
 }
 
-static Evas_Bool _elitaire_card_job_drop(Elitaire_Job_List * list, void * data)
+static Evas_Bool 
+_elitaire_card_job_drop(Elitaire_Job_List * list, void * data)
 {
     int fr;
     Elitaire_Card * ecard;
@@ -308,13 +332,15 @@ static Evas_Bool _elitaire_card_job_drop(Elitaire_Job_List * list, void * data)
     return 0;
 }
 
-static Evas_Bool _elitaire_card_job_wait_mouse(Elitaire_Job_List * list, void * data)
+static Evas_Bool 
+_elitaire_card_job_wait_mouse(Elitaire_Job_List * list, void * data)
 {
     _elitaire_card_job_timer_add(list, data, _elitaire_card_wait_cb);
     return 0;
 }
 
-static Evas_Bool _elitaire_card_job_wait_time(Elitaire_Job_List * list, void * data)
+static Evas_Bool 
+_elitaire_card_job_wait_time(Elitaire_Job_List * list, void * data)
 {
     int fr;
     Elitaire_Card * ecard;
@@ -331,13 +357,15 @@ static Evas_Bool _elitaire_card_job_wait_time(Elitaire_Job_List * list, void * d
     return 0;
 }
 
-static Evas_Bool _elitaire_card_job_fade_in(Elitaire_Job_List * list, void * data)
+static Evas_Bool 
+_elitaire_card_job_fade_in(Elitaire_Job_List * list, void * data)
 {
     _elitaire_card_job_timer_add(list, data, _elitaire_card_fade_in_cb);
     return 0;
 }
 
-static Evas_Bool _elitaire_card_job_fade_out(Elitaire_Job_List * list, void * data)
+static Evas_Bool 
+_elitaire_card_job_fade_out(Elitaire_Job_List * list, void * data)
 {
     _elitaire_card_job_timer_add(list, data, _elitaire_card_fade_out_cb);
     return 0;
@@ -346,7 +374,8 @@ static Evas_Bool _elitaire_card_job_fade_out(Elitaire_Job_List * list, void * da
 /* ***************************************************************************
  *  other internals
  * ***************************************************************************/
-static void _elitaire_card_shadow_on(Evas_Object * card)
+static void 
+_elitaire_card_shadow_on(Evas_Object * card)
 {
     Elitaire_Card * data = NULL;
 
@@ -375,7 +404,8 @@ static void _elitaire_card_shadow_on(Evas_Object * card)
     }
 }
 
-static void _elitaire_card_shadow_off(Evas_Object * card)
+static void 
+_elitaire_card_shadow_off(Evas_Object * card)
 {
     Elitaire_Card * data = NULL;
 
@@ -387,7 +417,8 @@ static void _elitaire_card_shadow_off(Evas_Object * card)
     }
 }
 
-static void _elitaire_card_drag(Evas_Object * card)
+static void 
+_elitaire_card_drag(Evas_Object * card)
 {
     Elitaire_Card_Job * job;
     Elitaire_Card * ecard;
@@ -395,10 +426,12 @@ static void _elitaire_card_drag(Evas_Object * card)
     ecard = (Elitaire_Card *) evas_object_smart_data_get(card);
 
     job = _elitaire_card_job_new(card);
-    elitaire_job_add(ecard->jobs, _elitaire_card_job_drag, ELITAIRE_JOB_SYNC_ALLOW, job);
+    elitaire_job_add(ecard->jobs, _elitaire_card_job_drag, 
+                                                ELITAIRE_JOB_SYNC_ALLOW, job);
 }
 
-static void _elitaire_card_drop(Evas_Object * card)
+static void 
+_elitaire_card_drop(Evas_Object * card)
 {
     Elitaire_Card_Job * job;
     Elitaire_Card * ecard;
@@ -406,10 +439,12 @@ static void _elitaire_card_drop(Evas_Object * card)
     ecard = (Elitaire_Card *) evas_object_smart_data_get(card);
 
     job = _elitaire_card_job_new(card);
-    elitaire_job_add(ecard->jobs, _elitaire_card_job_drop, ELITAIRE_JOB_SYNC_ALLOW, job);
+    elitaire_job_add(ecard->jobs, _elitaire_card_job_drop, 
+                                                ELITAIRE_JOB_SYNC_ALLOW, job);
 }
 
-static void _elitaire_card_fade_out(Evas_Object * card)
+static void 
+_elitaire_card_fade_out(Evas_Object * card)
 {
     Elitaire_Card_Job * job;
     Elitaire_Card * ecard;
@@ -418,10 +453,12 @@ static void _elitaire_card_fade_out(Evas_Object * card)
 
     job = _elitaire_card_job_new(card);
     job->x.i = 256;
-    elitaire_job_add(ecard->jobs, _elitaire_card_job_fade_out, ELITAIRE_JOB_SYNC_NEXT_WAIT, job);
+    elitaire_job_add(ecard->jobs, _elitaire_card_job_fade_out, 
+                                            ELITAIRE_JOB_SYNC_NEXT_WAIT, job);
 }
 
-static void _elitaire_card_fade_wait(Evas_Object * card)
+static void 
+_elitaire_card_fade_wait(Evas_Object * card)
 {
     Elitaire_Card_Job * job;
     Elitaire_Card * ecard;
@@ -430,10 +467,12 @@ static void _elitaire_card_fade_wait(Evas_Object * card)
 
     job = _elitaire_card_job_new(card);
     job->x.i = 2;
-    elitaire_job_add(ecard->jobs, _elitaire_card_job_wait_mouse, ELITAIRE_JOB_SYNC_WAIT, job);
+    elitaire_job_add(ecard->jobs, _elitaire_card_job_wait_mouse, 
+                                            ELITAIRE_JOB_SYNC_WAIT, job);
 }
 
-static void _elitaire_card_fade_in(Evas_Object * card)
+static void 
+_elitaire_card_fade_in(Evas_Object * card)
 {
     Elitaire_Card_Job * job;
     Elitaire_Card * ecard;
@@ -442,13 +481,15 @@ static void _elitaire_card_fade_in(Evas_Object * card)
 
     job = _elitaire_card_job_new(card);
     job->x.i = 30;
-    elitaire_job_add(ecard->jobs, _elitaire_card_job_fade_in, ELITAIRE_JOB_SYNC_ALLOW, job);
+    elitaire_job_add(ecard->jobs, _elitaire_card_job_fade_in, 
+                                            ELITAIRE_JOB_SYNC_ALLOW, job);
 }
 
 /* ***************************************************************************
  * callbacks
  * ***************************************************************************/
-static int _elitaire_card_slide_cb(void * data)
+static int 
+_elitaire_card_slide_cb(void * data)
 {
     Elitaire_Card_Job * job;
     Evas_Object * card;
@@ -494,7 +535,8 @@ static int _elitaire_card_slide_cb(void * data)
     return 1;
 }
 
-static int _elitaire_card_flip_cb(void * data)
+static int 
+_elitaire_card_flip_cb(void * data)
 {
     Elitaire_Card_Job * job;
     Evas_Object * card, * image, * shadow;
@@ -549,7 +591,8 @@ static int _elitaire_card_flip_cb(void * data)
     return 1;
 }
 
-static int _elitaire_card_dragged_cb(void * data)
+static int 
+_elitaire_card_dragged_cb(void * data)
 {
     Elitaire_Card_Job * job;
     Evas_Object * card;
@@ -596,7 +639,8 @@ static int _elitaire_card_dragged_cb(void * data)
     return 1;
 }
 
-static int _elitaire_card_drag_cb(void * data)
+static int 
+_elitaire_card_drag_cb(void * data)
 {
     Elitaire_Card_Job * job;
     Elitaire_Card * eli_card;
@@ -642,7 +686,8 @@ static int _elitaire_card_drag_cb(void * data)
     return 1;
 }
 
-static int _elitaire_card_drop_cb(void * data)
+static int 
+_elitaire_card_drop_cb(void * data)
 {
     Elitaire_Card_Job * job;
     Evas_Object * card = NULL;
@@ -688,7 +733,8 @@ static int _elitaire_card_drop_cb(void * data)
     return 1;
 }
 
-static int _elitaire_card_wait_cb(void * data)
+static int 
+_elitaire_card_wait_cb(void * data)
 {
     Evas * evas;
     Elitaire_Card_Job * job;
@@ -706,7 +752,8 @@ static int _elitaire_card_wait_cb(void * data)
     }
 }
 
-static int _elitaire_card_fade_in_cb(void * data)
+static int 
+_elitaire_card_fade_in_cb(void * data)
 {
     Elitaire_Card_Job * job;
     Evas_Object * card;
@@ -731,7 +778,8 @@ static int _elitaire_card_fade_in_cb(void * data)
     }
 }
 
-static int _elitaire_card_fade_out_cb(void * data)
+static int 
+_elitaire_card_fade_out_cb(void * data)
 {
     Elitaire_Card_Job * job;
     Evas_Object * card;
@@ -756,7 +804,8 @@ static int _elitaire_card_fade_out_cb(void * data)
     }
 }
 
-static int _elitaire_card_wait_time_cb(void * data)
+static int 
+_elitaire_card_wait_time_cb(void * data)
 {
     Elitaire_Card_Job * job;
     Evas_Object * card;
