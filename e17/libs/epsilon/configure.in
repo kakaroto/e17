@@ -63,7 +63,6 @@ PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
 PKG_CHECK_MODULES(ECORE, [
     ecore-evas >= 0.9.9
     ecore-file >= 0.9.9
-    ecore-con >= 0.9.9
     ecore-ipc >= 0.9.9
   ]
 )
