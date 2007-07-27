@@ -71,8 +71,6 @@ entrance_auth_new(void)
    Entrance_Auth *e;
 
    e = (Entrance_Auth *) calloc(1, sizeof(struct _Entrance_Auth));
-   e->env = (char **) malloc(sizeof(char *) * 2);
-   e->env[0] = 0;
    return (e);
 }
 
@@ -124,7 +122,6 @@ entrance_auth_free(Entrance_Auth * e)
 
    memset(e->user, 0, sizeof(e->user));
    memset(e->pass, 0, sizeof(e->pass));
-   if (e->env) free(e->env);
    e->env = NULL;
    entrance_auth_session_end(e);
    free(e);
