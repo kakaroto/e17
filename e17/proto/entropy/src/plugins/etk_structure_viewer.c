@@ -171,6 +171,8 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   event_file_core *event;
   Etk_Tree_Col* col;
   Etk_Tree_Row* parent;
+  char* thumbnail_filename;
+  char* thumbnail_key;
 
   viewer = instance->data;
   parent = (Etk_Tree_Row*)viewer->parent_visual;
@@ -178,13 +180,16 @@ structure_viewer_add_row (entropy_gui_component_instance * instance,
   col = etk_tree_nth_col_get(ETK_TREE(parent->tree), 0);
   etk_tree_freeze(ETK_TREE(viewer->tree));
 
+  /* [TODO] Make ETK_STOCK_BIG changable from options */
+  thumbnail_filename= etk_theme_icon_path_get();
+  thumbnail_key = etk_stock_key_get(ETK_STOCK_PLACES_FOLDER, ETK_STOCK_BIG);
   
   if (!prow) {
 	  new_row = etk_tree_row_append( ((Etk_Tree_Row*)viewer->parent_visual)->tree, (Etk_Tree_Row*)viewer->parent_visual, col,
-			  PACKAGE_DATA_DIR "/icons/folder.png", NULL, _(file->filename), NULL);
+      thumbnail_filename, thumbnail_key, _(file->filename), NULL);
   } else {
 	  new_row = etk_tree_row_append( ((Etk_Tree_Row*)prow)->tree, (Etk_Tree_Row*)prow, col, 
-			  PACKAGE_DATA_DIR "/icons/folder.png", NULL, _(file->filename), NULL);
+      thumbnail_filename, thumbnail_key, _(file->filename), NULL);
   }
 
   ecore_hash_set(instance_map_hash, new_row, instance);
