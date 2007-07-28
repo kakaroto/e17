@@ -48,7 +48,7 @@ evfs_server_data(void *data, int type, void *event)
    if ((e = (Ecore_Ipc_Event_Server_Data *) event))
      {
 	/*Check if it's bound to us..*/
-	if (!ecore_hash_get(evfs_session_servers, e->data)) return 1;
+	if (!ecore_hash_get(evfs_session_servers, e->server)) return 1;
 	     
         /*Special case, if it's an id notify, we can't really id the client without it */
 
@@ -227,7 +227,7 @@ evfs_connect(void (*callback_func) (evfs_event *, void *), void *obj)
         goto retry;
 
      } else {
-	     ecore_hash_set(evfs_session_servers, connection, (int*)1);
+	     ecore_hash_set(evfs_session_servers, connection->server, (int*)1);
      }
 
    return connection;
