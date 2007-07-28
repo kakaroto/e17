@@ -979,7 +979,7 @@ _e_traverse_packing_xml(Enhance *en, E_Widget *widget)
 	     if (!strcmp("x_options", str))
 	       packing->x_options = strdup("");
 	     if (!strcmp("y_options", str))
-	       packing->x_options = strdup("");
+	       packing->y_options = strdup("");
 	  }
      }
    while((tag = exml_next_nomove(xml)) != NULL);
