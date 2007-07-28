@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-07-22 22:51+0200\n"
+"POT-Creation-Date: 2007-07-28 11:22+0200\n"
 "PO-Revision-Date: 2007-07-24 23:02+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -46,43 +46,12 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:651 src/buttons.c:193
-#: src/cmclass.c:84 src/cursors.c:127 src/iclass.c:357 src/tclass.c:97
-#: src/tooltips.c:141
+#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:651 src/buttons.c:184
+#: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:357 src/tclass.c:97
+#: src/tooltips.c:134
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u 参照残っています。\n"
-
-#: src/aclass.c:294 src/backgrounds.c:1150 src/borders.c:1101
-#: src/borders.c:1224 src/buttons.c:714 src/cmclass.c:202 src/config.c:249
-#: src/container.c:1775 src/cursors.c:177 src/iclass.c:547 src/menus.c:1802
-#: src/menus.c:1912 src/slideout.c:427 src/tclass.c:258 src/tooltips.c:177
-#: src/windowmatch.c:160
-#, c-format
-msgid "CONFIG: ignoring extra data in \"%s\"\n"
-msgstr "CONFIG: \"%s\" にある余分なデータは無視します。\n"
-
-#: src/aclass.c:302 src/backgrounds.c:1158 src/borders.c:1107
-#: src/borders.c:1230 src/buttons.c:722 src/cmclass.c:210 src/config.c:257
-#: src/cursors.c:183 src/iclass.c:552 src/menus.c:1807 src/menus.c:1918
-#: src/slideout.c:433 src/tclass.c:264 src/tooltips.c:183
-#: src/windowmatch.c:165
-#, c-format
-msgid "CONFIG: missing required data in \"%s\"\n"
-msgstr "CONFIG: \"%s\" に必要なデータが含まれていません。\n"
-
-#: src/aclass.c:501
-#, c-format
-msgid ""
-"Warning: unable to determine what to do with\n"
-"the following text in the middle of current ActionClass definition:\n"
-"%s\n"
-"Will ignore and continue...\n"
-msgstr ""
-"警告。現在の ActionClass に定義されている以下の文字列の\n"
-"処理方法が決定できません。\n"
-"%s\n"
-"無視して処理を継続します...\n"
 
 #: src/actions.c:90
 #, c-format
@@ -203,7 +172,7 @@ msgstr "Enlightenment 再起動"
 msgid "Quit Enlightenment"
 msgstr "Enlightenment 終了"
 
-#: src/backgrounds.c:1638
+#: src/backgrounds.c:1613
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -214,11 +183,11 @@ msgstr ""
 "名前: %s\n"
 "ファイル: %s\n"
 
-#: src/backgrounds.c:1639
+#: src/backgrounds.c:1614
 msgid "-NONE-"
 msgstr "なし"
 
-#: src/backgrounds.c:1819 src/backgrounds.c:1821
+#: src/backgrounds.c:1794 src/backgrounds.c:1796
 msgid ""
 "No\n"
 "Background"
@@ -226,40 +195,40 @@ msgstr ""
 "背景\n"
 "なし"
 
-#: src/backgrounds.c:1915 src/backgrounds.c:2344
+#: src/backgrounds.c:1890 src/backgrounds.c:2319
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "%2i:%02i:%02i 後に使用されていない背景を解放する"
 
-#: src/backgrounds.c:2130
+#: src/backgrounds.c:2105
 msgid "Use background image"
 msgstr "背景に画像を使用する"
 
-#: src/backgrounds.c:2134
+#: src/backgrounds.c:2109
 msgid "Keep aspect on scale"
 msgstr "縦横のサイズ比を保つ"
 
-#: src/backgrounds.c:2138
+#: src/backgrounds.c:2113
 msgid "Tile image across background"
 msgstr "背景画像をタイル状に配置"
 
-#: src/backgrounds.c:2147
+#: src/backgrounds.c:2122
 msgid "Move to Front\n"
 msgstr "先頭へ移動\n"
 
-#: src/backgrounds.c:2152
+#: src/backgrounds.c:2127
 msgid "Duplicate\n"
 msgstr "コピー\n"
 
-#: src/backgrounds.c:2156
+#: src/backgrounds.c:2131
 msgid "Unlist\n"
 msgstr "背景リストから消去\n"
 
-#: src/backgrounds.c:2161
+#: src/backgrounds.c:2136
 msgid "Delete File\n"
 msgstr "背景ファイルを削除\n"
 
-#: src/backgrounds.c:2172
+#: src/backgrounds.c:2147
 msgid ""
 "Background\n"
 "Image\n"
@@ -273,81 +242,68 @@ msgstr ""
 "\n"
 "方向\n"
 
-#: src/backgrounds.c:2229
+#: src/backgrounds.c:2204
 msgid "BG Colour\n"
 msgstr "背景の色\n"
 
-#: src/backgrounds.c:2234
+#: src/backgrounds.c:2209
 msgid "Red:\n"
 msgstr "赤:\n"
 
-#: src/backgrounds.c:2245
+#: src/backgrounds.c:2220
 msgid "Green:\n"
 msgstr "緑:\n"
 
-#: src/backgrounds.c:2256
+#: src/backgrounds.c:2231
 msgid "Blue:\n"
 msgstr "青:\n"
 
-#: src/backgrounds.c:2289
+#: src/backgrounds.c:2264
 msgid "Pre-scan BG's"
 msgstr "背景をスキャン"
 
-#: src/backgrounds.c:2297
+#: src/backgrounds.c:2272
 msgid "Sort by File"
 msgstr "ファイル名でソート"
 
-#: src/backgrounds.c:2302
+#: src/backgrounds.c:2277
 msgid "Sort by Attr."
 msgstr "属性でソート"
 
-#: src/backgrounds.c:2308
+#: src/backgrounds.c:2283
 msgid "Sort by Image"
 msgstr "画像名でソート"
 
-#: src/backgrounds.c:2328
+#: src/backgrounds.c:2303
 msgid "Use dithering in Hi-Colour"
 msgstr "ハイカラー時にディザリングする"
 
-#: src/backgrounds.c:2332
+#: src/backgrounds.c:2307
 msgid "Background overrides theme"
 msgstr "背景はテーマを上書きする"
 
-#: src/backgrounds.c:2337
+#: src/backgrounds.c:2312
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 "一般の背景透過手法に合わせてE16の背景透過機能を補正する (速度低下の可能性あ"
 "り)"
 
 #
-#: src/backgrounds.c:2361 src/mod-trans.c:193
+#: src/backgrounds.c:2336 src/mod-trans.c:193
 msgid "Background"
 msgstr "背景"
 
-#: src/backgrounds.c:2362
+#: src/backgrounds.c:2337
 msgid "Desktop Background Settings"
 msgstr "デスクトップ背景の設定"
 
-#: src/backgrounds.c:2365
+#: src/backgrounds.c:2340
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
 msgstr ""
 "Enlightenment デスクトップ\n"
 "背景設定ダイアログ\n"
-
-#: src/cmclass.c:331
-#, c-format
-msgid ""
-"Warning: unable to determine what to do with\n"
-"the following text in the middle of current  ColorModifier definition:\n"
-"%s\n"
-"Will ignore and continue...\n"
-msgstr ""
-"警告。現在の ColorModifier に定義されている以下の文字列の\n"
-"処理方法が決定できません。\n"
-"%s\n"
-"無視して処理を継続します。...\n"
 
 #: src/comms.c:241
 msgid "E IPC Error"
@@ -370,7 +326,30 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:177
+#: src/config.c:195 src/config.c:294
+#, c-format
+msgid "CONFIG: ignoring extra data in \"%s\"\n"
+msgstr "CONFIG: \"%s\" にある余分なデータは無視します。\n"
+
+#: src/config.c:203 src/config.c:301
+#, c-format
+msgid "CONFIG: missing required data in \"%s\"\n"
+msgstr "CONFIG: \"%s\" に必要なデータが含まれていません。\n"
+
+#: src/config.c:213
+#, fuzzy, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current %s definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Warning: 設定ファイルの Extras 定義部分の途中に出てきた次の文字列を\n"
+"どうしたらいいか決定できません :\n"
+"%s\n"
+"無視して次に行きます...\n"
+
+#: src/config.c:221
 #, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
@@ -379,19 +358,19 @@ msgstr ""
 "警告。%s ブロックに設定エラーがあります。\n"
 "出力はおそらくおかしくなっていると思います。\n"
 
-#: src/config.c:265
+#: src/config.c:310
 msgid "Theme versioning ERROR"
 msgstr "テーマのバージョンエラー"
 
-#: src/config.c:266
+#: src/config.c:311
 msgid "Restart with Defaults"
 msgstr "デフォルトの設定で再起動"
 
-#: src/config.c:267
+#: src/config.c:312
 msgid "Abort and Exit"
 msgstr "無視して終了"
 
-#: src/config.c:268
+#: src/config.c:313
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -425,50 +404,16 @@ msgstr ""
 "このテーマで利用している機能が新しい Enlightenment の機能なのに、\n"
 "Enlightenment がしばらく更新されていないためかもしれません。\n"
 
-#: src/config.c:563
+#: src/config.c:605
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 起動中..."
-
-#: src/config.c:598
-msgid "Recover system config?"
-msgstr "システムの設定の復旧をしますか？"
-
-#: src/config.c:598
-msgid "Yes, Attempt recovery"
-msgstr "はい、復旧を試みます"
-
-#: src/config.c:599
-msgid "Restart and try again"
-msgstr "再起動してもう一度試します"
-
-#: src/config.c:599
-msgid "Quit and give up"
-msgstr "あきらめて終了します"
-
-#: src/config.c:601
-msgid ""
-"Enlightenment has encountered parsing errors in your autosaved\n"
-"configuration.\n"
-"\n"
-"This may be due to filing system errors, Minor bugs or unforeseen\n"
-"system shutdowns.\n"
-"\n"
-"Do you wish Enlightenment to recover its original system\n"
-"configuration and try again?\n"
-msgstr ""
-"自動保存された設定の解析中にエラーが発生しました。\n"
-"\n"
-"原因として、ファイルシステムのエラー、隠れたバグ、あるいはシステムが突然\n"
-"シャットダウンされたことが考えられます。\n"
-"\n"
-"オリジナルのシステム設定に戻して再試行しますか？\n"
 
 #
 #: src/container.c:1230
 msgid "Settings..."
 msgstr "設定"
 
-#: src/container.c:1234 src/dialog.c:899 src/pager.c:999 config/strings.c:30
+#: src/container.c:1234 src/dialog.c:887 src/pager.c:999 config/strings.c:30
 #: config/strings.c:131
 msgid "Close"
 msgstr "閉じる"
@@ -619,7 +564,7 @@ msgstr ""
 "マウスの中ボタンをクリックすれば、実行中のアプリ\n"
 "ケーションがすべて一覧で表示されます。\n"
 
-#: src/desktops.c:152
+#: src/desktops.c:151
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -627,7 +572,7 @@ msgstr ""
 "ここをクリックするとこのデスクトップが\n"
 "上に出ます。\n"
 
-#: src/desktops.c:166
+#: src/desktops.c:164
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -635,68 +580,68 @@ msgstr ""
 "ここをクリックするとこのデスクトップが\n"
 "下に移ります。\n"
 
-#: src/desktops.c:2293 src/desktops.c:2332
+#: src/desktops.c:2290 src/desktops.c:2329
 #, c-format
 msgid "%i Desktops"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2295 src/desktops.c:2334
+#: src/desktops.c:2292 src/desktops.c:2331
 #, c-format
 msgid "%i Desktop"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2327
+#: src/desktops.c:2324
 msgid "Number of virtual desktops:\n"
 msgstr "仮想デスクトップの枚数:\n"
 
-#: src/desktops.c:2356
+#: src/desktops.c:2353
 msgid "Slide desktops around when changing"
 msgstr "デスクトップ間を移動する時にスライドする"
 
 #
-#: src/desktops.c:2362
+#: src/desktops.c:2359
 msgid "Desktop Slide speed:\n"
 msgstr "デスクトップのスライド速度\n"
 
 #
-#: src/desktops.c:2376
+#: src/desktops.c:2373
 msgid "Wrap desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2381
 msgid "Display desktop dragbar"
 msgstr "デスクトップにドラッグバーを表示する"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2387
 msgid "Drag bar position:"
 msgstr "ドラッグバーの位置"
 
-#: src/desktops.c:2394
+#: src/desktops.c:2391
 msgid "Top"
 msgstr "上"
 
-#: src/desktops.c:2400
+#: src/desktops.c:2397
 msgid "Bottom"
 msgstr "下"
 
-#: src/desktops.c:2406 src/pager.c:1909 src/pager.c:1934 src/pager.c:1959
+#: src/desktops.c:2403 src/pager.c:1909 src/pager.c:1934 src/pager.c:1959
 msgid "Left"
 msgstr "左"
 
-#: src/desktops.c:2412 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2409 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Right"
 msgstr "右"
 
 #
-#: src/desktops.c:2420 src/menus-misc.c:713
+#: src/desktops.c:2417 src/menus-misc.c:713
 msgid "Desks"
 msgstr "マルチデスクトップ"
 
-#: src/desktops.c:2421
+#: src/desktops.c:2418
 msgid "Multiple Desktop Settings"
 msgstr "マルチデスクトップの設定"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2421
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -704,7 +649,7 @@ msgstr ""
 "Enlightenment マルチデスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:2503 src/desktops.c:2538
+#: src/desktops.c:2500 src/desktops.c:2535
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -713,7 +658,7 @@ msgstr ""
 "%i x %i\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2506 src/desktops.c:2541
+#: src/desktops.c:2503 src/desktops.c:2538
 msgid ""
 "1\n"
 "Screen in size"
@@ -721,43 +666,43 @@ msgstr ""
 "1\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2534
+#: src/desktops.c:2531
 msgid "Virtual Desktop size:\n"
 msgstr "仮想デスクトップの大きさ\n"
 
-#: src/desktops.c:2575
+#: src/desktops.c:2572
 msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2582
+#: src/desktops.c:2579
 msgid "Edge Flip Mode:"
 msgstr "マウスカーソルによるデスクトップの切り替え"
 
-#: src/desktops.c:2585
+#: src/desktops.c:2582
 msgid "Off"
 msgstr "無効"
 
-#: src/desktops.c:2590
+#: src/desktops.c:2587
 msgid "On"
 msgstr "有効"
 
-#: src/desktops.c:2595
+#: src/desktops.c:2592
 msgid "Only when moving window"
 msgstr "ウィンドウ移動時のみ切り替える"
 
-#: src/desktops.c:2601
+#: src/desktops.c:2598
 msgid "Resistance at edge of screen:\n"
 msgstr "画面の端に達した時の移動抵抗値\n"
 
-#: src/desktops.c:2613
+#: src/desktops.c:2610
 msgid "Areas"
 msgstr "デスクトップサイズ"
 
-#: src/desktops.c:2614
+#: src/desktops.c:2611
 msgid "Virtual Desktop Settings"
 msgstr "仮想デスクトップ設定"
 
-#: src/desktops.c:2617
+#: src/desktops.c:2614
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -765,16 +710,16 @@ msgstr ""
 "Enlightenment 仮想デスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/dialog.c:887 src/dialog.c:2179 src/dialog.c:2210 src/events.c:84
+#: src/dialog.c:875 src/dialog.c:2119 src/dialog.c:2150 src/events.c:84
 #: src/handlers.c:194 src/sound.c:313
 msgid "OK"
 msgstr "了解"
 
-#: src/dialog.c:892
+#: src/dialog.c:880
 msgid "Apply"
 msgstr "適用"
 
-#: src/dialog.c:2210
+#: src/dialog.c:2150
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
@@ -1220,19 +1165,6 @@ msgstr "セレクションエラー"
 msgid "Could not acquire selection: %s"
 msgstr "セレクション %s を獲得できませんでした"
 
-#: src/iclass.c:716
-#, c-format
-msgid ""
-"Warning: unable to determine what to do with\n"
-"the following text in the middle of current ImageClass definition:\n"
-"%s\n"
-"Will ignore and continue...\n"
-msgstr ""
-"警告。現在の ImageClass に定義されている以下の文字列の\n"
-"処理方法が決定できません。\n"
-"%s\n"
-"無視して処理を継続します...\n"
-
 #: src/iconify.c:470
 msgid "Iconbox Options"
 msgstr "アイコンボックスオプション"
@@ -1393,30 +1325,30 @@ msgstr "このグループをアイコン化する"
 msgid "Group %i"
 msgstr "グループ %i"
 
-#: src/menus.c:2114
+#: src/menus.c:2040
 msgid "Animated display of menus"
 msgstr "メニューをアニメーション表示する"
 
-#: src/menus.c:2119
+#: src/menus.c:2045
 msgid "Always pop up menus on screen"
 msgstr "メニューが画面からはみ出る場合は必ず収まるようにメニューを動かす"
 
-#: src/menus.c:2124
+#: src/menus.c:2050
 msgid "Warp pointer after moving menus"
 msgstr "マウスポインタはメニューの移動に追随する"
 
 #
-#: src/menus.c:2130
+#: src/menus.c:2056
 msgid "Menus"
 msgstr "メニュー"
 
 #
-#: src/menus.c:2131
+#: src/menus.c:2057
 msgid "Menu Settings"
 msgstr "メニューの設定"
 
 #
-#: src/menus.c:2134
+#: src/menus.c:2060
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"
@@ -2012,18 +1944,6 @@ msgstr ""
 "あります。X11 以降のサーバーだとすると、そのサーバーは Enlightenment の\n"
 "作者が利用してもいないし、今まで聞いたこともないサーバーです。\n"
 
-#: src/slideout.c:457 src/tclass.c:459
-#, c-format
-msgid ""
-"Warning: unable to determine what to do with\n"
-"the following text in the middle of current Text definition:\n"
-"%s\n"
-"Will ignore and continue...\n"
-msgstr ""
-"警告。現在の Text 定義にある以下の文字列の処理方法が決定できません。\n"
-"%s\n"
-"無視して処理を継続します...\n"
-
 #: src/snaps.c:743
 msgid "Title:"
 msgstr "タイトル"
@@ -2285,60 +2205,34 @@ msgstr ""
 " %s/themes/\n"
 "にもテーマが見つかりません。このまま進めてもほとんど無意味です。\n"
 
-#: src/tooltips.c:230
-#, c-format
-msgid ""
-"Warning: unable to determine what to do with\n"
-"the following text in the middle of current ToolTip definition:\n"
-"%s\n"
-"Will ignore and continue...\n"
-msgstr ""
-"警告。現在の ToolTip に定義されている以下の文字列の処理方法が\n"
-"決定できません。\n"
-"%s\n"
-"無視して処理を継続します...\n"
-
-#: src/tooltips.c:890
+#: src/tooltips.c:860
 msgid "Display Tooltips"
 msgstr "ツールチップを表示する"
 
-#: src/tooltips.c:895
+#: src/tooltips.c:865
 msgid "Display Root Window Tips"
 msgstr "ルートウィンドウのツールチップを表示する"
 
-#: src/tooltips.c:900
+#: src/tooltips.c:870
 msgid "Tooltip Delay:\n"
 msgstr "ツールチップが表示されるまでの時間\n"
 
 #
-#: src/tooltips.c:911
+#: src/tooltips.c:881
 msgid "Tooltips"
 msgstr "ツールチップ"
 
-#: src/tooltips.c:912
+#: src/tooltips.c:882
 msgid "Tooltip Settings"
 msgstr "ツールチップの設定"
 
-#: src/tooltips.c:915
+#: src/tooltips.c:885
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
 msgstr ""
 "Enlightenment ツールチップ\n"
 "設定ダイアログ\n"
-
-#: src/windowmatch.c:300
-#, c-format
-msgid ""
-"Warning: unable to determine what to do with\n"
-"the following text in the middle of current WindowMatch definition:\n"
-"%s\n"
-"Will ignore and continue...\n"
-msgstr ""
-"警告。現在の WindowMatch に定義されている以下の文字列の処理方法が\n"
-"決定できません。\n"
-"%s\n"
-"無視して処理を継続します...\n"
 
 #: config/strings.c:5
 msgid ""
@@ -2971,6 +2865,100 @@ msgstr "その他"
 #: config/strings.c:197
 msgid "Enlightenment Epplets"
 msgstr "Enlightenment Epplets"
+
+#~ msgid ""
+#~ "Warning: unable to determine what to do with\n"
+#~ "the following text in the middle of current ActionClass definition:\n"
+#~ "%s\n"
+#~ "Will ignore and continue...\n"
+#~ msgstr ""
+#~ "警告。現在の ActionClass に定義されている以下の文字列の\n"
+#~ "処理方法が決定できません。\n"
+#~ "%s\n"
+#~ "無視して処理を継続します...\n"
+
+#~ msgid ""
+#~ "Warning: unable to determine what to do with\n"
+#~ "the following text in the middle of current  ColorModifier definition:\n"
+#~ "%s\n"
+#~ "Will ignore and continue...\n"
+#~ msgstr ""
+#~ "警告。現在の ColorModifier に定義されている以下の文字列の\n"
+#~ "処理方法が決定できません。\n"
+#~ "%s\n"
+#~ "無視して処理を継続します。...\n"
+
+#~ msgid "Recover system config?"
+#~ msgstr "システムの設定の復旧をしますか？"
+
+#~ msgid "Yes, Attempt recovery"
+#~ msgstr "はい、復旧を試みます"
+
+#~ msgid "Restart and try again"
+#~ msgstr "再起動してもう一度試します"
+
+#~ msgid "Quit and give up"
+#~ msgstr "あきらめて終了します"
+
+#~ msgid ""
+#~ "Enlightenment has encountered parsing errors in your autosaved\n"
+#~ "configuration.\n"
+#~ "\n"
+#~ "This may be due to filing system errors, Minor bugs or unforeseen\n"
+#~ "system shutdowns.\n"
+#~ "\n"
+#~ "Do you wish Enlightenment to recover its original system\n"
+#~ "configuration and try again?\n"
+#~ msgstr ""
+#~ "自動保存された設定の解析中にエラーが発生しました。\n"
+#~ "\n"
+#~ "原因として、ファイルシステムのエラー、隠れたバグ、あるいはシステムが突然\n"
+#~ "シャットダウンされたことが考えられます。\n"
+#~ "\n"
+#~ "オリジナルのシステム設定に戻して再試行しますか？\n"
+
+#~ msgid ""
+#~ "Warning: unable to determine what to do with\n"
+#~ "the following text in the middle of current ImageClass definition:\n"
+#~ "%s\n"
+#~ "Will ignore and continue...\n"
+#~ msgstr ""
+#~ "警告。現在の ImageClass に定義されている以下の文字列の\n"
+#~ "処理方法が決定できません。\n"
+#~ "%s\n"
+#~ "無視して処理を継続します...\n"
+
+#~ msgid ""
+#~ "Warning: unable to determine what to do with\n"
+#~ "the following text in the middle of current Text definition:\n"
+#~ "%s\n"
+#~ "Will ignore and continue...\n"
+#~ msgstr ""
+#~ "警告。現在の Text 定義にある以下の文字列の処理方法が決定できません。\n"
+#~ "%s\n"
+#~ "無視して処理を継続します...\n"
+
+#~ msgid ""
+#~ "Warning: unable to determine what to do with\n"
+#~ "the following text in the middle of current ToolTip definition:\n"
+#~ "%s\n"
+#~ "Will ignore and continue...\n"
+#~ msgstr ""
+#~ "警告。現在の ToolTip に定義されている以下の文字列の処理方法が\n"
+#~ "決定できません。\n"
+#~ "%s\n"
+#~ "無視して処理を継続します...\n"
+
+#~ msgid ""
+#~ "Warning: unable to determine what to do with\n"
+#~ "the following text in the middle of current WindowMatch definition:\n"
+#~ "%s\n"
+#~ "Will ignore and continue...\n"
+#~ msgstr ""
+#~ "警告。現在の WindowMatch に定義されている以下の文字列の処理方法が\n"
+#~ "決定できません。\n"
+#~ "%s\n"
+#~ "無視して処理を継続します...\n"
 
 #~ msgid "Height"
 #~ msgstr "高さ"
@@ -3632,17 +3620,6 @@ msgstr "Enlightenment Epplets"
 #~ msgstr ""
 #~ "Warning: iconbox.cfg ファイル内の設定部分が\n"
 #~ "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
-
-#~ msgid ""
-#~ "Warning: unable to determine what to do with\n"
-#~ "the following text in the middle of current Extras definition:\n"
-#~ "%s\n"
-#~ "Will ignore and continue...\n"
-#~ msgstr ""
-#~ "Warning: 設定ファイルの Extras 定義部分の途中に出てきた次の文字列を\n"
-#~ "どうしたらいいか決定できません :\n"
-#~ "%s\n"
-#~ "無視して次に行きます...\n"
 
 #~ msgid ""
 #~ "Warning: Configuration appears to have ended before we were\n"
