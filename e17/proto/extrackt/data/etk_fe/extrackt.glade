@@ -18,7 +18,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
-  <signal name="delete_event" handler="_etk_fe_gui_window_deleted_cb" last_modification_time="Sat, 28 Jan 2006 14:35:10 GMT"/>
+  <signal name="delete-event" handler="_etk_fe_gui_window_deleted_cb" last_modification_time="Sat, 28 Jan 2006 14:35:10 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox5">
@@ -1488,7 +1488,7 @@
 			      <property name="visible">True</property>
 			      <property name="add_tearoffs">False</property>
 			      <property name="focus_on_click">True</property>
-			      <signal name="active_item_changed" handler="_etk_fe_gui_ripper_combo_changed_cb" last_modification_time="Mon, 03 Apr 2006 23:13:53 GMT"/>
+			      <signal name="active-item-changed" handler="_etk_fe_gui_ripper_combo_changed_cb" last_modification_time="Mon, 03 Apr 2006 23:13:53 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="left_attach">1</property>
@@ -1760,7 +1760,7 @@
 			      <property name="visible">True</property>
 			      <property name="add_tearoffs">False</property>
 			      <property name="focus_on_click">True</property>
-			      <signal name="active_item_changed" handler="_etk_fe_gui_encoder_combo_changed_cb" last_modification_time="Mon, 03 Apr 2006 23:13:08 GMT"/>
+			      <signal name="active-item-changed" handler="_etk_fe_gui_encoder_combo_changed_cb" last_modification_time="Mon, 03 Apr 2006 23:13:08 GMT"/>
 			    </widget>
 			    <packing>
 			      <property name="left_attach">1</property>
