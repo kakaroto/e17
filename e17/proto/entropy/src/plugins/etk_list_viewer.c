@@ -526,6 +526,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   char buffer[50];
   char date_buffer[26];
   char* thumbnail_filename;
+  char* thumbnail_key;
 
 
   viewer = instance->data;
@@ -540,9 +541,12 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 
   if (!file->thumbnail) {
 	  entropy_plugin_thumbnail_request(instance, file, (void*)gui_event_callback); 
-	  thumbnail_filename= PACKAGE_DATA_DIR "/icons/default.png"; 
+    thumbnail_filename= etk_theme_icon_path_get();
+    /* [TODO] ETK_STOCK_BIG needs to be gotten from the config */
+    thumbnail_key = etk_stock_key_get(ETK_STOCK_PLACES_FOLDER, ETK_STOCK_BIG);
   } else {
-	  thumbnail_filename = file->thumbnail->thumbnail_filename;
+    thumbnail_filename = file->thumbnail->thumbnail_filename;
+    thumbnail_key = NULL;
   }
   
   col1 = etk_tree_nth_col_get(ETK_TREE(viewer->tree), 0);
@@ -556,7 +560,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   
   if (!file->retrieved_stat) {
 	  new_row = etk_tree_row_append(ETK_TREE(viewer->tree), NULL, 
-		  col1, thumbnail_filename, NULL,
+		  col1, thumbnail_filename, thumbnail_key,
 		  col2,   file->filename, 
 		  col4, file->mime_type,
 		  NULL);
@@ -569,7 +573,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 	  date_buffer[strlen(date_buffer)-1] = '\0';
 	  
 	  new_row = etk_tree_row_append(ETK_TREE(viewer->tree), NULL, 
-		  col1, thumbnail_filename, NULL,
+		  col1, thumbnail_filename, thumbnail_key,
 		  col2,   file->filename,
 		  col3,   buffer,
 		  col4,   file->mime_type,
@@ -814,7 +818,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   entropy_etk_file_list_viewer *viewer;
   char  **dnd_types;
   int dnd_types_num=0;
-
+  Etk_Tree_Model *model;
     
   instance = entropy_gui_component_instance_new ();
   viewer = entropy_malloc (sizeof (entropy_etk_file_list_viewer));
@@ -824,9 +828,14 @@ entropy_plugin_gui_instance_new (entropy_core * core,
   
   viewer->tree = etk_tree_new(); 
   etk_tree_mode_set(ETK_TREE(viewer->tree), ETK_TREE_MODE_LIST);
- 
+
+  /* [TODO] We need to make this configurable, and replace the 48 by a proper 
+   * value depending on SMALL, NORMAL, LARGE for etk_stock */
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Icon"), 48,0.0);
-  etk_tree_col_model_add(viewer->tree_col1, etk_tree_model_image_new());
+  model = etk_tree_model_image_new();
+  etk_tree_rows_height_set(ETK_TREE(viewer->tree), 48);
+
+  etk_tree_col_model_add(viewer->tree_col1, model);
    
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Filename"), 150,0.0);
   etk_tree_col_model_add(viewer->tree_col1, etk_tree_model_text_new());
