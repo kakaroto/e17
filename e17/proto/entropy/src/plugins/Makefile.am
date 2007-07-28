@@ -85,9 +85,9 @@ structure_viewer_la_LIBADD     = @EWL_LIBS@
 
 action_simple_la_SOURCES       = $(top_srcdir)/src/entropy_gui.c \
 				action_simple.c $(top_srcdir)/src/entropy_debug.c
-action_simple_la_CFLAGS        = @EWL_CFLAGS@
+action_simple_la_CFLAGS        = @ECORE_CFLAGS@ @EWL_CFLAGS@
 action_simple_la_LDFLAGS       = -module -avoid-version
-action_simple_la_LIBADD        = @EWL_LIBS@
+action_simple_la_LIBADD        = @ECORE_LIBS@ @EWL_LIBS@
 
 
 layout_ewl_simple_la_SOURCES   = $(top_srcdir)/src/entropy_gui.c \
