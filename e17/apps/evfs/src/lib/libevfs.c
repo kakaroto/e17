@@ -6,6 +6,7 @@
 Ecore_List *client_list = NULL;
 static int _libevfs_init = 0;
 static long _libevfs_next_command_id;
+static Ecore_Hash* evfs_session_servers;
 
 
 long libevfs_next_command_id_get() 
@@ -46,6 +47,9 @@ evfs_server_data(void *data, int type, void *event)
 
    if ((e = (Ecore_Ipc_Event_Server_Data *) event))
      {
+	/*Check if it's bound to us..*/
+	if (!ecore_hash_get(evfs_session_servers, e->data)) return 1;
+	     
         /*Special case, if it's an id notify, we can't really id the client without it */
 
         if (e->major == EVFS_EV_NOTIFY_ID)
@@ -178,6 +182,7 @@ evfs_connect(void (*callback_func) (evfs_event *, void *), void *obj)
      {
         _libevfs_init = 1;
 	_libevfs_next_command_id = 1;
+	evfs_session_servers = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
 	/*Register the callback*/
         ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, evfs_server_data,
@@ -203,7 +208,7 @@ evfs_connect(void (*callback_func) (evfs_event *, void *), void *obj)
    if (!
        (connection->server =
         ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0,
-                                 NULL)))
+                                 connection)))
      {
         fprintf(stderr,
                 "Cannot connect to evfs server with '%s', making new server and trying again..\n",
@@ -221,6 +226,8 @@ evfs_connect(void (*callback_func) (evfs_event *, void *), void *obj)
         usleep(100000 * connect_attempts);
         goto retry;
 
+     } else {
+	     ecore_hash_set(evfs_session_servers, connection, (int*)1);
      }
 
    return connection;
