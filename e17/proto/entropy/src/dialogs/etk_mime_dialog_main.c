@@ -325,7 +325,7 @@ void etk_mime_dialog_add_edit_create(char* mime, char* program) {
 	etk_window_wmclass_set(ETK_WINDOW(mime_dialog_add_edit_window), "mimedialog", "mimedialog");
 	etk_widget_size_request_set(ETK_WIDGET(mime_dialog_add_edit_window), 250, 80);
 
-	etk_signal_connect ("delete_event", ETK_OBJECT (mime_dialog_add_edit_window),
+	etk_signal_connect ("delete-event", ETK_OBJECT (mime_dialog_add_edit_window),
 	      ETK_CALLBACK (_etk_window_deleted_add_cb), NULL);
 
 	table = etk_table_new(2,3,ETK_FALSE);
@@ -402,7 +402,7 @@ void etk_mime_dialog_application_create(char* mime, Entropy_Config_Mime_Binding_
 	etk_window_wmclass_set(ETK_WINDOW(window), "mimedialog", "mimedialog");
 	etk_widget_size_request_set(ETK_WIDGET(window), 250, 80);
 
-	etk_signal_connect ("delete_event", ETK_OBJECT (window),
+	etk_signal_connect ("delete-event", ETK_OBJECT (window),
 	      ETK_CALLBACK (_etk_window_deleted_add_app_cb), NULL);
 
 	table = etk_table_new(2,4,ETK_FALSE);
@@ -484,7 +484,7 @@ void etk_mime_dialog_create()
 	etk_window_title_set(ETK_WINDOW(mime_dialog_window), "Program Associations");
 	etk_window_wmclass_set(ETK_WINDOW(mime_dialog_window), "mimedialog", "mimedialog");
 
-	etk_signal_connect ("delete_event", ETK_OBJECT (mime_dialog_window),
+	etk_signal_connect ("delete-event", ETK_OBJECT (mime_dialog_window),
 	      ETK_CALLBACK (_etk_window_deleted_cb), NULL);
 
 	etk_widget_size_request_set(ETK_WIDGET(mime_dialog_window), 450, 500);

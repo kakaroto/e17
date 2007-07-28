@@ -1,5 +1,9 @@
 This is a list of things we need to fix:
 
+* More comprehensive Open With dialog.
+* Multicolumn list view
+* Better visual indication of directory sorting order
+* More icon set sizes
 * extractor plugin - fix odd behaviour (sliding window) and make the window
   move with the main entropy window if the latter is moved. how do we handle
   fullscreen mode or when there's no space to show the sliding window?
@@ -8,7 +12,7 @@ This is a list of things we need to fix:
 
 This is a rough list of things we could implement:
 
-[-] * more thumbnailers - pdf, ttf, text (makes more snese in icon view)
+[-] * more thumbnailers - pdf (done), ttf, text (makes more snese in icon view)
 [-] * archives - ability to extract archives to a path
 [-] * right click drag menus - when we drag with the right click, it would be
       nice to display a context menu (might need etk work)

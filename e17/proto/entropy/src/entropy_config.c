@@ -623,7 +623,7 @@ void entropy_config_defaults_populate(Entropy_Config_Loaded* config)
 		entropy_config_misc_item_str_set("general.treeviewer", "1",ENTROPY_CONFIG_LOC_LIST);
 		entropy_config_misc_item_str_set("general.trackback", "1",ENTROPY_CONFIG_LOC_LIST);
 		entropy_config_misc_item_str_set("general.presortfolders", "1",ENTROPY_CONFIG_LOC_LIST);
-		entropy_config_misc_item_str_set("general.hiddenbackup", "1",ENTROPY_CONFIG_LOC_LIST);
+		entropy_config_misc_item_str_set("general.hiddenbackup", "0",ENTROPY_CONFIG_LOC_LIST);
 		entropy_config_misc_item_str_set("general.iconsize", "48",ENTROPY_CONFIG_LOC_LIST);
 
 }
