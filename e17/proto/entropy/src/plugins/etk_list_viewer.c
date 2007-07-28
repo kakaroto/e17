@@ -543,7 +543,7 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
 	  entropy_plugin_thumbnail_request(instance, file, (void*)gui_event_callback); 
     thumbnail_filename= etk_theme_icon_path_get();
     /* [TODO] ETK_STOCK_BIG needs to be gotten from the config */
-    thumbnail_key = etk_stock_key_get(ETK_STOCK_PLACES_FOLDER, ETK_STOCK_BIG);
+    thumbnail_key = etk_stock_key_get(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_BIG);
   } else {
     thumbnail_filename = file->thumbnail->thumbnail_filename;
     thumbnail_key = NULL;
