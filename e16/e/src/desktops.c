@@ -1243,9 +1243,8 @@ DeskGoto(Desk * dsk)
 	DeskEnter(dsk);
      }
 
-   ActionsResume();
-
    DeskSwitchDone();
+   ActionsResume();
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 

@@ -520,7 +520,7 @@ FocusNewDesk(void)
    /* Set the mouse-over window */
    Mode.mouse_over_ewin = GetEwinByCurrentPointer();
 
-   doFocusToEwin(NULL, FOCUS_DESK_ENTER);
+   FocusToEWin(NULL, FOCUS_DESK_ENTER);
 
    /* Unfreeze keyboard */
    XUngrabKeyboard(disp, CurrentTime);
