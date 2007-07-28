@@ -344,11 +344,6 @@ ConfigFileRead(FILE * fs)
 		       if (err)
 			  ConfigAlertLoad("Tooltip");
 		       break;
-		    case CONFIG_FONTS:
-		       err = FontConfigLoad(fs);
-		       if (err)
-			  ConfigAlertLoad("Font");
-		       break;
 		    case CONFIG_TEXT:
 		       err = TextclassConfigLoad(fs);
 		       if (err)
@@ -573,7 +568,6 @@ int
 ThemeConfigLoad(void)
 {
    static const char  *const config_files[] = {
-      "fonts.cfg",
       "init.cfg",
       "textclasses.cfg",
 #if ENABLE_COLOR_MODIFIERS
@@ -592,6 +586,9 @@ ThemeConfigLoad(void)
    char                s[FILEPATH_LEN_MAX];
    Progressbar        *p = NULL;
    int                 i;
+
+   /* Font mappings */
+   FontConfigLoad();
 
    Esnprintf(s, sizeof(s), "%s/", Mode.theme.path);
 

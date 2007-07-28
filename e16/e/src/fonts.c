@@ -86,46 +86,48 @@ FontLookup(const char *name)
  */
 #include "conf.h"
 
-int
-FontConfigLoad(FILE * fs)
+static int
+_FontConfigLoad(FILE * fs)
 {
    int                 err = 0;
    FontAlias          *fa;
    char                s[FILEPATH_LEN_MAX];
-   char                s1[128];
-   int                 i1, ret;
+   char                s1[128], *p2;
+   int                 i2;
 
    while (GetLine(s, sizeof(s), fs))
      {
-	i1 = -1;
-	ret = sscanf(s, "%d", &i1);
-	if (ret == 1)
-	  {
-	     switch (i1)
-	       {
-	       case CONFIG_VERSION:
-	       case CONFIG_OPEN:
-		  break;
-	       case CONFIG_CLOSE:
-		  goto done;
-	       }
-	  }
-	else
-	  {
-	     s1[0] = '\0';
-	     i1 = 0;
-	     sscanf(s, "%120s %n", s1, &i1);
-	     if (i1 <= 1)
-	       {
-		  Eprintf("Ignoring line: %s\n", s);
-		  continue;
-	       }
-	     fa = FontAliasCreate(s1, s + i1);
-	  }
+	s1[0] = '\0';
+	i2 = 0;
+	sscanf(s, "%120s %n", s1, &i2);
+	if (i2 <= 0)
+	   continue;
+	p2 = s + i2;
+	if (!p2[0])
+	   continue;
+	if (strncmp(s, "font-", 5))
+	   continue;
+	fa = FontAliasCreate(s1, p2);
      }
 
- done:
    return err;
+}
+
+void
+FontConfigLoad(void)
+{
+#if USE_XFT
+   int                 err;
+
+   if (Conf.theme.prefer_xft_fonts)
+     {
+	err = ConfigFileLoad("fonts.cfg.xft", Mode.theme.path,
+			     _FontConfigLoad, 0);
+	if (!err)
+	   return;
+     }
+#endif
+   ConfigFileLoad("fonts.cfg", Mode.theme.path, _FontConfigLoad, 0);
 }
 
 void

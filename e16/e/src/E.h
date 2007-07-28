@@ -378,6 +378,7 @@ typedef struct
    struct
    {
       char                localise;
+      char                prefer_xft_fonts;
       char               *name;
       char               *extra_path;
       char               *ttfont_path;
@@ -605,7 +606,7 @@ Window              ExtInitWinGet(void);
 void                ExtInitWinKill(void);
 
 /* fonts.c */
-int                 FontConfigLoad(FILE * fs);
+void                FontConfigLoad(void);
 void                FontConfigUnload(void);
 const char         *FontLookup(const char *name);
 
