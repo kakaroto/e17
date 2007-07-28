@@ -764,29 +764,42 @@ _e_property_handle(Enhance *en, EXML_Node *node)
    
    else if(!strcmp(name, "orientation"))
      {
+	IF_PARENT_CLASS("GtkToolbar")
+          {
 	     PROPERTY_STR;
 	     Etk_Toolbar_Orientation orientation = ETK_TOOLBAR_HORIZ;
 
 	     if (value && !strcmp(value, "GTK_ORIENTATION_VERTICAL"))
 	       orientation = ETK_TOOLBAR_VERT;
 	     etk_toolbar_orientation_set(ETK_TOOLBAR(wid->wid), orientation);
+          }
+
+	IF_PARENT_CLASS("GtkProgressBar")
+          {
+	     PROPERTY_STR;
+	     Etk_Progress_Bar_Direction direction = ETK_PROGRESS_BAR_LEFT_TO_RIGHT;
+
+	     if (value && !strcmp(value, "GTK_PROGRESS_RIGHT_TO_LEFT"))
+               direction = ETK_PROGRESS_BAR_RIGHT_TO_LEFT;
+	     etk_progress_bar_direction_set(ETK_PROGRESS_BAR(wid->wid), direction);
+          }
      }     
 
    else if(!strcmp(name, "toolbar_style"))
      {
-	     PROPERTY_STR;
-	     Etk_Toolbar_Style style = ETK_TOOLBAR_ICON;
+	PROPERTY_STR;
+	Etk_Toolbar_Style style = ETK_TOOLBAR_ICON;
 
-	     if (value)
-	       {
-		 if (!strcmp(value, "GTK_TOOLBAR_TEXT"))
-		   style = ETK_TOOLBAR_TEXT;
-		 else if (!strcmp(value, "GTK_TOOLBAR_BOTH"))
-		   style = ETK_TOOLBAR_BOTH_VERT;
-		 else if (!strcmp(value, "GTK_TOOLBAR_BOTH_HORIZ"))
-		   style = ETK_TOOLBAR_BOTH_HORIZ;
-	       }
-	     etk_toolbar_style_set(ETK_TOOLBAR(wid->wid), style);
+	if (value)
+	  {
+	    if (!strcmp(value, "GTK_TOOLBAR_TEXT"))
+	      style = ETK_TOOLBAR_TEXT;
+	    else if (!strcmp(value, "GTK_TOOLBAR_BOTH"))
+	      style = ETK_TOOLBAR_BOTH_VERT;
+	    else if (!strcmp(value, "GTK_TOOLBAR_BOTH_HORIZ"))
+	      style = ETK_TOOLBAR_BOTH_HORIZ;
+	  }
+	etk_toolbar_style_set(ETK_TOOLBAR(wid->wid), style);
      }
 
    else if(!strcmp(name, "adjustment"))
