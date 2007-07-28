@@ -4456,3 +4456,15 @@ Don't mask off events while switching area/desk. The amount of enter/leave
  masks causes more trouble than worth while (I think...).
 Get rid of spurious tooltips.
 Remove the "excessive flip check" limiting minimum time between edge flips.
+
+-------------------------------------------------------------------------------
+
+Sat Jul 28 16:08:32 CEST 2007
+(Kim)
+
+--- 0.16.8.9 0.05 ---
+Follow ecore_list name changes.
+Avoid some lagginess at end of desk switch.
+Disable theme localisation by default.
+Prefer Xft font configuration.
+
