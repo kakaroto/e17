@@ -594,7 +594,7 @@ _etk_fe_gui_show(E_Gui_Etk *gui)
    etk_tree_col_model_add(gui->tracks_name_col, etk_tree_model_text_new());
    gui->tracks_time_col = etk_tree_col_new(ETK_TREE(gui->tracks_tree), 
 		          _("Length"),
-			  40, 0.0);
+			  60, 0.0);
    etk_tree_col_model_add(gui->tracks_time_col, etk_tree_model_text_new());
    gui->tracks_rip_col = etk_tree_col_new(ETK_TREE(gui->tracks_tree), 
 			 _("Rip"),
@@ -913,7 +913,7 @@ etk_fe_disc_update(void *data)
 	char *secs;
 	int   size;
 	int   tmp;
-	int   selected = 0;
+	int   selected = 1;
 	
 	track_num = ex_util_num_to_str(i + 1, gui->ex->disc_info.num_tracks);
 	
