@@ -62,11 +62,8 @@ lang_unregister_module_actions()
    //FIXME: shold we check if these actions exist?
    e_action_del(LANG_NEXT_ACTION);
    e_action_del(LANG_PREV_ACTION);
-
    e_action_predef_name_del(LANG_ACTION_GROUP, LANG_ACTION_NEXT_LANGUAGE); 
    e_action_predef_name_del(LANG_ACTION_GROUP, LANG_ACTION_PREV_LANGUAGE);
-   e_config_save();
-
    return 1;
 }
 
@@ -98,7 +95,6 @@ lang_unregister_module_keybindings()
    _lang_unregister_module_keybinding(&(language_config->switch_prev_lang_key), 1);
 
    e_managers_keys_grab();
-   e_config_save();
 
    return 1;
 }
