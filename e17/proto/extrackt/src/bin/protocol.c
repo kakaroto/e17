@@ -5,6 +5,7 @@
  */
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "Extrackt.h"
 
 /* parse a message from the pipe an execute the corresponding 
@@ -87,7 +88,7 @@ ex_protocol_parse(Extrackt *ex, char *msg, int length)
 	       }
 	     ex->rip.pid = 0;
 	     if(ex->encode.on)
-	       ex_command_encode_append(ex, ex->rip.curr_track);
+	       ex_command_encode_append(ex, ex->rip.curr_track.number);
 	     ex->rip.curr_track.number = -1;
 	     ex->rip.curr_track.size = -1;
 	     ex->rip.curr_track.filename = NULL;

@@ -26,8 +26,10 @@ void    ex_command_encode(Extrackt *ex);
 int     ex_command_encode_update(Extrackt *ex);
 int	ex_command_encode_set(Extrackt *ex, char *name);
 void    ex_command_encode_abort(Extrackt *ex);
+void    ex_command_encode_append(Extrackt *ex, int tracknumber);
 
 void    ex_string_file_delete(char *file);
 char   *ex_string_file_extension_get(char *file);
+int     ex_string_file_exists(char *path);
 
 #endif

@@ -168,9 +168,11 @@ ex_cddev_toc_read(Extrackt *ex)
    struct cd_toc_entry toc_buffer[MAX_TRACKS];
    struct ioc_read_toc_entry cdte;
 #endif
+/* UNUSED
 #ifdef CDROMSUBCHNL
    struct cdrom_subchnl cdsc;
 #endif
+*/
 #ifdef CDROM_READ_SUBCHANNEL
    struct cd_sub_channel sch;
 #endif

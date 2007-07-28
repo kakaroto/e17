@@ -220,12 +220,15 @@ ex_config_defaults_apply(Extrackt *ex)
    /* add default encoders */
      {
 	Ex_Config_Exe *ripper;
+	char default_path[PATH_MAX];
 	
+	snprintf(default_path, PATH_MAX, "%s/rip/%%e/%%T-%%A/%%t-%%a.wav", getenv("HOME"));
+
 	ripper = E_NEW(1, Ex_Config_Exe);
 	ripper->name = E_STRDUP("cdparanoia");
 	ripper->exe = E_STRDUP("cdparanoia");
 	ripper->command_line_opts = E_STRDUP("-d %d -w %n %o");
-	ripper->file_format = E_STRDUP("/tmp/music/%e/%T-%A/%t-%a.wav");
+	ripper->file_format = E_STRDUP(default_path);
 	ripper->type = EX_CONFIG_EXE_RIPPER;
 	ripper->def = 1;
 	ex->config.rippers = evas_list_append(ex->config.rippers, ripper);
@@ -234,7 +237,7 @@ ex_config_defaults_apply(Extrackt *ex)
 	ripper->name = E_STRDUP("cdda2wav");
 	ripper->exe = E_STRDUP("cdda2wav");
 	ripper->command_line_opts = E_STRDUP("-D %d -t %n -O wav %o");
-	ripper->file_format = E_STRDUP("/tmp/music/%e/%T-%A/%t-%a.wav");
+	ripper->file_format = E_STRDUP(default_path);
 	ripper->type = EX_CONFIG_EXE_RIPPER;
 	ripper->def = 0;
 	ex->config.rippers = evas_list_append(ex->config.rippers, ripper);
@@ -246,21 +249,29 @@ ex_config_defaults_apply(Extrackt *ex)
    /* add default encoders */
      {
 	Ex_Config_Exe *encoder;
+	char  default_path[PATH_MAX];
+	char *ext;
+	int   length;
 	
+	length = snprintf(default_path, PATH_MAX - 4, "%s/rip/%%e/%%T-%%A/%%t-%%a.", getenv("HOME"));
+	ext = &(default_path[length]);
+
+	strncpy(ext, "ogg", 4);
 	encoder = E_NEW(1, Ex_Config_Exe);
 	encoder->name = E_STRDUP("oggenc");
 	encoder->exe = E_STRDUP("oggenc");
 	encoder->command_line_opts = E_STRDUP("-o %o -q 4 -G %g -a %A -N %n -t %t -l %T %i"); 
-	encoder->file_format = E_STRDUP("/tmp/music/%e/%T-%A/%t-%a.ogg");
+	encoder->file_format = E_STRDUP(default_path);
 	encoder->type = EX_CONFIG_EXE_ENCODER;
 	encoder->def = 0;
 	ex->config.encode->encoders = evas_list_append(ex->config.encode->encoders, encoder);
 	
+	strncpy(ext, "mp3", 4);
 	encoder = E_NEW(1, Ex_Config_Exe);
 	encoder->name = E_STRDUP("lame");
 	encoder->exe = E_STRDUP("lame");
 	encoder->command_line_opts = E_STRDUP("--tt %t --ta %a --tl %T --ty %y --tn %n --tg %g -h -b 192 %i %o"); 
-	encoder->file_format = E_STRDUP("/tmp/music/%e/%T-%A/%t-%a.mp3");
+	encoder->file_format = E_STRDUP(default_path);
 	encoder->type = EX_CONFIG_EXE_ENCODER;
 	encoder->def = 1;
 	ex->config.encode->encoders = evas_list_append(ex->config.encode->encoders, encoder);

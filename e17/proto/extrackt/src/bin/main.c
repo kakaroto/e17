@@ -1,6 +1,9 @@
 /* vim: set ts=8 sw=3 sts=8 noexpandtab cino=>5n-3f0^-2{2: */
 #include "Extrackt.h"
 
+/* FIXME for now just load the etk fe in this way */
+Extrackt_Frontend *etk_fe_get(void);
+
 /* initialize extrackt */
 Extrackt * 
 extrackt_init(void)

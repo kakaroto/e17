@@ -12,11 +12,8 @@
 static int   _ex_cddb_sum(int val);
 static void  _ex_cddb_line_process(char *inbuffer, Ex_Disc_Data *data, int numtracks);
 static char *_ex_cddb_line_data_get(char **dataptr);
-static void  _ex_cddb_line_write(char *header, int num, char *data, FILE *outfile, char *encoding);
-static char *_ex_cddb_str_encoding_convert(char *str, char *from, char *to, int max_len);
 static char *_ex_cddb_uri_make(Ex_Config_Cddb_Server *server, Ex_Cddb_Hello *hello, char *cmd);    
 static char *_ex_cddb_request_make(Ex_Config_Cddb_Server *server,Ex_Cddb_Hello *hello, char *cmd);
-static int  _ex_cddb_line_count(char *lines);   
 
 static char *discdb_genres[]={"unknown","blues","classical","country",
      "data","folk","jazz","misc","newage",
@@ -544,21 +541,6 @@ _ex_cddb_line_data_get(char **line)
      }
    *line = NULL;   
    return data;
-}
-
-static int
-_ex_cddb_line_count(char *lines)
-{
-   char *c;
-   int nlines = 0;
-   
-   for(c = lines; *c; c++)
-     {
-	if(*c == '\n')
-	  nlines++;
-
-     }
-   return nlines;
 }
 
 static char *
