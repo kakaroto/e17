@@ -102,6 +102,7 @@ color				{ KEYWORD_RETURN(COLOR); }
 color2				{ KEYWORD_RETURN(COLOR2); }
 color3				{ KEYWORD_RETURN(COLOR3); }
 color_class			{ KEYWORD_RETURN(COLOR_CLASS); }
+color_classes			{ KEYWORD_RETURN(COLOR_CLASSES); }
 COMP				{ KEYWORD_RETURN(COMP); }
 confine				{ KEYWORD_RETURN(CONFINE); }
 data				{ KEYWORD_RETURN(DATA); }

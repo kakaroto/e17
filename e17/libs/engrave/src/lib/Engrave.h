@@ -100,6 +100,7 @@ extern "C" {
 #include <engrave_image.h>
 #include <engrave_font.h>
 #include <engrave_spectrum.h>
+#include <engrave_color_class.h>
 #include <engrave_program.h>
 #include <engrave_part_state.h>
 #include <engrave_part.h>

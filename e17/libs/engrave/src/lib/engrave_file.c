@@ -55,6 +55,18 @@ engrave_file_free(Engrave_File *ef)
   }
   ef->groups = evas_list_free(ef->groups);
 
+  for (l = ef->spectra; l; l = l->next) {
+    Engrave_Spectrum *es = l->data;
+    engrave_spectrum_free(es);
+  }
+  ef->spectra = evas_list_free(ef->spectra);
+
+  for (l = ef->color_classes; l; l = l->next) {
+    Engrave_Color_Class *ecc = l->data;
+    engrave_color_class_free(ecc);
+  }
+  ef->color_classes = evas_list_free(ef->color_classes);
+
   FREE(ef);
 }
 
@@ -129,7 +141,7 @@ engrave_file_font_add(Engrave_File *e, Engrave_Font *ef)
 
 /**
  * engrave_file_spectrum_add - add the spectrum to the engrave file.
- * @param e: The Engrave_File to add the font too.
+ * @param e: The Engrave_File to add the spectrum too.
  * @param es: The Engrave_Spectrum to add to the file.
  *
  * @return Returns no value.
@@ -142,6 +154,20 @@ engrave_file_spectrum_add(Engrave_File *e, Engrave_Spectrum *es)
   engrave_spectrum_parent_set(es, e);
 }
 
+/**
+ * engrave_file_color_class_add - add the color_class to the engrave file.
+ * @param e: The Engrave_File to add the color_class too.
+ * @param ecc: The Engrave_Color_Class to add to the file.
+ *
+ * @return Returns no value.
+ */
+EAPI void
+engrave_file_color_class_add(Engrave_File *e, Engrave_Color_Class *ecc)
+{
+  if (!e || !ecc) return;
+  e->color_classes = evas_list_append(e->color_classes, ecc);
+  engrave_color_class_parent_set(ecc, e);
+}
 
 /**
  * engrave_file_style_add - add the style to the engrave file.
@@ -214,6 +240,19 @@ engrave_file_spectrum_last_get(Engrave_File *ef)
 {
   if (!ef) return NULL;
   return evas_list_data(evas_list_last(ef->spectra));
+}
+
+/**
+ * engrave_file_color_class_last_get - returns the last color_class in the file
+ * @param ef: The Engrave_File from which to retrieve the color_class
+ *
+ * @return Returns the last Engrave_Color_Class in the engrave file @a ef or NULL
+ */
+EAPI Engrave_Color_Class *
+engrave_file_color_class_last_get(Engrave_File *ef)
+{
+  if (!ef) return NULL;
+  return evas_list_data(evas_list_last(ef->color_classes));
 }
 
 
@@ -366,6 +405,20 @@ engrave_file_spectra_count(Engrave_File *ef)
 }
 
 /**
+ * engrave_file_color_classes_count - count the color_classes in the file
+ * @param ef: The Engrave_File to check for color_classes
+ * 
+ * @return Returns the number of color_classes in the file, 0 otherwise
+ */
+EAPI int
+engrave_file_color_classes_count(Engrave_File *ef)
+{
+  if (!ef) return 0;
+  return evas_list_count(ef->color_classes);
+}
+
+
+/**
  * engrave_file_image_foreach - call the given function for each image object
  * @param ef: The Engrave_File for which the images should be iterated over
  * @param func: The function to call for each image
@@ -495,6 +548,29 @@ engrave_file_spectrum_foreach(Engrave_File *ef,
   for (l = ef->spectra; l; l = l->next) {
     Engrave_Spectrum *es = l->data;
     if (es) func(es, data);
+  }
+}
+
+/**
+ * engrave_file_color_class_foreach - call the given function for each color_class object
+ * @param ef: The Engrave_File for which the color_classes should be iterated over
+ * @param func: The function to call for each color_class
+ * @param data: Any user data to pass to the given function.
+ *
+ * @return Returns no value.
+ */
+EAPI void
+engrave_file_color_class_foreach(Engrave_File *ef, 
+                            void (*func)(Engrave_Color_Class *, void *data), 
+                            void *data)
+{
+  Evas_List *l;
+
+  if (!engrave_file_color_classes_count(ef)) return;
+
+  for (l = ef->color_classes; l; l = l->next) {
+    Engrave_Color_Class *ecc = l->data;
+    if (ecc) func(ecc, data);
   }
 }
 

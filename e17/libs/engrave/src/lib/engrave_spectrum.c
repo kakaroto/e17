@@ -135,7 +135,11 @@ EAPI void
 engrave_spectrum_name_set(Engrave_Spectrum *es, const char * name)
 {
   if (!es) return;
-  if (name) es->name = strdup(name);
+  if (name)
+  {
+	  IF_FREE(es->name);
+	  es->name = strdup(name);
+  }
 }
 
 /**

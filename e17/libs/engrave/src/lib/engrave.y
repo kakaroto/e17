@@ -34,7 +34,7 @@
 %token BASE
 %token STRING FLOAT
 %token ACTION AFTER ALIGN ASPECT ASPECT_PREFERENCE BORDER MIDDLE
-%token CLIP_TO COLLECTIONS COLOR COLOR2 COLOR3 COLOR_CLASS
+%token CLIP_TO COLLECTIONS COLOR COLOR2 COLOR3 COLOR_CLASS COLOR_CLASSES
 %token CONFINE DATA DESCRIPTION DRAGABLE EFFECT FILL FIT TILE SCALE
 %token FONT FONTS GROUP GROUPS IMAGE TEXTBLOCK IMAGES IN ITEM MAX MIN FIXED MOUSE_EVENTS
 %token NAME NORMAL OFFSET ORIGIN PART PARTS PROGRAM PROGRAMS ALIAS
@@ -78,6 +78,7 @@ edjes: /* blank */
 	| spectra edjes
 	| styles edjes
 	| collections edjes
+	| color_classes {section = BASE; } edjes
 	| data edjes
 	| error {
 		parse_error();
@@ -87,6 +88,26 @@ edjes: /* blank */
 	;
 
 collections:  COLLECTIONS OPEN_BRACE {section = GROUPS; } collection_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
+	;
+
+color_classes: COLOR_CLASSES OPEN_BRACE color_classes_entry CLOSE_BRACE semicolon_maybe
+	;
+
+color_classes_entry: /* empty */
+	| color_class_block color_classes_entry
+	;
+
+color_class_block: COLOR_CLASS OPEN_BRACE { 
+	engrave_parse_file_color_class();
+	section = COLOR_CLASS; 
+	} color_class_statement CLOSE_BRACE semicolon_maybe  /* don't reset section here, it should be set from calling block */
+	;
+
+color_class_statement: /* empty */
+	| name color_class_statement
+	| color color_class_statement
+	| color2 color_class_statement
+	| color3 color_class_statement
 	;
 
 spectra: SPECTRA OPEN_BRACE { section = SPECTRA; } spectra_statement CLOSE_BRACE semicolon_maybe { section = BASE; }
@@ -259,6 +280,8 @@ name: NAME COLON STRING SEMICOLON {
                     break;
 		  case STYLE:
 		    engrave_parse_style_name($3);
+		  case COLOR_CLASS:
+		    engrave_parse_color_class_name($3);
                   default:
                     break;
                 }
@@ -334,12 +357,10 @@ program_after: AFTER COLON STRING SEMICOLON {
 	;
 
 collection_statement: /* empty */
-	| styles
 	| collection_statement styles
-	| images
 	| collection_statement images
-	| group
 	| collection_statement group
+	| collection_statement color_classes { section = GROUPS; } 
 	;
 
 group: GROUP OPEN_BRACE { engrave_parse_group(); section = GROUP; } group_foo CLOSE_BRACE semicolon_maybe { section = GROUPS; }
@@ -354,6 +375,7 @@ group_body: data
 	| script
 	| parts
 	| programs
+	| color_classes { section = GROUP; }
 	;
 
 script: SCRIPT {
@@ -439,6 +461,7 @@ parts_statement: /* empty */
 	| parts_statement part
 	| parts_statement program_statement
 	| parts_statement programs
+	| parts_statement color_classes { section = PARTS; }
 	;
 
 part: PART OPEN_BRACE { engrave_parse_part(); section = PART; } part_foo CLOSE_BRACE semicolon_maybe { section = PARTS; }
@@ -463,6 +486,7 @@ part_preamble_entry: name
 	| pointer_mode
 	| clip_to
 	| color_class
+	| color_classes { section = PART; }
 	| text_class
     ; 
 
@@ -617,6 +641,7 @@ desc_preamble_entry: state
 	| step
 	| aspect
 	| aspect_preference
+	| color_classes { section = STATE; }
 	;
 
 state: STATE COLON STRING exp SEMICOLON {
@@ -922,17 +947,38 @@ color_class: COLOR_CLASS COLON STRING SEMICOLON {
 	;
 
 color: COLOR COLON exp exp exp exp SEMICOLON {
-                engrave_parse_state_color((int)$3, (int)$4, (int)$5, (int)$6);
+	switch(section)
+	{
+		case COLOR_CLASS:
+			engrave_parse_color_class_color(1, (int)$3, (int)$4, (int)$5, (int)$6);
+			break;
+		default:
+                	engrave_parse_state_color((int)$3, (int)$4, (int)$5, (int)$6);
+	}
 	}
 	;
 
 color2: COLOR2 COLON exp exp exp exp SEMICOLON {
-                engrave_parse_state_color2((int)$3, (int)$4, (int)$5, (int)$6);
+       	switch(section)
+	{
+		case COLOR_CLASS:
+			engrave_parse_color_class_color(2, (int)$3, (int)$4, (int)$5, (int)$6);
+			break;
+		default:
+                	engrave_parse_state_color2((int)$3, (int)$4, (int)$5, (int)$6);
+	}
 	}
 	;
 		
 color3: COLOR3 COLON exp exp exp exp SEMICOLON {
-                engrave_parse_state_color3((int)$3, (int)$4, (int)$5, (int)$6);
+        switch(section)
+	{
+		case COLOR_CLASS:
+			engrave_parse_color_class_color(3, (int)$3, (int)$4, (int)$5, (int)$6);
+			break;
+		default:
+                	engrave_parse_state_color3((int)$3, (int)$4, (int)$5, (int)$6);
+	}
 	}
 	;
 

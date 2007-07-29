@@ -13,6 +13,7 @@ static void _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part,
 static void _engrave_output_image(Engrave_Image *image, void *data);
 static void _engrave_output_font(Engrave_Font *font, void *data);
 static void _engrave_output_spectrum(Engrave_Spectrum *es, void *data);
+static void _engrave_output_color_class(Engrave_Color_Class *ecc, void *data);
 static void _engrave_output_style(Engrave_Style *style, void *data);
 static void _engrave_output_data(Engrave_Data *data, void *udata);
 static void _engrave_output_group(Engrave_Group *group, void *data);
@@ -205,6 +206,11 @@ engrave_edc_output(Engrave_File *engrave_file, const char *path)
   /* spectra */
   engrave_out_start(out, "spectra");
   engrave_file_spectrum_foreach(engrave_file, _engrave_output_spectrum, out);
+  engrave_out_end(out);
+
+  /* color_classes */
+  engrave_out_start(out, "color_classes");
+  engrave_file_color_class_foreach(engrave_file, _engrave_output_color_class, out);
   engrave_out_end(out);
 
   /* images */
@@ -707,6 +713,32 @@ _engrave_output_spectrum(Engrave_Spectrum *es, void *data)
 
   
 }
+
+static void
+_engrave_output_color_class(Engrave_Color_Class *ecc, void *data)
+{
+  FILE *out;
+
+  out = data;
+  engrave_out_start(out, "color_class");
+  engrave_out_data(out, "name", "\"%s\"", engrave_color_class_name_get(ecc));
+
+  if (ecc->color)
+	  engrave_out_data(out, "color", "%d %d %d %d",
+		  ecc->color->r, ecc->color->g, ecc->color->b, ecc->color->a);
+
+  if (ecc->color2)
+	  engrave_out_data(out, "color2", "%d %d %d %d",
+		  ecc->color2->r, ecc->color2->g, ecc->color2->b, ecc->color2->a);
+
+  if (ecc->color3)
+	  engrave_out_data(out, "color3", "%d %d %d %d",
+		  ecc->color3->r, ecc->color3->g, ecc->color3->b, ecc->color3->a);
+
+  engrave_out_end(out);
+
+}
+
 
 
 static void

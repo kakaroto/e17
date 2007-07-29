@@ -85,12 +85,38 @@ engrave_parse_group_name(char *name)
   engrave_group_name_set(group, name);
 }
 
+void 
+engrave_parse_color_class_name(char *name)
+{
+  if (!name) return;
+  Engrave_Color_Class * ecc = engrave_file_color_class_last_get(engrave_file);
+  engrave_color_class_name_set(ecc, name);
+}
+
+void 
+engrave_parse_color_class_color(int num, int r, int g, int b, int a)
+{
+  Engrave_Color_Class * ecc = engrave_file_color_class_last_get(engrave_file);
+  Engrave_Color_Class_Color * ec = engrave_color_class_color_new(r, g, b, a);
+  engrave_color_class_color_set(ecc, ec, num);
+}
+
 void
 engrave_parse_group_alias(char *alias)
 {
   Engrave_Group *group;
   group = engrave_file_group_last_get(engrave_file);
   engrave_group_alias_set(group, alias);
+}
+
+Engrave_Color_Class *
+engrave_parse_file_color_class()
+{
+  Engrave_Color_Class *ecc;
+  ecc = engrave_color_class_new();
+  engrave_file_color_class_add(engrave_file, ecc);
+  engrave_color_class_parent_set(ecc, engrave_file);
+  return ecc;
 }
 
 void
