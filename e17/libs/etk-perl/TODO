@@ -9,17 +9,11 @@ TODO:
 		* Tree
 		* Window
 		* Widget
-	- Check for memory usage (I'm not sure if we're leaking or not,
-	  need to do some tests for that)
 	- Fix Combobox append functions (waiting for some functionality in etk)
+	- Same for Combobox_Entry
 	- Image new from data
 	- fix DND
 	- fix Etk::Simple ( image new_from_file requires a key now )
 
 BUGS:
-
-Pending:
-	-etk_canvas.h
-	-dnd
-
 
