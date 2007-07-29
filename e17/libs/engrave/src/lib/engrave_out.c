@@ -628,7 +628,8 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
           if (smooth != 1)
               engrave_out_data(out, "smooth", "%d", smooth);
 
-	  engrave_out_data(out, "type", "%s", _fill_type_string[type]);
+	  if (type >= 0)
+	      engrave_out_data(out, "type", "%s", _fill_type_string[type]);
 
           if ((orig_x != 0.0) || (orig_y != 0.0) 
                   || (orig_off_x != 0) || (orig_off_y != 0))

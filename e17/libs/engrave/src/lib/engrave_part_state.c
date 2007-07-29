@@ -33,7 +33,7 @@ engrave_part_state_new(void)
   state->rel2.offset.x = -1;
   state->rel2.offset.y = -1;
   state->fill.smooth = 1;
-  state->fill.type = 0;
+  state->fill.type = -1;
   state->fill.pos_rel.x = 0.0;
   state->fill.pos_abs.x = 0;
   state->fill.rel.x = 1.0;
