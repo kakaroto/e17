@@ -162,7 +162,10 @@ video_key(Evas_Event_Key_Down *ev)
      {
 	/* FIXME: play info display */
 	jump = 0.0;
-	emotion_object_play_set(o_video, 0);
+	if (emotion_object_play_get(o_video))
+	  emotion_object_play_set(o_video, 0);
+	else
+	  emotion_object_play_set(o_video, 1);
 	edje_object_signal_emit(o_video_bg, "active", "");
      }
    else if (!strcmp(ev->keyname, "Up"))

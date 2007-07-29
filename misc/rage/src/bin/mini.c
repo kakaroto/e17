@@ -200,6 +200,7 @@ _mini_timer(void *data)
 		  edje_object_signal_emit(mini->o_parent, "generate", "begin");
 		  snprintf(buf, sizeof(buf), "nice -n 5 %s/rage_thumb \"%s\" \"%s\" -fps 10 -og 128x96",
 			   PACKAGE_BIN_DIR, mini->source, mini->file);
+		  printf("EXEC: %s\n", buf);
 		  mini->gen_exe = ecore_exe_run(buf, mini);
 		  mini->handler = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _mini_exe_exit, mini);
 		  mini->timer = ecore_timer_add(240.0, _mini_overtime_timer, mini);
