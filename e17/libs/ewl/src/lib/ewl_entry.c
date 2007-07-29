@@ -717,6 +717,10 @@ ewl_entry_delete_left(Ewl_Entry *e)
 		DRETURN(DLEVEL_STABLE);	
 
 	pos1 = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
+	/* we cannot delete anything if we are at the beginning of the text */
+	if (pos1 == 0)
+		DRETURN(DLEVEL_STABLE);
+
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), pos1 - 1);
 	ewl_text_text_delete(EWL_TEXT(e), 1);
 
