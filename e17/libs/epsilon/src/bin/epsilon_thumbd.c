@@ -840,7 +840,7 @@ epsilond_worker_clean(Epsilon_Worker *worker)
 {
 	Epsilon_Message *msg;
 	worker->child = 0;
-	while ((msg = ecore_list_remove_first(worker->thumbs))) 
+	while ((msg = ecore_list_first_remove(worker->thumbs))) 
 		free(msg);
 	return 1;
 }
