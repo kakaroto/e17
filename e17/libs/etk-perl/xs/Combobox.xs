@@ -35,6 +35,7 @@ new_default(class)
 	OUTPUT:
 	RETVAL
 
+# Convert to entry
 Etk_Widget *
 etk_combobox_entry_entry_get(combobox_entry)
 	Etk_Combobox_Entry *combobox_entry
@@ -76,6 +77,307 @@ etk_combobox_entry_clear(combobox_entry)
 	ALIAS:
 	Clear=1
 
+# FIXME: Copied directly from combobox: These need to be changed
+Etk_Combobox_Entry_Item *
+etk_combobox_entry_item_append(combobox, ...)
+        Etk_Combobox_Entry * combobox
+      ALIAS:
+	ItemAppend=1
+    CODE:
+        int i;
+        void **ptr = NULL;
+
+        ptr = calloc(items, sizeof(void *));
+        memset(ptr, 0, items * sizeof(void *));
+        /* the idea here is that we either have a max limit on how many items
+	 * we can have in a combo, or we create "models" like the tree. lets
+	 * see how well this will work.
+	 */
+	 for(i = 0; i < items - 1; i++)
+           {
+	      if(SvPOK(ST(i + 1)))
+		   ptr[i] = SvPV_nolen(ST(i + 1));
+	      else 
+		   ptr[i] = SvObj(ST(i + 1), getClass("Etk_Widget"));
+	   }
+        switch(items)
+        {	   
+	   case 2:
+	   RETVAL = etk_combobox_entry_item_append(combobox, ptr[0]);
+	   break;
+	   case 3:
+	   RETVAL = etk_combobox_entry_item_append(combobox, ptr[0], ptr[1]);
+	   break;
+	   case 4:
+	   RETVAL = etk_combobox_entry_item_append(combobox, ptr[0], ptr[1], ptr[2]);
+	   break;
+	   case 5:
+	   RETVAL = etk_combobox_entry_item_append(combobox, ptr[0], ptr[1], ptr[2], ptr[3]);
+	   break;
+	   case 6:
+	   RETVAL = etk_combobox_entry_item_append(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4]);
+	   break;
+	   case 7:
+	   RETVAL = etk_combobox_entry_item_append(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4], 
+					     ptr[5]);
+	   break;
+	   case 8:
+	   RETVAL = etk_combobox_entry_item_append(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4],
+					     ptr[5], ptr[6]);
+	   break;
+	   case 9:
+	   RETVAL = etk_combobox_entry_item_append(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4], 
+					     ptr[5], ptr[6], ptr[7]);
+	   break;
+	   case 10:
+	   RETVAL = etk_combobox_entry_item_append(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4], 
+					     ptr[5], ptr[6], ptr[7], ptr[8]);
+	   break;
+	   case 11:
+	   RETVAL = etk_combobox_entry_item_append(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4], 
+					     ptr[5], ptr[6], ptr[7], ptr[8],
+					     ptr[9]);
+	   break;
+	}
+        if(ptr)
+          free(ptr);
+    OUTPUT:
+        RETVAL
+  
+Etk_Combobox_Entry_Item *
+etk_combobox_entry_item_prepend(combobox, ...)
+        Etk_Combobox_Entry * combobox
+      ALIAS:
+	ItemPrepend=1
+    CODE:
+        int i;
+        void **ptr = NULL;
+
+        ptr = calloc(items, sizeof(void *));
+        memset(ptr, 0, items * sizeof(void *));
+        /* the idea here is that we either have a max limit on how many items
+	 * we can have in a combo, or we create "models" like the tree. lets
+	 * see how well this will work.
+	 */
+	 for(i = 0; i < items - 1; i++)
+           {
+	      if(SvPOK(ST(i + 1)))
+		   ptr[i] = SvPV_nolen(ST(i + 1));
+	      else 
+		   ptr[i] = SvObj(ST(i + 1), getClass("Etk_Widget"));
+	   }
+        switch(items)
+        {	   
+	   case 2:
+	   RETVAL = etk_combobox_entry_item_prepend(combobox, ptr[0]);
+	   break;
+	   case 3:
+	   RETVAL = etk_combobox_entry_item_prepend(combobox, ptr[0],
+					     ptr[1]);
+	   break;
+	   case 4:
+	   RETVAL = etk_combobox_entry_item_prepend(combobox, ptr[0],
+					     ptr[1], ptr[2]);
+	   break;
+	   case 5:
+	   RETVAL = etk_combobox_entry_item_prepend(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3]);
+	   break;
+	   case 6:
+	   RETVAL = etk_combobox_entry_item_prepend(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4]);
+	   break;
+	   case 7:
+	   RETVAL = etk_combobox_entry_item_prepend(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4], 
+					     ptr[5]);
+	   break;
+	   case 8:
+	   RETVAL = etk_combobox_entry_item_prepend(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4],
+					     ptr[5], ptr[6]);
+	   break;
+	   case 9:
+	   RETVAL = etk_combobox_entry_item_prepend(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4], 
+					     ptr[5], ptr[6], ptr[7]);
+	   break;
+	   case 10:
+	   RETVAL = etk_combobox_entry_item_prepend(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4], 
+					     ptr[5], ptr[6], ptr[7], ptr[8]);
+	   break;
+	   case 11:
+	   RETVAL = etk_combobox_entry_item_prepend(combobox, ptr[0],
+					     ptr[1], ptr[2], ptr[3], ptr[4], 
+					     ptr[5], ptr[6], ptr[7], ptr[8],
+					     ptr[9]);
+	   break;
+	}
+        if(ptr)
+          free(ptr);
+    OUTPUT:
+        RETVAL
+  
+Etk_Combobox_Entry_Item *
+etk_combobox_entry_item_insert(combobox, after, ...)
+        Etk_Combobox_Entry * combobox
+        Etk_Combobox_Entry_Item * after
+      ALIAS:
+	ItemInsert=1
+    CODE:
+        int i;
+        void **ptr = NULL;
+
+        ptr = calloc(items, sizeof(void *));
+        memset(ptr, 0, items * sizeof(void *));
+        /* the idea here is that we either have a max limit on how many items
+	 * we can have in a combo, or we create "models" like the tree. lets
+	 * see how well this will work.
+	 */
+	 for(i = 0; i < items - 2; i++)
+           {
+	      if(SvPOK(ST(i + 1)))
+		   ptr[i] = SvPV_nolen(ST(i + 1));
+	      else 
+		   ptr[i] = SvObj(ST(i + 1), getClass("Etk_Widget"));
+	   }
+        switch(items)
+        {	   
+	   case 2:
+	   RETVAL = etk_combobox_entry_item_insert(combobox, 
+						       after, ptr[0]);
+	   break;
+	   case 3:
+	   RETVAL = etk_combobox_entry_item_insert(combobox, 
+						       after, ptr[0], 
+						       ptr[1]);
+	   break;
+	   case 4:
+	   RETVAL = etk_combobox_entry_item_insert(combobox, 
+						       after, ptr[0], 
+						       ptr[1], ptr[2]);
+	   break;
+	   case 5:
+	   RETVAL = etk_combobox_entry_item_insert(combobox, 
+						       after, ptr[0], 
+						       ptr[1], ptr[2], ptr[3]);
+	   break;
+	   case 6:
+	   RETVAL = etk_combobox_entry_item_insert(combobox, 
+						       after, ptr[0], 
+						       ptr[1], ptr[2], ptr[3],
+						       ptr[4]);
+	   break;
+	   case 7:
+	   RETVAL = etk_combobox_entry_item_insert(combobox, 
+						       after, ptr[0], 
+						       ptr[1], ptr[2], ptr[3],
+						       ptr[4], ptr[5]);
+	   break;
+	   case 8:
+	   RETVAL = etk_combobox_entry_item_insert(combobox, 
+						       after, ptr[0], 
+						       ptr[1], ptr[2], ptr[3],
+						       ptr[4], ptr[5], ptr[6]);
+	   break;
+	   case 9:
+	   RETVAL = etk_combobox_entry_item_insert(combobox, 
+						       after, ptr[0], 
+						       ptr[1], ptr[2], ptr[3],
+						       ptr[4], ptr[5], ptr[6],
+						       ptr[7]);
+	   break;
+	   case 10:
+	   RETVAL = etk_combobox_entry_item_insert(combobox, 
+						       after, ptr[0], 
+						       ptr[1], ptr[2], ptr[3],
+						       ptr[4], ptr[5], ptr[6],
+						       ptr[7], ptr[8]);
+	   break;
+	   case 11:
+	   RETVAL = etk_combobox_entry_item_insert(combobox, 
+						       after, ptr[0], 
+						       ptr[1], ptr[2], ptr[3], 
+						       ptr[4], ptr[5], ptr[6], 
+						       ptr[7], ptr[8], ptr[9]);
+	   break;
+	}
+        if(ptr)
+          free(ptr);
+    OUTPUT:
+        RETVAL
+
+
+void
+etk_combobox_entry_active_item_set(combobox_entry, item)
+	Etk_Combobox_Entry *combobox_entry
+	Etk_Combobox_Entry_Item *item
+	ALIAS:
+	ActiveItemSet=1
+
+Etk_Combobox_Entry_Item *
+etk_combobox_entry_active_item_get(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	ActiveItemGet=1
+
+int
+etk_combobox_entry_active_item_num_get(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	ActiveItemNumGet=1
+
+Etk_Combobox_Entry_Item * 
+etk_combobox_entry_first_item_get(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	FirstItemGet=1
+
+Etk_Combobox_Entry_Item *
+etk_combobox_entry_last_item_get(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	LastItemGet=1
+
+Etk_Combobox_Entry_Item *
+etk_combobox_entry_nth_item_get(combobox_entry, index)
+	Etk_Combobox_Entry *combobox_entry
+	int index
+	ALIAS:
+	NthItemGet=1
+
+Etk_Bool
+etk_combobox_entry_is_popped_up(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	IsPoppedUp=1
+
+void
+etk_combobox_entry_pop_up(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	PopUp=1
+
+void
+etk_combobox_entry_pop_down(combobox_entry)
+	Etk_Combobox_Entry *combobox_entry
+	ALIAS:
+	PopDown=1
+
+void
+etk_combobox_entry_popup_feed(combobox_entry, window)
+	Etk_Combobox_Entry *combobox_entry
+	Etk_Window *window
+	ALIAS:
+	PopupFeed=1
+
 MODULE = Etk::Combobox::Entry::Item	PACKAGE = Etk::Combobox::Entry::Item	PREFIX = etk_combobox_entry_item_
 
 void
@@ -84,7 +386,47 @@ etk_combobox_entry_item_remove(item)
 	ALIAS:
 	Remove=1
 
+# etk_combobox_entry_item_fields_set
 
+# etk_combobox_entry_item_fields_get
+
+void
+etk_combobox_entry_item_data_set(item, data)
+	Etk_Combobox_Entry_Item *item
+	SV * data
+	ALIAS:
+	DataSet=1
+	CODE:
+	etk_combobox_entry_item_data_set(item, newSVsv(data));
+	
+SV *
+etk_combobox_entry_item_data_get(item)
+	Etk_Combobox_Entry_Item *item
+	ALIAS:
+	DataGet=1
+	CODE:
+	RETVAL = newSVsv((SV*)etk_combobox_entry_item_data_get(item));
+	OUTPUT:
+	RETVAL
+
+Etk_Combobox_Entry_Item *
+etk_combobox_entry_item_prev_get(item)
+	Etk_Combobox_Entry_Item *item
+	ALIAS:
+	PrevGet=1
+
+Etk_Combobox_Entry_Item *
+etk_combobox_entry_item_next_get(item)
+	Etk_Combobox_Entry_Item *item
+	ALIAS:
+	NextGet=1
+
+Etk_Combobox_Entry *
+etk_combobox_entry_item_combobox_entry_get(item)
+	Etk_Combobox_Entry_Item *item
+	ALIAS:
+	ComboboxEntryGet=1
+	
 MODULE = Etk::Combobox::Item		PACKAGE = Etk::Combobox::Item		PREFIX = etk_combobox_item_
 
 SV *

@@ -34,7 +34,8 @@ our @ISA = qw/Exporter/;
 
 our %EXPORT_TAGS = (
    box		=> [qw/BoxStart BoxEnd BoxNone BoxExpand BoxFill BoxExpandFill/],
-   combobox	=> [qw/ColumnTypeLabel ColumnTypeImage ColumnTypeOther/],
+   combobox	=> [qw/ColumnTypeLabel ColumnTypeImage ColumnTypeOther EntryImage EntryLabel EntryOther
+    EntryNone EntryExpand EntryFill EntryExpandFill/],
    fillpolicy	=> [qw/FillNone HFill VFill HExpand VExpand/],
    messagedialog=> [qw/None Warning Question Error
     ButtonsNone ButtonsOk ButtonsClose ButtonsCancel ButtonsYesNo ButtonsOkCancel/],
@@ -90,7 +91,14 @@ use constant
 {
     ColumnTypeLabel => 0,
     ColumnTypeImage => 1,
-    ColumnTypeOther => 2
+    ColumnTypeOther => 2,
+    EntryLabel	=> 0,
+    EntryImage	=> 1,
+    EntryOther	=> 2,
+    EntryNone	=> 0,
+    EntryExpand	=> 1 << 0,
+    EntryFill	=> 1 << 1,
+    EntryExpandFill	=> (1 << 0) | (1 << 1)
 };
 
 

@@ -714,6 +714,30 @@ sub _menu_seperator_new
     return $menu_item;
 }
 
+sub __combobox_entry_populate 
+{
+    my $combo = shift;
+    my $dir = shift;
+
+    $combo->Clear();
+    $combo->ItemPrepend(
+    		Etk::Image::new_from_stock(PlacesFolder, SizeSmall),
+		"..");
+
+    while (<$dir/*>) {
+	    if (-d) {
+		$combo->ItemPrepend(
+			Etk::Image::new_from_stock(PlacesFolder, SizeSmall),
+			$_);
+	    } else {
+		$combo->ItemPrepend(
+			Etk::Image::new_from_stock(TextXGeneric, SizeSmall),
+			$_);
+	    }
+
+    }
+
+}
 
 sub combobox_window_show
 {
@@ -729,6 +753,19 @@ sub combobox_window_show
     $combobox->ItemAppend("Test 1");
     $combobox->ItemAppend("Test 2");
     $combobox->ItemAppend("Test 3");    
+
+    $frame = Etk::Frame->new("Entry combobox");
+    $vbox->Append($frame);
+
+    $combobox = Etk::Combobox::Entry->new();
+    $combobox->SignalConnect("active-item-changed", sub {
+	    print "TODO\n";
+    });
+    $combobox->ColumnAdd(EntryImage, 24, EntryNone, 0.0);
+    $combobox->ColumnAdd(EntryLabel, 75, EntryExpand, 0.0);
+    $combobox->Build();
+    $frame->Add($combobox);
+    __combobox_entry_populate($combobox, ".");
 
     $frame = Etk::Frame->new("Some stock icons");
     $vbox->Append($frame);
