@@ -239,7 +239,8 @@ About_Dialog *about_dialog_new()
 void etk_properties_dialog_new(Entropy_Generic_File* file)
 {
    About_Dialog *ad;
-   char fullname[1024];
+   char buf[1024];
+   time_t stime;
 
    ad = about_dialog_new();
    ad->file = file;
@@ -248,10 +249,10 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
    if(ad && ad->main.dialog) {
      entropy_core_file_cache_add_reference(file->md5);
 	   
-     snprintf(fullname,sizeof(fullname),"%s/%s", ad->file->path,ad->file->filename);
+     snprintf(buf,sizeof(buf),"%s/%s", ad->file->path,ad->file->filename);
 
      /*Setup the display*/
-     etk_entry_text_set(ETK_ENTRY(ad->general.file_entry), fullname);
+     etk_entry_text_set(ETK_ENTRY(ad->general.file_entry), buf);
 
      if (file->thumbnail) {
 	     etk_image_set_from_file(ETK_IMAGE(ad->preview.image),
@@ -262,7 +263,12 @@ void etk_properties_dialog_new(Entropy_Generic_File* file)
  			   PACKAGE_DATA_DIR "/icons/default.png",
 			   NULL);	     
      }
-     
+     snprintf(buf,50,"%lld kb", file->properties.st_size / 1024);
+     etk_entry_text_set(ETK_ENTRY(ad->general.size_entry), buf);
+
+     stime = file->properties.st_atime;
+     etk_entry_text_set(ETK_ENTRY(ad->general.lastm_entry), ctime(&stime));
+     etk_entry_text_set(ETK_ENTRY(ad->general.ftype_entry), file->mime_type); 
 		     
 	   
      etk_widget_show_all(ad->main.dialog);
