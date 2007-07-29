@@ -142,7 +142,6 @@ fonts:  FONTS OPEN_BRACE { section = FONTS; } font_statement CLOSE_BRACE semicol
 	;
 
 font_statement: /* empty */
-	| font
 	| font_statement font
 	;
 
@@ -155,15 +154,13 @@ styles: STYLES OPEN_BRACE { section = STYLES; } styles_statement CLOSE_BRACE sem
 	;
 
 styles_statement: 
-	| style
 	| styles_statement style
 	;
 
 style: STYLE OPEN_BRACE { engrave_parse_style(); section = STYLE; } style_statement CLOSE_BRACE semicolon_maybe { section = STYLES; }
 	;
 
-style_statement: /* empty too? */
-	| style_entry
+style_statement: /* empty */
 	| style_statement style_entry
 	;
 
@@ -181,7 +178,6 @@ images:  IMAGES OPEN_BRACE { section = IMAGES; } image_statement CLOSE_BRACE sem
 	;
 
 image_statement: /* empty */
-	| image
 	| image_statement image
 	;
 
@@ -206,7 +202,6 @@ data:  DATA OPEN_BRACE data_statement CLOSE_BRACE semicolon_maybe
 	;
 
 data_statement: /* empty */
-	| item 
 	| data_statement item
 	;
 
@@ -242,7 +237,6 @@ programs: PROGRAMS OPEN_BRACE { section = PROGRAMS; } program_statement CLOSE_BR
 	;
 
 program_statement: /* empty */
-	| program
 	| program_statement program
 	;
 
@@ -250,7 +244,6 @@ program: PROGRAM OPEN_BRACE { engrave_parse_program(); section = PROGRAM; } prog
 	;
 
 program_body: /* blank */ 
-	| program_cmd
 	| program_body program_cmd
 	| program_body SEMICOLON
 	;
@@ -457,7 +450,6 @@ parts: PARTS OPEN_BRACE { section = PARTS; } parts_statement CLOSE_BRACE semicol
 	;
 
 parts_statement: /* empty */
-	| part
 	| parts_statement part
 	| parts_statement program_statement
 	| parts_statement programs
@@ -595,7 +587,6 @@ dragable: DRAGABLE OPEN_BRACE { section = DRAGABLE; } dragable_statement CLOSE_B
 	;
 
 dragable_statement: /* empty */
-	| dragable_body
 	| dragable_statement dragable_body
 	;
 
@@ -749,7 +740,6 @@ rel2: REL2 OPEN_BRACE {section = REL2;} rel_statement CLOSE_BRACE semicolon_mayb
 	;
 
 rel_statement: /* empty */ 
-	| rel_body
 	| rel_statement rel_body
 	;
 
@@ -865,7 +855,6 @@ desc_image: IMAGE OPEN_BRACE { section = IMAGE; } image_state_statement CLOSE_BR
 	;
 
 image_state_statement: /* empty */ 
-	| image_body
 	| image_state_statement image_body
 	;
 
@@ -900,7 +889,6 @@ fill: FILL OPEN_BRACE { section = FILL; } fill_statement CLOSE_BRACE semicolon_m
 	;
 
 fill_statement: /* empty */
-	| fill_body
 	| fill_statement fill_body
 	;
 
@@ -929,7 +917,6 @@ origin: ORIGIN OPEN_BRACE { section = ORIGIN; } origin_statement CLOSE_BRACE sem
 	;
 
 origin_statement: /* empty */
-	| origin_body
 	| origin_statement origin_body
 	;
 
@@ -991,7 +978,6 @@ semicolon_maybe: /* after braces, we can have semicolons. Is this how to solve t
 	;
 
 text_statement: /* empty */
-	| text_body
 	| text_statement text_body
 	;
 
