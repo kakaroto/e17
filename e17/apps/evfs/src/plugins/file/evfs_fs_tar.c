@@ -436,7 +436,7 @@ evfs_dir_list(evfs_client * client, evfs_filereference *ref,
    if (!
        (file =
         ecore_hash_get(tar_cache,
-                       evfs_file_top_level_find(ref->path))))
+                       evfs_file_top_level_find(ref)->path)))
      {
         file = evfs_tar_load_tar(client, ref);
      }
@@ -484,7 +484,7 @@ evfs_dir_list(evfs_client * client, evfs_filereference *ref,
                      strlen(ele_new->name) + 1;
                   reference->path = malloc(size);
                   reference->file_type = ele_new->type;
-                  reference->plugin_uri = "tar";
+                  reference->plugin_uri = strdup("tar");
                   snprintf(reference->path, size, "%s/%s", ele_new->path,
                            ele_new->name);
                   ecore_list_append(files, reference);
@@ -516,7 +516,7 @@ evfs_file_stat(evfs_command * command, struct stat *file_stat, int number)
      }
    else
      {
-        printf("located tar file in cache");
+        /*printf("located tar file in cache");*/
         ele =
            ecore_hash_get(file->link_in,
                           command->file_command.files[number]->path);
