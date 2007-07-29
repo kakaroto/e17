@@ -14,7 +14,7 @@ EAPI int EPSILON_EVENT_DONE;
 static int debug = 0;
 
 static int epsilon_init_count = 0;
-static int epsilon_mid = 0;
+static unsigned long epsilon_mid = 0;
 
 static Ecore_DList *epsilon_request_queue = NULL;
 

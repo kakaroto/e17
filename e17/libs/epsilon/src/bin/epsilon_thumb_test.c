@@ -76,42 +76,5 @@ int main(int argc, char** argv)
 	printf("\nEpsilon Thumb completed in %g seconds\n\n", end - start);
 
 	epsilon_shutdown();
-#if 0
-	sleep(5);
-
-	start = ecore_time_get();
-	ecore_list_first_goto(files);
-	while ((file = ecore_list_next(files))) {
-		pid_t pid;
-		char *realpath;
-		char fullpath[PATH_MAX];
-
-		snprintf(fullpath, PATH_MAX, "%s/%s", PATH, file);
-		realpath = ecore_file_realpath(fullpath);
-
-		if (ecore_file_exists(realpath) && !ecore_file_is_dir(realpath)) {
-			if ((pid = fork()) == 0) {
-				Epsilon *ep;
-
-				ep = epsilon_new(realpath);
-				if (epsilon_exists(ep) == EPSILON_FAIL) {
-					epsilon_generate(ep);
-				}
-				epsilon_free(ep);
-				exit(0);
-			}
-			else if (pid > 0) {
-				int status;
-				waitpid(pid, &status, WNOHANG);
-				printf("\n! EVENT ! THUMB COMPLETE ! %d REMAINING !\n\n", incomplete_thumbs);
-			}
-			incomplete_thumbs++;
-		}
-	}
-
-	end = ecore_time_get();
-	printf("\nFork & Wait completed in %g seconds\n\n", end - start);
-#endif
-
 	return 0;
 }

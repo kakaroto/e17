@@ -32,7 +32,7 @@
 typedef struct _Epsilon_Client Epsilon_Client;
 struct _Epsilon_Client
 {
-	unsigned int         id;
+	unsigned int        id;
 	Ecore_Ipc_Client    *client;
 	Ecore_List          *thumbs;
 
@@ -60,8 +60,8 @@ struct _Epsilon_Worker
 {
 	Ecore_List *thumbs;
 	pid_t child;
+	double runtime;
 	Ecore_Ipc_Server *server;
-	Epsilon_Ipc_End ipcend;
 };
 
 
@@ -75,7 +75,7 @@ struct _Epsilon_Response
 	Epsilon_Message *msg;
 };
 
-static int client_id = 1;
+static unsigned int client_id = 1;
 static int debug = 0;
 static double idle_time = 0;
 static int running_workers = 0;
@@ -107,7 +107,6 @@ int epsilond_cb_worker_add(void *data, int type, void *event);
 int epsilond_cb_worker_del(void *data, int type, void *event);
 int epsilond_cb_worker_data(void *data, int type, void *event);
 
-
 void epsilond_init_thumbd_server(Ecore_List* workers) 
 {
 	char* buf;
@@ -131,12 +130,14 @@ void epsilond_init_thumbd_server(Ecore_List* workers)
 	 */
 	worker_add = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, epsilond_cb_worker_add, workers);
 	worker_del = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, epsilond_cb_worker_del, workers);
-	worker_data = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, epsilond_cb_worker_data, workers);
-
+	worker_data = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, epsilond_cb_worker_data, workers);	
 }
+
+
 
 void epsilond_shutdown_thumbd_server()
 {
+	if (debug) printf("Shutting down server (thumbd)\n");
 	if (thumbd_server) {
 		ecore_ipc_server_del(thumbd_server);
 		thumbd_server = NULL;
@@ -244,6 +245,8 @@ epsilond_cb_client_del(void *data, int type, void *event)
 		ecore_list_next(clients);
 	}
 
+	ecore_ipc_client_del(e->client);
+
 	return 1;
 }
 
@@ -279,9 +282,8 @@ epsilond_cb_worker_del(void *data, int type, void *event)
 		ecore_list_next(workers);
 	}
 
+	ecore_ipc_client_del(e->client);
 	running_workers--;
-	/*if (!running_workers) epsilond_shutdown_thumbd_server();
-	else printf ("**** Worker finished - now %d\n", running_workers);*/
 
 	return 1;
 }
@@ -318,7 +320,9 @@ epsilond_cb_client_data(void *data, int type, void *event)
 	e = event;
 	type = 0;
 
-	if (ecore_ipc_client_server_get(e->client) != thumb_server) return 1;
+	if (ecore_ipc_client_server_get(e->client) != thumb_server)  {
+		return 1;
+	}
 
 	if (debug) printf("!!! client %p sent data\n", e->client);
 
@@ -525,9 +529,11 @@ epsilond_worker_run(void *data)
 		if (ecore_ipc_server_send(worker->server, 1,1,1,1,1,msg,sizeof(Epsilon_Message)+msg->bufsize) < 0) {
 			perror("write");
 		}
-		//ecore_ipc_server_flush(worker->server);
+		ecore_ipc_server_flush(worker->server);
+
+		free(msg);
 	}
-	//ecore_ipc_server_flush(worker->server);
+	ecore_ipc_server_flush(worker->server);
 	ecore_main_loop_quit();
 
 	return 1;
@@ -541,6 +547,7 @@ epsilond_worker_fork(Epsilon_Worker *worker)
 	 */
 	ecore_list_first_goto(worker->thumbs);
 
+	worker->runtime = ecore_time_get();
 	worker->child = fork();
 
 	/*
@@ -548,8 +555,6 @@ epsilond_worker_fork(Epsilon_Worker *worker)
 	 * it's idler.
 	 */
 	if (!worker->child) {
-		char *buf;
-
 		ecore_event_handler_del(client_add);
 		client_add = NULL;
 		ecore_event_handler_del(client_del);
@@ -589,14 +594,13 @@ epsilond_worker_fork(Epsilon_Worker *worker)
 int
 epsilond_idle_enterer(void *data)
 {
-	int idle;
+	int idle=0;
 	Epsilon_Client *cl;
 	Epsilon_Response *response;
 	Epsilon_Worker *worker;
 	Ecore_List *clients = data;
 
 	if (debug) printf("Idle state entered\n");
-
 
 	/*
 	 * Send responses for completed thumbnails
@@ -613,17 +617,16 @@ epsilond_idle_enterer(void *data)
 		}
 
 		if (cl && msg) {
-			if (debug) printf("%ld sending response to %d\n",
-					(long int)getpid(), cl->id);
+			if (debug) printf("%ld sending response to %d (%d)\n",
+					(long int)getpid(), cl->id, msg->mid);
 
 			if (debug) printf("Client %p\n", cl->client);
 			if (ecore_ipc_client_send(cl->client, 1,1,1,1,1,msg,sizeof(Epsilon_Message) + msg->bufsize) < 0)
 				perror("write");
 			free(msg);
 		} else {
-			printf("Client: %p, Msg: %p\n",cl,msg);
+			if (debug) printf("Client: %p, Msg: %p\n",cl,msg);
 		}
-
 		free(response);
 	}
 	if (debug) printf("Finished responses\n");
@@ -651,8 +654,13 @@ epsilond_idle_enterer(void *data)
 				epsilond_worker_clean(worker);
 			}
 			else {
+				if (debug) printf("Moving idle down to %d\n", idle);
 				idle--;
 			}
+
+			if (debug) printf("Worker %d runtime: %f\n", worker->child, ecore_time_get() - worker->runtime);
+		} else {
+			if (debug) printf("Worker child pid not set, thumbs is: %d\n", ecore_list_count(worker->thumbs));
 		}
 	}
 
@@ -672,12 +680,16 @@ epsilond_idle_enterer(void *data)
 		/*
 		 * No worker threads available, so quit trying to do work.
 		 */
-		if (available < 1)
+		if (available < 1) {
+			if (debug) printf("No workers available\n");
 			break;
+		}
 
 	}
 
 	idle = ecore_list_count(queued_workers);
+
+	if (debug) printf("Idle: %d\n", idle);
 
 	/*
 	 * Fork off worker threads to begin thumbnailing.
@@ -692,14 +704,19 @@ epsilond_idle_enterer(void *data)
 				else printf ("**** Added worker - now %d\n", running_workers+1);*/
 				running_workers++;
 				
-				if (!epsilond_worker_fork(worker))
+				if (!epsilond_worker_fork(worker)) {
+					if (debug) printf("Error forking worker %p\n", worker);
 					return 0;
+				}
+			} else {
+				if (debug) printf ("No thumbs to process\n");
 			}
 		}
 		else {
 			idle--;
 		}
 	}
+	if (debug) printf("Idle: %d\n", idle);
 
 	/*
 	 * FIXME: Detect idle time and exit after a specified interval
