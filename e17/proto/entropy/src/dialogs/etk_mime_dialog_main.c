@@ -210,7 +210,8 @@ void _entropy_etk_mime_dialog_application_add_cb(Etk_Object* w, void* user_data)
 		
 		etk_tree_row_fields_get(row, col2, &mime_type, NULL);
 		if (mime_type) {
-			etk_mime_dialog_application_create(mime_type,action);	
+			if ( (edit_action == NULL && isedit == 0) || (edit_action && isedit == 1)) 
+				etk_mime_dialog_application_create(mime_type,action);	
 		}
 	}
 }
