@@ -62,7 +62,6 @@ engrave_program_script_set(Engrave_Program *ep, const char *script)
 {
   if (!ep) return;
   IF_FREE(ep->script);
-  ep->action = ENGRAVE_ACTION_SCRIPT;
   ep->script = (script ? strdup(script) : NULL);
 }
 

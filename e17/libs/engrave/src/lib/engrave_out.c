@@ -394,18 +394,6 @@ _engrave_output_program(Engrave_Program *program, void *data)
             _action_string[action], state, state2);
       break;
 
-    case ENGRAVE_ACTION_SCRIPT:
-      {
-        if (engrave_program_script_get(program))
-        {
-          engrave_out_start(out, "script");
-          /* FIXME scripts are wierd ... */
-          fprintf(out, "%s", engrave_program_script_get(program));
-          engrave_out_end(out);
-        }
-      }
-      break;
-
     case ENGRAVE_ACTION_NUM:
       break;
 
@@ -420,6 +408,14 @@ _engrave_output_program(Engrave_Program *program, void *data)
 
   engrave_program_target_foreach(program, _engrave_program_output_target, out);
   engrave_program_after_foreach(program, _engrave_program_output_after, out);
+
+  if (engrave_program_script_get(program))
+  {
+    engrave_out_start(out, "script");
+    /* FIXME scripts are wierd ... */
+    fprintf(out, "%s", engrave_program_script_get(program));
+    engrave_out_end(out);
+  }
 
   engrave_out_end(out);
 }
