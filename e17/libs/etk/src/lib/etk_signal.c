@@ -1,6 +1,5 @@
 /** @file etk_signal.c */
 #include "etk_signal.h"
-#include <Evas.h>
 #include <stdlib.h>
 #include <string.h>
 #include "etk_type.h"
@@ -514,6 +513,25 @@ Etk_Marshaller etk_signal_marshaller_get(Etk_Signal *signal)
    if (!signal)
       return NULL;
    return signal->marshaller;
+}
+
+/**
+ * @brief Gets a list of all the current signals
+ * @return Returns an Evas_List containing all the signals.
+ */
+Evas_List * etk_signal_get_all()
+{
+   return _etk_signal_signals_list;
+}
+
+/**
+ * @brief Gets the object type of the signal
+ * @param signal a signal
+ * @return Returns the object type of the signal, or NULL on failure
+ */
+const Etk_Type * etk_signal_object_type_get(Etk_Signal *signal)
+{
+   return (signal ? signal->object_type : NULL);
 }
 
 /**

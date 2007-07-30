@@ -3,6 +3,7 @@
 #define _ETK_SIGNAL_H_
 
 #include <stdarg.h>
+#include <Evas.h>
 #include "etk_marshallers.h"
 #include "etk_types.h"
 
@@ -52,6 +53,9 @@ void etk_signal_unblock(const char *signal_name, Etk_Object *object, Etk_Callbac
 Etk_Bool etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_value, ...);
 Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *return_value, ...);
 Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *return_value, va_list args);
+
+Evas_List * etk_signal_get_all();
+const Etk_Type * etk_signal_object_type_get(Etk_Signal *signal);
 
 void etk_signal_stop();
 
