@@ -157,6 +157,7 @@ static void _etk_fixed_constructor(Etk_Fixed *fixed)
       return;
 
    fixed->children = NULL;
+   fixed->clip = NULL;
 
    ETK_CONTAINER(fixed)->child_add = _etk_fixed_child_add;
    ETK_CONTAINER(fixed)->child_remove = _etk_fixed_child_remove;

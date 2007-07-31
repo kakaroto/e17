@@ -35,6 +35,10 @@ struct Etk_Mdi_Area
 Etk_Type   *etk_mdi_area_type_get(void);
 Etk_Widget *etk_mdi_area_new(void);
 
+void        etk_mdi_area_put(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x, int y);
+void        etk_mdi_area_move(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x, int y);
+void        etk_mdi_area_child_position_get(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int *x, int *y);
+
 /** @} */
 
 #endif

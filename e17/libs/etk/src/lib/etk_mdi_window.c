@@ -73,7 +73,7 @@ Etk_Type *etk_mdi_window_type_get(void)
          ETK_CONSTRUCTOR(_etk_mdi_window_constructor), ETK_DESTRUCTOR(_etk_mdi_window_destructor));
 
       _etk_mdi_window_signals[ETK_MDI_WINDOW_MOVED_SIGNAL] = etk_signal_new("moved", mdi_window_type,
-         -1, etk_marshaller_VOID__VOID, NULL, NULL);
+         -1, etk_marshaller_VOID__INT_INT, NULL, NULL);
       _etk_mdi_window_signals[ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete-event", mdi_window_type,
          ETK_MEMBER_OFFSET(Etk_Mdi_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
 
@@ -151,24 +151,18 @@ const char *etk_mdi_window_title_get(Etk_Mdi_Window *mdi_window)
    return mdi_window->title;
 }
 
+/**
+ * @brief Moves a mdi_window to the position (x, y)
+ * @param mdi_window a mdi_window
+ * @param x the x position where to move the mdi_window
+ * @param y the y position where to move the mdi_window
+ */
 void etk_mdi_window_move(Etk_Mdi_Window *mdi_window, int x, int y)
 {
    if (!mdi_window)
       return;
 
-   mdi_window->position.x = x;
-   mdi_window->position.y = y;
-
-   etk_signal_emit(_etk_mdi_window_signals[ETK_MDI_WINDOW_MOVED_SIGNAL], ETK_OBJECT(mdi_window), NULL);
-}
-
-void etk_mdi_window_position_get(Etk_Mdi_Window *mdi_window, int *x, int *y)
-{
-   if (!mdi_window)
-      return;
-
-   if (x) *x = mdi_window->position.x;
-   if (y) *y = mdi_window->position.y;
+   etk_signal_emit(_etk_mdi_window_signals[ETK_MDI_WINDOW_MOVED_SIGNAL], ETK_OBJECT(mdi_window), NULL, x, y);
 }
 
 /**
@@ -178,14 +172,11 @@ void etk_mdi_window_position_get(Etk_Mdi_Window *mdi_window, int *x, int *y)
  */
 void etk_mdi_window_maximized_set(Etk_Mdi_Window *mdi_window, Etk_Bool maximized)
 {
-   if (!mdi_window)
+   if (!mdi_window || mdi_window->maximized == maximized)
       return;
 
-   if (mdi_window->maximized != maximized)
-   {
-      mdi_window->maximized = maximized;
-      etk_object_notify(ETK_OBJECT(mdi_window), "maximized");
-   }
+   mdi_window->maximized = maximized;
+   etk_object_notify(ETK_OBJECT(mdi_window), "maximized");
 }
 
 /**
@@ -228,8 +219,6 @@ static void _etk_mdi_window_constructor(Etk_Mdi_Window *mdi_window)
    if (!mdi_window)
       return;
 
-   mdi_window->position.x = 0;
-   mdi_window->position.y = 0;
    mdi_window->title = NULL;
    mdi_window->maximized = ETK_FALSE;
    mdi_window->dragging = ETK_FALSE;
@@ -346,8 +335,11 @@ static void _etk_mdi_window_titlebar_mouse_down_cb(void *data, Evas *e, Evas_Obj
 
    if (!mdi_window->maximized)
    {
-      mdi_window->drag_offset_x = ev->canvas.x - mdi_window->position.x;
-      mdi_window->drag_offset_y = ev->canvas.y - mdi_window->position.y;
+      int x, y;
+
+      etk_widget_geometry_get(ETK_WIDGET(mdi_window), &x, &y, NULL, NULL);
+      mdi_window->drag_offset_x = ev->canvas.x - x;
+      mdi_window->drag_offset_y = ev->canvas.y - y;
       mdi_window->dragging = ETK_TRUE;
    }
 

@@ -144,7 +144,7 @@ void etk_config_shutdown(void)
    if (_etk_config)
    {
       free(_etk_config->version);
-      if (_etk_config->general);
+      if (_etk_config->general)
       {
          free(_etk_config->general->wm_theme);
          free(_etk_config->general->widget_theme);

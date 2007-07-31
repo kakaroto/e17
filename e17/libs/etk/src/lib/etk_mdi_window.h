@@ -33,7 +33,6 @@ struct Etk_Mdi_Window
    Etk_Bool (*delete_event)(Etk_Mdi_Window *mdi_window);
 
    char *title;
-   Etk_Position position;
    Etk_Bool maximized;
    Etk_Bool dragging;
    int drag_offset_x;
@@ -52,7 +51,6 @@ void        etk_mdi_window_title_set(Etk_Mdi_Window *mdi_window, const char *tit
 const char *etk_mdi_window_title_get(Etk_Mdi_Window *mdi_window);
 
 void        etk_mdi_window_move(Etk_Mdi_Window *mdi_window, int x, int y);
-void        etk_mdi_window_position_get(Etk_Mdi_Window *mdi_window, int *x, int *y);
 
 /*
 void        etk_mdi_window_modal_for_window(Etk_Mdi_Window *window_to_modal, Etk_Mdi_Window *mdi_window);

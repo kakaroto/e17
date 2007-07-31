@@ -30,6 +30,25 @@ void etk_marshaller_VOID__INT(Etk_Callback callback, Etk_Object *object, void *d
    callback_VOID__INT(object, arg1, data);
 }
 
+/* etk_marshaller_VOID__INT_INT */
+void etk_marshaller_VOID__INT_INT(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments)
+{
+   typedef void (*Etk_Callback_VOID__INT_INT)(Etk_Object *object, int arg1, int arg2, void *data);
+   Etk_Callback_VOID__INT_INT callback_VOID__INT_INT;
+   int arg1;
+   int arg2;
+
+   if (!callback || !object)
+      return;
+
+   arg1 = va_arg(arguments, int);
+   arg2 = va_arg(arguments, int);
+
+   callback_VOID__INT_INT = (Etk_Callback_VOID__INT_INT)callback;
+   callback_VOID__INT_INT(object, arg1, arg2, data);
+}
+
+
 /* etk_marshaller_VOID__DOUBLE */
 void etk_marshaller_VOID__DOUBLE(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments)
 {

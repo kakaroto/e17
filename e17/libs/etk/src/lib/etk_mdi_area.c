@@ -10,10 +10,18 @@
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
 
+#include <stdlib.h>
+
 /**
  * @addtogroup Etk_Mdi_Area
  * @{
  */
+
+typedef struct Etk_Mdi_Area_Child
+{
+   Etk_Widget *child;
+   Etk_Position pos;
+} Etk_Mdi_Area_Child;
 
 static void _etk_mdi_area_constructor(Etk_Mdi_Area *mdi_area);
 static void _etk_mdi_area_destructor(Etk_Mdi_Area *mdi_area);
@@ -23,7 +31,7 @@ static void _etk_mdi_area_child_add(Etk_Container *container, Etk_Widget *widget
 static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *widget);
 static Evas_List *_etk_mdi_area_children_get(Etk_Container *container);
 static void _etk_mdi_area_realized_cb(Etk_Object *object, void *data);
-static void _etk_mdi_area_child_moved_cb(Etk_Widget *child, void *data);
+static void _etk_mdi_area_child_moved_cb(Etk_Widget *child, int x, int y, void *data);
 static void _etk_mdi_area_child_maximized_cb(Etk_Object *object, const char *property_name, void *data);
 
 /**************************
@@ -59,6 +67,98 @@ Etk_Widget *etk_mdi_area_new(void)
    return etk_widget_new(ETK_MDI_AREA_TYPE, "theme-group", "mdi_area", NULL);
 }
 
+/**
+ * @brief Puts a new child into the mdi_area container, at the position (x, y)
+ * @param mdi_area a mdi_area container
+ * @param child the child to add
+ * @param x the x position where to put the child
+ * @param y the y position where to put the child
+ */
+void etk_mdi_area_put(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x, int y)
+{
+   Etk_Mdi_Area_Child *c;
+
+   if (!mdi_area || !widget)
+      return;
+
+   c = malloc(sizeof(Etk_Mdi_Area_Child));
+   c->child = widget;
+   c->pos.x = x;
+   c->pos.y = y;
+   mdi_area->children = evas_list_append(mdi_area->children, c);
+   etk_object_data_set(ETK_OBJECT(widget), "_Etk_Mdi_Area::Node", evas_list_last(mdi_area->children));
+
+   if (mdi_area->clip)
+   {
+      etk_widget_clip_set(widget, mdi_area->clip);
+      evas_object_show(mdi_area->clip);
+   }
+
+   if (ETK_IS_MDI_WINDOW(widget))
+   {
+      etk_signal_connect("moved", ETK_OBJECT(widget), ETK_CALLBACK(_etk_mdi_area_child_moved_cb), mdi_area);
+      etk_object_notification_callback_add(ETK_OBJECT(widget), "maximized", _etk_mdi_area_child_maximized_cb, mdi_area);
+   }
+
+   etk_widget_parent_set(widget, ETK_WIDGET(mdi_area));
+   etk_signal_emit_by_name("child-added", ETK_OBJECT(mdi_area), NULL, widget);
+}
+
+/**
+ * @brief Moves an existing child of the mdi_area container to the position (x, y)
+ * @param mdi_area a mdi_area container
+ * @param widget the child to move
+ * @param x the x position where to move the child
+ * @param y the y position where to move the child
+ */
+void etk_mdi_area_move(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x, int y)
+{
+   Evas_List *l;
+   Etk_Mdi_Area_Child *c;
+
+   if (!mdi_area || !widget)
+      return;
+
+   for (l = mdi_area->children; l; l = l->next)
+   {
+      c = l->data;
+      if (c->child == widget)
+      {
+         c->pos.x = x;
+         c->pos.y = y;
+         etk_widget_size_recalc_queue(ETK_WIDGET(mdi_area));
+         break;
+      }
+   }
+}
+
+/**
+ * @brief Gets the position of a child of the mdi_area container
+ * @param mdi_area a mdi_area container
+ * @param widget the child you want the position of
+ * @param x the location where to store the x position of the child (it can be NULL)
+ * @param y the location where to store the y position of the child (it can be NULL)
+ * @note if the child is not contained by the mdi_area container, @a x and @a y will be set to (0, 0)
+ */
+void etk_mdi_area_child_position_get(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int *x, int *y)
+{
+   Evas_List *l;
+   Etk_Mdi_Area_Child *c;
+
+   if (x) *x = 0;
+   if (y) *y = 0;
+
+   if (!mdi_area || !widget)
+      return;
+
+   if ((l = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Mdi_Area::Node")))
+   {
+      c = l->data;
+      if (x) *x = c->pos.x;
+      if (y) *y = c->pos.y;
+   }
+}
+
 /**************************
  *
  * Etk specific functions
@@ -72,6 +172,7 @@ static void _etk_mdi_area_constructor(Etk_Mdi_Area *mdi_area)
       return;
 
    mdi_area->children = NULL;
+   mdi_area->clip = NULL;
 
    ETK_WIDGET(mdi_area)->size_request = _etk_mdi_area_size_request;
    ETK_WIDGET(mdi_area)->size_allocate = _etk_mdi_area_size_allocate;
@@ -91,6 +192,7 @@ static void _etk_mdi_area_destructor(Etk_Mdi_Area *mdi_area)
 
    while (mdi_area->children)
    {
+      free(mdi_area->children->data);
       mdi_area->children = evas_list_remove_list(mdi_area->children, mdi_area->children);
    }
 }
@@ -99,10 +201,9 @@ static void _etk_mdi_area_destructor(Etk_Mdi_Area *mdi_area)
 static void _etk_mdi_area_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
 {
    Etk_Mdi_Area *mdi_area;
-   Etk_Widget *c;
+   Etk_Mdi_Area_Child *c;
    Etk_Size child_size;
    Evas_List *l;
-   int x, y;
 
    if (!(mdi_area = ETK_MDI_AREA(widget)) || !size_requisition)
       return;
@@ -113,12 +214,9 @@ static void _etk_mdi_area_size_request(Etk_Widget *widget, Etk_Size *size_requis
    for (l = mdi_area->children; l; l = l->next)
    {
       c = l->data;
-
-      etk_mdi_window_position_get(ETK_MDI_WINDOW(c), &x, &y);
-      etk_widget_size_request(c, &child_size);
-
-      size_requisition->w = ETK_MAX(size_requisition->w, x + child_size.w);
-      size_requisition->h = ETK_MAX(size_requisition->h, y + child_size.h);
+      etk_widget_size_request(c->child, &child_size);
+      size_requisition->w = ETK_MAX(size_requisition->w, c->pos.x + child_size.w);
+      size_requisition->h = ETK_MAX(size_requisition->h, c->pos.y + child_size.h);
    }
 
    size_requisition->w += 2 * ETK_CONTAINER(mdi_area)->border_width;
@@ -129,11 +227,10 @@ static void _etk_mdi_area_size_request(Etk_Widget *widget, Etk_Size *size_requis
 static void _etk_mdi_area_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Mdi_Area *mdi_area;
-   Etk_Widget *c;
+   Etk_Mdi_Area_Child *c;
    Etk_Size child_size;
    Etk_Geometry child_geometry;
    Evas_List *l;
-   int x, y;
 
    if (!(mdi_area = ETK_MDI_AREA(widget)))
       return;
@@ -149,50 +246,29 @@ static void _etk_mdi_area_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
    for (l = mdi_area->children; l; l = l->next)
    {
       c = l->data;
-
-      etk_mdi_window_position_get(ETK_MDI_WINDOW(c), &x, &y);
-      etk_widget_size_request(c, &child_size);
-
-      if (!ETK_MDI_WINDOW(c)->maximized)
-      {
-         child_geometry.x = geometry.x + x;
-         child_geometry.y = geometry.y + y;
-         child_geometry.w = child_size.w;
-         child_geometry.h = child_size.h;
-      }
-      else
+      etk_widget_size_request(c->child, &child_size);
+      if (ETK_IS_MDI_WINDOW(c->child) && ETK_MDI_WINDOW(c->child)->maximized)
       {
          child_geometry.x = geometry.x;
          child_geometry.y = geometry.y;
          child_geometry.w = geometry.w;
          child_geometry.h = geometry.h;
       }
-
-      etk_widget_size_allocate(c, child_geometry);
+      else
+      {
+         child_geometry.x = geometry.x + c->pos.x;
+         child_geometry.y = geometry.y + c->pos.y;
+         child_geometry.w = child_size.w;
+         child_geometry.h = child_size.h;
+      }
+      etk_widget_size_allocate(c->child, child_geometry);
    }
 }
 
 /* Adds a child to the mdi_area container */
 static void _etk_mdi_area_child_add(Etk_Container *container, Etk_Widget *widget)
 {
-   Etk_Mdi_Area *mdi_area;
-
-   if (!(mdi_area = ETK_MDI_AREA(container)) || !widget || !ETK_IS_MDI_WINDOW(widget))
-      return;
-
-   mdi_area->children = evas_list_append(mdi_area->children, widget);
-
-   if (mdi_area->clip)
-   {
-      etk_widget_clip_set(widget, mdi_area->clip);
-      evas_object_show(mdi_area->clip);
-   }
-
-   etk_widget_parent_set(widget, ETK_WIDGET(mdi_area));
-   etk_signal_connect("moved", ETK_OBJECT(widget), ETK_CALLBACK(_etk_mdi_area_child_moved_cb), mdi_area);
-   etk_object_notification_callback_add(ETK_OBJECT(widget), "maximized", _etk_mdi_area_child_maximized_cb, mdi_area);
-   etk_signal_emit_by_name("child-added", ETK_OBJECT(mdi_area), NULL, widget);
-   etk_object_notify(ETK_OBJECT(mdi_area), "child");
+   etk_mdi_area_put(ETK_MDI_AREA(container), widget, 0, 0);
 }
 
 /* Removes the child from the mdi_area container */
@@ -204,26 +280,26 @@ static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *wid
    if (!(mdi_area = ETK_MDI_AREA(container)) || !widget)
       return;
 
-   for (l = mdi_area->children; l; l = l->next)
+   if ((l = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Mdi_Area::Node")))
    {
-      if (l->data == widget)
+      free(l->data);
+      etk_object_data_set(ETK_OBJECT(widget), "_Etk_Mdi_Area::Node", NULL);
+      mdi_area->children = evas_list_remove_list(mdi_area->children, l);
+
+      if (mdi_area->clip)
       {
-         mdi_area->children = evas_list_remove_list(mdi_area->children, l);
+         etk_widget_clip_unset(widget);
+         if (!mdi_area->children)
+            evas_object_hide(mdi_area->clip);
+      }
 
-         if (mdi_area->clip)
-         {
-            etk_widget_clip_unset(widget);
-            if (!mdi_area->children)
-               evas_object_hide(mdi_area->clip);
-         }
-
+      if (ETK_IS_MDI_WINDOW(widget))
+      {
          etk_signal_disconnect("moved", ETK_OBJECT(widget), ETK_CALLBACK(_etk_mdi_area_child_moved_cb));
          etk_object_notification_callback_remove(ETK_OBJECT(widget), "maximized", _etk_mdi_area_child_maximized_cb);
-
-         etk_signal_emit_by_name("child-removed", ETK_OBJECT(mdi_area), NULL, widget);
-         etk_object_notify(ETK_OBJECT(mdi_area), "child");
-         break;
       }
+
+      etk_signal_emit_by_name("child-removed", ETK_OBJECT(mdi_area), NULL, widget);
    }
 }
 
@@ -231,7 +307,7 @@ static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *wid
 static Evas_List *_etk_mdi_area_children_get(Etk_Container *container)
 {
    Etk_Mdi_Area *mdi_area;
-   Etk_Widget *c;
+   Etk_Mdi_Area_Child *c;
    Evas_List *children, *l;
 
    if (!(mdi_area = ETK_MDI_AREA(container)))
@@ -241,7 +317,7 @@ static Evas_List *_etk_mdi_area_children_get(Etk_Container *container)
    for (l = mdi_area->children; l; l = l->next)
    {
       c = l->data;
-      children = evas_list_append(children, c);
+      children = evas_list_append(children, c->child);
    }
    return children;
 }
@@ -256,7 +332,7 @@ static Evas_List *_etk_mdi_area_children_get(Etk_Container *container)
 static void _etk_mdi_area_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Mdi_Area *mdi_area;
-   Etk_Widget *c;
+   Etk_Mdi_Area_Child *c;
    Evas_List *l;
    Evas *evas;
 
@@ -269,31 +345,21 @@ static void _etk_mdi_area_realized_cb(Etk_Object *object, void *data)
    for (l = mdi_area->children; l; l = l->next)
    {
       c = l->data;
-      etk_widget_clip_set(c, mdi_area->clip);
+      etk_widget_clip_set(c->child, mdi_area->clip);
    }
 
    if (mdi_area->children)
       evas_object_show(mdi_area->clip);
 }
 
-static void _etk_mdi_area_child_moved_cb(Etk_Widget *child, void *data)
+static void _etk_mdi_area_child_moved_cb(Etk_Widget *child, int x, int y, void *data)
 {
-   Etk_Mdi_Area *mdi_area;
-
-   if (!(mdi_area = ETK_MDI_AREA(data)))
-      return;
-
-   etk_widget_size_recalc_queue(ETK_WIDGET(mdi_area));
+   etk_mdi_area_move(ETK_MDI_AREA(data), child, x, y);
 }
 
 static void _etk_mdi_area_child_maximized_cb(Etk_Object *object, const char *property_name, void *data)
 {
-   Etk_Mdi_Area *mdi_area;
-
-   if (!(mdi_area = ETK_MDI_AREA(data)))
-      return;
-
-   etk_widget_size_recalc_queue(ETK_WIDGET(mdi_area));
+   etk_widget_size_recalc_queue(ETK_WIDGET(data));
 }
 
 /** @} */
@@ -306,6 +372,19 @@ static void _etk_mdi_area_child_maximized_cb(Etk_Object *object, const char *pro
 
 /**
  * @addtogroup Etk_Mdi_Area
+ *
+ * Etk_Mdi_Area allows you to easily position mdi_windows and/or other widgets at fixed coordinates. The children will have the same size as their
+ * requested-size (unless a mdi_window is maximized). So to force a child to have a fixed size, you can call etk_widget_size_request_set() on the child. @n
+ * Fox example, to put a mdi_window at the position (20, 30), with the size 100x30:
+ * @code
+ * Etk_Widget *mdi_area;
+ * Etk_Widget *mdi_window;
+ *
+ * mdi_area = etk_mdi_area_new();
+ * mdi_window = etk_mdi_window_new();
+ * etk_mdi_area_put(ETK_MDI_AREA(mdi_area), mdi_window, 20, 30);
+ * etk_widget_size_request_set(mdi_window, 100, 30);
+ * @endcode @n
  *
  * \par Object Hierarchy:
  * - Etk_Object
