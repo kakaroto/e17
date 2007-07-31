@@ -1762,6 +1762,11 @@ ewl_embed_freeze(Ewl_Embed *e)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
+	/*
+	 * Global freeze on theme events while theme's are being manipulated.
+	 */
+	ewl_engine_theme_freeze(e);
+
 	ewl_engine_canvas_freeze(e);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1779,6 +1784,10 @@ ewl_embed_thaw(Ewl_Embed *e)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
+	/*
+	 * Thaw the theme and canvas for this embed.
+	 */
+	ewl_engine_theme_thaw(e);
 	ewl_engine_canvas_thaw(e);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1803,6 +1812,7 @@ ewl_embed_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_EMBED_TYPE);
 
 	emb = EWL_EMBED(w);
+
 	ewl_embed_freeze(emb);
 
 	if (!emb->ev_clip) {

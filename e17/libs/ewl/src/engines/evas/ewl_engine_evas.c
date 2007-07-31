@@ -6,6 +6,8 @@
 
 #include <Evas.h>
 
+#include <Edje.h>
+
 static Evas_Smart *widget_smart = NULL;
 
 static int ee_init(Ewl_Engine *engine);
@@ -37,7 +39,9 @@ static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
 
 static void *theme_funcs[EWL_ENGINE_THEME_MAX] =
 	{
-		NULL, NULL, NULL,
+		edje_freeze,
+		edje_thaw,
+		edje_file_data_get,
 		ee_canvas_smart_new,
 		NULL,
 		evas_object_del,

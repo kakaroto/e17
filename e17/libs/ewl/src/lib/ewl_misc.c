@@ -145,8 +145,6 @@ ewl_backtrace(void)
 int
 ewl_init(int *argc, char **argv)
 {
-	int frozen = FALSE;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/* check if we are already initialized */
@@ -194,12 +192,6 @@ ewl_init(int *argc, char **argv)
 		goto ERROR;
 	}
 	ecore_list_prepend(shutdown_queue, edje_shutdown);
-
-	/*
-	 * Global freeze on edje events while edje's are being manipulated.
-	 */
-	edje_freeze();
-	frozen = TRUE;
 
 	reveal_list = ecore_list_new();
 	obscure_list = ecore_list_new();
@@ -304,7 +296,6 @@ ewl_init(int *argc, char **argv)
 	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 
 ERROR:
-	if (frozen) edje_thaw();
 	ewl_shutdown();
 
 	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
@@ -450,7 +441,8 @@ ewl_idle_render(void *data __UNUSED__)
 	 */
 	ecore_list_first_goto(ewl_embed_list);
 	while ((emb = ecore_list_next(ewl_embed_list)) != NULL)
-		ewl_embed_freeze(emb);
+		if (REALIZED(emb))
+			ewl_embed_freeze(emb);
 
 	/*
 	 * Clean out the unused widgets first, to avoid them being drawn or
@@ -495,11 +487,6 @@ ewl_idle_render(void *data __UNUSED__)
 	}
 
 	/*
-	 * Our work is done, allow edje events to be triggered.
-	 */
-	edje_thaw();
-
-	/*
 	 * Allow each embed to render itself, this requires thawing the evas.
 	 */
 	ecore_list_first_goto(ewl_embed_list);
@@ -521,11 +508,6 @@ ewl_idle_render(void *data __UNUSED__)
 						ecore_time_get() - render_time);
 		}
 	}
-
-	/*
-	 * Global freeze on edje events while edje's are being manipulated.
-	 */
-	edje_freeze();
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

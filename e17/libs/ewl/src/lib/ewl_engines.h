@@ -215,6 +215,10 @@ void		 ewl_engine_canvas_thaw(Ewl_Embed *embed);
 void		 ewl_engine_canvas_damage_add(Ewl_Embed *embed, int x, int y, 
 								int w, int h);
 
+void		 ewl_engine_theme_freeze(Ewl_Embed *embed);
+void		 ewl_engine_theme_thaw(Ewl_Embed *embed);
+char		*ewl_engine_theme_data_get(Ewl_Widget *w, char *key);
+
 int 		 ewl_engine_pointer_data_new(Ewl_Embed *embed,
 						unsigned int *data, int w, int h);
 void		 ewl_engine_pointer_free(Ewl_Embed *embed, int pointer);
@@ -280,7 +284,7 @@ typedef void  (*Ewl_Engine_Cb_Canvas_Damage_Add)(Ewl_Embed *embed,
 						int x, int y, int w, int h);
 typedef void  (*Ewl_Engine_Cb_Theme_Freeze)();
 typedef void  (*Ewl_Engine_Cb_Theme_Thaw)();
-typedef char *(*Ewl_Engine_Cb_Theme_Data_Get)(char *path, char *key);
+typedef char *(*Ewl_Engine_Cb_Theme_Data_Get)(const char *path, char *key);
 typedef void *(*Ewl_Engine_Cb_Theme_Widget_Group)(Ewl_Widget *w);
 typedef void *(*Ewl_Engine_Cb_Theme_Object_Add)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Theme_Object_Del)(void *obj);

@@ -1152,23 +1152,55 @@ ewl_engine_theme_thaw(Ewl_Embed *embed)
 }
 
 /**
+ * @param embed: Embed used to lookup the current theme key.
+ * @return Returns no value
+ * @brief Fetch data from the theme system
+ */
+char *
+ewl_engine_theme_data_get(Ewl_Widget *w, char *key)
+{
+	Ewl_Embed *embed;
+	Ewl_Engine_Cb_Theme_Data_Get theme_data_get;
+	char *value = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+
+	embed = ewl_embed_widget_find(w);
+	if (embed) {
+		theme_data_get = ewl_engine_hook_get(embed, 
+						EWL_ENGINE_HOOK_TYPE_THEME,
+						EWL_ENGINE_THEME_DATA_GET);
+		if (theme_data_get)
+			value = theme_data_get(ewl_theme_path_get(), key);
+	}
+
+	DRETURN_PTR(value, DLEVEL_STABLE);
+}
+
+/**
  * @return Returns a new object group on success, NULL on failure
  * @brief Create a grouping for theme objects.
  */
 void *
 ewl_engine_theme_widget_group(Ewl_Widget *w)
 {
+	Ewl_Embed *embed;
 	Ewl_Engine_Cb_Theme_Widget_Group theme_widget_group;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
-	theme_widget_group = ewl_engine_hook_get(EWL_EMBED(w),
-					EWL_ENGINE_HOOK_TYPE_THEME,
-					EWL_ENGINE_THEME_WIDGET_GROUP);
-	if (theme_widget_group)
-		DRETURN_PTR(theme_widget_group(w), DLEVEL_STABLE);
+	embed = ewl_embed_widget_find(w);
+	if (embed) {
+		theme_widget_group = ewl_engine_hook_get(embed,
+						EWL_ENGINE_HOOK_TYPE_THEME,
+						EWL_ENGINE_THEME_WIDGET_GROUP);
+		if (theme_widget_group)
+			DRETURN_PTR(theme_widget_group(w), DLEVEL_STABLE);
+	}
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
