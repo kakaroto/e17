@@ -646,7 +646,7 @@ static void _etk_notebook_tab_bar_size_allocate(Etk_Widget *widget, Etk_Geometry
    if (geometry.w >= requested_size.w)
       ratio = 1.0;
    else
-      ratio = (float)requested_size.w / geometry.w;
+      ratio = (float)geometry.w / requested_size.w;
    
    tab_geometry.x = geometry.x;
    tab_geometry.y = geometry.y;
