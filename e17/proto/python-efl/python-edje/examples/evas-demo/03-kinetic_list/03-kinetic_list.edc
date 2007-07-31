@@ -1,0 +1,115 @@
+fonts {
+  font: "VeraBd.ttf" "Font Item";
+}
+
+images {
+  image: "listitem.png" COMP;
+  image: "background.png" LOSSY 95;
+}
+
+collections {
+   group {
+      name: "main";
+
+      parts {
+         part {
+            name: "background";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0 0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+               image.normal: "background.png";
+            }
+         }
+         part {
+             name: "list";
+             type: SWALLOW;
+             description {
+                 state: "default" 0.0;
+                 rel1 {
+                     relative: 0 0;
+                     offset: 10 10;
+                 }
+                 rel2 {
+                     relative: 1 1;
+                     offset: -11 -11;
+                 }
+             }
+         }
+      }
+  }
+   group {
+      name: "list_item";
+      parts {
+         part {
+            name: "item_background";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 1 1;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -2 -2;
+               }
+               image {
+                   normal: "listitem.png";
+                   border: 5 5 5 5;
+               }
+            }
+         }
+         part {
+             name: "thumbnail";
+             type: SWALLOW;
+             description {
+                 state: "default" 0.0;
+                 min: 100 75;
+                 max: 100 75;
+                 rel1 {
+                     to: "item_background";
+                     relative: 0 0.5;
+                     offset: 120 2;
+                 }
+                 rel2 {
+                     to: "item_background";
+                     relative: 0 0.5;
+                 }
+             }
+         }
+         part {
+            name: "label";
+            type: TEXT;
+            description {
+                state: "default" 0.0;
+                rel1 {
+                    to: "item_background";
+                    relative: 0 0.5;
+                    offset: 130 0;
+                }
+                rel2 {
+                    to: "item_background";
+                    relative: 0 0.5;
+                }
+                align: 0 0.5;
+                color: 0 0 0 255;
+                color2: 225 225 225 128;
+                text {
+                    font: "Font Item";
+                    size: 40;
+                    text: "Audio";
+                    min: 1 1;
+                }
+             }
+          }
+       }
+    }
+}
