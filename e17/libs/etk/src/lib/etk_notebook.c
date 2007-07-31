@@ -21,7 +21,8 @@ enum Etk_Notebook_Signal_Id
 
 enum Etk_Notebook_Property_Id
 {
-   ETK_NOTEBOOK_TABS_VISIBLE_PROPERTY
+   ETK_NOTEBOOK_TABS_VISIBLE_PROPERTY,
+   ETK_NOTEBOOK_TABS_HOMOGENEOUS_PROPERTY
 };
 
 static void _etk_notebook_constructor(Etk_Notebook *notebook);
@@ -75,6 +76,8 @@ Etk_Type *etk_notebook_type_get(void)
       
       etk_type_property_add(notebook_type, "tabs-visible", ETK_NOTEBOOK_TABS_VISIBLE_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      etk_type_property_add(notebook_type, "tabs-homogeneous", ETK_NOTEBOOK_TABS_HOMOGENEOUS_PROPERTY,
+            ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       
       notebook_type->property_set = _etk_notebook_property_set;
       notebook_type->property_get = _etk_notebook_property_get;
@@ -472,6 +475,33 @@ Etk_Bool etk_notebook_tabs_visible_get(Etk_Notebook *notebook)
    return notebook->tab_bar_visible;
 }
 
+/**
+ * @brief Sets whether the tab-bar tabs must have the same size or not
+ * @param notebook a notebook
+ * @param tabs_homogeneous if @a tabs_homogeneous is ETK_TRUE, the tab-bar tabs will have the same size.
+ */
+void etk_notebook_tabs_homogeneous_set(Etk_Notebook *notebook, Etk_Bool tabs_homogeneous)
+{
+   if (!notebook || notebook->tab_bar_homogeneous == tabs_homogeneous)
+      return;
+
+   notebook->tab_bar_homogeneous = tabs_homogeneous;
+   etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
+   etk_object_notify(ETK_OBJECT(notebook), "tabs-homogeneous");
+}
+
+/**
+ * @brief Gets whether or not the tab-bar tabs must have the same size
+ * @param notebook a notebook
+ * @return Returns ETK_TRUE if the tab bar tabs must have the same size, ETK_FALSE otherwise
+ */
+Etk_Bool etk_notebook_tabs_homogeneous_get(Etk_Notebook *notebook)
+{
+   if (!notebook)
+      return ETK_FALSE;
+   return notebook->tab_bar_homogeneous;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -488,6 +518,7 @@ static void _etk_notebook_constructor(Etk_Notebook *notebook)
    notebook->current_page = NULL;
    notebook->tab_bar_focused = ETK_FALSE;
    notebook->tab_bar_visible = ETK_TRUE;
+   notebook->tab_bar_homogeneous = ETK_FALSE;
    
    _etk_notebook_tab_bar_create(notebook);
    
@@ -528,6 +559,9 @@ static void _etk_notebook_property_set(Etk_Object *object, int property_id, Etk_
       case ETK_NOTEBOOK_TABS_VISIBLE_PROPERTY:
          etk_notebook_tabs_visible_set(notebook, etk_property_value_bool_get(value));
          break;
+      case ETK_NOTEBOOK_TABS_HOMOGENEOUS_PROPERTY:
+         etk_notebook_tabs_homogeneous_set(notebook, etk_property_value_bool_get(value));
+         break;
       default:
          break;
    }
@@ -545,6 +579,9 @@ static void _etk_notebook_property_get(Etk_Object *object, int property_id, Etk_
    {
       case ETK_NOTEBOOK_TABS_VISIBLE_PROPERTY:
          etk_property_value_bool_set(value, notebook->tab_bar_visible);
+         break;
+      case ETK_NOTEBOOK_TABS_HOMOGENEOUS_PROPERTY:
+         etk_property_value_bool_set(value, notebook->tab_bar_homogeneous);
          break;
       default:
          break;
@@ -623,9 +660,15 @@ static void _etk_notebook_tab_bar_size_request(Etk_Widget *widget, Etk_Size *siz
    {
       p = l->data;
       etk_widget_size_request(p->tab, &tab_size);
-      size->w += tab_size.w;
+      if (notebook->tab_bar_homogeneous)
+         size->w = ETK_MAX(size->w, tab_size.w);
+      else
+         size->w += tab_size.w;
       size->h = ETK_MAX(size->h, tab_size.h);
    }
+
+   if (notebook->tab_bar_homogeneous)
+      size->w *= evas_list_count(notebook->pages);
 }
 
 /* Resizes the notebook's tab-bar to the allocated size */
@@ -635,28 +678,48 @@ static void _etk_notebook_tab_bar_size_allocate(Etk_Widget *widget, Etk_Geometry
    Etk_Size requested_size;
    Etk_Size tab_size;
    Etk_Geometry tab_geometry;
-   float ratio;
+   int tab_w = 0;
+   int extra = 0;
+   float ratio = 0;
    Etk_Notebook_Page *p;
    Evas_List *l;
    
    if (!widget || !(notebook = ETK_NOTEBOOK(etk_object_data_get(ETK_OBJECT(widget), "_Etk_Notebook::Notebook"))))
       return;
    
-   etk_widget_size_request(widget, &requested_size);
-   if (geometry.w >= requested_size.w)
-      ratio = 1.0;
+   if (notebook->tab_bar_homogeneous)
+   {
+      int count;
+
+      count = evas_list_count(notebook->pages);
+      tab_w = geometry.w / count;
+      extra = geometry.w % count;
+   }
    else
-      ratio = (float)geometry.w / requested_size.w;
-   
+   {
+      etk_widget_size_request(widget, &requested_size);
+      if (geometry.w >= requested_size.w)
+         ratio = 1.0;
+      else
+         ratio = (float)geometry.w / requested_size.w;
+   }
+
    tab_geometry.x = geometry.x;
    tab_geometry.y = geometry.y;
    tab_geometry.h = geometry.h;
-   
+
    for (l = notebook->pages; l; l = l->next)
    {
       p = l->data;
       etk_widget_size_request(p->tab, &tab_size);
-      tab_geometry.w = tab_size.w * ratio;
+      if (notebook->tab_bar_homogeneous)
+      {
+         tab_geometry.w = tab_w;
+         if (!l->next)
+            tab_geometry.w += extra;
+      }
+      else
+         tab_geometry.w = tab_size.w * ratio;
       etk_widget_size_allocate(p->tab, tab_geometry);
       tab_geometry.x += tab_geometry.w;
    }
