@@ -42,19 +42,19 @@ exit_cb (void *ev, int ev_type, void *data)
   return (0);
 }
 
+/*
 static void
 bg_key_down_cb (void *data, Evas * evas, Evas_Object * obj, void *event_info)
 {
   printf ("key down\n");
-
 }
 
 static void
 bg_key_up_cb (void *data, Evas * evas, Evas_Object * obj, void *event_info)
 {
   printf ("key up\n");
-
 }
+*/
 
 void key_data (void *data, const char *str)
 {
