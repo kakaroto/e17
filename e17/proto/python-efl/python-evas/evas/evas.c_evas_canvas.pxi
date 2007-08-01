@@ -258,7 +258,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         evas_image_cache_set(self.obj, size)
 
     def image_cache_get(self):
-        evas_image_cache_get(self.obj)
+        return evas_image_cache_get(self.obj)
 
     property image_cache:
         def __get__(self):
