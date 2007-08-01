@@ -98,6 +98,8 @@ void __etk_perl_init() {
 	__("Etk_Iconbox_Grid",		"Etk::Iconbox::Grid");
 	__("Etk_Image",		"Etk::Image");
 	__("Etk_Label",		"Etk::Label");
+	__("Etk_Mdi_Window",		"Etk::Mdi::Window");
+	__("Etk_Mdi_Area",		"Etk::Mdi::Area");
 	__("Etk_Menu",		"Etk::Menu");
 	__("Etk_Menu_Bar",		"Etk::Menu::Bar");
 	__("Etk_Menu_Item",		"Etk::Menu::Item");
@@ -190,6 +192,8 @@ void __etk_perl_init() {
 						__("PopupWindow", "Window");
 						__("Drag", "Window");
 				__("Viewport", "Bin");
+				__("Mdi::Window", "Bin");
+			__("Mdi::Area", "Container");
 			__("Box", "Container");
 				__("Toolbar", "Box");
 				__("HBox", "Box");
