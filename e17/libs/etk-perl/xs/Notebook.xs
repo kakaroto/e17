@@ -154,4 +154,16 @@ etk_notebook_tabs_visible_get(notebook)
       ALIAS:
 	TabsVisibleGet=1
 
+void
+etk_notebook_tabs_homogeneous_set(notebook, tabs_homogeneous)
+	Etk_Notebook * notebook
+	Etk_Bool tabs_homogeneous
+	ALIAS:
+	TabsHomogeneousSet=1
+
+Etk_Bool
+etk_notebook_tabs_homogeneous_get(notebook)
+	Etk_Notebook * notebook
+	ALIAS:
+	TabsHomogeneousGet=1
 
