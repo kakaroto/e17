@@ -218,7 +218,12 @@ static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event
 
 		if (file) {
 			printf("Deleting '%s'...\n", file->file->filename);
-			entropy_etk_delete_dialog_new(file->file, (entropy_gui_component_instance*)data);
+			
+			if (key_event->modifiers & ETK_MODIFIER_SHIFT) {
+				entropy_plugin_filesystem_file_remove(file->file, (entropy_gui_component_instance*)data);
+			} else {
+				entropy_etk_delete_dialog_new(file->file, (entropy_gui_component_instance*)data);
+			}
 		}
 
 	  }
