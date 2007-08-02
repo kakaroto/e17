@@ -57,7 +57,7 @@ int		 ewl_password_init(Ewl_Password *e);
 
 void		 ewl_password_text_set(Ewl_Password *e, const char *t);
 char		*ewl_password_text_get(Ewl_Password *e);
-void         ewl_password_clear(Ewl_Password *e);
+void		 ewl_password_clear(Ewl_Password *e);
 
 void		 ewl_password_obscure_set(Ewl_Password *e, char o);
 char		 ewl_password_obscure_get(Ewl_Password *e);
