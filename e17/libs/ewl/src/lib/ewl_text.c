@@ -168,7 +168,7 @@ ewl_text_length_get(Ewl_Text *t)
  * limit will be deleted.
  */
 void
-ewl_text_maximum_length_set(Ewl_Text *t, unsigned int char_num)
+ewl_text_length_maximum_set(Ewl_Text *t, unsigned int char_num)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -198,7 +198,7 @@ ewl_text_maximum_length_set(Ewl_Text *t, unsigned int char_num)
  * @brief Retrieve if maximum number of characters
  */
 unsigned int
-ewl_text_maximum_length_get(Ewl_Text *t)
+ewl_text_length_maximum_get(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, 0);
