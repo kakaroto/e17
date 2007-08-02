@@ -110,7 +110,7 @@ TextDrawRotBack(Win win, Drawable dst, Drawable src, int x, int y,
 	break;
      case FONT_TO_DOWN:
 	EXGetGeometry(dst, NULL, NULL, NULL, &win_w, NULL, NULL, NULL);
-	im = EImageGrabDrawable(src, None, 0, 0, 0, w, h);
+	im = EImageGrabDrawable(src, None, 0, 0, w, h, 0);
 	EImageOrientate(im, 1);
 	EImageRenderOnDrawable(im, win, dst, 0, win_w - y - h, x, h, w);
 	EImageFree(im);
