@@ -114,7 +114,7 @@ ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
 
-	e->multiline = multiline;
+	e->multiline = !!multiline;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -147,10 +147,10 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
 
-	if (e->editable == editable)
+	if (e->editable == !!editable)
 		DRETURN(DLEVEL_STABLE);
 
-	e->editable = editable;
+	e->editable = !!editable;
 
 	if (e->editable)
 	{

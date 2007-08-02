@@ -57,9 +57,9 @@ struct Ewl_Entry
 	Ewl_Text	 text;			/**< The Ewl_Text parent */
 	Ewl_Widget	*cursor;		/**< The cursor */
 
-	unsigned int	 multiline;		/**< Is the entry multi-line */
-	unsigned int	 editable;		/**< Is the entry editable */
-	unsigned int	 in_select_mode;	/**< Are we in select mode */
+	unsigned int	 multiline:1;		/**< Is the entry multi-line */
+	unsigned int	 editable:1;		/**< Is the entry editable */
+	unsigned int	 in_select_mode:1;	/**< Are we in select mode */
 };
 
 Ewl_Widget	*ewl_entry_new(void);
