@@ -47,7 +47,10 @@ static char *_text_effect_string[ENGRAVE_TEXT_EFFECT_NUM] = {
         "SHADOW",
         "OUTLINE_SHADOW",
         "SOFT_SHADOW",
-        "OUTLINE_SOFT_SHADOW"
+        "OUTLINE_SOFT_SHADOW",
+        "FAR_SHADOW",
+        "FAR_SOFT_SHADOW",
+        "GLOW"
         };
 
 static char *_action_string[ENGRAVE_ACTION_NUM] = {

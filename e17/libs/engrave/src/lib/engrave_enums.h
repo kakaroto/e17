@@ -64,6 +64,9 @@ enum _Engrave_Text_Effect
   ENGRAVE_TEXT_EFFECT_OUTLINE_SHADOW, /**< Outlined and shadowed text */
   ENGRAVE_TEXT_EFFECT_SOFT_SHADOW, /**< Soft shadowed text */
   ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW, /**< Outlined and soft shadowed text */
+  ENGRAVE_TEXT_EFFECT_FAR_SHADOW, /**< far shadowed text */
+  ENGRAVE_TEXT_EFFECT_FAR_SOFT_SHADOW, /**< far and soft shadowed text */
+  ENGRAVE_TEXT_EFFECT_GLOW, /**< glowing text */
   ENGRAVE_TEXT_EFFECT_NUM
 };
 
