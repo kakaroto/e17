@@ -470,7 +470,7 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line)
 	else if (!strcmp (result, "SEARCH"))
 	  {
 	     ic->config->num_new = elements (value);
-	     printf ("New mail: %d\n", ic->config->num_new);
+	     printf ("New mail (%s:%s): %d\n", ic->config->host, ic->config->new_path, ic->config->num_new);
 	  }
 	else
 	  {
@@ -555,6 +555,10 @@ _mail_imap_server_idle (ImapClient *ic)
    len = snprintf (out, sizeof (out), "DONE\r\n");
    ecore_con_server_send (ic->server, out, len);
    ic->idling = 0;
+ 
+   //ic->state = IMAP_STATE_SEARCH_UNSEEN;
+   //ic->state = IMAP_STATE_SEARCH_RECENT;
+   ic->state = IMAP_STATE_SEARCH_NEW;
 }
 
 static void
@@ -565,6 +569,10 @@ _mail_imap_server_noop (ImapClient *ic)
 
    len = snprintf (out, sizeof (out), "A%04i NOOP\r\n", ic->cmd++);
    ecore_con_server_send (ic->server, out, len);
+ 
+   //ic->state = IMAP_STATE_SEARCH_UNSEEN;
+   //ic->state = IMAP_STATE_SEARCH_RECENT;
+   ic->state = IMAP_STATE_SEARCH_NEW;
 }
 
 static int
