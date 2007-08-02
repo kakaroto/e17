@@ -74,6 +74,7 @@ struct Ewl_Text
 	{
 		unsigned int chars; 	/**< Number of characters in the text */
 		unsigned int bytes; 	/**< Number of bytes in the text */
+		unsigned int max_chars; /**< Maximal number of characters in the text */
 	} length; 			/**< Different text lengths */
 
 	unsigned int total_size; 	/**< The total size we've alloc'd for text */
@@ -105,6 +106,9 @@ Ewl_Widget 	*ewl_text_new(void);
 int 		 ewl_text_init(Ewl_Text *t);
 
 unsigned int	 ewl_text_length_get(Ewl_Text *t);
+void		 ewl_text_length_maximum_set(Ewl_Text *t, 
+						unsigned int char_num);
+unsigned int	 ewl_text_length_maximum_get(Ewl_Text *t);
 
 void 		 ewl_text_offsets_set(Ewl_Text *t, int x, int y);
 void 		 ewl_text_offsets_get(Ewl_Text *t, int *x, int *y);

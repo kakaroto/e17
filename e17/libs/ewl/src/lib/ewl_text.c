@@ -157,6 +157,57 @@ ewl_text_length_get(Ewl_Text *t)
 }
 
 /**
+ * @param t: The Ewl_Text to set the maximum number of characters
+ * @param num: The maximum number of characters 
+ * @return Returns no value
+ * @brief Set the maximum number of characters
+ * 
+ * This function set the maximum number of characters that can be insert into
+ * the text. The number of characters is unlimited if the value is equal to 0.
+ * If there is already text inside of the text widget, every thing after the 
+ * limit will be deleted.
+ */
+void
+ewl_text_maximum_length_set(Ewl_Text *t, unsigned int char_num)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+
+	if (t->length.max_chars == char_num)
+		DRETURN(DLEVEL_STABLE);
+
+	t->length.max_chars = char_num;
+
+	if (char_num > 0 && char_num < t->length.max_chars) {
+		unsigned int tmp_pos;
+
+		tmp_pos = ewl_text_cursor_position_get(t);
+		ewl_text_cursor_position_set(t, char_num);
+		ewl_text_text_delete(t, ewl_text_length_get(t) - char_num);
+		ewl_text_cursor_position_set(t, MIN(char_num, tmp_pos));
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param e: The Ewl_Entry to get the maximum number of characters
+ * @return Returns the maximum length of characters, if the number is unlimited
+ *         it returns 0
+ * @brief Retrieve if maximum number of characters
+ */
+unsigned int
+ewl_text_maximum_length_get(Ewl_Text *t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, 0);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, 0);
+
+	DRETURN_INT(t->length.max_chars, DLEVEL_STABLE);
+}
+
+/**
  * @param t: The Ewl_Text to get the layout offsets from
  * @param x: A pointer to an integer to store the x offset of the text display
  * @param y: A pointer to an integer to store the y offset of the text display
@@ -419,6 +470,10 @@ ewl_text_text_prepend(Ewl_Text *t, const char *text)
 
 	/* don't do anything if there is no text */
 	if (!text) DRETURN(DLEVEL_STABLE);
+	
+	/* don't insert text if we already reached the maximum */
+	if (t->length.max_chars && t->length.chars >= t->length.max_chars) 
+		DRETURN(DLEVEL_STABLE);
 
 	ewl_text_text_insert_private(t, text, 0, &char_len, &byte_len);
 	ewl_text_fmt_node_prepend(t->formatting.nodes,
@@ -459,6 +514,10 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 
 	/* don't do anything if there is no text */
 	if (!text) DRETURN(DLEVEL_STABLE);
+	
+	/* don't insert text if we already reached the maximum */
+	if (t->length.max_chars && t->length.chars >= t->length.max_chars) 
+		DRETURN(DLEVEL_STABLE);
 
 	ewl_text_text_insert_private(t, text, t->length.chars, &char_len, &byte_len);
 	ewl_text_fmt_node_append(t->formatting.nodes,
@@ -500,6 +559,10 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int char_idx)
 	/* don't do anything if there is no text */
 	if (!text) DRETURN(DLEVEL_STABLE);
 
+	/* don't insert text if we already reached the maximum */
+	if (t->length.max_chars && t->length.chars >= t->length.max_chars) 
+		DRETURN(DLEVEL_STABLE);
+
 	/* Limit the index to be within safe boundaries */
 	if (char_idx > t->length.chars + 1)
 		char_idx = t->length.chars + 1;
@@ -531,6 +594,7 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
 			unsigned int *byte_len)
 {
 	unsigned int new_byte_len, clen = 0, blen = 0, bidx = 0;
+	unsigned int max_chars;
 	char *tmp, *ptr;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -542,7 +606,8 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
 
 	/* count the number of chars in the text */
 	tmp = (char *)txt;
-	while (*tmp) 
+	max_chars = (t->length.max_chars) ? t->length.max_chars : UINT_MAX;
+	while (*tmp && (clen + t->length.chars) < max_chars) 
 	{
 		if (ewl_text_char_utf8_is(tmp)) 
 			tmp = ewl_text_text_next_char(tmp, NULL);
@@ -578,7 +643,7 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
 	/* copy the text over, replace invalid UTF-8 chars */
 	tmp = (char *)txt;
 	ptr = t->text + bidx;
-	while (*tmp) 
+	while (*tmp && (tmp - txt) < blen) 
 	{
 		if (ewl_text_char_utf8_is(tmp)) 
 		{
