@@ -6,6 +6,7 @@
 #include <time.h>
 #include <Etk.h>
 #include "entropy_etk_context_menu.h"
+#include "etk_user_interaction_dialog.h"
 #include "etk_properties_dialog.h"
 
 #define EN_DND_COL_NUM 5
@@ -96,12 +97,12 @@ entropy_plugin_toolkit_get()
 
 
 /* Compares two rows of the tree */
-static int _entropy_etk_list_type_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+static int _entropy_etk_list_type_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data)
 {
    gui_file *file1, *file2;
    int val;
    
-   if (!tree || !row1 || !row2 || !col)
+   if (!row1 || !row2 || !col)
       return 0;
 
    file1 = ecore_hash_get(etk_list_viewer_row_hash, row1);
@@ -116,13 +117,13 @@ static int _entropy_etk_list_type_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
    }
 }
 
-static int _entropy_etk_list_filename_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+static int _entropy_etk_list_filename_compare_cb( Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data)
 {
    gui_file *file1, *file2;
    int val;
    int presort_folder;
    
-   if (!tree || !row1 || !row2 || !col)
+   if (!row1 || !row2 || !col)
       return 0;
 
    file1 = ecore_hash_get(etk_list_viewer_row_hash, row1);
@@ -149,11 +150,11 @@ static int _entropy_etk_list_filename_compare_cb(Etk_Tree *tree, Etk_Tree_Row *r
 }
 
 /* Compares two rows of the tree */
-static int _entropy_etk_list_size_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+static int _entropy_etk_list_size_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2,  void *data)
 {
    gui_file *file1, *file2;
    
-   if (!tree || !row1 || !row2 || !col)
+   if (!row1 || !row2 || !col)
       return 0;
    
    file1 = ecore_hash_get(etk_list_viewer_row_hash, row1);
@@ -172,11 +173,11 @@ static int _entropy_etk_list_size_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
 }
 
 /* Compares two rows of the tree */
-static int _entropy_etk_list_date_compare_cb(Etk_Tree *tree, Etk_Tree_Row *row1, Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data)
+static int _entropy_etk_list_date_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2,  void *data)
 {
    gui_file *file1, *file2;
    
-   if (!tree || !row1 || !row2 || !col)
+   if (!row1 || !row2 || !col)
       return 0;
    
    file1 = ecore_hash_get(etk_list_viewer_row_hash, row1);
@@ -217,7 +218,7 @@ static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event
 
 		if (file) {
 			printf("Deleting '%s'...\n", file->file->filename);
-			entropy_plugin_filesystem_file_remove(file->file, (entropy_gui_component_instance*)data);
+			entropy_etk_delete_dialog_new(file->file, (entropy_gui_component_instance*)data);
 		}
 
 	  }
@@ -525,8 +526,8 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   Etk_Tree_Col* col5;
   char buffer[50];
   char date_buffer[26];
-  char* thumbnail_filename;
-  char* thumbnail_key;
+  const char* thumbnail_filename;
+  const char* thumbnail_key;
 
 
   viewer = instance->data;

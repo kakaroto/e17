@@ -17,6 +17,86 @@ void etk_entropy_user_interaction_dialog_cb(Etk_Object* w, void* user_data)
 	etk_object_destroy(ETK_OBJECT(window));
 }
 
+void etk_entropy_delete_dialog_cb(Etk_Object* w, void* user_data)
+{
+	Etk_Widget* window = NULL;
+	int result = (int)user_data;
+	entropy_generic_file* file;
+	entropy_gui_component_instance* instance;
+	
+	window = etk_object_data_get(ETK_OBJECT(w), "window");
+	file= etk_object_data_get(ETK_OBJECT(window), "file");
+	instance = etk_object_data_get(ETK_OBJECT(window), "instance");
+
+	etk_signal_disconnect("pressed", ETK_OBJECT(w), ETK_CALLBACK(etk_entropy_delete_dialog_cb));
+
+	switch (result) {
+		case ENTROPY_USER_INTERACTION_RESPONSE_YES:
+		case ENTROPY_USER_INTERACTION_RESPONSE_YES_TO_ALL: {
+			entropy_plugin_filesystem_file_remove(file, instance);
+		}
+		break;
+		default: break;
+	}
+	etk_object_destroy(ETK_OBJECT(window));
+}
+
+void entropy_etk_delete_dialog_new(entropy_generic_file* file, entropy_gui_component_instance* instance) 
+{
+	char buf[PATH_MAX];
+	Etk_Widget* window = etk_window_new();
+	Etk_Widget* vbox= etk_vbox_new(ETK_TRUE,5);
+	Etk_Widget* hbox = etk_hbox_new(ETK_TRUE,5);
+	Etk_Widget* button;
+	Etk_Widget* label;
+
+	snprintf(buf, PATH_MAX, "Are you sure you want to delete '%s/%s'? ", file->path,file->filename);
+
+		etk_window_title_set(ETK_WINDOW(window), buf);
+		
+		etk_container_add(ETK_CONTAINER(window), vbox);
+
+		label = etk_label_new(buf);
+		etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 5);
+		etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 5);
+
+		button = etk_button_new_with_label("Yes");
+		etk_container_add(ETK_CONTAINER(hbox), button);
+		etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(etk_entropy_delete_dialog_cb), 
+				(int*)ENTROPY_USER_INTERACTION_RESPONSE_YES );
+		etk_object_data_set(ETK_OBJECT(button), "window", window);
+		etk_widget_show(button);
+
+		button = etk_button_new_with_label("Yes to all");
+		etk_container_add(ETK_CONTAINER(hbox), button);
+		etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(etk_entropy_delete_dialog_cb), 
+				(int*)ENTROPY_USER_INTERACTION_RESPONSE_YES_TO_ALL );
+		etk_object_data_set(ETK_OBJECT(button), "window", window);
+		etk_widget_show(button);
+
+		button = etk_button_new();
+		etk_button_label_set(ETK_BUTTON(button), "No");
+		etk_container_add(ETK_CONTAINER(hbox), button);
+		
+		etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(etk_entropy_delete_dialog_cb), 
+				(int*)ENTROPY_USER_INTERACTION_RESPONSE_NO );
+		etk_object_data_set(ETK_OBJECT(button), "window", window);
+		etk_widget_show(button);
+
+		button = etk_button_new_with_label("No to all");
+		etk_container_add(ETK_CONTAINER(hbox), button);		
+		etk_signal_connect("pressed", ETK_OBJECT(button), ETK_CALLBACK(etk_entropy_delete_dialog_cb), 
+				(int*)ENTROPY_USER_INTERACTION_RESPONSE_NO_TO_ALL );
+		etk_object_data_set(ETK_OBJECT(button), "window", window);
+		etk_widget_show(button);
+
+
+		etk_object_data_set(ETK_OBJECT(window), "file", file);
+		etk_object_data_set(ETK_OBJECT(window), "instance", instance);
+
+		etk_widget_show_all(window);
+}
+
 void entropy_etk_user_interaction_dialog_new(entropy_file_operation* interact) 
 {
 
