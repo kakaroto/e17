@@ -17,6 +17,7 @@
 #define XINE_THUMB_RETRY -10
 #define XINE_THUMB_FAIL -11
 #define XINE_THUMB_SUCCESS -9
+#define XINE_THUMBNAILER_DEBUG 0
 
 typedef struct _epsilon_xine_param
 {
@@ -139,8 +140,10 @@ yv12_to_rgb (const char *name, int w, int h, DATA8 ** buf, Imlib_Image * rp)
   if (rp)
     *rp = NULL;
 
-  if (!(dst = imlib_create_image (w, h)))
+  if (!(dst = imlib_create_image (w, h))) {
+    if (XINE_THUMBNAILER_DEBUG) printf("Couldn't create  yv12_to_rgb imlib image..\n");
     return XINE_THUMB_FAIL;
+  }
 
   imlib_context_set_image (dst);
   imlib_image_set_format ("argb");
@@ -196,13 +199,15 @@ yv12_to_rgb (const char *name, int w, int h, DATA8 ** buf, Imlib_Image * rp)
 
   if ((sy < 32) || (sy > 223))
     {
+      if (XINE_THUMBNAILER_DEBUG) printf("Image too dark!..\n");
       ret = XINE_THUMB_RETRY;
     }
-  else
+  else {
     ret = XINE_THUMB_SUCCESS;
 
-  free (*buf);
-  *buf = NULL;
+    free (*buf);
+    *buf = NULL;
+  }
 
   imlib_image_put_back_data ((DATA32 *) _rgb);
 
@@ -268,6 +273,8 @@ epsilon_generate_thumb (Epsilon * e)
       goto done;
     }
 
+    if (XINE_THUMBNAILER_DEBUG) printf("Starting xine thumbnail process..\n");
+
 try_get_chance:
   new_perc = -1;
   new_time = req_time;
@@ -279,6 +286,7 @@ try_get_chance:
       if (!xine_play (param->stream, new_perc, 0))
 	{
 	  ret = XINE_THUMB_FAIL;
+	  if (XINE_THUMBNAILER_DEBUG) printf("Coudln't play video %s..\n", e->src);
 	  goto close_stream;
 	}
     }
@@ -292,6 +300,7 @@ try_get_chance:
 
   if (length < 0)
     {
+      if (XINE_THUMBNAILER_DEBUG) printf("Video is 0 length!..\n");
       ret = XINE_THUMB_FAIL;
       goto close_stream;
     }
@@ -314,7 +323,7 @@ try_get_chance:
   if (!xine_get_current_frame (param->stream, &w, &h, &ratio, &format, NULL))
     {
       attempts++;
-      if (attempts < 4)
+      if (attempts < 10)
 	{
 	  if (req_time < 10000)
 	    req_time += 1000;
@@ -325,12 +334,14 @@ try_get_chance:
 	}
       else
 	{
+	  if (XINE_THUMBNAILER_DEBUG) printf("Exhausted attempts to thumbnail..\n");
 	  ret = XINE_THUMB_FAIL;
 	  goto close_stream;
 	}
     }
   else if ((w <= 0) || (h <= 0))
     {
+      if (XINE_THUMBNAILER_DEBUG) printf("Width/Height of video invalid: %d:%d..\n", w,h);
       ret = XINE_THUMB_FAIL;
       goto close_stream;
     }
@@ -339,6 +350,7 @@ try_get_chance:
       /* know we know the size, get a buffer for the snapshot */
       if (!(buf = malloc (w * h * 2)))
 	{
+	  if (XINE_THUMBNAILER_DEBUG) printf("Couldn't allocate memory for thumbnail buffer..\n");
 	  ret = XINE_THUMB_FAIL;
 	  goto close_stream;
 	}
@@ -347,12 +359,14 @@ try_get_chance:
       if (!xine_get_current_frame
 	  (param->stream, &w, &h, &ratio, &format, buf))
 	{
+	  if (XINE_THUMBNAILER_DEBUG) printf("Couldn't retrieve current video frame..\n");
 	  ret = XINE_THUMB_FAIL;
 	  goto close_stream;
 	}
 
       else if ((w <= 0) || (h <= 0))
 	{
+	  if (XINE_THUMBNAILER_DEBUG) printf("Width/height of video invalid: %d:%d..\n",w,h);
 	  ret = XINE_THUMB_FAIL;
 	  goto close_stream;
 	}
@@ -377,7 +391,7 @@ try_get_chance:
 	    {
 	      if (img)
 		{
-		  if (++attempts > 4)
+		  if (++attempts > 10)
 		    goto close_stream;
 		  imlib_free_image ();
 		  img = NULL;
@@ -393,6 +407,8 @@ try_get_chance:
 			    req_time = 3000;
 			  goto try_get_chance;
 			}
+
+	              if (XINE_THUMBNAILER_DEBUG) printf("Exhausted attempts to thumbnail pos 2..\n");
 		      ret = XINE_THUMB_FAIL;
 		      goto close_stream;
 		    }
@@ -400,6 +416,7 @@ try_get_chance:
 
 	      else
 		{
+		  if (XINE_THUMBNAILER_DEBUG) printf("Couldn't complete yv12_to_rgb..\n");
 		  ret = XINE_THUMB_FAIL;
 		  goto close_stream;
 		}
