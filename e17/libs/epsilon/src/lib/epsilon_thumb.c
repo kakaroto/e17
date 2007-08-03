@@ -233,8 +233,6 @@ static int
 epsilon_client_connect()
 {
 	int retries = 0;
-	char *buf;
-	char sockname[MAXHOSTNAMELEN];
 
 #define MAX_RETRY 5
 
