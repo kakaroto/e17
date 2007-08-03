@@ -130,10 +130,33 @@ collections {
             }
          }
 
+
+         part {
+            name: "alpha_clip";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+            description {
+               state: "hidden" 0.0;
+               inherit: "default" 0.0;
+               visible: 0;
+            }
+         }
+
          part {
             name: "alpha";
             type: GROUP;
             source: "alpha";
+            clip_to: "alpha_clip";
             description {
                state: "default" 0.0;
                min: 685 234;
@@ -146,7 +169,23 @@ collections {
                   relative: 0.5 1.0;
                   offset: 342 -10;
                }
-               visible: 1;
+            }
+         }
+
+
+         part {
+            name: "special-1_clip";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
             }
             description {
                state: "hidden" 0.0;
@@ -159,6 +198,7 @@ collections {
             name: "special-1";
             type: GROUP;
             source: "special-1";
+            clip_to: "special-1_clip";
             description {
                state: "default" 0.0;
                min: 685 234;
@@ -171,7 +211,22 @@ collections {
                   relative: 0.5 1.0;
                   offset: 342 -10;
                }
-               visible: 1;
+            }
+         }
+
+         part {
+            name: "special-2_clip";
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
             }
             description {
                state: "hidden" 0.0;
@@ -184,6 +239,7 @@ collections {
             name: "special-2";
             type: GROUP;
             source: "special-2";
+            clip_to: "special-2_clip";
             description {
                state: "default" 0.0;
                min: 685 234;
@@ -196,12 +252,6 @@ collections {
                   relative: 0.5 1.0;
                   offset: 342 -10;
                }
-               visible: 1;
-            }
-            description {
-               state: "hidden" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
             }
          }
       }
@@ -211,39 +261,39 @@ collections {
             name: "show-alpha";
             signal: "show-alpha";
             action: STATE_SET "default" 0.0;
-            target: "alpha";
+            target: "alpha_clip";
          }
          program {
             name: "hide-alpha";
             signal: "hide-alpha";
             action: STATE_SET "hidden" 0.0;
-            target: "alpha";
+            target: "alpha_clip";
          }
 
          program {
             name: "hide-special-1";
             signal: "hide-special-1";
             action: STATE_SET "hidden" 0.0;
-            target: "special-1";
+            target: "special-1_clip";
          }
          program {
             name: "show-special-1";
             signal: "show-special-1";
             action: STATE_SET "default" 0.0;
-            target: "special-1";
+            target: "special-1_clip";
          }
 
          program {
             name: "hide-special-2";
             signal: "hide-special-2";
             action: STATE_SET "hidden" 0.0;
-            target: "special-2";
+            target: "special-2_clip";
          }
          program {
             name: "show-special-2";
             signal: "show-special-2";
             action: STATE_SET "default" 0.0;
-            target: "special-2";
+            target: "special-2_clip";
          }
 
          program {
