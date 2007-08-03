@@ -25,6 +25,8 @@
 #endif
 
 #define EPSILON_WORKERS 4
+#define EPSILON_WORKER_RECONNECT_ATTEMPTS 5
+#define EPSILON_WORKER_RECONNECT_INTERVAL 100000
 
 /*
  * Connected client requesting thumbnailing.
@@ -124,6 +126,7 @@ void epsilond_init_thumbd_server(Ecore_List* workers)
 	 * Setup the IPC server to handle completed notifications
 	 */
 	thumbd_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EPSILOND_SOCK, 0, NULL);
+	ecore_ipc_server_client_limit_set(thumbd_server, 50, 0);
 
 	/*
 	 * Prepare the handlers for worker IPC events
@@ -542,6 +545,8 @@ epsilond_worker_run(void *data)
 int
 epsilond_worker_fork(Epsilon_Worker *worker)
 {
+	int attempts = 0;
+
 	/*
 	 * Begin iteration of the thumb list.
 	 */
@@ -571,11 +576,18 @@ epsilond_worker_fork(Epsilon_Worker *worker)
 		/*
 		 * Connect back to the parent process.
 		 */
+
+		connect:
 		worker->server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EPSILOND_SOCK, 0, NULL);
 		if (worker->server) {
 			if (debug) printf("Connecting to %s\n", EPSILOND_SOCK);
 		}
 		else {
+			if (attempts < EPSILON_WORKER_RECONNECT_ATTEMPTS) {
+				attempts++;
+				usleep(EPSILON_WORKER_RECONNECT_INTERVAL);
+				goto connect;
+			}
 			if (debug) printf("Failed connection to %s\n", EPSILOND_SOCK);
 			exit(1);
 		}
@@ -700,13 +712,10 @@ epsilond_idle_enterer(void *data)
 			if (ecore_list_count(worker->thumbs)) {
 				idle--;
 
-				/*if (!running_workers) epsilond_init_thumbd_server(gworkers);
-				else printf ("**** Added worker - now %d\n", running_workers+1);*/
 				running_workers++;
 				
 				if (!epsilond_worker_fork(worker)) {
-					if (debug) printf("Error forking worker %p\n", worker);
-					return 0;
+					return 1;
 				}
 			} else {
 				if (debug) printf ("No thumbs to process\n");
@@ -762,6 +771,7 @@ epsilond_init()
 	 * Setup the IPC server to handle requests
 	 */
 	thumb_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EPSILON_SOCK, 0, NULL);
+	ecore_ipc_server_client_limit_set(thumb_server, 50, 0);
 
 	free(buf);
 
