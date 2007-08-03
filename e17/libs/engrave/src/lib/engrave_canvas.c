@@ -470,11 +470,13 @@ engrave_canvas_part_state_text_setup(Engrave_Part_State *eps)
    engrave_part_state_color2_get(eps, &r, &g, &b, &a);
    evas_color_argb_premul(a,&r,&g,&b);
    evas_object_text_shadow_color_set(ep->object, r, g, b, a);
+   evas_object_text_glow_color_set(ep->object, r, g, b, a);
    
    engrave_part_state_color3_get(eps, &r, &g, &b, &a);
    evas_color_argb_premul(a,&r,&g,&b);
    evas_object_text_outline_color_set(ep->object, r, g, b, a);
-    
+   evas_object_text_glow2_color_set(ep->object, r, g, b, a);
+
    switch (engrave_part_effect_get(ep))
    {
    case ENGRAVE_TEXT_EFFECT_OUTLINE: 
@@ -494,6 +496,15 @@ engrave_canvas_part_state_text_setup(Engrave_Part_State *eps)
       break;
    case ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW:
       evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_OUTLINE_SOFT_SHADOW);
+      break;
+   case ENGRAVE_TEXT_EFFECT_FAR_SHADOW:
+      evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_FAR_SHADOW);
+      break;
+   case ENGRAVE_TEXT_EFFECT_FAR_SOFT_SHADOW:
+      evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_FAR_SOFT_SHADOW);
+      break;
+   case ENGRAVE_TEXT_EFFECT_GLOW:
+      evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_GLOW);
       break;
    default: 
       evas_object_text_style_set(ep->object, EVAS_TEXT_STYLE_PLAIN);
