@@ -423,8 +423,6 @@ _server_cb_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 static int
 _server_init(void)
 {
-   char buf[1024];
-   
    _server_local = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, "rage", 0, NULL);
    if (!_server_local) return 0;
    _server_remote = ecore_ipc_server_add(ECORE_IPC_REMOTE_SYSTEM, "", 9889, NULL);
