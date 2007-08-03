@@ -115,7 +115,7 @@ class news {
         if ($i <= 4)
             $date['year'] .= $name[$i];
         if ($i > 4 && $i <= 6)
-            $date['mounth'] .= $name[$i];
+            $date['month'] .= $name[$i];
         if ($i > 6 && $i <= 8)
             $date['day'] .= $name[$i];
         if ($i > 9 && $i <= 11)
@@ -125,7 +125,7 @@ class news {
         if ($i > 13 && $i <= 15)
             $date['second'] .= $name[$i];
     }
-    return mktime($date['hour'], $date['minute'], $date['second'], $date['mounth'], $date['day'], $date['year'] + 0);
+    return mktime($date['hour'], $date['minute'], $date['second'], $date['month'], $date['day'], $date['year'] + 0);
   }
 
   private function _get_localtime($timestamp) {

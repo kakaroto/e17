@@ -9,7 +9,7 @@
   if(isset($_GET['l']))
     $lang = $_GET['l'];
   else
-	$lang = '';
+	$lang = 'en';
 
   $page = str_replace(".", "", $page);
   if ($page == "") $page = "index";
