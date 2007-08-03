@@ -51,6 +51,26 @@ dnl Check for programs
 
 dnl Checks for libraries
 
+AC_ARG_ENABLE(fbcon,
+	[AC_HELP_STRING([--enable-fbcon],[enable fbcon support])],
+	[enable_fbcon=$enableval], [enable_fbcon="auto"])
+have_fbcon=no
+if test "x$enable_fbcon" != "xno" ; then
+	AC_CHECK_HEADERS(Evas_Engine_FB.h,
+		[AC_CHECK_HEADER(Ecore_Fb.h,
+			[have_fbcon=yes],
+			[], [#include <Ecore.h>])],
+		[], [#include <Evas.h>])
+	if test "x$have_fbcon" = "xyes" ; then
+		AC_DEFINE(ENABLE_EFLPP_FB, 1, [Enable FB])
+	elif test "x$enable_fbcon" = "xyes" ; then
+		AC_MSG_ERROR(fbcon requested but no evas/ecore support found)
+	fi
+fi
+AM_CONDITIONAL(EFLPP_ENABLE_FB, test "x$have_fbcon" = xyes)
+
+
+
 dnl Check for pkg-config stuff
 pkg_modules="$esmart_modules $emotion_modules evas ecore ecore-config ecore-evas ecore-ipc ecore-txt ecore-con ecore-job sigc++-2.0 etk ewl"
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])

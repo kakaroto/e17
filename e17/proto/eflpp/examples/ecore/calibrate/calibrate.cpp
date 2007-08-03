@@ -9,7 +9,10 @@ using namespace std;
 #include <eflpp_evas.h>
 #include <eflpp_ecore.h>
 
+#ifdef ENABLE_EFLPP_FB
 #include <Ecore_Fb.h>
+#endif
+
 #include <Ecore.h>
 
 #define CALIBRATE_FANCY_CROSSHAIR 1
@@ -28,6 +31,7 @@ static void* calibration_event_filter_start( void* data )
 
 static int calibration_event_filter_event( void* loop_data, void *data, int type, void* event )
 {
+#ifdef ENABLE_EFLPP_FB
     if ( type == ECORE_FB_EVENT_MOUSE_BUTTON_UP )
     {
         Ecore_Fb_Event_Mouse_Button_Up* ev = static_cast<Ecore_Fb_Event_Mouse_Button_Up*>( event );
@@ -38,6 +42,7 @@ static int calibration_event_filter_event( void* loop_data, void *data, int type
         return 0; // swallow event
     }
     else
+#endif
     {
         return 1; // keep event
     }
@@ -174,8 +179,7 @@ CalibrationRectangle::~CalibrationRectangle()
 
 bool CalibrationRectangle::handleShow()
 {
-#warning ECORE_FB_PATCH_NOT_SUBMITTED_YET
-#ifdef ECORE_FB_PATCH_SUBMITTED
+#ifdef ENABLE_EFLPP_FB
     ecore_fb_touch_screen_calibrate_set( 1, 0, 0, 0, 0 );
 #endif
     filter = ecore_event_filter_add( &calibration_event_filter_start,
@@ -211,7 +215,7 @@ void CalibrationRectangle::nextPoint( int x, int y )
         */
         //crosshair->hide();
         //text->hide();
-#ifdef ECORE_FB_PATCH_SUBMITTED
+#ifdef ENABLE_EFLPP_FB
         ecore_fb_touch_screen_calibrate_set( 0, 0, 0, 0, 0 );
 #endif
         ecore_event_filter_del( filter );

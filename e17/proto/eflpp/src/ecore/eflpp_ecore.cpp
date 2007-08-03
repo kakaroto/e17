@@ -6,7 +6,9 @@
 #include "eflpp_ecoreconfig.h"
 
 /* STD */
+#ifdef ENABLE_EFLPP_FB
 #include <linux/fb.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -163,6 +165,7 @@ EcoreEvasWindow::EcoreEvasWindow( int width, int height, const char* display, in
 
     if ( display && ::strstr( display, "/dev/fb" ) )
     {
+#ifdef ENABLE_EFLPP_FB
         int fb_dev_fd = ::open( display, O_RDONLY );
         if ( fb_dev_fd < 0 )
         {
@@ -199,6 +202,9 @@ EcoreEvasWindow::EcoreEvasWindow( int width, int height, const char* display, in
 #endif
         ecore_evas_fullscreen_set( _ee, 1 ); // fullscreen is default to get auto resize on changing rotation
         ecore_evas_rotation_set( _ee, rotation ); // force resize
+#else
+	printf("FB engine not enabled\n");
+#endif
     }
     else
     {
