@@ -98,7 +98,7 @@ int main( int argc, const char **argv )
     r->setLayer( 0 );
     r->show();
 
-    for ( int i = 0; i < STARS; ++i )
+    for ( unsigned int i = 0; i < STARS; ++i )
     {
         starfield.push_back( new Star( evas ) );
     }

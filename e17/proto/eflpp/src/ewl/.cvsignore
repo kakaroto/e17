@@ -1,2 +1,6 @@
+libeflpp_ewl.la
+.deps
+.libs
 Makefile
 Makefile.in
+eflpp_ewl.lo

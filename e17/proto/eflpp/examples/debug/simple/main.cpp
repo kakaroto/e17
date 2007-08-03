@@ -38,7 +38,6 @@ int main(int argc, char **argv, char **envv)
     Color c( 10, 20, 30, 40 );
     Point p( -50, -30 );
     Size s( 640, 480 );
-    int i = 20;
 
     //cout << r << c << p << s << endl;
 

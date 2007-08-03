@@ -1,2 +1,5 @@
+eflpp_ewl_embed
+.deps
+.libs
 Makefile
 Makefile.in

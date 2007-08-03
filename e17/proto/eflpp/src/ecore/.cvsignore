@@ -1,2 +1,7 @@
+libeflpp_ecore.la
+.deps
+.libs
 Makefile
 Makefile.in
+eflpp_ecore.lo
+eflpp_ecoreconfig.lo

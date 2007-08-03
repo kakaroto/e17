@@ -1,2 +1,6 @@
+libeflpp_emotion.la
+.deps
+.libs
 Makefile
 Makefile.in
+eflpp_emotion.lo

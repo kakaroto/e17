@@ -1,2 +1,6 @@
+libeflpp_etk.la
+.deps
+.libs
 Makefile
 Makefile.in
+eflpp_etk.lo

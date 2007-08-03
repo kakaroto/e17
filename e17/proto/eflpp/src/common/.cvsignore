@@ -1,2 +1,6 @@
+libeflpp_common.la
+.deps
+.libs
 Makefile
 Makefile.in
+eflpp_debug.lo

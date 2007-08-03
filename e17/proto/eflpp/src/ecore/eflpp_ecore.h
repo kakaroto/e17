@@ -12,7 +12,6 @@
 #include <Evas.h>
 #include <Ecore_Config.h>
 #include <Ecore_Data.h>
-#include <Ecore_Fb.h>
 #include <Ecore_Ipc.h>
 #include <Ecore_Txt.h>
 #include <Ecore_Con.h>

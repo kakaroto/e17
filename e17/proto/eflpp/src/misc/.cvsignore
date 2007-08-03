@@ -1,2 +1,6 @@
+libeflpp_misc.la
+.deps
+.libs
 Makefile
 Makefile.in
+eflpp_housekeeping.lo

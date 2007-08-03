@@ -52,7 +52,7 @@ dnl Check for programs
 dnl Checks for libraries
 
 dnl Check for pkg-config stuff
-pkg_modules="$esmart_modules $emotion_modules evas ecore ecore-config ecore-evas ecore-fb ecore-ipc ecore-txt ecore-con ecore-job sigc++-2.0 etk ewl"
+pkg_modules="$esmart_modules $emotion_modules evas ecore ecore-config ecore-evas ecore-ipc ecore-txt ecore-con ecore-job sigc++-2.0 etk ewl"
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
 
 dnl Check for headers

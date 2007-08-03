@@ -240,7 +240,7 @@ bool CalibrationRectangle::calibrate()
 
     int j;
     float n, x, y, x2, y2, xy, z, zx, zy;
-    float det, cal_a, cal_b, cal_c, cal_d, cal_e, cal_f, cal_i;
+    float det, cal_a, cal_b, cal_c, cal_e, cal_f, cal_i;
     float scaling = 65536.0;
     int cal_x[5], cal_xfb[5], cal_y[5], cal_yfb[5], cal_o[7];
 

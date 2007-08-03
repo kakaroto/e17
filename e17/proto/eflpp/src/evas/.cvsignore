@@ -1,2 +1,7 @@
+libeflpp_evas.la
+.deps
+.libs
 Makefile
 Makefile.in
+eflpp_evas.lo
+eflpp_evasfont.lo
