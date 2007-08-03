@@ -599,6 +599,9 @@ UpdateTextFrame(void)
          case ENGRAVE_TEXT_EFFECT_SOFT_SHADOW: eff_num = 4; break;
          case ENGRAVE_TEXT_EFFECT_OUTLINE_SHADOW: eff_num = 5; break;
          case ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW: eff_num = 6; break;
+         case ENGRAVE_TEXT_EFFECT_FAR_SHADOW: eff_num = 7; break;
+         case ENGRAVE_TEXT_EFFECT_FAR_SOFT_SHADOW: eff_num = 8; break;
+         case ENGRAVE_TEXT_EFFECT_GLOW: eff_num = 9; break;
          default: break; // remove warning
       }
       etk_combobox_active_item_set (ETK_COMBOBOX(UI_EffectComboBox),
@@ -1731,6 +1734,15 @@ create_text_frame(void)
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje (EdjeFile,"NONE.PNG"), "Outline Soft Shadow");
    etk_combobox_item_data_set (ComboItem, (void*)ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW);
+   ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
+      etk_image_new_from_edje (EdjeFile,"NONE.PNG"), "Far Shadow");
+   etk_combobox_item_data_set (ComboItem, (void*)ENGRAVE_TEXT_EFFECT_FAR_SHADOW);
+   ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
+      etk_image_new_from_edje (EdjeFile,"NONE.PNG"), "Far Soft Shadow");
+   etk_combobox_item_data_set (ComboItem, (void*)ENGRAVE_TEXT_EFFECT_FAR_SOFT_SHADOW);
+   ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
+      etk_image_new_from_edje (EdjeFile,"NONE.PNG"), "Glow");
+   etk_combobox_item_data_set (ComboItem, (void*)ENGRAVE_TEXT_EFFECT_GLOW);
    
    etk_table_attach_default (ETK_TABLE(table),UI_EffectComboBox, 1, 4, 2,2);
 
