@@ -9,6 +9,8 @@
 extern void PROTO_engrave_part_state_remove(Engrave_Part *ep, Engrave_Part_State *eps);
 extern void PROTO_engrave_group_part_remove(Engrave_Group *eg, Engrave_Part *ep);
 extern void PROTO_engrave_file_group_remove(Engrave_File *ef, Engrave_Group *eg);
+extern void PROTO_engrave_part_state_image_tween_remove_nth(Engrave_Part_State *eps,int tween_num);
+extern void PROTO_engrave_part_state_image_tween_remove_all(Engrave_Part_State *eps);
 
 int current_color_object;
 
@@ -137,7 +139,7 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
       case IMAGE_TWEEN_DELETE:
             sel_row = etk_tree_selected_row_get(ETK_TREE(UI_ImageTweenList));
-            if (row_num = (int)etk_tree_row_data_get (sel_row))
+            if ((row_num = (int)etk_tree_row_data_get (sel_row)))
             {
                PROTO_engrave_part_state_image_tween_remove_nth(Cur.eps,row_num-1);
                UpdateImageFrame();
@@ -408,7 +410,8 @@ on_PartEventsCheck_toggled(Etk_Object *object, void *data)
    printf("Toggled Signal on EventsCheck EMITTED\n");
    if (Cur.ep)
    {
-      engrave_part_mouse_events_set(Cur.ep,etk_toggle_button_active_get(object));
+      engrave_part_mouse_events_set(Cur.ep,
+                     etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object)));
    }
 }
 void
@@ -512,7 +515,7 @@ on_ImageComboBox_changed(Etk_Combobox *combobox, void *data)
    if ((image = etk_combobox_item_data_get(etk_combobox_active_item_get (combobox)))){
       //Set an existing image
       if (Cur.eps){
-         if (!etk_toggle_button_active_get(UI_ImageTweenRadio))
+         if (!etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(UI_ImageTweenRadio)))
          {
             engrave_part_state_image_normal_set(Cur.eps, image);
          }else{
@@ -812,7 +815,7 @@ on_SourceEntry_text_changed(Etk_Object *object, void *data)
 {
    printf("Text Changed Signal on SourceEntry Emitted\n");
    engrave_program_source_set(Cur.epr,
-            etk_entry_text_get(etk_combobox_entry_entry_get(UI_SourceEntry)));
+            etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry)))));
 }
 void
 on_SourceEntry_item_changed(Etk_Combobox_Entry *combo, void *data)
@@ -827,7 +830,7 @@ on_SourceEntry_item_changed(Etk_Combobox_Entry *combo, void *data)
    
    etk_combobox_entry_item_fields_get(active_item, NULL, &pname, NULL); 
    
-   etk_entry_text_set(etk_combobox_entry_entry_get(UI_SourceEntry),pname);
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),pname);
 }
 void
 on_SignalEntry_text_changed(Etk_Object *object, void *data)
@@ -1347,7 +1350,7 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
                Engrave_Image* eimg;
                eimg = engrave_image_new(etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),ENGRAVE_IMAGE_TYPE_LOSSY,95);	 
                engrave_file_image_add(Cur.ef,eimg);
-               if (!etk_toggle_button_active_get(UI_ImageTweenRadio))
+               if (!etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(UI_ImageTweenRadio)))
                   engrave_part_state_image_normal_set(Cur.eps,eimg);
                else
                   engrave_part_state_image_tween_add(Cur.eps,eimg);

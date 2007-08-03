@@ -287,13 +287,13 @@ PopulateSourceComboBox(void)
    {
       ep = l->data;
       if (ep->type == ENGRAVE_PART_TYPE_RECT)
-         etk_combobox_entry_item_append(UI_SourceEntry,
+         etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SourceEntry),
                      etk_image_new_from_edje (EdjeFile,"RECT.PNG"),ep->name);
       if (ep->type == ENGRAVE_PART_TYPE_TEXT)
-         etk_combobox_entry_item_append(UI_SourceEntry,
+         etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SourceEntry),
                      etk_image_new_from_edje (EdjeFile,"TEXT.PNG"),ep->name);
       if (ep->type == ENGRAVE_PART_TYPE_IMAGE)
-          etk_combobox_entry_item_append(UI_SourceEntry,
+          etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SourceEntry),
                      etk_image_new_from_edje (EdjeFile,"IMAGE.PNG"),ep->name);
    }
 
@@ -376,7 +376,8 @@ UpdatePartFrame(void)
 
       //Update Part
       etk_entry_text_set(ETK_ENTRY(UI_PartNameEntry),Cur.ep->name);
-      etk_toggle_button_active_set(UI_PartEventsCheck,Cur.ep->mouse_events);	 
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_PartEventsCheck),
+                                    Cur.ep->mouse_events);	 
 
       //ReEnable Signal Propagation
       etk_signal_unblock("text-changed",ETK_OBJECT(UI_PartNameEntry),
@@ -477,9 +478,7 @@ UpdateImageFrame(void)
    Engrave_Image *image;
    int i;
    Etk_Combobox_Item *item = NULL;
-   Etk_Tree_Col *col1 = etk_tree_nth_col_get (ETK_TREE(UI_ImageTweenList),0);
-   char buf[4096];
-   
+    
    //Stop signal propagation
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderLeftSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderRightSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed));
@@ -778,7 +777,8 @@ UpdateProgFrame(void)
    //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_ProgramEntry),
          ETK_CALLBACK(on_ProgramEntry_text_changed));
-   etk_signal_block("text-changed", ETK_OBJECT(etk_combobox_entry_entry_get(UI_SourceEntry)), 
+   etk_signal_block("text-changed",
+         ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))), 
          ETK_CALLBACK(on_SourceEntry_text_changed));
    etk_signal_block("text-changed", ETK_OBJECT(UI_SignalEntry), 
          ETK_CALLBACK(on_SignalEntry_text_changed));
@@ -806,7 +806,8 @@ UpdateProgFrame(void)
    etk_entry_text_set(ETK_ENTRY(UI_ProgramEntry),Cur.epr->name);
 
    //Update Source
-   etk_entry_text_set(etk_combobox_entry_entry_get(UI_SourceEntry),Cur.epr->source);
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),
+                      Cur.epr->source);
    
    //Update Signal
    etk_entry_text_set(ETK_ENTRY(UI_SignalEntry),Cur.epr->signal);
@@ -873,7 +874,8 @@ UpdateProgFrame(void)
    //Reenable signal propagation
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_ProgramEntry),
          ETK_CALLBACK(on_ProgramEntry_text_changed));
-   etk_signal_unblock("text-changed", ETK_OBJECT(etk_combobox_entry_entry_get(UI_SourceEntry)), 
+   etk_signal_unblock("text-changed",
+         ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))), 
          ETK_CALLBACK(on_SourceEntry_text_changed));
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_SignalEntry), 
          ETK_CALLBACK(on_SignalEntry_text_changed));
@@ -1510,7 +1512,6 @@ create_image_frame(void)
    Etk_Widget *label;
    Etk_Widget *table;
    Etk_Tree_Col *col1;
-   Etk_Widget *button;
 
    //ImageFrame
    UI_ImageFrame = etk_frame_new("Image");
@@ -1544,26 +1545,26 @@ create_image_frame(void)
    
    //MoveUpTweenButton
    UI_MoveUpTweenButton = etk_button_new_from_stock (ETK_STOCK_GO_UP);
-   etk_button_style_set(UI_MoveUpTweenButton,  ETK_BUTTON_ICON);
+   etk_button_style_set(ETK_BUTTON(UI_MoveUpTweenButton),  ETK_BUTTON_ICON);
    etk_signal_connect("clicked", ETK_OBJECT(UI_MoveUpTweenButton), 
       ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_UP);
-   etk_box_append (UI_ImageTweenVBox, UI_MoveUpTweenButton, 
+   etk_box_append (ETK_BOX(UI_ImageTweenVBox), UI_MoveUpTweenButton, 
                      ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    //MoveDownTweenButton
    UI_MoveDownTweenButton = etk_button_new_from_stock (ETK_STOCK_GO_DOWN);
-   etk_button_style_set(UI_MoveDownTweenButton,  ETK_BUTTON_ICON);
+   etk_button_style_set(ETK_BUTTON(UI_MoveDownTweenButton),  ETK_BUTTON_ICON);
    etk_signal_connect("clicked", ETK_OBJECT(UI_MoveDownTweenButton), 
       ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_DOWN);
-   etk_box_append (UI_ImageTweenVBox, UI_MoveDownTweenButton, 
+   etk_box_append (ETK_BOX(UI_ImageTweenVBox), UI_MoveDownTweenButton, 
                      ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
                      
    //DeleteTweenButton
    UI_DeleteTweenButton = etk_button_new_from_stock (ETK_STOCK_EDIT_DELETE);
-   etk_button_style_set(UI_DeleteTweenButton, ETK_BUTTON_ICON);
+   etk_button_style_set(ETK_BUTTON(UI_DeleteTweenButton), ETK_BUTTON_ICON);
    etk_signal_connect("clicked", ETK_OBJECT(UI_DeleteTweenButton), 
       ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_DELETE);
-   etk_box_append (UI_ImageTweenVBox, UI_DeleteTweenButton, 
+   etk_box_append (ETK_BOX(UI_ImageTweenVBox), UI_DeleteTweenButton, 
                      ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
                      
    //ImageTweenList
@@ -2033,9 +2034,9 @@ create_program_frame(void)
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1,ETK_TABLE_NONE,0,0);
    //etk_tooltips_tip_set(UI_SourceEntry, "<b>Source(s)</b> of the signal.<br>The Part or Program that emit the signal<br>Wildcards can be used to widen the scope, ex: \"button-*\"");
    UI_SourceEntry = etk_combobox_entry_new();
-   etk_combobox_entry_column_add(UI_SourceEntry, ETK_COMBOBOX_ENTRY_IMAGE, 24, ETK_COMBOBOX_ENTRY_NONE, 0.0);
-   etk_combobox_entry_column_add(UI_SourceEntry, ETK_COMBOBOX_ENTRY_LABEL, 75, ETK_COMBOBOX_ENTRY_EXPAND, 0.0);
-   etk_combobox_entry_build(UI_SourceEntry);
+   etk_combobox_entry_column_add(ETK_COMBOBOX_ENTRY(UI_SourceEntry), ETK_COMBOBOX_ENTRY_IMAGE, 24, ETK_COMBOBOX_ENTRY_NONE, 0.0);
+   etk_combobox_entry_column_add(ETK_COMBOBOX_ENTRY(UI_SourceEntry), ETK_COMBOBOX_ENTRY_LABEL, 75, ETK_COMBOBOX_ENTRY_EXPAND, 0.0);
+   etk_combobox_entry_build(ETK_COMBOBOX_ENTRY(UI_SourceEntry));
    etk_table_attach_default(ETK_TABLE(table), UI_SourceEntry, 1, 3, 1, 1);
 
    //UI_SignalEntry
@@ -2150,7 +2151,7 @@ create_program_frame(void)
          ETK_CALLBACK(on_ActionComboBox_changed), NULL);
    etk_signal_connect("text-changed", ETK_OBJECT(UI_ProgramEntry), 
          ETK_CALLBACK(on_ProgramEntry_text_changed), NULL);
-   etk_signal_connect("text-changed", ETK_OBJECT(etk_combobox_entry_entry_get(UI_SourceEntry)), 
+   etk_signal_connect("text-changed", ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))), 
          ETK_CALLBACK(on_SourceEntry_text_changed), UI_SourceEntry);
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_SourceEntry), 
          ETK_CALLBACK(on_SourceEntry_item_changed), NULL);

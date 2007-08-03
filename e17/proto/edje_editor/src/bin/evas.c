@@ -354,7 +354,7 @@ ev_resize_fake(int w, int h)
    edje_object_part_drag_value_set (EV_fakewin, "miniarrow", (double)w, (double)h);
    char buf[100];
    snprintf(buf,100,"Current size: %d x %d",w,h);
-   etk_label_set (UI_CurrentGroupSizeLabel, buf);
+   etk_label_set(ETK_LABEL(UI_CurrentGroupSizeLabel), buf);
 }
 
 void
