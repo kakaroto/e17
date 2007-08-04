@@ -21,11 +21,6 @@ static Evas_Smart *_entrance_smart_object_smart_get();
 static Evas_Object *entrance_smart_object_new(Evas * evas);
 void _entrance_smart_object_add(Evas_Object * o);
 void _entrance_smart_object_del(Evas_Object * o);
-void _entrance_smart_object_layer_set(Evas_Object * o, int l);
-void _entrance_smart_object_raise(Evas_Object * o);
-void _entrance_smart_object_lower(Evas_Object * o);
-void _entrance_smart_object_stack_above(Evas_Object * o, Evas_Object * above);
-void _entrance_smart_object_stack_below(Evas_Object * o, Evas_Object * below);
 void _entrance_smart_object_move(Evas_Object * o, Evas_Coord x, Evas_Coord y);
 void _entrance_smart_object_resize(Evas_Object * o, Evas_Coord w,
                                    Evas_Coord h);
@@ -166,63 +161,6 @@ _entrance_smart_object_del(Evas_Object * o)
       evas_object_del(data->edje);
       evas_object_del(data->clip);
       free(data);
-   }
-}
-
-void
-_entrance_smart_object_layer_set(Evas_Object * o, int l)
-{
-   Entrance_Smart *data;
-
-   if ((data = evas_object_smart_data_get(o)))
-   {
-      evas_object_layer_set(data->clip, l);
-      evas_object_layer_set(data->edje, l);
-      evas_object_layer_set(data->avatar, l);
-   }
-}
-
-void
-_entrance_smart_object_raise(Evas_Object * o)
-{
-   Entrance_Smart *data;
-
-   if ((data = evas_object_smart_data_get(o)))
-   {
-      evas_object_raise(data->clip);
-   }
-}
-
-void
-_entrance_smart_object_lower(Evas_Object * o)
-{
-   Entrance_Smart *data;
-
-   if ((data = evas_object_smart_data_get(o)))
-   {
-      evas_object_lower(data->clip);
-   }
-}
-
-void
-_entrance_smart_object_stack_above(Evas_Object * o, Evas_Object * above)
-{
-   Entrance_Smart *data;
-
-   if ((data = evas_object_smart_data_get(o)))
-   {
-      evas_object_stack_above(data->edje, above);
-   }
-}
-
-void
-_entrance_smart_object_stack_below(Evas_Object * o, Evas_Object * below)
-{
-   Entrance_Smart *data;
-
-   if ((data = evas_object_smart_data_get(o)))
-   {
-      evas_object_stack_below(data->edje, below);
    }
 }
 
