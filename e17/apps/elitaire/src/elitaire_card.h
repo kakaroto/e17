@@ -1,14 +1,15 @@
 /**********************************************/
 
 /*** the data struct ***/
-struct Elitaire_Card{
+struct Elitaire_Card {
 	Evas_Object * image;
 	Evas_Object * next_card;
 	Evas_Object * shadow;
 	playingCard * pcard;
 	Elitaire    * eli;
 	Elitaire_Job_List * jobs;
-	Evas_Bool     flying;
+	char          flying:1;
+	char          waiting:1;
 };
 /*** external API ***/
 

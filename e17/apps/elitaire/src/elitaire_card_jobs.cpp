@@ -351,7 +351,7 @@ _elitaire_card_job_wait_time(Elitaire_Job_List * list, void * data)
 
     fr = ecard->eli->frame_rate;
 
-    ecard->flying = true;
+    ecard->waiting = true;
     job->timer = ecore_animator_add(_elitaire_card_wait_time_cb, data);
 
     return 0;
@@ -818,9 +818,10 @@ _elitaire_card_wait_time_cb(void * data)
     if (card && eli_card) {
         if (--(job->x.i)) return 1;
             
-        eli_card->flying = false;
+        eli_card->waiting = false;
         elitaire_job_del(eli_card->jobs, data);
         return 0;
     }
     return 0;
 }
+

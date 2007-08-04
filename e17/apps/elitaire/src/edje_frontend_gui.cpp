@@ -196,9 +196,9 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
         edje_object_signal_callback_add(eef->gui, "new_game", "*",
                                         _eli_edje_frontend_new_game_cb, eap);
         evas_object_event_callback_add(eef->gui, EVAS_CALLBACK_KEY_DOWN,
-                                       _key_down_cb, eef);
+                                       _key_down_cb, eap);
         evas_object_event_callback_add(eef->gui, EVAS_CALLBACK_KEY_UP,
-                                       _key_up_cb, eef);
+                                       _key_up_cb, eap);
         evas_object_show(eef->gui);
     }
     else {
@@ -566,10 +566,12 @@ static void _elitaire_scroll_right_cb(void * data, Evas_Object * o,
 
 static void _key_down_cb(void * data, Evas * e, Evas_Object * obj, void * event_info)
 {
-    Eli_Edje_Frontend *eef;
-    Evas_Event_Key_Down *ev;
+    Eli_App * eap;
+    Eli_Edje_Frontend * eef;
+    Evas_Event_Key_Down * ev;
 
-    eef = (Eli_Edje_Frontend *) data;
+    eap = (Eli_App *) data;
+    eef = eli_app_edje_frontend_get(eap);
     ev = (Evas_Event_Key_Down *) event_info;
     
     if (!strcmp(ev->key, "Control_L") || !strcmp(ev->key, "Control_R")) {
@@ -582,6 +584,8 @@ static void _key_down_cb(void * data, Evas * e, Evas_Object * obj, void * event_
     }
     else if (!strcmp(ev->key, "F2"))
         edje_object_signal_emit(eef->gui, "new_game", "");
+    else if (!strcmp(ev->key, "F1"))
+        eli_app_about_open(eap);
 
     if (eef->key.ctrl_down && !eef->key.alt_down) {
         if (!strcmp(ev->key, "z")) 
@@ -606,10 +610,12 @@ static void _key_down_cb(void * data, Evas * e, Evas_Object * obj, void * event_
 static void _key_up_cb(void *data, Evas * e, Evas_Object * obj, 
 		                                       void *event_info)
 {
+    Eli_App * eap;
     Eli_Edje_Frontend * eef;
     Evas_Event_Key_Up * ev;
 
-    eef =  (Eli_Edje_Frontend *) data;
+    eap = (Eli_App *) data;
+    eef = eli_app_edje_frontend_get(eap);
     ev = (Evas_Event_Key_Up *) event_info;
 
     if (!strcmp(ev->key, "Control_L")) eef->key.ctrl_down = false;

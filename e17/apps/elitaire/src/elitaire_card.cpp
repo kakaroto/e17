@@ -87,7 +87,7 @@ Evas_Bool elitaire_card_is_flying(Evas_Object * card)
     data = (Elitaire_Card *) evas_object_smart_data_get(card);
 
     if (data) {
-        return data->flying;
+        return data->flying || data->waiting;
     }
     return false;
 }
