@@ -206,8 +206,6 @@ ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas, Ewl_Embed_Window *canvas_wind
 {
 	Ecore_List *paths;
 	char *font_path;
-	char *name = "EWL Embedded Smart Object";
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("emb", emb, NULL);
 	DCHECK_PARAM_PTR_RET("canvas", canvas, NULL);
@@ -217,17 +215,21 @@ ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas, Ewl_Embed_Window *canvas_wind
 	emb->canvas_window = canvas_window;
 
 	if (!embedded_smart) {
-		embedded_smart = evas_smart_new(name,
+		static const Evas_Smart_Class sc = {
+			"EWL Embedded Smart Object",
+			EVAS_SMART_CLASS_VERSION,
 			NULL,
 			ewl_embed_smart_cb_del,
-			NULL, NULL, NULL, NULL, NULL,
 			ewl_embed_smart_cb_move,
 			ewl_embed_smart_cb_resize,
 			ewl_embed_smart_cb_show,
 			ewl_embed_smart_cb_hide,
 			NULL,
 			ewl_embed_smart_cb_clip_set,
-			ewl_embed_smart_cb_clip_unset, NULL);
+			ewl_embed_smart_cb_clip_unset, 
+			NULL
+		};
+		embedded_smart = evas_smart_class_new(&sc);
 	}
 
 	if (emb->smart) {

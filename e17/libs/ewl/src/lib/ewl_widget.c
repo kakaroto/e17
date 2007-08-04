@@ -2339,11 +2339,13 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 		w->smart_object = ewl_embed_object_request(emb, "Ewl Widget Smart Object");
 		if (!w->smart_object) {
 			if (!widget_smart) {
-				widget_smart = evas_smart_new("Ewl Widget Smart Object",
-						NULL, NULL, NULL, NULL,
-						NULL, NULL, NULL, NULL,
-						NULL, NULL, NULL, NULL,
-						NULL, NULL, NULL);
+				static const Evas_Smart_Class sc = {
+					"Ewl Widget Smart Object",
+					EVAS_SMART_CLASS_VERSION,
+					NULL, NULL, NULL, NULL, NULL,
+				       	NULL, NULL, NULL, NULL, NULL
+				};
+				widget_smart = evas_smart_class_new(&sc);
 			}
 			w->smart_object = evas_object_smart_add(emb->canvas, widget_smart);
 		}
