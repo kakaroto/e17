@@ -3121,14 +3121,12 @@ static Evas_Object *_etk_widget_smart_object_add(Evas *evas, Etk_Widget *widget)
 
    if (!_etk_widget_smart_object_smart)
    {
-      _etk_widget_smart_object_smart = evas_smart_new("Widget_Object",
-         NULL, /* add */
-         NULL, /* del */
-         NULL, /* layer_set */
-         NULL, /* raise */
-         NULL, /* lower */
-         NULL, /* stack_above */
-         NULL, /* stack_below */
+      static const Evas_Smart_Class sc =
+      {
+         "Widget_Object",
+         EVAS_SMART_CLASS_VERSION,
+         NULL,
+         NULL,
          _etk_widget_smart_object_move_cb, /* move */
          _etk_widget_smart_object_resize_cb, /* resize */
          _etk_widget_smart_object_show_cb, /* show */
@@ -3136,7 +3134,9 @@ static Evas_Object *_etk_widget_smart_object_add(Evas *evas, Etk_Widget *widget)
          _etk_widget_smart_object_color_set_cb, /* color_set */
          _etk_widget_smart_object_clip_set_cb, /* clip_set */
          _etk_widget_smart_object_clip_unset_cb, /* clip_unset */
-         NULL); /* data*/
+         NULL
+      };
+      _etk_widget_smart_object_smart = evas_smart_class_new(&sc);
    }
 
    new_object = evas_object_smart_add(evas, _etk_widget_smart_object_smart);
@@ -3441,14 +3441,12 @@ static Evas_Object *_etk_widget_content_object_add(Evas *evas, Etk_Widget *widge
 
    if (!_etk_widget_content_object_smart)
    {
-      _etk_widget_content_object_smart = evas_smart_new("Content_Object",
-         NULL, /* add */
-         NULL, /* del */
-         NULL, /* layer_set */
-         NULL, /* raise */
-         NULL, /* lower */
-         NULL, /* stack_above */
-         NULL, /* stack_below */
+      static const Evas_Smart_Class sc =
+      {
+         "Content_Object",
+         EVAS_SMART_CLASS_VERSION,
+         NULL,
+         NULL,
          _etk_widget_content_object_move_cb, /* move */
          _etk_widget_content_object_resize_cb, /* resize */
          NULL, /* show */
@@ -3456,7 +3454,9 @@ static Evas_Object *_etk_widget_content_object_add(Evas *evas, Etk_Widget *widge
          NULL, /* color_set */
          _etk_widget_content_object_clip_set_cb, /* clip_set */
          _etk_widget_content_object_clip_unset_cb, /* clip_unset */
-         NULL); /* data*/
+         NULL
+      };
+      _etk_widget_content_object_smart = evas_smart_class_new(&sc);
    }
 
    new_object = evas_object_smart_add(evas, _etk_widget_content_object_smart);

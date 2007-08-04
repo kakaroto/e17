@@ -1055,14 +1055,12 @@ Evas_Object *etk_textblock_object_add(Etk_Textblock *tb, Evas *evas)
    
    if (!_etk_tb_object_smart)
    {
-      _etk_tb_object_smart = evas_smart_new("Textblock_Object",
+      static const Evas_Smart_Class sc =
+      {
+         "Textblock_Object",
+         EVAS_SMART_CLASS_VERSION,
          _etk_tb_object_smart_add,
          _etk_tb_object_smart_del,
-         NULL,
-         NULL,
-         NULL,
-         NULL,
-         NULL,
          _etk_tb_object_smart_move,
          _etk_tb_object_smart_resize,
          _etk_tb_object_smart_show,
@@ -1070,7 +1068,9 @@ Evas_Object *etk_textblock_object_add(Etk_Textblock *tb, Evas *evas)
          _etk_tb_object_smart_color_set,
          _etk_tb_object_smart_clip_set,
          _etk_tb_object_smart_clip_unset,
-         NULL);
+         NULL
+      };
+      _etk_tb_object_smart = evas_smart_class_new(&sc);
    }
    _etk_tb_object_smart_use++;
    

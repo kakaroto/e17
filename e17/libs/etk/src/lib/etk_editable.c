@@ -79,10 +79,12 @@ Evas_Object *etk_editable_add(Evas *evas)
 {
    if (!_etk_editable_smart)
    {
-      _etk_editable_smart = evas_smart_new("Editable_Object",
+      static const Evas_Smart_Class sc =
+      {
+         "Editable_Object",
+         EVAS_SMART_CLASS_VERSION,
          _etk_editable_smart_add,
          _etk_editable_smart_del,
-         NULL, NULL, NULL, NULL, NULL,
          _etk_editable_smart_move,
          _etk_editable_smart_resize,
          _etk_editable_smart_show,
@@ -90,7 +92,9 @@ Evas_Object *etk_editable_add(Evas *evas)
          _etk_editable_color_set,
          _etk_editable_clip_set,
          _etk_editable_clip_unset,
-         NULL);
+         NULL
+      };
+      _etk_editable_smart = evas_smart_class_new(&sc);
       _etk_editable_smart_use = 0;
    }
    

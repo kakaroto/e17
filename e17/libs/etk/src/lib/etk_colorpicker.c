@@ -887,14 +887,12 @@ static Evas_Object *_etk_colorpicker_picker_object_add(Evas *evas, Etk_Colorpick
    
    if (!_etk_colorpicker_picker_smart)
    {
-      _etk_colorpicker_picker_smart = evas_smart_new("Picker_Object",
+      static const Evas_Smart_Class sc =
+      {
+         "Picker_Object",
+         EVAS_SMART_CLASS_VERSION,
          _etk_colorpicker_picker_smart_add,
          _etk_colorpicker_picker_smart_del,
-         NULL,
-         NULL,
-         NULL,
-         NULL,
-         NULL,
          _etk_colorpicker_picker_smart_move,
          _etk_colorpicker_picker_smart_resize,
          _etk_colorpicker_picker_smart_show,
@@ -902,7 +900,9 @@ static Evas_Object *_etk_colorpicker_picker_object_add(Evas *evas, Etk_Colorpick
          NULL,
          _etk_colorpicker_picker_smart_clip_set,
          _etk_colorpicker_picker_smart_clip_unset,
-         NULL);
+         NULL
+      };
+      _etk_colorpicker_picker_smart = evas_smart_class_new(&sc);
       _etk_colorpicker_picker_smart_use = 0;
    }
    _etk_colorpicker_picker_smart_use++;
