@@ -1,3 +1,6 @@
+/* 
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2 
+ */
 #include "Esmart_Container.h"
 #include "esmart_container_private.h"
 
@@ -48,28 +51,26 @@ esmart_container_new(Evas *evas)
 Evas_Smart *
 _container_smart_get()
 {
-  if (smart) return smart;
+   if (!smart)
+     {
+	static const Evas_Smart_Class sc =
+	  {
+	     "container",
+	     EVAS_SMART_CLASS_VERSION,
+	     _container_add,
+	     _container_del,
+	     _container_move,
+	     _container_resize,
+	     _container_show,
+	     _container_hide,
+	     _container_color_set,
+	     _container_clip_set,
+	     _container_clip_unset,
+	     NULL
+	  };
 
-  smart = evas_smart_new ("container",
-                          _container_add,
-                          _container_del,
-                          NULL, NULL, NULL, NULL, NULL,
-                          /*
-                          _container_layer_set,
-                          _container_raise,
-                          _container_lower,
-                          _container_stack_above,
-                          _container_stack_below,
-                          */
-                          _container_move,
-                          _container_resize,
-                          _container_show,
-                          _container_hide,
-                          _container_color_set,
-                          _container_clip_set,
-                          _container_clip_unset,
-                          NULL
-                          );
+	smart = evas_smart_class_new(&sc);
+     }
 
   return smart; 
 }

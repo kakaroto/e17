@@ -220,21 +220,27 @@ _esmart_resize_object_smart_get()
 {
    static Evas_Smart *smart = NULL;
 
-   if (smart)
-     return smart;
+   if (!smart)
+     {
+	static const Evas_Smart_Class sc =
+	  {
+	     "esmart_resize_object",
+	     EVAS_SMART_CLASS_VERSION,
+	     _esmart_resize_object_add,
+	     _esmart_resize_object_del,
+	     _esmart_resize_object_move,
+	     _esmart_resize_object_resize,
+	     _esmart_resize_object_show,
+	     _esmart_resize_object_hide,
+	     _esmart_resize_object_color_set,
+	     _esmart_resize_object_clip_set,
+	     _esmart_resize_object_clip_unset,
+	     NULL
+	  };
 
-   smart = evas_smart_new("esmart_resize_object",
-	 _esmart_resize_object_add,
-	 _esmart_resize_object_del,
-	 NULL, NULL, NULL, NULL, NULL,
-	 _esmart_resize_object_move,
-	 _esmart_resize_object_resize,
-	 _esmart_resize_object_show,
-	 _esmart_resize_object_hide,
-	 _esmart_resize_object_color_set,
-	 _esmart_resize_object_clip_set,
-	 _esmart_resize_object_clip_unset, NULL);
-
+	smart = evas_smart_class_new(&sc);
+     }
+   
    return smart;
 }
 

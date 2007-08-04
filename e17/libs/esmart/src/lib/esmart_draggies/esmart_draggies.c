@@ -1,3 +1,6 @@
+/* 
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2 
+ */
 /**************************************************************************
  * draggies.c : a rectangle to add to your borderless/shaped ecore_evas app
  * that will handle moving the ecore evas, as if it were a border.
@@ -113,22 +116,22 @@ esmart_draggies_new (Ecore_Evas * ee)
     return (NULL);
   if ((result = esmart_dragable_object_new (ecore_evas_get (ee))))
     {
-      if ((data = evas_object_smart_data_get (result)))
-	{
-	  data->ee = ee;
-	  o = evas_object_rectangle_add (ecore_evas_get (ee));
-	  evas_object_color_set (o, 255, 255, 255, 0);
-	  evas_object_repeat_events_set (o, 1);
-	  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
-					  _mouse_down_cb, data);
-	  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_UP,
-					  _mouse_up_cb, data);
-	  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_MOVE,
-					  _mouse_move_cb, data);
-	  data->obj = o;
+       if ((data = evas_object_smart_data_get (result)))
+	 {
+	    data->ee = ee;
+	    o = evas_object_rectangle_add (ecore_evas_get (ee));
+	    evas_object_color_set (o, 255, 255, 255, 0);
+	    evas_object_repeat_events_set (o, 1);
+	    evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
+		  _mouse_down_cb, data);
+	    evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_UP,
+		  _mouse_up_cb, data);
+	    evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_MOVE,
+		  _mouse_move_cb, data);
+	    data->obj = o;
 
-    evas_object_smart_member_add(o, result);
-	}
+	    evas_object_smart_member_add(o, result);
+	 }
     }
   return (result);
 }
@@ -177,20 +180,26 @@ _esmart_dragable_object_smart_get ()
 {
   static Evas_Smart *smart = NULL;
 
-  if (smart)
-     return smart;
-  
-  smart = evas_smart_new ("esmart_dragable_object",
-			  _esmart_dragable_object_add,
-			  _esmart_dragable_object_del,
-        NULL, NULL, NULL, NULL, NULL,
-			  _esmart_dragable_object_move,
-			  _esmart_dragable_object_resize,
-			  _esmart_dragable_object_show,
-			  _esmart_dragable_object_hide,
-			  _esmart_dragable_object_color_set,
-			  _esmart_dragable_object_clip_set,
-			  _esmart_dragable_object_clip_unset, NULL);
+  if (!smart)
+    { 
+       static const Evas_Smart_Class sc = 
+	 {
+	    "esmart_dragable_object",
+	    EVAS_SMART_CLASS_VERSION,
+	    _esmart_dragable_object_add,
+	    _esmart_dragable_object_del,
+	    _esmart_dragable_object_move,
+	    _esmart_dragable_object_resize,
+	    _esmart_dragable_object_show,
+	    _esmart_dragable_object_hide,
+	    _esmart_dragable_object_color_set,
+	    _esmart_dragable_object_clip_set,
+	    _esmart_dragable_object_clip_unset, 
+	    NULL
+	 };
+
+       smart = evas_smart_class_new(&sc);
+    }
 
   return smart;
 }
