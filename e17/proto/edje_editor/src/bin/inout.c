@@ -3,5 +3,5 @@
 #include <Etk.h>
 #include "main.h"
 #include "interface.h"
-#include "parse.h"
+#include "inout.h"
 
