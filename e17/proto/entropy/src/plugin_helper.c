@@ -432,6 +432,39 @@ void entropy_event_paste_request(entropy_gui_component_instance* instance)
     entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_LOCAL); 
 }
 
+void entropy_event_hover_request(entropy_gui_component_instance* instance, entropy_generic_file* file, int x, int y) 
+{
+    entropy_gui_event *gui_event;
+
+	
+    gui_event = entropy_malloc (sizeof (entropy_gui_event));
+    gui_event->event_type =
+	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_HOVER);
+    gui_event->data = file;
+    entropy_core_file_cache_add_reference (file->md5);
+
+    /*FIXME: BAD reuse of fields - should gui/notify events have a hash of key/values?*/
+    gui_event->key = x;
+    gui_event->hints = y;
+    entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_LOCAL); 
+}
+
+void entropy_event_dehover_request(entropy_gui_component_instance* instance, entropy_generic_file* file) 
+{
+    entropy_gui_event *gui_event;
+
+	
+    gui_event = entropy_malloc (sizeof (entropy_gui_event));
+    gui_event->event_type =
+	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_DEHOVER);
+    gui_event->data = file;
+    entropy_core_file_cache_add_reference (file->md5);
+
+    printf("Sending dehover..\n");
+    entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_LOCAL); 
+}
+
+
 entropy_generic_file* entropy_layout_current_folder_get(entropy_gui_component_instance_layout* layout)
 {
 	return layout->current_folder;

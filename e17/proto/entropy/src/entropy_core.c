@@ -292,7 +292,8 @@ entropy_core* entropy_core_init(int argc, char** argv) {
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_COPY_REQUEST, entropy_event_handler_copy_request_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_CUT_REQUEST, entropy_event_handler_cut_request_handler);
 	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_PASTE_REQUEST, entropy_event_handler_paste_request_handler);
-	
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_HOVER, entropy_event_handler_hover_request_handler);	
+	entropy_core_gui_event_handler_add(ENTROPY_GUI_EVENT_DEHOVER, entropy_event_handler_dehover_request_handler);
 
 	//printf("\n\nDetails of thumbnailers:\n");
 
@@ -639,6 +640,10 @@ char* entropy_core_gui_event_get(char* event) {
 		return "entropy_gui_event_cut_request";
 	} else if (!strcmp(event, ENTROPY_GUI_EVENT_PASTE_REQUEST)) {
 		return "entropy_gui_event_paste_request";
+	} else if (!strcmp(event, ENTROPY_GUI_EVENT_HOVER)) {
+		return "entropy_gui_event_hover";		
+	} else if (!strcmp(event, ENTROPY_GUI_EVENT_DEHOVER)) {
+		return "entropy_gui_event_dehover";	
 	} else 
 		return "";
 }

@@ -33,6 +33,17 @@ struct entropy_etk_iconbox_viewer
 
   /*A file we're waiting on for passback properties*/
   Ecore_Hash* properties_request_hash;  
+
+  /*Timer for tooltips*/
+  Ecore_Timer* tooltimer;
+  Ecore_Timer* popuptimer;
+
+  /*Hover positions*/
+  int hx;
+  int hy;
+
+  /*Hover file*/
+  entropy_generic_file* hover_file;
 };
 
 void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, void *data);
@@ -211,6 +222,73 @@ void _entropy_etk_icon_viewer_slider_cb(Etk_Object *object, double value, void *
   entropy_etk_icon_viewer_icon_size_set(viewer, value);
 }
 
+int _entropy_etk_icon_viewer_hover_popup_cb(void* data)
+{
+	entropy_gui_component_instance *instance;	
+	entropy_etk_iconbox_viewer *viewer;
+	entropy_file_request* req;
+
+	req = data;
+	instance = (entropy_gui_component_instance*)req->requester;
+	viewer = instance->data;
+
+	entropy_event_hover_request(instance,req->file, viewer->hx, viewer->hy);
+	entropy_core_file_cache_remove_reference(req->file->md5);
+
+	viewer->hover_file = req->file;
+	free(req);
+
+	ecore_timer_del(viewer->popuptimer);
+	viewer->popuptimer = NULL;
+
+	return 0;
+}
+
+
+void _entropy_etk_icon_viewer_move_cb(Etk_Object *object, void *event_info, void *data)
+{
+	Etk_Event_Mouse_Move *event =event_info;
+	Etk_Iconbox_Icon* icon;
+	entropy_generic_file* file;
+	entropy_gui_component_instance *instance;	
+	entropy_etk_iconbox_viewer *viewer;
+	Etk_Toplevel* toplevel;
+	int win_x,win_y;
+
+	instance = data;
+	viewer = instance->data;
+
+	if (viewer->popuptimer) {
+		ecore_timer_del(viewer->popuptimer);
+		viewer->popuptimer = NULL;
+	}
+
+	if (viewer->hover_file) {
+		entropy_event_dehover_request(instance,viewer->hover_file);
+		viewer->hover_file = NULL;
+	}
+
+	if (!(icon = etk_iconbox_icon_get_at_xy(ETK_ICONBOX(viewer->iconbox), 
+   		event->cur.canvas.x, event->cur.canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE))) return;
+
+	toplevel = etk_widget_toplevel_parent_get(viewer->iconbox);
+	etk_window_geometry_get(ETK_WINDOW(toplevel), &win_x, &win_y, NULL, NULL);
+	
+	file = etk_iconbox_icon_data_get(icon);
+
+	if (file) {
+		entropy_file_request* req = calloc(1,sizeof(entropy_file_request));
+		req->file = file;
+		req->requester = instance;
+		entropy_core_file_cache_add_reference(file->md5);
+
+		viewer->hx = event->cur.canvas.x+win_x;
+		viewer->hy = event->cur.canvas.y+win_y;
+
+		viewer->popuptimer = ecore_timer_add(2.0,_entropy_etk_icon_viewer_hover_popup_cb , req);
+	}
+}
+
 void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, void *data)
 {
   entropy_gui_component_instance *instance;	
@@ -226,8 +304,6 @@ void _entropy_etk_icon_viewer_click_cb(Etk_Object *object, void *event_info, voi
   viewer = instance->data;
   event = event_info;
   selected_count = 0;
-
-  printf("Button 1, but not double click - %d\n",event->flags);
 
  if (!(icon = etk_iconbox_icon_get_at_xy(ETK_ICONBOX(viewer->iconbox), 
    	event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
@@ -575,6 +651,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 		  
 	  
   etk_signal_connect("mouse-down", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_entropy_etk_icon_viewer_click_cb), instance);
+  etk_signal_connect("mouse-move", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_entropy_etk_icon_viewer_move_cb), instance);
   
   /*DND Setup*/
   /* dnd_types_num = 1;

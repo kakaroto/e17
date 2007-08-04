@@ -22,6 +22,9 @@
 #define ENTROPY_GUI_EVENT_CUT_REQUEST "entropy_gui_event_cut_request"
 #define ENTROPY_GUI_EVENT_PASTE_REQUEST "entropy_gui_event_paste_request"
 
+#define ENTROPY_GUI_EVENT_HOVER "entropy_gui_event_hover"
+#define ENTROPY_GUI_EVENT_DEHOVER "entropy_gui_event_dehover"
+
 
 #define ENTROPY_TOOLKIT_EWL "ewl"
 #define ENTROPY_TOOLKIT_ETK "etk"

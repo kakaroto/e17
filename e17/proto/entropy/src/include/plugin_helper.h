@@ -38,5 +38,7 @@ void entropy_plugin_filesystem_file_group_remove(entropy_generic_file* file, cha
 void entropy_event_copy_request(entropy_gui_component_instance* instance);
 void entropy_event_cut_request(entropy_gui_component_instance* instance);
 void entropy_event_paste_request(entropy_gui_component_instance* instance);
+void entropy_event_hover_request(entropy_gui_component_instance* instance, entropy_generic_file* file, int x, int y);
+void entropy_event_dehover_request(entropy_gui_component_instance* instance, entropy_generic_file* file);
 
 #endif

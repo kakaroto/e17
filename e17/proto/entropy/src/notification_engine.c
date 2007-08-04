@@ -217,6 +217,20 @@ void entropy_notify_event_destroy(entropy_notify_event* eevent) {
 				}
 				break;			
 
+				case ENTROPY_NOTIFY_HOVER: {
+					entropy_generic_file* file = eevent->data;
+					entropy_core_file_cache_remove_reference ( 
+						file->md5);
+				};
+				break;
+				case ENTROPY_NOTIFY_DEHOVER: {
+					entropy_generic_file* file = eevent->data;
+					entropy_core_file_cache_remove_reference ( 
+						file->md5);
+				};
+				break;
+				
+
 			}
 	}
 

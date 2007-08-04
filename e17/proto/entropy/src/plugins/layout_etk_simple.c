@@ -9,6 +9,7 @@
 #include "etk_mime_dialog.h"
 #include "etk_file_cache_dialog.h"
 #include "entropy_etk_context_menu.h"
+#include "entropy_etk_options_dialog.h"
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <stdlib.h>
@@ -621,6 +622,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	     break;
 
 	     case ENTROPY_NOTIFY_USER_INTERACTION_YES_NO_ABORT: {
+		/*FIXME: We need to handle different types here*/
 		entropy_etk_user_interaction_dialog_new((entropy_file_operation*)el);
 	     }
 	     break;
@@ -687,16 +689,11 @@ entropy_plugin_layout_create (entropy_core * core)
 				  void *data);
   entropy_plugin *local;
 
-  entropy_gui_component_instance*
-	  (*metadata_plugin_init) (entropy_core * core,
-				  entropy_gui_component_instance *,
-				  void* parent_visual,
-				  void *data);
-
-  
   entropy_plugin *meta;
+  entropy_plugin *hover;
   entropy_plugin *trackback;
   entropy_gui_component_instance* meta_instance;
+  entropy_gui_component_instance* hover_instance;
 	  
   Etk_Tree_Col* col;
   Etk_Widget* vbox;
@@ -874,15 +871,22 @@ entropy_plugin_layout_create (entropy_core * core)
 	  }
    }
 
-
-
   /*Initialise the metadata plugin*/
   meta = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_INFO_PROVIDER);
   if (meta) {
-	  metadata_plugin_init = 
+	  local_plugin_init = 
 	  dlsym(meta->dl_ref, "entropy_plugin_gui_instance_new");
-	  meta_instance = (*metadata_plugin_init)(core,layout,layout->gui_object,NULL);
+	  meta_instance = (*local_plugin_init)(core,layout,NULL);
 	  meta_instance->plugin = meta;
+  }
+
+  /*Initialise the hover viewer*/
+  hover = entropy_plugins_type_get_first(ENTROPY_PLUGIN_GUI_COMPONENT, ENTROPY_PLUGIN_GUI_COMPONENT_HOVER_PROVIDER);
+  if (hover) {
+	  local_plugin_init = 
+	  dlsym(hover->dl_ref, "entropy_plugin_gui_instance_new");
+	  hover_instance = (*local_plugin_init)(core,layout,NULL);
+	  hover_instance->plugin = hover;
   }
 
 

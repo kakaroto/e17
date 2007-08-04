@@ -149,7 +149,7 @@ entropy_plugin_init(entropy_core* core)
 
 entropy_gui_component_instance *
 entropy_plugin_gui_instance_new (entropy_core * core,
-		     entropy_gui_component_instance * layout, void* parent_visual, void *data)
+		     entropy_gui_component_instance * layout, void *data)
 {
   Etk_Tree_Col *col_tree;
   _etk_meta_plugin* view = entropy_malloc(sizeof(_etk_meta_plugin));
@@ -164,7 +164,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 					 (ENTROPY_GUI_EVENT_FILE_METADATA_AVAILABLE));
 
   instance->data = view;
-  view->parent_window = (Etk_Widget*)parent_visual;
+  view->parent_window = (Etk_Widget*)layout->gui_object;
   view->window = etk_window_new();
   etk_window_decorated_set(ETK_WINDOW(view->window), ETK_FALSE);
   

@@ -40,6 +40,7 @@ ETK_LIST_VIEWER_L = etk_list.la
 ETK_METADATA_L = etk_metadata.la
 ETK_ICONBOX_L = etk_iconbox.la
 ETK_TRACKBACK_L = etk_trackback.la
+ETK_HOVER_L = etk_hover.la
 else
 LAYOUT_ETK_L =
 ETK_LIST_VIEWER_L =
@@ -47,9 +48,10 @@ ETK_STRUCTURE_VIEWER_L =
 ETK_METADATA_L =
 ETK_ICONBOX_L = 
 ETK_TRACKBACK_L =
+ETK_HOVER_L =
 endif
 
-pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L) $(REMOTE_THUMBNAILER_L) $(DISTRIB_THUMBNAILER_L) $(ETK_STRUCTURE_VIEWER_L) $(ETK_LIST_VIEWER_L) $(METADATA_EXTRACT_L) $(ETK_METADATA_L) $(ETK_ICONBOX_L) $(ETK_TRACKBACK_L)
+pkg_LTLIBRARIES		= $(MIME_L) $(THUMBNAILER_L) $(POSIX_L) $(LAYOUT_L) $(EWL_LOCAL_ICON_L) $(STRUCTURE_VIEWER_L) $(SYSTEM_THUMBNAILER_L) $(ACTION_SIMPLE_L) $(LAYOUT_ETK_L) $(EWL_LIST_L) $(REMOTE_THUMBNAILER_L) $(DISTRIB_THUMBNAILER_L) $(ETK_STRUCTURE_VIEWER_L) $(ETK_LIST_VIEWER_L) $(METADATA_EXTRACT_L) $(ETK_METADATA_L) $(ETK_ICONBOX_L) $(ETK_TRACKBACK_L) $(ETK_HOVER_L)
 
 ewl_local_icon_la_SOURCES      = 	$(top_srcdir)/src/entropy_gui.c \
 					$(top_srcdir)/src/dialogs/ewl_progress_dialog.c \
@@ -161,6 +163,14 @@ etk_metadata_la_SOURCES = etk_meta_plugin.c
 etk_metadata_la_CFLAGS       = @ETK_CFLAGS@
 etk_metadata_la_LDFLAGS      = -module -avoid-version
 etk_metadata_la_LIBADD       = @ETK_LIBS@
+
+if HAVE_EMOTION
+etk_hover_la_SOURCES = etk_hover_viewer.c
+etk_hover_la_CFLAGS = @ETK_CFLAGS@ @EMOTION_CFLAGS@
+etk_hover_la_LDFLAGS = -module -avoid-version
+etk_hover_la_LIBADD = @ETK_LIBS@ @EMOTION_LIBS@
+endif
+
 endif
 
 mime_la_SOURCES                = mime.c $(top_srcdir)/src/entropy_core.c

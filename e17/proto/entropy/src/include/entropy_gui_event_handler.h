@@ -123,4 +123,18 @@ Entropy_Gui_Event_Handler* entropy_event_handler_paste_request_handler();
 Entropy_Gui_Event_Handler_Instance_Data* 
 entropy_event_handler_paste_request_instance_data(entropy_gui_event* event, 
 	entropy_gui_component_instance* requestor) ;
+
+/*Hover Request */
+Entropy_Gui_Event_Handler* entropy_event_handler_hover_request_handler();
+Entropy_Gui_Event_Handler_Instance_Data* 
+entropy_event_handler_hover_request_instance_data(entropy_gui_event* event, 
+			entropy_gui_component_instance* requestor);
+
+/*DeHover Request */
+Entropy_Gui_Event_Handler* entropy_event_handler_dehover_request_handler();
+Entropy_Gui_Event_Handler_Instance_Data* 
+entropy_event_handler_dehover_request_instance_data(entropy_gui_event* event, 
+		                        entropy_gui_component_instance* requestor);
+
+
 #endif

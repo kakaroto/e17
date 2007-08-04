@@ -4,6 +4,7 @@
 #include <dlfcn.h>
 #include <Etk.h>
 
+
 void etk_entropy_user_interaction_dialog_cb(Etk_Object* w, void* user_data)
 {
 	long id = (long)etk_object_data_get(ETK_OBJECT(w),"operation");
