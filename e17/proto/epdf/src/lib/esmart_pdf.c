@@ -42,11 +42,6 @@
 static void _smart_init (void);
 static void _smart_add (Evas_Object *obj);
 static void _smart_del (Evas_Object *obj);
-static void _smart_layer_set (Evas_Object *obj, int layer);
-static void _smart_raise (Evas_Object *obj);
-static void _smart_lower (Evas_Object *obj);
-static void _smart_stack_above (Evas_Object *obj, Evas_Object *above);
-static void _smart_stack_below (Evas_Object *obj, Evas_Object *below);
 static void _smart_move (Evas_Object *obj, Evas_Coord x, Evas_Coord y);
 static void _smart_resize (Evas_Object *obj, Evas_Coord w, Evas_Coord h);
 static void _smart_show (Evas_Object *obj);
@@ -453,22 +448,22 @@ static void
 _smart_init (void)
 {
   if (smart) return;
-  smart = evas_smart_new (E_OBJ_NAME,
-                          _smart_add,
-                          _smart_del,
-                          _smart_layer_set,
-                          _smart_raise,
-                          _smart_lower,
-                          _smart_stack_above,
-                          _smart_stack_below,
-                          _smart_move,
-                          _smart_resize,
-                          _smart_show,
-                          _smart_hide,
-                          _smart_color_set,
-                          _smart_clip_set,
-                          _smart_clip_unset,
-                          NULL);
+  static const Evas_Smart_Class sc =
+    {
+      E_OBJ_NAME,
+      EVAS_SMART_CLASS_VERSION,
+      _smart_add,
+      _smart_del,
+      _smart_move,
+      _smart_resize,
+      _smart_show,
+      _smart_hide,
+      _smart_color_set,
+      _smart_clip_set,
+      _smart_clip_unset,
+      NULL
+    };
+  smart = evas_smart_class_new(&sc);
 }
 
 static void
@@ -508,61 +503,6 @@ _smart_del (Evas_Object *obj)
     epdf_index_delete (sp->pdf_index);
 
   free (sp);
-}
-
-static void
-_smart_layer_set (Evas_Object *obj, int layer)
-{
-  Smart_Pdf *sp;
-
-  sp = evas_object_smart_data_get (obj);
-  if (!sp) return;
-
-  evas_object_layer_set (sp->obj, layer);
-}
-
-static void
-_smart_raise (Evas_Object *obj)
-{
-  Smart_Pdf *sp;
-
-  sp = evas_object_smart_data_get (obj);
-  if (!sp) return;
-
-  evas_object_raise (sp->obj);
-}
-
-static void
-_smart_lower (Evas_Object *obj)
-{
-  Smart_Pdf *sp;
-
-  sp = evas_object_smart_data_get (obj);
-  if (!sp) return;
-
-  evas_object_lower (sp->obj);
-}
-
-static void
-_smart_stack_above (Evas_Object *obj, Evas_Object *above)
-{
-  Smart_Pdf *sp;
-
-  sp = evas_object_smart_data_get (obj);
-  if (!sp) return;
-
-  evas_object_stack_above (sp->obj, above);
-}
-
-static void
-_smart_stack_below (Evas_Object *obj, Evas_Object *below)
-{
-  Smart_Pdf *sp;
-
-  sp = evas_object_smart_data_get (obj);
-  if (!sp) return;
-
-  evas_object_stack_below (sp->obj, below);
 }
 
 static void
