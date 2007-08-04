@@ -18,14 +18,14 @@ callbacks.h \
 evas.h \
 interface.h \
 main.h \
-parse.h
+inout.h
 
 edje_editor_SOURCES = \
 callbacks.c \
 evas.c \
 interface.c \
 main.c \
-parse.c \
+inout.c \
 $(edje_editor_INCLUDES)
 
 edje_editor_LDADD = @ECORE_LIBS@ @ETK_LIBS@ @EVAS_LIBS@ @ENGRAVE_LIBS@ @EDJE_LIBS@
