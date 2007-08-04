@@ -118,3 +118,8 @@ if ($modulename eq "www") {
     print("--- FLAGGING UPDATE OF WWW ---\n");
     system("wget http://web.enlightenment.org/u.php -O /dev/null >& /dev/null");
 }
+# also flag www if devs updates
+if ($modulename eq "devs") {
+    print("--- FLAGGING UPDATE OF WWW/DEVS ---\n");
+    system("wget http://web.enlightenment.org/u.php -O /dev/null >& /dev/null");
+}
