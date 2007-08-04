@@ -467,17 +467,25 @@ entrance_session_start_user_session(Entrance_Session * e)
 
    entrance_config_prevuser_save(e->auth->user, e->db);
 
+   syslog(LOG_INFO, "DEBUG1");
    /* avoid doubling up pam handles before the fork */
    pwent = struct_passwd_dup(e->auth->pw);
+   syslog(LOG_INFO, "DEBUG2");
    entrance_auth_free(e->auth);
    e->auth = NULL;
+   syslog(LOG_INFO, "DEBUG3");
 
    /* Shutdown subsytems */
    edje_shutdown();
+   syslog(LOG_INFO, "DEBUG4");
    ecore_evas_shutdown();
+   syslog(LOG_INFO, "DEBUG5");
    ecore_config_shutdown();
+   syslog(LOG_INFO, "DEBUG6");
    ecore_x_sync();
+   syslog(LOG_INFO, "DEBUG7");
    entrance_ipc_shutdown();
+   syslog(LOG_INFO, "DEBUG8");
 
    switch ((pid = fork()))
    {

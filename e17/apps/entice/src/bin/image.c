@@ -813,15 +813,25 @@ entice_image_get(void)
    static Evas_Smart *s = NULL;
 
    if (!s)
-   {
-      s = evas_smart_new("EnticeImage", entice_image_add, entice_image_del,
-                         NULL, NULL, NULL, NULL, NULL,
-			 entice_image_move, entice_image_resize, entice_image_show,
-                         entice_image_hide, entice_image_color_set,
-                         entice_image_clip_set, entice_image_clip_unset,
-                         NULL);
-   }
-   return (s);
+     {
+        static const Evas_Smart_Class sc =
+	  {
+	     "EnticeImage",
+	       EVAS_SMART_CLASS_VERSION,
+	       entice_image_add,
+	       entice_image_del,
+	       entice_image_move,
+	       entice_image_resize,
+	       entice_image_show,
+	       entice_image_hide,
+	       entice_image_color_set,
+	       entice_image_clip_set,
+	       entice_image_clip_unset,
+	       NULL
+	  };
+	s = evas_smart_class_new(&sc);
+     }
+   return s;
 }
 
 Evas_Object *

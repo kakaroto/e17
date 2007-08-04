@@ -122,24 +122,25 @@ _entrance_smart_object_smart_get()
 {
    static Evas_Smart *smart = NULL;
 
-   if (smart)
-      return (smart);
-
-   smart =
-      evas_smart_new("entrance_smart_object", _entrance_smart_object_add,
-                     _entrance_smart_object_del,
-                     _entrance_smart_object_layer_set,
-                     _entrance_smart_object_raise,
-                     _entrance_smart_object_lower,
-                     _entrance_smart_object_stack_above,
-                     _entrance_smart_object_stack_below,
-                     _entrance_smart_object_move,
-                     _entrance_smart_object_resize,
-                     _entrance_smart_object_show, _entrance_smart_object_hide,
-                     _entrance_smart_object_color_set,
-                     _entrance_smart_object_clip_set,
-                     _entrance_smart_object_clip_unset, NULL);
-
+   if (smart) return (smart);
+     {
+	static const Evas_Smart_Class sc =
+	  {
+	     "entrance_smart_object",
+	       EVAS_SMART_CLASS_VERSION,
+	       _entrance_smart_object_add,
+	       _entrance_smart_object_del,
+	       _entrance_smart_object_move,
+	       _entrance_smart_object_resize,
+	       _entrance_smart_object_show,
+	       _entrance_smart_object_hide,
+	       _entrance_smart_object_color_set,
+	       _entrance_smart_object_clip_set,
+	       _entrance_smart_object_clip_unset,
+	       NULL
+	  };
+	smart = evas_smart_class_new(&sc);
+     }
    return smart;
 }
 

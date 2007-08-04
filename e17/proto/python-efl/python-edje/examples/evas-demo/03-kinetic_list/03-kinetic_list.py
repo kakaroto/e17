@@ -204,7 +204,7 @@ class KineticList(evas.SmartObject):
             self.pixel_per_sec -= self.pixel_per_sec / 10
             self.__update_screen()
 
-        ecore.timer_add(0.1, self.__do_scroll)
+        ecore.timer_add(0.02, self.__do_scroll)
 
     def __do_magnetic_scroll(self):
         if self.pixels_left <= 0 or abs(self.pixel_per_sec) < 1:
