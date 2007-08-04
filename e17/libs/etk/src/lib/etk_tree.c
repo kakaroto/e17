@@ -2389,6 +2389,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
                   col = tree->columns[i];
                   if (col->visible && col->expand)
                   {
+                     col->width += freespace / num_expand_cols;
                      columns_width += freespace / num_expand_cols;
                      col->visible_width += freespace / num_expand_cols;
                   }
@@ -2604,7 +2605,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
                {
                   cell_geometry.x = geometry.x + col->xoffset + CELL_HMARGINS;
                   cell_geometry.y = geometry.y + row_y + CELL_VMARGINS;
-                  cell_geometry.w = col->width - (2 * CELL_HMARGINS);
+                  cell_geometry.w = col->visible_width - (2 * CELL_HMARGINS);
                   cell_geometry.h = tree->rows_height - (2 * CELL_VMARGINS);
                   
                   /* Render the expander of the row */

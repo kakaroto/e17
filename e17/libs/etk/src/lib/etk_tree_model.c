@@ -379,8 +379,8 @@ static Etk_Bool _text_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geome
       return ETK_FALSE;
    
    edje_object_part_text_set(cell_objects[0], "etk.text.label", *text_data);
+   evas_object_resize(cell_objects[0], geometry.w, geometry.h - (geometry.y / 2));
    evas_object_move(cell_objects[0], geometry.x, geometry.y + (geometry.h / 2));
-   evas_object_resize(cell_objects[0], geometry.w + (geometry.x / 2), geometry.h - (geometry.y / 2));
    evas_object_show(cell_objects[0]);
    
    return ETK_FALSE;
