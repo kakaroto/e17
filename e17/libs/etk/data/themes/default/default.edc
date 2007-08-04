@@ -12,6 +12,7 @@ fonts {
    font: "Vera.ttf" "Vera";
    font: "VeraBd.ttf" "Vera-Bold";
    font: "VeraIt.ttf" "Vera-Italic";   
+   font: "VeraBI.ttf" "Vera-Bold-Italic";   
    font: "VeraMono.ttf" "Vera-Mono";
 }
 
