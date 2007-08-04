@@ -717,20 +717,23 @@ static void _elitaire_flip_no_ani_cb(playingCard * pcard)
 
 static Evas_Smart * _elitaire_smart_get()
 {
-    if (smart) return smart;
-
-    smart = evas_smart_new("Elitaire", 
-                           _elitaire_object_add, 
-                           _elitaire_object_del,
-                           NULL, NULL, NULL, NULL, NULL,
-                           _elitaire_object_move,
-                           _elitaire_object_resize,
-                           _elitaire_object_show,
-                           _elitaire_object_hide,
-                           _elitaire_object_color_set,
-                           _elitaire_object_clip_set,
-                           _elitaire_object_clip_unset,
-                           NULL);
+    if (!smart) {
+        static const Evas_Smart_Class sc = {
+            "Elitaire",
+            EVAS_SMART_CLASS_VERSION,
+            _elitaire_object_add, 
+            _elitaire_object_del,
+            _elitaire_object_move,
+            _elitaire_object_resize,
+            _elitaire_object_show,
+            _elitaire_object_hide,
+            _elitaire_object_color_set,
+            _elitaire_object_clip_set,
+            _elitaire_object_clip_unset,
+            NULL
+        };
+        smart = evas_smart_class_new(&sc);
+    }
 
     return smart;
 }

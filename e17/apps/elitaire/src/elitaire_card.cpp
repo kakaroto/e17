@@ -347,20 +347,23 @@ Evas_Object * elitaire_card_next_card_get(Evas_Object * card)
 
 static Evas_Smart * _elitaire_card_smart_get()
 {
-    if (smart) return smart;
-
-    smart = evas_smart_new("Elitaire_Card",
-                           _elitaire_card_add,
-                           _elitaire_card_del,
-                           NULL, NULL, NULL, NULL, NULL,
-                           _elitaire_card_move,
-                           _elitaire_card_resize,
-                           _elitaire_card_show,
-                           _elitaire_card_hide,
-                           _elitaire_card_color_set,
-                           _elitaire_card_clip_set,
-                           _elitaire_card_clip_unset,
-                           NULL);
+    if (!smart) {
+        static const Evas_Smart_Class sc = {
+            "Elitaire_Card",
+            EVAS_SMART_CLASS_VERSION,
+            _elitaire_card_add,
+            _elitaire_card_del,
+            _elitaire_card_move,
+            _elitaire_card_resize,
+            _elitaire_card_show,
+            _elitaire_card_hide,
+            _elitaire_card_color_set,
+            _elitaire_card_clip_set,
+            _elitaire_card_clip_unset,
+            NULL
+        };
+        smart = evas_smart_class_new(&sc);
+    }
     return smart;
 }
 
