@@ -8,6 +8,7 @@
 #include "etk_directory_add_dialog.h"
 #include "etk_properties_dialog.h"
 #include "entropy_etk_context_menu.h"
+#include "etk_user_interaction_dialog.h"
 
 #define EN_DND_COL_NUM 5
 
@@ -243,6 +244,39 @@ int _entropy_etk_icon_viewer_hover_popup_cb(void* data)
 
 	return 0;
 }
+
+/* Called when the user presses a key */
+static void _etk_entropy_iconviewer_key_down_cb(Etk_Object *object, void *event, void *data)
+{
+   Etk_Event_Key_Down *key_event = event;
+   Etk_Iconbox* iconbox = ETK_ICONBOX(object);
+
+   if (!strcmp(key_event->key, "Delete")) {
+	   Etk_Iconbox_Icon* icon;
+	   entropy_generic_file* file;
+	   
+	   printf("Delete pressed!\n");
+
+	   for (icon = iconbox->first_icon; icon ; icon = icon->next ) {
+	   	if (etk_iconbox_is_selected(icon)) {
+		   file = etk_iconbox_icon_data_get(icon);
+
+		   if (file) {
+			printf("Deleting '%s'...\n", file->filename);
+			
+			if (key_event->modifiers & ETK_MODIFIER_SHIFT) {
+				entropy_plugin_filesystem_file_remove(file, (entropy_gui_component_instance*)data);
+			} else {
+				entropy_etk_delete_dialog_new(file, (entropy_gui_component_instance*)data);
+			}
+		   }
+		}
+	  }
+
+   }
+
+}
+
 
 
 void _entropy_etk_icon_viewer_move_cb(Etk_Object *object, void *event_info, void *data)
@@ -652,6 +686,8 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 	  
   etk_signal_connect("mouse-down", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_entropy_etk_icon_viewer_click_cb), instance);
   etk_signal_connect("mouse-move", ETK_OBJECT(viewer->iconbox), ETK_CALLBACK(_entropy_etk_icon_viewer_move_cb), instance);
+  etk_signal_connect("key-down", ETK_OBJECT(viewer->iconbox), 
+		  ETK_CALLBACK(_etk_entropy_iconviewer_key_down_cb), instance);
   
   /*DND Setup*/
   /* dnd_types_num = 1;
