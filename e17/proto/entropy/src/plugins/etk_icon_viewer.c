@@ -250,6 +250,7 @@ static void _etk_entropy_iconviewer_key_down_cb(Etk_Object *object, void *event,
 {
    Etk_Event_Key_Down *key_event = event;
    Etk_Iconbox* iconbox = ETK_ICONBOX(object);
+   Ecore_List* del = NULL;
 
    if (!strcmp(key_event->key, "Delete")) {
 	   Etk_Iconbox_Icon* icon;
@@ -267,10 +268,15 @@ static void _etk_entropy_iconviewer_key_down_cb(Etk_Object *object, void *event,
 			if (key_event->modifiers & ETK_MODIFIER_SHIFT) {
 				entropy_plugin_filesystem_file_remove(file, (entropy_gui_component_instance*)data);
 			} else {
-				entropy_etk_delete_dialog_new(file, (entropy_gui_component_instance*)data);
+				if (!del) del = ecore_list_new();
+				ecore_list_append(del, file);
 			}
 		   }
 		}
+	  }
+
+	  if (del && ecore_list_count(del)) {
+		entropy_etk_delete_dialog_new((entropy_gui_component_instance*)data, del);
 	  }
 
    }

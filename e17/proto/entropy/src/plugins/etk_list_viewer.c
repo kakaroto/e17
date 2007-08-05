@@ -204,13 +204,13 @@ static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event
    Etk_Tree* tree;
    Evas_List* row_list = NULL;
    gui_file* file;
+   Ecore_List* del = NULL;
 	
    tree = ETK_TREE(object);
-   for (iter = etk_tree_first_row_get(tree); iter; iter = etk_tree_row_walk_next(iter, ETK_TRUE))
-	   if (iter->selected == ETK_TRUE) row_list = evas_list_append(row_list, iter);
-
 
    if (!strcmp(key_event->key, "Delete")) {
+	   for (iter = etk_tree_first_row_get(tree); iter; iter = etk_tree_row_walk_next(iter, ETK_TRUE))
+		   if (iter->selected == ETK_TRUE) row_list = evas_list_append(row_list, iter);
 	   printf("Delete pressed!\n");
 
 	  for (; row_list; row_list = row_list->next ) {
@@ -222,15 +222,22 @@ static void _etk_entropy_list_viewer_key_down_cb(Etk_Object *object, void *event
 			if (key_event->modifiers & ETK_MODIFIER_SHIFT) {
 				entropy_plugin_filesystem_file_remove(file->file, (entropy_gui_component_instance*)data);
 			} else {
-				entropy_etk_delete_dialog_new(file->file, (entropy_gui_component_instance*)data);
+				if (!del) del = ecore_list_new();
+				ecore_list_append(del, file->file);
 			}
 		}
 
 	  }
 
+	  evas_list_free(row_list);
+
+	  if (del && ecore_list_count(del)) {
+		entropy_etk_delete_dialog_new((entropy_gui_component_instance*)data, del);
+	  }
+
    }
 
-   evas_list_free(row_list);
+   
 
 }
 
