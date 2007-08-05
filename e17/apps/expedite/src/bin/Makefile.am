@@ -12,6 +12,7 @@ bin_PROGRAMS = expedite
 expedite_SOURCES = \
 main.c main.h \
 engine_software_x11.c engine_software_x11.h \
+engine_gl_glew.c engine_gl_glew.h \
 engine_gl_x11.c engine_gl_x11.h \
 engine_xrender_x11.c engine_xrender_x11.h \
 engine_software_16_x11.c engine_software_16_x11.h \
@@ -59,4 +60,4 @@ image_blend_occlude2_very_many.c \
 image_blend_occlude3_very_many.c \
 poly_blend.c
 
-expedite_LDFLAGS = @EVAS_LIBS@ @sdl_libs@ @x_libs@ @ddraw_libs@ -lm
+expedite_LDFLAGS = @EVAS_LIBS@ @sdl_libs@ @x_libs@ @ddraw_libs@ @glew_libs@ -lm

@@ -25,7 +25,7 @@ else
   PACKAGE_BIN_DIR="${bindir}"
 fi
 AC_SUBST(PACKAGE_BIN_DIR)
-		
+
 if test "x${libdir}" = 'xNONE'; then
   if test "x${prefix}" = "xNONE"; then
     PACKAGE_LIB_DIR="${ac_default_prefix}/lib"
@@ -48,6 +48,15 @@ PKG_CHECK_MODULES([EVAS], evas)
 
 PCFLAGS=$CFLAGS
 CFLAGS="$EVAS_CFLAGS $CFLAGS"
+
+have_glew_opengl="no"
+AC_CHECK_HEADER(Evas_Engine_GL_Glew.h,
+  [ AC_DEFINE(HAVE_EVAS_GL_GLEW, 1, [Evas GL Glew Engine Support])
+    have_glew_opengl="yes"
+    glew_libs="-lglew32 -lgdi32" ],
+  [ dummy=no ],
+  [ #include <Evas.h> ]
+)
 
 have_xlib_opengl="no"
 AC_CHECK_HEADER(Evas_Engine_GL_X11.h,
@@ -100,6 +109,7 @@ fi
 AC_SUBST(x_cflags)
 AC_SUBST(x_libs)
 AC_SUBST(ddraw_libs)
+AC_SUBST(glew_libs)
 
 #######################################
 ## SDL
@@ -144,6 +154,7 @@ echo "  Engines:"
 echo "    Software Xlib...........: ${have_xlib}"
 echo "    Software Xlib 16 bits...: ${have_xlib_16}"
 echo "    X Render Xlib...........: ${have_xlib_render}"
+echo "    Open GL Glew............: ${have_glew_opengl}"
 echo "    Open GL Xlib............: ${have_xlib_opengl}"
 echo "    Software DirectDraw.....: ${have_ddraw}"
 echo "    Software SDL............: ${have_sdl}"

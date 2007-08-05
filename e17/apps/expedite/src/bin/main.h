@@ -11,6 +11,7 @@
 #include <Evas.h>
 #include "config.h"
 #include "engine_software_x11.h"
+#include "engine_gl_glew.h"
 #include "engine_gl_x11.h"
 #include "engine_xrender_x11.h"
 #include "engine_software_16_x11.h"
