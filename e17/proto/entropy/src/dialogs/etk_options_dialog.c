@@ -237,9 +237,9 @@ void entropy_etk_options_dialog_create()
 	      etk_box_append(ETK_BOX(hbox), slider, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 	      label = etk_label_new("");
 	      etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-	      etk_signal_connect("value_changed", ETK_OBJECT(slider), ETK_CALLBACK(etk_options_dialog_slider_cb), 
+	      etk_signal_connect("value-changed", ETK_OBJECT(slider), ETK_CALLBACK(etk_options_dialog_slider_cb), 
 			      label);
-	      etk_signal_connect("value_changed", ETK_OBJECT(slider), ETK_CALLBACK(entropy_etk_options_slider_generic_cb), 
+	      etk_signal_connect("value-changed", ETK_OBJECT(slider), ETK_CALLBACK(entropy_etk_options_slider_generic_cb), 
 			      "general.iconsize");
 	   
 
