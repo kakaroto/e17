@@ -192,6 +192,17 @@ PKG_CHECK_MODULES(EWL, ewl >= 0.0.4,
 )
 AM_CONDITIONAL(HAVE_EWL, test "x$have_ewl" = "xyes")
 
+#check for emotion
+PKG_CHECK_MODULES(EMOTION, emotion >= 0.0.1,
+   [ have_emotion="yes" ],
+   [
+     AC_MSG_WARN([No Emotion, can't build emotion plugins.])
+     have_emotion="no"
+   ]
+)
+AM_CONDITIONAL(HAVE_EMOTION, test "x$have_emotion" = "xyes") 
+
+
 #check for etk
 PKG_CHECK_MODULES(ETK, etk >= 0.1.0,
    [ have_etk="yes" ],
