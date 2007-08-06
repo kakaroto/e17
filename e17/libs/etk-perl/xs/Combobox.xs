@@ -386,9 +386,35 @@ etk_combobox_entry_item_remove(item)
 	ALIAS:
 	Remove=1
 
-# etk_combobox_entry_item_fields_set
+void
+etk_combobox_entry_item_field_set(item, col, data)
+	Etk_Combobox_Entry_Item * item
+	int col
+	SV * data
+      ALIAS:
+	FieldSet=1
+	CODE:
+ 	if (SvPOK(data))
+		etk_combobox_entry_item_field_set(item, col, (void *)SvPV_nolen(data));
+ 	else
+		etk_combobox_entry_item_field_set(item, col, (void *)SvObj(data, "Etk::Widget"));
 
-# etk_combobox_entry_item_fields_get
+SV *
+etk_combobox_entry_item_field_get(item, col, type=0)
+	Etk_Combobox_Entry_Item * item
+	int col
+	int type
+      ALIAS:
+	FieldGet=1
+	CODE:
+	void * data;
+	data = etk_combobox_entry_item_field_get(item, col);
+ 	if (type == 0)
+		RETVAL = sv_2mortal(newSVpv((char *)data, 0));
+ 	else
+ 		RETVAL = sv_2mortal(newSVObject((Etk_Widget *)data));
+	OUTPUT:
+	RETVAL
 
 void
 etk_combobox_entry_item_data_set(item, data)
@@ -460,37 +486,35 @@ etk_combobox_item_remove(item)
       ALIAS:
 	Remove=1
 
-# void
-# etk_combobox_item_col_set(item, col, data)
-#	Etk_Combobox_Item * item
-#	int col
-#	SV * data
-#      ALIAS:
-#	ColSet=1
-#	CODE:
-# /	if (SvPOK(data))
-#		etk_combobox_item_col_set(item, col, SvPV_nolen(data));
-# /	else
-#		etk_combobox_item_col_set(item, col, SvEtkWidgetPtr(data));
-#
-# SV *
-# etk_combobox_item_col_get(item, col, type=0)
-#	Etk_Combobox_Item * item
-#	int col
-#	int type
-#      ALIAS:
-#	ColGet=1
-#	CODE:
-#	void * data;
-#	data = etk_combobox_item_col_get(item, col);
-# /	if (type == 0)
-#		RETVAL = sv_2mortal(newSVpv((char *)data, 0));
-# /	else
-# 		RETVAL = sv_2mortal(newSVEtkWidgetPtr((Etk_Widget *)data));
-#	OUTPUT:
-#	RETVAL
+void
+etk_combobox_item_field_set(item, col, data)
+	Etk_Combobox_Item * item
+	int col
+	SV * data
+      ALIAS:
+	FieldSet=1
+	CODE:
+ 	if (SvPOK(data))
+		etk_combobox_item_field_set(item, col, (void *)SvPV_nolen(data));
+ 	else
+		etk_combobox_item_field_set(item, col, (void *)SvObj(data, "Etk::Widget"));
 
-
+SV *
+etk_combobox_item_field_get(item, col, type=0)
+	Etk_Combobox_Item * item
+	int col
+	int type
+      ALIAS:
+	FieldGet=1
+	CODE:
+	void * data;
+	data = etk_combobox_item_field_get(item, col);
+ 	if (type == 0)
+		RETVAL = sv_2mortal(newSVpv((char *)data, 0));
+ 	else
+ 		RETVAL = sv_2mortal(newSVObject((Etk_Widget *)data));
+	OUTPUT:
+	RETVAL
 
 
 MODULE = Etk::Combobox		PACKAGE = Etk::Combobox		PREFIX = etk_combobox_
