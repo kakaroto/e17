@@ -43,10 +43,11 @@ my $inew = \&new;
 			return NewFromStock($arg1, $arg2);
 		} else {
 			if (defined $arg2) {
-				return NewFromEdje($arg1, $arg2);
-			} else {
-				# XXX oops... from file requires a key now
-				return NewFromFile($arg1, ""); 
+				if ($arg1 =~ /\.edj$/) {
+					return NewFromEdje($arg1, $arg2);
+				} else {
+					return NewFromFile($arg1, $arg2); 
+				}
 			}
 		}
 	}

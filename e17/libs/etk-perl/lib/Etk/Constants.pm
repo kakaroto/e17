@@ -25,7 +25,7 @@ None by default.
 
    box combobox fillpolicy messagedialog progressbar scrolledview
    toplevelwidget tree textblock table colorpicker mouse toolbar
-   button shadow image entry popupwindow window swallow all
+   button shadow image entry popupwindow window swallow slider all
  
 =cut
 

@@ -13,7 +13,6 @@ TODO:
 	- Same for Combobox_Entry
 	- Image new from data
 	- fix DND
-	- fix Etk::Simple ( image new_from_file requires a key now )
 
 BUGS:
 
