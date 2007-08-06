@@ -21,8 +21,6 @@ static void _etk_cairo_size_requested_cb(Etk_Object *object, Etk_Size *size, voi
 static void _etk_cairo_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_cairo_rebuild(Etk_Cairo *cairo);
 static void _etk_cairo_redraw_required_handler(Etk_Cairo *cairo);
-static void _etk_cairo_shown_cb(Etk_Object *object, void *data);
-static void _etk_cairo_hidden_cb(Etk_Object *object, void *data);
 
 static Etk_Signal *_etk_cairo_signals[ETK_CAIRO_NUM_SIGNALS];
 
@@ -85,13 +83,12 @@ static void _etk_cairo_constructor(Etk_Cairo *cairo)
   cairo->image = etk_image_new();
   etk_widget_internal_set(cairo->image, ETK_TRUE);
   etk_widget_parent_set(cairo->image, widget);
+  etk_widget_show(cairo->image);
 
   widget->size_allocate = _etk_cairo_size_allocate;
 
   cairo->redraw_required_handler = _etk_cairo_redraw_required_handler;
   etk_signal_connect("size-requested", ETK_OBJECT(cairo), ETK_CALLBACK(_etk_cairo_size_requested_cb), NULL);
-  etk_signal_connect("shown", ETK_OBJECT(cairo), ETK_CALLBACK(_etk_cairo_shown_cb), NULL);
-  etk_signal_connect("hidden", ETK_OBJECT(cairo), ETK_CALLBACK(_etk_cairo_hidden_cb), NULL);
 }
 
 /**
@@ -218,22 +215,5 @@ static void _etk_cairo_redraw_required_handler(Etk_Cairo *cairo)
 {
   if (!cairo)
     return;
-
-}
-
-/* Show the widget */
-static void _etk_cairo_shown_cb(Etk_Object *object, void *data)
-{
-  Etk_Cairo *cairo;
-
-  if (!(cairo = ETK_CAIRO(object)))
-    return;
-
-  etk_widget_show(cairo->image);
-}
-
-/* Hide the widget */
-static void _etk_cairo_hidden_cb(Etk_Object *object, void *data)
-{
 
 }
