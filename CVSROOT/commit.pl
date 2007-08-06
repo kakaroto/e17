@@ -55,7 +55,7 @@ foreach(@filesets) {
 
 $basename = $paths[0];
 $modulename = $paths[1];
-if(($modulename eq "apps") || ($modulename eq "libs")) {
+if(($modulename eq "apps") || ($modulename eq "libs") || ($modulename eq "proto")) {
 	if($paths[2]) {
 		$modulename .= "/$paths[2]";
 	}
