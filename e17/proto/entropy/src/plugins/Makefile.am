@@ -40,7 +40,13 @@ ETK_LIST_VIEWER_L = etk_list.la
 ETK_METADATA_L = etk_metadata.la
 ETK_ICONBOX_L = etk_iconbox.la
 ETK_TRACKBACK_L = etk_trackback.la
+
+if HAVE_EMOTION
 ETK_HOVER_L = etk_hover.la
+else
+ETK_HOVER_L =
+endif
+
 else
 LAYOUT_ETK_L =
 ETK_LIST_VIEWER_L =

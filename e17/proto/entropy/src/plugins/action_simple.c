@@ -173,7 +173,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
     //printf ("Hit action callback\n");
     //printf("Exe: %s\n", fullname);
 
-    ecore_exe_run (fullname, NULL);
+    ecore_exe_pipe_run (fullname, ECORE_EXE_PIPE_AUTO, NULL);
   }
   else {
     printf ("action_simple: No action associated with %s\n",
