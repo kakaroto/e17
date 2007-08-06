@@ -173,7 +173,8 @@ class EvasEdje : public EvasObject
 
     void setMinimumSize( const Size& size );
     void setMaximumSize( const Size& size );
-    Size minimalSize() const;
+    Size getMinimalSize() const;
+    Size getMaximumSize() const;
 
     void recalculateLayout();
 
