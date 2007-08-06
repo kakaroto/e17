@@ -141,8 +141,10 @@ void               etk_combobox_entry_clear(Etk_Combobox_Entry *combobox_entry);
 
 void               etk_combobox_entry_item_fields_set(Etk_Combobox_Entry_Item *item, ...);
 void               etk_combobox_entry_item_fields_set_valist(Etk_Combobox_Entry_Item *item, va_list args);
+void               etk_combobox_entry_item_field_set(Etk_Combobox_Entry_Item *item, int column, void * value);
 void               etk_combobox_entry_item_fields_get(Etk_Combobox_Entry_Item *item, ...);
 void               etk_combobox_entry_item_fields_get_valist(Etk_Combobox_Entry_Item *item, va_list args);
+void *             etk_combobox_entry_item_field_get(Etk_Combobox_Entry_Item *item, int column);
 
 void               etk_combobox_entry_item_data_set(Etk_Combobox_Entry_Item *item, void *data);
 void               etk_combobox_entry_item_data_set_full(Etk_Combobox_Entry_Item *item, void *data, void (*free_cb)(void *data));

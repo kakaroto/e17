@@ -501,6 +501,52 @@ void etk_combobox_item_fields_set_valist(Etk_Combobox_Item *item, va_list args)
 }
 
 /**
+ * @brief Sets the value of the one column of the combobox item. The current widgets of item will be destroyed
+ * @param item a combobox item
+ * @param column the column to set the value of
+ * @param value the different widget to attach to the column of the item:
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget *"
+ * @note The new widgets of the item will be automatically shown
+ */
+void etk_combobox_item_field_set(Etk_Combobox_Item *item, int column, void *value)
+{
+   Etk_Combobox *combobox;
+   
+   if (!item || !(combobox = item->combobox) || (column >= combobox->num_cols))
+      return;
+   
+   switch (combobox->cols[column]->type)
+   {
+      if (item->widgets[column])
+         etk_object_destroy(ETK_OBJECT(item->widgets[column]));
+      
+      case ETK_COMBOBOX_LABEL:
+         item->widgets[column] = etk_label_new((const char *) value);
+         etk_widget_pass_mouse_events_set(item->widgets[column], ETK_TRUE);
+         break;
+      case ETK_COMBOBOX_IMAGE:
+         item->widgets[column] = ETK_WIDGET((Etk_Widget *) value);
+         etk_widget_pass_mouse_events_set(item->widgets[column], ETK_TRUE);
+         break;
+      case ETK_COMBOBOX_OTHER:
+         item->widgets[column] = ETK_WIDGET((Etk_Widget *) value);
+         break;
+      default:
+         item->widgets[column] = NULL;
+         break;
+   }
+   etk_widget_parent_set(item->widgets[column], ETK_WIDGET(item));
+   etk_widget_show(item->widgets[column]);
+   
+   if (combobox->active_item == item)
+      etk_combobox_active_item_set(combobox, item);
+}
+
+
+
+/**
  * @brief Gets the values of the cells of the combobox item
  * @param item a combobox item
  * @param ... the location where to store the different values of the cells of the item:
@@ -566,6 +612,49 @@ void etk_combobox_item_fields_get_valist(Etk_Combobox_Item *item, va_list args)
       etk_widget_show(item->widgets[i]);
    }
 }
+
+/**
+ * @brief Gets the value of the cell of a column of the combobox item
+ * @param item a combobox item
+ * @param column the column to get the values of
+ * @return The value of the cell as a void pointer that you must cast to the appropriate type:
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char **" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image **" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget **"
+ */
+void * etk_combobox_item_field_get(Etk_Combobox_Item *item, int column)
+{
+   Etk_Combobox *combobox;
+   
+   if (!item || !(combobox = item->combobox) || (column >= combobox->num_cols))
+      return NULL;
+   
+   switch (combobox->cols[column]->type)
+   {
+      case ETK_COMBOBOX_LABEL:
+      {
+         const char *label;
+         label = etk_label_get(ETK_LABEL(item->widgets[column]));
+	 return (void *)label;
+         break;
+      }
+      case ETK_COMBOBOX_IMAGE:
+      case ETK_COMBOBOX_OTHER:
+      {
+         Etk_Widget *widget;
+         widget = item->widgets[column];
+	 return (void *) widget;
+         break;
+      }
+      default:
+	 return NULL;
+         break;
+   }
+// FIXME: are these needed here?
+//   etk_widget_parent_set(item->widgets[column], ETK_WIDGET(item));
+//   etk_widget_show(item->widgets[column]);
+}
+
 
 /**
  * @brief Sets the data associated to the combobox item
