@@ -26,6 +26,16 @@
 #include "tclass.h"
 #include "xwin.h"
 
+#ifdef USE_PANGO
+#include <X11/Xft/Xft.h>
+#include <pango/pangoxft.h>
+/* If we have pango-xft we might as well also have xft */
+#undef USE_XFT
+#define USE_XFT 1
+#else
+#undef FONT_TYPE_PANGO_XFT
+#endif
+
 #ifdef USE_XFT
 #include <X11/extensions/Xrender.h>
 #include <X11/Xft/Xft.h>
@@ -559,6 +569,116 @@ const FontOps       FontOpsXft = {
 };
 #endif /* FONT_TYPE_XFT */
 
+#if FONT_TYPE_PANGO_XFT
+/*
+ * Pango-Xft
+ */
+extern const FontOps FontOpsPangoXft;
+
+static PangoContext *_pango_ctx = NULL;
+
+/* Beware! The layout of FontCtxPangoXft must match FontCtxXft
+ * in order to reuse the _xft_Fdc... functions. */
+typedef struct
+{
+   PangoFontDescription *font;
+   Win                 win;
+   Drawable            draw;
+   XftDraw            *xftd;
+   XftColor            xftc;
+} FontCtxPangoXft;
+
+static int
+_pango_xft_Load(TextState * ts, int fallback __UNUSED__)
+{
+   FontCtxPangoXft    *fdc;
+   PangoFontDescription *font;
+   PangoFontMask       flags;
+   const char         *name;
+
+   name = ts->fontname;
+   if (strncmp(name, "pango:", 6))
+      return -1;
+   name += 6;
+
+   if (!_pango_ctx)
+      _pango_ctx = pango_xft_get_context(disp, VRoot.scr);
+   if (!_pango_ctx)
+      return -1;
+
+   font = pango_font_description_from_string(name);
+   if (!font)
+      return -1;
+
+   flags = pango_font_description_get_set_fields(font);
+   if ((flags & PANGO_FONT_MASK_FAMILY) == 0)
+      pango_font_description_set_family(font, "sans");
+   if ((flags & PANGO_FONT_MASK_SIZE) == 0)
+      pango_font_description_set_size(font, 10 * PANGO_SCALE);
+
+   fdc = EMALLOC(FontCtxPangoXft, 1);
+   if (!fdc)
+      return -1;
+   fdc->font = font;
+   ts->fdc = fdc;
+   ts->need_utf8 = 1;
+   ts->type = FONT_TYPE_PANGO_XFT;
+   ts->ops = &FontOpsPangoXft;
+   return 0;
+}
+
+static void
+_pango_xft_Unload(TextState * ts)
+{
+   FontCtxPangoXft    *fdc = (FontCtxPangoXft *) ts->fdc;
+
+   pango_font_description_free(fdc->font);
+}
+
+static void
+_pango_xft_TextSize(TextState * ts, const char *text, int len __UNUSED__,
+		    int *width, int *height, int *ascent)
+{
+   FontCtxPangoXft    *fdc = (FontCtxPangoXft *) ts->fdc;
+   PangoLayout        *layout;
+   PangoRectangle      logical_rect;
+
+   layout = pango_layout_new(_pango_ctx);
+   pango_layout_set_text(layout, text, -1);
+   pango_layout_set_font_description(layout, fdc->font);
+   pango_layout_get_extents(layout, NULL, &logical_rect);
+
+   *width = PANGO_PIXELS(logical_rect.x + logical_rect.width);
+   *height = PANGO_PIXELS(logical_rect.height);
+   *ascent = PANGO_PIXELS(-logical_rect.y);
+
+   g_object_unref(layout);
+}
+
+static void
+_pango_xft_TextDraw(TextState * ts, int x, int y, const char *text,
+		    int len __UNUSED__)
+{
+   FontCtxPangoXft    *fdc = (FontCtxPangoXft *) ts->fdc;
+   PangoLayout        *layout;
+
+   layout = pango_layout_new(_pango_ctx);
+   pango_layout_set_text(layout, text, -1);
+   pango_layout_set_font_description(layout, fdc->font);
+
+   pango_xft_render_layout(fdc->xftd, &(fdc->xftc), layout,
+			   x * PANGO_SCALE, y * PANGO_SCALE);
+
+   g_object_unref(layout);
+}
+
+const FontOps       FontOpsPangoXft = {
+   _pango_xft_Load, _pango_xft_Unload,
+   _pango_xft_TextSize, TextstateTextFit, _pango_xft_TextDraw,
+   _xft_FdcInit, _xft_FdcFini, _xft_FdcSetDrawable, _xft_FdcSetColor
+};
+#endif /* FONT_TYPE_PANGO_XFT */
+
 #if FONT_TYPE_XFS
 /*
  * XFontSet - XCreateFontSet
@@ -850,6 +970,10 @@ TextStateLoadFont(TextState * ts)
 #endif
 #if FONT_TYPE_XFS
    if (!FontOpsXfs.Load(ts, 0))	/* XFontSet - XCreateFontSet */
+      goto done;
+#endif
+#if FONT_TYPE_PANGO_XFT
+   if (!FontOpsPangoXft.Load(ts, 0))	/* Pango-Xft */
       goto done;
 #endif
 #if FONT_TYPE_XFT

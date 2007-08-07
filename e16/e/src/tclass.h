@@ -36,11 +36,12 @@
 #define FONT_TO_UP        2
 #define FONT_TO_LEFT      3
 
-#define FONT_TYPE_UNKNOWN 0
-#define FONT_TYPE_IFT     1	/* Imlib2/FreeType */
-#define FONT_TYPE_XFT     2	/* Xft             */
-#define FONT_TYPE_XFS     3	/* XFontSet        */
-#define FONT_TYPE_XFONT   0	/* XFontStruct     */
+#define FONT_TYPE_UNKNOWN       0
+#define FONT_TYPE_IFT           1	/* Imlib2/FreeType */
+#define FONT_TYPE_XFT           2	/* Xft             */
+#define FONT_TYPE_XFS           3	/* XFontSet        */
+#define FONT_TYPE_XFONT         0	/* XFontStruct     */
+#define FONT_TYPE_PANGO_XFT     5	/* Pango-Xft       */
 
 typedef struct
 {

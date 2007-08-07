@@ -5,7 +5,7 @@ config_DATA = \
 	definitions \
 	actionclasses.cfg bindings.cfg matches.cfg menus.cfg \
 	e16keyedit.db \
-	fonts.cfg.xft
+	fonts.cfg.xft fonts.cfg.pango
 
 menudir = $(ENLIGHTENMENT_ROOT)/config/menus
 menu_DATA = \
