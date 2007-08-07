@@ -24,6 +24,8 @@
 #include <Ecore.h>
 #include <Ecore_File.h>
 #include <Ecore_Data.h>
+#include <Ecore_Str.h>
+#include <zlib.h>
 
 #define MAIN_WIDTH 640
 #define MAIN_HEIGHT 320
@@ -597,15 +599,17 @@ create_main_test_window(Ewl_Container *box)
 static void
 fill_source_text(Ewl_Test *test)
 {
-	FILE *file;
 	struct stat buf;
 	char filename[PATH_MAX];
 
 	snprintf(filename, sizeof(filename), PACKAGE_DATA_DIR "/ewl/examples/%s", 
 								test->filename);
-	file = fopen(filename, "r");
-	if (file)
+	if (ecore_file_exists(filename)) 
 	{
+		FILE *file;
+		file = fopen(filename, "r");
+		if (!file) return;
+
 		char *str;
 
 		stat(filename, &buf);
@@ -614,6 +618,42 @@ fill_source_text(Ewl_Test *test)
 		fread(str, buf.st_size, 1, file);
 		str[buf.st_size] = '\0';
 		fclose(file);
+
+		text_parse(str);
+		free(str);
+	}
+	else {
+		char *str;
+		gzFile file;
+		unsigned int size;
+		unsigned int step;
+		unsigned int len = 0;
+		int ret;
+
+		/* let see if a compressed version exists */
+		ecore_strlcat(filename, ".gz", sizeof(filename));
+		if (!ecore_file_exists(filename)) return;
+		
+		file = gzopen(filename, "rb");
+		if (!file) return;
+
+		stat(filename, &buf);
+
+		step = buf.st_size;
+		size = step * 4;
+		str = malloc(sizeof(char) * (size + 1));
+		while ((ret = gzread(file, str + (size - 4 * step), step))) {
+			if (ret < 0) {
+				fprintf(stderr, "Could not open gzipped file\n");
+				gzclose(file);
+				free(str);
+			}
+			size += step;
+			str = realloc(str, sizeof(char) * (size + 1));
+			len += ret;
+		}
+		str[len] = '\0';
+		gzclose(file);
 
 		text_parse(str);
 		free(str);
