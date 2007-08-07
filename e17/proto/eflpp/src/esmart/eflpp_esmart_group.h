@@ -19,6 +19,7 @@ public:
   virtual ~EvasEsmartGroup();
 
   void add (EvasObject* object);
+  void remove (EvasObject* object);
 
 protected:
   // smart object handlers

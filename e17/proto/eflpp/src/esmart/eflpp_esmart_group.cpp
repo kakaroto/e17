@@ -41,6 +41,11 @@ void EvasEsmartGroup::add (EvasObject *object)
   evasObjectList.push_back (object);
 }
 
+void EvasEsmartGroup::remove (EvasObject* object)
+{
+  cerr << "EvasEsmartGroup::remove" << endl;
+}
+
 // Handler functions
 
 void EvasEsmartGroup::addHandler()
@@ -79,6 +84,14 @@ void EvasEsmartGroup::showHandler()
 void EvasEsmartGroup::hideHandler()
 {
   cerr << "EvasEsmartGroup::hideHandler" << endl;
+  for (list<EvasObject*>::iterator eol_it = evasObjectList.begin ();
+       eol_it != evasObjectList.end ();
+       eol_it++)
+  {
+    EvasObject *eo = (*eol_it);
+
+    eo->hide();
+  } 
 }
 
 void EvasEsmartGroup::colorSetHandler( int r, int g, int b, int a )
