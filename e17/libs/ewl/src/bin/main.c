@@ -647,6 +647,7 @@ fill_source_text(Ewl_Test *test)
 				fprintf(stderr, "Could not open gzipped file\n");
 				gzclose(file);
 				free(str);
+				return;
 			}
 			size += step;
 			str = realloc(str, sizeof(char) * (size + 1));
