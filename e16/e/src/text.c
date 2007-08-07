@@ -25,13 +25,12 @@
 #include "eimage.h"
 #include "tclass.h"
 #include "xwin.h"
-#ifndef USE_XFT
-#undef FONT_TYPE_XFT
-#define FONT_TYPE_XFT 0
-#endif
-#if FONT_TYPE_XFT
+
+#ifdef USE_XFT
 #include <X11/extensions/Xrender.h>
 #include <X11/Xft/Xft.h>
+#else
+#undef FONT_TYPE_XFT
 #endif
 
 #if FONT_TYPE_IFT
@@ -428,14 +427,18 @@ _xft_Load(TextState * ts, int fallback __UNUSED__)
 {
    XftFont            *font;
    FontCtxXft         *fdc;
+   const char         *name;
 
-   if (strchr(ts->fontname, '/'))
+   name = ts->fontname;
+   if (!strncmp(name, "xft:", 4))
+      name += 4;
+   else if (strchr(name, '/'))
       return -1;
 
-   if (ts->fontname[0] == '-')
-      font = XftFontOpenXlfd(disp, VRoot.scr, ts->fontname);
+   if (name[0] == '-')
+      font = XftFontOpenXlfd(disp, VRoot.scr, name);
    else
-      font = XftFontOpenName(disp, VRoot.scr, ts->fontname);
+      font = XftFontOpenName(disp, VRoot.scr, name);
 
    if (!font)
       return -1;
@@ -446,7 +449,7 @@ _xft_Load(TextState * ts, int fallback __UNUSED__)
 
       if (ftf == NULL)
 	 return -1;
-      Eprintf("Font %s family_name=%s style_name=%s\n", ts->fontname,
+      Eprintf("Font %s family_name=%s style_name=%s\n", name,
 	      ftf->family_name, ftf->style_name);
       XftUnlockFace(font);
    }
@@ -508,6 +511,7 @@ _xft_FdcInit(TextState * ts, Win win, Drawable draw)
    FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
 
    fdc->win = win;
+   fdc->draw = draw;
 
    fdc->xftd = XftDrawCreate(disp, draw, WinGetVisual(win), WinGetCmap(win));
    if (!fdc->xftd)
@@ -530,6 +534,7 @@ _xft_FdcSetDrawable(TextState * ts, unsigned long draw)
 
    if (fdc->draw == draw)
       return;
+   fdc->draw = draw;
    XftDrawChange(fdc->xftd, draw);
 }
 

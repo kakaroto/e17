@@ -3,33 +3,33 @@
 __E_CFG_VERSION 1
 __FONTS __BGN
 
-font-default		"Sans-8:Bold"
+font-default		"xft:sans-8:bold"
 
-font-border		"Sans-8:Bold"
-font-border-italic	"Sans-8:Italic"
-font-border-small	"Sans-6"
+font-border		"xft:sans-8:bold"
+font-border-italic	"xft:sans-8:italic"
+font-border-small	"xft:sans-6"
 
-font-coords		"Sans-8:Bold"
+font-coords		"xft:sans-8:bold"
 
-font-dialog		"Sans-8"
-font-dialog-hilite	"Sans-8:Bold"
-font-dialog-italic	"Sans-8:Italic"
+font-dialog		"xft:sans-8"
+font-dialog-hilite	"xft:sans-8:bold"
+font-dialog-italic	"xft:sans-8:italic"
 
-font-epplet		"Sans-6"
-font-epplet-small	"Sans-6"
-font-epplet-medium	"Sans-8"
-font-epplet-large	"Sans-10"
+font-epplet		"xft:sans-6"
+font-epplet-small	"xft:sans-6"
+font-epplet-medium	"xft:sans-8"
+font-epplet-large	"xft:sans-10"
 
-font-focus	"Sans-8:Bold"
+font-focus		"xft:sans-8:bold"
 
-font-iconbox	"Sans-8:Bold"
+font-iconbox		"xft:sans-8:bold"
 
-font-init	"Sans-9:Bold"
+font-init		"xft:sans-9:bold"
 
-font-menu	"Sans-8"
+font-menu		"xft:sans-8"
 
-font-pager	"Sans-8:Bold"
+font-pager		"xft:sans-8:bold"
 
-font-tooltip	"Sans-8:Bold"
+font-tooltip		"xft:sans-8:bold"
 
 __END
