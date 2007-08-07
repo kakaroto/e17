@@ -33,15 +33,8 @@ This package will install the Enlightenment window manager.
 %setup -n %{name}-@VERSION@
 
 %build
-CFLAGS="${RPM_OPT_FLAGS}"
-AC_FLAGS="--prefix=%{_prefix} --mandir=%{_mandir}"
-export CFLAGS AC_FLAGS
-if [ ! -f configure ]; then
-  ./autogen.sh $AC_FLAGS
-else
-  %{configure} $AC_FLAGS %{?acflags}
-fi
-%{__make} %{?mflags}
+%{configure} %{?acflags}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
 test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
