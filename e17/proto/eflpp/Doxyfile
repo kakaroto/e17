@@ -1,4 +1,4 @@
-PROJECT_NAME           = Evas
+PROJECT_NAME           = EFLpp
 PROJECT_NUMBER         =
 OUTPUT_DIRECTORY       = doc
 INPUT                  = ./src ./src/edje
