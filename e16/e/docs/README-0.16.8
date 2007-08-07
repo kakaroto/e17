@@ -554,14 +554,16 @@ sound.theme =
 # When enabled, and e.g. LANG=ja_JP and we are looking for fonts.cfg the search
 # order is fonts.cfg.ja_JP, fonts.cfg.ja, fonts.cfg.
 theme.localise = 0
-# [bool] Prefer fonts.cfg.xft over fonts.cfg
-theme.prefer_xft_fonts = 1
 # [string] Theme
 theme.name = winter
 # [string] Colon separated list of directories containing e16 themes
 theme.extra_path = /mnt/fc4/src/E/themes/e16
 # [string] Colon separated list of additional TrueType font directories
 theme.ttfont_path = 
+# [bool] Use alternative font configuration file (specified by theme.font_cfg)
+theme.use_alt_font_cfg = 1
+# [string] Alternative font configuration file
+theme.font_cfg = fonts.cfg.xft
 
 # [bool] Enable tooltips
 tooltips.enable = 1

@@ -116,17 +116,17 @@ _FontConfigLoad(FILE * fs)
 void
 FontConfigLoad(void)
 {
-#if USE_XFT
    int                 err;
 
-   if (Conf.theme.prefer_xft_fonts)
+   if (Conf.theme.use_alt_font_cfg)
      {
-	err = ConfigFileLoad("fonts.cfg.xft", Mode.theme.path,
+	if (!Conf.theme.font_cfg)
+	   Conf.theme.font_cfg = Estrdup("fonts.cfg.xft");
+	err = ConfigFileLoad(Conf.theme.font_cfg, Mode.theme.path,
 			     _FontConfigLoad, 0);
 	if (!err)
 	   return;
      }
-#endif
    ConfigFileLoad("fonts.cfg", Mode.theme.path, _FontConfigLoad, 0);
 }
 

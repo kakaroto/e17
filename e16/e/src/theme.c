@@ -500,10 +500,11 @@ static const IpcItem ThemeIpcArray[] = {
 
 static const CfgItem ThemeCfgItems[] = {
    CFG_ITEM_BOOL(Conf.theme, localise, 0),
-   CFG_ITEM_BOOL(Conf.theme, prefer_xft_fonts, 1),
    CFG_ITEM_STR(Conf.theme, name),
    CFG_ITEM_STR(Conf.theme, extra_path),
    CFG_ITEM_STR(Conf.theme, ttfont_path),
+   CFG_ITEM_BOOL(Conf.theme, use_alt_font_cfg, 1),
+   CFG_ITEM_STR(Conf.theme, font_cfg),
 };
 #define N_CFG_ITEMS (sizeof(ThemeCfgItems)/sizeof(CfgItem))
 
