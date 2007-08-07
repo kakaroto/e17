@@ -179,9 +179,6 @@ CalibrationRectangle::~CalibrationRectangle()
 
 bool CalibrationRectangle::handleShow()
 {
-#ifdef ENABLE_EFLPP_FB
-    ecore_fb_touch_screen_calibrate_set( 1, 0, 0, 0, 0 );
-#endif
     filter = ecore_event_filter_add( &calibration_event_filter_start,
                             &calibration_event_filter_event,
                             &calibration_event_filter_end, this );
@@ -215,9 +212,6 @@ void CalibrationRectangle::nextPoint( int x, int y )
         */
         //crosshair->hide();
         //text->hide();
-#ifdef ENABLE_EFLPP_FB
-        ecore_fb_touch_screen_calibrate_set( 0, 0, 0, 0, 0 );
-#endif
         ecore_event_filter_del( filter );
         calibrate();
         done.emit();
