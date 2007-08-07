@@ -298,6 +298,8 @@ HandleEvent(XEvent * ev)
 	     if (!Mode.grabs.pointer_grab_active)
 		Mode.grabs.pointer_grab_active = 2;
 	  }
+	ModeGetXY(ev->xcrossing.root, ev->xcrossing.x_root,
+		  ev->xcrossing.y_root);
 	TooltipsSetPending(0, NULL, NULL);
 	goto do_stuff;
 
@@ -310,6 +312,8 @@ HandleEvent(XEvent * ev)
 	     Mode.grabs.pointer_grab_window = None;
 	     Mode.grabs.pointer_grab_active = 0;
 	  }
+	ModeGetXY(ev->xcrossing.root, ev->xcrossing.x_root,
+		  ev->xcrossing.y_root);
 	TooltipsSetPending(0, NULL, NULL);
 	goto do_stuff;
 
