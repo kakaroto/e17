@@ -363,12 +363,15 @@ _e_sticky_window_add(E_Sticky *s)
    etk_container_add(ETK_CONTAINER(s->win), vbox);
    etk_widget_focus(s->textview);
    etk_signal_connect("selection-received", ETK_OBJECT(s->win), ETK_CALLBACK(_e_sticky_selection_text_request_cb), s);
-   
+
+#if 0
+   /* [TODO] [1] Disable transparency until we have a way to figure out if screen is composited */
    etk_widget_propagate_color_set(s->win, ETK_FALSE);   
    etk_widget_color_set(s->win, 160, 160, 160, 160);
    etk_widget_color_set(s->stick_toggle, 160, 160, 160, 160);
    etk_widget_color_set(s->lock_toggle, 160, 160, 160, 160);
-   etk_widget_color_set(s->close_button, 160, 160, 160, 160);   
+   etk_widget_color_set(s->close_button, 160, 160, 160, 160);
+#endif   
 }
 
 E_Sticky *
