@@ -223,14 +223,19 @@ with version >= 1.3.0.
 
 Tweaks:
 
-If window resize/shading with composite enabled is ugly, try:
-$ eesh set compmgr.resize_fix_enable 1
-This problem should not occur with recent X-servers.
+As of e16 >= 0.16.8.9: If there is any kind of trouble with the composite
+manager, first check compmgr.mode (eesh show compmgr), and set it to 1 if
+it isn't (eesh set compmgr.mode 1, restart).
 
 If pop-up windows disappear immediately after having appeared (may happen
 e.g. with certain pop-up windows when using gnome > 2.12), try:
 $ eesh set compmgr.override_redirect.mode 0
 This should make the pop-up windows usable, but not always rendered properly.
+This problem should not occur with recent X-servers.
+
+If window resize/shading with composite enabled is ugly, try:
+$ eesh set compmgr.resize_fix_enable 1
+This problem should not occur with recent X-servers.
 
 
 Default keybindings
@@ -615,7 +620,7 @@ in fonts.cfg. Directory search order is (typically):
 Other themes are likely to have font references more or less scattered around
 in TextClass definitions in the theme configuration files.
 
-There are three different ways to specify a font:
+There are several ways to specify a font:
 
 1) "<font name>/<size>", e.g. "Vera/8".
 In this case e16 must be able to find "Vera.ttf" in its TrueType font path.
@@ -625,9 +630,14 @@ may be given via the theme.ttfont_path configuration setting.
 2) XLFD font sets, e.g. "-*-lucida-medium-r-normal-*-12-120-*-*-*-*-*-*,-*-gulim*-medium-r-normal-*-12-120-*-*-*-*-ksc5601.1987-*".
 xfontsel, xlsfonts, and xfd can be used to select and show these fonts.
 
-3) Fontconfig font names, e.g. "Luxi Sans-10:bold".
+3) Fontconfig font names, prefixed by "xft:", e.g. "xft:Luxi Sans-10:bold".
 fc-list and xfd can be used to select and show these fonts.
-NB! This possibility (Xft support) was added after the 0.16.8.4 release.
+This possibility (Xft support) is available as of version 0.16.8.5.
+
+4) Pango font names, prefixed by "pango:", e.g. "pango:sans bold 10".
+This possibility (Pango support) is available as of version 0.16.8.9.
+Pango support must be explicitly enabled at build time with --enable-pango.
+
 
 Using e16 with GNOME
 --------------------
