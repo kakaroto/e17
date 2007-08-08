@@ -14,20 +14,20 @@ namespace efl {
 EvasEsmartGroup::EvasEsmartGroup( EvasCanvas* canvas, const char* name )
     :EvasEsmart( canvas, "<attach>", name )
 {
-  o = newEsmart( "EsmartGroup" );
+  o = newEsmart( name );
 }
 
 EvasEsmartGroup::EvasEsmartGroup( int x, int y, EvasCanvas* canvas, const char* name )
     :EvasEsmart( canvas, "<attach>", name )
 {
-  o = newEsmart( "EsmartGroup" );
+  o = newEsmart( name );
   move( x, y );
 }
 
 EvasEsmartGroup::EvasEsmartGroup( int x, int y, int width, int height, EvasCanvas* canvas, const char* name )
     :EvasEsmart( canvas, "<attach>", name )
 {
-  o = newEsmart( "EsmartGroup" );
+  o = newEsmart( name );
   move( x, y );
   resize( width, height );
 }
@@ -39,6 +39,7 @@ EvasEsmartGroup::~EvasEsmartGroup()
 void EvasEsmartGroup::add (EvasObject *object)
 {
   evasObjectList.push_back (object);
+  printf ("add (%p) -> size: %d\n", this, evasObjectList.size ());
 }
 
 void EvasEsmartGroup::remove (EvasObject* object)
@@ -70,26 +71,26 @@ void EvasEsmartGroup::resizeHandler( Evas_Coord w, Evas_Coord h )
 
 void EvasEsmartGroup::showHandler()
 {
-  cerr << "EvasEsmartGroup::showHandler" << endl;
+  printf ("EvasEsmartGroup::showHandler (%p) -> size: %d\n", this, evasObjectList.size());
   for (list<EvasObject*>::iterator eol_it = evasObjectList.begin ();
        eol_it != evasObjectList.end ();
        eol_it++)
   {
     EvasObject *eo = (*eol_it);
-  
+    cerr << "show" << endl; 
     eo->show();
   }
 }
 
 void EvasEsmartGroup::hideHandler()
 {
-  cerr << "EvasEsmartGroup::hideHandler" << endl;
+  printf ("EvasEsmartGroup::hideHandler (%p) -> size: %d\n", this, evasObjectList.size());
   for (list<EvasObject*>::iterator eol_it = evasObjectList.begin ();
        eol_it != evasObjectList.end ();
        eol_it++)
   {
     EvasObject *eo = (*eol_it);
-
+    cerr << "hide" << endl;
     eo->hide();
   } 
 }

@@ -11,16 +11,12 @@ Q: What's the license?
 A: LGPL
 
 Q: What are the requirements?
-A: You need a C++ toolchain (recommended: g++ 4.1.1), qmake 2.00a (from Qt4), libsigc-2.x, Evas, Ecore, Edje.
+A: You need a C++ toolchain (recommended: g++ 4.1.1), libsigc-2.x, Evas, Ecore, Edje.
    For a debugging build, you need libcwd, see http://libcwd.sourceforge.net
-   Optional parts need Esmart, Epsilon, Ewl, Etk, and Emotion - you can configure the build by modifying include.pro
+   Optional parts need Esmart, Epsilon, Ewl, Etk, and Emotion
 
-Q: How do I build efl++?
-A: source makevars.sh; qmake efl++.pro; make
-
-Q: What's that qmake thing? Where is the autotools stuff or the handcrafted Makefile?
-A: I'm not very fond of autoconf and friends, nor do I like handcrafted Makefiles.
-   qmake is a build utility done by TrollTech - see http://doc.trolltech.com/4.0/qmake-manual.html
+Q: How do I build eflpp?
+A: ./autogen.sh && make && make install
 
 Q: Why no inline functions [yet]?
 A: Premature optimization is the root of all evil.
@@ -30,8 +26,8 @@ A: I couldn't decide yet whether libstdc++ should be optional or not.
    After all, I'm targetting embedded systems...
 
 Q: Why a monolithic library and not just one library for every EFL sublibrary?
-A: EFL++ as a class library benefits from putting everything into one library.
-   I may reconsider this when I have more knowledge about the EFL++ use-cases.
+A: EFLpp as a class library benefits from putting everything into one library.
+   I may reconsider this when I have more knowledge about the EFLpp use-cases.
 
 Q: How stable is the API yet?
 A: Not at all! Trust me, everything can change. I know this is a bit sucky for all potential
