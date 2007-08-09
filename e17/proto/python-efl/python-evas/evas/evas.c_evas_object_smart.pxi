@@ -26,35 +26,55 @@ cdef void _smart_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y):
     cdef SmartObject obj
     obj = <SmartObject>Object_from_instance(o)
     if obj._m_move is not None:
-        obj._m_move(obj, x, y)
+        try:
+            obj._m_move(obj, x, y)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
 
 
 cdef void _smart_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h):
     cdef SmartObject obj
     obj = <SmartObject>Object_from_instance(o)
     if obj._m_resize is not None:
-        obj._m_resize(obj, w, h)
+        try:
+            obj._m_resize(obj, w, h)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
 
 
 cdef void _smart_object_show(Evas_Object *o):
     cdef SmartObject obj
     obj = <SmartObject>Object_from_instance(o)
     if obj._m_show is not None:
-        obj._m_show(obj)
+        try:
+            obj._m_show(obj)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
 
 
 cdef void _smart_object_hide(Evas_Object *o):
     cdef SmartObject obj
     obj = <SmartObject>Object_from_instance(o)
     if obj._m_hide is not None:
-        obj._m_hide(obj)
+        try:
+            obj._m_hide(obj)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
 
 
 cdef void _smart_object_color_set(Evas_Object *o, int r, int g, int b, int a):
     cdef SmartObject obj
     obj = <SmartObject>Object_from_instance(o)
     if obj._m_color_set is not None:
-        obj._m_color_set(obj, r, g, b, a)
+        try:
+            obj._m_color_set(obj, r, g, b, a)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
 
 
 cdef void _smart_object_clip_set(Evas_Object *o, Evas_Object *clip):
@@ -63,14 +83,22 @@ cdef void _smart_object_clip_set(Evas_Object *o, Evas_Object *clip):
     obj = <SmartObject>Object_from_instance(o)
     other = Object_from_instance(clip)
     if obj._m_clip_set is not None:
-        obj._m_clip_set(obj, other)
+        try:
+            obj._m_clip_set(obj, other)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
 
 
 cdef void _smart_object_clip_unset(Evas_Object *o):
     cdef SmartObject obj
     obj = <SmartObject>Object_from_instance(o)
     if obj._m_clip_unset is not None:
-        obj._m_clip_unset(obj)
+        try:
+            obj._m_clip_unset(obj)
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
 
 
 cdef void _smart_callback(void *data, Evas_Object *o, void *event_info):
