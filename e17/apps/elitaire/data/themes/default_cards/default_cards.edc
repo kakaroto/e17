@@ -128,5 +128,9 @@ collections {
 	CARD("49")
 	CARD("50")
 	CARD("51")
+	CARD("bg")
+	CARD("ALL")
+	CARD("LAST")
+	CARD("shadow")
 }
 
