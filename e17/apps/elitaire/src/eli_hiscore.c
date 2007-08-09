@@ -28,7 +28,7 @@ static Eet_Data_Descriptor * edd_hiscore;
 static Eet_Data_Descriptor * edd_entry;
 static char * eet_file_name;
 
-static Ecore_Tree * hiscore_tree = NULL;
+static Ecore_Hash * hiscore_hash = NULL;
 
 /* internals declaration */
 static void _eli_highscore_list_free(Evas_List * list);
@@ -95,8 +95,8 @@ void eli_highscore_init(const char * app)
     /*
      * setup the hiscore hash
      */
-    hiscore_tree = ecore_tree_new(ecore_str_compare);
-    ecore_tree_free_key_cb_set(hiscore_tree, free);
+    hiscore_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+    ecore_hash_free_key_cb_set(hiscore_hash, free);
 
     /*
      * fill the hash
@@ -113,7 +113,7 @@ void eli_highscore_init(const char * app)
 	    Eli_Highscore * hiscore;
 
 	    hiscore = eet_data_read(ef, edd_hiscore, list[i]);
-	    ecore_tree_set(hiscore_tree, strdup(list[i]), hiscore->entries);
+	    ecore_hash_set(hiscore_hash, strdup(list[i]), hiscore->entries);
 	}
 	free(list);
 	eet_close(ef);
@@ -123,15 +123,15 @@ void eli_highscore_init(const char * app)
 void eli_highscore_shutdown(void)
 {
     /* free the data */
-    ecore_tree_free_value_cb_set(hiscore_tree, 
+    ecore_hash_free_value_cb_set(hiscore_hash, 
 		                      ECORE_FREE_CB(_eli_highscore_list_free));
-    ecore_tree_destroy(hiscore_tree);
+    ecore_hash_destroy(hiscore_hash);
     eet_data_descriptor_free(edd_hiscore);
     eet_data_descriptor_free(edd_entry);
     free(eet_file_name);
 
     /* and the set the pointer to null */
-    hiscore_tree = NULL;
+    hiscore_hash = NULL;
     edd_hiscore = NULL;
     edd_entry = NULL;
     eet_file_name = NULL;
@@ -186,7 +186,7 @@ Evas_Bool eli_highscore_entry_add(const char * game, const char * username,
     if (count) l = evas_list_sort(l, (count + 1), list_sort);
     if (count >= 10) l = evas_list_remove_list(l, evas_list_last(l));
 
-    ecore_tree_set(hiscore_tree, strdup(game), l);
+    ecore_hash_set(hiscore_hash, strdup(game), l);
   
     _eli_highscore_write(game);
     
@@ -231,7 +231,7 @@ Evas_List * eli_highscore_get(const char * game)
 {
     if(!game || *game == '\0') return NULL;
 
-    return ecore_tree_get(hiscore_tree, game);
+    return ecore_hash_get(hiscore_hash, game);
 }
 
 /* ***************************************************************************
