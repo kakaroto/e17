@@ -226,6 +226,32 @@ void cardGame::restart()
     deal();
 }
 
+vector<playingCard*> * cardGame::getHints()
+{
+    vector<playingCard*> * hints = new vector<playingCard*>;
+
+    /* search in every stack if a card is moveable to every stack excluding
+     * to itself */
+    for (size_t from = 0; from < stacks.size(); from++) {
+        card_iterator it, it_end;
+
+        it = stacks[from]->begin();
+        it_end = stacks[from]->end();
+        
+        while (it != it_end) {
+            for (size_t to = 0; to < stacks.size(); to++) {
+                if (from != to && moveable(*it, to)) {
+                    hints->push_back(*it);
+                    break;
+                }
+            }
+            it++;
+        }
+    }
+
+    return hints;
+}
+
 
 /* Klondike ******************************************************************/
 klondike::klondike(bool thoughtful):isThoughtful(thoughtful)

@@ -133,6 +133,35 @@ void elitaire_stack_layer_reinit(Elitaire * eli, playingCard * pcard)
     }
 }
 
+/*
+ * hide the hints higlights
+ * this function is private
+ */
+void elitaire_hints_hide(Elitaire * eli)
+{
+    int i;
+    Evas_Object * card;
+    card_iterator it, it_end;
+    int num_decks;
+
+    if (!eli || !eli->hints_on) return;
+
+    eli->hints_on = false;
+    num_decks = eli->game->getNumDecks();
+
+    for (i = 0; i < num_decks; i++) {
+        it = eli->game->getDeckBegin(i);
+        it_end = eli->game->getDeckEnd(i);
+
+        while (it != it_end) {
+            card = (Evas_Object *) (*it)->data;
+            elitaire_card_hint_highlight_hide(card);
+            it++;
+        }
+    }
+}
+
+
 /* calculate  the longest line */
 int elitaire_cols_max_calc(Elitaire * eli)
 {                               
@@ -471,9 +500,14 @@ void elitaire_mouse_down_cb(void * data, Evas * e, Evas_Object * obj,
     ev = (Evas_Event_Mouse_Down *) event_info;
     
     if (card) {
+        Elitaire *eli;
+
+        eli = elitaire_card_elitaire_get(card);
+
         if (ev->button == 1 && elitaire_card_moveable(card)) {
             elitaire_card_chain_make(card);
             elitaire_card_dragged(card);
+            elitaire_hints_hide(eli);
         }
         else if (ev->button == 2) {
             Evas_Object * next_card;
@@ -505,9 +539,11 @@ void elitaire_mouse_up_cb(void *data, Evas * e, Evas_Object * obj,
         switch (ev->button) {
         case 1:
             eli->game->clickOn(elitaire_card_playingCard_get(card));
+            elitaire_hints_hide(eli);
             break;
         case 3:
             eli->game->rightClickOn(elitaire_card_playingCard_get(card));
+            elitaire_hints_hide(eli);
             break;
         }
     }

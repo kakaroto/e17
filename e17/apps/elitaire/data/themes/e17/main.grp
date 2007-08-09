@@ -125,10 +125,11 @@ group {
 			}
 		}
 		
-		ICON_BOX(3)
+		ICON_BOX(4)
 	        ICON("undo", "undo.png", "undo.png", 0, 1)
 		ICON("restart" , "restart.png", "restart-down.png", 1, 2)	
 		ICON("newstart" , "newstart.png", "newstart-down.png", 2, 3)
+		ICON("hints" , "hints.png", "hints-down.png", 3, 4)
 		
 		part {
 			name: "elitaire_card_field";
@@ -270,6 +271,7 @@ group {
 		ICON_PROGS( "undo", "undo", "")
 		ICON_PROGS( "restart", "restart", "br")
 		ICON_PROGS( "newstart", "new_game", "")
+		ICON_PROGS( "hints", "hints", "")
 		BAR_PROGS( "cardbar", "elitaire_cards_box", "card_bar", cardbar_state, "cards")
 		BAR_PROGS( "themebar", "elitaire_theme_box", "theme_bar", themebar_state, "theme")
 		BAR_PROGS( "menubar", "elitaire_new_box", "menu_bar", menubar_state, "game")

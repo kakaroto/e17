@@ -39,6 +39,9 @@ void          elitaire_object_undo                 (Evas_Object * elitaire);
 void          elitaire_object_restart              (Evas_Object * elitaire);
 Evas_Bool     elitaire_object_giveup               (Evas_Object * elitaire);
 void          elitaire_object_pause                (Evas_Object * elitaire);
+void          elitaire_object_hints_show           (Evas_Object * elitaire);
+void          elitaire_object_hints_hide           (Evas_Object * elitaire);
+Evas_Bool     elitaire_object_hints_visible        (Evas_Object * elitaire);
 void          elitaire_object_offset_set           (Evas_Object * elitaire, Evas_Coord l, Evas_Coord r, Evas_Coord t, Evas_Coord b);
 void          elitaire_object_offset_get           (Evas_Object * elitaire, Evas_Coord * l, Evas_Coord * r, Evas_Coord * t, Evas_Coord * b);
 

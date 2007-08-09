@@ -561,6 +561,7 @@ class cardGame
 	
 	bool undo();
 	void restart();
+	vector<playingCard*> * getHints();
 };
 
 #include "rulesFreeCell.h"

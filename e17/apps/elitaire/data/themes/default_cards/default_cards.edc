@@ -13,6 +13,38 @@ group {\
 				image.normal: _number".png";\
 			}\
 		}\
+		part {\
+			name: "hint_hilite";\
+			type: IMAGE;\
+			description {\
+				state: "default" 0.0;\
+				color: 0 0 0 0;\
+				image.normal: "hint_hilite.png";\
+			}\
+			description {\
+				state: "on" 0.0;\
+				inherit: "default" 0.0;\
+				color: 255 255 255 100;\
+			}\
+		}\
+	}\
+	programs {\
+		program {\
+			name: "hilite_on";\
+			signal: "hint,on";\
+			source: "elitaire";\
+			action: STATE_SET "on" 0.0;\
+			target: "hint_hilite";\
+		}\
+	}\
+	programs {\
+		program {\
+			name: "hilite_off";\
+			signal: "hint,off";\
+			source: "elitaire";\
+			action: STATE_SET "default" 0.0;\
+			target: "hint_hilite";\
+		}\
 	}\
 }
 
@@ -73,6 +105,7 @@ images {
 	image: "ALL.png" LOSSY 95;
 	image: "LAST.png" LOSSY 95;
 	image: "shadow.png" LOSSY 95;
+	image: "hint_hilite.png" LOSSY 95;
 }
 collections {
 	CARD("00")

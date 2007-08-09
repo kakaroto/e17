@@ -308,6 +308,59 @@ void elitaire_object_pause(Evas_Object * elitaire)
     }
 }
 
+/*
+ * Highlight the cards that are moveable
+ */
+void elitaire_object_hints_show(Evas_Object * elitaire)
+{
+    Elitaire * eli;
+    card_iterator it, it_end;
+    vector<playingCard*> * hints;
+
+    eli = (Elitaire *) evas_object_smart_data_get(elitaire);
+    if (!eli) return;
+
+    hints = eli->game->getHints();
+    
+    it = hints->begin();
+    it_end = hints->end();
+
+    while (it != it_end) {
+        Evas_Object * card;
+        
+        card = (Evas_Object *) (*it)->data;
+        elitaire_card_hint_highlight_show(card);
+        it++;
+    }
+
+    eli->hints_on = true;
+    delete hints;
+}
+
+/*
+ * Unhighlight the cards that are moveable
+ */
+void elitaire_object_hints_hide(Evas_Object * elitaire)
+{
+    Elitaire * eli;
+    
+    eli = (Elitaire *) evas_object_smart_data_get(elitaire);
+    elitaire_hints_hide(eli);
+}
+
+/*
+ * return if the highlights are visible
+ */
+Evas_Bool elitaire_object_hints_visible(Evas_Object * elitaire)
+{
+    Elitaire * eli;
+
+    eli = (Elitaire *) evas_object_smart_data_get(elitaire);
+    if (!eli) return false;
+    
+    return eli->hints_on;
+}
+
 void elitaire_object_size_min_get(Evas_Object * elitaire, Evas_Coord * minw,
                            Evas_Coord * minh)
 {
@@ -529,6 +582,7 @@ void elitaire_object_undo(Evas_Object * elitaire)
 
     eli = (Elitaire *) evas_object_smart_data_get(elitaire);
     if (eli) {
+        elitaire_hints_hide(eli);
         eli->game->undo();
     }
 }
@@ -539,6 +593,7 @@ void elitaire_object_restart(Evas_Object * elitaire)
 
     eli = (Elitaire *) evas_object_smart_data_get(elitaire);
     if (eli) {
+        elitaire_hints_hide(eli);
         eli->game->restart();
     }
 }
@@ -549,6 +604,7 @@ Evas_Bool elitaire_object_giveup(Evas_Object * elitaire)
 
     eli = (Elitaire *) evas_object_smart_data_get(elitaire);
     if (eli) {
+        elitaire_hints_hide(eli);
         return eli->game->giveUp();
     }
     return false;

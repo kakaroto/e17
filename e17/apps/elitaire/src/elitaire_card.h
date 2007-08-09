@@ -23,6 +23,8 @@ void          elitaire_card_callback_add      (Evas_Object * card, Evas_Callback
 void          elitaire_card_callback_del      (Evas_Object * card, Evas_Callback_Type type, 
                               void(*func)(void *data, Evas *e, Evas_Object *obj, void *event_info));
 Evas_Bool	  elitaire_card_moveable          (Evas_Object * card);
+void          elitaire_card_hint_highlight_show(Evas_Object * card);
+void          elitaire_card_hint_highlight_hide(Evas_Object * card);
 Elitaire    * elitaire_card_elitaire_get      (Evas_Object * card);
 void          elitaire_card_chain_make        (Evas_Object * card);
 void          elitaire_card_chain_del         (Evas_Object * card);

@@ -27,6 +27,8 @@ static void _undo_cb(void * data, Evas_Object * o,
                           const char * emission, const char * source);
 static void _restart_cb(void * data, Evas_Object * o, 
                           const char * emission, const char * source);
+static void _hints_cb(void * data, Evas_Object * o, 
+                          const char * emission, const char * source);
 static void _elitaire_scroll_stop_cb(void * data, Evas_Object * o,
                           const char * emission, const char * source);
 static void _elitaire_scroll_left_start_cb(void * data, Evas_Object * o,
@@ -195,6 +197,7 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
                                         eef);
         edje_object_signal_callback_add(eef->gui, "new_game", "*",
                                         _eli_edje_frontend_new_game_cb, eap);
+        edje_object_signal_callback_add(eef->gui, "hints", "*", _hints_cb, eef);
         evas_object_event_callback_add(eef->gui, EVAS_CALLBACK_KEY_DOWN,
                                        _key_down_cb, eap);
         evas_object_event_callback_add(eef->gui, EVAS_CALLBACK_KEY_UP,
@@ -515,6 +518,20 @@ static void _restart_cb(void * data, Evas_Object * o, const char * emission,
 
     if (!eef) return;
     if (eef->elitaire) elitaire_object_restart(eef->elitaire);
+}
+
+static void _hints_cb(void * data, Evas_Object * o, const char * emission,
+                 const char * source)
+{
+    Eli_Edje_Frontend * eef;
+
+    eef = (Eli_Edje_Frontend *) data;
+
+    if (!eef && !eef->elitaire) return;
+    if (elitaire_object_hints_visible(eef->elitaire)) 
+        elitaire_object_hints_hide(eef->elitaire);
+    else
+        elitaire_object_hints_show(eef->elitaire);
 }
 
 static void _elitaire_scroll_stop_cb(void * data, Evas_Object * o,

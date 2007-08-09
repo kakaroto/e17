@@ -132,6 +132,26 @@ Evas_Bool elitaire_card_moveable(Evas_Object * card)
     return 0;
 }
 
+void elitaire_card_hint_highlight_show(Evas_Object * card)
+{
+    Elitaire_Card * data;
+
+    printf("card show hilite");
+    data = (Elitaire_Card *) evas_object_smart_data_get(card);
+    if (!data) return;
+        
+    edje_object_signal_emit(data->image, "hint,on", "elitaire");
+}
+
+void elitaire_card_hint_highlight_hide(Evas_Object * card)
+{
+    Elitaire_Card * data;
+
+    data = (Elitaire_Card *) evas_object_smart_data_get(card);
+    if (!data) return;
+        
+    edje_object_signal_emit(data->image, "hint,off", "elitaire");
+}
 
 Elitaire * elitaire_card_elitaire_get(Evas_Object * card)
 {

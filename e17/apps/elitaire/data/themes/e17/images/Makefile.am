@@ -18,6 +18,8 @@ EXTRA_DIST = \
            e17_titlebar.png\
            e17_titlebar_shadow1.png\
            e17_titlebar_shadow2.png\
+           hints.png\
+           hints-down.png\
            images.inc\
            logo.png\
            newstart-down.png\

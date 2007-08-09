@@ -23,6 +23,7 @@ struct Elitaire{
 	Evas_Bool   deal;
 	Evas_Bool   animate;
 	Evas_Bool   shadow;
+	Evas_Bool   hints_on;
 	
 	Evas_Coord  card_w, card_h;
 	Evas_Coord  card_max_w,card_max_h;
@@ -39,6 +40,7 @@ struct Elitaire{
 void         elitaire_stack_layer_reinit (Elitaire * eli, playingCard * pcard);
 int          elitaire_clicked_stack_get  (Elitaire * eli, Evas_Coord x, Evas_Coord y);
 void         elitaire_stacks_reinit      (Elitaire * eli);
+void         elitaire_hints_hide         (Elitaire * eli);
 Evas_Coord   elitaire_card_offset_get    (Elitaire * eli);
 Evas_Coord   elitaire_card_offset_calc   (Elitaire * eli,Evas_Coord h);
 Evas_Coord   elitaire_spacing_abs_calc   (Elitaire * eli, int row);
