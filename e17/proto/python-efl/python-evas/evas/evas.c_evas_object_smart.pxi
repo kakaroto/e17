@@ -184,19 +184,15 @@ cdef class SmartObject(Object):
        and move registered children by it.
      * resize(): called in order to resize object. No default implementation.
      * show(): called in order to show the given element. Usually you call
-       the same function on children. Default implementation calls show()
-       on registered children.
+       the same function on children. No default implementation.
      * hide(): called in order to hide the given element. Usually you call
-       the same function on children. Default implementation calls hide()
-       on registered children.
+       the same function on children. No default implementation.
      * color_set(): called in order to change object color. No default
        implementation.
      * clip_set(): called in order to limit object's visible area.
-       Default implementation calls clip_set() on every registered
-       children.
+       No default implementation.
      * clip_unset(): called in order to unlimit object's visible area.
-       Default implementation calls clip_unset() on every registered
-       children.
+       No default implementation.
 
     Notes:
      * If you redefine object's __init__(), you MUST call your parent!
@@ -323,59 +319,6 @@ cdef class SmartObject(Object):
             itr = itr.next
         evas_list_free(lst)
 
-    def show(self):
-        cdef Evas_List *lst, *itr
-        lst = evas_object_smart_members_get(self.obj)
-        itr = lst
-        while itr:
-            evas_object_show(<Evas_Object*>itr.data)
-            itr = itr.next
-        evas_list_free(lst)
-
-    def hide(self):
-        cdef Evas_List *lst, *itr
-        lst = evas_object_smart_members_get(self.obj)
-        itr = lst
-        while itr:
-            evas_object_hide(<Evas_Object*>itr.data)
-            itr = itr.next
-        evas_list_free(lst)
-
-    def color_set(self, int r, int g, int b, int a):
-        cdef Evas_List *lst, *itr
-        lst = evas_object_smart_members_get(self.obj)
-        itr = lst
-        while itr:
-            evas_object_color_set(<Evas_Object*>itr.data, r, g, b, a)
-            itr = itr.next
-        evas_list_free(lst)
-
-    def clip_set(self, obj):
-        cdef Evas_List *lst, *itr
-        cdef Object o
-        cdef Evas_Object *clip
-        if obj is None:
-            clip = NULL
-        elif isinstance(obj, Object):
-            o = <Object>obj
-            clip = o.obj
-        else:
-            raise ValueError("clip must be instance of evas.Object or None.")
-        lst = evas_object_smart_members_get(self.obj)
-        itr = lst
-        while itr:
-            evas_object_clip_set(<Evas_Object*>itr.data, clip)
-            itr = itr.next
-        evas_list_free(lst)
-
-    def clip_unset(self):
-        cdef Evas_List *lst, *itr
-        lst = evas_object_smart_members_get(self.obj)
-        itr = lst
-        while itr:
-            evas_object_clip_unset(<Evas_Object*>itr.data)
-            itr = itr.next
-        evas_list_free(lst)
 
     # Factory
     def Rectangle(self, size=None, pos=None, geometry=None, color=None,
