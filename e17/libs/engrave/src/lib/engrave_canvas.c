@@ -17,11 +17,6 @@ static Evas_Smart *engrave_canvas_object_smart_get(void);
 static Evas_Object *engrave_canvas_object_new(Evas *evas);
 static void engrave_canvas_object_add(Evas_Object *o);
 static void engrave_canvas_object_del(Evas_Object *o);
-static void engrave_canvas_object_layer_set(Evas_Object *o, int l);
-static void engrave_canvas_object_raise(Evas_Object *o);
-static void engrave_canvas_object_lower(Evas_Object *o);
-static void engrave_canvas_object_stack_above(Evas_Object *o, Evas_Object *above);
-static void engrave_canvas_object_stack_below(Evas_Object *o, Evas_Object *below);
 static void engrave_canvas_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
 static void engrave_canvas_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
 static void engrave_canvas_object_show(Evas_Object *o);
@@ -583,24 +578,24 @@ engrave_canvas_object_smart_get(void)
     static Evas_Smart *smrt = NULL;
     if (smrt) return smrt;
 
-    smrt = evas_smart_new("engrave_canvas_object",
-                            engrave_canvas_object_add,
-                            engrave_canvas_object_del,
-                            engrave_canvas_object_layer_set,
-                            engrave_canvas_object_raise,
-                            engrave_canvas_object_lower,
-                            engrave_canvas_object_stack_above,
-                            engrave_canvas_object_stack_below,
-                            engrave_canvas_object_move,
-                            engrave_canvas_object_resize,
-                            engrave_canvas_object_show,
-                            engrave_canvas_object_hide,
-                            engrave_canvas_object_color_set,
-                            engrave_canvas_object_clip_set,
-                            engrave_canvas_object_clip_unset,
-                            NULL
-                          );
-    return smrt;
+   static const Evas_Smart_Class sc =
+   {  
+      "engrave_canvas_object",
+      EVAS_SMART_CLASS_VERSION,
+      engrave_canvas_object_add,
+      engrave_canvas_object_del,
+      engrave_canvas_object_move,
+      engrave_canvas_object_resize,
+      engrave_canvas_object_show,
+      engrave_canvas_object_hide,
+      engrave_canvas_object_color_set,
+      engrave_canvas_object_clip_set,
+      engrave_canvas_object_clip_unset,
+      NULL
+   };
+   smrt = evas_smart_class_new(&sc); 
+    
+   return smrt;
 }
 
 static void 
@@ -627,51 +622,6 @@ engrave_canvas_object_del(Evas_Object *o)
 
         FREE(ec);
     }
-}
-
-static void
-engrave_canvas_object_layer_set(Evas_Object *o, int l)
-{
-    Engrave_Canvas *ec;
-
-    if ((ec = evas_object_smart_data_get(o))) 
-        evas_object_layer_set(ec->clip, l);
-}
-
-static void
-engrave_canvas_object_raise(Evas_Object *o)
-{
-    Engrave_Canvas *ec;
-
-    if ((ec = evas_object_smart_data_get(o)))
-        evas_object_raise(ec->clip);
-}
-
-static void
-engrave_canvas_object_lower(Evas_Object *o)
-{
-    Engrave_Canvas *ec;
-
-    if ((ec = evas_object_smart_data_get(o)))
-        evas_object_lower(ec->clip);
-}
-
-static void
-engrave_canvas_object_stack_above(Evas_Object *o, Evas_Object *above)
-{
-    Engrave_Canvas *ec;
-
-    if ((ec = evas_object_smart_data_get(o)))
-        evas_object_stack_above(ec->clip, above);
-}
-
-static void
-engrave_canvas_object_stack_below(Evas_Object *o, Evas_Object *below)
-{
-    Engrave_Canvas *ec;
-
-    if ((ec = evas_object_smart_data_get(o)))
-        evas_object_stack_below(ec->clip, below);
 }
 
 static void
