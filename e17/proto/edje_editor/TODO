@@ -1,7 +1,9 @@
 TODO edje_editor (not a complete list...only the first in my mind)
 =======================================
 
-* Better save routines
+* make better file dialogs
+
+* If save failed the original file is deleted (bad engrave  !)
 
 * Tooltips EVERYWERE  :)
 
@@ -9,8 +11,6 @@ TODO edje_editor (not a complete list...only the first in my mind)
    (have to wait a way to move the rows in the etk_tree)
 
 * A new object add must be take a progressive (and unique) number (newrect1, newrect2...etc)
-
-* Text object: GLOW? GLOW2? FAR? ... does edje suport this?
 
 * Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
 

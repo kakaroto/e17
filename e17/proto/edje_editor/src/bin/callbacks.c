@@ -58,7 +58,7 @@ on_AllButton_click(Etk_Button *button, void *data)
       case TOOLBAR_SAVE:
          printf("Clicked signal on Toolbar Button 'Save' EMITTED\n");
          if (Cur.open_file_name)
-            engrave_edj_output(Cur.ef,Cur.open_file_name);
+            SaveEDJ(Cur.open_file_name);
          else
             ShowFilechooser(FILECHOOSER_SAVE_EDJ);
          break;
@@ -176,6 +176,7 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
    }
 }
+
 
 /* Tree callbacks */
 void
@@ -1324,8 +1325,7 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
          break;
          case FILECHOOSER_SAVE_EDJ:
             printf("SAVE EDJ\n");
-            engrave_edj_output(Cur.ef,
-            (char*)etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
+            SaveEDJ(etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
          break;
          case FILECHOOSER_SAVE_EDC:
             printf("SAVE EDC\n");
@@ -1412,26 +1412,8 @@ on_FileChooser_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
    etk_object_destroy(ETK_OBJECT(str));
 }
 
-void on_PlayDialog_response(Etk_Dialog *dialog, int response_id, void *data){
-/*    GString *command = g_string_new("");
-   if (response_id == ETK_RESPONSE_OK){
-      printf("TEST IN VIEWER\n");
-      g_string_printf(command,"edje_viewer %s",EDCFile->str);
-      command->str[command->len - 1] = 'j';
-      command = g_string_append(command," &");
-      printf("TEST IN VIEWER %s\n",command->str);
-      system(command->str);
-      etk_widget_hide(UI_PlayDialog);
-   }
-   else{
-      etk_widget_hide(ETK_WIDGET(dialog));
-   }
-   g_string_free(command,TRUE); */
-}
-
 void 
 on_AlertDialog_response(Etk_Dialog *dialog, int response_id, void *data)
 {
    etk_widget_hide(ETK_WIDGET(dialog));
 }
-

@@ -22,8 +22,6 @@ void on_RelToComboBox_changed          (Etk_Combobox *combobox, void *data);
 void on_TextEntry_text_changed         (Etk_Object *object, void *data);
 void on_FileChooser_response           (Etk_Dialog *dialog, int response_id,
                                        void *data);
-void on_PlayDialog_response            (Etk_Dialog *dialog, int response_id,
-                                       void *data);
 void on_BorderSpinner_value_changed    (Etk_Range *range, double value, void *data);
 void on_RelSpinner_value_changed       (Etk_Range *range, double value, void *data);
 void on_RelOffsetSpinner_value_changed	(Etk_Range *range, double value, void *data);

@@ -88,7 +88,9 @@ enum various
    IMAGE_TWEEN_DELETE,
    IMAGE_TWEEN_RADIO,
    IMAGE_NORMAL_RADIO,
-   SAVE_SCRIPT
+   SAVE_SCRIPT,
+   LOAD_WIN,
+   SAVE_WIN
 };
 
 struct Current_State

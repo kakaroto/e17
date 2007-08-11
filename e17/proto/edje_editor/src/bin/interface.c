@@ -953,44 +953,6 @@ ShowFilechooser(int FileChooserType)
 
 /* functions to create interface*/
 Etk_Widget*
-create_play_dialog(void)
-{
-   Etk_Widget *dialog;
-   Etk_Widget *label;
-   Etk_Widget *vbox;
-
-   //Dialog
-   dialog = etk_dialog_new();
-   //etk_container_border_width_set (dialog,5);	//TODO Can't exec this line(don't show the dialog). Etk bug?
-   etk_dialog_has_separator_set (ETK_DIALOG(dialog), ETK_FALSE);
-   etk_signal_connect("delete-event", ETK_OBJECT(dialog), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
-   etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(on_PlayDialog_response), NULL);
-   etk_widget_size_request_set(dialog, 400, 300);
-
-   vbox = etk_vbox_new(ETK_FALSE, 10);
-   etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), vbox,
-      ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
-
-   label = etk_label_new("<b>Executing_edje_cc</>");
-   etk_object_properties_set (ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   //Text_view
-   UI_PlayTextView = etk_text_view_new ();
-   etk_box_append(ETK_BOX(vbox), UI_PlayTextView, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   //etk_textblock_object_cursor_visible_set (ETK_TEXT_VIEW(UI_PlayTextView)->textblock, ETK_FALSE); //TODO questa riga non funziona
-
-   //etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),ETK_STOCK_DOCUMENT_OPEN ,ETK_RESPONSE_OK );
-   etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),ETK_STOCK_DIALOG_CLOSE ,ETK_RESPONSE_CLOSE);
-   etk_dialog_button_add (ETK_DIALOG(dialog), "Test!", ETK_RESPONSE_OK);
-
-   etk_widget_show_all(dialog);
-   etk_widget_hide(dialog);
-
-   return dialog;
-}
-
-Etk_Widget*
 create_filechooser_dialog(void)
 {
    Etk_Widget *dialog = NULL;
@@ -2221,8 +2183,6 @@ create_main_window(void)
    etk_tooltips_enable();
 
    UI_FileChooserDialog = create_filechooser_dialog();
-
-   UI_PlayDialog = create_play_dialog();
 
    //Alert Dialog
    UI_AlertDialog = etk_message_dialog_new (ETK_MESSAGE_DIALOG_INFO, ETK_MESSAGE_DIALOG_OK, "Hallo world!");
