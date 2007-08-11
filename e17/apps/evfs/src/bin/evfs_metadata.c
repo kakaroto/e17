@@ -380,6 +380,11 @@ void evfs_metadata_initialise(int forker)
 
 }
 
+void evfs_metadata_initialise_worker()
+{
+	evfs_metadata_db_init(&db);
+}
+
 Evas_List* evfs_metadata_groups_get() {
 	int ret;
 	Evas_List* ret_list = NULL;

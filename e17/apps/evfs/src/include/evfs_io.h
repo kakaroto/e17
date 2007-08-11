@@ -4,6 +4,9 @@
 #include <Eet.h>
 #include <Evas.h>
 
+#define EVFS_MESSAGE_CLIENTID 1001
+#define EVFS_MESSAGE_KILL 1002
+
 int evfs_io_initialise();
 
 typedef struct ecore_ipc_message ecore_ipc_message;

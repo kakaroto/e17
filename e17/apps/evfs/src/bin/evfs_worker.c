@@ -45,268 +45,31 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <signal.h>
 #include <errno.h>
 #include <dirent.h>
-#include <ctype.h>
 
-#define EVFS_TIMER_INTERVAL 0.01
-
-static evfs_client* client_worker_waiter = NULL;
-
-/*An object used for testing, so we can GDB the worker*/
-static Ecore_Ipc_Client* worker_client_waiter = NULL;
-
+static evfs_client* worker_client;
 static evfs_server* server;
-static Ecore_Event_Handler *client_add = NULL;
-static Ecore_Event_Handler *client_del = NULL;
-static Ecore_Event_Handler *client_data = NULL;
+Ecore_Event_Handler* server_data;
+Ecore_Ipc_Server* iserver;
 
-static Ecore_Event_Handler *worker_add = NULL;
-static Ecore_Event_Handler *worker_del = NULL;
-static Ecore_Event_Handler *worker_data = NULL;
 
-int ipc_server_data(void *data __UNUSED__, int type __UNUSED__, void *event);
 int ecore_timer_enterer(__UNUSED__ void *data);
-void evfs_worker_initialise();
+int incoming_command_cb(__UNUSED__ void *data);
+int evfs_handle_command(evfs_client * client, evfs_command * command);
 void evfs_load_plugins();
 
-
-evfs_client *
-evfs_client_get(Ecore_Ipc_Client * client)
+int ecore_timer_enterer(__UNUSED__ void *data)
 {
-   return ecore_hash_get(server->client_hash, client);
-}
-
-unsigned long
-evfs_server_get_next_id(evfs_server * serve)
-{
-   serve->clientCounter++;
-   printf("Allocated %ld\n", serve->clientCounter - 1);
-   return serve->clientCounter - 1;
-}
-
-int evfs_server_worker_spawn(int id) 
-{
-   const char *server_exe = BINDIR "/evfsworker";
-   char strid[20];
-
-   snprintf(strid, 20, "%d", id);
-   printf("Creating new worker, client ID: %d\n",id);
-
-   if (!access(server_exe, X_OK | R_OK)) {
-        setsid();
-        if (fork() == 0) {
-             execl(server_exe, strid, NULL);
-        }
-        return 1;
-     } else {
-        fprintf(stderr, "You don't have rights to execute the evfs worker\n");
-        return 1;
-     }
-
-   return 0;
-}
-
-
-void evfs_worker_initialise()
-{
-   /*Load the plugins */ 
-   evfs_load_plugins();
-   evfs_operation_initialise();
-}
-
-
-/* Server -> Client IPC*/
-int
-ipc_client_add(void *data __UNUSED__, int type __UNUSED__, void *event)
-{
-   Ecore_Ipc_Event_Client_Add *e;
-   evfs_client *client;
-
-   e = (Ecore_Ipc_Event_Client_Add *) event;
-   /*printf("ERR: EVFS Client Connected!!!\n"); */
-
-   /*Make sure we're not the worker server's event*/
-   if (ecore_ipc_client_server_get(e->client) != server->ipc_server) return 1;
-
-   client = NEW(evfs_client);
-   client->client = e->client;
-   client->server = server;
-   client->prog_command = NULL;
-   client->id = evfs_server_get_next_id(server);
-   ecore_hash_set(server->client_hash, client->client, client);
-   server->num_clients++;
-
-
-   printf("Creating new worker..\n");
-   
-   /*Save a reference to this client, so we can allocate the worker child to
-    * it when it calls back*/
-   
-   if (worker_client_waiter) {
-	   client->worker_client = worker_client_waiter;
-	   ecore_hash_set(evfs_server_get()->worker_hash, worker_client_waiter, client);
-	   worker_client_waiter = NULL;
-
-	   evfs_event_client_id_notify(client);
-   } else {
-	   if (client_worker_waiter) {
-		   printf("EVFS: Worker failed to connect for previous client - Abort\n");
-	   } else {
-		   client_worker_waiter = client;
-
-		   /*Spawn a worker*/
-		   evfs_server_worker_spawn(client->id);
-	   }
-   }
-   
-   /*ecore_ipc_server_send(client->master, EVFS_MESSAGE_CLIENTID,0,0,0,0,(void*)client,sizeof(int));*/
-
-   /*Tell our child that we've connected*/
-   return (1);
-}
-
-int
-ipc_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
-{
-   Ecore_Ipc_Event_Client_Del *e;
-   Ecore_List *keys;
-   evfs_client *client;
-   evfs_plugin *plugin;
-   char *key;
-
-   e = (Ecore_Ipc_Event_Client_Del *) event;
-
-   /*Make sure we're not the worker server's event*/
-   if (ecore_ipc_client_server_get(e->client) != server->ipc_server) return 1;
-
-
-   client = ecore_hash_get(server->client_hash, e->client);
-   printf("Client %ld, Client Disconnected!!!\n", client->id);
-
-   /*Notify the plugins that this client has disconnected */
-   keys = ecore_hash_keys(server->plugin_uri_hash);
-   ecore_list_first_goto(keys);
-   while ((key = ecore_list_first_remove(keys)))
-     {
-        plugin = ecore_hash_get(server->plugin_uri_hash, key);
-        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_client_disconnect) (client);
-     }
-
-   /*Kill the child pid*/
-   if (client->pid) {
-	printf("Sending client %p the kill signal\n", client->worker_client);
-	ecore_ipc_client_send(client->worker_client, EVFS_MESSAGE_KILL,0,0,0,0,NULL,0);
-   }
-
-   ecore_list_destroy(keys);
-   ecore_ipc_client_del(client->client);
-   ecore_hash_remove(server->client_hash, client);
-   evfs_cleanup_client(client);
-
-   return (1);
-}
-
-int
-ipc_client_data(void *data __UNUSED__, int type __UNUSED__, void *event)
-{
-
-   Ecore_Ipc_Event_Client_Data *e = (Ecore_Ipc_Event_Client_Data *) event;
-   evfs_client *client;
-
-   /*Make sure we're not the worker server's event*/
-   if (ecore_ipc_client_server_get(e->client) != server->ipc_server) return 1;
-
-   client = evfs_client_get(e->client);
-
-   /*Onsend to client's worker, if any*/
-   if (client->worker_client) {
-	   /*printf("Onsending data to client..%d %d %d %d %d\n", e->major,e->minor,e->ref,e->ref_to,e->response,e->data, e->size );*/
-	   
-	   ecore_ipc_client_send(client->worker_client,e->major,e->minor,e->ref,e->ref_to,e->response,e->data, e->size); 
-   } else {
-	   printf("No worker client to send to at ipc_client_data\n");
-   }
-
-   return 1;
-}
-/*-----------*/
-
-/*Server -> Worker IPC*/
-int
-ipc_worker_add(void *data __UNUSED__, int type __UNUSED__, void *event)
-{
-	Ecore_Ipc_Event_Client_Data *e = (Ecore_Ipc_Event_Client_Data *) event;
-
-	/*Make sure we're not the daemon server's event*/
-	if (ecore_ipc_client_server_get(e->client) != server->worker_server) return 1;
-
-	printf("New worker client to server..\n");
-		
-	if (client_worker_waiter) {
-		printf("Client %p waiting for worker..\n", client_worker_waiter);
-		
-		client_worker_waiter->worker_client = e->client;
-		ecore_hash_set(evfs_server_get()->worker_hash, e->client, client_worker_waiter);
-
-		evfs_event_client_id_notify(client_worker_waiter);	
-		client_worker_waiter = NULL;
-	} else {
-		printf("Added worker to holding queue..\n");
-		worker_client_waiter = e->client;
-	}
-
-	return 1;
-}
-
-int
-ipc_worker_del(void *data __UNUSED__, int type __UNUSED__, void *event)
-{
-   Ecore_Ipc_Event_Client_Del *e;
-   Ecore_List *keys;
-   evfs_client *client;
-   evfs_plugin *plugin;
-   char *key;
-   
-   e = (Ecore_Ipc_Event_Client_Del *) event;
-
-   /*Make sure we're not the daemon server's event*/
-   if (ecore_ipc_client_server_get(e->client) != server->worker_server) return 1;
-
-   printf("Worker disconnect..\n");
-
+   incoming_command_cb(NULL);
+   evfs_operation_queue_run();
+	
    return 1;
 }
 
-int
-ipc_worker_data(void *data __UNUSED__, int type __UNUSED__, void *event)
-{
-
-   Ecore_Ipc_Event_Client_Data *e = (Ecore_Ipc_Event_Client_Data *) event;
-   evfs_client *client;
-   int id;
-
-   /*Make sure we're not the daemon server's event*/
-   if (ecore_ipc_client_server_get(e->client) != server->worker_server) return 1;
-
-   //printf("WORKER: Unrecognised major: %d\n", e->major);
-   //
-   /*printf("Sending data to client.. %d %d %d %d %d\n", e->major, e->minor, e->ref, e->ref_to, e->response);*/
-
-   client = ecore_hash_get(evfs_server_get()->worker_hash, e->client);
-   if (client) {
-	   ecore_ipc_client_send(client->client, e->major,e->minor,e->ref,e->ref_to,e->response,e->data,e->size);
-   } else {
-		   printf("Cannot find client at ipc_worker_data\n");
-   }
-
-   return 1;
-}
-/*------------------*/
-
-
-int
-evfs_handle_command(evfs_client * client, evfs_command * command)
+int evfs_handle_command(evfs_client * client, evfs_command * command)
 {
    int cleanup_command=1;
+
+   /*printf("Handling data for client with ID: %d\n", client->id);*/
 	
    switch (command->type)
      {
@@ -400,6 +163,67 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
      }
 
    return cleanup_command;
+}
+
+
+int incoming_command_cb(__UNUSED__ void *data)
+{
+   int clean =0;
+
+   evfs_command_client *com_cli =
+      ecore_list_first_remove(server->incoming_command_list);
+
+   if (com_cli)
+     {
+        clean = evfs_handle_command(com_cli->client, com_cli->command);
+        if (clean) evfs_cleanup_command(com_cli->command, EVFS_CLEANUP_FREE_COMMAND);
+        free(com_cli);
+     }
+
+   return 1;
+}
+
+/*Handler for messages server->worker*/
+int
+ipc_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
+{
+	Ecore_Ipc_Event_Server_Data *e = (Ecore_Ipc_Event_Server_Data *) event;
+
+	/*Ignore messages from master server*/
+	//if (e->server == server->ipc_server) return 1;
+	//
+	if (e->major == EVFS_MESSAGE_KILL) {
+	   printf("Our parent client has disconnected, suicide time\n");
+	   ecore_main_loop_quit();
+	} else {	
+	   /*printf("Got server data in fork!: PID: %d\n", getpid());*/
+
+	   ecore_ipc_message *msg =
+	      ecore_ipc_message_new(e->major, e->minor, e->ref, e->ref_to, e->response,
+                            e->data, e->size);
+
+	   if (!worker_client->prog_command) {
+	        worker_client->prog_command = evfs_command_new();
+	   }
+
+	   /*True == command finished */
+	   if (evfs_process_incoming_command(evfs_server_get(), worker_client->prog_command, msg))
+	     {
+	        evfs_command_client *com_cli = NEW(evfs_command_client);
+	
+	        com_cli->client = worker_client;
+	        com_cli->command = worker_client->prog_command;
+	        worker_client->prog_command = NULL;
+	        
+		ecore_list_append(server->incoming_command_list, com_cli);
+		/*printf("Finished processing command in fork\n");*/
+	     }
+
+	   free(msg);
+
+	}
+
+	return 1;
 }
 
 
@@ -561,8 +385,7 @@ evfs_load_plugin_vfolder(char *filename)
 }
 
 
-void
-evfs_load_plugins()
+void evfs_load_plugins()
 {
    struct dirent *de;
    DIR *dir;
@@ -645,40 +468,7 @@ evfs_load_plugins()
      }
    closedir(dir);
 }
-/*-------------------*/
 
-int
-incoming_command_cb(__UNUSED__ void *data)
-{
-   int clean =0;
-
-   evfs_command_client *com_cli =
-      ecore_list_first_remove(server->incoming_command_list);
-
-   if (com_cli)
-     {
-        clean = evfs_handle_command(com_cli->client, com_cli->command);
-        if (clean) evfs_cleanup_command(com_cli->command, EVFS_CLEANUP_FREE_COMMAND);
-        free(com_cli);
-     }
-
-   return 1;
-}
-
-int
-ecore_timer_enterer(__UNUSED__ void *data)
-{
-   incoming_command_cb(NULL);
-   evfs_operation_queue_run();
-	
-   return 1;
-}
-
-int
-ecore_timer_enterer_server(__UNUSED__ void *data)
-{
-   return 1;
-}
 
 int
 main(int argc, char **argv)
@@ -695,68 +485,40 @@ main(int argc, char **argv)
 
    server->worker_hash =
       ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
-   
+
    server->plugin_uri_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
    server->plugin_meta_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare);
    server->plugin_vfolder_hash = ecore_hash_new(ecore_str_hash, ecore_str_compare); 
-   
-   server->clientCounter = 1000;
+
    server->incoming_command_list = ecore_list_new();
 
-   //ecore_idle_enterer_add(incoming_command_cb, NULL);
-
-   /*Identify that we are a server*/
    evfs_object_server_is_set();
 
-   /*Add a timer, to make sure our event loop keeps going.  Kinda hacky */
-   server->tmr = ecore_timer_add(1, ecore_timer_enterer_server, NULL);
-
-   if ((server->ipc_server =
-        ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0,
-                                 NULL)))
-     {
-        ecore_ipc_server_del(server->ipc_server);
-        free(server);
-        printf("ERR: Server already running...\n");
-        return (1);
-     }
-   else
-     {
-        //printf ("ERR: Server created..\n");
-
-        server->ipc_server =
-           ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0, NULL);
-
-        client_add = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, ipc_client_add,
-                                NULL);
-        client_del = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, ipc_client_del,
-                                NULL);
-        client_data = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, ipc_client_data,
-                                NULL);
-
-	server->worker_server = 
-	    ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EVFS_WOR_TITLE, 0, NULL);
-
-        worker_add = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, ipc_worker_add,
-                                NULL);
-        worker_del = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, ipc_worker_del,
-                                NULL);
-        worker_data = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, ipc_worker_data,
-                                NULL);
-
-		
-     }
-
+   evfs_load_plugins();
    evfs_io_initialise();
    evfs_vfolder_initialise();
    evfs_trash_initialise();
-   
-   if (argc >= 2 && !strcmp(argv[1], "-nometa"))
-       evfs_metadata_initialise(0);
-   else
-       evfs_metadata_initialise(1);    	  
+   evfs_operation_initialise();
+   evfs_metadata_initialise_worker();
 
+   /*Add a timer, to make sure our event loop keeps going.  Kinda hacky */
+   server->tmr = ecore_timer_add(0.01, ecore_timer_enterer, NULL);
 
+   worker_client = NEW(evfs_client);
+   worker_client->server = server;
+
+   if (argc > 0) {
+	   worker_client->id = atoi(argv[0]);
+	   printf("Created new worker, ID: %d\n", worker_client->id);
+   }
+
+    printf("Created new worker, ID: %d\n", worker_client->id);
+   server_data = ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, ipc_server_data,
+                                NULL);
+   worker_client->master = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_WOR_TITLE, 0,
+                                 NULL);
+
+    printf("Created new worker, ID: %d\n", worker_client->id);
    ecore_main_loop_begin();
 
    return 0;

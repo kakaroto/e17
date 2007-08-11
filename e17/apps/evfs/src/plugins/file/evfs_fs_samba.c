@@ -45,6 +45,7 @@
 
 //static struct stat file_stat;
 int smbc_remove_unused_server(SMBCCTX * context, SMBCSRV * srv);
+static int smbLOCK = 0;
 static SMBCCTX *smb_context = NULL;
 Ecore_List *auth_cache;
 
@@ -160,7 +161,7 @@ auth_fn(const char *server, const char *share,
 	      */
 
 	     strcpy(username, "anonymous");
-	     strcpy(password, "password");
+	     strcpy(password, "anonymous");
      }
 
 }
@@ -230,7 +231,7 @@ smb_evfs_file_rename(evfs_client* client, evfs_command* command)
 			smb_context,
 			command->file_command.files[1]->path);
 
-	return 0;
+	return err;
 }
 
 int

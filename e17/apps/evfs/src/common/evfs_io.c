@@ -244,7 +244,7 @@ evfs_write_event_file_monitor(evfs_client * client, evfs_event * event)
    /*Write "From" file */
    data = eet_data_descriptor_encode(_evfs_filemonitor_edd, &event->file_monitor, &size_ret);
 
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
                                                              EVFS_EV_PART_FILE_MONITOR,
                                                              client->id, 0, 0,
@@ -255,7 +255,7 @@ evfs_write_event_file_monitor(evfs_client * client, evfs_event * event)
 void
 evfs_write_stat_event(evfs_client * client, evfs_event * event)
 {
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
                                                              EVFS_EV_PART_STAT_SIZE,
                                                              client->id, 0, 0,
@@ -280,7 +280,7 @@ evfs_write_list_event(evfs_client * client, evfs_event * event)
         data =
            eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
 
-        evfs_write_ecore_ipc_client_message(client->client,
+        evfs_write_ecore_ipc_server_message(client->master,
                                             ecore_ipc_message_new(EVFS_EV_REPLY,
                                                                   EVFS_EV_PART_FILE_REFERENCE,
                                                                   client->id, 0,
@@ -301,7 +301,7 @@ void evfs_write_metadata_groups_event(evfs_client* client, evfs_event* event)
 	for (l = event->misc.string_list; l; ) {
 		g = l->data;
 		
-		evfs_write_ecore_ipc_client_message(client->client,
+		evfs_write_ecore_ipc_server_message(client->master,
                                             ecore_ipc_message_new(EVFS_EV_REPLY,
                                                                   EVFS_EV_PART_CHAR_PTR,
                                                                   client->id, 0,
@@ -315,7 +315,7 @@ void evfs_write_metadata_groups_event(evfs_client* client, evfs_event* event)
 void
 evfs_write_file_read_event(evfs_client * client, evfs_event * event)
 {
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
                                                              EVFS_EV_PART_DATA,
                                                              client->id, 0, 0,
@@ -332,7 +332,7 @@ void evfs_write_meta_event(evfs_client * client, evfs_event * event)
       eet_data_descriptor_encode(_evfs_metalist_edd, event->meta,
                                  &size_ret);
 
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
                                                              EVFS_EV_PART_METALIST,
                                                              client->id, 0, 0,
@@ -353,7 +353,7 @@ evfs_write_progress_event(evfs_client * client, evfs_event * event)
       eet_data_descriptor_encode(_evfs_progress_event_edd, event->progress,
                                  &size_ret);
 
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
                                                              EVFS_EV_PART_PROGRESS,
                                                              client->id, 0, 0,
@@ -365,7 +365,7 @@ evfs_write_progress_event(evfs_client * client, evfs_event * event)
    ref = ecore_list_first_remove(event->file_list.list);
    data = eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
 
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
                                                              EVFS_EV_PART_FILE_REFERENCE,
                                                              client->id, 0, 0,
@@ -376,7 +376,7 @@ evfs_write_progress_event(evfs_client * client, evfs_event * event)
    ref = ecore_list_first_remove(event->file_list.list);
    data = eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size_ret);
 
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
                                                              EVFS_EV_PART_FILE_REFERENCE,
                                                              client->id, 0, 0,
@@ -393,7 +393,7 @@ evfs_write_operation_event(evfs_client * client, evfs_event * event)
    char *data =
       eet_data_descriptor_encode(_evfs_operation_edd, event->op, &size_ret);
 
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
                                                              EVFS_EV_PART_OPERATION,
                                                              client->id, 0, 0,
@@ -407,7 +407,7 @@ evfs_write_event(evfs_client * client, evfs_command * command,
                  evfs_event * event)
 {
    //printf("Sending event type '%d'\n", event->type);
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
                                                              EVFS_EV_PART_TYPE,
                                                              client->id, 0, 0,
@@ -455,12 +455,15 @@ evfs_write_event(evfs_client * client, evfs_command * command,
 	evfs_write_metadata_groups_event(client,event);
 	break;
 
+     case EVFS_EV_AUTH_REQUIRED:
+	break;
+
      default:
         printf("Event type not handled in switch\n");
         break;
      }
 
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_EV_REPLY,
                                                              EVFS_EV_PART_END,
                                                              client->id, 0, 0,
@@ -721,7 +724,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
 {
 
       /*Write the command type structure */
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_COMMAND,
                                                              EVFS_COMMAND_TYPE,
                                                              client->id, 0, 0,
@@ -729,7 +732,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
                                                              sizeof
                                                              (evfs_command_type)));
 
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_COMMAND,
                                                              EVFS_COMMAND_EXTRA,
                                                              client->id, 0, 0,
@@ -737,7 +740,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
                                                              file_command.extra,
                                                              sizeof(int)));
 
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_COMMAND,
                                                             EVFS_COMMAND_CLIENTID,
                                                             client->id, 0, 0,
@@ -777,6 +780,7 @@ evfs_write_command_client(evfs_client * client, evfs_command * command)
 
    /*Send a final */
    evfs_write_command_end_client(client);
+
 }
 
 void
@@ -791,7 +795,7 @@ evfs_write_command_end(evfs_connection * conn)
 void
 evfs_write_command_end_client(evfs_client * client)
 {
-   evfs_write_ecore_ipc_client_message(client->client,
+   evfs_write_ecore_ipc_server_message(client->master,
                                        ecore_ipc_message_new(EVFS_COMMAND,
                                                              EVFS_COMMAND_END,
                                                              client->id, 0, 0,
@@ -861,7 +865,7 @@ evfs_write_file_command_client(evfs_client * client, evfs_command * command)
 	data = eet_data_descriptor_encode(_evfs_filereference_edd, ref, &size);
 
 
-        evfs_write_ecore_ipc_client_message(client->client,
+        evfs_write_ecore_ipc_server_message(client->master,
                                             ecore_ipc_message_new(EVFS_COMMAND,
                                                                   EVFS_FILE_REFERENCE,
                                                                   client->id, 0,
@@ -874,7 +878,7 @@ evfs_write_file_command_client(evfs_client * client, evfs_command * command)
 
     /*If there's a string ref, write it*/
     if (command->file_command.ref) {
-	  evfs_write_ecore_ipc_client_message(client->client, 
+	  evfs_write_ecore_ipc_server_message(client->master, 
 			  		ecore_ipc_message_new(EVFS_COMMAND,
 						EVFS_COMMAND_PART_FILECOMMAND_REF1,
 						client->id,0,0,command->file_command.ref,
@@ -882,7 +886,7 @@ evfs_write_file_command_client(evfs_client * client, evfs_command * command)
     }
 
     if (command->file_command.ref2) {
-	  evfs_write_ecore_ipc_client_message(client->client, 
+	  evfs_write_ecore_ipc_server_message(client->server, 
 			  		ecore_ipc_message_new(EVFS_COMMAND,
 						EVFS_COMMAND_PART_FILECOMMAND_REF2,
 						client->id,0,0,command->file_command.ref2,
@@ -988,7 +992,7 @@ evfs_process_incoming_command(evfs_server * server, evfs_command * command,
         break;
 
      default:
-        printf("Unknown incoming command part\n");
+        printf("Unknown incoming command part - %d\n", message->minor );
         break;
      }
 

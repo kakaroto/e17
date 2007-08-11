@@ -19,6 +19,8 @@
 #include <string.h>
 
 #define EVFS_IPC_TITLE "evfs_fs"
+#define EVFS_WOR_TITLE "evfs_worker_daemon"
+
 #define MAXPATHLEN 512
 #define FALSE 0
 #define TRUE 1

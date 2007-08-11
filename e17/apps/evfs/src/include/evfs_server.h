@@ -15,11 +15,15 @@ typedef struct evfs_server evfs_server;
 struct evfs_server
 {
    Ecore_Hash *client_hash;
+   Ecore_Hash *worker_hash;
    Ecore_Hash *plugin_uri_hash;
    Ecore_Hash *plugin_meta_hash;
    Ecore_Hash *plugin_vfolder_hash;
    
    Ecore_Ipc_Server *ipc_server;
+   Ecore_Ipc_Server *worker_server;
+
+   Ecore_Timer* tmr;
    unsigned long clientCounter;
 
    Ecore_List *incoming_command_list;

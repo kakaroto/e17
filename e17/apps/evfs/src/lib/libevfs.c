@@ -67,6 +67,8 @@ evfs_server_data(void *data, int type, void *event)
                   if (client->id == MAX_CLIENT)
                     {
                        memcpy(&client->id, e->data, sizeof(unsigned long));
+
+		       /*printf("Assigned ID: %d\n", client->id);*/
                     }
                   else
                     {
@@ -101,8 +103,11 @@ evfs_server_data(void *data, int type, void *event)
                        conn->prog_event = NEW(evfs_event);
                     }
 
+		  /*printf("Got client message: %d %d %d %d %d\n", e->major, e->minor, e->ref, e->ref_to, e->response);*/
+
                   if (evfs_read_event(conn->prog_event, msg))
                     {
+			    
                        /*True return == Event fully read */
 
                        /*Execute callback if registered.. */
@@ -130,7 +135,7 @@ evfs_server_data(void *data, int type, void *event)
              else
                {
                   fprintf(stderr,
-                          "EVFS: Could not find connection for clientId\n");
+                          "EVFS: Could not find connection for clientId: %d\n", e->ref);
                }
           }
      }
@@ -207,7 +212,7 @@ evfs_connect(void (*callback_func) (evfs_event *, void *), void *obj)
 
    if (!
        (connection->server =
-        ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0,
+        ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE,0,
                                  connection)))
      {
         fprintf(stderr,
@@ -228,6 +233,13 @@ evfs_connect(void (*callback_func) (evfs_event *, void *), void *obj)
 
      } else {
 	     ecore_hash_set(evfs_session_servers, connection->server, (int*)1);
+
+	     while (connection->id == MAX_CLIENT) {
+		        /*printf("Waiting for connection id..\n");*/
+			ecore_main_loop_iterate();
+	     }
+	     /*printf("Got connection ID: %d\n", connection->id);*/
+	     
      }
 
    return connection;
