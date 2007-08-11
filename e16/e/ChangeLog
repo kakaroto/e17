@@ -4468,3 +4468,19 @@ Avoid some lagginess at end of desk switch.
 Disable theme localisation by default.
 Prefer Xft font configuration.
 
+
+-------------------------------------------------------------------------------
+
+Sat Aug 11 13:31:21 CEST 2007
+(Kim)
+
+--- 0.16.8.9 ---
+Fix rendering vertical (->down) text.
+Fix occasional bad tooltip placement.
+Fix evaluation of LOCALEDIR with new autosomething. Remove fsstd option.
+Spec file tweaks.
+Change configuration of alternative font configuration.
+Xft font is now selected using prefix "xft:".
+Fix valgrind complaint (drawable caching).
+Optionally use pango for font rendering.
+
