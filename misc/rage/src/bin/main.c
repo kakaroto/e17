@@ -649,6 +649,26 @@ main_menu_video_library(void *data)
 }
 
 static void
+main_menu_dvd_watch(void *data)
+{
+   Video_Lib_Item *vli;
+
+   vli = data;
+   if (over_delay_timer)
+     {
+	ecore_timer_del(over_delay_timer);
+	over_delay_timer = NULL;
+     }
+   main_mode_push(VIDEO);
+   if (over_video)
+     {
+	minivid_del(over_video);
+	over_video = NULL;
+     }
+   video_init("emotion_decoder_xine.so", "dvd://", "video");
+}
+
+static void
 main_menu_video(void *data)
 {
    menu_push("menu", "Video", NULL, NULL);
@@ -667,21 +687,6 @@ main_menu_video(void *data)
 
    menu_go();
    menu_item_select("Library");
-   
-     {
-	const Evas_List *l;
-	
-	for (l = volume_items_get(); l; l = l->next)
-	  {
-	     Volume_Item *vi;
-	     
-	     vi = l->data;
-	     if (!strcmp(vi->type, "video"))
-	       {
-		  printf("%s :: %s - (%s)\n", vi->genre, vi->name, vi->path);
-	       }
-	  }
-     }
 }
 
 static void
@@ -696,7 +701,7 @@ main_menu_dvd(void *data)
 		 NULL, NULL, NULL, NULL, NULL);
    menu_item_add("icon/dvd", "Watch",
 		 "Watch your DVD", NULL,
-		 NULL, NULL, NULL, NULL, NULL);
+		 main_menu_dvd_watch, NULL, NULL, NULL, NULL);
    menu_item_enabled_set("DVD", "Resume", 0);
    menu_item_enabled_set("DVD", "Rip", 0);
    menu_item_enabled_set("DVD", "Watch", 1);
