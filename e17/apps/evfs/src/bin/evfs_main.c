@@ -750,6 +750,9 @@ main(int argc, char **argv)
    evfs_io_initialise();
    evfs_vfolder_initialise();
    evfs_trash_initialise();
+
+   /*We should rename this when running in core server..*/
+   evfs_worker_initialise();
    
    if (argc >= 2 && !strcmp(argv[1], "-nometa"))
        evfs_metadata_initialise(0);
