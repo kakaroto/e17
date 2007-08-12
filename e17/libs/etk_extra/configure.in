@@ -117,8 +117,8 @@ fi
 AC_OUTPUT([
 Makefile
 etk_extra_tree_model_wobbly.pc
-$etk_extra_video_pc
-$etk_extra_cairo_pc
+etk_extra_video.pc
+etk_extra_cairo.pc
 src/Makefile
 src/lib/Makefile
 src/lib/etk_video/Makefile
