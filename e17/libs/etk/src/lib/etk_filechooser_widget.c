@@ -18,6 +18,8 @@
 #include "etk_box.h"
 #include "etk_entry.h"
 #include "etk_label.h"
+#include "etk_stock.h"
+#include "etk_button.h"
 #include "config.h"
 
 /* OS-specific to list the mount points */
@@ -67,6 +69,7 @@ static void _etk_filechooser_widget_place_activated_cb(Etk_Object *object, Etk_T
 static void _etk_filechooser_widget_fav_activated_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_filechooser_widget_file_activated_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static void _etk_filechooser_widget_file_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static void _etk_filechooser_widget_updir_clicked_cb(Etk_Button *button, void *data);
 static void _etk_filechooser_widget_places_tree_fill(Etk_Filechooser_Widget *fcw);
 static void _etk_filechooser_widget_favs_tree_fill(Etk_Filechooser_Widget *fcw);
 
@@ -164,7 +167,7 @@ void etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechoos
    
    if (!filechooser_widget->is_save)
       etk_entry_clear(ETK_ENTRY(filechooser_widget->name_entry));
-   
+
    /* TODO: Do not walk through the list twice!! */
    ecore_list_first_goto(files);
    while ((filename = ecore_list_next(files)))
@@ -378,6 +381,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    Etk_Widget *vpaned;
    Etk_Widget *hbox;
    Etk_Widget *label;
+   Etk_Widget *button;
    
    if (!fcw)
       return;
@@ -401,6 +405,10 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    fcw->name_entry = etk_entry_new();
    etk_widget_disabled_set(fcw->name_entry, ETK_TRUE);
    etk_box_append(ETK_BOX(hbox),fcw->name_entry,ETK_BOX_START,ETK_BOX_EXPAND_FILL,10);
+   
+   button = etk_button_new_from_stock(ETK_STOCK_GO_UP);
+   etk_box_append(ETK_BOX(hbox),button,ETK_BOX_START,ETK_BOX_NONE,10);
+   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_filechooser_widget_updir_clicked_cb), fcw);
    
    hpaned = etk_hpaned_new();
    etk_box_append(ETK_BOX(fcw->vbox),hpaned,ETK_BOX_START,ETK_BOX_EXPAND_FILL,10);
@@ -549,15 +557,7 @@ static void _etk_filechooser_widget_place_activated_cb(Etk_Object *object, Etk_T
    if (!(filechooser_widget = ETK_FILECHOOSER_WIDGET(data)) || !(selected_dir = etk_tree_row_data_get(row)))
      return;
    
-   if (strcmp(selected_dir, "..") == 0)
-   {
-      char back[PATH_MAX];
-      
-      snprintf(back, PATH_MAX, "%s/..", filechooser_widget->current_folder);
-      etk_filechooser_widget_current_folder_set(filechooser_widget, back);
-   }
-   else
-      etk_filechooser_widget_current_folder_set(filechooser_widget, selected_dir);
+   etk_filechooser_widget_current_folder_set(filechooser_widget, selected_dir);
    etk_tree_unselect_all(ETK_TREE(filechooser_widget->fav_tree));
 }
 
@@ -608,6 +608,19 @@ static void _etk_filechooser_widget_file_selected_cb(Etk_Object *object, Etk_Tre
    
    if (ecore_file_exists(file_path) && !ecore_file_is_dir(file_path))
       etk_entry_text_set(ETK_ENTRY(filechooser_widget->name_entry),selected_file);
+}
+/* Called when the '..' button is clicked */
+static void _etk_filechooser_widget_updir_clicked_cb(Etk_Button *button, void *data)
+{
+   Etk_Filechooser_Widget *filechooser_widget;
+   char back[PATH_MAX];
+
+   if (!(filechooser_widget = ETK_FILECHOOSER_WIDGET(data)))
+     return;
+   
+   snprintf(back, PATH_MAX, "%s/..", filechooser_widget->current_folder);
+
+   etk_filechooser_widget_current_folder_set(filechooser_widget, ecore_file_realpath(back));
 }
 /**************************
  *
