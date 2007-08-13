@@ -926,24 +926,27 @@ ShowFilechooser(int FileChooserType)
    switch(FileChooserType){
       case FILECHOOSER_OPEN:
          etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose an EDJ or EDC file to open");
-         etk_widget_hide(UI_FilechooserFileNameLabel);
-         etk_widget_hide(UI_FilechooserFileNameEntry);
+         etk_filechooser_widget_is_save_set(UI_FileChooser,ETK_FALSE);
          etk_widget_hide(UI_FilechooserSaveButton);
       break;
       case FILECHOOSER_IMAGE:
          etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose an image to import");
+         etk_filechooser_widget_is_save_set(UI_FileChooser,ETK_FALSE);
          etk_widget_hide(UI_FilechooserSaveButton);
       break;
       case FILECHOOSER_FONT:
          etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose an font to import");
+         etk_filechooser_widget_is_save_set(UI_FileChooser,ETK_FALSE);
          etk_widget_hide(UI_FilechooserSaveButton);
       break;
       case FILECHOOSER_SAVE_EDJ:
          etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose the new edje name");
+         etk_filechooser_widget_is_save_set(UI_FileChooser,ETK_TRUE);
          etk_widget_hide(UI_FilechooserLoadButton);
       break;
       case FILECHOOSER_SAVE_EDC:
          etk_window_title_set(ETK_WINDOW(UI_FileChooserDialog), "Choose the new edc name");
+         etk_filechooser_widget_is_save_set(UI_FileChooser,ETK_TRUE);
          etk_widget_hide(UI_FilechooserLoadButton);
       break;
       default:
@@ -970,27 +973,6 @@ create_filechooser_dialog(void)
    UI_FileChooser = etk_filechooser_widget_new();
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), UI_FileChooser,
       ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
-
-   file_tree = ETK_FILECHOOSER_WIDGET(UI_FileChooser)->files_tree;
-   etk_signal_connect("row-clicked", ETK_OBJECT(file_tree), ETK_CALLBACK(on_FileChooser_row_selected), NULL);
-   //etk_signal_connect("row-selected", ETK_OBJECT(file_tree), ETK_CALLBACK(on_FileChooser_row_selected), NULL);
-   places_tree = ETK_FILECHOOSER_WIDGET(UI_FileChooser)->places_tree;
-   etk_signal_connect("row-clicked", ETK_OBJECT(places_tree), ETK_CALLBACK(on_FileChooser_row_selected), NULL);
-   //etk_signal_connect("row-selected", ETK_OBJECT(places_tree), ETK_CALLBACK(on_FileChooser_row_selected), NULL);
-   fav_tree = ETK_FILECHOOSER_WIDGET(UI_FileChooser)->fav_tree;
-   etk_signal_connect("row-clicked", ETK_OBJECT(fav_tree), ETK_CALLBACK(on_FileChooser_row_selected), NULL);
-   //etk_signal_connect("row-selected", ETK_OBJECT(fav_tree), ETK_CALLBACK(on_FileChooser_row_selected), NULL);
-
-   //label
-   UI_FilechooserFileNameLabel = etk_label_new("<b>Full file name</b>");
-   etk_object_properties_set (ETK_OBJECT(UI_FilechooserFileNameLabel), "xalign",1.0,NULL);
-   etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog),UI_FilechooserFileNameLabel,
-      ETK_BOX_START, ETK_BOX_NONE,0);
-
-   //FileNameEntry
-   UI_FilechooserFileNameEntry = etk_entry_new();
-   etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog),
-      UI_FilechooserFileNameEntry, ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
 
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog),
       ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL );

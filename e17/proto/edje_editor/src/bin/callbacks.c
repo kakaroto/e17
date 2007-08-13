@@ -1325,21 +1325,26 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
          break;
          case FILECHOOSER_SAVE_EDJ:
             printf("SAVE EDJ\n");
-            SaveEDJ(etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
+            snprintf(cmd,4096,"%s/%s",
+               etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
+               etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+            SaveEDJ(cmd);
          break;
-         case FILECHOOSER_SAVE_EDC:
+/*         case FILECHOOSER_SAVE_EDC:
             printf("SAVE EDC\n");
             engrave_edc_output(Cur.ef,
             (char*)etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
-         break;
+         break;*/
          case FILECHOOSER_IMAGE:
-            printf("new image: %s\n",etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
             if (Cur.eps){
                //If the new image is not in the edc dir
-               if (strcmp(etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),engrave_file_image_dir_get(Cur.ef))){
+               if (strcmp(etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),engrave_file_image_dir_get(Cur.ef))){
                   //TODO check if image already exist and is a valid image
                   //Copy the image to the image_dir
-                  snprintf(cmd, 4096, "cp \"%s\" \"%s\"", etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)), engrave_file_image_dir_get(Cur.ef));
+                  snprintf(cmd, 4096, "cp \"%s/%s\" \"%s\"", 
+                           etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
+                           etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
+                           engrave_file_image_dir_get(Cur.ef));
                   ret = system(cmd);
                   if (ret < 0) {
                      ShowAlert("Error: unable to copy image!");
@@ -1361,13 +1366,15 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
             }
          break;
          case FILECHOOSER_FONT:
-            printf("new font: %s\n",etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
             if (Cur.eps){
                //If the new font is not in the edc dir
-               if (strcmp(etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),engrave_file_font_dir_get(Cur.ef))){
+               if (strcmp(etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),engrave_file_font_dir_get(Cur.ef))){
                   //TODO check if font already exist in the EDCFileDir
                   //Copy the font to the EDCDir
-                  snprintf(cmd, 4096, "cp %s %s", etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)), engrave_file_font_dir_get(Cur.ef));
+                  snprintf(cmd, 4096, "cp \"%s/%s\" \"%s\"",
+                        etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
+                        etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
+                        engrave_file_font_dir_get(Cur.ef));
                   ret = system(cmd);
                   if (ret < 0) {
                      ShowAlert("Error: unable to copy font!");
@@ -1379,7 +1386,7 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
                efont = engrave_font_new(
                   etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
                   etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
-               engrave_file_font_add(Cur.ef,efont);	 
+               engrave_file_font_add(Cur.ef,efont);
                engrave_part_state_text_font_set(Cur.eps,etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
 
                PopulateFontsComboBox();
@@ -1393,23 +1400,6 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
    else{
       etk_widget_hide(ETK_WIDGET(dialog));
    }
-}
-
-void 
-on_FileChooser_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
-{
-   Etk_String *str=etk_string_new("");
-   
-   if (etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)))
-     etk_string_append_printf(str,"%s/",etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
-
-   if (etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)))
-     str = etk_string_append_printf(str,etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
-
-
-   etk_entry_text_set(ETK_ENTRY(UI_FilechooserFileNameEntry),str->string);
-   
-   etk_object_destroy(ETK_OBJECT(str));
 }
 
 void 
