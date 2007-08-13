@@ -25,6 +25,7 @@
 #define ENTROPY_GUI_EVENT_HOVER "entropy_gui_event_hover"
 #define ENTROPY_GUI_EVENT_DEHOVER "entropy_gui_event_dehover"
 
+#define ENTROPY_GUI_EVENT_AUTH_REQUEST "entropy_gui_event_auth_request"
 
 #define ENTROPY_TOOLKIT_EWL "ewl"
 #define ENTROPY_TOOLKIT_ETK "etk"

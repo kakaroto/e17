@@ -146,6 +146,14 @@ Ecore_List* entropy_plugin_filesystem_filelist_get(entropy_file_request* request
 		
 }
 
+void entropy_plugin_filesystem_auth_respond(char* loc, char* user, char* password) 
+{
+	Entropy_Plugin_File* plugin;
+	
+        plugin = ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first(ENTROPY_PLUGIN_BACKEND_FILE ,ENTROPY_PLUGIN_SUB_TYPE_ALL));
+	(*plugin->file_functions.auth_respond)(loc,user,password);	
+}
+
 void entropy_plugin_filesystem_filestat_get(entropy_file_request* request)
 {
 	Entropy_Plugin_File* plugin;
@@ -463,6 +471,19 @@ void entropy_event_dehover_request(entropy_gui_component_instance* instance, ent
     printf("Sending dehover..\n");
     entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_LOCAL); 
 }
+
+void entropy_event_auth_request(entropy_gui_component_instance* instance,char* location) 
+{
+    entropy_gui_event *gui_event;
+
+    gui_event = entropy_malloc (sizeof (entropy_gui_event));
+    gui_event->event_type =
+	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_AUTH_REQUEST);
+    gui_event->data = strdup(location);
+
+    entropy_core_layout_notify_event (instance, gui_event, ENTROPY_EVENT_LOCAL); 
+}
+
 
 
 entropy_generic_file* entropy_layout_current_folder_get(entropy_gui_component_instance_layout* layout)

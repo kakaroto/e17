@@ -10,6 +10,7 @@
 #include "etk_file_cache_dialog.h"
 #include "entropy_etk_context_menu.h"
 #include "entropy_etk_options_dialog.h"
+#include "etk_auth_request_dialog.h"
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <stdlib.h>
@@ -674,6 +675,12 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	     }
 	     break;
 
+	     case ENTROPY_NOTIFY_AUTH_REQUEST: {
+		  printf("Requested auth for: %s\n",(char*)el); 
+		  etk_auth_request_dialog_create(strdup((char*)el));
+	     }
+	     break;
+
      }
 }
 
@@ -763,6 +770,10 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_core_component_event_register (layout,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_PASTE_REQUEST));
+
+  entropy_core_component_event_register (layout,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_AUTH_REQUEST));
 
 
   /*Etk related init */

@@ -137,4 +137,11 @@ entropy_event_handler_dehover_request_instance_data(entropy_gui_event* event,
 		                        entropy_gui_component_instance* requestor);
 
 
+/*Auth Request */
+Entropy_Gui_Event_Handler* entropy_event_handler_auth_request_handler();
+void entropy_event_handler_auth_request_cleanup(Entropy_Gui_Event_Handler_Instance_Data* data);
+Entropy_Gui_Event_Handler_Instance_Data* 
+entropy_event_handler_auth_request_instance_data(entropy_gui_event* event, 
+	entropy_gui_component_instance* requestor);
+
 #endif

@@ -82,6 +82,10 @@ typedef struct entropy_file_operation {
 	long id;
 } entropy_file_operation;
 
+typedef struct {
+	char* filename;
+} entropy_auth_request;
+
 typedef struct entropy_file_stat entropy_file_stat;
 struct entropy_file_stat {
 	entropy_generic_file* file;

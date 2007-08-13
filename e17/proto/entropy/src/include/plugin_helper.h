@@ -12,6 +12,7 @@ void entropy_plugin_thumbnail_request(entropy_gui_component_instance* requestor,
 				void (*cb)());
 void entropy_plugin_filesystem_file_remove(entropy_generic_file* file, entropy_gui_component_instance*);
 int entropy_plugin_filesystem_file_copy(entropy_generic_file* source, char* dest, entropy_gui_component_instance* requester);
+void entropy_plugin_filesystem_auth_respond(char* loc, char* user, char* password);
 int entropy_plugin_filesystem_file_copy_multi(Ecore_List* files, char* dest, entropy_gui_component_instance* requester);
 int entropy_plugin_filesystem_file_move_multi(Ecore_List* files, char* dest, entropy_gui_component_instance* requester);
 int entropy_plugin_filesystem_file_trash_restore(Ecore_List* files, entropy_gui_component_instance* requester);
@@ -40,5 +41,7 @@ void entropy_event_cut_request(entropy_gui_component_instance* instance);
 void entropy_event_paste_request(entropy_gui_component_instance* instance);
 void entropy_event_hover_request(entropy_gui_component_instance* instance, entropy_generic_file* file, int x, int y);
 void entropy_event_dehover_request(entropy_gui_component_instance* instance, entropy_generic_file* file);
+
+void entropy_event_auth_request(entropy_gui_component_instance* instance,char*);
 
 #endif

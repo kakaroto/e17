@@ -30,11 +30,7 @@ void entropy_filesystem_file_copy (entropy_generic_file * file, char *path_to, e
 void entropy_filesystem_file_copy_multi (Ecore_List* files, char *path_to, entropy_gui_component_instance * instance);
 void entropy_filesystem_file_move_multi (Ecore_List* files, char *path_to, entropy_gui_component_instance * instance);
 void entropy_filesystem_file_trash_restore (Ecore_List* files, entropy_gui_component_instance * instance);
-
-
 void entropy_filesystem_file_move (entropy_generic_file * file, char *path_to, entropy_gui_component_instance * instance);
-
-
 void entropy_filesystem_file_rename (entropy_generic_file * file_from, entropy_generic_file * file_to);
 void entropy_filesystem_operation_respond(long id, int response);
 void entropy_filesystem_directory_create (entropy_generic_file * parent, const char* child_name);
@@ -42,8 +38,8 @@ void entropy_filesystem_file_remove (entropy_generic_file * file, entropy_gui_co
 void entropy_filesystem_metadata_groups_get(entropy_gui_component_instance* instance);
 void entropy_filesystem_file_group_add(entropy_generic_file* file, char* group);
 void entropy_filesystem_file_group_remove(entropy_generic_file* file, char* group);
-
 Ecore_List* entropy_filesystem_metadata_groups_retrieve();
+void entropy_filesystem_auth_response(char* location, char* user, char* password);
 
 static evfs_connection *con;
 
@@ -487,23 +483,6 @@ callback (evfs_event * data, void *obj)
 	
 					
 	Evas_List* l;
-	/*entropy_gui_event* gui_event;
-	entropy_gui_component_instance* instance;
-
-	instance = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
-        ecore_hash_remove (evfs_dir_requests, (long*)data->resp_command.client_identifier);
-
-
-        gui_event = entropy_malloc (sizeof (entropy_gui_event));
-        gui_event->event_type =
-	entropy_core_gui_event_get (ENTROPY_GUI_EVENT_METADATA_GROUPS);
-
-	gui_event->data = data->misc.string_list;
-	
-	      
-	entropy_core_layout_notify_event (instance, gui_event,
-					  ENTROPY_EVENT_LOCAL);*/
-
 	if (metadata_groups) {
 		char* obj;
 		while ((obj = ecore_list_first_remove(metadata_groups))) {
@@ -516,6 +495,23 @@ callback (evfs_event * data, void *obj)
 		l=l->next;
 	}
 	
+  }
+  break;
+
+  case EVFS_EV_AUTH_REQUIRED: {
+	entropy_file_request* calling_request = NULL;
+
+ 	printf("Received 'auth required' event\n");
+	calling_request = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+	if (calling_request) {
+		char loc[PATH_MAX];
+		snprintf(loc,sizeof(loc),"%s://%s/%s", calling_request->file->uri_base, calling_request->file->path, calling_request->file->filename);
+		printf("Found original request..\n");
+		
+		entropy_event_auth_request(calling_request->requester, loc);
+	} else {
+		printf("Could not find original request\n");
+	}
   }
   break;
 
@@ -629,6 +625,7 @@ entropy_plugin_init (entropy_core * core)
   plugin->misc_functions.groups_retrieve = &entropy_filesystem_metadata_groups_retrieve;
   plugin->file_functions.group_file_add = &entropy_filesystem_file_group_add;
   plugin->file_functions.group_file_remove = &entropy_filesystem_file_group_remove;
+  plugin->file_functions.auth_respond = entropy_filesystem_auth_response;
   
   return base; 
 
@@ -1106,8 +1103,16 @@ void entropy_filesystem_file_group_remove(entropy_generic_file* file, char* grou
   evfs_client_metadata_group_file_remove(con, uri_path_from->files[0], group);
 
   free(uri_from);
-  free(uri_path_from);
-  
+  evfs_cleanup_file_uri_path(uri_path_from); 
+}
+
+void entropy_filesystem_auth_response(char* location, char* user, char* password)
+{
+	printf("Parsing uri %s\n", location);
+	evfs_filereference* ref = evfs_parse_uri_single(location);
+	evfs_client_auth_send(con,ref,user,password);
+
+	
 }
 
 void entropy_filesystem_operation_respond(long id, int response) 
