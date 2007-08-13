@@ -277,6 +277,7 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance,
 				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);
 
 	dialog->password_widget_entry = etk_entry_new();
+	etk_entry_password_mode_set(ETK_ENTRY(dialog->password_widget_entry), ETK_TRUE);
 	etk_table_attach(ETK_TABLE(dialog->vbox2), dialog->password_widget_entry,1,1,4,4,
 				0,0,
 				ETK_TABLE_HFILL | ETK_TABLE_VFILL | ETK_TABLE_HEXPAND);

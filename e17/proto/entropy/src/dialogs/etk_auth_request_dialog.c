@@ -67,6 +67,7 @@ void etk_auth_request_dialog_create(char* location)
 	label = etk_label_new("Password");
 	etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 	dialog->password = etk_entry_new();
+	etk_entry_password_mode_set(ETK_ENTRY(dialog->password), ETK_TRUE);
 	etk_box_append(ETK_BOX(hbox), dialog->password, ETK_BOX_START, ETK_BOX_NONE, 0);
 
 	hbox = etk_hbox_new(ETK_FALSE,0);
