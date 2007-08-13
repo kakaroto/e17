@@ -84,3 +84,17 @@ etk_filechooser_widget_show_hidden_set(filechooser_widget, show_hidden)
       ALIAS:
 	ShowHiddenSet=1
 	
+void
+etk_filechooser_widget_is_save_set(filechooser_widget, is_save)
+	Etk_Filechooser_Widget *        filechooser_widget
+	Etk_Bool		is_save
+	ALIAS:
+	IsSaveSet=1
+
+Etk_Bool
+etk_filechooser_widget_is_save_get(filechooser_widget)
+	Etk_Filechooser_Widget *        filechooser_widget
+	ALIAS:
+	IsSaveGet=1
+
+
