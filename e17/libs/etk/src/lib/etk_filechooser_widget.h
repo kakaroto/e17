@@ -11,7 +11,7 @@
  * @{
  */
 
-/** Gets the type of a status bar */
+/** Gets the type of a fileschooser widget */
 #define ETK_FILECHOOSER_WIDGET_TYPE       (etk_filechooser_widget_type_get())
 /** Casts the object to an Etk_Filechooser_Widget */
 #define ETK_FILECHOOSER_WIDGET(obj)       (ETK_OBJECT_CAST((obj), ETK_FILECHOOSER_WIDGET_TYPE, Etk_Filechooser_Widget))
@@ -20,7 +20,7 @@
 
 /**
  * @struct Etk_Filechooser_Widget
- * @brief An Etk_Filechooser_Widget is a widget used to select several files
+ * @brief An Etk_Filechooser_Widget is a widget used to select one or more files
  */
 struct Etk_Filechooser_Widget
 {
@@ -28,7 +28,8 @@ struct Etk_Filechooser_Widget
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
    
-   Etk_Widget *hpaned;
+   Etk_Widget *vbox;
+   Etk_Widget *name_entry;
    
    Etk_Widget *places_tree;
    Etk_Tree_Col *places_col;
@@ -42,6 +43,7 @@ struct Etk_Filechooser_Widget
 
    Etk_Bool select_multiple;
    Etk_Bool show_hidden;
+   Etk_Bool is_save;
    
    char *current_folder;
 };
@@ -54,6 +56,9 @@ Etk_Bool    etk_filechooser_widget_select_multiple_get(Etk_Filechooser_Widget *f
 
 void        etk_filechooser_widget_show_hidden_set(Etk_Filechooser_Widget *filechooser_widget, Etk_Bool show_hidden);
 Etk_Bool    etk_filechooser_widget_show_hidden_get(Etk_Filechooser_Widget *filechooser_widget);
+
+void        etk_filechooser_widget_is_save_set(Etk_Filechooser_Widget *filechooser_widget, Etk_Bool is_save);
+Etk_Bool    etk_filechooser_widget_is_save_get(Etk_Filechooser_Widget *filechooser_widget);
 
 void        etk_filechooser_widget_current_folder_set(Etk_Filechooser_Widget *filechooser_widget, const char *folder);
 const char *etk_filechooser_widget_current_folder_get(Etk_Filechooser_Widget *filechooser_widget);
