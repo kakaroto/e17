@@ -45,4 +45,5 @@ void evfs_handle_metadata_file_group_remove(evfs_client* client, evfs_command* c
 void evfs_handle_trash_restore_command(evfs_client * client,
                                    evfs_command * command);
 
+void evfs_handle_auth_respond_command(evfs_client* client, evfs_command* command);
 #endif

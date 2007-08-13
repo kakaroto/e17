@@ -794,7 +794,7 @@ sftp_exe_data(void *data, int type, void *event)
 /*----------------------------------------------------------------*/
 
 void
-evfs_dir_list(evfs_client * client, evfs_filereference* ref, Ecore_List ** directory_list);
+evfs_dir_list(evfs_client * client, evfs_command* command, Ecore_List ** directory_list);
 int evfs_file_open(evfs_client * client, evfs_filereference * file);
 int evfs_file_close(evfs_filereference * file);
 int evfs_file_seek(evfs_filereference * file, long offset, int whence);
@@ -1089,7 +1089,7 @@ int evfs_file_write(evfs_filereference * file, char *bytes, long size) {
 }
 
 void
-evfs_dir_list(evfs_client * client, evfs_filereference* iref,
+evfs_dir_list(evfs_client * client, evfs_command* command,
                   /*Returns.. */
                   Ecore_List ** directory_list)
 {
@@ -1101,6 +1101,8 @@ evfs_dir_list(evfs_client * client, evfs_filereference* iref,
 	
 	char* host, *schar;
 	SftpConnection* conn = NULL;
+
+        evfs_filereference* iref = command->file_command.files[0];
 
 	sftp_split_host_path(iref->path, &host,&schar);
 

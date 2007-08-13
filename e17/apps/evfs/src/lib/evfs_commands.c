@@ -440,5 +440,26 @@ evfs_client_metadata_group_file_remove(evfs_connection * conn, evfs_filereferenc
    free(command);
 
    return id;
+}
 
+long
+evfs_client_auth_send(evfs_connection* conn, evfs_filereference* ref, char* user, char* password)
+{
+   evfs_command *command = evfs_client_command_new();
+   long id = command->client_identifier;
+
+   command->type = EVFS_CMD_AUTH_RESPONSE;
+   command->file_command.num_files = 1;
+   command->file_command.files = malloc(sizeof(evfs_filereference *) * 1);
+   command->file_command.files[0] = ref;
+   command->file_command.files[0]->username = user;
+   command->file_command.files[0]->password = password;
+
+   evfs_write_command(conn, command);
+	
+   free(command->file_command.files);
+   free(command);
+
+
+   return id;
 }

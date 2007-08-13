@@ -49,10 +49,12 @@ static int smbLOCK = 0;
 static SMBCCTX *smb_context = NULL;
 Ecore_List *auth_cache;
 
+Ecore_List* auth_command_list;
+
 int smb_next_fd;
 Ecore_Hash *smb_fd_hash;
 
-static void smb_evfs_dir_list(evfs_client * client, evfs_filereference* command,
+static void smb_evfs_dir_list(evfs_client * client, evfs_command* command,
                               Ecore_List ** directory_list);
 int smb_evfs_file_stat(evfs_command * command, struct stat *file_stat, int);
 int evfs_file_open(evfs_client * client, evfs_filereference * file);
@@ -65,12 +67,61 @@ int evfs_file_create(evfs_filereference * file);
 int smb_evfs_file_rename(evfs_client* client, evfs_command* command);
 int smb_evfs_file_mkdir(evfs_filereference * file);
 int evfs_file_remove(char *file);
+void
+evfs_auth_push(evfs_command* command);
 
 int
 evfs_client_disconnect(evfs_client * client)
 {
    /*printf("Received disconnect for client at evfs_fs_samba.c for client %d\n",
           client->id);*/
+}
+
+typedef struct {
+	evfs_command* command;
+	evfs_client* client;
+} smb_auth_struct;
+
+smb_auth_struct* evfs_smb_auth_top_get()
+{
+	smb_auth_struct* as = NULL;
+	
+	if (ecore_list_count(auth_command_list) >0) {		 
+		ecore_list_first_goto(auth_command_list);
+		as = ecore_list_current(auth_command_list);
+		printf("Request for top auth item (count %d): com: %p, cli: %p\n",ecore_list_count(auth_command_list), as->command, as->client);
+		return ecore_list_current(auth_command_list);
+	}
+
+	return NULL;
+}
+
+void evfs_smb_auth_push(evfs_command* command, evfs_client* client)
+{
+	smb_auth_struct* as = NEW(smb_auth_struct);
+	as->command = command;
+	as->client = client;
+	ecore_list_prepend(auth_command_list, as);
+
+	printf("Pushed comm: %p, cli: %p to stack\n", command, client);
+}
+
+void evfs_smb_auth_pop(evfs_command* command)
+{
+	smb_auth_struct* it;
+	ecore_list_first_goto(auth_command_list);
+
+	while ( (it=ecore_list_next(auth_command_list))) {
+		if (it->command = command) {
+			printf("Popped comm: %p, cli: %p from stack\n", it->command, it->client);	
+			
+			ecore_list_first_remove(auth_command_list);
+			free(it);			
+			return;
+		}
+	}
+	
+	printf("EVFS_SMB: error: Could not find command in auth list\n");
 }
 
 void
@@ -159,9 +210,19 @@ auth_fn(const char *server, const char *share,
      } else {
 	     /*Otherwise - fail - ask user -try again - TODO
 	      */
+	     /*strcpy(username, "anonymous");
+	     strcpy(password, "anonymous");*/
 
-	     strcpy(username, "anonymous");
-	     strcpy(password, "anonymous");
+	     /*Don't auth for ADMIN shares*/
+	     if (!strstr(share, "$")) {
+		     printf("Sending auth request to client...\n");
+		     smb_auth_struct* as = evfs_smb_auth_top_get();
+		     if (as) {
+			     evfs_auth_failure_event_create(as->client,as->command);
+		     } else {
+			     printf("No command to request auth for in stack.\n");
+		     }
+	     }
      }
 
 }
@@ -191,11 +252,15 @@ evfs_plugin_init()
 
    functions->evfs_file_mkdir = &smb_evfs_file_mkdir;
    functions->evfs_file_remove = &evfs_file_remove;
+   functions->evfs_auth_push = &evfs_auth_push;
+   
    printf("Samba stat func at '%p'\n", &smb_evfs_file_stat);
 
    auth_cache = ecore_list_new();
    smb_fd_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
    smb_next_fd = 0;
+
+   auth_command_list = ecore_list_new();
 
    smb_context = smbc_new_context();
    if (smb_context != NULL)
@@ -220,10 +285,20 @@ evfs_plugin_uri_get()
    return "smb";
 }
 
+void
+evfs_auth_push(evfs_command* command)
+{
+	evfs_auth_structure_add(auth_cache, command->file_command.files[0]->username, 
+			command->file_command.files[0]->password,
+			command->file_command.files[0]->path);
+}
+
 int 
 smb_evfs_file_rename(evfs_client* client, evfs_command* command)
 {
 	int err;
+
+	evfs_smb_auth_push(command, client);
 
 	/*TODO: Check that these files are on same filesystem.
 	 * This should really be a per-plugin function called from the top level*/
@@ -231,6 +306,7 @@ smb_evfs_file_rename(evfs_client* client, evfs_command* command)
 			smb_context,
 			command->file_command.files[1]->path);
 
+	evfs_smb_auth_pop(command);
 	return err;
 }
 
@@ -289,17 +365,20 @@ smb_evfs_file_stat(evfs_command * command, struct stat *file_stat, int number)
 }
 
 static void
-smb_evfs_dir_list(evfs_client * client, evfs_filereference * file,
+smb_evfs_dir_list(evfs_client * client, evfs_command * command,
                   /*Returns.. */
                   Ecore_List ** directory_list)
 {
 
    char dir_path[PATH_MAX];
-
    int size;
    SMBCFILE *dir = NULL;
    struct smbc_dirent *entry = NULL;
+   evfs_filereference* file = command->file_command.files[0];
+   
    Ecore_List *files = ecore_list_new();
+
+   evfs_smb_auth_push(command,client);
 
    /*Does this command have an attached authentication object? */
    if (file->username)
@@ -346,16 +425,26 @@ smb_evfs_dir_list(evfs_client * client, evfs_filereference * file,
                   else if (entry->smbc_type == SMBC_LINK)
                      reference->file_type = EVFS_FILE_LINK;
 
-                  size =
-                     (sizeof(char) *
-                      strlen(file->path)) +
-                     (sizeof(char) * strlen(entry->name)) + (sizeof(char) * 2);
-                  reference->path = malloc(size);
+		  /*If the entry is a server, rewrite to remove the workgroup,
+		   * if any*/
+                  if (entry->smbc_type != SMBC_SERVER) {
+			  size =
+	                     (sizeof(char) *
+	                      strlen(file->path)) +
+	                     (sizeof(char) * strlen(entry->name)) + (sizeof(char) * 2);
+	                  reference->path = malloc(size);
 
-                  snprintf(reference->path, size, "%s/%s",
-                           file->path, entry->name);
+	                  snprintf(reference->path, size, "%s/%s",
+	                           file->path, entry->name);
+		  } else {
+			  size = (sizeof(char) + (sizeof(char) * strlen(entry->name)) + (sizeof(char) * 2));
+			   reference->path = malloc(size);
 
-                  /*printf("File '%s' is of type '%d'\n", reference->path, reference->file_type); */
+	                  snprintf(reference->path, size, "/%s",
+	                           entry->name);					  
+		  }
+
+                  /*printf("File '%s' is of type '%d'\n", reference->path, reference->file_type);*/
 
                   reference->plugin_uri = strdup("smb");
                   ecore_list_append(files, reference);
@@ -374,6 +463,7 @@ smb_evfs_dir_list(evfs_client * client, evfs_filereference * file,
                strerror(errno));
      }
 
+    evfs_smb_auth_pop(command);
 }
 
 int

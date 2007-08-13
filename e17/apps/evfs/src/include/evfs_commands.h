@@ -44,4 +44,7 @@ evfs_client_metadata_group_file_add(evfs_connection * conn, evfs_filereference* 
 long 
 evfs_client_metadata_group_file_remove(evfs_connection * conn, evfs_filereference* ref, char* group);
 
+long 
+evfs_client_auth_send(evfs_connection* conn, evfs_filereference* ref, char* user, char* password);
+
 #endif

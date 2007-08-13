@@ -76,6 +76,13 @@ evfs_list_dir_event_create(evfs_client * client, evfs_command * command,
 void
 evfs_auth_failure_event_create(evfs_client * client, evfs_command * command)
 {
+	evfs_event *event = NEW(evfs_event);
+	event->type = EVFS_EV_AUTH_REQUIRED;
+
+	evfs_write_event(client,command,event);
+
+	/*Now destroy */
+	evfs_cleanup_event(event);
 }
 
 void

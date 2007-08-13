@@ -1,7 +1,7 @@
 
 /*
 
-Copyright (C) 2005-2006 Alexander Taylor <alex@logisticchaos.com>.
+Copyright (C) 2005-2007 Alexander Taylor <alex@logisticchaos.com>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -155,6 +155,11 @@ int evfs_handle_command(evfs_client * client, evfs_command * command)
 
      case EVFS_CMD_TRASH_RESTORE:
 	evfs_handle_trash_restore_command(client,command);
+	break;
+
+     case EVFS_CMD_AUTH_RESPONSE:
+	printf("Got auth response command..\n");
+	evfs_handle_auth_respond_command(client,command);
 	break;
 
      default:
@@ -473,6 +478,8 @@ void evfs_load_plugins()
 int
 main(int argc, char **argv)
 {
+   char* search;
+
    /*Init the ipc server */
    if (ecore_ipc_init() < 1)
       return (1);
@@ -508,8 +515,13 @@ main(int argc, char **argv)
    worker_client->server = server;
 
    if (argc > 0) {
-	   worker_client->id = atoi(argv[0]);
-	   printf("Created new worker, ID: %d\n", worker_client->id);
+	   if (strstr(argv[0] , "worker")) {
+		   worker_client->id = atoi(argv[1]);
+		   printf("Created new worker, ID: %d\n", worker_client->id);		   
+	   } else {		   
+		   worker_client->id = atoi(argv[0]);
+		   printf("Created new worker, ID: %d\n", worker_client->id);
+	   }
    }
 
     printf("Created new worker, ID: %d\n", worker_client->id);

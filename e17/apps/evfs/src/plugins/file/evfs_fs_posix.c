@@ -57,7 +57,7 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
 int evfs_file_write(evfs_filereference * file, char *bytes, long size);
 int evfs_file_create(evfs_filereference * file);
 int evfs_file_mkdir(evfs_filereference * file);
-void evfs_dir_list(evfs_client * client, evfs_filereference* ref,
+void evfs_dir_list(evfs_client * client, evfs_command* command,
                    Ecore_List ** directory_list);
 
         /*Internal functions */
@@ -507,7 +507,7 @@ evfs_file_create(evfs_filereference * file)
 }
 
 void
-evfs_dir_list(evfs_client * client, evfs_filereference* file,
+evfs_dir_list(evfs_client * client, evfs_command* command,
               Ecore_List ** directory_list)
 {
    struct dirent *de;
@@ -515,6 +515,8 @@ evfs_dir_list(evfs_client * client, evfs_filereference* file,
    DIR *dir;
    Ecore_List *files = ecore_list_new();
    char full_name[PATH_MAX];
+
+   evfs_filereference* file = command->file_command.files[0];
 
    dir = opendir(file->path);
    while ((de = readdir(dir)))

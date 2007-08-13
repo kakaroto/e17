@@ -149,6 +149,8 @@ typedef struct evfs_event_misc
 } evfs_event_misc;
 
 //Would be good if this could be a union -> but evfs_command changes size :( */
+/*Looking to create a solution to this soon, using EET*/
+/*Either that, or just send serveral structs through the pipe*/
 typedef struct evfs_event
 {
    evfs_eventtype type;

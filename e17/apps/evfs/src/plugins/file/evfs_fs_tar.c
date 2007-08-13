@@ -90,7 +90,7 @@ int evfs_file_seek(evfs_filereference * file, long offset, int whence);
 int evfs_file_read(evfs_filereference * file, char *bytes, long size);
 int evfs_file_write(evfs_filereference * file, char *bytes, long size);
 int evfs_file_create(evfs_filereference * file);
-void evfs_dir_list(evfs_client * client, evfs_filereference * file,
+void evfs_dir_list(evfs_client * client, evfs_command * command,
                    Ecore_List ** directory_list);
 
 struct tar_file
@@ -420,7 +420,7 @@ evfs_tar_load_tar(evfs_client * client, evfs_filereference * ref)
 }
 
 void
-evfs_dir_list(evfs_client * client, evfs_filereference *ref,
+evfs_dir_list(evfs_client * client, evfs_command* command,
 /*Returns..*/
               Ecore_List ** directory_list)
 {
@@ -430,6 +430,8 @@ evfs_dir_list(evfs_client * client, evfs_filereference *ref,
    Ecore_List *keys;
    Ecore_List *files = ecore_list_new();
    char *key;
+
+   evfs_filereference* ref = command->file_command.files[0];
 
    printf("Listing tar file dir: '%s'\n", ref->path);
 

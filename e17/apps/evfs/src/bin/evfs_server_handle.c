@@ -180,7 +180,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
                   evfs_filereference *file = NULL;
 
                   /*First, we need a directory list... */
-                  (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command->file_command.files[0],
+                  (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command,
                                                        &directory_list);
                   if (directory_list)
                     {
@@ -340,12 +340,12 @@ evfs_handle_dir_list_command(evfs_client * client, evfs_command * command)
                                                  files[0]->plugin_uri);
    if (plugin) {
         Ecore_List *directory_list = NULL;
-        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command->file_command.files[0], &directory_list);
+        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command, &directory_list);
         if (directory_list) {
              evfs_list_dir_event_create(client, command, directory_list);
         } else {
              printf
-                ("evfs_handle_dir_list_command: Recevied null from plugin for directory_list\n");
+                ("evfs_handle_dir_list_command: Received null from plugin for directory_list\n");
         }
   } else {
         printf("No plugin for '%s'\n",
@@ -388,6 +388,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 {
    evfs_plugin *plugin = NULL;
    evfs_plugin *dst_plugin = NULL;
+   evfs_command* tmp_command;
    int num_files;
    int c_file;
 
@@ -556,8 +557,15 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 		     evfs_operation_mkdir_task_add(EVFS_OPERATION(op), evfs_filereference_clone(command->file_command.files[c_file]), newdir_rewrite);
 	
 	             /*First, we need a directory list... */
-	             (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command->file_command.files[c_file],
+
+		     /*We have to make a temp command - list expects first file in command to be list directory*/
+		     tmp_command = evfs_file_command_single_build(command->file_command.files[c_file]); 
+		     
+	             (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, tmp_command,
 	                                                  &directory_list);
+
+		     evfs_cleanup_file_command(tmp_command);
+		     
 	             if (directory_list) {
         	          evfs_filereference *file = NULL;
 
@@ -739,5 +747,18 @@ void evfs_handle_trash_restore_command(evfs_client* client, evfs_command* comman
 		printf("Original location: %s -- file: %s\n", desk->path, path);
 
 		evfs_handle_file_copy(client, f_command, f_command, 1);
+	}
+}
+
+void evfs_handle_auth_respond_command(evfs_client* client, evfs_command* command)
+{
+	evfs_plugin* plugin = NULL;
+	int ret = 0;
+	
+	plugin =
+	evfs_get_plugin_for_uri(client->server,command->file_command.files[0]->plugin_uri);
+
+	if (plugin) {
+		(*EVFS_PLUGIN_FILE(plugin)->functions->evfs_auth_push)(command);		
 	}
 }

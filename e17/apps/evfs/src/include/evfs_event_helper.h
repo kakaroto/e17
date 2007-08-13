@@ -28,4 +28,8 @@ evfs_meta_data_event_create(evfs_client* client,evfs_command* command, Evas_List
 
 void evfs_group_list_event_create(evfs_client* client, evfs_command* command, Evas_List* group_list);
 
+void
+evfs_auth_failure_event_create(evfs_client * client, evfs_command * command);
+
+
 #endif
