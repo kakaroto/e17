@@ -48,11 +48,12 @@ int smbc_remove_unused_server(SMBCCTX * context, SMBCSRV * srv);
 static int smbLOCK = 0;
 static SMBCCTX *smb_context = NULL;
 Ecore_List *auth_cache;
-
 Ecore_List* auth_command_list;
-
 int smb_next_fd;
 Ecore_Hash *smb_fd_hash;
+
+evfs_auth_cache *
+evfs_auth_cache_get(Ecore_List * cache, char *path);
 
 static void smb_evfs_dir_list(evfs_client * client, evfs_command* command,
                               Ecore_List ** directory_list);
@@ -124,19 +125,32 @@ void evfs_smb_auth_pop(evfs_command* command)
 	printf("EVFS_SMB: error: Could not find command in auth list\n");
 }
 
-void
+evfs_auth_cache*
 evfs_auth_structure_add(Ecore_List * cache, char *username, char *password,
                         char *path)
 {
-   evfs_auth_cache *obj = NEW(evfs_auth_cache);
+   evfs_auth_cache *obj = NULL;
+   
+   
+   if ((obj = evfs_auth_cache_get(cache,path)) == NULL) {
+	   obj = NEW(evfs_auth_cache);
 
-   obj->username = strdup(username);
-   obj->password = strdup(password);
-   obj->path = strdup(path);
+	   obj->username = strdup(username);
+	   obj->password = strdup(password);
+	   obj->path = strdup(path);
+	
+	   printf("Added %s:***** to '%s' for auth\n", username, path);
 
-   printf("Added %s:%s to '%s' for auth\n", username, password, path);
+	   ecore_list_append(cache, obj);
+   } else {
+	   obj->username = strdup(username);
+	   obj->password = strdup(password);
+	   obj->attempts = 0;
 
-   ecore_list_append(cache, obj);
+	   printf("Updated auth for '%s': %s:*****\n",path,username);
+   }
+
+   return obj;
 }
 
 evfs_auth_cache *
@@ -204,15 +218,11 @@ auth_fn(const char *server, const char *share,
    obj = evfs_auth_cache_get(auth_cache, path);
    if (obj)
      {
-        strncpy(username, obj->username, unmaxlen);
-        strncpy(password, obj->password, pwmaxlen);
-        return;
-     } else {
-	     /*Otherwise - fail - ask user -try again - TODO
-	      */
-	     /*strcpy(username, "anonymous");
-	     strcpy(password, "anonymous");*/
-
+        if (obj->attempts == 0) {
+		strncpy(username, obj->username, unmaxlen);
+	        strncpy(password, obj->password, pwmaxlen);
+		obj->attempts++;
+	} else {
 	     /*Don't auth for ADMIN shares*/
 	     if (!strstr(share, "$")) {
 		     printf("Sending auth request to client...\n");
@@ -223,6 +233,13 @@ auth_fn(const char *server, const char *share,
 			     printf("No command to request auth for in stack.\n");
 		     }
 	     }
+	}
+        return;
+     } else {
+	     /*No object found, try with guest*/
+	     obj = evfs_auth_structure_add(auth_cache, "guest", "guest", path);
+	     strncpy(username, obj->username, unmaxlen);
+	     strncpy(password, obj->password, pwmaxlen);
      }
 
 }
@@ -263,6 +280,7 @@ evfs_plugin_init()
    auth_command_list = ecore_list_new();
 
    smb_context = smbc_new_context();
+   smbc_option_set(smb_context, "debug_stderr", (void *) 1);
    if (smb_context != NULL)
      {
         smb_context->debug = 0;
