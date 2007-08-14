@@ -123,6 +123,12 @@ typedef enum evfs_progress_type
    EVFS_PROGRESS_TYPE_DONE
 } evfs_progress_type;
 
+typedef enum EvfsEventReturnCode
+{
+  EVFS_RETURN_CODE_ERROR = 1,
+  EVFS_RETURN_CODE_SUCCESS = 0
+} EvfsEventReturnCode;
+
 typedef struct evfs_event_progress
 {
    char *file_from;
@@ -155,6 +161,7 @@ typedef struct evfs_event
 {
    evfs_eventtype type;
    evfs_command resp_command;
+   EvfsEventReturnCode retCode;
 
    evfs_event_file_list file_list;
    evfs_event_id_notify id_notify;

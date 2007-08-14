@@ -82,6 +82,7 @@ typedef struct {
 	evfs_command* command;
 	evfs_client* client;
 } smb_auth_struct;
+evfs_auth_cache* last_auth = NULL;
 
 smb_auth_struct* evfs_smb_auth_top_get()
 {
@@ -126,13 +127,19 @@ void evfs_smb_auth_pop(evfs_command* command)
 }
 
 evfs_auth_cache*
-evfs_auth_structure_add(Ecore_List * cache, char *username, char *password,
+evfs_auth_structure_add(char *username, char *password,
                         char *path)
 {
    evfs_auth_cache *obj = NULL;
-   
-   
-   if ((obj = evfs_auth_cache_get(cache,path)) == NULL) {
+
+  
+   /*Populate last auth structure*/
+   if (last_auth->username) free(last_auth->username);
+   if (last_auth->password) free(last_auth->password);
+   last_auth->username = strdup(username);
+   last_auth->password = strdup(password);
+     
+   if ((obj = evfs_auth_cache_get(auth_cache,path)) == NULL) {
 	   obj = NEW(evfs_auth_cache);
 
 	   obj->username = strdup(username);
@@ -141,8 +148,10 @@ evfs_auth_structure_add(Ecore_List * cache, char *username, char *password,
 	
 	   printf("Added %s:***** to '%s' for auth\n", username, path);
 
-	   ecore_list_append(cache, obj);
+	   ecore_list_append(auth_cache, obj);
    } else {
+	   free(obj->username);
+	   free(obj->password);
 	   obj->username = strdup(username);
 	   obj->password = strdup(password);
 	   obj->attempts = 0;
@@ -237,7 +246,7 @@ auth_fn(const char *server, const char *share,
         return;
      } else {
 	     /*No object found, try with guest*/
-	     obj = evfs_auth_structure_add(auth_cache, "guest", "guest", path);
+	     obj = evfs_auth_structure_add("guest", "guest", path);
 	     strncpy(username, obj->username, unmaxlen);
 	     strncpy(password, obj->password, pwmaxlen);
      }
@@ -278,6 +287,7 @@ evfs_plugin_init()
    smb_next_fd = 0;
 
    auth_command_list = ecore_list_new();
+   last_auth = NEW(evfs_auth_cache);
 
    smb_context = smbc_new_context();
    smbc_option_set(smb_context, "debug_stderr", (void *) 1);
@@ -306,7 +316,7 @@ evfs_plugin_uri_get()
 void
 evfs_auth_push(evfs_command* command)
 {
-	evfs_auth_structure_add(auth_cache, command->file_command.files[0]->username, 
+	evfs_auth_structure_add(command->file_command.files[0]->username, 
 			command->file_command.files[0]->password,
 			command->file_command.files[0]->path);
 }
@@ -343,8 +353,7 @@ smb_evfs_file_stat(evfs_command * command, struct stat *file_stat, int number)
    if (command->file_command.files[number]->username)
      {
         printf("We have a username, adding to hash..\n");
-        evfs_auth_structure_add(auth_cache,
-                                command->file_command.files[number]->username,
+        evfs_auth_structure_add( command->file_command.files[number]->username,
                                 command->file_command.files[number]->password,
                                 command->file_command.files[number]->path);
      }
@@ -402,8 +411,7 @@ smb_evfs_dir_list(evfs_client * client, evfs_command * command,
    if (file->username)
      {
         printf("We have a username, adding to hash..\n");
-        evfs_auth_structure_add(auth_cache,
-                                file->username,
+        evfs_auth_structure_add( file->username,
                                 file->password,
                                 file->path);
      }
@@ -495,7 +503,7 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
    if (file->username)
      {
         printf("We have a username, adding to hash..\n");
-        evfs_auth_structure_add(auth_cache, file->username, file->password,
+        evfs_auth_structure_add(file->username, file->password,
                                 file->path);
      }
 
@@ -621,7 +629,7 @@ smb_evfs_file_mkdir(evfs_filereference * file)
    if (file->username)
      {
         printf("We have a username, adding to hash..\n");
-        evfs_auth_structure_add(auth_cache, file->username, file->password,
+        evfs_auth_structure_add(file->username, file->password,
                                 file->path);
      }
 
