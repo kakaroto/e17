@@ -510,8 +510,9 @@ static void _gui_fm_ok_clicked_cb(Etk_Object *obj, void *data)
 
    dir = etk_filechooser_widget_current_folder_get(
 	   ETK_FILECHOOSER_WIDGET(gui->fm_chooser));
-   file = etk_filechooser_widget_selected_file_get(
-	   ETK_FILECHOOSER_WIDGET(gui->fm_chooser));
+   if (!(file = etk_filechooser_widget_selected_file_get(
+	   ETK_FILECHOOSER_WIDGET(gui->fm_chooser)))) return;
+
    gui->path = strdup(dir);
    gui->path = strcat(gui->path, "/");
    gui->path = strcat(gui->path, file);
