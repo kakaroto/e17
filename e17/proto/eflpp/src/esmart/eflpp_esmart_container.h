@@ -90,7 +90,7 @@ public:
 
 protected:
 
-virtual void addHandler() {};
+  virtual void addHandler() {};
   virtual void delHandler() {};
   virtual void moveHandler( Evas_Coord x, Evas_Coord y ) {};
   virtual void resizeHandler( Evas_Coord w, Evas_Coord h ) {};

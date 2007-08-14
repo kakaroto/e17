@@ -11,33 +11,46 @@ namespace efl {
 //===============================================================================================
 
 EvasEsmartContainer::EvasEsmartContainer( EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas, "esmart_container", name )
+    :EvasEsmart( canvas )
 {
+    o = esmart_container_new( canvas->obj() );
+    init( name ? name : "esmart_container" );
 }
 
 EvasEsmartContainer::EvasEsmartContainer( Direction dir, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas, "esmart_container", name )
+    :EvasEsmart( canvas )
 {
-  setDirection( dir );
+    o = esmart_container_new( canvas->obj() );
+    init( name ? name : "esmart_container" );
+  
+    setDirection( dir );
 }
 
 EvasEsmartContainer::EvasEsmartContainer( int x, int y, Direction dir, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas, "esmart_container", name )
+    :EvasEsmart( canvas )
 {
-  setDirection( dir );
-  move( x, y );
+    o = esmart_container_new( canvas->obj() );
+  
+    init( name ? name : "esmart_container" );
+  
+    setDirection( dir );
+    move( x, y );
 }
 
 EvasEsmartContainer::EvasEsmartContainer( int x, int y, int width, int height, Direction dir, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas, "esmart_container", name )
+    :EvasEsmart( canvas )
 {
-  setDirection( dir );
-  move( x, y );
-  resize( width, height );
+    o = esmart_container_new( canvas->obj() );
+    init( name ? name : "esmart_container" );
+  
+    setDirection( dir );
+    move( x, y );
+    resize( width, height );
 }
 
 EvasEsmartContainer::~EvasEsmartContainer()
 {
+    evas_object_del( o );
 }
 
 void EvasEsmartContainer::setDirection( Direction dir )

@@ -10,7 +10,7 @@ namespace efl {
 // EvasEsmart
 //===============================================================================================
 EvasEsmart::EvasEsmart(EvasCanvas *canvas, const char *type, const char *name )
-    :EvasObject( canvas, type, name )
+    :EvasObject( canvas )
 {
 	printf ("EvasEsmart constructor\n");
   //selfEsmartPointer = this;

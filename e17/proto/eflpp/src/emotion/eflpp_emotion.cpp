@@ -15,26 +15,37 @@ namespace efl {
 //===============================================================================================
 
 EvasEmotion::EvasEmotion( EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas, "emotion", name )
+    :EvasObject( canvas )
 {
+    o = emotion_object_add( canvas->obj() );
+    init( name ? name : "emotion" );
 }
 
 EvasEmotion::EvasEmotion( const char* filename, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas, "emotion", name ? name : filename )
+         :EvasObject( canvas )
 {
+    o = emotion_object_add( canvas->obj() );
+    init( name ? name : filename );
+  
     setFile( filename );
 }
 
 EvasEmotion::EvasEmotion( int x, int y, const char* filename, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas, "emotion", name ? name : filename )
+         :EvasObject( canvas )
 {
+    o = emotion_object_add( canvas->obj() );
+    init( name ? name : filename );
+  
     setFile( filename );
     move( x, y );
 }
 
 EvasEmotion::EvasEmotion( int x, int y, int width, int height, const char* filename, EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas, "emotion", name ? name : filename )
+    :EvasObject( canvas )
 {
+    o = emotion_object_add( canvas->obj() );
+    init( name ? name : filename );
+  
     setFile( filename );
     move( x, y );
     resize( width, height );

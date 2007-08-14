@@ -34,7 +34,7 @@ int main( int argc, const char **argv )
     buttontext->setLayer( 11 );
 
     EvasEsmartContainer* vbox = new EvasEsmartContainer( 50, 50, EvasEsmartContainer::Vertical, evas );
-    vbox->resize( 100, 100 );
+    vbox->resize( 150, 100 );
     vbox->setLayer( 20 );
     vbox->setAlignment( EvasEsmartContainer::Right );
     //vbox->setPadding( 10, 10, 10, 10 );

@@ -11,28 +11,34 @@ namespace efl {
 //===========================================================================//
 
 EvasEsmartTextEntry::EvasEsmartTextEntry( EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas, "esmart_textentry", name )
+    :EvasEsmart( canvas )
 {
+    o = esmart_text_entry_new( canvas->obj() );
+    init( name ? name : "esmart_textentry" );
 }
 
 EvasEsmartTextEntry::EvasEsmartTextEntry( int x, int y, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas, "esmart_textentry", name )
+    :EvasEsmart( canvas )
 {
-  move( x, y );
+    o = esmart_text_entry_new( canvas->obj() );
+    init( name ? name : "esmart_textentry" );
+
+    move( x, y );
 }
 
 EvasEsmartTextEntry::EvasEsmartTextEntry( int x, int y, int width, int height, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas, "esmart_textentry", name )
+    :EvasEsmart( canvas )
 {
-  //esmart_text_entry_max_chars_set(o, 32);
-  //esmart_text_entry_is_password_set(o, true);
+    o = esmart_text_entry_new( canvas->obj() );
+    init( name ? name : "esmart_textentry" );
 
-  move( x, y );
-  resize( width, height );
+    move( x, y );
+    resize( width, height );
 }
 
 EvasEsmartTextEntry::~EvasEsmartTextEntry()
 {
+    evas_object_del( o );
 }
 
 void EvasEsmartTextEntry::setText (const char *str)

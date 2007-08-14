@@ -112,7 +112,7 @@ void EwlEmbed::setFocus( bool b )
 //==========================================================================//
 
 EvasEwl::EvasEwl( EwlEmbed* ewlobj, EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas, "<attach>", name )
+    :EvasObject( canvas )
 
 {
 #warning not sure whether this belongs here

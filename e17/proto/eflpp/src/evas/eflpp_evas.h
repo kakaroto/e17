@@ -103,7 +103,6 @@ class EvasObject
   protected:
     // construction/destruction
     EvasObject( EvasCanvas* canvas,
-            const char* type = "unknown",
             const char* name = "(null)" );
     virtual ~EvasObject();
 
@@ -111,7 +110,6 @@ class EvasObject
     bool operator==(const EvasObject& rhs) { return rhs.o == o; };
 
     /* don't use these */
-    const char* type() const { return _type; };
     Evas_Object* obj() const { return o; };
     EvasCanvas* canvas() const { return _canvas; }; // FIXME: Rename to parent() ?
 
@@ -181,9 +179,10 @@ class EvasObject
     static void dispatcher( void *data, Evas *evas, Evas_Object *evas_object, void *event_info);
 
   protected:
-    const char* _type;
     Evas_Object* o;
     EvasCanvas* _canvas;
+  
+    void init (const char *name);
 
   private:
     EvasObject(); // disable default constructor
@@ -364,7 +363,7 @@ inline ostream& operator<<( ostream& s, const EvasCanvas& canvas )
 }
 inline ostream& operator<<( ostream& s, const EvasObject& obj )
 {
-    return s << "<" << obj.type() << " Object '" << obj.name() << "' @ " << obj.geometry() << ">";
+    return s << "<" << " Object '" << obj.name() << "' @ " << obj.geometry() << ">";
 }
 
 }

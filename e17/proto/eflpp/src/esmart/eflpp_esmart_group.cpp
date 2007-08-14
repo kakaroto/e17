@@ -12,28 +12,34 @@ namespace efl {
 //===========================================================================//
 
 EvasEsmartGroup::EvasEsmartGroup( EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas, "<attach>", name )
+    :EvasEsmart( canvas )
 {
-  o = newEsmart( name );
+    o = newEsmart( name );
+    init( name ? name : "esmart_group" );
 }
 
 EvasEsmartGroup::EvasEsmartGroup( int x, int y, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas, "<attach>", name )
+    :EvasEsmart( canvas )
 {
-  o = newEsmart( name );
-  move( x, y );
+    o = newEsmart( name );
+    init( name ? name : "esmart_group" );
+
+    move( x, y );
 }
 
 EvasEsmartGroup::EvasEsmartGroup( int x, int y, int width, int height, EvasCanvas* canvas, const char* name )
-    :EvasEsmart( canvas, "<attach>", name )
+    :EvasEsmart( canvas )
 {
-  o = newEsmart( name );
-  move( x, y );
-  resize( width, height );
+    o = newEsmart( name );
+    init( name ? name : "esmart_group" );
+  
+    move( x, y );
+    resize( width, height );
 }
 
 EvasEsmartGroup::~EvasEsmartGroup()
 {
+		evas_object_del( o );
 }
 
 void EvasEsmartGroup::add (EvasObject *object)

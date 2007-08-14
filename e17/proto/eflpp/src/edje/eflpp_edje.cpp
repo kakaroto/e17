@@ -13,8 +13,11 @@ namespace efl {
 // EvasEdje
 //===============================================================================================
 EvasEdje::EvasEdje( EvasCanvas* canvas, const char* name )
-    :EvasObject( canvas, "edje", name )
+    :EvasObject( canvas )
 {
+    o = edje_object_add( canvas->obj() );
+    init( name ? name : "edje" );
+  
 #ifdef CWDEBUG
     edje_object_message_handler_set( o, &_edje_message_handler_callback, 0 );
     edje_object_signal_callback_add( o, "*", "*", &_edje_signal_handler_callback, 0 );
@@ -22,8 +25,11 @@ EvasEdje::EvasEdje( EvasCanvas* canvas, const char* name )
 }
 
 EvasEdje::EvasEdje( const char* filename, const char* groupname, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas, "edje", name ? name : groupname )
+         :EvasObject( canvas  )
 {
+    o = edje_object_add( canvas->obj() );
+    init( name ? name : groupname );
+  
 #ifdef CWDEBUG
     edje_object_message_handler_set( o, &_edje_message_handler_callback, 0 );
     edje_object_signal_callback_add( o, "*", "*", &_edje_signal_handler_callback, 0 );
@@ -32,8 +38,11 @@ EvasEdje::EvasEdje( const char* filename, const char* groupname, EvasCanvas* can
 }
 
 EvasEdje::EvasEdje( int x, int y, const char* filename, const char* groupname, EvasCanvas* canvas, const char* name )
-         :EvasObject( canvas, "edje", name ? name : groupname )
+         :EvasObject( canvas )
 {
+    o = edje_object_add( canvas->obj() );
+    init( name ? name : groupname );
+  
 #ifdef CWDEBUG
     edje_object_message_handler_set( o, &_edje_message_handler_callback, 0 );
     edje_object_signal_callback_add( o, "*", "*", &_edje_signal_handler_callback, 0 );
