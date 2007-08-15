@@ -100,7 +100,7 @@ class SmartObject(c_evas.SmartObject):
 
 class Rectangle(c_evas.Rectangle):
     def __init__(self, canvas, size=None, pos=None, geometry=None, color=None,
-                name=None):
+                 name=None):
         c_evas.Rectangle.__init__(self, canvas)
         self._new_obj()
         self._set_common_params(size=size, pos=pos, geometry=geometry,
@@ -109,7 +109,7 @@ class Rectangle(c_evas.Rectangle):
 
 class Line(c_evas.Line):
     def __init__(self, canvas, start=None, end=None, size=None, pos=None,
-                geometry=None, color=None, name=None):
+                 geometry=None, color=None, name=None):
         c_evas.Line.__init__(self, canvas)
         self._new_obj()
         self._set_common_params(start=start, end=end, size=size, pos=pos,
@@ -119,8 +119,6 @@ class Line(c_evas.Line):
 class Image(c_evas.Image):
     def __init__(self, canvas, file=None, size=None, pos=None, geometry=None,
                  color=None, name=None):
-        if not isinstance(canvas, c_evas.Canvas):
-            raise TypeError("First argument must be evas.Canvas")
         c_evas.Image.__init__(self, canvas)
         self._new_obj()
         self._set_common_params(file=file, size=size, pos=pos,
@@ -129,7 +127,7 @@ class Image(c_evas.Image):
 
 class Gradient(c_evas.Gradient):
     def __init__(self, canvas, size=None, pos=None, geometry=None, color=None,
-                name=None):
+                 name=None):
         c_evas.Gradient.__init__(self, canvas)
         self._new_obj()
         self._set_common_params(size=size, pos=pos, geometry=geometry,
