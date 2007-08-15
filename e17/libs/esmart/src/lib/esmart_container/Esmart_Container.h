@@ -94,7 +94,13 @@ EAPI int  esmart_container_move_button_get(Evas_Object *container);
 
 
 /* element adding/removing */
+
+/*! \brief Append a new object to the container.
+ *  @param container The container object.
+ *  @param element The element to add into the container.
+ */
 EAPI void esmart_container_element_append(Evas_Object *container, Evas_Object *element);
+
 EAPI void esmart_container_element_prepend(Evas_Object *container, Evas_Object *element);
 EAPI void esmart_container_element_append_relative(Evas_Object *container,
                                                    Evas_Object *element,
@@ -116,7 +122,13 @@ EAPI void esmart_container_scroll(Evas_Object *container, int val);
 
 EAPI void   esmart_container_scroll_offset_set(Evas_Object *container, int val);
 EAPI int    esmart_container_scroll_offset_get(Evas_Object *container);
+
+/*! \brief Scroll container elements to a percent position.
+ *  @param container Object
+ *  @param percent The percent value 0.0 to 1.0
+ */
 EAPI void   esmart_container_scroll_percent_set(Evas_Object *container, double percent);
+
 EAPI double esmart_container_scroll_percent_get(Evas_Object *container);
 EAPI void   esmart_container_scroll_to(Evas_Object *container, Evas_Object *element);
 
