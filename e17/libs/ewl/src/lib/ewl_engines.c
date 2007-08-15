@@ -125,7 +125,7 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
 	DCHECK_PARAM_PTR_RET("name", name, NULL);
 
 	/* see if we've created this engine already */
-	engine = ecore_hash_get(ewl_engines, (char *)name);
+	engine = ecore_hash_get(ewl_engines, name);
 	if (engine)
 		DRETURN_PTR(engine, DLEVEL_STABLE);
 
