@@ -52,21 +52,36 @@ AC_SUBST(EDJE_CFLAGS)
 
 
 dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/share'; then
+if test "x${datarootdir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then
     AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
   else
     AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datarootdir}/${PACKAGE}")
 fi
 
 
 
 
-evas_cflags=`evas-config --cflags`
-evas_libs=`evas-config --libs`
+dnl evas_cflags=`evas-config --cflags`
+dnl evas_libs=`evas-config --libs`
+
+
+have_evas=no
+PKG_CHECK_MODULES(EVAS, evas >= 0.9.9,
+[
+	have_evas=yes
+],
+[
+	AC_MSG_ERROR([Fatal Error: please install latest evas package.])
+])
+AM_CONDITIONAL(HAVE_EVAS, test "$have_evas" = yes)
+evas_cflags=$EVAS_CFLAGS
+evas_libs=$EVAS_LIBS
+AC_SUBST(EVAS_LIBS)
+AC_SUBST(EVAS_CFLAGS)
 
 
 if test "x${prefix}" = 'xNONE'; then

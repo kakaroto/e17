@@ -607,6 +607,7 @@ static void gevas_init(GtkgEvas * ev)
 /*     printf("gevas_init() 1\n"); */
 
     evas_init();
+    evas_common_image_init();
     
 	ev->current_idle = 0;
     ev->evas_render_call_count = 0;

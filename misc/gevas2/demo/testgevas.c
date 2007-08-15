@@ -1039,7 +1039,7 @@ int main(int argc, char *argv[])
 
     fprintf(stderr,"main()\n");
 
-	gtk_init(&argc, &argv);
+    gtk_init(&argc, &argv);
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 

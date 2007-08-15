@@ -624,9 +624,9 @@ static void gevasobj_destroy(GtkObject * object)
 	ev->ev_handlers = NULL;
 
 
-	/* Chain up */
-	if (GTK_OBJECT_GET_CLASS(parent_class)->destroy)
-		(*GTK_OBJECT_GET_CLASS(parent_class)->destroy) (object);
+/* 	/\* Chain up *\/ */
+/* 	if (GTK_OBJECT_GET_CLASS(parent_class)->destroy) */
+/* 		(*GTK_OBJECT_GET_CLASS(parent_class)->destroy) (object); */
 }
 
 static void gevasobj_finalize(GObject * object)
