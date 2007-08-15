@@ -62,7 +62,7 @@ bool EvasEdje::setFile( const char* filename, const char* groupname )
     return ( errorcode == 0 );
 }
 
-Size EvasEdje::getMinimalSize() const
+Size EvasEdje::minimalSize() const
 {
     int w, h;
     edje_object_size_min_get( o, &w, &h );
@@ -70,7 +70,7 @@ Size EvasEdje::getMinimalSize() const
     return Size( w, h );
 }
 
-Size EvasEdje::getMaximumSize() const
+Size EvasEdje::maximumSize() const
 {
     int w, h;
     edje_object_size_max_get( o, &w, &h );

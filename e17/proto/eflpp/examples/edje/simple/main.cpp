@@ -26,7 +26,7 @@ int main( int argc, const char **argv )
     EvasEdje* edje = new EvasEdje( 0, 0, PACKAGE_DATA_DIR "/edjes/simple.edj", "test", evas );
 
     edje->resize( WIDTH, HEIGHT );
-    Size s = edje->getMinimalSize();
+    Size s = edje->minimalSize();
     edje->setLayer( 0 );
     edje->show();
 

@@ -47,7 +47,7 @@ int main( int argc, const char **argv )
 
     EvasEdje* edje = new EvasEdje( 0, 0, PACKAGE_DATA_DIR "/edjes/angstrom-bootmanager.edj", "background", evas );
     edje->resize( WIDTH, HEIGHT );
-    Size s = edje->getMinimalSize();
+    Size s = edje->minimalSize();
     edje->setLayer( 1 );
     edje->show();
 
