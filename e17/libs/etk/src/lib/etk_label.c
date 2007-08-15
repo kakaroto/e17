@@ -241,28 +241,24 @@ static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Label *label;
    Evas_Object *theme_object;
-   Evas_Object *o;
    Etk_Size requested_size;
 
    if (!(label = ETK_LABEL(widget)))
       return;
 
-   theme_object = ETK_WIDGET(widget)->theme_object;
-   o = edje_object_part_object_get(theme_object, "etk.text.label");
-   if (o)
+   if ((theme_object = widget->theme_object))
    {
-       int x = 0;
-       int y = 0;
-
-       etk_widget_size_request(widget, &requested_size);
-       if (requested_size.w < geometry.w)
-          x = (geometry.w - requested_size.w) * label->xalign;
-
-       if (requested_size.h < geometry.h)
-          y = (geometry.h - requested_size.h) * label->yalign;
-
-       evas_object_move(o, geometry.x + x, geometry.y + y);
-       evas_object_resize(o, geometry.w, geometry.h);
+      int x = 0;
+      int y = 0;
+      
+      etk_widget_size_request(widget, &requested_size);
+      if (requested_size.w < geometry.w)
+         x = (geometry.w - requested_size.w) * label->xalign;
+      if (requested_size.h < geometry.h)
+         y = (geometry.h - requested_size.h) * label->yalign;
+      
+      evas_object_move(theme_object, geometry.x + x, geometry.y + y);
+      evas_object_resize(theme_object, ETK_MIN(geometry.w, requested_size.w), ETK_MIN(geometry.h, requested_size.h));
    }
 }
 
