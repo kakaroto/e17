@@ -39,6 +39,30 @@ collections {
                }
             }
          }
+         part {
+            name: "label";
+            type: TEXT;
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+            }
+         }
+         programs {
+            program {
+               name: "emit_back_message";
+               signal: "emit,message";
+               script {
+                  send_message(MSG_INT, 1, 1);
+               }
+            }
+         }
       }
    }
 }

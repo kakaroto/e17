@@ -40,6 +40,19 @@ cdef void signal_cb(void *data, evas.c_evas.Evas_Object *obj,
             traceback.print_exc()
 
 
+cdef _register_decorated_callbacks(obj):
+    for attr_name in dir(obj):
+        attr_value = getattr(obj, attr_name)
+        if callable(attr_value):
+            if hasattr(attr_value, "edje_signal_callback"):
+                emission, source = getattr(attr_value, "edje_signal_callback")
+                obj.signal_callback_add(emission, source, attr_value)
+            elif hasattr(attr_value, "edje_text_change_callback"):
+                obj.text_change_cb_set(attr_value)
+            elif hasattr(attr_value, "edje_message_handler"):
+                obj.message_handler_set(attr_value)
+
+
 class EdjeLoadError(Exception):
     def __init__(self, int code):
         if code == EDJE_LOAD_ERROR_NONE:
@@ -70,6 +83,7 @@ cdef class Edje(evas.c_evas.Object):
     def _new_obj(self):
         if self.obj == NULL:
             self._set_obj(edje_object_add(self._evas.obj))
+            _register_decorated_callbacks(self)
 
     def _set_common_params(self, file=None, group=None, size=None, pos=None,
                            geometry=None, color=None, name=None):

@@ -9,7 +9,9 @@ WM_INFO = ("Virtual Keyboard", "vkbd")
 import os
 import sys
 import evas
+import evas.decorators
 import edje
+import edje.decorators
 import ecore
 import ecore.evas
 
@@ -43,24 +45,7 @@ class VirtualKeyboard(edje.Edje):
         self.pressed_keys = {}
         self.is_shift_down = False
         self.is_mouse_down = False
-        self._setup_events()
         self.press_shift()
-
-    def _setup_events(self):
-        self.signal_callback_add("key_down", "*", self.on_edje_signal_key_down)
-        self.signal_callback_add("mouse_over_key", "*",
-                                 self.on_edje_signal_mouse_over_key)
-        self.signal_callback_add("mouse_out_key", "*",
-                                 self.on_edje_signal_mouse_out_key)
-        self.signal_callback_add("mouse,down,1", "*",
-                                 self.on_edje_signal_mouse_down_key)
-        self.signal_callback_add("mouse,down,1,*", "*",
-                                 self.on_edje_signal_mouse_down_key)
-        self.signal_callback_add("mouse,up,1", "*",
-                                 self.on_edje_signal_mouse_up_key)
-        self.on_mouse_down_add(self.on_mouse_down)
-        self.on_mouse_up_add(self.on_mouse_up)
-        self.on_key_down_add(self.on_key_down)
 
     def press_shift(self):
         self.obj["alpha"].signal_emit("press_shift", "")
@@ -76,7 +61,7 @@ class VirtualKeyboard(edje.Edje):
         else:
             self.press_shift()
 
-    @staticmethod
+    @edje.decorators.signal_callback("key_down", "*")
     def on_edje_signal_key_down(self, emission, source):
         if ':' in source:
             key = source.split(":", 1)[1]
@@ -111,7 +96,7 @@ class VirtualKeyboard(edje.Edje):
             self.text += key
             self.part_text_set("field", "".join(self.text))
 
-    @staticmethod
+    @edje.decorators.signal_callback("mouse_over_key", "*")
     def on_edje_signal_mouse_over_key(self, emission, source):
         if not self.is_mouse_down:
             return
@@ -129,7 +114,7 @@ class VirtualKeyboard(edje.Edje):
         self.pressed_keys[subpart] = subpart
         o.signal_emit("press_key", subpart)
 
-    @staticmethod
+    @edje.decorators.signal_callback("mouse_out_key", "*")
     def on_edje_signal_mouse_out_key(self, emission, source):
         if not self.is_mouse_down:
             return
@@ -142,7 +127,8 @@ class VirtualKeyboard(edje.Edje):
             del self.pressed_keys[subpart]
             o.signal_emit("release_key", subpart)
 
-    @staticmethod
+
+    @edje.decorators.signal_callback("mouse,down,1", "*")
     def on_edje_signal_mouse_down_key(self, emission, source):
         if ':' not in source:
             return
@@ -159,7 +145,11 @@ class VirtualKeyboard(edje.Edje):
         self.pressed_keys[subpart] = subpart
         o.signal_emit("press_key", subpart)
 
-    @staticmethod
+    @edje.decorators.signal_callback("mouse,down,1,*", "*")
+    def on_edje_signal_mouse_down_multiple_key(self, emission, source):
+        self.on_edje_signal_mouse_down_key(emission, source)
+
+    @edje.decorators.signal_callback("mouse,up,1", "*")
     def on_edje_signal_mouse_up_key(self, emission, source):
         if ':' not in source:
             return
@@ -171,19 +161,19 @@ class VirtualKeyboard(edje.Edje):
             o.signal_emit("release_key", subpart)
             o.signal_emit("activated_key", subpart)
 
-    @staticmethod
+    @evas.decorators.mouse_down_callback
     def on_mouse_down(self, event):
         if event.button != 1:
             return
         self.is_mouse_down = True
 
-    @staticmethod
+    @evas.decorators.mouse_up_callback
     def on_mouse_up(self, event):
         if event.button != 1:
             return
         self.is_mouse_down = False
 
-    @staticmethod
+    @evas.decorators.key_down_callback
     def on_key_down(self, event):
         k = event.keyname.lower()
         if k == "return":
