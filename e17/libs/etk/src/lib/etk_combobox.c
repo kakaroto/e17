@@ -22,6 +22,7 @@
 
 enum Etk_Combobox_Signal_Id
 {
+   ETK_COMBOBOX_ITEM_ACTIVATED_SIGNAL,
    ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL,
    ETK_COMBOBOX_NUM_SIGNALS
 };
@@ -89,6 +90,8 @@ Etk_Type *etk_combobox_type_get(void)
       combobox_type = etk_type_new("Etk_Combobox", ETK_WIDGET_TYPE, sizeof(Etk_Combobox),
             ETK_CONSTRUCTOR(_etk_combobox_constructor), ETK_DESTRUCTOR(_etk_combobox_destructor));
       
+      _etk_combobox_signals[ETK_COMBOBOX_ITEM_ACTIVATED_SIGNAL] = etk_signal_new("item-activated",
+            combobox_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_combobox_signals[ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL] = etk_signal_new("active-item-changed",
             combobox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       
@@ -434,6 +437,73 @@ void etk_combobox_clear(Etk_Combobox *combobox)
 }
 
 /**
+ * @brief Sets the values of the cells of the combobox
+ * @param combobox a combobox
+ * @param ... the different widgets to attach to the columns of the item:
+ * there must be as many arguments as the number of columns in the combobox, one for each column. @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget *"
+ */
+void etk_combobox_fields_set(Etk_Combobox *combobox, ...)
+{
+   va_list args;
+
+   if (!combobox)
+      return;
+
+   va_start(args, combobox);
+   etk_combobox_fields_set_valist(combobox, args);
+   va_end(args);
+}
+
+/**
+ * @brief Sets the values of the cells of the combobox
+ * @param combobox a combobox
+ * @param args the different widgets to attach to the columns of the item:
+ * there must be as many arguments as the number of columns in the combobox, one for each column. @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget *"
+ */
+void etk_combobox_fields_set_valist(Etk_Combobox *combobox, va_list args)
+{
+   int i;
+   Etk_Widget *widget;
+
+   if (!combobox)
+      return;
+
+   if (!combobox->built)
+   {
+      ETK_WARNING("Unable to set the specified fields. The combobox is not built yet.");
+      return;
+   }
+
+   for (i = 0; i < combobox->num_cols; i++)
+   {
+      switch (combobox->cols[i]->type)
+      {
+         case ETK_COMBOBOX_LABEL:
+            etk_label_set(ETK_LABEL(combobox->active_item_children[i]), va_arg(args, char *));
+            break;
+         case ETK_COMBOBOX_IMAGE:
+            widget = ETK_WIDGET(va_arg(args, Etk_Widget *));
+            if (widget)
+               etk_image_copy(ETK_IMAGE(combobox->active_item_children[i]), ETK_IMAGE(widget));
+            else
+               etk_image_set_from_file(ETK_IMAGE(combobox->active_item_children[i]), NULL, NULL);
+            break;
+         case ETK_COMBOBOX_OTHER:
+            widget = va_arg(args, Etk_Widget *);
+            break;
+         default:
+            break;
+      }
+   }
+}
+
+/**
  * @brief Sets the values of the cells of the combobox item
  * @param item a combobox item
  * @param ... the different widgets to attach to the columns of the item:
@@ -734,7 +804,10 @@ void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *ite
             break;
       }
    }
-   
+
+   if (item)
+      etk_signal_emit(_etk_combobox_signals[ETK_COMBOBOX_ITEM_ACTIVATED_SIGNAL], ETK_OBJECT(combobox), NULL, item);
+
    if (combobox->active_item != item)
    {
       combobox->active_item = item;
@@ -1506,6 +1579,12 @@ static void _etk_combobox_widgets_emit_theme_signal(Etk_Combobox *combobox, Etk_
  *     - Etk_Combobox
  *
  * \par Signals:
+ * @signal_name "item-activated": Emitted when an item is activated
+ * @signal_cb void callback(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
+ * @signal_arg combobox: the combobox whose item has been activated
+ * @signal_arg item: the activated item
+ * @signal_data
+ * \par
  * @signal_name "active-item-changed": Emitted when the active item is changed (when the user selects another items)
  * @signal_cb void callback(Etk_Combobox *combobox, void *data)
  * @signal_arg combobox: the combobox whose active item has been changed
