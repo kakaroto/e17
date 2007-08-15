@@ -8,6 +8,14 @@ cdef void obj_free_cb(void *data, Evas *e, Evas_Object *obj, void *event_info):
     python.Py_DECREF(self)
 
 
+cdef _register_decorated_callbacks(obj):
+    for attr_name in dir(obj):
+        attr_value = getattr(obj, attr_name)
+        if callable(attr_value) and hasattr(attr_value, "evas_event_callback"):
+            t = getattr(attr_value, "evas_event_callback")
+            obj.event_callback_add(t, attr_value)
+
+
 cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def __new__(self, *a, **ka):
         self.obj = NULL
@@ -41,6 +49,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         evas_object_data_set(obj, "python-evas", <void *>self)
         evas_object_event_callback_add(obj, EVAS_CALLBACK_FREE, obj_free_cb,
                                        <void *>self)
+        _register_decorated_callbacks(self)
         return 1
 
     def __dealloc__(self):
