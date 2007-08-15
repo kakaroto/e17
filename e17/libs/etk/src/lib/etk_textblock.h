@@ -34,7 +34,7 @@ typedef enum
    ETK_TEXTBLOCK_NODE_ROOT,        /**< The node is the root node */
    ETK_TEXTBLOCK_NODE_PARAGRAPH,   /**< The node is a paragraph node */
    ETK_TEXTBLOCK_NODE_LINE,        /**< The node is a line node */
-   ETK_TEXTBLOCK_NODE_NORMAL       /**< The node is a normal normal (containing some text or a format) */
+   ETK_TEXTBLOCK_NODE_NORMAL       /**< The node is a normal node (containing some text or a format) */
 } Etk_Textblock_Node_Type;
 
 /** @brief The different types of tag for a node */

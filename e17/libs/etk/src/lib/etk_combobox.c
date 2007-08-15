@@ -964,7 +964,7 @@ static void _etk_combobox_constructor(Etk_Combobox *combobox)
    combobox->active_item = NULL;
    combobox->active_item_widget = NULL;
    combobox->active_item_children = NULL;
-   combobox->items_height = DEFAULT_ITEM_HEIGHT;
+   combobox->items_height = -1;
    combobox->built = ETK_FALSE;
    
    ETK_WIDGET(combobox)->size_request = _etk_combobox_size_request;
@@ -1252,6 +1252,8 @@ static void _etk_combobox_realized_cb(Etk_Object *object, void *data)
       combobox->popup_offset_y = 0;
    if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "popup_extra_width", "%d", &combobox->popup_extra_w) != 1)
       combobox->popup_extra_w = 0;
+   if (combobox->items_height == -1 && etk_widget_theme_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->items_height) != 1)
+      combobox->items_height = DEFAULT_ITEM_HEIGHT;
 }
 
 /* Called when a child-label of the combobox's button is realized */

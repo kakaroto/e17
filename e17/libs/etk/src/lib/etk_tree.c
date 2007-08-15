@@ -1881,7 +1881,7 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    tree->purge_pool = NULL;
    tree->row_objects = NULL;
    
-   tree->rows_height = DEFAULT_ROW_HEIGHT;
+   tree->rows_height = -1;
    tree->scroll_x = 0;
    tree->scroll_y = 0;
    
@@ -2774,6 +2774,19 @@ static void _etk_tree_realized_cb(Etk_Object *object, void *data)
    {
       evas_color_argb_premul(tree->separator_color.a, &tree->separator_color.r,
             &tree->separator_color.g, &tree->separator_color.b);
+   }
+   /* if rows_height is not set */
+   if (tree->rows_height == -1)
+   {
+      /* try to get the value from theme or fallback to default value */
+      if (etk_widget_theme_data_get(ETK_WIDGET(tree), "row_height", "%d", &tree->rows_height) != 1)
+         tree->rows_height = DEFAULT_ROW_HEIGHT;
+      else
+      {
+         Etk_Range *vscrollbar;
+         vscrollbar = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(tree->scrolled_view));
+         etk_range_increments_set(vscrollbar, tree->rows_height, 5 * tree->rows_height);
+      }
    }
    
    /* Reparent the column headers if the "tree-contains-headers" setting has changed */
