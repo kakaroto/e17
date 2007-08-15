@@ -119,7 +119,6 @@ guint gevastwin_get_type(void)
 static void gevastwin_class_init(GtkgEvasTwinClass * klass)
 {
 	GtkObjectClass *object_class;
-	GtkgEvasObjClass *gobj = (GtkgEvasObjClass *) klass;
 
 	object_class = (GtkObjectClass *) klass;
 	parent_class = gtk_type_class(gtk_object_get_type());
@@ -258,13 +257,13 @@ void _gevastwin_move_xxx(GtkgEvasObj * object, double x, double y)
 /*                ev->mainobj, ev->auxobj, object ); */
         
 		if (ev->mainobj == object) {
-            printf("gevastwin_move_xxx(MO) extra object. main:%lp aux:%lp obj:%lp\n", 
+            printf("gevastwin_move_xxx(MO) extra object. main:%p aux:%p obj:%p\n", 
                    ev->mainobj, ev->auxobj, object ); 
 			ev->main_obj_move(object, x, y);
 			_gevastwin_sync_obj(ev, ev->auxobj);
 		}
 		else if (ev->auxobj == object) {
-            printf("gevastwin_move_xxx(AO) extra object. main:%lp aux:%lp obj:%lp\n", 
+            printf("gevastwin_move_xxx(AO) extra object. main:%p aux:%p obj:%p\n", 
                    ev->mainobj, ev->auxobj, object ); 
 			ev->aux_obj_move(object, x, y);
 			_gevastwin_sync_obj(ev, ev->mainobj);
@@ -432,7 +431,6 @@ void gevastwin_add_extra_objects( GtkgEvasTwin* ev, GtkgEvasObjCollection* v )
 static void gevastwin_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
 	GtkgEvasTwin *ev;
-	gchar *gstr;
 
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASTWIN(object));

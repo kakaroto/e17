@@ -402,20 +402,11 @@ gevas_drag_data_get (GtkWidget *widget,
 					 guint info,
 					 guint32 time)
 {
-/*	char  *image_file_name, *image_file_uri;*/
-/*	gboolean is_reset;*/
-    GtkgEvas* gevas = GTK_GEVAS(widget);
+	GtkgEvas* gevas = GTK_GEVAS(widget);
 
-	
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (context != NULL);
 
-
-
-/*    printf("gevas_drag_data_get() \n");*/
-    
-    
-/*    
 	switch (info) {
 	case PROPERTY_TYPE:
 		/* formulate the drag data based on the drag type.  Eventually, we will*/
@@ -477,8 +468,6 @@ gevas_drag_data_get (GtkWidget *widget,
 	default:
 		g_assert_not_reached ();
 	}
-*/
-    
 }
 #endif
 
@@ -1003,11 +992,11 @@ static void gevas_realize(GtkWidget * widget)
 	gdk_vis  = gdkx_visual_get(XVisualIDFromVisual(vis));
 	gdk_cmap = (GdkColormap *)gdkx_colormap_get(cmap);
 
-    attributes.visual   = gdk_vis;	/*gtk_widget_get_visual (widget); */
+	attributes.visual   = gdk_vis;	/*gtk_widget_get_visual (widget); */
 	attributes.colormap = gdk_cmap;	/*gtk_widget_get_colormap (widget); */
 #else
-    attributes.visual      = gtk_widget_get_visual (widget);
-    attributes.colormap    = gtk_widget_get_colormap (widget);
+	attributes.visual      = gtk_widget_get_visual (widget);
+	attributes.colormap    = gtk_widget_get_colormap (widget);
 #endif
   
 	/* Evas window */
@@ -1362,13 +1351,13 @@ void gevas_get_viewport_area( GtkgEvas* gevas, gint* x, gint* y, gint* w, gint* 
     
     if( gevas->scrolledwindow )
     {
-        if( a = gtk_scrolled_window_get_hadjustment( swin ))
+        if( (a = gtk_scrolled_window_get_hadjustment( swin )))
         {
             *x = a->value;
             *w = a->page_size;
         }
         
-        if( a = gtk_scrolled_window_get_vadjustment( swin ))
+        if( (a = gtk_scrolled_window_get_vadjustment( swin )))
         {
             *y = a->value;
             *h = a->page_size;
@@ -1389,8 +1378,6 @@ static gint gevas_view_redraw_cb(gpointer data)
 {
     GtkgEvas* 	  gevas = GTK_GEVAS( data );
 	GtkgEvas* 	  ev    = gevas;
-	GdkRectangle* area  = &ev->evas_r;
-    GdkRectangle  rect;
 
     /* prevent evas from breaking if window isn't mapped */
     if(!GTK_WIDGET_MAPPED(ev))  
@@ -1438,8 +1425,8 @@ gint gevas_edje_animate_timer_cb( gpointer data )
         return 1;
 
 	GtkgEvas *ev;
-    g_return_if_fail(data != NULL);
-	g_return_if_fail(GTK_IS_GEVAS(data));
+    g_return_val_if_fail(data != NULL, 1);
+	g_return_val_if_fail(GTK_IS_GEVAS(data), 1);
     ev = GTK_GEVAS(data);
     
     if( ev->evas )
@@ -1563,10 +1550,6 @@ gevas_gtk_marshal_BOOL__POINTER_POINTER_INT_INT_INT (GtkObject*  object,
 
 void gevas_new_gtkscrolledwindow(GtkgEvas** gevas , GtkWidget** scrolledwindow )
 {
-    
-    GtkBin *bin;
-
-
 	*scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
     *gevas = GTK_GEVAS(gevas_new());
 
@@ -1789,7 +1772,7 @@ remove_string_from_list( GtkgEvas * ev, const char* p, GList **li )
     if(!strlen(p))
         return;
 
-    if(t = g_list_find(*li, (gpointer)p))
+    if((t = g_list_find(*li, (gpointer)p)))
     {
         g_free(t->data);
         *li = g_list_remove_link(*li, t);
@@ -1812,8 +1795,6 @@ void gevas_add_metadata_prefix( GtkgEvas * ev, const char* p )
 
 void gevas_remove_metadata_prefix ( GtkgEvas * ev, const char* p )
 {
-    GList *li = 0;
-    
     g_return_if_fail(ev != NULL);
 	g_return_if_fail(p  != NULL);
 	g_return_if_fail(GTK_IS_GEVAS(ev));
@@ -1853,16 +1834,16 @@ void gevas_remove_image_prefix ( GtkgEvas * ev, const char* p )
 
 GList* gevas_get_metadata_prefix_list( GtkgEvas *ev )
 {
-    g_return_if_fail(ev != NULL);
-	g_return_if_fail(GTK_IS_GEVAS(ev));
+    g_return_val_if_fail(ev != NULL, NULL);
+	g_return_val_if_fail(GTK_IS_GEVAS(ev), NULL);
     return ev->metadata_prefix_list;
 }
 
 
 GList* gevas_get_image_prefix_list   ( GtkgEvas *ev )
 {
-    g_return_if_fail(ev != NULL);
-	g_return_if_fail(GTK_IS_GEVAS(ev));
+    g_return_val_if_fail(ev != NULL, NULL);
+	g_return_val_if_fail(GTK_IS_GEVAS(ev), NULL);
     return ev->image_prefix_list;
 }
 
@@ -1881,7 +1862,6 @@ GList* gevas_get_image_prefix_list   ( GtkgEvas *ev )
 gboolean
 gevas_file_exists(const char* fmt, ... )
 {
-  gchar *full_filename;
   struct stat s;
   gint status;
   va_list args;

@@ -66,7 +66,7 @@ extern "C" {
 /** public members **/
 
 	gchar *gevastext_get_string(GtkgEvasObj * object);
-	gchar *gevastext_get_font(GtkgEvasObj * object);
+	const gchar *gevastext_get_font(GtkgEvasObj * object);
 	int gevastext_get_text_size(GtkgEvasObj * object);
 	void gevastext_get_ascent_descent(GtkgEvasObj * object, double *ascent,
 									  double *descent);

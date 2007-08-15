@@ -50,6 +50,7 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 
 /* Always disable NLS, since we have no config.h; 
  * a real app would not do this of course.
@@ -496,11 +497,9 @@ load_from_metadata(
     GtkgEvasImage* ev = user_data;
     char* full_buffer;
     const char* filen;
-    char* edb_prefix = 0;
     char* p = 0;
     GHashTable* hash_args = 0;
 /*     E_DB_File* edb = 0; */
-    gboolean failed=1;
     
     g_return_if_fail(ev != NULL);
 	g_return_if_fail(fully_qualified_prefix!= NULL);
@@ -515,7 +514,7 @@ load_from_metadata(
     if( strlen( fully_qualified_prefix ))
     {
         full_buffer = g_strconcat( fully_qualified_prefix,
-                                   "/", ev->metadata_load_postfix,0 );
+                                   "/", ev->metadata_load_postfix, NULL);
     }
     else
     {
@@ -629,7 +628,6 @@ void gevasimage_ensure_smallerthan_with_ratio( GtkgEvasImage* gi, int MaxDesired
 {
     int w=0, h=0;
     double ratio = MaxDesiredWidthOrHeight;
-    GtkRequisition requisition;
     GtkgEvasObj* go = GTK_GEVASOBJ( gi );
 
     gevasimage_get_image_size(go, &w, &h); 

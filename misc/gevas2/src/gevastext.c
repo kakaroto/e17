@@ -109,18 +109,18 @@ gchar *gevastext_get_string(GtkgEvasObj * object)
     return (gchar*)evas_object_text_text_get( EVASO(object));
 }
 
-gchar *gevastext_get_font(GtkgEvasObj * object)
+const gchar *gevastext_get_font(GtkgEvasObj * object)
 {
-    char* font = 0;
+    const char* font = 0;
     Evas_Font_Size sz = 0;
 
     evas_object_text_font_get( EVASO(object), &font, &sz );
-    return (gchar*)font;
+    return font;
 }
 
 int gevastext_get_text_size(GtkgEvasObj * object)
 {
-    char* font = 0;
+    const char* font = 0;
     Evas_Font_Size sz = 0;
 
     evas_object_text_font_get( EVASO(object), &font, &sz );

@@ -38,6 +38,7 @@
 #include <gevasobj.h>
 
 #include <stdio.h>
+#include <string.h>
 
 #include "project.h"
 #include "gevas_sprite.h"
@@ -739,7 +740,6 @@ void gevasobj_move(GtkgEvasObj * object, double x, double y)
 void gevasobj_move_relative( GtkgEvasObj * object, double dx, double dy)
 {
     Evas_Coord lx=0, ly=0;
-    gint32 x, y;
 
     gevasobj_get_location( object, &lx, &ly );
     

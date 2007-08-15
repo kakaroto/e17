@@ -146,20 +146,20 @@ static gboolean throbFunction(gpointer user_data)
         
         
 #if 0
-/*         gevasobj_get_geometry( go, &x, &y, &w, &h); */
-/*         iw = w * (1.0 + (ev->t * 1)); */
-/*         ih = h * (1.0 + (ev->t * 1)); */
-/*         ix = x + ((w - iw) / 2); */
-/*         iy = y + ((h - ih) / 2); */
+         gevasobj_get_geometry( go, &x, &y, &w, &h);
+         iw = w * (1.0 + (ev->t * 1));
+         ih = h * (1.0 + (ev->t * 1));
+         ix = x + ((w - iw) / 2);
+         iy = y + ((h - ih) / 2);
         
-/*         if( ix != ev->x || iy != ev->y ) */
-/*         { */
-/*             x = ix - ((w - iw) / 2); */
-/*             y = iy - ((h - ih) / 2); */
-/*             printf("x:%f evx:%f y:%f evy:%f\n", x, ev->x, y, ev->y ); */
-/* /*             ev->x = x; */ */
-/* /*             ev->y = y; */ */
-/*         } */
+         if( ix != ev->x || iy != ev->y )
+         { */
+             x = ix - ((w - iw) / 2);
+             y = iy - ((h - ih) / 2);
+             printf("x:%f evx:%f y:%f evy:%f\n", x, ev->x, y, ev->y );
+/*             ev->x = x; */
+/*             ev->y = y; */
+         }
 #endif
     }
     
@@ -217,12 +217,9 @@ GEVASEV_HANDLER_RET
 gevasev_throb_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
 							 int _x, int _y)
 {
-	Evas_Coord x = 0, y = 0, w = 0, h = 0;
-    double sw = 0, sh = 0;
     GtkgEvasEvH* evh;
     GtkgEvasObj* go;
 	GtkgEvasEvHThrob *ev;
-	GtkgEvasObj *ggobj = GTK_GEVASOBJ(gevasobj);
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_THROB(object),
 						 GEVASEV_HANDLER_RET_NEXT);
@@ -249,9 +246,7 @@ GEVASEV_HANDLER_RET
 gevasev_throb_mouse_out(GtkObject * object, GtkObject * gevasobj, int _b,
 							  int _x, int _y)
 {
-	double x = 0, y = 0, w = 0, h = 0;
 	GtkgEvasEvHThrob *ev;
-	GtkgEvasObj *ggobj = GTK_GEVASOBJ(gevasobj);
 	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_THROB(object),
 						 GEVASEV_HANDLER_RET_NEXT);

@@ -72,14 +72,13 @@ void makeFastAnim()
 {
     GtkgEvasSprite* sprite = 0;
     GtkgEvasImage*  gi     = 0;
-    GtkgEvasObj*    go     = 0;
     int i = 0;
 
     sprite = gevas_sprite_new( GTK_GEVAS(gevas) );
 
     for( i=1; i<7; ++i )
     {
-        gchar* md = g_strdup_printf( "cell%ld.png?x=270&y=120&visible=0&fill_size=1", i );
+        gchar* md = g_strdup_printf( "cell%d.png?x=270&y=120&visible=0&fill_size=1", i );
         
         gi = gevasimage_new_from_metadata( GTK_GEVAS(gevas), md );
         gevas_sprite_add( sprite, GTK_GEVASOBJ( gi ) );
@@ -168,7 +167,7 @@ int main(int argc, char *argv[])
     fprintf( stderr, "Adding the frames\n");
     for( i=1; i<7; ++i )
     {
-        gchar* md = g_strdup_printf( "cell%ld.png?x=120&y=120&visible=0&fill_size=1", i );
+        gchar* md = g_strdup_printf( "cell%d.png?x=120&y=120&visible=0&fill_size=1", i );
         
         gi = gevasimage_new_from_metadata( GTK_GEVAS(gevas), md );
         gevas_sprite_add( sprite, GTK_GEVASOBJ( gi ) );
@@ -202,7 +201,7 @@ int main(int argc, char *argv[])
     sprite = gevas_sprite_new( GTK_GEVAS(gevas) );
     for( i=1; i<7; ++i )
     {
-        gchar* md = g_strdup_printf( "cell%ld.png?x=260&y=120&visible=0&fill_size=1", i );
+        gchar* md = g_strdup_printf( "cell%d.png?x=260&y=120&visible=0&fill_size=1", i );
         
         gi = gevasimage_new_from_metadata( GTK_GEVAS(gevas), md );
         gevas_sprite_add( sprite, GTK_GEVASOBJ( gi ) );
