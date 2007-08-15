@@ -9,72 +9,128 @@ cdef EcoreEvas EcoreEvas_from_instance(Ecore_Evas *obj):
 cdef void resize_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._resize_cb(self)
+    try:
+        self._resize_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void move_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._move_cb(self)
+    try:
+        self._move_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void show_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._show_cb(self)
+    try:
+        self._show_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void hide_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._hide_cb(self)
+    try:
+        self._hide_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void delete_request_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._delete_request_cb(self)
+    try:
+        self._delete_request_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void destroy_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._destroy_cb(self)
+    try:
+        self._destroy_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void focus_in_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._focus_in_cb(self)
+    try:
+        self._focus_in_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void focus_out_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._focus_out_cb(self)
+    try:
+        self._focus_out_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void sticky_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._sticky_cb(self)
+    try:
+        self._sticky_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void unsticky_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._unsticky_cb(self)
+    try:
+        self._unsticky_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void mouse_in_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._mouse_in_cb(self)
+    try:
+        self._mouse_in_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void mouse_out_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._mouse_out_cb(self)
+    try:
+        self._mouse_out_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void pre_render_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._pre_render_cb(self)
+    try:
+        self._pre_render_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 cdef void post_render_cb(Ecore_Evas *ee):
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
-    self._post_render_cb(self)
+    try:
+        self._post_render_cb(self)
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
 
 
 
