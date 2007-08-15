@@ -30,7 +30,10 @@ enum Etk_Widget_Signal_Id
 enum Etk_Mdi_Window_Property_Id
 {
    ETK_MDI_WINDOW_TITLE_PROPERTY,
-   ETK_MDI_WINDOW_MAXIMIZED_PROPERTY
+   ETK_MDI_WINDOW_MAXIMIZED_PROPERTY,
+   ETK_MDI_WINDOW_DRAGGABLE_PROPERTY,
+   ETK_MDI_WINDOW_RESIZABLE_PROPERTY,
+   ETK_MDI_WINDOW_DECORATED_PROPERTY
 };
 
 static void _etk_mdi_window_constructor(Etk_Mdi_Window *mdi_window);
@@ -81,6 +84,12 @@ Etk_Type *etk_mdi_window_type_get(void)
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(mdi_window_type, "maximized", ETK_MDI_WINDOW_MAXIMIZED_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+      etk_type_property_add(mdi_window_type, "draggable", ETK_MDI_WINDOW_DRAGGABLE_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      etk_type_property_add(mdi_window_type, "resizable", ETK_MDI_WINDOW_RESIZABLE_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      etk_type_property_add(mdi_window_type, "decorated", ETK_MDI_WINDOW_DECORATED_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
 
       mdi_window_type->property_set = _etk_mdi_window_property_set;
       mdi_window_type->property_get = _etk_mdi_window_property_get;
@@ -191,6 +200,96 @@ Etk_Bool etk_mdi_window_maximized_get(Etk_Mdi_Window *mdi_window)
 
    return mdi_window->maximized;
 }
+
+/**
+ * @brief Sets whether or not the mdi_window is draggable
+ * @param mdi_window a mdi_window
+ * @param draggable ETK_TRUE to enable drag on the mdi_window, ETK_FALSE otherwise
+ */
+void etk_mdi_window_draggable_set(Etk_Mdi_Window *mdi_window, Etk_Bool draggable)
+{
+   if (!mdi_window || mdi_window->draggable == draggable)
+      return;
+
+   mdi_window->dragging = ETK_FALSE;
+   mdi_window->draggable = draggable;
+   etk_object_notify(ETK_OBJECT(mdi_window), "draggable");
+}
+
+/**
+ * @brief Gets whether the mdi_window is draggable
+ * @param mdi_window a mdi_window
+ * @return Returns ETK_TRUE if the mdi_window is draggable, ETK_FALSE otherwise
+ */
+Etk_Bool etk_mdi_window_draggable_get(Etk_Mdi_Window *mdi_window)
+{
+   if (!mdi_window)
+      return ETK_FALSE;
+
+   return mdi_window->draggable;
+}
+
+/**
+ * @brief Sets whether or not the mdi_window is draggable
+ * @param mdi_window a mdi_window
+ * @param resizable ETK_TRUE to enable resize on the mdi_window, ETK_FALSE otherwise
+ */
+void etk_mdi_window_resizable_set(Etk_Mdi_Window *mdi_window, Etk_Bool resizable)
+{
+   if (!mdi_window || mdi_window->resizable == resizable)
+      return;
+
+   mdi_window->resizing = ETK_FALSE;
+   mdi_window->resizable = resizable;
+   /* make sure the pointer is correct */
+   // etk_toplevel_pointer_pop(etk_widget_toplevel_parent_get(ETK_WIDGET(mdi_window)), ETK_POINTER_RESIZE_BR);
+   etk_object_notify(ETK_OBJECT(mdi_window), "resizable");
+}
+
+/**
+ * @brief Gets whether the mdi_window is resizable
+ * @param mdi_window a mdi_window
+ * @return Returns ETK_TRUE if the mdi_window is resizable, ETK_FALSE otherwise
+ */
+Etk_Bool etk_mdi_window_resizable_get(Etk_Mdi_Window *mdi_window)
+{
+   if (!mdi_window)
+      return ETK_FALSE;
+
+   return mdi_window->resizable;
+}
+
+/**
+ * @brief Sets whether or not the mdi_window is decorated
+ * @param mdi_window a mdi_window
+ * @param decorated ETK_TRUE to enable decoration on the mdi_window, ETK_FALSE otherwise
+ */
+void etk_mdi_window_decorated_set(Etk_Mdi_Window *mdi_window, Etk_Bool decorated)
+{
+   if (!mdi_window || mdi_window->decorated == decorated)
+      return;
+
+   mdi_window->decorated = decorated;
+   if (decorated)
+      etk_widget_theme_group_set(ETK_WIDGET(mdi_window), "mdi_window");
+   else
+      etk_widget_theme_group_set(ETK_WIDGET(mdi_window), "mdi_window_borderless");
+   etk_object_notify(ETK_OBJECT(mdi_window), "decorated");
+}
+
+/**
+ * @brief Gets whether the mdi_window is decorated
+ * @param mdi_window a mdi_window
+ * @return Returns ETK_TRUE if the mdi_window is decorated, ETK_FALSE otherwise
+ */
+Etk_Bool etk_mdi_window_decorated_get(Etk_Mdi_Window *mdi_window)
+{
+   if (!mdi_window)
+      return ETK_FALSE;
+
+   return mdi_window->decorated;
+}
+
 /**
  * @brief A utility function to use as a callback for the "delete-event" signal.
  * It will hide the mdi_window and return ETK_TRUE to prevent the program from quitting
@@ -221,6 +320,10 @@ static void _etk_mdi_window_constructor(Etk_Mdi_Window *mdi_window)
 
    mdi_window->title = NULL;
    mdi_window->maximized = ETK_FALSE;
+   mdi_window->draggable = ETK_TRUE;
+   mdi_window->resizable = ETK_TRUE;
+   mdi_window->decorated = ETK_TRUE;
+   /* mdi_window->decorations = ETK_MDI_WINDOW_WM_DECORATION_ALL; */
    mdi_window->dragging = ETK_FALSE;
    mdi_window->resizing = ETK_FALSE;
 
@@ -254,6 +357,15 @@ static void _etk_mdi_window_property_set(Etk_Object *object, int property_id, Et
       case ETK_MDI_WINDOW_MAXIMIZED_PROPERTY:
          etk_mdi_window_maximized_set(mdi_window, etk_property_value_bool_get(value));
          break;
+      case ETK_MDI_WINDOW_DRAGGABLE_PROPERTY:
+         etk_mdi_window_draggable_set(mdi_window, etk_property_value_bool_get(value));
+         break;
+      case ETK_MDI_WINDOW_RESIZABLE_PROPERTY:
+         etk_mdi_window_resizable_set(mdi_window, etk_property_value_bool_get(value));
+         break;
+      case ETK_MDI_WINDOW_DECORATED_PROPERTY:
+         etk_mdi_window_decorated_set(mdi_window, etk_property_value_bool_get(value));
+         break;
       default:
          break;
    }
@@ -273,7 +385,16 @@ static void _etk_mdi_window_property_get(Etk_Object *object, int property_id, Et
          etk_property_value_string_set(value, mdi_window->title);
          break;
       case ETK_MDI_WINDOW_MAXIMIZED_PROPERTY:
-         etk_property_value_bool_set(value, etk_mdi_window_maximized_get(mdi_window));
+         etk_property_value_bool_set(value, mdi_window->maximized);
+         break;
+      case ETK_MDI_WINDOW_DRAGGABLE_PROPERTY:
+         etk_property_value_bool_set(value, mdi_window->draggable);
+         break;
+      case ETK_MDI_WINDOW_RESIZABLE_PROPERTY:
+         etk_property_value_bool_set(value, mdi_window->resizable);
+         break;
+      case ETK_MDI_WINDOW_DECORATED_PROPERTY:
+         etk_property_value_bool_set(value, mdi_window->decorated);
          break;
       default:
          break;
@@ -328,7 +449,7 @@ static void _etk_mdi_window_titlebar_mouse_down_cb(void *data, Evas *e, Evas_Obj
    Etk_Mdi_Window *mdi_window;
    Evas_Event_Mouse_Down *ev;
 
-   if (!(mdi_window = ETK_MDI_WINDOW(data)))
+   if (!(mdi_window = ETK_MDI_WINDOW(data)) || !mdi_window->draggable)
       return;
 
    ev = event_info;
@@ -363,7 +484,7 @@ static void _etk_mdi_window_titlebar_mouse_move_cb(void *data, Evas *e, Evas_Obj
    Etk_Mdi_Window *mdi_window;
    Evas_Event_Mouse_Move *ev;
 
-   if (!(mdi_window = ETK_MDI_WINDOW(data)) || !(mdi_window->dragging))
+   if (!(mdi_window = ETK_MDI_WINDOW(data)) || !mdi_window->dragging)
       return;
 
    ev = event_info;
@@ -378,7 +499,7 @@ static void _etk_mdi_window_resize_mouse_in_cb(void *data, Evas *evas, Evas_Obje
 {
    Etk_Mdi_Window *mdi_window;
 
-   if (!(mdi_window = ETK_MDI_WINDOW(data)) || mdi_window->maximized)
+   if (!(mdi_window = ETK_MDI_WINDOW(data)) || mdi_window->maximized || !mdi_window->resizable)
       return;
 
    etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(ETK_WIDGET(mdi_window)), ETK_POINTER_RESIZE_BR);
@@ -402,7 +523,7 @@ static void _etk_mdi_window_resize_mouse_down_cb(void *data, Evas *evas, Evas_Ob
    Evas_Event_Mouse_Down *ev;
    int w, h;
 
-   if (!(mdi_window = ETK_MDI_WINDOW(data)) || mdi_window->maximized)
+   if (!(mdi_window = ETK_MDI_WINDOW(data)) || mdi_window->maximized || !mdi_window->resizable)
       return;
 
    ev = event_info;
@@ -428,7 +549,7 @@ static void _etk_mdi_window_resize_mouse_move_cb(void *data, Evas *e, Evas_Objec
    Etk_Mdi_Window *mdi_window;
    Evas_Event_Mouse_Move *ev;
 
-   if (!(mdi_window = ETK_MDI_WINDOW(data)) || !(mdi_window->resizing))
+   if (!(mdi_window = ETK_MDI_WINDOW(data)) || !mdi_window->resizing)
       return;
 
    ev = event_info;
@@ -491,4 +612,22 @@ static Etk_Bool _etk_mdi_window_delete_event_handler(Etk_Mdi_Window *mdi_window)
  * @prop_type String (char *)
  * @prop_rw
  * @prop_val NULL
+ * \par
+ * @prop_name "maximized": Whether or not the mdi_window is maximized
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_FALSE
+ * \par
+ * @prop_name "draggable": Whether or not the mdi_window is draggable
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
+ * @prop_name "resizable": Whether or not the mdi_window is resizable
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
+ * @prop_name "decorated": Whether or not the mdi_window is decorated
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
  */

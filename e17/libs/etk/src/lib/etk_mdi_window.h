@@ -20,6 +20,18 @@
 
 typedef struct Etk_Mdi_Window_Data Etk_Mdi_Window_Data;
 
+/*
+typedef enum
+{
+   ETK_MDI_WINDOW_WM_DECORATION_NONE = 1 << 0,
+   ETK_MDI_WINDOW_WM_DECORATION_MINIMIZE = 1 << 1,
+   ETK_MDI_WINDOW_WM_DECORATION_MAXIMIZE = 1 << 2,
+   ETK_MDI_WINDOW_WM_DECORATION_CLOSE = 1 << 3,
+   ETK_MDI_WINDOW_WM_DECORATION_ALL =
+      ETK_MDI_WINDOW_WM_DECORATION_MINIMIZE | ETK_MDI_WINDOW_WM_DECORATION_MAXIMIZE | ETK_MDI_WINDOW_WM_DECORATION_CLOSE
+} Etk_Mdi_Window_WM_Decoration;
+*/
+
 /**
  * @brief @widget A widget in a mdi area
  * @structinfo
@@ -34,6 +46,10 @@ struct Etk_Mdi_Window
 
    char *title;
    Etk_Bool maximized;
+   Etk_Bool draggable;
+   Etk_Bool resizable;
+   Etk_Bool decorated;
+   /* Etk_Mdi_Window_WM_Decoration decorations; */
    Etk_Bool dragging;
    int drag_offset_x;
    int drag_offset_y;
@@ -59,9 +75,18 @@ void        etk_mdi_window_modal_for_window(Etk_Mdi_Window *window_to_modal, Etk
 void        etk_mdi_window_maximized_set(Etk_Mdi_Window *mdi_window, Etk_Bool maximized);
 Etk_Bool    etk_mdi_window_maximized_get(Etk_Mdi_Window *mdi_window);
 
-/*
+void        etk_mdi_window_draggable_set(Etk_Mdi_Window *mdi_window, Etk_Bool draggable);
+Etk_Bool    etk_mdi_window_draggable_get(Etk_Mdi_Window *mdi_window);
+
+void        etk_mdi_window_resizable_set(Etk_Mdi_Window *mdi_window, Etk_Bool resizable);
+Etk_Bool    etk_mdi_window_resizable_get(Etk_Mdi_Window *mdi_window);
+
 void        etk_mdi_window_decorated_set(Etk_Mdi_Window *mdi_window, Etk_Bool decorated);
 Etk_Bool    etk_mdi_window_decorated_get(Etk_Mdi_Window *mdi_window);
+
+/*
+void        etk_mdi_window_decorations_set(Etk_Mdi_Window *mdi_window, Etk_Mdi_Window_WM_Decoration decorations);
+Etk_Mdi_Window_WM_Decoration etk_mdi_window_decorations_get(Etk_Mdi_Window *mdi_window);
 */
 
 Etk_Bool    etk_mdi_window_hide_on_delete(Etk_Object *mdi_window, void *data);
