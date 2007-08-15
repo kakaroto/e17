@@ -47,8 +47,6 @@ PKG_CHECK_MODULES(EDJE, edje >= 0.4.9 ecore >= 0.9.9,
 	AC_MSG_ERROR([Fatal Error: please install latest edje package.])	
 ])
 AM_CONDITIONAL(HAVE_EDJE, test "$have_edje" = yes)
-AC_SUBST(EDJE_LIBS)
-AC_SUBST(EDJE_CFLAGS)
 
 
 dnl Set PACKAGE_DATA_DIR in config.h.
@@ -80,8 +78,6 @@ PKG_CHECK_MODULES(EVAS, evas >= 0.9.9,
 AM_CONDITIONAL(HAVE_EVAS, test "$have_evas" = yes)
 evas_cflags=$EVAS_CFLAGS
 evas_libs=$EVAS_LIBS
-AC_SUBST(EVAS_LIBS)
-AC_SUBST(EVAS_CFLAGS)
 
 
 if test "x${prefix}" = 'xNONE'; then
