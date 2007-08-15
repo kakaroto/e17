@@ -29,7 +29,7 @@ AC_MSG_CHECKING(whether to enable edb code)
 AC_ARG_ENABLE(edb-code, 
   [  --enable-edb-code       enable edb related code], [
       AC_MSG_RESULT(yes)
-      AC_DEFINE(BUILD_EDB_CODE)
+      AC_DEFINE(BUILD_EDB_CODE, 1, [ Support edb ])
       edb_cflags=`edb-config --cflags`
       edb_libs=`edb-config --libs`" -lz"
   ], AC_MSG_RESULT(no)
@@ -52,12 +52,12 @@ AM_CONDITIONAL(HAVE_EDJE, test "$have_edje" = yes)
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${datarootdir}" = 'x${prefix}/share'; then
   if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", 1, [ Where to install data ])
   else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", 1, [ Where to install data ])
   fi
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datarootdir}/${PACKAGE}")
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datarootdir}/${PACKAGE}", 1, [ Where to install data ])
 fi
 
 
@@ -103,7 +103,7 @@ AC_SUBST(INCLUDEDIR)
 
 ICON_INSTALL_DIR="/usr/local/gevas2/icons"
 AC_SUBST(ICON_INSTALL_DIR)
-AC_DEFINE_UNQUOTED(ICON_INSTALL_DIR, "$ICON_INSTALL_DIR" )
+AC_DEFINE_UNQUOTED(ICON_INSTALL_DIR, "$ICON_INSTALL_DIR", 1, [ Where to install icons ])
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
