@@ -4,7 +4,7 @@
 <p>
 Enlightenment DR17 (or E17 for short) is being actively developed for the last three years.</p><p>
 We are using CVS for our repository, so one of the ways to get E is to
-download it directly from the repository, as it is explaned
+download it directly from the repository, as it is explained
 <?php a("download/cvs", "here");?>.
 Although we are trying to keep the code there stable and usable, there is
 still a chance to get it at a bad moment when it is broken. So, for the
