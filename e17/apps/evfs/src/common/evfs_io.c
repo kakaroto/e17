@@ -28,6 +28,7 @@ static Eet_Data_Descriptor *_EvfsMetadataGroup_edd;
 static Eet_Data_Descriptor *_EvfsEventMetadataGroups_edd;
 static Eet_Data_Descriptor *_EvfsOperation_edd;
 static Eet_Data_Descriptor *_EvfsEventAuthRequired_edd;
+static Eet_Data_Descriptor *_EvfsEventOpen_edd;
 
 #define _NEW_EDD(type) eet_data_descriptor_new(#type, sizeof(type), \
                               (void *(*)(void *))evas_list_next, \
@@ -75,7 +76,6 @@ evfs_io_filereference_edd_get()
 void 
 evfs_io_event_edd_set(int type, Eet_Data_Descriptor* desc)
 {
-	printf("Set %p for %d\n", desc, type);
 	ecore_hash_set(evfs_io_edd_hash, (int*)type,desc);
 }
 
@@ -244,6 +244,11 @@ evfs_io_initialise()
    _EVFS_EVENT_BASE_ADD(EvfsEventAuthRequired);
    evfs_io_event_edd_set(EVFS_EV_AUTH_REQUIRED, _EvfsEventAuthRequired_edd);
 
+   /*EvfsEventOpen*/
+   _EvfsEventOpen_edd = _NEW_EDD(EvfsEventOpen);
+   _EVFS_EVENT_BASE_ADD(EvfsEventOpen);
+   evfs_io_event_edd_set(EVFS_EV_FILE_OPEN, _EvfsEventOpen_edd);
+
 
    /*File monitor edd*/
    /*_evfs_filemonitor_edd =
@@ -304,6 +309,7 @@ ecore_ipc_message* evfs_io_event_construct (EvfsEvent* event) {
 	char* data;
 	int size;
 	int tmplen;
+	int ssize=0;
 
 	edd = evfs_io_event_edd_get(event);
 	if (!edd) {
@@ -320,10 +326,11 @@ ecore_ipc_message* evfs_io_event_construct (EvfsEvent* event) {
 			data = realloc(data, size + EVFS_EVENT_DATA(event)->size);
 			memcpy(data+event->suffix, EVFS_EVENT_DATA(event)->bytes, EVFS_EVENT_DATA(event)->size);
 
+			ssize = size;
 			size += EVFS_EVENT_DATA(event)->size;
 		}		
 
-		return ecore_ipc_message_new(EVFS_EV_REPLY, event->type, 0,0,0,data,size);
+		return ecore_ipc_message_new(EVFS_EV_REPLY, event->type, size,0,0,data,size);
 	}
 
 	return NULL;	
@@ -365,7 +372,11 @@ evfs_read_event(ecore_ipc_message * msg)
    edd = evfs_io_event_edd_get_type(msg->minor);
 
    if (edd) {
-          ev = eet_data_descriptor_decode(edd, msg->data, msg->len);
+	  int edd_data_size=msg->len;
+	  if (msg->ref > 0) edd_data_size = msg->ref;
+
+	  printf("Edd data size: %d, Msg->len: %d\n", edd_data_size, msg->len);
+          ev = eet_data_descriptor_decode(edd, msg->data, edd_data_size);
 	  if (ev->suffix) {
 		  EVFS_EVENT_DATA(ev)->bytes = calloc(ev->suffix,1);
 		  EVFS_EVENT_DATA(ev)->size = msg->len-ev->suffix;
