@@ -64,7 +64,7 @@ ewl_text_trigger_new(Ewl_Text_Trigger_Type type)
 int
 ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 {
-	char *type_str;
+	const char *type_str;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("trigger", trigger, FALSE);
