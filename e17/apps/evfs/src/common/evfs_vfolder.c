@@ -11,7 +11,7 @@ evfs_vfolder_initialise()
    evfs_vfolder_init = 1;
 
    _evfs_vfolder_edd =
-      eet_data_descriptor_new("evfs_vfolder", sizeof(evfs_filereference),
+      eet_data_descriptor_new("evfs_vfolder", sizeof(EvfsFilereference),
                               (void *(*)(void *))evas_list_next,
                               (void *(*)(void *, void *))evas_list_append,
                               (void *(*)(void *))evas_list_data,
@@ -36,7 +36,7 @@ evfs_vfolder_new()
 }
 
 evfs_vfolder *
-evfs_vfolder_base_add(evfs_vfolder * folder, evfs_filereference * file)
+evfs_vfolder_base_add(evfs_vfolder * folder, EvfsFilereference * file)
 {
    evfs_vfolder *ret_folder = NULL;
 

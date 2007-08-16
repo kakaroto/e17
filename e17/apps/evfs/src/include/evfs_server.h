@@ -6,8 +6,8 @@ struct evfs_connection
 {
    Ecore_Ipc_Server *server;
    unsigned long id;
-   void (*callback_func) (evfs_event * data, void *obj);
-   evfs_event *prog_event;
+   void (*callback_func) (EvfsEvent * data, void *obj);
+   EvfsEvent *prog_event;
    void *obj;
 };
 

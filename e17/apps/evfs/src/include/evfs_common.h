@@ -2,10 +2,11 @@
 #define __EVFS_COMMON_H_
 
 evfs_plugin *evfs_get_plugin_for_uri(evfs_server * server, char *uri_base);
-evfs_filereference* evfs_filereference_clone(evfs_filereference* source);
-int evfs_filereference_sanitise(evfs_filereference* ref);
+EvfsFilereference* EvfsFilereference_clone(EvfsFilereference* source);
+int EvfsFilereference_sanitise(EvfsFilereference* ref);
 evfs_plugin* evfs_meta_plugin_get_for_type(evfs_server* server, char* mime);
-evfs_command* evfs_file_command_single_build(evfs_filereference* ref);
+evfs_command* evfs_file_command_single_build(EvfsFilereference* ref);
+void evfs_file_command_file_add(evfs_command* command, EvfsFilereference* ref);
 	
 
 #endif

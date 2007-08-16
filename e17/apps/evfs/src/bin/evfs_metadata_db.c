@@ -248,7 +248,7 @@ int evfs_metadata_db_upgrade_check(sqlite3* db, int startmode)
 }
 
 
-int evfs_metadata_db_id_for_file(sqlite3* db, evfs_filereference* ref, int create)
+int evfs_metadata_db_id_for_file(sqlite3* db, EvfsFilereference* ref, int create)
 {
 	char* file_path;
 	char query[PATH_MAX];
@@ -258,7 +258,7 @@ int evfs_metadata_db_id_for_file(sqlite3* db, evfs_filereference* ref, int creat
 
 	
 	/*Build a path*/
-	file_path = evfs_filereference_to_string(ref);
+	file_path = EvfsFilereference_to_string(ref);
 	/*printf("File path is: %s\n", file_path);*/
 
 

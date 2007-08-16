@@ -64,6 +64,7 @@ typedef enum evfs_operation_task_status
 
 #define EVFS_OPERATION(op) ((evfs_operation*) op)
 typedef struct evfs_operation evfs_operation;
+typedef struct evfs_operation EvfsOperation;
 struct evfs_operation
 {
    evfs_operation_type type;
@@ -121,8 +122,8 @@ struct evfs_operation_task_file_copy {
 	struct stat dest_stat;
 	int dest_stat_response;
 
-	evfs_filereference* file_from;
-	evfs_filereference* file_to;
+	EvfsFilereference* file_from;
+	EvfsFilereference* file_to;
 
 	int64 next_byte;
 	
@@ -134,7 +135,7 @@ struct evfs_operation_task_file_remove {
 	evfs_operation_task task;
 
 	struct stat file_stat;
-	evfs_filereference* file;
+	EvfsFilereference* file;
 };
 typedef struct evfs_operation_task_file_remove evfs_operation_task_file_remove;
 
@@ -143,8 +144,8 @@ typedef struct evfs_operation_task_file_remove evfs_operation_task_file_remove;
 struct evfs_operation_task_mkdir {
 	evfs_operation_task task;
 
-	evfs_filereference* from;
-	evfs_filereference* file;
+	EvfsFilereference* from;
+	EvfsFilereference* file;
 };
 typedef struct evfs_operation_task_mkdir evfs_operation_task_mkdir;
 
@@ -159,10 +160,10 @@ void evfs_operation_status_set(evfs_operation * op, int status);
 void evfs_operation_wait_type_set(evfs_operation* op, int type);
 void evfs_operation_response_handle(evfs_operation* op, evfs_operation_task* task);
 
-void evfs_operation_copy_task_add(evfs_operation* op, evfs_filereference* file_from, 
-		evfs_filereference* file_to, struct stat from_stat, struct stat to_stat, int);
-void evfs_operation_mkdir_task_add(evfs_operation* op, evfs_filereference* src, evfs_filereference* dir);
-void evfs_operation_remove_task_add(evfs_operation* op, evfs_filereference* file, struct stat file_stat);
+void evfs_operation_copy_task_add(evfs_operation* op, EvfsFilereference* file_from, 
+		EvfsFilereference* file_to, struct stat from_stat, struct stat to_stat, int);
+void evfs_operation_mkdir_task_add(evfs_operation* op, EvfsFilereference* src, EvfsFilereference* dir);
+void evfs_operation_remove_task_add(evfs_operation* op, EvfsFilereference* file, struct stat file_stat);
 
 void evfs_operation_tasks_print(evfs_operation* op);
 void evfs_operation_queue_pending_add(evfs_operation* op);

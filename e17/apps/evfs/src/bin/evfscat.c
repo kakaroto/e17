@@ -4,7 +4,7 @@
 evfs_connection *con;
 
 void
-callback(evfs_event * data, void *obj)
+callback(EvfsEvent * data, void *obj)
 {
 
    switch (data->type)
@@ -12,21 +12,20 @@ callback(evfs_event * data, void *obj)
      case EVFS_EV_FILE_OPEN:
         /*
 	 	 *	printf("File open event..fd is %d, reading..\n", 
-	 	 *	data->resp_command.file_command.files[0]->fd);
+	 	 *	data->resp_command.file_command->files[0]->fd);
 	    */
 
-        evfs_client_file_read(con, data->resp_command.file_command.files[0],
+        evfs_client_file_read(con, evfs_command_first_file_get(data->command),
                               16384);
 
         break;
 
      case EVFS_EV_FILE_READ:
         //printf("File read event, size is %ld\n", data->data.size);
-        if (data->data.size > 0)
+        if (EVFS_EVENT_DATA(data)->size > 0)
           {
-             fwrite(data->data.bytes, data->data.size, 1, stdout);
-             evfs_client_file_read(con,
-                                   data->resp_command.file_command.files[0],
+             fwrite(EVFS_EVENT_DATA(data)->bytes, EVFS_EVENT_DATA(data)->size, 1, stdout);
+             evfs_client_file_read(con, evfs_command_first_file_get(data->command),
                                    16384);
           }
         else

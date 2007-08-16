@@ -15,6 +15,7 @@ evfs_SOURCES = \
 	$(top_srcdir)/src/common/evfs_io.c \
 	$(top_srcdir)/src/common/evfs_event_helper.c \
 	$(top_srcdir)/src/common/evfs_common.c \
+	$(top_srcdir)/src/common/evfs_filereference.c \
 	evfs_server_handle.c \
 	evfs_operation.c \
 	evfs_operation_tasks.c \
@@ -31,6 +32,7 @@ evfsworker_SOURCES = \
         $(top_srcdir)/src/common/evfs_io.c \
         $(top_srcdir)/src/common/evfs_event_helper.c \
         $(top_srcdir)/src/common/evfs_common.c \
+	$(top_srcdir)/src/common/evfs_filereference.c \
         evfs_server_handle.c \
         evfs_operation.c \
         evfs_operation_tasks.c \

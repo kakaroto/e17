@@ -6,44 +6,52 @@ evfs_file_uri_path *dir_path;
 evfs_connection *con;
 
 void
-callback(evfs_event * data, void *obj)
+callback(EvfsEvent* data, void *obj)
 {
    if (data->type == EVFS_EV_FILE_MONITOR)
      {
         printf("DEMO: Received a file monitor notification\n");
-        printf("DEMO: For file: '%s'\n", data->file_monitor.filename);
+        printf("DEMO: For file: '%s'\n", EVFS_EVENT_FILE_MONITOR(data)->file->path);
         mon_current++;
      }
    else if (data->type == EVFS_EV_STAT)
      {
         printf("Received stat event for file '%s'!\n",
-               data->resp_command.file_command.files[0]->path);
-        printf("File size: %llu\n", data->stat.stat_obj.st_size);
-        //printf("File inode: %ld\n", data->stat.stat_obj.st_ino);
-        printf("File uid: %d\n", data->stat.stat_obj.st_uid);
-        printf("File gid: %d\n", data->stat.stat_obj.st_gid);
-        printf("Last access: %d\n", data->stat.stat_obj.ist_atime);
-        printf("Last modify : %d\n", data->stat.stat_obj.ist_mtime);
+               evfs_command_first_file_get(data->command)->path);
+        printf("File size: %llu\n", EVFS_EVENT_STAT(data)->st_size);
+        printf("File uid: %d\n", EVFS_EVENT_STAT(data)->st_uid);
+        printf("File gid: %d\n", EVFS_EVENT_STAT(data)->st_gid);
+        printf("Last access: %d\n", EVFS_EVENT_STAT(data)->ist_atime);
+        printf("Last modify : %d\n", EVFS_EVENT_STAT(data)->ist_mtime);
      }
    else if (data->type == EVFS_EV_DIR_LIST)
      {
-        evfs_filereference *ref;
+        EvfsFilereference *ref;
+	Evas_List* l;
 
         printf("Received a directory listing..\nFiles:\n\n");
 
-        ecore_list_first_goto(data->file_list.list);
-        while ((ref = ecore_list_next(data->file_list.list)))
+        for (l = EVFS_EVENT_DIR_LIST(data)->files; l; ) 
           {
+	     ref = l->data;
              printf("(%s) Received file type for file: %d\n", ref->path,
                     ref->file_type);
+
+	     l = l->next;
           }
 
      } else if (data->type == EVFS_EV_METADATA)  {
+	     Evas_List* l;
+	     EvfsMetaObject* o;
+	     
 	     printf("Received metadata:\n");
-
-	     printf("Artist: '%s'\n", (char *)ecore_hash_get(data->meta->meta_hash, "artist"));
-	     printf("Title: '%s'\n", (char *)ecore_hash_get(data->meta->meta_hash, "title"));
-	     printf("Length: '%s'\n", (char *)ecore_hash_get(data->meta->meta_hash, "length"));
+	     
+	     for (l = EVFS_EVENT_METADATA(data)->meta_list;l;) {		     
+		     o = l->data;
+		     l = l->next;
+	
+		     printf("%s -> %s\n", o->key, o->value);
+	     }
 	     
 			     
 	     

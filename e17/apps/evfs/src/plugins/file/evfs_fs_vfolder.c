@@ -75,10 +75,10 @@ evfs_dir_list(evfs_client * client, evfs_command* command,
               Ecore_List ** directory_list)
 {
    Ecore_List *files = ecore_list_new();
-   evfs_filereference* ref;
+   EvfsFilereference* ref;
    char* path;
 
-   evfs_filereference* file = command->file_command.files[0];
+   EvfsFilereference* file = evfs_command_first_file_get(command);
    path = file->path;
 
    /*We should make this generic - perhaps a plugin system*/
@@ -94,7 +94,7 @@ evfs_dir_list(evfs_client * client, evfs_command* command,
 	   while ((key = ecore_list_next(keys))) {
 		   snprintf(path,sizeof(path),"/%s",key); 
 
-		   ref = NEW(evfs_filereference);
+		   ref = NEW(EvfsFilereference);
 		   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
 		   ref->path = strdup(path);
 		   ref->file_type = EVFS_FILE_DIRECTORY;

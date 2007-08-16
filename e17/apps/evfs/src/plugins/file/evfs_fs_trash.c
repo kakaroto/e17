@@ -58,26 +58,26 @@ int evfs_file_remove(char *src);
 int evfs_file_rename(evfs_client * client, evfs_command * command);
 
 int evfs_client_disconnect(evfs_client * client);
-int evfs_file_open(evfs_client * client, evfs_filereference * file);
-int evfs_file_close(evfs_filereference * file);
+int evfs_file_open(evfs_client * client, EvfsFilereference * file);
+int evfs_file_close(EvfsFilereference * file);
 int evfs_file_stat(evfs_command * command, struct stat *file_stat, int);
 int evfs_file_lstat(evfs_command * command, struct stat *file_stat, int);
-int evfs_file_seek(evfs_filereference * file, long offset, int whence);
-int evfs_file_read(evfs_client * client, evfs_filereference * file,
+int evfs_file_seek(EvfsFilereference * file, long offset, int whence);
+int evfs_file_read(evfs_client * client, EvfsFilereference * file,
                    char *bytes, long size);
-int evfs_file_write(evfs_filereference * file, char *bytes, long size);
+int evfs_file_write(EvfsFilereference * file, char *bytes, long size);
 
-void evfs_file_notify_create(evfs_filereference* file);
-int evfs_file_create(evfs_filereference * file);
-int evfs_file_mkdir(evfs_filereference * file);
+void evfs_file_notify_create(EvfsFilereference* file);
+int evfs_file_create(EvfsFilereference * file);
+int evfs_file_mkdir(EvfsFilereference * file);
 void evfs_dir_list(evfs_client * client, evfs_command * command,
                    Ecore_List ** directory_list);
 
 
-evfs_filereference* evfs_fs_trash_proxy_create(evfs_filereference* ref, char* newpath)
+EvfsFilereference* evfs_fs_trash_proxy_create(EvfsFilereference* ref, char* newpath)
 {
 	int size;
-	evfs_filereference* newfile = evfs_filereference_clone(ref);
+	EvfsFilereference* newfile = EvfsFilereference_clone(ref);
 
 	/*Make a proxy file, and send this to the posix plugin create*/
 	free(newfile->path);
@@ -93,10 +93,10 @@ evfs_filereference* evfs_fs_trash_proxy_create(evfs_filereference* ref, char* ne
 	return newfile;
 }
 
-evfs_filereference* evfs_fs_trash_proxy_create_absolute(evfs_filereference* ref, char* newdir, char* newsuffix)
+EvfsFilereference* evfs_fs_trash_proxy_create_absolute(EvfsFilereference* ref, char* newdir, char* newsuffix)
 {
 	int size;
-	evfs_filereference* newfile = evfs_filereference_clone(ref);
+	EvfsFilereference* newfile = EvfsFilereference_clone(ref);
 
 	/*Make a proxy file, and send this to the posix plugin create*/
 	free(newfile->path);
@@ -113,7 +113,7 @@ evfs_filereference* evfs_fs_trash_proxy_create_absolute(evfs_filereference* ref,
 }
 
 /*Internal functions*/
-char* evfs_fs_trash_filename_get(evfs_filereference* ref)
+char* evfs_fs_trash_filename_get(EvfsFilereference* ref)
 {
 	time_t res;
 	int fulllen;
@@ -133,7 +133,7 @@ char* evfs_fs_trash_filename_get(evfs_filereference* ref)
 	return newname;
 }
 
-void evfs_fs_trash_infofile_create(evfs_filereference* ref, char* newname, char* path)
+void evfs_fs_trash_infofile_create(EvfsFilereference* ref, char* newname, char* path)
 {
 	int origlen;
 	FILE* file;
@@ -216,7 +216,7 @@ evfs_client_disconnect(evfs_client * client)
 int
 evfs_file_stat(evfs_command * command, struct stat *file_stat, int file_number)
 {
-	evfs_filereference* ref = command->file_command.files[file_number];
+	EvfsFilereference* ref = evfs_command_nth_file_get(command,file_number);
 
 	printf("Performing stat on: '%s'\n", ref->path);
 	
@@ -227,7 +227,7 @@ evfs_file_stat(evfs_command * command, struct stat *file_stat, int file_number)
 		return EVFS_SUCCESS;
 	} else {
 		if (ref->attach) {
-			evfs_filereference* proxy;
+			EvfsFilereference* proxy;
 			char* pos;
 			char* slashpos;
 			
@@ -264,14 +264,14 @@ evfs_file_stat(evfs_command * command, struct stat *file_stat, int file_number)
 }
 
 int
-evfs_file_open(evfs_client * client, evfs_filereference * file)
+evfs_file_open(evfs_client * client, EvfsFilereference * file)
 {
 	printf("evfs_fs_trash.c open - STUB\n");
 	return 0;	
 }
 
 int
-evfs_file_close(evfs_filereference * file)
+evfs_file_close(EvfsFilereference * file)
 {
 	if (file->plugin) 
 		return (*EVFS_PLUGIN_FILE(posix_plugin)->functions->evfs_file_close) (file);
@@ -282,14 +282,14 @@ evfs_file_close(evfs_filereference * file)
 }
 
 int
-evfs_file_seek(evfs_filereference * file, long offset, int whence)
+evfs_file_seek(EvfsFilereference * file, long offset, int whence)
 {
 	printf("evfs_fs_trash.c seek - STUB\n");
 	return -1;	
 }
 
 int
-evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
+evfs_file_read(evfs_client * client, EvfsFilereference * file, char *bytes,
                long size)
 {
 	printf("evfs_fs_trash.c read - STUB\n");	
@@ -297,7 +297,7 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
 }
 
 int
-evfs_file_write(evfs_filereference * file, char *bytes, long size)
+evfs_file_write(EvfsFilereference * file, char *bytes, long size)
 {
 	if (file->plugin) {
 		return (*EVFS_PLUGIN_FILE(posix_plugin)->functions->evfs_file_write) (file, bytes, size);
@@ -307,7 +307,7 @@ evfs_file_write(evfs_filereference * file, char *bytes, long size)
 	}
 }
 
-void evfs_file_notify_create(evfs_filereference* ref)
+void evfs_file_notify_create(EvfsFilereference* ref)
 {
 	if (next_trash_file) {
 		free(next_trash_file);
@@ -319,14 +319,14 @@ void evfs_file_notify_create(evfs_filereference* ref)
 
 	}
 	next_trash_file = evfs_fs_trash_filename_get(ref);
-	next_trash_path = evfs_filereference_to_string(ref);
+	next_trash_path = EvfsFilereference_to_string(ref);
 	printf("Next trash path is : %s\n", next_trash_path);
 }
 
 int
-evfs_file_create(evfs_filereference * file)
+evfs_file_create(EvfsFilereference * file)
 {	
-	evfs_filereference* file_trash;
+	EvfsFilereference* file_trash;
 	char* pos;
 	char* rewrite_parent;
 	char* parent_dir;
@@ -374,12 +374,12 @@ evfs_file_create(evfs_filereference * file)
 }
 
 int
-evfs_file_mkdir(evfs_filereference * file)
+evfs_file_mkdir(EvfsFilereference * file)
 {
 	char* pos;
 	char* rewrite_parent;
 	char* parent_dir;
-	evfs_filereference* par;
+	EvfsFilereference* par;
 
 	/*Check if this file lives in a directory other than '/'*/
 	if ( (pos = strchr(file->path+1, '/'))) {

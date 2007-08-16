@@ -1,50 +1,50 @@
 #ifndef __EVFS_COMMANDS_H_
 #define __EVFS_COMMANDS_H_
 
-long evfs_monitor_add(evfs_connection * conn, evfs_filereference * ref);
-long evfs_monitor_remove(evfs_connection * conn, evfs_filereference * ref);
-long evfs_client_file_remove(evfs_connection * conn, evfs_filereference * ref);
-long evfs_client_file_rename(evfs_connection * conn, evfs_filereference * from,
-                             evfs_filereference * to);
-long evfs_client_file_stat(evfs_connection * conn, evfs_filereference * file);
-long evfs_client_dir_list(evfs_connection * conn, evfs_filereference * file);
-long evfs_client_file_open(evfs_connection * conn, evfs_filereference * file);
-long evfs_client_file_copy(evfs_connection * conn, evfs_filereference * from,
-                           evfs_filereference * to);
+long evfs_monitor_add(evfs_connection * conn, EvfsFilereference * ref);
+long evfs_monitor_remove(evfs_connection * conn, EvfsFilereference * ref);
+long evfs_client_file_remove(evfs_connection * conn, EvfsFilereference * ref);
+long evfs_client_file_rename(evfs_connection * conn, EvfsFilereference * from,
+                             EvfsFilereference * to);
+long evfs_client_file_stat(evfs_connection * conn, EvfsFilereference * file);
+long evfs_client_dir_list(evfs_connection * conn, EvfsFilereference * file);
+long evfs_client_file_open(evfs_connection * conn, EvfsFilereference * file);
+long evfs_client_file_copy(evfs_connection * conn, EvfsFilereference * from,
+                           EvfsFilereference * to);
 long evfs_client_file_copy_multi(evfs_connection * conn, Ecore_List* files,
-				evfs_filereference* to);
+				EvfsFilereference* to);
 long 
 evfs_client_file_move_multi(evfs_connection * conn, Ecore_List* files,
-				evfs_filereference* to);
+				EvfsFilereference* to);
 long evfs_client_file_trash_restore(evfs_connection * conn, Ecore_List* files);
-long evfs_client_file_move(evfs_connection * conn, evfs_filereference * from,
-                           evfs_filereference * to);
-long evfs_client_file_read(evfs_connection * conn, evfs_filereference * file,
+long evfs_client_file_move(evfs_connection * conn, EvfsFilereference * from,
+                           EvfsFilereference * to);
+long evfs_client_file_read(evfs_connection * conn, EvfsFilereference * file,
                            int read_size);
 long evfs_client_operation_respond(evfs_connection * conn, long opid,
                                    evfs_operation_response response);
 
-long evfs_client_directory_create(evfs_connection * conn, evfs_filereference * file);
+long evfs_client_directory_create(evfs_connection * conn, EvfsFilereference * file);
 
 long 
-evfs_client_metadata_retrieve(evfs_connection * conn, evfs_filereference* file );
+evfs_client_metadata_retrieve(evfs_connection * conn, EvfsFilereference* file );
 
 long 
-evfs_client_metadata_string_file_set(evfs_connection * conn, evfs_filereference* file, char* key,char* value );
+evfs_client_metadata_string_file_set(evfs_connection * conn, EvfsFilereference* file, char* key,char* value );
 
 long 
-evfs_client_metadata_string_file_get(evfs_connection * conn, evfs_filereference* file, char* key );
+evfs_client_metadata_string_file_get(evfs_connection * conn, EvfsFilereference* file, char* key );
 
 long 
 evfs_client_metadata_groups_get(evfs_connection * conn);
 
 long 
-evfs_client_metadata_group_file_add(evfs_connection * conn, evfs_filereference* ref, char* group);
+evfs_client_metadata_group_file_add(evfs_connection * conn, EvfsFilereference* ref, char* group);
 
 long 
-evfs_client_metadata_group_file_remove(evfs_connection * conn, evfs_filereference* ref, char* group);
+evfs_client_metadata_group_file_remove(evfs_connection * conn, EvfsFilereference* ref, char* group);
 
 long 
-evfs_client_auth_send(evfs_connection* conn, evfs_filereference* ref, char* user, char* password);
+evfs_client_auth_send(evfs_connection* conn, EvfsFilereference* ref, char* user, char* password);
 
 #endif

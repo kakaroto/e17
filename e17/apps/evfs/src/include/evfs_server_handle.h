@@ -1,10 +1,10 @@
 #ifndef _EVFS_SERVER_HANDLE_H_
 #define _EVFS_SERVER_HANDLE_H_
 
-int evfs_uri_open(evfs_client * client, evfs_filereference * uri);
-int evfs_uri_read(evfs_client * client, evfs_filereference * uri, char *bytes,
+int evfs_uri_open(evfs_client * client, EvfsFilereference * uri);
+int evfs_uri_read(evfs_client * client, EvfsFilereference * uri, char *bytes,
                   long size);
-int evfs_uri_close(evfs_client * client, evfs_filereference * uri);
+int evfs_uri_close(evfs_client * client, EvfsFilereference * uri);
 
 void evfs_handle_monitor_start_command(evfs_client * client,
                                        evfs_command * command);

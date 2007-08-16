@@ -42,7 +42,7 @@
 
 #define EVFS_PLUGIN_VFOLDER_TRASH_ID "/Trash"
 
-void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list);
+void evfs_vfolder_list(EvfsFilereference* ref, Ecore_List** list);
 static char* evfs_home_dir;
 static char evfs_trash_home[PATH_MAX];
 
@@ -67,7 +67,7 @@ evfs_plugin_vfolder_root_get() {
 }
 
 
-void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
+void evfs_vfolder_list(EvfsFilereference* ref, Ecore_List** list)
 {
 	Ecore_List* info_files;
 	char* file;
@@ -76,7 +76,7 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 	info_files = ecore_file_ls(evfs_trash_home);
 
 	while ( (file = ecore_list_first_remove(info_files))) {
-		evfs_filereference* ref;
+		EvfsFilereference* ref;
 		char* pos;
 		
 		snprintf(parser, PATH_MAX, "%s/%s", evfs_trash_home, file);

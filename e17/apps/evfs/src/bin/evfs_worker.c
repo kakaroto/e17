@@ -131,14 +131,14 @@ int evfs_handle_command(evfs_client * client, evfs_command * command)
 	break;
 
      case EVFS_CMD_METADATA_FILE_SET:
-	printf("Key/value: %s -> %s\n", command->file_command.ref, command->file_command.ref2);
+	printf("Key/value: %s -> %s\n", command->file_command->ref, command->file_command->ref2);
 	evfs_handle_metadata_string_file_set_command(client,command, 
-			command->file_command.ref, command->file_command.ref2);
+			command->file_command->ref, command->file_command->ref2);
 	break;
      case EVFS_CMD_METADATA_FILE_GET:
-	printf("Requested metadata retrieval.. key:%s\n", command->file_command.ref);
+	printf("Requested metadata retrieval.. key:%s\n", command->file_command->ref);
 	evfs_handle_metadata_string_file_get_command(client,command, 
-			command->file_command.ref);	
+			command->file_command->ref);	
 	break;
 
      case EVFS_CMD_METADATA_GROUPS_GET:
@@ -201,27 +201,23 @@ ipc_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 	   printf("Our parent client has disconnected, suicide time\n");
 	   ecore_main_loop_quit();
 	} else {	
-	   /*printf("Got server data in fork!: PID: %d\n", getpid());*/
+	   evfs_command* command;
+	   printf("Got server data in fork!: PID: %d\n", getpid());
 
 	   ecore_ipc_message *msg =
 	      ecore_ipc_message_new(e->major, e->minor, e->ref, e->ref_to, e->response,
                             e->data, e->size);
 
-	   if (!worker_client->prog_command) {
-	        worker_client->prog_command = evfs_command_new();
-	   }
-
 	   /*True == command finished */
-	   if (evfs_process_incoming_command(evfs_server_get(), worker_client->prog_command, msg))
+	   if ((command = evfs_process_incoming_command(evfs_server_get(), msg)))
 	     {
 	        evfs_command_client *com_cli = NEW(evfs_command_client);
 	
 	        com_cli->client = worker_client;
-	        com_cli->command = worker_client->prog_command;
-	        worker_client->prog_command = NULL;
+	        com_cli->command = command;
 	        
 		ecore_list_append(server->incoming_command_list, com_cli);
-		/*printf("Finished processing command in fork\n");*/
+		printf("Finished processing command in fork\n");
 	     }
 
 	   free(msg);
@@ -529,8 +525,11 @@ main(int argc, char **argv)
                                 NULL);
    worker_client->master = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_WOR_TITLE, 0,
                                  NULL);
+   /*We're going to be sending *quite* a lot of data*/
+   ecore_ipc_server_data_size_max_set(worker_client->master,1000000);
 
     printf("Created new worker, ID: %d\n", worker_client->id);
+    printf("Connected to %p\n", worker_client->master);
    ecore_main_loop_begin();
 
    return 0;

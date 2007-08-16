@@ -1,9 +1,9 @@
 #include "evfs.h"
 
-static evfs_filereference* empty_filereference = NULL;
+static EvfsFilereference* empty_filereference = NULL;
 
 int
-evfs_file_path_compare(evfs_filereference * file1, evfs_filereference * file2)
+evfs_file_path_compare(EvfsFilereference * file1, EvfsFilereference * file2)
 {
    return strcasecmp(file1->path, file2->path);
 
@@ -14,7 +14,7 @@ evfs_file_list_sort(Ecore_List * file_list)
 {
 
    Ecore_Sheap *heap;
-   evfs_filereference *f;
+   EvfsFilereference *f;
 
    /*
     * Push the data into a heap.
@@ -42,7 +42,7 @@ evfs_file_list_sort(Ecore_List * file_list)
 }
 
 
-int evfs_filereference_equal_is(evfs_filereference* file1, evfs_filereference* file2)
+int EvfsFilereference_equal_is(EvfsFilereference* file1, EvfsFilereference* file2)
 {
 	int equal = 1;
 
@@ -53,16 +53,16 @@ int evfs_filereference_equal_is(evfs_filereference* file1, evfs_filereference* f
 		if ( (file1->parent && !file2->parent)  || (file2->parent && !file1->parent))
 			equal = 0;
 		else if (file1 ->parent && file2->parent)
-			equal = evfs_filereference_equal_is(file1->parent, file2->parent);
+			equal = EvfsFilereference_equal_is(file1->parent, file2->parent);
 	}
 
 	return equal;
 }
 
-evfs_filereference* evfs_empty_file_get()
+EvfsFilereference* evfs_empty_file_get()
 {
 	if (!empty_filereference) {
-		evfs_filereference* ref = calloc(1,sizeof(evfs_filereference));
+		EvfsFilereference* ref = calloc(1,sizeof(EvfsFilereference));
 		ref->path = "/";
 		ref->plugin_uri = "";
 
@@ -72,3 +72,4 @@ evfs_filereference* evfs_empty_file_get()
 
 	return empty_filereference;
 }
+

@@ -63,10 +63,10 @@ octal(const char *str, int len)
    return ret;
 }
 
-evfs_filereference *
-evfs_file_top_level_find(evfs_filereference * file)
+EvfsFilereference *
+evfs_file_top_level_find(EvfsFilereference * file)
 {
-   evfs_filereference *top = file;
+   EvfsFilereference *top = file;
 
    while (top->parent)
      {
@@ -83,13 +83,13 @@ int evfs_file_rename(char *src, char *dst);
 int evfs_client_disconnect(evfs_client * client);
 int evfs_monitor_start(evfs_client * client, evfs_command * command);
 int evfs_monitor_stop(evfs_client * client, evfs_command * command);
-int evfs_file_open(evfs_client * client, evfs_filereference * file);
-int evfs_file_close(evfs_filereference * file);
+int evfs_file_open(evfs_client * client, EvfsFilereference * file);
+int evfs_file_close(EvfsFilereference * file);
 int evfs_file_stat(evfs_command * command, struct stat *file_stat, int);
-int evfs_file_seek(evfs_filereference * file, long offset, int whence);
-int evfs_file_read(evfs_filereference * file, char *bytes, long size);
-int evfs_file_write(evfs_filereference * file, char *bytes, long size);
-int evfs_file_create(evfs_filereference * file);
+int evfs_file_seek(EvfsFilereference * file, long offset, int whence);
+int evfs_file_read(EvfsFilereference * file, char *bytes, long size);
+int evfs_file_write(EvfsFilereference * file, char *bytes, long size);
+int evfs_file_create(EvfsFilereference * file);
 void evfs_dir_list(evfs_client * client, evfs_command * command,
                    Ecore_List ** directory_list);
 
@@ -338,9 +338,9 @@ evfs_client_disconnect(evfs_client * client)
 }
 
 struct tar_file *
-evfs_tar_load_tar(evfs_client * client, evfs_filereference * ref)
+evfs_tar_load_tar(evfs_client * client, EvfsFilereference * ref)
 {
-   evfs_filereference *p_ref;
+   EvfsFilereference *p_ref;
    union TARPET_block block;
 
    struct tar_file *tar = tar_file_new();
@@ -431,7 +431,7 @@ evfs_dir_list(evfs_client * client, evfs_command* command,
    Ecore_List *files = ecore_list_new();
    char *key;
 
-   evfs_filereference* ref = command->file_command.files[0];
+   EvfsFilereference* ref = evfs_command_first_file_get(command);
 
    printf("Listing tar file dir: '%s'\n", ref->path);
 
@@ -450,7 +450,7 @@ evfs_dir_list(evfs_client * client, evfs_command* command,
         keys = ecore_hash_keys(file->hierarchy);
         while ((key = ecore_list_next(keys)))
           {
-             evfs_filereference *reference = NEW(evfs_filereference);
+             EvfsFilereference *reference = NEW(EvfsFilereference);
              int size = 0;
 
              ele = ecore_hash_get(file->hierarchy, key);
@@ -476,7 +476,7 @@ evfs_dir_list(evfs_client * client, evfs_command* command,
              ecore_list_first_goto(keys);
              while ((key = ecore_list_next(keys)))
                {
-                  evfs_filereference *reference = NEW(evfs_filereference);
+                  EvfsFilereference *reference = NEW(EvfsFilereference);
                   int size = 0;
 
                   ele_new = ecore_hash_get(ele->children, key);
@@ -506,12 +506,11 @@ evfs_file_stat(evfs_command * command, struct stat *file_stat, int number)
    struct tar_element *ele;
 
    printf("Looking for file '%s'\n",
-          evfs_file_top_level_find(command->file_command.files[number])->path);
+          evfs_file_top_level_find(evfs_command_nth_file_get(command,number)));
    if (!
        (file =
         ecore_hash_get(tar_cache,
-                       evfs_file_top_level_find(command->file_command.
-                                                files[number])->path)))
+                       evfs_file_top_level_find(evfs_command_nth_file_get(command,number)))))
      {
         printf("Could not find file in lookup ref\n");
 
@@ -521,7 +520,7 @@ evfs_file_stat(evfs_command * command, struct stat *file_stat, int number)
         /*printf("located tar file in cache");*/
         ele =
            ecore_hash_get(file->link_in,
-                          command->file_command.files[number]->path);
+                          evfs_command_nth_file_get(command,number)->path);
 
         if (ele)
           {
@@ -531,7 +530,7 @@ evfs_file_stat(evfs_command * command, struct stat *file_stat, int number)
         else
           {
              printf("Couldn't locate file '%s' in tar file\n",
-                    command->file_command.files[number]->path);
+                    evfs_command_nth_file_get(command,number)->path);
           }
      }
 

@@ -41,7 +41,7 @@
 
 #define EVFS_PLUGIN_VFOLDER_GROUPS_ID "/Groups"
 
-void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list);
+void evfs_vfolder_list(EvfsFilereference* ref, Ecore_List** list);
 
 evfs_plugin_functions_vfolder *
 evfs_plugin_init()
@@ -59,7 +59,7 @@ evfs_plugin_vfolder_root_get() {
 }
 
 
-void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
+void evfs_vfolder_list(EvfsFilereference* ref, Ecore_List** list)
 {
 	char* path = ref->path;
 	
@@ -67,7 +67,7 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 		   Evas_List* group_list;
 		   Evas_List* iter;
 		   char assemble[PATH_MAX];
-		   evfs_metadata_group_header* g;
+		   EvfsMetadataGroup* g;
 		   
 		   /*Get group list, and return*/
 		   group_list = evfs_metadata_groups_get();
@@ -78,7 +78,7 @@ void evfs_vfolder_list(evfs_filereference* ref, Ecore_List** list)
 			   snprintf(assemble, sizeof(assemble), "%s/%s", 
 					   EVFS_PLUGIN_VFOLDER_GROUPS_ID, g->name);
 			   
-		   	   ref = NEW(evfs_filereference);
+		   	   ref = NEW(EvfsFilereference);
 			   ref->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
 			   ref->path = strdup(assemble);
 			   if (g->visualhint) ref->attach = strdup(g->visualhint);

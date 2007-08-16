@@ -795,13 +795,13 @@ sftp_exe_data(void *data, int type, void *event)
 
 void
 evfs_dir_list(evfs_client * client, evfs_command* command, Ecore_List ** directory_list);
-int evfs_file_open(evfs_client * client, evfs_filereference * file);
-int evfs_file_close(evfs_filereference * file);
-int evfs_file_seek(evfs_filereference * file, long offset, int whence);
-int evfs_file_read(evfs_client * client, evfs_filereference * file,
+int evfs_file_open(evfs_client * client, EvfsFilereference * file);
+int evfs_file_close(EvfsFilereference * file);
+int evfs_file_seek(EvfsFilereference * file, long offset, int whence);
+int evfs_file_read(evfs_client * client, EvfsFilereference * file,
                    char *bytes, long size);
-int evfs_file_write(evfs_filereference * file, char *bytes, long size);
-int evfs_file_create(evfs_filereference * file);
+int evfs_file_write(EvfsFilereference * file, char *bytes, long size);
+int evfs_file_create(EvfsFilereference * file);
 int evfs_file_remove(char *file);
 int evfs_file_stat(evfs_command* command, struct stat *dst_stat, int);
 
@@ -869,7 +869,7 @@ void sftp_split_host_path(char* input, char** host, char** path)
 }
 
 int
-evfs_file_create(evfs_filereference* file) 
+evfs_file_create(EvfsFilereference* file) 
 {
 	return evfs_file_open(NULL, file);
 }
@@ -881,7 +881,7 @@ evfs_file_stat(evfs_command* command, struct stat *dst_stat, int i)
 	char* host, *path;
 	SftpGenericHandle* handle;
 
-	sftp_split_host_path(command->file_command.files[i]->path, &host, &path);
+	sftp_split_host_path(evfs_command_nth_file_get(command,i)->path, &host, &path);
 
 	if ( !(conn = sftp_get_connection_for_host(host))) {
 		conn = sftp_connect(host);
@@ -916,7 +916,7 @@ evfs_file_stat(evfs_command* command, struct stat *dst_stat, int i)
 	
 }
 
-int evfs_file_read(evfs_client * client, evfs_filereference * file,
+int evfs_file_read(evfs_client * client, EvfsFilereference * file,
                    char *bytes, long size)
 {
 	SftpConnection* conn;
@@ -973,7 +973,7 @@ int evfs_file_read(evfs_client * client, evfs_filereference * file,
 }
 
 int
-evfs_file_open(evfs_client * client, evfs_filereference * file) 
+evfs_file_open(evfs_client * client, EvfsFilereference * file) 
 {
 	SftpConnection* conn;
 	char* host, *path;
@@ -1023,7 +1023,7 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 	return file->fd;
 }
 
-int evfs_file_close(evfs_filereference * file) {
+int evfs_file_close(EvfsFilereference * file) {
 	SftpConnection* conn;
 	char* host, *path;
 	SftpGenericHandle* handle;
@@ -1065,7 +1065,7 @@ int evfs_file_close(evfs_filereference * file) {
 
 }
 
-int evfs_file_write(evfs_filereference * file, char *bytes, long size) {
+int evfs_file_write(EvfsFilereference * file, char *bytes, long size) {
 	SftpOpenHandle* handle;
 
 
@@ -1102,7 +1102,7 @@ evfs_dir_list(evfs_client * client, evfs_command* command,
 	char* host, *schar;
 	SftpConnection* conn = NULL;
 
-        evfs_filereference* iref = command->file_command.files[0];
+        EvfsFilereference* iref = evfs_command_first_file_get(command);
 
 	sftp_split_host_path(iref->path, &host,&schar);
 
@@ -1142,7 +1142,7 @@ evfs_dir_list(evfs_client * client, evfs_command* command,
 
 	*directory_list = ecore_list_new();
 	while ( (file = ecore_list_first_remove(rhandle->file_list))) {
-		evfs_filereference* ref = NEW(evfs_filereference);
+		EvfsFilereference* ref = NEW(EvfsFilereference);
 		ref->path = malloc(strlen(host) + 1 + strlen(schar) + strlen(file->filename) + 2);
 		snprintf(ref->path, strlen(host) + 1 + strlen(schar) + strlen(file->filename) + 2, "/%s%s/%s", host, schar, file->filename);
 

@@ -12,7 +12,7 @@ typedef struct evfs_plugin_functions_meta
 
 typedef struct evfs_plugin_functions_vfolder
 {
-   void (*evfs_vfolder_list)(evfs_filereference* ref, Ecore_List** list);
+   void (*evfs_vfolder_list)(EvfsFilereference* ref, Ecore_List** list);
 } evfs_plugin_functions_vfolder;
 
 typedef struct evfs_plugin_functions
@@ -28,19 +28,19 @@ typedef struct evfs_plugin_functions
    void (*evfs_dir_list) (evfs_client * client, evfs_command * command,
                           Ecore_List ** directory_list);
 
-   int (*evfs_file_open) (evfs_client * client, evfs_filereference * command);
-   int (*evfs_file_seek) (evfs_filereference * command, long offset,
+   int (*evfs_file_open) (evfs_client * client, EvfsFilereference * command);
+   int (*evfs_file_seek) (EvfsFilereference * command, long offset,
                           int whence);
-   int (*evfs_file_read) (evfs_client * client, evfs_filereference * command,
+   int (*evfs_file_read) (evfs_client * client, EvfsFilereference * command,
                           char *bytes, long size);
-   int (*evfs_file_write) (evfs_filereference * command, char *bytes,
+   int (*evfs_file_write) (EvfsFilereference * command, char *bytes,
                            long size);
-   int (*evfs_file_close) (evfs_filereference * command);
+   int (*evfs_file_close) (EvfsFilereference * command);
 
-   void (*evfs_file_notify_create) (evfs_filereference* file);
-   int (*evfs_file_create) (evfs_filereference * file);
+   void (*evfs_file_notify_create) (EvfsFilereference* file);
+   int (*evfs_file_create) (EvfsFilereference * file);
 
-   int (*evfs_file_mkdir) (evfs_filereference * file);
+   int (*evfs_file_mkdir) (EvfsFilereference * file);
 
    void (*evfs_auth_push) (evfs_command* command);
 

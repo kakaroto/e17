@@ -47,16 +47,16 @@ int evfs_file_rename(evfs_client * client, evfs_command * command);
 int evfs_client_disconnect(evfs_client * client);
 int evfs_monitor_start(evfs_client * client, evfs_command * command);
 int evfs_monitor_stop(evfs_client * client, evfs_command * command);
-int evfs_file_open(evfs_client * client, evfs_filereference * file);
-int evfs_file_close(evfs_filereference * file);
+int evfs_file_open(evfs_client * client, EvfsFilereference * file);
+int evfs_file_close(EvfsFilereference * file);
 int evfs_file_stat(evfs_command * command, struct stat *file_stat, int);
 int evfs_file_lstat(evfs_command * command, struct stat *file_stat, int);
-int evfs_file_seek(evfs_filereference * file, long offset, int whence);
-int evfs_file_read(evfs_client * client, evfs_filereference * file,
+int evfs_file_seek(EvfsFilereference * file, long offset, int whence);
+int evfs_file_read(evfs_client * client, EvfsFilereference * file,
                    char *bytes, long size);
-int evfs_file_write(evfs_filereference * file, char *bytes, long size);
-int evfs_file_create(evfs_filereference * file);
-int evfs_file_mkdir(evfs_filereference * file);
+int evfs_file_write(EvfsFilereference * file, char *bytes, long size);
+int evfs_file_create(EvfsFilereference * file);
+int evfs_file_mkdir(EvfsFilereference * file);
 void evfs_dir_list(evfs_client * client, evfs_command* command,
                    Ecore_List ** directory_list);
 
@@ -208,7 +208,7 @@ evfs_file_monitor_fam_handler(void *data, Ecore_File_Monitor * em,
                     path);
 
              evfs_file_monitor_event_create(mon->client, type, path, filetype, "file");  /*Find a better way to do the plugin */
-             /*We should really use an evfs_filereference here */
+             /*We should really use an EvfsFilereference here */
           }
      }
 
@@ -238,13 +238,13 @@ int
 posix_monitor_add(evfs_client * client, evfs_command * command)
 {
    Ecore_List *mon_list =
-      ecore_hash_get(posix_monitor_hash, command->file_command.files[0]->path);
+      ecore_hash_get(posix_monitor_hash, evfs_command_first_file_get(command)->path);
    evfs_file_monitor *mon;
    evfs_file_monitor *old;
 
    mon = calloc(1, sizeof(evfs_file_monitor));
    mon->client = client;
-   mon->monitor_path = strdup(command->file_command.files[0]->path);
+   mon->monitor_path = strdup(evfs_command_first_file_get(command)->path);
 
    /*Check if we are already monitoring, if not, make a new list of monitors.. */
    if (!mon_list)
@@ -295,14 +295,14 @@ int
 evfs_monitor_start(evfs_client * client, evfs_command * command)
 {
 
-   /*printf("Received monitor request at plugin for %s..\n",command->file_command.files[0]->path ); */
+   /*printf("Received monitor request at plugin for %s..\n",command->file_command->files[0]->path ); */
    return posix_monitor_add(client, command);
 }
 
 int
 evfs_monitor_stop(evfs_client * client, evfs_command * command)
 {
-   evfs_posix_monitor_remove(client, command->file_command.files[0]->path);
+   evfs_posix_monitor_remove(client, evfs_command_first_file_get(command)->path);
    return 0;
 }
 
@@ -381,8 +381,8 @@ evfs_file_remove(char *src)
 int
 evfs_file_rename(evfs_client * client, evfs_command * command)
 {
-   evfs_filereference *from = command->file_command.files[0];
-   evfs_filereference *to = command->file_command.files[1];
+   EvfsFilereference *from = evfs_command_first_file_get(command);
+   EvfsFilereference *to = evfs_command_second_file_get(command);
 
    printf("Renaming %s to %s\n", from->path, to->path);
    return evfs_misc_rename(from->path, to->path);
@@ -394,9 +394,9 @@ evfs_file_stat(evfs_command * command, struct stat *file_stat, int file_number)
    int res;
 	
    #ifdef  __USE_LARGEFILE64
-   res = stat64(command->file_command.files[file_number]->path, file_stat);
+   res = stat64(evfs_command_nth_file_get(command,file_number)->path, file_stat);
    #else
-   res = stat(command->file_command.files[file_number]->path, file_stat);
+   res = stat(evfs_command_nth_file_get(command,file_number)->path, file_stat);
    #endif
 
    if (!res)
@@ -409,7 +409,7 @@ int
 evfs_file_lstat(evfs_command * command, struct stat *file_stat, int file_number)
 {
    //printf("Getting file stat...\n");
-   int res = lstat(command->file_command.files[file_number]->path, file_stat);
+   int res = lstat(evfs_command_nth_file_get(command,file_number)->path, file_stat);
 
    //printf("File size: %d\n", file_stat->st_size);
    //
@@ -421,7 +421,7 @@ evfs_file_lstat(evfs_command * command, struct stat *file_stat, int file_number)
 }
 
 int
-evfs_file_open(evfs_client * client, evfs_filereference * file)
+evfs_file_open(evfs_client * client, EvfsFilereference * file)
 {
    int fd;
    
@@ -438,7 +438,7 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 }
 
 int
-evfs_file_close(evfs_filereference * file)
+evfs_file_close(EvfsFilereference * file)
 {
    int res;
 
@@ -451,7 +451,7 @@ evfs_file_close(evfs_filereference * file)
 }
 
 int
-evfs_file_seek(evfs_filereference * file, long offset, int whence)
+evfs_file_seek(EvfsFilereference * file, long offset, int whence)
 {
    /*printf ("Seek in file '%s' forward by '%d'\n", file->path, offset); */
 
@@ -461,7 +461,7 @@ evfs_file_seek(evfs_filereference * file, long offset, int whence)
 }
 
 int
-evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
+evfs_file_read(evfs_client * client, EvfsFilereference * file, char *bytes,
                long size)
 {
    int bytes_read;
@@ -484,7 +484,7 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
 }
 
 int
-evfs_file_write(evfs_filereference * file, char *bytes, long size)
+evfs_file_write(EvfsFilereference * file, char *bytes, long size)
 {
    ssize_t i;
 
@@ -497,7 +497,7 @@ evfs_file_write(evfs_filereference * file, char *bytes, long size)
 }
 
 int
-evfs_file_create(evfs_filereference * file)
+evfs_file_create(EvfsFilereference * file)
 {
    printf ("Creating file '%s'\n", file->path);
 
@@ -516,7 +516,7 @@ evfs_dir_list(evfs_client * client, evfs_command* command,
    Ecore_List *files = ecore_list_new();
    char full_name[PATH_MAX];
 
-   evfs_filereference* file = command->file_command.files[0];
+   EvfsFilereference* file = evfs_command_first_file_get(command);
 
    dir = opendir(file->path);
    while ((de = readdir(dir)))
@@ -524,7 +524,7 @@ evfs_dir_list(evfs_client * client, evfs_command* command,
         if (strcmp(de->d_name, ".") && strcmp(de->d_name, "..")
             && strcmp(de->d_name, "."))
           {
-             evfs_filereference *ref = NEW(evfs_filereference);
+             EvfsFilereference *ref = NEW(EvfsFilereference);
 
              snprintf(full_name, 1024, "%s/%s",
                       file->path, de->d_name);
@@ -550,7 +550,7 @@ evfs_dir_list(evfs_client * client, evfs_command* command,
 }
 
 int
-evfs_file_mkdir(evfs_filereference * file)
+evfs_file_mkdir(EvfsFilereference * file)
 {
    return mkdir(file->path, S_IRWXU);
 }

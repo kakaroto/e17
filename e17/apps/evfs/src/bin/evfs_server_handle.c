@@ -16,7 +16,7 @@
 /*Move these functions somewhere*/
 
 int
-evfs_uri_open(evfs_client * client, evfs_filereference * uri)
+evfs_uri_open(evfs_client * client, EvfsFilereference * uri)
 {
    evfs_plugin *plugin =
       evfs_get_plugin_for_uri(client->server, uri->plugin_uri);
@@ -34,7 +34,7 @@ evfs_uri_open(evfs_client * client, evfs_filereference * uri)
 }
 
 int
-evfs_uri_close(evfs_client * client, evfs_filereference * uri)
+evfs_uri_close(evfs_client * client, EvfsFilereference * uri)
 {
    evfs_plugin *plugin =
       evfs_get_plugin_for_uri(client->server, uri->plugin_uri);
@@ -53,7 +53,7 @@ evfs_uri_close(evfs_client * client, evfs_filereference * uri)
 }
 
 int
-evfs_uri_read(evfs_client * client, evfs_filereference * uri, char *bytes,
+evfs_uri_read(evfs_client * client, EvfsFilereference * uri, char *bytes,
               long size)
 {
    evfs_plugin *plugin =
@@ -77,11 +77,10 @@ evfs_handle_monitor_start_command(evfs_client * client, evfs_command * command)
 {
    /*First get the plugin responsible for this file */
 
-   if (command->file_command.num_files > 0)
+   if (command->file_command->num_files > 0)
      {
         evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
-                                                      command->file_command.
-                                                      files[0]->plugin_uri);
+                                                      evfs_command_first_file_get(command)->plugin_uri);
 
         if (!plugin)
           {
@@ -91,7 +90,7 @@ evfs_handle_monitor_start_command(evfs_client * client, evfs_command * command)
           {
              printf
                 ("Requesting a file monitor from this plugin for uri type '%s'\n",
-                 command->file_command.files[0]->plugin_uri);
+                 evfs_command_first_file_get(command)->plugin_uri);
              (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_monitor_start) (client, command);
 
           }
@@ -109,11 +108,10 @@ evfs_handle_monitor_stop_command(evfs_client * client, evfs_command * command)
 
    void (*evfs_monitor_start) (evfs_client * client, evfs_command * command);
 
-   if (command->file_command.num_files > 0)
+   if (evfs_command_file_count_get(command) > 0)
      {
         evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
-                                                      command->file_command.
-                                                      files[0]->plugin_uri);
+                                                      evfs_command_first_file_get(command)->plugin_uri);
 
         if (!plugin)
           {
@@ -123,7 +121,7 @@ evfs_handle_monitor_stop_command(evfs_client * client, evfs_command * command)
           {
              printf
                 ("Requesting a file monitor end from this plugin for uri type '%s'\n",
-                 command->file_command.files[0]->plugin_uri);
+                 evfs_command_first_file_get(command)->plugin_uri);
 
              evfs_monitor_start =
                 dlsym(plugin->dl_ref, EVFS_FUNCTION_MONITOR_STOP);
@@ -155,8 +153,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
 
 
    evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
-                                                 command->file_command.
-                                                 files[0]->plugin_uri);
+                                                 evfs_command_first_file_get(command)->plugin_uri);
    if (plugin)
      {
         (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_lstat) (command, &file_stat, 0);
@@ -166,7 +163,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
           {
 
 		  evfs_operation_remove_task_add(EVFS_OPERATION(op), 
-		       evfs_filereference_clone(command->file_command.files[0]),
+		       EvfsFilereference_clone(evfs_command_first_file_get(command)),
 		       file_stat);		
 		  
           }
@@ -177,7 +174,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
 
                   /*It's a directory, recurse into it */
                   Ecore_List *directory_list = NULL;
-                  evfs_filereference *file = NULL;
+                  EvfsFilereference *file = NULL;
 
                   /*First, we need a directory list... */
                   (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command,
@@ -186,13 +183,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
                     {
                        while ((file = ecore_list_first_remove(directory_list)))
                          {
-                            evfs_command *recursive_command = NEW(evfs_command);
-
-                            recursive_command->file_command.files =
-                               malloc(sizeof(evfs_filereference *) * 1);
-                            recursive_command->type = EVFS_CMD_REMOVE_FILE;
-                            recursive_command->file_command.files[0] = file;
-                            recursive_command->file_command.num_files = 1;
+                            evfs_command *recursive_command = evfs_file_command_single_build(file);
 
                             evfs_handle_file_remove_command(client,
                                                             recursive_command, root_command);
@@ -203,7 +194,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
                     }
 
 		  evfs_operation_remove_task_add(EVFS_OPERATION(op), 
-		       evfs_filereference_clone(command->file_command.files[0]),
+		       EvfsFilereference_clone(evfs_command_first_file_get(command)),
 		       file_stat);	
 
                }
@@ -211,7 +202,7 @@ evfs_handle_file_remove_command(evfs_client * client, evfs_command * command, ev
                {
                   printf("Not recursing - LINK directory!\n");
 		  evfs_operation_remove_task_add(EVFS_OPERATION(op), 
-		       evfs_filereference_clone(command->file_command.files[0]),
+		       EvfsFilereference_clone(evfs_command_first_file_get(command)),
 		       file_stat);	
                }
 
@@ -240,15 +231,14 @@ evfs_handle_file_rename_command(evfs_client * client, evfs_command * command)
    printf("At rename handle\n");
 
    evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
-                                                 command->file_command.
-                                                 files[0]->plugin_uri);
+                                                 evfs_command_first_file_get(command)->plugin_uri);
    if (plugin)
      {
         printf("Pointer here: %p\n", EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_rename);
 
         if (EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_rename)
           {
-             if (command->file_command.num_files == 2)
+             if (evfs_command_file_count_get(command) == 2)
                 (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_rename) (client, command);
              else
                 printf("ERR: Wrong number of files to rename\n");
@@ -264,13 +254,12 @@ evfs_handle_file_stat_command(evfs_client * client, evfs_command * command)
    struct stat file_stat;
 
    evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
-                                                 command->file_command.
-                                                 files[0]->plugin_uri);
+                                                 evfs_command_first_file_get(command)->plugin_uri);
    if (plugin && EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_stat )
      {
         (*(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_stat)) (command, &file_stat, 0);
 
-	/*printf("Size: %lld for '%s'\n", file_stat.st_size, command->file_command.files[0]->path);*/
+	/*printf("Size: %lld for '%s'\n", file_stat.st_size, command->file_command->files[0]->path);*/
 
         evfs_stat_event_create(client, command, &file_stat);
      }
@@ -282,18 +271,17 @@ evfs_handle_file_open_command(evfs_client * client, evfs_command * command)
 
    printf("At file open handler\n");
    printf("Looking for plugin for '%s'\n",
-          command->file_command.files[0]->plugin_uri);
+          evfs_command_first_file_get(command)->plugin_uri);
    evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
-                                                 command->file_command.
-                                                 files[0]->plugin_uri);
+                                                 evfs_command_first_file_get(command)->plugin_uri);
    if (plugin)
      {
         printf("Pointer here: %p\n", EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_open);
         (*(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_open)) (client,
-                                                command->file_command.files[0]);
+                                                evfs_command_first_file_get(command));
 
         fprintf(stderr, "Opened file, fd is: %d\n",
-                command->file_command.files[0]->fd);
+                evfs_command_first_file_get(command)->fd);
         evfs_open_event_create(client, command);
      }
 
@@ -305,23 +293,21 @@ evfs_handle_file_read_command(evfs_client * client, evfs_command * command)
    char *bytes;
    int b_read = 0;
 
-   //printf ("At file read handler, fd is: %d\n", command->file_command.files[0]->fd);
-   //printf ("Reading %d bytes\n", command->file_command.extra);
+   //printf ("At file read handler, fd is: %d\n", command->file_command->files[0]->fd);
+   //printf ("Reading %d bytes\n", command->file_command->extra);
 
-   bytes = malloc(sizeof(char) * command->file_command.extra);
+   bytes = malloc(sizeof(char) * command->file_command->extra);
 
-   //printf("Looking for plugin for '%s'\n", command->file_command.files[0]->plugin_uri);
+   //printf("Looking for plugin for '%s'\n", command->file_command->files[0]->plugin_uri);
    evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
-                                                 command->file_command.
-                                                 files[0]->plugin_uri);
+                                                 evfs_command_first_file_get(command)->plugin_uri);
    if (plugin)
      {
         //printf("Pointer here: %p\n", EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_read);
         b_read =
            (*(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_read)) (client,
-                                                   command->file_command.
-                                                   files[0], bytes,
-                                                   command->file_command.extra);
+                                                   evfs_command_first_file_get(command), bytes,
+                                                   command->file_command->extra);
 
         //printf("Bytes read: %d\n", b_read);
 
@@ -336,8 +322,7 @@ evfs_handle_dir_list_command(evfs_client * client, evfs_command * command)
 {
 
    evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
-                                                 command->file_command.
-                                                 files[0]->plugin_uri);
+                                                 evfs_command_first_file_get(command)->plugin_uri);
    if (plugin) {
         Ecore_List *directory_list = NULL;
         (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command, &directory_list);
@@ -349,7 +334,7 @@ evfs_handle_dir_list_command(evfs_client * client, evfs_command * command)
         }
   } else {
         printf("No plugin for '%s'\n",
-               command->file_command.files[0]->plugin_uri);
+               evfs_command_first_file_get(command)->plugin_uri);
   }
 }
 
@@ -362,14 +347,14 @@ void evfs_handle_directory_create_command(evfs_client* client, evfs_command* com
 	
        plugin =
        evfs_get_plugin_for_uri(client->server,
-                              command->file_command.files[0]->plugin_uri);
+                              evfs_command_first_file_get(command)->plugin_uri);
 	
 	if (plugin) {
 		printf("Making new directory '%s'",
-	        command->file_command.files[0]->path);
+	        evfs_command_first_file_get(command)->path);
 		  
 	        ret =
-	        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_mkdir) (command->file_command.files[0]);
+	        (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_mkdir) (evfs_command_first_file_get(command));
 		printf("....ret was %d\n", ret);
 	}
 }
@@ -400,7 +385,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
    int res;
    evfs_operation_files *op;
 
-   num_files = command->file_command.num_files;
+   num_files = evfs_command_file_count_get(command);
    printf("Num files at copy: %d\n", num_files);
 
    /* < 2 files, no copy, dude */
@@ -411,7 +396,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 
    dst_plugin =
      evfs_get_plugin_for_uri(client->server,
-    command->file_command.files[num_files-1]->plugin_uri);
+    evfs_command_nth_file_get(command, num_files-1)->plugin_uri);
 
    if (num_files > 2) {
 	   /*Check if >2 files, dest file is a dir*/
@@ -435,7 +420,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
    for (c_file=0;c_file < num_files - 1; c_file++) {
 	   plugin =
 	      evfs_get_plugin_for_uri(client->server,
-                 command->file_command.files[c_file]->plugin_uri);
+                 evfs_command_nth_file_get(command,c_file)->plugin_uri);
 	
 	   if (plugin && dst_plugin) {
 
@@ -459,26 +444,26 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 	           (*EVFS_PLUGIN_FILE(dst_plugin)->functions->evfs_file_lstat) (command, &dest_stat, num_files-1);
 
 		/*if (S_ISDIR(dest_stat.st_mode)) {
-			printf("Dest is a dir: %s\n", command->file_command.files[num_files-1]->path);
+			printf("Dest is a dir: %s\n", command->file_command->files[num_files-1]->path);
 			printf("Res: %d\n", res);
 		} else {
-			printf("Dest not a dir: %s://%s\n",  command->file_command.files[num_files-1]->plugin_uri,
-				command->file_command.files[num_files-1]->path);
+			printf("Dest not a dir: %s://%s\n",  command->file_command->files[num_files-1]->plugin_uri,
+				command->file_command->files[num_files-1]->path);
 			printf("Res: %d\n", res);
 		}*/
 
 	        if (!S_ISDIR(file_stat.st_mode)) {
-			  evfs_filereference* rewrite_dest = NULL;
+			  EvfsFilereference* rewrite_dest = NULL;
 
 			  rewrite_dest = 
-			     evfs_filereference_clone(command->file_command.files[num_files-1]); 
+			     EvfsFilereference_clone(evfs_command_nth_file_get(command,num_files-1)); 
 
 			  /*If dest_file exists, and is a dir - the dest file is rewritten
 			   * to be the original filename in the new dir*/
 			  if (res == EVFS_SUCCESS && S_ISDIR(dest_stat.st_mode)) {
 				evfs_command* new_command;
 				int final_len;
-				char *slashpos = strrchr(command->file_command.files[c_file]->path, '/');
+				char *slashpos = strrchr(evfs_command_nth_file_get(command,c_file)->path, '/');
 				printf("Filename is: %s\n", slashpos);
 				
 				
@@ -486,10 +471,10 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 				char *path_to = malloc(final_len);
 				
 				
-				if (strcmp(command->file_command.files[num_files-1]->path, "/")) 
-					snprintf(path_to, final_len , "%s%s", command->file_command.files[num_files-1]->path, slashpos);
+				if (strcmp(evfs_command_nth_file_get(command,num_files-1)->path, "/")) 
+					snprintf(path_to, final_len , "%s%s", evfs_command_nth_file_get(command,num_files-1)->path, slashpos);
 				else
-					snprintf(path_to, final_len , "%s%s", command->file_command.files[num_files-1]->path, slashpos+1);
+					snprintf(path_to, final_len , "%s%s", evfs_command_nth_file_get(command,num_files-1)->path, slashpos+1);
 				printf("Multi file dest dir rewrite path: %s\n", path_to);
 
 				free(rewrite_dest->path);
@@ -505,7 +490,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 			
 			  if (!S_ISLNK(file_stat.st_mode)) {
 				  evfs_operation_copy_task_add(EVFS_OPERATION(op), 
-				       evfs_filereference_clone(command->file_command.files[c_file]),
+				       EvfsFilereference_clone(evfs_command_nth_file_get(command,c_file)),
 				       rewrite_dest,
 				       file_stat, dest_stat, res);
 
@@ -517,7 +502,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 			  /*If we're a move, queue the delete of this dir..*/
 			  if (move) {
 			       evfs_operation_remove_task_add(EVFS_OPERATION(op), 
-			     	  evfs_filereference_clone(command->file_command.files[c_file]),
+			     	  EvfsFilereference_clone(evfs_command_nth_file_get(command,c_file)),
 				  file_stat);
 			  }
 
@@ -527,13 +512,13 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 		     int origlen;
 		     char* pos;
 
-		     evfs_filereference* newdir_rewrite;
+		     EvfsFilereference* newdir_rewrite;
 		     
-		     newdir_rewrite = evfs_filereference_clone(command->file_command.files[num_files-1]);
+		     newdir_rewrite = EvfsFilereference_clone(evfs_command_nth_file_get(command,num_files-1));
 		     if (command == root_command && S_ISDIR(dest_stat.st_mode)) {
 			     origlen = strlen(newdir_rewrite->path);
 			     printf("Origlen is: %d (%s)\n", origlen, newdir_rewrite->path);
-			     pos = strrchr(command->file_command.files[c_file]->path, '/');
+			     pos = strrchr(evfs_command_nth_file_get(command,c_file)->path, '/');
 			     printf("String after pos: '%s'\n", pos+1);
 			     newlen = strlen(newdir_rewrite->path)+1+strlen(pos+1)+1;
 			     printf("Newlen is: %d\n", newlen);
@@ -554,12 +539,12 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 		     
 		     
 	
-		     evfs_operation_mkdir_task_add(EVFS_OPERATION(op), evfs_filereference_clone(command->file_command.files[c_file]), newdir_rewrite);
+		     evfs_operation_mkdir_task_add(EVFS_OPERATION(op), EvfsFilereference_clone(evfs_command_nth_file_get(command,c_file)), newdir_rewrite);
 	
 	             /*First, we need a directory list... */
 
 		     /*We have to make a temp command - list expects first file in command to be list directory*/
-		     tmp_command = evfs_file_command_single_build(command->file_command.files[c_file]); 
+		     tmp_command = evfs_file_command_single_build(evfs_command_nth_file_get(command,c_file)); 
 		     
 	             (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, tmp_command,
 	                                                  &directory_list);
@@ -567,12 +552,12 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 		     evfs_cleanup_file_command(tmp_command);
 		     
 	             if (directory_list) {
-        	          evfs_filereference *file = NULL;
+        	          EvfsFilereference *file = NULL;
 
                 	  while ((file = ecore_list_first_remove(directory_list))) {
-	                       evfs_filereference *source = NEW(evfs_filereference);
-	                       evfs_filereference *dest = NEW(evfs_filereference);
-	                       evfs_command *recursive_command = NEW(evfs_command);
+	                       EvfsFilereference *source = NEW(EvfsFilereference);
+	                       EvfsFilereference *dest = NEW(EvfsFilereference);
+	                       evfs_command *recursive_command;
 	
         	               snprintf(destination_file, PATH_MAX, "%s%s",
                 	                newdir_rewrite->path,
@@ -580,19 +565,16 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 
         	               source->path = strdup(file->path);
 	                       source->plugin_uri =
-	                          strdup(command->file_command.files[c_file]->plugin_uri);
+	                          strdup(evfs_command_nth_file_get(command,c_file)->plugin_uri);
 	                       source->parent = NULL;   /*TODO - handle nested uris */
 
 	                       dest->path = strdup(destination_file);
 	                       dest->plugin_uri = strdup(newdir_rewrite->plugin_uri);
 	                       dest->parent = NULL;     /*TODO - handle nested uris */
 
-        	               recursive_command->file_command.files =
-	                          malloc(sizeof(evfs_filereference *) * 2);
-	                       recursive_command->type = EVFS_CMD_FILE_COPY;
-	                       recursive_command->file_command.files[0] = source;
-	                       recursive_command->file_command.files[1] = dest;
-        	               recursive_command->file_command.num_files = 2;
+			       recursive_command = evfs_file_command_single_build(source);
+			       evfs_file_command_file_add(recursive_command, dest);
+			       recursive_command->type = EVFS_CMD_FILE_COPY;
 
 	                       //printf("Copy file '%s' to %s\n", file->path, destination_file);
 	
@@ -608,7 +590,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 			  /*If we're a move, queue the delete of this dir (it should be empty - unless perms denied it....*/
 			  if (move) {
 			       evfs_operation_remove_task_add(EVFS_OPERATION(op), 
-			     	  evfs_filereference_clone(command->file_command.files[c_file]),
+			     	  EvfsFilereference_clone(evfs_command_nth_file_get(command,c_file)),
 				  file_stat);
 			  } //if
 	               }// root_if
@@ -616,8 +598,8 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 
      } else {
         printf("Could not get plugins for both source and dest: (%s:%s)\n",
-               command->file_command.files[c_file]->plugin_uri,
-               command->file_command.files[num_files-1]->plugin_uri);
+               evfs_command_nth_file_get(command,c_file)->plugin_uri,
+               evfs_command_nth_file_get(command,num_files-1)->plugin_uri);
      }
   } //for loop if
 
@@ -672,8 +654,8 @@ void evfs_handle_metadata_command(evfs_client* client, evfs_command* command)
 void evfs_handle_metadata_string_file_set_command(evfs_client* client __UNUSED__, 
 		evfs_command* command, char* key, char* value) 
 {
-	if (command->file_command.num_files > 0) {
-		evfs_metadata_file_set_key_value_string(command->file_command.files[0], key, value);
+	if (command->file_command->num_files > 0) {
+		evfs_metadata_file_set_key_value_string(evfs_command_first_file_get(command), key, value);
 	}
 }
 
@@ -681,8 +663,8 @@ void evfs_handle_metadata_string_file_get_command(evfs_client* client __UNUSED__
 		evfs_command* command, char* key) 
 {
 	char* value;
-	if (command->file_command.num_files > 0) {
-		value = evfs_metadata_file_get_key_value_string(command->file_command.files[0], key);
+	if (command->file_command->num_files > 0) {
+		value = evfs_metadata_file_get_key_value_string(evfs_command_first_file_get(command), key);
 	}
 }
 
@@ -698,15 +680,15 @@ void evfs_handle_metadata_groups_request_command(evfs_client* client, evfs_comma
 
 void evfs_handle_metadata_file_group_add(evfs_client* client, evfs_command* command)
 {
-	if (command->file_command.num_files > 0) {
-		evfs_metadata_group_header_file_add(command->file_command.files[0], command->file_command.ref);
+	if (command->file_command->num_files > 0) {
+		evfs_metadata_group_header_file_add(evfs_command_first_file_get(command), command->file_command->ref);
 	}
 }
 
 void evfs_handle_metadata_file_group_remove(evfs_client* client, evfs_command* command)
 {
-	if (command->file_command.num_files > 0) {
-		evfs_metadata_group_header_file_remove(command->file_command.files[0], command->file_command.ref);
+	if (command->file_command->num_files > 0) {
+		evfs_metadata_group_header_file_remove(evfs_command_first_file_get(command), command->file_command->ref);
 	}	
 }
 
@@ -715,13 +697,13 @@ void evfs_handle_trash_restore_command(evfs_client* client, evfs_command* comman
 	int c;
 	Ecore_Desktop* desk;
 	char path[PATH_MAX];
-	evfs_filereference *ref, *src, *dest;
+	EvfsFilereference *ref, *src, *dest;
 	char* pos;
 	char* pos2;
 	evfs_command* f_command;
 
-	for (c=0;c<command->file_command.num_files;c++) {
-		ref = command->file_command.files[c];
+	for (c=0;c<command->file_command->num_files;c++) {
+		ref = evfs_command_nth_file_get(command,c);
 		pos = strrchr(ref->path, '.');
 		pos2 = strrchr(ref->path, '/');
 
@@ -729,20 +711,17 @@ void evfs_handle_trash_restore_command(evfs_client* client, evfs_command* comman
 		snprintf(path, PATH_MAX, "file://%s/", evfs_trash_files_dir_get());
 		strncat(path, pos2+1, strlen(pos2+1) - strlen(pos));
 		
-		printf("Parsing '%s'\n", command->file_command.files[c]->path);
+		printf("Parsing '%s'\n", evfs_command_nth_file_get(command,c)->path);
 
 		/*Parse the ecore_desktop file*/
-		desk = ecore_desktop_get(command->file_command.files[c]->path,NULL);
+		desk = ecore_desktop_get(evfs_command_nth_file_get(command,c)->path,NULL);
 
 		src = evfs_parse_uri_single(path);
 		dest = evfs_parse_uri_single(desk->path);
 
-		f_command = NEW(evfs_command);
+		f_command = evfs_file_command_single_build(src);
+		evfs_file_command_file_add(f_command, dest);
 		f_command->type = EVFS_CMD_FILE_MOVE;
-		f_command->file_command.files = calloc(2, sizeof(evfs_filereference));
-		f_command->file_command.files[0] = src;
-		f_command->file_command.files[1] = dest;
-		f_command->file_command.num_files = 2;
 
 		printf("Original location: %s -- file: %s\n", desk->path, path);
 
@@ -756,7 +735,7 @@ void evfs_handle_auth_respond_command(evfs_client* client, evfs_command* command
 	int ret = 0;
 	
 	plugin =
-	evfs_get_plugin_for_uri(client->server,command->file_command.files[0]->plugin_uri);
+	evfs_get_plugin_for_uri(client->server,evfs_command_first_file_get(command)->plugin_uri);
 
 	if (plugin) {
 		(*EVFS_PLUGIN_FILE(plugin)->functions->evfs_auth_push)(command);		

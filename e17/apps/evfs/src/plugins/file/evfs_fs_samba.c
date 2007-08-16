@@ -58,15 +58,15 @@ evfs_auth_cache_get(Ecore_List * cache, char *path);
 static void smb_evfs_dir_list(evfs_client * client, evfs_command* command,
                               Ecore_List ** directory_list);
 int smb_evfs_file_stat(evfs_command * command, struct stat *file_stat, int);
-int evfs_file_open(evfs_client * client, evfs_filereference * file);
-int evfs_file_close(evfs_filereference * file);
-int evfs_file_seek(evfs_filereference * file, long offset, int whence);
-int evfs_file_read(evfs_client * client, evfs_filereference * file,
+int evfs_file_open(evfs_client * client, EvfsFilereference * file);
+int evfs_file_close(EvfsFilereference * file);
+int evfs_file_seek(EvfsFilereference * file, long offset, int whence);
+int evfs_file_read(evfs_client * client, EvfsFilereference * file,
                    char *bytes, long size);
-int evfs_file_write(evfs_filereference * file, char *bytes, long size);
-int evfs_file_create(evfs_filereference * file);
+int evfs_file_write(EvfsFilereference * file, char *bytes, long size);
+int evfs_file_create(EvfsFilereference * file);
 int smb_evfs_file_rename(evfs_client* client, evfs_command* command);
-int smb_evfs_file_mkdir(evfs_filereference * file);
+int smb_evfs_file_mkdir(EvfsFilereference * file);
 int evfs_file_remove(char *file);
 void
 evfs_auth_push(evfs_command* command);
@@ -201,7 +201,7 @@ smb_fd_get_for_int(int fd)
 }
 
 void
-evfs_smb_populate_fd(evfs_filereference * file)
+evfs_smb_populate_fd(EvfsFilereference * file)
 {
    if (file->fd_p == NULL)
      {
@@ -316,9 +316,9 @@ evfs_plugin_uri_get()
 void
 evfs_auth_push(evfs_command* command)
 {
-	evfs_auth_structure_add(command->file_command.files[0]->username, 
-			command->file_command.files[0]->password,
-			command->file_command.files[0]->path);
+	evfs_auth_structure_add(evfs_command_first_file_get(command)->username, 
+			evfs_command_first_file_get(command)->password,
+			evfs_command_first_file_get(command)->path);
 }
 
 int 
@@ -330,9 +330,9 @@ smb_evfs_file_rename(evfs_client* client, evfs_command* command)
 
 	/*TODO: Check that these files are on same filesystem.
 	 * This should really be a per-plugin function called from the top level*/
-	err = smb_context->rename(smb_context, command->file_command.files[0]->path, 
+	err = smb_context->rename(smb_context, evfs_command_first_file_get(command)->path, 
 			smb_context,
-			command->file_command.files[1]->path);
+			evfs_command_second_file_get(command)->path);
 
 	evfs_smb_auth_pop(command);
 	return err;
@@ -350,15 +350,15 @@ smb_evfs_file_stat(evfs_command * command, struct stat *file_stat, int number)
    //struct stat* file_stat = calloc(1,sizeof(struct stat));
    //
    /*Does this command have an attached authentication object? */
-   if (command->file_command.files[number]->username)
+   if (evfs_command_nth_file_get(command,number)->username)
      {
         printf("We have a username, adding to hash..\n");
-        evfs_auth_structure_add( command->file_command.files[number]->username,
-                                command->file_command.files[number]->password,
-                                command->file_command.files[number]->path);
+        evfs_auth_structure_add( evfs_command_nth_file_get(command,number)->username,
+                                evfs_command_nth_file_get(command,number)->password,
+                                evfs_command_nth_file_get(command,number)->path);
      }
 
-   sprintf(dir, "smb:/%s", command->file_command.files[number]->path);
+   sprintf(dir, "smb:/%s", evfs_command_nth_file_get(command,number)->path);
    //printf("Getting stat on file '%s'\n", dir);
 
    err = smb_context->stat(smb_context, (const char *)dir, &smb_stat);
@@ -401,7 +401,7 @@ smb_evfs_dir_list(evfs_client * client, evfs_command * command,
    int size;
    SMBCFILE *dir = NULL;
    struct smbc_dirent *entry = NULL;
-   evfs_filereference* file = command->file_command.files[0];
+   EvfsFilereference* file = evfs_command_first_file_get(command);
    
    Ecore_List *files = ecore_list_new();
 
@@ -430,7 +430,7 @@ smb_evfs_dir_list(evfs_client * client, evfs_command * command,
              /*Make sure we don't use . or .. */
              if (strcmp(entry->name, ".") && strcmp(entry->name, ".."))
                {
-                  evfs_filereference *reference = NEW(evfs_filereference);
+                  EvfsFilereference *reference = NEW(EvfsFilereference);
 
                   if (entry->smbc_type == SMBC_FILE)
                      reference->file_type = EVFS_FILE_NORMAL;
@@ -493,7 +493,7 @@ smb_evfs_dir_list(evfs_client * client, evfs_command * command,
 }
 
 int
-evfs_file_open(evfs_client * client, evfs_filereference * file)
+evfs_file_open(evfs_client * client, EvfsFilereference * file)
 {
    char dir_path[1024];
 
@@ -551,7 +551,7 @@ evfs_file_remove(char *file)
 }
 
 int
-evfs_file_close(evfs_filereference * file)
+evfs_file_close(EvfsFilereference * file)
 {
    printf("SMB close: closing\n");
 
@@ -565,7 +565,7 @@ evfs_file_close(evfs_filereference * file)
 }
 
 int
-evfs_file_write(evfs_filereference * file, char *bytes, long size)
+evfs_file_write(EvfsFilereference * file, char *bytes, long size)
 {
    ssize_t i;
 
@@ -578,7 +578,7 @@ evfs_file_write(evfs_filereference * file, char *bytes, long size)
 }
 
 int
-evfs_file_seek(evfs_filereference * file, long pos, int whence)
+evfs_file_seek(EvfsFilereference * file, long pos, int whence)
 {
    //printf ("Seeking file to %ld\n", pos);
 
@@ -588,7 +588,7 @@ evfs_file_seek(evfs_filereference * file, long pos, int whence)
 }
 
 int
-evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
+evfs_file_read(evfs_client * client, EvfsFilereference * file, char *bytes,
                long size)
 {
    int bytes_read = 0;
@@ -602,7 +602,7 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
 }
 
 int
-evfs_file_create(evfs_filereference * file)
+evfs_file_create(EvfsFilereference * file)
 {
    char dir_path[1024];
 
@@ -621,7 +621,7 @@ evfs_file_create(evfs_filereference * file)
 }
 
 int
-smb_evfs_file_mkdir(evfs_filereference * file)
+smb_evfs_file_mkdir(EvfsFilereference * file)
 {
    char dir_path[1024];
 

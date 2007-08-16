@@ -46,8 +46,7 @@ Eet_Data_Descriptor *evfs_io_filereference_edd_get();
 ecore_ipc_message *ecore_ipc_message_new(int major, int minor, int ref,
                                          int ref_to, int response, void *data,
                                          int len);
-int evfs_process_incoming_command(evfs_server * server, evfs_command * command,
-                                  ecore_ipc_message * message);
+evfs_command* evfs_process_incoming_command(evfs_server * server, ecore_ipc_message * message);
 void evfs_write_command_end(evfs_connection * conn);
 void evfs_write_command(evfs_connection * conn, evfs_command * command);
 void evfs_write_command_client(evfs_client * client, evfs_command * command);
@@ -61,8 +60,8 @@ void evfs_write_ecore_ipc_client_message(Ecore_Ipc_Client * client,
 void evfs_write_ecore_ipc_server_message(Ecore_Ipc_Server * server,
                                          ecore_ipc_message * msg);
 void evfs_write_event(evfs_client * client, evfs_command * command,
-                      evfs_event * event);
-int evfs_read_event(evfs_event * event, ecore_ipc_message * msg);
+                      EvfsEvent * event);
+EvfsEvent* evfs_read_event(ecore_ipc_message * msg);
 
 void
 evfs_write_command_end(evfs_connection * conn);

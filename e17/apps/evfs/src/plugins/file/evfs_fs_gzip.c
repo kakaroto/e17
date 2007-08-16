@@ -45,15 +45,15 @@ int evfs_file_rename(char *src, char *dst);
 int evfs_client_disconnect(evfs_client * client);
 int evfs_monitor_start(evfs_client * client, evfs_command * command);
 int evfs_monitor_stop(evfs_client * client, evfs_command * command);
-int evfs_file_open(evfs_client *, evfs_filereference * file);
-int evfs_file_close(evfs_filereference * file);
+int evfs_file_open(evfs_client *, EvfsFilereference * file);
+int evfs_file_close(EvfsFilereference * file);
 int evfs_file_stat(evfs_command * command, struct stat *file_stat);
-int evfs_file_seek(evfs_filereference * file, long offset, int whence);
-int evfs_file_read(evfs_client * client, evfs_filereference * file,
+int evfs_file_seek(EvfsFilereference * file, long offset, int whence);
+int evfs_file_read(evfs_client * client, EvfsFilereference * file,
                    char *bytes, long size);
-int evfs_file_write(evfs_filereference * file, char *bytes, long size);
-int evfs_file_create(evfs_filereference * file);
-void evfs_dir_list(evfs_client * client, evfs_filereference * file);
+int evfs_file_write(EvfsFilereference * file, char *bytes, long size);
+int evfs_file_create(EvfsFilereference * file);
+void evfs_dir_list(evfs_client * client, EvfsFilereference * file);
 
 #define GZIP_BUFFER 16384
 #define GZIP_MAX_ERRORS 5
@@ -71,7 +71,7 @@ void evfs_dir_list(evfs_client * client, evfs_filereference * file);
 Ecore_Hash *gzip_hash;
 typedef struct gzip_file
 {
-   evfs_filereference *ref;
+   EvfsFilereference *ref;
    z_stream stream;
    unsigned char *buffer;
 
@@ -104,8 +104,8 @@ evfs_plugin_init()
     * functions->evfs_file_create = &evfs_file_create; */
 
    /*FIXME - This is bad - by using a direct compare, we preclude clients using
-    * an 'identical' evfs_filereference with a different pointer*/
-   /*TODO - Fix this by creating evfs_filereference_compare for Ecore_Hash */
+    * an 'identical' EvfsFilereference with a different pointer*/
+   /*TODO - Fix this by creating EvfsFilereference_compare for Ecore_Hash */
    gzip_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
    return functions;
@@ -128,7 +128,7 @@ evfs_client_disconnect(evfs_client * client)
 
 /*Jump a specified amount*/
 char
-gzip_jump_fixed(evfs_client * client, evfs_filereference * ref, int bytes)
+gzip_jump_fixed(evfs_client * client, EvfsFilereference * ref, int bytes)
 {
    char *tmp = malloc(bytes);
 
@@ -143,7 +143,7 @@ gzip_jump_fixed(evfs_client * client, evfs_filereference * ref, int bytes)
 
 /*Jump a string*/
 char
-gzip_jump_string(evfs_client * client, evfs_filereference * ref)
+gzip_jump_string(evfs_client * client, EvfsFilereference * ref)
 {
    char tmp;
    int c = 0;
@@ -164,7 +164,7 @@ gzip_jump_string(evfs_client * client, evfs_filereference * ref)
 }
 
 int
-evfs_gzip_parse_header(evfs_client * client, evfs_filereference * ref,
+evfs_gzip_parse_header(evfs_client * client, EvfsFilereference * ref,
                        unsigned char header[10])
 {
    unsigned int mode;
@@ -227,9 +227,9 @@ evfs_gzip_parse_header(evfs_client * client, evfs_filereference * ref,
 }
 
 int
-evfs_file_open(evfs_client * client, evfs_filereference * file)
+evfs_file_open(evfs_client * client, EvfsFilereference * file)
 {
-   evfs_filereference *f_par = file->parent;
+   EvfsFilereference *f_par = file->parent;
    gzip_file *gfile;
    int open_ret = 0;
    char bytes[10];
@@ -268,7 +268,7 @@ evfs_file_open(evfs_client * client, evfs_filereference * file)
 
 /*FUTURE DOC NOTE - Takes the child file, not the parent */
 int
-evfs_gzip_populate_buffer(evfs_client * client, evfs_filereference * ref)
+evfs_gzip_populate_buffer(evfs_client * client, EvfsFilereference * ref)
 {
    int res;
    gzip_file *gfile = ecore_hash_get(gzip_hash, ref);
@@ -304,7 +304,7 @@ evfs_gzip_populate_buffer(evfs_client * client, evfs_filereference * ref)
 }
 
 int
-evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
+evfs_file_read(evfs_client * client, EvfsFilereference * file, char *bytes,
                long size)
 {
    gzip_file *gfile = ecore_hash_get(gzip_hash, file);
@@ -356,7 +356,7 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
 }
 
 int
-evfs_file_close(evfs_filereference * file)
+evfs_file_close(EvfsFilereference * file)
 {
    gzip_file *gfile = ecore_hash_get(gzip_hash, file);
 

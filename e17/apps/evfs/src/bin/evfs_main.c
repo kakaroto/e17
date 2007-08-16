@@ -141,7 +141,7 @@ ipc_client_add(void *data __UNUSED__, int type __UNUSED__, void *event)
    /*Save a reference to this client, so we can allocate the worker child to
     * it when it calls back*/
    
-   if (worker_client_waiter) {
+   if (worker_client_waiter) {	   
 	   client->worker_client = worker_client_waiter;
 	   ecore_hash_set(evfs_server_get()->worker_hash, worker_client_waiter, client);
 	   worker_client_waiter = NULL;
@@ -213,13 +213,16 @@ ipc_client_data(void *data __UNUSED__, int type __UNUSED__, void *event)
    evfs_client *client;
 
    /*Make sure we're not the worker server's event*/
-   if (ecore_ipc_client_server_get(e->client) != server->ipc_server) return 1;
+   if (ecore_ipc_client_server_get(e->client) != server->ipc_server) {
+	   printf("CLIENT DATA: Not a message for us...server %p != client server %p: Type: %d\n", server->ipc_server,ecore_ipc_client_server_get(e->client),e->major );
+	   return 1;
+   }
 
    client = evfs_client_get(e->client);
 
    /*Onsend to client's worker, if any*/
    if (client->worker_client) {
-	   /*printf("Onsending data to client..%d %d %d %d %d\n", e->major,e->minor,e->ref,e->ref_to,e->response,e->data, e->size );*/
+	   printf("Onsending data to client %p..%d %d %d %d %d\n", client->worker_client,e->major,e->minor,e->ref,e->ref_to,e->response,e->data, e->size );
 	   
 	   ecore_ipc_client_send(client->worker_client,e->major,e->minor,e->ref,e->ref_to,e->response,e->data, e->size); 
    } else {
@@ -239,7 +242,10 @@ ipc_worker_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 	/*Make sure we're not the daemon server's event*/
 	if (ecore_ipc_client_server_get(e->client) != server->worker_server) return 1;
 
-	printf("New worker client to server..\n");
+	/*We're going to be sending *quite* a lot of data*/
+	ecore_ipc_client_data_size_max_set(e->client,1000000);
+
+	printf("New worker client to server..%p\n", server->worker_server);
 		
 	if (client_worker_waiter) {
 		printf("Client %p waiting for worker..\n", client_worker_waiter);
@@ -285,7 +291,10 @@ ipc_worker_data(void *data __UNUSED__, int type __UNUSED__, void *event)
    int id;
 
    /*Make sure we're not the daemon server's event*/
-   if (ecore_ipc_client_server_get(e->client) != server->worker_server) return 1;
+   if (ecore_ipc_client_server_get(e->client) != server->worker_server) {
+	   printf("Not a message for us...server %p != client server %p: Type: %d\n", server->worker_server,ecore_ipc_client_server_get(e->client),e->major );
+	   return 1;
+   }
 
    //printf("WORKER: Unrecognised major: %d\n", e->major);
    //
@@ -293,7 +302,8 @@ ipc_worker_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 
    client = ecore_hash_get(evfs_server_get()->worker_hash, e->client);
    if (client) {
-	   ecore_ipc_client_send(client->client, e->major,e->minor,e->ref,e->ref_to,e->response,e->data,e->size);
+	   printf("Got worker message, sending to client: %d, %d, %d, %d\n",e->major,e->minor,e->ref,e->ref_to);
+	   ecore_ipc_client_send(client->client, e->major,e->minor,client->id,e->ref_to,e->response,e->data,e->size);
    } else {
 		   printf("Cannot find client at ipc_worker_data\n");
    }
@@ -368,14 +378,14 @@ evfs_handle_command(evfs_client * client, evfs_command * command)
 	break;
 
      case EVFS_CMD_METADATA_FILE_SET:
-	printf("Key/value: %s -> %s\n", command->file_command.ref, command->file_command.ref2);
+	printf("Key/value: %s -> %s\n", command->file_command->ref, command->file_command->ref2);
 	evfs_handle_metadata_string_file_set_command(client,command, 
-			command->file_command.ref, command->file_command.ref2);
+			command->file_command->ref, command->file_command->ref2);
 	break;
      case EVFS_CMD_METADATA_FILE_GET:
-	printf("Requested metadata retrieval.. key:%s\n", command->file_command.ref);
+	printf("Requested metadata retrieval.. key:%s\n", command->file_command->ref);
 	evfs_handle_metadata_string_file_get_command(client,command, 
-			command->file_command.ref);	
+			command->file_command->ref);	
 	break;
 
      case EVFS_CMD_METADATA_GROUPS_GET:
@@ -727,6 +737,9 @@ main(int argc, char **argv)
         server->ipc_server =
            ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0, NULL);
 
+	/*We're going to be sending *quite* a lot of data*/
+	ecore_ipc_server_data_size_max_set(server->ipc_server,1000000);
+
         client_add = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, ipc_client_add,
                                 NULL);
         client_del = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, ipc_client_del,
@@ -734,8 +747,12 @@ main(int argc, char **argv)
         client_data = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, ipc_client_data,
                                 NULL);
 
+	printf("Started IPC server %p for ipc_server\n", server->ipc_server);
+
 	server->worker_server = 
 	    ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EVFS_WOR_TITLE, 0, NULL);
+	/*We're going to be sending *quite* a lot of data*/
+	ecore_ipc_server_data_size_max_set(server->worker_server,1000000);
 
         worker_add = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, ipc_worker_add,
                                 NULL);

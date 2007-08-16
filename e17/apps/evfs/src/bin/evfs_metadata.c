@@ -149,7 +149,7 @@ Eet_Data_Descriptor* _evfs_metadata_edd_create(char* desc, int size)
 void evfs_metadata_debug_group_list_print()
 {
 	Evas_List* l;
-	evfs_metadata_group_header* g;
+	EvfsMetadataGroup* g;
 
 	printf("Printing group list:\n");
 	for (l = metadata_root->group_list; l; ) {
@@ -166,7 +166,7 @@ void evfs_metadata_debug_group_list_print()
 void evfs_metadata_debug_file_groups_print(evfs_metadata_file_groups* groups)
 {
 	Evas_List* l;
-	evfs_metadata_group_header* g;
+	EvfsMetadataGroup* g;
 
 	printf("Printing group list:\n");
 	for (l = groups->groups; l; ) {
@@ -180,16 +180,17 @@ void evfs_metadata_debug_file_groups_print(evfs_metadata_file_groups* groups)
 }
 
 
-void evfs_metadata_group_header_free(evfs_metadata_group_header* g)
+void evfs_metadata_group_header_free(EvfsMetadataGroup* g)
 {
 	if (g->name) free(g->name);
 	if (g->description) free(g->description);
+	if (g->visualhint) free(g->visualhint);
 	free(g);
 }
 
 void evfs_metadata_file_groups_free(evfs_metadata_file_groups* groups) {
 	Evas_List* l;
-	evfs_metadata_group_header* g;
+	EvfsMetadataGroup* g;
 
 	for (l = groups->groups; l; ) {
 		g = l->data;
@@ -203,7 +204,7 @@ void evfs_metadata_file_groups_free(evfs_metadata_file_groups* groups) {
 
 int evfs_metadata_file_groups_group_check(evfs_metadata_file_groups* groups, char* group) {
 	Evas_List* l;
-	evfs_metadata_group_header* g;
+	EvfsMetadataGroup* g;
 	int ret = 0;
 
 	for (l = groups->groups; l; ) {
@@ -221,12 +222,12 @@ int evfs_metadata_file_groups_group_check(evfs_metadata_file_groups* groups, cha
 	return ret;
 }
 
-evfs_metadata_group_header*
-evfs_metadata_group_header_new(char* name, char* desc) 
+EvfsMetadataGroup*
+EvfsMetadataGroup_new(char* name, char* desc) 
 {
-	evfs_metadata_group_header* group;
+	EvfsMetadataGroup* group;
 
-	group = calloc(1, sizeof(evfs_metadata_group_header));
+	group = calloc(1, sizeof(EvfsMetadataGroup));
 
 	if (name) group->name = strdup(name);
 	if (desc) group->description = strdup(desc);
@@ -234,7 +235,7 @@ evfs_metadata_group_header_new(char* name, char* desc)
 	return group;
 }
 
-int evfs_metadata_group_header_exists(char* group)
+int EvfsMetadataGroup_exists(char* group)
 {
 	char query[1024];
 	int exists = 0;
@@ -267,7 +268,7 @@ void evfs_metadata_initialise(int forker)
 	char* data;
 	int size;
 	int ret;
-	evfs_filereference* ref;
+	EvfsFilereference* ref;
 	
 	if (!evfs_metadata_state) {
 		evfs_metadata_state++;
@@ -293,10 +294,10 @@ void evfs_metadata_initialise(int forker)
                                  "value", value, EET_T_STRING);
 
 		/*Group edd*/
-		Evfs_Metadata_Group_Edd = _evfs_metadata_edd_create("evfs_metadata_group_header", sizeof(evfs_metadata_group_header));
-		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_Group_Edd, evfs_metadata_group_header,
+		Evfs_Metadata_Group_Edd = _evfs_metadata_edd_create("EvfsMetadataGroup", sizeof(EvfsMetadataGroup));
+		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_Group_Edd, EvfsMetadataGroup,
 	                                 "description", description, EET_T_STRING);
-		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_Group_Edd, evfs_metadata_group_header,
+		EET_DATA_DESCRIPTOR_ADD_BASIC(Evfs_Metadata_Group_Edd, EvfsMetadataGroup,
 	                                 "name", name, EET_T_STRING);
 
 		/*Metadata group root*/
@@ -329,11 +330,11 @@ void evfs_metadata_initialise(int forker)
 	
 			/*Create a starting 'group' list*/
 			metadata_root->group_list = evas_list_append(metadata_root->group_list, 
-					evfs_metadata_group_header_new("Pictures", "Pictures"));
+					EvfsMetadataGroup_new("Pictures", "Pictures"));
 			metadata_root->group_list = evas_list_append(metadata_root->group_list, 
-					evfs_metadata_group_header_new("Video", "Video"));
+					EvfsMetadataGroup_new("Video", "Video"));
 			metadata_root->group_list = evas_list_append(metadata_root->group_list, 
-					evfs_metadata_group_header_new("Audio", "Audio"));
+					EvfsMetadataGroup_new("Audio", "Audio"));
 
 			data = eet_data_descriptor_encode(Evfs_Metadata_Root_Edd, metadata_root, &size);
 			ret = eet_write(_evfs_metadata_eet, EVFS_METADATA_GROUP_LIST, data, size, 0);
@@ -364,7 +365,7 @@ void evfs_metadata_initialise(int forker)
 		evfs_metadata_db_init(&db);
 
 		/*Setup the directory scan queue*/
-		ref = NEW(evfs_filereference);
+		ref = NEW(EvfsFilereference);
 		ref->plugin_uri = strdup("file");
 		ref->path = strdup(homedir);
 
@@ -389,7 +390,7 @@ Evas_List* evfs_metadata_groups_get() {
 	int ret;
 	Evas_List* ret_list = NULL;
 	sqlite3_stmt *pStmt;
-	evfs_metadata_group_header* g;
+	EvfsMetadataGroup* g;
 
 	ret = sqlite3_prepare(db, "select name,visualHint from MetaGroup where parent = 0", 
 			-1, &pStmt, 0);
@@ -399,7 +400,7 @@ Evas_List* evfs_metadata_groups_get() {
 		
 
 		if (ret == SQLITE_ROW) {
-			g = calloc(1, sizeof(evfs_metadata_group_header));
+			g = calloc(1, sizeof(EvfsMetadataGroup));
 			g->name = strdup((char*)sqlite3_column_text(pStmt,0));
 			if (sqlite3_column_text(pStmt, 1)) {
 				g->visualhint = strdup((char*)sqlite3_column_text(pStmt,1));
@@ -443,7 +444,7 @@ evfs_metadata_file_group_list(char* group)
 	return ret_list;
 }
 
-void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
+void evfs_metadata_group_header_file_add(EvfsFilereference* ref, char* group)
 {
 	char* file_path;
 	int ret = 0;
@@ -457,7 +458,7 @@ void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 
 	/*First make sure this group exists*/
 
-	if ( (groupid = evfs_metadata_group_header_exists(group))) {
+	if ( (groupid = EvfsMetadataGroup_exists(group))) {
 		printf("Group exists - proceed\n");
 	} else {
 		printf("Alert - group not found\n");
@@ -465,7 +466,7 @@ void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 	}
 
 	/*Build a path*/
-	file_path = evfs_filereference_to_string(ref);
+	file_path = EvfsFilereference_to_string(ref);
 	printf("File path is: %s\n", file_path);
 
 
@@ -504,7 +505,7 @@ void evfs_metadata_group_header_file_add(evfs_filereference* ref, char* group)
 
 
 
-void evfs_metadata_group_header_file_remove(evfs_filereference* ref, char* group)
+void evfs_metadata_group_header_file_remove(EvfsFilereference* ref, char* group)
 {
 	char* file_path;
 	int ret = 0;
@@ -518,7 +519,7 @@ void evfs_metadata_group_header_file_remove(evfs_filereference* ref, char* group
 
 	/*First make sure this group exists*/
 
-	if ( (groupid = evfs_metadata_group_header_exists(group))) {
+	if ( (groupid = EvfsMetadataGroup_exists(group))) {
 		printf("Group exists - proceed\n");
 	} else {
 		printf("Alert - group not found\n");
@@ -526,7 +527,7 @@ void evfs_metadata_group_header_file_remove(evfs_filereference* ref, char* group
 	}
 
 	/*Build a path*/
-	file_path = evfs_filereference_to_string(ref);
+	file_path = EvfsFilereference_to_string(ref);
 	printf("File path is: %s\n", file_path);
 
 
@@ -563,7 +564,7 @@ void evfs_metadata_group_header_file_remove(evfs_filereference* ref, char* group
 
 
 
-void evfs_metadata_file_set_key_value_string(evfs_filereference* ref, char* key,
+void evfs_metadata_file_set_key_value_string(EvfsFilereference* ref, char* key,
 		char* value) 
 {
 	evfs_metadata_object obj;
@@ -574,7 +575,7 @@ void evfs_metadata_file_set_key_value_string(evfs_filereference* ref, char* key,
 	int ret;
 
 	/*Build a path*/
-	file_path = evfs_filereference_to_string(ref);
+	file_path = EvfsFilereference_to_string(ref);
 
 	snprintf(path, PATH_MAX, "/filedata/%s/custommeta/string/%s", file_path, key);
 	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ_WRITE);
@@ -598,7 +599,7 @@ void evfs_metadata_file_set_key_value_string(evfs_filereference* ref, char* key,
 	eet_close(_evfs_metadata_eet);
 }
 
-char* evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key) 
+char* evfs_metadata_file_get_key_value_string(EvfsFilereference* ref, char* key) 
 {
 	evfs_metadata_object* obj = NULL;
 	char path[PATH_MAX];
@@ -609,7 +610,7 @@ char* evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key
 	char* value = NULL;
 
 	/*Build a path*/
-	file_path = evfs_filereference_to_string(ref);
+	file_path = EvfsFilereference_to_string(ref);
 
 	snprintf(path, PATH_MAX, "/filedata/%s/custommeta/string/%s", file_path, key);
 	_evfs_metadata_eet = eet_open(metadata_file, EET_FILE_MODE_READ);
@@ -640,15 +641,15 @@ char* evfs_metadata_file_get_key_value_string(evfs_filereference* ref, char* key
 
 /*----------------*/
 /*This section defines the fork/grab part of the metadata system*/
-void evfs_metadata_extract_queue(evfs_filereference* ref)
+void evfs_metadata_extract_queue(EvfsFilereference* ref)
 {
 	/*At the moment, we only extract meta from posix folders*/
 	/*This may change, but we'll have to copy the file locally,
 	 * so libextractor can have a shot at it*/
 	if (!strcmp(ref->plugin_uri,"file")) {
-		evfs_filereference* clone;
+		EvfsFilereference* clone;
 
-		clone = evfs_filereference_clone(ref);
+		clone = EvfsFilereference_clone(ref);
 		ecore_list_append(evfs_metadata_queue, clone);
 	}
 }
@@ -656,13 +657,13 @@ void evfs_metadata_extract_queue(evfs_filereference* ref)
 
 int evfs_metadata_scan_runner(void* data)
 {
-	evfs_filereference* ref;
-	evfs_filereference* iref;
+	EvfsFilereference* ref;
+	EvfsFilereference* iref;
 
 	if ((ref = ecore_list_first_remove(
 		evfs_metadata_directory_scan_queue))) {
 
-		evfs_filereference_sanitise(ref);
+		EvfsFilereference_sanitise(ref);
 		if (ref->plugin) {
 			Ecore_List* dir_list;
 			evfs_command* c = evfs_file_command_single_build(ref);
@@ -687,15 +688,15 @@ int evfs_metadata_scan_runner(void* data)
 
 						if (S_ISDIR(file_stat.st_mode)) {
 							ecore_list_append(evfs_metadata_directory_scan_queue, iref);
-							free(ci->file_command.files);
+							evas_list_free(ci->file_command->files);
 							free(ci);
 						} else if (strstr(iref->path, ".mp3") || strstr(iref->path, ".jpg") ||
 								strstr(iref->path, ".mpg")) {
 							ecore_list_append(evfs_metadata_queue, iref);
-							free(ci->file_command.files);
+							evas_list_free(ci->file_command->files);
 							free(ci);
 						} else {
-							evfs_cleanup_file_command(ci);
+							evfs_cleanup_command(ci, EVFS_CLEANUP_FREE_COMMAND);
 						}
 					}
 				}
@@ -742,7 +743,7 @@ int evfs_metadata_scan_deleted(void* data)
 			handleCount++;
 			/*printf("Filename: %s - ", str);*/
 
-			evfs_filereference* file = evfs_parse_uri_single((char*)str);
+			EvfsFilereference* file = evfs_parse_uri_single((char*)str);
 			if (file) {
 				evfs_command* proxy;
 				struct stat file_stat;
@@ -795,7 +796,7 @@ int evfs_metadata_scan_deleted(void* data)
 
 int evfs_metadata_extract_runner(void* data)
 {
-	evfs_filereference* ref;
+	EvfsFilereference* ref;
 	int status;
 	int ret;
 	
@@ -830,7 +831,7 @@ int evfs_metadata_extract_runner(void* data)
 	return 1;
 }
 
-int evfs_metadata_extract_fork(evfs_filereference* ref)
+int evfs_metadata_extract_fork(EvfsFilereference* ref)
 {	
 	_metadata_fork = fork();
 	if (!_metadata_fork) {
@@ -841,7 +842,7 @@ int evfs_metadata_extract_fork(evfs_filereference* ref)
 		sqlite3* dbi;
 		int file;
 		Evas_List* l;
-		evfs_meta_obj* o;
+		EvfsMetaObject* o;
 
 		ecore_main_loop_quit();
 
@@ -860,9 +861,7 @@ int evfs_metadata_extract_fork(evfs_filereference* ref)
 		file = evfs_metadata_db_id_for_file(dbi,ref,1);
 
 		if (file) {
-			command = NEW(evfs_command);
-			command->file_command.files = calloc(1, sizeof(evfs_filereference*));
-			command->file_command.files[0] = ref;
+			command = evfs_file_command_single_build(ref);
 			plugin = evfs_meta_plugin_get_for_type(evfs_server_get(), "object/undefined");
 			meta_list = (*EVFS_PLUGIN_META(plugin)->functions->evfs_file_meta_retrieve)(NULL,command);
 

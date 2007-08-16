@@ -17,6 +17,7 @@ long libevfs_next_command_id_get()
 evfs_command* evfs_client_command_new()
 {
 	evfs_command* command = NEW(evfs_command);
+	command->file_command = NEW(evfs_command_file);
 	command->client_identifier = libevfs_next_command_id_get();
 
 	return command;
@@ -68,7 +69,7 @@ evfs_server_data(void *data, int type, void *event)
                     {
                        memcpy(&client->id, e->data, sizeof(unsigned long));
 
-		       /*printf("Assigned ID: %d\n", client->id);*/
+		       printf("Assigned ID: %d\n", client->id);
                     }
                   else
                     {
@@ -89,6 +90,7 @@ evfs_server_data(void *data, int type, void *event)
               */
 
              evfs_connection *conn = evfs_get_connection_for_id(e->ref);
+	     EvfsEvent* event;
 
              if (conn)
                {
@@ -97,26 +99,15 @@ evfs_server_data(void *data, int type, void *event)
                                            e->ref_to, e->response, e->data,
                                            e->size);
 
-                  if (conn->prog_event == NULL)
-                    {
-                       /*We haven't started an event yet - make a new one */
-                       conn->prog_event = NEW(evfs_event);
-                    }
-
 		  /*printf("Got client message: %d %d %d %d %d\n", e->major, e->minor, e->ref, e->ref_to, e->response);*/
 
-                  if (evfs_read_event(conn->prog_event, msg))
+                  if ( (event = evfs_read_event(msg)))
                     {
 			    
-                       /*True return == Event fully read */
-
                        /*Execute callback if registered.. */
                        if (conn->callback_func)
                          {
-
-                            evfs_event *ev = conn->prog_event;
-
-                            (*conn->callback_func) (ev, conn->obj);
+                            (*conn->callback_func) (event, conn->obj);
                          }
                        else
                          {
@@ -125,7 +116,7 @@ evfs_server_data(void *data, int type, void *event)
                          }
 
                        /*Now cleanup the event we send back */
-                       evfs_cleanup_event(conn->prog_event);
+                       evfs_cleanup_event(event);
                        conn->prog_event = NULL; /*Detach this event from the conn.  Client is responsible for it now */
 
                     }
@@ -167,7 +158,7 @@ evfs_server_spawn()
 }
 
 evfs_connection *
-evfs_connect(void (*callback_func) (evfs_event *, void *), void *obj)
+evfs_connect(void (*callback_func) (EvfsEvent *, void *), void *obj)
 {
    ecore_init();
    ecore_ipc_init();
@@ -459,11 +450,11 @@ evfs_file_uri_path*
 evfs_parse_uri(char* uri)
 {
 	evfs_file_uri_path* path = NEW(evfs_file_uri_path);
-	evfs_filereference* ref;
+	EvfsFilereference* ref;
 
 	ref = evfs_parse_uri_single(uri);
 	if (ref) {
-		path->files = calloc(1, sizeof(evfs_filereference*));
+		path->files = calloc(1, sizeof(EvfsFilereference*));
 		path->files[0] = ref;
 		path->num_files = 1;
 	}
@@ -474,11 +465,11 @@ evfs_parse_uri(char* uri)
 
 /*Function to parse a uri*/
 /*We should rewrite this,use a proper parser*/
-evfs_filereference *
+EvfsFilereference *
 evfs_parse_uri_single(char *uri)
 {
    evfs_uri_token *token;
-   evfs_filereference *ref = NULL, *new_ref = NULL, *root_ref =
+   EvfsFilereference *ref = NULL, *new_ref = NULL, *root_ref =
       NULL, *bottom_ref = NULL;
    Ecore_DList *tokens;
 
@@ -496,7 +487,7 @@ evfs_parse_uri_single(char *uri)
 
  start_uri_section:
 
-   new_ref = NEW(evfs_filereference);
+   new_ref = NEW(EvfsFilereference);
    if (!ref)
      {
         new_ref->parent = NULL;
@@ -594,12 +585,12 @@ evfs_parse_uri_single(char *uri)
 }
 
 char *
-evfs_filereference_to_string(evfs_filereference * ref)
+EvfsFilereference_to_string(EvfsFilereference * ref)
 {
    int length = 0;
    char *uri;
    Ecore_List *parent_list = ecore_list_new();
-   evfs_filereference *parent;
+   EvfsFilereference *parent;
 
    ecore_list_prepend(parent_list, ref);
    length += strlen(ref->plugin_uri) + strlen("://");

@@ -115,7 +115,7 @@ evfs_operation_user_dispatch(evfs_client * client, evfs_command * command,
 
 
 /*Sub task functions*/
-void evfs_operation_copy_task_add(evfs_operation* op, evfs_filereference* file_from, evfs_filereference* file_to, struct stat from_stat,
+void evfs_operation_copy_task_add(evfs_operation* op, EvfsFilereference* file_from, EvfsFilereference* file_to, struct stat from_stat,
 		struct stat to_stat, int to_stat_response)
 {
 	evfs_operation_files* fop = EVFS_OPERATION_FILES(op);
@@ -137,7 +137,7 @@ void evfs_operation_copy_task_add(evfs_operation* op, evfs_filereference* file_f
 	ecore_list_append(op->sub_task, copy);
 }
 
-void evfs_operation_remove_task_add(evfs_operation* op, evfs_filereference* file, struct stat file_stat)
+void evfs_operation_remove_task_add(evfs_operation* op, EvfsFilereference* file, struct stat file_stat)
 {
 	evfs_operation_files* fop = EVFS_OPERATION_FILES(op);
 	evfs_operation_task_file_remove* remove = calloc(1, sizeof(evfs_operation_task_file_remove));
@@ -156,7 +156,7 @@ void evfs_operation_remove_task_add(evfs_operation* op, evfs_filereference* file
 
 
 /*Sub task functions*/
-void evfs_operation_mkdir_task_add(evfs_operation* op, evfs_filereference* src, evfs_filereference* dir)
+void evfs_operation_mkdir_task_add(evfs_operation* op, EvfsFilereference* src, EvfsFilereference* dir)
 {
 	evfs_operation_files* fop = EVFS_OPERATION_FILES(op);
 	evfs_operation_task_mkdir* mkdir = calloc(1, sizeof(evfs_operation_task_mkdir));

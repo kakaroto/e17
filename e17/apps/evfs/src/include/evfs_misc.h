@@ -36,21 +36,21 @@ Ecore_List *evfs_file_list_sort(Ecore_List * file_list);
 
 void evfs_cleanup_client(evfs_client * client);
 void evfs_disconnect(evfs_connection * connection);
-evfs_connection *evfs_connect(void (*callback_func) (evfs_event *, void *),
+evfs_connection *evfs_connect(void (*callback_func) (EvfsEvent *, void *),
                               void *obj);
 
 evfs_file_uri_path *evfs_parse_uri(char *uri);
-evfs_filereference * evfs_parse_uri_single(char *uri);
+EvfsFilereference * evfs_parse_uri_single(char *uri);
 
 int evfs_handle_command(evfs_client * client, evfs_command * command);
 void evfs_handle_monitor_start_command(evfs_client * client,
                                        evfs_command * command);
 unsigned long evfs_server_get_next_id(evfs_server * serve);
-char *evfs_filereference_to_string(evfs_filereference * ref);
+char *EvfsFilereference_to_string(EvfsFilereference * ref);
 
-int evfs_filereference_equal_is(evfs_filereference* file1, evfs_filereference* file2);
+int EvfsFilereference_equal_is(EvfsFilereference* file1, EvfsFilereference* file2);
 
-evfs_filereference* evfs_empty_file_get();
+EvfsFilereference* evfs_empty_file_get();
 
 long libevfs_next_command_id_get();
 evfs_command* evfs_client_command_new();

@@ -4,7 +4,7 @@
 evfs_connection *con;
 
 void
-callback(evfs_event * data, void *obj)
+callback(EvfsEvent * data, void *obj)
 {
 
    switch (data->type)
@@ -12,7 +12,7 @@ callback(evfs_event * data, void *obj)
      case EVFS_EV_FILE_PROGRESS:
 	printf(".");
 	
-	if (data->progress->type == EVFS_PROGRESS_TYPE_DONE) {
+	if (EVFS_EVENT_PROGRESS(data)->type == EVFS_PROGRESS_TYPE_DONE) {
 		evfs_disconnect(con);
 		exit(0);
 	}

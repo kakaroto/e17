@@ -30,12 +30,12 @@ typedef struct evfs_uri_token
    char *token_s;
 } evfs_uri_token;
 
-typedef struct evfs_filereference
+typedef struct EvfsFilereference
 {
    char *plugin_uri;
    struct evfs_plugin *plugin;
 
-   struct evfs_filereference *parent;
+   struct EvfsFilereference *parent;
    struct evfs_server *server;  /*The server that spawned/owns this fileref, if any */
 
    evfs_file_type file_type;
@@ -48,13 +48,15 @@ typedef struct evfs_filereference
 
    int fd;                      /*The file descriptor (if any) */
    void *fd_p;
-} evfs_filereference;
+} EvfsFilereference;
 
 typedef struct evfs_file_uri_path evfs_file_uri_path;
 struct evfs_file_uri_path
 {
    int num_files;
-   evfs_filereference **files;
+   EvfsFilereference **files;
 };
+
+EvfsFilereference* evfs_filereference_new(char* plugin, char* path, int filetype);
 
 #endif

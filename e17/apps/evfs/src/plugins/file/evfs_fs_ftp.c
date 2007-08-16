@@ -40,19 +40,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <Ecore_File.h>
 #include <curl/curl.h>
 
-struct ftp_conn *connection_handle_get(evfs_filereference * ref,
+struct ftp_conn *connection_handle_get(EvfsFilereference * ref,
                                        evfs_command * com);
 
 void evfs_ftp_dir_list(evfs_client * client, evfs_command * command,
                        Ecore_List ** directory_list);
 int evfs_ftp_file_stat(evfs_command * command, struct stat *file_stat);
-int evfs_file_open(evfs_client * client, evfs_filereference * file);
-int evfs_file_close(evfs_filereference * file);
-int evfs_file_seek(evfs_filereference * file, long offset, int whence);
-int evfs_file_read(evfs_client * client, evfs_filereference * file,
+int evfs_file_open(evfs_client * client, EvfsFilereference * file);
+int evfs_file_close(EvfsFilereference * file);
+int evfs_file_seek(EvfsFilereference * file, long offset, int whence);
+int evfs_file_read(evfs_client * client, EvfsFilereference * file,
                    char *bytes, long size);
-int evfs_file_write(evfs_filereference * file, char *bytes, long size);
-int evfs_file_create(evfs_filereference * file);
+int evfs_file_write(EvfsFilereference * file, char *bytes, long size);
+int evfs_file_create(EvfsFilereference * file);
 int evfs_client_disconnect(evfs_client * client);
 
 typedef enum evfs_ftp_data
@@ -77,7 +77,7 @@ Ecore_Hash *connections;
 /******************Begin Internal Functions*******************************/
 
 ftp_conn *
-connection_handle_get(evfs_filereference * ref, evfs_command * com)
+connection_handle_get(EvfsFilereference * ref, evfs_command * com)
 {
    ftp_conn *conn = NULL;
 
@@ -119,17 +119,17 @@ connection_handle_get(evfs_filereference * ref, evfs_command * com)
 }
 
 void
-connection_handle_save(ftp_conn * conn, evfs_filereference * ref)
+connection_handle_save(ftp_conn * conn, EvfsFilereference * ref)
 {
    ecore_hash_set(connections, ref->path, conn);
 
 }
 
-evfs_filereference *
+EvfsFilereference *
 parse_ls_line(ftp_conn * conn, char *line, int is_stat)
 {
    char *fieldline = strdup(line);
-   evfs_filereference *ref = NEW(evfs_filereference);
+   EvfsFilereference *ref = NEW(EvfsFilereference);
    char *curfield;
    Ecore_List *fields = ecore_list_new();
 
@@ -205,7 +205,7 @@ evfs_ftp_dir_list_cb(void *buffer, size_t size, size_t nmemb, void *cbdata)
       ecore_hash_get((Ecore_Hash *) cbdata, (int *)EVFS_FTP_COMMAND);
    ftp_conn *conn =
       ecore_hash_get((Ecore_Hash *) cbdata, (int *)EVFS_FTP_HANDLE);
-   evfs_filereference *ref;
+   EvfsFilereference *ref;
    char *curline;
 
    while (dirs)
@@ -270,7 +270,7 @@ evfs_ftp_dir_list(evfs_client * client, evfs_command * command,
 
    Ecore_Hash *data = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
    ftp_conn *conn =
-      connection_handle_get(command->file_command.files[0], command);
+      connection_handle_get(evfs_command_first_file_get(command), command);
    Ecore_List *files = ecore_list_new();
    char *error = malloc(CURL_ERROR_SIZE);
 
@@ -299,7 +299,7 @@ evfs_ftp_dir_list(evfs_client * client, evfs_command * command,
         /*Set out return pointer.. */
         *directory_list = files;
      }
-   connection_handle_save(conn, command->file_command.files[0]);
+   connection_handle_save(conn, evfs_command_first_file_get(command));
 }
 
 int
@@ -310,28 +310,28 @@ evfs_ftp_file_stat(evfs_command * command, struct stat *file_stat)
 }
 
 int
-evfs_file_open(evfs_client * client, evfs_filereference * file)
+evfs_file_open(evfs_client * client, EvfsFilereference * file)
 {
 
    return 0;
 }
 
 int
-evfs_file_close(evfs_filereference * file)
+evfs_file_close(EvfsFilereference * file)
 {
 
    return 0;
 }
 
 int
-evfs_file_seek(evfs_filereference * file, long pos, int whence)
+evfs_file_seek(EvfsFilereference * file, long pos, int whence)
 {
 
    return 0;
 }
 
 int
-evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
+evfs_file_read(evfs_client * client, EvfsFilereference * file, char *bytes,
                long size)
 {
 
@@ -339,14 +339,14 @@ evfs_file_read(evfs_client * client, evfs_filereference * file, char *bytes,
 }
 
 int
-evfs_file_write(evfs_filereference * file, char *bytes, long size)
+evfs_file_write(EvfsFilereference * file, char *bytes, long size)
 {
 
    return 0;
 }
 
 int
-evfs_file_create(evfs_filereference * file)
+evfs_file_create(EvfsFilereference * file)
 {
 
    return 0;

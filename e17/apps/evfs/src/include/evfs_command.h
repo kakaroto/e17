@@ -40,18 +40,23 @@ typedef struct evfs_command_file
    char* ref;
    char* ref2;
 
-   evfs_filereference **files;
+   Evas_List* files;
 }
 evfs_command_file;
 
 typedef struct evfs_command
 {
    evfs_command_type type;
-   evfs_command_file file_command;
+   evfs_command_file* file_command;
    struct evfs_operation *op;
 
    long client_identifier;
 }
 evfs_command;
+
+EvfsFilereference* evfs_command_first_file_get(evfs_command* command);
+EvfsFilereference* evfs_command_second_file_get(evfs_command* command);
+EvfsFilereference* evfs_command_nth_file_get(evfs_command* command, int n);
+int evfs_command_file_count_get(evfs_command* command);
 
 #endif

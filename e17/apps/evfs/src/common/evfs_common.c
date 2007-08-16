@@ -13,7 +13,7 @@ evfs_get_plugin_for_uri(evfs_server * server, char *uri_base)
 }
 
 /*Make sure as file is all good*/
-int evfs_filereference_sanitise(evfs_filereference* ref)
+int EvfsFilereference_sanitise(EvfsFilereference* ref)
 {
 	if (!ref->plugin) {
 		ref->plugin = evfs_get_plugin_for_uri(evfs_server_get(), ref->plugin_uri);
@@ -21,21 +21,24 @@ int evfs_filereference_sanitise(evfs_filereference* ref)
 	return 1;
 }
 
-evfs_command* evfs_file_command_single_build(evfs_filereference* ref)
+evfs_command* evfs_file_command_single_build(EvfsFilereference* ref)
 {
 	evfs_command* c = NEW(evfs_command);
-
-	c->file_command.files = calloc(1, sizeof(evfs_filereference*));
-	c->file_command.files[0] = ref;
-	c->file_command.num_files = 1;
-	evfs_filereference_sanitise(ref);
+	EvfsFilereference_sanitise(ref);
+	c->file_command = NEW(evfs_command_file);
+	c->file_command->files = evas_list_append(c->file_command->files,ref);
 
 	return c;
 }
 
-evfs_filereference* evfs_filereference_clone(evfs_filereference* source)
+void evfs_file_command_file_add(evfs_command* command, EvfsFilereference* ref)
 {
-	evfs_filereference* dest = calloc(1,sizeof(evfs_filereference));
+	command->file_command->files = evas_list_append(command->file_command->files, ref);
+}
+
+EvfsFilereference* EvfsFilereference_clone(EvfsFilereference* source)
+{
+	EvfsFilereference* dest = calloc(1,sizeof(EvfsFilereference));
 
 	dest->plugin_uri = strdup(source->plugin_uri);
 	dest->plugin = source->plugin;
