@@ -2,8 +2,7 @@
 
 INCLUDES = \
 	-I$(top_srcdir)/intl -I$(srcdir) -I$(top_srcdir)/src -I.. -I. \
-	@GTK_CFLAGS@ @evas_cflags@ @edb_cflags@ \
-	-I/usr/local/include
+	@GTK_CFLAGS@ @evas_cflags@ @edb_cflags@
 
 PIXMAPS = \
 delete.png \
