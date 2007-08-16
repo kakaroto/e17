@@ -44,7 +44,7 @@ void entropy_filesystem_auth_response(char* location, char* user, char* password
 static evfs_connection *con;
 
 void
-callback (evfs_event * data, void *obj)
+callback (EvfsEvent * data, void *obj)
 {
 
   //printf("Callback hit..%d\n", data->type);
@@ -52,12 +52,14 @@ callback (evfs_event * data, void *obj)
 
   switch (data->type) {
   case EVFS_EV_SUB_MONITOR_NOTIFY:{
+      EvfsFilereference* filemonitor = EVFS_EVENT_FILE_MONITOR(data)->file;
+					  
       /*Find a better way to do this, possibly modify evfs to pass a reference object */
       Ecore_List *watchers;
       void *key;
       entropy_gui_event *gui_event;
 
-      char *folder = strdup ((char *) data->file_monitor.filename);
+      char *folder = strdup ((char *) EVFS_EVENT_FILE_MONITOR(data)->file);
       char *pos = rindex (folder, '/');
       *pos = '\0';
 
@@ -74,7 +76,7 @@ callback (evfs_event * data, void *obj)
 	    (((evfs_file_uri_path *)
 	      ecore_hash_get (folder_monitor_hash, key))->files[0]->path,
 	     folder)) {
-	  char *md5 = md5_entropy_path_file (data->file_monitor.plugin, folder, pos + 1);
+	  char *md5 = md5_entropy_path_file (filemonitor->plugin_uri, folder, pos + 1);
 	  entropy_file_listener *listener;
 
 
@@ -88,11 +90,11 @@ callback (evfs_event * data, void *obj)
 
 	    strncpy (file->path, folder, PATH_MAX);
 	    strncpy (file->filename, pos + 1, strlen (pos + 1) + 1);
-	    strncpy (file->uri_base, data->file_monitor.plugin,
-		     strlen (data->file_monitor.plugin));
+	    strncpy (file->uri_base, filemonitor->plugin_uri,
+		     strlen (filemonitor->plugin_uri));
 	    file->md5 = strdup (md5);
 	    
-	    if (data->file_monitor.filetype == EVFS_FILE_DIRECTORY) {
+	    if (filemonitor->file_type == EVFS_FILE_DIRECTORY) {
 		    strcpy(file->mime_type, "file/folder");
 		    file->filetype = FILE_FOLDER;
 	    }
@@ -120,7 +122,7 @@ callback (evfs_event * data, void *obj)
 	  /*Create a GUI event to send to watchers */
 	  gui_event = entropy_malloc (sizeof (entropy_gui_event));
 
-	  switch (data->file_monitor.fileev_type) {
+	  switch (EVFS_EVENT_FILE_MONITOR(data)->type) {
 	  case EVFS_FILE_EV_CREATE:	//printf("  Create event\n");
 	    gui_event->event_type =
 	      entropy_core_gui_event_get (ENTROPY_GUI_EVENT_FILE_CREATE);
@@ -162,13 +164,13 @@ callback (evfs_event * data, void *obj)
       entropy_gui_component_instance *instance;
       entropy_file_stat *file_stat;
       entropy_file_listener* listener;
-      evfs_filereference* ref;
+      EvfsFilereference* ref;
       char* md5;
       char *folder, *filename;
       char* pos;
 
 
-      ref = data->resp_command.file_command.files[0];
+      ref = evfs_command_first_file_get(data->command);
 
       pos = rindex (ref->path, '/');
       /*Set the file's filename*/
@@ -187,19 +189,19 @@ callback (evfs_event * data, void *obj)
 
       //printf("Folder: '%s'\nFilename: '%s'\n", folder, pos+1);
       md5 = md5_entropy_path_file (ref->plugin_uri, folder, filename);
-      instance = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier );
+      instance = ecore_hash_get (evfs_dir_requests, (long*)data->command->client_identifier );
 
       /*Build a file<->stat structure to pass to requester */
       file_stat = entropy_malloc (sizeof (entropy_file_stat));
       file_stat->stat_obj = entropy_malloc (sizeof (struct stat));
 
-      file_stat->stat_obj->st_mode = data->stat.stat_obj.st_mode;
-      file_stat->stat_obj->st_uid = data->stat.stat_obj.st_uid;
-      file_stat->stat_obj->st_gid = data->stat.stat_obj.st_gid;
-      file_stat->stat_obj->st_size = data->stat.stat_obj.st_size;
-      file_stat->stat_obj->st_atime = data->stat.stat_obj.ist_atime;
-      file_stat->stat_obj->st_mtime = data->stat.stat_obj.ist_mtime;
-      file_stat->stat_obj->st_ctime = data->stat.stat_obj.ist_ctime;
+      file_stat->stat_obj->st_mode = EVFS_EVENT_STAT(data)->st_mode;
+      file_stat->stat_obj->st_uid = EVFS_EVENT_STAT(data)->st_uid;
+      file_stat->stat_obj->st_gid = EVFS_EVENT_STAT(data)->st_gid;
+      file_stat->stat_obj->st_size = EVFS_EVENT_STAT(data)->st_size;
+      file_stat->stat_obj->st_atime = EVFS_EVENT_STAT(data)->ist_atime;
+      file_stat->stat_obj->st_mtime = EVFS_EVENT_STAT(data)->ist_mtime;
+      file_stat->stat_obj->st_ctime = EVFS_EVENT_STAT(data)->ist_ctime;
 
       /*Retrieve the file. This is bad - the file might not exist anymore! */
       listener = entropy_core_file_cache_retrieve (md5);
@@ -207,13 +209,13 @@ callback (evfs_event * data, void *obj)
 	      file_stat->file = listener->file;
 
 	      /*Pop stats*/
-	      listener->file->properties.st_mode = data->stat.stat_obj.st_mode;
-	      listener->file->properties.st_uid = data->stat.stat_obj.st_uid;
-	      listener->file->properties.st_gid = data->stat.stat_obj.st_gid;
-	      listener->file->properties.st_size = data->stat.stat_obj.st_size;
-	      listener->file->properties.st_atime = data->stat.stat_obj.ist_atime;
-	      listener->file->properties.st_mtime = data->stat.stat_obj.ist_mtime;
-	      listener->file->properties.st_ctime = data->stat.stat_obj.ist_ctime;
+	      listener->file->properties.st_mode = EVFS_EVENT_STAT(data)->st_mode;
+	      listener->file->properties.st_uid = EVFS_EVENT_STAT(data)->st_uid;
+	      listener->file->properties.st_gid = EVFS_EVENT_STAT(data)->st_gid;
+	      listener->file->properties.st_size = EVFS_EVENT_STAT(data)->st_size;
+	      listener->file->properties.st_atime = EVFS_EVENT_STAT(data)->ist_atime;
+	      listener->file->properties.st_mtime = EVFS_EVENT_STAT(data)->ist_mtime;
+	      listener->file->properties.st_ctime = EVFS_EVENT_STAT(data)->ist_ctime;
 	      listener->file->retrieved_stat = 1;
 
 
@@ -229,14 +231,14 @@ callback (evfs_event * data, void *obj)
 	      entropy_core_layout_notify_event (instance, gui_event,
 					ENTROPY_EVENT_LOCAL);
       } else {
-	      printf("Error! Couldn't find listener for '%s' '%s' '%s'\n",data->resp_command.file_command.files[0]->plugin_uri, folder, filename);
+	      printf("Error! Couldn't find listener for '%s' '%s' '%s'\n",evfs_command_first_file_get(data->command)->plugin_uri, folder, filename);
       }
 
       /*Do some freeing */
       entropy_free (file_stat->stat_obj);
       entropy_free (file_stat);
 
-      ecore_hash_remove (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+      ecore_hash_remove (evfs_dir_requests, (long*)data->command->client_identifier);
       entropy_free (folder);
       entropy_free (filename);
       entropy_free (md5);
@@ -253,25 +255,28 @@ callback (evfs_event * data, void *obj)
       entropy_generic_file *file;
       entropy_file_listener *listener;
       entropy_gui_event *gui_event;
-      evfs_filereference *ref;
+      EvfsFilereference *ref;
       char *filename;
       char *folder;
       char *pos;
 
-      printf("Looking for callers for dir list for: '%s'\n", data->resp_command.file_command.files[0]->path);
-      calling_request = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+      printf("Looking for callers for dir list for: '%s'\n", evfs_command_first_file_get(data->command)->path);
+      calling_request = ecore_hash_get (evfs_dir_requests, (long*)data->command->client_identifier);
       if (calling_request) {
 	     /*Remove from directory requesters*/
-	      ecore_hash_remove(evfs_dir_requests, (long*)data->resp_command.client_identifier );
+	      ecore_hash_remove(evfs_dir_requests, (long*)data->command->client_identifier );
 		
 	      
 	      ecore_list_append(file_list, calling_request);
 	      
 	      /*folder = data->resp_command.file_command.files[0]->path;*/
 
-	      if (data->file_list.list) {
-		      ecore_list_first_goto (data->file_list.list);
-		      while ((ref = ecore_list_next (data->file_list.list))) {
+	      if (EVFS_EVENT_DIR_LIST(data)->files) {
+		      Evas_List* l;
+		      for (l= EVFS_EVENT_DIR_LIST(data)->files;l; ) {
+			ref = l->data;
+			l = l->next; 
+
 			/*printf("(%s) Received file type for file: %d\n", ref->path, ref->file_type); */
 
 			pos = rindex (ref->path, '/');
@@ -385,29 +390,27 @@ callback (evfs_event * data, void *obj)
 	entropy_malloc (sizeof (entropy_file_progress));
       char *uri = NULL;
 
-      request->identifier = data->resp_command.client_identifier;
+      request->identifier = data->command->client_identifier;
 
-      ecore_list_first_goto(data->file_list.list);
-      if (ecore_list_current(data->file_list.list)) {
-        	request->file_from = evfs_filereference_to_entropy_generic_file(ecore_list_current(data->file_list.list));
-                ecore_list_next(data->file_list.list);
+       if (EVFS_EVENT_PROGRESS(data)->from) {
+	request->file_from = EvfsFilereference_to_entropy_generic_file(EVFS_EVENT_PROGRESS(data)->from);
+       }
+       if (EVFS_EVENT_PROGRESS(data)->to) {
+	request->file_to = EvfsFilereference_to_entropy_generic_file(EVFS_EVENT_PROGRESS(data)->to);
+       }
 
-		if (ecore_list_current(data->file_list.list)) {
-		      request->file_to = evfs_filereference_to_entropy_generic_file(ecore_list_current(data->file_list.list));
-		}
-      }
-      request->progress = data->progress->file_progress;
 
-      if (data->progress->type == EVFS_PROGRESS_TYPE_CONTINUE)
+      request->progress = EVFS_EVENT_PROGRESS(data)->progressAmt;
+
+      if (EVFS_EVENT_PROGRESS(data)->type == EVFS_PROGRESS_TYPE_CONTINUE)
 	request->type = TYPE_CONTINUE;
       else
 	request->type = TYPE_END;
 
       /*Find who called us */
       uri =
-	evfs_filereference_to_string (data->resp_command.file_command.
-				      files[0]);
-      instance = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+	EvfsFilereference_to_string (evfs_command_first_file_get(data->command));
+      instance = ecore_hash_get (evfs_dir_requests, (long*)data->command->client_identifier);
 
       if (instance) {
 	/*Build up the gui_event wrapper */
@@ -423,8 +426,8 @@ callback (evfs_event * data, void *obj)
 	printf ("Could not get file copy caller for '%s'\n", uri);
       }
 
-      if (data->progress->type == EVFS_PROGRESS_TYPE_DONE) {
-	ecore_hash_remove(evfs_dir_requests, (long*)data->resp_command.client_identifier);
+      if (EVFS_EVENT_PROGRESS(data)->type == EVFS_PROGRESS_TYPE_DONE) {
+	ecore_hash_remove(evfs_dir_requests, (long*)data->command->client_identifier);
       }
 
       if (uri) free (uri);
@@ -440,14 +443,13 @@ callback (evfs_event * data, void *obj)
 	entropy_gui_event* gui_event;
 	entropy_file_operation* op;
 
-	printf("EVFS requested feedback on an operation!, id %ld\n",  data->op->id);
+	printf("EVFS requested feedback on an operation!, id %ld\n",  EVFS_EVENT_OPERATION(data)->operation->id);
 
       /*Find who called us */
       uri =
-	evfs_filereference_to_string (data->resp_command.file_command.
-				      files[0]);
-      instance = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
-      ecore_hash_remove (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+	EvfsFilereference_to_string (evfs_command_first_file_get(data->command));
+      instance = ecore_hash_get (evfs_dir_requests, (long*)data->command->client_identifier);
+      ecore_hash_remove (evfs_dir_requests, (long*)data->command->client_identifier);
 
 
 
@@ -458,8 +460,8 @@ callback (evfs_event * data, void *obj)
 	 entropy_core_gui_event_get (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT);
 
 	 op = entropy_malloc(sizeof(entropy_file_operation));
-	 op->file = data->op->misc_str;
-	 op->id = data->op->id;
+	 op->file = EVFS_EVENT_OPERATION(data)->operation->misc_str;
+	 op->id = EVFS_EVENT_OPERATION(data)->operation->id;
 	 gui_event->data = op;
 	
 	      
@@ -489,8 +491,8 @@ callback (evfs_event * data, void *obj)
 			free(obj);
 		}
 	}
-	for (l = data->misc.string_list; l; ) {
-		ecore_list_append(metadata_groups, strdup(l->data));
+	for (l = EVFS_EVENT_METADATA_GROUPS(data)->string_list; l; ) {
+		ecore_list_append(metadata_groups, strdup( ((EvfsMetadataGroup*)l->data)->name));
 
 		l=l->next;
 	}
@@ -502,7 +504,7 @@ callback (evfs_event * data, void *obj)
 	entropy_file_request* calling_request = NULL;
 
  	printf("Received 'auth required' event\n");
-	calling_request = ecore_hash_get (evfs_dir_requests, (long*)data->resp_command.client_identifier);
+	calling_request = ecore_hash_get (evfs_dir_requests, (long*)data->command->client_identifier);
 	if (calling_request) {
 		char loc[PATH_MAX];
 		snprintf(loc,sizeof(loc),"%s://%s/%s", calling_request->file->uri_base, calling_request->file->path, calling_request->file->filename);
@@ -551,7 +553,7 @@ filesystem_demonitor_directory (void *requester)
     keys = ecore_hash_keys(folder_monitor_hash);  
     while ( (key = ecore_list_first_remove(keys))) {
 	    compare = ecore_hash_get(folder_monitor_hash, key);
-	    if (compare && evfs_filereference_equal_is(dir->files[0], compare->files[0]))
+	    if (compare && EvfsFilereference_equal_is(dir->files[0], compare->files[0]))
 		    found = 1;
     }
     
@@ -676,7 +678,7 @@ structurelist_get (char *base)
 struct stat *
 filestat_get (entropy_file_request * request)
 {
-  evfs_filereference *path;
+  EvfsFilereference *path;
   char *uri = uri = entropy_core_generic_file_uri_create (request->file, 0);
   long id;
 
@@ -1109,7 +1111,7 @@ void entropy_filesystem_file_group_remove(entropy_generic_file* file, char* grou
 void entropy_filesystem_auth_response(char* location, char* user, char* password)
 {
 	printf("Parsing uri %s\n", location);
-	evfs_filereference* ref = evfs_parse_uri_single(location);
+	EvfsFilereference* ref = evfs_parse_uri_single(location);
 	evfs_client_auth_send(con,ref,user,password);
 
 	
@@ -1143,7 +1145,7 @@ void entropy_filesystem_file_trash_restore (Ecore_List* files, entropy_gui_compo
   int flag;
   entropy_generic_file* file;
   Ecore_List* evfs_files;
-  evfs_filereference* ref;
+  EvfsFilereference* ref;
   char path[PATH_MAX];
 
   flag = 0;

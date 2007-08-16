@@ -1507,9 +1507,9 @@ char* entropy_core_generic_file_uri_create (entropy_generic_file* file, int dril
 }
 
 
-entropy_generic_file* evfs_filereference_to_entropy_generic_file(void* ref) 
+entropy_generic_file* EvfsFilereference_to_entropy_generic_file(void* ref) 
 {
-	evfs_filereference* file_ref = (evfs_filereference*)ref;
+	EvfsFilereference* file_ref = (EvfsFilereference*)ref;
 	char *copy = strdup (file_ref->path);
 	char *pos = strrchr (copy, '/');
 	entropy_generic_file* file = entropy_generic_file_new();
