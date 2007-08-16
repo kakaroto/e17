@@ -790,7 +790,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
  * @brief Sends the event for a DND drop into an embed.
  */
 const char *
-ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal)
+ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal __UNUSED__)
 {
 	Ewl_Widget *widget = NULL, *parent = NULL;
 	const char *result = NULL;

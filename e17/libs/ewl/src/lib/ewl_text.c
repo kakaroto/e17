@@ -643,7 +643,7 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
 	/* copy the text over, replace invalid UTF-8 chars */
 	tmp = (char *)txt;
 	ptr = t->text + bidx;
-	while (*tmp && (tmp - txt) < blen) 
+	while (*tmp && (tmp - txt) < (int)blen) 
 	{
 		if (ewl_text_char_utf8_is(tmp)) 
 		{
