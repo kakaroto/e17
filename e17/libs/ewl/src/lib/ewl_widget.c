@@ -879,7 +879,7 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const cha
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!w->theme_object)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * Fill in the default part to use when the key is NULL.
