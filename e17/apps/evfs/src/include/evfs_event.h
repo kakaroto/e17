@@ -166,6 +166,7 @@ typedef struct
    EvfsEvent base;
 } EvfsEventAuthRequired;
 
+#define EVFS_EVENT_OPEN(event) ((EvfsEventOpen *) event)
 typedef struct
 {
    EvfsEvent base;

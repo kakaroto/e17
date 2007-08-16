@@ -330,7 +330,7 @@ ecore_ipc_message* evfs_io_event_construct (EvfsEvent* event) {
 			size += EVFS_EVENT_DATA(event)->size;
 		}		
 
-		return ecore_ipc_message_new(EVFS_EV_REPLY, event->type, size,0,0,data,size);
+		return ecore_ipc_message_new(EVFS_EV_REPLY, event->type, 0,ssize,0,data,size);
 	}
 
 	return NULL;	
@@ -373,13 +373,14 @@ evfs_read_event(ecore_ipc_message * msg)
 
    if (edd) {
 	  int edd_data_size=msg->len;
-	  if (msg->ref > 0) edd_data_size = msg->ref;
+	  if (msg->ref_to > 0) edd_data_size = msg->ref_to;
 
-	  printf("Edd data size: %d, Msg->len: %d\n", edd_data_size, msg->len);
           ev = eet_data_descriptor_decode(edd, msg->data, edd_data_size);
 	  if (ev->suffix) {
-		  EVFS_EVENT_DATA(ev)->bytes = calloc(ev->suffix,1);
 		  EVFS_EVENT_DATA(ev)->size = msg->len-ev->suffix;
+		  EVFS_EVENT_DATA(ev)->bytes = calloc(EVFS_EVENT_DATA(ev)->size,1);		  
+
+		  /*fprintf(stderr, "Copying %d bytes into place from offset %d\n",EVFS_EVENT_DATA(ev)->size, ev->suffix );*/
 		  memcpy(EVFS_EVENT_DATA(ev)->bytes, msg->data+ev->suffix, EVFS_EVENT_DATA(ev)->size);
 	  }
 	  return ev;
