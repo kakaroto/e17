@@ -74,7 +74,7 @@ evfs_list_dir_event_create(evfs_client * client, evfs_command * command,
 void
 evfs_auth_failure_event_create(evfs_client * client, evfs_command * command)
 {
-	EvfsEventAuthFailure *event = NEW(EvfsEventAuthFailure);
+	EvfsEventAuthRequired *event = NEW(EvfsEventAuthRequired);
 	EVFS_EVENT(event)->type = EVFS_EV_AUTH_REQUIRED;
 
 	evfs_write_event(client,command,EVFS_EVENT(event));

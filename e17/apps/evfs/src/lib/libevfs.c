@@ -69,7 +69,7 @@ evfs_server_data(void *data, int type, void *event)
                     {
                        memcpy(&client->id, e->data, sizeof(unsigned long));
 
-		       printf("Assigned ID: %d\n", client->id);
+		       /*printf("Assigned ID: %d\n", client->id);*/
                     }
                   else
                     {

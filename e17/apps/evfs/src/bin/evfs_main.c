@@ -214,7 +214,7 @@ ipc_client_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 
    /*Make sure we're not the worker server's event*/
    if (ecore_ipc_client_server_get(e->client) != server->ipc_server) {
-	   printf("CLIENT DATA: Not a message for us...server %p != client server %p: Type: %d\n", server->ipc_server,ecore_ipc_client_server_get(e->client),e->major );
+	   /*printf("CLIENT DATA: Not a message for us...server %p != client server %p: Type: %d\n", server->ipc_server,ecore_ipc_client_server_get(e->client),e->major );*/
 	   return 1;
    }
 
@@ -222,7 +222,7 @@ ipc_client_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 
    /*Onsend to client's worker, if any*/
    if (client->worker_client) {
-	   printf("Onsending data to client %p..%d %d %d %d %d\n", client->worker_client,e->major,e->minor,e->ref,e->ref_to,e->response,e->data, e->size );
+	   /*printf("Onsending data to client %p..%d %d %d %d %d\n", client->worker_client,e->major,e->minor,e->ref,e->ref_to,e->response,e->data, e->size );*/
 	   
 	   ecore_ipc_client_send(client->worker_client,e->major,e->minor,e->ref,e->ref_to,e->response,e->data, e->size); 
    } else {
@@ -292,7 +292,7 @@ ipc_worker_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 
    /*Make sure we're not the daemon server's event*/
    if (ecore_ipc_client_server_get(e->client) != server->worker_server) {
-	   printf("Not a message for us...server %p != client server %p: Type: %d\n", server->worker_server,ecore_ipc_client_server_get(e->client),e->major );
+	   /*printf("Not a message for us...server %p != client server %p: Type: %d\n", server->worker_server,ecore_ipc_client_server_get(e->client),e->major );*/
 	   return 1;
    }
 
@@ -302,7 +302,7 @@ ipc_worker_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 
    client = ecore_hash_get(evfs_server_get()->worker_hash, e->client);
    if (client) {
-	   printf("Got worker message, sending to client: %d, %d, %d, %d\n",e->major,e->minor,e->ref,e->ref_to);
+	   /*printf("Got worker message, sending to client: %d, %d, %d, %d\n",e->major,e->minor,e->ref,e->ref_to);*/
 	   ecore_ipc_client_send(client->client, e->major,e->minor,client->id,e->ref_to,e->response,e->data,e->size);
    } else {
 		   printf("Cannot find client at ipc_worker_data\n");

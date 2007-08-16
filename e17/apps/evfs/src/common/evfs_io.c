@@ -27,6 +27,7 @@ static Eet_Data_Descriptor *_EvfsEventStat_edd;
 static Eet_Data_Descriptor *_EvfsMetadataGroup_edd;
 static Eet_Data_Descriptor *_EvfsEventMetadataGroups_edd;
 static Eet_Data_Descriptor *_EvfsOperation_edd;
+static Eet_Data_Descriptor *_EvfsEventAuthRequired_edd;
 
 #define _NEW_EDD(type) eet_data_descriptor_new(#type, sizeof(type), \
                               (void *(*)(void *))evas_list_next, \
@@ -238,7 +239,11 @@ evfs_io_initialise()
 		   _EvfsMetadataGroup_edd	);
    evfs_io_event_edd_set(EVFS_EV_METADATA_GROUPS, _EvfsEventMetadataGroups_edd);
 
-   
+   /*EvfsEventAuthFailure*/
+   _EvfsEventAuthRequired_edd = _NEW_EDD(EvfsEventAuthRequired);
+   _EVFS_EVENT_BASE_ADD(EvfsEventAuthRequired);
+   evfs_io_event_edd_set(EVFS_EV_AUTH_REQUIRED, _EvfsEventAuthRequired_edd);
+
 
    /*File monitor edd*/
    /*_evfs_filemonitor_edd =
@@ -343,7 +348,7 @@ evfs_write_event(evfs_client * client, evfs_command * command,
    event->command = command;
 
    ecore_ipc_message* msg = evfs_io_event_construct(event);
-   printf("Writing event to master: %p -- message: %p:%p..\n", client->master, msg, msg->data);
+   /*printf("Writing event to master: %p -- message: %p:%p..\n", client->master, msg, msg->data);*/
 
    evfs_write_ecore_ipc_server_message(client->master,msg);
 }
@@ -382,8 +387,8 @@ evfs_write_ecore_ipc_server_message(Ecore_Ipc_Server * server,
 
    ecore_ipc_server_send(server, msg->major, msg->minor, msg->ref, msg->ref_to,
                          msg->response, msg->data, msg->len);
-   printf("Sent %d, %d, %d, %d, %d, - data %p, size %d\n", msg->major, msg->minor, msg->ref, msg->ref_to,
-                         msg->response, msg->data, msg->len);
+   /*printf("Sent %d, %d, %d, %d, %d, - data %p, size %d\n", msg->major, msg->minor, msg->ref, msg->ref_to,
+                         msg->response, msg->data, msg->len);*/
    free(msg);
 
 }

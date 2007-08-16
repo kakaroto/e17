@@ -202,7 +202,7 @@ ipc_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 	   ecore_main_loop_quit();
 	} else {	
 	   evfs_command* command;
-	   printf("Got server data in fork!: PID: %d\n", getpid());
+	   /*printf("Got server data in fork!: PID: %d\n", getpid());*/
 
 	   ecore_ipc_message *msg =
 	      ecore_ipc_message_new(e->major, e->minor, e->ref, e->ref_to, e->response,
@@ -217,7 +217,7 @@ ipc_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 	        com_cli->command = command;
 	        
 		ecore_list_append(server->incoming_command_list, com_cli);
-		printf("Finished processing command in fork\n");
+		/*printf("Finished processing command in fork\n");*/
 	     }
 
 	   free(msg);

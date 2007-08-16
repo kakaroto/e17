@@ -164,7 +164,7 @@ typedef struct
 typedef struct
 {
    EvfsEvent base;
-} EvfsEventAuthFailure;
+} EvfsEventAuthRequired;
 
 typedef struct
 {
