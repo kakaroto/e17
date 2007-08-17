@@ -128,8 +128,7 @@ struct Ewl_MVC
 
 	Ecore_List *selected;		/**< The selected cells */
 
-	Ewl_Selection_Mode selection_mode;	/**< The widget 
-							selection mode*/
+	Ewl_Selection_Mode selection_mode;	/**< The widget selection mode*/
 	unsigned char dirty:1;		/**< Is the data dirty */
 };
 
