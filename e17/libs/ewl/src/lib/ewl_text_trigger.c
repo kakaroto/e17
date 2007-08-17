@@ -561,7 +561,7 @@ ewl_text_trigger_cb_unrealize(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Creates and returns a new trigger_area of the given type
  */
 static Ewl_Widget *
-ewl_text_trigger_area_new()
+ewl_text_trigger_area_new(void)
 {
 	Ewl_Text_Trigger_Area *area;
 
