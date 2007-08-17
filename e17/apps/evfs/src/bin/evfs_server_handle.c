@@ -549,7 +549,7 @@ evfs_handle_file_copy(evfs_client * client, evfs_command * command,
 	             (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, tmp_command,
 	                                                  &directory_list);
 
-		     evfs_cleanup_file_command(tmp_command);
+		     evfs_cleanup_file_command_only(tmp_command);
 		     
 	             if (directory_list) {
         	          EvfsFilereference *file = NULL;
