@@ -478,6 +478,9 @@ ewl_mvc_selected_add(Ewl_MVC *mvc, Ewl_Model *model, void *data,
  * @param mvc: The MVC to get the data from
  * @return Returns the last selected item. Return must be free'd
  * @brief Retrieves the last selected item. Return must be free'd.
+ *
+ * If there should not be any selection or an error occured (e.g. the selection
+ * mode is set to EWL_SELECTION_MODE_NONE) it will return NULL.
  */
 Ewl_Selection_Idx *
 ewl_mvc_selected_get(Ewl_MVC *mvc)
