@@ -12,6 +12,19 @@
 typedef struct Ewl_Text_Trigger_Area Ewl_Text_Trigger_Area;
 
 /**
+ * @def EWL_TEXT_TRIGGER_AREA_TYPE
+ * The type name for the Ewl_Text_Area_Trigger widget
+ */
+#define EWL_TEXT_TRIGGER_AREA_TYPE "trigger_area"
+
+/**
+ * @def EWL_TEXT_TRIGGER_AREA_IS(w)
+ * Returns TRUE if the widget is an Ewl_Text_Area_Trigger, FALSE otherwise
+ */
+#define EWL_TEXT_TRIGGER_AREA_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_TEXT_TRIGGER_AREA_TYPE))
+
+
+/**
  * @def EWL_TEXT_TRIGGER_AREA(area)
  * Typecasts a pointer to an Ewl_Text_Trigger_Area pointer
  */
@@ -26,8 +39,9 @@ struct Ewl_Text_Trigger_Area
 	unsigned int deleted;	/**< Is this area deleted */
 };
 
-static Ewl_Widget *ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type);
-static int ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
+static Ewl_Widget *ewl_text_trigger_area_new();
+static int ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area);
+static void ewl_text_trigger_area_type_set(Ewl_Text_Trigger_Area *area,
 					Ewl_Text_Trigger_Type type);
 
 /**
@@ -289,7 +303,8 @@ ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 	DCHECK_TYPE("cur", cur, EWL_TEXT_TRIGGER_TYPE);
 
-	area = ewl_text_trigger_area_new(cur->type);
+	area = ewl_text_trigger_area_new();
+	ewl_text_trigger_area_type_set(EWL_TEXT_TRIGGER_AREA(area), cur->type);
 	ewl_container_child_append(EWL_CONTAINER(t), area);
 	ewl_widget_internal_set(area, TRUE);
 	ewl_object_geometry_request(EWL_OBJECT(area), x, y, w, h);
@@ -545,8 +560,8 @@ ewl_text_trigger_cb_unrealize(Ewl_Widget *w, void *ev __UNUSED__,
  * @return Returns a new trigger area of the given type
  * @brief Creates and returns a new trigger_area of the given type
  */
-Ewl_Widget *
-ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type)
+static Ewl_Widget *
+ewl_text_trigger_area_new()
 {
 	Ewl_Text_Trigger_Area *area;
 
@@ -556,7 +571,7 @@ ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type)
 	if (!area)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_text_trigger_area_init(area, type))
+	if (!ewl_text_trigger_area_init(area))
 	{
 		ewl_widget_destroy(EWL_WIDGET(area));
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -568,13 +583,11 @@ ewl_text_trigger_area_new(Ewl_Text_Trigger_Type type)
 /**
  * @internal
  * @param area: The trigger area to initialize
- * @param type: The type of the trigger area
  * @return Returns TRUE on success or FALSE on failure
  * @brief Initializes a triggger area to default values
  */
-int
-ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area, 
-				Ewl_Text_Trigger_Type type)
+static int
+ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("area", area, FALSE);
@@ -582,17 +595,38 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area,
 	if (!ewl_widget_init(EWL_WIDGET(area)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(EWL_WIDGET(area),
-			((type == EWL_TEXT_TRIGGER_TYPE_SELECTION) ?
-			 "selection_area" : "trigger_area"));
-	ewl_widget_inherit(EWL_WIDGET(area), "trigger_area");
-
-	if (type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
-		ewl_widget_color_set(EWL_WIDGET(area), 0, 0, 0, 0);
+	ewl_widget_inherit(EWL_WIDGET(area), EWL_TEXT_TRIGGER_AREA_TYPE);
 
 	ewl_widget_focusable_set(EWL_WIDGET(area), FALSE);
 	ewl_widget_internal_set(EWL_WIDGET(area), TRUE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param area: The trigger area to set the type for
+ * @param type: The type of the trigger area
+ * @return Returns nothing
+ * @brief Set the trigger type of the area 
+ */
+static void
+ewl_text_trigger_area_type_set(Ewl_Text_Trigger_Area *area, 
+				Ewl_Text_Trigger_Type type)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("area", area);
+	DCHECK_TYPE("area", area, EWL_TEXT_TRIGGER_AREA_TYPE);
+
+	ewl_widget_appearance_set(EWL_WIDGET(area),
+			((type == EWL_TEXT_TRIGGER_TYPE_SELECTION) ?
+			 "selection_area" : "trigger_area"));
+
+	if (type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
+		ewl_widget_color_set(EWL_WIDGET(area), 0, 0, 0, 0);
+	else
+		ewl_widget_color_set(EWL_WIDGET(area), 255, 255, 255, 255);
+
+	DRETURN(DLEVEL_STABLE);
 }
 
