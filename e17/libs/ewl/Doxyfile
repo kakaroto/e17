@@ -459,7 +459,7 @@ WARN_LOGFILE           = ewl_doxy_warnings.txt
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = src/lib src/bin TODO
+INPUT                  = src/lib src/bin
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 

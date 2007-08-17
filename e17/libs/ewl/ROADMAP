@@ -9,7 +9,7 @@ EWL ROADMAP
 
 0.6.1
 -----
-- bug fixes (see TODO and xcomputerman.net/bugs)
+- bug fixes (see bugs.enlightenment.org)
 - any DWARNINGS that are printed out
 - check for memleaks/corruption
 
