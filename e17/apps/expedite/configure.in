@@ -99,6 +99,15 @@ AC_CHECK_HEADER(Evas_Engine_Software_DDraw.h,
   [ #include <Evas.h> ]
 )
 
+have_d3d="no"
+AC_CHECK_HEADER(Evas_Engine_Direct3D.h,
+  [ AC_DEFINE(HAVE_DIRECT3D, 1, [Evas Direct3D Engine Support])
+    have_d3d="yes"
+    d3d_libs="-ld3d9 -ld3dx9d" ],
+  [ dummy=no ],
+  [ #include <Evas.h> ]
+)
+
 if test "x$have_xlib" = "xyes" -o "x$have_xlib_16" = "xyes" -o "x$have_xlib_render" = "xyes" -o "x$have_xlib_opengl" = "xyes" ; then
 AC_PATH_XTRA
 x_dir=${x_dir:-/usr/X11R6}
@@ -109,6 +118,7 @@ fi
 AC_SUBST(x_cflags)
 AC_SUBST(x_libs)
 AC_SUBST(ddraw_libs)
+AC_SUBST(d3d_libs)
 AC_SUBST(glew_libs)
 
 #######################################
@@ -157,6 +167,7 @@ echo "    X Render Xlib...........: ${have_xlib_render}"
 echo "    Open GL Glew............: ${have_glew_opengl}"
 echo "    Open GL Xlib............: ${have_xlib_opengl}"
 echo "    Software DirectDraw.....: ${have_ddraw}"
+echo "    Direct3D................: ${have_d3d}"
 echo "    Software SDL............: ${have_sdl}"
 echo
 echo "  Installation:"

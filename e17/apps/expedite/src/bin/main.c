@@ -1058,6 +1058,7 @@ rnd(void)
    return (int)(((unsigned int)r1 << 16) | ((unsigned int)r2));
 }
 
+#ifndef _WIN32
 double
 get_time(void)
 {
@@ -1066,6 +1067,13 @@ get_time(void)
    gettimeofday(&timev, NULL);
    return (double)timev.tv_sec + (((double)timev.tv_usec) / 1000000);
 }
+#else
+double
+get_time(void)
+{
+   return (double)GetTickCount()/1000.0;
+}
+#endif
 
 int
 engine_abort(void)
@@ -1104,6 +1112,8 @@ _engine_args(int argc, char **argv)
      loop_func = engine_software_ddraw_loop;
    if (engine_software_sdl_args(argc, argv))
      loop_func = engine_software_sdl_loop;
+   if (engine_direct3d_args(argc, argv))
+     loop_func = engine_direct3d_loop;
    if (!loop_func)
      {
 	fprintf(stderr,
@@ -1113,7 +1123,7 @@ _engine_args(int argc, char **argv)
 		"  -e ENGINE\n"
 		"\n"
 		"Where ENGINE can be one of:\n"
-		"  x11 xr gl-glew gl x11-16 ddraw sdl\n"
+		"  x11 xr gl-glew gl x11-16 ddraw direct3d sdl\n"
 		);
 	exit(-1);
      }

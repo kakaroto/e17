@@ -8,6 +8,10 @@
 #include <sys/time.h>
 #include <time.h>
 
+#ifdef _WIN32
+# include <windows.h>
+#endif
+
 #include <Evas.h>
 #include "config.h"
 #include "engine_software_x11.h"
@@ -17,6 +21,7 @@
 #include "engine_software_16_x11.h"
 #include "engine_software_ddraw.h"
 #include "engine_software_sdl.h"
+#include "engine_direct3d.h"
 #include "ui.h"
 #include "about.h"
 
