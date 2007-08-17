@@ -107,12 +107,13 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 		{
 			if (context_mask & EWL_TEXT_CONTEXT_MASK_FONT)
 			{
-				IF_FREE(new_tx->font);
-				new_tx->font = strdup(tx_change->font);
+				IF_RELEASE(new_tx->font);
+				new_tx->font = ecore_string_instance(
+							tx_change->font);
 
-				IF_FREE(new_tx->font_source);
+				IF_RELEASE(new_tx->font_source);
 				if (tx_change->font_source)
-					new_tx->font_source = strdup(tx_change->font_source);
+					new_tx->font_source = ecore_string_instance(tx_change->font_source);
 			}
 
 			if (context_mask & EWL_TEXT_CONTEXT_MASK_SIZE)
@@ -211,7 +212,8 @@ ewl_text_context_release(Ewl_Text_Context *tx)
 
 	ecore_hash_remove(context_hash, tx);
 
-	IF_FREE(tx->font);
+	IF_RELEASE(tx->font);
+	IF_RELEASE(tx->font_source);
 	IF_RELEASE(tx->format);
 	FREE(tx);
 
@@ -228,7 +230,7 @@ ewl_text_context_release(Ewl_Text_Context *tx)
 void
 ewl_text_context_print(Ewl_Text_Context *tx, const char *indent)
 {
-	char *t, *s;
+	const char *t, *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tx", tx);
@@ -268,11 +270,11 @@ ewl_text_context_print(Ewl_Text_Context *tx, const char *indent)
 void
 ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 {
-	char *format, *t;
+	char *t;
 	int pos = 0, i;
 	struct 
 	{
-		char *key;
+		const char *key;
 		char *val;
 		int free;
 	} fmt[128];
@@ -409,12 +411,11 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 	fmt[pos].val = t;
 	fmt[pos++].free = FALSE;
 
-	t = NEW(char, 128);
 
 	fmt[pos].key = "font_source";
 	if (ctx->font_source)
 	{
-		fmt[pos].val = ctx->font_source;
+		fmt[pos].val = (char *)ctx->font_source;
 		fmt[pos++].free = FALSE;
 
 		t = strdup(ctx->font);
@@ -424,6 +425,7 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 		fmt[pos].val = (char *)ewl_theme_path_get();
 		fmt[pos++].free = FALSE;
 
+		t = NEW(char, 128);
 		snprintf(t, 128, "fonts/%s", ctx->font);
 	}
 
@@ -446,21 +448,24 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 	fmt[pos++].free = TRUE;
 
 	/* create the formatting string */
-	format = NEW(char, 2048);
-	strcat(format, "+");
-
-	for (i = 0; i < pos; i ++)
 	{
-		strcat(format, fmt[i].key);
-		strcat(format, "=");
-		strcat(format, fmt[i].val);
-		strcat(format, " ");
+		char format[2048];
 
-		if (fmt[i].free) FREE(fmt[i].val);
+		format[0] = '\0';
+		ecore_strlcat(format, "+", sizeof(format));
+
+		for (i = 0; i < pos; i ++)
+		{
+			ecore_strlcat(format, fmt[i].key, sizeof(format));
+			ecore_strlcat(format, "=", sizeof(format));
+			ecore_strlcat(format, fmt[i].val, sizeof(format));
+			ecore_strlcat(format, " ", sizeof(format));
+
+			if (fmt[i].free) FREE(fmt[i].val);
+		}
+
+		ctx->format = ecore_string_instance(format);
 	}
-
-	ctx->format = ecore_string_instance(format);
-	FREE(format);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -478,7 +483,7 @@ ewl_text_context_dup(Ewl_Text_Context *old)
 
 	/* make sure we get our own pointer to the font so it dosen't get
 	 * free'd behind our back */
-	tx->font = ((old->font) ? strdup(old->font) : NULL);
+	tx->font = ((old->font) ? ecore_string_instance(old->font) : NULL);
 	tx->ref_count = 1;
 
 	tx->format = ((old->format) ? ecore_string_instance((char *)old->format) : NULL);
@@ -518,7 +523,6 @@ ewl_text_context_hash_key(const void *ctx)
 static int
 ewl_text_context_hash_cmp(const void *ctx1, const void *ctx2)
 {
-	unsigned int key1, key2;
 	const Ewl_Text_Context *tx1 = ctx1;
 	const Ewl_Text_Context *tx2 = ctx2;
 
@@ -527,10 +531,7 @@ ewl_text_context_hash_cmp(const void *ctx1, const void *ctx2)
 #define KEY_BUILD(c) (c.r | c.g | c.b | c.a)
 #define KEY_COMPARE(k1, k2) if (k1 > k2) goto CTX1_LARGER; else if (k2 > k1) goto CTX2_LARGER;
 
-	key1 = ((tx1->font) ? ecore_str_hash(tx1->font) : 0);
-	key2 = ((tx2->font) ? ecore_str_hash(tx2->font) : 0); 
-	KEY_COMPARE(key1, key2);
-
+	KEY_COMPARE(ecore_str_compare(tx1->font, tx2->font), 0);
 	KEY_COMPARE(tx1->size, tx2->size);
 	KEY_COMPARE(tx1->styles, tx2->styles);
 	KEY_COMPARE(KEY_BUILD(tx1->color), KEY_BUILD(tx2->color));
@@ -561,8 +562,12 @@ ewl_text_context_merge(Ewl_Text_Context *tx, unsigned int context_mask,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tx", tx);
 
-	tx->font = ((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? tx_change->font : tx->font);
-	tx->font_source = ((context_mask & EWL_TEXT_CONTEXT_MASK_FONT) ? tx_change->font_source : tx->font_source);
+	if (context_mask & EWL_TEXT_CONTEXT_MASK_FONT) {
+		IF_RELEASE(tx->font);
+		IF_RELEASE(tx->font_source);
+		tx->font = ecore_string_instance(tx_change->font);
+		tx->font = ecore_string_instance(tx_change->font);
+	}
 	tx->size = ((context_mask & EWL_TEXT_CONTEXT_MASK_SIZE) ? tx_change->size : tx->size);
 	tx->styles = ((context_mask & EWL_TEXT_CONTEXT_MASK_STYLES) ? tx_change->styles : tx->styles),
 	tx->align = ((context_mask & EWL_TEXT_CONTEXT_MASK_ALIGN) ? tx_change->align : tx->align);

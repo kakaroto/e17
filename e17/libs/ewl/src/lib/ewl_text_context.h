@@ -20,8 +20,8 @@ typedef struct Ewl_Text_Context Ewl_Text_Context;
  */
 struct Ewl_Text_Context
 {
-	char *font;				/**< Font name */
-	char *font_source;			/**< The font source */
+	const char *font;			/**< Font name */
+	const char *font_source;		/**< The font source */
 	unsigned int styles;			/**< Styles set in this node */
 	unsigned int align;			/**< Text alignment */
 	Ewl_Text_Wrap wrap;			/**< Text wrap setting */
