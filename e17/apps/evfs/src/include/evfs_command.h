@@ -58,5 +58,6 @@ EvfsFilereference* evfs_command_first_file_get(evfs_command* command);
 EvfsFilereference* evfs_command_second_file_get(evfs_command* command);
 EvfsFilereference* evfs_command_nth_file_get(evfs_command* command, int n);
 int evfs_command_file_count_get(evfs_command* command);
+void evfs_command_localise(evfs_command* command);
 
 #endif

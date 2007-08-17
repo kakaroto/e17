@@ -20,7 +20,7 @@ void
 evfs_cleanup_file_command_only(evfs_command* command)
 {
 	if (command->file_command->files)
-		free(command->file_command->files);
+		evas_list_free(command->file_command->files);
 
 	free(command);
 }
@@ -113,9 +113,6 @@ evfs_cleanup_file_read_event(EvfsEventData* event)
 void
 evfs_cleanup_progress_event(EvfsEventProgress* event)
 {
-   if (event->from) evfs_cleanup_filereference(event->from);
-   if (event->to) evfs_cleanup_filereference(event->to);
-   
 }
 
 void

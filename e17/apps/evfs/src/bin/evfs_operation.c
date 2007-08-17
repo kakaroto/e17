@@ -123,6 +123,9 @@ void evfs_operation_copy_task_add(evfs_operation* op, EvfsFilereference* file_fr
 
 	copy->file_from = file_from;
 	copy->file_to = file_to;
+
+	printf("New copy, from: %p, To: %p\n", file_from, file_to);
+	
 	copy->next_byte = 0;
 	memcpy(&copy->source_stat, &from_stat, sizeof(struct stat));
 	memcpy(&copy->dest_stat, &to_stat, sizeof(struct stat));

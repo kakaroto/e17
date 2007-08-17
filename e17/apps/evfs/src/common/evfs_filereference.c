@@ -7,6 +7,7 @@ EvfsFilereference* evfs_filereference_new(char* plugin, char* path, int filetype
 	ref->plugin_uri = strdup(plugin);
 	ref->file_type = filetype;
 	ref->plugin = evfs_get_plugin_for_uri(evfs_server_get(), plugin);
+	printf("Got plugin %p for uri %s\n", ref->plugin, plugin);
 
 	return ref;
 }

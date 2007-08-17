@@ -27,6 +27,7 @@ static Eet_Data_Descriptor *_EvfsEventStat_edd;
 static Eet_Data_Descriptor *_EvfsMetadataGroup_edd;
 static Eet_Data_Descriptor *_EvfsEventMetadataGroups_edd;
 static Eet_Data_Descriptor *_EvfsOperation_edd;
+static Eet_Data_Descriptor *_EvfsEventOperation_edd;
 static Eet_Data_Descriptor *_EvfsEventAuthRequired_edd;
 static Eet_Data_Descriptor *_EvfsEventOpen_edd;
 
@@ -118,32 +119,6 @@ evfs_io_initialise()
    EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsFilereference_edd, EvfsFilereference, "parent", parent, 
 		   _EvfsFilereference_edd);
 
-
-   /*Command edd*/
-   _EvfsCommandFile_edd = _NEW_EDD(evfs_command_file);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommandFile_edd, evfs_command_file,
-                   "type", type, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommandFile_edd, evfs_command_file,
-                   "extra", extra, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommandFile_edd, evfs_command_file,
-                   "ref", ref, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommandFile_edd, evfs_command_file,
-                   "ref2", ref2, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_LIST(_EvfsCommandFile_edd, evfs_command_file,
-                   "files", files, _EvfsFilereference_edd);
-
-   
-   
-   _EvfsCommand_edd = _NEW_EDD(evfs_command);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommand_edd, evfs_command,
-                                 "EvfsCommand_type", type, EET_T_INT);   
-   EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsCommand_edd, evfs_command,
-                                 "EvfsCommand_filecommand", file_command, _EvfsCommandFile_edd);  
-   EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsCommand_edd, evfs_command,
-                                 "EvfsCommand_operation", op, _EvfsOperation_edd);   
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommand_edd, evfs_command,
-                                 "EvfsCommand_id", client_identifier, EET_T_INT);
-
    /*Evfs_operation eet */
    _EvfsOperation_edd = _NEW_EDD(EvfsOperation);
 
@@ -163,8 +138,29 @@ evfs_io_initialise()
    EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsOperation_edd, evfs_operation,
                                  "response", response, EET_T_INT);
 
+   /*Command edd*/
+   _EvfsCommandFile_edd = _NEW_EDD(evfs_command_file);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommandFile_edd, evfs_command_file,
+                   "type", type, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommandFile_edd, evfs_command_file,
+                   "extra", extra, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommandFile_edd, evfs_command_file,
+                   "ref", ref, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommandFile_edd, evfs_command_file,
+                   "ref2", ref2, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_LIST(_EvfsCommandFile_edd, evfs_command_file,
+                   "files", files, _EvfsFilereference_edd);
    
-   
+   _EvfsCommand_edd = _NEW_EDD(evfs_command);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommand_edd, evfs_command,
+                                 "EvfsCommand_type", type, EET_T_INT);   
+   EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsCommand_edd, evfs_command,
+                                 "EvfsCommand_filecommand", file_command, _EvfsCommandFile_edd);  
+   EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsCommand_edd, evfs_command,
+                                 "EvfsCommand_operation", op, _EvfsOperation_edd);   
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommand_edd, evfs_command,
+                                 "EvfsCommand_id", client_identifier, EET_T_INT);
+
    /*Base event EDD*/
    _EvfsEvent_edd = _NEW_EDD(EvfsEvent);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEvent_edd, EvfsEvent,
@@ -248,6 +244,13 @@ evfs_io_initialise()
    _EvfsEventOpen_edd = _NEW_EDD(EvfsEventOpen);
    _EVFS_EVENT_BASE_ADD(EvfsEventOpen);
    evfs_io_event_edd_set(EVFS_EV_FILE_OPEN, _EvfsEventOpen_edd);
+
+   /*EvfsEventOperation*/
+   _EvfsEventOperation_edd = _NEW_EDD(EvfsEventOperation);
+   _EVFS_EVENT_BASE_ADD(EvfsEventOperation);
+   EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsEventOperation_edd, EvfsEventOperation, "EvfsEventOperation_operation", operation, _EvfsOperation_edd);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventOperation_edd, EvfsEventOperation, "EvfsEventOperation_misc", misc, EET_T_STRING);
+   evfs_io_event_edd_set(EVFS_EV_OPERATION, _EvfsEventOperation_edd);
 
 
    /*File monitor edd*/
@@ -357,7 +360,11 @@ evfs_write_event(evfs_client * client, evfs_command * command,
    ecore_ipc_message* msg = evfs_io_event_construct(event);
    /*printf("Writing event to master: %p -- message: %p:%p..\n", client->master, msg, msg->data);*/
 
-   evfs_write_ecore_ipc_server_message(client->master,msg);
+   if (msg) {
+	   evfs_write_ecore_ipc_server_message(client->master,msg);
+   } else {
+	   printf("Could not find message to write\n");
+   }
 }
 
 EvfsEvent*
@@ -420,22 +427,6 @@ evfs_write_ecore_ipc_client_message(Ecore_Ipc_Client * client,
 //be generic
 //
 void
-evfs_write_operation_command(evfs_connection * conn, evfs_command * command)
-{
-   int size_ret = 0;
-
-   char *data =
-      eet_data_descriptor_encode(_EvfsOperation_edd, command->op, &size_ret);
-
-   evfs_write_ecore_ipc_server_message(conn->server,
-                                       ecore_ipc_message_new(EVFS_COMMAND,
-                                                             EVFS_COMMAND_PART_OPERATION,
-                                                             0, 0, 0, data,
-                                                             size_ret));
-   free(data);
-}
-
-void
 evfs_write_command(evfs_connection * conn, evfs_command * command)
 {
    char* data;
@@ -463,6 +454,10 @@ evfs_process_incoming_command(evfs_server * server,
 	int size;
 
 	com = eet_data_descriptor_decode(_EvfsCommand_edd, message->data, message->len);
+
+	/*Set local references to plugins, etc*/
+	evfs_command_localise(com);
+
 	return com;
 }
 
