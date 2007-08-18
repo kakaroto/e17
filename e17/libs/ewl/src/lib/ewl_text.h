@@ -87,6 +87,7 @@ struct Ewl_Text
 	} formatting;	  	/**< Holds the formatting information */
 
 	Ecore_List *triggers;  	  /**< The list of triggers */
+	Ecore_List *areas_cache;  /**< unused areas */
 	Ewl_Widget *selection;	  /**< The current selection */
 
 	struct
@@ -297,7 +298,7 @@ void ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data);
 
 void ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
-void ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx);
+void ewl_text_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx);
 
 void ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 

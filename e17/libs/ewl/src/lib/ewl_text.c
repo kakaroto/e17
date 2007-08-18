@@ -55,7 +55,6 @@ static void ewl_text_triggers_shift(Ewl_Text *t, unsigned int char_pos,
 static void ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig);
 
 static void ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
-static void ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger);
 
 static void ewl_text_selection_select_to(Ewl_Text_Trigger *s, 
 						unsigned int char_idx);
@@ -130,7 +129,7 @@ ewl_text_init(Ewl_Text *t)
 	ewl_container_add_notify_set(EWL_CONTAINER(t), 
 					ewl_text_cb_child_add);
 	ewl_container_remove_notify_set(EWL_CONTAINER(t), 
-					ewl_text_cb_child_del);
+					ewl_text_cb_child_remove);
 
 	t->dirty = TRUE;
 
@@ -2987,6 +2986,8 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
 			/* if this would move us past our index, find the
 			 * difference between our desired index and the
 			 * current index and set that */
+			/* XXX I thought evas uses for all things byte indices
+			 * shouldn't we transform thos char_idx to byte_idx? */
 			if ((cur_char_idx + pos) > char_idx)
 			{
 				evas_textblock_cursor_pos_set(cursor, 
@@ -3079,8 +3080,7 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 		if (t->dirty) ewl_text_display(t);
 
-		/* XXX ewl_text_triggers_realize here? */
-		ewl_text_triggers_configure(t);
+		ewl_text_triggers_areas_place(t);
 
 		/* re-configure the selection to make sure it resizes
 		 * if needed */
@@ -3158,7 +3158,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 		evas_object_show(t->textblock);
 	}
 
-	ewl_text_triggers_realize(t);
+	ewl_text_triggers_areas_place(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3269,10 +3269,10 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	t = EWL_TEXT(w);
 
 	/* Note, we don't explictly destroy the triggers or the selection
-	 * because they will be cleared as children of the text widget
-	 * itself */
+	 * because they will be cleared, because they are children of the 
+	 * text widget itself */
 	IF_FREE_LIST(t->triggers);
-	t->selection = NULL;
+	t->selection = t->selection = NULL;
 
 	ewl_text_fmt_destroy(t->formatting.nodes);
 	t->formatting.nodes = NULL;
@@ -3320,7 +3320,6 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 		t->selection = tmp;
 		sel = EWL_TEXT_TRIGGER(tmp);
-		sel->text_parent = t;
 
 		ewl_text_trigger_start_pos_set(sel, 0);
 		ewl_text_trigger_length_set(sel, 0);
@@ -3477,24 +3476,15 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
 void
 ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
-	char *appearance;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("c", c, EWL_TEXT_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (!(appearance = ewl_widget_appearance_get(w)))
-		DRETURN(DLEVEL_STABLE);
-
-	/* if this is a trigger then add it as such
-	 * Note: we cannot do a simple type check here, because a text selection
-	 * is also of the type EWL_TEXT_TRIGGER */
-	if (!strcmp(appearance, EWL_TEXT_TRIGGER_TYPE))
+	/* if this is a trigger then add it as such */
+	if (EWL_TEXT_TRIGGER_IS(w))
 		ewl_text_trigger_add(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
-
-	FREE(appearance);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3505,29 +3495,37 @@ ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
  * @param w: The widget to work with
  * @param idx: UNUSED
  * @return Returns no value
- * @brief The child del callback
+ * @brief The child remove callback
  */
 void
-ewl_text_cb_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
+ewl_text_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 {
-	char *appearance;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("c", c, EWL_TEXT_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (!(appearance = ewl_widget_appearance_get(w)))
-		DRETURN(DLEVEL_STABLE);
+	/* if it is a trigger, we need to treat it special */
+	if (EWL_TEXT_TRIGGER_IS(w)) {
+		Ewl_Text_Trigger *trigger;
 
-	/* if this is a trigger, remove it as such
-	 * Note: we cannot do a simple type check here, because a text selection
-	 * is also of the type EWL_TEXT_TRIGGER */
-	if (!strcmp(appearance, EWL_TEXT_TRIGGER_TYPE))
-		ewl_text_trigger_del(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
+		trigger = EWL_TEXT_TRIGGER(w);
+		ewl_text_trigger_areas_cleanup(trigger);
+		trigger->text_parent = NULL;
 
-	FREE(appearance);
+		if (trigger->type == EWL_TEXT_TRIGGER_TYPE_TRIGGER) {
+			ecore_list_goto(EWL_TEXT(c)->triggers, trigger);
+			ecore_list_remove(EWL_TEXT(c)->triggers);
+		}
+		else {
+			/* for debug */
+			if (EWL_TEXT(c)->selection != w)
+				DWARNING("we are removing a selection, that"
+					 "isn't our own. WTF is happened\n");
+			EWL_TEXT(c)->selection = NULL;
+		}
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3630,7 +3628,6 @@ ewl_text_triggers_remove(Ewl_Text *t)
 
 	while ((trig = ecore_list_first_remove(t->triggers))) 
 	{
-		trig->text_parent = NULL;
 		ewl_widget_destroy(EWL_WIDGET(trig));
 	}
 
@@ -3737,7 +3734,7 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int char_pos,
  * @brief Sets all of the triggers in the text @a t as realized
  */
 void
-ewl_text_triggers_realize(Ewl_Text *t)
+ewl_text_triggers_areas_place(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -3772,7 +3769,7 @@ ewl_text_triggers_unrealize(Ewl_Text *t)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
-
+	
 	if (t->triggers)
 	{
 		ecore_list_first_goto(t->triggers);
@@ -3880,43 +3877,45 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
 	DCHECK_TYPE("trigger", trigger, EWL_TEXT_TRIGGER_TYPE);
 
+	/* this code there is for both triggers and selections */
+	trigger->text_parent = t;
+	
+	/* the rest will be for real triggers only */
+	if (trigger->type == EWL_TEXT_TRIGGER_TYPE_SELECTION)
+		DRETURN(DLEVEL_STABLE);
+
 	/* create the trigger list if needed */
 	if (!t->triggers)
 		t->triggers = ecore_list_new();
 
 	/* if we have no length, we start past the end of the text, or we
 	 * extend past the end of the text then return an error */
-	if ((trigger->char_len == 0) || (trigger->char_pos > t->length.chars)
-			|| ((trigger->char_pos + trigger->char_len) > t->length.chars))
+	if ((trigger->char_len == 0) 
+		|| ((trigger->char_pos + trigger->char_len) > t->length.chars))
 		DRETURN(DLEVEL_STABLE);
 
-	trigger->text_parent = t;
 
-	/* only need to check for overlappign if this is a trigger (not a
-	 * selection) */
-	if (trigger->type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
+	/* check now for overlapping */
+	ecore_list_first_goto(t->triggers);
+	while ((cur = ecore_list_next(t->triggers)))
 	{
-		ecore_list_first_goto(t->triggers);
-		while ((cur = ecore_list_next(t->triggers)))
+		if (trigger->char_pos < cur->char_pos)
 		{
-			if (trigger->char_pos < cur->char_pos)
-			{
-				if ((trigger->char_pos + trigger->char_len) < cur->char_pos)
-					break;
+			if ((trigger->char_pos + trigger->char_len) < cur->char_pos)
+				break;
 
-				DWARNING("Overlapping triggers are not allowed.");
-				DRETURN(DLEVEL_STABLE);
-			}
+			DWARNING("Overlapping triggers are not allowed.");
+			DRETURN(DLEVEL_STABLE);
+		}
 
-			if ((trigger->char_pos > (cur->char_pos + cur->char_len)))
-				continue;
+		if ((trigger->char_pos > (cur->char_pos + cur->char_len)))
+			continue;
 
-			if ((trigger->char_pos >= cur->char_pos) 
-						&& (trigger->char_pos <= (cur->char_pos + cur->char_len)))
-			{
-				DWARNING("Overlapping triggers are not allowed.");
-				DRETURN(DLEVEL_STABLE);
-			}
+		if ((trigger->char_pos >= cur->char_pos) 
+				&& (trigger->char_pos <= (cur->char_pos + cur->char_len)))
+		{
+			DWARNING("Overlapping triggers are not allowed.");
+			DRETURN(DLEVEL_STABLE);
 		}
 	}
 
@@ -3933,26 +3932,5 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 		ecore_list_append(t->triggers, trigger);
 
 	DRETURN(DLEVEL_STABLE);
-}
-
-static void
-ewl_text_trigger_del(Ewl_Text *t, Ewl_Text_Trigger *trigger)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_PARAM_PTR("trigger", trigger);
-	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
-	DCHECK_TYPE("trigger", trigger, EWL_TEXT_TRIGGER_TYPE);
-
-	/* nothign to do if we have no triggers */
-	if (!t->triggers)
-		DRETURN(DLEVEL_STABLE);
-
-	ecore_list_goto(t->triggers, trigger);
-	ecore_list_remove(t->triggers);
-
-	trigger->text_parent = NULL;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

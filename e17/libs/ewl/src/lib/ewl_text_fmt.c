@@ -438,7 +438,7 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 	fmt->current_node.char_idx = 0;
 	fmt->current_node.byte_idx = 0;
 
-	while ((fmt->current_node.char_idx + node->char_len) < idx)
+	while ((fmt->current_node.char_idx + node->char_len) <= idx)
 	{
 		fmt->current_node.char_idx += node->char_len;
 		fmt->current_node.byte_idx += node->byte_len;
