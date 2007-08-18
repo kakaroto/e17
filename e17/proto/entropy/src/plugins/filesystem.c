@@ -59,7 +59,7 @@ callback (EvfsEvent * data, void *obj)
       void *key;
       entropy_gui_event *gui_event;
 
-      char *folder = strdup ((char *) EVFS_EVENT_FILE_MONITOR(data)->file);
+      char *folder = strdup (filemonitor->path);
       char *pos = rindex (folder, '/');
       *pos = '\0';
 
