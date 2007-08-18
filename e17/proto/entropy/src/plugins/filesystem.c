@@ -460,7 +460,9 @@ callback (EvfsEvent * data, void *obj)
 	 entropy_core_gui_event_get (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT);
 
 	 op = entropy_malloc(sizeof(entropy_file_operation));
-	 op->file = EVFS_EVENT_OPERATION(data)->operation->misc_str;
+
+	 printf("Operation file is: %s\n", EVFS_EVENT_OPERATION(data)->misc);
+	 op->file = EVFS_EVENT_OPERATION(data)->misc;
 	 op->id = EVFS_EVENT_OPERATION(data)->operation->id;
 	 gui_event->data = op;
 	
