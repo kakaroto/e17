@@ -35,7 +35,6 @@ evfs_command_type;
 typedef struct evfs_command_file
 {
    evfs_command_type type;
-   int num_files;
    int extra;
    char* ref;
    char* ref2;

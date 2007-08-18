@@ -44,49 +44,63 @@ trash_la_SOURCES = evfs_fs_trash.c \
 posix_la_SOURCES = evfs_fs_posix.c \
 			$(top_srcdir)/src/common/evfs_debug.c \
 			$(top_srcdir)/src/common/evfs_event_helper.c \
-			$(top_srcdir)/src/common/evfs_misc.c
+			$(top_srcdir)/src/common/evfs_misc.c \
+			$(top_srcdir)/src/common/evfs_command.c \
+			$(top_srcdir)/src/common/evfs_filereference.c
 
 vfolder_la_SOURCES = evfs_fs_vfolder.c \
                         $(top_srcdir)/src/common/evfs_debug.c \
                         $(top_srcdir)/src/common/evfs_event_helper.c \
-                        $(top_srcdir)/src/common/evfs_misc.c
+                        $(top_srcdir)/src/common/evfs_misc.c \
+                        $(top_srcdir)/src/common/evfs_command.c \
+                        $(top_srcdir)/src/common/evfs_filereference.c
 
 tar_la_SOURCES = evfs_fs_tar.c \
                         $(top_srcdir)/src/common/evfs_debug.c \
                         $(top_srcdir)/src/common/evfs_event_helper.c \
 			$(top_srcdir)/src/bin/evfs_server_handle.c \
-			$(top_srcdir)/src/common/evfs_common.c 
+			$(top_srcdir)/src/common/evfs_common.c \
+                        $(top_srcdir)/src/common/evfs_command.c \
+                        $(top_srcdir)/src/common/evfs_filereference.c
 
 sftp_la_SOURCES = evfs_fs_sftp.c \
                         $(top_srcdir)/src/plugins/file/sftp.h \
                         $(top_srcdir)/src/common/evfs_debug.c \
                         $(top_srcdir)/src/common/evfs_event_helper.c \
                         $(top_srcdir)/src/bin/evfs_server_handle.c \
-                        $(top_srcdir)/src/common/evfs_common.c
-												
+                        $(top_srcdir)/src/common/evfs_common.c \
+                        $(top_srcdir)/src/common/evfs_command.c \
+                        $(top_srcdir)/src/common/evfs_filereference.c											
 
 bzip2_la_SOURCES = evfs_fs_bzip2.c \
                         $(top_srcdir)/src/common/evfs_debug.c \
                         $(top_srcdir)/src/common/evfs_event_helper.c \
                         $(top_srcdir)/src/bin/evfs_server_handle.c \
-                        $(top_srcdir)/src/common/evfs_common.c
+                        $(top_srcdir)/src/common/evfs_common.c \
+                        $(top_srcdir)/src/common/evfs_command.c \
+                        $(top_srcdir)/src/common/evfs_filereference.c
 
 gzip_la_SOURCES = evfs_fs_gzip.c \
                         $(top_srcdir)/src/common/evfs_debug.c \
                         $(top_srcdir)/src/common/evfs_event_helper.c \
                         $(top_srcdir)/src/bin/evfs_server_handle.c \
-                        $(top_srcdir)/src/common/evfs_common.c
+                        $(top_srcdir)/src/common/evfs_common.c \
+                        $(top_srcdir)/src/common/evfs_command.c \
+                        $(top_srcdir)/src/common/evfs_filereference.c
 
 
 samba_la_SOURCES = evfs_fs_samba.c \
                         $(top_srcdir)/src/common/evfs_debug.c \
                         $(top_srcdir)/src/common/evfs_event_helper.c \
-			$(top_srcdir)/src/common/evfs_misc.c
+			$(top_srcdir)/src/common/evfs_misc.c \
+                        $(top_srcdir)/src/common/evfs_command.c \
+                        $(top_srcdir)/src/common/evfs_filereference.c
 
 ftp_la_SOURCES = evfs_fs_ftp.c \
                         $(top_srcdir)/src/common/evfs_debug.c \
-                        $(top_srcdir)/src/common/evfs_event_helper.c
-
+                        $(top_srcdir)/src/common/evfs_event_helper.c \
+                        $(top_srcdir)/src/common/evfs_command.c \
+                        $(top_srcdir)/src/common/evfs_filereference.c
 
 	
 posix_la_CFLAGS =  @ECORE_CFLAGS@

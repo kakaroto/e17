@@ -6,7 +6,7 @@ evfs_monitor_add(evfs_connection * conn, EvfsFilereference * ref)
    evfs_command *command = evfs_client_command_new();
    long id = command->client_identifier;
 
-   /*printf("Adding a monitor on: '%s' using '%s'\n", ref->path, ref->plugin_uri); */
+   printf("Adding a monitor on: '%s' using '%s'\n", ref->path, ref->plugin_uri); 
 
    command->type = EVFS_CMD_STARTMON_FILE;
    command->file_command->files = evas_list_append( command->file_command->files, ref);
@@ -61,7 +61,6 @@ evfs_client_file_rename(evfs_connection * conn, EvfsFilereference * from,
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_RENAME_FILE;
-   command->file_command->num_files = 2;
    command->file_command->files = evas_list_append( command->file_command->files, from);
    command->file_command->files = evas_list_append( command->file_command->files, to);
 

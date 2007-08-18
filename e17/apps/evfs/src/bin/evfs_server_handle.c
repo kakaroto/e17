@@ -77,7 +77,7 @@ evfs_handle_monitor_start_command(evfs_client * client, evfs_command * command)
 {
    /*First get the plugin responsible for this file */
 
-   if (command->file_command->num_files > 0)
+   if (evfs_command_file_count_get(command) > 0)
      {
         evfs_plugin *plugin = evfs_get_plugin_for_uri(client->server,
                                                       evfs_command_first_file_get(command)->plugin_uri);
@@ -654,7 +654,7 @@ void evfs_handle_metadata_command(evfs_client* client, evfs_command* command)
 void evfs_handle_metadata_string_file_set_command(evfs_client* client __UNUSED__, 
 		evfs_command* command, char* key, char* value) 
 {
-	if (command->file_command->num_files > 0) {
+	if (evfs_command_file_count_get(command) == 1) {
 		evfs_metadata_file_set_key_value_string(evfs_command_first_file_get(command), key, value);
 	}
 }
@@ -663,7 +663,7 @@ void evfs_handle_metadata_string_file_get_command(evfs_client* client __UNUSED__
 		evfs_command* command, char* key) 
 {
 	char* value;
-	if (command->file_command->num_files > 0) {
+	if (evfs_command_file_count_get(command) == 1) {
 		value = evfs_metadata_file_get_key_value_string(evfs_command_first_file_get(command), key);
 	}
 }
@@ -680,14 +680,14 @@ void evfs_handle_metadata_groups_request_command(evfs_client* client, evfs_comma
 
 void evfs_handle_metadata_file_group_add(evfs_client* client, evfs_command* command)
 {
-	if (command->file_command->num_files > 0) {
+	if (evfs_command_file_count_get(command) == 1) {
 		evfs_metadata_group_header_file_add(evfs_command_first_file_get(command), command->file_command->ref);
 	}
 }
 
 void evfs_handle_metadata_file_group_remove(evfs_client* client, evfs_command* command)
 {
-	if (command->file_command->num_files > 0) {
+	if (evfs_command_file_count_get(command) == 1) {
 		evfs_metadata_group_header_file_remove(evfs_command_first_file_get(command), command->file_command->ref);
 	}	
 }
@@ -702,7 +702,7 @@ void evfs_handle_trash_restore_command(evfs_client* client, evfs_command* comman
 	char* pos2;
 	evfs_command* f_command;
 
-	for (c=0;c<command->file_command->num_files;c++) {
+	for (c=0;c<evfs_command_file_count_get(command);c++) {
 		ref = evfs_command_nth_file_get(command,c);
 		pos = strrchr(ref->path, '.');
 		pos2 = strrchr(ref->path, '/');

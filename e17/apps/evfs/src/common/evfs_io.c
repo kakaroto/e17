@@ -6,9 +6,6 @@ static int io_init = 0;
 static int _evfs_object_client_is = 1;
 
 static Eet_Data_Descriptor *_EvfsOperation_edd;
-static Eet_Data_Descriptor *_evfs_filemonitor_edd;
-static Eet_Data_Descriptor *_evfs_metalist_edd;
-static Eet_Data_Descriptor *_evfs_metaobj_edd;
 static Ecore_Hash* evfs_io_edd_hash;
 
 /*Reorg*/
@@ -30,6 +27,7 @@ static Eet_Data_Descriptor *_EvfsOperation_edd;
 static Eet_Data_Descriptor *_EvfsEventOperation_edd;
 static Eet_Data_Descriptor *_EvfsEventAuthRequired_edd;
 static Eet_Data_Descriptor *_EvfsEventOpen_edd;
+static Eet_Data_Descriptor *_EvfsEventFileMonitor_edd;
 
 #define _NEW_EDD(type) eet_data_descriptor_new(#type, sizeof(type), \
                               (void *(*)(void *))evas_list_next, \
@@ -235,6 +233,13 @@ evfs_io_initialise()
 		   _EvfsMetadataGroup_edd	);
    evfs_io_event_edd_set(EVFS_EV_METADATA_GROUPS, _EvfsEventMetadataGroups_edd);
 
+   /*EvfsEventFileMonitor*/
+   _EvfsEventFileMonitor_edd = _NEW_EDD(EvfsEventFileMonitor);
+   _EVFS_EVENT_BASE_ADD(EvfsEventFileMonitor);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventFileMonitor_edd, EvfsEventFileMonitor, "EvfsEventFileMonitor_type", type, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsEventFileMonitor_edd, EvfsEventFileMonitor, "EvfsEventFileMonitor_file", file, _EvfsFilereference_edd);
+   evfs_io_event_edd_set(EVFS_EV_FILE_MONITOR, _EvfsEventFileMonitor_edd);
+   
    /*EvfsEventAuthFailure*/
    _EvfsEventAuthRequired_edd = _NEW_EDD(EvfsEventAuthRequired);
    _EVFS_EVENT_BASE_ADD(EvfsEventAuthRequired);
@@ -252,36 +257,6 @@ evfs_io_initialise()
    EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventOperation_edd, EvfsEventOperation, "EvfsEventOperation_misc", misc, EET_T_STRING);
    evfs_io_event_edd_set(EVFS_EV_OPERATION, _EvfsEventOperation_edd);
 
-
-   /*File monitor edd*/
-   /*_evfs_filemonitor_edd =
-      eet_data_descriptor_new("evfs_filemonitor", sizeof(evfs_event_file_monitor),
-                              (void *(*)(void *))evas_list_next,
-                              (void *(*)(void *, void *))evas_list_append,
-                              (void *(*)(void *))evas_list_data,
-                              (void *(*)(void *))evas_list_free,
-                              (void (*)
-                               (void *,
-                                int (*)(void *, const char *, void *, void *),
-                                void *))evas_hash_foreach, (void *(*)(void *,
-                                                                      const char
-                                                                      *,
-                                                                      void *))
-                              evas_hash_add, (void (*)(void *))evas_hash_free);
-
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filemonitor_edd, evfs_event_file_monitor, "fileev_type", fileev_type,
-                                 EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filemonitor_edd, evfs_event_file_monitor,
-		                                       "plugin", plugin, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filemonitor_edd, evfs_event_file_monitor,
-		                                       "filename", filename, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filemonitor_edd, evfs_event_file_monitor,
-		                                       "filename_len", filename_len, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_evfs_filemonitor_edd, evfs_event_file_monitor,
-		                                       "filetype", filetype, EET_T_INT);*/
-   
-
-   
    return 0;
 
 }
