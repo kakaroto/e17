@@ -83,7 +83,6 @@ void EvasEsmartGroup::showHandler()
        eol_it++)
   {
     EvasObject *eo = (*eol_it);
-    cerr << "show" << endl; 
     eo->show();
   }
 }
@@ -96,7 +95,6 @@ void EvasEsmartGroup::hideHandler()
        eol_it++)
   {
     EvasObject *eo = (*eol_it);
-    cerr << "hide" << endl;
     eo->hide();
   } 
 }
