@@ -92,9 +92,9 @@ void entropy_etk_options_dialog_close(Etk_Object* obj, void* data)
 	Ecore_List* keys;
 	char* key;
 	
-	etk_widget_hide(_entropy_etk_options_dialog);
+	if (!((int)data ==1)) etk_widget_hide(_entropy_etk_options_dialog);
 
-	if ((int)data == 0) {
+	if ((int)data == 0 || (int)data == 1 ) {
 		printf("Save config selected..\n");
 
 		keys = ecore_hash_keys(_entropy_global_options_hash);
