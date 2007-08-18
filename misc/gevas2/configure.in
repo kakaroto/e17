@@ -49,22 +49,6 @@ PKG_CHECK_MODULES(EDJE, edje >= 0.4.9 ecore >= 0.9.9,
 AM_CONDITIONAL(HAVE_EDJE, test "$have_edje" = yes)
 
 
-dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${datarootdir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", 1, [ Where to install data ])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", 1, [ Where to install data ])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datarootdir}/${PACKAGE}", 1, [ Where to install data ])
-fi
-
-
-
-
-dnl evas_cflags=`evas-config --cflags`
-dnl evas_libs=`evas-config --libs`
 
 
 have_evas=no
@@ -80,26 +64,16 @@ evas_cflags=$EVAS_CFLAGS
 evas_libs=$EVAS_LIBS
 
 
-if test "x${prefix}" = 'xNONE'; then
-        prefix=${ac_default_prefix};
-fi;
-if test "x${exec_prefix}" = 'xNONE'; then
-        exec_prefix=${ac_default_prefix};
-fi;
-
-PREFIX=${prefix};
-SYSCONFDIR=`eval echo ${sysconfdir}`
-EXECPREFIX=`eval echo ${exec_prefix}`
-BINDIR=`eval echo ${bindir}`
-LIBDIR=`eval echo ${libdir}`
-INCLUDEDIR=`eval echo ${includedir}`
-
-AC_SUBST(PREFIX)
-AC_SUBST(SYSCONFDIR)
-AC_SUBST(EXECPREFIX)
-AC_SUBST(BINDIR)
-AC_SUBST(LIBDIR)
-AC_SUBST(INCLUDEDIR)
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${datarootdir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datarootdir}/${PACKAGE}")
+fi
 
 ICON_INSTALL_DIR="/usr/local/gevas2/icons"
 AC_SUBST(ICON_INSTALL_DIR)

@@ -1,0 +1,4 @@
+#undef BUILD_EDB_CODE
+#undef PACKAGE_DATA_DIR
+#undef ICON_INSTALL_DIR
+
