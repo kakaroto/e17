@@ -203,7 +203,7 @@ class EcoreEvasWindow : public Trackable
     void setSticky( int on );
     int isSticky() const;
 
-  private:
+  protected:
     EvasCanvas* _canvas;
     Ecore_Evas* _ee;
 
@@ -213,6 +213,34 @@ class EcoreEvasWindow : public Trackable
     EcoreEvasWindow();
     bool operator=( const EcoreEvasWindow& );
     bool operator==( const EcoreEvasWindow& );
+};
+
+class EcoreEvasWindowSoftwareX11 : public EcoreEvasWindow
+{
+  public:
+    EcoreEvasWindowSoftwareX11( int width, int height, const char* display = 0 );
+    virtual ~EcoreEvasWindowSoftwareX11();
+
+    // TODO: Test for supported backends?
+  
+  private:
+    EcoreEvasWindowSoftwareX11();
+    bool operator=( const EcoreEvasWindowSoftwareX11& );
+    bool operator==( const EcoreEvasWindowSoftwareX11& );
+};
+
+class EcoreEvasWindowFB : public EcoreEvasWindow
+{
+  public:
+    EcoreEvasWindowFB( int width, int height, const char* display, int rotation );
+    virtual ~EcoreEvasWindowFB();
+
+    // TODO: Test for supported backends?
+  
+  private:
+    EcoreEvasWindowFB();
+    bool operator=( const EcoreEvasWindowFB& );
+    bool operator==( const EcoreEvasWindowFB& );
 };
 
 //===============================================================================================

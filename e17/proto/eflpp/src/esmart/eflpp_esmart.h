@@ -52,6 +52,8 @@ private:
   // TODO: Evas_Object -> EvasObject?
   static void wrap_clip_set(Evas_Object *o, Evas_Object *clip);
   static void wrap_clip_unset(Evas_Object *o);
+  
+  Evas_Smart_Class sc;
 
 };
 

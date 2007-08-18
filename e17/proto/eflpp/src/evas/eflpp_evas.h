@@ -59,7 +59,13 @@ class EvasCanvas : public Trackable
 
     /* Output Methods */
     int lookupRenderMethod( const char* method );
+  
+    /*! \brief Set the Evas output method.
+     *  This does include a call to lookupRenderMethod().
+     *  @param method Name of the output method. (See C API docs).
+     */
     bool setOutputMethod( const char* method );
+  
     void resize( int width, int height );
     Size size() const;
     Rect geometry() const;

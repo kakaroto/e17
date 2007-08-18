@@ -155,75 +155,9 @@ EcoreConfig* EcoreApplication::config()
 EcoreEvasWindow::EcoreEvasWindow( int width, int height, const char* display, int rotation )
                 :Trackable( "EcoreEvasMainWindow" )
 {
-    Dout( dc::notice, "EcoreEvasWindow::EcoreEvasWindow" );
-    EcoreApplication::application()->setMainWindow( this );
-
-    if ( ::getenv( "EFL_DISPLAY" ) ) display = ::getenv( "EFL_DISPLAY" );
-    if ( ::getenv( "EFL_WIDTH" ) ) width = atoi( ::getenv( "EFL_WIDTH" ) );
-    if ( ::getenv( "EFL_HEIGHT" ) ) height = atoi( ::getenv( "EFL_HEIGHT" ) );
-    if ( ::getenv( "EFL_ROTATION" ) ) rotation = atoi( ::getenv( "EFL_ROTATION" ) );
-
-    if ( display && ::strstr( display, "/dev/fb" ) )
-    {
-#ifdef ENABLE_EFLPP_FB
-        int fb_dev_fd = ::open( display, O_RDONLY );
-        if ( fb_dev_fd < 0 )
-        {
-            fprintf(stderr,"Can't open display '%s': %s\n", display, strerror(errno));
-            exit( 1 );
-        }
-
-        struct fb_var_screeninfo fb_vinfo;
-        struct fb_fix_screeninfo fb_finfo;
-
-        // read VScreen info from fb
-        if ( ioctl( fb_dev_fd, FBIOGET_VSCREENINFO, &fb_vinfo ) )
-        {
-            fprintf(stderr,"Can't get VSCREENINFO: %s\n", strerror(errno));
-            exit(1);
-        }
-
-        // readFScreen info from fb
-        if ( ioctl( fb_dev_fd, FBIOGET_FSCREENINFO, &fb_finfo ) )
-        {
-            fprintf(stderr,"Can't get FSCREENINFO: %s\n", strerror(errno));
-            exit(1);
-        }
-
-        Dout( dc::notice, "- using display '" << display << "' [" << fb_finfo.id << "] - " << fb_vinfo.xres << "x" << fb_vinfo.yres << "@" << rotation );
-        width = ( rotation % 180 ) ? fb_vinfo.yres : fb_vinfo.xres;
-        height = ( rotation % 180 ) ? fb_vinfo.xres : fb_vinfo.yres;
-        Dout( dc::notice, "- using size (after rotating) " << width << "x" << height );
-#ifdef ECORE_FB_NO_ROTATION_BUG
-        //FIXME EFL BUG: initial rotation is not taken into account for evas calculation
-        _ee = ecore_evas_fb_new( const_cast<char*>( display ), rotation, 50, 50 );
-#else
-        _ee = ecore_evas_fb_new( const_cast<char*>( display ), 0, 50, 50 ); // start with rotation 0 to workaround bug
-#endif
-        ecore_evas_fullscreen_set( _ee, 1 ); // fullscreen is default to get auto resize on changing rotation
-        ecore_evas_rotation_set( _ee, rotation ); // force resize
-#else
-	printf("FB engine not enabled\n");
-#endif
-    }
-    else
-    {
-        Dout( dc::notice, "- detected display string '" << ( display ? display:"<null>" ) << "' - starting X11 engine" );
-        //FIXME: Should we care about positioning? 0, 0 for now
-        _ee = ecore_evas_software_x11_new( const_cast<char*>( display ), 0, 0, 0, width, height );
-    }
-    ecore_evas_title_set( _ee, eApp->name().c_str() );
-    ecore_evas_borderless_set( _ee, 0 );
-    ecore_evas_show( _ee );
-    _canvas = new EvasCanvas( ecore_evas_get( _ee ) );
-
-    /* Set up magic object back link */
-    ecore_evas_data_set( _ee, "obj_c++", this );
-
-    /* Set up default callbacks */
-    setEventEnabled( Resize, true );
-    setEventEnabled( DeleteRequest, true );
+  
 }
+
 
 EcoreEvasWindow::~EcoreEvasWindow()
 {
@@ -554,6 +488,110 @@ int EcoreEvasWindow::isSticky() const
 EcoreEvasWindow* EcoreEvasWindow::objectLink( Ecore_Evas* ee )
 {
     return static_cast<EcoreEvasWindow*>( ecore_evas_data_get( ee, "obj_c++" ) );
+}
+
+EcoreEvasWindowSoftwareX11::EcoreEvasWindowSoftwareX11( int width, int height, const char* display )
+                :EcoreEvasWindow( width, height )
+{    
+    Dout( dc::notice, "EcoreEvasWindow::EcoreEvasWindow" );
+    EcoreApplication::application()->setMainWindow( this );
+
+    if ( ::getenv( "EFL_WIDTH" ) ) width = atoi( ::getenv( "EFL_WIDTH" ) );
+    if ( ::getenv( "EFL_HEIGHT" ) ) height = atoi( ::getenv( "EFL_HEIGHT" ) );
+  
+    Dout( dc::notice, "- detected display string '" << ( display ? display:"<null>" ) << "' - starting X11 engine" );
+    //FIXME: Should we care about positioning? 0, 0 for now
+    _ee = ecore_evas_software_x11_new( const_cast<char*>( display ), 0, 0, 0, width, height );
+    
+    ecore_evas_title_set( _ee, eApp->name().c_str() );
+    ecore_evas_borderless_set( _ee, 0 );
+    ecore_evas_show( _ee );
+    _canvas = new EvasCanvas( ecore_evas_get( _ee ) );
+
+    /* Set up magic object back link */
+    ecore_evas_data_set( _ee, "obj_c++", this );
+
+    /* Set up default callbacks */
+    setEventEnabled( Resize, true );
+    setEventEnabled( DeleteRequest, true );
+}
+
+EcoreEvasWindowSoftwareX11::~EcoreEvasWindowSoftwareX11()
+{
+  
+}
+
+EcoreEvasWindowFB::EcoreEvasWindowFB( int width, int height, const char* display = 0, int rotation = 0 )
+                :EcoreEvasWindow( width, height )
+{
+    Dout( dc::notice, "EcoreEvasWindow::EcoreEvasWindow" );
+    EcoreApplication::application()->setMainWindow( this );
+
+    if ( ::getenv( "EFL_DISPLAY" ) ) display = ::getenv( "EFL_DISPLAY" );
+    if ( ::getenv( "EFL_WIDTH" ) ) width = atoi( ::getenv( "EFL_WIDTH" ) );
+    if ( ::getenv( "EFL_HEIGHT" ) ) height = atoi( ::getenv( "EFL_HEIGHT" ) );
+    if ( ::getenv( "EFL_ROTATION" ) ) rotation = atoi( ::getenv( "EFL_ROTATION" ) );
+
+    if ( display /*&& ::strstr( display, "/dev/fb" )*/ )
+    {
+#ifdef ENABLE_EFLPP_FB
+        int fb_dev_fd = ::open( display, O_RDONLY );
+        if ( fb_dev_fd < 0 )
+        {
+            fprintf(stderr,"Can't open display '%s': %s\n", display, strerror(errno));
+            exit( 1 );
+        }
+
+        struct fb_var_screeninfo fb_vinfo;
+        struct fb_fix_screeninfo fb_finfo;
+
+        // read VScreen info from fb
+        if ( ioctl( fb_dev_fd, FBIOGET_VSCREENINFO, &fb_vinfo ) )
+        {
+            fprintf(stderr,"Can't get VSCREENINFO: %s\n", strerror(errno));
+            exit(1);
+        }
+
+        // readFScreen info from fb
+        if ( ioctl( fb_dev_fd, FBIOGET_FSCREENINFO, &fb_finfo ) )
+        {
+            fprintf(stderr,"Can't get FSCREENINFO: %s\n", strerror(errno));
+            exit(1);
+        }
+
+        Dout( dc::notice, "- using display '" << display << "' [" << fb_finfo.id << "] - " << fb_vinfo.xres << "x" << fb_vinfo.yres << "@" << rotation );
+        width = ( rotation % 180 ) ? fb_vinfo.yres : fb_vinfo.xres;
+        height = ( rotation % 180 ) ? fb_vinfo.xres : fb_vinfo.yres;
+        Dout( dc::notice, "- using size (after rotating) " << width << "x" << height );
+#ifdef ECORE_FB_NO_ROTATION_BUG
+        //FIXME EFL BUG: initial rotation is not taken into account for evas calculation
+        _ee = ecore_evas_fb_new( const_cast<char*>( display ), rotation, 50, 50 );
+#else
+        _ee = ecore_evas_fb_new( const_cast<char*>( display ), 0, 50, 50 ); // start with rotation 0 to workaround bug
+#endif
+        ecore_evas_fullscreen_set( _ee, 1 ); // fullscreen is default to get auto resize on changing rotation
+        ecore_evas_rotation_set( _ee, rotation ); // force resize
+#else
+	printf("FB engine not enabled\n");
+#endif
+    }
+    
+    ecore_evas_title_set( _ee, eApp->name().c_str() );
+    ecore_evas_borderless_set( _ee, 0 );
+    ecore_evas_show( _ee );
+    _canvas = new EvasCanvas( ecore_evas_get( _ee ) );
+
+    /* Set up magic object back link */
+    ecore_evas_data_set( _ee, "obj_c++", this );
+
+    /* Set up default callbacks */
+    setEventEnabled( Resize, true );
+    setEventEnabled( DeleteRequest, true );
+}
+
+EcoreEvasWindowFB::~EcoreEvasWindowFB()
+{
+  
 }
 
 //===============================================================================================
