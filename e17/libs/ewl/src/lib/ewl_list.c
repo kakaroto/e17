@@ -176,7 +176,7 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	}
 
 	ewl_mvc_handle_click(EWL_MVC(data), NULL,
-			ewl_mvc_data_get(EWL_MVC(data)), row, -1);
+			ewl_mvc_data_get(EWL_MVC(data)), row, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
