@@ -738,7 +738,7 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 	ecore_list_free_cb_set(intersections, ECORE_FREE_CB(free));
 
 	range = EWL_SELECTION_RANGE(sel);
-	ecore_list_goto_first(mvc->selected);
+	ecore_list_first_goto(mvc->selected);
 	while ((cur = ecore_list_current(mvc->selected)))
 	{
 		if (ewl_mvc_selection_intersects(range, cur))

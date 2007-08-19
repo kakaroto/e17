@@ -630,7 +630,7 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	ewl_attach_tooltip->x = e->x;
 	ewl_attach_tooltip->y = e->y;
 	
-	delay_str = ewl_theme_data_str_get(w, "/tooltip/delay");
+	delay_str = (const char *)ewl_theme_data_str_get(w, "/tooltip/delay");
 	if (delay_str)
 	{
 		delay = atof(delay_str);

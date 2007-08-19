@@ -2876,7 +2876,7 @@ ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t, unsigned int byte_idx)
 	tmp = *(ptr + node->byte_len);
 	if (strlen(ptr) < node->byte_len)
 		DWARNING("Byte length of node %u overruns actual text %d",
-				node->byte_len, strlen(ptr));
+				node->byte_len, (int)strlen(ptr));
 	*(ptr + node->byte_len) = '\0';
 
 	ewl_text_plaintext_parse(t->textblock, ptr);
