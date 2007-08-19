@@ -138,10 +138,10 @@ struct operation
 
 /* maybe needs to actually deal with floating point numbers */
 
-static struct operation
-parse_number(cpp_reader * pfile, const char *start, int olen)
+static void
+parse_number(struct operation *op, cpp_reader * pfile, const char *start,
+	     int olen)
 {
-   struct operation    op;
    const char         *p = start;
    int                 c;
    unsigned long       n = 0, nd, ULONG_MAX_over_base;
@@ -151,7 +151,7 @@ parse_number(cpp_reader * pfile, const char *start, int olen)
    int                 digit, largest_digit = 0;
    int                 spec_long = 0;
 
-   op.unsignedp = 0;
+   op->unsignedp = 0;
 
    for (c = 0; c < len; c++)
       if (p[c] == '.')
@@ -159,8 +159,8 @@ parse_number(cpp_reader * pfile, const char *start, int olen)
 	   /* It's a float since it contains a point.  */
 	   cpp_error(pfile,
 		     "floating point numbers not allowed in #if expressions");
-	   op.op = ERROR;
-	   return op;
+	   op->op = ERROR;
+	   return;
 	}
    if (len >= 3 && (!strncmp(p, "0x", 2) || !strncmp(p, "0X", 2)))
      {
@@ -197,9 +197,9 @@ parse_number(cpp_reader * pfile, const char *start, int olen)
 		    }
 		  else if (c == 'u' || c == 'U')
 		    {
-		       if (op.unsignedp)
+		       if (op->unsignedp)
 			  cpp_error(pfile, "two `u's in integer constant");
-		       op.unsignedp = 1;
+		       op->unsignedp = 1;
 		    }
 		  else
 		     break;
@@ -221,8 +221,8 @@ parse_number(cpp_reader * pfile, const char *start, int olen)
    if (len != 0)
      {
 	cpp_error(pfile, "Invalid number in #if expression");
-	op.op = ERROR;
-	return op;
+	op->op = ERROR;
+	return;
      }
    if (base <= largest_digit)
       cpp_warning(pfile, "integer constant contains digits beyond the radix");
@@ -231,16 +231,15 @@ parse_number(cpp_reader * pfile, const char *start, int olen)
       cpp_warning(pfile, "integer constant out of range");
 
    /* If too big to be signed, consider it unsigned.  */
-   if ((long)n < 0 && !op.unsignedp)
+   if ((long)n < 0 && !op->unsignedp)
      {
 	if (base == 10)
 	   cpp_warning(pfile,
 		       "integer constant is so large that it is unsigned");
-	op.unsignedp = 1;
+	op->unsignedp = 1;
      }
-   op.value = n;
-   op.op = INT;
-   return op;
+   op->value = n;
+   op->op = INT;
 }
 
 struct token
@@ -265,18 +264,17 @@ static struct token tokentab2[] = {
 
 /* Read one token. */
 
-static struct operation
-cpp_lex(cpp_reader * pfile)
+static void
+cpp_lex(struct operation *op, cpp_reader * pfile)
 {
    int                 c;
    struct token       *toktab;
    enum cpp_token      token;
-   struct operation    op;
    unsigned char      *tok_start, *tok_end;
    int                 old_written;
 
-   op.value = 0;
-   op.unsignedp = 0;
+   op->value = 0;
+   op->unsignedp = 0;
 
  retry:
 
@@ -284,13 +282,15 @@ cpp_lex(cpp_reader * pfile)
    cpp_skip_hspace(pfile);
    c = CPP_BUF_PEEK(CPP_BUFFER(pfile));
    if (c == '#')
-      return parse_number(pfile,
-			  cpp_read_check_assertion(pfile) ? "1" : "0", 1);
+     {
+	parse_number(op, pfile, cpp_read_check_assertion(pfile) ? "1" : "0", 1);
+	return;
+     }
 
    if (c == '\n')
      {
-	op.op = 0;
-	return op;
+	op->op = 0;
+	return;
      }
    token = cpp_get_token(pfile);
    tok_start = pfile->token_buffer + old_written;
@@ -299,25 +299,31 @@ cpp_lex(cpp_reader * pfile)
    switch (token)
      {
      case CPP_EOF:		/* Should not happen ... */
-	op.op = 0;
-	return op;
+	op->op = 0;
+	break;
+
      case CPP_VSPACE:
      case CPP_POP:
 	if (CPP_BUFFER(pfile)->fname != NULL)
 	  {
-	     op.op = 0;
-	     return op;
+	     op->op = 0;
+	     break;
 	  }
 	goto retry;
+
      case CPP_HSPACE:
      case CPP_COMMENT:
 	goto retry;
+
      case CPP_NUMBER:
-	return parse_number(pfile, (char *)tok_start, tok_end - tok_start);
+	parse_number(op, pfile, (char *)tok_start, tok_end - tok_start);
+	break;
+
      case CPP_STRING:
 	cpp_error(pfile, "string constants not allowed in #if expressions");
-	op.op = ERROR;
-	return op;
+	op->op = ERROR;
+	break;
+
      case CPP_CHAR:
 	/* This code for reading a character constant
 	 * handles multicharacter constants and wide characters.
@@ -402,12 +408,11 @@ cpp_lex(cpp_reader * pfile)
 		if (cpp_lookup("__CHAR_UNSIGNED__",
 			       sizeof("__CHAR_UNSIGNED__") - 1, -1)
 		    || ((result >> (num_bits - 1)) & 1) == 0)
-		   op.value
-		      =
+		   op->value =
 		      result & ((unsigned long)~0 >>
 				(HOST_BITS_PER_LONG - num_bits));
 		else
-		   op.value =
+		   op->value =
 		      result | ~((unsigned long)~0 >>
 				 (HOST_BITS_PER_LONG - num_bits));
 	     }
@@ -431,18 +436,18 @@ cpp_lex(cpp_reader * pfile)
 				    "Ignoring invalid multibyte character");
 		  }
 #endif
-		op.value = result;
+		op->value = result;
 	     }
 	}
 
 	/* This is always a signed type.  */
-	op.unsignedp = 0;
-	op.op = CHAR;
-
-	return op;
+	op->unsignedp = 0;
+	op->op = CHAR;
+	break;
 
      case CPP_NAME:
-	return parse_number(pfile, "0", 0);
+	parse_number(op, pfile, "0", 0);
+	break;
 
      case CPP_OTHER:
 	/* See if it is a special token of length 2.  */
@@ -463,13 +468,13 @@ cpp_lex(cpp_reader * pfile)
 		  cpp_error(pfile, buf);
 		  free(buf);
 	       }
-	     op.op = toktab->token;
-	     return op;
+	     op->op = toktab->token;
+	     break;
 	  }
 	/* fall through */
      default:
-	op.op = *tok_start;
-	return op;
+	op->op = *tok_start;
+	break;
      }
 }
 
@@ -686,7 +691,7 @@ cpp_parse_expr(cpp_reader * pfile)
 	char                flags = 0;
 
 	/* Read a token */
-	op = cpp_lex(pfile);
+	cpp_lex(&op, pfile);
 
 	/* See if the token is an operand, in which case go to set_value.
 	 * If the token is an operator, figure out its left and right

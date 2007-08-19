@@ -1510,9 +1510,9 @@ static char         rest_extension[] = "...";
 
 /* Create a DEFINITION node from a #define directive.  Arguments are 
  * as for do_define. */
-static              MACRODEF
-create_definition(unsigned char *buf, unsigned char *limit, cpp_reader * pfile,
-		  int predefinition)
+static void
+create_definition(MACRODEF * mdef, unsigned char *buf, unsigned char *limit,
+		  cpp_reader * pfile, int predefinition)
 {
    unsigned char      *bp;	/* temp ptr into input buffer */
    unsigned char      *symname;	/* remember where symbol name starts */
@@ -1524,7 +1524,6 @@ create_definition(unsigned char *buf, unsigned char *limit, cpp_reader * pfile,
    DEFINITION         *defn;
    int                 arglengths = 0;	/* Accumulate lengths of arg names
 					 * plus number of args.  */
-   MACRODEF            mdef;
 
    cpp_buf_line_and_col(CPP_BUFFER(pfile), &line, &col);
 
@@ -1718,15 +1717,14 @@ create_definition(unsigned char *buf, unsigned char *limit, cpp_reader * pfile,
 
    /* OP is null if this is a predefinition */
    defn->predefined = predefinition;
-   mdef.defn = defn;
-   mdef.symnam = (char *)symname;
-   mdef.symlen = sym_length;
+   mdef->defn = defn;
+   mdef->symnam = (char *)symname;
+   mdef->symlen = sym_length;
 
-   return mdef;
+   return;
 
  nope:
-   mdef.defn = 0;
-   return mdef;
+   mdef->defn = 0;
 }
 
 /* Check a purported macro name SYMNAME, and yield its length.
@@ -1863,9 +1861,9 @@ do_define(cpp_reader * pfile, struct directive *keyword,
    MACRODEF            mdef;
    HASHNODE           *hp;
 
-   mdef = create_definition(buf, limit, pfile, keyword == NULL);
+   create_definition(&mdef, buf, limit, pfile, keyword == NULL);
    if (mdef.defn == 0)
-      goto nope;
+      return 1;
 
    hashcode = hashf(mdef.symnam, mdef.symlen, HASHSIZE);
 
@@ -1918,10 +1916,6 @@ do_define(cpp_reader * pfile, struct directive *keyword,
      }
 
    return 0;
-
- nope:
-
-   return 1;
 }
 
 /* This structure represents one parsed argument in a macro call.
