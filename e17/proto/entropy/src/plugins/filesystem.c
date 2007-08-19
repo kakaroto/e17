@@ -853,7 +853,7 @@ filelist_get (entropy_file_request * request)
     printf ("URI: %s\n", uri);
 
     path = evfs_parse_uri (uri);
-    request_id = evfs_client_dir_list (con, path->files[0]);
+    request_id = evfs_client_dir_list (con, path->files[0], 0);
 
 
     new_request = entropy_malloc (sizeof (entropy_file_request));
