@@ -89,13 +89,14 @@ evfs_client_file_stat(evfs_connection * conn, EvfsFilereference * file)
 }
 
 long
-evfs_client_dir_list(evfs_connection * conn, EvfsFilereference * file)
+evfs_client_dir_list(evfs_connection * conn, EvfsFilereference * file, int options)
 {
    evfs_command *command = evfs_client_command_new();
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_LIST_DIR;
    command->file_command->files = evas_list_append( command->file_command->files, file);
+   command->options = options;
    evfs_write_command(conn, command);
 
    evas_list_free(command->file_command->files);

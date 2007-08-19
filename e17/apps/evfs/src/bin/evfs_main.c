@@ -192,7 +192,7 @@ ipc_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
      }
 
    /*Kill the child pid*/
-   if (client->pid) {
+   if (client->worker_client) {
 	printf("Sending client %p the kill signal\n", client->worker_client);
 	ecore_ipc_client_send(client->worker_client, EVFS_MESSAGE_KILL,0,0,0,0,NULL,0);
    }

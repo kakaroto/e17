@@ -327,6 +327,22 @@ evfs_handle_dir_list_command(evfs_client * client, evfs_command * command)
         Ecore_List *directory_list = NULL;
         (*EVFS_PLUGIN_FILE(plugin)->functions->evfs_dir_list) (client, command, &directory_list);
         if (directory_list) {
+	     if (command->options & EVFS_COMMAND_OPTION_STAT) {
+		     struct stat file_stat;
+		     EvfsFilereference* ref;
+		     evfs_command* command;
+		     
+		     ecore_list_first_goto(directory_list);		     
+		     while ( (ref = ecore_list_next(directory_list))) {
+			        command = evfs_file_command_single_build(ref);
+				(*(EVFS_PLUGIN_FILE(plugin)->functions->evfs_file_stat)) 
+					(command, &file_stat, 0);
+				evfs_cleanup_file_command_only(command);
+
+				if (ref->stat) free(ref->stat);
+				memcpy(ref->stat, &file_stat, sizeof(struct stat));
+		     }
+	     }
              evfs_list_dir_event_create(client, command, directory_list);
         } else {
              printf

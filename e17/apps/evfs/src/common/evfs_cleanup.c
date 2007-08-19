@@ -64,6 +64,9 @@ evfs_cleanup_filereference(EvfsFilereference * ref)
    /*Do we assume this is just a string?*/
    if (ref->attach)
       free(ref->attach);
+
+   if (ref->stat)
+      free(ref->stat);
    free(ref);
 
 }

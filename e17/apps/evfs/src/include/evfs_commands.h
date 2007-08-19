@@ -7,7 +7,7 @@ long evfs_client_file_remove(evfs_connection * conn, EvfsFilereference * ref);
 long evfs_client_file_rename(evfs_connection * conn, EvfsFilereference * from,
                              EvfsFilereference * to);
 long evfs_client_file_stat(evfs_connection * conn, EvfsFilereference * file);
-long evfs_client_dir_list(evfs_connection * conn, EvfsFilereference * file);
+long evfs_client_dir_list(evfs_connection * conn, EvfsFilereference * file, int options);
 long evfs_client_file_open(evfs_connection * conn, EvfsFilereference * file);
 long evfs_client_file_copy(evfs_connection * conn, EvfsFilereference * from,
                            EvfsFilereference * to);

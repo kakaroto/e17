@@ -48,6 +48,8 @@ typedef struct EvfsFilereference
 
    int fd;                      /*The file descriptor (if any) */
    void *fd_p;
+
+   struct stat* stat;
 } EvfsFilereference;
 
 typedef struct evfs_file_uri_path evfs_file_uri_path;
@@ -58,5 +60,6 @@ struct evfs_file_uri_path
 };
 
 EvfsFilereference* evfs_filereference_new(char* plugin, char* path, int filetype);
+EvfsFilereference* evfs_filereference_local_new(char* path);
 
 #endif

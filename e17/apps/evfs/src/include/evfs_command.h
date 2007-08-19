@@ -32,6 +32,10 @@ typedef enum evfs_command_type
 }
 evfs_command_type;
 
+typedef enum EvfsCommandOption {
+	EVFS_COMMAND_OPTION_STAT
+} EvfsCommandOption;
+
 typedef struct evfs_command_file
 {
    evfs_command_type type;
@@ -49,6 +53,7 @@ typedef struct evfs_command
    evfs_command_file* file_command;
    struct evfs_operation *op;
 
+   int options;
    long client_identifier;
 }
 evfs_command;
