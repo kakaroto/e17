@@ -494,10 +494,11 @@ list_viewer_remove_row(entropy_gui_component_instance* instance,
 
 	event_file = ecore_hash_get(viewer->gui_hash,file);
 
-	etk_tree_row_delete(event_file->icon);
-
-	/*Destroy the gui_file object..*/
-	gui_file_remove_destroy_single(instance,event_file);
+	if (event_file) {
+		etk_tree_row_delete(event_file->icon);
+		/*Destroy the gui_file object..*/
+		gui_file_remove_destroy_single(instance,event_file);
+	}
 	
 }
 
