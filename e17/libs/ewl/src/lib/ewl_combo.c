@@ -213,7 +213,6 @@ ewl_combo_popup_container_set(Ewl_Combo *combo, Ewl_Container *c)
 	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
 
 	combo->scrollable = FALSE;
-
 	ewl_context_menu_container_set(EWL_CONTEXT_MENU(combo->popup), c);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -261,8 +260,8 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_container_reset(EWL_CONTAINER(combo->popup));
-	ewl_combo_popup_fill(combo, EWL_CONTAINER(combo->popup), model, view,
-				mvc_data);
+	ewl_combo_popup_fill(combo, EWL_CONTAINER(combo->popup), 
+				model, view, mvc_data);
 
 	ewl_mvc_dirty_set(EWL_MVC(combo), FALSE);
 
@@ -377,8 +376,8 @@ ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, Ewl_View *view,
 	if (!model || !view)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_combo_popup_fill(combo, EWL_CONTAINER(menu), model, view,
-								mvc_data);
+	ewl_combo_popup_fill(combo, EWL_CONTAINER(menu), 
+				model, view, mvc_data);
 
 	ewl_button_label_set(EWL_BUTTON(menu), NULL);
 	ewl_button_image_set(EWL_BUTTON(menu), NULL, NULL);
@@ -425,7 +424,7 @@ ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model,
 			/* if there shouldn't be a model for the expansion 
 			 * we us the current model */
 			if (!model->expansion.model 
-				|| !(em = model->expansion.model(mvc_data, i)))
+					|| !(em = model->expansion.model(mvc_data, i)))
 				em = model;
 			/* if there shouldm't be a view for the expansion
 			 * we us the current view */
