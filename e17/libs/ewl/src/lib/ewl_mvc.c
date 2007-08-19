@@ -31,6 +31,7 @@ static void ewl_mvc_highlight_do(Ewl_MVC *mvc, Ewl_Container *c,
 				Ewl_Selection *sel, Ewl_Widget *w);
 static void ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev, void *data);
 static void ewl_mvc_cb_sel_free(void *data);
+static void ewl_mvc_selection_free(Ewl_Selection *sel);
 
 
 /**
@@ -309,7 +310,7 @@ ewl_mvc_selected_clear_private(Ewl_MVC *mvc)
 		DRETURN(DLEVEL_STABLE);
 
 	while ((sel = ecore_list_remove_first(mvc->selected)))
-		ewl_mvc_cb_sel_free(sel);
+		ewl_mvc_selection_free(sel);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -719,7 +720,7 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 		idx = EWL_SELECTION_IDX(sel);
 		if (ewl_mvc_selected_goto(mvc, idx->row, idx->column))
 		{
-			FREE(sel);
+			ewl_mvc_selection_free(sel);
 			DRETURN(DLEVEL_STABLE);
 		}
 
@@ -748,7 +749,7 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 			 * range and don't need to be re-inserted */
 			if (cur->type == EWL_SELECTION_TYPE_INDEX)
 			{
-				FREE(cur);
+				ewl_mvc_selection_free(cur);
 			}
 			else
 				ecore_list_append(intersections, cur);
@@ -780,7 +781,7 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 			if (ewl_mvc_selection_contained(ptr, range))
 			{
 				ecore_list_append(mvc->selected, ptr);
-				FREE(range);
+				ewl_mvc_selection_free(EWL_SELECTION(range));
 				range = NULL;
 				break;
 			}
@@ -813,7 +814,7 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 	 * range */
 	if (ewl_mvc_selection_contained(range, cur))
 	{
-		FREE(cur);
+		ewl_mvc_selection_free(EWL_SELECTION(cur));
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -828,7 +829,7 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 		range->end.row = MAX(range->end.row, cur->end.row);
 		range->end.column = MAX(range->end.column, cur->end.column);
 
-		FREE(cur);
+		ewl_mvc_selection_free(EWL_SELECTION(cur));
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -888,7 +889,7 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 						cur->end.column);
 		ecore_list_append(list, sel);
 	}
-	FREE(cur);
+	ewl_mvc_selection_free(EWL_SELECTION(cur));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1079,8 +1080,7 @@ ewl_mvc_selected_range_split(Ewl_MVC *mvc, Ewl_Selection_Range *range,
 							row, range->end.column);
 		ecore_list_append(mvc->selected, sel);
 	}
-
-	FREE(range);
+	ewl_mvc_selection_free(EWL_SELECTION(range));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1267,7 +1267,6 @@ ewl_mvc_highlight_do(Ewl_MVC *mvc __UNUSED__, Ewl_Container *c,
 	{
 		if (!sel->highlight)
 			sel->highlight = ecore_list_new();
-
 		ecore_list_append(sel->highlight, h);
 	}
 
@@ -1337,28 +1336,48 @@ ewl_mvc_selected_change_notify(Ewl_MVC *mvc)
 static void
 ewl_mvc_cb_sel_free(void *data)
 {
-	Ewl_Selection *sel;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
 
-	sel = data;
+	ewl_mvc_selection_free(EWL_SELECTION(data));
+	data = NULL;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_mvc_selection_free(Ewl_Selection *sel)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sel", sel);
+
+	/* we remove the destroy callback on the highlight as it will try to
+	 * remove itself which causes the selection to get a NULL highlight
+	 * and causes highlights to hang around */
 	if (sel->highlight)
 	{
 		if (sel->type == EWL_SELECTION_TYPE_INDEX)
+		{
+			ewl_callback_del(sel->highlight, EWL_CALLBACK_DESTROY,
+					ewl_mvc_cb_highlight_destroy);
 			ewl_widget_destroy(sel->highlight);
+		}
 		else
 		{
 			Ewl_Widget *w;
 
 			while ((w = ecore_list_first_remove(sel->highlight)))
+			{
+				ewl_callback_del(w, EWL_CALLBACK_DESTROY,
+						ewl_mvc_cb_highlight_destroy);
 				ewl_widget_destroy(w);
+			}
 
 			IF_FREE_LIST(sel->highlight);
 		}
 		sel->highlight = NULL;
 	}
-	FREE(data);
+	FREE(sel);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
