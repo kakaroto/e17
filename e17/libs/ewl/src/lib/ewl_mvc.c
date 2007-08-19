@@ -1142,23 +1142,21 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 				Ewl_Selection_Idx *idx;
 
 				idx = EWL_SELECTION_IDX(sel);
+				smod = sel->model;
 				sdata = sel->data;
 				srow = idx->row;
 				scolumn = idx->column;
-				smod = EWL_SELECTION(idx)->model;
 			}
 			else
 			{
 				Ewl_Selection_Range *idx;
 
 				idx = EWL_SELECTION_RANGE(sel);
+				smod = sel->model;
 				sdata = sel->data;
 				srow = idx->start.row;
 				scolumn = idx->start.column;
-				smod = EWL_SELECTION(idx)->model;
-
 			}
-			ecore_list_remove(mvc->selected);
 
 			ewl_mvc_selected_range_add(mvc, smod, data, srow, scolumn,
 							row, column);
@@ -1217,6 +1215,7 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 
 			idx = EWL_SELECTION_IDX(sel);
 			w = widget(mvc, sel->data, idx->row, idx->column);
+
 			if (w) ewl_mvc_highlight_do(mvc, c, sel, w);
 		}
 		else
@@ -1231,8 +1230,7 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 						k <= idx->end.column; k++)
 				{
 					w = widget(mvc, sel->data, i, k);
-					if (w) ewl_mvc_highlight_do(mvc, c,
-								sel, w);
+					if (w) ewl_mvc_highlight_do(mvc, c, sel, w);
 				}
 			}
 		}
