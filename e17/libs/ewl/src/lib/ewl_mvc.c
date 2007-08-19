@@ -309,7 +309,7 @@ ewl_mvc_selected_clear_private(Ewl_MVC *mvc)
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
 
-	while ((sel = ecore_list_remove_first(mvc->selected)))
+	while ((sel = ecore_list_first_remove(mvc->selected)))
 		ewl_mvc_selection_free(sel);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -345,7 +345,7 @@ ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list)
 	}
 
 	ewl_mvc_selected_insert(mvc, NULL, NULL,
-			ecore_list_remove_first(list), 0, 0);
+			ecore_list_first_remove(list), 0, 0);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_MULTI)
 	{
@@ -766,7 +766,7 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 	{
 		Ewl_Selection_Range *ptr;
 
-		while ((ptr = ecore_list_remove_first(intersections)))
+		while ((ptr = ecore_list_first_remove(intersections)))
 		{
 			/* if range is contained inside current then
 			 * this can be the only intersection. we add
