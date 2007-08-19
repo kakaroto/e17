@@ -232,8 +232,12 @@ combo_test_data_setup(void)
 	data->data = calloc(data->count, sizeof(char *));
 
 	for (i = 0; i < data->count; i++)
-		data->data[i] = strdup(ewl_icon_theme_icon_path_get(icons[i],
-						EWL_ICON_SIZE_MEDIUM));
+	{
+		const char *icon;
+
+		icon = ewl_icon_theme_icon_path_get(icons[i], EWL_ICON_SIZE_MEDIUM); 
+		data->data[i] = strdup((icon ? icon : icons[i]));
+	}
 
 	return data;
 }
@@ -339,6 +343,7 @@ combo_test_editable_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 {
 	Ewl_Widget *w;
 	Ewl_Widget *o;
+	char *str;
 
 	w = ewl_hbox_new();
 	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT);
@@ -349,7 +354,8 @@ combo_test_editable_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 	ewl_widget_show(o);
 
 	o = ewl_label_new();
-	ewl_label_text_set(EWL_LABEL(o), strrchr((const char *)data, '/') + 1);
+	str = strrchr((const char *)data, '/');
+	ewl_label_text_set(EWL_LABEL(o), (str ? str + 1 : data));
 	ewl_container_child_append(EWL_CONTAINER(w), o);
 	ewl_widget_show(o);
 
@@ -362,6 +368,4 @@ combo_cb_entry_changed(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	printf("value changed to (%s)\n", ewl_text_text_get(EWL_TEXT(w)));
 }
-
-
 
