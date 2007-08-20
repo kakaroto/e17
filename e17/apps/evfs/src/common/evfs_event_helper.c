@@ -61,7 +61,7 @@ evfs_list_dir_event_create(evfs_client * client, evfs_command * command,
 
    EVFS_EVENT(event)->type = EVFS_EV_DIR_LIST;
    event->files = NULL;
-   while ((file = ecore_list_remove_first(files))) {
+   while ((file = ecore_list_first_remove(files))) {
 	   event->files = evas_list_append(event->files, file);
    }
    ecore_list_destroy(files);

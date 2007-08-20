@@ -152,15 +152,14 @@ void evfs_metadata_debug_group_list_print()
 	EvfsMetadataGroup* g;
 
 	printf("Printing group list:\n");
-	for (l = metadata_root->group_list; l; ) {
-		g = l->data;
-	
-
-		printf("Name: %s, Desc: %s\n", g->name, g->description);
-		
-		l = l->next;
+	if (metadata_root && metadata_root->group_list) {
+		for (l = metadata_root->group_list; l; ) {
+			g = l->data;
+			printf("Name: %s, Desc: %s\n", g->name, g->description);		
+			l = l->next;
+		}
+		printf("Done..\n");
 	}
-	printf("Done..\n");
 }
 
 void evfs_metadata_debug_file_groups_print(evfs_metadata_file_groups* groups)
