@@ -47,7 +47,7 @@ static Etk_Signal *_etk_text_view_signals[ETK_TEXT_VIEW_NUM_SIGNALS];
  * @brief Gets the type of an Etk_Text_View
  * @return Returns the type of an Etk_Text_View
  */
-Etk_Type *etk_text_view_type_get()
+Etk_Type *etk_text_view_type_get(void)
 {
    static Etk_Type *text_view_type = NULL;
 
@@ -67,7 +67,7 @@ Etk_Type *etk_text_view_type_get()
  * @brief Creates a new text view
  * @return Returns the new text view widget
  */
-Etk_Widget *etk_text_view_new()
+Etk_Widget *etk_text_view_new(void)
 {
    return etk_widget_new(ETK_TEXT_VIEW_TYPE, "theme-group", "text_view", "focusable", ETK_TRUE,
       "focus-on-click", ETK_TRUE, NULL);
