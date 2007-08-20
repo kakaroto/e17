@@ -8,7 +8,7 @@
  * @param user_data data to pass to the callback
  */
 E_DBus_Callback *
-e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmarshal_Func unmarshal_func, void *user_data)
+e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Free_Func free_func, void *user_data)
 {
   E_DBus_Callback *cb;
 
@@ -18,6 +18,7 @@ e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmarshal_Func unmarsha
   if (!cb) return NULL;
   cb->cb_func = cb_func;
   cb->unmarshal_func = unmarshal_func;
+  cb->free_func = free_func;
   cb->user_data = user_data;
   return cb;
 }
@@ -47,6 +48,13 @@ e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg, DBusError *err)
     return cb->unmarshal_func(msg, err);
   else
     return NULL;
+}
+
+void
+e_dbus_callback_return_free(E_DBus_Callback *cb, void *data)
+{
+  if (cb && cb->free_func)
+    cb->free_func(data);
 }
 
 const char *

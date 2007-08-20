@@ -152,7 +152,7 @@ e_nm_device_wireless_get_networks(E_NM_Context *ctx, const char *device,
   int ret;
 
   msg = e_nm_device_call_new(device, "getNetworks");
-  ret = e_dbus_method_call_send(ctx->conn, msg, cb_nm_string_list, cb_func, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(ctx->conn, msg, cb_nm_string_list, cb_func, free_nm_string_list, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }

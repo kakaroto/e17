@@ -45,6 +45,15 @@ unmarshal_device_get_property(DBusMessage *msg, DBusError *err)
   return ret;
 }
 
+static void 
+free_device_get_property(void *data)
+{
+  E_Hal_Device_Get_Property_Return *ret = data;
+
+  if (!ret) return;
+  free(ret);
+}
+
 int
 e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *property, E_DBus_Callback_Func cb_func, void *data)
 {
@@ -53,7 +62,7 @@ e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *
 
   msg = e_hal_device_call_new(udi, "GetProperty");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
-  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_get_property, cb_func, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_get_property, cb_func, free_device_get_property, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -144,6 +153,16 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
   return ret;
 }
 
+static void
+free_device_get_all_properties(void *data)
+{
+  E_Hal_Device_Get_All_Properties_Return *ret = data;
+
+  if (!ret) return;
+  ecore_hash_destroy(ret->properties);
+  free(ret);
+}
+
 int
 e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data)
 {
@@ -151,7 +170,7 @@ e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus
   int ret;
 
   msg = e_hal_device_call_new(udi, "GetAllProperties");
-  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_get_all_properties, cb_func, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_get_all_properties, cb_func, free_device_get_all_properties, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -186,6 +205,15 @@ unmarshal_device_query_capability(DBusMessage *msg, DBusError *err)
   return ret;
 }
 
+static void
+free_device_query_capability(void *data)
+{
+  E_Hal_Device_Query_Capability_Return *ret = data;
+
+  if (!ret) return;
+  free(ret);
+}
+
 int
 e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const char *capability, E_DBus_Callback_Func cb_func, void *data)
 {
@@ -194,7 +222,7 @@ e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const ch
 
   msg = e_hal_device_call_new(udi, "QueryCapability");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &capability, DBUS_TYPE_INVALID);
-  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_query_capability, cb_func, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_device_query_capability, cb_func, free_device_query_capability, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -237,7 +265,7 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
   }
   dbus_message_iter_close_container(&iter, &subiter) ;
 
-  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, NULL, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -273,7 +301,7 @@ e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List
   }
   dbus_message_iter_close_container(&iter, &subiter) ;
 
-  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, NULL, cb_func, NULL, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }

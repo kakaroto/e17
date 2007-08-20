@@ -45,6 +45,16 @@ unmarshal_string_list(DBusMessage *msg, DBusError *err)
   return ret;
 }
 
+static void
+free_string_list(void *data)
+{
+  E_Hal_String_List_Return *ret = data;
+
+  if (!ret) return;
+  ecore_list_destroy(ret->strings);
+  free(ret);
+}
+
 int
 e_hal_manager_get_all_devices(E_DBus_Connection *conn, E_DBus_Callback_Func cb_func, void *data)
 {
@@ -52,7 +62,7 @@ e_hal_manager_get_all_devices(E_DBus_Connection *conn, E_DBus_Callback_Func cb_f
   int ret;
 
   msg = e_hal_manager_call_new("GetAllDevices");
-  ret = e_dbus_method_call_send(conn, msg, unmarshal_string_list, cb_func, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_string_list, cb_func, free_string_list, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -84,6 +94,15 @@ unmarshal_manager_device_exists(DBusMessage *msg, DBusError *err)
   return ret;
 }
 
+static void
+free_manager_device_exists(void *data)
+{
+  E_Hal_Manager_Device_Exists_Return *ret = data;
+
+  if (!ret) return;
+  free(ret);
+}
+
 int
 e_hal_manager_device_exists(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data)
 {
@@ -92,7 +111,7 @@ e_hal_manager_device_exists(E_DBus_Connection *conn, const char *udi, E_DBus_Cal
 
   msg = e_hal_manager_call_new("DeviceExists");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
-  ret = e_dbus_method_call_send(conn, msg, unmarshal_manager_device_exists, cb_func, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_manager_device_exists, cb_func, free_manager_device_exists, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -106,7 +125,7 @@ e_hal_manager_find_device_string_match(E_DBus_Connection *conn, const char *key,
 
   msg = e_hal_manager_call_new("FindDeviceStringMatch");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &key, DBUS_TYPE_STRING, &value, DBUS_TYPE_INVALID);
-  ret = e_dbus_method_call_send(conn, msg, unmarshal_string_list, cb_func, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_string_list, cb_func, free_string_list, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -121,7 +140,7 @@ e_hal_manager_find_device_by_capability(E_DBus_Connection *conn, const char *cap
 
   msg = e_hal_manager_call_new("FindDeviceByCapability");
   dbus_message_append_args(msg, DBUS_TYPE_STRING, &capability, DBUS_TYPE_INVALID);
-  ret = e_dbus_method_call_send(conn, msg, unmarshal_string_list, cb_func, -1, data) ? 1 : 0;
+  ret = e_dbus_method_call_send(conn, msg, unmarshal_string_list, cb_func, free_string_list, -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }

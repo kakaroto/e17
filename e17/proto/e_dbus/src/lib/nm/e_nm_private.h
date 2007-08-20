@@ -37,9 +37,11 @@ int e_nm_get_from_device(E_NM_Context *ctx, const char *device,
                          const char *method, int rettype);
 
 void *cb_nm_generic(DBusMessage *msg, DBusError *err);
+void  free_nm_generic(void *data);
 void *cb_nm_int32(DBusMessage *msg, DBusError *err);
 void *cb_nm_uint32(DBusMessage *msg, DBusError *err);
 void *cb_nm_string(DBusMessage *msg, DBusError *err);
 void *cb_nm_boolean(DBusMessage *msg, DBusError *err);
 void *cb_nm_string_list(DBusMessage *msg, DBusError *err);
+void  free_nm_string_list(void *data);
 #endif

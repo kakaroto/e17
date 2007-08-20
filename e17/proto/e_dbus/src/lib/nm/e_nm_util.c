@@ -9,7 +9,7 @@
  * @brief returns an e_dbus callback for a given dbus type
  * @param rettype the return type we want to find a callback for
  **/
-E_DBus_Unmarshal_Func
+static E_DBus_Unmarshal_Func
 e_nm_callback_by_type(int rettype)
 {
   switch (rettype)
@@ -33,6 +33,25 @@ e_nm_callback_by_type(int rettype)
 
 /**
  * @internal
+ * @brief returns an e_dbus free for a given dbus type
+ * @param rettype the return type we want to find a free for
+ **/
+static E_DBus_Free_Func
+e_nm_free_by_type(int rettype)
+{
+  switch (rettype)
+  {
+    case DBUS_TYPE_STRING:
+    case DBUS_TYPE_INT32:
+    case DBUS_TYPE_UINT32:
+    case DBUS_TYPE_BOOLEAN:
+    default:
+      return free_nm_generic;
+  }
+}
+
+/**
+ * @internal
  * @brief Send "get" messages to NetworkManager via e_dbus
  * @param ctx an e_nm context
  * @param cb a callback, used when the method returns (or an error is received)
@@ -49,7 +68,7 @@ e_nm_get_from_nm(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data,
 
   msg = e_nm_manager_call_new(method);
   ret = e_dbus_method_call_send(ctx->conn, msg, e_nm_callback_by_type(rettype),
-                                cb_func, -1, data) ? 1 : 0;
+                                cb_func, e_nm_free_by_type(rettype), -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -74,7 +93,7 @@ e_nm_get_from_device(E_NM_Context *ctx, const char *device,
 
   msg = e_nm_device_call_new(device, method);
   ret = e_dbus_method_call_send(ctx->conn, msg, e_nm_callback_by_type(rettype),
-                                cb_func, -1, data) ? 1 : 0;
+                                cb_func, e_nm_free_by_type(rettype), -1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -89,6 +108,16 @@ cb_nm_generic(DBusMessage *msg, DBusError *err)
   return NULL;
 }
 
+/**
+ * @internal
+ * @brief Generic free for methods
+ */
+void
+free_nm_generic(void *data)
+{
+  if (!data) return;
+  free(data);
+}
 
 /**
  * @internal
@@ -188,5 +217,13 @@ cb_nm_string_list(DBusMessage *msg, DBusError *err)
   }
 
   return devices;
+}
+
+void
+free_nm_string_list(void *data)
+{
+  Ecore_List *devices = data;
+
+  ecore_list_destroy(devices);
 }
 

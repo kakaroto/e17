@@ -154,6 +154,16 @@ e_notify_unmarshal_get_capabilities_return(DBusMessage *msg, DBusError *err)
   return ret;
 }
 
+void
+e_notify_free_get_capabilities_return(void *data)
+{
+  E_Notification_Return_Get_Capabilities *ret = data;
+
+  if (!ret) return;
+  ecore_list_destroy(ret->capabilities);
+  free(ret);
+}
+
 DBusMessage *
 e_notify_marshal_get_server_information()
 {
@@ -194,6 +204,14 @@ e_notify_unmarshal_get_server_information_return(DBusMessage *msg, DBusError *er
   return info;
 }
 
+void
+e_notify_free_get_server_information_return(void *data)
+{
+  E_Notification_Return_Get_Server_Information *info = data;
+
+  if (!info) return;
+  free(info);
+}
 
 DBusMessage *
 e_notify_marshal_close_notification(dbus_uint32_t id)
@@ -397,6 +415,15 @@ e_notify_unmarshal_notify_return(DBusMessage *msg, DBusError *err)
     return NULL;
   }
   return ret;
+}
+
+void
+e_notify_free_notify_return(void *data)
+{
+  E_Notification_Return_Notify *ret = data;
+
+  if (!ret) return;
+  free(ret);
 }
 
 void

@@ -22,6 +22,7 @@ struct E_DBus_Callback
 {
   E_DBus_Callback_Func cb_func;
   E_DBus_Unmarshal_Func unmarshal_func;
+  E_DBus_Free_Func free_func;
   void *user_data;
 };
 

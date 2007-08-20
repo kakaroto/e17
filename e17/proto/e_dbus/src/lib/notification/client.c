@@ -36,7 +36,7 @@ e_notification_send(E_Notification *n, E_DBus_Callback_Func func, void *data)
   DBusMessage *msg;
 
   msg = e_notify_marshal_notify(n);
-  e_dbus_method_call_send(client_conn, msg, e_notify_unmarshal_notify_return, func, -1, data);
+  e_dbus_method_call_send(client_conn, msg, e_notify_unmarshal_notify_return, func, e_notify_free_notify_return, -1, data);
   dbus_message_unref(msg);
 }
 
@@ -46,7 +46,7 @@ e_notification_get_capabilities(E_DBus_Callback_Func func, void *data)
   DBusMessage *msg;
 
   msg = e_notify_marshal_get_capabilities();
-  e_dbus_method_call_send(client_conn, msg, e_notify_unmarshal_get_capabilities_return, func, -1, data);
+  e_dbus_method_call_send(client_conn, msg, e_notify_unmarshal_get_capabilities_return, func, e_notify_free_get_capabilities_return, -1, data);
   dbus_message_unref(msg);
 }
 
@@ -56,6 +56,6 @@ e_notification_get_server_information(E_DBus_Callback_Func func, void *data)
   DBusMessage *msg;
 
   msg = e_notify_marshal_get_server_information();
-  e_dbus_method_call_send(client_conn, msg, e_notify_unmarshal_get_server_information_return, func, -1, data);
+  e_dbus_method_call_send(client_conn, msg, e_notify_unmarshal_get_server_information_return, func, e_notify_free_get_server_information_return, -1, data);
   dbus_message_unref(msg);
 }

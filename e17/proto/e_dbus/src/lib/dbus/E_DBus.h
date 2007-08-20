@@ -31,6 +31,7 @@ typedef int  (*E_DBus_Object_Property_Set_Cb) (E_DBus_Object *obj, const char *p
  */
 typedef void (*E_DBus_Callback_Func) (void *user_data, void *method_return, DBusError *error);
 typedef void *(*E_DBus_Unmarshal_Func) (DBusMessage *msg, DBusError *err);
+typedef void (*E_DBus_Free_Func) (void *data);
 
 typedef struct E_DBus_Callback E_DBus_Callback;
 
@@ -69,7 +70,7 @@ void e_dbus_object_property_set_cb_set(E_DBus_Object *obj, E_DBus_Object_Propert
 
 DBusPendingCall *e_dbus_message_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, int timeout, void *data);
 
-DBusPendingCall *e_dbus_method_call_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Callback_Func cb_func, int timeout, void *data);
+DBusPendingCall *e_dbus_method_call_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Callback_Func cb_func, E_DBus_Free_Func free_func, int timeout, void *data);
 
 
 /* signal receiving */
@@ -124,11 +125,12 @@ void e_dbus_properties_set(E_DBus_Connection *conn, const char *destination,
                            void *data);
 
 
-E_DBus_Callback *e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmarshal_Func unmarshal_func, void *user_data);
+E_DBus_Callback *e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Free_Func free_func, void *user_data);
 
 void e_dbus_callback_free(E_DBus_Callback *callback);
 void e_dbus_callback_call(E_DBus_Callback *cb, void *data, DBusError *error);
 void *e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg, DBusError *err);
+void e_dbus_callback_return_free(E_DBus_Callback *callback, void *data);
 
 const char *e_dbus_basic_type_as_string(int type);
 

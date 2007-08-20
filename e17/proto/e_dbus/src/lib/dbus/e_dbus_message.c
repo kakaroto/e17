@@ -99,6 +99,7 @@ cb_method_call(void *data, DBusMessage *msg, DBusError *err)
     dbus_move_error(err, &new_err);
 
   e_dbus_callback_call(cb, method_return, &new_err);
+  e_dbus_callback_return_free(cb, method_return);
 
   if (dbus_error_is_set(&new_err))
     dbus_error_free(&new_err);
@@ -107,9 +108,9 @@ cb_method_call(void *data, DBusMessage *msg, DBusError *err)
 }
 
 DBusPendingCall *
-e_dbus_method_call_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Callback_Func cb_func, int timeout, void *data)
+e_dbus_method_call_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Callback_Func cb_func, E_DBus_Free_Func free_func, int timeout, void *data)
 {
   E_DBus_Callback *cb;
-  cb = e_dbus_callback_new(cb_func, unmarshal_func, data);
+  cb = e_dbus_callback_new(cb_func, unmarshal_func, free_func, data);
   return e_dbus_message_send(conn, msg, cb_method_call, timeout, cb);
 }
