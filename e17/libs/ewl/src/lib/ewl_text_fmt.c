@@ -421,6 +421,13 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fmt", fmt);
+
+	if (fmt->length.char_len != EWL_TEXT(fmt->text)->length.chars) {
+		DWARNING("The character length of the ftm (%u) is not"
+				" equal to the length of the text (%u)\n",
+				fmt->length.char_len,
+				EWL_TEXT(fmt->text)->length.chars);
+	}
 	
 	if (idx >= fmt->length.char_len)
 	{
