@@ -29,16 +29,6 @@ struct _Config_Item
    int show_text;
 };
 
-struct _Popup
-{
-   E_Popup *win;
-
-   int w, h;
-   int pinned : 1;
-
-   Evas_Object *o_bg;
-};
-
 EAPI extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init(E_Module *m);
