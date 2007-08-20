@@ -195,13 +195,13 @@ callback (EvfsEvent * data, void *obj)
       file_stat = entropy_malloc (sizeof (entropy_file_stat));
       file_stat->stat_obj = entropy_malloc (sizeof (struct stat));
 
-      file_stat->stat_obj->st_mode = EVFS_EVENT_STAT(data)->st_mode;
-      file_stat->stat_obj->st_uid = EVFS_EVENT_STAT(data)->st_uid;
-      file_stat->stat_obj->st_gid = EVFS_EVENT_STAT(data)->st_gid;
-      file_stat->stat_obj->st_size = EVFS_EVENT_STAT(data)->st_size;
-      file_stat->stat_obj->st_atime = EVFS_EVENT_STAT(data)->ist_atime;
-      file_stat->stat_obj->st_mtime = EVFS_EVENT_STAT(data)->ist_mtime;
-      file_stat->stat_obj->st_ctime = EVFS_EVENT_STAT(data)->ist_ctime;
+      file_stat->stat_obj->st_mode = EVFS_EVENT_STAT(data)->stat->st_mode;
+      file_stat->stat_obj->st_uid = EVFS_EVENT_STAT(data)->stat->st_uid;
+      file_stat->stat_obj->st_gid = EVFS_EVENT_STAT(data)->stat->st_gid;
+      file_stat->stat_obj->st_size = EVFS_EVENT_STAT(data)->stat->st_size;
+      file_stat->stat_obj->st_atime = EVFS_EVENT_STAT(data)->stat->ist_atime;
+      file_stat->stat_obj->st_mtime = EVFS_EVENT_STAT(data)->stat->ist_mtime;
+      file_stat->stat_obj->st_ctime = EVFS_EVENT_STAT(data)->stat->ist_ctime;
 
       /*Retrieve the file. This is bad - the file might not exist anymore! */
       listener = entropy_core_file_cache_retrieve (md5);
@@ -209,13 +209,13 @@ callback (EvfsEvent * data, void *obj)
 	      file_stat->file = listener->file;
 
 	      /*Pop stats*/
-	      listener->file->properties.st_mode = EVFS_EVENT_STAT(data)->st_mode;
-	      listener->file->properties.st_uid = EVFS_EVENT_STAT(data)->st_uid;
-	      listener->file->properties.st_gid = EVFS_EVENT_STAT(data)->st_gid;
-	      listener->file->properties.st_size = EVFS_EVENT_STAT(data)->st_size;
-	      listener->file->properties.st_atime = EVFS_EVENT_STAT(data)->ist_atime;
-	      listener->file->properties.st_mtime = EVFS_EVENT_STAT(data)->ist_mtime;
-	      listener->file->properties.st_ctime = EVFS_EVENT_STAT(data)->ist_ctime;
+	      listener->file->properties.st_mode = EVFS_EVENT_STAT(data)->stat->st_mode;
+	      listener->file->properties.st_uid = EVFS_EVENT_STAT(data)->stat->st_uid;
+	      listener->file->properties.st_gid = EVFS_EVENT_STAT(data)->stat->st_gid;
+	      listener->file->properties.st_size = EVFS_EVENT_STAT(data)->stat->st_size;
+	      listener->file->properties.st_atime = EVFS_EVENT_STAT(data)->stat->ist_atime;
+	      listener->file->properties.st_mtime = EVFS_EVENT_STAT(data)->stat->ist_mtime;
+	      listener->file->properties.st_ctime = EVFS_EVENT_STAT(data)->stat->ist_ctime;
 	      listener->file->retrieved_stat = 1;
 
 
