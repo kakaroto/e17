@@ -460,10 +460,10 @@ _slide_cb_check(void *data)
 static void
 _slide_get_bg_subdirs(void *data, char *localPath)
 {
-   Ecore_List *dirListing;
-   char fullPath[4096];
-   char itemFullPath[4096];
-   char itemLocalPath[4096];
+   Ecore_List *dir_list;
+   char full_path[4096];
+   char item_full_path[4096];
+   char item_local_path[4096];
    char *item;
    Instance *inst;
    Config_Item *ci;
@@ -473,21 +473,21 @@ _slide_get_bg_subdirs(void *data, char *localPath)
    if(!ci->dir)
      return;
 
-   snprintf(fullPath, sizeof(fullPath), "%s/%s", ci->dir, localPath);
-   dirListing = ecore_file_ls(fullPath);
+   snprintf(full_path, sizeof(full_path), "%s/%s", ci->dir, localPath);
+   dir_list = ecore_file_ls(full_path);
 
-   while((item = ecore_list_next(dirListing)) != NULL)
+   while((item = ecore_list_next(dir_list)) != NULL)
      {
-	snprintf(itemFullPath, sizeof(itemFullPath), "%s/%s", fullPath, item);
-	snprintf(itemLocalPath, sizeof(itemLocalPath), "%s/%s", localPath, item);
+	snprintf(item_full_path, sizeof(item_full_path), "%s/%s", full_path, item);
+	snprintf(item_local_path, sizeof(item_local_path), "%s/%s", localPath, item);
 
-	if(ecore_file_is_dir(itemFullPath))
-	  _slide_get_bg_subdirs(inst, itemLocalPath);
+	if(ecore_file_is_dir(item_full_path))
+	  _slide_get_bg_subdirs(inst, item_local_path);
 	else
-	  ecore_list_append(inst->bg_list, strdup(itemLocalPath));
+	  ecore_list_append(inst->bg_list, strdup(item_local_path));
      }
 
-   ecore_list_destroy(dirListing);
+   ecore_list_destroy(dir_list);
 }
 
 static void
@@ -496,8 +496,8 @@ _slide_get_bg_count(void *data)
    Instance *inst;
    Config_Item *ci;
    char *item;
-   Ecore_List *dirListing;
-   char itemFullPath[4096];
+   Ecore_List *dir_list;
+   char item_full_path[4096];
 
    inst = data;
    ci = _slide_config_item_get(inst->gcc->id);
@@ -509,19 +509,19 @@ _slide_get_bg_count(void *data)
    inst->bg_list = ecore_list_new();
    ecore_list_free_cb_set(inst->bg_list, free);
 
-   dirListing = ecore_file_ls(ci->dir);
+   dir_list = ecore_file_ls(ci->dir);
 
-   while((item = ecore_list_next(dirListing)) != NULL)
+   while((item = ecore_list_next(dir_list)) != NULL)
      {
-	snprintf(itemFullPath, sizeof(itemFullPath), "%s/%s", ci->dir, item);
+	snprintf(item_full_path, sizeof(item_full_path), "%s/%s", ci->dir, item);
 
-	if(ecore_file_is_dir(itemFullPath))
+	if(ecore_file_is_dir(item_full_path))
 	  _slide_get_bg_subdirs(inst, item);
 	else
 	  ecore_list_append(inst->bg_list, strdup(item));
      }
 
-   ecore_list_destroy(dirListing);
+   ecore_list_destroy(dir_list);
 
    ecore_list_first_goto(inst->bg_list);
    while ((item = (char *)ecore_list_next(inst->bg_list)) != NULL)
