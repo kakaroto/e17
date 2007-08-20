@@ -493,8 +493,7 @@ ewl_attach_free(Ewl_Attach *attach)
 
 	/* XXX should we clean up _WIDGET in here? */
 
-	if ((attach->data_type == EWL_ATTACH_DATA_TYPE_TEXT)
-			|| (attach->data_type == EWL_ATTACH_DATA_TYPE_OTHER))
+	if ((attach->data_type == EWL_ATTACH_DATA_TYPE_TEXT))
 	{
 		IF_FREE(attach->data);
 	}
