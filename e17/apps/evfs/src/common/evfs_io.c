@@ -28,7 +28,8 @@ static Eet_Data_Descriptor *_EvfsEventOperation_edd;
 static Eet_Data_Descriptor *_EvfsEventAuthRequired_edd;
 static Eet_Data_Descriptor *_EvfsEventOpen_edd;
 static Eet_Data_Descriptor *_EvfsEventFileMonitor_edd;
-static Eet_Data_Descriptor *_stat_edd;
+static Eet_Data_Descriptor *_EvfsStat_edd;
+static Eet_Data_Descriptor *_EvfsStat_edd;
 
 #define _NEW_EDD(type) eet_data_descriptor_new(#type, sizeof(type), \
                               (void *(*)(void *))evas_list_next, \
@@ -100,20 +101,20 @@ evfs_io_initialise()
    evfs_io_edd_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 
    /*Stat*/
-   _stat_edd = _NEW_EDD(struct stat);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_dev", st_dev, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_ino", st_ino, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_mode", st_mode, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_nlink", st_nlink, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_uid", st_uid, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_gid", st_gid, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_rdev", st_rdev, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_size", st_size, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_blksize", st_blksize, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_blocks", st_blocks, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_atime", st_atime, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_mtime", st_mtime, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_stat_edd, struct stat, "stat_st_ctime", st_ctime, EET_T_INT);
+   _EvfsStat_edd = _NEW_EDD(EvfsStat);
+   //EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_dev", st_dev, EET_T_INT);
+   //EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_ino", st_ino, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_mode", st_mode, EET_T_INT);
+   //EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_nlink", st_nlink, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_uid", st_uid, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_gid", st_gid, EET_T_INT);
+   //EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_rdev", st_rdev, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_size", st_size, EET_T_LONG_LONG);
+   //EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_blksize", st_blksize, EET_T_INT);
+   //EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_blocks", st_blocks, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_atime", ist_atime, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_mtime", ist_mtime, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsStat_edd, EvfsStat, "stat_st_ctime", ist_ctime, EET_T_INT);
    
 
    /*File_reference eet */
@@ -135,7 +136,7 @@ evfs_io_initialise()
    EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsFilereference_edd, EvfsFilereference, "parent", parent, 		   
 		   _EvfsFilereference_edd);
    EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsFilereference_edd, EvfsFilereference, "stat", stat, 
-		   _stat_edd);
+		   _EvfsStat_edd);
 
    /*Evfs_operation eet */
    _EvfsOperation_edd = _NEW_EDD(EvfsOperation);
@@ -233,13 +234,7 @@ evfs_io_initialise()
    _EvfsEventStat_edd = _NEW_EDD(EvfsEventStat);
    _EVFS_EVENT_BASE_ADD(EvfsEventStat);
    EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsEventStat_edd, EvfsEventStat, "EvfsEventStat_file", file, _EvfsFilereference_edd);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventStat_edd, EvfsEventStat, "EvfsEventStat_st_mode", st_mode, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventStat_edd, EvfsEventStat, "EvfsEventStat_st_uid", st_uid, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventStat_edd, EvfsEventStat, "EvfsEventStat_st_gid", st_gid, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventStat_edd, EvfsEventStat, "EvfsEventStat_st_size", st_size, EET_T_LONG_LONG);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventStat_edd, EvfsEventStat, "EvfsEventStat_ist_atime", ist_atime, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventStat_edd, EvfsEventStat, "EvfsEventStat_ist_mtime", ist_mtime, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventStat_edd, EvfsEventStat, "EvfsEventStat_ist_ctime", ist_ctime, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsEventStat_edd, EvfsEventStat, "EvfsEventStat_stat", stat, _EvfsStat_edd);
    evfs_io_event_edd_set(EVFS_EV_STAT, _EvfsEventStat_edd); 
 
    /*EvfsMetadataGroup*/
@@ -355,7 +350,7 @@ evfs_write_event(evfs_client * client, evfs_command * command,
    event->command = command;
 
    ecore_ipc_message* msg = evfs_io_event_construct(event);
-   /*printf("Writing event to master: %p -- message: %p:%p..\n", client->master, msg, msg->data);*/
+   printf("Writing event to master: %p -- message: %p:%p, size: %d..\n", client->master, msg, msg->data, msg->len);
 
    if (msg) {
 	   evfs_write_ecore_ipc_server_message(client->master,msg);

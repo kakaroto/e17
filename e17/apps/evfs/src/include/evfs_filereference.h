@@ -30,6 +30,17 @@ typedef struct evfs_uri_token
    char *token_s;
 } evfs_uri_token;
 
+typedef struct {
+   int st_mode;
+   int st_uid;
+   int st_gid;
+   uint64 st_size;
+   int ist_atime;
+   int ist_mtime;
+   int ist_ctime;
+} EvfsStat;
+
+
 typedef struct EvfsFilereference
 {
    char *plugin_uri;
@@ -49,7 +60,7 @@ typedef struct EvfsFilereference
    int fd;                      /*The file descriptor (if any) */
    void *fd_p;
 
-   struct stat* stat;
+   EvfsStat* stat;
 } EvfsFilereference;
 
 typedef struct evfs_file_uri_path evfs_file_uri_path;
@@ -61,5 +72,7 @@ struct evfs_file_uri_path
 
 EvfsFilereference* evfs_filereference_new(char* plugin, char* path, int filetype);
 EvfsFilereference* evfs_filereference_local_new(char* path);
+void evfs_filereference_stat_to_system(EvfsFilereference* file, struct stat* st);
+void evfs_stat_system_to_evfs_filereference(EvfsFilereference* file, struct stat* st);
 
 #endif
