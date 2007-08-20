@@ -304,7 +304,8 @@ ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
 
 			/* Note: we already removed the related text part
 			 * so it is save to use the new shorter text here */
-			ewl_text_fmt_char_to_byte(fmt, idx, 
+			ewl_text_fmt_char_to_byte(fmt, 
+					fmt->current_node.char_idx,
 					node->char_len, 
 					NULL, &byte_len);
 
