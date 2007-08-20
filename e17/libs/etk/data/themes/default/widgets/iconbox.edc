@@ -124,7 +124,7 @@ group {
             }
             image {
                normal: "hscrollbar_trough2.png";
-	       border: 4 4 0 0;
+               border: 4 4 0 0;
             }
          }
       }
@@ -227,9 +227,6 @@ group {
 
 group {
    name: "etk/iconbox/label";
-   data {
-      item: "inset" "8 6 0 0";
-   }
    parts {
       part {
          name: "background";
@@ -238,11 +235,11 @@ group {
             visible: 0;
             rel1 {
                relative: 0.0 0.0;
-               offset: -6 -3;
+               offset: 0 0;
             }
             rel2 {
                relative: 1.0 1.0;
-               offset: 3 3;
+               offset: -1 -1;
             }
             image {
                normal: "iconbox_label_bg.png";
@@ -260,10 +257,32 @@ group {
          }
       }
       part {
-         name: "etk.text.label";
-         type: TEXTBLOCK;
+         name: "clip";
+         type: RECT;
          description {
             state: "default" 0.0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: 6 3;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: -6 -5;
+            }
+         }
+      }
+      part {
+         name: "etk.text.label";
+         type: TEXTBLOCK;
+         clip_to: "clip";
+         description {
+            state: "default" 0.0;
+            rel1 {
+               to: clip;
+            }
+            rel2 {
+               to: clip;
+            }
             text {
                style: "Label";
                min: 1 1;

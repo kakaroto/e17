@@ -159,7 +159,7 @@ Etk_Iconbox_Model *etk_iconbox_model_new(Etk_Iconbox *iconbox)
    model->iconbox = iconbox;
    
    model->width = 110;
-   model->height = 70;
+   model->height = 76;
    model->xpadding = 5;
    model->ypadding = 4;
    
@@ -173,7 +173,7 @@ Etk_Iconbox_Model *etk_iconbox_model_new(Etk_Iconbox *iconbox)
    model->label_x = 0;
    model->label_y = 50;
    model->label_width = 100;
-   model->label_height = 12;
+   model->label_height = 18;
    model->label_xalign = 0.5;
    model->label_yalign = 0.0;
    
