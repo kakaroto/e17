@@ -42,7 +42,7 @@ static int          _slide_cb_check          (void *data);
 static void         _slide_get_bg_count      (void *data);
 static void         _slide_set_bg            (void *data, const char *bg);
 static void         _slide_set_preview       (void *data);
-static void         _slide_get_bg_subdirs    (void *data, char *localPath);
+static void         _slide_get_bg_subdirs    (void *data, char *local_path);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -458,7 +458,7 @@ _slide_cb_check(void *data)
 }
 
 static void
-_slide_get_bg_subdirs(void *data, char *localPath)
+_slide_get_bg_subdirs(void *data, char *local_path)
 {
    Ecore_List *dir_list;
    char full_path[4096];
@@ -473,13 +473,13 @@ _slide_get_bg_subdirs(void *data, char *localPath)
    if(!ci->dir)
      return;
 
-   snprintf(full_path, sizeof(full_path), "%s/%s", ci->dir, localPath);
+   snprintf(full_path, sizeof(full_path), "%s/%s", ci->dir, local_path);
    dir_list = ecore_file_ls(full_path);
 
    while((item = ecore_list_next(dir_list)) != NULL)
      {
 	snprintf(item_full_path, sizeof(item_full_path), "%s/%s", full_path, item);
-	snprintf(item_local_path, sizeof(item_local_path), "%s/%s", localPath, item);
+	snprintf(item_local_path, sizeof(item_local_path), "%s/%s", local_path, item);
 
 	if(ecore_file_is_dir(item_full_path))
 	  _slide_get_bg_subdirs(inst, item_local_path);
