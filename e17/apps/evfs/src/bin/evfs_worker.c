@@ -513,22 +513,19 @@ main(int argc, char **argv)
    if (argc > 0) {
 	   if (strstr(argv[0] , "worker")) {
 		   worker_client->id = atoi(argv[1]);
-		   printf("Created new worker, ID: %d\n", worker_client->id);		   
 	   } else {		   
 		   worker_client->id = atoi(argv[0]);
-		   printf("Created new worker, ID: %d\n", worker_client->id);
 	   }
    }
 
-    printf("Created new worker, ID: %d\n", worker_client->id);
    server_data = ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, ipc_server_data,
                                 NULL);
    worker_client->master = ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_WOR_TITLE, 0,
                                  NULL);
-   /*We're going to be sending *quite* a lot of data*/
-   ecore_ipc_server_data_size_max_set(worker_client->master,1000000);
 
-    printf("Created new worker, ID: %d\n", worker_client->id);
+   /*We're going to be sending *quite* a lot of data*/
+   ecore_ipc_server_data_size_max_set(worker_client->master,-1);
+
     printf("Connected to %p\n", worker_client->master);
    ecore_main_loop_begin();
 
