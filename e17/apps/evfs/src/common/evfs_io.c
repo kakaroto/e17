@@ -299,11 +299,9 @@ ecore_ipc_message_new(int major, int minor, int ref, int ref_to, int response,
 }
 
 ecore_ipc_message* evfs_io_event_construct (EvfsEvent* event) {
-	ecore_ipc_message* msg;
 	Eet_Data_Descriptor* edd;
 	char* data;
 	int size;
-	int tmplen;
 	int ssize=0;
 
 	edd = evfs_io_event_edd_get(event);
@@ -363,8 +361,6 @@ EvfsEvent*
 evfs_read_event(ecore_ipc_message * msg)
 {
    Eet_Data_Descriptor* edd;
-   char* data;
-   int size;
    EvfsEvent* ev;
    
    /*Event type is stored in minor ref*/
@@ -442,8 +438,6 @@ evfs_process_incoming_command(evfs_server * server,
                               ecore_ipc_message * message)
 {
 	evfs_command* com;
-	char* data;
-	int size;
 
 	com = eet_data_descriptor_decode(_EvfsCommand_edd, message->data, message->len);
 

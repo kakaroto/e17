@@ -269,10 +269,6 @@ int
 ipc_worker_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Ipc_Event_Client_Del *e;
-   Ecore_List *keys;
-   evfs_client *client;
-   evfs_plugin *plugin;
-   char *key;
    
    e = (Ecore_Ipc_Event_Client_Del *) event;
 
@@ -290,7 +286,6 @@ ipc_worker_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 
    Ecore_Ipc_Event_Client_Data *e = (Ecore_Ipc_Event_Client_Data *) event;
    evfs_client *client;
-   int id;
 
    /*Make sure we're not the daemon server's event*/
    if (ecore_ipc_client_server_get(e->client) != server->worker_server) {

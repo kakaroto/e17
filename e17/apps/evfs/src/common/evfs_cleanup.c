@@ -3,7 +3,6 @@
 void
 evfs_cleanup_command(evfs_command * command, int free_command)
 {
-
    switch (command->type)
      {
      case EVFS_CMD_STARTMON_FILE:
@@ -183,30 +182,30 @@ evfs_cleanup_event(EvfsEvent* event)
    switch (event->type)
      {
      case EVFS_EV_FILE_MONITOR:
-        evfs_cleanup_monitor_event(event);
+        evfs_cleanup_monitor_event(EVFS_EVENT_FILE_MONITOR(event));
         break;
      case EVFS_EV_DIR_LIST:
-        evfs_cleanup_file_list_event(event);
+        evfs_cleanup_file_list_event(EVFS_EVENT_DIR_LIST(event));
         break;
      case EVFS_EV_FILE_READ:
-        evfs_cleanup_file_read_event(event);
+        evfs_cleanup_file_read_event(EVFS_EVENT_DATA(event));
         break;
      case EVFS_EV_FILE_PROGRESS:
-        evfs_cleanup_progress_event(event);
+        evfs_cleanup_progress_event(EVFS_EVENT_PROGRESS(event));
         break;
      case EVFS_EV_OPERATION:
-        evfs_cleanup_operation_event(event);
+        evfs_cleanup_operation_event(EVFS_EVENT_OPERATION(event));
         break;
      case EVFS_EV_METADATA:
-	evfs_cleanup_metadata_event(event);
+	evfs_cleanup_metadata_event(EVFS_EVENT_METADATA(event));
 	break;
 
      case EVFS_EV_METADATA_GROUPS:
-	evfs_cleanup_metadata_groups_event(event);
+	evfs_cleanup_metadata_groups_event(EVFS_EVENT_METADATA_GROUPS(event));
 	break;
 
      case EVFS_EV_STAT:
-	evfs_cleanup_stat_event(event);
+	evfs_cleanup_stat_event(EVFS_EVENT_STAT(event));
 	break;
 
      default:
