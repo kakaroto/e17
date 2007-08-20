@@ -779,9 +779,8 @@ ewl_colorpicker_cb_dnd_data(Ewl_Widget *w, void *ev,
 	DCHECK_PARAM_PTR("ev", ev);
 	DCHECK_TYPE("w", w, EWL_COLORPICKER_TYPE);
 
-	printf("Data %d bytes %d bits\n", event->len, event->format);
 	ewl_colorpicker_current_rgb_get(cp, &curcolors[0], &curcolors[1],
-			&curcolors[2]);
+							&curcolors[2]);
 	curcolors[3] = ewl_colorpicker_alpha_get(cp);
 
 	if (event->format == 32) {

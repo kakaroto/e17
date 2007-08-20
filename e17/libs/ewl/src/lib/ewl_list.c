@@ -151,7 +151,7 @@ void
 ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Model *model;
-	unsigned int row;
+	int row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -161,6 +161,8 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	model = ewl_mvc_model_get(EWL_MVC(data));
 	row = ewl_container_child_index_get(EWL_CONTAINER(data), w);
+	if (row < 0) DRETURN(DLEVEL_STABLE);
+
 	if (row > model->count(data)) 
 	{
 		if (!EWL_HIGHLIGHT_IS(w))
@@ -173,6 +175,7 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 		 * widget for this highlight widget */
 		row = ewl_container_child_index_get(EWL_CONTAINER(data),
 				ewl_highlight_follow_get(EWL_HIGHLIGHT(w)));
+		if (row < 0) DRETURN(DLEVEL_STABLE);
 	}
 
 	ewl_mvc_handle_click(EWL_MVC(data), NULL,

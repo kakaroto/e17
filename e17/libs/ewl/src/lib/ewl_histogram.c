@@ -68,7 +68,8 @@ ewl_histogram_init(Ewl_Histogram *hist)
  * @brief Changes the drawing color of a histogram.
  */
 void
-ewl_histogram_color_set(Ewl_Histogram *hist, int r, int g, int b, int a)
+ewl_histogram_color_set(Ewl_Histogram *hist, unsigned int r, unsigned int g, 
+						unsigned int b, unsigned int a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("hist", hist);
@@ -92,7 +93,8 @@ ewl_histogram_color_set(Ewl_Histogram *hist, int r, int g, int b, int a)
  * @brief Get the current color values for drawing the histogram.
  */
 void
-ewl_histogram_color_get(Ewl_Histogram *hist, int *r, int *g, int *b, int *a)
+ewl_histogram_color_get(Ewl_Histogram *hist, unsigned int *r, unsigned int *g, 
+						unsigned int *b, unsigned int *a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("hist", hist);

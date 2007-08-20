@@ -811,7 +811,7 @@ ewl_tree2_cb_row_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	ewl_mvc_handle_click(EWL_MVC(tree), ewl_mvc_model_get(EWL_MVC(node)),
 				ewl_mvc_data_get(EWL_MVC(node)),
-				node->row_num, -1);
+				node->row_num, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -847,7 +847,7 @@ ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	Ewl_Row *row;
 	Ewl_Tree2 *tree;
 	Ewl_Tree2_Node *node;
-	unsigned int column;
+	int column;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -862,6 +862,7 @@ ewl_tree2_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 		DRETURN(DLEVEL_STABLE);
 
 	column = ewl_container_child_index_get(EWL_CONTAINER(row), w);
+	if (column < 0) DRETURN(DLEVEL_STABLE);
 
 	ewl_mvc_handle_click(EWL_MVC(node->tree),
 			ewl_mvc_model_get(EWL_MVC(node)),

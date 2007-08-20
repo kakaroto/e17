@@ -54,7 +54,7 @@ ewl_tree_new(unsigned short columns)
 int
 ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 {
-	int i;
+	unsigned int i;
 	Ewl_Widget *header;
 	Ewl_Widget *button;
 
@@ -181,8 +181,7 @@ ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible)
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
  
-	tree->headers_visible = visible;
- 
+	tree->headers_visible = !!visible;
 	row = tree->header;
 
 	ewl_container_child_iterate_begin(EWL_CONTAINER(row));
@@ -225,7 +224,7 @@ ewl_tree_expandable_rows_set(Ewl_Tree *tree, unsigned int expand)
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
  
-	tree->expands_visible = expand;
+	tree->expands_visible = !!expand;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -262,7 +261,7 @@ ewl_tree_expandable_rows_get(Ewl_Tree *tree)
 Ewl_Widget *
 ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 {
-	int i;
+	unsigned int i;
 	Ewl_Widget *w;
 	Ewl_Widget *row;
 	Ewl_Widget *node;
@@ -353,7 +352,7 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 Ewl_Widget *
 ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 {
-	int i;
+	unsigned int i;
 	Ewl_Widget **texts;
 	Ewl_Widget *row;
 
@@ -399,7 +398,7 @@ ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 Ewl_Widget *
 ewl_tree_entry_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 {
-	int i;
+	unsigned int i;
 	Ewl_Widget **entries;
 	Ewl_Widget *row;
 

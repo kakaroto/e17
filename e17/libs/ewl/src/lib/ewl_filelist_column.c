@@ -210,7 +210,7 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 
 	/* remove all of the nodes after this one */
 	ecore_list_index_goto(list->dirs, i);
-	while((d = ecore_list_remove(list->dirs)))
+	while ((d = ecore_list_remove(list->dirs)))
 	{
 		ewl_widget_destroy(d->list);
 		IF_FREE(d->dir);
@@ -219,7 +219,7 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 
 	/* build up our base path */
 	ecore_list_first_goto(path_list);
-	while(count != i)
+	while (count != i)
 	{
 		strcat(path, ecore_list_next(path_list));
 		count ++;

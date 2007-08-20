@@ -241,29 +241,30 @@ char *
 ewl_filelist_size_get(off_t st_size)
 {
 	double dsize;
-	char size[1024];
+	char size[1024], *suffix;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	dsize = (double)st_size;
 	if (dsize < 1024)
-		sprintf(size, "%'.0f b", dsize);
+		snprintf(size, sizeof(size), "%.0f b", dsize);
 	else 
 	{
 		dsize /= 1024.0;
 		if (dsize < 1024)
-			sprintf(size, "%'.1f kb", dsize);
+			suffix = "kb";
 		else 
 		{
 			dsize /= 1024.0;
 			if (dsize < 1024)
-				sprintf(size, "%'.1f mb", dsize);
+				suffix = "mb";
 			else 
 			{
 				dsize /= 1024.0;
-				sprintf(size, "%'.1f gb", dsize);
+				suffix = "gb";
 			}
 		}
+		snprintf(size, sizeof(size), "%.1f %s", dsize, suffix);
 	}
 
 	DRETURN_PTR(strdup(size), DLEVEL_STABLE);

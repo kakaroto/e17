@@ -911,7 +911,7 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const cha
 void
 ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char *text)
 {
-	int i;
+	unsigned int i;
 	Ewl_Pair *match = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1005,7 +1005,7 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 const char *
 ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part)
 {
-	int i;
+	unsigned int i;
 	Ewl_Pair *match = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1970,7 +1970,8 @@ ewl_widget_focused_get(void)
  * @brief sets the colour of the widget
  */
 void
-ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a)
+ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g, 
+					unsigned int b, unsigned int a)
 {
 	Ewl_Color_Set *color;
 
@@ -2001,7 +2002,8 @@ ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a)
  * @brief Gets the colour settings of the widget
  */
 void
-ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a)
+ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g, 
+					unsigned int *b, unsigned int *a)
 {
 	Ewl_Color_Set *color;
 
@@ -2212,7 +2214,7 @@ ewl_widget_free(Ewl_Widget *w)
 			FREE(EWL_PAIR(w->theme_text.list)->value);
 		}
 		else {
-			int i;
+			unsigned int i;
 			for (i = 0; i < w->theme_text.len; i++) {
 				Ewl_Pair *pair = EWL_PAIR(w->theme_text.list[i]);
 				IF_RELEASE(pair->key);
@@ -2405,7 +2407,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 				ewl_widget_appearance_part_text_apply(w, key, value);
 			}
 			else {
-				int i;
+				unsigned int i;
 				for (i = 0; i < w->theme_text.len; i++) {
 					key = w->theme_text.list[i]->key;
 					value = w->theme_text.list[i]->value;

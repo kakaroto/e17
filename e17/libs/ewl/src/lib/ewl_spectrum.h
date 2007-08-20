@@ -50,9 +50,9 @@ struct Ewl_Spectrum
 	} cross_hairs;			/**< Selection crosshairs */
 
 	struct {
-		int r;
-		int g;
-		int b;
+		unsigned int r;
+		unsigned int g;
+		unsigned int b;
 	} rgb;				/**< Current RBG colour of the spectrum */
 
 	struct {

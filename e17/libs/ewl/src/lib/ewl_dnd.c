@@ -6,12 +6,12 @@
 
 #define EWL_DND_WINDOW_ROOT 0
 
-int EWL_CALLBACK_DND_POSITION; /**< A DND position event **/
-int EWL_CALLBACK_DND_ENTER; /**< On enter of a widget **/
-int EWL_CALLBACK_DND_LEAVE; /**< On exit of a widget **/
-int EWL_CALLBACK_DND_DROP; /**< Drop event **/
-int EWL_CALLBACK_DND_DATA_RECEIVED; /**< Data received event **/
-int EWL_CALLBACK_DND_DATA_REQUEST; /**< Data request event **/
+unsigned int EWL_CALLBACK_DND_POSITION; /**< A DND position event **/
+unsigned int EWL_CALLBACK_DND_ENTER; /**< On enter of a widget **/
+unsigned int EWL_CALLBACK_DND_LEAVE; /**< On exit of a widget **/
+unsigned int EWL_CALLBACK_DND_DROP; /**< Drop event **/
+unsigned int EWL_CALLBACK_DND_DATA_RECEIVED; /**< Data received event **/
+unsigned int EWL_CALLBACK_DND_DATA_REQUEST; /**< Data request event **/
 
 static int ewl_dragging_current;
 static int ewl_dnd_status;

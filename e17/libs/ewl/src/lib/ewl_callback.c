@@ -156,7 +156,7 @@ static int
 ewl_callback_insert(Ewl_Widget *w, unsigned int t, 
 				Ewl_Callback *cb, unsigned int pos)
 {
-	int place;
+	unsigned int place;
 	Ewl_Callback *old = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -383,7 +383,8 @@ ewl_callback_insert_after(Ewl_Widget *w, unsigned int t,
 			  Ewl_Callback_Function after, void *after_data)
 {
 	Ewl_Callback *search;
-	int ret, pos = 0;
+	int ret;
+	unsigned int pos = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
@@ -554,7 +555,7 @@ void
 ewl_callback_del_cb_id(Ewl_Widget *w, unsigned int t, int cb_id)
 {
 	Ewl_Callback *cb;
-	int i;
+	unsigned int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -587,7 +588,7 @@ ewl_callback_del_cb_id(Ewl_Widget *w, unsigned int t, int cb_id)
 void
 ewl_callback_clear(Ewl_Widget *w)
 {
-	int i;
+	unsigned int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -613,7 +614,7 @@ void
 ewl_callback_del(Ewl_Widget *w, unsigned int t, Ewl_Callback_Function f)
 {
 	Ewl_Callback *cb;
-	int i;
+	unsigned int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -650,7 +651,7 @@ ewl_callback_del_with_data(Ewl_Widget *w, unsigned int t,
 			   Ewl_Callback_Function f, void *d)
 {
 	Ewl_Callback *cb;
-	int i;
+	unsigned int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

@@ -210,7 +210,7 @@ ewl_entry_selection_clear(Ewl_Entry *e)
 	sel = EWL_TEXT_TRIGGER(ewl_text_selection_get(EWL_TEXT(e)));
 	if (sel)
 	{
-		int len, pos;
+		unsigned int len, pos;
 
 		len = ewl_text_trigger_length_get(sel);
 		pos = ewl_text_trigger_start_pos_get(sel);
@@ -707,7 +707,7 @@ ewl_entry_cursor_move_down(Ewl_Entry *e)
 void
 ewl_entry_delete_left(Ewl_Entry *e)
 {
-	int pos1;
+	unsigned int pos;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
@@ -716,12 +716,13 @@ ewl_entry_delete_left(Ewl_Entry *e)
 	if (!EWL_TEXT(e)->text)
 		DRETURN(DLEVEL_STABLE);	
 
-	pos1 = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
+	pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
+
 	/* we cannot delete anything if we are at the beginning of the text */
-	if (pos1 == 0)
+	if (pos == 0)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), pos1 - 1);
+	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), pos - 1);
 	ewl_text_text_delete(EWL_TEXT(e), 1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

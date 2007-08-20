@@ -236,8 +236,10 @@ unsigned int	 ewl_widget_focusable_get(Ewl_Widget *w);
 void		 ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val);
 unsigned int	 ewl_widget_ignore_focus_change_get(Ewl_Widget *w);
 
-void 		 ewl_widget_color_set(Ewl_Widget *w, int r, int g, int b, int a);
-void 		 ewl_widget_color_get(Ewl_Widget *w, int *r, int *g, int *b, int *a);
+void 		 ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g, 
+							unsigned int b, unsigned int a);
+void 		 ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g, 
+							unsigned int *b, unsigned int *a);
 
 int 		 ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w);
 

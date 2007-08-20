@@ -236,7 +236,7 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 
 	c = EWL_CONTAINER(b);
 	ecore_dlist_first_goto(c->children);
-	while((child = ecore_dlist_next(c->children)))
+	while ((child = ecore_dlist_next(c->children)))
 		ewl_box_cb_child_show(c, child);
 
 	ewl_widget_configure(EWL_WIDGET(b));

@@ -298,7 +298,7 @@ ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent, Ewl_Attach *attac
 	}
 	else
 	{
-		int i;
+		unsigned int i;
 		Ewl_Attach *tmp;
 
 		/* replace if in list already */
@@ -380,7 +380,7 @@ ewl_attach_list_del(Ewl_Attach_List *list, Ewl_Attach_Type type)
 	}
 	else
 	{
-		int i;
+		unsigned int i;
 		Ewl_Attach *tmp;
 
 		for (i = 0; i < list->len; i++)
@@ -430,7 +430,7 @@ ewl_attach_list_get(Ewl_Attach_List *list, Ewl_Attach_Type type)
 	}
 	else
 	{
-		int i;
+		unsigned int i;
 		Ewl_Attach *tmp;
 
 		for (i = 0; i < list->len; i++)
@@ -494,7 +494,8 @@ ewl_attach_free(Ewl_Attach *attach)
 	/* XXX should we clean up _WIDGET in here? */
 
 	if ((attach->data_type == EWL_ATTACH_DATA_TYPE_TEXT)
-			|| (attach->type == EWL_ATTACH_DATA_TYPE_OTHER)) {
+			|| (attach->data_type == EWL_ATTACH_DATA_TYPE_OTHER))
+	{
 		IF_FREE(attach->data);
 	}
 		
@@ -528,7 +529,8 @@ ewl_attach_cb_parent_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 	/* make sure the timer gets cleaned up if the widget goes away */
 	if ((ewl_attach_tooltip) && (w == ewl_attach_tooltip->to) 
-			&& (ewl_attach_tooltip->timer)) {
+			&& (ewl_attach_tooltip->timer)) 
+	{
 		ecore_timer_del(ewl_attach_tooltip->timer);
 		ewl_attach_tooltip->timer = NULL;
 	}

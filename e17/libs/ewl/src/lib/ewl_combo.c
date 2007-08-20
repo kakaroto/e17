@@ -401,8 +401,7 @@ static void
 ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model, 
 			Ewl_View *view, void *mvc_data)
 {
-	int count;
-	int i;
+	unsigned int count, i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("combo", combo);
@@ -625,6 +624,7 @@ ewl_combo_cell_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_COMBO_CELL_TYPE);
 
 	i = ewl_container_child_index_get(EWL_CONTAINER(w->parent), w);
+	if (i < 0) DRETURN(DLEVEL_STABLE);
 
 	combo = ewl_combo_cell_combo_get(EWL_COMBO_CELL(w));
 	model = ewl_combo_cell_model_get(EWL_COMBO_CELL(w));

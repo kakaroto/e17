@@ -412,10 +412,10 @@ ewl_media_audio_mute_set(Ewl_Media *m, int mute)
 	DCHECK_PARAM_PTR("m", m);
 	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
-	if (m->mute == mute) 
+	if (m->mute == !!mute) 
 		DRETURN(DLEVEL_STABLE);
 
-	m->mute = mute;
+	m->mute = !!mute;
 
 #ifdef BUILD_EMOTION_SUPPORT
 	if (m->video)

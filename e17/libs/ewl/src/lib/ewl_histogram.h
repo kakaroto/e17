@@ -54,11 +54,11 @@ Ewl_Widget 	*ewl_histogram_new(void);
 int 		 ewl_histogram_init(Ewl_Histogram *histogram);
 
 void 		 ewl_histogram_color_set(Ewl_Histogram *histogram, 
-						int r, int g, 
-						int b, int a);
+						unsigned int r, unsigned int g, 
+						unsigned int b, unsigned int a);
 void 		 ewl_histogram_color_get(Ewl_Histogram *histogram, 
-						int *r, int *g, 
-						int *b, int *a);
+						unsigned int *r, unsigned int *g, 
+						unsigned int *b, unsigned int *a);
 
 void 		 ewl_histogram_image_set(Ewl_Histogram *histogram, 
 						Ewl_Image *image);

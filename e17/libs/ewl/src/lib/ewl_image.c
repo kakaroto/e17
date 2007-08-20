@@ -739,8 +739,9 @@ ewl_image_thumbnail_size_get(Ewl_Image_Thumbnail *thumb)
 void
 ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, const char *path)
 {
+#ifdef BUILD_EPSILON_SUPPORT
 	Ewl_Thumbnail_Size size;
-
+#endif
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("thumb", thumb);
 	DCHECK_TYPE("thumb", thumb, EWL_IMAGE_THUMBNAIL_TYPE);

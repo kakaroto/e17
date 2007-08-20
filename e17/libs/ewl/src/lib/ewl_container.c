@@ -560,15 +560,16 @@ static int
 ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w, 
 							unsigned int skip)
 {
-	unsigned int idx = 0, ret = -1;
+	unsigned int idx = 0;
+	int ret = -1;
 	Ewl_Container *container;
 	Ewl_Widget *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("parent", parent, idx);
-	DCHECK_PARAM_PTR_RET("w", w, idx);
-	DCHECK_TYPE_RET("parent", parent, EWL_CONTAINER_TYPE, idx);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, idx);
+	DCHECK_PARAM_PTR_RET("parent", parent, ret);
+	DCHECK_PARAM_PTR_RET("w", w, ret);
+	DCHECK_TYPE_RET("parent", parent, EWL_CONTAINER_TYPE, ret);
+	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, ret);
 
 	container = parent;
 	while (container->redirect) container = container->redirect;

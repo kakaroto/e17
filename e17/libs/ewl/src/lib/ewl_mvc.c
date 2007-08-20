@@ -23,8 +23,8 @@ static int ewl_mvc_line_intersects(int astart, int aend, int bstart, int bend);
 static void ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 			Ewl_Selection_Range *range, Ewl_Selection_Range *cur);
 static Ewl_Selection *ewl_mvc_selection_make(Ewl_Model *model, void *data, 
-						int top, int left, 
-						int bottom, int right);
+					unsigned int top, unsigned int left, 
+					unsigned int bottom, unsigned int right);
 
 static void ewl_mvc_selected_change_notify(Ewl_MVC *mvc);
 static void ewl_mvc_highlight_do(Ewl_MVC *mvc, Ewl_Container *c,
@@ -326,7 +326,7 @@ void
 ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list)
 {
 	Ewl_Selection *sel;
-	int count = 0;
+	unsigned int count = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("mvc", mvc);
@@ -895,8 +895,9 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 }
 
 static Ewl_Selection *
-ewl_mvc_selection_make(Ewl_Model *model, void *data, int top, int left, 
-						int bottom, int right)
+ewl_mvc_selection_make(Ewl_Model *model, void *data, unsigned int top, 
+				unsigned int left, unsigned int bottom,
+				unsigned int right)
 {
 	Ewl_Selection *sel;
 
