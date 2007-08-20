@@ -279,6 +279,15 @@ ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fmt", fmt);
 
+	if (idx < fmt->current_node.char_idx) 
+	{
+		DWARNING("The current position (%u) is higher than the to "
+				"be to remove position (%u)\n",
+				fmt->current_node.char_idx, idx);
+	}
+	/* adjust the char length, we'll adjust the byte length later */
+	fmt->length.char_len -= char_len;
+
 	node = ecore_dlist_current(fmt->nodes);
 	while (char_len > 0)
 	{
@@ -291,18 +300,28 @@ ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
 		node->char_len -= available;
 		if (node->char_len > 0)
 		{
-			node->byte_len = 0;
+			unsigned int byte_len = 0;
+
+			/* Note: we already removed the related text part
+			 * so it is save to use the new shorter text here */
 			ewl_text_fmt_char_to_byte(fmt, idx, 
 					node->char_len, 
-					NULL, &(node->byte_len));
+					NULL, &byte_len);
 
-			ecore_dlist_next(fmt->nodes);
+			/* deduct the byte count */
+			fmt->length.byte_len -= node->byte_len - byte_len;
+			node->byte_len = byte_len;
+
 			fmt->current_node.char_idx += node->char_len;
 			fmt->current_node.byte_idx += node->byte_len;
+			ecore_dlist_next(fmt->nodes);
 			node = ecore_dlist_current(fmt->nodes);
 		}
 		else
 		{
+			/* we still need to adjust the global byte count */
+			fmt->length.byte_len -= node->byte_len;
+
 			ecore_dlist_remove(fmt->nodes);
 			ewl_text_fmt_node_free(node);
 			node = ecore_dlist_current(fmt->nodes);
@@ -422,8 +441,9 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fmt", fmt);
 
-	if (fmt->length.char_len != EWL_TEXT(fmt->text)->length.chars) {
-		DWARNING("The character length of the ftm (%u) is not"
+	if (fmt->length.char_len != EWL_TEXT(fmt->text)->length.chars) 
+	{
+		DWARNING("The character length of the fmt (%u) is not"
 				" equal to the length of the text (%u)\n",
 				fmt->length.char_len,
 				EWL_TEXT(fmt->text)->length.chars);
