@@ -163,7 +163,7 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	row = ewl_container_child_index_get(EWL_CONTAINER(data), w);
 	if (row < 0) DRETURN(DLEVEL_STABLE);
 
-	if (row > model->count(data)) 
+	if ((unsigned int) row > model->count(data)) 
 	{
 		if (!EWL_HIGHLIGHT_IS(w))
 		{

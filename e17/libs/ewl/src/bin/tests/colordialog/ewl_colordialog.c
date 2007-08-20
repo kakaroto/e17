@@ -68,7 +68,7 @@ colordialog_cb_launch(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *o;
-	int r, g, b, a;
+	unsigned int r, g, b, a;
 
 	o = ewl_widget_name_find("colour_preview");
 	ewl_widget_color_get(o, &r, &g, &b, &a);
