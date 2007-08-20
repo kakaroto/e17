@@ -36,6 +36,16 @@
 #define EVFS_FUNCTION_FILE_MOVE "evfs_file_move"
 #define EVFS_FUNCTION_FILE_STAT_GET "evfs_file_stat_get"
 
+#if     __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 8)
+#  define GNUC_EXTENSION __extension__
+#else
+#  define GNUC_EXTENSION
+#endif
+
+GNUC_EXTENSION typedef signed long long int64;
+GNUC_EXTENSION typedef unsigned long long uint64;
+
+
 #include "evfs_plugin.h"
 
 typedef enum
@@ -52,17 +62,6 @@ typedef enum
 EfsdFsOps;
 
 /*----------------------------------------------------------------*/
-#if     __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 8)
-#  define GNUC_EXTENSION __extension__
-#else
-#  define GNUC_EXTENSION
-#endif
-
-GNUC_EXTENSION typedef signed long long int64;
-GNUC_EXTENSION typedef unsigned long long uint64;
-
-
-
 #define INT64_CONSTANT(val)	(GNUC_EXTENSION (val##LL))
 
 #define INT32_TO_BE(val)	((unsigned int) ( \

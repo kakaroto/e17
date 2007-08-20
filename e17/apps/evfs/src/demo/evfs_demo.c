@@ -18,11 +18,11 @@ callback(EvfsEvent* data, void *obj)
      {
         printf("Received stat event for file '%s'!\n",
                evfs_command_first_file_get(data->command)->path);
-        printf("File size: %llu\n", EVFS_EVENT_STAT(data)->st_size);
-        printf("File uid: %d\n", EVFS_EVENT_STAT(data)->st_uid);
-        printf("File gid: %d\n", EVFS_EVENT_STAT(data)->st_gid);
-        printf("Last access: %d\n", EVFS_EVENT_STAT(data)->ist_atime);
-        printf("Last modify : %d\n", EVFS_EVENT_STAT(data)->ist_mtime);
+        printf("File size: %llu\n", EVFS_EVENT_STAT(data)->stat->st_size);
+        printf("File uid: %d\n", EVFS_EVENT_STAT(data)->stat->st_uid);
+        printf("File gid: %d\n", EVFS_EVENT_STAT(data)->stat->st_gid);
+        printf("Last access: %d\n", EVFS_EVENT_STAT(data)->stat->ist_atime);
+        printf("Last modify : %d\n", EVFS_EVENT_STAT(data)->stat->ist_mtime);
      }
    else if (data->type == EVFS_EV_DIR_LIST)
      {

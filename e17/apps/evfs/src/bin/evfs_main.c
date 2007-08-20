@@ -127,6 +127,8 @@ ipc_client_add(void *data __UNUSED__, int type __UNUSED__, void *event)
    /*Make sure we're not the worker server's event*/
    if (ecore_ipc_client_server_get(e->client) != server->ipc_server) return 1;
 
+   ecore_ipc_client_data_size_max_set(e->client,-1);
+
    client = NEW(evfs_client);
    client->client = e->client;
    client->server = server;
@@ -243,7 +245,7 @@ ipc_worker_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 	if (ecore_ipc_client_server_get(e->client) != server->worker_server) return 1;
 
 	/*We're going to be sending *quite* a lot of data*/
-	ecore_ipc_client_data_size_max_set(e->client,1000000);
+	ecore_ipc_client_data_size_max_set(e->client,-1);
 
 	printf("New worker client to server..%p\n", server->worker_server);
 		
@@ -296,9 +298,7 @@ ipc_worker_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 	   return 1;
    }
 
-   //printf("WORKER: Unrecognised major: %d\n", e->major);
-   //
-   /*printf("Sending data to client.. %d %d %d %d %d\n", e->major, e->minor, e->ref, e->ref_to, e->response);*/
+   /*printf("Sending data to client.. %d %d %d %d %d, len:%d\n", e->major, e->minor, e->ref, e->ref_to, e->response, e->size);*/
 
    client = ecore_hash_get(evfs_server_get()->worker_hash, e->client);
    if (client) {
@@ -738,7 +738,7 @@ main(int argc, char **argv)
            ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE, 0, NULL);
 
 	/*We're going to be sending *quite* a lot of data*/
-	ecore_ipc_server_data_size_max_set(server->ipc_server,1000000);
+	ecore_ipc_server_data_size_max_set(server->ipc_server,-1);
 
         client_add = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, ipc_client_add,
                                 NULL);
@@ -752,7 +752,7 @@ main(int argc, char **argv)
 	server->worker_server = 
 	    ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EVFS_WOR_TITLE, 0, NULL);
 	/*We're going to be sending *quite* a lot of data*/
-	ecore_ipc_server_data_size_max_set(server->worker_server,1000000);
+	ecore_ipc_server_data_size_max_set(server->worker_server,-1);
 
         worker_add = ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, ipc_worker_add,
                                 NULL);
