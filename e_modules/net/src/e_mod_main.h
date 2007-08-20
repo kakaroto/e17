@@ -4,22 +4,17 @@
 #define E_MOD_MAIN_H
 
 typedef struct _Instance Instance;
-typedef struct _Popup Popup;
+typedef unsigned long bytes_t;
 
 struct _Instance 
 {
    E_Gadcon_Client *gcc;
-   Evas_Object *o_net;
+   Evas_Object *o_net, *pop_bg;
    Ecore_Timer *timer;
-   Popup *popup;
-   short popup_locked;
-   unsigned long in, out;
-};
+   E_Gadcon_Popup *popup;
 
-struct _Popup 
-{
-   E_Popup *win;
-   Evas_Object *o_bg;
+   short popup_locked;
+   bytes_t in, out;
 };
 
 EAPI extern E_Module_Api e_modapi;

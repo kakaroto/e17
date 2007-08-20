@@ -13,7 +13,6 @@
 #include <net/if_mib.h>
 #endif
 
-typedef unsigned long bytes_t;
 static void _bytes_to_string(bytes_t bytes, char *string, int size);
 static void _cb_post(void *data, E_Menu *m);
 static void _cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -122,7 +121,7 @@ _cb_poll(void *data)
      {
 	_bytes_to_string(in, tmp, sizeof(tmp));
 	snprintf(popbuf, sizeof(popbuf), "Rx: %s", tmp);
-	edje_object_part_text_set(inst->popup->o_bg, "e.text.recv", popbuf);
+	edje_object_part_text_set(inst->pop_bg, "e.text.recv", popbuf);
      }
    
    _bytes_to_string(bout, tmp, sizeof(tmp));
@@ -132,7 +131,7 @@ _cb_poll(void *data)
      {
 	_bytes_to_string(out, tmp, sizeof(tmp));
 	snprintf(popbuf, sizeof(popbuf), "Tx: %s", tmp);
-	edje_object_part_text_set(inst->popup->o_bg, "e.text.send", popbuf);
+	edje_object_part_text_set(inst->pop_bg, "e.text.send", popbuf);
      }
    
    return 1;
@@ -158,12 +157,7 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 	  }
      }
    else if ((ev->button == 1) && (!cfg->menu))
-     {
-	if (inst->popup_locked) 
-	  inst->popup_locked = 0;
-	else
-	  inst->popup_locked = 1;
-     }
+     e_gadcon_popup_toggle_pinned(inst->popup);
    else if ((ev->button == 3) && (!cfg->menu)) 
      {
 	E_Menu *mn;
@@ -198,124 +192,36 @@ _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *sou
 {
    Instance *inst;
    Config_Item *ci;
-   E_Container *con;
    Evas_Object *bg;
-   Evas_Coord cx, cy, cw, ch;
-   Evas_Coord ox, oy, ow, oh;
-   Evas_List *l;
-   int layer = -1;
-   int wx, wy, ww, wh;
-   char buf[PATH_MAX];
+   Evas_Coord gw, gh;
+   char buf[PATH_MAX], tmp[100];
 
    inst = data;
    if (inst->popup != NULL) return;
    ci = _config_item_get(inst->gcc->id);
    if (!ci->show_popup) return;
    
-   inst->popup = E_NEW(Popup, 1);
+   inst->popup = e_gadcon_popup_new(inst->gcc, NULL);
    snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(cfg->mod));
    
-   con = e_container_current_get(e_manager_current_get());
-   inst->popup->win = e_popup_new(e_zone_current_get(con), 0, 0, 0, 0);
    bg = edje_object_add(inst->popup->win->evas);
    if (!e_theme_edje_object_set(bg, "base/theme/modules", 
 				"modules/net/popup"))
      edje_object_file_set(bg, buf, "modules/net/popup");
    snprintf(buf, sizeof(buf), D_("Device - %s"), ci->device);
    edje_object_part_text_set(bg, "e.text.title", buf);
-   evas_object_show(bg);
+   inst->pop_bg = bg;
 
-   snprintf(buf, sizeof(buf), "Rx: 0 B");
+   _bytes_to_string(inst->in, tmp, sizeof(tmp));
+   snprintf(buf, sizeof(buf), "Rx: %s", tmp);
    edje_object_part_text_set(bg, "e.text.recv", buf);
-   snprintf(buf, sizeof(buf), "Tx: 0 B");
+
+   _bytes_to_string(inst->out, tmp, sizeof(tmp));
+   snprintf(buf, sizeof(buf), "Tx: %s", tmp);
    edje_object_part_text_set(bg, "e.text.send", buf);
    
-   edje_object_size_min_calc(bg, &ww, &wh);
-   evas_object_move(bg, 0, 0);
-   evas_object_resize(bg, ww, wh);
-   inst->popup->o_bg = bg;
-
-   /* Begin Butt Ugly hack for shelf "layer"/position changes */
-   cx = cy = cw = ch = -1;
-   for (l = e_shelf_list(); l; l = l->next) 
-     {
-	E_Shelf *es;
-	
-	es = l->data;
-	if (es->gadcon != inst->gcc->gadcon) continue;
-	layer = es->layer;
-	cx = es->x;
-	cy = es->y;
-	cw = es->w;
-	ch = es->h;
-	break;
-     }
-   
-   if (cx == -1) return;
-   evas_object_geometry_get(inst->o_net, &ox, &oy, &ow, &oh);
-   switch (inst->gcc->gadcon->orient) 
-     {
-      case E_GADCON_ORIENT_CORNER_RT:
-      case E_GADCON_ORIENT_CORNER_RB:
-      case E_GADCON_ORIENT_RIGHT:
-	wx = (cx - ww);
-	if (layer == 1) 
-	  wy = oy;
-	else 
-	  wy = (cy + oy);
-	if ((wy + wh) > (cy + ch))
-	  wy = (cy + ch) - wh;
-	break;
-      case E_GADCON_ORIENT_LEFT:
-      case E_GADCON_ORIENT_CORNER_LT:
-      case E_GADCON_ORIENT_CORNER_LB:
-	wx = (cx + cw);
-	if (layer == 1)
-	  wy = oy;
-	else
-	  wy = (cy + oy);
-	if ((wy + wh) > (cy + ch))
-	  wy = (cy + ch) - wh;
-	break;
-      case E_GADCON_ORIENT_TOP:
-      case E_GADCON_ORIENT_CORNER_TL:
-	if (layer == 1)
-	  wx = ox;
-	else
-	  wx = (cx + ox);
-	wy = (cy + ch);
-	break;
-      case E_GADCON_ORIENT_CORNER_TR:
-	if (layer == 1)
-	  wx = ox;
-	else
-	  wx = (cx + ox);
-	wy = (cy + ch);
-	if ((wx + ww) > (cx + cw))
-	  wx = (cx + cw) - ww;
-	break;
-      case E_GADCON_ORIENT_BOTTOM:
-      case E_GADCON_ORIENT_CORNER_BL:
-	if (layer == 1)
-	  wx = ox;
-	else
-	  wx = (cx + ox);
-	wy = (cy - wh);
-	break;
-      case E_GADCON_ORIENT_CORNER_BR:
-	if (layer == 1)
-	  wx = ox;
-	else
-	  wx = (cx + ox);
-	wy = (cy - wh);
-	if ((wx + ww) > (cx + cw))
-	  wx = (cx + cw) - ww;
-	break;
-      default:
-	break;
-     }
-   e_popup_move_resize(inst->popup->win, wx, wy, ww, wh);
-   e_popup_show(inst->popup->win);
+   e_gadcon_popup_content_set(inst->popup, bg);
+   e_gadcon_popup_show(inst->popup);
 }
 
 EAPI void 
@@ -323,12 +229,10 @@ _cb_mouse_out(void *data, Evas_Object *obj, const char *emission, const char *so
 {
    Instance *inst;
    
-   inst = data;
-   if (!inst->popup) return;
-   if (inst->popup_locked) return;
-   evas_object_del(inst->popup->o_bg);
-   e_object_del(E_OBJECT(inst->popup->win));
-   E_FREE(inst->popup);
+   if (!(inst = data)) return;
+   if (inst->popup->pinned) return;
+   e_object_del(E_OBJECT(inst->popup));
+   inst->popup = NULL;
 }
 
 static void

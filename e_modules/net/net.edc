@@ -266,33 +266,13 @@ collections
 	     part 
 	       {
 		  name: "base";
+                  type: RECT;
 		  mouse_events: 0;
-		  type: RECT;
 		  description 
 		    {
 		       state: "default" 0.0;
-		       rel1.offset: 1 1;
-		       rel2.offset: -2 -2;
-		       color: 221 221 221 255;
+                       color: 0 0 0 0;
 		       min: 125 50;
-		    }
-	       }
-	     part 
-	       {
-		  name: "bd";
-		  mouse_events: 0;
-		  description 
-		    {
-		       state: "default" 0.0;
-		       rel1.offset: 0 0;
-		       rel2.offset: -1 -1;
-		       image 
-			 {
-			    normal: "bd.png";
-			    border: 1 1 1 1;
-			    middle: 0;
-			 }
-		       fill.smooth: 0;
 		    }
 	       }
 	     part 
@@ -363,7 +343,7 @@ collections
 		       rel1 
 			 {
 			    relative: 1.0 0.0;
-			    offset: 8 6;
+			    offset: 10 6;
 			    to: "icon";
 			 }
 		       rel2 
@@ -382,7 +362,7 @@ collections
 			    size: 10;
 			    min: 1 1;
 			    align: 0.0 0.5;
-			    text_class: "menu_item";
+			    text_class: "module_normal";
 			    elipsis: 0.0;
 			 }
 		    }
@@ -400,7 +380,7 @@ collections
 		       rel1 
 			 {
 			    relative: 1.0 1.0;
-			    offset: 8 -6;
+			    offset: 10 -6;
 			    to: "icon";
 			 }
 		       rel2 
@@ -419,7 +399,7 @@ collections
 			    size: 10;
 			    min: 1 1;
 			    align: 0.0 0.5;
-			    text_class: "menu_item";
+			    text_class: "module_normal";
 			    elipsis: 0.0;
 			 }
 		    }
