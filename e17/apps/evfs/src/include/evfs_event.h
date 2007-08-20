@@ -127,14 +127,7 @@ typedef struct
    EvfsEvent base;
    EvfsFilereference* file;
 
-   int st_mode;
-   int st_uid;
-   int st_gid;
-   uint64 st_size;
-   int ist_atime;
-   int ist_mtime;
-   int ist_ctime;
-
+   EvfsStat* stat;
 } EvfsEventStat;
 
 #define EVFS_EVENT_METADATA_GROUPS(event) ((EvfsEventMetadataGroups *) event)

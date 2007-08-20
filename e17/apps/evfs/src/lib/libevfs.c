@@ -204,8 +204,8 @@ evfs_connect(void (*callback_func) (EvfsEvent *, void *), void *obj)
    if (!
        (connection->server =
         ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, EVFS_IPC_TITLE,0,
-                                 connection)))
-     {
+                                 connection)))	   
+     {	     
         fprintf(stderr,
                 "Cannot connect to evfs server with '%s', making new server and trying again..\n",
                 EVFS_IPC_TITLE);

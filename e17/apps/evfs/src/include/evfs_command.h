@@ -33,7 +33,7 @@ typedef enum evfs_command_type
 evfs_command_type;
 
 typedef enum EvfsCommandOption {
-	EVFS_COMMAND_OPTION_STAT
+	EVFS_COMMAND_OPTION_STAT = 1
 } EvfsCommandOption;
 
 typedef struct evfs_command_file

@@ -96,7 +96,10 @@ evfs_client_dir_list(evfs_connection * conn, EvfsFilereference * file, int optio
 
    command->type = EVFS_CMD_LIST_DIR;
    command->file_command->files = evas_list_append( command->file_command->files, file);
+
    command->options = options;
+
+   printf("COMMAND OPTIOONS: %d\n", command->options);
    evfs_write_command(conn, command);
 
    evas_list_free(command->file_command->files);
