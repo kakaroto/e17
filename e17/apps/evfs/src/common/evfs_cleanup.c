@@ -72,6 +72,14 @@ evfs_cleanup_filereference(EvfsFilereference * ref)
 }
 
 void
+evfs_cleanup_stat_event(EvfsEventStat* event)
+{
+	if (event->stat) {
+		free(event->stat);
+	}
+}
+
+void
 evfs_cleanup_monitor_event(EvfsEventFileMonitor *event)
 {
    if (event->file)
@@ -196,6 +204,11 @@ evfs_cleanup_event(EvfsEvent* event)
      case EVFS_EV_METADATA_GROUPS:
 	evfs_cleanup_metadata_groups_event(event);
 	break;
+
+     case EVFS_EV_STAT:
+	evfs_cleanup_stat_event(event);
+	break;
+
      default:
 	break;
      }

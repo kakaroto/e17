@@ -32,15 +32,15 @@ evfs_stat_event_create(evfs_client * client, evfs_command * command,
    EvfsEventStat *event = NEW(EvfsEventStat);
    EVFS_EVENT(event)->type = EVFS_EV_STAT;
 
-   //memcpy(&event->stat.stat_obj, stat_obj, sizeof(struct stat));
-   event->st_mode = stat_obj->st_mode;
-   event->st_uid = stat_obj->st_uid;
-   event->st_gid = stat_obj->st_gid;
-   event->st_uid = stat_obj->st_uid;
-   event->st_size = stat_obj->st_size;
-   event->ist_atime = stat_obj->st_atime;
-   event->ist_mtime = stat_obj->st_mtime;
-   event->ist_ctime = stat_obj->st_ctime;
+   event->stat = NEW(EvfsStat);
+   event->stat->st_mode = stat_obj->st_mode;
+   event->stat->st_uid = stat_obj->st_uid;
+   event->stat->st_gid = stat_obj->st_gid;
+   event->stat->st_uid = stat_obj->st_uid;
+   event->stat->st_size = stat_obj->st_size;
+   event->stat->ist_atime = stat_obj->st_atime;
+   event->stat->ist_mtime = stat_obj->st_mtime;
+   event->stat->ist_ctime = stat_obj->st_ctime;
 
    evfs_write_event(client, command, EVFS_EVENT(event));
 
