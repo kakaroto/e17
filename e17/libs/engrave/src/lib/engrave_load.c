@@ -49,11 +49,11 @@ engrave_load_edc(const char *file, const char *imdir, const char *fontdir)
         path = strdup(".");
     }
 
-    snprintf(buf, sizeof(buf), "cat %s | cpp -E -I%s -o %s", file, path, tmpf);
+    snprintf(buf, sizeof(buf), "cat %s | cpp -I%s > %s", file, path, tmpf);
     ret = system(buf);
     if (ret < 0)
     {
-      snprintf(buf, sizeof(buf), "gcc -E -I %s -o %s %s", path, tmpf, file);
+      snprintf(buf, sizeof(buf), "gcc -E -I%s -o %s %s", path, tmpf, file);
       ret = system(buf);
     }
     FREE(path);

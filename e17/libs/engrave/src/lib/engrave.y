@@ -1072,7 +1072,6 @@ parse_error(void)
 {
 	fprintf(stderr, "file: %s, line: %d, column: %d\n\n",
                 engrave_cur_file, engrave_lnum, engrave_col);
-	exit(-1);
 }
 
 

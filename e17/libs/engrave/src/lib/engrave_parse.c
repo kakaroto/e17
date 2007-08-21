@@ -8,15 +8,19 @@ int yyparse(void);
 Engrave_File *
 engrave_parse(const char *file, const char *imdir, const char *fontdir)
 {
+  int ret;
   engrave_file = engrave_file_new();
   engrave_file_image_dir_set(engrave_file, imdir);
   engrave_file_font_dir_set(engrave_file, fontdir);
 
   yyin = fopen(file, "r");
-  yyparse();
+  ret = yyparse();
   fclose(yyin);
 
-  return (engrave_file);
+  if (ret == 0)
+     return (engrave_file);
+  
+  return (NULL);
 }
 
 void
