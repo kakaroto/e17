@@ -13,11 +13,11 @@ void etk_test_colorpicker_window_create(void *data)
    }
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Color Picker Test");
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);	
-   
+   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+
    cp = etk_colorpicker_new();
    etk_colorpicker_use_alpha_set(ETK_COLORPICKER(cp), ETK_TRUE);
    etk_container_add(ETK_CONTAINER(win), cp);
-   
+
    etk_widget_show_all(win);
 }

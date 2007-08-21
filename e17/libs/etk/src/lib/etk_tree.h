@@ -54,7 +54,7 @@ struct Etk_Tree_Col
 
    int id;
    Etk_Tree *tree;
-   
+
    int num_models;
    Etk_Tree_Model *models[ETK_TREE_MAX_MODELS_PER_COL];
 
@@ -63,17 +63,17 @@ struct Etk_Tree_Col
    Etk_Bool visible;
    Etk_Bool expand;
    float align;
-   
+
    int xoffset;
    int min_width;
    int width;
    int visible_width;
-   
+
    Etk_Widget *header;
    Evas_Object *header_over;
    Evas_Object *clip;
    Evas_Object *separator;
-   
+
    struct
    {
       int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
@@ -96,11 +96,11 @@ struct Etk_Tree_Row
    Etk_Tree_Row *last_child;
    int num_children;
    int num_visible_children;
-   
+
    void ***cells_data;
    void *data;
    void (*data_free_cb)(void *data);
-   
+
    unsigned int delete_me : 1;
    unsigned int unfolded : 1;
    unsigned int selected : 1;
@@ -126,28 +126,29 @@ struct Etk_Tree
    Etk_Bool headers_visible;
    Etk_Bool col_separators_visible;
    Etk_Color col_separator_color;
-   
+
    Etk_Tree_Col *col_to_resize;
    Etk_Bool col_resize_pointer_set;
    int col_resize_orig_width;
    int col_resize_orig_mouse_x;
    Etk_Tree_Col *sorted_col;
    Etk_Bool sorted_asc;
-   
+
    int total_rows;
    Etk_Tree_Row root;
    Etk_Tree_Row *last_selected_row;
    Evas_List *purge_pool;
    Evas_List *row_objects;
-   
+
    int rows_height;
    int scroll_x;
    int scroll_y;
-   
+
    Ecore_Job *purge_job;
    Etk_Bool tree_contains_headers;
    Etk_Tree_Mode mode;
    Etk_Bool multiple_select;
+   Etk_Bool alternating_row_colors;
    Etk_Bool frozen;
    Etk_Bool built;
 };
@@ -165,6 +166,8 @@ void           etk_tree_headers_visible_set(Etk_Tree *tree, Etk_Bool headers_vis
 Etk_Bool       etk_tree_headers_visible_get(Etk_Tree *tree);
 void           etk_tree_column_separators_visible_set(Etk_Tree *tree, Etk_Bool col_separators_visible);
 Etk_Bool       etk_tree_column_separators_visible_get(Etk_Tree *tree);
+void           etk_tree_alternating_row_colors_set(Etk_Tree *tree, Etk_Bool alternating_row_colors);
+Etk_Bool       etk_tree_alternating_row_colors_get(Etk_Tree *tree);
 void           etk_tree_rows_height_set(Etk_Tree *tree, int rows_height);
 int            etk_tree_rows_height_get(Etk_Tree *tree);
 

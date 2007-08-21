@@ -12,7 +12,7 @@
  * - Fix the labels of S and V
  * - Add a "Previous" color-rect below the "Current" color-rect
  */
- 
+
 /**
  * @defgroup Etk_Colorpicker Etk_Colorpicker
  * @brief The colorpicker is a widget that allows the user to select a color
@@ -48,10 +48,10 @@ struct Etk_Colorpicker
    /* private: */
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
-   
+
    Etk_Widget *main_table;
    Etk_Widget *picker_widget;
-   
+
    /* Square picker */
    Evas_Object *sp_object;
    Evas_Object *sp_image;
@@ -63,7 +63,7 @@ struct Etk_Colorpicker
    Etk_Bool sp_dragging;
    Etk_Bool sp_image_needs_update;
    Etk_Bool sp_cursor_needs_update;
-   
+
    /* Vertical picker */
    Evas_Object *vp_object;
    Evas_Object *vp_image;
@@ -73,27 +73,27 @@ struct Etk_Colorpicker
    Etk_Bool vp_dragging;
    Etk_Bool vp_image_needs_update;
    Etk_Bool vp_cursor_needs_update;
-   
+
    /* Component widgets */
    Etk_Widget *component_table;
    Etk_Widget *radios[6];
-   
+
    /* Sliders */
    Etk_Widget *sliders[6];
    Evas_Object *sliders_image[6];
    int sliders_res;
    Etk_Bool sliders_need_update;
-   
+
    /* Alpha slider */
    Etk_Widget *alpha_slider;
    Etk_Widget *alpha_label;
-   
+
    /* Current color objects */
    Etk_Widget *color_table;
    Etk_Widget *current_color_label;
    Etk_Widget *current_color_widget;
    Evas_Object *current_color_rect;
-   
+
    Etk_Bool ignore_value_changed;
    Etk_Bool use_alpha;
    Etk_Colorpicker_Mode mode;

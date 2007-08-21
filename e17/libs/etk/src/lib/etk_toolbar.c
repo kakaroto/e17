@@ -54,18 +54,18 @@ Etk_Type *etk_toolbar_type_get(void)
    {
       toolbar_type = etk_type_new("Etk_Toolbar", ETK_CONTAINER_TYPE, sizeof(Etk_Toolbar),
          ETK_CONSTRUCTOR(_etk_toolbar_constructor), NULL);
-      
+
       etk_type_property_add(toolbar_type, "orientation", ETK_TOOLBAR_ORIENTATION_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_HORIZ));
       etk_type_property_add(toolbar_type, "style", ETK_TOOLBAR_STYLE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_BOTH_VERT));
       etk_type_property_add(toolbar_type, "stock-size", ETK_TOOLBAR_STOCK_SIZE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_STOCK_MEDIUM));
-      
+
       toolbar_type->property_set = _etk_toolbar_property_set;
       toolbar_type->property_get = _etk_toolbar_property_get;
    }
-   
+
    return toolbar_type;
 }
 
@@ -124,10 +124,10 @@ void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, Etk_Toolbar_Orientation o
 {
    Evas_List *children, *l;
    Etk_Widget *prev_box;
-   
+
    if (!toolbar || toolbar->orientation == orientation)
       return;
-   
+
    toolbar->reorientating = ETK_TRUE;
    prev_box = toolbar->box;
    toolbar->orientation = orientation;
@@ -137,23 +137,23 @@ void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, Etk_Toolbar_Orientation o
       toolbar->box = etk_hbox_new(ETK_FALSE, 0);
    etk_widget_internal_set(toolbar->box, ETK_TRUE);
    etk_widget_show(toolbar->box);
-   
+
    etk_signal_connect("child-added", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
    etk_signal_connect("child-removed", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
-   
-   
+
+
    children = etk_container_children_get(ETK_CONTAINER(prev_box));
    for (l = children; l; l = l->next)
       etk_toolbar_append(toolbar, ETK_WIDGET(l->data), ETK_BOX_START);
    evas_list_free(children);
    etk_object_destroy(ETK_OBJECT(prev_box));
-   
+
    if (toolbar->orientation == ETK_TOOLBAR_VERT)
       etk_widget_theme_group_set(ETK_WIDGET(toolbar), "vtoolbar");
    else
       etk_widget_theme_group_set(ETK_WIDGET(toolbar), "htoolbar");
    etk_widget_parent_set(toolbar->box, ETK_WIDGET(toolbar));
-   
+
    toolbar->reorientating = ETK_FALSE;
    etk_object_notify(ETK_OBJECT(toolbar), "orientation");
 }
@@ -179,10 +179,10 @@ void etk_toolbar_style_set(Etk_Toolbar *toolbar, Etk_Toolbar_Style style)
 {
    Evas_List *children, *l;
    Etk_Button_Style button_style;
-   
+
    if (!toolbar || toolbar->style == style)
       return;
-   
+
    toolbar->style = style;
    switch (style)
    {
@@ -200,9 +200,9 @@ void etk_toolbar_style_set(Etk_Toolbar *toolbar, Etk_Toolbar_Style style)
          break;
       default:
          button_style = ETK_BUTTON_BOTH_VERT;
-         break;      
+         break;
    }
-   
+
    children = etk_container_children_get(ETK_CONTAINER(toolbar->box));
    for (l = children; l; l = l->next)
    {
@@ -210,7 +210,7 @@ void etk_toolbar_style_set(Etk_Toolbar *toolbar, Etk_Toolbar_Style style)
          etk_button_style_set(ETK_BUTTON(l->data), button_style);
    }
    evas_list_free(children);
-   
+
    etk_object_notify(ETK_OBJECT(toolbar), "style");
 }
 
@@ -246,7 +246,7 @@ void etk_toolbar_stock_size_set(Etk_Toolbar *toolbar, Etk_Stock_Size size)
 	 etk_button_stock_size_set(ETK_BUTTON(l->data), size);
    }
    evas_list_free(children);
-   
+
    etk_object_notify(ETK_OBJECT(toolbar), "stock-size");
 }
 
@@ -278,7 +278,7 @@ static void _etk_toolbar_constructor(Etk_Toolbar *toolbar)
    toolbar->orientation = ETK_TOOLBAR_HORIZ;
    toolbar->stock_size = ETK_STOCK_MEDIUM;
    toolbar->reorientating = ETK_FALSE;
-   
+
    ETK_WIDGET(toolbar)->size_request = _etk_toolbar_size_request;
    ETK_WIDGET(toolbar)->size_allocate = _etk_toolbar_size_allocate;
    ETK_CONTAINER(toolbar)->child_add = _etk_toolbar_child_add;
@@ -289,7 +289,7 @@ static void _etk_toolbar_constructor(Etk_Toolbar *toolbar)
    etk_widget_parent_set(toolbar->box, ETK_WIDGET(toolbar));
    etk_widget_internal_set(ETK_WIDGET(toolbar->box), ETK_TRUE);
    etk_widget_show(toolbar->box);
-   
+
    etk_signal_connect("child-added", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
    etk_signal_connect("child-removed", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
 }
@@ -301,7 +301,7 @@ static void _etk_toolbar_property_set(Etk_Object *object, int property_id, Etk_P
 
    if (!(toolbar = ETK_TOOLBAR(object)) || !value)
       return;
-   
+
    switch (property_id)
    {
       case ETK_TOOLBAR_ORIENTATION_PROPERTY:
@@ -312,7 +312,7 @@ static void _etk_toolbar_property_set(Etk_Object *object, int property_id, Etk_P
          break;
       case ETK_TOOLBAR_STOCK_SIZE_PROPERTY:
          etk_toolbar_stock_size_set(toolbar, etk_property_value_int_get(value));
-         break;      
+         break;
       default:
          break;
    }
@@ -333,7 +333,7 @@ static void _etk_toolbar_property_get(Etk_Object *object, int property_id, Etk_P
          break;
       case ETK_TOOLBAR_STYLE_PROPERTY:
          etk_property_value_int_set(value, toolbar->style);
-         break;      
+         break;
       case ETK_TOOLBAR_STOCK_SIZE_PROPERTY:
          etk_property_value_int_set(value, toolbar->stock_size);
          break;
@@ -346,7 +346,7 @@ static void _etk_toolbar_property_get(Etk_Object *object, int property_id, Etk_P
 static void _etk_toolbar_size_request(Etk_Widget *widget, Etk_Size *size)
 {
    Etk_Toolbar *toolbar;
-   
+
    if (!(toolbar = ETK_TOOLBAR(widget)) || !size)
       return;
    etk_widget_size_request(ETK_WIDGET(toolbar->box), size);
@@ -357,10 +357,10 @@ static void _etk_toolbar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry
 {
    Etk_Toolbar *toolbar;
    Etk_Size size;
-   
+
    if (!(toolbar = ETK_TOOLBAR(widget)))
       return;
-   
+
    etk_widget_size_request(toolbar->box, &size);
    geometry.w = ETK_MAX(geometry.w, size.w);
    etk_widget_size_allocate(ETK_WIDGET(toolbar->box), geometry);
@@ -370,7 +370,7 @@ static void _etk_toolbar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry
 void _etk_toolbar_child_add(Etk_Container *container, Etk_Widget *widget)
 {
    Etk_Toolbar *toolbar;
-   
+
    if (!(toolbar = ETK_TOOLBAR(container)) || !widget)
       return;
    etk_toolbar_append(toolbar, widget, ETK_BOX_START);
@@ -380,7 +380,7 @@ void _etk_toolbar_child_add(Etk_Container *container, Etk_Widget *widget)
 void _etk_toolbar_child_remove(Etk_Container *container, Etk_Widget *widget)
 {
    Etk_Toolbar *toolbar;
-   
+
    if (!(toolbar = ETK_TOOLBAR(container)) || !widget)
       return;
    etk_container_remove(widget);
@@ -390,7 +390,7 @@ void _etk_toolbar_child_remove(Etk_Container *container, Etk_Widget *widget)
 Evas_List *_etk_toolbar_children_get(Etk_Container *container)
 {
    Etk_Toolbar *toolbar;
-   
+
    if (!(toolbar = ETK_TOOLBAR(container)))
       return NULL;
    return etk_container_children_get(ETK_CONTAINER(toolbar->box));
@@ -406,15 +406,15 @@ Evas_List *_etk_toolbar_children_get(Etk_Container *container)
 static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data)
 {
    Etk_Toolbar *toolbar;
-   
+
    if (!(toolbar = ETK_TOOLBAR(data)) || !child)
       return;
-   
+
    /* Sets the style and the stock size if the new child is a tool-item */
    if (ETK_IS_TOOL_ITEM(child))
    {
       Etk_Button_Style button_style;
-      
+
       switch (toolbar->style)
       {
          case ETK_TOOLBAR_ICON:
@@ -445,22 +445,22 @@ static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, v
       Etk_Box_Fill_Policy policy;
       Etk_Box_Group group;
       int pos, padding;
-      
+
       visible = etk_widget_is_visible(child);
       etk_box_child_position_get(ETK_BOX(toolbar->box), child, &group, &pos);
       etk_box_child_packing_get(ETK_BOX(toolbar->box), child, &policy, &padding);
-      
+
       etk_object_destroy(ETK_OBJECT(child));
       if (toolbar->orientation == ETK_TOOLBAR_HORIZ)
          child = etk_vseparator_new();
       else
          child = etk_hseparator_new();
-      
+
       etk_box_insert_at(ETK_BOX(toolbar->box), child, group, pos, policy, padding);
       if (visible)
          etk_widget_show(child);
    }
-   
+
    if (etk_theme_group_exists(etk_widget_theme_file_get(ETK_WIDGET(toolbar)),
       etk_widget_theme_group_get(child), etk_widget_theme_group_get(ETK_WIDGET(toolbar))))
    {
@@ -473,10 +473,10 @@ static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, v
 static void _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
 {
    Etk_Toolbar *toolbar;
-   
+
    if (!(toolbar = ETK_TOOLBAR(data)) || !child)
       return;
-   
+
    if (etk_widget_theme_parent_get(child) == ETK_WIDGET(toolbar))
       etk_widget_theme_parent_set(child, NULL);
    etk_signal_emit_by_name("child-removed", ETK_OBJECT(toolbar), NULL, child);

@@ -36,7 +36,7 @@
 
 
 /** @brief The two groups where the children can be packed: the start-group and the end-group */
-typedef enum 
+typedef enum
 {
    ETK_BOX_START,    /**< The start-group of children: the children in this group are displayed
                       * at the start (left or top) of the box */
@@ -67,7 +67,7 @@ struct Etk_Box_Cell
    /* private: */
    Etk_Box_Cell *prev;
    Etk_Box_Cell *next;
-   
+
    Etk_Widget *child;
    Evas_List *focus_node;
    Etk_Box_Group group;

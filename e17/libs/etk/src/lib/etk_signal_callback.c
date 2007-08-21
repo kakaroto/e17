@@ -101,7 +101,7 @@ void etk_signal_callback_call_valist(Etk_Signal_Callback *callback, Etk_Object *
    else
    {
       va_list args2;
-      
+
       va_copy(args2, args);
       marshaller(callback->callback, object, callback->data, return_value, args2);
       va_end(args2);

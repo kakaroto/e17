@@ -50,20 +50,20 @@ Etk_Type *etk_embed_type_get(void)
 Etk_Widget *etk_embed_new(Evas *evas)
 {
    Etk_Widget *embed;
-   
+
    if (!evas)
       return NULL;
-   
+
    embed = etk_widget_new(ETK_EMBED_TYPE, NULL);
    ETK_TOPLEVEL(embed)->evas = evas;
    ETK_TOPLEVEL(embed)->evas_position_get = _etk_embed_evas_position_get;
    ETK_TOPLEVEL(embed)->screen_position_get = _etk_embed_screen_position_get;
    ETK_TOPLEVEL(embed)->size_get = _etk_embed_size_get;
    ETK_TOPLEVEL(embed)->pointer_set = _etk_embed_pointer_set;
-   
+
    /* TODO: FIXME: We need that to force the widget to realize... */
    etk_object_properties_set(ETK_OBJECT(embed), "theme-group", "", NULL);
-   
+
    /* If the widget has failed to realize, we destroy it, and we return NULL */
    if (!(ETK_WIDGET(embed)->smart_object))
    {
@@ -71,10 +71,10 @@ Etk_Widget *etk_embed_new(Evas *evas)
       etk_object_destroy(ETK_OBJECT(embed));
       return NULL;
    }
-   
+
    /* Force the children of the embed to be realized */
    etk_object_notify(ETK_OBJECT(embed), "evas");
-   
+
    return embed;
 }
 
@@ -138,7 +138,7 @@ static void _etk_embed_constructor(Etk_Embed *embed)
 {
    if (!embed)
       return;
-   
+
    embed->position_get = NULL;
    embed->position_data = NULL;
    embed->pointer_set = NULL;
@@ -162,10 +162,10 @@ static void _etk_embed_screen_position_get(Etk_Toplevel *toplevel, int *x, int *
 {
    Etk_Embed *embed;
    int win_x, win_y;
-   
+
    if (!(embed = ETK_EMBED(toplevel)))
       return;
-   
+
    etk_widget_geometry_get(ETK_WIDGET(embed), x, y, NULL, NULL);
    if (embed->position_get)
    {
@@ -187,10 +187,10 @@ static void _etk_embed_size_get(Etk_Toplevel *toplevel, int *w, int *h)
 static void _etk_embed_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type)
 {
    Etk_Embed *embed;
-   
+
    if (!(embed = ETK_EMBED(toplevel)))
       return;
-   
+
    if (embed->pointer_set)
       embed->pointer_set(embed->pointer_data, pointer_type);
 }
@@ -207,7 +207,7 @@ static void _etk_embed_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type poin
  * @addtogroup Etk_Embed
  *
  * @image html widgets/embed.png
- * 
+ *
  * The embed widget allows you to add Etk widgets in your Evas programs, without having to create an Etk_Window. @n
  * The embed widget is created with etk_embed_new() which only requires the Evas where to create the embed object. You
  * can then get the corresponding Evas object with etk_embed_object_get(). This object can be manipulated as any other
@@ -241,7 +241,7 @@ static void _etk_embed_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type poin
  *    evas = ecore_evas_get(ee);
  *    embed = etk_embed_new(evas);
  *    etk_embed_position_method_set(ETK_EMBED(embed, window_position_get, ee);
- * 
+ *
  *    //Pack a colorpicker into the embed widget
  *    colorpicker = etk_colorpicker_new();
  *    etk_container_add(ETK_CONTAINER(embed), colorpicker);
@@ -256,7 +256,7 @@ static void _etk_embed_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type poin
  *    //etk_widget_show_all(embed) shows automatically the embed object
  * }
  * @endcode @n
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

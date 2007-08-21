@@ -42,7 +42,7 @@ struct Etk_Image
    Etk_Widget widget;
 
    Evas_Object *object;
-   
+
    Etk_Image_Source source;
    union
    {
@@ -51,19 +51,19 @@ struct Etk_Image
          char *filename;
          char *key;
       } file;
-      
+
       struct
       {
          char *filename;
          char *group;
       } edje;
-      
+
       struct
       {
          Etk_Stock_Id id;
          Etk_Stock_Size size;
       } stock;
-      
+
       struct
       {
          void *pixels;
@@ -71,7 +71,7 @@ struct Etk_Image
          Etk_Bool copied;
       } data;
    } info;
-   
+
    double aspect_ratio;
    Etk_Bool keep_aspect;
 };

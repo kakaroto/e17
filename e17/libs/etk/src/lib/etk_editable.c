@@ -29,10 +29,10 @@ typedef struct Etk_Editable_Smart_Data
    Etk_Bool selection_visible;
    Etk_Bool password_mode;
    Etk_Bool disabled;
-   
+
    Etk_String *text;
    int unicode_length;
-   
+
    float align;
    int cursor_width;
    Etk_Bool selection_on_fg;
@@ -97,7 +97,7 @@ Evas_Object *etk_editable_add(Evas *evas)
       _etk_editable_smart = evas_smart_class_new(&sc);
       _etk_editable_smart_use = 0;
    }
-   
+
    return evas_object_smart_add(evas, _etk_editable_smart);
 }
 
@@ -112,25 +112,25 @@ void etk_editable_theme_set(Evas_Object *editable, const char *file, const char 
 {
    Etk_Editable_Smart_Data *sd;
    const char *data;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
-   
+
    etk_theme_edje_object_set(sd->text_object, NULL, "text", group);
    sd->average_char_w = -1;
    sd->average_char_h = -1;
-   
+
    etk_theme_edje_object_set(sd->cursor_object, NULL, "cursor", group);
    edje_object_size_min_get(sd->cursor_object, &sd->cursor_width, NULL);
    sd->cursor_width = ETK_MAX(sd->cursor_width, 1);
-   
+
    etk_theme_edje_object_set(sd->selection_object, NULL, "selection", group);
    data = edje_object_data_get(sd->selection_object, "on_foreground");
    if (data && strcmp(data, "1") == 0)
       evas_object_stack_above(sd->selection_object, sd->text_object);
    else
       evas_object_stack_below(sd->selection_object, sd->text_object);
-   
+
    _etk_editable_text_update(editable);
    _etk_editable_cursor_update(editable);
 }
@@ -144,10 +144,10 @@ void etk_editable_align_set(Evas_Object *editable, float align)
 {
    Etk_Editable_Smart_Data *sd;
    int w, h;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
-   
+
    sd->align = ETK_CLAMP(align, 0.0, 1.0);
    evas_object_geometry_get(editable, NULL, NULL, &w, &h);
    _etk_editable_text_position_update(editable, w, h);
@@ -161,7 +161,7 @@ void etk_editable_align_set(Evas_Object *editable, float align)
 float etk_editable_align_get(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return 0.0;
    return sd->align;
@@ -176,12 +176,12 @@ float etk_editable_align_get(Evas_Object *editable)
 void etk_editable_password_mode_set(Evas_Object *editable, Etk_Bool password_mode)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    if (sd->password_mode == password_mode)
       return;
-   
+
    sd->password_mode = password_mode;
    _etk_editable_text_update(editable);
    _etk_editable_cursor_update(editable);
@@ -195,7 +195,7 @@ void etk_editable_password_mode_set(Evas_Object *editable, Etk_Bool password_mod
 Etk_Bool etk_editable_password_mode_get(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return ETK_FALSE;
    return sd->password_mode;
@@ -210,12 +210,12 @@ Etk_Bool etk_editable_password_mode_get(Evas_Object *editable)
 void etk_editable_disabled_set(Evas_Object *editable, Etk_Bool disabled)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    if (sd->disabled == disabled)
       return;
-   
+
    if (disabled)
       edje_object_signal_emit(sd->text_object, "etk,state,disabled", "etk");
    else
@@ -231,7 +231,7 @@ void etk_editable_disabled_set(Evas_Object *editable, Etk_Bool disabled)
 Etk_Bool etk_editable_disabled_get(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return ETK_FALSE;
    return sd->disabled;
@@ -245,14 +245,14 @@ Etk_Bool etk_editable_disabled_get(Evas_Object *editable)
 void etk_editable_text_set(Evas_Object *editable, const char *text)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
-   
+
    etk_string_clear(sd->text);
    sd->unicode_length = 0;
    _etk_editable_text_insert(editable, 0, text);
-   
+
    sd->cursor_pos = sd->unicode_length;
    sd->selection_pos = sd->unicode_length;
    _etk_editable_cursor_update(editable);
@@ -266,7 +266,7 @@ void etk_editable_text_set(Evas_Object *editable, const char *text)
 const char *etk_editable_text_get(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return NULL;
    return etk_string_get(sd->text);
@@ -286,17 +286,17 @@ char *etk_editable_text_range_get(Evas_Object *editable, int start, int end)
    char *range;
    int start_id, end_id;
    int i;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return NULL;
    if (!(text = etk_string_get(sd->text)))
       return NULL;
-   
+
    start = ETK_CLAMP(start, 0, sd->unicode_length);
    end = ETK_CLAMP(end, 0, sd->unicode_length);
    if (end <= start)
       return NULL;
-   
+
    start_id = 0;
    end_id = 0;
    for (i = 0; i < end; i++)
@@ -305,14 +305,14 @@ char *etk_editable_text_range_get(Evas_Object *editable, int start, int end)
       if (i < start)
          start_id = end_id;
    }
-   
+
    if (end_id <= start_id)
       return NULL;
-   
+
    range = malloc(end_id - start_id + 1);
    strncpy(range, &text[start_id], end_id - start_id);
    range[end_id - start_id] = '\0';
-   
+
    return range;
 }
 
@@ -325,7 +325,7 @@ char *etk_editable_text_range_get(Evas_Object *editable, int start, int end)
 int etk_editable_text_length_get(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return 0;
    return sd->unicode_length;
@@ -343,19 +343,19 @@ Etk_Bool etk_editable_insert(Evas_Object *editable, int pos, const char *text)
    Etk_Editable_Smart_Data *sd;
    int unicode_length;
    int w, h;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return ETK_FALSE;
-   
+
    unicode_length = _etk_editable_text_insert(editable, pos, text);
    if (unicode_length <= 0)
       return ETK_FALSE;
-   
+
    if (sd->cursor_pos >= pos)
       etk_editable_cursor_pos_set(editable, sd->cursor_pos + unicode_length);
    if (sd->selection_pos >= pos)
       etk_editable_selection_pos_set(editable, sd->selection_pos + unicode_length);
-   
+
    evas_object_geometry_get(editable, NULL, NULL, &w, &h);
    _etk_editable_text_position_update(editable, w, h);
    return ETK_TRUE;
@@ -373,24 +373,24 @@ Etk_Bool etk_editable_delete(Evas_Object *editable, int start, int end)
    Etk_Editable_Smart_Data *sd;
    int unicode_length;
    int w, h;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return ETK_FALSE;
-   
+
    unicode_length = _etk_editable_text_delete(editable, start, end);
    if (unicode_length <= 0)
       return ETK_FALSE;
-   
+
    if (sd->cursor_pos > end)
       etk_editable_cursor_pos_set(editable, sd->cursor_pos - unicode_length);
    else if (sd->cursor_pos > start)
       etk_editable_cursor_pos_set(editable, start);
-   
+
    if (sd->selection_pos > end)
       etk_editable_selection_pos_set(editable, sd->selection_pos - unicode_length);
    else if (sd->selection_pos > start)
       etk_editable_selection_pos_set(editable, start);
-   
+
    evas_object_geometry_get(editable, NULL, NULL, &w, &h);
    _etk_editable_text_position_update(editable, w, h);
    return ETK_TRUE;
@@ -404,14 +404,14 @@ Etk_Bool etk_editable_delete(Evas_Object *editable, int start, int end)
 void etk_editable_cursor_pos_set(Evas_Object *editable, int pos)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
-   
+
    pos = ETK_CLAMP(pos, 0, sd->unicode_length);
    if (sd->cursor_pos == pos)
       return;
-   
+
    sd->cursor_pos = pos;
    _etk_editable_cursor_update(editable);
 }
@@ -424,7 +424,7 @@ void etk_editable_cursor_pos_set(Evas_Object *editable, int pos)
 int etk_editable_cursor_pos_get(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return 0;
    return sd->cursor_pos;
@@ -437,7 +437,7 @@ int etk_editable_cursor_pos_get(Evas_Object *editable)
 void etk_editable_cursor_move_to_start(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    etk_editable_cursor_pos_set(editable, 0);
@@ -450,7 +450,7 @@ void etk_editable_cursor_move_to_start(Evas_Object *editable)
 void etk_editable_cursor_move_to_end(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    etk_editable_cursor_pos_set(editable, sd->unicode_length);
@@ -463,7 +463,7 @@ void etk_editable_cursor_move_to_end(Evas_Object *editable)
 void etk_editable_cursor_move_left(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    etk_editable_cursor_pos_set(editable, sd->cursor_pos - 1);
@@ -476,7 +476,7 @@ void etk_editable_cursor_move_left(Evas_Object *editable)
 void etk_editable_cursor_move_right(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    etk_editable_cursor_pos_set(editable, sd->cursor_pos + 1);
@@ -489,12 +489,12 @@ void etk_editable_cursor_move_right(Evas_Object *editable)
 void etk_editable_cursor_show(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    if (sd->cursor_visible)
       return;
-   
+
    sd->cursor_visible = ETK_TRUE;
    if (evas_object_visible_get(editable))
    {
@@ -510,12 +510,12 @@ void etk_editable_cursor_show(Evas_Object *editable)
 void etk_editable_cursor_hide(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    if (!sd->cursor_visible)
       return;
-   
+
    sd->cursor_visible = ETK_FALSE;
    evas_object_hide(sd->cursor_object);
 }
@@ -528,14 +528,14 @@ void etk_editable_cursor_hide(Evas_Object *editable)
 void etk_editable_selection_pos_set(Evas_Object *editable, int pos)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
-   
+
    pos = ETK_CLAMP(pos, 0, sd->unicode_length);
    if (sd->selection_pos == pos)
       return;
-   
+
    sd->selection_pos = pos;
    _etk_editable_selection_update(editable);
 }
@@ -548,7 +548,7 @@ void etk_editable_selection_pos_set(Evas_Object *editable, int pos)
 int etk_editable_selection_pos_get(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return 0;
    return sd->selection_pos;
@@ -561,7 +561,7 @@ int etk_editable_selection_pos_get(Evas_Object *editable)
 void etk_editable_selection_move_to_start(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    etk_editable_selection_pos_set(editable, 0);
@@ -574,7 +574,7 @@ void etk_editable_selection_move_to_start(Evas_Object *editable)
 void etk_editable_selection_move_to_end(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    etk_editable_selection_pos_set(editable, sd->unicode_length);
@@ -587,7 +587,7 @@ void etk_editable_selection_move_to_end(Evas_Object *editable)
 void etk_editable_selection_move_left(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    etk_editable_selection_pos_set(editable, sd->selection_pos - 1);
@@ -600,7 +600,7 @@ void etk_editable_selection_move_left(Evas_Object *editable)
 void etk_editable_selection_move_right(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    etk_editable_selection_pos_set(editable, sd->selection_pos + 1);
@@ -626,7 +626,7 @@ void etk_editable_select_all(Evas_Object *editable)
 void etk_editable_unselect_all(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    etk_editable_selection_pos_set(editable, sd->cursor_pos);
@@ -639,12 +639,12 @@ void etk_editable_unselect_all(Evas_Object *editable)
 void etk_editable_selection_show(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    if (sd->selection_visible)
       return;
-   
+
    sd->selection_visible = ETK_TRUE;
    if (evas_object_visible_get(editable) && sd->cursor_pos != sd->selection_pos)
       evas_object_show(sd->selection_object);
@@ -657,12 +657,12 @@ void etk_editable_selection_show(Evas_Object *editable)
 void etk_editable_selection_hide(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    if (!sd->selection_visible)
       return;
-   
+
    sd->selection_visible = ETK_FALSE;
    evas_object_hide(sd->selection_object);
 }
@@ -685,17 +685,17 @@ int etk_editable_pos_get_from_coords(Evas_Object *editable, int x, int y)
    int canvas_x, canvas_y;
    int index, pos, i, j;
    const char *text;
-   
+
    if ((!editable) || (!(sd = evas_object_smart_data_get(editable))))
       return 0;
    if (!(text_obj = edje_object_part_object_get(sd->text_object, "etk.text.text")))
       return 0;
-   
+
    evas_object_geometry_get(editable, &ox, &oy, NULL, NULL);
    evas_object_geometry_get(text_obj, &tx, &ty, &tw, &th);
    canvas_x = ox + x;
    canvas_y = oy + y;
-   
+
    if (((canvas_y + SELECTION_MARGIN) < ty) || (canvas_x < tx))
       pos = 0;
    else if (((canvas_y - SELECTION_MARGIN) > (ty + th)) || (canvas_x > (tx + tw)))
@@ -708,7 +708,7 @@ int etk_editable_pos_get_from_coords(Evas_Object *editable, int x, int y)
       {
          if ((canvas_x - tx) > (cx + (cw / 2)))
             index++;
-         
+
          i = 0;
          j = -1;
          pos = 0;
@@ -718,14 +718,14 @@ int etk_editable_pos_get_from_coords(Evas_Object *editable, int x, int y)
             j = i;
             i = evas_string_char_next_get(text, i, NULL);
          }
-         
+
          if (pos > sd->unicode_length)
             pos = sd->unicode_length;
       }
       else
          pos = 0;
    }
-   
+
    return pos;
 }
 
@@ -749,20 +749,20 @@ void etk_editable_char_size_get(Evas_Object *editable, int *w, int *h)
 
    if (w)   *w = 0;
    if (h)   *h = 0;
-   
+
    if (!editable || !(evas = evas_object_evas_get(editable)))
       return;
    if (!(sd = evas_object_smart_data_get(editable)))
       return;
    if (!(text_obj = edje_object_part_object_get(sd->text_object, "etk.text.text")))
       return;
-   
+
    if (sd->average_char_w <= 0 || sd->average_char_h <= 0)
    {
       font_source = evas_object_text_font_source_get(text_obj);
       evas_object_text_font_get(text_obj, &font, &font_size);
       style = evas_object_text_style_get(text_obj);
-      
+
       text_obj = evas_object_text_add(evas);
       evas_object_text_font_source_set(text_obj, font_source);
       evas_object_text_font_set(text_obj, font, font_size);
@@ -770,11 +770,11 @@ void etk_editable_char_size_get(Evas_Object *editable, int *w, int *h)
       evas_object_text_text_set(text_obj, text);
       evas_object_geometry_get(text_obj, NULL, NULL, &tw, &th);
       evas_object_del(text_obj);
-      
+
       sd->average_char_w = tw / strlen(text);
       sd->average_char_h = th;
    }
-   
+
    if (w)   *w = sd->average_char_w;
    if (h)   *h = sd->average_char_h;
 }
@@ -794,7 +794,7 @@ static int _etk_editable_text_insert(Evas_Object *editable, int pos, const char 
    int char_length, unicode_length;
    int index;
    int i;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return 0;
    if (!text || *text == '\0')
@@ -802,9 +802,9 @@ static int _etk_editable_text_insert(Evas_Object *editable, int pos, const char 
       _etk_editable_text_update(editable);
       return 0;
    }
-   
+
    pos = ETK_CLAMP(pos, 0, sd->unicode_length);
-   
+
    char_length = -1;
    unicode_length = -1;
    for (i = 0; i != char_length; i = evas_string_char_next_get(text, i, NULL))
@@ -812,18 +812,18 @@ static int _etk_editable_text_insert(Evas_Object *editable, int pos, const char 
       char_length = i;
       unicode_length++;
    }
-   
+
    index = 0;
    if ((cur_text = etk_string_get(sd->text)))
    {
       for (i = 0; i < pos; i++)
          index = evas_string_char_next_get(cur_text, index, NULL);
    }
-   
+
    etk_string_insert_sized(sd->text, index, text, char_length);
    sd->unicode_length += unicode_length;
    _etk_editable_text_update(editable);
-   
+
    return unicode_length;
 }
 
@@ -835,17 +835,17 @@ static int _etk_editable_text_delete(Evas_Object *editable, int start, int end)
    const char *cur_text;
    int start_id, end_id;
    int i;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return 0;
    if (!(cur_text = etk_string_get(sd->text)))
       return 0;
-   
+
    start = ETK_CLAMP(start, 0, sd->unicode_length);
    end = ETK_CLAMP(end, 0, sd->unicode_length);
    if (end <= start)
       return 0;
-   
+
    start_id = 0;
    end_id = 0;
    for (i = 0; i < end; i++)
@@ -854,14 +854,14 @@ static int _etk_editable_text_delete(Evas_Object *editable, int start, int end)
       if (i < start)
          start_id = end_id;
    }
-   
+
    if (end_id <= start_id)
       return 0;
-   
+
    etk_string_delete(sd->text, start_id, end_id - start_id);
    sd->unicode_length -= (end - start);
    _etk_editable_text_update(editable);
-   
+
    return end - start;
 }
 
@@ -874,24 +874,24 @@ static void _etk_editable_cursor_update(Evas_Object *editable)
    int tx, ty;
    int cx, cy, ch;
    int w, h;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    if (!(text_obj = edje_object_part_object_get(sd->text_object, "etk.text.text")))
       return;
-   
+
    evas_object_geometry_get(text_obj, &tx, &ty, NULL, NULL);
    _etk_editable_char_geometry_get_from_pos(editable, sd->cursor_pos, &cx, &cy, NULL, &ch);
-   
+
    evas_object_move(sd->cursor_object, tx + cx, ty + cy - 1);
    evas_object_resize(sd->cursor_object, sd->cursor_width, ch);
-   
+
    if (sd->cursor_visible && evas_object_visible_get(editable))
    {
       evas_object_show(sd->cursor_object);
       edje_object_signal_emit(sd->cursor_object, "etk,action,show,cursor", "etk");
    }
-   
+
    evas_object_geometry_get(editable, NULL, NULL, &w, &h);
    _etk_editable_text_position_update(editable, w, h);
    _etk_editable_selection_update(editable);
@@ -906,28 +906,28 @@ static void _etk_editable_selection_update(Evas_Object *editable)
    int cx, cy;
    int sx, sy, sw, sh;
    int start_pos, end_pos;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
    if (!(text_obj = edje_object_part_object_get(sd->text_object, "etk.text.text")))
       return;
-   
+
    if (sd->cursor_pos == sd->selection_pos || !sd->selection_visible)
       evas_object_hide(sd->selection_object);
    else
    {
       evas_object_geometry_get(text_obj, &tx, &ty, NULL, NULL);
-      
+
       start_pos = ETK_MIN(sd->cursor_pos, sd->selection_pos);
       end_pos = ETK_MAX(sd->cursor_pos, sd->selection_pos);
-      
+
       _etk_editable_char_geometry_get_from_pos(editable, start_pos, &cx, &cy, NULL, NULL);
       sx = tx + cx;
       sy = ty + cy;
-      
+
       _etk_editable_char_geometry_get_from_pos(editable, end_pos, &cx, NULL, NULL, &sh);
       sw = tx + cx - sx;
-      
+
       evas_object_move(sd->selection_object, sx, sy - 1);
       evas_object_resize(sd->selection_object, sw, sh);
       evas_object_show(sd->selection_object);
@@ -941,14 +941,14 @@ static void _etk_editable_text_update(Evas_Object *editable)
 {
    Etk_Editable_Smart_Data *sd;
    int minw, minh;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
-   
+
    if (sd->password_mode)
    {
       char *text;
-      
+
       text = malloc(sd->unicode_length + 1);
       memset(text, '*', sd->unicode_length);
       text[sd->unicode_length] = '\0';
@@ -957,7 +957,7 @@ static void _etk_editable_text_update(Evas_Object *editable)
    }
    else
       edje_object_part_text_set(sd->text_object, "etk.text.text", etk_string_get(sd->text));
-   
+
    edje_object_size_min_calc(sd->text_object, &minw, &minh);
    evas_object_resize(sd->text_object, minw, minh);
 }
@@ -972,22 +972,22 @@ static void _etk_editable_text_position_update(Evas_Object *editable, int ow, in
    int cx, cy, cw;
    int sx, sy;
    int offset_x = 0;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return;
-   
+
    evas_object_geometry_get(editable, &ox, &oy, NULL, NULL);
    evas_object_geometry_get(sd->text_object, &tx, &ty, &tw, &th);
    evas_object_geometry_get(sd->cursor_object, &cx, &cy, &cw, NULL);
    evas_object_geometry_get(sd->selection_object, &sx, &sy, NULL, NULL);
-   
+
    if (tw <= ow)
       offset_x = ox - tx;
    else if (cx < (ox + CURSOR_MARGIN))
       offset_x = ox + CURSOR_MARGIN - cx;
    else if ((cx + cw + CURSOR_MARGIN) > (ox + ow))
       offset_x = (ox + ow) - (cx + cw + CURSOR_MARGIN);
-     
+
    if (tw > ow)
    {
       if ((tx + offset_x) > ox)
@@ -997,7 +997,7 @@ static void _etk_editable_text_position_update(Evas_Object *editable, int ow, in
    }
    else
       offset_x += (ow - tw) * sd->align;
-   
+
    new_ty = oy + ((oh - th) / 2) + 1;
    evas_object_move(sd->text_object, tx + offset_x, new_ty);
    evas_object_move(sd->cursor_object, cx + offset_x, cy + (new_ty - ty));
@@ -1014,17 +1014,17 @@ static int _etk_editable_char_geometry_get_from_pos(Evas_Object *editable, int p
    int index, i;
    int last_pos;
    int ret;
-   
+
    if (cx)   *cx = 0;
    if (cy)   *cy = 0;
    if (cw)   *cw = 0;
    if (ch)   *ch = 0;
-   
+
    if (!editable || !(sd = evas_object_smart_data_get(editable)))
       return 0;
    if (!(text_obj = edje_object_part_object_get(sd->text_object, "etk.text.text")))
       return 0;
-   
+
    text = evas_object_text_text_get(text_obj);
    if (!text || sd->unicode_length <= 0 || pos <= 0)
    {
@@ -1042,11 +1042,11 @@ static int _etk_editable_char_geometry_get_from_pos(Evas_Object *editable, int p
       }
       else
          last_pos = 0;
-      
+
       index = 0;
       for (i = 0; i < pos; i++)
          index = evas_string_char_next_get(text, index, NULL);
-      
+
       ret = evas_object_text_char_pos_get(text_obj, index, &x, cy, &w, ch);
       if (cx)   *cx = x - 1 + (last_pos ? w : 0);
       if (cw)   *cw = last_pos ? 1 : w;
@@ -1067,26 +1067,26 @@ static void _etk_editable_smart_add(Evas_Object *object)
    Evas *evas;
    Etk_Editable_Smart_Data *sd;
    int ox, oy;
-   
+
    if (!object || !(evas = evas_object_evas_get(object)))
       return;
 
    sd = malloc(sizeof(Etk_Editable_Smart_Data));
    if (!sd)
       return;
-   
+
    _etk_editable_smart_use++;
    evas_object_smart_data_set(object, sd);
    evas_object_geometry_get(object, &ox, &oy, NULL, NULL);
-   
+
    sd->text = etk_string_new(NULL);
    sd->unicode_length = 0;
-   
+
    sd->cursor_width = 1;
    sd->selection_on_fg = ETK_FALSE;
    sd->average_char_w = -1;
    sd->average_char_h = -1;
-   
+
    sd->align = 0.0;
    sd->cursor_pos = 0;
    sd->cursor_visible = ETK_TRUE;
@@ -1098,31 +1098,31 @@ static void _etk_editable_smart_add(Evas_Object *object)
    sd->clip_object = evas_object_rectangle_add(evas);
    evas_object_move(sd->clip_object, ox, oy);
    evas_object_smart_member_add(sd->clip_object, object);
-   
+
    sd->event_object = evas_object_rectangle_add(evas);
    evas_object_color_set(sd->event_object, 255, 255, 255, 0);
    evas_object_clip_set(sd->event_object, sd->clip_object);
    evas_object_move(sd->event_object, ox, oy);
    evas_object_smart_member_add(sd->event_object, object);
-   
+
    sd->text_object = edje_object_add(evas);
    evas_object_pass_events_set(sd->text_object, 1);
    evas_object_clip_set(sd->text_object, sd->clip_object);
    evas_object_move(sd->text_object, ox, oy);
    evas_object_smart_member_add(sd->text_object, object);
-   
+
    sd->selection_object = edje_object_add(evas);
    evas_object_pass_events_set(sd->selection_object, 1);
    evas_object_clip_set(sd->selection_object, sd->clip_object);
    evas_object_move(sd->selection_object, ox, oy);
    evas_object_smart_member_add(sd->selection_object, object);
-   
+
    sd->cursor_object = edje_object_add(evas);
    evas_object_pass_events_set(sd->cursor_object, 1);
    evas_object_clip_set(sd->cursor_object, sd->clip_object);
    evas_object_move(sd->cursor_object, ox, oy);
    evas_object_smart_member_add(sd->cursor_object, object);
-   
+
    _etk_editable_cursor_update(object);
 }
 
@@ -1130,19 +1130,19 @@ static void _etk_editable_smart_add(Evas_Object *object)
 static void _etk_editable_smart_del(Evas_Object *object)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!object || !(sd = evas_object_smart_data_get(object)))
       return;
-   
+
    evas_object_del(sd->clip_object);
    evas_object_del(sd->event_object);
    evas_object_del(sd->text_object);
    evas_object_del(sd->cursor_object);
    evas_object_del(sd->selection_object);
-   
+
    etk_object_destroy(ETK_OBJECT(sd->text));
    free(sd);
-   
+
    _etk_editable_smart_use--;
    if (_etk_editable_smart_use <= 0)
    {
@@ -1157,21 +1157,21 @@ static void _etk_editable_smart_move(Evas_Object *object, int x, int y)
    Etk_Editable_Smart_Data *sd;
    int prev_x, prev_y;
    int ox, oy;
-   
+
    if (!object || !(sd = evas_object_smart_data_get(object)))
       return;
-   
+
    evas_object_geometry_get(object, &prev_x, &prev_y, NULL, NULL);
-   
+
    evas_object_move(sd->clip_object, x, y);
    evas_object_move(sd->event_object, x, y);
-   
+
    evas_object_geometry_get(sd->text_object, &ox, &oy, NULL, NULL);
    evas_object_move(sd->text_object, ox + (x - prev_x), oy + (y - prev_y));
-   
+
    evas_object_geometry_get(sd->cursor_object, &ox, &oy, NULL, NULL);
    evas_object_move(sd->cursor_object, ox + (x - prev_x), oy + (y - prev_y));
-   
+
    evas_object_geometry_get(sd->selection_object, &ox, &oy, NULL, NULL);
    evas_object_move(sd->selection_object, ox + (x - prev_x), oy + (y - prev_y));
 }
@@ -1180,10 +1180,10 @@ static void _etk_editable_smart_move(Evas_Object *object, int x, int y)
 static void _etk_editable_smart_resize(Evas_Object *object, int w, int h)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!object || !(sd = evas_object_smart_data_get(object)))
       return;
-   
+
    evas_object_resize(sd->clip_object, w, h);
    evas_object_resize(sd->event_object, w, h);
    _etk_editable_text_position_update(object, w, h);
@@ -1193,20 +1193,20 @@ static void _etk_editable_smart_resize(Evas_Object *object, int w, int h)
 static void _etk_editable_smart_show(Evas_Object *object)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!object || !(sd = evas_object_smart_data_get(object)))
       return;
-   
+
    evas_object_show(sd->clip_object);
    evas_object_show(sd->event_object);
    evas_object_show(sd->text_object);
-   
+
    if (sd->cursor_visible)
    {
       evas_object_show(sd->cursor_object);
       edje_object_signal_emit(sd->cursor_object, "etk,action,show,cursor", "etk");
    }
-   
+
    if (sd->selection_visible && sd->cursor_pos != sd->selection_pos)
       evas_object_show(sd->selection_object);
 }
@@ -1215,10 +1215,10 @@ static void _etk_editable_smart_show(Evas_Object *object)
 static void _etk_editable_smart_hide(Evas_Object *object)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!object || !(sd = evas_object_smart_data_get(object)))
       return;
-   
+
    evas_object_hide(sd->clip_object);
    evas_object_hide(sd->event_object);
    evas_object_hide(sd->text_object);
@@ -1230,7 +1230,7 @@ static void _etk_editable_smart_hide(Evas_Object *object)
 static void _etk_editable_color_set(Evas_Object *object, int r, int g, int b, int a)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!object || !(sd = evas_object_smart_data_get(object)))
       return;
    evas_object_color_set(sd->clip_object, r, g, b, a);
@@ -1240,7 +1240,7 @@ static void _etk_editable_color_set(Evas_Object *object, int r, int g, int b, in
 static void _etk_editable_clip_set(Evas_Object *object, Evas_Object *clip)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!object || !(sd = evas_object_smart_data_get(object)))
       return;
    evas_object_clip_set(sd->clip_object, clip);
@@ -1250,7 +1250,7 @@ static void _etk_editable_clip_set(Evas_Object *object, Evas_Object *clip)
 static void _etk_editable_clip_unset(Evas_Object *object)
 {
    Etk_Editable_Smart_Data *sd;
-   
+
    if (!object || !(sd = evas_object_smart_data_get(object)))
       return;
    evas_object_clip_unset(sd->clip_object);

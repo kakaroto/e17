@@ -90,7 +90,7 @@ void etk_popup_window_parent_set(Etk_Popup_Window *popup_window, Etk_Popup_Windo
 {
    if (!popup_window)
       return;
-   
+
    if (popup_window->parent)
    {
       popup_window->parent->children = evas_list_remove(popup_window->parent->children, popup_window);
@@ -100,7 +100,7 @@ void etk_popup_window_parent_set(Etk_Popup_Window *popup_window, Etk_Popup_Windo
       if (popup_window->popped_up)
          _etk_popup_window_popped_parents = evas_list_append(_etk_popup_window_popped_parents, popup_window);
    }
-   
+
    if (parent)
    {
       if (popup_window->popped_up)
@@ -138,7 +138,7 @@ void etk_popup_window_focused_window_set(Etk_Popup_Window *popup_window)
 {
    Etk_Popup_Window *pop;
    Evas_List *l;
-   
+
    if (popup_window && popup_window->popped_up)
       _etk_popup_window_focused_window = popup_window;
    else
@@ -148,21 +148,21 @@ void etk_popup_window_focused_window_set(Etk_Popup_Window *popup_window)
          pop = pop->popped_child;
       _etk_popup_window_focused_window = pop;
    }
-   
+
    /* Raise the new focused window - if its a normal window, dont */
    if (popup_window && !ETK_IS_POPUP_WINDOW(popup_window))
      return;
-   
+
    for (pop = popup_window; pop; pop = pop->parent)
    {
       if ((l = evas_list_find_list(_etk_popup_window_popped_parents, pop)))
       {
          _etk_popup_window_popped_parents = evas_list_remove_list(_etk_popup_window_popped_parents, l);
          _etk_popup_window_popped_parents = evas_list_append(_etk_popup_window_popped_parents, pop);
-         
+
          for ( ; pop; pop = pop->popped_child)
             etk_window_raise(ETK_WINDOW(pop));
-         
+
          break;
       }
    }
@@ -195,7 +195,7 @@ void etk_popup_window_popup(Etk_Popup_Window *popup_window)
 void etk_popup_window_popup_in_direction(Etk_Popup_Window *popup_window, Etk_Popup_Direction direction)
 {
    int x, y;
-   
+
    etk_engine_mouse_position_get(&x, &y);
    etk_popup_window_popup_at_xy_in_direction(popup_window, x + 2, y + 2, direction);
 }
@@ -211,17 +211,17 @@ void etk_popup_window_popup_in_direction(Etk_Popup_Window *popup_window, Etk_Pop
 void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
 {
    Etk_Size size;
-   
+
    if (!popup_window)
       return;
-   
+
    if (!popup_window->popped_up)
    {
       etk_engine_popup_window_popup(popup_window);
-      
+
       evas_event_feed_mouse_move(ETK_TOPLEVEL(popup_window)->evas, -100000, -100000, 0, NULL);
       evas_event_feed_mouse_in(ETK_TOPLEVEL(popup_window)->evas, 0, NULL);
-      
+
       if (!_etk_popup_window_popped_parents)
       {
          etk_event_global_callback_add(ETK_EVENT_KEY_DOWN, _etk_popup_window_key_down_cb, NULL);
@@ -229,7 +229,7 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
          etk_event_global_callback_add(ETK_EVENT_MOUSE_MOVE, _etk_popup_window_mouse_move_cb, NULL);
          etk_event_global_callback_add(ETK_EVENT_MOUSE_UP, _etk_popup_window_mouse_up_cb, NULL);
       }
-      
+
       if (!popup_window->parent || !popup_window->parent->popped_up)
       {
          _etk_popup_window_popped_parents = evas_list_append(_etk_popup_window_popped_parents, popup_window);
@@ -243,14 +243,14 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
       }
       popup_window->popped_up = ETK_TRUE;
    }
-   
+
    etk_popup_window_focused_window_set(popup_window);
-   
+
    etk_widget_size_request_full(ETK_WIDGET(popup_window), &size, ETK_FALSE);
    etk_window_move(ETK_WINDOW(popup_window), x, y);
    etk_window_resize(ETK_WINDOW(popup_window), size.w, size.h);
    etk_widget_show(ETK_WIDGET(popup_window));
-   
+
    _etk_popup_window_slide_timer_update(popup_window);
    etk_signal_emit(_etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_UP_SIGNAL], ETK_OBJECT(popup_window), NULL);
 }
@@ -267,10 +267,10 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
 void etk_popup_window_popup_at_xy_in_direction(Etk_Popup_Window *popup_window, int x, int y, Etk_Popup_Direction direction)
 {
    Etk_Size size;
-   
+
    if (!popup_window)
       return;
-   
+
    etk_widget_size_request_full(ETK_WIDGET(popup_window), &size, ETK_FALSE);
    switch (direction)
    {
@@ -299,19 +299,19 @@ void etk_popup_window_popdown(Etk_Popup_Window *popup_window)
 {
    if (!popup_window || !popup_window->popped_up)
       return;
-   
+
    if (popup_window->popped_child)
       etk_popup_window_popdown(popup_window->popped_child);
-   
+
    etk_engine_popup_window_popdown(popup_window);
    popup_window->popped_up = ETK_FALSE;
    if (popup_window->parent && popup_window->parent->popped_child == popup_window)
       popup_window->parent->popped_child = NULL;
-   
+
    _etk_popup_window_popped_parents = evas_list_remove(_etk_popup_window_popped_parents, popup_window);
    if (_etk_popup_window_focused_window == popup_window)
       etk_popup_window_focused_window_set(popup_window->parent);
-   
+
    if (!_etk_popup_window_popped_parents)
    {
       etk_event_global_callback_del(ETK_EVENT_KEY_DOWN, _etk_popup_window_key_down_cb);
@@ -319,9 +319,9 @@ void etk_popup_window_popdown(Etk_Popup_Window *popup_window)
       etk_event_global_callback_del(ETK_EVENT_MOUSE_MOVE, _etk_popup_window_mouse_move_cb);
       etk_event_global_callback_del(ETK_EVENT_MOUSE_UP, _etk_popup_window_mouse_up_cb);
    }
-   
+
    etk_widget_hide(ETK_WIDGET(popup_window));
-   etk_signal_emit(_etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL], ETK_OBJECT(popup_window), NULL);   
+   etk_signal_emit(_etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL], ETK_OBJECT(popup_window), NULL);
 }
 
 /**
@@ -356,7 +356,7 @@ static void _etk_popup_window_constructor(Etk_Popup_Window *popup_window)
 {
    if (!popup_window)
       return;
-   
+
    popup_window->popped_up = ETK_FALSE;
    popup_window->parent = NULL;
    popup_window->children = NULL;
@@ -376,7 +376,7 @@ static void _etk_popup_window_key_down_cb(Etk_Event_Global event_info, void *dat
 {
    if (!_etk_popup_window_focused_window)
       return;
-   
+
    evas_event_feed_key_down(ETK_TOPLEVEL(_etk_popup_window_focused_window)->evas, event_info.key_down.keyname,
       event_info.key_down.key, event_info.key_down.string, NULL, event_info.key_down.timestamp, NULL);
 }
@@ -387,7 +387,7 @@ static void _etk_popup_window_key_up_cb(Etk_Event_Global event_info, void *data)
 {
    if (!_etk_popup_window_focused_window)
       return;
-   
+
    evas_event_feed_key_up(ETK_TOPLEVEL(_etk_popup_window_focused_window)->evas, event_info.key_up.keyname,
       event_info.key_up.key, event_info.key_up.string, NULL, event_info.key_up.timestamp, NULL);
 }
@@ -398,14 +398,14 @@ static void _etk_popup_window_mouse_move_cb(Etk_Event_Global event_info, void *d
 {
    Etk_Popup_Window *pop;
    int px, py;
-   
+
    pop = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_parents)));
    for ( ; pop; pop = pop->popped_child)
    {
       etk_window_geometry_get(ETK_WINDOW(pop), &px, &py, NULL, NULL);
       evas_event_feed_mouse_move(ETK_TOPLEVEL(pop)->evas, event_info.mouse_move.pos.x - px,
          event_info.mouse_move.pos.y - py, event_info.mouse_move.timestamp, NULL);
-      
+
       /* Start to make the popup window slide if needed */
       _etk_popup_window_slide_timer_update(pop);
    }
@@ -417,13 +417,13 @@ static void _etk_popup_window_mouse_up_cb(Etk_Event_Global event_info, void *dat
 {
    Etk_Popup_Window *pop;
    Etk_Bool pointer_over_window = ETK_FALSE;
-   
+
    /* If the user clicks on a popped window, we feed the event */
    pop = ETK_POPUP_WINDOW(evas_list_data(evas_list_last(_etk_popup_window_popped_parents)));
    for ( ; pop; pop = pop->popped_child)
    {
       int px, py, pw, ph;
-      
+
       etk_window_geometry_get(ETK_WINDOW(pop), &px, &py, &pw, &ph);
       if (ETK_INSIDE(event_info.mouse_up.pos.x, event_info.mouse_up.pos.y, px, py, pw, ph))
       {
@@ -433,7 +433,7 @@ static void _etk_popup_window_mouse_up_cb(Etk_Event_Global event_info, void *dat
 	 break;
       }
    }
-   
+
    /* Otherwise, we pop down the popup windows */
    if (!pointer_over_window && event_info.mouse_up.timestamp >= _etk_popup_window_popup_timestamp
       && (event_info.mouse_up.timestamp - _etk_popup_window_popup_timestamp) >= ETK_POPUP_WINDOW_MIN_POP_TIME)
@@ -512,16 +512,16 @@ static int _etk_popup_window_slide_timer_cb(void *data)
    for ( ; pwin; pwin = pwin->popped_child)
    {
       int mx, my;
-      
+
       etk_window_geometry_get(ETK_WINDOW(pwin), &x, &y, NULL, NULL);
       etk_window_move(ETK_WINDOW(pwin), x + dx, y + dy);
-      
+
       /* We feed a mouse-move event since the relative position between the mouse pointer
        * and the popup window has changed */
       etk_engine_mouse_position_get(&mx, &my);
       evas_event_feed_mouse_move(ETK_TOPLEVEL(pwin)->evas, mx - x, my - y, etk_engine_event_timestamp_get(), NULL);
    }
-   
+
    return 1;
 }
 
@@ -566,7 +566,7 @@ static Etk_Popup_Window_Screen_Edge _etk_popup_window_edge_get(Etk_Popup_Window 
       result |= ETK_POPUP_WINDOW_TOP_EDGE;
    if (py + ph > sy + sh)
       result |= ETK_POPUP_WINDOW_BOTTOM_EDGE;
-   
+
    return result;
 }
 
@@ -588,7 +588,7 @@ static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_edge_get(void)
       result |= ETK_POPUP_WINDOW_BOTTOM_EDGE;
    if (my <= sy)
       result |= ETK_POPUP_WINDOW_TOP_EDGE;
-   
+
    return result;
 }
 
@@ -609,7 +609,7 @@ static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_edge_get(void)
  * pointer reaches this edge. @n
  * You usually do not need to directly create a popup window in your programs, use Etk_Menu or Etk_Combobox instead.
  * However, Etk_Popup_Window can be useful if you are creating a new widget.
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

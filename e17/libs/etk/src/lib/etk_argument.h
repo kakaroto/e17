@@ -3,7 +3,7 @@
 #define _ETK_ARGUMENT_H_
 
 #include "etk_types.h"
- 
+
 /**
  * @defgroup Etk_Argument Argument parser
  * @brief A couple of functions to parse the arguments of a program

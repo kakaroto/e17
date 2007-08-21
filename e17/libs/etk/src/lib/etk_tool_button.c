@@ -65,7 +65,7 @@ Etk_Widget *etk_tool_button_new_with_label(const char *label)
 Etk_Widget *etk_tool_button_new_from_stock(Etk_Stock_Id stock_id)
 {
    Etk_Widget *tool_button;
-   
+
    tool_button = etk_tool_button_new();
    etk_button_set_from_stock(ETK_BUTTON(tool_button), stock_id);
 
@@ -118,7 +118,7 @@ Etk_Widget *etk_tool_toggle_button_new_with_label(const char *label)
 Etk_Widget *etk_tool_toggle_button_new_from_stock(Etk_Stock_Id stock_id)
 {
    Etk_Widget *tool_toggle_button;
-   
+
    tool_toggle_button = etk_tool_toggle_button_new();
    etk_button_set_from_stock(ETK_BUTTON(tool_toggle_button), stock_id);
 

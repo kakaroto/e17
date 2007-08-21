@@ -22,7 +22,7 @@ typedef enum Etk_Selection_Content
 } Etk_Selection_Content;
 
 struct Etk_Event_Selection_Request
-{    
+{
    void *data;
    Etk_Selection_Content content;
 };
@@ -31,7 +31,7 @@ struct Etk_Selection_Data
 {
    unsigned char    *data;
    int               length;
-   
+
    int             (*free)(void *data);
 };
 
@@ -51,11 +51,11 @@ struct Etk_Selection_Data_Text
 
 struct Etk_Selection_Data_Targets
 {
-   Etk_Selection_Data data;   
+   Etk_Selection_Data data;
    char **targets;
    int num_targets;
 };
-  
+
 /** @} */
 
 #endif

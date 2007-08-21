@@ -11,7 +11,7 @@
  * one child which can be aligned and scaled inside the container
  * @{
  */
- 
+
 /** Gets the type of an alignment */
 #define ETK_ALIGNMENT_TYPE       (etk_alignment_type_get())
 /** Casts the object to an Etk_Alignment */

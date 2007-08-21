@@ -68,7 +68,7 @@ Etk_Type *etk_range_type_get(void)
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
       etk_type_property_add(range_type, "page-size", ETK_RANGE_PAGE_SIZE_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
-      
+
       range_type->property_set = _etk_range_property_set;
       range_type->property_get = _etk_range_property_get;
    }
@@ -86,7 +86,7 @@ Etk_Type *etk_range_type_get(void)
 Etk_Bool etk_range_value_set(Etk_Range *range, double value)
 {
    double new_value;
-   
+
    if (!range)
       return ETK_FALSE;
 
@@ -98,7 +98,7 @@ Etk_Bool etk_range_value_set(Etk_Range *range, double value)
       etk_object_notify(ETK_OBJECT(range), "value");
       return ETK_TRUE;
    }
-   
+
    return ETK_FALSE;
 }
 
@@ -127,7 +127,7 @@ void etk_range_range_set(Etk_Range *range, double lower, double upper)
 
    if (upper < lower + range->page_size)
       upper = lower + range->page_size;
-   
+
    if (range->lower != lower)
    {
       range->lower = lower;
@@ -194,7 +194,7 @@ void etk_range_increments_get(Etk_Range *range, double *step, double *page)
    if (page)
       *page = range ? range->page_increment : 0.0;
 }
-   
+
 /**
  * @brief Sets the page size of the range: this value controls the size of the drag button of a scrollbar for example
  * @param range a range
@@ -335,7 +335,7 @@ static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Pro
  * up/down keys are pressed, or when the trough of a scrollbar is clicked for example.
  * - the <b>"page size"</b> value is the size of viewport, used to calculate the size of the drag button of a scrollbar
  * @n @n
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

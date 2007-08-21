@@ -49,7 +49,7 @@ Etk_Type *etk_alignment_type_get(void)
             ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(1.0));
       etk_type_property_add(alignment_type, "yscale", ETK_ALIGNMENT_YSCALE_PROPERTY,
             ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_float(1.0));
-      
+
       alignment_type->property_set = _etk_alignment_property_set;
       alignment_type->property_get = _etk_alignment_property_get;
    }
@@ -277,18 +277,18 @@ static void _etk_alignment_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
  * @prop_type Float
  * @prop_rw
  * @prop_val 0.5
- * \par 
+ * \par
  * @prop_name "yalign": Vertical alignment of the child in the available space, from 0.0 (top) to 1.0 (bottom).
  * @prop_type Float
  * @prop_rw
  * @prop_val 0.5
- * \par 
+ * \par
  * @prop_name "xscale": How much of the horizontal space the child should use,
  * from 0.0 (none, the child does not expand) to 1.0 (the child fills all the horizontal space).
  * @prop_type Float
  * @prop_rw
  * @prop_val 1.0
- * \par 
+ * \par
  * @prop_name "yscale": How much of the vertical space the child should use,
  * from 0.0 (none, the child does not expand) to 1.0 (the child fills all the vertical space).
  * @prop_type Float

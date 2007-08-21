@@ -100,23 +100,23 @@ static void _etk_viewport_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
 
    evas_object_move(viewport->clip, geometry.x, geometry.y);
    evas_object_resize(viewport->clip, geometry.w, geometry.h);
-   
+
    if ((child = etk_bin_child_get(ETK_BIN(viewport))))
    {
       Etk_Size child_requisition;
 
       etk_widget_size_request(child, &child_requisition);
-      
+
       if (child_requisition.w <= geometry.w)
          geometry.x += (geometry.w - child_requisition.w) / 2;
       else
          geometry.x -= viewport->xscroll;
-      
+
       if (child_requisition.h <= geometry.h)
          geometry.y += (geometry.h - child_requisition.h) / 2;
       else
          geometry.y -= viewport->yscroll;
-      
+
       geometry.w = child_requisition.w;
       geometry.h = child_requisition.h;
       etk_widget_size_allocate(child, geometry);
@@ -183,10 +183,10 @@ static void _etk_viewport_realized_cb(Etk_Object *object, void *data)
 static void _etk_viewport_child_added_cb(Etk_Object *object, void *child, void *data)
 {
    Etk_Viewport *viewport;
-   
+
    if (!(viewport = ETK_VIEWPORT(object)) || !child || !viewport->clip)
       return;
-   
+
    etk_widget_clip_set(ETK_WIDGET(child), viewport->clip);
    evas_object_show(viewport->clip);
 }
@@ -195,10 +195,10 @@ static void _etk_viewport_child_added_cb(Etk_Object *object, void *child, void *
 static void _etk_viewport_child_removed_cb(Etk_Object *object, void *child, void *data)
 {
    Etk_Viewport *viewport;
-   
+
    if (!(viewport = ETK_VIEWPORT(object)) || !child || !viewport->clip)
       return;
-   
+
    etk_widget_clip_unset(ETK_WIDGET(child));
    evas_object_hide(viewport->clip);
 }

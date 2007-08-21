@@ -32,15 +32,15 @@ Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, cha
    char *arg;
    int arg_len;
    int i, j;
-   
+
    if (!argc || !argv)
       return ETK_FALSE;
-   
+
    for (i = 0; i < *argc; i++)
    {
       if (!(arg = ((*argv)[i])))
          continue;
-      
+
       arg_len = strlen(arg);
       if ((arg_len == 2) && (arg[0] == '-') && (arg[1] == short_name))
          is_set = ETK_TRUE;
@@ -49,7 +49,7 @@ Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, cha
          if (long_name && (strcmp(&arg[2], long_name) == 0))
             is_set = ETK_TRUE;
       }
-      
+
       if (is_set)
       {
          if (remove)
@@ -61,7 +61,7 @@ Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, cha
          return ETK_TRUE;
       }
    }
-   
+
    return ETK_FALSE;
 }
 
@@ -85,21 +85,21 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
    char *arg, *next, *value_ptr = NULL;
    int arg_len, long_name_len;
    int i, j;
-   
+
    if (!argc || !argv || !value)
       return ETK_FALSE;
-   
+
    long_name_len = long_name ? strlen(long_name) : 0;
-   
+
    for (i = 0; i < *argc; i++)
    {
       if (!(arg = (*argv)[i]))
          continue;
-      
+
       arg_len = strlen(arg);
       if (arg_len < 2 || arg[0] != '-')
          continue;
-      
+
       /* Short argument */
       if (arg[1] != '-')
       {
@@ -144,7 +144,7 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
             }
          }
       }
-      
+
       if (value_ptr)
       {
          /* A value has been found */
@@ -158,7 +158,7 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
          return ETK_TRUE;
       }
    }
-   
+
    return ETK_FALSE;
 }
 

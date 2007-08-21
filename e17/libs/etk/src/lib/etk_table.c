@@ -49,14 +49,14 @@ Etk_Type *etk_table_type_get(void)
    {
       table_type = etk_type_new("Etk_Table", ETK_CONTAINER_TYPE, sizeof(Etk_Table),
             ETK_CONSTRUCTOR(_etk_table_constructor), ETK_DESTRUCTOR(_etk_table_destructor));
-   
+
       etk_type_property_add(table_type, "num-cols", ETK_TABLE_NUM_COLS_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
       etk_type_property_add(table_type, "num-rows", ETK_TABLE_NUM_ROWS_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
       etk_type_property_add(table_type, "homogeneous", ETK_TABLE_HOMOGENEOUS_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(ETK_TABLE_NOT_HOMOGENEOUS));
-      
+
       table_type->property_set = _etk_table_property_set;
       table_type->property_get = _etk_table_property_get;
    }
@@ -100,7 +100,7 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
       for (j = cell->top_attach; j <= cell->bottom_attach; j++)
          table->cells[CELL_INDEX(table, i, j)] = NULL;
    }
-   
+
    table->cells_list = evas_list_remove_list(table->cells_list, cell->node);
    free(cell);
 
@@ -144,13 +144,13 @@ void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
       new_cols = malloc(num_cols * sizeof(Etk_Table_Col_Row));
       new_rows = malloc(num_rows * sizeof(Etk_Table_Col_Row));
    }
-   
+
    for (l = table->cells_list; l; l = next)
    {
       next = l->next;
       cell = l->data;
       child = cell->child;
-      
+
       /* The child is in the old table but not in the new one: we remove it */
       if (cell->left_attach >= num_cols || cell->top_attach >= num_rows)
          etk_table_cell_clear(table, cell->left_attach, cell->top_attach);
@@ -206,7 +206,7 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
    right_attach = ETK_CLAMP(right_attach, left_attach, table->num_cols - 1);
    top_attach = ETK_CLAMP(top_attach, 0, table->num_rows - 1);
    bottom_attach = ETK_CLAMP(bottom_attach, top_attach, table->num_rows - 1);
-   
+
    cell = malloc(sizeof(Etk_Table_Cell));
    cell->left_attach = left_attach;
    cell->right_attach = right_attach;
@@ -228,7 +228,7 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
 
    table->cells_list = evas_list_append(table->cells_list, cell);
    cell->node = evas_list_last(table->cells_list);
-   
+
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Table::Cell", cell);
    etk_widget_parent_set(child, ETK_WIDGET(table));
    etk_signal_emit_by_name("child-added", ETK_OBJECT(table), NULL, child);
@@ -288,7 +288,7 @@ Etk_Table_Homogeneous etk_table_homogeneous_get(Etk_Table *table)
 void etk_table_child_position_get(Etk_Table *table, Etk_Widget *child, int *left_attach, int *right_attach, int *top_attach, int *bottom_attach)
 {
    int i, j;
-   
+
    if (left_attach)
       *left_attach = -1;
    if (right_attach)
@@ -297,16 +297,16 @@ void etk_table_child_position_get(Etk_Table *table, Etk_Widget *child, int *left
       *top_attach = -1;
    if (bottom_attach)
       *bottom_attach = -1;
-   
-   if (!table || !child)   
-      return;   
-   
+
+   if (!table || !child)
+      return;
+
    for (i = 0; i < table->num_cols; i++)
    {
       for (j = 0; j < table->num_rows; j++)
       {
 	 Etk_Table_Cell *cell = NULL;
-	 
+
          cell = table->cells[CELL_INDEX(table, i, j)];
 	 if (cell && cell->child == child)
 	 {
@@ -321,7 +321,7 @@ void etk_table_child_position_get(Etk_Table *table, Etk_Widget *child, int *left
 	    return;
 	 }
       }
-   }   
+   }
 }
 
 /**************************
@@ -355,10 +355,10 @@ static void _etk_table_constructor(Etk_Table *table)
 static void _etk_table_destructor(Etk_Table *table)
 {
    Etk_Table_Cell *cell;
-   
+
    if (!table)
       return;
-   
+
    while (table->cells_list)
    {
       cell = table->cells_list->data;
@@ -441,13 +441,13 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
       /*********************************************
        * Phase 1: We calculate the width of the cols of the table
        *********************************************/
-      
+
       /* Horizontally-homogeneous table */
       if (table->homogeneous & ETK_TABLE_HHOMOGENEOUS)
       {
          int max_col_width = CELL_MIN_SIZE;
          int cell_size;
-   
+
          /* We calculate the maximum size of a cell */
          for (l = table->cells_list; l; l = l->next)
          {
@@ -466,7 +466,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             table->cols[i].requested_size = max_col_width;
             table->cols[i].expand = hexpand;
          }
-   
+
          size_requisition->w = table->num_cols * max_col_width;
       }
       /* Non horizontally-homogeneous table */
@@ -500,15 +500,15 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             int num_expandable_cells;
             int free_space;
             float delta;
-            
+
             cell = l->data;
             child = cell->child;
-            
+
             if (cell->left_attach < cell->right_attach)
             {
                cells_size = 0;
                num_expandable_cells = 0;
-               
+
                etk_widget_size_request(child, &child_size);
                for (i = cell->left_attach; i <= cell->right_attach; i++)
                {
@@ -545,18 +545,18 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
          for (i = 0; i < table->num_cols; i++)
             size_requisition->w += table->cols[i].requested_size;
       }
-      
-      
+
+
       /*********************************************
        * Phase 2: We calculate the height of the rows of the table
        *********************************************/
-      
+
       /* Vertically-homogeneous table */
       if (table->homogeneous & ETK_TABLE_VHOMOGENEOUS)
       {
          int max_row_height = CELL_MIN_SIZE;
          int cell_size;
-   
+
          /* We calculate the maximum size of a cell */
          for (l = table->cells_list; l; l = l->next)
          {
@@ -575,7 +575,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             table->rows[i].requested_size = max_row_height;
             table->rows[i].expand = vexpand;
          }
-   
+
          size_requisition->h = table->num_rows * max_row_height;
       }
       /* Non vertically-homogeneous table */
@@ -609,15 +609,15 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
             int num_expandable_cells;
             int free_space;
             float delta;
-            
+
             cell = l->data;
             child = cell->child;
-            
+
             if (cell->top_attach < cell->bottom_attach)
             {
                cells_size = 0;
                num_expandable_cells = 0;
-               
+
                etk_widget_size_request(child, &child_size);
                for (i = cell->top_attach; i <= cell->bottom_attach; i++)
                {
@@ -757,7 +757,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
             size = table->rows[i].requested_size + ((float)free_space / num_rows_to_expand);
          else
             size = table->rows[i].requested_size;
-         
+
          table->rows[i].size = size;
          table->rows[i].offset = offset;
          offset += size;
@@ -769,7 +769,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    {
       cell = l->data;
       child = cell->child;
-      
+
       child_geometry.x = geometry.x + table->cols[cell->left_attach].offset + cell->x_padding;
       child_geometry.y = geometry.y + table->rows[cell->top_attach].offset + cell->y_padding;
       child_geometry.w = table->cols[cell->right_attach].offset - table->cols[cell->left_attach].offset +
@@ -808,10 +808,10 @@ static Evas_List *_etk_table_children_get(Etk_Container *container)
    Etk_Table *table;
    Etk_Table_Cell *cell;
    Evas_List *children, *l;
-   
+
    if (!(table = ETK_TABLE(container)))
       return NULL;
-   
+
    children = NULL;
    for (l = table->cells_list; l; l = l->next)
    {

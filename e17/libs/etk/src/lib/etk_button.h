@@ -44,7 +44,7 @@ struct Etk_Button
    Etk_Widget *box;
    Etk_Image *image;
    Etk_Widget *label;
-   
+
    void (*pressed_handler)(Etk_Button *button);
    void (*released_handler)(Etk_Button *button);
    void (*clicked_handler)(Etk_Button *button);

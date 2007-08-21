@@ -125,7 +125,7 @@ static void _etk_text_view_constructor(Etk_Text_View *text_view)
 
    text_view->textblock = etk_textblock_new();
    text_view->textblock_object = NULL;
-   
+
    ETK_WIDGET(text_view)->size_allocate = _etk_text_view_size_allocate;
 
    ETK_WIDGET(text_view)->scroll = _etk_text_view_scroll;
@@ -149,10 +149,10 @@ static void _etk_text_view_destructor(Etk_Text_View *text_view)
 static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Text_View *text_view;
-   
+
    if (!(text_view = ETK_TEXT_VIEW(widget)))
       return;
-   
+
    evas_object_move(text_view->textblock_object, geometry.x, geometry.y);
    evas_object_resize(text_view->textblock_object, geometry.w, geometry.h);
 }
@@ -185,7 +185,7 @@ static void _etk_text_view_unrealized_cb(Etk_Object *object, void *data)
 
    if (!(text_view = ETK_TEXT_VIEW(object)))
       return;
-   
+
    if (text_view->textblock_object)
    {
       etk_widget_member_object_del(ETK_WIDGET(text_view), text_view->textblock_object);
@@ -203,16 +203,16 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
    Etk_Textblock_Iter *selection;
    int compare_res;
    Etk_Bool selecting;
-   
+
    if (!(text_view = ETK_TEXT_VIEW(object)) || !text_view->textblock_object)
       return;
-   
+
    tb = text_view->textblock;
    cursor = etk_textblock_object_cursor_get(text_view->textblock_object);
    selection = etk_textblock_object_selection_bound_get(text_view->textblock_object);
    compare_res = etk_textblock_iter_compare(cursor, selection);
    selecting = (compare_res != 0);
-   
+
    if (strcmp(event->keyname, "Left") == 0)
    {
       if (event->modifiers & ETK_MODIFIER_SHIFT)
@@ -287,7 +287,7 @@ static void _etk_text_view_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *e
 static void _etk_text_view_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size)
 {
    Etk_Text_View *text_view;
-   
+
    if(!(text_view = ETK_TEXT_VIEW(widget)) || !scroll_size )
       return;
 

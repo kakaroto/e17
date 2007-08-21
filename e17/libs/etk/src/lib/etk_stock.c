@@ -251,7 +251,7 @@ const char *etk_stock_key_get(Etk_Stock_Id stock_id, Etk_Stock_Size size)
 {
    if (stock_id < 0 || stock_id >= ETK_NUM_STOCK_IDS)
       return NULL;
-   
+
    if (size == ETK_STOCK_SMALL)
       return _etk_stock_items[stock_id].small_icon_key;
    else if (size == ETK_STOCK_MEDIUM)

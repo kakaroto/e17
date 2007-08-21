@@ -78,18 +78,18 @@ struct Etk_Combobox_Entry_Item
    /* private: */
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
-   
+
    Etk_Combobox_Entry *combobox_entry;
    Etk_Combobox_Entry_Item *prev;
    Etk_Combobox_Entry_Item *next;
-   
+
    Etk_Widget **widgets;
    void *data;
    void (*data_free_cb)(void *data);
 };
 
 /**
- * @brief @widget A combobox_entry is a widget 
+ * @brief @widget A combobox_entry is a widget
  * @structinfo
  */
 struct Etk_Combobox_Entry
@@ -97,19 +97,19 @@ struct Etk_Combobox_Entry
    /* private: */
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
-   
+
    Etk_Widget *button;
    Etk_Popup_Window *window;
    int popup_offset_x;
    int popup_offset_y;
    int popup_extra_w;
-   
+
    int num_cols;
    Etk_Combobox_Entry_Column **cols;
-   
+
    Etk_Combobox_Entry_Item *first_item;
    Etk_Combobox_Entry_Item *last_item;
-   
+
    Etk_Combobox_Entry_Item *selected_item;
    Etk_Combobox_Entry_Item *active_item;
    Etk_Widget *entry;

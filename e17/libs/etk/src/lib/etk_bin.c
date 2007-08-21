@@ -44,10 +44,10 @@ Etk_Type *etk_bin_type_get(void)
    {
       bin_type = etk_type_new("Etk_Bin", ETK_CONTAINER_TYPE, sizeof(Etk_Bin),
             ETK_CONSTRUCTOR(_etk_bin_constructor), NULL);
-      
+
       etk_type_property_add(bin_type, "child", ETK_BIN_CHILD_PROPERTY,
             ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
-      
+
       bin_type->property_set = _etk_bin_property_set;
       bin_type->property_get = _etk_bin_property_get;
    }
@@ -72,7 +72,7 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
    {
       etk_widget_parent_set(child, ETK_WIDGET(bin));
       bin->child = child;
-      
+
       etk_signal_emit_by_name("child-added", ETK_OBJECT(bin), NULL, child);
       etk_object_notify(ETK_OBJECT(bin), "child");
    }
@@ -163,7 +163,7 @@ static void _etk_bin_size_request(Etk_Widget *widget, Etk_Size *size)
    }
    else
       etk_widget_size_request(bin->child, size);
-   
+
    size->w += 2 * etk_container_border_width_get(container);
    size->h += 2 * etk_container_border_width_get(container);
 }
@@ -178,7 +178,7 @@ static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    if (!(bin = ETK_BIN(widget)))
       return;
    container = ETK_CONTAINER(widget);
-   
+
    if (bin->child)
    {
       border = etk_container_border_width_get(container);
@@ -216,14 +216,14 @@ static Evas_List *_etk_bin_children_get(Etk_Container *container)
 {
    Etk_Bin *bin;
    Evas_List *children;
-   
+
    if (!(bin = ETK_BIN(container)))
       return NULL;
-   
+
    children = NULL;
    if (bin->child)
       children = evas_list_append(children, bin->child);
-   
+
    return children;
 }
 

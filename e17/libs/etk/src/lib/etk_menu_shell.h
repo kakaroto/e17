@@ -29,7 +29,7 @@ struct Etk_Menu_Shell
    /* private: */
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
-   
+
    Evas_List *items;
 };
 

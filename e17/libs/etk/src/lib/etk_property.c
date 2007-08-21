@@ -73,7 +73,7 @@ Etk_Property_Type etk_property_type_get(Etk_Property *property)
 /**
  * @brief Clears a property value: the current value is freed and the type of the property is set to ETK_PROPERTY_NONE
  * @param value the property value to clear
- */ 
+ */
 void etk_property_value_clear(Etk_Property_Value *value)
 {
    if (!value)
@@ -87,7 +87,7 @@ void etk_property_value_clear(Etk_Property_Value *value)
 /**
  * @brief Deletes a property value
  * @param value the property value to delete
- */ 
+ */
 void etk_property_value_delete(Etk_Property_Value *value)
 {
    etk_property_value_clear(value);

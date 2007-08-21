@@ -70,7 +70,7 @@ void etk_object_shutdown(void)
 void etk_object_purge(void)
 {
    Etk_Object *object, *next;
-   
+
    for (object = _etk_object_objects; object; object = next)
    {
       next = object->next;
@@ -95,10 +95,10 @@ Etk_Type *etk_object_type_get(void)
 
       _etk_object_signals[ETK_OBJECT_DESTROYED_SIGNAL] = etk_signal_new("destroyed",
          object_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      
+
       etk_type_property_add(object_type, "name", ETK_OBJECT_NAME_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
-      
+
       object_type->property_set = _etk_object_property_set;
       object_type->property_get = _etk_object_property_get;
    }
@@ -146,10 +146,10 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
 
    if (!object_type)
       return NULL;
-   
+
    new_object = malloc(object_type->type_size);
    new_object->type = object_type;
-   
+
    etk_type_object_construct(object_type, new_object);
    va_copy(args2, args);
    etk_object_properties_set_valist(new_object, first_property, args2);
@@ -168,12 +168,12 @@ Etk_Object *etk_object_new_valist(Etk_Type *object_type, const char *first_prope
 void etk_object_destroy(Etk_Object *object)
 {
    void **weak_pointer;
-   
+
    if (!object || object->destroy_me)
       return;
-   
+
    etk_object_name_set(object, NULL);
-   
+
    /* Sets the weak-pointers to NULL */
    while (object->weak_pointers)
    {
@@ -181,7 +181,7 @@ void etk_object_destroy(Etk_Object *object)
       *weak_pointer =  NULL;
       object->weak_pointers = evas_list_remove_list(object->weak_pointers, object->weak_pointers);
    }
-   
+
    object->destroy_me = ETK_TRUE;
    etk_signal_emit(_etk_object_signals[ETK_OBJECT_DESTROYED_SIGNAL], object, NULL);
 }
@@ -195,7 +195,7 @@ void etk_object_destroy(Etk_Object *object)
 void etk_object_name_set(Etk_Object *object, const char *name)
 {
    Etk_Object *object2;
-   
+
    if (!object || object->destroy_me || object->name == name)
       return;
 
@@ -208,7 +208,7 @@ void etk_object_name_set(Etk_Object *object, const char *name)
          else
             etk_object_name_set(object2, NULL);
       }
-      
+
       free(object->name);
       object->name = strdup(name);
       _etk_object_name_hash = evas_hash_add(_etk_object_name_hash, object->name, object);
@@ -219,7 +219,7 @@ void etk_object_name_set(Etk_Object *object, const char *name)
       free(object->name);
       object->name = NULL;
    }
-   
+
    etk_object_notify(object, "name");
 }
 
@@ -308,10 +308,10 @@ void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *sig
 void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *signal_callback)
 {
    Evas_List *l;
-   
+
    if (!object || !signal_callback)
       return;
-   
+
    if ((l = evas_list_find_list(object->signal_callbacks, signal_callback)))
    {
       etk_signal_callback_del(l->data);
@@ -358,7 +358,7 @@ void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location)
       return;
    if (evas_list_find(object->weak_pointers, pointer_location))
       return;
-   
+
    object->weak_pointers = evas_list_append(object->weak_pointers, pointer_location);
 }
 
@@ -413,7 +413,7 @@ void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, 
       object->data_hash = evas_hash_del(object->data_hash, key, NULL);
       free(data);
    }
-   
+
    data = malloc(sizeof(Etk_Object_Data));
    data->value = value;
    data->free_cb = free_cb;
@@ -429,7 +429,7 @@ void etk_object_data_set_full(Etk_Object *object, const char *key, void *value, 
 void *etk_object_data_get(Etk_Object *object, const char *key)
 {
    Etk_Object_Data *data;
-   
+
    if (!object || !key || !(data = evas_hash_find(object->data_hash, key)))
       return NULL;
    return data->value;
@@ -557,7 +557,7 @@ void etk_object_properties_get_valist(Etk_Object *object, const char *first_prop
          if (type->property_get)
          {
             type->property_get(object, property->id, property_value);
-            
+
             value_location = va_arg(args, void *);
             etk_property_value_get(property_value, etk_property_value_type_get(property_value), value_location);
          }
@@ -589,7 +589,7 @@ void etk_object_notify(Etk_Object *object, const char *property_name)
       return;
    if (!(callbacks = evas_hash_find(object->notification_callbacks, property_name)))
       return;
-   
+
    object->notifying++;
 
    for (l = *callbacks; l; l = l->next)
@@ -598,7 +598,7 @@ void etk_object_notify(Etk_Object *object, const char *property_name)
       if (callback->callback && !callback->delete_me)
          callback->callback(object, property_name, callback->data);
    }
-   
+
    object->notifying--;
    if (object->notifying <= 0 && object->should_delete_cbs)
    {
@@ -698,7 +698,7 @@ static void _etk_object_constructor(Etk_Object *object)
    object->notification_callbacks = NULL;
    object->should_delete_cbs = ETK_FALSE;
    object->notifying = 0;
-   
+
    /* Append the new object to the list */
    object->prev = _etk_object_last_object;
    object->next = NULL;
@@ -714,17 +714,17 @@ static void _etk_object_destructor(Etk_Object *object)
 {
    if (!object)
       return;
-   
+
    evas_hash_foreach(object->data_hash, _etk_object_data_free_cb, NULL);
    evas_hash_free(object->data_hash);
-   
+
    while (object->signal_callbacks)
    {
       etk_signal_callback_del(object->signal_callbacks->data);
       object->signal_callbacks = evas_list_remove_list(object->signal_callbacks,
          object->signal_callbacks);
    }
-   
+
    evas_hash_foreach(object->notification_callbacks, _etk_object_notification_callbacks_free_cb, NULL);
    evas_hash_free(object->notification_callbacks);
 }
@@ -773,10 +773,10 @@ static void _etk_object_free(Etk_Object *object)
 {
    if (!object)
       return;
-   
+
    etk_object_destroy(object);
    etk_type_destructors_call(object->type, object);
-   
+
    if (object->prev)
       object->prev->next = object->next;
    if (object->next)
@@ -785,7 +785,7 @@ static void _etk_object_free(Etk_Object *object)
       _etk_object_objects = object->next;
    if (object == _etk_object_last_object)
       _etk_object_last_object = object->prev;
-   
+
    free(object);
 }
 
@@ -795,22 +795,22 @@ static Evas_Bool _etk_object_notification_callbacks_clean_cb(Evas_Hash *hash, co
    Evas_List *l, *next;
    Evas_List **callbacks;
    Etk_Notification_Callback *callback;
-   
+
    if (!(callbacks = data))
       return 1;
-   
+
    for (l = *callbacks; l; l = next)
    {
       next = l->next;
       callback = l->data;
-      
+
       if (callback->delete_me)
       {
          free(callback);
          *callbacks = evas_list_remove_list(*callbacks, l);
       }
    }
-   
+
    return 1;
 }
 
@@ -818,17 +818,17 @@ static Evas_Bool _etk_object_notification_callbacks_clean_cb(Evas_Hash *hash, co
 static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Evas_List **list;
-   
+
    if (!(list = data))
       return 1;
-   
+
    while (*list)
    {
       free((*list)->data);
       *list = evas_list_remove_list(*list, *list);
    }
    free(list);
-   
+
    return 1;
 }
 
@@ -836,14 +836,14 @@ static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, con
 static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Etk_Object_Data *object_data;
-   
+
    if (!(object_data = data))
       return 1;
-   
+
    if (object_data->free_cb)
       object_data->free_cb(object_data->value);
    free(object_data);
-   
+
    return 1;
 }
 
@@ -889,7 +889,7 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(clicked_cb), user_data);
  * @endcode
  *
- * You can also disconnect a callback from a signal of an object with etk_signal_disconnect(). For instance: 
+ * You can also disconnect a callback from a signal of an object with etk_signal_disconnect(). For instance:
  * @code
  * //Disconnects the callback "clicked_cb()" from the signal "clicked"
  * etk_signal_disconnect("clicked", ETK_OBJECT(button), ETK_CALLBACK(clicked_cb));
@@ -922,7 +922,7 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * Etk_Object, Etk_Widget, Etk_Container, Etk_Bin and Etk_Button).
  * <hr>
  * @n @n
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *

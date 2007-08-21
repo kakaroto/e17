@@ -36,7 +36,7 @@ Etk_Type *etk_radio_button_type_get(void)
 
       etk_type_property_add(radio_button_type, "group", ETK_RADIO_BUTTON_GROUP_PROPERTY,
             ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
-   
+
       radio_button_type->property_set = _etk_radio_button_property_set;
       radio_button_type->property_get = _etk_radio_button_property_get;
    }
@@ -231,7 +231,7 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
       toggle_button->active = active;
       etk_signal_emit_by_name("toggled", ETK_OBJECT(toggle_button), NULL);
       etk_object_notify(ETK_OBJECT(toggle_button), "active");
-   
+
       if (toggle_button->active)
       {
          /* Deactivate the current active button of the group */
@@ -276,7 +276,7 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
  * radio_buttons[1] = etk_radio_button_new_with_label_from_widget("Option 2", ETK_RADIO_BUTTON(radio_buttons[0]));
  * radio_buttons[2] = etk_radio_button_new_with_label_from_widget("Option 3", ETK_RADIO_BUTTON(radio_buttons[0]));
  * @endcode
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

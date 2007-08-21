@@ -39,7 +39,7 @@ struct Etk_Popup_Window
    /* private: */
    /* Inherit from Etk_Window */
    Etk_Window window;
-   
+
    Etk_Bool popped_up;
    Etk_Popup_Window *parent;
    Evas_List *children;

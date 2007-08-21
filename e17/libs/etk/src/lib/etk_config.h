@@ -10,7 +10,7 @@
  * @brief The config system saves and loads Etk's internal configuration (theme, font, styles, etc)
  * @{
  */
- 
+
 Etk_Bool    etk_config_init(void);
 void        etk_config_shutdown(void);
 

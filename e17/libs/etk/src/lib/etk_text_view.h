@@ -20,7 +20,7 @@
 
 /**
  * @struct Etk_Text_View
- * @brief An Etk_Text_View is a widget that allows the user to edit multi-line text 
+ * @brief An Etk_Text_View is a widget that allows the user to edit multi-line text
  */
 struct Etk_Text_View
 {

@@ -26,10 +26,10 @@ struct Etk_Engine
    char *engine_name;
    Etk_Engine *super;
    void *handle;
-   
+
    Etk_Bool (*engine_init)(void);
    void (*engine_shutdown)(void);
-   
+
    void (*window_constructor)(Etk_Window *window);
    void (*window_destructor)(Etk_Window *window);
    void (*window_show)(Etk_Window *window);
@@ -65,27 +65,27 @@ struct Etk_Engine
    void (*window_shaped_set)(Etk_Window *window, Etk_Bool shaped);
    Etk_Bool (*window_shaped_get)(Etk_Window *window);
    void (*window_has_alpha_set)(Etk_Window *window, Etk_Bool has_alpha);
-   Etk_Bool (*window_has_alpha_get)(Etk_Window *window);   
+   Etk_Bool (*window_has_alpha_get)(Etk_Window *window);
    void (*window_skip_taskbar_hint_set)(Etk_Window *window, Etk_Bool skip_taskbar_hint);
    Etk_Bool (*window_skip_taskbar_hint_get)(Etk_Window *window);
    void (*window_skip_pager_hint_set)(Etk_Window *window, Etk_Bool skip_pager_hint);
    Etk_Bool (*window_skip_pager_hint_get)(Etk_Window *window);
    void (*window_pointer_set)(Etk_Window *window, Etk_Pointer_Type pointer_type);
-   
+
    void (*popup_window_constructor)(Etk_Popup_Window *popup_window);
    void (*popup_window_popup)(Etk_Popup_Window *popup_window);
    void (*popup_window_popdown)(Etk_Popup_Window *popup_window);
-   
+
    void (*event_callback_set)(void (*callback)(Etk_Event_Type event, Etk_Event_Global event_info));
    unsigned int (*event_timestamp_get)(void);
-   
+
    void (*mouse_position_get)(int *x, int *y);
    void (*mouse_screen_geometry_get)(int *x, int *y, int *w, int *h);
-   
+
    void (*selection_text_set)(Etk_Selection_Type selection, const char *text);
    void (*selection_text_request)(Etk_Selection_Type selection, Etk_Widget *target);
    void (*selection_clear)(Etk_Selection_Type selection);
-   
+
    void (*drag_constructor)(Etk_Drag *drag);
    void (*drag_begin)(Etk_Drag *drag);
 };
@@ -143,7 +143,7 @@ Etk_Bool     etk_engine_window_skip_taskbar_hint_get(Etk_Window *window);
 void         etk_engine_window_skip_pager_hint_set(Etk_Window *window, Etk_Bool skip_pager_hint);
 Etk_Bool     etk_engine_window_skip_pager_hint_get(Etk_Window *window);
 void         etk_engine_window_pointer_set(Etk_Window *window, Etk_Pointer_Type pointer_type);
-  
+
 void         etk_engine_popup_window_constructor(Etk_Popup_Window *popup_window);
 void         etk_engine_popup_window_popup(Etk_Popup_Window *popup_window);
 void         etk_engine_popup_window_popdown(Etk_Popup_Window *popup_window);

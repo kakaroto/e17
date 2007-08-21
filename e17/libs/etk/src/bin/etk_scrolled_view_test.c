@@ -14,7 +14,7 @@ void etk_test_scrolled_view_window_create(void *data)
    Etk_Widget *fixed;
    Etk_Widget *button;
    int i, j;
-   
+
    if (win)
    {
       etk_widget_show_all(ETK_WIDGET(win));
@@ -25,10 +25,10 @@ void etk_test_scrolled_view_window_create(void *data)
    etk_window_title_set(ETK_WINDOW(win), "Etk Scrolled View Test");
    etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    etk_widget_size_request_set(win, 180, 180);
-   
+
    scrolled_view = etk_scrolled_view_new();
    etk_container_add(ETK_CONTAINER(win), scrolled_view);
-   
+
    fixed = etk_fixed_new();
    etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(scrolled_view), fixed);
 
@@ -41,6 +41,6 @@ void etk_test_scrolled_view_window_create(void *data)
          etk_fixed_put(ETK_FIXED(fixed), button, (BUTTON_WIDTH + SPACING) * i, (BUTTON_HEIGHT + SPACING) * j);
       }
    }
-   
+
    etk_widget_show_all(win);
 }

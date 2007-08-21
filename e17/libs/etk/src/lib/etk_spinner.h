@@ -32,12 +32,12 @@ struct Etk_Spinner
 
    Evas_Object *editable_object;
    Etk_Bool selection_dragging;
-   
+
    int digits;
    char value_format[16];
    Etk_Bool snap_to_ticks;
    Etk_Bool wrap;
-   
+
    int successive_steps;
    Ecore_Timer *step_timer;
 };

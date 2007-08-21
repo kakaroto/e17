@@ -8,7 +8,7 @@
  * @addtogroup Etk_Selection
  * @{
  */
- 
+
 /**
  * @brief Sets the text of the given selection
  * @param selection the selection type whose text should be set

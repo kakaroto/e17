@@ -74,7 +74,7 @@ void etk_theme_init(void)
 {
    _etk_theme_widget_default = _etk_theme_find("themes", "default");
    _etk_theme_icon_default = _etk_theme_find("icons", "default");
-   
+
    etk_theme_widget_set_from_name(etk_config_widget_theme_get());
    etk_theme_icon_set_from_name("default");
 }
@@ -89,7 +89,7 @@ void etk_theme_shutdown(void)
    free(_etk_theme_widget_current);
    free(_etk_theme_icon_default);
    free(_etk_theme_icon_current);
-   
+
    _etk_theme_widget_default = NULL;
    _etk_theme_widget_current = NULL;
    _etk_theme_icon_default = NULL;
@@ -105,7 +105,7 @@ Etk_Bool etk_theme_widget_set_from_path(const char *theme_path)
 {
    if (!theme_path)
       return ETK_FALSE;
-   
+
    if (ecore_file_exists(theme_path))
    {
       free(_etk_theme_widget_current);
@@ -124,11 +124,11 @@ Etk_Bool etk_theme_widget_set_from_name(const char *theme_name)
 {
    char *path;
    Etk_Bool result;
-   
+
    path = etk_theme_widget_find(theme_name);
    result = etk_theme_widget_set_from_path(path);
    free(path);
-   
+
    return result;
 }
 
@@ -151,15 +151,15 @@ char *etk_theme_widget_name_get(void)
    const char *start, *end;
    char *name;
    int len;
-   
+
    if (!_etk_theme_widget_current)
       return NULL;
-   
+
    if (!(start = strrchr(_etk_theme_widget_current, '/')))
       start = _etk_theme_widget_current;
    else
       start++;
-   
+
    if ((end = strrchr(start, '.')))
    {
       len = end - start;
@@ -168,7 +168,7 @@ char *etk_theme_widget_name_get(void)
       name[len] = '\0';
       return name;
    }
-   
+
    return NULL;
 }
 
@@ -185,13 +185,13 @@ Evas_List *etk_theme_widget_available_themes_get(void)
    char *home;
    char *file;
    int i;
-   
+
    if ((home = getenv("HOME")))
       snprintf(path[0], PATH_MAX, "%s/.e/etk/themes/", home);
    else
       path[0][0] = '\0';
    snprintf(path[1], PATH_MAX, PACKAGE_DATA_DIR "/themes/");
-   
+
    for (i = 0; i < 2; i++)
    {
       files = ecore_file_ls(path[i]);
@@ -203,7 +203,7 @@ Evas_List *etk_theme_widget_available_themes_get(void)
          ecore_list_destroy(files);
       }
    }
-   
+
    return themes;
 }
 
@@ -228,7 +228,7 @@ Etk_Bool etk_theme_icon_set_from_path(const char *theme_path)
 {
    if (!theme_path)
       return ETK_FALSE;
-   
+
    if (ecore_file_exists(theme_path))
    {
       free(_etk_theme_icon_current);
@@ -247,11 +247,11 @@ Etk_Bool etk_theme_icon_set_from_name(const char *theme_name)
 {
    char *path;
    Etk_Bool result;
-   
+
    path = etk_theme_icon_find(theme_name);
    result = etk_theme_icon_set_from_path(path);
    free(path);
-   
+
    return result;
 }
 
@@ -274,15 +274,15 @@ char *etk_theme_icon_name_get(void)
    const char *start, *end;
    char *name;
    int len;
-   
+
    if (!_etk_theme_icon_current)
       return NULL;
-   
+
    if (!(start = strrchr(_etk_theme_icon_current, '/')))
       start = _etk_theme_icon_current;
    else
       start++;
-   
+
    if ((end = strrchr(start, '.')))
    {
       len = end - start;
@@ -291,7 +291,7 @@ char *etk_theme_icon_name_get(void)
       name[len] = '\0';
       return name;
    }
-   
+
    return NULL;
 }
 
@@ -308,13 +308,13 @@ Evas_List *etk_theme_icon_available_themes_get(void)
    char *home;
    char *file;
    int i;
-   
+
    if ((home = getenv("HOME")))
       snprintf(path[0], PATH_MAX, "%s/.e/etk/icons/", home);
    else
       path[0][0] = '\0';
    snprintf(path[1], PATH_MAX, PACKAGE_DATA_DIR "/icons/");
-   
+
    for (i = 0; i < 2; i++)
    {
       files = ecore_file_ls(path[i]);
@@ -326,7 +326,7 @@ Evas_List *etk_theme_icon_available_themes_get(void)
          ecore_list_destroy(files);
       }
    }
-   
+
    return themes;
 }
 
@@ -367,17 +367,17 @@ void etk_theme_available_themes_free(Evas_List *themes)
 Etk_Bool etk_theme_group_exists(const char *file, const char *group, const char *parent_group)
 {
    char full_group[PATH_MAX];
-   
+
    if (!file)
       file = _etk_theme_widget_current ? _etk_theme_widget_current : _etk_theme_widget_default;
    if (!group || group[0] == '\0' || !file)
       return ETK_FALSE;
-   
+
    if (parent_group && parent_group[0] != '\0')
       snprintf(full_group, PATH_MAX, "etk/%s/%s", parent_group, group);
    else
       snprintf(full_group, PATH_MAX, "etk/%s", group);
-   
+
    return edje_file_group_exists(file, full_group);
 }
 
@@ -393,10 +393,10 @@ Etk_Bool etk_theme_group_exists(const char *file, const char *group, const char 
 Etk_Bool etk_theme_edje_object_set(Evas_Object *object, const char *file, const char *group, const char *parent_group)
 {
    char full_group[PATH_MAX];
-   
+
    if (!object)
       return ETK_FALSE;
-   
+
    if (!file)
       file = _etk_theme_widget_current ? _etk_theme_widget_current : _etk_theme_widget_default;
    if (!group || group[0] == '\0' || !file)
@@ -404,12 +404,12 @@ Etk_Bool etk_theme_edje_object_set(Evas_Object *object, const char *file, const 
       edje_object_file_set(object, NULL, NULL);
       return ETK_FALSE;
    }
-   
+
    if (parent_group && parent_group[0] != '\0')
       snprintf(full_group, PATH_MAX, "etk/%s/%s", parent_group, group);
    else
       snprintf(full_group, PATH_MAX, "etk/%s", group);
-   
+
    if (edje_object_file_set(object, file, full_group))
       return ETK_TRUE;
    else
@@ -431,7 +431,7 @@ Etk_Bool etk_theme_edje_object_set_from_parent(Evas_Object *object, const char *
 {
    if (!object)
       return ETK_FALSE;
-   
+
    return etk_theme_edje_object_set(object, etk_widget_theme_file_get(parent),
          group, etk_widget_theme_group_get(parent));
 }
@@ -457,7 +457,7 @@ Etk_Bool etk_theme_color_get(const char *file, Etk_Color_Type color_type, int *r
       file = _etk_theme_widget_current ? _etk_theme_widget_current : _etk_theme_widget_default;
    if (color_type < 0 || color_type >= ETK_COLOR_NUM_COLORS)
       color_type = ETK_COLOR_FOREGROUND;
-   
+
    if (file)
    {
       color_string = edje_file_data_get(file, _etk_theme_color_names[color_type]);
@@ -468,13 +468,13 @@ Etk_Bool etk_theme_color_get(const char *file, Etk_Color_Type color_type, int *r
       }
       free(color_string);
    }
-   
+
    /* The color has not been found, we set it to its default value */
    if (r)   *r = _etk_theme_default_colors[color_type][0];
    if (g)   *g = _etk_theme_default_colors[color_type][1];
    if (b)   *b = _etk_theme_default_colors[color_type][2];
    if (a)   *a = _etk_theme_default_colors[color_type][3];
-   
+
    return ETK_FALSE;
 }
 
@@ -489,21 +489,21 @@ static char *_etk_theme_find(const char *subdir, const char *theme_name)
 {
    char path[PATH_MAX];
    char *home;
-   
+
    if (!theme_name || !subdir)
       return NULL;
-   
+
    if ((home = getenv("HOME")))
    {
       snprintf(path, PATH_MAX, "%s/.e/etk/%s/%s.edj", home, subdir, theme_name);
       if (ecore_file_exists(path))
          return strdup(path);
    }
-   
+
    snprintf(path, PATH_MAX, PACKAGE_DATA_DIR"/%s/%s.edj", subdir, theme_name);
    if (ecore_file_exists(path))
       return strdup(path);
-   
+
    return NULL;
 }
 

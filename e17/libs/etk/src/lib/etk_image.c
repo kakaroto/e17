@@ -55,7 +55,7 @@ Etk_Type *etk_image_type_get(void)
    {
       image_type = etk_type_new("Etk_Image", ETK_WIDGET_TYPE, sizeof(Etk_Image),
          ETK_CONSTRUCTOR(_etk_image_constructor), ETK_DESTRUCTOR(_etk_image_destructor));
-      
+
       etk_type_property_add(image_type, "source", ETK_IMAGE_SOURCE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE, etk_property_value_int(ETK_IMAGE_FILE));
       etk_type_property_add(image_type, "file", ETK_IMAGE_FILE_PROPERTY,
@@ -98,7 +98,7 @@ Etk_Widget *etk_image_new(void)
 Etk_Widget *etk_image_new_from_file(const char *filename, const char *key)
 {
    Etk_Widget *image;
-   
+
    image = etk_image_new();
    etk_image_set_from_file(ETK_IMAGE(image), filename, key);
    return image;
@@ -113,7 +113,7 @@ Etk_Widget *etk_image_new_from_file(const char *filename, const char *key)
 Etk_Widget *etk_image_new_from_edje(const char *filename, const char *group)
 {
    Etk_Widget *image;
-   
+
    image = etk_image_new();
    etk_image_set_from_edje(ETK_IMAGE(image), filename, group);
    return image;
@@ -128,7 +128,7 @@ Etk_Widget *etk_image_new_from_edje(const char *filename, const char *group)
 Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id, Etk_Stock_Size stock_size)
 {
    Etk_Widget *image;
-   
+
    image = etk_image_new();
    etk_image_set_from_stock(ETK_IMAGE(image), stock_id, stock_size);
    return image;
@@ -142,7 +142,7 @@ Etk_Widget *etk_image_new_from_stock(Etk_Stock_Id stock_id, Etk_Stock_Size stock
 Etk_Widget *etk_image_new_from_evas_object(Evas_Object *evas_object)
 {
    Etk_Widget *image;
-   
+
    image = etk_image_new();
    etk_image_set_from_evas_object(ETK_IMAGE(image), evas_object);
    return image;
@@ -160,7 +160,7 @@ Etk_Widget *etk_image_new_from_evas_object(Evas_Object *evas_object)
 Etk_Widget *etk_image_new_from_data(int width, int height, void *data, Etk_Bool copy)
 {
    Etk_Widget *image;
-   
+
    image = etk_image_new();
    etk_image_set_from_data(ETK_IMAGE(image), width, height, data, copy);
    return image;
@@ -176,7 +176,7 @@ void etk_image_set_from_file(Etk_Image *image, const char *filename, const char 
 {
    if (!image)
       return;
-   
+
    _etk_image_source_set(image, ETK_IMAGE_FILE);
    if (image->info.file.filename != filename)
    {
@@ -228,7 +228,7 @@ void etk_image_set_from_edje(Etk_Image *image, const char *filename, const char 
 {
    if (!image)
       return;
-   
+
    _etk_image_source_set(image, ETK_IMAGE_EDJE);
    if (image->info.edje.filename != filename)
    {
@@ -281,7 +281,7 @@ void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id, Etk_Stock
       return;
    if (image->source == ETK_IMAGE_STOCK && image->info.stock.id == stock_id && image->info.stock.size == stock_size)
       return;
-   
+
    _etk_image_source_set(image, ETK_IMAGE_STOCK);
    if (image->info.stock.id != stock_id)
    {
@@ -293,7 +293,7 @@ void etk_image_set_from_stock(Etk_Image *image, Etk_Stock_Id stock_id, Etk_Stock
       image->info.stock.size = stock_size;
       etk_object_notify(ETK_OBJECT(image), "stock-size");
    }
-   
+
    _etk_image_load(image);
 }
 
@@ -330,7 +330,7 @@ void etk_image_set_from_evas_object(Etk_Image *image, Evas_Object *evas_object)
 {
    if (!image)
       return;
-   
+
    _etk_image_source_set(image, ETK_IMAGE_EVAS_OBJECT);
    if (image->object != evas_object)
    {
@@ -370,9 +370,9 @@ void etk_image_set_from_data(Etk_Image *image, int width, int height, void *data
 {
    if (!image)
       return;
-   
+
    _etk_image_source_set(image, ETK_IMAGE_DATA);
-   
+
    if (data && width > 0 && height > 0)
    {
       image->info.data.size.w = width;
@@ -386,7 +386,7 @@ void etk_image_set_from_data(Etk_Image *image, int width, int height, void *data
       else
          image->info.data.pixels = data;
    }
-   
+
    _etk_image_load(image);
 }
 
@@ -403,7 +403,7 @@ void *etk_image_data_get(Etk_Image *image, Etk_Bool for_writing)
 {
    if (!image)
       return NULL;
-   
+
    if (image->source == ETK_IMAGE_FILE)
    {
       if (image->object)
@@ -416,7 +416,7 @@ void *etk_image_data_get(Etk_Image *image, Etk_Bool for_writing)
       else
          return image->info.data.pixels;
    }
-   
+
    return NULL;
 }
 
@@ -440,10 +440,10 @@ Etk_Image_Source etk_image_source_get(Etk_Image *image)
 void etk_image_update(Etk_Image *image)
 {
    int w, h;
-   
+
    if (!image)
       return;
-   
+
    etk_image_size_get(image, &w, &h);
    etk_image_update_rect(image, 0, 0, w, h);
 }
@@ -474,7 +474,7 @@ void etk_image_copy(Etk_Image *dest_image, Etk_Image *src_image)
 {
    if (!dest_image || !src_image || dest_image == src_image)
       return;
-   
+
    switch (src_image->source)
    {
       case ETK_IMAGE_FILE:
@@ -496,7 +496,7 @@ void etk_image_copy(Etk_Image *dest_image, Etk_Image *src_image)
       default:
          break;
    }
-   
+
    etk_image_aspect_ratio_set(dest_image, src_image->aspect_ratio);
    etk_image_keep_aspect_set(dest_image, src_image->keep_aspect);
 }
@@ -515,16 +515,16 @@ void etk_image_size_get(Etk_Image *image, int *width, int *height)
       *width = 0;
    if (height)
       *height = 0;
-   
+
    if (!image || !image->object)
       return;
-   
+
    if (image->source == ETK_IMAGE_FILE || image->source == ETK_IMAGE_DATA)
       evas_object_image_size_get(image->object, width, height);
    else if (image->source == ETK_IMAGE_EDJE || image->source == ETK_IMAGE_STOCK)
    {
       Evas_Coord min_x, min_y, calc_x, calc_y;
-      
+
       edje_object_size_min_get(image->object, &min_x, &min_y);
       edje_object_size_min_calc(image->object, &calc_x, &calc_y);
       if (width)
@@ -571,7 +571,7 @@ void etk_image_aspect_ratio_set(Etk_Image *image, double aspect_ratio)
 {
    if (!image || image->aspect_ratio)
       return;
-   
+
    image->aspect_ratio = aspect_ratio;
    etk_widget_redraw_queue(ETK_WIDGET(image));
    etk_object_notify(ETK_OBJECT(image), "aspect-ratio");
@@ -770,7 +770,7 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       double aspect_ratio;
       int image_w, image_h;
       int new_size;
-      
+
       if (image->aspect_ratio > 0.0)
          aspect_ratio = image->aspect_ratio;
       else
@@ -783,7 +783,7 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          }
          aspect_ratio = (double)image_w / (double)image_h;
       }
-      
+
       if (geometry.h * aspect_ratio > geometry.w)
       {
          new_size = geometry.w / aspect_ratio;
@@ -797,10 +797,10 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          geometry.w = new_size;
       }
    }
-   
+
    if (image->source == ETK_IMAGE_FILE || image->source == ETK_IMAGE_DATA)
       evas_object_image_fill_set(image->object, 0, 0, geometry.w, geometry.h);
-   
+
    evas_object_move(image->object, geometry.x, geometry.y);
    evas_object_resize(image->object, geometry.w, geometry.h);
 }
@@ -815,7 +815,7 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 static void _etk_image_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Image *image;
-   
+
    if (!(image = ETK_IMAGE(object)))
       return;
    _etk_image_load(image);
@@ -832,7 +832,7 @@ static void _etk_image_source_set(Etk_Image *image, Etk_Image_Source source)
 {
    if (!image || image->source == source)
       return;
-   
+
    switch (image->source)
    {
       case ETK_IMAGE_FILE:
@@ -850,7 +850,7 @@ static void _etk_image_source_set(Etk_Image *image, Etk_Image_Source source)
       default:
          break;
    }
-   
+
    switch (source)
    {
       case ETK_IMAGE_FILE:
@@ -874,11 +874,11 @@ static void _etk_image_source_set(Etk_Image *image, Etk_Image_Source source)
       default:
          break;
    }
-   
+
    if (image->object && image->source != ETK_IMAGE_EVAS_OBJECT)
       evas_object_del(image->object);
    image->object = NULL;
-   
+
    image->source = source;
    etk_object_notify(ETK_OBJECT(image), "source");
 }
@@ -887,10 +887,10 @@ static void _etk_image_source_set(Etk_Image *image, Etk_Image_Source source)
 static void _etk_image_load(Etk_Image *image)
 {
    Evas *evas;
-   
+
    if (!image || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(image))))
       return;
-   
+
    /* Create the Evas object */
    if (!image->object)
    {
@@ -908,11 +908,11 @@ static void _etk_image_load(Etk_Image *image)
             break;
       }
    }
-   
+
    if (!image->object)
       return;
    etk_widget_member_object_add(ETK_WIDGET(image), image->object);
-   
+
    /* Load the image */
    switch (image->source)
    {
@@ -920,7 +920,7 @@ static void _etk_image_load(Etk_Image *image)
       {
          const char *image_file;
          int error_code;
-         
+
          evas_object_image_file_get(image->object, &image_file, NULL);
          if (!image_file || !image->info.file.filename || strcmp(image_file, image->info.file.filename) != 0)
          {
@@ -935,7 +935,7 @@ static void _etk_image_load(Etk_Image *image)
       {
          const char *file, *key;
          int error_code;
-         
+
          if (image->source == ETK_IMAGE_STOCK)
          {
             file = etk_theme_icon_path_get();
@@ -946,7 +946,7 @@ static void _etk_image_load(Etk_Image *image)
             file = image->info.edje.filename;
             key = image->info.edje.group;
          }
-         
+
          edje_object_file_set(image->object, file, key);
          if (file && (error_code = edje_object_load_error_get(image->object)))
             ETK_WARNING("Unable to load image from edje-file  \"%s\"/\"%s\", error %d", file, key, error_code);
@@ -959,7 +959,7 @@ static void _etk_image_load(Etk_Image *image)
       default:
          break;
    }
-   
+
    evas_object_show(image->object);
    etk_widget_size_recalc_queue(ETK_WIDGET(image));
 }
@@ -978,7 +978,7 @@ static void _etk_image_load(Etk_Image *image)
  * @image html widgets/image.png
  * The image can be loaded from several sources: image files (png, jpg, and the other formats supported by evas), edje
  * files (edj), stock-icons, data pixels or given Evas objects.
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

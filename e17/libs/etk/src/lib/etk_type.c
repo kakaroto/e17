@@ -92,7 +92,7 @@ void etk_type_delete(Etk_Type *type)
 {
    if (!type)
       return;
-   
+
    _etk_type_types_hash = evas_hash_del(_etk_type_types_hash, type->name, NULL);
    _etk_type_free(type);
 }
@@ -372,7 +372,7 @@ static Evas_Bool _etk_type_property_free_cb(Evas_Hash *hash, const char *key, vo
 static Evas_Bool _etk_type_property_add_to_list(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Evas_List **properties;
-   
+
    if (data && (properties = fdata))
       *properties = evas_list_append(*properties, data);
    return 1;

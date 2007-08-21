@@ -8,7 +8,7 @@
  * @addtogroup Etk_Utils
  * @{
  */
- 
+
 /**
  * @brief Combines the returned boolean values together by performing an "OR" operation
  * @param return_value the location where to store the result

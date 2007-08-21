@@ -13,21 +13,21 @@
  * - source:
  * drag_begin: drag has started
  * drag_end: drag has ended
- * 
+ *
  * - destination:
  * drag_leave: mouse leaves widget
  * drag_motion: mouse is moving on widget
  * drag_drop: object dropped on widget
- * 
+ *
  * selection_received: when our widget gets the selection it has asked for
  *                     (ie, we want to get a selection)
  * selection_get: when a request for a selection has been made to our widget
  *                (ie, someone is getting our selection from us)
  * selection_clear_event: the selection has been cleared
- * 
+ *
  * clipboard_received: when our widget gets the clipboard data it has asked for
  *                     (ie, we want to get a clipboard's text / image)
- * 
+ *
  */
 
 /**************************

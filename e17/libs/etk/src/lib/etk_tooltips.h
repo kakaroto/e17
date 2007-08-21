@@ -22,7 +22,7 @@ Etk_Bool etk_tooltips_tip_visible();
 
 void etk_tooltips_pop_up(Etk_Widget *widget);
 void etk_tooltips_pop_down();
-  
+
 /** @} */
 
 #endif

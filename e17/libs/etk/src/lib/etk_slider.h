@@ -52,7 +52,7 @@ struct Etk_Slider
    /* private: */
    /* Inherit from Etk_Range */
    Etk_Range range;
-   
+
    char *format;
    Etk_Bool inverted;
    Etk_Bool dragging;

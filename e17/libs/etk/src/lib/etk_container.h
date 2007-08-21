@@ -29,7 +29,7 @@ struct Etk_Container
    /* private: */
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
-   
+
    void (*child_add)(Etk_Container *container, Etk_Widget *widget);
    void (*child_remove)(Etk_Container *container, Etk_Widget *widget);
    Evas_List *(*children_get)(Etk_Container *container);

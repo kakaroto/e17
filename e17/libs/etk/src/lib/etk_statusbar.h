@@ -29,7 +29,7 @@ struct Etk_Statusbar
    /* private: */
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
-   
+
    Etk_Bool has_resize_grip;
    Evas_List *msg_stack;
    int next_message_id;

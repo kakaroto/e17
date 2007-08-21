@@ -31,7 +31,7 @@ static void _etk_dialog_constructor(Etk_Dialog *dialog);
 static void _etk_dialog_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_dialog_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data);
-  
+
 static Etk_Signal *_etk_dialog_signals[ETK_DIALOG_NUM_SIGNALS];
 
 
@@ -131,7 +131,7 @@ void etk_dialog_pack_button_in_action_area(Etk_Dialog *dialog, Etk_Button *butto
 {
    if (!dialog)
       return;
-   
+
    etk_dialog_button_response_id_set(dialog, button, response_id);
    etk_box_append(ETK_BOX(dialog->action_area_hbox), ETK_WIDGET(button), group, fill_policy, padding);
 }
@@ -152,7 +152,7 @@ Etk_Widget *etk_dialog_button_add(Etk_Dialog *dialog, const char *label, int res
 
    if (!dialog)
       return NULL;
-   
+
    button = etk_button_new_with_label(label);
    etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_BOX_START, ETK_BOX_FILL, 0);
    etk_widget_show(button);
@@ -175,7 +175,7 @@ Etk_Widget *etk_dialog_button_add_from_stock(Etk_Dialog *dialog, int stock_id, i
 
    if (!dialog)
       return NULL;
-   
+
    button = etk_button_new_from_stock(stock_id);
    etk_dialog_pack_button_in_action_area(dialog, ETK_BUTTON(button), response_id, ETK_BOX_START, ETK_BOX_FILL, 0);
    etk_widget_show(button);
@@ -231,10 +231,10 @@ void etk_dialog_action_area_alignment_set(Etk_Dialog *dialog, float align)
 float etk_dialog_action_area_alignment_get(Etk_Dialog *dialog)
 {
    float align;
-   
+
    if (!dialog)
       return 0.0;
-   
+
    etk_alignment_get(ETK_ALIGNMENT(dialog->action_area_alignment), &align, NULL, NULL, NULL);
    return align;
 }
@@ -280,11 +280,11 @@ void etk_dialog_button_response_id_set(Etk_Dialog *dialog, Etk_Button *button, i
 
    if (!dialog || !button)
       return;
-   
+
    id = malloc(sizeof(int));
    *id = response_id;
    etk_object_data_set_full(ETK_OBJECT(button), "_Etk_Dialog::Response_Id", id, free);
-   
+
    etk_signal_disconnect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb));
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
 }
@@ -298,7 +298,7 @@ void etk_dialog_button_response_id_set(Etk_Dialog *dialog, Etk_Button *button, i
 int etk_dialog_button_response_id_get(Etk_Button *button)
 {
    int *id;
-   
+
    if (!button || !(id = (int *)etk_object_data_get(ETK_OBJECT(button), "_Etk_Dialog::Response_Id")))
       return ETK_RESPONSE_NONE;
    return *id;
@@ -349,12 +349,12 @@ static void _etk_dialog_constructor(Etk_Dialog *dialog)
    dialog->dialog_vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(dialog), dialog->dialog_vbox);
    etk_widget_show(dialog->dialog_vbox);
-   
+
    dialog->main_area_vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_widget_internal_set(dialog->main_area_vbox, ETK_TRUE);
    etk_box_append(ETK_BOX(dialog->dialog_vbox), dialog->main_area_vbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_widget_show(dialog->main_area_vbox);
-   
+
    dialog->separator = etk_hseparator_new();
    etk_widget_internal_set(dialog->separator, ETK_TRUE);
    etk_widget_theme_parent_set(dialog->separator, ETK_WIDGET(dialog));
@@ -433,7 +433,7 @@ static void _etk_dialog_property_get(Etk_Object *object, int property_id, Etk_Pr
 static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
 {
    int response_id;
-   
+
    if ((response_id = etk_dialog_button_response_id_get(ETK_BUTTON(object))) == ETK_RESPONSE_NONE)
       return;
    etk_signal_emit(_etk_dialog_signals[ETK_DIALOG_RESPONSE_SIGNAL], ETK_OBJECT(data), NULL, response_id);
@@ -490,7 +490,7 @@ static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
  * etk_dialog_button_add_from_stock(dialog, ETK_STOCK_DIALOG_CLOSE, ETK_RESPONSE_CLOSE);
  * etk_signal_connect("response", ETK_OBJECT(dialog), ETK_CALLBACK(dialog_response_cb), NULL);
  * @endcode @n
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

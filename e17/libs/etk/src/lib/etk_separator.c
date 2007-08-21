@@ -89,7 +89,7 @@ Etk_Widget *etk_vseparator_new(void)
  *
  * @image html widgets/separator.png
  * Etk_Separator is the base class for Etk_HSeparator (horizontal separator) and Etk_VSeparator (vertical separator)
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

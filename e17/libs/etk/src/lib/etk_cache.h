@@ -21,11 +21,11 @@ struct Etk_Cache
    /* private: */
    Evas_List *cached_objects;
    int size;
-   
+
    void (*free_cb)(Evas_Object *object, void *data);
    void *free_cb_data;
 };
- 
+
 
 Etk_Cache   *etk_cache_new(int size);
 void         etk_cache_destroy(Etk_Cache *cache);

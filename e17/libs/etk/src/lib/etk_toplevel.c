@@ -50,12 +50,12 @@ Etk_Type *etk_toplevel_type_get(void)
    {
       toplevel_type = etk_type_new("Etk_Toplevel", ETK_BIN_TYPE, sizeof(Etk_Toplevel),
          ETK_CONSTRUCTOR(_etk_toplevel_constructor), ETK_DESTRUCTOR(_etk_toplevel_destructor));
-      
+
       etk_type_property_add(toplevel_type, "evas", ETK_TOPLEVEL_EVAS_PROPERTY,
          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE, etk_property_value_pointer(NULL));
       etk_type_property_add(toplevel_type, "focused-widget", ETK_TOPLEVEL_FOCUSED_WIDGET_PROPERTY,
          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
-   
+
       toplevel_type->property_set = _etk_toplevel_property_set;
       toplevel_type->property_get = _etk_toplevel_property_get;
    }
@@ -165,10 +165,10 @@ Etk_Widget *etk_toplevel_focused_widget_get(Etk_Toplevel *toplevel)
 Etk_Widget *etk_toplevel_focused_widget_prev_get(Etk_Toplevel *toplevel)
 {
    Etk_Widget *prev;
-   
+
    if (!toplevel)
       return NULL;
-   
+
    prev = toplevel->focused_widget;
    while ((prev = _etk_toplevel_prev_to_focus_get(toplevel, prev))
          && (!prev->focusable || etk_widget_disabled_get(prev)));
@@ -184,10 +184,10 @@ Etk_Widget *etk_toplevel_focused_widget_prev_get(Etk_Toplevel *toplevel)
 Etk_Widget *etk_toplevel_focused_widget_next_get(Etk_Toplevel *toplevel)
 {
    Etk_Widget *next;
-   
+
    if (!toplevel)
       return NULL;
-   
+
    next = toplevel->focused_widget;
    while ((next = _etk_toplevel_next_to_focus_get(toplevel, next))
          && (!next->focusable || etk_widget_disabled_get(next)));
@@ -198,7 +198,7 @@ Etk_Widget *etk_toplevel_focused_widget_next_get(Etk_Toplevel *toplevel)
  * @brief Pushs a pointer type on the pointer stack. It will change the pointer shape
  * @param toplevel a toplevel widget
  * @param pointer_type the type of pointer to push on the stack
- */ 
+ */
 void etk_toplevel_pointer_push(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type)
 {
    Etk_Pointer_Type *prev_pointer_type;
@@ -221,7 +221,7 @@ void etk_toplevel_pointer_push(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_
  * It will change the pointer shape if the pointer to pop out is the one currently on the top of the stack
  * @param toplevel a toplevel widget
  * @param pointer_type the type of pointer to pop out of the stack. -1 to pop the top pointer of the stack
- */ 
+ */
 void etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type)
 {
    Evas_List *l;
@@ -229,12 +229,12 @@ void etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_t
    Etk_Pointer_Type *prev_pointer_type_ptr;
    Etk_Pointer_Type *current_pointer_ptr;
    Etk_Pointer_Type *p;
-   
+
    if (!toplevel || !(prev_pointer_type_ptr = evas_list_data(evas_list_last(toplevel->pointer_stack))))
       return;
-   
+
    prev_pointer_type = *prev_pointer_type_ptr;
-   
+
    if (pointer_type < 0)
    {
       toplevel->pointer_stack = evas_list_remove_list(toplevel->pointer_stack, evas_list_last(toplevel->pointer_stack));
@@ -385,7 +385,7 @@ static void _etk_toplevel_key_down_cb(void *data, Evas *e, Evas_Object *obj, voi
 
    if (!(toplevel = ETK_TOPLEVEL(data)))
       return;
-   
+
    focused = toplevel->focused_widget ? toplevel->focused_widget : ETK_WIDGET(toplevel);
    for (widget = focused; widget && propagate; widget = widget->parent)
    {
@@ -404,7 +404,7 @@ static void _etk_toplevel_key_up_cb(void *data, Evas *e, Evas_Object *obj, void 
 
    if (!(toplevel = ETK_TOPLEVEL(data)))
       return;
-   
+
    focused = toplevel->focused_widget ? toplevel->focused_widget : ETK_WIDGET(toplevel);
    for (widget = focused; widget && propagate; widget = widget->parent)
    {
@@ -424,7 +424,7 @@ static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_W
 {
    Etk_Widget *prev;
    Evas_List *focus_order, *l;
-   
+
    if (!toplevel)
       return NULL;
    if (!widget)
@@ -435,7 +435,7 @@ static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_W
       if (widget->focusable)
          return widget;
    }
-   
+
    prev = NULL;
    for ( ; widget->parent; widget = widget->parent)
    {
@@ -457,7 +457,7 @@ static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_W
       else
          break;
    }
-   
+
    return prev;
 }
 
@@ -466,7 +466,7 @@ static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_W
 {
    Etk_Widget *next;
    Evas_List *focus_order, *l;
-   
+
    if (!toplevel)
       return NULL;
    if (!widget)
@@ -477,7 +477,7 @@ static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_W
       if (widget->focusable)
          return widget;
    }
-   
+
    next = NULL;
    for ( ; widget->parent; widget = widget->parent)
    {
@@ -499,7 +499,7 @@ static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_W
       else
          break;
    }
-   
+
    return next;
 }
 
@@ -542,7 +542,7 @@ static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_W
  * etk_signal_connect("entered", ETK_OBJECT(button), ETK_CALLBACK(_button_entered_cb), NULL);
  * etk_signal_connect("left", ETK_OBJECT(button), ETK_CALLBACK(_button_left_cb), NULL);
  * @endcode @n
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

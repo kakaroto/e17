@@ -30,7 +30,7 @@ typedef enum
    ETK_TABLE_HOMOGENEOUS = ETK_TABLE_HHOMOGENEOUS | ETK_TABLE_VHOMOGENEOUS   /**< Equivalent to ETK_TABLE_HHOMOGENEOUS | ETK_TABLE_VHOMOGENEOUS */
 } Etk_Table_Homogeneous;
 
-/** @brief Describes how a child of the table should fill and expand the space allocated for it */ 
+/** @brief Describes how a child of the table should fill and expand the space allocated for it */
 typedef enum
 {
    ETK_TABLE_NONE = 0,            /**< The child doesn't fill or expand */

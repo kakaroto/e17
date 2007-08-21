@@ -34,7 +34,7 @@ enum Etk_Window_Property_Id
    ETK_WINDOW_FOCUSED_PROPERTY,
    ETK_WINDOW_DECORATED_PROPERTY,
    ETK_WINDOW_SHAPED_PROPERTY,
-   ETK_WINDOW_HAS_ALPHA_PROPERTY,     
+   ETK_WINDOW_HAS_ALPHA_PROPERTY,
    ETK_WINDOW_SKIP_TASKBAR_PROPERTY,
    ETK_WINDOW_SKIP_PAGER_PROPERTY
 };
@@ -74,13 +74,13 @@ Etk_Type *etk_window_type_get(void)
    if (!window_type)
    {
        window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_TYPE, sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor), ETK_DESTRUCTOR(_etk_window_destructor));
-   
+
       _etk_window_signals[ETK_WINDOW_MOVED_SIGNAL] = etk_signal_new("moved", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_RESIZED_SIGNAL] = etk_signal_new("resized", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_FOCUSED_IN_SIGNAL] = etk_signal_new("focused-in", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_FOCUSED_OUT_SIGNAL] = etk_signal_new("focused-out", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
       _etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete-event", window_type, ETK_MEMBER_OFFSET(Etk_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
-   
+
       etk_type_property_add(window_type, "title", ETK_WINDOW_TITLE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(window_type, "iconified", ETK_WINDOW_ICONIFIED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(window_type, "maximized", ETK_WINDOW_MAXIMIZED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
@@ -89,10 +89,10 @@ Etk_Type *etk_window_type_get(void)
       etk_type_property_add(window_type, "focused", ETK_WINDOW_FOCUSED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(window_type, "decorated", ETK_WINDOW_DECORATED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(window_type, "shaped", ETK_WINDOW_SHAPED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      etk_type_property_add(window_type, "has-alpha", ETK_WINDOW_HAS_ALPHA_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));      
+      etk_type_property_add(window_type, "has-alpha", ETK_WINDOW_HAS_ALPHA_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(window_type, "skip-taskbar", ETK_WINDOW_SKIP_TASKBAR_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(window_type, "skip-pager", ETK_WINDOW_SKIP_PAGER_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      
+
       window_type->property_set = _etk_window_property_set;
       window_type->property_get = _etk_window_property_get;
    }
@@ -118,7 +118,7 @@ Etk_Widget *etk_window_new(void)
 void etk_window_delete_request(Etk_Window *window)
 {
    Etk_Bool result;
-   
+
    etk_signal_emit(_etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL], ETK_OBJECT(window), &result);
    if (!result)
       etk_object_destroy(ETK_OBJECT(window));
@@ -128,7 +128,7 @@ void etk_window_delete_request(Etk_Window *window)
  * @brief Sets the title of the window
  * @param window the window
  * @param title the title to set
- */ 
+ */
 void etk_window_title_set(Etk_Window *window, const char *title)
 {
    if (!window)
@@ -140,7 +140,7 @@ void etk_window_title_set(Etk_Window *window, const char *title)
  * @brief Gets the title of the window
  * @param window the window
  * @return Returns the title of the window
- */ 
+ */
 const char *etk_window_title_get(Etk_Window *window)
 {
    if (!window)
@@ -181,7 +181,7 @@ void etk_window_move(Etk_Window *window, int x, int y)
  * @param h the new height of the window
  */
 void etk_window_resize(Etk_Window *window, int w, int h)
-{   
+{
    if (!window)
       return;
    etk_engine_window_resize(window, w, h);
@@ -212,16 +212,16 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
 {
    int x, y, w, h;
    int cw, ch;
-   
+
    if (!window_to_center)
       return;
-   
+
    if (window_to_center->center_on_window)
    {
       etk_object_weak_pointer_remove(ETK_OBJECT(window), (void **)(&window_to_center->center_on_window));
       window_to_center->center_on_window = NULL;
    }
-   
+
    /* If the window has not been been resized yet, we can't center it already,
     * so we queue the center-action for later */
    if (window_to_center->wait_size_request)
@@ -249,10 +249,10 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
 void etk_window_move_to_mouse(Etk_Window *window)
 {
    int x, y;
-   
+
    if (!window)
       return;
-   
+
    etk_engine_mouse_position_get(&x, &y);
    etk_window_move(window, x, y);
 }
@@ -268,15 +268,15 @@ void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window
    if (!window_to_modal)
       return;
    etk_engine_window_modal_for_window(window_to_modal, window);
-   
-   if (window)     
+
+   if (window)
      {
 	etk_signal_connect_swapped("shown", ETK_OBJECT(window_to_modal),
 				   ETK_CALLBACK(_etk_window_disable),
-				   window);	
+				   window);
 	etk_signal_connect_swapped("hidden", ETK_OBJECT(window_to_modal),
 				   ETK_CALLBACK(_etk_window_enable),
-				   window);	
+				   window);
 	etk_signal_connect_swapped("delete-event", ETK_OBJECT(window_to_modal),
 				   ETK_CALLBACK(_etk_window_enable),
 				   window);
@@ -578,7 +578,7 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
  * @return Return ETK_TRUE so the the program won't quit
  */
 Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data)
-{   
+{
    etk_widget_hide(ETK_WIDGET(window));
    return ETK_TRUE;
 }
@@ -594,19 +594,19 @@ static void _etk_window_constructor(Etk_Window *window)
 {
    if (!window)
       return;
- 
+
    window->wait_size_request = ETK_TRUE;
    window->center_on_window = NULL;
    window->delete_event = _etk_window_delete_event_handler;
-   
+
    etk_engine_window_constructor(window);
-   
+
    ETK_TOPLEVEL(window)->pointer_set = _etk_window_pointer_set;
    ETK_TOPLEVEL(window)->evas_position_get = _etk_window_evas_position_get;
    ETK_TOPLEVEL(window)->screen_position_get = _etk_window_screen_position_get;
    ETK_TOPLEVEL(window)->size_get = _etk_window_size_get;
    ETK_TOPLEVEL(window)->evas = etk_engine_window_evas_get(window);
-   
+
    /* TODO: remove the font path */
    evas_font_path_append(ETK_TOPLEVEL(window)->evas, PACKAGE_DATA_DIR "/fonts/");
    etk_signal_connect("size-requested", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_size_requested_cb), NULL);
@@ -620,9 +620,9 @@ static void _etk_window_destructor(Etk_Window *window)
 {
    if (!window)
       return;
-   
+
    etk_engine_window_destructor(window);
-   
+
    if (window->center_on_window)
       etk_object_weak_pointer_remove(ETK_OBJECT(window->center_on_window), (void **)(&window->center_on_window));
 }
@@ -634,7 +634,7 @@ static void _etk_window_property_set(Etk_Object *object, int property_id, Etk_Pr
 
    if (!(window = ETK_WINDOW(object)) || !value)
       return;
-   
+
    switch (property_id)
    {
       case ETK_WINDOW_TITLE_PROPERTY:
@@ -663,7 +663,7 @@ static void _etk_window_property_set(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_WINDOW_HAS_ALPHA_PROPERTY:
          etk_window_has_alpha_set(window, etk_property_value_bool_get(value));
-         break;      
+         break;
       case ETK_WINDOW_SKIP_TASKBAR_PROPERTY:
          etk_window_skip_taskbar_hint_set(window, etk_property_value_bool_get(value));
          break;
@@ -711,7 +711,7 @@ static void _etk_window_property_get(Etk_Object *object, int property_id, Etk_Pr
          break;
       case ETK_WINDOW_HAS_ALPHA_PROPERTY:
          etk_property_value_bool_set(value, etk_window_has_alpha_get(window));
-         break;      
+         break;
       case ETK_WINDOW_SKIP_TASKBAR_PROPERTY:
          etk_property_value_bool_set(value, etk_window_skip_taskbar_hint_get(window));
          break;
@@ -733,7 +733,7 @@ static void _etk_window_property_get(Etk_Object *object, int property_id, Etk_Pr
 static void _etk_window_shown_cb(Etk_Object *object, void *data)
 {
    Etk_Window *window;
-   
+
    if (!(window = ETK_WINDOW(object)) || window->wait_size_request)
       return;
    etk_engine_window_show(window);
@@ -743,7 +743,7 @@ static void _etk_window_shown_cb(Etk_Object *object, void *data)
 static void _etk_window_hidden_cb(Etk_Object *object, void *data)
 {
    Etk_Window *window;
-   
+
    if (!(window = ETK_WINDOW(object)) || window->wait_size_request)
       return;
    etk_engine_window_hide(window);
@@ -753,14 +753,14 @@ static void _etk_window_hidden_cb(Etk_Object *object, void *data)
 static void _etk_window_size_requested_cb(Etk_Object *object, Etk_Size *requested_size, void *data)
 {
    Etk_Window *window;
-   
+
    if (!(window = ETK_WINDOW(object)) || !requested_size)
       return;
-   
+
    if (requested_size->w >= 0 && requested_size->h >= 0)
    {
       etk_engine_window_size_min_set(window, requested_size->w, requested_size->h);
-      
+
       if (window->wait_size_request)
       {
          window->wait_size_request = ETK_FALSE;
@@ -807,7 +807,7 @@ static void _etk_window_disable(Etk_Window *window)
 {
    if (!window)
       return;
-   
+
    etk_widget_disabled_set(ETK_WIDGET(window), ETK_TRUE);
 }
 
@@ -816,7 +816,7 @@ static void _etk_window_enable(Etk_Window *window)
 {
    if (!window)
       return;
-   
+
    etk_widget_disabled_set(ETK_WIDGET(window), ETK_FALSE);
 }
 

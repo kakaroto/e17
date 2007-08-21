@@ -37,10 +37,10 @@ typedef struct Etk_Iconbox_Grid
    int xoffset;
    int yoffset;
    int num_cols;
-   
+
    Evas_List *icon_objects;
    Evas_Object *clip;
-   
+
    Evas_Object *selection_rect;
    Etk_Bool selection_started;
    int selection_orig_x;
@@ -51,7 +51,7 @@ typedef struct Etk_Iconbox_Grid
    int selection_last_col;
    int selection_first_row;
    int selection_last_row;
-   
+
    Ecore_Timer *scroll_timer;
    float hscrolling_speed;
    float vscrolling_speed;
@@ -151,32 +151,32 @@ Etk_Widget *etk_iconbox_new(void)
 Etk_Iconbox_Model *etk_iconbox_model_new(Etk_Iconbox *iconbox)
 {
    Etk_Iconbox_Model *model;
-   
+
    if (!iconbox)
       return NULL;
-   
+
    model = malloc(sizeof(Etk_Iconbox_Model));
    model->iconbox = iconbox;
-   
+
    model->width = 110;
    model->height = 76;
    model->xpadding = 5;
    model->ypadding = 4;
-   
+
    model->icon_x = 26;
    model->icon_y = 0;
    model->icon_width = 48;
    model->icon_height = 48;
    model->icon_fill = ETK_FALSE;
    model->icon_keep_aspect = ETK_TRUE;
-   
+
    model->label_x = 0;
    model->label_y = 50;
    model->label_width = 100;
    model->label_height = 18;
    model->label_xalign = 0.5;
    model->label_yalign = 0.0;
-   
+
    iconbox->models = evas_list_append(iconbox->models, model);
    return model;
 }
@@ -189,15 +189,15 @@ Etk_Iconbox_Model *etk_iconbox_model_new(Etk_Iconbox *iconbox)
 void etk_iconbox_model_free(Etk_Iconbox_Model *model)
 {
    Etk_Iconbox *iconbox;
-   
+
    if (!model)
       return;
-   
+
    iconbox = model->iconbox;
    iconbox->models = evas_list_remove(iconbox->models, model);
    if (iconbox->current_model == model)
       iconbox->current_model = evas_list_data(iconbox->models);
-   
+
    free(model);
 }
 
@@ -210,13 +210,13 @@ void etk_iconbox_current_model_set(Etk_Iconbox *iconbox, Etk_Iconbox_Model *mode
 {
    if (!iconbox || (model && model->iconbox != iconbox))
       return;
-   
+
    iconbox->current_model = model;
    etk_range_increments_set(etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(iconbox->scrolled_view)),
       model->width * 0.75, model->width * 3.0);
    etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(iconbox->scrolled_view)),
       model->height * 0.75, model->height * 3.0);
-   
+
    etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
 }
@@ -245,12 +245,12 @@ void etk_iconbox_model_geometry_set(Etk_Iconbox_Model *model, int width, int hei
 {
    if (!model)
       return;
-   
+
    model->width = ETK_MAX(width, 10);
    model->height = ETK_MAX(height, 10);
    model->xpadding = ETK_MAX(xpadding, 0);
    model->ypadding = ETK_MAX(ypadding, 0);
-   
+
    if (model->iconbox && model->iconbox->current_model == model)
    {
       etk_widget_redraw_queue(model->iconbox->grid);
@@ -295,14 +295,14 @@ void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y,
 {
    if (!model)
       return;
-   
+
    model->icon_x = ETK_MAX(x, 0);
    model->icon_y = ETK_MAX(y, 0);
    model->icon_width = ETK_MAX(width, 10);
    model->icon_height = ETK_MAX(height, 10);
    model->icon_fill = fill;
    model->icon_keep_aspect = keep_aspect;
-   
+
    if (model->iconbox && model->iconbox->current_model == model)
    {
       etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(model->iconbox->grid), NULL);
@@ -355,14 +355,14 @@ void etk_iconbox_model_label_geometry_set(Etk_Iconbox_Model *model, int x, int y
 {
    if (!model)
       return;
-   
+
    model->label_x = ETK_MAX(x, 0);
    model->label_y = ETK_MAX(y, 0);
    model->label_width = ETK_MAX(width, 10);
    model->label_height = ETK_MAX(height, 5);
    model->label_xalign = ETK_CLAMP(xalign, 0.0, 1.0);
    model->label_yalign = ETK_CLAMP(yalign, 0.0, 1.0);
-   
+
    if (model->iconbox && model->iconbox->current_model == model)
    {
       etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(model->iconbox->grid), NULL);
@@ -416,7 +416,7 @@ void etk_iconbox_thaw(Etk_Iconbox *iconbox)
 {
    if (!iconbox || !iconbox->frozen)
       return;
-   
+
    etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
    iconbox->frozen = ETK_FALSE;
@@ -437,7 +437,7 @@ Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename,
 
    if (!iconbox)
       return NULL;
-   
+
    icon = malloc(sizeof(Etk_Iconbox_Icon));
    icon->iconbox = iconbox;
    icon->prev = NULL;
@@ -448,7 +448,7 @@ Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename,
    icon->data = NULL;
    icon->data_free_cb = NULL;
    icon->selected = ETK_FALSE;
-   
+
    if (iconbox->last_icon)
    {
       iconbox->last_icon->next = icon;
@@ -458,13 +458,13 @@ Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename,
    if (!iconbox->first_icon)
       iconbox->first_icon = icon;
    iconbox->num_icons++;
-   
+
    if (!iconbox->frozen)
    {
       etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
       etk_widget_redraw_queue(iconbox->grid);
    }
-   
+
    return icon;
 }
 
@@ -475,11 +475,11 @@ Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename,
 void etk_iconbox_icon_del(Etk_Iconbox_Icon *icon)
 {
    Etk_Iconbox *iconbox;
-   
+
    if (!icon)
       return;
    iconbox = icon->iconbox;
-   
+
    if (iconbox->first_icon == icon)
       iconbox->first_icon = icon->next;
    if (iconbox->last_icon == icon)
@@ -489,16 +489,16 @@ void etk_iconbox_icon_del(Etk_Iconbox_Icon *icon)
    if (icon->next)
       icon->next->prev = icon->prev;
    iconbox->num_icons--;
-   
+
    free(icon->filename);
    free(icon->edje_group);
    free(icon->label);
-   
+
    if (icon->data && icon->data_free_cb)
       icon->data_free_cb(icon->data);
-   
+
    free(icon);
-   
+
    if (!iconbox->frozen)
    {
       etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
@@ -517,7 +517,7 @@ void etk_iconbox_clear(Etk_Iconbox *iconbox)
 
    while (iconbox->first_icon)
       etk_iconbox_icon_del(iconbox->first_icon);
-   
+
    etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
 }
@@ -544,20 +544,20 @@ Etk_Iconbox_Icon *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y,
    int col, row;
    int icon_id;
    Etk_Bool over = ETK_FALSE;
-   
+
    if (!iconbox || !(grid = ETK_ICONBOX_GRID(iconbox->grid)) || grid->num_cols <= 0 || !(model = iconbox->current_model))
       return NULL;
-   
+
    etk_widget_inner_geometry_get(iconbox->grid, &grid_geom.x, &grid_geom.y, &grid_geom.w, &grid_geom.h);
    if (x < grid_geom.x || y < grid_geom.y || x > grid_geom.x + grid_geom.w || y > grid_geom.y + grid_geom.h)
       return NULL;
-   
+
    col = (x - grid_geom.x + grid->xoffset) / iconbox->current_model->width;
    row = (y - grid_geom.y + grid->yoffset) / iconbox->current_model->height;
    icon_id = row * grid->num_cols + col;
    if (col >= grid->num_cols || icon_id >= iconbox->num_icons)
       return NULL;
-   
+
    if (over_cell)
       over = ETK_TRUE;
    else
@@ -565,7 +565,7 @@ Etk_Iconbox_Icon *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y,
       if (over_icon)
       {
          int icon_x, icon_y;
-         
+
          icon_x = grid_geom.x - grid->xoffset + (col * model->width) + model->xpadding + model->icon_x;
          icon_y = grid_geom.y - grid->yoffset+ (row * model->height) + model->ypadding + model->icon_y;
          if (x >= icon_x && x <= icon_x + model->icon_width && y >= icon_y && y <= icon_y + model->icon_height)
@@ -574,24 +574,24 @@ Etk_Iconbox_Icon *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y,
       if (over_label)
       {
          int label_x, label_y;
-         
+
          label_x = grid_geom.x - grid->xoffset + (col * model->width) + model->xpadding + model->label_x;
          label_y = grid_geom.y - grid->yoffset + (row * model->height) + model->ypadding + model->label_y;
          if (x >= label_x && x <= label_x + model->label_width && y >= label_y && y <= label_y + model->label_height)
             over = ETK_TRUE;
       }
    }
-   
+
    if (over)
    {
       int i;
       Etk_Iconbox_Icon *icon;
-      
+
       for (i = 0, icon = iconbox->first_icon; i < icon_id && icon; i++, icon = icon->next);
       return icon;
    }
    else
-      return NULL;   
+      return NULL;
 }
 
 /**
@@ -604,7 +604,7 @@ void etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, con
 {
    if (!icon)
       return;
-   
+
    if (icon->filename != filename)
    {
       free(icon->filename);
@@ -615,7 +615,7 @@ void etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, con
       free(icon->edje_group);
       icon->edje_group = edje_group ? strdup(edje_group) : NULL;
    }
-   
+
    if (!icon->iconbox->frozen)
       etk_widget_redraw_queue(icon->iconbox->grid);
 }
@@ -643,12 +643,12 @@ void etk_iconbox_icon_label_set(Etk_Iconbox_Icon *icon, const char *label)
 {
    if (!icon)
       return;
-   
+
    if (icon->label != label)
    {
       free(icon->label);
       icon->label = label ? strdup(label) : NULL;
-      
+
       if (!icon->iconbox->frozen)
          etk_widget_redraw_queue(icon->iconbox->grid);
    }
@@ -688,10 +688,10 @@ void etk_iconbox_icon_data_set_full(Etk_Iconbox_Icon *icon, void *data, void (*f
 {
    if (!icon || (icon->data == data))
       return;
-   
+
    if (icon->data && icon->data_free_cb)
       icon->data_free_cb(icon->data);
-   
+
    icon->data = data;
    icon->data_free_cb = free_cb;
 }
@@ -715,13 +715,13 @@ void *etk_iconbox_icon_data_get(Etk_Iconbox_Icon *icon)
 void etk_iconbox_select_all(Etk_Iconbox *iconbox)
 {
    Etk_Iconbox_Icon *icon;
-   
+
    if (!iconbox)
       return;
-   
+
    for (icon = iconbox->first_icon; icon; icon = icon->next)
       icon->selected = ETK_TRUE;
-   
+
    etk_widget_redraw_queue(iconbox->grid);
    etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ALL_SELECTED_SIGNAL], ETK_OBJECT(iconbox), NULL);
 }
@@ -733,13 +733,13 @@ void etk_iconbox_select_all(Etk_Iconbox *iconbox)
 void etk_iconbox_unselect_all(Etk_Iconbox *iconbox)
 {
    Etk_Iconbox_Icon *icon;
-   
+
    if (!iconbox)
       return;
-   
+
    for (icon = iconbox->first_icon; icon; icon = icon->next)
       icon->selected = ETK_FALSE;
-   
+
    etk_widget_redraw_queue(iconbox->grid);
    etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ALL_UNSELECTED_SIGNAL], ETK_OBJECT(iconbox), NULL);
 }
@@ -753,7 +753,7 @@ void etk_iconbox_icon_select(Etk_Iconbox_Icon *icon)
    if (!icon)
       return;
    icon->selected = ETK_TRUE;
-   
+
    if (!icon->iconbox->frozen)
       etk_widget_redraw_queue(icon->iconbox->grid);
    etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ICON_SELECTED_SIGNAL], ETK_OBJECT(icon->iconbox), NULL, icon);
@@ -768,7 +768,7 @@ void etk_iconbox_icon_unselect(Etk_Iconbox_Icon *icon)
    if (!icon)
       return;
    icon->selected = ETK_FALSE;
-   
+
    if (!icon->iconbox->frozen)
       etk_widget_redraw_queue(icon->iconbox->grid);
    etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ICON_UNSELECTED_SIGNAL], ETK_OBJECT(icon->iconbox), NULL, icon);
@@ -814,14 +814,14 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
 {
    if (!iconbox)
       return;
-   
+
    iconbox->scrolled_view = etk_scrolled_view_new();
    etk_widget_parent_set(iconbox->scrolled_view, ETK_WIDGET(iconbox));
    etk_widget_theme_parent_set(iconbox->scrolled_view, ETK_WIDGET(iconbox));
    etk_widget_internal_set(iconbox->scrolled_view, ETK_TRUE);
    etk_widget_repeat_mouse_events_set(iconbox->scrolled_view, ETK_TRUE);
    etk_widget_show(iconbox->scrolled_view);
-   
+
    iconbox->grid = etk_widget_new(ETK_ICONBOX_GRID_TYPE, "theme-group", "grid", "theme-parent", iconbox,
       "has-event-object", ETK_TRUE, "repeat-mouse-events", ETK_TRUE, "internal", ETK_TRUE, NULL);
    ETK_ICONBOX_GRID(iconbox->grid)->iconbox = iconbox;
@@ -831,16 +831,16 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
    iconbox->models = NULL;
    iconbox->current_model = NULL;
    etk_iconbox_current_model_set(iconbox, etk_iconbox_model_new(iconbox));
-   
+
    iconbox->num_icons = 0;
    iconbox->first_icon = NULL;
    iconbox->last_icon = NULL;
-   
+
    iconbox->frozen = ETK_FALSE;
-   
+
    ETK_WIDGET(iconbox)->size_request = _etk_iconbox_size_request;
    ETK_WIDGET(iconbox)->size_allocate = _etk_iconbox_size_allocate;
-   
+
    etk_signal_connect("realized", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_iconbox_realized_cb), NULL);
 }
 
@@ -849,9 +849,9 @@ static void _etk_iconbox_destructor(Etk_Iconbox *iconbox)
 {
    if (!iconbox)
       return;
-   
+
    etk_iconbox_clear(iconbox);
-   
+
    iconbox->current_model = NULL;
    while (iconbox->models)
       etk_iconbox_model_free(iconbox->models->data);
@@ -909,7 +909,7 @@ static void _etk_iconbox_grid_constructor(Etk_Iconbox_Grid *grid)
    grid->selection_rect = NULL;
    grid->selection_started = ETK_FALSE;
    grid->scroll_timer = NULL;
-   
+
    ETK_WIDGET(grid)->size_allocate = _etk_iconbox_grid_size_allocate;
    ETK_WIDGET(grid)->scroll = _etk_iconbox_grid_scroll;
    ETK_WIDGET(grid)->scroll_size_get = _etk_iconbox_grid_scroll_size_get;
@@ -925,7 +925,7 @@ static void _etk_iconbox_grid_destructor(Etk_Iconbox_Grid *grid)
 {
    if (!grid)
       return;
-   
+
    if (grid->scroll_timer)
       ecore_timer_del(grid->scroll_timer);
 }
@@ -946,10 +946,10 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
    int first_icon_id;
    int i, j;
    int x, y;
-   
+
    if (!(grid = ETK_ICONBOX_GRID(widget)) || !(iconbox = grid->iconbox))
       return;
-   
+
    if (!iconbox->current_model)
    {
       num_cols = 0;
@@ -965,12 +965,12 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
    num_visible_icons = ETK_MIN(num_cols * num_rows, iconbox->num_icons);
    num_icons_to_add = num_visible_icons - evas_list_count(grid->icon_objects);
    grid->num_cols = num_cols;
-   
+
    /* Cache current icons */
    for (l = grid->icon_objects; l; l = l->next)
    {
       icon_object = l->data;
-      
+
       if (icon_object->image)
       {
          /*etk_widget_member_object_del(iconbox->grid, icon_object->image);
@@ -982,7 +982,7 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
          icon_object->image = NULL;
       }
    }
-   
+
    /* Create or delete icon objects if necessary */
    if (num_icons_to_add > 0)
    {
@@ -994,7 +994,7 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
       for (i = 0; i < -num_icons_to_add; i++)
          _etk_iconbox_icon_object_delete(grid);
    }
-   
+
    /* Draw the icons */
    l = grid->icon_objects;
    if (iconbox->current_model)
@@ -1002,16 +1002,16 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
       first_icon_id = (grid->yoffset / iconbox->current_model->height) * num_cols +
          (grid->xoffset / iconbox->current_model->width);
       for (i = 0, icon = iconbox->first_icon; i < first_icon_id && icon; i++, icon = icon->next);
-      
+
       y = -(grid->yoffset % iconbox->current_model->height) + geometry.y;
       for (i = 0; i < num_rows; i++)
       {
          x = -(grid->xoffset % iconbox->current_model->width) + geometry.x;
-         
+
          for (j = 0; j < num_cols && icon && l; j++, icon = icon->next, l = l->next)
          {
             icon_object = l->data;
-            
+
             need_clip = ETK_FALSE;
             if (i == 0 || i == num_rows - 1 || j == 0 || j == num_cols - 1)
             {
@@ -1027,7 +1027,7 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
          y += iconbox->current_model->height;
       }
    }
-   
+
    /* Hide the other icon objects */
    for (; l; l = l->next)
    {
@@ -1035,11 +1035,11 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
       evas_object_hide(icon_object->image);
       etk_widget_hide(icon_object->label);
    }
-   
+
    /* Move/resize the clip */
    evas_object_move(grid->clip, geometry.x, geometry.y);
    evas_object_resize(grid->clip, geometry.w, geometry.h);
-   
+
    /* Raise the selection rect */
    etk_widget_member_object_raise(ETK_WIDGET(grid), grid->selection_rect);
 }
@@ -1048,22 +1048,22 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
 static void _etk_iconbox_grid_scroll(Etk_Widget *widget, int x, int y)
 {
    Etk_Iconbox_Grid *grid;
-   
+
    if (!(grid = ETK_ICONBOX_GRID(widget)))
       return;
-   
+
    if (grid->selection_started)
    {
       grid->selection_mouse_x += (x - grid->xoffset);
       grid->selection_mouse_y += (y - grid->yoffset);
    }
-   
+
    grid->xoffset = x;
    grid->yoffset = y;
-   
+
    if (grid->selection_started)
       _etk_iconbox_grid_selection_rect_update(grid);
-   
+
    etk_widget_redraw_queue(widget);
 }
 
@@ -1071,10 +1071,10 @@ static void _etk_iconbox_grid_scroll(Etk_Widget *widget, int x, int y)
 static void _etk_iconbox_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size)
 {
    Etk_Iconbox *iconbox;
-   
+
    if (!widget || !(iconbox = ETK_ICONBOX_GRID(widget)->iconbox) || !scroll_size)
       return;
-   
+
    if (!iconbox->current_model)
    {
       scroll_size->w = 0;
@@ -1084,16 +1084,16 @@ static void _etk_iconbox_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrol
    {
       int num_cols;
       int num_rows;
-      
+
       num_cols = ETK_MAX(scrollview_size.w / iconbox->current_model->width, 1);
       num_rows = (iconbox->num_icons + num_cols - 1) / num_cols;
-      
+
       if (num_rows * iconbox->current_model->height > scrollview_size.h)
       {
          num_cols = ETK_MAX((scrollview_size.w - scrollbar_size.w) / iconbox->current_model->width, 1);
          num_rows = (iconbox->num_icons + num_cols - 1) / num_cols;
       }
-      
+
       scroll_size->w = num_cols * iconbox->current_model->width;
       scroll_size->h = num_rows * iconbox->current_model->height;
    }
@@ -1116,7 +1116,7 @@ static void _etk_iconbox_realized_cb(Etk_Object *object, void *data)
 
    if (!(iconbox = ETK_ICONBOX(object)))
       return;
-   
+
    if (etk_widget_theme_data_get(ETK_WIDGET(iconbox), "selected_icon_color", "%d %d %d %d",
       &iconbox->selected_icon_color.r, &iconbox->selected_icon_color.g,
       &iconbox->selected_icon_color.b, &iconbox->selected_icon_color.a) != 4)
@@ -1137,14 +1137,14 @@ static void _etk_iconbox_grid_realized_cb(Etk_Object *object, void *data)
 {
    Evas *evas;
    Etk_Iconbox_Grid *grid;
-   
+
    if (!(grid = ETK_ICONBOX_GRID(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(grid))))
       return;
-   
+
    grid->clip = evas_object_rectangle_add(evas);
    evas_object_show(grid->clip);
    etk_widget_member_object_add(ETK_WIDGET(grid), grid->clip);
-   
+
    grid->selection_rect = edje_object_add(evas);
    etk_theme_edje_object_set_from_parent(grid->selection_rect, "selection", ETK_WIDGET(grid->iconbox));
    evas_object_pass_events_set(grid->selection_rect, 1);
@@ -1156,10 +1156,10 @@ static void _etk_iconbox_grid_realized_cb(Etk_Object *object, void *data)
 static void _etk_iconbox_grid_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Iconbox_Grid *grid;
-   
+
    if (!(grid = ETK_ICONBOX_GRID(object)))
       return;
-   
+
    while (grid->icon_objects)
       _etk_iconbox_icon_object_delete(grid);
    grid->clip = NULL;
@@ -1172,13 +1172,13 @@ static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_
    Etk_Iconbox *iconbox;
    Etk_Iconbox_Icon *icon;
    Etk_Bool ctrl_pressed;
-   
+
    if (!(grid = ETK_ICONBOX_GRID(object)) || !(iconbox = grid->iconbox))
       return;
-   
+
    if (event->button != 1)
       return;
-   
+
    ctrl_pressed = (event->modifiers & ETK_MODIFIER_CTRL);
    if ((icon = etk_iconbox_icon_get_at_xy(iconbox, event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
    {
@@ -1206,7 +1206,7 @@ static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_
       grid->selection_last_col = 0;
       grid->selection_first_row = 0;
       grid->selection_last_row = 0;
-      
+
       if (!ctrl_pressed)
          etk_iconbox_unselect_all(iconbox);
       for (icon = iconbox->first_icon; icon; icon = icon->next)
@@ -1218,13 +1218,13 @@ static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_
 static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Iconbox_Grid *grid;
-   
+
    if (!(grid = ETK_ICONBOX_GRID(object)))
       return;
-   
+
    if (event->button != 1)
       return;
-   
+
    if (grid->selection_started)
    {
       grid->selection_started = ETK_FALSE;
@@ -1243,16 +1243,16 @@ static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_
    Etk_Iconbox_Grid *grid;
    Etk_Bool should_scroll = ETK_FALSE;
    int x, y, w, h;
-   
+
    if (!(grid = ETK_ICONBOX_GRID(object)))
       return;
-   
+
    if (grid->selection_started)
    {
       grid->selection_mouse_x = event->cur.widget.x + grid->xoffset;
       grid->selection_mouse_y = event->cur.widget.y + grid->yoffset;
       _etk_iconbox_grid_selection_rect_update(grid);
-      
+
       /* Scroll the grid if the mouse is outside of the grid */
       grid->hscrolling_speed = 0.0;
       grid->vscrolling_speed = 0.0;
@@ -1281,7 +1281,7 @@ static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_
             ETK_MIN(event->cur.canvas.y - (y + h - ETK_ICONBOX_SCROLL_MARGIN), ETK_ICONBOX_MAX_SCROLL_DISTANCE);
          should_scroll = ETK_TRUE;
       }
-      
+
       if (should_scroll && !grid->scroll_timer)
          grid->scroll_timer = ecore_timer_add(ETK_ICONBOX_SCROLL_DELAY, _etk_iconbox_grid_scroll_cb, grid);
       else if (!should_scroll && grid->scroll_timer)
@@ -1303,21 +1303,21 @@ static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid)
 {
    Evas *evas;
    Etk_Iconbox_Icon_Object *icon_object;
-   
+
    if (!grid || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(grid))))
       return;
-   
+
    icon_object = malloc(sizeof(Etk_Iconbox_Icon_Object));
    icon_object->image = NULL;
    icon_object->use_edje = ETK_FALSE;
-   
+
    icon_object->label = etk_label_new(NULL);
    etk_widget_theme_parent_set(icon_object->label, ETK_WIDGET(grid->iconbox));
    etk_widget_parent_set(icon_object->label, ETK_WIDGET(grid));
    etk_widget_internal_set(icon_object->label, ETK_TRUE);
    etk_widget_repeat_mouse_events_set(icon_object->label, ETK_TRUE);
    etk_label_alignment_set(ETK_LABEL(icon_object->label), 0.0, 0.0);
-   
+
    grid->icon_objects = evas_list_append(grid->icon_objects, icon_object);
 }
 
@@ -1325,10 +1325,10 @@ static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid)
 static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid)
 {
    Etk_Iconbox_Icon_Object *icon_object;
-   
+
    if (!grid || !(icon_object = evas_list_data(grid->icon_objects)))
       return;
-   
+
    /* Cache the image */
    if (icon_object->image)
    {
@@ -1339,10 +1339,10 @@ static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid)
          etk_cache_image_object_add(icon_object->image);*/
       evas_object_del(icon_object->image);
    }
-   
+
    etk_object_destroy(ETK_OBJECT(icon_object->label));
    free(icon_object);
-   
+
    grid->icon_objects = evas_list_remove_list(grid->icon_objects, grid->icon_objects);
 }
 
@@ -1357,17 +1357,17 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
    int icon_w, icon_h;
    float aspect_ratio;
    Etk_Geometry icon_geometry;
-   
+
    if (!icon || !icon_object || !model || !(iconbox = icon->iconbox) || !(grid = ETK_ICONBOX_GRID(iconbox->grid)))
       return;
    if (!(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(iconbox))))
       return;
-   
+
    icon_object_geometry.x = x + model->xpadding;
    icon_object_geometry.y = y + model->ypadding;
    icon_object_geometry.w = model->width - 2 * model->xpadding;
    icon_object_geometry.h = model->height - 2 * model->ypadding;
-   
+
    /* Render the icon */
    if (icon->filename)
    {
@@ -1398,7 +1398,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
          icon_h = model->icon_height;
       }
       etk_widget_member_object_add(iconbox->grid, icon_object->image);
-      
+
       if (icon->selected)
       {
          evas_object_color_set(icon_object->image, iconbox->selected_icon_color.r, iconbox->selected_icon_color.g,
@@ -1408,7 +1408,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
          evas_object_color_set(icon_object->image, 255, 255, 255, 255);
       if (grid->clip && clip)
          evas_object_clip_set(icon_object->image, grid->clip);
-      
+
       if (model->icon_fill)
       {
          icon_geometry.w = model->icon_width;
@@ -1429,26 +1429,26 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
       }
       icon_geometry.x = icon_object_geometry.x + model->icon_x + (model->icon_width - icon_geometry.w) / 2;
       icon_geometry.y = icon_object_geometry.y + model->icon_y + (model->icon_height - icon_geometry.h) / 2;
-      
+
       evas_object_move(icon_object->image, icon_geometry.x, icon_geometry.y);
       evas_object_resize(icon_object->image, icon_geometry.w, icon_geometry.h);
       if (!icon->edje_group)
          evas_object_image_fill_set(icon_object->image, 0, 0, icon_geometry.w, icon_geometry.h);
       evas_object_show(icon_object->image);
    }
-   
+
    /* Render the label */
    label_geometry.x = icon_object_geometry.x + model->label_x;
    label_geometry.y = icon_object_geometry.y + model->label_y;
    label_geometry.w = model->label_width;
    label_geometry.h = model->label_height;
-   
+
    etk_label_set(ETK_LABEL(icon_object->label), icon->label);
    if (icon->selected)
       etk_widget_theme_signal_emit(icon_object->label, "etk,state,selected", ETK_FALSE);
    else
       etk_widget_theme_signal_emit(icon_object->label, "etk,state,unselected", ETK_FALSE);
-   
+
    if (clip && grid->clip)
       etk_widget_clip_set(icon_object->label, grid->clip);
    else
@@ -1466,15 +1466,15 @@ static void _etk_iconbox_grid_selection_rect_update(Etk_Iconbox_Grid *grid)
    Etk_Geometry rect_geometry;
    Etk_Iconbox *iconbox;
    Etk_Iconbox_Model *model;
-   
+
    if (!grid || !(iconbox = grid->iconbox))
       return;
-   
+
    rect_geometry.x = ETK_MIN(grid->selection_orig_x, grid->selection_mouse_x);
    rect_geometry.y = ETK_MIN(grid->selection_orig_y, grid->selection_mouse_y);
    rect_geometry.w = abs(grid->selection_orig_x - grid->selection_mouse_x);
    rect_geometry.h = abs(grid->selection_orig_y - grid->selection_mouse_y);
-   
+
    /* Select the icons */
    if ((model = iconbox->current_model))
    {
@@ -1484,17 +1484,17 @@ static void _etk_iconbox_grid_selection_rect_update(Etk_Iconbox_Grid *grid)
       int i, j, k;
       int icon_id;
       Etk_Bool need_redraw = ETK_FALSE;
-      
+
       first_col = (rect_geometry.x + (model->width - model->icon_x - model->icon_width)) / model->width;
       last_col = (rect_geometry.x + rect_geometry.w - model->icon_x) / model->width;
       first_row = (rect_geometry.y + (model->height - model->icon_y - model->icon_height)) / model->height;
       last_row = (rect_geometry.y + rect_geometry.h - model->icon_y) / model->height;
-      
+
       first_col = ETK_CLAMP(first_col, 0, grid->num_cols - 1);
       last_col = ETK_CLAMP(last_col, 0, grid->num_cols - 1);
       first_row = ETK_MAX(first_row, 0);
       last_row = ETK_MAX(last_row, 0);
-      
+
       icon = iconbox->first_icon;
       icon_id = 0;
       for (i = ETK_MIN(grid->selection_first_row, first_row); i <=  ETK_MAX(grid->selection_last_row, last_row); i++)
@@ -1508,7 +1508,7 @@ static void _etk_iconbox_grid_selection_rect_update(Etk_Iconbox_Grid *grid)
             }
             if (!icon)
                break;
-            
+
             if (i >= first_row && i <= last_row && j >= first_col && j <= last_col)
                icon->selected = !icon->was_selected;
             else
@@ -1516,16 +1516,16 @@ static void _etk_iconbox_grid_selection_rect_update(Etk_Iconbox_Grid *grid)
             need_redraw = ETK_TRUE;
          }
       }
-      
+
       grid->selection_first_col = first_col;
       grid->selection_last_col = last_col;
       grid->selection_first_row = first_row;
       grid->selection_last_row = last_row;
-      
+
       if (need_redraw)
          etk_widget_redraw_queue(ETK_WIDGET(grid));
    }
-   
+
    /* Draws the selection rect */
    etk_widget_inner_geometry_get(ETK_WIDGET(grid), &x, &y, NULL, NULL);
    evas_object_move(grid->selection_rect, x + rect_geometry.x - grid->xoffset, y + rect_geometry.y - grid->yoffset);
@@ -1540,16 +1540,16 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
    Etk_Iconbox_Grid *grid;
    Etk_Iconbox *iconbox;
    Etk_Range *hrange, *vrange;
-   
+
    if (!(grid = ETK_ICONBOX_GRID(data)) || !(iconbox = grid->iconbox))
       return 1;
-   
+
    hrange = etk_scrolled_view_hscrollbar_get(ETK_SCROLLED_VIEW(iconbox->scrolled_view));
    vrange = etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(iconbox->scrolled_view));
-   
+
    etk_range_value_set(hrange, etk_range_value_get(hrange) + grid->hscrolling_speed);
    etk_range_value_set(vrange, etk_range_value_get(vrange) + grid->vscrolling_speed);
-   
+
    return 1;
 }
 
@@ -1569,11 +1569,11 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
  * the model controls the position and the size of the cell, the icon image and the label of the iconbox's icons. @n
  * A default model is created when the iconbox is created, but you can add your own with etk_iconbox_model_new(),
  * and enable it with etk_iconbox_current_model_set(). @n @n
- * The model's settings can be changed with 
+ * The model's settings can be changed with
  * etk_iconbox_model_geometry_set(), etk_iconbox_model_icon_geometry_set() and etk_iconbox_model_label_geometry_set(). @n @n
  * Once the model is defined, you can start adding and removing icons to the iconbox with etk_iconbox_append(),
  * etk_iconbox_icon_del() and etk_iconbox_clear().
- *  
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

@@ -41,7 +41,7 @@ struct Etk_Progress_Bar
    /* private: */
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
-   
+
    char *text;
    double fraction;
    double pulse_pos;
@@ -69,7 +69,7 @@ double      etk_progress_bar_pulse_step_get(Etk_Progress_Bar *progress_bar);
 
 void        etk_progress_bar_direction_set(Etk_Progress_Bar *progress_bar, Etk_Progress_Bar_Direction direction);
 Etk_Progress_Bar_Direction etk_progress_bar_direction_get(Etk_Progress_Bar *progress_bar);
-  
+
 /** @} */
 
 #endif

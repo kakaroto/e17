@@ -11,7 +11,7 @@
  * that can cast a shadow or have a border
  * @{
  */
- 
+
 /** Gets the type of a shadow */
 #define ETK_SHADOW_TYPE       (etk_shadow_type_get())
 /** Casts the object to an Etk_Shadow */
@@ -51,20 +51,20 @@ struct Etk_Shadow
    /* private: */
    /* Inherit from Etk_Bin */
    Etk_Bin bin;
-   
+
    Etk_Shadow_Type type;
    Etk_Shadow_Edges edges;
    Etk_Color color;
    int offset_x;
    int offset_y;
    int radius;
-   
+
    int border_width;
    Etk_Color border_color;
-   
+
    Etk_Bool shadow_need_recalc;
    Etk_Bool border_need_recalc;
-   
+
    Evas_Object *shadow_objs[4];
    Evas_Object *border_objs[4];
    Evas_Object *clip;

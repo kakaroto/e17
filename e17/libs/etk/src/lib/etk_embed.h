@@ -36,10 +36,10 @@ struct Etk_Embed
    /* private: */
    /* Inherit from Etk_Toplevel */
    Etk_Toplevel toplevel;
-   
+
    void (*position_get)(void *window_data, int *x, int *y);
    void *position_data;
-   
+
    void (*pointer_set)(void *window_data, Etk_Pointer_Type pointer_type);
    void *pointer_data;
 };

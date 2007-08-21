@@ -45,7 +45,7 @@ Etk_Type *etk_label_type_get(void)
    {
       label_type = etk_type_new("Etk_Label", ETK_WIDGET_TYPE, sizeof(Etk_Label),
          ETK_CONSTRUCTOR(_etk_label_constructor), ETK_DESTRUCTOR(_etk_label_destructor));
-      
+
       etk_type_property_add(label_type, "label", ETK_LABEL_LABEL_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(label_type, "xalign", ETK_LABEL_XALIGN_PROPERTY,
@@ -250,13 +250,13 @@ static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    {
       int x = 0;
       int y = 0;
-      
+
       etk_widget_size_request(widget, &requested_size);
       if (requested_size.w < geometry.w)
          x = (geometry.w - requested_size.w) * label->xalign;
       if (requested_size.h < geometry.h)
          y = (geometry.h - requested_size.h) * label->yalign;
-      
+
       evas_object_move(theme_object, geometry.x + x, geometry.y + y);
       evas_object_resize(theme_object, ETK_MIN(geometry.w, requested_size.w), ETK_MIN(geometry.h, requested_size.h));
    }
@@ -275,7 +275,7 @@ static void _etk_label_realized_cb(Etk_Object *object, void *data)
 
    if (!(label = ETK_LABEL(object)))
       return;
-   
+
    if (!label->text)
       etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.label", "");
    else

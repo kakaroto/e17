@@ -8,7 +8,7 @@
  * @addtogroup Etk_String Etk_String
  * @{
  */
- 
+
 #define ETK_STRING_BLOCK_SIZE 128
 #define ETK_STRING_SIZE_TO_ALLOC(length) \
    (((length) + (ETK_STRING_BLOCK_SIZE - 1)) / ETK_STRING_BLOCK_SIZE) * ETK_STRING_BLOCK_SIZE
@@ -17,7 +17,7 @@ enum _Etk_String_Property_Id
 {
    ETK_STRING_STRING_PROPERTY
 };
-   
+
 static void _etk_string_constructor(Etk_String *string);
 static void _etk_string_destructor(Etk_String *string);
 static char *_etk_string_vprintf(const char *format, va_list args);
@@ -75,11 +75,11 @@ Etk_String *etk_string_new_printf(const char *format, ...)
 {
    Etk_String *new_string;
    va_list args;
-   
+
    va_start(args, format);
    new_string = etk_string_set_vprintf(ETK_STRING(etk_object_new(ETK_STRING_TYPE, NULL)), format, args);
    va_end(args);
-   
+
    return new_string;
 }
 
@@ -93,11 +93,11 @@ Etk_String *etk_string_new_vprintf(const char *format, va_list args)
 {
    Etk_String *new_string;
    va_list args2;
-   
+
    va_copy(args2, args);
    new_string = etk_string_set_vprintf(ETK_STRING(etk_object_new(ETK_STRING_TYPE, NULL)), format, args2);
    va_end(args2);
-   
+
    return new_string;
 }
 
@@ -148,7 +148,7 @@ Etk_String *etk_string_truncate(Etk_String *string, int length)
 {
    if (!string)
       return NULL;
-   
+
    if (length < string->length)
    {
       string->string[length] = 0;
@@ -171,7 +171,7 @@ Etk_String *etk_string_delete(Etk_String *string, int pos, int size)
       return NULL;
    if (pos < 0 || pos >= string->length || size <= 0)
       return string;
-   
+
    if (pos + size >= string->length)
       return etk_string_truncate(string, pos);
    else
@@ -190,12 +190,12 @@ Etk_String *etk_string_clear(Etk_String *string)
 {
    if (!string)
       return NULL;
-   
+
    free(string->string);
    string->string = strdup("");
    string->length = 0;
    string->allocated_length = 0;
-   
+
    return string;
 }
 
@@ -222,7 +222,7 @@ Etk_String *etk_string_set_sized(Etk_String *string, const char *value, int size
 {
    if (!string)
       return etk_string_new_sized(value, size);
-   
+
    if (!value || *value == 0 || size <= 0)
    {
       *string->string = 0;
@@ -231,20 +231,20 @@ Etk_String *etk_string_set_sized(Etk_String *string, const char *value, int size
    else
    {
       int length;
-      
+
       if (size > string->allocated_length)
       {
          free(string->string);
          string->string = malloc(ETK_STRING_SIZE_TO_ALLOC(size) + 1);
          string->allocated_length = ETK_STRING_SIZE_TO_ALLOC(size);
       }
-      
+
       length = strlen(value);
       string->length = ETK_MIN(length, size);
       strncpy(string->string, value, string->length);
       string->string[string->length] = 0;
    }
-   
+
    etk_object_notify(ETK_OBJECT(string), "string");
    return string;
 }
@@ -260,11 +260,11 @@ Etk_String *etk_string_set_printf(Etk_String *string, const char *format, ...)
 {
    va_list args;
    Etk_String *result;
-   
+
    va_start(args, format);
    result = etk_string_set_vprintf(string, format, args);
    va_end(args);
-   
+
    return result;
 }
 
@@ -280,13 +280,13 @@ Etk_String *etk_string_set_vprintf(Etk_String *string, const char *format, va_li
    va_list args2;
    char *text;
    Etk_String *result;
-   
+
    va_copy(args2, args);
    text = _etk_string_vprintf(format, args2);
    result = etk_string_set(string, text);
    free(text);
    va_end(args2);
-   
+
    return result;
 }
 
@@ -335,11 +335,11 @@ Etk_String *etk_string_prepend_printf(Etk_String *string, const char *format, ..
 {
    va_list args;
    Etk_String *result;
-   
+
    va_start(args, format);
    result = etk_string_prepend_vprintf(string, format, args);
    va_end(args);
-   
+
    return result;
 }
 
@@ -354,11 +354,11 @@ Etk_String *etk_string_prepend_vprintf(Etk_String *string, const char *format, v
 {
    va_list args2;
    Etk_String *result;
-   
+
    va_copy(args2, args);
    result = etk_string_insert_vprintf(string, 0, format, args2);
    va_end(args2);
-   
+
    return result;
 }
 
@@ -407,11 +407,11 @@ Etk_String *etk_string_append_printf(Etk_String *string, const char *format, ...
 {
    va_list args;
    Etk_String *result;
-   
+
    va_start(args, format);
    result = etk_string_append_vprintf(string, format, args);
    va_end(args);
-   
+
    return result;
 }
 
@@ -426,11 +426,11 @@ Etk_String *etk_string_append_vprintf(Etk_String *string, const char *format, va
 {
    va_list args2;
    Etk_String *result;
-   
+
    va_copy(args2, args);
    result = etk_string_insert_vprintf(string, string->length, format, args2);
    va_end(args2);
-   
+
    return result;
 }
 
@@ -460,7 +460,7 @@ Etk_String *etk_string_insert_sized(Etk_String *string, int pos, const char *tex
       return etk_string_new_sized(text, length);
    if (!text || *text == 0 || length <= 0)
       return string;
-   
+
    pos = ETK_CLAMP(pos, 0, string->length);
    length = ETK_MIN(length, strlen(text));
    if (string->length + length > string->allocated_length)
@@ -468,12 +468,12 @@ Etk_String *etk_string_insert_sized(Etk_String *string, int pos, const char *tex
       string->string = realloc(string->string, ETK_STRING_SIZE_TO_ALLOC(string->length + length) + 1);
       string->allocated_length = ETK_STRING_SIZE_TO_ALLOC(string->length + length);
    }
-   
+
    memmove(&string->string[pos + length], &string->string[pos], string->length - pos);
    strncpy(&string->string[pos], text, length);
    string->length += length;
    string->string[string->length] = 0;
-   
+
    etk_object_notify(ETK_OBJECT(string), "string");
    return string;
 }
@@ -488,12 +488,12 @@ Etk_String *etk_string_insert_sized(Etk_String *string, int pos, const char *tex
 Etk_String *etk_string_insert_char(Etk_String *string, int pos, char c)
 {
    int i;
-   
+
    if (!string)
       return etk_string_insert_char(etk_string_new(NULL), pos, c);
    if (c == 0)
       return etk_string_truncate(string, pos);
-   
+
    pos = ETK_CLAMP(pos, 0, string->length);
    if (string->length + 1 > string->allocated_length)
    {
@@ -502,11 +502,11 @@ Etk_String *etk_string_insert_char(Etk_String *string, int pos, char c)
    }
    for (i = string->length - 1; i >= pos; i--)
       string->string[i + 1] = string->string[i];
-   
+
    string->string[pos] = c;
    string->length++;
    string->string[string->length] = 0;
-   
+
    etk_object_notify(ETK_OBJECT(string), "string");
    return string;
 }
@@ -523,11 +523,11 @@ Etk_String *etk_string_insert_printf(Etk_String *string, int pos, const char *fo
 {
    va_list args;
    Etk_String *result;
-   
+
    va_start(args, format);
    result = etk_string_insert_vprintf(string, pos, format, args);
    va_end(args);
-   
+
    return result;
 }
 
@@ -544,13 +544,13 @@ Etk_String *etk_string_insert_vprintf(Etk_String *string, int pos, const char *f
    va_list args2;
    char *text_to_append;
    Etk_String *result;
-   
+
    va_copy(args2, args);
    text_to_append = _etk_string_vprintf(format, args2);
    result = etk_string_insert(string, pos, text_to_append);
    free(text_to_append);
    va_end(args2);
-   
+
    return result;
 }
 
@@ -565,7 +565,7 @@ static void _etk_string_constructor(Etk_String *string)
 {
    if (!string)
       return;
-   
+
    string->string = strdup("");
    string->length = 0;
    string->allocated_length = 0;
@@ -593,10 +593,10 @@ static char *_etk_string_vprintf(const char *format, va_list args)
    char *text;
    va_list args2;
    int length;
-   
+
    if (!format)
       return NULL;
-   
+
    va_copy(args2, args);
    length = vsnprintf(&c, 1, format, args2);
    va_end(args2);
@@ -604,7 +604,7 @@ static char *_etk_string_vprintf(const char *format, va_list args)
    va_copy(args2, args);
    vsprintf(text, format, args2);
    va_end(args2);
-   
+
    return text;
 }
 

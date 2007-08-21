@@ -179,10 +179,10 @@ static void _main_window_create(void)
    etk_window_title_set(ETK_WINDOW(win), "Etk Test Application");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
    etk_signal_connect_swapped("destroyed", ETK_OBJECT(win), ETK_CALLBACK(_main_quit_cb), NULL);
-   
+
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
-   
+
    /* Create a frame and a table for each category */
    for (i = 0; i < NUM_CATEGORIES; i++)
    {
@@ -192,7 +192,7 @@ static void _main_window_create(void)
          if (_test_apps[j].category == i)
             num_examples++;
       }
-      
+
       frame = etk_frame_new(_categories[i]);
       etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
       tables[i] = etk_table_new(NUM_COLS, (num_examples + NUM_COLS - 1) / NUM_COLS, ETK_TABLE_HOMOGENEOUS);
@@ -208,7 +208,7 @@ static void _main_window_create(void)
       etk_table_attach_default(ETK_TABLE(tables[_test_apps[i].category]), button,
             j % NUM_COLS, j % NUM_COLS, j / NUM_COLS, j / NUM_COLS);
    }
-   
+
    etk_widget_show_all(win);
 }
 

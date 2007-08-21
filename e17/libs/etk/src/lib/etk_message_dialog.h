@@ -57,10 +57,10 @@ struct Etk_Message_Dialog
    /* private: */
    /* Inherit from Etk_Dialog */
    Etk_Dialog dialog;
-   
+
    Etk_Message_Dialog_Type message_type;
    Etk_Message_Dialog_Buttons buttons_type;
-   
+
    Etk_Widget *main_area_hbox;
    Etk_Widget *image;
    Etk_Widget *label;

@@ -36,7 +36,7 @@ static char *_etk_event_empty = "";
 void etk_event_init(void)
 {
    int i;
-   
+
    for (i = 0; i < ETK_EVENT_NUM_EVENTS; i++)
       _etk_event_callbacks[i] = NULL;
    etk_engine_event_callback_set(_etk_event_callback_cb);
@@ -49,7 +49,7 @@ void etk_event_init(void)
 void etk_event_shutdown(void)
 {
    int i;
-   
+
    for (i = 0; i < ETK_EVENT_NUM_EVENTS; i++)
    {
       while (_etk_event_callbacks[i])
@@ -58,7 +58,7 @@ void etk_event_shutdown(void)
          _etk_event_callbacks[i] = evas_list_remove_list(_etk_event_callbacks[i], _etk_event_callbacks[i]);
       }
    }
-   
+
    etk_engine_event_callback_set(NULL);
 }
 
@@ -72,7 +72,7 @@ void etk_event_mouse_in_wrap(Etk_Widget *widget, Evas_Event_Mouse_In *evas_event
 {
    if (!widget || !evas_event || !etk_event)
       return;
-   
+
    etk_event->buttons = evas_event->buttons;
    etk_event->canvas.x = evas_event->canvas.x;
    etk_event->canvas.y = evas_event->canvas.y;
@@ -93,7 +93,7 @@ void etk_event_mouse_out_wrap(Etk_Widget *widget, Evas_Event_Mouse_Out *evas_eve
 {
    if (!widget || !evas_event || !etk_event)
       return;
-   
+
    etk_event->buttons = evas_event->buttons;
    etk_event->canvas.x = evas_event->canvas.x;
    etk_event->canvas.y = evas_event->canvas.y;
@@ -114,7 +114,7 @@ void etk_event_mouse_move_wrap(Etk_Widget *widget, Evas_Event_Mouse_Move *evas_e
 {
    if (!widget || !evas_event || !etk_event)
       return;
-   
+
    etk_event->buttons = evas_event->buttons;
    etk_event->cur.canvas.x = evas_event->cur.canvas.x;
    etk_event->cur.canvas.y = evas_event->cur.canvas.y;
@@ -139,7 +139,7 @@ void etk_event_mouse_down_wrap(Etk_Widget *widget, Evas_Event_Mouse_Down *evas_e
 {
    if (!widget || !evas_event || !etk_event)
       return;
-   
+
    etk_event->button = evas_event->button;
    etk_event->canvas.x = evas_event->canvas.x;
    etk_event->canvas.y = evas_event->canvas.y;
@@ -161,7 +161,7 @@ void etk_event_mouse_up_wrap(Etk_Widget *widget, Evas_Event_Mouse_Up *evas_event
 {
    if (!widget || !evas_event || !etk_event)
       return;
-   
+
    etk_event->button = evas_event->button;
    etk_event->canvas.x = evas_event->canvas.x;
    etk_event->canvas.y = evas_event->canvas.y;
@@ -183,7 +183,7 @@ void etk_event_mouse_wheel_wrap(Etk_Widget *widget, Evas_Event_Mouse_Wheel *evas
 {
    if (!widget || !evas_event || !etk_event)
       return;
-   
+
    etk_event->direction = (evas_event->direction == 0) ? ETK_WHEEL_VERTICAL : ETK_WHEEL_HORIZONTAL;
    etk_event->z = evas_event->z;
    etk_event->canvas.x = evas_event->canvas.x;
@@ -240,10 +240,10 @@ void etk_event_key_up_wrap(Etk_Widget *widget, Evas_Event_Key_Up *evas_event, Et
 void etk_event_global_callback_add(Etk_Event_Type event, void (*callback)(Etk_Event_Global event, void *data), void *data)
 {
    Etk_Event_Callback *cb;
-   
+
    if (!callback)
       return;
-   
+
    cb = malloc(sizeof(Etk_Event_Callback));
    cb->callback = callback;
    cb->data = data;
@@ -259,10 +259,10 @@ void etk_event_global_callback_del(Etk_Event_Type event, void (*callback)(Etk_Ev
 {
    Etk_Event_Callback *cb;
    Evas_List *l;
-   
+
    if (!callback)
       return;
-   
+
    for (l = _etk_event_callbacks[event]; l; l = l->next)
    {
       cb = l->data;
@@ -296,19 +296,19 @@ static void _etk_event_callback_cb(Etk_Event_Type event, Etk_Event_Global event_
 {
    Evas_List *callbacks, *l;
    Etk_Event_Callback *callback;
-   
+
    /* We make a copy of the callbacks list to avoid potential
     * problems if a callback removes itself from the list */
    callbacks = NULL;
    for (l = _etk_event_callbacks[event]; l; l = l->next)
       callbacks = evas_list_append(callbacks, l->data);
-   
+
    for (l = callbacks; l; l = l->next)
    {
       callback = l->data;
       callback->callback(event_info, callback->data);
    }
-   
+
    evas_list_free(callbacks);
 }
 
@@ -323,7 +323,7 @@ static void _etk_event_modifiers_wrap(Evas_Modifier *evas_modifiers, Etk_Modifie
 {
    if (!evas_modifiers || !etk_modifiers)
       return;
-   
+
    *etk_modifiers = ETK_MODIFIER_NONE;
    if (evas_key_modifier_is_set(evas_modifiers, "Control"))
       *etk_modifiers |= ETK_MODIFIER_CTRL;
@@ -340,14 +340,14 @@ static void _etk_event_locks_wrap(Evas_Lock *evas_locks, Etk_Locks *etk_locks)
 {
    if (!evas_locks || !etk_locks)
       return;
-   
+
    *etk_locks = ETK_LOCK_NONE;
    if (evas_key_lock_is_set(evas_locks, "Num_Lock"))
       *etk_locks |= ETK_LOCK_NUM;
    if (evas_key_lock_is_set(evas_locks, "Caps_Lock"))
       *etk_locks |= ETK_LOCK_CAPS;
    if (evas_key_lock_is_set(evas_locks, "Scroll_Lock"))
-      *etk_locks |= ETK_LOCK_SCROLL;   
+      *etk_locks |= ETK_LOCK_SCROLL;
 }
 
 /* Converts the Evas mouse flags to Etk mouse flags */
@@ -355,7 +355,7 @@ static void _etk_event_mouse_flags_wrap(Evas_Button_Flags evas_flags, Etk_Mouse_
 {
    if (!etk_flags)
       return;
-   
+
    *etk_flags = ETK_MOUSE_NONE;
    if (evas_flags & EVAS_BUTTON_DOUBLE_CLICK)
       *etk_flags |= ETK_MOUSE_DOUBLE_CLICK;

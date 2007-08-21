@@ -71,7 +71,7 @@ int etk_init(int *argc, char ***argv)
       {
          etk_argument_value_get(argc, argv, "etk-engine", 0, ETK_TRUE, &engine_name);
       }
-      
+
       /* Initialize the EFL */
       if (!evas_init())
       {
@@ -88,11 +88,11 @@ int etk_init(int *argc, char ***argv)
          ETK_WARNING("Edje initialization failed!");
          return 0;
       }
-      
+
       /* TODO: maybe we should do this in etk_main().
        * Problem: if we do this, a program that uses directly ecore_main_loop_begin() and not etk_main() won't work */
       _etk_main_idle_enterer = ecore_idle_enterer_add(_etk_main_idle_enterer_cb, NULL);
-      
+
       /* Initialize the subsystems of Etk */
       if (!etk_config_init())
       {
@@ -113,12 +113,12 @@ int etk_init(int *argc, char ***argv)
       }
       etk_event_init();
       etk_tooltips_init();
-      
+
       /* Initialize Gettext */
       setlocale(LC_ALL, "");
       bindtextdomain(PACKAGE, LOCALEDIR);
       textdomain(PACKAGE);
-      
+
       free(engine_name);
       _etk_main_init_count++;
       return _etk_main_init_count;
@@ -134,30 +134,30 @@ int etk_shutdown(void)
 {
    if (_etk_main_init_count <= 0)
       return 0;
-   
+
    _etk_main_init_count--;
    if (_etk_main_init_count == 0)
    {
       ecore_idle_enterer_del(_etk_main_idle_enterer);
       _etk_main_idle_enterer = NULL;
-      
+
       /* Shutdown the subsystems of Etk */
       etk_object_shutdown();
       etk_signal_shutdown();
       etk_type_shutdown();
-      
+
       etk_tooltips_shutdown();
       etk_event_shutdown();
       etk_engine_shutdown();
       etk_config_shutdown();
       etk_theme_shutdown();
-      
+
       /* Shutdown the EFL*/
       edje_shutdown();
       ecore_shutdown();
       evas_shutdown();
    }
-   
+
    return _etk_main_init_count;
 }
 
@@ -170,7 +170,7 @@ void etk_main(void)
 {
    if (_etk_main_init_count <= 0 || _etk_main_running)
       return;
-   
+
    _etk_main_running = ETK_TRUE;
    ecore_main_loop_begin();
 }
@@ -199,7 +199,7 @@ void etk_main_iterate(void)
 
    if (_etk_main_init_count <= 0)
       return;
-   
+
    etk_object_purge();
 
    for (l = etk_toplevel_widgets_get(); l; l = l->next)
@@ -232,10 +232,10 @@ static void _etk_main_size_request_recursive(Etk_Widget *widget)
 {
    Evas_List *l;
    Etk_Size unused_size;
-   
+
    if (!widget)
       return;
-   
+
    etk_widget_size_request(widget, &unused_size);
    for (l = widget->children; l; l = l->next)
       _etk_main_size_request_recursive(ETK_WIDGET(l->data));
@@ -246,10 +246,10 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
 {
    Evas_List *l;
    Etk_Geometry geometry;
-   
+
    if (!widget)
       return;
-   
+
    if (is_top_level)
    {
       etk_toplevel_evas_position_get(ETK_TOPLEVEL(widget), &geometry.x, &geometry.y);
@@ -258,7 +258,7 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
    else
    {
       int left, right, top, bottom;
-      
+
       etk_widget_geometry_get(widget, &geometry.x, &geometry.y, &geometry.w, &geometry.h);
       etk_widget_padding_get(widget, &left, &right, &top, &bottom);
       geometry.x -= left;
@@ -267,7 +267,7 @@ static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_to
       geometry.h += top + bottom;
    }
    etk_widget_size_allocate(widget, geometry);
-   
+
    for (l = widget->children; l; l = l->next)
       _etk_main_size_allocate_recursive(ETK_WIDGET(l->data), ETK_FALSE);
 }

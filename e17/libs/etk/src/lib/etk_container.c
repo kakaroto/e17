@@ -50,7 +50,7 @@ Etk_Type *etk_container_type_get(void)
    {
       container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE, sizeof(Etk_Container),
             ETK_CONSTRUCTOR(_etk_container_constructor), NULL);
-   
+
       _etk_container_signals[ETK_CONTAINER_CHILD_ADDED_SIGNAL] = etk_signal_new("child-added",
             container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_container_signals[ETK_CONTAINER_CHILD_REMOVED_SIGNAL] = etk_signal_new("child-removed",
@@ -58,7 +58,7 @@ Etk_Type *etk_container_type_get(void)
 
       etk_type_property_add(container_type, "border-width", ETK_CONTAINER_BORDER_WIDTH_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
-   
+
       container_type->property_set = _etk_container_property_set;
       container_type->property_get = _etk_container_property_get;
    }
@@ -96,10 +96,10 @@ void etk_container_remove(Etk_Widget *widget)
 void etk_container_remove_all(Etk_Container *container)
 {
    Evas_List *children, *l;
-   
+
    if (!container)
       return;
-   
+
    children = etk_container_children_get(container);
    for (l = children; l; l = l->next)
       etk_container_remove(ETK_WIDGET(l->data));
@@ -158,14 +158,14 @@ Etk_Bool etk_container_is_child(Etk_Container *container, Etk_Widget *widget)
 {
    Evas_List *children;
    Etk_Bool is_child;
-   
+
    if (!container || !widget)
       return ETK_FALSE;
-   
+
    children = etk_container_children_get(container);
    is_child = (evas_list_find(children, widget) != NULL);
    evas_list_free(children);
-   
+
    return is_child;
 }
 
@@ -222,7 +222,7 @@ void etk_container_child_space_fill(Etk_Widget *child, Etk_Geometry *child_space
 
    if (!child || !child_space)
       return;
-   
+
    xalign = ETK_CLAMP(xalign, 0.0, 1.0);
    yalign = ETK_CLAMP(yalign, 0.0, 1.0);
 
@@ -255,7 +255,7 @@ static void _etk_container_constructor(Etk_Container *container)
    container->child_remove = NULL;
    container->children_get = NULL;
    container->border_width = 0;
-   
+
    etk_signal_connect("child-added", ETK_OBJECT(container), ETK_CALLBACK(_etk_container_child_added_cb), NULL);
    etk_signal_connect("child-removed", ETK_OBJECT(container), ETK_CALLBACK(_etk_container_child_removed_cb), NULL);
 }
@@ -306,10 +306,10 @@ static void _etk_container_property_get(Etk_Object *object, int property_id, Etk
 static void _etk_container_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data)
 {
    Etk_Container *container;
-   
+
    if (!(container = ETK_CONTAINER(object)) || !child)
       return;
-   
+
    etk_object_notification_callback_add(ETK_OBJECT(child), "parent",
          _etk_container_child_parent_changed_cb, container);
 }
@@ -318,10 +318,10 @@ static void _etk_container_child_added_cb(Etk_Object *object, Etk_Widget *child,
 static void _etk_container_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
 {
    Etk_Container *container;
-   
+
    if (!(container = ETK_CONTAINER(object)) || !child)
       return;
-   
+
    etk_object_notification_callback_remove(ETK_OBJECT(child), "parent", _etk_container_child_parent_changed_cb);
 }
 
@@ -330,10 +330,10 @@ static void _etk_container_child_parent_changed_cb(Etk_Object *object, const cha
 {
    Etk_Container *container;
    Etk_Widget *child;
-   
+
    if (!(child = ETK_WIDGET(object)) || !(container = ETK_CONTAINER(data)))
       return;
-   
+
    etk_object_notification_callback_remove(ETK_OBJECT(child), "parent", _etk_container_child_parent_changed_cb);
    if (container->child_remove)
       container->child_remove(container, child);
@@ -365,7 +365,7 @@ static void _etk_container_child_parent_changed_cb(Etk_Object *object, const cha
  * a child of the container with etk_container_is_child(). @n
  * Note that when a container is destroyed, all its children are automatically destroyed too. If you want to avoid that,
  * before destroying the container, you can call etk_container_remove_all().
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

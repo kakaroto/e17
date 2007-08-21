@@ -27,7 +27,7 @@ struct Etk_String
    /* private: */
    /* Inherit from Etk_Object */
    Etk_Object object;
-   
+
    char *string;
    int length;
    int allocated_length;

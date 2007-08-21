@@ -55,13 +55,13 @@ struct Etk_Toplevel
    Evas *evas;
    void (*evas_position_get)(Etk_Toplevel *toplevel, int *x, int *y);
    void (*screen_position_get)(Etk_Toplevel *toplevel, int *x, int *y);
-   void (*size_get)(Etk_Toplevel *toplevel, int *w, int *h); 
+   void (*size_get)(Etk_Toplevel *toplevel, int *w, int *h);
 
    Etk_Widget *focused_widget;
 
    Evas_List *pointer_stack;
    void (*pointer_set)(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
-   
+
    Etk_Bool need_update;
 };
 

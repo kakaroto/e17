@@ -53,7 +53,7 @@ Etk_Type *etk_progress_bar_type_get(void)
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
       etk_type_property_add(progress_bar_type, "pulse-step", ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.1));
-      
+
       progress_bar_type->property_set = _etk_progress_bar_property_set;
       progress_bar_type->property_get = _etk_progress_bar_property_get;
    }
@@ -89,11 +89,11 @@ void etk_progress_bar_text_set(Etk_Progress_Bar *progress_bar, const char *text)
 {
    if (!progress_bar || progress_bar->text == text)
       return;
-   
+
    if (progress_bar->text)
       free(progress_bar->text);
    progress_bar->text = text ? strdup(text) : NULL;
-   
+
    _etk_progress_bar_update(progress_bar);
    etk_object_notify(ETK_OBJECT(progress_bar), "text");
 }
@@ -118,10 +118,10 @@ const char *etk_progress_bar_text_get(Etk_Progress_Bar *progress_bar)
 void etk_progress_bar_fraction_set(Etk_Progress_Bar *progress_bar, double fraction)
 {
    Etk_Widget *widget;
-   
+
    if (!(widget = ETK_WIDGET(progress_bar)))
       return;
-   
+
    fraction = ETK_CLAMP(fraction, 0.0, 1.0);
    if (progress_bar->fraction != fraction || progress_bar->is_pulsing == ETK_TRUE)
    {
@@ -152,7 +152,7 @@ void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar)
 {
    if (!progress_bar)
       return;
-   
+
    if (!progress_bar->is_pulsing)
    {
       progress_bar->pulse_pos = 0.0;
@@ -180,7 +180,7 @@ void etk_progress_bar_pulse(Etk_Progress_Bar *progress_bar)
          }
       }
    }
-   
+
    _etk_progress_bar_update(progress_bar);
 }
 
@@ -194,7 +194,7 @@ void etk_progress_bar_pulse_step_set(Etk_Progress_Bar *progress_bar, double puls
 {
    if (!progress_bar)
       return;
- 
+
    pulse_step = ETK_CLAMP(pulse_step, 0.0, 1.0);
    if (progress_bar->pulse_step != pulse_step)
    {
@@ -224,7 +224,7 @@ void etk_progress_bar_direction_set(Etk_Progress_Bar *progress_bar, Etk_Progress
 {
    if (!progress_bar || progress_bar->direction == direction)
       return;
-   
+
    progress_bar->direction = direction;
    _etk_progress_bar_update(progress_bar);
    etk_object_notify(ETK_OBJECT(progress_bar), "direction");
@@ -261,7 +261,7 @@ static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar)
    progress_bar->pulse_dir = ETK_PROGRESS_BAR_LEFT_TO_RIGHT;
    progress_bar->direction = ETK_PROGRESS_BAR_LEFT_TO_RIGHT;
    progress_bar->is_pulsing = ETK_FALSE;
-   
+
    etk_signal_connect("realized", ETK_OBJECT(progress_bar), ETK_CALLBACK(_etk_progress_bar_realized_cb), NULL);
 }
 
@@ -315,7 +315,7 @@ static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, 
          break;
       case ETK_PROGRESS_BAR_PULSE_STEP_PROPERTY:
          etk_property_value_double_set(value, progress_bar->pulse_step);
-         break;      
+         break;
       default:
          break;
    }
@@ -332,14 +332,14 @@ static void _etk_progress_bar_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Progress_Bar *progress_bar;
    float w;
-   
+
    if (!(progress_bar = ETK_PROGRESS_BAR(object)))
       return;
-   
+
    if (etk_widget_theme_data_get(ETK_WIDGET(object), "filler_pulse_width", "%f", &w) != 1)
       w = 0.3;
    progress_bar->filler_pulse_w = ETK_CLAMP(w, 0.1, 0.9);
-   
+
    _etk_progress_bar_update(progress_bar);
 }
 
@@ -353,10 +353,10 @@ static void _etk_progress_bar_realized_cb(Etk_Object *object, void *data)
 static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar)
 {
    Etk_Widget *widget;
-   
+
    if (!(widget = ETK_WIDGET(progress_bar)) || !widget->theme_object)
       return;
-   
+
    if (!progress_bar->is_pulsing)
    {
       if (progress_bar->direction == ETK_PROGRESS_BAR_LEFT_TO_RIGHT)
@@ -370,7 +370,7 @@ static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar)
       edje_object_part_drag_value_set(widget->theme_object, "etk.dragable.filler", progress_bar->pulse_pos, 0.0);
       edje_object_part_drag_size_set(widget->theme_object, "etk.dragable.filler", progress_bar->filler_pulse_w, 0.0);
    }
-   
+
    etk_widget_theme_part_text_set(widget, "etk.text.text", progress_bar->text ? progress_bar->text : "");
 }
 
@@ -394,7 +394,7 @@ static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar)
  * etk_progress_bar_pulse(). You can also set the pulse-step with etk_progress_bar_pulse_step_set(). This mode is used
  * when you can't know the progress of the operation (for example, it can be used for a download when you can't know the
  * total size of the file) @n
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

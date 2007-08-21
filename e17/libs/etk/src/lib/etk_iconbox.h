@@ -42,19 +42,19 @@ struct Etk_Iconbox_Model
 {
    /* private: */
    Etk_Iconbox *iconbox;
-   
+
    int width;
    int height;
    int xpadding;
    int ypadding;
-   
+
    int icon_x;
    int icon_y;
    int icon_width;
    int icon_height;
    Etk_Bool icon_fill;
    Etk_Bool icon_keep_aspect;
-   
+
    int label_x;
    int label_y;
    int label_width;
@@ -74,14 +74,14 @@ struct Etk_Iconbox_Icon
 
    Etk_Iconbox_Icon *prev;
    Etk_Iconbox_Icon *next;
-   
+
    char *filename;
    char *edje_group;
    char *label;
-   
+
    void *data;
    void (*data_free_cb)(void *data);
-   
+
    Etk_Bool was_selected;
    Etk_Bool selected;
 };
@@ -101,7 +101,7 @@ struct Etk_Iconbox
 
    Evas_List *models;
    Etk_Iconbox_Model *current_model;
-   
+
    int num_icons;
    Etk_Iconbox_Icon *first_icon;
    Etk_Iconbox_Icon *last_icon;

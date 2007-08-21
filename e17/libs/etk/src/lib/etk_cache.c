@@ -10,7 +10,7 @@
  */
 
 static void _etk_cache_object_deleted_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
- 
+
 typedef struct Etk_Cache_Item
 {
    char *filename;
@@ -35,13 +35,13 @@ typedef struct Etk_Cache_Item
 Etk_Cache *etk_cache_new(int size)
 {
    Etk_Cache *cache;
-   
+
    cache = malloc(sizeof(Etk_Cache));
    cache->cached_objects = NULL;
    cache->size = ETK_MAX(0, size);
    cache->free_cb = NULL;
    cache->free_cb_data = NULL;
-   
+
    return cache;
 }
 
@@ -53,7 +53,7 @@ void etk_cache_destroy(Etk_Cache *cache)
 {
    if (!cache)
       return;
-   
+
    etk_cache_clear(cache);
    free(cache);
 }
@@ -65,10 +65,10 @@ void etk_cache_destroy(Etk_Cache *cache)
 void etk_cache_clear(Etk_Cache *cache)
 {
    Etk_Cache_Item *item;
-   
+
    if (!cache)
       return;
-   
+
    while (cache->cached_objects)
    {
       item = cache->cached_objects->data;
@@ -88,7 +88,7 @@ void etk_cache_free_callback_set(Etk_Cache *cache, void (*free_cb)(Evas_Object *
 {
    if (!cache)
       return;
-   
+
    cache->free_cb = free_cb;
    cache->free_cb_data = data;
 }
@@ -103,13 +103,13 @@ void etk_cache_size_set(Etk_Cache *cache, int size)
 {
    Etk_Cache_Item *item;
    int num_objects;
-   
+
    if (!cache)
       return;
-   
+
    cache->size = ETK_MAX(0, size);
    num_objects = etk_cache_size_get(cache);
-   
+
    /* Destroys the objects that can't fit anymore */
    while (cache->cached_objects && num_objects > cache->size)
    {
@@ -158,10 +158,10 @@ void etk_cache_add(Etk_Cache *cache, Evas_Object *object, const char *filename, 
 {
    Etk_Cache_Item *item;
    Evas_List *l;
-   
+
    if (!cache || !object || cache->size <= 0 || !filename)
       return;
-   
+
    /* If the object is already cached, we move it at the end of the cache */
    if ((l = evas_object_data_get(object, "_Etk_Cache::Node")))
    {
@@ -181,23 +181,23 @@ void etk_cache_add(Etk_Cache *cache, Evas_Object *object, const char *filename, 
       evas_object_data_set(item->object, "_Etk_Cache::Node", evas_list_last(cache->cached_objects));
       return;
    }
-   
+
    /* If no more space is available, we remove the oldest object of the cache */
    if (evas_list_count(cache->cached_objects) >= cache->size)
    {
       item = cache->cached_objects->data;
       evas_object_del(item->object);
    }
-   
+
    /* We create a new cache-item for the object and we add it to the cache */
    item = malloc(sizeof(Etk_Cache_Item));
    item->filename = strdup(filename);
    item->key = key ? strdup(key) : NULL;
    item->object = object;
-   
+
    evas_object_hide(object);
    evas_object_event_callback_add(object, EVAS_CALLBACK_FREE, _etk_cache_object_deleted_cb, cache);
-   
+
    cache->cached_objects = evas_list_append(cache->cached_objects, item);
    evas_object_data_set(item->object, "_Etk_Cache::Node", evas_list_last(cache->cached_objects));
 }
@@ -211,20 +211,20 @@ void etk_cache_remove(Etk_Cache *cache, Evas_Object *object)
 {
    Etk_Cache_Item *item;
    Evas_List *l;
-   
+
    if (!cache || !object)
       return;
-   
+
    if ((l = evas_object_data_get(object, "_Etk_Cache::Node")))
    {
       item = l->data;
-      
+
       evas_object_data_del(object, "_Etk_Cache::Node");
       evas_object_event_callback_del(object, EVAS_CALLBACK_FREE, _etk_cache_object_deleted_cb);
       free(item->filename);
       free(item->key);
       free(item);
-      
+
       cache->cached_objects = evas_list_remove_list(cache->cached_objects, l);
    }
 }
@@ -243,28 +243,28 @@ Evas_Object *etk_cache_find(Etk_Cache *cache, const char *filename, const char *
    Etk_Cache_Item *item;
    Evas_List *l;
    Evas_Object *object;
-   
+
    if (!cache || !filename)
       return NULL;
-   
+
    for (l = cache->cached_objects; l; l = l->next)
    {
       item = l->data;
       if (strcmp(item->filename, filename) == 0 && (strcmp(item->key ? item->key : "", key ? key : "") == 0))
       {
          object = item->object;
-         
+
          evas_object_data_del(object, "_Etk_Cache::Node");
          evas_object_event_callback_del(object, EVAS_CALLBACK_FREE, _etk_cache_object_deleted_cb);
          free(item->filename);
          free(item->key);
          free(item);
-         
+
          cache->cached_objects = evas_list_remove(cache->cached_objects, item);
          return object;
       }
    }
-   
+
    return NULL;
 }
 
@@ -278,10 +278,10 @@ Evas_Object *etk_cache_find(Etk_Cache *cache, const char *filename, const char *
 static void _etk_cache_object_deleted_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Etk_Cache *cache;
-   
+
    if (!(cache = data))
       return;
-   
+
    etk_cache_remove(cache, obj);
    if (cache->free_cb)
       cache->free_cb(obj, cache->free_cb_data);

@@ -42,22 +42,22 @@ void etk_test_iconbox_window_create(void *data)
 {
    static Etk_Widget *win = NULL;
    Etk_Widget *iconbox;
-   
+
    if (win)
    {
       etk_widget_show_all(ETK_WIDGET(win));
       return;
-   }	
-  
+   }
+
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Iconbox Test");
    etk_window_resize(ETK_WINDOW(win), 600, 330);
    etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
-   
+
    iconbox = etk_iconbox_new();
    etk_container_add(ETK_CONTAINER(win), iconbox);
    etk_signal_connect("mouse-down", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_test_iconbox_mouse_down_cb), NULL);
-   
+
    _etk_test_iconbox_folder_set(ETK_ICONBOX(iconbox), NULL);
    etk_widget_show_all(win);
 }
@@ -68,14 +68,14 @@ static void _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_
    Etk_Iconbox *iconbox;
    Etk_Iconbox_Icon *icon;
    Etk_String *new_folder;
-   
+
    if (!(iconbox = ETK_ICONBOX(object)))
       return;
    if (event->button != 1 || !(event->flags & ETK_MOUSE_DOUBLE_CLICK) || (event->flags & ETK_MOUSE_TRIPLE_CLICK))
       return;
    if (!(icon = etk_iconbox_icon_get_at_xy(iconbox, event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
       return;
-   
+
    new_folder = etk_string_new_printf("%s/%s", etk_string_get(_etk_test_iconbox_current_folder),
       etk_iconbox_icon_label_get(icon));
    _etk_test_iconbox_folder_set(iconbox, etk_string_get(new_folder));
@@ -88,31 +88,31 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
    Ecore_List *files;
    char *filename;
    char file_path[PATH_MAX];
-   
+
    if (!iconbox)
       return;
    if (!folder && !(folder = getenv("HOME")))
       return;
    if (!(files = ecore_file_ls(folder)))
       return;
-   
+
    etk_iconbox_clear(iconbox);
    etk_iconbox_append(iconbox, etk_theme_icon_path_get(), "actions/go-up_48", "..");
-   
+
    /* First, add the folders */
    ecore_list_first_goto(files);
    while ((filename = ecore_list_next(files)))
-   {      
+   {
       if (filename[0] == '.')
          continue;
-      
+
       snprintf(file_path, PATH_MAX, "%s/%s", folder, filename);
       if (!ecore_file_is_dir(file_path))
          continue;
-      
+
       etk_iconbox_append(iconbox, etk_theme_icon_path_get(), "places/folder_48", filename);
    }
-   
+
    /* Then the files */
    ecore_list_first_goto(files);
    while ((filename = ecore_list_next(files)))
@@ -120,14 +120,14 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
       const char *ext;
       char *icon = NULL;
       int i;
-      
+
       if (filename[0] == '.')
          continue;
-      
+
       snprintf(file_path, PATH_MAX, "%s/%s", folder, filename);
       if (ecore_file_is_dir(file_path))
          continue;
-      
+
       if ((ext = strrchr(filename, '.')) && (ext = ext + 1))
       {
          for (i = 0; i < _etk_test_iconbox_num_types; i++)
@@ -139,12 +139,12 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
             }
          }
       }
-      
+
       etk_iconbox_append(iconbox, etk_theme_icon_path_get(), icon ? icon : "mimetypes/text-x-generic_48", filename);
    }
-   
+
    ecore_list_destroy(files);
-   
+
    if (!_etk_test_iconbox_current_folder)
       _etk_test_iconbox_current_folder = etk_string_new(NULL);
    etk_string_set(_etk_test_iconbox_current_folder, folder);

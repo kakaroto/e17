@@ -6,7 +6,7 @@
  * Creation of the test-app window
  *
  **************************/
- 
+
 /* Creates the window for the image test */
 void etk_test_image_window_create(void *data)
 {
@@ -20,11 +20,11 @@ void etk_test_image_window_create(void *data)
       etk_widget_show_all(ETK_WIDGET(win));
       return;
    }
-   
+
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Image Test");
    etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
-   
+
    /* TODO: we need a more complete test-app for Etk_Image */
    /* Create two images with different "keep-aspect" property and pack theme into a table */
    images[0] = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png", NULL);

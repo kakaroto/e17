@@ -50,7 +50,7 @@ struct Etk_Selection_Event
 void etk_selection_text_set(Etk_Selection_Type selection, const char *text);
 void etk_selection_text_request(Etk_Selection_Type selection, Etk_Widget *target);
 void etk_selection_clear(Etk_Selection_Type selection);
-  
+
 /** @} */
 
 #endif

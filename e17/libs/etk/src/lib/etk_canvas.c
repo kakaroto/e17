@@ -79,7 +79,7 @@ Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
       evas_object_move(object, cx, cy);
       evas_object_clip_set(object, canvas->clip);
       evas_object_show(canvas->clip);
-      
+
       evas_object_event_callback_add(object, EVAS_CALLBACK_FREE, _etk_canvas_object_deleted_cb, canvas);
       canvas->objects = evas_list_append(canvas->objects, object);
    }
@@ -95,16 +95,16 @@ Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
 void etk_canvas_object_remove(Etk_Canvas *canvas, Evas_Object *object)
 {
    Evas_List *l;
-   
+
    if (!canvas || !object)
       return;
-   
+
    if ((l = evas_list_find_list(canvas->objects, object)))
    {
       etk_widget_member_object_del(ETK_WIDGET(canvas), object);
       evas_object_clip_unset(object);
       evas_object_hide(object);
-      
+
       evas_object_event_callback_del(object, EVAS_CALLBACK_FREE, _etk_canvas_object_deleted_cb);
       canvas->objects = evas_list_remove_list(canvas->objects, l);
       if (!canvas->objects)
@@ -124,10 +124,10 @@ void etk_canvas_object_remove(Etk_Canvas *canvas, Evas_Object *object)
 void etk_canvas_object_move(Etk_Canvas *canvas, Evas_Object *object, int x, int y)
 {
    int cx, cy;
-   
+
    if (!canvas || !object)
       return;
-   
+
    etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
    evas_object_move(object, cx + x, cy + y);
 }
@@ -148,10 +148,10 @@ void etk_canvas_object_move(Etk_Canvas *canvas, Evas_Object *object, int x, int 
 void etk_canvas_object_geometry_get(Etk_Canvas *canvas, Evas_Object *object, int *x, int *y, int *w, int *h)
 {
    int cx, cy;
-   
+
    if (!canvas || !object)
       return;
-   
+
    etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
    evas_object_geometry_get(object, x, y, w, h);
    if (x)   *x -= cx;
@@ -173,7 +173,7 @@ static void _etk_canvas_constructor(Etk_Canvas *canvas)
    canvas->clip = NULL;
    canvas->objects = NULL;
    ETK_WIDGET(canvas)->size_allocate = _etk_canvas_size_allocate;
-   
+
    etk_signal_connect("realized", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realized_cb), NULL);
    etk_signal_connect("unrealized", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_unrealized_cb), NULL);
 }
@@ -182,10 +182,10 @@ static void _etk_canvas_constructor(Etk_Canvas *canvas)
 static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Canvas *canvas;
-   
+
    if (!(canvas = ETK_CANVAS(widget)))
       return;
-   
+
    evas_object_move(canvas->clip, geometry.x, geometry.y);
    evas_object_resize(canvas->clip, geometry.w, geometry.h);
 }
@@ -206,10 +206,10 @@ static void _etk_canvas_realized_cb(Etk_Object *object, void *data)
 
    if (!(canvas = ETK_CANVAS(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(canvas))))
       return;
-   
+
    canvas->clip = evas_object_rectangle_add(evas);
    etk_widget_member_object_add(ETK_WIDGET(canvas), canvas->clip);
-   
+
    for (l = canvas->objects; l; l = l->next)
    {
       obj = l->data;
@@ -222,10 +222,10 @@ static void _etk_canvas_realized_cb(Etk_Object *object, void *data)
 static void _etk_canvas_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Canvas *canvas;
-   
+
    if (!(canvas = ETK_CANVAS(object)))
       return;
-   
+
    canvas->clip = NULL;
    evas_list_free(canvas->objects);
    canvas->objects = NULL;
@@ -235,10 +235,10 @@ static void _etk_canvas_unrealized_cb(Etk_Object *object, void *data)
 static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Etk_Canvas *canvas;
-   
+
    if (!(canvas = ETK_CANVAS(data)) || !obj)
       return;
-   
+
    canvas->objects = evas_list_remove(canvas->objects, obj);
    if (!canvas->objects)
       evas_object_hide(canvas->clip);
@@ -272,7 +272,7 @@ static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj,
  *    etk_canvas_object_add(canvas, obj);
  * }
  * @endcode @n
- * 
+ *
  * Once an object is added to the canvas, you can use any @a evas_object_*() functions to control it. @n
  * You just have to keep in mind that calling evas_object_move() on an object belonging to the canvas will move
  * the object relatively to the top-left corner of the window, and not to the top corner of the canvas itself. @n

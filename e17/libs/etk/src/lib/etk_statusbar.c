@@ -56,12 +56,12 @@ Etk_Type *etk_statusbar_type_get(void)
    {
       statusbar_type = etk_type_new("Etk_Statusbar", ETK_WIDGET_TYPE, sizeof(Etk_Statusbar),
          ETK_CONSTRUCTOR(_etk_statusbar_constructor), ETK_DESTRUCTOR(_etk_statusbar_destructor));
-      
+
       etk_type_property_add(statusbar_type, "current-message", ETK_STATUSBAR_CURRENT_MESSAGE_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE, NULL);
       etk_type_property_add(statusbar_type, "has-resize-grip", ETK_STATUSBAR_HAS_RESIZE_GRIP_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
-      
+
       statusbar_type->property_set = _etk_statusbar_property_set;
       statusbar_type->property_get = _etk_statusbar_property_get;
    }
@@ -88,20 +88,20 @@ int etk_statusbar_context_id_get(Etk_Statusbar *statusbar, const char *context)
 {
    char *key;
    int *context_id;
-   
+
    if (!statusbar || !context)
       return -1;
-   
+
    key = malloc(strlen("_Etk_Statusbar::") + strlen(context) + 1);
    sprintf(key, "_Etk_Statusbar::%s", context);
-   
+
    if (!(context_id = etk_object_data_get(ETK_OBJECT(statusbar), key)))
    {
       context_id = malloc(sizeof(int));
       *context_id = statusbar->next_context_id++;
       etk_object_data_set_full(ETK_OBJECT(statusbar), key, context_id, free);
    }
-   
+
    free(key);
    return *context_id;
 }
@@ -117,18 +117,18 @@ int etk_statusbar_context_id_get(Etk_Statusbar *statusbar, const char *context)
 int etk_statusbar_message_push(Etk_Statusbar *statusbar, const char *message, int context_id)
 {
    Etk_Statusbar_Msg *new_msg;
-   
+
    if (!statusbar || !message)
       return -1;
-   
+
    new_msg = malloc(sizeof(Etk_Statusbar_Msg));
    new_msg->msg = strdup(message);
    new_msg->context_id = context_id;
    new_msg->message_id = statusbar->next_message_id++;
-   
+
    statusbar->msg_stack = evas_list_prepend(statusbar->msg_stack, new_msg);
    _etk_statusbar_update(statusbar);
-   
+
    etk_object_notify(ETK_OBJECT(statusbar), "current-message");
    return new_msg->message_id;
 }
@@ -142,10 +142,10 @@ void etk_statusbar_message_pop(Etk_Statusbar *statusbar, int context_id)
 {
    Evas_List *l;
    Etk_Statusbar_Msg *m;
-   
+
    if (!statusbar)
       return;
-   
+
    for (l = statusbar->msg_stack; l; l = l->next)
    {
       m = l->data;
@@ -158,7 +158,7 @@ void etk_statusbar_message_pop(Etk_Statusbar *statusbar, int context_id)
          break;
       }
    }
-   
+
    etk_object_notify(ETK_OBJECT(statusbar), "current-message");
 }
 
@@ -172,10 +172,10 @@ void etk_statusbar_message_remove(Etk_Statusbar *statusbar, int message_id)
 {
    Evas_List *l;
    Etk_Statusbar_Msg *m;
-   
+
    if (!statusbar)
       return;
-   
+
    for (l = statusbar->msg_stack; l; l = l->next)
    {
       m = l->data;
@@ -201,14 +201,14 @@ void etk_statusbar_message_remove(Etk_Statusbar *statusbar, int message_id)
 void etk_statusbar_message_get(Etk_Statusbar *statusbar, const char **message, int *message_id, int *context_id)
 {
    Etk_Statusbar_Msg *m;
-   
+
    if (message)     *message = NULL;
    if (message_id)  *message_id = 0;
    if (context_id)  *context_id = 0;
-   
+
    if (!statusbar)
       return;
-   
+
    if (statusbar->msg_stack && (m = statusbar->msg_stack->data))
    {
       if (message)     *message = m->msg;
@@ -227,7 +227,7 @@ void etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool has_re
 {
    if (!statusbar || statusbar->has_resize_grip == has_resize_grip)
       return;
-   
+
    statusbar->has_resize_grip = has_resize_grip;
    if (statusbar->has_resize_grip)
       etk_widget_theme_signal_emit(ETK_WIDGET(statusbar), "etk,action,show,resize_grip", ETK_TRUE);
@@ -264,7 +264,7 @@ static void _etk_statusbar_constructor(Etk_Statusbar *statusbar)
    statusbar->msg_stack = NULL;
    statusbar->next_message_id = 0;
    statusbar->next_context_id = 0;
-   
+
    etk_signal_connect("realized", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_realized_cb), NULL);
 }
 
@@ -272,10 +272,10 @@ static void _etk_statusbar_constructor(Etk_Statusbar *statusbar)
 static void _etk_statusbar_destructor(Etk_Statusbar *statusbar)
 {
    Etk_Statusbar_Msg *msg;
-   
+
    if (!statusbar)
       return;
-   
+
    while (statusbar->msg_stack)
    {
       msg = statusbar->msg_stack->data;
@@ -316,7 +316,7 @@ static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk
       case ETK_STATUSBAR_CURRENT_MESSAGE_PROPERTY:
       {
          const char *message;
-         
+
          etk_statusbar_message_get(statusbar, &message, NULL, NULL);
          etk_property_value_string_set(value, message);
          break;
@@ -340,17 +340,17 @@ static void _etk_statusbar_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Statusbar *statusbar;
    Etk_Widget *statusbar_widget;
-   
+
    if (!(statusbar = ETK_STATUSBAR(object)))
       return;
    statusbar_widget = ETK_WIDGET(statusbar);
-   
+
    if (statusbar->has_resize_grip)
       etk_widget_theme_signal_emit(statusbar_widget, "etk,action,show,resize_grip", ETK_TRUE);
    else
       etk_widget_theme_signal_emit(statusbar_widget, "etk,action,hide,resize_grip", ETK_TRUE);
    _etk_statusbar_update(statusbar);
-   
+
    if (statusbar_widget->theme_object)
    {
       edje_object_signal_callback_add(statusbar_widget->theme_object, "*", "etk.event.resize",
@@ -362,10 +362,10 @@ static void _etk_statusbar_realized_cb(Etk_Object *object, void *data)
 static void _etk_statusbar_resize_grip_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Etk_Statusbar *statusbar;
-   
+
    if (!(statusbar = ETK_STATUSBAR(data)))
       return;
-   
+
    if (strcmp(emission, "mouse,in") == 0)
       etk_toplevel_pointer_push(etk_widget_toplevel_parent_get(ETK_WIDGET(statusbar)), ETK_POINTER_RESIZE_BR);
    else if (strcmp(emission, "mouse,out") == 0)
@@ -373,10 +373,10 @@ static void _etk_statusbar_resize_grip_cb(void *data, Evas_Object *obj, const ch
    else if (strcmp(emission, "mouse,down,1") == 0)
    {
       Etk_Toplevel *window;
-      
+
       if (!(window = etk_widget_toplevel_parent_get(ETK_WIDGET(statusbar))) || !ETK_IS_WINDOW(window))
          return;
-      
+
       etk_window_geometry_get(ETK_WINDOW(window), NULL, NULL, &statusbar->window_width, &statusbar->window_height);
       etk_signal_connect("mouse-move", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_mouse_move_cb), NULL);
    }
@@ -389,12 +389,12 @@ static void _etk_statusbar_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Mov
 {
    Etk_Statusbar *statusbar;
    Etk_Toplevel *window;
-   
+
    if (!(statusbar = ETK_STATUSBAR(object)))
       return;
    if (!(window = etk_widget_toplevel_parent_get(ETK_WIDGET(statusbar))) || !ETK_IS_WINDOW(window))
       return;
-   
+
    statusbar->window_width += event->cur.widget.x - event->prev.widget.x;
    statusbar->window_height += event->cur.widget.y - event->prev.widget.y;
    etk_window_resize(ETK_WINDOW(window), statusbar->window_width, statusbar->window_height);
@@ -410,10 +410,10 @@ static void _etk_statusbar_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Mov
 static void _etk_statusbar_update(Etk_Statusbar *statusbar)
 {
    Etk_Statusbar_Msg *msg;
-   
+
    if (!statusbar)
       return;
-   
+
    if (statusbar->msg_stack && (msg = statusbar->msg_stack->data) && msg->msg)
       etk_widget_theme_part_text_set(ETK_WIDGET(statusbar), "etk.text.message", msg->msg);
    else
@@ -459,7 +459,7 @@ static void _etk_statusbar_update(Etk_Statusbar *statusbar)
  * //Note: it won't change the current message of the statusbar since "Paste" is not on the top of the message-stack
  * etk_statusbar_message_pop(statusbar, etk_statusbar_context_id_get("Menu"));
  * @endcode @n @n
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

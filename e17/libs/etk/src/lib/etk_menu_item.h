@@ -5,7 +5,7 @@
 #include "etk_container.h"
 #include "etk_types.h"
 #include "etk_stock.h"
- 
+
 /**
  * @defgroup Etk_Menu_Item Etk_Menu_Item
  * @brief The Etk_Menu_Item widget is an item that can be packed in a menu shell (Etk_Menu or Etk_Menu_Bar)
@@ -56,17 +56,17 @@ struct Etk_Menu_Item
    /* private: */
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
-   
+
    void (*selected_handler)(Etk_Menu_Item *menu_item);
    void (*unselected_handler)(Etk_Menu_Item *menu_item);
    void (*activated_handler)(Etk_Menu_Item *menu_item);
-   
+
    Etk_Menu_Shell *parent_shell;
    Etk_Menu *submenu;
-   
+
    char *label;
    Etk_Widget *left_widget;
-   
+
    Etk_Bool is_selected;
 };
 
@@ -101,7 +101,7 @@ struct Etk_Menu_Item_Check
    /* private: */
    /* Inherit from Etk_Menu_Item */
    Etk_Menu_Item menu_item;
-   
+
    void (*toggled_handler)(Etk_Menu_Item_Check *check_item);
    void (*active_set)(Etk_Menu_Item_Check *check_item, Etk_Bool active);
    Etk_Bool active;
@@ -116,7 +116,7 @@ struct Etk_Menu_Item_Radio
    /* private: */
    /* Inherit from Etk_Menu_Item_Check */
    Etk_Menu_Item_Check check_item;
-   
+
    Evas_List **group;
    Etk_Bool can_uncheck;
 };

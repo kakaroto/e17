@@ -58,7 +58,7 @@ Etk_Type *etk_paned_type_get(void)
    {
       paned_type = etk_type_new("Etk_Paned", ETK_CONTAINER_TYPE, sizeof(Etk_Paned),
             ETK_CONSTRUCTOR(_etk_paned_constructor), NULL);
-      
+
       etk_type_property_add(paned_type, "position", ETK_PANED_POSITION_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
    }
@@ -80,7 +80,7 @@ Etk_Type *etk_hpaned_type_get(void)
       hpaned_type = etk_type_new("Etk_HPaned", ETK_PANED_TYPE, sizeof(Etk_HPaned),
             ETK_CONSTRUCTOR(_etk_hpaned_constructor), NULL);
    }
-   
+
    return hpaned_type;
 }
 
@@ -98,7 +98,7 @@ Etk_Type *etk_vpaned_type_get(void)
       vpaned_type = etk_type_new("Etk_VPaned", ETK_PANED_TYPE, sizeof(Etk_VPaned),
             ETK_CONSTRUCTOR(_etk_vpaned_constructor), NULL);
    }
-   
+
    return vpaned_type;
 }
 
@@ -134,7 +134,7 @@ void etk_paned_child1_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
 
    if (paned->child1)
       etk_container_remove(paned->child1);
-   
+
    paned->child1 = child;
    paned->expand1 = expand;
    if (child)
@@ -159,7 +159,7 @@ void etk_paned_child2_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
 
    if (paned->child2)
       etk_container_remove(paned->child2);
-   
+
    paned->child2 = child;
    paned->expand2 = expand;
    if (child)
@@ -251,17 +251,17 @@ Etk_Bool etk_paned_child2_expand_get(Etk_Paned *paned)
 void etk_paned_position_set(Etk_Paned *paned, int position)
 {
    int prev_position;
-   
+
    if (!paned)
       return;
-   
+
    prev_position = paned->position;
    paned->position = position;
    if (ETK_IS_HPANED(paned))
       _etk_hpaned_position_calc(paned);
    else
       _etk_vpaned_position_calc(paned);
-   
+
    etk_widget_redraw_queue(ETK_WIDGET(paned));
    if (prev_position != paned->position)
       etk_object_notify(ETK_OBJECT(paned), "position");
@@ -352,7 +352,7 @@ static void _etk_hpaned_size_request(Etk_Widget *widget, Etk_Size *size)
       child1_size.w = 0;
       child1_size.h = 0;
    }
-   
+
    if (paned->child2)
       etk_widget_size_request(paned->child2, &child2_size);
    else
@@ -360,11 +360,11 @@ static void _etk_hpaned_size_request(Etk_Widget *widget, Etk_Size *size)
       child2_size.w = 0;
       child2_size.h = 0;
    }
-   
+
    etk_widget_size_request(paned->separator, &separator_size);
    size->w = child1_size.w + child2_size.w + separator_size.w;
    size->h = ETK_MAX(child1_size.h, ETK_MAX(child2_size.h, separator_size.h));
-   
+
    /* We force the paned to redraw */
    /* TODO: maybe a smarter way to fix the redraw bug */
    etk_widget_redraw_queue(widget);
@@ -386,7 +386,7 @@ static void _etk_vpaned_size_request(Etk_Widget *widget, Etk_Size *size)
       child1_size.w = 0;
       child1_size.h = 0;
    }
-   
+
    if (paned->child2)
       etk_widget_size_request(paned->child2, &child2_size);
    else
@@ -394,11 +394,11 @@ static void _etk_vpaned_size_request(Etk_Widget *widget, Etk_Size *size)
       child2_size.w = 0;
       child2_size.h = 0;
    }
-   
+
    etk_widget_size_request(paned->separator, &separator_size);
    size->w = ETK_MAX(child1_size.w, ETK_MAX(child2_size.w, separator_size.w));
    size->h = child1_size.h + child2_size.h + separator_size.h;
-   
+
    /* We force the paned to redraw */
    /* TODO: maybe a smarter way to fix the redraw bug */
    etk_widget_redraw_queue(widget);
@@ -416,7 +416,7 @@ static void _etk_hpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       etk_widget_hide(paned->separator);
    else
       etk_widget_show(paned->separator);
-      
+
    if (!paned->child2 && paned->child1)
       etk_widget_size_allocate(paned->child1, geometry);
    else if (!paned->child1 && paned->child2)
@@ -426,7 +426,7 @@ static void _etk_hpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       int prev_size;
       Etk_Size separator_size;
       Etk_Geometry child_geometry;
-      
+
       if (paned->child1->geometry.w == -1
 	  && paned->child2->geometry.w == -1
 	  && paned->separator->geometry.w == -1
@@ -474,7 +474,7 @@ static void _etk_vpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       etk_widget_hide(paned->separator);
    else
       etk_widget_show(paned->separator);
-      
+
    if (!paned->child2 && paned->child1)
       etk_widget_size_allocate(paned->child1, geometry);
    else if (!paned->child1 && paned->child2)
@@ -490,7 +490,7 @@ static void _etk_vpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 	  && paned->separator->geometry.h == -1
 	  && paned->position != 0)
 	return;
-      
+
       prev_size = paned->child1->geometry.h + paned->child2->geometry.h + paned->separator->geometry.h;
       if (prev_size <= 0 && paned->position != 0)
 	 etk_paned_position_set(paned, paned->position);
@@ -540,7 +540,7 @@ static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget
       paned->child2 = NULL;
    else
       return;
-   
+
    etk_widget_size_recalc_queue(ETK_WIDGET(paned));
    etk_signal_emit_by_name("child-removed", ETK_OBJECT(paned), NULL, widget);
 }
@@ -550,16 +550,16 @@ static Evas_List *_etk_paned_children_get(Etk_Container *container)
 {
    Etk_Paned *paned;
    Evas_List *children;
-   
+
    if (!(paned = ETK_PANED(container)))
       return NULL;
-   
+
    children = NULL;
    if (paned->child1)
       children = evas_list_append(children, paned->child1);
    if (paned->child2)
       children = evas_list_append(children, paned->child2);
-   
+
    return children;
 }
 
@@ -625,7 +625,7 @@ static void _etk_paned_separator_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse
 }
 
 
-/* Called whent the user moves the mouse above the separator of paned */ 
+/* Called whent the user moves the mouse above the separator of paned */
 static void _etk_paned_separator_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data)
 {
    Etk_Paned *paned;

@@ -34,7 +34,7 @@ struct Etk_Menu
    /* private: */
    /* Inherit from Etk_Menu_Shell */
    Etk_Menu_Shell menu_shell;
-   
+
    Etk_Popup_Window *window;
    Etk_Menu_Item *parent_item;
 };

@@ -54,7 +54,7 @@ struct Etk_Toolbar
    Etk_Container container;
 
    Etk_Widget *box;
-   
+
    Etk_Toolbar_Orientation orientation;
    Etk_Toolbar_Style style;
    Etk_Stock_Size stock_size;

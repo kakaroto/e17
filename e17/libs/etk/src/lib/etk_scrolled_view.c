@@ -56,7 +56,7 @@ Etk_Type *etk_scrolled_view_type_get(void)
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
       etk_type_property_add(scrolled_view_type, "vpolicy", ETK_SCROLLED_VIEW_VPOLICY_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
-      
+
       scrolled_view_type->property_set = _etk_scrolled_view_property_set;
       scrolled_view_type->property_get = _etk_scrolled_view_property_get;
    }
@@ -159,7 +159,7 @@ void etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled
 {
    if (!scrolled_view)
       return;
-   
+
    if (hpolicy)
       *hpolicy = scrolled_view ? scrolled_view->hpolicy : ETK_POLICY_AUTO;
    if (vpolicy)
@@ -187,7 +187,7 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    etk_widget_parent_set(scrolled_view->hscrollbar, ETK_WIDGET(scrolled_view));
    etk_widget_internal_set(scrolled_view->hscrollbar, ETK_TRUE);
    etk_widget_show(scrolled_view->hscrollbar);
-   
+
    scrolled_view->vscrollbar = etk_vscrollbar_new(0.0, 0.0, 0.0, 12.0, 50.0, 0.0);
    etk_widget_theme_parent_set(scrolled_view->vscrollbar, ETK_WIDGET(scrolled_view));
    etk_widget_parent_set(scrolled_view->vscrollbar, ETK_WIDGET(scrolled_view));
@@ -283,10 +283,10 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    Etk_Geometry child_geometry;
    Etk_Widget *child;
    Etk_Bool show_vscrollbar = ETK_FALSE, show_hscrollbar = ETK_FALSE;
-   
+
    if (!(scrolled_view = ETK_SCROLLED_VIEW(widget)))
       return;
-   
+
    if (!(child = ETK_BIN(scrolled_view)->child) || !child->scroll_size_get || !child->scroll)
    {
       etk_widget_hide(scrolled_view->hscrollbar);
@@ -310,22 +310,22 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
       vscrollbar_size.w = 0;
       vscrollbar_size.h = 0;
    }
-   
+
    scrollview_size.w = geometry.w - child->inset.left - child->inset.right;
    scrollview_size.h = geometry.h - child->inset.top - child->inset.bottom;
    if (child->scroll_margins_get)
    {
       Etk_Size margins_size;
-      
+
       child->scroll_margins_get(child, &margins_size);
       scrollview_size.w -= margins_size.w;
       scrollview_size.h -= margins_size.h;
    }
-   
+
    scrollbar_size.w = vscrollbar_size.w;
    scrollbar_size.h = hscrollbar_size.h;
    child->scroll_size_get(child, scrollview_size, scrollbar_size, &scroll_size);
-   
+
    if ((scrolled_view->hpolicy == ETK_POLICY_AUTO && scroll_size.w > scrollview_size.w)
       || scrolled_view->hpolicy == ETK_POLICY_SHOW)
    {
@@ -345,7 +345,7 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
    {
       scrollview_size.h -= hscrollbar_size.h;
       etk_widget_show(scrolled_view->hscrollbar);
-      
+
       child_geometry.x = geometry.x;
       child_geometry.y = geometry.y + geometry.h - hscrollbar_size.h;
       child_geometry.w = geometry.w - (show_vscrollbar ? vscrollbar_size.w : 0);
@@ -420,7 +420,7 @@ static void _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Dow
       etk_range_value_set(vscrollbar_range, vscrollbar_range->value - vscrollbar_range->page_increment);
    else
       propagate = ETK_TRUE;
-   
+
    if (!propagate)
       etk_signal_stop();
 }
@@ -430,10 +430,10 @@ static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_W
 {
    Etk_Scrolled_View *scrolled_view;
    Etk_Range *vscrollbar_range;
-   
+
    if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
       return;
-   
+
    vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
    etk_range_value_set(vscrollbar_range, vscrollbar_range->value + event->z * vscrollbar_range->step_increment);
    etk_signal_stop();
@@ -467,7 +467,7 @@ static void _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, v
    if (!object || !child)
       return;
    etk_signal_connect("scroll-size-changed", ETK_OBJECT(child),
-      ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object); 
+      ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object);
 }
 
 /* Called when a child is removed */
@@ -475,7 +475,7 @@ static void _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child,
 {
    if (!object || !child)
       return;
-   etk_signal_disconnect("scroll-size-changed", ETK_OBJECT(child), 
+   etk_signal_disconnect("scroll-size-changed", ETK_OBJECT(child),
       ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb));
 }
 
@@ -488,10 +488,10 @@ static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, 
    Etk_Size scrollview_size;
    Etk_Size scrollbar_size;
    Etk_Size scroll_size;
-   
+
    if (!(child = ETK_WIDGET(object)) || !child->scroll_size_get || !(scrolled_view = ETK_SCROLLED_VIEW(data)))
       return;
-   
+
    if (scrolled_view->hpolicy == ETK_POLICY_AUTO || scrolled_view->hpolicy == ETK_POLICY_SHOW)
       etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, ETK_FALSE);
    else
@@ -506,12 +506,12 @@ static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, 
       vscrollbar_requisition.w = 0;
       vscrollbar_requisition.h = 0;
    }
-   
+
    etk_widget_inner_geometry_get(ETK_WIDGET(scrolled_view), NULL, NULL, &scrollview_size.w, &scrollview_size.h);
    scrollbar_size.w = vscrollbar_requisition.w;
    scrollbar_size.h = hscrollbar_requisition.h;
    child->scroll_size_get(child, scrollview_size, scrollbar_size, &scroll_size);
-   
+
    etk_range_range_set(ETK_RANGE(scrolled_view->hscrollbar), 0, scroll_size.w);
    etk_range_range_set(ETK_RANGE(scrolled_view->vscrollbar), 0, scroll_size.h);
    etk_widget_redraw_queue(ETK_WIDGET(scrolled_view));
@@ -542,7 +542,7 @@ static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, 
  * Most of the widgets doesn't have a scrolling ability, which means that you have to create an Etk_Viewport that
  * implements this ability, attach the child to the viewport, and add the viewport to the scrolled view.
  * etk_scrolled_view_add_with_viewport() is a convenient function that does that for you. @n @n
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

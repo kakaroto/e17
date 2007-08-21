@@ -195,7 +195,7 @@ static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const c
 static void _etk_scrollbar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Range *scrollbar_range;
-   
+
    if (!(scrollbar_range = ETK_RANGE(object)))
       return;
    etk_range_value_set(scrollbar_range, scrollbar_range->value + event->z * scrollbar_range->step_increment);
@@ -266,7 +266,7 @@ static void _etk_scrollbar_range_changed_cb(Etk_Object *object, const char *prop
       edje_object_part_drag_value_set(theme_object, "etk.dragable.bar", percent, 0.0);
    else
       edje_object_part_drag_value_set(theme_object, "etk.dragable.bar", 0.0, percent);
-   
+
    /* Update the size of the drag button */
    if (range->upper > range->lower)
       new_drag_size = (double)range->page_size / (range->upper - range->lower);
@@ -364,7 +364,7 @@ static int _etk_scrollbar_step_increment_cb(void *data)
  * Etk_Scrollbar is an abstract class for two derived widgets: Etk_HScrollbar (a horizontal scrollbar)
  * and Etk_VScrollbar (a vertical scrollbar). @n
  * You usually do not need to use Etk_Scrollbar directly. In most of the cases, you can use Etk_Scrolled_View instead.
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

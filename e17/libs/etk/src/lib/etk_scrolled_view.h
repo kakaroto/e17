@@ -21,7 +21,7 @@
 
 
 /**
- * @brief Etk_Scrolled_View_Policy describes whether the scrollbar should be always visible, always hidden, 
+ * @brief Etk_Scrolled_View_Policy describes whether the scrollbar should be always visible, always hidden,
  * or whether it should be shown/hidden automatically
  */
 typedef enum

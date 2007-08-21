@@ -72,7 +72,7 @@ union Etk_Event_Global
       Etk_Position pos;            /**< The position of the mouse pointer */
       unsigned int timestamp;      /**< The timestamp when the event occured */
    } mouse_move;                   /**< The structure of a "mouse move" global event */
-   
+
    struct
    {
       int button;                  /**< The button which has been pressed/released */
@@ -83,7 +83,7 @@ union Etk_Event_Global
       unsigned int timestamp;      /**< The timestamp when the event occured */
    } mouse_down,                   /**< The structure of a "mouse down" global event */
      mouse_up;                     /**< The structure of a "mouse up" global event */
-   
+
    struct
    {
       Etk_Wheel_Direction direction;   /**< The direction of the mouse wheel event */
@@ -93,7 +93,7 @@ union Etk_Event_Global
       Etk_Position pos;            /**< The position of the mouse pointer */
       unsigned int timestamp;      /**< The timestamp when the event occured */
    } mouse_wheel;                  /**< The structure of a "mouse wheel" global event */
-   
+
    struct
    {
       char *keyname;               /**< A name corresponding to the pressed/released key */

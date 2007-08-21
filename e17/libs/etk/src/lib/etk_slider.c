@@ -56,14 +56,14 @@ Etk_Type *etk_slider_type_get(void)
    {
       slider_type = etk_type_new("Etk_Slider", ETK_RANGE_TYPE, sizeof(Etk_Slider),
          ETK_CONSTRUCTOR(_etk_slider_constructor), ETK_DESTRUCTOR(_etk_slider_destructor));
-      
+
       etk_type_property_add(slider_type, "label-format", ETK_SLIDER_LABEL_FORMAT_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(slider_type, "inverted", ETK_SLIDER_INVERTED_PROPERTY,
          ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(slider_type, "update-policy", ETK_SLIDER_UPDATE_POLICY_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SLIDER_CONTINUOUS));
-      
+
       slider_type->property_set = _etk_slider_property_set;
       slider_type->property_get = _etk_slider_property_get;
    }
@@ -148,14 +148,14 @@ void etk_slider_label_set(Etk_Slider *slider, const char *label_format)
 {
    if (!slider || slider->format == label_format)
       return;
-   
+
    free(slider->format);
    slider->format = label_format ? strdup(label_format) : NULL;
-   
+
    etk_widget_theme_signal_emit(ETK_WIDGET(slider),
       label_format ? "etk,action,show,label" : "etk,action,hide,label", ETK_TRUE);
    _etk_slider_label_update(slider);
-   
+
    etk_object_notify(ETK_OBJECT(slider), "label-format");
 }
 
@@ -181,7 +181,7 @@ void etk_slider_inverted_set(Etk_Slider *slider, Etk_Bool inverted)
 {
    if (!slider || slider->inverted == inverted)
       return;
-   
+
    slider->inverted = inverted;
    if (ETK_WIDGET(slider)->theme_object)
    {
@@ -213,7 +213,7 @@ void etk_slider_update_policy_set(Etk_Slider *slider, Etk_Slider_Update_Policy p
 {
    if (!slider || slider->policy == policy)
       return;
-   
+
    slider->policy = policy;
    if (slider->update_timer)
    {
@@ -252,7 +252,7 @@ static void _etk_slider_constructor(Etk_Slider *slider)
    slider->dragging = ETK_FALSE;
    slider->policy = ETK_SLIDER_CONTINUOUS;
    slider->update_timer = NULL;
-   
+
    ETK_RANGE(slider)->value_changed_handler = _etk_slider_value_changed_handler;
    etk_signal_connect("realized", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realized_cb), NULL);
    etk_signal_connect("key-down", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_key_down_cb), NULL);
@@ -266,7 +266,7 @@ static void _etk_slider_destructor(Etk_Slider *slider)
 {
    if (!slider)
       return;
-   
+
    if (slider->update_timer)
       ecore_timer_del(slider->update_timer);
    free(slider->format);
@@ -341,7 +341,7 @@ static void _etk_slider_realized_cb(Etk_Object *object, void *data)
       slider->format ? "etk,action,show,label" : "etk,action,hide,label", ETK_TRUE);
    edje_object_signal_callback_add(theme_object, "drag*", "etk.dragable.slider",
       _etk_slider_cursor_dragged_cb, object);
-   
+
    _etk_slider_value_changed_handler(ETK_RANGE(slider), ETK_RANGE(slider)->value);
 }
 
@@ -370,7 +370,7 @@ static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *even
       etk_range_value_set(range, range->value + dir * range->page_increment);
    else
       propagate = ETK_TRUE;
-   
+
    if (!propagate)
       etk_signal_stop();
 }
@@ -380,10 +380,10 @@ static void _etk_slider_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel
 {
    Etk_Range *range;
    int dir;
-   
+
    if (!(range = ETK_RANGE(object)))
       return;
-   
+
    dir = ETK_SLIDER(range)->inverted ? 1 : -1;
    etk_range_value_set(range, range->value + dir * event->z * range->step_increment);
    etk_signal_stop();
@@ -432,7 +432,7 @@ static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const ch
                ecore_timer_del(slider->update_timer);
             slider->update_timer = ecore_timer_add(UPDATE_DELAY, _etk_slider_update_timer_cb, slider);
          }
-         
+
          _etk_slider_label_update(slider);
       }
    }
@@ -452,7 +452,7 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
       percent = ETK_CLAMP((value - range->lower) / (range->upper - range->lower - range->page_size), 0.0, 1.0);
    else
       percent = 0.0;
-   
+
    if (!slider->dragging)
    {
       if (ETK_IS_HSLIDER(slider))
@@ -466,7 +466,7 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
          edje_object_part_drag_value_set(theme_object, "etk.dragable.slider", 0.0, percent);
       }
    }
-   
+
    _etk_slider_label_update(slider);
 }
 
@@ -485,10 +485,10 @@ static int _etk_slider_update_timer_cb(void *data)
 {
    Etk_Slider *slider;
    double v;
-   
+
    if (!(slider = ETK_SLIDER(data)))
       return 0;
-   
+
    v = _etk_slider_value_get_from_edje(slider);
    etk_range_value_set(ETK_RANGE(slider), v);
    slider->update_timer = NULL;
@@ -506,10 +506,10 @@ static double _etk_slider_value_get_from_edje(Etk_Slider *slider)
 {
    Etk_Range *range;
    double v;
-   
+
    if (!(range = ETK_RANGE(slider)) || !ETK_WIDGET(slider)->theme_object || range->upper <= range->lower)
       return 0.0;
-   
+
    if (ETK_IS_HSLIDER(slider))
    {
       edje_object_part_drag_value_get(ETK_WIDGET(slider)->theme_object, "etk.dragable.slider", &v, NULL);
@@ -520,7 +520,7 @@ static double _etk_slider_value_get_from_edje(Etk_Slider *slider)
       edje_object_part_drag_value_get(ETK_WIDGET(slider)->theme_object, "etk.dragable.slider", NULL, &v);
       v = slider->inverted ? v : (1.0 - v);
    }
-   
+
    v = range->lower + v * (range->upper - range->lower);
    return v;
 }
@@ -530,10 +530,10 @@ static void _etk_slider_label_update(Etk_Slider *slider)
 {
    char label[256];
    double v;
-   
+
    if (!slider)
       return;
-   
+
    if (slider->format)
    {
       v = _etk_slider_value_get_from_edje(slider);
@@ -573,7 +573,7 @@ static void _etk_slider_label_update(Etk_Slider *slider)
  * //Display the value of the slider with the format "2.17 cm"
  * etk_slider_label_set(slider, "%.2f cm");
  * @endcode @n
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

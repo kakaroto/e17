@@ -50,7 +50,7 @@ struct Etk_Notebook
    /* private: */
    /* Inherit from Etk_Container */
    Etk_Container container;
-   
+
    Etk_Widget *tab_bar;
    Etk_Bool tab_bar_focused;
    Etk_Bool tab_bar_visible;

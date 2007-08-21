@@ -44,7 +44,7 @@ Etk_Type *etk_frame_type_get(void)
 
       etk_type_property_add(frame_type, "label", ETK_FRAME_LABEL_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
-      
+
       frame_type->property_set = _etk_frame_property_set;
       frame_type->property_get = _etk_frame_property_get;
    }
@@ -88,7 +88,7 @@ void etk_frame_label_set(Etk_Frame *frame, const char *label)
       etk_widget_theme_part_text_set(ETK_WIDGET(frame), "etk.text.label", frame->label);
       etk_widget_theme_signal_emit(ETK_WIDGET(frame), "etk,action,show,label", ETK_TRUE);
    }
-   
+
    if (label != frame->label)
       etk_object_notify(ETK_OBJECT(frame), "label");
 }
@@ -193,7 +193,7 @@ static void _etk_frame_realized_cb(Etk_Object *object, void *data)
  * @addtogroup Etk_Frame
  *
  * @image html widgets/frame.png
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

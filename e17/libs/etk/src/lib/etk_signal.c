@@ -41,7 +41,7 @@ void etk_signal_shutdown(void)
       free(_etk_signal_emitted_signals->data);
       _etk_signal_emitted_signals = evas_list_remove_list(_etk_signal_emitted_signals, _etk_signal_emitted_signals);
    }
-   
+
    while (_etk_signal_signals_list)
    {
       _etk_signal_free(_etk_signal_signals_list->data);
@@ -53,7 +53,7 @@ void etk_signal_shutdown(void)
  * @brief Creates a new signal called @a signal_name, for the object type @a object_type
  * @param signal_name the name of the new signal
  * @param object_type the object type of the new signal
- * @param handler_offset the offset of the default handler in the object's struct 
+ * @param handler_offset the offset of the default handler in the object's struct
  * (use ETK_MEMBER_OFFSET() to get it). -1 if there is no default handler
  * @param marshaller the marshaller of the signal: it will treat and pass the arguments to the callbacks
  * @param accumulator the accumulator used to combine together the different values returned by the callbacks.
@@ -89,10 +89,10 @@ Etk_Signal *etk_signal_new(const char *signal_name, Etk_Type *object_type, long 
 void etk_signal_delete(Etk_Signal *signal)
 {
    Evas_List *l;
-   
+
    if (!signal)
       return;
-   
+
    if ((l = evas_list_find_list(_etk_signal_signals_list, signal)))
    {
       _etk_signal_free(l->data);
@@ -215,7 +215,7 @@ void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_C
  * @param object the object that will connect the signal
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
- */ 
+ */
 void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
 {
    Etk_Signal *signal;
@@ -247,14 +247,14 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Call
 
    if (!object || !signal_name || !callback)
       return;
-   
+
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
       ETK_WARNING("Invalid signal disconnection: the object type \"%s\" doesn't have a signal called \"%s\"",
          object->type->name, signal_name);
       return;
    }
-   
+
    callbacks = NULL;
    etk_object_signal_callbacks_get(object, signal, &callbacks);
    while (callbacks)
@@ -279,14 +279,14 @@ void etk_signal_disconnect_all(const char *signal_name, Etk_Object *object)
 
    if (!object || !signal_name)
       return;
-   
+
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
       ETK_WARNING("Invalid signal disconnection: the object type \"%s\" doesn't have a signal called \"%s\"",
          object->type->name, signal_name);
       return;
    }
-   
+
    callbacks = NULL;
    etk_object_signal_callbacks_get(object, signal, &callbacks);
    while (callbacks)
@@ -312,14 +312,14 @@ void etk_signal_block(const char *signal_name, Etk_Object *object, Etk_Callback 
 
    if (!object || !signal_name || !callback)
       return;
-   
+
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
       ETK_WARNING("Invalid signal block: the object type \"%s\" doesn't have a signal called \"%s\"",
          object->type->name, signal_name);
       return;
    }
-   
+
    callbacks = NULL;
    etk_object_signal_callbacks_get(object, signal, &callbacks);
    while (callbacks)
@@ -346,14 +346,14 @@ void etk_signal_unblock(const char *signal_name, Etk_Object *object, Etk_Callbac
 
    if (!object || !signal_name || !callback)
       return;
-   
+
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
       ETK_WARNING("Invalid signal unblock: the object type \"%s\" doesn't have a signal called \"%s\"",
          object->type->name, signal_name);
       return;
    }
-   
+
    callbacks = NULL;
    etk_object_signal_callbacks_get(object, signal, &callbacks);
    while (callbacks)
@@ -385,7 +385,7 @@ Etk_Bool etk_signal_emit(Etk_Signal *signal, Etk_Object *object, void *return_va
    va_start(args, return_value);
    ret = etk_signal_emit_valist(signal, object, return_value, args);
    va_end(args);
-   
+
    return ret;
 }
 
@@ -416,7 +416,7 @@ Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, vo
    va_start(args, return_value);
    ret = etk_signal_emit_valist(signal, object, return_value, args);
    va_end(args);
-   
+
    return ret;
 }
 
@@ -447,7 +447,7 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *re
    /* The pointer object will be set to NULL if the object is destroyed by a callback */
    object_ptr = object;
    etk_object_weak_pointer_add(object, &object_ptr);
-   
+
    emitted_signal = malloc(sizeof(Etk_Signal_Emitted));
    emitted_signal->signal = signal;
    emitted_signal->object = object;
@@ -468,7 +468,7 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *re
          va_end(args2);
       }
    }
-   
+
    /* Then we call the corresponding callbacks */
    if (object_ptr && !emitted_signal->stop_emission)
    {
@@ -493,13 +493,13 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object, void *re
       }
       callbacks = evas_list_free(callbacks);
    }
-   
+
    if (object_ptr)
       etk_object_weak_pointer_remove(object, &object_ptr);
    _etk_signal_emitted_signals = evas_list_remove_list(_etk_signal_emitted_signals, _etk_signal_emitted_signals);
    ret = !emitted_signal->stop_emission;
    free(emitted_signal);
-   
+
    return ret;
 }
 
@@ -538,11 +538,11 @@ const Etk_Type * etk_signal_object_type_get(Etk_Signal *signal)
  * @brief Stops the propagation of the last emitted signal: the remaining callbacks/handler won't be called. @n
  * It's usually called in a callback to avoid the other callbacks to be called.
  * @note It has no effect if no signal is being emitted
- */ 
+ */
 void etk_signal_stop()
 {
    Etk_Signal_Emitted *last_emitted_signal;
-   
+
    if (_etk_signal_emitted_signals)
    {
       last_emitted_signal = _etk_signal_emitted_signals->data;

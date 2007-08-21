@@ -37,7 +37,7 @@ void etk_test_entry_window_create(void *data)
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
 
-   
+
    /*******************
     * Normal entry
     *******************/

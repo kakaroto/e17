@@ -27,24 +27,24 @@ struct Etk_Filechooser_Widget
    /* private: */
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
-   
+
    Etk_Widget *vbox;
    Etk_Widget *name_entry;
-   
+
    Etk_Widget *places_tree;
    Etk_Tree_Col *places_col;
-   
+
    Etk_Widget *fav_tree;
    Etk_Tree_Col *fav_col;
-   
+
    Etk_Widget *files_tree;
    Etk_Tree_Col *files_name_col;
-   Etk_Tree_Col *files_date_col;   
+   Etk_Tree_Col *files_date_col;
 
    Etk_Bool select_multiple;
    Etk_Bool show_hidden;
    Etk_Bool is_save;
-   
+
    char *current_folder;
 };
 

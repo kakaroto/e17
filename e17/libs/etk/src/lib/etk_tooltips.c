@@ -25,7 +25,7 @@ static void _etk_tooltips_mouse_wheel_cb(Etk_Object *object, void *event, void *
 static void _etk_tooltips_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _etk_tooltips_widget_unrealized_cb(Etk_Object *object, void *data);
 static int _etk_tooltips_timer_cb(void *data);
-  
+
 static Etk_Widget *_etk_tooltips_window = NULL;
 static Etk_Widget *_etk_tooltips_label = NULL;
 static Etk_Object *_etk_tooltips_cur_object = NULL;
@@ -43,29 +43,29 @@ static Evas_Hash *_etk_tooltips_hash = NULL;
 
 /**
  * @brief Initialize tooltips subsystem
- */ 
+ */
 void etk_tooltips_init()
 {
    if(_etk_tooltips_initialized)
      return;
 
-   
-   _etk_tooltips_window = etk_widget_new(ETK_WINDOW_TYPE, "theme-group", "tooltip", "decorated", ETK_FALSE, "skip-taskbar", ETK_TRUE, "skip-pager", ETK_TRUE, NULL);   
-   
+
+   _etk_tooltips_window = etk_widget_new(ETK_WINDOW_TYPE, "theme-group", "tooltip", "decorated", ETK_FALSE, "skip-taskbar", ETK_TRUE, "skip-pager", ETK_TRUE, NULL);
+
    _etk_tooltips_label = etk_label_new(NULL);
    etk_container_add(ETK_CONTAINER(_etk_tooltips_window), _etk_tooltips_label);
-   
+
    _etk_tooltips_initialized = ETK_TRUE;
 }
 
 /**
  * @brief Shutdown tooltips subsystem
- */ 
+ */
 void etk_tooltips_shutdown()
 {
    if(!_etk_tooltips_initialized)
      return;
-   
+
    //etk_object_destroy(_etk_tooltips_window);
    evas_hash_foreach(_etk_tooltips_hash, _etk_tooltips_hash_free, NULL);
    evas_hash_free(_etk_tooltips_hash);
@@ -74,7 +74,7 @@ void etk_tooltips_shutdown()
 
 /**
  * @brief Shutdown tooltips subsystem
- */ 
+ */
 void etk_tooltips_enable()
 {
    //_etk_tooltips_enabled = ETK_TRUE;
@@ -82,7 +82,7 @@ void etk_tooltips_enable()
 
 /**
  * @brief Get wether tooltips are enabled or disabled
- */ 
+ */
 Etk_Bool etk_tooltips_enabled_get()
 {
    return _etk_tooltips_enabled;
@@ -90,7 +90,7 @@ Etk_Bool etk_tooltips_enabled_get()
 
 /**
  * @brief Disable tooltips
- */ 
+ */
 void etk_tooltips_disable()
 {
    _etk_tooltips_enabled = ETK_FALSE;
@@ -100,12 +100,12 @@ void etk_tooltips_disable()
  * @brief Set tooltip text for a widget
  * @param widget the widget whose tooltip we want to set
  * @param text the text of the tooltip
- */ 
+ */
 void etk_tooltips_tip_set(Etk_Widget *widget, const char *text)
 {
    char *tip_text = NULL;
    char *key;
-   
+
    key = calloc(32, sizeof(char));
    snprintf(key, 32 * sizeof(char), "%p", widget);
 
@@ -122,11 +122,11 @@ void etk_tooltips_tip_set(Etk_Widget *widget, const char *text)
 	 etk_signal_disconnect("mouse-wheel", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_wheel_cb));
 	 etk_signal_disconnect("key-down", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_key_down_cb));
 	 etk_signal_disconnect("unrealized", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_widget_unrealized_cb));
-	 free(tip_text);	 
+	 free(tip_text);
       }
       else
       {
-	 free(tip_text);	 
+	 free(tip_text);
 	 tip_text = strdup(text);
 	 _etk_tooltips_hash = evas_hash_modify(_etk_tooltips_hash, key, tip_text);
       }
@@ -152,14 +152,14 @@ void etk_tooltips_tip_set(Etk_Widget *widget, const char *text)
  * @brief Get tooltip text for a widget
  * @param widget the widget whose tooltip we want to set
  * @return The text of the tooltip of the widget or NULL if it isn't set
- */ 
+ */
  const char *etk_tooltips_tip_get(Etk_Widget *widget)
 {
    const char *tip_text;
    char *key;
-   
+
    key = calloc(32, sizeof(char));
-   snprintf(key, 32 * sizeof(char), "%p", widget);   
+   snprintf(key, 32 * sizeof(char), "%p", widget);
    if((tip_text = evas_hash_find(_etk_tooltips_hash, key)) != NULL)
    {
       free(key);
@@ -177,8 +177,8 @@ Etk_Bool etk_tooltips_tip_visible()
 {
    if(!_etk_tooltips_enabled || !ETK_IS_WINDOW(_etk_tooltips_window))
      return ETK_FALSE;
-   
-   return etk_widget_is_visible(_etk_tooltips_window);   
+
+   return etk_widget_is_visible(_etk_tooltips_window);
 }
 
 /**
@@ -194,19 +194,19 @@ void etk_tooltips_pop_up(Etk_Widget *widget)
    Evas *evas;
    int pt_x, pt_y;
    int win_x, win_y;
-   
+
    if(!ETK_IS_OBJECT(widget))
      return;
-   
+
    key = calloc(32, sizeof(char));
    snprintf(key, 32 * sizeof(char), "%p", ETK_OBJECT(widget));
    if((text = evas_hash_find(_etk_tooltips_hash, key)) == NULL)
    {
       free(key);
-      _etk_tooltips_timer = NULL;      
+      _etk_tooltips_timer = NULL;
       return;
-   } 
-   
+   }
+
      {
 	/* We are doing this because if the label / window grow, then are not shrinking anymore */
 	etk_object_destroy(ETK_OBJECT(_etk_tooltips_window));
@@ -215,16 +215,16 @@ void etk_tooltips_pop_up(Etk_Widget *widget)
 	_etk_tooltips_label = etk_label_new(NULL);
 	etk_container_add(ETK_CONTAINER(_etk_tooltips_window), _etk_tooltips_label);
      }
-   
-   etk_label_set(ETK_LABEL(_etk_tooltips_label), text);   
-   	
+
+   etk_label_set(ETK_LABEL(_etk_tooltips_label), text);
+
    evas = etk_widget_toplevel_evas_get(widget);
    evas_pointer_canvas_xy_get(evas, &pt_x, &pt_y);
    toplevel = etk_widget_toplevel_parent_get(widget);
    etk_window_geometry_get(ETK_WINDOW(toplevel), &win_x, &win_y, NULL, NULL);
    x = pt_x + win_x;
-   y = pt_y + win_y;      
-   
+   y = pt_y + win_y;
+
    /* TODO: if tooltip window is outside screen, fix its place */
    etk_window_move(ETK_WINDOW(_etk_tooltips_window), x + 5, y + 5);
    etk_widget_show_all(_etk_tooltips_window);
@@ -240,7 +240,7 @@ void etk_tooltips_pop_down()
 {
    if(!_etk_tooltips_enabled)
      return;
-   
+
    etk_widget_hide(_etk_tooltips_window);
    _etk_tooltips_timer = NULL;
    _etk_tooltips_cur_object = NULL;
@@ -271,11 +271,11 @@ static void _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *
 {
    if(!_etk_tooltips_enabled)
      return;
-   
+
    if(_etk_tooltips_timer != NULL)
      ecore_timer_del(_etk_tooltips_timer);
-      
-   etk_tooltips_pop_down();      
+
+   etk_tooltips_pop_down();
 }
 
 /* Callback for when the mouse moves on the widget */
@@ -283,16 +283,16 @@ static void _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move
 {
    if(!_etk_tooltips_enabled)
      return;
-   
+
    if(!ETK_IS_WINDOW(_etk_tooltips_window))
      return;
-   
+
    if(etk_widget_is_visible(_etk_tooltips_window))
      return;
-   
-   if(_etk_tooltips_timer != NULL)     
+
+   if(_etk_tooltips_timer != NULL)
      ecore_timer_del(_etk_tooltips_timer);
-   
+
    etk_tooltips_pop_down();
    _etk_tooltips_cur_object = object;
    _etk_tooltips_timer = ecore_timer_add(_etk_tooltips_delay, _etk_tooltips_timer_cb, NULL);
@@ -303,9 +303,9 @@ static void _etk_tooltips_mouse_down_cb(Etk_Object *object, void *event, void *d
 {
    if(!_etk_tooltips_enabled)
      return;
-   
+
    etk_tooltips_pop_down();
-   _etk_tooltips_cur_object = object;   
+   _etk_tooltips_cur_object = object;
    _etk_tooltips_timer = ecore_timer_add(_etk_tooltips_delay, _etk_tooltips_timer_cb, NULL);
 }
 
@@ -314,9 +314,9 @@ static void _etk_tooltips_mouse_wheel_cb(Etk_Object *object, void *event, void *
 {
    if(!_etk_tooltips_enabled)
      return;
-   
+
    etk_tooltips_pop_down();
-   _etk_tooltips_cur_object = object;   
+   _etk_tooltips_cur_object = object;
    _etk_tooltips_timer = ecore_timer_add(_etk_tooltips_delay, _etk_tooltips_timer_cb, NULL);
 }
 
@@ -325,9 +325,9 @@ static void _etk_tooltips_key_down_cb(Etk_Object *object, void *event, void *dat
 {
    if(!_etk_tooltips_enabled)
      return;
-   
+
    etk_tooltips_pop_down();
-   _etk_tooltips_cur_object = object;   
+   _etk_tooltips_cur_object = object;
    _etk_tooltips_timer = ecore_timer_add(_etk_tooltips_delay, _etk_tooltips_timer_cb, NULL);
 }
 
@@ -336,16 +336,16 @@ static void _etk_tooltips_widget_unrealized_cb(Etk_Object *object, void *data)
 {
    char *key;
    void *value = NULL;
-   
+
    key = calloc(32, sizeof(char));
    snprintf(key, 32 * sizeof(char), "%p", ETK_WIDGET(object));
-      
+
    if((value = evas_hash_find(_etk_tooltips_hash, key)) == NULL)
    {
       free(key);
       return;
    }
-   
+
    _etk_tooltips_hash = evas_hash_del(_etk_tooltips_hash, key, value);
    free(key);
 }
@@ -353,7 +353,7 @@ static void _etk_tooltips_widget_unrealized_cb(Etk_Object *object, void *data)
 /* free hash items */
 static Evas_Bool _etk_tooltips_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
-   hash = evas_hash_del(hash, key, data);   
+   hash = evas_hash_del(hash, key, data);
    if(data)
      free(data);
    return 1;

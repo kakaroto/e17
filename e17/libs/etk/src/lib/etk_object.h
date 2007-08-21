@@ -61,10 +61,10 @@ struct Etk_Object
    Etk_Type *type;
    char *name;
    Etk_Bool destroy_me;
-   
+
    Etk_Object *prev;
    Etk_Object *next;
-   
+
    Evas_Hash *data_hash;
    Evas_List *signal_callbacks;
    Evas_List *weak_pointers;

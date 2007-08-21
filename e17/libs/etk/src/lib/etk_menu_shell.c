@@ -43,7 +43,7 @@ Etk_Type *etk_menu_shell_type_get()
    {
       menu_shell_type = etk_type_new("Etk_Menu_Shell", ETK_WIDGET_TYPE, sizeof(Etk_Menu_Shell),
          ETK_CONSTRUCTOR(_etk_menu_shell_constructor), ETK_DESTRUCTOR(_etk_menu_shell_destructor));
-   
+
       _etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_ADDED_SIGNAL] = etk_signal_new("item-added",
          menu_shell_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
       _etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL] = etk_signal_new("item-removed",
@@ -53,7 +53,7 @@ Etk_Type *etk_menu_shell_type_get()
    return menu_shell_type;
 }
 
-/** 
+/**
  * @brief Adds a menu-item at the start of the menu-shell
  * @param menu_shell a menu-shell
  * @param item the menu-item to prepend to the menu-shell
@@ -62,12 +62,12 @@ void etk_menu_shell_prepend(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
 {
    if (!menu_shell || !item)
       return;
-   
+
    menu_shell->items = evas_list_prepend(menu_shell->items, item);
    _etk_menu_shell_item_add(menu_shell, item);
 }
 
-/** 
+/**
  * @brief Adds a menu-item at the end of the menu-shell
  * @param menu_shell a menu-shell
  * @param item the menu-item to append to the menu-shell
@@ -76,7 +76,7 @@ void etk_menu_shell_append(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
 {
    if (!menu_shell || !item)
       return;
-   
+
    menu_shell->items = evas_list_append(menu_shell->items, item);
    _etk_menu_shell_item_add(menu_shell, item);
 }
@@ -92,7 +92,7 @@ void etk_menu_shell_prepend_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *
 {
    if (!menu_shell || !item)
       return;
-   
+
    menu_shell->items = evas_list_prepend_relative(menu_shell->items, item, relative);
    _etk_menu_shell_item_add(menu_shell, item);
 }
@@ -108,7 +108,7 @@ void etk_menu_shell_append_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *i
 {
    if (!menu_shell || !item)
       return;
-   
+
    menu_shell->items = evas_list_append_relative(menu_shell->items, item, relative);
    _etk_menu_shell_item_add(menu_shell, item);
 }
@@ -125,7 +125,7 @@ void etk_menu_shell_insert(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, int 
 {
    if (!menu_shell || !item)
       return;
-   
+
    if (position <= 0)
       menu_shell->items = evas_list_prepend(menu_shell->items, item);
    else if (position >= evas_list_count(menu_shell->items))
@@ -133,7 +133,7 @@ void etk_menu_shell_insert(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, int 
    else
    {
       void *rel;
-      
+
       rel = evas_list_nth(menu_shell->items, position);
       menu_shell->items = evas_list_prepend_relative(menu_shell->items, item, rel);
    }
@@ -148,10 +148,10 @@ void etk_menu_shell_insert(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, int 
 void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
 {
    Evas_List *l;
-   
+
    if (!menu_shell || !item)
       return;
-   
+
    if ((l = evas_list_find_list(menu_shell->items, item)))
    {
       etk_widget_parent_set(ETK_WIDGET(item), NULL);
@@ -171,14 +171,14 @@ void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
 Evas_List *etk_menu_shell_items_get(Etk_Menu_Shell *menu_shell)
 {
    Evas_List *list, *l;
-   
+
    if (!menu_shell)
       return NULL;
-   
+
    list = NULL;
    for (l = menu_shell->items; l; l = l->next)
       list = evas_list_append(list, l->data);
-   
+
    return list;
 }
 
@@ -232,7 +232,7 @@ static void _etk_menu_shell_item_add(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *
  * A menu-item can be added to the menu-shell with etk_menu_shell_append(), etk_menu_shell_insert()... @n
  * It can be then removed from the menu-shell with etk_menu_shell_remove(). @n
  * You can also get the list of the menu-items of the menu-shell using etk_menu_shell_items_get().
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget

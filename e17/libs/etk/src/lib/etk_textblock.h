@@ -87,22 +87,22 @@ struct Etk_Textblock_Format
    float align;
    int left_margin;
    int right_margin;
-   
+
    Etk_Textblock_Style_Type style;
    Etk_Color style_color1;
    Etk_Color style_color2;
-   
+
    Etk_Textblock_Underline_Type underline;
    Etk_Color underline_color1;
    Etk_Color underline_color2;
-   
+
    Etk_Bool strikethrough;
    Etk_Color strikethrough_color;
-   
+
    const char *font_face;
    int font_size;
    Etk_Color font_color;
-   
+
    Etk_Bool bold;
    Etk_Bool italic;
 };
@@ -122,13 +122,13 @@ struct Etk_Textblock_Node
             Etk_Color color1;
             Etk_Color color2;
          } u;
-         
+
          /* Params for the <s> tag */
          struct
          {
             Etk_Color color;
          } s;
-         
+
          /* Params for the <p> tag */
          struct
          {
@@ -137,7 +137,7 @@ struct Etk_Textblock_Node
             int right_margin;
             Etk_Textblock_Wrap wrap;
          } p;
-         
+
          /* Params for the <style> tag */
          struct
          {
@@ -145,7 +145,7 @@ struct Etk_Textblock_Node
             Etk_Color color1;
             Etk_Color color2;
          } style;
-         
+
          /* Params for the <font> tag */
          struct
          {
@@ -153,16 +153,16 @@ struct Etk_Textblock_Node
             int size;
             Etk_Color color;
          } font;
-         
+
       } params;
-      
+
       Etk_Textblock_Tag_Type type;
    } tag;
-   
+
    Etk_Textblock_Node_Type type;
    Etk_String *text;
    int unicode_length;
-   
+
    Etk_Textblock_Node *parent;
    Etk_Textblock_Node *prev;
    Etk_Textblock_Node *next;
@@ -179,7 +179,7 @@ struct Etk_Textblock_Iter
    /* private: */
    Etk_Textblock *tb;
    Etk_Textblock_Node *node;
-   
+
    Etk_Textblock_Gravity gravity;
    int pos;
    int index;
@@ -194,10 +194,10 @@ struct Etk_Textblock
    /* private: */
    /* Inherit from Etk_Object */
    Etk_Object object;
-   
+
    Etk_Textblock_Node root;
    Evas_List *iters;
-   
+
    Evas_List *evas_objects;
 };
 
@@ -256,5 +256,5 @@ void     etk_textblock_char_size_get(Evas *evas, const char *font_face, int font
 void     etk_textblock_printf(Etk_Textblock *tb);
 
 /** @} */
- 
+
 #endif

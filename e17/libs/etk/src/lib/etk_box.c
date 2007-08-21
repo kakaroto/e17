@@ -56,12 +56,12 @@ Etk_Type *etk_box_type_get(void)
    {
       box_type = etk_type_new("Etk_Box", ETK_CONTAINER_TYPE, sizeof(Etk_Box),
             ETK_CONSTRUCTOR(_etk_box_constructor), ETK_DESTRUCTOR(_etk_box_destructor));
-   
+
       etk_type_property_add(box_type, "spacing", ETK_BOX_SPACING_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
       etk_type_property_add(box_type, "homogeneous", ETK_BOX_HOMOGENEOUS_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
-      
+
       box_type->property_set = _etk_box_property_set;
       box_type->property_get = _etk_box_property_get;
    }
@@ -169,10 +169,10 @@ void etk_box_append(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Bo
 void etk_box_insert(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Widget *after, Etk_Box_Fill_Policy fill_policy, int padding)
 {
    Etk_Box_Cell *after_cell;
-   
+
    if (!box || !child)
       return;
-   
+
    after_cell = _etk_box_cell_get(after);
    _etk_box_insert_after_cell(box, child, group, after_cell, fill_policy, padding);
 }
@@ -191,17 +191,17 @@ void etk_box_insert(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, Etk_Wi
 void etk_box_insert_at(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, int pos, Etk_Box_Fill_Policy fill_policy, int padding)
 {
    Etk_Box_Cell *after_cell;
-   
+
    if (!box || !child)
       return;
-   
+
    if (pos <= 0)
       after_cell = NULL;
    else if (pos >= box->cells_count[group])
       after_cell = box->last_cell[group];
    else
       after_cell = _etk_box_cell_nth_get(box, group, pos - 1);
-   
+
    _etk_box_insert_after_cell(box, child, group, after_cell, fill_policy, padding);
 }
 
@@ -215,10 +215,10 @@ void etk_box_insert_at(Etk_Box *box, Etk_Widget *child, Etk_Box_Group group, int
 Etk_Widget *etk_box_child_get_at(Etk_Box *box, Etk_Box_Group group, int pos)
 {
    Etk_Box_Cell *cell;
-   
+
    if (!box)
       return NULL;
-   
+
    if (!(cell = _etk_box_cell_nth_get(box, group, pos)))
       return NULL;
    else
@@ -242,7 +242,7 @@ void etk_box_child_position_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Group g
 
    if (!box || !child || !(cell = _etk_box_cell_get(child)))
       return;
-   
+
    padding = cell->padding;
    fill_policy = cell->fill_policy;
    etk_widget_parent_set(child, NULL);
@@ -261,13 +261,13 @@ Etk_Bool etk_box_child_position_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Gro
 {
    Etk_Box_Cell *cell, *c;
    int i;
-   
+
    if (!box || !child)
       return ETK_FALSE;
-   
+
    if (!(cell = _etk_box_cell_get(child)))
       return ETK_FALSE;
-   
+
    for (i = 0, c = box->first_cell[cell->group]; c; i++, c = c->next)
    {
       if (cell == c)
@@ -292,10 +292,10 @@ Etk_Bool etk_box_child_position_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Gro
 void etk_box_child_packing_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Policy fill_policy, int padding)
 {
    Etk_Box_Cell *cell;
-   
+
    if (!box || !child)
       return;
-   
+
    if ((cell = _etk_box_cell_get(child)))
    {
       cell->fill_policy = fill_policy;
@@ -315,10 +315,10 @@ void etk_box_child_packing_set(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Pol
 Etk_Bool etk_box_child_packing_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill_Policy *fill_policy, int *padding)
 {
    Etk_Box_Cell *cell;
-   
+
    if (!box || !child)
       return ETK_FALSE;
-   
+
    if ((cell = _etk_box_cell_get(child)))
    {
       if (fill_policy)
@@ -327,7 +327,7 @@ Etk_Bool etk_box_child_packing_get(Etk_Box *box, Etk_Widget *child, Etk_Box_Fill
          *padding = cell->padding;
       return ETK_TRUE;
    }
-   
+
    return ETK_FALSE;
 }
 
@@ -418,7 +418,7 @@ static void _etk_box_destructor(Etk_Box *box)
 {
    Etk_Box_Cell *cell, *next;
    int i;
-   
+
    if (!box)
       return;
 
@@ -489,7 +489,7 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
 
    if (!(box = ETK_BOX(container)) || !widget)
       return;
-   
+
    if ((cell = _etk_box_cell_get(widget)))
    {
       if (cell->prev)
@@ -501,11 +501,11 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
       if (cell == box->last_cell[cell->group])
          box->last_cell[cell->group] = cell->prev;
       box->cells_count[cell->group]--;
-      
+
       ETK_WIDGET(box)->focus_order = evas_list_remove_list(ETK_WIDGET(box)->focus_order, cell->focus_node);
       etk_object_data_set(ETK_OBJECT(widget), "_Etk_Box::Cell", NULL);
       free(cell);
-      
+
       etk_widget_size_recalc_queue(ETK_WIDGET(box));
       etk_signal_emit_by_name("child-removed", ETK_OBJECT(box), NULL, widget);
    }
@@ -518,17 +518,17 @@ static Evas_List *_etk_box_children_get(Etk_Container *container)
    Evas_List *children;
    Etk_Box_Cell *cell;
    int i;
-   
+
    if (!(box = ETK_BOX(container)))
       return NULL;
-   
+
    children = NULL;
    for (i = 0; i < 2; i++)
    {
       for (cell = box->first_cell[i]; cell; cell = cell->next)
          children = evas_list_append(children, cell->child);
    }
-   
+
    return children;
 }
 
@@ -566,7 +566,7 @@ static void _etk_hbox_size_request(Etk_Widget *widget, Etk_Size *size)
    size->w = 0;
    size->h = 0;
    num_visible_children = 0;
-   
+
    for (i = 0; i < 2; i++)
    {
       box->request_sizes[i] = realloc(box->request_sizes[i], box->cells_count[i] * sizeof(int));
@@ -574,12 +574,12 @@ static void _etk_hbox_size_request(Etk_Widget *widget, Etk_Size *size)
       {
          child = cell->child;
          box->request_sizes[i][j] = 0;
-         
+
          if (!etk_widget_is_visible(child))
             continue;
-         
+
          etk_widget_size_request(child, &child_size);
-         
+
          if (box->homogeneous)
          {
             if (size->w < child_size.w + 2 * cell->padding)
@@ -590,10 +590,10 @@ static void _etk_hbox_size_request(Etk_Widget *widget, Etk_Size *size)
             box->request_sizes[i][j] = child_size.w + 2 * cell->padding;
             size->w += box->request_sizes[i][j];
          }
-         
+
          if (size->h < child_size.h)
             size->h = child_size.h;
-         
+
          num_visible_children++;
       }
    }
@@ -640,10 +640,10 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    requested_size.h -= 2 * container->border_width;
    allocated_size.w = geometry.w - 2 * container->border_width;
    allocated_size.h = geometry.h - 2 * container->border_width;
-   
+
    start_offset = container->border_width;
    end_offset = container->border_width;
-   
+
    if (allocated_size.w <= requested_size.w)
    {
       float ratio;
@@ -656,7 +656,7 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          while (cell)
          {
             child = cell->child;
-            
+
             if (etk_widget_is_visible(child))
             {
                width = box->request_sizes[i][j] * ratio;
@@ -674,16 +674,16 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                   child_geometry.x = geometry.x + geometry.w - end_offset - child_geometry.w;
                   end_offset += width + box->spacing;
                }
-               
+
                child_geometry.x += cell->padding;
                child_geometry.w -= 2 * cell->padding;
-               
+
                etk_container_child_space_fill(child, &child_geometry,
                      cell->fill_policy & ETK_BOX_FILL,
                      !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), 0.5, 0.5);
                etk_widget_size_allocate(child, child_geometry);
             }
-            
+
             cell = (i == ETK_BOX_START) ? cell->next : cell->prev;
             j = (i == ETK_BOX_START) ? (j + 1) : (j - 1);
          }
@@ -698,10 +698,10 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          for (cell = box->first_cell[i]; cell; cell = cell->next)
          {
             child = cell->child;
-            
+
             if (!etk_widget_is_visible(child))
                continue;
-            
+
             if (cell->fill_policy & ETK_BOX_EXPAND)
                num_children_to_expand++;
          }
@@ -719,7 +719,7 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          while (cell)
          {
             child = cell->child;
-            
+
             if (etk_widget_is_visible(child))
             {
                width = box->request_sizes[i][j];
@@ -742,13 +742,13 @@ static void _etk_hbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
                child_geometry.x += cell->padding;
                child_geometry.w -= 2 * cell->padding;
-               
+
                etk_container_child_space_fill(child, &child_geometry,
                      cell->fill_policy & ETK_BOX_FILL,
-                     !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), 0.5, 0.5); 
+                     !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE), 0.5, 0.5);
                etk_widget_size_allocate(child, child_geometry);
             }
-            
+
             cell = (i == ETK_BOX_START) ? cell->next : cell->prev;
             j = (i == ETK_BOX_START) ? (j + 1) : (j - 1);
          }
@@ -790,7 +790,7 @@ static void _etk_vbox_size_request(Etk_Widget *widget, Etk_Size *size)
    size->w = 0;
    size->h = 0;
    num_visible_children = 0;
-   
+
    for (i = 0; i < 2; i++)
    {
       box->request_sizes[i] = realloc(box->request_sizes[i], box->cells_count[i] * sizeof(int));
@@ -798,12 +798,12 @@ static void _etk_vbox_size_request(Etk_Widget *widget, Etk_Size *size)
       {
          child = cell->child;
          box->request_sizes[i][j] = 0;
-         
+
          if (!etk_widget_is_visible(child))
             continue;
-         
+
          etk_widget_size_request(child, &child_size);
-         
+
          if (box->homogeneous)
          {
             if (size->h < child_size.h + 2 * cell->padding)
@@ -817,7 +817,7 @@ static void _etk_vbox_size_request(Etk_Widget *widget, Etk_Size *size)
 
          if (size->w < child_size.w)
             size->w = child_size.w;
-         
+
          num_visible_children++;
       }
    }
@@ -864,10 +864,10 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    requested_size.h -= 2 * container->border_width;
    allocated_size.w = geometry.w - 2 * container->border_width;
    allocated_size.h = geometry.h - 2 * container->border_width;
-   
+
    start_offset = container->border_width;
    end_offset = container->border_width;
-   
+
    if (allocated_size.h <= requested_size.h)
    {
       float ratio;
@@ -880,7 +880,7 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          while (cell)
          {
             child = cell->child;
-            
+
             if (etk_widget_is_visible(child))
             {
                height = box->request_sizes[i][j] * ratio;
@@ -898,16 +898,16 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
                   child_geometry.y = geometry.y + geometry.h - end_offset - child_geometry.h;
                   end_offset += height + box->spacing;
                }
-               
+
                child_geometry.y += cell->padding;
                child_geometry.h -= 2 * cell->padding;
-               
+
                etk_container_child_space_fill(child, &child_geometry,
                      !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE),
                      cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5);
                etk_widget_size_allocate(child, child_geometry);
             }
-            
+
             cell = (i == ETK_BOX_START) ? cell->next : cell->prev;
             j = (i == ETK_BOX_START) ? (j + 1) : (j - 1);
          }
@@ -922,10 +922,10 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          for (cell = box->first_cell[i]; cell; cell = cell->next)
          {
             child = cell->child;
-            
+
             if (!etk_widget_is_visible(child))
                continue;
-            
+
             if (cell->fill_policy & ETK_BOX_EXPAND)
                num_children_to_expand++;
          }
@@ -943,7 +943,7 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          while (cell)
          {
             child = cell->child;
-            
+
             if (etk_widget_is_visible(child))
             {
                height = box->request_sizes[i][j];
@@ -966,13 +966,13 @@ static void _etk_vbox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
                child_geometry.y += cell->padding;
                child_geometry.h -= 2 * cell->padding;
-               
+
                etk_container_child_space_fill(child, &child_geometry,
                      !(cell->fill_policy & ETK_BOX_SHRINK_OPPOSITE),
-                     cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5); 
+                     cell->fill_policy & ETK_BOX_FILL, 0.5, 0.5);
                etk_widget_size_allocate(child, child_geometry);
             }
-            
+
             cell = (i == ETK_BOX_START) ? cell->next : cell->prev;
             j = (i == ETK_BOX_START) ? (j + 1) : (j - 1);
          }
@@ -991,7 +991,7 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
 {
    Etk_Box_Cell *cell;
    Etk_Widget *box_widget;
-   
+
    if (!(box_widget = ETK_WIDGET(box)) || !child)
       return;
    if (after && after->group != group)
@@ -1000,7 +1000,7 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
          "do not belong to the same child-group");
       return;
    }
-   
+
    cell = malloc(sizeof(Etk_Box_Cell));
    cell->prev = NULL;
    cell->next = NULL;
@@ -1009,7 +1009,7 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
    cell->group = group;
    cell->fill_policy = fill_policy;
    cell->padding = padding;
-   
+
    if (after)
    {
       cell->prev = after;
@@ -1019,7 +1019,7 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
       else
          box->last_cell[group] = cell;
       after->next = cell;
-      
+
       box_widget->focus_order = evas_list_append_relative_list(box_widget->focus_order, child, after->focus_node);
       cell->focus_node = evas_list_next(after->focus_node);
    }
@@ -1031,7 +1031,7 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
       else
          box->last_cell[group] = cell;
       box->first_cell[group] = cell;
-      
+
       if (group == ETK_BOX_START || !box->last_cell[ETK_BOX_START])
       {
          box_widget->focus_order = evas_list_prepend(box_widget->focus_order, child);
@@ -1045,7 +1045,7 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
       }
    }
    box->cells_count[group]++;
-   
+
    etk_widget_parent_set(child, ETK_WIDGET(box));
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Box::Cell", cell);
    etk_signal_emit_by_name("child-added", ETK_OBJECT(box), NULL, child);
@@ -1064,10 +1064,10 @@ static Etk_Box_Cell *_etk_box_cell_nth_get(Etk_Box *box, Etk_Box_Group group, in
 {
    Etk_Box_Cell *cell;
    int i;
-   
+
    if (!box || box->cells_count[group] <= 0)
       return NULL;
-   
+
    if (n < (box->cells_count[group] / 2))
    {
       cell = box->first_cell[group];
@@ -1080,7 +1080,7 @@ static Etk_Box_Cell *_etk_box_cell_nth_get(Etk_Box *box, Etk_Box_Group group, in
       for (i = 0; i < (box->cells_count[group] - n - 1) && cell->prev; i++)
          cell = cell->prev;
    }
-   
+
    return cell;
 }
 
@@ -1102,7 +1102,7 @@ static Etk_Box_Cell *_etk_box_cell_nth_get(Etk_Box *box, Etk_Box_Group group, in
  * end-group are packed at the end of the box (right for the hbox, bottom for the vbox). @n
  * Widgets can be packed with the functions etk_box_prepend(), etk_box_append(), etk_box_insert() and
  * etk_box_insert_at().
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget
@@ -1116,7 +1116,7 @@ static Etk_Box_Cell *_etk_box_cell_nth_get(Etk_Box *box, Etk_Box_Group group, in
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_FALSE
- * \par 
+ * \par
  * @prop_name "spacing": The amount of space between two children
  * @prop_type Integer
  * @prop_rw

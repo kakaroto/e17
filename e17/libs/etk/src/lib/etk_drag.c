@@ -21,12 +21,12 @@
 Etk_Type *etk_drag_type_get(void)
 {
    static Etk_Type *drag_type = NULL;
-   
+
    if(!drag_type)
    {
       drag_type = etk_type_new("Etk_Drag", ETK_WINDOW_TYPE, sizeof(Etk_Drag), NULL, NULL);
    }
-   
+
    return drag_type;
 }
 

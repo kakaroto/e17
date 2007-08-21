@@ -76,7 +76,7 @@ void etk_message_dialog_message_type_set(Etk_Message_Dialog *dialog, Etk_Message
 {
    if (!dialog || dialog->message_type == type)
       return;
-   
+
    switch (type)
    {
       case ETK_MESSAGE_DIALOG_WARNING:
@@ -95,9 +95,9 @@ void etk_message_dialog_message_type_set(Etk_Message_Dialog *dialog, Etk_Message
       default:
          etk_image_set_from_stock(ETK_IMAGE(dialog->image), ETK_STOCK_DIALOG_INFORMATION, ETK_STOCK_BIG);
          etk_window_title_set(ETK_WINDOW(dialog), _("Information"));
-         break; 
+         break;
    }
-   
+
    dialog->message_type = type;
    etk_object_notify(ETK_OBJECT(dialog), "message-type");
 }
@@ -123,12 +123,12 @@ Etk_Message_Dialog_Type etk_message_dialog_message_type_get(Etk_Message_Dialog *
 void etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, Etk_Message_Dialog_Buttons buttons)
 {
    int i;
-   
+
    if (!dialog)
       return;
    if (dialog->buttons_type == buttons)
       return;
-   
+
    for (i = 0; i < ETK_MESSAGE_DIALOG_MAX_BUTTONS; i++)
    {
       if (dialog->buttons[i])
@@ -137,7 +137,7 @@ void etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, Etk_Message_Dial
          dialog->buttons[i] = NULL;
       }
    }
-   
+
    switch (buttons)
    {
       case ETK_MESSAGE_DIALOG_OK:
@@ -156,12 +156,12 @@ void etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, Etk_Message_Dial
       case ETK_MESSAGE_DIALOG_OK_CANCEL:
          dialog->buttons[0] = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_YES, ETK_RESPONSE_OK);
          dialog->buttons[1] = etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_NO, ETK_RESPONSE_CANCEL);
-         break;      
+         break;
       case ETK_MESSAGE_DIALOG_NONE:
       default:
-         break; 
+         break;
    }
-   
+
    dialog->buttons_type = buttons;
    etk_object_notify(ETK_OBJECT(dialog), "buttons");
 }
@@ -212,7 +212,7 @@ const char *etk_message_dialog_text_get(Etk_Message_Dialog *dialog)
 static void _etk_message_dialog_constructor(Etk_Message_Dialog *dialog)
 {
    int i;
-   
+
    if (!dialog)
       return;
 
@@ -220,7 +220,7 @@ static void _etk_message_dialog_constructor(Etk_Message_Dialog *dialog)
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), dialog->main_area_hbox, ETK_BOX_START, ETK_BOX_NONE, 4);
    etk_widget_internal_set(dialog->main_area_hbox, ETK_TRUE);
    etk_widget_show(dialog->main_area_hbox);
-   
+
    dialog->image = etk_image_new_from_stock(ETK_STOCK_DIALOG_INFORMATION, ETK_STOCK_BIG);
    etk_box_append(ETK_BOX(dialog->main_area_hbox), dialog->image, ETK_BOX_START, ETK_BOX_NONE, 3);
    etk_widget_internal_set(dialog->image, ETK_TRUE);
@@ -235,7 +235,7 @@ static void _etk_message_dialog_constructor(Etk_Message_Dialog *dialog)
    dialog->message_type = ETK_MESSAGE_DIALOG_INFO;
    for(i = 0; i < ETK_MESSAGE_DIALOG_MAX_BUTTONS; i++)
       dialog->buttons[i] = NULL;
-   
+
    etk_window_title_set(ETK_WINDOW(dialog), _("Information"));
 }
 
@@ -257,7 +257,7 @@ static void _etk_message_dialog_property_set(Etk_Object *object, int property_id
          break;
       case ETK_MESSAGE_DIALOG_TEXT_PROPERTY:
          etk_message_dialog_text_set(dialog, etk_property_value_string_get(value));
-         break;      
+         break;
       default:
          break;
    }
@@ -281,7 +281,7 @@ static void _etk_message_dialog_property_get(Etk_Object *object, int property_id
          break;
       case ETK_MESSAGE_DIALOG_TEXT_PROPERTY:
          etk_property_value_string_set(value, etk_message_dialog_text_get(dialog));
-         break;      
+         break;
       default:
          break;
    }
@@ -303,7 +303,7 @@ static void _etk_message_dialog_property_get(Etk_Object *object, int property_id
  * to a title and to an icon. @n
  * Several common predefined sets of buttons can be used by the message dialog (see Etk_Message_Dialog_Buttons),
  * but you can also use ETK_MESSAGE_DIALOG_NONE and add your own buttons with etk_dialog_button_add().
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget
