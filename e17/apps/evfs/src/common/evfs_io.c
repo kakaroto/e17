@@ -348,8 +348,6 @@ evfs_write_event(evfs_client * client, evfs_command * command,
    event->command = command;
 
    ecore_ipc_message* msg = evfs_io_event_construct(event);
-   printf("Writing event to master: %p -- message: %p:%p, size: %d..\n", client->master, msg, msg->data, msg->len);
-
    if (msg) {
 	   evfs_write_ecore_ipc_server_message(client->master,msg);
    } else {
