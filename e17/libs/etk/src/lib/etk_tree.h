@@ -124,6 +124,8 @@ struct Etk_Tree
    int num_cols;
    Etk_Tree_Col **columns;
    Etk_Bool headers_visible;
+   Etk_Bool col_separators_visible;
+   Etk_Color col_separator_color;
    
    Etk_Tree_Col *col_to_resize;
    Etk_Bool col_resize_pointer_set;
@@ -143,7 +145,6 @@ struct Etk_Tree
    int scroll_y;
    
    Ecore_Job *purge_job;
-   Etk_Color separator_color;
    Etk_Bool tree_contains_headers;
    Etk_Tree_Mode mode;
    Etk_Bool multiple_select;
@@ -162,6 +163,8 @@ void           etk_tree_multiple_select_set(Etk_Tree *tree, Etk_Bool multiple_se
 Etk_Bool       etk_tree_multiple_select_get(Etk_Tree *tree);
 void           etk_tree_headers_visible_set(Etk_Tree *tree, Etk_Bool headers_visible);
 Etk_Bool       etk_tree_headers_visible_get(Etk_Tree *tree);
+void           etk_tree_column_separators_visible_set(Etk_Tree *tree, Etk_Bool col_separators_visible);
+Etk_Bool       etk_tree_column_separators_visible_get(Etk_Tree *tree);
 void           etk_tree_rows_height_set(Etk_Tree *tree, int rows_height);
 int            etk_tree_rows_height_get(Etk_Tree *tree);
 
