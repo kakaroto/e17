@@ -52,7 +52,7 @@ struct E_Hal_Property
   {
     const char *s;
     int i;
-    dbus_uint32_t b;
+    dbus_bool_t b;
     double d;
     dbus_uint64_t u64;
     Ecore_List *strlist;
