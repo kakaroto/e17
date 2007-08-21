@@ -713,6 +713,19 @@ etk_tree_col_alignment_get(col)
 
 MODULE = Etk::Tree	PACKAGE = Etk::Tree	PREFIX = etk_tree_
 	
+void
+etk_tree_column_separators_visible_set(tree, col_separators_visible)
+	Etk_Tree *      tree
+	Etk_Bool col_separators_visible
+	ALIAS:
+	ColumnSeperatorsVisibleSet=1
+
+Etk_Bool
+etk_tree_column_separators_visible_get(tree)
+	Etk_Tree *      tree
+	ALIAS:
+	ColumnSeperatorsVisibleGet=1
+
 Etk_Tree_Row *
 etk_tree_row_append(tree, parent=NULL)
 	Etk_Tree *	tree
