@@ -757,3 +757,15 @@ void evfs_handle_auth_respond_command(evfs_client* client, evfs_command* command
 		(*EVFS_PLUGIN_FILE(plugin)->functions->evfs_auth_push)(command);		
 	}
 }
+
+void evfs_handle_mime_request(evfs_client* client, evfs_command* command)
+{
+	if (strcmp(evfs_command_first_file_get(command)->plugin_uri, "file")) {
+		printf("EVFS: Mime not currently handled for plugin != file\n");
+		/*TODO: Transfer file local, then mime? Ugh*/
+	} else {
+		char* mime = efreet_mime_type_get(evfs_command_first_file_get(command)->path);
+		printf("%s\n", mime);
+	}
+}
+

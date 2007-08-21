@@ -424,3 +424,24 @@ evfs_client_auth_send(evfs_connection* conn, EvfsFilereference* ref, char* user,
 
    return id;
 }
+
+long
+evfs_client_mime_request(evfs_connection* conn, EvfsFilereference* ref)
+{
+   evfs_command *command = evfs_client_command_new();
+   long id = command->client_identifier;
+
+   command->type = EVFS_CMD_MIME_REQUEST;
+   command->file_command->files = evas_list_append( command->file_command->files, ref);   
+
+   evfs_write_command(conn, command);
+	
+   evas_list_free(command->file_command->files);
+   free(command);
+
+
+   return id;
+}
+
+
+

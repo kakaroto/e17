@@ -103,40 +103,40 @@ ftp_la_SOURCES = evfs_fs_ftp.c \
                         $(top_srcdir)/src/common/evfs_filereference.c
 
 	
-posix_la_CFLAGS =  @ECORE_CFLAGS@
+posix_la_CFLAGS =  @ECORE_CFLAGS@ @EFREET_CFLAGS@
 posix_la_LDFLAGS = -module -avoid-version
 posix_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
-vfolder_la_CFLAGS =  @ECORE_CFLAGS@
+vfolder_la_CFLAGS =  @ECORE_CFLAGS@ @EFREET_CFLAGS@
 vfolder_la_LDFLAGS = -module -avoid-version
 vfolder_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
-samba_la_CFLAGS =  @ECORE_CFLAGS@
+samba_la_CFLAGS =  @ECORE_CFLAGS@ @EFREET_CFLAGS@
 samba_la_LDFLAGS = -module -avoid-version -lsmbclient
 samba_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
-tar_la_CFLAGS =  @ECORE_CFLAGS@
+tar_la_CFLAGS =  @ECORE_CFLAGS@ @EFREET_CFLAGS@
 tar_la_LDFLAGS = -module -avoid-version
 tar_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
-bzip2_la_CFLAGS =  @ECORE_CFLAGS@
+bzip2_la_CFLAGS =  @ECORE_CFLAGS@ @EFREET_CFLAGS@ 
 bzip2_la_LDFLAGS = -module -avoid-version
 bzip2_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs @BZ2_LIBS@
 
-gzip_la_CFLAGS =  @ECORE_CFLAGS@
+gzip_la_CFLAGS =  @ECORE_CFLAGS@ @EFREET_CFLAGS@ 
 gzip_la_LDFLAGS = -module -avoid-version
 gzip_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs -lz
 
 
-ftp_la_CFLAGS =  @ECORE_CFLAGS@ @curl_cflags@
+ftp_la_CFLAGS =  @ECORE_CFLAGS@ @curl_cflags@ @EFREET_CFLAGS@
 ftp_la_LDFLAGS = -module -avoid-version
 ftp_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs @curl_libs@
 
-sftp_la_CFLAGS =  @ECORE_CFLAGS@
+sftp_la_CFLAGS =  @ECORE_CFLAGS@ @EFREET_CFLAGS@
 sftp_la_LDFLAGS = -module -avoid-version
 sftp_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 
-trash_la_CFLAGS =  @ECORE_CFLAGS@
+trash_la_CFLAGS =  @ECORE_CFLAGS@ @EFREET_CFLAGS@
 trash_la_LDFLAGS = -module -avoid-version
 trash_la_LIBADD =  @ECORE_LIBS@ -L$(top_builddir)/src/lib -levfs
 

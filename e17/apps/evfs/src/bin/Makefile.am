@@ -6,7 +6,7 @@ MAINTAINERCLEANFILES = Makefile.in Makefile
 
 DEBUGFLAGS = -DDEBUG -DDEBUG_NEST -W -Wall
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src/include @EET_CFLAGS@ @EVAS_CFLAGS@ @ECORE_CFLAGS@ @XML2_CFLAGS@ $(DEBUGFLAGS) -I.  -DBINDIR=\""$(bindir)"\"
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src/include @EET_CFLAGS@ @EVAS_CFLAGS@ @ECORE_CFLAGS@ @XML2_CFLAGS@ @EFREET_CFLAGS@ $(DEBUGFLAGS) -I.  -DBINDIR=\""$(bindir)"\"
 
 evfs_SOURCES = \
 	evfs_main.c \
@@ -49,12 +49,12 @@ evfscopy_SOURCES = \
         evfscopy.c
 
 
-evfs_LDADD = $(top_builddir)/src/lib/libevfs.la @XML2_LIBS@ @SQLITE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EET_LIBS@
+evfs_LDADD = $(top_builddir)/src/lib/libevfs.la @XML2_LIBS@ @SQLITE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EET_LIBS@ @EFREET_LIBS@
 
-evfscat_LDADD = $(top_builddir)/src/lib/libevfs.la @XML2_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EET_LIBS@
+evfscat_LDADD = $(top_builddir)/src/lib/libevfs.la @XML2_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EET_LIBS@ @EFREET_LIBS@
 
-evfscopy_LDADD = $(top_builddir)/src/lib/libevfs.la @XML2_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EET_LIBS@
+evfscopy_LDADD = $(top_builddir)/src/lib/libevfs.la @XML2_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EET_LIBS@ @EFREET_LIBS@
 
-evfsworker_LDADD = $(top_builddir)/src/lib/libevfs.la @XML2_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EET_LIBS@
+evfsworker_LDADD = $(top_builddir)/src/lib/libevfs.la @XML2_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EET_LIBS@ @EFREET_LIBS@
 
 

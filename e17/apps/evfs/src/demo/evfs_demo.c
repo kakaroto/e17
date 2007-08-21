@@ -153,6 +153,8 @@ main(int argc, char **argv)
 	   evfs_client_metadata_string_file_set(con, dir_path->files[0], "entropy_folder_preference", "icon");
    } else if (!strcmp(cmd, "METAGET")) {
            evfs_client_metadata_string_file_get(con, dir_path->files[0], "entropy_folder_preference");
+   } else if (!strcmp(cmd, "MIME")) {
+	   evfs_client_mime_request(con, dir_path->files[0]);
    }
    ecore_main_loop_begin();
    evfs_disconnect(con);

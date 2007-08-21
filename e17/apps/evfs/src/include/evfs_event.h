@@ -18,6 +18,7 @@ typedef enum
    EVFS_EV_METADATA_FILE_GET = 11,
    EVFS_EV_METADATA_GROUPS = 12,
    EVFS_EV_AUTH_REQUIRED = 13,
+   EVFS_EV_MIME = 14,
 
    EVFS_EV_ERROR = 100,
    EVFS_EV_NOT_SUPPORTED = 101
@@ -27,37 +28,6 @@ typedef enum evfs_eventtype_sub
 {
    EVFS_EV_SUB_MONITOR_NOTIFY = 1
 } evfs_eventtype_sub;
-
-typedef enum evfs_eventpart
-{
-   EVFS_EV_PART_TYPE = 1,
-   EVFS_EV_PART_SUB_TYPE = 2,
-   EVFS_EV_PART_FILE_MONITOR_TYPE = 3,
-   EVFS_EV_PART_FILE_MONITOR_FILENAME = 4,
-   EVFS_EV_PART_FILE_MONITOR_PLUGIN = 5,
-   EVFS_EV_PART_DATA = 6,
-   EVFS_EV_PART_STAT_SIZE = 7,
-   EVFS_EV_PART_FILE_REFERENCE = 8,
-   EVFS_EV_PART_METALIST = 9,
-   EVFS_EV_PART_CHAR_PTR = 10,
-
-   EVFS_EV_PART_PROGRESS = 11,
-
-   EVFS_COMMAND_EXTRA = 12,
-   EVFS_COMMAND_TYPE = 13,
-   EVFS_FILE_REFERENCE = 14,
-
-   EVFS_EV_PART_OPERATION = 18,
-   EVFS_EV_PART_FILE_MONITOR = 19,
-   
-   EVFS_COMMAND_END = 20,
-   EVFS_COMMAND_PART_OPERATION = 21,
-   EVFS_COMMAND_CLIENTID = 22,
-   EVFS_COMMAND_PART_FILECOMMAND_REF1 = 23,
-   EVFS_COMMAND_PART_FILECOMMAND_REF2 = 24,
-
-   EVFS_EV_PART_END = 1000
-} evfs_eventpart;
 
 /*-----------------------------------------------------------------*/
 /*Reorg event*/
@@ -174,6 +144,12 @@ typedef struct
    char* misc;
 } EvfsEventOperation;
 
+#define EVFS_EVENT_MIME(event) ((EvfsEventMime*) event)
+typedef struct
+{
+	EvfsEvent base;
+	char* mime;
+} EvfsEventMime;
 
 /*---------------*/
 

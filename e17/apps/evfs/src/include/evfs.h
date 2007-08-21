@@ -14,6 +14,8 @@
 #include <Ecore_File.h>
 
 #include <Evas.h>
+#include <Efreet.h>
+#include <Efreet_Mime.h>
 
 #include <stdlib.h>
 #include <string.h>

@@ -110,6 +110,7 @@ AC_SUBST(PERL)
 dnl Check for pkg-config stuff
 PKG_CHECK_MODULES(EET, [eet])
 PKG_CHECK_MODULES(EVAS, [evas])
+PKG_CHECK_MODULES(EFREET, [efreet-mime])
 PKG_CHECK_MODULES(ECORE, [ecore ecore-desktop ecore-ipc])
 PKG_CHECK_MODULES(XML2, [libxml-2.0 >= 2.3.10])
 

@@ -29,7 +29,7 @@ static Eet_Data_Descriptor *_EvfsEventAuthRequired_edd;
 static Eet_Data_Descriptor *_EvfsEventOpen_edd;
 static Eet_Data_Descriptor *_EvfsEventFileMonitor_edd;
 static Eet_Data_Descriptor *_EvfsStat_edd;
-static Eet_Data_Descriptor *_EvfsStat_edd;
+static Eet_Data_Descriptor *_EvfsEventMime_edd;
 
 #define _NEW_EDD(type) eet_data_descriptor_new(#type, sizeof(type), \
                               (void *(*)(void *))evas_list_next, \
@@ -273,6 +273,11 @@ evfs_io_initialise()
    EET_DATA_DESCRIPTOR_ADD_SUB(_EvfsEventOperation_edd, EvfsEventOperation, "EvfsEventOperation_operation", operation, _EvfsOperation_edd);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventOperation_edd, EvfsEventOperation, "EvfsEventOperation_misc", misc, EET_T_STRING);
    evfs_io_event_edd_set(EVFS_EV_OPERATION, _EvfsEventOperation_edd);
+
+   _EvfsEventMime_edd = _NEW_EDD(EvfsEventMime);
+   _EVFS_EVENT_BASE_ADD(EvfsEventMime);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsEventMime_edd, EvfsEventMime, "EvfsEventMime_mime", mime, EET_T_STRING);
+   evfs_io_event_edd_set(EVFS_EV_MIME, _EvfsEventMime_edd);
 
    return 0;
 

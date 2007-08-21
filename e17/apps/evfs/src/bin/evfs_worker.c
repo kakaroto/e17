@@ -162,6 +162,10 @@ int evfs_handle_command(evfs_client * client, evfs_command * command)
 	evfs_handle_auth_respond_command(client,command);
 	break;
 
+     case EVFS_CMD_MIME_REQUEST:
+	evfs_handle_mime_request(client,command);
+	break;
+
      default:
         printf("Warning - unhandled command %d\n", command->type);
         break;
@@ -481,6 +485,11 @@ main(int argc, char **argv)
       return (1);
 
    ecore_file_init();
+   if (!efreet_mime_init())
+   {
+       printf("Could not init efreet\n");
+       return 1;
+   }
 
    server = evfs_server_new();
    server->client_hash =
