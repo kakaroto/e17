@@ -712,7 +712,20 @@ etk_tree_col_alignment_get(col)
 
 
 MODULE = Etk::Tree	PACKAGE = Etk::Tree	PREFIX = etk_tree_
-	
+
+void
+etk_tree_alternating_row_colors_set(tree, alternating_row_colors)
+	Etk_Tree *      tree
+	Etk_Bool alternating_row_colors
+	ALIAS:
+	AlternatingRowColorsSet=1
+
+Etk_Bool
+etk_tree_alternating_row_colors_get(tree)
+	Etk_Tree *      tree
+	ALIAS:
+	AlternatingRowColorsGet=1
+
 void
 etk_tree_column_separators_visible_set(tree, col_separators_visible)
 	Etk_Tree *      tree
