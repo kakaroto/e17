@@ -299,7 +299,7 @@ exe_data(void *data, int ev_type, void *ev) // Data is Load_TextView or Save_Tex
 }
 
 int 
-exe_exit(void *data, int ev_type, void *ev) // Data is Load_TextView or Save_TextView
+exe_exit(void *data, int ev_type, void *ev) // Data is LOAD_WIN or SAVE_WIN
 {
    char buf[1024];
    Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *)ev;
@@ -313,24 +313,30 @@ exe_exit(void *data, int ev_type, void *ev) // Data is Load_TextView or Save_Tex
    if (ecore_exe_data_get(e->exe) == (void*)LOAD_WIN) //if Load Win
    {
       Cur.ef = engrave_load_edc(Cur.main_source_file, Cur.source_dir, Cur.source_dir);
+      if (!Cur.ef)
+      {
+         etk_textview_append(Load_TextView,"<font color=#FF0000><b>Error parsing edc file.</b>\n");
+      }
+      else
+      {
+         
+         etk_textview_append(Load_TextView,"<font color=#00AA00><b>Operation completed.</b>\n");
       
-      etk_textview_append(Load_TextView,"<font color=#00AA00><b>Operation completed.</b>\n");
-      
-      snprintf(buf,1024,"<b>Main source file:</b> %s\n",Cur.main_source_file);
-      etk_textview_append(Load_TextView, buf);
+         snprintf(buf,1024,"<b>Main source file:</b> %s\n",Cur.main_source_file);
+         etk_textview_append(Load_TextView, buf);
 
-      snprintf(buf,1024,"<b>Source dir:</b> %s\n",Cur.source_dir);
-      etk_textview_append(Load_TextView, buf);
+         snprintf(buf,1024,"<b>Source dir:</b> %s\n",Cur.source_dir);
+         etk_textview_append(Load_TextView, buf);
 
-      snprintf(buf,1024,"<b>Image dir:</b> %s\n",engrave_file_image_dir_get(Cur.ef));
-      etk_textview_append(Load_TextView, buf);
+         snprintf(buf,1024,"<b>Image dir:</b> %s\n",engrave_file_image_dir_get(Cur.ef));
+         etk_textview_append(Load_TextView, buf);
 
-      snprintf(buf,1024,"<b>Font dir:</b> %s</font>\n",engrave_file_font_dir_get(Cur.ef));
-      etk_textview_append(Load_TextView, buf);
-      
+         snprintf(buf,1024,"<b>Font dir:</b> %s</font>\n",engrave_file_font_dir_get(Cur.ef));
+         etk_textview_append(Load_TextView, buf);
+      }
       stop_bar(Load_ProgBar);
    }
-   else
+   else //SAVE_WIN
    {
       stop_bar(Save_ProgBar);
       etk_textview_append(Save_TextView,"<font color=#00AA00><b>Operation completed.</b>\n");
