@@ -152,7 +152,7 @@ EcoreConfig* EcoreApplication::config()
 // EcoreEvasWindow
 //===============================================================================================
 
-EcoreEvasWindow::EcoreEvasWindow( int width, int height, const char* display, int rotation )
+EcoreEvasWindow::EcoreEvasWindow(/* int width, int height, const char* display, int rotation*/ )
                 :Trackable( "EcoreEvasWindow" )
 {
   
@@ -491,11 +491,12 @@ EcoreEvasWindow* EcoreEvasWindow::objectLink( Ecore_Evas* ee )
 }
 
 EcoreEvasWindowSoftwareX11::EcoreEvasWindowSoftwareX11( int width, int height, const char* display )
-                :EcoreEvasWindow( width, height )
+                :EcoreEvasWindow()
 {    
-    Dout( dc::notice, "EcoreEvasWindow::EcoreEvasWindow" );
+    Dout( dc::notice, "EcoreEvasWindow::EcoreEvasWindowSoftwareX11" );
     EcoreApplication::application()->setMainWindow( this );
 
+    if ( ::getenv( "EFL_DISPLAY" ) ) display = ::getenv( "EFL_DISPLAY" );
     if ( ::getenv( "EFL_WIDTH" ) ) width = atoi( ::getenv( "EFL_WIDTH" ) );
     if ( ::getenv( "EFL_HEIGHT" ) ) height = atoi( ::getenv( "EFL_HEIGHT" ) );
   
@@ -521,10 +522,75 @@ EcoreEvasWindowSoftwareX11::~EcoreEvasWindowSoftwareX11()
   
 }
 
-EcoreEvasWindowFB::EcoreEvasWindowFB( int width, int height, const char* display = 0, int rotation = 0 )
-                :EcoreEvasWindow( width, height )
+EcoreEvasWindowGLX11::EcoreEvasWindowGLX11( int width, int height, const char* display )
+                :EcoreEvasWindow()
+{    
+    Dout( dc::notice, "EcoreEvasWindow::EcoreEvasWindowGL" );
+    EcoreApplication::application()->setMainWindow( this );
+
+    if ( ::getenv( "EFL_DISPLAY" ) ) display = ::getenv( "EFL_DISPLAY" );
+    if ( ::getenv( "EFL_WIDTH" ) ) width = atoi( ::getenv( "EFL_WIDTH" ) );
+    if ( ::getenv( "EFL_HEIGHT" ) ) height = atoi( ::getenv( "EFL_HEIGHT" ) );
+  
+    Dout( dc::notice, "- detected display string '" << ( display ? display:"<null>" ) << "' - starting X11 engine" );
+    //FIXME: Should we care about positioning? 0, 0 for now
+    _ee = ecore_evas_gl_x11_new( const_cast<char*>( display ), 0, 0, 0, width, height );
+    
+    ecore_evas_title_set( _ee, eApp->name().c_str() );
+    ecore_evas_borderless_set( _ee, 0 );
+    ecore_evas_show( _ee );
+    _canvas = new EvasCanvas( ecore_evas_get( _ee ) );
+
+    /* Set up magic object back link */
+    ecore_evas_data_set( _ee, "obj_c++", this );
+
+    /* Set up default callbacks */
+    setEventEnabled( Resize, true );
+    setEventEnabled( DeleteRequest, true );
+}
+
+EcoreEvasWindowGLX11::~EcoreEvasWindowGLX11()
 {
-    Dout( dc::notice, "EcoreEvasWindow::EcoreEvasWindow" );
+  
+}
+
+EcoreEvasWindowXRenderX11::EcoreEvasWindowXRenderX11( int width, int height, const char* display )
+                :EcoreEvasWindow()
+{    
+    Dout( dc::notice, "EcoreEvasWindow::EcoreEvasWindowGL" );
+    EcoreApplication::application()->setMainWindow( this );
+
+    if ( ::getenv( "EFL_DISPLAY" ) ) display = ::getenv( "EFL_DISPLAY" );
+    if ( ::getenv( "EFL_WIDTH" ) ) width = atoi( ::getenv( "EFL_WIDTH" ) );
+    if ( ::getenv( "EFL_HEIGHT" ) ) height = atoi( ::getenv( "EFL_HEIGHT" ) );
+  
+    Dout( dc::notice, "- detected display string '" << ( display ? display:"<null>" ) << "' - starting X11 engine" );
+    //FIXME: Should we care about positioning? 0, 0 for now
+    _ee = ecore_evas_xrender_x11_new( const_cast<char*>( display ), 0, 0, 0, width, height );
+    
+    ecore_evas_title_set( _ee, eApp->name().c_str() );
+    ecore_evas_borderless_set( _ee, 0 );
+    ecore_evas_show( _ee );
+    _canvas = new EvasCanvas( ecore_evas_get( _ee ) );
+
+    /* Set up magic object back link */
+    ecore_evas_data_set( _ee, "obj_c++", this );
+
+    /* Set up default callbacks */
+    setEventEnabled( Resize, true );
+    setEventEnabled( DeleteRequest, true );
+}
+
+EcoreEvasWindowXRenderX11::~EcoreEvasWindowXRenderX11()
+{
+  
+}
+
+// TODO: Possible without #ifdef stuff?
+EcoreEvasWindowFB::EcoreEvasWindowFB( int width, int height, const char* display, int rotation )
+                :EcoreEvasWindow()
+{
+    Dout( dc::notice, "EcoreEvasWindow::EcoreEvasWindowFB" );
     EcoreApplication::application()->setMainWindow( this );
 
     if ( ::getenv( "EFL_DISPLAY" ) ) display = ::getenv( "EFL_DISPLAY" );

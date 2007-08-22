@@ -13,7 +13,7 @@ int main( int argc, const char **argv )
     EcoreApplication* app = new EcoreApplication( argc, argv, "Esmart Container Test" );
 
     /* Create the main window, a window with an embedded canvas */
-    EcoreEvasWindow* mw = new EcoreEvasWindow( WIDTH, HEIGHT );
+    EcoreEvasWindowSoftwareX11* mw = new EcoreEvasWindowSoftwareX11( WIDTH, HEIGHT );
 
     EvasCanvas* evas = mw->canvas();
 

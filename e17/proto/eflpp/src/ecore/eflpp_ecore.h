@@ -106,6 +106,7 @@ class EcoreApplication : public Trackable
 // EcoreEvasWindow
 //===============================================================================================
 
+// TODO: Test for supported backends?
 class EcoreEvasWindow : public Trackable
 {
   public:
@@ -113,7 +114,6 @@ class EcoreEvasWindow : public Trackable
                     FocusIn, FocusOut, MouseIn, MouseOut, PreRender, PostRender };
 
   public:
-    EcoreEvasWindow( int width, int height, const char* display = 0, int rotation = 0 );
     virtual ~EcoreEvasWindow();
 
     EvasCanvas* canvas() const { return _canvas; };
@@ -207,10 +207,10 @@ class EcoreEvasWindow : public Trackable
     EvasCanvas* _canvas;
     Ecore_Evas* _ee;
 
+    EcoreEvasWindow();
     static EcoreEvasWindow* objectLink( Ecore_Evas* );
 
   private:
-    EcoreEvasWindow();
     bool operator=( const EcoreEvasWindow& );
     bool operator==( const EcoreEvasWindow& );
 };
@@ -220,8 +220,6 @@ class EcoreEvasWindowSoftwareX11 : public EcoreEvasWindow
   public:
     EcoreEvasWindowSoftwareX11( int width, int height, const char* display = 0 );
     virtual ~EcoreEvasWindowSoftwareX11();
-
-    // TODO: Test for supported backends?
   
   private:
     EcoreEvasWindowSoftwareX11();
@@ -229,10 +227,34 @@ class EcoreEvasWindowSoftwareX11 : public EcoreEvasWindow
     bool operator==( const EcoreEvasWindowSoftwareX11& );
 };
 
+class EcoreEvasWindowGLX11 : public EcoreEvasWindow
+{
+  public:
+    EcoreEvasWindowGLX11( int width, int height, const char* display = 0 );
+    virtual ~EcoreEvasWindowGLX11();
+  
+  private:
+    EcoreEvasWindowGLX11();
+    bool operator=( const EcoreEvasWindowGLX11& );
+    bool operator==( const EcoreEvasWindowGLX11& );
+};
+
+class EcoreEvasWindowXRenderX11 : public EcoreEvasWindow
+{
+  public:
+    EcoreEvasWindowXRenderX11( int width, int height, const char* display = 0 );
+    virtual ~EcoreEvasWindowXRenderX11();
+  
+  private:
+    EcoreEvasWindowXRenderX11();
+    bool operator=( const EcoreEvasWindowXRenderX11& );
+    bool operator==( const EcoreEvasWindowXRenderX11& );
+};
+
 class EcoreEvasWindowFB : public EcoreEvasWindow
 {
   public:
-    EcoreEvasWindowFB( int width, int height, const char* display, int rotation );
+    EcoreEvasWindowFB( int width, int height, const char* display = 0, int rotation = 0 );
     virtual ~EcoreEvasWindowFB();
 
     // TODO: Test for supported backends?

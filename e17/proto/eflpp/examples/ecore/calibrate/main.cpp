@@ -12,7 +12,7 @@ using namespace efl;
 int main( int argc, const char **argv )
 {
     efl::EcoreApplication app( argc, argv, "Ecore Calibration Example" );
-    efl::EcoreEvasWindow* mw = new efl::EcoreEvasWindow( WIDTH, HEIGHT );
+    efl::EcoreEvasWindowSoftwareX11* mw = new efl::EcoreEvasWindowSoftwareX11( WIDTH, HEIGHT );
     efl::EvasCanvas* evas = mw->canvas();
     Size s = evas->size();
 

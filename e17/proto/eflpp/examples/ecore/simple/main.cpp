@@ -13,7 +13,7 @@ int main( int argc, const char **argv )
     efl::EcoreApplication* app = new efl::EcoreApplication( argc, argv, "Simple Ecore Test" );
 
     /* Create the main window, a window with an embedded canvas */
-    efl::EcoreEvasWindow* mw = new efl::EcoreEvasWindow( WIDTH, HEIGHT );
+    efl::EcoreEvasWindowSoftwareX11* mw = new efl::EcoreEvasWindowSoftwareX11( WIDTH, HEIGHT );
 
     /* Create some objects on the canvas */
     efl::EvasCanvas* evas = mw->canvas();

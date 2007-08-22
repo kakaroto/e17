@@ -38,7 +38,7 @@ void advance( EcoreTimer* e )
 int main( int argc, const char **argv )
 {
     EcoreApplication* app = new efl::EcoreApplication( argc, argv, "Ecore Stars Test" );
-    EcoreEvasWindow* mw = new efl::EcoreEvasWindow( WIDTH, HEIGHT );
+    EcoreEvasWindowSoftwareX11* mw = new efl::EcoreEvasWindowSoftwareX11( WIDTH, HEIGHT );
     EvasCanvas* evas = mw->canvas();
 
     Rect bg = evas->geometry();

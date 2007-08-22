@@ -24,7 +24,7 @@ TimerApp( int argc, const char** argv ) : efl::EcoreApplication( argc, argv, "Ec
                                           alpha( 0 ), alphadirection( 1 ),
                                           xaddfactor( 1 ), yaddfactor( 1 )
 {
-    mw = new efl::EcoreEvasWindow( WIDTH, HEIGHT );
+    mw = new efl::EcoreEvasWindowSoftwareX11( WIDTH, HEIGHT );
     evas = mw->canvas();
 
     image = new efl::EvasImage( 0, 0, PACKAGE_DATA_DIR "/images/panel.png", evas );
@@ -53,7 +53,7 @@ TimerApp( int argc, const char** argv ) : efl::EcoreApplication( argc, argv, "Ec
     startTimer( 1.0 / 25 );
 }
 
-efl::EcoreEvasWindow* mw;
+efl::EcoreEvasWindowSoftwareX11* mw;
 efl::EvasCanvas* evas;
 efl::EvasImage* image, *shadow, *logo;
 efl::EvasImage* balls[NUMBALLS];
