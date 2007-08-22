@@ -40,6 +40,7 @@ evasmodule = Extension('evas.c_evas',
                        **pkgconfig('"evas >= 0.9.9.040"'))
 
 headers = ['evas/evas.c_evas.pxd',
+           'evas/evas.c_evas.h',
            'evas/python_evas_utils.h',
            ]
 
