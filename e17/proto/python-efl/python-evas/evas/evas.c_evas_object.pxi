@@ -5,6 +5,16 @@ cdef void obj_free_cb(void *data, Evas *e, Evas_Object *obj, void *event_info):
     self = <Object>data
     self.obj = NULL
     self._evas = <Canvas>None
+
+    if self._callbacks[EVAS_CALLBACK_FREE] is not None:
+        lst = self._callbacks[EVAS_CALLBACK_FREE]
+        for func, args, kargs in lst:
+            try:
+                func(self, *args, **kargs)
+            except Exception, e:
+                import traceback
+                traceback.print_exc()
+
     python.Py_DECREF(self)
 
 
@@ -14,6 +24,41 @@ cdef _register_decorated_callbacks(obj):
         if callable(attr_value) and hasattr(attr_value, "evas_event_callback"):
             t = getattr(attr_value, "evas_event_callback")
             obj.event_callback_add(t, attr_value)
+
+
+cdef _add_callback_to_list(Object obj, int type, func, args, kargs):
+    if type < 0 or type >= evas_event_callbacks_len:
+        raise ValueError("Invalid callback type")
+
+    r = (func, args, kargs)
+    lst = obj._callbacks[type]
+    if lst is not None:
+        lst.append(r)
+        return False
+    else:
+        obj._callbacks[type] = [r]
+        return True
+
+
+cdef _del_callback_from_list(Object obj, int type, func):
+    if type < 0 or type >= evas_event_callbacks_len:
+        raise ValueError("Invalid callback type")
+
+    lst = obj._callbacks[type]
+    if not lst:
+        raise ValueError("Callback %s was not registered with type %d" %
+                         (func, type))
+
+    i = None
+    for i, r in enumerate(lst):
+        if func == r[0]:
+            break
+    else:
+        raise ValueError("Callback %s was not registered with type %d" %
+                         (func, type))
+
+    del lst[i]
+    return len(lst) == 0
 
 
 cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
@@ -513,15 +558,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
     def event_callback_add(self, int type, func, *args, **kargs):
         cdef evas_event_callback_t cb
-        if type < 0 or type >= evas_event_callbacks_len:
-            raise ValueError("Invalid callback type")
-
-        r = (func, args, kargs)
-        lst = self._callbacks[type]
-        if lst is not None:
-            lst.append(r)
-        else:
-            self._callbacks[type] = [r]
+        if _add_callback_to_list(self, type, func, args, kargs):
             cb = evas_event_callbacks[type]
             evas_object_event_callback_add(self.obj,
                                            <Evas_Callback_Type>type,
@@ -529,24 +566,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
     def event_callback_del(self, int type, func):
         cdef evas_event_callback_t cb
-        if type < 0 or type >= evas_event_callbacks_len:
-            raise ValueError("Invalid callback type")
-
-        lst = self._callbacks[type]
-        if not lst:
-            raise ValueError("Callback %s was not registered with type %d" %
-                             (func, type))
-
-        i = None
-        for i, r in enumerate(lst):
-            if func == r[0]:
-                break
-        else:
-            raise ValueError("Callback %s was not registered with type %d" %
-                             (func, type))
-
-        del lst[i]
-        if len(lst) == 0:
+        if _del_callback_from_list(self, type, func):
             self._callbacks[type] = None
             cb = evas_event_callbacks[type]
             evas_object_event_callback_del(self.obj,
@@ -589,10 +609,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_del(EVAS_CALLBACK_MOUSE_WHEEL, func)
 
     def on_free_add(self, func, *a, **k):
-        self.event_callback_add(EVAS_CALLBACK_FREE, func, *a, **k)
+        _add_callback_to_list(self, EVAS_CALLBACK_FREE, func, a, k)
 
     def on_free_del(self, func):
-        self.event_callback_del(EVAS_CALLBACK_FREE, func)
+        _del_callback_from_list(self, EVAS_CALLBACK_FREE, func)
 
     def on_key_down_add(self, func, *a, **k):
         self.event_callback_add(EVAS_CALLBACK_KEY_DOWN, func, *a, **k)
