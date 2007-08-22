@@ -226,7 +226,6 @@ ipc_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 		/*printf("Finished processing command in fork\n");*/
 	     }
 	
-	   free(msg->data);
 	   free(msg);
 
 	}

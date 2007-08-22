@@ -431,7 +431,6 @@ evfs_write_command(evfs_connection * conn, evfs_command * command)
                                                              0, 0, 0, data,
                                                              size));
 
-      free(data);
 }
 
 /*----------------------------*/
