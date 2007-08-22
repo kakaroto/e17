@@ -16,14 +16,38 @@ cdef void _smart_object_delete(Evas_Object *o):
             import traceback
             traceback.print_exc()
 
-    del obj.delete
-    del obj.move
-    del obj.resize
-    del obj.show
-    del obj.hide
-    del obj.color_set
-    del obj.clip_set
-    del obj.clip_unset
+    try:
+        del obj.delete
+    except AttributeError, e:
+        pass
+    try:
+        del obj.move
+    except AttributeError, e:
+        pass
+    try:
+        del obj.resize
+    except AttributeError, e:
+        pass
+    try:
+        del obj.show
+    except AttributeError, e:
+        pass
+    try:
+        del obj.hide
+    except AttributeError, e:
+        pass
+    try:
+        del obj.color_set
+    except AttributeError, e:
+        pass
+    try:
+        del obj.clip_set
+    except AttributeError, e:
+        pass
+    try:
+        del obj.clip_unset
+    except AttributeError, e:
+        pass
 
     obj._smart_callbacks = None
     obj._m_delete = None
