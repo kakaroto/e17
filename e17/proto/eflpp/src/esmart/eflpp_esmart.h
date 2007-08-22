@@ -17,6 +17,7 @@
 
 namespace efl {
 
+// TODO: Change to signal handling for callback functions...
 class EvasEsmart : public EvasObject
 {
 public:
@@ -47,7 +48,7 @@ private:
   static void wrap_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
   static void wrap_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
   static void wrap_show(Evas_Object *o);
-  static void wrap_hide(Evas_Object *o);
+  static void wrap_hide( Evas_Object *o);
   static void wrap_color_set(Evas_Object *o, int r, int g, int b, int a);
   // TODO: Evas_Object -> EvasObject?
   static void wrap_clip_set(Evas_Object *o, Evas_Object *clip);

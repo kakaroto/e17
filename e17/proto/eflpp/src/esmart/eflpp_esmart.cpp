@@ -26,7 +26,7 @@ Evas_Object *EvasEsmart::newEsmart( const char *name )
 
   evasobj = evas_object_smart_add(canvas()->obj(), getEsmart(name));
 
-  evas_object_smart_data_set(evasobj, this);
+  //evas_object_smart_data_set(evasobj, this);
 
   return evasobj;
 }
@@ -44,7 +44,7 @@ Evas_Smart *EvasEsmart::getEsmart( const char *name )
   sc.color_set = wrap_color_set;
   sc.clip_set = wrap_clip_set;
   sc.clip_unset = wrap_clip_unset;
-  sc.data = NULL;//(void *) this;
+  sc.data = this;
   
   Evas_Smart *smart = evas_smart_class_new( &sc );
   
@@ -56,65 +56,84 @@ Evas_Smart *EvasEsmart::getEsmart( const char *name )
 void EvasEsmart::wrap_add( Evas_Object *o ) 
 {
   // FIXME: data not bound to object at this point. Think about new wrapper design...
-  EvasEsmart *es = static_cast<EvasEsmart*> (evas_object_smart_data_get(o));
-  if (es)
-    es->addHandler();
+  Evas_Smart *es =  evas_object_smart_smart_get (o);
+    
+  EvasEsmart *esObj = static_cast<EvasEsmart*> (evas_smart_data_get(es));
+  if (esObj)
+    esObj->addHandler();
 }
 
-void EvasEsmart::wrap_del(Evas_Object *o) 
+void EvasEsmart::wrap_del( Evas_Object *o) 
 {
-  EvasEsmart *es = static_cast<EvasEsmart*> (evas_object_smart_data_get(o));
-  if (es)
-    es->delHandler();
+  Evas_Smart *es = evas_object_smart_smart_get (o);
+    
+  EvasEsmart *esObj = static_cast<EvasEsmart*> (evas_smart_data_get(es));
+  if (esObj)
+    esObj->delHandler();
 }
 
-void EvasEsmart::wrap_move(Evas_Object *o, Evas_Coord x, Evas_Coord y) 
+void EvasEsmart::wrap_move( Evas_Object *o, Evas_Coord x, Evas_Coord y) 
 {
-  EvasEsmart *es = static_cast<EvasEsmart*> (evas_object_smart_data_get(o));
-  if (es)
-    es->moveHandler( x, y );
+  Evas_Smart *es = evas_object_smart_smart_get (o);
+    
+  EvasEsmart *esObj = static_cast<EvasEsmart*> (evas_smart_data_get(es));
+  if (esObj)
+    esObj->moveHandler( x, y );
 }
 
-void EvasEsmart::wrap_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) 
+void EvasEsmart::wrap_resize( Evas_Object *o, Evas_Coord w, Evas_Coord h) 
 {
-  EvasEsmart *es = static_cast<EvasEsmart*> (evas_object_smart_data_get(o));
-  if (es)
-    es->resizeHandler( w, h );
+  Evas_Smart *es = evas_object_smart_smart_get (o);
+    
+  EvasEsmart *esObj = static_cast<EvasEsmart*> (evas_smart_data_get(es));
+  if (esObj)
+    esObj->resizeHandler( w, h );
 }
 
-void EvasEsmart::wrap_show(Evas_Object *o) 
+void EvasEsmart::wrap_show( Evas_Object *o) 
 {
-  cerr << "show" << endl;
-  EvasEsmart *es = static_cast<EvasEsmart*> (evas_object_smart_data_get(o));
-  es->showHandler();
+ cerr << "show" << endl;
+  Evas_Smart *es = evas_object_smart_smart_get (o);
+    
+  EvasEsmart *esObj = static_cast<EvasEsmart*> (evas_smart_data_get(es));
+  if (esObj)
+    esObj->showHandler();
 }
 
-void EvasEsmart::wrap_hide(Evas_Object *o) 
+void EvasEsmart::wrap_hide( Evas_Object *o) 
 {
-  EvasEsmart *es = static_cast<EvasEsmart*> (evas_object_smart_data_get(o));
-  if (es)
-    es->hideHandler();
+  Evas_Smart *es = evas_object_smart_smart_get (o);
+    
+  EvasEsmart *esObj = static_cast<EvasEsmart*> (evas_smart_data_get(es));
+  if (esObj)
+    esObj->hideHandler();
 }
 
-void EvasEsmart::wrap_color_set(Evas_Object *o, int r, int g, int b, int a) 
+void EvasEsmart::wrap_color_set( Evas_Object *o, int r, int g, int b, int a) 
 {
-  EvasEsmart *es = static_cast<EvasEsmart*> (evas_object_smart_data_get(o));
-  if (es)
-    es->colorSetHandler( r, g, b, a );
+  Evas_Smart *es = evas_object_smart_smart_get (o);
+    
+  EvasEsmart *esObj = static_cast<EvasEsmart*> (evas_smart_data_get(es));
+  if (esObj)
+    esObj->colorSetHandler( r, g, b, a );
 }
 
-void EvasEsmart::wrap_clip_set(Evas_Object *o, Evas_Object *clip) 
+void EvasEsmart::wrap_clip_set( Evas_Object *o, Evas_Object *clip) 
 {
-  EvasEsmart *es = static_cast<EvasEsmart*> (evas_object_smart_data_get(o));
-  if (es)
-    es->clipSetHandler( clip );
+  Evas_Smart *es = evas_object_smart_smart_get (o);
+    
+  EvasEsmart *esObj = static_cast<EvasEsmart*> (evas_smart_data_get(es));
+  if (esObj)
+    esObj->clipSetHandler( clip );
 }
 
-void EvasEsmart::wrap_clip_unset(Evas_Object *o)
+void EvasEsmart::wrap_clip_unset( Evas_Object *o)
 {
-  EvasEsmart *es = static_cast<EvasEsmart*> (evas_object_smart_data_get(o));
-  if (es)
-    es->clipUnsetHandler();
+  Evas_Smart *es = evas_object_smart_smart_get (o);
+    
+  EvasEsmart *esObj = static_cast<EvasEsmart*> (evas_smart_data_get(es));
+  if (esObj)
+    esObj->clipUnsetHandler();
 }
 
 } // end namespace efl

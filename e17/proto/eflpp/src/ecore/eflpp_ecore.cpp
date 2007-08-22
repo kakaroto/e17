@@ -153,7 +153,7 @@ EcoreConfig* EcoreApplication::config()
 //===============================================================================================
 
 EcoreEvasWindow::EcoreEvasWindow( int width, int height, const char* display, int rotation )
-                :Trackable( "EcoreEvasMainWindow" )
+                :Trackable( "EcoreEvasWindow" )
 {
   
 }
