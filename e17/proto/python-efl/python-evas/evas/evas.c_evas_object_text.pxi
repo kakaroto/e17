@@ -13,12 +13,12 @@ cdef class Text(Object):
                                   color=color, name=name)
         if text is not None:
             self.text_set(text)
+        if font_source:
+            self.font_source_set(font_source)
         if font:
             if not isinstance(font, (tuple, list)):
                 font = (font,)
             self.font_set(*font)
-        if font_source:
-            self.font_source_set(font_source)
         if style is not None:
             self.style_set(style)
         if shadow_color is not None:
