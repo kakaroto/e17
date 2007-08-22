@@ -56,6 +56,7 @@ static void ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig);
 
 static void ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
 
+static Ewl_Widget *ewl_text_selection_new(Ewl_Text *t);
 static void ewl_text_selection_select_to(Ewl_Text_Trigger *s, 
 						unsigned int char_idx);
 
@@ -691,14 +692,14 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int char_len)
 			(t->cursor_position >= t->length.chars))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_text_fmt_char_to_byte(t->formatting.nodes, 
-				t->cursor_position, char_len,
-				&byte_idx, &byte_len);
-
 	/* don't try to delete more then we have after the current cursor
 	 * position */
 	if ((t->length.chars - t->cursor_position) < char_len)
 		char_len = t->length.chars - t->cursor_position;
+
+	ewl_text_fmt_char_to_byte(t->formatting.nodes, 
+				t->cursor_position, char_len,
+				&byte_idx, &byte_len);
 
 	t->length.chars -= char_len;
 	if (t->length.chars > 0)
@@ -867,6 +868,61 @@ ewl_text_has_selection(Ewl_Text *t)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The text to do the selection on
+ * @param char_idx: The start position of the selection
+ * @param char_len: The length of the selection
+ * @return Returns no value
+ * @brief Select the text
+ */
+void
+ewl_text_select(Ewl_Text *t, unsigned int char_idx, unsigned int char_len)
+{
+	Ewl_Text_Trigger *s;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+
+	if (t->length.chars == 0)
+		DRETURN(DLEVEL_STABLE);
+
+	if (char_idx > t->length.chars)
+		char_idx = t->length.chars;
+
+	if (char_idx + char_len > t->length.chars)
+		char_len = t->length.chars - char_idx;
+
+	/* if we haven't already have an selection create one */
+	if (!t->selection)
+		t->selection = ewl_text_selection_new(t);
+
+	s = EWL_TEXT_TRIGGER(t->selection);
+	ewl_text_trigger_start_pos_set(s, char_idx);
+	ewl_text_trigger_length_set(s, char_len);
+
+	ewl_text_trigger_position(t, s);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The text to do the selection on
+ * @return Returns no value
+ * @brief Select the whole text
+ */
+void
+ewl_text_all_select(Ewl_Text *t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("t", t);
+	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
+
+	ewl_text_select(t, 0, t->length.chars);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -3311,20 +3367,8 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	if (!t->selection)
 	{
-		Ewl_Widget *tmp;
-
-		/* create the selection */
-		tmp = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_SELECTION);
-		ewl_container_child_append(EWL_CONTAINER(t), tmp);
-		ewl_widget_internal_set(tmp, TRUE);
-
-		t->selection = tmp;
-		sel = EWL_TEXT_TRIGGER(tmp);
-
-		ewl_text_trigger_start_pos_set(sel, 0);
-		ewl_text_trigger_length_set(sel, 0);
-
-		ewl_widget_show(tmp);
+		t->selection = ewl_text_selection_new(t);
+		sel = EWL_TEXT_TRIGGER(t->selection);
 	}
 	else
 		sel = EWL_TEXT_TRIGGER(t->selection);
@@ -3422,6 +3466,28 @@ ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/* create the selection */
+static Ewl_Widget *
+ewl_text_selection_new(Ewl_Text *t)
+{
+	Ewl_Widget *w;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, NULL);
+	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
+
+	w = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_SELECTION);
+	ewl_container_child_append(EWL_CONTAINER(t), w);
+	ewl_widget_internal_set(w, TRUE);
+
+	ewl_text_trigger_start_pos_set(EWL_TEXT_TRIGGER(w), 0);
+	ewl_text_trigger_length_set(EWL_TEXT_TRIGGER(w), 0);
+
+	ewl_widget_show(w);
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
 static void

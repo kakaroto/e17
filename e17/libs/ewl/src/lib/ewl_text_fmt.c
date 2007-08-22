@@ -382,7 +382,7 @@ ewl_text_fmt_get_first(Ewl_Text_Fmt *fmt)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fmt", fmt, NULL);
 
-	DRETURN_PTR(ecore_dlist_first_goto(fmt->nodes),DLEVEL_STABLE);
+	DRETURN_PTR(ecore_dlist_first_goto(fmt->nodes), DLEVEL_STABLE);
 }
 
 /**
@@ -396,7 +396,7 @@ ewl_text_fmt_get_current(Ewl_Text_Fmt *fmt)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fmt", fmt, NULL);
 
-	DRETURN_PTR(ecore_dlist_current(fmt->nodes),DLEVEL_STABLE);
+	DRETURN_PTR(ecore_dlist_current(fmt->nodes), DLEVEL_STABLE);
 }
 
 /**

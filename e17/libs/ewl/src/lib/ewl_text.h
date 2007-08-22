@@ -136,6 +136,9 @@ unsigned int	 ewl_text_selectable_get(Ewl_Text *t);
 char 		*ewl_text_selection_text_get(Ewl_Text *t);
 unsigned int 	 ewl_text_has_selection(Ewl_Text *t);
 Ewl_Widget	*ewl_text_selection_get(Ewl_Text *t);
+void		 ewl_text_select(Ewl_Text *t, unsigned int char_idx, 
+						unsigned int char_len);
+void		 ewl_text_all_select(Ewl_Text *t);
 
 void		 ewl_text_cursor_position_set(Ewl_Text *t, 
 						unsigned int char_pos);
