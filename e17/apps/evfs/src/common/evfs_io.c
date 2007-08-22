@@ -399,6 +399,7 @@ evfs_write_ecore_ipc_server_message(Ecore_Ipc_Server * server,
                          msg->response, msg->data, msg->len);
    /*printf("Sent %d, %d, %d, %d, %d, - data %p, size %d\n", msg->major, msg->minor, msg->ref, msg->ref_to,
                          msg->response, msg->data, msg->len);*/
+   free(msg->data);
    free(msg);
 
 }

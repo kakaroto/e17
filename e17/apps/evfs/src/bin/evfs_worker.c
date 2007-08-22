@@ -31,6 +31,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "evfs.h"
 
 #include <Ecore_File.h>
+#include <Efreet.h>
+#include <Efreet_Mime.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -223,7 +225,8 @@ ipc_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 		ecore_list_append(server->incoming_command_list, com_cli);
 		/*printf("Finished processing command in fork\n");*/
 	     }
-
+	
+	   free(msg->data);
 	   free(msg);
 
 	}

@@ -470,7 +470,7 @@ smb_evfs_dir_list(evfs_client * client, evfs_command * command,
 	                           entry->name);					  
 		  }
 
-                  /*printf("File '%s' is of type '%d'\n", reference->path, reference->file_type);*/
+                  printf("File '%s' is of type '%d'\n", reference->path, reference->file_type);
 
                   reference->plugin_uri = strdup("smb");
                   ecore_list_append(files, reference);

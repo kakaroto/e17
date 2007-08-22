@@ -11,6 +11,8 @@
 #include <dirent.h>
 
 #include <Ecore_Desktop.h>
+#include <Efreet.h>
+#include <Efreet_Mime.h>
 
 /*---------------------------------------------------*/
 /*Move these functions somewhere*/
