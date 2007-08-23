@@ -1922,6 +1922,7 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    tree->sorted_col = NULL;
    tree->sorted_asc = ETK_TRUE;
    tree->headers_visible = ETK_TRUE;
+   tree->col_separators_visible = ETK_TRUE;
    tree->grid_clip = NULL;
 
    tree->root.tree = tree;
@@ -1951,8 +1952,8 @@ static void _etk_tree_constructor(Etk_Tree *tree)
 
    tree->purge_job = NULL;
    tree->mode = ETK_TREE_MODE_LIST;
-   tree->col_separators_visible = ETK_TRUE;
    tree->multiple_select = ETK_FALSE;
+   tree->alternating_row_colors = ETK_TRUE;
    tree->tree_contains_headers = ETK_TRUE;
    tree->col_resize_pointer_set = ETK_FALSE;
 
