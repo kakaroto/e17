@@ -11,7 +11,7 @@
  */
 Ewl_Widget *
 ewl_menu_item_new(void)
-{       
+{
 	Ewl_Menu_Item *item;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -32,10 +32,10 @@ ewl_menu_item_new(void)
  * @param item: the item to be initialized
  * @return Returns TRUE on success or FALSE on failure
  * @brief Initialize the fields of a menu item to their defaults
- */ 
+ */
 int
 ewl_menu_item_init(Ewl_Menu_Item *item)
-{       
+{
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("item", item, FALSE);
 

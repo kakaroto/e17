@@ -43,7 +43,7 @@ static void toggle_child_horizontal_align(Ewl_Widget *w, void *ev, void *data);
 static void toggle_child_shrink(Ewl_Widget *w, void *ev, void *data);
 static void toggle_child_fill(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Box";

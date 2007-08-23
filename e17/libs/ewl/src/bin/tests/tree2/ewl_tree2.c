@@ -774,7 +774,7 @@
  *      else if (column == 1)
  *          val = d->rows[row]->image;
  *      else if (column == 2)
- *          val = d->rows[row]; 
+ *          val = d->rows[row];
  *
  *      return val;
  * }
@@ -950,14 +950,14 @@ struct Tree2_Test_Data
 
 static int create_test(Ewl_Container *win);
 static void *tree2_test_data_setup(void);
-static Ewl_Widget *tree2_test_cb_widget_fetch(void *data, unsigned int row, 
+static Ewl_Widget *tree2_test_cb_widget_fetch(void *data, unsigned int row,
 						unsigned int column);
 static void *tree2_test_cb_header_data_fetch(void *data, unsigned int column);
 static Ewl_Widget *tree2_test_cb_header_fetch(void *data, unsigned int column);
-static void *tree2_test_data_fetch(void *data, unsigned int row, 
+static void *tree2_test_data_fetch(void *data, unsigned int row,
 						unsigned int column);
 static int tree2_test_column_sortable(void *data, unsigned int column);
-static void tree2_test_data_sort(void *data, unsigned int column, 
+static void tree2_test_data_sort(void *data, unsigned int column,
 						Ewl_Sort_Direction sort);
 static unsigned int tree2_test_data_count_get(void *data);
 static int tree2_test_data_expandable_get(void *data, unsigned int row);
@@ -970,7 +970,7 @@ static void ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w, void *ev, void *data);
 static void tree2_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void tree2_cb_select_mode_change(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Tree2";
@@ -991,7 +991,7 @@ create_test(Ewl_Container *box)
 
 	o2 = ewl_hbox_new();
 	ewl_container_child_append(box, o2);
-	ewl_object_fill_policy_set(EWL_OBJECT(o2), 
+	ewl_object_fill_policy_set(EWL_OBJECT(o2),
 				EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(o2);
 
@@ -1008,7 +1008,7 @@ create_test(Ewl_Container *box)
 	ewl_model_column_sortable_set(model, tree2_test_column_sortable);
 	ewl_model_data_count_set(model, tree2_test_data_count_get);
 	ewl_model_data_expandable_set(model, tree2_test_data_expandable_get);
-	ewl_model_expansion_data_fetch_set(model, 
+	ewl_model_expansion_data_fetch_set(model,
 				tree2_test_data_expansion_fetch);
 
 	view = ewl_view_new();
@@ -1038,7 +1038,7 @@ create_test(Ewl_Container *box)
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
 	ewl_button_label_set(EWL_BUTTON(o), "Scroll headers");
 	ewl_container_child_append(EWL_CONTAINER(o3), o);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_tree2_cb_scroll_headers, tree);
 	ewl_widget_show(o);
 
@@ -1046,7 +1046,7 @@ create_test(Ewl_Container *box)
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
 	ewl_button_label_set(EWL_BUTTON(o), "Hide headers");
 	ewl_container_child_append(EWL_CONTAINER(o3), o);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_tree2_cb_hide_headers, tree);
 	ewl_widget_show(o);
 
@@ -1073,7 +1073,7 @@ create_test(Ewl_Container *box)
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
 	ewl_button_label_set(EWL_BUTTON(o), "Set number of rows");
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_tree2_cb_set_rows_clicked, NULL);
 	ewl_widget_show(o);
 
@@ -1081,7 +1081,7 @@ create_test(Ewl_Container *box)
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
 	ewl_button_label_set(EWL_BUTTON(o), "Row select");
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				tree2_cb_select_mode_change, NULL);
 	ewl_widget_show(o);
 
@@ -1133,7 +1133,7 @@ tree2_test_data_setup(void)
 	dt[3]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/End.png");
 	dt[3]->text = strdup("Zebra");
 	dt[3]->expandable = 0;
-	
+
 	dt[4] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[4]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/banner-top.png");
 	dt[4]->text = strdup("Ant");
@@ -1146,7 +1146,7 @@ tree2_test_data_setup(void)
 }
 
 static Ewl_Widget *
-tree2_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__, 
+tree2_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 					unsigned int column)
 {
 	Ewl_Widget *w = NULL;
@@ -1181,7 +1181,7 @@ tree2_test_cb_header_data_fetch(void *data __UNUSED__, unsigned int column)
 {
 	if (column == 0)
 		return "Title";
-	
+
 	if (column == 1)
 		return "Image";
 
@@ -1212,7 +1212,7 @@ tree2_test_data_fetch(void *data, unsigned int row, unsigned int column)
 	 * normal app */
 	if (row >= d->count)
 	{
-		printf("Asking for too many rows %d (count == %d)\n", 
+		printf("Asking for too many rows %d (count == %d)\n",
 							row, d->count);
 		return NULL;
 	}
@@ -1267,9 +1267,9 @@ tree2_test_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort)
 				b = d->rows[j]->image;
 			}
 
-			if (((sort == EWL_SORT_DIRECTION_ASCENDING) 
+			if (((sort == EWL_SORT_DIRECTION_ASCENDING)
 						&& strcmp(a, b) > 0)
-					|| ((sort == EWL_SORT_DIRECTION_DESCENDING) 
+					|| ((sort == EWL_SORT_DIRECTION_DESCENDING)
 						&& strcmp(a, b) < 0))
 			{
 				char *temp;
@@ -1371,7 +1371,7 @@ ewl_tree2_cb_plain_view(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 }
 
 static void
-ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Widget *spinner, *tree;
@@ -1387,7 +1387,7 @@ ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__, 
+tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ecore_List *selected;
@@ -1403,7 +1403,7 @@ tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 			char *val;
 			unsigned int col;
 			Ewl_Selection_Idx *idx;
-		
+
 			idx = EWL_SELECTION_IDX(sel);
 			col = idx->column;
 			if (col != 3)
@@ -1431,12 +1431,12 @@ tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 					char *val;
 
 					if (k != 3)
-						val = sel->model->fetch(sel->data, 
+						val = sel->model->fetch(sel->data,
 									i, k);
 					else
 					{
 						Tree2_Test_Row_Data *d;
-						d = sel->model->fetch(sel->data, 
+						d = sel->model->fetch(sel->data,
 									i, k);
 						val = d->text;
 					}
@@ -1448,7 +1448,7 @@ tree2_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-tree2_cb_select_mode_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+tree2_cb_select_mode_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Widget *tree;

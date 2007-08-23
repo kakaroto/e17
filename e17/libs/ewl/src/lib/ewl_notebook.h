@@ -65,29 +65,29 @@ struct Ewl_Notebook
 Ewl_Widget	*ewl_notebook_new(void);
 int		 ewl_notebook_init(Ewl_Notebook *n);
 
-void		 ewl_notebook_tabbar_alignment_set(Ewl_Notebook *n, 
+void		 ewl_notebook_tabbar_alignment_set(Ewl_Notebook *n,
 						unsigned int align);
 unsigned int	 ewl_notebook_tabbar_alignment_get(Ewl_Notebook *n);
 
-void		 ewl_notebook_tabbar_position_set(Ewl_Notebook *n, 
+void		 ewl_notebook_tabbar_position_set(Ewl_Notebook *n,
 						Ewl_Position pos);
 Ewl_Position	 ewl_notebook_tabbar_position_get(Ewl_Notebook *n);
 
 void		 ewl_notebook_tabbar_visible_set(Ewl_Notebook *n,
 						unsigned int visible);
 unsigned int 	 ewl_notebook_tabbar_visible_get(Ewl_Notebook *n);
-void		 ewl_notebook_tabbar_homogeneous_set(Ewl_Notebook *n, 
+void		 ewl_notebook_tabbar_homogeneous_set(Ewl_Notebook *n,
 						unsigned int h);
 unsigned int	 ewl_notebook_tabbar_homogeneous_get(Ewl_Notebook *n);
 
-void		 ewl_notebook_visible_page_set(Ewl_Notebook *n, 
+void		 ewl_notebook_visible_page_set(Ewl_Notebook *n,
 						Ewl_Widget *page);
 Ewl_Widget	*ewl_notebook_visible_page_get(Ewl_Notebook *n);
 
-void		 ewl_notebook_page_tab_text_set(Ewl_Notebook *n, 
-						Ewl_Widget *page, 
+void		 ewl_notebook_page_tab_text_set(Ewl_Notebook *n,
+						Ewl_Widget *page,
 						const char *text);
-const char 	*ewl_notebook_page_tab_text_get(Ewl_Notebook *n, 
+const char 	*ewl_notebook_page_tab_text_get(Ewl_Notebook *n,
 						Ewl_Widget *page);
 
 void		 ewl_notebook_page_tab_widget_set(Ewl_Notebook *n,

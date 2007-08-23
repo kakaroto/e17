@@ -11,10 +11,10 @@ static void ee_canvas_render(Ewl_Embed *emb);
 static int ee_init(Ewl_Engine *engine);
 static void ee_shutdown(Ewl_Engine *engine);
 
-static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] = 
+static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
 	{
 		ee_canvas_setup,
-		ee_canvas_output_set, 
+		ee_canvas_output_set,
 		ee_canvas_render, NULL, NULL
 	};
 
@@ -97,11 +97,11 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
 	evas_output_method_set(evas, evas_render_method_lookup("buffer"));
 
 	info = evas_engine_info_get(evas);
-	if (!info) 
+	if (!info)
 	{
 		fprintf(stderr, "Unable to use buffer engine for rendering.\n");
 		exit(-1);
-	}  
+	}
 
 	win->window = bufinfo = (Evas_Engine_Info_Buffer *)info;
 
@@ -146,11 +146,11 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
 	evas_damage_rectangle_add(evas, 0, 0, width, height);
 
 	info = evas_engine_info_get(evas);
-	if (!info) 
+	if (!info)
 	{
 		fprintf(stderr, "Unable to use buffer engine for rendering.\n");
 		exit(-1);
-	}  
+	}
 
 	o = EWL_OBJECT(emb);
 	bufinfo = (Evas_Engine_Info_Buffer *)info;

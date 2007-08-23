@@ -27,8 +27,8 @@ static Ecore_Idle_Enterer *idle_enterer = NULL;
 static Ecore_Idler *ewl_garbage_collect = NULL;
 static int ewl_init_count = 0;
 
-/* 
- * store a list of shutdown functions to call 
+/*
+ * store a list of shutdown functions to call
  */
 static Ecore_List *shutdown_queue = NULL;
 
@@ -119,7 +119,7 @@ ewl_backtrace(void)
 	size_t size;
 	char **strings;
 	size_t i;
-		
+
 	if (!ewl_config_cache.backtrace)
 		return;
 
@@ -242,7 +242,7 @@ ewl_init(int *argc, char **argv)
 
 	/* we create the engine we will be working with here so that it is
 	 * initialized before we start to use it. */
-	if (!ewl_engine_new(ewl_config_string_get(ewl_config, 
+	if (!ewl_engine_new(ewl_config_string_get(ewl_config,
 					EWL_CONFIG_ENGINE_NAME), argc, argv)) {
 		fprintf(stderr, "Could not initialize Ewl Engine.\n");
 		goto ERROR;
@@ -325,7 +325,7 @@ ewl_shutdown(void)
 	/*
 	 * Destroy all existing widgets.
 	 */
-	if (ewl_embed_list) 
+	if (ewl_embed_list)
 	{
 		Ewl_Widget *emb;
 
@@ -337,7 +337,7 @@ ewl_shutdown(void)
 		IF_FREE_LIST(ewl_embed_list);
 	}
 
-	if (idle_enterer) 
+	if (idle_enterer)
 	{
 		ecore_idle_enterer_del(idle_enterer);
 		idle_enterer = NULL;
@@ -368,7 +368,7 @@ ewl_shutdown(void)
 /**
  * @return Returns no value.
  * @brief The main execution loop of EWL
- * 
+ *
  * This is the  main execution loop of ewl. It dispatches
  * incoming events and renders updates to the evas's used by ewl.
  */
@@ -553,62 +553,62 @@ ewl_init_parse_options(int *argc, char **argv)
 	i = 0;
 	while (i < *argc) {
 		if (!strcmp(argv[i], "--ewl-segv")) {
-			ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_SEGV, 
+			ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_SEGV,
 						1, EWL_STATE_TRANSIENT);
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-backtrace")) {
-			ewl_config_int_set(ewl_config, 
+			ewl_config_int_set(ewl_config,
 					EWL_CONFIG_DEBUG_BACKTRACE, 1,
 					EWL_STATE_TRANSIENT);
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-theme")) {
 			if (i + 1 < *argc) {
-				ewl_config_string_set(ewl_config, 
+				ewl_config_string_set(ewl_config,
 							EWL_CONFIG_THEME_NAME,
-							argv[i + 1], 
+							argv[i + 1],
 							EWL_STATE_TRANSIENT);
 				matched++;
 			}
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-print-theme-keys")) {
-			ewl_config_int_set(ewl_config, 
+			ewl_config_int_set(ewl_config,
 					EWL_CONFIG_THEME_PRINT_KEYS, 1,
 					EWL_STATE_TRANSIENT);
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-print-theme-signals")) {
-			ewl_config_int_set(ewl_config, 
+			ewl_config_int_set(ewl_config,
 					EWL_CONFIG_THEME_PRINT_SIGNALS, 1,
 					EWL_STATE_TRANSIENT);
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-print-gc-reap")) {
-			ewl_config_int_set(ewl_config, 
+			ewl_config_int_set(ewl_config,
 					EWL_CONFIG_DEBUG_GC_REAP, 1,
 					EWL_STATE_TRANSIENT);
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-debug")) {
 			if ((i + 1) < *argc) {
-				ewl_config_int_set(ewl_config, 
+				ewl_config_int_set(ewl_config,
 					EWL_CONFIG_DEBUG_LEVEL, atoi(argv[i + 1]),
 					EWL_STATE_TRANSIENT);
 				matched++;
 			} else {
-				ewl_config_int_set(ewl_config, 
+				ewl_config_int_set(ewl_config,
 					EWL_CONFIG_DEBUG_LEVEL, 1,
 					EWL_STATE_TRANSIENT);
 			}
-			ewl_config_int_set(ewl_config, 
+			ewl_config_int_set(ewl_config,
 					EWL_CONFIG_DEBUG_ENABLE, 1,
 					EWL_STATE_TRANSIENT);
 			matched ++;
 		}
 		else if (!strcmp(argv[i], "--ewl-debug-paint")) {
-			ewl_config_int_set(ewl_config, 
+			ewl_config_int_set(ewl_config,
 					EWL_CONFIG_DEBUG_EVAS_RENDER, 1,
 					EWL_STATE_TRANSIENT);
 			matched ++;
@@ -641,7 +641,7 @@ ewl_init_parse_options(int *argc, char **argv)
 				{
 					if (!strcmp(eng, name))
 					{
-						ewl_config_string_set(ewl_config, 
+						ewl_config_string_set(ewl_config,
 							EWL_CONFIG_ENGINE_NAME, name,
 							EWL_STATE_TRANSIENT);
 						matched ++;
@@ -706,7 +706,7 @@ ewl_print_help(void)
 		"\t--ewl-segv                Trigger crash when warning printed.\n"
 		"\t--ewl-theme <theme>       Set the theme to use for widgets.\n"
 		" AVAILABLE ENGINES\n");
-			
+
 	names = ewl_engine_names_get();
 	while ((name = ecore_list_first_remove(names)))
 	{
@@ -954,7 +954,7 @@ ewl_realize_request(Ewl_Widget *w)
 		if (!o)
 			DRETURN(DLEVEL_STABLE);
 
-		if (!ewl_object_queued_has(EWL_OBJECT(o), 
+		if (!ewl_object_queued_has(EWL_OBJECT(o),
 				EWL_FLAG_QUEUED_RPROCESS)) {
 			if (!REALIZED(o))
 				DRETURN(DLEVEL_STABLE);
@@ -1013,10 +1013,10 @@ ewl_realize_queue(void)
 	 */
 	while ((w = ecore_list_first_remove(realize_list))) {
 		if (VISIBLE(w) && !REALIZED(w)) {
-			ewl_object_queued_add(EWL_OBJECT(w), 
+			ewl_object_queued_add(EWL_OBJECT(w),
 						EWL_FLAG_QUEUED_RPROCESS);
 			ewl_widget_realize(EWL_WIDGET(w));
-			ewl_object_queued_remove(EWL_OBJECT(w), 
+			ewl_object_queued_remove(EWL_OBJECT(w),
 						EWL_FLAG_QUEUED_RPROCESS);
 			ecore_list_prepend(child_add_list, w);
 		}
@@ -1057,9 +1057,9 @@ ewl_realize_queue(void)
  * @internal
  * @param w: The widget to destroy
  * @return Returns no value
- * @brief Queues the widget to be destroyed. 
+ * @brief Queues the widget to be destroyed.
  *
- * NOTE you should be using ewl_widget_destroy instead of calling 
+ * NOTE you should be using ewl_widget_destroy instead of calling
  * ewl_destroy_request directly.
  */
 void
@@ -1103,7 +1103,7 @@ ewl_canvas_destroy(void *evas)
 	DCHECK_PARAM_PTR("evas", evas);
 
 	ecore_list_append(free_evas_list, evas);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1124,7 +1124,7 @@ ewl_canvas_object_destroy(void *obj)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-#define EWL_GC_LIMIT 300 
+#define EWL_GC_LIMIT 300
 
 /**
  * @internal
@@ -1150,14 +1150,14 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		if (ewl_object_queued_has(EWL_OBJECT(w),
 					  EWL_FLAG_QUEUED_CSCHEDULED))
 			ewl_configure_cancel_request(w);
-	
+
 		ewl_callback_call(w, EWL_CALLBACK_DESTROY);
 		ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
 		ewl_widget_free(w);
 		cleanup++;
 	}
 
-	if (ewl_config_cache.gc_reap) 
+	if (ewl_config_cache.gc_reap)
 		printf("Destroyed %d EWL objects\n", cleanup);
 	cleanup = 0;
 
@@ -1166,7 +1166,7 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		cleanup++;
 	}
 
-	if (ewl_config_cache.gc_reap) 
+	if (ewl_config_cache.gc_reap)
 		printf("Destroyed %d Evas Objects\n", cleanup);
 	cleanup = 0;
 
@@ -1180,7 +1180,7 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 		}
 	}
 
-	if (ewl_config_cache.gc_reap) 
+	if (ewl_config_cache.gc_reap)
 		printf("Destroyed %d Evas\n---\n", cleanup);
 
 	/* We set the ewl_garbage_collect to NULL because when we return 0
@@ -1208,7 +1208,7 @@ strdup(const char *str)
 #endif
 
 /**
- * @param mod_dir: do we add or remove from the indent 
+ * @param mod_dir: do we add or remove from the indent
  * @return Returns a string with a number of spaces equal to the current
  * debug level
  * @brief Creates a string used to indent debug messages

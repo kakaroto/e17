@@ -13,7 +13,7 @@ static void ewl_progressbar_child_handle(Ewl_Container *c);
  * @brief Allocate and initialize a new progressbar
  */
 Ewl_Widget *
-ewl_progressbar_new(void) 
+ewl_progressbar_new(void)
 {
 	Ewl_Progressbar *p;
 
@@ -27,7 +27,7 @@ ewl_progressbar_new(void)
 		ewl_widget_destroy(EWL_WIDGET(p));
 		p = NULL;
 	}
-	
+
 	DRETURN_PTR(EWL_WIDGET(p), DLEVEL_STABLE);
 }
 
@@ -76,10 +76,10 @@ ewl_progressbar_init(Ewl_Progressbar *p)
 	ewl_widget_show(p->label);
 
 	p->auto_label = TRUE;
-	
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
+
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			ewl_progressbar_cb_configure, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED, 
+	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
 			ewl_progressbar_cb_value_changed, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -99,7 +99,7 @@ ewl_progressbar_label_set(Ewl_Progressbar *p, char *label)
 	DCHECK_TYPE("p", p, EWL_PROGRESSBAR_TYPE);
 
 	p->auto_label = FALSE;
-	
+
 	if (label)
 		ewl_label_text_set(EWL_LABEL(p->label), label);
 
@@ -117,7 +117,7 @@ ewl_progressbar_custom_label_set(Ewl_Progressbar *p, char *format_string)
 {
 	Ewl_Range *r;
 	char label[PATH_MAX];
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_TYPE("p", p, EWL_PROGRESSBAR_TYPE);
@@ -129,7 +129,7 @@ ewl_progressbar_custom_label_set(Ewl_Progressbar *p, char *format_string)
 		snprintf (label, PATH_MAX, format_string, r->value, r->max_val);
 		ewl_label_text_set(EWL_LABEL(p->label), label);
 	}
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -139,12 +139,12 @@ ewl_progressbar_custom_label_set(Ewl_Progressbar *p, char *format_string)
  * @brief Hides the given progressbars label
  */
 void
-ewl_progressbar_label_hide(Ewl_Progressbar *p) 
+ewl_progressbar_label_hide(Ewl_Progressbar *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_TYPE("p", p, EWL_PROGRESSBAR_TYPE);
-	
+
 	p->auto_label = FALSE;
 	ewl_label_text_set(EWL_LABEL(p->label), "");
 
@@ -157,7 +157,7 @@ ewl_progressbar_label_hide(Ewl_Progressbar *p)
  * @brief Shows the given progressbars label
  */
 void
-ewl_progressbar_label_show (Ewl_Progressbar *p) 
+ewl_progressbar_label_show (Ewl_Progressbar *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
@@ -174,8 +174,8 @@ ewl_progressbar_label_show (Ewl_Progressbar *p)
  * @param ev_data: UNUSED
  * @param user_data: UNUSED
  * @return Returns no value
- * @brief On a configure event we need to adjust the progressbar to fit 
- * into it's new coords and position as well as move the bar to the correct 
+ * @brief On a configure event we need to adjust the progressbar to fit
+ * into it's new coords and position as well as move the bar to the correct
  * size and position.
  */
 void
@@ -186,7 +186,7 @@ ewl_progressbar_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Range *r;
 	int dx, dy;
 	int dw;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_PROGRESSBAR_TYPE);
@@ -197,18 +197,18 @@ ewl_progressbar_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	dx = CURRENT_X(p);
 	dy = CURRENT_Y(p);
 	dw = CURRENT_W(p);
-	
+
 	dw = dw * (r->value - r->min_val) / (r->max_val - r->min_val);
-	
+
 	if (r->invert){
 		dx += CURRENT_W(p) - dw;
 	}
-	
-	ewl_object_geometry_request(EWL_OBJECT(p->bar), dx, CURRENT_Y(p), 
+
+	ewl_object_geometry_request(EWL_OBJECT(p->bar), dx, CURRENT_Y(p),
 						dw, CURRENT_H(p));
-	ewl_object_place (EWL_OBJECT(p->label), CURRENT_X(p),CURRENT_Y(p), 
+	ewl_object_place (EWL_OBJECT(p->label), CURRENT_X(p),CURRENT_Y(p),
 						CURRENT_W(p), CURRENT_H(p));
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -226,7 +226,7 @@ ewl_progressbar_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	Ewl_Progressbar *p;
 	Ewl_Range *r;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_PROGRESSBAR_TYPE);
@@ -236,14 +236,14 @@ ewl_progressbar_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (p->auto_label) {
 		char c[10];
-		/* 
+		/*
 		 * Do a precentage calculation as a default label.
 		 */
-		snprintf (c, sizeof (c), "%.0lf%%", (r->value / 
+		snprintf (c, sizeof (c), "%.0lf%%", (r->value /
 					(r->max_val - r->min_val)) * 100);
 		ewl_label_text_set(EWL_LABEL(p->label), c);
 	}
-	 
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -262,7 +262,7 @@ ewl_progressbar_child_handle(Ewl_Container *c)
 
 	if (value < 0.01 || ewl_range_unknown_get(r)) {
 		value = 0.01;
-		ewl_widget_state_set(EWL_WIDGET(c), "range-unknown", 
+		ewl_widget_state_set(EWL_WIDGET(c), "range-unknown",
 							EWL_STATE_PERSISTENT);
 	}
 
@@ -291,7 +291,7 @@ ewl_progressbar_cb_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	DCHECK_TYPE("c", c, EWL_PROGRESSBAR_TYPE);
 
 	ewl_progressbar_child_handle(c);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

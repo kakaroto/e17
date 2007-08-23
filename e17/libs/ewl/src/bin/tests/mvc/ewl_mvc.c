@@ -47,9 +47,9 @@ static int insert_range_overlap_vertical(char *buf, int len);
 static int insert_range_overlap_new_covers_old(char *buf, int len);
 static int insert_range_overlap_old_covers_new(char *buf, int len);
 
-static int ewl_mvc_is_index(char *buf, int len, Ewl_Selection *sel, 
+static int ewl_mvc_is_index(char *buf, int len, Ewl_Selection *sel,
 						int row, int column);
-static int ewl_mvc_is_range(char *buf, int len, Ewl_Selection *sel, 
+static int ewl_mvc_is_range(char *buf, int len, Ewl_Selection *sel,
 					int srow, int scolumn,
 					int erow, int ecolumn);
 
@@ -116,7 +116,7 @@ static Ewl_Unit_Test mvc_unit_tests[] = {
 		{NULL, NULL, -1, NULL}
 	};
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "MVC";
@@ -276,7 +276,7 @@ selected_count_get(char *buf, int len)
 	count = ewl_mvc_selected_count_get(m);
 	if (count != expected)
 	{
-		snprintf(buf, len, "Incorrect count (%d instead of %d)", 
+		snprintf(buf, len, "Incorrect count (%d instead of %d)",
 							count, expected);
 		return FALSE;
 	}
@@ -450,7 +450,7 @@ selected_rm_unselected_idx(char *buf, int len)
  */
 
 /*
- * ------ 
+ * ------
  * |    |
  * ------
  * |  X |
@@ -493,7 +493,7 @@ selected_rm_2x1_bottom(char *buf, int len)
 }
 
 /*
- * ------ 
+ * ------
  * |  X |
  * ------
  * |    |
@@ -536,7 +536,7 @@ selected_rm_2x1_top(char *buf, int len)
 }
 
 /*
- * ------------ 
+ * ------------
  * | X  |     |
  * ------------
  */
@@ -575,7 +575,7 @@ selected_rm_1x2_left(char *buf, int len)
 }
 
 /*
- * ------------ 
+ * ------------
  * |    |  X  |
  * ------------
  */
@@ -935,7 +935,7 @@ selected_rm_from_range_bottom_edge_point(char *buf, int len)
 		return FALSE;
 	}
 
-	/* should have 3 ranges: [(1,2)(5,8)] 
+	/* should have 3 ranges: [(1,2)(5,8)]
 				 [(2,6)]
 				 [(6,4)(6,8)] */
 	sel = ecore_list_index_goto(m->selected, 0);
@@ -955,7 +955,7 @@ selected_rm_from_range_bottom_edge_point(char *buf, int len)
 
 /*
  * c == currently in the list
- * r == range to be inserted 
+ * r == range to be inserted
  */
 /*
  * ----
@@ -1478,7 +1478,7 @@ insert_range_overlap_old_covers_new(char *buf, int len)
 }
 
 static int
-ewl_mvc_is_index(char *buf, int len, Ewl_Selection *sel, 
+ewl_mvc_is_index(char *buf, int len, Ewl_Selection *sel,
 					int row, int column)
 {
 	Ewl_Selection_Idx *idx;
@@ -1503,7 +1503,7 @@ ewl_mvc_is_index(char *buf, int len, Ewl_Selection *sel,
 }
 
 static int
-ewl_mvc_is_range(char *buf, int len, Ewl_Selection *sel, 
+ewl_mvc_is_range(char *buf, int len, Ewl_Selection *sel,
 					int srow, int scolumn,
 					int erow, int ecolumn)
 {

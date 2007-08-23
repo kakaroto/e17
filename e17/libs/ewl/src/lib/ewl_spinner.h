@@ -80,7 +80,7 @@ void ewl_spinner_cb_key_down(Ewl_Widget *widget, void *ev_data,
 						void *user_data);
 void ewl_spinner_cb_focus_out(Ewl_Widget *w, void *ev_data,
 						void *user_data);
-void ewl_spinner_cb_wheel(Ewl_Widget *w, void *ev_data, 
+void ewl_spinner_cb_wheel(Ewl_Widget *w, void *ev_data,
 						void *user_data);
 
 void ewl_spinner_cb_increase_value(Ewl_Widget *widget, void *ev_data,

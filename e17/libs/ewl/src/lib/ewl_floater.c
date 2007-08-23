@@ -32,7 +32,7 @@ ewl_floater_new(void)
  * @param f: the floater widget
  * @return Returns no value.
  * @brief Initialize a floater to default values
- * 
+ *
  * Sets the fields and callbacks of the floater @a f to their defaults.
  */
 int
@@ -59,7 +59,7 @@ ewl_floater_init(Ewl_Floater *f)
 					| EWL_FLAG_ALIGN_TOP);
 	ewl_widget_appearance_set(w, EWL_FLOATER_TYPE);
 	ewl_widget_inherit(w, EWL_FLOATER_TYPE);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, 
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 				ewl_floater_cb_destroy, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -222,7 +222,7 @@ ewl_floater_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
  * parent/window gets configured.
  */
 void
-ewl_floater_cb_follow_configure(Ewl_Widget *w __UNUSED__, 
+ewl_floater_cb_follow_configure(Ewl_Widget *w __UNUSED__,
 				void *ev_data __UNUSED__, void *user_data)
 {
 	int align, x, y;
@@ -287,7 +287,7 @@ ewl_floater_cb_follow_configure(Ewl_Widget *w __UNUSED__,
  * @brief Callback when the followed widget is destroyed
  */
 void
-ewl_floater_cb_follow_destroy(Ewl_Widget *w __UNUSED__ , 
+ewl_floater_cb_follow_destroy(Ewl_Widget *w __UNUSED__ ,
 				void *ev_data __UNUSED__, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

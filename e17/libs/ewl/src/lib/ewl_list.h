@@ -33,7 +33,7 @@
 #define EWL_LIST(list) ((Ewl_List *)list)
 
 /**
- * The list strucutre 
+ * The list strucutre
  */
 typedef struct Ewl_List Ewl_List;
 

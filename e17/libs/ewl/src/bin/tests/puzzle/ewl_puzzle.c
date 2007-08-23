@@ -20,7 +20,7 @@ static void puzzle_mouse_up_cb(Ewl_Widget *w, void *e, void *data);
 static Ewl_Widget *childs[4][4];
 static int free_col, free_row;
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Puzzle";
@@ -37,7 +37,7 @@ create_test(Ewl_Container *box)
 	Ewl_Widget *grid;
 	Ewl_Widget *hbox;
 	Ewl_Widget *c;
-	
+
 	/*
 	 * set up the outer grid
 	 */
@@ -46,7 +46,7 @@ create_test(Ewl_Container *box)
 	ewl_grid_dimensions_set(EWL_GRID(c), 1, 2);
 	ewl_grid_row_preferred_h_use(EWL_GRID(c), 1);
 	ewl_widget_show(c);
-	
+
 	/*
 	 * the first hbox
 	 */
@@ -56,7 +56,7 @@ create_test(Ewl_Container *box)
 
 
 	/*
-	 * set up the grid 
+	 * set up the grid
 	 */
 	grid = ewl_grid_new();
 	ewl_grid_dimensions_set(EWL_GRID(grid), 4, 4);
@@ -65,7 +65,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(grid);
 
 	puzzle_grid_fill(EWL_GRID(grid));
-	
+
 	/* the seperator */
 	w = ewl_vseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(hbox), w);
@@ -81,7 +81,7 @@ create_test(Ewl_Container *box)
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 	ewl_container_child_append(EWL_CONTAINER(hbox), w);
 	ewl_widget_show(w);
-	
+
 	/*
 	 * the hbox
 	 */
@@ -95,7 +95,7 @@ create_test(Ewl_Container *box)
 	w = ewl_text_new();
 	ewl_object_insets_set(EWL_OBJECT(w), 10, 10, 10, 10);
 	ewl_text_wrap_set(EWL_TEXT(w), TRUE);
-	ewl_text_text_append(EWL_TEXT(w), 
+	ewl_text_text_append(EWL_TEXT(w),
 			"The rules are really simple. Just try\n"
 			"to have the same image on your left\n"
 			"like you have on your right hand.");
@@ -110,7 +110,7 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, puzzle_clicked_cb, grid);
 	ewl_container_child_append(EWL_CONTAINER(hbox), w);
 	ewl_widget_show(w);
-	
+
 	return 1;
 }
 
@@ -119,7 +119,7 @@ puzzle_grid_fill(Ewl_Grid *grid)
 {
 	Ewl_Widget *w;
 	int i, random;
-	int unsort[6][15] = 
+	int unsort[6][15] =
 		{{4, 2, 5, 14, 0, 11, 6, 13, 10, 12, 1, 9, 8, 7, 3},
 		 {0, 2, 3, 7, 8, 4, 1, 6, 12, 5, 10, 11, 9, 13, 14},
 		 {1, 2, 6, 3, 13, 7, 10, 11, 0, 5, 12, 14, 4, 8, 9},
@@ -129,28 +129,28 @@ puzzle_grid_fill(Ewl_Grid *grid)
 
 	/* a really stupid randomizer */
 	random = time(NULL) % 6;
-	
+
 	/*
 	 * fill the grid with content
 	 */
 	for (i = 0; i < 15; i++)
 	{
 		char buf[PATH_MAX];
-		
+
 		snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR
 				"/ewl/images/e-logo-%i.png", unsort[random][i]);
-		
+
 		w = ewl_image_new();
 		ewl_image_file_path_set(EWL_IMAGE(w), buf);
 		ewl_image_proportional_set(EWL_IMAGE(w), FALSE);
 		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 		ewl_container_child_append(EWL_CONTAINER(grid), w);
-		ewl_grid_child_position_set(EWL_GRID(grid), w, 
+		ewl_grid_child_position_set(EWL_GRID(grid), w,
 				i % 4, i % 4, i / 4, i / 4);
-		ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, 
+		ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
 					puzzle_mouse_up_cb, grid);
 		ewl_widget_show(w);
-		
+
 		childs[i % 4][i / 4] = w;
 	}
 	free_col = free_row = 3;
@@ -196,7 +196,7 @@ puzzle_mouse_up_cb(Ewl_Widget *w, void *e, void *data)
 
 		if (sign(free_row - row) != direction)
 			return;
-		
+
 		for (i = free_row; i != row; i -= direction) {
 			Ewl_Widget *move;
 
@@ -217,7 +217,7 @@ puzzle_mouse_up_cb(Ewl_Widget *w, void *e, void *data)
 
 		if (sign(free_col - col) != direction)
 			return;
-		
+
 		for (i = free_col; i != col; i -= direction) {
 			Ewl_Widget *move;
 
@@ -230,14 +230,14 @@ puzzle_mouse_up_cb(Ewl_Widget *w, void *e, void *data)
 	}
 }
 
-static int 
+static int
 sign(int x)
 {
 	if (x > 0)
 		return 1;
 	if (x < 0)
 		return -1;
-	
+
 	return 0;
 }
 

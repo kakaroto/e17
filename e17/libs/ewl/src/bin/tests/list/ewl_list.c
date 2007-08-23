@@ -30,14 +30,14 @@ static void *list_test_data_setup(void);
 static void list_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void list_cb_multi_value_changed(Ewl_Widget *w, void *ev, void *data);
 
-static Ewl_Widget *list_test_cb_widget_fetch(void *data, unsigned int row, 
+static Ewl_Widget *list_test_cb_widget_fetch(void *data, unsigned int row,
 						unsigned int col);
-static void *list_test_data_fetch(void *data, unsigned int row, 
+static void *list_test_data_fetch(void *data, unsigned int row,
 						unsigned int column);
 static unsigned int list_test_data_count_get(void *data);
 static void list_cb_select_none(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "List";
@@ -80,7 +80,7 @@ create_test(Ewl_Container *box)
 	ewl_mvc_model_set(EWL_MVC(list), model);
 	ewl_mvc_view_set(EWL_MVC(list), view);
 	ewl_mvc_data_set(EWL_MVC(list), str_data);
-	ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED, 
+	ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED,
 					list_cb_value_changed, NULL);
 	ewl_widget_show(list);
 
@@ -97,7 +97,7 @@ create_test(Ewl_Container *box)
 	ewl_mvc_view_set(EWL_MVC(list), view);
 	ewl_mvc_data_set(EWL_MVC(list), str_data);
 	ewl_mvc_selection_mode_set(EWL_MVC(list), EWL_SELECTION_MODE_MULTI);
-	ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED, 
+	ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED,
 					list_cb_multi_value_changed, NULL);
 	ewl_widget_show(list);
 
@@ -151,7 +151,7 @@ create_test(Ewl_Container *box)
 
 		ewl_container_child_append(EWL_CONTAINER(list), o);
 	}
-	
+
 	return 1;
 }
 
@@ -181,7 +181,7 @@ list_test_data_setup(void)
 }
 
 static Ewl_Widget *
-list_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__, 
+list_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 					unsigned int col __UNUSED__)
 {
 	Ewl_Widget *w;
@@ -198,7 +198,7 @@ list_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 }
 
 static void *
-list_test_data_fetch(void *data, unsigned int row, 
+list_test_data_fetch(void *data, unsigned int row,
 					unsigned int column __UNUSED__)
 {
 	List_Test_Data *d;
@@ -227,7 +227,7 @@ list_test_data_count_get(void *data)
 }
 
 static void
-list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__, 
+list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_List *list;
@@ -239,12 +239,12 @@ list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 	idx = ewl_mvc_selected_get(EWL_MVC(list));
 
 	ecore_list_index_goto(el, idx->row);
-	printf("Selected (%d) (%s)\n", idx->row, 
+	printf("Selected (%d) (%s)\n", idx->row,
 			(char *)ecore_list_current(el));
 }
 
 static void
-list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__, 
+list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ecore_List *selected, *el;
@@ -264,7 +264,7 @@ list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 
 			idx = EWL_SELECTION_IDX(sel);
 			ecore_list_index_goto(el, idx->row);
-			printf("    %d (%s)\n", idx->row, 
+			printf("    %d (%s)\n", idx->row,
 					(char *)ecore_list_current(el));
 		}
 		else
@@ -276,7 +276,7 @@ list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 			for (i = idx->start.row; i <= idx->end.row; i++)
 			{
 				ecore_list_index_goto(el, i);
-				printf("    %d (%s)\n", i, 
+				printf("    %d (%s)\n", i,
 					(char *)ecore_list_current(el));
 			}
 		}
@@ -284,7 +284,7 @@ list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-list_cb_select_none(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+list_cb_select_none(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	printf("ERROR, shouldn't get selection changed callbacks.\n");

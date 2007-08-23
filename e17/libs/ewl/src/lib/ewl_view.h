@@ -4,8 +4,8 @@
 
 /**
  * @addtogroup Ewl_View Ewl_View: A data view
- * @brief Defines the callbacks for setting up the widgets based on the data 
- * returned from the Model. Create widgets, set data on widgets, calculate 
+ * @brief Defines the callbacks for setting up the widgets based on the data
+ * returned from the Model. Create widgets, set data on widgets, calculate
  * sizing, minimize number of widgets.
  *
  * @{
@@ -18,9 +18,9 @@
 #define EWL_VIEW_WIDGET_FETCH(f) ((Ewl_View_Widget_Fetch)f)
 
 /**
- * A typedef to shorten the definition of the view_widget_fetch callbacks. 
+ * A typedef to shorten the definition of the view_widget_fetch callbacks.
  */
-typedef Ewl_Widget *(*Ewl_View_Widget_Fetch)(void *data, unsigned int row, 
+typedef Ewl_Widget *(*Ewl_View_Widget_Fetch)(void *data, unsigned int row,
 						unsigned int col);
 
 /**
@@ -30,7 +30,7 @@ typedef Ewl_Widget *(*Ewl_View_Widget_Fetch)(void *data, unsigned int row,
 #define EWL_VIEW_HEADER_GET(f) ((Ewl_View_Header_Fetch)f)
 
 /**
- * A typedef to shorten the definition of the view_header_fetch callbacks. 
+ * A typedef to shorten the definition of the view_header_fetch callbacks.
  */
 typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, unsigned int column);
 
@@ -53,9 +53,9 @@ typedef struct Ewl_View Ewl_View;
 
 /**
  * A typedef to shorten the definition of the view_expansion_view_fetch
- * callbacks. 
+ * callbacks.
  */
-typedef Ewl_View *(*Ewl_View_Expansion_View_Fetch)(void *data, 
+typedef Ewl_View *(*Ewl_View_Expansion_View_Fetch)(void *data,
 							unsigned int row);
 
 /**
@@ -72,15 +72,15 @@ Ewl_View 		*ewl_view_new(void);
 int 			 ewl_view_init(Ewl_View *view);
 Ewl_View		*ewl_view_clone(Ewl_View *src);
 
-void 			 ewl_view_widget_fetch_set(Ewl_View *view, 
+void 			 ewl_view_widget_fetch_set(Ewl_View *view,
 						Ewl_View_Widget_Fetch construct);
 Ewl_View_Widget_Fetch	 ewl_view_widget_fetch_get(Ewl_View *view);
 
-void 			 ewl_view_header_fetch_set(Ewl_View *v, 
+void 			 ewl_view_header_fetch_set(Ewl_View *v,
 						Ewl_View_Header_Fetch f);
 Ewl_View_Header_Fetch 	 ewl_view_header_fetch_get(Ewl_View *v);
 
-void 			 ewl_view_expansion_view_fetch_set(Ewl_View *v, 
+void 			 ewl_view_expansion_view_fetch_set(Ewl_View *v,
 						Ewl_View_Expansion_View_Fetch f);
 Ewl_View_Expansion_View_Fetch	ewl_view_expansion_view_fetch_get(Ewl_View *v);
 

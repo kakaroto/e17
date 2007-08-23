@@ -105,7 +105,7 @@ static Ewl_Unit_Test image_unit_tests[] = {
 		{NULL, NULL, -1, NULL}
 	};
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Image";
@@ -329,7 +329,7 @@ create_image_fd_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	ewl_window_title_set (EWL_WINDOW (fd), "Select an Image...");
 	ewl_window_name_set (EWL_WINDOW (fd), "EWL Image Test");
 	ewl_window_class_set (EWL_WINDOW (fd), "EWL Filedialog");
-	ewl_callback_append (fd, EWL_CALLBACK_VALUE_CHANGED, 
+	ewl_callback_append (fd, EWL_CALLBACK_VALUE_CHANGED,
 			    create_image_fd_window_response, user_data);
 	ewl_widget_show(fd);
 }
@@ -339,7 +339,7 @@ create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 {
 	Ewl_Event_Action_Response *e;
 	Ewl_Widget *entry = data;
-  
+
 	e = ev;
 
 	if (e->response == EWL_STOCK_OK) {

@@ -10,14 +10,14 @@
 static int create_test(Ewl_Container *box);
 static void cb_rerun_progressbars(Ewl_Widget *w, void *ev, void *data);
 static void cb_set_new_range(Ewl_Widget *w, void *ev, void *data);
-static void cb_destroy_progressbar_test(Ewl_Widget *w, void *ev, 
+static void cb_destroy_progressbar_test(Ewl_Widget *w, void *ev,
 							void *data);
 static int cb_increment_progress(void *data);
 
 static Ecore_Timer *progress_timer[3];
 static Ewl_Widget *progressbar[4];
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Progressbar";
@@ -42,13 +42,13 @@ create_test(Ewl_Container *box)
 
 
 	progressbar_box = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox), 
+	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox),
 							progressbar_box);
 	ewl_box_spacing_set(EWL_BOX(progressbar_box), 0);
 	ewl_widget_show(progressbar_box);
 
 	/*
-	 * First and second progressbar 
+	 * First and second progressbar
 	 */
 	for (i = 0; i < 2; i++) {
 		progressbar[i] = ewl_progressbar_new();
@@ -59,21 +59,21 @@ create_test(Ewl_Container *box)
 
 		progress_timer[i] = ecore_timer_add(0.1, cb_increment_progress,
 				(Ewl_Progressbar *) progressbar[i]);
-	
-		ewl_container_child_append(EWL_CONTAINER(progressbar_box), 
+
+		ewl_container_child_append(EWL_CONTAINER(progressbar_box),
 							progressbar[i]);
 	}
 
 	/*
-	 * Third big progressbar 
+	 * Third big progressbar
 	 */
 	progressbar[2] = ewl_progressbar_new();
-	ewl_range_value_set(EWL_RANGE(progressbar[2]), 0);	
+	ewl_range_value_set(EWL_RANGE(progressbar[2]), 0);
 	ewl_widget_show(progressbar[2]);
-	
+
 	progress_timer[2] = ecore_timer_add(0.1, cb_increment_progress,
 			(Ewl_Progressbar *) progressbar[2]);
-	
+
 	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox), progressbar[2]);
 
 	/*
@@ -81,8 +81,8 @@ create_test(Ewl_Container *box)
 	 */
 	progressbar[3] = ewl_progressbar_new();
 	ewl_range_unknown_set(EWL_RANGE(progressbar[3]), TRUE);
-	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox), progressbar[3]);	
-	ewl_widget_show(progressbar[3]);	
+	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox), progressbar[3]);
+	ewl_widget_show(progressbar[3]);
 
 	/*
 	 * Add buttons at the bottom
@@ -92,13 +92,13 @@ create_test(Ewl_Container *box)
 						progressbar_box);
 	ewl_box_spacing_set(EWL_BOX(progressbar_box), 0);
 	ewl_widget_show(progressbar_box);
-					
+
 	button = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(button), "Rerun");
 	ewl_container_child_append(EWL_CONTAINER(progressbar_box), button);
-	ewl_callback_prepend(button, EWL_CALLBACK_CLICKED, 
+	ewl_callback_prepend(button, EWL_CALLBACK_CLICKED,
 			cb_rerun_progressbars, NULL);
-		
+
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show (button);
 
@@ -120,7 +120,7 @@ cb_increment_progress(void *data)
 	char c[30];
 	int i;
 	Ewl_Range *r;
-	
+
 	r = EWL_RANGE(data);
 	val = ewl_range_value_get(r);
 
@@ -150,7 +150,7 @@ cb_increment_progress(void *data)
 		ewl_progressbar_label_set(EWL_PROGRESSBAR(r), c);
 	}
 
-	if (val == 60) 
+	if (val == 60)
 		ewl_progressbar_label_hide(EWL_PROGRESSBAR(r));
 
 	if (val == 70)
@@ -181,31 +181,31 @@ cb_set_new_range(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	j = rand() % 500;
 	printf ("New random value: %d\n", j);
-	
+
 	for (i = 0; i < 3; i++) {
 		ewl_range_maximum_value_set(EWL_RANGE(progressbar[i]), j);
-		
+
 		if (ewl_range_value_get(EWL_RANGE(progressbar[i])) >= j)
-			cb_rerun_progressbars(EWL_WIDGET (progressbar[i]), 
+			cb_rerun_progressbars(EWL_WIDGET (progressbar[i]),
 								NULL, NULL);
 	}
 }
 
 static void
-cb_rerun_progressbars (Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+cb_rerun_progressbars (Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	int i;
 
 	for (i = 0; i < 3; i++) {
-		/* 
+		/*
 		 * Make sure to autolabel the bar on start again,
 		 * if we stop a place where it labels manually.
 		 * (since the auto label is turned off when you label manually)
 		 */
 		ewl_progressbar_label_show (EWL_PROGRESSBAR (progressbar[i]));
 		ewl_range_value_set(EWL_RANGE(progressbar[i]), 0);
-		
+
 		if (progress_timer[i]) {
 			ecore_timer_del(progress_timer[i]);
 			progress_timer[i] = NULL;

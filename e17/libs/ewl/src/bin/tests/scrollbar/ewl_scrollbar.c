@@ -7,7 +7,7 @@
 
 static int create_test(Ewl_Container *win);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Scrollbar";
@@ -31,7 +31,7 @@ create_test(Ewl_Container *box)
 	ewl_object_padding_set(EWL_OBJECT(vscrollbar), 10, 10, 10, 10);
 	ewl_container_child_append(box, vscrollbar);
 	ewl_widget_show(vscrollbar);
-	
+
 	return 1;
 }
 

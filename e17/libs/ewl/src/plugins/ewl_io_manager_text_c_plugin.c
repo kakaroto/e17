@@ -9,7 +9,7 @@ static void setup_hash();
 static int string_is_keyword(Ecore_Hash *keys, const char * string);
 static void text_set(Ewl_Text *t, char *text);
 
-enum text_mode 
+enum text_mode
 {
 	COMMAND,
 	C_COMMENT,
@@ -68,7 +68,7 @@ setup_hash()
 {
 
 	int i;
-	
+
 	key1 = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 	key2 = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
@@ -93,7 +93,7 @@ ewl_io_manager_plugin_uri_read(const char *uri)
 
 
 	file = fopen(uri, "r");
-	if (file) 
+	if (file)
 	{
 		struct stat buf;
 		char *str;
@@ -106,7 +106,7 @@ ewl_io_manager_plugin_uri_read(const char *uri)
 		fread(str, buf.st_size, 1, file);
 		str[buf.st_size] = '\0';
 		fclose(file);
-	
+
 		text_set(EWL_TEXT(ret), str);
 		FREE(str);
 	}
@@ -179,8 +179,8 @@ string_is_keyword(Ecore_Hash *keys, const char *string)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("string", string, FALSE);
-	
-	DRETURN_INT(((ecore_hash_get(keys, string) != NULL) ? TRUE : FALSE), 
+
+	DRETURN_INT(((ecore_hash_get(keys, string) != NULL) ? TRUE : FALSE),
 							DLEVEL_STABLE);
 }
 
@@ -210,28 +210,28 @@ text_set(Ewl_Text *t, char *text)
 
 		else if (isdigit(*tx1))
 			mode = NUMBER;
-			
+
 		else if (*tx1 == '\"' && !( tx1 != text && *(tx1 - 1) == '\\'))
 			mode = STRING;
 
 		else
 			mode = REST;
-		
+
 		/*
 		 * finde the end of the mode
 		 */
 		tx2++;
-		switch (mode) 
+		switch (mode)
 		{
 			case NUMBER:
 			case COMMAND:
 				while(isalnum(*tx2) || (*tx2 == '_'))
 					tx2++;
 				break;
-			
+
 			case C_COMMENT:
-				while((*tx2 != '\0') && 
-					 	(!((*tx2 == '*') 
+				while((*tx2 != '\0') &&
+					 	(!((*tx2 == '*')
 							&& (*(tx2 + 1) == '/'))))
 					tx2++;
 
@@ -246,8 +246,8 @@ text_set(Ewl_Text *t, char *text)
 				break;
 
 			case STRING:
-				while((*tx2 != '\0') 
-						&& !((*tx2 == '\"') 
+				while((*tx2 != '\0')
+						&& !((*tx2 == '\"')
 							&& (*(tx2 - 1) != '\\')))
 					tx2++;
 
@@ -265,16 +265,16 @@ text_set(Ewl_Text *t, char *text)
 			default:
 				break;
 		}
-		
+
 		/* append the text */
 		remc = *tx2;
 		*tx2 = '\0';
-		
-		if (mode == COMMAND && ((tx2 - tx1) < 8) && 
+
+		if (mode == COMMAND && ((tx2 - tx1) < 8) &&
 					string_is_keyword(key1, tx1))
 			ewl_text_color_set(t, 68, 144, 169, 255);
 
-		else if ((mode == COMMAND) && ((tx2 - tx1) < 8) && 
+		else if ((mode == COMMAND) && ((tx2 - tx1) < 8) &&
 					string_is_keyword(key2, tx1))
 			ewl_text_color_set(t, 26, 117, 3, 255);
 
@@ -292,7 +292,7 @@ text_set(Ewl_Text *t, char *text)
 
 		else
 			ewl_text_color_set(t, 0, 0, 0, 255);
-		
+
 		ewl_text_text_append(t, tx1);
 
 		*tx2 = remc;

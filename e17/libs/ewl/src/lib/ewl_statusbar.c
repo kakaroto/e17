@@ -20,7 +20,7 @@ ewl_statusbar_new(void)
 	sb = NEW(Ewl_Statusbar, 1);
 	if (!sb)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	
+
 	if (!ewl_statusbar_init(sb)) {
 		ewl_widget_destroy(EWL_WIDGET(sb));
 		sb = NULL;
@@ -79,7 +79,7 @@ ewl_statusbar_init(Ewl_Statusbar *sb)
 
 	sb->stack = ecore_list_new();
 
-	ewl_callback_append(EWL_WIDGET(sb), EWL_CALLBACK_DESTROY, 
+	ewl_callback_append(EWL_WIDGET(sb), EWL_CALLBACK_DESTROY,
 					ewl_statusbar_cb_destroy, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -178,7 +178,7 @@ ewl_statusbar_active_set(Ewl_Statusbar *sb, Ewl_Position pos)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-					  
+
 /**
  * @param sb: The statusbar to operate on
  * @param w: The widget to add to the container
@@ -308,7 +308,7 @@ ewl_statusbar_pop(Ewl_Statusbar *sb)
 	DCHECK_TYPE("sb", sb, EWL_STATUSBAR_TYPE);
 
 	current = ecore_list_first_remove(sb->stack);
-	if (current) 
+	if (current)
 		ewl_widget_destroy(current);
 
 	current = ecore_list_first_goto(sb->stack);
@@ -321,7 +321,7 @@ ewl_statusbar_pop(Ewl_Statusbar *sb)
 }
 
 void
-ewl_statusbar_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_statusbar_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Statusbar *sb;

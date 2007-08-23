@@ -29,7 +29,7 @@
 
 /**
  * @def EWL_TREE2_VIEW(v)
- * Typecasts a pointer to an Ewl_Tree2_View pointer 
+ * Typecasts a pointer to an Ewl_Tree2_View pointer
  */
 #define EWL_TREE2_VIEW(v) ((Ewl_Tree2_View *)v)
 

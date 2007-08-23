@@ -7,7 +7,7 @@ enum Ewl_Engine_Window_Hooks
 	EWL_ENGINE_WINDOW_NEW,	/**< Create the window */
 	EWL_ENGINE_WINDOW_DESTROY,/**< Destroy the window */
 
-	EWL_ENGINE_WINDOW_MOVE,	/**< Move the window to 
+	EWL_ENGINE_WINDOW_MOVE,	/**< Move the window to
 							the given location */
 	EWL_ENGINE_WINDOW_RESIZE,	/**< Resize the window */
 	EWL_ENGINE_WINDOW_MIN_MAX_SIZE_SET, /**< Set the min and max sizes */
@@ -17,7 +17,7 @@ enum Ewl_Engine_Window_Hooks
 	EWL_ENGINE_WINDOW_TITLE_SET, /**< Set the window title */
 	EWL_ENGINE_WINDOW_NAME_CLASS_SET,/**< Set the window name/class */
 
-	EWL_ENGINE_WINDOW_BORDERLESS_SET,/**< Set the borderless 
+	EWL_ENGINE_WINDOW_BORDERLESS_SET,/**< Set the borderless
 							 state of the window */
 	EWL_ENGINE_WINDOW_DIALOG_SET,	/**< Set the dialog setting of the window */
 	EWL_ENGINE_WINDOW_STATES_SET,	/**< Set the window state flags */
@@ -146,7 +146,7 @@ struct Ewl_Engine
 	char *name;			/**< The name of the engine */
 
 	Ecore_DList *dependancies;	/**< The engines this one depends on */
-	Ewl_Engine_Info *functions;	/**< The functions used by ewl, 
+	Ewl_Engine_Info *functions;	/**< The functions used by ewl,
 						suppled by the engine */
 };
 
@@ -190,7 +190,7 @@ void		 ewl_engine_keyboard_ungrab(Ewl_Window *win);
 int 		 ewl_engine_pointer_grab(Ewl_Window *win);
 void 		 ewl_engine_pointer_ungrab(Ewl_Window *win);
 
-void		 ewl_engine_window_selection_text_set(Ewl_Window *win, 
+void		 ewl_engine_window_selection_text_set(Ewl_Window *win,
 							const char *txt);
 void		 ewl_engine_window_geometry_get(Ewl_Window *win, int root,
 						int *width, int *height);
@@ -212,7 +212,7 @@ void		 ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y,
 void		 ewl_engine_canvas_render(Ewl_Embed *embed);
 void		 ewl_engine_canvas_freeze(Ewl_Embed *embed);
 void		 ewl_engine_canvas_thaw(Ewl_Embed *embed);
-void		 ewl_engine_canvas_damage_add(Ewl_Embed *embed, int x, int y, 
+void		 ewl_engine_canvas_damage_add(Ewl_Embed *embed, int x, int y,
 								int w, int h);
 
 void		 ewl_engine_theme_freeze(Ewl_Embed *embed);
@@ -232,55 +232,55 @@ int 		 ewl_engine_pointer_get(Ewl_Embed *embed);
 
 typedef void (*Ewl_Engine_Cb_Window_New)(Ewl_Window *win);	/**< Create the window */
 typedef void (*Ewl_Engine_Cb_Window_Destroy)(Ewl_Window *win);/**< Destroy the window */
-typedef void (*Ewl_Engine_Cb_Window_Move)(Ewl_Window *win);	/**< Move the window to 
+typedef void (*Ewl_Engine_Cb_Window_Move)(Ewl_Window *win);	/**< Move the window to
 							the given location */
 typedef void (*Ewl_Engine_Cb_Window_Resize)(Ewl_Window *win);	/**< Resize the window */
-typedef void (*Ewl_Engine_Cb_Window_Min_Max_Size_Set)(Ewl_Window *win); /**< Set the min 
+typedef void (*Ewl_Engine_Cb_Window_Min_Max_Size_Set)(Ewl_Window *win); /**< Set the min
 									and max sizes */
 typedef void (*Ewl_Engine_Cb_Window_Show)(Ewl_Window *win);	/**< Show the window */
 typedef void (*Ewl_Engine_Cb_Window_Hide)(Ewl_Window *win);	/**< Hide the window */
 typedef void (*Ewl_Engine_Cb_Window_Title_Set)(Ewl_Window *win); /**< Set the window title */
-typedef void (*Ewl_Engine_Cb_Window_Name_Class_Set)(Ewl_Window *win);	/**< Set the window 
+typedef void (*Ewl_Engine_Cb_Window_Name_Class_Set)(Ewl_Window *win);	/**< Set the window
 								name/class */
-typedef void (*Ewl_Engine_Cb_Window_Borderless_Set)(Ewl_Window *win);	/**< Set the borderless 
+typedef void (*Ewl_Engine_Cb_Window_Borderless_Set)(Ewl_Window *win);	/**< Set the borderless
 							 state of the window */
-typedef void (*Ewl_Engine_Cb_Window_Dialog_Set)(Ewl_Window *win);	/**< Set the dialog 
+typedef void (*Ewl_Engine_Cb_Window_Dialog_Set)(Ewl_Window *win);	/**< Set the dialog
 									setting of the window */
-typedef void (*Ewl_Engine_Cb_Window_Transient_For)(Ewl_Window *win);	/**< Set the window 
+typedef void (*Ewl_Engine_Cb_Window_Transient_For)(Ewl_Window *win);	/**< Set the window
 								transient */
-typedef void (*Ewl_Engine_Cb_Window_Leader_Set)(Ewl_Window *win);	/**< Set the window's 
+typedef void (*Ewl_Engine_Cb_Window_Leader_Set)(Ewl_Window *win);	/**< Set the window's
 								 leader */
 typedef void (*Ewl_Engine_Cb_Window_States_Set)(Ewl_Window *win); /**< Set the window states */
 typedef void (*Ewl_Engine_Cb_Window_Hints_Set)(Ewl_Window *win); /**< Set the window hints */
 typedef void (*Ewl_Engine_Cb_Window_Raise)(Ewl_Window *win);	/**< Raise the window */
 typedef void (*Ewl_Engine_Cb_Window_Lower)(Ewl_Window *win);	/**< Lower the window */
 typedef int  (*Ewl_Engine_Cb_Keyboard_Grab)(Ewl_Window *win);	/**< Set the keyboard grab */
-typedef void  (*Ewl_Engine_Cb_Keyboard_Ungrab)(Ewl_Window *win); /**< Set the keyboard 
+typedef void  (*Ewl_Engine_Cb_Keyboard_Ungrab)(Ewl_Window *win); /**< Set the keyboard
 							ungrab */
 typedef int  (*Ewl_Engine_Cb_Pointer_Grab)(Ewl_Window *win);	/**< Set the pointer grab */
 typedef void  (*Ewl_Engine_Cb_Pointer_Ungrab)(Ewl_Window *win); /**< Set the pointer ungrab */
-typedef void (*Ewl_Engine_Cb_Window_Selection_Text_Set)(Ewl_Window *win, 
-							const char *txt); /**< Set the 
+typedef void (*Ewl_Engine_Cb_Window_Selection_Text_Set)(Ewl_Window *win,
+							const char *txt); /**< Set the
 									   selection text */
-typedef void (*Ewl_Engine_Cb_Window_Geometry_Get)(Ewl_Window *win, 
-						int *width, int *height); /**< Get the window 
+typedef void (*Ewl_Engine_Cb_Window_Geometry_Get)(Ewl_Window *win,
+						int *width, int *height); /**< Get the window
 								geometry */
-typedef void (*Ewl_Engine_Cb_Window_Dnd_Aware_Set)(Ewl_Embed *embed);	 /**< Set the embed 
+typedef void (*Ewl_Engine_Cb_Window_Dnd_Aware_Set)(Ewl_Embed *embed);	 /**< Set the embed
 								dnd aware */
 typedef void (*Ewl_Engine_Cb_Window_Dnd_Drag_Types_Set)(Ewl_Embed *embed, char **types, unsigned int num);	 /**< Set the drag types */
 typedef void (*Ewl_Engine_Cb_Window_Dnd_Drag_Start)(Ewl_Embed *embed);	 /**< Start the drag process */
 typedef void (*Ewl_Engine_Cb_Window_Dnd_Drag_Drop)(Ewl_Embed *embed);	 /**< End the drag process with a drop event */
 typedef int (*Ewl_Engine_Cb_Window_Dnd_Drag_Data_Send)(Ewl_Embed *embed, void *handle, void *data, int size);	 /**< Send the drag data */
-typedef void (*Ewl_Engine_Cb_Window_Desktop_Size_Get)(Ewl_Embed *embed, 
+typedef void (*Ewl_Engine_Cb_Window_Desktop_Size_Get)(Ewl_Embed *embed,
 							int *w, int *h); /**< Get the desktop
 								size */
 typedef void (*Ewl_Engine_Cb_Canvas_Setup)(Ewl_Window *win, int debug); /**< Setup the render canvas */
 typedef void  (*Ewl_Engine_Cb_Canvas_Output_Set)(Ewl_Embed *emb, int x, int y,
-						 int width, int height); 
+						 int width, int height);
 typedef void  (*Ewl_Engine_Cb_Canvas_Render)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Canvas_Freeze)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Canvas_Thaw)(Ewl_Embed *embed);
-typedef void  (*Ewl_Engine_Cb_Canvas_Damage_Add)(Ewl_Embed *embed, 
+typedef void  (*Ewl_Engine_Cb_Canvas_Damage_Add)(Ewl_Embed *embed,
 						int x, int y, int w, int h);
 typedef void  (*Ewl_Engine_Cb_Theme_Freeze)();
 typedef void  (*Ewl_Engine_Cb_Theme_Thaw)();
@@ -296,23 +296,23 @@ typedef void *(*Ewl_Engine_Cb_Theme_Object_Clip_Set)(void *obj, void *clip);
 typedef void *(*Ewl_Engine_Cb_Theme_Object_Clip_Unset)(void *obj);
 typedef void (*Ewl_Engine_Cb_Theme_Object_Stack_Add)(Ewl_Widget *w);
 typedef void (*Ewl_Engine_Cb_Theme_Object_Layer_Update)(Ewl_Widget *w);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_File_Set)(void *obj, char *path, 
+typedef void  (*Ewl_Engine_Cb_Theme_Object_File_Set)(void *obj, char *path,
 								char *group);
 typedef void *(*Ewl_Engine_Cb_Theme_Object_Load_Error)(void *obj);
 typedef void  (*Ewl_Engine_Cb_Theme_Object_Min_Size_Get)(void *obj, int *w, int *h);
 typedef void  (*Ewl_Engine_Cb_Theme_Object_Max_Size_Get)(void *obj, int *w, int *h);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Signal_Send)(void *obj, 
+typedef void  (*Ewl_Engine_Cb_Theme_Object_Signal_Send)(void *obj,
 							char *state, char *source);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Part_Text_Set)(void *obj, 
+typedef void  (*Ewl_Engine_Cb_Theme_Object_Part_Text_Set)(void *obj,
 							char *part, char *text);
-typedef void  (*Ewl_Engine_Cb_Theme_Object_Color_Class_Set)(char *name, int r, 
-							int g, int b, int r2, 
-							int g2, int b2, int r3, 
+typedef void  (*Ewl_Engine_Cb_Theme_Object_Color_Class_Set)(char *name, int r,
+							int g, int b, int r2,
+							int g2, int b2, int r3,
 							int g3, int b3);
 typedef void *(*Ewl_Engine_Cb_Theme_Clip_Add)(Ewl_Embed *embed);
 typedef void  (*Ewl_Engine_Cb_Theme_Clip_Del)(void *clip);
 typedef void *(*Ewl_Engine_Cb_Theme_Clip_Clipees_Get)(void *clip);
-typedef void  (*Ewl_Engine_Cb_Theme_Clip_Color_Set)(void *clip, int r, int g, 
+typedef void  (*Ewl_Engine_Cb_Theme_Clip_Color_Set)(void *clip, int r, int g,
 								int b, int a);
 
 typedef int   (*Ewl_Engine_Cb_Pointer_Data_New)(Ewl_Embed *embed,

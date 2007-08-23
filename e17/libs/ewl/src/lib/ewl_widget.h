@@ -30,7 +30,7 @@
 #define EWL_WIDGET_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_WIDGET_TYPE))
 
 /**
- * The attachment list 
+ * The attachment list
  */
 typedef struct Ewl_Attach_List Ewl_Attach_List;
 
@@ -85,7 +85,7 @@ struct Ewl_Pair_List
 typedef struct Ewl_Callback_Chain Ewl_Callback_Chain;
 
 /**
- * @brief The callback chain contains the length, mask and information on the list 
+ * @brief The callback chain contains the length, mask and information on the list
  */
 struct Ewl_Callback_Chain
 {
@@ -96,7 +96,7 @@ struct Ewl_Callback_Chain
 };
 
 /**
- * A set of colours 
+ * A set of colours
  */
 typedef struct Ewl_Color_Set Ewl_Color_Set;
 
@@ -137,7 +137,7 @@ struct Ewl_Widget
 	Ewl_Object object; /**< Inherit the base Object class */
 	Ewl_Widget *parent; /**< The parent widget, actually a container */
 
-	Ewl_Callback_Chain callbacks[EWL_CALLBACK_MAX + 1]; 
+	Ewl_Callback_Chain callbacks[EWL_CALLBACK_MAX + 1];
 						/**< Callback chain array */
 	Ewl_Attach_List *attach;       /**< List of attachments on the widget */
 
@@ -151,8 +151,8 @@ struct Ewl_Widget
 	const char *appearance;   /**< Key to lookup appearance in theme */
 	const char *inheritance;  /**< Inheritance of path widget */
 	int layer;		/**< the layer relative to the parent */
-	int toplayered;		/**< Indicates if the widget should 
-						be on the top of the layer stack */ 
+	int toplayered;		/**< Indicates if the widget should
+						be on the top of the layer stack */
 
 	Ecore_Hash *theme; 		/**< Overriding theme settings */
 	Ewl_Pair_List theme_text;	/**< Overriding text in theme */
@@ -189,7 +189,7 @@ int		 ewl_widget_appearance_path_size_get(Ewl_Widget *w);
 int		 ewl_widget_appearance_path_copy(Ewl_Widget *w, char *buf,
 						int size);
 void 		 ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part,
-						   const char *text);     
+						   const char *text);
 const char 	*ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part);
 void 		 ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text);
 const char	*ewl_widget_appearance_text_get(Ewl_Widget *w);
@@ -236,9 +236,9 @@ unsigned int	 ewl_widget_focusable_get(Ewl_Widget *w);
 void		 ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val);
 unsigned int	 ewl_widget_ignore_focus_change_get(Ewl_Widget *w);
 
-void 		 ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g, 
+void 		 ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g,
 							unsigned int b, unsigned int a);
-void 		 ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g, 
+void 		 ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g,
 							unsigned int *b, unsigned int *a);
 
 int 		 ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w);

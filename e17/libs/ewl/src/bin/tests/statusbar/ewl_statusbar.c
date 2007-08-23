@@ -12,7 +12,7 @@ static int create_test(Ewl_Container *win);
 static void button_push_cb(Ewl_Widget *w, void *ev, void *data);
 static void button_pop_cb(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Statusbar";

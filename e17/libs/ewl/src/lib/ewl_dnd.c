@@ -34,7 +34,7 @@ static int ewl_dnd_types_encoded_contains(char *types, char *type);
  * @brief Initialize the DND sybsystem
  */
 int
-ewl_dnd_init(void) 
+ewl_dnd_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -45,12 +45,12 @@ ewl_dnd_init(void)
 	EWL_CALLBACK_DND_DATA_RECEIVED = ewl_callback_type_add();
 	EWL_CALLBACK_DND_DATA_REQUEST = ewl_callback_type_add();
 
-	ewl_dnd_provided_hash = ecore_hash_new(ecore_direct_hash, 
+	ewl_dnd_provided_hash = ecore_hash_new(ecore_direct_hash,
 						ecore_direct_compare);
 	if (!ewl_dnd_provided_hash)
 		goto PROVIDED_ERROR;
 
-	ewl_dnd_accepted_hash = ecore_hash_new(ecore_direct_hash, 
+	ewl_dnd_accepted_hash = ecore_hash_new(ecore_direct_hash,
 						ecore_direct_compare);
 	if (!ewl_dnd_accepted_hash)
 		goto ACCEPTED_ERROR;
@@ -260,7 +260,7 @@ ewl_dnd_accepted_types_get(Ewl_Widget *w)
  * @brief Tells the widget to start dragging
  */
 void
-ewl_dnd_drag_start(Ewl_Widget *w) 
+ewl_dnd_drag_start(Ewl_Widget *w)
 {
 	unsigned int i;
 	char **types;
@@ -270,7 +270,7 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (!ewl_dnd_status || ewl_dragging_current) 
+	if (!ewl_dnd_status || ewl_dragging_current)
 		DRETURN(DLEVEL_STABLE);
 
 	emb = ewl_embed_widget_find(w);
@@ -321,7 +321,7 @@ ewl_dnd_drag_start(Ewl_Widget *w)
  * @brief Tells the widget to start dragging
  */
 void
-ewl_dnd_drag_drop(Ewl_Widget *w) 
+ewl_dnd_drag_drop(Ewl_Widget *w)
 {
 	Ewl_Embed *emb;
 
@@ -349,7 +349,7 @@ ewl_dnd_drag_drop(Ewl_Widget *w)
  * @brief Disables DND
  */
 void
-ewl_dnd_disable(void) 
+ewl_dnd_disable(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -363,7 +363,7 @@ ewl_dnd_disable(void)
  * @brief Enables DND
  */
 void
-ewl_dnd_enable(void) 
+ewl_dnd_enable(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -377,7 +377,7 @@ ewl_dnd_enable(void)
  * @brief Retrieves the current DND status
  */
 int
-ewl_dnd_status_get(void) 
+ewl_dnd_status_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -389,7 +389,7 @@ ewl_dnd_status_get(void)
  * @brief Retrieves the current DND widget
  */
 Ewl_Widget *
-ewl_dnd_drag_widget_get(void) 
+ewl_dnd_drag_widget_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -401,7 +401,7 @@ ewl_dnd_drag_widget_get(void)
  * @brief Clears the current DND widget
  */
 void
-ewl_dnd_drag_widget_clear(void) 
+ewl_dnd_drag_widget_clear(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

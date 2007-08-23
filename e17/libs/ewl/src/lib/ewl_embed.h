@@ -54,7 +54,7 @@ typedef void *Ewl_Embed_Window;
 #define EWL_EMBED_WINDOW(window) ((Ewl_Embed_Window *)window)
 
 /**
- * @brief Inherits from Ewl_Overlay that acts as a top level widget 
+ * @brief Inherits from Ewl_Overlay that acts as a top level widget
  * for interacting with the canvas.
  */
 struct Ewl_Embed
@@ -120,15 +120,15 @@ void 		 ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x,
 void 		 ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
 					  unsigned int modifiers);
 
-const char 	*ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, 
+const char 	*ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y,
 						int *, int *, int *, int *);
-const char 	*ewl_embed_dnd_drop_feed(Ewl_Embed* embed, int x, int y, 
+const char 	*ewl_embed_dnd_drop_feed(Ewl_Embed* embed, int x, int y,
 							int internal);
-void		 ewl_embed_dnd_data_received_feed(Ewl_Embed* embed, char *type, 
-							void *data, 
+void		 ewl_embed_dnd_data_received_feed(Ewl_Embed* embed, char *type,
+							void *data,
 							unsigned int len,
 							unsigned int format);
-void		 ewl_embed_dnd_data_request_feed(Ewl_Embed* embed, void *handle, 
+void		 ewl_embed_dnd_data_request_feed(Ewl_Embed* embed, void *handle,
 								char *type);
 
 void 		 ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
@@ -144,7 +144,7 @@ void        	*ewl_embed_object_request(Ewl_Embed *e, char *type);
 
 void 		 ewl_embed_tab_order_append(Ewl_Embed *e, Ewl_Widget *w);
 void		 ewl_embed_tab_order_prepend(Ewl_Embed *e, Ewl_Widget *w);
-void		 ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, 
+void		 ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w,
 					   unsigned int idx);
 void		 ewl_embed_tab_order_insert_before(Ewl_Embed *e, Ewl_Widget *w,
 						 Ewl_Widget *before);

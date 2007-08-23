@@ -6,7 +6,7 @@
 
 /**
  * @enum Ewl_Test_Type
- * The different types of tests available 
+ * The different types of tests available
  */
 enum Ewl_Test_Type
 {

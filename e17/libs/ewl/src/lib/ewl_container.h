@@ -152,7 +152,7 @@ void 		 ewl_container_callback_intercept(Ewl_Container *c,
 						unsigned int t);
 void 		 ewl_container_callback_nointercept(Ewl_Container *c,
 						unsigned int t);
-Ewl_Widget 	*ewl_container_child_at_get(Ewl_Container *widget, 
+Ewl_Widget 	*ewl_container_child_at_get(Ewl_Container *widget,
 							int x, int y);
 Ewl_Widget 	*ewl_container_child_at_recursive_get(Ewl_Container *widget,
 							int x, int y);

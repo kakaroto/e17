@@ -163,7 +163,7 @@ ewl_checkbutton_label_position_set(Ewl_Checkbutton *cb, Ewl_Position p)
  * @brief The clicked callback for the checkbutton
  */
 void
-ewl_checkbutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_checkbutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Checkbutton *cb;

@@ -11,18 +11,18 @@
  * itself is the callback. If it isn't direct then the list points to an
  * array of callbacks. (You can't use the length to determine this as if
  * the list has several items and you remove them down to the first item in
- * the array the list won't be direct, but will have only one item.) 
+ * the array the list won't be direct, but will have only one item.)
  */
 
 static unsigned int ewl_callback_hash(const void *key);
 static int ewl_callback_compare(const void *key1, const void *key2);
 static void ewl_callback_unregister(Ewl_Callback * cb);
-static Ewl_Callback *ewl_callback_get(Ewl_Widget *w, unsigned int type, 
+static Ewl_Callback *ewl_callback_get(Ewl_Widget *w, unsigned int type,
 						unsigned int idx);
 
-static void ewl_callback_rm(Ewl_Widget *w, unsigned int t, 
+static void ewl_callback_rm(Ewl_Widget *w, unsigned int t,
 						unsigned int pos);
-static int ewl_callback_insert(Ewl_Widget *w, unsigned int t, 
+static int ewl_callback_insert(Ewl_Widget *w, unsigned int t,
 				Ewl_Callback *cb, unsigned int pos);
 
 static int callback_type_count = EWL_CALLBACK_MAX + 1;;
@@ -40,7 +40,7 @@ static Ecore_Hash *cb_registration = NULL;
  * 21279 ningerso  19   0 22972  22M  9412 R     6.0  8.0   0:40 ewl_test
  * With shared callbacks ewl_test with all windows open has a top line of:
  * 15901 ningerso  10   0 20120  19M  9148 S     0.0  7.0   0:34 ewl_test
- * 
+ *
  * So using shared callbacks saves us over 2 MB of memory in this case.
  *
  *
@@ -136,14 +136,14 @@ ewl_callback_rm(Ewl_Widget *w, unsigned int t, unsigned int pos)
 	/* not the last position */
 	if ((int)pos != (EWL_CALLBACK_LEN(w, t) - 1))
 	{
-		memmove(w->callbacks[t].list + pos, 
-			w->callbacks[t].list + (pos + 1), 
+		memmove(w->callbacks[t].list + pos,
+			w->callbacks[t].list + (pos + 1),
 			(w->callbacks[t].len - pos - 1) * sizeof(void *));
 	}
 
 	w->callbacks[t].len  -= 1;
 	w->callbacks[t].list[EWL_CALLBACK_LEN(w, t)] = NULL;
-	w->callbacks[t].list = realloc(w->callbacks[t].list, 
+	w->callbacks[t].list = realloc(w->callbacks[t].list,
 					w->callbacks[t].len * sizeof(void *));
 
 	if (pos < EWL_CALLBACK_POS(w, t))
@@ -153,7 +153,7 @@ ewl_callback_rm(Ewl_Widget *w, unsigned int t, unsigned int pos)
 }
 
 static int
-ewl_callback_insert(Ewl_Widget *w, unsigned int t, 
+ewl_callback_insert(Ewl_Widget *w, unsigned int t,
 				Ewl_Callback *cb, unsigned int pos)
 {
 	unsigned int place;
@@ -195,7 +195,7 @@ ewl_callback_insert(Ewl_Widget *w, unsigned int t,
 		EWL_CALLBACK_SET_NODIRECT(w, t);
 	}
 
-	w->callbacks[place].list = realloc(w->callbacks[place].list, 
+	w->callbacks[place].list = realloc(w->callbacks[place].list,
 					w->callbacks[place].len * sizeof(void *));
 
 	/* if old is set this was a direct so we can just set 0, 1 and be
@@ -211,8 +211,8 @@ ewl_callback_insert(Ewl_Widget *w, unsigned int t,
 		 * original lenth already */
 		if ((int)pos != (w->callbacks[place].len - 1))
 		{
-			memmove(w->callbacks[place].list + (pos + 1), 
-				w->callbacks[place].list + pos, 
+			memmove(w->callbacks[place].list + (pos + 1),
+				w->callbacks[place].list + pos,
 				(w->callbacks[place].len - 1) * sizeof(void *));
 		}
 		w->callbacks[place].list[pos] = cb;
@@ -240,7 +240,7 @@ ewl_callback_get(Ewl_Widget *w, unsigned int t, unsigned int i)
 	if (chain->mask & EWL_CALLBACK_TYPE_DIRECT)
 		cb = EWL_CALLBACK(chain->list);
 
-	else if (chain->list) 
+	else if (chain->list)
 		cb = chain->list[i];
 
 	if (t >= EWL_CALLBACK_MAX)
@@ -266,8 +266,8 @@ ewl_callback_type_add(void)
 }
 
 static int
-ewl_callback_position_insert(Ewl_Widget *w, unsigned int type, 
-				Ewl_Callback_Function func, 
+ewl_callback_position_insert(Ewl_Widget *w, unsigned int type,
+				Ewl_Callback_Function func,
 				unsigned int pos, void *user_data)
 {
 	int ret;
@@ -331,7 +331,7 @@ ewl_callback_append(Ewl_Widget *w, unsigned int t,
 	DCHECK_PARAM_PTR_RET("f", f, 0);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
-	ret = ewl_callback_position_insert(w, t, f, 
+	ret = ewl_callback_position_insert(w, t, f,
 				EWL_CALLBACK_LEN(w, t), user_data);
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
@@ -360,7 +360,7 @@ ewl_callback_prepend(Ewl_Widget *w, unsigned int t,
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
 
 	ret = ewl_callback_position_insert(w, t, f, 0, user_data);
-			
+
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
@@ -397,7 +397,7 @@ ewl_callback_insert_after(Ewl_Widget *w, unsigned int t,
 	for (pos = 0; pos < EWL_CALLBACK_LEN(w, t); pos++)
 	{
 		search = ewl_callback_get(w, t, pos);
-		if (search && (search->func == after) && 
+		if (search && (search->func == after) &&
 				(search->user_data == after_data))
 		{
 			pos ++;
@@ -594,7 +594,7 @@ ewl_callback_clear(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	for (i = 0; i < EWL_CALLBACK_MAX; i++) 
+	for (i = 0; i < EWL_CALLBACK_MAX; i++)
 		ewl_callback_del_type(w, i);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

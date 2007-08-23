@@ -22,8 +22,8 @@ static int ewl_mvc_selection_contained(Ewl_Selection_Range *a,
 static int ewl_mvc_line_intersects(int astart, int aend, int bstart, int bend);
 static void ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 			Ewl_Selection_Range *range, Ewl_Selection_Range *cur);
-static Ewl_Selection *ewl_mvc_selection_make(Ewl_Model *model, void *data, 
-					unsigned int top, unsigned int left, 
+static Ewl_Selection *ewl_mvc_selection_make(Ewl_Model *model, void *data,
+					unsigned int top, unsigned int left,
 					unsigned int bottom, unsigned int right);
 
 static void ewl_mvc_selected_change_notify(Ewl_MVC *mvc);
@@ -707,10 +707,10 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 	DCHECK_PARAM_PTR("mvc", mvc);
 
 	if (!sel)
-		sel = EWL_SELECTION(ewl_mvc_selection_index_new(model, 
+		sel = EWL_SELECTION(ewl_mvc_selection_index_new(model,
 							data, row, column));
 
-	/* if this is an index and the index is already selected 
+	/* if this is an index and the index is already selected
 	 * then we're done. Otherwise, just insert the item into the list
 	 * and be done with it. */
 	if (sel->type == EWL_SELECTION_TYPE_INDEX)
@@ -771,12 +771,12 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 			/* if range is contained inside current then
 			 * this can be the only intersection. we add
 			 * current to the list, destroy range and
-			 * are done 
+			 * are done
 			 *
 			 * We can't do this inside
 			 * ewl_mvc_range_merge() as we free range in
 			 * this case and keep ptr. This is backwards
-			 * to what's expected by _merge() 
+			 * to what's expected by _merge()
 			 */
 			if (ewl_mvc_selection_contained(ptr, range))
 			{
@@ -819,7 +819,7 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 	}
 
 	/* see if this is a merge of the two along one of the sides */
-	if (((range->start.row == cur->start.row) 
+	if (((range->start.row == cur->start.row)
 			&& (range->end.row == cur->end.row))
 		|| ((range->start.column == cur->start.column)
 			&& (range->end.column == cur->end.column)))
@@ -834,16 +834,16 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 	}
 
 	/* not merged and not overlapped we're going to need to split @a cur
-	 * apart in order for this to mesh together 
+	 * apart in order for this to mesh together
 	 *
-	 * We're going to split @a cur into, at most, 4 parts 
+	 * We're going to split @a cur into, at most, 4 parts
 	 *
 	 *  1
 	 * - - - - - ------- - - - -
 	 *  2        | R    |  4
 	 *           |      |
 	 *           -------- - - - -
-	 *           | 3    
+	 *           | 3
 	 *
 	 *           |
 	 */
@@ -851,9 +851,9 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 	/* find everything above (case 1) */
 	if (cur->start.row < range->start.row)
 	{
-		sel = ewl_mvc_selection_make(model, data, cur->start.row, 
+		sel = ewl_mvc_selection_make(model, data, cur->start.row,
 						cur->start.column,
-						range->start.row - 1, 
+						range->start.row - 1,
 						cur->end.column);
 		ecore_list_append(list, sel);
 	}
@@ -861,7 +861,7 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 	/* find everything left (case 2) */
 	if (cur->start.column < range->start.column)
 	{
-		sel = ewl_mvc_selection_make(model, data, 
+		sel = ewl_mvc_selection_make(model, data,
 						MAX(range->start.row, cur->start.row),
 						cur->start.column,
 						cur->end.row,
@@ -882,7 +882,7 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 	/* find everything left (case 4) */
 	if (cur->end.column > range->end.column)
 	{
-		sel = ewl_mvc_selection_make(model, data, 
+		sel = ewl_mvc_selection_make(model, data,
 						MAX(range->start.row, cur->start.row),
 						range->end.column + 1,
 						MIN(range->end.row, cur->end.row),
@@ -895,7 +895,7 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 }
 
 static Ewl_Selection *
-ewl_mvc_selection_make(Ewl_Model *model, void *data, unsigned int top, 
+ewl_mvc_selection_make(Ewl_Model *model, void *data, unsigned int top,
 				unsigned int left, unsigned int bottom,
 				unsigned int right)
 {
@@ -949,15 +949,15 @@ ewl_mvc_selection_intersects(Ewl_Selection_Range *range, Ewl_Selection *sel)
 
 		/* if the columns intersect and the rows intersect then the
 		 * boxes intersect */
-		if (ewl_mvc_line_intersects(cur->start.row, cur->end.row, 
+		if (ewl_mvc_line_intersects(cur->start.row, cur->end.row,
 						range->start.row, range->end.row)
 				|| ewl_mvc_line_intersects(range->start.row, range->end.row,
 						cur->start.row, cur->end.row))
 		{
 			if (ewl_mvc_line_intersects(cur->start.column, cur->end.column,
 						range->start.column, range->end.column)
-					|| ewl_mvc_line_intersects(range->start.column, 
-							range->end.column, cur->start.column, 
+					|| ewl_mvc_line_intersects(range->start.column,
+							range->end.column, cur->start.column,
 							cur->end.column))
 			{
 				DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -968,9 +968,9 @@ ewl_mvc_selection_intersects(Ewl_Selection_Range *range, Ewl_Selection *sel)
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
-/* 
+/*
  * this checks the following:
- *    astart <= bstart <= aend 
+ *    astart <= bstart <= aend
  * or astart <= bend <= aend
  * or bstart <= astart <= bend
  * or bstart <= aend <= bend

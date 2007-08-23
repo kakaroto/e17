@@ -93,16 +93,16 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 	o = EWL_OBJECT(win);
 
 	evas = evas_new();
-	evas_output_method_set(evas, 
+	evas_output_method_set(evas,
 			evas_render_method_lookup("software_16_x11"));
 
 	info = evas_engine_info_get(evas);
-	if (!info) 
+	if (!info)
 	{
 		fprintf(stderr, "Unable to use software_16_x11 engine "
 				"for rendering, ");
 		exit(-1);
-	}  
+	}
 
 	sinfo = (Evas_Engine_Info_Software_16_X11 *)info;
 

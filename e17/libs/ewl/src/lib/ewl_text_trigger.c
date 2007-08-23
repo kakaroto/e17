@@ -135,7 +135,7 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
  * @brief The trigger destroy callback
  */
 void
-ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Text_Trigger *t;
@@ -158,7 +158,7 @@ ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @return Returns the type of the trigger
  * @brief Retrieves the type of the trigger
  */
-Ewl_Text_Trigger_Type 
+Ewl_Text_Trigger_Type
 ewl_text_trigger_type_get(Ewl_Text_Trigger *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -174,7 +174,7 @@ ewl_text_trigger_type_get(Ewl_Text_Trigger *t)
  * @return Returns no value
  * @brief Sets the start position of the trigger @a t to position @a pos
  */
-void 
+void
 ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, unsigned int char_pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -282,7 +282,7 @@ ewl_text_trigger_base_get(Ewl_Text_Trigger *t)
  * @brief Creates a trigger area at the given co-ordinates
  */
 void
-ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur, 
+ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
 					int x, int y, int w, int h)
 {
 	Ewl_Widget *area;
@@ -337,8 +337,8 @@ ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig)
  * @return Returns no value
  * @brief Configures the areas associated with @a trig
  */
-void 
-ewl_text_trigger_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+void
+ewl_text_trigger_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Text_Trigger *trig;
@@ -367,7 +367,7 @@ ewl_text_trigger_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Hides the trigger
  */
 void
-ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *area;
@@ -395,7 +395,7 @@ ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Shows the trigger
  */
 void
-ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *area;
@@ -411,7 +411,7 @@ ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev __UNUSED__,
 	ecore_list_first_goto(trig->areas);
 	while ((area = ecore_list_next(trig->areas)))
 		ewl_widget_show(area);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -423,7 +423,7 @@ ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Unrealizes the trigger
  */
 void
-ewl_text_trigger_cb_unrealize(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_text_trigger_cb_unrealize(Ewl_Widget *w, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -488,7 +488,7 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area)
 
 	ewl_widget_focusable_set(w, FALSE);
 	ewl_widget_internal_set(w, TRUE);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN, 
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN,
 			ewl_text_trigger_area_cb_mouse_in, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT,
 			ewl_text_trigger_area_cb_mouse_out, NULL);
@@ -505,10 +505,10 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area)
  * @param area: The trigger area to set the type for
  * @param type: The type of the trigger area
  * @return Returns nothing
- * @brief Set the trigger type of the area 
+ * @brief Set the trigger type of the area
  */
 static void
-ewl_text_trigger_area_type_set(Ewl_Text_Trigger_Area *area, 
+ewl_text_trigger_area_type_set(Ewl_Text_Trigger_Area *area,
 				Ewl_Text_Trigger_Type type)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -569,7 +569,7 @@ ewl_text_trigger_area_cache(Ewl_Text *t, Ewl_Text_Trigger_Area *area)
 	if (!t->areas_cache)
 		t->areas_cache = ecore_list_new();
 
-	ecore_list_append(t->areas_cache, area);	
+	ecore_list_append(t->areas_cache, area);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -583,7 +583,7 @@ ewl_text_trigger_area_cache(Ewl_Text *t, Ewl_Text_Trigger_Area *area)
  * @brief The trigger area mouse in callback
  */
 void
-ewl_text_trigger_area_cb_mouse_in(Ewl_Widget *w, void *ev, 
+ewl_text_trigger_area_cb_mouse_in(Ewl_Widget *w, void *ev,
 					void *data __UNUSED__)
 {
 	Ewl_Text_Trigger_Area *a;
@@ -594,7 +594,7 @@ ewl_text_trigger_area_cb_mouse_in(Ewl_Widget *w, void *ev,
 
 	a = EWL_TEXT_TRIGGER_AREA(w);
 	if (a->trigger)
-		ewl_callback_call_with_event_data(EWL_WIDGET(a->trigger), 
+		ewl_callback_call_with_event_data(EWL_WIDGET(a->trigger),
 						EWL_CALLBACK_MOUSE_IN, ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -609,7 +609,7 @@ ewl_text_trigger_area_cb_mouse_in(Ewl_Widget *w, void *ev,
  * @brief The trigger area mouse out callback
  */
 void
-ewl_text_trigger_area_cb_mouse_out(Ewl_Widget *w, void *ev, 
+ewl_text_trigger_area_cb_mouse_out(Ewl_Widget *w, void *ev,
 						void *data __UNUSED__)
 {
 	Ewl_Text_Trigger_Area *a;
@@ -620,7 +620,7 @@ ewl_text_trigger_area_cb_mouse_out(Ewl_Widget *w, void *ev,
 
 	a = EWL_TEXT_TRIGGER_AREA(w);
 	if (a->trigger)
-		ewl_callback_call_with_event_data(EWL_WIDGET(a->trigger), 
+		ewl_callback_call_with_event_data(EWL_WIDGET(a->trigger),
 						EWL_CALLBACK_MOUSE_OUT, ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -635,7 +635,7 @@ ewl_text_trigger_area_cb_mouse_out(Ewl_Widget *w, void *ev,
  * @brief The trigger area mouse up callback
  */
 void
-ewl_text_trigger_area_cb_mouse_up(Ewl_Widget *w, void *ev, 
+ewl_text_trigger_area_cb_mouse_up(Ewl_Widget *w, void *ev,
 					void *data __UNUSED__)
 {
 	Ewl_Text_Trigger_Area *a;
@@ -646,7 +646,7 @@ ewl_text_trigger_area_cb_mouse_up(Ewl_Widget *w, void *ev,
 
 	a = EWL_TEXT_TRIGGER_AREA(w);
 	if (a->trigger)
-		ewl_callback_call_with_event_data(EWL_WIDGET(a->trigger), 
+		ewl_callback_call_with_event_data(EWL_WIDGET(a->trigger),
 						EWL_CALLBACK_MOUSE_UP, ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -661,7 +661,7 @@ ewl_text_trigger_area_cb_mouse_up(Ewl_Widget *w, void *ev,
  * @brief The trigger mouse down callback
  */
 void
-ewl_text_trigger_area_cb_mouse_down(Ewl_Widget *w, void *ev, 
+ewl_text_trigger_area_cb_mouse_down(Ewl_Widget *w, void *ev,
 					void *data __UNUSED__)
 {
 	Ewl_Text_Trigger_Area *a;
@@ -672,7 +672,7 @@ ewl_text_trigger_area_cb_mouse_down(Ewl_Widget *w, void *ev,
 
 	a = EWL_TEXT_TRIGGER_AREA(w);
 	if (a->trigger)
-		ewl_callback_call_with_event_data(EWL_WIDGET(a->trigger), 
+		ewl_callback_call_with_event_data(EWL_WIDGET(a->trigger),
 						EWL_CALLBACK_MOUSE_DOWN, ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

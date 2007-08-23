@@ -5,9 +5,9 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static void ewl_highlight_cb_follow_configure(Ewl_Widget *w, 
+static void ewl_highlight_cb_follow_configure(Ewl_Widget *w,
 					void *ev, void *data);
-static void ewl_highlight_cb_follow_destroy(Ewl_Widget *w, 
+static void ewl_highlight_cb_follow_destroy(Ewl_Widget *w,
 					void *ev, void *data);
 static void ewl_highlight_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 
@@ -23,7 +23,7 @@ ewl_highlight_new(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	w = NEW(Ewl_Highlight, 1);
-	if (!w) 
+	if (!w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	if (!ewl_highlight_init(EWL_HIGHLIGHT(w)))
@@ -102,7 +102,7 @@ ewl_highlight_follow_get(Ewl_Highlight *h)
 }
 
 static void
-ewl_highlight_cb_follow_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_highlight_cb_follow_configure(Ewl_Widget *w, void *ev __UNUSED__,
 							void *data)
 {
 	int width, height;
@@ -119,7 +119,7 @@ ewl_highlight_cb_follow_configure(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_highlight_cb_follow_destroy(Ewl_Widget *w __UNUSED__, 
+ewl_highlight_cb_follow_destroy(Ewl_Widget *w __UNUSED__,
 				void *ev __UNUSED__, void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

@@ -58,7 +58,7 @@ struct Ewl_Dialog
 	Ewl_Position position;	/**< Position of the action_area */
 	Ewl_Position active_area; /**< Which section of the dialog is active */
 };
-  
+
 Ewl_Widget 	*ewl_dialog_new (void);
 int 		 ewl_dialog_init (Ewl_Dialog *dialog);
 

@@ -6,7 +6,7 @@
 
 /**
  * @addtogroup Ewl_Calendar Ewl_Calendar: The EWL Calendar Widget
- * @brief Defines the Ewl_Calendar class  
+ * @brief Defines the Ewl_Calendar class
  *
  * @remarks Inherits from Ewl_Box.
  * @image html Ewl_Calendar_inheritance.png
@@ -14,7 +14,7 @@
  * @{
  */
 
-/** 
+/**
  * @themekey /calendar/file
  * @themekey /calendar/group
  */
@@ -42,9 +42,9 @@ typedef struct Ewl_Calendar Ewl_Calendar;
  */
 #define EWL_CALENDAR(calendar) ((Ewl_Calendar *) calendar)
 
-/** 
+/**
  * @brief Inherits from an Ewl_Box to provide a calendar widget
- * 
+ *
  * Layout is either free-form, or auto-arranged to a grid.
  */
 struct Ewl_Calendar

@@ -39,7 +39,7 @@ ewl_widget_new(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	w = NEW(Ewl_Widget, 1);
-	if (!w) 
+	if (!w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	if (!ewl_widget_init(w)) {
@@ -67,13 +67,13 @@ ewl_widget_init(Ewl_Widget *w)
 	ewl_widget_inherit(w, EWL_WIDGET_TYPE);
 
 	/*
-	 * Set size fields on the object 
+	 * Set size fields on the object
 	 */
 	if (!ewl_object_init(EWL_OBJECT(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/*
-	 * Set up the necessary theme structures 
+	 * Set up the necessary theme structures
 	 */
 	if (!ewl_theme_widget_init(w))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -138,9 +138,9 @@ ewl_widget_name_set(Ewl_Widget *w, const char *name)
 
 	if (!ewl_widget_name_table)
 	{
-		ewl_widget_name_table = ecore_hash_new(ecore_str_hash, 
+		ewl_widget_name_table = ecore_hash_new(ecore_str_hash,
 							ecore_str_compare);
-		ecore_hash_free_key_cb_set(ewl_widget_name_table, 
+		ecore_hash_free_key_cb_set(ewl_widget_name_table,
 						ECORE_FREE_CB(free));
 		ewl_shutdown_add(ewl_widget_name_table_shutdown);
 	}
@@ -183,7 +183,7 @@ ewl_widget_name_find(const char *name)
 	DCHECK_PARAM_PTR_RET("name", name, NULL);
 
 	if (ewl_widget_name_table)
-		match = EWL_WIDGET(ecore_hash_get(ewl_widget_name_table, 
+		match = EWL_WIDGET(ecore_hash_get(ewl_widget_name_table,
 							(void *)name));
 
 	DRETURN_PTR(match, DLEVEL_STABLE);
@@ -207,7 +207,7 @@ ewl_widget_realize(Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED)
-			&& !ewl_object_queued_has(EWL_OBJECT(w), 
+			&& !ewl_object_queued_has(EWL_OBJECT(w),
 						EWL_FLAG_QUEUED_RPROCESS))
 		ewl_realize_cancel_request(w);
 
@@ -428,9 +428,9 @@ ewl_widget_destroy(Ewl_Widget *w)
 	ewl_widget_hide(w);
 	ewl_widget_unrealize(w);
 
-	/* 
-	 * remove ourselves from any containers 
-	 */ 
+	/*
+	 * remove ourselves from any containers
+	 */
 	ewl_widget_parent_set(w, NULL);
 
 	/*
@@ -439,7 +439,7 @@ ewl_widget_destroy(Ewl_Widget *w)
 	 * deleted. Clear all callbacks except for the destroy callbacks.
 	 * This preserves the list of the destroy type so we don't get a segfault.
 	 *
-	 * We delete these now so that we can't possibly get any callbacks before the 
+	 * We delete these now so that we can't possibly get any callbacks before the
 	 * idler kicks in
 	 */
 	for (i = 0; i < (EWL_CALLBACK_MAX + 1); i++)
@@ -769,11 +769,11 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
 
 	if (w->theme_object) {
 		if (ewl_config_cache.print_signals)
-			printf("Emitting: %s to %p (%s)\n", state, w, 
+			printf("Emitting: %s to %p (%s)\n", state, w,
 							w->appearance);
 
 		edje_object_signal_emit(w->theme_object, state, "EWL");
-	} 
+	}
 
 	ewl_callback_call(w, EWL_CALLBACK_STATE_CHANGED);
 
@@ -845,7 +845,7 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
 }
 
 /**
- * @param w: The widget to get the parent from 
+ * @param w: The widget to get the parent from
  * @return Returns the parent of the given widget, or NULL if none set
  * @brief Retrieves the parent of the given widget
  */
@@ -859,7 +859,7 @@ ewl_widget_parent_get(Ewl_Widget *w)
 	DRETURN_PTR(w->parent, DLEVEL_STABLE);
 }
 
-/**     
+/**
  * @param w: the widget whose text to change
  * @param part: the theme part name whose text to change
  * @param text: the new text to change to
@@ -934,7 +934,7 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 		else {
 			for (i = 0; i < w->theme_text.len; i++) {
 				Ewl_Pair *current = w->theme_text.list[i];
-				if (part == current->key || 
+				if (part == current->key ||
 						(part && !strcmp(current->key, part))) {
 					match = current;
 					break;
@@ -1067,7 +1067,7 @@ ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text)
  * @param w: the widget whose text to retrieve
  * @return Returns the current text on success, NULL on failure.
  * @brief Retrieve the text of the given theme part of a widget
- * 
+ *
  * Note, the returned value will only be valid until the next time
  * ewl_widget_appearance_text_set() is called on this widget.
  */
@@ -1184,17 +1184,17 @@ ewl_widget_layer_top_set(Ewl_Widget *w, int top)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	
+
 	if (w->toplayered == top)
 		DRETURN(DLEVEL_STABLE);
-	
+
 	w->toplayered = top;
-	
+
 	if (REALIZED(w)) {
 		ewl_widget_layer_stack_add(w);
 		ewl_widget_layer_update(w);
 	}
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1210,7 +1210,7 @@ ewl_widget_layer_top_get(Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, 0);
-	
+
 	DRETURN_INT(w->toplayered, DLEVEL_STABLE);
 }
 
@@ -1220,7 +1220,7 @@ ewl_widget_layer_top_get(Ewl_Widget *w)
  * @brief Changes the order in the embed so @a w receives focus first on tab.
  *
  * This moves the widget @a w to the end of the tab order list in the embed
- * that holds it. 
+ * that holds it.
  */
 void
 ewl_widget_tab_order_append(Ewl_Widget *w)
@@ -1243,7 +1243,7 @@ ewl_widget_tab_order_append(Ewl_Widget *w)
  * @brief Changes the order in the embed so @a w receives focus first on tab.
  *
  * This moves the widget @a w to the front of the tab order list in the embed
- * that holds it. 
+ * that holds it.
  */
 void
 ewl_widget_tab_order_prepend(Ewl_Widget *w)
@@ -1267,7 +1267,7 @@ ewl_widget_tab_order_prepend(Ewl_Widget *w)
  * @brief Changes the order in the embed so @a w receives focus first on tab.
  *
  * This moves the widget @a w to the given index in the tab order list in the embed
- * that holds it. 
+ * that holds it.
  */
 void
 ewl_widget_tab_order_insert(Ewl_Widget *w, unsigned int idx)
@@ -1365,7 +1365,7 @@ ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (val)
-		ewl_object_flags_add(EWL_OBJECT(w), 
+		ewl_object_flags_add(EWL_OBJECT(w),
 				EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
 				EWL_FLAGS_PROPERTY_MASK);
 	else
@@ -1388,7 +1388,7 @@ ewl_widget_ignore_focus_change_get(Ewl_Widget *w)
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
 
-	if (ewl_object_flags_has(EWL_OBJECT(w), 
+	if (ewl_object_flags_has(EWL_OBJECT(w),
 					EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
 					EWL_FLAGS_PROPERTY_MASK))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -1433,7 +1433,7 @@ ewl_widget_focusable_get(Ewl_Widget *w)
 	DCHECK_PARAM_PTR_RET("w", w, FALSE);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
 
-	if (ewl_object_flags_has(EWL_OBJECT(w), 
+	if (ewl_object_flags_has(EWL_OBJECT(w),
 					EWL_FLAG_PROPERTY_FOCUSABLE,
 					EWL_FLAGS_PROPERTY_MASK))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -1682,7 +1682,7 @@ ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 	/* we don't check the type of the widget in here or we'll get into
 	 * an infinate loop ... */
 
-	if (widget->inheritance) 
+	if (widget->inheritance)
 	{
 		char *match, *end;
 
@@ -1970,7 +1970,7 @@ ewl_widget_focused_get(void)
  * @brief sets the colour of the widget
  */
 void
-ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g, 
+ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a)
 {
 	Ewl_Color_Set *color;
@@ -2002,7 +2002,7 @@ ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g,
  * @brief Gets the colour settings of the widget
  */
 void
-ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g, 
+ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a)
 {
 	Ewl_Color_Set *color;
@@ -2023,22 +2023,22 @@ ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g,
 }
 
 static void
-ewl_widget_layer_stack_add(Ewl_Widget *w) 
+ewl_widget_layer_stack_add(Ewl_Widget *w)
 {
 	Evas_Object *smart_parent;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	
+
 	if (w->parent && OBSCURED(w->parent))
 		DRETURN(DLEVEL_STABLE);
-	
-	if (w->parent && !w->toplayered) 
+
+	if (w->parent && !w->toplayered)
 		smart_parent = w->parent->smart_object;
 	else {
 		Ewl_Embed *emb;
-		
+
 		emb = ewl_embed_widget_find(w);
 		smart_parent = emb->smart;
 	}
@@ -2071,7 +2071,7 @@ ewl_widget_layer_update(Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	/* check first if the widget should be on the top */
-	if (w->toplayered) 
+	if (w->toplayered)
 	{
 		evas_object_raise(w->smart_object);
 		DRETURN(DLEVEL_STABLE);
@@ -2083,7 +2083,7 @@ ewl_widget_layer_update(Ewl_Widget *w)
 
 	else if (layer > 0) {
 		Evas_Object *above;
-		
+
 		if (!(above = ewl_widget_layer_neighbor_find_above(w)))
 		{
 			DWARNING("No object to stack above.");
@@ -2118,11 +2118,11 @@ ewl_widget_layer_neighbor_find_above(Ewl_Widget *w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	o = ol = w->parent->fx_clip_box;
-	
+
 	while ((o = evas_object_above_get(o)))
 	{
 		Ewl_Widget *found;
-		
+
 		found = evas_object_data_get(o, "EWL");
 		/*
 		 * Perhaps it is a cached object so no reason to stop iterating
@@ -2130,7 +2130,7 @@ ewl_widget_layer_neighbor_find_above(Ewl_Widget *w)
 		if (found) {
 			/* ignore the widget itself */
 			if (w == found) continue;
-			if (ewl_widget_layer_priority_get(w) <= 
+			if (ewl_widget_layer_priority_get(w) <=
 					ewl_widget_layer_priority_get(found))
 				break;
 			ol = o;
@@ -2153,11 +2153,11 @@ ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	o = ol = w->parent->fx_clip_box;
-	
+
 	while ((o = evas_object_below_get(o)))
 	{
 		Ewl_Widget *found;
-		
+
 		found = evas_object_data_get(o, "EWL");
 		/*
 		 * Perhaps it is a cached object so no reason to stop iterating
@@ -2165,7 +2165,7 @@ ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
 		if (found) {
 			/* ignore the widget itself */
 			if (w == found) continue;
-			if (ewl_widget_layer_priority_get(w) >= 
+			if (ewl_widget_layer_priority_get(w) >=
 					ewl_widget_layer_priority_get(found))
 				break;
 			ol = o;
@@ -2188,8 +2188,8 @@ ewl_widget_free(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	/* 
-	 * cleanup the attachment lists 
+	/*
+	 * cleanup the attachment lists
 	 */
 	if (w->attach)
 	{
@@ -2233,9 +2233,9 @@ ewl_widget_free(Ewl_Widget *w)
 		w_data = ecore_hash_remove(ewl_widget_data_table, w);
 		IF_FREE_HASH(w_data);
 	}
-	
+
 	FREE(w);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -2387,11 +2387,11 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 		 * Set the state of the theme object
 		 */
 		if (w->theme_state)
-			ewl_widget_state_set(w, (char *)w->theme_state, 
+			ewl_widget_state_set(w, (char *)w->theme_state,
 						EWL_STATE_PERSISTENT);
 
 		if (DISABLED(w))
-			ewl_widget_state_set(w, "disabled", 
+			ewl_widget_state_set(w, "disabled",
 						EWL_STATE_PERSISTENT);
 
 		/*
@@ -2420,7 +2420,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * Create clip box if necessary
 	 */
-	if (!w->fx_clip_box && !ewl_object_flags_get(EWL_OBJECT(w), 
+	if (!w->fx_clip_box && !ewl_object_flags_get(EWL_OBJECT(w),
 						EWL_FLAG_VISIBLE_NOCLIP)) {
 		w->fx_clip_box = ewl_embed_object_request(emb, "rectangle");
 		if (!w->fx_clip_box)
@@ -2589,7 +2589,7 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 		t = w->theme_group;
 		w->theme_group = ecore_string_instance(group);
-		
+
 		/* free this after, if it's the same string we dont' want to
 		 * release all references on it */
 		IF_RELEASE(t);
@@ -3061,9 +3061,9 @@ ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 				ev->y > CURRENT_Y(embed) &&
 				ev->x < CURRENT_X(embed) + CURRENT_W(embed) &&
 				ev->y < CURRENT_Y(embed) + CURRENT_H(embed))) {
-			ewl_embed_dnd_position_feed(EWL_EMBED(embed), 
-							ev->x, ev->y, 
-							NULL, NULL, 
+			ewl_embed_dnd_position_feed(EWL_EMBED(embed),
+							ev->x, ev->y,
+							NULL, NULL,
 							NULL, NULL);
 		}
 	}

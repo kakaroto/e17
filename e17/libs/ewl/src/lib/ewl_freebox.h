@@ -22,7 +22,7 @@
 /**
  * Callback to compare two widgets to determine which is first. If the
  * return is < 0 then a is first. If the return is > 0 then b is first. If
- * the return == 0 then they are equal 
+ * the return == 0 then they are equal
  */
 typedef int (*Ewl_Freebox_Comparator)(Ewl_Widget *a, Ewl_Widget *b);
 
@@ -45,7 +45,7 @@ typedef struct Ewl_Freebox Ewl_Freebox;
 
 /**
  * @brief Inherits from Ewl_Container and extends to allow for differnt layout
- * algorithms 
+ * algorithms
  */
 struct Ewl_Freebox
 {

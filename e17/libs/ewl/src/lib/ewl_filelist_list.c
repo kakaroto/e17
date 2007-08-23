@@ -9,14 +9,14 @@
 
 static Ewl_View *ewl_filelist_list_view = NULL;
 
-static void ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, 
+static void ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir,
 						char *file, void *data);
-static void ewl_filelist_list_cb_dir_clicked(Ewl_Widget *w, void *ev, 
+static void ewl_filelist_list_cb_dir_clicked(Ewl_Widget *w, void *ev,
 							void *data);
-static void ewl_filelist_list_cb_icon_clicked(Ewl_Widget *w, void *ev, 
+static void ewl_filelist_list_cb_icon_clicked(Ewl_Widget *w, void *ev,
 							void *data);
 
-static Ewl_Widget *ewl_filelist_list_view_cb_widget_fetch(void *data, 
+static Ewl_Widget *ewl_filelist_list_view_cb_widget_fetch(void *data,
 							unsigned int row,
 							unsigned int col);
 
@@ -28,7 +28,7 @@ Ewl_View *
 ewl_filelist_list_view_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	
+
 	if (!ewl_filelist_list_view)
 	{
 		ewl_filelist_list_view = ewl_view_new();
@@ -40,8 +40,8 @@ ewl_filelist_list_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_filelist_list_view_cb_widget_fetch(void *data __UNUSED__, 
-					unsigned int row __UNUSED__, 
+ewl_filelist_list_view_cb_widget_fetch(void *data __UNUSED__,
+					unsigned int row __UNUSED__,
 					unsigned int col __UNUSED__)
 {
 	Ewl_Widget *list;
@@ -86,7 +86,7 @@ int
 ewl_filelist_list_init(Ewl_Filelist_List *fl)
 {
 	Ewl_Filelist *list;
-	char *headers[] = {"filename", "size", "modifed", 
+	char *headers[] = {"filename", "size", "modifed",
 			"permissions", "owner", "group"};
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -143,7 +143,7 @@ ewl_filelist_list_dir_change(Ewl_Filelist *fl)
  * @brief Callback when the selected files are changed
  */
 void
-ewl_filelist_list_selected_file_add(Ewl_Filelist *fl, 
+ewl_filelist_list_selected_file_add(Ewl_Filelist *fl,
 				const char *file __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -215,7 +215,7 @@ ewl_filelist_list_shift_handle(Ewl_Filelist *fl, Ewl_Widget *clicked)
 }
 
 static void
-ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, char *file, 
+ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, char *file,
 						void *data __UNUSED__)
 {
 	char path[PATH_MAX];
@@ -231,7 +231,7 @@ ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, char *file,
 
 	list = EWL_FILELIST_LIST(fl);
 
-	snprintf(path, PATH_MAX, "%s/%s", 
+	snprintf(path, PATH_MAX, "%s/%s",
 			ewl_filelist_directory_get(fl), file);
 	if (stat(path, &buf) == 0)
 	{
@@ -279,7 +279,7 @@ ewl_filelist_list_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 	event = ev;
 
 	/* only trigger on lmb */
-	if (event->button != 1) 
+	if (event->button != 1)
 		DRETURN(DLEVEL_STABLE);
 
 	dir = ewl_label_text_get(EWL_LABEL(o));
@@ -300,7 +300,7 @@ ewl_filelist_list_cb_icon_clicked(Ewl_Widget *w, void *ev, void *data)
 	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev, 
+	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev,
 					"row,select", "row,unselect");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

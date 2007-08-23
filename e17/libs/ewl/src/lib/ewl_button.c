@@ -15,7 +15,7 @@ static Ewl_Stock_Funcs stock_funcs = {
 
 static Ewl_Widget *ewl_button_view_cb_widget_fetch(void *data, unsigned int row,
 							unsigned int col);
-static Ewl_Widget *ewl_button_view_cb_header_fetch(void *data, 
+static Ewl_Widget *ewl_button_view_cb_header_fetch(void *data,
 							unsigned int col);
 
 /**
@@ -82,7 +82,7 @@ ewl_button_init(Ewl_Button *b)
 
 	ewl_widget_focusable_set(w, TRUE);
 
-	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN, 
+	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
 				ewl_button_cb_key_down, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -107,7 +107,7 @@ ewl_button_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_button_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__, 
+ewl_button_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 				unsigned int col __UNUSED__)
 {
 	Ewl_Widget *button;
@@ -154,11 +154,11 @@ ewl_button_label_set(Ewl_Button *b, const char *l)
 		Ewl_Container *redir;
 
 		/*
-		 * Save the current redirection and focus on the point where 
+		 * Save the current redirection and focus on the point where
 		 * our internal widgets belong.
 		 */
 		redir = ewl_container_redirect_get(EWL_CONTAINER(b));
-		ewl_container_redirect_set(EWL_CONTAINER(b), 
+		ewl_container_redirect_set(EWL_CONTAINER(b),
 							EWL_CONTAINER(b->body));
 
 		b->label_object = ewl_label_new();
@@ -190,7 +190,7 @@ ewl_button_label_get(Ewl_Button *b)
 	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, NULL);
 
 	if (b->label_object)
-		DRETURN_PTR(ewl_label_text_get(EWL_LABEL(b->label_object)), 
+		DRETURN_PTR(ewl_label_text_get(EWL_LABEL(b->label_object)),
 								DLEVEL_STABLE);
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -215,7 +215,7 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 		if (b->image_object)
 			ewl_widget_destroy(b->image_object);
 		b->image_object = NULL;
-		
+
 		DRETURN(DLEVEL_STABLE);
 	}
 
@@ -223,11 +223,11 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 		Ewl_Container *redir;
 
 		/*
-		 * Save the current redirection and focus on the point where 
+		 * Save the current redirection and focus on the point where
 		 * our internal widgets belong.
 		 */
 		redir = ewl_container_redirect_get(EWL_CONTAINER(b));
-		ewl_container_redirect_set(EWL_CONTAINER(b), 
+		ewl_container_redirect_set(EWL_CONTAINER(b),
 							EWL_CONTAINER(b->body));
 		b->image_object = ewl_image_new();
 		ewl_container_child_prepend(EWL_CONTAINER(b), b->image_object);
@@ -262,7 +262,7 @@ ewl_button_image_get(Ewl_Button *b)
 
 	if (!b->image_object)
 		file = NULL;
-	else 
+	else
 		file = ewl_image_file_path_get(EWL_IMAGE(b->image_object));
 
 	DRETURN_PTR(file, DLEVEL_STABLE);
@@ -396,7 +396,7 @@ ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	DCHECK_TYPE("w", w, EWL_BUTTON_TYPE);
 
 	event = ev;
-	if ((!strcmp(event->keyname, "Return")) 
+	if ((!strcmp(event->keyname, "Return"))
 			|| (!strcmp(event->keyname, "KP_Return"))
 			|| (!strcmp(event->keyname, "Enter"))
 			|| (!strcmp(event->keyname, "KP_Enter"))

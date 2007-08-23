@@ -109,7 +109,7 @@ ewl_range_minimum_value_set(Ewl_Range *r, double minv)
 	/* update to the min value if needed */
 	if (r->value < r->min_val)
 		ewl_range_value_set(r, r->min_val);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -148,7 +148,7 @@ ewl_range_maximum_value_set(Ewl_Range *r, double maxv)
 	/* update to max value if needed */
 	if (r->value > r->max_val)
 		ewl_range_value_set(r, r->max_val);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -219,7 +219,7 @@ ewl_range_invert_set(Ewl_Range *r, unsigned int invert)
 	DCHECK_PARAM_PTR("r", r);
 	DCHECK_TYPE("r", r, EWL_RANGE_TYPE);
 
-	if (r->invert != !!invert) 
+	if (r->invert != !!invert)
 	{
 		r->invert = !!invert;
 		ewl_widget_configure(EWL_WIDGET(r));

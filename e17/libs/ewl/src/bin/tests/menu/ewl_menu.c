@@ -9,7 +9,7 @@
 static int create_test(Ewl_Container *box);
 static void cb_menu_clicked(Ewl_Widget * w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Menu";
@@ -34,7 +34,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(item);
 
 	menu1 = ewl_menu_new();
-	ewl_button_image_set(EWL_BUTTON(menu1), 
+	ewl_button_image_set(EWL_BUTTON(menu1),
 				PACKAGE_DATA_DIR "/ewl/images/Draw.png", NULL);
 	ewl_button_label_set(EWL_BUTTON(menu1), "Test Menu");
 	ewl_container_child_append(EWL_CONTAINER(box), menu1);
@@ -42,7 +42,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(menu1);
 
 	item = ewl_menu_item_new();
-	ewl_button_image_set(EWL_BUTTON(item), 
+	ewl_button_image_set(EWL_BUTTON(item),
 				PACKAGE_DATA_DIR "/ewl/images/Open.png", NULL);
 	ewl_button_label_set(EWL_BUTTON(item), "Dia");
 	ewl_container_child_append(EWL_CONTAINER(menu1), item);
@@ -50,7 +50,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new();
-	ewl_button_image_set(EWL_BUTTON(item), 
+	ewl_button_image_set(EWL_BUTTON(item),
 				PACKAGE_DATA_DIR "/ewl/images/Package.png", NULL);
 	ewl_button_label_set(EWL_BUTTON(item), "Gimp");
 	ewl_container_child_append(EWL_CONTAINER(menu1), item);

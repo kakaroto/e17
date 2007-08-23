@@ -190,7 +190,7 @@ ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
  * @return Returns the orientation set on the seeker
  * @brief This will retrieve the current orientation set on the seeker
  */
-Ewl_Orientation 
+Ewl_Orientation
 ewl_seeker_orientation_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -247,14 +247,14 @@ ewl_seeker_autohide_get(Ewl_Seeker *s)
 
 	DRETURN_INT(abs(s->autohide), DLEVEL_STABLE);
 }
- 
+
 /**
  * @internal
  * @param w: The widget to work with
  * @param ev_data: UNUSED
  * @param user_data: UNUSED
  * @return Returns no value
- * @brief On a configure event we need to adjust the seeker to fit into it's 
+ * @brief On a configure event we need to adjust the seeker to fit into it's
  * new coords and position as well as move the button to the correct size and
  * position.
  */
@@ -276,7 +276,7 @@ ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	s = EWL_SEEKER(w);
 	r = EWL_RANGE(w);
-	
+
 	if (!s->button)
 		DRETURN(DLEVEL_STABLE);
 
@@ -284,7 +284,7 @@ ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	dy = CURRENT_Y(s);
 	dw = CURRENT_W(s);
 	dh = CURRENT_H(s);
-	
+
 	range = r->max_val - r->min_val;
 	/*
 	 * First determine the size based on the number of steps to span from
@@ -646,7 +646,7 @@ ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my)
 	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, 0.0);
 
 	r = EWL_RANGE(s);
-	
+
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		m = mx;
 
@@ -687,7 +687,7 @@ ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my)
 	 * Calculate the new value based on the range, sizes and new position.
 	 */
 	scale = (r->max_val - r->min_val) * (double)(m - dc) / (double)dg;
-	
+
 	if (!r->invert)
 		scale = r->min_val + scale;
 	else
@@ -713,7 +713,7 @@ ewl_seeker_timer(void *data)
 	/*
 	 * Find the value based on mouse position
 	 */
-	posval = ewl_seeker_mouse_value_map(s, s->dragstart * 2, 
+	posval = ewl_seeker_mouse_value_map(s, s->dragstart * 2,
 						s->dragstart * 2);
 
 	/*

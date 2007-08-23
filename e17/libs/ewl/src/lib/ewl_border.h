@@ -64,7 +64,7 @@ const char 	*ewl_border_label_get(Ewl_Border *b);
 void 		 ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos);
 Ewl_Position 	 ewl_border_label_position_get(Ewl_Border *b);
 
-void 		 ewl_border_label_alignment_set(Ewl_Border *b, 
+void 		 ewl_border_label_alignment_set(Ewl_Border *b,
 						unsigned int align);
 unsigned int 	 ewl_border_label_alignment_get(Ewl_Border *b);
 

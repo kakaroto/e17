@@ -69,7 +69,7 @@ Ewl_Icon_Type	 ewl_icon_type_get(Ewl_Icon *icon);
 
 void             ewl_icon_part_hide(Ewl_Icon *icon, Ewl_Icon_Part part);
 
-void		 ewl_icon_image_set(Ewl_Icon *icon, const char *file, 
+void		 ewl_icon_image_set(Ewl_Icon *icon, const char *file,
 						const char *key);
 const char 	*ewl_icon_image_file_get(Ewl_Icon *icon);
 
@@ -88,11 +88,11 @@ const char	*ewl_icon_label_get(Ewl_Icon *icon);
 void		 ewl_icon_editable_set(Ewl_Icon *icon, unsigned int e);
 unsigned int	 ewl_icon_editable_get(Ewl_Icon *icon);
 
-void		 ewl_icon_label_compressed_set(Ewl_Icon *icon, 
+void		 ewl_icon_label_compressed_set(Ewl_Icon *icon,
 						unsigned int compress);
 unsigned int	 ewl_icon_label_compressed_get(Ewl_Icon *icon);
 
-void             ewl_icon_label_complex_set(Ewl_Icon *icon, 
+void             ewl_icon_label_complex_set(Ewl_Icon *icon,
 						unsigned int complex_label);
 unsigned int     ewl_icon_label_complex_get(Ewl_Icon *icon);
 

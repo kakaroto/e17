@@ -71,11 +71,11 @@ void		 ewl_popup_offset_set(Ewl_Popup *p, int x, int y);
 void ewl_popup_cb_show(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_popup_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_popup_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size, 
+void ewl_popup_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 					Ewl_Orientation o);
 void ewl_popup_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_popup_cb_follow_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_popup_cb_follow_configure(Ewl_Widget *w, void *ev_data, 
+void ewl_popup_cb_follow_configure(Ewl_Widget *w, void *ev_data,
 					void *user_data);
 
 /**

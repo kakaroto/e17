@@ -63,13 +63,13 @@ ewl_media_init(Ewl_Media *m)
 	ewl_widget_appearance_set(w, EWL_MEDIA_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(w), EWL_MEDIA_TYPE);
 
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, 
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 				ewl_media_cb_realize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REVEAL, 
+	ewl_callback_append(w, EWL_CALLBACK_REVEAL,
 				ewl_media_cb_reveal, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, 
+	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE,
 				ewl_media_cb_unrealize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_media_cb_configure, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -412,7 +412,7 @@ ewl_media_audio_mute_set(Ewl_Media *m, int mute)
 	DCHECK_PARAM_PTR("m", m);
 	DCHECK_TYPE("m", m, EWL_MEDIA_TYPE);
 
-	if (m->mute == !!mute) 
+	if (m->mute == !!mute)
 		DRETURN(DLEVEL_STABLE);
 
 	m->mute = !!mute;

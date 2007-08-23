@@ -101,7 +101,7 @@ ewl_view_widget_fetch_get(Ewl_View *v)
  * @param v: The Ewl_View to set the header_fetch callback on
  * @param f: The Ewl_View_Header_Fetch callback
  * @return Returns no value.
- * @brief Sets the header fetch callback into the view 
+ * @brief Sets the header fetch callback into the view
  */
 void
 ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f)
@@ -120,7 +120,7 @@ ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f)
  * NULL on failure.
  * @brief Gets the header fetch callback from the view
  */
-Ewl_View_Header_Fetch 
+Ewl_View_Header_Fetch
 ewl_view_header_fetch_get(Ewl_View *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -133,7 +133,7 @@ ewl_view_header_fetch_get(Ewl_View *v)
  * @param v: The Ewl_View to set the expansion_view_fetch callback on
  * @param f: The Ewl_View_Expansion_View_Fetch callback
  * @return Returns no value.
- * @brief Sets the expansion view fetch callback into the view 
+ * @brief Sets the expansion view fetch callback into the view
  */
 void
 ewl_view_expansion_view_fetch_set(Ewl_View *v, Ewl_View_Expansion_View_Fetch f)

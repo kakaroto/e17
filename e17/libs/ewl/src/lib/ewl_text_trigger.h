@@ -10,7 +10,7 @@
  * @addtogroup Ewl_Text_Trigger Ewl_Text_Trigger: References portions of the
  * text that respond to actions.
  * @brief Defines a class for triggering actions within the text
- * 
+ *
  * @{
  */
 
@@ -55,29 +55,29 @@ struct Ewl_Text_Trigger
 #define EWL_TEXT_TRIGGER(trigger) ((Ewl_Text_Trigger *) trigger)
 
 Ewl_Widget	*ewl_text_trigger_new(Ewl_Text_Trigger_Type type);
-int 		 ewl_text_trigger_init(Ewl_Text_Trigger *trigger, 
+int 		 ewl_text_trigger_init(Ewl_Text_Trigger *trigger,
 					Ewl_Text_Trigger_Type type);
 
 Ewl_Text_Trigger_Type ewl_text_trigger_type_get(Ewl_Text_Trigger *t);
 
-void 		 ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, 
+void 		 ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t,
 						unsigned int char_pos);
 unsigned int 	 ewl_text_trigger_start_pos_get(Ewl_Text_Trigger *t);
 
-void 		 ewl_text_trigger_base_set(Ewl_Text_Trigger *t, 
+void 		 ewl_text_trigger_base_set(Ewl_Text_Trigger *t,
 						unsigned int char_pos);
 unsigned int 	 ewl_text_trigger_base_get(Ewl_Text_Trigger *t);
 
-void 		 ewl_text_trigger_length_set(Ewl_Text_Trigger *t, 
+void 		 ewl_text_trigger_length_set(Ewl_Text_Trigger *t,
 						unsigned int char_len);
 unsigned int 	 ewl_text_trigger_length_get(Ewl_Text_Trigger *t);
 
-void		 ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur, 
+void		 ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
 						int x, int y, int w, int h);
 void		 ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig);
 
 /*
- * Internal stuff  
+ * Internal stuff
  */
 void ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev, void *data);

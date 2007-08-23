@@ -11,8 +11,8 @@ static int ewl_icon_theme_is_edje = 0;
 static Ecore_Hash *ewl_icon_theme_cache = NULL;
 static Ecore_Hash *ewl_icon_fallback_theme_cache = NULL;
 static void ewl_icon_theme_cb_free(void *data);
-static const char *ewl_icon_theme_icon_path_get_helper(const char *icon, 
-					const char *size, const char *theme, 
+static const char *ewl_icon_theme_icon_path_get_helper(const char *icon,
+					const char *size, const char *theme,
 					const char *key, Ecore_Hash *cache);
 
 /**
@@ -32,9 +32,9 @@ ewl_icon_theme_init(void)
 
 		ewl_icon_fallback_theme_cache = ecore_hash_new(
 						ecore_str_hash, ecore_str_compare);
-		ecore_hash_free_key_cb_set(ewl_icon_fallback_theme_cache, 
+		ecore_hash_free_key_cb_set(ewl_icon_fallback_theme_cache,
 						ewl_icon_theme_cb_free);
-		ecore_hash_free_value_cb_set(ewl_icon_fallback_theme_cache, 
+		ecore_hash_free_value_cb_set(ewl_icon_fallback_theme_cache,
 						free);
 	}
 
@@ -65,7 +65,7 @@ void
 ewl_icon_theme_theme_change(void)
 {
 	const char *icon_theme;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	icon_theme = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_ICON_THEME);
@@ -105,7 +105,7 @@ ewl_icon_theme_icon_path_get(const char *icon, int size)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
 
-	icon_theme = ewl_config_string_get(ewl_config, 
+	icon_theme = ewl_config_string_get(ewl_config,
 				EWL_CONFIG_THEME_ICON_THEME);
 
 	/* make sure we have an icon theme */
@@ -117,12 +117,12 @@ ewl_icon_theme_icon_path_get(const char *icon, int size)
 		DRETURN_PTR(icon_theme, DLEVEL_STABLE);
 
 	if (size == 0)
-		size = ewl_config_int_get(ewl_config, 
+		size = ewl_config_int_get(ewl_config,
 					EWL_CONFIG_THEME_ICON_SIZE);
 
 	snprintf(icon_size, sizeof(icon_size), "%dx%d", size, size);
 	snprintf(key, sizeof(key), "%s@%s", icon, icon_size);
-	ret = ewl_icon_theme_icon_path_get_helper(icon, icon_size, icon_theme, 
+	ret = ewl_icon_theme_icon_path_get_helper(icon, icon_size, icon_theme,
 						key, ewl_icon_theme_cache);
 
 	if (ret == EWL_THEME_KEY_NOMATCH)
@@ -136,7 +136,7 @@ ewl_icon_theme_icon_path_get(const char *icon, int size)
 }
 
 static const char *
-ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size, 
+ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
 					const char *theme, const char *key,
 					Ecore_Hash *cache)
 {

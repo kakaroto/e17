@@ -19,19 +19,19 @@ static void ewl_spectrum_hsv_to_rgb(double h, double s, double v,
 					unsigned int *b);
 static void ewl_spectrum_rgb_to_hsv(unsigned int r, unsigned int g, unsigned int b,
 					double *h, double *s, double *v);
-static void ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, 
-					int w, int h, unsigned int *r, 
+static void ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y,
+					int w, int h, unsigned int *r,
 					unsigned int *g, unsigned int *b);
-static void ewl_spectrum_color_coord_xy_get(Ewl_Spectrum *sp, int *x, int *y, 
-					int w, int h, unsigned int r, 
+static void ewl_spectrum_color_coord_xy_get(Ewl_Spectrum *sp, int *x, int *y,
+					int w, int h, unsigned int r,
 					unsigned int g, unsigned int b);
-static void ewl_spectrum_color_coord_map_vertical(Ewl_Spectrum *sp, int y, 
-				int img_h, unsigned int *r, 
+static void ewl_spectrum_color_coord_map_vertical(Ewl_Spectrum *sp, int y,
+				int img_h, unsigned int *r,
 				unsigned int *g, unsigned int *b);
-static void ewl_spectrum_color_coord_map_square(Ewl_Spectrum *sp, int x, 
-				int y, int img_w, int img_h, unsigned int *r, 
+static void ewl_spectrum_color_coord_map_square(Ewl_Spectrum *sp, int x,
+				int y, int img_w, int img_h, unsigned int *r,
 				unsigned int *g, unsigned int *b);
-static void ewl_spectrum_color_coord_vertical_y_get(Ewl_Spectrum *sp, 
+static void ewl_spectrum_color_coord_vertical_y_get(Ewl_Spectrum *sp,
 				int *y, int img_h,
 				unsigned int r, unsigned int g, unsigned int b);
 static void ewl_spectrum_color_coord_square_xy_get(Ewl_Spectrum *sp,
@@ -90,9 +90,9 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
 	ewl_container_callback_intercept(EWL_CONTAINER(sp),
 					EWL_CALLBACK_MOUSE_UP);
 
-	ewl_callback_append(EWL_WIDGET(sp), EWL_CALLBACK_MOUSE_DOWN, 
+	ewl_callback_append(EWL_WIDGET(sp), EWL_CALLBACK_MOUSE_DOWN,
 				ewl_spectrum_cb_mouse_down, NULL);
-	ewl_callback_append(EWL_WIDGET(sp), EWL_CALLBACK_MOUSE_UP, 
+	ewl_callback_append(EWL_WIDGET(sp), EWL_CALLBACK_MOUSE_UP,
 				ewl_spectrum_cb_mouse_up, NULL);
 
 	sp->type = EWL_SPECTRUM_TYPE_SQUARE;
@@ -102,7 +102,7 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
 	ewl_container_child_append(EWL_CONTAINER(sp), sp->canvas);
 	ewl_object_fill_policy_set(EWL_OBJECT(sp->canvas), EWL_FLAG_FILL_FILL);
 	ewl_widget_internal_set(sp->canvas, TRUE);
-	ewl_callback_append(EWL_WIDGET(sp->canvas), EWL_CALLBACK_REVEAL, 
+	ewl_callback_append(EWL_WIDGET(sp->canvas), EWL_CALLBACK_REVEAL,
 				ewl_spectrum_canvas_cb_reveal, sp);
 	ewl_widget_show(sp->canvas);
 
@@ -117,7 +117,7 @@ ewl_spectrum_init(Ewl_Spectrum *sp)
 	ewl_widget_internal_set(sp->cross_hairs.vertical, TRUE);
 	ewl_widget_layer_priority_set(sp->cross_hairs.vertical, 1);
 
-	ewl_callback_append(EWL_WIDGET(sp), EWL_CALLBACK_CONFIGURE, 
+	ewl_callback_append(EWL_WIDGET(sp), EWL_CALLBACK_CONFIGURE,
 			ewl_spectrum_cb_configure, NULL);
 
 	ewl_spectrum_rgb_set(sp, 255, 255, 255);
@@ -181,8 +181,8 @@ ewl_spectrum_mode_set(Ewl_Spectrum *sp, Ewl_Color_Mode mode)
 
 /**
  * @param sp: The Ewl_Spectrum to get the mode from
- * @return Returns the mode of the spectrum 
- * @brief Get the mode of the spectrum 
+ * @return Returns the mode of the spectrum
+ * @brief Get the mode of the spectrum
  */
 Ewl_Color_Mode
 ewl_spectrum_mode_get(Ewl_Spectrum *sp)
@@ -203,7 +203,7 @@ ewl_spectrum_mode_get(Ewl_Spectrum *sp)
  * @brief Set the RGB values for the spectrum
  */
 void
-ewl_spectrum_rgb_set(Ewl_Spectrum *sp, unsigned int r, 
+ewl_spectrum_rgb_set(Ewl_Spectrum *sp, unsigned int r,
 			unsigned int g, unsigned int b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -234,7 +234,7 @@ ewl_spectrum_rgb_set(Ewl_Spectrum *sp, unsigned int r,
  * @brief Get the RGB values for the spectrum
  */
 void
-ewl_spectrum_rgb_get(Ewl_Spectrum *sp, unsigned int *r, 
+ewl_spectrum_rgb_get(Ewl_Spectrum *sp, unsigned int *r,
 			unsigned int *g, unsigned int *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -329,9 +329,9 @@ ewl_spectrum_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	ewl_object_position_request(EWL_OBJECT(sp->canvas), 
+	ewl_object_position_request(EWL_OBJECT(sp->canvas),
 					CURRENT_X(sp), CURRENT_Y(sp));
-	ewl_object_size_request(EWL_OBJECT(sp->canvas), 
+	ewl_object_size_request(EWL_OBJECT(sp->canvas),
 					CURRENT_W(sp), CURRENT_H(sp));
 
 	ewl_spectrum_draw(sp);
@@ -367,7 +367,7 @@ ewl_spectrum_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	sp = EWL_SPECTRUM(w);
 	e = ev;
 
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, 
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 					ewl_spectrum_cb_mouse_move, NULL);
 
 	ewl_spectrum_mouse_process(sp, e->x, e->y);
@@ -435,7 +435,7 @@ ewl_spectrum_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Restore the spectrum after a REVEAL callback
  */
 void
-ewl_spectrum_canvas_cb_reveal(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ewl_spectrum_canvas_cb_reveal(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 								void *data)
 {
 	Ewl_Spectrum *sp;
@@ -460,7 +460,7 @@ ewl_spectrum_mouse_process(Ewl_Spectrum *sp, int x, int y)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
 	DCHECK_TYPE("sp", sp, EWL_SPECTRUM_TYPE);
-	
+
 	x -= CURRENT_X(sp->canvas);
 	y -= CURRENT_Y(sp->canvas);
 
@@ -581,7 +581,7 @@ ewl_spectrum_hsv_to_rgb(double h, double s, double v,
 				g_tmp = p;
 				b_tmp = q;
 				break;
-		}	
+		}
 	}
 
 	if (r) *r = r_tmp;
@@ -622,7 +622,7 @@ ewl_spectrum_rgb_to_hsv(unsigned int r, unsigned int g, unsigned int b,
 		tmp_h *= 60.0;
 		if (tmp_h < 0.0) tmp_h += 360.0;
 	}
-	
+
 	if (h) *h = tmp_h;
 	if (s) *s = tmp_s;
 	if (v) *v = tmp_v;
@@ -681,18 +681,18 @@ ewl_spectrum_cross_hairs_draw(Ewl_Spectrum *sp)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("sp", sp);
 	DCHECK_TYPE("sp", sp, EWL_SPECTRUM_TYPE);
-	
+
 	/* get the coords */
 	evas_object_image_size_get(EWL_IMAGE(sp->canvas)->image, &img_w, &img_h);
-	ewl_spectrum_color_coord_xy_get(sp, &x, &y, img_w, img_h, 
+	ewl_spectrum_color_coord_xy_get(sp, &x, &y, img_w, img_h,
 					sp->rgb.r, sp->rgb.g, sp->rgb.b);
 	x += CURRENT_X(sp->canvas);
 	y += CURRENT_Y(sp->canvas);
 	/* place the horizontal cross hair */
 	y -= CURRENT_H(sp->cross_hairs.horizontal) / 2;
-	ewl_object_position_request(EWL_OBJECT(sp->cross_hairs.horizontal), 
+	ewl_object_position_request(EWL_OBJECT(sp->cross_hairs.horizontal),
 							CURRENT_X(sp), y);
-	ewl_object_w_request(EWL_OBJECT(sp->cross_hairs.horizontal), 
+	ewl_object_w_request(EWL_OBJECT(sp->cross_hairs.horizontal),
 							CURRENT_W(sp));
 
 	if (!VISIBLE(sp->cross_hairs.horizontal))
@@ -702,15 +702,15 @@ ewl_spectrum_cross_hairs_draw(Ewl_Spectrum *sp)
 	if (sp->type == EWL_SPECTRUM_TYPE_SQUARE)
 	{
 		x -= CURRENT_W(sp->cross_hairs.vertical) / 2;
-		ewl_object_position_request(EWL_OBJECT(sp->cross_hairs.vertical), 
+		ewl_object_position_request(EWL_OBJECT(sp->cross_hairs.vertical),
 							x, CURRENT_Y(sp));
-		ewl_object_h_request(EWL_OBJECT(sp->cross_hairs.vertical), 
+		ewl_object_h_request(EWL_OBJECT(sp->cross_hairs.vertical),
 							CURRENT_H(sp));
 
 		if (!VISIBLE(sp->cross_hairs.vertical))
 			ewl_widget_show(sp->cross_hairs.vertical);
 	}
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -724,13 +724,13 @@ ewl_spectrum_color_coord_map(Ewl_Spectrum *sp, int x, int y, int img_w, int img_
 	if (sp->type == EWL_SPECTRUM_TYPE_VERTICAL)
 		ewl_spectrum_color_coord_map_vertical(sp, y, img_h, r, g, b);
 	else
-		ewl_spectrum_color_coord_map_square(sp, x, y, img_w, 
+		ewl_spectrum_color_coord_map_square(sp, x, y, img_w,
 							img_h, r, g, b);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void ewl_spectrum_color_coord_xy_get(Ewl_Spectrum *sp, int *x, int *y, 
+static void ewl_spectrum_color_coord_xy_get(Ewl_Spectrum *sp, int *x, int *y,
 					int w, int h, unsigned int r,
 					unsigned int g, unsigned int b)
 {
@@ -742,11 +742,11 @@ static void ewl_spectrum_color_coord_xy_get(Ewl_Spectrum *sp, int *x, int *y,
 		if (x) *x = 0;
 	}
 	else
-		ewl_spectrum_color_coord_square_xy_get(sp, x, y, w, 
+		ewl_spectrum_color_coord_square_xy_get(sp, x, y, w,
 							h, r, g, b);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}					
+}
 
 
 static void
@@ -929,7 +929,7 @@ ewl_spectrum_color_coord_square_xy_get(Ewl_Spectrum *sp, int *x, int *y, int img
 
 	tmp_x = 0;
 	tmp_y = 0;
-	
+
 	switch (sp->mode)
 	{
 		case EWL_COLOR_MODE_RGB_RED:

@@ -55,11 +55,11 @@
  *
  * The basis for all widgets in EWL is Ewl_Object. Ewl_Objects are never
  * allocated outside of another widget, it provides size and position
- * information for the widget as well as info about the widgets padding and 
- * insets. There are also fields for indicating object alignment and fill 
+ * information for the widget as well as info about the widgets padding and
+ * insets. There are also fields for indicating object alignment and fill
  * policies.
  *
- * The next step above Ewl_Object is Ewl_Widget. Again, Ewl_Widgets are 
+ * The next step above Ewl_Object is Ewl_Widget. Again, Ewl_Widgets are
  * usually not allocated by themselves, but are part of all the other widgets
  * available in EWL. The Ewl_Widget class provides the necessary information about
  * a widget that relates to its appearance, its parent container, event
@@ -69,12 +69,12 @@
  * your code.
  *
  * A necessary class that some widgets inherit from is Ewl_Container. This is
- * used for holding collections of widgets and specifiying their layout. Containers 
+ * used for holding collections of widgets and specifiying their layout. Containers
  * are the building blocks of the widget set. They allow for creating heirarchies
  * of widgets that are bounded within their parent containers. Ewl_Container
  * inherits from Ewl_Widget, so any container can also be treated as a
  * widget, and thus you can put containers within other containers. Examples
- * of inheriting classes are Ewl_Window and Ewl_Box. In the case of 
+ * of inheriting classes are Ewl_Window and Ewl_Box. In the case of
  * Ewl_Window, widgets inside the window are given any position they request
  * within the insets of the window. For Ewl_Box, contained widgets are
  * layed out either from top to bottom, or from left to right, depending on
@@ -217,7 +217,7 @@
  * other applications to demonstrate EWLs capabilities.
  *
  * If you have questions, corrections, or improvements, please send
- * them to <a href="mailto: enlightenment-devel@lists.sourceforge.net">enlightenment-devel at lists dot sourceforge dot net</a>. 
+ * them to <a href="mailto: enlightenment-devel@lists.sourceforge.net">enlightenment-devel at lists dot sourceforge dot net</a>.
  */
 
 /**

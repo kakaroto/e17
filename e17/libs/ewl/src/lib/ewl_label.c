@@ -112,7 +112,7 @@ ewl_label_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_label_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__, 
+ewl_label_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 					unsigned int col __UNUSED__)
 {
 	Ewl_Widget *label;

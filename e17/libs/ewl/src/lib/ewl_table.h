@@ -57,7 +57,7 @@ struct Ewl_Table
 	int row_select;		/**< boolean: select entire rows */
 
 	unsigned int homogeneous_h;   	/**< Horizontal homogeneous flag */
-	unsigned int homogeneous_v;   	/**< Vertical homogeneous flag */ 
+	unsigned int homogeneous_v;   	/**< Vertical homogeneous flag */
 
 	struct {
 		int start_r;			/**< Selection start row */
@@ -102,7 +102,7 @@ unsigned int    ewl_table_vhomogeneous_get(Ewl_Table *table);
  */
 void ewl_table_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_table_cb_child_select(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_table_cb_child_show(Ewl_Container *p, Ewl_Widget *c); 
+void ewl_table_cb_child_show(Ewl_Container *p, Ewl_Widget *c);
 
 /**
  * @}

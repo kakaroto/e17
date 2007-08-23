@@ -47,7 +47,7 @@ static int create_test(Ewl_Container *win);
 static void cb_fetch_password_text(Ewl_Widget *w, void *ev, void *data);
 static void cb_set_password_text(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Password";

@@ -57,7 +57,7 @@ Ewl_Widget 	*ewl_filedialog_multiselect_new(void);
 Ewl_Widget 	*ewl_filedialog_new(void);
 int		 ewl_filedialog_init(Ewl_Filedialog *fd);
 
-void		 ewl_filedialog_list_view_set(Ewl_Filedialog *fd, 
+void		 ewl_filedialog_list_view_set(Ewl_Filedialog *fd,
 						Ewl_View *view);
 Ewl_View	*ewl_filedialog_list_view_get(Ewl_Filedialog *fd);
 

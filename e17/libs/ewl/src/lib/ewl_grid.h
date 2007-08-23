@@ -46,12 +46,12 @@ struct Ewl_Grid_Info
 		int size;		/**< The size set by the user */
 		float rel_size;		/**< The relative size */
 	} user;				/**< The user set values for the grid */
-	
+
 	Ewl_Grid_Resize_Type resize_type; /**< Are there values set by the user */
 };
 
 /**
- * The Ewl_Grid widget 
+ * The Ewl_Grid widget
  */
 typedef struct Ewl_Grid Ewl_Grid;
 
@@ -64,7 +64,7 @@ typedef struct Ewl_Grid Ewl_Grid;
 /**
  * @brief Inherit from Ewl_Container and extend to privide a grid layout widget
  */
-struct Ewl_Grid 
+struct Ewl_Grid
 {
 	Ewl_Container container;		/**< Inherit from Ewl_Container */
 
@@ -74,7 +74,7 @@ struct Ewl_Grid
 						 	be recalculated */
 	unsigned char homogeneous_h:1;  	/**< Horizontal homogeneous flag */
 	unsigned char homogeneous_v:1;   	/**< Vertical homogeneous flag */
-	
+
 	Ewl_Orientation orientation;		/**< The grid orientation */
 
 	int rows;				/**< Row count */

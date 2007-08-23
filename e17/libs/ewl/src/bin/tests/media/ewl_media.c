@@ -30,17 +30,17 @@ static void cb_launch(Ewl_Widget *w, void *ev, void *data);
 static void cb_gstreamer_change(Ewl_Widget *w, void *ev, void *data);
 static void cb_xine_change(Ewl_Widget *w, void *ev, void *data);
 static void del_cb(Ewl_Widget *w, void *event, void *data);
-static void play_cb(Ewl_Widget *w, void *event, void *data); 
+static void play_cb(Ewl_Widget *w, void *event, void *data);
 static void stop_cb(Ewl_Widget *w, void *event, void *data);
-static void ff_cb(Ewl_Widget *w, void *event, void *data); 
+static void ff_cb(Ewl_Widget *w, void *event, void *data);
 static void rew_cb(Ewl_Widget *w, void *event, void *data);
 static void video_change_cb(Ewl_Widget *w, void *event, void *data);
-static void seeker_move_cb(Ewl_Widget *w, void *event, void *data); 
+static void seeker_move_cb(Ewl_Widget *w, void *event, void *data);
 static void open_file_cb(Ewl_Widget *w, void *event, void *data);
 static void open_cb(Ewl_Widget *w, void *event, void *data);
 static void key_up_cb(Ewl_Widget *w, void *event, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Media";
@@ -58,7 +58,7 @@ create_test(Ewl_Container *box)
 	if (!ewl_media_is_available())
 	{
 		o = ewl_label_new();
-		ewl_label_text_set(EWL_LABEL(o), 
+		ewl_label_text_set(EWL_LABEL(o),
 				"Ewl_Media is not available. "
 				"Please install Emotion "
 				"and rebuild Ewl.");
@@ -97,14 +97,14 @@ create_test(Ewl_Container *box)
 }
 
 static void
-cb_gstreamer_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+cb_gstreamer_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	module_type = EWL_MEDIA_MODULE_GSTREAMER;
 }
 
 static void
-cb_xine_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+cb_xine_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	module_type = EWL_MEDIA_MODULE_XINE;
@@ -123,8 +123,8 @@ del_cb(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
 }
 
 static void
-play_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, 
-				void *data __UNUSED__) 
+play_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
+				void *data __UNUSED__)
 {
 	ewl_media_play_set(EWL_MEDIA(video), 1);
 }
@@ -138,7 +138,7 @@ stop_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 
 static void
 ff_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-				void *data __UNUSED__) 
+				void *data __UNUSED__)
 {
 	double p;
 
@@ -147,7 +147,7 @@ ff_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 }
 
 static void
-rew_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, 
+rew_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 				void *data __UNUSED__)
 {
 	double p;
@@ -176,7 +176,7 @@ video_change_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, void *data)
 
 static void
 seeker_move_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-					void *data __UNUSED__) 
+					void *data __UNUSED__)
 {
 	double val;
 
@@ -200,7 +200,7 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 		char buf[PATH_MAX];
 
 		file = ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w));
-		snprintf(buf, PATH_MAX, "%s/%s", 
+		snprintf(buf, PATH_MAX, "%s/%s",
 				ewl_filedialog_directory_get(EWL_FILEDIALOG(w)),
 				file);
 
@@ -216,7 +216,7 @@ static void
 open_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 					void *data __UNUSED__)
 {
-	if (!fd_win) 
+	if (!fd_win)
 	{
 		fd_win = ewl_filedialog_new();
 		ewl_callback_append(fd_win, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
@@ -276,7 +276,7 @@ create_media_window(Ewl_Media_Module_Type type)
 
 	/* box to contain contols and scrollers */
 	controls = ewl_vbox_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(controls), 
+	ewl_object_fill_policy_set(EWL_OBJECT(controls),
 			EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(b), controls);
 	ewl_widget_show(controls);
@@ -301,7 +301,7 @@ create_media_window(Ewl_Media_Module_Type type)
 			o = ewl_button_new();
 			ewl_stock_type_set(EWL_STOCK(o), controls[i].name);
 			ewl_container_child_append(EWL_CONTAINER(b), o);
-			ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+			ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 					controls[i].func, NULL);
 			ewl_widget_show(o);
 		}
@@ -314,7 +314,7 @@ create_media_window(Ewl_Media_Module_Type type)
 	/* the video seeker */
 	seeker = ewl_hseeker_new();
 	ewl_container_child_append(EWL_CONTAINER(b), seeker);
-	ewl_object_fill_policy_set(EWL_OBJECT(seeker), 
+	ewl_object_fill_policy_set(EWL_OBJECT(seeker),
 			EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
 	ewl_range_value_set(EWL_RANGE(seeker), 0.0);
 	ewl_range_maximum_value_set(EWL_RANGE(seeker), 0.0);

@@ -44,7 +44,7 @@ typedef struct Ewl_Range Ewl_Range;
 struct Ewl_Range
 {
 	Ewl_Container container; /**< Inherit from Ewl_Container */
-	
+
 	double value; /**< Currently chosen value */
 	double min_val; /**< Minimal valide value */
 	double max_val; /**< Maximal valide value */

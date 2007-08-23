@@ -65,7 +65,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_FILL);
 
 	ewl_container_show_notify_set(EWL_CONTAINER(t), ewl_table_cb_child_show);
-	
+
 	/*
 	 * Create a new grid
 	 */
@@ -90,7 +90,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 			ewl_container_child_append(EWL_CONTAINER(cell), button);
 			ewl_object_fill_policy_set(EWL_OBJECT(cell),
 						EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
-			ewl_container_child_append(EWL_CONTAINER(t->grid), 
+			ewl_container_child_append(EWL_CONTAINER(t->grid),
 							EWL_WIDGET(cell));
 			ewl_grid_child_position_set(t->grid, EWL_WIDGET(cell),
 								i, i, 1, 1);
@@ -114,7 +114,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 	 * Append callbacks
 	 */
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE,
-					ewl_table_cb_configure, NULL); 
+					ewl_table_cb_configure, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -144,7 +144,7 @@ ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
 	cell = (Ewl_Cell *)ewl_cell_new ();
 	ewl_container_child_append(EWL_CONTAINER (cell), w);
 
-	ewl_container_child_append(EWL_CONTAINER(table->grid), 
+	ewl_container_child_append(EWL_CONTAINER(table->grid),
 							EWL_WIDGET(cell));
 	if (table->col_headers)
 		ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
@@ -179,8 +179,8 @@ ewl_table_col_row_get(Ewl_Table *t, Ewl_Cell *cell,
 
 	/*---------------------------------
 	 * DEVELOPER NOTE:
-	 * This method is supposed to search the grid for the specified 
-	 * widget and store it's column/row specs in the col/row 
+	 * This method is supposed to search the grid for the specified
+	 * widget and store it's column/row specs in the col/row
 	 * parameters and I think that is in fact what it does now. It
 	 * is not tested.
 	 *---------------------------------*/
@@ -212,7 +212,7 @@ ewl_table_col_row_get(Ewl_Table *t, Ewl_Cell *cell,
 			break;
 		}
 	}
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -376,9 +376,9 @@ ewl_table_reset(Ewl_Table *t, int cols, int rows, char **col_headers)
 			ewl_button_label_set(EWL_BUTTON(button), col_headers[i - 1]);
 			ewl_widget_disable(button);
 			ewl_container_child_append(EWL_CONTAINER(cell), button);
-			ewl_container_child_append(EWL_CONTAINER(t->grid), 
+			ewl_container_child_append(EWL_CONTAINER(t->grid),
 							EWL_WIDGET(cell));
-			ewl_grid_child_position_set(t->grid, EWL_WIDGET(cell), 
+			ewl_grid_child_position_set(t->grid, EWL_WIDGET(cell),
 								i, i, 1, 1);
 			ewl_widget_show(button);
 			ewl_widget_show(EWL_WIDGET(cell));
@@ -419,7 +419,7 @@ ewl_table_selected_get(Ewl_Table *t)
 				t->selected.start_r == gc->start_row &&
 				t->selected.end_c == gc->end_col &&
 				t->selected.end_r == gc->end_row) {
-			
+
 			tw = (Ewl_Text *) ecore_dlist_first_goto(
 					EWL_CONTAINER(child)->children);
 
@@ -509,29 +509,29 @@ ewl_table_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 void
 ewl_table_cb_child_show(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 {
-	Ewl_Table *table; 
-	int width_g, height_g; 
+	Ewl_Table *table;
+	int width_g, height_g;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_TYPE("p", p, EWL_CONTAINER_TYPE);
 
-	table = EWL_TABLE (p); 
+	table = EWL_TABLE (p);
 	ewl_object_preferred_inner_size_get (EWL_OBJECT (table->grid),
-							&width_g, &height_g); 
+							&width_g, &height_g);
 	ewl_object_preferred_inner_size_set (EWL_OBJECT (table), width_g, height_g);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param table: the table to change homogeneous layout 
+ * @param table: the table to change homogeneous layout
  * @param h: the boolean value to change the layout mode to
  * @return Returns no value.
  * @brief Change the homogeneous layout of the box
  *
  * Grids use non-homogeneous layout by default, this can be used
- * to change that. 
+ * to change that.
  */
 void
 ewl_table_homogeneous_set(Ewl_Table *table, unsigned int h)
@@ -544,19 +544,19 @@ ewl_table_homogeneous_set(Ewl_Table *table, unsigned int h)
 		ewl_table_hhomogeneous_set(table, h);
 	if (table->homogeneous_v != h)
 		ewl_table_vhomogeneous_set(table, h);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param table: the table to change horizontal homogeneous layout 
+ * @param table: the table to change horizontal homogeneous layout
  * @param h: the boolean value to change the horizontal layout mode to
  * @return Returns no value.
  * @brief Change the horizontal homogeneous layout of the box
  *
  * Grids use non-homogeneous layout by default, this can be used
  * to change that for horizontal orientation, i.e. all columns can
- * have the same width. 
+ * have the same width.
  */
 void
 ewl_table_hhomogeneous_set(Ewl_Table *table, unsigned int h)
@@ -567,22 +567,22 @@ ewl_table_hhomogeneous_set(Ewl_Table *table, unsigned int h)
 
  	if (table->homogeneous_h != h)
 	{
-		table->homogeneous_h = h; 
+		table->homogeneous_h = h;
 		ewl_grid_hhomogeneous_set (EWL_GRID (table->grid), h );
 	}
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param table: the table to change vertical homogeneous layout 
+ * @param table: the table to change vertical homogeneous layout
  * @param h: the boolean value to change the vertical layout mode to
  * @return Returns no value.
  * @brief Change the vertical homogeneous layout of the box
  *
  * Grids use non-homogeneous layout by default, this can be used
- * to change that for vertical orientation, i.e. all rows can have 
- * the same height. 
+ * to change that for vertical orientation, i.e. all rows can have
+ * the same height.
  */
 void
 ewl_table_vhomogeneous_set(Ewl_Table *table, unsigned int h)
@@ -593,32 +593,32 @@ ewl_table_vhomogeneous_set(Ewl_Table *table, unsigned int h)
 
  	if (table->homogeneous_v != h)
 	{
-		table->homogeneous_v = h; 
+		table->homogeneous_v = h;
 		ewl_grid_vhomogeneous_set (EWL_GRID (table->grid), h );
 	}
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param table: the table to get the homogeneous layout 
- * @return The horizontal homogeneous flag 
- * @brief Retrieves the horizontal homogeneous flag  
+ * @param table: the table to get the homogeneous layout
+ * @return The horizontal homogeneous flag
+ * @brief Retrieves the horizontal homogeneous flag
  */
-unsigned int 
+unsigned int
 ewl_table_hhomogeneous_get(Ewl_Table *table)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("table", table, 0);
 	DCHECK_TYPE_RET("table", table, EWL_TABLE_TYPE, 0);
 
-	DRETURN_INT(table->homogeneous_h, DLEVEL_STABLE); 
+	DRETURN_INT(table->homogeneous_h, DLEVEL_STABLE);
 }
 
 /**
- * @param table: the table to get the vertical layout 
- * @return The vertical homogeneous flag 
- * @brief Retrieves the vertical homogeneous flag  
+ * @param table: the table to get the vertical layout
+ * @return The vertical homogeneous flag
+ * @brief Retrieves the vertical homogeneous flag
  */
 unsigned int
 ewl_table_vhomogeneous_get(Ewl_Table *table)
@@ -627,6 +627,6 @@ ewl_table_vhomogeneous_get(Ewl_Table *table)
 	DCHECK_PARAM_PTR_RET("table", table, 0);
 	DCHECK_TYPE_RET("table", table, EWL_TABLE_TYPE, 0);
 
-	DRETURN_INT(table->homogeneous_v, DLEVEL_STABLE); 
+	DRETURN_INT(table->homogeneous_v, DLEVEL_STABLE);
 }
 

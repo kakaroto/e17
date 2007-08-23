@@ -23,14 +23,14 @@ typedef struct Ewl_Filelist_Column_Data Ewl_Filelist_Column_Data;;
 
 static Ewl_View *ewl_filelist_column_view = NULL;
 
-static void ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *event, 
+static void ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *event,
 							void *data);
-static void ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *event, 
+static void ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *event,
 							void *data);
-static void ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, 
+static void ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir,
 						char *file, void *data);
 static Ewl_Widget * ewl_filelist_column_view_cb_widget_fetch(void *data,
-							unsigned int col, 
+							unsigned int col,
 							unsigned int row);
 
 /**
@@ -45,7 +45,7 @@ ewl_filelist_column_view_get(void)
 	if (!ewl_filelist_column_view)
 	{
 		ewl_filelist_column_view = ewl_view_new();
-		ewl_view_widget_fetch_set(ewl_filelist_column_view, 
+		ewl_view_widget_fetch_set(ewl_filelist_column_view,
 					ewl_filelist_column_view_cb_widget_fetch);
 	}
 
@@ -53,8 +53,8 @@ ewl_filelist_column_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_filelist_column_view_cb_widget_fetch(void *data __UNUSED__, 
-						unsigned int col __UNUSED__, 
+ewl_filelist_column_view_cb_widget_fetch(void *data __UNUSED__,
+						unsigned int col __UNUSED__,
 						unsigned int row __UNUSED__)
 {
 	Ewl_Widget *list;
@@ -191,7 +191,7 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 		d = ecore_list_next(list->dirs);
 		dir = ecore_list_next(path_list);
 		if (!d || !dir) break;
-		
+
 		/* we do this as a strncmp and use the length of d->dir as
 		 * there is the possiblity we have dropped the /. but, we
 		 * also check to make sure that d->dir is no more then 1
@@ -241,7 +241,7 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 		ecore_list_append(list->dirs, d);
 
 		strcat(path, dir);
-		ewl_filelist_directory_read(fl, path, TRUE, 
+		ewl_filelist_directory_read(fl, path, TRUE,
 					ewl_filelist_column_row_add, s);
 	}
 
@@ -443,13 +443,13 @@ ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *ev, void *data)
 	}
 
 	ewl_filelist_directory_set(EWL_FILELIST(data), path);
-	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev, 
+	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev,
 					"icon,select", "icon,unselect");
 
 	if (fl->preview) ewl_widget_destroy(fl->preview);
 	fl->preview = ewl_filelist_selected_file_preview_get(EWL_FILELIST(data),
 						ewl_icon_label_get(EWL_ICON(w)));
-	ewl_object_fill_policy_set(EWL_OBJECT(fl->preview), 
+	ewl_object_fill_policy_set(EWL_OBJECT(fl->preview),
 				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->preview);
 	ewl_widget_show(fl->preview);
@@ -491,7 +491,7 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file,
 
 	stock = ewl_filelist_stock_icon_get(fl, path);
 	img = ewl_icon_theme_icon_path_get(stock, 0);
-	if (img) ewl_icon_image_set(EWL_ICON(icon), img, stock); 
+	if (img) ewl_icon_image_set(EWL_ICON(icon), img, stock);
 
 	ewl_container_child_append(EWL_CONTAINER(data), icon);
 	ewl_object_alignment_set(EWL_OBJECT(icon), EWL_FLAG_ALIGN_LEFT);

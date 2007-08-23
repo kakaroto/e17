@@ -52,7 +52,7 @@ ewl_io_manager_plugin_uri_write(Ewl_Widget *data, const char *uri)
 }
 
 int
-ewl_io_manager_plugin_string_write(Ewl_Widget *data, 
+ewl_io_manager_plugin_string_write(Ewl_Widget *data,
 				const char **string __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

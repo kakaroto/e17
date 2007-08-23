@@ -24,16 +24,16 @@ struct Ewl_Filelist_Tree_Data
 
 static Ewl_View *ewl_filelist_tree_view = NULL;
 
-static Ewl_Widget * ewl_filelist_tree_view_widget_fetch(void *data, 
+static Ewl_Widget * ewl_filelist_tree_view_widget_fetch(void *data,
 							unsigned int row,
 							unsigned int col);
-static void ewl_filelist_tree_add(Ewl_Filelist *fl, const char *dir, 
+static void ewl_filelist_tree_add(Ewl_Filelist *fl, const char *dir,
 						char *file, void *data);
 
-static Ewl_Widget *ewl_filelist_tree_cb_widget_fetch(void *data, 
+static Ewl_Widget *ewl_filelist_tree_cb_widget_fetch(void *data,
 							unsigned int row,
 							unsigned int column);
-static Ewl_Widget *ewl_filelist_tree_cb_header_fetch(void *data, 
+static Ewl_Widget *ewl_filelist_tree_cb_header_fetch(void *data,
 							unsigned int column);
 
 /* Model callbacks */
@@ -54,7 +54,7 @@ Ewl_View *
 ewl_filelist_tree_view_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	
+
 	if (!ewl_filelist_tree_view)
 	{
 		ewl_filelist_tree_view = ewl_view_new();
@@ -66,8 +66,8 @@ ewl_filelist_tree_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_filelist_tree_view_widget_fetch(void *data __UNUSED__, 
-					unsigned int row __UNUSED__, 
+ewl_filelist_tree_view_widget_fetch(void *data __UNUSED__,
+					unsigned int row __UNUSED__,
 					unsigned int col __UNUSED__)
 {
 	Ewl_Widget *tree;
@@ -191,7 +191,7 @@ ewl_filelist_tree_dir_change(Ewl_Filelist *fl)
  * @brief Callback when the selected files are changed
  */
 void
-ewl_filelist_tree_selected_file_add(Ewl_Filelist *fl, 
+ewl_filelist_tree_selected_file_add(Ewl_Filelist *fl,
 				const char *file __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -267,7 +267,7 @@ ewl_filelist_tree_shift_handle(Ewl_Filelist *fl, Ewl_Widget *clicked)
 }
 
 static void
-ewl_filelist_tree_add(Ewl_Filelist *fl, const char *dir, char *file, 
+ewl_filelist_tree_add(Ewl_Filelist *fl, const char *dir, char *file,
 						void *data __UNUSED__)
 {
 	Ewl_Filelist_Tree *flt;
@@ -332,7 +332,7 @@ printf("RET %p %s\n", data, ret);
  * @internal
  */
 static void
-ewl_filelist_tree_data_sort(void *data, unsigned int column __UNUSED__, 
+ewl_filelist_tree_data_sort(void *data, unsigned int column __UNUSED__,
 						Ewl_Sort_Direction sort)
 {
 	char *file;
@@ -418,8 +418,8 @@ ewl_filelist_tree_data_expansion_data_fetch(void *data, unsigned int parent)
 }
 
 static
-Ewl_Widget *ewl_filelist_tree_cb_widget_fetch(void *data, 
-						unsigned int row __UNUSED__, 
+Ewl_Widget *ewl_filelist_tree_cb_widget_fetch(void *data,
+						unsigned int row __UNUSED__,
 						unsigned int column __UNUSED__)
 {
 	Ewl_Widget *l;
@@ -434,7 +434,7 @@ Ewl_Widget *ewl_filelist_tree_cb_widget_fetch(void *data,
 }
 
 static
-Ewl_Widget *ewl_filelist_tree_cb_header_fetch(void *data __UNUSED__, 
+Ewl_Widget *ewl_filelist_tree_cb_header_fetch(void *data __UNUSED__,
 							unsigned int column)
 {
 	Ewl_Widget *l;

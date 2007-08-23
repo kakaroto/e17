@@ -32,7 +32,7 @@ static void cb_select_theme(Ewl_Widget *w, void *ev, void *data);
 static void cb_apply_theme(Ewl_Widget *w, void *ev, void *data);
 static void cb_default_theme(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Theme";
@@ -66,9 +66,9 @@ create_test(Ewl_Container *box)
 	ewl_border_label_set(EWL_BORDER(list), "Theme name");
 	ewl_container_child_append(EWL_CONTAINER(vbox), list);
 	ewl_widget_show(list);
-	
+
 	rep = opendir(PACKAGE_DATA_DIR "/ewl/themes");
-	while ((file = readdir(rep))) 
+	while ((file = readdir(rep)))
 	{
 		char *name;
 		int len;
@@ -81,7 +81,7 @@ create_test(Ewl_Container *box)
 
 			w = ewl_button_new();
 			ewl_button_label_set(EWL_BUTTON(w), name);
-			ewl_object_fill_policy_set(EWL_OBJECT(w), 
+			ewl_object_fill_policy_set(EWL_OBJECT(w),
 				EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
 			ewl_callback_append(w, EWL_CALLBACK_CLICKED,
 					    cb_select_theme, strdup(name));
@@ -129,7 +129,7 @@ cb_select_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 
 	notebook = ewl_widget_name_find("notebook");
 
-	snprintf(theme_filename, sizeof(theme_filename), 
+	snprintf(theme_filename, sizeof(theme_filename),
 			PACKAGE_DATA_DIR "/ewl/themes/%s", (char *)data);
 	ewl_theme_data_reset(notebook);
 	ewl_theme_data_str_set(notebook, "/file", theme_filename);
@@ -151,7 +151,7 @@ cb_apply_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 }
 
 static void
-cb_default_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+cb_default_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *db = w;
@@ -177,66 +177,66 @@ widgets_build(void)
 
 	notebook = ewl_notebook_new();
 	ewl_widget_name_set(notebook, "notebook");
-	
+
 	/* buttons */
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(notebook), vbox);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox, "Buttons");
 	ewl_widget_show(vbox);
-	
+
 	misc = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(misc), "Normal button");
 	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_checkbutton_new();
 	ewl_button_label_set(EWL_BUTTON(misc), "Check button");
 	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_radiobutton_new();
 	ewl_button_label_set(EWL_BUTTON(misc), "Radio button");
 	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	/* numerical/text entries */
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(notebook), vbox);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox, 
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox,
 						"Numerical & Text Entries");
 	ewl_widget_show(vbox);
-	
+
 	misc = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(misc), "Normal entry");
 	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_password_new();
 	ewl_password_text_set(EWL_PASSWORD(misc), "Password entry");
 	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_spinner_new();
 	ewl_spinner_digits_set(EWL_SPINNER(misc), 0);
 	ewl_range_minimum_value_set(EWL_RANGE(misc), 0);
@@ -246,11 +246,11 @@ widgets_build(void)
 	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_hseeker_new();
 	ewl_range_maximum_value_set(EWL_RANGE(misc), 10.0);
 	ewl_range_step_set(EWL_RANGE(misc), 1.0);
@@ -258,51 +258,51 @@ widgets_build(void)
 	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	/* menus */
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(notebook), vbox);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox, "Menus");
 	ewl_widget_show(vbox);
-	
+
 	misc = ewl_menu_new();
 	ewl_button_label_set(EWL_BUTTON(misc), "Menu");
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
 
-	for (i = 0; i < 3; i++) 
+	for (i = 0; i < 3; i++)
 	{
 		item = ewl_menu_item_new();
 		if (menus[i].name)
-			ewl_button_label_set(EWL_BUTTON(item), 
+			ewl_button_label_set(EWL_BUTTON(item),
 						menus[i].name);
 
 		if (menus[i].image)
-			ewl_button_image_set(EWL_BUTTON(item), 
+			ewl_button_image_set(EWL_BUTTON(item),
 						menus[i].image, NULL);
 
 		ewl_container_child_append(EWL_CONTAINER(misc), item);
 		ewl_widget_show(item);
 	}
-	
+
 	misc = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-#if 0	
+#if 0
 XXX Port this to use the model/view system
 	misc = ewl_combo_new("Combo entry");
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
 
-	for (i = 0; i < 3; i++) 
+	for (i = 0; i < 3; i++)
 	{
 		item = ewl_menu_item_new();
 		if (menus[i].name)
-			ewl_button_label_set(EWL_BUTTON(item), 
+			ewl_button_label_set(EWL_BUTTON(item),
 						menus[i].name);
 
 		if (menus[i].image)
-			ewl_button_image_set(EWL_BUTTON(item), 
+			ewl_button_image_set(EWL_BUTTON(item),
 						menus[i].image, NULL);
 
 		ewl_container_child_append(EWL_CONTAINER(misc), item);
@@ -313,16 +313,16 @@ XXX Port this to use the model/view system
 	/* List/tree */
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(notebook), vbox);
-	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox, 
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox,
 							"List and Tree");
 	ewl_widget_show(vbox);
-	
+
 	str = "List";
 	misc = ewl_tree_new(1);
 	ewl_tree_headers_set(EWL_TREE(misc), &str);
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	str = "Row 1";
 	item = ewl_tree_text_row_add(EWL_TREE(misc), NULL, &str);
 
@@ -331,18 +331,18 @@ XXX Port this to use the model/view system
 
 	str = "Row 3";
 	item = ewl_tree_text_row_add(EWL_TREE(misc), NULL, &str);
-	
+
 	misc = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	str_col[0] = "Tree";
 	str_col[1] = "Column";
 	misc = ewl_tree_new(2);
 	ewl_tree_headers_set(EWL_TREE(misc), str_col);
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	str_col[0] = "row1";
 	str_col[1] = "label";
 	item = ewl_tree_text_row_add(EWL_TREE(misc), NULL, str_col);
@@ -350,7 +350,7 @@ XXX Port this to use the model/view system
 	str_col[0] = "sub row";
 	str_col[1] = "label";
 	item = ewl_tree_text_row_add(EWL_TREE(misc), EWL_ROW(item), str_col);
-	
+
 	str_col[0] = "row2";
 	str_col[1] = "label";
 	item = ewl_tree_text_row_add(EWL_TREE(misc), NULL, str_col);
@@ -358,13 +358,13 @@ XXX Port this to use the model/view system
 	str_col[0] = "sub row";
 	str_col[1] = "label";
 	item = ewl_tree_text_row_add(EWL_TREE(misc), EWL_ROW(item), str_col);
-	
+
 	/* Misc */
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(notebook), vbox);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox, "Misc");
 	ewl_widget_show(vbox);
-	
+
 	misc = ewl_hpaned_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
@@ -383,11 +383,11 @@ XXX Port this to use the model/view system
 	ewl_text_text_set(EWL_TEXT(item), "right");
 	ewl_container_child_append(EWL_CONTAINER(misc), item);
 	ewl_widget_show(item);
-	
+
 	misc = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
-	
+
 	misc = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(misc), "Tooltip");
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);

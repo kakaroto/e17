@@ -216,7 +216,7 @@ ewl_text_fmt_node_insert(Ewl_Text_Fmt *fmt, unsigned int idx,
 			fmt->current_node.char_idx += cur_node->char_len;
 			fmt->current_node.byte_idx += cur_node->byte_len;
 		}
-		else 
+		else
 		{
 			ecore_dlist_append(fmt->nodes, node);
 			ecore_dlist_last_goto(fmt->nodes);
@@ -230,10 +230,10 @@ ewl_text_fmt_node_insert(Ewl_Text_Fmt *fmt, unsigned int idx,
 	else
 	{
 		/* insert into the middle of the current node */
-		left = ewl_text_fmt_node_new(node->tx, 
+		left = ewl_text_fmt_node_new(node->tx,
 				idx - fmt->current_node.char_idx, 0);
-		ewl_text_fmt_char_to_byte(fmt, idx, 
-					idx - fmt->current_node.char_idx, 
+		ewl_text_fmt_char_to_byte(fmt, idx,
+					idx - fmt->current_node.char_idx,
 					NULL, &(left->byte_len));
 
 		cur_node->char_len -= left->char_len;
@@ -266,12 +266,12 @@ ewl_text_fmt_node_insert(Ewl_Text_Fmt *fmt, unsigned int idx,
 /**
  * @param fmt: The Ewl_Text_Fmt to work with
  * @param idx: The index to delete from
- * @param char_len: The character length to delete 
+ * @param char_len: The character length to delete
  * @return Returns no value
  * @brief Removes any formatting for @a char_len bytes starting at @a idx
  */
 void
-ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx, 
+ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
 					unsigned int char_len)
 {
 	Ewl_Text_Fmt_Node *node;
@@ -279,7 +279,7 @@ ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fmt", fmt);
 
-	if (idx < fmt->current_node.char_idx) 
+	if (idx < fmt->current_node.char_idx)
 	{
 		DWARNING("The current position (%u) is higher than the to "
 				"be to remove position (%u)\n",
@@ -304,9 +304,9 @@ ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
 
 			/* Note: we already removed the related text part
 			 * so it is save to use the new shorter text here */
-			ewl_text_fmt_char_to_byte(fmt, 
+			ewl_text_fmt_char_to_byte(fmt,
 					fmt->current_node.char_idx,
-					node->char_len, 
+					node->char_len,
 					NULL, &byte_len);
 
 			/* deduct the byte count */
@@ -360,7 +360,7 @@ ewl_text_fmt_node_count_get(Ewl_Text_Fmt *fmt)
 /**
  * @param fmt: The Ewl_Text_Fmt to work with
  * @return Returns the last node in the formatting information
- * @brief Retrives the last formatting node 
+ * @brief Retrives the last formatting node
  */
 Ewl_Text_Fmt_Node *
 ewl_text_fmt_get_last(Ewl_Text_Fmt *fmt)
@@ -374,7 +374,7 @@ ewl_text_fmt_get_last(Ewl_Text_Fmt *fmt)
 /**
  * @param fmt: The Ewl_Text_Fmt to work with
  * @return Returns the first node in the formatting information
- * @brief Retrives the first formatting node 
+ * @brief Retrives the first formatting node
  */
 Ewl_Text_Fmt_Node *
 ewl_text_fmt_get_first(Ewl_Text_Fmt *fmt)
@@ -388,7 +388,7 @@ ewl_text_fmt_get_first(Ewl_Text_Fmt *fmt)
 /**
  * @param fmt: The Ewl_Text_Fmt to work with
  * @return Returns the current node in the formatting information
- * @brief Retrives the current formatting node 
+ * @brief Retrives the current formatting node
  */
 Ewl_Text_Fmt_Node *
 ewl_text_fmt_get_current(Ewl_Text_Fmt *fmt)
@@ -437,26 +437,26 @@ ewl_text_fmt_get(Ewl_Text_Fmt *fmt, unsigned int idx)
 void
 ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 {
-	Ewl_Text_Fmt_Node *node; 
+	Ewl_Text_Fmt_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fmt", fmt);
 
-	if (fmt->length.char_len != EWL_TEXT(fmt->text)->length.chars) 
+	if (fmt->length.char_len != EWL_TEXT(fmt->text)->length.chars)
 	{
 		DWARNING("The character length of the fmt (%u) is not"
 				" equal to the length of the text (%u)\n",
 				fmt->length.char_len,
 				EWL_TEXT(fmt->text)->length.chars);
 	}
-	
+
 	if (idx >= fmt->length.char_len)
 	{
 		node = ecore_dlist_last_goto(fmt->nodes);
 
-		fmt->current_node.char_idx = 
+		fmt->current_node.char_idx =
 			fmt->length.char_len - node->char_len;
-		fmt->current_node.byte_idx = 
+		fmt->current_node.byte_idx =
 			fmt->length.byte_len - node->byte_len;
 
 		DRETURN(DLEVEL_STABLE);
@@ -489,9 +489,9 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 	{
 		node = ecore_dlist_last_goto(fmt->nodes);
 
-		fmt->current_node.char_idx = 
+		fmt->current_node.char_idx =
 			fmt->length.char_len - node->char_len;
-		fmt->current_node.byte_idx = 
+		fmt->current_node.byte_idx =
 			fmt->length.byte_len - node->byte_len;
 	}
 
@@ -506,13 +506,13 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 			fmt->current_node.byte_idx += node->byte_len;
 
 			ecore_dlist_next(fmt->nodes);
-			if (!(node = ecore_dlist_current(fmt->nodes))) 
+			if (!(node = ecore_dlist_current(fmt->nodes)))
 			{
 				DWARNING("Incorrectly walked off list.\n");
 				node = ecore_dlist_last_goto(fmt->nodes);
-				fmt->current_node.char_idx = 
+				fmt->current_node.char_idx =
 					fmt->length.char_len - node->char_len;
-				fmt->current_node.byte_idx = 
+				fmt->current_node.byte_idx =
 					fmt->length.byte_len - node->byte_len;
 			       	break;
 			}
@@ -526,7 +526,7 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 		while (fmt->current_node.char_idx > idx)
 		{
 			ecore_dlist_previous(fmt->nodes);
-			if (!(node = ecore_dlist_current(fmt->nodes))) 
+			if (!(node = ecore_dlist_current(fmt->nodes)))
 			{
 				DWARNING("Incorrectly walked off list.\n");
 				node = ecore_dlist_first_goto(fmt->nodes);
@@ -584,7 +584,7 @@ ewl_text_fmt_dump(Ewl_Text_Fmt *fmt)
 /**
  * @param fmt: The Ewl_Text_Fmt to work with
  * @param char_idx: The character index to convert
- * @param char_len: The cahracter length to convert 
+ * @param char_len: The cahracter length to convert
  * @param byte_idx: Where to store the byte index
  * @param byte_len: Where to store the byte length
  * @return Returns no value
@@ -594,7 +594,7 @@ ewl_text_fmt_dump(Ewl_Text_Fmt *fmt)
 /* This _HAS_ to leave the list with the same current pointer is when it
  * started */
 void
-ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt, 
+ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
 			unsigned int char_idx, unsigned int char_len,
 			unsigned int *byte_idx, unsigned int *byte_len)
 {
@@ -627,7 +627,7 @@ ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
 		}
 		move = ecore_dlist_previous;
 
-		if (!node) 
+		if (!node)
 		{
 			node = ecore_dlist_last_goto(fmt->nodes);
 			fmt->current_node.char_idx = fmt->length.char_len - node->char_len;
@@ -648,7 +648,7 @@ ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
 		}
 		move = ecore_dlist_next;
 
-		if (!node) 
+		if (!node)
 		{
 			node = ecore_dlist_first_goto(fmt->nodes);
 			fmt->current_node.char_idx = 0;
@@ -703,14 +703,14 @@ ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
  * @param byte_idx: Where to store the byte index
  * @param byte_len: Where to store the byte length
  * @param char_idx: The character index to convert
- * @param char_len: The cahracter length to convert 
+ * @param char_len: The cahracter length to convert
  * @return Returns no value
  * @brief Calculates the char index for the given @a byte_idx and stores
  * into @a char_idx. Also calculates the @a char_len for @a byte_len
  */
 void
-ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt, 
-			unsigned int byte_idx, unsigned int byte_len, 
+ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt,
+			unsigned int byte_idx, unsigned int byte_len,
 			unsigned int *char_idx, unsigned int *char_len)
 {
 	Ewl_Text *t;
@@ -740,7 +740,7 @@ ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt,
 			if (!node) break;
 		}
 
-		if (!node) 
+		if (!node)
 		{
 			node = ecore_dlist_last_goto(fmt->nodes);
 			fmt->current_node.char_idx = fmt->length.char_len - node->char_len;
@@ -820,7 +820,7 @@ ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt,
  * @brief Walks the formatting information and calls @a cb for each node
  */
 void
-ewl_text_fmt_walk(Ewl_Text_Fmt *fmt, 
+ewl_text_fmt_walk(Ewl_Text_Fmt *fmt,
 	void (*cb)(Ewl_Text_Fmt_Node *, Ewl_Text *, unsigned int byte_idx))
 {
 	Ewl_Text_Fmt_Node *current_node, *node;
@@ -853,7 +853,7 @@ ewl_text_fmt_walk(Ewl_Text_Fmt *fmt,
  * char_len characters
  */
 void
-ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask, 
+ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
 			Ewl_Text_Context *change, unsigned int char_idx,
 			unsigned int char_len)
 {
@@ -880,7 +880,7 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
 		if (!node) break;
 
 		/* covers entire node */
-		if ((char_idx == fmt->current_node.char_idx) 
+		if ((char_idx == fmt->current_node.char_idx)
 				&& (node->char_len <= char_len))
 		{
 			Ewl_Text_Context *new_tx;
@@ -931,14 +931,14 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
 			Ewl_Text_Fmt_Node *new;
 			unsigned int blen = 0, right_skip;
 
-			if (char_idx < fmt->current_node.char_idx) 
+			if (char_idx < fmt->current_node.char_idx)
 			{
 				DWARNING("Cursor index less than formatting node index");
 				right_skip = 0;
 			}
 			else
 				right_skip = char_idx - fmt->current_node.char_idx;
-			ewl_text_fmt_char_to_byte(fmt, fmt->current_node.char_idx, 
+			ewl_text_fmt_char_to_byte(fmt, fmt->current_node.char_idx,
 							right_skip, NULL, &blen);
 
 			new = ewl_text_fmt_node_new(node->tx, right_skip, blen);
@@ -976,13 +976,13 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
 
 				tx = new->tx;
 				ewl_text_fmt_char_to_byte(fmt,
-						char_idx, char_len, 
+						char_idx, char_len,
 						NULL, &blen);
 
 				/* we create a new node which will be our
 				 * formatting and reset node to be original
 				 * formatting */
-				new = ewl_text_fmt_node_new(node->tx, 
+				new = ewl_text_fmt_node_new(node->tx,
 						char_len, blen);
 
 				ecore_dlist_insert(fmt->nodes, new);
@@ -1023,7 +1023,7 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
  * @brief Creates a new Ewl_Text_Fmt_Node structure
  */
 Ewl_Text_Fmt_Node *
-ewl_text_fmt_node_new(Ewl_Text_Context *tx, unsigned int char_len, 
+ewl_text_fmt_node_new(Ewl_Text_Context *tx, unsigned int char_len,
 					unsigned int byte_len)
 {
 	Ewl_Text_Fmt_Node *node;
@@ -1041,7 +1041,7 @@ ewl_text_fmt_node_new(Ewl_Text_Context *tx, unsigned int char_len,
 	DRETURN_PTR(node, DLEVEL_STABLE);
 }
 
-static void 
+static void
 ewl_text_fmt_node_free(void *node)
 {
 	Ewl_Text_Fmt_Node *n;

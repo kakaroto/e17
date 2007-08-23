@@ -13,7 +13,7 @@ static Ewl_Unit_Test container_unit_tests[] = {
 		{NULL, NULL, -1, NULL}
 	};
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Container";

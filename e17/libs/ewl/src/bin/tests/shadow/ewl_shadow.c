@@ -29,9 +29,9 @@ create_test(Ewl_Container *box)
 	ewl_object_alignment_set(EWL_OBJECT(shadow), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(box), shadow);
 	ewl_widget_show(shadow);
-	
+
 	image = ewl_image_new();
-	ewl_image_file_set(EWL_IMAGE(image), 
+	ewl_image_file_set(EWL_IMAGE(image),
 			PACKAGE_DATA_DIR "/ewl/images/elicit.png", NULL);
 	ewl_image_size_set(EWL_IMAGE(image), 220, 210);
 	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);

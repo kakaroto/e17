@@ -249,7 +249,7 @@ ewl_object_preferred_inner_w_set(Ewl_Object *o, int w)
 }
 
 /**
- * @param o: the object to change preferred height 
+ * @param o: the object to change preferred height
  * @param h: the value to use as the preferred height
  * @return Returns no value.
  * @brief Set the preferred height of the object
@@ -1278,8 +1278,8 @@ ewl_object_insets_right_get(Ewl_Object *o)
  *
  * Stores the new alignment value into the object for use
  * when laying out the object. Possible values for the alignment are
- * EWL_FLAG_ALIGN_CENTER, EWL_FLAG_ALIGN_LEFT, EWL_FLAG_ALIGN_RIGHT, 
- * EWL_FLAG_ALIGN_TOP and EWL_FLAG_ALIGN_BOTTOM. You can combine those 
+ * EWL_FLAG_ALIGN_CENTER, EWL_FLAG_ALIGN_LEFT, EWL_FLAG_ALIGN_RIGHT,
+ * EWL_FLAG_ALIGN_TOP and EWL_FLAG_ALIGN_BOTTOM. You can combine those
  * with the bitwise OR, e.g. EWL_FLAG_ALIGN_TOP | EWL_FLAG_ALIGN_LEFT.
  */
 void
@@ -1356,10 +1356,10 @@ ewl_object_place(Ewl_Object *o, int x, int y, int w, int h)
  * @see @link Ewl_Enums Enums @endlink
  *
  * Stores the new fill policy value into the object for use when laying out
- * the object. Possible values for the fill policy are EWL_FLAG_FILL_NONE, 
+ * the object. Possible values for the fill policy are EWL_FLAG_FILL_NONE,
  * EWL_FLAG_FILL_HSHRINK, EWL_FLAG_FILL_VSHRINK, EWL_FLAG_FILL_SHRINK,
  * EWL_FLAG_FILL_HFILL, EWL_FLAG_FILL_VFILL and EWL_FLAG_FILL_FILL. You can
- * combine those with a bitwise OR, e.g. EWL_FLAG_FILL_VFILL 
+ * combine those with a bitwise OR, e.g. EWL_FLAG_FILL_VFILL
  * | EWL_FLAG_FILL_HSHRINK.
  */
 void

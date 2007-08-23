@@ -13,7 +13,7 @@
 static void ewl_combo_cb_selected_change(Ewl_MVC *mvc);
 Ewl_Widget *ewl_combo_submenu_new(Ewl_Combo *c, Ewl_Model *model,
 					Ewl_View *view, void *mvc_data);
-static void ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, 
+static void ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c,
 			Ewl_Model *model, Ewl_View *view, void *mvc_data);
 
 /**
@@ -31,7 +31,7 @@ ewl_combo_new(void)
 	if (!combo)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_combo_init(combo)) 
+	if (!ewl_combo_init(combo))
 	{
 		ewl_widget_destroy(EWL_WIDGET(combo));
 		combo = NULL;
@@ -43,7 +43,7 @@ ewl_combo_new(void)
 /**
  * @param combo: The Ewl_Combo to initialize
  * @return Returns TRUE on success or FALSE on failure
- * @brief Initializes a combo to default values 
+ * @brief Initializes a combo to default values
  */
 int
 ewl_combo_init(Ewl_Combo *combo)
@@ -57,24 +57,24 @@ ewl_combo_init(Ewl_Combo *combo)
 	ewl_widget_inherit(EWL_WIDGET(combo), EWL_COMBO_TYPE);
 	ewl_widget_appearance_set(EWL_WIDGET(combo), EWL_COMBO_TYPE);
 	ewl_box_orientation_set(EWL_BOX(combo), EWL_ORIENTATION_HORIZONTAL);
-	ewl_mvc_selected_change_cb_set(EWL_MVC(combo), 
+	ewl_mvc_selected_change_cb_set(EWL_MVC(combo),
 					ewl_combo_cb_selected_change);
 
 	combo->button = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(combo), combo->button);
 	ewl_widget_internal_set(combo->button, TRUE);
-	ewl_object_alignment_set(EWL_OBJECT(combo->button), 
+	ewl_object_alignment_set(EWL_OBJECT(combo->button),
 					EWL_FLAG_ALIGN_RIGHT);
 	ewl_callback_append(combo->button, EWL_CALLBACK_CLICKED,
 				ewl_combo_cb_decrement_clicked, combo);
 	ewl_widget_show(combo->button);
-	
+
 	/*
 	 * setup the popup
 	 */
 	combo->popup = ewl_context_menu_new();
 	ewl_popup_follow_set(EWL_POPUP(combo->popup), EWL_WIDGET(combo));
-	ewl_popup_type_set(EWL_POPUP(combo->popup), 
+	ewl_popup_type_set(EWL_POPUP(combo->popup),
 				EWL_POPUP_TYPE_MENU_VERTICAL);
 	ewl_popup_fit_to_follow_set(EWL_POPUP(combo->popup), TRUE);
 	ewl_window_keyboard_grab_set(EWL_WINDOW(combo->popup), TRUE);
@@ -82,7 +82,7 @@ ewl_combo_init(Ewl_Combo *combo)
 	ewl_widget_appearance_set(combo->popup, EWL_COMBO_TYPE
 						"/"EWL_POPUP_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(combo->popup),
-					EWL_FLAG_FILL_HFILL 
+					EWL_FLAG_FILL_HFILL
 					| EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(combo->popup),
 				EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
@@ -96,8 +96,8 @@ ewl_combo_init(Ewl_Combo *combo)
  * @param combo: The Ewl_Combo to use
  * @param editable: Set if the combo is editable or not
  * @return Returns no value
- * @brief This will set if the displayed data in the combo is editable. 
- *  
+ * @brief This will set if the displayed data in the combo is editable.
+ *
  * If the editable flag is set to TRUE then the combo will always request
  * the header as the item to display. If it is FALSE then the combo will use
  * the selected widget as the display.
@@ -115,7 +115,7 @@ ewl_combo_editable_set(Ewl_Combo *combo, unsigned int editable)
 	combo->editable = !!editable;
 
 	/* force the selected display to change */
-	ewl_combo_cb_selected_change(EWL_MVC(combo));	
+	ewl_combo_cb_selected_change(EWL_MVC(combo));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -160,7 +160,7 @@ ewl_combo_scrollable_set(Ewl_Combo *combo, unsigned int scrollable)
 		Ewl_Widget *scroll;
 		int max_h;
 
-		max_h = ewl_theme_data_int_get(EWL_WIDGET(combo), 
+		max_h = ewl_theme_data_int_get(EWL_WIDGET(combo),
 						"/combo/popup/height");
 		/* set it to sane values if it isn't defined in the theme */
 		if (max_h <= 0)
@@ -168,7 +168,7 @@ ewl_combo_scrollable_set(Ewl_Combo *combo, unsigned int scrollable)
 
 		/* setup the new scrollpane container */
 		scroll = ewl_scrollpane_new();
-		ewl_object_fill_policy_set(EWL_OBJECT(scroll), 
+		ewl_object_fill_policy_set(EWL_OBJECT(scroll),
 						EWL_FLAG_FILL_HFILL
 						| EWL_FLAG_FILL_SHRINK);
 		ewl_object_maximum_h_set(EWL_OBJECT(scroll), max_h);
@@ -227,7 +227,7 @@ ewl_combo_popup_container_set(Ewl_Combo *combo, Ewl_Container *c)
  * @brief Callback for when the button to expand the combo is pressed
  */
 void
-ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 								void *data)
 {
 	Ewl_Combo *combo;
@@ -260,7 +260,7 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_container_reset(EWL_CONTAINER(combo->popup));
-	ewl_combo_popup_fill(combo, EWL_CONTAINER(combo->popup), 
+	ewl_combo_popup_fill(combo, EWL_CONTAINER(combo->popup),
 				model, view, mvc_data);
 
 	ewl_mvc_dirty_set(EWL_MVC(combo), FALSE);
@@ -277,7 +277,7 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
  * @brief Callback for when the button to close the combo is clicked
  */
 void
-ewl_combo_cb_popup_hide(Ewl_Widget *w __UNUSED__, 
+ewl_combo_cb_popup_hide(Ewl_Widget *w __UNUSED__,
 				void *ev __UNUSED__, void *data)
 {
 	Ewl_Combo *combo;
@@ -316,7 +316,7 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 	 */
 	if (!combo->header) {
 		combo->header = ewl_cell_new();
-		ewl_container_child_prepend(EWL_CONTAINER(combo), 
+		ewl_container_child_prepend(EWL_CONTAINER(combo),
 							combo->header);
 		ewl_object_fill_policy_set(EWL_OBJECT(combo->header),
 							EWL_FLAG_FILL_FILL);
@@ -338,7 +338,7 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 		item = view->fetch(model->fetch(mvc_data, idx->row, 0),
 				idx->row, 0);
 	}
-	else if (view->header_fetch) 
+	else if (view->header_fetch)
 		item = view->header_fetch(ewl_mvc_data_get(mvc), 0);
 
 	if (item)
@@ -359,7 +359,7 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
  * @brief Callback for when the button to expand the combo is pressed
  */
 Ewl_Widget *
-ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, Ewl_View *view, 
+ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, Ewl_View *view,
 			void *mvc_data)
 {
 	Ewl_Widget *menu;
@@ -376,13 +376,13 @@ ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, Ewl_View *view,
 	if (!model || !view)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_combo_popup_fill(combo, EWL_CONTAINER(menu), 
+	ewl_combo_popup_fill(combo, EWL_CONTAINER(menu),
 				model, view, mvc_data);
 
 	ewl_button_label_set(EWL_BUTTON(menu), NULL);
 	ewl_button_image_set(EWL_BUTTON(menu), NULL, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(menu), EWL_FLAG_FILL_HFILL);
-	ewl_container_redirect_set(EWL_CONTAINER(menu), 
+	ewl_container_redirect_set(EWL_CONTAINER(menu),
 			EWL_CONTAINER(EWL_BUTTON(menu)->body));
 
 	DRETURN_PTR(menu, DLEVEL_STABLE);
@@ -398,7 +398,7 @@ ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, Ewl_View *view,
  * @brief fill the given container with the items
  */
 static void
-ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model, 
+ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model,
 			Ewl_View *view, void *mvc_data)
 {
 	unsigned int count, i;
@@ -420,9 +420,9 @@ ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model,
 			Ewl_View *ev;
 			void *ed;
 
-			/* if there shouldn't be a model for the expansion 
+			/* if there shouldn't be a model for the expansion
 			 * we us the current model */
-			if (!model->expansion.model 
+			if (!model->expansion.model
 					|| !(em = model->expansion.model(mvc_data, i)))
 				em = model;
 			/* if there shouldm't be a view for the expansion
@@ -449,7 +449,7 @@ ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model,
 		}
 		ewl_container_child_append(c, o);
 		ewl_widget_show(o);
-		
+
 		if (view->fetch && model->fetch)
 		{
 			item = view->fetch(model->fetch(mvc_data, i, 0), i, 0);
@@ -475,7 +475,7 @@ ewl_combo_cell_new(void)
 	if (!cell)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_combo_cell_init(cell)) 
+	if (!ewl_combo_cell_init(cell))
 	{
 		ewl_widget_destroy(EWL_WIDGET(cell));
 		cell = NULL;
@@ -487,7 +487,7 @@ ewl_combo_cell_new(void)
 /**
  * @param cell: The Ewl_Combo_Cell to initialize
  * @return Returns TRUE on success or FALSE on failure
- * @brief Initializes a combo cell to default values 
+ * @brief Initializes a combo cell to default values
  */
 int
 ewl_combo_cell_init(Ewl_Combo_Cell *cell)
@@ -501,7 +501,7 @@ ewl_combo_cell_init(Ewl_Combo_Cell *cell)
 	ewl_widget_inherit(EWL_WIDGET(cell), EWL_COMBO_CELL_TYPE);
 	ewl_widget_appearance_set(EWL_WIDGET(cell), EWL_COMBO_CELL_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_HFILL);
-	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CLICKED,
 				ewl_combo_cell_cb_clicked, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -522,7 +522,7 @@ ewl_combo_cell_combo_set(Ewl_Combo_Cell *cell, Ewl_Combo *combo)
 	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
 
 	cell->combo = combo;
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -554,7 +554,7 @@ ewl_combo_cell_model_set(Ewl_Combo_Cell *cell, Ewl_Model *model)
 	DCHECK_PARAM_PTR("model", model);
 
 	cell->model = model;
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -585,7 +585,7 @@ ewl_combo_cell_data_set(Ewl_Combo_Cell *cell, void *mvc_data)
 	DCHECK_TYPE("cell", cell, EWL_COMBO_CELL_TYPE);
 
 	cell->mvc_data = mvc_data;
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -611,7 +611,7 @@ ewl_combo_cell_data_get(Ewl_Combo_Cell *cell)
  * @brief Callback for when a combo item is clicked
  */
 void
-ewl_combo_cell_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_combo_cell_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 							void *data __UNUSED__)
 {
 	Ewl_Combo *combo;
@@ -629,7 +629,7 @@ ewl_combo_cell_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 	combo = ewl_combo_cell_combo_get(EWL_COMBO_CELL(w));
 	model = ewl_combo_cell_model_get(EWL_COMBO_CELL(w));
 	mvc_data = ewl_combo_cell_data_get(EWL_COMBO_CELL(w));
-	
+
 	ewl_mvc_selected_set(EWL_MVC(combo), model, mvc_data, i, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

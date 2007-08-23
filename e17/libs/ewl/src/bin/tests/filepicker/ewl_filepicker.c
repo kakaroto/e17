@@ -32,7 +32,7 @@
  *
  * Along with changing the directory you can also specify if the picker will
  * allow for multiple file selections, showing dot files, showing the
- * favorites panel or setting the file filter. This is done with the 
+ * favorites panel or setting the file filter. This is done with the
  * following code:
  *
  * @code
@@ -44,14 +44,14 @@
  *
  * ewl_filepicker_show_favorites_set(fp, TRUE);
  * fav = ewl_filepicker_show_favorites_get(fp);
- * 
+ *
  * ewl_filepicker_filter_set(fp, filter);
  * filter = ewl_filepicker_filter_get(fp);
  * @endcode
  *
  * You can also change the view used for the file list.
  *
- * @code 
+ * @code
  * ewl_filepicker_list_view_set(fp, view);
  * view = ewl_filepicker_list_view_get(fp);
  * @endcode
@@ -70,7 +70,7 @@
  */
 
 static int create_test(Ewl_Container *box);
-static void ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev, 
+static void ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev,
 							void *data);
 static int directory_test_set_get(char *buf, int len);
 static int directory_test_path_split(char *buf, int len);
@@ -81,7 +81,7 @@ static Ewl_Unit_Test filepicker_unit_tests[] = {
 		{NULL, NULL, -1, NULL}
 	};
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Filepicker";
@@ -109,7 +109,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev, 
+ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev,
 					void *data __UNUSED__)
 {
 	Ewl_Filepicker *fp;

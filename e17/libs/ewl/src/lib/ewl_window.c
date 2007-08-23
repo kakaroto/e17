@@ -206,7 +206,7 @@ ewl_window_class_set(Ewl_Window *win, const char *classname)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	if ((!classname) || (!win->classname) 
+	if ((!classname) || (!win->classname)
 			|| (strcmp(win->classname, classname)))
 	{
 		IF_FREE(win->classname);
@@ -275,7 +275,7 @@ ewl_window_dialog_set(Ewl_Window *win, int dialog)
 	/* do nothing if already set */
 	if (dialog == ewl_window_dialog_get(win))
 		DRETURN(DLEVEL_STABLE);
-	
+
 	if (dialog)
 		win->flags |= EWL_WINDOW_DIALOG;
 	else
@@ -308,7 +308,7 @@ ewl_window_dialog_get(Ewl_Window *win)
  * @return Returns no value
  * @brief Sets the fullscreen setting for the window
  */
-void 
+void
 ewl_window_fullscreen_set(Ewl_Window *win, unsigned int fullscreen)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -350,7 +350,7 @@ ewl_window_fullscreen_get(Ewl_Window *win)
  * @return Returns no value
  * @brief Sets the skip taskbar setting for the window
  */
-void 
+void
 ewl_window_skip_taskbar_set(Ewl_Window *win, unsigned int skip)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -373,7 +373,7 @@ ewl_window_skip_taskbar_set(Ewl_Window *win, unsigned int skip)
 
 /**
  * @param win: The window to work with
- * @return Returns TRUE if the window is to be skipped for the taskbar, 
+ * @return Returns TRUE if the window is to be skipped for the taskbar,
  *		FALSE otherwise
  * @brief Retrieve the skip taskbar setting for the window
  */
@@ -393,7 +393,7 @@ ewl_window_skip_taskbar_get(Ewl_Window *win)
  * @return Returns no value
  * @brief Sets the skip pager setting for the window
  */
-void 
+void
 ewl_window_skip_pager_set(Ewl_Window *win, unsigned int skip)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -416,7 +416,7 @@ ewl_window_skip_pager_set(Ewl_Window *win, unsigned int skip)
 
 /**
  * @param win: The window to work with
- * @return Returns TRUE if the window is to be skipped for the pager, 
+ * @return Returns TRUE if the window is to be skipped for the pager,
  *		FALSE otherwise
  * @brief Retrieve the skip pager setting for the window
  */
@@ -498,7 +498,7 @@ ewl_window_lower(Ewl_Window *win)
  * @return Returns no value.
  * @brief Request the WM to pay attention to the window
  *
- * Demand attention for the window @a win if it is realized. 
+ * Demand attention for the window @a win if it is realized.
  * The window manager will then try to draw attention to the
  * window, e.g. a blinking taskbar entry. When the window
  * got the wanted attention the window manager will stop
@@ -619,7 +619,7 @@ ewl_window_transient_for_foreign(Ewl_Window *win, Ewl_Embed_Window *forwin)
 	win->flags |= EWL_WINDOW_TRANSIENT_FOREIGN;
 	win->flags &= ~EWL_WINDOW_TRANSIENT;
 
-	if (win->window) 
+	if (win->window)
 		ewl_engine_window_transient_for(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -688,7 +688,7 @@ ewl_window_leader_foreign_set(Ewl_Window *win, Ewl_Embed_Window *leader)
 
 	/* if there is no leader remove the leader for state
 	 * and update the window, if it already exists */
-	if (!leader) 
+	if (!leader)
 		win->flags &= ~EWL_WINDOW_LEADER_FOREIGN;
 	else
 		win->flags |= EWL_WINDOW_LEADER_FOREIGN;
@@ -715,7 +715,7 @@ ewl_window_leader_get(Ewl_Window *win)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
 	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, NULL);
-	
+
 	if (win->flags & EWL_WINDOW_LEADER)
 		DRETURN_PTR(win->leader.ewl, DLEVEL_STABLE);
 
@@ -736,7 +736,7 @@ ewl_window_leader_foreign_get(Ewl_Window *win)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
 	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, NULL);
-	
+
 	if (win->flags & EWL_WINDOW_LEADER_FOREIGN)
 		DRETURN_PTR(win->leader.foreign, DLEVEL_STABLE);
 
@@ -796,7 +796,7 @@ ewl_window_keyboard_grab_set(Ewl_Window *win, int grab)
 
 	if (grab)
 		win->flags |= EWL_WINDOW_GRAB_KEYBOARD;
-	else 
+	else
 		win->flags &= ~EWL_WINDOW_GRAB_KEYBOARD;
 
 	ewl_engine_keyboard_grab(win);
@@ -841,7 +841,7 @@ ewl_window_pointer_grab_set(Ewl_Window *win, int grab)
 
 	if (grab)
 		win->flags |= EWL_WINDOW_GRAB_POINTER;
-	else 
+	else
 		win->flags &= ~EWL_WINDOW_GRAB_POINTER;
 
 	ewl_engine_pointer_grab(win);
@@ -957,7 +957,7 @@ ewl_window_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	window = EWL_WINDOW(w);
 
-	ewl_engine_window_new(window);	
+	ewl_engine_window_new(window);
 	ewl_engine_window_name_class_set(window);
 	ewl_engine_window_title_set(window);
 	ewl_engine_window_borderless_set(window);
@@ -977,7 +977,7 @@ ewl_window_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	}
 	ewl_engine_embed_dnd_aware_set(EWL_EMBED(window));
 
-	ewl_engine_canvas_setup(window, ewl_config_int_get(ewl_config, 
+	ewl_engine_canvas_setup(window, ewl_config_int_get(ewl_config,
 					EWL_CONFIG_DEBUG_EVAS_RENDER));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1115,7 +1115,7 @@ ewl_window_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	if (win->flags & EWL_WINDOW_USER_CONFIGURE)
 		win->flags &= ~EWL_WINDOW_USER_CONFIGURE;
-	else    
+	else
 		ewl_engine_window_resize(win);
 
 	ewl_engine_window_show(win);
@@ -1135,7 +1135,7 @@ ewl_window_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The expose callback
  */
 void
-ewl_window_cb_expose(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_window_cb_expose(Ewl_Widget *w, void *ev __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Window *win;
@@ -1256,7 +1256,7 @@ ewl_window_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * keeps the bounds respected.
 	 */
 	ewl_engine_window_min_max_size_set(win);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

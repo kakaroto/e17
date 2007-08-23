@@ -9,7 +9,7 @@
 
 static int create_test(Ewl_Container *box);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Icon";

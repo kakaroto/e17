@@ -10,7 +10,7 @@
  * this array needs to have it's items in the same order as they
  * appear in the Ewl_Stock_Type enum
  */
-struct 
+struct
 {
 	char *label;
 	char *image_key;
@@ -104,19 +104,19 @@ ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock)
 
 	/* set the label */
 	if (s->stock_funcs->label_set)
-		s->stock_funcs->label_set(s, 
+		s->stock_funcs->label_set(s,
 			 ewl_stock_items[s->stock_type].label);
 
 	/* set the image */
 	if (s->stock_funcs->image_set) {
 		const char *data;
-		
+
 		/* check for an image key */
 		data = ewl_icon_theme_icon_path_get(
 				ewl_stock_items[s->stock_type].image_key,
 				EWL_ICON_SIZE_MEDIUM);
 
-		s->stock_funcs->image_set(s, data, 
+		s->stock_funcs->image_set(s, data,
 				ewl_stock_items[s->stock_type].image_key);
 	}
 
@@ -133,7 +133,7 @@ ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock)
  * @return Returns the Ewl_Stock_Type of the stock widget
  * @brief Get the stock type in use
  */
-Ewl_Stock_Type 
+Ewl_Stock_Type
 ewl_stock_type_get(Ewl_Stock *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

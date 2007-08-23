@@ -41,7 +41,7 @@ static void cb_mouse_move(Ewl_Widget *w, void *ev, void *data);
 
 #define WIN_NAME "buffer_engine_window"
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Engine";

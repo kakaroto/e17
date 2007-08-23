@@ -5,7 +5,7 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static Ewl_Widget *ewl_tree2_view_plain_cb_widget_fetch(void *data, 
+static Ewl_Widget *ewl_tree2_view_plain_cb_widget_fetch(void *data,
 							unsigned int row,
 							unsigned int col);
 
@@ -31,7 +31,7 @@ ewl_tree2_view_plain_get(void)
 }
 
 static Ewl_Widget *
-ewl_tree2_view_plain_cb_widget_fetch(void *data __UNUSED__, 
+ewl_tree2_view_plain_cb_widget_fetch(void *data __UNUSED__,
 					unsigned int row __UNUSED__,
 					unsigned int col __UNUSED__)
 {

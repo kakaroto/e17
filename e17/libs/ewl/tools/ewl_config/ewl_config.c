@@ -42,16 +42,16 @@ static void ec_cb_win_hide(Ewl_Widget *w, void *ev, void *data);
 typedef struct Ec_Gui_Menu_Item Ec_Gui_Menu_Item;
 struct Ec_Gui_Menu_Item
 {
-	char *name; 
+	char *name;
 	void (*cb)(Ewl_Widget *w, void *ev, void *data);
-};		
-		 
+};
+
 typedef struct Ec_Gui_Menu Ec_Gui_Menu;
-struct Ec_Gui_Menu 
-{			
+struct Ec_Gui_Menu
+{
 	char *name;
 	Ec_Gui_Menu_Item *items;
-};  
+};
 
 
 int
@@ -67,7 +67,7 @@ main(int argc, char ** argv)
 
 	for (i = 1; i < argc; i++)
 	{
-		if ((!strncmp(argv[i], "-s", 2)) 
+		if ((!strncmp(argv[i], "-s", 2))
 				|| (!strncmp(argv[i], "-set", 4)))
 		{
 			if (++i < argc)
@@ -87,7 +87,7 @@ main(int argc, char ** argv)
 				*val = '\0';
 				val++;
 
-				ewl_config_string_set(ewl_config, key, val, 
+				ewl_config_string_set(ewl_config, key, val,
 							EWL_STATE_PERSISTENT);
 				free(t);
 
@@ -99,7 +99,7 @@ main(int argc, char ** argv)
 				goto EWL_SHUTDOWN;
 			}
 		}
-		else if ((!strncmp(argv[i], "-g", 2)) 
+		else if ((!strncmp(argv[i], "-g", 2))
 				|| (!strncmp(argv[i], "-get", 4)))
 		{
 			if (++i < argc)
@@ -178,7 +178,7 @@ ec_main_win(int save_system)
 	ewl_window_class_set(EWL_WINDOW(o), "ewl_config");
 	ewl_window_name_set(EWL_WINDOW(o), "ewl_config");
 	ewl_object_size_request(EWL_OBJECT(o), 450, 250);
-	ewl_callback_append(o, EWL_CALLBACK_DELETE_WINDOW, 
+	ewl_callback_append(o, EWL_CALLBACK_DELETE_WINDOW,
 					ec_cb_delete_window, NULL);
 	ewl_widget_show(o);
 
@@ -189,7 +189,7 @@ ec_main_win(int save_system)
 	o = ewl_hmenubar_new();
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ec_menubar_setup(EWL_MENUBAR(o));
-	ewl_object_fill_policy_set(EWL_OBJECT(o), 
+	ewl_object_fill_policy_set(EWL_OBJECT(o),
 			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	ewl_widget_show(o);
 
@@ -216,8 +216,8 @@ ec_main_win(int save_system)
 
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Revert");
-	ewl_button_image_set(EWL_BUTTON(o), 
-			ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_CANCEL, 
+	ewl_button_image_set(EWL_BUTTON(o),
+			ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_CANCEL,
 							EWL_ICON_SIZE_MEDIUM),
 			EWL_ICON_DIALOG_CANCEL);
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
@@ -250,7 +250,7 @@ ec_main_win(int save_system)
 }
 
 static void
-ec_cb_delete_window(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ec_cb_delete_window(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	ewl_main_quit();
@@ -352,11 +352,11 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	if (rep)
 	{
 		while ((file = readdir(rep)))
-		{	   
+		{
 			int len;
 
 			len = strlen(file->d_name);
-			if ((len >= 4) && 
+			if ((len >= 4) &&
 					(!strcmp(file->d_name + len - 4, ".edj")))
 			{
 				char *t;
@@ -394,7 +394,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	o = ewl_entry_new();
 	ewl_widget_name_set(o, EC_ICON_THEME);
 	ewl_table_add(EWL_TABLE(box), o, 1, 1, 0, 0);
-	ewl_text_text_set(EWL_TEXT(o), 
+	ewl_text_text_set(EWL_TEXT(o),
 		ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_ICON_THEME));
 	ewl_widget_show(o);
 
@@ -477,7 +477,7 @@ ec_debug_page_setup(Ewl_Notebook *n)
 	Ewl_Widget *box, *o2;
 	int i, row = 0;
 
-	struct 
+	struct
 	{
 		char *label;
 		char *key;
@@ -547,7 +547,7 @@ ec_debug_page_setup(Ewl_Notebook *n)
 }
 
 static void
-ec_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ec_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *about, *box, *o;
@@ -609,7 +609,7 @@ ec_cb_win_hide(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 }
 
 static void
-ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *o;
@@ -681,7 +681,7 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *o;
@@ -720,9 +720,9 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	for (i = 0; checks[i].name != NULL; i++)
 	{
 		o = ewl_widget_name_find(checks[i].name);
-		if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)) != 
+		if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)) !=
 				ewl_config_int_get(ewl_config, checks[i].key))
-			ewl_config_int_set(ewl_config, checks[i].key, 
+			ewl_config_int_set(ewl_config, checks[i].key,
 					ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)),
 					EWL_STATE_PERSISTENT);
 	}
@@ -733,20 +733,20 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 		o = ewl_widget_name_find(strings[i].name);
 		new = ewl_text_text_get(EWL_TEXT(o));
-		if (strcmp(new, ewl_config_string_get(ewl_config, 
+		if (strcmp(new, ewl_config_string_get(ewl_config,
 						strings[i].key)))
 		{
-			ewl_config_string_set(ewl_config, 
+			ewl_config_string_set(ewl_config,
 					strings[i].key, new,
 					EWL_STATE_PERSISTENT);
 		}
 	}
 
 	o = ewl_widget_name_find(EC_DEBUG_LEVEL);
-	if (ewl_range_value_get(EWL_RANGE(o)) != 
+	if (ewl_range_value_get(EWL_RANGE(o)) !=
 			ewl_config_int_get(ewl_config, EWL_CONFIG_DEBUG_LEVEL))
 	{
-		ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_LEVEL, 
+		ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_LEVEL,
 					ewl_range_value_get(EWL_RANGE(o)),
 					EWL_STATE_PERSISTENT);
 	}
@@ -755,7 +755,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	val = ewl_range_value_get(EWL_RANGE(o));
 	if (val != ewl_config_int_get(ewl_config, EWL_CONFIG_THEME_ICON_SIZE))
 	{
-		ewl_config_int_set(ewl_config, 
+		ewl_config_int_set(ewl_config,
 				EWL_CONFIG_THEME_ICON_SIZE, val,
 				EWL_STATE_PERSISTENT);
 	}

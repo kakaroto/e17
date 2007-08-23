@@ -49,7 +49,7 @@ ewl_row_init(Ewl_Row *row)
 
 	ewl_container_show_notify_set(EWL_CONTAINER(row), ewl_row_cb_child_show);
 	ewl_container_hide_notify_set(EWL_CONTAINER(row), ewl_row_cb_child_hide);
-	ewl_container_resize_notify_set(EWL_CONTAINER(row), 
+	ewl_container_resize_notify_set(EWL_CONTAINER(row),
 					ewl_row_cb_child_resize);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL);
@@ -179,7 +179,7 @@ ewl_row_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 		while ((child = EWL_OBJECT(ewl_container_child_next(c)))) {
 			align = EWL_OBJECT(ewl_container_child_next(hdr));
 			if (align && VISIBLE(align))
-				width = ewl_object_current_x_get(align) + 
+				width = ewl_object_current_x_get(align) +
 						ewl_object_current_w_get(align) - x;
 			else if (nodes)
 				width = remains / nodes;
@@ -356,7 +356,7 @@ ewl_row_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
  * @brief The child resize callback
  */
 void
-ewl_row_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
+ewl_row_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 				int size, Ewl_Orientation o)
 {
 	Ewl_Row *row;

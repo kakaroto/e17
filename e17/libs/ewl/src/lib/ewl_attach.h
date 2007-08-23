@@ -23,7 +23,7 @@
 
 /**
  * @def EWL_ATTACH(attach)
- * Typecast a pointer to an Ewl_Attach pointer 
+ * Typecast a pointer to an Ewl_Attach pointer
  */
 #define EWL_ATTACH(attach) ((Ewl_Attach *) attach)
 
@@ -98,7 +98,7 @@ struct Ewl_Attach_Dnd
 	ewl_attach_other_set(EWL_WIDGET(w), EWL_ATTACH_TYPE_COLOR, data)
 
 /**
- * @def ewl_attach_color_get(w) 
+ * @def ewl_attach_color_get(w)
  * Convenience method to get a colour attachment back
  */
 #define ewl_attach_color_get(w) \

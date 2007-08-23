@@ -15,7 +15,7 @@
  * add the grabbers as needed. The paned widget is an Ewl_Container so to
  * add panes you just use the container functions to append, prepend and
  * insert as needed.
- * 
+ *
  * @section init_layout Initial Layout
  *
  * If you need to set the initial sizes of the items in the grabber then you
@@ -25,12 +25,12 @@
  */
 
 static int create_test(Ewl_Container *box);
-static void ewl_paned_test_cb_clicked_destroy(Ewl_Widget *w, void *ev, 
+static void ewl_paned_test_cb_clicked_destroy(Ewl_Widget *w, void *ev,
 							void *data);
 static void ewl_paned_test_cb_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_paned_test_cb_add(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Paned";

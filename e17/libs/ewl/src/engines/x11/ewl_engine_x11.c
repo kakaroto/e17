@@ -69,7 +69,7 @@ static void ee_window_borderless_set(Ewl_Window *win);
 static void ee_window_dialog_set(Ewl_Window *win);
 static void ee_window_states_set(Ewl_Window *win);
 static void ee_window_state_request(Ewl_Window *win, int states);
-static void ee_window_state_handle(Ewl_Window *win, int states, 
+static void ee_window_state_handle(Ewl_Window *win, int states,
 				Ewl_Window_Flags ewl_flag,
 				Ecore_X_Window_State ecore_flag);
 static void ee_window_states_set_helper(Ewl_Window *win);
@@ -161,7 +161,7 @@ ewl_engine_create(int *argc, char ** argv)
 		FREE(engine);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
-	
+
 	DRETURN_PTR(EWL_ENGINE(engine), DLEVEL_STABLE);
 }
 
@@ -182,7 +182,7 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
 	if (argc && argv)
 	{
 		for (i = 1; i < *argc; i++)
-		{ 
+		{
 			if (!strcmp(argv[i], "-display"))
 			{
 				if (++i < *argc)
@@ -215,7 +215,7 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
 						ECORE_X_EVENT_KEY_DOWN,
 						ewl_ev_x_key_down, NULL);
 	ee_key_up_handler = ecore_event_handler_add(
-						ECORE_X_EVENT_KEY_UP, 
+						ECORE_X_EVENT_KEY_UP,
 						ewl_ev_x_key_up, NULL);
 
 	/*
@@ -273,9 +273,9 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
 						ECORE_X_EVENT_WINDOW_FOCUS_OUT,
 						ewl_ev_x_focus_out, NULL);
 
-	if (!ee_expose_handler || !ee_configure_handler 
+	if (!ee_expose_handler || !ee_configure_handler
 			|| !ee_delete_request_handler
-			|| !ee_key_down_handler || !ee_key_up_handler 
+			|| !ee_key_down_handler || !ee_key_up_handler
 			|| !ee_dnd_position_handler || !ee_dnd_enter_handler
 			|| !ee_dnd_leave_handler || !ee_dnd_drop_handler
 			|| !ee_selection_notify_handler || !ee_selection_request_handler
@@ -440,8 +440,8 @@ ee_window_move(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	ecore_x_window_move((Ecore_X_Window)win->window, 
-					EWL_EMBED(win)->x, 
+	ecore_x_window_move((Ecore_X_Window)win->window,
+					EWL_EMBED(win)->x,
 					EWL_EMBED(win)->y);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -547,7 +547,7 @@ ee_window_borderless_set(Ewl_Window *win)
 	DCHECK_PARAM_PTR("win", win);
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	ecore_x_mwm_borderless_set((Ecore_X_Window)win->window, 
+	ecore_x_mwm_borderless_set((Ecore_X_Window)win->window,
 				(!!(win->flags & EWL_WINDOW_BORDERLESS)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -561,7 +561,7 @@ ee_window_dialog_set(Ewl_Window *win)
 	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	ecore_x_netwm_window_type_set((Ecore_X_Window)win->window,
-			((!!(win->flags & EWL_WINDOW_DIALOG)) ? 
+			((!!(win->flags & EWL_WINDOW_DIALOG)) ?
 					ECORE_X_WINDOW_TYPE_DIALOG :
 					ECORE_X_WINDOW_TYPE_NORMAL));
 
@@ -575,7 +575,7 @@ ee_window_states_set(Ewl_Window *win)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE); 
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	diff = win->flags ^ win->old_flags;
 	if (!diff) DRETURN(DLEVEL_STABLE);
@@ -591,7 +591,7 @@ ee_window_states_set(Ewl_Window *win)
 }
 
 static void
-ee_window_state_handle(Ewl_Window *win, int states, 
+ee_window_state_handle(Ewl_Window *win, int states,
 				Ewl_Window_Flags ewl_flag,
 				Ecore_X_Window_State ecore_flag)
 {
@@ -599,7 +599,7 @@ ee_window_state_handle(Ewl_Window *win, int states,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE); 
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	if (states & ewl_flag)
 	{
@@ -616,19 +616,19 @@ ee_window_state_request(Ewl_Window *win, int states)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE); 
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
-	ee_window_state_handle(win, states, EWL_WINDOW_FULLSCREEN, 
+	ee_window_state_handle(win, states, EWL_WINDOW_FULLSCREEN,
 					ECORE_X_WINDOW_STATE_FULLSCREEN);
-	ee_window_state_handle(win, states, EWL_WINDOW_SKIP_TASKBAR, 
+	ee_window_state_handle(win, states, EWL_WINDOW_SKIP_TASKBAR,
 					ECORE_X_WINDOW_STATE_SKIP_TASKBAR);
-	ee_window_state_handle(win, states, EWL_WINDOW_SKIP_PAGER, 
+	ee_window_state_handle(win, states, EWL_WINDOW_SKIP_PAGER,
 					ECORE_X_WINDOW_STATE_SKIP_PAGER);
-	ee_window_state_handle(win, states, EWL_WINDOW_MODAL, 
+	ee_window_state_handle(win, states, EWL_WINDOW_MODAL,
 					ECORE_X_WINDOW_STATE_MODAL);
-	ee_window_state_handle(win, states, EWL_WINDOW_DEMANDS_ATTENTION, 
+	ee_window_state_handle(win, states, EWL_WINDOW_DEMANDS_ATTENTION,
 					ECORE_X_WINDOW_STATE_DEMANDS_ATTENTION);
-	
+
 	win->flags &= ~EWL_WINDOW_DEMANDS_ATTENTION;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -642,7 +642,7 @@ ee_window_states_set_helper(Ewl_Window *win)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE); 
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	/* Note: We're ignoring the attention demand state in here as it is
 	 * only relevant if the window has been realized */
@@ -675,7 +675,7 @@ ee_window_hints_set(Ewl_Window *win)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE); 
+	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
 
 	if (win->flags & EWL_WINDOW_LEADER)
 		win_group = win->leader.ewl->window;
@@ -686,7 +686,7 @@ ee_window_hints_set(Ewl_Window *win)
 
 	if (win->flags & EWL_WINDOW_URGENT)
 		urgent = TRUE;
-	
+
 	ecore_x_icccm_hints_set((Ecore_X_Window) win->window,
 				1, // accepts focus
 				0, // initial states
@@ -695,7 +695,7 @@ ee_window_hints_set(Ewl_Window *win)
 				0, // icon window
 				(Ecore_X_Window) win_group, // window group
 				urgent); // is urgent
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -732,11 +732,11 @@ ee_window_leader_set(Ewl_Window *win)
 	else if (win->flags & EWL_WINDOW_LEADER_FOREIGN)
 		leader = win->leader.foreign;
 	else
-		/* according to the icccm specs a client leader 
+		/* according to the icccm specs a client leader
 		 * sets itself to the leader */
 		leader = win->window;
 
-	ecore_x_icccm_client_leader_set((Ecore_X_Window)win->window, 
+	ecore_x_icccm_client_leader_set((Ecore_X_Window)win->window,
 					(Ecore_X_Window)leader);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1085,11 +1085,11 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 	if ((ewl_object_current_w_get(EWL_OBJECT(window)) != ev->w)
 			|| (ewl_object_current_h_get(EWL_OBJECT(window)) != ev->h)) {
 
-		/* 
-		 * Right now this is commented out, as it was preventing windows 
-		 * from resizing when WE were the ones setting the size 
-		 * (mainly on initial show of the window). It would be nice to 
-		 * add this back in to limit the # of window resizes occuring. 
+		/*
+		 * Right now this is commented out, as it was preventing windows
+		 * from resizing when WE were the ones setting the size
+		 * (mainly on initial show of the window). It would be nice to
+		 * add this back in to limit the # of window resizes occuring.
 		 * (As long as it doesn't break initial size.)
 		 */
 		if (ev->from_wm) window->flags |= EWL_WINDOW_USER_CONFIGURE;
@@ -1373,29 +1373,29 @@ ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
 		Ecore_X_Selection_Data *data = ev->data;
 
 		embed = ewl_embed_canvas_window_find((void *)ev->win);
-		if (embed) 
+		if (embed)
 		{
 			if (data->content == ECORE_X_SELECTION_CONTENT_FILES)
 			{
 				Ecore_X_Selection_Data_Files *files = ev->data;
 				ewl_embed_dnd_data_received_feed(embed,
 							ev->target,
-							files->files, 
+							files->files,
 							files->num_files,
 							data->format);
-			} 
+			}
 			else if (data->content == ECORE_X_SELECTION_CONTENT_TEXT)
 			{
 				Ecore_X_Selection_Data_Text *text = ev->data;
 				ewl_embed_dnd_data_received_feed(embed,
-							ev->target, text->text, 
+							ev->target, text->text,
 							data->length,
 							data->format);
-			} 
+			}
 			else
 			{
 				ewl_embed_dnd_data_received_feed(embed,
-							ev->target, data->data, 
+							ev->target, data->data,
 							data->length,
 							data->format);
 			}
@@ -1471,7 +1471,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 		 */
 		embed = ewl_embed_canvas_window_find((void *)ev->win);
 		if (embed) {
-			/* First see if we need to send an 'enter' 
+			/* First see if we need to send an 'enter'
 			 * to the widget */
 			if (ewl_embed_dnd_position_feed(embed, x, y, &px,
 							&py, &pw, &ph))

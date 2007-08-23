@@ -21,7 +21,7 @@
  * ewl_text_text_set(EWL_TEXT(text), "set the text here");
  * ewl_widget_show(text);
  * @endcode
- * 
+ *
  * Once the text object is created you can change the text, retrieve the
  * current text contents or get the text length. These things can be done
  * with:
@@ -52,7 +52,7 @@
  * There are similar calls to mainipluate the font, font size, font colour,
  * background colour, glow colour, outline colour, strikethrough colour,
  * underline colour, double underline colour, alignment, wrap and style information.
- * 
+ *
  * Styles have a few extra calls to make them easier to use. These include:
  * @code
  * void ewl_text_style_add(Ewl_Text *t, Ewl_Text_Style style, unsigned int len);
@@ -96,7 +96,7 @@ static Ewl_Unit_Test text_unit_tests[] = {
 		{NULL, NULL, -1, NULL}
 	};
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Text";
@@ -260,7 +260,7 @@ trigger_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 }
 
 static void
-trigger_cb_mouse_in(Ewl_Widget *w, void *ev __UNUSED__, 
+trigger_cb_mouse_in(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Text_Trigger *t;
@@ -272,7 +272,7 @@ trigger_cb_mouse_in(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-trigger_cb_mouse_out(Ewl_Widget *w, void *ev __UNUSED__, 
+trigger_cb_mouse_out(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Text_Trigger *t;
@@ -384,16 +384,16 @@ text_invalid_utf8_set_get(char *buf, int len)
 		snprintf(buf, len, "ewl_text_text_get() returned a "
 				"NULL-pointer");
 	}
-	else if (!strcmp(text, returned_text) 
+	else if (!strcmp(text, returned_text)
 		|| returned_text[2] < 0
 		|| returned_text[4] < 0
 		|| returned_text[10] < 0
-		|| returned_text[11] < 0) 
+		|| returned_text[11] < 0)
 	{
 		snprintf(buf, len, "Incorrect UTF-8 validation during"
 				"setting a invalid UTF-8 string");
 		return FALSE;
 	}
 	return TRUE;
-} 
+}
 

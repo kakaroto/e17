@@ -61,7 +61,7 @@ ewl_popup_init(Ewl_Popup *p)
 
 	ewl_window_override_set(EWL_WINDOW(p), TRUE);
 
-	ewl_container_show_notify_set(EWL_CONTAINER(p), 
+	ewl_container_show_notify_set(EWL_CONTAINER(p),
 					ewl_popup_cb_child_show);
 	ewl_container_resize_notify_set(EWL_CONTAINER(p),
 					ewl_popup_cb_child_resize);
@@ -73,7 +73,7 @@ ewl_popup_init(Ewl_Popup *p)
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_popup_cb_show, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, ewl_popup_cb_mouse_move,
 									NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_popup_cb_destroy, 
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_popup_cb_destroy,
 									NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -105,7 +105,7 @@ ewl_popup_type_set(Ewl_Popup *p, Ewl_Popup_Type type)
  * @brief This is to get the type of the popup. The type defines how the
  * popup will handle the positioning
  */
-Ewl_Popup_Type 
+Ewl_Popup_Type
 ewl_popup_type_get(Ewl_Popup *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -130,7 +130,7 @@ ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w)
 
 	if (p->follow == w)
 		DRETURN(DLEVEL_STABLE);
-	
+
 	if (p->follow) {
 		ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
 						ewl_popup_cb_follow_destroy, p);
@@ -140,7 +140,7 @@ ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w)
 	}
 
 	if (w) {
-		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, 
+		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 					ewl_popup_cb_follow_destroy, p);
 		ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 					ewl_popup_cb_follow_configure, p);
@@ -154,7 +154,7 @@ ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w)
 /**
  * @param p: The popup to get the follow from
  * @return Returns the follow of the popup
- * @brief 
+ * @brief
  */
 Ewl_Widget *
 ewl_popup_follow_get(Ewl_Popup *p)
@@ -180,15 +180,15 @@ ewl_popup_fit_to_follow_set(Ewl_Popup *p, int fit)
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_TYPE("p", p, EWL_POPUP_TYPE);
 
-	p->fit_to_follow = !!fit;	
+	p->fit_to_follow = !!fit;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param p: The popup 
+ * @param p: The popup
  * @return Returns if the popup is set to fit the size of the follow
- * @brief 
+ * @brief
  */
 int
 ewl_popup_fit_to_follow_get(Ewl_Popup *p)
@@ -337,7 +337,7 @@ ewl_popup_move_timer(void *data)
 	Ewl_Popup *p;
 	int dx, dy;
 	int ex, ey, mx, my;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("data", data, FALSE);
 	DCHECK_TYPE_RET("data", data, EWL_POPUP_TYPE, FALSE);
@@ -358,7 +358,7 @@ ewl_popup_move_timer(void *data)
 	ewl_embed_window_position_get(EWL_EMBED(p), &ex, &ey);
 	ewl_embed_mouse_move_feed(EWL_EMBED(p), mx - ex, my - ey, 0);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);	
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -398,7 +398,7 @@ ewl_popup_move_direction_get(Ewl_Popup *p, int *dx, int *dy)
 		*dx = -1;
 	else
 		*dx = 0;
-	
+
 	if (my <= 0)
 		*dy = 1;
 	else if (my >= dh - 1)
@@ -413,12 +413,12 @@ ewl_popup_move_direction_get(Ewl_Popup *p, int *dx, int *dy)
 /**
  * @internal
  * @param p: The popup widget
- * @param dx: The x direction 
+ * @param dx: The x direction
  * @param dy: The y direction
  * @return Returns nothing
  * @brief move the popup and its follow if this is also a popup
  */
-static void 
+static void
 ewl_popup_move(Ewl_Popup *p, int dx, int dy)
 {
 	int x, y;
@@ -435,7 +435,7 @@ ewl_popup_move(Ewl_Popup *p, int dx, int dy)
 	/* move the follow, too, if it is a popup child */
 	if (p->follow) {
 		Ewl_Embed *e;
-		
+
 		e = ewl_embed_widget_find(EWL_WIDGET(p->follow));
 		if (EWL_POPUP_IS(e))
 			ewl_popup_move(EWL_POPUP(e), dx, dy);
@@ -460,11 +460,11 @@ ewl_popup_move_stop(Ewl_Popup *p)
 	DCHECK_TYPE("p", p, EWL_POPUP_TYPE);
 
 	p->moving = FALSE;
-	
+
 	/* stop moving the follow, too, if it is a popup child */
 	if (p->follow) {
 		Ewl_Embed *e;
-		
+
 		e = ewl_embed_widget_find(EWL_WIDGET(p->follow));
 		if (EWL_POPUP_IS(e))
 			ewl_popup_move_stop(EWL_POPUP(e));
@@ -508,7 +508,7 @@ ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_popup_cb_follow_configure(Ewl_Widget *w __UNUSED__, 
+ewl_popup_cb_follow_configure(Ewl_Widget *w __UNUSED__,
 				void *ev_data __UNUSED__, void *user_data)
 {
 	Ewl_Popup *p;
@@ -564,7 +564,7 @@ ewl_popup_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	
+
 	ewl_overlay_cb_child_show(c, w);
 	ewl_popup_position_check(EWL_POPUP(c));
 
@@ -586,7 +586,7 @@ ewl_popup_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 	DCHECK_TYPE("c", c, EWL_POPUP_TYPE);
-	
+
 	ewl_overlay_cb_child_resize(c, w, size, o);
 	ewl_popup_position_check(EWL_POPUP(c));
 
@@ -603,10 +603,10 @@ ewl_popup_position_check(Ewl_Popup *p)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_TYPE("p", p, EWL_POPUP_TYPE);
-	
+
 	if (p->type == EWL_POPUP_TYPE_NONE || p->moving)
 		DRETURN(DLEVEL_STABLE);
-	
+
 	if (p->follow) {
 		Ewl_Embed *emb;
 
@@ -616,7 +616,7 @@ ewl_popup_position_check(Ewl_Popup *p)
 	}
 	else
 		ewl_embed_desktop_size_get(EWL_EMBED(p), &desk_w, &desk_h);
-	
+
 	if (p->type == EWL_POPUP_TYPE_MOUSE) {
 		x = win_x + p->mouse.x;
 		y = win_y + p->mouse.y;
@@ -632,13 +632,13 @@ ewl_popup_position_check(Ewl_Popup *p)
 			y += p->offset.y;
 	}
 	else if (p->type == EWL_POPUP_TYPE_MENU_VERTICAL) {
-		
+
 		x = win_x + CURRENT_X(p->follow);
 		y = win_y + CURRENT_Y(p->follow);
-		
+
 		if (x + CURRENT_W(p) > desk_w && x > desk_w / 2)
 			x = desk_w - CURRENT_W(p);
-		
+
 		if (y + CURRENT_H(p->follow) + CURRENT_H(p) > desk_h
 				&& y > desk_h / 2)
 			y -= CURRENT_H(p);
@@ -646,7 +646,7 @@ ewl_popup_position_check(Ewl_Popup *p)
 			y += CURRENT_H(p->follow);
 	}
 	else if (p->type == EWL_POPUP_TYPE_MENU_HORIZONTAL) {
-		
+
 		x = win_x + CURRENT_X(p->follow);
 		y = win_y + CURRENT_Y(p->follow);
 
@@ -671,10 +671,10 @@ ewl_popup_size_check(Ewl_Popup *p)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 	DCHECK_TYPE("p", p, EWL_POPUP_TYPE);
-	
+
 	if (!p->follow || p->type == EWL_POPUP_TYPE_NONE || !p->fit_to_follow)
 		DRETURN(DLEVEL_STABLE);
-	
+
 	if (p->type == EWL_POPUP_TYPE_MENU_VERTICAL)
 		ewl_object_w_request(EWL_OBJECT(p), CURRENT_W(p->follow));
 

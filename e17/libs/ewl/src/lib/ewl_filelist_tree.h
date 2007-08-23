@@ -53,12 +53,12 @@ Ewl_Widget	*ewl_filelist_tree_new(void);
 int		 ewl_filelist_tree_init(Ewl_Filelist_Tree *fl);
 
 void		 ewl_filelist_tree_dir_change(Ewl_Filelist *fl);
-void 		 ewl_filelist_tree_selected_file_add(Ewl_Filelist *fl, 
+void 		 ewl_filelist_tree_selected_file_add(Ewl_Filelist *fl,
 							const char *file);
-const char 	*ewl_filelist_tree_filename_get(Ewl_Filelist *fl, 
+const char 	*ewl_filelist_tree_filename_get(Ewl_Filelist *fl,
 							void *item);
 void		 ewl_filelist_tree_selected_unselect(Ewl_Filelist *fl);
-void		 ewl_filelist_tree_shift_handle(Ewl_Filelist *fl, 
+void		 ewl_filelist_tree_shift_handle(Ewl_Filelist *fl,
 						Ewl_Widget *clicked);
 
 /**

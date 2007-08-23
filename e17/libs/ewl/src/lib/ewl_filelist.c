@@ -8,8 +8,8 @@
 #include "ewl_debug.h"
 
 static void ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c,
-						int add, const char *signal, 
-						int a_idx, Ewl_Widget *a, 
+						int add, const char *signal,
+						int a_idx, Ewl_Widget *a,
 						int b_idx, Ewl_Widget *b);
 /**
  * @param fl: The filelist to initialize
@@ -62,7 +62,7 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 
 	ev_data.response = EWL_FILELIST_EVENT_DIR_CHANGE;
 
-	ewl_callback_call_with_event_data(EWL_WIDGET(fl), 
+	ewl_callback_call_with_event_data(EWL_WIDGET(fl),
 			EWL_CALLBACK_VALUE_CHANGED, &ev_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -70,7 +70,7 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 
 /**
  * @param fl: The filelist to get the current directory from
- * @return Returns the current directory 
+ * @return Returns the current directory
  * @brief Retrieves the current directory set on the filelist
  */
 const char *
@@ -85,11 +85,11 @@ ewl_filelist_directory_get(Ewl_Filelist *fl)
 
 /**
  * @param fl: The filelist to set the filter into
- * @param filter: The filter to set 
+ * @param filter: The filter to set
  * @return Returns no value.
  * @brief Sets the given filter into the filelist
  */
-void	
+void
 ewl_filelist_filter_set(Ewl_Filelist *fl, const char *filter)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -107,7 +107,7 @@ ewl_filelist_filter_set(Ewl_Filelist *fl, const char *filter)
 /**
  * @param fl: The filelist to get the filter from
  * @return Returns the current filter
- * @brief Retrieves the current filter set on the filelist 
+ * @brief Retrieves the current filter set on the filelist
  */
 const char *
 ewl_filelist_filter_get(Ewl_Filelist *fl)
@@ -125,7 +125,7 @@ ewl_filelist_filter_get(Ewl_Filelist *fl)
  * @return Returns no value
  * @brief Sets the given multiselect value into the filelist
  */
-void	
+void
 ewl_filelist_multiselect_set(Ewl_Filelist *fl, unsigned int ms)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -165,7 +165,7 @@ ewl_filelist_show_dot_files_set(Ewl_Filelist *fl, unsigned int dot)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fl", fl);
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
-	
+
 	fl->show_dot_files = !!dot;
 	if (fl->show_dot_change) fl->show_dot_change(fl);
 
@@ -191,7 +191,7 @@ ewl_filelist_show_dot_files_get(Ewl_Filelist *fl)
  * @param fl: The filelist to set the selected file into
  * @param file: The file to set selected
  * @return Returns no value
- * @brief Sets the given file as selected in the filelist 
+ * @brief Sets the given file as selected in the filelist
  */
 void
 ewl_filelist_selected_file_set(Ewl_Filelist *fl, const char *file)
@@ -248,17 +248,17 @@ ewl_filelist_size_get(off_t st_size)
 	dsize = (double)st_size;
 	if (dsize < 1024)
 		snprintf(size, sizeof(size), "%.0f b", dsize);
-	else 
+	else
 	{
 		dsize /= 1024.0;
 		if (dsize < 1024)
 			suffix = "kb";
-		else 
+		else
 		{
 			dsize /= 1024.0;
 			if (dsize < 1024)
 				suffix = "mb";
-			else 
+			else
 			{
 				dsize /= 1024.0;
 				suffix = "gb";
@@ -320,7 +320,7 @@ ewl_filelist_username_get(uid_t st_uid)
 	pwd = getpwuid(st_uid);
 	if (pwd)
 		snprintf(name, PATH_MAX, "%s", pwd->pw_name);
-	else 
+	else
 		snprintf(name, PATH_MAX, "%-8d", (int)st_uid);
 
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
@@ -342,9 +342,9 @@ ewl_filelist_groupname_get(gid_t st_gid)
 	grp = getgrgid(st_gid);
 	if (grp)
 		snprintf(name, PATH_MAX, "%s", grp->gr_name);
-	else 
+	else
 		snprintf(name, PATH_MAX, "%-8d", (int)st_gid);
-	
+
 	DRETURN_PTR(strdup(name), DLEVEL_STABLE);
 }
 
@@ -361,7 +361,7 @@ ewl_filelist_modtime_get(time_t st_modtime)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	time = ctime(&st_modtime);
-	if (time) 
+	if (time)
 	{
 		time = strdup(time);
 		time[strlen(time) - 1] = '\0';
@@ -385,14 +385,14 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 	char path3[PATH_MAX], file_info[PATH_MAX];
 	char *size, *perms, *username, *groupname, *time;
 	struct stat buf;
-		
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
 	DCHECK_PARAM_PTR_RET("path", path, NULL);
 	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
 
 	path2 = ewl_filelist_directory_get(EWL_FILELIST(fl));
-	snprintf(path3, PATH_MAX, "%s/%s", path2, path);	
+	snprintf(path3, PATH_MAX, "%s/%s", path2, path);
 
 	stat(path3, &buf);
 
@@ -402,15 +402,15 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 	groupname = ewl_filelist_groupname_get(buf.st_gid);
 	time = ewl_filelist_modtime_get(buf.st_mtime);
 
-	snprintf(file_info, PATH_MAX, 
+	snprintf(file_info, PATH_MAX,
 				"Size: %s\n"
 				"User ID: %s\n"
 				"Group ID: %s\n"
 				"Permissions: %s\n"
-				"Last Modified: %s\n", 
+				"Last Modified: %s\n",
 			size, username, groupname,
 			perms, time);
-	
+
 	box = ewl_vbox_new();
 	ewl_widget_show(box);
 
@@ -505,7 +505,7 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
  * @param fl: The filelist to work with
  * @return Returns no value.
  * @brief Notifies interested consumers that the filelist has changed
- * selected values 
+ * selected values
  */
 void
 ewl_filelist_selected_files_change_notify(Ewl_Filelist *fl)
@@ -517,7 +517,7 @@ ewl_filelist_selected_files_change_notify(Ewl_Filelist *fl)
 	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
 
 	ev_data.response = EWL_FILELIST_EVENT_SELECTION_CHANGE;
-	ewl_callback_call_with_event_data(EWL_WIDGET(fl), 
+	ewl_callback_call_with_event_data(EWL_WIDGET(fl),
 			EWL_CALLBACK_VALUE_CHANGED, &ev_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -586,7 +586,7 @@ ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl)
  * @return Returns no value
  * @brief Sets the value to use for flags on the horizontal scrollbar
  */
-void 
+void
 ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollpane_Flags h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -635,7 +635,7 @@ ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path)
 		DRETURN_PTR(EWL_ICON_FOLDER, DLEVEL_STABLE);
 
 	ptr = strrchr(path, '.');
-	if (ptr) 
+	if (ptr)
 	{
 		ret = ewl_io_manager_extension_icon_name_get(ptr);
 		if (ret) DRETURN_PTR(ret, DLEVEL_STABLE);
@@ -671,7 +671,7 @@ ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir)
 	if (!strcmp(dir, ".."))
 	{
 		char *t, *t2;
-	
+
 		snprintf(path, PATH_MAX, "%s", cur_dir);
 		t = path;
 		t2 = t;
@@ -717,8 +717,8 @@ ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir)
  */
 void
 ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
-		unsigned int skip_dot_dot, 
-		void (*func)(Ewl_Filelist *fl, const char *dir, 
+		unsigned int skip_dot_dot,
+		void (*func)(Ewl_Filelist *fl, const char *dir,
 				char *file, void *data), void *data)
 {
 	Ecore_List *all_files, *files, *dirs;
@@ -751,7 +751,7 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
 		if (fl->filter && (!is_dir) && fnmatch(fl->filter, file, 0))
 			continue;
 
-		if ((!ewl_filelist_show_dot_files_get(fl)) 
+		if ((!ewl_filelist_show_dot_files_get(fl))
 				&& (file[0] == '.'))
 			continue;
 
@@ -765,7 +765,7 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
 		func(fl, dir, file, data);
 		FREE(file);
 	}
-	
+
 	while ((file = ecore_list_first_remove(files)))
 	{
 		func(fl, dir, file, data);
@@ -787,12 +787,12 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
  * @param select_state: Signal to send to goto select state
  * @param unselect_state: Signal to send to goto unselect state
  * @return Returns no value.
- * @brief Adds or removes the given widget from the select list as needed 
+ * @brief Adds or removes the given widget from the select list as needed
  */
 void
 ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 				Ewl_Event_Mouse_Up *ev,
-				const char *select_state, 
+				const char *select_state,
 				const char *unselect_state)
 {
 	int multi = FALSE;
@@ -805,7 +805,7 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* only trigger on lmb */
-	if (ev->button != 1) 
+	if (ev->button != 1)
 		DRETURN(DLEVEL_STABLE);
 
 	/* are the multiselect keys pressed? */
@@ -854,8 +854,8 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 			fl->select.last = w;
 		}
 
-		if (select_state) 
-			ewl_widget_state_set(w, select_state, 
+		if (select_state)
+			ewl_widget_state_set(w, select_state,
 						EWL_STATE_PERSISTENT);
 		ecore_list_append(fl->selected, w);
 
@@ -899,9 +899,9 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
  * @brief Handles the select/deselect of widgets in the given container @a c
  */
 void
-ewl_filelist_container_shift_handle(Ewl_Filelist *fl, 
+ewl_filelist_container_shift_handle(Ewl_Filelist *fl,
 			Ewl_Container *c, Ewl_Widget *clicked,
-			const char *select_signal, 
+			const char *select_signal,
 			const char *unselect_signal)
 {
 	int base_idx, last_idx = -1, cur_idx;
@@ -938,11 +938,11 @@ ewl_filelist_container_shift_handle(Ewl_Filelist *fl,
 		/* user selected more, just tag on whats between the last
 		 * click and the current click */
 		if (((cur_idx < last_idx) && (last_idx < base_idx))
-				|| ((base_idx < last_idx) 
+				|| ((base_idx < last_idx)
 					&& (last_idx < cur_idx)))
 		{
-			ewl_filelist_signal_between(fl, c, TRUE, select_signal, 
-						last_idx, fl->select.last, 
+			ewl_filelist_signal_between(fl, c, TRUE, select_signal,
+						last_idx, fl->select.last,
 						cur_idx, clicked);
 		}
 		else
@@ -961,12 +961,12 @@ ewl_filelist_container_shift_handle(Ewl_Filelist *fl,
 			/* if we moved over the base point we need to
 			 * reseelct some stuff */
 			if (!((last_idx < base_idx) && (cur_idx < base_idx))
-					&& !((last_idx > base_idx) 
+					&& !((last_idx > base_idx)
 						&& (cur_idx > base_idx)))
 			{
 				ewl_filelist_signal_between(fl, c, TRUE,
 						select_signal, base_idx,
-						fl->select.base, cur_idx, 
+						fl->select.base, cur_idx,
 						clicked);
 			}
 		}
@@ -976,9 +976,9 @@ ewl_filelist_container_shift_handle(Ewl_Filelist *fl,
 }
 
 static void
-ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add, 
-						const char *signal, 
-						int a_idx, Ewl_Widget *a, 
+ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add,
+						const char *signal,
+						int a_idx, Ewl_Widget *a,
 						int b_idx, Ewl_Widget *b)
 {
 	Ewl_Widget *start, *end, *cur;
@@ -1025,7 +1025,7 @@ ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add,
 			{
 				ecore_list_goto(fl->selected, cur);
 				ecore_list_remove(fl->selected);
-				ewl_widget_state_set(cur, signal, 
+				ewl_widget_state_set(cur, signal,
 							EWL_STATE_PERSISTENT);
 			}
 		}
@@ -1043,7 +1043,7 @@ ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add,
  * @brief The destroy callback
  */
 void
-ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Filelist *fl;

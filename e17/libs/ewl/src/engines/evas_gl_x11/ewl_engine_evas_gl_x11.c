@@ -95,14 +95,14 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 	evas_output_method_set(evas, evas_render_method_lookup("gl_x11"));
 
 	info = evas_engine_info_get(evas);
-	if (!info) 
+	if (!info)
 	{
 		fprintf(stderr, "Unable to use gl_x11 engine for rendering, ");
 		exit(-1);
-	}  
+	}
 
 	glinfo = (Evas_Engine_Info_GL_X11 *)info;
-	
+
 	glinfo->info.display = ecore_x_display_get();
 	glinfo->info.visual = glinfo->func.best_visual_get(
 				glinfo->info.display,

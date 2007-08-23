@@ -33,7 +33,7 @@ create_test(Ewl_Container *box)
 	o2 = ewl_toolbar_new();
 	ewl_container_child_append(EWL_CONTAINER(body), o2);
 	ewl_object_alignment_set(EWL_OBJECT(o2), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(o2), 
+	ewl_object_fill_policy_set(EWL_OBJECT(o2),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	ewl_toolbar_icon_part_hide(EWL_TOOLBAR(o2), EWL_ICON_PART_LABEL);
 	ewl_widget_show(o2);
@@ -53,7 +53,7 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_STOP);
 	ewl_widget_show(o);
-	
+
 	o = ewl_icon_simple_new();
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_HOME);
@@ -62,7 +62,7 @@ create_test(Ewl_Container *box)
 	o = ewl_vseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_widget_show(o);
-	
+
 	o = ewl_hseeker_new();
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_widget_show(o);

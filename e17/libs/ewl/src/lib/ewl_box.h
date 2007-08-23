@@ -44,10 +44,10 @@ typedef struct Ewl_Box Ewl_Box;
 
 /**
  * @brief Inherits from an Ewl_Container to provide layout facilities for child
- * widgets placed inside. 
- * 
- * Layout is done horizontally (left-to-right), or vertically (top-to-bottom). 
- * There is also a flag for homogeneous layout, which gives each child Ewl_Widget 
+ * widgets placed inside.
+ *
+ * Layout is done horizontally (left-to-right), or vertically (top-to-bottom).
+ * There is also a flag for homogeneous layout, which gives each child Ewl_Widget
  * equal space inside the Ewl_Box.
  */
 struct Ewl_Box
@@ -73,16 +73,16 @@ unsigned int 	 ewl_box_homogeneous_get(Ewl_Box *b);
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size, 
+void ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 							Ewl_Orientation o);
-void ewl_box_cb_child_homogeneous_resize(Ewl_Container *c, 
+void ewl_box_cb_child_homogeneous_resize(Ewl_Container *c,
 				Ewl_Widget *w, int size, Ewl_Orientation o);
 void ewl_box_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_box_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 void ewl_box_cb_child_homogeneous_show(Ewl_Container *c, Ewl_Widget *w);
 
 void ewl_box_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
-void ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data, 
+void ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data,
 							void *user_data);
 
 /**

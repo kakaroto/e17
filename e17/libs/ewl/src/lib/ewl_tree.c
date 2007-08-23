@@ -180,7 +180,7 @@ ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
- 
+
 	tree->headers_visible = !!visible;
 	row = tree->header;
 
@@ -223,7 +223,7 @@ ewl_tree_expandable_rows_set(Ewl_Tree *tree, unsigned int expand)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
 	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
- 
+
 	tree->expands_visible = !!expand;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -625,7 +625,7 @@ ewl_tree_selected_clear(Ewl_Tree *tree)
 
 /**
  * @param tree: The tree to find the row in
- * @param row: The row number to find 
+ * @param row: The row number to find
  * @return Returns the given row, or NULL if not found
  */
 Ewl_Widget *
@@ -882,7 +882,7 @@ ewl_tree_node_init(Ewl_Tree_Node *node)
 
 	ewl_widget_appearance_set(EWL_WIDGET(node), EWL_TREE_NODE_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(node), EWL_TREE_NODE_TYPE);
-	
+
 	ewl_container_show_notify_set(EWL_CONTAINER(node),
 				  ewl_tree_cb_node_child_show);
 	ewl_container_hide_notify_set(EWL_CONTAINER(node),
@@ -1438,7 +1438,7 @@ ewl_tree_cb_hscroll(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
  * @brief Callback for when the header grabbers are moved
  */
 void
-ewl_tree_cb_header_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ewl_tree_cb_header_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 								void *data)
 {
 	Ewl_Tree *tree;

@@ -30,7 +30,7 @@
 #define EWL_FILELIST_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_FILELIST_TYPE))
 
 /**
- * The Ewl_Filelist provides a base class for the file lists 
+ * The Ewl_Filelist provides a base class for the file lists
  */
 typedef struct Ewl_Filelist Ewl_Filelist;
 
@@ -70,20 +70,20 @@ struct Ewl_Filelist
 	void (*filter_change)(Ewl_Filelist *fl);	/**< Callback to notify
 							of filter change */
 	void (*multiselect_change)(Ewl_Filelist *fl); /**< Callback to notify
-							of multilselect state 
+							of multilselect state
 							change */
 	void (*show_dot_change)(Ewl_Filelist *fl);	/**< Callback to notify
-							of show dot file 
+							of show dot file
 							setting change */
 	void (*selected_unselect)(Ewl_Filelist *fl); /**< Callback to
 							unselect all files */
-	void (*selected_file_add)(Ewl_Filelist *fl, const char *file); /**< 
-							Callback to 
+	void (*selected_file_add)(Ewl_Filelist *fl, const char *file); /**<
+							Callback to
 							notify of a change
 							to the selected
 							files */
-	const char *(*file_name_get)(Ewl_Filelist *fl, void *file); /**< 
-							Callback to get the 
+	const char *(*file_name_get)(Ewl_Filelist *fl, void *file); /**<
+							Callback to get the
 							selected filename */
 	void (*shift_handle)(Ewl_Filelist *fl, Ewl_Widget *clicked); /**<
 							Callback to handle
@@ -116,14 +116,14 @@ char		*ewl_filelist_perms_get(mode_t st_mode);
 char		*ewl_filelist_username_get(uid_t st_uid);
 char		*ewl_filelist_groupname_get(gid_t st_gid);
 char		*ewl_filelist_modtime_get(time_t modtime);
-Ewl_Widget	*ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, 
+Ewl_Widget	*ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl,
 							const char *path);
 void		 ewl_filelist_selected_files_set(Ewl_Filelist *fl,
 							Ecore_List *files);
 Ecore_List	*ewl_filelist_selected_files_get(Ewl_Filelist *fl);
 void 		 ewl_filelist_selected_files_change_notify(Ewl_Filelist *fl);
 
-void		 ewl_filelist_selected_signal_all(Ewl_Filelist *fl, 
+void		 ewl_filelist_selected_signal_all(Ewl_Filelist *fl,
 						const char *signal);
 
 void		 ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl,
@@ -137,20 +137,20 @@ Ewl_Scrollpane_Flags ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl);
 const char	*ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path);
 
 char 		*ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir);
-void 		 ewl_filelist_directory_read(Ewl_Filelist *fl, 
+void 		 ewl_filelist_directory_read(Ewl_Filelist *fl,
 					const char *dir,
 					unsigned int skip_dot_dot,
-					void (*func)(Ewl_Filelist *fl, 
-						const char *dir, 
+					void (*func)(Ewl_Filelist *fl,
+						const char *dir,
 						char *file, void *data),
 					void *data);
 void 		 ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 						Ewl_Event_Mouse_Up *ev,
-						const char *select_state, 
+						const char *select_state,
 						const char *unselect_state);
-void 		 ewl_filelist_container_shift_handle(Ewl_Filelist *fl, 
+void 		 ewl_filelist_container_shift_handle(Ewl_Filelist *fl,
 					Ewl_Container *c, Ewl_Widget *clicked,
-					const char *select_signal, 
+					const char *select_signal,
 					const char *unselect_signal);
 
 /*

@@ -7,10 +7,10 @@
 
 static int create_test(Ewl_Container *win);
 static void colordialog_cb_launch(Ewl_Widget *w, void *ev, void *data);
-static void colordialog_cb_value_changed(Ewl_Widget *w, void *ev, 
+static void colordialog_cb_value_changed(Ewl_Widget *w, void *ev,
 							void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Colordialog";

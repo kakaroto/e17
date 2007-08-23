@@ -26,7 +26,7 @@
 
 static int create_test(Ewl_Container *win);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Button";

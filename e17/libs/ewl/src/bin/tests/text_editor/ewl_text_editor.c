@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct 
+typedef struct
 {
 	char *name;
 	void (*cb)(Ewl_Widget *w, void *ev, void *data);
@@ -65,7 +65,7 @@ static void ete_cb_set(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_load(Ewl_Widget *w, void *ev, void *data);
 static void ete_cb_clear(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Text Editor";
@@ -98,21 +98,21 @@ create_test(Ewl_Container *box)
 			char *tooltip;
 			void (*cb)(Ewl_Widget *w, void *ev, void *data);
 		} format[] = {
-			{EWL_ICON_FORMAT_JUSTIFY_LEFT, "Left align", 
+			{EWL_ICON_FORMAT_JUSTIFY_LEFT, "Left align",
 							ete_cb_justify_left},
-			{EWL_ICON_FORMAT_JUSTIFY_CENTER, "Center", 
+			{EWL_ICON_FORMAT_JUSTIFY_CENTER, "Center",
 							ete_cb_justify_center},
-			{EWL_ICON_FORMAT_JUSTIFY_RIGHT, "Right align", 
+			{EWL_ICON_FORMAT_JUSTIFY_RIGHT, "Right align",
 							ete_cb_justify_right},
 			{EWL_ICON_FORMAT_TEXT_BOLD, "Bold", ete_cb_bold},
 			{EWL_ICON_FORMAT_TEXT_ITALIC, "Italic", ete_cb_italic},
-			{EWL_ICON_FORMAT_TEXT_UNDERLINE, "Underline", 
+			{EWL_ICON_FORMAT_TEXT_UNDERLINE, "Underline",
 							ete_cb_underline},
-			{EWL_ICON_FORMAT_TEXT_STRIKETHROUGH, "Strikethrough", 
+			{EWL_ICON_FORMAT_TEXT_STRIKETHROUGH, "Strikethrough",
 							ete_cb_strikethrough},
 			{NULL, NULL, NULL}
 		};
-		
+
 		styles = ecore_list_new();
 		ecore_list_append(styles, "None");
 		ecore_list_append(styles, "Shadow");
@@ -129,13 +129,13 @@ create_test(Ewl_Container *box)
 							EWL_ICON_SIZE_SMALL);
 
 			o = ewl_icon_simple_new();
-			ewl_icon_image_set(EWL_ICON(o), path, 
+			ewl_icon_image_set(EWL_ICON(o), path,
 							format[i].icon);
 			ewl_icon_label_set(EWL_ICON(o), format[i].tooltip);
 			ewl_container_child_append(EWL_CONTAINER(hbox), o);
-			ewl_object_fill_policy_set(EWL_OBJECT(o), 
+			ewl_object_fill_policy_set(EWL_OBJECT(o),
 							EWL_FLAG_FILL_VFILL);
-			ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+			ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 							format[i].cb, NULL);
 			ewl_attach_tooltip_text_set(o, format[i].tooltip);
 			ewl_widget_show(o);
@@ -161,7 +161,7 @@ create_test(Ewl_Container *box)
 		ewl_mvc_selected_set(EWL_MVC(o), NULL,
 				ewl_mvc_data_get(EWL_MVC(o)), 0, 0);
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
-		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
+		ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
 						ete_cb_styles_changed, NULL);
 		ewl_object_fill_policy_set(EWL_OBJECT(o),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
@@ -188,7 +188,7 @@ create_test(Ewl_Container *box)
 	}
 
 	scroll = ewl_scrollpane_new();
-	ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(scroll), 
+	ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(scroll),
 					EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN);
 	ewl_container_child_append(EWL_CONTAINER(box), scroll);
 	ewl_widget_name_set(scroll, "scrollpane");
@@ -225,7 +225,7 @@ create_test(Ewl_Container *box)
 				{NULL, NULL}
 			};
 
-		for (i = 0; btns[i].name != NULL; i++) 
+		for (i = 0; btns[i].name != NULL; i++)
 		{
 			o = ewl_button_new();
 			ewl_button_label_set(EWL_BUTTON(o), btns[i].name);
@@ -272,8 +272,8 @@ ete_style_apply(Ewl_Text *t, Ewl_Text_Style s)
 		ewl_text_styles_set(t, styles);
 }
 
-static void 
-ete_cb_styles_changed(Ewl_Widget *w, void *ev __UNUSED__, 
+static void
+ete_cb_styles_changed(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *entry;
@@ -306,7 +306,7 @@ ete_cb_styles_changed(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ete_cb_strikethrough(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ete_cb_strikethrough(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Widget *entry;
@@ -316,7 +316,7 @@ ete_cb_strikethrough(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-ete_cb_underline(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ete_cb_underline(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Widget *entry;
@@ -355,21 +355,21 @@ ete_align_apply(unsigned int align)
 }
 
 static void
-ete_cb_justify_left(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ete_cb_justify_left(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	ete_align_apply(EWL_FLAG_ALIGN_LEFT);
 }
 
 static void
-ete_cb_justify_center(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ete_cb_justify_center(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	ete_align_apply(EWL_FLAG_ALIGN_CENTER);
 }
 
 static void
-ete_cb_justify_right(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ete_cb_justify_right(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	ete_align_apply(EWL_FLAG_ALIGN_RIGHT);
@@ -390,7 +390,7 @@ ete_font_apply(char *font)
 				ewl_text_trigger_start_pos_get(
 					EWL_TEXT_TRIGGER(ewl_text_selection_get(EWL_TEXT(t)))));
 	else
-		of = ewl_text_font_get(EWL_TEXT(t), 
+		of = ewl_text_font_get(EWL_TEXT(t),
 				ewl_text_cursor_position_get(EWL_TEXT(t)));
 
 	if (!strcmp(of, "ewl/default/bold-italic"))
@@ -400,7 +400,7 @@ ete_font_apply(char *font)
 		else if (!strcmp(font, "ewl/default/italic"))
 			font = "ewl/default/bold";
 	}
-	else if ((!strcmp(of, "ewl/default/italic") && !strcmp(font, "ewl/default/bold")) 
+	else if ((!strcmp(of, "ewl/default/italic") && !strcmp(font, "ewl/default/bold"))
 			|| ((!strcmp(of, "ewl/default/bold") && (!strcmp(font, "ewl/default/italic")))))
 		font = "ewl/default/bold-italic";
 
@@ -428,14 +428,14 @@ ete_font_apply(char *font)
 }
 
 static void
-ete_cb_bold(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ete_cb_bold(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	ete_font_apply("ewl/default/bold");
 }
 
 static void
-ete_cb_italic(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ete_cb_italic(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	ete_font_apply("ewl/default/italic");
@@ -464,7 +464,7 @@ ete_cb_font_size(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 		ewl_text_cursor_position_set(EWL_TEXT(entry), cursor_pos);
 	}
 	else
-		ewl_text_font_size_set(EWL_TEXT(entry), 
+		ewl_text_font_size_set(EWL_TEXT(entry),
 					ewl_range_value_get(EWL_RANGE(w)));
 }
 

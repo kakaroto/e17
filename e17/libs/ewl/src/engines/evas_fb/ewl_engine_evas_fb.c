@@ -20,7 +20,7 @@ static void ee_canvas_setup(Ewl_Window *win, int debug);
 static int ee_init(Ewl_Engine *engine);
 static void ee_shutdown(Ewl_Engine *engine);
 
-static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] = 
+static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
 	{
 		ee_canvas_setup,
 		NULL, NULL, NULL, NULL
@@ -77,7 +77,7 @@ ee_init(Ewl_Engine *engine)
 					ECORE_FB_EVENT_KEY_DOWN,
 					ewl_ev_fb_key_down, engine);
 	ee_key_up_handler = ecore_event_handler_add(
-					ECORE_FB_EVENT_KEY_UP, 
+					ECORE_FB_EVENT_KEY_UP,
 					ewl_ev_fb_key_up, engine);
 	ee_mouse_down_handler = ecore_event_handler_add(
 					ECORE_FB_EVENT_MOUSE_BUTTON_DOWN,
@@ -157,11 +157,11 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
 	evas_output_method_set(evas, evas_render_method_lookup("fb"));
 
 	info = evas_engine_info_get(evas);
-	if (!info) 
+	if (!info)
 	{
 		fprintf(stderr, "Unable to use evas_fb engine for rendering, ");
 		exit(-1);
-	}  
+	}
 
 	win->window = fbinfo = (Evas_Engine_Info_FB *)info;
 

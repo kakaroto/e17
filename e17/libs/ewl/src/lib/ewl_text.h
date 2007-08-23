@@ -66,7 +66,7 @@ typedef struct Ewl_Text Ewl_Text;
 struct Ewl_Text
 {
 	Ewl_Container container;  /**< Inherit from Ewl_Container */
-	void *textblock;	  /**< The Evas_Object_Textblock */ 
+	void *textblock;	  /**< The Evas_Object_Textblock */
 
 	char *text;		  /**< The text itself */
 
@@ -107,16 +107,16 @@ Ewl_Widget 	*ewl_text_new(void);
 int 		 ewl_text_init(Ewl_Text *t);
 
 unsigned int	 ewl_text_length_get(Ewl_Text *t);
-void		 ewl_text_length_maximum_set(Ewl_Text *t, 
+void		 ewl_text_length_maximum_set(Ewl_Text *t,
 						unsigned int char_num);
 unsigned int	 ewl_text_length_maximum_get(Ewl_Text *t);
 
 void 		 ewl_text_offsets_set(Ewl_Text *t, int x, int y);
 void 		 ewl_text_offsets_get(Ewl_Text *t, int *x, int *y);
 
-void		 ewl_text_index_geometry_map(Ewl_Text *t, 
+void		 ewl_text_index_geometry_map(Ewl_Text *t,
 					unsigned int char_idx,
-					int *x, int *y, 
+					int *x, int *y,
 					int *w, int *h);
 unsigned int	 ewl_text_coord_index_map(Ewl_Text *t, int x, int y);
 
@@ -126,7 +126,7 @@ void		 ewl_text_clear(Ewl_Text *t);
 
 void		 ewl_text_text_prepend(Ewl_Text *t, const char *text);
 void		 ewl_text_text_append(Ewl_Text *t, const char *text);
-void		 ewl_text_text_insert(Ewl_Text *t, const char *text, 
+void		 ewl_text_text_insert(Ewl_Text *t, const char *text,
 						unsigned int char_idx);
 void		 ewl_text_text_delete(Ewl_Text *t, unsigned int length);
 
@@ -136,11 +136,11 @@ unsigned int	 ewl_text_selectable_get(Ewl_Text *t);
 char 		*ewl_text_selection_text_get(Ewl_Text *t);
 unsigned int 	 ewl_text_has_selection(Ewl_Text *t);
 Ewl_Widget	*ewl_text_selection_get(Ewl_Text *t);
-void		 ewl_text_select(Ewl_Text *t, unsigned int char_idx, 
+void		 ewl_text_select(Ewl_Text *t, unsigned int char_idx,
 						unsigned int char_len);
 void		 ewl_text_all_select(Ewl_Text *t);
 
-void		 ewl_text_cursor_position_set(Ewl_Text *t, 
+void		 ewl_text_cursor_position_set(Ewl_Text *t,
 						unsigned int char_pos);
 unsigned int	 ewl_text_cursor_position_get(Ewl_Text *t);
 
@@ -148,11 +148,11 @@ unsigned int	 ewl_text_cursor_position_line_up_get(Ewl_Text *t);
 unsigned int	 ewl_text_cursor_position_line_down_get(Ewl_Text *t);
 
 void		 ewl_text_font_set(Ewl_Text *t, const char *font);
-void		 ewl_text_font_apply(Ewl_Text *t, const char *font, 
+void		 ewl_text_font_apply(Ewl_Text *t, const char *font,
 						unsigned int char_len);
 char 		*ewl_text_font_get(Ewl_Text *t, unsigned int char_idx);
 
-void		 ewl_text_font_source_set(Ewl_Text *t, const char *source, 
+void		 ewl_text_font_source_set(Ewl_Text *t, const char *source,
 							const char *font);
 void		 ewl_text_font_source_apply(Ewl_Text *t, const char *source,
 							const char *font,
@@ -164,25 +164,25 @@ void		 ewl_text_font_size_apply(Ewl_Text *t, unsigned int size,
 							unsigned int char_len);
 unsigned int	 ewl_text_font_size_get(Ewl_Text *t, unsigned int char_idx);
 
-void		 ewl_text_color_set(Ewl_Text *t, 
-					unsigned int r, unsigned int g, 
+void		 ewl_text_color_set(Ewl_Text *t,
+					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a);
-void		 ewl_text_color_apply(Ewl_Text *t, 
+void		 ewl_text_color_apply(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a,
 					unsigned int char_len);
-void 		 ewl_text_color_get(Ewl_Text *t, 
+void 		 ewl_text_color_get(Ewl_Text *t,
 					unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a,
 					unsigned int char_idx);
 
 void		 ewl_text_align_set(Ewl_Text *t, unsigned int align);
-void		 ewl_text_align_apply(Ewl_Text *t, unsigned int align, 
+void		 ewl_text_align_apply(Ewl_Text *t, unsigned int align,
 						unsigned int char_len);
 unsigned int	 ewl_text_align_get(Ewl_Text *t, unsigned int char_idx);
 
 void		 ewl_text_styles_set(Ewl_Text *t, unsigned int styles);
-void		 ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, 
+void		 ewl_text_styles_apply(Ewl_Text *t, unsigned int styles,
 						unsigned int char_len);
 unsigned int	 ewl_text_styles_get(Ewl_Text *t, unsigned int char_idx);
 
@@ -192,94 +192,94 @@ void		 ewl_text_style_del(Ewl_Text *t, Ewl_Text_Style style,
 						unsigned int char_len);
 void		 ewl_text_style_invert(Ewl_Text *t, Ewl_Text_Style style,
 						unsigned int char_len);
-unsigned int	 ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, 
+unsigned int	 ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style,
 						unsigned int char_idx);
 
 void		 ewl_text_wrap_set(Ewl_Text *t, Ewl_Text_Wrap wrap);
-void		 ewl_text_wrap_apply(Ewl_Text *t, Ewl_Text_Wrap wrap, 
+void		 ewl_text_wrap_apply(Ewl_Text *t, Ewl_Text_Wrap wrap,
 						unsigned int char_len);
 Ewl_Text_Wrap	 ewl_text_wrap_get(Ewl_Text *t, unsigned int char_idx);
 
-void		 ewl_text_bg_color_set(Ewl_Text *t, 
-					unsigned int r, unsigned int g, 
+void		 ewl_text_bg_color_set(Ewl_Text *t,
+					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a);
-void		 ewl_text_bg_color_apply(Ewl_Text *t, 
+void		 ewl_text_bg_color_apply(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a,
 					unsigned int char_len);
-void		 ewl_text_bg_color_get(Ewl_Text *t, 
+void		 ewl_text_bg_color_get(Ewl_Text *t,
 					unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a,
 					unsigned int char_idx);
 
-void		 ewl_text_glow_color_set(Ewl_Text *t, 
+void		 ewl_text_glow_color_set(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a);
-void		 ewl_text_glow_color_apply(Ewl_Text *t, 
+void		 ewl_text_glow_color_apply(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a,
 					unsigned int char_len);
-void		 ewl_text_glow_color_get(Ewl_Text *t, 
+void		 ewl_text_glow_color_get(Ewl_Text *t,
 					unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a,
 					unsigned int char_idx);
 
-void		 ewl_text_outline_color_set(Ewl_Text *t, 
+void		 ewl_text_outline_color_set(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a);
-void		 ewl_text_outline_color_apply(Ewl_Text *t, 
+void		 ewl_text_outline_color_apply(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a,
 					unsigned int char_len);
-void		 ewl_text_outline_color_get(Ewl_Text *t, 
+void		 ewl_text_outline_color_get(Ewl_Text *t,
 					unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a,
 					unsigned int char_idx);
 
-void		 ewl_text_shadow_color_set(Ewl_Text *t, 
+void		 ewl_text_shadow_color_set(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a);
-void		 ewl_text_shadow_color_apply(Ewl_Text *t, 
+void		 ewl_text_shadow_color_apply(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a,
 					unsigned int char_len);
-void 	 	 ewl_text_shadow_color_get(Ewl_Text *t, 
+void 	 	 ewl_text_shadow_color_get(Ewl_Text *t,
 					unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a,
 					unsigned int char_idx);
 
-void		 ewl_text_strikethrough_color_set(Ewl_Text *t, 
+void		 ewl_text_strikethrough_color_set(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a);
-void		 ewl_text_strikethrough_color_apply(Ewl_Text *t, 
+void		 ewl_text_strikethrough_color_apply(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a,
 					unsigned int char_len);
-void		 ewl_text_strikethrough_color_get(Ewl_Text *t, 
+void		 ewl_text_strikethrough_color_get(Ewl_Text *t,
 					unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a,
 					unsigned int char_idx);
 
-void		 ewl_text_underline_color_set(Ewl_Text *t, 
+void		 ewl_text_underline_color_set(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a);
-void		 ewl_text_underline_color_apply(Ewl_Text *t, 
+void		 ewl_text_underline_color_apply(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a,
 					unsigned int char_len);
-void		 ewl_text_underline_color_get(Ewl_Text *t, 
+void		 ewl_text_underline_color_get(Ewl_Text *t,
 					unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a,
 					unsigned int char_idx);
 
-void		 ewl_text_double_underline_color_set(Ewl_Text *t, 
+void		 ewl_text_double_underline_color_set(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a);
-void		 ewl_text_double_underline_color_apply(Ewl_Text *t, 
+void		 ewl_text_double_underline_color_apply(Ewl_Text *t,
 					unsigned int r, unsigned int g,
 					unsigned int b, unsigned int a,
 					unsigned int char_len);
-void 		 ewl_text_double_underline_color_get(Ewl_Text *t, 
+void 		 ewl_text_double_underline_color_get(Ewl_Text *t,
 					unsigned int *r, unsigned int *g,
 					unsigned int *b, unsigned int *a,
 					unsigned int char_idx);

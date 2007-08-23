@@ -29,7 +29,7 @@ ewl_model_new(void)
 /**
  * @return Returns a model that is setup to work with an ecore_list
  * @brief Retrieves a model pre-initialized to work with an ecore list. This
- * will setup the fetch and count methods for you 
+ * will setup the fetch and count methods for you
  */
 Ewl_Model *
 ewl_model_ecore_list_get(void)
@@ -79,17 +79,17 @@ ewl_model_data_header_fetch_set(Ewl_Model *m, Ewl_Model_Data_Header_Fetch get)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/** 
+/**
  * @param m: The model to work with
  * @return Returns the header fetch function
- * @brief Retrieves the header fetch function 
+ * @brief Retrieves the header fetch function
  */
 Ewl_Model_Data_Header_Fetch
 ewl_model_data_header_fetch_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
-	
+
 	DRETURN_PTR(m->header, DLEVEL_STABLE);
 }
 
@@ -151,7 +151,7 @@ ewl_model_column_sortable_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("m", m, NULL);
-	
+
 	DRETURN_PTR(m->sortable, DLEVEL_STABLE);
 }
 
@@ -287,7 +287,7 @@ ewl_model_data_expandable_get(Ewl_Model *m)
  * @brief Sets the subfetch callback into the model
  */
 void
-ewl_model_expansion_data_fetch_set(Ewl_Model *m, 
+ewl_model_expansion_data_fetch_set(Ewl_Model *m,
 				Ewl_Model_Expansion_Data_Fetch get)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -355,7 +355,7 @@ ewl_model_data_free_get(Ewl_Model *m)
  * @brief Sets the model expansion model fetch callback to @a f
  */
 void
-ewl_model_expansion_model_fetch_set(Ewl_Model *m, 
+ewl_model_expansion_model_fetch_set(Ewl_Model *m,
 				Ewl_Model_Expansion_Model_Fetch f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -387,8 +387,8 @@ ewl_model_expansion_model_fetch_get(Ewl_Model *m)
  * @return Returns the data at the given row
  * @brief This will return the @a row data element from the list
  */
-void * 
-ewl_model_cb_ecore_list_fetch(void *data, unsigned int row, 
+void *
+ewl_model_cb_ecore_list_fetch(void *data, unsigned int row,
 				unsigned int col __UNUSED__)
 {
 	Ecore_List *list;

@@ -55,7 +55,7 @@ ewl_check_init(Ewl_Check *cb)
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 20, 20);
 
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
 				ewl_check_cb_clicked, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT,
 				ewl_check_cb_update_check, NULL);
@@ -109,7 +109,7 @@ ewl_check_is_checked(Ewl_Check *cb)
  * @brief The clicked callback for the check widget
  */
 void
-ewl_check_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_check_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Check *cb;

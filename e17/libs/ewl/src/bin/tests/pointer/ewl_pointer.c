@@ -14,7 +14,7 @@ static int timer_cb_out(void *data);
 
 static Ecore_Timer *cur_timer;
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Pointer";
@@ -81,7 +81,7 @@ timer_cb_out(void *data)
 }
 
 static void
-cb_destroy(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+cb_destroy(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	if (cur_timer)

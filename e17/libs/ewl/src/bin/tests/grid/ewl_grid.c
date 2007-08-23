@@ -13,7 +13,7 @@ static void child_append_cb(Ewl_Widget *w, void *e, void *d);
 static void child_prepend_cb(Ewl_Widget *w, void *e, void *d);
 static void button_clicked_cb(Ewl_Widget *w, void *e, void *d);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Grid";
@@ -52,7 +52,7 @@ create_test(Ewl_Container *box)
 	w = ewl_hseparator_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), w);
 	ewl_widget_show(w);
-	
+
 	/* the hbox */
 	hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
@@ -73,7 +73,7 @@ create_test(Ewl_Container *box)
 	ewl_container_child_prepend(EWL_CONTAINER(hbox), w);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, child_prepend_cb, grid);
 	ewl_widget_show(w);
-	
+
 	/*
 	 * fill the grid with content
 	 */
@@ -90,18 +90,18 @@ create_test(Ewl_Container *box)
 	ewl_grid_child_position_set(EWL_GRID(grid), w, 1, 2, 3, 3);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, button_clicked_cb, NULL);
 	ewl_widget_show(w);
-	
+
 	w = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(w), "This row use the\n"
 					"preferred heigth");
 	ewl_container_child_append(EWL_CONTAINER(grid), w);
 	ewl_grid_child_position_set(EWL_GRID(grid), w, 3, 4, 2, 2);
 	ewl_widget_show(w);
-	
+
 	return 1;
 }
 
-static void 
+static void
 child_append_cb(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d)
 {
 	Ewl_Widget *button;
@@ -114,7 +114,7 @@ child_append_cb(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d)
 	ewl_widget_show(button);
 }
 
-static void 
+static void
 child_prepend_cb(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d)
 {
 	Ewl_Widget *button;
@@ -127,7 +127,7 @@ child_prepend_cb(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d)
 	ewl_widget_show(button);
 }
 
-static void 
+static void
 button_clicked_cb(Ewl_Widget *w, void *e __UNUSED__, void *d __UNUSED__)
 {
 	Ewl_Widget *g;

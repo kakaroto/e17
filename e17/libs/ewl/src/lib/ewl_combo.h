@@ -62,14 +62,14 @@ struct Ewl_Combo
 Ewl_Widget 	*ewl_combo_new(void);
 int		 ewl_combo_init(Ewl_Combo *combo);
 
-void		 ewl_combo_editable_set(Ewl_Combo *combo, 
+void		 ewl_combo_editable_set(Ewl_Combo *combo,
 						unsigned int editable);
 unsigned int	 ewl_combo_editable_get(Ewl_Combo *combo);
-void		 ewl_combo_scrollable_set(Ewl_Combo *combo, 
+void		 ewl_combo_scrollable_set(Ewl_Combo *combo,
 						unsigned int scrollable);
 unsigned int	 ewl_combo_scrollable_get(Ewl_Combo *combo);
 
-void		 ewl_combo_popup_container_set(Ewl_Combo *combo, 
+void		 ewl_combo_popup_container_set(Ewl_Combo *combo,
 						Ewl_Container *c);
 
 
@@ -113,7 +113,7 @@ struct Ewl_Combo_Cell
 {
 	Ewl_Cell cell;		/**< Inherit from the cell */
 	Ewl_Combo *combo;	/**< The parent combo */
-	Ewl_Model *model;	/**< The model that was used to build the 
+	Ewl_Model *model;	/**< The model that was used to build the
 					content of the cell */
 	void *mvc_data;		/**< The mvc data that was used to build the
 					content of the cell */

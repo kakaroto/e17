@@ -5,7 +5,7 @@
 #include "ewl_box.h"
 #include "ewl_view.h"
 
-/** 
+/**
  * @addtogroup Ewl_Filepicker Ewl_Filepicker: Allows selecting files from a list
  * A widget to allow selecting ifles
  *
@@ -95,8 +95,8 @@ void		 ewl_filepicker_list_view_set(Ewl_Filepicker *fp,
 							Ewl_View *view);
 Ewl_View 	*ewl_filepicker_list_view_get(Ewl_Filepicker *fp);
 
-void 		 ewl_filepicker_filter_add(Ewl_Filepicker *fp, 
-						const char *name, 
+void 		 ewl_filepicker_filter_add(Ewl_Filepicker *fp,
+						const char *name,
 						const char *filter);
 /**
  * @}

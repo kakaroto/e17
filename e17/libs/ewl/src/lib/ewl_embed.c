@@ -23,7 +23,7 @@ static void ewl_embed_smart_cb_hide(Evas_Object *obj);
 static void ewl_embed_smart_cb_clip_set(Evas_Object *obj, Evas_Object *clip);
 static void ewl_embed_smart_cb_clip_unset(Evas_Object *obj);
 
-static void ewl_embed_tab_order_change(Ewl_Embed *e, 
+static void ewl_embed_tab_order_change(Ewl_Embed *e,
 				 void *(*change)(Ecore_DList *list),
 				 void *(*cycle)(Ecore_DList *list));
 
@@ -176,7 +176,7 @@ ewl_embed_engine_name_get(Ewl_Embed *embed)
 
 /**
  * @internal
- * @brief Shutdown the embed 
+ * @brief Shutdown the embed
  */
 void
 ewl_embed_shutdown(void)
@@ -226,7 +226,7 @@ ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas, Ewl_Embed_Window *canvas_wind
 			ewl_embed_smart_cb_hide,
 			NULL,
 			ewl_embed_smart_cb_clip_set,
-			ewl_embed_smart_cb_clip_unset, 
+			ewl_embed_smart_cb_clip_unset,
 			NULL
 		};
 		embedded_smart = evas_smart_class_new(&sc);
@@ -329,7 +329,7 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 						EWL_FLAG_STATE_FOCUSED);
 		ewl_object_state_remove(EWL_OBJECT(e->last.clicked),
 						EWL_FLAG_STATE_PRESSED);
-		
+
 		ewl_callback_call(e->last.clicked, EWL_CALLBACK_FOCUS_OUT);
 
 		/* Clean the last.clicked up recursively */
@@ -376,7 +376,7 @@ ewl_embed_last_mouse_position_get(int *x, int *y)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (x) *x = ewl_embed_last_mouse_x; 
+	if (x) *x = ewl_embed_last_mouse_x;
 	if (y) *y = ewl_embed_last_mouse_y;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -390,7 +390,7 @@ ewl_embed_last_mouse_position_get(int *x, int *y)
  * @brief Sends the event for a key press into an embed.
  */
 void
-ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname, 
+ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
 			unsigned int mods)
 {
 	Ewl_Widget *temp;
@@ -406,8 +406,8 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
 	 * focus change events
 	 */
 	/* FIXME This "Tab" should probably be made a config variable */
-	if ((!(embed->last.focused 
-			&& ewl_widget_ignore_focus_change_get(embed->last.focused))) 
+	if ((!(embed->last.focused
+			&& ewl_widget_ignore_focus_change_get(embed->last.focused)))
 				&& (!strcmp(keyname, "Tab")))
 	{
 		if (mods & EWL_KEY_MODIFIER_SHIFT)
@@ -418,8 +418,8 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	/* 
-	 * setup the event struct 
+	/*
+	 * setup the event struct
 	 */
 	ev.base.modifiers = mods;
 	ev.base.keyname = strdup(keyname);
@@ -430,15 +430,15 @@ ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
 	 */
 	if (!embed->last.focused) {
 		if (embed->last.clicked)
-			ewl_embed_focused_widget_set(embed, 
+			ewl_embed_focused_widget_set(embed,
 						embed->last.clicked);
 		else
 		{
-			ewl_embed_focused_widget_set(embed, 
+			ewl_embed_focused_widget_set(embed,
 				ecore_dlist_first_goto(embed->tab_order));
 
 			if (!embed->last.focused)
-				ewl_embed_focused_widget_set(embed, 
+				ewl_embed_focused_widget_set(embed,
 							EWL_WIDGET(embed));
 		}
 	}
@@ -482,8 +482,8 @@ ewl_embed_key_up_feed(Ewl_Embed *embed, const char *keyname,
 	/* handle tab focus change (we just drop it on the floor as the
 	 * actual focus change was done in key down */
 	/* FIXME Should probably make this "Tab" a config variable */
-	if ((embed->last.focused 
-			&& (!ewl_widget_ignore_focus_change_get(embed->last.focused))) 
+	if ((embed->last.focused
+			&& (!ewl_widget_ignore_focus_change_get(embed->last.focused)))
 			&& (!strcmp(keyname, "Tab")))
 		DRETURN(DLEVEL_STABLE);
 
@@ -530,7 +530,7 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	/* 
+	/*
 	 * Keep track on the mouse position
 	 */
 	ewl_embed_last_mouse_x = x + embed->x;
@@ -586,7 +586,7 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 			ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_MOUSE_DOWN, &ev);
 
-			if (ev.clicks > 1) 
+			if (ev.clicks > 1)
 				ewl_callback_call_with_event_data(temp,
 					EWL_CALLBACK_CLICKED, &ev);
 		}
@@ -599,9 +599,9 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 * change. Then select the new widget and notify it of the selection.
 	 */
 	if (widget != deselect) {
-		/* 
+		/*
 		 * Make sure these widgets haven't been scheduled for
-		 * deletion before we send their callbacks. 
+		 * deletion before we send their callbacks.
 		 */
 		if (deselect && !DESTROYED(deselect) &&
 				!ewl_widget_parent_of(deselect, widget)) {
@@ -639,8 +639,8 @@ ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x, int y,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
-	
-	/* 
+
+	/*
 	 * Keep track on the mouse position
 	 */
 	ewl_embed_last_mouse_x = x + embed->x;
@@ -692,7 +692,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	DCHECK_PARAM_PTR("embed", embed);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
 
-	/* 
+	/*
 	 * Keep track on the mouse position
 	 */
 	ewl_embed_last_mouse_x = x + embed->x;
@@ -721,7 +721,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	 * Defocus all widgets up to the level of a shared parent of
 	 * old and newly focused widgets.
 	 */
-	while (check && (widget != EWL_WIDGET(check)) 
+	while (check && (widget != EWL_WIDGET(check))
 			&& !ewl_widget_parent_of(EWL_WIDGET(check), widget)) {
 		ewl_embed_mouse_cursor_set(EWL_WIDGET(check));
 
@@ -745,7 +745,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 			if (!(ewl_object_state_has(check,
 						EWL_FLAG_STATE_MOUSE_IN))) {
 				ewl_embed_mouse_cursor_set(EWL_WIDGET(check));
-				
+
 				ewl_object_state_add(check,
 						EWL_FLAG_STATE_MOUSE_IN);
 				ewl_callback_call_with_event_data(EWL_WIDGET(check),
@@ -755,7 +755,7 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 			ewl_callback_call_with_event_data(EWL_WIDGET(check),
 					EWL_CALLBACK_MOUSE_MOVE, &ev);
 		}
-		
+
 		/*
 		 * It's possible that the call to MOUSE_IN caused the
 		 * 'embed->last.mouse_in' to have become null.  Make sure this
@@ -805,7 +805,7 @@ ewl_embed_dnd_drop_feed(Ewl_Embed *embed, int x, int y, int internal __UNUSED__)
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
 	/*
 	 * Find the lowest DND aware widget
-	 */ 
+	 */
 	while (widget) {
 		if (ewl_object_flags_has(EWL_OBJECT(widget),
 					EWL_FLAG_PROPERTY_DND_TARGET,
@@ -875,7 +875,7 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed), x, y);
 	/*
 	 * Find the lowest DND aware widget
-	 */ 
+	 */
 	while (widget) {
 		if (ewl_object_flags_has(EWL_OBJECT(widget),
 					EWL_FLAG_PROPERTY_DND_TARGET,
@@ -911,7 +911,7 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 
 	/*
 	 * Pass the position event up the chain
-	 */ 
+	 */
 	parent = widget;
 	while (parent) {
 		ewl_callback_call_with_event_data(parent,
@@ -924,7 +924,7 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
 
 	/* Request a DND data request */
 	for (i = 0; i < embed->dnd_types.num_types; i++) {
-		if (ewl_dnd_accepted_types_contains(widget, 
+		if (ewl_dnd_accepted_types_contains(widget,
 					embed->dnd_types.types[i])) {
 			result = embed->dnd_types.types[i];
 			break;
@@ -963,7 +963,7 @@ ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	ev.base.y = y;
 
 	while (embed->last.mouse_in) {
-		ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in), 
+		ewl_object_state_remove(EWL_OBJECT(embed->last.mouse_in),
 					EWL_FLAG_STATE_MOUSE_IN);
 		ewl_callback_call_with_event_data(embed->last.mouse_in,
 						  EWL_CALLBACK_MOUSE_OUT, &ev);
@@ -984,7 +984,7 @@ ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
  * @brief Sends a mouse out event to the last focused widget
  */
 void
-ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir, 
+ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir,
 							unsigned int mods)
 {
 	Ewl_Widget *w;
@@ -1003,12 +1003,12 @@ ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir,
 	ev.dir = dir;
 
 	w = embed->last.mouse_in;
-	if (!w) 
+	if (!w)
 		ewl_callback_call_with_event_data(EWL_WIDGET(embed),
 					  EWL_CALLBACK_MOUSE_WHEEL, &ev);
 
 	while (w) {
-		ewl_callback_call_with_event_data(w, 
+		ewl_callback_call_with_event_data(w,
 				EWL_CALLBACK_MOUSE_WHEEL, &ev);
 		w = w->parent;
 	}
@@ -1021,12 +1021,12 @@ ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y, int z, int dir,
  * @param type: The type to feed.
  * @param data: a pointer to the data received that generated the event
  * @param len: length of the data that generated the event
- * @param format: The bit format of the data 
+ * @param format: The bit format of the data
  * @return Returns no value.
  * @brief Sends the event for selection data received into an embed.
  */
 void
-ewl_embed_dnd_data_received_feed(Ewl_Embed *embed, char *type, void *data, 
+ewl_embed_dnd_data_received_feed(Ewl_Embed *embed, char *type, void *data,
 					unsigned int len, unsigned int format)
 {
 	Ewl_Event_Dnd_Data_Received ev;
@@ -1041,8 +1041,8 @@ ewl_embed_dnd_data_received_feed(Ewl_Embed *embed, char *type, void *data,
 	 */
 	if (embed->last.drop_widget) {
 		if (ewl_dnd_accepted_types_contains(embed->last.drop_widget, type)) {
-			/* 
-			 * setup the event struct 
+			/*
+			 * setup the event struct
 			 */
 			ev.type = type;
 			ev.data = data;
@@ -1076,8 +1076,8 @@ ewl_embed_dnd_data_request_feed(Ewl_Embed *embed, void *handle, char *type)
 	 */
 	if (embed->last.drag_widget) {
 		if (ewl_dnd_provided_types_contains(embed->last.drag_widget, type)) {
-			/* 
-			 * setup the event struct 
+			/*
+			 * setup the event struct
 			 */
 			ev.handle = handle;
 			ev.type = type;
@@ -1233,7 +1233,7 @@ ewl_embed_object_request(Ewl_Embed *e, char *type)
 }
 
 /**
- * @param e: the embed that holds widgets 
+ * @param e: the embed that holds widgets
  * @param w: the widget that will be moved to the front of the tab order list
  * @return Returns no value.
  * @brief Moves the widget @a w to the front of the tab order list.
@@ -1300,7 +1300,7 @@ ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, unsigned int idx)
 	current_idx = ecore_dlist_index(e->tab_order);
 
 	/* make sure this widget isn't already in the list */
-	if (ewl_object_in_tab_list_get(EWL_OBJECT(w)) 
+	if (ewl_object_in_tab_list_get(EWL_OBJECT(w))
 			&& ecore_dlist_goto(e->tab_order, w)) {
 		int del_idx;
 
@@ -1311,7 +1311,7 @@ ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, unsigned int idx)
 
 		ecore_dlist_remove(e->tab_order);
 	}
-	
+
 	ecore_dlist_index_goto(e->tab_order, idx);
 	ecore_dlist_insert(e->tab_order, w);
 
@@ -1333,7 +1333,7 @@ ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w, unsigned int idx)
  * @brief Inserts the @a w widget into the tab order after the @a after widget
  */
 void
-ewl_embed_tab_order_insert_after(Ewl_Embed *e, Ewl_Widget *w, 
+ewl_embed_tab_order_insert_after(Ewl_Embed *e, Ewl_Widget *w,
 					Ewl_Widget *after)
 {
 	int cur_idx, idx;
@@ -1369,7 +1369,7 @@ ewl_embed_tab_order_insert_after(Ewl_Embed *e, Ewl_Widget *w,
  * @brief Inserts the @a w widget into the tab order before the @a before widget
  */
 void
-ewl_embed_tab_order_insert_before(Ewl_Embed *e, Ewl_Widget *w, 
+ewl_embed_tab_order_insert_before(Ewl_Embed *e, Ewl_Widget *w,
 					Ewl_Widget *before)
 {
 	int cur_idx, idx;
@@ -1431,7 +1431,7 @@ void ewl_embed_tab_order_next(Ewl_Embed *e)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
-	ewl_embed_tab_order_change(e, ecore_dlist_next, 
+	ewl_embed_tab_order_change(e, ecore_dlist_next,
 					ecore_dlist_first_goto);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1450,7 +1450,7 @@ ewl_embed_tab_order_previous(Ewl_Embed *e)
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_EMBED_TYPE);
 
-	ewl_embed_tab_order_change(e, ecore_dlist_previous, 
+	ewl_embed_tab_order_change(e, ecore_dlist_previous,
 					ecore_dlist_last_goto);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1499,14 +1499,14 @@ ewl_embed_tab_order_change(Ewl_Embed *e, void *(*change)(Ecore_DList *list),
 		w = ecore_dlist_current(e->tab_order);
 
 		/* check if we hit the end of the list and loop to the start */
-		if (!w) 
+		if (!w)
 		{
 			cycle(e->tab_order);
 			w = ecore_dlist_current(e->tab_order);
 		}
 
 		/* make sure we don't cycle */
-		if (w == start) 
+		if (w == start)
 			DRETURN(DLEVEL_STABLE);
 	}
 
@@ -1593,28 +1593,28 @@ ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w)
 
 	ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAG_STATE_PRESSED);
 
-	if ((w == e->last.focused) 
-			|| (RECURSIVE(w) 
+	if ((w == e->last.focused)
+			|| (RECURSIVE(w)
 				&& ewl_widget_parent_of(w, e->last.focused)))
 		e->last.focused = ewl_embed_info_parent_find(w);
 
-	if ((w == e->last.clicked) 
-			|| (RECURSIVE(w) 
+	if ((w == e->last.clicked)
+			|| (RECURSIVE(w)
 				&& ewl_widget_parent_of(w, e->last.clicked)))
 		e->last.clicked = ewl_embed_info_parent_find(w);
 
-	if ((w == e->last.mouse_in) 
-			|| (RECURSIVE(w) 
+	if ((w == e->last.mouse_in)
+			|| (RECURSIVE(w)
 				&& ewl_widget_parent_of(w, e->last.mouse_in)))
 		e->last.mouse_in = ewl_embed_info_parent_find(w);
 
-	if ((w == e->last.drop_widget) 
-			|| (RECURSIVE(w) 
+	if ((w == e->last.drop_widget)
+			|| (RECURSIVE(w)
 				&& ewl_widget_parent_of(w, e->last.drop_widget)))
 		e->last.drop_widget = ewl_embed_info_parent_find(w);
 
-	if ((w == e->last.drag_widget) 
-			|| (RECURSIVE(w) 
+	if ((w == e->last.drag_widget)
+			|| (RECURSIVE(w)
 				&& ewl_widget_parent_of(w, e->last.drag_widget)))
 		e->last.drag_widget = ewl_embed_info_parent_find(w);
 
@@ -1804,7 +1804,7 @@ ewl_embed_thaw(Ewl_Embed *e)
  * @brief Callback for the realize event
  */
 void
-ewl_embed_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_embed_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
@@ -1877,11 +1877,11 @@ ewl_embed_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief Callback for the unrealize event
  */
 void
-ewl_embed_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_embed_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_EMBED_TYPE);
@@ -1927,7 +1927,7 @@ ewl_embed_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 		evas_object_resize(emb->ev_clip, (Evas_Coord)(CURRENT_W(w)),
 				   (Evas_Coord)(CURRENT_H(w)));
 	}
-	
+
 	/*
 	 * Configure each of the child widgets.
 	 */
@@ -1943,7 +1943,7 @@ ewl_embed_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 		if (size > PREFERRED_H(w))
 			ewl_object_preferred_inner_h_set(EWL_OBJECT(w), size);
 
-		ewl_object_place(child, CURRENT_X(w), CURRENT_Y(w), 
+		ewl_object_place(child, CURRENT_X(w), CURRENT_Y(w),
 					CURRENT_W(w), CURRENT_H(w));
 	}
 
@@ -1987,7 +1987,7 @@ ewl_embed_cb_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @return Returns no value
  * @brief The destroy callback
  */
-void ewl_embed_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__, 
+void ewl_embed_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
@@ -2120,7 +2120,7 @@ ewl_embed_smart_cb_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 
 	emb = evas_object_smart_data_get(obj);
 	if (emb)
-		ewl_object_position_request(EWL_OBJECT(emb), 
+		ewl_object_position_request(EWL_OBJECT(emb),
 						(int)(x), (int)(y));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2204,7 +2204,7 @@ ewl_embed_smart_cb_clip_unset(Evas_Object *obj)
 }
 
 static void
-ewl_embed_evas_cb_mouse_out(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_mouse_out(void *data, Evas *e __UNUSED__,
 				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2216,7 +2216,7 @@ ewl_embed_evas_cb_mouse_out(void *data, Evas *e __UNUSED__,
 
 	embed = data;
 
-	if (ev->canvas.x < CURRENT_X(embed) 
+	if (ev->canvas.x < CURRENT_X(embed)
 			|| ev->canvas.x >= (CURRENT_X(embed) + CURRENT_W(embed))
 			|| ev->canvas.y < CURRENT_Y(embed)
 			|| ev->canvas.y >= (CURRENT_Y(embed) + CURRENT_H(embed)))
@@ -2227,7 +2227,7 @@ ewl_embed_evas_cb_mouse_out(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_cb_mouse_down(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_mouse_down(void *data, Evas *e __UNUSED__,
 				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2246,7 +2246,7 @@ ewl_embed_evas_cb_mouse_down(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_cb_mouse_up(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_mouse_up(void *data, Evas *e __UNUSED__,
 				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2255,7 +2255,7 @@ ewl_embed_evas_cb_mouse_up(void *data, Evas *e __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("data", data, EWL_EMBED_TYPE);
-	
+
 	ev = event_info;
 	embed = data;
 	ewl_embed_mouse_up_feed(embed, ev->button, ev->canvas.x,
@@ -2265,7 +2265,7 @@ ewl_embed_evas_cb_mouse_up(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_cb_mouse_move(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_mouse_move(void *data, Evas *e __UNUSED__,
 				Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2284,13 +2284,13 @@ ewl_embed_evas_cb_mouse_move(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_cb_mouse_wheel(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_mouse_wheel(void *data, Evas *e __UNUSED__,
 				Evas_Object *obj __UNUSED__,
 				void *event_info)
 {
 	Ewl_Embed *embed;
 	Evas_Event_Mouse_Wheel *ev;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("data", data);
 	DCHECK_TYPE("data", data, EWL_EMBED_TYPE);
@@ -2298,14 +2298,14 @@ ewl_embed_evas_cb_mouse_wheel(void *data, Evas *e __UNUSED__,
 	ev = event_info;
 	embed = data;
 
-	ewl_embed_mouse_wheel_feed(embed, ev->canvas.x, ev->canvas.y, ev->z, 
+	ewl_embed_mouse_wheel_feed(embed, ev->canvas.x, ev->canvas.y, ev->z,
 					ev->direction, ewl_ev_modifiers_get());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_embed_evas_cb_key_down(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_key_down(void *data, Evas *e __UNUSED__,
 			Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2318,7 +2318,7 @@ ewl_embed_evas_cb_key_down(void *data, Evas *e __UNUSED__,
 
 	ev = event_info;
 	embed = data;
-	
+
 	if (evas_key_modifier_is_set(ev->modifiers, "Shift"))
 		key_modifiers |= EWL_KEY_MODIFIER_SHIFT;
 	else if (evas_key_modifier_is_set(ev->modifiers, "Alt"))
@@ -2333,11 +2333,11 @@ ewl_embed_evas_cb_key_down(void *data, Evas *e __UNUSED__,
 		key_modifiers |= EWL_KEY_MODIFIER_WIN;
 
 	ewl_ev_modifiers_set(key_modifiers);
-	
+
 	if (!ev->string || iscntrl(*ev->string))
-		ewl_embed_key_down_feed(embed, ev->keyname, 
+		ewl_embed_key_down_feed(embed, ev->keyname,
 				ewl_ev_modifiers_get());
-	else 
+	else
 		ewl_embed_key_down_feed(embed, ev->string,
 				ewl_ev_modifiers_get());
 
@@ -2345,7 +2345,7 @@ ewl_embed_evas_cb_key_down(void *data, Evas *e __UNUSED__,
 }
 
 static void
-ewl_embed_evas_cb_key_up(void *data, Evas *e __UNUSED__, 
+ewl_embed_evas_cb_key_up(void *data, Evas *e __UNUSED__,
 			Evas_Object *obj __UNUSED__, void *event_info)
 {
 	Ewl_Embed *embed;
@@ -2374,7 +2374,7 @@ ewl_embed_evas_cb_key_up(void *data, Evas *e __UNUSED__,
 	ewl_ev_modifiers_set(key_modifiers);
 
 	if (!ev->string || iscntrl(*ev->string))
-		ewl_embed_key_up_feed(embed, ev->keyname, 
+		ewl_embed_key_up_feed(embed, ev->keyname,
 					ewl_ev_modifiers_get());
 	else
 		ewl_embed_key_up_feed(embed, ev->string,

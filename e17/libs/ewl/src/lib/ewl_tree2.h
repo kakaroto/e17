@@ -123,7 +123,7 @@ struct Ewl_Tree2
 Ewl_Widget 	*ewl_tree2_new(void);
 int 		 ewl_tree2_init(Ewl_Tree2 *tree);
 
-void		 ewl_tree2_column_count_set(Ewl_Tree2 *tree, 
+void		 ewl_tree2_column_count_set(Ewl_Tree2 *tree,
 						unsigned int count);
 unsigned int	 ewl_tree2_column_count_get(Ewl_Tree2 *tree);
 
@@ -135,7 +135,7 @@ void		 ewl_tree2_content_view_set(Ewl_Tree2 *tree, Ewl_View *view);
 Ewl_View	*ewl_tree2_content_view_get(Ewl_Tree2 *tree);
 
 Ewl_Tree_Selection_Type ewl_tree2_selection_type_get(Ewl_Tree2 *tree);
-void 		 ewl_tree2_selection_type_set(Ewl_Tree2 *tree, 
+void 		 ewl_tree2_selection_type_set(Ewl_Tree2 *tree,
 						Ewl_Tree_Selection_Type type);
 
 void		 ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, unsigned int fixed);
@@ -143,9 +143,9 @@ unsigned int	 ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
 
 Ewl_Widget	*ewl_tree2_content_widget_get(Ewl_Tree2 *tree);
 
-void		 ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, 
+void		 ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data,
 						unsigned int row);
-void		 ewl_tree2_row_collapse(Ewl_Tree2 *tree, void *data, 
+void		 ewl_tree2_row_collapse(Ewl_Tree2 *tree, void *data,
 						unsigned int row);
 
 unsigned int	 ewl_tree2_row_expanded_is(Ewl_Tree2 *tree, void *data,
@@ -172,11 +172,11 @@ void ewl_tree2_cb_column_sort(Ewl_Widget *w, void *ev, void *data);
 #define EWL_TREE2_NODE(n) ((Ewl_Tree2_Node *)n)
 
 /**
- * Ewl_Tree2_Node 
+ * Ewl_Tree2_Node
  */
 typedef struct Ewl_Tree2_Node Ewl_Tree2_Node;
 
-/** 
+/**
  * @brief Inherits from Ewl_Container and extends to hold information on a
  * row of the tree
  */

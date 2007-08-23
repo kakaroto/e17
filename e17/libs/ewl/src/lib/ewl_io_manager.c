@@ -30,42 +30,42 @@ ewl_io_manager_init(void)
 		/* XXX this is a dumb way to do this.... */
 		ewl_io_manager_ext_icon_map = ecore_hash_new(ecore_str_hash,
 						ewl_io_manager_strcasecompare);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".png", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".png",
 						EWL_ICON_IMAGE_X_GENERIC);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".jpg", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".jpg",
 						EWL_ICON_IMAGE_X_GENERIC);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".gif", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".gif",
 						EWL_ICON_IMAGE_X_GENERIC);
 
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".wmv", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".wmv",
 						EWL_ICON_VIDEO_X_GENERIC);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpg", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpg",
 						EWL_ICON_VIDEO_X_GENERIC);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpeg", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpeg",
 						EWL_ICON_VIDEO_X_GENERIC);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".avi", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".avi",
 						EWL_ICON_VIDEO_X_GENERIC);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mov", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mov",
 						EWL_ICON_VIDEO_X_GENERIC);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".asf", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".asf",
 						EWL_ICON_VIDEO_X_GENERIC);
 
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mp3", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mp3",
 						EWL_ICON_AUDIO_X_GENERIC);
 
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".html", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".html",
 						EWL_ICON_TEXT_HTML);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".htm", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".htm",
 						EWL_ICON_TEXT_HTML);
 
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".pl", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".pl",
 						EWL_ICON_TEXT_X_SCRIPT);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".sh", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".sh",
 						EWL_ICON_TEXT_X_SCRIPT);
-		ecore_hash_set(ewl_io_manager_ext_icon_map, ".ksh", 
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".ksh",
 						EWL_ICON_TEXT_X_SCRIPT);
 
-		ewl_io_manager_plugins = ecore_hash_new(ecore_str_hash, 
+		ewl_io_manager_plugins = ecore_hash_new(ecore_str_hash,
 							ecore_str_compare);
 		ecore_hash_free_key_cb_set(ewl_io_manager_plugins, free);
 		ecore_hash_free_value_cb_set(ewl_io_manager_plugins,
@@ -208,12 +208,12 @@ ewl_io_manager_string_read(const char *string, const char *mime)
 /**
  * @param data: The data to write
  * @param uri: The URI to write the data too
- * @param mime: The mime type to write the data out as 
+ * @param mime: The mime type to write the data out as
  * @return Returns TRUE on success, FALSE otherwise
  * @brief Writes the given @a data out to @a uri as mime type @a mime
  */
 int
-ewl_io_manager_uri_write(Ewl_Widget *data, const char *uri, 
+ewl_io_manager_uri_write(Ewl_Widget *data, const char *uri,
 							const char *mime)
 {
 	Ewl_IO_Manager_Plugin *plugin = NULL;
@@ -245,7 +245,7 @@ ewl_io_manager_uri_write(Ewl_Widget *data, const char *uri,
  * @brief Writes the given data into the given string pointer
  */
 int
-ewl_io_manager_string_write(Ewl_Widget *data, char **string, 
+ewl_io_manager_string_write(Ewl_Widget *data, char **string,
 						const char *mime)
 {
 	Ewl_IO_Manager_Plugin *plugin = NULL;
@@ -280,14 +280,14 @@ ewl_io_manager_plugin_get(const char *mime)
 
 	/* see if this was already cached */
 	plugin = ecore_hash_get(ewl_io_manager_plugins, mime);
-	if (plugin) 
+	if (plugin)
 		DRETURN_PTR(plugin, DLEVEL_STABLE);
 
 	m = strdup(mime);
 	while ((ptr = strchr(m, '/')))
 		*ptr = '_';
 
-	snprintf(file, sizeof(file), 
+	snprintf(file, sizeof(file),
 		"%s/ewl/plugins/ewl_io_manager_%s_plugin.so", PACKAGE_LIB_DIR,
 		m);
 	FREE(m);
@@ -316,17 +316,17 @@ ewl_io_manager_plugin_get(const char *mime)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	plugin->uri_read = 
+	plugin->uri_read =
 		dlsym(plugin->handle, "ewl_io_manager_plugin_uri_read");
-	plugin->string_read = 
+	plugin->string_read =
 		dlsym(plugin->handle, "ewl_io_manager_plugin_string_read");
 
-	plugin->uri_write = 
+	plugin->uri_write =
 		dlsym(plugin->handle, "ewl_io_manager_plugin_uri_write");
-	plugin->string_write = 
+	plugin->string_write =
 		dlsym(plugin->handle, "ewl_io_manager_plugin_string_write");
 
-	if (!plugin->uri_read || !plugin->uri_write 
+	if (!plugin->uri_read || !plugin->uri_write
 			|| !plugin->uri_write || !plugin->string_write)
 	{
 		FREE(plugin);

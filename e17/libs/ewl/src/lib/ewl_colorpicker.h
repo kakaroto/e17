@@ -101,7 +101,7 @@ void		 ewl_colorpicker_previous_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
 
 void		 ewl_colorpicker_color_mode_set(Ewl_Colorpicker *cp, Ewl_Color_Mode type);
 Ewl_Color_Mode	 ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp);
- 
+
  /*
   * * internally used callbacks, override at your own risk.
   *   */
@@ -109,7 +109,7 @@ void ewl_colorpicker_cb_square_change(Ewl_Widget *w, void *ev, void *data);
 void ewl_colorpicker_cb_vertical_change(Ewl_Widget *w, void *ev, void *data);
 
 void ewl_colorpicker_cb_spinner_change(Ewl_Widget *w, void *ev, void *data);
-void ewl_colorpicker_cb_radio_change(Ewl_Widget *w, void *ev, void *data); 
+void ewl_colorpicker_cb_radio_change(Ewl_Widget *w, void *ev, void *data);
 
 void ewl_colorpicker_cb_previous_clicked(Ewl_Widget *w, void *ev, void *data);
 void ewl_colorpicker_cb_dnd_data(Ewl_Widget *w, void *ev, void *data);

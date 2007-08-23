@@ -11,7 +11,7 @@
 #include "ewl_debug.h"
 
 static void ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r,
-				unsigned int g, unsigned int b, double h, 
+				unsigned int g, unsigned int b, double h,
 				double s, double v);
 
 #define EWL_COLORPICKER_SPINNER_TYPE "colorpicker_spinner"
@@ -40,7 +40,7 @@ struct Ewl_Colorpicker_Spinner
  */
 typedef struct Ewl_Colorpicker_Radiobutton Ewl_Colorpicker_Radiobutton;
 
-/** 
+/**
  * @brief Inherits from Ewl_Radiobutton and extends to provide colorpicker
  * information
  */
@@ -52,7 +52,7 @@ struct Ewl_Colorpicker_Radiobutton
 
 static Ewl_Widget *ewl_colorpicker_spinner_new(void);
 static int ewl_colorpicker_spinner_init(Ewl_Colorpicker_Spinner *sp);
-static void ewl_colorpicker_spinner_mode_set(Ewl_Colorpicker_Spinner *sp, 
+static void ewl_colorpicker_spinner_mode_set(Ewl_Colorpicker_Spinner *sp,
 							Ewl_Color_Mode mode);
 static Ewl_Color_Mode ewl_colorpicker_spinner_mode_get(
 						Ewl_Colorpicker_Spinner *sp);
@@ -60,7 +60,7 @@ static Ewl_Color_Mode ewl_colorpicker_spinner_mode_get(
 static Ewl_Widget *ewl_colorpicker_radiobutton_new(void);
 static int ewl_colorpicker_radiobutton_init(Ewl_Colorpicker_Radiobutton *sp);
 static void ewl_colorpicker_radiobutton_mode_set(
-						Ewl_Colorpicker_Radiobutton *sp, 
+						Ewl_Colorpicker_Radiobutton *sp,
 						Ewl_Color_Mode mode);
 
 static Ewl_Color_Mode ewl_colorpicker_radiobutton_mode_get(
@@ -155,7 +155,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	ewl_object_minimum_size_set(EWL_OBJECT(o), 150, 150);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
 	ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
 				ewl_colorpicker_cb_square_change, cp);
 	cp->picker.square = o;
 	ewl_widget_show(o);
@@ -168,7 +168,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	ewl_object_minimum_size_set(EWL_OBJECT(o), 15, 150);
 	ewl_object_maximum_size_set(EWL_OBJECT(o), 15, EWL_OBJECT_MAX_SIZE);
 	ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
 				ewl_colorpicker_cb_vertical_change, cp);
 	cp->picker.vertical = o;
 	ewl_widget_show(o);
@@ -182,14 +182,14 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	ewl_grid_vhomogeneous_set(EWL_GRID(hbox), TRUE);
 	ewl_grid_column_preferred_w_use(EWL_GRID(hbox), 0);
 	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), 
+	ewl_object_fill_policy_set(EWL_OBJECT(hbox),
 				EWL_FLAG_FILL_NONE | EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(hbox);
 
 	o = ewl_label_new();
 	ewl_widget_internal_set(o, TRUE);
 	ewl_label_text_set(EWL_LABEL(o), "Current:");
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);	
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
 	ewl_widget_show(o);
 
 	o = NEW(Ewl_Widget, 1);
@@ -200,7 +200,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	ewl_widget_color_set(o, r, g, b, 255);
 	ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
 	ewl_object_minimum_h_set(EWL_OBJECT(o), 20);
-	ewl_object_fill_policy_set(EWL_OBJECT(o), 
+	ewl_object_fill_policy_set(EWL_OBJECT(o),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	cp->preview.current = o;
 	ewl_widget_show(o);
@@ -208,7 +208,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	o = ewl_label_new();
 	ewl_widget_internal_set(o, TRUE);
 	ewl_label_text_set(EWL_LABEL(o), "Previous:");
-	ewl_container_child_append(EWL_CONTAINER(hbox), o);	
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
 	ewl_widget_show(o);
 
 	o = NEW(Ewl_Widget, 1);
@@ -219,9 +219,9 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 	ewl_widget_color_set(o, r, g, b, 255);
 	ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
 	ewl_object_minimum_h_set(EWL_OBJECT(o), 20);
-	ewl_object_fill_policy_set(EWL_OBJECT(o), 
+	ewl_object_fill_policy_set(EWL_OBJECT(o),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_colorpicker_cb_previous_clicked, cp);
 	cp->preview.previous = o;
 	ewl_widget_show(o);
@@ -250,7 +250,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 			ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), FALSE);
 
 		ewl_container_child_append(EWL_CONTAINER(hbox), o);
-		ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o), 
+		ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o),
 									modes[i].mode);
 		if (prev)
 			ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(prev));
@@ -561,7 +561,7 @@ ewl_colorpicker_cb_square_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
  * @brief Callback for a vertical spectrum value change
  */
 void
-ewl_colorpicker_cb_vertical_change(Ewl_Widget *w __UNUSED__, 
+ewl_colorpicker_cb_vertical_change(Ewl_Widget *w __UNUSED__,
 					void *ev __UNUSED__, void *data)
 {
 	Ewl_Colorpicker *cp;
@@ -741,7 +741,7 @@ ewl_colorpicker_cb_radio_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
  * @brief Callback for when a user clicks on the previous colour
  */
 void
-ewl_colorpicker_cb_previous_clicked(Ewl_Widget *w __UNUSED__, 
+ewl_colorpicker_cb_previous_clicked(Ewl_Widget *w __UNUSED__,
 					void *ev __UNUSED__, void *data)
 {
 	Ewl_Colorpicker *cp;
@@ -751,7 +751,7 @@ ewl_colorpicker_cb_previous_clicked(Ewl_Widget *w __UNUSED__,
 	DCHECK_TYPE("data", data, EWL_COLORPICKER_TYPE);
 
 	cp = data;
-	ewl_colorpicker_current_rgb_set(cp, cp->previous.r, cp->previous.g, 
+	ewl_colorpicker_current_rgb_set(cp, cp->previous.r, cp->previous.g,
 							cp->previous.b);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -890,7 +890,7 @@ ewl_colorpicker_spinner_mode_get(Ewl_Colorpicker_Spinner *sp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("sp", sp, EWL_COLOR_MODE_RGB_RED);
-	DCHECK_TYPE_RET("sp", sp, EWL_COLORPICKER_SPINNER_TYPE,	 
+	DCHECK_TYPE_RET("sp", sp, EWL_COLORPICKER_SPINNER_TYPE,
 					EWL_COLOR_MODE_RGB_RED);
 
 	DRETURN_INT(sp->mode, DLEVEL_STABLE);
@@ -931,7 +931,7 @@ ewl_colorpicker_radiobutton_init(Ewl_Colorpicker_Radiobutton *rb)
 }
 
 static void
-ewl_colorpicker_radiobutton_mode_set(Ewl_Colorpicker_Radiobutton *rb, 
+ewl_colorpicker_radiobutton_mode_set(Ewl_Colorpicker_Radiobutton *rb,
 						Ewl_Color_Mode mode)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -948,7 +948,7 @@ ewl_colorpicker_radiobutton_mode_get(Ewl_Colorpicker_Radiobutton *rb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("rb", rb, EWL_COLOR_MODE_RGB_RED);
-	DCHECK_TYPE_RET("rb", rb, EWL_COLORPICKER_RADIOBUTTON_TYPE,	 
+	DCHECK_TYPE_RET("rb", rb, EWL_COLORPICKER_RADIOBUTTON_TYPE,
 					EWL_COLOR_MODE_RGB_RED);
 
 	DRETURN_INT(rb->mode, DLEVEL_STABLE);

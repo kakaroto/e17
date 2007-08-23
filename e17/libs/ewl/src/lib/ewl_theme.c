@@ -30,7 +30,7 @@ ewl_theme_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!ewl_theme_theme_set(ewl_config_string_get(ewl_config, 
+	if (!ewl_theme_theme_set(ewl_config_string_get(ewl_config,
 						EWL_CONFIG_THEME_NAME)))
 	{
 		DWARNING("No usable theme found, exiting.");
@@ -90,7 +90,7 @@ ewl_theme_theme_set(const char *theme_name)
 	/* get the new theme path and setup the font path */
 	IF_FREE(ewl_theme_path);
 	ewl_theme_path = ewl_theme_path_find(theme_name);
-	if (!ewl_theme_path) DRETURN_INT(FALSE, DLEVEL_STABLE); 
+	if (!ewl_theme_path) DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_theme_font_path_init();
 
@@ -149,7 +149,7 @@ ewl_theme_widget_shutdown(Ewl_Widget *w)
 
 	/*
 	 * We only want to destroy the hash if its not ewl_theme_def_data
-	 * We destroy ewl_theme_def_data from else where.. 
+	 * We destroy ewl_theme_def_data from else where..
 	 */
 	if (w->theme && w->theme != ewl_theme_def_data)
 		IF_FREE_HASH(w->theme);
@@ -476,10 +476,10 @@ ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v)
 	}
 
 	if (v && v != EWL_THEME_KEY_NOMATCH)
-		ecore_hash_set(w->theme, (void *)ecore_string_instance(k), 
+		ecore_hash_set(w->theme, (void *)ecore_string_instance(k),
 						(void *)ecore_string_instance(v));
 	else
-		ecore_hash_set(w->theme, (void *)ecore_string_instance(k), 
+		ecore_hash_set(w->theme, (void *)ecore_string_instance(k),
 						EWL_THEME_KEY_NOMATCH);
 
 	if (REALIZED(w)) {
@@ -520,8 +520,8 @@ ewl_theme_data_int_set(Ewl_Widget *w, char *k, int v)
  * of name is found we will return null.
  */
 static char *
-ewl_theme_path_find(const char *name) 
-{		
+ewl_theme_path_find(const char *name)
+{
 	struct stat st;
 	char *theme_found_path = NULL;
 	char theme_tmp_path[PATH_MAX];
@@ -543,7 +543,7 @@ ewl_theme_path_find(const char *name)
 
 	/*
 	 * Build a path to the theme if it is the users home dir and use it if
-	 * available. 
+	 * available.
 	 */
 	if (home) {
 		snprintf(theme_tmp_path, PATH_MAX, "%s/.e/ewl/themes/%s.edj",
@@ -570,7 +570,7 @@ ewl_theme_path_find(const char *name)
 			char *cwd;
 
 			cwd = getenv("PWD");
-			if (cwd != NULL) 
+			if (cwd != NULL)
 				snprintf(theme_tmp_path, PATH_MAX, "%s/%s", cwd, name);
 			else
 				snprintf(theme_tmp_path, PATH_MAX, "%s", name);
@@ -623,7 +623,7 @@ ewl_theme_font_path_init(void)
 					ewl_theme_path, font_path);
 		else
 			snprintf(key, PATH_MAX, "%s", ewl_theme_path);
-			
+
 		ecore_list_append(ewl_theme_font_paths, strdup(key));
 	}
 

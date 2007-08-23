@@ -28,7 +28,7 @@ struct Freebox_Test
 	Ewl_Freebox_Comparator compare;
 };
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Freebox";

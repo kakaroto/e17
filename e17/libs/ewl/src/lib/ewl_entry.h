@@ -45,7 +45,7 @@
 #define EWL_ENTRY(entry) ((Ewl_Entry *) entry)
 
 /**
- * The Ewl_Entry 
+ * The Ewl_Entry
  */
 typedef struct Ewl_Entry Ewl_Entry;
 
@@ -63,7 +63,7 @@ struct Ewl_Entry
 };
 
 Ewl_Widget	*ewl_entry_new(void);
-int 		 ewl_entry_init(Ewl_Entry *e);	
+int 		 ewl_entry_init(Ewl_Entry *e);
 
 void		 ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline);
 unsigned int	 ewl_entry_multiline_get(Ewl_Entry *e);
@@ -111,7 +111,7 @@ void ewl_entry_delete_right(Ewl_Entry *e);
 typedef struct Ewl_Entry_Cursor Ewl_Entry_Cursor;
 
 /**
- * @brief Inherit from Ewl_Widget and extend for the Entry cursor 
+ * @brief Inherit from Ewl_Widget and extend for the Entry cursor
  */
 struct Ewl_Entry_Cursor
 {

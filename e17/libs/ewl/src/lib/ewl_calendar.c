@@ -11,15 +11,15 @@
 
 static void ewl_calendar_grid_setup(Ewl_Calendar *cal);
 static int ewl_calendar_leap_year_detect(unsigned int year);
-static void ewl_calendar_highlight_today(struct tm *now, Ewl_Label *day, 
+static void ewl_calendar_highlight_today(struct tm *now, Ewl_Label *day,
 						Ewl_Calendar *cal);
-static void ewl_calendar_day_select_cb(Ewl_Widget *w, void *ev_data, 
+static void ewl_calendar_day_select_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data);
-static void ewl_calendar_day_pick_cb(Ewl_Widget *w, void *ev_data, 
+static void ewl_calendar_day_pick_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data);
-static void ewl_calendar_prev_month_cb(Ewl_Widget *w, void *ev_data, 
+static void ewl_calendar_prev_month_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data);
-static void ewl_calendar_next_month_cb(Ewl_Widget *w, void *ev_data, 
+static void ewl_calendar_next_month_cb(Ewl_Widget *w, void *ev_data,
 					void *user_data);
 static void ewl_calendar_add_day_labels(Ewl_Calendar *ib);
 
@@ -37,7 +37,7 @@ static int mdays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
  * Creates a new Ewl_Calendar object
  */
 Ewl_Widget *
-ewl_calendar_new(void) 
+ewl_calendar_new(void)
 {
 	Ewl_Calendar* ib;
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -60,7 +60,7 @@ ewl_calendar_new(void)
  * @brief Init a new Ewl_Calendar to default values and callbacks, and set date to today
  */
 int
-ewl_calendar_init(Ewl_Calendar* ib) 
+ewl_calendar_init(Ewl_Calendar* ib)
 {
 	Ewl_Widget *w, *vbox, *top_hbox, *o;
 	struct tm *ptr;
@@ -93,20 +93,20 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), o);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
-	icon = ewl_icon_theme_icon_path_get(EWL_ICON_GO_PREVIOUS, 
+	icon = ewl_icon_theme_icon_path_get(EWL_ICON_GO_PREVIOUS,
 						EWL_ICON_SIZE_SMALL);
 	if (icon)
 		ewl_icon_image_set(EWL_ICON(o), icon, EWL_ICON_GO_PREVIOUS);
 	ewl_icon_alt_text_set(EWL_ICON(o), "<<");
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 					ewl_calendar_prev_month_cb, ib);
 	ewl_widget_show(o);
 
 	ib->month_label = ewl_label_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(ib->month_label), 
+	ewl_object_fill_policy_set(EWL_OBJECT(ib->month_label),
 						EWL_FLAG_FILL_HFILL |
 						EWL_FLAG_FILL_VSHRINK);
-	ewl_object_alignment_set(EWL_OBJECT(ib->month_label), 
+	ewl_object_alignment_set(EWL_OBJECT(ib->month_label),
 						EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(top_hbox), ib->month_label);
 	ewl_widget_show(ib->month_label);
@@ -114,13 +114,13 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	o = ewl_icon_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_RIGHT);
-	ewl_container_child_append(EWL_CONTAINER(top_hbox), o);	
-	icon = ewl_icon_theme_icon_path_get(EWL_ICON_GO_NEXT, 
+	ewl_container_child_append(EWL_CONTAINER(top_hbox), o);
+	icon = ewl_icon_theme_icon_path_get(EWL_ICON_GO_NEXT,
 						EWL_ICON_SIZE_SMALL);
 	if (icon)
 		ewl_icon_image_set(EWL_ICON(o), icon, EWL_ICON_GO_NEXT);
 	ewl_icon_alt_text_set(EWL_ICON(o), ">>");
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 					ewl_calendar_next_month_cb, ib);
 	ewl_widget_show(o);
 
@@ -151,7 +151,7 @@ ewl_calendar_init(Ewl_Calendar* ib)
  * the user must freet this string.
  */
 char *
-ewl_calendar_ascii_time_get(Ewl_Calendar *cal) 
+ewl_calendar_ascii_time_get(Ewl_Calendar *cal)
 {
 	time_t tm;
 	struct tm* month_start;
@@ -169,7 +169,7 @@ ewl_calendar_ascii_time_get(Ewl_Calendar *cal)
 	mktime(month_start);
 
 	snprintf(str, sizeof(str), "%s", asctime(month_start));
-	
+
 	DRETURN_PTR(strdup(str), DLEVEL_STABLE);
 }
 
@@ -179,7 +179,7 @@ ewl_calendar_ascii_time_get(Ewl_Calendar *cal)
  * @brief Returns the current day selected in the calendar
  */
 int
-ewl_calendar_day_get(Ewl_Calendar *c) 
+ewl_calendar_day_get(Ewl_Calendar *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, FALSE);
@@ -194,7 +194,7 @@ ewl_calendar_day_get(Ewl_Calendar *c)
  * @brief Returns the month selected in the calendar
  */
 int
-ewl_calendar_month_get(Ewl_Calendar *c) 
+ewl_calendar_month_get(Ewl_Calendar *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, FALSE);
@@ -209,7 +209,7 @@ ewl_calendar_month_get(Ewl_Calendar *c)
  * @brief Returns the year currently selected in the calendar
  */
 int
-ewl_calendar_year_get(Ewl_Calendar *c) 
+ewl_calendar_year_get(Ewl_Calendar *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, FALSE);
@@ -219,7 +219,7 @@ ewl_calendar_year_get(Ewl_Calendar *c)
 }
 
 static void
-ewl_calendar_grid_setup(Ewl_Calendar *cal) 
+ewl_calendar_grid_setup(Ewl_Calendar *cal)
 {
 	struct tm *date;
 	char display_top[50];
@@ -236,7 +236,7 @@ ewl_calendar_grid_setup(Ewl_Calendar *cal)
 	ewl_calendar_add_day_labels(cal);
 
 	/* Make the initial display */
-	snprintf(display_top, sizeof(display_top), "%s %d", 
+	snprintf(display_top, sizeof(display_top), "%s %d",
 				months[cal->cur_month], cal->cur_year);
 	ewl_label_text_set(EWL_LABEL(cal->month_label), display_top);
 	today = cal->cur_day;
@@ -278,22 +278,22 @@ ewl_calendar_grid_setup(Ewl_Calendar *cal)
 			cur_col = 1;
 		}
 
-		snprintf(day, sizeof(day), "%d", cur_day + 1); 
+		snprintf(day, sizeof(day), "%d", cur_day + 1);
 		day_label = ewl_label_new();
 		ewl_label_text_set(EWL_LABEL(day_label), day);
-		ewl_object_alignment_set(EWL_OBJECT(day_label), 
+		ewl_object_alignment_set(EWL_OBJECT(day_label),
 							EWL_FLAG_ALIGN_RIGHT);
-		ewl_callback_append(EWL_WIDGET(day_label), 
-					EWL_CALLBACK_MOUSE_DOWN, 
+		ewl_callback_append(EWL_WIDGET(day_label),
+					EWL_CALLBACK_MOUSE_DOWN,
 					ewl_calendar_day_select_cb, cal);
-		ewl_callback_append(EWL_WIDGET(day_label), 
+		ewl_callback_append(EWL_WIDGET(day_label),
 					EWL_CALLBACK_CLICKED,
 					ewl_calendar_day_pick_cb, cal);
-		
+
 		ewl_container_child_append(EWL_CONTAINER(cal->grid), day_label);
-		ewl_grid_child_position_set(EWL_GRID(cal->grid), 
-						day_label, cur_col - 1, 
-						cur_col - 1, cur_row - 1, 
+		ewl_grid_child_position_set(EWL_GRID(cal->grid),
+						day_label, cur_col - 1,
+						cur_col - 1, cur_row - 1,
 						cur_row - 1);
 		ewl_calendar_highlight_today(date, EWL_LABEL(day_label), cal);
 		ewl_widget_show(day_label);
@@ -313,14 +313,14 @@ ewl_calendar_leap_year_detect(unsigned int year)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	assert(year > 1581);
-	leap = (((year % 4 == 0) && (year % 100)) || (year % 400 == 0)); 
+	leap = (((year % 4 == 0) && (year % 100)) || (year % 400 == 0));
 
 	DRETURN_INT(leap, DLEVEL_STABLE);
 }
 
 static void
-ewl_calendar_highlight_today(struct tm *now, Ewl_Label *day, 
-					Ewl_Calendar *cal) 
+ewl_calendar_highlight_today(struct tm *now, Ewl_Label *day,
+					Ewl_Calendar *cal)
 {
 	int i;
 
@@ -333,7 +333,7 @@ ewl_calendar_highlight_today(struct tm *now, Ewl_Label *day,
 
 	/* Get the day */
 	i = atoi(ewl_label_text_get(EWL_LABEL(day)));
-	if ((i == now->tm_mday) && ((now->tm_year + 1900) == cal->cur_year) 
+	if ((i == now->tm_mday) && ((now->tm_year + 1900) == cal->cur_year)
 			&& (now->tm_mon == cal->cur_month)) {
 		ewl_widget_color_set(EWL_WIDGET(day), 0, 0, 255, 255);
 	}
@@ -342,7 +342,7 @@ ewl_calendar_highlight_today(struct tm *now, Ewl_Label *day,
 }
 
 static void
-ewl_calendar_day_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_calendar_day_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data)
 {
 	struct tm *now;
@@ -374,8 +374,8 @@ ewl_calendar_day_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 }
 
 static void
-ewl_calendar_day_pick_cb(Ewl_Widget *w __UNUSED__, void *ev_data, 
-						void *user_data) 
+ewl_calendar_day_pick_cb(Ewl_Widget *w __UNUSED__, void *ev_data,
+						void *user_data)
 {
 	Ewl_Event_Mouse_Down *ev;
 
@@ -393,7 +393,7 @@ ewl_calendar_day_pick_cb(Ewl_Widget *w __UNUSED__, void *ev_data,
 
 static void
 ewl_calendar_prev_month_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-						void *user_data) 
+						void *user_data)
 {
 	Ewl_Calendar *ib;
 
@@ -403,9 +403,9 @@ ewl_calendar_prev_month_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 
 	ib = EWL_CALENDAR(user_data);
 	ib->cur_month -= 1;
-	if (ib->cur_month < 0) { 
-		ib->cur_month = 11; 
-		ib->cur_year--; 
+	if (ib->cur_month < 0) {
+		ib->cur_month = 11;
+		ib->cur_year--;
 	}
 	ewl_calendar_grid_setup(ib);
 
@@ -414,19 +414,19 @@ ewl_calendar_prev_month_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 
 static void
 ewl_calendar_next_month_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-						void *user_data) 
+						void *user_data)
 {
 	Ewl_Calendar *ib;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("user_data", user_data);
 	DCHECK_TYPE("user_data", user_data, EWL_CALENDAR_TYPE);
 
 	ib = EWL_CALENDAR(user_data);
 	ib->cur_month += 1;
-	if (ib->cur_month > 11) { 
-		ib->cur_month = 0; 
-		ib->cur_year++; 
+	if (ib->cur_month > 11) {
+		ib->cur_month = 0;
+		ib->cur_year++;
 	}
 	ewl_calendar_grid_setup(ib);
 
@@ -434,7 +434,7 @@ ewl_calendar_next_month_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 }
 
 static void
-ewl_calendar_add_day_labels(Ewl_Calendar *ib) 
+ewl_calendar_add_day_labels(Ewl_Calendar *ib)
 {
 	Ewl_Widget* day_label;
 	char *days[] = {"M", "T", "W", "T", "F", "S", "S", NULL};
@@ -450,7 +450,7 @@ ewl_calendar_add_day_labels(Ewl_Calendar *ib)
 		ewl_label_text_set(EWL_LABEL(day_label), days[i]);
 		ewl_container_child_append(EWL_CONTAINER(ib->grid),
 							day_label);
-		ewl_object_alignment_set(EWL_OBJECT(day_label), 
+		ewl_object_alignment_set(EWL_OBJECT(day_label),
 							EWL_FLAG_ALIGN_CENTER);
 		ewl_widget_show(day_label);
 	}

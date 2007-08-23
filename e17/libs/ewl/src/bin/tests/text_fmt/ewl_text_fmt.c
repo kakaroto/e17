@@ -73,7 +73,7 @@ static Ewl_Unit_Test text_fmt_unit_tests[] = {
 		{NULL, NULL, -1, NULL}
 	};
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Text Format";
@@ -83,7 +83,7 @@ test_info(Ewl_Test *test)
 	test->unit_tests = text_fmt_unit_tests;
 }
 
-static int 
+static int
 tf_new(char *buf, int len)
 {
 	Ewl_Widget *t;
@@ -116,7 +116,7 @@ tf_new_null_text(char *buf, int len)
 	return 1;
 }
 
-static int 
+static int
 tf_destroy(char *buf, int len)
 {
 	Ewl_Widget *t;
@@ -134,7 +134,7 @@ tf_destroy(char *buf, int len)
 	return 1;
 }
 
-static int 
+static int
 tf_clear(char *buf, int len)
 {
 	Ewl_Widget *t;
@@ -190,79 +190,79 @@ tf_count_empty(char *buf, int len)
 	return 1;
 }
 
-static int 
+static int
 tf_count_non_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_prepend_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_prepend_non_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_append_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_append_non_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_insert_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_insert_non_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_delete_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_delete_non_empty(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_delete_past_end(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_delete_all(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_delete_full_node(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;
 }
 
-static int 
+static int
 tf_delete_partial_node(char *buf __UNUSED__, int len __UNUSED__)
 {
 	return 1;

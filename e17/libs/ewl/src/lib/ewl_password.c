@@ -57,7 +57,7 @@ ewl_password_init(Ewl_Password *e)
 	ewl_text_selectable_set(EWL_TEXT(w), FALSE);
 
 	/*
-	 * Attach necessary callback mechanisms 
+	 * Attach necessary callback mechanisms
 	 */
 	ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN, ewl_entry_cb_key_down);
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN, ewl_entry_cb_mouse_down);
@@ -143,15 +143,15 @@ void
 ewl_password_clear(Ewl_Password *e)
 {
 	Ewl_Widget *w;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_PASSWORD_TYPE);
-	
+
 	w = EWL_WIDGET(e);
-	
+
 	ewl_password_text_set(e, NULL);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -204,7 +204,7 @@ ewl_password_text_insert(Ewl_Password *e, const char *s)
 
 	s3 = NEW(char, l + l2 + 1);
 	if (!s3) {
-		if (s2) 
+		if (s2)
 		{
 			ZERO(s2, char, strlen(s2));
 			FREE(s2);
@@ -265,15 +265,15 @@ ewl_password_cb_key_down(Ewl_Widget *w, void *ev_data,
 
 	else if ((!strcmp(ev->keyname, "Return"))
 			|| (!strcmp(ev->keyname, "KP_Return"))
-			|| (!strcmp(ev->keyname, "Enter")) 
+			|| (!strcmp(ev->keyname, "Enter"))
 			|| (!strcmp(ev->keyname, "KP_Enter"))
 			|| (!strcmp(ev->keyname, "\n")))
 		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
-	else if ((!strcmp(ev->keyname, "Left")) 
+	else if ((!strcmp(ev->keyname, "Left"))
 			|| (!strcmp(ev->keyname, "Right"))
 			|| (!strcmp(ev->keyname, "Up"))
-			|| (!strcmp(ev->keyname, "Down")) 
+			|| (!strcmp(ev->keyname, "Down"))
 			|| (!strcmp(ev->keyname, "Delete"))) {
 		/* ignore these */
 	}
@@ -298,8 +298,8 @@ ewl_password_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	/* 
-	 * Entry re-enables its callbacks when enabled, so we 
+	/*
+	 * Entry re-enables its callbacks when enabled, so we
 	 * must disable them again.
 	 */
 	ewl_callback_del(w, EWL_CALLBACK_KEY_DOWN, ewl_entry_cb_key_down);

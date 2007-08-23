@@ -12,7 +12,7 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-/** 
+/**
  * Ewl_Filepicker_Filter
  */
 typedef struct Ewl_Filepicker_Filter Ewl_Filepicker_Filter;
@@ -29,16 +29,16 @@ struct Ewl_Filepicker_Filter
 static void ewl_filepicker_favorites_populate(Ewl_Filepicker *fp);
 static void ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev,
 								void *data);
-static void ewl_filepicker_cb_button_clicked(Ewl_Widget *w, void *ev, 
+static void ewl_filepicker_cb_button_clicked(Ewl_Widget *w, void *ev,
 							void *data);
 static void ewl_filepicker_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 
 static void ewl_filepicker_path_populate(Ewl_Filepicker *fp, char *path);
-static void ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev, 
+static void ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev,
 							void *data);
-static void ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev, 
+static void ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev,
 							void *data);
-static void ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev, 
+static void ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev,
 							void *data);
 
 static void *ewl_filepicker_cb_type_fetch(void *data, unsigned int row,
@@ -112,7 +112,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_mvc_data_set(EWL_MVC(fp->path_combo), fp->path);
 	ewl_callback_append(fp->path_combo, EWL_CALLBACK_VALUE_CHANGED,
 					ewl_filepicker_cb_path_change, fp);
-	ewl_object_fill_policy_set(EWL_OBJECT(fp->path_combo), 
+	ewl_object_fill_policy_set(EWL_OBJECT(fp->path_combo),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	ewl_widget_show(fp->path_combo);
 
@@ -137,7 +137,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 
 	box = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(o), box);
-	ewl_object_fill_policy_set(EWL_OBJECT(o), 
+	ewl_object_fill_policy_set(EWL_OBJECT(o),
 			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	ewl_widget_show(box);
 
@@ -147,7 +147,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_widget_show(fp->file_entry);
 
 	fp->filters = ecore_list_new();
-	ecore_list_free_cb_set(fp->filters, 
+	ecore_list_free_cb_set(fp->filters,
 				ECORE_FREE_CB(ewl_filepicker_filter_free_cb));
 	ewl_filepicker_filter_add(fp, "All files", NULL);
 
@@ -179,16 +179,16 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	o = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_OK);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_filepicker_cb_button_clicked, fp);
-	ewl_object_fill_policy_set(EWL_OBJECT(o), 
+	ewl_object_fill_policy_set(EWL_OBJECT(o),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	ewl_widget_show(o);
 
 	o = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_CANCEL);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 				ewl_filepicker_cb_button_clicked, fp);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(o);
@@ -204,7 +204,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
  * @param fp: The filepicker to change
  * @param show: The show favorites setting to apply
  * @return Returns no value
- * @brief Sets the show favorites setting of the file picker 
+ * @brief Sets the show favorites setting of the file picker
  */
 void
 ewl_filepicker_show_favorites_set(Ewl_Filepicker *fp, unsigned int show)
@@ -266,7 +266,7 @@ ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
 	fp->file_list = view->fetch(NULL, 0, 0);
 	ewl_container_child_append(EWL_CONTAINER(fp->file_list_box),
 							fp->file_list);
-	ewl_callback_append(EWL_WIDGET(fp->file_list), 
+	ewl_callback_append(EWL_WIDGET(fp->file_list),
 				EWL_CALLBACK_VALUE_CHANGED,
 				ewl_filepicker_cb_list_value_changed, fp);
 
@@ -282,15 +282,15 @@ ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
 	/* load new view from old view values */
 	if (old_fl)
 	{
-		ewl_filepicker_directory_set(fp, 
+		ewl_filepicker_directory_set(fp,
 					ewl_filelist_directory_get(old_fl));
-		ewl_filepicker_filter_set(fp, 
+		ewl_filepicker_filter_set(fp,
 					ewl_filelist_filter_get(old_fl));
-		ewl_filepicker_multiselect_set(fp, 
+		ewl_filepicker_multiselect_set(fp,
 					ewl_filelist_multiselect_get(old_fl));
-		ewl_filepicker_show_dot_files_set(fp, 
+		ewl_filepicker_show_dot_files_set(fp,
 					ewl_filelist_show_dot_files_get(old_fl));
-		ewl_filepicker_selected_files_set(fp, 
+		ewl_filepicker_selected_files_set(fp,
 					ewl_filelist_selected_files_get(old_fl));
 		ewl_widget_destroy(EWL_WIDGET(old_fl));
 	}
@@ -302,7 +302,7 @@ ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
 /**
  * @param fp: The filepicker to get the value from
  * @return Returns the current view set on the filepicker
- * @brief Retrieves the current view used for the file list 
+ * @brief Retrieves the current view used for the file list
  */
 Ewl_View *
 ewl_filepicker_list_view_get(Ewl_Filepicker *fp)
@@ -324,7 +324,7 @@ void
 ewl_filepicker_directory_set(Ewl_Filepicker *fp, const char *dir)
 {
 	char *tmp;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fp", fp);
 	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
@@ -375,7 +375,7 @@ ewl_filepicker_directory_get(Ewl_Filepicker *fp)
  * @param fp: The filepicker to set the filter on
  * @param filter: The filter to set on the filepicker
  * @return Returns no value.
- * @brief Set the given filter into the file picker 
+ * @brief Set the given filter into the file picker
  */
 void
 ewl_filepicker_filter_set(Ewl_Filepicker *fp, const char *filter)
@@ -444,7 +444,7 @@ ewl_filepicker_multiselect_get(Ewl_Filepicker *fp)
  * @param dot: The show dot files setting to set.
  * @return Returns no value.
  * @brief Set the show dot files setting of the filepicker to the given
- * value 
+ * value
  */
 void
 ewl_filepicker_show_dot_files_set(Ewl_Filepicker *fp, unsigned int dot)
@@ -510,7 +510,7 @@ ewl_filepicker_selected_file_get(Ewl_Filepicker *fp)
 	 * changed the selected name. Otherwise we try to grab whats in the
 	 * selected array from the file list */
 	file = ewl_text_text_get(EWL_TEXT(fp->file_entry));
-	if (!file) 
+	if (!file)
 		file = ewl_filelist_selected_file_get(EWL_FILELIST(fp->file_list));
 
 	DRETURN_PTR(file, DLEVEL_STABLE);
@@ -604,14 +604,14 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 		FREE(dir);
 	}
 	else if (e->response == EWL_FILELIST_EVENT_SELECTION_CHANGE)
-		ewl_text_text_set(EWL_TEXT(fp->file_entry), 
+		ewl_text_text_set(EWL_TEXT(fp->file_entry),
 				ewl_filelist_selected_file_get(fl));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_filepicker_cb_button_clicked(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_filepicker_cb_button_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 							void *data)
 {
 	Ewl_Filepicker *fp;
@@ -652,7 +652,7 @@ ewl_filepicker_favorites_populate(Ewl_Filepicker *fp)
 }
 
 static void *
-ewl_filepicker_cb_type_fetch(void *data, unsigned int row, 
+ewl_filepicker_cb_type_fetch(void *data, unsigned int row,
 				unsigned int col __UNUSED__)
 {
 	Ewl_Filepicker *fp;
@@ -738,7 +738,7 @@ ewl_filepicker_path_populate(Ewl_Filepicker *fp, char *path)
 }
 
 static void
-ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev __UNUSED__,
 							void *data)
 {
 	Ewl_Filepicker *fp;
@@ -752,7 +752,7 @@ ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev __UNUSED__,
 	fp = data;
 	idx = ewl_mvc_selected_get(EWL_MVC(w));
 	ecore_list_index_goto(fp->path, idx->row);
-			
+
 	ewl_filepicker_directory_set(fp, ecore_list_current(fp->path));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -775,7 +775,7 @@ ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 }
 
 static void
-ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev __UNUSED__,
 							void *data)
 {
 	Ewl_Filepicker *fp;
@@ -800,7 +800,7 @@ ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_filepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_filepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	char *file;
@@ -833,7 +833,7 @@ static void
 ewl_filepicker_filter_free_cb(Ewl_Filepicker_Filter *filter)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	
+
 	if (!filter) DRETURN(DLEVEL_STABLE);
 
 	IF_FREE(filter->name);

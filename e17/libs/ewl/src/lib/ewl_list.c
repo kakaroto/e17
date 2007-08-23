@@ -6,8 +6,8 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static Ewl_Widget *ewl_list_widget_at(Ewl_MVC *mvc, void *data, 
-					unsigned int row, 
+static Ewl_Widget *ewl_list_widget_at(Ewl_MVC *mvc, void *data,
+					unsigned int row,
 					unsigned int column);
 
 /**
@@ -53,7 +53,7 @@ ewl_list_init(Ewl_List *list)
 
 	ewl_mvc_selected_change_cb_set(EWL_MVC(list), ewl_list_cb_selected_change);
 
-	ewl_callback_append(EWL_WIDGET(list), EWL_CALLBACK_CONFIGURE, 
+	ewl_callback_append(EWL_WIDGET(list), EWL_CALLBACK_CONFIGURE,
 						ewl_list_cb_configure, NULL);
 
 	ewl_container_add_notify_set(EWL_CONTAINER(list), ewl_list_cb_child_add);
@@ -67,10 +67,10 @@ ewl_list_init(Ewl_List *list)
  * @param ev: UNUSED
  * @param data: UNUSED
  * @return Returns no value
- * @brief Configures the given list 
+ * @brief Configures the given list
  */
 void
-ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_List *list;
@@ -91,7 +91,7 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	/* if either the list isn't dirty or some of the MVC controls have
 	 * not been set on the list just leave this up to the box to handle */
-	if ((!ewl_mvc_dirty_get(EWL_MVC(list))) 
+	if ((!ewl_mvc_dirty_get(EWL_MVC(list)))
 			|| !model || !view || !mvc_data)
 		DRETURN(DLEVEL_STABLE);
 
@@ -133,7 +133,7 @@ ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 					EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
 				ewl_list_cb_item_clicked, c);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -163,7 +163,7 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	row = ewl_container_child_index_get(EWL_CONTAINER(data), w);
 	if (row < 0) DRETURN(DLEVEL_STABLE);
 
-	if ((unsigned int) row > model->count(data)) 
+	if ((unsigned int) row > model->count(data))
 	{
 		if (!EWL_HIGHLIGHT_IS(w))
 		{
@@ -203,7 +203,7 @@ ewl_list_cb_selected_change(Ewl_MVC *mvc)
 }
 
 static Ewl_Widget *
-ewl_list_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row, 
+ewl_list_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
 					unsigned int column __UNUSED__)
 {
 	Ewl_Widget *w;
@@ -213,7 +213,7 @@ ewl_list_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
 	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
 
 	w = ewl_container_child_get(EWL_CONTAINER(mvc), row);
-	
+
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 

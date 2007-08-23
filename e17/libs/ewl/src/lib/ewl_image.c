@@ -72,7 +72,7 @@ ewl_image_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_image_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__, 
+ewl_image_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 						unsigned int col __UNUSED__)
 {
 	Ewl_Widget *image;
@@ -544,7 +544,7 @@ ewl_image_flip(Ewl_Image *img, Ewl_Orientation orient)
 	evas_object_image_size_get(img->image, &w, &h);
 	in = evas_object_image_data_get(img->image, TRUE);
 
-	if (orient == EWL_ORIENTATION_VERTICAL) 
+	if (orient == EWL_ORIENTATION_VERTICAL)
 	{
 		mx = w;
 		my = h / 2;
@@ -565,9 +565,9 @@ ewl_image_flip(Ewl_Image *img, Ewl_Orientation orient)
 		s = w;
 	}
 
-	for (iy = 0; iy < my; iy++) 
+	for (iy = 0; iy < my; iy++)
 	{
-		for (ix = 0; ix < mx; ix++) 
+		for (ix = 0; ix < mx; ix++)
 		{
 			*oa = s - 1 - *ia;
 			*ob = *ib;
@@ -703,13 +703,13 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
  * @return Returns no value.
  * @brief This will set the size of the thumbnails
  */
-void 
+void
 ewl_image_thumbnail_size_set(Ewl_Image_Thumbnail *thumb, Ewl_Thumbnail_Size s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("thumb", thumb);
 	DCHECK_TYPE("thumb", thumb, EWL_IMAGE_THUMBNAIL_TYPE);
-	
+
 	thumb->size = s;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -729,7 +729,7 @@ ewl_image_thumbnail_size_get(Ewl_Image_Thumbnail *thumb)
 	DRETURN_INT(thumb->size, DLEVEL_STABLE);
 }
 
-/** 
+/**
  * @param thumb: The thumbnail to request
  * @param path: The path to the image
  * @return Returns no value.
@@ -748,10 +748,10 @@ ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, const char *path)
 	DCHECK_PARAM_PTR("path", path);
 
 #ifdef BUILD_EPSILON_SUPPORT
-	if (thumb->size == EWL_THUMBNAIL_SIZE_NORMAL) 
+	if (thumb->size == EWL_THUMBNAIL_SIZE_NORMAL)
 		size = EPSILON_THUMB_NORMAL;
 	else size = EPSILON_THUMB_LARGE;
-	
+
 	thumb->thumb = epsilon_add((char *)path, NULL, size, thumb);
 #else
 	thumb->thumb = NULL;
@@ -761,7 +761,7 @@ ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, const char *path)
 }
 
 static void
-ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Image_Thumbnail *thumb;
@@ -783,7 +783,7 @@ ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 #ifdef BUILD_EPSILON_SUPPORT
 static int
-ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__, 
+ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__,
 								void *event)
 {
 	Ewl_Image_Thumbnail *thumb;
@@ -795,7 +795,7 @@ ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__,
 	ev = event;
 	thumb = ev->data;
 
-	if (thumb) 
+	if (thumb)
 	{
 		if (ev->dest)
 		{
@@ -1128,9 +1128,9 @@ ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data,
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
-		evas_event_feed_mouse_down(emb->canvas, ev->button, 
-				EVAS_BUTTON_NONE, 
-				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
+		evas_event_feed_mouse_down(emb->canvas, ev->button,
+				EVAS_BUTTON_NONE,
+				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
 				NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1161,9 +1161,9 @@ ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data,
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE && emb)
-		evas_event_feed_mouse_up(emb->canvas, ev->button, 
-				EVAS_BUTTON_NONE, 
-				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
+		evas_event_feed_mouse_up(emb->canvas, ev->button,
+				EVAS_BUTTON_NONE,
+				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
 				NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1194,8 +1194,8 @@ ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 	ev = ev_data;
 
 	if (i->type == EWL_IMAGE_TYPE_EDJE)
-		evas_event_feed_mouse_move(emb->canvas, ev->x, ev->y, 
-				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff), 
+		evas_event_feed_mouse_move(emb->canvas, ev->x, ev->y,
+				(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
 				NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1207,7 +1207,7 @@ ewl_image_rotate_90(Ewl_Image *img, int cc)
 	int i, j, w = 0, h = 0, ix, iy, ox, oy, os, ow, oh;
 	int *ia, *ib, *oa, *ob;
 	unsigned int *in, *out;
- 
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("img", img);
 	DCHECK_TYPE("img", img, EWL_IMAGE_TYPE);
@@ -1279,7 +1279,7 @@ ewl_image_rotate_180(Ewl_Image *img)
 	in = evas_object_image_data_get(img->image, TRUE);
 
 	size = w * h / 2;
-	for (i = 0; i < size; i++) 
+	for (i = 0; i < size; i++)
 	{
 		ix = i % w;
 		iy = i / w;

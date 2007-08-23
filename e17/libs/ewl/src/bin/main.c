@@ -32,7 +32,7 @@
 
 static Ewl_Model *expansion_model = NULL;
 
-static char *ewl_test_about_body = 
+static char *ewl_test_about_body =
 		"The EWL Test application services two purposes\n"
 		"The first is to allow us to test the different\n"
 		"pieces of EWL as we develop and work on them.\n\n"
@@ -63,14 +63,14 @@ static void cb_run_unit_tests(Ewl_Widget *w, void *ev, void *data);
 
 static void ewl_test_cb_help(Ewl_Widget *w, void *ev, void *data);
 static void ewl_test_cb_about(Ewl_Widget *w, void *ev, void *data);
-	
-static void *ewl_test_cb_category_fetch(void *data, unsigned int row, 
+
+static void *ewl_test_cb_category_fetch(void *data, unsigned int row,
 						unsigned int column);
 static int ewl_test_cb_category_expandable(void *data, unsigned int row);
 static void *ewl_test_cb_category_expansion_fetch(void *data, unsigned int row);
-static Ewl_Model *ewl_test_cb_category_expansion_model_fetch(void *data, 
+static Ewl_Model *ewl_test_cb_category_expansion_model_fetch(void *data,
 							unsigned int row);
-static void *ewl_test_cb_expansion_fetch(void *data, unsigned int row, 
+static void *ewl_test_cb_expansion_fetch(void *data, unsigned int row,
 							unsigned int column);
 static void ewl_test_cb_test_selected(Ewl_Widget *w, void *ev, void *data);
 
@@ -146,7 +146,7 @@ main(int argc, char **argv)
 				if (unit_test)
 					ret = run_unit_tests(t);
 				else
-					run_window_test(t, MAIN_WIDTH, 
+					run_window_test(t, MAIN_WIDTH,
 								MAIN_HEIGHT);
 
 				ran_test ++;
@@ -190,7 +190,7 @@ ewl_test_cb_unit_test_timer(void *data)
 		Ewl_Widget *tree, *progress, *stat;
 
 		stat = ewl_widget_name_find("statusbar");
-		ewl_statusbar_push(EWL_STATUSBAR(stat), 
+		ewl_statusbar_push(EWL_STATUSBAR(stat),
 				(char *)unit_tests[current_unit_test].name);
 		val = unit_tests[current_unit_test].func(buf, sizeof(buf));
 		ewl_statusbar_pop(EWL_STATUSBAR(stat));
@@ -217,7 +217,7 @@ ewl_test_cb_unit_test_timer(void *data)
 }
 
 static void
-ewl_test_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_test_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__,
 				void *data __UNUSED__)
 {
 	ewl_widget_destroy(w);
@@ -257,7 +257,7 @@ run_window_test(Ewl_Test *test, int width, int height)
 	ewl_window_name_set(EWL_WINDOW(win), test->name);
 	ewl_window_class_set(EWL_WINDOW(win), "Ewl Test Window");
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
-					ewl_test_cb_delete_window, NULL);	
+					ewl_test_cb_delete_window, NULL);
 	if ((width > 0) && (height > 0))
 		ewl_object_size_request(EWL_OBJECT(win), width, height);
 
@@ -288,7 +288,7 @@ run_unit_tests(Ewl_Test *test)
 
 		printf("Running %s: ", test->unit_tests[i].name);
 		ret = test->unit_tests[i].func(buf, sizeof(buf));
-		printf("%s %s\n", (ret ? "PASSED" : "FAILED"), 
+		printf("%s %s\n", (ret ? "PASSED" : "FAILED"),
 						(ret ? "" : buf));
 
 		buf[0] = '\0';
@@ -337,7 +337,7 @@ run_test_boxed(Ewl_Test *t)
 	/* make sure we have a function if we aren't a straight unit test */
 	if ((t->type != EWL_TEST_TYPE_UNIT) && (!t->func))
 	{
-		printf("WARNING: No UI test function defined for (%s).\n", 
+		printf("WARNING: No UI test function defined for (%s).\n",
 								t->name);
 		return;
 	}
@@ -395,7 +395,7 @@ ewl_test_setup_tests(void)
 					if (func_info)
 					{
 						Ewl_Test *t;
-				
+
 						t = calloc(1, sizeof(Ewl_Test));
 						func_info(t);
 						t->handle = handle;
@@ -476,9 +476,9 @@ create_main_test_window(Ewl_Container *box)
 	ewl_model_data_fetch_set(model, ewl_test_cb_category_fetch);
 	ewl_model_data_count_set(model, ewl_model_cb_ecore_list_count);
 	ewl_model_data_expandable_set(model, ewl_test_cb_category_expandable);
-	ewl_model_expansion_data_fetch_set(model, 
+	ewl_model_expansion_data_fetch_set(model,
 				ewl_test_cb_category_expansion_fetch);
-	ewl_model_expansion_model_fetch_set(model, 
+	ewl_model_expansion_model_fetch_set(model,
 				ewl_test_cb_category_expansion_model_fetch);
 
 	tree = ewl_tree2_new();
@@ -602,9 +602,9 @@ fill_source_text(Ewl_Test *test)
 	struct stat buf;
 	char filename[PATH_MAX];
 
-	snprintf(filename, sizeof(filename), PACKAGE_DATA_DIR "/ewl/examples/%s", 
+	snprintf(filename, sizeof(filename), PACKAGE_DATA_DIR "/ewl/examples/%s",
 								test->filename);
-	if (ecore_file_exists(filename)) 
+	if (ecore_file_exists(filename))
 	{
 		FILE *file;
 		file = fopen(filename, "r");
@@ -633,7 +633,7 @@ fill_source_text(Ewl_Test *test)
 		/* let see if a compressed version exists */
 		ecore_strlcat(filename, ".gz", sizeof(filename));
 		if (!ecore_file_exists(filename)) return;
-		
+
 		file = gzopen(filename, "rb");
 		if (!file) return;
 
@@ -679,7 +679,7 @@ setup_unit_tests(Ewl_Test *test)
 	ewl_mvc_data_set(EWL_MVC(tree), current_test);
 	for (i = 0; test->unit_tests[i].func; i++)
 	{
-		if (test->unit_tests[i].failure_reason) 
+		if (test->unit_tests[i].failure_reason)
 			free(test->unit_tests[i].failure_reason);
 		test->unit_tests[i].failure_reason = NULL;
 
@@ -694,7 +694,7 @@ setup_unit_tests(Ewl_Test *test)
 }
 
 static void
-cb_run_unit_tests(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+cb_run_unit_tests(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	int i;
@@ -713,14 +713,14 @@ cb_run_unit_tests(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_range_maximum_value_set(EWL_RANGE(progress), (double)(i));
 	ewl_range_value_set(EWL_RANGE(progress), 0.0);
 
-	if (unit_test_timer) 
+	if (unit_test_timer)
 	{
 		ecore_timer_del(unit_test_timer);
 		unit_test_timer = NULL;
 		current_unit_test = 0;
 	}
 
-	unit_test_timer = ecore_timer_add(0.1, ewl_test_cb_unit_test_timer, 
+	unit_test_timer = ecore_timer_add(0.1, ewl_test_cb_unit_test_timer,
 							test->unit_tests);
 }
 
@@ -765,7 +765,7 @@ text_parse(char *str)
 
 		if (!source)
 			return;
-		
+
 		strncpy(source, str, len1);
 		strncpy(source + len1, end + 1, len2 + 1);
 
@@ -785,7 +785,7 @@ text_parse(char *str)
 	tmp = *end;
 	*end = '\0';
 
-	ewl_text_clear(EWL_TEXT(tutorial)); 
+	ewl_text_clear(EWL_TEXT(tutorial));
 	tutorial_parse(EWL_TEXT(tutorial), start);
 
 	*end = tmp;
@@ -796,19 +796,19 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 {
 	char *start, *end;
 	int handled_newline = 0;
-	int in_codeblock = 0; 
+	int in_codeblock = 0;
 	int not_double = 0;
-	
+
 	start = str;
-	
+
 	/* skip the comment block start and any blank space after */
 	while ((*start == '/') || (*start == '*') || (isspace(*start))) start++;
 	end = start;
-	
+
 	while (start && (*start != '\0'))
 	{
 		int did_newline = 0;
-		
+
 		/* we strip out newlines so the text will wrap nicely */
 		if (*end == '\n')
 		{
@@ -901,7 +901,7 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 				/* skip to the end of the line */
 				end = strchr(end, '\n');
 
-				/* if this is the section header we need to skip 
+				/* if this is the section header we need to skip
 				 * the section name */
 				if (key == 's')
 				{
@@ -1002,7 +1002,7 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 }
 
 static void
-ewl_test_cb_help(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ewl_test_cb_help(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Widget *win, *vbox, *o;
@@ -1034,7 +1034,7 @@ ewl_test_cb_help(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-ewl_test_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ewl_test_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Widget *win, *vbox, *o;
@@ -1068,7 +1068,7 @@ ewl_test_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void *
-ewl_test_cb_category_fetch(void *data __UNUSED__, unsigned int row, 
+ewl_test_cb_category_fetch(void *data __UNUSED__, unsigned int row,
 					unsigned int column __UNUSED__)
 {
 	switch(row)
@@ -1083,7 +1083,7 @@ ewl_test_cb_category_fetch(void *data __UNUSED__, unsigned int row,
 }
 
 static int
-ewl_test_cb_category_expandable(void *data __UNUSED__, 
+ewl_test_cb_category_expandable(void *data __UNUSED__,
 				unsigned int row __UNUSED__)
 {
 	return 1;
@@ -1097,7 +1097,7 @@ ewl_test_cb_category_expansion_fetch(void *data, unsigned int row)
 }
 
 static Ewl_Model *
-ewl_test_cb_category_expansion_model_fetch(void *data __UNUSED__, 
+ewl_test_cb_category_expansion_model_fetch(void *data __UNUSED__,
 						unsigned int row __UNUSED__)
 {
 	if (expansion_model) return expansion_model;
@@ -1110,7 +1110,7 @@ ewl_test_cb_category_expansion_model_fetch(void *data __UNUSED__,
 }
 
 static void *
-ewl_test_cb_expansion_fetch(void *data, unsigned int row, 
+ewl_test_cb_expansion_fetch(void *data, unsigned int row,
 				unsigned int column __UNUSED__)
 {
 	Ewl_Test *test;
@@ -1122,7 +1122,7 @@ ewl_test_cb_expansion_fetch(void *data, unsigned int row,
 }
 
 static void
-ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ecore_List *tree_data, *unit;
@@ -1133,7 +1133,7 @@ ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__,
 	sel = ewl_mvc_selected_get(EWL_MVC(w));
 
 	/* don't care about the top level rows */
-	if (tree_data == sel->sel.data) 
+	if (tree_data == sel->sel.data)
 	{
 		free(sel);
 		return;
@@ -1160,7 +1160,7 @@ cb_unit_test_header_data_fetch(void *data __UNUSED__, unsigned int column)
 {
 	if (column == 0)
 		return "Test";
-	
+
 	if (column == 1)
 		return "Status";
 
@@ -1187,11 +1187,11 @@ cb_unit_test_fetch(void *data, unsigned int row, unsigned int column)
 	t = data;
 	if (column == 0)
 		return (void *)t->unit_tests[row].name;
-	
+
 	else if (column == 1)
-		return ((t->unit_tests[row].status < 0) ? "" : 
+		return ((t->unit_tests[row].status < 0) ? "" :
 			(t->unit_tests[row].status == 0) ? "FAIL" : "PASS");
-	
+
 	else
 		return t->unit_tests[row].failure_reason;
 }
@@ -1205,7 +1205,7 @@ cb_unit_test_count(void *data)
 	t = data;
 	if (!data) return 0;
 
-	for (i = 0; t->unit_tests[i].func; i++) 
+	for (i = 0; t->unit_tests[i].func; i++)
 		;
 
 	return i;

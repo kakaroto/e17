@@ -5,9 +5,9 @@
 #include "ewl_tree2_view.h"
 
 /**
- * @addtogroup Ewl_Tree2_View_Scrolled Ewl_Tree2_View_Scrolled The scrolled tree view 
+ * @addtogroup Ewl_Tree2_View_Scrolled Ewl_Tree2_View_Scrolled The scrolled tree view
  * @brief A scrolled view for the tree
- * 
+ *
  * @remarks Inherits from Ewl_Box.
  * @image html Ewl_Tree2_View_Scrolled_inheritance.png
  *

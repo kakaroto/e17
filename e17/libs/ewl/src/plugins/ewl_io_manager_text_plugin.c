@@ -15,7 +15,7 @@ ewl_io_manager_plugin_uri_read(const char *uri)
 	DCHECK_PARAM_PTR_RET("uri", uri, NULL);
 
 	file = fopen(uri, "r");
-	if (file) 
+	if (file)
 	{
 		struct stat buf;
 		char *str;

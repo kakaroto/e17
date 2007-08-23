@@ -13,7 +13,7 @@ static void fd_cb_delete(Ewl_Widget *w, void *ev, void *data);
 static void fd_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void fd_append(void *value, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Filedialog";
@@ -62,7 +62,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-dialog_cb_single_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+dialog_cb_single_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Widget *fd;
@@ -70,7 +70,7 @@ dialog_cb_single_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	fd = ewl_filedialog_new();
 	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "C Files", "*.c");
 	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "D Files", "*.d");
-	ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW, 
+	ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW,
 					fd_cb_delete, NULL);
 	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
 					fd_cb_value_changed, NULL);
@@ -78,13 +78,13 @@ dialog_cb_single_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-dialog_cb_multi_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+dialog_cb_multi_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Widget *fd;
 
 	fd = ewl_filedialog_multiselect_new();
-	ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW, 
+	ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW,
 					fd_cb_delete, NULL);
 	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
 					fd_cb_value_changed, NULL);

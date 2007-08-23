@@ -52,11 +52,11 @@ struct Ewl_Window
 
 	void *window; /**< Provides a window for drawing */
 	union {
-		Ewl_Window *ewl; 		
+		Ewl_Window *ewl;
 		Ewl_Embed_Window *foreign;
 	} transient; /**< Window to be transient for */
 	union {
-		Ewl_Window *ewl; 		
+		Ewl_Window *ewl;
 		Ewl_Embed_Window *foreign;
 	} leader; /**< the leader of the window group */
 
@@ -83,13 +83,13 @@ char 		*ewl_window_class_get(Ewl_Window *win);
 void 		 ewl_window_borderless_set(Ewl_Window *win);
 void 		 ewl_window_dialog_set(Ewl_Window *win, int dialog);
 int 		 ewl_window_dialog_get(Ewl_Window *win);
-void 		 ewl_window_fullscreen_set(Ewl_Window *win, 
+void 		 ewl_window_fullscreen_set(Ewl_Window *win,
 					unsigned int fullscreen);
 unsigned int 	 ewl_window_fullscreen_get(Ewl_Window *win);
-void 		 ewl_window_skip_taskbar_set(Ewl_Window *win, 
+void 		 ewl_window_skip_taskbar_set(Ewl_Window *win,
 					unsigned int skip);
 unsigned int 	 ewl_window_skip_taskbar_get(Ewl_Window *win);
-void 		 ewl_window_skip_pager_set(Ewl_Window *win, 
+void 		 ewl_window_skip_pager_set(Ewl_Window *win,
 					unsigned int skip);
 unsigned int 	 ewl_window_skip_pager_get(Ewl_Window *win);
 void		 ewl_window_attention_demand(Ewl_Window *win);
@@ -99,10 +99,10 @@ void 		 ewl_window_move(Ewl_Window *win, int x, int y);
 void 		 ewl_window_raise(Ewl_Window *win);
 void 		 ewl_window_lower(Ewl_Window *win);
 void 		 ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin);
-void 		 ewl_window_transient_for_foreign(Ewl_Window *win, 
+void 		 ewl_window_transient_for_foreign(Ewl_Window *win,
 						    Ewl_Embed_Window *forwin);
 void 		 ewl_window_leader_set(Ewl_Window *win, Ewl_Window *leader);
-void 		 ewl_window_leader_foreign_set(Ewl_Window *win, 
+void 		 ewl_window_leader_foreign_set(Ewl_Window *win,
 						    Ewl_Embed_Window *leader);
 Ewl_Window	*ewl_window_leader_get(Ewl_Window *win);
 Ewl_Embed_Window *ewl_window_leader_foreign_get(Ewl_Window *win);

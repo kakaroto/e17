@@ -31,7 +31,7 @@ static void ewl_icon_label_update(Ewl_Icon *icon);
 
 /**
  * @return Returns a new Ewl_Icon widget, or NULL on failure
- * @brief Creates and initializes a new Ewl_Icon widget 
+ * @brief Creates and initializes a new Ewl_Icon widget
  */
 Ewl_Widget *
 ewl_icon_new(void)
@@ -56,7 +56,7 @@ ewl_icon_new(void)
 /**
  * @return Returns a new Ewl_Icon widget, or NULL on failure
  * @brief Creates and initializes a new Ewl_Icon widget
- * 
+ *
  * The difference to ewl_icon_new() is that it has lighter
  * default values. The defaults are
  * complex_label:    no
@@ -75,7 +75,7 @@ ewl_icon_simple_new(void)
 	w = ewl_icon_new();
 	if (!w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	
+
 	ewl_icon_label_complex_set(EWL_ICON(w), FALSE);
 	ewl_icon_label_compressed_set(EWL_ICON(w), FALSE);
 	ewl_icon_thumbnailing_set(EWL_ICON(w), FALSE);
@@ -156,7 +156,7 @@ ewl_icon_type_set(Ewl_Icon *icon, Ewl_Icon_Type type)
  * @return Returns the Ewl_Icon_Type of the icon
  * @brief Retrieve the type of the icon
  */
-Ewl_Icon_Type 
+Ewl_Icon_Type
 ewl_icon_type_get(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -183,7 +183,7 @@ ewl_icon_part_hide(Ewl_Icon *icon, Ewl_Icon_Part part)
 		DRETURN(DLEVEL_STABLE);
 
 	icon->hidden = part;
-	
+
 	ewl_icon_parts_update(icon);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -223,14 +223,14 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 
 	ewl_icon_constrain_set(icon, icon->constrain);
 	ewl_image_proportional_set(EWL_IMAGE(icon->image), TRUE);
-	ewl_object_alignment_set(EWL_OBJECT(icon->image), 
+	ewl_object_alignment_set(EWL_OBJECT(icon->image),
 						EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_internal_set(icon->image, TRUE);
 	ewl_container_child_prepend(EWL_CONTAINER(icon), icon->image);
 
 	if (icon->hidden == EWL_ICON_PART_IMAGE)
 		DRETURN(DLEVEL_STABLE);
-	
+
 	if (!icon->thumbnailing)
 		ewl_icon_parts_update(icon);
 	else if (!icon->alt)
@@ -382,10 +382,10 @@ ewl_icon_extended_data_set(Ewl_Icon *icon, Ewl_Widget *ext)
 
 	if (icon->extended)
 		ewl_widget_destroy(icon->extended);
-	
+
 	icon->extended = ext;
 	ewl_widget_internal_set(icon->extended, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(icon), icon->extended);	
+	ewl_container_child_append(EWL_CONTAINER(icon), icon->extended);
 
 	if (icon->type == EWL_ICON_TYPE_SHORT)
 		ewl_widget_hide(icon->extended);
@@ -397,7 +397,7 @@ ewl_icon_extended_data_set(Ewl_Icon *icon, Ewl_Widget *ext)
 
 /**
  * @param icon: The icon to get the extended data from
- * @return Returns the extended data on the icon, or NULL if none set 
+ * @return Returns the extended data on the icon, or NULL if none set
  * @brief Retrieve the extended data from the icon
  */
 Ewl_Widget *
@@ -430,9 +430,9 @@ ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/** 
+/**
  * @param icon: The icon to get the constrain from
- * @return Returns the current constrain value of the icon 
+ * @return Returns the current constrain value of the icon
  * @brief Retrieve the constrain value set on the icon
  */
 unsigned int
@@ -504,9 +504,9 @@ ewl_icon_label_complex_set(Ewl_Icon *icon, unsigned int c)
 
 	if (!icon->label)
 		DRETURN(DLEVEL_STABLE);
-	
+
 	/*
-	 * we are now switching from Ewl_Label to Ewl_Text 
+	 * we are now switching from Ewl_Label to Ewl_Text
 	 * or vice-verse, so first of all destroy the current
 	 * widget
 	 */
@@ -581,7 +581,7 @@ void
 ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt)
 {
 	const char *img, *file;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
@@ -651,7 +651,7 @@ ewl_icon_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 }
 
 static void
-ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data)
 {
 	Ewl_Icon *icon;
@@ -673,7 +673,7 @@ ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_container_child_append(EWL_CONTAINER(emb), entry);
 
 	/* put the entry in the same spot as the label */
-	ewl_object_current_geometry_get(EWL_OBJECT(icon->label), &x, &y, 
+	ewl_object_current_geometry_get(EWL_OBJECT(icon->label), &x, &y,
 							NULL, NULL);
 	ewl_object_position_request(EWL_OBJECT(entry), x, y);
 	ewl_widget_show(entry);
@@ -689,7 +689,7 @@ ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-ewl_icon_cb_entry_focus_out(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_icon_cb_entry_focus_out(Ewl_Widget *w, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Icon *icon;
@@ -734,7 +734,7 @@ ewl_icon_parts_update(Ewl_Icon *icon)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("icon", icon);
 	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
-	
+
 	/*
 	 * show both the label and the image
 	 */
@@ -792,13 +792,13 @@ ewl_icon_label_build(Ewl_Icon *icon)
 	else
 		icon->label = ewl_label_new();
 
-	ewl_object_fill_policy_set(EWL_OBJECT(icon->label), 
+	ewl_object_fill_policy_set(EWL_OBJECT(icon->label),
 					EWL_FLAG_FILL_NONE);
-	ewl_object_alignment_set(EWL_OBJECT(icon->label), 
+	ewl_object_alignment_set(EWL_OBJECT(icon->label),
 					EWL_FLAG_ALIGN_CENTER);
 
 	if (icon->editable)
-		ewl_callback_append(icon->label, 
+		ewl_callback_append(icon->label,
 				EWL_CALLBACK_MOUSE_DOWN,
 				ewl_icon_cb_label_mouse_down, icon);
 
@@ -848,7 +848,7 @@ ewl_icon_label_update(Ewl_Icon *icon)
 	if (!icon->label_text)
 		DRETURN(DLEVEL_STABLE);
 
-	if (icon->compress_label && 
+	if (icon->compress_label &&
 			(strlen(icon->label_text) > EWL_ICON_COMPRESS_SIZE))
 	{
 		char *c;
@@ -856,7 +856,7 @@ ewl_icon_label_update(Ewl_Icon *icon)
 		c = NEW(char, EWL_ICON_COMPRESS_SIZE + 4);
 		strncpy(c, icon->label_text, EWL_ICON_COMPRESS_SIZE);
 		strcat(c, "...");
-	
+
 		ewl_icon_label_text_set(icon, c);
 		FREE(c);
 	}
@@ -867,7 +867,7 @@ ewl_icon_label_update(Ewl_Icon *icon)
 }
 
 static void
-ewl_icon_cb_thumb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+ewl_icon_cb_thumb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 								void *data)
 {
 	Ewl_Icon *icon;

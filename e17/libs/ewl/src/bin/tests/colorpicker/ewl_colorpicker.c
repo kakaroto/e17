@@ -42,7 +42,7 @@
 static int create_test(Ewl_Container *box);
 static void color_value_changed(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Colorpicker";

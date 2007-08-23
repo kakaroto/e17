@@ -160,7 +160,7 @@ ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 		if (ewl_object_state_has(EWL_OBJECT(e), EWL_FLAG_STATE_FOCUSED))
 			ewl_widget_show(e->cursor);
 
-		ewl_widget_state_set(EWL_WIDGET(e), "enabled", 
+		ewl_widget_state_set(EWL_WIDGET(e), "enabled",
 					EWL_STATE_PERSISTENT);
 	}
 	else
@@ -198,7 +198,7 @@ ewl_entry_editable_get(Ewl_Entry *e)
  * @return Returns TRUE if a selection was cleared, FALSE otherwise.
  * @brief Clear the current selection in the entry
  */
-unsigned int 
+unsigned int
 ewl_entry_selection_clear(Ewl_Entry *e)
 {
 	Ewl_Text_Trigger *sel;
@@ -239,7 +239,7 @@ ewl_entry_selection_clear(Ewl_Entry *e)
  * @brief The configure callback
  */
 void
-ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Entry *e;
@@ -284,8 +284,8 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
  * @return Returns no value
  * @brief The focus in callback
  */
-void 
-ewl_entry_cb_focus_in(Ewl_Widget *w, void *ev __UNUSED__, 
+void
+ewl_entry_cb_focus_in(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Entry *entry;
@@ -309,8 +309,8 @@ ewl_entry_cb_focus_in(Ewl_Widget *w, void *ev __UNUSED__,
  * @return Returns no value
  * @brief The focus out callback
  */
-void 
-ewl_entry_cb_focus_out(Ewl_Widget *w, void *ev __UNUSED__, 
+void
+ewl_entry_cb_focus_out(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Entry *entry;
@@ -321,7 +321,7 @@ ewl_entry_cb_focus_out(Ewl_Widget *w, void *ev __UNUSED__,
 
 	entry = EWL_ENTRY(w);
 	if (entry->editable && VISIBLE(entry->cursor))
-		ewl_widget_hide(entry->cursor);	
+		ewl_widget_hide(entry->cursor);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -376,7 +376,7 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 		if (!ewl_entry_selection_clear(e))
 			ewl_entry_delete_right(e);
 	}
-	else if ((!strcmp(event->keyname, "Return")) 
+	else if ((!strcmp(event->keyname, "Return"))
 			|| (!strcmp(event->keyname, "KP_Return"))
 			|| (!strcmp(event->keyname, "Enter"))
 			|| (!strcmp(event->keyname, "KP_Enter"))
@@ -388,11 +388,11 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 		{
 			ewl_entry_selection_clear(e);
 
-			ewl_text_text_insert(EWL_TEXT(e), "\n", 
+			ewl_text_text_insert(EWL_TEXT(e), "\n",
 				ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor)));
 		}
 	}
-	else if (!(event->modifiers & EWL_KEY_MODIFIER_CTRL)) 
+	else if (!(event->modifiers & EWL_KEY_MODIFIER_CTRL))
 	{
 		ewl_entry_selection_clear(e);
 
@@ -428,7 +428,7 @@ ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	e = EWL_ENTRY(w);
 
 	e->in_select_mode = TRUE;
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, 
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_entry_cb_mouse_move, NULL);
 
 	idx = ewl_text_coord_index_map(EWL_TEXT(e), event->x, event->y);
@@ -447,7 +447,7 @@ ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
  * @brief The mouse up callback
  */
 void
-ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Entry *e;
@@ -480,7 +480,7 @@ ewl_entry_cb_disable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	ewl_entry_editable_set(EWL_ENTRY(w), FALSE);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -513,7 +513,7 @@ ewl_entry_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
  * @brief The mouse move callback
  */
 void
-ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -549,7 +549,7 @@ ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	if (EWL_ENTRY(w)->editable && !DISABLED(w)) {
 		ewl_widget_focus_send(w);
-		ewl_text_cursor_position_set(txt, 
+		ewl_text_cursor_position_set(txt,
 				ewl_text_coord_index_map(txt, event->x,
 					event->y));
 	}
@@ -580,7 +580,7 @@ ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	txt = EWL_TEXT(w);
 
 	if (EWL_ENTRY(w)->editable && !DISABLED(w)) {
-		if (!strcmp(event->type, "text/plain") 
+		if (!strcmp(event->type, "text/plain")
 				&& strcmp(nl_langinfo(CODESET), "UTF-8")) {
 			char *text;
 
@@ -598,7 +598,7 @@ ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 			IF_FREE(text);
 		}
 		else
-			ewl_text_text_insert(txt, event->data, 
+			ewl_text_text_insert(txt, event->data,
 					ewl_text_cursor_position_get(txt));
 	}
 
@@ -608,7 +608,7 @@ ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 /**
  * @param e: The Ewl_Entry to work with
  * @return Returns no value
- * @brief Moves the cursor to the left of it's current position 
+ * @brief Moves the cursor to the left of it's current position
  */
 void
 ewl_entry_cursor_move_left(Ewl_Entry *e)
@@ -708,13 +708,13 @@ void
 ewl_entry_delete_left(Ewl_Entry *e)
 {
 	unsigned int pos;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
 	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
 
 	if (!EWL_TEXT(e)->text)
-		DRETURN(DLEVEL_STABLE);	
+		DRETURN(DLEVEL_STABLE);
 
 	pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
@@ -731,7 +731,7 @@ ewl_entry_delete_left(Ewl_Entry *e)
 /**
  * @param e: The Ewl_Entry to work with
  * @return Returns no value.
- * @brief Deletes the character to the right of the cursor 
+ * @brief Deletes the character to the right of the cursor
  */
 void
 ewl_entry_delete_right(Ewl_Entry *e)
@@ -763,7 +763,7 @@ ewl_entry_cursor_new(Ewl_Entry *parent)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	
+
 	w = NEW(Ewl_Entry_Cursor, 1);
 	if (!w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -833,7 +833,7 @@ ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c)
 	DCHECK_PARAM_PTR_RET("c", c, 0);
 	DCHECK_TYPE_RET("c", c, EWL_ENTRY_CURSOR_TYPE, 0);
 
-	DRETURN_INT(ewl_text_cursor_position_get(EWL_TEXT(c->parent)), 
+	DRETURN_INT(ewl_text_cursor_position_get(EWL_TEXT(c->parent)),
 							DLEVEL_STABLE);
 }
 

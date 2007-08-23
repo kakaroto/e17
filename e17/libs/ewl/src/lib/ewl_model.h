@@ -4,8 +4,8 @@
 
 /**
  * @addtogroup Ewl_Model Ewl_Model: A data model
- * Defines communication callbacks for views and controllers. 
- * Query row/column data, indicate expansion points, notify views and 
+ * Defines communication callbacks for views and controllers.
+ * Query row/column data, indicate expansion points, notify views and
  * controllers of changes, trigger sorting on a row/column combination.
  *
  * @{
@@ -23,9 +23,9 @@ typedef struct Ewl_Model Ewl_Model;
 #define EWL_MODEL_DATA_FETCH(f) ((Ewl_Model_Data_Fetch)f)
 
 /**
- * A typedef to shorten the definition of the model_fetch callbacks. 
+ * A typedef to shorten the definition of the model_fetch callbacks.
  */
-typedef void *(*Ewl_Model_Data_Fetch)(void *data, unsigned int row, 
+typedef void *(*Ewl_Model_Data_Fetch)(void *data, unsigned int row,
 						unsigned int column);
 
 /**
@@ -35,7 +35,7 @@ typedef void *(*Ewl_Model_Data_Fetch)(void *data, unsigned int row,
 #define EWL_MODEL_FREE(f) ((Ewl_Model_Data_Free)f)
 
 /**
- * A typedef to shorten the definition of the model_data_free callbacks. 
+ * A typedef to shorten the definition of the model_data_free callbacks.
  */
 typedef void (*Ewl_Model_Data_Free)(void *data);
 
@@ -83,7 +83,7 @@ typedef void *(*Ewl_Model_Data_Header_Fetch)(void *data, unsigned int col);
  * A typedef to shorten the definition of the model_expansion_model_fetch
  * callback
  */
-typedef Ewl_Model *(*Ewl_Model_Expansion_Model_Fetch)(void *data, 
+typedef Ewl_Model *(*Ewl_Model_Expansion_Model_Fetch)(void *data,
 						unsigned int row);
 
 /**
@@ -94,9 +94,9 @@ typedef Ewl_Model *(*Ewl_Model_Expansion_Model_Fetch)(void *data,
 #define EWL_MODEL_DATA_SORT(f) ((Ewl_Model_Data_Sort)f)
 
 /**
- * A typedef to shorten the definition of the model_sort callbacks. 
+ * A typedef to shorten the definition of the model_sort callbacks.
  */
-typedef void (*Ewl_Model_Data_Sort)(void *data, unsigned int column, 
+typedef void (*Ewl_Model_Data_Sort)(void *data, unsigned int column,
 						Ewl_Sort_Direction sort);
 
 /**
@@ -106,7 +106,7 @@ typedef void (*Ewl_Model_Data_Sort)(void *data, unsigned int column,
 #define EWL_MODEL_DATA_COUNT(f) ((Ewl_Model_Data_Count)f)
 
 /**
- * A typedef to shorten the definition of the model_count callbacks. 
+ * A typedef to shorten the definition of the model_count callbacks.
  */
 typedef unsigned int (*Ewl_Model_Data_Count)(void *data);
 
@@ -117,7 +117,7 @@ typedef unsigned int (*Ewl_Model_Data_Count)(void *data);
 #define EWL_MODEL_COLUMN_SORTABLE(f) ((Ewl_Model_Column_Sortable)f)
 
 /**
- * A typedef to shorten the definition of the model_column_sortable callbacks. 
+ * A typedef to shorten the definition of the model_column_sortable callbacks.
  */
 typedef int (*Ewl_Model_Column_Sortable)(void *data, unsigned int col);
 
@@ -131,7 +131,7 @@ typedef int (*Ewl_Model_Column_Sortable)(void *data, unsigned int col);
  * A typedef to shorten the definition of the data_highlight callbacks.
  */
 typedef unsigned int (*Ewl_Model_Data_Highlight)(void *data, unsigned int row);
-						
+
 
 /**
  * @def EWL_MODEL(model)
@@ -166,7 +166,7 @@ int			 ewl_model_init(Ewl_Model *model);
 
 Ewl_Model		*ewl_model_ecore_list_get(void);
 
-void			 ewl_model_data_fetch_set(Ewl_Model *m, 
+void			 ewl_model_data_fetch_set(Ewl_Model *m,
 					Ewl_Model_Data_Fetch get);
 Ewl_Model_Data_Fetch	 ewl_model_data_fetch_get(Ewl_Model *m);
 
@@ -174,7 +174,7 @@ void			 ewl_model_data_header_fetch_set(Ewl_Model *m,
 					Ewl_Model_Data_Header_Fetch get);
 Ewl_Model_Data_Header_Fetch ewl_model_data_header_fetch_get(Ewl_Model *m);
 
-void			 ewl_model_data_free_set(Ewl_Model *m, 
+void			 ewl_model_data_free_set(Ewl_Model *m,
 					Ewl_Model_Data_Free assign);
 Ewl_Model_Data_Free	 ewl_model_data_free_get(Ewl_Model *m);
 
@@ -182,7 +182,7 @@ void			 ewl_model_column_sortable_set(Ewl_Model *m,
 					Ewl_Model_Column_Sortable sortable);
 Ewl_Model_Column_Sortable ewl_model_column_sortable_get(Ewl_Model *m);
 
-void			 ewl_model_data_sort_set(Ewl_Model *m, 
+void			 ewl_model_data_sort_set(Ewl_Model *m,
 					Ewl_Model_Data_Sort sort);
 Ewl_Model_Data_Sort	 ewl_model_data_sort_get(Ewl_Model *m);
 
@@ -190,15 +190,15 @@ void			 ewl_model_data_highlight_set(Ewl_Model *m,
 					Ewl_Model_Data_Highlight highlight);
 Ewl_Model_Data_Highlight ewl_model_data_highlight_get(Ewl_Model *m);
 
-void			 ewl_model_data_count_set(Ewl_Model *m, 
+void			 ewl_model_data_count_set(Ewl_Model *m,
 					Ewl_Model_Data_Count count);
 Ewl_Model_Data_Count	 ewl_model_data_count_get(Ewl_Model *m);
 
-void			 ewl_model_data_expandable_set(Ewl_Model *m, 
+void			 ewl_model_data_expandable_set(Ewl_Model *m,
 					Ewl_Model_Data_Expandable exp);
 Ewl_Model_Data_Expandable ewl_model_data_expandable_get(Ewl_Model *m);
 
-void			 ewl_model_expansion_data_fetch_set(Ewl_Model *m, 
+void			 ewl_model_expansion_data_fetch_set(Ewl_Model *m,
 					Ewl_Model_Expansion_Data_Fetch get);
 Ewl_Model_Expansion_Data_Fetch ewl_model_expansion_data_fetch_get(Ewl_Model *m);
 
@@ -209,7 +209,7 @@ Ewl_Model_Expansion_Model_Fetch ewl_model_expansion_model_fetch_get(Ewl_Model *m
 /*
  * Internal stuff.
  */
-void *ewl_model_cb_ecore_list_fetch(void *data, unsigned int row, 
+void *ewl_model_cb_ecore_list_fetch(void *data, unsigned int row,
 						unsigned int col);
 unsigned int ewl_model_cb_ecore_list_count(void *data);
 

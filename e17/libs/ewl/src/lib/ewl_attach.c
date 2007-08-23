@@ -37,13 +37,13 @@ struct Ewl_Attach_Tooltip
 static Ewl_Attach_List *ewl_attach_list_new(void);
 static void ewl_attach_list_free(Ewl_Attach_List *list);
 
-static void ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent, 
+static void ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent,
 							Ewl_Attach *attach);
 static void *ewl_attach_list_get(Ewl_Attach_List *list, Ewl_Attach_Type type);
 
-static Ewl_Attach *ewl_attach_new(Ewl_Attach_Type t, 
+static Ewl_Attach *ewl_attach_new(Ewl_Attach_Type t,
 				Ewl_Attach_Data_Type dt, void *data);
-static int ewl_attach_init(Ewl_Attach *attach, Ewl_Attach_Type t, 
+static int ewl_attach_init(Ewl_Attach *attach, Ewl_Attach_Type t,
 				Ewl_Attach_Data_Type dt, void *data);
 static void ewl_attach_free(Ewl_Attach *attach);
 
@@ -84,7 +84,7 @@ ewl_attach_text_set(Ewl_Widget *w, Ewl_Attach_Type t, const char *data)
 	{
 		Ewl_Attach *attach;
 
-		attach = ewl_attach_new(t, EWL_ATTACH_DATA_TYPE_TEXT, 
+		attach = ewl_attach_new(t, EWL_ATTACH_DATA_TYPE_TEXT,
 							(void *)data);
 		if (attach)
 			ewl_attach_list_add(w->attach, w, attach);
@@ -117,7 +117,7 @@ ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data)
 	{
 		Ewl_Attach *attach;
 
-		attach = ewl_attach_new(t, EWL_ATTACH_DATA_TYPE_WIDGET, 
+		attach = ewl_attach_new(t, EWL_ATTACH_DATA_TYPE_WIDGET,
 							(void *)data);
 		if (attach)
 			ewl_attach_list_add(w->attach, w, attach);
@@ -211,7 +211,7 @@ ewl_attach_get(Ewl_Widget *w, Ewl_Attach_Type t)
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
 
-	if (!w->attach) 
+	if (!w->attach)
 	{
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
@@ -249,10 +249,10 @@ ewl_attach_list_free(Ewl_Attach_List *list)
 		while (list->len)
 		{
 			if (!list->direct)
-				ewl_attach_list_del(list, 
+				ewl_attach_list_del(list,
 					EWL_ATTACH(list->list[0])->type);
 			else
-				ewl_attach_list_del(list, 
+				ewl_attach_list_del(list,
 					EWL_ATTACH(list->list)->type);
 		}
 	}
@@ -394,11 +394,11 @@ ewl_attach_list_del(Ewl_Attach_List *list, Ewl_Attach_Type type)
 
 				/* if not the last entry */
 				if (i != list->len)
-					memmove(list->list + i, 
-						list->list + i + 1, 
+					memmove(list->list + i,
+						list->list + i + 1,
 						list->len * sizeof(void *));
 
-				list->list = realloc(list->list, 
+				list->list = realloc(list->list,
 						list->len * sizeof(void *));
 			}
 		}
@@ -468,7 +468,7 @@ ewl_attach_new(Ewl_Attach_Type t, Ewl_Attach_Data_Type dt, void *data)
 }
 
 static int
-ewl_attach_init(Ewl_Attach *attach, Ewl_Attach_Type t, 
+ewl_attach_init(Ewl_Attach *attach, Ewl_Attach_Type t,
 			Ewl_Attach_Data_Type dt, void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -497,7 +497,7 @@ ewl_attach_free(Ewl_Attach *attach)
 	{
 		IF_FREE(attach->data);
 	}
-		
+
 
 	IF_FREE(attach);
 
@@ -512,14 +512,14 @@ ewl_attach_parent_setup(Ewl_Widget *w)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	w->attach = ewl_attach_list_new();
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, 
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 				ewl_attach_cb_parent_destroy, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_attach_cb_parent_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_attach_cb_parent_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 				void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -527,8 +527,8 @@ ewl_attach_cb_parent_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	/* make sure the timer gets cleaned up if the widget goes away */
-	if ((ewl_attach_tooltip) && (w == ewl_attach_tooltip->to) 
-			&& (ewl_attach_tooltip->timer)) 
+	if ((ewl_attach_tooltip) && (w == ewl_attach_tooltip->to)
+			&& (ewl_attach_tooltip->timer))
 	{
 		ecore_timer_del(ewl_attach_tooltip->timer);
 		ewl_attach_tooltip->timer = NULL;
@@ -582,11 +582,11 @@ ewl_attach_tooltip_detach(Ewl_Attach *attach)
 	ewl_attach_tooltip->y = 0;
 
 	/* cleanup the display window */
-	if (ewl_attach_tooltip->box) 
+	if (ewl_attach_tooltip->box)
 	{
 		if (attach->data_type != EWL_ATTACH_DATA_TYPE_TEXT)
 			ewl_container_child_remove(
-					EWL_CONTAINER(ewl_attach_tooltip->box), 
+					EWL_CONTAINER(ewl_attach_tooltip->box),
 					EWL_WIDGET(attach->data));
 
 		ewl_widget_destroy(ewl_attach_tooltip->box);
@@ -627,24 +627,24 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	ewl_attach_tooltip->attach = attach;
 	ewl_attach_tooltip->to = w;
-	
+
 	ewl_attach_tooltip->x = e->x;
 	ewl_attach_tooltip->y = e->y;
-	
+
 	delay_str = (const char *)ewl_theme_data_str_get(w, "/tooltip/delay");
 	if (delay_str)
 	{
 		delay = atof(delay_str);
 	}
 
-	ewl_attach_tooltip->timer = ecore_timer_add(delay, 
+	ewl_attach_tooltip->timer = ecore_timer_add(delay,
 					ewl_attach_cb_tooltip_timer, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
-ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w __UNUSED__, 
+ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w __UNUSED__,
 				void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Attach *attach;
@@ -659,7 +659,7 @@ ewl_attach_cb_tooltip_mouse_down(Ewl_Widget *w __UNUSED__,
 }
 
 static void
-ewl_attach_cb_tooltip_mouse_out(Ewl_Widget *w __UNUSED__, 
+ewl_attach_cb_tooltip_mouse_out(Ewl_Widget *w __UNUSED__,
 				void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Attach *attach;
@@ -701,9 +701,9 @@ ewl_attach_cb_tooltip_timer(void *data)
 		ewl_popup_follow_set(EWL_POPUP(ewl_attach_tooltip->win),
 							EWL_WIDGET(emb));
 		ewl_attach_tooltip->embed = EWL_WIDGET(emb);
-		ewl_callback_prepend(ewl_attach_tooltip->win, 
+		ewl_callback_prepend(ewl_attach_tooltip->win,
 					EWL_CALLBACK_DESTROY,
-					ewl_attach_cb_tooltip_win_destroy, 
+					ewl_attach_cb_tooltip_win_destroy,
 					NULL);
 
 		ov = ewl_theme_data_int_get(EWL_WIDGET(w),
@@ -711,19 +711,19 @@ ewl_attach_cb_tooltip_timer(void *data)
 		oh = ewl_theme_data_int_get(EWL_WIDGET(w),
 							"/tooltip/hoffset");
 
-		ewl_popup_offset_set(EWL_POPUP(ewl_attach_tooltip->win), 
+		ewl_popup_offset_set(EWL_POPUP(ewl_attach_tooltip->win),
 						oh, ov);
 		ewl_widget_appearance_set(ewl_attach_tooltip->win,
 						EWL_ATTACH_TOOLTIP_TYPE);
-		ewl_widget_inherit(ewl_attach_tooltip->win, 
+		ewl_widget_inherit(ewl_attach_tooltip->win,
 						EWL_ATTACH_TOOLTIP_TYPE);
 	}
 	else
 	{
 		/* see if we need to add to the embed */
-		if ((!ewl_attach_tooltip->embed) 
-				|| (ewl_attach_tooltip->embed 
-							!= EWL_WIDGET(emb))) 
+		if ((!ewl_attach_tooltip->embed)
+				|| (ewl_attach_tooltip->embed
+							!= EWL_WIDGET(emb)))
 		{
 			ewl_attach_tooltip->embed = EWL_WIDGET(emb);
 			ewl_popup_follow_set(EWL_POPUP(ewl_attach_tooltip->win),
@@ -736,12 +736,12 @@ ewl_attach_cb_tooltip_timer(void *data)
 	{
 		ewl_attach_tooltip->box = ewl_hbox_new();
 		ewl_container_child_append(
-				EWL_CONTAINER(ewl_attach_tooltip->win), 
+				EWL_CONTAINER(ewl_attach_tooltip->win),
 						ewl_attach_tooltip->box);
 	}
 	ewl_widget_show(ewl_attach_tooltip->box);
 
-	if (ewl_attach_tooltip->attach->data_type == 
+	if (ewl_attach_tooltip->attach->data_type ==
 			EWL_ATTACH_DATA_TYPE_WIDGET)
 	{
 		ewl_container_child_append(
@@ -755,14 +755,14 @@ ewl_attach_cb_tooltip_timer(void *data)
 		Ewl_Widget *o;
 
 		o = ewl_label_new();
-		ewl_label_text_set(EWL_LABEL(o), 
+		ewl_label_text_set(EWL_LABEL(o),
 				ewl_attach_tooltip->attach->data);
 		ewl_container_child_append(
 				EWL_CONTAINER(ewl_attach_tooltip->box), o);
 		ewl_widget_show(o);
 	}
 
-	ewl_popup_mouse_position_set(EWL_POPUP(ewl_attach_tooltip->win), 
+	ewl_popup_mouse_position_set(EWL_POPUP(ewl_attach_tooltip->win),
 					ewl_attach_tooltip->x,
 					ewl_attach_tooltip->y);
 

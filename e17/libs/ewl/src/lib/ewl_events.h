@@ -59,7 +59,7 @@ struct Ewl_Event_Key
 #define EWL_EVENT_KEY_DOWN(e) ((Ewl_Event_Key_Down *)(e))
 
 /**
- *  The Ewl_Event_Window_Key_Down structure 
+ *  The Ewl_Event_Window_Key_Down structure
  */
 typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
 
@@ -237,7 +237,7 @@ struct Ewl_Event_Mouse_Wheel
 #define EWL_DND_TYPES(t) ((Ewl_Dnd_Types *)(t))
 
 /**
- * The Ewl_Dnd_Types type 
+ * The Ewl_Dnd_Types type
  */
 typedef struct Ewl_Dnd_Types Ewl_Dnd_Types;
 

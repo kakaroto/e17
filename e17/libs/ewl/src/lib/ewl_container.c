@@ -6,9 +6,9 @@
 
 #include <Evas.h>
 
-static void ewl_container_child_insert_helper(Ewl_Container *pc, 
-						Ewl_Widget *child, 
-						int index, 
+static void ewl_container_child_insert_helper(Ewl_Container *pc,
+						Ewl_Widget *child,
+						int index,
 						int skip_internal);
 static int ewl_container_child_count_get_helper(Ewl_Container *c, int skip);
 
@@ -20,7 +20,7 @@ static int ewl_container_child_count_get_helper(Ewl_Container *c, int skip);
  * Initializes the default values of the container, this also sets up the
  * widget fields of the container.
  */
-int 
+int
 ewl_container_init(Ewl_Container *c)
 {
 	Ewl_Widget *w;
@@ -241,7 +241,7 @@ ewl_container_child_prepend(Ewl_Container *pc, Ewl_Widget *child)
 }
 
 static void
-ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child, 
+ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child,
 						int index, int skip_internal)
 {
 	Ewl_Widget *cur;
@@ -270,7 +270,7 @@ ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child,
 	ecore_dlist_first_goto(pc->children);
 	while ((cur = ecore_dlist_current(pc->children)))
 	{
-		if (skip_internal && ewl_widget_internal_is(cur)) 
+		if (skip_internal && ewl_widget_internal_is(cur))
 		{
 			ecore_dlist_next(pc->children);
 			continue;
@@ -474,7 +474,7 @@ ewl_container_child_count_internal_get(Ewl_Container *c)
  *
  * This function return the number of visible child widgets in this container,
  * no matter if the container is set to redirect or not.
- * Note: other than ewl_container_count_get() and 
+ * Note: other than ewl_container_count_get() and
  * ewl_container_count_internal_get() it does not return the number of
  * children in the redirection end container.
  */
@@ -489,7 +489,7 @@ ewl_container_child_count_visible_get(Ewl_Container *c)
 }
 
 static Ewl_Widget *
-ewl_container_child_helper_get(Ewl_Container *parent, int index, 
+ewl_container_child_helper_get(Ewl_Container *parent, int index,
 						unsigned int skip)
 {
 	Ewl_Container *container = NULL;
@@ -557,7 +557,7 @@ ewl_container_child_internal_get(Ewl_Container *parent, int index)
 }
 
 static int
-ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w, 
+ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w,
 							unsigned int skip)
 {
 	unsigned int idx = 0;
@@ -577,7 +577,7 @@ ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w,
 	ecore_dlist_first_goto(container->children);
 	while ((child = ecore_dlist_next(container->children))) {
 		if (skip && ewl_widget_internal_is(child)) continue;
-		if (child == w) 
+		if (child == w)
 		{
 			ret = idx;
 			break;
@@ -605,7 +605,7 @@ ewl_container_child_index_get(Ewl_Container *parent, Ewl_Widget *w)
 	DCHECK_PARAM_PTR_RET("w", w, idx);
 	DCHECK_TYPE_RET("parent", parent, EWL_CONTAINER_TYPE, idx);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, idx);
-				
+
 	idx = ewl_container_child_index_helper_get(parent, w, TRUE);
 
 	DRETURN_INT(idx, DLEVEL_STABLE);
@@ -629,7 +629,7 @@ ewl_container_child_index_internal_get(Ewl_Container *parent, Ewl_Widget *w)
 	DCHECK_PARAM_PTR_RET("w", w, idx);
 	DCHECK_TYPE_RET("parent", parent, EWL_CONTAINER_TYPE, idx);
 	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, idx);
-				
+
 	idx = ewl_container_child_index_helper_get(parent, w, FALSE);
 
 	DRETURN_INT(idx, DLEVEL_STABLE);
@@ -737,7 +737,7 @@ ewl_container_child_at_get(Ewl_Container *widget, int x, int y)
 				found = child;
 				break;
 			}
-			if ((!found || ewl_widget_layer_priority_get(found) <= 
+			if ((!found || ewl_widget_layer_priority_get(found) <=
 						ewl_widget_layer_priority_get(child)))
 				found = child;
 		}
@@ -1156,7 +1156,7 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 	if (DESTROYED(c))
 		DRETURN(DLEVEL_STABLE);
 
-	c->visible_children--; 
+	c->visible_children--;
 	if (c->visible_children < 0)
 		DWARNING("visible_children is %d\n", c->visible_children);
 
@@ -1166,7 +1166,7 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 	if (c->clip_box) {
 		const Evas_List *clippees;
 		clippees = evas_object_clipees_get(c->clip_box);
-		if (!clippees) 
+		if (!clippees)
 			evas_object_hide(c->clip_box);
 	}
 
@@ -1273,7 +1273,7 @@ ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc)
  * @param ev_data: UNUSED
  * @param user_data: UNUSED
  * @return Returns no value
- * @brief When reparenting a container, it's children need the updated 
+ * @brief When reparenting a container, it's children need the updated
  * information about the container, such as the evas.
  */
 void
@@ -1418,8 +1418,8 @@ ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @return Returns no value
  * @brief Callback for when the container is revealed
  */
-void 
-ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__, 
+void
+ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
 	Ewl_Embed *e;
@@ -1472,7 +1472,7 @@ ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
  * clip boxes.
  */
 void
-ewl_container_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_container_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	int i = 0;
@@ -1514,7 +1514,7 @@ ewl_container_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_container_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_container_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

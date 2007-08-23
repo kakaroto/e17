@@ -7,15 +7,15 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
-static void ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev_data, 
-							void *user_data); 
+static void ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev_data,
+							void *user_data);
 
 /**
  * @return Returns NULL on failure, a new Ewl_Datepicker on success
  * @brief Creates a new Ewl_Datepicker
  */
 Ewl_Widget *
-ewl_datepicker_new(void) 
+ewl_datepicker_new(void)
 {
 	Ewl_Datepicker *ib;
 
@@ -39,7 +39,7 @@ ewl_datepicker_new(void)
  * @brief Initialize the date picker to default values.
  */
 int
-ewl_datepicker_init(Ewl_Datepicker *dp) 
+ewl_datepicker_init(Ewl_Datepicker *dp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("dp", dp, FALSE);
@@ -53,11 +53,11 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 							EWL_FLAG_FILL_NONE);
 
 	dp->calendar_window = ewl_popup_new();
-	ewl_widget_appearance_set(dp->calendar_window, 
+	ewl_widget_appearance_set(dp->calendar_window,
 				EWL_DATEPICKER_TYPE"/"EWL_POPUP_TYPE);
-	ewl_object_fill_policy_set(EWL_OBJECT(dp->calendar_window), 
+	ewl_object_fill_policy_set(EWL_OBJECT(dp->calendar_window),
 						EWL_FLAG_FILL_NONE);
-	ewl_popup_type_set(EWL_POPUP(dp->calendar_window), 
+	ewl_popup_type_set(EWL_POPUP(dp->calendar_window),
 					EWL_POPUP_TYPE_MENU_VERTICAL);
 	ewl_popup_follow_set(EWL_POPUP(dp->calendar_window), EWL_WIDGET(dp));
 	ewl_window_keyboard_grab_set(EWL_WINDOW(dp->calendar_window), TRUE);
@@ -66,20 +66,20 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 				ewl_datepicker_cb_window_mouse_down, dp);
 
 	dp->calendar = ewl_calendar_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(dp->calendar), 
+	ewl_object_fill_policy_set(EWL_OBJECT(dp->calendar),
 							EWL_FLAG_FILL_NONE);
-	ewl_container_child_append(EWL_CONTAINER(dp->calendar_window), 
+	ewl_container_child_append(EWL_CONTAINER(dp->calendar_window),
 							dp->calendar);
-	ewl_callback_append(EWL_WIDGET(dp->calendar), 
-				EWL_CALLBACK_VALUE_CHANGED, 
+	ewl_callback_append(EWL_WIDGET(dp->calendar),
+				EWL_CALLBACK_VALUE_CHANGED,
 				ewl_datepicker_cb_value_changed, dp);
 	ewl_widget_show(dp->calendar);
 
-	ewl_callback_prepend(EWL_WIDGET(dp), EWL_CALLBACK_DESTROY, 
+	ewl_callback_prepend(EWL_WIDGET(dp), EWL_CALLBACK_DESTROY,
 				ewl_datepicker_cb_destroy, dp);
-	ewl_callback_append(EWL_WIDGET(dp), EWL_CALLBACK_MOUSE_DOWN, 
+	ewl_callback_append(EWL_WIDGET(dp), EWL_CALLBACK_MOUSE_DOWN,
 				ewl_datepicker_cb_dropdown, NULL);
-	
+
 	ewl_callback_call(EWL_WIDGET(dp->calendar), EWL_CALLBACK_VALUE_CHANGED);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -95,10 +95,10 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
  */
 void
 ewl_datepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
-					void *user_data __UNUSED__) 
+					void *user_data __UNUSED__)
 {
 	Ewl_Datepicker *dp;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_DATEPICKER_TYPE);
@@ -118,8 +118,8 @@ ewl_datepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
  * @brief Callback for when the datepicker calendar window value changes
  */
 void
-ewl_datepicker_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
-							void *user_data) 
+ewl_datepicker_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+							void *user_data)
 {
 	char *date;
 	Ewl_Datepicker* dp;
@@ -148,7 +148,7 @@ ewl_datepicker_cb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
  */
 void
 ewl_datepicker_cb_window_mouse_down(Ewl_Widget *w, void *ev __UNUSED__,
-						void *user_data __UNUSED__) 
+						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -161,8 +161,8 @@ ewl_datepicker_cb_window_mouse_down(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev __UNUSED__, 
-					void *user_data __UNUSED__) 
+ewl_datepicker_cb_dropdown(Ewl_Widget *w, void *ev __UNUSED__,
+					void *user_data __UNUSED__)
 {
 	Ewl_Datepicker *dp;
 

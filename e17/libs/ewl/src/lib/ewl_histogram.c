@@ -68,7 +68,7 @@ ewl_histogram_init(Ewl_Histogram *hist)
  * @brief Changes the drawing color of a histogram.
  */
 void
-ewl_histogram_color_set(Ewl_Histogram *hist, unsigned int r, unsigned int g, 
+ewl_histogram_color_set(Ewl_Histogram *hist, unsigned int r, unsigned int g,
 						unsigned int b, unsigned int a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -93,7 +93,7 @@ ewl_histogram_color_set(Ewl_Histogram *hist, unsigned int r, unsigned int g,
  * @brief Get the current color values for drawing the histogram.
  */
 void
-ewl_histogram_color_get(Ewl_Histogram *hist, unsigned int *r, unsigned int *g, 
+ewl_histogram_color_get(Ewl_Histogram *hist, unsigned int *r, unsigned int *g,
 						unsigned int *b, unsigned int *a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -138,7 +138,7 @@ ewl_histogram_channel_set(Ewl_Histogram *hist, Ewl_Histogram_Channel channel)
  * @return Returns the currently drawn color channel.
  * @brief Sets the color channel to graph in the histogram.
  */
-Ewl_Histogram_Channel 
+Ewl_Histogram_Channel
 ewl_histogram_channel_get(Ewl_Histogram *hist)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -198,7 +198,7 @@ ewl_histogram_image_get(Ewl_Histogram *hist)
  * @brief Configures the histogram
  */
 void
-ewl_histogram_cb_configure(Ewl_Widget *w, void *event __UNUSED__, 
+ewl_histogram_cb_configure(Ewl_Widget *w, void *event __UNUSED__,
 						void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -323,8 +323,8 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 		}
 	}
 	else
-		color = (unsigned int)(hist->color.a << 24 | 
-					hist->color.r << 16 | 
+		color = (unsigned int)(hist->color.a << 24 |
+					hist->color.r << 16 |
 					hist->color.g << 8 |
 					hist->color.b);
 

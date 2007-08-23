@@ -81,7 +81,7 @@ ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb)
 	DCHECK_TYPE("crb", crb, EWL_RADIOBUTTON_TYPE);
 
 	/*
-	 * If a chain doesnt exist, create one 
+	 * If a chain doesnt exist, create one
 	 */
 	if (!crb->chain) {
 		crb->chain = ecore_list_new();

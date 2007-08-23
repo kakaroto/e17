@@ -16,7 +16,7 @@
 static int create_test(Ewl_Container *box);
 static void cb_get_rows(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Tree";
@@ -44,7 +44,7 @@ create_test(Ewl_Container *box)
 
 	tree = ewl_tree_new(COLS);
 	ewl_tree_mode_set(EWL_TREE(tree), EWL_SELECTION_MODE_SINGLE);
-	
+
 	button = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(button), "Number of selected rows");
 	ewl_container_child_append(EWL_CONTAINER(hbox), button);
@@ -59,7 +59,7 @@ create_test(Ewl_Container *box)
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, cb_get_rows, tree);
 	ewl_widget_show(button);
 
-	for (col = 0; col < COLS; col++) 
+	for (col = 0; col < COLS; col++)
 	{
 		snprintf(buf, PATH_MAX, "Column %d", col);
 		headers[col] = strdup(buf);
@@ -71,10 +71,10 @@ create_test(Ewl_Container *box)
 
 	memset(entries, 0, COLS * sizeof(char *));
 
-	for (row = 0; row < ROWS; row++) 
+	for (row = 0; row < ROWS; row++)
 	{
 
-		for (col = 0; col < COLS; col++) 
+		for (col = 0; col < COLS; col++)
 		{
 			snprintf(buf, 1024, "Row %d Col %d", row, col);
 			entries[col] = strdup(buf);
@@ -87,7 +87,7 @@ create_test(Ewl_Container *box)
 			prow = ewl_tree_text_row_add(EWL_TREE(tree),
 					EWL_ROW(prow), entries);
 
-		for (col = 0; col < COLS; col++) 
+		for (col = 0; col < COLS; col++)
 		{
 			if (entries[col])
 				free(entries[col]);
@@ -95,7 +95,7 @@ create_test(Ewl_Container *box)
 		}
 	}
 
-	for (col = 0; col < COLS; col++) 
+	for (col = 0; col < COLS; col++)
 	{
 		if (headers[col])
 			free(headers[col]);
@@ -109,7 +109,7 @@ cb_get_rows(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 {
 	Ecore_List *selected;
 	Ewl_Tree *tree;
-	
+
 	tree = data;
 	selected = ewl_tree_selected_get(tree);
 	printf("Selected %d rows\n", ecore_list_count(selected));

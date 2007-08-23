@@ -40,7 +40,7 @@
  * ewl_mvc_data_set(EWL_MVC(combo), data);
  * ewl_widget_show(combo);
  * @endcode
- * 
+ *
  * If you have a custom widget you wish to display you can set your own
  * functions into the view to draw your widget. In this case we just want a
  * simple label displayed.
@@ -51,7 +51,7 @@
  * populating the widget.
  *
  * @code
- * static Ewl_Widget *combo_test_data_header_fetch(void *data, 
+ * static Ewl_Widget *combo_test_data_header_fetch(void *data,
  *							unsigned int col);
  * static void *combo_test_data_fetch(void *data, unsigned int row,
  *						unsigned int col);
@@ -65,7 +65,7 @@
  * the number of items in your data structure. Each of these three functions
  * receive a void *data param. This is your data as set into the combo box
  * so you shouldn't need to create a global pointer to the data.
- * 
+ *
  * @note If you set the combo to editable, with ewl_combo_editable set then
  * instead of using the model/view to get the data we will query the view
  * for the header. It is then up to the app to do what they will with the
@@ -93,13 +93,13 @@ static unsigned int combo_test_data_count_get(void *data);
 static void combo_cb_add(Ewl_Widget *w, void *ev, void *data);
 static void combo_cb_entry_changed(Ewl_Widget *w, void *ev, void *data);
 
-static Ewl_Widget *combo_test_editable_cb_header_fetch(void *data, 
+static Ewl_Widget *combo_test_editable_cb_header_fetch(void *data,
 							unsigned int col);
-static Ewl_Widget *combo_test_editable_cb_widget_fetch(void *data, 
-							unsigned int row, 
+static Ewl_Widget *combo_test_editable_cb_widget_fetch(void *data,
+							unsigned int row,
 							unsigned int col);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Combo";
@@ -173,7 +173,7 @@ create_test(Ewl_Container *box)
 
 	view = ewl_view_new();
 	ewl_view_widget_fetch_set(view, combo_test_editable_cb_widget_fetch);
-	ewl_view_header_fetch_set(view, 
+	ewl_view_header_fetch_set(view,
 			combo_test_editable_cb_header_fetch);
 
 	combo = ewl_combo_new();
@@ -235,7 +235,7 @@ combo_test_data_setup(void)
 	{
 		const char *icon;
 
-		icon = ewl_icon_theme_icon_path_get(icons[i], EWL_ICON_SIZE_MEDIUM); 
+		icon = ewl_icon_theme_icon_path_get(icons[i], EWL_ICON_SIZE_MEDIUM);
 		data->data[i] = strdup((icon ? icon : icons[i]));
 	}
 
@@ -255,7 +255,7 @@ combo_test_data_header_fetch(void *data __UNUSED__, unsigned int col __UNUSED__)
 }
 
 static void *
-combo_test_data_fetch(void *data, unsigned int row, 
+combo_test_data_fetch(void *data, unsigned int row,
 				unsigned int col __UNUSED__)
 {
 	Combo_Test_Data *d;
@@ -277,7 +277,7 @@ combo_test_data_count_get(void *data)
 }
 
 static void
-combo_value_changed(Ewl_Widget *w, void *ev __UNUSED__, 
+combo_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 				void *data __UNUSED__)
 {
 	Combo_Test_Data *d;
@@ -293,7 +293,7 @@ combo_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *c;
@@ -330,7 +330,7 @@ combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__)
 	o = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(o), val);
 	ewl_container_child_append(EWL_CONTAINER(w), o);
-	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED, 
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
 				combo_cb_entry_changed, NULL);
 	ewl_widget_show(o);
 
@@ -338,7 +338,7 @@ combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__)
 }
 
 static Ewl_Widget *
-combo_test_editable_cb_widget_fetch(void *data, unsigned int row __UNUSED__, 
+combo_test_editable_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 						unsigned int col __UNUSED__)
 {
 	Ewl_Widget *w;
@@ -363,7 +363,7 @@ combo_test_editable_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 }
 
 static void
-combo_cb_entry_changed(Ewl_Widget *w, void *ev __UNUSED__, 
+combo_cb_entry_changed(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	printf("value changed to (%s)\n", ewl_text_text_get(EWL_TEXT(w)));

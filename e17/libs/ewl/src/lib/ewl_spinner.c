@@ -62,19 +62,19 @@ ewl_spinner_init(Ewl_Spinner *s)
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
 				   EWL_FLAG_FILL_HFILL);
 
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, 
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 				ewl_spinner_cb_realize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_spinner_cb_configure, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED, 
+	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
 				ewl_spinner_cb_value_changed, NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, 
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 				ewl_spinner_cb_destroy, NULL);
 	ewl_container_show_notify_set(EWL_CONTAINER(w),
 				ewl_spinner_cb_child_show);
 	ewl_container_resize_notify_set(EWL_CONTAINER(w),
 				ewl_spinner_cb_child_resize);
-	
+
 	s->entry = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(s->entry), "0");
 	ewl_container_child_append(EWL_CONTAINER(s), s->entry);
@@ -184,7 +184,7 @@ ewl_spinner_digits_get(Ewl_Spinner *s)
  * @brief The realize callback
  */
 void
-ewl_spinner_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_spinner_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Spinner *s;
@@ -208,7 +208,7 @@ ewl_spinner_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The value changed callback
  */
 void
-ewl_spinner_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_spinner_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Spinner *s;
@@ -232,7 +232,7 @@ ewl_spinner_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief The configure callback
  */
 void
-ewl_spinner_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_spinner_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	Ewl_Spinner *s;
@@ -249,12 +249,12 @@ ewl_spinner_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	cy = CURRENT_Y(w);
 	cw = CURRENT_W(w);
 	ch = CURRENT_H(w);
-	
+
 	pvw = ewl_object_preferred_w_get(EWL_OBJECT(s->vbox));
 
 	ewl_object_place(EWL_OBJECT(s->vbox), cx + cw - pvw, cy, pvw, ch);
 	ewl_object_place(EWL_OBJECT(s->entry), cx, cy, cw - pvw, ch);
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -313,7 +313,7 @@ ewl_spinner_cb_key_down(Ewl_Widget *w, void *ev_data,
 				 ev->keyname[0] == '-'))
 	{
 		ewl_entry_selection_clear(e);
-		ewl_text_text_insert(EWL_TEXT(e), ev->keyname, 
+		ewl_text_text_insert(EWL_TEXT(e), ev->keyname,
 				ewl_text_cursor_position_get(EWL_TEXT(e)));
 	}
 
@@ -424,7 +424,7 @@ ewl_spinner_cb_increase_value(Ewl_Widget *w __UNUSED__, void *ev_data,
 	s = EWL_SPINNER(user_data);
 	r = EWL_RANGE(s);
 	ewl_spinner_cb_focus_out(EWL_WIDGET(s), NULL, NULL);
-	
+
 	if (!r->invert)
 		ewl_range_increase(r);
 	else
@@ -491,14 +491,14 @@ ewl_spinner_cb_decrease_value(Ewl_Widget *w __UNUSED__, void *ev_data,
 
 	s = EWL_SPINNER(user_data);
 	r = EWL_RANGE(s);
-	
+
 	ewl_spinner_cb_focus_out(EWL_WIDGET(s), NULL, NULL);
 
 	if (!r->invert)
 		ewl_range_decrease(r);
 	else
 		ewl_range_increase(r);
-	
+
 	if (ev_data) {
 		s->direction = (!r->invert) ? -1 : 1;
 		s->start_time = ecore_time_get();
@@ -571,15 +571,15 @@ ewl_spinner_timer(void *data)
 	dv = velocity * s->direction * 10.0 * r->step * dt*dt;
 
 	while  (r->step < abs(dv - s->last_value - step)) {
-		if (s->direction == 1) 
+		if (s->direction == 1)
 			step += r->step;
-		else 
+		else
 			step -= r->step;
 	}
-	
+
 	ewl_range_value_set(r, r->value + step);
 	s->last_value += step;
-	
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -591,14 +591,14 @@ ewl_spinner_child_handle(Ewl_Spinner *s)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
 	DCHECK_TYPE("s", s, EWL_SPINNER_TYPE);
-	
+
 	pvw = ewl_object_preferred_w_get(EWL_OBJECT(s->vbox));
 	pvh = ewl_object_preferred_h_get(EWL_OBJECT(s->vbox));
-	
+
 	pew = ewl_object_preferred_w_get(EWL_OBJECT(s->entry));
 	peh = ewl_object_preferred_h_get(EWL_OBJECT(s->entry));
 
-	ewl_object_preferred_inner_size_set(EWL_OBJECT(s), pvw + pew, 
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(s), pvw + pew,
 							MAX(peh, pvh));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -619,7 +619,7 @@ ewl_spinner_cb_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	DCHECK_TYPE("c", c, EWL_SPINNER_TYPE);
 
 	ewl_spinner_child_handle(EWL_SPINNER(c));
-	
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

@@ -119,11 +119,11 @@ struct Ewl_Paned_Grabber
 Ewl_Widget 	*ewl_paned_grabber_new(void);
 int 		 ewl_paned_grabber_init(Ewl_Paned_Grabber *g);
 
-void		 ewl_paned_grabber_paned_orientation_set(Ewl_Paned_Grabber *g, 
+void		 ewl_paned_grabber_paned_orientation_set(Ewl_Paned_Grabber *g,
 							Ewl_Orientation o);
 Ewl_Orientation  ewl_paned_grabber_orientation_get(Ewl_Paned_Grabber *g);
 
-void		 ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g, 
+void		 ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g,
 							unsigned int dir);
 
 /**

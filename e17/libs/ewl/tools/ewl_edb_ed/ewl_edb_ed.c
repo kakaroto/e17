@@ -32,7 +32,7 @@ int main(int argc, char ** argv) {
 
     if (!ewl_init(&argc, argv)) {
         printf("Unable to init ewl\n");
-        return 0; 
+        return 0;
     }
 
     win = ewl_window_new();
@@ -80,7 +80,7 @@ int main(int argc, char ** argv) {
 	ewl_object_padding_set(EWL_OBJECT(combo), 5, 0, 0, 0);
     ewl_widget_show(combo);
 
-    {	
+    {
         o = ewl_menu_item_new(NULL, "int");
         ewl_container_child_append(EWL_CONTAINER(combo), o);
 		ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_INT);
@@ -167,7 +167,7 @@ int main(int argc, char ** argv) {
 	/* save /quit buttons on bottom */
 	box2 = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(box), box2);
-	ewl_object_fill_policy_set(EWL_OBJECT(box2), 
+	ewl_object_fill_policy_set(EWL_OBJECT(box2),
 						EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
 	ewl_object_alignment_set(EWL_OBJECT(box2), EWL_FLAG_ALIGN_RIGHT);
 	ewl_widget_show(box2);
@@ -194,7 +194,7 @@ int main(int argc, char ** argv) {
 }
 
 void win_del_cb(Ewl_Widget *w, void *event, void *data) {
-    ewl_main_quit(); 
+    ewl_main_quit();
 
     return;
     w = NULL;
@@ -219,7 +219,7 @@ void open_file_cb(Ewl_Widget *w, void *event, void *data) {
 		return;
 	}
 
-	key_list = e_db_dump_key_list(file, &num_ret);	
+	key_list = e_db_dump_key_list(file, &num_ret);
 	{
 		int i = 0;
 
@@ -262,7 +262,7 @@ void open_file_cb(Ewl_Widget *w, void *event, void *data) {
 	}
 
 	free(key_list);
-	
+
 	return;
 	w = NULL;
 	data = NULL;

@@ -15,7 +15,7 @@ static void cb_clicked(Ewl_Widget *w, void *ev, void *data);
 static void cb_open(Ewl_Widget *w, void *ev, void *data);
 static void cb_fd_delete(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "IO Manager";
@@ -46,7 +46,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-cb_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+cb_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *fd;
@@ -81,7 +81,7 @@ cb_open(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	fd = EWL_FILEDIALOG(w);
 	s = ewl_filedialog_selected_file_get(fd);
-	snprintf(path, sizeof(path), "%s/%s", 
+	snprintf(path, sizeof(path), "%s/%s",
 			ewl_filedialog_directory_get(fd), s);
 	if (s) free(s);
 	ewl_widget_destroy(w);

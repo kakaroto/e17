@@ -14,12 +14,12 @@ static void ewl_freebox_layout_comparator(Ewl_Freebox *fb);
  * This will allow for differnt types of 'free' layout depending on what you
  * need. First there is AUTO layout, which will just place the widgets in
  * rows and columns (this will expand the freebox as needed while
- * trying to maintain the given space). 
- * 
+ * trying to maintain the given space).
+ *
  * The second type of layout is MANUAL. Initially this will layout as per
  * AUTO but after that the user will be able to drag the widgets around and
  * put them where they want.
- * 
+ *
  * The third type of layout is COMPARATOR. This will require the comparator
  * function to be set into the freebox. Then, as it is layout out widgets it
  * will call the comparator to determine which should be placed first. It
@@ -137,7 +137,7 @@ ewl_freebox_orientation_set(Ewl_Freebox *fb, Ewl_Orientation orientation)
 /**
  * @param fb: The freebox to use
  * @return Returns the orientation of the freebox
- * @brief Retrieve the current orientation of the freebox 
+ * @brief Retrieve the current orientation of the freebox
  */
 Ewl_Orientation
 ewl_freebox_orientation_get(Ewl_Freebox *fb)
@@ -173,7 +173,7 @@ ewl_freebox_layout_type_set(Ewl_Freebox *fb, Ewl_Freebox_Layout_Type type)
 }
 
 /**
- * @param fb: The Ewl_Freebox to get the layout from 
+ * @param fb: The Ewl_Freebox to get the layout from
  * @return Returns the Ewl_Freebox_Layout_Type currently set on this freebox
  * @brief Retrieve the layout type of the Ewl_Freebox
  */
@@ -190,7 +190,7 @@ ewl_freebox_layout_type_get(Ewl_Freebox *fb)
 /**
  * @param fb: The Ewl_Freebox to set the comparator on
  * @param cmp: The Ewl_Freebox_Comparator functon to set
- * @return Returns no value 
+ * @return Returns no value
  * @brief Set the comparator to use in the Ewl_Freebox
  */
 void
@@ -211,7 +211,7 @@ ewl_freebox_comparator_set(Ewl_Freebox *fb, Ewl_Freebox_Comparator cmp)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/** 
+/**
  * @param fb: The Ewl_Freebox to get the comparator from
  * @return Returns the Ewl_Freebox_Comparator set on the given Ewl_Freebox
  * or NULL if none set.
@@ -256,7 +256,7 @@ ewl_freebox_resort(Ewl_Freebox *fb)
  * @brief The configure callback
  */
 void
-ewl_freebox_cb_configure(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_freebox_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Freebox *fb;
@@ -271,7 +271,7 @@ ewl_freebox_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	else if (fb->layout == EWL_FREEBOX_LAYOUT_MANUAL)
 		ewl_freebox_layout_manual(fb);
-	
+
 	else if (fb->layout == EWL_FREEBOX_LAYOUT_COMPARATOR)
 		ewl_freebox_layout_comparator(fb);
 
@@ -325,7 +325,7 @@ ewl_freebox_cb_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	fb->sorted = FALSE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}	
+}
 
 /* This will run through the list of child widgets and lay them out in rows
  * based on their size. */
@@ -343,7 +343,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	int (*current_pos)(Ewl_Object *obj);
 	int (*current_size)(Ewl_Object *obj);
 	int (*current_anchor)(Ewl_Object *obj);
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("fb", fb);
 	DCHECK_TYPE("fb", fb, EWL_FREEBOX_TYPE);
@@ -408,7 +408,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 		*col_size = MAX(*col_size, *grow_dir);
 		cur_align += *stable_dir + pad;
 	}
-	
+
 	/* reset the start values */
 	cur_pos = start_pos;
 	cur_align = base_pos;
@@ -419,7 +419,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	while ((child = ecore_dlist_next(c->children)))
 	{
 		if (!VISIBLE(child)) continue;
-		ewl_object_minimum_size_get(EWL_OBJECT(child), 
+		ewl_object_minimum_size_get(EWL_OBJECT(child),
 						&child_w, &child_h);
 
 		/* past end of widget, wrap */
@@ -482,7 +482,7 @@ ewl_freebox_layout_comparator(Ewl_Freebox *fb)
 	/* sort the data if needed */
 	if (!fb->sorted)
 	{
-		ecore_dlist_sort(c->children, ECORE_COMPARE_CB(fb->comparator), 
+		ecore_dlist_sort(c->children, ECORE_COMPARE_CB(fb->comparator),
 					ECORE_SORT_MIN);
 
 		/* we set sorted to TRUE at the end here as each of those

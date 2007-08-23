@@ -9,7 +9,7 @@
 static int create_test(Ewl_Container *box);
 static void ewl_histogram_test_cb_configure(Ewl_Widget *w, void *event, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Histogram";
@@ -73,7 +73,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-ewl_histogram_test_cb_configure(Ewl_Widget *w, void *event __UNUSED__, 
+ewl_histogram_test_cb_configure(Ewl_Widget *w, void *event __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Widget *child;

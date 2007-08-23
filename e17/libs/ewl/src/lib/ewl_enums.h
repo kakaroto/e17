@@ -45,7 +45,7 @@ enum Ewl_Callback_Type
 };
 
 /**
- * The Ewl_Callback_Type 
+ * The Ewl_Callback_Type
  */
 typedef enum Ewl_Callback_Type Ewl_Callback_Type;
 
@@ -160,7 +160,7 @@ enum Ewl_Flags
 
 /**
  * @def EWL_FLAG_FILL_NORMAL
- * Flag specifing normal fill values 
+ * Flag specifing normal fill values
  */
 #define EWL_FLAG_FILL_NORMAL (EWL_FLAG_FILL_FILL)
 
@@ -352,7 +352,7 @@ typedef enum Ewl_Key_Modifiers Ewl_Key_Modifiers;
  * @enum Ewl_State_Type
  * The state type
  */
-enum Ewl_State_Type 
+enum Ewl_State_Type
 {
 	EWL_STATE_TRANSIENT,
 	EWL_STATE_PERSISTENT
@@ -397,7 +397,7 @@ typedef enum Ewl_Stock_Type Ewl_Stock_Type;
  * @enum Ewl_Color_Mode
  * The different colour picker modes
  */
-enum Ewl_Color_Mode 
+enum Ewl_Color_Mode
 {
 	EWL_COLOR_MODE_RGB_RED,
 	EWL_COLOR_MODE_RGB_GREEN,
@@ -431,7 +431,7 @@ typedef enum Ewl_Spectrum_Type Ewl_Spectrum_Type;
  * @enum Ewl_Text_Style
  * The possible styles that can be set into ewl_text widgets
  */
-enum Ewl_Text_Style 
+enum Ewl_Text_Style
 {
 	EWL_TEXT_STYLE_NONE = 0x00,
 	EWL_TEXT_STYLE_UNDERLINE = 0x01,
@@ -453,7 +453,7 @@ typedef enum Ewl_Text_Style Ewl_Text_Style;
  * @enum Ewl_Text_Trigger_Type
  * The types of trigger that can be set
  */
-enum Ewl_Text_Trigger_Type 
+enum Ewl_Text_Trigger_Type
 {
 	EWL_TEXT_TRIGGER_TYPE_NONE,
 	EWL_TEXT_TRIGGER_TYPE_SELECTION,
@@ -469,7 +469,7 @@ typedef enum Ewl_Text_Trigger_Type Ewl_Text_Trigger_Type;
  * @enum Ewl_Attach_Type
  * The types that can be attached to a widget
  */
-enum Ewl_Attach_Type 
+enum Ewl_Attach_Type
 {
 	EWL_ATTACH_TYPE_TOOLTIP,
 	EWL_ATTACH_TYPE_COLOR,
@@ -481,7 +481,7 @@ enum Ewl_Attach_Type
 };
 
 /**
- * The Ewl_Attach_Type 
+ * The Ewl_Attach_Type
  */
 typedef enum Ewl_Attach_Type Ewl_Attach_Type;
 
@@ -489,7 +489,7 @@ typedef enum Ewl_Attach_Type Ewl_Attach_Type;
  * @enum Ewl_Attach_Data_Type
  * The types of data that can be set into a widgets attachment
  */
-enum Ewl_Attach_Data_Type 
+enum Ewl_Attach_Data_Type
 {
 	EWL_ATTACH_DATA_TYPE_TEXT,
 	EWL_ATTACH_DATA_TYPE_WIDGET,
@@ -602,7 +602,7 @@ enum Ewl_Filelist_Event_Type
 };
 
 /**
- * The Ewl_Filelist_Event_Type 
+ * The Ewl_Filelist_Event_Type
  */
 typedef enum Ewl_Filelist_Event_Type Ewl_Filelist_Event_Type;
 
@@ -797,7 +797,7 @@ typedef enum Ewl_Selection_Mode Ewl_Selection_Mode;
 
 /**
  * @enum Ewl_Tree_Selection_Type
- * The tree selection type 
+ * The tree selection type
  */
 enum Ewl_Tree_Selection_Type
 {
@@ -860,7 +860,7 @@ typedef enum Ewl_Thumbnail_Size Ewl_Thumbnail_Size;
 
 /**
  * @}
- */ 
+ */
 
 #endif
 

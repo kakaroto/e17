@@ -49,7 +49,7 @@ ewl_overlay_init(Ewl_Overlay *w)
 	ewl_widget_appearance_set(EWL_WIDGET(w), EWL_OVERLAY_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(w), EWL_OVERLAY_TYPE);
 
-	ewl_container_show_notify_set(EWL_CONTAINER(w), 
+	ewl_container_show_notify_set(EWL_CONTAINER(w),
 					ewl_overlay_cb_child_show);
 	ewl_container_resize_notify_set(EWL_CONTAINER(w),
 					ewl_overlay_cb_child_resize);

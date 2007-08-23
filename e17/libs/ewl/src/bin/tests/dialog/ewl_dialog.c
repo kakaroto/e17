@@ -14,7 +14,7 @@ static void dialog_response_cb(Ewl_Widget *w, void *ev, void *data);
 static void run_dialog(Ewl_Widget *w, void *ev, void *data);
 static void dialog_delete_cb(Ewl_Widget *w, void *ev, void *data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Dialog";
@@ -68,8 +68,8 @@ run_dialog(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	ewl_widget_show(hbox);
 
 	o = ewl_image_new();
-	ewl_image_file_set(EWL_IMAGE(o), 
-		ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_INFORMATION, 46), 
+	ewl_image_file_set(EWL_IMAGE(o),
+		ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_INFORMATION, 46),
 		EWL_ICON_DIALOG_INFORMATION);
 	ewl_container_child_append(EWL_CONTAINER(hbox), o);
 	ewl_object_padding_set(EWL_OBJECT(o), 20, 20, 20, 20);

@@ -284,13 +284,13 @@ ewl_scrollpane_vscrollbar_value_set(Ewl_Scrollpane *s, double val)
 }
 
 /**
- * @param s: the scrollpane to retrieve its vertical scrollbar stepping 
- * @return Returns the value of the stepping of the vertical scrollbar 
+ * @param s: the scrollpane to retrieve its vertical scrollbar stepping
+ * @return Returns the value of the stepping of the vertical scrollbar
  *		in @a s on success.
  * @brief Retrives the value of the stepping of the vertical scrollbar in @a s.
  */
 double
-ewl_scrollpane_hscrollbar_step_get(Ewl_Scrollpane *s) 
+ewl_scrollpane_hscrollbar_step_get(Ewl_Scrollpane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
@@ -301,13 +301,13 @@ ewl_scrollpane_hscrollbar_step_get(Ewl_Scrollpane *s)
 }
 
 /**
- * @param s: the scrollpane to retrieve its vertical scrollbar stepping 
- * @return Returns the value of the stepping of the vertical scrollbar 
+ * @param s: the scrollpane to retrieve its vertical scrollbar stepping
+ * @return Returns the value of the stepping of the vertical scrollbar
  *		in @a s on success.
  * @brief Retrives the value of the stepping of the vertical scrollbar in @a s.
  */
 double
-ewl_scrollpane_vscrollbar_step_get(Ewl_Scrollpane *s) 
+ewl_scrollpane_vscrollbar_step_get(Ewl_Scrollpane *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0.0);
@@ -468,7 +468,7 @@ ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ewl_object_geometry_request(EWL_OBJECT(s->box),
 					CURRENT_X(w) - b_width,
 					CURRENT_Y(w) - b_height,
-					content_w + b_width, 
+					content_w + b_width,
 					content_h + b_height);
 
 	/*
@@ -567,7 +567,7 @@ ewl_scrollpane_cb_focus_jump(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @param ev_data: UNUSED
  * @param user_data: The scrollbar
  * @return Returns no value
- * @brief When a horizontal scrollbar is clicked we need to move the 
+ * @brief When a horizontal scrollbar is clicked we need to move the
  * contents of the scrollpane horizontally.
  */
 void
@@ -591,7 +591,7 @@ ewl_scrollpane_cb_hscroll(Ewl_Widget *w __UNUSED__,
  * @param ev_data: UNUSED
  * @param user_data: The scrollbar
  * @return Returns no value
- * @brief When a vertical scrollbar is clicked we need to move the 
+ * @brief When a vertical scrollbar is clicked we need to move the
  * contents of the scrollpane vertically.
  */
 void

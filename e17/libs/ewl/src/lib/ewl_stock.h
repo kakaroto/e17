@@ -7,7 +7,7 @@
 /**
  * @addtogroup Ewl_Stock Ewl_Stock: The Stock
  * @brief The stock class is an abstact class to provide the stock feature of
- * buttons and icons in a common place. This class inherits from the Ewl_Box 
+ * buttons and icons in a common place. This class inherits from the Ewl_Box
  * to allow for placing any other widget inside the stock.
  *
  * @remarks Inherits from Ewl_Box.
@@ -67,7 +67,7 @@ typedef void (*Ewl_Stock_Label_Set)(Ewl_Stock *s, const char *txt);
  */
 typedef void (*Ewl_Stock_Image_Set)(Ewl_Stock *s, const char *file, const char *key);
 
-/** 
+/**
  * @def EWL_STOCK_TOOLTIP_SET(f)
  * Typecast to the tooltip set pointer
  */

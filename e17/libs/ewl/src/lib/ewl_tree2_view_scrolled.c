@@ -31,8 +31,8 @@ ewl_tree2_view_scrolled_get(void)
 }
 
 static Ewl_Widget *
-ewl_tree2_view_cb_widget_fetch(void *data __UNUSED__, 
-				unsigned int col __UNUSED__, 
+ewl_tree2_view_cb_widget_fetch(void *data __UNUSED__,
+				unsigned int col __UNUSED__,
 				unsigned int row __UNUSED__)
 {
 	Ewl_Widget *tree;
@@ -105,7 +105,7 @@ ewl_tree2_view_scrolled_init(Ewl_Tree2_View_Scrolled *tv)
  * @brief Sets if the headers should be scrolled with the tree
  */
 void
-ewl_tree2_view_scrolled_scroll_headers_set(Ewl_Tree2_View *view, 
+ewl_tree2_view_scrolled_scroll_headers_set(Ewl_Tree2_View *view,
 						unsigned int scroll)
 {
 	Ewl_Tree2_View_Scrolled *vs;

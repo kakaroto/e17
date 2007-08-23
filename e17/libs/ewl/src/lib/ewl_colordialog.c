@@ -58,7 +58,7 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
 	ewl_window_name_set(EWL_WINDOW(cd), "Ewl Colordialog");
 	ewl_window_class_set(EWL_WINDOW(cd), "Ewl Colordialog");
 
-	ewl_callback_append(EWL_WIDGET(cd), EWL_CALLBACK_DELETE_WINDOW, 
+	ewl_callback_append(EWL_WIDGET(cd), EWL_CALLBACK_DELETE_WINDOW,
 				ewl_colordialog_cb_delete_window, NULL);
 
 	ewl_dialog_active_area_set(EWL_DIALOG(cd), EWL_POSITION_TOP);
@@ -67,7 +67,7 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
 	cd->picker = ewl_colorpicker_new();
 	ewl_widget_internal_set(cd->picker, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(cd), cd->picker);
-	ewl_object_fill_policy_set(EWL_OBJECT(cd->picker), 
+	ewl_object_fill_policy_set(EWL_OBJECT(cd->picker),
 					EWL_FLAG_FILL_FILL);
 	ewl_widget_show(cd->picker);
 
@@ -77,14 +77,14 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
 	o = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(cd), o);
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_OK);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 					ewl_colordialog_cb_button_click, cd);
 	ewl_widget_show(o);
 
 	o = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(cd), o);
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_CANCEL);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 					ewl_colordialog_cb_button_click, cd);
 	ewl_widget_show(o);
 
@@ -141,7 +141,7 @@ ewl_colordialog_alpha_set(Ewl_Colordialog *cd, unsigned int alpha)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
 	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
-		 
+
 	ewl_colorpicker_alpha_set(EWL_COLORPICKER(cd->picker), alpha);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -181,9 +181,9 @@ ewl_colordialog_current_rgb_set(Ewl_Colordialog *cd, unsigned int r,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cd", cd);
 	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
-	 
+
 	ewl_colorpicker_current_rgb_set(EWL_COLORPICKER(cd->picker), r, g, b);
-	 
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -226,7 +226,7 @@ ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cd, unsigned int r,
 	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
 
 	ewl_colorpicker_previous_rgb_set(EWL_COLORPICKER(cd->picker), r, g, b);
-	 
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -311,7 +311,7 @@ ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	type = ewl_stock_type_get(EWL_STOCK(w));
 	ewl_colordialog_respond(EWL_COLORDIALOG(data), type);
-	 
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -324,7 +324,7 @@ ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev __UNUSED__, void *data)
  * @brief The delete window callback
  */
 void
-ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -346,7 +346,7 @@ ewl_colordialog_respond(Ewl_Colordialog *cd, unsigned int response)
 	DCHECK_TYPE("cd", cd, EWL_COLORDIALOG_TYPE);
 
 	cd_ev.response = response;
-	ewl_callback_call_with_event_data(EWL_WIDGET(cd), 
+	ewl_callback_call_with_event_data(EWL_WIDGET(cd),
 					EWL_CALLBACK_VALUE_CHANGED, &cd_ev);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

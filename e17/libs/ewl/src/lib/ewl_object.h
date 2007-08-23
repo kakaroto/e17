@@ -16,7 +16,7 @@
 #define EWL_OBJECT_MIN_SIZE (1)
 
 /**
- * @def EWL_OBJECT_MAX_SIZE 
+ * @def EWL_OBJECT_MAX_SIZE
  * The maximum possible size any object can receive.
  */
 #define EWL_OBJECT_MAX_SIZE (INT_MAX)
@@ -28,7 +28,7 @@
 typedef struct Ewl_Object Ewl_Object;
 
 /**
- * @def EWL_OBJECT(object) 
+ * @def EWL_OBJECT(object)
  * A typecast for accessing the inherited object fields.
  */
 #define EWL_OBJECT(object) ((Ewl_Object *) object)
@@ -262,7 +262,7 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * @def ewl_object_state_remove(o, state)
  * @param o: The object to work with
  * @param state: The state to remove
- * Removes the given state from the given @a o object 
+ * Removes the given state from the given @a o object
  */
 #define ewl_object_state_remove(o, state) \
 	ewl_object_flags_remove(o, state, EWL_FLAGS_STATE_MASK)
@@ -565,7 +565,7 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
 			|| ewl_object_queued_has(EWL_OBJECT(o), \
 					EWL_FLAG_QUEUED_CPROCESS))
 
-/** 
+/**
  * @def DISABLED(o)
  * Used to determine if a widget is disabled
  */

@@ -9,13 +9,13 @@
 
 static Ewl_View *ewl_filelist_icon_view = NULL;
 
-static void ewl_filelist_icon_cb_dir_clicked(Ewl_Widget *w, 
+static void ewl_filelist_icon_cb_dir_clicked(Ewl_Widget *w,
 						void *ev, void *data);
 static void ewl_filelist_icon_cb_icon_clicked(Ewl_Widget *w,
 						void *ev, void *data);
-static void ewl_filelist_icon_icon_add(Ewl_Filelist *fl, const char *dir, 
+static void ewl_filelist_icon_icon_add(Ewl_Filelist *fl, const char *dir,
 						char *file, void *data);
-static Ewl_Widget *ewl_filelist_icon_view_cb_widget_fetch(void *data, 
+static Ewl_Widget *ewl_filelist_icon_view_cb_widget_fetch(void *data,
 							unsigned int row,
 							unsigned int col);
 
@@ -27,7 +27,7 @@ Ewl_View *
 ewl_filelist_icon_view_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	
+
 	if (!ewl_filelist_icon_view)
 	{
 		ewl_filelist_icon_view = ewl_view_new();
@@ -39,8 +39,8 @@ ewl_filelist_icon_view_get(void)
 }
 
 static Ewl_Widget *
-ewl_filelist_icon_view_cb_widget_fetch(void *data __UNUSED__, 
-					unsigned int row __UNUSED__, 
+ewl_filelist_icon_view_cb_widget_fetch(void *data __UNUSED__,
+					unsigned int row __UNUSED__,
 					unsigned int col __UNUSED__)
 {
 	Ewl_Widget *list;
@@ -54,7 +54,7 @@ ewl_filelist_icon_view_cb_widget_fetch(void *data __UNUSED__,
 
 /**
  * @return Returns a new Ewl_Filelist_Icon or NULL on failure
- * @brief Creates a new Ewl_Filelist_Icon widget 
+ * @brief Creates a new Ewl_Filelist_Icon widget
  */
 Ewl_Widget *
 ewl_filelist_icon_new(void)
@@ -126,7 +126,7 @@ ewl_filelist_icon_dir_change(Ewl_Filelist *fl)
 
 	list = EWL_FILELIST_ICON(fl);
 	ewl_container_reset(EWL_CONTAINER(list->freebox));
-	ewl_filelist_directory_read(fl, ewl_filelist_directory_get(fl), 
+	ewl_filelist_directory_read(fl, ewl_filelist_directory_get(fl),
 				FALSE, ewl_filelist_icon_icon_add, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -149,7 +149,7 @@ ewl_filelist_icon_selected_file_add(Ewl_Filelist *fl, const char *file)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/** 
+/**
  * @param fl: The filelist to work with
  * @param item: The item to get the name from
  * @return Returns the filename for the given item
@@ -235,7 +235,7 @@ ewl_filelist_icon_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 	event = ev;
 
 	/* only trigger on lmb */
-	if (event->button != 1) 
+	if (event->button != 1)
 		DRETURN(DLEVEL_STABLE);
 
 	dir = ewl_icon_label_get(icon);
@@ -257,7 +257,7 @@ ewl_filelist_icon_cb_icon_clicked(Ewl_Widget *w, void *ev, void *data)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 	DCHECK_TYPE("data", data, EWL_FILELIST_TYPE);
 
-	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev, 
+	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev,
 					"icon,select", "icon,unselect");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -295,7 +295,7 @@ ewl_filelist_icon_icon_add(Ewl_Filelist *fl, const char *dir, char *file,
 
 	stock = ewl_filelist_stock_icon_get(fl, path);
 	img = ewl_icon_theme_icon_path_get(stock, 0);
-	if (img) ewl_icon_image_set(EWL_ICON(icon), img, stock); 
+	if (img) ewl_icon_image_set(EWL_ICON(icon), img, stock);
 
 	ewl_container_child_append(EWL_CONTAINER(list->freebox), icon);
 	ewl_widget_show(icon);

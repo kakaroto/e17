@@ -13,7 +13,7 @@ static void cb_value_show(Ewl_Widget * w, void *ev, void *data);
 
 static Ewl_Widget *spinner[4];
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Spinner";
@@ -133,7 +133,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-cb_value_show(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+cb_value_show(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	printf("X %d, Y %d, W %d, H %d\n",

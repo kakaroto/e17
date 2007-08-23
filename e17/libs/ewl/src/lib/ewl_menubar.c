@@ -20,7 +20,7 @@ ewl_menubar_new(void)
 	mb = NEW(Ewl_Menubar, 1);
 	if (!mb)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	
+
 	if (!ewl_menubar_init(mb)) {
 		ewl_widget_destroy(EWL_WIDGET(mb));
 		mb = NULL;
@@ -45,7 +45,7 @@ ewl_hmenubar_new(void)
 	if (!mb)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_menubar_orientation_set(EWL_MENUBAR(mb), 
+	ewl_menubar_orientation_set(EWL_MENUBAR(mb),
 				EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_PTR(mb, DLEVEL_STABLE);
@@ -54,7 +54,7 @@ ewl_hmenubar_new(void)
 /**
  * @return Returns NULL on failure or a pointer to a new vertical menubar on
  * success
- * @brief Creates a new Ewl_Menubar in a vertical orientation 
+ * @brief Creates a new Ewl_Menubar in a vertical orientation
  */
 Ewl_Widget *
 ewl_vmenubar_new(void)
@@ -67,7 +67,7 @@ ewl_vmenubar_new(void)
 	if (!mb)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_menubar_orientation_set(EWL_MENUBAR(mb), 
+	ewl_menubar_orientation_set(EWL_MENUBAR(mb),
 				EWL_ORIENTATION_VERTICAL);
 
 	DRETURN_PTR(mb, DLEVEL_STABLE);
@@ -131,7 +131,7 @@ ewl_menubar_from_info(Ewl_Menubar *mb, Ewl_Menubar_Info *info)
 		ewl_button_label_set(EWL_BUTTON(menu), info[i].name);
 		ewl_menu_from_info(EWL_MENU(menu), info[i].menu);
 		ewl_container_child_append(EWL_CONTAINER(mb), menu);
-		ewl_object_fill_policy_set(EWL_OBJECT(menu), 
+		ewl_object_fill_policy_set(EWL_OBJECT(menu),
 				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
 		ewl_widget_show(menu);
 	}
@@ -156,7 +156,7 @@ ewl_menubar_orientation_set(Ewl_Menubar *mb, Ewl_Orientation o)
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_object_fill_policy_set(EWL_OBJECT(mb),
 				EWL_FLAG_FILL_HFILL);
-		ewl_box_orientation_set(EWL_BOX(mb->inner_box), 
+		ewl_box_orientation_set(EWL_BOX(mb->inner_box),
 				EWL_ORIENTATION_HORIZONTAL);
 		ewl_object_fill_policy_set(EWL_OBJECT(mb->inner_box),
 				EWL_FLAG_FILL_HFILL);
@@ -205,7 +205,7 @@ ewl_menubar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (EWL_MENU_IS(w)) 
+	if (EWL_MENU_IS(w))
 		EWL_MENU(w)->menubar_parent = EWL_WIDGET(c);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

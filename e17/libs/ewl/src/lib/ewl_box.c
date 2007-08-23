@@ -62,7 +62,7 @@ static void ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
  * @return Returns NULL on failure, or a newly allocated box on success.
  * @brief Allocate and initialize a new box with given orientation
  */
-Ewl_Widget 
+Ewl_Widget
 *ewl_box_new(void)
 {
 	Ewl_Box *b;
@@ -105,7 +105,7 @@ Ewl_Widget
  * @return Returns NULL on failure, or a newly allocated vertical box on success.
  * @brief Allocate and initialize a new box with vertical orientation
  */
-Ewl_Widget 
+Ewl_Widget
 *ewl_vbox_new(void)
 {
 	Ewl_Widget *b;
@@ -156,7 +156,7 @@ ewl_box_init(Ewl_Box * b)
 	/*
 	 * Setup the container size change handlers.
 	 */
-	ewl_container_resize_notify_set(EWL_CONTAINER(b), 
+	ewl_container_resize_notify_set(EWL_CONTAINER(b),
 					ewl_box_cb_child_resize);
 	ewl_container_show_notify_set(EWL_CONTAINER(b), ewl_box_cb_child_show);
 	ewl_container_hide_notify_set(EWL_CONTAINER(b), ewl_box_cb_child_hide);
@@ -164,7 +164,7 @@ ewl_box_init(Ewl_Box * b)
 	/*
 	 * Attach the default layout callback.
 	 */
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_box_cb_configure, NULL);
 
 	/*
@@ -318,7 +318,7 @@ ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
 		 */
 		nodes = ewl_container_child_count_visible_get(c) - 1;
 		if (b->orientation == EWL_ORIENTATION_HORIZONTAL) {
-			ewl_container_largest_prefer(c, 
+			ewl_container_largest_prefer(c,
 						EWL_ORIENTATION_VERTICAL);
 			ewl_container_sum_prefer(c,
 						EWL_ORIENTATION_HORIZONTAL);
@@ -326,7 +326,7 @@ ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
 					PREFERRED_W(b) + b->spacing * nodes);
 		}
 		else {
-			ewl_container_largest_prefer(c, 
+			ewl_container_largest_prefer(c,
 						EWL_ORIENTATION_HORIZONTAL);
 			ewl_container_sum_prefer(c,
 						EWL_ORIENTATION_VERTICAL);
@@ -415,7 +415,7 @@ ewl_box_spacing_set(Ewl_Box * b, int s)
  * 4. Layout the position of all children based on the sizes accepted.
  */
 void
-ewl_box_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_box_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Box *b;
@@ -582,7 +582,7 @@ ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread, int *fill_size, int *al
 	DCHECK_TYPE_RET("b", b, EWL_BOX_TYPE, 0);
 	DCHECK_PARAM_PTR_RET("spread", spread, 0);
 
-	initial = *fill_size / 
+	initial = *fill_size /
 		ewl_container_child_count_visible_get(EWL_CONTAINER(b));
 
 	/*
@@ -792,7 +792,7 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 }
 
 static void
-ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c, 
+ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c,
 			int *x, int *y, int *align, int *align_size)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -890,7 +890,7 @@ ewl_box_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
  * @brief Update the container when a widget is shown in homegeneous mode
  */
 void
-ewl_box_cb_child_homogeneous_show(Ewl_Container *c, 
+ewl_box_cb_child_homogeneous_show(Ewl_Container *c,
 					Ewl_Widget *w __UNUSED__)
 {
 	int numc;
@@ -967,10 +967,10 @@ ewl_box_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
  * @param size: The size of the widget
  * @param o: The orientation of the widget
  * @return Returns no value
- * @brief The container resize callback used by the box 
+ * @brief The container resize callback used by the box
  */
 void
-ewl_box_cb_child_homogeneous_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
+ewl_box_cb_child_homogeneous_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 			int size __UNUSED__, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -999,10 +999,10 @@ ewl_box_cb_child_homogeneous_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
  * @param size: The size of the widget
  * @param o: The orientation of the widget
  * @return Returns no value
- * @brief The container resize callback used by the box 
+ * @brief The container resize callback used by the box
  */
 void
-ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__, 
+ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 			int size, Ewl_Orientation o)
 {
 	int align_size, fill_size;

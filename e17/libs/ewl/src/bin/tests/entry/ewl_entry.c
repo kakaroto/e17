@@ -53,7 +53,7 @@ static Ewl_Widget *entry[3];
 
 static int create_test(Ewl_Container *box);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Entry";
@@ -65,7 +65,7 @@ test_info(Ewl_Test *test)
 }
 
 static void
-fetch_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
+fetch_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	char *s;
@@ -90,7 +90,7 @@ fetch_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 }
 
 static void
-set_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
+set_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	ewl_text_color_set(EWL_TEXT(entry[0]), 0, 0, 0, 255);

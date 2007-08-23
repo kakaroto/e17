@@ -57,7 +57,7 @@ ewl_cursor_init(Ewl_Cursor *cursor)
 
 	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
 				ewl_cursor_cb_render, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, 
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
 				ewl_cursor_cb_destroy, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_UNSTABLE);
@@ -103,7 +103,7 @@ ewl_cursor_cb_render(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 }
 
 static void
-ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, 
+ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Cursor *cursor = EWL_CURSOR(w);

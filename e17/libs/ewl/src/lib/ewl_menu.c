@@ -66,13 +66,13 @@ ewl_menu_init(Ewl_Menu *menu)
 	 */
 	menu->popup = ewl_context_menu_new();
 	ewl_popup_follow_set(EWL_POPUP(menu->popup), EWL_WIDGET(menu));
-	ewl_popup_type_set(EWL_POPUP(menu->popup), 
-					EWL_POPUP_TYPE_MENU_VERTICAL);	
+	ewl_popup_type_set(EWL_POPUP(menu->popup),
+					EWL_POPUP_TYPE_MENU_VERTICAL);
 	ewl_widget_internal_set(menu->popup, TRUE);
 	ewl_widget_appearance_set(EWL_WIDGET(menu->popup), EWL_MENU_TYPE);
 
 	/* redirect the menu container to the popup menu */
-	ewl_container_redirect_set(EWL_CONTAINER(menu), 
+	ewl_container_redirect_set(EWL_CONTAINER(menu),
 					EWL_CONTAINER(menu->popup));
 	ewl_callback_prepend(menu->popup, EWL_CALLBACK_DESTROY,
 				ewl_menu_cb_popup_destroy, menu);
@@ -152,14 +152,14 @@ ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	menu = EWL_MENU(w);
 	parent = EWL_BOX(menu->menubar_parent);
-	
-	if ((parent && (ewl_box_orientation_get(parent) 
+
+	if ((parent && (ewl_box_orientation_get(parent)
 				== EWL_ORIENTATION_VERTICAL))
 			|| EWL_MENU_ITEM(menu)->inmenu)
-		ewl_popup_type_set(EWL_POPUP(menu->popup), 
+		ewl_popup_type_set(EWL_POPUP(menu->popup),
 					EWL_POPUP_TYPE_MENU_HORIZONTAL);
-	else 
-		ewl_popup_type_set(EWL_POPUP(menu->popup), 
+	else
+		ewl_popup_type_set(EWL_POPUP(menu->popup),
 					EWL_POPUP_TYPE_MENU_VERTICAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -175,14 +175,14 @@ ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__) 
+					void *user_data __UNUSED__)
 {
 	Ewl_Menu *menu;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_MENU_TYPE);
-	
+
 	menu = EWL_MENU(w);
 	if (menu->menubar_parent) {
 		Ewl_Menu *sub, *hide_menu = NULL;
@@ -191,9 +191,9 @@ ewl_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 		bar = EWL_CONTAINER(menu->menubar_parent);
 		ewl_container_child_iterate_begin(bar);
 		while ((sub = EWL_MENU(ewl_container_child_next(bar)))) {
-			if ((sub != EWL_MENU(w)) 
+			if ((sub != EWL_MENU(w))
 					&& EWL_MENU_IS(sub)
-					&& (sub->popup) 
+					&& (sub->popup)
 					&& VISIBLE(sub->popup)) {
 				hide_menu = sub;
 				break;
@@ -230,7 +230,7 @@ ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	menu = EWL_MENU(w);
 	item = EWL_MENU_ITEM(w);
-	
+
 	ewl_widget_show(menu->popup);
 	ewl_window_raise(EWL_WINDOW(menu->popup));
 
@@ -294,7 +294,7 @@ ewl_menu_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	menu = EWL_MENU(w);
 	if (menu->popup) {
 		ewl_callback_del(menu->popup, EWL_CALLBACK_DESTROY,
-						ewl_menu_cb_popup_destroy);	
+						ewl_menu_cb_popup_destroy);
 		ewl_widget_destroy(menu->popup);
 		menu->popup = NULL;
 	}
@@ -302,7 +302,7 @@ ewl_menu_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-int 
+int
 ewl_menu_mouse_feed(Ewl_Menu *menu, int x, int y)
 {
 	int emb_x = 0, emb_y = 0, emb_w = 0, emb_h = 0;
@@ -316,7 +316,7 @@ ewl_menu_mouse_feed(Ewl_Menu *menu, int x, int y)
 	x -= emb_x;
 	y -= emb_y;
 
-	if ((x > 0) && (y > 0) && (x <= emb_w) && (y <= emb_h)) 
+	if ((x > 0) && (y > 0) && (x <= emb_w) && (y <= emb_h))
 	{
 		ewl_embed_mouse_move_feed(EWL_EMBED(menu->popup), x, y, 0);
 		DRETURN_INT(TRUE, DLEVEL_STABLE);

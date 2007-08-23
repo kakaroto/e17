@@ -85,10 +85,10 @@ ewl_toolbar_init(Ewl_Toolbar *t)
 
 	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HFILL |
 						  EWL_FLAG_FILL_SHRINK);
-	ewl_object_alignment_set(EWL_OBJECT(t), EWL_FLAG_ALIGN_LEFT | 
+	ewl_object_alignment_set(EWL_OBJECT(t), EWL_FLAG_ALIGN_LEFT |
 							EWL_FLAG_ALIGN_TOP);
-	
-	ewl_container_add_notify_set(EWL_CONTAINER(EWL_MENUBAR(t)->inner_box), 
+
+	ewl_container_add_notify_set(EWL_CONTAINER(EWL_MENUBAR(t)->inner_box),
 					ewl_toolbar_cb_child_add);
 	t->hidden = EWL_ICON_PART_NONE;
 
@@ -107,7 +107,7 @@ ewl_toolbar_orientation_set(Ewl_Toolbar *t, Ewl_Orientation o)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_TYPE("t", t, EWL_TOOLBAR_TYPE);
-	
+
 	ewl_menubar_orientation_set(EWL_MENUBAR(t), o);
 	if (o == EWL_ORIENTATION_HORIZONTAL)
 		ewl_widget_appearance_set(EWL_WIDGET(t), "htoolbar");
@@ -151,7 +151,7 @@ ewl_toolbar_icon_part_hide(Ewl_Toolbar *t, Ewl_Icon_Part part)
 
 	if (t->hidden == part)
 		DRETURN(DLEVEL_STABLE);
-	
+
 	t->hidden = part;
 
 	ewl_container_child_iterate_begin(EWL_CONTAINER(t));
@@ -184,7 +184,7 @@ ewl_toolbar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	ewl_menubar_cb_child_add(c, w);
 	t = EWL_TOOLBAR(EWL_WIDGET(c)->parent);
 
-	if (EWL_ICON_IS(w)) 
+	if (EWL_ICON_IS(w))
 		ewl_icon_part_hide(EWL_ICON(w), t->hidden);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

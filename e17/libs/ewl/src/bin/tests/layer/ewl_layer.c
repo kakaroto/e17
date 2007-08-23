@@ -12,7 +12,7 @@ static void spectrum_hide(Ewl_Widget *w, void *ev_data, void *user_data);
 static void layer_change(Ewl_Widget *w, void *ev_data, void *user_data);
 static void configure_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
-void 
+void
 test_info(Ewl_Test *test)
 {
 	test->name = "Layer";
@@ -31,7 +31,7 @@ create_test(Ewl_Container *box)
 {
 	Ewl_Widget *w, *c, *spec;
 	int i;
-	
+
 	/*
 	 * Create the overlay container
 	 */
@@ -39,7 +39,7 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(box), c);
 	ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_FILL);
 	ewl_widget_show(c);
-	
+
 	/*
 	 * Create the spectrum
 	 */
@@ -47,7 +47,7 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(c), w);
 	ewl_widget_layer_priority_set(w, 0);
 	spec = w;
-    
+
 	/*
 	 * And now create the first row of buttons
 	 */
@@ -63,7 +63,7 @@ create_test(Ewl_Container *box)
 
 		button_row1[i] = w;
 	}
-	
+
 	/*
 	 * Create the second row
 	 */
@@ -104,14 +104,14 @@ create_test(Ewl_Container *box)
 	ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED);
 	ewl_widget_show(w);
 	dbutton[1] = w;
-	
+
 	ewl_callback_append(c, EWL_CALLBACK_CONFIGURE, configure_cb, NULL);
-	
+
 	return 1;
 }
 
 static void
-spectrum_show(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
+spectrum_show(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 		void *user_data)
 {
 	Ewl_Widget *spec;
@@ -121,8 +121,8 @@ spectrum_show(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	return;
 }
 
-static void 
-spectrum_hide(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__, 
+static void
+spectrum_hide(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 		void *user_data)
 {
 	Ewl_Widget *spec;
@@ -132,8 +132,8 @@ spectrum_hide(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	return;
 }
 
-static void 
-layer_change(Ewl_Widget *w, void *ev_data __UNUSED__, 
+static void
+layer_change(Ewl_Widget *w, void *ev_data __UNUSED__,
 		void *user_data __UNUSED__)
 {
 	if (ewl_widget_layer_priority_get(w) == 3)
@@ -142,8 +142,8 @@ layer_change(Ewl_Widget *w, void *ev_data __UNUSED__,
 		ewl_widget_layer_priority_set(w, 3);
 }
 
-static void 
-configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__, 
+static void
+configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		void *user_data __UNUSED__)
 {
 	int x, y;

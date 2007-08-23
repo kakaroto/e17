@@ -6,7 +6,7 @@
 
 /**
  * @addtogroup Ewl_Datepicker Ewl_Datepicker: The EWL Datepicker widget
- * @brief Defines the Ewl_Datepicker class,  
+ * @brief Defines the Ewl_Datepicker class,
  *
  * @remarks Inherits from Ewl_Text.
  * @image html Ewl_Datepicker_inheritance.png
@@ -14,7 +14,7 @@
  * @{
  */
 
-/** 
+/**
  * @themekey /datepicker/file
  * @themekey /datepicker/group
  */
@@ -42,7 +42,7 @@ typedef struct Ewl_Datepicker Ewl_Datepicker;
  */
 #define EWL_DATEPICKER(datepicker) ((Ewl_Datepicker *) datepicker)
 
-/** 
+/**
  * @brief Inherits from Ewl_Text and extends to provide a date picker
  */
 struct Ewl_Datepicker
@@ -62,7 +62,7 @@ int		 ewl_datepicker_init(Ewl_Datepicker* datepicker);
  */
 void ewl_datepicker_cb_destroy(Ewl_Widget *w, void *ev, void *user_data);
 void ewl_datepicker_cb_value_changed(Ewl_Widget *w, void *ev, void *user_data);
-void ewl_datepicker_cb_window_mouse_down(Ewl_Widget *w, void *ev, 
+void ewl_datepicker_cb_window_mouse_down(Ewl_Widget *w, void *ev,
 							void *user_data);
 
 /**

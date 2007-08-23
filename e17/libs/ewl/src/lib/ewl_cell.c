@@ -70,7 +70,7 @@ ewl_cell_init(Ewl_Cell *cell)
  * @brief The configure callback for the cell widget
  */
 void
-ewl_cell_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__, 
+ewl_cell_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Container *c;
@@ -135,7 +135,7 @@ ewl_cell_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
  * @brief Callback for when a child widget is resized within the container
  */
 void
-ewl_cell_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, 
+ewl_cell_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 			int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

@@ -193,7 +193,7 @@ border_change_alignment(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
-border_change_position(Ewl_Widget *w, void *ev __UNUSED__, 
+border_change_position(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	if (!ewl_radiobutton_is_checked(w))
