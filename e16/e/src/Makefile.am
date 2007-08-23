@@ -89,7 +89,8 @@ e16_SOURCES = \
 	size.c			\
 	slideout.c		\
 	snaps.c                 snaps.h			\
-	sound.c			\
+	sound.c			sound.h			\
+	sound_esd.c		\
 	stacking.c		\
 	startup.c		\
 	systray.c		\

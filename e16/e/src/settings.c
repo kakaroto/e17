@@ -647,7 +647,9 @@ static const DialogDef *dialogs[] = {
    &DlgMenus,
    &DlgAutoraise,
    &DlgTooltips,
+#if HAVE_SOUND
    &DlgSound,
+#endif
    &DlgGroupDefaults,
    &DlgRemember,
    &DlgFx,

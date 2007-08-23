@@ -109,6 +109,9 @@ if test "x$enable_sound" = "xyes"; then
     AC_MSG_WARN([Sound support was requested but not found.])
   ])
 fi
+if test "x$enable_sound" = "xyes"; then
+  AC_DEFINE(HAVE_SOUND, 1, [Sound support])
+fi
 
 CPPFLAGS="$X_CFLAGS $CPPFLAGS"
 LDFLAGS="$X_LIBS $LDFLAGS -L$prefix/lib"

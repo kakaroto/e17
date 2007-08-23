@@ -32,6 +32,7 @@
 #include "alert.h"
 #include "edebug.h"
 #include "lang.h"
+#include "sound.h"
 #include "util.h"
 
 #define USE_EXT_INIT_WIN 1
@@ -645,9 +646,6 @@ void                SetupX(const char *dstr);
 
 /* slideouts.c */
 int                 SlideoutsConfigLoad(FILE * fs);
-
-/* sound.c */
-void                SoundPlay(const char *name);
 
 /* startup.c */
 void                StartupWindowsCreate(void);

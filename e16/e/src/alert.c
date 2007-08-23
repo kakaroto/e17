@@ -30,10 +30,8 @@
 #include "alert.h"
 #include "lang.h"
 #include "session.h"
+#include "sound.h"
 #include "util.h"
-
-/* Should be elsewhere */
-void                SoundPlay(const char *name);
 
 #define ExTextExtents XmbTextExtents
 #define ExDrawString XmbDrawString

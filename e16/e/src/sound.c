@@ -22,40 +22,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#if HAVE_SOUND
 #include "dialog.h"
 #include "e16-ecore_list.h"
 #include "emodule.h"
 #include "settings.h"
-
-#ifdef HAVE_LIBESD
-#include <esd.h>
-#include <audiofile.h>
-
-#ifdef WORDS_BIGENDIAN
-#define SWAP_SHORT( x ) x = ( ( x & 0x00ff ) << 8 ) | ( ( x >> 8 ) & 0x00ff )
-#define SWAP_LONG( x ) x = ( ( ( x & 0x000000ff ) << 24 ) |\
-      ( ( x & 0x0000ff00 ) << 8 ) |\
-      ( ( x & 0x00ff0000 ) >> 8 ) |\
-      ( ( x & 0xff000000 ) >> 24 ) )
-#endif
-#endif
-
-typedef struct
-{
-   char               *file;
-   int                 rate;
-   int                 format;
-   int                 samples;
-   unsigned char      *data;
-   int                 id;
-} Sample;
+#include "sound.h"
 
 typedef struct
 {
    char               *name;
    char               *file;
    Sample             *sample;
-   unsigned int        ref_count;
 } SoundClass;
 
 static struct
@@ -64,132 +42,10 @@ static struct
    char               *theme;
 } Conf_sound;
 
-static int          sound_fd = -1;
-
 static Ecore_List  *sound_list = NULL;
 
-#ifdef HAVE_LIBESD
-static Sample      *
-LoadWav(const char *file)
-{
-   AFfilehandle        in_file;
-   char               *find = NULL;
-   Sample             *s;
-   int                 in_format, in_width, in_channels, frame_count;
-   int                 bytes_per_frame, frames_read;
-   double              in_rate;
-
-   find = FindFile(file, Mode.theme.path, 0);
-   if (!find)
-     {
-	DialogOK(_("Error finding sound file"),
-		 _("Warning!  Enlightenment was unable to load the\n"
-		   "following sound file:\n%s\n"
-		   "Enlightenment will continue to operate, but you\n"
-		   "may wish to check your configuration settings.\n"), file);
-	return NULL;
-     }
-
-   in_file = afOpenFile(find, "r", NULL);
-   if (!in_file)
-     {
-	Efree(find);
-	return NULL;
-     }
-
-   s = EMALLOC(Sample, 1);
-   if (!s)
-     {
-	Efree(find);
-	afCloseFile(in_file);
-	return NULL;
-     }
-
-   frame_count = afGetFrameCount(in_file, AF_DEFAULT_TRACK);
-   in_channels = afGetChannels(in_file, AF_DEFAULT_TRACK);
-   in_rate = afGetRate(in_file, AF_DEFAULT_TRACK);
-   afGetSampleFormat(in_file, AF_DEFAULT_TRACK, &in_format, &in_width);
-#ifdef WORDS_BIGENDIAN
-   afSetVirtualByteOrder(in_file, AF_DEFAULT_TRACK, AF_BYTEORDER_BIGENDIAN);
-#else
-   afSetVirtualByteOrder(in_file, AF_DEFAULT_TRACK, AF_BYTEORDER_LITTLEENDIAN);
-#endif
-   s->file = Estrdup(find);
-   s->rate = 44100;
-   s->format = ESD_STREAM | ESD_PLAY;
-   s->samples = 0;
-   s->data = NULL;
-   s->id = 0;
-
-   if (in_width == 8)
-      s->format |= ESD_BITS8;
-   else if (in_width == 16)
-      s->format |= ESD_BITS16;
-   bytes_per_frame = (in_width * in_channels) / 8;
-   if (in_channels == 1)
-      s->format |= ESD_MONO;
-   else if (in_channels == 2)
-      s->format |= ESD_STEREO;
-   s->rate = (int)in_rate;
-
-   s->samples = frame_count * bytes_per_frame;
-   s->data = EMALLOC(unsigned char, frame_count * bytes_per_frame);
-
-   frames_read = afReadFrames(in_file, AF_DEFAULT_TRACK, s->data, frame_count);
-   afCloseFile(in_file);
-   Efree(find);
-
-   return s;
-}
-
-static void
-SamplePlay(Sample * s)
-{
-   int                 size, confirm = 0;
-
-   if ((sound_fd < 0) || (!Conf_sound.enable) || (!s))
-      return;
-
-   if (!s->id && s->data)
-     {
-	size = s->samples;
-	s->id = esd_sample_getid(sound_fd, s->file);
-	if (s->id < 0)
-	  {
-	     s->id =
-		esd_sample_cache(sound_fd, s->format, s->rate, size, s->file);
-	     write(sound_fd, s->data, size);
-	     confirm = esd_confirm_sample_cache(sound_fd);
-	     if (confirm != s->id)
-		s->id = 0;
-	  }
-	Efree(s->data);
-	s->data = NULL;
-     }
-   if (s->id > 0)
-      esd_sample_play(sound_fd, s->id);
-}
-#endif /* HAVE_LIBESD */
-
-static void
-SampleDestroy(Sample * s)
-{
-#ifdef HAVE_LIBESD
-   if ((s->id) && (sound_fd >= 0))
-     {
-/*      Why the hell is this symbol not in esd? */
-/*      it's in esd.h - evil evil evil */
-/*      esd_sample_kill(sound_fd,s->id); */
-	esd_sample_free(sound_fd, s->id);
-     }
-#endif
-   if (s->data)
-      Efree(s->data);
-   if (s->file)
-      Efree(s->file);
-   if (s)
-      Efree(s);
-}
+extern const SoundOps SoundOps_esd;
+static const SoundOps *ops = &SoundOps_esd;
 
 static void
 _SclassSampleDestroy(void *data, void *user_data __UNUSED__)
@@ -199,7 +55,8 @@ _SclassSampleDestroy(void *data, void *user_data __UNUSED__)
    if (!sclass || !sclass->sample)
       return;
 
-   SampleDestroy(sclass->sample);
+   if (ops && ops->SampleDestroy)
+      ops->SampleDestroy(sclass->sample);
    sclass->sample = NULL;
 }
 
@@ -228,13 +85,13 @@ SclassDestroy(SoundClass * sclass)
 {
    if (!sclass)
       return;
+
    ecore_list_node_remove(sound_list, sclass);
+   _SclassSampleDestroy(sclass, NULL);
    if (sclass->name)
       Efree(sclass->name);
    if (sclass->file)
       Efree(sclass->file);
-   if (sclass->sample)
-      SampleDestroy(sclass->sample);
    Efree(sclass);
 }
 
@@ -243,14 +100,32 @@ SclassApply(SoundClass * sclass)
 {
    if (!sclass || !Conf_sound.enable)
       return;
-#ifdef HAVE_LIBESD
-   if (!sclass->sample)
-      sclass->sample = LoadWav(sclass->file);
-   if (sclass->sample)
-      SamplePlay(sclass->sample);
+
+   if (!sclass->sample && ops && ops->SampleLoad)
+     {
+	char               *file;
+
+	file = FindFile(sclass->file, Mode.theme.path, 0);
+	if (file)
+	  {
+	     sclass->sample = ops->SampleLoad(file);
+	     Efree(file);
+	  }
+	else
+	  {
+	     DialogOK(_("Error finding sound file"),
+		      _("Warning!  Enlightenment was unable to load the\n"
+			"following sound file:\n%s\n"
+			"Enlightenment will continue to operate, but you\n"
+			"may wish to check your configuration settings.\n"),
+		      file);
+	  }
+     }
+
+   if (sclass->sample && ops && ops->SamplePlay)
+      ops->SamplePlay(sclass->sample);
    else
       SclassDestroy(sclass);
-#endif
 }
 
 static int
@@ -294,21 +169,16 @@ SoundFree(const char *name)
 static void
 SoundInit(void)
 {
-#ifdef HAVE_LIBESD
-   int                 fd;
-#endif
+   int                 err;
 
-#ifdef HAVE_LIBESD
    if (!Conf_sound.enable)
       return;
 
-   if (sound_fd != -1)
-      return;
+   err = -1;
+   if (ops && ops->Init)
+      err = ops->Init();
 
-   fd = esd_open_sound(NULL);
-   if (fd >= 0)
-      sound_fd = fd;
-   else
+   if (err)
      {
 	AlertX(_("Error initialising sound"), _("OK"), NULL, NULL,
 	       _("Audio was enabled for Enlightenment but there was an error\n"
@@ -316,21 +186,17 @@ SoundInit(void)
 		 "now be disabled.\n"));
 	Conf_sound.enable = 0;
      }
-#else
-   Conf_sound.enable = 0;
-#endif
 }
 
 static void
 SoundExit(void)
 {
-   if (sound_fd < 0)
-      return;
-
    ecore_list_for_each(sound_list, _SclassSampleDestroy, NULL);
 
-   close(sound_fd);
-   sound_fd = -1;
+   if (ops && ops->Exit)
+      ops->Exit();
+
+   Conf_sound.enable = 0;
 }
 
 /*
@@ -490,7 +356,6 @@ SoundIpc(const char *params)
      }
    else if (!strncmp(cmd, "off", 2))
      {
-	Conf_sound.enable = 0;
 	SoundExit();
      }
    else if (!strncmp(cmd, "on", 2))
@@ -534,3 +399,5 @@ const EModule       ModSound = {
    {N_IPC_FUNCS, SoundIpcArray},
    {N_CFG_ITEMS, SoundCfgItems}
 };
+
+#endif /* HAVE_SOUND */

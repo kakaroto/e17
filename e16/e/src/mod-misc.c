@@ -56,7 +56,10 @@ extern const EModule ModMenus;
 extern const EModule ModMisc;
 extern const EModule ModPagers;
 extern const EModule ModSlideouts;
+
+#if HAVE_SOUND
 extern const EModule ModSound;
+#endif
 extern const EModule ModTextclass;
 extern const EModule ModTheme;
 extern const EModule ModTooltips;
@@ -91,7 +94,9 @@ const EModule      *p_modules[] = {
    &ModMisc,
    &ModPagers,
    &ModSlideouts,
+#if HAVE_SOUND
    &ModSound,
+#endif
    &ModTextclass,
    &ModTheme,
    &ModTooltips,
