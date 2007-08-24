@@ -132,6 +132,20 @@ int evfs_metadata_db_upgrade_3_4(sqlite3* db)
 	return evfs_metadata_db_version_bump(db, "4");
 }
 
+int evfs_metadata_db_upgrade_4_5(sqlite3* db)
+{
+	int ret;
+	char* errMsg = 0;
+
+	printf("Performing upgrade from v.4 to v.5\n");
+
+	ret = sqlite3_exec(db, 
+	"create table FileTag (id integer primary key AUTOINCREMENT, File int, tag varchar(255));", 
+	NULL, 0,&errMsg);
+
+	return evfs_metadata_db_version_bump(db, "5");
+}
+
 int evfs_metadata_db_version_bump(sqlite3* db, char* ver)
 {
 	int ret;
@@ -161,6 +175,7 @@ void evfs_metadata_db_init(sqlite3** db)
 	ecore_hash_set(db_upgrade_hash, (int*)1, evfs_metadata_db_upgrade_1_2);
 	ecore_hash_set(db_upgrade_hash, (int*)2, evfs_metadata_db_upgrade_2_3);
 	ecore_hash_set(db_upgrade_hash, (int*)3, evfs_metadata_db_upgrade_3_4);
+	ecore_hash_set(db_upgrade_hash, (int*)4, evfs_metadata_db_upgrade_4_5);
 	
 	/*Check if we need to seed the DB*/
 	if (stat(metadata_db, &config_dir_stat)) {

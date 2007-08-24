@@ -350,6 +350,28 @@ evfs_client_metadata_string_file_get(evfs_connection * conn, EvfsFilereference* 
 
 }
 
+long
+evfs_client_file_tag_add(evfs_connection * conn, EvfsFilereference* file, char* key )
+{
+   evfs_command *command = evfs_client_command_new();
+   long id = command->client_identifier;
+
+   command->type = EVFS_CMD_FILE_TAG_ADD;
+
+   command->file_command->files = evas_list_append( command->file_command->files, file);
+   command->file_command->ref = key;
+
+
+   evfs_write_command(conn, command);
+
+   evas_list_free(command->file_command->files);
+   free(command);
+
+
+   return id;
+
+}
+
 long 
 evfs_client_metadata_groups_get(evfs_connection * conn)
 {

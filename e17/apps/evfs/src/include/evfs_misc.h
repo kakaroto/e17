@@ -32,9 +32,11 @@ struct evfs_file_monitor
    Ecore_File_Monitor *em;
 };
 
+typedef struct {
+} EvfsVfolderEntry;
+
 Ecore_List *evfs_file_list_sort(Ecore_List * file_list);
 
-void evfs_cleanup_client(evfs_client * client);
 void evfs_disconnect(evfs_connection * connection);
 evfs_connection *evfs_connect(void (*callback_func) (EvfsEvent *, void *),
                               void *obj);

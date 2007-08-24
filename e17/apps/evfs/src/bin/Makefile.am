@@ -10,7 +10,6 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src/include @EET_CFLAGS@ @EVAS_CFLAGS
 
 evfs_SOURCES = \
 	evfs_main.c \
-	evfs_cleanup.c \
 	$(top_srcdir)/src/common/evfs_new.c \
 	$(top_srcdir)/src/common/evfs_io.c \
 	$(top_srcdir)/src/common/evfs_event_helper.c \
@@ -27,7 +26,6 @@ evfs_SOURCES = \
 
 evfsworker_SOURCES = \
 	evfs_worker.c \
-        evfs_cleanup.c \
         $(top_srcdir)/src/common/evfs_new.c \
         $(top_srcdir)/src/common/evfs_io.c \
         $(top_srcdir)/src/common/evfs_event_helper.c \

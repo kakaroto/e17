@@ -215,3 +215,8 @@ evfs_cleanup_event(EvfsEvent* event)
    free(event);
 
 }
+
+void evfs_cleanup_client(evfs_client* client)
+{
+	free(client);
+}
