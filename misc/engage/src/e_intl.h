@@ -3,6 +3,8 @@
  */
 #ifdef E_TYPEDEFS
 
+#if 0 /* This is wrong. etk_utils.h should not define _ */
+
 #define _(str) gettext(str)
 #define d_(str, dom) dgettext(PACKAGE dom, str)
 
@@ -10,9 +12,12 @@
  * for string lists which are not dynamically allocated 
  */
 #define N_(str) (str)
+#endif
 
+#if 0 /* Not used */
 typedef struct _E_Input_Method_Config E_Input_Method_Config;
 typedef struct _E_Language_Pack E_Language_Pack;
+#endif
 
 #else
 #ifndef E_INTL_H

@@ -27,7 +27,9 @@ struct _E_Util_Fake_Mouse_Up_Info
 };
 */
 /* local subsystem functions */
+#if 0
 static void _e_util_container_fake_mouse_up_cb(void *data);
+#endif
 static int _e_util_wakeup_cb(void *data);
 
 /* local subsystem globals */

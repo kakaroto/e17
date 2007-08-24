@@ -21,9 +21,13 @@ static char *_e_intl_language_alias = NULL;
 static char *_e_intl_orig_xmodifiers = NULL;
 static char *_e_intl_orig_qt_im_module = NULL; 
 static char *_e_intl_orig_gtk_im_module = NULL;
+#if 0
 static char *_e_intl_input_method = NULL;
+#endif
 
+#if 0
 static Eet_Data_Descriptor *_e_intl_input_method_config_edd = NULL;
+#endif
 static int loc_mask;
 
 #define E_EXE_STOP(EXE) if (EXE != NULL) { ecore_exe_terminate(EXE); ecore_exe_free(EXE); EXE = NULL; }
@@ -53,9 +57,11 @@ static Evas_Bool 	 _e_intl_locale_hash_free_cb(Evas_Hash *hash, const char *key,
 
 /* Input Method Configuration and Management */
 static int 		 _e_intl_cb_exit(void *data, int type, void *event);
-/*static Evas_List 	*_e_intl_imc_path_scan(E_Path *path);
-static Evas_List 	*_e_intl_imc_dir_scan(const char *dir);*/
+#if 0
+static Evas_List 	*_e_intl_imc_path_scan(E_Path *path);
+static Evas_List 	*_e_intl_imc_dir_scan(const char *dir);
 static E_Input_Method_Config *_e_intl_imc_find(Evas_List *imc_list, char *name);
+#endif
 
 
 EAPI int
@@ -947,7 +953,8 @@ _e_intl_locale_search_order_get(char *locale)
        } 
    return search_list;
 }
-/*
+
+#if 0
 static Evas_List *
 _e_intl_imc_path_scan(E_Path *path)
 {
@@ -1030,7 +1037,7 @@ _e_intl_imc_dir_scan(const char *dir)
      }
    return imcs;
 }
-*/
+
 static E_Input_Method_Config *
 _e_intl_imc_find(Evas_List *imc_list, char *name)
 {
@@ -1049,3 +1056,4 @@ _e_intl_imc_find(Evas_List *imc_list, char *name)
    
    return NULL;
 }
+#endif

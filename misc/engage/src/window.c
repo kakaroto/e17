@@ -28,8 +28,10 @@ static void     handle_post_render_cb(Ecore_Evas * _ee);
 static void     handle_mouse_in(Ecore_Evas * _ee);
 static void     handle_mouse_out(Ecore_Evas * _ee);
 static void     handle_focus_out(Ecore_Evas * _ee);
+#if 0
 static void     handle_mouse_down(void *data, Evas * e, Evas_Object * obj,
                                   void *event);
+#endif
 static void     handle_mouse_move(void *data, Evas * e, Evas_Object * obj,
                                   void *event);
 static void     handle_menu_draw(void *data, Evas * e, Evas_Object * obj,
@@ -154,10 +156,8 @@ od_window_move()
 
   ecore_evas_geometry_get(ee, &x, &y, &w, &h);
 
-#ifdef HAVE_TRANS_BG
   if ((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
     esmart_trans_x11_freshen(o, x, y, w, h);
-#endif
 }
 
 void
@@ -168,12 +168,11 @@ od_window_resize()
 
   ecore_evas_geometry_get(ee, &x, &y, &w, &h);
 
-#ifdef HAVE_TRANS_BG
   if ((o = evas_object_name_find(ecore_evas_get(ee), "trans"))) {
     evas_object_resize(o, w, h);
     esmart_trans_x11_freshen(o, x, y, w, h);
   }
-#endif
+
   options.width = w;
   options.height = h;
   ecore_config_int_set("engage.options.width", w);
@@ -254,13 +253,9 @@ od_window_init()
 
 #ifdef ShapeInput  
   if(options.use_composite)
-  { 
-  	ecore_evas_override_set(ee, 1);
     ecore_evas_alpha_set(ee, 1);
-  }
-  else
 #endif 
-    ecore_evas_borderless_set(ee, 1);  
+  ecore_evas_borderless_set(ee, 1);  
   
   if(options.use_composite)
   {
@@ -363,7 +358,6 @@ od_window_init()
   ecore_evas_callback_resize_set(ee, od_window_resize);
 
   if (options.mode == OM_BELOW && !options.use_composite) {
-#ifdef HAVE_TRANS_BG
     o = esmart_trans_x11_new(evas);
     evas_object_layer_set(o, 0);
     evas_object_move(o, 0, 0);
@@ -374,15 +368,6 @@ od_window_init()
                              (int) (res_y - options.height),
                              options.width, options.height);
     evas_object_show(o);
-#else
-    o = evas_object_rectangle_add(evas);
-    evas_object_color_set(o, 0, 0, 0, 255);
-    evas_object_layer_set(o, 0);
-    evas_object_move(o, 0, 0);
-    evas_object_resize(o, options.width, options.height);
-    evas_object_name_set(o, "trans");
-    evas_object_show(o);
-#endif
   }
 
   od_dock_redraw(ee);
@@ -392,6 +377,7 @@ od_window_init()
     od_window_hide();
 }
 
+#if 0
 static void
 handle_mouse_down(void *data, Evas * e, Evas_Object * obj, void *event)
 {
@@ -445,6 +431,7 @@ handle_mouse_down(void *data, Evas * e, Evas_Object * obj, void *event)
     }
   }
 }
+#endif
 
 static void
 handle_mouse_move(void *data, Evas * e, Evas_Object * obj, void *event)

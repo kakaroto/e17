@@ -445,7 +445,7 @@ od_wm_ignored(Ecore_X_Window win)
 
   ecore_x_netwm_window_state_get(win, &state, &num);
   counter = 0;
-  for (tmp = state; counter < num; tmp++ && counter++)
+  for (tmp = state; counter < num; tmp++, counter++)
     if (*tmp == ECORE_X_WINDOW_STATE_SKIP_TASKBAR)
       result = true;
 
