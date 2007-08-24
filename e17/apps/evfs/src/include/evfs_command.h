@@ -56,6 +56,7 @@ typedef struct evfs_command
    evfs_command_type type;
    evfs_command_file* file_command;
    struct evfs_operation *op;
+   Evas_List* entries;
 
    int options;
    long client_identifier;

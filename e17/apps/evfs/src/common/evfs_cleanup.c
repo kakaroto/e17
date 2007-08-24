@@ -9,6 +9,9 @@ evfs_cleanup_command(evfs_command * command, int free_command)
      default:
         evfs_cleanup_file_command(command);
         break;
+     case EVFS_CMD_VFOLDER_CREATE:
+     	evfs_cleanup_vfolder_create(command);
+	break;
      }
 
    if (free_command == EVFS_CLEANUP_FREE_COMMAND)
@@ -37,6 +40,24 @@ evfs_cleanup_file_command(evfs_command * command)
 	   }
 	   evas_list_free(command->file_command->files); 
    }
+}
+
+void 
+evfs_cleanup_vfolder_create(evfs_command* command)
+{
+	Evas_List* l;
+	EvfsVfolderEntry *e;
+	if (command->entries) {
+		for (l=command->entries; l; ) {
+			e = l->data;
+			l=l->next;
+
+			IF_FREE(e->name);
+			IF_FREE(e->value);
+			free(e);
+		}
+		evas_list_free(command->entries);
+	}
 }
 
 void

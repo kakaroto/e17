@@ -466,4 +466,28 @@ evfs_client_mime_request(evfs_connection* conn, EvfsFilereference* ref)
 }
 
 
+evfs_command* evfs_vfolder_create_command_new(char* name)
+{
+   evfs_command *command = evfs_client_command_new();
+   long id = command->client_identifier;
 
+   command->type = EVFS_CMD_VFOLDER_CREATE;
+
+   return command;
+}
+
+void evfs_vfolder_command_entry_add(evfs_command* command, char type, char* name, char* value)
+{
+	EvfsVfolderEntry* entry = NEW(EvfsVfolderEntry);
+	entry->type = type;
+	if (name) entry->name = strdup(name);
+	if (value) entry->value = strdup(value);
+
+	command->entries = evas_list_append(command->entries, entry);
+}
+
+int evfs_vfolder_command_send(evfs_connection* conn, evfs_command* command)
+{
+	evfs_write_command(conn, command);
+	return command->client_identifier;
+}

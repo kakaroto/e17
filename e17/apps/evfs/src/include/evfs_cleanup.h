@@ -15,5 +15,6 @@ void evfs_cleanup_file_monitor(evfs_file_monitor * mon);
 void evfs_cleanup_event(EvfsEvent *);
 void evfs_cleanup_file_uri_path(evfs_file_uri_path * path);
 void evfs_cleanup_client(evfs_client * client);
+void evfs_cleanup_vfolder_create(evfs_command* command);
 
 #endif

@@ -50,4 +50,8 @@ evfs_client_auth_send(evfs_connection* conn, EvfsFilereference* ref, char* user,
 long
 evfs_client_mime_request(evfs_connection* conn, EvfsFilereference* ref);
 
+int evfs_vfolder_command_send(evfs_connection* conn, evfs_command* command);
+void evfs_vfolder_command_entry_add(evfs_command* command, char type, char* name, char* value);
+evfs_command* evfs_vfolder_create_command_new(char* name); 
+
 #endif

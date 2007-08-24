@@ -30,6 +30,7 @@ static Eet_Data_Descriptor *_EvfsEventOpen_edd;
 static Eet_Data_Descriptor *_EvfsEventFileMonitor_edd;
 static Eet_Data_Descriptor *_EvfsStat_edd;
 static Eet_Data_Descriptor *_EvfsEventMime_edd;
+static Eet_Data_Descriptor *_EvfsVfolderEntry_edd;
 
 #define _NEW_EDD(type) eet_data_descriptor_new(#type, sizeof(type), \
                               (void *(*)(void *))evas_list_next, \
@@ -156,6 +157,18 @@ evfs_io_initialise()
                                  "substatus", substatus, EET_T_INT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsOperation_edd, evfs_operation,
                                  "response", response, EET_T_INT);
+
+    /*EvfsVfolderEntry_edd*/
+    _EvfsVfolderEntry_edd = _NEW_EDD(EvfsVfolderEntry);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsVfolderEntry_edd, EvfsVfolderEntry, "type", type,
+                               EET_T_CHAR);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsVfolderEntry_edd, EvfsVfolderEntry, "name", name,
+                                   EET_T_STRING);
+    EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsVfolderEntry_edd, EvfsVfolderEntry, "value", value,
+                                   EET_T_STRING);
+
+				   
+
 
    /*Command edd*/
    _EvfsCommandFile_edd = _NEW_EDD(evfs_command_file);

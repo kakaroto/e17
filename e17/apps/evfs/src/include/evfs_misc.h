@@ -32,7 +32,12 @@ struct evfs_file_monitor
    Ecore_File_Monitor *em;
 };
 
+#define EVFS_VFOLDER_ENTRY_META 'M'
+#define EVFS_VFOLDER_ENTRY_TAG 'T'
 typedef struct {
+	char type; /*M = meta, T = tag*/
+	char* name;
+	char* value;
 } EvfsVfolderEntry;
 
 Ecore_List *evfs_file_list_sort(Ecore_List * file_list);
