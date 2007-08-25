@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <config.h>
 #include <string.h>
+#include <math.h>
 #ifdef WITH_DMALLOC
 # include <dmalloc.h>
 #endif
@@ -40,6 +41,8 @@ if ((x + w) > ((xx) + (ww))) {w = (ww) - (x - xx);} \
 if ((y + h) > ((yy) + (hh))) {h = (hh) - (y - yy);}
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
+#define round(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
 
 #ifdef __EMX__
 extern char *__XOS2RedirRoot(const char *);
