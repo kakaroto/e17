@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+SUBDIRS = images
+
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = \
 	-v \
@@ -14,7 +16,8 @@ EXTRA_DIST = esmart_text_entry_test.edc
 
 esmart_text_entry_test.edj: Makefile esmart_text_entry_test.edc
 	$(EDJE_CC) $(EDJE_FLAGS) \
-	$(top_srcdir)/data/esmart_text_entry_test.edc
+	$(top_srcdir)/data/esmart_text_entry_test.edc \
+	$(top_builddir)/data/esmart_text_entry_test.edj
 
 clean-local:
 	rm -f *.edj

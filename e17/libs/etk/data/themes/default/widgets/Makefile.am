@@ -8,6 +8,7 @@ EXTRA_DIST = button.edc \
 	slider.edc \
 	tree.edc \
 	combobox.edc \
+	combobox_entry.edc \
 	paned.edc \
 	spinner.edc \
 	windows.edc \

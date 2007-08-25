@@ -20,6 +20,7 @@ char *mimes[] =
    "image/tiff",
    "image/svg+xml",
    "image/xpm",
+   "image/x-xpixmap",
    NULL
 };
 
