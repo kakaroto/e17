@@ -1,7 +1,7 @@
 #include "loader_common.h"
 #include <png.h>
 
-/* this is a quick sample png loader module... nice and small isnt it? */
+/* this is a quick sample png loader module... nice and small isn't it? */
 
 /* PNG stuff */
 #define PNG_BYTES_TO_CHECK 4
@@ -18,14 +18,14 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 {
    png_uint_32         w32, h32;
    int                 w, h;
-   char                hasa = 0, hasg = 0;
+   char                hasa = 0;
    FILE               *f;
    png_structp         png_ptr = NULL;
    png_infop           info_ptr = NULL;
    int                 bit_depth, color_type, interlace_type;
 
-   /* if immediate_load is 1, then dont delay image laoding as below, or */
-   /* already data in this image - dont load it again */
+   /* if immediate_load is 1, then don't delay image loading as below, or */
+   /* already data in this image - don't load it again */
    if (im->data)
       return 0;
    f = fopen(im->real_file, "rb");
@@ -36,7 +36,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
      {
         unsigned char       buf[PNG_BYTES_TO_CHECK];
 
-        /* if we havent read the header before, set the header data */
+        /* if we haven't read the header before, set the header data */
         fread(buf, 1, PNG_BYTES_TO_CHECK, f);
         if (!png_check_sig(buf, PNG_BYTES_TO_CHECK))
           {
@@ -71,28 +71,19 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                      &interlace_type, NULL, NULL);
         im->w = (int)w32;
         im->h = (int)h32;
-	if ((w32 < 1) || (h32 < 1) || (w32 > 8192) || (h32 > 8192))
-	  {
+        if ((w32 < 1) || (h32 < 1) || (w32 > 8192) || (h32 > 8192))
+          {
              png_read_end(png_ptr, info_ptr);
              png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
              fclose(f);
              return 0;
-	  }
-        if (color_type == PNG_COLOR_TYPE_PALETTE)
-	  {
-	     png_set_expand(png_ptr);
-	     if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
-	       hasa = 1;
-	  }
-        if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-           hasa = 1;
-        if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-          {
-             hasa = 1;
-             hasg = 1;
           }
-        if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY)
-           hasg = 1;
+        if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+           hasa = 1;
+        if (color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+           hasa = 1;
+        if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+           hasa = 1;
         if (hasa)
            SET_FLAG(im->flags, F_HAS_ALPHA);
         else
@@ -112,27 +103,43 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
         w = im->w;
         h = im->h;
-        if (hasa)
-           png_set_expand(png_ptr);
-        /* we want ARGB */
-/* note form raster:                                                         */
+
+        /* Prep for transformations...  ultimately we want ARGB */
+        /* expand palette -> RGB if necessary */
+        if (color_type == PNG_COLOR_TYPE_PALETTE)
+           png_set_palette_to_rgb(png_ptr);
+        /* expand gray (w/reduced bits) -> 8-bit RGB if necessary */
+        if ((color_type == PNG_COLOR_TYPE_GRAY) ||
+           (color_type == PNG_COLOR_TYPE_GRAY_ALPHA))
+          {
+             png_set_gray_to_rgb(png_ptr);
+             if (bit_depth < 8)
+                png_set_expand_gray_1_2_4_to_8(png_ptr);
+          }
+        /* expand transparency entry -> alpha channel if present */
+        if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+           png_set_tRNS_to_alpha(png_ptr);
+        /* reduce 16bit color -> 8bit color if necessary */
+        if (bit_depth > 8)
+           png_set_strip_16(png_ptr);
+        /* pack all pixels to byte boundaries */
+        png_set_packing(png_ptr);
+
+/* note from raster:                                                         */
 /* thanks to mustapha for helping debug this on PPC Linux remotely by        */
-/* sending across screenshots all the tiem and me figuring out form them     */
+/* sending across screenshots all the time and me figuring out from them     */
 /* what the hell was up with the colors                                      */
-/* now png loading shoudl work on big endian machines nicely                 */
+/* now png loading should work on big-endian machines nicely                 */
 #ifdef WORDS_BIGENDIAN
         png_set_swap_alpha(png_ptr);
-        png_set_filler(png_ptr, 0xff, PNG_FILLER_BEFORE);
+        if (!hasa)
+           png_set_filler(png_ptr, 0xff, PNG_FILLER_BEFORE);
 #else
         png_set_bgr(png_ptr);
-        png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
+        if (!hasa)
+           png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
 #endif
-        /* 16bit color -> 8bit color */
-        png_set_strip_16(png_ptr);
-        /* pack all pixels to byte boundaires */
-        png_set_packing(png_ptr);
-        if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
-           png_set_expand(png_ptr);
+
         if (im->data)
            free(im->data);
         im->data = malloc(w * h * sizeof(DATA32));
@@ -153,12 +160,6 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
              fclose(f);
              return 0;
-          }
-        if (hasg)
-          {
-             png_set_gray_to_rgb(png_ptr);
-             if (png_get_bit_depth(png_ptr, info_ptr) < 8)
-                png_set_gray_1_2_4_to_8(png_ptr);
           }
         for (i = 0; i < h; i++)
            lines[i] = ((unsigned char *)(im->data)) + (i * w * sizeof(DATA32));
@@ -276,11 +277,11 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    if ((tag = __imlib_GetTag(im, "interlacing")) && tag->val)
      {
 #ifdef PNG_WRITE_INTERLACING_SUPPORTED
-	  png_ptr->interlaced = PNG_INTERLACE_ADAM7;
-	  num_passes = png_set_interlace_handling(png_ptr);
+          png_ptr->interlaced = PNG_INTERLACE_ADAM7;
+          num_passes = png_set_interlace_handling(png_ptr);
 #endif
      }
-   
+
    png_init_io(png_ptr, f);
    if (im->flags & F_HAS_ALPHA)
      {
@@ -400,7 +401,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    return 1;
 }
 
-/* fills the ImlibLoader struct with a strign array of format file */
+/* fills the ImlibLoader struct with a string array of format file */
 /* extensions this loader can load. eg: */
 /* loader->formats = { "jpeg", "jpg"}; */
 /* giving permutations is a good idea. case sensitivity is irrelevant */
