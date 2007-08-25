@@ -1094,7 +1094,6 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
    int ww, wh;
-   Evas_Coord gx, gy, gw, gh, zw, zh, px, py;
    
    if (!(inst = data)) return;
    e_gadcon_popup_show(inst->popup);
