@@ -24,6 +24,7 @@
 #ifndef _TCLASS_H
 #define _TCLASS_H
 
+#include "eimage.h"
 #include "etypes.h"
 #include "xwin.h"
 
@@ -37,15 +38,19 @@
 #define FONT_TO_LEFT      3
 
 #define FONT_TYPE_UNKNOWN       0
-#define FONT_TYPE_IFT           1	/* Imlib2/FreeType */
-#define FONT_TYPE_XFT           2	/* Xft             */
-#define FONT_TYPE_XFS           3	/* XFontSet        */
 #define FONT_TYPE_XFONT         0	/* XFontStruct     */
+#define FONT_TYPE_XFS           2	/* XFontSet        */
+#define FONT_TYPE_IFT           3	/* Imlib2/FreeType */
+#if USE_XFT
+#define FONT_TYPE_XFT           4	/* Xft             */
+#endif
+#if USE_PANGO
 #define FONT_TYPE_PANGO_XFT     5	/* Pango-Xft       */
+#endif
 
 typedef struct
 {
-   int                 (*Load) (TextState * ts, int fallback);
+   int                 (*Load) (TextState * ts, const char *name);
    void                (*Destroy) (TextState * ts);
    void                (*TextSize) (TextState * ts, const char *text, int len,
 				    int *width, int *height, int *ascent);
@@ -115,5 +120,10 @@ void                TextDraw(TextClass * tclass, Win win, Drawable draw,
 			     int active, int sticky, int state,
 			     const char *text, int x, int y, int w, int h,
 			     int fsize, int justification);
+
+int                 _xft_FdcInit(TextState * ts, Win win, Drawable draw);
+void                _xft_FdcFini(TextState * ts);
+void                _xft_FdcSetDrawable(TextState * ts, unsigned long draw);
+void                _xft_FdcSetColor(TextState * ts, XColor * xc);
 
 #endif /* _TCLASS_H */

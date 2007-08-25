@@ -96,12 +96,12 @@ e16_SOURCES = \
 	systray.c		\
 	tclass.c		tclass.h		\
 	text.c			\
+	ttfont.c text_xft.c text_pango.c	\
 	theme.c                 \
 	timers.c		timers.h		\
 	tooltips.c		tooltips.h		\
 	user.c			user.h			\
 	util.h			\
-	ttfont.c		\
 	warp.c			\
 	windowmatch.c   	windowmatch.h		\
 	x.c                     xwin.h			\
@@ -111,24 +111,29 @@ e16_SOURCES = \
 	$(SRCS_ECOMPMGR)	\
 	$(SRCS_SNPRINTF)
 
-
 LDADD = \
 	$(LTLIBINTL)		\
 	$(LTLIBICONV)		\
 	$(ECORE_LIBS)		\
-	$(ESD_LIBS) 		\
-	$(IMLIB2_LIBS) 		\
-	$(GLX_LIBS) 		\
-	$(PANGO_LIBS) 		\
-	$(XFT_LIBS) 		\
-	$(X_LIBS) 		\
-	$(SM_LIBS) 		\
-	$(XINERAMA_LIBS) 	\
-	$(X_EXTRA_LIBS) 	\
-	$(E_X_LIBS) 		\
+	$(ESD_LIBS)		\
+	$(IMLIB2_LIBS)		\
+	$(GLX_LIBS)		\
+	$(PANGO_LIBS)		\
+	$(XFT_LIBS)		\
+	$(X_LIBS)		\
+	$(SM_LIBS)		\
+	$(XINERAMA_LIBS)	\
+	$(X_EXTRA_LIBS)		\
+	$(E_X_LIBS)		\
 	-lX11 -lm
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) $(ECORE_CFLAGS) $(ESD_CFLAGS) $(IMLIB2_CFLAGS) $(PANGO_CFLAGS) $(XFT_CFLAGS) $(X_CFLAGS)
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) \
+	$(ECORE_CFLAGS) \
+	$(ESD_CFLAGS) \
+	$(IMLIB2_CFLAGS) \
+	$(PANGO_CFLAGS) \
+	$(XFT_CFLAGS) \
+	$(X_CFLAGS)
 
 install-data-local:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes

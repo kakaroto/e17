@@ -26,27 +26,6 @@
 #include "tclass.h"
 #include "xwin.h"
 
-#ifdef USE_PANGO
-#include <X11/Xft/Xft.h>
-#include <pango/pangoxft.h>
-/* If we have pango-xft we might as well also have xft */
-#undef USE_XFT
-#define USE_XFT 1
-#else
-#undef FONT_TYPE_PANGO_XFT
-#endif
-
-#ifdef USE_XFT
-#include <X11/extensions/Xrender.h>
-#include <X11/Xft/Xft.h>
-#else
-#undef FONT_TYPE_XFT
-#endif
-
-#if FONT_TYPE_IFT
-extern const FontOps FontOpsIft;
-#endif
-
 static              GC
 _get_gc(Win win)
 {
@@ -417,268 +396,6 @@ TextstateTextFitMB(TextState * ts, char **ptext, int *pw, int textwidth_limit)
    EwcClose();
 }
 
-#if FONT_TYPE_XFT
-/*
- * Xft
- */
-extern const FontOps FontOpsXft;
-
-typedef struct
-{
-   XftFont            *font;
-   Win                 win;
-   Drawable            draw;
-   XftDraw            *xftd;
-   XftColor            xftc;
-} FontCtxXft;
-
-static int
-_xft_Load(TextState * ts, int fallback __UNUSED__)
-{
-   XftFont            *font;
-   FontCtxXft         *fdc;
-   const char         *name;
-
-   name = ts->fontname;
-   if (!strncmp(name, "xft:", 4))
-      name += 4;
-   else if (strchr(name, '/'))
-      return -1;
-
-   if (name[0] == '-')
-      font = XftFontOpenXlfd(disp, VRoot.scr, name);
-   else
-      font = XftFontOpenName(disp, VRoot.scr, name);
-
-   if (!font)
-      return -1;
-
-#if 0				/* Debug */
-   {
-      FT_Face             ftf = XftLockFace(font);
-
-      if (ftf == NULL)
-	 return -1;
-      Eprintf("Font %s family_name=%s style_name=%s\n", name,
-	      ftf->family_name, ftf->style_name);
-      XftUnlockFace(font);
-   }
-#endif
-
-   fdc = EMALLOC(FontCtxXft, 1);
-   if (!fdc)
-      return -1;
-   fdc->font = font;
-   ts->fdc = fdc;
-   ts->need_utf8 = 1;
-   ts->type = FONT_TYPE_XFT;
-   ts->ops = &FontOpsXft;
-   return 0;
-}
-
-static void
-_xft_Unload(TextState * ts)
-{
-   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
-
-   XftFontClose(disp, fdc->font);
-}
-
-static void
-_xft_TextSize(TextState * ts, const char *text, int len,
-	      int *width, int *height, int *ascent)
-{
-   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
-   XGlyphInfo          gi;
-
-   if (len == 0)
-      len = strlen(text);
-   XftTextExtentsUtf8(disp, fdc->font, (const XftChar8 *)text, len, &gi);
-   *width = gi.xOff;
-   *height = fdc->font->height;
-   if (*height < fdc->font->ascent + fdc->font->descent)
-      *height = fdc->font->ascent + fdc->font->descent;
-   *ascent = fdc->font->ascent;
-#if 0
-   Eprintf("asc/dsc/h=%d/%d/%d x,y=%2d,%d wxh=%dx%d ox,y=%3d,%d: (%d)%s\n",
-	   fdc->font->ascent, fdc->font->descent, fdc->font->height, gi.x, gi.y,
-	   gi.width, gi.height, gi.xOff, gi.yOff, len, text);
-#endif
-}
-
-static void
-_xft_TextDraw(TextState * ts, int x, int y, const char *text, int len)
-{
-   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
-
-   XftDrawStringUtf8(fdc->xftd, &(fdc->xftc), fdc->font, x, y,
-		     (const XftChar8 *)text, len);
-}
-
-static int
-_xft_FdcInit(TextState * ts, Win win, Drawable draw)
-{
-   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
-
-   fdc->win = win;
-   fdc->draw = draw;
-
-   fdc->xftd = XftDrawCreate(disp, draw, WinGetVisual(win), WinGetCmap(win));
-   if (!fdc->xftd)
-      return -1;
-   return 0;
-}
-
-static void
-_xft_FdcFini(TextState * ts)
-{
-   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
-
-   XftDrawDestroy(fdc->xftd);
-}
-
-static void
-_xft_FdcSetDrawable(TextState * ts, unsigned long draw)
-{
-   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
-
-   if (fdc->draw == draw)
-      return;
-   fdc->draw = draw;
-   XftDrawChange(fdc->xftd, draw);
-}
-
-static void
-_xft_FdcSetColor(TextState * ts, XColor * xc)
-{
-   FontCtxXft         *fdc = (FontCtxXft *) ts->fdc;
-   XRenderColor        xrc;
-
-   xrc.red = xc->red * 256;
-   xrc.green = xc->green * 256;
-   xrc.blue = xc->blue * 256;
-   xrc.alpha = 65535;
-
-   XftColorAllocValue(disp, WinGetVisual(fdc->win), WinGetCmap(fdc->win),
-		      &xrc, &(fdc->xftc));
-}
-
-const FontOps       FontOpsXft = {
-   _xft_Load, _xft_Unload, _xft_TextSize, TextstateTextFit, _xft_TextDraw,
-   _xft_FdcInit, _xft_FdcFini, _xft_FdcSetDrawable, _xft_FdcSetColor
-};
-#endif /* FONT_TYPE_XFT */
-
-#if FONT_TYPE_PANGO_XFT
-/*
- * Pango-Xft
- */
-extern const FontOps FontOpsPangoXft;
-
-static PangoContext *_pango_ctx = NULL;
-
-/* Beware! The layout of FontCtxPangoXft must match FontCtxXft
- * in order to reuse the _xft_Fdc... functions. */
-typedef struct
-{
-   PangoFontDescription *font;
-   Win                 win;
-   Drawable            draw;
-   XftDraw            *xftd;
-   XftColor            xftc;
-} FontCtxPangoXft;
-
-static int
-_pango_xft_Load(TextState * ts, int fallback __UNUSED__)
-{
-   FontCtxPangoXft    *fdc;
-   PangoFontDescription *font;
-   PangoFontMask       flags;
-   const char         *name;
-
-   name = ts->fontname;
-   if (strncmp(name, "pango:", 6))
-      return -1;
-   name += 6;
-
-   if (!_pango_ctx)
-      _pango_ctx = pango_xft_get_context(disp, VRoot.scr);
-   if (!_pango_ctx)
-      return -1;
-
-   font = pango_font_description_from_string(name);
-   if (!font)
-      return -1;
-
-   flags = pango_font_description_get_set_fields(font);
-   if ((flags & PANGO_FONT_MASK_FAMILY) == 0)
-      pango_font_description_set_family(font, "sans");
-   if ((flags & PANGO_FONT_MASK_SIZE) == 0)
-      pango_font_description_set_size(font, 10 * PANGO_SCALE);
-
-   fdc = EMALLOC(FontCtxPangoXft, 1);
-   if (!fdc)
-      return -1;
-   fdc->font = font;
-   ts->fdc = fdc;
-   ts->need_utf8 = 1;
-   ts->type = FONT_TYPE_PANGO_XFT;
-   ts->ops = &FontOpsPangoXft;
-   return 0;
-}
-
-static void
-_pango_xft_Unload(TextState * ts)
-{
-   FontCtxPangoXft    *fdc = (FontCtxPangoXft *) ts->fdc;
-
-   pango_font_description_free(fdc->font);
-}
-
-static void
-_pango_xft_TextSize(TextState * ts, const char *text, int len __UNUSED__,
-		    int *width, int *height, int *ascent)
-{
-   FontCtxPangoXft    *fdc = (FontCtxPangoXft *) ts->fdc;
-   PangoLayout        *layout;
-   PangoRectangle      logical_rect;
-
-   layout = pango_layout_new(_pango_ctx);
-   pango_layout_set_text(layout, text, -1);
-   pango_layout_set_font_description(layout, fdc->font);
-   pango_layout_get_extents(layout, NULL, &logical_rect);
-
-   *width = PANGO_PIXELS(logical_rect.x + logical_rect.width);
-   *height = PANGO_PIXELS(logical_rect.height);
-   *ascent = PANGO_PIXELS(-logical_rect.y);
-
-   g_object_unref(layout);
-}
-
-static void
-_pango_xft_TextDraw(TextState * ts, int x, int y, const char *text,
-		    int len __UNUSED__)
-{
-   FontCtxPangoXft    *fdc = (FontCtxPangoXft *) ts->fdc;
-   PangoLayout        *layout;
-
-   layout = pango_layout_new(_pango_ctx);
-   pango_layout_set_text(layout, text, -1);
-   pango_layout_set_font_description(layout, fdc->font);
-
-   pango_xft_render_layout(fdc->xftd, &(fdc->xftc), layout,
-			   x * PANGO_SCALE, y * PANGO_SCALE);
-
-   g_object_unref(layout);
-}
-
-const FontOps       FontOpsPangoXft = {
-   _pango_xft_Load, _pango_xft_Unload,
-   _pango_xft_TextSize, TextstateTextFit, _pango_xft_TextDraw,
-   _xft_FdcInit, _xft_FdcFini, _xft_FdcSetDrawable, _xft_FdcSetColor
-};
-#endif /* FONT_TYPE_PANGO_XFT */
-
 #if FONT_TYPE_XFS
 /*
  * XFontSet - XCreateFontSet
@@ -695,37 +412,27 @@ typedef struct
 } FontCtxXfs;
 
 static int
-_xfs_Load(TextState * ts, int fallback)
+_xfs_Load(TextState * ts, const char *name)
 {
    XFontSet            font;
    FontCtxXfs         *fdc;
    int                 i, missing_cnt, font_cnt;
-   char              **missing_list, *def_str, **fn;
+   char              **missing_list, *def_str, **fnlr;
    XFontStruct       **fs;
 
-   font = XCreateFontSet(disp, ts->fontname, &missing_list,
-			 &missing_cnt, &def_str);
+   font = XCreateFontSet(disp, name, &missing_list, &missing_cnt, &def_str);
    if (missing_cnt)
       XFreeStringList(missing_list);
-
-   if (!font && fallback)
-     {
-	font = XCreateFontSet(disp, "fixed", &missing_list,
-			      &missing_cnt, &def_str);
-	if (missing_cnt)
-	   XFreeStringList(missing_list);
-     }
-
    if (!font)
       return -1;
 
-   if (EDebug(EDBUG_TYPE_FONTS))
+   if (EDebug(EDBUG_TYPE_FONTS) >= 2)
      {
 	Eprintf("- XBaseFontNameListOfFontSet %s\n",
 		XBaseFontNameListOfFontSet(font));
-	font_cnt = XFontsOfFontSet(font, &fs, &fn);
+	font_cnt = XFontsOfFontSet(font, &fs, &fnlr);
 	for (i = 0; i < font_cnt; i++)
-	   Eprintf("- XFontsOfFontSet %d: %s\n", i, fn[i]);
+	   Eprintf("- XFontsOfFontSet %d: %s\n", i, fnlr[i]);
      }
 
    fdc = EMALLOC(FontCtxXfs, 1);
@@ -734,7 +441,7 @@ _xfs_Load(TextState * ts, int fallback)
    fdc->font = font;
    ts->fdc = fdc;
    fdc->ascent = 0;
-   font_cnt = XFontsOfFontSet(font, &fs, &fn);
+   font_cnt = XFontsOfFontSet(font, &fs, &fnlr);
    for (i = 0; i < font_cnt; i++)
       fdc->ascent = MAX(fs[i]->ascent, fdc->ascent);
    ts->type = FONT_TYPE_XFS;
@@ -822,24 +529,15 @@ typedef struct
 } FontCtxXfont;
 
 static int
-_xfont_Load(TextState * ts, int fallback __UNUSED__)
+_xfont_Load(TextState * ts, const char *name)
 {
-   XFontStruct        *font = NULL;
+   XFontStruct        *font;
    FontCtxXfont       *fdc;
 
-   if (strchr(ts->fontname, ',') == NULL)
-      font = XLoadQueryFont(disp, ts->fontname);
-   if (font)
-      goto done;
+   font = XLoadQueryFont(disp, name);
+   if (!font)
+      return -1;
 
-   /* This one really should succeed! */
-   font = XLoadQueryFont(disp, "fixed");
-   if (font)
-      goto done;
-
-   return -1;			/* Failed */
-
- done:
    fdc = EMALLOC(FontCtxXfont, 1);
    if (!fdc)
       return -1;
@@ -952,9 +650,51 @@ TsTextDraw(TextState * ts, int x, int y, const char *text, int len)
    ts->ops->TextDraw(ts, x, y, text, len);
 }
 
+typedef struct
+{
+   const char         *type;
+   const FontOps      *ops;
+   char                checked;
+} FontHandler;
+
+#define FONT(type, ops, opsm) { type, ops, 0 }
+
+#if FONT_TYPE_IFT
+extern const FontOps FontOps_ift;
+#endif
+#if FONT_TYPE_XFT
+extern const FontOps FontOps_xft;
+#endif
+#if FONT_TYPE_PANGO_XFT
+extern const FontOps FontOps_pango;
+#endif
+
+static FontHandler  fhs[] = {
+#if FONT_TYPE_XFONT
+   FONT("xfont", &FontOpsXfont, &FontOpsXfont),	/* XFontStruct - XLoadQueryFont */
+#endif
+#if FONT_TYPE_XFS
+   FONT("xfs", &FontOpsXfs, &FontOpsXfs),	/* XFontSet - XCreateFontSet */
+#endif
+#if FONT_TYPE_IFT
+   FONT("ift", &FontOps_ift, NULL),	/* Imlib2/FreeType */
+#endif
+#if FONT_TYPE_XFT
+   FONT("xft", &FontOps_xft, NULL),	/* Xft */
+#endif
+#if FONT_TYPE_PANGO_XFT
+   FONT("pango", &FontOps_pango, NULL),	/* Pango-Xft */
+#endif
+   {NULL, NULL, 0},
+};
+
 static void
 TextStateLoadFont(TextState * ts)
 {
+   const char         *s, *type, *name;
+   char                buf[1024];
+   FontHandler        *fhp = fhs;
+
    if (!ts->fontname)
       return;
 
@@ -964,28 +704,48 @@ TextStateLoadFont(TextState * ts)
 
    ts->need_utf8 = Mode.locale.utf8_int;
 
+   type = NULL;
+   name = ts->fontname;
 #if FONT_TYPE_IFT
-   if (!FontOpsIft.Load(ts, 0))	/* Imlib2/FreeType */
-      goto done;
+   if (strchr(ts->fontname, '/'))
+     {
+	type = "ift";
+	goto check;
+     }
 #endif
 #if FONT_TYPE_XFS
-   if (!FontOpsXfs.Load(ts, 0))	/* XFontSet - XCreateFontSet */
-      goto done;
+   if (ts->fontname[0] == '-')
+     {
+	type = "xfs";
+	goto check;
+     }
 #endif
-#if FONT_TYPE_PANGO_XFT
-   if (!FontOpsPangoXft.Load(ts, 0))	/* Pango-Xft */
-      goto done;
-#endif
-#if FONT_TYPE_XFT
-   if (!FontOpsXft.Load(ts, 0))	/* Xft */
-      goto done;
-#endif
+   s = strchr(ts->fontname, ':');
+   if (!s || s == ts->fontname)
+      goto fallback;
+   if (s - ts->fontname > 16)
+      goto fallback;
+   memcpy(buf, ts->fontname, s - ts->fontname);
+   buf[s - ts->fontname] = '\0';
+   type = buf;
+   name = s + 1;
+
+ check:
+   for (fhp = fhs; fhp->type; fhp++)
+     {
+	if (strcmp(fhp->type, type))
+	   continue;
+	ts->ops = fhp->ops;
+	ts->ops->Load(ts, name);
+	goto done;
+     }
+ fallback:
 #if FONT_TYPE_XFS
-   if (!FontOpsXfs.Load(ts, 1))	/* XFontSet - XCreateFontSet */
+   if (!FontOpsXfs.Load(ts, "fixed"))	/* XFontSet - XCreateFontSet */
       goto done;
 #endif
 #if FONT_TYPE_XFONT
-   if (!FontOpsXfont.Load(ts, 1))	/* XFontStruct - XLoadQueryFont */
+   if (!FontOpsXfont.Load(ts, "fixed"))	/* XFontStruct - XLoadQueryFont */
       goto done;
 #endif
 

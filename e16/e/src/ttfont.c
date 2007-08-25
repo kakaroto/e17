@@ -22,11 +22,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "eimage.h"
 #include "tclass.h"
-#include <Imlib2.h>
 
 #if FONT_TYPE_IFT
+#include "eimage.h"
+#include <Imlib2.h>
+
+/*
+ * Imlib2/FreeType
+ */
+extern const FontOps FontOps_ift;
 
 typedef void        EFont;
 
@@ -97,11 +102,6 @@ EFont_draw_string(EImage * im, EFont * f, int x, int y,
    imlib_text_draw(x, y - imlib_get_font_ascent(), text);
 }
 
-/*
- * Imlib2/FreeType
- */
-extern const FontOps FontOpsIft;
-
 typedef struct
 {
    EFont              *font;
@@ -110,7 +110,7 @@ typedef struct
 } FontCtxIft;
 
 static int
-_ift_Load(TextState * ts, int fallback __UNUSED__)
+_ift_Load(TextState * ts, const char *name __UNUSED__)
 {
    EFont              *font;
    FontCtxIft         *fdc;
@@ -138,7 +138,7 @@ _ift_Load(TextState * ts, int fallback __UNUSED__)
    ts->fdc = fdc;
    ts->need_utf8 = 1;
    ts->type = FONT_TYPE_IFT;
-   ts->ops = &FontOpsIft;
+   ts->ops = &FontOps_ift;
    return 0;
 }
 
@@ -191,7 +191,7 @@ _ift_FdcSetColor(TextState * ts __UNUSED__, XColor * xc)
    EGetColor(xc, &(fdc->r), &(fdc->g), &(fdc->b));
 }
 
-const FontOps       FontOpsIft = {
+const FontOps       FontOps_ift = {
    _ift_Load, _ift_Unload, _ift_TextSize, TextstateTextFit, _ift_TextDraw,
    _ift_FdcInit, NULL, _ift_FdcSetDrawable, _ift_FdcSetColor
 };
