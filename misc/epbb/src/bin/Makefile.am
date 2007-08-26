@@ -2,9 +2,9 @@
 
 INCLUDES = \
 	-Wall -I../lib \
-	@evas_cflags@ \
-	@ecore_cflags@ \
-	@edje_cflags@ \
+	@EVAS_CFLAGS@ \
+	@ECORE_CFLAGS@ \
+	@EDJE_CFLAGS@ \
 	@pbb_cflags@
 
 bin_PROGRAMS = epbb
@@ -14,8 +14,8 @@ epbb.c epbb.h \
 main.c
 
 epbb_LDADD = \
-@evas_libs@ \
-@ecore_libs@ \
-@edje_libs@ \
+@EVAS_LIBS@ \
+@ECORE_LIBS@ \
+@EDJE_LIBS@ \
 @pbb_libs@ \
--lm -lc
+-lm

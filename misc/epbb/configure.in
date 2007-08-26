@@ -64,47 +64,9 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
-PROG="evas-config";
-AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-if test -z "$EVAS_CONFIG" ; then
-  AC_MSG_ERROR([
-  $PROG is not in your \$PATH. Please ensure it is.
-  Read the manual page for you shell as to how to extend your path.
-  FATAL ERROR. ABORT.
-  ])
-fi
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
-
-PROG="ecore-config";
-AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-if [ test -z $ECORE_CONFIG ]; then
-  AC_MSG_ERROR([
-  $PROG is not in your \$PATH. Please ensure it is.
-  Read the manual page for you shell as to how to extend your path.
-  FATAL ERROR. ABORT.
-  ])
-fi
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
-
-PROG="edje-config";
-AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
-if [ test -z $EDJE_CONFIG ]; then
-  AC_MSG_ERROR([
-  $PROG is not in your \$PATH. Please ensure it is.
-  Read the manual page for you shell as to how to extend your path.
-  FATAL ERROR. ABORT.
-  ])
-fi
-edje_cflags=`$EDJE_CONFIG --cflags`
-edje_libs=`$EDJE_CONFIG --libs`
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_libs)
+PKG_CHECK_MODULES(EVAS, [evas])
+PKG_CHECK_MODULES(ECORE, [ecore])
+PKG_CHECK_MODULES(EDJE, [edje])
 
 pbb_cflags=
 pbb_libs=
