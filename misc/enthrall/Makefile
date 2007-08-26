@@ -1,5 +1,5 @@
-BIN = enthrall
-SRC = enthrall.c theora.c rgb2yuv420.c
+BIN = src/enthrall
+SRC = src/enthrall.c src/theora.c src/rgb2yuv420.c
 OBJ = $(SRC:%.c=%.o)
 PREFIX = /usr/local
 
@@ -14,10 +14,10 @@ all: $(BIN)
 $(BIN): $(OBJ)
 	$(CC) $(LIBS) $(OBJ) -o $@
 
-enthrall.o: enthrall.c
+src/enthrall.o: src/enthrall.c
 	$(CC) $(CFLAGS) $(ECORE_CFLAGS) $(IMLIB_CFLAGS) $(THEORA_CFLAGS) -c -o $@ $<
 
-theora.o: theora.c
+src/theora.o: src/theora.c
 	$(CC) $(CFLAGS) $(THEORA_CFLAGS) -c -o $@ $<
 
 .c.o:
