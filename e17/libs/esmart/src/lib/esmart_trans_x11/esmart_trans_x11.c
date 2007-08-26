@@ -38,11 +38,6 @@ static Evas_Smart * _esmart_trans_x11_smart_get(void);
 /* smart object handlers */
 static void _esmart_trans_x11_add(Evas_Object *o);
 static void _esmart_trans_x11_del(Evas_Object *o);
-static void _esmart_trans_x11_layer_set(Evas_Object *o, int l);
-static void _esmart_trans_x11_raise(Evas_Object *o);
-static void _esmart_trans_x11_lower(Evas_Object *o);
-static void _esmart_trans_x11_stack_above(Evas_Object *o, Evas_Object *above);
-static void _esmart_trans_x11_stack_below(Evas_Object *o, Evas_Object *below);
 static void _esmart_trans_x11_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
 static void _esmart_trans_x11_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
 static void _esmart_trans_x11_show(Evas_Object *o);
@@ -459,6 +454,21 @@ _esmart_trans_x11_property_cb(void *data, int type, void *event)
    return 1;
 }
 
+static const Evas_Smart_Class _esmart_trans_x11_smart_class = {
+  "x11_trans_object",
+  EVAS_SMART_CLASS_VERSION,
+  _esmart_trans_x11_add,
+  _esmart_trans_x11_del,
+  _esmart_trans_x11_move,
+  _esmart_trans_x11_resize,
+  _esmart_trans_x11_show,
+  _esmart_trans_x11_hide,
+  _esmart_trans_x11_color_set,
+  _esmart_trans_x11_clip_set,
+  _esmart_trans_x11_clip_unset,
+  NULL
+};
+
 static Evas_Smart *
 _esmart_trans_x11_smart_get(void)
 {
@@ -467,23 +477,7 @@ _esmart_trans_x11_smart_get(void)
   if (smart)
      return smart;
   
-  smart = evas_smart_new ("x11_trans_object",
-                          _esmart_trans_x11_add,
-                          _esmart_trans_x11_del,
-                          _esmart_trans_x11_layer_set,
-                          _esmart_trans_x11_raise,
-                          _esmart_trans_x11_lower,
-                          _esmart_trans_x11_stack_above,
-                          _esmart_trans_x11_stack_below,
-                          _esmart_trans_x11_move,
-                          _esmart_trans_x11_resize,
-                          _esmart_trans_x11_show,
-                          _esmart_trans_x11_hide,
-                          _esmart_trans_x11_color_set,
-                          _esmart_trans_x11_clip_set,
-                          _esmart_trans_x11_clip_unset,
-                          NULL
-                          );
+  smart = evas_smart_class_new(&_esmart_trans_x11_smart_class);
 
   /* Get the real root window */
   rroot = DefaultRootWindow(ecore_x_display_get());
@@ -527,53 +521,6 @@ _esmart_trans_x11_del(Evas_Object *o)
 	data->clip = NULL;
 	free(data);
   }
-}
-
-static void
-_esmart_trans_x11_layer_set(Evas_Object *o, int l)
-{
-  Esmart_Trans_X11 *data;
-  
-  if((data = evas_object_smart_data_get(o)))
-    evas_object_layer_set(data->clip, l);
-}
-
-static void
-_esmart_trans_x11_raise(Evas_Object *o)
-{
-  Esmart_Trans_X11 *data;
-  
-  if((data = evas_object_smart_data_get(o)))
-    evas_object_raise(data->clip);
-}
-
-static void
-_esmart_trans_x11_lower(Evas_Object *o)
-{
-  Esmart_Trans_X11 *data;
-  
-  if((data = evas_object_smart_data_get(o)))
-	evas_object_lower(data->clip);
-}
-
-static void
-_esmart_trans_x11_stack_above(Evas_Object *o, Evas_Object *above)
-{
-  Esmart_Trans_X11 *data;
-  
-  if((data = evas_object_smart_data_get(o)))
-    evas_object_stack_above(data->clip, above);
-}
-
-static void
-_esmart_trans_x11_stack_below(Evas_Object *o, Evas_Object *below)
-{
-  Esmart_Trans_X11 *data;
-  
-  data = evas_object_smart_data_get(o);
-
-  if((data = evas_object_smart_data_get(o)))
-    evas_object_stack_below(data->clip, below);
 }
 
 static void
