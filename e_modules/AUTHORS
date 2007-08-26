@@ -2,6 +2,10 @@ This file will summarise who is currently responsible for maintaining
 each module.  See the individual AUTHORS files in each module for the
 complete list of credits.
 
+The current e_module maintainers are onefang and devilhorns, they are
+responisble for overall maintenance, but leave decisions regarding
+individual modules to their respective authors.
+
 alarm - Laurent 'kiwi' Ghigonis <ooookiwi@gmail.com>
 
 bling - Ibukun Olumuyiwa <ibukun@xcomputerman.com>
