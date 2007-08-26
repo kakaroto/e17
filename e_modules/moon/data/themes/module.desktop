@@ -2,5 +2,5 @@
 Type=Link
 Name=Moon
 GenericName=gadget
-Comment=Moon phase module for e17
+Comment=<hilight>Moon Gadget</hilight><br>Gadget for e17 which displays the<br>current phase of the moon.
 Icon=e-module-moon

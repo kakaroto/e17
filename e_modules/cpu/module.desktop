@@ -2,4 +2,4 @@
 Type=Link
 Name=Cpu
 Icon=e-module-cpu
-
+Comment=<hilight>CPU Gadget</hilight><br>Used to monitor CPU utilization.

@@ -2,3 +2,4 @@
 Type=Link
 Name=Forecasts
 Icon=e-module-forecasts
+Comment=<hilight>Forecasts Gadget</hilight><br>The forecasts gadget will display<br>the current weather conditions<br>plus a few days forecast.

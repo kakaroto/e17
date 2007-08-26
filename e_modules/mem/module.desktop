@@ -2,3 +2,4 @@
 Type=Link
 Name=Mem
 Icon=e-module-mem
+Comment=<hilight>Mem Gadget</hilight><br>Used to monitor memory utilization.

@@ -6,3 +6,4 @@ StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=photo,gadget
 Icon=e-module-photo
+Comment=<hilight>Photo Gadget</hilight><br>View photos or a mini slideshow<br>within this gadget.

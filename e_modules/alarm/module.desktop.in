@@ -6,3 +6,4 @@ StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=alarm,gadget
 Icon=./module.edj
+Comment=<hilight>Alarm Module</hilight><br>A module which allows you to<br>set popup reminders.

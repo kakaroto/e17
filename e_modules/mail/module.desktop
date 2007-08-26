@@ -2,3 +2,4 @@
 Type=Link
 Name=Mail
 Icon=e-module-mail
+Comment=<hilight>Mail Gadget</hilight><br>Mail notification gadget. Checks<br>POP3, IMAP, maildir, and mbox<br>mailboxes.
