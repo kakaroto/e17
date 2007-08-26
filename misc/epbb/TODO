@@ -1,1 +1,3 @@
 Still left TODO
+
+main.c incorrectly casts (char*) to (struct pbbmessage*)
