@@ -135,7 +135,7 @@ main_start(int argc, char **argv)
    evas = ecore_evas_get(ecore_evas);
    evas_image_cache_set(evas, 2 * 1024 * 1024);
    evas_font_cache_set(evas, 512 * 1024);
-   snprintf(buf, sizeof(buf), "data/test/fonts");
+   snprintf(buf, sizeof(buf), "data/fonts");
    evas_font_path_append(evas, buf);
    return 1;
 }
@@ -193,7 +193,7 @@ bg_setup(void)
    evas_object_resize(o, startw, starth);
    evas_object_layer_set(o, -999);
    evas_object_color_set(o, 255, 255, 255, 255);
-   snprintf(buf, sizeof(buf), "data/test/images/bg.png");
+   snprintf(buf, sizeof(buf), "data/images/bg.png");
    evas_object_image_file_set(o, buf, NULL);
    evas_object_image_fill_set(o, 0, 0, 128, 128);
    evas_object_pass_events_set(o, 1);
@@ -207,7 +207,7 @@ bg_setup(void)
    evas_object_resize(o, startw, starth);
    evas_object_layer_set(o, -999);
    evas_object_color_set(o, 255, 255, 255, 255);
-   snprintf(buf, sizeof(buf), "data/test/images/shadow.png");
+   snprintf(buf, sizeof(buf), "data/images/shadow.png");
    evas_object_image_file_set(o, buf, NULL);
    evas_object_image_smooth_scale_set(o, 0);
    evas_object_image_fill_set(o, 0, 0, startw, starth);
@@ -476,7 +476,7 @@ list_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    char buf[4096];
    
    co = data;
-   snprintf(buf, sizeof(buf), "data/test/images/item_selected.png");
+   snprintf(buf, sizeof(buf), "data/images/item_selected.png");
    evas_object_image_file_set(co->bg, buf, NULL);
 }
 
@@ -487,7 +487,7 @@ list_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    char buf[4096];
    
    co = data;
-   snprintf(buf, sizeof(buf), "data/test/images/item_normal.png");
+   snprintf(buf, sizeof(buf), "data/images/item_normal.png");
    evas_object_image_file_set(co->bg, buf, NULL);
    test_setup(co->file, co->part);
    evas_object_color_set(co->bg, 128, 128, 128, 128);
@@ -594,7 +594,7 @@ test_list(char *file)
 	o = evas_object_image_add(evas);
 	evas_object_layer_set(o, 10);
 	evas_object_image_border_set(o, 10, 10, 10, 10);
-	snprintf(buf, sizeof(buf), "data/test/images/item_title.png");
+	snprintf(buf, sizeof(buf), "data/images/item_title.png");
 	evas_object_image_file_set(o, buf, NULL);
 	evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, list_head_down_cb, co);
 	evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP,   list_head_up_cb, co);
@@ -633,7 +633,7 @@ test_list(char *file)
 	     o = evas_object_image_add(evas);
 	     evas_object_layer_set(o, 10);
 	     evas_object_image_border_set(o, 10, 10, 10, 10);
-	     snprintf(buf, sizeof(buf), "data/test/images/item_normal.png");
+	     snprintf(buf, sizeof(buf), "data/images/item_normal.png");
 	     evas_object_image_file_set(o, buf, NULL);
 	     evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, list_down_cb, co);
 	     evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP,   list_up_cb, co);
@@ -731,7 +731,7 @@ test_setup(char *file, char *name)
    edjes = evas_list_append(edjes, de);
 
    o = evas_object_image_add(evas);
-   snprintf(buf, sizeof(buf), "data/test/images/border.png");
+   snprintf(buf, sizeof(buf), "data/images/border.png");
    evas_object_image_file_set(o, buf, NULL);
    evas_object_image_smooth_scale_set(o, 0);
    evas_object_color_set(o, 255, 255, 255, 255);
