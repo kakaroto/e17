@@ -19,8 +19,6 @@ alarm - Sets reminders and timer.  (Replaces eveil.)
 
 bling - EFLized Composite Manager for E17. (Not for users right now).
 
-calendar - A module to display a desktop calendar.
-
 cpu - A module to monitor cpu load.  (Will be replaced by something better.)
 
 deskshow - A module to iconify/uniconify all current windows to show the
@@ -28,11 +26,9 @@ desktop.  This is probably obsolete, the functionality is now in E.
 
 emu - Experimental generic scriptable module for E17.
 
-engage - Icon bar / task bar / system tray.
-
 flame - A module to display flames on the desktop.
 
-forecasts - A module to display  the current condition and forecasts.
+forecasts - A module to display the current condition and forecasts.
 
 language - A module to control active keyboard/keyboard layout/layout variant.
 
