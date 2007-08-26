@@ -2,4 +2,4 @@
 Type=Link
 Name=Uptime
 Icon=e-module-uptime
-
+Comment=<hilight>Uptime Gadget</hilight><br>Gadget to display the current<br>uptime of the system.

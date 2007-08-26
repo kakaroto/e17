@@ -2,3 +2,4 @@
 Type=Link
 Name=Screenshot
 Icon=e-module-screenshot
+Comment=<hilight>Screenshot Gadget</hilight><br>Gadget to take screenshots utilizing<br>scrot or import.

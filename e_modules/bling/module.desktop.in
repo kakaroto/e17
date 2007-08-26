@@ -6,4 +6,4 @@ StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=bling,gadget
 Icon=./module.edj
-Comment=<hilight>Bling Module</hilight><br>An xcompmgr derivitive.
+Comment=<hilight>Bling Module</hilight><br>An xcompmgr derived, EFLized<br>composite manager for E17.

@@ -6,3 +6,4 @@ StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=language,gadget
 Icon=e-module-language
+Comment=<hilight>Language Gadget</hilight><br>Gadget to control active keyboard,<br>keyboard layout, and layout variant.
