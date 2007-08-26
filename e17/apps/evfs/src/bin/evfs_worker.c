@@ -47,9 +47,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <signal.h>
 #include <errno.h>
 #include <dirent.h>
+#include <sqlite3.h>
+#include "evfs_metadata_db.h"
 
 static evfs_client* worker_client;
 static evfs_server* server;
+static sqlite3* worker_db = NULL;
 Ecore_Event_Handler* server_data;
 Ecore_Ipc_Server* iserver;
 
@@ -58,6 +61,12 @@ int ecore_timer_enterer(__UNUSED__ void *data);
 int incoming_command_cb(__UNUSED__ void *data);
 int evfs_handle_command(evfs_client * client, evfs_command * command);
 void evfs_load_plugins();
+
+
+sqlite3* evfs_worker_db_get() 
+{
+	return worker_db;
+}
 
 int ecore_timer_enterer(__UNUSED__ void *data)
 {
@@ -166,6 +175,10 @@ int evfs_handle_command(evfs_client * client, evfs_command * command)
 
      case EVFS_CMD_MIME_REQUEST:
 	evfs_handle_mime_request(client,command);
+	break;
+
+     case EVFS_CMD_VFOLDER_CREATE:
+	evfs_handle_vfolder_create(client,command);
 	break;
 
      default:
@@ -514,6 +527,7 @@ main(int argc, char **argv)
    evfs_trash_initialise();
    evfs_operation_initialise();
    evfs_metadata_initialise_worker();
+   worker_db = evfs_metadata_db_connect();
 
    /*Add a timer, to make sure our event loop keeps going.  Kinda hacky */
    server->tmr = ecore_timer_add(0.01, ecore_timer_enterer, NULL);

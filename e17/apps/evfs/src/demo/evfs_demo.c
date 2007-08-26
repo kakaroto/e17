@@ -155,6 +155,10 @@ main(int argc, char **argv)
            evfs_client_metadata_string_file_get(con, dir_path->files[0], "entropy_folder_preference");
    } else if (!strcmp(cmd, "MIME")) {
 	   evfs_client_mime_request(con, dir_path->files[0]);
+   } else if (!strcmp(cmd, "VFOLDER")) {
+	   evfs_command* cm = evfs_vfolder_create_command_new("Pictures");
+	   evfs_vfolder_command_entry_add(cm, 'M', "mimetype","image/jpeg");
+	   evfs_vfolder_command_send(con,cm);
    }
    ecore_main_loop_begin();
    evfs_disconnect(con);

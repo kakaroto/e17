@@ -10,8 +10,9 @@
  * * Make a 'bulk-run' function to avoid the endless repeated sqlite3_exec
  */
 
-#define EVFS_METADATA_DB_CONFIG_LATEST 4
+#define EVFS_METADATA_DB_CONFIG_LATEST 6
 static char metadata_db[PATH_MAX];
+static int loc_init = 0;
 static char* homedir;
 static Ecore_Hash* db_upgrade_hash = NULL;
 
@@ -146,6 +147,24 @@ int evfs_metadata_db_upgrade_4_5(sqlite3* db)
 	return evfs_metadata_db_version_bump(db, "5");
 }
 
+int evfs_metadata_db_upgrade_5_6(sqlite3* db)
+{
+	int ret;
+	char* errMsg = 0;
+
+	printf("Performing upgrade from v.5 to v.6\n");
+
+	ret = sqlite3_exec(db, 
+	"create table VfolderSearch (id integer primary key AUTOINCREMENT, name varchar(255));",
+	NULL, 0,&errMsg);
+
+	ret = sqlite3_exec(db, 
+	"create table VfolderSearchComponent (id integer primary key AUTOINCREMENT, vfolderSearch int, rtype char, rkey varchar(255), rvalue varchar(255));",
+	NULL, 0,&errMsg);
+
+	return evfs_metadata_db_version_bump(db, "6");
+}
+
 int evfs_metadata_db_version_bump(sqlite3* db, char* ver)
 {
 	int ret;
@@ -160,15 +179,23 @@ int evfs_metadata_db_version_bump(sqlite3* db, char* ver)
 }
 /*---*/
 
+void evfs_metadata_db_location_init()
+{
+	if (!loc_init) {
+		loc_init =1 ;
+		homedir = strdup(getenv("HOME"));
+		snprintf(metadata_db, PATH_MAX, "%s/.e/evfs/evfs_metadata.db", homedir);
+	}
+}
+
 void evfs_metadata_db_init(sqlite3** db)
 {
 	struct stat config_dir_stat;
 	int ret;
 	int ver;
 	int runs = 0;
-	
-	homedir = strdup(getenv("HOME"));
-	snprintf(metadata_db, PATH_MAX, "%s/.e/evfs/evfs_metadata.db", homedir);
+
+	evfs_metadata_db_location_init();
 
 	db_upgrade_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	ecore_hash_set(db_upgrade_hash, (int*)0, evfs_metadata_db_upgrade_0_1);
@@ -176,6 +203,7 @@ void evfs_metadata_db_init(sqlite3** db)
 	ecore_hash_set(db_upgrade_hash, (int*)2, evfs_metadata_db_upgrade_2_3);
 	ecore_hash_set(db_upgrade_hash, (int*)3, evfs_metadata_db_upgrade_3_4);
 	ecore_hash_set(db_upgrade_hash, (int*)4, evfs_metadata_db_upgrade_4_5);
+	ecore_hash_set(db_upgrade_hash, (int*)5, evfs_metadata_db_upgrade_5_6);
 	
 	/*Check if we need to seed the DB*/
 	if (stat(metadata_db, &config_dir_stat)) {
@@ -218,6 +246,28 @@ void evfs_metadata_db_init(sqlite3** db)
 	}	
 
 	printf("DB Init complete..\n");
+}
+
+sqlite3* evfs_metadata_db_connect()
+{
+	sqlite3* db;
+	int ret;
+	
+	evfs_metadata_db_location_init();
+	
+	ret = sqlite3_open(metadata_db, &db);
+	if( ret ){
+	    fprintf(stderr, "Can't open metadata database: %s\n", sqlite3_errmsg(db));
+	    sqlite3_close(db);
+	    exit(1);
+	}
+
+	return db;
+}
+
+sqlite3* evfs_metadata_db_close(sqlite3* db)
+{
+	sqlite3_close(db);
 }
 
 int evfs_metadata_db_upgrade_check(sqlite3* db, int startmode) 
@@ -317,6 +367,7 @@ int evfs_metadata_db_id_for_file(sqlite3* db, EvfsFilereference* ref, int create
 		printf("id_for_file: sqlite error (%s)\n", file_path);
 		file = 0;
 	}
+	free(file_path);
 
 	return file;
 }
@@ -380,3 +431,72 @@ void evfs_metadata_db_delete_file(sqlite3* db, int file)
 	if (errMsg) printf("ERROR: %s\n", errMsg);		
 }
 
+
+int evfs_metadata_db_vfolder_search_create(sqlite3* db, char* name)
+{
+	char query[PATH_MAX];
+	int ret;
+	int vfo = 0;
+	sqlite3_stmt *pStmt;
+
+	snprintf(query, sizeof(query), "select id from VFolderSearch where name = ?");
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+
+	if (ret == SQLITE_OK) {
+		sqlite3_bind_text(pStmt, 1, name, strlen(name), SQLITE_STATIC);
+		
+		ret = sqlite3_step(pStmt);
+		if (ret == SQLITE_ROW)  {
+			vfo = sqlite3_column_int(pStmt,0);
+
+			sqlite3_reset(pStmt);
+			sqlite3_finalize(pStmt);
+		} else {
+			sqlite3_reset(pStmt);
+			sqlite3_finalize(pStmt);
+			
+			snprintf(query, sizeof(query), "insert into VFolderSearch (name) values(?);");
+			ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+			sqlite3_bind_text(pStmt, 1, name, strlen(name), SQLITE_STATIC);
+
+			if (sqlite3_step(pStmt) == SQLITE_DONE) {
+				vfo = (int)sqlite3_last_insert_rowid(db);
+			} else {
+				vfo = 0;
+			}
+				
+			sqlite3_reset(pStmt);
+			sqlite3_finalize(pStmt);
+		}
+	} else {
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+		
+		printf("id_for_file: sqlite error (%s)\n", name);
+		vfo = 0;
+	}
+
+	return vfo;
+}
+
+void evfs_metadata_db_vfolder_search_entry_add(sqlite3* db, int id, EvfsVfolderEntry* entry) 
+{
+	char query[PATH_MAX];
+	int ret;
+	sqlite3_stmt *pStmt;
+
+	snprintf(query, sizeof(query),
+		"insert into VfolderSearchComponent (vfolderSearch, rtype, rkey, rvalue) values (%d, '%c', ?, ?);", id, entry->type);
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+
+	if (ret == SQLITE_OK) {
+		sqlite3_bind_text(pStmt, 1, entry->name, strlen(entry->name), SQLITE_STATIC);
+		sqlite3_bind_text(pStmt, 2, entry->value, strlen(entry->value), SQLITE_STATIC);
+		
+		if (sqlite3_step(pStmt) != SQLITE_DONE) {
+			printf("evfs_metadata_db_vfolder_search_entry_add: sqlite3 error\n");
+		}
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+	}
+}

@@ -13,6 +13,8 @@
 #include <Ecore_Desktop.h>
 #include <Efreet.h>
 #include <Efreet_Mime.h>
+#include <sqlite3.h>
+#include "evfs_metadata_db.h"
 
 /*---------------------------------------------------*/
 /*Move these functions somewhere*/
@@ -766,8 +768,27 @@ void evfs_handle_mime_request(evfs_client* client, evfs_command* command)
 		printf("EVFS: Mime not currently handled for plugin != file\n");
 		/*TODO: Transfer file local, then mime? Ugh*/
 	} else {
-		char* mime = efreet_mime_type_get(evfs_command_first_file_get(command)->path);
+		const char* mime = efreet_mime_type_get(evfs_command_first_file_get(command)->path);
 		printf("%s\n", mime);
 	}
 }
 
+void evfs_handle_vfolder_create(evfs_client* client, evfs_command* command)
+{
+	int id;
+	sqlite3* db;
+	Evas_List* l;
+	EvfsVfolderEntry* e;
+	printf("Creating a vfolder called '%s'\n", command->file_command->ref);
+	
+	db = evfs_metadata_db_connect();
+	id = evfs_metadata_db_vfolder_search_create(db, command->file_command->ref);
+
+	for (l=command->entries;l;) {
+		e=l->data;
+		evfs_metadata_db_vfolder_search_entry_add(db, id, e);
+		l=l->next;
+	}
+	
+	evfs_metadata_db_close(db);
+}

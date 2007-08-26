@@ -192,8 +192,10 @@ evfs_io_initialise()
                                  "EvfsCommand_operation", op, _EvfsOperation_edd);   
    EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommand_edd, evfs_command,
                                  "EvfsCommand_id", client_identifier, EET_T_INT);
-      EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommand_edd, evfs_command,
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_EvfsCommand_edd, evfs_command,
                                  "EvfsCommand_options", options, EET_T_INT);
+   EET_DATA_DESCRIPTOR_ADD_LIST(_EvfsCommand_edd, evfs_command,
+		   		 "EvfsCommand_entries", entries, _EvfsVfolderEntry_edd);
 
    /*Base event EDD*/
    _EvfsEvent_edd = _NEW_EDD(EvfsEvent);

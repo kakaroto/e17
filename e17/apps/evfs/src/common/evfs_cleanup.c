@@ -40,6 +40,8 @@ evfs_cleanup_file_command(evfs_command * command)
 	   }
 	   evas_list_free(command->file_command->files); 
    }
+
+   if (command->file_command->ref) free(command->file_command->ref);
 }
 
 void 

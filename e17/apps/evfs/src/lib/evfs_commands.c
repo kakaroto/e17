@@ -472,6 +472,7 @@ evfs_command* evfs_vfolder_create_command_new(char* name)
    long id = command->client_identifier;
 
    command->type = EVFS_CMD_VFOLDER_CREATE;
+   command->file_command->ref = strdup(name);
 
    return command;
 }
