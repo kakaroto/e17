@@ -274,10 +274,7 @@ _set_cpu_load(void *data)
 
    _graph_values(inst);
 
-   if (cpu_count == 1)
-     snprintf(str, sizeof(str), "<br>%d%%", cpu_stats[0]);
-   else
-     snprintf(str, sizeof(str), "%d%%", cpu_stats[0]);
+   snprintf(str, sizeof(str), "%d%%", cpu_stats[0]);
    
    i = 1;
    while (i < cpu_count)
