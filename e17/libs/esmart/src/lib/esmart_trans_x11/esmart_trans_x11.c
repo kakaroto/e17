@@ -177,16 +177,15 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
       if (ret && (p = *((Ecore_X_Pixmap *) data)))
       {
          Imlib_Image    im;
-         unsigned int   pw, ph;
-         int            px, py;
+         int            px, py, pw, ph;
             
          ecore_x_pixmap_geometry_get(p, &px, &py, &pw, &ph);
          if (pw && ph) {
             imlib_context_set_drawable(*((Ecore_X_Pixmap *) data));
 
             /* Check if the object will fit within the pixmap's boundaries */
-            if ((x >= px) && (y >= py) && ((x + w) <= (px + ((signed int) pw))) 
-                  && ((y + h) <= (py + ((signed int) ph))))
+            if ((x >= px) && (y >= py) && ((x + w) <= (px + pw))
+                  && ((y + h) <= (py + ph)))
             {
                im = imlib_create_image_from_drawable(0, x, y, w, h, 1);
                imlib_context_set_image(im);
