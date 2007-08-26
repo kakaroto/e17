@@ -1,5 +1,5 @@
 /*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2(0
  */
 #include <e.h>
 #include "e_mod_main.h"
@@ -18,6 +18,11 @@ struct _Instance
    E_Gadcon_Client *gcc;
    Cpu             *cpu;
    Ecore_Timer     *timer;
+
+   E_Gadcon_Popup  *popup;
+   Evas_Object     *o_bg, *o_chart[4], *o_poly[4];
+   Evas_List       *points[4];
+   int		    chart_colors[4][4];
 };
 
 struct _Cpu 
@@ -35,13 +40,12 @@ static Config_Item *_config_item_get(const char *id);
 static int _set_cpu_load(void *data);
 static int _get_cpu_count(void);
 static int _get_cpu_load(void);
-static void _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _graph_values(Instance *inst);
 static void _menu_cb_post(void *data, E_Menu *m);
-static void _cpu_menu_fast(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _cpu_menu_medium(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _cpu_menu_normal(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _cpu_menu_slow(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _cpu_menu_very_slow(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _cpu_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -50,7 +54,7 @@ Config *cpu_conf = NULL;
 
 static int cpu_count;
 static int cpu_stats[4];
-static float update_interval;
+static float update_poll_time;
 
 static const E_Gadcon_Client_Class _gc_class = 
 {
@@ -65,7 +69,10 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Instance        *inst;
    Config_Item     *ci;
    E_Gadcon_Client *gcc;
+   const char	   *color_string;
    char             buf[4096];
+   int		    i;
+
 
    cpu_count = _get_cpu_count();
    
@@ -83,21 +90,66 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    
    cpu->o_icon = edje_object_add(gc->evas);
    if (!e_theme_edje_object_set(cpu->o_icon, 
-				"base/theme/modules/cpu", "modules/cpu/main"))
+				"base/theme/modules", "modules/cpu/main"))
      edje_object_file_set(cpu->o_icon, buf, "modules/cpu/main");
    evas_object_show(cpu->o_icon);
    
    gcc = e_gadcon_client_new(gc, name, id, style, cpu->o_icon);
-   gcc->data = inst;
-   inst->gcc = gcc;
-   inst->cpu = cpu;
+   gcc->data   = inst;
+   inst->gcc   = gcc;
+   inst->cpu   = cpu;
+
+   inst->popup = e_gadcon_popup_new(gcc, NULL);
+   inst->o_bg  = edje_object_add(inst->popup->win->evas);
+   if (!e_theme_edje_object_set(inst->o_bg, 
+				"base/theme/modules", "modules/cpu/popup"))
+     edje_object_file_set(inst->o_bg, buf, "modules/cpu/popup");
+
+   for (i = 0; i < cpu_count && i < 4; i++)
+     {
+	snprintf(buf, sizeof(buf), "chart%d", i + 1);
+	inst->o_chart[i] = edje_object_add(inst->popup->win->evas);
+	evas_object_layer_set(inst->o_chart[i], 1);
+	edje_object_part_swallow(inst->o_bg, buf, inst->o_chart[i]);
+
+	inst->o_poly[i] = evas_object_polygon_add(inst->popup->win->evas);
+	evas_object_layer_set(inst->o_poly[i], 1);
+	evas_object_anti_alias_set(inst->o_poly[i], 1);
+
+	evas_object_show(inst->o_chart[i]);
+	evas_object_show(inst->o_poly[i]);
+
+	snprintf(buf, sizeof(buf), "chart_color%d", i + 1);
+	color_string = edje_object_data_get(inst->o_bg, buf);
+	if (!color_string || sscanf(color_string, "%d %d %d %d",
+				    &inst->chart_colors[i][0],
+				    &inst->chart_colors[i][1],
+				    &inst->chart_colors[i][2],
+				    &inst->chart_colors[i][3]) != 4)
+	  {
+	     inst->chart_colors[i][0] = 55;
+	     inst->chart_colors[i][1] = 110;
+	     inst->chart_colors[i][2] = 250;
+	     inst->chart_colors[i][3] = 155;
+	  }
+     }
+
+   snprintf(buf, sizeof(buf), "e,state,orientation,%d",
+	    cpu_count > 4 ? 4 : cpu_count);
+   edje_object_signal_emit(inst->o_bg, buf, "e");
+
+   e_gadcon_popup_content_set(inst->popup, inst->o_bg);
 
    cpu_conf->instances = evas_list_append(cpu_conf->instances, inst);
 
    evas_object_event_callback_add(cpu->o_icon, EVAS_CALLBACK_MOUSE_DOWN,
-				  _button_cb_mouse_down, inst);
+				  _cb_mouse_down, inst);
+   evas_object_event_callback_add(cpu->o_icon, EVAS_CALLBACK_MOUSE_IN,
+				   _cb_mouse_in, inst);
+   evas_object_event_callback_add(cpu->o_icon, EVAS_CALLBACK_MOUSE_OUT,
+				   _cb_mouse_out, inst);
 
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   inst->timer = ecore_timer_add(ci->poll_time, _set_cpu_load, inst);
    return gcc;
 }
 
@@ -110,6 +162,8 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    inst = gcc->data;
    cpu = inst->cpu;
 
+   if (inst->popup)
+     e_object_del(E_OBJECT(inst->popup));
    if (inst->timer)
      ecore_timer_del(inst->timer);
    if (cpu->o_icon)
@@ -161,15 +215,17 @@ _config_item_get(const char *id)
 	if (!ci->id) continue;
 	if (!strcmp(ci->id, id))
 	  {
-	     update_interval = ci->interval;
+	     update_poll_time = ci->poll_time;
 	     return ci;
 	  }
      }
 
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
-   ci->interval = 1;
-   update_interval = ci->interval;
+   ci->poll_time = 1;
+   ci->show_popup = 1;
+   ci->max_points = 20;
+   update_poll_time = ci->poll_time;
    
    cpu_conf->items = evas_list_append(cpu_conf->items, ci);
    return ci;
@@ -178,10 +234,12 @@ _config_item_get(const char *id)
 static int 
 _set_cpu_load(void *data) 
 {
-   Instance *inst;
-   Cpu      *cpu;
-   int       i = 0;
-   char      str[100], str_tmp[100];
+   Instance    *inst;
+   Cpu         *cpu;
+   Config_Item *ci;
+   Evas_List   *l;
+   int          i = 0, *p;
+   char         str[100], str_tmp[100];
 
    if (cpu_count == -1) return 0;
 
@@ -191,6 +249,30 @@ _set_cpu_load(void *data)
    if (!cpu) return 1;
    
    _get_cpu_load();
+
+   ci = _config_item_get(inst->gcc->id);
+
+   for (i = 0; i < cpu_count; i++)
+     {
+	p = (int *) malloc(sizeof(int));
+	*p = cpu_stats[i];
+
+	if (evas_list_count(inst->points[i]) < ci->max_points)
+	  {
+	     inst->points[i] = evas_list_prepend(inst->points[i], p);
+	     l = evas_list_last(inst->points[i]);
+	     l->next = inst->points[i];
+	     inst->points[i]->prev = l;
+	  }
+	else
+	  {
+	     inst->points[i] = inst->points[i]->prev;
+	     if (inst->points[i]->data) free(inst->points[i]->data);
+	     inst->points[i]->data = p;
+	  }
+     }
+
+   _graph_values(inst);
 
    if (cpu_count == 1)
      snprintf(str, sizeof(str), "<br>%d%%", cpu_stats[0]);
@@ -258,7 +340,7 @@ _get_cpu_load(void)
    new_used = cp_time[CP_USER] + cp_time[CP_NICE] + cp_time[CP_SYS];
    new_tot = new_used + cp_time[CP_IDLE];
 
-   cpu_stats[0] = (100 * (float)(new_used - old_used) / (float)(new_tot - old_tot)) / update_interval;
+   cpu_stats[0] = (100 * (float)(new_used - old_used) / (float)(new_tot - old_tot)) / update_poll_time;
 
    old_tot = new_tot;
    old_used = new_used; 
@@ -300,7 +382,7 @@ _get_cpu_load(void)
 	     tmp_s = ((new_s - old_s[i]));
 	  }
 	
-	cpu_stats[i] = (tmp_u + tmp_n + tmp_s) / update_interval;
+	cpu_stats[i] = (tmp_u + tmp_n + tmp_s) / update_poll_time;
 
 	old_u[i] = new_u;
 	old_n[i] = new_n;
@@ -319,70 +401,113 @@ _get_cpu_load(void)
 }
 
 static void
-_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_graph_values(Instance *inst)
+{
+   Config_Item *ci;
+   Evas_List *l;
+   int i, m, p, v, step = 3;
+   float coeff;
+
+   if (!inst->popup->win->visible) return;
+
+   ci = _config_item_get(inst->gcc->id);
+   for (i = 0; i < cpu_count; i++)
+     {
+	Evas_Coord w = 0, h = 0, x = 0, y = 0;
+
+	evas_object_polygon_points_clear(inst->o_poly[i]);
+	evas_object_geometry_get(inst->o_chart[i], &x, &y, &w, &h);
+
+	coeff = (float) -h / 100;
+	step = ((int) ((float) w / (float) ci->max_points + 0.5));
+	if (step < 1) step = 1;
+	if (step * ci->max_points < w) step++;
+
+	/* Lower right */
+	evas_object_polygon_point_add(inst->o_poly[i], p = (x + w), m = (y + h));
+	for (l = inst->points[i]; l && p >= x; l = l->next, p = p - step)
+	  {
+	     v = m + (*(int *) l->data) * coeff;
+	     evas_object_polygon_point_add(inst->o_poly[i], p, v);
+	     if (l->next == inst->points[i]) break;
+	  }
+	if (p > x)
+	  evas_object_polygon_point_add(inst->o_poly[i], p, m);
+	/* Lower left */
+	evas_object_polygon_point_add(inst->o_poly[i], x, m);
+	evas_object_color_set(inst->o_poly[i],
+			      inst->chart_colors[i][0],
+			      inst->chart_colors[i][1],
+			      inst->chart_colors[i][2],
+			      inst->chart_colors[i][3]);
+     }
+}
+
+void
+_cpu_config_updated(const char *id)
+{
+  Evas_List *l;
+  Config_Item *ci;
+
+  if (!cpu_conf)
+    return;
+  ci = _config_item_get(id);
+  for (l = cpu_conf->instances; l; l = l->next)
+    {
+      Instance *inst;
+
+      inst = l->data;
+      if (!inst->gcc->id)
+	continue;
+
+      if (!strcmp(inst->gcc->id, ci->id))
+	{
+	  if (inst->timer)
+	    ecore_timer_del(inst->timer);
+	  inst->timer =
+	    ecore_timer_add(ci->poll_time, _set_cpu_load, inst);
+
+	  if (!ci->show_popup)
+	    {
+	       if (inst->popup->pinned)
+		 e_gadcon_popup_toggle_pinned(inst->popup);
+	       e_gadcon_popup_hide(inst->popup);
+	    }
+
+	  break;
+	}
+    }
+}
+
+static void
+_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
    Evas_Event_Mouse_Down *ev;
    
    inst = data;
    ev = event_info;
+   if (ev->button == 1)
+     e_gadcon_popup_toggle_pinned(inst->popup);
    if ((ev->button == 3) && (!cpu_conf->menu))
      {
 	E_Menu *mn;
 	E_Menu_Item *mi;
 	int cx, cy, cw, ch;
-	Config_Item *ci;
-	
-	ci = _config_item_get(inst->gcc->id);
-
-	mn = e_menu_new();
-	cpu_conf->menu_interval = mn;
-	
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Fast (0.5 sec)"));
-	e_menu_item_radio_set(mi, 1);
-	e_menu_item_radio_group_set(mi, 1);
-	if (ci->interval <= 0.5) e_menu_item_toggle_set(mi, 1);
-	e_menu_item_callback_set(mi, _cpu_menu_fast, inst);
-
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Medium (1 sec)"));
-	e_menu_item_radio_set(mi, 1);
-	e_menu_item_radio_group_set(mi, 1);
-	if (ci->interval > 0.5) e_menu_item_toggle_set(mi, 1);
-	e_menu_item_callback_set(mi, _cpu_menu_medium, inst);
-
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Normal (2 sec)"));
-	e_menu_item_radio_set(mi, 1);
-	e_menu_item_radio_group_set(mi, 1);
-	if (ci->interval >= 2.0) e_menu_item_toggle_set(mi, 1);
-	e_menu_item_callback_set(mi, _cpu_menu_normal, inst);
-
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Slow (5 sec)"));
-	e_menu_item_radio_set(mi, 1);
-	e_menu_item_radio_group_set(mi, 1);
-	if (ci->interval >= 5.0) e_menu_item_toggle_set(mi, 1);
-	e_menu_item_callback_set(mi, _cpu_menu_slow, inst);
-
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Very Slow (30 sec)"));
-	e_menu_item_radio_set(mi, 1);
-	e_menu_item_radio_group_set(mi, 1);
-	if (ci->interval >= 30.0) e_menu_item_toggle_set(mi, 1);
-	e_menu_item_callback_set(mi, _cpu_menu_very_slow, inst);
 
 	mn = e_menu_new();
 	cpu_conf->menu = mn;
 	e_menu_post_deactivate_callback_set(mn, _menu_cb_post, inst);
 	
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Time Between Updates"));
-	e_menu_item_submenu_set(mi, cpu_conf->menu_interval);
+	e_menu_item_label_set(mi, _("Configuration"));
+	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+	e_menu_item_callback_set(mi, _cpu_menu_cb_configure, inst);
+
+	mi = e_menu_item_new(mn);
+	e_menu_item_separator_set(mi, 1);
 
         e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
-	
 	e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
 	e_menu_activate_mouse(mn,
 			      e_util_zone_current_get(e_manager_current_get()),
@@ -393,90 +518,62 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
 }
 
+static void 
+_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Instance *inst;
+   Config_Item *ci;
+
+   if (!(inst = data)) return;
+   ci = _config_item_get(inst->gcc->id);
+   if (!ci->show_popup) return;
+
+   e_gadcon_popup_show(inst->popup);
+   _graph_values(inst);
+}
+
+static void 
+_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Instance *inst;
+   Config_Item *ci;
+   
+   if (!(inst = data)) return;
+   ci = _config_item_get(inst->gcc->id);
+   if (!ci->show_popup) return;
+
+   e_gadcon_popup_hide(inst->popup);
+}
+
 static void
 _menu_cb_post(void *data, E_Menu *m)
 {
    if (!cpu_conf->menu) return;
    e_object_del(E_OBJECT(cpu_conf->menu));
    cpu_conf->menu = NULL;
-   if (cpu_conf->menu_interval)
-     e_object_del(E_OBJECT(cpu_conf->menu_interval));
-   cpu_conf->menu_interval = NULL;
 }
    
 static void
-_cpu_menu_fast(void *data, E_Menu *m, E_Menu_Item *mi)
+_cpu_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 {
    Instance *inst;
    Config_Item *ci;
-   
+   int i, max = 0, w = 0;
+
    inst = data;
-   ci = _config_item_get(inst->gcc->id);
+   ci = _config_item_get (inst->gcc->id);
 
-   ci->interval = 0.5;
-   ecore_timer_del(inst->timer);
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
-   e_config_save_queue();
-}
+   for (i = 0; i < cpu_count && i < 4; i++)
+     {
+	evas_object_geometry_get(inst->o_chart[i],
+				 NULL, NULL,
+				 &w, NULL);
 
-static void
-_cpu_menu_medium(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Instance *inst;
-   Config_Item *ci;
-   
-   inst = data;
-   ci = _config_item_get(inst->gcc->id);
+	if (w > max)
+	  max = w;
+     }
 
-   ci->interval = 1.0;
-   ecore_timer_del(inst->timer);
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
-   e_config_save_queue();
-}
-
-static void
-_cpu_menu_normal(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Instance *inst;
-   Config_Item *ci;
-   
-   inst = data;
-   ci = _config_item_get(inst->gcc->id);
-
-   ci->interval = 2.0;
-   ecore_timer_del(inst->timer);
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
-   e_config_save_queue();
-}
-
-static void
-_cpu_menu_slow(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Instance *inst;
-   Config_Item *ci;
-   
-   inst = data;
-   ci = _config_item_get(inst->gcc->id);
-
-   ci->interval = 5.0;
-   ecore_timer_del(inst->timer);
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
-   e_config_save_queue();
-}
-
-static void
-_cpu_menu_very_slow(void *data, E_Menu *m, E_Menu_Item *mi)
-{
-   Instance *inst;
-   Config_Item *ci;
-   
-   inst = data;
-   ci = _config_item_get(inst->gcc->id);
-
-   ci->interval = 30.0;
-   ecore_timer_del(inst->timer);
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
-   e_config_save_queue();
+   _config_cpu_module(ci, max);
 }
 
 EAPI E_Module_Api e_modapi = 
@@ -495,7 +592,9 @@ e_modapi_init(E_Module *m)
    #undef D
    #define D conf_item_edd
    E_CONFIG_VAL(D, T, id, STR);
-   E_CONFIG_VAL(D, T, interval, DOUBLE);
+   E_CONFIG_VAL(D, T, poll_time, DOUBLE);
+   E_CONFIG_VAL(D, T, show_popup, INT);
+   E_CONFIG_VAL(D, T, max_points, INT);
    
    #undef T
    #define T Config
@@ -511,7 +610,9 @@ e_modapi_init(E_Module *m)
 	cpu_conf = E_NEW(Config, 1);
 	ci = E_NEW(Config_Item, 1);
 	ci->id = evas_stringshare_add("0");
-	ci->interval = 1;
+	ci->poll_time = 1;
+	ci->show_popup = 1;
+	ci->max_points = 20;
 	
 	cpu_conf->items = evas_list_append(cpu_conf->items, ci);
      }
@@ -535,7 +636,7 @@ e_modapi_shutdown(E_Module *m)
 	cpu_conf->menu = NULL;
      }
 
-   while(cpu_conf->items) 
+   while (cpu_conf->items) 
      {
 	Config_Item *ci;
 	

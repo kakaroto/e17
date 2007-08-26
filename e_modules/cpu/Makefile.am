@@ -13,6 +13,7 @@ cpu.edj
 EXTRA_DIST = $(files_DATA) \
 cpu.edc \
 VeraMono.ttf \
+VeraBd.ttf \
 cpu.png \
 e_modules-cpu.spec
 
@@ -28,7 +29,8 @@ INCLUDES = -I. \
 pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
-		       e_mod_main.h
+		       e_mod_main.h \
+		       e_mod_config.c
 
 module_la_LIBADD       = @e_libs@
 module_la_LDFLAGS      = -module -avoid-version
