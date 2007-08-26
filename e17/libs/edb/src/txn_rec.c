@@ -47,6 +47,7 @@ static const char sccsid[] = "@(#)txn_rec.c	10.15 (Sleepycat) 1/3/99";
 #include <sys/types.h>
 
 #include <errno.h>
+#include <string.h>
 #endif
 
 #include "edb_int.h"

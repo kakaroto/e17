@@ -5,6 +5,10 @@
  *	Sleepycat Software.  All rights reserved.
  */
 
+/* needed to get pread/pwrite protos */
+#define _BSD_SOURCE
+#define _XOPEN_SOURCE 500
+
 #include "config.h"
 
 #ifndef lint

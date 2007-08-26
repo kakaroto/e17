@@ -1,6 +1,13 @@
 #include <gtk/gtk.h>
 
 
+void
+init_type_menu                         (void);
+
+void
+new_db                                 (GtkWidget       *window,
+                                        char            *file);
+
 gboolean
 on_window_delete_event                 (GtkWidget       *widget,
                                         GdkEvent        *event,

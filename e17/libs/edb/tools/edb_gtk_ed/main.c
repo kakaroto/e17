@@ -11,6 +11,7 @@
 
 #include "interface.h"
 #include "support.h"
+#include "callbacks.h"
 
 GtkWidget *main_window;
 char *db_file = NULL;

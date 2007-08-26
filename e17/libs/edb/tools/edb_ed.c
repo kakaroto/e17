@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
 
 static int
 sort_compare(const void *v1, const void *v2);
@@ -316,7 +317,7 @@ main(int argc, char **argv)
 			    if(!the_data)
 			      {
 				fprintf(stderr,
-					"Out of RAM inporting stdin. Current allocation:%d\n",
+					"Out of RAM inporting stdin. Current allocation:%zu\n",
 					data_read_size);
 				exit(-1);
 			      }
@@ -327,12 +328,12 @@ main(int argc, char **argv)
 			
 			if(feof(stdin))
 			  {
-			    fprintf(stdout,"Read in %d bytes\n",data_read_size);
+			    fprintf(stdout,"Read in %zu bytes\n",data_read_size);
 			  }
 			else if(ferror(stdin))
 			  {
 			    fprintf(stderr,
-				    "Error reading stdin at offset %d\n",data_read_size);
+				    "Error reading stdin at offset %zu\n",data_read_size);
 			    exit(-1);
 			  }
 			

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #define  YELLOW_ON_BLUE 10
 #define  RED_ON_BLUE    11

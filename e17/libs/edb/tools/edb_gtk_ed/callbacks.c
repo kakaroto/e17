@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -23,12 +25,6 @@ gint  row_selected = -1;
 
 int
 sort_compare(const void *v1, const void *v2);
-
-void
-new_db(GtkWidget *window, char *file);
-
-void
-init_type_menu(void);
 
 void
 on_int_activate(GtkMenuItem *menuitem, gpointer user_data);
