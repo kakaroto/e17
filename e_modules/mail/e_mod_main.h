@@ -54,6 +54,9 @@ struct _Config_Item
    unsigned char show_label;
    double check_time;
 
+   unsigned char show_popup;
+   unsigned char show_popup_empty;
+
    Evas_List *boxes;
 };
 

@@ -6,6 +6,8 @@ struct _E_Config_Dialog_Data
 {
   int show_label;
   double check_time;
+  int show_popup;
+  int show_popup_empty;
   Evas_List *boxes;
 
   /* Evas Object References */
@@ -57,6 +59,8 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 {
   cfdata->show_label = ci->show_label;
   cfdata->check_time = ci->check_time;
+  cfdata->show_popup = ci->show_popup;
+  cfdata->show_popup_empty = ci->show_popup_empty;
   cfdata->boxes = ci->boxes;
 }
 
@@ -92,6 +96,12 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   of = e_widget_framelist_add (evas, _("General Settings"), 0);
   ob =
     e_widget_check_add (evas, D_("Always Show Labels"), &(cfdata->show_label));
+  e_widget_framelist_object_append (of, ob);
+  ob =
+    e_widget_check_add (evas, D_("Show Mailbox Popup"), &(cfdata->show_popup));
+  e_widget_framelist_object_append (of, ob);
+  ob =
+    e_widget_check_add (evas, D_("Show All Boxes In Popup"), &(cfdata->show_popup_empty));
   e_widget_framelist_object_append (of, ob);
   ob = e_widget_label_add (evas, D_("Check Interval"));
   e_widget_framelist_object_append (of, ob);
@@ -141,6 +151,8 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   ci = cfd->data;
   ci->show_label = cfdata->show_label;
   ci->check_time = cfdata->check_time;
+  ci->show_popup = cfdata->show_popup;
+  ci->show_popup_empty = cfdata->show_popup_empty;
   e_config_save_queue ();
   _mail_config_updated (ci->id);
   return 1;

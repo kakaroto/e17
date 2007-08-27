@@ -295,7 +295,7 @@ _mail_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
 
   if (inst->popup) return;
   ci = _mail_config_item_get (inst->gcc->id);
-  if (!ci->boxes) return;
+  if ((!ci->show_popup) || (!ci->boxes)) return;
 
   inst->popup = e_gadcon_popup_new (inst->gcc, _mail_popup_resize);
   snprintf (path, sizeof (path), "%s/mail.edj",
@@ -307,12 +307,21 @@ _mail_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
 
        cb = l->data;
        if (!cb) continue;
+       if ((!ci->show_popup_empty) && (!cb->num_new)) continue;
        snprintf (buf, sizeof (buf), "%s: %d/%d", cb->name, cb->num_new,
 	         cb->num_total);
        e_tlist_append (list, buf, NULL, NULL, NULL, NULL);
     }
-  e_gadcon_popup_content_set (inst->popup, list);
-  e_gadcon_popup_show (inst->popup);
+  if (e_tlist_count (list))
+    {
+       e_gadcon_popup_content_set (inst->popup, list);
+       e_gadcon_popup_show (inst->popup);
+    }
+  else
+    {
+       e_object_del (E_OBJECT (inst->popup));
+       inst->popup = NULL;
+    }
 }
 
 static void
@@ -374,6 +383,8 @@ _mail_config_item_get (const char *id)
   ci->id = evas_stringshare_add (id);
   ci->show_label = 1;
   ci->check_time = 15.0;
+  ci->show_popup = 1;
+  ci->show_popup_empty = 0;
   ci->boxes = NULL;
 
   mail_config->items = evas_list_append (mail_config->items, ci);
@@ -418,6 +429,8 @@ e_modapi_init (E_Module * m)
   E_CONFIG_VAL (D, T, id, STR);
   E_CONFIG_VAL (D, T, show_label, UCHAR);
   E_CONFIG_VAL (D, T, check_time, DOUBLE);
+  E_CONFIG_VAL (D, T, show_popup, UCHAR);
+  E_CONFIG_VAL (D, T, show_popup_empty, UCHAR);
   E_CONFIG_LIST (D, T, boxes, conf_box_edd);
 
   conf_edd = E_CONFIG_DD_NEW ("Mail_Config", Config);
@@ -438,6 +451,8 @@ e_modapi_init (E_Module * m)
       ci->id = evas_stringshare_add ("0");
       ci->show_label = 1;
       ci->check_time = 15.0;
+      ci->show_popup = 1;
+      ci->show_popup_empty = 0;
       ci->boxes = NULL;
 
       mail_config->items = evas_list_append (mail_config->items, ci);
