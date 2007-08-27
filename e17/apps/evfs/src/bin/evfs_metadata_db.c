@@ -265,7 +265,7 @@ sqlite3* evfs_metadata_db_connect()
 	return db;
 }
 
-sqlite3* evfs_metadata_db_close(sqlite3* db)
+void evfs_metadata_db_close(sqlite3* db)
 {
 	sqlite3_close(db);
 }
@@ -507,7 +507,6 @@ Ecore_List* evfs_metadata_db_vfolder_search_list_get(sqlite3* db)
 
 	char query[PATH_MAX];
 	int ret;
-	int vfo = 0;
 	sqlite3_stmt *pStmt;
 	char* name;
 
@@ -519,7 +518,7 @@ Ecore_List* evfs_metadata_db_vfolder_search_list_get(sqlite3* db)
 	if (ret == SQLITE_OK) {
 		
 		while ((ret = sqlite3_step(pStmt)) == SQLITE_ROW) {
-			name = strdup(sqlite3_column_text(pStmt,0));
+			name = strdup((const char*)sqlite3_column_text(pStmt,0));
 			ecore_list_append(retlist,name);
 		}
 
@@ -528,4 +527,73 @@ Ecore_List* evfs_metadata_db_vfolder_search_list_get(sqlite3* db)
 	}
 
 	return retlist;
+}
+
+int evfs_metadata_db_vfolder_search_id_get(sqlite3* db, char* name)
+{
+	char query[PATH_MAX];
+	int ret;
+	int id;
+	sqlite3_stmt *pStmt;
+
+
+	snprintf(query, sizeof(query), "select id from VFolderSearch where name = ?");
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+
+	if (ret == SQLITE_OK) {
+		sqlite3_bind_text(pStmt, 1, name, strlen(name), SQLITE_STATIC);	
+		if ((ret = sqlite3_step(pStmt)) == SQLITE_ROW) {
+			id = sqlite3_column_int(pStmt,0);
+		} else {
+			id = 0;		
+		}
+
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+	} else {
+		id = 0;
+	}
+
+	return id;
+}
+
+Ecore_List* evfs_metadata_db_vfolder_search_entries_get(sqlite3* db, int id)
+{
+	Ecore_List* entries;
+
+	entries = ecore_list_new();
+	char query[PATH_MAX];
+	int ret;
+	sqlite3_stmt *pStmt;
+
+	int rtype;
+	char* rkey = NULL;
+	char* rvalue=NULL;
+	EvfsVfolderEntry* entry;
+
+	entries = ecore_list_new();
+
+	snprintf(query, sizeof(query), "select rtype, rkey, rvalue from VFolderSearchComponent where id = ?");
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+
+	if (ret == SQLITE_OK) {
+		sqlite3_bind_int(pStmt, 1, id);
+		while ((ret = sqlite3_step(pStmt)) == SQLITE_ROW) {
+			entry = NEW(EvfsVfolderEntry);
+			rtype = sqlite3_column_text(pStmt,0)[0];
+			if (sqlite3_column_text(pStmt,1)) 
+				rkey = strdup((const char*)sqlite3_column_text(pStmt,1));
+			if (sqlite3_column_text(pStmt,2))
+				rvalue = strdup((const char*)sqlite3_column_text(pStmt,2));
+			entry->type = rtype;
+			entry->name = rkey;
+			entry->value = rvalue;
+			ecore_list_append(entries,entry);
+		}
+
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+	}
+	
+	return entries;
 }

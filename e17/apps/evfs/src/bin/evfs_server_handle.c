@@ -769,7 +769,7 @@ void evfs_handle_mime_request(evfs_client* client, evfs_command* command)
 		/*TODO: Transfer file local, then mime? Ugh*/
 	} else {
 		const char* mime = efreet_mime_type_get(evfs_command_first_file_get(command)->path);
-		printf("%s\n", mime);
+		evfs_mime_event_create(client, command, mime);
 	}
 }
 
@@ -779,7 +779,6 @@ void evfs_handle_vfolder_create(evfs_client* client, evfs_command* command)
 	sqlite3* db;
 	Evas_List* l;
 	EvfsVfolderEntry* e;
-	printf("Creating a vfolder called '%s'\n", command->file_command->ref);
 	
 	db = evfs_metadata_db_connect();
 	id = evfs_metadata_db_vfolder_search_create(db, command->file_command->ref);

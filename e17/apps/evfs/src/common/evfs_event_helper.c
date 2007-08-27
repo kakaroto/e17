@@ -176,3 +176,15 @@ void evfs_group_list_event_create(evfs_client* client, evfs_command* command, Ev
    /*Destroy */
    evfs_cleanup_event(EVFS_EVENT(event));
 }
+
+void evfs_mime_event_create(evfs_client* client, evfs_command* command, const char* mime)
+{
+   EvfsEventMime* event = NEW(EvfsEventMime);
+   EVFS_EVENT(event)->type = EVFS_EV_MIME;
+
+   event->mime = (char*)mime;
+
+   evfs_write_event(client,command,EVFS_EVENT(mime));
+
+   evfs_cleanup_event(EVFS_EVENT(event));
+}

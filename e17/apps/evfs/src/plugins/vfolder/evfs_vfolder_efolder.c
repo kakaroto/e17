@@ -72,19 +72,42 @@ void evfs_vfolder_list(EvfsFilereference* ref, Ecore_List** list)
 
 	db = evfs_metadata_db_connect();
 		
-	retlist = evfs_metadata_db_vfolder_search_list_get(db);
-	ecore_list_first_goto(retlist);
-	while ((name = ecore_list_first_remove(retlist))) {
- 	        snprintf(assemble, sizeof(assemble), "%s/%s", 
-     	           EVFS_PLUGIN_VFOLDER_EFOLDER_ID, name);
-	        new = NEW(EvfsFilereference);
-  	        new->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
-   	        new->path = strdup(assemble);
-	        new->file_type = EVFS_FILE_DIRECTORY;
+	if (!strcmp(path, EVFS_PLUGIN_VFOLDER_EFOLDER_ID)) {
+		retlist = evfs_metadata_db_vfolder_search_list_get(db);
+		ecore_list_first_goto(retlist);
+		while ((name = ecore_list_first_remove(retlist))) {
+	 	        snprintf(assemble, sizeof(assemble), "%s/%s", 
+	     	           EVFS_PLUGIN_VFOLDER_EFOLDER_ID, name);
+	
+			new = NEW(EvfsFilereference);
+	  	        new->plugin_uri = strdup(EVFS_PLUGIN_VFOLDER_URI);
+	   	        new->path = strdup(assemble);
+		        new->file_type = EVFS_FILE_DIRECTORY;
 
-		ecore_list_append_list(*list, new);
+			ecore_list_append(*list, new);
+		}
+		ecore_list_destroy(retlist);
+	} else {
+		char* efolder_name;
+		int id;
+		efolder_name = strstr(path + 1, "/") + 1;
+
+		/*Get the id for this efolder*/	
+		if (efolder_name) {
+			id = evfs_metadata_db_vfolder_search_id_get(db,efolder_name);
+
+			if (id) {
+				EvfsVfolderEntry* entry;
+				Ecore_List* entries = 
+					evfs_metadata_db_vfolder_search_entries_get(db,id);
+
+				ecore_list_first_goto(entries);
+				while ( (entry = ecore_list_first_remove(entries))) {
+					printf ("%c %s %s\n", entry->type, entry->name, entry->value);
+				}
+			}
+		}
 	}
-	ecore_list_destroy(retlist);
 
 	evfs_metadata_db_close(db);
 }

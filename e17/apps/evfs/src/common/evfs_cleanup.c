@@ -182,6 +182,11 @@ evfs_cleanup_metadata_event(EvfsEventMetadata* event)
 	}
 }
 
+void evfs_cleanup_mime_event(EvfsEventMime* event)
+{
+	free(event->mime);
+}
+
 void
 evfs_cleanup_metadata_groups_event(EvfsEventMetadataGroups* event) 
 {
@@ -222,13 +227,14 @@ evfs_cleanup_event(EvfsEvent* event)
      case EVFS_EV_METADATA:
 	evfs_cleanup_metadata_event(EVFS_EVENT_METADATA(event));
 	break;
-
      case EVFS_EV_METADATA_GROUPS:
 	evfs_cleanup_metadata_groups_event(EVFS_EVENT_METADATA_GROUPS(event));
 	break;
-
      case EVFS_EV_STAT:
 	evfs_cleanup_stat_event(EVFS_EVENT_STAT(event));
+	break;
+     case EVFS_EV_MIME:
+	evfs_cleanup_mime_event(EVFS_EVENT_MIME(event));
 	break;
 
      default:
