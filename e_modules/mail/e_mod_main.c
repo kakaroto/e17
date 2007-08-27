@@ -56,6 +56,8 @@ static void _mail_free (Mail * mail);
 static int _mail_cb_check (void *data);
 static int _mail_cb_exe_exit (void *data, int type, void *event);
 
+static void _mail_popup_resize (Evas_Object *obj, int *w, int *h);
+
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
 static E_Config_DD *conf_box_edd = NULL;
@@ -159,8 +161,8 @@ _gc_shutdown (E_Gadcon_Client * gcc)
 
   inst = gcc->data;
 
-   if (inst->check_timer)
-     ecore_timer_del(inst->check_timer);
+  if (inst->check_timer)
+    ecore_timer_del (inst->check_timer);
    
   evas_object_event_callback_del (inst->mail_obj, EVAS_CALLBACK_MOUSE_DOWN,
 				  _mail_cb_mouse_down);
@@ -169,6 +171,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
   evas_object_event_callback_del (inst->mail_obj, EVAS_CALLBACK_MOUSE_OUT,
 				  _mail_cb_mouse_out);
 
+  if (inst->popup) e_object_del (E_OBJECT (inst->popup));
   mail_config->instances = evas_list_remove (mail_config->instances, inst);
   _mail_free (inst->mail);
   free (inst);
@@ -255,7 +258,7 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 	}
 
       mi = e_menu_item_new (mn);
-      e_menu_item_label_set (mi, _("Configuration"));
+      e_menu_item_label_set (mi, D_("Configuration"));
       e_util_menu_item_edje_icon_set (mi, "enlightenment/configuration");
       e_menu_item_callback_set (mi, _mail_menu_cb_configure, inst);
 
@@ -279,11 +282,37 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 static void
 _mail_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-  Instance *inst = data;
+  Instance    *inst = data;
+  Config_Item *ci;
+  Evas_Object *list;
+  Evas_List   *l;
+  char         buf[256];
+  char path[PATH_MAX];
 
   if (!inst)
     return;
   edje_object_signal_emit (inst->mail_obj, "label_active", "");
+
+  if (inst->popup) return;
+  ci = _mail_config_item_get (inst->gcc->id);
+  if (!ci->boxes) return;
+
+  inst->popup = e_gadcon_popup_new (inst->gcc, _mail_popup_resize);
+  snprintf (path, sizeof (path), "%s/mail.edj",
+	    e_module_dir_get (mail_config->module));
+  list = e_tlist_add (inst->popup->win->evas);
+  for (l = ci->boxes; l; l = l->next)
+    {
+       Config_Box *cb;
+
+       cb = l->data;
+       if (!cb) continue;
+       snprintf (buf, sizeof (buf), "%s: %d/%d", cb->name, cb->num_new,
+	         cb->num_total);
+       e_tlist_append (list, buf, NULL, NULL, NULL, NULL);
+    }
+  e_gadcon_popup_content_set (inst->popup, list);
+  e_gadcon_popup_show (inst->popup);
 }
 
 static void
@@ -297,6 +326,12 @@ _mail_cb_mouse_out (void *data, Evas * e, Evas_Object * obj, void *event_info)
   ci = _mail_config_item_get (inst->gcc->id);
   if (!ci->show_label)
     edje_object_signal_emit (inst->mail_obj, "label_passive", "");
+
+  if (inst->popup)
+    {
+       e_object_del (E_OBJECT (inst->popup));
+       inst->popup = NULL;
+    }
 }
 
 static void
@@ -353,8 +388,8 @@ EAPI E_Module_Api e_modapi = {
 EAPI void *
 e_modapi_init (E_Module * m)
 {
-  bindtextdomain(PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset(PACKAGE, "UTF-8");
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (PACKAGE, "UTF-8");
 
   conf_box_edd = E_CONFIG_DD_NEW ("Mail_Box_Config", Config_Box);
 #undef T
@@ -815,3 +850,14 @@ _mail_menu_cb_exec (void *data, E_Menu * m, E_Menu_Item * mi)
     ecore_event_handler_add (ECORE_EXE_EVENT_DEL, _mail_cb_exe_exit, cb);
   cb->exe = ecore_exe_run (cb->exec, cb);
 }
+
+static void
+_mail_popup_resize (Evas_Object *obj, int *w, int *h)
+{
+   Evas_Coord mw, mh;
+
+   e_tlist_min_size_get (obj, &mw, &mh);
+   *w = mw;
+   *h = mh;
+}
+

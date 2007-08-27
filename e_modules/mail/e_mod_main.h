@@ -28,6 +28,8 @@ struct _Instance
    Ecore_Exe *exe;
    Ecore_Timer *check_timer;
    int count;
+
+   E_Gadcon_Popup *popup;
 };
 
 struct _Mail
