@@ -500,3 +500,32 @@ void evfs_metadata_db_vfolder_search_entry_add(sqlite3* db, int id, EvfsVfolderE
 		sqlite3_finalize(pStmt);
 	}
 }
+
+Ecore_List* evfs_metadata_db_vfolder_search_list_get(sqlite3* db)
+{
+	Ecore_List* retlist;
+
+	char query[PATH_MAX];
+	int ret;
+	int vfo = 0;
+	sqlite3_stmt *pStmt;
+	char* name;
+
+	retlist = ecore_list_new();
+
+	snprintf(query, sizeof(query), "select name from VFolderSearch");
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+
+	if (ret == SQLITE_OK) {
+		
+		while ((ret = sqlite3_step(pStmt)) == SQLITE_ROW) {
+			name = strdup(sqlite3_column_text(pStmt,0));
+			ecore_list_append(retlist,name);
+		}
+
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+	}
+
+	return retlist;
+}

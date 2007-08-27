@@ -12,5 +12,6 @@ void evfs_metadata_db_delete_file(sqlite3* db, int file);
 int evfs_metadata_db_vfolder_search_create(sqlite3* db, char* name);
 sqlite3* evfs_metadata_db_close(sqlite3* db);
 void evfs_metadata_db_vfolder_search_entry_add(sqlite3* db, int id, EvfsVfolderEntry* entry);
+Ecore_List* evfs_metadata_db_vfolder_search_list_get(sqlite3* db);
 
 #endif
