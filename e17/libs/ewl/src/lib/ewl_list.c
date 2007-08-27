@@ -151,6 +151,7 @@ void
 ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Model *model;
+	void *mvc_data;
 	int row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -160,10 +161,11 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_TYPE("data", data, EWL_LIST_TYPE);
 
 	model = ewl_mvc_model_get(EWL_MVC(data));
+	mvc_data = ewl_mvc_data_get(EWL_MVC(data));
 	row = ewl_container_child_index_get(EWL_CONTAINER(data), w);
 	if (row < 0) DRETURN(DLEVEL_STABLE);
 
-	if ((unsigned int) row > model->count(data))
+	if ((unsigned int) row > model->count(mvc_data))
 	{
 		if (!EWL_HIGHLIGHT_IS(w))
 		{
@@ -178,8 +180,7 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 		if (row < 0) DRETURN(DLEVEL_STABLE);
 	}
 
-	ewl_mvc_handle_click(EWL_MVC(data), NULL,
-			ewl_mvc_data_get(EWL_MVC(data)), row, 0);
+	ewl_mvc_handle_click(EWL_MVC(data), NULL, mvc_data, row, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
