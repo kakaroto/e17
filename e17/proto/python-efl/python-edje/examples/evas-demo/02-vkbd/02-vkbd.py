@@ -147,7 +147,7 @@ class VirtualKeyboard(edje.Edje):
 
     @edje.decorators.signal_callback("mouse,down,1,*", "*")
     def on_edje_signal_mouse_down_multiple_key(self, emission, source):
-        self.on_edje_signal_mouse_down_key(emission, source)
+        self.on_edje_signal_mouse_down_key(self, emission, source)
 
     @edje.decorators.signal_callback("mouse,up,1", "*")
     def on_edje_signal_mouse_up_key(self, emission, source):
