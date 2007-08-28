@@ -208,9 +208,20 @@ Pixmap              EWindowGetShapePixmap(Win win);
 Bool                EQueryPointer(Win win, int *px, int *py,
 				  Window * pchild, unsigned int *pmask);
 
-void                EAllocColor(Colormap colormap, XColor * pxc);
-void                ESetColor(XColor * pxc, int r, int g, int b);
-void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
+typedef struct
+{
+   unsigned long       pixel;
+   unsigned char       alpha, red, green, blue;
+} EColor;
+
+void                EAllocColor(Colormap cmap, EColor * pec);
+void                EAllocXColor(Colormap cmap, XColor * pxc, EColor * pec);
+
+#define SET_COLOR(xc, _r, _g, _b) \
+    do { (xc)->red = _r; (xc)->green = _g; (xc)->blue = _b; } while(0)
+
+#define GET_COLOR(xc, _r, _g, _b) \
+    do { _r = (xc)->red; _g = (xc)->green; _b = (xc)->blue; } while(0)
 
 Window              EXWindowGetParent(Window xwin);
 int                 EXGetGeometry(Window xwin, Window * root_return,

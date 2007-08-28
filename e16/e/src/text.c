@@ -500,7 +500,7 @@ _xfs_FdcSetDrawable(TextState * ts, unsigned long draw)
 }
 
 static void
-_xfs_FdcSetColor(TextState * ts, XColor * xc)
+_xfs_FdcSetColor(TextState * ts, EColor * xc)
 {
    FontCtxXfs         *fdc = (FontCtxXfs *) ts->fdc;
 
@@ -605,7 +605,7 @@ _xfont_FdcSetDrawable(TextState * ts, unsigned long draw)
 }
 
 static void
-_xfont_FdcSetColor(TextState * ts, XColor * xc)
+_xfont_FdcSetColor(TextState * ts, EColor * xc)
 {
    FontCtxXfont       *fdc = (FontCtxXfont *) ts->fdc;
 

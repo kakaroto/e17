@@ -140,15 +140,15 @@ _ShapeGetColor(void)
    static char         color_valid = 0;
    static unsigned int color_value = 0;
    static unsigned int color_pixel;
-   XColor              xc;
+   EColor              color;
 
    if (color_valid && color_value == Conf.movres.color)
       goto done;
 
    color_value = Conf.movres.color;
-   ESetColor(&xc, _R(color_value), _G(color_value), _B(color_value));
-   EAllocColor(VRoot.cmap, &xc);
-   color_pixel = xc.pixel;
+   SET_COLOR(&color, _R(color_value), _G(color_value), _B(color_value));
+   EAllocColor(VRoot.cmap, &color);
+   color_pixel = color.pixel;
    color_valid = 1;
 
  done:

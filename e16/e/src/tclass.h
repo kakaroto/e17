@@ -61,7 +61,7 @@ typedef struct
    int                 (*FdcInit) (TextState * ts, Win win, Drawable draw);
    void                (*FdcFini) (TextState * ts);
    void                (*FdcSetDrawable) (TextState * ts, unsigned long draw);
-   void                (*FdcSetColor) (TextState * ts, XColor * xc);
+   void                (*FdcSetColor) (TextState * ts, EColor * xc);
 } FontOps;
 
 struct _textstate
@@ -75,8 +75,8 @@ struct _textstate
       char                orientation;
       char                effect;
    } style;
-   XColor              fg_col;
-   XColor              bg_col;
+   EColor              fg_col;
+   EColor              bg_col;
    void               *fdc;
    const FontOps      *ops;
 };
@@ -124,6 +124,6 @@ void                TextDraw(TextClass * tclass, Win win, Drawable draw,
 int                 _xft_FdcInit(TextState * ts, Win win, Drawable draw);
 void                _xft_FdcFini(TextState * ts);
 void                _xft_FdcSetDrawable(TextState * ts, unsigned long draw);
-void                _xft_FdcSetColor(TextState * ts, XColor * xc);
+void                _xft_FdcSetColor(TextState * ts, EColor * xc);
 
 #endif /* _TCLASS_H */

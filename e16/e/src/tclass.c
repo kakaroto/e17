@@ -429,7 +429,7 @@ TextclassConfigLoad(FILE * fs)
 	       {
 		  r = g = b = 0;
 		  sscanf(s, "%*s %i %i %i", &r, &g, &b);
-		  ESetColor(&ts->fg_col, r, g, b);
+		  SET_COLOR(&ts->fg_col, r, g, b);
 	       }
 	     break;
 	  case TEXT_BG_COL:
@@ -437,7 +437,7 @@ TextclassConfigLoad(FILE * fs)
 	       {
 		  r = g = b = 0;
 		  sscanf(s, "%*s %i %i %i", &r, &g, &b);
-		  ESetColor(&ts->bg_col, r, g, b);
+		  SET_COLOR(&ts->bg_col, r, g, b);
 	       }
 	     break;
 	  default:
@@ -468,7 +468,7 @@ TextclassSighan(int sig, void *prm __UNUSED__)
 	tc->norm.normal = TextstateCreate();
 	tc->norm.normal->fontname =
 	   Estrdup("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
-	ESetColor(&(tc->norm.normal->fg_col), 0, 0, 0);
+	SET_COLOR(&(tc->norm.normal->fg_col), 0, 0, 0);
 	TextclassPopulate(tc);
 	break;
      }

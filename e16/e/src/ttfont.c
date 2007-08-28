@@ -184,11 +184,11 @@ _ift_FdcSetDrawable(TextState * ts, unsigned long draw)
 }
 
 static void
-_ift_FdcSetColor(TextState * ts __UNUSED__, XColor * xc)
+_ift_FdcSetColor(TextState * ts __UNUSED__, EColor * ec)
 {
    FontCtxIft         *fdc = (FontCtxIft *) ts->fdc;
 
-   EGetColor(xc, &(fdc->r), &(fdc->g), &(fdc->b));
+   GET_COLOR(ec, fdc->r, fdc->g, fdc->b);
 }
 
 const FontOps       FontOps_ift = {
@@ -240,14 +240,6 @@ main(int argc, char **argv)
 	  }
      }
    return 0;
-}
-
-void
-EGetColor(const XColor * pxc, int *pr, int *pg, int *pb)
-{
-   *pr = pxc->red >> 8;
-   *pg = pxc->green >> 8;
-   *pb = pxc->blue >> 8;
 }
 
 #endif

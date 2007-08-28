@@ -1572,25 +1572,21 @@ EXFreeGC(GC gc)
 }
 
 void
-EAllocColor(Colormap cmap, XColor * pxc)
+EAllocColor(Colormap cmap, EColor * pec)
 {
+   XColor              xc;
+
+   EAllocXColor(cmap, &xc, pec);
+   pec->pixel = xc.pixel;
+}
+
+void
+EAllocXColor(Colormap cmap, XColor * pxc, EColor * pec)
+{
+   pxc->red = pec->red << 8;
+   pxc->green = pec->green << 8;
+   pxc->blue = pec->blue << 8;
    XAllocColor(disp, cmap, pxc);
-}
-
-void
-ESetColor(XColor * pxc, int r, int g, int b)
-{
-   pxc->red = (r << 8) | r;
-   pxc->green = (g << 8) | g;
-   pxc->blue = (b << 8) | b;
-}
-
-void
-EGetColor(const XColor * pxc, int *pr, int *pg, int *pb)
-{
-   *pr = pxc->red >> 8;
-   *pg = pxc->green >> 8;
-   *pb = pxc->blue >> 8;
 }
 
 /* Build mask from window shape rects */

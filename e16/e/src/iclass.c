@@ -61,7 +61,7 @@ struct _imagestate
    EImage             *im;
    EImageBorder       *border;
    int                 pixmapfillstyle;
-   XColor              bg, hi, lo, hihi, lolo;
+   EColor              bg, hi, lo, hihi, lolo;
    int                 bevelstyle;
 #if ENABLE_COLOR_MODIFIERS
    ColorModifierClass *colmod;
@@ -199,11 +199,11 @@ ImagestateColorsSetGray(ImageState * is,
 			unsigned int hihi, unsigned int hi,
 			unsigned int bg, unsigned int lo, unsigned int lolo)
 {
-   ESetColor(&(is->hihi), hihi, hihi, hihi);
-   ESetColor(&(is->hi), hi, hi, hi);
-   ESetColor(&(is->bg), bg, bg, bg);
-   ESetColor(&(is->lo), lo, lo, lo);
-   ESetColor(&(is->lolo), lolo, lolo, lolo);
+   SET_COLOR(&(is->hihi), hihi, hihi, hihi);
+   SET_COLOR(&(is->hi), hi, hi, hi);
+   SET_COLOR(&(is->bg), bg, bg, bg);
+   SET_COLOR(&(is->lo), lo, lo, lo);
+   SET_COLOR(&(is->lolo), lolo, lolo, lolo);
 }
 
 static ImageState  *
@@ -1383,17 +1383,17 @@ ImageclassSetupFallback(void)
 
    ic->active.normal = ImagestateCreate();
    ImagestateColorsSetGray(ic->active.normal, 255, 255, 0, 0, 0);
-   ESetColor(&(ic->active.normal->bg), 180, 140, 160);
+   SET_COLOR(&(ic->active.normal->bg), 180, 140, 160);
    ic->active.normal->bevelstyle = BEVEL_AMIGA;
 
    ic->active.hilited = ImagestateCreate();
    ImagestateColorsSetGray(ic->active.hilited, 255, 255, 0, 0, 0);
-   ESetColor(&(ic->active.hilited->bg), 230, 190, 210);
+   SET_COLOR(&(ic->active.hilited->bg), 230, 190, 210);
    ic->active.hilited->bevelstyle = BEVEL_AMIGA;
 
    ic->active.clicked = ImagestateCreate();
    ImagestateColorsSetGray(ic->active.clicked, 0, 0, 0, 255, 255);
-   ESetColor(&(ic->active.clicked->bg), 230, 190, 210);
+   SET_COLOR(&(ic->active.clicked->bg), 230, 190, 210);
    ic->active.clicked->bevelstyle = BEVEL_AMIGA;
 
    ic->padding.left = 8;

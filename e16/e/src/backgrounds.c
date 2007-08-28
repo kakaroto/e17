@@ -51,7 +51,7 @@ struct _background
    char               *name;
    Pixmap              pmap;
    time_t              last_viewed;
-   XColor              bg_solid;
+   EColor              bg_solid;
    char                bg_tile;
    BgPart              bg;
    BgPart              top;
@@ -80,7 +80,7 @@ BackgroundGetUniqueString(const Background * bg)
    int                 r, g, b;
    int                 n1, n2, n3, n4, n5, f1, f2, f3, f4, f5, f6;
 
-   EGetColor(&(bg->bg_solid), &r, &g, &b);
+   GET_COLOR(&(bg->bg_solid), r, g, b);
    n1 = (r << 24) | (g << 16) | (b << 8) | (bg->bg_tile << 7)
       | (bg->bg.keep_aspect << 6) | (bg->top.keep_aspect << 5);
    n2 = (bg->bg.xjust << 16) | (bg->bg.yjust);
@@ -287,7 +287,7 @@ BackgroundDelete(Background * bg)
 }
 
 static Background  *
-BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
+BackgroundCreate(const char *name, EColor * solid, const char *bgn, char tile,
 		 char keep_aspect, int xjust, int yjust, int xperc,
 		 int yperc, const char *top, char tkeep_aspect, int txjust,
 		 int tyjust, int txperc, int typerc)
@@ -300,7 +300,7 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
 
    bg->name = Estrdup(name);
 
-   ESetColor(&(bg->bg_solid), 160, 160, 160);
+   SET_COLOR(&(bg->bg_solid), 160, 160, 160);
    if (solid)
       bg->bg_solid = *solid;
    else
@@ -402,7 +402,7 @@ BackgroundInvalidate(Background * bg, int refresh)
 }
 
 static int
-BackgroundModify(Background * bg, XColor * solid, const char *bgn, char tile,
+BackgroundModify(Background * bg, EColor * solid, const char *bgn, char tile,
 		 char keep_aspect, int xjust, int yjust, int xperc,
 		 int yperc, const char *top, char tkeep_aspect, int txjust,
 		 int tyjust, int txperc, int typerc)
@@ -799,7 +799,7 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
 {
    Background         *bg;
    EImage             *im, *im2;
-   XColor              xclr;
+   EColor              color;
    char                tile = 1, keep_asp = 0;
    int                 width, height;
    int                 scalex = 0, scaley = 0;
@@ -898,9 +898,9 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
 	keep_asp = 1;
      }
 
-   ESetColor(&xclr, 0, 0, 0);
+   SET_COLOR(&color, 0, 0, 0);
 
-   bg = BackgroundCreate(bgid, &xclr, file, tile,
+   bg = BackgroundCreate(bgid, &color, file, tile,
 			 keep_asp, justx, justy,
 			 scalex, scaley, NULL, 0, 0, 0, 0, 0);
 
@@ -1014,7 +1014,7 @@ BackgroundGetInfoString1(const Background * bg, char *buf, int len)
 {
    int                 r, g, b;
 
-   EGetColor(&(bg->bg_solid), &r, &g, &b);
+   GET_COLOR(&(bg->bg_solid), r, g, b);
    Esnprintf(buf, len,
 	     "%s ref_count %u keepim %u\n"
 	     " bg.solid\t %i %i %i \n"
@@ -1039,7 +1039,7 @@ BackgroundGetInfoString2(const Background * bg, char *buf, int len)
 {
    int                 r, g, b;
 
-   EGetColor(&(bg->bg_solid), &r, &g, &b);
+   GET_COLOR(&(bg->bg_solid), r, g, b);
    Esnprintf(buf, len,
 	     "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
 	     bg->name, r, g, b, S(bg->bg.file), bg->bg_tile,
@@ -1112,7 +1112,7 @@ BackgroundsConfigLoad(FILE * fs)
 {
    int                 err = 0;
    Background         *bg = 0;
-   XColor              xclr;
+   EColor              color;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 ii1;
@@ -1129,7 +1129,7 @@ BackgroundsConfigLoad(FILE * fs)
    ColorModifierClass *cm = NULL;
 #endif
 
-   ESetColor(&xclr, 0, 0, 0);
+   SET_COLOR(&color, 0, 0, 0);
 
    while (GetLine(s, sizeof(s), fs))
      {
@@ -1163,7 +1163,7 @@ BackgroundsConfigLoad(FILE * fs)
 			 }
 		       if (ok)
 			 {
-			    bg = BackgroundCreate(name, &xclr, bg1, i1, i2, i3,
+			    bg = BackgroundCreate(name, &color, bg1, i1, i2, i3,
 						  i4, i5, i6, bg2, j1, j2, j3,
 						  j4, j5);
 #if ENABLE_COLOR_MODIFIERS
@@ -1206,7 +1206,7 @@ BackgroundsConfigLoad(FILE * fs)
 		  if (!ignore)
 		    {
 		       if (!bg)
-			  bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
+			  bg = BackgroundCreate(name, &color, bg1, i1, i2,
 						i3, i4, i5, i6, bg2, j1,
 						j2, j3, j4, j5);
 		    }
@@ -1218,9 +1218,9 @@ BackgroundsConfigLoad(FILE * fs)
 	  case BG_RGB:
 	     r = g = b = 0;
 	     sscanf(s, "%*s %d %d %d", &r, &g, &b);
-	     ESetColor(&xclr, r, g, b);
+	     SET_COLOR(&color, r, g, b);
 	     if (ignore)
-		bg->bg_solid = xclr;
+		bg->bg_solid = color;
 	     break;
 
 	  case BG_BG1:
@@ -1324,7 +1324,7 @@ BackgroundsConfigSave(void)
 	fprintf(fs, "5 999\n");
 
 	fprintf(fs, "100 %s\n", bg->name);
-	EGetColor(&(bg->bg_solid), &r, &g, &b);
+	GET_COLOR(&(bg->bg_solid), r, g, b);
 	fprintf(fs, "560 %d %d %d\n", r, g, b);
 
 	if ((bg->bg.file) && (!bg->bg.real_file))
@@ -1530,7 +1530,7 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.backgrounds.user = tmp_userbg;
 	Conf.hints.set_xroot_info_on_root_window = tmp_root_hint;
 
-	ESetColor(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
+	SET_COLOR(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
 	tmp_bg->bg_tile = tmp_bg_tile;
 	tmp_bg->bg.keep_aspect = tmp_bg_keep_aspect;
 	tmp_bg->bg.xjust = tmp_bg_xjust;
@@ -1559,7 +1559,7 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val __UNUSED__,
    int                 w, h;
    DItem              *di;
    Win                 win;
-   XColor              xclr;
+   EColor              color;
    const char         *fbg, *ffg;
 
    if (!tmp_bg)
@@ -1572,8 +1572,8 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val __UNUSED__,
    pmap = EGetWindowBackgroundPixmap(win);
    fbg = (tmp_bg_image) ? BackgroundGetBgFile(tmp_bg) : NULL;
    ffg = (tmp_bg_image) ? BackgroundGetFgFile(tmp_bg) : NULL;
-   ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
-   bg = BackgroundCreate("TEMP", &xclr, fbg, tmp_bg_tile,
+   SET_COLOR(&color, tmp_bg_r, tmp_bg_g, tmp_bg_b);
+   bg = BackgroundCreate("TEMP", &color, fbg, tmp_bg_tile,
 			 tmp_bg_keep_aspect, tmp_bg_xjust,
 			 1024 - tmp_bg_yjust, tmp_bg_xperc,
 			 1024 - tmp_bg_yperc, ffg,
@@ -1592,7 +1592,7 @@ BG_GetValues(void)
 {
    tmp_bg_image = (tmp_bg->bg.file) ? 1 : 0;
 
-   EGetColor(&(tmp_bg->bg_solid), &tmp_bg_r, &tmp_bg_g, &tmp_bg_b);
+   GET_COLOR(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
    tmp_bg_tile = tmp_bg->bg_tile;
    tmp_bg_keep_aspect = tmp_bg->bg.keep_aspect;
    tmp_bg_xjust = tmp_bg->bg.xjust;
@@ -1661,14 +1661,14 @@ CB_ConfigureNewBG(Dialog * d __UNUSED__, int val __UNUSED__,
 		  void *data __UNUSED__)
 {
    char                s[1024];
-   XColor              xclr;
+   EColor              color;
    int                 lower, upper;
 
    Esnprintf(s, sizeof(s), "__NEWBG_%i", (unsigned)time(NULL));
 
-   ESetColor(&xclr, tmp_bg_r, tmp_bg_g, tmp_bg_b);
+   SET_COLOR(&color, tmp_bg_r, tmp_bg_g, tmp_bg_b);
 
-   tmp_bg = BackgroundCreate(s, &xclr, tmp_bg->bg.file, tmp_bg_tile,
+   tmp_bg = BackgroundCreate(s, &color, tmp_bg->bg.file, tmp_bg_tile,
 			     tmp_bg_keep_aspect, tmp_bg_xjust,
 			     1024 - tmp_bg_yjust, tmp_bg_xperc,
 			     1024 - tmp_bg_yperc, tmp_bg->top.file,
@@ -2353,7 +2353,7 @@ BackgroundSet1(const char *name, const char *params)
    char                type[FILEPATH_LEN_MAX];
    int                 len, value;
    Background         *bg;
-   XColor              xclr;
+   EColor              color;
 
    if (!p || !p[0])
       return;
@@ -2361,8 +2361,8 @@ BackgroundSet1(const char *name, const char *params)
    bg = BackgroundFind(name);
    if (!bg)
      {
-	ESetColor(&xclr, 0, 0, 0);
-	bg = BackgroundCreate(name, &xclr, NULL, 0, 0, 0,
+	SET_COLOR(&color, 0, 0, 0);
+	bg = BackgroundCreate(name, &color, NULL, 0, 0, 0,
 			      0, 0, 0, NULL, 0, 0, 0, 0, 0);
 	if (!bg)
 	  {
@@ -2383,7 +2383,7 @@ BackgroundSet1(const char *name, const char *params)
 
 	r = g = b = 0;
 	sscanf(p, "%i %i %i", &r, &g, &b);
-	ESetColor(&(bg->bg_solid), r, g, b);
+	SET_COLOR(&(bg->bg_solid), r, g, b);
      }
    else if (!strcmp(type, "bg.file"))
      {
@@ -2452,7 +2452,7 @@ static void
 BackgroundSet2(const char *name, const char *params)
 {
    Background         *bg;
-   XColor              xclr;
+   EColor              color;
    unsigned int        i;
    int                 r, g, b;
    char                bgf[FILEPATH_LEN_MAX], topf[FILEPATH_LEN_MAX];
@@ -2470,18 +2470,18 @@ BackgroundSet2(const char *name, const char *params)
 	      &r, &g, &b,
 	      bgf, &tile, &keep_aspect, &xjust, &yjust, &xperc, &yperc,
 	      topf, &tkeep_aspect, &txjust, &tyjust, &txperc, &typerc);
-   ESetColor(&xclr, r, g, b);
+   SET_COLOR(&color, r, g, b);
 
    bg = BackgroundFind(name);
    if (bg)
      {
-	BackgroundModify(bg, &xclr, bgf, tile, keep_aspect, xjust,
+	BackgroundModify(bg, &color, bgf, tile, keep_aspect, xjust,
 			 yjust, xperc, yperc, topf, tkeep_aspect,
 			 txjust, tyjust, txperc, typerc);
      }
    else
      {
-	bg = BackgroundCreate(name, &xclr, bgf, tile, keep_aspect, xjust,
+	bg = BackgroundCreate(name, &color, bgf, tile, keep_aspect, xjust,
 			      yjust, xperc, yperc, topf, tkeep_aspect,
 			      txjust, tyjust, txperc, typerc);
      }

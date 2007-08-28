@@ -40,11 +40,12 @@ struct _ecursor
 static Ecore_List  *cursor_list = NULL;
 
 static ECursor     *
-ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
-	      XColor * bg)
+ECursorCreate(const char *name, const char *image, int native_id, EColor * fg,
+	      EColor * bg)
 {
    Cursor              curs;
    Pixmap              pmap, mask;
+   XColor              fgxc, bgxc;
    int                 xh, yh;
    unsigned int        w, h, ww, hh;
    char               *img, msk[FILEPATH_LEN_MAX];
@@ -70,13 +71,13 @@ ECursorCreate(const char *name, const char *image, int native_id, XColor * fg,
 	curs = None;
 	if ((w <= ww) && (h <= hh) && (pmap))
 	  {
-	     EAllocColor(VRoot.cmap, fg);
-	     EAllocColor(VRoot.cmap, bg);
+	     EAllocXColor(VRoot.cmap, &fgxc, fg);
+	     EAllocXColor(VRoot.cmap, &bgxc, bg);
 	     if (xh < 0 || xh >= (int)w)
 		xh = (int)w / 2;
 	     if (yh < 0 || yh >= (int)h)
 		yh = (int)h / 2;
-	     curs = XCreatePixmapCursor(disp, pmap, mask, fg, bg, xh, yh);
+	     curs = XCreatePixmapCursor(disp, pmap, mask, &fgxc, &bgxc, xh, yh);
 	  }
 
 	if (!curs)
@@ -171,7 +172,7 @@ static int
 ECursorConfigLoad(FILE * fs)
 {
    int                 err = 0;
-   XColor              xclr, xclr2;
+   EColor              clr, clr2;
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    char               *p2;
@@ -192,13 +193,13 @@ ECursorConfigLoad(FILE * fs)
 	     i2 = atoi(s2);
 	     if (i2 != CONFIG_OPEN)
 		goto done;
-	     ESetColor(&xclr, 0, 0, 0);
-	     ESetColor(&xclr2, 255, 255, 255);
+	     SET_COLOR(&clr, 0, 0, 0);
+	     SET_COLOR(&clr2, 255, 255, 255);
 	     pname = pfile = NULL;
 	     native_id = -1;
 	     break;
 	  case CONFIG_CLOSE:
-	     ECursorCreate(pname, pfile, native_id, &xclr, &xclr2);
+	     ECursorCreate(pname, pfile, native_id, &clr, &clr2);
 	     err = 0;
 	     break;
 
@@ -214,12 +215,12 @@ ECursorConfigLoad(FILE * fs)
 	  case CURS_BG_RGB:
 	     r = g = b = 0;
 	     sscanf(p2, "%d %d %d", &r, &g, &b);
-	     ESetColor(&xclr, r, g, b);
+	     SET_COLOR(&clr, r, g, b);
 	     break;
 	  case CURS_FG_RGB:
 	     r = g = b = 255;
 	     sscanf(p2, "%d %d %d", &r, &g, &b);
-	     ESetColor(&xclr2, r, g, b);
+	     SET_COLOR(&clr2, r, g, b);
 	     break;
 	  case XBM_FILE:
 	     strcpy(file, s2);
