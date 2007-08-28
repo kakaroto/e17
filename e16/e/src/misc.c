@@ -319,3 +319,37 @@ EDebugSet(unsigned int type, int value)
 }
 
 #endif
+
+#if USE_MODULES
+/*
+ * Dynamic module loading
+ */
+#include <dlfcn.h>
+
+void               *
+ModLoad(const char *name)
+{
+   char                buf[1024];
+   void               *h;
+
+   Esnprintf(buf, sizeof(buf), "%s/e16/%s.so", ENLIGHTENMENT_LIB, name);
+   if (EDebug(1))
+      Eprintf("ModLoad %s\n", buf);
+   h = dlopen(buf, RTLD_NOW | RTLD_LOCAL);
+   if (!h)
+      Eprintf("*** ModLoad %s: %s\n", buf, dlerror());
+
+   return h;
+}
+
+void               *
+ModSym(void *handle, const char *sym)
+{
+   void               *h;
+
+   h = dlsym(handle, sym);
+
+   return h;
+}
+
+#endif /* USE_MODULES */

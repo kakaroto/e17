@@ -90,4 +90,10 @@ int                 Esnprintf(va_alist);
 #endif
 #endif /* HAVE_SNPRINTF */
 
+#if USE_MODULES
+/* Dynamic loading */
+void               *ModLoad(const char *name);
+void               *ModSym(void *handle, const char *sym);
+#endif
+
 #endif /* _UTIL_H_ */
