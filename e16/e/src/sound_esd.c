@@ -162,6 +162,7 @@ _esd_Exit(void)
    sound_fd = -1;
 }
 
+extern const SoundOps SoundOps_esd;
 const SoundOps      SoundOps_esd = {
    _esd_Init, _esd_Exit, _esd_Load, _esd_Destroy, _esd_Play,
 };
