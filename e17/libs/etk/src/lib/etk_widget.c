@@ -229,13 +229,13 @@ Etk_Type *etk_widget_type_get(void)
             widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
 
       etk_type_property_add(widget_type, "parent", ETK_WIDGET_PARENT_PROPERTY,
-            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+            ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_object(NULL));
       etk_type_property_add(widget_type, "theme-file", ETK_WIDGET_THEME_FILE_PROPERTY,
             ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "theme-group", ETK_WIDGET_THEME_GROUP_PROPERTY,
             ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(widget_type, "theme-parent", ETK_WIDGET_THEME_PARENT_PROPERTY,
-            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+            ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_object(NULL));
       etk_type_property_add(widget_type, "padding", ETK_WIDGET_PADDING_PROPERTY,
             ETK_PROPERTY_OTHER, ETK_PROPERTY_NO_ACCESS, NULL);
       etk_type_property_add(widget_type, "geometry", ETK_WIDGET_GEOMETRY_PROPERTY,
@@ -2056,7 +2056,7 @@ static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Pr
    switch (property_id)
    {
       case ETK_WIDGET_PARENT_PROPERTY:
-         etk_widget_parent_set(widget, ETK_WIDGET(etk_property_value_pointer_get(value)));
+         etk_widget_parent_set(widget, ETK_WIDGET(etk_property_value_object_get(value)));
          break;
       case ETK_WIDGET_THEME_FILE_PROPERTY:
          etk_widget_theme_file_set(widget, etk_property_value_string_get(value));
@@ -2065,7 +2065,7 @@ static void _etk_widget_property_set(Etk_Object *object, int property_id, Etk_Pr
          etk_widget_theme_group_set(widget, etk_property_value_string_get(value));
          break;
       case ETK_WIDGET_THEME_PARENT_PROPERTY:
-         etk_widget_theme_parent_set(widget, ETK_WIDGET(etk_property_value_pointer_get(value)));
+         etk_widget_theme_parent_set(widget, ETK_WIDGET(etk_property_value_object_get(value)));
          break;
       case ETK_WIDGET_REQUESTED_WIDTH_PROPERTY:
          etk_widget_size_request_set(widget, etk_property_value_int_get(value), widget->requested_size.h);
@@ -2117,7 +2117,7 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
    switch (property_id)
    {
       case ETK_WIDGET_PARENT_PROPERTY:
-         etk_property_value_pointer_set(value, ETK_OBJECT(widget->parent));
+         etk_property_value_object_set(value, ETK_OBJECT(widget->parent));
          break;
       case ETK_WIDGET_THEME_FILE_PROPERTY:
          etk_property_value_string_set(value, widget->theme_file);
@@ -2126,7 +2126,7 @@ static void _etk_widget_property_get(Etk_Object *object, int property_id, Etk_Pr
          etk_property_value_string_set(value, widget->theme_group);
          break;
       case ETK_WIDGET_THEME_PARENT_PROPERTY:
-         etk_property_value_pointer_set(value, widget->theme_parent);
+         etk_property_value_object_set(value, ETK_OBJECT(widget->theme_parent));
          break;
       case ETK_WIDGET_REQUESTED_WIDTH_PROPERTY:
          etk_property_value_int_set(value, widget->requested_size.w);

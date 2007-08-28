@@ -71,7 +71,7 @@ Etk_Type *etk_menu_type_get(void)
          menu_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
 
       etk_type_property_add(menu_type, "parent-item", ETK_MENU_PARENT_ITEM_PROPERTY,
-         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+         ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_object(NULL));
 
       menu_type->property_set = _etk_menu_property_set;
       menu_type->property_get = _etk_menu_property_get;
@@ -215,7 +215,7 @@ static void _etk_menu_property_set(Etk_Object *object, int property_id, Etk_Prop
    switch (property_id)
    {
       case ETK_MENU_PARENT_ITEM_PROPERTY:
-         etk_menu_item_submenu_set(ETK_MENU_ITEM(etk_property_value_pointer_get(value)), menu);
+         etk_menu_item_submenu_set(ETK_MENU_ITEM(etk_property_value_object_get(value)), menu);
          break;
       default:
          break;
@@ -233,7 +233,7 @@ static void _etk_menu_property_get(Etk_Object *object, int property_id, Etk_Prop
    switch (property_id)
    {
       case ETK_MENU_PARENT_ITEM_PROPERTY:
-         etk_property_value_pointer_set(value, menu->parent_item);
+         etk_property_value_object_set(value, ETK_OBJECT(menu->parent_item));
          break;
       default:
          break;

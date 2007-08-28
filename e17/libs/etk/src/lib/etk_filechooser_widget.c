@@ -118,8 +118,6 @@ Etk_Type *etk_filechooser_widget_type_get(void)
    {
       filechooser_widget_type = etk_type_new("Etk_Filechooser_Widget", ETK_WIDGET_TYPE, sizeof(Etk_Filechooser_Widget), ETK_CONSTRUCTOR(_etk_filechooser_widget_constructor), ETK_DESTRUCTOR(_etk_filechooser_widget_destructor));
 
-      //_etk_filechooser_widget_signals[ETK_FILECHOOSER_WIDGET_TEXT_POPPED_SIGNAL] = etk_signal_new("text_popped", filechooser_widget_type, -1, etk_marshaller_VOID__INT_POINTER, NULL, NULL);
-
       etk_type_property_add(filechooser_widget_type, "path", ETK_FILECHOOSER_WIDGET_PATH_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(filechooser_widget_type, "select-multiple", ETK_FILECHOOSER_WIDGET_SELECT_MULTIPLE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
       etk_type_property_add(filechooser_widget_type, "show-hidden", ETK_FILECHOOSER_WIDGET_SHOW_HIDDEN_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));

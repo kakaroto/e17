@@ -80,7 +80,7 @@ void etk_property_value_clear(Etk_Property_Value *value)
       return;
 
    if (value->type == ETK_PROPERTY_STRING)
-      free(value->value->string_value);
+      free(value->value.string_value);
    value->type = ETK_PROPERTY_NONE;
 }
 
@@ -91,7 +91,6 @@ void etk_property_value_clear(Etk_Property_Value *value)
 void etk_property_value_delete(Etk_Property_Value *value)
 {
    etk_property_value_clear(value);
-   if (value) free(value->value);
    free(value);
 }
 
@@ -115,7 +114,6 @@ Etk_Property_Value *etk_property_value_new(void)
 {
    Etk_Property_Value *new_value;
    new_value = malloc(sizeof(Etk_Property_Value));
-   new_value->value = malloc(sizeof(Etk_Property_Value_Value));
    new_value->type = ETK_PROPERTY_NONE;
    return new_value;
 }
@@ -246,6 +244,19 @@ Etk_Property_Value *etk_property_value_long(long value)
 }
 
 /**
+ * @brief Creates a new object property value
+ * @param value the value of the new property value
+ * @return Returns the new property value
+ */
+Etk_Property_Value *etk_property_value_object(Etk_Object *value)
+{
+   Etk_Property_Value *new_value;
+   new_value = etk_property_value_new();
+   etk_property_value_object_set(new_value, value);
+   return new_value;
+}
+
+/**
  * @brief Creates a new pointer property value
  * @param value the value of the new property value
  * @return Returns the new property value
@@ -351,6 +362,13 @@ void etk_property_value_set_valist(Etk_Property_Value *property_value, Etk_Prope
          etk_property_value_long_set(property_value, value);
          break;
       }
+      case ETK_PROPERTY_OBJECT:
+      {
+         Etk_Object *value;
+         value = va_arg(*arg, Etk_Object *);
+         etk_property_value_object_set(property_value, value);
+         break;
+      }
       case ETK_PROPERTY_POINTER:
       {
          void *value;
@@ -381,7 +399,7 @@ void etk_property_value_int_set(Etk_Property_Value *property_value, int value)
       return;
 
    etk_property_value_clear(property_value);
-   property_value->value->int_value = value;
+   property_value->value.int_value = value;
    property_value->type = ETK_PROPERTY_INT;
 }
 
@@ -396,7 +414,7 @@ void etk_property_value_bool_set(Etk_Property_Value *property_value, Etk_Bool va
       return;
 
    etk_property_value_clear(property_value);
-   property_value->value->bool_value = value;
+   property_value->value.bool_value = value;
    property_value->type = ETK_PROPERTY_BOOL;
 }
 
@@ -411,7 +429,7 @@ void etk_property_value_char_set(Etk_Property_Value *property_value, char value)
       return;
 
    etk_property_value_clear(property_value);
-   property_value->value->char_value = value;
+   property_value->value.char_value = value;
    property_value->type = ETK_PROPERTY_CHAR;
 }
 
@@ -426,7 +444,7 @@ void etk_property_value_float_set(Etk_Property_Value *property_value, float valu
       return;
 
    etk_property_value_clear(property_value);
-   property_value->value->float_value = value;
+   property_value->value.float_value = value;
    property_value->type = ETK_PROPERTY_FLOAT;
 }
 
@@ -441,7 +459,7 @@ void etk_property_value_double_set(Etk_Property_Value *property_value, double va
       return;
 
    etk_property_value_clear(property_value);
-   property_value->value->double_value = value;
+   property_value->value.double_value = value;
    property_value->type = ETK_PROPERTY_DOUBLE;
 }
 
@@ -456,7 +474,7 @@ void etk_property_value_short_set(Etk_Property_Value *property_value, short valu
       return;
 
    etk_property_value_clear(property_value);
-   property_value->value->short_value = value;
+   property_value->value.short_value = value;
    property_value->type = ETK_PROPERTY_SHORT;
 }
 
@@ -471,8 +489,23 @@ void etk_property_value_long_set(Etk_Property_Value *property_value, long value)
       return;
 
    etk_property_value_clear(property_value);
-   property_value->value->long_value = value;
+   property_value->value.long_value = value;
    property_value->type = ETK_PROPERTY_LONG;
+}
+
+/**
+ * @brief Sets the object value of a property value
+ * @param property_value a property value
+ * @param value the value to set
+ */
+void etk_property_value_object_set(Etk_Property_Value *property_value, Etk_Object *value)
+{
+   if (!property_value)
+      return;
+
+   etk_property_value_clear(property_value);
+   property_value->value.object_value = value;
+   property_value->type = ETK_PROPERTY_OBJECT;
 }
 
 /**
@@ -486,7 +519,7 @@ void etk_property_value_pointer_set(Etk_Property_Value *property_value, void *va
       return;
 
    etk_property_value_clear(property_value);
-   property_value->value->pointer_value = value;
+   property_value->value.pointer_value = value;
    property_value->type = ETK_PROPERTY_POINTER;
 }
 
@@ -502,9 +535,9 @@ void etk_property_value_string_set(Etk_Property_Value *property_value, const cha
 
    etk_property_value_clear(property_value);
    if (value)
-      property_value->value->string_value = strdup(value);
+      property_value->value.string_value = strdup(value);
    else
-      property_value->value->string_value = NULL;
+      property_value->value.string_value = NULL;
    property_value->type = ETK_PROPERTY_STRING;
 }
 
@@ -542,6 +575,9 @@ void etk_property_value_get(Etk_Property_Value *value, Etk_Property_Type type, v
       case ETK_PROPERTY_LONG:
          *((long *)value_location) = etk_property_value_long_get(value);
          break;
+      case ETK_PROPERTY_OBJECT:
+         *((Etk_Object **)value_location) = etk_property_value_object_get(value);
+         break;
       case ETK_PROPERTY_POINTER:
          *((void **)value_location) = etk_property_value_pointer_get(value);
          break;
@@ -562,7 +598,7 @@ int etk_property_value_int_get(Etk_Property_Value *value)
 {
    if (!value || value->type != ETK_PROPERTY_INT)
       return 0;
-   return value->value->int_value;
+   return value->value.int_value;
 }
 
 /**
@@ -574,7 +610,7 @@ Etk_Bool etk_property_value_bool_get(Etk_Property_Value *value)
 {
    if (!value || value->type != ETK_PROPERTY_BOOL)
       return ETK_FALSE;
-   return value->value->bool_value;
+   return value->value.bool_value;
 }
 
 /**
@@ -586,7 +622,7 @@ char etk_property_value_char_get(Etk_Property_Value *value)
 {
    if (!value || value->type != ETK_PROPERTY_CHAR)
       return 0;
-   return value->value->char_value;
+   return value->value.char_value;
 }
 
 /**
@@ -598,7 +634,7 @@ float etk_property_value_float_get(Etk_Property_Value *value)
 {
    if (!value || value->type != ETK_PROPERTY_FLOAT)
       return 0.0;
-   return value->value->float_value;
+   return value->value.float_value;
 }
 
 /**
@@ -610,7 +646,7 @@ double etk_property_value_double_get(Etk_Property_Value *value)
 {
    if (!value || value->type != ETK_PROPERTY_DOUBLE)
       return 0.0;
-   return value->value->double_value;
+   return value->value.double_value;
 }
 
 /**
@@ -622,7 +658,7 @@ short etk_property_value_short_get(Etk_Property_Value *value)
 {
    if (!value || value->type != ETK_PROPERTY_SHORT)
       return 0;
-   return value->value->short_value;
+   return value->value.short_value;
 }
 
 /**
@@ -634,7 +670,19 @@ long etk_property_value_long_get(Etk_Property_Value *value)
 {
    if (!value || value->type != ETK_PROPERTY_LONG)
       return 0;
-   return value->value->long_value;
+   return value->value.long_value;
+}
+
+/**
+ * @brief Gets the object value of the property value
+ * @param value a value
+ * @return Returns the object value of the property value
+ */
+Etk_Object *etk_property_value_object_get(Etk_Property_Value *value)
+{
+   if (!value || value->type != ETK_PROPERTY_OBJECT)
+      return NULL;
+   return value->value.object_value;
 }
 
 /**
@@ -646,7 +694,7 @@ void *etk_property_value_pointer_get(Etk_Property_Value *value)
 {
    if (!value || value->type != ETK_PROPERTY_POINTER)
       return NULL;
-   return value->value->pointer_value;
+   return value->value.pointer_value;
 }
 
 /**
@@ -658,7 +706,7 @@ const char *etk_property_value_string_get(Etk_Property_Value *value)
 {
    if (!value || value->type != ETK_PROPERTY_STRING)
       return NULL;
-   return value->value->string_value;
+   return value->value.string_value;
 }
 
 /** @} */

@@ -83,7 +83,7 @@ Etk_Type *etk_button_type_get(void)
       etk_type_property_add(button_type, "label", ETK_BUTTON_LABEL_PROPERTY,
             ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
       etk_type_property_add(button_type, "image", ETK_BUTTON_IMAGE_PROPERTY,
-            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
+            ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_object(NULL));
       etk_type_property_add(button_type, "xalign", ETK_BUTTON_XALIGN_PROPERTY,
             ETK_PROPERTY_FLOAT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_float(0.5));
       etk_type_property_add(button_type, "yalign", ETK_BUTTON_YALIGN_PROPERTY,
@@ -468,7 +468,7 @@ static void _etk_button_property_set(Etk_Object *object, int property_id, Etk_Pr
          etk_button_label_set(button, etk_property_value_string_get(value));
          break;
       case ETK_BUTTON_IMAGE_PROPERTY:
-         etk_button_image_set(button, ETK_IMAGE(etk_property_value_pointer_get(value)));
+         etk_button_image_set(button, ETK_IMAGE(etk_property_value_object_get(value)));
          break;
       case ETK_BUTTON_XALIGN_PROPERTY:
          etk_button_alignment_set(button, etk_property_value_float_get(value), button->yalign);
@@ -501,7 +501,7 @@ static void _etk_button_property_get(Etk_Object *object, int property_id, Etk_Pr
          etk_property_value_string_set(value, etk_button_label_get(button));
          break;
       case ETK_BUTTON_IMAGE_PROPERTY:
-         etk_property_value_pointer_set(value, ETK_OBJECT(button->image));
+         etk_property_value_object_set(value, ETK_OBJECT(button->image));
          break;
       case ETK_BUTTON_XALIGN_PROPERTY:
          etk_property_value_float_set(value, button->xalign);

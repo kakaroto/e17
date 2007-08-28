@@ -97,7 +97,7 @@ Etk_Type *etk_menu_item_type_get(void)
       etk_type_property_add(menu_item_type, "label", ETK_MENU_ITEM_LABEL_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(menu_item_type, "submenu", ETK_MENU_ITEM_SUBMENU_PROPERTY,
-         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+         ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_object(NULL));
 
       menu_item_type->property_set = _etk_menu_item_property_set;
       menu_item_type->property_get = _etk_menu_item_property_get;
@@ -332,7 +332,7 @@ Etk_Type *etk_menu_item_image_type_get(void)
          sizeof(Etk_Menu_Item_Image), NULL, NULL);
 
       etk_type_property_add(menu_item_image_type, "image", ETK_MENU_ITEM_IMAGE_PROPERTY,
-         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+         ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_object(NULL));
 
       menu_item_image_type->property_set = _etk_menu_item_image_property_set;
       menu_item_image_type->property_get = _etk_menu_item_image_property_get;
@@ -509,8 +509,8 @@ Etk_Type *etk_menu_item_radio_type_get(void)
       menu_item_radio_type = etk_type_new("Etk_Menu_Item_Radio", ETK_MENU_ITEM_CHECK_TYPE, sizeof(Etk_Menu_Item_Radio),
          ETK_CONSTRUCTOR(_etk_menu_item_radio_constructor), ETK_DESTRUCTOR(_etk_menu_item_radio_destructor));
 
-      etk_type_property_add(menu_item_radio_type, "group", ETK_MENU_ITEM_GROUP_PROPERTY, ETK_PROPERTY_POINTER,
-         ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
+      etk_type_property_add(menu_item_radio_type, "group", ETK_MENU_ITEM_GROUP_PROPERTY,
+         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
 
       menu_item_radio_type->property_set = _etk_menu_item_radio_property_set;
       menu_item_radio_type->property_get = _etk_menu_item_radio_property_get;
@@ -725,7 +725,7 @@ static void _etk_menu_item_property_set(Etk_Object *object, int property_id, Etk
          etk_menu_item_label_set(menu_item, etk_property_value_string_get(value));
          break;
       case ETK_MENU_ITEM_SUBMENU_PROPERTY:
-         etk_menu_item_submenu_set(menu_item, ETK_MENU(etk_property_value_pointer_get(value)));
+         etk_menu_item_submenu_set(menu_item, ETK_MENU(etk_property_value_object_get(value)));
          break;
       default:
          break;
@@ -746,7 +746,7 @@ static void _etk_menu_item_property_get(Etk_Object *object, int property_id, Etk
          etk_property_value_string_set(value, menu_item->label);
          break;
       case ETK_MENU_ITEM_SUBMENU_PROPERTY:
-         etk_property_value_pointer_set(value, menu_item->submenu);
+         etk_property_value_object_set(value, ETK_OBJECT(menu_item->submenu));
          break;
       default:
          break;
@@ -764,7 +764,7 @@ static void _etk_menu_item_image_property_set(Etk_Object *object, int property_i
    switch (property_id)
    {
       case ETK_MENU_ITEM_IMAGE_PROPERTY:
-         etk_menu_item_image_set(image_item, etk_property_value_pointer_get(value));
+         etk_menu_item_image_set(image_item, ETK_IMAGE(etk_property_value_object_get(value)));
          break;
       default:
          break;
@@ -782,7 +782,7 @@ static void _etk_menu_item_image_property_get(Etk_Object *object, int property_i
    switch (property_id)
    {
       case ETK_MENU_ITEM_IMAGE_PROPERTY:
-         etk_property_value_pointer_set(value, menu_item->left_widget);
+         etk_property_value_object_set(value, ETK_OBJECT(menu_item->left_widget));
          break;
       default:
          break;

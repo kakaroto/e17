@@ -45,9 +45,9 @@ Etk_Type *etk_menu_shell_type_get()
          ETK_CONSTRUCTOR(_etk_menu_shell_constructor), ETK_DESTRUCTOR(_etk_menu_shell_destructor));
 
       _etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_ADDED_SIGNAL] = etk_signal_new("item-added",
-         menu_shell_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+         menu_shell_type, -1, etk_marshaller_VOID__OBJECT, NULL, NULL);
       _etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL] = etk_signal_new("item-removed",
-         menu_shell_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+         menu_shell_type, -1, etk_marshaller_VOID__OBJECT, NULL, NULL);
    }
 
    return menu_shell_type;

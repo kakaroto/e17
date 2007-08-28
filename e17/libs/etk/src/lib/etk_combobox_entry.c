@@ -93,7 +93,7 @@ Etk_Type *etk_combobox_entry_type_get(void)
       etk_type_property_add(combobox_entry_type, "items-height", ETK_COMBOBOX_ENTRY_ITEMS_HEIGHT_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(DEFAULT_ITEM_HEIGHT));
       etk_type_property_add(combobox_entry_type, "active-item", ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_PROPERTY,
-            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+            ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_object(NULL));
 
       combobox_entry_type->property_set = _etk_combobox_entry_property_set;
       combobox_entry_type->property_get = _etk_combobox_entry_property_get;
@@ -950,7 +950,7 @@ static void _etk_combobox_entry_property_set(Etk_Object *object, int property_id
          etk_combobox_entry_items_height_set(combobox_entry, etk_property_value_int_get(value));
          break;
       case ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_PROPERTY:
-         etk_combobox_entry_active_item_set(combobox_entry, ETK_COMBOBOX_ENTRY_ITEM(etk_property_value_pointer_get(value)));
+         etk_combobox_entry_active_item_set(combobox_entry, ETK_COMBOBOX_ENTRY_ITEM(etk_property_value_object_get(value)));
          break;
       default:
          break;
@@ -971,7 +971,7 @@ static void _etk_combobox_entry_property_get(Etk_Object *object, int property_id
          etk_property_value_int_set(value, combobox_entry->items_height);
          break;
       case ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_PROPERTY:
-         etk_property_value_pointer_set(value, combobox_entry->active_item);
+         etk_property_value_object_set(value, ETK_OBJECT(combobox_entry->active_item));
          break;
       default:
          break;

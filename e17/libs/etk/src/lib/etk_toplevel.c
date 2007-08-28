@@ -54,7 +54,7 @@ Etk_Type *etk_toplevel_type_get(void)
       etk_type_property_add(toplevel_type, "evas", ETK_TOPLEVEL_EVAS_PROPERTY,
          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE, etk_property_value_pointer(NULL));
       etk_type_property_add(toplevel_type, "focused-widget", ETK_TOPLEVEL_FOCUSED_WIDGET_PROPERTY,
-         ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+         ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_object(NULL));
 
       toplevel_type->property_set = _etk_toplevel_property_set;
       toplevel_type->property_get = _etk_toplevel_property_get;
@@ -327,7 +327,7 @@ static void _etk_toplevel_property_set(Etk_Object *object, int property_id, Etk_
    switch (property_id)
    {
       case ETK_TOPLEVEL_FOCUSED_WIDGET_PROPERTY:
-         etk_toplevel_focused_widget_set(toplevel, ETK_WIDGET(etk_property_value_pointer_get(value)));
+         etk_toplevel_focused_widget_set(toplevel, ETK_WIDGET(etk_property_value_object_get(value)));
          break;
       default:
          break;
@@ -348,7 +348,7 @@ static void _etk_toplevel_property_get(Etk_Object *object, int property_id, Etk_
          etk_property_value_pointer_set(value, toplevel->evas);
          break;
       case ETK_TOPLEVEL_FOCUSED_WIDGET_PROPERTY:
-         etk_property_value_pointer_set(value, toplevel->focused_widget);
+         etk_property_value_object_set(value, ETK_OBJECT(toplevel->focused_widget));
          break;
       default:
          break;

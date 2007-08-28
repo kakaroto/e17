@@ -23,6 +23,7 @@ typedef enum
    ETK_PROPERTY_DOUBLE,         /**< The value of the property is a double */
    ETK_PROPERTY_SHORT,          /**< The value of the property is a short */
    ETK_PROPERTY_LONG,           /**< The value of the property is a long */
+   ETK_PROPERTY_OBJECT,         /**< The value of the property is an object (Etk_Object *) */
    ETK_PROPERTY_POINTER,        /**< The value of the property is a pointer (void *) */
    ETK_PROPERTY_STRING,         /**< The value of the property is a string (char *) */
    ETK_PROPERTY_OTHER           /**< Used when none of the above type can be used. The property can't have a default
@@ -68,9 +69,11 @@ struct Etk_Property
  * @structinfo
  */
 
-typedef struct Etk_Property_Value_Value Etk_Property_Value_Value;
-struct Etk_Property_Value_Value
+struct Etk_Property_Value
 {
+   /* private: */
+   union
+   {
       int int_value;
       Etk_Bool bool_value;
       char char_value;
@@ -78,14 +81,10 @@ struct Etk_Property_Value_Value
       double double_value;
       short short_value;
       long long_value;
+      Etk_Object *object_value;
       void *pointer_value;
       char *string_value;
-};
-
-struct Etk_Property_Value
-{
-   /* private: */
-   Etk_Property_Value_Value *value;
+   } value;
    Etk_Property_Type type;
 };
 
@@ -107,6 +106,7 @@ Etk_Property_Value *etk_property_value_float(float value);
 Etk_Property_Value *etk_property_value_double(double value);
 Etk_Property_Value *etk_property_value_short(short value);
 Etk_Property_Value *etk_property_value_long(long value);
+Etk_Property_Value *etk_property_value_object(Etk_Object *value);
 Etk_Property_Value *etk_property_value_pointer(void *value);
 Etk_Property_Value *etk_property_value_string(const char *value);
 
@@ -119,6 +119,7 @@ void                etk_property_value_float_set(Etk_Property_Value *property_va
 void                etk_property_value_double_set(Etk_Property_Value *property_value, double value);
 void                etk_property_value_short_set(Etk_Property_Value *property_value, short value);
 void                etk_property_value_long_set(Etk_Property_Value *property_value, long value);
+void                etk_property_value_object_set(Etk_Property_Value *property_value, Etk_Object *value);
 void                etk_property_value_pointer_set(Etk_Property_Value *property_value, void *value);
 void                etk_property_value_string_set(Etk_Property_Value *property_value, const char *value);
 
@@ -130,6 +131,7 @@ float               etk_property_value_float_get(Etk_Property_Value *value);
 double              etk_property_value_double_get(Etk_Property_Value *value);
 short               etk_property_value_short_get(Etk_Property_Value *value);
 long                etk_property_value_long_get(Etk_Property_Value *value);
+Etk_Object         *etk_property_value_object_get(Etk_Property_Value *value);
 void               *etk_property_value_pointer_get(Etk_Property_Value *value);
 const char         *etk_property_value_string_get(Etk_Property_Value *value);
 

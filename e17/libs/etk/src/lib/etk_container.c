@@ -52,9 +52,9 @@ Etk_Type *etk_container_type_get(void)
             ETK_CONSTRUCTOR(_etk_container_constructor), NULL);
 
       _etk_container_signals[ETK_CONTAINER_CHILD_ADDED_SIGNAL] = etk_signal_new("child-added",
-            container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+            container_type, -1, etk_marshaller_VOID__OBJECT, NULL, NULL);
       _etk_container_signals[ETK_CONTAINER_CHILD_REMOVED_SIGNAL] = etk_signal_new("child-removed",
-            container_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+            container_type, -1, etk_marshaller_VOID__OBJECT, NULL, NULL);
 
       etk_type_property_add(container_type, "border-width", ETK_CONTAINER_BORDER_WIDTH_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));

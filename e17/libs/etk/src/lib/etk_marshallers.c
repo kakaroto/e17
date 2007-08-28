@@ -65,6 +65,22 @@ void etk_marshaller_VOID__DOUBLE(Etk_Callback callback, Etk_Object *object, void
    callback_VOID__DOUBLE(object, arg1, data);
 }
 
+/* etk_marshaller_VOID__OBJECT */
+void etk_marshaller_VOID__OBJECT(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments)
+{
+   typedef void (*Etk_Callback_VOID__OBJECT)(Etk_Object *object, Etk_Object *arg1, void *data);
+   Etk_Callback_VOID__OBJECT callback_VOID__OBJECT;
+   Etk_Object *arg1;
+
+   if (!callback || !object)
+      return;
+
+   arg1 = va_arg(arguments, Etk_Object *);
+
+   callback_VOID__OBJECT = (Etk_Callback_VOID__OBJECT)callback;
+   callback_VOID__OBJECT(object, arg1, data);
+}
+
 /* etk_marshaller_VOID__POINTER */
 void etk_marshaller_VOID__POINTER(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments)
 {

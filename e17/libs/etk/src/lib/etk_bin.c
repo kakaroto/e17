@@ -46,7 +46,7 @@ Etk_Type *etk_bin_type_get(void)
             ETK_CONSTRUCTOR(_etk_bin_constructor), NULL);
 
       etk_type_property_add(bin_type, "child", ETK_BIN_CHILD_PROPERTY,
-            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
+            ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_object(NULL));
 
       bin_type->property_set = _etk_bin_property_set;
       bin_type->property_get = _etk_bin_property_get;
@@ -121,7 +121,7 @@ static void _etk_bin_property_set(Etk_Object *object, int property_id, Etk_Prope
    switch (property_id)
    {
       case ETK_BIN_CHILD_PROPERTY:
-         etk_bin_child_set(bin, ETK_WIDGET(etk_property_value_pointer_get(value)));
+         etk_bin_child_set(bin, ETK_WIDGET(etk_property_value_object_get(value)));
          break;
       default:
          break;
@@ -139,7 +139,7 @@ static void _etk_bin_property_get(Etk_Object *object, int property_id, Etk_Prope
    switch (property_id)
    {
       case ETK_BIN_CHILD_PROPERTY:
-         etk_property_value_pointer_set(value, bin->child);
+         etk_property_value_object_set(value, ETK_OBJECT(bin->child));
          break;
       default:
          break;

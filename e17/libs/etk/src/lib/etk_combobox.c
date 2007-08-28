@@ -91,14 +91,14 @@ Etk_Type *etk_combobox_type_get(void)
             ETK_CONSTRUCTOR(_etk_combobox_constructor), ETK_DESTRUCTOR(_etk_combobox_destructor));
 
       _etk_combobox_signals[ETK_COMBOBOX_ITEM_ACTIVATED_SIGNAL] = etk_signal_new("item-activated",
-            combobox_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+            combobox_type, -1, etk_marshaller_VOID__OBJECT, NULL, NULL);
       _etk_combobox_signals[ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL] = etk_signal_new("active-item-changed",
             combobox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
 
       etk_type_property_add(combobox_type, "items-height", ETK_COMBOBOX_ITEMS_HEIGHT_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(DEFAULT_ITEM_HEIGHT));
       etk_type_property_add(combobox_type, "active-item", ETK_COMBOBOX_ACTIVE_ITEM_PROPERTY,
-            ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_pointer(NULL));
+            ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_object(NULL));
 
       combobox_type->property_set = _etk_combobox_property_set;
       combobox_type->property_get = _etk_combobox_property_get;
@@ -1016,7 +1016,7 @@ static void _etk_combobox_property_set(Etk_Object *object, int property_id, Etk_
          etk_combobox_items_height_set(combobox, etk_property_value_int_get(value));
          break;
       case ETK_COMBOBOX_ACTIVE_ITEM_PROPERTY:
-         etk_combobox_active_item_set(combobox, ETK_COMBOBOX_ITEM(etk_property_value_pointer_get(value)));
+         etk_combobox_active_item_set(combobox, ETK_COMBOBOX_ITEM(etk_property_value_object_get(value)));
          break;
       default:
          break;
@@ -1037,7 +1037,7 @@ static void _etk_combobox_property_get(Etk_Object *object, int property_id, Etk_
          etk_property_value_int_set(value, combobox->items_height);
          break;
       case ETK_COMBOBOX_ACTIVE_ITEM_PROPERTY:
-         etk_property_value_pointer_set(value, combobox->active_item);
+         etk_property_value_object_set(value, ETK_OBJECT(combobox->active_item));
          break;
       default:
          break;
