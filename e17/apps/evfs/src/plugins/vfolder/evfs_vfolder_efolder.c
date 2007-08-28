@@ -100,11 +100,16 @@ void evfs_vfolder_list(EvfsFilereference* ref, Ecore_List** list)
 				EvfsVfolderEntry* entry;
 				Ecore_List* entries = 
 					evfs_metadata_db_vfolder_search_entries_get(db,id);
+				Ecore_List* files;
 
-				ecore_list_first_goto(entries);
-				while ( (entry = ecore_list_first_remove(entries))) {
-					printf ("%c %s %s\n", entry->type, entry->name, entry->value);
+				files = evfs_metadata_db_vfolder_search_entries_execute(db,entries);
+				ecore_list_first_goto(files);
+				while ((name = ecore_list_first_remove(files))) {
+					new = evfs_parse_uri_single(name);
+					ecore_list_append(*list, new);
 				}
+
+
 			}
 		}
 	}

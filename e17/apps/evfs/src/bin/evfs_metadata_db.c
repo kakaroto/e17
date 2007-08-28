@@ -597,3 +597,45 @@ Ecore_List* evfs_metadata_db_vfolder_search_entries_get(sqlite3* db, int id)
 	
 	return entries;
 }
+
+Ecore_List* evfs_metadata_db_vfolder_search_entries_execute(sqlite3* db, Ecore_List* entries)
+{
+	char query[PATH_MAX];
+
+	EvfsVfolderEntry* entry;
+	ecore_list_first_goto(entries);
+	Ecore_List* files;
+	char* file;
+	int ret;
+	sqlite3_stmt *pStmt;
+
+	files = ecore_list_new();
+
+	snprintf(query,sizeof(query),"select distinct f.filename from File f where 1 ");
+	while ( (entry=ecore_list_next(entries))) {
+		if (entry->type == 'M') {
+			strcat(query, " and f.id in (select file from FileMeta where keyword='");
+			strcat(query, entry->name);
+			strcat(query, "'");
+			strcat(query, " and value = '");
+			strcat(query, entry->value);
+			strcat(query, "') ");
+
+		}
+	}
+	
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+	if (ret == SQLITE_OK) {
+		while ((ret = sqlite3_step(pStmt)) == SQLITE_ROW) {
+			file = strdup(	sqlite3_column_text(pStmt,0));		
+			ecore_list_append(files,file);
+		}
+
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+
+	}
+	printf("%s\n", query);
+
+	return files;
+}
