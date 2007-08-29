@@ -184,7 +184,20 @@ void evfs_mime_event_create(evfs_client* client, evfs_command* command, const ch
 
    event->mime = (char*)mime;
 
-   evfs_write_event(client,command,EVFS_EVENT(mime));
+   evfs_write_event(client,command,EVFS_EVENT(event));
 
    evfs_cleanup_event(EVFS_EVENT(event));
+}
+
+void evfs_metaall_event_create(evfs_client* client, evfs_command* command, Evas_List* e)
+{
+   EvfsEventMetaAll* event = NEW(EvfsEventMetaAll);
+   EVFS_EVENT(event)->type = EVFS_EV_METAALL;
+   event->meta = e;
+
+
+   evfs_write_event(client,command,EVFS_EVENT(event));
+
+   evfs_cleanup_event(EVFS_EVENT(event));
+
 }

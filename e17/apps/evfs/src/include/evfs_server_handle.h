@@ -49,4 +49,6 @@ void evfs_handle_auth_respond_command(evfs_client* client, evfs_command* command
 void evfs_handle_mime_request(evfs_client* client, evfs_command* command);
 
 void evfs_handle_vfolder_create(evfs_client* client, evfs_command* command);
+
+void evfs_handle_meta_all_request(evfs_client* client, evfs_command* command);
 #endif

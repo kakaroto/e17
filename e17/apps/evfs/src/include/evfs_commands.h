@@ -54,4 +54,7 @@ int evfs_vfolder_command_send(evfs_connection* conn, evfs_command* command);
 void evfs_vfolder_command_entry_add(evfs_command* command, char type, char* name, char* value);
 evfs_command* evfs_vfolder_create_command_new(char* name); 
 
+long
+evfs_client_meta_list_all(evfs_connection* conn);
+
 #endif

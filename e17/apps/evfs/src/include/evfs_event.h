@@ -19,6 +19,7 @@ typedef enum
    EVFS_EV_METADATA_GROUPS = 12,
    EVFS_EV_AUTH_REQUIRED = 13,
    EVFS_EV_MIME = 14,
+   EVFS_EV_METAALL = 15,
 
    EVFS_EV_ERROR = 100,
    EVFS_EV_NOT_SUPPORTED = 101
@@ -150,6 +151,13 @@ typedef struct
 	EvfsEvent base;
 	char* mime;
 } EvfsEventMime;
+
+#define EVFS_EVENT_META_ALL(event) ((EvfsEventMetaAll*)event)
+typedef struct
+{
+	EvfsEvent base;
+	Evas_List* meta;
+} EvfsEventMetaAll;
 
 /*---------------*/
 

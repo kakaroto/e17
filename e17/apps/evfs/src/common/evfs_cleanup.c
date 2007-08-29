@@ -203,6 +203,20 @@ evfs_cleanup_metadata_groups_event(EvfsEventMetadataGroups* event)
 }
 
 void
+evfs_cleanup_meta_all_event(EvfsEventMetaAll* event)
+{
+	Evas_List* l;
+	EvfsMetaObject* m;
+
+	for (l=event->meta;l;) {
+		m=l->data;
+		free(m);
+		l=l->next;
+	}
+	evas_list_free(event->meta);
+}
+
+void
 evfs_cleanup_event(EvfsEvent* event)
 {
    /*evfs_cleanup_command(event->command, EVFS_CLEANUP_PRESERVE_COMMAND);*/
@@ -235,6 +249,9 @@ evfs_cleanup_event(EvfsEvent* event)
 	break;
      case EVFS_EV_MIME:
 	evfs_cleanup_mime_event(EVFS_EVENT_MIME(event));
+	break;
+     case EVFS_EV_METAALL:
+     	evfs_cleanup_meta_all_event(EVFS_EVENT_META_ALL(event));
 	break;
 
      default:

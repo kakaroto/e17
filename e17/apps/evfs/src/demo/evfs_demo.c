@@ -55,6 +55,17 @@ callback(EvfsEvent* data, void *obj)
 	     
 			     
 	     
+     } else if (data->type == EVFS_EV_METAALL) {
+     	Evas_List* l;
+	EvfsMetaObject* m;
+
+	printf("Metaall event\n");
+	for (l=EVFS_EVENT_META_ALL(data)->meta;l;) {
+		m = l->data;
+		printf("%s\n", m->key);
+		l=l->next;
+	}
+
      }
 
    /*if (mon_current == 2) {
@@ -159,6 +170,8 @@ main(int argc, char **argv)
 	   evfs_command* cm = evfs_vfolder_create_command_new("Pictures");
 	   evfs_vfolder_command_entry_add(cm, 'M', "mimetype","image/jpeg");
 	   evfs_vfolder_command_send(con,cm);
+   } else if (!strcmp(cmd, "METAALL")) {
+   	   evfs_client_meta_list_all(con);
    }
    ecore_main_loop_begin();
    evfs_disconnect(con);

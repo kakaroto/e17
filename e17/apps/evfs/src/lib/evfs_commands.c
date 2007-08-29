@@ -492,3 +492,18 @@ int evfs_vfolder_command_send(evfs_connection* conn, evfs_command* command)
 	evfs_write_command(conn, command);
 	return command->client_identifier;
 }
+
+long
+evfs_client_meta_list_all(evfs_connection* conn)
+{
+   evfs_command *command = evfs_client_command_new();
+   long id = command->client_identifier;
+
+   command->type = EVFS_CMD_META_ALL_REQUEST;
+
+   evfs_write_command(conn, command);
+   free(command);
+
+   return id;
+}
+

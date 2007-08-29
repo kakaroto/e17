@@ -639,3 +639,27 @@ Ecore_List* evfs_metadata_db_vfolder_search_entries_execute(sqlite3* db, Ecore_L
 
 	return files;
 }
+
+Evas_List* evfs_metadata_db_meta_list_get(sqlite3* db)
+{
+	char query[PATH_MAX];
+	Evas_List* meta = NULL;
+	int ret;
+	sqlite3_stmt *pStmt;
+
+	snprintf(query,sizeof(query),"select keyword, count(*) cnt from FileMeta group by keyword order by cnt desc");
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+	if (ret == SQLITE_OK) {
+		while ((ret = sqlite3_step(pStmt)) == SQLITE_ROW) {
+			EvfsMetaObject* m =  NEW(EvfsMetaObject);
+			char* mt = strdup(sqlite3_column_text(pStmt,0));
+			m->key = mt;
+
+			meta = evas_list_append(meta, m);	
+		}
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+
+	}
+	return meta;	
+}

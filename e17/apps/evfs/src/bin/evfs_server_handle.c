@@ -791,3 +791,17 @@ void evfs_handle_vfolder_create(evfs_client* client, evfs_command* command)
 	
 	evfs_metadata_db_close(db);
 }
+
+void evfs_handle_meta_all_request(evfs_client* client, evfs_command* command)
+{
+	Evas_List* e;
+	sqlite3* db;
+
+	db = evfs_metadata_db_connect();
+	if (db) {
+		e = evfs_metadata_db_meta_list_get(db);
+		evfs_metadata_db_close(db);
+
+		evfs_metaall_event_create(client,command,e);
+	}
+}

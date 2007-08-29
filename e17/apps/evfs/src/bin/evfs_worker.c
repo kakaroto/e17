@@ -181,6 +181,10 @@ int evfs_handle_command(evfs_client * client, evfs_command * command)
 	evfs_handle_vfolder_create(client,command);
 	break;
 
+     case EVFS_CMD_META_ALL_REQUEST:
+     	evfs_handle_meta_all_request(client,command);
+	break;
+
      default:
         printf("Warning - unhandled command %d\n", command->type);
         break;
