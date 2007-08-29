@@ -11,6 +11,7 @@
 #include "entropy_etk_context_menu.h"
 #include "entropy_etk_options_dialog.h"
 #include "etk_auth_request_dialog.h"
+#include "etk_efolder_dialog.h"
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <stdlib.h>
@@ -950,6 +951,9 @@ entropy_plugin_layout_create (entropy_core * core)
   
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Add Location"), ETK_STOCK_ADDRESS_BOOK_NEW, ETK_MENU_SHELL(menu), NULL);
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_location_add_cb), layout);
+ 
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("eFolder Wizard.."), ETK_STOCK_ADDRESS_BOOK_NEW, ETK_MENU_SHELL(menu), NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_efolder_dialog_show), layout);
   
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Program Associations.."), 
 		  ETK_STOCK_EMBLEM_SYMBOLIC_LINK, ETK_MENU_SHELL(menu), NULL);
