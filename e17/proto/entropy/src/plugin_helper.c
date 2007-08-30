@@ -342,6 +342,17 @@ Ecore_List* entropy_plugin_filesystem_metadata_groups_retrieve()
    } else return NULL;
 }
 
+void entropy_plugin_filesystem_metadata_all_get(entropy_gui_component_instance* instance) 
+{
+    Entropy_Plugin_File* plugin =
+    ENTROPY_PLUGIN_FILE(entropy_plugins_type_get_first (ENTROPY_PLUGIN_BACKEND_FILE,
+				    ENTROPY_PLUGIN_SUB_TYPE_ALL));
+
+  if (plugin) {
+  	return (*plugin->misc_functions.meta_all_get)(instance);
+   }
+}
+
 void entropy_plugin_filesystem_file_group_add(entropy_generic_file* file, char* group)
 {
     Entropy_Plugin_File* plugin =

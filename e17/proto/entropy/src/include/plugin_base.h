@@ -80,12 +80,12 @@ struct Entropy_Plugin_File {
 
 		void (*file_trash_restore) (Ecore_List* files, entropy_gui_component_instance* instance);
 		void (*auth_respond) (char*,char*,char*);
-
 	} file_functions;
 
 	struct {
 		void (*groups_get)(entropy_gui_component_instance* instance);
 		 Ecore_List* (*groups_retrieve)();
+		void (*meta_all_get)(entropy_gui_component_instance* instance);
 	} misc_functions;
 };
 #define ENTROPY_PLUGIN_FILE(plugin) ((Entropy_Plugin_File *) plugin)

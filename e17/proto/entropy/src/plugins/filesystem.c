@@ -40,6 +40,7 @@ void entropy_filesystem_file_group_add(entropy_generic_file* file, char* group);
 void entropy_filesystem_file_group_remove(entropy_generic_file* file, char* group);
 Ecore_List* entropy_filesystem_metadata_groups_retrieve();
 void entropy_filesystem_auth_response(char* location, char* user, char* password);
+void entropy_filesystem_meta_all_retrieve();
 
 static evfs_connection *con;
 
@@ -630,6 +631,7 @@ entropy_plugin_init (entropy_core * core)
   plugin->file_functions.group_file_add = &entropy_filesystem_file_group_add;
   plugin->file_functions.group_file_remove = &entropy_filesystem_file_group_remove;
   plugin->file_functions.auth_respond = entropy_filesystem_auth_response;
+  plugin->misc_functions.meta_all_get = &entropy_filesystem_meta_all_retrieve;
   
   return base; 
 
@@ -1174,4 +1176,12 @@ void entropy_filesystem_file_trash_restore (Ecore_List* files, entropy_gui_compo
   } else {
 	  printf("No files with attached uris to de-trash\n");
   }
+}
+
+void entropy_filesystem_meta_all_retrieve(entropy_gui_component_instance* instance)
+{
+	long id;
+	
+	id = evfs_client_meta_list_all(con);
+	ecore_hash_set (evfs_dir_requests, (long*)id, instance);
 }
