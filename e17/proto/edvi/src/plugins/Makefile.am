@@ -1,4 +1,4 @@
 
-SUBDIRS = lib bin plugins
+SUBDIRS = ewl epsilon
 
 MAINTAINERCLEANFILES = Makefile.in

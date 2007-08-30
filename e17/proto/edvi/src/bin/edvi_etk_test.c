@@ -25,14 +25,14 @@ main (int argc, char *argv[])
 
   if (argc == 1) {
     printf ("Usage: %s dvi_file\n", argv[0]);
-    return -1;
+    return EXIT_FAILURE;
   }
 
   printf ("[DVI] version : %s\n", edvi_version_get ());
   if (!edvi_init (300, "cx", 4,
                   1.0, 1.0,
                   0, 255, 255, 255, 0, 0, 0)) {
-    return -1;
+    return EXIT_FAILURE;
   }
 
   etk_init (&argc, &argv);
@@ -45,12 +45,12 @@ main (int argc, char *argv[])
     printf ("The file %s can't be opened\n", argv[1]);
     etk_shutdown ();
     edvi_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
 
   window = etk_window_new ();
   etk_window_title_set (ETK_WINDOW (window), "Etk Dvi Test Application");
-  etk_signal_connect ("delete_event", ETK_OBJECT (window),
+  etk_signal_connect ("delete-event", ETK_OBJECT (window),
                       ETK_CALLBACK(_quit_cb), NULL);
 
   hbox = etk_hbox_new (ETK_FALSE, 6);
@@ -80,7 +80,7 @@ main (int argc, char *argv[])
   }
 
   /* change page */
-  etk_signal_connect ("row_clicked", ETK_OBJECT (list),
+  etk_signal_connect ("row-clicked", ETK_OBJECT (list),
                       ETK_CALLBACK(_change_page_cb), dvi);
 
   /* we attach and show */
@@ -89,7 +89,7 @@ main (int argc, char *argv[])
 
   etk_box_append (ETK_BOX (hbox), dvi, ETK_BOX_START, ETK_BOX_NONE, 0);
   etk_widget_show (dvi);
-  
+
   etk_widget_show (window);
 
   etk_main ();
@@ -97,7 +97,7 @@ main (int argc, char *argv[])
   etk_shutdown ();
   edvi_shutdown ();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 static void

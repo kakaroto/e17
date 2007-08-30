@@ -89,7 +89,7 @@ void etk_dvi_file_set(Etk_Dvi *dvi, const char *filename)
       edvi_document_delete (dvi->dvi_document);
 
    dvi->dvi_document = edvi_document_new (dvi->filename, dvi->dvi_device, dvi->dvi_property);
-   dvi->page = 0;
+   dvi->page = -1;
 
    _etk_dvi_load(dvi);
 }
@@ -325,7 +325,7 @@ static void _etk_dvi_constructor(Etk_Dvi *dvi)
 
    dvi->dvi_object = NULL;
    dvi->filename = NULL;
-   dvi->page = 0;
+   dvi->page = -1;
    dvi->page_length = 10;
 
    dvi->dvi_device = edvi_device_new (edvi_dpi_get(), edvi_dpi_get());
@@ -514,8 +514,8 @@ static void _etk_dvi_load(Etk_Dvi *dvi)
       if (dvi->dvi_object)
       {
          unsigned int *m;
-         int w;
-         int h;
+         int           w;
+         int           h;
 
 	 dvi->dvi_page = edvi_page_new (dvi->dvi_document, dvi->page);
 

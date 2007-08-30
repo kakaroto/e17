@@ -27,15 +27,14 @@ main (int argc, char *argv[])
 
   if (argc == 1) {
     printf ("Usage: %s dvi_file\n", argv[0]);
-    return -1;
+    return EXIT_FAILURE;
   }
 
   printf ("[DVI] version       : %s\n", edvi_version_get ());
   if (!edvi_init (300, "cx", 4,
                   1.0, 1.0,
-                  0, 255, 255, 255, 0, 0, 0)) {
-    return -1;
-  }
+                  0, 255, 255, 255, 0, 0, 0))
+    return EXIT_FAILURE;
 
   ewl_init (&argc, (char **)argv);
   str_data = ecore_list_new();
@@ -44,13 +43,13 @@ main (int argc, char *argv[])
   /* We open the dvi file */
   dvi = ewl_dvi_new ();
   ewl_dvi_file_set (EWL_DVI (dvi), argv[1]);
-  document = EWL_DVI (dvi)->dvi_document;
+  document = ewl_dvi_dvi_document_get (EWL_DVI (dvi));
   if (!document) {
     printf ("The file %s can't be opened\n", argv[1]);
     ecore_list_destroy (str_data);
     ewl_main_quit ();
     edvi_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
 
   window = ewl_window_new ();
@@ -100,7 +99,7 @@ main (int argc, char *argv[])
 
   edvi_shutdown ();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 static void _quit_cb (Ewl_Widget * w, void *ev_data, void *user_data)

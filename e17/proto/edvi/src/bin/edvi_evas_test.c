@@ -42,7 +42,6 @@ _evas_object_bg_set (Evas_Object *o, int r, int g, int b)
 int
 main (int argc, char * argv[])
 {
-  char          *filename;
   Edvi_Device   *device;
   Edvi_Property *property;
   Edvi_Document *document;
@@ -51,20 +50,19 @@ main (int argc, char * argv[])
   Evas          *evas;
   Evas_Object   *o;
   char          *param_kpathsea_mode  = "cx";
+  int            page_number;
 
-  if (argc < 2) {
-    printf ("\nUsage: %s file.dvi\n\n", argv[0]);
-    return -1;
+  if (argc < 3) {
+    printf ("\nUsage: %s file.dvi page_number\n\n", argv[0]);
+    return EXIT_FAILURE;
   }
-
-  filename = argv[1];
 
   printf ("[DVI] version : %s\n", edvi_version_get ());
 
   if (!edvi_init (300, param_kpathsea_mode, 4,
                   1.0, 1.0,
                   0, 255, 255, 255, 0, 0, 0)) {
-    return -1;
+    return EXIT_FAILURE;
   }
 
   device = edvi_device_new (edvi_dpi_get (), edvi_dpi_get ());
@@ -78,12 +76,13 @@ main (int argc, char * argv[])
   }
   edvi_property_property_set (property, EDVI_PROPERTY_DELAYED_FONT_OPEN);
 
-  document = edvi_document_new (filename, device, property);
+  document = edvi_document_new (argv[1], device, property);
   if (!document) {
     goto free_property;
   }
 
-  page = edvi_page_new (document, 0);
+  sscanf (argv[2], "%d", &page_number);
+  page = edvi_page_new (document, page_number);
   if (!page) {
     goto free_document;
   }
@@ -121,6 +120,16 @@ main (int argc, char * argv[])
   ecore_main_loop_begin ();
 
   ecore_evas_shutdown ();
+  ecore_shutdown ();
+  evas_shutdown ();
+  edvi_page_delete (page);
+  edvi_document_delete (document);
+  edvi_property_delete (property);
+  edvi_device_delete (device);
+  edvi_shutdown ();
+
+  return EXIT_SUCCESS;
+
  shutdown_ecore:
   ecore_shutdown ();
  shutdown_evas:
@@ -136,7 +145,7 @@ main (int argc, char * argv[])
  shutdown:
   edvi_shutdown ();
 
-  return 0;
+  return EXIT_FAILURE;
 }
 
 static void

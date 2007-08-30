@@ -13,7 +13,7 @@ endif
 
 INCLUDES = 			\
 -I. -I$(top_srcdir)/src/lib	\
-@EVAS_CFLAGS@ @ECORE_CFLAGS@ @EWL_CFLAGS@ @ETK_CFLAGS@ @DVILIB2_CFLAGS@
+@EWL_CFLAGS@ @ETK_CFLAGS@ @EDVI_CFLAGS@
 
 lib_LTLIBRARIES = libedvi.la
 
@@ -47,4 +47,4 @@ edvi_private.h
 installed_headersdir = $(prefix)/include/edvi
 installed_headers_DATA = $(EDVIHEADERS)
 
-libedvi_la_LIBADD = @DVILIB2_LIBS@ @ETK_LIBS@ @EWL_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@
+libedvi_la_LIBADD = @ETK_LIBS@ @EWL_LIBS@ @EDVI_LIBS@

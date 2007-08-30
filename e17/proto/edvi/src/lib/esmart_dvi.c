@@ -98,7 +98,7 @@ esmart_dvi_init (Evas_Object *obj)
 
   if (sp->filename) free (sp->filename);
   sp->filename = NULL;
-  sp->page = 0;
+  sp->page = -1;
   sp->page_length = 10;
 
   sp->dvi_device = edvi_device_new (edvi_dpi_get(), edvi_dpi_get());
@@ -574,9 +574,25 @@ _smart_page_render (Evas_Object *obj)
     {
       if (sp->dvi_page)
         edvi_page_delete (sp->dvi_page);
+
       if (sp->obj)
         {
+          unsigned int *m;
+          int           w;
+          int           h;
+
           sp->dvi_page = edvi_page_new (sp->dvi_document, sp->page);
+          w = edvi_page_width_get (sp->dvi_page);
+          h = edvi_page_height_get (sp->dvi_page);
+          evas_object_image_size_set (sp->obj, w, h);
+          evas_object_image_fill_set (sp->obj, 0, 0, w, h);
+          m = (unsigned int *)evas_object_image_data_get (sp->obj, 1);
+          if (!m)
+            return;
+
+          memset(m, (255 << 24) | (255 << 16) | (255 << 8) | 255, w * h * 4);
+          evas_object_image_data_update_add (sp->obj, 0, 0, w, h);
+          evas_object_resize (sp->obj, w, h);
           edvi_page_render (sp->dvi_page, sp->dvi_device, sp->obj);
         }
       evas_object_show (sp->obj);

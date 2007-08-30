@@ -7,9 +7,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 compile \
 		       depcomp install-sh ltconfig ltmain.sh missing \
 		       stamp-h.in
 
-bin_SCRIPTS = edvi-config
-
-EXTRA_DIST = AUTHORS README edvi.pc.in edvi-config.in
+EXTRA_DIST = AUTHORS README edvi.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = edvi.pc

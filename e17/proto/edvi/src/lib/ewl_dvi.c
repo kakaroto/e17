@@ -78,7 +78,7 @@ ewl_dvi_init(Ewl_Dvi *dvi)
 			    NULL);
 
 	dvi->filename = NULL;
-	dvi->page = 0;
+	dvi->page = -1;
 	dvi->page_length = 10;
 
 	dvi->dvi_device = edvi_device_new (edvi_dpi_get(), edvi_dpi_get());
@@ -145,7 +145,7 @@ ewl_dvi_file_set(Ewl_Dvi *dvi, const char *filename)
 	}
 
 	dvi->dvi_document = edvi_document_new (filename, dvi->dvi_device, dvi->dvi_property);
-	dvi->page = 0;
+	dvi->page = -1;
 
 	/*
 	 * Load the new dvi if widget has been realized

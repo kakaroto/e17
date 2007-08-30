@@ -19,39 +19,37 @@ main (int argc, char *argv[])
   Ecore_Evas *ee;
   Evas *evas;
   Evas_Object *o;
-  char *filename;
   int page_number;
 
   if (argc < 3)
     {
       printf ("\nUsage: %s filename page_number\n\n", argv[0]);
-      return -1;
+      return EXIT_FAILURE;
     }
 
   printf ("[DVI] version : %s\n", edvi_version_get ());
   if (!edvi_init (300, "cx", 4,
                   1.0, 1.0,
-                  0, 0, 0, 0, 255, 255, 255)) {
-    return -1;
+                  0, 255, 255, 255, 0, 0, 0)) {
+    return EXIT_FAILURE;
   }
 
-  filename = argv[1];
   sscanf (argv[2], "%d", &page_number);
 
   if (!evas_init()) {
     edvi_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
   if (!ecore_init()) {
     evas_shutdown ();
     edvi_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
   if (!ecore_evas_init()) {
     ecore_shutdown ();
     evas_shutdown ();
     edvi_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
 
   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 600, 850);
@@ -61,7 +59,7 @@ main (int argc, char *argv[])
   ecore_evas_name_class_set(ee, "esmart_dvi_test", "test_esmart_dvi");
   ecore_evas_callback_resize_set(ee, app_resize);
   ecore_evas_show(ee);
-  
+
   evas = ecore_evas_get(ee);
 
   o = esmart_dvi_add (evas);
@@ -69,22 +67,22 @@ main (int argc, char *argv[])
     ecore_evas_shutdown ();
     ecore_shutdown ();
     evas_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
-  esmart_dvi_file_set (o, filename);
+
+  esmart_dvi_file_set (o, argv[1]);
   esmart_dvi_page_set (o, page_number);
-  esmart_dvi_scale_set (o, 0.5, 0.5);
   evas_object_move (o, 0, 0);
   evas_object_show (o);
 
   ecore_main_loop_begin ();
-   
+
   ecore_evas_shutdown ();
   ecore_shutdown ();
   evas_shutdown ();
   edvi_shutdown ();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 static void
@@ -92,7 +90,7 @@ app_resize(Ecore_Evas *ee)
 {
    Evas_Coord w, h;
    Evas *evas;
-   
+
    evas = ecore_evas_get(ee);
    evas_output_viewport_get(evas, NULL, NULL, &w, &h);
 /*    bg_resize(w, h); */
