@@ -1,5 +1,6 @@
 TODO
 ----
+       * IPC message worker->master to queue metadata extract
 
 [DONE] * Unique identifier per command, for easier tracking
        * Exception handling
@@ -18,7 +19,7 @@ Metadata system
 
 Vfolder system
 --------------
-       * Plugin system to attach vfolder plugins (i.e. trash can etc)
+[DONE] * Plugin system to attach vfolder plugins (i.e. trash can etc)
 
 Plugins
 -------

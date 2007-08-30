@@ -573,7 +573,7 @@ Ecore_List* evfs_metadata_db_vfolder_search_entries_get(sqlite3* db, int id)
 
 	entries = ecore_list_new();
 
-	snprintf(query, sizeof(query), "select rtype, rkey, rvalue from VFolderSearchComponent where id = ?");
+	snprintf(query, sizeof(query), "select rtype, rkey, rvalue from VFolderSearchComponent where vfolderSearch = ?");
 	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
 
 	if (ret == SQLITE_OK) {
@@ -611,6 +611,8 @@ Ecore_List* evfs_metadata_db_vfolder_search_entries_execute(sqlite3* db, Ecore_L
 
 	files = ecore_list_new();
 
+	printf("Building query from %d entries\n", ecore_list_count(entries));
+	
 	snprintf(query,sizeof(query),"select distinct f.filename from File f where 1 ");
 	while ( (entry=ecore_list_next(entries))) {
 		if (entry->type == 'M') {
