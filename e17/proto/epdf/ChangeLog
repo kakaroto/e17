@@ -1,5 +1,18 @@
 2007-08-30  Vincent Torri  <doursse at users dot sf dot net>
 
+	* src/bin/epdf_evas_test.c: (main):
+	* src/lib/esmart_pdf.c: (_smart_page_render):
+	* src/lib/etk_pdf.c: (etk_pdf_search_next), (_etk_pdf_load):
+	* src/lib/ewl_pdf.c: (ewl_pdf_search_next), (ewl_pdf_reveal_cb):
+	missing removal of remove epdf_document_page_get().
+
+	* src/plugins/ewl/ewl_pdf.c: (create_test), (create_pdf_fd_cb),
+	(create_pdf_fd_window_response):
+	fill the entry with the filename, remove trailing spaces and
+	remove some comments.
+
+2007-08-30  Vincent Torri  <doursse at users dot sf dot net>
+
 	* src/bin/epdf_etk_test.c: (main), (_tree_fill):
 	remove trailing spaces
 

@@ -32,7 +32,7 @@ static void pdf_load ();
 
 static int create_test (Ewl_Container *box);
 
-void 
+void
 test_info (Ewl_Test *test)
 {
   test->name = "Pdf";
@@ -96,9 +96,9 @@ create_test (Ewl_Container *box)
                               EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
   ewl_container_child_append (EWL_CONTAINER (scrollpane), list);
 /*   ewl_callback_append (list, */
-/* 		       EWL_CALLBACK_VALUE_CHANGED, */
-/* 		       EWL_CALLBACK_FUNCTION (_change_page_cb), */
-/* 		       pdf); */
+/*		       EWL_CALLBACK_VALUE_CHANGED, */
+/*		       EWL_CALLBACK_FUNCTION (_change_page_cb), */
+/*		       pdf); */
 /*   ewl_widget_show (list); */
 
 /*   list = ewl_tree_new (1); */
@@ -141,7 +141,7 @@ create_test (Ewl_Container *box)
   ewl_widget_show (button);
 
   pdf_load (pdf_file);
-  
+
   return 1;
 }
 
@@ -156,7 +156,7 @@ create_pdf_fd_cb(Ewl_Widget *w, void *ev_data,
   ewl_window_title_set (EWL_WINDOW (fd), "Select a Pdf file...");
   ewl_window_name_set (EWL_WINDOW (fd), "EWL Pdf Test");
   ewl_window_class_set (EWL_WINDOW (fd), "EWL Filedialog");
-  ewl_callback_append (fd, EWL_CALLBACK_VALUE_CHANGED, 
+  ewl_callback_append (fd, EWL_CALLBACK_VALUE_CHANGED,
                        create_pdf_fd_window_response, user_data);
   ewl_widget_show(fd);
 }
@@ -165,10 +165,8 @@ static void
 create_pdf_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 {
   Ewl_Event_Action_Response *e;
-  Ewl_Widget    *entry;
-  
+
   e = ev;
-  entry = EWL_WIDGET (data);
 
   if (e->response == EWL_STOCK_OK) {
     const char *path;
@@ -177,9 +175,8 @@ create_pdf_fd_window_response (Ewl_Widget *w, void *ev, void *data)
     int   l1;
     int   l2;
 
-    printf("File open from pdf test: %s/%s\n", 
-           path = ewl_filedialog_directory_get (EWL_FILEDIALOG (w)),
-           filename = ewl_filedialog_selected_file_get (EWL_FILEDIALOG (w)));
+    path = ewl_filedialog_directory_get (EWL_FILEDIALOG (w));
+    filename = ewl_filedialog_selected_file_get (EWL_FILEDIALOG (w));
 
     l1 = strlen (path);
     l2 = strlen (filename);
@@ -192,7 +189,7 @@ create_pdf_fd_window_response (Ewl_Widget *w, void *ev, void *data)
       memcpy (file + l1 + 1, filename, l2);
       file [l1 + l2 + 1] = '\0';
     }
-    printf ("file : %s\n", file);
+    ewl_text_text_set (EWL_TEXT (data), file);
     pdf_load (file);
     free (file);
     // free(path); FIXME: Is text widget allocated correctly?

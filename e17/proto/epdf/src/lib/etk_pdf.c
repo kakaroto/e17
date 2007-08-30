@@ -278,7 +278,7 @@ etk_pdf_search_next (Etk_Pdf *pdf)
 
      pdf->search.page++;
      printf ("page : %d\n", pdf->search.page);
-     page = epdf_document_page_get (pdf->pdf_document, pdf->search.page);
+     page = epdf_page_new (pdf->pdf_document, pdf->search.page);
      pdf->search.list = epdf_page_text_find (page,
                                              pdf->search.text,
                                              pdf->search.is_case_sensitive);
@@ -652,7 +652,7 @@ static void _etk_pdf_load(Etk_Pdf *pdf)
 	 epdf_page_delete (pdf->pdf_page);
       if (pdf->pdf_object)
       {
-	 pdf->pdf_page = epdf_document_page_get (pdf->pdf_document, pdf->page);
+	 pdf->pdf_page = epdf_page_new (pdf->pdf_document, pdf->page);
 	 epdf_page_render (pdf->pdf_page, pdf->pdf_object,
                            pdf->orientation,
                            0, 0, -1, -1,

@@ -43,7 +43,7 @@ main (int argc, char *argv[])
     exit (-1);
   }
 
-  page = epdf_document_page_get (document, page_number);
+  page = epdf_page_new (document, page_number);
   if (!page) {
     printf ("Bad page\n");
     epdf_document_delete (document);

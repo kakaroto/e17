@@ -340,7 +340,7 @@ ewl_pdf_search_next (Ewl_Pdf *pdf)
 
                 pdf->search.page++;
                 printf ("page : %d\n", pdf->search.page);
-                page = epdf_document_page_get (pdf->pdf_document, pdf->search.page);
+                page = epdf_page_new (pdf->pdf_document, pdf->search.page);
                 pdf->search.list = epdf_page_text_find (page,
                                                         pdf->search.text,
                                                         pdf->search.is_case_sensitive);
@@ -587,7 +587,7 @@ ewl_pdf_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	if (pdf->pdf_document) {
 		if (pdf->pdf_page)
 			epdf_page_delete (pdf->pdf_page);
-		pdf->pdf_page = epdf_document_page_get (pdf->pdf_document, pdf->page);
+		pdf->pdf_page = epdf_page_new (pdf->pdf_document, pdf->page);
 		epdf_page_render (pdf->pdf_page, pdf->image,
                                   pdf->orientation,
                                   0, 0, -1, -1,

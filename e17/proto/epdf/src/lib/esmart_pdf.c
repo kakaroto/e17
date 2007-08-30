@@ -599,7 +599,7 @@ _smart_page_render (Evas_Object *obj)
         epdf_page_delete (sp->pdf_page);
       if (sp->obj)
         {
-          sp->pdf_page = epdf_document_page_get (sp->pdf_document, sp->page);
+          sp->pdf_page = epdf_page_new (sp->pdf_document, sp->page);
           epdf_page_render (sp->pdf_page, sp->obj, sp->orientation,
                             0, 0, -1, -1,
                             sp->hscale, sp->vscale);
