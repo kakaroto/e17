@@ -1131,17 +1131,18 @@ ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__,
 
 	tree_data = ewl_mvc_data_get(EWL_MVC(w));
 	sel = ewl_mvc_selected_get(EWL_MVC(w));
+	if (!sel)
+		goto EXIT_CALLBACK;
 
 	/* don't care about the top level rows */
 	if (tree_data == sel->sel.data)
-	{
-		free(sel);
-		return;
-	}
+		goto CLEAR_SELECTION;
 
 	/* get the test */
 	ecore_list_index_goto(sel->sel.data, sel->row);
 	test = ecore_list_current(sel->sel.data);
+	if (!test)
+		goto FREE_SELECTION;
 
 	/* we need to determine if this is the unit test case. if it is we
 	 * need to treat it specially */
@@ -1152,7 +1153,12 @@ ewl_test_cb_test_selected(Ewl_Widget *w, void *ev __UNUSED__,
 	else
 		run_test_boxed(test);
 
+CLEAR_SELECTION:
+	ewl_mvc_selected_clear(EWL_MVC(w));
+FREE_SELECTION:
 	free(sel);
+EXIT_CALLBACK:
+	return;
 }
 
 static void *
