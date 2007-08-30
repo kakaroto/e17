@@ -1,0 +1,9 @@
+2007-08-30  Vincent Torri  <doursse at users dot sf dot net>
+
+	* acinclude.m4:
+	* configure.in:
+	use AC_LIBTOOL_LANG_F77_CONFIG instead of
+	an m4 macro
+
+	* src/plugins/Makefile.am:
+	add a new line at end of file
