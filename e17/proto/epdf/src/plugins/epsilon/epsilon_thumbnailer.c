@@ -62,7 +62,7 @@ epsilon_generate_thumb (Epsilon * e)
    const int     *pixels;
 
    document = epdf_document_new (e->src);
-   page = epdf_document_page_get (document, 1);
+   page = epdf_page_new (document, 1);
    ee = ecore_evas_buffer_new(64,64);
    evas = ecore_evas_get(ee);
    o = evas_object_image_add (evas);

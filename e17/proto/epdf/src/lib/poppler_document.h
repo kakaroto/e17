@@ -34,20 +34,6 @@ Epdf_Document *epdf_document_new (const char *filename);
 void epdf_document_delete (Epdf_Document *document);
 
 /**
- * Return a newly created Epdf_Page object
- *
- * @param document The document to delete
- * @param index The number of the page
- * @return The page
- *
- * Return the page number @p index of the document @p document. The
- * result must be freed with epdf_page_delete
- *
- */
-Epdf_Page *epdf_document_page_get (Epdf_Document *document,
-                                   int            index);
-
-/**
  * Return the count of the pages of the document
  *
  * @param document The document

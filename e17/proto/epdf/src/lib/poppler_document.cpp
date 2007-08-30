@@ -83,15 +83,6 @@ epdf_document_doc_get (Epdf_Document *document)
   return document->pdfdoc;
 }
 
-Epdf_Page *
-epdf_document_page_get (Epdf_Document *document, int index)
-{
-  if (!document)
-    return NULL;
-
-  return epdf_page_new (document, index);
-}
-
 int
 epdf_document_page_count_get (Epdf_Document *document)
 {

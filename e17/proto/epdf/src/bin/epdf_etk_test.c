@@ -116,7 +116,7 @@ main (int argc, char *argv[])
                     1, 1, 0, 1,
                     0, 0, ETK_TABLE_NONE);
   etk_widget_show (pdf);
-  
+
   etk_widget_show (window);
 
   etk_main ();
@@ -140,7 +140,7 @@ _tree_fill (Etk_Pdf *pdf, Etk_Tree *tree, Etk_Tree_Col *col, Etk_Tree_Row *row, 
 
   if (!items)
     return;
-  
+
   ecore_list_first_goto (items);
   while ((item = ecore_list_next (items))) {
     char       *buf;
@@ -149,7 +149,7 @@ _tree_fill (Etk_Pdf *pdf, Etk_Tree *tree, Etk_Tree_Col *col, Etk_Tree_Row *row, 
 
     buf = strdup (epdf_index_item_title_get (item));
     prow = etk_tree_row_append (tree, row, col, buf, NULL);
-      
+
     num = (int *)malloc (sizeof (int));
     *num = epdf_index_item_page_get (etk_pdf_pdf_document_get (pdf), item);
     etk_tree_row_data_set_full (prow, num, free);
