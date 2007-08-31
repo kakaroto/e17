@@ -230,7 +230,7 @@ _cb_mouse_out(void *data, Evas_Object *obj, const char *emission, const char *so
    Instance *inst;
    
    if (!(inst = data)) return;
-   if (inst->popup->pinned) return;
+   if ((!inst->popup) || (inst->popup->pinned)) return;
    e_object_del(E_OBJECT(inst->popup));
    inst->popup = NULL;
 }
