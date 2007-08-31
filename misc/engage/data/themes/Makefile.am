@@ -12,6 +12,5 @@ theme_DATA = $(EDJS)
 all: $(EDCS)
 
 .edc.edj:
-	edje_cc -v -id $(<:%.edc=%)/images -fd $(<:%.edc=%)/fonts $< $@
-
+	edje_cc -v -id $*/images -fd $*/fonts $< $@
 
