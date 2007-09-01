@@ -97,6 +97,9 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         _register_decorated_callbacks(self)
         return 1
 
+    def _set_evas(self, Canvas evas not None):
+        self._evas = evas
+
     def __dealloc__(self):
         cdef void *data
         cdef Evas_Object *obj

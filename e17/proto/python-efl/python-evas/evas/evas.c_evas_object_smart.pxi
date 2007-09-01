@@ -273,11 +273,15 @@ cdef class SmartObject(Object):
     def __dealloc__(self):
         self._smart_callbacks = None
 
-    def _new_obj(self):
+    def __init__(self, Canvas canvas not None, **kargs):
         cdef Evas_Smart *cls
+        if type(self) is SmartObject:
+            raise TypeError("Must not instantiate SmartObject, but subclasses")
+        Object.__init__(self, canvas)
         if self.obj == NULL:
             cls = _smart_class_from_name(self.__class__.__name__)
             self._set_obj(evas_object_smart_add(self._evas.obj, cls))
+        self._set_common_params(**kargs)
 
     def member_add(self, Object child):
         evas_object_smart_member_add(child.obj, self.obj)
@@ -351,62 +355,32 @@ cdef class SmartObject(Object):
 
 
     # Factory
-    def Rectangle(self, size=None, pos=None, geometry=None, color=None,
-                  name=None):
-        obj = Rectangle(self.evas)
-        obj._new_obj()
-        obj._set_common_params(size=size, pos=pos, geometry=geometry,
-                               color=color, name=name)
+    def Rectangle(self, **kargs):
+        obj = Rectangle(self.evas, **kargs)
         self.member_add(obj)
         return obj
 
-    def Line(self, start=None, end=None, size=None, pos=None,
-             geometry=None, color=None, name=None):
-        obj = Line(self.evas)
-        obj._new_obj()
-        obj._set_common_params(start=start, end=end, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
+    def Line(self, **kargs):
+        obj = Line(self.evas, **kargs)
         self.member_add(obj)
         return obj
 
-
-    def Image(self, file=None, size=None, pos=None, geometry=None,
-              color=None, name=None):
-        obj = Image(self.evas)
-        obj._new_obj()
-        obj._set_common_params(file=file, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
+    def Image(self, **kargs):
+        obj = Image(self.evas, **kargs)
         self.member_add(obj)
         return obj
 
-    def Gradient(self, size=None, pos=None, geometry=None, color=None,
-                 name=None):
-        obj = Gradient(self.evas)
-        obj._new_obj()
-        obj._set_common_params(size=size, pos=pos, geometry=geometry,
-                               color=color, name=name)
+    def Gradient(self, **kargs):
+        obj = Gradient(self.evas, **kargs)
         self.member_add(obj)
         return obj
 
-    def Polygon(self, points=None, size=None, pos=None, geometry=None,
-                color=None, name=None):
-        obj = Polygon(self.evas)
-        obj._new_obj()
-        obj._set_common_params(points=points, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
+    def Polygon(self, **kargs):
+        obj = Polygon(self.evas, **kargs)
         self.member_add(obj)
         return obj
 
-    def Text(self, text=None, font=None, font_source=None, style=None,
-             shadow_color=None, glow_color=None, glow2_color=None,
-             outline_color=None, size=None, pos=None, geometry=None,
-             color=None, name=None):
-        obj = Text(self.evas)
-        obj._new_obj()
-        obj._set_common_params(text=text, font=font, font_source=font_source,
-                               style=style, shadow_color=shadow_color,
-                               glow_color=glow_color, glow2_color=glow2_color,
-                               outline_color=outline_color, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
+    def Text(self, **kargs):
+        obj = Text(self.evas, **kargs)
         self.member_add(obj)
         return obj

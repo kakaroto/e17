@@ -1,14 +1,14 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef class Polygon(Object):
-    def _new_obj(self):
+    def __init__(self, Canvas canvas not None, **kargs):
+        Object.__init__(self, canvas)
         if self.obj == NULL:
             self._set_obj(evas_object_polygon_add(self._evas.obj))
+        self._set_common_params(**kargs)
 
-    def _set_common_params(self, points=None, size=None, pos=None,
-                           geometry=None, color=None, name=None):
-        Object._set_common_params(self, size=size, pos=pos, geometry=geometry,
-                                  color=color, name=name)
+    def _set_common_params(self, points=None, **kargs):
+        Object._set_common_params(self, **kargs)
         if points:
             for x, y in points:
                 self.point_add(x, y)

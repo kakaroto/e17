@@ -1,12 +1,13 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef class Line(Object):
-    def _new_obj(self):
+    def __init__(self, Canvas canvas not None, **kargs):
+        Object.__init__(self, canvas)
         if self.obj == NULL:
             self._set_obj(evas_object_line_add(self._evas.obj))
+        self._set_common_params(**kargs)
 
-    def _set_common_params(self, start=None, end=None, size=None, pos=None,
-                           geometry=None, color=None, name=None):
+    def _set_common_params(self, start=None, end=None, geometry=None, size=None, pos=None, **kargs):
         if start and end:
             x1 = start[0]
             y1 = start[1]
@@ -39,8 +40,7 @@ cdef class Line(Object):
             self.start_set(*start)
         elif end:
             self.end_set(*end)
-        Object._set_common_params(self, size=size, pos=pos, geometry=geometry,
-                                  color=color, name=name)
+        Object._set_common_params(self, geometry=geometry, size=size, pos=pos, **kargs)
 
     def xy_set(self, int x1, int y1, int x2, int y2):
         evas_object_line_xy_set(self.obj, x1, y1, x2, y2)

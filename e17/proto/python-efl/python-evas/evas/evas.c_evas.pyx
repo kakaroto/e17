@@ -34,7 +34,7 @@ cdef Canvas Canvas_from_instance(Evas *evas):
     if evas == NULL:
         return None
 
-    c = Canvas()
+    c = Canvas.__new__(Canvas)
     c._set_obj(evas)
 
     return c
@@ -84,7 +84,8 @@ cdef Object Object_from_instance(Evas_Object *obj):
         t = evas_object_type_get(obj)
         c = Canvas_from_instance(evas_object_evas_get(obj))
         cls = object_mapping.get(t, Object)
-        o = cls(c)
+        o = cls.__new__(cls)
+        o._set_evas(c)
         o._set_obj(obj)
 
     return o

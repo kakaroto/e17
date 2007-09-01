@@ -22,11 +22,14 @@ cdef class Emotion(evas.c_evas.Object):
     def __new__(self, *a, **ka):
         self._emotion_callbacks = {}
 
-    def _new_obj(self):
+    def __init__(self, evas.c_evas.Canvas canvas not None, **kargs):
+        evas.c_evas.Object.__init__(self, canvas)
         if self.obj == NULL:
             self._set_obj(emotion_object_add(self._evas.obj))
+        self._set_common_params(**kargs)
 
-    def _set_common_params(self, char *module_filename,
+    def _set_common_params(self,
+                           char *module_filename="emotion_decoder_xine.so",
                            module_params=None, size=None, pos=None,
                            geometry=None, color=None, name=None):
         evas.c_evas.Object._set_common_params(self, size=size, pos=pos,

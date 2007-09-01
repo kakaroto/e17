@@ -1,16 +1,16 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef class Text(Object):
-    def _new_obj(self):
+    def __init__(self, Canvas canvas not None, **kargs):
+        Object.__init__(self, canvas)
         if self.obj == NULL:
             self._set_obj(evas_object_text_add(self._evas.obj))
+        self._set_common_params(**kargs)
 
     def _set_common_params(self, text=None, font=None, font_source=None,
                            style=None, shadow_color=None, glow_color=None,
-                           glow2_color=None, outline_color=None, size=None,
-                           pos=None, geometry=None, color=None, name=None):
-        Object._set_common_params(self, size=size, pos=pos, geometry=geometry,
-                                  color=color, name=name)
+                           glow2_color=None, outline_color=None, **kargs):
+        Object._set_common_params(self, **kargs)
         if text is not None:
             self.text_set(text)
         if font_source:

@@ -2,6 +2,8 @@
 
 import c_emotion
 
+from c_emotion import Emotion, EmotionModuleInitError
+
 EMOTION_EVENT_MENU1 = 0
 EMOTION_EVENT_MENU2 = 1
 EMOTION_EVENT_MENU3 = 2
@@ -30,16 +32,3 @@ EMOTION_EVENT_7 = 24
 EMOTION_EVENT_8 = 25
 EMOTION_EVENT_9 = 26
 EMOTION_EVENT_10 = 27
-
-EmotionModuleInitError = c_emotion.EmotionModuleInitError
-
-class Emotion(c_emotion.Emotion):
-    def __init__(self, canvas, module_filename="emotion_decoder_xine.so",
-                 module_params=None, size=None, pos=None, geometry=None,
-                 color=None, name=None):
-        c_emotion.Emotion.__init__(self, canvas)
-        self._new_obj()
-        self._set_common_params(module_filename=module_filename,
-                                module_params=module_params,
-                                size=size, pos=pos, geometry=geometry,
-                                color=color, name=name)

@@ -1,18 +1,18 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef class Image(Object):
-    def _new_obj(self):
+    def __init__(self, Canvas canvas not None, **kargs):
+        Object.__init__(self, canvas)
         if self.obj == NULL:
             self._set_obj(evas_object_image_add(self._evas.obj))
+        self._set_common_params(**kargs)
 
-    def _set_common_params(self, file=None, size=None, pos=None, geometry=None,
-                           color=None, name=None):
+    def _set_common_params(self, file=None, **kargs):
         if file:
             if isinstance(file, basestring):
                 file = (file, None)
             self.file_set(*file)
-        Object._set_common_params(self, size=size, pos=pos, geometry=geometry,
-                                  color=color, name=name)
+        Object._set_common_params(self, **kargs)
 
     def file_set(self, char *filename, key=None):
         cdef char *k

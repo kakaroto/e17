@@ -80,10 +80,12 @@ cdef class Edje(evas.c_evas.Object):
     def __new__(self, *a, **ka):
         self._signal_callbacks = {}
 
-    def _new_obj(self):
+    def __init__(self, evas.c_evas.Canvas canvas not None, **kargs):
+        evas.c_evas.Object.__init__(self, canvas)
         if self.obj == NULL:
             self._set_obj(edje_object_add(self._evas.obj))
             _register_decorated_callbacks(self)
+        self._set_common_params(**kargs)
 
     def _set_common_params(self, file=None, group=None, size=None, pos=None,
                            geometry=None, color=None, name=None):

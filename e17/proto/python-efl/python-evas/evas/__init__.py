@@ -2,13 +2,12 @@
 
 import c_evas
 
-shutdown = c_evas.shutdown
-render_method_lookup = c_evas.render_method_lookup
-render_method_list = c_evas.render_method_list
-color_argb_premul = c_evas.color_argb_premul
-color_argb_unpremul = c_evas.color_argb_unpremul
-color_rgb_to_hsv = c_evas.color_rgb_to_hsv
-color_hsv_to_rgb = c_evas.color_hsv_to_rgb
+from c_evas import Canvas, SmartObject, Rectangle, Line, Image, \
+     Gradient, Polygon, Text, Rect, EvasLoadError, \
+     shutdown, render_method_lookup, render_method_list, \
+     color_argb_premul, color_argb_unpremul, \
+     color_rgb_to_hsv, color_hsv_to_rgb
+
 
 EVAS_CALLBACK_MOUSE_IN = 0
 EVAS_CALLBACK_MOUSE_OUT = 1
@@ -72,89 +71,5 @@ EVAS_TEXT_STYLE_FAR_SOFT_SHADOW = 9
 EVAS_OBJECT_POINTER_MODE_AUTOGRAB = 0
 EVAS_OBJECT_POINTER_MODE_NOGRAB = 1
 
-EvasLoadError = c_evas.EvasLoadError
-Rect = c_evas.Rect
-
-class Canvas(c_evas.Canvas):
-    def __init__(self, method=None, size=None, viewport=None):
-        c_evas.Canvas.__init__(self)
-        self._new_evas()
-        if method:
-            self.output_method_set(method)
-        if size:
-            self.size_set(*size)
-        if viewport:
-            self.viewport_set(*viewport)
-
-
-class SmartObject(c_evas.SmartObject):
-    def __init__(self, canvas, size=None, pos=None, geometry=None, color=None,
-                 name=None):
-        if type(self) is SmartObject or type(self) is c_evas.SmartObject:
-            raise TypeError("Must not instantiate SmartObject, but subclasses")
-        c_evas.SmartObject.__init__(self, canvas)
-        self._new_obj()
-        self._set_common_params(size=size, pos=pos, geometry=geometry,
-                                color=color, name=name)
-
-
-class Rectangle(c_evas.Rectangle):
-    def __init__(self, canvas, size=None, pos=None, geometry=None, color=None,
-                 name=None):
-        c_evas.Rectangle.__init__(self, canvas)
-        self._new_obj()
-        self._set_common_params(size=size, pos=pos, geometry=geometry,
-                                color=color, name=name)
-
-
-class Line(c_evas.Line):
-    def __init__(self, canvas, start=None, end=None, size=None, pos=None,
-                 geometry=None, color=None, name=None):
-        c_evas.Line.__init__(self, canvas)
-        self._new_obj()
-        self._set_common_params(start=start, end=end, size=size, pos=pos,
-                                geometry=geometry, color=color, name=name)
-
-
-class Image(c_evas.Image):
-    def __init__(self, canvas, file=None, size=None, pos=None, geometry=None,
-                 color=None, name=None):
-        c_evas.Image.__init__(self, canvas)
-        self._new_obj()
-        self._set_common_params(file=file, size=size, pos=pos,
-                                geometry=geometry, color=color, name=name)
-
-
-class Gradient(c_evas.Gradient):
-    def __init__(self, canvas, size=None, pos=None, geometry=None, color=None,
-                 name=None):
-        c_evas.Gradient.__init__(self, canvas)
-        self._new_obj()
-        self._set_common_params(size=size, pos=pos, geometry=geometry,
-                                color=color, name=name)
-
-
-class Polygon(c_evas.Polygon):
-    def __init__(self, canvas, points=None, size=None, pos=None, geometry=None,
-                color=None, name=None):
-        c_evas.Polygon.__init__(self, canvas)
-        self._new_obj()
-        self._set_common_params(points=points, size=size, pos=pos,
-                                geometry=geometry, color=color, name=name)
-
-
-class Text(c_evas.Text):
-    def __init__(self, canvas, text=None, font=None, font_source=None,
-                style=None, shadow_color=None, glow_color=None,
-                glow2_color=None, outline_color=None, size=None, pos=None,
-                geometry=None, color=None, name=None):
-        c_evas.Text.__init__(self, canvas)
-        self._new_obj()
-        self._set_common_params(text=text, font=font, font_source=font_source,
-                                style=style, shadow_color=shadow_color,
-                                glow_color=glow_color, glow2_color=glow2_color,
-                                outline_color=outline_color, size=size,
-                                pos=pos, geometry=geometry, color=color,
-                                name=name)
 
 c_evas.init()

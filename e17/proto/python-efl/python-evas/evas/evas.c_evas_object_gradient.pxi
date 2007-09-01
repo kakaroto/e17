@@ -1,9 +1,11 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef class Gradient(Object):
-    def _new_obj(self):
+    def __init__(self, Canvas canvas not None, **kargs):
+        Object.__init__(self, canvas)
         if self.obj == NULL:
             self._set_obj(evas_object_gradient_add(self._evas.obj))
+        self._set_common_params(**kargs)
 
     def color_stop_add(self, int r, int g, int b, int a, int delta):
         """Adds a color stop to the given evas gradient object.

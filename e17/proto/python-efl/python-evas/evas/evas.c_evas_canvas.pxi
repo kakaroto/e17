@@ -4,6 +4,15 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def __new__(self, *a, **ka):
         self.obj = NULL
 
+    def __init__(self, method=None, size=None, viewport=None):
+        self._new_evas()
+        if method:
+            self.output_method_set(method)
+        if size:
+            self.size_set(*size)
+        if viewport:
+            self.viewport_set(*viewport)
+
     def __dealloc__(self):
         if self.obj:
             evas_free(self.obj)
@@ -341,56 +350,20 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         return evas_event_freeze_get(self.obj)
 
     # Factory
-    def Rectangle(self, size=None, pos=None, geometry=None, color=None,
-                  name=None):
-        obj = Rectangle(self)
-        obj._new_obj()
-        obj._set_common_params(size=size, pos=pos, geometry=geometry,
-                               color=color, name=name)
-        return obj
+    def Rectangle(self, **kargs):
+        return Rectangle(self, **kargs)
 
-    def Line(self, start=None, end=None, size=None, pos=None,
-             geometry=None, color=None, name=None):
-        obj = Line(self)
-        obj._new_obj()
-        obj._set_common_params(start=start, end=end, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
-        return obj
+    def Line(self, **kargs):
+        return Line(self, **kargs)
 
+    def Image(self, **kargs):
+        return Image(self, **kargs)
 
-    def Image(self, file=None, size=None, pos=None, geometry=None,
-              color=None, name=None):
-        obj = Image(self)
-        obj._new_obj()
-        obj._set_common_params(file=file, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
-        return obj
+    def Gradient(self, **kargs):
+        return Gradient(self, **kargs)
 
-    def Gradient(self, size=None, pos=None, geometry=None, color=None,
-                 name=None):
-        obj = Gradient(self)
-        obj._new_obj()
-        obj._set_common_params(size=size, pos=pos, geometry=geometry,
-                               color=color, name=name)
-        return obj
+    def Polygon(self, **kargs):
+        return Polygon(self, **kargs)
 
-    def Polygon(self, points=None, size=None, pos=None, geometry=None,
-                color=None, name=None):
-        obj = Polygon(self)
-        obj._new_obj()
-        obj._set_common_params(points=points, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
-        return obj
-
-    def Text(self, text=None, font=None, font_source=None, style=None,
-             shadow_color=None, glow_color=None, glow2_color=None,
-             outline_color=None, size=None, pos=None, geometry=None,
-             color=None, name=None):
-        obj = Text(self)
-        obj._new_obj()
-        obj._set_common_params(text=text, font=font, font_source=font_source,
-                               style=style, shadow_color=shadow_color,
-                               glow_color=glow_color, glow2_color=glow2_color,
-                               outline_color=outline_color, size=size, pos=pos,
-                               geometry=geometry, color=color, name=name)
-        return obj
+    def Text(self, **kargs):
+        return Text(self, **kargs)
