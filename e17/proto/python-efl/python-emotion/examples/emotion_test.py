@@ -35,12 +35,31 @@ class MovieWindow(evas.SmartObject):
         self.frame.data["resizing"] = False
         self.frame.part_drag_value_set("video_speed", 0.0, 1.0)
         self.frame.part_text_set("video_speed_txt", "1.0")
+        self.vid.show()
 
         evas.SmartObject.__init__(self, canvas)
         self._setup_signals()
 
     def show(self):
-        evas.SmartObject.show(self)
+        self.frame.show()
+
+    def hide(self):
+        self.frame.hide()
+
+    def move(self, x, y):
+        self.frame.move(x, y)
+
+    def resize(self, w, h):
+        self.frame.resize(w, h)
+
+    def clip_set(self, o):
+        self.frame.clip_set(o)
+
+    def clip_unset(self):
+        self.frame.clip_unset()
+
+    def color_set(self, r, g, b, a):
+        self.frame.color_set(r, g, b, a)
 
     def play_get(self):
         return self.vid.play
