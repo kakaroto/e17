@@ -43,5 +43,7 @@ void entropy_event_hover_request(entropy_gui_component_instance* instance, entro
 void entropy_event_dehover_request(entropy_gui_component_instance* instance, entropy_generic_file* file);
 
 void entropy_event_auth_request(entropy_gui_component_instance* instance,char*);
+void entropy_plugin_filesystem_metadata_all_get(entropy_gui_component_instance* instance);
+void entropy_plugin_filesystem_vfolder_create(char* name, Evas_List* entries);
 
 #endif

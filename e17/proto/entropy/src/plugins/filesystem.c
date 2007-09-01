@@ -41,6 +41,7 @@ void entropy_filesystem_file_group_remove(entropy_generic_file* file, char* grou
 Ecore_List* entropy_filesystem_metadata_groups_retrieve();
 void entropy_filesystem_auth_response(char* location, char* user, char* password);
 void entropy_filesystem_meta_all_retrieve();
+void entropy_filesystem_vfolder_create(char* name, Evas_List* entries);
 
 static evfs_connection *con;
 
@@ -503,6 +504,29 @@ callback (EvfsEvent * data, void *obj)
   }
   break;
 
+  case EVFS_EV_METAALL: {
+	entropy_gui_component_instance* instance = NULL;
+	entropy_gui_event* gui_event;
+
+        instance = ecore_hash_get (evfs_dir_requests, (long*)data->command->client_identifier);
+        ecore_hash_remove (evfs_dir_requests, (long*)data->command->client_identifier);
+
+
+
+        if (instance) {
+		/*Build up the gui_event wrapper */
+	         gui_event = entropy_malloc (sizeof (entropy_gui_event));
+        	 gui_event->event_type =
+		 entropy_core_gui_event_get (ENTROPY_GUI_EVENT_META_ALL_REQUEST);
+
+		 gui_event->data = EVFS_EVENT_META_ALL(data)->meta;
+		      
+		entropy_core_layout_notify_event (instance, gui_event,
+					  ENTROPY_EVENT_LOCAL);
+      }
+  }
+  break;
+
   case EVFS_EV_AUTH_REQUIRED: {
 	entropy_file_request* calling_request = NULL;
 
@@ -632,6 +656,7 @@ entropy_plugin_init (entropy_core * core)
   plugin->file_functions.group_file_remove = &entropy_filesystem_file_group_remove;
   plugin->file_functions.auth_respond = entropy_filesystem_auth_response;
   plugin->misc_functions.meta_all_get = &entropy_filesystem_meta_all_retrieve;
+  plugin->misc_functions.vfolder_create = &entropy_filesystem_vfolder_create;
   
   return base; 
 
@@ -1184,4 +1209,21 @@ void entropy_filesystem_meta_all_retrieve(entropy_gui_component_instance* instan
 	
 	id = evfs_client_meta_list_all(con);
 	ecore_hash_set (evfs_dir_requests, (long*)id, instance);
+}
+
+void entropy_filesystem_vfolder_create(char* name, Evas_List* entries)
+{
+	evfs_command* com;
+	EvfsVfolderEntry* e;
+	Evas_List* l;
+
+	com = evfs_vfolder_create_command_new(name);
+	for (l=entries;l;) {
+		e=l->data;
+	
+		evfs_vfolder_command_entry_add(com,e->type,e->name,e->value);
+		
+		l=l->next;
+	}
+	evfs_vfolder_command_send(con,com);
 }

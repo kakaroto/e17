@@ -144,4 +144,9 @@ Entropy_Gui_Event_Handler_Instance_Data*
 entropy_event_handler_auth_request_instance_data(entropy_gui_event* event, 
 	entropy_gui_component_instance* requestor);
 
+/*Metadata All */
+Entropy_Gui_Event_Handler* entropy_event_handler_meta_all_request_handler();
+Entropy_Gui_Event_Handler_Instance_Data* entropy_event_handler_metadata_all_instance_data(entropy_gui_event* event, 
+			entropy_gui_component_instance* requestor);
+
 #endif

@@ -118,6 +118,18 @@ _etk_window_deleted_cb (Etk_Object * object, void *data)
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_METADATA_GROUPS));
 
+  entropy_core_component_event_deregister (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_PASTE_REQUEST));
+
+  entropy_core_component_event_deregister (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_AUTH_REQUEST));
+
+  entropy_core_component_event_deregister (instance,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_META_ALL_REQUEST));
+
   /*Deregister this layout*/
   entropy_core_layout_deregister(instance->core, instance);
 
@@ -481,6 +493,12 @@ void _location_add_cb(Etk_Object *obj, void *data)
 	etk_location_add_dialog_create((entropy_gui_component_instance*)data, layout_etk_simple_add_header);
 }
 
+void _entropy_etk_efolder_dialog_show_cb(Etk_Object *obj, void *data)
+{
+	entropy_gui_component_instance* layout = (entropy_gui_component_instance*)data;
+	entropy_plugin_filesystem_metadata_all_get(layout);
+}
+
 
 void
 _entropy_etk_layout_key_down_cb(Etk_Object *object, void *event, void *data)
@@ -682,6 +700,11 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor,
 	     }
 	     break;
 
+	     case ENTROPY_NOTIFY_METADATA_ALL: {
+			entropy_etk_efolder_dialog_show((Evas_List*)el);
+	     }
+	     break;
+
      }
 }
 
@@ -775,6 +798,10 @@ entropy_plugin_layout_create (entropy_core * core)
   entropy_core_component_event_register (layout,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_AUTH_REQUEST));
+
+  entropy_core_component_event_register (layout,
+					 entropy_core_gui_event_get
+					 (ENTROPY_GUI_EVENT_META_ALL_REQUEST));
 
 
   /*Etk related init */
@@ -953,7 +980,7 @@ entropy_plugin_layout_create (entropy_core * core)
   etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_location_add_cb), layout);
  
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("eFolder Wizard.."), ETK_STOCK_ADDRESS_BOOK_NEW, ETK_MENU_SHELL(menu), NULL);
-  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_efolder_dialog_show), layout);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(_entropy_etk_efolder_dialog_show_cb), layout);
   
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Program Associations.."), 
 		  ETK_STOCK_EMBLEM_SYMBOLIC_LINK, ETK_MENU_SHELL(menu), NULL);

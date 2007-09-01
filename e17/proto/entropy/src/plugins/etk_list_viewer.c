@@ -847,7 +847,7 @@ entropy_plugin_gui_instance_new (entropy_core * core,
    * value depending on SMALL, NORMAL, LARGE for etk_stock */
   viewer->tree_col1 = etk_tree_col_new(ETK_TREE(viewer->tree), _("Icon"), 48,0.0);
   model = etk_tree_model_image_new();
-  etk_tree_rows_height_set(ETK_TREE(viewer->tree), 48);
+  //etk_tree_rows_height_set(ETK_TREE(viewer->tree), 48);
 
   etk_tree_col_model_add(viewer->tree_col1, model);
    
