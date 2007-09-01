@@ -1,0 +1,4 @@
+2007-09-01  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/lib/Epsilon.c: (epsilon_mime_for_extension_get):
+	add dvi mime type

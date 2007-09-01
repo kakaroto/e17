@@ -412,6 +412,7 @@ epsilon_mime_for_extension_get(const char* extension)
 	else if (!strcasecmp(extension, "avi")) return "video/x-msvideo";
 	else if (!strcasecmp(extension, "mov")) return "video/quicktime";
 	else if (!strcasecmp(extension, "pdf")) return "application/pdf";
+	else if (!strcasecmp(extension, "dvi")) return "application/dvi";
 	else return NULL;
 }
 
