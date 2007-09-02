@@ -24,6 +24,7 @@
 #include "container.h"
 #include "e16-ecore_hints.h"
 #include "events.h"
+#include "ewins.h"
 #include "hints.h"
 #include "xwin.h"
 
@@ -331,6 +332,7 @@ SystraySelectionEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	DialogOK(_("Systray Error!"), _("Systray went elsewhere?!?"));
 	SelectionRelease(systray_sel);
 	systray_sel = None;
+	EwinHide(((Container *) prm)->ewin);
 	break;
 
      case ClientMessage:
