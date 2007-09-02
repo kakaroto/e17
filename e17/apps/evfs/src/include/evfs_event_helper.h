@@ -33,4 +33,6 @@ evfs_auth_failure_event_create(evfs_client * client, evfs_command * command);
 
 void evfs_mime_event_create(evfs_client* client, evfs_command* command, const char* mime);
 
+void evfs_metaall_event_create(evfs_client* client, evfs_command* command, Evas_List* e);
+
 #endif

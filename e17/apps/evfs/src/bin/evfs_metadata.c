@@ -752,6 +752,7 @@ int evfs_metadata_scan_deleted(void* data)
 
 				if (res == 0) {
 					/*printf("*\n");*/
+					evfs_metadata_db_record_stat(db, sqlite3_column_int(pStmt,1), &file_stat);
 				} else {
 					/*printf("DELETED\n");*/
 
@@ -808,7 +809,7 @@ int evfs_metadata_extract_runner(void* data)
 	} else {
 		/*printf("...metadata runner executing..\n");*/
 
-		if ((ret = (waitpid(_metadata_fork, &status, WNOHANG) > 0)) ||
+		if ( (ret = (waitpid(_metadata_fork, &status, WNOHANG)) > 0) ||
 			       errno == ECHILD) {
 			_metadata_fork = 0;
 

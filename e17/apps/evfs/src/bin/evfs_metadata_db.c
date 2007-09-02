@@ -10,7 +10,7 @@
  * * Make a 'bulk-run' function to avoid the endless repeated sqlite3_exec
  */
 
-#define EVFS_METADATA_DB_CONFIG_LATEST 6
+#define EVFS_METADATA_DB_CONFIG_LATEST 7
 static char metadata_db[PATH_MAX];
 static int loc_init = 0;
 static char* homedir;
@@ -165,6 +165,21 @@ int evfs_metadata_db_upgrade_5_6(sqlite3* db)
 	return evfs_metadata_db_version_bump(db, "6");
 }
 
+int evfs_metadata_db_upgrade_6_7(sqlite3* db)
+{
+	int ret;
+	char* errMsg = 0;
+
+	printf("Performing upgrade from v.6 to v.7\n");
+
+	ret = sqlite3_exec(db, 
+	"CREATE TABLE FileStat (id integer primary key AUTOINCREMENT, File int, tm_created int, tm_modified int, size int, fowner int, fgroup int);",
+	NULL, 0,&errMsg);
+
+	return evfs_metadata_db_version_bump(db, "7");
+}
+
+
 int evfs_metadata_db_version_bump(sqlite3* db, char* ver)
 {
 	int ret;
@@ -204,6 +219,7 @@ void evfs_metadata_db_init(sqlite3** db)
 	ecore_hash_set(db_upgrade_hash, (int*)3, evfs_metadata_db_upgrade_3_4);
 	ecore_hash_set(db_upgrade_hash, (int*)4, evfs_metadata_db_upgrade_4_5);
 	ecore_hash_set(db_upgrade_hash, (int*)5, evfs_metadata_db_upgrade_5_6);
+	ecore_hash_set(db_upgrade_hash, (int*)6, evfs_metadata_db_upgrade_6_7);
 	
 	/*Check if we need to seed the DB*/
 	if (stat(metadata_db, &config_dir_stat)) {
@@ -425,6 +441,10 @@ void evfs_metadata_db_delete_file(sqlite3* db, int file)
 	ret = sqlite3_exec(db, query, NULL,0,&errMsg);
 	if (errMsg) printf("ERROR: %s\n", errMsg);
 
+	snprintf(query, sizeof(query), "delete from FileStat where File = %d", file);
+	ret = sqlite3_exec(db, query, NULL,0,&errMsg);
+	if (errMsg) printf("ERROR: %s\n", errMsg);	
+
 	/*...And any group memberships*/
 	snprintf(query, sizeof(query), "delete from FileGroup where File = %d", file);
 	ret = sqlite3_exec(db, query, NULL,0,&errMsg);
@@ -629,7 +649,7 @@ Ecore_List* evfs_metadata_db_vfolder_search_entries_execute(sqlite3* db, Ecore_L
 	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
 	if (ret == SQLITE_OK) {
 		while ((ret = sqlite3_step(pStmt)) == SQLITE_ROW) {
-			file = strdup(	sqlite3_column_text(pStmt,0));		
+			file = strdup((char*)sqlite3_column_text(pStmt,0));		
 			ecore_list_append(files,file);
 		}
 
@@ -654,7 +674,7 @@ Evas_List* evfs_metadata_db_meta_list_get(sqlite3* db)
 	if (ret == SQLITE_OK) {
 		while ((ret = sqlite3_step(pStmt)) == SQLITE_ROW) {
 			EvfsMetaObject* m =  NEW(EvfsMetaObject);
-			char* mt = strdup(sqlite3_column_text(pStmt,0));
+			char* mt = strdup((char*)sqlite3_column_text(pStmt,0));
 			m->key = mt;
 
 			meta = evas_list_append(meta, m);	
@@ -664,4 +684,35 @@ Evas_List* evfs_metadata_db_meta_list_get(sqlite3* db)
 
 	}
 	return meta;	
+}
+
+void evfs_metadata_db_record_stat(sqlite3* db, int file, struct stat* st)
+{
+	char query[1024];
+	int ret;
+	char* errMsg = 0;
+	sqlite3_stmt *pStmt;
+	
+	snprintf(query, sizeof(query), "delete from FileStat where File = %d", file);
+	ret = sqlite3_exec(db, query, NULL,0,&errMsg);
+	if (errMsg) printf("ERROR: %s\n", errMsg);		
+
+	snprintf(query, sizeof(query), 
+		"insert into FileStat (file, tm_created, tm_modified, size, fowner, fgroup) select %d, ?, ?, ?, ?, ?", file);
+
+	ret = sqlite3_prepare(db, query, -1, &pStmt, 0);
+
+	if (ret == SQLITE_OK) {
+		sqlite3_bind_int(pStmt, 1, st->st_ctime);
+		sqlite3_bind_int(pStmt, 2, st->st_mtime);
+		sqlite3_bind_int(pStmt, 3, st->st_size);
+		sqlite3_bind_int(pStmt, 4, st->st_uid);
+		sqlite3_bind_int(pStmt, 5, st->st_gid);
+
+		if (sqlite3_step(pStmt) != SQLITE_DONE) {
+			printf("evfs_metadata_db_record_stat: sqlite3 error\n");
+		}
+		sqlite3_reset(pStmt);
+		sqlite3_finalize(pStmt);
+	}
 }
