@@ -34,9 +34,17 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             self._set_obj(evas_new())
 
     def __str__(self):
-        return "%s(0x%x, refcount=%d, Evas_Object=0x%x)" % \
+        w, h = self.size_get()
+        return "%s(size=(%d, %d), method=%r)" % \
+               (self.__class__.__name__, w, h, self.output_method_get())
+
+    def __repr__(self):
+        w, h = self.size_get()
+        return ("%s(0x%x, refcount=%d, Evas_Object=0x%x, size=(%d, %d), "
+                "method=%r)") % \
                (self.__class__.__name__, <unsigned long>self,
-                python.REFCOUNT(self), <unsigned long>self.obj)
+                PY_REFCOUNT(self), <unsigned long>self.obj,
+                w, h, self.output_method_get())
 
     def output_method_set(self, method):
         "Set canvas render method, can be either a name or id."

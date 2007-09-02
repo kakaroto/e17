@@ -1,5 +1,6 @@
 cdef extern from "python_evas_utils.h":
-    pass
+    int PY_REFCOUNT(object)
+
 
 cdef extern from "Evas.h":
     ####################################################################

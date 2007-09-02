@@ -1,3 +1,7 @@
+cdef extern from "python_evas_utils.h":
+    int PY_REFCOUNT(object)
+
+
 cdef extern from "Evas.h":
     ctypedef struct Evas
 

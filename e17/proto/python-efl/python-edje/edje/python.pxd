@@ -77,8 +77,3 @@ cdef extern from "Python.h":
     int PyObject_CheckReadBuffer(obj)
     int PyObject_AsReadBuffer(obj, void **buffer, Py_ssize_t *buffer_len) except -1
     int PyObject_AsWriteBuffer(obj, void **buffer, Py_ssize_t *buffer_len) except -1
-
-
-
-cdef extern from "Numeric/arrayobject.h":
-    int REFCOUNT(object)

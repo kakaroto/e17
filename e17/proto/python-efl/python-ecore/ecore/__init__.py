@@ -2,29 +2,18 @@
 
 import c_ecore
 
-shutdown = c_ecore.shutdown
+from c_ecore import shutdown, time_get, timer_add, \
+     main_loop_begin, main_loop_quit, main_loop_iterate, \
+     animator_add, animator_frametime_set, animator_frametime_get, \
+     idler_add, idle_enterer_add, idle_exiter_add, fd_handler_add, \
+     Animator, Timer, Idler, IdleExiter, IdleEnterer, FdHandler
 
-main_loop_begin = c_ecore.main_loop_begin
-main_loop_quit = c_ecore.main_loop_quit
-main_loop_iterate = c_ecore.main_loop_iterate
-
-time_get = c_ecore.time_get
-timer_add = c_ecore.timer_add
-
-animator_add = c_ecore.animator_add
-animator_frametime_set = c_ecore.animator_frametime_set
-animator_frametime_get = c_ecore.animator_frametime_get
-
-idler_add = c_ecore.idler_add
-idle_enterer_add = c_ecore.idle_enterer_add
-idle_exiter_add = c_ecore.idle_exiter_add
 
 ECORE_FD_NONE = 0
 ECORE_FD_READ = 1
 ECORE_FD_WRITE = 2
 ECORE_FD_ERROR = 4
 ECORE_FD_ALL = 7
-fd_handler_add = c_ecore.fd_handler_add
 
 
 class MainLoop(object):
@@ -39,41 +28,5 @@ class MainLoop(object):
     @staticmethod
     def iterate():
         main_loop_iterate()
-
-
-class Timer(c_ecore.Timer):
-    def __new__(type, timeout, func, *args, **kargs):
-        obj = timer_add(timeout, func, *args, **kargs)
-        return obj
-
-
-class Animator(c_ecore.Animator):
-    def __new__(type, func, *args, **kargs):
-        obj = animator_add(func, *args, **kargs)
-        return obj
-
-
-class Idler(c_ecore.Idler):
-    def __new__(type, func, *args, **kargs):
-        obj = idler_add(func, *args, **kargs)
-        return obj
-
-
-class IdleEnterer(c_ecore.IdleEnterer):
-    def __new__(type, func, *args, **kargs):
-        obj = idle_enterer_add(func, *args, **kargs)
-        return obj
-
-
-class IdleExiter(c_ecore.IdleExiter):
-    def __new__(type, func, *args, **kargs):
-        obj = idle_exiter_add(func, *args, **kargs)
-        return obj
-
-
-class FdHandler(c_ecore.FdHandler):
-    def __new__(type, fd, flags, func, *args, **kargs):
-        obj = fd_handler_add(fd, flags, func, *args, **kargs)
-        return obj
 
 c_ecore.init()

@@ -30,3 +30,25 @@ of "python setup.py $COMMAND --help", example:
         python setup.py install --help
 
 Options can also be set in file "setup.cfg".
+
+
+TROUBLESHOOTING
+===============
+
+If you get the following error during build_ext:
+
+        ecore/ecore.c_ecore.c:14:31: error: python_evas_utils.h: No such file or directory
+
+Means that either python_evas_utils.h was not installed or it is placed
+at an non-standard place.
+
+If it's not installed at all, please do so by:
+
+        # copy and extract python-evas to 'src/python-evas', then:
+        cd src/python-evas
+        python setup.py install_headers
+
+If it's installed at a non-standard place, you can specify it with
+"build_ext --include-dirs":
+
+        python setup.py build_ext --include-dirs $PYTHON_EVAS_UTILS_H_PATH

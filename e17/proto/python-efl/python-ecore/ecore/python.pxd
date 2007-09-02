@@ -81,8 +81,3 @@ cdef extern from "Python.h":
     object PyBuffer_FromMemory(void *ptr, int size)
     object PyBuffer_FromReadWriteMemory(void *ptr, int size)
     object PyBuffer_New(int size)
-
-
-
-cdef extern from "Numeric/arrayobject.h":
-    int REFCOUNT(object)

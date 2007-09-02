@@ -17,4 +17,7 @@ typedef struct
     Evas_Point canvas;
 } Evas_Position;
 
+#define PY_REFCOUNT(obj) (((PyObject *)(obj))->ob_refcnt)
+
+
 #endif /* _PYTHON_EVAS_UTILS_H_ */

@@ -87,7 +87,3 @@ cdef extern from "Python.h":
 
     # methodobject.h
     object PyMethod_New(object func, object self, object cls)
-
-
-cdef extern from "Numeric/arrayobject.h":
-    int REFCOUNT(object)

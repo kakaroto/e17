@@ -72,10 +72,29 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self._evas = evas
 
     def __str__(self):
-        return "%s(0x%x, type=%r, refcount=%d, Evas_Object=0x%x)" % \
+        x, y, w, h = self.geometry_get()
+        r, g, b, a = self.color_get()
+        name = self.name_get()
+        if name:
+            name_str = "name=%r, "
+        else:
+            name_str = ""
+        return ("%s(%sgeometry=(%d, %d, %d, %d), color=(%d, %d, %d, %d), "
+                "layer=%s, clip=%s, visible=%s)") % \
+               (self.__class__.__name__, name_str, x, y, w, h,
+                r, g, b, a, self.layer_get(), self.clip_get(),
+                self.visible_get())
+
+    def __repr__(self):
+        x, y, w, h = self.geometry_get()
+        r, g, b, a = self.color_get()
+        return ("%s(0x%x, type=%r, refcount=%d, Evas_Object=0x%x, name=%r, "
+                "geometry=(%d, %d, %d, %d), color=(%d, %d, %d, %d), "
+                "layer=%s, clip=%r, visible=%s)") % \
                (self.__class__.__name__, <unsigned long>self,
-                self.type_get(), python.REFCOUNT(self),
-                <unsigned long>self.obj)
+                self.type_get(), PY_REFCOUNT(self), <unsigned long>self.obj,
+                self.name_get(), x, y, w, h, r, g, b, a, self.layer_get(),
+                self.clip_get(), self.visible_get())
 
     cdef int _unset_obj(self) except 0:
         assert self.obj != NULL, "Object must wrap something"

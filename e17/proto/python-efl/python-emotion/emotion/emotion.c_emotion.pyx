@@ -45,6 +45,31 @@ cdef class Emotion(evas.c_evas.Object):
             for opt, val in module_params.iteritems():
                 emotion_object_module_option_set(self.obj, opt, val)
 
+    def __str__(self):
+        x, y, w, h = self.geometry_get()
+        r, g, b, a = self.color_get()
+        name = self.name_get()
+        if name:
+            name_str = "name=%r, "
+        else:
+            name_str = ""
+        return ("%s(%sfile=%r, geometry=(%d, %d, %d, %d), "
+                "color=(%d, %d, %d, %d), layer=%s, clip=%s, visible=%s)") % \
+               (self.__class__.__name__, name_str, self.file_get(), x, y, w, h,
+                r, g, b, a, self.layer_get(), self.clip_get(),
+                self.visible_get())
+
+    def __repr__(self):
+        x, y, w, h = self.geometry_get()
+        r, g, b, a = self.color_get()
+        return ("%s(0x%x, type=%r, refcount=%d, Evas_Object=0x%x, name=%r, "
+                "file=%r, geometry=(%d, %d, %d, %d), "
+                "color=(%d, %d, %d, %d), layer=%s, clip=%r, visible=%s)") % \
+               (self.__class__.__name__, <unsigned long>self,
+                self.type_get(), PY_REFCOUNT(self), <unsigned long>self.obj,
+                self.name_get(), self.file_get(), x, y, w, h, r, g, b, a,
+                self.layer_get(), self.clip_get(), self.visible_get())
+
     def file_get(self):
         cdef char *f
         f = emotion_object_file_get(self.obj)

@@ -163,9 +163,12 @@ cdef class EcoreEvas:
         return 1
 
     def __str__(self):
-        return "%s(0x%x, refcount=%d, Ecore_Evas=0x%x, Evas=%s)" % \
+        return "%s(Evas=%s)" % (self.__class__.__name__, self._evas)
+
+    def __repr__(self):
+        return "%s(0x%x, refcount=%d, Ecore_Evas=0x%x, Evas=%r)" % \
                (self.__class__.__name__, <unsigned long>self,
-                python.REFCOUNT(self), <unsigned long>self.obj,
+                PY_REFCOUNT(self), <unsigned long>self.obj,
                 self._evas)
 
     def evas_get(self):

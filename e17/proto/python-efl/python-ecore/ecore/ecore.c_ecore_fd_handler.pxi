@@ -1,8 +1,8 @@
 # This file is included verbatim by c_ecore.pyx
 
 cdef void fd_handler_prepare_cb(void *_td, Ecore_Fd_Handler *fdh):
-    cdef int r
     cdef FdHandler obj
+    cdef int r
 
     obj = <FdHandler>_td
     if obj._prepare_callback is None:
@@ -15,13 +15,55 @@ cdef void fd_handler_prepare_cb(void *_td, Ecore_Fd_Handler *fdh):
         traceback.print_exc()
 
 
+cdef flags2str(int value):
+    flags = []
+    if value & <int>ECORE_FD_READ:
+        flags.append("READ")
+    if value & <int>ECORE_FD_WRITE:
+        flags.append("WRITE")
+    if value & <int>ECORE_FD_ERROR:
+        flags.append("ERROR")
+    return ", ".join(flags)
+
+
+cdef int fd_handler_cb(void *_td, Ecore_Fd_Handler *fdh):
+    cdef FdHandler obj
+    cdef int r
+
+    obj = <FdHandler>_td
+
+    try:
+        r = bool(obj._exec())
+    except Exception, e:
+        import traceback
+        traceback.print_exc()
+        r = 0
+
+    if not r:
+        obj.delete()
+    return r
+
+
 cdef class FdHandler:
-    def __init__(self, func, args, kargs):
+    def __init__(self, fd, int flags, func, *args, **kargs):
+        if not callable(func):
+            raise TypeError("Parameter 'func' must be callable")
         self.func = func
         self.args = args
         self.kargs = kargs
-        self.obj = NULL
         self._prepare_callback = None
+        if self.obj == NULL:
+            if not isinstance(fd, (int, long)):
+                try:
+                    fd = fd.fileno()
+                except AttributeError, e:
+                    raise ValueError("fd must be integer or have fileno()")
+
+            self.obj = ecore_main_fd_handler_add(fd,
+                                                 <Ecore_Fd_Handler_Flags>flags,
+                                                 fd_handler_cb, <void *>self,
+                                                 NULL, NULL)
+            python.Py_INCREF(self)
 
     def __str__(self):
         if self.obj == NULL:
@@ -29,20 +71,23 @@ cdef class FdHandler:
             flags = ""
         else:
             fd = self.fd_get()
-            v = self.active_get(7)
-            flags = []
-            if v & ECORE_FD_READ:
-                flags.append("READ")
-            if v & ECORE_FD_WRITE:
-                flags.append("WRITE")
-            if v & ECORE_FD_ERROR:
-                flags.append("ERROR")
-            flags = ", ".join(flags)
+            flags = flags2str(self.active_get(7))
+        return "%s(func=%s, args=%s, kargs=%s, fd=%s, flags=[%s])" % \
+               (self.__class__.__name__, self.func, self.args, self.kargs,
+                fd, flags)
+
+    def __repr__(self):
+        if self.obj == NULL:
+            fd = None
+            flags = ""
+        else:
+            fd = self.fd_get()
+            flags = flags2str(self.active_get(7))
         return ("%s(0x%x, func=%s, args=%s, kargs=%s, fd=%s, flags=[%s], "
                 "Ecore_Fd_Handler=0x%x, refcount=%d)") % \
                (self.__class__.__name__, <unsigned long>self,
                 self.func, self.args, self.kargs, fd, flags,
-                <unsigned long>self.obj, python.REFCOUNT(self))
+                <unsigned long>self.obj, PY_REFCOUNT(self))
 
     def __dealloc__(self):
         if self.obj != NULL:
@@ -52,13 +97,7 @@ cdef class FdHandler:
         self.args = None
         self.kargs = None
 
-    cdef int _set_obj(self, Ecore_Fd_Handler *obj) except 0:
-        assert self.obj == NULL, "Object must be clean"
-        self.obj = obj
-        python.Py_INCREF(self)
-        return 1
-
-    def _exec(self):
+    cdef object _exec(self):
         return self.func(self, *self.args, **self.kargs)
 
     def delete(self):
@@ -110,35 +149,5 @@ cdef class FdHandler:
             raise TypeError("Parameter 'func' must be callable")
 
 
-cdef int fd_handler_cb(void *_td, Ecore_Fd_Handler *fdh):
-    cdef int r
-
-    obj = <FdHandler>_td
-
-    try:
-        r = bool(obj._exec())
-    except Exception, e:
-        import traceback
-        traceback.print_exc()
-        r = 0
-
-    if not r:
-        obj.delete()
-    return r
-
-
-def fd_handler_add(int fd, int flags, func, *args, **kargs):
-    cdef Ecore_Fd_Handler *h
-    cdef Ecore_Fd_Handler_Flags v
-    cdef FdHandler obj
-
-    if not callable(func):
-        raise TypeError("Parameter 'func' must be callable")
-
-    obj = FdHandler(func, args, kargs)
-
-    v = <Ecore_Fd_Handler_Flags>flags
-    h = ecore_main_fd_handler_add(fd, v, fd_handler_cb, <void *>obj,
-                                  NULL, NULL)
-    obj._set_obj(h)
-    return obj
+def fd_handler_add(fd, int flags, func, *args, **kargs):
+    return FdHandler(fd, flags, func, *args, **kargs)

@@ -1,3 +1,7 @@
+cdef extern from "python_evas_utils.h":
+    int PY_REFCOUNT(object)
+
+
 cdef extern from "Ecore.h":
     ctypedef enum Ecore_Fd_Handler_Flags:
         ECORE_FD_READ = 1
@@ -54,7 +58,7 @@ cdef class Timer:
     cdef object args
     cdef object kargs
 
-    cdef int _set_obj(self, Ecore_Timer *obj) except 0
+    cdef object _exec(self)
 
 
 cdef class Animator:
@@ -63,7 +67,7 @@ cdef class Animator:
     cdef object args
     cdef object kargs
 
-    cdef int _set_obj(self, Ecore_Animator *obj) except 0
+    cdef object _exec(self)
 
 
 cdef class Idler:
@@ -72,7 +76,7 @@ cdef class Idler:
     cdef object args
     cdef object kargs
 
-    cdef int _set_obj(self, Ecore_Idler *obj) except 0
+    cdef object _exec(self)
 
 
 cdef class IdleEnterer:
@@ -81,7 +85,7 @@ cdef class IdleEnterer:
     cdef object args
     cdef object kargs
 
-    cdef int _set_obj(self, Ecore_Idle_Enterer *obj) except 0
+    cdef object _exec(self)
 
 
 cdef class IdleExiter:
@@ -90,7 +94,7 @@ cdef class IdleExiter:
     cdef object args
     cdef object kargs
 
-    cdef int _set_obj(self, Ecore_Idle_Exiter *obj) except 0
+    cdef object _exec(self)
 
 
 cdef class FdHandler:
@@ -100,4 +104,4 @@ cdef class FdHandler:
     cdef object kargs
     cdef object _prepare_callback
 
-    cdef int _set_obj(self, Ecore_Fd_Handler *obj) except 0
+    cdef object _exec(self)
