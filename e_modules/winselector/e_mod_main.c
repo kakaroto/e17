@@ -102,19 +102,29 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   return gcc;
 }
 
-   static void
+static void
 _gc_shutdown (E_Gadcon_Client * gcc)
 {
    Instance *inst;
 
   inst = gcc->data;
-   if (inst->win_menu)
-     {
-	e_menu_post_deactivate_callback_set(inst->win_menu, NULL, NULL);
-	e_object_del(E_OBJECT(inst->win_menu));
-	inst->win_menu = NULL;
-     }
-  evas_object_del (inst->o_button);
+  if (inst->win_menu)
+    {
+       e_menu_post_deactivate_callback_set(inst->win_menu, NULL, NULL);
+       e_object_del(E_OBJECT(inst->win_menu));
+       inst->win_menu = NULL;
+    }
+  if (inst->bd_icon)
+    {
+       edje_object_part_unswallow(inst->o_button, inst->bd_icon);
+       evas_object_del(inst->bd_icon);
+       inst->bd_icon = NULL;
+    }
+  if (inst->o_button)
+    {
+       evas_object_del(inst->o_button);
+       inst->o_button = NULL;
+    }
   free (inst);
 }
 
@@ -482,6 +492,9 @@ static int _window_cb_border_remove(void *data, int type, void *event)
 
 static void _focus_in(E_Border *bd, Instance *inst)
 {
+   if (!inst->o_button)
+     return;
+
    _focus_out(inst);
    inst->bd_icon = e_border_icon_add(bd, evas_object_evas_get(inst->o_button));
    edje_object_signal_emit(inst->o_button, "focus_in", "");
@@ -491,10 +504,16 @@ static void _focus_in(E_Border *bd, Instance *inst)
 
 static void _focus_out(Instance *inst)
 {
-   edje_object_signal_emit(inst->o_button, "focus_out", "");
-   if (inst->bd_icon) evas_object_del(inst->bd_icon);
-   inst->bd_icon = NULL;
+   if (!inst->o_button)
+     return;
 
+   edje_object_signal_emit(inst->o_button, "focus_out", "");
+   if (inst->bd_icon)
+     {
+	edje_object_part_unswallow(inst->o_button, inst->bd_icon);
+	evas_object_del(inst->bd_icon);
+	inst->bd_icon = NULL;
+     }
 }
 
 static int _win_menu_sort_alpha_cb(void *d1, void *d2)
