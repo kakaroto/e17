@@ -230,3 +230,19 @@ _ex_file_get(char *path)
      }
    else return ecore_file_file_get(path);
 }
+
+char *
+_ex_path_normalize(const char *path)
+{
+   int size;
+   size = strlen(path);
+   if (size >= 2 && path[size - 1] == '/')
+     return strdup(path);
+   else
+     {
+	char * newpath;
+	newpath = calloc(size + 2, sizeof(char));
+	snprintf(newpath, size + 2, "%s/", path);
+	return newpath;
+     }
+}

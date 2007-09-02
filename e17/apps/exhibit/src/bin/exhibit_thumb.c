@@ -146,7 +146,7 @@ _ex_thumb_update_at_row(Etk_Tree_Row *row)
    tab = _ex_tab_find_by_itree(tree);
    
    snprintf(file, sizeof(file), "%s%s",
-	    tab->cur_path, icol_string);
+	    tab->dir, icol_string);
    
    ep = epsilon_new(file);
 

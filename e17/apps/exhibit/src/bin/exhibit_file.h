@@ -13,5 +13,6 @@ int         _ex_file_is_jpg(char *file);
 
 char       *_ex_file_strip_extention(char *path);
 const char *_ex_file_get(char *path);
+char       *_ex_path_normalize(const char *path);
     
 #endif

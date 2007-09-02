@@ -70,11 +70,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_scrolled_view_policy_set(etk_tree_scrolled_view_get(ETK_TREE(tab->itree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
    etk_tree_build(ETK_TREE(tab->itree));
 
-   if (dir)
-     tab->dir = strdup(dir);
-   else
-     tab->dir = strdup(".");
-
+   tab->dir = _ex_path_normalize(dir);
    tab->alignment = etk_alignment_new(0.5, 0.5, 0.0, 0.0);   
    
    tab->image = etk_image_new();
@@ -133,9 +129,9 @@ _ex_tab_delete()
 void
 _ex_tab_select(Ex_Tab *tab)
 { 
-   chdir(tab->cur_path);
+   //chdir(tab->dir);
 
-   D(("_ex_tab_select: changed dir to %s\n", tab->cur_path));
+   D(("_ex_tab_select: changed dir to %s\n", tab->dir));
    D(("_ex_tab_select: selecting tab num %d\n", e->cur_tab->num));
 
    if (tab->comment.visible)
@@ -332,7 +328,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 	     
 	     row = ll->data;
 	     etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
-	     snprintf(tmp, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->cur_path, icol2_string);
+	     snprintf(tmp, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->dir, icol2_string);
 	     strncat(drag_data, tmp, PATH_MAX * evas_list_count(rows));
 	     if (i <= EX_DND_MAX_NUM * EX_DND_MAX_NUM)
 	       {
@@ -359,7 +355,7 @@ static void _ex_tab_tree_drag_begin_cb(Etk_Object *object, void *data)
 	row = etk_tree_selected_row_get(tree);      
 	etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), &icol1_string, &icol2_string, etk_tree_nth_col_get(tree, 1),NULL);
 	drag_data = calloc(PATH_MAX, sizeof(char));
-	snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->cur_path, icol2_string);
+	snprintf(drag_data, PATH_MAX * sizeof(char), "file://%s%s\r\n", tab->dir, icol2_string);
 	image = etk_image_new_from_file(icol1_string, NULL);
 	etk_image_keep_aspect_set(ETK_IMAGE(image), ETK_TRUE);
 	etk_widget_size_request_set(image, 96, 96);
@@ -376,6 +372,7 @@ _ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event
    Etk_Tree *tree;
    char *dcol_string;
    Exhibit *e;
+   char *path, *real_path;
 
    e = data;
    _ex_slideshow_stop(e);
@@ -384,13 +381,21 @@ _ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event
    tree = ETK_TREE(object);
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, NULL, &dcol_string, NULL);
 
+   path = calloc(PATH_MAX, sizeof(char));
+   snprintf(path, PATH_MAX, "%s/%s", e->cur_tab->dir, dcol_string);
+
+   real_path = ecore_file_realpath(path);
+   E_FREE(path);
+   
    E_FREE(e->cur_tab->dir);
-   e->cur_tab->dir = strdup(dcol_string);
+   e->cur_tab->dir = _ex_path_normalize(real_path);
+   E_FREE(real_path);
+   
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
-   etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), etk_notebook_current_page_get(ETK_NOTEBOOK(e->notebook)), _ex_file_get(e->cur_tab->cur_path));
+   etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), etk_notebook_current_page_get(ETK_NOTEBOOK(e->notebook)), _ex_file_get(e->cur_tab->dir));
 }
 
 static void
@@ -399,6 +404,8 @@ _ex_tab_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
    Exhibit *e;   
    Etk_Tree *tree;
    char *icol_string;
+   int row_num;
+   char *path;
 
    e = data;
    e->zoom = 0;
@@ -409,7 +416,10 @@ _ex_tab_itree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
    etk_tree_row_fields_get(row, etk_tree_nth_col_get(tree, 0), NULL, NULL, 
 	 &icol_string, NULL);
 
-   _ex_main_image_set(e, icol_string);
+   row_num = etk_tree_row_num_get(tree, row);
+   path = (char *) evas_list_nth(e->cur_tab->images, row_num);
+   
+   _ex_main_image_set(e, path);
 }
 
 static void

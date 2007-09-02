@@ -151,7 +151,6 @@ struct _Ex_Options_Dialog
 struct _Ex_Tab
 {
    char          *dir;
-   char           cur_path[PATH_MAX];
 
    /* Path and filename of the dir to the 
       currently "set" image */

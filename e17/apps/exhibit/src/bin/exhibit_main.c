@@ -157,7 +157,7 @@ _ex_main_image_set(Exhibit *e, char *image)
    e->cur_tab->cur_file = malloc(PATH_MAX);
    memset(e->cur_tab->cur_file, 0, PATH_MAX);
    
-   snprintf(e->cur_tab->set_img_path, PATH_MAX, "%s", e->cur_tab->cur_path);
+   snprintf(e->cur_tab->set_img_path, PATH_MAX, "%s", e->cur_tab->dir);
    snprintf(e->cur_tab->cur_file, PATH_MAX, "%s", image);
 
    e->cur_tab->image_loaded = ETK_TRUE;
@@ -232,7 +232,7 @@ _ex_main_populate_files_timer_cb(void *fdata)
 
    etk_tree_freeze(ETK_TREE(e->cur_tab->itree));
    etk_tree_freeze(ETK_TREE(e->cur_tab->dtree));   
-   
+
    while (cur < data->num)
      {
 	char image[PATH_MAX];
@@ -252,7 +252,7 @@ _ex_main_populate_files_timer_cb(void *fdata)
 	if ((!e->options->list_hidden) && (file[0] == '.'))
 	  continue;
 	
-	snprintf(image, PATH_MAX, "%s", file);
+	snprintf(image, PATH_MAX, "%s%s", e->cur_tab->dir, file);
 
 	if (data->update == EX_TREE_UPDATE_ALL || data->update == EX_TREE_UPDATE_DIRS)
 	  {
@@ -278,7 +278,8 @@ _ex_main_populate_files_timer_cb(void *fdata)
 
 	if(!realpath(image, imagereal))
 	  snprintf(imagereal, PATH_MAX, "%s", image);
-
+	
+	e->cur_tab->images = evas_list_append(e->cur_tab->images, strdup(imagereal));
 	_ex_main_itree_add(imagereal, data->selected_file);
 	
 	if (i == MAX_INSERTS_PER_ITERATION)
@@ -300,8 +301,8 @@ _ex_main_populate_files_timer_cb(void *fdata)
 
    if (!e->cur_tab->monitor)
      {
-	D(("Adding monitoring to path %s\n", e->cur_tab->cur_path)); 
-	e->cur_tab->monitor = ecore_file_monitor_add(e->cur_tab->cur_path, 
+	D(("Adding monitoring to path %s\n", e->cur_tab->dir)); 
+	e->cur_tab->monitor = ecore_file_monitor_add(e->cur_tab->dir, 
 	      _ex_main_monitor_dir, NULL);
      }
       
@@ -327,9 +328,10 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    int j = 1;
    int i = 0;
    int (*cmp)(const void *, const void *) = _ex_sort_cmp_name;
+   Evas_List *l;
 	
    _ex_main_image_unset();
-   chdir(e->cur_tab->dir);
+   //chdir(e->cur_tab->dir);
    
    if (update == EX_TREE_UPDATE_ALL || update == EX_TREE_UPDATE_DIRS)
      {
@@ -345,14 +347,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 	e->cur_tab->monitor = NULL;
      }
    
-   getcwd(e->cur_tab->cur_path, PATH_MAX);
-   if (strlen(e->cur_tab->cur_path) < PATH_MAX - 2)
-     {
-	int len = strlen(e->cur_tab->cur_path);
-	e->cur_tab->cur_path[len] = '/';
-	e->cur_tab->cur_path[len + 1] = '\0';
-     }
-   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))), e->cur_tab->cur_path);
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))), e->cur_tab->dir);
    
    data = calloc(1, sizeof(Ex_Populate_Data));
    if (selected_file)
@@ -361,7 +356,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
      data->selected_file = NULL;
    data->update = update;
 	
-   dir = opendir(".");
+   dir = opendir(e->cur_tab->dir);
    
    if (!dir)
      {
@@ -407,12 +402,13 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    data->num = FILELIST_SIZE * j + i;
    closedir(dir);   
 
+   // free the old images list
+   for (l = e->cur_tab->images; l; l = l->next)
+     if (l->data) free(l->data);
+   e->cur_tab->images = evas_list_free(e->cur_tab->images);
+   
    ecore_timer_add(0.001, _ex_main_populate_files_timer_cb, data);  
    
-   /* Set the dir to the current dir at the end so we avoid stepdown 
-    * like ".." if we just call the refresh on the listing like after a delete
-    */
-   e->cur_tab->dir = strdup(".");      
 }
 
 void
@@ -683,7 +679,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	  {
 	     Ex_Tab *tab;
 	     
-	     tab = _ex_tab_new(e, e->cur_tab->cur_path);
+	     tab = _ex_tab_new(e, e->cur_tab->dir);
 
 	     _ex_main_window_tab_append(tab);
 	     _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
@@ -814,7 +810,7 @@ _ex_main_window_tab_toggled_cb(Etk_Object *object, void *data)
 
    D(("Selecting tab %d\n", e->cur_tab->num));
    _ex_tab_select(tab);
-   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))), e->cur_tab->cur_path);
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))), e->cur_tab->dir);
 }
 
 void
@@ -871,7 +867,7 @@ _etk_main_drag_drop_cb(Etk_Object *object, void *event, void *data)
 	if (ecore_file_exists(file) && !ecore_file_is_dir(file))
 	  _ex_main_image_set(e, file);
 	etk_notebook_page_tab_label_set(ETK_NOTEBOOK(e->notebook), e->cur_tab->num, 
-	      _ex_file_get(e->cur_tab->cur_path));
+	      _ex_file_get(e->cur_tab->dir));
 	break;
      }
 }

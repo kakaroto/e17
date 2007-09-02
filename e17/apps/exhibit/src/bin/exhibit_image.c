@@ -651,7 +651,7 @@ _ex_image_save_as_cb(void *data)
        int ret;
 
        r1 = ecore_file_realpath(dir);
-       r2 = ecore_file_realpath(e->cur_tab->cur_path);
+       r2 = ecore_file_realpath(e->cur_tab->dir);
 
        ret = strcmp(r1, r2);
        free(r1);
