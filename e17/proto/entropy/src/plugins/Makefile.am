@@ -117,7 +117,8 @@ layout_etk_simple_la_SOURCES  =  layout_etk_simple.c $(top_srcdir)/src/entropy_d
 				$(top_srcdir)/src/dialogs/etk_options_dialog.c \
 				$(top_srcdir)/src/dialogs/etk_file_cache_debug_dialog.c \
 				$(top_srcdir)/src/dialogs/etk_auth_request_dialog.c \
-				$(top_srcdir)/src/dialogs/etk_efolder_dialog.c
+				$(top_srcdir)/src/dialogs/etk_efolder_dialog.c \
+				$(top_srcdir)/src/dialogs/etk_about_dialog.c
 
 layout_etk_simple_la_CFLAGS   = @ETK_CFLAGS@
 layout_etk_simple_la_LDFLAGS  = -module -avoid-version

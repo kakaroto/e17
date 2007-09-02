@@ -12,6 +12,7 @@
 #include "entropy_etk_options_dialog.h"
 #include "etk_auth_request_dialog.h"
 #include "etk_efolder_dialog.h"
+#include "etk_about_dialog.h"
 #include <dlfcn.h>
 #include <Ecore.h>
 #include <stdlib.h>
@@ -366,6 +367,11 @@ void etk_layout_simple_exit_cb(Etk_Object* obj, void* data)
 	entropy_gui_component_instance* instance = data;
 
 	layout_etk_simple_quit(instance->core);
+}
+
+void entropy_etk_about_dialog_cb(Etk_Object* cb, void* data)
+{
+	entropy_etk_about_dialog_show();
 }
 
 
@@ -1038,8 +1044,8 @@ entropy_plugin_layout_create (entropy_core * core)
   menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("Help"), ETK_STOCK_NO_STOCK, ETK_MENU_SHELL(menubar), NULL);
   menu = etk_menu_new();
   etk_menu_item_submenu_set(ETK_MENU_ITEM(menu_item), ETK_MENU(menu));
-  _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("About.."), ETK_STOCK_HELP_BROWSER, ETK_MENU_SHELL(menu), NULL);
-
+  menu_item = _entropy_etk_menu_item_new(ETK_MENU_ITEM_NORMAL, _("About.."), ETK_STOCK_HELP_BROWSER, ETK_MENU_SHELL(menu), NULL);
+  etk_signal_connect("activated", ETK_OBJECT(menu_item), ETK_CALLBACK(entropy_etk_about_dialog_cb), layout);
 
   etk_box_append(ETK_BOX(vbox), menubar, ETK_BOX_START, ETK_BOX_NONE, 0);
   etk_box_append(ETK_BOX(vbox), gui->trackback_shell, ETK_BOX_START, ETK_BOX_NONE, 0);
