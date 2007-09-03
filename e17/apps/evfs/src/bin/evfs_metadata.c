@@ -77,6 +77,7 @@ typedef struct {
 int evfs_metadata_extract_runner(void* data);
 int evfs_metadata_scan_runner(void* data);
 int evfs_metadata_scan_deleted(void* data);
+int evfs_metadata_dir_queuer(void* data);
 
 
 /*DB Helper functions*/
@@ -375,6 +376,7 @@ void evfs_metadata_initialise(int forker)
 			ecore_timer_add(0.5, evfs_metadata_scan_runner, NULL);
 			ecore_timer_add(5, evfs_metadata_scan_deleted, NULL);
 			ecore_timer_add(0.5, evfs_metadata_extract_runner, NULL);
+			ecore_timer_add(1800, evfs_metadata_dir_queuer, NULL);
 		}
 	}
 
@@ -650,6 +652,21 @@ void evfs_metadata_extract_queue(EvfsFilereference* ref)
 
 		clone = EvfsFilereference_clone(ref);
 		ecore_list_append(evfs_metadata_queue, clone);
+	}
+}
+
+int evfs_metadata_dir_queuer(void* data)
+{
+	EvfsFilereference* ref;
+
+	/*Setup the directory scan queue*/
+	ref = NEW(EvfsFilereference);
+	ref->plugin_uri = strdup("file");
+	ref->path = strdup(homedir);
+
+	if (ecore_list_count(evfs_metadata_directory_scan_queue) ==0) {
+		printf("Starting metaextract again..\n");
+		ecore_list_append(evfs_metadata_directory_scan_queue, ref);
 	}
 }
 
