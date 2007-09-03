@@ -191,7 +191,7 @@ void etk_location_add_dialog_create(entropy_gui_component_instance* instance,
 	etk_container_add(ETK_CONTAINER(dialog->window), outer_vbox);
 
 	dialog->frame = etk_frame_new("Add Location..");
-	etk_container_add(ETK_CONTAINER(outer_vbox), dialog->frame);
+	etk_box_append(ETK_BOX(outer_vbox), dialog->frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 10);
 
 	dialog->vbox1 = etk_vbox_new(ETK_FALSE,0);
 	etk_container_add(ETK_CONTAINER(dialog->frame), dialog->vbox1);

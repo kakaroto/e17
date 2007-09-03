@@ -415,6 +415,23 @@ gui_object_destroy_and_free (entropy_gui_component_instance * comp,
 }
 
 
+static void _etk_list_viewer_row_shown(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   entropy_gui_component_instance* instance;
+   entropy_etk_file_list_viewer* viewer;
+   entropy_gui_event *gui_event;
+   gui_file* file;
+   
+  
+   file = ecore_hash_get(etk_list_viewer_row_hash, row);
+   instance = file->instance;
+   viewer = instance->data;
+
+   if (!file->file->thumbnail) {
+	   entropy_plugin_thumbnail_request(instance, file->file, (void*)gui_event_callback);
+   }
+}
+
 static void _etk_list_viewer_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
 {
    entropy_gui_component_instance* instance;
@@ -554,7 +571,6 @@ list_viewer_add_row (entropy_gui_component_instance * instance,
   }
 
   if (!file->thumbnail) {
-	  entropy_plugin_thumbnail_request(instance, file, (void*)gui_event_callback); 
     thumbnail_filename= etk_theme_icon_path_get();
     /* [TODO] ETK_STOCK_BIG needs to be gotten from the config */
     thumbnail_key = etk_stock_key_get(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_BIG);
@@ -941,6 +957,10 @@ entropy_plugin_gui_instance_new (entropy_core * core,
 
   etk_signal_connect("row-clicked", ETK_OBJECT( viewer->tree  ), 
 		  ETK_CALLBACK(_etk_list_viewer_row_clicked), NULL);
+
+  etk_signal_connect("row-shown", ETK_OBJECT( viewer->tree  ), 
+		  ETK_CALLBACK(_etk_list_viewer_row_shown), NULL);
+
 
   etk_signal_connect("key-down", ETK_OBJECT(viewer->tree), 
 		  ETK_CALLBACK(_etk_entropy_list_viewer_key_down_cb), instance);
