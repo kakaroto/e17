@@ -2,12 +2,14 @@
 #include <dlfcn.h>
 #include "entropy_gui.h"
 #include <limits.h>
-
+#include "Epsilon_Request.h"
+#include <Epsilon.h>
 
 
 static Ecore_List *types = NULL;
 static Ecore_Hash *file_instance_hash = NULL;
-static entropy_generic_file *tmp_file;
+static Ecore_Hash *_ecore_thumb_file_instance_hash = NULL;
+static Ecore_Event_Handler *thumb_done = NULL;
 
 /*There will only ever be one instance of a thumbnail plugin, therefore this is safe*/
 static entropy_gui_component_instance *local_instance;
@@ -44,6 +46,63 @@ entropy_thumbnailer_plugin_mime_types_get ()
   return types;
 }
 
+int thumb_complete_remote_cb(void *data, int type, void *event)
+{
+        Epsilon_Request *thumb = event;
+	entropy_thumbnail* thumbnail;
+	entropy_gui_event* gui_event;
+	entropy_gui_component_instance* instance = NULL;
+	entropy_file_request* req;
+	char* md5;
+
+	if (!thumb) {
+		printf("Received NULL thumbnail - abort!\n");
+		return 0;
+	}
+
+	md5 = md5_entropy_local_file(thumb->path);
+
+	req = ecore_hash_get(_ecore_thumb_file_instance_hash, md5);	
+	if (req && thumb->dest) {
+		instance = req->requester;
+		ecore_hash_remove(_ecore_thumb_file_instance_hash, md5);
+
+		thumbnail = entropy_thumbnail_new();
+		strcpy(thumbnail->thumbnail_filename, thumb->dest);
+		thumbnail->parent = req->file;
+		req->file->thumbnail = thumbnail;
+
+	    gui_event = entropy_malloc (sizeof (entropy_gui_event));
+	    gui_event->event_type =
+	      entropy_core_gui_event_get
+	      (ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE);
+	    gui_event->data = thumbnail;
+
+	    /*Remove the original file*/
+	    entropy_plugin_filesystem_file_remove (req->file2, instance);
+
+	    /*Free tmp file*/
+	    entropy_generic_file_destroy(req->file2);
+
+
+	    /*Call the callback stuff */
+	    entropy_core_layout_notify_event (instance, gui_event,
+					      ENTROPY_EVENT_LOCAL);
+
+	    entropy_core_file_cache_remove_reference(req->file->md5);
+
+	    free(req);
+	    free(md5);
+	} else {
+		/*Another thumbnailer?*/
+		return 1;
+	}
+
+        return 0;
+}
+
+
+
 entropy_thumbnail *
 entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
 {
@@ -56,15 +115,10 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
     return request->file->thumbnail;
   }
 
-  //printf("Adding reference to '%s'\n", request->file->md5);
   entropy_core_file_cache_add_reference (request->file->md5);
-
-
-  //printf("Requested a remote thumbnail for '%s://%s/%s\n", request->file->uri_base, request->file->path, request->file->filename);
 
   entropy_plugin_filesystem_file_copy (request->file, TMP_THUMBNAIL, local_instance);
   ecore_hash_set (file_instance_hash, request->file->md5, request->instance);
-  //printf("md5: '%s'\n", md5);
 
   return NULL;
 }
@@ -94,10 +148,9 @@ entropy_plugin_gui_instance_new (entropy_core * core)
 
 
   file_instance_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
+  _ecore_thumb_file_instance_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
 
-  tmp_file = entropy_generic_file_new ();
-  strcpy (tmp_file->uri_base, "file");
-  strcpy (tmp_file->path, "/tmp");
+  ecore_hash_free_key_cb_set(_ecore_thumb_file_instance_hash, free);
 
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
@@ -105,6 +158,8 @@ entropy_plugin_gui_instance_new (entropy_core * core)
   entropy_core_component_event_register (instance,
 					 entropy_core_gui_event_get
 					 (ENTROPY_GUI_EVENT_USER_INTERACTION_YES_NO_ABORT));
+
+  thumb_done = ecore_event_handler_add(EPSILON_EVENT_DONE, thumb_complete_remote_cb, NULL);
 
   return instance;
 }
@@ -131,10 +186,10 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 
       if (progress->type == TYPE_END) {
 	entropy_file_listener *listener;
+	entropy_file_request* o_request;
 	char new_path[PATH_MAX];
-	entropy_thumbnail *thumb;
-	entropy_gui_event *gui_event;
 	char *md5 = NULL;
+	entropy_generic_file* tmp_file;
 
 	entropy_gui_component_instance *instance = NULL;
 
@@ -146,40 +201,24 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
 
 	/*Actually make the thumbnail */
 	if (instance && (listener = entropy_core_file_cache_retrieve (md5))) {
-	  snprintf (new_path, PATH_MAX, "/tmp/%s", progress->file_from->filename);
+	  	  snprintf (new_path, PATH_MAX, "/tmp/%s", progress->file_from->filename);
 
-	  strncpy (tmp_file->filename, listener->file->filename,
-		   FILENAME_LENGTH);
-	  //printf("Thumbnailing: %s/%s\n", tmp_file->path, tmp_file->filename);
+		  tmp_file = entropy_generic_file_new ();
+		  strcpy (tmp_file->uri_base, "file");
+		  strcpy (tmp_file->path, "/tmp");
+		  strncpy (tmp_file->filename, listener->file->filename,
+			   FILENAME_LENGTH);
+		  
+		  o_request = entropy_malloc(sizeof(entropy_file_request));	
+		  o_request->file = listener->file;
+		  o_request->file2 = tmp_file;
+		  o_request->requester = instance;
+   
+		  ecore_hash_set (_ecore_thumb_file_instance_hash, md5_entropy_local_file(new_path), o_request);
 
-
-	  thumb = entropy_thumbnail_create (tmp_file);
-
-	  if (thumb) {
-	    listener->file->thumbnail = thumb;
-	    thumb->parent = listener->file;
-
-	    /*Build up the gui_event wrapper */
-	    gui_event = entropy_malloc (sizeof (entropy_gui_event));
-	    gui_event->event_type =
-	      entropy_core_gui_event_get
-	      (ENTROPY_GUI_EVENT_THUMBNAIL_AVAILABLE);
-	    gui_event->data = thumb;
-	    //
-	    /*Call the callback stuff */
-	    entropy_core_layout_notify_event (instance, gui_event,
-					      ENTROPY_EVENT_LOCAL);
-
-	    //printf("Removing reference to '%s'\n", listener->file->md5);
-	    //
-	    entropy_core_file_cache_remove_reference (listener->file->md5);
-
-	    /*Remove the d/led image */
-	    entropy_plugin_filesystem_file_remove (tmp_file, comp);
-	  }
-	  else {
-	    printf ("Remote thumbnailer: Couldn't make thumbnail\n");
-	  }
+		  epsilon_add(new_path, NULL, EPSILON_THUMB_NORMAL, NULL);
+		  
+		  entropy_core_file_cache_remove_reference (listener->file->md5);
 	}
 	else {
 	  printf ("Remote thumbnailer: Couldn't retrieve file reference\n");

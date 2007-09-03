@@ -80,11 +80,15 @@ int thumb_complete_cb(void *data, int type, void *event)
 
 		entropy_core_file_cache_remove_reference(req->file->md5);
 
-		free(md5);
 		free(req);
+		free(md5);
 	} else {
-		printf("Couldn't file local ref! for %s *****\n", thumb->path);
+		free(md5);
+		if (req) free(req);
+		/*Another thumbnailer?*/
+		return 1;
 	}
+	
 
         return 0;
 }
