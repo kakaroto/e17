@@ -612,7 +612,8 @@ _ex_image_move_cb(void *data)
    char *basename;
    int ret;
 
-   basename = strdup(etk_entry_text_get(ETK_ENTRY(fd->entry)));
+   basename = strdup(etk_filechooser_widget_selected_file_get
+      (ETK_FILECHOOSER_WIDGET(fd->filechooser)));
    ret = _ex_image_save_as_cb(data);
    if (basename)
      {
@@ -639,38 +640,31 @@ _ex_image_save_as_cb(void *data)
    Etk_Image *im = ETK_IMAGE(fd->e->cur_tab->image);
    int res = 0;
 
-   basename = etk_entry_text_get(ETK_ENTRY(fd->entry));
+   basename = etk_filechooser_widget_selected_file_get
+      (ETK_FILECHOOSER_WIDGET(fd->filechooser));
    dir = etk_filechooser_widget_current_folder_get
       (ETK_FILECHOOSER_WIDGET(fd->filechooser));
 
-  if (!dir || !basename)
-    goto destroy;
+   if (!dir || !basename)
+      goto destroy;
 
-    {
-       char *r1, *r2;
-       int ret;
+   {
+      int ret;
 
-       r1 = ecore_file_realpath(dir);
-       r2 = ecore_file_realpath(e->cur_tab->dir);
-
-       ret = strcmp(r1, r2);
-       free(r1);
-       free(r2);
-
-       if (!ret)
-	 goto destroy;;
-    }
+      snprintf(file, sizeof(file), "%s/%s", dir, basename);
+      ret = ecore_file_exists(file);
+      if (ret)
+          goto destroy;
+   }
   
-  snprintf(file, sizeof(file), "%s/%s", dir, basename);
-  D(("Saving: %s\n", file));
-
-  /* Dont fork for the tree polulating to work */
-  evas_object_image_save(etk_image_evas_object_get(im), file, NULL, NULL);
-  res = 1;
+   D(("Saving: %s\n", file));
+   /* Dont fork for the tree polulating to work */
+   evas_object_image_save(etk_image_evas_object_get(im), file, NULL, NULL);
+   res = 1;
 
 destroy:
-  _ex_image_file_dialog_destroy(fd);
-  return res;
+   _ex_image_file_dialog_destroy(fd);
+   return res;
 }
 
 Ex_Filedialog *
@@ -678,7 +672,6 @@ _ex_image_file_dialog_new()
 {
    Ex_Filedialog *fd;
    Etk_Widget *vbox;
-   Etk_Widget *label;
    
    fd = calloc(1, sizeof(Ex_Filedialog));
    if (!fd) return NULL;
@@ -695,14 +688,7 @@ _ex_image_file_dialog_new()
    fd->filechooser = etk_filechooser_widget_new();
    etk_container_add(ETK_CONTAINER(vbox), fd->filechooser);
    
-   label = etk_label_new("Filename:");
-   etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-   
-   D(("Selected original filename: %s\n", e->cur_tab->cur_file));
-   
-   fd->entry = etk_entry_new();
-   etk_entry_text_set(ETK_ENTRY(fd->entry), e->cur_tab->cur_file);
-   etk_box_append(ETK_BOX(vbox), fd->entry, ETK_BOX_START, ETK_BOX_EXPAND, 0); 
+   //D(("Selected original filename: %s\n", e->cur_tab->cur_file));
    
    fd->hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(vbox), fd->hbox);
@@ -727,11 +713,13 @@ _ex_image_move()
 {
    Ex_Filedialog *fd;
    Etk_Widget *btn;
+   char *dialog_title;
 
    fd = _ex_image_file_dialog_new();
-   etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit - Move image...");
-   etk_signal_connect("key-down", ETK_OBJECT(fd->entry), 
-	 ETK_CALLBACK(_ex_image_move_entry_cb), fd);
+   etk_filechooser_widget_is_save_set(ETK_FILECHOOSER_WIDGET(fd->filechooser), ETK_TRUE);
+   asprintf(&dialog_title, "Exhibit [ %s ] - Move image...",  fd->e->cur_tab->cur_file);
+   etk_window_title_set(ETK_WINDOW(fd->win), dialog_title);
+
 
    btn = etk_button_new_with_label("Move");
    etk_box_append(ETK_BOX(fd->hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -751,11 +739,13 @@ _ex_image_save_as()
 {
    Ex_Filedialog *fd;
    Etk_Widget *btn;
+   char *dialog_title;
 
    fd = _ex_image_file_dialog_new();
-   etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit - Save image as...");
-   etk_signal_connect("key-down", ETK_OBJECT(fd->entry), 
-	 ETK_CALLBACK(_ex_image_move_entry_cb), fd);
+   etk_filechooser_widget_is_save_set(ETK_FILECHOOSER_WIDGET(fd->filechooser), ETK_TRUE);
+   asprintf(&dialog_title, "Exhibit [ %s ] - Save image as...",  fd->e->cur_tab->cur_file);
+   etk_window_title_set(ETK_WINDOW(fd->win), dialog_title);
+
 
    btn = etk_button_new_with_label("Save");
    etk_box_append(ETK_BOX(fd->hbox), btn, ETK_BOX_START, ETK_BOX_NONE, 0);

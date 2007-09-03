@@ -260,7 +260,6 @@ struct _Ex_Filedialog
 {
    Etk_Widget *win;
    Etk_Widget *filechooser;
-   Etk_Widget *entry;
    Etk_Image  *im;
    Etk_Widget *hbox;
    Exhibit *e;
