@@ -20,7 +20,19 @@ class EcoreEvasWindow : public Trackable
   public:
     enum Event { Resize, Move, Show, Hide, DeleteRequest, Destroy,
                     FocusIn, FocusOut, MouseIn, MouseOut, PreRender, PostRender };
-
+  
+    enum EngineType
+    {
+      SoftwareX11 = ECORE_EVAS_ENGINE_SOFTWARE_X11,
+      SoftwareFB = ECORE_EVAS_ENGINE_SOFTWARE_FB,
+      GLX11 = ECORE_EVAS_ENGINE_GL_X11,
+      SoftwareBuffer = ECORE_EVAS_ENGINE_SOFTWARE_BUFFER,
+      XRenderX11 = ECORE_EVAS_ENGINE_XRENDER_X11,
+      DirectFB = ECORE_EVAS_ENGINE_DIRECTFB,
+      SoftwareX11_16 = ECORE_EVAS_ENGINE_SOFTWARE_X11_16,
+      SDL = ECORE_EVAS_ENGINE_SDL
+    };
+  
   public:
     virtual ~EcoreEvasWindow();
 
@@ -46,6 +58,8 @@ class EcoreEvasWindow : public Trackable
     * The default implementation returns true.
     **/
     virtual bool canClose() const;
+  
+    static bool isEngineTypeSupported (EngineType et);
 
     /* Window Management */
     void move( const Point& );

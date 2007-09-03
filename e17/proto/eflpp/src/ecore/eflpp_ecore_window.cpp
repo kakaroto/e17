@@ -127,6 +127,11 @@ void EcoreEvasWindow::postRenderEvent()
     Dout( dc::notice, "EcoreEvasWindow::postRenderEvent()" );
 }
 
+bool EcoreEvasWindow::isEngineTypeSupported (EngineType et)
+{
+  return ecore_evas_engine_type_supported_get (static_cast <Ecore_Evas_Engine_Type> (et));
+}
+
 bool EcoreEvasWindow::canClose() const
 {
     return true;
