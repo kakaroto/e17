@@ -326,28 +326,24 @@ EDebugSet(unsigned int type, int value)
  */
 #include <dlfcn.h>
 
-void               *
-ModLoad(const char *name)
+const void         *
+ModLoadSym(const char *lib, const char *sym, const char *name)
 {
    char                buf[1024];
    void               *h;
 
-   Esnprintf(buf, sizeof(buf), "%s/e16/%s.so", ENLIGHTENMENT_LIB, name);
+   Esnprintf(buf, sizeof(buf), "%s/e16/lib%s_%s.so",
+	     ENLIGHTENMENT_LIB, lib, name);
    if (EDebug(1))
       Eprintf("ModLoad %s\n", buf);
    h = dlopen(buf, RTLD_NOW | RTLD_LOCAL);
    if (!h)
       Eprintf("*** ModLoad %s: %s\n", buf, dlerror());
+   if (!h)
+      return NULL;
 
-   return h;
-}
-
-void               *
-ModSym(void *handle, const char *sym)
-{
-   void               *h;
-
-   h = dlsym(handle, sym);
+   Esnprintf(buf, sizeof(buf), "%s_%s", sym, name);
+   h = dlsym(h, buf);
 
    return h;
 }

@@ -92,8 +92,8 @@ int                 Esnprintf(va_alist);
 
 #if USE_MODULES
 /* Dynamic loading */
-void               *ModLoad(const char *name);
-void               *ModSym(void *handle, const char *sym);
+const void         *ModLoadSym(const char *lib, const char *sym,
+			       const char *name);
 #endif
 
 #endif /* _UTIL_H_ */
