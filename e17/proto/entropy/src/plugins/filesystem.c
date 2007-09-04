@@ -451,10 +451,7 @@ callback (EvfsEvent * data, void *obj)
       uri =
 	EvfsFilereference_to_string (evfs_command_first_file_get(data->command));
       instance = ecore_hash_get (evfs_dir_requests, (long*)data->command->client_identifier);
-      ecore_hash_remove (evfs_dir_requests, (long*)data->command->client_identifier);
-
-
-
+      
       if (instance) {
          /*Build up the gui_event wrapper */
          gui_event = entropy_malloc (sizeof (entropy_gui_event));
