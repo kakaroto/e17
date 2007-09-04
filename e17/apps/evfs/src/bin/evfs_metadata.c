@@ -737,7 +737,12 @@ int evfs_metadata_scan_deleted(void* data)
 	unsigned const char* str;
 	int res = 0;
 	Ecore_List* delList;
+	Ecore_List* keys;
+	int it;
 
+	Ecore_Hash* stat_hash;
+
+	stat_hash = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
 	delList = ecore_list_new();
 	
 	ret = sqlite3_open(metadata_db, &dbi);
@@ -768,8 +773,13 @@ int evfs_metadata_scan_deleted(void* data)
 				res = (*EVFS_PLUGIN_FILE(file->plugin)->functions->evfs_file_stat)(proxy, &file_stat,0);
 
 				if (res == 0) {
-					/*printf("*\n");*/
-					evfs_metadata_db_record_stat(db, sqlite3_column_int(pStmt,1), &file_stat);
+					struct stat* cpstat;
+					int id;
+
+					cpstat = NEW(struct stat);
+					memcpy(cpstat,&file_stat, sizeof(struct stat));					
+					id = sqlite3_column_int(pStmt,1);
+					ecore_hash_set(stat_hash, (int*)id, cpstat);	
 				} else {
 					/*printf("DELETED\n");*/
 
@@ -780,6 +790,16 @@ int evfs_metadata_scan_deleted(void* data)
 		}
 		sqlite3_reset(pStmt);
 		sqlite3_finalize(pStmt);
+
+		/*Record stats*/
+		keys = ecore_hash_keys(stat_hash);
+		while ( (it = (int)ecore_list_first_remove(keys))) {
+			struct stat* st = ecore_hash_get(stat_hash, (int*)it);
+			evfs_metadata_db_record_stat(db, it, st);
+
+			free(st);
+		}
+		ecore_list_destroy(keys);
 		
 		/*If we saw no rows, we're at the end - go back
 		 * to the start*/
@@ -808,6 +828,7 @@ int evfs_metadata_scan_deleted(void* data)
 	ecore_list_destroy(delList);
 	sqlite3_close(dbi);	
 
+	ecore_hash_destroy(stat_hash);
 	return 1;
 }
 
