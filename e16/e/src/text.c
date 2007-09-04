@@ -657,6 +657,12 @@ typedef struct
    char                checked;
 } FontHandler;
 
+#if USE_MODULES
+
+#define FONT(type, ops, opsm) { type, opsm, 0 }
+
+#else
+
 #define FONT(type, ops, opsm) { type, ops, 0 }
 
 #if FONT_TYPE_IFT
@@ -668,6 +674,8 @@ extern const FontOps FontOps_xft;
 #if FONT_TYPE_PANGO_XFT
 extern const FontOps FontOps_pango;
 #endif
+
+#endif /* USE_MODULES */
 
 static FontHandler  fhs[] = {
 #if FONT_TYPE_XFONT
@@ -735,6 +743,17 @@ TextStateLoadFont(TextState * ts)
      {
 	if (strcmp(fhp->type, type))
 	   continue;
+#if USE_MODULES
+	if (!fhp->ops)
+	  {
+	     if (fhp->checked)
+		goto fallback;
+	     fhp->checked = 1;
+	     fhp->ops = ModLoadSym("font", "FontOps", type);
+	     if (!fhp->ops)
+		goto fallback;
+	  }
+#endif
 	ts->ops = fhp->ops;
 	ts->ops->Load(ts, name);
 	goto done;

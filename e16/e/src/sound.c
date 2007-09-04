@@ -44,8 +44,12 @@ static struct
 
 static Ecore_List  *sound_list = NULL;
 
+#if USE_MODULES
+static const SoundOps *ops = NULL;
+#else
 extern const SoundOps SoundOps_esd;
 static const SoundOps *ops = &SoundOps_esd;
+#endif
 
 static void
 _SclassSampleDestroy(void *data, void *user_data __UNUSED__)
@@ -175,6 +179,10 @@ SoundInit(void)
       return;
 
    err = -1;
+#if USE_MODULES
+   if (!ops)
+      ops = ModLoadSym("sound", "SoundOps", "esd");
+#endif
    if (ops && ops->Init)
       err = ops->Init();
 
