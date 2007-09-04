@@ -33,7 +33,8 @@ typedef enum evfs_command_type
    EVFS_CMD_FILE_TAG_ADD = 25,
    EVFS_CMD_FILE_TAG_REMOVE = 26,
    EVFS_CMD_VFOLDER_CREATE = 27,
-   EVFS_CMD_META_ALL_REQUEST = 28
+   EVFS_CMD_META_ALL_REQUEST = 28,
+   EVFS_CMD_AUTH_EXCHANGE = 29
 }
 evfs_command_type;
 

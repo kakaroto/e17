@@ -43,7 +43,6 @@
 #include <libsmbclient.h>
 #include <limits.h>
 
-//static struct stat file_stat;
 int smbc_remove_unused_server(SMBCCTX * context, SMBCSRV * srv);
 static int smbLOCK = 0;
 static SMBCCTX *smb_context = NULL;

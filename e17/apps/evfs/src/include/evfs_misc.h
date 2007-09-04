@@ -13,16 +13,6 @@ typedef struct evfs_command_client
 
 /*-----------*/
 
-/*This structure needs more development*/
-typedef struct evfs_auth_cache
-{
-   char* plugin;
-   char *path;
-   char *username;
-   char *password;
-   int attempts;
-} evfs_auth_cache;
-
 typedef struct evfs_file_monitor evfs_file_monitor;
 struct evfs_file_monitor
 {

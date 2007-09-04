@@ -22,7 +22,8 @@ evfs_SOURCES = \
 	evfs_metadata_db.c \
 	#evfs_mounts.c \
 	$(top_srcdir)/src/common/evfs_vfolder.c \
-	$(top_srcdir)/src/common/evfs_server.c
+	$(top_srcdir)/src/common/evfs_server.c \
+	$(top_srcdir)/src/common/evfs_auth.c 
 
 evfsworker_SOURCES = \
 	evfs_worker.c \
@@ -37,7 +38,8 @@ evfsworker_SOURCES = \
         evfs_metadata.c \
         evfs_metadata_db.c \
         $(top_srcdir)/src/common/evfs_vfolder.c \
-        $(top_srcdir)/src/common/evfs_server.c
+        $(top_srcdir)/src/common/evfs_server.c \
+	$(top_srcdir)/src/common/evfs_auth.c
 
 
 evfscat_SOURCES = \

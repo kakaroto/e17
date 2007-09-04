@@ -668,6 +668,8 @@ int evfs_metadata_dir_queuer(void* data)
 		printf("Starting metaextract again..\n");
 		ecore_list_append(evfs_metadata_directory_scan_queue, ref);
 	}
+
+	return 1;
 }
 
 

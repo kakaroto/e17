@@ -88,6 +88,7 @@ EfsdFsOps;
       (((uint64) (val) &						\
 	(uint64) INT64_CONSTANT (0xff00000000000000U)) >> 56)))
 
+#include "evfs_auth.h"
 #include "evfs_event.h"
 #include "evfs_server.h"
 #include "evfs_misc.h"
