@@ -54,6 +54,7 @@ ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                                      ],
                             **pkgconfig('"ecore-evas >= 0.9.9.040"'))
 
+include_dirs = [os.path.join(python_inc, "python-evas")]
 
 trove_classifiers = [
     "Development Status :: 3 - Alpha",
@@ -86,19 +87,20 @@ for instance), toggling fullscreen, setting window shape, border and
 other parameters.
 """
 
-setup(name = 'python-ecore',
-      version = '0.1.1',
-      license = 'BSD',
-      author = 'Gustavo Sverzut Barbieri',
-      author_email = 'barbieri@gmail.com',
-      url = 'http://www.enlightenment.org/',
-      description = 'Python bindings for Ecore',
-      long_description = long_description,
-      keywords = 'wrapper binding enlightenment abstraction event ecore',
-      classifiers = trove_classifiers,
-      packages = find_packages(),
-      install_requires = ['python-evas>=0.1.1'],
-      setup_requires = ['python-evas>=0.1.1'],
-      ext_modules = [ecoremodule, ecoreevasmodule],
-      zip_safe = False,
+setup(name='python-ecore',
+      version='0.1.1',
+      license='BSD',
+      author='Gustavo Sverzut Barbieri',
+      author_email='barbieri@gmail.com',
+      url='http://www.enlightenment.org/',
+      description='Python bindings for Ecore',
+      long_description=long_description,
+      keywords='wrapper binding enlightenment abstraction event ecore',
+      classifiers=trove_classifiers,
+      packages=find_packages(),
+      install_requires=['python-evas>=0.1.1'],
+      setup_requires=['python-evas>=0.1.1'],
+      include_dirs=include_dirs,
+      ext_modules=[ecoremodule, ecoreevasmodule],
+      zip_safe=False,
       )

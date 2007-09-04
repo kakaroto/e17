@@ -5,7 +5,6 @@ from ez_setup import use_setuptools
 use_setuptools('0.6c3')
 
 import distutils.sysconfig
-import pkg_resources
 from setuptools import setup, find_packages, Extension
 import commands
 
@@ -94,20 +93,20 @@ C, originally called Small, later renamed to PAWN).
 """
 
 
-setup(name = 'python-edje',
-      version = '0.1.1',
-      license = 'BSD',
-      author = 'Gustavo Sverzut Barbieri',
-      author_email = 'barbieri@gmail.com',
-      url = 'http://www.enlightenment.org/',
-      description = 'Python bindings for Edje',
-      long_description = long_description,
-      keywords = 'wrapper binding enlightenment graphics raster evas canvas theme',
-      classifiers = trove_classifiers,
-      packages = find_packages(),
-      install_requires = ['python-evas>=0.1.1'],
-      setup_requires = ['python-evas>=0.1.1'],
-      include_dirs = include_dirs,
-      ext_modules = [edjemodule],
-      zip_safe = False,
+setup(name='python-edje',
+      version='0.1.1',
+      license='BSD',
+      author='Gustavo Sverzut Barbieri',
+      author_email='barbieri@gmail.com',
+      url='http://www.enlightenment.org/',
+      description='Python bindings for Edje',
+      long_description=long_description,
+      keywords='wrapper binding enlightenment graphics raster evas canvas theme',
+      classifiers=trove_classifiers,
+      packages=find_packages(),
+      install_requires=['python-evas>=0.1.1'],
+      setup_requires=['python-evas>=0.1.1'],
+      include_dirs=include_dirs,
+      ext_modules=[edjemodule],
+      zip_safe=False,
       )

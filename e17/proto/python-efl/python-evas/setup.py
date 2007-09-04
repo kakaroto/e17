@@ -80,18 +80,18 @@ only terminal to 16 color VGA to 256 color and all the way up through
 15, 16, 24 and 32bit color.
 """
 
-setup(name = 'python-evas',
-      version = '0.1.1',
-      license = 'BSD',
+setup(name='python-evas',
+      version='0.1.1',
+      license='BSD',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
       url='http://www.enlightenment.org/',
-      description = 'Python bindings for Evas',
-      long_description = long_description,
-      keywords = 'wrapper binding enlightenment graphics raster evas canvas',
-      classifiers = trove_classifiers,
-      packages = find_packages(),
-      headers = headers,
-      ext_modules = [evasmodule],
+      description='Python bindings for Evas',
+      long_description=long_description,
+      keywords='wrapper binding enlightenment graphics raster evas canvas',
+      classifiers=trove_classifiers,
+      packages=find_packages(),
+      headers=headers,
+      ext_modules=[evasmodule],
       zip_safe=False,
       )
