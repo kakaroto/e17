@@ -840,9 +840,10 @@ _ex_image_rename_dialog_response(Etk_Object *obj, int response_id, void *data)
 	 newpath = malloc(PATH_MAX);
 	 oldpath = malloc(PATH_MAX);
 	 snprintf(newpath, PATH_MAX, "%s%s", tab->set_img_path, string);
-	 snprintf(oldpath, PATH_MAX, "%s%s", tab->set_img_path, tab->cur_file);
+	 snprintf(oldpath, PATH_MAX, "%s", tab->cur_file);
 	 D(("Renaming from %s -> %s\n", oldpath, newpath));
 
+printf("Rename '%s' to '%s' \n", oldpath, newpath);
 	 ret = rename(oldpath, newpath);
 	 if (ret == -1) 
 	   _ex_main_dialog_show("Error renaming file!", ETK_MESSAGE_DIALOG_ERROR);
@@ -869,7 +870,7 @@ _ex_image_rename()
    char string[PATH_MAX];
    char labeltext[PATH_MAX + 100];
 
-   snprintf(string, sizeof(PATH_MAX), "%s%s", tab->set_img_path, tab->cur_file);
+   snprintf(string, sizeof(string), "%s", basename(tab->cur_file));
    dialog = etk_dialog_new();
 
    snprintf(labeltext, sizeof(labeltext), "Rename file '%s'", string);
@@ -884,6 +885,7 @@ _ex_image_rename()
 	 ETK_BOX_START, ETK_BOX_NONE, 2);
 
    entry = etk_entry_new();
+   etk_entry_text_set(ETK_ENTRY(entry), string);
    
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), ETK_WIDGET(entry), 
 	 ETK_BOX_START, ETK_BOX_NONE, 0);
