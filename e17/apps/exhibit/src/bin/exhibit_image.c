@@ -768,7 +768,7 @@ _ex_image_delete_cb(void *data)
    char string[PATH_MAX];
    int ret;
 
-   snprintf(string, sizeof(string), "%s%s", tab->set_img_path, tab->cur_file);
+   snprintf(string, sizeof(string), "%s", tab->cur_file);
 
    ret = remove(string);
    if (ret == -1) 
@@ -806,8 +806,8 @@ _ex_image_delete(Exhibit *e)
    char string[PATH_MAX];
 
    snprintf(string, sizeof(string),
-	 "Are you sure you want to delete this image? <br>%s%s<br> ", 
-	 tab->set_img_path, tab->cur_file);
+	 "Are you sure you want to delete this image? <br>%s<br> ", 
+	 tab->cur_file);
 
    tab->dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_QUESTION, 
 	 ETK_MESSAGE_DIALOG_OK_CANCEL, 
