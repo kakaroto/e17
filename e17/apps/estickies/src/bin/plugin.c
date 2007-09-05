@@ -60,12 +60,12 @@ int _e_plugin_load(const char *plugin_name)
    if (ecore_hash_get(_e_plugin_loaded, plugin_name))
      return 0;
    
-   if((plugin = ecore_plugin_load(_e_plugin_path, plugin_name)) == NULL)
+   if((plugin = ecore_plugin_load(_e_plugin_path, plugin_name, NULL)) == NULL)
      return 0;
 
    ecore_hash_set(_e_plugin_loaded, plugin_name, plugin);
    
-   if ((on_load = ecore_plugin_call(plugin, "plugin_on_load")))
+   if ((on_load = ecore_plugin_symbol_get(plugin, "plugin_on_load")))
      {
 	on_load();
      }
@@ -82,7 +82,7 @@ int _e_plugin_unload(const char *plugin_name)
    if (!plugin_name || !(plugin = ecore_hash_get(_e_plugin_loaded, plugin_name)))
      return 0;
    
-   if ((on_unload = ecore_plugin_call(plugin, "plugin_on_unload")))
+   if ((on_unload = ecore_plugin_symbol_get(plugin, "plugin_on_unload")))
      {
 	on_unload();
      }
@@ -99,7 +99,7 @@ static int _e_plugin_unload_from_ptr(Ecore_Plugin *plugin)
 {
    int *(*on_unload)(void);
 
-   if ((on_unload = ecore_plugin_call(plugin, "plugin_on_unload")))
+   if ((on_unload = ecore_plugin_symbol_get(plugin, "plugin_on_unload")))
      {
 	on_unload();
      }
