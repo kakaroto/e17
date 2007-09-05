@@ -16,7 +16,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <dlfcn.h>
 #include <fcntl.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -44,6 +43,7 @@ static char *ewl_test_about_body =
 		"recompile or edit the test application.\n";
 
 static int ewl_test_setup_tests(void);
+static void ewl_test_free(Ewl_Test *test);
 static void ewl_test_print_tests(void);
 
 static void run_test_boxed(Ewl_Test *t);
@@ -80,6 +80,7 @@ static void *cb_unit_test_fetch(void *data, unsigned int row, unsigned int colum
 static unsigned int cb_unit_test_count(void *data);
 
 static Ecore_List *tests = NULL;
+static int tests_path_group = 0;
 static int window_count = 0;
 static int current_unit_test = 0;
 static Ecore_Timer *unit_test_timer = NULL;
@@ -172,6 +173,7 @@ main(int argc, char **argv)
 		ewl_main();
 
 	if (tests) ecore_list_destroy(tests);
+	if (tests_path_group) ecore_path_group_del(tests_path_group);
 
 	return ret;
 }
@@ -360,58 +362,59 @@ run_test_boxed(Ewl_Test *t)
 static int
 ewl_test_setup_tests(void)
 {
-	char buf[PATH_MAX], buf2[PATH_MAX];
 	Ecore_List *list = NULL;
-	char *file = NULL;
+	char *name = NULL;
+
+	if (tests) return 1;
 
 	tests = ecore_list_new();
 	if (!tests) return 0;
 
-	ecore_list_free_cb_set(tests, ECORE_FREE_CB(free));
+	ecore_list_free_cb_set(tests, ECORE_FREE_CB(ewl_test_free));
 
-	snprintf(buf, sizeof(buf), "%s", PACKAGE_LIB_DIR "/ewl/tests");
-	list = ecore_file_ls(buf);
-	if (list && ecore_list_count(list) > 0)
+	tests_path_group = ecore_path_group_new("Test Plugins");
+	ecore_path_group_add(tests_path_group, PACKAGE_LIB_DIR "/ewl/tests");
+	list = ecore_plugin_available_get(tests_path_group);
+	/* no tests found ... */
+	if (!list) return 0;
+	
+	while ((name = ecore_list_first_goto(list)))
 	{
-		ecore_list_first_goto(list);
-		while ((file = ecore_list_first_remove(list)))
+		Ecore_Plugin *plugin;
+		void (*func_info)(Ewl_Test *test);
+
+		plugin = ecore_plugin_load(tests_path_group, name, NULL);
+		if (!plugin)
+			continue;
+
+
+		/* the UI test info */
+		func_info = ecore_plugin_symbol_get(plugin, "test_info");
+		if (func_info)
 		{
-			int len;
+			Ewl_Test *t;
 
-			/* see if this is a .so file */
-			len = strlen(file);
-			if (!strncmp(file + (len - 3), ".so", 3))
-			{
-				void *handle;
-
-				snprintf(buf2, sizeof(buf2), "%s/%s", buf, file);
-				handle = dlopen(buf2, RTLD_LAZY | RTLD_GLOBAL);
-				if (handle)
-				{
-					void (*func_info)(Ewl_Test *test);
-
-					/* the UI test info */
-					func_info = dlsym(handle, "test_info");
-					if (func_info)
-					{
-						Ewl_Test *t;
-
-						t = calloc(1, sizeof(Ewl_Test));
-						func_info(t);
-						t->handle = handle;
-						ecore_list_append(tests, t);
-					}
-				}
-			}
-			free(file);
+			t = calloc(1, sizeof(Ewl_Test));
+			func_info(t);
+			t->plugin = plugin;
+			ecore_list_append(tests, t);
 		}
-		ecore_list_destroy(list);
+
+		ecore_list_remove(list);
 	}
+	ecore_list_destroy(list);
 
 	/* no tests found ... */
 	if (ecore_list_count(tests) == 0) return 0;
 
 	return 1;
+}
+
+static void 
+ewl_test_free(Ewl_Test *test)
+{
+	if (test->plugin) ecore_plugin_unload(test->plugin);
+	free(test);
 }
 
 static int

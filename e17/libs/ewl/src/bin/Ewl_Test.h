@@ -49,7 +49,7 @@ struct Ewl_Test
 	const char *filename;		 /**< Filename of the test */
 	const char *tip;		 /**< Tooltip for the test */
 
-	void *handle;			 /**< Dynamic file handle for test */
+	Ecore_Plugin *plugin;		 /**< Dynamic file handle for test */
 	Ewl_Test_Type type;		 /**< The type of test */
 	int (*func)(Ewl_Container *con); /**< The test function */
 	Ewl_Unit_Test *unit_tests;	 /**< The test unit tests */

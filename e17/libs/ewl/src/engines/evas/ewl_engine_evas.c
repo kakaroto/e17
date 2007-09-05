@@ -103,7 +103,6 @@ ee_init(Ewl_Engine *engine)
 	info->hooks.canvas = canvas_funcs;
 	info->hooks.theme = theme_funcs;
 
-	engine->name = strdup("evas");
 	engine->functions = info;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -116,7 +115,6 @@ ee_shutdown(Ewl_Engine *engine)
 	DCHECK_PARAM_PTR("engine", engine);
 
 	IF_FREE(engine->functions);
-	IF_FREE(engine->name);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

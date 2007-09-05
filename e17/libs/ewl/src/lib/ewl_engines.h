@@ -142,8 +142,7 @@ struct Ewl_Engine_Info
  */
 struct Ewl_Engine
 {
-	void *handle;			/**< The dlsym handle */
-	char *name;			/**< The name of the engine */
+	Ecore_Plugin * plugin;		/**< The plugin of the engine */
 
 	Ecore_DList *dependancies;	/**< The engines this one depends on */
 	Ewl_Engine_Info *functions;	/**< The functions used by ewl,

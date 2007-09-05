@@ -7,10 +7,10 @@
 #include "ewl_debug.h"
 
 #include <Efreet_Mime.h>
-#include <dlfcn.h>
 
 static Ecore_Hash *ewl_io_manager_plugins = NULL;
 static Ecore_Hash *ewl_io_manager_ext_icon_map = NULL;
+static int ewl_io_manager_path = 0;
 static int ewl_io_manager_strcasecompare(const void *key1, const void *key2);
 static void ewl_io_manager_cb_free_plugin(void *data);
 
@@ -86,6 +86,11 @@ ewl_io_manager_shutdown(void)
 
 	IF_FREE_HASH(ewl_io_manager_ext_icon_map);
 	IF_FREE_HASH(ewl_io_manager_plugins);
+	if (ewl_io_manager_path) 
+	{
+		ecore_path_group_del(ewl_io_manager_path);
+		ewl_io_manager_path = 0;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -272,7 +277,7 @@ static Ewl_IO_Manager_Plugin *
 ewl_io_manager_plugin_get(const char *mime)
 {
 	Ewl_IO_Manager_Plugin *plugin = NULL;
-	char file[PATH_MAX];
+	char name[PATH_MAX];
 	char *m = NULL, *ptr;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -283,17 +288,25 @@ ewl_io_manager_plugin_get(const char *mime)
 	if (plugin)
 		DRETURN_PTR(plugin, DLEVEL_STABLE);
 
+	if (!ewl_io_manager_path)
+	{
+		ewl_io_manager_path = ecore_path_group_new("Ewl IO Manager");
+		ecore_path_group_add(ewl_io_manager_path,
+				PACKAGE_LIB_DIR"/ewl/plugins/");
+	}
+
 	m = strdup(mime);
 	while ((ptr = strchr(m, '/')))
 		*ptr = '_';
 
-	snprintf(file, sizeof(file),
-		"%s/ewl/plugins/ewl_io_manager_%s_plugin.so", PACKAGE_LIB_DIR,
-		m);
+	snprintf(name, sizeof(name), "ewl_io_manager_%s_plugin", m);
 	FREE(m);
 
-	if (!ecore_file_exists(file))
+	plugin = NEW(Ewl_IO_Manager_Plugin, 1);
+	plugin->plugin = ecore_plugin_load(ewl_io_manager_path, name, NULL);
+	if (!plugin->plugin)
 	{
+		FREE(plugin);
 		m = strdup(mime);
 		plugin = NULL;
 
@@ -304,31 +317,31 @@ ewl_io_manager_plugin_get(const char *mime)
 			*ptr = '\0';
 			plugin = ewl_io_manager_plugin_get(m);
 		}
+
 		FREE(m);
 		DRETURN_PTR(plugin, DLEVEL_STABLE);
 	}
-
-	plugin = NEW(Ewl_IO_Manager_Plugin, 1);
-	plugin->handle = dlopen(file, RTLD_LAZY | RTLD_GLOBAL);
-	if (!plugin->handle)
-	{
-		FREE(plugin);
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
-
+	
 	plugin->uri_read =
-		dlsym(plugin->handle, "ewl_io_manager_plugin_uri_read");
+		ecore_plugin_symbol_get(plugin->plugin, 
+					"ewl_io_manager_plugin_uri_read");
 	plugin->string_read =
-		dlsym(plugin->handle, "ewl_io_manager_plugin_string_read");
+		ecore_plugin_symbol_get(plugin->plugin, 
+					"ewl_io_manager_plugin_string_read");
 
 	plugin->uri_write =
-		dlsym(plugin->handle, "ewl_io_manager_plugin_uri_write");
+		ecore_plugin_symbol_get(plugin->plugin, 
+					"ewl_io_manager_plugin_uri_write");
 	plugin->string_write =
-		dlsym(plugin->handle, "ewl_io_manager_plugin_string_write");
+		ecore_plugin_symbol_get(plugin->plugin, 
+					"ewl_io_manager_plugin_string_write");
 
 	if (!plugin->uri_read || !plugin->uri_write
 			|| !plugin->uri_write || !plugin->string_write)
 	{
+		if (plugin->plugin)
+			ecore_plugin_unload(plugin->plugin);
+
 		FREE(plugin);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
@@ -365,10 +378,10 @@ ewl_io_manager_cb_free_plugin(void *data)
 	DCHECK_PARAM_PTR("data", data);
 
 	plugin = data;
-	if (plugin->handle)
-		dlclose(plugin->handle);
+	if (plugin->plugin)
+		ecore_plugin_unload(plugin->plugin);
 
-	plugin->handle = NULL;
+	plugin->plugin = NULL;
 	plugin->uri_write = NULL;
 	plugin->uri_read = NULL;
 	plugin->string_read = NULL;

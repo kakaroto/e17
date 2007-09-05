@@ -63,7 +63,6 @@ ee_init(Ewl_Engine *engine)
 	info->shutdown = ee_shutdown;
 	info->hooks.canvas = canvas_funcs;
 
-	engine->name = strdup("evas_buffer");
 	engine->functions = info;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -76,7 +75,6 @@ ee_shutdown(Ewl_Engine *engine)
 	DCHECK_PARAM_PTR("engine", engine);
 
 	IF_FREE(engine->functions);
-	IF_FREE(engine->name);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

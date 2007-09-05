@@ -4,8 +4,6 @@
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
-#include <dlfcn.h>
-
 #define EWL_ENGINE_DIR "engines"
 
 enum Ewl_Engine_Hook_Type
@@ -18,6 +16,7 @@ enum Ewl_Engine_Hook_Type
 typedef enum Ewl_Engine_Hook_Type Ewl_Engine_Hook_Type;
 
 static Ecore_Hash *ewl_engines = NULL;
+static int ewl_engines_path = 0;
 static void ewl_engine_free(Ewl_Engine *engine);
 static void **ewl_engine_hooks_get(Ewl_Engine *engine, Ewl_Engine_Hook_Type type);
 static void *ewl_engine_hook_get(Ewl_Embed *embed,
@@ -52,6 +51,11 @@ ewl_engines_shutdown(void)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	IF_FREE_HASH(ewl_engines);
+	if (ewl_engines_path)
+	{
+		ecore_path_group_del(ewl_engines_path);
+		ewl_engines_path = 0;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -118,8 +122,7 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
 	Ecore_DList *(*dependancies)(void);
 	Ecore_DList *deps = NULL;
 	Ecore_DList *dep_list;
-	void *handle;
-	char filename[PATH_MAX];
+	Ecore_Plugin *plugin;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("name", name, NULL);
@@ -129,31 +132,25 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
 	if (engine)
 		DRETURN_PTR(engine, DLEVEL_STABLE);
 
-	snprintf(filename, sizeof(filename), "%s/ewl/%s/%s.so.%s",
-							PACKAGE_LIB_DIR,
-							EWL_ENGINE_DIR, name,
-							INTERFACE_CURRENT);
-	if (!ecore_file_exists(filename))
+	if (!ewl_engines_path)
 	{
-		snprintf(filename, sizeof(filename), "%s/ewl/%s/%s.%s.so",
+		char pathname[PATH_MAX];
+
+		ewl_engines_path = ecore_path_group_new("Ewl Engine Paths");
+		snprintf(pathname, sizeof(pathname), "%s/ewl/%s/",
 							PACKAGE_LIB_DIR,
-							EWL_ENGINE_DIR, name,
-							INTERFACE_CURRENT);
-		if (!ecore_file_exists(filename))
-		{
-			DWARNING("Given engine name dosen't exist.");
-			DRETURN_PTR(NULL, DLEVEL_STABLE);
-		}
+							EWL_ENGINE_DIR);
+		ecore_path_group_add(ewl_engines_path, pathname);
 	}
 
-	handle = dlopen(filename, RTLD_LAZY | RTLD_GLOBAL);
-	if (!handle)
+	plugin = ecore_plugin_load(ewl_engines_path, name, INTERFACE_CURRENT);
+	if (!plugin)
 	{
-		DWARNING("Unable to dlopen engine file.");
+		DWARNING("Unable to open engine file.");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	dependancies = dlsym(handle, "ewl_engine_dependancies");
+	dependancies = ecore_plugin_symbol_get(plugin, "ewl_engine_dependancies");
 	if (!dependancies)
 	{
 		DWARNING("Unable to find ewl_engine_dependancies in "
@@ -189,7 +186,7 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
 		ecore_dlist_destroy(dep_list);
 	}
 
-	create_engine = dlsym(handle, "ewl_engine_create");
+	create_engine = ecore_plugin_symbol_get(plugin, "ewl_engine_create");
 	if (!create_engine)
 	{
 		DWARNING("Unable to find ewl_engine_create in engine file.");
@@ -203,7 +200,7 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	engine->handle = handle;
+	engine->plugin = plugin;
 	engine->dependancies = deps;
 
 	ecore_hash_set(ewl_engines, strdup(name), engine);
@@ -1574,8 +1571,8 @@ ewl_engine_free(Ewl_Engine *engine)
 	if (engine->dependancies)
 		ecore_dlist_destroy(engine->dependancies);
 
-	dlclose(engine->handle);
-	engine->handle = NULL;
+	ecore_plugin_unload(engine->plugin);
+	engine->plugin = NULL;
 
 	FREE(engine);
 

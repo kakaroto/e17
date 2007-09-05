@@ -155,7 +155,6 @@ create_test(Ewl_Container *box)
 	printf("Inserting 'The fourth bunch of text\\n' [98]\n");
 	ewl_text_text_insert(EWL_TEXT(o), "The fourth bunch of text\n", 31); /* 25 */
 
-
 	printf("Creating trigger [115]\n");
 	trigger = EWL_TEXT_TRIGGER(ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER));
 	ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));

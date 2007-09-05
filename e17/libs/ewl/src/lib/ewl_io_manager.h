@@ -12,7 +12,7 @@ typedef struct Ewl_IO_Manager_Plugin Ewl_IO_Manager_Plugin;
  */
 struct Ewl_IO_Manager_Plugin
 {
-	void *handle;			/**< The libray handle */
+	Ecore_Plugin *plugin;			/**< The libray handle */
 
 	Ewl_Widget *(*uri_read)(const char *uri);	/**< The URI read fuction */
 	Ewl_Widget *(*string_read)(const char *string); /**< The string read function */

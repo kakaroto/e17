@@ -295,7 +295,6 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
 	info->hooks.window = window_funcs;
 	info->hooks.pointer = pointer_funcs;
 
-	engine->name = strdup("x11");
 	engine->functions = info;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -382,7 +381,6 @@ ee_shutdown(Ewl_Engine *engine)
 	ecore_x_shutdown();
 
 	IF_FREE(engine->functions);
-	IF_FREE(engine->name);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
