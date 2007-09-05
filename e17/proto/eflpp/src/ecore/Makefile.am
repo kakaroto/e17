@@ -11,13 +11,15 @@ noinst_LTLIBRARIES = libeflpp_ecore.la
 libeflpp_ecore_la_SOURCES = \
 	eflpp_ecoreconfig.cpp\
 	eflpp_ecore.cpp \
-	eflpp_ecore_window.cpp
+	eflpp_ecore_window.cpp \
+	eflpp_ecore_data.cpp
     
 libeflpp_includedir = $(pkgincludedir)
 
 libeflpp_include_DATA = \
 	eflpp_ecoreconfig.h\
 	eflpp_ecore.h \
-	eflpp_ecore_window.h
+	eflpp_ecore_window.h \
+	eflpp_ecore_data.h
 
 EXTRA_DIST = $(libeflpp_include_DATA)
