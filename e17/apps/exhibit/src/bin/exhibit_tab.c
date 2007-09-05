@@ -70,7 +70,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_scrolled_view_policy_set(etk_tree_scrolled_view_get(ETK_TREE(tab->itree)), ETK_POLICY_AUTO, ETK_POLICY_SHOW);
    etk_tree_build(ETK_TREE(tab->itree));
 
-   tab->dir = _ex_path_normalize(dir);
+   tab->dir = _ex_path_normalize(ecore_file_realpath(dir));
    tab->alignment = etk_alignment_new(0.5, 0.5, 0.0, 0.0);   
    
    tab->image = etk_image_new();

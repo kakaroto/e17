@@ -539,6 +539,7 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
 		 _ex_main_itree_add(path, path);
 	      else
 		 _ex_main_itree_add(path, NULL);
+              e->cur_tab->images = evas_list_append(e->cur_tab->images, strdup(path));
 	      break;
 	   default:
 	      D(("Unknown ecore file event occured\n"));
