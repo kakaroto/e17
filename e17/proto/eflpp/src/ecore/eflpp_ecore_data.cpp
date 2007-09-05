@@ -5,9 +5,12 @@ namespace efl {
 template <typename T>
 EcoreList<T>::EcoreList()
 {
-   m_list = ecore_list_new();
-   /*int status =*/ ecore_list_init( m_list );
-   // todo: how to handle return value?
+    m_list = ecore_list_new();
+    if (m_list)
+    {
+        /*int status =*/ ecore_list_init( m_list );
+        // todo: how to handle return value? -> Exception?
+    }
 }
   
 template <typename T>
