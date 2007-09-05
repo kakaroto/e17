@@ -50,7 +50,7 @@ static void         ContainerEventIconWin(Win win, XEvent * ev, void *prm);
 
 ContainerCfg        Conf_containers;
 
-Ecore_List         *container_list = NULL;
+static Ecore_List  *container_list = NULL;
 
 static int
 _ContainerMatchName(const void *data, const void *match)

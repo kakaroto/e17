@@ -118,6 +118,7 @@ EwinOpFind(const char *op)
    return NULL;
 }
 
+#if 0				/* Unused */
 void
 EwinFixPosition(EWin * ewin)
 {
@@ -141,6 +142,7 @@ EwinFixPosition(EWin * ewin)
    if (x != EoGetX(ewin) || y != EoGetY(ewin))
       EwinMove(ewin, x, y);
 }
+#endif
 
 static void
 EwinDetermineArea(EWin * ewin)

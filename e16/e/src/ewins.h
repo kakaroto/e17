@@ -465,12 +465,9 @@ void                EwinSyncRequestWait(EWin * ewin);
 /* moveresize.c */
 int                 ActionMoveStart(EWin * ewin, char constrained, int nogroup);
 int                 ActionMoveEnd(EWin * ewin);
-int                 ActionMoveSuspend(void);
-int                 ActionMoveResume(void);
-void                ActionMoveHandleMotion(void);
 int                 ActionResizeStart(EWin * ewin, int hv);
 int                 ActionResizeEnd(EWin * ewin);
-void                ActionResizeHandleMotion(void);
+
 int                 ActionsSuspend(void);
 int                 ActionsResume(void);
 void                ActionsHandleMotion(void);

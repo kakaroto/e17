@@ -60,6 +60,7 @@ EModuleFind(const char *name)
    return NULL;
 }
 
+#if 0				/* Unused */
 static void
 EModuleCommand(const EModule * em, const char *cmd, const char *prm)
 {
@@ -76,6 +77,7 @@ EModuleCommand(const EModule * em, const char *cmd, const char *prm)
 	break;
      }
 }
+#endif
 
 int
 ModuleConfigSet(const char *name, const char *item, const char *params)
@@ -144,6 +146,7 @@ ModuleConfigShow(const char *name, const char *item)
    return 0;
 }
 
+#if 0				/* Unused */
 int
 ModuleCommand(const char *name, const char *cmd, const char *params)
 {
@@ -157,6 +160,7 @@ ModuleCommand(const char *name, const char *cmd, const char *params)
 
    return 0;
 }
+#endif
 
 void
 ModulesSignal(int sig, void *prm)

@@ -25,7 +25,6 @@
 #include "desktops.h"
 #include "eobj.h"
 #include "ewins.h"
-#include "hints.h"
 #include "piximg.h"
 #include "xwin.h"
 
@@ -124,10 +123,10 @@ static Font         font = None;	/* Used in mode 1 (technical) */
 
 #define _SHAPE_SET_RECT(rl, _x, _y, _w, _h) \
   do { \
-    rl[0].x = _x;          rl[0].y = _y;          rl[0].width = _w; rl[0].height = 1; \
-    rl[1].x = _x;          rl[1].y = _y + _h - 1; rl[1].width = _w; rl[1].height = 1; \
-    rl[2].x = _x;          rl[2].y = _y + 1;      rl[2].width = 1;  rl[2].height = _h - 2; \
-    rl[3].x = _x + _w - 1; rl[3].y = _y + 1;      rl[3].width = 1;  rl[3].height = _h - 2; \
+    rl[0].x = (_x);        rl[0].y = (_y);        rl[0].width = (_w); rl[0].height = 1; \
+    rl[1].x = (_x);        rl[1].y = (_y)+(_h)-1; rl[1].width = (_w); rl[1].height = 1; \
+    rl[2].x = (_x);        rl[2].y = (_y)+1;      rl[2].width = 1;    rl[2].height = (_h)-2; \
+    rl[3].x = (_x)+(_w)-1; rl[3].y = (_y)+1;      rl[3].width = 1;    rl[3].height = (_h)-2; \
   } while(0)
 
 #define _R(x) (((x) >> 16) & 0xff)

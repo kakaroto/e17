@@ -956,6 +956,7 @@ EGetWindowAttributes(Win win, XWindowAttributes * pxwa)
    pxwa->colormap = win->cmap;
 }
 
+#if 0				/* Unused */
 void
 EConfigureWindow(Win win, unsigned int mask, XWindowChanges * wc)
 {
@@ -990,6 +991,7 @@ EConfigureWindow(Win win, unsigned int mask, XWindowChanges * wc)
    if ((doit) || (mask & (CWBorderWidth | CWSibling | CWStackMode)))
       XConfigureWindow(disp, win->xwin, mask, wc);
 }
+#endif
 
 void
 ESetWindowBackgroundPixmap(Win win, Pixmap pmap)
@@ -1294,6 +1296,7 @@ EShapeCombineRectangles(Win win, int dest, int x, int y,
    EShapeUpdate(win);
 }
 
+#if 0				/* Unused */
 XRectangle         *
 EShapeGetRectangles(Win win, int dest, int *rn, int *ord)
 {
@@ -1338,6 +1341,7 @@ EShapeGetRectangles(Win win, int dest, int *rn, int *ord)
      }
    return NULL;
 }
+#endif
 
 int
 EShapeCopy(Win dst, Win src)

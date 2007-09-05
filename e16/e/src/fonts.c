@@ -84,7 +84,6 @@ FontLookup(const char *name)
 /*
  * Configuration load
  */
-#include "conf.h"
 
 static int
 _FontConfigLoad(FILE * fs)

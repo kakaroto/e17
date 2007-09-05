@@ -951,11 +951,13 @@ BackgroundGetFgFile(const Background * bg)
    return bg->top.file;
 }
 
+#if 0				/* Unused */
 int
 BackgroundGetColor(const Background * bg)
 {
    return (bg->pmap) ? 0 : bg->bg_solid.pixel;
 }
+#endif
 
 Pixmap
 BackgroundGetPixmap(const Background * bg)
@@ -2495,11 +2497,11 @@ BackgroundsIpc(const char *params)
    int                 i, len, num, len2;
    Background         *bg;
 
+   len = len2 = 0;
    cmd[0] = prm[0] = '\0';
    p = params;
    if (p)
      {
-	len = len2 = 0;
 	sscanf(p, "%100s %n%100s %n", cmd, &len2, prm, &len);
 	p += len;
      }

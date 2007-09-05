@@ -130,7 +130,6 @@ void                ICCCM_Iconify(const EWin * ewin);
 void                ICCCM_DeIconify(const EWin * ewin);
 void                ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo,
 				    int *pho);
-void                ICCCM_MatchSize(EWin * ewin);
 void                ICCCM_GetIncrementalSize(EWin * ewin, unsigned int w,
 					     unsigned int h, unsigned int *wi,
 					     unsigned int *hi);

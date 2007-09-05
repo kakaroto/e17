@@ -806,6 +806,7 @@ DesksSetCurrent(Desk * dsk)
    desks.current = dsk;
 }
 
+#if 0				/* Unused */
 void
 DesksClear(void)
 {
@@ -819,6 +820,7 @@ DesksClear(void)
 	   EClearWindow(EoGetWin(dsk));
      }
 }
+#endif
 
 static void
 DesksResize(int w, int h)

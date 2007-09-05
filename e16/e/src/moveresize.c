@@ -197,7 +197,7 @@ ActionMoveEnd(EWin * ewin)
    return 0;
 }
 
-int
+static int
 ActionMoveSuspend(void)
 {
    EWin               *ewin, **lst;
@@ -230,7 +230,7 @@ ActionMoveSuspend(void)
    return 0;
 }
 
-int
+static int
 ActionMoveResume(void)
 {
    EWin               *ewin, **lst;
@@ -460,7 +460,7 @@ ActionResizeEnd(EWin * ewin)
    return 0;
 }
 
-void
+static void
 ActionMoveHandleMotion(void)
 {
    int                 dx, dy, dd;
@@ -681,7 +681,7 @@ ActionMoveHandleMotion(void)
    Efree(gwins);
 }
 
-void
+static void
 ActionResizeHandleMotion(void)
 {
    int                 x, y, w, h;

@@ -314,8 +314,10 @@ AnimatorDel(Animator * an)
      }
 }
 
+#if 0				/* Unused */
 void               *
 AnimatorGetData(Animator * an)
 {
    return an->data;
 }
+#endif

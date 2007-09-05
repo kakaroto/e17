@@ -658,6 +658,7 @@ MenuFreePixmaps(Menu * m)
    m->filled = 0;
 }
 
+#if 0				/* Unused */
 void
 MenuRepack(Menu * m)
 {
@@ -676,6 +677,7 @@ MenuRepack(Menu * m)
    EwinResize(ewin, m->w, m->h);
    EwinRaise(ewin);
 }
+#endif
 
 void
 MenuAddItem(Menu * m, MenuItem * item)
@@ -1896,8 +1898,6 @@ MenuConfigLoad(FILE * fs)
 	     ic = NULL;
 	     if (strcmp("NULL", s2))
 		ic = ImageclassFind(s2, 0);
-	     if (i2 <= 0)
-		break;
 	     _EFDUP(txt, p3);
 	     break;
 	  case MENU_ACTION:

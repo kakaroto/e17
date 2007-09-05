@@ -397,6 +397,7 @@ SlideoutsHide(void)
  * Configuration load/save
  */
 #include "conf.h"
+
 int
 SlideoutsConfigLoad(FILE * fs)
 {
@@ -409,6 +410,8 @@ SlideoutsConfigLoad(FILE * fs)
 
    if (!slideout_list)
       slideout_list = ecore_list_new();
+
+   name[0] = '\0';
 
    while (GetLine(s, sizeof(s), fs))
      {

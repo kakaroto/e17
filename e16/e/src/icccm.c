@@ -216,12 +216,14 @@ ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo, int *pho)
    *pho = h;
 }
 
+#if 0				/* Unused */
 void
 ICCCM_MatchSize(EWin * ewin)
 {
    ICCCM_SizeMatch(ewin, ewin->client.w, ewin->client.h, &ewin->client.w,
 		   &ewin->client.h);
 }
+#endif
 
 void
 ICCCM_GetIncrementalSize(EWin * ewin, unsigned int w, unsigned int h,
