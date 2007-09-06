@@ -51,6 +51,7 @@ def engine_type_supported_get(method):
 
 
 include "ecore.evas.c_ecore_evas_base.pxi"
+include "ecore.evas.c_ecore_evas_base_x11.pxi"
 include "ecore.evas.c_ecore_evas_software_x11.pxi"
 include "ecore.evas.c_ecore_evas_gl_x11.pxi"
 include "ecore.evas.c_ecore_evas_xrender_x11.pxi"

@@ -162,6 +162,13 @@ cdef extern from "Ecore_Evas.h":
     int  ecore_evas_ignore_events_get(Ecore_Evas *ee)
 
 
+cdef extern from "Ecore_X.h":
+    ctypedef unsigned int Ecore_X_Cursor
+
+    cdef void ecore_x_window_cursor_set(Ecore_X_Window win, Ecore_X_Cursor c)
+    Ecore_X_Cursor ecore_x_cursor_shape_get(int shape)
+
+
 cdef class EcoreEvas:
     cdef Ecore_Evas *obj
     cdef object _evas
@@ -184,19 +191,22 @@ cdef class EcoreEvas:
     cdef int _set_obj(EcoreEvas self, Ecore_Evas *obj) except 0
 
 
-cdef class SoftwareX11(EcoreEvas):
+cdef class BaseX11(EcoreEvas):
+    pass
+
+cdef class SoftwareX11(BaseX11):
     pass
 
 
-cdef class GLX11(EcoreEvas):
+cdef class GLX11(BaseX11):
     pass
 
 
-cdef class XRenderX11(EcoreEvas):
+cdef class XRenderX11(BaseX11):
     pass
 
 
-cdef class SoftwareX11_16(EcoreEvas):
+cdef class SoftwareX11_16(BaseX11):
     pass
 
 

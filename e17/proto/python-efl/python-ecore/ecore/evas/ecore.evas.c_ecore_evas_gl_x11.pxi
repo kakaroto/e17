@@ -1,6 +1,6 @@
 # This file is included verbatim by c_ecore_evas.pyx
 
-cdef class GLX11(EcoreEvas):
+cdef class GLX11(BaseX11):
     def __init__(self, char *display=NULL, long parent_xid=0, int x=0, int y=0,
                  int w=320, int h=240):
         cdef Ecore_Evas *obj
