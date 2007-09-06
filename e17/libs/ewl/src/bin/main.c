@@ -400,7 +400,7 @@ ewl_test_setup_tests(void)
 			ecore_list_append(tests, t);
 		}
 
-		ecore_list_remove(list);
+		ecore_list_remove_destroy(list);
 	}
 	ecore_list_destroy(list);
 
