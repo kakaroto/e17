@@ -314,11 +314,13 @@ ewl_embed_active_set(Ewl_Embed *embed, unsigned int act)
 
 		e = embed;
 		ewl_embed_active_embed = NULL;
+		ewl_embed_focus_set(embed, FALSE);
 	}
 	else
 	{
 		e = ewl_embed_active_embed;
 		ewl_embed_active_embed = embed;
+		ewl_embed_focus_set(embed, TRUE);
 	}
 
 	if (e && e->last.clicked)
