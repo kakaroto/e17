@@ -235,6 +235,7 @@ cdef extern from "Evas.h":
     int evas_shutdown()
 
     Evas_List *evas_list_free(Evas_List *list)
+    Evas_List *evas_list_append(Evas_List *list, void *data)
 
 
     ####################################################################
