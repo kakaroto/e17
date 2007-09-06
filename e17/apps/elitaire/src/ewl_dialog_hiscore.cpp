@@ -107,8 +107,10 @@ void ewl_frontend_dialog_highscore_add(Eli_App * eap, float points, pointsType t
     wh->eap = eap;
     wh->points = points;
     wh->type = type;
+
     /* a hopefully good default */
     username = getpwuid(geteuid())->pw_name;
+
     /* Setup and show the name window */
     win = ewl_dialog_new();
     ewl_dialog_action_position_set(EWL_DIALOG(win), EWL_POSITION_BOTTOM);
@@ -154,6 +156,7 @@ void ewl_frontend_dialog_highscore_add(Eli_App * eap, float points, pointsType t
     ewl_object_padding_set(EWL_OBJECT(o), 15, 15, 2, 15);
     ewl_callback_append(EWL_WIDGET(o), EWL_CALLBACK_KEY_DOWN, 
                         _highscore_key_down_cb, wh);
+    ewl_text_all_select(EWL_TEXT(o));
     ewl_widget_show(o);
 
     wh_entry = o;
