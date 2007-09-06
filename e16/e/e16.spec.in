@@ -1,7 +1,7 @@
 Summary: The Enlightenment window manager, DR16.
 Name: @PACKAGE@
 Version: @E_PKG_VERSION@
-Release: @E_RPM_REVISION@%{?_rpm_add_date:.%(date '+%y%m%d')}%{?_vendorsuffix:.%{_vendorsuffix}}
+Release: @E_RPM_REVISION@%{?_rpm_pkg_ext:%{_rpm_pkg_ext}}%{?_rpm_add_date:.%(date '+%y%m%d')}%{?_vendorsuffix:.%{_vendorsuffix}}
 License: BSD
 Group: User Interface/Desktops
 URL: http://www.enlightenment.org/
@@ -39,8 +39,8 @@ This package will install the Enlightenment window manager.
 %install
 test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
 %{__make} install DESTDIR=$RPM_BUILD_ROOT %{?mflags_install}
-rm -f $RPM_BUILD_ROOT/usr/lib/libe16_*.a
-rm -f $RPM_BUILD_ROOT/usr/lib/libe16_*.la
+rm -f $RPM_BUILD_ROOT/usr/lib/e16/*.a
+rm -f $RPM_BUILD_ROOT/usr/lib/e16/*.la
 mkdir -p $RPM_BUILD_ROOT/etc/X11/xinit/Xclients.d
 cp $RPM_BUILD_ROOT/usr/share/e16/misc/Xclients.* $RPM_BUILD_ROOT/etc/X11/xinit/Xclients.d/
 
@@ -51,7 +51,7 @@ test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog README docs/README-0.16.8
 %{_bindir}/*
-%{_libdir}/libe16_*.so
+%{_libdir}/e16/*.so
 %{_datadir}/%{name}/*
 %{_datadir}/locale/*
 %{_datadir}/xsessions/*

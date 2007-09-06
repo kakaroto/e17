@@ -2,12 +2,13 @@ MAINTAINERCLEANFILES	= Makefile.in
 
 if BUILD_ROOTHACKLIB
 
-lib_LTLIBRARIES		= libe16_hack.la
+libe16dir = $(libdir)/e16
 
-libe16_hack_la_SOURCES  = e16_hack.c
+libe16_LTLIBRARIES = libhack.la
 
-libe16_hack_la_LIBADD   = $(DLOPEN_LIBS)
-#libe16_hack_la_LDFLAGS  = -version-info 0:0:0
-libe16_hack_la_LDFLAGS  = -avoid-version
+libhack_la_SOURCES  = e16_hack.c
+
+libhack_la_LIBADD   = $(DLOPEN_LIBS)
+libhack_la_LDFLAGS  = -avoid-version
 
 endif

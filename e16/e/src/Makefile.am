@@ -90,13 +90,11 @@ e16_SOURCES = \
 	slideout.c		\
 	snaps.c                 snaps.h			\
 	sound.c			sound.h			\
-	sound_esd.c		\
 	stacking.c		\
 	startup.c		\
 	systray.c		\
 	tclass.c		tclass.h		\
 	text.c			\
-	ttfont.c text_xft.c text_pango.c	\
 	theme.c                 \
 	timers.c		timers.h		\
 	tooltips.c		tooltips.h		\
@@ -106,6 +104,7 @@ e16_SOURCES = \
 	windowmatch.c   	windowmatch.h		\
 	x.c                     xwin.h			\
 	zoom.c			\
+	$(MODULE_SRCS)		\
 	$(SRCS_GNOME) 		\
 	$(SRCS_GLX) 		\
 	$(SRCS_ECOMPMGR)	\
@@ -115,11 +114,9 @@ LDADD = \
 	$(LTLIBINTL)		\
 	$(LTLIBICONV)		\
 	$(ECORE_LIBS)		\
-	$(ESD_LIBS)		\
 	$(IMLIB2_LIBS)		\
+	$(MODULE_LIBS)		\
 	$(GLX_LIBS)		\
-	$(PANGO_LIBS)		\
-	$(XFT_LIBS)		\
 	$(X_LIBS)		\
 	$(SM_LIBS)		\
 	$(XINERAMA_LIBS)	\
@@ -129,11 +126,55 @@ LDADD = \
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir) \
 	$(ECORE_CFLAGS) \
-	$(ESD_CFLAGS) \
+	$(MODULE_CFLAGS) \
 	$(IMLIB2_CFLAGS) \
-	$(PANGO_CFLAGS) \
-	$(XFT_CFLAGS) \
 	$(X_CFLAGS)
+
+if BUILD_MODULES
+
+e16_LDFLAGS = -export-dynamic
+
+libe16dir = $(libdir)/e16
+
+libe16_LTLIBRARIES = $(LIBSND_ESD) $(LIBFNT_IFT) $(LIBFNT_XFT) $(LIBFNT_PANGO)
+
+if USE_LIBESD
+LIBSND_ESD = libsound_esd.la
+libsound_esd_la_SOURCES   = sound_esd.c
+libsound_esd_la_CFLAGS    = $(ESD_CFLAGS)
+libsound_esd_la_LIBADD    = $(ESD_LIBS)
+libsound_esd_la_LDFLAGS   = -module -avoid-version
+endif
+
+LIBFNT_IFT = libfont_ift.la
+libfont_ift_la_SOURCES    = ttfont.c
+libfont_ift_la_CFLAGS     = $(IMLIB2_CFLAGS)
+libfont_ift_la_LIBADD     = $(IMLIB2_LIBS)
+libfont_ift_la_LDFLAGS    = -module -avoid-version
+
+if USE_LIBXFT
+LIBFNT_XFT = libfont_xft.la
+libfont_xft_la_SOURCES    = text_xft.c
+libfont_xft_la_CFLAGS     = $(XFT_CFLAGS)
+libfont_xft_la_LIBADD     = $(XFT_LIBS)
+libfont_xft_la_LDFLAGS    = -module -avoid-version
+endif
+
+if USE_LIBPANGO
+LIBFNT_PANGO = libfont_pango.la
+libfont_pango_la_SOURCES  = text_pango.c
+libfont_pango_la_CFLAGS   = $(PANGO_CFLAGS)
+libfont_pango_la_LIBADD   = $(PANGO_LIBS) libfont_xft.la
+libfont_pango_la_LDFLAGS  = -module -avoid-version
+endif
+
+else
+
+MODULE_SRCS = sound_esd.c ttfont.c text_xft.c text_pango.c
+MODULE_LIBS = $(ESD_LIBS) $(PANGO_LIBS) $(XFT_LIBS)
+MODULE_CFLAGS = $(ESD_CFLAGS) $(PANGO_CFLAGS) $(XFT_CFLAGS)
+
+endif
 
 install-data-local:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes

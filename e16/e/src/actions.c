@@ -41,7 +41,7 @@ ExecSetupEnv(int flags)
       LangExport();
 #if USE_ROOTHACKLIB
    if (Mode.wm.window)
-      Esetenv("LD_PRELOAD", ENLIGHTENMENT_LIB "/libe16_hack.so");
+      Esetenv("LD_PRELOAD", ENLIGHTENMENT_LIB "/e16/libhack.so");
 #endif
 }
 
