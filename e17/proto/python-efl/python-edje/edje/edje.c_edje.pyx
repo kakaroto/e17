@@ -134,5 +134,45 @@ def text_class_list():
 def message_signal_process():
     edje_message_signal_process()
 
+
+def extern_object_min_size_set(evas.c_evas.Object obj, int w, int h):
+    """Set minimum size of an external object.
+
+    If this object is already swallowed, it will trigger edje to recalculate
+    it's objects geometries.
+    """
+    edje_extern_object_min_size_set(obj.obj, w, h)
+
+
+def extern_object_max_size_set(evas.c_evas.Object obj, int w, int h):
+    """Set maximum size of an external object.
+
+    If this object is already swallowed, it will trigger edje to recalculate
+    it's objects geometries.
+    """
+    edje_extern_object_max_size_set(obj.obj, w, h)
+
+
+def extern_object_aspect_set(evas.c_evas.Object obj, int aspect, int w, int h):
+    """Set aspect size of an external object.
+
+    This sets the desired aspect ratio to keep an object that will be
+    swallowed by Edje. The width and height define a preferred size ASPECT
+    and the object may be scaled to be larger or smaller, but retaining the
+    relative scale of both aspect width and height.
+
+    Known aspect ratios:
+     * EDJE_ASPECT_CONTROL_NONE = 0
+     * EDJE_ASPECT_CONTROL_NEITHER = 1
+     * EDJE_ASPECT_CONTROL_HORIZONTAL = 2
+     * EDJE_ASPECT_CONTROL_VERTICAL = 3
+     * EDJE_ASPECT_CONTROL_BOTH = 4
+
+    If this object is already swallowed, it will trigger edje to recalculate
+    it's objects geometries.
+    """
+    edje_extern_object_aspect_set(obj.obj, <Edje_Aspect_Control>aspect, w, h)
+
+
 include "edje.c_edje_message.pxi"
 include "edje.c_edje_object.pxi"
