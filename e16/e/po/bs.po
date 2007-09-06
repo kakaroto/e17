@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-07-28 11:22+0200\n"
+"POT-Creation-Date: 2007-09-06 16:51+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -62,7 +62,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:651 src/buttons.c:184
-#: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:357 src/tclass.c:97
+#: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:357 src/tclass.c:97
 #: src/tooltips.c:134
 #, c-format
 msgid "%u references remain\n"
@@ -163,27 +163,27 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/alert.c:211
+#: src/alert.c:209
 msgid "Enlightenment Error"
 msgstr "Enlightenment greŷka"
 
-#: src/alert.c:573
+#: src/alert.c:571
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment dijalog poruka"
 
-#: src/alert.c:573
+#: src/alert.c:571
 msgid "Ignore this"
 msgstr "Ignoriŷi ovo"
 
-#: src/alert.c:574 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572 config/strings.c:95 config/strings.c:198
 msgid "Restart Enlightenment"
 msgstr "Ponovo pokreni Enlightenment"
 
-#: src/alert.c:574 src/setup.c:169
+#: src/alert.c:572 src/setup.c:169
 msgid "Quit Enlightenment"
 msgstr "Iza�i iz Enlightenment-a"
 
-#: src/backgrounds.c:1613
+#: src/backgrounds.c:1615
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -194,11 +194,11 @@ msgstr ""
 "Ime: %s\n"
 "Datoteka: %s\n"
 
-#: src/backgrounds.c:1614
+#: src/backgrounds.c:1616
 msgid "-NONE-"
 msgstr "-NIŠTA-"
 
-#: src/backgrounds.c:1794 src/backgrounds.c:1796
+#: src/backgrounds.c:1796 src/backgrounds.c:1798
 msgid ""
 "No\n"
 "Background"
@@ -206,40 +206,40 @@ msgstr ""
 "Bez\n"
 "Pozadine"
 
-#: src/backgrounds.c:1890 src/backgrounds.c:2319
+#: src/backgrounds.c:1892 src/backgrounds.c:2321
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Neiskoriŷtene pozadine se osloba�aju nakon %2i:%02i:%02i"
 
-#: src/backgrounds.c:2105
+#: src/backgrounds.c:2107
 msgid "Use background image"
 msgstr "Koristi sliku pozadine"
 
-#: src/backgrounds.c:2109
+#: src/backgrounds.c:2111
 msgid "Keep aspect on scale"
 msgstr "Zadrŵi izraz na skali"
 
-#: src/backgrounds.c:2113
+#: src/backgrounds.c:2115
 msgid "Tile image across background"
 msgstr "Poploīaj sliku ŷirom pozadine"
 
-#: src/backgrounds.c:2122
+#: src/backgrounds.c:2124
 msgid "Move to Front\n"
 msgstr "Pomjeri naprijed\n"
 
-#: src/backgrounds.c:2127
+#: src/backgrounds.c:2129
 msgid "Duplicate\n"
 msgstr "Poduplaj\n"
 
-#: src/backgrounds.c:2131
+#: src/backgrounds.c:2133
 msgid "Unlist\n"
 msgstr "Unlist\n"
 
-#: src/backgrounds.c:2136
+#: src/backgrounds.c:2138
 msgid "Delete File\n"
 msgstr "Obriŷi datoteku\n"
 
-#: src/backgrounds.c:2147
+#: src/backgrounds.c:2149
 msgid ""
 "Background\n"
 "Image\n"
@@ -253,59 +253,59 @@ msgstr ""
 "i\n"
 "Poravnanje\n"
 
-#: src/backgrounds.c:2204
+#: src/backgrounds.c:2206
 msgid "BG Colour\n"
 msgstr "BG Color\n"
 
-#: src/backgrounds.c:2209
+#: src/backgrounds.c:2211
 msgid "Red:\n"
 msgstr "Crveno:\n"
 
-#: src/backgrounds.c:2220
+#: src/backgrounds.c:2222
 msgid "Green:\n"
 msgstr "Zeleno:\n"
 
-#: src/backgrounds.c:2231
+#: src/backgrounds.c:2233
 msgid "Blue:\n"
 msgstr "Plavo:\n"
 
-#: src/backgrounds.c:2264
+#: src/backgrounds.c:2266
 msgid "Pre-scan BG's"
 msgstr "Pre-scan BG's"
 
-#: src/backgrounds.c:2272
+#: src/backgrounds.c:2274
 msgid "Sort by File"
 msgstr "Saprtiraj po Datoteci"
 
-#: src/backgrounds.c:2277
+#: src/backgrounds.c:2279
 msgid "Sort by Attr."
 msgstr "Sortiraj po Atributu"
 
-#: src/backgrounds.c:2283
+#: src/backgrounds.c:2285
 msgid "Sort by Image"
 msgstr "Sortiraj po Slici"
 
-#: src/backgrounds.c:2303
+#: src/backgrounds.c:2305
 msgid "Use dithering in Hi-Colour"
 msgstr "Use dithering in Hi-Color"
 
-#: src/backgrounds.c:2307
+#: src/backgrounds.c:2309
 msgid "Background overrides theme"
 msgstr "Pozadina zanemaruje temu"
 
-#: src/backgrounds.c:2312
+#: src/backgrounds.c:2314
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2336 src/mod-trans.c:193
+#: src/backgrounds.c:2338 src/mod-trans.c:193
 msgid "Background"
 msgstr "Pozadina"
 
-#: src/backgrounds.c:2337
+#: src/backgrounds.c:2339
 msgid "Desktop Background Settings"
 msgstr "Osobine pozadine Desktopa"
 
-#: src/backgrounds.c:2340
+#: src/backgrounds.c:2342
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -589,67 +589,67 @@ msgstr ""
 "Kliknite ovdje da spustite ovaj desktop\n"
 "na dno.\n"
 
-#: src/desktops.c:2290 src/desktops.c:2329
+#: src/desktops.c:2292 src/desktops.c:2331
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktopi"
 
-#: src/desktops.c:2292 src/desktops.c:2331
+#: src/desktops.c:2294 src/desktops.c:2333
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
-#: src/desktops.c:2324
+#: src/desktops.c:2326
 msgid "Number of virtual desktops:\n"
 msgstr "Broj virtualnih Desktopa:\n"
 
-#: src/desktops.c:2353
+#: src/desktops.c:2355
 msgid "Slide desktops around when changing"
 msgstr "Klizaj prozore okolo kada mijenjam"
 
-#: src/desktops.c:2359
+#: src/desktops.c:2361
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Brzina klizanja Desktop-a: (sporo)\n"
 
-#: src/desktops.c:2373
+#: src/desktops.c:2375
 msgid "Wrap desktops around"
 msgstr "Uvij prozore okolo"
 
-#: src/desktops.c:2381
+#: src/desktops.c:2383
 msgid "Display desktop dragbar"
 msgstr "Prikaŵi dektop dragbar"
 
-#: src/desktops.c:2387
+#: src/desktops.c:2389
 msgid "Drag bar position:"
 msgstr "Dragbar pozicija:"
 
-#: src/desktops.c:2391
+#: src/desktops.c:2393
 msgid "Top"
 msgstr "Vrh"
 
-#: src/desktops.c:2397
+#: src/desktops.c:2399
 msgid "Bottom"
 msgstr "Dno"
 
-#: src/desktops.c:2403 src/pager.c:1909 src/pager.c:1934 src/pager.c:1959
+#: src/desktops.c:2405 src/pager.c:1909 src/pager.c:1934 src/pager.c:1959
 msgid "Left"
 msgstr "Lijevo"
 
-#: src/desktops.c:2409 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
+#: src/desktops.c:2411 src/pager.c:1921 src/pager.c:1946 src/pager.c:1971
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2417 src/menus-misc.c:713
+#: src/desktops.c:2419 src/menus-misc.c:713
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2418
+#: src/desktops.c:2420
 msgid "Multiple Desktop Settings"
 msgstr "Osobine viŷestrukih desktopa"
 
-#: src/desktops.c:2421
+#: src/desktops.c:2423
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -657,7 +657,7 @@ msgstr ""
 "Enlightenment Viŷestruki Dektop\n"
 "dijalog osobina\n"
 
-#: src/desktops.c:2500 src/desktops.c:2535
+#: src/desktops.c:2502 src/desktops.c:2537
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -666,7 +666,7 @@ msgstr ""
 "%i x %i\n"
 "Ekrana u veliīini"
 
-#: src/desktops.c:2503 src/desktops.c:2538
+#: src/desktops.c:2505 src/desktops.c:2540
 msgid ""
 "1\n"
 "Screen in size"
@@ -674,43 +674,43 @@ msgstr ""
 "1\n"
 "Ekran u veliīini"
 
-#: src/desktops.c:2531
+#: src/desktops.c:2533
 msgid "Virtual Desktop size:\n"
 msgstr "Veliīina virtualnog Desktopa:\n"
 
-#: src/desktops.c:2572
+#: src/desktops.c:2574
 msgid "Wrap virtual desktops around"
 msgstr "Uvij vitrualne desktope okolo"
 
-#: src/desktops.c:2579
+#: src/desktops.c:2581
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2582
+#: src/desktops.c:2584
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2587
+#: src/desktops.c:2589
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2592
+#: src/desktops.c:2594
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2598
+#: src/desktops.c:2600
 msgid "Resistance at edge of screen:\n"
 msgstr "Otpor precrtavanja ekrana:\n"
 
-#: src/desktops.c:2610
+#: src/desktops.c:2612
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2611
+#: src/desktops.c:2613
 msgid "Virtual Desktop Settings"
 msgstr "Osobine virtualnih Desktopa"
 
-#: src/desktops.c:2614
+#: src/desktops.c:2616
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -719,7 +719,7 @@ msgstr ""
 "Dijalog osobina\n"
 
 #: src/dialog.c:875 src/dialog.c:2119 src/dialog.c:2150 src/events.c:84
-#: src/handlers.c:194 src/sound.c:313
+#: src/handlers.c:194 src/sound.c:191
 msgid "OK"
 msgstr "Uredu"
 
@@ -1900,7 +1900,7 @@ msgstr ""
 "Enlightenment Savjeti\n"
 "dijalog osobina\n"
 
-#: src/settings.c:711
+#: src/settings.c:713
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment se pokre�e..."
@@ -2085,11 +2085,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "Greŷka prilikom snimanja slike\n"
 
-#: src/sound.c:85
+#: src/sound.c:120
 msgid "Error finding sound file"
 msgstr "Greŷka u traŵenju zvuīne datoteke"
 
-#: src/sound.c:86
+#: src/sound.c:121
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2104,11 +2104,11 @@ msgstr ""
 "Enlightenment �e nastaviti sa radom, ali Vi bi\n"
 "moŵda trebali provjeriti vaŷe konfiguracijske osobine.\n"
 
-#: src/sound.c:313
+#: src/sound.c:191
 msgid "Error initialising sound"
 msgstr "Greŷka u inicijalizaciji zvuka"
 
-#: src/sound.c:314
+#: src/sound.c:192
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2118,11 +2118,11 @@ msgstr ""
 "u komuniciranju sa serverom za zvuk (Esound). Zvuk �e sada biti\n"
 "iskljuīen.\n"
 
-#: src/sound.c:432
+#: src/sound.c:306
 msgid "Enable sounds"
 msgstr "Omogu�i zvukove"
 
-#: src/sound.c:438
+#: src/sound.c:312
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2130,15 +2130,15 @@ msgstr ""
 "Zvuk nije dostupan dok EsounD nije\n"
 "prisutan za vrijeme kompilacije."
 
-#: src/sound.c:445
+#: src/sound.c:319
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:446
+#: src/sound.c:320
 msgid "Audio Settings"
 msgstr "Audio osobine"
 
-#: src/sound.c:449
+#: src/sound.c:323
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2146,29 +2146,29 @@ msgstr ""
 "Enlightenment Audio\n"
 "dijalog osobina\n"
 
-#: src/systray.c:331 src/systray.c:435 src/systray.c:443
+#: src/systray.c:332 src/systray.c:437 src/systray.c:445
 #, fuzzy
 msgid "Systray Error!"
 msgstr "ECursor greŷka!"
 
-#: src/systray.c:331
+#: src/systray.c:332
 msgid "Systray went elsewhere?!?"
 msgstr ""
 
-#: src/systray.c:435
+#: src/systray.c:437
 msgid "Only one systray is allowed"
 msgstr ""
 
-#: src/systray.c:443
+#: src/systray.c:445
 msgid "Could not activate systray"
 msgstr ""
 
-#: src/systray.c:453
+#: src/systray.c:455
 #, fuzzy
 msgid "Systray Options"
 msgstr "Opcije Desktopa"
 
-#: src/systray.c:454
+#: src/systray.c:456
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Osobine automatskog pove�avanja"
