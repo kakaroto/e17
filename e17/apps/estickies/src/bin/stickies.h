@@ -116,8 +116,8 @@ void _e_sticky_lock_toggle(E_Sticky *s);
 void _e_sticky_load_from(E_Sticky *s);
 void _e_sticky_lock_set(E_Sticky *s, Etk_Bool on);    
 void _e_sticky_properties_set(E_Sticky *s);
-void _e_sticky_theme_apply(E_Sticky *s, char *theme);
-void _e_sticky_theme_apply_all(char *theme);  
+void _e_sticky_theme_apply(E_Sticky *s, const char *theme);
+void _e_sticky_theme_apply_all(const char *theme);
 void _e_sticky_export_to(E_Sticky *s);
 void _e_sticky_delete_confirm(E_Sticky *s);
     

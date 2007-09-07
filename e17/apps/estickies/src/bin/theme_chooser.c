@@ -207,7 +207,7 @@ _e_theme_apply_now(E_Sticky *s)
 {
    Etk_Tree_Row *row;
    char *icol_string;
-      
+   
    if(!_e_sticky_exists(s))
      return;
    

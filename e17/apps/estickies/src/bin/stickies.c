@@ -14,8 +14,10 @@ static void _e_sticky_mouse_move_cb(Etk_Object *object, void *event, void *data)
 static void _e_sticky_move_cb(Etk_Object *object, void *data);
 static void _e_sticky_resize_cb(Etk_Object *object, void *data);
 static int _e_sticky_delete_event_cb(Etk_Object *object, void *data);
+/*
 static void _e_sticky_focus_in_cb(Etk_Object *object, void *data);
 static void _e_sticky_focus_out_cb(Etk_Object *object, void *data);
+*/ 
 static void _e_sticky_sticky_cb(Etk_Object *object, const char *property_name, void *data);
 static void _e_sticky_delete_confirm_cb(Etk_Object *obj, int response_id, void *data);  
 static void _e_sticky_selection_text_request_cb(Etk_Object *object, void *event, void *data);
@@ -640,7 +642,7 @@ _e_sticky_properties_set(E_Sticky *s)
 }
 
 void
-_e_sticky_theme_apply(E_Sticky *s, char *theme)
+_e_sticky_theme_apply(E_Sticky *s, const char *theme)
 {
    char theme_file[PATH_MAX];
    
@@ -674,7 +676,7 @@ _e_sticky_theme_apply(E_Sticky *s, char *theme)
 }
 
 void
-_e_sticky_theme_apply_all(char *theme)
+_e_sticky_theme_apply_all(const char *theme)
 {
    Evas_List *l;
    
@@ -704,7 +706,7 @@ static void _e_sticky_selection_text_request_cb(Etk_Object *object, void *event,
    Etk_Selection_Event *ev = event;
    Etk_Textblock_Iter *cursor;
    Etk_Textblock_Iter *selection;   
-   E_Sticky *s;
+   E_Sticky *s = data;
    
    if(!(ev = event) || (ev->type != ETK_SELECTION_TEXT))
      return;

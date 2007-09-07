@@ -4,6 +4,7 @@ static int _e_plugin_path = -1;
 static Ecore_Hash *_e_plugin_loaded;
 
 static int _e_plugin_unload_from_ptr(Ecore_Plugin *plugin);
+int _e_plugin_unload(const char *plugin_name);
 
 /* initialize the plugin subsystem */
 int _e_plugin_init()
@@ -40,8 +41,6 @@ int _e_plugin_shutdown()
    key = ecore_list_current(keys);
    while (key)
      {
-	Ecore_Plugin *plugin = NULL;
-	
 	key = ecore_list_next(keys);
 	_e_plugin_unload(key);
      }
