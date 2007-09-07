@@ -293,7 +293,7 @@ _e_sticky_window_add(E_Sticky *s)
    snprintf(theme, sizeof(theme), PACKAGE_DATA_DIR"/themes/%s", s->theme);
    
    s->win = etk_window_new();
-   etk_window_has_alpha_set(ETK_WINDOW(s->win), ETK_TRUE);
+//   etk_window_has_alpha_set(ETK_WINDOW(s->win), ETK_TRUE);
    etk_window_title_set(ETK_WINDOW(s->win), "estickies");
    etk_window_wmclass_set(ETK_WINDOW(s->win), "estickies", "estickies");
    etk_window_decorated_set(ETK_WINDOW(s->win), ETK_FALSE);
