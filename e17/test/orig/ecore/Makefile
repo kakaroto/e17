@@ -1,7 +1,7 @@
-FLAGS = `ecore-config --cflags`
-LIBS  = `ecore-config --libs`
+FLAGS = `pkg-config ecore ecore-evas ecore-job ecore-config ecore-x evas --cflags`
+LIBS  = `pkg-config ecore ecore-evas ecore-job ecore-config ecore-x evas --libs`
 
-BINS  = ecore_config ecore_evas_test ecore_test ecore_dbus_test ecore_dbus_hal_test ecore_dbus_receiver_test
+BINS  = ecore_config ecore_evas_test ecore_test
 all: $(BINS)
 
 ecore_config_SRCS = ecore_config.c
