@@ -34,7 +34,8 @@ the list.
 This Documentation is intended to take you step by step through Enlightenment(E16)
 and its default setup, how to use it, modify settings, and put it to use for
 you. When you have finished reading each page please press the NEXT button on
-the top of this window to go to the next page, or use the Back button until you have reached the _Docs_Index(docindex)
+the top of this window to go to the next page, or use the Back button until you
+have reached the _Docs_Index(docindex)
 <p>
 If you are reading this right now you have managed to get E16 itself
 installed correctly and are either running E16 for the first time or
@@ -174,6 +175,7 @@ these equally important projects should not be forgotten.
 <page columns=1 padding=16 name=web background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <img src=E_website.png x=300 y=20>
+<br>
 <br>
 <br>
 <br>
@@ -469,8 +471,8 @@ _desktop(desktops) . Rolling your wheel downward you will advance
 forward a desktop.
 <p>
 If this doesn't work, then it may be you haven't configured your X server to
-understand a mouse with a wheel. If you use XFree86 you may need to edit your 
-XF86Config to have a "Pointer" Section like:
+understand a mouse with a wheel. You may need to edit your X server
+configuration to have a "Pointer" Section like:
 <font face=aircut3/12 color=#ccaacc>
 <p>
 Section "Pointer"<br>
@@ -482,7 +484,6 @@ EndSection
 <font face=aircut3/12 color=#ffffff>
 <p>
 You may need to modify this for your mouse.
-
 
 
 
@@ -566,9 +567,7 @@ Changing Window Borders
 <p>
 From time to time you may find that you don't like a particular border that a
 window uses, for some reason or another.  You can easily change the border
-style of a window in E16 using the 
-<br>
-_Window_Operations(windowops)
+style of a window in E16 using the _Window_Operations(windowops)
 menu, however.  Select the "Set Border Style" menu, and a list will be
 presented to you of available borders in this theme.  The most common use
 for this is to make an application shed its border, using the
@@ -623,7 +622,7 @@ CTRL+ALT+M - Maximize/unmaximize the currently focused window
 <br>
 CTRL+ALT+F - Toggle fullscreen mode of the currently focused window
 <br>
-CTRL+ALT+(F1 - F12) - Go directly to desktops 0 - 11
+CTRL+ALT+(F1 - F8) - Go directly to desktops 0 - 7
 <br>
 <font face=aircut3/12 color=#ffffff>
 (more on next page ...)
@@ -649,10 +648,10 @@ SHIFT+ALT+Up-Arrow - Move to the virtual desktop above if there is one
 SHIFT+ALT+Down-Arrow - Move to the virtual desktop below if there is one
 <font face=aircut3/12 color=#ffffff>
 <p>
-Note: Zooming in and out of windows will only work if you have an XFree86 
-server or one that implements the Xf86VidMode extension. You also need
-to define lots of screen modes for your display, so ensure your "Display" 
-subsection of your XF86Config looks like:
+Note: Zooming in and out of windows will only work if you have an X server
+that implements the Xf86VidMode extension. You also need to define multiple
+screen modes for your display, e.g. with a "Display" subsection of the X11
+configuration that looks like:
 <font face=aircut3/12 color=#ccaacc>
 <p>
 SubSection "Display"<br>
@@ -661,9 +660,6 @@ SubSection "Display"<br>
 EndSubSection
 <font face=aircut3/12 color=#ffffff>
 <p>
-Have a "Display" subsection per depth (this example is for 16 bit) and all
-the resolutions defined as above.
-
 
 
 
@@ -772,7 +768,7 @@ Changing Desktops
 There are several ways that you can change your current desktop - let's go over
 a few of them here.
 <p>
-You can use the _Keybindings(defkeys) alt-F1 through alt-F12 for the first 12
+You can use the _Keybindings(defkeys) alt-F1 through alt-F8 for the first 8
 desktops.<br>
 You can use the _Keybindings(defkeys) Ctrl-Alt-Left and Ctrl-Alt-Right to
 navigate to the next/previous desktop.<br>
@@ -974,35 +970,13 @@ Iconbox location.
 <p>
 If you want to customize the images used for the icons in your iconbox, there 
 is already an example configuration supplied. To make your own configuration
-copy the icondefs.cfg file installed in your E16 system config 
-directory (/usr/local/enlightenment/config/icondefs.cfg or 
-/usr/share/enlightenment/config/icondefs.cfg) to your ~/.e16
-directory and then edit it. On each line you will find 4 fields. The first
-field is the image file to be used. The image is searched for in the usual 
-search path if it is not an absolute path to the image file. The search path
-is in order: ~/.e16, THEME_DIR/, ENLIGHTENMENT_ROOT/config.
-<p>
-The second field on the line is a shell-glob like match for the title of 
-a window.
-If this field is irrelevant, NULL is used instead. NB: the only valid wildcard
-in the glob pattern is "*". The third field is the NAME property of the window
-and the fourth is the CLASS. The order of search priority is last to first,
-so the last entry in the file that matches a window's title, name and class 
-globs will use the icon image defined on the first line.
-
-<page columns=1 padding=16 name=iconbox4 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
-<p>
-If you want all windows to have an icon then use:
-<p>
-"pix/pimage.png" NULL NULL NULL
-<p>
-This is the most general match for an icon and will match ALL windows. If you
-use this make sure it's at the start of the file so it will only match if no 
-other matches are found.
+copy the matches.cfg file installed in your E16 system config 
+directory (/usr/local/e16/config/matches.cfg or 
+/usr/share/e16/config/matches.cfg) to your ~/.e16
+directory and then edit it.
 <p>
 There are several examples of using the globbing and matching in the system
-icondefs.cfg file. Use that as a reference for your own additions.
+matches.cfg file. Use that as a reference for your own additions.
 
 <page columns=1 padding=16 name=minimized background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
