@@ -1,3 +1,4 @@
 debian/tmp/usr/bin/evfs
 debian/tmp/usr/bin/evfscat
 debian/tmp/usr/bin/evfscopy
+debian/tmp/usr/bin/evfsworker
