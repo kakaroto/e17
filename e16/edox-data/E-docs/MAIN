@@ -31,13 +31,13 @@ the list.
 <page columns=1 padding=16 name=aboutdox background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <p>
-This Documentation is intended to take you step by step through Enlightenment
+This Documentation is intended to take you step by step through Enlightenment(E16)
 and its default setup, how to use it, modify settings, and put it to use for
 you. When you have finished reading each page please press the NEXT button on
 the top of this window to go to the next page, or use the Back button until you have reached the _Docs_Index(docindex)
 <p>
-If you are reading this right now you have managed to get Enlightenment itself
-installed correctly and are either running Enlightenment for the first time or
+If you are reading this right now you have managed to get E16 itself
+installed correctly and are either running E16 for the first time or
 have just upgraded to a new version. Congratulations. Now it's time to take
 you on a quick tour of the desktop you will have before you.
 <p>
@@ -57,14 +57,14 @@ any time during the program.
 <page columns=1 padding=16 name=about background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <p align=50%>
-Enlightenment is your Window Manager. The Window Manager controls the 
+E16 is your Window Manager. The Window Manager controls the 
 appearance of the borders of your windows, their behavior and
 all user interaction with positioning, killing, resizing, moving, iconifying,
 shading etc. your windows, virtual desktops, multiple desktops, menus attached
 to windows and some root window menus and can also control the background
 of your desktop(s).
 <p align=50%>
-Enlightenment is a large and complex program and is by no means perfect,
+E16 is a large and complex program and is by no means perfect,
 but it is being worked on and is as stable as possible. It has many advanced 
 features, but may also be missing some features that you would like to see.
 The version you are now running (0.16.8) is by no means the
@@ -74,7 +74,7 @@ being worked on all the time. Please visit the
 _Web(web) site often for
 new versions, fixes, patches and updates.
 <p align=50%>
-We hope that you enjoy using Enlightenment as much as we have enjoyed writing
+We hope that you enjoy using E16 as much as we have enjoyed writing
 it.  We'd like to think that even if this isn't the right software for you, you
 at least can have fun playing around with what we have created.
 
@@ -110,7 +110,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <page columns=2 padding=16 name=credits background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/10 color=#ffffff>
 <p>
-Enlightenment has been written by:<br>
+E16 has been written by:<br>
 <br>
 The Rasterman (Carsten Haitzler),<br>
 Mandrake (Geoff Harrison),<br>
@@ -238,7 +238,7 @@ CVS Commit List Mail
 <p>
 To receive CVS Commit mails, please go to the
 CVS Commits List mail page:
-http://www.enlightenment.org/mailman/listinfo/cvs-commits-list
+https://lists.sourceforge.net/lists/listinfo/enlightenment-cvs
 <br>
 This mailing list does not accept user-submissions. It is automatically
 generated email that is sent out whenever the enlightenment CVS server
@@ -249,7 +249,7 @@ Developer Mailing List
 <p>
 If you would like to receive mail from the developer mailing list, please go
 to the E-develop Mailing List mail page:
-http://enlightenment.org/mailman/listinfo/e-develop.
+https://lists.sourceforge.net/lists/listinfo/enlightenment-devel
 <br>
 This mailing list is for discussing Enlightenment and it's development, bugs,
 feature requests, etc.  It is not a general chatter list.  The developers do
@@ -319,7 +319,7 @@ _Maintenance_Scripts(maint)<br>
 <font face=aircut3/12 color=#ffffff>
 <img src=E_screen_start.png x=16 y=16>
 <p>
-Now that you have started Enlightenment, if you are using it for your desktop 
+Now that you have started E16, if you are using it for your desktop 
 shell, your screen should look something like the image here on the left.
 <p>
 Across the whole top of the screen you will see a bar with arrows pointing 
@@ -349,7 +349,7 @@ see an "User Menus" menu appear (example displayed on the right here).
 Applications you may have installed will appear in this menu. To launch one 
 of them simply select it from the menu.
 <p>
-Note: Menus in Enlightenment work like most menu systems. Either hold 
+Note: Menus in E16 work like most menu systems. Either hold 
 down the mouse button and navigate with the button down, releasing on the
 selection you want, or release elsewhere to not select anything. You can also
 quickly click and release, then navigate: move the mouse, and click
@@ -374,7 +374,7 @@ manipulate it like a normal window. Close the window to unstick the menu.
 <p>
 <br>
 Clicking the middle button on the desktop _background(backgrounds) will display 
-Enlightenment's main menu. You can access the other menus plus more options
+E16's main menu. You can access the other menus plus more options
 from this menu (including those to log out, restart and display Help 
 information). A sample of this menu is shown to our left.
 <p>
@@ -384,7 +384,7 @@ information). A sample of this menu is shown to our left.
 <br>
 When you click the right mouse button
 a menu with the title "Settings" will appear. This is
-Enlightenment's _settings(settings) menu. From it you can select various
+E16's _settings(settings) menu. From it you can select various
 configuration dialogs that will assist you in customizing your desktop to 
 better suit your needs.
 
@@ -404,7 +404,7 @@ your screen, normally you will bring up a _menu(rootmenu).  And of course, when 
 click on the _border(border) of a window, you will do various things.  But these
 are not the only things you can do with your mouse.
 <p>
-In Enlightenment, there are several other actions that the mouse can do by
+In E16, there are several other actions that the mouse can do by
 default.  For example, by holding down the ALT key when you click the left
 mouse button anywhere in a window, you will find that you can _move(movemode) the window
 around the screen, just as if you had used the titlebar.  You can also ALT
@@ -433,7 +433,7 @@ Mouse Configuration
 <p>
 <br>
 <br>
-Enlightenment makes extensive use of the mouse.
+E16 makes extensive use of the mouse.
 However, you may be missing some features because of the way
 that your mouse is configured on your X server.
 <p>
@@ -447,7 +447,7 @@ your X server documentation to configure this emulation.
 This may vary from system to system. The OS and X server may also 
 vary the method in which you do this, if it is possible. Not having 
 a middle mouse button in 
-Enlightenment, or for that matter X, is not a good thing as it is almost 
+E16, or for that matter X, is not a good thing as it is almost 
 assumed to be there, and is used by many applications, including E.
 
 
@@ -461,7 +461,7 @@ assumed to be there, and is used by many applications, including E.
 <img src=E_mousewheel.png x=370 y=30>
 <img src=E_mouse.png x=410 y=330>
 <p>
-If you have a Wheel-Mouse and X is configured to use it, Enlightenment
+If you have a Wheel-Mouse and X is configured to use it, E16
 supports it by default.
 <p>
 Rolling your wheel up on the desktop background will take you back a 
@@ -566,7 +566,7 @@ Changing Window Borders
 <p>
 From time to time you may find that you don't like a particular border that a
 window uses, for some reason or another.  You can easily change the border
-style of a window in Enlightenment using the 
+style of a window in E16 using the 
 <br>
 _Window_Operations(windowops)
 menu, however.  Select the "Set Border Style" menu, and a list will be
@@ -597,9 +597,9 @@ Below are the keybindings for E as it comes "from the factory"
 <p>
 CTRL+ALT+Home - Re-shuffle windows on screen to be Clean
 <br>
-CTRL+ALT+Del - Exit Enlightenment and Log Out
+CTRL+ALT+Del - Exit E16 and Log Out
 <br>
-CTRL+ALT+End - Restart Enlightenment
+CTRL+ALT+End - Restart E16
 <br>
 CTRL+ALT+Up-Arrow - Raise window to top
 <br>
@@ -677,11 +677,11 @@ the resolutions defined as above.
 Multiple & Virtual Desktops
 <font face=aircut3/12 color=#ffffff>
 <p>
-Enlightenment supports both Multiple and Virtual desktops. There are
-distinct difference between the two, and Enlightenment treats them differently.
+E16 supports both Multiple and Virtual desktops. There are
+distinct difference between the two, and E16 treats them differently.
 <p>
-When you start Enlightenment you will by default have two desktops. In
-Enlightenment desktops are geometrically unrelated work areas. They are 
+When you start E16 you will by default have two desktops. In
+E16 desktops are geometrically unrelated work areas. They are 
 visually stacked on top of each other and can even be dragged down to expose
 desktops underneath.
 <p>
@@ -714,7 +714,7 @@ allocated to it and you can be looking at any screen-sized part of it at any
 time. It's just like getting more sheets of paper and taping them to the sides
 of your current sheet of paper. An easy way of changing your view is by just
 sliding your mouse in the direction of a currently unviewable part of your
-desktop. As long as you have Edge Flip enabled Enlightenment will 
+desktop. As long as you have Edge Flip enabled E16 will 
 automatically scroll over to that part of the desktop.
 
 
@@ -746,13 +746,13 @@ virtual areas.
 <font face=aircut3/12 color=#ffffff>
 <img src=E_deskimg.png x=275 y=81>
 <p>
-Enlightenment also allows you to set a different desktop backdrop per desktop
+E16 also allows you to set a different desktop backdrop per desktop
 to help you customize your environment and differentiate which desktop is 
 which.
 <p>
-An easy way of having Enlightenment automatically pick up any pictures you have
-is to make a directory in your ~/.enlightenment directory called
-backgrounds and then fill that with your favorite backdrops. Enlightenment
+An easy way of having E16 automatically pick up any pictures you have
+is to make a directory in your ~/.e16 directory called
+backgrounds and then fill that with your favorite backdrops. E16
 will automatically discover this and index them for you allowing you to
 select them and change their settings. More on this topic is explained in the
 _Desktop_Backgrounds(backgrounds) section.
@@ -847,7 +847,7 @@ windowlist sorted by desktops.
 The Pager
 <font face=aircut3/12 color=#ffffff>
 Pagers may not be a new idea in desktop environments, but the Pager in
-Enlightenment (as seen on the right) is a highly advanced and highly
+E16 (as seen on the right) is a highly advanced and highly
 configurable tool for desktop and window control, as well as a navigation tool.
 <p>
 The pager lets you see your desktop screen area in miniature. It lets you click
@@ -884,7 +884,7 @@ options, you can select the "Pager Settings" item, and another dialog will pop
 up, that looks like the one below.
 <p>
 This dialog box will allow you to set all sorts of additional parameters, many
-of which can increase the performance of Enlightenment on your system.
+of which can increase the performance of E16 on your system.
 Disabling high quality snapshots and/or snapshots in general as well as
 continuous updates can seriously improve performance - these features are
 intended for high end machines.
@@ -974,13 +974,13 @@ Iconbox location.
 <p>
 If you want to customize the images used for the icons in your iconbox, there 
 is already an example configuration supplied. To make your own configuration
-copy the icondefs.cfg file installed in your Enlightenment system config 
+copy the icondefs.cfg file installed in your E16 system config 
 directory (/usr/local/enlightenment/config/icondefs.cfg or 
-/usr/share/enlightenment/config/icondefs.cfg) to your ~/.enlightenment 
+/usr/share/enlightenment/config/icondefs.cfg) to your ~/.e16
 directory and then edit it. On each line you will find 4 fields. The first
 field is the image file to be used. The image is searched for in the usual 
 search path if it is not an absolute path to the image file. The search path
-is in order: ~/.enlightenment, THEME_DIR/, ENLIGHTENMENT_ROOT/config.
+is in order: ~/.e16, THEME_DIR/, ENLIGHTENMENT_ROOT/config.
 <p>
 The second field on the line is a shell-glob like match for the title of 
 a window.
@@ -1044,13 +1044,13 @@ that window (Note: only one of these dialogs can be active at any one time), as
 shown to our right.
 <p>
 This dialog lets you selectively snapshot certain attributes of that window at
-that time and have Enlightenment remember them. You may choose to only remember
+that time and have E16 remember them. You may choose to only remember
 some of the attributes, and possibly not have the application started
-automatically for you. Choose what you want Enlightenment to remember about that
+automatically for you. Choose what you want E16 to remember about that
 window and hit "Apply" or "OK" if you don't need the dialog anymore, and
-Enlightenment will, the next time that instance of the application is run,
+E16 will, the next time that instance of the application is run,
 apply the current location, size, border style or any other attribute to
-that window. Enlightenment can also launch the application for you upon startup
+that window. E16 can also launch the application for you upon startup
 if you so wish.
 
 
@@ -1066,10 +1066,10 @@ if you so wish.
 Settings
 <font face=aircut3/12 color=#ffffff>
 When you click the right mouse button on the desktop background you will pop 
-up the Settings menu. From here you can select an aspect of Enlightenment to
+up the Settings menu. From here you can select an aspect of E16 to
 configure to your liking. There are too many settings to actually document
 fully right now, but the likelihood is if you want a particular behavior from
-Enlightenment, it is achievable by merely playing with these options.
+E16, it is achievable by merely playing with these options.
 <p>
 Combinations of options are often required to get the effect you want, so some
 experimentation may be required. Do not be frightened. Nothing you can do
@@ -1090,7 +1090,7 @@ Window Groups
 <font face=aircut3/12 color=#ffffff>
 <p>
 Sometimes you have a number of windows on your desktop that logically go
-together. Enlightenment allows you to group windows
+together. E16 allows you to group windows
 together, so that whenever you change a property of one window in a group,
 the change is reflected on the other group members. If you have a group whose
 members span multiple _desktops(desktops) , changing a group's property 
@@ -1140,17 +1140,17 @@ Selecting and Adding backgrounds
 <p>
 Often you will want to change the background of a particular desktop.  There
 are several ways you can do this.  But of course, to change your desktop,
-you'll need to give Enlightenment some graphics to play with.  A desktop
+you'll need to give E16 some graphics to play with.  A desktop
 theme may add a background or two to your available selections, but 
 most users want to have even backgrounds to choose from.  To add backgrounds to your
 selection, make a backgrounds directory under your home directory.  To
 do this using most shells you can type
 <p>
-mkdir ~/.enlightenment/backgrounds
+mkdir ~/.e16/backgrounds
 <p>
-Once you've done this, you should restart Enlightenment - this can be done
+Once you've done this, you should restart E16 - this can be done
 quickly and easily by simply hitting the Ctrl-Alt-End key combination.  When
-Enlightenment starts up, it will rescan these directories, and add new files
+E16 starts up, it will rescan these directories, and add new files
 into the background selector.
 
 
@@ -1164,7 +1164,7 @@ into the background selector.
 <p>
 <br>
 <br>
-Once you have added your backgrounds and restarted Enlightenment, you should be
+Once you have added your backgrounds and restarted E16, you should be
 able to go to the root menu desktop selector.  To get to this menu, middle
 click on the desktop, select "Desktop",
 and go to Backgrounds.  You should get something that looks similar to the
@@ -1190,7 +1190,7 @@ image that you have selected.
 <p>
 <br>
 <br>
-Enlightenment will attempt to choose the best
+E16 will attempt to choose the best
 settings for a particular background, but if it gets it wrong you can always
 change the settings by hand.  By bringing up the settings menu with the right
 mouse button and selecting the "Desktop Background Settings" item, you can
@@ -1240,7 +1240,7 @@ all the various settings for each individual background available.
 Tooltips
 <font face=aircut3/12 color=#ffffff>
 <p>
-From time to time, as you use Enlightenment, if you don't remember what does
+From time to time, as you use E16, if you don't remember what does
 what, if you keep the mouse still for a little bit a tooltip will pop up.  The
 easiest example of this is when you hold the mouse over a _Window_Border(border)
 .
@@ -1264,9 +1264,9 @@ Audio
 <p>
 <br>
 <br>
-Of course, Enlightenment comes preconfigured to play lots of little blips and
+Of course, E16 comes preconfigured to play lots of little blips and
 beeps when you do various things on your desktop.  In order to use sound in
-Enlightenment, you must have both ESounD and audiofile installed.  You can find
+E16, you must have both ESounD and audiofile installed.  You can find
 more information about these libraries from http://www.gnome.org.
 <p>
 <br>
@@ -1285,7 +1285,7 @@ shown here at right.
 Special Effects
 <font face=aircut3/12 color=#ffffff>
 <p>
-Enlightenment has many features that are configured via the "Special FX"<br>
+E16 has many features that are configured via the "Special FX"<br>
 _settings(settings) dialog.  Here you can configure the _Dragbar(dragbar) ,
 various sliding speeds (including the speed of a windowshade), as well as
 toggle animation of different features.  You can also configure the method used
@@ -1294,7 +1294,7 @@ _resize_modes(resizemode) .
 <p>There are several FX features disabled by default
 in a new installation, including the animated display of menus.  You can also
 enable saveunders here, which may improve or slow down the performance of
-Enlightenment on your X server, depending on server and configuration.
+E16 on your X server, depending on server and configuration.
 
 
 <page columns=1 padding=16 name=focus background=Edoc_bg.png linkcolor=#88dddd>
@@ -1306,12 +1306,12 @@ Setting the Focus
 <p>
 <br>
 <br>
-Enlightenment offers lots of different options for focusing windows.  By
+E16 offers lots of different options for focusing windows.  By
 default, it comes up in sloppy focus mode.  There are two other primary focus
-modes supported by Enlightenment - click to focus and pointer focus.
+modes supported by E16 - click to focus and pointer focus.
 <p>
 Click To Focus most people are familiar with.  You click on a window and it
-receives the focus from Enlightenment.
+receives the focus from E16.
 <p>
 Pointer Focus gives the focus to whichever window the pointer is sitting over
 <p>
@@ -1327,7 +1327,7 @@ Next we'll tell you how to change these settings.
 <p>
 <br>
 <br>
-Enlightenment allows you to change your focus settings at any time.  Simply
+E16 allows you to change your focus settings at any time.  Simply
 bring up the _Settings(settings) menu and then select "Focus Settings" to bring
 up a dialog that looks something like the one on the right.  At the top, we can
 select between our three focus modes, as described on the previous page.
@@ -1351,7 +1351,7 @@ _Keybinding(defkeys) .
 Moving Windows
 <font face=aircut3/12 color=#ffffff>
 <p>
-Enlightenment comes with several different available methods for moving a
+E16 comes with several different available methods for moving a
 window.  You can perform the actual moves using the  Window
 <br>
 _Border(border), or by using the available
@@ -1365,7 +1365,7 @@ Settings".  You can select from a list that looks similar to the one here
 above-right.  Experiment until you find one that suits you best.
 <p>
 For some serious eyecandy, try out the Translucent move mode.  This will only
-work if your X server and Enlightenment are running on the same machine,
+work if your X server and E16 are running on the same machine,
 however.
 
 
@@ -1376,7 +1376,7 @@ however.
 Resizing Windows
 <font face=aircut3/12 color=#ffffff>
 <p>
-Enlightenment also comes with several available methods for resizing windows.
+E16 also comes with several available methods for resizing windows.
 You can perform the actual resize on the window by clicking on any
 resize-handle of your window _border(border) and dragging to the desired size.
 You can also get the same effect by using the ALT + middle button
@@ -1484,14 +1484,14 @@ sloppy and pointer _focus_modes(focus) .
 <page columns=1 padding=16 name=eesh background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Enlightenment and IPC
+E16 and IPC
 <font face=aircut3/12 color=#ffffff>
 <p>
-Enlightenment has a fairly interesting IPC system that allows external
-applications (such as Eterm) to talk to Enlightenment and both ask for
+E16 has a fairly interesting IPC system that allows external
+applications (such as Eterm) to talk to E16 and both ask for
 information and change information.  There is a program that was installed with
-Enlightenment called "eesh" that is a simple shell interface to the IPC in
-Enlightenment.  It's even got its own documentation.  You can go into
+E16 called "eesh" that is a simple shell interface to the IPC in
+E16.  It's even got its own documentation.  You can go into
 eesh and type "help" and it should spit back a list of commands that it
 understands.
 <p>
@@ -1509,11 +1509,11 @@ To exit eesh, hit CTRL + D (EOF)
 <page columns=1 padding=16 name=editmenus background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Editing Enlightenment's Menus
+Editing E16's Menus
 <font face=aircut3/12 color=#ffffff>
 <p>
-The first time you run Enlightenment as a user after you've installed it, it
-should create a directory under your home directory called .enlightenment.  In
+The first time you run E16 as a user after you've installed it, it
+should create a directory under your home directory called .e16.  In
 this directory, there will be a file called "file.menu" - this file controls
 the contents of your left-mouse button _Menu(rootmenu) .  The very first line
 of this file contains the title for the menu, and the remainder of the file
@@ -1530,7 +1530,7 @@ Entry title , graphic for menu (or NULL) , exec "commandline"
 <font face=aircut3/12 color=#ffffff>
 <p>
 You may have several files in here, including a KDE menu and a Gnome menu if
-Enlightenment has detected their presence during installation.  If
+E16 has detected their presence during installation.  If
 detected, your primary apps will be located in another file called
 user_apps.menu.  Each of these files is for you to edit as desired.
 
@@ -1547,28 +1547,28 @@ Editing Your Keybindings
 <br>
 
 To set your own keybindings, all you have to do is find the keybindings.cfg
-file that was installed with Enlightenment, and make a copy in your
-~/.enlightenment directory.  This file is fairly long, but shouldn't be too
+file that was installed with E16, and make a copy in your
+~/.e16 directory.  This file is fairly long, but shouldn't be too
 difficult to edit.  Be careful!  The keybindings in this file will override ALL
 the default keybindings, as long as this file exists, so edit this file with
 extreme caution (unless you know what you're doing).
 <p>
 To reset your keybindings back to the default, simply remove this file from
-your ~/.enlightenment directory.  The next time you restart Enlightenment
+your ~/.e16 directory.  The next time you restart E16
 it should reload the default keybindings into memory.
 
 <page columns=1 padding=16 name=themes background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Enlightenment and Themes
+E16 and Themes
 <font face=aircut3/12 color=#ffffff>
 <p>
-One of the strong points of Enlightenment, of course, is that you can change
+One of the strong points of E16, of course, is that you can change
 around the complete look and feel of your desktop whenever you want to.
 Included with the 0.16.8 release are a few themes, to show off a little bit of
 this configurability.  You can select them by using the middle mouse button
 _menu(rootmenu) , going to the "Themes" selector, and then choosing a new
-theme.  Of course, there are plenty more themes for Enlightenment than come
+theme.  Of course, there are plenty more themes for E16 than come
 with it by default.  You can find more by going to:
 <p>
 http://e.themes.org
@@ -1578,8 +1578,8 @@ and searching around until you find something you like.
 To install a new theme
 is simple: all you need to do is take the bleh.etheme file and drop it into
 your<br>
-~/.enlightenment/themes<br>
-directory.  Once you've restarted Enlightenment,
+~/.e16/themes<br>
+directory.  Once you've restarted E16,
 it will automatically show up in your Themes _menu(rootmenu), and you can
 choose it just like any other theme.
 
@@ -1589,12 +1589,12 @@ choose it just like any other theme.
 <page columns=1 padding=16 name=eyecandy background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Enlightenment's Eyecandy Features
+E16's Eyecandy Features
 <font face=aircut3/12 color=#ffffff>
 <p>
 <br>
 <br>
-Of course, Enlightenment wouldn't be complete without just a few bits of
+Of course, E16 wouldn't be complete without just a few bits of
 eyecandy to play with.
 <p>
 On the "Special FX" _settings(settings) dialog you can chose two toys:
@@ -1617,17 +1617,17 @@ respect to the desktop background.
 Included Maintenance Scripts
 <font face=aircut3/12 color=#ffffff>
 <p>
-Enlightenment comes with several scripts that are executable out of the middle
+E16 comes with several scripts that are executable out of the middle
 mouse button _menu(rootmenu) - these scripts can perform all sorts of
-maintenance on the files that Enlightenment creates automatically for you.
+maintenance on the files that E16 creates automatically for you.
 When you select "Maintenance" you should get a menu that looks something like
 the one above-right.  You can also rebuild the KDE and GNOME menus
-Enlightenment uses from here<p>
+E16 uses from here<p>
 As a warning, when you purge configuration information, the next time you
-restart Enlightenment it will take longer to load.  You can monitor
-Enlightenment's usage using the query tools provided.  If you change themes a
+restart E16 it will take longer to load.  You can monitor
+E16's usage using the query tools provided.  If you change themes a
 lot you will probably want to purge the config file cache after you've settled
-on a theme.  This will help keep your disk usage by Enlightenment down.
+on a theme.  This will help keep your disk usage by E16 down.
 
 
 
@@ -1656,9 +1656,9 @@ _How_can_I_move_or_resize_the_iconbox?(faq4)
 <p>
 _How_can_I_disable_that_annoying_desktop_tooltip?(faq4)
 <p>
-_How_can_I_set_up_Enlightenment_to_work_with_GNOME?(faq5)
+_How_can_I_set_up_E16_to_work_with_GNOME?(faq5)
 <p>
-_How_can_I_set_up_Enlightenment_to_work_with_KDE?(faq5)
+_How_can_I_set_up_E16_to_work_with_KDE?(faq5)
 <p>
 _These_docs_didn't_help,_where_can_I_get_more_help?(faqend)
 
@@ -1687,7 +1687,7 @@ your icon appears.  If so, rightclick on it to reconfigure your Iconbox.
 Q:  I Can't Seem To Find My Left Mouse Menu
 <p>
 A:  Your menu files may be destroyed.  Try rerunning the program that initially
-generated them.  First you'll want to remove the ~/.enlightenment/*.menu files.
+generated them.  First you'll want to remove the ~/.e16/menus/*.menu files.
 Rebuild them using the _Maintenance(maint) menu.
 
 
@@ -1702,19 +1702,19 @@ Frequently Asked Questions: Page 2
 Q:  All My Settings Are Mangled And I Can't Fix It
 <p>
 A:  Well, if things get really messed up, you can always remove all of
-Enlightenment's automatically saved files.  go into ~/.enlightenment, and
+E16's automatically saved files.  go into ~/.e16, and
 remove the ...e_session* files, and then blow away the cached directory.  If
 your theme is broken, remove the user_theme.cfg file, also.  The
-next time you start Enlightenment it should reset everything to the default.
+next time you start E16 it should reset everything to the default.
 <p>
 <br>
 <br>
 Q: I Upgraded My Theme, But The New One Isn't Being Used
 <p>
-A: When you upgrade a theme that does not come with Enlightenment, when you go
-into your ~/.enlightenment/themes directory, be sure to delete the unpacked
+A: When you upgrade a theme that does not come with E16, when you go
+into your ~/.e16/themes directory, be sure to delete the unpacked
 directory version of your theme that should be sitting next to the theme, if it
-is there.  Otherwise when Enlightenment attempts to start the new version it
+is there.  Otherwise when E16 attempts to start the new version it
 will use the old files, which causes this problem.
 
 <page columns=1 padding=16 name=faq4 background=Edoc_bg.png linkcolor=#88dddd>
@@ -1751,18 +1751,18 @@ Frequently Asked Questions: Page 4
 <font face=aircut3/12 color=#ffffff>
 
 <p>
-Q: How do I set up Enlightenment to work with GNOME?
+Q: How do I set up E16 to work with GNOME?
 <p>
 A: Start your GNOME session with<br>
-export WINDOW_MANAGER=enlightenment<br>
+export WINDOW_MANAGER=e16<br>
 exec gnome-session<br>
 
 
 <p>
-Q: How do I set up Enlightenment to work with KDE?
+Q: How do I set up E16 to work with KDE?
 <p>
 A: Start your KDE session with<br>
-export KDEWM=enlightenment<br>
+export KDEWM=e16<br>
 exec startkde<br>
 
 <page columns=1 padding=16 name=faqend background=Edoc_bg.png linkcolor=#88dddd>
