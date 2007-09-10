@@ -149,7 +149,7 @@ EBlendRemoveShape(Win win, Pixmap pmap, int x, int y)
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = EXCreateGC(root, GCSubwindowMode, &gcv);
 
-	mask = EXCreatePixmap(root, w, h, 1);
+	mask = XCreatePixmap(disp, root, w, h, 1);
 	gcm = EXCreateGC(mask, 0, NULL);
 	XSetForeground(disp, gcm, 1);
 	XFillRectangle(disp, mask, gcm, 0, 0, w, h);
@@ -160,7 +160,7 @@ EBlendRemoveShape(Win win, Pixmap pmap, int x, int y)
 			  rl[i].height);
 	XSetClipMask(disp, gc, mask);
 	EXFreeGC(gcm);
-	EXFreePixmap(mask);
+	XFreePixmap(disp, mask);
      }
 
    XSetClipOrigin(disp, gc, x, y);

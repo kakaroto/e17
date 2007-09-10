@@ -235,10 +235,6 @@ void                EXCopyArea(Drawable src, Drawable dst, int sx, int sy,
 
 void                EXWarpPointer(Window xwin, int x, int y);
 
-#define EXCreatePixmap(win, w, h, d) \
-	XCreatePixmap(disp, win, w, h, d)
-#define EXFreePixmap(pmap) \
-	XFreePixmap(disp, pmap)
 Pixmap              EXCreatePixmapCopy(Pixmap src, unsigned int w,
 				       unsigned int h, unsigned int depth);
 

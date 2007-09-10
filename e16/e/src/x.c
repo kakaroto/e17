@@ -37,7 +37,8 @@
 #include "eglx.h"
 #endif
 
-#define DEBUG_XWIN 0
+#define DEBUG_XWIN   0
+#define DEBUG_PIXMAP 0
 
 #if USE_COMPOSITE
 static Visual      *argb_visual = NULL;
@@ -1513,14 +1514,24 @@ Pixmap
 ECreatePixmap(Win win, unsigned int width, unsigned int height,
 	      unsigned int depth)
 {
+   Pixmap              pmap;
+
    if (depth == 0)
       depth = win->depth;
-   return XCreatePixmap(disp, win->xwin, width, height, depth);
+
+   pmap = XCreatePixmap(disp, win->xwin, width, height, depth);
+#if DEBUG_PIXMAP
+   Eprintf("%s: %#lx\n", __func__, pmap);
+#endif
+   return pmap;
 }
 
 void
 EFreePixmap(Pixmap pmap)
 {
+#if DEBUG_PIXMAP
+   Eprintf("%s: %#lx\n", __func__, pmap);
+#endif
    XFreePixmap(disp, pmap);
 }
 
@@ -1531,11 +1542,13 @@ EXCreatePixmapCopy(Pixmap src, unsigned int w, unsigned int h,
    Pixmap              pmap;
    GC                  gc;
 
-   pmap = EXCreatePixmap(src, w, h, depth);
+   pmap = XCreatePixmap(disp, src, w, h, depth);
    gc = EXCreateGC(src, 0, NULL);
    XCopyArea(disp, src, pmap, gc, 0, 0, w, h, 0, 0);
    EXFreeGC(gc);
-
+#if DEBUG_PIXMAP
+   Eprintf("%s: %#lx\n", __func__, pmap);
+#endif
    return pmap;
 }
 
