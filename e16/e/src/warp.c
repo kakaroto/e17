@@ -223,8 +223,7 @@ WarpFocusWinPaint(WarpFocusWin * fw)
 
 	state = (i == warpFocusIndex) ? STATE_CLICKED : STATE_NORMAL;
 
-	ImageclassApply(fw->ic, wi->win, fw->mw, fw->mh, 0, 0, state,
-			ST_WARPLIST);
+	ImageclassApply(fw->ic, wi->win, 0, 0, state, ST_WARPLIST);
 
 	iw = 0;
 	if (Conf.warplist.icon_mode != 0)

@@ -152,7 +152,7 @@ ProgressbarSet(Progressbar * p, int progress)
    Esnprintf(s, sizeof(s), "%i%%", p->value);
 
    EobjResize(p->p_win, w, p->h);
-   ImageclassApply(p->ic, p->p_win->win, w, p->h, 1, 0, STATE_NORMAL, ST_SOLID);
+   ImageclassApply(p->ic, p->p_win->win, 1, 0, STATE_NORMAL, ST_SOLID);
    EobjShapeUpdate(p->p_win, 0);
 
    pad = ImageclassGetPadding(p->ic);
@@ -172,11 +172,9 @@ ProgressbarShow(Progressbar * p)
 {
    EImageBorder       *pad;
 
-   ImageclassApply(p->ic, p->win->win, p->w - (p->h * 5), p->h, 0, 0,
-		   STATE_NORMAL, ST_SOLID);
-   ImageclassApply(p->ic, p->n_win->win, (p->h * 5), p->h, 0, 0,
-		   STATE_CLICKED, ST_SOLID);
-   ImageclassApply(p->ic, p->p_win->win, 1, p->h, 1, 0, STATE_NORMAL, ST_SOLID);
+   ImageclassApply(p->ic, p->win->win, 0, 0, STATE_NORMAL, ST_SOLID);
+   ImageclassApply(p->ic, p->n_win->win, 0, 0, STATE_CLICKED, ST_SOLID);
+   ImageclassApply(p->ic, p->p_win->win, 1, 0, STATE_NORMAL, ST_SOLID);
 
    EobjMap(p->win, 0);
    EobjMap(p->n_win, 0);

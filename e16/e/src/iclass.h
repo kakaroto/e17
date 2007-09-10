@@ -108,7 +108,7 @@ EImage             *ImageclassGetImage(ImageClass * ic, int active, int sticky,
 Pixmap              ImageclassApplySimple(ImageClass * ic, Win win,
 					  Drawable draw, int state, int x,
 					  int y, int w, int h);
-void                ImageclassApply(ImageClass * ic, Win win, int w, int h,
+void                ImageclassApply(ImageClass * ic, Win win,
 				    int active, int sticky, int state,
 				    int image_type);
 void                ImageclassApplyCopy(ImageClass * ic, Win win, int w,
@@ -119,9 +119,8 @@ EImage             *ImageclassGetImageBlended(ImageClass * ic, Win win,
 					      int w, int h, int active,
 					      int sticky, int state,
 					      int image_type);
-void                ITApply(Win win, ImageClass * ic, ImageState * is, int w,
-			    int h, int state, int active, int sticky,
-			    int image_type, TextClass * tc,
-			    TextState * ts, const char *text);
+void                ITApply(Win win, ImageClass * ic, ImageState * is,
+			    int state, int active, int sticky, int image_type,
+			    TextClass * tc, TextState * ts, const char *text);
 
 #endif /* _ICLASS_H */

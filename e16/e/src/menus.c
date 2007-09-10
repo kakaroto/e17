@@ -694,7 +694,6 @@ MenuRealize(Menu * m)
 {
    int                 i, maxh, maxw, nmaxy;
    int                 maxx1, maxx2, w, h, x, y, r, mmw, mmh;
-   int                 iw, ih;
    EImage             *im;
    EImageBorder       *pad, *pad_item, *pad_sub;
    char                has_i, has_s;
@@ -854,12 +853,8 @@ MenuRealize(Menu * m)
 	  }
 	if (m->items[i]->icon_iclass && Conf.menus.show_icons)
 	  {
-	     iw = 0;
-	     ih = 0;
-	     EGetGeometry(m->items[i]->icon_win, NULL, NULL, NULL, &iw, &ih,
-			  NULL, NULL);
 	     ImageclassApply(m->items[i]->icon_iclass, m->items[i]->icon_win,
-			     iw, ih, 0, 0, STATE_NORMAL, ST_MENU_ITEM);
+			     0, 0, STATE_NORMAL, ST_MENU_ITEM);
 	  }
 	if (x + maxw > mmw)
 	   mmw = x + maxw;

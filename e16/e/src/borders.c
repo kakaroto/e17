@@ -110,7 +110,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
    ewb->is = is;
    ewb->ts = ts;
 
-   ITApply(ewb->win, ewin->border->part[i].iclass, is, ewb->w, ewb->h,
+   ITApply(ewb->win, ewin->border->part[i].iclass, is,
 	   ewb->state, ewin->state.active, EoIsSticky(ewin),
 	   ST_BORDER, ewin->border->part[i].tclass, ts, txt);
 }
@@ -394,7 +394,6 @@ EwinBorderCalcSizes(EWin * ewin, int propagate)
    for (i = 0; i < ewin->border->num_winparts; i++)
      {
 	reshape |= BorderWinpartDraw(ewin, i);
-	ewin->bits[i].no_expose = 1;
      }
 
 #if 0				/* Debug */
@@ -553,7 +552,6 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 	ewin->bits[i].ch = -99;
 	ewin->bits[i].state = 0;
 	ewin->bits[i].expose = 0;
-	ewin->bits[i].no_expose = 0;
 	ewin->bits[i].left = 0;
 	ewin->bits[i].is = NULL;
      }

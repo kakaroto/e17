@@ -81,7 +81,6 @@ struct _ewinbit
    int                 cx, cy, cw, ch;
    int                 state;
    char                expose;
-   char                no_expose;
    char                left;
    ImageState         *is;
    TextState          *ts;

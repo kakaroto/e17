@@ -1163,16 +1163,17 @@ ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 }
 
 void
-ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
+ITApply(Win win, ImageClass * ic, ImageState * is,
 	int state, int active, int sticky, int image_type,
 	TextClass * tc, TextState * ts, const char *text)
 {
+   int                 w, h;
+
    if (win == NoWin || !ic)
       return;
 
-   /* FIXME - Why? */
-   if (w <= 0 || h <= 0)
-      EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL);
+   w = WinGetW(win);
+   h = WinGetH(win);
    if (w <= 0 || h <= 0)
       return;
 
@@ -1254,11 +1255,10 @@ ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
 }
 
 void
-ImageclassApply(ImageClass * ic, Win win, int w, int h, int active,
-		int sticky, int state, int image_type)
+ImageclassApply(ImageClass * ic, Win win, int active, int sticky, int state,
+		int image_type)
 {
-   ITApply(win, ic, NULL, w, h, state, active, sticky, image_type,
-	   NULL, NULL, NULL);
+   ITApply(win, ic, NULL, state, active, sticky, image_type, NULL, NULL, NULL);
 }
 
 void
@@ -1534,7 +1534,7 @@ ImageclassIpc(const char *params)
 	else
 	   st = STATE_NORMAL;
 
-	ImageclassApply(ic, win, w, h, 0, 0, st, ST_SOLID);
+	ImageclassApply(ic, win, 0, 0, st, ST_SOLID);
 	EDestroyWin(win);
      }
    else if (!strcmp(param2, "apply_copy"))

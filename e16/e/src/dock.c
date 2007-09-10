@@ -144,6 +144,5 @@ DockIt(EWin * ewin)
 	XMapWindow(disp, ewin->icccm.icon_win);
      }
 
-   ImageclassApply(ic, EoGetWin(ewin), ewin->client.w, ewin->client.h,
-		   0, 0, STATE_NORMAL, ST_BUTTON);
+   ImageclassApply(ic, EoGetWin(ewin), 0, 0, STATE_NORMAL, ST_BUTTON);
 }

@@ -697,8 +697,7 @@ _PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
      {
 	DeskGetArea(p->dsk, &cx, &cy);
 	EMoveResizeWindow(p->sel_win, cx * p->dw, cy * p->dh, p->dw, p->dh);
-	ImageclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0, STATE_NORMAL,
-			ST_PAGER);
+	ImageclassApply(ic, p->sel_win, 0, 0, STATE_NORMAL, ST_PAGER);
      }
 }
 
@@ -1064,8 +1063,7 @@ _PagerUpdateSel(Pager * p, void *prm __UNUSED__)
 	EMapWindow(p->sel_win);
 	ic = ImageclassFind("PAGER_SEL", 0);
 	if (ic)
-	   ImageclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0,
-			   STATE_NORMAL, ST_PAGER);
+	   ImageclassApply(ic, p->sel_win, 0, 0, STATE_NORMAL, ST_PAGER);
      }
 }
 
