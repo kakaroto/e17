@@ -12,4 +12,6 @@ void    _ex_tab_current_zoom_out(Exhibit *e);
 void    _ex_tab_current_zoom_one_to_one(Exhibit *e);
 void    _ex_tab_current_fit_to_window(Exhibit *e);
 Ex_Tab *_ex_tab_find_by_itree(Etk_Tree *itree);
+void    _ex_tab_imagelist_rebuild();
+void    _ex_tab_imagelist_free(Ex_Tab *tab);
 #endif

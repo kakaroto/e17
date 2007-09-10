@@ -440,3 +440,47 @@ _ex_tab_itree_key_down_cb(Etk_Object *object, void *event, void *data)
         _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
      }
 }
+
+void
+_ex_tab_imagelist_rebuild()
+{
+   Ex_Tab *tab;
+   Etk_Tree_Row * iter;
+   char * icol_string;
+
+   tab = e->cur_tab;
+   _ex_tab_imagelist_free(tab);
+
+   // walk the tree and rebuild the image list
+   for (iter = etk_tree_first_row_get(ETK_TREE(tab->itree));
+        iter;
+	iter = etk_tree_row_walk_next(iter, ETK_TRUE))
+	{
+	   char *image;
+	   image = (char *)calloc(PATH_MAX, sizeof(char));
+
+           etk_tree_row_fields_get(iter, 
+              etk_tree_nth_col_get(ETK_TREE(tab->itree), 0), NULL, NULL, 
+	      &icol_string, NULL);
+	   
+	   snprintf(image, PATH_MAX, "%s%s", tab->dir, icol_string);
+
+	   tab->images = evas_list_append(tab->images, image);
+
+	}
+
+}
+
+void
+_ex_tab_imagelist_free(Ex_Tab *tab)
+{
+   Evas_List *l;
+   if (!tab) return;
+
+   for (l = tab->images; l; l = l->next)
+     if (l->data) free(l->data);
+   tab->images = evas_list_free(tab->images);
+}
+
+
+

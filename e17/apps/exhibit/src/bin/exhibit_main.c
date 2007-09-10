@@ -402,10 +402,7 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    data->num = FILELIST_SIZE * j + i;
    closedir(dir);   
 
-   // free the old images list
-   for (l = e->cur_tab->images; l; l = l->next)
-     if (l->data) free(l->data);
-   e->cur_tab->images = evas_list_free(e->cur_tab->images);
+   _ex_tab_imagelist_free(e->cur_tab);
    
    ecore_timer_add(0.001, _ex_main_populate_files_timer_cb, data);  
    
