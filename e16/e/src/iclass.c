@@ -1205,7 +1205,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
 	       {
 		  if (pmm.type != 0)
 		    {
-		       pmap = ECreatePixmap(win, w, h, 0);
+		       pmap = EGetWindowBackgroundPixmap(win);
 		       EXCopyArea(pmm.pmap, pmap, 0, 0, w, h, 0, 0);
 		    }
 
@@ -1215,9 +1215,8 @@ ITApply(Win win, ImageClass * ic, ImageState * is, int w, int h,
 	       }
 
 	     /* Set window pixmap */
-	     ESetWindowBackgroundPixmap(win, pmap);
-	     if (pmap != pmm.pmap)
-		EFreePixmap(pmap);
+	     if (pmap == pmm.pmap)
+		ESetWindowBackgroundPixmap(win, pmap);
 
 	     if (pmm.w == w && pmm.h == h)
 		EShapeCombineMask(win, ShapeBounding, 0, 0, pmm.mask, ShapeSet);
