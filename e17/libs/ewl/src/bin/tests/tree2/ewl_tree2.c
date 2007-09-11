@@ -1218,13 +1218,13 @@ tree2_test_data_fetch(void *data, unsigned int row, unsigned int column)
 	}
 
 	if (column == 0)
-		val = d->rows[row % d->count]->text;
+		val = d->rows[row % TREE2_DATA_ELEMENTS]->text;
 
 	else if (column == 1)
-		val = d->rows[row % d->count]->image;
+		val = d->rows[row % TREE2_DATA_ELEMENTS]->image;
 
 	else if (column == 2)
-		val = d->rows[row % d->count];
+		val = d->rows[row % TREE2_DATA_ELEMENTS];
 
 	else
 	{
@@ -1310,8 +1310,8 @@ tree2_test_data_expandable_get(void *data, unsigned int row)
 
 	d = data;
 
-	if (d && d->rows[row % d->count])
-		ret = d->rows[row % d->count]->expandable;
+	if (d && d->rows[row % TREE2_DATA_ELEMENTS])
+		ret = d->rows[row % TREE2_DATA_ELEMENTS]->expandable;
 
 	return ret;
 }
