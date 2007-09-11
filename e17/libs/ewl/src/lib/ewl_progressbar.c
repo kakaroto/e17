@@ -82,6 +82,9 @@ ewl_progressbar_init(Ewl_Progressbar *p)
 	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
 			ewl_progressbar_cb_value_changed, NULL);
 
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL | 
+						  EWL_FLAG_FILL_VSHRINK);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
