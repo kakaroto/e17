@@ -1109,7 +1109,7 @@ tree2_test_data_setup(void)
 
 	dt[1]->subdata = calloc(1, sizeof(Tree2_Test_Data));
 	dt[1]->subdata->count = 1;
-	dt[1]->subdata->rows = calloc(1, sizeof(Tree2_Test_Row_Data *));
+	dt[1]->subdata->rows = calloc(dt[1]->subdata->count, sizeof(Tree2_Test_Row_Data *));
 	dt[1]->subdata->rows[0] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[1]->subdata->rows[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
 	dt[1]->subdata->rows[0]->text = strdup("The First Subrow");
@@ -1120,14 +1120,26 @@ tree2_test_data_setup(void)
 	dt[2]->expandable = 1;
 
 	dt[2]->subdata = calloc(1, sizeof(Tree2_Test_Data));
-	dt[2]->subdata->count = 2;
-	dt[2]->subdata->rows = calloc(2, sizeof(Tree2_Test_Row_Data *));
+	dt[2]->subdata->count = 6;
+	dt[2]->subdata->rows = calloc(dt[2]->subdata->count, sizeof(Tree2_Test_Row_Data *));
 	dt[2]->subdata->rows[0] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[2]->subdata->rows[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
 	dt[2]->subdata->rows[0]->text = strdup("Squee.");
 	dt[2]->subdata->rows[1] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[2]->subdata->rows[1]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
 	dt[2]->subdata->rows[1]->text = strdup("Splat");
+	dt[2]->subdata->rows[2] = calloc(1, sizeof(Tree2_Test_Row_Data));
+	dt[2]->subdata->rows[2]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+	dt[2]->subdata->rows[2]->text = strdup("Squee.");
+	dt[2]->subdata->rows[3] = calloc(1, sizeof(Tree2_Test_Row_Data));
+	dt[2]->subdata->rows[3]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+	dt[2]->subdata->rows[3]->text = strdup("Splat");
+	dt[2]->subdata->rows[4] = calloc(1, sizeof(Tree2_Test_Row_Data));
+	dt[2]->subdata->rows[4]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+	dt[2]->subdata->rows[4]->text = strdup("Squee.");
+	dt[2]->subdata->rows[5] = calloc(1, sizeof(Tree2_Test_Row_Data));
+	dt[2]->subdata->rows[5]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
+	dt[2]->subdata->rows[5]->text = strdup("Splat");
 
 	dt[3] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[3]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/End.png");
