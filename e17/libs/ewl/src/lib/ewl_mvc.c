@@ -1216,8 +1216,7 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 
 			idx = EWL_SELECTION_IDX(sel);
 			w = widget(mvc, sel->data, idx->row, idx->column);
-
-			if (w) ewl_mvc_highlight_do(mvc, c, sel, w);
+			ewl_mvc_highlight_do(mvc, c, sel, w);
 		}
 		else
 		{
@@ -1231,7 +1230,7 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 						k <= idx->end.column; k++)
 				{
 					w = widget(mvc, sel->data, i, k);
-					if (w) ewl_mvc_highlight_do(mvc, c, sel, w);
+					ewl_mvc_highlight_do(mvc, c, sel, w);
 				}
 			}
 		}
