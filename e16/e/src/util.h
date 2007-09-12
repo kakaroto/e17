@@ -27,6 +27,15 @@
 #include "config.h"
 #include <stdarg.h>
 
+/* Inspired by Xfuncproto.h */
+#if defined(__GNUC__) && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 303)
+# define __EXPORT__      __attribute__((visibility("default")))
+#elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x550)
+# define __EXPORT__      __global
+#else /* not gcc >= 3.3 and not Sun Studio >= 8 */
+# define __EXPORT__
+#endif
+
 #if HAVE___ATTRIBUTE__
 #define __PRINTF__ __attribute__((__format__(__printf__, 1, 2)))
 #else
@@ -63,12 +72,12 @@ char               *Estrndup(const char *s, size_t n);
 char               *Estrdupcat2(char *ss, const char *s1, const char *s2);
 
 char              **StrlistDup(char **lst, int num);
-void                StrlistFree(char **lst, int num);
+__EXPORT__ void     StrlistFree(char **lst, int num);
 char               *StrlistJoin(char **lst, int num);
 char               *StrlistEncodeEscaped(char *buf, int len, char **lst,
 					 int num);
 char              **StrlistDecodeEscaped(const char *str, int *pnum);
-char              **StrlistFromString(const char *str, int delim, int *num);
+__EXPORT__ char   **StrlistFromString(const char *str, int delim, int *num);
 
 void                Esetenv(const char *name, const char *value);
 

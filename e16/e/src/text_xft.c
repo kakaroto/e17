@@ -31,7 +31,7 @@
 /*
  * Xft
  */
-extern const FontOps FontOps_xft;
+__EXPORT__ extern const FontOps FontOps_xft;
 
 typedef struct
 {

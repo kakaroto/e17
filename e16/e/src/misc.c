@@ -344,6 +344,8 @@ ModLoadSym(const char *lib, const char *sym, const char *name)
 
    Esnprintf(buf, sizeof(buf), "%s_%s", sym, name);
    h = dlsym(h, buf);
+   if (!h)
+      Eprintf("*** ModLoad %s: %s\n", buf, dlerror());
 
    return h;
 }

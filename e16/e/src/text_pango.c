@@ -31,7 +31,7 @@
 /*
  * Pango-Xft
  */
-extern const FontOps FontOps_pango;
+__EXPORT__ extern const FontOps FontOps_pango;
 
 static PangoContext *_pango_ctx = NULL;
 

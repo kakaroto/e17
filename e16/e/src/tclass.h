@@ -107,7 +107,7 @@ void                TextclassSetJustification(TextClass * tc, int just);
 /* text.c */
 TextState          *TextclassGetTextState(TextClass * tclass, int state,
 					  int active, int sticky);
-void                TextstateTextFit(TextState * ts, char **ptext, int *pw,
+__EXPORT__ void     TextstateTextFit(TextState * ts, char **ptext, int *pw,
 				     int textwidth_limit);
 void                TextstateTextDraw(TextState * ts, Win win, Drawable draw,
 				      const char *text, int x, int y, int w,
@@ -121,9 +121,9 @@ void                TextDraw(TextClass * tclass, Win win, Drawable draw,
 			     const char *text, int x, int y, int w, int h,
 			     int fsize, int justification);
 
-int                 _xft_FdcInit(TextState * ts, Win win, Drawable draw);
-void                _xft_FdcFini(TextState * ts);
-void                _xft_FdcSetDrawable(TextState * ts, unsigned long draw);
-void                _xft_FdcSetColor(TextState * ts, EColor * xc);
+__EXPORT__ int      _xft_FdcInit(TextState * ts, Win win, Drawable draw);
+__EXPORT__ void     _xft_FdcFini(TextState * ts);
+__EXPORT__ void     _xft_FdcSetDrawable(TextState * ts, unsigned long draw);
+__EXPORT__ void     _xft_FdcSetColor(TextState * ts, EColor * xc);
 
 #endif /* _TCLASS_H */

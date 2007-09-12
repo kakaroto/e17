@@ -31,7 +31,7 @@
 /*
  * Imlib2/FreeType
  */
-extern const FontOps FontOps_ift;
+__EXPORT__ extern const FontOps FontOps_ift;
 
 typedef void        EFont;
 

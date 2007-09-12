@@ -27,6 +27,10 @@
 #include <esd.h>
 #include <audiofile.h>
 
+#ifdef USE_MODULES
+#define Estrdup strdup
+#endif
+
 struct _sample
 {
    char               *file;	/* We should not need this */
@@ -162,7 +166,7 @@ _esd_Exit(void)
    sound_fd = -1;
 }
 
-extern const SoundOps SoundOps_esd;
+__EXPORT__ extern const SoundOps SoundOps_esd;
 const SoundOps      SoundOps_esd = {
    _esd_Init, _esd_Exit, _esd_Load, _esd_Destroy, _esd_Play,
 };
