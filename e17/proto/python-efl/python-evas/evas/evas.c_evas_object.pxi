@@ -151,6 +151,9 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             raise ValueError("Object already deleted")
         evas_object_del(self.obj)
 
+    def is_deleted(self):
+        return bool(self.obj == NULL)
+
     def _set_common_params(self, size=None, pos=None, geometry=None,
                            color=None, name=None):
         if size:
