@@ -14,16 +14,20 @@ static unsigned int directory_data_count(void *data);
 static void destroy(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_widget_destroy(w);
+	em->bwin = NULL;
 }
 
 void show_browser(Ewl_Widget *w, void *event, void *data)
 {
-	em->bwin = add_window("Browser!", 200, 400, destroy, NULL);
+	if (!em->bwin)
+	{
+		em->bwin = add_window("Browser!", 200, 400, destroy, NULL);
 
-	em->dtree = add_dtree(em->bwin);
-        ewl_object_maximum_w_set(EWL_OBJECT(em->dtree), 200);
+		em->dtree = add_dtree(em->bwin);
+        	ewl_object_maximum_w_set(EWL_OBJECT(em->dtree), 200);
 
-	populate_directories(NULL, NULL, NULL);
+		populate_directories(NULL, NULL, NULL);
+	}
 }
 
 /*Create and Add a Tree to the Container c*/

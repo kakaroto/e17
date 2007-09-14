@@ -19,6 +19,7 @@ FILES = add.png \
 	media-seek-backward.png \
 	media-seek-forward.png \
 	normal_view.png \
+	photo_lens.png \
 	preferences-system.png \
 	redo.png \
 	remove.png \

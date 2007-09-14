@@ -63,21 +63,24 @@ void create_main(void)
         buf[sizeof(buf)-1] = '\0';
         em->current_directory = strdup(buf);
 
-	em->win = add_window("Ephoto!", 800, 600, destroy, NULL);
+	em->bwin = NULL;
+
+	em->win = add_window("Ephoto!", 600, 475, destroy, NULL);
 
 	vbox = add_box(em->win, EWL_ORIENTATION_VERTICAL, 5);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 
 	mb = add_menubar(vbox);
+	
 	menu = add_menu(mb, "File");
-	em->smi = add_menu_item(menu, "Save Image As", 
-				PACKAGE_DATA_DIR "/images/stock_save-as.png", 
-							save_dialog, NULL);
-	ewl_widget_disable(em->smi);
 	mi = add_menu_item(menu, "Exit", 
 				PACKAGE_DATA_DIR "/images/exit.png", 
 							destroy, NULL);
 	menu = add_menu(mb, "Albums");
+
+	menu = add_menu(mb, "View");
+	mi = add_menu_item(menu, "Browser",
+				NULL, show_browser, NULL);
 
 	menu = add_menu(mb, "Help");
         mi = add_menu_item(menu, "About",

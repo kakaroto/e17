@@ -17,31 +17,34 @@ static void close_dialog(Ewl_Widget *w, void *event, void *data)
 /*Add an About Dialog*/
 void about_dialog(Ewl_Widget *w, void *event, void *data)
 {
-	Ewl_Widget *window, *button, *vbox, *text;
+	Ewl_Widget *window, *button, *image, *vbox, *text;
 	
-	window = add_window("About Ephoto", 200, 100, NULL, NULL);
+	window = add_window("About Ephoto", 300, 400, NULL, NULL);
         ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, close_dialog, window);
 
         vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 3);
         ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 
+	image = add_image(vbox, PACKAGE_DATA_DIR "/images/photo_lens.png", 0, NULL, NULL);
+	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
+
 	text = add_text(vbox, "Ephoto is an advanced image viewer that allows\n"
-		       "you to view images in several methods. They\n"
+		       "you to view images using several methods. They\n"
 		       "include an icon view, a list view, and a single\n"
 		       "image view.  You can also view exif data, view\n"
 		       "images in a fullscreen mode, and view images in a\n"
 		       "slideshow.  The edit view offers simple and advanced\n"
-		       "editing options including rotations, flips, blurs,\n"
-		       "sharpens, conversion to black and white, and\n"
-		       "conversions to sepia.");
+		       "editing options.");
 
 	ewl_text_wrap_set(EWL_TEXT(text), EWL_TEXT_WRAP_WORD);
+        ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
 
 	button = add_button(vbox, "Close",
                                 PACKAGE_DATA_DIR "/images/dialog-close.png",
                                                                 close_dialog, window);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
-	
+	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);	
+
 	return;
 }
 

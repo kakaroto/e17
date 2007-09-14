@@ -132,6 +132,17 @@ PKG_CHECK_MODULES([EWL], ewl,
    ]
 )
 
+PKG_CHECK_MODULES([EFREET_MIME], efreet-mime,
+   [
+      have_efreet_mime="Yes"
+   ],
+   [
+      have_efreet_mime="No"
+      echo "Efreet_Mime was not found by pkg-config!";
+      AC_MSG_ERROR([Ephoto needs efreet_mime to compile.])
+   ]
+)
+
 PKG_CHECK_MODULES([EPSILON], epsilon,
    [
       have_epsilon="Yes"
@@ -178,6 +189,7 @@ echo
 echo "  Evas ............: $have_evas"
 echo "  Ecore ...........: $have_ecore"
 echo "  Edje ............: $have_edje"
+echo "  Efreet_Mime .....: $have_efreet_mime"
 echo "  Epsilon .........: $have_epsilon"
 echo "  Ewl .............: $have_ewl"
 echo "  Libexif .........: $have_exif"
