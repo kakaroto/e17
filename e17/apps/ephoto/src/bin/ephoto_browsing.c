@@ -51,8 +51,7 @@ Ecore_List *get_directories(const char *directory)
 Ecore_List *get_images(const char *directory)
 {
         Ecore_List *ls, *files;
-        char *file;
-        char path[PATH_MAX];
+        char path[PATH_MAX], *file;
 
         if (ecore_file_is_dir(directory))
         {
@@ -66,6 +65,8 @@ Ecore_List *get_images(const char *directory)
                         file = ecore_list_first_remove(ls);
                         if (strncmp(file, ".", 1))
                         {
+				const char *type;
+
                                 if (strcmp(directory, "/"))
                                 {
                                         snprintf(path, PATH_MAX, "%s/%s",
@@ -76,15 +77,8 @@ Ecore_List *get_images(const char *directory)
                                         snprintf(path, PATH_MAX, "%s%s",
                                                  directory, file);
                                 }
-				if (fnmatch("*.[Jj][Pp][Ee][Gg]", path, 0) == 0)
-				{
-					ecore_dlist_append(files, strdup(path));
-				}
-				else if (fnmatch("*.[Jj][Pp][Gg]", path, 0) == 0)
-				{
-					ecore_dlist_append(files, strdup(path));
-				}
-				else if (fnmatch("*.[Pp][Nn][Gg]", path, 0) == 0)
+				type = efreet_mime_type_get(strdup(path));
+				if ((ecore_hash_get(em->types, type)) == "image")
 				{
 					ecore_dlist_append(files, strdup(path));
 				}

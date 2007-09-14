@@ -22,7 +22,6 @@ Ewl_Widget *add_list_view(Ewl_Widget *c)
 /*Show the list view*/
 void show_list_view(Ewl_Widget *w, void *event, void *data)
 {
-	show_main_view(NULL, NULL, NULL);
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->list_vbox);
 }
 

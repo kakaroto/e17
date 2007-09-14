@@ -44,7 +44,6 @@ Ewl_Widget *add_single_view(Ewl_Widget *c)
 /*Show the single view*/
 void show_single_view(Ewl_Widget *w, void *event, void *data)
 {
-	show_main_view(NULL, NULL, NULL);
         ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->single_vbox);
 	ewl_image_file_path_set(EWL_IMAGE(em->simage), 
 					ecore_dlist_current(em->images));

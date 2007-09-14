@@ -24,7 +24,10 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
 	Ewl_Widget *button, *vbox, *ibox, *hbox, *bhbox, *nb;
 	Ewl_Widget *standard, *advanced;
 
-	hbox = add_box(c, EWL_ORIENTATION_HORIZONTAL, 2);
+	em->edit_vbox = add_box(c, EWL_ORIENTATION_VERTICAL, 2);
+	ewl_object_fill_policy_set(EWL_OBJECT(em->edit_vbox), EWL_FLAG_FILL_ALL);
+
+	hbox = add_box(em->edit_vbox, EWL_ORIENTATION_HORIZONTAL, 2);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
 
 	nb = ewl_notebook_new();
@@ -78,7 +81,7 @@ Ewl_Widget *add_edit_view(Ewl_Widget *c)
 /*Show the edit view*/
 void show_edit_view(Ewl_Widget *w, void *event, void *data)
 {
-        ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->main_nb), em->edit_vbox);
+        ewl_notebook_visible_page_set(EWL_NOTEBOOK(em->view_box), em->edit_vbox);
 	ewl_image_file_path_set(EWL_IMAGE(em->eimage), ecore_dlist_current(em->images));
 	ewl_widget_enable(em->smi);
 	return;
