@@ -18,6 +18,7 @@ struct _Instance
    E_Gadcon_Client *gcc;
    Cpu             *cpu;
    Ecore_Timer     *timer;
+   Config_Item     *ci;
 };
 
 struct _Cpu 
@@ -63,17 +64,15 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    Cpu             *cpu;
    Instance        *inst;
-   Config_Item     *ci;
    E_Gadcon_Client *gcc;
    char             buf[4096];
 
    cpu_count = _get_cpu_count();
    
    inst = E_NEW(Instance, 1);   
-
-   ci = _config_item_get(id);
-   if (!ci->id)
-     ci->id = evas_stringshare_add(id);
+   inst->ci = _config_item_get(id);
+   if (!inst->ci->id)
+     inst->ci->id = evas_stringshare_add(id);
 
    cpu = E_NEW(Cpu, 1);
    cpu->inst = inst;
@@ -97,7 +96,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(cpu->o_icon, EVAS_CALLBACK_MOUSE_DOWN,
 				  _button_cb_mouse_down, inst);
 
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
    return gcc;
 }
 
@@ -331,10 +330,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	E_Menu *mn;
 	E_Menu_Item *mi;
 	int cx, cy, cw, ch;
-	Config_Item *ci;
 	
-	ci = _config_item_get(inst->gcc->id);
-
 	mn = e_menu_new();
 	cpu_conf->menu_interval = mn;
 	
@@ -342,35 +338,35 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	e_menu_item_label_set(mi, _("Fast (0.5 sec)"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
-	if (ci->interval <= 0.5) e_menu_item_toggle_set(mi, 1);
+	if (inst->ci->interval <= 0.5) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cpu_menu_fast, inst);
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, _("Medium (1 sec)"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
-	if (ci->interval > 0.5) e_menu_item_toggle_set(mi, 1);
+	if (inst->ci->interval > 0.5) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cpu_menu_medium, inst);
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, _("Normal (2 sec)"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
-	if (ci->interval >= 2.0) e_menu_item_toggle_set(mi, 1);
+	if (inst->ci->interval >= 2.0) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cpu_menu_normal, inst);
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, _("Slow (5 sec)"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
-	if (ci->interval >= 5.0) e_menu_item_toggle_set(mi, 1);
+	if (inst->ci->interval >= 5.0) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cpu_menu_slow, inst);
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, _("Very Slow (30 sec)"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
-	if (ci->interval >= 30.0) e_menu_item_toggle_set(mi, 1);
+	if (inst->ci->interval >= 30.0) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cpu_menu_very_slow, inst);
 
 	mn = e_menu_new();
@@ -408,14 +404,12 @@ static void
 _cpu_menu_fast(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Instance *inst;
-   Config_Item *ci;
-   
+ 
    inst = data;
-   ci = _config_item_get(inst->gcc->id);
 
-   ci->interval = 0.5;
+   inst->ci->interval = 0.5;
    ecore_timer_del(inst->timer);
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
    e_config_save_queue();
 }
 
@@ -423,14 +417,12 @@ static void
 _cpu_menu_medium(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Instance *inst;
-   Config_Item *ci;
-   
+ 
    inst = data;
-   ci = _config_item_get(inst->gcc->id);
 
-   ci->interval = 1.0;
+   inst->ci->interval = 1.0;
    ecore_timer_del(inst->timer);
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
    e_config_save_queue();
 }
 
@@ -438,14 +430,12 @@ static void
 _cpu_menu_normal(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Instance *inst;
-   Config_Item *ci;
-   
+ 
    inst = data;
-   ci = _config_item_get(inst->gcc->id);
 
-   ci->interval = 2.0;
+   inst->ci->interval = 2.0;
    ecore_timer_del(inst->timer);
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
    e_config_save_queue();
 }
 
@@ -453,14 +443,12 @@ static void
 _cpu_menu_slow(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Instance *inst;
-   Config_Item *ci;
-   
-   inst = data;
-   ci = _config_item_get(inst->gcc->id);
 
-   ci->interval = 5.0;
+   inst = data;
+
+   inst->ci->interval = 5.0;
    ecore_timer_del(inst->timer);
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
    e_config_save_queue();
 }
 
@@ -468,14 +456,12 @@ static void
 _cpu_menu_very_slow(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Instance *inst;
-   Config_Item *ci;
-   
-   inst = data;
-   ci = _config_item_get(inst->gcc->id);
 
-   ci->interval = 30.0;
+   inst = data;
+
+   inst->ci->interval = 30.0;
    ecore_timer_del(inst->timer);
-   inst->timer = ecore_timer_add(ci->interval, _set_cpu_load, inst);
+   inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
    e_config_save_queue();
 }
 
@@ -535,7 +521,7 @@ e_modapi_shutdown(E_Module *m)
 	cpu_conf->menu = NULL;
      }
 
-   while(cpu_conf->items) 
+   while (cpu_conf->items) 
      {
 	Config_Item *ci;
 	
@@ -555,19 +541,6 @@ e_modapi_shutdown(E_Module *m)
 EAPI int
 e_modapi_save(E_Module *m) 
 {
-   Evas_List *l;
-   
-   for (l = cpu_conf->instances; l; l = l->next) 
-     {
-	Instance *inst;
-	Config_Item *ci;
-	
-	inst = l->data;
-	ci = _config_item_get(inst->gcc->id);
-	if (ci->id)
-	  evas_stringshare_del(ci->id);
-	ci->id = evas_stringshare_add(inst->gcc->id);
-     }
    e_config_domain_save("module.cpu", conf_edd, cpu_conf);
    return 1;
 }
@@ -575,7 +548,7 @@ e_modapi_save(E_Module *m)
 EAPI int
 e_modapi_about(E_Module *m)
 {
-  e_module_dialog_show (m, _("Enlightenment Cpu Monitor Module"),
-			_("This module is used to monitor cpu load."));
+  e_module_dialog_show(m, _("Enlightenment Cpu Monitor Module"),
+		       _("This module is used to monitor cpu load."));
   return 1;
 }
