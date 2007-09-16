@@ -38,6 +38,7 @@ static void _gc_shutdown (E_Gadcon_Client * gcc);
 static void _gc_orient (E_Gadcon_Client * gcc);
 static char *_gc_label (void);
 static Evas_Object *_gc_icon (Evas * evas);
+static const char *_gc_id_new (void);
 
 /* Func Protos for Module */
 static void _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
@@ -68,7 +69,7 @@ static Ecore_Event_Handler *exit_handler;
 
 static const E_Gadcon_Client_Class _gc_class = {
   GADCON_CLIENT_CLASS_VERSION,
-  "mail", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+  "mail", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
   E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -83,8 +84,6 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   inst = E_NEW (Instance, 1);
   inst->ci = _mail_config_item_get (id);
-  if (!inst->ci->id)
-    inst->ci->id = evas_stringshare_add (id);
 
   mail = _mail_new (gc->evas);
   mail->inst = inst;
@@ -201,6 +200,15 @@ _gc_icon (Evas * evas)
 	    e_module_dir_get (mail_config->module));
   edje_object_file_set (o, buf, "icon");
   return o;
+}
+
+static const char *
+_gc_id_new (void)
+{
+   Config_Item *ci;
+
+   ci = _mail_config_item_get (NULL);
+   return ci->id;
 }
 
 static void
@@ -358,28 +366,47 @@ _mail_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 static Config_Item *
 _mail_config_item_get (const char *id)
 {
-  Evas_List *l;
-  Config_Item *ci;
+   Evas_List *l;
+   Config_Item *ci;
+   char buf[128];
 
-  for (l = mail_config->items; l; l = l->next)
-    {
-      ci = l->data;
-      if (!ci->id)
-	continue;
-      if (!strcmp (ci->id, id))
-	return ci;
-    }
+   if (!id)
+     {
+	int  num = 0;
 
-  ci = E_NEW (Config_Item, 1);
-  ci->id = evas_stringshare_add (id);
-  ci->show_label = 1;
-  ci->check_time = 15.0;
-  ci->show_popup = 1;
-  ci->show_popup_empty = 0;
-  ci->boxes = NULL;
+	/* Create id */
+	if (mail_config->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last (mail_config->items)->data;
+	     p = strrchr (ci->id, '.');
+	     if (p) num = atoi (p + 1) + 1;
+	  }
+	snprintf (buf, sizeof (buf), "%s.%d", _gc_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = mail_config->items; l; l = l->next)
+	  {
+	     ci = l->data;
+	     if (!ci->id)
+	       continue;
+	     if (!strcmp (ci->id, id))
+	       return ci;
+	  }
+     }
 
-  mail_config->items = evas_list_append (mail_config->items, ci);
-  return ci;
+   ci = E_NEW (Config_Item, 1);
+   ci->id = evas_stringshare_add (id);
+   ci->show_label = 1;
+   ci->check_time = 15.0;
+   ci->show_popup = 1;
+   ci->show_popup_empty = 0;
+   ci->boxes = NULL;
+
+   mail_config->items = evas_list_append (mail_config->items, ci);
+   return ci;
 }
 
 EAPI E_Module_Api e_modapi = {

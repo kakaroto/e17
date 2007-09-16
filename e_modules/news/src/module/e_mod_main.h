@@ -34,6 +34,8 @@ EAPI int   e_modapi_info(E_Module *m);
 EAPI int   e_modapi_about(E_Module *m);
 EAPI int   e_modapi_config(E_Module *m);
 
+const char *_gc_name(void);
+
 #endif
 #endif
 

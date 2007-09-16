@@ -12,13 +12,14 @@ static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc);
 static char *_gc_label(void);
 static Evas_Object *_gc_icon(Evas *evas);
+static const char *_gc_id_new(void);
 
 /* and actually define the gadcon class that this module provides (just 1) */
 static E_Gadcon_Client_Class _gadcon_class = {
    GADCON_CLIENT_CLASS_VERSION,
    "taskbar",
    {
-    _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+    _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
    E_GADCON_CLIENT_STYLE_PLAIN
 };
  /**/
@@ -223,6 +224,15 @@ _gc_icon(Evas *evas)
    snprintf(buf, sizeof(buf), "%s/e-module-taskbar.edj", e_module_dir_get(taskbar_config->module));
    edje_object_file_set(o, buf, "icon");
    return o;
+}
+
+static const char *
+_gc_id_new(void)
+{
+   Config_Item *ci;
+
+   ci = _taskbar_config_item_get(NULL);
+   return ci->id;
 }
  /**/
 /***************************************************************************/
@@ -1213,12 +1223,31 @@ _taskbar_config_item_get(const char *id)
 {
    Evas_List *l;
    Config_Item *ci;
+   char buf[128];
 
-   for (l = taskbar_config->items; l; l = l->next)
+   if (!id)
      {
-        ci = l->data;
-        if (!ci->id) continue;
-        if (!strcmp(ci->id, id)) return ci;
+	int  num = 0;
+
+	/* Create id */
+	if (taskbar_config->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last(taskbar_config->items)->data;
+	     p = strrchr(ci->id, '.');
+	     if (p) num = atoi(p + 1) + 1;
+	  }
+	snprintf(buf, sizeof(buf), "%s.%d", _gadcon_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = taskbar_config->items; l; l = l->next)
+	  {
+	     ci = l->data;
+	     if (!ci->id) continue;
+	     if (!strcmp(ci->id, id)) return ci;
+	  }
      }
 
    ci = E_NEW(Config_Item, 1);

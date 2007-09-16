@@ -33,6 +33,7 @@ static void             _gc_shutdown (E_Gadcon_Client *gcc);
 static void             _gc_orient   (E_Gadcon_Client *gcc);
 static char            *_gc_label    (void);
 static Evas_Object     *_gc_icon     (Evas *evas);
+static const char      *_gc_id_new   (void);
 
 static void         _slide_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void         _slide_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
@@ -54,7 +55,7 @@ Config *slide_config = NULL;
 static const E_Gadcon_Client_Class _gc_class =
 {
    GADCON_CLIENT_CLASS_VERSION,
-     "slideshow", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+     "slideshow", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -69,8 +70,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst = E_NEW(Instance, 1);
 
    inst->ci = _slide_config_item_get(id);
-   if (!inst->ci->id)
-     inst->ci->id = evas_stringshare_add(id);
 
    slide = _slide_new(gc->evas);
    slide->inst = inst;
@@ -152,6 +151,15 @@ _gc_icon(Evas *evas)
 	    e_module_dir_get (slide_config->module));
    edje_object_file_set(o, buf, "icon");
    return o;
+}
+
+static const char *
+_gc_id_new(void)
+{
+   Config_Item *ci;
+
+   ci = _slide_config_item_get(NULL);
+   return ci->id;
 }
 
 static void
@@ -248,20 +256,37 @@ _slide_config_item_get(const char *id)
    Config_Item *ci;
    char buf[4096];
 
-   for (l = slide_config->items; l; l = l->next)
+   if (!id)
      {
-	ci = l->data;
-	if (!ci->id) continue;
-	if (!strcmp(ci->id, id)) return ci;
-     }
+	int  num = 0;
 
-   snprintf(buf, sizeof (buf), "%s/.e/e/backgrounds", e_user_homedir_get());
+	/* Create id */
+	if (slide_config->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last(slide_config->items)->data;
+	     p = strrchr(ci->id, '.');
+	     if (p) num = atoi(p + 1) + 1;
+	  }
+	snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = slide_config->items; l; l = l->next)
+	  {
+	     ci = l->data;
+	     if (!ci->id) continue;
+	     if (!strcmp(ci->id, id)) return ci;
+	 }
+     }
 
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->poll_time = 60.0;
    ci->disable_timer = 0;
    ci->all_desks = 0;
+   snprintf(buf, sizeof (buf), "%s/.e/e/backgrounds", e_user_homedir_get());
    ci->dir = evas_stringshare_add(buf);
 
    slide_config->items = evas_list_append(slide_config->items, ci);

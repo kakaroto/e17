@@ -39,6 +39,7 @@ static void _gc_shutdown (E_Gadcon_Client * gcc);
 static void _gc_orient (E_Gadcon_Client * gcc);
 static char *_gc_label (void);
 static Evas_Object *_gc_icon (Evas * evas);
+static const char *_gc_id_new (void);
 
 /* Function Protos for the Module */
 static void _ss_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
@@ -67,7 +68,7 @@ Config *ss_config = NULL;
 /* Define the gadcon class */
 static const E_Gadcon_Client_Class _gc_class = {
   GADCON_CLIENT_CLASS_VERSION,
-  "screenshot", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+  "screenshot", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
   E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -82,8 +83,6 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   inst = E_NEW (Instance, 1);
 
   inst->ci = _ss_config_item_get (id);
-  if (!inst->ci->id)
-    inst->ci->id = evas_stringshare_add (id);
 
   ss = _ss_new (gc->evas);
   ss->inst = inst;
@@ -117,7 +116,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
 				  _ss_cb_mouse_down);
 
   _ss_free (ss);
-  E_FREE(inst);
+  E_FREE (inst);
 }
 
 static void
@@ -144,6 +143,15 @@ _gc_icon (Evas * evas)
 	    e_module_dir_get (ss_config->module));
   edje_object_file_set (o, buf, "icon");
   return o;
+}
+
+static const char *
+_gc_id_new (void)
+{
+   Config_Item *ci;
+
+   ci = _ss_config_item_get (NULL);
+   return ci->id;
 }
 
 static void
@@ -209,15 +217,34 @@ _ss_config_item_get (const char *id)
 {
   Evas_List *l;
   Config_Item *ci;
+   char buf[128];
 
-  for (l = ss_config->items; l; l = l->next)
-    {
-      ci = l->data;
-      if (!ci->id)
-	continue;
-      if (!strcmp (ci->id, id))
-	return ci;
-    }
+   if (!id)
+     {
+	int  num = 0;
+
+	/* Create id */
+	if (ss_config->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last (ss_config->items)->data;
+	     p = strrchr (ci->id, '.');
+	     if (p) num = atoi (p + 1) + 1;
+	  }
+	snprintf (buf, sizeof (buf), "%s.%d", _gc_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = ss_config->items; l; l = l->next)
+	  {
+	     ci = l->data;
+	     if (!ci->id)
+	       continue;
+	     if (!strcmp (ci->id, id))
+	       return ci;
+	  }
+     }
 
   ci = E_NEW (Config_Item, 1);
   ci->id = evas_stringshare_add (id);
@@ -432,7 +459,7 @@ static void
 _ss_free (Screenshot * ss)
 {
   evas_object_del (ss->ss_obj);
-  E_FREE(ss);
+  E_FREE (ss);
 }
 
 static void
@@ -550,11 +577,11 @@ _get_filename (Config_Item * ci)
     }
   else
     {
-       if (strstr(ci->filename, "%")) 
+       if (strstr (ci->filename, "%")) 
 	 {
-	    strftime(buff, sizeof(buff), ci->filename, loctime);
+	    strftime (buff, sizeof (buff), ci->filename, loctime);
 	    if (!strrchr (ci->filename, '.'))
-	      snprintf (buff, sizeof (buff), "%s.png", strdup(buff));
+	      snprintf (buff, sizeof (buff), "%s.png", strdup (buff));
 	 }
       else if (ecore_file_is_dir (ci->location))
 	{
@@ -604,7 +631,7 @@ _ss_exe_cb_exit (void *data, int type, void *event)
     {
        snprintf (buf, sizeof (buf), "%s %s", inst->ci->app, inst->filename);
        x = ecore_exe_run (buf, NULL);
-       if (x) ecore_exe_free(x);
+       if (x) ecore_exe_free (x);
     }
   return 0;
 }
@@ -702,6 +729,6 @@ _cb_entry_ok (char *text, void *data)
       e_config_save_queue ();
     }
 
-  inst->filename = evas_stringshare_add (ecore_file_file_get(text));
+  inst->filename = evas_stringshare_add (ecore_file_file_get (text));
   _ss_take_shot (inst);
 }

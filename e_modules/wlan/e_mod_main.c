@@ -26,6 +26,7 @@ static void _gc_shutdown (E_Gadcon_Client * gcc);
 static void _gc_orient (E_Gadcon_Client * gcc);
 static char *_gc_label (void);
 static Evas_Object *_gc_icon (Evas * evas);
+static const char *_gc_id_new (void);
 
 /* Func Protos for Module */
 static void _wlan_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
@@ -50,7 +51,7 @@ Config *wlan_config = NULL;
 
 static const E_Gadcon_Client_Class _gc_class = {
   GADCON_CLIENT_CLASS_VERSION,
-  "wlan", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+  "wlan", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
   E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -65,8 +66,6 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   inst = E_NEW (Instance, 1);
 
   inst->ci = _wlan_config_item_get (id);
-  if (!inst->ci->id)
-    inst->ci->id = evas_stringshare_add (id);
 
   wlan = _wlan_new (gc->evas);
   wlan->inst = inst;
@@ -119,6 +118,15 @@ _gc_icon (Evas * evas)
 	    e_module_dir_get (wlan_config->module));
   edje_object_file_set (o, buf, "icon");
   return o;
+}
+
+static const char *
+_gc_id_new (void)
+{
+   Config_Item *ci;
+
+   ci = _wlan_config_item_get (NULL);
+   return ci->id;
 }
 
 static void
@@ -219,30 +227,49 @@ _wlan_config_updated (Config_Item *ci)
 static Config_Item *
 _wlan_config_item_get (const char *id)
 {
-  Evas_List *l;
-  Config_Item *ci;
+   Evas_List *l;
+   Config_Item *ci;
+   char buf[128];
 
-  for (l = wlan_config->items; l; l = l->next)
-    {
-      ci = l->data;
-      if (!ci->id)
-	continue;
-      if (!strcmp (ci->id, id)) 
-	 {
-	    if (!ci->device)
-	      ci->device = evas_stringshare_add ("wlan0");
-	    return ci;
-	 }       
-    }
-  ci = E_NEW (Config_Item, 1);
-  ci->id = evas_stringshare_add (id);
-  ci->device = evas_stringshare_add ("wlan0");  
-  ci->poll_time = 1.0;
-  ci->always_text = 0;
-  ci->show_percent = 1;
+   if (!id)
+     {
+	int  num = 0;
 
-  wlan_config->items = evas_list_append (wlan_config->items, ci);
-  return ci;
+	/* Create id */
+	if (wlan_config->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last (wlan_config->items)->data;
+	     p = strrchr (ci->id, '.');
+	     if (p) num = atoi (p + 1) + 1;
+	  }
+	snprintf (buf, sizeof (buf), "%s.%d", _gc_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = wlan_config->items; l; l = l->next)
+	  {
+	     ci = l->data;
+	     if (!ci->id)
+	       continue;
+	     if (!strcmp (ci->id, id)) 
+	       {
+		  if (!ci->device)
+		    ci->device = evas_stringshare_add ("wlan0");
+		  return ci;
+	       }       
+	  }
+     }
+   ci = E_NEW (Config_Item, 1);
+   ci->id = evas_stringshare_add (id);
+   ci->device = evas_stringshare_add ("wlan0");  
+   ci->poll_time = 1.0;
+   ci->always_text = 0;
+   ci->show_percent = 1;
+
+   wlan_config->items = evas_list_append (wlan_config->items, ci);
+   return ci;
 }
 
 EAPI E_Module_Api e_modapi = {

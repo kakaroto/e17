@@ -219,18 +219,37 @@ news_config_item_add(const char *id)
 {
    News_Config_Item *nic;
    Evas_List *l;
+   char buf[128];
 
    DCONF(("Item new config"));
 
-   /* is there already an item config for this id ? */
-   for (l=news->config->items; l; l=evas_list_next(l))
+   if (!id)
      {
-        nic = evas_list_data(l);
-        if (!strcmp(nic->id, id))
-          {
-             DCONF(("config found ! %s", nic->id));
-             return nic;
-          }
+	int  num = 0;
+
+	/* Create id */
+	if (news->config->items)
+	  {
+	     const char *p;
+	     nic = evas_list_last(news->config->items)->data;
+	     p = strrchr(nic->id, '.');
+	     if (p) num = atoi(p + 1) + 1;
+	  }
+	snprintf(buf, sizeof(buf), "%s.%d", _gc_name(), num);
+	id = buf;
+     }
+   else
+     {
+	/* is there already an item config for this id ? */
+	for (l=news->config->items; l; l=evas_list_next(l))
+	  {
+	     nic = evas_list_data(l);
+	     if (!strcmp(nic->id, id))
+	       {
+		  DCONF(("config found ! %s", nic->id));
+		  return nic;
+	       }
+	  }
      }
 
    DCONF(("config NOT found ! creating new one %s", id));

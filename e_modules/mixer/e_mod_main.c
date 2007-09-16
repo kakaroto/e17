@@ -24,6 +24,7 @@ static void             _gc_shutdown (E_Gadcon_Client * gcc);
 static void             _gc_orient   (E_Gadcon_Client * gcc);
 static char            *_gc_label    (void);
 static Evas_Object     *_gc_icon     (Evas * evas);
+static const char      *_gc_id_new   (void);
 
 /* Module Protos */
 static void         _mixer_simple_volume_change (Mixer *mixer, Config_Item *ci, double val);
@@ -68,7 +69,7 @@ Config *mixer_config = NULL;
 static const E_Gadcon_Client_Class _gc_class =
 {
    GADCON_CLIENT_CLASS_VERSION, "mixer",
-     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
    E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -102,7 +103,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    /* Defer this until after the mixer system has been setup */
    inst->ci = _mixer_config_item_get(mixer, id);
-   if (!inst->ci->id) inst->ci->id = evas_stringshare_add(id);
 
    if ((mixer->mix_sys->get_volume) && (inst->ci->card_id != 0) && (inst->ci->channel_id != 0))
      {
@@ -185,6 +185,15 @@ _gc_icon(Evas *evas)
    o = edje_object_add(evas);
    edje_object_file_set(o, buf, "icon");
    return o;
+}
+
+static const char *
+_gc_id_new(void)
+{
+   Config_Item *ci;
+
+   ci = _mixer_config_item_get(NULL, NULL);
+   return ci->id;
 }
 
 void
@@ -322,14 +331,33 @@ _mixer_config_item_get(void *data, const char *id)
    Mixer_Channel *chan;
    Evas_List     *l;
    Config_Item   *ci;
+   char buf[128];
 
    mixer = data;
-   
-   for (l = mixer_config->items; l; l = l->next)
+
+   if (!id)
      {
-	ci = l->data;
-	if (!ci->id) continue;
-	if (!strcmp(ci->id, id)) return ci;
+	int  num = 0;
+
+	/* Create id */
+	if (mixer_config->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last(mixer_config->items)->data;
+	     p = strrchr(ci->id, '.');
+	     if (p) num = atoi(p + 1) + 1;
+	  }
+	snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = mixer_config->items; l; l = l->next)
+	  {
+	     ci = l->data;
+	     if (!ci->id) continue;
+	     if (!strcmp(ci->id, id)) return ci;
+	  }
      }
 
    ci = E_NEW(Config_Item, 1);

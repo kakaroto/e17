@@ -59,6 +59,7 @@ static void _gc_shutdown (E_Gadcon_Client * gcc);
 static void _gc_orient (E_Gadcon_Client * gcc);
 static char *_gc_label (void);
 static Evas_Object *_gc_icon (Evas * evas);
+static const char  *_gc_id_new (void);
 
 static void _ut_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 			       void *event_info);
@@ -77,7 +78,7 @@ Config *ut_config = NULL;
 
 static const E_Gadcon_Client_Class _gc_class = {
   GADCON_CLIENT_CLASS_VERSION,
-  "uptime", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+  "uptime", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
   E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -175,6 +176,15 @@ _gc_icon (Evas * evas)
   return o;
 }
 
+static const char *
+_gc_id_new (void)
+{
+   Config_Item *ci;
+
+   ci = _ut_config_item_get (NULL);
+   return ci->id;
+}
+
 static void
 _ut_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
@@ -238,26 +248,45 @@ _ut_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 static Config_Item *
 _ut_config_item_get (const char *id)
 {
-  Evas_List *l;
-  Config_Item *ci;
+   Evas_List *l;
+   Config_Item *ci;
+   char buf[128];
 
-  for (l = ut_config->items; l; l = l->next)
-    {
-      ci = l->data;
-      if (ci->id == NULL)
-	continue;
-      if (strcmp (ci->id, id) == 0)
-	return ci;
-    }
+   if (!id)
+     {
+	int  num = 0;
 
-  ci = E_NEW (Config_Item, 1);
-  ci->id = evas_stringshare_add (id);
-  ci->check_interval = 60.0;
-  ci->update_interval = 60.0;
+	/* Create id */
+	if (ut_config->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last (ut_config->items)->data;
+	     p = strrchr (ci->id, '.');
+	     if (p) num = atoi (p + 1) + 1;
+	  }
+	snprintf (buf, sizeof (buf), "%s.%d", _gc_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = ut_config->items; l; l = l->next)
+	  {
+	     ci = l->data;
+	     if (ci->id == NULL)
+	       continue;
+	     if (strcmp (ci->id, id) == 0)
+	       return ci;
+	  }
+     }
 
-  ut_config->items = evas_list_append (ut_config->items, ci);
+   ci = E_NEW (Config_Item, 1);
+   ci->id = evas_stringshare_add (id);
+   ci->check_interval = 60.0;
+   ci->update_interval = 60.0;
 
-  return ci;
+   ut_config->items = evas_list_append (ut_config->items, ci);
+
+   return ci;
 }
 
 void

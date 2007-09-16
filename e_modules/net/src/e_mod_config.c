@@ -2,18 +2,38 @@
 #include "e_mod_config.h"
 #include "e_mod_main.h"
 #include "e_mod_net.h"
+#include "e_mod_gadcon.h"
 
 EAPI Config_Item *
 _config_item_get(const char *id) 
 {
    Evas_List *l;
    Config_Item *ci;
-   
-   for (l = cfg->items; l; l = l->next) 
+   char buf[128];
+
+   if (!id)
      {
-	ci = l->data;
-	if (!ci->id) continue;
-	if (!strcmp(ci->id, id)) return ci;
+	int  num = 0;
+
+	/* Create id */
+	if (cfg->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last(cfg->items)->data;
+	     p = strrchr(ci->id, '.');
+	     if (p) num = atoi(p + 1) + 1;
+	  }
+	snprintf(buf, sizeof(buf), "%s.%d", _gc_name(), num);
+	id = buf;
+     }
+   else
+     {
+	for (l = cfg->items; l; l = l->next) 
+	  {
+	     ci = l->data;
+	     if (!ci->id) continue;
+	     if (!strcmp(ci->id, id)) return ci;
+	  }
      }
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);

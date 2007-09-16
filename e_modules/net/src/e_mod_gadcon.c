@@ -9,11 +9,12 @@ static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc);
 static char *_gc_label(void);
 static Evas_Object *_gc_icon(Evas *evas);
+static const char *_gc_id_new(void);
 
 static const E_Gadcon_Client_Class _gc_class = 
 {
    GADCON_CLIENT_CLASS_VERSION, "net", 
-     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
    E_GADCON_CLIENT_STYLE_PLAIN
 };
   
@@ -28,8 +29,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    inst = E_NEW(Instance, 1);
    inst->ci = _config_item_get(id);
-   if (!inst->ci->id) evas_stringshare_add(id);
-   
+ 
    inst->o_net = edje_object_add(gc->evas);
    if (!e_theme_edje_object_set(inst->o_net, "base/theme/modules/net",
 				"modules/net/main"))
@@ -103,6 +103,15 @@ _gc_icon(Evas *evas)
    return o;
 }
 
+static const char *
+_gc_id_new(void)
+{
+   Config_Item *ci;
+
+   ci = _config_item_get(NULL);
+   return ci->id;
+}
+
 EAPI void 
 _gc_register(void) 
 {
@@ -113,4 +122,10 @@ EAPI void
 _gc_unregister(void) 
 {
    e_gadcon_provider_unregister(&_gc_class);
+}
+
+EAPI const char *
+_gc_name(void)
+{
+   return _gc_class.name;
 }

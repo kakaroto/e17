@@ -8,6 +8,7 @@ static void _gc_shutdown (E_Gadcon_Client * gcc);
 static void _gc_orient (E_Gadcon_Client * gcc);
 static char *_gc_label (void);
 static Evas_Object *_gc_icon (Evas * evas);
+static const char *_gc_id_new (void);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -17,7 +18,7 @@ Config *weather_config = NULL;
 /* Define Gadcon Class */
 static const E_Gadcon_Client_Class _gadcon_class = {
   GADCON_CLIENT_CLASS_VERSION,
-  "weather", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+  "weather", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
   E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -189,6 +190,15 @@ _gc_icon (Evas * evas)
   return o;
 }
 
+static const char *
+_gc_id_new (void)
+{
+   Config_Item *ci;
+
+   ci = _weather_config_item_get (NULL);
+   return ci->id;
+}
+
 static void
 _weather_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 			void *event_info)
@@ -249,28 +259,47 @@ _weather_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 static Config_Item *
 _weather_config_item_get (const char *id)
 {
-  Evas_List *l;
-  Config_Item *ci;
+   Evas_List *l;
+   Config_Item *ci;
+   char buf[128];
 
-  for (l = weather_config->items; l; l = l->next)
-    {
-      ci = l->data;
-      if (!ci->id)
-	continue;
-      if (!strcmp (ci->id, id))
-	return ci;
-    }
+   if (!id)
+     {
+	int  num = 0;
 
-  ci = E_NEW (Config_Item, 1);
-  ci->id = evas_stringshare_add (id);
-  ci->poll_time = 900.0;
-  ci->display = 0;
-  ci->degrees = DEGREES_F;
-  ci->host = evas_stringshare_add ("www.rssweather.com");
-  ci->code = evas_stringshare_add ("KJFK");
+	/* Create id */
+	if (weather_config->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last (weather_config->items)->data;
+	     p = strrchr (ci->id, '.');
+	     if (p) num = atoi (p + 1) + 1;
+	  }
+	snprintf (buf, sizeof (buf), "%s.%d", _gadcon_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = weather_config->items; l; l = l->next)
+	  {
+	     ci = l->data;
+	     if (!ci->id)
+	       continue;
+	     if (!strcmp (ci->id, id))
+	       return ci;
+	  }
+     }
 
-  weather_config->items = evas_list_append (weather_config->items, ci);
-  return ci;
+   ci = E_NEW (Config_Item, 1);
+   ci->id = evas_stringshare_add (id);
+   ci->poll_time = 900.0;
+   ci->display = 0;
+   ci->degrees = DEGREES_F;
+   ci->host = evas_stringshare_add ("www.rssweather.com");
+   ci->code = evas_stringshare_add ("KJFK");
+
+   weather_config->items = evas_list_append (weather_config->items, ci);
+   return ci;
 }
 
 /* Gadman Module Setup */

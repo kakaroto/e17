@@ -32,6 +32,7 @@ static void _gc_shutdown(E_Gadcon_Client *gcc);
 static void _gc_orient(E_Gadcon_Client *gcc);
 static char *_gc_label(void);
 static Evas_Object *_gc_icon(Evas *evas);
+static const char *_gc_id_new(void);
 static Config_Item *_config_item_get(const char *id);
 static int _set_cpu_load(void *data);
 static int _get_cpu_count(void);
@@ -56,7 +57,7 @@ static float update_interval;
 static const E_Gadcon_Client_Class _gc_class = 
 {
    GADCON_CLIENT_CLASS_VERSION, "cpu", 
-     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon}
+     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL}
 };
 
 static E_Gadcon_Client *
@@ -71,8 +72,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    
    inst = E_NEW(Instance, 1);   
    inst->ci = _config_item_get(id);
-   if (!inst->ci->id)
-     inst->ci->id = evas_stringshare_add(id);
 
    cpu = E_NEW(Cpu, 1);
    cpu->inst = inst;
@@ -148,20 +147,48 @@ _gc_icon(Evas *evas)
    return o;
 }
 
+static const char *
+_gc_id_new(void)
+{
+   Config_Item *ci;
+
+   ci = _config_item_get(NULL);
+   return ci->id;
+}
+
 static Config_Item *
 _config_item_get(const char *id) 
 {
    Evas_List   *l;
    Config_Item *ci;
+   char buf[128];
 
-   for (l = cpu_conf->items; l; l = l->next) 
+   if (!id)
      {
-	ci = l->data;
-	if (!ci->id) continue;
-	if (!strcmp(ci->id, id))
+	int  num = 0;
+
+	/* Create id */
+	if (cpu_conf->items)
 	  {
-	     update_interval = ci->interval;
-	     return ci;
+	     const char *p;
+	     ci = evas_list_last(cpu_conf->items)->data;
+	     p = strrchr(ci->id, '.');
+	     if (p) num = atoi(p + 1) + 1;
+	  }
+	snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = cpu_conf->items; l; l = l->next) 
+	  {
+	     ci = l->data;
+	     if (!ci->id) continue;
+	     if (!strcmp(ci->id, id))
+	       {
+		  update_interval = ci->interval;
+		  return ci;
+	       }
 	  }
      }
 
@@ -169,7 +196,7 @@ _config_item_get(const char *id)
    ci->id = evas_stringshare_add(id);
    ci->interval = 1;
    update_interval = ci->interval;
-   
+
    cpu_conf->items = evas_list_append(cpu_conf->items, ci);
    return ci;
 }

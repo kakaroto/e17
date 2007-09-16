@@ -18,13 +18,14 @@ static void             _gc_shutdown(E_Gadcon_Client *gcc);
 static void             _gc_orient(E_Gadcon_Client *gcc);
 static char            *_gc_label(void);
 static Evas_Object     *_gc_icon(Evas *evas);
+static const char      *_gc_id_new(void);
 
 static const E_Gadcon_Client_Class _gadcon_class =
 {
    GADCON_CLIENT_CLASS_VERSION,
    "moon",
    {
-      _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon
+      _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL
    },
    E_GADCON_CLIENT_STYLE_INSET
 };
@@ -227,6 +228,12 @@ _gc_icon(Evas *evas)
    snprintf(buf, sizeof(buf), "%s/e-module-moon.edj", e_module_dir_get(_module));
    edje_object_file_set(o, buf, "icon");
    return o;
+}
+
+static const char *
+_gc_id_new(void)
+{
+   return _gadcon_class.name;
 }
 
 

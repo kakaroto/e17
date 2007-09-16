@@ -21,6 +21,7 @@ static void _gc_shutdown(E_Gadcon_Client * gcc);
 static void _gc_orient(E_Gadcon_Client * gcc);
 static char *_gc_label(void);
 static Evas_Object *_gc_icon(Evas * evas);
+static const char *_gc_id_new(void);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -30,7 +31,7 @@ Config *forecasts_config = NULL;
 /* Define Gadcon Class */
 static const E_Gadcon_Client_Class _gadcon_class = {
   GADCON_CLIENT_CLASS_VERSION,
-  "forecasts", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon},
+  "forecasts", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
   E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -254,6 +255,15 @@ _gc_icon(Evas * evas)
    return o;
 }
 
+static const char *
+_gc_id_new(void)
+{
+   Config_Item *ci;
+
+   ci = _forecasts_config_item_get(NULL);
+   return ci->id;
+}
+
 static void
 _forecasts_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
 			void *event_info)
@@ -316,14 +326,33 @@ _forecasts_config_item_get(const char *id)
 {
    Evas_List *l;
    Config_Item *ci;
+   char buf[128];
 
-   for (l = forecasts_config->items; l; l = l->next)
+   if (!id)
      {
-	ci = l->data;
-	if (!ci->id)
-	  continue;
-	if (!strcmp(ci->id, id))
-	  return ci;
+	int  num = 0;
+
+	/* Create id */
+	if (forecasts_config->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last(forecasts_config->items)->data;
+	     p = strrchr(ci->id, '.');
+	     if (p) num = atoi(p + 1) + 1;
+	  }
+	snprintf(buf, sizeof(buf), "%s.%d", _gadcon_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = forecasts_config->items; l; l = l->next)
+	  {
+	     ci = l->data;
+	     if (!ci->id)
+	       continue;
+	     if (!strcmp(ci->id, id))
+	       return ci;
+	  }
      }
 
    ci = E_NEW(Config_Item, 1);
