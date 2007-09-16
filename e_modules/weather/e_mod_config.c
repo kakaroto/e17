@@ -147,6 +147,6 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   ci->code = evas_stringshare_add (t);
 
   e_config_save_queue ();
-  _weather_config_updated (ci->id);
+  _weather_config_updated (ci);
   return 1;
 }

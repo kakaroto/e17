@@ -37,7 +37,7 @@ EAPI int   e_modapi_save(E_Module *m);
 EAPI int   e_modapi_about(E_Module *m);
 
 void _config_weather_module(Config_Item *ci);
-void _weather_config_updated(const char *id);
+void _weather_config_updated(Config_Item *ci);
 void _weather_convert_degrees(void *data);
 
 extern Config *weather_config;
