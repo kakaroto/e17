@@ -28,6 +28,7 @@ struct _Instance
    Ecore_Exe *exe;
    Ecore_Timer *check_timer;
    int count;
+   Config_Item *ci;
 
    E_Gadcon_Popup *popup;
 };
@@ -90,10 +91,10 @@ EAPI int   e_modapi_save(E_Module *m);
 EAPI int   e_modapi_about(E_Module *m);
 
 void _config_mail_module(Config_Item *ci);
-void _mail_config_updated(const char *id);
+void _mail_config_updated(Config_Item *ci);
 void _mail_box_config_updated(E_Config_Dialog *cfd);
-void _mail_box_deleted(const char *ci_name, const char *box_name);
-void _mail_box_added(const char *ci_name, const char *box_name);
+void _mail_box_deleted(Config_Item *ci, const char *box_name);
+void _mail_box_added(Config_Item *ci, const char *box_name);
 void _mail_set_text(void *data);
 void _mail_start_exe(void *data);
 

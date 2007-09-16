@@ -353,7 +353,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 /*       cfd->data = cb; */
       mail_ci->boxes = evas_list_append (mail_ci->boxes, cb);
       e_config_save_queue ();
-      _mail_box_added (mail_ci->id, cb->name);
+      _mail_box_added (mail_ci, cb->name);
     }
 
   _mail_box_config_updated (prev_dlg);

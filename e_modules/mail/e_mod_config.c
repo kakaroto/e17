@@ -154,7 +154,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   ci->show_popup = cfdata->show_popup;
   ci->show_popup_empty = cfdata->show_popup_empty;
   e_config_save_queue ();
-  _mail_config_updated (ci->id);
+  _mail_config_updated (ci);
   return 1;
 }
 
@@ -354,7 +354,7 @@ _cb_del_box (void *data, void *data2)
 	continue;
       if (!strcmp (s, cb->name))
 	{
-	  _mail_box_deleted (ci->id, cb->name);
+	  _mail_box_deleted (ci, cb->name);
 	  break;
 	}
     }

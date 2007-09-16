@@ -5,6 +5,12 @@
 #include "e_mod_main.h"
 #include "imap2.h"
 
+#if 0
+#define D(args...) printf(##args)
+#else
+#define D(args...)
+#endif
+
 /*
  * TODO:
  * * Let the user select between Unseen, Recent and New mail
@@ -38,6 +44,7 @@ _mail_imap_check_mail (void *data)
 
 	ic = l->data;
 	ic->data = data;
+	D ("Checking (%s:%s): %p\n", ic->config->host, ic->config->new_path, ic->server);
 	if (!ic->server)
 	  {
 	     if (!ic->add_handler)
@@ -233,6 +240,8 @@ _mail_imap_server_data (void *data, int type, void *event)
    if (ic->state == IMAP_STATE_DISCONNECTED)
      return 1;
 
+   D ("Data from %s:%s\n", ic->config->host, ic->config->new_path);
+
    /* Hijack server data.
     * We require minimum 2 characters, as the minimum server data is '\r\n' */
    if ((ic->prev.data) || (ev->size < 2))
@@ -258,6 +267,7 @@ _mail_imap_server_data (void *data, int type, void *event)
    /* Check for correct EOD */
    if ((*(reply + size - 2) != '\r') && (*(reply + size - 1) != '\n'))
      {
+	D ("Wrong eod %s:%s\n", ic->config->host, ic->config->new_path);
 	/* We got incomplete data, search for last EOD */
 	unsigned int pos = 0;
 	char *data;
@@ -342,7 +352,7 @@ _mail_imap_server_data (void *data, int type, void *event)
       case IMAP_STATE_IDLING:
 	 if ((ic->idle == 1) && (!ic->idling))
 	   {
-	      printf ("Begin idle\n");
+	      D ("Begin idle\n");
 	      len = snprintf (out, sizeof (out), "A%04i IDLE\r\n", ic->cmd++);
 	      ecore_con_server_send (ic->server, out, len);
 	      ic->idling = 1;
@@ -370,6 +380,7 @@ _mail_imap_server_data (void *data, int type, void *event)
    if (ic->cmd > 9999)
      ic->cmd = 1;
    _mail_set_text (ic->data);
+   D ("\n");
    return 0;
 }
 
@@ -408,7 +419,7 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line)
 	  }
 	else if (!strcmp (result, "OK"))
 	  {
-	     printf ("Reply ok: %s\n", value);
+	     D ("Reply ok: %s\n", value);
 	  }
 	else
 	  {
@@ -446,7 +457,7 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line)
 		  if (pp) *pp = '\0';
 		  if (!strcmp (p, "IDLE"))
 		    {
-		       printf ("Server supports idle\n");
+		       D ("Server supports idle\n");
 		       ic->idle = 1;
 		    }
 		  if (pp)
@@ -461,16 +472,16 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line)
 	  }
 	else if (!strcmp (result, "OK"))
 	  {
-	     printf ("Result OK: %s\n", value);
+	     D ("Result OK: %s\n", value);
 	  }
 	else if (!strcmp (result, "FLAGS"))
 	  {
-	     printf ("Flags: %s\n", value);
+	     D ("Flags: %s\n", value);
 	  }
 	else if (!strcmp (result, "SEARCH"))
 	  {
 	     ic->config->num_new = elements (value);
-	     printf ("New mail (%s:%s): %d\n", ic->config->host, ic->config->new_path, ic->config->num_new);
+	     D ("New mail (%s:%s): %d\n", ic->config->host, ic->config->new_path, ic->config->num_new);
 	  }
 	else
 	  {
@@ -481,26 +492,26 @@ _mail_imap_server_data_parse (ImapClient *ic, char *line)
 	     if (p) *p = '\0';
 	     if (!strcmp (value, "RECENT"))
 	       {
-		  printf ("Recent mails: %d\n", atoi (result));
+		  D ("Recent mails: %d\n", atoi (result));
 		  //ic->state = IMAP_STATE_SEARCH_UNSEEN;
 		  //ic->state = IMAP_STATE_SEARCH_RECENT;
 		  ic->state = IMAP_STATE_SEARCH_NEW;
 	       }
 	     else if (!strcmp (value, "EXISTS"))
 	       {
-		  printf ("Existing mails: %d\n", atoi (result));
+		  D ("Existing mails: %d\n", atoi (result));
 		  ic->config->num_total = atoi (result);
 	       }
 	     else if (!strcmp (value, "FETCH"))
 	       {
-		  printf ("Reading mail: %d\n", atoi (result));
+		  D ("Reading mail: %d\n", atoi (result));
 		  //ic->state = IMAP_STATE_SEARCH_UNSEEN;
 		  //ic->state = IMAP_STATE_SEARCH_RECENT;
 		  ic->state = IMAP_STATE_SEARCH_NEW;
 	       }
 	     else if (!strcmp (value, "EXPUNGE"))
 	       {
-		  printf ("Deleting mail: %d\n", atoi (result));
+		  D ("Deleting mail: %d\n", atoi (result));
 		  //ic->state = IMAP_STATE_SEARCH_UNSEEN;
 		  //ic->state = IMAP_STATE_SEARCH_RECENT;
 		  ic->state = IMAP_STATE_SEARCH_NEW;
