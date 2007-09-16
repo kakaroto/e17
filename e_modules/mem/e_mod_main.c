@@ -10,6 +10,7 @@ struct _Instance
   Evas_Object *mem_obj;
   Mem *mem;
   Ecore_Timer *check_timer;
+  Config_Item *ci;
 };
 
 struct _Mem
@@ -57,14 +58,13 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   E_Gadcon_Client *gcc;
   Evas_Object *o;
   Instance *inst;
-  Config_Item *ci;
   Mem *mem;
 
   inst = E_NEW (Instance, 1);
 
-  ci = _mem_config_item_get (id);
-  if (!ci->id)
-    ci->id = evas_stringshare_add (id);
+  inst->ci = _mem_config_item_get (id);
+  if (!inst->ci->id)
+    inst->ci->id = evas_stringshare_add (id);
 
   mem = _mem_new (gc->evas);
   mem->inst = inst;
@@ -83,12 +83,12 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_OUT,
 				  _mem_cb_mouse_out, inst);
 
-  if (ci->always_text)
+  if (inst->ci->always_text)
     edje_object_signal_emit (inst->mem_obj, "label_active", "");
 
   _mem_cb_check (inst);
 
-  inst->check_timer = ecore_timer_add (ci->poll_time, _mem_cb_check, inst);
+  inst->check_timer = ecore_timer_add (inst->ci->poll_time, _mem_cb_check, inst);
   mem_config->instances = evas_list_append (mem_config->instances, inst);
   return gcc;
 }
@@ -184,43 +184,33 @@ static void
 _mem_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 {
   Instance *inst;
-  Config_Item *ci;
 
   inst = data;
-  ci = _mem_config_item_get (inst->gcc->id);
-  _config_mem_module (ci);
+  _config_mem_module (inst->ci);
 }
 
 void
-_mem_config_updated (const char *id)
+_mem_config_updated (Config_Item *ci)
 {
   Evas_List *l;
-  Config_Item *ci;
 
   if (!mem_config)
     return;
-  ci = _mem_config_item_get (id);
   for (l = mem_config->instances; l; l = l->next)
     {
       Instance *inst;
 
       inst = l->data;
-      if (!inst->gcc->id)
-	continue;
+      if (inst->ci != ci) continue;
 
-      if (!strcmp (inst->gcc->id, ci->id))
-	{
-	  if (inst->check_timer)
-	    ecore_timer_del (inst->check_timer);
-	  inst->check_timer =
-	    ecore_timer_add ((double) ci->poll_time, _mem_cb_check, inst);
-	  if (ci->always_text)
-	    edje_object_signal_emit (inst->mem_obj, "label_active", "");
-	  else
-	    edje_object_signal_emit (inst->mem_obj, "label_passive", "");
-
-	  break;
-	}
+      if (inst->check_timer)
+	ecore_timer_del (inst->check_timer);
+      inst->check_timer =
+	      ecore_timer_add (inst->ci->poll_time, _mem_cb_check, inst);
+      if (inst->ci->always_text)
+	edje_object_signal_emit (inst->mem_obj, "label_active", "");
+      else
+	edje_object_signal_emit (inst->mem_obj, "label_passive", "");
     }
 }
 
@@ -343,19 +333,6 @@ e_modapi_shutdown (E_Module * m)
 EAPI int
 e_modapi_save (E_Module * m)
 {
-  Evas_List *l;
-
-  for (l = mem_config->instances; l; l = l->next)
-    {
-      Instance *inst;
-      Config_Item *ci;
-
-      inst = l->data;
-      ci = _mem_config_item_get (inst->gcc->id);
-      if (ci->id)
-	evas_stringshare_del (ci->id);
-      ci->id = evas_stringshare_add (inst->gcc->id);
-    }
   e_config_domain_save ("module.mem", conf_edd, mem_config);
   return 1;
 }
@@ -399,11 +376,9 @@ static void
 _mem_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
   Instance *inst;
-  Config_Item *ci;
 
   inst = data;
-  ci = _mem_config_item_get (inst->gcc->id);
-  if (!ci->always_text)
+  if (!inst->ci->always_text)
     edje_object_signal_emit (inst->mem_obj, "label_active", "");
 }
 
@@ -411,11 +386,9 @@ static void
 _mem_cb_mouse_out (void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
   Instance *inst;
-  Config_Item *ci;
 
   inst = data;
-  ci = _mem_config_item_get (inst->gcc->id);
-  if (!ci->always_text)
+  if (!inst->ci->always_text)
     edje_object_signal_emit (inst->mem_obj, "label_passive", "");
 }
 
@@ -423,17 +396,15 @@ static int
 _mem_cb_check (void *data)
 {
   Instance *inst;
-  Config_Item *ci;
   Edje_Message_Float msg;
   int real, swap, total_real, total_swap;
   char real_str[100];
   char swap_str[100];
 
   inst = data;
-  ci = _mem_config_item_get (inst->gcc->id);
-  _mem_get_values (ci, &real, &swap, &total_real, &total_swap);
+  _mem_get_values (inst->ci, &real, &swap, &total_real, &total_swap);
 
-  if (!ci->show_percent)
+  if (!inst->ci->show_percent)
     {
       snprintf (real_str, sizeof (real_str), "Real: %d/%d MB", (real / 1024),
 		(total_real / 1024));

@@ -37,7 +37,7 @@ EAPI int e_modapi_info(E_Module *m);
 EAPI int e_modapi_about(E_Module *m);
 
 void _config_taskbar_module(Config_Item *ci);
-void _taskbar_config_updated(const char *id);
+void _taskbar_config_updated(Config_Item *ci);
 extern Config *taskbar_config;
 
 #endif

@@ -1,8 +1,8 @@
 #include <e.h>
+#include "e_mod_config.h"
 #include "e_mod_main.h"
 #include "e_mod_gadcon.h"
 #include "e_mod_net.h"
-#include "e_mod_config.h"
 
 static E_Gadcon_Client *_gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style);
 static void _gc_shutdown(E_Gadcon_Client *gcc);
@@ -22,15 +22,14 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    Instance *inst;
    E_Gadcon_Client *gcc;
-   Config_Item *ci;
    char buf[PATH_MAX];
 
    snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(cfg->mod));
 
-   ci = _config_item_get(id);
-   if (!ci->id) evas_stringshare_add(id);
-   
    inst = E_NEW(Instance, 1);
+   inst->ci = _config_item_get(id);
+   if (!inst->ci->id) evas_stringshare_add(id);
+   
    inst->o_net = edje_object_add(gc->evas);
    if (!e_theme_edje_object_set(inst->o_net, "base/theme/modules/net",
 				"modules/net/main"))
@@ -41,7 +40,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 				   _cb_mouse_out, inst);
    evas_object_show(inst->o_net);
 
-   if (!ci->show_text)
+   if (!inst->ci->show_text)
      edje_object_signal_emit(inst->o_net, "e,state,text,hide", "e");
    else
      edje_object_signal_emit(inst->o_net, "e,state,text,show", "e");

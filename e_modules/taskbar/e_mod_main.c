@@ -36,6 +36,7 @@ struct _Instance
    E_Gadcon_Client *gcc;        // The gadcon client
    Evas_Object *o_taskbar;      // Same as o_gccbox below
    Taskbar *taskbar;            // The taskbar
+   Config_Item *ci;
 };
 
 struct _Taskbar
@@ -126,11 +127,10 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Instance *inst;
    Evas_Coord x, y, w, h;
    int cx, cy, cw, ch;
-   Config_Item *ci;
 
    inst = E_NEW(Instance, 1);
-   ci = _taskbar_config_item_get(id);
-   if (!ci->id) ci->id = evas_stringshare_add(id);
+   inst->ci = _taskbar_config_item_get(id);
+   if (!inst->ci->id) inst->ci->id = evas_stringshare_add(id);
 
    b = _taskbar_new(gc->evas, gc->zone);
 
@@ -151,7 +151,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    taskbar_config->instances = evas_list_append(taskbar_config->instances, inst);
 
    // Fill on initial config
-   _taskbar_config_updated(id);
+   _taskbar_config_updated(inst->ci);
 
    return gcc;
 }
@@ -341,9 +341,7 @@ _taskbar_fill(Taskbar *b)
    Taskbar_Icon *ic;
    E_Border_List *bl;
    E_Border *bd;
-   Config_Item *ci;
 
-   ci = _taskbar_config_item_get(b->inst->gcc->id);
    bl = e_container_border_list_first(b->zone->container);
    while ((bd = e_container_border_list_next(bl)))
      {
@@ -351,7 +349,8 @@ _taskbar_fill(Taskbar *b)
            continue;
         if (bd->client.netwm.state.skip_taskbar)
            continue;
-        if ((((bd->desk == e_desk_current_get(b->zone))||(bd->sticky)) && (bd->zone == b->zone)) || (ci->show_all))
+        if ((((bd->desk == e_desk_current_get(b->zone))||(bd->sticky)) && (bd->zone == b->zone)) ||
+	    (ic->taskbar->inst->ci->show_all))
           {
 	     b->borders = evas_list_append(b->borders, bd);
              ic = _taskbar_icon_new(b, bd);
@@ -616,17 +615,13 @@ _taskbar_icon_new(Taskbar *b, E_Border *bd)
 static int
 _taskbar_icon_check_add(Taskbar *b, E_Border *bd)
 {
-   Config_Item *ci;
-   
-   ci = _taskbar_config_item_get(b->inst->gcc->id);
-   
    if (bd->user_skip_winlist)
      return 1;
    if (bd->client.netwm.state.skip_taskbar)
      return 1;
    if (_taskbar_icon_find(b, bd))
      return 1;
-   if (!(ci->show_all))
+   if (!(b->inst->ci->show_all))
      {
 	if (bd->zone != b->zone)
 	  return 1;
@@ -734,41 +729,33 @@ static void
 _taskbar_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Taskbar *b;
-   Config_Item *ci;
 
    b = (Taskbar *)data;
-   ci = _taskbar_config_item_get(b->inst->gcc->id);
-   _config_taskbar_module(ci);
+   _config_taskbar_module(b->inst->ci);
 }
 
 void
-_taskbar_config_updated(const char *id)
+_taskbar_config_updated(Config_Item *ci)
 {
    Evas_List *l;
-   Config_Item *ci;
    if (!taskbar_config) return;
-   ci = _taskbar_config_item_get(id);
    for (l = taskbar_config->instances; l; l = l->next)
      {
 	Instance *inst;
 	inst = l->data;
-	if (!inst->gcc->id) continue;
-	if (!strcmp(inst->gcc->id, ci->id))
+	if (inst->ci != ci) continue;
+	for (l = inst->taskbar->icons; l; l = l->next)
 	  {
-	     for (l = inst->taskbar->icons; l; l = l->next)
-	       {
-		  if (!ci->show_label)
-		    edje_object_signal_emit(l->data, "label_hidden", "");
-		  else
-		    edje_object_signal_emit(l->data, "label_visible", "");
+	     if (!inst->ci->show_label)
+	       edje_object_signal_emit(l->data, "label_hidden", "");
+	     else
+	       edje_object_signal_emit(l->data, "label_visible", "");
 
-	       }
-
-	     _taskbar_empty(inst->taskbar);
-	     _taskbar_fill(inst->taskbar);
-	     _gc_orient(inst->gcc);
-	     break;
 	  }
+
+	_taskbar_empty(inst->taskbar);
+	_taskbar_fill(inst->taskbar);
+	_gc_orient(inst->gcc);
      }
 
 }
@@ -786,15 +773,13 @@ static void
 _taskbar_cb_icon_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Taskbar_Icon *ic;
-   Config_Item *ci;
 
    ic = (Taskbar_Icon *)data;
-   ci = _taskbar_config_item_get(ic->taskbar->inst->gcc->id);
-   if (ci->highlight)
+   if (ic->taskbar->inst->ci->highlight)
      _taskbar_icon_signal_emit(ic, "hilight", "");
    _taskbar_icon_signal_emit(ic, "active", "");
    edje_object_part_text_set(ic->taskbar->o_gccbox, "active_label", ic->label);
-   if (ci->show_label)
+   if (ic->taskbar->inst->ci->show_label)
       _taskbar_icon_signal_emit(ic, "label_active", "");
 }
 
@@ -802,15 +787,13 @@ static void
 _taskbar_cb_icon_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Taskbar_Icon *ic;
-   Config_Item *ci;
 
    ic = (Taskbar_Icon *)data;
-   ci = _taskbar_config_item_get(ic->taskbar->inst->gcc->id);
-   if (ci->highlight)
+   if (ic->taskbar->inst->ci->highlight)
      _taskbar_icon_signal_emit(ic, "unhilight", "");
    _taskbar_icon_signal_emit(ic, "passive", "");
    edje_object_part_text_set(ic->taskbar->o_gccbox, "active_label", "");
-   if (ci->show_label)
+   if (ic->taskbar->inst->ci->show_label)
       _taskbar_icon_signal_emit(ic, "label_passive", "");
 }
 
@@ -870,14 +853,12 @@ _taskbar_cb_icon_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_inf
 {
    Evas_Event_Mouse_Up *ev;
    Taskbar_Icon *ic;
-   Config_Item *ci;
 
    ev = event_info;
    ic = data;
-   ci = _taskbar_config_item_get(ic->taskbar->inst->gcc->id);
    if (ev->button == 1)
      {
-	if (!ic->border->sticky && ci->show_all)
+	if (!ic->border->sticky && ic->taskbar->inst->ci->show_all)
 	  e_desk_show(ic->border->desk);
         if (evas_key_modifier_is_set(ev->modifiers, "Alt"))
           {
@@ -927,7 +908,7 @@ _taskbar_cb_icon_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_inf
      }
    else if (ev->button == 2)
      {
-	if (!ic->border->sticky && ci->show_all)
+	if (!ic->border->sticky && ic->taskbar->inst->ci->show_all)
 	  e_desk_show(ic->border->desk);
         e_border_raise(ic->border);
         e_border_focus_set(ic->border, 1, 1);
@@ -1071,7 +1052,6 @@ static int
 _taskbar_cb_event_border_zone_set(void *data, int type, void *event)
 {
    E_Event_Border_Zone_Set *ev;
-   Config_Item *ci;
    Evas_List *l;
 
    ev = event;
@@ -1081,8 +1061,7 @@ _taskbar_cb_event_border_zone_set(void *data, int type, void *event)
         Instance *inst;
 
         inst = l->data;
-	ci = _taskbar_config_item_get(inst->gcc->id);
-        if ((inst->taskbar->zone == ev->border->zone)||ci->show_all)
+        if ((inst->taskbar->zone == ev->border->zone)||inst->ci->show_all)
           {
 	     _taskbar_icon_check_add(inst->taskbar, ev->border);
           }
@@ -1099,7 +1078,6 @@ _taskbar_cb_event_border_desk_set(void *data, int type, void *event)
 {
    E_Event_Border_Desk_Set *ev;
    Evas_List *l;
-   Config_Item *ci;
 
    ev = event;
 
@@ -1108,8 +1086,7 @@ _taskbar_cb_event_border_desk_set(void *data, int type, void *event)
 	Instance *inst;
 
 	inst = l->data;
-	ci = _taskbar_config_item_get(inst->gcc->id);
-     	if ((ev->border->desk == e_desk_current_get(ev->border->zone)) || (ev->border->sticky) || (ci->show_all))
+     	if ((ev->border->desk == e_desk_current_get(ev->border->zone)) || (ev->border->sticky) || (inst->ci->show_all))
      	  {
      	     _taskbar_icon_check_add(inst->taskbar, ev->border);
      	  }
@@ -1214,7 +1191,6 @@ _taskbar_cb_event_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev;
    Evas_List *l;
-   Config_Item *ci;
 
    ev = event;
    for (l = taskbar_config->instances; l; l = l->next)
@@ -1222,8 +1198,7 @@ _taskbar_cb_event_desk_show(void *data, int type, void *event)
 	Instance *inst;
 
 	inst = l->data;
-	ci = _taskbar_config_item_get(inst->gcc->id);
-	if ((inst->taskbar->zone == ev->desk->zone) && !(ci->show_all))
+	if ((inst->taskbar->zone == ev->desk->zone) && !(inst->ci->show_all))
 	  {
      	     _taskbar_empty(inst->taskbar);
      	     _taskbar_fill(inst->taskbar);
@@ -1370,18 +1345,6 @@ e_modapi_shutdown(E_Module *m)
 EAPI int
 e_modapi_save(E_Module *m)
 {
-   Evas_List *l;
-
-   for (l = taskbar_config->instances; l; l = l->next)
-     {
-	Instance *inst;
-	Config_Item *ci;
-
-	inst = l->data;
-	ci = _taskbar_config_item_get(inst->gcc->id);
-	if (ci->id) evas_stringshare_del(ci->id);
-	ci->id = evas_stringshare_add(inst->gcc->id);
-     }
    e_config_domain_save("module.taskbar", conf_edd, taskbar_config);
    return 1;
 }

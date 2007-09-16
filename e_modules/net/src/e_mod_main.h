@@ -15,6 +15,8 @@ struct _Instance
 
    short popup_locked;
    bytes_t in, out;
+
+   Config_Item *ci;
 };
 
 EAPI extern E_Module_Api e_modapi;

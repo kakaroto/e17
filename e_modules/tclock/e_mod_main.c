@@ -43,6 +43,7 @@ struct _Instance
 {
   E_Gadcon_Client *gcc;
   Evas_Object *tclock;
+  Config_Item *ci;
 };
 
 static E_Gadcon_Client *
@@ -52,13 +53,12 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   E_Gadcon_Client *gcc;
   Instance *inst;
   char buf[4096];
-  Config_Item *ci;
 
   inst = E_NEW (Instance, 1);
 
-  ci = _tclock_config_item_get (id);
-  if (!ci->id)
-    ci->id = evas_stringshare_add (id);
+  inst->ci = _tclock_config_item_get (id);
+  if (!inst->ci->id)
+    inst->ci->id = evas_stringshare_add (id);
 
   o = edje_object_add (gc->evas);
   snprintf (buf, sizeof (buf), "%s/tclock.edj",
@@ -192,47 +192,37 @@ static void
 _tclock_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 {
   Instance *inst;
-  Config_Item *ci;
 
   inst = data;
-  ci = _tclock_config_item_get (inst->gcc->id);
-  _config_tclock_module (ci);
+  _config_tclock_module (inst->ci);
 }
 
 void
-_tclock_config_updated (const char *id)
+_tclock_config_updated (Config_Item *ci)
 {
   Evas_List *l;
-  Config_Item *ci;
 
   if (!tclock_config)
     return;
-  ci = _tclock_config_item_get (id);
   for (l = tclock_config->instances; l; l = l->next)
     {
       Instance *inst;
 
       inst = l->data;
-      if (!inst->gcc->id)
-	continue;
-      if (!strcmp (inst->gcc->id, ci->id))
-	{
-	  if (!ci->show_time)
-	    edje_object_signal_emit (inst->tclock, "time_hidden", "");
-	  else
-	    edje_object_signal_emit (inst->tclock, "time_visible", "");
-	  edje_object_message_signal_process (inst->tclock);
+      if (inst->ci != ci) continue;
+      if (!inst->ci->show_time)
+	edje_object_signal_emit (inst->tclock, "time_hidden", "");
+      else
+	edje_object_signal_emit (inst->tclock, "time_visible", "");
+      edje_object_message_signal_process (inst->tclock);
 
-	  if (!ci->show_date)
-	    edje_object_signal_emit (inst->tclock, "date_hidden", "");
-	  else
-	    edje_object_signal_emit (inst->tclock, "date_visible", "");
-	  edje_object_message_signal_process (inst->tclock);
+      if (!inst->ci->show_date)
+	edje_object_signal_emit (inst->tclock, "date_hidden", "");
+      else
+	edje_object_signal_emit (inst->tclock, "date_visible", "");
+      edje_object_message_signal_process (inst->tclock);
 
-	  _tclock_cb_check (inst);
-
-	  break;
-	}
+      _tclock_cb_check (inst);
     }
 }
 
@@ -240,7 +230,6 @@ static int
 _tclock_cb_check (void *data)
 {
    Instance *inst;
-   Config_Item *ci;
    Evas_List *l;
    time_t current_time;
    struct tm *local_time;
@@ -251,15 +240,14 @@ _tclock_cb_check (void *data)
    for (l = tclock_config->instances; l; l = l->next) 
      {
 	inst = l->data;
-	ci = _tclock_config_item_get (inst->gcc->id);
 
-	if (!ci->show_time)
+	if (!inst->ci->show_time)
 	  edje_object_signal_emit (inst->tclock, "time_hidden", "");
 	else
 	  edje_object_signal_emit (inst->tclock, "time_visible", "");
 	edje_object_message_signal_process (inst->tclock);
 	
-	if (!ci->show_date)
+	if (!inst->ci->show_date)
 	  edje_object_signal_emit (inst->tclock, "date_hidden", "");
 	else
 	  edje_object_signal_emit (inst->tclock, "date_visible", "");
@@ -267,14 +255,14 @@ _tclock_cb_check (void *data)
 	
 	memset (buf, 0, sizeof (buf));
 	
-	if (ci->time_format)
+	if (inst->ci->time_format)
 	  {
-	    strftime (buf, 1024, ci->time_format, local_time);
+	    strftime (buf, 1024, inst->ci->time_format, local_time);
 	    edje_object_part_text_set (inst->tclock, "tclock_time", buf);
 	  }
-	if (ci->date_format)
+	if (inst->ci->date_format)
 	  {
-	    strftime (buf, 1024, ci->date_format, local_time);
+	    strftime (buf, 1024, inst->ci->date_format, local_time);
 	    edje_object_part_text_set (inst->tclock, "tclock_date", buf);
 	  }
      }
@@ -401,19 +389,6 @@ e_modapi_shutdown (E_Module * m)
 EAPI int
 e_modapi_save (E_Module * m)
 {
-  Evas_List *l;
-
-  for (l = tclock_config->instances; l; l = l->next)
-    {
-      Instance *inst;
-      Config_Item *ci;
-
-      inst = l->data;
-      ci = _tclock_config_item_get (inst->gcc->id);
-      if (ci->id)
-	evas_stringshare_del (ci->id);
-      ci->id = evas_stringshare_add (inst->gcc->id);
-    }
   e_config_domain_save ("module.tclock", conf_edd, tclock_config);
   return 1;
 }

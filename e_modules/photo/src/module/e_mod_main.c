@@ -162,7 +162,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    o = edje_object_add(gc->evas);
    gcc = e_gadcon_client_new(gc, name, id, style, o);
-   pi = photo_item_add(gcc, o);
+   pi = photo_item_add(gcc, o, id);
    gcc->data = pi;
 
    photo->items = evas_list_append(photo->items, pi);

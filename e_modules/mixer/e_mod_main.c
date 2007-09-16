@@ -77,7 +77,6 @@ static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
    Instance        *inst;
-   Config_Item     *ci;
    Mixer           *mixer;
    E_Gadcon_Client *gcc;
    char             buf[4096];
@@ -102,14 +101,14 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    _mixer_system_init(mixer);
 
    /* Defer this until after the mixer system has been setup */
-   ci = _mixer_config_item_get(mixer, id);
-   if (!ci->id) ci->id = evas_stringshare_add(id);
+   inst->ci = _mixer_config_item_get(mixer, id);
+   if (!inst->ci->id) inst->ci->id = evas_stringshare_add(id);
 
-   if ((mixer->mix_sys->get_volume) && (ci->card_id != 0) && (ci->channel_id != 0))
+   if ((mixer->mix_sys->get_volume) && (inst->ci->card_id != 0) && (inst->ci->channel_id != 0))
      {
 	int ret;
 	
-	ret = mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
+	ret = mixer->mix_sys->get_volume(inst->ci->card_id, inst->ci->channel_id);
 	if (ret < 33)
 	  edje_object_signal_emit(mixer->base, "low", "");
 	else if ((ret >= 34) && (ret < 66))
@@ -118,11 +117,11 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 	  edje_object_signal_emit(mixer->base, "high", ""); 
      }
 
-   if ((mixer->mix_sys->get_mute) && (ci->card_id != 0) && (ci->channel_id != 0))
+   if ((mixer->mix_sys->get_mute) && (inst->ci->card_id != 0) && (inst->ci->channel_id != 0))
      {
         int m;
 
-	m = mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
+	m = mixer->mix_sys->get_mute(inst->ci->card_id, inst->ci->channel_id);
 	if (m) 
 	  edje_object_signal_emit(mixer->base, "muted", "");
      }
@@ -192,17 +191,14 @@ void
 mixer_vol_increase(Instance *inst)
 {
    Mixer_Win_Gauge *win;
-   Config_Item     *ci;
 
    _mixer_window_gauge_pop_up(inst);
 
    if (!inst || !inst->mixer) return;
-   ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
-   if (!ci) return;
 
    win = inst->mixer->gauge_win;
-   _mixer_volume_increase(inst->mixer, ci);
-   _mixer_window_gauge_send_vol(win, inst->mixer, ci);
+   _mixer_volume_increase(inst->mixer, inst->ci);
+   _mixer_window_gauge_send_vol(win, inst->mixer, inst->ci);
    if (win) edje_object_signal_emit(win->pulsar, "vol,increase", "e");
 }
 
@@ -210,30 +206,23 @@ void
 mixer_vol_decrease(Instance *inst)
 {
    Mixer_Win_Gauge  *win;
-   Config_Item      *ci;
 
    _mixer_window_gauge_pop_up(inst);
 
    if (!inst || !inst->mixer) return;
-   ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
-   if (!ci) return;
 
    win = inst->mixer->gauge_win;
-   _mixer_volume_decrease(inst->mixer, ci);
-   _mixer_window_gauge_send_vol(win, inst->mixer, ci);
+   _mixer_volume_decrease(inst->mixer, inst->ci);
+   _mixer_window_gauge_send_vol(win, inst->mixer, inst->ci);
    if (win) edje_object_signal_emit(win->pulsar, "vol,decrease", "e");
 }
 
 void
 mixer_mute_toggle(Instance *inst)
 {
-   Config_Item *ci;
-
    if (!inst || !inst->mixer) return;
-   ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
-   if (!ci) return;
 
-   _mixer_simple_mute_toggle(inst->mixer, ci);
+   _mixer_simple_mute_toggle(inst->mixer, inst->ci);
 }
 
 static void
@@ -241,14 +230,10 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance              *inst;
    Evas_Event_Mouse_Down *ev;
-   Config_Item           *ci;
 
    inst = data;
    if (!inst) return;
 
-   ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
-   if (!ci) return;
-   
    ev = event_info;
    if ((ev->button == 3) && (!mixer_config->menu))
      {
@@ -280,8 +265,8 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
    else if (ev->button == 2)
      {
-	if ((ci->use_app) && (ci->app != NULL))
-	  ecore_exe_run(ci->app, NULL);
+	if ((inst->ci->use_app) && (inst->ci->app != NULL))
+	  ecore_exe_run(inst->ci->app, NULL);
 	else
 	  _mixer_window_simple_pop_up(inst);	
      }
@@ -293,7 +278,6 @@ static void
 _mixer_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Wheel *ev;
-   Config_Item *ci;
    Mixer *mixer;
    int vol;
    int dir = 0;
@@ -306,13 +290,10 @@ _mixer_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!mixer->mix_sys) return;
    if (!mixer->mix_sys->get_volume) return;
 
-   ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
-   if (!ci) return;
-
    dir = -ev->z;
-   vol = mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
+   vol = mixer->mix_sys->get_volume(mixer->inst->ci->card_id, mixer->inst->ci->channel_id);
    val = ((double)vol + dir * step);
-   _mixer_simple_volume_change(mixer, ci, val);
+   _mixer_simple_volume_change(mixer, mixer->inst->ci, val);
 }
 
 static void
@@ -327,13 +308,10 @@ static void
 _mixer_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    Instance    *inst;
-   Config_Item *ci;
 
    inst = data;
    if (!inst) return;
-   ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
-   if (!ci) return;
-   _config_mixer_module(inst->mixer, ci);
+   _config_mixer_module(inst->mixer, inst->ci);
 }
 
 static Config_Item *
@@ -584,18 +562,6 @@ e_modapi_shutdown(E_Module *m)
 EAPI int
 e_modapi_save(E_Module *m)
 {
-   Evas_List *l;
-
-   for (l = mixer_config->instances; l; l = l->next)
-     {
-	Instance *inst;
-	Config_Item *ci;
-
-	inst = l->data;
-	ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
-	if (ci->id) evas_stringshare_del(ci->id);
-	ci->id = evas_stringshare_add(inst->gcc->id);
-     }
    e_config_domain_save("module.mixer", conf_edd, mixer_config);
    return 1;
 }
@@ -701,7 +667,6 @@ static void
 _mixer_window_simple_pop_up(Instance *inst)
 {
    E_Container *con;
-   Config_Item *ci;
    Mixer_Win_Simple *win;
    Evas_Coord ox, oy, ow, oh;
    Evas_Coord mw, mh;
@@ -709,9 +674,6 @@ _mixer_window_simple_pop_up(Instance *inst)
    
    if (!inst || !inst->mixer) return;
    if (!(con = e_container_current_get(e_manager_current_get()))) return;
-   
-   ci = _mixer_config_item_get(inst->mixer, inst->gcc->id);
-   if (!ci) return;
    
    evas_object_geometry_get(inst->mixer->base, &ox, &oy, &ow, &oh); 
    
@@ -804,11 +766,11 @@ _mixer_window_simple_pop_up(Instance *inst)
         int vol;
         double v;
         
-	if ((ci->card_id != 0) && (ci->channel_id != 0)) 
+	if ((inst->ci->card_id != 0) && (inst->ci->channel_id != 0)) 
 	  {
 	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
 				     "e,state,enabled", "e");
-	     vol = inst->mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
+	     vol = inst->mixer->mix_sys->get_volume(inst->ci->card_id, inst->ci->channel_id);
 	     v = (1.0 - ((double)vol / 100));
 	     e_slider_value_set(win->slider, v);
 	     if (vol < 33)
@@ -822,7 +784,7 @@ _mixer_window_simple_pop_up(Instance *inst)
 	       {
 		  int m;
 
-		  m = inst->mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
+		  m = inst->mixer->mix_sys->get_mute(inst->ci->card_id, inst->ci->channel_id);
 		  e_widget_check_checked_set(win->check, m);
 		  if (m) 
 		    {
@@ -995,7 +957,6 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Mixer_Win_Simple *win;
    Mixer            *mixer;
-   Config_Item      *ci;
    double            val;
  
    if (!(win = data)) return;
@@ -1006,11 +967,8 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    if (!mixer->mix_sys->get_mute) return;
    if (!mixer->mix_sys->set_volume) return;
    
-   ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
-   if (!ci) return;
-
    val = ((1.0 - (e_slider_value_get(obj))) * 100);
-   _mixer_simple_volume_change(mixer, ci, val);
+   _mixer_simple_volume_change(mixer, mixer->inst->ci, val);
 }
 
 /* Called when the "mute" checkbox is toggled */
@@ -1019,15 +977,12 @@ _mixer_window_simple_mute_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Mixer_Win_Simple *win;
    Mixer            *mixer;
-   Config_Item      *ci;
    
    if (!(win = data)) return;
    
    mixer = win->mixer;
-   ci = _mixer_config_item_get(mixer, mixer->inst->gcc->id);
-   if (!ci) return;
 
-   _mixer_simple_mute_toggle(mixer, ci);
+   _mixer_simple_mute_toggle(mixer, mixer->inst->ci);
 }
 
 /* Called when the mouse moves over the input window */
@@ -1147,14 +1102,12 @@ static void
 _mixer_window_gauge_pop_up(Instance *inst)
 {
    E_Container *con;
-   Config_Item *ci;
    Mixer_Win_Gauge *win;
    char buf[4096];
 
    if (!inst || !inst->mixer || !inst->gcc) return;
    if (!(con = e_container_current_get(e_manager_current_get()))) return;
-   if (!(ci = _mixer_config_item_get(inst->mixer, inst->gcc->id))) return;
-   if (!(ci->show_popup)) return;
+   if (!(inst->ci->show_popup)) return;
 
    if (!(win = inst->mixer->gauge_win))
      {
@@ -1192,7 +1145,7 @@ _mixer_window_gauge_pop_up(Instance *inst)
    
    if (win->timer) ecore_timer_del(win->timer);
 
-   win->timer = ecore_timer_add(ci->popup_speed, _mixer_window_gauge_visible_cb, win);
+   win->timer = ecore_timer_add(inst->ci->popup_speed, _mixer_window_gauge_visible_cb, win);
 }
 
 static void

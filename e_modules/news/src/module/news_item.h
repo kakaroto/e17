@@ -74,7 +74,7 @@ struct _News_Item
 };
 
 
-News_Item   *news_item_new(E_Gadcon_Client *gcc, Evas_Object *obj);
+News_Item   *news_item_new(E_Gadcon_Client *gcc, Evas_Object *obj, const char *id);
 void         news_item_free(News_Item *ni);
 
 void         news_item_refresh(News_Item *ni, int changed_order, int changed_content, int changed_state);

@@ -146,6 +146,6 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 
    e_config_save_queue ();
 
-   _slide_config_updated (ci->id);
+   _slide_config_updated (ci);
    return 1;
 }

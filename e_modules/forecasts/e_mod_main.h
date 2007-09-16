@@ -37,7 +37,7 @@ EAPI int   e_modapi_save(E_Module *m);
 EAPI int   e_modapi_about(E_Module *m);
 
 void _config_forecasts_module(Config_Item *ci);
-void _forecasts_config_updated(const char *id);
+void _forecasts_config_updated(Config_Item *ci);
 
 extern Config *forecasts_config;
 

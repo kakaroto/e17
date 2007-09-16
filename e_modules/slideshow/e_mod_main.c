@@ -16,6 +16,8 @@ struct _Instance
    const char      *display;
    
    int index, bg_id, bg_count;
+
+   Config_Item     *ci;
 };
 
 struct _Slideshow
@@ -62,14 +64,13 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    Evas_Object *o;
    E_Gadcon_Client *gcc;
    Instance *inst;
-   Config_Item *ci;
    Slideshow *slide;
 
    inst = E_NEW(Instance, 1);
 
-   ci = _slide_config_item_get(id);
-   if (!ci->id)
-     ci->id = evas_stringshare_add(id);
+   inst->ci = _slide_config_item_get(id);
+   if (!inst->ci->id)
+     inst->ci->id = evas_stringshare_add(id);
 
    slide = _slide_new(gc->evas);
    slide->inst = inst;
@@ -84,15 +85,15 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, _slide_cb_mouse_down, inst);
    slide_config->instances = evas_list_append(slide_config->instances, inst);
 
-   if (!ci->disable_timer)
+   if (!inst->ci->disable_timer)
      inst->check_timer =
-     ecore_timer_add(ci->poll_time, _slide_cb_check, inst);
+     ecore_timer_add(inst->ci->poll_time, _slide_cb_check, inst);
    else
      {
 	_slide_get_bg_count(inst);
-	if(ci->random_order)
+	if(inst->ci->random_order)
 	  {
-             srand(time(NULL) + atoi(inst->gcc->id) * 100);
+             srand(time(NULL) + inst->gcc->id * 100);
 	     inst->index = (rand() % (inst->bg_count+1));
 	  }
 	else
@@ -190,15 +191,12 @@ _slide_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
    else if (ev->button == 2)
      {
-	Config_Item *ci;
-
-	ci = _slide_config_item_get(inst->gcc->id);
-	if (ci->disable_timer)
+	if (inst->ci->disable_timer)
 	  return;
 	if (inst->check_timer)
 	  ecore_timer_del(inst->check_timer);
 	else
-	  inst->check_timer = ecore_timer_add(ci->poll_time, _slide_cb_check, inst);
+	  inst->check_timer = ecore_timer_add(inst->ci->poll_time, _slide_cb_check, inst);
      }
    else if (ev->button == 1)
      _slide_cb_check(inst);
@@ -217,38 +215,29 @@ static void
 _slide_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Instance *inst;
-   Config_Item *ci;
 
    inst = data;
-   ci = _slide_config_item_get(inst->gcc->id);
-   _config_slideshow_module(ci);
+   _config_slideshow_module(inst->ci);
 }
 
 void
-_slide_config_updated(const char *id)
+_slide_config_updated(Config_Item *ci)
 {
    Evas_List *l;
-   Config_Item *ci;
 
    if (!slide_config)
      return;
-   ci = _slide_config_item_get(id);
    for (l = slide_config->instances; l; l = l->next)
      {
 	Instance *inst;
 
 	inst = l->data;
-	if (!inst->gcc->id)
-	  continue;
-	if (!strcmp(inst->gcc->id, ci->id))
-	  {
-	     if (inst->check_timer)
-	       ecore_timer_del(inst->check_timer);
-	     if ((ci->disable_timer) || (ci->poll_time == 0))
-	       break;
-	     inst->check_timer = ecore_timer_add(ci->poll_time, _slide_cb_check, inst);
-	     break;
-	  }
+	if (inst->ci != ci) continue;
+	if (inst->check_timer)
+	  ecore_timer_del(inst->check_timer);
+	if ((inst->ci->disable_timer) || (inst->ci->poll_time == 0))
+	  break;
+	inst->check_timer = ecore_timer_add(inst->ci->poll_time, _slide_cb_check, inst);
      }
 }
 
@@ -365,18 +354,6 @@ e_modapi_shutdown(E_Module *m)
 EAPI int
 e_modapi_save(E_Module *m)
 {
-   Evas_List *l;
-
-   for(l = slide_config->instances; l; l = l->next)
-     {
-	Instance *inst;
-	Config_Item *ci;
-
-	inst = l->data;
-	ci = _slide_config_item_get(inst->gcc->id);
-	if (ci->id) evas_stringshare_del(ci->id);
-	ci->id = evas_stringshare_add(inst->gcc->id);
-     }
    e_config_domain_save("module.slideshow", conf_edd, slide_config);
    return 1;
 }
@@ -424,11 +401,9 @@ static int
 _slide_cb_check(void *data)
 {
    Instance *inst;
-   Config_Item *ci;
    char *bg;
 
    inst = data;
-   ci = _slide_config_item_get(inst->gcc->id);
 
    _slide_get_bg_count(inst);
 
@@ -444,9 +419,9 @@ _slide_cb_check(void *data)
 	if (bg != NULL)
 	  {
 	     _slide_set_bg(inst, bg);
-	     if(ci->random_order)
+	     if(inst->ci->random_order)
 	       {
-                  srand(time(NULL) + atoi(inst->gcc->id) * 100);
+                  srand(time(NULL) + inst->gcc->id * 100);
 		  inst->index = (rand() % (inst->bg_count+1));
 	       }
 	     else
@@ -466,14 +441,12 @@ _slide_get_bg_subdirs(void *data, char *local_path)
    char item_local_path[4096];
    char *item;
    Instance *inst;
-   Config_Item *ci;
 
    inst = data;
-   ci = _slide_config_item_get(inst->gcc->id);
-   if(!ci->dir)
+   if(!inst->ci->dir)
      return;
 
-   snprintf(full_path, sizeof(full_path), "%s/%s", ci->dir, local_path);
+   snprintf(full_path, sizeof(full_path), "%s/%s", inst->ci->dir, local_path);
    dir_list = ecore_file_ls(full_path);
 
    while((item = ecore_list_next(dir_list)) != NULL)
@@ -494,14 +467,12 @@ static void
 _slide_get_bg_count(void *data)
 {
    Instance *inst;
-   Config_Item *ci;
    char *item;
    Ecore_List *dir_list;
    char item_full_path[4096];
 
    inst = data;
-   ci = _slide_config_item_get(inst->gcc->id);
-   if (!ci->dir) return;
+   if (!inst->ci->dir) return;
 
    inst->bg_count = 0;
    if (inst->bg_list) ecore_list_destroy(inst->bg_list);
@@ -509,11 +480,11 @@ _slide_get_bg_count(void *data)
    inst->bg_list = ecore_list_new();
    ecore_list_free_cb_set(inst->bg_list, free);
 
-   dir_list = ecore_file_ls(ci->dir);
+   dir_list = ecore_file_ls(inst->ci->dir);
 
    while((item = ecore_list_next(dir_list)) != NULL)
      {
-	snprintf(item_full_path, sizeof(item_full_path), "%s/%s", ci->dir, item);
+	snprintf(item_full_path, sizeof(item_full_path), "%s/%s", inst->ci->dir, item);
 
 	if(ecore_file_is_dir(item_full_path))
 	  _slide_get_bg_subdirs(inst, item);
@@ -532,7 +503,6 @@ static void
 _slide_set_bg(void *data, const char *bg)
 {
    Instance *inst;
-   Config_Item *ci;
    E_Container *con;
    E_Gadcon *g;
    E_Desk *d;
@@ -543,10 +513,9 @@ _slide_set_bg(void *data, const char *bg)
    inst = data;
    g = inst->gcc->gadcon;
    if(!g){return;}
-   ci = _slide_config_item_get(inst->gcc->id);
-   snprintf (buf, sizeof (buf), "%s/%s", ci->dir, bg);
+   snprintf (buf, sizeof (buf), "%s/%s", inst->ci->dir, bg);
 
-   if (ci->all_desks == 0) 
+   if (inst->ci->all_desks == 0) 
      {
 	con = e_container_current_get(e_manager_current_get());
 	z = e_zone_current_get(con);
@@ -554,7 +523,7 @@ _slide_set_bg(void *data, const char *bg)
 	e_bg_del(con->num, z->num, d->x, d->y);
 	e_bg_add(con->num, z->num, d->x, d->y, buf);
      }
-   else if (ci->all_desks == 1) 
+   else if (inst->ci->all_desks == 1) 
      {
 	while (e_config->desktop_backgrounds) 
 	  {
@@ -565,7 +534,7 @@ _slide_set_bg(void *data, const char *bg)
 	  }
 	e_bg_default_set(buf);
      }
-   else if (ci->all_desks == 2)
+   else if (inst->ci->all_desks == 2)
      {
 	z = e_gadcon_zone_get(g);
         for (i = 0; i < z->desk_x_count * z->desk_y_count; i++)
@@ -582,17 +551,15 @@ static void
 _slide_set_preview(void *data)
 {
    Instance *inst;
-   Config_Item *ci;
    Slideshow *ss;
    char buf[4096];
    char *bg;
 
    inst = data;
-   ci = _slide_config_item_get(inst->gcc->id);
    ss = inst->slide;
 
    bg = ecore_list_index_goto(inst->bg_list, inst->index);
-   snprintf(buf, sizeof (buf), "%s/%s", ci->dir, bg);
+   snprintf(buf, sizeof (buf), "%s/%s", inst->ci->dir, bg);
    if (!e_util_edje_collection_exists (buf, "e/desktop/background")) return;
    if (ss->bg_obj) evas_object_del(ss->bg_obj);
    ss->bg_obj = edje_object_add(e_livethumb_evas_get (ss->img_obj));

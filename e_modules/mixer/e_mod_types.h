@@ -14,6 +14,7 @@ struct _Instance
 {
    E_Gadcon_Client *gcc;
    Mixer           *mixer;
+   Config_Item     *ci;
 };
 
 struct _Mixer

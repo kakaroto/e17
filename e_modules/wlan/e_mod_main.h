@@ -34,7 +34,7 @@ EAPI int   e_modapi_shutdown(E_Module *m);
 EAPI int   e_modapi_save(E_Module *m);
 EAPI int   e_modapi_about(E_Module *m);
 
-void _wlan_config_updated(const char *id);
+void _wlan_config_updated(Config_Item *ci);
 void _config_wlan_module(Config_Item *ci);
 void _wlan_get_values(Config_Item *ci, int *real, int *swap, int *total_real, int *total_swap);
 extern Config *wlan_config;

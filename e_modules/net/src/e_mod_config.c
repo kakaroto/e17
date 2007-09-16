@@ -1,6 +1,6 @@
 #include <e.h>
-#include "e_mod_main.h"
 #include "e_mod_config.h"
+#include "e_mod_main.h"
 #include "e_mod_net.h"
 
 EAPI Config_Item *
@@ -78,28 +78,22 @@ _config_devices_get(void)
 }
 
 EAPI void 
-_config_updated(const char *id) 
+_config_updated(Config_Item *ci)
 {
    Evas_List *l;
-   Config_Item *ci;
    
    if (!cfg) return;
-   ci = _config_item_get(id);
    for (l = cfg->instances; l; l = l->next) 
      {
 	Instance *inst;
 	
 	inst = l->data;
-	if (!inst) continue;
-	if (!inst->gcc->id) continue;
-	if (strcmp(inst->gcc->id, id)) continue;
+	if (inst->ci != ci) continue;
 	if (!inst->timer)
 	  inst->timer = ecore_timer_add(0.5, _cb_poll, inst);
 	if (!ci->show_text)
 	  edje_object_signal_emit(inst->o_net, "e,state,text,hide", "e");
 	else
 	  edje_object_signal_emit(inst->o_net, "e,state,text,show", "e");
-	  
-	break;
      }
 }

@@ -30,7 +30,7 @@ EAPI int e_modapi_save(E_Module *m);
 EAPI int e_modapi_about(E_Module *m);
 
 void _config_ut_module(Config_Item *ci);
-void _ut_config_updated(const char *id);
+void _ut_config_updated(Config_Item *ci);
 extern Config *ut_config;
 
 #endif

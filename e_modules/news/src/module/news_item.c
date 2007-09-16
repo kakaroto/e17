@@ -12,7 +12,7 @@ static void       _cb_item_open(void *data, Evas_Object *obj, const char *emissi
  */
 
 News_Item *
-news_item_new(E_Gadcon_Client *gcc, Evas_Object *obj)
+news_item_new(E_Gadcon_Client *gcc, Evas_Object *obj, const char *id)
 {
    News_Item *ni;
    News_Config_Item *nic;
@@ -23,7 +23,7 @@ news_item_new(E_Gadcon_Client *gcc, Evas_Object *obj)
 
    news_theme_edje_set(obj, NEWS_THEME_ITEM);
 
-   nic = news_config_item_add(gcc->id);
+   nic = news_config_item_add(id);
    ni->gcc = gcc;
    ni->obj = obj;
    ni->config = nic;

@@ -298,7 +298,7 @@ _dialog_create(News_Viewer *nv)
    E_Dialog    *dia;
    char buf[4096];
 
-   snprintf(buf, sizeof(buf), "_e_mod_news_viewer_%c", nv->item->gcc->id[0]);
+   snprintf(buf, sizeof(buf), "_e_mod_news_viewer_%d", nv->item->gcc->id);
    dia = e_dialog_new(e_container_current_get(e_manager_current_get()),
                       "E", buf);
    if (!dia) return 0;

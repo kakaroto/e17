@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include "e_mod_main.h"
 #include "e_mod_types.h"
 #include "oss_mixer.h"
 

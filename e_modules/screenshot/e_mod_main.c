@@ -23,6 +23,7 @@ struct _Instance
   Screenshot *ss;
   Ecore_Exe *exe;
   const char *filename;
+  Config_Item *ci;
 };
 
 struct _Screenshot
@@ -76,14 +77,13 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   Evas_Object *o;
   E_Gadcon_Client *gcc;
   Instance *inst;
-  Config_Item *ci;
   Screenshot *ss;
 
   inst = E_NEW (Instance, 1);
 
-  ci = _ss_config_item_get (id);
-  if (!ci->id)
-    ci->id = evas_stringshare_add (id);
+  inst->ci = _ss_config_item_get (id);
+  if (!inst->ci->id)
+    inst->ci->id = evas_stringshare_add (id);
 
   ss = _ss_new (gc->evas);
   ss->inst = inst;
@@ -199,11 +199,9 @@ static void
 _ss_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 {
   Instance *inst;
-  Config_Item *ci;
 
   inst = data;
-  ci = _ss_config_item_get (inst->gcc->id);
-  _config_screenshot_module (ci);
+  _config_screenshot_module (inst->ci);
 }
 
 static Config_Item *
@@ -399,19 +397,6 @@ e_modapi_shutdown (E_Module * m)
 EAPI int
 e_modapi_save (E_Module * m)
 {
-  Evas_List *l;
-
-  for (l = ss_config->instances; l; l = l->next)
-    {
-      Instance *inst;
-      Config_Item *ci;
-
-      inst = l->data;
-      ci = _ss_config_item_get (inst->gcc->id);
-      if (ci->id)
-	evas_stringshare_del (ci->id);
-      ci->id = evas_stringshare_add (inst->gcc->id);
-    }
   e_config_domain_save ("module.screenshot", conf_edd, ss_config);
   return 1;
 }
@@ -453,15 +438,12 @@ _ss_free (Screenshot * ss)
 static void
 _ss_handle_mouse_down (Instance * inst)
 {
-  Config_Item *ci;
-
   if (inst->exe)
     return;
-  ci = _ss_config_item_get (inst->gcc->id);
 
-  if (!ci->prompt)
+  if (!inst->ci->prompt)
     {
-      char *f = _get_filename (ci);
+      char *f = _get_filename (inst->ci);
       inst->filename = evas_stringshare_add (f);
       _ss_take_shot (inst);
     }
@@ -605,7 +587,6 @@ _ss_exe_cb_exit (void *data, int type, void *event)
   Instance *inst;
   Ecore_Exe_Event_Del *ev;
   Ecore_Exe *x;
-  Config_Item *ci;
   char buf[4096];
 
    ev = event;
@@ -619,10 +600,9 @@ _ss_exe_cb_exit (void *data, int type, void *event)
   if (ss_config->exe_exit_handler)
     ecore_event_handler_del (ss_config->exe_exit_handler);
 
-  ci = _ss_config_item_get (inst->gcc->id);
-  if ((ci->use_app) && (ci->app != NULL))
+  if ((inst->ci->use_app) && (inst->ci->app != NULL))
     {
-       snprintf (buf, sizeof (buf), "%s %s", ci->app, inst->filename);
+       snprintf (buf, sizeof (buf), "%s %s", inst->ci->app, inst->filename);
        x = ecore_exe_run (buf, NULL);
        if (x) ecore_exe_free(x);
     }
@@ -633,7 +613,6 @@ static void
 _ss_take_shot (void *data)
 {
   Instance *inst;
-  Config_Item *ci;
   Edje_Message_Int_Set *msg;
   char buf[1024];
   char *cmd, *opt, *p;
@@ -642,19 +621,15 @@ _ss_take_shot (void *data)
   if (!inst)
     return;
 
-  ci = _ss_config_item_get (inst->gcc->id);
-  if (!ci)
-    return;
-
-  if (ci->use_import == 1)
+  if (inst->ci->use_import == 1)
     {
       cmd = strdup ("import");
-      opt = _get_import_options (ci);
+      opt = _get_import_options (inst->ci);
     }
-  else if (ci->use_scrot == 1)
+  else if (inst->ci->use_scrot == 1)
     {
       cmd = strdup ("scrot");
-      opt = _get_scrot_options (ci);
+      opt = _get_scrot_options (inst->ci);
     }
   else
     {
@@ -669,14 +644,14 @@ _ss_take_shot (void *data)
   if (!p)
     snprintf (buf, sizeof (buf), "%s.png", inst->filename);
 
-  snprintf (buf, sizeof (buf), "%s %s %s/%s", cmd, opt, ci->location, 
+  snprintf (buf, sizeof (buf), "%s %s %s/%s", cmd, opt, inst->ci->location, 
 	    inst->filename);
    
-  if (ci->delay_time > 0)
+  if (inst->ci->delay_time > 0)
     {
       msg = malloc (sizeof (Edje_Message_Int_Set) + 1 * sizeof (int));
       msg->count = 1;
-      msg->val[0] = ci->delay_time - 1;
+      msg->val[0] = inst->ci->delay_time - 1;
       edje_object_message_send (inst->ss->ss_obj, EDJE_MESSAGE_INT_SET, 1,
 				msg);
       free (msg);
@@ -700,14 +675,11 @@ static void
 _cb_entry_ok (char *text, void *data)
 {
   Instance *inst;
-  Config_Item *ci;
   char *t;
 
   inst = data;
   if (!inst)
     return;
-
-  ci = _ss_config_item_get (inst->gcc->id);
 
   t = ecore_file_dir_get (text);
   if (!strcmp (t, text))
@@ -716,17 +688,17 @@ _cb_entry_ok (char *text, void *data)
 			    D_ ("Enlightenment Screenshot Module"),
 			    D_ ("You did not specify a path.<br>"
 				"This shot will be saved in your home folder."));
-      if (ci->location)
-	evas_stringshare_del (ci->location);
-      ci->location = evas_stringshare_add (e_user_homedir_get ());
+      if (inst->ci->location)
+	evas_stringshare_del (inst->ci->location);
+      inst->ci->location = evas_stringshare_add (e_user_homedir_get ());
       e_config_save_queue ();
     }
   else
     {
 
-      if (ci->location)
-	evas_stringshare_del (ci->location);
-      ci->location = evas_stringshare_add (t);
+      if (inst->ci->location)
+	evas_stringshare_del (inst->ci->location);
+      inst->ci->location = evas_stringshare_add (t);
       e_config_save_queue ();
     }
 

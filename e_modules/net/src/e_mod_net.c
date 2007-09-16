@@ -2,9 +2,9 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
 #include <e.h>
+#include "e_mod_config.h"
 #include "e_mod_main.h"
 #include "e_mod_net.h"
-#include "e_mod_config.h"
 #include "e_mod_configure.h"
 #ifdef __FreeBSD__
 #include <sys/socket.h>
@@ -43,13 +43,11 @@ EAPI int
 _cb_poll(void *data) 
 {
    Instance *inst;
-   Config_Item *ci;
    char buf[256], popbuf[256], tmp[100];
    long bin, bout;
    bytes_t in, out = 0;
 
    inst = data;
-   ci = _config_item_get(inst->gcc->id);
 
 #ifndef __FreeBSD__	
    FILE *f;
@@ -73,7 +71,7 @@ _cb_poll(void *data)
 		    &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 17)
 	  continue;
 
-	if (!strcmp(dev, ci->device)) found = 1;
+	if (!strcmp(dev, inst->ci->device)) found = 1;
 	if (found) break;
      }
    fclose(f);
@@ -89,7 +87,7 @@ _cb_poll(void *data)
    for(i=1; i <= count; ++i)
      { 
 	get_ifmib_general(i, ifmd);
-	if (!strcmp(ifmd->ifmd_name, ci->device)) break;
+	if (!strcmp(ifmd->ifmd_name, inst->ci->device)) break;
      }
 
    in = ifmd->ifmd_data.ifi_ibytes; 
@@ -105,11 +103,11 @@ _cb_poll(void *data)
    inst->in = in;
    inst->out = out;
 
-   if (bin <= ci->limit)
+   if (bin <= inst->ci->limit)
      edje_object_signal_emit(inst->o_net, "e,state,receive,idle", "e");
    else
      edje_object_signal_emit(inst->o_net, "e,state,receive,active", "e");
-   if (bout <= ci->limit)
+   if (bout <= inst->ci->limit)
      edje_object_signal_emit(inst->o_net, "e,state,send,idle", "e");
    else
      edje_object_signal_emit(inst->o_net, "e,state,send,active", "e");
@@ -141,18 +139,16 @@ EAPI void
 _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event) 
 {
    Instance *inst;
-   Config_Item *ci;
    Ecore_Exe *x;
    Evas_Event_Mouse_Down *ev;
    
    inst = data;
    ev = event;
-   ci = _config_item_get(inst->gcc->id);
    if ((ev->button == 1) && (ev->flags & EVAS_BUTTON_DOUBLE_CLICK)) 
      {
-	if (ci->app != NULL) 
+	if (inst->ci->app != NULL) 
 	  {
-	     x = ecore_exe_run(ci->app, NULL);
+	     x = ecore_exe_run(inst->ci->app, NULL);
 	     if (x) ecore_exe_free(x);
 	  }
      }
@@ -191,15 +187,12 @@ EAPI void
 _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *source)
 {
    Instance *inst;
-   Config_Item *ci;
    Evas_Object *bg;
-   Evas_Coord gw, gh;
    char buf[PATH_MAX], tmp[100];
 
    inst = data;
    if (inst->popup != NULL) return;
-   ci = _config_item_get(inst->gcc->id);
-   if (!ci->show_popup) return;
+   if (!inst->ci->show_popup) return;
    
    inst->popup = e_gadcon_popup_new(inst->gcc, NULL);
    snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(cfg->mod));
@@ -208,7 +201,7 @@ _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *sou
    if (!e_theme_edje_object_set(bg, "base/theme/modules", 
 				"modules/net/popup"))
      edje_object_file_set(bg, buf, "modules/net/popup");
-   snprintf(buf, sizeof(buf), D_("Device - %s"), ci->device);
+   snprintf(buf, sizeof(buf), D_("Device - %s"), inst->ci->device);
    edje_object_part_text_set(bg, "e.text.title", buf);
    inst->pop_bg = bg;
 
@@ -259,9 +252,7 @@ static void
 _cb_configure(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
    Instance *inst;
-   Config_Item *ci;
    
    inst = data;
-   ci = _config_item_get(inst->gcc->id);
-   _configure_net_module(ci);
+   _configure_net_module(inst->ci);
 }

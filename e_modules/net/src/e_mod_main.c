@@ -1,7 +1,7 @@
 #include <e.h>
+#include "e_mod_config.h"
 #include "e_mod_main.h"
 #include "e_mod_gadcon.h"
-#include "e_mod_config.h"
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *item_edd = NULL;
@@ -77,19 +77,6 @@ e_modapi_shutdown(E_Module *m)
 EAPI int
 e_modapi_save(E_Module *m) 
 {
-   Evas_List *l;
-   
-   for (l = cfg->instances; l; l = l->next) 
-     {
-	Instance *inst;
-	Config_Item *ci;
-	
-	inst = l->data;
-	ci = _config_item_get(inst->gcc->id);
-	if (ci->id) evas_stringshare_del(ci->id);
-	ci->id = evas_stringshare_add(inst->gcc->id);
-     }
-   
    e_config_domain_save("module.net", conf_edd, cfg);
    return 1;
 }

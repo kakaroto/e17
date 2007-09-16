@@ -10,6 +10,7 @@ struct _Instance
   Evas_Object *wlan_obj;
   Wlan *wlan;
   Ecore_Timer *check_timer;
+  Config_Item *ci;
 };
 
 struct _Wlan
@@ -59,14 +60,13 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   E_Gadcon_Client *gcc;
   Evas_Object *o;
   Instance *inst;
-  Config_Item *ci;
   Wlan *wlan;
 
   inst = E_NEW (Instance, 1);
 
-  ci = _wlan_config_item_get (id);
-  if (!ci->id)
-    ci->id = evas_stringshare_add (id);
+  inst->ci = _wlan_config_item_get (id);
+  if (!inst->ci->id)
+    inst->ci->id = evas_stringshare_add (id);
 
   wlan = _wlan_new (gc->evas);
   wlan->inst = inst;
@@ -85,12 +85,12 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_OUT,
 				  _wlan_cb_mouse_out, inst);
 
-  if (ci->always_text)
+  if (inst->ci->always_text)
     edje_object_signal_emit (inst->wlan_obj, "label_active", "");
 
   _wlan_cb_check (inst);
 
-  inst->check_timer = ecore_timer_add (ci->poll_time, _wlan_cb_check, inst);
+  inst->check_timer = ecore_timer_add (inst->ci->poll_time, _wlan_cb_check, inst);
   wlan_config->instances = evas_list_append (wlan_config->instances, inst);
   return gcc;
 }
@@ -186,43 +186,33 @@ static void
 _wlan_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 {
   Instance *inst;
-  Config_Item *ci;
 
   inst = data;
-  ci = _wlan_config_item_get (inst->gcc->id);
-  _config_wlan_module (ci);
+  _config_wlan_module (inst->ci);
 }
 
 void
-_wlan_config_updated (const char *id)
+_wlan_config_updated (Config_Item *ci)
 {
   Evas_List *l;
-  Config_Item *ci;
 
   if (!wlan_config)
     return;
-  ci = _wlan_config_item_get (id);
   for (l = wlan_config->instances; l; l = l->next)
     {
       Instance *inst;
 
       inst = l->data;
-      if (!inst->gcc->id)
-	continue;
+      if (inst->ci != ci) continue;
 
-      if (!strcmp (inst->gcc->id, ci->id))
-	{
-	  if (inst->check_timer)
-	    ecore_timer_del (inst->check_timer);
-	  inst->check_timer =
-	    ecore_timer_add ((double) ci->poll_time, _wlan_cb_check, inst);
-	  if (ci->always_text)
-	    edje_object_signal_emit (inst->wlan_obj, "label_active", "");
-	  else
-	    edje_object_signal_emit (inst->wlan_obj, "label_passive", "");
-
-	  break;
-	}
+      if (inst->check_timer)
+	ecore_timer_del (inst->check_timer);
+      inst->check_timer =
+	      ecore_timer_add (inst->ci->poll_time, _wlan_cb_check, inst);
+      if (inst->ci->always_text)
+	edje_object_signal_emit (inst->wlan_obj, "label_active", "");
+      else
+	edje_object_signal_emit (inst->wlan_obj, "label_passive", "");
     }
 }
 
@@ -343,19 +333,6 @@ e_modapi_shutdown (E_Module * m)
 EAPI int
 e_modapi_save (E_Module * m)
 {
-  Evas_List *l;
-
-  for (l = wlan_config->instances; l; l = l->next)
-    {
-      Instance *inst;
-      Config_Item *ci;
-
-      inst = l->data;
-      ci = _wlan_config_item_get (inst->gcc->id);
-      if (ci->id)
-	evas_stringshare_del (ci->id);
-      ci->id = evas_stringshare_add (inst->gcc->id);
-    }
   e_config_domain_save ("module.wlan", conf_edd, wlan_config);
   return 1;
 }
@@ -408,19 +385,16 @@ static void
 _wlan_cb_mouse_out (void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
   Instance *inst;
-  Config_Item *ci;
 
   inst = data;
-  ci = _wlan_config_item_get (inst->gcc->id);
-  if (!ci->always_text)
+  if (!inst->ci->always_text)
     edje_object_signal_emit (inst->wlan_obj, "label_passive", "");
 }
 
 static int
 _wlan_cb_check (void *data)
 {
-  Instance *inst;
-  Config_Item *ci;
+   Instance *inst;
 
    unsigned int dummy;
    char iface[64];
@@ -439,8 +413,7 @@ _wlan_cb_check (void *data)
    if (!stat)
       return 1;
 
-  inst = data;
-  ci = _wlan_config_item_get (inst->gcc->id);
+   inst = data;
    
    while (fgets(buf, 256, stat))
      {
@@ -455,10 +428,10 @@ _wlan_cb_check (void *data)
                    iface, &wlan_status, &wlan_link, &wlan_level, &wlan_noise, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy) < 11)
            continue;
 
-      if (!ci->device)
+      if (!inst->ci->device)
 	continue;
 
-      if (!strcmp (iface, ci->device))
+      if (!strcmp (iface, inst->ci->device))
 	{
 	  found_dev = 1;
 	  break;

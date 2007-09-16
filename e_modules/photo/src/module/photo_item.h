@@ -72,7 +72,7 @@ struct _Photo_Item
 };
 
 
-Photo_Item  *photo_item_add(E_Gadcon_Client *gcc, Evas_Object *obj);
+Photo_Item  *photo_item_add(E_Gadcon_Client *gcc, Evas_Object *obj, const char *id);
 void         photo_item_del(Photo_Item *pi);
 
 void         photo_item_timer_set(Photo_Item *pi, int active, int time);

@@ -133,7 +133,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   ci->always_text = cfdata->always_text;
   ci->show_percent = cfdata->show_percent;
   e_config_save_queue ();
-  _mem_config_updated (ci->id);
+  _mem_config_updated (ci);
 
   return 1;
 }

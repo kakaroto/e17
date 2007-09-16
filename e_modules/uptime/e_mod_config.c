@@ -134,7 +134,7 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   ci->check_interval = cfdata->check_interval;
   ci->update_interval = cfdata->update_interval;
   e_config_save_queue ();
-  _ut_config_updated (ci->id);
+  _ut_config_updated (ci);
 
   return 1;
 }

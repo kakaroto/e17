@@ -135,7 +135,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    o = edje_object_add(gc->evas);
    gcc = e_gadcon_client_new(gc, name, id, style, o);
-   ni = news_item_new(gcc, o);
+   ni = news_item_new(gcc, o, id);
    gcc->data = ni;
 
    news->items = evas_list_append(news->items, ni);

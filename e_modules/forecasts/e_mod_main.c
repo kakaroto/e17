@@ -87,6 +87,7 @@ struct _Instance
    int bufsize, cursize;
 
    E_Gadcon_Popup *popup;
+   Config_Item    *ci;
 };
 
 struct _Forecasts
@@ -139,12 +140,11 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
    E_Gadcon_Client *gcc;
    Forecasts *w;
    Instance *inst;
-   Config_Item *ci;
 
    inst = E_NEW(Instance, 1);
 
-   ci = _forecasts_config_item_get(id);
-   inst->area = evas_stringshare_add(ci->code);
+   inst->ci = _forecasts_config_item_get(id);
+   inst->area = evas_stringshare_add(inst->ci->code);
 
    w = _forecasts_new(gc->evas);
    w->inst = inst;
@@ -162,7 +162,7 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(inst->forecasts_obj, EVAS_CALLBACK_MOUSE_OUT,
 				   _cb_mouse_out, inst);
 
-   if (!ci->show_text)
+   if (!inst->ci->show_text)
      edje_object_signal_emit(inst->forecasts_obj, "e,state,description,hide", "e");
    else
      edje_object_signal_emit(inst->forecasts_obj, "e,state,description,show", "e");
@@ -187,7 +187,7 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
 
    _forecasts_cb_check(inst);
    inst->check_timer =
-      ecore_timer_add((double) ci->poll_time, _forecasts_cb_check, inst);
+      ecore_timer_add(inst->ci->poll_time, _forecasts_cb_check, inst);
    return gcc;
 }
 
@@ -306,11 +306,9 @@ static void
 _forecasts_menu_cb_configure(void *data, E_Menu * m, E_Menu_Item * mi)
 {
    Instance *inst;
-   Config_Item *ci;
 
    inst = data;
-   ci = _forecasts_config_item_get(inst->gcc->id);
-   _config_forecasts_module(ci);
+   _config_forecasts_module(inst->ci);
 }
 
 static Config_Item *
@@ -436,21 +434,6 @@ e_modapi_shutdown(E_Module * m)
 EAPI int
 e_modapi_save(E_Module * m)
 {
-   Evas_List *l;
-
-   for (l = forecasts_config->instances; l; l = l->next)
-     {
-	Instance *inst;
-	Config_Item *ci;
-
-	inst = l->data;
-	ci = _forecasts_config_item_get(inst->gcc->id);
-
-	if (ci->id)
-	  evas_stringshare_del(ci->id);
-	ci->id = evas_stringshare_add(inst->gcc->id);
-     }
-
    e_config_domain_save("module.forecasts", conf_edd, forecasts_config);
    return 1;
 }
@@ -532,10 +515,8 @@ static int
 _forecasts_cb_check(void *data)
 {
    Instance *inst;
-   Config_Item *ci;
 
    inst = data;
-   ci = _forecasts_config_item_get(inst->gcc->id);
 
    if (inst->server)
      {
@@ -548,7 +529,7 @@ _forecasts_cb_check(void *data)
 	      proxy.host, proxy.port, inst);
    else
      inst->server =
-	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, ci->host, 80, inst);
+	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, inst->ci->host, 80, inst);
 
    return 1;
 }
@@ -557,7 +538,6 @@ static int
 _forecasts_server_add(void *data, int type, void *event)
 {
    Instance *inst;
-   Config_Item *ci;
    Ecore_Con_Event_Server_Add *ev;
    char buf[1024];
    char forecast[1024];
@@ -567,19 +547,18 @@ _forecasts_server_add(void *data, int type, void *event)
    if (!inst)
      return 1;
 
-   ci = _forecasts_config_item_get(inst->gcc->id);
    ev = event;
    if ((!inst->server) || (inst->server != ev->server))
      return 1;
 
-   if (ci->degrees == DEGREES_F)
+   if (inst->ci->degrees == DEGREES_F)
      degrees = 'f';
    else
      degrees = 'c';
 
-   snprintf(forecast, sizeof(forecast), "/forecastrss?p=%s&u=%c", ci->code, degrees);
+   snprintf(forecast, sizeof(forecast), "/forecastrss?p=%s&u=%c", inst->ci->code, degrees);
    snprintf(buf, sizeof(buf), "GET http://%s%s HTTP/1.1\r\nHost: %s\r\n\r\n",
-	 ci->host, forecast, ci->host);
+	    inst->ci->host, forecast, inst->ci->host);
    DEBUG("Server: %s", buf);
    ecore_con_server_send(inst->server, buf, strlen(buf));
    return 0;
@@ -790,11 +769,9 @@ error:
 void
 _forecasts_converter(Instance *inst)
 {
-   Config_Item *ci;
    int i, dir = -1;
 
-   ci = _forecasts_config_item_get(inst->gcc->id);
-   if ((inst->units.temp == 'F') && (ci->degrees == DEGREES_C))
+   if ((inst->units.temp == 'F') && (inst->ci->degrees == DEGREES_C))
      {
 	dir = DEGREES_C;
 	inst->units.temp = 'C';
@@ -802,7 +779,7 @@ _forecasts_converter(Instance *inst)
 	snprintf(inst->units.pressure, 3, "mb");
 	snprintf(inst->units.speed, 4, "kph");
      }
-   else if ((inst->units.temp == 'C') && (ci->degrees == DEGREES_F))
+   else if ((inst->units.temp == 'C') && (inst->ci->degrees == DEGREES_F))
      {
 	dir = DEGREES_F;
 	inst->units.temp = 'F';
@@ -885,54 +862,46 @@ _forecasts_display_set(Instance * inst, int ok)
 }
 
 void
-_forecasts_config_updated(const char *id)
+_forecasts_config_updated(Config_Item *ci)
 {
    Evas_List *l;
-   Config_Item *ci;
    char buf[4096];
 
    if (!forecasts_config)
      return;
-   ci = _forecasts_config_item_get(id);
    for (l = forecasts_config->instances; l; l = l->next)
      {
 	Instance *inst;
 
 	inst = l->data;
-	if (!inst->gcc->id)
-	  continue;
-	if (!strcmp(inst->gcc->id, ci->id))
-	  {
-	     int area_changed = 0;
+	if (inst->ci != ci) continue;
+	int area_changed = 0;
 
-	     if (inst->area && strcmp(inst->area, ci->code))
-	       area_changed = 1;
+	if (inst->area && strcmp(inst->area, inst->ci->code))
+	  area_changed = 1;
 
-	     if (inst->area) evas_stringshare_del(inst->area);
-	     inst->area = evas_stringshare_add(ci->code);
-	     _forecasts_converter(inst);
-	     _forecasts_popup_content_create(inst);
+	if (inst->area) evas_stringshare_del(inst->area);
+	inst->area = evas_stringshare_add(inst->ci->code);
+	_forecasts_converter(inst);
+	_forecasts_popup_content_create(inst);
 
-	     snprintf(buf, sizeof(buf), "%d°%c", inst->condition.temp, inst->units.temp);
-	     edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.temp", buf);
+	snprintf(buf, sizeof(buf), "%d°%c", inst->condition.temp, inst->units.temp);
+	edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.temp", buf);
 
-	     if (!ci->show_text)
-	       edje_object_signal_emit(inst->forecasts_obj, "e,state,description,hide", "e");
-	     else
-	       edje_object_signal_emit(inst->forecasts_obj, "e,state,description,show", "e");
-   
-	     if (area_changed)
-	       _forecasts_cb_check(inst);
-	     if (!inst->check_timer)
-	       inst->check_timer =
-		  ecore_timer_add((double) ci->poll_time, _forecasts_cb_check,
-			inst);
-	     else
-	       ecore_timer_interval_set(inst->check_timer,
-		     (double) ci->poll_time);
+	if (!inst->ci->show_text)
+	  edje_object_signal_emit(inst->forecasts_obj, "e,state,description,hide", "e");
+	else
+	  edje_object_signal_emit(inst->forecasts_obj, "e,state,description,show", "e");
 
-	     break;
-	  }
+	if (area_changed)
+	  _forecasts_cb_check(inst);
+	if (!inst->check_timer)
+	  inst->check_timer =
+	     ecore_timer_add(inst->ci->poll_time, _forecasts_cb_check,
+			     inst);
+	else
+	  ecore_timer_interval_set(inst->check_timer,
+				   inst->ci->poll_time);
      }
 }
 
@@ -1093,8 +1062,7 @@ static void
 _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
-   int ww, wh;
-   
+ 
    if (!(inst = data)) return;
    e_gadcon_popup_show(inst->popup);
 }

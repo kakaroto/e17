@@ -1,7 +1,7 @@
 #include <e.h>
+#include "e_mod_config.h"
 #include "e_mod_main.h"
 #include "e_mod_configure.h"
-#include "e_mod_config.h"
 
 struct _E_Config_Dialog_Data 
 {
@@ -169,6 +169,6 @@ _apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
      ci->app = evas_stringshare_add(cfdata->app);
    
    e_config_save_queue();
-   _config_updated(ci->id);
+   _config_updated(ci);
    return 1;
 }

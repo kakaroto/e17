@@ -62,7 +62,7 @@ static void     _cb_popi_close(void *data);
  * Public functions
  */
 
-Photo_Item *photo_item_add(E_Gadcon_Client *gcc, Evas_Object *obj)
+Photo_Item *photo_item_add(E_Gadcon_Client *gcc, Evas_Object *obj, const char *id)
 {
    Photo_Item *pi;
    Photo_Config_Item *pic;
@@ -71,7 +71,7 @@ Photo_Item *photo_item_add(E_Gadcon_Client *gcc, Evas_Object *obj)
 
    photo_util_edje_set(obj, PHOTO_THEME_ITEM);
 
-   pic = photo_config_item_new(gcc->id);
+   pic = photo_config_item_new(id);
    pi->gcc = gcc;
    pi->obj = obj;
    pi->config = pic;

@@ -44,6 +44,7 @@ struct _Instance
   time_t counter;
   int nusers;
   double la[3];
+  Config_Item *ci;
 };
 
 struct _Uptime
@@ -86,15 +87,14 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   Evas_Object *o;
   E_Gadcon_Client *gcc;
   Instance *inst;
-  Config_Item *ci;
   Uptime *ut;
 
   inst = E_NEW (Instance, 1);
-  ci = _ut_config_item_get (id);
+  inst->ci = _ut_config_item_get (id);
 
 #ifdef UPTIME_DEBUG
-  syslog (LOG_EMERG, "ii id= %s, ci->update_interval = %d, ci = %d\n",
-	  ci->id, ci->update_interval, ci->check_interval);
+  syslog (LOG_EMERG, "ii id= %s, inst->ci->update_interval = %d, ci = %d\n",
+	  inst->ci->id, inst->ci->update_interval, inst->ci->check_interval);
 #endif
 
   ut = _ut_new (gc->evas);
@@ -115,7 +115,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   inst->counter = 0;
 
   if (!inst->monitor)
-    inst->monitor = ecore_timer_add (ci->update_interval, _ut_cb_check, inst);
+    inst->monitor = ecore_timer_add (inst->ci->update_interval, _ut_cb_check, inst);
 
   return gcc;
 }
@@ -230,11 +230,9 @@ static void
 _ut_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 {
   Instance *inst;
-  Config_Item *ci;
 
   inst = data;
-  ci = _ut_config_item_get (inst->gcc->id);
-  _config_ut_module (ci);
+  _config_ut_module (inst->ci);
 }
 
 static Config_Item *
@@ -263,31 +261,23 @@ _ut_config_item_get (const char *id)
 }
 
 void
-_ut_config_updated (const char *id)
+_ut_config_updated (Config_Item *ci)
 {
   Evas_List *l;
-  Config_Item *ci;
 
   if (ut_config == NULL)
     return;
-
-  ci = _ut_config_item_get (id);
 
   for (l = ut_config->instances; l; l = l->next)
     {
       Instance *inst;
 
       inst = l->data;
-      if (inst->gcc->id == NULL)
-	continue;
-      if (strcmp (inst->gcc->id, ci->id) == 0)
-	{
-	  if (inst->monitor != NULL)
-	    ecore_timer_del (inst->monitor);
-	  inst->monitor =
-	    ecore_timer_add (ci->update_interval, _ut_cb_check, inst);
-	  break;
-	}
+      if (inst->ci != ci) continue;
+      if (inst->monitor != NULL)
+	ecore_timer_del (inst->monitor);
+      inst->monitor =
+	      ecore_timer_add (ci->update_interval, _ut_cb_check, inst);
     }
 }
 
@@ -377,22 +367,7 @@ e_modapi_shutdown (E_Module * m)
 EAPI int
 e_modapi_save (E_Module * m)
 {
-  Evas_List *l;
-
-  for (l = ut_config->instances; l; l = l->next)
-    {
-      Instance *inst;
-      Config_Item *ci;
-
-      inst = l->data;
-      ci = _ut_config_item_get (inst->gcc->id);
-      if (ci->id != NULL)
-	evas_stringshare_del (ci->id);
-      ci->id = evas_stringshare_add (inst->gcc->id);
-    }
-
   e_config_domain_save ("module.uptime", conf_edd, ut_config);
-
   return 1;
 }
 
@@ -530,7 +505,6 @@ static int
 _ut_cb_check (void *data)
 {
   Instance *inst;
-  Config_Item *ci;
   int days, hours, minutes;
   char u_date_time[256] = "up: N/A";
   char load_avg[256] = "la: N/A";
@@ -541,17 +515,13 @@ _ut_cb_check (void *data)
   if (!inst)
     return 0;
 
-  ci = _ut_config_item_get (inst->gcc->id);
-  if (!ci)
-    return 0;
-
 #ifdef UPTIME_DEBUG
   syslog (LOG_EMERG, "counter = %d  update = %d\n", inst->counter,
-	  ci->check_interval);
+	  inst->ci->check_interval);
 #endif
 
-  inst->counter += ci->update_interval;
-  if (inst->counter >= ci->check_interval)
+  inst->counter += inst->ci->update_interval;
+  if (inst->counter >= inst->ci->check_interval)
     {
       inst->counter = 0;
       (void) update_counters (inst);

@@ -34,7 +34,7 @@ EAPI int   e_modapi_save(E_Module *m);
 EAPI int   e_modapi_about(E_Module *m);
 
 void _config_slideshow_module(Config_Item *ci);
-void _slide_config_updated(const char *id);
+void _slide_config_updated(Config_Item *ci);
 extern Config *slide_config;
 
 #endif
