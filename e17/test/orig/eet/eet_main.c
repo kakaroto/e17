@@ -14,145 +14,6 @@
 #define PATH_MAX 4096
 #endif
 
-/* just some sample code on how to use encoder/decoders */
-#if 0
-#include <Evas.h>
-
-typedef struct _blah2
-{
-   char *string;
-}
-Blah2;
-
-typedef struct _blah3
-{
-   char *string;
-}
-Blah3;
-
-typedef struct _blah
-{
-   char character;
-   short sixteen;
-   int integer;
-   long long lots;
-   float floating;
-   double floating_lots;
-   char *string;
-   Blah2 *blah2;
-   Evas_List *blah3;
-}
-Blah;
-
-void
-encdectest(void)
-{
-   Blah blah;
-   Blah2 blah2;
-   Blah3 blah3;
-   Eet_Data_Descriptor *edd, *edd2, *edd3;
-   void *data;
-   int size;
-   FILE *f;
-   Blah *blah_in;
-
-   edd3 = eet_data_descriptor_new("blah3", sizeof(Blah3),
-				  evas_list_next,
-				  evas_list_append,
-				  evas_list_data,
-				  evas_list_free,
-				  evas_hash_foreach,
-				  evas_hash_add,
-				  evas_hash_free);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd3, Blah3, "string3", string, EET_T_STRING);
-
-   edd2 = eet_data_descriptor_new("blah2", sizeof(Blah2),
-				  evas_list_next,
-				  evas_list_append,
-				  evas_list_data,
-				  evas_list_free,
-				  evas_hash_foreach,
-				  evas_hash_add,
-				  evas_hash_free);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd2, Blah2, "string2", string, EET_T_STRING);
-
-   edd = eet_data_descriptor_new("blah", sizeof(Blah),
-				  evas_list_next,
-				  evas_list_append,
-				  evas_list_data,
-				  evas_list_free,
-				  evas_hash_foreach,
-				  evas_hash_add,
-				  evas_hash_free);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Blah, "character", character, EET_T_CHAR);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Blah, "sixteen", sixteen, EET_T_SHORT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Blah, "integer", integer, EET_T_INT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Blah, "lots", lots, EET_T_LONG_LONG);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Blah, "floating", floating, EET_T_FLOAT);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Blah, "floating_lots", floating_lots, EET_T_DOUBLE);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Blah, "string", string, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_SUB  (edd, Blah, "blah2", blah2, edd2);
-   EET_DATA_DESCRIPTOR_ADD_LIST (edd, Blah, "blah3", blah3, edd3);
-
-   blah3.string="PANTS";
-
-   blah2.string="subtype string here!";
-
-   blah.character='7';
-   blah.sixteen=0x7777;
-   blah.integer=0xc0def00d;
-   blah.lots=0xdeadbeef31337777;
-   blah.floating=3.141592654;
-   blah.floating_lots=0.777777777777777;
-   blah.string="bite me like a turnip";
-   blah.blah2 = &blah2;
-   blah.blah3 = evas_list_append(NULL, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-
-   data = eet_data_descriptor_encode(edd, &blah, &size);
-   f = fopen("out", "wb");
-   if (f)
-     {
-	fwrite(data, size, 1, f);
-	fclose(f);
-     }
-   printf("-----DECODING\n");
-   blah_in = eet_data_descriptor_decode(edd, data, size);
-   printf("-----DECODED!\n");
-   printf("%c\n", blah_in->character);
-   printf("%x\n", (int)blah_in->sixteen);
-   printf("%x\n", blah_in->integer);
-   printf("%lx\n", blah_in->lots);
-   printf("%f\n", (double)blah_in->floating);
-   printf("%f\n", (double)blah_in->floating_lots);
-   printf("%s\n", blah_in->string);
-   printf("%p\n", blah_in->blah2);
-   printf("  %s\n", blah_in->blah2->string);
-     {
-	Evas_List *l;
-
-	for (l = blah_in->blah3; l; l = l->next)
-	  {
-	     Blah3 *blah3_in;
-
-	     blah3_in = l->data;
-	     printf("%p\n", blah3_in);
-	     printf("  %s\n", blah3_in->string);
-	  }
-     }
-   eet_data_descriptor_free(edd);
-   eet_data_descriptor_free(edd2);
-   eet_data_descriptor_free(edd3);
-
-   exit(0);
-}
-#endif
-
 int eet_mkdir(char *dir);
 void eet_mkdirs(char *s);
 
@@ -381,6 +242,52 @@ pack(char *pak_file, char **files, int count, char **noz, int noz_num)
    eet_close(ef);
 }
 
+void
+dumpfunc(void *dumpdata, const char *str)
+{
+   fprintf(dumpdata, "%s\n", str);
+}
+
+void
+dump(void *data, int size, const char *file)
+{
+   FILE *f;
+   
+   f = fopen(file, "w");
+   if (f)
+     {
+	eet_data_text_dump(data, size, dumpfunc, f);
+	fclose(f);
+     }
+}
+
+void *
+undump(const char *file, int *size_ret)
+{
+   FILE *f;
+   int len, sz = 0;
+   char *st;           
+   void *data = NULL;
+   
+   f = fopen(file, "r");
+   if (f)
+     {
+	fseek(f, 0, SEEK_END);
+	len = ftell(f);
+	rewind(f);
+	st = malloc(len + 1);
+	if (st)
+	  {
+	     fread(st, len, 1, f);
+	     st[len] = 0;
+	     data = eet_data_text_undump(st, strlen(st), size_ret);
+	     free(st);
+	  }
+	fclose(f);
+     }
+   return data;
+}
+
 int
 main(int argc, char **argv)
 {
@@ -397,7 +304,7 @@ main(int argc, char **argv)
 	     return 0;
 	  }
      }
-   else if (argc > 3)
+   else if (argc == 3)
      {
 	char **noz     = NULL;
 	int    noz_num = 0;
@@ -425,22 +332,50 @@ main(int argc, char **argv)
 	     return 0;
 	  }
      }
+   else if (argc == 5)
+     {
+	if (!strcmp(argv[1], "-x"))
+	  {
+	     return 0;
+	  }
+	else if (!strcmp(argv[1], "-xz"))
+	  {
+	     return 0;
+	  }
+	else if (!strcmp(argv[1], "-i"))
+	  {
+	     return 0;
+	  }
+	else if (!strcmp(argv[1], "-iz"))
+	  {
+	     return 0;
+	  }
+     }
    printf("usage:\n"
-	  "  %s -l in_file\n"
-	  "  %s -d in_file\n"
+	  "  %s -l  in_file\n"
+	  "  %s -d  in_file\n"
+	  "  %s -x  in_file key outfile\n"
+	  "  %s -i  in_file key outfile\n"
+	  "  %s -xz in_file key outfile\n"
+	  "  %s -iz in_file key outfile\n"
 	  "  %s -c out_file [-nz glob [-nz glob ...]] dir_file1 [dir_file2 ...]\n"
 	  "\n"
 	  "where:\n"
-	  "  -l in_file     list contents of eet file\n"
-	  "  -d in_file     unpack eet file\n"
-	  "  -c out_file    pack up eet file\n"
-	  "  -nz match      don't compress files matching match glob\n"
+	  "  -l  in_file     list contents of eet file\n"
+	  "  -d  in_file     unpack eet file\n"
+	  "  -c  out_file    pack up eet file\n"
+	  "  -x  in_file     extract a data encoded key to outfile\n"
+	  "  -i  in_file     insert a data encoded key from outfile\n"
+	  "  -xz in_file     extract a data encoded key to outfile (compressed)\n"
+	  "  -iz in_file     insert a data encoded key from outfile (compressed)\n"
+	  "  -nz match       don't compress files matching match glob\n"
 	  "\n"
 	  "example:\n"
 	  "  %s -c out.eet -nz \"*.jpg\" things/\n"
 	  "  %s -l out.eet\n"
 	  "  %s -d out.eet\n",
 	  argv[0], argv[0], argv[0],
-	  argv[0], argv[0], argv[0]);
+	  argv[0], argv[0], argv[0],
+	  argv[0], argv[0]);
    return -1;
 }
