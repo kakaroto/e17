@@ -5,6 +5,10 @@
 #include "etk_menu_shell.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* TODO/FIXME list:
  * - Improve default theme
  * - Add keyboard navigation
@@ -42,5 +46,9 @@ Etk_Type   *etk_menu_bar_type_get(void);
 Etk_Widget *etk_menu_bar_new(void);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

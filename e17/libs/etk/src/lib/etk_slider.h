@@ -2,9 +2,14 @@
 #ifndef _ETK_SLIDER_H_
 #define _ETK_SLIDER_H_
 
-#include "etk_range.h"
 #include <Ecore.h>
+
+#include "etk_range.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Slider Etk_Slider
@@ -99,5 +104,9 @@ void        etk_slider_update_policy_set(Etk_Slider *slider, Etk_Slider_Update_P
 Etk_Slider_Update_Policy etk_slider_update_policy_get(Etk_Slider *slider);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

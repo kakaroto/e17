@@ -1,15 +1,21 @@
 /** @file etk_combobox.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_combobox.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include "etk_container.h"
-#include "etk_popup_window.h"
-#include "etk_toggle_button.h"
-#include "etk_label.h"
-#include "etk_image.h"
 #include "etk_event.h"
+#include "etk_image.h"
+#include "etk_label.h"
+#include "etk_popup_window.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_toggle_button.h"
 #include "etk_utils.h"
 
 /**

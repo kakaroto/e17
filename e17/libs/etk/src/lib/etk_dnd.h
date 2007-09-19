@@ -2,8 +2,12 @@
 #ifndef _ETK_DND_H_
 #define _ETK_DND_H_
 
-#include "etk_window.h"
 #include "etk_types.h"
+#include "etk_window.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define ETK_SELECTION_TARGET_TARGETS "TARGETS"
 #define ETK_SELECTION_TARGET_TEXT "TEXT"
@@ -57,5 +61,9 @@ struct Etk_Selection_Data_Targets
 };
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

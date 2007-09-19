@@ -1,10 +1,14 @@
 /** @file etk_dnd.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_dnd.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include <Ecore.h>
 
-#include "config.h"
+#include <Ecore.h>
 
 #include "etk_engine.h"
 

@@ -3,7 +3,12 @@
 #define _ETK_SIGNAL_CALLBACK_H_
 
 #include <stdarg.h>
+
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Signal_Callback Etk_Signal_Callback
@@ -40,5 +45,9 @@ Etk_Bool etk_signal_callback_is_blocked(Etk_Signal_Callback *callback);
 
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

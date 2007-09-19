@@ -2,9 +2,13 @@
 #ifndef _ETK_UTILS_H_
 #define _ETK_UTILS_H_
 
-#include <stdio.h>
-#include <math.h>
 #include <libintl.h>
+#include <math.h>
+#include <stdio.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Utils Etk_Utils
@@ -42,5 +46,9 @@ void etk_callback_set_null(void *data);
 unsigned int etk_current_time_get();
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

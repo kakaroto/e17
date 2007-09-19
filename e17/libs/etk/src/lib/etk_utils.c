@@ -1,6 +1,12 @@
 /** @file etk_utils.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_utils.h"
+
 #include <sys/time.h>
+
 #include "etk_types.h"
 #include "etk_signal.h"
 

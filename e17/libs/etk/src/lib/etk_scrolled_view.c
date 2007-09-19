@@ -1,12 +1,18 @@
 /** @file etk_scrolled_view.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_scrolled_view.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include "etk_viewport.h"
+
 #include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
+#include "etk_viewport.h"
 
 /**
  * @addtogroup Etk_Scrolled_View

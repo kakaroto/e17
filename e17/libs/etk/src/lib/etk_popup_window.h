@@ -2,9 +2,14 @@
 #ifndef _ETK_POPUP_WINDOW_H_
 #define _ETK_POPUP_WINDOW_H_
 
-#include "etk_window.h"
 #include <Evas.h>
+
 #include "etk_types.h"
+#include "etk_window.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Popup_Window Etk_Popup_Window
@@ -63,5 +68,9 @@ void              etk_popup_window_popdown_all(void);
 Etk_Bool          etk_popup_window_is_popped_up(Etk_Popup_Window *popup_window);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

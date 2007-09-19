@@ -2,9 +2,14 @@
 #ifndef _ETK_COMBOBOX_ENTRY_H_
 #define _ETK_COMBOBOX_ENTRY_H_
 
-#include "etk_widget.h"
 #include <stdarg.h>
+
+#include "etk_widget.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* TODO/FIXME list:
  * - combobox_entry item separator!
@@ -167,5 +172,9 @@ void etk_combobox_entry_pop_down(Etk_Combobox_Entry *combobox_entry);
 void etk_combobox_entry_popup_feed(Etk_Combobox_Entry *combobox_entry, Etk_Window *window);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

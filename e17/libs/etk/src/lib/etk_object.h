@@ -2,10 +2,16 @@
 #ifndef _ETK_OBJECT_H_
 #define _ETK_OBJECT_H_
 
-#include <Evas.h>
 #include <stdarg.h>
+
+#include <Evas.h>
+
 #include "etk_type.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* TODO/FIXME list:
  * - etk_object_type_get() and etk_object_object_type_get() are confusing: maybe we should rename them
@@ -111,5 +117,9 @@ void        etk_object_notification_callback_add(Etk_Object *object, const char 
 void        etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data));
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

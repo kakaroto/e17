@@ -1,7 +1,12 @@
 /** @file etk_bin.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_bin.h"
+
 #include <stdlib.h>
-#include <Evas.h>
+
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"

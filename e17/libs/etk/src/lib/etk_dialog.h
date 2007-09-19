@@ -2,9 +2,13 @@
 #ifndef _ETK_DIALOG_H_
 #define _ETK_DIALOG_H_
 
-#include "etk_window.h"
 #include "etk_box.h"
 #include "etk_types.h"
+#include "etk_window.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* TODO/FIXME list:
  * - We should certainly set some X hints to make dialogs not only simple windows
@@ -86,5 +90,9 @@ void        etk_dialog_has_separator_set(Etk_Dialog *dialog, Etk_Bool has_separa
 Etk_Bool    etk_dialog_has_separator_get(Etk_Dialog *dialog);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

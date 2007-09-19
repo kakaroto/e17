@@ -5,6 +5,10 @@
 #include "etk_button.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Toggle_Button Etk_Toggle_Button
  * @brief An Etk_Toggle_Button is a button that can be activated and deactivated by clicking on it.
@@ -45,5 +49,9 @@ void        etk_toggle_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
 Etk_Bool    etk_toggle_button_active_get(Etk_Toggle_Button *toggle_button);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

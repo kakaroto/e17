@@ -3,9 +3,13 @@
 #define _ETK_TOOL_BUTTON_H_
 
 #include "etk_button.h"
-#include "etk_toggle_button.h"
 #include "etk_stock.h"
+#include "etk_toggle_button.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Tool_Button Etk_Tool_Button
@@ -68,5 +72,9 @@ Etk_Widget *etk_tool_toggle_button_new_with_label(const char *label);
 Etk_Widget *etk_tool_toggle_button_new_from_stock(Etk_Stock_Id stock_id);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

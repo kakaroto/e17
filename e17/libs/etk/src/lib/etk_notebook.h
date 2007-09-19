@@ -2,9 +2,14 @@
 #ifndef _ETK_NOTEBOOK_H_
 #define _ETK_NOTEBOOK_H_
 
-#include "etk_container.h"
 #include <Evas.h>
+
+#include "etk_container.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** TODO/FIXME list:
  * - Improve the default theme of the tabs
@@ -90,5 +95,9 @@ void        etk_notebook_tabs_homogeneous_set(Etk_Notebook *notebook, Etk_Bool t
 Etk_Bool    etk_notebook_tabs_homogeneous_get(Etk_Notebook *notebook);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

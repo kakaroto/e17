@@ -1,6 +1,12 @@
 /** @file etk_toggle_button.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_toggle_button.h"
+
 #include <stdlib.h>
+
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 

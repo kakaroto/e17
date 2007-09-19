@@ -1,18 +1,23 @@
 /** @file etk_engine.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_engine.h"
+
+#include <dlfcn.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
-#include <dlfcn.h>
+
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
-#include "etk_object.h"
-#include "etk_window.h"
-#include "etk_popup_window.h"
+
 #include "etk_drag.h"
-#include "etk_widget.h"
+#include "etk_object.h"
+#include "etk_popup_window.h"
 #include "etk_utils.h"
-#include "config.h"
+#include "etk_widget.h"
 
 /**
  * @addtogroup Etk_Engine

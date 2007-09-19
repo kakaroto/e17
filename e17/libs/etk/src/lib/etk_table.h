@@ -2,9 +2,14 @@
 #ifndef _ETK_TABLE_H_
 #define _ETK_TABLE_H_
 
-#include "etk_container.h"
 #include <Evas.h>
+
+#include "etk_container.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Table Etk_Table
@@ -111,5 +116,9 @@ Etk_Table_Homogeneous etk_table_homogeneous_get(Etk_Table *table);
 void etk_table_child_position_get(Etk_Table *table, Etk_Widget *child, int *left_attach, int *right_attach, int *top_attach, int *bottom_attach);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

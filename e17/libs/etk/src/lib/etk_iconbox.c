@@ -1,17 +1,24 @@
 /** @file etk_iconbox.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_iconbox.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include <Ecore.h>
 #include <Edje.h>
-#include "etk_container.h"
-#include "etk_scrolled_view.h"
-#include "etk_label.h"
+
 #include "etk_cache.h"
-#include "etk_theme.h"
+#include "etk_container.h"
 #include "etk_event.h"
+#include "etk_label.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_scrolled_view.h"
+#include "etk_theme.h"
 #include "etk_utils.h"
 
 /**

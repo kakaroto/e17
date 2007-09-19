@@ -5,6 +5,10 @@
 #include "etk_bin.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Frame Etk_Frame
  * @brief A frame is a bin container with a label. It may be useful to group widgets that are logically related
@@ -40,5 +44,9 @@ void        etk_frame_label_set(Etk_Frame *frame, const char *label);
 const char *etk_frame_label_get(Etk_Frame *frame);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

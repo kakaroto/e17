@@ -2,8 +2,12 @@
 #ifndef _ETK_RANGE_H_
 #define _ETK_RANGE_H_
 
-#include "etk_widget.h"
 #include "etk_types.h"
+#include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Range Etk_Range
@@ -52,5 +56,9 @@ void      etk_range_page_size_set(Etk_Range *range, double page_size);
 double    etk_range_page_size_get(Etk_Range *range);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

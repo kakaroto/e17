@@ -3,8 +3,13 @@
 #define _ETK_SCROLLBAR_H_
 
 #include <Ecore.h>
+
 #include "etk_range.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* TODO/FIXME list:
  * - the value of the scrollbar should be changed when the trough is clicked
@@ -84,5 +89,9 @@ Etk_Widget *etk_hscrollbar_new(double lower, double upper, double value, double 
 Etk_Widget *etk_vscrollbar_new(double lower, double upper, double value, double step_increment, double page_increment, double page_size);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

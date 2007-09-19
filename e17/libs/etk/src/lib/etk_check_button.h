@@ -5,6 +5,10 @@
 #include "etk_toggle_button.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Check_Button Etk_Check_Button
  * @brief The Etk_Check_Button widget is a toggle button made up of a checkbox and a label
@@ -36,5 +40,9 @@ Etk_Widget *etk_check_button_new(void);
 Etk_Widget *etk_check_button_new_with_label(const char *label);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

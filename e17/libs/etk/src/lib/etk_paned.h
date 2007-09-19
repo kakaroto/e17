@@ -5,6 +5,10 @@
 #include "etk_container.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Paned Etk_Paned
  * @brief The Etk_Paned widget is a container that can contain two children separated by a draggable separator
@@ -97,5 +101,9 @@ void        etk_paned_position_set(Etk_Paned *paned, int position);
 int         etk_paned_position_get(Etk_Paned *paned);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

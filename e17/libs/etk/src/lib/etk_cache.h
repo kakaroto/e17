@@ -3,7 +3,12 @@
 #define _ETK_CACHE_H_
 
 #include <Evas.h>
+
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Cache Cache system of Etk
@@ -41,5 +46,9 @@ void         etk_cache_remove(Etk_Cache *cache, Evas_Object *object);
 Evas_Object *etk_cache_find(Etk_Cache *cache, const char *filename, const char *key);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -2,9 +2,14 @@
 #ifndef _ETK_FIXED_H_
 #define _ETK_FIXED_H_
 
-#include "etk_container.h"
 #include <Evas.h>
+
+#include "etk_container.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Fixed Etk_Fixed
@@ -41,5 +46,9 @@ void        etk_fixed_move(Etk_Fixed *fixed, Etk_Widget *widget, int x, int y);
 void        etk_fixed_child_position_get(Etk_Fixed *fixed, Etk_Widget *widget, int *x, int *y);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

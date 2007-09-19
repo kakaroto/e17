@@ -1,9 +1,14 @@
 /** @file etk_type.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_type.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include "etk_signal.h"
-#include "etk_property.h"
 
 /**
  * @addtogroup Etk_Type

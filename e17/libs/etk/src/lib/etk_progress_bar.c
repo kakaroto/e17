@@ -1,4 +1,8 @@
 /** @file etk_progress_bar.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_progress_bar.h"
 #include <stdlib.h>
 #include <string.h>

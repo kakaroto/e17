@@ -1,9 +1,15 @@
 /** @file etk_notebook.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_notebook.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include "etk_radio_button.h"
+
 #include "etk_event.h"
+#include "etk_radio_button.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"

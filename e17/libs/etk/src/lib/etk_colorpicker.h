@@ -2,9 +2,14 @@
 #ifndef __ETK_COLORPICKER_H__
 #define __ETK_COLORPICKER_H__
 
-#include "etk_widget.h"
 #include <Evas.h>
+
+#include "etk_widget.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* TODO/FIXME list:
  * - Html code somewhere
@@ -112,5 +117,9 @@ void                 etk_colorpicker_use_alpha_set(Etk_Colorpicker *cp, Etk_Bool
 Etk_Bool             etk_colorpicker_use_alpha_get(Etk_Colorpicker *cp);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

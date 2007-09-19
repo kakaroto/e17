@@ -3,8 +3,13 @@
 #define _ETK_IMAGE_H_
 
 #include <Evas.h>
-#include "etk_widget.h"
+
 #include "etk_stock.h"
+#include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Image Etk_Image
@@ -108,5 +113,9 @@ void         etk_image_aspect_ratio_set(Etk_Image *image, double aspect_ratio);
 double       etk_image_aspect_ratio_get(Etk_Image *image);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -2,10 +2,14 @@
 #ifndef _ETK_TOOLBAR_H_
 #define _ETK_TOOLBAR_H_
 
+#include "etk_box.h"
 #include "etk_container.h"
 #include "etk_stock.h"
 #include "etk_types.h"
-#include "etk_box.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* TODO/FIXME list:
  * - When the toolbar is too large, we should clip it and add a popup-menu for the clipped tool-items
@@ -79,5 +83,9 @@ void           etk_toolbar_stock_size_set(Etk_Toolbar *toolbar, Etk_Stock_Size s
 Etk_Stock_Size etk_toolbar_stock_size_get(Etk_Toolbar *toolbar);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

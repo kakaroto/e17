@@ -1,14 +1,20 @@
 /** @file etk_entry.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_entry.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include "etk_editable.h"
-#include "etk_image.h"
-#include "etk_toplevel.h"
-#include "etk_selection.h"
 #include "etk_event.h"
+#include "etk_image.h"
+#include "etk_selection.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_toplevel.h"
 #include "etk_utils.h"
 
 /* TODO: what if the image is reparented?! */

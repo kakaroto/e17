@@ -1,8 +1,15 @@
 /** @file etk_editable.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_editable.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include <Edje.h>
+
 #include "etk_string.h"
 #include "etk_theme.h"
 #include "etk_utils.h"

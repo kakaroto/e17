@@ -3,7 +3,12 @@
 #define _ETK_THEME_H_
 
 #include <Evas.h>
+
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* TODO/FIXME list:
  * - Use etk_config_dir_get() to get the dirs where the themes should be looked for
@@ -68,5 +73,9 @@ Etk_Bool    etk_theme_edje_object_set_from_parent(Evas_Object *object, const cha
 Etk_Bool    etk_theme_color_get(const char *file, Etk_Color_Type color_type, int *r, int *g, int *b, int *a);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

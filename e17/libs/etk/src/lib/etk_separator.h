@@ -2,8 +2,12 @@
 #ifndef _ETK_SEPARATOR_H_
 #define _ETK_SEPARATOR_H_
 
-#include "etk_widget.h"
 #include "etk_types.h"
+#include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Separator Etk_Separator
@@ -75,5 +79,9 @@ Etk_Widget *etk_hseparator_new(void);
 Etk_Widget *etk_vseparator_new(void);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

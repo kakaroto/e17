@@ -1,13 +1,19 @@
 /** @file etk_dialog.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_dialog.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include "etk_alignment.h"
-#include "etk_separator.h"
 #include "etk_button.h"
-#include "etk_theme.h"
+#include "etk_separator.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_theme.h"
 
 /**
  * @addtogroup Etk_Dialog

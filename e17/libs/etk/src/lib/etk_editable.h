@@ -3,7 +3,12 @@
 #define _ETK_EDITABLE_H_
 
 #include <Evas.h>
+
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Editable Etk_Editable
@@ -52,5 +57,9 @@ int          etk_editable_pos_get_from_coords(Evas_Object *editable, int x, int 
 void         etk_editable_char_size_get(Evas_Object *editable, int *w, int *h);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

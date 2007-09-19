@@ -3,8 +3,13 @@
 #define _ETK_TOPLEVEL_H_
 
 #include <Evas.h>
+
 #include "etk_bin.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Toplevel Etk_Toplevel
@@ -86,5 +91,9 @@ Evas_List  *etk_toplevel_widgets_get(void);
 
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

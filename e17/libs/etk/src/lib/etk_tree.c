@@ -1,16 +1,23 @@
 /** @file etk_tree.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_tree.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include <Edje.h>
-#include "etk_tree_model.h"
-#include "etk_scrolled_view.h"
+
 #include "etk_button.h"
-#include "etk_toplevel.h"
 #include "etk_event.h"
-#include "etk_theme.h"
+#include "etk_scrolled_view.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_theme.h"
+#include "etk_toplevel.h"
+#include "etk_tree_model.h"
 #include "etk_utils.h"
 
 /**

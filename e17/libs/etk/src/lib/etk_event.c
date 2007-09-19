@@ -1,6 +1,12 @@
 /** @file etk_event.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_event.h"
+
 #include <stdlib.h>
+
 #include "etk_engine.h"
 #include "etk_widget.h"
 

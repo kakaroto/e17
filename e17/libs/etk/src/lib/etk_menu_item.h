@@ -3,8 +3,12 @@
 #define _ETK_MENU_ITEM_H_
 
 #include "etk_container.h"
-#include "etk_types.h"
 #include "etk_stock.h"
+#include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Menu_Item Etk_Menu_Item
@@ -166,5 +170,9 @@ void        etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Evas_
 Evas_List **etk_menu_item_radio_group_get(Etk_Menu_Item_Radio *radio_item);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

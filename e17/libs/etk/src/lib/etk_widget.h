@@ -3,8 +3,13 @@
 #define _ETK_WIDGET_H_
 
 #include <Evas.h>
+
 #include "etk_object.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Widget Etk_Widget
@@ -210,5 +215,9 @@ Etk_Bool     etk_widget_dnd_internal_get(Etk_Widget *widget);
 void         etk_widget_dnd_internal_set(Etk_Widget *widget, Etk_Bool on);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

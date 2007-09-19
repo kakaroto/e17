@@ -2,9 +2,14 @@
 #ifndef _ETK_TEXTBLOCK_H_
 #define _ETK_TEXTBLOCK_H_
 
-#include "etk_object.h"
 #include <Evas.h>
+
+#include "etk_object.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Textblock Etk_Textblock
@@ -256,5 +261,9 @@ void     etk_textblock_char_size_get(Evas *evas, const char *font_face, int font
 void     etk_textblock_printf(Etk_Textblock *tb);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

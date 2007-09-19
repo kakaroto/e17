@@ -3,8 +3,13 @@
 #define _ETK_CANVAS_H_
 
 #include <Evas.h>
+
 #include "etk_widget.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Canvas Etk_Canvas
@@ -44,5 +49,9 @@ void        etk_canvas_object_move(Etk_Canvas *canvas, Evas_Object *object, int 
 void        etk_canvas_object_geometry_get(Etk_Canvas *canvas, Evas_Object *object, int *x, int *y, int *w, int *h);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

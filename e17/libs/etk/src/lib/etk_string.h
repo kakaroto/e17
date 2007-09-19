@@ -2,9 +2,14 @@
 #ifndef _ETK_STRING_H_
 #define _ETK_STRING_H_
 
-#include "etk_object.h"
 #include <stdarg.h>
+
+#include "etk_object.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_String Etk_String
@@ -71,5 +76,9 @@ Etk_String *etk_string_insert_printf(Etk_String *string, int pos, const char *fo
 Etk_String *etk_string_insert_vprintf(Etk_String *string, int pos, const char *format, va_list args);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

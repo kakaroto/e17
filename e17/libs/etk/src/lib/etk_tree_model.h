@@ -3,9 +3,15 @@
 #define _ETK_TREE_MODEL_H_
 
 #include <stdarg.h>
+
 #include <Evas.h>
+
 #include "etk_tree.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Tree_Model Etk_Tree_Model
@@ -53,5 +59,9 @@ void            etk_tree_model_image_width_get(Etk_Tree_Model *model, int *width
 /* TODO: checkbox-model: use a third value to actually hide the checkbox */
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

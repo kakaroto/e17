@@ -3,7 +3,12 @@
 #define _ETK_MAIN_H_
 
 #include <Evas.h>
+
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Main The main functions of Etk
@@ -19,5 +24,9 @@ void etk_main_quit(void);
 void etk_main_iterate(void);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -2,8 +2,13 @@
 #ifndef _ETK_CONFIG_H_
 #define _ETK_CONFIG_H_
 
-#include "etk_types.h"
 #include <Eet.h>
+
+#include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Config Config system of Etk
@@ -30,5 +35,9 @@ const char *etk_config_engine_get(void);
 void        etk_config_engine_set(const char *engine);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

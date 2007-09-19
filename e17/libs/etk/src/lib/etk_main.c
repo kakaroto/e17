@@ -1,26 +1,30 @@
 /** @file etk_main.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_main.h"
-#include <stdlib.h>
-#include <string.h>
+
 #include <locale.h>
 #include <limits.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <Ecore.h>
-#include <Evas.h>
 #include <Edje.h>
+
 #include "etk_argument.h"
-#include "etk_engine.h"
-#include "etk_type.h"
-#include "etk_signal.h"
-#include "etk_object.h"
-#include "etk_toplevel.h"
-#include "etk_utils.h"
 #include "etk_config.h"
-#include "etk_theme.h"
 #include "etk_dnd.h"
-#include "etk_tooltips.h"
+#include "etk_engine.h"
+#include "etk_object.h"
+#include "etk_signal.h"
 #include "etk_textblock.h"
-#include "config.h"
+#include "etk_theme.h"
+#include "etk_tooltips.h"
+#include "etk_toplevel.h"
+#include "etk_type.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Main

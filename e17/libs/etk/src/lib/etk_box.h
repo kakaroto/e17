@@ -2,9 +2,14 @@
 #ifndef _ETK_BOX_H_
 #define _ETK_BOX_H_
 
-#include "etk_container.h"
 #include <Evas.h>
+
+#include "etk_container.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Box Etk_Box
@@ -140,5 +145,9 @@ void        etk_box_homogeneous_set(Etk_Box *box, Etk_Bool homogeneous);
 Etk_Bool    etk_box_homogeneous_get(Etk_Box *box);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

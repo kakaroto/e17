@@ -1,10 +1,16 @@
 /** @file etk_menu_item.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_menu_item.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include "etk_image.h"
-#include "etk_menu_shell.h"
 #include "etk_menu.h"
+#include "etk_menu_shell.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"

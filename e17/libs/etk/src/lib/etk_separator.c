@@ -1,5 +1,10 @@
 /** @file etk_separator.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_separator.h"
+
 #include <stdlib.h>
 
 /**

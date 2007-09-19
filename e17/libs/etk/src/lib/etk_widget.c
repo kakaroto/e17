@@ -1,19 +1,26 @@
 /** @file etk_widget.c */
-#define _XOPEN_SOURCE 600
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_widget.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+
 #include <stdarg.h>
-#include <Evas.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include <Edje.h>
-#include "etk_theme.h"
-#include "etk_toplevel.h"
+
 #include "etk_event.h"
 #include "etk_marshallers.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_theme.h"
+#include "etk_toplevel.h"
 #include "etk_utils.h"
+
+#define _XOPEN_SOURCE 600
 
 /**
  * @addtogroup Etk_Widget

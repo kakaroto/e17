@@ -1,7 +1,13 @@
 /** @file etk_cache.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_cache.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include "etk_utils.h"
 
 /**

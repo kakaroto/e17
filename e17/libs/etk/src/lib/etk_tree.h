@@ -2,11 +2,17 @@
 #ifndef _ETK_TREE_H_
 #define _ETK_TREE_H_
 
-#include "etk_widget.h"
 #include <stdarg.h>
+
 #include <Evas.h>
 #include <Ecore_Job.h>
+
+#include "etk_widget.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Tree Etk_Tree
@@ -254,5 +260,9 @@ Etk_Scrolled_View *etk_tree_scrolled_view_get(Etk_Tree *tree);
 void           etk_tree_row_scroll_to(Etk_Tree_Row *row, Etk_Bool center);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

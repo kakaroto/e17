@@ -1,12 +1,18 @@
 /** @file etk_config.c */
-#include "etk_config.h"
-#include "etk_utils.h"
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#include "etk_config.h"
+
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
+
 #include <Ecore_File.h>
 #include <Evas.h>
+
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Config

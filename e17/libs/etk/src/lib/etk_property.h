@@ -3,7 +3,12 @@
 #define _ETK_PROPERTY_H_
 
 #include <stdarg.h>
+
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Property Etk_Property
@@ -136,5 +141,9 @@ void               *etk_property_value_pointer_get(Etk_Property_Value *value);
 const char         *etk_property_value_string_get(Etk_Property_Value *value);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

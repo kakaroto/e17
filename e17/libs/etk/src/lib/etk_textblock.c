@@ -1,10 +1,16 @@
 /** @file etk_textblock.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "etk_textblock.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include <Ecore.h>
 #include <Ecore_Job.h>
+
 #include "etk_string.h"
 #include "etk_utils.h"
 

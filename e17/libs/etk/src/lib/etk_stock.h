@@ -4,6 +4,10 @@
 
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Stock Etk_Stock
  * @{
@@ -248,5 +252,9 @@ const char *etk_stock_key_get(Etk_Stock_Id stock_id, Etk_Stock_Size size);
 const char *etk_stock_label_get(Etk_Stock_Id stock_id);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

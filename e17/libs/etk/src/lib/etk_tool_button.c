@@ -1,9 +1,12 @@
 /** @file etk_tool_button.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_tool_button.h"
+
 #include <stdlib.h>
 #include <string.h>
-
-#include "etk_button.h"
 
 /**
  * @addtogroup Etk_Tool_Button

@@ -3,8 +3,13 @@
 #define _ETK_FILECHOOSER_WIDGET_H_
 
 #include <Evas.h>
-#include "etk_widget.h"
+
 #include "etk_types.h"
+#include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Filechooser_Widget Etk_Filechooser_Widget
@@ -67,5 +72,9 @@ const char *etk_filechooser_widget_selected_file_get(Etk_Filechooser_Widget *wid
 Evas_List  *etk_filechooser_widget_selected_files_get(Etk_Filechooser_Widget *widget);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

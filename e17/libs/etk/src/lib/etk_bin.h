@@ -5,6 +5,10 @@
 #include "etk_container.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Bin Etk_Bin
  * @brief The Etk_Bin widget is a container that can contain only one child
@@ -38,5 +42,9 @@ void        etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child);
 Etk_Widget *etk_bin_child_get(Etk_Bin *bin);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

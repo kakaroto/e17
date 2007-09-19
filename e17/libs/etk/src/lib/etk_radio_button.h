@@ -3,8 +3,13 @@
 #define _ETK_RADIO_BUTTON_H_
 
 #include <Evas.h>
+
 #include "etk_toggle_button.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Radio_Button Etk_Radio_Button
@@ -45,5 +50,9 @@ void        etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List
 Evas_List **etk_radio_button_group_get(Etk_Radio_Button *radio_button);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

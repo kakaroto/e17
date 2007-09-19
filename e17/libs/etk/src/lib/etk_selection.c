@@ -1,7 +1,13 @@
 /** @file etk_selection.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_selection.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include "etk_engine.h"
 
 /**

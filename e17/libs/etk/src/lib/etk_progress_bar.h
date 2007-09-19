@@ -2,8 +2,12 @@
 #ifndef _ETK_PROGRESS_BAR_H_
 #define _ETK_PROGRESS_BAR_H_
 
-#include "etk_widget.h"
 #include "etk_types.h"
+#include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* TODO/FIXME list:
  * - Support format string "%p" for the text of the progress bar
@@ -71,5 +75,9 @@ void        etk_progress_bar_direction_set(Etk_Progress_Bar *progress_bar, Etk_P
 Etk_Progress_Bar_Direction etk_progress_bar_direction_get(Etk_Progress_Bar *progress_bar);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

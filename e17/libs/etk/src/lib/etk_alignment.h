@@ -5,6 +5,10 @@
 #include "etk_bin.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Alignment Etk_Alignment
  * @brief The Etk_Alignment widget is a container that can contain
@@ -44,5 +48,9 @@ void        etk_alignment_set(Etk_Alignment *alignment, float xalign, float yali
 void        etk_alignment_get(Etk_Alignment *alignment, float *xalign, float *yalign, float *xscale, float *yscale);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -3,8 +3,12 @@
 #define _ETK_BUTTON_H_
 
 #include "etk_bin.h"
-#include "etk_types.h"
 #include "etk_stock.h"
+#include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Button Etk_Button
@@ -82,5 +86,9 @@ void             etk_button_alignment_set(Etk_Button *button, float xalign, floa
 void             etk_button_alignment_get(Etk_Button *button, float *xalign, float *yalign);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

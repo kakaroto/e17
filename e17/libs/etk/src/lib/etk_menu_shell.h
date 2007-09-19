@@ -2,9 +2,14 @@
 #ifndef _ETK_MENU_SHELL_H_
 #define _ETK_MENU_SHELL_H_
 
-#include "etk_widget.h"
 #include <Evas.h>
+
 #include "etk_types.h"
+#include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Menu_Shell Etk_Menu_Shell
@@ -46,5 +51,9 @@ void       etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item
 Evas_List *etk_menu_shell_items_get(Etk_Menu_Shell *menu_shell);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

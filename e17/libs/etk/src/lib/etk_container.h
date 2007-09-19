@@ -3,8 +3,13 @@
 #define _ETK_CONTAINER_H_
 
 #include <Evas.h>
-#include "etk_widget.h"
+
 #include "etk_types.h"
+#include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Container Etk_Container
@@ -55,5 +60,9 @@ void       etk_container_for_each_data(Etk_Container *container, void (*for_each
 void       etk_container_child_space_fill(Etk_Widget *child, Etk_Geometry *child_space, Etk_Bool hfill, Etk_Bool vfill, float xalign, float yalign);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

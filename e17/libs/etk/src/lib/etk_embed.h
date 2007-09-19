@@ -5,6 +5,10 @@
 #include "etk_toplevel.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* TODO/FIXME list:
  * - Add a method to add copy/paste support
  * - Maybe create sets of methods (pointer, position, copy/paste) for the most common Evas engines
@@ -52,5 +56,9 @@ void         etk_embed_position_method_set(Etk_Embed *embed, void (*position_get
 void         etk_embed_pointer_method_set(Etk_Embed *embed, void (*pointer_set)(void *pointer_data, Etk_Pointer_Type pointer_type), void *pointer_data);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

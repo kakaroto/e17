@@ -5,6 +5,10 @@
 #include "etk_bin.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Shadow Etk_Shadow
  * @brief The Etk_Shadow widget is a container that can contain one child, and
@@ -85,5 +89,9 @@ void        etk_shadow_border_color_set(Etk_Shadow *shadow, int r, int g, int b,
 void        etk_shadow_border_color_get(Etk_Shadow *shadow, int *r, int *g, int *b, int *a);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

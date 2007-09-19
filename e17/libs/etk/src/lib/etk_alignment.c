@@ -1,6 +1,12 @@
 /** @file etk_alignment.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_alignment.h"
+
 #include <stdlib.h>
+
 #include "etk_utils.h"
 
 /**

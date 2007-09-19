@@ -4,6 +4,10 @@
 
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* TODO/FIXME list:
  * - support non-UTF8 text
  * - support non-text content
@@ -52,5 +56,9 @@ void etk_selection_text_request(Etk_Selection_Type selection, Etk_Widget *target
 void etk_selection_clear(Etk_Selection_Type selection);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

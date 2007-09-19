@@ -1,11 +1,14 @@
 /** @file etk_drag.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_drag.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include "config.h"
 
 #include "etk_widget.h"
-#include "etk_window.h"
 #include "etk_engine.h"
 
 /**

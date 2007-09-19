@@ -1,5 +1,10 @@
 /** @file etk_check_button.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_check_button.h"
+
 #include <stdlib.h>
 
 /**

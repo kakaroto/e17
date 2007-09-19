@@ -3,8 +3,13 @@
 #define _ETK_STATUSBAR_H_
 
 #include <Evas.h>
-#include "etk_widget.h"
+
 #include "etk_types.h"
+#include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Statusbar Etk_Statusbar
@@ -52,5 +57,9 @@ void        etk_statusbar_has_resize_grip_set(Etk_Statusbar *statusbar, Etk_Bool
 Etk_Bool    etk_statusbar_has_resize_grip_get(Etk_Statusbar *statusbar);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

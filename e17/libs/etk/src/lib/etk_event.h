@@ -3,7 +3,12 @@
 #define _ETK_EVENT_H_
 
 #include <Evas.h>
+
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Event The event system of Etk
@@ -258,5 +263,9 @@ void etk_event_global_callback_del(Etk_Event_Type event, void (*callback)(Etk_Ev
 void etk_event_mouse_position_get(int *x, int *y);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -6,6 +6,10 @@
 #include "etk_scrollbar.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Scrolled_View Etk_Scrolled_View
  * @brief The Etk_Scrolled_View widget is a container with two scrollbars that allow the user to scroll its unique child
@@ -61,5 +65,9 @@ void        etk_scrolled_view_policy_set(Etk_Scrolled_View *scrolled_view, Etk_S
 void        etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy *hpolicy, Etk_Scrolled_View_Policy *vpolicy);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

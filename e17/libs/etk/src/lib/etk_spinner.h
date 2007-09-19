@@ -2,9 +2,14 @@
 #ifndef _ETK_SPINNER_H_
 #define _ETK_SPINNER_H_
 
-#include "etk_range.h"
 #include <Ecore.h>
+
+#include "etk_range.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Spinner Etk_Spinner
@@ -54,5 +59,9 @@ void        etk_spinner_wrap_set(Etk_Spinner *spinner, Etk_Bool wrap);
 Etk_Bool    etk_spinner_wrap_get(Etk_Spinner *spinner);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

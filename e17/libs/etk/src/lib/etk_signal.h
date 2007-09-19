@@ -3,9 +3,15 @@
 #define _ETK_SIGNAL_H_
 
 #include <stdarg.h>
+
 #include <Evas.h>
+
 #include "etk_marshallers.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Signal Etk_Signal
@@ -60,5 +66,9 @@ const Etk_Type * etk_signal_object_type_get(Etk_Signal *signal);
 void etk_signal_stop();
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

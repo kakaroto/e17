@@ -1,14 +1,21 @@
 /** @file etk_statusbar.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_statusbar.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include <Edje.h>
-#include "etk_toplevel.h"
-#include "etk_window.h"
+
 #include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_toplevel.h"
 #include "etk_utils.h"
+#include "etk_window.h"
 
 /**
  * @addtogroup Etk_Statusbar

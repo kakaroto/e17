@@ -1,10 +1,16 @@
 /** @file etk_frame.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_frame.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include "etk_utils.h"
+
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Frame

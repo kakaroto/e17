@@ -1,4 +1,8 @@
 /** @file etk_popup_window.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_popup_window.h"
 #include <stdlib.h>
 #include "etk_engine.h"

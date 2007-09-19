@@ -4,6 +4,10 @@
 
 #include "etk_widget.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Tooltips Etk_Tooltips
  * @{
@@ -24,5 +28,9 @@ void etk_tooltips_pop_up(Etk_Widget *widget);
 void etk_tooltips_pop_down();
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

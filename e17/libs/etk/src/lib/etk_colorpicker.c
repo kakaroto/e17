@@ -1,13 +1,19 @@
 /** @file etk_colorpicker.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_colorpicker.h"
+
 #include <stdlib.h>
 #include <stdint.h>
-#include "etk_table.h"
-#include "etk_slider.h"
+
 #include "etk_label.h"
 #include "etk_radio_button.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_slider.h"
+#include "etk_table.h"
 #include "etk_utils.h"
 
 /**

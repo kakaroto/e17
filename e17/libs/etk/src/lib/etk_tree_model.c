@@ -1,13 +1,18 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_tree_model.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <Evas.h>
+
 #include <Edje.h>
-#include "etk_tree.h"
+
 #include "etk_cache.h"
-#include "etk_theme.h"
 #include "etk_signal.h"
+#include "etk_theme.h"
 #include "etk_utils.h"
 
 /* Structure of the "image" model */

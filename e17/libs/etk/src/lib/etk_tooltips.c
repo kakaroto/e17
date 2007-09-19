@@ -1,15 +1,22 @@
 /** @file etk_tooltips.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_tooltips.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <Ecore.h>
 #include <Evas.h>
-#include "etk_window.h"
-#include "etk_label.h"
+
 #include "etk_event.h"
+#include "etk_label.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
+#include "etk_window.h"
 
 /**
  * @addtogroup Etk_Tooltips

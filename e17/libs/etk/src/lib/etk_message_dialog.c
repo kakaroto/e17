@@ -1,9 +1,15 @@
 /** @file etk_message_dialog.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_message_dialog.h"
+
 #include <stdlib.h>
+
 #include "etk_box.h"
-#include "etk_label.h"
 #include "etk_image.h"
+#include "etk_label.h"
 #include "etk_stock.h"
 #include "etk_utils.h"
 

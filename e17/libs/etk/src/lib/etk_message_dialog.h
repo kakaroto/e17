@@ -5,6 +5,10 @@
 #include "etk_dialog.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* TODO/FIXME list:
  * - Use printf-like format for the message
  * - Support primary and secondary texts?
@@ -81,5 +85,9 @@ void        etk_message_dialog_buttons_set(Etk_Message_Dialog *dialog, Etk_Messa
 Etk_Message_Dialog_Buttons etk_message_dialog_buttons_get(Etk_Message_Dialog *dialog);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

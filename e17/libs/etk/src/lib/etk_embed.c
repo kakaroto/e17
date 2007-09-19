@@ -1,11 +1,16 @@
 /** @file etk_embed.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_embed.h"
+
 #include <stdlib.h>
+
 #include "etk_main.h"
-#include "etk_utils.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "config.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Embed

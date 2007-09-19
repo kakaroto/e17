@@ -5,12 +5,12 @@
 
 #include "etk_mdi_area.h"
 
+#include <stdlib.h>
+
 #include "etk_mdi_window.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
-
-#include <stdlib.h>
 
 /**
  * @addtogroup Etk_Mdi_Area

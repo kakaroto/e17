@@ -2,12 +2,17 @@
 #ifndef _ETK_ENGINE_H_
 #define _ETK_ENGINE_H_
 
-#include "Evas.h"
+#include <Evas.h>
+
 #include "etk_event.h"
-#include "etk_toplevel.h"
-#include "etk_window.h"
 #include "etk_selection.h"
+#include "etk_toplevel.h"
 #include "etk_types.h"
+#include "etk_window.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Engine Etk_Engine
@@ -162,5 +167,9 @@ void         etk_engine_drag_constructor(Etk_Drag *drag);
 void         etk_engine_drag_begin(Etk_Drag *drag);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,14 +1,20 @@
 /** @file etk_theme.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_theme.h"
+
+#include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <limits.h>
+
 #include <Ecore_File.h>
 #include <Edje.h>
-#include "etk_widget.h"
+
 #include "etk_config.h"
-#include "config.h"
+#include "etk_widget.h"
 
 /**
  * @addtogroup Etk_Theme

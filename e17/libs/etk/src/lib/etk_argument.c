@@ -1,5 +1,10 @@
 /** @file etk_argument.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_argument.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

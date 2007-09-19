@@ -2,9 +2,14 @@
 #ifndef _ETK_TEXT_VIEW_H_
 #define _ETK_TEXT_VIEW_H_
 
-#include "etk_widget.h"
 #include <Evas.h>
+
+#include "etk_widget.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Text_View Etk_Text_View
@@ -40,5 +45,9 @@ Etk_Textblock_Iter *etk_text_view_cursor_get(Etk_Text_View *text_view);
 Etk_Textblock_Iter *etk_text_view_selection_bound_get(Etk_Text_View *text_view);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

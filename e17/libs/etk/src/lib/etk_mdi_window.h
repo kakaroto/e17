@@ -5,6 +5,10 @@
 #include "etk_bin.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Mdi_Window Etk_Mdi_Window
  * @brief A widget in a mdi area
@@ -92,5 +96,9 @@ Etk_Mdi_Window_WM_Decoration etk_mdi_window_decorations_get(Etk_Mdi_Window *mdi_
 Etk_Bool    etk_mdi_window_hide_on_delete(Etk_Object *mdi_window, void *data);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

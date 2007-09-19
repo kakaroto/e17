@@ -5,6 +5,10 @@
 #include "etk_bin.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Viewport Etk_Viewport
  * @{
@@ -36,5 +40,9 @@ Etk_Type   *etk_viewport_type_get(void);
 Etk_Widget *etk_viewport_new(void);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

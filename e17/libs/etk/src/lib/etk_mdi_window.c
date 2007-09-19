@@ -5,15 +5,15 @@
 
 #include "etk_mdi_window.h"
 
-#include "etk_utils.h"
-#include "etk_signal.h"
-#include "etk_signal_callback.h"
-#include "etk_toplevel.h"
+#include <stdlib.h>
+#include <string.h>
 
 #include <Edje.h>
 
-#include <stdlib.h>
-#include <string.h>
+#include "etk_signal.h"
+#include "etk_signal_callback.h"
+#include "etk_toplevel.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Mdi_Window

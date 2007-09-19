@@ -5,6 +5,10 @@
 #include "etk_container.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Mdi_Area Etk_Mdi_Area
  * @brief A container widget for Etk_Mdi_Window
@@ -40,5 +44,9 @@ void        etk_mdi_area_move(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x,
 void        etk_mdi_area_child_position_get(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int *x, int *y);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

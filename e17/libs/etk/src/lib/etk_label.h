@@ -3,7 +3,12 @@
 #define _ETK_LABEL_H_
 
 #include <Evas.h>
+
 #include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Label Etk_Label
@@ -45,5 +50,9 @@ void        etk_label_alignment_set(Etk_Label *label, float xalign, float yalign
 void        etk_label_alignment_get(Etk_Label *label, float *xalign, float *yalign);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

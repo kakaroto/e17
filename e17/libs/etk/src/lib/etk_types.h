@@ -4,6 +4,10 @@
 
 #include <stdarg.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @defgroup Etk_Types Etk_Types
  * @{
@@ -171,5 +175,9 @@ typedef struct Etk_Color
 } Etk_Color;
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

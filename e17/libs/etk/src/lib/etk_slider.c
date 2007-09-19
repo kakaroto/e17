@@ -1,8 +1,15 @@
 /** @file etk_slider.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_slider.h"
+
 #include <stdlib.h>
 #include <string.h>
+
 #include <Edje.h>
+
 #include "etk_event.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"

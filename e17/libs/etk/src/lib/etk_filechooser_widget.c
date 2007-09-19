@@ -1,26 +1,32 @@
 /** @file etk_filechooser_widget.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_filechooser_widget.h"
+
+#include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <limits.h>
 #include <time.h>
+
 #include <Ecore.h>
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
-#include "etk_theme.h"
-#include "etk_signal.h"
-#include "etk_signal_callback.h"
-#include "etk_utils.h"
-#include "etk_tree.h"
-#include "etk_tree_model.h"
-#include "etk_paned.h"
+
 #include "etk_box.h"
+#include "etk_button.h"
 #include "etk_entry.h"
 #include "etk_label.h"
+#include "etk_paned.h"
 #include "etk_stock.h"
-#include "etk_button.h"
-#include "config.h"
+#include "etk_signal.h"
+#include "etk_signal_callback.h"
+#include "etk_theme.h"
+#include "etk_tree.h"
+#include "etk_tree_model.h"
+#include "etk_utils.h"
 
 /* OS-specific to list the mount points */
 #ifdef HAVE_LINUX

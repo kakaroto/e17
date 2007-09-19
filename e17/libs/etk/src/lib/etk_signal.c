@@ -1,10 +1,16 @@
 /** @file etk_signal.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_signal.h"
+
 #include <stdlib.h>
 #include <string.h>
-#include "etk_type.h"
+
 #include "etk_object.h"
 #include "etk_signal_callback.h"
+#include "etk_type.h"
 #include "etk_utils.h"
 
 /**

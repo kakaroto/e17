@@ -3,8 +3,13 @@
 #define _ETK_WINDOW_H_
 
 #include <Ecore.h>
+
 #include "etk_toplevel.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Window Etk_Window
@@ -94,5 +99,9 @@ Etk_Bool    etk_window_skip_pager_hint_get(Etk_Window *window);
 Etk_Bool    etk_window_hide_on_delete(Etk_Object *window, void *data);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

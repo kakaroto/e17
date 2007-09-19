@@ -2,8 +2,12 @@
 #ifndef _ETK_DRAG_H_
 #define _ETK_DRAG_H_
 
-#include "etk_window.h"
 #include "etk_types.h"
+#include "etk_window.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define ETK_DRAG_TYPE       (etk_drag_type_get())
 #define ETK_DRAG(obj)       (ETK_OBJECT_CAST((obj), ETK_DRAG_TYPE, Etk_Drag))
@@ -33,5 +37,9 @@ Etk_Widget *etk_drag_parent_widget_get(Etk_Drag *drag);
 
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

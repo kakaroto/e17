@@ -2,9 +2,14 @@
 #ifndef _ETK_ENTRY_H_
 #define _ETK_ENTRY_H_
 
-#include "etk_widget.h"
 #include <Evas.h>
+
 #include "etk_types.h"
+#include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Entry Etk_Entry
@@ -69,5 +74,9 @@ void        etk_entry_password_mode_set(Etk_Entry *entry, Etk_Bool password_mode
 Etk_Bool    etk_entry_password_mode_get(Etk_Entry *entry);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

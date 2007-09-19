@@ -3,8 +3,13 @@
 #define _ETK_TYPE_H_
 
 #include <Evas.h>
+
 #include "etk_property.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @defgroup Etk_Type Etk_Type
@@ -59,5 +64,9 @@ Etk_Bool      etk_type_property_find(Etk_Type *type, const char *name, Etk_Type 
 void          etk_type_property_list(Etk_Type *type, Evas_List **properties);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

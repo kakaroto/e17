@@ -1,4 +1,8 @@
 /** @file etk_marshallers.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_marshallers.h"
 
 /* etk_marshaller_VOID__VOID */

@@ -1,13 +1,17 @@
 /** @file etk_window.c */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "etk_window.h"
+
 #include <stdlib.h>
 #include <string.h>
 
 #include "etk_engine.h"
-#include "etk_utils.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
-#include "config.h"
+#include "etk_utils.h"
 
 /**
  * @addtogroup Etk_Window

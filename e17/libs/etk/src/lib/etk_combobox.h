@@ -2,9 +2,14 @@
 #ifndef _ETK_COMBOBOX_H_
 #define _ETK_COMBOBOX_H_
 
-#include "etk_widget.h"
 #include <stdarg.h>
+
+#include "etk_widget.h"
 #include "etk_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* TODO/FIXME list:
  * - Combobox item separator!
@@ -164,5 +169,9 @@ Etk_Combobox_Item *etk_combobox_nth_item_get(Etk_Combobox *combobox, int index);
 Etk_Combobox      *etk_combobox_item_combobox_get(Etk_Combobox_Item *item);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -2,10 +2,16 @@
 #ifndef _ETK_ICONBOX_H_
 #define _ETK_ICONBOX_H_
 
-#include "etk_widget.h"
-#include <Evas.h>
 #include <stdarg.h>
+
+#include <Evas.h>
+
 #include "etk_types.h"
+#include "etk_widget.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* TODO/FIXME list:
  * - Implement dnd
@@ -152,5 +158,9 @@ Etk_Bool           etk_iconbox_is_selected(Etk_Iconbox_Icon *icon);
 Etk_Scrolled_View *etk_iconbox_scrolled_view_get(Etk_Iconbox *iconbox);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

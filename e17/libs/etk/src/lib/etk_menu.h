@@ -6,6 +6,10 @@
 #include "etk_popup_window.h"
 #include "etk_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* TODO/FIXME list:
  * - Keyboard navigation!
  * - Sometimes an item is selected when the menu is popped up. Probably a bug in Etk_Popup_Window's feeding code
@@ -51,5 +55,9 @@ void           etk_menu_popup_at_xy_in_direction(Etk_Menu *menu, int x, int y, E
 void           etk_menu_popdown(Etk_Menu *menu);
 
 /** @} */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
