@@ -1,3 +1,8 @@
+2007-09-19	Michael Lauer  <mickey at vanille-media dot de>
+
+	* src/lib/poppler_page.cpp: (epdf_page_text_get):
+	libpoppler 0.6 needs a selectionStyle parameter.
+
 2007-08-30  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/bin/epdf_evas_test.c: (main):

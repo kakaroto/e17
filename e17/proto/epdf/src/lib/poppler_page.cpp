@@ -199,7 +199,9 @@ epdf_page_text_get (Epdf_Page *page, Epdf_Rectangle r)
   pdf_selection.y2 = r.y2;
 
   sel_text = new GooString;
-  sel_text = text_dev->getSelectionText (&pdf_selection);
+  /* added selectionStyleGlyph to catch up with poppler 0.6. Is that correct
+     or should we rather use selectionStyleLine or selectionStyleWord? :M: */
+  sel_text = text_dev->getSelectionText (&pdf_selection, selectionStyleGlyph);
   result = strdup (sel_text->getCString ());
   delete sel_text;
 
