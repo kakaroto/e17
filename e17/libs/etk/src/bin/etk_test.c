@@ -105,6 +105,11 @@ static Etk_Test_App _test_apps[] =
       BASIC_WIDGET
    },
    {
+      "Stock Icons",
+      etk_test_stock_window_create,
+      BASIC_WIDGET
+   },
+   {
       "Drag and Drop",
       etk_test_dnd_window_create,
       MISC

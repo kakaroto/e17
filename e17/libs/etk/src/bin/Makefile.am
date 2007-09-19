@@ -40,7 +40,8 @@ etk_combobox_test.c \
 etk_iconbox_test.c \
 etk_text_view_test.c \
 etk_embed_test.c \
-etk_shadow_test.c
+etk_shadow_test.c \
+etk_stock.c
 
 etk_test_LDADD = $(top_builddir)/src/lib/libetk.la \
 		 @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@

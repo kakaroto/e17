@@ -24,5 +24,6 @@ void etk_test_iconbox_window_create(void *data);
 void etk_test_text_view_window_create(void *data);
 void etk_test_embed_window_create(void *data);
 void etk_test_shadow_window_create(void *data);
+void etk_test_stock_window_create(void *data);
 
 #endif
