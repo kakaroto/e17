@@ -1,5 +1,6 @@
 #include <e.h>
 #include "config.h"
+#include "e_mod_main.h"
 #ifdef HAVE_ALSA
 #include "e_mod_types.h"
 #include "alsa_mixer.h"
