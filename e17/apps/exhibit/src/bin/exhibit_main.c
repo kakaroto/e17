@@ -626,7 +626,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	
 	_ex_slideshow_stop(e);
 	_ex_thumb_abort();
-        e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(entry)));
+        e->cur_tab->dir = _ex_path_normalize((char*)etk_entry_text_get(ETK_ENTRY(entry)));
         etk_tree_clear(ETK_TREE(e->cur_tab->itree));
         etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
 	etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
