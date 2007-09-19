@@ -77,6 +77,7 @@ struct Etk_Tree_Col
    struct
    {
       int (*compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
+      int (*last_compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
       void *data;
    } sort;
 };

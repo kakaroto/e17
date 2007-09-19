@@ -927,7 +927,7 @@ void etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *c
    Etk_Tree *tree;
    Etk_Tree_Row *row, *to_sort;
 
-   if (!col || !compare_cb || !(tree = col->tree) || (tree->sorted_col == col && tree->sorted_asc == ascending))
+   if (!col || !compare_cb || !(tree = col->tree) || (tree->sorted_col == col && tree->sorted_asc == ascending && col->sort.last_compare_cb == compare_cb))
       return;
 
    if (tree->sorted_col == col && tree->sorted_asc != ascending)
@@ -935,7 +935,7 @@ void etk_tree_col_sort_full(Etk_Tree_Col *col, int (*compare_cb)(Etk_Tree_Col *c
        _etk_tree_reverse(col->tree);
        return;
      }
-
+   col->sort.last_compare_cb = compare_cb;
    row = tree->root.first_child;
 
    to_sort = row;
