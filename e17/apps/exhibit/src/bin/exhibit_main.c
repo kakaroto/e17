@@ -158,7 +158,7 @@ _ex_main_image_set(Exhibit *e, char *image)
    memset(e->cur_tab->cur_file, 0, PATH_MAX);
    
    snprintf(e->cur_tab->set_img_path, PATH_MAX, "%s", e->cur_tab->dir);
-   snprintf(e->cur_tab->cur_file, PATH_MAX, "%s", image);
+   snprintf(e->cur_tab->cur_file, PATH_MAX, "%s", ecore_file_file_get(image));
 
    e->cur_tab->image_loaded = ETK_TRUE;
    etk_widget_show(ETK_WIDGET(e->cur_tab->image));
