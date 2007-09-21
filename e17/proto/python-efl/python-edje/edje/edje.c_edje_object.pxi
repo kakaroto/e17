@@ -1,5 +1,7 @@
 # This file is included verbatim by edje.c_edje.pyx
 
+import traceback
+
 cdef void text_change_cb(void *data, evas.c_evas.Evas_Object *obj, char *part):
     cdef Edje self
     self = <Edje>data
@@ -9,7 +11,6 @@ cdef void text_change_cb(void *data, evas.c_evas.Evas_Object *obj, char *part):
     try:
         func(self, part, *args, **kargs)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 
@@ -23,7 +24,6 @@ cdef void message_handler_cb(void *data, evas.c_evas.Evas_Object *obj,
     try:
         func(self, Message_from_type(type, id, msg), *args, **kargs)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 
@@ -36,7 +36,6 @@ cdef void signal_cb(void *data, evas.c_evas.Evas_Object *obj,
         try:
             func(self, emission, source, *args, **kargs)
         except Exception, e:
-            import traceback
             traceback.print_exc()
 
 
@@ -84,8 +83,21 @@ cdef class Edje(evas.c_evas.Object):
         evas.c_evas.Object.__init__(self, canvas)
         if self.obj == NULL:
             self._set_obj(edje_object_add(self._evas.obj))
-            _register_decorated_callbacks(self)
         self._set_common_params(**kargs)
+
+    def __free_wrapper_resources(self, ed):
+        self._signal_callbacks.clear()
+        self._text_change_cb = None
+        self._message_handler_cb = None
+
+    cdef int _set_obj(self, evas.c_evas.Evas_Object *obj) except 0:
+        cdef int r
+        r = evas.c_evas.Object._set_obj(self, obj)
+        if r == 1:
+            self.event_callback_add(evas.c_evas.EVAS_CALLBACK_FREE,
+                                    self.__free_wrapper_resources)
+            _register_decorated_callbacks(self)
+        return r
 
     def _set_common_params(self, file=None, group=None, size=None, pos=None,
                            geometry=None, color=None, name=None):
@@ -505,6 +517,9 @@ cdef class Edje(evas.c_evas.Object):
             raise TypeError("invalid message type '%s'" % type(data).__name__)
 
     def message_handler_set(self, func, *args, **kargs):
+        if not callable(func):
+            raise TypeError("func must be callable")
+
         if func is None:
             self._message_handler_cb = None
             edje_object_message_handler_set(self.obj, NULL, NULL)
@@ -518,6 +533,9 @@ cdef class Edje(evas.c_evas.Object):
 
     def signal_callback_add(self, char *emission, char *source, func,
                             *args, **kargs):
+        if not callable(func):
+            raise TypeError("func must be callable")
+
         lst = self._signal_callbacks.setdefault((emission, source), [])
         if not lst:
             edje_object_signal_callback_add(self.obj, emission, source,
