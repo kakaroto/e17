@@ -187,6 +187,7 @@ examples/ecore/paint/Makefile
 examples/ecore/simple/Makefile
 examples/ecore/stars/Makefile
 examples/ecore/timers/Makefile
+examples/ecore/list/Makefile
 examples/angstrom/Makefile
 examples/angstrom/bootmanager/Makefile
 examples/evas/Makefile
