@@ -26,6 +26,9 @@ def render_method_list():
     evas_render_method_list_free(lst)
     return ret
 
+cdef object canvas_mapping
+
+canvas_mapping = dict()
 
 cdef Canvas Canvas_from_instance(Evas *evas):
     cdef void *data
@@ -34,10 +37,29 @@ cdef Canvas Canvas_from_instance(Evas *evas):
     if evas == NULL:
         return None
 
-    c = Canvas.__new__(Canvas)
-    c._set_obj(evas)
+    o = canvas_mapping.get(<long>evas, None)
+    if o is not None:
+        c = o
+    else:
+        c = Canvas.__new__(Canvas)
+        c._set_obj(evas) # calls Canvas_remember()
 
     return c
+
+cdef int Canvas_remember(long ptr, Canvas c) except 0:
+    o = canvas_mapping.get(ptr, None)
+    if o is not None:
+        raise ValueError("Canvas 0x%x already registered for %s" % (ptr, o))
+    canvas_mapping[ptr] = c
+    return 1
+
+
+cdef int Canvas_forget(long ptr) except 0:
+    try:
+        del canvas_mapping[ptr]
+    except KeyError, e:
+        raise ValueError("Canvas 0x%x is unknown" % ptr)
+    return 1
 
 
 # XXX: this should be C-only, but it would require ecore_evas

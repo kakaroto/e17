@@ -15,18 +15,21 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
     def __dealloc__(self):
         if self.obj:
+            _Canvas_forget(<long>self.obj)
             evas_free(self.obj)
             self.obj = NULL
 
     cdef int _set_obj(self, Evas *obj) except 0:
         assert self.obj == NULL, "Object must be clean"
         self.obj = obj
+        Canvas_remember(<long>self.obj, self)
         return 1
 
     # XXX: this should be C-only, but it would require ecore_evas
     # XXX: being able to use it.
     def _unset_obj(self):
         "Remove internally wrapped Evas* object."
+        Canvas_forget(<long>self.obj)
         self.obj = NULL
 
     def _new_evas(self):

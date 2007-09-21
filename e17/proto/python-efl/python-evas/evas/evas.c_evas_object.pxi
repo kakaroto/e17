@@ -1,20 +1,45 @@
 # This file is included verbatim by c_evas.pyx
 
+import traceback
+
+
+cdef int _free_wrapper_resources(Object obj) except 0:
+    cdef int i
+    for i from 0 <= i < evas_event_callbacks_len:
+        obj._callbacks[i] = None
+    obj._data.clear()
+    return 1
+
+
+cdef int _unregister_callbacks(Object obj) except 0:
+    cdef Evas_Object *o
+    cdef evas_event_callback_t cb
+    o = obj.obj
+    if o != NULL:
+        for i, lst in enumerate(obj._callbacks):
+            if lst is not None:
+                cb = evas_event_callbacks[i]
+                evas_object_event_callback_del(o, i, cb)
+
+    evas_object_event_callback_del(o, EVAS_CALLBACK_FREE, obj_free_cb)
+    return 1
+
+
 cdef void obj_free_cb(void *data, Evas *e, Evas_Object *obj, void *event_info):
     cdef Object self
     self = <Object>data
     self.obj = NULL
     self._evas = <Canvas>None
 
-    if self._callbacks[EVAS_CALLBACK_FREE] is not None:
-        lst = self._callbacks[EVAS_CALLBACK_FREE]
+    lst = self._callbacks[EVAS_CALLBACK_FREE]
+    if lst is not None:
         for func, args, kargs in lst:
             try:
                 func(self, *args, **kargs)
             except Exception, e:
-                import traceback
                 traceback.print_exc()
 
+    _free_wrapper_resources(self)
     python.Py_DECREF(self)
 
 
@@ -58,7 +83,11 @@ cdef _del_callback_from_list(Object obj, int type, func):
                          (func, type))
 
     del lst[i]
-    return len(lst) == 0
+    if len(lst) == 0:
+        obj._callbacks[type] = None
+        return True
+    else:
+        return False
 
 
 cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
@@ -79,29 +108,30 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
             name_str = "name=%r, "
         else:
             name_str = ""
+        clip = bool(self.clip_get() is not None)
         return ("%s(%sgeometry=(%d, %d, %d, %d), color=(%d, %d, %d, %d), "
                 "layer=%s, clip=%s, visible=%s)") % \
                (self.__class__.__name__, name_str, x, y, w, h,
-                r, g, b, a, self.layer_get(), self.clip_get(),
-                self.visible_get())
+                r, g, b, a, self.layer_get(), clip, self.visible_get())
 
     def __repr__(self):
         x, y, w, h = self.geometry_get()
         r, g, b, a = self.color_get()
+        clip = bool(self.clip_get() is not None)
         return ("%s(0x%x, type=%r, refcount=%d, Evas_Object=0x%x, name=%r, "
                 "geometry=(%d, %d, %d, %d), color=(%d, %d, %d, %d), "
                 "layer=%s, clip=%r, visible=%s)") % \
                (self.__class__.__name__, <unsigned long>self,
                 self.type_get(), PY_REFCOUNT(self), <unsigned long>self.obj,
                 self.name_get(), x, y, w, h, r, g, b, a, self.layer_get(),
-                self.clip_get(), self.visible_get())
+                clip, self.visible_get())
 
     cdef int _unset_obj(self) except 0:
         assert self.obj != NULL, "Object must wrap something"
         assert evas_object_data_del(self.obj, "python-evas") == \
                <void *>self, "Object wrapped should refer to self"
-        evas_object_event_callback_del(self.obj, EVAS_CALLBACK_FREE,
-                                       obj_free_cb)
+        _unregister_callbacks(self)
+        _free_wrapper_resources(self)
         self.obj = NULL
         python.Py_DECREF(self)
         return 1
@@ -122,28 +152,18 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def __dealloc__(self):
         cdef void *data
         cdef Evas_Object *obj
-        cdef evas_event_callback_t cb
 
-        #print "==>DEALLOC: type=%s, instance=%s" % (self.type_get(),  self)
-
-        if self.obj != NULL:
-            for i, lst in enumerate(self._callbacks):
-                if lst is not None:
-                    cb = evas_event_callbacks[i]
-                    evas_object_event_callback_del(self.obj, i, cb)
-
+        _unregister_callbacks(self)
         self._data = None
         self._callbacks = None
         obj = self.obj
-        if self.obj == NULL:
+        if obj == NULL:
             return
         self.obj = NULL
-
         self._evas = <Canvas>None
 
         data = evas_object_data_get(obj, "python-evas")
         assert data == NULL, "Object must not be wrapped!"
-        evas_object_event_callback_del(obj, EVAS_CALLBACK_FREE, obj_free_cb)
         evas_object_del(obj)
 
     def delete(self):
@@ -583,19 +603,24 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
     def event_callback_add(self, int type, func, *args, **kargs):
         cdef evas_event_callback_t cb
+
+        if not callable(func):
+            raise TypeError("func must be callable")
+
         if _add_callback_to_list(self, type, func, args, kargs):
-            cb = evas_event_callbacks[type]
-            evas_object_event_callback_add(self.obj,
-                                           <Evas_Callback_Type>type,
-                                           cb, <void*>self)
+            if type != EVAS_CALLBACK_FREE:
+                cb = evas_event_callbacks[type]
+                evas_object_event_callback_add(self.obj,
+                                               <Evas_Callback_Type>type,
+                                               cb, <void*>self)
 
     def event_callback_del(self, int type, func):
         cdef evas_event_callback_t cb
         if _del_callback_from_list(self, type, func):
-            self._callbacks[type] = None
-            cb = evas_event_callbacks[type]
-            evas_object_event_callback_del(self.obj,
-                                           <Evas_Callback_Type>type, cb)
+            if type != EVAS_CALLBACK_FREE:
+                cb = evas_event_callbacks[type]
+                evas_object_event_callback_del(self.obj,
+                                               <Evas_Callback_Type>type, cb)
 
     def on_mouse_in_add(self, func, *a, **k):
         self.event_callback_add(EVAS_CALLBACK_MOUSE_IN, func, *a, **k)
@@ -634,10 +659,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
         self.event_callback_del(EVAS_CALLBACK_MOUSE_WHEEL, func)
 
     def on_free_add(self, func, *a, **k):
-        _add_callback_to_list(self, EVAS_CALLBACK_FREE, func, a, k)
+        self.event_callback_add(EVAS_CALLBACK_FREE, func, *a, **k)
 
     def on_free_del(self, func):
-        _del_callback_from_list(self, EVAS_CALLBACK_FREE, func)
+        self.event_callback_del(EVAS_CALLBACK_FREE, func)
 
     def on_key_down_add(self, func, *a, **k):
         self.event_callback_add(EVAS_CALLBACK_KEY_DOWN, func, *a, **k)

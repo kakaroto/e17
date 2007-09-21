@@ -5,6 +5,7 @@ _smart_objects = dict()
 cdef object _smart_classes
 _smart_classes = list()
 
+import traceback
 
 cdef void _smart_object_delete(Evas_Object *o):
     cdef SmartObject obj
@@ -13,7 +14,6 @@ cdef void _smart_object_delete(Evas_Object *o):
         try:
             obj._m_delete(obj)
         except Exception, e:
-            import traceback
             traceback.print_exc()
 
     try:
@@ -67,7 +67,6 @@ cdef void _smart_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y):
         try:
             obj._m_move(obj, x, y)
         except Exception, e:
-            import traceback
             traceback.print_exc()
 
 
@@ -78,7 +77,6 @@ cdef void _smart_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h):
         try:
             obj._m_resize(obj, w, h)
         except Exception, e:
-            import traceback
             traceback.print_exc()
 
 
@@ -89,7 +87,6 @@ cdef void _smart_object_show(Evas_Object *o):
         try:
             obj._m_show(obj)
         except Exception, e:
-            import traceback
             traceback.print_exc()
 
 
@@ -100,7 +97,6 @@ cdef void _smart_object_hide(Evas_Object *o):
         try:
             obj._m_hide(obj)
         except Exception, e:
-            import traceback
             traceback.print_exc()
 
 
@@ -111,7 +107,6 @@ cdef void _smart_object_color_set(Evas_Object *o, int r, int g, int b, int a):
         try:
             obj._m_color_set(obj, r, g, b, a)
         except Exception, e:
-            import traceback
             traceback.print_exc()
 
 
@@ -124,7 +119,6 @@ cdef void _smart_object_clip_set(Evas_Object *o, Evas_Object *clip):
         try:
             obj._m_clip_set(obj, other)
         except Exception, e:
-            import traceback
             traceback.print_exc()
 
 
@@ -135,7 +129,6 @@ cdef void _smart_object_clip_unset(Evas_Object *o):
         try:
             obj._m_clip_unset(obj)
         except Exception, e:
-            import traceback
             traceback.print_exc()
 
 
@@ -152,7 +145,6 @@ cdef void _smart_callback(void *data, Evas_Object *o, void *event_info):
         try:
             func(obj, ei, *args, **kargs)
         except Exception, e:
-            import traceback
             traceback.print_exc()
 
 
@@ -315,11 +307,19 @@ cdef class SmartObject(Object):
         lst.append((func, args, kargs))
 
     def callback_del(self, char *event, func):
-        lst = self._smart_callbacks[event]
+        try:
+            lst = self._smart_callbacks[event]
+        except KeyError, e:
+            raise ValueError("Unknown event %r" % e)
+
         i = -1
         for i, (f, a, k) in enumerate(lst):
             if func == f:
                 break
+        else:
+            raise ValueError("Callback %s was not registered with event %r" %
+                             (func, e))
+
         del lst[i]
         if not lst:
             del self._smart_callbacks[event]

@@ -1,5 +1,7 @@
 # This file is included verbatim by c_evas.pyx
 
+import traceback
+
 cdef int cb_dispatcher(Object self, event, Evas_Callback_Type type) except 0:
     # iterate over copy since users may delete callback from callback
     lst = list(self._callbacks[<int>type])
@@ -7,7 +9,6 @@ cdef int cb_dispatcher(Object self, event, Evas_Callback_Type type) except 0:
         try:
             func(self, event, *args, **kargs)
         except Exception, e:
-            import traceback
             traceback.print_exc()
     return 1
 
@@ -19,7 +20,6 @@ cdef int cb_dispatcher2(Object self, Evas_Callback_Type type) except 0:
         try:
             func(self, *args, **kargs)
         except Exception, e:
-            import traceback
             traceback.print_exc()
     return 1
 
