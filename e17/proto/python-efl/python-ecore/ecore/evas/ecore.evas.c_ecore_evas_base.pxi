@@ -1,5 +1,7 @@
 # This file is included verbatim by c_ecore_evas.pyx
 
+import traceback
+
 cdef EcoreEvas EcoreEvas_from_instance(Ecore_Evas *obj):
     cdef void *data
     data = ecore_evas_data_get(obj, "python-ecore-evas")
@@ -12,7 +14,6 @@ cdef void resize_cb(Ecore_Evas *ee):
     try:
         self._resize_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void move_cb(Ecore_Evas *ee):
@@ -21,7 +22,6 @@ cdef void move_cb(Ecore_Evas *ee):
     try:
         self._move_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void show_cb(Ecore_Evas *ee):
@@ -30,7 +30,6 @@ cdef void show_cb(Ecore_Evas *ee):
     try:
         self._show_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void hide_cb(Ecore_Evas *ee):
@@ -39,7 +38,6 @@ cdef void hide_cb(Ecore_Evas *ee):
     try:
         self._hide_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void delete_request_cb(Ecore_Evas *ee):
@@ -48,7 +46,6 @@ cdef void delete_request_cb(Ecore_Evas *ee):
     try:
         self._delete_request_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void destroy_cb(Ecore_Evas *ee):
@@ -57,7 +54,6 @@ cdef void destroy_cb(Ecore_Evas *ee):
     try:
         self._destroy_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void focus_in_cb(Ecore_Evas *ee):
@@ -66,7 +62,6 @@ cdef void focus_in_cb(Ecore_Evas *ee):
     try:
         self._focus_in_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void focus_out_cb(Ecore_Evas *ee):
@@ -75,7 +70,6 @@ cdef void focus_out_cb(Ecore_Evas *ee):
     try:
         self._focus_out_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void sticky_cb(Ecore_Evas *ee):
@@ -84,7 +78,6 @@ cdef void sticky_cb(Ecore_Evas *ee):
     try:
         self._sticky_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void unsticky_cb(Ecore_Evas *ee):
@@ -93,7 +86,6 @@ cdef void unsticky_cb(Ecore_Evas *ee):
     try:
         self._unsticky_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void mouse_in_cb(Ecore_Evas *ee):
@@ -102,7 +94,6 @@ cdef void mouse_in_cb(Ecore_Evas *ee):
     try:
         self._mouse_in_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void mouse_out_cb(Ecore_Evas *ee):
@@ -111,7 +102,6 @@ cdef void mouse_out_cb(Ecore_Evas *ee):
     try:
         self._mouse_out_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void pre_render_cb(Ecore_Evas *ee):
@@ -120,7 +110,6 @@ cdef void pre_render_cb(Ecore_Evas *ee):
     try:
         self._pre_render_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 cdef void post_render_cb(Ecore_Evas *ee):
@@ -129,7 +118,6 @@ cdef void post_render_cb(Ecore_Evas *ee):
     try:
         self._post_render_cb(self)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 
