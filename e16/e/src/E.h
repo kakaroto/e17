@@ -325,6 +325,7 @@ typedef struct
       int                 mode_move;
       int                 mode_resize;
       int                 mode_info;
+      int                 mode_maximize_default;
       unsigned int        color;
       char                avoid_server_grab;
       char                update_while_moving;

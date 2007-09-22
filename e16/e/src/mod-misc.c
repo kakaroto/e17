@@ -153,6 +153,7 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_INT(Conf, movres.mode_move, 0),
    CFG_ITEM_INT(Conf, movres.mode_resize, 2),
    CFG_ITEM_INT(Conf, movres.mode_info, 1),
+   CFG_ITEM_INT(Conf, movres.mode_maximize_default, 1),
    CFG_ITEM_HEX(Conf, movres.color, 0x00ff0000),
    CFG_ITEM_INT(Conf, movres.avoid_server_grab, 1),
    CFG_ITEM_BOOL(Conf, movres.update_while_moving, 0),

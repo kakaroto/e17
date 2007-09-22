@@ -28,6 +28,7 @@
 static int          tmp_move;
 static int          tmp_resize;
 static int          tmp_geominfo;
+static int          tmp_maximize;
 static char         tmp_avoid_server_grab;
 static char         tmp_update_while_moving;
 static char         tmp_sync_request;
@@ -40,6 +41,7 @@ CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Conf.movres.mode_move = tmp_move;
 	Conf.movres.mode_resize = tmp_resize;
 	Conf.movres.mode_info = tmp_geominfo;
+	Conf.movres.mode_maximize_default = tmp_maximize;
 	Conf.movres.avoid_server_grab = tmp_avoid_server_grab;
 	Conf.movres.update_while_moving = tmp_update_while_moving;
 	Conf.movres.enable_sync_request = tmp_sync_request;
@@ -50,11 +52,12 @@ CB_ConfigureMoveResize(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 static void
 _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 {
-   DItem              *di, *radio1, *radio2, *radio3;
+   DItem              *di, *radio1, *radio2, *radio3, *radio4;
 
    tmp_move = Conf.movres.mode_move;
    tmp_resize = Conf.movres.mode_resize;
    tmp_geominfo = Conf.movres.mode_info;
+   tmp_maximize = Conf.movres.mode_maximize_default;
    tmp_avoid_server_grab = Conf.movres.avoid_server_grab;
    tmp_update_while_moving = Conf.movres.update_while_moving;
    tmp_sync_request = Conf.movres.enable_sync_request;
@@ -162,6 +165,34 @@ _DlgFillMoveResize(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 0);
    DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_geominfo);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemSetText(di, _("Default Resize Policy:"));
+
+   radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Conservative"));
+   DialogItemRadioButtonSetFirst(di, radio4);
+   DialogItemRadioButtonGroupSetVal(di, 2);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Available"));
+   DialogItemRadioButtonSetFirst(di, radio4);
+   DialogItemRadioButtonGroupSetVal(di, 1);
+
+   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Absolute"));
+   DialogItemRadioButtonSetFirst(di, radio4);
+   DialogItemRadioButtonGroupSetVal(di, 0);
+   DialogItemRadioButtonGroupSetValPtr(radio4, &tmp_maximize);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

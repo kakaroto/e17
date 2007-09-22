@@ -63,8 +63,8 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
      }
 
    type = MAX_ABSOLUTE;		/* Select default */
-   if (!resize_type)
-      ;
+   if (!resize_type || !resize_type[0])
+      type = Conf.movres.mode_maximize_default;
    else if (!strcmp(resize_type, "absolute"))
       type = MAX_ABSOLUTE;
    else if (!strcmp(resize_type, "available"))
