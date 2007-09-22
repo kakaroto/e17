@@ -328,7 +328,6 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    int j = 1;
    int i = 0;
    int (*cmp)(const void *, const void *) = _ex_sort_cmp_name;
-   Evas_List *l;
 	
    _ex_main_image_unset();
    //chdir(e->cur_tab->dir);
