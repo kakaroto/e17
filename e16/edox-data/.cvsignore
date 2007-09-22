@@ -1,8 +1,11 @@
-autom4te.cache
+.git
+.gitignore
 aclocal.m4
-Makefile.in
-configure
+autom4te.cache
 config.log
 config.status
+configure
 Makefile
+Makefile.in
+e16-docs.spec
 e16-docs*.tar.gz

@@ -1,5 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
+MAINTAINERCLEANFILES = aclocal.m4 configure install-sh missing \
+		       Makefile.in
+
 SUBDIRS = E-docs
 
-EXTRA_DIST = edox-data.spec
+#EXTRA_DIST = e16-docs.spec.in
