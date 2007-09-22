@@ -15,7 +15,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
     def __dealloc__(self):
         if self.obj:
-            _Canvas_forget(<long>self.obj)
+            Canvas_forget(<long>self.obj)
             evas_free(self.obj)
             self.obj = NULL
 
