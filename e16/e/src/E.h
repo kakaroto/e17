@@ -423,6 +423,7 @@ typedef struct
       char                argb_clients_inherit_attr;
       int                 image_cache_size;
       int                 mask_alpha_threshold;
+      char                enable_startup_id;
    } testing;
 
    char                autosave;
@@ -565,6 +566,7 @@ void                About(void);
 
 /* actions.c */
 #define EXEC_SET_LANG       0x01
+#define EXEC_SET_STARTUP_ID 0x02
 int                 execApplication(const char *params, int flags);
 void                Espawn(int argc, char **argv);
 void                EspawnCmd(const char *cmd);

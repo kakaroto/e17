@@ -22,8 +22,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "desktops.h"
 #include "file.h"
 #include "user.h"
+
+static void
+StartupIdExport(void)
+{
+   char                buf[128];
+   Desk               *dsk;
+   int                 ax, ay;
+
+   dsk = DesksGetCurrent();
+   DeskGetArea(dsk, &ax, &ay);
+
+   Esnprintf(buf, sizeof(buf), "e16/%d:%d:%d,%d", Mode.apps.startup_id,
+	     dsk->num, ax, ay);
+   Esetenv("DESKTOP_STARTUP_ID", buf);
+}
 
 static void
 ExecSetupEnv(int flags)
@@ -39,6 +55,9 @@ ExecSetupEnv(int flags)
    /* Set up env stuff */
    if (flags & EXEC_SET_LANG)
       LangExport();
+   if (flags & EXEC_SET_STARTUP_ID)
+      StartupIdExport();
+
 #if USE_ROOTHACKLIB
    if (Mode.wm.window)
       Esetenv("LD_PRELOAD", ENLIGHTENMENT_LIB "/e16/libhack.so");
@@ -60,6 +79,7 @@ execApplication(const char *params, int flags)
    if (exe[0] == '\0')
       return -1;
 
+   Mode.apps.startup_id++;
    if (fork())
       return 0;
 

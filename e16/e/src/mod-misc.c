@@ -194,6 +194,7 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, testing.argb_internal_clients, 0),
    CFG_ITEM_BOOL(Conf, testing.argb_clients, 0),
    CFG_ITEM_BOOL(Conf, testing.argb_clients_inherit_attr, 0),
+   CFG_ITEM_BOOL(Conf, testing.enable_startup_id, 1),
    CFG_FUNC_INT(Conf, testing.image_cache_size, -1, _CfgImageCacheSize),
    CFG_ITEM_INT(Conf, testing.mask_alpha_threshold, 8),
 
@@ -207,7 +208,7 @@ static void
 MiscIpcExec(const char *params)
 {
    if (params)
-      execApplication(params, EXEC_SET_LANG);
+      execApplication(params, EXEC_SET_LANG | EXEC_SET_STARTUP_ID);
    else
       IpcPrintf("exec what?\n");
 }

@@ -658,17 +658,17 @@ EWMH_GetWindowUserTime(EWin * ewin)
 static void
 EWMH_GetWindowStartupId(EWin * ewin)
 {
-#if 0				/* TBD */
 #define TryGroup(e) (((e)->icccm.group != None) && ((e)->icccm.group != EwinGetClientXwin(e)))
    char               *str;
+
+   if (!Conf.testing.enable_startup_id)
+      return;
 
    ecore_x_netwm_startup_id_get(EwinGetClientXwin(ewin), &str);
    if (!str && TryGroup(ewin))
       ecore_x_netwm_startup_id_get(ewin->icccm.group, &str);
-   Eprintf("Startup id: %s: %s\n", EwinGetTitle(ewin), str);
-#else
-   ewin = NULL;
-#endif
+   if (str && EDebug(1))
+      Eprintf("Startup id: %s: %s\n", EwinGetTitle(ewin), str);
 }
 
 static void
