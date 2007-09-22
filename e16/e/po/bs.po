@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-09-21 20:35+0200\n"
+"POT-Creation-Date: 2007-09-22 12:47+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -68,7 +68,7 @@ msgstr ""
 msgid "%u references remain\n"
 msgstr "%u referenca ostaje\n"
 
-#: src/actions.c:90
+#: src/actions.c:110
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -81,7 +81,7 @@ msgstr ""
 "Ovaj program ne moŵe biti izvrŷen.\n"
 "To je zato jer datoteka ne postoji.\n"
 
-#: src/actions.c:98
+#: src/actions.c:118
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -99,7 +99,7 @@ msgstr ""
 "putanji za svoj shell koji je %s. Predlaŵem da proīitate stranice priruīnika\n"
 "za taj shell i da proīitate kako promjeniti ili dodati vaŷu izvrŷavaju�u putanju.\n"
 
-#: src/actions.c:118
+#: src/actions.c:138
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -115,7 +115,7 @@ msgstr ""
 "Nisam siguran zaŷto ovo ne moŵete uraditi. Datoteka postoji,\n"
 "i Vi je moŵete izvrŷavati. Predlaŵem da bolje pogledate ovo.\n"
 
-#: src/actions.c:129
+#: src/actions.c:149
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -130,7 +130,7 @@ msgstr ""
 "To je zato ŷto datoteka postoji, ali Vi niste u moguīnosti da je\n"
 "izvrŷavate zato ŷto nemate psristup za izvrŷavanje te datoteke.\n"
 
-#: src/actions.c:144
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -143,7 +143,7 @@ msgstr ""
 "Ovaj program ne moŵe biti izvrŷen.\n"
 "To je zato ŷto je u stvari datiteka direktorij.\n"
 
-#: src/actions.c:152
+#: src/actions.c:172
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -156,7 +156,7 @@ msgstr ""
 "Ovaj program ne moŵe biti izvrŷen.\n"
 "To je zato ŷto datoteka nije ispravna.\n"
 
-#: src/actions.c:177
+#: src/actions.c:197
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -1398,7 +1398,7 @@ msgstr "E dijalozi:"
 msgid "Tooltips:"
 msgstr "Savjeti:"
 
-#: src/mod-trans.c:165 src/settings.c:75 src/settings.c:80 src/settings.c:306
+#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:337
 msgid "Opaque"
 msgstr "Mutan"
 
@@ -1643,73 +1643,89 @@ msgstr ""
 "Enlightenment usmjeravanje\n"
 "Dijalog osobina\n"
 
-#: src/settings.c:67
+#: src/settings.c:70
 msgid "Move Methods:"
 msgstr "Metoda pomakinjanja:"
 
-#: src/settings.c:72
+#: src/settings.c:75
 msgid "Resize Methods:"
 msgstr "Metode mijenjanja veliīine:"
 
-#: src/settings.c:85 src/settings.c:90 src/settings.c:311
+#: src/settings.c:88 src/settings.c:93 src/settings.c:342
 msgid "Technical"
 msgstr "Tehniīki"
 
-#: src/settings.c:95 src/settings.c:100 src/settings.c:316
+#: src/settings.c:98 src/settings.c:103 src/settings.c:347
 msgid "Box"
 msgstr "Kutija"
 
-#: src/settings.c:105 src/settings.c:110 src/settings.c:321
+#: src/settings.c:108 src/settings.c:113 src/settings.c:352
 msgid "Shaded"
 msgstr "Osjen�eno"
 
-#: src/settings.c:115 src/settings.c:120 src/settings.c:326
+#: src/settings.c:118 src/settings.c:123 src/settings.c:357
 msgid "Semi-Solid"
 msgstr "Semi-Solid"
 
-#: src/settings.c:126
+#: src/settings.c:129
 msgid "Translucent"
 msgstr "Proziran"
 
-#: src/settings.c:135
+#: src/settings.c:138
 msgid "Avoid server grab"
 msgstr ""
 
-#: src/settings.c:145
+#: src/settings.c:148
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "Premjesti / Promjeni veliīinu Info pozicija:"
 
-#: src/settings.c:149
+#: src/settings.c:152
 msgid "Window Center (O/T/B Methods)"
 msgstr "Centar prozora (O/T/B Methode)"
 
-#: src/settings.c:155
+#: src/settings.c:158
 msgid "Always Screen corner"
 msgstr "Always Screen corner"
 
-#: src/settings.c:161
+#: src/settings.c:164
 msgid "Don't show"
 msgstr "Nemoj prikazati"
 
-#: src/settings.c:171
+#: src/settings.c:176
+msgid "Default Resize Policy:"
+msgstr ""
+
+#: src/settings.c:180
+msgid "Conservative"
+msgstr ""
+
+#: src/settings.c:186
+msgid "Available"
+msgstr ""
+
+#: src/settings.c:192
+msgid "Absolute"
+msgstr ""
+
+#: src/settings.c:202
 #, fuzzy
 msgid "Update window while moving"
 msgstr "Usmjeravanje prozora prilikom prebacivanja"
 
-#: src/settings.c:176
+#: src/settings.c:207
 msgid "Synchronize move/resize with application"
 msgstr ""
 
-#: src/settings.c:182
+#: src/settings.c:213
 #, fuzzy
 msgid "Move/Resize"
 msgstr "Veliīina"
 
-#: src/settings.c:183
+#: src/settings.c:214
 msgid "Move & Resize Settings"
 msgstr "Premjesti & Promjeni veliīinu osobine"
 
-#: src/settings.c:186
+#: src/settings.c:217
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
@@ -1717,74 +1733,74 @@ msgstr ""
 "Enlightenment Premjesti & Promjeni veliīinu\n"
 "Metod dijalog osobina\n"
 
-#: src/settings.c:270
+#: src/settings.c:301
 msgid "Dialog windows appear together with their owner"
 msgstr "Dijalog prozora se pojavljuje zajedno sa njihovim vlasnikom"
 
-#: src/settings.c:275
+#: src/settings.c:306
 msgid "Switch to desktop where dialog appears"
 msgstr "Prebaci se na desktop na kojem se dijalg pokazuje"
 
-#: src/settings.c:283
+#: src/settings.c:314
 msgid "Place windows manually"
 msgstr "Smjesti prozore ruīno"
 
-#: src/settings.c:288
+#: src/settings.c:319
 msgid "Place windows under mouse"
 msgstr "Pozicioniraj prozore ispod miŷa"
 
-#: src/settings.c:293
+#: src/settings.c:324
 msgid "Slide windows in when they appear"
 msgstr "Klizaj prozore kada se pojave"
 
-#: src/settings.c:298
+#: src/settings.c:329
 msgid "Slide windows around when cleaning up"
 msgstr "Klizaj prozore okolo kada īistim"
 
-#: src/settings.c:303
+#: src/settings.c:334
 msgid "Slide Method:"
 msgstr "Metpda klizanja:"
 
-#: src/settings.c:336
+#: src/settings.c:367
 #, fuzzy
 msgid "Appear Slide speed:"
 msgstr "Brzina pojavljivanja klizanja: (sporo)\n"
 
-#: src/settings.c:347
+#: src/settings.c:378
 #, fuzzy
 msgid "Cleanup Slide speed:"
 msgstr "Brzina īiŷ�enja klizanja: (sporo)\n"
 
-#: src/settings.c:360
+#: src/settings.c:391
 msgid "Animate shading and unshading of windows"
 msgstr "Pokreni sijen�enje i sklanjanje sijenki prozora"
 
-#: src/settings.c:366
+#: src/settings.c:397
 #, fuzzy
 msgid "Window Shading speed:"
 msgstr "Brzina sjenīenja prozora: (sporo)\n"
 
-#: src/settings.c:379
+#: src/settings.c:410
 msgid "Ignore struts"
 msgstr "Ignoriŷi dijagonale"
 
-#: src/settings.c:384
+#: src/settings.c:415
 msgid "Raise fullscreen windows"
 msgstr ""
 
-#: src/settings.c:392
+#: src/settings.c:423
 msgid "Place windows on another head when full"
 msgstr "Smjesti prozore na druge poīetke kada je puno"
 
-#: src/settings.c:400
+#: src/settings.c:431
 msgid "Placement"
 msgstr ""
 
-#: src/settings.c:401
+#: src/settings.c:432
 msgid "Window Placement Settings"
 msgstr "Osobine smjeŷtanja prozora"
 
-#: src/settings.c:404
+#: src/settings.c:435
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1792,24 +1808,24 @@ msgstr ""
 "Enlightenment Smjeŷtanje prozora\n"
 "dijalog osobina\n"
 
-#: src/settings.c:435
+#: src/settings.c:466
 msgid "Raise Windows Automatically"
 msgstr "Pove�aj prozore automatski"
 
-#: src/settings.c:441
+#: src/settings.c:472
 msgid "Autoraise delay:"
 msgstr "Kaŷnjenje automatskog pove�anja:"
 
-#: src/settings.c:452
+#: src/settings.c:483
 #, fuzzy
 msgid "Autoraise"
 msgstr "Kaŷnjenje automatskog pove�anja:"
 
-#: src/settings.c:453
+#: src/settings.c:484
 msgid "Autoraise Settings"
 msgstr "Osobine automatskog pove�avanja"
 
-#: src/settings.c:456
+#: src/settings.c:487
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -1817,33 +1833,33 @@ msgstr ""
 "Enlightenment Automatsko pove�avanje\n"
 "prozora dijalog osobina\n"
 
-#: src/settings.c:493
+#: src/settings.c:524
 msgid "Enable Dialog Headers"
 msgstr "Omogu�i zaglavlje dijaloga"
 
-#: src/settings.c:499
+#: src/settings.c:530
 #, fuzzy
 msgid "Enable Button Images"
 msgstr "Omogu�i zvukove"
 
-#: src/settings.c:508
+#: src/settings.c:539
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:516
+#: src/settings.c:547
 msgid "Use saveunders to reduce window exposures"
 msgstr "Koristi saveunders da bi regulisali izlaganje prozora"
 
-#: src/settings.c:522 config/strings.c:144 config/strings.c:160
+#: src/settings.c:553 config/strings.c:144 config/strings.c:160
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Razne osobine"
 
-#: src/settings.c:523
+#: src/settings.c:554
 msgid "Miscellaneous Settings"
 msgstr "Razne osobine"
 
-#: src/settings.c:526
+#: src/settings.c:557
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1851,47 +1867,47 @@ msgstr ""
 "Enlightenment Razno\n"
 "dijalog osobina\n"
 
-#: src/settings.c:567
+#: src/settings.c:598
 #, fuzzy
 msgid "Enable Composite"
 msgstr "Omogu�i zvukove"
 
-#: src/settings.c:575
+#: src/settings.c:606
 #, fuzzy
 msgid "Enable Fading"
 msgstr "Ukljuīi precrtavanje ivice"
 
-#: src/settings.c:583
+#: src/settings.c:614
 msgid "Shadows Off"
 msgstr ""
 
-#: src/settings.c:589
+#: src/settings.c:620
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:595
+#: src/settings.c:626
 msgid "Shadows Sharp2"
 msgstr ""
 
-#: src/settings.c:601
+#: src/settings.c:632
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:609
+#: src/settings.c:640
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:620
+#: src/settings.c:651
 #, fuzzy
 msgid "Composite"
 msgstr "Omogu�i zvukove"
 
-#: src/settings.c:621
+#: src/settings.c:652
 #, fuzzy
 msgid "Composite Settings"
 msgstr "Osobine savjeta"
 
-#: src/settings.c:624
+#: src/settings.c:655
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
@@ -1900,7 +1916,7 @@ msgstr ""
 "Enlightenment Savjeti\n"
 "dijalog osobina\n"
 
-#: src/settings.c:713
+#: src/settings.c:744
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment se pokre�e..."

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-09-21 20:35+0200\n"
+"POT-Creation-Date: 2007-09-22 12:47+0200\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -48,7 +48,7 @@ msgstr ""
 msgid "%u references remain\n"
 msgstr "%u bað geriye kaldý\n"
 
-#: src/actions.c:90
+#: src/actions.c:110
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -61,7 +61,7 @@ msgstr ""
 "Bu uygulama çalýþtýrýlamadý .\n"
 "Zira , bu dosya yok .\n"
 
-#: src/actions.c:98
+#: src/actions.c:118
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -81,7 +81,7 @@ msgstr ""
 "komutanýn rehberine (man ..) bakýp o ´path´\n"
 "verimini geniþlet .\n"
 
-#: src/actions.c:118
+#: src/actions.c:138
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -98,7 +98,7 @@ msgstr ""
 "Bu dosya var ve senin çalýþtýrma hakkýn da\n"
 "var ?! ..\n"
 
-#: src/actions.c:129
+#: src/actions.c:149
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -113,7 +113,7 @@ msgstr ""
 "Bu uygulama var , ama senin bu uyulamayý \n"
 "çalýþtýrma hakkýn yok .\n"
 
-#: src/actions.c:144
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -126,7 +126,7 @@ msgstr ""
 "Bu uygulama çalýþtýrýlamadý .\n"
 "O dosya gercek'te bir dizin .\n"
 
-#: src/actions.c:152
+#: src/actions.c:172
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -139,7 +139,7 @@ msgstr ""
 "Bu uygulama çalýþtýrýlamadý .\n"
 "Zira bu normal bir dosya deðil .\n"
 
-#: src/actions.c:177
+#: src/actions.c:197
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -1390,7 +1390,7 @@ msgstr ""
 msgid "Tooltips:"
 msgstr "Balon yardýmý gösterme zaman arasý :\n"
 
-#: src/mod-trans.c:165 src/settings.c:75 src/settings.c:80 src/settings.c:306
+#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:337
 msgid "Opaque"
 msgstr "Içli"
 
@@ -1640,73 +1640,89 @@ msgstr ""
 "Enlightenment foküsleme\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:67
+#: src/settings.c:70
 msgid "Move Methods:"
 msgstr "Taþýma þekli :"
 
-#: src/settings.c:72
+#: src/settings.c:75
 msgid "Resize Methods:"
 msgstr "Yeniden boyutlandýrma þekli :"
 
-#: src/settings.c:85 src/settings.c:90 src/settings.c:311
+#: src/settings.c:88 src/settings.c:93 src/settings.c:342
 msgid "Technical"
 msgstr "Teknik"
 
-#: src/settings.c:95 src/settings.c:100 src/settings.c:316
+#: src/settings.c:98 src/settings.c:103 src/settings.c:347
 msgid "Box"
 msgstr "Kutu olarak"
 
-#: src/settings.c:105 src/settings.c:110 src/settings.c:321
+#: src/settings.c:108 src/settings.c:113 src/settings.c:352
 msgid "Shaded"
 msgstr "Gölgeli"
 
-#: src/settings.c:115 src/settings.c:120 src/settings.c:326
+#: src/settings.c:118 src/settings.c:123 src/settings.c:357
 msgid "Semi-Solid"
 msgstr "Yarý-gözükür"
 
-#: src/settings.c:126
+#: src/settings.c:129
 msgid "Translucent"
 msgstr "Transparan"
 
-#: src/settings.c:135
+#: src/settings.c:138
 msgid "Avoid server grab"
 msgstr ""
 
-#: src/settings.c:145
+#: src/settings.c:148
 msgid "Move/Resize Geometry Info Postion:"
 msgstr "Taþýma/boyutlandýrma bilgisi yeri :"
 
-#: src/settings.c:149
+#: src/settings.c:152
 msgid "Window Center (O/T/B Methods)"
 msgstr "Pencere ortasýnda ( O/T/B türleri )"
 
-#: src/settings.c:155
+#: src/settings.c:158
 msgid "Always Screen corner"
 msgstr "Daima ekran köþesinde"
 
-#: src/settings.c:161
+#: src/settings.c:164
 msgid "Don't show"
 msgstr "Gösterme"
 
-#: src/settings.c:171
+#: src/settings.c:176
+msgid "Default Resize Policy:"
+msgstr ""
+
+#: src/settings.c:180
+msgid "Conservative"
+msgstr ""
+
+#: src/settings.c:186
+msgid "Available"
+msgstr ""
+
+#: src/settings.c:192
+msgid "Absolute"
+msgstr ""
+
+#: src/settings.c:202
 #, fuzzy
 msgid "Update window while moving"
 msgstr "Pencere deðiþtirirken pencereleri foküsle"
 
-#: src/settings.c:176
+#: src/settings.c:207
 msgid "Synchronize move/resize with application"
 msgstr ""
 
-#: src/settings.c:182
+#: src/settings.c:213
 #, fuzzy
 msgid "Move/Resize"
 msgstr "Boyut"
 
-#: src/settings.c:183
+#: src/settings.c:214
 msgid "Move & Resize Settings"
 msgstr "Boyutlandýrma & Taþýma þekilleri"
 
-#: src/settings.c:186
+#: src/settings.c:217
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
@@ -1714,76 +1730,76 @@ msgstr ""
 "Enlightenment Taþýma & boyutlandýrma\n"
 "türleri ayarlarý diyaloðu\n"
 
-#: src/settings.c:270
+#: src/settings.c:301
 msgid "Dialog windows appear together with their owner"
 msgstr "Diyalok pencerelerini ana pencereleriyle beraber ayný masaüsütünde aç"
 
-#: src/settings.c:275
+#: src/settings.c:306
 msgid "Switch to desktop where dialog appears"
 msgstr "Yeni bir diyalok penceresinin açýldýðý masaüstüne geç"
 
-#: src/settings.c:283
+#: src/settings.c:314
 msgid "Place windows manually"
 msgstr "Pencereleri elden yerleþtir"
 
-#: src/settings.c:288
+#: src/settings.c:319
 msgid "Place windows under mouse"
 msgstr "Pencereleri farenin altýna yerleþtir"
 
-#: src/settings.c:293
+#: src/settings.c:324
 msgid "Slide windows in when they appear"
 msgstr "Pencerler gözükürken pencereleri kaydýrt"
 
-#: src/settings.c:298
+#: src/settings.c:329
 msgid "Slide windows around when cleaning up"
 msgstr "Ekraný temizlerken pencereleri kaydýrt"
 
-#: src/settings.c:303
+#: src/settings.c:334
 msgid "Slide Method:"
 msgstr "Kaydýrma þekli :"
 
-#: src/settings.c:336
+#: src/settings.c:367
 #, fuzzy
 msgid "Appear Slide speed:"
 msgstr "Görünme kaydýtma hýzý : (yavaþ)\n"
 
-#: src/settings.c:347
+#: src/settings.c:378
 #, fuzzy
 msgid "Cleanup Slide speed:"
 msgstr "Temizleme kaydýrtma hýzý: (yavaþ)\n"
 
-#: src/settings.c:360
+#: src/settings.c:391
 msgid "Animate shading and unshading of windows"
 msgstr "Pencerelerin toplanmasýný hareketlendir"
 
-#: src/settings.c:366
+#: src/settings.c:397
 #, fuzzy
 msgid "Window Shading speed:"
 msgstr "Pencere toplama hýzý : (yavaþ)\n"
 
-#: src/settings.c:379
+#: src/settings.c:410
 #, fuzzy
 msgid "Ignore struts"
 msgstr "Bunu geç"
 
-#: src/settings.c:384
+#: src/settings.c:415
 msgid "Raise fullscreen windows"
 msgstr ""
 
-#: src/settings.c:392
+#: src/settings.c:423
 #, fuzzy
 msgid "Place windows on another head when full"
 msgstr "Pencereleri elden yerleþtir"
 
-#: src/settings.c:400
+#: src/settings.c:431
 msgid "Placement"
 msgstr ""
 
-#: src/settings.c:401
+#: src/settings.c:432
 msgid "Window Placement Settings"
 msgstr "Pencere yerleþme ayarlarý"
 
-#: src/settings.c:404
+#: src/settings.c:435
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1791,24 +1807,24 @@ msgstr ""
 "Enlightenment pencere yerleþme\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:435
+#: src/settings.c:466
 msgid "Raise Windows Automatically"
 msgstr "Pencereleri otomatikman öne geçir"
 
-#: src/settings.c:441
+#: src/settings.c:472
 msgid "Autoraise delay:"
 msgstr "Bekleme zamaný :"
 
-#: src/settings.c:452
+#: src/settings.c:483
 #, fuzzy
 msgid "Autoraise"
 msgstr "Bekleme zamaný :"
 
-#: src/settings.c:453
+#: src/settings.c:484
 msgid "Autoraise Settings"
 msgstr "Otomatik öne getirim"
 
-#: src/settings.c:456
+#: src/settings.c:487
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -1816,33 +1832,33 @@ msgstr ""
 "Enlightenment otomatikman öne getirim\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:493
+#: src/settings.c:524
 msgid "Enable Dialog Headers"
 msgstr "Diyalok baþlýklarýný aç"
 
-#: src/settings.c:499
+#: src/settings.c:530
 #, fuzzy
 msgid "Enable Button Images"
 msgstr "Sesi aç"
 
-#: src/settings.c:508
+#: src/settings.c:539
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:516
+#: src/settings.c:547
 msgid "Use saveunders to reduce window exposures"
 msgstr "Pencere gösterimlerini \"saveunder\"'leri kullanýp azalt"
 
-#: src/settings.c:522 config/strings.c:144 config/strings.c:160
+#: src/settings.c:553 config/strings.c:144 config/strings.c:160
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Karýþýk ayarlar"
 
-#: src/settings.c:523
+#: src/settings.c:554
 msgid "Miscellaneous Settings"
 msgstr "Karýþýk ayarlar"
 
-#: src/settings.c:526
+#: src/settings.c:557
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1850,47 +1866,47 @@ msgstr ""
 "Enlightenment karýþýk ayarlar\n"
 "diyaloðu\n"
 
-#: src/settings.c:567
+#: src/settings.c:598
 #, fuzzy
 msgid "Enable Composite"
 msgstr "Sesi aç"
 
-#: src/settings.c:575
+#: src/settings.c:606
 #, fuzzy
 msgid "Enable Fading"
 msgstr "Kenar zýplamasýný aç"
 
-#: src/settings.c:583
+#: src/settings.c:614
 msgid "Shadows Off"
 msgstr ""
 
-#: src/settings.c:589
+#: src/settings.c:620
 msgid "Shadows Sharp"
 msgstr ""
 
-#: src/settings.c:595
+#: src/settings.c:626
 msgid "Shadows Sharp2"
 msgstr ""
 
-#: src/settings.c:601
+#: src/settings.c:632
 msgid "Shadows Blurred"
 msgstr ""
 
-#: src/settings.c:609
+#: src/settings.c:640
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:620
+#: src/settings.c:651
 #, fuzzy
 msgid "Composite"
 msgstr "Sesi aç"
 
-#: src/settings.c:621
+#: src/settings.c:652
 #, fuzzy
 msgid "Composite Settings"
 msgstr "Balon yardýmý ayarlarý"
 
-#: src/settings.c:624
+#: src/settings.c:655
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
@@ -1899,7 +1915,7 @@ msgstr ""
 "Enlightenment balon yardýmý\n"
 "ayarlarý diyaloðu\n"
 
-#: src/settings.c:713
+#: src/settings.c:744
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment baþlýyor ...."
