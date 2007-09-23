@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-09-22 12:47+0200\n"
-"PO-Revision-Date: 2007-08-25 10:22+0900\n"
+"PO-Revision-Date: 2007-09-22 23:01+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1687,20 +1687,19 @@ msgstr "表示しない"
 
 #: src/settings.c:176
 msgid "Default Resize Policy:"
-msgstr ""
+msgstr "デフォルトの最大化方式"
 
 #: src/settings.c:180
 msgid "Conservative"
-msgstr ""
+msgstr "何も隠さない"
 
 #: src/settings.c:186
 msgid "Available"
-msgstr ""
+msgstr "eppletは隠さない"
 
 #: src/settings.c:192
-#, fuzzy
 msgid "Absolute"
-msgstr "上に"
+msgstr "画面一杯"
 
 #
 #: src/settings.c:202
