@@ -4484,3 +4484,33 @@ Xft font is now selected using prefix "xft:".
 Fix valgrind complaint (drawable caching).
 Optionally use pango for font rendering.
 
+
+-------------------------------------------------------------------------------
+
+Sun Sep 23 14:51:38 CEST 2007
+(Kim)
+
+--- 0.16.8.10 0.01 ---
+Bump version.
+Change some libtool macro names to non-deprecated ones.
+Add AC_LIBTOOL_LANG_..._CONFIG magic to cut down configure speed a bit on
+ some platforms (as suggested by Andreas).
+Always enable warnings when using gcc. Fix warnings.
+Remove unmaintained debian stuff.
+Deactivate more code when disabling sound.
+XColor -> EColor, EGet/SetColor -> macros.
+Loadable module support bits.
+Split up font stuff, preparing for loadable font type handlers.
+Japanese translation update (Yasufumi Haga).
+Close systray if _NET_SYSTEM_TRAY_Sx selection is lost.
+Font and sound module bits.
+Deactivate unused code, trivial cleanups.
+Optionally build various bits (font,sound support) as loadable modules.
+Eliminate EXCreate/FreePixmap.
+Avoid some pixmap create/destroys.
+Simplify some imageclass functions (w,h are always window size).
+Add optional visibility hiding (only useful with modular build).
+Spec file fix for x86_64 (Peter Kjellerstedt).
+Enable setting default maximise policy.
+Startup id bits.
+Japanese translation update (Yasufumi Haga).
