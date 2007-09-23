@@ -3,5 +3,4 @@ libeflpp_ecore.la
 .libs
 Makefile
 Makefile.in
-eflpp_ecore.lo
-eflpp_ecoreconfig.lo
+*.lo

@@ -16,3 +16,9 @@ aclocal.m4
 Makefile.in
 Makefile
 .tm_project.cache
+missing
+install-sh
+depcomp
+.tm_project2.cache
+.anjuta
+
