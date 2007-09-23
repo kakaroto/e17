@@ -41,3 +41,6 @@ A: See TODO
 
 Q: How can I see the debug messages?
 A: export EFL_DEBUG="1" and regenerate all Makefiles
+
+Q: It takes a long time to 'make' and 'make install'. This is bad while development. Are there alternatives?
+A: Yes. You could simpy add the eflpp top level directory to the PKG_CONFIG_PATH variable. Then pkg-config is able to find the unsinstalled lib and include files. No need to do a 'make install'.
