@@ -1114,7 +1114,7 @@ _ex_main_window_show(char *dir, int fullscreen, int slideshow)
 	  {	     
 	     char *dir2;
 	     
-	     dir2 = ecore_file_dir_get(dir);
+	     dir2 = ecore_file_dir_get(ecore_file_realpath(dir));
 	     tab = _ex_tab_new(e, dir2);
 	     E_FREE(dir2);
 	     realpath(dir, file);
