@@ -528,7 +528,7 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
 	   case ECORE_FILE_EVENT_DELETED_FILE:
 	      /* TODO: remove the correct item from tree, don't refresh all */
 	      etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_FILES);
+	      _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 	      break;
 	   case ECORE_FILE_EVENT_CREATED_FILE:
 	      if (e->options->monitor_focus)

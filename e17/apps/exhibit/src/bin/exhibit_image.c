@@ -713,12 +713,11 @@ _ex_image_move()
 {
    Ex_Filedialog *fd;
    Etk_Widget *btn;
-   char *dialog_title;
 
    fd = _ex_image_file_dialog_new();
    etk_filechooser_widget_is_save_set(ETK_FILECHOOSER_WIDGET(fd->filechooser), ETK_TRUE);
-   asprintf(&dialog_title, "Exhibit [ %s ] - Move image...",  fd->e->cur_tab->cur_file);
-   etk_window_title_set(ETK_WINDOW(fd->win), dialog_title);
+   etk_filechooser_widget_selected_file_set(ETK_FILECHOOSER_WIDGET(fd->filechooser), fd->e->cur_tab->cur_file);
+   etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit - Move image to...");
 
 
    btn = etk_button_new_with_label("Move");
@@ -739,12 +738,11 @@ _ex_image_save_as()
 {
    Ex_Filedialog *fd;
    Etk_Widget *btn;
-   char *dialog_title;
 
    fd = _ex_image_file_dialog_new();
    etk_filechooser_widget_is_save_set(ETK_FILECHOOSER_WIDGET(fd->filechooser), ETK_TRUE);
-   asprintf(&dialog_title, "Exhibit [ %s ] - Save image as...",  fd->e->cur_tab->cur_file);
-   etk_window_title_set(ETK_WINDOW(fd->win), dialog_title);
+   etk_filechooser_widget_selected_file_set(ETK_FILECHOOSER_WIDGET(fd->filechooser), fd->e->cur_tab->cur_file);
+   etk_window_title_set(ETK_WINDOW(fd->win), "Exhibit - Save image as...");
 
 
    btn = etk_button_new_with_label("Save");
@@ -768,7 +766,7 @@ _ex_image_delete_cb(void *data)
    char string[PATH_MAX];
    int ret;
 
-   snprintf(string, sizeof(string), "%s", tab->cur_file);
+   snprintf(string, sizeof(string), "%s%s", tab->set_img_path, tab->cur_file);
 
    ret = remove(string);
    if (ret == -1) 
