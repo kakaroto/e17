@@ -28,8 +28,6 @@ cdef int _unregister_callbacks(Object obj) except 0:
 cdef void obj_free_cb(void *data, Evas *e, Evas_Object *obj, void *event_info):
     cdef Object self
     self = <Object>data
-    self.obj = NULL
-    self._evas = <Canvas>None
 
     lst = self._callbacks[EVAS_CALLBACK_FREE]
     if lst is not None:
@@ -39,8 +37,7 @@ cdef void obj_free_cb(void *data, Evas *e, Evas_Object *obj, void *event_info):
             except Exception, e:
                 traceback.print_exc()
 
-    _free_wrapper_resources(self)
-    python.Py_DECREF(self)
+    self._unset_obj()
 
 
 cdef _register_decorated_callbacks(obj):
@@ -128,16 +125,19 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
     cdef int _unset_obj(self) except 0:
         assert self.obj != NULL, "Object must wrap something"
-        assert evas_object_data_del(self.obj, "python-evas") == \
-               <void *>self, "Object wrapped should refer to self"
         _unregister_callbacks(self)
         _free_wrapper_resources(self)
+        assert evas_object_data_del(self.obj, "python-evas") == <void*>self, \
+               "Evas_Object has incorrect python-evas data"
         self.obj = NULL
+        self._evas = <Canvas>None
         python.Py_DECREF(self)
         return 1
 
     cdef int _set_obj(self, Evas_Object *obj) except 0:
         assert self.obj == NULL, "Object must be clean"
+        assert evas_object_data_get(obj, "python-evas") == NULL, \
+               "Evas_Object must not wrapped by something else!"
         self.obj = obj
         python.Py_INCREF(self)
         evas_object_data_set(obj, "python-evas", <void *>self)
