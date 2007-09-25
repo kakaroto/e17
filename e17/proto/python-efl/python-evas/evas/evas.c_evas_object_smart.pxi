@@ -9,12 +9,12 @@ import traceback
 
 cdef void _smart_object_delete(Evas_Object *o):
     cdef SmartObject obj
-    obj = <SmartObject>Object_from_instance(o)
-    if obj._m_delete is not None:
-        try:
-            obj._m_delete(obj)
-        except Exception, e:
-            traceback.print_exc()
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
+
+    try:
+        obj._m_delete(obj)
+    except Exception, e:
+        traceback.print_exc()
 
     try:
         del obj.delete
@@ -62,7 +62,7 @@ cdef void _smart_object_delete(Evas_Object *o):
 
 cdef void _smart_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y):
     cdef SmartObject obj
-    obj = <SmartObject>Object_from_instance(o)
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_move is not None:
         try:
             obj._m_move(obj, x, y)
@@ -72,7 +72,7 @@ cdef void _smart_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y):
 
 cdef void _smart_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h):
     cdef SmartObject obj
-    obj = <SmartObject>Object_from_instance(o)
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_resize is not None:
         try:
             obj._m_resize(obj, w, h)
@@ -82,7 +82,7 @@ cdef void _smart_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h):
 
 cdef void _smart_object_show(Evas_Object *o):
     cdef SmartObject obj
-    obj = <SmartObject>Object_from_instance(o)
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_show is not None:
         try:
             obj._m_show(obj)
@@ -92,7 +92,7 @@ cdef void _smart_object_show(Evas_Object *o):
 
 cdef void _smart_object_hide(Evas_Object *o):
     cdef SmartObject obj
-    obj = <SmartObject>Object_from_instance(o)
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_hide is not None:
         try:
             obj._m_hide(obj)
@@ -102,7 +102,7 @@ cdef void _smart_object_hide(Evas_Object *o):
 
 cdef void _smart_object_color_set(Evas_Object *o, int r, int g, int b, int a):
     cdef SmartObject obj
-    obj = <SmartObject>Object_from_instance(o)
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_color_set is not None:
         try:
             obj._m_color_set(obj, r, g, b, a)
@@ -113,7 +113,7 @@ cdef void _smart_object_color_set(Evas_Object *o, int r, int g, int b, int a):
 cdef void _smart_object_clip_set(Evas_Object *o, Evas_Object *clip):
     cdef SmartObject obj
     cdef Object other
-    obj = <SmartObject>Object_from_instance(o)
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
     other = Object_from_instance(clip)
     if obj._m_clip_set is not None:
         try:
@@ -124,7 +124,7 @@ cdef void _smart_object_clip_set(Evas_Object *o, Evas_Object *clip):
 
 cdef void _smart_object_clip_unset(Evas_Object *o):
     cdef SmartObject obj
-    obj = <SmartObject>Object_from_instance(o)
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_clip_unset is not None:
         try:
             obj._m_clip_unset(obj)
@@ -135,12 +135,14 @@ cdef void _smart_object_clip_unset(Evas_Object *o):
 cdef void _smart_callback(void *data, Evas_Object *o, void *event_info):
     cdef SmartObject obj
     cdef object event, ei
-    obj = <SmartObject>Object_from_instance(o)
-    if obj is <SmartObject>None or obj._smart_callbacks is None:
-        return
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
     event = <object>data
     ei = <object>event_info
-    lst = obj._smart_callbacks[event]
+    try:
+        lst = obj._smart_callbacks[event]
+    except KeyError, e:
+        traceback.print_exc()
+        return
     for func, args, kargs in lst:
         try:
             func(obj, ei, *args, **kargs)
@@ -176,14 +178,16 @@ cdef long _smart_object_class_new(char *name) except 0:
 
 cdef Evas_Smart *_smart_class_from_name(char *name) except NULL:
     cdef long addr
-    cdef Evas_Smart *cls
-    if _smart_objects.has_key(name):
-        addr = _smart_objects[name]
+    key = name
+    # XXX: for optimizations this should be a try-except KeyError,
+    # XXX: but it just don't work, I'm getting non-released objects
+    # XXX: due pending references (Pyrex 0.9.5.1a).
+    if key in _smart_objects:
+        addr = _smart_objects[key]
     else:
         addr = _smart_object_class_new(name)
-        _smart_objects[name] = addr
-    cls = <Evas_Smart*>addr
-    return cls
+        _smart_objects[key] = addr
+    return <Evas_Smart*>addr
 
 
 cdef object _smart_class_get_impl_method(object cls, char *name):
