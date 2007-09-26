@@ -13,7 +13,17 @@ template <typename T>
 class EcoreList
 {
   public:
+    /*!
+     *  Create a new EcoreList.
+     */
     EcoreList();
+  
+    /*!  
+     *  Create a EcoreList from by using a existing Ecore_List C object.
+     *  Notice that the destructor deletes the C object list.
+     */
+    EcoreList(Ecore_List *list);
+  
     virtual ~EcoreList();
 
     /*!
@@ -112,7 +122,17 @@ template <typename T>
 class EcoreDList
 {
   public:
+    /*!
+     *  Create a new EcoreList.
+     */
     EcoreDList();
+  
+    /*!
+     *  Create a EcoreList from by using a existing Ecore_List C object.
+     *  Notice that the destructor deletes the C object list.
+     */
+    EcoreDList(Ecore_DList *list);
+  
     virtual ~EcoreDList();
 
     /*!
@@ -188,6 +208,12 @@ EcoreList<T>::EcoreList()
 {
     m_list = ecore_list_new();
     // todo: how to handle error return? -> Exception?
+}
+
+template <typename T>
+EcoreList<T>::EcoreList(Ecore_List *list)
+{
+    m_list = list;
 }
   
 template <typename T>
@@ -287,7 +313,7 @@ T *EcoreList<T>::gotoFirst()
 }
 
 template <typename T>
-T *EcoreList<T>::gotoLast()
+T* EcoreList<T>::gotoLast()
 {
     return static_cast <T*> ( ecore_list_last_goto( m_list ) );
 }
@@ -347,6 +373,12 @@ EcoreDList<T>::EcoreDList()
     m_list = ecore_dlist_new();
     // todo: how to handle error return? -> Exception?
 }
+
+template <typename T>
+EcoreDList<T>::EcoreDList(Ecore_DList *list)
+{
+    m_list = list;
+}
   
 template <typename T>
 EcoreDList<T>::~EcoreDList()
@@ -397,7 +429,7 @@ T *EcoreDList<T>::remove()
 }
 
 template <typename T>
-T *EcoreDList<T>::removeFirst()
+T* EcoreDList<T>::removeFirst()
 {
     return static_cast <T*> ( ecore_dlist_first_remove( m_list ) );
 }
@@ -415,15 +447,15 @@ T *EcoreDList<T>::current()
 }
 
 /*template <typename T>
-T *EcoreDList<T>::first()
+T EcoreDList<T>::first()
 {
-    return static_cast <T*> ( ecore_dlist_first( m_list ) );
+    return static_cast <T> ( ecore_dlist_first( m_list ) );
 }
 
 template <typename T>
-T *EcoreDList<T>::last()
+T EcoreDList<T>::last()
 {
-    return static_cast <T*> ( ecore_dlist_last( m_list) );
+    return static_cast <T> ( ecore_dlist_last( m_list) );
 }*/
 
 template <typename T>
