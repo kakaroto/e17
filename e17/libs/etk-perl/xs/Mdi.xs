@@ -119,3 +119,4 @@ etk_mdi_area_child_position_get(area, widget)
 	PUSHs(sv_2mortal(newSViv(y)));
 
 
+MODULE = Etk::Mdi       PACKAGE = Etk::Mdi
