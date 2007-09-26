@@ -19,6 +19,8 @@ alarm - Sets reminders and timer.  (Replaces eveil.)
 
 bling - EFLized Composite Manager for E17. (Not for users right now).
 
+calendar - A module to show the current day.
+
 cpu - A module to monitor cpu load.  (Will be replaced by something better.)
 
 deskshow - A module to iconify/uniconify all current windows to show the

@@ -1,0 +1,103 @@
+images
+{
+	image: "calendar.png" COMP;
+}
+
+fonts
+{
+	font: "VeraMono.ttf" "VeraMono";
+	font: "VeraBd.ttf"   "VeraBold";
+}
+
+collections
+{
+	group
+	{
+		name: "modules/calendar/main";
+		parts
+		{
+			part
+			{
+				name: "calendar";
+				description
+				{
+					state: "default" 0.0;
+					aspect: 1.0 1.0;
+					aspect_preference: BOTH;
+					rel1 { relative: 0.0 0.0; }
+					rel2 { relative: 1.0 1.0; }
+					image { normal: "calendar.png"; }
+				}
+			}
+			part
+			{
+				name: "monthday";
+				type: TEXT;
+				mouse_events: 0;
+				description
+				{
+					state: "default" 0.0;
+					align: 0.5 0.5;
+					fixed: 1 1;
+					rel1
+					{
+						relative: 0.0 0.0;
+						offset: 5 14;
+						to: "calendar";
+					}
+					rel2
+					{
+						relative: 1.0 0.5;
+						to: "calendar";
+					}
+					color: 46 52 54 255;
+					color_class: "module_label";
+					text
+					{
+						text: "??";
+						font: "VeraBold";
+						size: 13;
+						min: 1 1;
+						align: 0.5 0.5;
+						text_class: "module_large";
+					}
+				}
+			}
+			part
+			{
+				name: "weekday";
+				type: TEXT;
+				mouse_events: 0;
+				description
+				{
+					state: "default" 0.0;
+					align: 0.5 0.5;
+					fixed: 1 1;
+					rel1
+					{
+						relative: 0.0 0.5;
+						offset: 5 0;
+						to: "calendar";
+					}
+					rel2
+					{
+						relative: 1.0 1.0;
+						to: "calendar";
+					}
+					color: 46 52 54 255;
+					color_class: "module_label";
+					text
+					{
+						text: "??";
+						font: "VeraMono";
+						size: 8;
+						min: 1 1;
+						align: 0.5 0.5;
+						text_class: "module_large";
+					}
+				}
+			}
+
+		}
+	}
+}
