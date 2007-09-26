@@ -22,7 +22,7 @@ typedef struct Etk_Signal_Emitted
 {
    Etk_Signal *signal;
    Etk_Object *object;
-   Etk_Bool stop_emission;
+   Etk_Bool stop_emission:1;
 } Etk_Signal_Emitted;
 
 static void _etk_signal_free(Etk_Signal *signal);

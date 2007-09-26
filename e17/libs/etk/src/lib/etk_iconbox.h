@@ -58,8 +58,6 @@ struct Etk_Iconbox_Model
    int icon_y;
    int icon_width;
    int icon_height;
-   Etk_Bool icon_fill;
-   Etk_Bool icon_keep_aspect;
 
    int label_x;
    int label_y;
@@ -67,6 +65,9 @@ struct Etk_Iconbox_Model
    int label_height;
    float label_xalign;
    float label_yalign;
+
+   Etk_Bool icon_fill:1;
+   Etk_Bool icon_keep_aspect:1;
 };
 
 /**
@@ -88,8 +89,8 @@ struct Etk_Iconbox_Icon
    void *data;
    void (*data_free_cb)(void *data);
 
-   Etk_Bool was_selected;
-   Etk_Bool selected;
+   Etk_Bool was_selected:1;
+   Etk_Bool selected:1;
 };
 
 /**
@@ -113,7 +114,7 @@ struct Etk_Iconbox
    Etk_Iconbox_Icon *last_icon;
 
    Etk_Color selected_icon_color;
-   Etk_Bool frozen;
+   Etk_Bool frozen:1;
 };
 
 

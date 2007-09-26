@@ -49,13 +49,14 @@ struct Etk_Paned
 
    Etk_Widget *separator;
    Etk_Widget *child1;
-   Etk_Bool expand1;
    Etk_Widget *child2;
-   Etk_Bool expand2;
 
-   Etk_Bool drag;
    int drag_delta;
    int position;
+
+   Etk_Bool expand1:1;
+   Etk_Bool expand2:1;
+   Etk_Bool drag:1;
 };
 
 /**

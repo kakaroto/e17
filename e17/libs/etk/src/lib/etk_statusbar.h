@@ -35,12 +35,12 @@ struct Etk_Statusbar
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
 
-   Etk_Bool has_resize_grip;
    Evas_List *msg_stack;
    int next_message_id;
    int next_context_id;
    int window_width;
    int window_height;
+   Etk_Bool has_resize_grip:1;
 };
 
 

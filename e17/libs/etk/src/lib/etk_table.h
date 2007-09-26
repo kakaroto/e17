@@ -77,7 +77,7 @@ typedef struct Etk_Table_Col_Row
    int requested_size;
    int size;
    int offset;
-   Etk_Bool expand;
+   Etk_Bool expand:1;
 } Etk_Table_Col_Row;
 
 /**

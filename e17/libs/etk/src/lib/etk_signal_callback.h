@@ -28,9 +28,9 @@ struct Etk_Signal_Callback
    /* private: */
    Etk_Signal *signal;
    Etk_Callback callback;
-   Etk_Bool swapped;
-   Etk_Bool blocked;
    void *data;
+   Etk_Bool swapped:1;
+   Etk_Bool blocked:1;
 };
 
 

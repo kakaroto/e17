@@ -36,7 +36,7 @@ struct Etk_Radio_Button
    Etk_Toggle_Button toggle_button;
 
    Evas_List **group;
-   Etk_Bool can_uncheck;
+   Etk_Bool can_uncheck:1;
 };
 
 

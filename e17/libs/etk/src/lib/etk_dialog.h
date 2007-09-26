@@ -62,7 +62,7 @@ struct Etk_Dialog
    Etk_Widget *action_area_hbox;
    Etk_Widget *separator;
 
-   Etk_Bool has_separator;
+   Etk_Bool has_separator:1;
 };
 
 

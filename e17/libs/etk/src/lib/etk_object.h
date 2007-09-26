@@ -54,7 +54,7 @@ struct Etk_Notification_Callback
    /* private: */
    void (*callback)(Etk_Object *object, const char *property_name, void *data);
    void *data;
-   Etk_Bool delete_me;
+   Etk_Bool delete_me:1;
 };
 
 /**
@@ -66,7 +66,6 @@ struct Etk_Object
    /* private: */
    Etk_Type *type;
    char *name;
-   Etk_Bool destroy_me;
 
    Etk_Object *prev;
    Etk_Object *next;
@@ -75,8 +74,9 @@ struct Etk_Object
    Evas_List *signal_callbacks;
    Evas_List *weak_pointers;
    Evas_Hash *notification_callbacks;
-   Etk_Bool should_delete_cbs;
    int notifying;
+   Etk_Bool should_delete_cbs:1;
+   Etk_Bool destroy_me:1;
 };
 
 

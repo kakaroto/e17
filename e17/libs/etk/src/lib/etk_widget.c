@@ -34,7 +34,7 @@
 typedef struct Etk_Widget_Member_Object
 {
    Evas_Object *object;
-   Etk_Bool visible;
+   Etk_Bool visible:1;
 } Etk_Widget_Member_Object;
 
 typedef struct Etk_Widget_Swallowed_Object

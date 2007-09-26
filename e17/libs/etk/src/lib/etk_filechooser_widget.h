@@ -46,11 +46,11 @@ struct Etk_Filechooser_Widget
    Etk_Tree_Col *files_name_col;
    Etk_Tree_Col *files_date_col;
 
-   Etk_Bool select_multiple;
-   Etk_Bool show_hidden;
-   Etk_Bool is_save;
-
    char *current_folder;
+
+   Etk_Bool select_multiple:1;
+   Etk_Bool show_hidden:1;
+   Etk_Bool is_save:1;
 };
 
 Etk_Type   *etk_filechooser_widget_type_get(void);

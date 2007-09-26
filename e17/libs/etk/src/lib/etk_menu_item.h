@@ -71,7 +71,7 @@ struct Etk_Menu_Item
    char *label;
    Etk_Widget *left_widget;
 
-   Etk_Bool is_selected;
+   Etk_Bool is_selected:1;
 };
 
 /**
@@ -108,7 +108,7 @@ struct Etk_Menu_Item_Check
 
    void (*toggled_handler)(Etk_Menu_Item_Check *check_item);
    void (*active_set)(Etk_Menu_Item_Check *check_item, Etk_Bool active);
-   Etk_Bool active;
+   Etk_Bool active:1;
 };
 
 /**
@@ -122,7 +122,7 @@ struct Etk_Menu_Item_Radio
    Etk_Menu_Item_Check check_item;
 
    Evas_List **group;
-   Etk_Bool can_uncheck;
+   Etk_Bool can_uncheck:1;
 };
 
 

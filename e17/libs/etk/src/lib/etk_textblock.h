@@ -89,9 +89,6 @@ typedef enum
 struct Etk_Textblock_Format
 {
    Etk_Textblock_Wrap wrap;
-   float align;
-   int left_margin;
-   int right_margin;
 
    Etk_Textblock_Style_Type style;
    Etk_Color style_color1;
@@ -101,15 +98,19 @@ struct Etk_Textblock_Format
    Etk_Color underline_color1;
    Etk_Color underline_color2;
 
-   Etk_Bool strikethrough;
    Etk_Color strikethrough_color;
 
    const char *font_face;
-   int font_size;
    Etk_Color font_color;
 
-   Etk_Bool bold;
-   Etk_Bool italic;
+   float align;
+   int left_margin;
+   int right_margin;
+   int font_size;
+
+   Etk_Bool strikethrough:1;
+   Etk_Bool bold:1;
+   Etk_Bool italic:1;
 };
 
 /** TODOC */

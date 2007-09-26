@@ -73,12 +73,12 @@ struct Etk_Image
       {
          void *pixels;
          Etk_Size size;
-         Etk_Bool copied;
+         Etk_Bool copied:1;
       } data;
    } info;
 
    double aspect_ratio;
-   Etk_Bool keep_aspect;
+   Etk_Bool keep_aspect:1;
 };
 
 

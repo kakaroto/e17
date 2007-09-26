@@ -53,7 +53,7 @@ struct Etk_Progress_Bar
    double filler_pulse_w;
    Etk_Progress_Bar_Direction pulse_dir;
    Etk_Progress_Bar_Direction direction;
-   Etk_Bool is_pulsing;
+   Etk_Bool is_pulsing:1;
 };
 
 

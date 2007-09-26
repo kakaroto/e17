@@ -90,12 +90,13 @@ struct Etk_Box
    /* Inherit from Etk_Container */
    Etk_Container container;
 
-   int spacing;
-   Etk_Bool homogeneous;
    Etk_Box_Cell *first_cell[2];
    Etk_Box_Cell *last_cell[2];
-   int cells_count[2];
    int *request_sizes[2];
+   int cells_count[2];
+
+   int spacing;
+   Etk_Bool homogeneous:1;
 };
 
 /**

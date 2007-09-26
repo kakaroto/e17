@@ -62,7 +62,7 @@ struct Etk_Toolbar
    Etk_Toolbar_Orientation orientation;
    Etk_Toolbar_Style style;
    Etk_Stock_Size stock_size;
-   Etk_Bool reorientating;
+   Etk_Bool reorientating:1;
 };
 
 

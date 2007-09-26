@@ -67,7 +67,7 @@ struct Etk_Toplevel
    Evas_List *pointer_stack;
    void (*pointer_set)(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
 
-   Etk_Bool need_update;
+   Etk_Bool need_update:1;
 };
 
 

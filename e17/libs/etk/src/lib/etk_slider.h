@@ -59,10 +59,10 @@ struct Etk_Slider
    Etk_Range range;
 
    char *format;
-   Etk_Bool inverted;
-   Etk_Bool dragging;
-   Etk_Slider_Update_Policy policy;
    Ecore_Timer *update_timer;
+   Etk_Slider_Update_Policy policy;
+   Etk_Bool inverted:1;
+   Etk_Bool dragging:1;
 };
 
 /**

@@ -59,21 +59,17 @@ struct Etk_Tree_Col
    Etk_Object object;
 
    int id;
-   Etk_Tree *tree;
-
    int num_models;
-   Etk_Tree_Model *models[ETK_TREE_MAX_MODELS_PER_COL];
-
    int position;
-   Etk_Bool resizable;
-   Etk_Bool visible;
-   Etk_Bool expand;
-   float align;
-
    int xoffset;
    int min_width;
    int width;
    int visible_width;
+   float align;
+
+   Etk_Tree *tree;
+
+   Etk_Tree_Model *models[ETK_TREE_MAX_MODELS_PER_COL];
 
    Etk_Widget *header;
    Evas_Object *header_over;
@@ -86,6 +82,10 @@ struct Etk_Tree_Col
       int (*last_compare_cb)(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
       void *data;
    } sort;
+
+   Etk_Bool resizable:1;
+   Etk_Bool visible:1;
+   Etk_Bool expand:1;
 };
 
 /**
@@ -108,9 +108,9 @@ struct Etk_Tree_Row
    void *data;
    void (*data_free_cb)(void *data);
 
-   unsigned int delete_me : 1;
-   unsigned int unfolded : 1;
-   unsigned int selected : 1;
+   Etk_Bool delete_me:1;
+   Etk_Bool unfolded:1;
+   Etk_Bool selected:1;
 };
 
 /**
@@ -128,36 +128,36 @@ struct Etk_Tree
    Etk_Widget *grid;
    Evas_Object *grid_clip;
 
-   int num_cols;
    Etk_Tree_Col **columns;
-   Etk_Bool headers_visible;
-   Etk_Bool col_separators_visible;
    Etk_Color col_separator_color;
 
    Etk_Tree_Col *col_to_resize;
-   Etk_Bool col_resize_pointer_set;
-   int col_resize_orig_width;
-   int col_resize_orig_mouse_x;
    Etk_Tree_Col *sorted_col;
-   Etk_Bool sorted_asc;
 
-   int total_rows;
    Etk_Tree_Row root;
    Etk_Tree_Row *last_selected_row;
    Evas_List *purge_pool;
    Evas_List *row_objects;
 
+   int num_cols;
    int rows_height;
    int scroll_x;
    int scroll_y;
+   int col_resize_orig_width;
+   int col_resize_orig_mouse_x;
+   int total_rows;
 
    Ecore_Job *purge_job;
-   Etk_Bool tree_contains_headers;
    Etk_Tree_Mode mode;
-   Etk_Bool multiple_select;
-   Etk_Bool alternating_row_colors;
-   Etk_Bool frozen;
-   Etk_Bool built;
+   Etk_Bool tree_contains_headers:1;
+   Etk_Bool col_resize_pointer_set:1;
+   Etk_Bool sorted_asc:1;
+   Etk_Bool multiple_select:1;
+   Etk_Bool alternating_row_colors:1;
+   Etk_Bool headers_visible:1;
+   Etk_Bool col_separators_visible:1;
+   Etk_Bool frozen:1;
+   Etk_Bool built:1;
 };
 
 

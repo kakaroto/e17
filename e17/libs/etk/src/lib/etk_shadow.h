@@ -66,12 +66,12 @@ struct Etk_Shadow
    int border_width;
    Etk_Color border_color;
 
-   Etk_Bool shadow_need_recalc;
-   Etk_Bool border_need_recalc;
-
    Evas_Object *shadow_objs[4];
    Evas_Object *border_objs[4];
    Evas_Object *clip;
+
+   Etk_Bool shadow_need_recalc:1;
+   Etk_Bool border_need_recalc:1;
 };
 
 

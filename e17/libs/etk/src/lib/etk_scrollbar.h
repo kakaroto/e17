@@ -54,8 +54,8 @@ struct Etk_Scrollbar
    Etk_Range range;
 
    Ecore_Timer *scrolling_timer;
-   Etk_Bool first_scroll;
-   Etk_Bool dragging;
+   Etk_Bool first_scroll:1;
+   Etk_Bool dragging:1;
 };
 
 /**

@@ -29,22 +29,22 @@ typedef struct Etk_Editable_Smart_Data
    Evas_Object *text_object;
    Evas_Object *cursor_object;
    Evas_Object *selection_object;
+   Etk_String *text;
 
    int cursor_pos;
-   Etk_Bool cursor_visible;
    int selection_pos;
-   Etk_Bool selection_visible;
-   Etk_Bool password_mode;
-   Etk_Bool disabled;
-
-   Etk_String *text;
    int unicode_length;
-
-   float align;
    int cursor_width;
-   Etk_Bool selection_on_fg;
    int average_char_w;
    int average_char_h;
+
+   float align;
+
+   Etk_Bool cursor_visible:1;
+   Etk_Bool selection_visible:1;
+   Etk_Bool password_mode:1;
+   Etk_Bool disabled:1;
+   Etk_Bool selection_on_fg:1;
 } Etk_Editable_Smart_Data;
 
 

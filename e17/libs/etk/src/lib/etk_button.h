@@ -53,12 +53,13 @@ struct Etk_Button
    void (*released_handler)(Etk_Button *button);
    void (*clicked_handler)(Etk_Button *button);
 
-   Etk_Bool is_pressed;
-   Etk_Bool ignore_image_remove;
    Etk_Button_Style style;
    Etk_Stock_Size stock_size;
    float xalign;
    float yalign;
+
+   Etk_Bool is_pressed:1;
+   Etk_Bool ignore_image_remove:1;
 };
 
 

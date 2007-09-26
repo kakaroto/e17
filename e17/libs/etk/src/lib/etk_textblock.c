@@ -48,8 +48,6 @@ struct Etk_Textblock_Object_SD
    Etk_Textblock_Object_Line *first_visible_line;
    Etk_Textblock_Object_Line *last_visible_line;
 
-   Etk_Bool cursor_visible;
-   Etk_Bool selecting;
    Etk_Textblock_Iter *cursor;
    Etk_Textblock_Iter *selection;
 
@@ -63,6 +61,9 @@ struct Etk_Textblock_Object_SD
 
    Ecore_Timer *cursor_timer;
    Ecore_Job *update_job;
+
+   Etk_Bool cursor_visible:1;
+   Etk_Bool selecting:1;
 };
 
 /* A line for a textblock object is a text terminated by '\n', <br> or </p>.
@@ -77,8 +78,8 @@ struct Etk_Textblock_Object_Line
    Etk_Geometry geometry;
    Evas_Object *object;
 
-   Etk_Bool need_geometry_update;
-   Etk_Bool need_content_update;
+   Etk_Bool need_geometry_update:1;
+   Etk_Bool need_content_update:1;
 };
 
 static void _etk_tb_constructor(Etk_Textblock *tb);

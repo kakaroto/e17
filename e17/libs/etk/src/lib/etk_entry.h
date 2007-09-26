@@ -48,15 +48,16 @@ struct Etk_Entry
    Etk_Image *primary_image;
    Etk_Image *secondary_image;
 
-   Etk_Bool password_mode;
-   Etk_Bool selection_dragging;
-   Etk_Bool pointer_set;
-   Etk_Bool primary_image_highlight;
-   Etk_Bool secondary_image_highlight;
+   char *text;
+
    Etk_Color highlight_color;
    int image_interspace;
 
-   char *text;
+   Etk_Bool password_mode:1;
+   Etk_Bool selection_dragging:1;
+   Etk_Bool pointer_set:1;
+   Etk_Bool primary_image_highlight:1;
+   Etk_Bool secondary_image_highlight:1;
 };
 
 

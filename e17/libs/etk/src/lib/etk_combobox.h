@@ -121,7 +121,7 @@ struct Etk_Combobox
    Etk_Widget **active_item_children;
 
    int items_height;
-   Etk_Bool built;
+   Etk_Bool built:1;
 };
 
 

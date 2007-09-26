@@ -41,15 +41,11 @@ typedef struct Etk_Iconbox_Grid
    Etk_Widget widget;
 
    Etk_Iconbox *iconbox;
-   int xoffset;
-   int yoffset;
-   int num_cols;
 
    Evas_List *icon_objects;
    Evas_Object *clip;
 
    Evas_Object *selection_rect;
-   Etk_Bool selection_started;
    int selection_orig_x;
    int selection_orig_y;
    int selection_mouse_x;
@@ -58,10 +54,14 @@ typedef struct Etk_Iconbox_Grid
    int selection_last_col;
    int selection_first_row;
    int selection_last_row;
+   int xoffset;
+   int yoffset;
+   int num_cols;
 
    Ecore_Timer *scroll_timer;
    float hscrolling_speed;
    float vscrolling_speed;
+   Etk_Bool selection_started:1;
 } Etk_Iconbox_Grid;
 
 typedef struct Etk_Iconbox_Icon_Object

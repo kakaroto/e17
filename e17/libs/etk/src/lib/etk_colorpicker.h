@@ -65,9 +65,9 @@ struct Etk_Colorpicker
    int sp_res;
    float sp_xpos, sp_ypos;
    Etk_Colorpicker_Mode sp_xcomponent, sp_ycomponent;
-   Etk_Bool sp_dragging;
-   Etk_Bool sp_image_needs_update;
-   Etk_Bool sp_cursor_needs_update;
+   Etk_Bool sp_dragging:1;
+   Etk_Bool sp_image_needs_update:1;
+   Etk_Bool sp_cursor_needs_update:1;
 
    /* Vertical picker */
    Evas_Object *vp_object;
@@ -75,9 +75,9 @@ struct Etk_Colorpicker
    Evas_Object *vp_cursor;
    int vp_res;
    float vp_pos;
-   Etk_Bool vp_dragging;
-   Etk_Bool vp_image_needs_update;
-   Etk_Bool vp_cursor_needs_update;
+   Etk_Bool vp_dragging:1;
+   Etk_Bool vp_image_needs_update:1;
+   Etk_Bool vp_cursor_needs_update:1;
 
    /* Component widgets */
    Etk_Widget *component_table;
@@ -87,7 +87,7 @@ struct Etk_Colorpicker
    Etk_Widget *sliders[6];
    Evas_Object *sliders_image[6];
    int sliders_res;
-   Etk_Bool sliders_need_update;
+   Etk_Bool sliders_need_update:1;
 
    /* Alpha slider */
    Etk_Widget *alpha_slider;
@@ -99,8 +99,8 @@ struct Etk_Colorpicker
    Etk_Widget *current_color_widget;
    Evas_Object *current_color_rect;
 
-   Etk_Bool ignore_value_changed;
-   Etk_Bool use_alpha;
+   Etk_Bool ignore_value_changed:1;
+   Etk_Bool use_alpha:1;
    Etk_Colorpicker_Mode mode;
    Etk_Color current_color;
 };

@@ -45,10 +45,10 @@ struct Etk_Popup_Window
    /* Inherit from Etk_Window */
    Etk_Window window;
 
-   Etk_Bool popped_up;
    Etk_Popup_Window *parent;
    Evas_List *children;
    Etk_Popup_Window *popped_child;
+   Etk_Bool popped_up:1;
 };
 
 

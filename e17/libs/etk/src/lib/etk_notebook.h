@@ -57,12 +57,13 @@ struct Etk_Notebook
    Etk_Container container;
 
    Etk_Widget *tab_bar;
-   Etk_Bool tab_bar_focused;
-   Etk_Bool tab_bar_visible;
-   Etk_Bool tab_bar_homogeneous;
 
    Evas_List *pages;
    Etk_Notebook_Page *current_page;
+
+   Etk_Bool tab_bar_focused:1;
+   Etk_Bool tab_bar_visible:1;
+   Etk_Bool tab_bar_homogeneous:1;
 };
 
 

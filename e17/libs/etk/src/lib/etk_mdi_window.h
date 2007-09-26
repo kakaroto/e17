@@ -49,17 +49,18 @@ struct Etk_Mdi_Window
    Etk_Bool (*delete_event)(Etk_Mdi_Window *mdi_window);
 
    char *title;
-   Etk_Bool maximized;
-   Etk_Bool draggable;
-   Etk_Bool resizable;
-   Etk_Bool decorated;
    /* Etk_Mdi_Window_WM_Decoration decorations; */
-   Etk_Bool dragging;
    int drag_offset_x;
    int drag_offset_y;
-   Etk_Bool resizing;
    int resize_offset_x;
    int resize_offset_y;
+
+   Etk_Bool maximized:1;
+   Etk_Bool draggable:1;
+   Etk_Bool resizable:1;
+   Etk_Bool decorated:1;
+   Etk_Bool resizing:1;
+   Etk_Bool dragging:1;
 };
 
 Etk_Type   *etk_mdi_window_type_get(void);

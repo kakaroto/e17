@@ -38,7 +38,7 @@ struct Etk_Menu_Bar
    /* Inherit from Etk_Menu_Shell */
    Etk_Menu_Shell menu_shell;
 
-   Etk_Bool move_callback;
+   Etk_Bool move_callback:1;
 };
 
 
