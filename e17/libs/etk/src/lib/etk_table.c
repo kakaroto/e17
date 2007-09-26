@@ -470,7 +470,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
          for (i = 0; i < table->num_cols; i++)
          {
             table->cols[i].requested_size = max_col_width;
-            table->cols[i].expand = hexpand;
+            table->cols[i].expand = !!hexpand;
          }
 
          size_requisition->w = table->num_cols * max_col_width;
@@ -495,7 +495,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                etk_widget_size_request(child, &child_size);
                if (table->cols[cell->left_attach].requested_size < child_size.w + 2 * cell->x_padding)
                   table->cols[cell->left_attach].requested_size = child_size.w + 2 * cell->x_padding;
-               table->cols[cell->left_attach].expand |= (cell->fill_policy & ETK_TABLE_HEXPAND);
+               table->cols[cell->left_attach].expand |= ((cell->fill_policy & ETK_TABLE_HEXPAND) != 0);
                hexpand |= (cell->fill_policy & ETK_TABLE_HEXPAND);
             }
          }
@@ -579,7 +579,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
          for (i = 0; i < table->num_rows; i++)
          {
             table->rows[i].requested_size = max_row_height;
-            table->rows[i].expand = vexpand;
+            table->rows[i].expand = !!vexpand;
          }
 
          size_requisition->h = table->num_rows * max_row_height;
@@ -604,7 +604,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
                etk_widget_size_request(child, &child_size);
                if (table->rows[cell->top_attach].requested_size < child_size.h + 2 * cell->y_padding)
                   table->rows[cell->top_attach].requested_size = child_size.h + 2 * cell->y_padding;
-               table->rows[cell->top_attach].expand |= (cell->fill_policy & ETK_TABLE_VEXPAND);
+               table->rows[cell->top_attach].expand |= ((cell->fill_policy & ETK_TABLE_VEXPAND) != 0);
                vexpand |= (cell->fill_policy & ETK_TABLE_VEXPAND);
             }
          }
