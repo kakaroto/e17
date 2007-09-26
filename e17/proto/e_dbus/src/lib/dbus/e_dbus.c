@@ -138,6 +138,26 @@ e_dbus_connection_data_watch_add(E_DBus_Connection *cd, DBusWatch *watch)
   if (hd->enabled) e_dbus_fd_handler_add(hd);
 }
 
+static E_DBus_Connection *
+_e_dbus_connection_new(DBusConnection *conn)
+{
+  E_DBus_Connection *cd;
+
+  cd = calloc(1, sizeof(E_DBus_Connection));
+  if (!cd) return NULL;
+
+  cd->conn = dbus_connection_ref(conn);
+  cd->conn_name = strdup(dbus_bus_get_unique_name(conn));
+
+  DEBUG(1, "Connected! Name: %s\n", cd->conn_name);
+
+  cd->shared_type = -1;
+  cd->fd_handlers = ecore_list_new();
+  cd->timeouts = ecore_list_new();
+
+  return cd;
+}
+
 static void
 _e_dbus_connection_free(void *data)
 {
@@ -145,8 +165,6 @@ _e_dbus_connection_free(void *data)
   Ecore_Fd_Handler *fd_handler;
   Ecore_Timer *timer;
   DEBUG(5, "_e_dbus_connection free!\n");
-
-  if (cd->conn_name) free(cd->conn_name);
 
   ecore_list_first_goto(cd->fd_handlers);
   while ((fd_handler = ecore_list_next(cd->fd_handlers)))
@@ -160,6 +178,9 @@ _e_dbus_connection_free(void *data)
 
   if (cd->shared_type != -1)
     shared_connections[cd->shared_type] = NULL;
+
+  if (cd->conn_name) free(cd->conn_name);
+  dbus_connection_unref(cd->conn);
 
   free(cd);
 }
@@ -333,7 +354,7 @@ cb_watch_toggle(DBusWatch *watch, void *data)
 static void
 e_dbus_message_free(void *data, void *message)
 {
-  //dbus_message_unref(message);
+  dbus_message_unref(message);
 }
 
 static DBusHandlerResult
@@ -359,14 +380,15 @@ e_dbus_filter(DBusConnection *conn, DBusMessage *message, void *user_data)
       DEBUG(3, "error: %s\n", dbus_message_get_error_name(message));
       break;
     case DBUS_MESSAGE_TYPE_SIGNAL:
-      ecore_event_add(E_DBUS_EVENT_SIGNAL, message, e_dbus_message_free, NULL);
-      return DBUS_HANDLER_RESULT_HANDLED;
+      ecore_event_add(E_DBUS_EVENT_SIGNAL, dbus_message_ref(message),
+                      e_dbus_message_free, NULL);
+      /* don't need to handle signals, they're for everyone who wants them */
+      return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
       break;
     default:
       break;
   }
   DEBUG(3, "-----------------\n\n");
-
 
   return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
@@ -449,17 +471,10 @@ e_dbus_bus_get(DBusBusType type)
 E_DBus_Connection *
 e_dbus_connection_setup(DBusConnection *conn)
 {
-  E_DBus_Connection *cd = NULL;
+  E_DBus_Connection *cd;
 
-  cd = calloc(1, sizeof(E_DBus_Connection));
+  cd = _e_dbus_connection_new(conn);
   if (!cd) return NULL;
-  cd->shared_type = -1;
-  cd->conn = conn;
-
-  cd->fd_handlers = ecore_list_new();
-  cd->timeouts = ecore_list_new();
-  cd->conn_name = strdup(dbus_bus_get_unique_name(cd->conn));
-  DEBUG(1, "Connected! Name: %s\n", cd->conn_name);
 
   /* connection_setup */
   dbus_connection_set_exit_on_disconnect(cd->conn, FALSE);
