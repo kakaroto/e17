@@ -1,5 +1,6 @@
 # This file is included verbatim by c_ecore_evas.pyx
 
+cimport evas.c_evas as c_evas
 import traceback
 
 cdef EcoreEvas EcoreEvas_from_instance(Ecore_Evas *obj):
@@ -171,22 +172,30 @@ cdef class EcoreEvas:
             return self._data
 
     def cursor_get(self):
-        cdef char *filename
+        cdef evas.c_evas.Evas_Object *eobj
         cdef int layer, hotx, hoty
-        ecore_evas_cursor_get(self.obj, &filename, &layer, &hotx, &hoty)
-        if filename == NULL:
-            fn = None
+        eobj = NULL
+        ecore_evas_cursor_get(self.obj, &eobj, &layer, &hotx, &hoty)
+        if eobj == NULL:
+            eo = None
         else:
-            fn = filename
-        return (fn, layer, hotx, hoty)
+            eo = evas.c_evas._Object_from_instance(<long>eobj)
+        return (eo, layer, hotx, hoty)
 
-    def cursor_set(self, filename, int layer=0, int hotx=0, int hoty=0):
-        cdef char *f
-        if filename is None:
-            f = NULL
+    def cursor_set(self, cursor, int layer=0, int hotx=0, int hoty=0):
+        if cursor is None:
+            ecore_evas_cursor_set(self.obj, NULL, layer, hotx, hoty)
+        elif isinstance(cursor, str):
+            ecore_evas_cursor_set(self.obj, cursor, layer, hotx, hoty)
+        elif isinstance(cursor, evas.c_evas.Object):
+            self.object_cursor_set(cursor, layer, hotx, hoty)
         else:
-            f = filename
-        ecore_evas_cursor_set(self.obj, f, layer, hotx, hoty)
+            raise TypeError("cursor must be 'str', 'None' or "
+                            "'evas.c_evas.Object'")
+
+    def object_cursor_set(self, c_evas.Object cursor, int layer=0,
+                          int hotx=0, int hoty=0):
+        ecore_evas_object_cursor_set(self.obj, cursor.obj, layer, hotx, hoty)
 
     def move(self, int x, int y):
         ecore_evas_move(self.obj, x, y)

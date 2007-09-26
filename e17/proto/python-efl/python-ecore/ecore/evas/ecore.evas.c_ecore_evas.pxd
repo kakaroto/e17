@@ -1,9 +1,7 @@
+cimport evas.c_evas
+
 cdef extern from "python_evas_utils.h":
     int PY_REFCOUNT(object)
-
-
-cdef extern from "Evas.h":
-    ctypedef struct Evas
 
 
 cdef extern from "Ecore_Evas.h":
@@ -86,9 +84,9 @@ cdef extern from "Ecore_Evas.h":
 
 
 
-    Ecore_Evas *ecore_evas_ecore_evas_get(Evas *e)
+    Ecore_Evas *ecore_evas_ecore_evas_get(evas.c_evas.Evas *e)
     void ecore_evas_free(Ecore_Evas *ee)
-    Evas *ecore_evas_get(Ecore_Evas *ee)
+    evas.c_evas.Evas *ecore_evas_get(Ecore_Evas *ee)
 
     void *ecore_evas_data_get(Ecore_Evas *ee, char *key)
     void ecore_evas_data_set(Ecore_Evas *ee, char *key, void *data)
@@ -137,7 +135,8 @@ cdef extern from "Ecore_Evas.h":
     void ecore_evas_size_step_set(Ecore_Evas *ee, int w, int h)
     void ecore_evas_size_step_get(Ecore_Evas *ee, int *w, int *h)
     void ecore_evas_cursor_set(Ecore_Evas *ee, char *file, int layer, int hot_x, int hot_y)
-    void ecore_evas_cursor_get(Ecore_Evas *ee, char **file, int *layer, int *hot_x, int *hot_y)
+    void ecore_evas_cursor_get(Ecore_Evas *ee, evas.c_evas.Evas_Object **obj, int *layer, int *hot_x, int *hot_y)
+    void ecore_evas_object_cursor_set(Ecore_Evas *ee, evas.c_evas.Evas_Object *obj, int layer, int hot_x, int hot_y)
     void ecore_evas_layer_set(Ecore_Evas *ee, int layer)
     int  ecore_evas_layer_get(Ecore_Evas *ee)
     void ecore_evas_focus_set(Ecore_Evas *ee, int on)
