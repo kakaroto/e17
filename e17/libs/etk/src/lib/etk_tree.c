@@ -3776,8 +3776,11 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
          /* Unselect all the rows and select only the given row */
          etk_tree_unselect_all(tree);
          row->selected = ETK_TRUE;
-         row->tree->last_selected_row = row;
-         etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
+         if (row->tree->last_selected_row != row)
+         {
+            row->tree->last_selected_row = row;
+            etk_signal_emit(_etk_tree_signals[ETK_TREE_ROW_SELECTED_SIGNAL], ETK_OBJECT(row->tree), NULL, row);
+         }
       }
    }
 

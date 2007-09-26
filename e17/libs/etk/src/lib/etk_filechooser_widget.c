@@ -387,31 +387,31 @@ Etk_Bool etk_filechooser_widget_selected_file_set(Etk_Filechooser_Widget *filech
       return ETK_FALSE;
    
    if (strchr(filename, '/') == NULL)
-     {
-       // filename doesn't contains slashes, then i can use it directly 
-       etk_entry_text_set(ETK_ENTRY(filechooser_widget->name_entry), filename);
-       return ETK_TRUE;
-     } 
+   {
+      // filename doesn't contains slashes, then i can use it directly 
+      etk_entry_text_set(ETK_ENTRY(filechooser_widget->name_entry), filename);
+      return ETK_TRUE;
+   } 
    else
-     {
-       // filename contains slashes, now i've to check if path is right
-       char *path;
+   {
+      // filename contains slashes, now i've to check if path is right
+      char *path;
 
-       path = ecore_file_dir_get(filename);
-       if (ecore_file_exists(path) == 0) 
-         {
-           // the extracted path doesn't exists, error
-           return ETK_FALSE; 
-         } 
-       else 
-         {
-           // the extracted path exists, sync current folder and set filename
-           etk_filechooser_widget_current_folder_set(filechooser_widget, path);
-           etk_entry_text_set(ETK_ENTRY(filechooser_widget->name_entry), ecore_file_file_get(filename));
-           return ETK_TRUE;         
-         }
-       free(path);
-     }
+      path = ecore_file_dir_get(filename);
+      if (ecore_file_exists(path) == 0) 
+      {
+         // the extracted path doesn't exists, error
+         return ETK_FALSE; 
+      } 
+      else 
+      {
+         // the extracted path exists, sync current folder and set filename
+         etk_filechooser_widget_current_folder_set(filechooser_widget, path);
+         etk_entry_text_set(ETK_ENTRY(filechooser_widget->name_entry), ecore_file_file_get(filename));
+         return ETK_TRUE;         
+      }
+      free(path);
+   }
 }
 
 /**************************
