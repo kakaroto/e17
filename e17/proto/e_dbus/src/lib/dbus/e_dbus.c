@@ -146,7 +146,7 @@ _e_dbus_connection_new(DBusConnection *conn)
   cd = calloc(1, sizeof(E_DBus_Connection));
   if (!cd) return NULL;
 
-  cd->conn = dbus_connection_ref(conn);
+  cd->conn = conn;
   cd->conn_name = strdup(dbus_bus_get_unique_name(conn));
 
   DEBUG(1, "Connected! Name: %s\n", cd->conn_name);
@@ -180,7 +180,6 @@ _e_dbus_connection_free(void *data)
     shared_connections[cd->shared_type] = NULL;
 
   if (cd->conn_name) free(cd->conn_name);
-  dbus_connection_unref(cd->conn);
 
   free(cd);
 }
