@@ -113,7 +113,7 @@ Etk_Type *etk_colorpicker_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_CP_COLOR_CHANGED_SIGNAL,
-            "color-changed", etk_marshaller_VOID, NULL, NULL),
+            "color-changed", etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

@@ -70,7 +70,7 @@ Etk_Type *etk_notebook_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL,
-            "current-page-changed", etk_marshaller_VOID, NULL, NULL),
+            "current-page-changed", etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

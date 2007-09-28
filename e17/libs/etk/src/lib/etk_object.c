@@ -92,7 +92,7 @@ Etk_Type *etk_object_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_OBJECT_DESTROYED_SIGNAL,
-            "destroyed", etk_marshaller_VOID, NULL, NULL),
+            "destroyed", etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

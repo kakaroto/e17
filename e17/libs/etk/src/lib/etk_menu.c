@@ -64,9 +64,9 @@ Etk_Type *etk_menu_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_MENU_POPPED_UP_SIGNAL,
-            "popped-up", etk_marshaller_VOID, NULL, NULL),
+            "popped-up", etk_marshaller_VOID),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_MENU_POPPED_DOWN_SIGNAL,
-            "popped-down", etk_marshaller_VOID, NULL, NULL),
+            "popped-down", etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

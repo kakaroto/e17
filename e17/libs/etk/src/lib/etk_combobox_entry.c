@@ -86,7 +86,7 @@ Etk_Type *etk_combobox_entry_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_CHANGED_SIGNAL,
-            "active-item-changed", etk_marshaller_VOID, NULL, NULL),
+            "active-item-changed", etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

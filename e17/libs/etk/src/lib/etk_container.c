@@ -50,9 +50,9 @@ Etk_Type *etk_container_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_CONTAINER_CHILD_ADDED_SIGNAL,
-            "child-added", etk_marshaller_OBJECT, NULL, NULL),
+            "child-added", etk_marshaller_OBJECT),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_CONTAINER_CHILD_REMOVED_SIGNAL,
-            "child-removed", etk_marshaller_OBJECT, NULL, NULL),
+            "child-removed", etk_marshaller_OBJECT),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

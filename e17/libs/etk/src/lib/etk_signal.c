@@ -47,8 +47,7 @@ void etk_signal_shutdown(void)
  * @brief Creates a new signal in the system.
  */
 static Etk_Signal *etk_signal_new_raw(const char *signal_name, Etk_Type *type,
-   long handler_offset, Etk_Marshaller marshaller, Etk_Accumulator accumulator,
-   void *accum_data)
+   long handler_offset, Etk_Marshaller marshaller)
 {
    Etk_Signal *new_signal;
 
@@ -57,8 +56,6 @@ static Etk_Signal *etk_signal_new_raw(const char *signal_name, Etk_Type *type,
    new_signal->code = type->signals_count;
    new_signal->handler_offset = handler_offset;
    new_signal->marshaller = marshaller;
-   new_signal->accumulator = accumulator;
-   new_signal->accum_data = accum_data;
    etk_type_signal_add(type, new_signal);
 
    type->signals_count++;
@@ -79,16 +76,11 @@ static Etk_Signal *etk_signal_new_raw(const char *signal_name, Etk_Type *type,
  * handler.
  * @param marshaller the marshaller of the signal: it will treat and pass the
  * arguments to the callbacks.
- * @param accumulator the accumulator used to combine together the different
- * values returned by the callbacks. Set it to NULL if the callbacks does not
- * return any value or if you only want to keep the last returned value.
- * @param accum_data the value to pass to the accumulator
  *
  * @return Returns the new signal code, or -1 in case of failure
  */
 int etk_signal_new(const char *signal_name, Etk_Type *type, long handler_offset,
-                   Etk_Marshaller marshaller, Etk_Accumulator accumulator,
-                   void *accum_data)
+                   Etk_Marshaller marshaller)
 {
    Etk_Signal *new_signal;
 
@@ -96,7 +88,7 @@ int etk_signal_new(const char *signal_name, Etk_Type *type, long handler_offset,
       return -1;
 
    new_signal = etk_signal_new_raw(signal_name, type, handler_offset,
-                                   marshaller, accumulator, accum_data);
+                                   marshaller);
 
    if (!new_signal)
       return -1;
@@ -130,8 +122,7 @@ void etk_signal_new_with_desc(Etk_Type *type,
    }
 
    new_signal = etk_signal_new_raw(desc->name, type, desc->handler_offset,
-                                   desc->marshaller, desc->accumulator,
-                                   desc->accum_data);
+                                   desc->marshaller);
 
    if (!new_signal)
    {

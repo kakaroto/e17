@@ -54,7 +54,7 @@ Etk_Type *etk_dialog_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_DIALOG_RESPONSE_SIGNAL,
-            "response", etk_marshaller_INT, NULL, NULL),
+            "response", etk_marshaller_INT),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

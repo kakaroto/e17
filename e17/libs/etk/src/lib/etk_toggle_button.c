@@ -49,8 +49,7 @@ Etk_Type *etk_toggle_button_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_HANDLER(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL,
-            "toggled", Etk_Toggle_Button, toggled_handler,
-            etk_marshaller_VOID, NULL, NULL),
+            "toggled", Etk_Toggle_Button, toggled_handler, etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

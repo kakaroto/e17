@@ -38,9 +38,6 @@ extern "C" {
    fprintf(stderr, "[Etk-Warning] (%s:%d - %s()):\n" format "\n\n", __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
 
-void etk_accumulator_bool_or(void *return_value, const void *value_to_accum, void *data);
-void etk_accumulator_bool_and(void *return_value, const void *value_to_accum, void *data);
-
 Etk_Bool etk_callback_set_null(void *data);
 
 unsigned int etk_current_time_get();

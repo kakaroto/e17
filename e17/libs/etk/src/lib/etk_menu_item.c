@@ -82,13 +82,13 @@ Etk_Type *etk_menu_item_type_get(void)
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_HANDLER(ETK_MENU_ITEM_SELECTED_SIGNAL,
             "selected", Etk_Menu_Item, selected_handler,
-            etk_marshaller_VOID, NULL, NULL),
+            etk_marshaller_VOID),
          ETK_SIGNAL_DESC_HANDLER(ETK_MENU_ITEM_UNSELECTED_SIGNAL,
             "unselected", Etk_Menu_Item, unselected_handler,
-            etk_marshaller_VOID, NULL, NULL),
+            etk_marshaller_VOID),
          ETK_SIGNAL_DESC_HANDLER(ETK_MENU_ITEM_ACTIVATED_SIGNAL,
             "activated", Etk_Menu_Item, activated_handler,
-            etk_marshaller_VOID, NULL, NULL),
+            etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -436,7 +436,7 @@ Etk_Type *etk_menu_item_check_type_get(void)
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_HANDLER(ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL,
             "toggled", Etk_Menu_Item_Check, toggled_handler,
-            etk_marshaller_VOID, NULL, NULL),
+            etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

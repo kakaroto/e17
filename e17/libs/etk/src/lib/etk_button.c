@@ -72,14 +72,11 @@ Etk_Type *etk_button_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_HANDLER(ETK_BUTTON_PRESSED_SIGNAL,
-            "pressed", Etk_Button, pressed_handler,
-            etk_marshaller_VOID, NULL, NULL),
+            "pressed", Etk_Button, pressed_handler, etk_marshaller_VOID),
          ETK_SIGNAL_DESC_HANDLER(ETK_BUTTON_RELEASED_SIGNAL,
-            "released", Etk_Button, released_handler,
-            etk_marshaller_VOID, NULL, NULL),
+            "released", Etk_Button, released_handler, etk_marshaller_VOID),
          ETK_SIGNAL_DESC_HANDLER(ETK_BUTTON_CLICKED_SIGNAL,
-            "clicked", Etk_Button, clicked_handler,
-            etk_marshaller_VOID, NULL, NULL),
+            "clicked", Etk_Button, clicked_handler, etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

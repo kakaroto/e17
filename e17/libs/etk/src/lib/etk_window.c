@@ -73,16 +73,15 @@ Etk_Type *etk_window_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_WINDOW_MOVED_SIGNAL,
-            "moved", etk_marshaller_VOID, NULL, NULL),
+            "moved", etk_marshaller_VOID),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_WINDOW_RESIZED_SIGNAL,
-            "resized", etk_marshaller_VOID, NULL, NULL),
+            "resized", etk_marshaller_VOID),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_WINDOW_FOCUSED_IN_SIGNAL,
-            "focused-in", etk_marshaller_VOID, NULL, NULL),
+            "focused-in", etk_marshaller_VOID),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_WINDOW_FOCUSED_OUT_SIGNAL,
-            "focused-out", etk_marshaller_VOID, NULL, NULL),
+            "focused-out", etk_marshaller_VOID),
          ETK_SIGNAL_DESC_HANDLER(ETK_WINDOW_DELETE_EVENT_SIGNAL,
-            "delete-event", Etk_Window, delete_event,
-            etk_marshaller_VOID, etk_accumulator_bool_or, NULL),
+            "delete-event", Etk_Window, delete_event, etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

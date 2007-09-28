@@ -68,10 +68,10 @@ Etk_Type *etk_mdi_window_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_MDI_WINDOW_MOVED_SIGNAL,
-            "moved", etk_marshaller_INT_INT, NULL, NULL),
+            "moved", etk_marshaller_INT_INT),
          ETK_SIGNAL_DESC_HANDLER(ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL,
             "delete-event", Etk_Mdi_Window, delete_event,
-            etk_marshaller_VOID, etk_accumulator_bool_or, NULL),
+            etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

@@ -43,9 +43,9 @@ Etk_Type *etk_menu_shell_type_get()
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_MENU_SHELL_ITEM_ADDED_SIGNAL,
-            "item-added", etk_marshaller_OBJECT, NULL, NULL),
+            "item-added", etk_marshaller_OBJECT),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL,
-            "item-removed", etk_marshaller_OBJECT, NULL, NULL),
+            "item-removed", etk_marshaller_OBJECT),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

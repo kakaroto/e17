@@ -173,27 +173,27 @@ Etk_Type *etk_tree_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ALL_SELECTED_SIGNAL,
-            "all-selected", etk_marshaller_VOID, NULL, NULL),
+            "all-selected", etk_marshaller_VOID),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ALL_UNSELECTED_SIGNAL,
-            "all-unselected", etk_marshaller_VOID, NULL, NULL),
+            "all-unselected", etk_marshaller_VOID),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_SELECTED_SIGNAL,
-            "row-selected", etk_marshaller_POINTER, NULL, NULL),
+            "row-selected", etk_marshaller_POINTER),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_UNSELECTED_SIGNAL,
-            "row-unselected", etk_marshaller_POINTER, NULL, NULL),
+            "row-unselected", etk_marshaller_POINTER),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_CLICKED_SIGNAL,
-            "row-clicked", etk_marshaller_POINTER_POINTER, NULL, NULL),
+            "row-clicked", etk_marshaller_POINTER_POINTER),
 
          /* TODO: do we really need "row-activated" */
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_ACTIVATED_SIGNAL,
-            "row-activated", etk_marshaller_POINTER, NULL, NULL),
+            "row-activated", etk_marshaller_POINTER),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_UNFOLDED_SIGNAL,
-            "row-unfolded", etk_marshaller_POINTER, NULL, NULL),
+            "row-unfolded", etk_marshaller_POINTER),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_FOLDED_SIGNAL,
-            "row-folded", etk_marshaller_POINTER, NULL, NULL),
+            "row-folded", etk_marshaller_POINTER),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_SHOWN_SIGNAL,
-            "row-shown", etk_marshaller_POINTER, NULL, NULL),
+            "row-shown", etk_marshaller_POINTER),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_HIDDEN_SIGNAL,
-            "row-hidden", etk_marshaller_POINTER, NULL, NULL),
+            "row-hidden", etk_marshaller_POINTER),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -234,7 +234,7 @@ Etk_Type *etk_tree_col_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_COL_CELL_VALUE_CHANGED_SIGNAL,
-            "cell-value-changed", etk_marshaller_POINTER, NULL, NULL),
+            "cell-value-changed", etk_marshaller_POINTER),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

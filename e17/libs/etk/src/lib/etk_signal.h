@@ -40,19 +40,17 @@ typedef struct Etk_Signal_Description
    char *name;
    long handler_offset;
    Etk_Marshaller marshaller;
-   Etk_Accumulator accumulator;
-   void *accum_data;
 } Etk_Signal_Description;
 
-#define ETK_SIGNAL_DESCRIPTION_SENTINEL {NULL, NULL, 0, NULL, NULL, NULL}
+#define ETK_SIGNAL_DESCRIPTION_SENTINEL {NULL, NULL, 0, NULL}
 
-#define ETK_SIGNAL_DESC_NO_HANDLER(signal_code, name, marshaller, accumulator, accum_data) \
+#define ETK_SIGNAL_DESC_NO_HANDLER(signal_code, name, marshaller) \
         {&(signal_code), (name), -1, \
-           (marshaller), (accumulator), (accum_data)}
+           (marshaller)}
 
-#define ETK_SIGNAL_DESC_HANDLER(signal_code, name, type, handler, marshaller, accumulator, accum_data) \
+#define ETK_SIGNAL_DESC_HANDLER(signal_code, name, type, handler, marshaller) \
         {&(signal_code), (name), ETK_MEMBER_OFFSET(type, handler), \
-           (marshaller), (accumulator), (accum_data)}
+           (marshaller)}
 
 /**
  * @brief The structure of a signal
@@ -65,15 +63,12 @@ struct Etk_Signal
    int code;
    long handler_offset;
    Etk_Marshaller marshaller;
-   Etk_Accumulator accumulator;
-   void *accum_data;
 };
 
 void etk_signal_shutdown(void);
 
 int         etk_signal_new(const char *signal_name, Etk_Type *type,
-                           long handler_offset, Etk_Marshaller marshaller,
-                           Etk_Accumulator accumulator, void *accum_data);
+                           long handler_offset, Etk_Marshaller marshaller);
 void etk_signal_new_with_desc(Etk_Type *type,
                               const Etk_Signal_Description *desc);
 void        etk_signal_delete(Etk_Signal *signal);

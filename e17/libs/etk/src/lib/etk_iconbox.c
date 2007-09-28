@@ -120,13 +120,13 @@ Etk_Type *etk_iconbox_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ICON_SELECTED_SIGNAL,
-            "icon-selected", etk_marshaller_POINTER, NULL, NULL),
+            "icon-selected", etk_marshaller_POINTER),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ICON_UNSELECTED_SIGNAL,
-            "icon-unselected", etk_marshaller_POINTER, NULL, NULL),
+            "icon-unselected", etk_marshaller_POINTER),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ALL_SELECTED_SIGNAL,
-            "all-selected", etk_marshaller_VOID, NULL, NULL),
+            "all-selected", etk_marshaller_VOID),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ALL_UNSELECTED_SIGNAL,
-            "all-unselected", etk_marshaller_VOID, NULL, NULL),
+            "all-unselected", etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
