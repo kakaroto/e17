@@ -539,51 +539,51 @@ cdef class EventPoint:
 
 
 cdef class EventPosition:
-    cdef EventPoint _output
-    cdef EventPoint _canvas
+    cdef readonly EventPoint output
+    cdef readonly EventPoint canvas
 
     cdef void _set_objs(self, void *output, void *canvas)
 
 
 cdef class EventMouseIn:
     cdef Evas_Event_Mouse_In *obj
-    cdef EventPosition _pos
+    cdef readonly EventPosition position
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventMouseOut:
     cdef Evas_Event_Mouse_Out *obj
-    cdef EventPosition _pos
+    cdef readonly EventPosition position
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventMouseDown:
     cdef Evas_Event_Mouse_Down *obj
-    cdef EventPosition _pos
+    cdef readonly EventPosition position
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventMouseUp:
     cdef Evas_Event_Mouse_Up *obj
-    cdef EventPosition _pos
+    cdef readonly EventPosition position
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventMouseMove:
     cdef Evas_Event_Mouse_Move *obj
-    cdef EventPosition _pos
-    cdef EventPosition _prev
+    cdef readonly EventPosition position
+    cdef readonly EventPosition prev_position
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventMouseWheel:
     cdef Evas_Event_Mouse_Wheel *obj
-    cdef EventPosition _pos
+    cdef readonly EventPosition position
 
     cdef void _set_obj(self, void *ptr)
 
@@ -608,8 +608,8 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
 cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     cdef Evas_Object *obj
-    cdef Canvas _evas
-    cdef object _data
+    cdef readonly Canvas evas
+    cdef readonly data
     cdef object _callbacks
 
     cdef int _unset_obj(self) except 0
@@ -640,6 +640,10 @@ cdef class Image(Object):
     pass
 
 
+cdef class FilledImage(Image):
+    pass
+
+
 cdef class Gradient(Object):
     pass
 
@@ -650,3 +654,7 @@ cdef class Polygon(Object):
 
 cdef class Text(Object):
     pass
+
+
+cdef class ClippedSmartObject(SmartObject):
+    cdef readonly Rectangle clipper

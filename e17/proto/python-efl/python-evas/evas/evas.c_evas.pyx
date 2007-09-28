@@ -1,5 +1,9 @@
 cimport python
 
+__extra_epydoc_fields__ = (
+    ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
+    )
+
 def init():
     return evas_init()
 
@@ -9,12 +13,19 @@ def shutdown():
 
 
 def render_method_lookup(char *name):
-    "Lookup render method and return its id (> 0 if found)."
+    """Lookup render method and return its id (> 0 if found).
+
+    @parm: name
+    @rtype: int
+    """
     return evas_render_method_lookup(name)
 
 
 def render_method_list():
-    "Returns a list of render method names."
+    """Returns a list of render method names.
+
+    @rtype: list of str
+    """
     cdef Evas_List *lst
 
     ret = []
@@ -122,15 +133,16 @@ def _Object_from_instance(long ptr):
 def color_parse(desc, is_premul=None):
     """Converts a color description to (r, g, b, a) in pre-multiply form.
 
-    is_premul default value will depend on desc type:
-       * desc is string: is_premul=False
-       * desc is integer: is_premul=False
-       * desc is tuple: is_premul=True
+    C{is_premul} default value will depend on desc type:
+     - desc is string: C{is_premul=False}
+     - desc is integer: C{is_premul=False}
+     - desc is tuple: C{is_premul=True}
 
-    @param desc: can be either a string, an integer or a tuple.
-    @param is_premul: specifies if the color is in pre-multiply form. This
-                      is the format expected by evas.
+    @parm: B{desc} can be either a string, an integer or a tuple.
+    @parm: B{is_premul} specifies if the color is in pre-multiply form. This
+           is the format expected by evas.
     @return: (r, g, b, a) in pre-multiply form.
+    @rtype: tuple of int
     """
     cdef unsigned long c, desc_len
     cdef int r, g, b, a
@@ -189,26 +201,66 @@ def color_parse(desc, is_premul=None):
 
 
 def color_argb_premul(int r, int g, int b, int a):
+    """Convert color to pre-multiplied format.
+
+    @note: Evas works with pre-multiplied colors internally, so every
+           color that comes from or goes to it must be in this format.
+
+    @parm: r
+    @parm: g
+    @parm: b
+    @parm: a
+    @return: pre-multiplied (r, g, b, a)
+    @rtype: tuple of int
+    """
     evas_color_argb_premul(a, &r, &g, &b)
     return (r, g, b, a)
 
 def color_argb_unpremul(int r, int g, int b, int a):
+    """Convert color to regular (no pre-multiplied) format.
+
+    @note: Evas works with pre-multiplied colors internally, so every
+           color that comes from or goes to it must be in this format.
+
+    @parm: r
+    @parm: g
+    @parm: b
+    @parm: a
+    @return: (r, g, b, a)
+    @rtype: tuple of int
+    """
     evas_color_argb_unpremul(a, &r, &g, &b)
     return (r, g, b, a)
 
 def color_hsv_to_rgb(float h, float s, float v):
+    """Convert color from HSV to RGB format.
+
+    @parm: h
+    @parm: s
+    @parm: v
+    @return: (r, g, b)
+    @rtype: tuple of int
+    """
     cdef int r, g, b
     evas_color_hsv_to_rgb(h, s, v, &r, &g, &b)
     return (r, g, b)
 
 def color_rgb_to_hsv(int r, int g, int b):
+    """Convert color from RGB to HSV format.
+
+    @parm: r
+    @parm: g
+    @parm: b
+    @return: (h, s, v)
+    @rtype: tuple of int
+    """
     cdef float h, s, v
     evas_color_rgb_to_hsv(r, g, b, &h, &s, &v)
     return (h, s, v)
 
 
 class EvasLoadError(Exception):
-    def __init__(self, int code):
+    def __init__(self, int code, char *filename, char *key):
         if code == EVAS_LOAD_ERROR_NONE:
             msg = "No error on load"
         elif code == EVAS_LOAD_ERROR_GENERIC:
@@ -223,7 +275,10 @@ class EvasLoadError(Exception):
             msg = "File corrupt (but was detected as a known format)"
         elif code == EVAS_LOAD_ERROR_UNKNOWN_FORMAT:
             msg = "File is not a known format"
-        Exception.__init__(self, msg)
+        self.code = code
+        self.file = filename
+        self.key = key
+        Exception.__init__(self, "%s (file=%s, key=%s)" % (msg, filename, key))
 
 
 include "evas.c_evas_rect.pxi"

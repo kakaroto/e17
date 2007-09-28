@@ -1,39 +1,52 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef class Gradient(Object):
+    "Rectangular area with gradient filling"
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
-            self._set_obj(evas_object_gradient_add(self._evas.obj))
+            self._set_obj(evas_object_gradient_add(self.evas.obj))
         self._set_common_params(**kargs)
 
     def color_stop_add(self, int r, int g, int b, int a, int delta):
         """Adds a color stop to the given evas gradient object.
 
-        The delta parameter determines the proportion of the gradient
-        object that is to be set to the color.  For instance, if red is
-        added with delta set to 2, and green is added with delta set to
-        1, two-thirds will be red or reddish and one-third will be green
-        or greenish.
+        @note: Colors are added from the top downwards.
+        @note: Colors are in pre-multipied format.
 
-        Colors are added from the top downwards.
+        @parm: B{r}
+        @parm: B{g}
+        @parm: B{b}
+        @parm: B{a}
+        @parm: B{delta} determines the proportion of the gradient
+           object that is to be set to the color.  For instance, if red is
+           added with delta set to 2, and green is added with delta set to
+           1, two-thirds will be red or reddish and one-third will be green
+           or greenish.
         """
         evas_object_gradient_color_stop_add(self.obj, r, g, b, a, delta)
 
     def alpha_stop_add(self, int a, int delta):
         """Adds an alpha stop to the given evas gradient object.
 
-        The delta parameter determines the proportion of the gradient
-        object that is to be set to the alpha value.
-
         Alphas are added from the top downwards.
+
+        @parm: B{a}
+        @parm: B{delta} determines the proportion of the gradient
+           object that is to be set to the alpha value.
         """
         evas_object_gradient_alpha_stop_add(self.obj, a, delta)
 
     def clear(self):
+        "Deletes all stops set or any set data."
         evas_object_gradient_clear(self.obj)
 
     def gradient_type_get(self):
+        """Sets the geometric type displayed.
+
+        @return: (type, instance_params)
+        @rtype: tuple of str
+        """
         cdef char *st, *si
         evas_object_gradient_type_get(self.obj, &st, &si)
         if st == NULL:
@@ -49,11 +62,11 @@ cdef class Gradient(Object):
     def gradient_type_set(self, char *type, instance_params=None):
         """Set a gradient's geometric type.
 
-        Examples are "linear", "linear.diag", "linear.codiag", "radial",
-        "rectangular", "angular", "sinusoidal", ...
-
-        Some types may accept additional parameters to further specify
-        the look.
+        @parm: B{type} the geometric type to use. Examples are "linear",
+           "linear.diag", "linear.codiag", "radial", "rectangular",
+           "angular", "sinusoidal", ...
+        @parm: B{instance_params} optional, may be accepted by some times
+           to further specify the look.
         """
         cdef char *si
         if instance_params is None:
@@ -72,6 +85,7 @@ cdef class Gradient(Object):
             self.gradient_type_set(*spec)
 
     def fill_get(self):
+        "@rtype: list of int"
         cdef int x, y, w, h
         evas_object_gradient_fill_get(self.obj, &x, &y, &w, &h)
         return (x, y, w, h)
@@ -88,6 +102,11 @@ cdef class Gradient(Object):
 
         The default values for the fill parameters is x = 0, y = 0,
         w = 32 and h = 32.
+
+        @parm: B{x}
+        @parm: B{y}
+        @parm: B{w}
+        @parm: B{h}
         """
         evas_object_gradient_fill_set(self.obj, x, y, w, h)
 
@@ -99,6 +118,7 @@ cdef class Gradient(Object):
             self.fill_set(*spec)
 
     def fill_angle_get(self):
+        "@rtype: int"
         return evas_object_gradient_fill_angle_get(self.obj)
 
     def fill_angle_set(self, int value):
@@ -115,8 +135,8 @@ cdef class Gradient(Object):
             self.fill_angle_set(value)
 
     def fill_spread_get(self):
-        """Retrieves the spread (tiling mode) for the given gradient object's
-        fill.
+        """Retrieves the spread (tiling mode) for fill.
+        @rtype: int
         """
         return evas_object_gradient_fill_spread_get(self.obj)
 
@@ -124,14 +144,14 @@ cdef class Gradient(Object):
         """Sets the tiling mode for the given evas gradient object's fill.
 
         value can be:
-         * EVAS_TEXTURE_REFLECT: tiling reflects.
-         * EVAS_TEXTURE_REPEAT: tiling repeats.
-         * EVAS_TEXTURE_RESTRICT: tiling clamps - range offset ignored.
-         * EVAS_TEXTURE_RESTRICT_REFLECT: tiling clamps and any range offset
+         - EVAS_TEXTURE_REFLECT: tiling reflects.
+         - EVAS_TEXTURE_REPEAT: tiling repeats.
+         - EVAS_TEXTURE_RESTRICT: tiling clamps - range offset ignored.
+         - EVAS_TEXTURE_RESTRICT_REFLECT: tiling clamps and any range offset
            reflects.
-         * EVAS_TEXTURE_RESTRICT_REPEAT: tiling clamps and any range offset
+         - EVAS_TEXTURE_RESTRICT_REPEAT: tiling clamps and any range offset
            repeats.
-         * EVAS_TEXTURE_PAD: tiling extends with end values.
+         - EVAS_TEXTURE_PAD: tiling extends with end values.
          """
         evas_object_gradient_fill_spread_set(self.obj, value)
 
@@ -145,6 +165,8 @@ cdef class Gradient(Object):
     def angle_get(self):
         """Retrieves the angle at which the given evas gradient object sits
         rel to its intrinsic orientation.
+
+        @rtype: int
         """
         return evas_object_gradient_angle_get(self.obj)
 
@@ -164,12 +186,13 @@ cdef class Gradient(Object):
             self.angle_set(value)
 
     def direction_get(self):
+        "@rtype: int"
         return evas_object_gradient_direction_get(self.obj)
 
     def direction_set(self, int value):
         """Sets the direction of the given evas gradient object's spectrum.
 
-        value can be either 1 (default) or -1.
+        @parm: B{value} can be either 1 (default) or -1.
         """
         evas_object_gradient_direction_set(self.obj, value)
 
@@ -181,12 +204,13 @@ cdef class Gradient(Object):
             self.direction_set(value)
 
     def offset_get(self):
+        "@rtype: float"
         return evas_object_gradient_offset_get(self.obj)
 
     def offset_set(self, float value):
         """Sets the offset of the given evas gradient object's spectrum.
 
-        value can be negative.
+        @parm: B{value} can be negative.
         """
         evas_object_gradient_offset_set(self.obj, value)
 

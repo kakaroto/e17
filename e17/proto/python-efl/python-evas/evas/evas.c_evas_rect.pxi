@@ -7,32 +7,52 @@ cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
     access and modify its properties in an easy way.
 
     Useful properties are:
-     * left (or "x")
-     * right
-     * top (or "y")
-     * bottom
-     * center_x
-     * center_y
-     * width (or "w")
-     * height (or "h")
-     * top_left
-     * top_right
-     * bottom_left
-     * bottom_right
-     * center
-     * pos
-     * size
-     * area
+     - left (or "x")
+     - right
+     - top (or "y")
+     - bottom
+     - center_x
+     - center_y
+     - width (or "w")
+     - height (or "h")
+     - top_left
+     - top_right
+     - bottom_left
+     - bottom_right
+     - center
+     - pos
+     - size
+     - area
 
     Useful methods are:
-     * normalize
-     * contains
-     * intercepts
-     * clip
-     * union
-     * clamp
-     * move_by
-     * inflate
+     - normalize
+     - contains
+     - intercepts
+     - clip
+     - union
+     - clamp
+     - move_by
+     - inflate
+
+    Usage example:
+
+     >>> r1 = Rect(10, 20, 30, 40)
+     >>> r2 = Rect((0, 0), (100, 100))
+     >>> r1
+     Rect(x=10, y=20, w=30, h=40)
+     >>> r2
+     Rect(x=0, y=0, w=100, h=100)
+     >>> r1.contains(r2)
+     False
+     >>> r2.contains(r1)
+     True
+     >>> r1 in r2 # same as r2.contains(r1)
+     True
+     >>> r1.intercepts(r2)
+     True
+
+    @attention: this is not a graphical object! Do not confuse with
+       L{Rectangle}.
     """
 
     def __init__(self, *args, **kargs):
@@ -394,6 +414,7 @@ cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
                     self.y0 != 0 and self._h != 0)
 
     def __contains__(self, obj):
+        "Checks if contains given rectangle."
         cdef Rect o
         if isinstance(obj, Rect):
             o = obj
@@ -406,20 +427,11 @@ cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
                     self.y0 <= o.top and o.bottom <= self.y1)
 
     def contains(self, obj):
-        "Checks if contains given parameter"
-        cdef Rect o
-        if isinstance(obj, Rect):
-            o = obj
-        elif isinstance(obj, (tuple, list)) and len(obj) == 2:
-            o = Rect(pos=obj)
-        else:
-            o = Rect(obj)
-
-        return bool(self.x0 <= o.left and o.right <= self.x1 and \
-                    self.y0 <= o.top and o.bottom <= self.y1)
+        "Checks if contains given rectangle."
+        return obj in self
 
     def intercepts(self, obj):
-        "Checks if intercepts given parameter"
+        "Checks if intercepts given rectangle."
         cdef Rect o
         cdef int left, right, top, bottom, a, b, c, d
         if isinstance(obj, Rect):

@@ -1,6 +1,46 @@
 # This file is included verbatim by c_evas.pyx
 
 cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
+    """Evas Canvas.
+
+    Canvas is the base drawing area and scene manager, it should have
+    a number of objects (or actors) that will be managed. Object state
+    is monitored and redraw is optimized based on changes.
+
+    @ivar rect: L{Rect} describing object geometry, for easy manipulation.
+          Changing this L{Rect} will not affect current geometry, you have
+          to set it again to have this behavior.
+
+    @attention: Canvas must be associated with an Input/Output system in
+                order to be functional. So far it's impossible to do this
+                association directly from Python, so you should create
+                Canvas indirectly using C{ecore.evas} classes, like
+                L{ecore.evas.SoftwareX11}.
+    @see: L{ecore.evas.SoftwareX11}, L{ecore.evas.Buffer}, ...
+
+    @group Most used: size_get, size_set, size, rect
+    @group Factories: Rectangle, Line, Image, FilledImage, Gradient,
+       Polygon, Text
+    @group Children manipulation: top_at_xy_get, top_at_pointer_get,
+           top_in_rectangle_get, objects_at_xy_get, objects_in_rectangle_get,
+           top_get, top, bottom_get, bottom, focus_get, focus, object_name_find
+    @group Coordinates: viewport_set, viewport_get, viewport,
+           coord_screen_x_to_world, coord_screen_y_to_world,
+           coord_world_x_to_screen, coord_world_y_to_screen
+    @group Pointer: pointer_output_xy_get, pointer_output_xy,
+           pointer_canvas_xy_get, pointer_canvas_xy,
+           pointer_button_down_mask_get, pointer_button_down_mask,
+           pointer_inside_get, pointer_inside
+    @group Image settings: image_cache_flush, image_cache_reload,
+           image_cache_set, image_cache_get, image_cache
+    @group Font settings: font_cache_flush, font_cache_get, font_cache_set,
+           font_cache, font_path_clear, font_path_append, font_path_prepend,
+           font_path_list, font_available_list, font_hinting_can_hint,
+           font_hinting_set, font_hinting_get, font_hinting
+    @group Often unused: damage_rectangle_add, obscured_rectangle_add,
+           obscured_clear, render_updates, render, norender, freeze_get,
+           output_method_set, output_method_get, output_method
+    """
     def __new__(self, *a, **ka):
         self.obj = NULL
 
@@ -28,11 +68,18 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     # XXX: this should be C-only, but it would require ecore_evas
     # XXX: being able to use it.
     def _unset_obj(self):
-        "Remove internally wrapped Evas* object."
+        "Remove internally wrapped Evas*."
         Canvas_forget(<long>self.obj)
         self.obj = NULL
 
     def _new_evas(self):
+        """Creates an internal (wrapped) 'Evas*' for this object.
+
+        If this Python wrapper is shallow then it allocate a new
+        'Evas*' using C{evas_new()}
+
+        @warning: internal.
+        """
         if self.obj == NULL:
             self._set_obj(evas_new())
 
@@ -50,7 +97,10 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
                 w, h, self.output_method_get())
 
     def output_method_set(self, method):
-        "Set canvas render method, can be either a name or id."
+        """Set canvas render method, can be either a name or id.
+
+        @parm: method
+        """
         cdef int engine_id
 
         if isinstance(method, (int, long)):
@@ -63,7 +113,10 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         evas_output_method_set(self.obj, engine_id)
 
     def output_method_get(self):
-        "Returns the id of the current output method, or 0 if error happened."
+        """Returns the id of the current output method, or 0 if error happened.
+
+        @rtype: int
+        """
         return evas_output_method_get(self.obj)
 
     property output_method:
@@ -74,9 +127,15 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             return self.output_method_get()
 
     def size_set(self, int w, int h):
+        """Set canvas size.
+
+        @parm: w
+        @parm: h
+        """
         evas_output_size_set(self.obj, w, h)
 
     def size_get(self):
+        """@rtype: tuple of int"""
         cdef int w, h
         evas_output_size_get(self.obj, &w, &h)
         return (w, h)
@@ -100,9 +159,21 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             return Rect(0, 0, w, h)
 
     def viewport_set(self, int x, int y, int w, int h):
+        """Sets the output viewport of the given evas in evas units.
+
+        The output viewport is the area of the evas that will be visible to
+        the viewer. The viewport will be stretched to fit the output target
+        of the evas when rendering is performed.
+
+        @note: The coordinate values do not have to map 1-to-1 with the output
+               target.  However, it is generally advised that it is done for
+               ease of use.
+        """
+
         evas_output_viewport_set(self.obj, x, y, w, h)
 
     def viewport_get(self):
+        "@rtype: list of int"
         cdef int x, y, w, h
         evas_output_viewport_get(self.obj, &x, &y, &w, &h)
         return (x, y, w, h)
@@ -115,18 +186,23 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             return self.viewport_get()
 
     def coord_screen_x_to_world(self, int x):
+        "@rtype: int"
         return evas_coord_screen_x_to_world(self.obj, x)
 
     def coord_screen_y_to_world(self, int y):
+        "@rtype: int"
         return evas_coord_screen_y_to_world(self.obj, y)
 
     def coord_world_x_to_screen(self, int x):
+        "@rtype: int"
         return evas_coord_world_x_to_screen(self.obj, x)
 
     def coord_world_y_to_screen(self, int y):
+        "@rtype: int"
         return evas_coord_world_y_to_screen(self.obj, y)
 
     def pointer_output_xy_get(self):
+        """Returns the pointer's (x, y) relative to output."""
         cdef int x, y
         evas_pointer_output_xy_get(self.obj, &x, &y)
         return (x, y)
@@ -136,6 +212,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             return self.pointer_output_xy_get()
 
     def pointer_canvas_xy_get(self):
+        """Returns the pointer's (x, y) relative to canvas."""
         cdef int x, y
         evas_pointer_canvas_xy_get(self.obj, &x, &y)
         return (x, y)
@@ -145,18 +222,44 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             return self.pointer_canvas_xy_get()
 
     def pointer_button_down_mask_get(self):
+        """Returns a bitmask with the mouse buttons currently pressed set to 1.
+
+        The least significant bit corresponds to the first mouse button
+        (button 1) and the most significant bit corresponds to the last mouse
+        button (button 32).
+
+        @rtype: int
+        """
         return evas_pointer_button_down_mask_get(self.obj)
 
     property pointer_button_down_mask:
         def __get__(self):
             return self.pointer_button_down_mask_get()
 
-    def pointer_inside(self):
+    def pointer_inside_get(self):
+        """Returns whether the mouse pointer is logically inside the canvas.
+
+        @rtype: bool
+        """
         return bool(evas_pointer_inside_get(self.obj))
+
+    property pointer_inside:
+        def __get__(self):
+            return self.pointer_inside_get()
 
     def top_at_xy_get(self, int x, int y,
                       include_pass_events_objects=False,
                       include_hidden_objects=False):
+        """Get the topmost object at (x, y).
+
+        @parm: B{x}
+        @parm: B{y}
+        @parm: B{include_hidden_objects} if to include objects passing events.
+        @parm: B{include_hidden_objects} if to include hidden objects.
+
+        @return: child object.
+        @rtype: L{Object}
+        """
         cdef int ip, ih
         cdef Evas_Object *o
         ip = include_pass_events_objects
@@ -165,6 +268,11 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         return Object_from_instance(o)
 
     def top_at_pointer_get(self):
+        """Get the topmost object at pointer position.
+
+        @return: child object.
+        @rtype: L{Object}
+        """
         cdef Evas_Object *o
         o = evas_object_top_at_pointer_get(self.obj)
         return Object_from_instance(o)
@@ -172,6 +280,18 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def top_in_rectangle_get(self, int x, int y, int w, int h,
                              include_pass_events_objects=False,
                              include_hidden_objects=False):
+        """Get the topmost object at given geometry.
+
+        @parm: B{x}
+        @parm: B{y}
+        @parm: B{w}
+        @parm: B{h}
+        @parm: B{include_hidden_objects} if to include objects passing events.
+        @parm: B{include_hidden_objects} if to include hidden objects.
+
+        @return: child object.
+        @rtype: L{Object}
+        """
         cdef int ip, ih
         cdef Evas_Object *o
         ip = include_pass_events_objects
@@ -182,6 +302,16 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def objects_at_xy_get(self, int x, int y,
                              include_pass_events_objects=False,
                              include_hidden_objects=False):
+        """Get all children at (x, y).
+
+        @parm: B{x}
+        @parm: B{y}
+        @parm: B{include_hidden_objects} if to include objects passing events.
+        @parm: B{include_hidden_objects} if to include hidden objects.
+
+        @return: children objects.
+        @rtype: list of L{Object}
+        """
         cdef Evas_List *objs, *itr
         cdef int ip, ih
         cdef Evas_Object *o
@@ -200,6 +330,18 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def objects_in_rectangle_get(self, int x, int y, int w, int h,
                              include_pass_events_objects=False,
                              include_hidden_objects=False):
+        """Get all children at given geometry.
+
+        @parm: B{x}
+        @parm: B{y}
+        @parm: B{w}
+        @parm: B{h}
+        @parm: B{include_hidden_objects} if to include objects passing events.
+        @parm: B{include_hidden_objects} if to include hidden objects.
+
+        @return: children objects.
+        @rtype: list of L{Object}
+        """
         cdef Evas_List *objs, *itr
         cdef int ip, ih
         cdef Evas_Object *o
@@ -231,12 +373,14 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         evas_render_updates_free(lst)
 
     def render(self):
+        "Force canvas to redraw pending updates."
         evas_render(self.obj)
 
     def norender(self):
         evas_norender(self.obj)
 
     def top_get(self):
+        "@rtype: L{Object}"
         cdef Evas_Object *other
         other = evas_object_top_get(self.obj)
         return Object_from_instance(other)
@@ -246,6 +390,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             return self.top_get()
 
     def bottom_get(self):
+        "@rtype: L{Object}"
         cdef Evas_Object *other
         other = evas_object_bottom_get(self.obj)
         return Object_from_instance(other)
@@ -255,6 +400,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             return self.bottom_get()
 
     def focus_get(self):
+        "@rtype: L{Object}"
         cdef Evas_Object *o
         o = evas_focus_get(self.obj)
         return Object_from_instance(o)
@@ -264,6 +410,10 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             return self.focus_get()
 
     def object_name_find(self, char *name):
+        """Find object by name.
+        @parm: name
+        @rtype: L{Object}
+        """
         cdef Evas_Object *other
         other = evas_object_name_find(self.obj, name)
         return Object_from_instance(other)
@@ -278,6 +428,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         evas_image_cache_set(self.obj, size)
 
     def image_cache_get(self):
+        "@rtype: int"
         return evas_image_cache_get(self.obj)
 
     property image_cache:
@@ -291,6 +442,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         evas_font_cache_flush(self.obj)
 
     def font_cache_get(self):
+        "@rtype: int"
         return evas_font_cache_get(self.obj)
 
     def font_cache_set(self, int value):
@@ -313,6 +465,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         evas_font_path_prepend(self.obj, path)
 
     def font_path_list(self):
+        "@rtype: list of str"
         cdef Evas_List *itr
         lst = []
         itr = evas_font_path_list(self.obj)
@@ -322,6 +475,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         return lst
 
     def font_available_list(self):
+        "@rtype: list of str"
         cdef void *p
         cdef Evas_List *itr, *head
         lst = []
@@ -335,13 +489,18 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         return lst
 
     def font_hinting_can_hint(self, int flags):
+        "@rtype: bool"
         return bool(evas_font_hinting_can_hint(self.obj,
                                                <Evas_Font_Hinting_Flags>flags))
 
     def font_hinting_set(self, int flags):
+        """@parm: B{flags} one of EVAS_FONT_HINTING_NONE,
+                EVAS_FONT_HINTING_AUTO or EVAS_FONT_HINTING_BYTECODE
+        """
         evas_font_hinting_set(self.obj, <Evas_Font_Hinting_Flags>flags)
 
     def font_hinting_get(self):
+        "@rtype: int"
         return <int>evas_font_hinting_get(self.obj)
 
     property font_hinting:
@@ -352,29 +511,56 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
             self.font_hinting_set(value)
 
     def freeze(self):
+        "Freeze event processing"
         evas_event_freeze(self.obj)
 
     def thaw(self):
+        "Thaw (unfreeze) event processing"
         evas_event_thaw(self.obj)
 
     def freeze_get(self):
+        "@rtype: int"
         return evas_event_freeze_get(self.obj)
 
     # Factory
     def Rectangle(self, **kargs):
+        """Factory of L{evas.Rectangle} associated with this canvas.
+        @rtype: L{Rectangle<evas.Rectangle>}
+        """
         return Rectangle(self, **kargs)
 
     def Line(self, **kargs):
+        """Factory of L{evas.Line} associated with this canvas.
+        @rtype: L{Line<evas.Line>}
+        """
         return Line(self, **kargs)
 
     def Image(self, **kargs):
+        """Factory of L{evas.Image} associated with this canvas.
+        @rtype: L{Image<evas.Image>}
+        """
         return Image(self, **kargs)
 
+    def FilledImage(self, **kargs):
+        """Factory of L{evas.FilledImage} associated with this canvas.
+        @rtype: L{FilledImage<evas.FilledImage>}
+        """
+        return FilledImage(self, **kargs)
+
     def Gradient(self, **kargs):
+        """Factory of L{evas.Gradient} associated with this canvas.
+        @rtype: L{Gradient<evas.Gradient>}
+        """
         return Gradient(self, **kargs)
 
     def Polygon(self, **kargs):
+        """Factory of L{evas.Polygon} associated with this canvas.
+        @rtype: L{Polygon<evas.Polygon>}
+        """
         return Polygon(self, **kargs)
 
     def Text(self, **kargs):
+        """Factory of L{evas.Text} associated with this canvas.
+        @rtype: L{Text<evas.Text>}
+        """
         return Text(self, **kargs)

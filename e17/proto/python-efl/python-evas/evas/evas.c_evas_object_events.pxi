@@ -34,36 +34,23 @@ cdef class EventPoint:
 
 cdef class EventPosition:
     cdef void _set_objs(self, void *output, void *canvas):
-        cdef EventPoint o, c
-        o = <EventPoint>EventPoint()
-        o._set_obj(<Evas_Point*>output)
-        self._output = o
-        c = <EventPoint>EventPoint()
-        c._set_obj(<Evas_Point*>canvas)
-        self._canvas = c
+        self.output = EventPoint()
+        self.output._set_obj(<Evas_Point*>output)
+        self.canvas = EventPoint()
+        self.canvas._set_obj(<Evas_Point*>canvas)
 
     def __str__(self):
         return "%s(output=(%d, %d), canvas=(%d, %d))" % \
-               (self.__class__.__name__, self._output.x, self._output.y,
-                self._canvas.x, self._canvas.y)
-
-    property output:
-        def __get__(self):
-            return self._output
-
-    property canvas:
-        def __get__(self):
-            return self._canvas
+               (self.__class__.__name__, self.output.x, self.output.y,
+                self.canvas.x, self.canvas.y)
 
 
 
 cdef class EventMouseIn:
     cdef void _set_obj(self, void *ptr):
-        cdef Evas_Event_Mouse_In *obj
-        obj = <Evas_Event_Mouse_In*>ptr
-        self.obj = obj
-        self._pos = <EventPosition>EventPosition()
-        self._pos._set_objs(&obj.output, &obj.canvas)
+        self.obj = <Evas_Event_Mouse_In*>ptr
+        self.position = EventPosition()
+        self.position._set_objs(&self.obj.output, &self.obj.canvas)
 
     def __str__(self):
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
@@ -72,10 +59,6 @@ cdef class EventMouseIn:
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
                  self.obj.timestamp)
-
-    property position:
-        def __get__(self):
-            return self._pos
 
     property buttons:
         def __get__(self):
@@ -88,11 +71,9 @@ cdef class EventMouseIn:
 
 cdef class EventMouseOut:
     cdef void _set_obj(self, void *ptr):
-        cdef Evas_Event_Mouse_Out *obj
-        obj = <Evas_Event_Mouse_Out*>ptr
-        self.obj = obj
-        self._pos = <EventPosition>EventPosition()
-        self._pos._set_objs(&obj.output, &obj.canvas)
+        self.obj = <Evas_Event_Mouse_Out*>ptr
+        self.position = EventPosition()
+        self.position._set_objs(&self.obj.output, &self.obj.canvas)
 
     def __str__(self):
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
@@ -101,10 +82,6 @@ cdef class EventMouseOut:
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
                  self.obj.timestamp)
-
-    property position:
-        def __get__(self):
-            return self._pos
 
     property buttons:
         def __get__(self):
@@ -117,11 +94,9 @@ cdef class EventMouseOut:
 
 cdef class EventMouseDown:
     cdef void _set_obj(self, void *ptr):
-        cdef Evas_Event_Mouse_Down *obj
-        obj = <Evas_Event_Mouse_Down*>ptr
-        self.obj = obj
-        self._pos = <EventPosition>EventPosition()
-        self._pos._set_objs(&obj.output, &obj.canvas)
+        self.obj = <Evas_Event_Mouse_Down*>ptr
+        self.position = EventPosition()
+        self.position._set_objs(&self.obj.output, &self.obj.canvas)
 
     def __str__(self):
         return ("%s(button=%d, output=(%d, %d), canvas=(%d, %d), "
@@ -130,10 +105,6 @@ cdef class EventMouseDown:
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
                  self.obj.timestamp)
-
-    property position:
-        def __get__(self):
-            return self._pos
 
     property button:
         def __get__(self):
@@ -146,11 +117,9 @@ cdef class EventMouseDown:
 
 cdef class EventMouseUp:
     cdef void _set_obj(self, void *ptr):
-        cdef Evas_Event_Mouse_Up *obj
-        obj = <Evas_Event_Mouse_Up*>ptr
-        self.obj = obj
-        self._pos = <EventPosition>EventPosition()
-        self._pos._set_objs(&obj.output, &obj.canvas)
+        self.obj = <Evas_Event_Mouse_Up*>ptr
+        self.position = EventPosition()
+        self.position._set_objs(&self.obj.output, &self.obj.canvas)
 
     def __str__(self):
         return ("%s(button=%d, output=(%d, %d), canvas=(%d, %d), "
@@ -159,10 +128,6 @@ cdef class EventMouseUp:
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
                  self.obj.timestamp)
-
-    property position:
-        def __get__(self):
-            return self._pos
 
     property button:
         def __get__(self):
@@ -175,13 +140,12 @@ cdef class EventMouseUp:
 
 cdef class EventMouseMove:
     cdef void _set_obj(self, void *ptr):
-        cdef Evas_Event_Mouse_Move *obj
-        obj = <Evas_Event_Mouse_Move*>ptr
-        self.obj = obj
-        self._pos = <EventPosition>EventPosition()
-        self._pos._set_objs(&obj.cur.output, &obj.cur.canvas)
-        self._prev = <EventPosition>EventPosition()
-        self._prev._set_objs(&obj.prev.output, &obj.prev.canvas)
+        self.obj = <Evas_Event_Mouse_Move*>ptr
+        self.position = EventPosition()
+        self.position._set_objs(&self.obj.cur.output, &self.obj.cur.canvas)
+        self.prev_position = EventPosition()
+        self.prev_position._set_objs(&self.obj.prev.output,
+                                     &self.obj.prev.canvas)
 
     def __str__(self):
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
@@ -192,14 +156,6 @@ cdef class EventMouseMove:
                  self.obj.prev.output.x, self.obj.prev.output.y,
                  self.obj.prev.canvas.x, self.obj.prev.canvas.y,
                  self.obj.timestamp)
-
-    property position:
-        def __get__(self):
-            return self._pos
-
-    property prev_position:
-        def __get__(self):
-            return self._prev
 
     property buttons:
         def __get__(self):
@@ -212,11 +168,9 @@ cdef class EventMouseMove:
 
 cdef class EventMouseWheel:
     cdef void _set_obj(self, void *ptr):
-        cdef Evas_Event_Mouse_Wheel *obj
-        obj = <Evas_Event_Mouse_Wheel*>ptr
-        self.obj = obj
-        self._pos = <EventPosition>EventPosition()
-        self._pos._set_objs(&obj.output, &obj.canvas)
+        self.obj = <Evas_Event_Mouse_Wheel*>ptr
+        self.position = EventPosition()
+        self.position._set_objs(&self.obj.output, &self.obj.canvas)
 
     def __str__(self):
         return ("%s(direction=%d, z=%d, output=(%d, %d), "
@@ -225,10 +179,6 @@ cdef class EventMouseWheel:
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
                  self.obj.timestamp)
-
-    property position:
-        def __get__(self):
-            return self._pos
 
     property timestamp:
         def __get__(self):
@@ -245,9 +195,7 @@ cdef class EventMouseWheel:
 
 cdef class EventKeyDown:
     cdef void _set_obj(self, void *ptr):
-        cdef Evas_Event_Key_Down *obj
-        obj = <Evas_Event_Key_Down*>ptr
-        self.obj = obj
+        self.obj = <Evas_Event_Key_Down*>ptr
 
     def __str__(self):
         return ("%s(keyname=%r, key=%r, string=%r, compose=%r, "
@@ -291,9 +239,7 @@ cdef class EventKeyDown:
 
 cdef class EventKeyUp:
     cdef void _set_obj(self, void *ptr):
-        cdef Evas_Event_Key_Up *obj
-        obj = <Evas_Event_Key_Up*>ptr
-        self.obj = obj
+        self.obj = <Evas_Event_Key_Up*>ptr
 
     def __str__(self):
         return ("%s(keyname=%r, key=%r, string=%r, compose=%r, "

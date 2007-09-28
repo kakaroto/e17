@@ -2,8 +2,8 @@
 
 import c_evas
 
-from c_evas import Canvas, SmartObject, Rectangle, Line, Image, \
-     Gradient, Polygon, Text, Rect, EvasLoadError, \
+from c_evas import Canvas, SmartObject, ClippedSmartObject, Rectangle, Line, \
+     Image, FilledImage, Gradient, Polygon, Text, Rect, EvasLoadError, \
      shutdown, render_method_lookup, render_method_list, \
      color_argb_premul, color_argb_unpremul, \
      color_rgb_to_hsv, color_hsv_to_rgb
@@ -52,6 +52,11 @@ EVAS_TEXTURE_PAD = 5
 
 EVAS_COLOR_SPACE_ARGB = 0
 EVAS_COLOR_SPACE_AHSV = 1
+
+EVAS_COLORSPACE_ARGB8888 = 0 # ARGB 32 bits per pixel, high-byte is Alpha
+EVAS_COLORSPACE_YCBCR422P601_PL = 1 # YCbCr 4:2:2 Planar, ITU.BT-601 specs.
+EVAS_COLORSPACE_YCBCR422P709_PL = 2 # YCbCr 4:2:2 Planar, ITU.BT-709 specs.
+EVAS_COLORSPACE_RGB565_A5P = 3 # 16bit rgb565 + Alpha plane (5/8 bits) at end
 
 EVAS_FONT_HINTING_NONE = 0
 EVAS_FONT_HINTING_AUTO = 1
