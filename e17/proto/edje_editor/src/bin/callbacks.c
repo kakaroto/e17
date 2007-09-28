@@ -15,14 +15,15 @@ extern void PROTO_engrave_part_state_image_tween_remove_all(Engrave_Part_State *
 int current_color_object;
 
 /* Called when the window is destroyed */
-void 
+Etk_Bool
 etk_main_quit_cb(void *data)
 {
    etk_main_quit();
+   return ETK_TRUE;
 }
 
 /* Called when the canvas change size */
-void 
+Etk_Bool
 on_canvas_geometry_changed(Etk_Object *canvas, const char *property_name, void *data)
 {
    int cx, cy, cw, ch;
@@ -33,17 +34,19 @@ on_canvas_geometry_changed(Etk_Object *canvas, const char *property_name, void *
    evas_object_resize(EV_canvas_shadow,cw,ch);
    evas_object_image_fill_set( EV_canvas_shadow,	0,0,cw,ch);
    ev_redraw();
+
+   return ETK_TRUE;
 }
 
 /* All the buttons Callback */
-void
+Etk_Bool
 on_AllButton_click(Etk_Button *button, void *data)
 {
    char cmd[1024];
    Etk_Tree_Row *sel_row;
    int row_num;
    Etk_String *text;
-   
+
    switch ((int)data)
    {
       case TOOLBAR_NEW:
@@ -175,11 +178,13 @@ on_AllButton_click(Etk_Button *button, void *data)
             etk_object_destroy(ETK_OBJECT(text));
          break;
    }
+
+   return ETK_TRUE;
 }
 
 
 /* Tree callbacks */
-void
+Etk_Bool
 on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    int row_type=0;
@@ -306,10 +311,12 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
       engrave_canvas_current_group_set (engrave_canvas, Cur.eg);
    }
    ev_redraw();
+
+   return ETK_TRUE;
 }
 
 /* Group frame callbacks */
-void
+Etk_Bool
 on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
 {
    Etk_Tree_Col *col1=NULL;
@@ -329,9 +336,11 @@ on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
       edje_object_part_text_set (EV_fakewin,
          "title", engrave_group_name_get(Cur.eg));
    }
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Group Spinners value changed signal EMIT\n");
@@ -362,10 +371,12 @@ on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
             break;
       }
    }
+
+   return ETK_TRUE;
 }
 
 /* Parts & Descriptions Callbacks*/
-void
+Etk_Bool
 on_PartNameEntry_text_changed(Etk_Object *object, void *data)
 {
    Etk_Tree_Col *col1=NULL;
@@ -403,9 +414,10 @@ on_PartNameEntry_text_changed(Etk_Object *object, void *data)
                break;
       }
    }
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_PartEventsCheck_toggled(Etk_Object *object, void *data)
 {
    printf("Toggled Signal on EventsCheck EMITTED\n");
@@ -414,8 +426,10 @@ on_PartEventsCheck_toggled(Etk_Object *object, void *data)
       engrave_part_mouse_events_set(Cur.ep,
                      etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object)));
    }
+   return ETK_TRUE;
 }
-void
+
+Etk_Bool
 on_StateEntry_text_changed(Etk_Object *object, void *data)
 {
    Etk_Tree_Col *col1=NULL;
@@ -441,9 +455,11 @@ on_StateEntry_text_changed(Etk_Object *object, void *data)
       etk_tree_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
          col1,EdjeFile,"DESC.PNG",buf,NULL);
    }
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    char buf[4096];
@@ -467,18 +483,21 @@ on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
       etk_tree_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
          col1,EdjeFile,"DESC.PNG",buf,NULL);
    }
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_AspectSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on AspectMinSpinner EMITTED\n");
    engrave_part_state_aspect_set(Cur.eps,
       etk_range_value_get(ETK_RANGE(UI_AspectMinSpinner)),
       etk_range_value_get(ETK_RANGE(UI_AspectMaxSpinner)));
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_AspectComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    Engrave_Aspect_Preference prefer;
@@ -487,9 +506,10 @@ on_AspectComboBox_changed(Etk_Combobox *combobox, void *data)
    prefer = (Engrave_Aspect_Preference)etk_combobox_item_data_get(etk_combobox_active_item_get (combobox));
    engrave_part_state_aspect_preference_set(Cur.eps,prefer);
 
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Active Item Changed Signal on MinMaxSpinners EMITTED\n");
@@ -503,10 +523,11 @@ on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *data)
       etk_range_value_get(ETK_RANGE(UI_StateMaxHSpinner)));
 
    ev_redraw();
+   return ETK_TRUE;
 }
 
 /* Image Frame Callbacks */
-void
+Etk_Bool
 on_ImageComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    Engrave_Image *image;
@@ -526,9 +547,11 @@ on_ImageComboBox_changed(Etk_Combobox *combobox, void *data)
          ev_redraw();
       }
    }
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_ImageTweenList_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    printf("Row selected signal on ImageTweenList EMITTED\n");
@@ -542,8 +565,11 @@ on_ImageTweenList_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data
       etk_widget_disabled_set(UI_MoveUpTweenButton,TRUE);
       etk_widget_disabled_set(UI_MoveDownTweenButton,TRUE);
    }
+
+   return ETK_TRUE;
 }
-void
+
+Etk_Bool
 on_ImageAlphaSlider_value_changed(Etk_Object *object, double va, void *data)
 {
    printf("ImageSlieder value_changed signale EMIT: %.2f\n",va);
@@ -551,9 +577,11 @@ on_ImageAlphaSlider_value_changed(Etk_Object *object, double va, void *data)
       engrave_part_state_color_set(Cur.eps, (int)va, (int)va, (int)va, (int)va);
       ev_redraw();
    }
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_BorderSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed signal on BorderSpinner EMITTED (value: %f)\n",etk_range_value_get(range));
@@ -568,10 +596,11 @@ on_BorderSpinner_value_changed(Etk_Range *range, double value, void *data)
 
       ev_redraw();
    }
+   return ETK_TRUE;
 }
 
 /* Position Frame Callbacks */
-void
+Etk_Bool
 on_RelToComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    printf("RelTocomboBox changed signal EMITTED \n");
@@ -580,10 +609,10 @@ on_RelToComboBox_changed(Etk_Combobox *combobox, void *data)
    part = etk_combobox_item_data_get (etk_combobox_active_item_get (combobox));
    if (part)
    {
-      if (part == Cur.ep ) 
+      if (part == Cur.ep)
       {
          ShowAlert("A state can't rel to itself.");
-         return;
+         return ETK_TRUE;
       }
       switch ((int)data)
       {
@@ -616,9 +645,10 @@ on_RelToComboBox_changed(Etk_Combobox *combobox, void *data)
    }
 
    ev_redraw();
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_RelSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on RelSpinner EMITTED (value: %f)\n",etk_range_value_get(range));
@@ -643,9 +673,11 @@ on_RelSpinner_value_changed(Etk_Range *range, double value, void *data)
       ev_redraw();
       //ev_draw_focus();
    }
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_RelOffsetSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on Offset Spinner EMITTED\n");
@@ -671,10 +703,11 @@ on_RelOffsetSpinner_value_changed(Etk_Range *range, double value, void *data)
       //ev_draw_focus();
    }
 
+   return ETK_TRUE;
 }
 
 /* Text Frame Callbacks */
-void 
+Etk_Bool
 on_FontComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    printf("Changed Signal on FontComboBox EMITTED \n");
@@ -688,9 +721,11 @@ on_FontComboBox_changed(Etk_Combobox *combobox, void *data)
          ev_redraw();
       }
    }
+
+   return ETK_TRUE;
 }
 
-void 
+Etk_Bool
 on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    Engrave_Text_Effect effect;
@@ -704,26 +739,30 @@ on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
          ev_redraw();
       }
    }
+
+   return ETK_TRUE;
 }
 
-void 
+Etk_Bool
 on_FontSizeSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on FontSizeSpinner EMITTED (value: %d)\n",(int)etk_range_value_get(range));
    engrave_part_state_text_size_set(Cur.eps,(int)etk_range_value_get(range));
    ev_redraw();
+   return ETK_TRUE;
 }
 
-void 
+Etk_Bool
 on_TextEntry_text_changed(Etk_Object *object, void *data)
 {
    printf("Text Changed Signal on TextEntry EMITTED (value %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
    engrave_part_state_text_text_set(Cur.eps,etk_entry_text_get(ETK_ENTRY(object)));
    ev_redraw();
+   return ETK_TRUE;
 }
 
 /* Programs Callbacks */
-void
+Etk_Bool
 on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    Engrave_Action action;
@@ -731,11 +770,11 @@ on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
    double value,value2;
    printf("Changed Signal on ActionComboBox EMITTED\n");
 
-   if (!Cur.epr) return;
+   if (!Cur.epr) return ETK_TRUE;
 
    //Get the current action in the current program
    engrave_program_action_get(Cur.epr,&action,&param1,&param2,200,200,&value,&value2);
-   
+
    //Get the new action from the combo data
    action = (Engrave_Action)etk_combobox_item_data_get(
                etk_combobox_active_item_get (combobox));
@@ -792,9 +831,11 @@ on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
       etk_widget_hide(UI_Param2Label);
       etk_widget_hide(UI_Param2Entry);
    }
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_ProgramEntry_text_changed(Etk_Object *object, void *data)
 {
    Etk_Tree_Col *col1=NULL;
@@ -809,57 +850,67 @@ on_ProgramEntry_text_changed(Etk_Object *object, void *data)
             NULL);
    }
    //TODO Check for dependencies! only in after?
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_SourceEntry_text_changed(Etk_Object *object, void *data)
 {
    printf("Text Changed Signal on SourceEntry Emitted\n");
    engrave_program_source_set(Cur.epr,
             etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry)))));
+
+   return ETK_TRUE;
 }
-void
+
+Etk_Bool
 on_SourceEntry_item_changed(Etk_Combobox_Entry *combo, void *data)
 {
    Etk_Combobox_Entry_Item *active_item = NULL;
    char *pname;
-   
+
    printf("Item Changed Signal on SourceEntry Emitted\n");
-   
+
    if (!(active_item = etk_combobox_entry_active_item_get(combo)))
-      return;
-   
-   etk_combobox_entry_item_fields_get(active_item, NULL, &pname, NULL); 
-   
+      return ETK_TRUE;
+
+   etk_combobox_entry_item_fields_get(active_item, NULL, &pname, NULL);
+
    etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),pname);
+
+   return ETK_TRUE;
 }
-void
+
+Etk_Bool
 on_SignalEntry_text_changed(Etk_Object *object, void *data)
 {
    printf("Text Changed Signal on SignalEntry Emitted\n");
    engrave_program_signal_set(Cur.epr,etk_entry_text_get(ETK_ENTRY(UI_SignalEntry)));
+   return ETK_TRUE;
 }
 
-void 
+Etk_Bool
 on_DelaySpinners_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("value Changed Signal on DelayFromSpinner Emitted\n");
    engrave_program_in_set(Cur.epr,
       etk_range_value_get(ETK_RANGE(UI_DelayFromSpinner)),
       etk_range_value_get(ETK_RANGE(UI_DelayRangeSpinner)));
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_TargetEntry_text_changed(Etk_Object *object, void *data)
 {
    char *text = strdup(etk_entry_text_get(ETK_ENTRY(object)));
    char *tok;
-   
+
    printf("Text Changed Signal on TargetEntry Emitted (text: %s)\n",text);
-   
+
    //Empty current targets list
    Cur.epr->targets=NULL; //ABSOLUTLY NOT THE RIGHT WAY!!!! TODO FIXME
-   
+
    //Spit the string in token and add every targets
    tok = strtok (text,",");
    while (tok != NULL)
@@ -868,106 +919,115 @@ on_TargetEntry_text_changed(Etk_Object *object, void *data)
       engrave_program_target_add(Cur.epr,tok);
       tok = strtok (NULL, ",");
    }
-   
+
    //TODO Check if all the targets exists in the group, otherwise make the text red
-   
+
    free(text);
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_Param1Entry_text_changed(Etk_Object *object, void *data)
 {
    Engrave_Action action;
    printf("Text Changed Signal on Param1Entry Emitted\n");
-   
+
    //get the action from the combo data
    action = (Engrave_Action)etk_combobox_item_data_get(
                etk_combobox_active_item_get (ETK_COMBOBOX(UI_ActionComboBox)));
-   
+
    engrave_program_action_set(Cur.epr,action,
 		etk_entry_text_get(ETK_ENTRY(UI_Param1Entry)),
 		etk_entry_text_get(ETK_ENTRY(UI_Param2Entry)),
 		Cur.epr->value,
 		Cur.epr->value2
 	);
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_Param2Entry_text_changed(Etk_Object *object, void *data)
 {
    Engrave_Action action;
    printf("Text Changed Signal on Param2Entry Emitted\n");
-   
+
    //get the action from the combo data
    action = (Engrave_Action)etk_combobox_item_data_get(
                etk_combobox_active_item_get (ETK_COMBOBOX(UI_ActionComboBox)));
-   
+
    engrave_program_action_set(Cur.epr,action,
 		etk_entry_text_get(ETK_ENTRY(UI_Param1Entry)),
       etk_entry_text_get(ETK_ENTRY(UI_Param2Entry)),
 		Cur.epr->value,
 		Cur.epr->value2
    );
-	
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_Param1Spinner_value_changed(Etk_Range *range, double value, void *data)
 {
    Engrave_Action action;
    printf("value Changed Signal on Param1Spinner Emitted\n");
-   
+
    //get the action from the combo data
    action = (Engrave_Action)etk_combobox_item_data_get(
                etk_combobox_active_item_get (ETK_COMBOBOX(UI_ActionComboBox)));
-   
+
    engrave_program_action_set(Cur.epr,action,
 		etk_entry_text_get(ETK_ENTRY(UI_Param1Entry)),
 		etk_entry_text_get(ETK_ENTRY(UI_Param2Entry)),
 		etk_range_value_get(ETK_RANGE(UI_Param1Spinner)),
 		Cur.epr->value2
 	);
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_TransitionComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    Engrave_Transition tran;
    printf("Changed Signal on TransitionComboBox Emitted\n");
-   
+
    //get the transition from the combo data
    tran = (Engrave_Transition)etk_combobox_item_data_get(
                etk_combobox_active_item_get (combobox));
-   
+
    engrave_program_transition_set(Cur.epr,tran,
       etk_range_value_get(ETK_RANGE(UI_DurationSpinner)));
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_DurationSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    Engrave_Transition tran;
    printf("value Changed Signal on DurationSpinner Emitted\n");
-   
+
    //get the transition from the combo data
    tran = (Engrave_Transition)etk_combobox_item_data_get(
                etk_combobox_active_item_get (ETK_COMBOBOX(UI_TransiComboBox)));
-   
+
    engrave_program_transition_set(Cur.epr,tran,
       etk_range_value_get(ETK_RANGE(UI_DurationSpinner)));
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_AfterEntry_text_changed(Etk_Object *object, void *data)
 {
    char *text = strdup(etk_entry_text_get(ETK_ENTRY(object)));
    char *tok;
- 
-   printf("Text Changed Signal on AfterEntry Emitted (text: %s)\n",text);   
-   
+
+   printf("Text Changed Signal on AfterEntry Emitted (text: %s)\n",text);
+
    //Empty current afters list
    Cur.epr->afters=NULL; //ABSOLUTLY NOT THE RIGHT WAY!!!! TODO FIXME
-   
+
    //Spit the string in token and add every afters
    tok = strtok (text,",");
    while (tok != NULL)
@@ -976,14 +1036,15 @@ on_AfterEntry_text_changed(Etk_Object *object, void *data)
       engrave_program_after_add(Cur.epr,tok);
       tok = strtok (NULL, ",");
    }
-   
+
    //TODO Check if all the after exists in the group, otherwise make the text red
-   
+
    free(text);
+   return ETK_TRUE;
 }
 
 /* Colors Callbacks */
-void
+Etk_Bool
 on_ColorCanvas_realize(Etk_Widget *canvas, void *data)
 {
    //Must use the realize callback on the EtkCanvas object.
@@ -1011,9 +1072,11 @@ on_ColorCanvas_realize(Etk_Widget *canvas, void *data)
          OutlineColorObject = rect;
          break;
    }
+
+   return ETK_TRUE;
 }
 
-void 
+void
 on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Etk_Color c;
@@ -1021,7 +1084,7 @@ on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (UI_ColorWin) etk_widget_show_all(UI_ColorWin);
    current_color_object = (int)data;
 
-   etk_signal_block("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
+   etk_signal_block("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change), NULL);
    switch (current_color_object)
    {
       case COLOR_OBJECT_RECT:
@@ -1045,10 +1108,10 @@ on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
    }
-   etk_signal_unblock("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change));
+   etk_signal_unblock("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change), NULL);
 }
 
-void
+Etk_Bool
 on_ColorDialog_change(Etk_Object *object, void *data)
 {
   // printf("ColorChangeSignal on ColorDialog EMITTED\n");
@@ -1091,10 +1154,11 @@ on_ColorDialog_change(Etk_Object *object, void *data)
    }
 
    ev_redraw();
+   return ETK_TRUE;
 }
 
 /* Add/Remove Buttons Callbacks */
-void 
+Etk_Bool
 on_AddMenu_item_activated(Etk_Object *object, void *data)
 {
    Engrave_Group *group = NULL;
@@ -1228,9 +1292,11 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          break;
    }
    ev_redraw();
+
+   return ETK_TRUE;
 }
 
-void
+Etk_Bool
 on_RemoveMenu_item_activated(Etk_Object *object, void *data)
 {
    Etk_Tree_Row* row;
@@ -1242,7 +1308,7 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
                printf("REMOVE DESCRIPTION: %s\n",Cur.eps->name);
                row = etk_tree_row_next_get(ecore_hash_get(hash,Cur.eps));
                if (!row) row = etk_tree_row_prev_get(ecore_hash_get(hash,Cur.eps));
-               etk_tree_row_delete(ecore_hash_get(hash,Cur.eps));         
+               etk_tree_row_delete(ecore_hash_get(hash,Cur.eps));
                ecore_hash_remove (hash, Cur.eps);
                PROTO_engrave_part_state_remove(Cur.ep, Cur.eps);
                engrave_part_state_free(Cur.eps);
@@ -1303,10 +1369,11 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
          }
       break;
    }
+   return ETK_TRUE;
 }
 
 /* Dialogs Callbacks */
-void
+Etk_Bool
 on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
 {
    char cmd[4096];
@@ -1348,7 +1415,7 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
                   ret = system(cmd);
                   if (ret < 0) {
                      ShowAlert("Error: unable to copy image!");
-                     return;
+                     return ETK_TRUE;
                   }
                }
                //Set the new image
@@ -1378,7 +1445,7 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
                   ret = system(cmd);
                   if (ret < 0) {
                      ShowAlert("Error: unable to copy font!");
-                     return;
+                     return ETK_TRUE;
                   }
                }
                //Set the new font
@@ -1400,10 +1467,13 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
    else{
       etk_widget_hide(ETK_WIDGET(dialog));
    }
+
+   return ETK_TRUE;
 }
 
-void 
+Etk_Bool
 on_AlertDialog_response(Etk_Dialog *dialog, int response_id, void *data)
 {
    etk_widget_hide(ETK_WIDGET(dialog));
+   return ETK_TRUE;
 }
