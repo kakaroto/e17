@@ -1157,8 +1157,7 @@ cb_config_hide(Etk_Object *object, void *data)
   configgui = data;
 
   etk_widget_hide_all(configgui->window);
-  etk_signal_stop();
-  return ETK_TRUE;
+  return ETK_FALSE;
 }
 
 void
