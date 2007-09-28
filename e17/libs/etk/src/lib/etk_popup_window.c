@@ -28,12 +28,8 @@ typedef enum Etk_Popup_Window_Screen_Edge
    ETK_POPUP_WINDOW_TOP_EDGE = (1 << 3)
 } Etk_Popup_Window_Screen_Edge;
 
-enum Etk_Popup_Window_Signal_Id
-{
-   ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL,
-   ETK_POPUP_WINDOW_POPPED_UP_SIGNAL,
-   ETK_POPUP_WINDOW_NUM_SIGNALS
-};
+int ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL;
+int ETK_POPUP_WINDOW_POPPED_UP_SIGNAL;
 
 static void _etk_popup_window_constructor(Etk_Popup_Window *popup_window);
 
@@ -51,8 +47,6 @@ static unsigned int _etk_popup_window_popup_timestamp = 0;
 static Ecore_Timer *_etk_popup_window_slide_timer = NULL;
 static Evas_List *_etk_popup_window_popped_parents = NULL;
 static Etk_Popup_Window *_etk_popup_window_focused_window = NULL;
-
-static Etk_Signal *_etk_popup_window_signals[ETK_POPUP_WINDOW_NUM_SIGNALS];
 
 
 /**************************
@@ -72,13 +66,17 @@ Etk_Type *etk_popup_window_type_get(void)
 
    if (!popup_window_type)
    {
-      popup_window_type = etk_type_new("Etk_Popup_Window", ETK_WINDOW_TYPE, sizeof(Etk_Popup_Window),
-         ETK_CONSTRUCTOR(_etk_popup_window_constructor), NULL);
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_POPUP_WINDOW_POPPED_UP_SIGNAL,
+            "popped-up", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL,
+            "popped-down", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_UP_SIGNAL] = etk_signal_new("popped-up",
-         popup_window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL] = etk_signal_new("popped-down",
-         popup_window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      popup_window_type = etk_type_new("Etk_Popup_Window", ETK_WINDOW_TYPE,
+         sizeof(Etk_Popup_Window),
+         ETK_CONSTRUCTOR(_etk_popup_window_constructor), NULL, signals);
    }
 
    return popup_window_type;
@@ -256,7 +254,7 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
    etk_widget_show(ETK_WIDGET(popup_window));
 
    _etk_popup_window_slide_timer_update(popup_window);
-   etk_signal_emit(_etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_UP_SIGNAL], ETK_OBJECT(popup_window), NULL);
+   etk_signal_emit(ETK_POPUP_WINDOW_POPPED_UP_SIGNAL, ETK_OBJECT(popup_window), NULL);
 }
 
 /**
@@ -325,7 +323,7 @@ void etk_popup_window_popdown(Etk_Popup_Window *popup_window)
    }
 
    etk_widget_hide(ETK_WIDGET(popup_window));
-   etk_signal_emit(_etk_popup_window_signals[ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL], ETK_OBJECT(popup_window), NULL);
+   etk_signal_emit(ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL, ETK_OBJECT(popup_window), NULL);
 }
 
 /**

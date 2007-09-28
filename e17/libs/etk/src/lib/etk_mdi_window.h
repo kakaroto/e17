@@ -24,6 +24,9 @@ extern "C" {
 
 typedef struct Etk_Mdi_Window_Data Etk_Mdi_Window_Data;
 
+extern int ETK_MDI_WINDOW_MOVED_SIGNAL;
+extern int ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL;
+
 /*
 typedef enum
 {

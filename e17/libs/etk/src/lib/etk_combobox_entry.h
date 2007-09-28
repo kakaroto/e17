@@ -40,6 +40,7 @@ extern "C" {
 /** Check if the object is an Etk_Combobox_Entry_Item */
 #define ETK_IS_COMBOBOX_ENTRY_ITEM(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_COMBOBOX_ENTRY_ITEM_TYPE))
 
+extern int ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_CHANGED_SIGNAL;
 
 /** @brief The different types of widgets that can be contained by  a combobox_entry's column */
 typedef enum

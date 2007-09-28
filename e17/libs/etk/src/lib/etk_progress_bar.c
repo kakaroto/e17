@@ -48,8 +48,10 @@ Etk_Type *etk_progress_bar_type_get(void)
 
    if (!progress_bar_type)
    {
-      progress_bar_type = etk_type_new("Etk_Progress_Bar", ETK_WIDGET_TYPE, sizeof(Etk_Progress_Bar),
-         ETK_CONSTRUCTOR(_etk_progress_bar_constructor), ETK_DESTRUCTOR(_etk_progress_bar_destructor));
+      progress_bar_type = etk_type_new("Etk_Progress_Bar", ETK_WIDGET_TYPE,
+         sizeof(Etk_Progress_Bar),
+         ETK_CONSTRUCTOR(_etk_progress_bar_constructor),
+         ETK_DESTRUCTOR(_etk_progress_bar_destructor), NULL);
 
       etk_type_property_add(progress_bar_type, "text", ETK_PROGRESS_BAR_TEXT_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -266,7 +268,7 @@ static void _etk_progress_bar_constructor(Etk_Progress_Bar *progress_bar)
    progress_bar->direction = ETK_PROGRESS_BAR_LEFT_TO_RIGHT;
    progress_bar->is_pulsing = ETK_FALSE;
 
-   etk_signal_connect("realized", ETK_OBJECT(progress_bar), ETK_CALLBACK(_etk_progress_bar_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(progress_bar), ETK_CALLBACK(_etk_progress_bar_realized_cb), NULL);
 }
 
 /* Destroys the progress bar */

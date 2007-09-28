@@ -17,11 +17,7 @@
  * @{
  */
 
-enum Etk_Range_Signal_Id
-{
-   ETK_RANGE_VALUE_CHANGED_SIGNAL,
-   ETK_RANGE_NUM_SIGNALS
-};
+int ETK_RANGE_VALUE_CHANGED_SIGNAL;
 
 enum Etk_Range_Property_Id
 {
@@ -36,8 +32,6 @@ enum Etk_Range_Property_Id
 static void _etk_range_constructor(Etk_Range *range);
 static void _etk_range_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-
-static Etk_Signal *_etk_range_signals[ETK_RANGE_NUM_SIGNALS];
 
 /**************************
  *
@@ -56,11 +50,16 @@ Etk_Type *etk_range_type_get(void)
 
    if (!range_type)
    {
-      range_type = etk_type_new("Etk_Range", ETK_WIDGET_TYPE, sizeof(Etk_Range),
-         ETK_CONSTRUCTOR(_etk_range_constructor), NULL);
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_HANDLER(ETK_RANGE_VALUE_CHANGED_SIGNAL,
+            "value-changed", Etk_Range, value_changed_handler,
+            etk_marshaller_VOID__DOUBLE, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL] = etk_signal_new("value-changed",
-         range_type, ETK_MEMBER_OFFSET(Etk_Range, value_changed_handler), etk_marshaller_VOID__DOUBLE, NULL, NULL);
+      range_type = etk_type_new("Etk_Range", ETK_WIDGET_TYPE,
+         sizeof(Etk_Range), ETK_CONSTRUCTOR(_etk_range_constructor), NULL,
+         signals);
 
       etk_type_property_add(range_type, "lower", ETK_RANGE_LOWER_PROPERTY,
          ETK_PROPERTY_DOUBLE, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_double(0.0));
@@ -100,7 +99,7 @@ Etk_Bool etk_range_value_set(Etk_Range *range, double value)
    if (new_value != range->value)
    {
       range->value = new_value;
-      etk_signal_emit(_etk_range_signals[ETK_RANGE_VALUE_CHANGED_SIGNAL], ETK_OBJECT(range), NULL, range->value);
+      etk_signal_emit(ETK_RANGE_VALUE_CHANGED_SIGNAL, ETK_OBJECT(range), NULL, range->value);
       etk_object_notify(ETK_OBJECT(range), "value");
       return ETK_TRUE;
    }

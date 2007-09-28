@@ -28,11 +28,8 @@ typedef struct Etk_Colorpicker_Picker_SD
    void (*move_resize)(Etk_Colorpicker *cp, int x, int y, int w, int h);
 } Etk_Colorpicker_Picker_SD;
 
-enum Etk_Colorpicker_Signal_Id
-{
-   ETK_CP_COLOR_CHANGED_SIGNAL,
-   ETK_CP_NUM_SIGNALS
-};
+int ETK_CP_COLOR_CHANGED_SIGNAL;
+
 
 enum Etk_Colorpicker_Property_Id
 {
@@ -95,7 +92,6 @@ static void _etk_colorpicker_color_calc(Etk_Colorpicker_Mode mode, float sp_xpos
 static float _etk_colorpicker_max_values[6] = { 360.0, 1.0, 1.0, 255.0, 255.0, 255.0 };
 static Evas_Smart *_etk_colorpicker_picker_smart = NULL;
 static int _etk_colorpicker_picker_smart_use = 0;
-static Etk_Signal *_etk_colorpicker_signals[ETK_CP_NUM_SIGNALS];
 
 
 /**************************
@@ -115,11 +111,15 @@ Etk_Type *etk_colorpicker_type_get(void)
 
    if (!cp_type)
    {
-      cp_type = etk_type_new("Etk_Colorpicker", ETK_WIDGET_TYPE, sizeof(Etk_Colorpicker),
-            ETK_CONSTRUCTOR(_etk_colorpicker_constructor), ETK_DESTRUCTOR(_etk_colorpicker_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_CP_COLOR_CHANGED_SIGNAL,
+            "color-changed", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL] = etk_signal_new("color-changed",
-            cp_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      cp_type = etk_type_new("Etk_Colorpicker", ETK_WIDGET_TYPE,
+         sizeof(Etk_Colorpicker), ETK_CONSTRUCTOR(_etk_colorpicker_constructor),
+         ETK_DESTRUCTOR(_etk_colorpicker_destructor), signals);
 
       etk_type_property_add(cp_type, "color-mode", ETK_CP_MODE_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_COLORPICKER_H));
@@ -218,7 +218,7 @@ void etk_colorpicker_current_color_set(Etk_Colorpicker *cp, Etk_Color color)
    cp->ignore_value_changed = ETK_FALSE;
 
    _etk_colorpicker_update_from_sliders(cp, ETK_COLORPICKER_R, ETK_TRUE, ETK_TRUE);
-   etk_signal_emit(_etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL], ETK_OBJECT(cp), NULL);
+   etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp), NULL);
 }
 
 /**
@@ -367,13 +367,13 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
 
       cp->sliders_image[i] = NULL;
 
-      etk_signal_connect("toggled", ETK_OBJECT(cp->radios[i]),
+      etk_signal_connect_by_code(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(cp->radios[i]),
             ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
-      etk_signal_connect("realized", ETK_OBJECT(cp->sliders[i]),
+      etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(cp->sliders[i]),
             ETK_CALLBACK(_etk_colorpicker_slider_realized_cb), cp);
-      etk_signal_connect("unrealized", ETK_OBJECT(cp->sliders[i]),
+      etk_signal_connect_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(cp->sliders[i]),
             ETK_CALLBACK(_etk_colorpicker_slider_unrealized_cb), cp);
-      etk_signal_connect("value-changed", ETK_OBJECT(cp->sliders[i]),
+      etk_signal_connect_by_code(ETK_RANGE_VALUE_CHANGED_SIGNAL, ETK_OBJECT(cp->sliders[i]),
             ETK_CALLBACK(_etk_colorpicker_slider_value_changed_cb), cp);
    }
 
@@ -390,7 +390,7 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
       etk_table_attach(ETK_TABLE(cp->component_table), cp->alpha_slider, 1, 1, 6, 6,
             ETK_TABLE_HFILL | ETK_TABLE_EXPAND, 0, 0);
 
-      etk_signal_connect("value-changed", ETK_OBJECT(cp->alpha_slider),
+      etk_signal_connect_by_code(ETK_RANGE_VALUE_CHANGED_SIGNAL, ETK_OBJECT(cp->alpha_slider),
             ETK_CALLBACK(_etk_colorpicker_alpha_slider_value_changed_cb), cp);
    }
 
@@ -416,13 +416,13 @@ static void _etk_colorpicker_constructor(Etk_Colorpicker *cp)
          ETK_TABLE_HFILL | ETK_TABLE_HEXPAND, 0, 0);
    etk_widget_show(cp->current_color_widget);
 
-   etk_signal_connect("realized", ETK_OBJECT(cp->picker_widget),
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(cp->picker_widget),
          ETK_CALLBACK(_etk_colorpicker_realized_cb), cp);
-   etk_signal_connect("unrealized", ETK_OBJECT(cp->picker_widget),
+   etk_signal_connect_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(cp->picker_widget),
          ETK_CALLBACK(_etk_colorpicker_unrealized_cb), cp);
-   etk_signal_connect("realized", ETK_OBJECT(cp->current_color_widget),
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(cp->current_color_widget),
          ETK_CALLBACK(_etk_colorpicker_current_color_realized_cb), cp);
-   etk_signal_connect("unrealized", ETK_OBJECT(cp->current_color_widget),
+   etk_signal_connect_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(cp->current_color_widget),
          ETK_CALLBACK(_etk_colorpicker_current_color_unrealized_cb), cp);
 
 
@@ -439,7 +439,7 @@ static void _etk_colorpicker_destructor(Etk_Colorpicker *cp)
       return;
 
    for (i = 0; i < 6; i++)
-      etk_signal_disconnect("toggled", ETK_OBJECT(cp->radios[i]), ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
+      etk_signal_disconnect_by_code(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(cp->radios[i]), ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -722,7 +722,7 @@ static void _etk_colorpicker_slider_value_changed_cb(Etk_Object *object, double 
          update_sp = ((i != cp->sp_xcomponent) && (i != cp->sp_ycomponent));
          update_vp = ((i / 3) != (cp->mode / 3));
          _etk_colorpicker_update_from_sliders(cp, i, update_sp, update_vp);
-         etk_signal_emit(_etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL], ETK_OBJECT(cp), NULL);
+         etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp), NULL);
          return;
       }
    }
@@ -747,7 +747,7 @@ static void _etk_colorpicker_alpha_slider_value_changed_cb(Etk_Object *object, d
    evas_object_color_set(cp->current_color_rect, color.r, color.g, color.b, cp->current_color.a);
 
    if (!cp->ignore_value_changed)
-      etk_signal_emit(_etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL], ETK_OBJECT(cp), NULL);
+      etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp), NULL);
 }
 
 /* Called when the color mode is changed with the radio buttons */
@@ -1118,7 +1118,7 @@ static void _etk_colorpicker_sp_cursor_move(Etk_Colorpicker *cp, float xpercent,
    cp->ignore_value_changed = ETK_FALSE;
 
    _etk_colorpicker_update_from_sliders(cp, cp->mode, ETK_FALSE, ETK_FALSE);
-   etk_signal_emit(_etk_colorpicker_signals[ETK_CP_COLOR_CHANGED_SIGNAL], ETK_OBJECT(cp), NULL);
+   etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp), NULL);
 }
 
 /* Updates the colorpicker from its sliders */

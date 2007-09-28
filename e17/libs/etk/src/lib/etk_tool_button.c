@@ -33,7 +33,7 @@ Etk_Type *etk_tool_button_type_get()
    if (!tool_button_type)
    {
       tool_button_type = etk_type_new("Etk_Tool_Button", ETK_BUTTON_TYPE, sizeof(Etk_Tool_Button),
-         ETK_CONSTRUCTOR(_etk_tool_button_constructor), NULL);
+         ETK_CONSTRUCTOR(_etk_tool_button_constructor), NULL, NULL);
    }
 
    return tool_button_type;
@@ -86,7 +86,7 @@ Etk_Type *etk_tool_toggle_button_type_get()
    if (!tool_toggle_button_type)
    {
       tool_toggle_button_type = etk_type_new("Etk_Tool_Toggle_Button", ETK_TOGGLE_BUTTON_TYPE, sizeof(Etk_Tool_Toggle_Button),
-         ETK_CONSTRUCTOR(_etk_tool_toggle_button_constructor), NULL);
+         ETK_CONSTRUCTOR(_etk_tool_toggle_button_constructor), NULL, NULL);
    }
 
    return tool_toggle_button_type;

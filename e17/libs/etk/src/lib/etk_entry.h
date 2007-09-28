@@ -32,6 +32,7 @@ typedef enum
    ETK_ENTRY_IMAGE_SECONDARY       /**< The image is secondary, to the right of the editable object */
 } Etk_Entry_Image_Position;
 
+extern int ETK_ENTRY_TEXT_CHANGED_SIGNAL;
 
 /**
  * @brief @widget A widget that allows the user to edit a single-line text

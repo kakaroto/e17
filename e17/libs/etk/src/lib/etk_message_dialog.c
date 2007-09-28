@@ -46,8 +46,9 @@ Etk_Type *etk_message_dialog_type_get(void)
 
    if (!message_dialog_type)
    {
-      message_dialog_type = etk_type_new("Etk_Message_Dialog", ETK_DIALOG_TYPE, sizeof(Etk_Message_Dialog),
-         ETK_CONSTRUCTOR(_etk_message_dialog_constructor), NULL);
+      message_dialog_type = etk_type_new("Etk_Message_Dialog", ETK_DIALOG_TYPE,
+         sizeof(Etk_Message_Dialog),
+         ETK_CONSTRUCTOR(_etk_message_dialog_constructor), NULL, NULL);
 
       etk_type_property_add(message_dialog_type, "message-type", ETK_MESSAGE_DIALOG_TYPE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_MESSAGE_DIALOG_INFO));

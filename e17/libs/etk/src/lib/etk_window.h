@@ -33,6 +33,11 @@ typedef enum
    ETK_WINDOW_BELOW        /**< The window is stacked below all the other windows */
 } Etk_Window_Stacking;
 
+extern int ETK_WINDOW_MOVED_SIGNAL;
+extern int ETK_WINDOW_RESIZED_SIGNAL;
+extern int ETK_WINDOW_FOCUSED_IN_SIGNAL;
+extern int ETK_WINDOW_FOCUSED_OUT_SIGNAL;
+extern int ETK_WINDOW_DELETE_EVENT_SIGNAL;
 
 /**
  * @brief @widget The most common toplevel-widget

@@ -122,7 +122,7 @@ Etk_Type *etk_shadow_type_get(void)
    if (!shadow_type)
    {
       shadow_type = etk_type_new("Etk_Shadow", ETK_BIN_TYPE, sizeof(Etk_Shadow),
-         ETK_CONSTRUCTOR(_etk_shadow_constructor), NULL);
+         ETK_CONSTRUCTOR(_etk_shadow_constructor), NULL, NULL);
 
       etk_type_property_add(shadow_type, "shadow-type", ETK_SHADOW_SHADOW_TYPE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SHADOW_NONE));
@@ -404,8 +404,8 @@ static void _etk_shadow_constructor(Etk_Shadow *shadow)
    ETK_WIDGET(shadow)->size_request = _etk_shadow_size_request;
    ETK_WIDGET(shadow)->size_allocate = _etk_shadow_size_allocate;
 
-   etk_signal_connect("realized", ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_realized_cb), NULL);
-   etk_signal_connect("unrealized", ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_unrealized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(shadow), ETK_CALLBACK(_etk_shadow_unrealized_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */

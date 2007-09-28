@@ -26,11 +26,7 @@
 
 #define IMAGE_SIZE 16
 
-enum Etk_Entry_Signal_Id
-{
-   ETK_ENTRY_TEXT_CHANGED_SIGNAL,
-   ETK_ENTRY_NUM_SIGNALS
-};
+int ETK_ENTRY_TEXT_CHANGED_SIGNAL;
 
 enum Etk_Entry_Propery_Id
 {
@@ -66,8 +62,6 @@ static void _etk_entry_disabled_cb(Etk_Object *object, void *data);
 static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, void *data);
 static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selection, Etk_Bool cut);
 
-static Etk_Signal *_etk_entry_signals[ETK_ENTRY_NUM_SIGNALS];
-
 
 /**************************
  *
@@ -86,11 +80,15 @@ Etk_Type *etk_entry_type_get(void)
 
    if (!entry_type)
    {
-      entry_type = etk_type_new("Etk_Entry", ETK_WIDGET_TYPE, sizeof(Etk_Entry),
-            ETK_CONSTRUCTOR(_etk_entry_constructor), ETK_DESTRUCTOR(_etk_entry_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_ENTRY_TEXT_CHANGED_SIGNAL,
+            "text-changed", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL] = etk_signal_new("text-changed",
-            entry_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      entry_type = etk_type_new("Etk_Entry", ETK_WIDGET_TYPE,
+         sizeof(Etk_Entry), ETK_CONSTRUCTOR(_etk_entry_constructor),
+         ETK_DESTRUCTOR(_etk_entry_destructor), signals);
 
       etk_type_property_add(entry_type, "password-mode", ETK_ENTRY_PASSWORD_MODE_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_bool(ETK_FALSE));
@@ -132,7 +130,7 @@ void etk_entry_text_set(Etk_Entry *entry, const char *text)
    else
       etk_editable_text_set(entry->editable_object, text);
 
-   etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
+   etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry), NULL);
 }
 
 /**
@@ -241,7 +239,7 @@ void etk_entry_clear_button_add(Etk_Entry *entry)
 
    image = etk_image_new_from_stock(ETK_STOCK_EDIT_CLEAR, ETK_STOCK_SMALL);
    etk_entry_image_set(entry, ETK_ENTRY_IMAGE_SECONDARY, ETK_IMAGE(image));
-   etk_signal_connect("mouse-click", ETK_OBJECT(image), ETK_CALLBACK(_etk_entry_clear_button_cb), entry);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_CLICK_SIGNAL, ETK_OBJECT(image), ETK_CALLBACK(_etk_entry_clear_button_cb), entry);
 }
 
 /**
@@ -282,24 +280,24 @@ void etk_entry_image_highlight_set(Etk_Entry *entry, Etk_Entry_Image_Position po
 
    if (highlight)
    {
-      etk_signal_connect("mouse-in", ETK_OBJECT(image),
+      etk_signal_connect_by_code(ETK_WIDGET_MOUSE_IN_SIGNAL, ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_in_cb), entry);
-      etk_signal_connect("mouse-out", ETK_OBJECT(image),
+      etk_signal_connect_by_code(ETK_WIDGET_MOUSE_OUT_SIGNAL, ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_out_cb), entry);
-      etk_signal_connect("mouse-down", ETK_OBJECT(image),
+      etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_down_cb), entry);
-      etk_signal_connect("mouse-up", ETK_OBJECT(image),
+      etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_up_cb), entry);
    }
    else
    {
-      etk_signal_disconnect("mouse-in", ETK_OBJECT(image),
+      etk_signal_disconnect_by_code(ETK_WIDGET_MOUSE_IN_SIGNAL, ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_in_cb), entry);
-      etk_signal_disconnect("mouse-out", ETK_OBJECT(image),
+      etk_signal_disconnect_by_code(ETK_WIDGET_MOUSE_OUT_SIGNAL, ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_out_cb), entry);
-      etk_signal_disconnect("mouse-down", ETK_OBJECT(image),
+      etk_signal_disconnect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_down_cb), entry);
-      etk_signal_disconnect("mouse-up", ETK_OBJECT(image),
+      etk_signal_disconnect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(image),
             ETK_CALLBACK(_etk_entry_image_mouse_up_cb), entry);
 
       etk_widget_color_set(ETK_WIDGET(image), 255, 255, 255, 255);
@@ -371,21 +369,21 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    widget->size_request = _etk_entry_size_request;
    widget->size_allocate = _etk_entry_size_allocate;
 
-   etk_signal_connect("realized", ETK_OBJECT(entry->internal_entry),
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(entry->internal_entry),
          ETK_CALLBACK(_etk_entry_internal_realized_cb), NULL);
-   etk_signal_connect("unrealized", ETK_OBJECT(entry->internal_entry),
+   etk_signal_connect_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(entry->internal_entry),
          ETK_CALLBACK(_etk_entry_internal_unrealized_cb), NULL);
-   etk_signal_connect("key-down", ETK_OBJECT(entry),
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_key_down_cb), NULL);
-   etk_signal_connect("focused", ETK_OBJECT(entry),
+   etk_signal_connect_by_code(ETK_WIDGET_FOCUSED_SIGNAL, ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_focused_cb), NULL);
-   etk_signal_connect("unfocused", ETK_OBJECT(entry),
+   etk_signal_connect_by_code(ETK_WIDGET_UNFOCUSED_SIGNAL, ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_unfocused_cb), NULL);
-   etk_signal_connect("enabled", ETK_OBJECT(entry),
+   etk_signal_connect_by_code(ETK_WIDGET_ENABLED_SIGNAL, ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_enabled_cb), NULL);
-   etk_signal_connect("disabled", ETK_OBJECT(entry),
+   etk_signal_connect_by_code(ETK_WIDGET_DISABLED_SIGNAL, ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_disabled_cb), NULL);
-   etk_signal_connect("selection-received", ETK_OBJECT(entry),
+   etk_signal_connect_by_code(ETK_WIDGET_SELECTION_RECEIVED_SIGNAL, ETK_OBJECT(entry),
          ETK_CALLBACK(_etk_entry_selection_received_cb), NULL);
 
 }
@@ -742,7 +740,7 @@ static void _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event
 
 
    if (changed)
-      etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
+      etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry), NULL);
    if (selection_changed)
       _etk_entry_selection_copy(entry, ETK_SELECTION_PRIMARY, ETK_FALSE);
    if (stop_signal)
@@ -997,7 +995,7 @@ static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, vo
       changed |= etk_editable_insert(editable, start_pos, text);
 
       if (changed)
-         etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
+         etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry), NULL);
    }
 }
 
@@ -1037,7 +1035,7 @@ static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selec
       if (cut)
       {
          if (etk_editable_delete(editable, start_pos, end_pos))
-            etk_signal_emit(_etk_entry_signals[ETK_ENTRY_TEXT_CHANGED_SIGNAL], ETK_OBJECT(entry), NULL);
+            etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry), NULL);
       }
    }
 }

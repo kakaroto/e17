@@ -20,12 +20,8 @@
  * @{
  */
 
-enum Etk_Widget_Signal_Id
-{
-   ETK_MDI_WINDOW_MOVED_SIGNAL,
-   ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL,
-   ETK_MDI_WINDOW_NUM_SIGNALS
-};
+int ETK_MDI_WINDOW_MOVED_SIGNAL;
+int ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL;
 
 enum Etk_Mdi_Window_Property_Id
 {
@@ -53,8 +49,6 @@ static void _etk_mdi_window_maximize_mouse_clicked_cb(void *data, Evas_Object *o
 static void _etk_mdi_window_close_mouse_clicked_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static Etk_Bool _etk_mdi_window_delete_event_handler(Etk_Mdi_Window *mdi_window);
 
-static Etk_Signal *_etk_mdi_window_signals[ETK_MDI_WINDOW_NUM_SIGNALS];
-
 /**************************
  *
  * Implementation
@@ -72,13 +66,18 @@ Etk_Type *etk_mdi_window_type_get(void)
 
    if (!mdi_window_type)
    {
-      mdi_window_type = etk_type_new("Etk_Mdi_Window", ETK_BIN_TYPE, sizeof(Etk_Mdi_Window),
-         ETK_CONSTRUCTOR(_etk_mdi_window_constructor), ETK_DESTRUCTOR(_etk_mdi_window_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_MDI_WINDOW_MOVED_SIGNAL,
+            "moved", etk_marshaller_VOID__INT_INT, NULL, NULL),
+         ETK_SIGNAL_DESC_HANDLER(ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL,
+            "delete-event", Etk_Mdi_Window, delete_event,
+            etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_mdi_window_signals[ETK_MDI_WINDOW_MOVED_SIGNAL] = etk_signal_new("moved", mdi_window_type,
-         -1, etk_marshaller_VOID__INT_INT, NULL, NULL);
-      _etk_mdi_window_signals[ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete-event", mdi_window_type,
-         ETK_MEMBER_OFFSET(Etk_Mdi_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
+      mdi_window_type = etk_type_new("Etk_Mdi_Window", ETK_BIN_TYPE,
+         sizeof(Etk_Mdi_Window), ETK_CONSTRUCTOR(_etk_mdi_window_constructor),
+         ETK_DESTRUCTOR(_etk_mdi_window_destructor), signals);
 
       etk_type_property_add(mdi_window_type, "title", ETK_MDI_WINDOW_TITLE_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -117,7 +116,7 @@ void etk_mdi_window_delete_request(Etk_Mdi_Window *mdi_window)
 {
    Etk_Bool result;
 
-   etk_signal_emit(_etk_mdi_window_signals[ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL], ETK_OBJECT(mdi_window), &result);
+   etk_signal_emit(ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(mdi_window), &result);
    if (!result)
    {
       etk_widget_parent_set(ETK_WIDGET(mdi_window), NULL);
@@ -171,7 +170,7 @@ void etk_mdi_window_move(Etk_Mdi_Window *mdi_window, int x, int y)
    if (!mdi_window)
       return;
 
-   etk_signal_emit(_etk_mdi_window_signals[ETK_MDI_WINDOW_MOVED_SIGNAL], ETK_OBJECT(mdi_window), NULL, x, y);
+   etk_signal_emit(ETK_MDI_WINDOW_MOVED_SIGNAL, ETK_OBJECT(mdi_window), NULL, x, y);
 }
 
 /**
@@ -329,7 +328,7 @@ static void _etk_mdi_window_constructor(Etk_Mdi_Window *mdi_window)
 
    mdi_window->delete_event = _etk_mdi_window_delete_event_handler;
 
-   etk_signal_connect("realized", ETK_OBJECT(mdi_window), ETK_CALLBACK(_etk_mdi_window_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(mdi_window), ETK_CALLBACK(_etk_mdi_window_realized_cb), NULL);
 }
 
 /* Destroys the mdi_window */

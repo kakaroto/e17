@@ -4,6 +4,7 @@
 
 #include <Evas.h>
 
+#include "etk_signal.h"
 #include "etk_property.h"
 #include "etk_types.h"
 
@@ -38,6 +39,10 @@ struct Etk_Type
    void (*property_set)(Etk_Object *object, int property_id, Etk_Property_Value *value);
    void (*property_get)(Etk_Object *object, int property_id, Etk_Property_Value *value);
    int type_size;
+
+   unsigned int signals_count;
+
+   Etk_Signal **signals;
    Evas_Hash *signals_hash;
    Evas_Hash *properties_hash;
 };
@@ -45,7 +50,10 @@ struct Etk_Type
 
 void          etk_type_shutdown(void);
 
-Etk_Type     *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_size, Etk_Constructor constructor, Etk_Destructor destructor);
+Etk_Type     *etk_type_new(const char *type_name, Etk_Type *parent_type,
+                           int type_size, Etk_Constructor constructor,
+                           Etk_Destructor destructor,
+                           const Etk_Signal_Description *signals);
 void          etk_type_delete(Etk_Type *type);
 
 void          etk_type_object_construct(Etk_Type *type, Etk_Object *object);
@@ -57,7 +65,8 @@ Etk_Type     *etk_type_get_from_name(const char *name);
 
 void          etk_type_signal_add(Etk_Type *type, Etk_Signal *signal);
 void          etk_type_signal_remove(Etk_Type *type, Etk_Signal *signal);
-Etk_Signal   *etk_type_signal_get(Etk_Type *type, const char *signal_name);
+Etk_Signal   *etk_type_signal_get(Etk_Type *type, int signal_code);
+Etk_Signal   *etk_type_signal_get_by_name(Etk_Type *type, const char *signal_name);
 
 Etk_Property *etk_type_property_add(Etk_Type *type, const char *name, int property_id, Etk_Property_Type property_type, Etk_Property_Flags flags, Etk_Property_Value *default_value);
 Etk_Bool      etk_type_property_find(Etk_Type *type, const char *name, Etk_Type **property_owner, Etk_Property **property);

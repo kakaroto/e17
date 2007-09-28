@@ -40,8 +40,9 @@ Etk_Type *etk_embed_type_get(void)
 
    if (!embed_type)
    {
-      embed_type = etk_type_new("Etk_Embed", ETK_TOPLEVEL_TYPE, sizeof(Etk_Embed),
-            ETK_CONSTRUCTOR(_etk_embed_constructor), NULL);
+      embed_type = etk_type_new("Etk_Embed", ETK_TOPLEVEL_TYPE,
+         sizeof(Etk_Embed),
+         ETK_CONSTRUCTOR(_etk_embed_constructor), NULL, NULL);
    }
 
    return embed_type;

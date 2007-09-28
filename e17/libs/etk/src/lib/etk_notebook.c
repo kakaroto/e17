@@ -19,11 +19,7 @@
  * @{
  */
 
-enum Etk_Notebook_Signal_Id
-{
-   ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL,
-   ETK_NOTEBOOK_NUM_SIGNALS
-};
+int ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL;
 
 enum Etk_Notebook_Property_Id
 {
@@ -55,8 +51,6 @@ static void _etk_notebook_tab_bar_create(Etk_Notebook *notebook);
 static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Evas_List *after, const char *tab_label, Etk_Widget *child);
 static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page *page);
 
-static Etk_Signal *_etk_notebook_signals[ETK_NOTEBOOK_NUM_SIGNALS];
-
 /**************************
  *
  * Implementation
@@ -74,11 +68,15 @@ Etk_Type *etk_notebook_type_get(void)
 
    if (!notebook_type)
    {
-      notebook_type = etk_type_new("Etk_Notebook", ETK_CONTAINER_TYPE, sizeof(Etk_Notebook),
-            ETK_CONSTRUCTOR(_etk_notebook_constructor), ETK_DESTRUCTOR(_etk_notebook_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL,
+            "current-page-changed", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_notebook_signals[ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL] = etk_signal_new("current-page-changed",
-            notebook_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      notebook_type = etk_type_new("Etk_Notebook", ETK_CONTAINER_TYPE,
+         sizeof(Etk_Notebook), ETK_CONSTRUCTOR(_etk_notebook_constructor),
+         ETK_DESTRUCTOR(_etk_notebook_destructor), signals);
 
       etk_type_property_add(notebook_type, "tabs-visible", ETK_NOTEBOOK_TABS_VISIBLE_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
@@ -213,11 +211,12 @@ Etk_Widget *etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
       if (new_current)
          etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(new_current->tab), ETK_TRUE);
       else
-         etk_signal_emit(_etk_notebook_signals[ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL], ETK_OBJECT(notebook), NULL);
+         etk_signal_emit(ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL, ETK_OBJECT(notebook), NULL);
    }
 
    if (child)
-      etk_signal_emit_by_name("child-removed", ETK_OBJECT(notebook), NULL, child);
+      etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(notebook),
+                      NULL, child);
    etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
    return child;
 }
@@ -412,7 +411,8 @@ void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widge
 
    if (page->child)
    {
-      etk_signal_emit_by_name("child-removed", ETK_OBJECT(notebook), NULL, page->child);
+      etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(notebook),
+                      NULL, page->child);
       etk_widget_parent_set(page->child, NULL);
       page->child = NULL;
    }
@@ -421,7 +421,8 @@ void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widge
    {
       page->child = child;
       etk_widget_parent_set(child, page->frame);
-      etk_signal_emit_by_name("child-added", ETK_OBJECT(notebook), NULL, child);
+      etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(notebook),
+                      NULL, child);
    }
    etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
 }
@@ -547,7 +548,7 @@ static void _etk_notebook_destructor(Etk_Notebook *notebook)
    for (l = notebook->pages; l; l = l->next)
    {
       page = l->data;
-      etk_signal_disconnect("toggled", ETK_OBJECT(page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
+      etk_signal_disconnect_by_code(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
       free(page);
    }
 }
@@ -903,13 +904,13 @@ static void _etk_notebook_tab_bar_create(Etk_Notebook *notebook)
    etk_widget_internal_set(notebook->tab_bar, ETK_TRUE);
    etk_widget_show(notebook->tab_bar);
 
-   etk_signal_connect("focused", ETK_OBJECT(notebook->tab_bar),
+   etk_signal_connect_by_code(ETK_WIDGET_FOCUSED_SIGNAL, ETK_OBJECT(notebook->tab_bar),
       ETK_CALLBACK(_etk_notebook_tab_bar_focused_cb), notebook);
-   etk_signal_connect("unfocused", ETK_OBJECT(notebook->tab_bar),
+   etk_signal_connect_by_code(ETK_WIDGET_UNFOCUSED_SIGNAL, ETK_OBJECT(notebook->tab_bar),
       ETK_CALLBACK(_etk_notebook_tab_bar_unfocused_cb), notebook);
-   etk_signal_connect("key-down", ETK_OBJECT(notebook->tab_bar),
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(notebook->tab_bar),
       ETK_CALLBACK(_etk_notebook_tab_bar_key_down_cb), notebook);
-   etk_signal_connect("mouse-wheel", ETK_OBJECT(notebook->tab_bar),
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_WHEEL_SIGNAL, ETK_OBJECT(notebook->tab_bar),
       ETK_CALLBACK(_etk_notebook_tab_bar_mouse_wheel_cb), notebook);
 
    etk_object_data_set(ETK_OBJECT(notebook->tab_bar), "_Etk_Notebook::Notebook", notebook);
@@ -939,7 +940,7 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Evas
    etk_widget_parent_set(new_page->tab, ETK_WIDGET(notebook->tab_bar));
    etk_widget_internal_set(new_page->tab, ETK_TRUE);
    etk_widget_show(new_page->tab);
-   etk_signal_connect("toggled", ETK_OBJECT(new_page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
+   etk_signal_connect_by_code(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(new_page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
 
    new_page->frame = etk_widget_new(ETK_WIDGET_TYPE, "theme-parent", notebook,
       "theme-group", notebook->tab_bar_visible ? "frame" : NULL, NULL);
@@ -954,7 +955,8 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Evas
    if (child)
    {
       etk_widget_parent_set(child, new_page->frame);
-      etk_signal_emit_by_name("child-added", ETK_OBJECT(notebook), NULL, child);
+      etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(notebook),
+                      NULL, child);
    }
 
    if (!notebook->current_page)
@@ -993,7 +995,7 @@ static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page 
       etk_widget_theme_signal_emit(page->tab, "etk,state,focused", ETK_FALSE);
 
    notebook->current_page = page;
-   etk_signal_emit(_etk_notebook_signals[ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL], ETK_OBJECT(notebook), NULL);
+   etk_signal_emit(ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL, ETK_OBJECT(notebook), NULL);
 }
 
 /** @} */

@@ -190,8 +190,10 @@ Etk_Type *etk_textblock_type_get()
 
    if (!textblock_type)
    {
-      textblock_type = etk_type_new("Etk_Textblock", ETK_OBJECT_TYPE, sizeof(Etk_Textblock),
-         ETK_CONSTRUCTOR(_etk_tb_constructor), ETK_DESTRUCTOR(_etk_tb_destructor));
+      textblock_type = etk_type_new("Etk_Textblock", ETK_OBJECT_TYPE,
+         sizeof(Etk_Textblock),
+         ETK_CONSTRUCTOR(_etk_tb_constructor),
+         ETK_DESTRUCTOR(_etk_tb_destructor), NULL);
    }
 
    return textblock_type;

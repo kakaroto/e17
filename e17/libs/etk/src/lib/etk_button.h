@@ -33,6 +33,9 @@ typedef enum
    ETK_BUTTON_BOTH_VERT         /**< Both the icon and the label are visible, the icon is above the label */
 } Etk_Button_Style;
 
+extern int ETK_BUTTON_PRESSED_SIGNAL;
+extern int ETK_BUTTON_RELEASED_SIGNAL;
+extern int ETK_BUTTON_CLICKED_SIGNAL;
 
 /**
  * @brief @widget A widget that can be pressed, released or clicked

@@ -62,7 +62,7 @@ Etk_Type *etk_statusbar_type_get(void)
    if (!statusbar_type)
    {
       statusbar_type = etk_type_new("Etk_Statusbar", ETK_WIDGET_TYPE, sizeof(Etk_Statusbar),
-         ETK_CONSTRUCTOR(_etk_statusbar_constructor), ETK_DESTRUCTOR(_etk_statusbar_destructor));
+         ETK_CONSTRUCTOR(_etk_statusbar_constructor), ETK_DESTRUCTOR(_etk_statusbar_destructor), NULL);
 
       etk_type_property_add(statusbar_type, "current-message", ETK_STATUSBAR_CURRENT_MESSAGE_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE, NULL);
@@ -272,7 +272,7 @@ static void _etk_statusbar_constructor(Etk_Statusbar *statusbar)
    statusbar->next_message_id = 0;
    statusbar->next_context_id = 0;
 
-   etk_signal_connect("realized", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_realized_cb), NULL);
 }
 
 /* Destroys the statusbar */
@@ -385,10 +385,10 @@ static void _etk_statusbar_resize_grip_cb(void *data, Evas_Object *obj, const ch
          return;
 
       etk_window_geometry_get(ETK_WINDOW(window), NULL, NULL, &statusbar->window_width, &statusbar->window_height);
-      etk_signal_connect("mouse-move", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_mouse_move_cb), NULL);
+      etk_signal_connect_by_code(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_mouse_move_cb), NULL);
    }
    else if (strcmp(emission, "mouse,up,1") == 0)
-      etk_signal_disconnect("mouse-move", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_mouse_move_cb), NULL);
+      etk_signal_disconnect_by_code(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_mouse_move_cb), NULL);
 }
 
 /* Called when mouse presses the resize grip and when the mouse is moved */

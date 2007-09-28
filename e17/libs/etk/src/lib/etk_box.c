@@ -61,7 +61,8 @@ Etk_Type *etk_box_type_get(void)
    if (!box_type)
    {
       box_type = etk_type_new("Etk_Box", ETK_CONTAINER_TYPE, sizeof(Etk_Box),
-            ETK_CONSTRUCTOR(_etk_box_constructor), ETK_DESTRUCTOR(_etk_box_destructor));
+         ETK_CONSTRUCTOR(_etk_box_constructor),
+         ETK_DESTRUCTOR(_etk_box_destructor), NULL);
 
       etk_type_property_add(box_type, "spacing", ETK_BOX_SPACING_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
@@ -87,7 +88,7 @@ Etk_Type *etk_hbox_type_get(void)
    if (!hbox_type)
    {
       hbox_type = etk_type_new("Etk_HBox", ETK_BOX_TYPE, sizeof(Etk_HBox),
-            ETK_CONSTRUCTOR(_etk_hbox_constructor), NULL);
+         ETK_CONSTRUCTOR(_etk_hbox_constructor), NULL, NULL);
    }
 
    return hbox_type;
@@ -105,7 +106,7 @@ Etk_Type *etk_vbox_type_get(void)
    if (!vbox_type)
    {
       vbox_type = etk_type_new("Etk_VBox", ETK_BOX_TYPE, sizeof(Etk_VBox),
-            ETK_CONSTRUCTOR(_etk_vbox_constructor), NULL);
+         ETK_CONSTRUCTOR(_etk_vbox_constructor), NULL, NULL);
    }
 
    return vbox_type;
@@ -513,7 +514,7 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
       free(cell);
 
       etk_widget_size_recalc_queue(ETK_WIDGET(box));
-      etk_signal_emit_by_name("child-removed", ETK_OBJECT(box), NULL, widget);
+      etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(box), NULL, widget);
    }
 }
 
@@ -1054,7 +1055,7 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
 
    etk_widget_parent_set(child, ETK_WIDGET(box));
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Box::Cell", cell);
-   etk_signal_emit_by_name("child-added", ETK_OBJECT(box), NULL, child);
+   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(box), NULL, child);
 }
 
 /* Gets the cell of the box containing the widget */

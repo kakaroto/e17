@@ -16,12 +16,8 @@
  * @{
  */
 
-enum Etk_Container_Signal_Id
-{
-   ETK_CONTAINER_CHILD_ADDED_SIGNAL,
-   ETK_CONTAINER_CHILD_REMOVED_SIGNAL,
-   ETK_CONTAINER_NUM_SIGNALS
-};
+int ETK_CONTAINER_CHILD_ADDED_SIGNAL;
+int ETK_CONTAINER_CHILD_REMOVED_SIGNAL;
 
 enum Etk_Container_Property_Id
 {
@@ -34,8 +30,6 @@ static void _etk_container_property_get(Etk_Object *object, int property_id, Etk
 static void _etk_container_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data);
 static void _etk_container_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
 static void _etk_container_child_parent_changed_cb(Etk_Object *object, const char *property_name, void *data);
-
-static Etk_Signal *_etk_container_signals[ETK_CONTAINER_NUM_SIGNALS];
 
 /**************************
  *
@@ -54,13 +48,17 @@ Etk_Type *etk_container_type_get(void)
 
    if (!container_type)
    {
-      container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE, sizeof(Etk_Container),
-            ETK_CONSTRUCTOR(_etk_container_constructor), NULL);
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_CONTAINER_CHILD_ADDED_SIGNAL,
+            "child-added", etk_marshaller_VOID__OBJECT, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_CONTAINER_CHILD_REMOVED_SIGNAL,
+            "child-removed", etk_marshaller_VOID__OBJECT, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_container_signals[ETK_CONTAINER_CHILD_ADDED_SIGNAL] = etk_signal_new("child-added",
-            container_type, -1, etk_marshaller_VOID__OBJECT, NULL, NULL);
-      _etk_container_signals[ETK_CONTAINER_CHILD_REMOVED_SIGNAL] = etk_signal_new("child-removed",
-            container_type, -1, etk_marshaller_VOID__OBJECT, NULL, NULL);
+      container_type = etk_type_new("Etk_Container", ETK_WIDGET_TYPE,
+         sizeof(Etk_Container), ETK_CONSTRUCTOR(_etk_container_constructor),
+         NULL, signals);
 
       etk_type_property_add(container_type, "border-width", ETK_CONTAINER_BORDER_WIDTH_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
@@ -262,8 +260,8 @@ static void _etk_container_constructor(Etk_Container *container)
    container->children_get = NULL;
    container->border_width = 0;
 
-   etk_signal_connect("child-added", ETK_OBJECT(container), ETK_CALLBACK(_etk_container_child_added_cb), NULL);
-   etk_signal_connect("child-removed", ETK_OBJECT(container), ETK_CALLBACK(_etk_container_child_removed_cb), NULL);
+   etk_signal_connect_by_code(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(container), ETK_CALLBACK(_etk_container_child_added_cb), NULL);
+   etk_signal_connect_by_code(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(container), ETK_CALLBACK(_etk_container_child_removed_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */

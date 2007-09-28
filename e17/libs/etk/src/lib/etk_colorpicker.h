@@ -43,6 +43,7 @@ typedef enum
    ETK_COLORPICKER_B      /**< The "Blue" mode */
 } Etk_Colorpicker_Mode;
 
+extern int ETK_CP_COLOR_CHANGED_SIGNAL;
 
 /**
  * @brief @widget A widget that allows the user to select a color

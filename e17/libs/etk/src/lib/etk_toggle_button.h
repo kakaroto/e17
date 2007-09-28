@@ -23,6 +23,7 @@ extern "C" {
 /** @brief Checks if the object is an Etk_Toggle_Button */
 #define ETK_IS_TOGGLE_BUTTON(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TOGGLE_BUTTON_TYPE))
 
+extern int ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL;
 
 /**
  * @brief @widget A button that can be activated/deactivated

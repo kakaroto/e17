@@ -17,18 +17,12 @@
  * @{
  */
 
-enum Etk_Menu_Shell_Signal_Id
-{
-   ETK_MENU_SHELL_ITEM_ADDED_SIGNAL,
-   ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL,
-   ETK_MENU_SHELL_NUM_SIGNALS
-};
+int ETK_MENU_SHELL_ITEM_ADDED_SIGNAL;
+int ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL;
 
 static void _etk_menu_shell_constructor(Etk_Menu_Shell *menu_shell);
 static void _etk_menu_shell_destructor(Etk_Menu_Shell *menu_shell);
 static void _etk_menu_shell_item_add(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
-
-static Etk_Signal *_etk_menu_shell_signals[ETK_MENU_SHELL_NUM_SIGNALS];
 
 /**************************
  *
@@ -47,13 +41,17 @@ Etk_Type *etk_menu_shell_type_get()
 
    if (!menu_shell_type)
    {
-      menu_shell_type = etk_type_new("Etk_Menu_Shell", ETK_WIDGET_TYPE, sizeof(Etk_Menu_Shell),
-         ETK_CONSTRUCTOR(_etk_menu_shell_constructor), ETK_DESTRUCTOR(_etk_menu_shell_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_MENU_SHELL_ITEM_ADDED_SIGNAL,
+            "item-added", etk_marshaller_VOID__OBJECT, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL,
+            "item-removed", etk_marshaller_VOID__OBJECT, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_ADDED_SIGNAL] = etk_signal_new("item-added",
-         menu_shell_type, -1, etk_marshaller_VOID__OBJECT, NULL, NULL);
-      _etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL] = etk_signal_new("item-removed",
-         menu_shell_type, -1, etk_marshaller_VOID__OBJECT, NULL, NULL);
+      menu_shell_type = etk_type_new("Etk_Menu_Shell", ETK_WIDGET_TYPE,
+         sizeof(Etk_Menu_Shell), ETK_CONSTRUCTOR(_etk_menu_shell_constructor),
+         ETK_DESTRUCTOR(_etk_menu_shell_destructor), signals);
    }
 
    return menu_shell_type;
@@ -164,7 +162,7 @@ void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
       item->parent_shell = NULL;
       menu_shell->items = evas_list_remove_list(menu_shell->items, l);
       etk_widget_size_recalc_queue(ETK_WIDGET(menu_shell));
-      etk_signal_emit(_etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL], ETK_OBJECT(menu_shell), NULL, item);
+      etk_signal_emit(ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL, ETK_OBJECT(menu_shell), NULL, item);
    }
 }
 
@@ -221,7 +219,7 @@ static void _etk_menu_shell_item_add(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *
 {
    etk_widget_parent_set(ETK_WIDGET(item), ETK_WIDGET(menu_shell));
    item->parent_shell = menu_shell;
-   etk_signal_emit(_etk_menu_shell_signals[ETK_MENU_SHELL_ITEM_ADDED_SIGNAL], ETK_OBJECT(menu_shell), NULL, item);
+   etk_signal_emit(ETK_MENU_SHELL_ITEM_ADDED_SIGNAL, ETK_OBJECT(menu_shell), NULL, item);
 }
 
 /** @} */

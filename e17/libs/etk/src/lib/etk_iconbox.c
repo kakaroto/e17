@@ -71,14 +71,10 @@ typedef struct Etk_Iconbox_Icon_Object
    Etk_Bool use_edje;
 } Etk_Iconbox_Icon_Object;
 
-enum Etk_Tree_Signal_Id
-{
-   ETK_ICONBOX_ICON_SELECTED_SIGNAL,
-   ETK_ICONBOX_ICON_UNSELECTED_SIGNAL,
-   ETK_ICONBOX_ALL_SELECTED_SIGNAL,
-   ETK_ICONBOX_ALL_UNSELECTED_SIGNAL,
-   ETK_ICONBOX_NUM_SIGNALS
-};
+int ETK_ICONBOX_ICON_SELECTED_SIGNAL;
+int ETK_ICONBOX_ICON_UNSELECTED_SIGNAL;
+int ETK_ICONBOX_ALL_SELECTED_SIGNAL;
+int ETK_ICONBOX_ALL_UNSELECTED_SIGNAL;
 
 static void _etk_iconbox_constructor(Etk_Iconbox *iconbox);
 static void _etk_iconbox_destructor(Etk_Iconbox *iconbox);
@@ -105,8 +101,6 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
 static void _etk_iconbox_grid_selection_rect_update(Etk_Iconbox_Grid *grid);
 static int _etk_iconbox_grid_scroll_cb(void *data);
 
-static Etk_Signal *_etk_iconbox_signals[ETK_ICONBOX_NUM_SIGNALS];
-
 /**************************
  *
  * Implementation
@@ -124,17 +118,21 @@ Etk_Type *etk_iconbox_type_get(void)
 
    if (!iconbox_type)
    {
-      iconbox_type = etk_type_new("Etk_Iconbox", ETK_WIDGET_TYPE, sizeof(Etk_Iconbox),
-         ETK_CONSTRUCTOR(_etk_iconbox_constructor), ETK_DESTRUCTOR(_etk_iconbox_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ICON_SELECTED_SIGNAL,
+            "icon-selected", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ICON_UNSELECTED_SIGNAL,
+            "icon-unselected", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ALL_SELECTED_SIGNAL,
+            "all-selected", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ALL_UNSELECTED_SIGNAL,
+            "all-unselected", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_iconbox_signals[ETK_ICONBOX_ICON_SELECTED_SIGNAL] = etk_signal_new("icon-selected",
-         iconbox_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_iconbox_signals[ETK_ICONBOX_ICON_UNSELECTED_SIGNAL] = etk_signal_new("icon-unselected",
-         iconbox_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_iconbox_signals[ETK_ICONBOX_ALL_SELECTED_SIGNAL] = etk_signal_new("all-selected",
-         iconbox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_iconbox_signals[ETK_ICONBOX_ALL_UNSELECTED_SIGNAL] = etk_signal_new("all-unselected",
-         iconbox_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      iconbox_type = etk_type_new("Etk_Iconbox", ETK_WIDGET_TYPE,
+         sizeof(Etk_Iconbox), ETK_CONSTRUCTOR(_etk_iconbox_constructor),
+         ETK_DESTRUCTOR(_etk_iconbox_destructor), signals);
    }
 
    return iconbox_type;
@@ -224,7 +222,7 @@ void etk_iconbox_current_model_set(Etk_Iconbox *iconbox, Etk_Iconbox_Model *mode
    etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(iconbox->scrolled_view)),
       model->height * 0.75, model->height * 3.0);
 
-   etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
+   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
 }
 
@@ -261,7 +259,7 @@ void etk_iconbox_model_geometry_set(Etk_Iconbox_Model *model, int width, int hei
    if (model->iconbox && model->iconbox->current_model == model)
    {
       etk_widget_redraw_queue(model->iconbox->grid);
-      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(model->iconbox->grid), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(model->iconbox->grid), NULL);
    }
 }
 
@@ -312,7 +310,7 @@ void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y,
 
    if (model->iconbox && model->iconbox->current_model == model)
    {
-      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(model->iconbox->grid), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(model->iconbox->grid), NULL);
       etk_widget_redraw_queue(model->iconbox->grid);
    }
 }
@@ -372,7 +370,7 @@ void etk_iconbox_model_label_geometry_set(Etk_Iconbox_Model *model, int x, int y
 
    if (model->iconbox && model->iconbox->current_model == model)
    {
-      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(model->iconbox->grid), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(model->iconbox->grid), NULL);
       etk_widget_redraw_queue(model->iconbox->grid);
    }
 }
@@ -424,7 +422,7 @@ void etk_iconbox_thaw(Etk_Iconbox *iconbox)
    if (!iconbox || !iconbox->frozen)
       return;
 
-   etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
+   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
    iconbox->frozen = ETK_FALSE;
 }
@@ -468,7 +466,7 @@ Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename,
 
    if (!iconbox->frozen)
    {
-      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid), NULL);
       etk_widget_redraw_queue(iconbox->grid);
    }
 
@@ -508,7 +506,7 @@ void etk_iconbox_icon_del(Etk_Iconbox_Icon *icon)
 
    if (!iconbox->frozen)
    {
-      etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid), NULL);
       etk_widget_redraw_queue(iconbox->grid);
    }
 }
@@ -525,7 +523,7 @@ void etk_iconbox_clear(Etk_Iconbox *iconbox)
    while (iconbox->first_icon)
       etk_iconbox_icon_del(iconbox->first_icon);
 
-   etk_signal_emit_by_name("scroll-size-changed", ETK_OBJECT(iconbox->grid), NULL);
+   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid), NULL);
    etk_widget_redraw_queue(iconbox->grid);
 }
 
@@ -730,7 +728,7 @@ void etk_iconbox_select_all(Etk_Iconbox *iconbox)
       icon->selected = ETK_TRUE;
 
    etk_widget_redraw_queue(iconbox->grid);
-   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ALL_SELECTED_SIGNAL], ETK_OBJECT(iconbox), NULL);
+   etk_signal_emit(ETK_ICONBOX_ALL_SELECTED_SIGNAL, ETK_OBJECT(iconbox), NULL);
 }
 
 /**
@@ -748,7 +746,7 @@ void etk_iconbox_unselect_all(Etk_Iconbox *iconbox)
       icon->selected = ETK_FALSE;
 
    etk_widget_redraw_queue(iconbox->grid);
-   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ALL_UNSELECTED_SIGNAL], ETK_OBJECT(iconbox), NULL);
+   etk_signal_emit(ETK_ICONBOX_ALL_UNSELECTED_SIGNAL, ETK_OBJECT(iconbox), NULL);
 }
 
 /**
@@ -763,7 +761,7 @@ void etk_iconbox_icon_select(Etk_Iconbox_Icon *icon)
 
    if (!icon->iconbox->frozen)
       etk_widget_redraw_queue(icon->iconbox->grid);
-   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ICON_SELECTED_SIGNAL], ETK_OBJECT(icon->iconbox), NULL, icon);
+   etk_signal_emit(ETK_ICONBOX_ICON_SELECTED_SIGNAL, ETK_OBJECT(icon->iconbox), NULL, icon);
 }
 
 /**
@@ -778,7 +776,7 @@ void etk_iconbox_icon_unselect(Etk_Iconbox_Icon *icon)
 
    if (!icon->iconbox->frozen)
       etk_widget_redraw_queue(icon->iconbox->grid);
-   etk_signal_emit(_etk_iconbox_signals[ETK_ICONBOX_ICON_UNSELECTED_SIGNAL], ETK_OBJECT(icon->iconbox), NULL, icon);
+   etk_signal_emit(ETK_ICONBOX_ICON_UNSELECTED_SIGNAL, ETK_OBJECT(icon->iconbox), NULL, icon);
 }
 
 /**
@@ -848,7 +846,7 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
    ETK_WIDGET(iconbox)->size_request = _etk_iconbox_size_request;
    ETK_WIDGET(iconbox)->size_allocate = _etk_iconbox_size_allocate;
 
-   etk_signal_connect("realized", ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_iconbox_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_iconbox_realized_cb), NULL);
 }
 
 /* Destroys the iconbox */
@@ -895,8 +893,10 @@ static Etk_Type *_etk_iconbox_grid_type_get()
 
    if (!iconbox_type)
    {
-      iconbox_type = etk_type_new("Etk_Iconbox_Grid", ETK_WIDGET_TYPE, sizeof(Etk_Iconbox_Grid),
-         ETK_CONSTRUCTOR(_etk_iconbox_grid_constructor), ETK_DESTRUCTOR(_etk_iconbox_grid_destructor));
+      iconbox_type = etk_type_new("Etk_Iconbox_Grid", ETK_WIDGET_TYPE,
+         sizeof(Etk_Iconbox_Grid),
+         ETK_CONSTRUCTOR(_etk_iconbox_grid_constructor),
+         ETK_DESTRUCTOR(_etk_iconbox_grid_destructor), NULL);
    }
 
    return iconbox_type;
@@ -920,11 +920,11 @@ static void _etk_iconbox_grid_constructor(Etk_Iconbox_Grid *grid)
    ETK_WIDGET(grid)->size_allocate = _etk_iconbox_grid_size_allocate;
    ETK_WIDGET(grid)->scroll = _etk_iconbox_grid_scroll;
    ETK_WIDGET(grid)->scroll_size_get = _etk_iconbox_grid_scroll_size_get;
-   etk_signal_connect("realized", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_realized_cb), NULL);
-   etk_signal_connect("unrealized", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_unrealized_cb), NULL);
-   etk_signal_connect("mouse-down", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_down_cb), NULL);
-   etk_signal_connect("mouse-up", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_up_cb), NULL);
-   etk_signal_connect("mouse-move", ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_move_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_unrealized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_up_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(grid), ETK_CALLBACK(_etk_iconbox_grid_mouse_move_cb), NULL);
 }
 
 /* Destroys the iconbox grid */

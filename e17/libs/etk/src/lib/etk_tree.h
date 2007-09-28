@@ -39,6 +39,18 @@ extern "C" {
 /** Check if the object is an Etk_Tree_Col */
 #define ETK_IS_TREE_COL(obj)     (ETK_OBJECT_CHECK_TYPE((obj), ETK_TREE_COL_TYPE))
 
+extern int ETK_TREE_ALL_SELECTED_SIGNAL;
+extern int ETK_TREE_ALL_UNSELECTED_SIGNAL;
+extern int ETK_TREE_ROW_SELECTED_SIGNAL;
+extern int ETK_TREE_ROW_UNSELECTED_SIGNAL;
+extern int ETK_TREE_ROW_CLICKED_SIGNAL;
+extern int ETK_TREE_ROW_ACTIVATED_SIGNAL;
+extern int ETK_TREE_ROW_UNFOLDED_SIGNAL;
+extern int ETK_TREE_ROW_FOLDED_SIGNAL;
+extern int ETK_TREE_ROW_SHOWN_SIGNAL;
+extern int ETK_TREE_ROW_HIDDEN_SIGNAL;
+
+extern int ETK_TREE_COL_CELL_VALUE_CHANGED_SIGNAL;
 
 /** @brief The different modes of the tree: List (rows can not have children) or tree (rows can have children) */
 typedef enum

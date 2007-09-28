@@ -41,7 +41,7 @@ Etk_Type *etk_string_type_get(void)
    if (!string_type)
    {
       string_type = etk_type_new("Etk_String", ETK_OBJECT_TYPE, sizeof(Etk_String),
-         ETK_CONSTRUCTOR(_etk_string_constructor), ETK_DESTRUCTOR(_etk_string_destructor));
+         ETK_CONSTRUCTOR(_etk_string_constructor), ETK_DESTRUCTOR(_etk_string_destructor), NULL);
       etk_type_property_add(string_type, "string", ETK_STRING_STRING_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
    }

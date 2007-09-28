@@ -38,6 +38,28 @@ typedef enum
                                              * in the theme-object of the swallower-widget */
 } Etk_Widget_Swallow_Error;
 
+extern int ETK_WIDGET_SHOWN_SIGNAL;
+extern int ETK_WIDGET_HIDDEN_SIGNAL;
+extern int ETK_WIDGET_REALIZED_SIGNAL;
+extern int ETK_WIDGET_UNREALIZED_SIGNAL;
+extern int ETK_WIDGET_SIZE_REQUESTED_SIGNAL;
+extern int ETK_WIDGET_MOUSE_IN_SIGNAL;
+extern int ETK_WIDGET_MOUSE_OUT_SIGNAL;
+extern int ETK_WIDGET_MOUSE_MOVE_SIGNAL;
+extern int ETK_WIDGET_MOUSE_DOWN_SIGNAL;
+extern int ETK_WIDGET_MOUSE_UP_SIGNAL;
+extern int ETK_WIDGET_MOUSE_CLICK_SIGNAL;
+extern int ETK_WIDGET_MOUSE_WHEEL_SIGNAL;
+extern int ETK_WIDGET_KEY_DOWN_SIGNAL;
+extern int ETK_WIDGET_KEY_UP_SIGNAL;
+extern int ETK_WIDGET_ENTERED_SIGNAL;
+extern int ETK_WIDGET_LEFT_SIGNAL;
+extern int ETK_WIDGET_FOCUSED_SIGNAL;
+extern int ETK_WIDGET_UNFOCUSED_SIGNAL;
+extern int ETK_WIDGET_ENABLED_SIGNAL;
+extern int ETK_WIDGET_DISABLED_SIGNAL;
+extern int ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL;
+extern int ETK_WIDGET_SELECTION_RECEIVED_SIGNAL;
 
 /**
  * @brief @widget The base class for all the widgets of Etk

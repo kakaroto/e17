@@ -51,8 +51,10 @@ Etk_Type *etk_mdi_area_type_get(void)
 
    if (!mdi_area_type)
    {
-      mdi_area_type = etk_type_new("Etk_Mdi_Area", ETK_CONTAINER_TYPE, sizeof(Etk_Mdi_Area),
-         ETK_CONSTRUCTOR(_etk_mdi_area_constructor), ETK_DESTRUCTOR(_etk_mdi_area_destructor));
+      mdi_area_type = etk_type_new("Etk_Mdi_Area", ETK_CONTAINER_TYPE,
+         sizeof(Etk_Mdi_Area),
+         ETK_CONSTRUCTOR(_etk_mdi_area_constructor),
+         ETK_DESTRUCTOR(_etk_mdi_area_destructor), NULL);
    }
 
    return mdi_area_type;
@@ -96,12 +98,12 @@ void etk_mdi_area_put(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x, int y)
 
    if (ETK_IS_MDI_WINDOW(widget))
    {
-      etk_signal_connect("moved", ETK_OBJECT(widget), ETK_CALLBACK(_etk_mdi_area_child_moved_cb), mdi_area);
+      etk_signal_connect_by_code(ETK_MDI_WINDOW_MOVED_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_mdi_area_child_moved_cb), mdi_area);
       etk_object_notification_callback_add(ETK_OBJECT(widget), "maximized", _etk_mdi_area_child_maximized_cb, mdi_area);
    }
 
    etk_widget_parent_set(widget, ETK_WIDGET(mdi_area));
-   etk_signal_emit_by_name("child-added", ETK_OBJECT(mdi_area), NULL, widget);
+   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(mdi_area), NULL, widget);
 }
 
 /**
@@ -180,8 +182,8 @@ static void _etk_mdi_area_constructor(Etk_Mdi_Area *mdi_area)
    ETK_CONTAINER(mdi_area)->child_remove = _etk_mdi_area_child_remove;
    ETK_CONTAINER(mdi_area)->children_get = _etk_mdi_area_children_get;
 
-   etk_signal_connect("realized", ETK_OBJECT(mdi_area), ETK_CALLBACK(_etk_mdi_area_realized_cb), NULL);
-   etk_signal_connect_swapped("unrealized", ETK_OBJECT(mdi_area), ETK_CALLBACK(etk_callback_set_null), &mdi_area->clip);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(mdi_area), ETK_CALLBACK(_etk_mdi_area_realized_cb), NULL);
+   etk_signal_connect_swapped_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(mdi_area), ETK_CALLBACK(etk_callback_set_null), &mdi_area->clip);
 }
 
 /* Destroys the mdi_area container */
@@ -295,11 +297,11 @@ static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *wid
 
       if (ETK_IS_MDI_WINDOW(widget))
       {
-         etk_signal_disconnect("moved", ETK_OBJECT(widget), ETK_CALLBACK(_etk_mdi_area_child_moved_cb), mdi_area);
+         etk_signal_disconnect_by_code(ETK_MDI_WINDOW_MOVED_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_mdi_area_child_moved_cb), mdi_area);
          etk_object_notification_callback_remove(ETK_OBJECT(widget), "maximized", _etk_mdi_area_child_maximized_cb);
       }
 
-      etk_signal_emit_by_name("child-removed", ETK_OBJECT(mdi_area), NULL, widget);
+      etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(mdi_area), NULL, widget);
    }
 }
 

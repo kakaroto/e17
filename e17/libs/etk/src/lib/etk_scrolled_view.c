@@ -55,8 +55,9 @@ Etk_Type *etk_scrolled_view_type_get(void)
 
    if (!scrolled_view_type)
    {
-      scrolled_view_type = etk_type_new("Etk_Scrolled_View", ETK_BIN_TYPE, sizeof(Etk_Scrolled_View),
-         ETK_CONSTRUCTOR(_etk_scrolled_view_constructor), NULL);
+      scrolled_view_type = etk_type_new("Etk_Scrolled_View", ETK_BIN_TYPE,
+         sizeof(Etk_Scrolled_View),
+         ETK_CONSTRUCTOR(_etk_scrolled_view_constructor), NULL, NULL);
 
       etk_type_property_add(scrolled_view_type, "hpolicy", ETK_SCROLLED_VIEW_HPOLICY_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
@@ -203,12 +204,12 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    ETK_WIDGET(scrolled_view)->size_request = _etk_scrolled_view_size_request;
    ETK_WIDGET(scrolled_view)->size_allocate = _etk_scrolled_view_size_allocate;
 
-   etk_signal_connect("key-down", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_key_down_cb), NULL);
-   etk_signal_connect("mouse-wheel", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_wheel), NULL);
-   etk_signal_connect("child-added", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_added_cb), NULL);
-   etk_signal_connect("child-removed", ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_removed_cb), NULL);
-   etk_signal_connect("value-changed", ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
-   etk_signal_connect("value-changed", ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_key_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_WHEEL_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_wheel), NULL);
+   etk_signal_connect_by_code(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_added_cb), NULL);
+   etk_signal_connect_by_code(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_removed_cb), NULL);
+   etk_signal_connect_by_code(ETK_RANGE_VALUE_CHANGED_SIGNAL, ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
+   etk_signal_connect_by_code(ETK_RANGE_VALUE_CHANGED_SIGNAL, ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -472,7 +473,7 @@ static void _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, v
 {
    if (!object || !child)
       return;
-   etk_signal_connect("scroll-size-changed", ETK_OBJECT(child),
+   etk_signal_connect_by_code(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(child),
       ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object);
 }
 
@@ -481,7 +482,7 @@ static void _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child,
 {
    if (!object || !child)
       return;
-   etk_signal_disconnect("scroll-size-changed", ETK_OBJECT(child),
+   etk_signal_disconnect_by_code(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(child),
       ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object);
 }
 

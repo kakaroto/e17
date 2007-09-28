@@ -60,7 +60,8 @@ Etk_Type *etk_image_type_get(void)
    if (!image_type)
    {
       image_type = etk_type_new("Etk_Image", ETK_WIDGET_TYPE, sizeof(Etk_Image),
-         ETK_CONSTRUCTOR(_etk_image_constructor), ETK_DESTRUCTOR(_etk_image_destructor));
+         ETK_CONSTRUCTOR(_etk_image_constructor),
+         ETK_DESTRUCTOR(_etk_image_destructor), NULL);
 
       etk_type_property_add(image_type, "source", ETK_IMAGE_SOURCE_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE, etk_property_value_int(ETK_IMAGE_FILE));
@@ -621,8 +622,8 @@ static void _etk_image_constructor(Etk_Image *image)
    widget->size_request = _etk_image_size_request;
    widget->size_allocate = _etk_image_size_allocate;
 
-   etk_signal_connect("realized", ETK_OBJECT(image), ETK_CALLBACK(_etk_image_realized_cb), NULL);
-   etk_signal_connect_swapped("unrealized", ETK_OBJECT(image), ETK_CALLBACK(etk_callback_set_null), &image->object);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(image), ETK_CALLBACK(_etk_image_realized_cb), NULL);
+   etk_signal_connect_swapped_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(image), ETK_CALLBACK(etk_callback_set_null), &image->object);
 }
 
 /* Destroys the image */

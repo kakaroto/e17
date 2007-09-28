@@ -48,8 +48,10 @@ Etk_Type *etk_fixed_type_get(void)
 
    if (!fixed_type)
    {
-      fixed_type = etk_type_new("Etk_Fixed", ETK_CONTAINER_TYPE, sizeof(Etk_Fixed),
-         ETK_CONSTRUCTOR(_etk_fixed_constructor), ETK_DESTRUCTOR(_etk_fixed_destructor));
+      fixed_type = etk_type_new("Etk_Fixed", ETK_CONTAINER_TYPE,
+         sizeof(Etk_Fixed),
+         ETK_CONSTRUCTOR(_etk_fixed_constructor),
+         ETK_DESTRUCTOR(_etk_fixed_destructor), NULL);
    }
 
    return fixed_type;
@@ -92,7 +94,7 @@ void etk_fixed_put(Etk_Fixed *fixed, Etk_Widget *widget, int x, int y)
    }
 
    etk_widget_parent_set(widget, ETK_WIDGET(fixed));
-   etk_signal_emit_by_name("child-added", ETK_OBJECT(fixed), NULL, widget);
+   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(fixed), NULL, widget);
 }
 
 /**
@@ -171,8 +173,8 @@ static void _etk_fixed_constructor(Etk_Fixed *fixed)
    ETK_WIDGET(fixed)->size_request = _etk_fixed_size_request;
    ETK_WIDGET(fixed)->size_allocate = _etk_fixed_size_allocate;
 
-   etk_signal_connect("realized", ETK_OBJECT(fixed), ETK_CALLBACK(_etk_fixed_realized_cb), NULL);
-   etk_signal_connect_swapped("unrealized", ETK_OBJECT(fixed), ETK_CALLBACK(etk_callback_set_null), &fixed->clip);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(fixed), ETK_CALLBACK(_etk_fixed_realized_cb), NULL);
+   etk_signal_connect_swapped_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(fixed), ETK_CALLBACK(etk_callback_set_null), &fixed->clip);
 }
 
 /* Destroys the fixed container */
@@ -274,7 +276,7 @@ static void _etk_fixed_child_remove(Etk_Container *container, Etk_Widget *widget
             evas_object_hide(fixed->clip);
       }
 
-      etk_signal_emit_by_name("child-removed", ETK_OBJECT(fixed), NULL, widget);
+      etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(fixed), NULL, widget);
    }
 }
 

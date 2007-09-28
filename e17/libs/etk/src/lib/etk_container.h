@@ -24,6 +24,8 @@ extern "C" {
 /** Checks if the object is an Etk_Container */
 #define ETK_IS_CONTAINER(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_CONTAINER_TYPE))
 
+extern int ETK_CONTAINER_CHILD_ADDED_SIGNAL;
+extern int ETK_CONTAINER_CHILD_REMOVED_SIGNAL;
 
 /**
  * @brief @widget A widget that can contain other widgets

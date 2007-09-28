@@ -28,11 +28,7 @@
 #define MIN_ITEM_HEIGHT 12
 #define DEFAULT_ITEM_HEIGHT 24
 
-enum Etk_Combobox_Entry_Signal_Id
-{
-   ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_CHANGED_SIGNAL,
-   ETK_COMBOBOX_ENTRY_NUM_SIGNALS
-};
+int ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_CHANGED_SIGNAL;
 
 enum Etk_Combobox_Entry_Property_Id
 {
@@ -71,8 +67,6 @@ static void _etk_combobox_entry_item_mouse_up_cb(Etk_Object *object, Etk_Event_M
 static void _etk_combobox_entry_selected_item_set(Etk_Combobox_Entry *combobox_entry, Etk_Combobox_Entry_Item *item);
 static void _etk_combobox_entry_item_cells_render(Etk_Combobox_Entry *combobox_entry, Etk_Widget **cells, Etk_Geometry geometry, Etk_Bool ignore_other);
 
-static Etk_Signal *_etk_combobox_entry_signals[ETK_COMBOBOX_ENTRY_NUM_SIGNALS];
-
 /**************************
  *
  * Implementation
@@ -90,11 +84,16 @@ Etk_Type *etk_combobox_entry_type_get(void)
 
    if (!combobox_entry_type)
    {
-      combobox_entry_type = etk_type_new("Etk_Combobox_Entry", ETK_WIDGET_TYPE, sizeof(Etk_Combobox_Entry),
-            ETK_CONSTRUCTOR(_etk_combobox_entry_constructor), ETK_DESTRUCTOR(_etk_combobox_entry_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_CHANGED_SIGNAL,
+            "active-item-changed", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_combobox_entry_signals[ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_CHANGED_SIGNAL] = etk_signal_new("active-item-changed",
-            combobox_entry_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      combobox_entry_type = etk_type_new("Etk_Combobox_Entry", ETK_WIDGET_TYPE,
+         sizeof(Etk_Combobox_Entry),
+         ETK_CONSTRUCTOR(_etk_combobox_entry_constructor),
+         ETK_DESTRUCTOR(_etk_combobox_entry_destructor), signals);
 
       etk_type_property_add(combobox_entry_type, "items-height", ETK_COMBOBOX_ENTRY_ITEMS_HEIGHT_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(DEFAULT_ITEM_HEIGHT));
@@ -119,8 +118,10 @@ Etk_Type *etk_combobox_entry_item_type_get(void)
 
    if (!combobox_entry_item_type)
    {
-      combobox_entry_item_type = etk_type_new("Etk_Combobox_Entry_Item", ETK_WIDGET_TYPE, sizeof(Etk_Combobox_Entry_Item),
-            ETK_CONSTRUCTOR(_etk_combobox_entry_item_constructor), ETK_DESTRUCTOR(_etk_combobox_entry_item_destructor));
+      combobox_entry_item_type = etk_type_new("Etk_Combobox_Entry_Item",
+         ETK_WIDGET_TYPE, sizeof(Etk_Combobox_Entry_Item),
+         ETK_CONSTRUCTOR(_etk_combobox_entry_item_constructor),
+         ETK_DESTRUCTOR(_etk_combobox_entry_item_destructor), NULL);
    }
 
    return combobox_entry_item_type;
@@ -380,9 +381,9 @@ Etk_Combobox_Entry_Item *etk_combobox_entry_item_insert_valist(Etk_Combobox_Entr
    etk_combobox_entry_item_fields_set_valist(item, args2);
    va_end(args2);
 
-   etk_signal_connect("entered", ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_entry_item_entered_cb), NULL);
-   etk_signal_connect("left", ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_entry_item_left_cb), NULL);
-   etk_signal_connect("mouse-up", ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_entry_item_mouse_up_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_ENTERED_SIGNAL, ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_entry_item_entered_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_LEFT_SIGNAL, ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_entry_item_left_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_entry_item_mouse_up_cb), NULL);
 
    etk_widget_parent_set(ETK_WIDGET(item), ETK_WIDGET(combobox_entry->window));
 
@@ -702,7 +703,7 @@ void etk_combobox_entry_active_item_set(Etk_Combobox_Entry *combobox_entry, Etk_
    if (combobox_entry->active_item != item)
    {
       combobox_entry->active_item = item;
-      etk_signal_emit(_etk_combobox_entry_signals[ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_CHANGED_SIGNAL], ETK_OBJECT(combobox_entry), NULL);
+      etk_signal_emit(ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_CHANGED_SIGNAL, ETK_OBJECT(combobox_entry), NULL);
       etk_object_notify(ETK_OBJECT(combobox_entry), "active-item");
    }
 }
@@ -909,18 +910,18 @@ static void _etk_combobox_entry_constructor(Etk_Combobox_Entry *combobox_entry)
    ETK_WIDGET(combobox_entry)->size_request = _etk_combobox_entry_size_request;
    ETK_WIDGET(combobox_entry)->size_allocate = _etk_combobox_entry_size_allocate;
 
-   etk_signal_connect("toggled", ETK_OBJECT(combobox_entry->button), ETK_CALLBACK(_etk_combobox_entry_button_toggled_cb), combobox_entry);
-   etk_signal_connect("mouse-up", ETK_OBJECT(combobox_entry->hbox), ETK_CALLBACK(_etk_combobox_entry_hbox_mouse_up_cb), combobox_entry);
-   etk_signal_connect("popped-down", ETK_OBJECT(combobox_entry->window), ETK_CALLBACK(_etk_combobox_entry_window_popped_down_cb), combobox_entry);
-   etk_signal_connect("key-down", ETK_OBJECT(combobox_entry->window), ETK_CALLBACK(_etk_combobox_entry_window_key_down_cb), combobox_entry);
-   etk_signal_connect("key-down", ETK_OBJECT(combobox_entry->entry), ETK_CALLBACK(_etk_combobox_entry_entry_key_down_cb), combobox_entry);
+   etk_signal_connect_by_code(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(combobox_entry->button), ETK_CALLBACK(_etk_combobox_entry_button_toggled_cb), combobox_entry);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(combobox_entry->hbox), ETK_CALLBACK(_etk_combobox_entry_hbox_mouse_up_cb), combobox_entry);
+   etk_signal_connect_by_code(ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL, ETK_OBJECT(combobox_entry->window), ETK_CALLBACK(_etk_combobox_entry_window_popped_down_cb), combobox_entry);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(combobox_entry->window), ETK_CALLBACK(_etk_combobox_entry_window_key_down_cb), combobox_entry);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(combobox_entry->entry), ETK_CALLBACK(_etk_combobox_entry_entry_key_down_cb), combobox_entry);
 
-   etk_signal_connect("realized", ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_realized_cb), NULL);
-   etk_signal_connect("focused", ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_focused_cb), NULL);
-   etk_signal_connect("unfocused", ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_unfocused_cb), NULL);
-   etk_signal_connect("enabled", ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_enabled_cb), NULL);
-   etk_signal_connect("disabled", ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_disabled_cb), NULL);
-   etk_signal_connect("key-down", ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_key_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_FOCUSED_SIGNAL, ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_focused_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_UNFOCUSED_SIGNAL, ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_unfocused_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_ENABLED_SIGNAL, ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_enabled_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_DISABLED_SIGNAL, ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_disabled_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(combobox_entry), ETK_CALLBACK(_etk_combobox_entry_key_down_cb), NULL);
 }
 
 /* Destroys the combobox_entry */
@@ -997,7 +998,7 @@ static void _etk_combobox_entry_item_constructor(Etk_Combobox_Entry_Item *item)
    item->data = NULL;
    item->data_free_cb = NULL;
 
-   etk_signal_connect("destroyed", ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_entry_item_destroyed_cb), NULL);
+   etk_signal_connect_by_code(ETK_OBJECT_DESTROYED_SIGNAL, ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_entry_item_destroyed_cb), NULL);
 }
 
 /* Destroys the combobox_entry item */

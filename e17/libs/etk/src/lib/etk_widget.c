@@ -44,33 +44,6 @@ typedef struct Etk_Widget_Swallowed_Object
    Etk_Widget *widget;
 } Etk_Widget_Swallowed_Object;
 
-enum Etk_Widget_Signal_Id
-{
-   ETK_WIDGET_SHOWN_SIGNAL,
-   ETK_WIDGET_HIDDEN_SIGNAL,
-   ETK_WIDGET_REALIZED_SIGNAL,
-   ETK_WIDGET_UNREALIZED_SIGNAL,
-   ETK_WIDGET_SIZE_REQUESTED_SIGNAL,
-   ETK_WIDGET_MOUSE_IN_SIGNAL,
-   ETK_WIDGET_MOUSE_OUT_SIGNAL,
-   ETK_WIDGET_MOUSE_MOVE_SIGNAL,
-   ETK_WIDGET_MOUSE_DOWN_SIGNAL,
-   ETK_WIDGET_MOUSE_UP_SIGNAL,
-   ETK_WIDGET_MOUSE_CLICK_SIGNAL,
-   ETK_WIDGET_MOUSE_WHEEL_SIGNAL,
-   ETK_WIDGET_KEY_DOWN_SIGNAL,
-   ETK_WIDGET_KEY_UP_SIGNAL,
-   ETK_WIDGET_ENTERED_SIGNAL,
-   ETK_WIDGET_LEFT_SIGNAL,
-   ETK_WIDGET_FOCUSED_SIGNAL,
-   ETK_WIDGET_UNFOCUSED_SIGNAL,
-   ETK_WIDGET_ENABLED_SIGNAL,
-   ETK_WIDGET_DISABLED_SIGNAL,
-   ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL,
-   ETK_WIDGET_SELECTION_RECEIVED_SIGNAL,
-   ETK_WIDGET_NUM_SIGNALS
-};
-
 enum Etk_Widget_Property_Id
 {
    ETK_WIDGET_PARENT_PROPERTY,
@@ -92,6 +65,29 @@ enum Etk_Widget_Property_Id
    ETK_WIDGET_FOCUSABLE_PROPERTY,
    ETK_WIDGET_FOCUS_ON_CLICK_PROPERTY
 };
+
+int ETK_WIDGET_SHOWN_SIGNAL;
+int ETK_WIDGET_HIDDEN_SIGNAL;
+int ETK_WIDGET_REALIZED_SIGNAL;
+int ETK_WIDGET_UNREALIZED_SIGNAL;
+int ETK_WIDGET_SIZE_REQUESTED_SIGNAL;
+int ETK_WIDGET_MOUSE_IN_SIGNAL;
+int ETK_WIDGET_MOUSE_OUT_SIGNAL;
+int ETK_WIDGET_MOUSE_MOVE_SIGNAL;
+int ETK_WIDGET_MOUSE_DOWN_SIGNAL;
+int ETK_WIDGET_MOUSE_UP_SIGNAL;
+int ETK_WIDGET_MOUSE_CLICK_SIGNAL;
+int ETK_WIDGET_MOUSE_WHEEL_SIGNAL;
+int ETK_WIDGET_KEY_DOWN_SIGNAL;
+int ETK_WIDGET_KEY_UP_SIGNAL;
+int ETK_WIDGET_ENTERED_SIGNAL;
+int ETK_WIDGET_LEFT_SIGNAL;
+int ETK_WIDGET_FOCUSED_SIGNAL;
+int ETK_WIDGET_UNFOCUSED_SIGNAL;
+int ETK_WIDGET_ENABLED_SIGNAL;
+int ETK_WIDGET_DISABLED_SIGNAL;
+int ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL;
+int ETK_WIDGET_SELECTION_RECEIVED_SIGNAL;
 
 static void _etk_widget_constructor(Etk_Widget *widget);
 static void _etk_widget_destructor(Etk_Widget *widget);
@@ -163,7 +159,6 @@ static void _etk_widget_content_object_clip_set_cb(Evas_Object *obj, Evas_Object
 static void _etk_widget_content_object_clip_unset_cb(Evas_Object *obj);
 
 
-static Etk_Signal *_etk_widget_signals[ETK_WIDGET_NUM_SIGNALS];
 static Etk_Bool _etk_widget_intercept_show_hide = ETK_TRUE;
 static Evas_Smart *_etk_widget_smart_object_smart = NULL;
 static Evas_Smart *_etk_widget_content_object_smart = NULL;
@@ -187,53 +182,64 @@ Etk_Type *etk_widget_type_get(void)
 
    if (!widget_type)
    {
-      widget_type = etk_type_new("Etk_Widget", ETK_OBJECT_TYPE, sizeof(Etk_Widget),
-            ETK_CONSTRUCTOR(_etk_widget_constructor), ETK_DESTRUCTOR(_etk_widget_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_HANDLER(ETK_WIDGET_SHOWN_SIGNAL,
+            "shown", Etk_Widget, shown_handler,
+            etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_HIDDEN_SIGNAL,
+            "hidden", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_REALIZED_SIGNAL,
+            "realized", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_UNREALIZED_SIGNAL,
+            "unrealized", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_SIZE_REQUESTED_SIGNAL,
+            "size-requested", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_MOUSE_IN_SIGNAL,
+            "mouse-in", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_MOUSE_OUT_SIGNAL,
+            "mouse-out", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_MOUSE_MOVE_SIGNAL,
+            "mouse-move", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_MOUSE_DOWN_SIGNAL,
+            "mouse-down", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_MOUSE_UP_SIGNAL,
+            "mouse-up", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_MOUSE_CLICK_SIGNAL,
+            "mouse-click", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_MOUSE_WHEEL_SIGNAL,
+            "mouse-wheel", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_KEY_DOWN_SIGNAL,
+            "key-down", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_KEY_UP_SIGNAL,
+            "key-up", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESC_HANDLER(ETK_WIDGET_ENTERED_SIGNAL,
+            "entered", Etk_Widget, entered_handler,
+             etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_HANDLER(ETK_WIDGET_LEFT_SIGNAL,
+            "left", Etk_Widget, left_handler,
+             etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_HANDLER(ETK_WIDGET_FOCUSED_SIGNAL,
+            "focused", Etk_Widget, focused_handler,
+             etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_HANDLER(ETK_WIDGET_UNFOCUSED_SIGNAL,
+            "unfocused", Etk_Widget, unfocused_handler,
+             etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_HANDLER(ETK_WIDGET_ENABLED_SIGNAL,
+            "enabled", Etk_Widget, enabled_handler,
+             etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_HANDLER(ETK_WIDGET_DISABLED_SIGNAL,
+            "disabled", Etk_Widget, disabled_handler,
+             etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL,
+            "scroll-size-changed", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WIDGET_SELECTION_RECEIVED_SIGNAL,
+            "selection-received", etk_marshaller_VOID__POINTER, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_widget_signals[ETK_WIDGET_SHOWN_SIGNAL] = etk_signal_new("shown",
-            widget_type, ETK_MEMBER_OFFSET(Etk_Widget, shown_handler), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_HIDDEN_SIGNAL] = etk_signal_new("hidden",
-            widget_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_REALIZED_SIGNAL] = etk_signal_new("realized",
-            widget_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_UNREALIZED_SIGNAL] = etk_signal_new("unrealized",
-            widget_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_SIZE_REQUESTED_SIGNAL] = etk_signal_new("size-requested",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL] = etk_signal_new("mouse-in",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL] = etk_signal_new("mouse-out",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_MOUSE_MOVE_SIGNAL] = etk_signal_new("mouse-move",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL] = etk_signal_new("mouse-down",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_MOUSE_UP_SIGNAL] = etk_signal_new("mouse-up",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_MOUSE_CLICK_SIGNAL] = etk_signal_new("mouse-click",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_MOUSE_WHEEL_SIGNAL] = etk_signal_new("mouse-wheel",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_KEY_DOWN_SIGNAL] = etk_signal_new("key-down",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_KEY_UP_SIGNAL] = etk_signal_new("key-up",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_ENTERED_SIGNAL] = etk_signal_new("entered",
-            widget_type, ETK_MEMBER_OFFSET(Etk_Widget, entered_handler), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_LEFT_SIGNAL] = etk_signal_new("left",
-            widget_type, ETK_MEMBER_OFFSET(Etk_Widget, left_handler), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_FOCUSED_SIGNAL] = etk_signal_new("focused",
-            widget_type, ETK_MEMBER_OFFSET(Etk_Widget, focused_handler), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_UNFOCUSED_SIGNAL] = etk_signal_new("unfocused",
-            widget_type, ETK_MEMBER_OFFSET(Etk_Widget, unfocused_handler), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_ENABLED_SIGNAL] = etk_signal_new("enabled",
-            widget_type, ETK_MEMBER_OFFSET(Etk_Widget, enabled_handler), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_DISABLED_SIGNAL] = etk_signal_new("disabled",
-            widget_type, ETK_MEMBER_OFFSET(Etk_Widget, disabled_handler), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL] = etk_signal_new("scroll-size-changed",
-            widget_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_widget_signals[ETK_WIDGET_SELECTION_RECEIVED_SIGNAL] = etk_signal_new("selection-received",
-            widget_type, -1, etk_marshaller_VOID__POINTER, NULL, NULL);
+      widget_type = etk_type_new("Etk_Widget", ETK_OBJECT_TYPE,
+         sizeof(Etk_Widget), ETK_CONSTRUCTOR(_etk_widget_constructor),
+         ETK_DESTRUCTOR(_etk_widget_destructor), signals);
 
       etk_type_property_add(widget_type, "parent", ETK_WIDGET_PARENT_PROPERTY,
             ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_object(NULL));
@@ -322,7 +328,7 @@ void etk_widget_show(Etk_Widget *widget)
       evas_object_show(widget->smart_object);
    etk_widget_size_recalc_queue(widget);
 
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SHOWN_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_SHOWN_SIGNAL, ETK_OBJECT(widget), NULL);
    etk_object_notify(ETK_OBJECT(widget), "visible");
 }
 
@@ -357,7 +363,7 @@ void etk_widget_hide(Etk_Widget *widget)
       evas_object_hide(widget->smart_object);
    etk_widget_size_recalc_queue(widget);
 
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_HIDDEN_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_HIDDEN_SIGNAL, ETK_OBJECT(widget), NULL);
    etk_object_notify(ETK_OBJECT(widget), "visible");
 }
 
@@ -443,7 +449,7 @@ void etk_widget_focus(Etk_Widget *widget)
 
    /* TODO: etk_toplevel_focused_widget_set() should emit the "focused" signal no? */
    etk_toplevel_focused_widget_set(widget->toplevel_parent, widget);
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_FOCUSED_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_FOCUSED_SIGNAL, ETK_OBJECT(widget), NULL);
 }
 
 /**
@@ -457,7 +463,7 @@ void etk_widget_unfocus(Etk_Widget *widget)
 
    /* TODO: etk_toplevel_focused_widget_set() should emit the "unfocused" signal no? */
    etk_toplevel_focused_widget_set(widget->toplevel_parent, NULL);
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_UNFOCUSED_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_UNFOCUSED_SIGNAL, ETK_OBJECT(widget), NULL);
 }
 
 /**
@@ -518,9 +524,9 @@ void etk_widget_disabled_set(Etk_Widget *widget, Etk_Bool disabled)
    if (widget->smart_object && !widget->pass_mouse_events)
       evas_object_pass_events_set(widget->smart_object, disabled);
    if (disabled)
-      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_DISABLED_SIGNAL], ETK_OBJECT(widget), NULL);
+      etk_signal_emit(ETK_WIDGET_DISABLED_SIGNAL, ETK_OBJECT(widget), NULL);
    else
-      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_ENABLED_SIGNAL], ETK_OBJECT(widget), NULL);
+      etk_signal_emit(ETK_WIDGET_ENABLED_SIGNAL, ETK_OBJECT(widget), NULL);
    etk_object_notify(ETK_OBJECT(widget), "disabled");
 }
 
@@ -613,7 +619,7 @@ void etk_widget_enter(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_ENTERED_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_ENTERED_SIGNAL, ETK_OBJECT(widget), NULL);
 }
 
 /**
@@ -624,7 +630,7 @@ void etk_widget_leave(Etk_Widget *widget)
 {
    if (!widget)
       return;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_LEFT_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_LEFT_SIGNAL, ETK_OBJECT(widget), NULL);
 }
 
 /**
@@ -1321,7 +1327,7 @@ void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition
    size_requisition->h += widget->padding.top + widget->padding.bottom;
 
    widget->need_size_recalc = ETK_FALSE;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_SIZE_REQUESTED_SIGNAL], ETK_OBJECT(widget), NULL, size_requisition);
+   etk_signal_emit(ETK_WIDGET_SIZE_REQUESTED_SIGNAL, ETK_OBJECT(widget), NULL, size_requisition);
 }
 
 /**
@@ -1995,11 +2001,11 @@ static void _etk_widget_constructor(Etk_Widget *widget)
    widget->need_theme_size_recalc = ETK_FALSE;
    widget->swallowed = ETK_FALSE;
 
-   etk_signal_connect("destroyed", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_destroyed_cb), NULL);
-   etk_signal_connect_swapped("mouse-in", ETK_OBJECT(widget), etk_widget_enter, widget);
-   etk_signal_connect_swapped("mouse-out", ETK_OBJECT(widget), etk_widget_leave, widget);
-   etk_signal_connect("mouse-down", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL);
-   etk_signal_connect("key-down", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_key_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_OBJECT_DESTROYED_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_destroyed_cb), NULL);
+   etk_signal_connect_swapped_by_code(ETK_WIDGET_MOUSE_IN_SIGNAL, ETK_OBJECT(widget), etk_widget_enter, widget);
+   etk_signal_connect_swapped_by_code(ETK_WIDGET_MOUSE_OUT_SIGNAL, ETK_OBJECT(widget), etk_widget_leave, widget);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_mouse_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_signal_key_down_cb), NULL);
 
    if (ETK_IS_TOPLEVEL(widget))
       etk_object_notification_callback_add(ETK_OBJECT(widget), "evas", _etk_widget_toplevel_evas_changed_cb, NULL);
@@ -2244,7 +2250,7 @@ static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object,
    if (!widget->pass_mouse_events && !widget->disabled)
    {
       etk_event_mouse_in_wrap(widget, event_info, &event);
-      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_IN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+      etk_signal_emit(ETK_WIDGET_MOUSE_IN_SIGNAL, ETK_OBJECT(widget), NULL, &event);
    }
 }
 
@@ -2260,7 +2266,7 @@ static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object
    if (!widget->pass_mouse_events && !widget->disabled)
    {
       etk_event_mouse_out_wrap(widget, event_info, &event);
-      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_OUT_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+      etk_signal_emit(ETK_WIDGET_MOUSE_OUT_SIGNAL, ETK_OBJECT(widget), NULL, &event);
    }
 }
 
@@ -2276,7 +2282,7 @@ static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *objec
    if (!widget->pass_mouse_events && !widget->disabled)
    {
       etk_event_mouse_move_wrap(widget, event_info, &event);
-      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_MOVE_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+      etk_signal_emit(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(widget), NULL, &event);
    }
 
    if (widget->parent)
@@ -2295,7 +2301,7 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
    if (!widget->pass_mouse_events && !widget->disabled)
    {
       etk_event_mouse_down_wrap(widget, event_info, &event);
-      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_DOWN_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+      etk_signal_emit(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(widget), NULL, &event);
    }
 
    if ((widget->pass_mouse_events || widget->repeat_mouse_events) && widget->parent)
@@ -2314,12 +2320,12 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
    if (!widget->pass_mouse_events && !widget->disabled)
    {
       etk_event_mouse_up_wrap(widget, event_info, &event);
-      etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_UP_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+      etk_signal_emit(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(widget), NULL, &event);
 
       if (ETK_INSIDE(event.canvas.x, event.canvas.y,
             widget->geometry.x, widget->geometry.y, widget->geometry.w, widget->geometry.h))
       {
-         etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_CLICK_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+         etk_signal_emit(ETK_WIDGET_MOUSE_CLICK_SIGNAL, ETK_OBJECT(widget), NULL, &event);
       }
    }
 
@@ -2338,7 +2344,7 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
       return;
 
    etk_event_mouse_wheel_wrap(widget, event_info, &event);
-   propagate = etk_signal_emit(_etk_widget_signals[ETK_WIDGET_MOUSE_WHEEL_SIGNAL], ETK_OBJECT(widget), NULL, &event);
+   propagate = etk_signal_emit(ETK_WIDGET_MOUSE_WHEEL_SIGNAL, ETK_OBJECT(widget), NULL, &event);
 
    if (propagate && widget->parent)
       _etk_widget_mouse_wheel_cb(widget->parent, evas, NULL, event_info);
@@ -2503,7 +2509,7 @@ static void _etk_widget_realize(Etk_Widget *widget)
 
    widget->need_theme_size_recalc = ETK_TRUE;
    widget->realized = ETK_TRUE;
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_REALIZED_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(widget), NULL);
    etk_widget_size_recalc_queue(widget);
 }
 
@@ -2520,7 +2526,7 @@ static void _etk_widget_unrealize(Etk_Widget *widget)
    if (!widget || !widget->realized)
       return;
 
-   etk_signal_emit(_etk_widget_signals[ETK_WIDGET_UNREALIZED_SIGNAL], ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(widget), NULL);
 
    while (widget->swallowed_objects)
    {
@@ -2798,7 +2804,7 @@ static void _etk_widget_swallow_full(Etk_Widget *swallower, const char *part, Ev
       etk_widget_size_recalc_queue(swallower);
    }
    else
-      etk_signal_connect("realized", ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_swallowed_widget_realized_cb), NULL);
+      etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(widget), ETK_CALLBACK(_etk_widget_swallowed_widget_realized_cb), NULL);
 }
 
 /* Makes the theme-object of the widget unswallow an object */
@@ -3023,7 +3029,7 @@ static void _etk_widget_swallowed_object_deleted_cb(void *data, Evas *e, Evas_Ob
          if (swo->widget)
          {
             swo->object = NULL;
-            etk_signal_connect("realized", ETK_OBJECT(swo->widget),
+            etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(swo->widget),
                ETK_CALLBACK(_etk_widget_swallowed_widget_realized_cb), NULL);
          }
          else
@@ -3064,7 +3070,7 @@ static void _etk_widget_swallowed_widget_realized_cb(Etk_Object *object, void *d
       }
    }
 
-   etk_signal_disconnect("realized", ETK_OBJECT(swallowed), ETK_CALLBACK(_etk_widget_swallowed_widget_realized_cb), NULL);
+   etk_signal_disconnect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(swallowed), ETK_CALLBACK(_etk_widget_swallowed_widget_realized_cb), NULL);
 }
 
 /**************************

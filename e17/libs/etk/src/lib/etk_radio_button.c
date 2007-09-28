@@ -35,8 +35,10 @@ Etk_Type *etk_radio_button_type_get(void)
 
    if (!radio_button_type)
    {
-      radio_button_type = etk_type_new("Etk_Radio_Button", ETK_TOGGLE_BUTTON_TYPE, sizeof(Etk_Radio_Button),
-            ETK_CONSTRUCTOR(_etk_radio_button_constructor), ETK_DESTRUCTOR(_etk_radio_button_destructor));
+      radio_button_type = etk_type_new("Etk_Radio_Button", ETK_TOGGLE_BUTTON_TYPE,
+         sizeof(Etk_Radio_Button),
+         ETK_CONSTRUCTOR(_etk_radio_button_constructor),
+         ETK_DESTRUCTOR(_etk_radio_button_destructor), NULL);
 
       etk_type_property_add(radio_button_type, "group", ETK_RADIO_BUTTON_GROUP_PROPERTY,
             ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_pointer(NULL));
@@ -233,7 +235,7 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
    if (!toggle_button->active || (toggle_button->active && radio_button->can_uncheck))
    {
       toggle_button->active = active;
-      etk_signal_emit_by_name("toggled", ETK_OBJECT(toggle_button), NULL);
+      etk_signal_emit(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(toggle_button), NULL);
       etk_object_notify(ETK_OBJECT(toggle_button), "active");
 
       if (toggle_button->active)

@@ -51,7 +51,8 @@ Etk_Type *etk_label_type_get(void)
    if (!label_type)
    {
       label_type = etk_type_new("Etk_Label", ETK_WIDGET_TYPE, sizeof(Etk_Label),
-         ETK_CONSTRUCTOR(_etk_label_constructor), ETK_DESTRUCTOR(_etk_label_destructor));
+         ETK_CONSTRUCTOR(_etk_label_constructor),
+         ETK_DESTRUCTOR(_etk_label_destructor), NULL);
 
       etk_type_property_add(label_type, "label", ETK_LABEL_LABEL_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -184,7 +185,7 @@ static void _etk_label_constructor(Etk_Label *label)
 
    widget->size_allocate = _etk_label_size_allocate;
 
-   etk_signal_connect("realized", ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(label), ETK_CALLBACK(_etk_label_realized_cb), NULL);
 }
 
 /* Destroys the label */

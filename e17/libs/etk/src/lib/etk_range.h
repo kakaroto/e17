@@ -22,6 +22,7 @@ extern "C" {
 /** Checks if the object is an Etk_Range */
 #define ETK_IS_RANGE(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_RANGE_TYPE))
 
+extern int ETK_RANGE_VALUE_CHANGED_SIGNAL;
 
 /**
  * @brief An abstract class used by widgets like scrollbars or sliders

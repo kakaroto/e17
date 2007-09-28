@@ -58,6 +58,12 @@ struct Etk_Notification_Callback
 };
 
 /**
+ * @brief Symbols for signals
+ */
+
+extern int ETK_OBJECT_DESTROYED_SIGNAL;
+
+/**
  * @brief @object The base class for all the objects and widgets of Etk
  * @structinfo
  */
@@ -71,7 +77,7 @@ struct Etk_Object
    Etk_Object *next;
 
    Evas_Hash *data_hash;
-   Evas_List *signal_callbacks;
+   Evas_List **signal_callbacks;
    Evas_List *weak_pointers;
    Evas_Hash *notification_callbacks;
    int notifying;
@@ -95,9 +101,9 @@ Etk_Object *etk_object_name_find(const char *name);
 Etk_Object *etk_object_check_cast(Etk_Object *object, Etk_Type *type);
 Etk_Type   *etk_object_object_type_get(Etk_Object *object);
 
-void        etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *signal_callback, Etk_Bool after);
-void        etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *signal_callback);
-void        etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Evas_List **callbacks);
+void        etk_object_signal_callback_add(Etk_Object *object, int signal_code, Etk_Signal_Callback *signal_callback, Etk_Bool after);
+void        etk_object_signal_callback_remove(Etk_Object *object, int signal_code, Etk_Signal_Callback *signal_callback);
+void        etk_object_signal_callbacks_get(Etk_Object *object, int signal_code, Evas_List **callbacks);
 
 void        etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location);
 void        etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location);

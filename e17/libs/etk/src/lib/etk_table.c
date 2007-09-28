@@ -54,7 +54,7 @@ Etk_Type *etk_table_type_get(void)
    if (!table_type)
    {
       table_type = etk_type_new("Etk_Table", ETK_CONTAINER_TYPE, sizeof(Etk_Table),
-            ETK_CONSTRUCTOR(_etk_table_constructor), ETK_DESTRUCTOR(_etk_table_destructor));
+            ETK_CONSTRUCTOR(_etk_table_constructor), ETK_DESTRUCTOR(_etk_table_destructor), NULL);
 
       etk_type_property_add(table_type, "num-cols", ETK_TABLE_NUM_COLS_PROPERTY,
             ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
@@ -112,7 +112,7 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
 
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Table::Cell", NULL);
    etk_widget_parent_set(child, NULL);
-   etk_signal_emit_by_name("child-removed", ETK_OBJECT(table), NULL, child);
+   etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(table), NULL, child);
 }
 
 /**
@@ -237,7 +237,7 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
 
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Table::Cell", cell);
    etk_widget_parent_set(child, ETK_WIDGET(table));
-   etk_signal_emit_by_name("child-added", ETK_OBJECT(table), NULL, child);
+   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(table), NULL, child);
 }
 
 /**

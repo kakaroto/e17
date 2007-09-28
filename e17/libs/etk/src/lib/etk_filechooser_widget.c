@@ -46,11 +46,6 @@
 
 #define ETK_FILECHOOSER_FAVS_FILE ".gtk-bookmarks"
 
-enum _Etk_Filechooser_Widget_Signal_Id
-{
-   ETK_FILECHOOSER_WIDGET_NUM_SIGNALS
-};
-
 enum _Etk_Filechooser_Widget_Property_Id
 {
    ETK_FILECHOOSER_WIDGET_PATH_PROPERTY,
@@ -103,7 +98,6 @@ static int _etk_filechooser_num_icons = sizeof(_etk_filechooser_icons) / sizeof 
 
 static char *_etk_filechooser_unsupported_fs[] = { "proc", "sysfs", "tmpfs", "devpts", "usbfs", "procfs", "devfs" };
 static int _etk_filechooser_num_unsupported_fs = sizeof(_etk_filechooser_unsupported_fs) / sizeof (_etk_filechooser_unsupported_fs[0]);
-/* static Etk_Signal *_etk_filechooser_widget_signals[ETK_FILECHOOSER_WIDGET_NUM_SIGNALS]; */
 
 /**************************
  *
@@ -122,7 +116,10 @@ Etk_Type *etk_filechooser_widget_type_get(void)
 
    if (!filechooser_widget_type)
    {
-      filechooser_widget_type = etk_type_new("Etk_Filechooser_Widget", ETK_WIDGET_TYPE, sizeof(Etk_Filechooser_Widget), ETK_CONSTRUCTOR(_etk_filechooser_widget_constructor), ETK_DESTRUCTOR(_etk_filechooser_widget_destructor));
+      filechooser_widget_type = etk_type_new("Etk_Filechooser_Widget",
+         ETK_WIDGET_TYPE, sizeof(Etk_Filechooser_Widget),
+         ETK_CONSTRUCTOR(_etk_filechooser_widget_constructor),
+         ETK_DESTRUCTOR(_etk_filechooser_widget_destructor), NULL);
 
       etk_type_property_add(filechooser_widget_type, "path", ETK_FILECHOOSER_WIDGET_PATH_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(filechooser_widget_type, "select-multiple", ETK_FILECHOOSER_WIDGET_SELECT_MULTIPLE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
@@ -454,7 +451,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
 
    button = etk_button_new_from_stock(ETK_STOCK_GO_UP);
    etk_box_append(ETK_BOX(hbox),button,ETK_BOX_START,ETK_BOX_NONE,10);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_filechooser_widget_updir_clicked_cb), fcw);
+   etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_filechooser_widget_updir_clicked_cb), fcw);
 
    hpaned = etk_hpaned_new();
    etk_box_append(ETK_BOX(fcw->vbox),hpaned,ETK_BOX_START,ETK_BOX_EXPAND_FILL,10);
@@ -475,7 +472,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    etk_tree_build(ETK_TREE(fcw->places_tree));
    etk_widget_show(fcw->places_tree);
    etk_widget_internal_set(fcw->places_tree, ETK_TRUE);
-   etk_signal_connect("row-selected", ETK_OBJECT(fcw->places_tree), ETK_CALLBACK(_etk_filechooser_widget_place_activated_cb), fcw);
+   etk_signal_connect_by_code(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(fcw->places_tree), ETK_CALLBACK(_etk_filechooser_widget_place_activated_cb), fcw);
 
    fcw->fav_tree = etk_tree_new();
    etk_widget_size_request_set(fcw->fav_tree, 180, 180);
@@ -486,7 +483,7 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    etk_tree_build(ETK_TREE(fcw->fav_tree));
    etk_widget_show(fcw->fav_tree);
    etk_widget_internal_set(fcw->fav_tree, ETK_TRUE);
-   etk_signal_connect("row-selected", ETK_OBJECT(fcw->fav_tree), ETK_CALLBACK(_etk_filechooser_widget_fav_activated_cb), fcw);
+   etk_signal_connect_by_code(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(fcw->fav_tree), ETK_CALLBACK(_etk_filechooser_widget_fav_activated_cb), fcw);
 
    fcw->files_tree = etk_tree_new();
    etk_widget_size_request_set(fcw->files_tree, 400, 120);
@@ -500,8 +497,8 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    etk_tree_build(ETK_TREE(fcw->files_tree));
    etk_widget_show(fcw->files_tree);
    etk_widget_internal_set(fcw->files_tree, ETK_TRUE);
-   etk_signal_connect("row-activated", ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_widget_file_activated_cb), fcw);
-   etk_signal_connect("row-selected", ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_widget_file_selected_cb), fcw);
+   etk_signal_connect_by_code(ETK_TREE_ROW_ACTIVATED_SIGNAL, ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_widget_file_activated_cb), fcw);
+   etk_signal_connect_by_code(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_widget_file_selected_cb), fcw);
 
    _etk_filechooser_widget_places_tree_fill(ETK_FILECHOOSER_WIDGET(fcw));
    _etk_filechooser_widget_favs_tree_fill(ETK_FILECHOOSER_WIDGET(fcw));

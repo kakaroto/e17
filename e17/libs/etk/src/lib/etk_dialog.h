@@ -45,6 +45,7 @@ typedef enum
    ETK_RESPONSE_HELP = -11              /**< Response: Help */
 } Etk_Dialog_Response_ID;
 
+extern int ETK_DIALOG_RESPONSE_SIGNAL;
 
 /**
  * @brief @widget A window with buttons in its bottom area to allow the user to respond to a request

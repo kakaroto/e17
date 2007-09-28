@@ -24,6 +24,8 @@ extern "C" {
 /** Check if the object is an Etk_Popup_Window */
 #define ETK_IS_POPUP_WINDOW(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_POPUP_WINDOW_TYPE))
 
+extern int ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL;
+extern int ETK_POPUP_WINDOW_POPPED_UP_SIGNAL;
 
 /** @brief The directions to which the popup window is popped up */
 typedef enum

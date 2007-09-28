@@ -46,7 +46,8 @@ Etk_Type *etk_frame_type_get(void)
    if (!frame_type)
    {
       frame_type = etk_type_new("Etk_Frame", ETK_BIN_TYPE, sizeof(Etk_Frame),
-         ETK_CONSTRUCTOR(_etk_frame_constructor), ETK_DESTRUCTOR(_etk_frame_destructor));
+         ETK_CONSTRUCTOR(_etk_frame_constructor),
+         ETK_DESTRUCTOR(_etk_frame_destructor), NULL);
 
       etk_type_property_add(frame_type, "label", ETK_FRAME_LABEL_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -124,7 +125,7 @@ static void _etk_frame_constructor(Etk_Frame *frame)
       return;
 
    frame->label = NULL;
-   etk_signal_connect("realized", ETK_OBJECT(frame), ETK_CALLBACK(_etk_frame_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(frame), ETK_CALLBACK(_etk_frame_realized_cb), NULL);
 }
 
 /* Destroys the frame */

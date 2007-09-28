@@ -28,7 +28,8 @@ Etk_Type *etk_separator_type_get(void)
    static Etk_Type *separator_type = NULL;
 
    if (!separator_type)
-      separator_type = etk_type_new("Etk_Separator", ETK_WIDGET_TYPE, sizeof(Etk_Separator), NULL, NULL);
+      separator_type = etk_type_new("Etk_Separator", ETK_WIDGET_TYPE,
+         sizeof(Etk_Separator), NULL, NULL, NULL);
 
    return separator_type;
 }
@@ -43,7 +44,8 @@ Etk_Type *etk_hseparator_type_get(void)
    static Etk_Type *hseparator_type = NULL;
 
    if (!hseparator_type)
-      hseparator_type = etk_type_new("Etk_HSeparator", ETK_SEPARATOR_TYPE, sizeof(Etk_HSeparator), NULL, NULL);
+      hseparator_type = etk_type_new("Etk_HSeparator", ETK_SEPARATOR_TYPE,
+         sizeof(Etk_HSeparator), NULL, NULL, NULL);
 
    return hseparator_type;
 }
@@ -58,7 +60,8 @@ Etk_Type *etk_vseparator_type_get(void)
    static Etk_Type *vseparator_type = NULL;
 
    if (!vseparator_type)
-      vseparator_type = etk_type_new("Etk_VSeparator", ETK_SEPARATOR_TYPE, sizeof(Etk_VSeparator), NULL, NULL);
+      vseparator_type = etk_type_new("Etk_VSeparator", ETK_SEPARATOR_TYPE,
+         sizeof(Etk_VSeparator), NULL, NULL, NULL);
 
    return vseparator_type;
 }

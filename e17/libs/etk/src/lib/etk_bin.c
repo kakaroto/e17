@@ -48,7 +48,7 @@ Etk_Type *etk_bin_type_get(void)
    if (!bin_type)
    {
       bin_type = etk_type_new("Etk_Bin", ETK_CONTAINER_TYPE, sizeof(Etk_Bin),
-            ETK_CONSTRUCTOR(_etk_bin_constructor), NULL);
+         ETK_CONSTRUCTOR(_etk_bin_constructor), NULL, NULL);
 
       etk_type_property_add(bin_type, "child", ETK_BIN_CHILD_PROPERTY,
             ETK_PROPERTY_OBJECT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_object(NULL));
@@ -78,7 +78,7 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
       etk_widget_parent_set(child, ETK_WIDGET(bin));
       bin->child = child;
 
-      etk_signal_emit_by_name("child-added", ETK_OBJECT(bin), NULL, child);
+      etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(bin), NULL, child);
       etk_object_notify(ETK_OBJECT(bin), "child");
    }
 }
@@ -212,7 +212,7 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
       return;
 
    bin->child = NULL;
-   etk_signal_emit_by_name("child-removed", ETK_OBJECT(bin), NULL, widget);
+   etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(bin), NULL, widget);
    etk_object_notify(ETK_OBJECT(bin), "child");
 }
 

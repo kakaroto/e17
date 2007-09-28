@@ -23,6 +23,8 @@ extern "C" {
 /** @brief Checks if the object is an Etk_Text_View */
 #define ETK_IS_TEXT_VIEW(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_TEXT_VIEW_TYPE))
 
+extern int ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL;
+
 /**
  * @struct Etk_Text_View
  * @brief An Etk_Text_View is a widget that allows the user to edit multi-line text

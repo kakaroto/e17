@@ -24,6 +24,9 @@ extern "C" {
 /** Check if the object is an Etk_Menu_Shell */
 #define ETK_IS_MENU_SHELL(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_SHELL_TYPE))
 
+extern int ETK_MENU_SHELL_ITEM_ADDED_SIGNAL;
+extern int ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL;
+
 
 /**
  * @brief @widget A base class used by Etk_Menu and Etk_Menu_Bar

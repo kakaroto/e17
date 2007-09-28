@@ -37,6 +37,12 @@ extern "C" {
 /** Check if the object is an Etk_Iconbobx */
 #define ETK_IS_ICONBOX(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_ICONBOX_TYPE))
 
+extern int ETK_ICONBOX_ICON_SELECTED_SIGNAL;
+extern int ETK_ICONBOX_ICON_UNSELECTED_SIGNAL;
+extern int ETK_ICONBOX_ALL_SELECTED_SIGNAL;
+extern int ETK_ICONBOX_ALL_UNSELECTED_SIGNAL;
+
+
 
 /**
  * @brief Describes the model of an iconbox: it includes the position and the size of the cell, of the icon and

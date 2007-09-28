@@ -18,15 +18,11 @@
  * @{
  */
 
-enum Etk_Widget_Signal_Id
-{
-   ETK_WINDOW_MOVED_SIGNAL,
-   ETK_WINDOW_RESIZED_SIGNAL,
-   ETK_WINDOW_FOCUSED_IN_SIGNAL,
-   ETK_WINDOW_FOCUSED_OUT_SIGNAL,
-   ETK_WINDOW_DELETE_EVENT_SIGNAL,
-   ETK_WINDOW_NUM_SIGNALS
-};
+int ETK_WINDOW_MOVED_SIGNAL;
+int ETK_WINDOW_RESIZED_SIGNAL;
+int ETK_WINDOW_FOCUSED_IN_SIGNAL;
+int ETK_WINDOW_FOCUSED_OUT_SIGNAL;
+int ETK_WINDOW_DELETE_EVENT_SIGNAL;
 
 enum Etk_Window_Property_Id
 {
@@ -58,8 +54,6 @@ static void _etk_window_pointer_set(Etk_Toplevel *toplevel, Etk_Pointer_Type poi
 static void _etk_window_disable(Etk_Window *window);
 static void _etk_window_enable(Etk_Window *window);
 
-static Etk_Signal *_etk_window_signals[ETK_WINDOW_NUM_SIGNALS];
-
 /**************************
  *
  * Implementation
@@ -77,13 +71,24 @@ Etk_Type *etk_window_type_get(void)
 
    if (!window_type)
    {
-       window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_TYPE, sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor), ETK_DESTRUCTOR(_etk_window_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WINDOW_MOVED_SIGNAL,
+            "moved", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WINDOW_RESIZED_SIGNAL,
+            "resized", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WINDOW_FOCUSED_IN_SIGNAL,
+            "focused-in", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_WINDOW_FOCUSED_OUT_SIGNAL,
+            "focused-out", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_HANDLER(ETK_WINDOW_DELETE_EVENT_SIGNAL,
+            "delete-event", Etk_Window, delete_event,
+            etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_window_signals[ETK_WINDOW_MOVED_SIGNAL] = etk_signal_new("moved", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_window_signals[ETK_WINDOW_RESIZED_SIGNAL] = etk_signal_new("resized", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_window_signals[ETK_WINDOW_FOCUSED_IN_SIGNAL] = etk_signal_new("focused-in", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_window_signals[ETK_WINDOW_FOCUSED_OUT_SIGNAL] = etk_signal_new("focused-out", window_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL] = etk_signal_new("delete-event", window_type, ETK_MEMBER_OFFSET(Etk_Window, delete_event), etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL);
+      window_type = etk_type_new("Etk_Window", ETK_TOPLEVEL_TYPE,
+         sizeof(Etk_Window), ETK_CONSTRUCTOR(_etk_window_constructor),
+         ETK_DESTRUCTOR(_etk_window_destructor), signals);
 
       etk_type_property_add(window_type, "title", ETK_WINDOW_TITLE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(window_type, "iconified", ETK_WINDOW_ICONIFIED_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
@@ -123,7 +128,7 @@ void etk_window_delete_request(Etk_Window *window)
 {
    Etk_Bool result;
 
-   etk_signal_emit(_etk_window_signals[ETK_WINDOW_DELETE_EVENT_SIGNAL], ETK_OBJECT(window), &result);
+   etk_signal_emit(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(window), &result);
    if (!result)
       etk_object_destroy(ETK_OBJECT(window));
 }
@@ -274,26 +279,25 @@ void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window
    etk_engine_window_modal_for_window(window_to_modal, window);
 
    if (window)
-     {
-	etk_signal_connect_swapped("shown", ETK_OBJECT(window_to_modal),
-				   ETK_CALLBACK(_etk_window_disable),
-				   window);
-	etk_signal_connect_swapped("hidden", ETK_OBJECT(window_to_modal),
-				   ETK_CALLBACK(_etk_window_enable),
-				   window);
-	etk_signal_connect_swapped("delete-event", ETK_OBJECT(window_to_modal),
-				   ETK_CALLBACK(_etk_window_enable),
-				   window);
-     }
+   {
+      etk_signal_connect_swapped_by_code(ETK_WIDGET_SHOWN_SIGNAL,
+         ETK_OBJECT(window_to_modal), ETK_CALLBACK(_etk_window_disable),
+         window);
+	   etk_signal_connect_swapped_by_code(ETK_WIDGET_HIDDEN_SIGNAL,
+         ETK_OBJECT(window_to_modal), ETK_CALLBACK(_etk_window_enable), window);
+	   etk_signal_connect_swapped_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL,
+         ETK_OBJECT(window_to_modal), ETK_CALLBACK(_etk_window_enable), window);
+   }
    else
-     {
-	etk_signal_disconnect("shown", ETK_OBJECT(window_to_modal),
-			      ETK_CALLBACK(_etk_window_disable), window);
-	etk_signal_disconnect("hidden", ETK_OBJECT(window_to_modal),
-			      ETK_CALLBACK(_etk_window_enable), window);
-	etk_signal_disconnect("delete-event", ETK_OBJECT(window_to_modal),
-			      ETK_CALLBACK(_etk_window_enable), window);
-     }
+   {
+	   etk_signal_disconnect_by_code(ETK_WIDGET_SHOWN_SIGNAL,
+         ETK_OBJECT(window_to_modal), ETK_CALLBACK(_etk_window_disable),
+         window);
+	   etk_signal_disconnect_by_code(ETK_WIDGET_HIDDEN_SIGNAL,
+         ETK_OBJECT(window_to_modal), ETK_CALLBACK(_etk_window_enable), window);
+	   etk_signal_disconnect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL,
+         ETK_OBJECT(window_to_modal), ETK_CALLBACK(_etk_window_enable), window);
+   }
 }
 
 /**
@@ -613,9 +617,9 @@ static void _etk_window_constructor(Etk_Window *window)
 
    /* TODO: remove the font path */
    evas_font_path_append(ETK_TOPLEVEL(window)->evas, PACKAGE_DATA_DIR "/fonts/");
-   etk_signal_connect("size-requested", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_size_requested_cb), NULL);
-   etk_signal_connect("shown", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_shown_cb), NULL);
-   etk_signal_connect("hidden", ETK_OBJECT(window), ETK_CALLBACK(_etk_window_hidden_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_SIZE_REQUESTED_SIGNAL, ETK_OBJECT(window), ETK_CALLBACK(_etk_window_size_requested_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_SHOWN_SIGNAL, ETK_OBJECT(window), ETK_CALLBACK(_etk_window_shown_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_HIDDEN_SIGNAL, ETK_OBJECT(window), ETK_CALLBACK(_etk_window_hidden_cb), NULL);
    etk_object_notify(ETK_OBJECT(window), "evas");
 }
 

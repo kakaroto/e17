@@ -22,11 +22,7 @@
  * @{
  */
 
-enum Etk_Text_View_Signal_Id
-{
-   ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL,
-   ETK_TEXT_VIEW_NUM_SIGNALS
-};
+int ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL;
 
 static void _etk_text_view_constructor(Etk_Text_View *text_view);
 static void _etk_text_view_destructor(Etk_Text_View *text_view);
@@ -38,9 +34,6 @@ static void _etk_text_view_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *e
 static void _etk_text_view_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
 static void _etk_text_view_scroll(Etk_Widget *widget, int x, int y);
 static void _etk_text_view_selection_copy(Etk_Text_View *tv, Etk_Selection_Type selection, Etk_Bool cut);
-
-
-static Etk_Signal *_etk_text_view_signals[ETK_TEXT_VIEW_NUM_SIGNALS];
 
 /**************************
  *
@@ -59,11 +52,16 @@ Etk_Type *etk_text_view_type_get(void)
 
    if (!text_view_type)
    {
-      text_view_type = etk_type_new("Etk_Text_View", ETK_WIDGET_TYPE, sizeof(Etk_Text_View),
-         ETK_CONSTRUCTOR(_etk_text_view_constructor), ETK_DESTRUCTOR(_etk_text_view_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL,
+            "text-changed", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_text_view_signals[ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL] = etk_signal_new("text-changed",
-         text_view_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      text_view_type = etk_type_new("Etk_Text_View",
+         ETK_WIDGET_TYPE, sizeof(Etk_Text_View),
+         ETK_CONSTRUCTOR(_etk_text_view_constructor),
+         ETK_DESTRUCTOR(_etk_text_view_destructor), signals);
    }
 
    return text_view_type;
@@ -137,10 +135,10 @@ static void _etk_text_view_constructor(Etk_Text_View *text_view)
    ETK_WIDGET(text_view)->scroll = _etk_text_view_scroll;
    ETK_WIDGET(text_view)->scroll_size_get = _etk_text_view_scroll_size_get;
 
-   etk_signal_connect("realized", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_realized_cb), NULL);
-   etk_signal_connect("unrealized", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_unrealized_cb), NULL);
-   etk_signal_connect("key-down", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_key_down_cb), NULL);
-   etk_signal_connect("mouse-up", ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_mouse_up_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_unrealized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_key_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(text_view), ETK_CALLBACK(_etk_text_view_mouse_up_cb), NULL);
 }
 
 /* Destroys the text view */
@@ -335,7 +333,7 @@ static void _etk_text_view_selection_copy(Etk_Text_View *tv, Etk_Selection_Type 
       if (cut)
       {
          etk_textblock_delete_range(tv->textblock, cursor_pos, selection_pos);
-         etk_signal_emit(_etk_text_view_signals[ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL], ETK_OBJECT(tv), NULL);
+         etk_signal_emit(ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL, ETK_OBJECT(tv), NULL);
       }
    }
 }

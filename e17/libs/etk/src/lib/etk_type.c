@@ -9,6 +9,9 @@
 #include <string.h>
 
 #include "etk_signal.h"
+#include "etk_signal_callback.h"
+#include "etk_property.h"
+#include "etk_object.h"
 
 /**
  * @addtogroup Etk_Type
@@ -48,10 +51,13 @@ void etk_type_shutdown(void)
  * @param destructor the destructor function
  * @return Returns the new type on success, NULL on failure
  */
-Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_size,
-   Etk_Constructor constructor, Etk_Destructor destructor)
+Etk_Type *etk_type_new(const char *type_name,
+   Etk_Type *parent_type, int type_size,
+   Etk_Constructor constructor, Etk_Destructor destructor,
+   const Etk_Signal_Description *signals)
 {
    Etk_Type *new_type;
+   unsigned int type_signals;
 
    if (!type_name)
       return NULL;
@@ -65,22 +71,56 @@ Etk_Type *etk_type_new(const char *type_name, Etk_Type *parent_type, int type_si
    new_type->property_get = NULL;
    new_type->signals_hash = NULL;
    new_type->properties_hash = NULL;
+   new_type->signals = NULL;
+
+   /* Count how many new signals we have. */
+   type_signals = 0;
+   if (signals)
+   {
+      const Etk_Signal_Description *s;
+      for (s = signals; s->signal_code_store; s++)
+         type_signals++;
+   }
 
    if (!parent_type)
    {
       new_type->hierarchy_depth = 0;
       new_type->hierarchy = NULL;
+      new_type->signals_count = 0;
+      if (type_signals > 0)
+         new_type->signals = (Etk_Signal **) malloc(type_signals * sizeof(Etk_Signal *));
    }
-   /* Build the type hierarchy */
    else
    {
       int i;
 
+      /* Build the type hierarchy */
       new_type->hierarchy_depth = parent_type->hierarchy_depth + 1;
       new_type->hierarchy = malloc(sizeof(Etk_Type *) * new_type->hierarchy_depth);
       new_type->hierarchy[0] = parent_type;
       for (i = 1; i < new_type->hierarchy_depth; i++)
          new_type->hierarchy[i] = parent_type->hierarchy[i - 1];
+
+      new_type->signals_count = parent_type->signals_count;
+
+      if (parent_type->signals_count > 0 || type_signals > 0)
+      {
+         new_type->signals = (Etk_Signal **) malloc((type_signals + new_type->signals_count) * sizeof(Etk_Signal *));
+
+         /* Copy parent signals to our array */
+         if (parent_type->signals_count > 0)
+            memcpy(new_type->signals, parent_type->signals,
+               sizeof(Etk_Type *) * parent_type->signals_count);
+      }
+   }
+
+   /* Add new signals to the type */
+   if (signals)
+   {
+      const Etk_Signal_Description *s;
+
+      for (s = signals; s->signal_code_store; s++)
+         etk_signal_new_with_desc(new_type, s);
    }
 
    _etk_type_types_hash = evas_hash_add(_etk_type_types_hash, new_type->name, new_type);
@@ -116,7 +156,11 @@ void etk_type_object_construct(Etk_Type *type, Etk_Object *object)
    if (!type || !object)
       return;
 
-   /* We first call the constructors */
+   /* We first allocate space for signal callbacks lists */
+   if (type->signals_count > 0)
+      object->signal_callbacks = (Evas_List **) calloc(type->signals_count, sizeof(Evas_List *));
+
+   /* Then call the constructors */
    for (i = type->hierarchy_depth - 1; i >= 0; i--)
    {
       if (type->hierarchy[i]->constructor)
@@ -172,6 +216,19 @@ void etk_type_destructors_call(Etk_Type *type, Etk_Object *object)
       if (type->hierarchy[i]->destructor)
          type->hierarchy[i]->destructor(object);
    }
+
+   /* Free all the signal callbacks */
+   for (i = 0; i < type->signals_count; i++)
+   {
+      Evas_List *lst;
+
+      for (lst = object->signal_callbacks[i]; lst; lst = lst->next)
+         etk_signal_callback_del(lst->data);
+      evas_list_free(object->signal_callbacks[i]);
+   }
+
+   if (object->signal_callbacks)
+      free(object->signal_callbacks);
 }
 
 /**
@@ -270,11 +327,18 @@ void etk_type_signal_remove(Etk_Type *type, Etk_Signal *signal)
  * @param signal_name the name of the signal to get
  * @return Returns the signal corresponding to the type and the signal name, or NULL on failure
  */
-Etk_Signal *etk_type_signal_get(Etk_Type *type, const char *signal_name)
+Etk_Signal *etk_type_signal_get_by_name(Etk_Type *type, const char *signal_name)
 {
    if (!type || !signal_name)
       return NULL;
    return evas_hash_find(type->signals_hash, signal_name);
+}
+
+Etk_Signal *etk_type_signal_get(Etk_Type *type, int signal_code)
+{
+   if (!type || signal_code < 0 || signal_code >= type->signals_count)
+      return NULL;
+   return type->signals[signal_code];
 }
 
 /**
@@ -354,6 +418,11 @@ static void _etk_type_free(Etk_Type *type)
    evas_hash_free(type->signals_hash);
    evas_hash_foreach(type->properties_hash, _etk_type_property_free_cb, NULL);
    evas_hash_free(type->properties_hash);
+
+   /* The signals themselves will be freed by etk_signal_shutdown() */
+   if (type->signals)
+      free(type->signals);
+
    free(type->hierarchy);
    free(type->name);
    free(type);

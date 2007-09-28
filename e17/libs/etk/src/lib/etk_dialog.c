@@ -20,11 +20,7 @@
  * @{
  */
 
-enum Etk_Dialog_Signal_Id
-{
-   ETK_DIALOG_RESPONSE_SIGNAL,
-   ETK_DIALOG_NUM_SIGNALS
-};
+int ETK_DIALOG_RESPONSE_SIGNAL;
 
 enum Etk_Dialog_Property_Id
 {
@@ -37,8 +33,6 @@ static void _etk_dialog_constructor(Etk_Dialog *dialog);
 static void _etk_dialog_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_dialog_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data);
-
-static Etk_Signal *_etk_dialog_signals[ETK_DIALOG_NUM_SIGNALS];
 
 
 /**************************
@@ -58,11 +52,15 @@ Etk_Type *etk_dialog_type_get(void)
 
    if (!dialog_type)
    {
-      dialog_type = etk_type_new("Etk_Dialog", ETK_WINDOW_TYPE, sizeof(Etk_Dialog),
-            ETK_CONSTRUCTOR(_etk_dialog_constructor), NULL);
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_DIALOG_RESPONSE_SIGNAL,
+            "response", etk_marshaller_VOID__INT, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_dialog_signals[ETK_DIALOG_RESPONSE_SIGNAL] = etk_signal_new("response",
-            dialog_type, -1, etk_marshaller_VOID__INT, NULL, NULL);
+      dialog_type = etk_type_new("Etk_Dialog", ETK_WINDOW_TYPE,
+         sizeof(Etk_Dialog), ETK_CONSTRUCTOR(_etk_dialog_constructor),
+         NULL, signals);
 
       etk_type_property_add(dialog_type, "has-separator", ETK_DIALOG_HAS_SEPARATOR_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
@@ -291,8 +289,8 @@ void etk_dialog_button_response_id_set(Etk_Dialog *dialog, Etk_Button *button, i
    *id = response_id;
    etk_object_data_set_full(ETK_OBJECT(button), "_Etk_Dialog::Response_Id", id, free);
 
-   etk_signal_disconnect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
-   etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
+   etk_signal_disconnect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
+   etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
 }
 
 /**
@@ -442,7 +440,7 @@ static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
 
    if ((response_id = etk_dialog_button_response_id_get(ETK_BUTTON(object))) == ETK_RESPONSE_NONE)
       return;
-   etk_signal_emit(_etk_dialog_signals[ETK_DIALOG_RESPONSE_SIGNAL], ETK_OBJECT(data), NULL, response_id);
+   etk_signal_emit(ETK_DIALOG_RESPONSE_SIGNAL, ETK_OBJECT(data), NULL, response_id);
 }
 
 /** @} */

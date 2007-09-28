@@ -22,13 +22,9 @@
  * @{
  */
 
-enum Etk_Button_Signal_Id
-{
-   ETK_BUTTON_PRESSED_SIGNAL,
-   ETK_BUTTON_RELEASED_SIGNAL,
-   ETK_BUTTON_CLICKED_SIGNAL,
-   ETK_BUTTON_NUM_SIGNALS
-};
+int ETK_BUTTON_PRESSED_SIGNAL;
+int ETK_BUTTON_RELEASED_SIGNAL;
+int ETK_BUTTON_CLICKED_SIGNAL;
 
 enum Etk_Button_Property_Id
 {
@@ -57,8 +53,6 @@ static void _etk_button_released_handler(Etk_Button *button);
 static void _etk_button_clicked_handler(Etk_Button *button);
 static void _etk_button_rebuild(Etk_Button *button);
 
-static Etk_Signal *_etk_button_signals[ETK_BUTTON_NUM_SIGNALS];
-
 /**************************
  *
  * Implementation
@@ -76,15 +70,22 @@ Etk_Type *etk_button_type_get(void)
 
    if (!button_type)
    {
-      button_type = etk_type_new("Etk_Button", ETK_BIN_TYPE, sizeof(Etk_Button),
-            ETK_CONSTRUCTOR(_etk_button_constructor), NULL);
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_HANDLER(ETK_BUTTON_PRESSED_SIGNAL,
+            "pressed", Etk_Button, pressed_handler,
+            etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_HANDLER(ETK_BUTTON_RELEASED_SIGNAL,
+            "released", Etk_Button, released_handler,
+            etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESC_HANDLER(ETK_BUTTON_CLICKED_SIGNAL,
+            "clicked", Etk_Button, clicked_handler,
+            etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_button_signals[ETK_BUTTON_PRESSED_SIGNAL] = etk_signal_new("pressed",
-            button_type, ETK_MEMBER_OFFSET(Etk_Button, pressed_handler), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_button_signals[ETK_BUTTON_RELEASED_SIGNAL] = etk_signal_new("released",
-            button_type, ETK_MEMBER_OFFSET(Etk_Button, released_handler), etk_marshaller_VOID__VOID, NULL, NULL);
-      _etk_button_signals[ETK_BUTTON_CLICKED_SIGNAL] = etk_signal_new("clicked",
-            button_type, ETK_MEMBER_OFFSET(Etk_Button, clicked_handler), etk_marshaller_VOID__VOID, NULL, NULL);
+      button_type = etk_type_new("Etk_Button", ETK_BIN_TYPE,
+         sizeof(Etk_Button), ETK_CONSTRUCTOR(_etk_button_constructor), NULL,
+         signals);
 
       etk_type_property_add(button_type, "label", ETK_BUTTON_LABEL_PROPERTY,
             ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_string(NULL));
@@ -153,7 +154,7 @@ void etk_button_press(Etk_Button *button)
       return;
 
    button->is_pressed = ETK_TRUE;
-   etk_signal_emit(_etk_button_signals[ETK_BUTTON_PRESSED_SIGNAL], ETK_OBJECT(button), NULL);
+   etk_signal_emit(ETK_BUTTON_PRESSED_SIGNAL, ETK_OBJECT(button), NULL);
 }
 
 /**
@@ -166,7 +167,7 @@ void etk_button_release(Etk_Button *button)
       return;
 
    button->is_pressed = ETK_FALSE;
-   etk_signal_emit(_etk_button_signals[ETK_BUTTON_RELEASED_SIGNAL], ETK_OBJECT(button), NULL);
+   etk_signal_emit(ETK_BUTTON_RELEASED_SIGNAL, ETK_OBJECT(button), NULL);
 }
 
 /**
@@ -177,7 +178,7 @@ void etk_button_click(Etk_Button *button)
 {
    if (!button)
       return;
-   etk_signal_emit(_etk_button_signals[ETK_BUTTON_CLICKED_SIGNAL], ETK_OBJECT(button), NULL);
+   etk_signal_emit(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), NULL);
 }
 
 /**
@@ -451,13 +452,13 @@ static void _etk_button_constructor(Etk_Button *button)
    button->released_handler = _etk_button_released_handler;
    button->clicked_handler = _etk_button_clicked_handler;
 
-   etk_signal_connect("realized", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_realized_cb), NULL);
-   etk_signal_connect("realized", ETK_OBJECT(button->label), ETK_CALLBACK(_etk_button_label_realized_cb), button);
-   etk_signal_connect("key-down", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_key_down_cb), NULL);
-   etk_signal_connect("key-up", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_key_up_cb), NULL);
-   etk_signal_connect("mouse-down", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_down_cb), NULL);
-   etk_signal_connect("mouse-up", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_up_cb), NULL);
-   etk_signal_connect("mouse-click", ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_click_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_button_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(button->label), ETK_CALLBACK(_etk_button_label_realized_cb), button);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_button_key_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_UP_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_button_key_up_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_up_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_CLICK_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_button_mouse_click_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -723,7 +724,7 @@ static void _etk_button_rebuild(Etk_Button *button)
          etk_widget_internal_set(button->box, ETK_TRUE);
          etk_container_add(ETK_CONTAINER(button->alignment), button->box);
          etk_widget_show(button->box);
-         etk_signal_connect("child-removed", ETK_OBJECT(button->box),
+         etk_signal_connect_by_code(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(button->box),
                ETK_CALLBACK(_etk_button_image_removed_cb), button);
       }
       else

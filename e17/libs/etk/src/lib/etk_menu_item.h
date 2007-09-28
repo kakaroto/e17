@@ -51,6 +51,12 @@ extern "C" {
 /** Radios if the object is an Etk_Menu_Item_Radio */
 #define ETK_IS_MENU_ITEM_RADIO(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_ITEM_RADIO_TYPE))
 
+extern int ETK_MENU_ITEM_SELECTED_SIGNAL;
+extern int ETK_MENU_ITEM_UNSELECTED_SIGNAL;
+extern int ETK_MENU_ITEM_ACTIVATED_SIGNAL;
+
+extern int ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL;
+
 /**
  * @brief @widget An item that can be packed in a menu shell
  * @structinfo

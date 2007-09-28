@@ -27,7 +27,8 @@ Etk_Type *etk_drag_type_get(void)
 
    if(!drag_type)
    {
-      drag_type = etk_type_new("Etk_Drag", ETK_WINDOW_TYPE, sizeof(Etk_Drag), NULL, NULL);
+      drag_type = etk_type_new("Etk_Drag", ETK_WINDOW_TYPE, sizeof(Etk_Drag),
+         NULL, NULL, NULL);
    }
 
    return drag_type;

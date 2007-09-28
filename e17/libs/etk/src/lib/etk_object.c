@@ -24,12 +24,6 @@ typedef struct Etk_Object_Data
    void (*free_cb)(void *data);
 } Etk_Object_Data;
 
-enum Etk_Object_Signal_Id
-{
-   ETK_OBJECT_DESTROYED_SIGNAL,
-   ETK_OBJECT_NUM_SIGNALS
-};
-
 enum Etk_Object_Property_Id
 {
    ETK_OBJECT_NAME_PROPERTY
@@ -48,7 +42,8 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
 static Etk_Object *_etk_object_objects = NULL;
 static Etk_Object *_etk_object_last_object = NULL;
 static Evas_Hash *_etk_object_name_hash = NULL;
-static Etk_Signal *_etk_object_signals[ETK_OBJECT_NUM_SIGNALS];
+
+int ETK_OBJECT_DESTROYED_SIGNAL;
 
 /**************************
  *
@@ -95,11 +90,15 @@ Etk_Type *etk_object_type_get(void)
 
    if (!object_type)
    {
-      object_type = etk_type_new("Etk_Object", NULL, sizeof(Etk_Object),
-         ETK_CONSTRUCTOR(_etk_object_constructor), ETK_DESTRUCTOR(_etk_object_destructor));
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_OBJECT_DESTROYED_SIGNAL,
+            "destroyed", etk_marshaller_VOID__VOID, NULL, NULL),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
 
-      _etk_object_signals[ETK_OBJECT_DESTROYED_SIGNAL] = etk_signal_new("destroyed",
-         object_type, -1, etk_marshaller_VOID__VOID, NULL, NULL);
+      object_type = etk_type_new("Etk_Object", NULL,
+         sizeof(Etk_Object), ETK_CONSTRUCTOR(_etk_object_constructor),
+         ETK_DESTRUCTOR(_etk_object_destructor), signals);
 
       etk_type_property_add(object_type, "name", ETK_OBJECT_NAME_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -188,7 +187,7 @@ void etk_object_destroy(Etk_Object *object)
    }
 
    object->destroy_me = ETK_TRUE;
-   etk_signal_emit(_etk_object_signals[ETK_OBJECT_DESTROYED_SIGNAL], object, NULL);
+   etk_signal_emit(ETK_OBJECT_DESTROYED_SIGNAL, object, NULL);
 }
 
 /**
@@ -285,67 +284,80 @@ Etk_Type *etk_object_object_type_get(Etk_Object *object)
 
 /**
  * @internal
- * @brief Adds @a signal_callback to the list of the signal-callbacks of the object
+ * @brief Adds @a signal_callback to the list of the signal-callbacks of the
+ *        object.
+ *
  * @param object an object
+ * @param signal_code the signal identification code
  * @param signal_callback the signal-callback to add
- * @param after if @a after is ETK_TRUE, the callback will be called after all the other callbacks already connected
- * to this signal, otherwise it will be called before (default behaviour)
+ * @param after if @a after is ETK_TRUE, the callback will be called after all
+ *              the other callbacks already connected to this signal, otherwise
+ *              it will be called before (default behaviour)
+ *
  * @note You do not have to call this function, use etk_signal_connect() instead
  */
-void etk_object_signal_callback_add(Etk_Object *object, Etk_Signal_Callback *signal_callback, Etk_Bool after)
+void etk_object_signal_callback_add(Etk_Object *object, int signal_code,
+                                    Etk_Signal_Callback *signal_callback,
+                                    Etk_Bool after)
 {
-   if (!object || !signal_callback)
-      return;
-
    if (after)
-      object->signal_callbacks = evas_list_append(object->signal_callbacks, signal_callback);
+      object->signal_callbacks[signal_code] =
+         evas_list_append(object->signal_callbacks[signal_code],
+                          signal_callback);
    else
-      object->signal_callbacks = evas_list_prepend(object->signal_callbacks, signal_callback);
+      object->signal_callbacks[signal_code] =
+         evas_list_prepend(object->signal_callbacks[signal_code],
+                           signal_callback);
 }
 
 /**
  * @internal
- * @brief Removes @a signal_callback from the list of the signal-callbacks of the object
+ * @brief Removes @a signal_callback from the list of the signal-callbacks of
+ *        the object.
+ *
  * @param object an object
+ * @param signal_code the signal identification code
  * @param signal_callback the signal-callback to remove
- * @note You do not have have to call this function, use etk_signal_disconnect() instead
+ *
+ * @note You do not have have to call this function, use etk_signal_disconnect()
+ *       instead.
  */
-void etk_object_signal_callback_remove(Etk_Object *object, Etk_Signal_Callback *signal_callback)
+void etk_object_signal_callback_remove(Etk_Object *object, int signal_code,
+                                       Etk_Signal_Callback *signal_callback)
 {
-   Evas_List *l;
-
-   if (!object || !signal_callback)
+   if (!signal_callback)
       return;
 
-   if ((l = evas_list_find_list(object->signal_callbacks, signal_callback)))
+   Evas_List *lst = evas_list_find_list(object->signal_callbacks[signal_code],
+                                        signal_callback);
+   if (lst)
    {
-      etk_signal_callback_del(l->data);
-      object->signal_callbacks = evas_list_remove_list(object->signal_callbacks, l);
+      etk_signal_callback_del(lst->data);
+      object->signal_callbacks[signal_code] =
+         evas_list_remove_list(object->signal_callbacks[signal_code], lst);
    }
 }
 
 /**
  * @internal
- * @brief Gets the signal-callbacks connected to the signal @a signal of the object @a object
+ * @brief Gets the signal-callbacks connected to the signal @a signal of the
+ *        object @a object
+ *
  * @param object the object connected to the signal
- * @param signal the signal which we want the callbacks of
- * @param callbacks the location of a list where the signal-callbacks will be appended
- * @note You usually do not need to call this function manually, it is used by etk_signal_emit()
+ * @param signal_code the signal identification code
+ * @param callbacks the location of a list where the signal-callbacks will be
+ *                  returned. You should not free this list.
+ *
+ * @note You usually do not need to call this function manually, it is used
+ *       by etk_signal_emit().
  */
-void etk_object_signal_callbacks_get(Etk_Object *object, Etk_Signal *signal, Evas_List **callbacks)
+void etk_object_signal_callbacks_get(Etk_Object *object, int signal_code,
+                                     Evas_List **callbacks)
 {
-   Evas_List *l;
-   Etk_Signal_Callback *callback;
-
-   if (!object || !signal || !callbacks)
+   if (!callbacks)
       return;
 
-   for (l = object->signal_callbacks; l; l = l->next)
-   {
-      callback = l->data;
-      if (callback->signal == signal)
-         *callbacks = evas_list_append(*callbacks, callback);
-   }
+   *callbacks = object->signal_callbacks[signal_code];
 }
 
 /**
@@ -698,7 +710,6 @@ static void _etk_object_constructor(Etk_Object *object)
    object->name = NULL;
    object->destroy_me = ETK_FALSE;
    object->data_hash = NULL;
-   object->signal_callbacks = NULL;
    object->weak_pointers = NULL;
    object->notification_callbacks = NULL;
    object->should_delete_cbs = ETK_FALSE;
@@ -722,13 +733,6 @@ static void _etk_object_destructor(Etk_Object *object)
 
    evas_hash_foreach(object->data_hash, _etk_object_data_free_cb, NULL);
    evas_hash_free(object->data_hash);
-
-   while (object->signal_callbacks)
-   {
-      etk_signal_callback_del(object->signal_callbacks->data);
-      object->signal_callbacks = evas_list_remove_list(object->signal_callbacks,
-         object->signal_callbacks);
-   }
 
    evas_hash_foreach(object->notification_callbacks, _etk_object_notification_callbacks_free_cb, NULL);
    evas_hash_free(object->notification_callbacks);

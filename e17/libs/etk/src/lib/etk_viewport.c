@@ -41,7 +41,9 @@ Etk_Type *etk_viewport_type_get(void)
    static Etk_Type *viewport_type = NULL;
 
    if (!viewport_type)
-      viewport_type = etk_type_new("Etk_Viewport", ETK_BIN_TYPE, sizeof(Etk_Viewport), ETK_CONSTRUCTOR(_etk_viewport_constructor), NULL);
+      viewport_type = etk_type_new("Etk_Viewport", ETK_BIN_TYPE,
+         sizeof(Etk_Viewport),
+         ETK_CONSTRUCTOR(_etk_viewport_constructor), NULL, NULL);
 
    return viewport_type;
 }
@@ -76,10 +78,10 @@ static void _etk_viewport_constructor(Etk_Viewport *viewport)
    ETK_WIDGET(viewport)->scroll_size_get = _etk_viewport_scroll_size_get;
    ETK_WIDGET(viewport)->scroll = _etk_viewport_scroll;
 
-   etk_signal_connect("realized", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_realized_cb), NULL);
-   etk_signal_connect_swapped("unrealized", ETK_OBJECT(viewport), ETK_CALLBACK(etk_callback_set_null), &viewport->clip);
-   etk_signal_connect("child-added", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_child_added_cb), NULL);
-   etk_signal_connect("child-removed", ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_child_removed_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_realized_cb), NULL);
+   etk_signal_connect_swapped_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(viewport), ETK_CALLBACK(etk_callback_set_null), &viewport->clip);
+   etk_signal_connect_by_code(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_child_added_cb), NULL);
+   etk_signal_connect_by_code(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_child_removed_cb), NULL);
 }
 
 /* Calculates the ideal size of the viewport */

@@ -53,8 +53,9 @@ Etk_Type *etk_scrollbar_type_get(void)
 
    if (!scrollbar_type)
    {
-      scrollbar_type = etk_type_new("Etk_Scrollbar", ETK_RANGE_TYPE, sizeof(Etk_Scrollbar),
-         ETK_CONSTRUCTOR(_etk_scrollbar_constructor), NULL);
+      scrollbar_type = etk_type_new("Etk_Scrollbar", ETK_RANGE_TYPE,
+         sizeof(Etk_Scrollbar),
+         ETK_CONSTRUCTOR(_etk_scrollbar_constructor), NULL, NULL);
    }
 
    return scrollbar_type;
@@ -71,7 +72,9 @@ Etk_Type *etk_hscrollbar_type_get(void)
 
    if (!hscrollbar_type)
    {
-      hscrollbar_type = etk_type_new("Etk_HScrollbar", ETK_SCROLLBAR_TYPE, sizeof(Etk_HScrollbar), NULL, NULL);
+      hscrollbar_type = etk_type_new("Etk_HScrollbar", ETK_SCROLLBAR_TYPE,
+         sizeof(Etk_HScrollbar),
+         NULL, NULL, NULL);
    }
 
    return hscrollbar_type;
@@ -88,7 +91,8 @@ Etk_Type *etk_vscrollbar_type_get(void)
 
    if (!vscrollbar_type)
    {
-      vscrollbar_type = etk_type_new("Etk_VScrollbar", ETK_SCROLLBAR_TYPE, sizeof(Etk_VScrollbar), NULL, NULL);
+      vscrollbar_type = etk_type_new("Etk_VScrollbar", ETK_SCROLLBAR_TYPE,
+         sizeof(Etk_VScrollbar), NULL, NULL, NULL);
    }
 
    return vscrollbar_type;
@@ -147,8 +151,8 @@ static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar)
 
    scrollbar->dragging = ETK_FALSE;
    ETK_RANGE(scrollbar)->value_changed_handler = _etk_scrollbar_value_changed_handler;
-   etk_signal_connect("realized", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_realized_cb), NULL);
-   etk_signal_connect("mouse-wheel", ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_mouse_wheel_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_WHEEL_SIGNAL, ETK_OBJECT(scrollbar), ETK_CALLBACK(_etk_scrollbar_mouse_wheel_cb), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "page-size", _etk_scrollbar_page_size_changed_cb, NULL);
    etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "lower", _etk_scrollbar_range_changed_cb, NULL);
    etk_object_notification_callback_add(ETK_OBJECT(scrollbar), "upper", _etk_scrollbar_range_changed_cb, NULL);

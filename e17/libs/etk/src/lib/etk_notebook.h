@@ -32,6 +32,7 @@ extern "C" {
 /** Checks if the object is an Etk_Notebook */
 #define ETK_IS_NOTEBOOK(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_NOTEBOOK_TYPE))
 
+extern int ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL;
 
 /**
  * @internal

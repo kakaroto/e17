@@ -62,7 +62,7 @@ Etk_Type *etk_slider_type_get(void)
    if (!slider_type)
    {
       slider_type = etk_type_new("Etk_Slider", ETK_RANGE_TYPE, sizeof(Etk_Slider),
-         ETK_CONSTRUCTOR(_etk_slider_constructor), ETK_DESTRUCTOR(_etk_slider_destructor));
+         ETK_CONSTRUCTOR(_etk_slider_constructor), ETK_DESTRUCTOR(_etk_slider_destructor), NULL);
 
       etk_type_property_add(slider_type, "label-format", ETK_SLIDER_LABEL_FORMAT_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
@@ -88,7 +88,7 @@ Etk_Type *etk_hslider_type_get(void)
    static Etk_Type *hslider_type = NULL;
 
    if (!hslider_type)
-      hslider_type = etk_type_new("Etk_HSlider", ETK_SLIDER_TYPE, sizeof(Etk_HSlider), NULL, NULL);
+      hslider_type = etk_type_new("Etk_HSlider", ETK_SLIDER_TYPE, sizeof(Etk_HSlider), NULL, NULL, NULL);
 
    return hslider_type;
 }
@@ -103,7 +103,7 @@ Etk_Type *etk_vslider_type_get(void)
    static Etk_Type *vslider_type = NULL;
 
    if (!vslider_type)
-      vslider_type = etk_type_new("Etk_VSlider", ETK_SLIDER_TYPE, sizeof(Etk_VSlider), NULL, NULL);
+      vslider_type = etk_type_new("Etk_VSlider", ETK_SLIDER_TYPE, sizeof(Etk_VSlider), NULL, NULL, NULL);
 
    return vslider_type;
 }
@@ -261,9 +261,9 @@ static void _etk_slider_constructor(Etk_Slider *slider)
    slider->update_timer = NULL;
 
    ETK_RANGE(slider)->value_changed_handler = _etk_slider_value_changed_handler;
-   etk_signal_connect("realized", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realized_cb), NULL);
-   etk_signal_connect("key-down", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_key_down_cb), NULL);
-   etk_signal_connect("mouse-wheel", ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_mouse_wheel_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_key_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_WHEEL_SIGNAL, ETK_OBJECT(slider), ETK_CALLBACK(_etk_slider_mouse_wheel_cb), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(slider), "lower", _etk_slider_range_changed_cb, NULL);
    etk_object_notification_callback_add(ETK_OBJECT(slider), "upper", _etk_slider_range_changed_cb, NULL);
 }

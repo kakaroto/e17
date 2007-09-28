@@ -39,8 +39,9 @@ Etk_Type *etk_canvas_type_get(void)
 
    if (!canvas_type)
    {
-      canvas_type = etk_type_new("Etk_Canvas", ETK_WIDGET_TYPE, sizeof(Etk_Canvas),
-            ETK_CONSTRUCTOR(_etk_canvas_constructor), NULL);
+      canvas_type = etk_type_new("Etk_Canvas", ETK_WIDGET_TYPE,
+         sizeof(Etk_Canvas), ETK_CONSTRUCTOR(_etk_canvas_constructor),
+         NULL, NULL);
    }
 
    return canvas_type;
@@ -180,8 +181,8 @@ static void _etk_canvas_constructor(Etk_Canvas *canvas)
    canvas->objects = NULL;
    ETK_WIDGET(canvas)->size_allocate = _etk_canvas_size_allocate;
 
-   etk_signal_connect("realized", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realized_cb), NULL);
-   etk_signal_connect("unrealized", ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_unrealized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_unrealized_cb), NULL);
 }
 
 /* Moves and resizes the clip of the canvas */

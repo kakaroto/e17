@@ -58,7 +58,7 @@ Etk_Type *etk_toolbar_type_get(void)
    if (!toolbar_type)
    {
       toolbar_type = etk_type_new("Etk_Toolbar", ETK_CONTAINER_TYPE, sizeof(Etk_Toolbar),
-         ETK_CONSTRUCTOR(_etk_toolbar_constructor), NULL);
+         ETK_CONSTRUCTOR(_etk_toolbar_constructor), NULL, NULL);
 
       etk_type_property_add(toolbar_type, "orientation", ETK_TOOLBAR_ORIENTATION_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_TOOLBAR_HORIZ));
@@ -143,8 +143,8 @@ void etk_toolbar_orientation_set(Etk_Toolbar *toolbar, Etk_Toolbar_Orientation o
    etk_widget_internal_set(toolbar->box, ETK_TRUE);
    etk_widget_show(toolbar->box);
 
-   etk_signal_connect("child-added", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
-   etk_signal_connect("child-removed", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
+   etk_signal_connect_by_code(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
+   etk_signal_connect_by_code(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
 
 
    children = etk_container_children_get(ETK_CONTAINER(prev_box));
@@ -295,8 +295,8 @@ static void _etk_toolbar_constructor(Etk_Toolbar *toolbar)
    etk_widget_internal_set(ETK_WIDGET(toolbar->box), ETK_TRUE);
    etk_widget_show(toolbar->box);
 
-   etk_signal_connect("child-added", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
-   etk_signal_connect("child-removed", ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
+   etk_signal_connect_by_code(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_added_cb), toolbar);
+   etk_signal_connect_by_code(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(toolbar->box), ETK_CALLBACK(_etk_toolbar_child_removed_cb), NULL);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -471,7 +471,7 @@ static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, v
    {
       etk_widget_theme_parent_set(child, ETK_WIDGET(toolbar));
    }
-   //etk_signal_emit_by_name("child-added", ETK_OBJECT(toolbar), NULL, child);
+   //etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(toolbar), NULL, child);
 }
 
 /* Called when a widget is removed from the toolbar's box */
@@ -484,7 +484,7 @@ static void _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *child,
 
    if (etk_widget_theme_parent_get(child) == ETK_WIDGET(toolbar))
       etk_widget_theme_parent_set(child, NULL);
-   etk_signal_emit_by_name("child-removed", ETK_OBJECT(toolbar), NULL, child);
+   etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(toolbar), NULL, child);
 }
 
 /** @} */

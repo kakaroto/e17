@@ -54,8 +54,10 @@ Etk_Type *etk_toplevel_type_get(void)
 
    if (!toplevel_type)
    {
-      toplevel_type = etk_type_new("Etk_Toplevel", ETK_BIN_TYPE, sizeof(Etk_Toplevel),
-         ETK_CONSTRUCTOR(_etk_toplevel_constructor), ETK_DESTRUCTOR(_etk_toplevel_destructor));
+      toplevel_type = etk_type_new("Etk_Toplevel", ETK_BIN_TYPE,
+         sizeof(Etk_Toplevel),
+         ETK_CONSTRUCTOR(_etk_toplevel_constructor),
+         ETK_DESTRUCTOR(_etk_toplevel_destructor), NULL);
 
       etk_type_property_add(toplevel_type, "evas", ETK_TOPLEVEL_EVAS_PROPERTY,
          ETK_PROPERTY_POINTER, ETK_PROPERTY_READABLE, etk_property_value_pointer(NULL));
@@ -303,7 +305,7 @@ static void _etk_toplevel_constructor(Etk_Toplevel *toplevel)
    toplevel->size_get = NULL;
    toplevel->need_update = ETK_FALSE;
    ETK_WIDGET(toplevel)->toplevel_parent = toplevel;
-   etk_signal_connect("realized", ETK_OBJECT(toplevel), ETK_CALLBACK(_etk_toplevel_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(toplevel), ETK_CALLBACK(_etk_toplevel_realized_cb), NULL);
 
    _etk_toplevel_widgets = evas_list_append(_etk_toplevel_widgets, toplevel);
 }
@@ -396,7 +398,7 @@ static void _etk_toplevel_key_down_cb(void *data, Evas *e, Evas_Object *obj, voi
    for (widget = focused; widget && propagate; widget = widget->parent)
    {
       etk_event_key_down_wrap(widget, event_info, &event);
-      propagate = etk_signal_emit_by_name("key-down", ETK_OBJECT(widget), NULL, &event);
+      propagate = etk_signal_emit(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(widget), NULL, &event);
    }
 }
 
@@ -415,7 +417,7 @@ static void _etk_toplevel_key_up_cb(void *data, Evas *e, Evas_Object *obj, void 
    for (widget = focused; widget && propagate; widget = widget->parent)
    {
       etk_event_key_up_wrap(widget, event_info, &event);
-      propagate = etk_signal_emit_by_name("key-up", ETK_OBJECT(widget), NULL, &event);
+      propagate = etk_signal_emit(ETK_WIDGET_KEY_UP_SIGNAL, ETK_OBJECT(widget), NULL, &event);
    }
 }
 

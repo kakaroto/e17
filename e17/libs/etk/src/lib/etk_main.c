@@ -147,8 +147,8 @@ int etk_shutdown(void)
 
       /* Shutdown the subsystems of Etk */
       etk_object_shutdown();
-      etk_signal_shutdown();
       etk_type_shutdown();
+      etk_signal_shutdown();
 
       etk_tooltips_shutdown();
       etk_event_shutdown();

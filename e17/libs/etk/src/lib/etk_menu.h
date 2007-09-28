@@ -28,6 +28,8 @@ extern "C" {
 /** Check if the object is an Etk_Menu */
 #define ETK_IS_MENU(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_MENU_TYPE))
 
+extern int ETK_MENU_POPPED_DOWN_SIGNAL;
+extern int ETK_MENU_POPPED_UP_SIGNAL;
 
 /**
  * @brief @widget A menu shell implemented in a popup window

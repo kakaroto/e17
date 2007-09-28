@@ -88,7 +88,7 @@ Etk_Type *etk_spinner_type_get(void)
    if (!spinner_type)
    {
       spinner_type = etk_type_new("Etk_Spinner", ETK_RANGE_TYPE, sizeof(Etk_Spinner),
-         ETK_CONSTRUCTOR(_etk_spinner_constructor), NULL);
+         ETK_CONSTRUCTOR(_etk_spinner_constructor), NULL, NULL);
 
       etk_type_property_add(spinner_type, "digits", ETK_SPINNER_DIGITS_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE,  etk_property_value_int(0));
@@ -238,15 +238,15 @@ static void _etk_spinner_constructor(Etk_Spinner *spinner)
    ETK_RANGE(spinner)->value_changed_handler = _etk_spinner_value_changed_handler;
    ETK_WIDGET(spinner)->size_allocate = _etk_spinner_size_allocate;
 
-   etk_signal_connect("realized", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_realized_cb), NULL);
-   etk_signal_connect("unrealized", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unrealized_cb), NULL);
-   etk_signal_connect("key-down", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_down_cb), NULL);
-   etk_signal_connect("key-up", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_up_cb), NULL);
-   etk_signal_connect("focused", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_focused_cb), NULL);
-   etk_signal_connect("unfocused", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unfocused_cb), NULL);
-   etk_signal_connect("enabled", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_enabled_cb), NULL);
-   etk_signal_connect("disabled", ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_disabled_cb), NULL);
-   etk_signal_connect("selection-received", ETK_OBJECT(spinner),
+   etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_realized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unrealized_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_UP_SIGNAL, ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_key_up_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_FOCUSED_SIGNAL, ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_focused_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_UNFOCUSED_SIGNAL, ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_unfocused_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_ENABLED_SIGNAL, ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_enabled_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_DISABLED_SIGNAL, ETK_OBJECT(spinner), ETK_CALLBACK(_etk_spinner_disabled_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_SELECTION_RECEIVED_SIGNAL, ETK_OBJECT(spinner),
          ETK_CALLBACK(_etk_spinner_selection_received_cb), NULL);
    etk_object_notification_callback_add(ETK_OBJECT(spinner), "step-increment",
          _etk_spinner_step_increment_changed_cb, NULL);
