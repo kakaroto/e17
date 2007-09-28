@@ -11,7 +11,7 @@ typedef struct _IM_Button_Type
 
 static void _etk_test_text_view_tag_window_create(void *data);
 static void _etk_test_text_view_im_window_create(void *data);
-static void _etk_test_im_editor_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_test_im_editor_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 
 static IM_Button_Type _im_buttons[] =
 {
@@ -210,7 +210,7 @@ static void _etk_test_text_view_im_window_create(void *data)
 }
 
 /* Called when a key is pressed when the editor text view is focused */
-static void _etk_test_im_editor_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_test_im_editor_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Textblock *message_tb, *editor_tb;
    Etk_Textblock_Iter *iter, *cursor;
@@ -218,9 +218,9 @@ static void _etk_test_im_editor_key_down_cb(Etk_Object *object, Etk_Event_Key_Do
    int buddy_id;
 
    if (!(message_tb = etk_text_view_textblock_get(ETK_TEXT_VIEW(data))))
-      return;
+      return ETK_FALSE;
    if (!(editor_tb = etk_text_view_textblock_get(ETK_TEXT_VIEW(object))))
-      return;
+      return ETK_FALSE;
 
    message = etk_textblock_text_get(editor_tb, ETK_TRUE);
    if ((strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "KP_Enter") == 0))
@@ -250,6 +250,8 @@ static void _etk_test_im_editor_key_down_cb(Etk_Object *object, Etk_Event_Key_Do
       }
 
       etk_textblock_iter_free(iter);
-      etk_signal_stop();
+      return ETK_TRUE;
    }
+
+   return ETK_FALSE;
 }

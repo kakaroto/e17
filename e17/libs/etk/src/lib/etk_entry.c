@@ -747,10 +747,8 @@ static Etk_Bool _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
       etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry), NULL);
    if (selection_changed)
       _etk_entry_selection_copy(entry, ETK_SELECTION_PRIMARY, ETK_FALSE);
-   if (stop_signal)
-      etk_signal_stop();
 
-   return ETK_TRUE;
+   return (!stop_signal);
 }
 
 /* Called when the mouse enters the entry */

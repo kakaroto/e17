@@ -1201,7 +1201,7 @@ static Etk_Bool _etk_combobox_entry_key_down_cb(Etk_Object *object, Etk_Event_Ke
    if (strcmp(event->keyname, "space") == 0)
    {
       etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(combobox_entry->button), ETK_TRUE);
-      etk_signal_stop();
+      return ETK_FALSE;
    }
 
    return ETK_TRUE;

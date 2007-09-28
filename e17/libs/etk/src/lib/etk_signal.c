@@ -18,17 +18,9 @@
  * @{
  */
 
-typedef struct Etk_Signal_Emitted
-{
-   Etk_Signal *signal;
-   Etk_Object *object;
-   Etk_Bool stop_emission:1;
-} Etk_Signal_Emitted;
-
 static void _etk_signal_free(Etk_Signal *signal);
 
 static Evas_List *_etk_signal_signals_list = NULL;
-static Evas_List *_etk_signal_emitted_signals = NULL;
 
 /**************************
  *
@@ -42,12 +34,6 @@ static Evas_List *_etk_signal_emitted_signals = NULL;
  */
 void etk_signal_shutdown(void)
 {
-   while (_etk_signal_emitted_signals)
-   {
-      free(_etk_signal_emitted_signals->data);
-      _etk_signal_emitted_signals = evas_list_remove_list(_etk_signal_emitted_signals, _etk_signal_emitted_signals);
-   }
-
    Evas_List *lst;
 
    for (lst = _etk_signal_signals_list; lst; lst = lst->next)
@@ -258,17 +244,23 @@ const Etk_Signal_Callback *etk_signal_connect_full_by_code(int signal_code, Etk_
 }
 
 /**
- * @brief Connects a callback to a signal of the object @a object. The callback is added at the start of the list of
- * callbacks to call. It means that when the signal is emitted, this callback will the first to be called. This way, you
- * can prevent the other callbacks from being called using etk_signal_stop() when this callback gets called
+ * @brief Connects a callback to a signal of the object @a object.
+ *
+ * When the signal of the object will be emitted, this callback will be
+ * automatically called.
+ *
  * @param signal_name the signal name to connect to the callback
  * @param object the object to connect to the callback
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
- * @param swapped if @a swapped == ETK_TRUE, the callback will be called with @a data as the only argument.
- * It can be useful to set it to ETK_TRUE if you just want to call one function on an object when the signal is emitted
- * @param after if @a after == ETK_TRUE, the callback will be called after all the callbacks already connected to this
- * signal. Otherwise, it will be called before all of them (default behavior)
+ * @param swapped if @a swapped == ETK_TRUE, the callback will be called
+ *        with @a data as the only argument. It can be useful to set it to
+ *        ETK_TRUE if you just want to call one function on an object when
+ *        the signal is emitted.
+ * @param after if @a after == ETK_TRUE, the callback will be called after
+ *        all the callbacks already connected to this signal. Otherwise, it
+ *        will be called before all of them (default behavior)
+ *
  * @return Returns a pointer identifying the connected callback, which can be
  * used later for disconnecting only this specific signal.
  */
@@ -781,8 +773,7 @@ void etk_signal_unblock_scb(const char *signal_name, Etk_Object *object,
  *        (@a return_value may be NULL)
  * @param ... the arguments to pass to the callback function
  *
- * @return Returns ETK_FALSE if the signal has been stopped (i.e.
- *         etk_signal_stop() has been called in one of the callbacks),
+ * @return Returns ETK_FALSE if the signal has been stopped
  *         and ETK_TRUE otherwise
  */
 Etk_Bool etk_signal_emit(int signal_code, Etk_Object *object, void *return_value, ...)
@@ -820,8 +811,7 @@ Etk_Bool etk_signal_emit(int signal_code, Etk_Object *object, void *return_value
  *        (@a return_value may be NULL)
  * @param ... the arguments to pass to the callback function
  *
- * @return Returns ETK_FALSE if the signal has been stopped (i.e.
- *         etk_signal_stop() has been called in one of the callbacks),
+ * @return Returns ETK_FALSE if the signal has been stopped
  *         and ETK_TRUE otherwise
  */
 Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *return_value, ...)
@@ -854,27 +844,22 @@ Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, vo
  *
  * @param signal the signal to emit
  * @param object the object which will emit the signal
- * @param return_value the location where store the return value
  *        (@a return_value may be NULL)
  * @param args the arguments to pass to the callback function
  *
  * @return Returns @a object, or NULL if @a object has been destroyed by
  *         one of the callbacks
- * @return Returns ETK_FALSE if the signal has been stopped (i.e.
- *         etk_signal_stop() has been called in one of the callbacks), and
- *         ETK_TRUE otherwise
+ * @return Returns ETK_FALSE if the signal has been stopped
+ *         and ETK_TRUE otherwise
  */
 Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object,
                                 void *return_value, va_list args)
 {
    Evas_List *callbacks;
    Etk_Signal_Callback *callback;
-   Etk_Signal_Emitted *emitted_signal;
-   Etk_Bool return_value_set = ETK_FALSE;
-   Etk_Bool result;
+   Etk_Bool keep_emission = ETK_TRUE;
    va_list args2;
    void *object_ptr;
-   Etk_Bool ret;
 
    if (!object || !signal)
       return ETK_FALSE;
@@ -883,12 +868,6 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object,
     * by a callback */
    object_ptr = object;
    etk_object_weak_pointer_add(object, &object_ptr);
-
-   emitted_signal = malloc(sizeof(Etk_Signal_Emitted));
-   emitted_signal->signal = signal;
-   emitted_signal->object = object;
-   emitted_signal->stop_emission = ETK_FALSE;
-   _etk_signal_emitted_signals = evas_list_prepend(_etk_signal_emitted_signals, emitted_signal);
 
    /* Calls the default handler */
    if (signal->handler_offset >= 0 && signal->marshaller)
@@ -899,34 +878,23 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object,
       if (*default_handler)
       {
          va_copy(args2, args);
-         signal->marshaller(*default_handler, object, NULL, return_value,
+         signal->marshaller(*default_handler, object, NULL, &keep_emission,
                             args2);
-         return_value_set = ETK_TRUE;
-         va_end(args2);
+
       }
    }
 
    /* Then we call the corresponding callbacks */
-   if (object_ptr && !emitted_signal->stop_emission)
+   if (object_ptr && keep_emission)
    {
       callbacks = NULL;
       etk_object_signal_callbacks_get(object, signal->code, &callbacks);
-      while (!emitted_signal->stop_emission && callbacks && object_ptr)
+      while (keep_emission && callbacks && object_ptr)
       {
          va_copy(args2, args);
          callback = callbacks->data;
-         if (!return_value_set || !signal->accumulator)
-         {
-            etk_signal_callback_call_valist(signal, callback, object,
-                                            return_value, args2);
-            return_value_set = ETK_TRUE;
-         }
-         else
-         {
-            etk_signal_callback_call_valist(signal, callback, object, &result,
-                                            args2);
-            signal->accumulator(return_value, &result, signal->accum_data);
-         }
+         etk_signal_callback_call_valist(signal, callback, object,
+                                         &keep_emission, args2);
          va_end(args2);
          callbacks = callbacks->next;
       }
@@ -934,11 +902,8 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object,
 
    if (object_ptr)
       etk_object_weak_pointer_remove(object, &object_ptr);
-   _etk_signal_emitted_signals = evas_list_remove_list(_etk_signal_emitted_signals, _etk_signal_emitted_signals);
-   ret = !emitted_signal->stop_emission;
-   free(emitted_signal);
 
-   return ret;
+   return keep_emission;
 }
 
 /**
@@ -960,22 +925,6 @@ Etk_Marshaller etk_signal_marshaller_get(Etk_Signal *signal)
 Evas_List * etk_signal_get_all()
 {
    return _etk_signal_signals_list;
-}
-
-/**
- * @brief Stops the propagation of the last emitted signal: the remaining callbacks/handler won't be called. @n
- * It's usually called in a callback to avoid the other callbacks to be called.
- * @note It has no effect if no signal is being emitted
- */
-void etk_signal_stop()
-{
-   Etk_Signal_Emitted *last_emitted_signal;
-
-   if (_etk_signal_emitted_signals)
-   {
-      last_emitted_signal = _etk_signal_emitted_signals->data;
-      last_emitted_signal->stop_emission = ETK_TRUE;
-   }
 }
 
 /**************************

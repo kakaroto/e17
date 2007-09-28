@@ -50,46 +50,6 @@ void etk_accumulator_bool_and(void *return_value, const void *value_to_accum, vo
 }
 
 /**
- * @brief Combines the returned boolean values together by performing an "OR" operation. @n
- * The accumulator will stop the propagation of the signal as soon as a callback returns ETK_TRUE
- * @param return_value the location where to store the result
- * @param value_to_accum the new value to combine
- * @param data unused
- */
-void etk_accumulator_stopping_bool_or(void *return_value, const void *value_to_accum, void *data)
-{
-   Etk_Bool *return_bool;
-   const Etk_Bool *result_bool;
-
-   if (!(return_bool = return_value) || !(result_bool = value_to_accum))
-      return;
-
-   *return_bool |= *result_bool;
-   if (*result_bool)
-      etk_signal_stop();
-}
-
-/**
- * @brief Combines the returned boolean values together by performing an "AND" operation. @n
- * The accumulator will stop the propagation of the signal as soon as a callback returns ETK_FALSE
- * @param return_value the location where to store the result
- * @param value_to_accum the new value to combine
- * @param data unused
- */
-void etk_accumulator_stopping_bool_and(void *return_value, const void *value_to_accum, void *data)
-{
-   Etk_Bool *return_bool;
-   const Etk_Bool *result_bool;
-
-   if (!(return_bool = return_value) || !(result_bool = value_to_accum))
-      return;
-
-   *return_bool &= *result_bool;
-   if (!(*result_bool))
-      etk_signal_stop();
-}
-
-/**
  * @brief A utility function to use as a swapped callback.
  * It sets to NULL the pointer located at the adress stored in @a data. @n
  * For example, if you want to set "pointer" to NULL when "button" is clicked, you can do: @n

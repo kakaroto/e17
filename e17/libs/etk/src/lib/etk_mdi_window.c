@@ -108,7 +108,7 @@ Etk_Widget *etk_mdi_window_new(void)
 
 /**
  * @brief Emits a delete-request on the mdi_window: it will call all the callbacks connected to the "delete-event" signal
- * and if all these callbacks return ETK_FALSE, the mdi_window will be destroyed. It has the same effect as if the user
+ * and if all these callbacks return ETK_TRUE, the mdi_window will be destroyed. It has the same effect as if the user
  * had clicked on the "close" button of the mdi_window
  * @param mdi_window a mdi_window
  */
@@ -116,8 +116,8 @@ void etk_mdi_window_delete_request(Etk_Mdi_Window *mdi_window)
 {
    Etk_Bool result;
 
-   etk_signal_emit(ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(mdi_window), &result);
-   if (!result)
+   result = etk_signal_emit(ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(mdi_window), NULL);
+   if (result)
    {
       etk_widget_parent_set(ETK_WIDGET(mdi_window), NULL);
       etk_object_destroy(ETK_OBJECT(mdi_window));

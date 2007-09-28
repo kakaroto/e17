@@ -120,7 +120,7 @@ Etk_Widget *etk_window_new(void)
 
 /**
  * @brief Emits a delete-request on the window: it will call all the callbacks connected to the "delete-event" signal
- * and if all these callbacks return ETK_FALSE, the window will be destroyed. It has the same effect as if the user
+ * and if all these callbacks return ETK_TRUE, the window will be destroyed. It has the same effect as if the user
  * had clicked on the "close" button of the window
  * @param window a window
  */
@@ -128,8 +128,9 @@ void etk_window_delete_request(Etk_Window *window)
 {
    Etk_Bool result;
 
-   etk_signal_emit(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(window), &result);
-   if (!result)
+   result = etk_signal_emit(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(window), NULL);
+
+   if (result)
       etk_object_destroy(ETK_OBJECT(window));
 }
 
@@ -580,15 +581,15 @@ Etk_Bool etk_window_skip_pager_hint_get(Etk_Window *window)
 
 /**
  * @brief A utility function to use as a callback for the "delete-event" signal.
- * It will hide the window and return ETK_TRUE to prevent the program from quitting
+ * It will hide the window and return ETK_FALSE to prevent the program from quitting
  * @param window the window to hide
  * @param data the data passed when the signal is emitted - unused
- * @return Return ETK_TRUE so the the program won't quit
+ * @return Return ETK_FALSE so the the program won't quit
  */
 Etk_Bool etk_window_hide_on_delete(Etk_Object *window, void *data)
 {
    etk_widget_hide(ETK_WIDGET(window));
-   return ETK_TRUE;
+   return ETK_FALSE;
 }
 
 /**************************
@@ -787,7 +788,7 @@ static Etk_Bool _etk_window_size_requested_cb(Etk_Object *object, Etk_Size *requ
 /* Default handler for the "delete-event" signal */
 static Etk_Bool _etk_window_delete_event_handler(Etk_Window *window)
 {
-   return ETK_FALSE;
+   return ETK_TRUE;
 }
 
 /* Gets the evas position of the window */

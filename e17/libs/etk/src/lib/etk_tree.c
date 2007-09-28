@@ -2998,7 +2998,6 @@ static Etk_Bool _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *ev
    if (strcmp(event->keyname, "a") == 0 && (event->modifiers & ETK_MODIFIER_CTRL))
    {
       etk_tree_select_all(tree);
-      etk_signal_stop();
    }
    /* Up arrow: Select the previous row */
    else if (strcmp(event->keyname, "Up") == 0)
@@ -3014,7 +3013,6 @@ static Etk_Bool _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *ev
 
       _etk_tree_row_select(tree, row_to_select, event->modifiers);
       etk_tree_row_scroll_to(row_to_select, ETK_FALSE);
-      etk_signal_stop();
    }
    /* Down arrow: Select the next row */
    else if (strcmp(event->keyname, "Down") == 0)
@@ -3026,24 +3024,25 @@ static Etk_Bool _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *ev
 
       _etk_tree_row_select(tree, row_to_select, event->modifiers);
       etk_tree_row_scroll_to(row_to_select, ETK_FALSE);
-      etk_signal_stop();
    }
    /* Left arrow: Fold the selected row */
    else if (strcmp(event->keyname, "Left") == 0)
    {
       if ((selected_row = etk_tree_selected_row_get(tree)))
          etk_tree_row_fold(selected_row);
-      etk_signal_stop();
    }
    /* Right arrow: Unfold the selected row */
    else if (strcmp(event->keyname, "Right") == 0)
    {
       if ((selected_row = etk_tree_selected_row_get(tree)))
          etk_tree_row_unfold(selected_row);
-      etk_signal_stop();
+   }
+   else
+   {
+      return ETK_TRUE;
    }
 
-   return ETK_TRUE;
+   return ETK_FALSE;
 }
 
 /**************************

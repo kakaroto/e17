@@ -593,10 +593,8 @@ static Etk_Bool _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down 
 
    if (selection_changed)
       _etk_spinner_selection_copy(spinner, ETK_SELECTION_PRIMARY, ETK_FALSE);
-   if (stop_signal)
-      etk_signal_stop();
 
-   return ETK_TRUE;
+   return (!stop_signal);
 }
 
 /* Called when a key is released while the spinner is focused */

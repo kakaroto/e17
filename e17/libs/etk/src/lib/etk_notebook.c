@@ -868,12 +868,12 @@ static Etk_Bool _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, Etk_Event_
    if (strcmp(event->keyname, "Left") == 0)
    {
       etk_notebook_page_prev(notebook);
-      etk_signal_stop();
+      return ETK_FALSE;
    }
    else if (strcmp(event->keyname, "Right") == 0)
    {
       etk_notebook_page_next(notebook);
-      etk_signal_stop();
+      return ETK_FALSE;
    }
 
    return ETK_TRUE;
@@ -892,9 +892,8 @@ static Etk_Bool _etk_notebook_tab_bar_mouse_wheel_cb(Etk_Object *object, Etk_Eve
    page_index += event->z;
    page_index = ETK_CLAMP(page_index, 0, etk_notebook_num_pages_get(notebook) - 1);
    etk_notebook_current_page_set(notebook, page_index);
-   etk_signal_stop();
 
-   return ETK_TRUE;
+   return ETK_FALSE;
 }
 
 /**************************

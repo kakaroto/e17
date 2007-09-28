@@ -2383,7 +2383,7 @@ static Etk_Bool _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key
       else
          etk_widget_unfocus(widget);
 
-      etk_signal_stop();
+      return ETK_FALSE;
    }
 
    return ETK_TRUE;

@@ -428,10 +428,7 @@ static Etk_Bool _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key
    else
       propagate = ETK_TRUE;
 
-   if (!propagate)
-      etk_signal_stop();
-
-   return ETK_TRUE;
+   return propagate;
 }
 
 /* Called when the user wants to scroll the scrolled view with the mouse wheel */
@@ -445,9 +442,7 @@ static Etk_Bool _etk_scrolled_view_mouse_wheel(Etk_Object *object, Etk_Event_Mou
 
    vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
    etk_range_value_set(vscrollbar_range, vscrollbar_range->value + event->z * vscrollbar_range->step_increment);
-   etk_signal_stop();
-
-   return ETK_TRUE;
+   return ETK_FALSE;
 }
 
 /* Called when the value of the hscrollbar has changed */

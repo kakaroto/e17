@@ -26,7 +26,7 @@ static int _etk_test_tree_scroll_timeout(void *data);
 static void _etk_test_tree_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
 static void _etk_test_tree_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
 static void _etk_test_tree_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Move *event, void *data);
-static void _etk_test_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_test_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_test_tree_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static int _etk_test_tree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
@@ -299,13 +299,13 @@ static void _etk_test_tree_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Mov
 
 /* Called when a key is pressed while the tree is focused:
  * we use this to delete the selected rows if "DEL" is pressed */
-static void _etk_test_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_test_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Tree *tree;
    Etk_Tree_Row *r;
 
    if (!(tree = ETK_TREE(object)))
-      return;
+      return ETK_FALSE;
 
    if (strcmp(event->keyname, "Delete") == 0)
    {
@@ -319,8 +319,10 @@ static void _etk_test_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
             etk_tree_row_delete(r);
       }
 
-      etk_signal_stop();
+      return ETK_TRUE;
    }
+
+   return ETK_FALSE;
 }
 
 /* Called when a row of the tree is clicked: we display the clicked row in the statusbar */

@@ -379,10 +379,7 @@ static Etk_Bool _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *
    else
       propagate = ETK_TRUE;
 
-   if (!propagate)
-      etk_signal_stop();
-
-   return ETK_TRUE;
+   return propagate;
 }
 
 /* Called when the user wants to change the value with the mouse wheel */
@@ -396,9 +393,7 @@ static Etk_Bool _etk_slider_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_W
 
    dir = ETK_SLIDER(range)->inverted ? 1 : -1;
    etk_range_value_set(range, range->value + dir * event->z * range->step_increment);
-   etk_signal_stop();
-
-   return ETK_TRUE;
+   return ETK_FALSE;
 }
 
 /* Called when the cursor of the slider is dragged */

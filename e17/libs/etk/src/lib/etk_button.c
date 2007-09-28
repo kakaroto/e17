@@ -607,7 +607,7 @@ static Etk_Bool _etk_button_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *
    if (strcmp(event->keyname, "space") == 0)
    {
       etk_button_press(button);
-      etk_signal_stop();
+      return ETK_FALSE;
    }
 
    return ETK_TRUE;
@@ -628,7 +628,7 @@ static Etk_Bool _etk_button_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *even
          etk_button_release(button);
          etk_button_click(button);
       }
-      etk_signal_stop();
+      return ETK_FALSE;
    }
 
    return ETK_TRUE;
