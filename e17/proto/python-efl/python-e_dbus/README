@@ -1,0 +1,31 @@
+                      DBUS PYTHON INTEGRATION FOR ECORE
+
+REQUIREMENTS
+============
+
+ * E_Dbus >= 0.1.0.003
+ * Ecore >= 0.9.9.041 (indirect, E_DBus dependency)
+ * D-Bus >= 0.62      (indirect, E_DBus dependency)
+ * Python >= 2.4
+ * Python-setuptools >= 0.6_rc3
+
+
+BUILDING AND INSTALLING
+=======================
+
+This package uses setuptools, so execute:
+
+Build::
+
+        python setup.py build
+
+Install::
+
+        python setup.py install
+
+You can choose where to install by using command options, see output
+of "python setup.py $COMMAND --help", example:
+
+        python setup.py install --help
+
+Options can also be set in file "setup.cfg".
