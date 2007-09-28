@@ -294,13 +294,13 @@ void etk_entry_image_highlight_set(Etk_Entry *entry, Etk_Entry_Image_Position po
    else
    {
       etk_signal_disconnect("mouse-in", ETK_OBJECT(image),
-            ETK_CALLBACK(_etk_entry_image_mouse_in_cb));
+            ETK_CALLBACK(_etk_entry_image_mouse_in_cb), entry);
       etk_signal_disconnect("mouse-out", ETK_OBJECT(image),
-            ETK_CALLBACK(_etk_entry_image_mouse_out_cb));
+            ETK_CALLBACK(_etk_entry_image_mouse_out_cb), entry);
       etk_signal_disconnect("mouse-down", ETK_OBJECT(image),
-            ETK_CALLBACK(_etk_entry_image_mouse_down_cb));
+            ETK_CALLBACK(_etk_entry_image_mouse_down_cb), entry);
       etk_signal_disconnect("mouse-up", ETK_OBJECT(image),
-            ETK_CALLBACK(_etk_entry_image_mouse_up_cb));
+            ETK_CALLBACK(_etk_entry_image_mouse_up_cb), entry);
 
       etk_widget_color_set(ETK_WIDGET(image), 255, 255, 255, 255);
    }

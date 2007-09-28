@@ -414,12 +414,12 @@ static void _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data
       return;
 
    etk_widget_theme_parent_set(ETK_WIDGET(item_object), NULL);
-   etk_signal_disconnect("entered", item_object, ETK_CALLBACK(_etk_menu_item_entered_cb));
-   etk_signal_disconnect("left", item_object, ETK_CALLBACK(_etk_menu_item_left_cb));
-   etk_signal_disconnect("mouse-up", item_object, ETK_CALLBACK(_etk_menu_item_mouse_up_cb));
-   etk_signal_disconnect("selected", item_object, ETK_CALLBACK(_etk_menu_item_selected_cb));
-   etk_signal_disconnect("unselected", item_object, ETK_CALLBACK(_etk_menu_item_unselected_cb));
-   etk_signal_disconnect("activated", item_object, ETK_CALLBACK(_etk_menu_item_activated_cb));
+   etk_signal_disconnect("entered", item_object, ETK_CALLBACK(_etk_menu_item_entered_cb), NULL);
+   etk_signal_disconnect("left", item_object, ETK_CALLBACK(_etk_menu_item_left_cb), NULL);
+   etk_signal_disconnect("mouse-up", item_object, ETK_CALLBACK(_etk_menu_item_mouse_up_cb), NULL);
+   etk_signal_disconnect("selected", item_object, ETK_CALLBACK(_etk_menu_item_selected_cb), NULL);
+   etk_signal_disconnect("unselected", item_object, ETK_CALLBACK(_etk_menu_item_unselected_cb), NULL);
+   etk_signal_disconnect("activated", item_object, ETK_CALLBACK(_etk_menu_item_activated_cb), NULL);
 }
 
 /* Called when the mouse pointer enters the item */

@@ -388,7 +388,7 @@ static void _etk_statusbar_resize_grip_cb(void *data, Evas_Object *obj, const ch
       etk_signal_connect("mouse-move", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_mouse_move_cb), NULL);
    }
    else if (strcmp(emission, "mouse,up,1") == 0)
-      etk_signal_disconnect("mouse-move", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_mouse_move_cb));
+      etk_signal_disconnect("mouse-move", ETK_OBJECT(statusbar), ETK_CALLBACK(_etk_statusbar_mouse_move_cb), NULL);
 }
 
 /* Called when mouse presses the resize grip and when the mouse is moved */

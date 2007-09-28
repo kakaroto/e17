@@ -149,16 +149,19 @@ const char *etk_signal_name_get(Etk_Signal *signal)
  * It can be useful to set it to ETK_TRUE if you just want to call one function on an object when the signal is emitted
  * @param after if @a after == ETK_TRUE, the callback will be called after all the callbacks already connected to this
  * signal. Otherwise, it will be called before all of them (default behavior)
+ * @return Returns a pointer identifying the connected callback, which can be
+ * used later for disconnecting only this specific signal.
  */
-void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Callback callback, void *data, Etk_Bool swapped, Etk_Bool after)
+const Etk_Signal_Callback *etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Callback callback, void *data, Etk_Bool swapped, Etk_Bool after)
 {
    Etk_Signal_Callback *new_callback;
    if (!object || !signal || !callback)
-      return;
+      return NULL;
 
    if (!(new_callback = etk_signal_callback_new(signal, callback, data, swapped)))
-      return;
+      return NULL;
    etk_object_signal_callback_add(object, new_callback, after);
+   return new_callback;
 }
 
 /**
@@ -169,22 +172,24 @@ void etk_signal_connect_full(Etk_Signal *signal, Etk_Object *object, Etk_Callbac
  * @param object the object to connect to the callback
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
+ * @return Returns a pointer identifying the connected callback, which can be
+ * used later for disconnecting only this specific signal.
  */
-void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
+const Etk_Signal_Callback *etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
 {
    Etk_Signal *signal;
 
    if (!object || !signal_name || !callback)
-      return;
+      return NULL;
 
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
       ETK_WARNING("Invalid signal connection: the object type \"%s\" doesn't have a signal called \"%s\"",
          object->type->name, signal_name);
-      return;
+      return NULL;
    }
 
-   etk_signal_connect_full(signal, object, callback, data, ETK_FALSE, ETK_FALSE);
+   return etk_signal_connect_full(signal, object, callback, data, ETK_FALSE, ETK_FALSE);
 }
 
 /**
@@ -195,22 +200,24 @@ void etk_signal_connect(const char *signal_name, Etk_Object *object, Etk_Callbac
  * @param object the object to connect to the callback
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
+ * @return Returns a pointer identifying the connected callback, which can be
+ * used later for disconnecting only this specific signal.
  */
-void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
+const Etk_Signal_Callback *etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
 {
    Etk_Signal *signal;
 
    if (!object || !signal_name || !callback)
-      return;
+      return NULL;
 
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
       ETK_WARNING("Invalid signal connection: the object type \"%s\" doesn't have a signal called \"%s\"",
          object->type->name, signal_name);
-      return;
+      return NULL;
    }
 
-   etk_signal_connect_full(signal, object, callback, data, ETK_FALSE, ETK_TRUE);
+   return etk_signal_connect_full(signal, object, callback, data, ETK_FALSE, ETK_TRUE);
 }
 
 /**
@@ -221,34 +228,37 @@ void etk_signal_connect_after(const char *signal_name, Etk_Object *object, Etk_C
  * @param object the object that will connect the signal
  * @param callback the callback to call when the signal is emitted
  * @param data the data to pass to the callback
+ * @return Returns a pointer identifying the connected callback, which can be
+ * used later for disconnecting only this specific signal.
  */
-void etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
+const Etk_Signal_Callback *etk_signal_connect_swapped(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
 {
    Etk_Signal *signal;
 
    if (!object || !signal_name || !callback)
-      return;
+      return NULL;
 
    if (!(signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object))))
    {
       ETK_WARNING("Invalid signal connection: the object type \"%s\" doesn't have a signal called \"%s\"",
          object->type->name, signal_name);
-      return;
+      return NULL;
    }
 
-   etk_signal_connect_full(signal, object, callback, data, ETK_TRUE, ETK_FALSE);
+   return etk_signal_connect_full(signal, object, callback, data, ETK_TRUE, ETK_FALSE);
 }
 
 /**
- * @brief Disconnects a callback from a signal, the callback won't be called anymore when the signal is emitted
+ * @brief Disconnects a callback from a signal, the callback won't be called anymore when the signal is emitted.
  * @param signal_name the name of the signal connected to the callback to disconnect
  * @param object the object connected to the callback to disconnect
  * @param callback the callback to disconnect
+ * @param data passed to the callback when connected
  */
-void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Callback callback)
+void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
 {
    Etk_Signal *signal;
-   Evas_List *callbacks;
+   Evas_List *callbacks, *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !signal_name || !callback)
@@ -263,14 +273,61 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Call
 
    callbacks = NULL;
    etk_object_signal_callbacks_get(object, signal, &callbacks);
-   while (callbacks)
+   c = callbacks;
+   while (c)
    {
-      signal_callback = callbacks->data;
-      if (signal_callback->callback == callback)
+      signal_callback = c->data;
+      if (signal_callback->callback == callback && signal_callback->data == data) {
          etk_object_signal_callback_remove(object, signal_callback);
-      callbacks = evas_list_remove_list(callbacks, callbacks);
+         break;
+      }
+      c = c->next;
    }
+   evas_list_free(callbacks);
 }
+
+/**
+ * @brief Disconnects a callback from a signal, the callback won't be called
+ * anymore when the signal is emitted. Removes one specific occurence of a
+ * callback function for a signal, identified by the value returned in
+ * connect() calls.
+ * @param object the object connected to the callback to disconnect
+ * @param scb the unique signal callback to disconnect
+ */
+void etk_signal_disconnect_scb(Etk_Object *object, Etk_Signal_Callback *scb)
+{
+   Etk_Signal *signal;
+   Evas_List *callbacks, *c;
+   Etk_Signal_Callback *signal_callback;
+
+   if (!object || !scb)
+      return;
+
+   if (!(signal = scb->signal))
+      return;
+
+   if (!etk_signal_lookup(signal->name, etk_object_object_type_get(object)))
+   {
+      ETK_WARNING("Invalid signal disconnection: the object type \"%s\" doesn't have a signal called \"%s\"",
+         object->type->name, signal->name);
+      return;
+   }
+
+   callbacks = NULL;
+   etk_object_signal_callbacks_get(object, signal, &callbacks);
+   c = callbacks;
+   while (c)
+   {
+      signal_callback = c->data;
+      if (signal_callback == scb) {
+         etk_object_signal_callback_remove(object, signal_callback);
+         break;
+      }
+      c = c->next;
+   }
+   evas_list_free(callbacks);
+}
+
 
 /**
  * @brief Disconnects all callbacks from a signal
@@ -280,7 +337,7 @@ void etk_signal_disconnect(const char *signal_name, Etk_Object *object, Etk_Call
 void etk_signal_disconnect_all(const char *signal_name, Etk_Object *object)
 {
    Etk_Signal *signal;
-   Evas_List *callbacks;
+   Evas_List *callbacks, *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !signal_name)
@@ -295,25 +352,28 @@ void etk_signal_disconnect_all(const char *signal_name, Etk_Object *object)
 
    callbacks = NULL;
    etk_object_signal_callbacks_get(object, signal, &callbacks);
-   while (callbacks)
+   c = callbacks;
+   while (c)
    {
-      signal_callback = callbacks->data;
+      signal_callback = c->data;
       etk_object_signal_callback_remove(object, signal_callback);
-      callbacks = evas_list_remove_list(callbacks, callbacks);
+      c = c->next;
    }
+   evas_list_free(callbacks);
 }
 
 /**
  * @brief Blocks a callback from being called when the corresponding signal is emitted. Unlike etk_signal_disconnect(),
- * the callback is note removed, and can be easily unblock with etk_signal_unblock()
+ * the callback is not removed, and can be easily unblock with etk_signal_unblock()
  * @param signal_name the name of the signal connected to the callback to block
  * @param object the object connected to the callback to block
  * @param callback the callback function to block
+ * @param data passed to the callback when connected
  */
-void etk_signal_block(const char *signal_name, Etk_Object *object, Etk_Callback callback)
+void etk_signal_block(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
 {
    Etk_Signal *signal;
-   Evas_List *callbacks;
+   Evas_List *callbacks, *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !signal_name || !callback)
@@ -328,13 +388,57 @@ void etk_signal_block(const char *signal_name, Etk_Object *object, Etk_Callback 
 
    callbacks = NULL;
    etk_object_signal_callbacks_get(object, signal, &callbacks);
-   while (callbacks)
+   c = callbacks;
+   while (c)
    {
-      signal_callback = callbacks->data;
-      if (signal_callback->callback == callback)
+      signal_callback = c->data;
+      if (signal_callback->callback == callback && signal_callback->data == data) {
          etk_signal_callback_block(signal_callback);
-      callbacks = evas_list_remove_list(callbacks, callbacks);
+         break;
+      }
+      c = c->next;
    }
+   evas_list_free(callbacks);
+}
+
+/**
+ * @brief Blocks a callback from being called when the corresponding signal is emitted. Unlike etk_signal_disconnect(),
+ * the callback is not removed, and can be easily unblock with etk_signal_unblock()
+ * @param object the object connected to the callback to block
+ * @param scb the unique signal callback to block
+ */
+void etk_signal_block_scb(Etk_Object *object, Etk_Signal_Callback *scb)
+{
+   Etk_Signal *signal;
+   Evas_List *callbacks, *c;
+   Etk_Signal_Callback *signal_callback;
+
+   if (!object || !scb)
+      return;
+
+   if (!(signal = scb->signal))
+      return;
+
+   if (!etk_signal_lookup(signal->name, etk_object_object_type_get(object)))
+   {
+      ETK_WARNING("Invalid signal block: the object type \"%s\" doesn't have a signal called \"%s\"",
+         object->type->name, signal->name);
+      return;
+   }
+
+   callbacks = NULL;
+   etk_object_signal_callbacks_get(object, signal, &callbacks);
+   c = callbacks;
+   while (c)
+   {
+      signal_callback = c->data;
+      if (signal_callback == scb) {
+         etk_signal_callback_block(signal_callback);
+         break;
+      }
+      c = c->next;
+   }
+   evas_list_free(callbacks);
 }
 
 /**
@@ -343,11 +447,12 @@ void etk_signal_block(const char *signal_name, Etk_Object *object, Etk_Callback 
  * @param signal_name the name of the signal connected to the callback to unblock
  * @param object the object connected to the callback to unblock
  * @param callback the callback function to unblock
+ * @param data passed to the callback when connected
  */
-void etk_signal_unblock(const char *signal_name, Etk_Object *object, Etk_Callback callback)
+void etk_signal_unblock(const char *signal_name, Etk_Object *object, Etk_Callback callback, void *data)
 {
    Etk_Signal *signal;
-   Evas_List *callbacks;
+   Evas_List *callbacks, *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !signal_name || !callback)
@@ -362,13 +467,57 @@ void etk_signal_unblock(const char *signal_name, Etk_Object *object, Etk_Callbac
 
    callbacks = NULL;
    etk_object_signal_callbacks_get(object, signal, &callbacks);
-   while (callbacks)
+   c = callbacks;
+   while (c)
    {
-      signal_callback = callbacks->data;
-      if (signal_callback->callback == callback)
+      signal_callback = c->data;
+      if (signal_callback->callback == callback && signal_callback->data == data) {
          etk_signal_callback_unblock(signal_callback);
-      callbacks = evas_list_remove_list(callbacks, callbacks);
+         break;
+      }
+      c = c->next;
    }
+   evas_list_free(callbacks);
+}
+
+/**
+ * @brief Unblocks a blocked callback. The callback will no longer be prevented from being called when the
+ * corresponding signal is emitted
+ * @param object the object connected to the callback to unblock
+ * @param scb the unique signal callback to unblock
+ */
+void etk_signal_unblock_scb(Etk_Object *object, Etk_Signal_Callback *scb)
+{
+   Etk_Signal *signal;
+   Evas_List *callbacks, *c;
+   Etk_Signal_Callback *signal_callback;
+
+   if (!object || !scb)
+      return;
+
+   if (!(signal = scb->signal))
+      return;
+
+   if (!etk_signal_lookup(signal->name, etk_object_object_type_get(object)))
+   {
+      ETK_WARNING("Invalid signal unblock: the object type \"%s\" doesn't have a signal called \"%s\"",
+         object->type->name, signal->name);
+      return;
+   }
+
+   callbacks = NULL;
+   etk_object_signal_callbacks_get(object, signal, &callbacks);
+   c = callbacks;
+   while (c)
+   {
+      signal_callback = c->data;
+      if (signal_callback == scb) {
+         etk_signal_callback_unblock(signal_callback);
+         break;
+      }
+      c = c->next;
+   }
+   evas_list_free(callbacks);
 }
 
 /**

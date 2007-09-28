@@ -288,11 +288,11 @@ void etk_window_modal_for_window(Etk_Window *window_to_modal, Etk_Window *window
    else
      {
 	etk_signal_disconnect("shown", ETK_OBJECT(window_to_modal),
-			      ETK_CALLBACK(_etk_window_disable));
+			      ETK_CALLBACK(_etk_window_disable), window);
 	etk_signal_disconnect("hidden", ETK_OBJECT(window_to_modal),
-			      ETK_CALLBACK(_etk_window_enable));
+			      ETK_CALLBACK(_etk_window_enable), window);
 	etk_signal_disconnect("delete-event", ETK_OBJECT(window_to_modal),
-			      ETK_CALLBACK(_etk_window_enable));
+			      ETK_CALLBACK(_etk_window_enable), window);
      }
 }
 

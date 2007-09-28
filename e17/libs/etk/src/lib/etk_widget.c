@@ -3064,7 +3064,7 @@ static void _etk_widget_swallowed_widget_realized_cb(Etk_Object *object, void *d
       }
    }
 
-   etk_signal_disconnect("realized", ETK_OBJECT(swallowed), ETK_CALLBACK(_etk_widget_swallowed_widget_realized_cb));
+   etk_signal_disconnect("realized", ETK_OBJECT(swallowed), ETK_CALLBACK(_etk_widget_swallowed_widget_realized_cb), NULL);
 }
 
 /**************************

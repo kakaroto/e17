@@ -439,7 +439,7 @@ static void _etk_colorpicker_destructor(Etk_Colorpicker *cp)
       return;
 
    for (i = 0; i < 6; i++)
-      etk_signal_disconnect("toggled", ETK_OBJECT(cp->radios[i]), ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb));
+      etk_signal_disconnect("toggled", ETK_OBJECT(cp->radios[i]), ETK_CALLBACK(_etk_colorpicker_radio_toggled_cb), cp);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */

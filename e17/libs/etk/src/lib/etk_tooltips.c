@@ -122,13 +122,13 @@ void etk_tooltips_tip_set(Etk_Widget *widget, const char *text)
       {
 	 etk_tooltips_pop_down();
 	 _etk_tooltips_hash = evas_hash_del(_etk_tooltips_hash, key, tip_text);
-	 etk_signal_disconnect("mouse-in", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_in_cb));
-	 etk_signal_disconnect("mouse-out", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_out_cb));
-	 etk_signal_disconnect("mouse-move", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_move_cb));
-	 etk_signal_disconnect("mouse-down", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_down_cb));
-	 etk_signal_disconnect("mouse-wheel", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_wheel_cb));
-	 etk_signal_disconnect("key-down", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_key_down_cb));
-	 etk_signal_disconnect("unrealized", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_widget_unrealized_cb));
+	 etk_signal_disconnect("mouse-in", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_in_cb), NULL);
+	 etk_signal_disconnect("mouse-out", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_out_cb), NULL);
+	 etk_signal_disconnect("mouse-move", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_move_cb), NULL);
+	 etk_signal_disconnect("mouse-down", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_down_cb), NULL);
+	 etk_signal_disconnect("mouse-wheel", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_mouse_wheel_cb), NULL);
+	 etk_signal_disconnect("key-down", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_key_down_cb), NULL);
+	 etk_signal_disconnect("unrealized", ETK_OBJECT(widget), ETK_CALLBACK(_etk_tooltips_widget_unrealized_cb), NULL);
 	 free(tip_text);
       }
       else

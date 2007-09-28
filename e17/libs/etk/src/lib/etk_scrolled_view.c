@@ -482,7 +482,7 @@ static void _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child,
    if (!object || !child)
       return;
    etk_signal_disconnect("scroll-size-changed", ETK_OBJECT(child),
-      ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb));
+      ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object);
 }
 
 /* Called when the scroll size of the scrolled view's child has changed */

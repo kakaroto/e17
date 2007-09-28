@@ -547,7 +547,7 @@ static void _etk_notebook_destructor(Etk_Notebook *notebook)
    for (l = notebook->pages; l; l = l->next)
    {
       page = l->data;
-      etk_signal_disconnect("toggled", ETK_OBJECT(page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb));
+      etk_signal_disconnect("toggled", ETK_OBJECT(page->tab), ETK_CALLBACK(_etk_notebook_tab_toggled_cb), notebook);
       free(page);
    }
 }

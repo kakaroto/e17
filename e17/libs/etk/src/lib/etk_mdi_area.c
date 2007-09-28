@@ -295,7 +295,7 @@ static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *wid
 
       if (ETK_IS_MDI_WINDOW(widget))
       {
-         etk_signal_disconnect("moved", ETK_OBJECT(widget), ETK_CALLBACK(_etk_mdi_area_child_moved_cb));
+         etk_signal_disconnect("moved", ETK_OBJECT(widget), ETK_CALLBACK(_etk_mdi_area_child_moved_cb), mdi_area);
          etk_object_notification_callback_remove(ETK_OBJECT(widget), "maximized", _etk_mdi_area_child_maximized_cb);
       }
 

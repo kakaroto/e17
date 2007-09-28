@@ -291,7 +291,7 @@ void etk_dialog_button_response_id_set(Etk_Dialog *dialog, Etk_Button *button, i
    *id = response_id;
    etk_object_data_set_full(ETK_OBJECT(button), "_Etk_Dialog::Response_Id", id, free);
 
-   etk_signal_disconnect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb));
+   etk_signal_disconnect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
    etk_signal_connect("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_dialog_button_clicked_cb), dialog);
 }
 
