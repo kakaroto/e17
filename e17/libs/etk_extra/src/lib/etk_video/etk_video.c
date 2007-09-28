@@ -20,8 +20,8 @@ static void _etk_video_constructor(Etk_Video *video);
 static void _etk_video_destructor(Etk_Video *video);
 static void _etk_video_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_video_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_video_realize_cb(Etk_Object *object, void *data);
-static void _etk_video_unrealize_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_video_realize_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_video_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_video_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_video_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_video_load(Etk_Video *video);
@@ -44,8 +44,8 @@ Etk_Type *etk_video_type_get()
    if (!video_type)
    {
       video_type = etk_type_new("Etk_Video", ETK_WIDGET_TYPE, sizeof(Etk_Video),
-         ETK_CONSTRUCTOR(_etk_video_constructor), ETK_DESTRUCTOR(_etk_video_destructor));
-      
+         ETK_CONSTRUCTOR(_etk_video_constructor), ETK_DESTRUCTOR(_etk_video_destructor), NULL);
+
       etk_type_property_add(video_type, "video-file", ETK_VIDEO_FILE_PROPERTY,
          ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(video_type, "keep-aspect", ETK_VIDEO_KEEP_ASPECT_PROPERTY,
@@ -452,27 +452,27 @@ static void _etk_video_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the video is realized */
-static void _etk_video_realize_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_video_realize_cb(Etk_Object *object, void *data)
 {
-   
    Etk_Video *video;
-   
+
    if (!(video = ETK_VIDEO(object)))
-      return;
+      return ETK_TRUE;
    _etk_video_load(video);
-   
+
+   return ETK_TRUE;
 }
 
 /* Called when the video is unrealized */
-static void _etk_video_unrealize_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_video_unrealize_cb(Etk_Object *object, void *data)
 {
-   
    Etk_Video *video;
 
    if (!(video = ETK_VIDEO(object)))
-      return;
+      return ETK_TRUE;
    video->video_object = NULL;
-   
+
+   return ETK_TRUE;
 }
 
 /**************************

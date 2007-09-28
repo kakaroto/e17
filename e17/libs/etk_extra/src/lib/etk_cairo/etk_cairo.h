@@ -12,6 +12,8 @@
  * @{
  */
 
+extern int ETK_CAIRO_REDRAW_REQUIRED_SIGNAL;
+
 typedef struct Etk_Cairo Etk_Cairo;
 
 /** Gets the type of an etk_cairo */
@@ -33,9 +35,9 @@ struct Etk_Cairo
 
    Etk_Widget *image;
 
-   void (*redraw_required_handler)(Etk_Cairo *cairo);
+   Etk_Bool (*redraw_required_handler)(Etk_Cairo *cairo);
 
-   struct 
+   struct
    {
      cairo_t *cr;
      cairo_surface_t *surface;

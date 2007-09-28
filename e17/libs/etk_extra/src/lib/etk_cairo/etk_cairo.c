@@ -1,11 +1,7 @@
 /** @file etk_cairo.c */
 #include "etk_cairo.h"
 
-enum Etk_Cairo_Signal_Id
-{
-  ETK_CAIRO_REDRAW_REQUIRED_SIGNAL,
-  ETK_CAIRO_NUM_SIGNALS
-};
+int ETK_CAIRO_REDRAW_REQUIRED_SIGNAL;
 
 enum Etk_Cairo_Property_Id
 {
@@ -17,12 +13,10 @@ static void _etk_cairo_constructor(Etk_Cairo *cairo);
 static void _etk_cairo_destructor(Etk_Cairo *cairo);
 static void _etk_cairo_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_cairo_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_cairo_size_requested_cb(Etk_Object *object, Etk_Size *size, void *data);
+static Etk_Bool _etk_cairo_size_requested_cb(Etk_Object *object, Etk_Size *size, void *data);
 static void _etk_cairo_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_cairo_rebuild(Etk_Cairo *cairo);
-static void _etk_cairo_redraw_required_handler(Etk_Cairo *cairo);
-
-static Etk_Signal *_etk_cairo_signals[ETK_CAIRO_NUM_SIGNALS];
+static Etk_Bool _etk_cairo_redraw_required_handler(Etk_Cairo *cairo);
 
 /**
  * @internal
@@ -35,12 +29,15 @@ Etk_Type *etk_cairo_type_get(void)
 
   if (!cairo_type)
   {
+    const Etk_Signal_Description signals[] = {
+      ETK_SIGNAL_DESC_HANDLER(ETK_CAIRO_REDRAW_REQUIRED_SIGNAL,
+        "redraw-required", Etk_Cairo, redraw_required_handler,
+        etk_marshaller_VOID),
+      ETK_SIGNAL_DESCRIPTION_SENTINEL
+    };
+
     cairo_type = etk_type_new("Etk_Cairo", ETK_WIDGET_TYPE, sizeof(Etk_Cairo),
-      ETK_CONSTRUCTOR(_etk_cairo_constructor), ETK_DESTRUCTOR(_etk_cairo_destructor));
-
-    _etk_cairo_signals[ETK_CAIRO_REDRAW_REQUIRED_SIGNAL] = etk_signal_new("redraw-required",
-      cairo_type, ETK_MEMBER_OFFSET(Etk_Cairo, redraw_required_handler), etk_marshaller_VOID__VOID, NULL, NULL);
-
+      ETK_CONSTRUCTOR(_etk_cairo_constructor), ETK_DESTRUCTOR(_etk_cairo_destructor), signals);
 
     etk_type_property_add(cairo_type, "min-width", ETK_CAIRO_MIN_WIDTH_PROPERTY,
       ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
@@ -154,7 +151,7 @@ static void _etk_cairo_property_get(Etk_Object *object, int property_id, Etk_Pro
   }
 }
 
-static void _etk_cairo_size_requested_cb(Etk_Object *object, Etk_Size *size, void *data)
+static Etk_Bool _etk_cairo_size_requested_cb(Etk_Object *object, Etk_Size *size, void *data)
 {
   Etk_Cairo *cairo;
   unsigned char *pixels = NULL;
@@ -162,23 +159,25 @@ static void _etk_cairo_size_requested_cb(Etk_Object *object, Etk_Size *size, voi
   int w, h;
 
   if (!(cairo = ETK_CAIRO(object)))
-    return;
+    return ETK_TRUE;
 
   etk_widget_geometry_get(ETK_WIDGET(cairo), NULL, NULL, &w, &h);
 
   if (old_w == w && old_h == h)
-    return;
+    return ETK_TRUE;
 
   old_w = w;
   old_h = h;
 
   _etk_cairo_rebuild(cairo);
   cairo_rectangle(cairo->cairo.cr, 0, 0, w, h);
-  etk_signal_emit(_etk_cairo_signals[ETK_CAIRO_REDRAW_REQUIRED_SIGNAL], object, NULL);
+  etk_signal_emit(ETK_CAIRO_REDRAW_REQUIRED_SIGNAL, object, NULL);
   pixels =  cairo_image_surface_get_data(cairo->cairo.surface);
 
   if (pixels)
     etk_image_set_from_data(ETK_IMAGE(cairo->image), w, h, pixels, ETK_FALSE);
+
+  return ETK_TRUE;
 }
 
 static void _etk_cairo_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
@@ -211,9 +210,9 @@ void _etk_cairo_rebuild(Etk_Cairo *cairo)
   cairo->cairo.cr = cairo_create(cairo->cairo.surface);
 }
 
-static void _etk_cairo_redraw_required_handler(Etk_Cairo *cairo)
+static Etk_Bool _etk_cairo_redraw_required_handler(Etk_Cairo *cairo)
 {
   if (!cairo)
-    return;
+    return ETK_TRUE;
 
 }
