@@ -223,7 +223,7 @@ ewl_init(int *argc, char **argv)
 	ecore_list_free_cb_set(configure_available, free);
 
 	if (!ewl_config_init()) {
-		fprintf(stderr, "Could not initilaize Ewl Config.\n");
+		fprintf(stderr, "Could not initialize Ewl Config.\n");
 		goto ERROR;
 	}
 	ecore_list_prepend(shutdown_queue, ewl_config_shutdown);
