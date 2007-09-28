@@ -340,7 +340,7 @@ static void _etk_text_view_selection_copy(Etk_Text_View *tv, Etk_Selection_Type 
       if (cut)
       {
          etk_textblock_delete_range(tv->textblock, cursor_pos, selection_pos);
-         etk_signal_emit(ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL, ETK_OBJECT(tv), NULL);
+         etk_signal_emit(ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL, ETK_OBJECT(tv));
       }
    }
 }

@@ -145,7 +145,8 @@ void etk_paned_child1_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
    {
       etk_widget_parent_set(child, ETK_WIDGET(paned));
       etk_widget_raise(paned->separator);
-      etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(paned), NULL, child);
+      etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(paned),
+                      child);
    }
 }
 
@@ -171,7 +172,7 @@ void etk_paned_child2_set(Etk_Paned *paned, Etk_Widget *child, Etk_Bool expand)
       etk_widget_parent_set(child, ETK_WIDGET(paned));
       etk_widget_raise(paned->separator);
       etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(paned),
-                      NULL, child);
+                      child);
    }
 }
 
@@ -558,7 +559,7 @@ static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget
 
    etk_widget_size_recalc_queue(ETK_WIDGET(paned));
    etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(paned),
-                   NULL, widget);
+                   widget);
 }
 
 /* Returns the children of the paned */

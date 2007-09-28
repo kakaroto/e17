@@ -218,7 +218,7 @@ void etk_colorpicker_current_color_set(Etk_Colorpicker *cp, Etk_Color color)
    cp->ignore_value_changed = ETK_FALSE;
 
    _etk_colorpicker_update_from_sliders(cp, ETK_COLORPICKER_R, ETK_TRUE, ETK_TRUE);
-   etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp), NULL);
+   etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp));
 }
 
 /**
@@ -731,7 +731,7 @@ static Etk_Bool _etk_colorpicker_slider_value_changed_cb(Etk_Object *object, dou
          update_sp = ((i != cp->sp_xcomponent) && (i != cp->sp_ycomponent));
          update_vp = ((i / 3) != (cp->mode / 3));
          _etk_colorpicker_update_from_sliders(cp, i, update_sp, update_vp);
-         etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp), NULL);
+         etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp));
          break;
       }
    }
@@ -757,7 +757,7 @@ static Etk_Bool _etk_colorpicker_alpha_slider_value_changed_cb(Etk_Object *objec
    evas_object_color_set(cp->current_color_rect, color.r, color.g, color.b, cp->current_color.a);
 
    if (!cp->ignore_value_changed)
-      etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp), NULL);
+      etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp));
 
    return ETK_TRUE;
 }
@@ -1132,7 +1132,7 @@ static void _etk_colorpicker_sp_cursor_move(Etk_Colorpicker *cp, float xpercent,
    cp->ignore_value_changed = ETK_FALSE;
 
    _etk_colorpicker_update_from_sliders(cp, cp->mode, ETK_FALSE, ETK_FALSE);
-   etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp), NULL);
+   etk_signal_emit(ETK_CP_COLOR_CHANGED_SIGNAL, ETK_OBJECT(cp));
 }
 
 /* Updates the colorpicker from its sliders */

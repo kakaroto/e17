@@ -187,7 +187,7 @@ void etk_object_destroy(Etk_Object *object)
    }
 
    object->destroy_me = ETK_TRUE;
-   etk_signal_emit(ETK_OBJECT_DESTROYED_SIGNAL, object, NULL);
+   etk_signal_emit(ETK_OBJECT_DESTROYED_SIGNAL, object);
 }
 
 /**

@@ -222,7 +222,7 @@ void etk_iconbox_current_model_set(Etk_Iconbox *iconbox, Etk_Iconbox_Model *mode
    etk_range_increments_set(etk_scrolled_view_vscrollbar_get(ETK_SCROLLED_VIEW(iconbox->scrolled_view)),
       model->height * 0.75, model->height * 3.0);
 
-   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid), NULL);
+   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid));
    etk_widget_redraw_queue(iconbox->grid);
 }
 
@@ -259,7 +259,7 @@ void etk_iconbox_model_geometry_set(Etk_Iconbox_Model *model, int width, int hei
    if (model->iconbox && model->iconbox->current_model == model)
    {
       etk_widget_redraw_queue(model->iconbox->grid);
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(model->iconbox->grid), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(model->iconbox->grid));
    }
 }
 
@@ -310,7 +310,7 @@ void etk_iconbox_model_icon_geometry_set(Etk_Iconbox_Model *model, int x, int y,
 
    if (model->iconbox && model->iconbox->current_model == model)
    {
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(model->iconbox->grid), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(model->iconbox->grid));
       etk_widget_redraw_queue(model->iconbox->grid);
    }
 }
@@ -370,7 +370,7 @@ void etk_iconbox_model_label_geometry_set(Etk_Iconbox_Model *model, int x, int y
 
    if (model->iconbox && model->iconbox->current_model == model)
    {
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(model->iconbox->grid), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(model->iconbox->grid));
       etk_widget_redraw_queue(model->iconbox->grid);
    }
 }
@@ -422,7 +422,7 @@ void etk_iconbox_thaw(Etk_Iconbox *iconbox)
    if (!iconbox || !iconbox->frozen)
       return;
 
-   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid), NULL);
+   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid));
    etk_widget_redraw_queue(iconbox->grid);
    iconbox->frozen = ETK_FALSE;
 }
@@ -466,7 +466,7 @@ Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename,
 
    if (!iconbox->frozen)
    {
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid));
       etk_widget_redraw_queue(iconbox->grid);
    }
 
@@ -506,7 +506,7 @@ void etk_iconbox_icon_del(Etk_Iconbox_Icon *icon)
 
    if (!iconbox->frozen)
    {
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid));
       etk_widget_redraw_queue(iconbox->grid);
    }
 }
@@ -523,7 +523,7 @@ void etk_iconbox_clear(Etk_Iconbox *iconbox)
    while (iconbox->first_icon)
       etk_iconbox_icon_del(iconbox->first_icon);
 
-   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid), NULL);
+   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(iconbox->grid));
    etk_widget_redraw_queue(iconbox->grid);
 }
 
@@ -728,7 +728,7 @@ void etk_iconbox_select_all(Etk_Iconbox *iconbox)
       icon->selected = ETK_TRUE;
 
    etk_widget_redraw_queue(iconbox->grid);
-   etk_signal_emit(ETK_ICONBOX_ALL_SELECTED_SIGNAL, ETK_OBJECT(iconbox), NULL);
+   etk_signal_emit(ETK_ICONBOX_ALL_SELECTED_SIGNAL, ETK_OBJECT(iconbox));
 }
 
 /**
@@ -746,7 +746,7 @@ void etk_iconbox_unselect_all(Etk_Iconbox *iconbox)
       icon->selected = ETK_FALSE;
 
    etk_widget_redraw_queue(iconbox->grid);
-   etk_signal_emit(ETK_ICONBOX_ALL_UNSELECTED_SIGNAL, ETK_OBJECT(iconbox), NULL);
+   etk_signal_emit(ETK_ICONBOX_ALL_UNSELECTED_SIGNAL, ETK_OBJECT(iconbox));
 }
 
 /**
@@ -761,7 +761,7 @@ void etk_iconbox_icon_select(Etk_Iconbox_Icon *icon)
 
    if (!icon->iconbox->frozen)
       etk_widget_redraw_queue(icon->iconbox->grid);
-   etk_signal_emit(ETK_ICONBOX_ICON_SELECTED_SIGNAL, ETK_OBJECT(icon->iconbox), NULL, icon);
+   etk_signal_emit(ETK_ICONBOX_ICON_SELECTED_SIGNAL, ETK_OBJECT(icon->iconbox), icon);
 }
 
 /**
@@ -776,7 +776,7 @@ void etk_iconbox_icon_unselect(Etk_Iconbox_Icon *icon)
 
    if (!icon->iconbox->frozen)
       etk_widget_redraw_queue(icon->iconbox->grid);
-   etk_signal_emit(ETK_ICONBOX_ICON_UNSELECTED_SIGNAL, ETK_OBJECT(icon->iconbox), NULL, icon);
+   etk_signal_emit(ETK_ICONBOX_ICON_UNSELECTED_SIGNAL, ETK_OBJECT(icon->iconbox), icon);
 }
 
 /**

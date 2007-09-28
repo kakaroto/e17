@@ -103,7 +103,7 @@ void etk_mdi_area_put(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x, int y)
    }
 
    etk_widget_parent_set(widget, ETK_WIDGET(mdi_area));
-   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(mdi_area), NULL, widget);
+   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(mdi_area), widget);
 }
 
 /**
@@ -301,7 +301,7 @@ static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *wid
          etk_object_notification_callback_remove(ETK_OBJECT(widget), "maximized", _etk_mdi_area_child_maximized_cb);
       }
 
-      etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(mdi_area), NULL, widget);
+      etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(mdi_area), widget);
    }
 }
 

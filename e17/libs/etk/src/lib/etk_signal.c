@@ -760,14 +760,12 @@ void etk_signal_unblock_scb(const char *signal_name, Etk_Object *object,
  *
  * @param signal_code code of the signal to emit
  * @param object the object which will emit the signal
- * @param return_value the location where store the return value
- *        (@a return_value may be NULL)
  * @param ... the arguments to pass to the callback function
  *
  * @return Returns ETK_FALSE if the signal has been stopped
  *         and ETK_TRUE otherwise
  */
-Etk_Bool etk_signal_emit(int signal_code, Etk_Object *object, void *return_value, ...)
+Etk_Bool etk_signal_emit(int signal_code, Etk_Object *object, ...)
 {
    va_list args;
    Etk_Signal *signal;
@@ -785,8 +783,8 @@ Etk_Bool etk_signal_emit(int signal_code, Etk_Object *object, void *return_value
       return ETK_FALSE;
    }
 
-   va_start(args, return_value);
-   ret = etk_signal_emit_valist(signal, object, return_value, args);
+   va_start(args, object);
+   ret = etk_signal_emit_valist(signal, object, args);
    va_end(args);
 
    return ret;
@@ -798,14 +796,13 @@ Etk_Bool etk_signal_emit(int signal_code, Etk_Object *object, void *return_value
  *
  * @param signal the name of the signal to emit
  * @param object the object which will emit the signal
- * @param return_value the location where store the return value
- *        (@a return_value may be NULL)
  * @param ... the arguments to pass to the callback function
  *
  * @return Returns ETK_FALSE if the signal has been stopped
  *         and ETK_TRUE otherwise
  */
-Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, void *return_value, ...)
+Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object,
+                                 ...)
 {
    va_list args;
    Etk_Signal *signal;
@@ -822,8 +819,8 @@ Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, vo
       return ETK_FALSE;
    }
 
-   va_start(args, return_value);
-   ret = etk_signal_emit_valist(signal, object, return_value, args);
+   va_start(args, object);
+   ret = etk_signal_emit_valist(signal, object, args);
    va_end(args);
 
    return ret;
@@ -835,7 +832,6 @@ Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, vo
  *
  * @param signal the signal to emit
  * @param object the object which will emit the signal
- *        (@a return_value may be NULL)
  * @param args the arguments to pass to the callback function
  *
  * @return Returns @a object, or NULL if @a object has been destroyed by
@@ -844,7 +840,7 @@ Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object, vo
  *         and ETK_TRUE otherwise
  */
 Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object,
-                                void *return_value, va_list args)
+                                va_list args)
 {
    Evas_List *callbacks;
    Etk_Signal_Callback *callback;

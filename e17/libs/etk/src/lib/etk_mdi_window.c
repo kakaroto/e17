@@ -116,7 +116,7 @@ void etk_mdi_window_delete_request(Etk_Mdi_Window *mdi_window)
 {
    Etk_Bool result;
 
-   result = etk_signal_emit(ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(mdi_window), NULL);
+   result = etk_signal_emit(ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(mdi_window));
    if (result)
    {
       etk_widget_parent_set(ETK_WIDGET(mdi_window), NULL);
@@ -170,7 +170,7 @@ void etk_mdi_window_move(Etk_Mdi_Window *mdi_window, int x, int y)
    if (!mdi_window)
       return;
 
-   etk_signal_emit(ETK_MDI_WINDOW_MOVED_SIGNAL, ETK_OBJECT(mdi_window), NULL, x, y);
+   etk_signal_emit(ETK_MDI_WINDOW_MOVED_SIGNAL, ETK_OBJECT(mdi_window), x, y);
 }
 
 /**

@@ -256,7 +256,7 @@ void etk_menu_item_select(Etk_Menu_Item *menu_item)
       return;
 
    menu_item->is_selected = ETK_TRUE;
-   etk_signal_emit(ETK_MENU_ITEM_SELECTED_SIGNAL, ETK_OBJECT(menu_item), NULL);
+   etk_signal_emit(ETK_MENU_ITEM_SELECTED_SIGNAL, ETK_OBJECT(menu_item));
 }
 
 /**
@@ -269,7 +269,7 @@ void etk_menu_item_unselect(Etk_Menu_Item *menu_item)
       return;
 
    menu_item->is_selected = ETK_FALSE;
-   etk_signal_emit(ETK_MENU_ITEM_UNSELECTED_SIGNAL, ETK_OBJECT(menu_item), NULL);
+   etk_signal_emit(ETK_MENU_ITEM_UNSELECTED_SIGNAL, ETK_OBJECT(menu_item));
 }
 
 /**
@@ -280,7 +280,7 @@ void etk_menu_item_activate(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
       return;
-   etk_signal_emit(ETK_MENU_ITEM_ACTIVATED_SIGNAL, ETK_OBJECT(menu_item), NULL);
+   etk_signal_emit(ETK_MENU_ITEM_ACTIVATED_SIGNAL, ETK_OBJECT(menu_item));
 }
 
 /**************************
@@ -977,7 +977,7 @@ static void _etk_menu_item_check_active_set(Etk_Menu_Item_Check *check_item, Etk
       return;
 
    check_item->active = active;
-   etk_signal_emit(ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL, ETK_OBJECT(check_item), NULL);
+   etk_signal_emit(ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL, ETK_OBJECT(check_item));
    etk_object_notify(ETK_OBJECT(check_item), "active");
 }
 
@@ -994,7 +994,7 @@ static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk
    if (!check_item->active || (check_item->active && radio_item->can_uncheck))
    {
       check_item->active = active;
-      etk_signal_emit(ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL, ETK_OBJECT(check_item), NULL);
+      etk_signal_emit(ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL, ETK_OBJECT(check_item));
       etk_object_notify(ETK_OBJECT(check_item), "active");
 
       if (check_item->active)

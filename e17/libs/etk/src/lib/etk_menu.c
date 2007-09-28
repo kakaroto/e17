@@ -338,7 +338,7 @@ static Etk_Bool _etk_menu_window_popped_up_cb(Etk_Object *object, void *data)
 
    if (!(menu = ETK_MENU(data)))
       return ETK_TRUE;
-   etk_signal_emit(ETK_MENU_POPPED_UP_SIGNAL, ETK_OBJECT(menu), NULL);
+   etk_signal_emit(ETK_MENU_POPPED_UP_SIGNAL, ETK_OBJECT(menu));
    return ETK_TRUE;
 }
 
@@ -354,7 +354,7 @@ static Etk_Bool _etk_menu_window_popped_down_cb(Etk_Object *object, void *data)
    for (l = ETK_MENU_SHELL(menu)->items; l; l = l->next)
       etk_menu_item_unselect(ETK_MENU_ITEM(l->data));
 
-   etk_signal_emit(ETK_MENU_POPPED_DOWN_SIGNAL, ETK_OBJECT(menu), NULL);
+   etk_signal_emit(ETK_MENU_POPPED_DOWN_SIGNAL, ETK_OBJECT(menu));
    return ETK_TRUE;
 }
 

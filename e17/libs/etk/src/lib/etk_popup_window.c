@@ -254,7 +254,7 @@ void etk_popup_window_popup_at_xy(Etk_Popup_Window *popup_window, int x, int y)
    etk_widget_show(ETK_WIDGET(popup_window));
 
    _etk_popup_window_slide_timer_update(popup_window);
-   etk_signal_emit(ETK_POPUP_WINDOW_POPPED_UP_SIGNAL, ETK_OBJECT(popup_window), NULL);
+   etk_signal_emit(ETK_POPUP_WINDOW_POPPED_UP_SIGNAL, ETK_OBJECT(popup_window));
 }
 
 /**
@@ -323,7 +323,7 @@ void etk_popup_window_popdown(Etk_Popup_Window *popup_window)
    }
 
    etk_widget_hide(ETK_WIDGET(popup_window));
-   etk_signal_emit(ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL, ETK_OBJECT(popup_window), NULL);
+   etk_signal_emit(ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL, ETK_OBJECT(popup_window));
 }
 
 /**

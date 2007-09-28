@@ -151,7 +151,7 @@ void etk_button_press(Etk_Button *button)
       return;
 
    button->is_pressed = ETK_TRUE;
-   etk_signal_emit(ETK_BUTTON_PRESSED_SIGNAL, ETK_OBJECT(button), NULL);
+   etk_signal_emit(ETK_BUTTON_PRESSED_SIGNAL, ETK_OBJECT(button));
 }
 
 /**
@@ -164,7 +164,7 @@ void etk_button_release(Etk_Button *button)
       return;
 
    button->is_pressed = ETK_FALSE;
-   etk_signal_emit(ETK_BUTTON_RELEASED_SIGNAL, ETK_OBJECT(button), NULL);
+   etk_signal_emit(ETK_BUTTON_RELEASED_SIGNAL, ETK_OBJECT(button));
 }
 
 /**
@@ -175,7 +175,7 @@ void etk_button_click(Etk_Button *button)
 {
    if (!button)
       return;
-   etk_signal_emit(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), NULL);
+   etk_signal_emit(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button));
 }
 
 /**

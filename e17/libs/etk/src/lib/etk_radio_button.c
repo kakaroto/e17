@@ -235,7 +235,7 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
    if (!toggle_button->active || (toggle_button->active && radio_button->can_uncheck))
    {
       toggle_button->active = active;
-      etk_signal_emit(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(toggle_button), NULL);
+      etk_signal_emit(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(toggle_button));
       etk_object_notify(ETK_OBJECT(toggle_button), "active");
 
       if (toggle_button->active)

@@ -436,7 +436,7 @@ void etk_tree_rows_height_set(Etk_Tree *tree, int rows_height)
       etk_range_increments_set(vscrollbar, rows_height, 5 * rows_height);
 
       etk_object_notify(ETK_OBJECT(tree), "rows-height");
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(tree->scroll_content), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(tree->scroll_content));
       etk_widget_redraw_queue(ETK_WIDGET(tree));
    }
 }
@@ -490,7 +490,7 @@ void etk_tree_thaw(Etk_Tree *tree)
       return;
 
    tree->frozen = ETK_FALSE;
-   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(tree->scroll_content), NULL);
+   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(tree->scroll_content));
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
@@ -669,7 +669,7 @@ void etk_tree_col_width_set(Etk_Tree_Col *col, int width)
 
    if (col->tree)
    {
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(col->tree->scroll_content), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(col->tree->scroll_content));
       etk_widget_redraw_queue(ETK_WIDGET(col->tree));
    }
 }
@@ -814,7 +814,7 @@ void etk_tree_col_visible_set(Etk_Tree_Col *col, Etk_Bool visible)
    if (col->tree)
    {
       _etk_tree_expanders_clip(col->tree);
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(col->tree->scroll_content), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(col->tree->scroll_content));
       etk_widget_redraw_queue(ETK_WIDGET(col->tree));
    }
 }
@@ -1191,7 +1191,7 @@ Etk_Tree_Row *etk_tree_row_insert_valist(Etk_Tree *tree, Etk_Tree_Row *parent, E
    if (tree->sorted_col) tree->sorted_col = NULL;
    if (!tree->frozen)
    {
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(tree->scroll_content), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(tree->scroll_content));
       etk_widget_redraw_queue(ETK_WIDGET(tree));
    }
    return new_row;
@@ -1212,7 +1212,7 @@ void etk_tree_row_delete(Etk_Tree_Row *row)
 
    if (!row->tree->frozen)
    {
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(row->tree->scroll_content), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(row->tree->scroll_content));
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
    }
 }
@@ -1230,7 +1230,7 @@ void etk_tree_clear(Etk_Tree *tree)
    while (tree->root.first_child)
       _etk_tree_row_move_to_purge_pool(tree->root.first_child);
 
-   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(tree->scroll_content), NULL);
+   etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(tree->scroll_content));
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
@@ -1286,7 +1286,7 @@ void etk_tree_row_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signal, va_
       if (col == row->tree->sorted_col)
          row->tree->sorted_col = NULL;
       if (emit_signal)
-         etk_signal_emit(ETK_TREE_COL_CELL_VALUE_CHANGED_SIGNAL, ETK_OBJECT(col), NULL, row);
+         etk_signal_emit(ETK_TREE_COL_CELL_VALUE_CHANGED_SIGNAL, ETK_OBJECT(col), row);
    }
    va_end(args2);
 
@@ -1387,7 +1387,7 @@ void etk_tree_row_model_fields_set_valist(Etk_Tree_Row *row, Etk_Bool emit_signa
       if (model->cell_data_set)
          model->cell_data_set(model, row->cells_data[model->col->id][model->index], &args2);
       if (emit_signal)
-         etk_signal_emit(ETK_TREE_COL_CELL_VALUE_CHANGED_SIGNAL, ETK_OBJECT(model->col), NULL, row);
+         etk_signal_emit(ETK_TREE_COL_CELL_VALUE_CHANGED_SIGNAL, ETK_OBJECT(model->col), row);
    }
    va_end(args2);
 
@@ -1510,7 +1510,7 @@ void etk_tree_select_all(Etk_Tree *tree)
    for (row = tree->root.first_child; row; row = etk_tree_row_walk_next(row, ETK_TRUE))
       row->selected = ETK_TRUE;
 
-   etk_signal_emit(ETK_TREE_ALL_SELECTED_SIGNAL, ETK_OBJECT(tree), NULL);
+   etk_signal_emit(ETK_TREE_ALL_SELECTED_SIGNAL, ETK_OBJECT(tree));
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
@@ -1530,7 +1530,7 @@ void etk_tree_unselect_all(Etk_Tree *tree)
    for (row = tree->root.first_child; row; row = etk_tree_row_walk_next(row, ETK_TRUE))
       row->selected = ETK_FALSE;
 
-   etk_signal_emit(ETK_TREE_ALL_SELECTED_SIGNAL, ETK_OBJECT(tree), NULL);
+   etk_signal_emit(ETK_TREE_ALL_SELECTED_SIGNAL, ETK_OBJECT(tree));
    etk_widget_redraw_queue(ETK_WIDGET(tree));
 }
 
@@ -1555,7 +1555,7 @@ void etk_tree_row_unselect(Etk_Tree_Row *row)
       return;
 
    row->selected = ETK_FALSE;
-   etk_signal_emit(ETK_TREE_ROW_UNSELECTED_SIGNAL, ETK_OBJECT(row->tree), NULL, row);
+   etk_signal_emit(ETK_TREE_ROW_UNSELECTED_SIGNAL, ETK_OBJECT(row->tree), row);
 
    if (!row->tree->frozen)
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
@@ -1589,10 +1589,10 @@ void etk_tree_row_fold(Etk_Tree_Row *row)
    row->num_visible_children = 0;
    row->unfolded = ETK_FALSE;
 
-   etk_signal_emit(ETK_TREE_ROW_FOLDED_SIGNAL, ETK_OBJECT(row->tree), NULL, row);
+   etk_signal_emit(ETK_TREE_ROW_FOLDED_SIGNAL, ETK_OBJECT(row->tree), row);
    if (!row->tree->frozen)
    {
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(row->tree->scroll_content), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(row->tree->scroll_content));
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
    }
 }
@@ -1614,10 +1614,10 @@ void etk_tree_row_unfold(Etk_Tree_Row *row)
       parent->num_visible_children += row->num_visible_children;
    row->unfolded = ETK_TRUE;
 
-   etk_signal_emit(ETK_TREE_ROW_UNFOLDED_SIGNAL, ETK_OBJECT(row->tree), NULL, row);
+   etk_signal_emit(ETK_TREE_ROW_UNFOLDED_SIGNAL, ETK_OBJECT(row->tree), row);
    if (!row->tree->frozen)
    {
-      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(row->tree->scroll_content), NULL);
+      etk_signal_emit(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(row->tree->scroll_content));
       etk_widget_redraw_queue(ETK_WIDGET(row->tree));
    }
 }
@@ -2482,12 +2482,12 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
    /* Emit the "row-shown/hidden" signals */
    while (prev_visible_rows)
    {
-      etk_signal_emit(ETK_TREE_ROW_HIDDEN_SIGNAL, ETK_OBJECT(tree), NULL, prev_visible_rows->data);
+      etk_signal_emit(ETK_TREE_ROW_HIDDEN_SIGNAL, ETK_OBJECT(tree), prev_visible_rows->data);
       prev_visible_rows = evas_list_remove_list(prev_visible_rows, prev_visible_rows);
    }
    while (new_visible_rows)
    {
-      etk_signal_emit(ETK_TREE_ROW_SHOWN_SIGNAL, ETK_OBJECT(tree), NULL, new_visible_rows->data);
+      etk_signal_emit(ETK_TREE_ROW_SHOWN_SIGNAL, ETK_OBJECT(tree), new_visible_rows->data);
       new_visible_rows = evas_list_remove_list(new_visible_rows, new_visible_rows);
    }
 }
@@ -3243,7 +3243,7 @@ static void _etk_tree_row_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, v
    if (event.flags != ETK_MOUSE_NONE)
    {
       etk_signal_emit(ETK_TREE_ROW_CLICKED_SIGNAL, ETK_OBJECT(row_object->row->tree),
-            NULL, row_object->row, &event);
+            row_object->row, &event);
    }
 }
 
@@ -3269,12 +3269,12 @@ static void _etk_tree_row_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, voi
       if (event.flags == ETK_MOUSE_NONE)
       {
          etk_signal_emit(ETK_TREE_ROW_CLICKED_SIGNAL, ETK_OBJECT(row_object->row->tree),
-               NULL, row_object->row, &event);
+               row_object->row, &event);
       }
       if (event.flags == ETK_MOUSE_DOUBLE_CLICK)
       {
          etk_signal_emit(ETK_TREE_ROW_ACTIVATED_SIGNAL, ETK_OBJECT(row_object->row->tree),
-               NULL, row_object->row, &event);
+               row_object->row, &event);
       }
    }
 }
@@ -3350,7 +3350,7 @@ static void _etk_tree_purge(Etk_Tree *tree)
             }
          }
 
-         etk_signal_emit(ETK_TREE_ROW_HIDDEN_SIGNAL, ETK_OBJECT(tree), NULL, row_object->row);
+         etk_signal_emit(ETK_TREE_ROW_HIDDEN_SIGNAL, ETK_OBJECT(tree), row_object->row);
          row_object->row = NULL;
       }
    }
@@ -3737,7 +3737,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
 
          row->selected = ETK_TRUE;
          row->tree->last_selected_row = row;
-         etk_signal_emit(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(row->tree), NULL, row);
+         etk_signal_emit(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(row->tree), row);
       }
    }
    else
@@ -3764,7 +3764,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
                break;
          }
 
-         etk_signal_emit(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(row->tree), NULL, row);
+         etk_signal_emit(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(row->tree), row);
       }
       /* Invert the selected state of the given row */
       else if (modifiers & ETK_MODIFIER_CTRL)
@@ -3775,7 +3775,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
          {
             row->selected = ETK_TRUE;
             row->tree->last_selected_row = row;
-            etk_signal_emit(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(row->tree), NULL, row);
+            etk_signal_emit(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(row->tree), row);
          }
       }
       else
@@ -3786,7 +3786,7 @@ static void _etk_tree_row_select(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Modifier
          if (row->tree->last_selected_row != row)
          {
             row->tree->last_selected_row = row;
-            etk_signal_emit(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(row->tree), NULL, row);
+            etk_signal_emit(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(row->tree), row);
          }
       }
    }

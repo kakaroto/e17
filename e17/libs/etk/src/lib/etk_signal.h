@@ -135,12 +135,11 @@ void etk_signal_unblock_scb_by_code(int signal_code, Etk_Object *object,
 void etk_signal_unblock_scb(const char *signal_name, Etk_Object *object,
                             const Etk_Signal_Callback *scb);
 
-Etk_Bool etk_signal_emit(int signal_code, Etk_Object *object,
-                         void *return_value, ...);
+Etk_Bool etk_signal_emit(int signal_code, Etk_Object *object, ...);
 Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object,
-                                 void *return_value, ...);
+                                 ...);
 Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object,
-                                void *return_value, va_list args);
+                                va_list args);
 
 Evas_List * etk_signal_get_all();
 const Etk_Type * etk_signal_object_type_get(Etk_Signal *signal);

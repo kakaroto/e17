@@ -812,12 +812,12 @@ void etk_combobox_active_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *ite
    }
 
    if (item)
-      etk_signal_emit(ETK_COMBOBOX_ITEM_ACTIVATED_SIGNAL, ETK_OBJECT(combobox), NULL, item);
+      etk_signal_emit(ETK_COMBOBOX_ITEM_ACTIVATED_SIGNAL, ETK_OBJECT(combobox), item);
 
    if (combobox->active_item != item)
    {
       combobox->active_item = item;
-      etk_signal_emit(ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL, ETK_OBJECT(combobox), NULL);
+      etk_signal_emit(ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL, ETK_OBJECT(combobox));
       etk_object_notify(ETK_OBJECT(combobox), "active-item");
    }
 }

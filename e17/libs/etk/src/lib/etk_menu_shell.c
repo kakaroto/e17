@@ -162,7 +162,7 @@ void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
       item->parent_shell = NULL;
       menu_shell->items = evas_list_remove_list(menu_shell->items, l);
       etk_widget_size_recalc_queue(ETK_WIDGET(menu_shell));
-      etk_signal_emit(ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL, ETK_OBJECT(menu_shell), NULL, item);
+      etk_signal_emit(ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL, ETK_OBJECT(menu_shell), item);
    }
 }
 
@@ -219,7 +219,7 @@ static void _etk_menu_shell_item_add(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *
 {
    etk_widget_parent_set(ETK_WIDGET(item), ETK_WIDGET(menu_shell));
    item->parent_shell = menu_shell;
-   etk_signal_emit(ETK_MENU_SHELL_ITEM_ADDED_SIGNAL, ETK_OBJECT(menu_shell), NULL, item);
+   etk_signal_emit(ETK_MENU_SHELL_ITEM_ADDED_SIGNAL, ETK_OBJECT(menu_shell), item);
 }
 
 /** @} */

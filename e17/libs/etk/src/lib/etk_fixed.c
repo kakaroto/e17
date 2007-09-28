@@ -94,7 +94,7 @@ void etk_fixed_put(Etk_Fixed *fixed, Etk_Widget *widget, int x, int y)
    }
 
    etk_widget_parent_set(widget, ETK_WIDGET(fixed));
-   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(fixed), NULL, widget);
+   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(fixed), widget);
 }
 
 /**
@@ -276,7 +276,7 @@ static void _etk_fixed_child_remove(Etk_Container *container, Etk_Widget *widget
             evas_object_hide(fixed->clip);
       }
 
-      etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(fixed), NULL, widget);
+      etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(fixed), widget);
    }
 }
 

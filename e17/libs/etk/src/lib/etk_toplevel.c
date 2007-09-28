@@ -399,7 +399,7 @@ static void _etk_toplevel_key_down_cb(void *data, Evas *e, Evas_Object *obj, voi
    for (widget = focused; widget && propagate; widget = widget->parent)
    {
       etk_event_key_down_wrap(widget, event_info, &event);
-      propagate = etk_signal_emit(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(widget), NULL, &event);
+      propagate = etk_signal_emit(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(widget), &event);
    }
 }
 
@@ -418,7 +418,7 @@ static void _etk_toplevel_key_up_cb(void *data, Evas *e, Evas_Object *obj, void 
    for (widget = focused; widget && propagate; widget = widget->parent)
    {
       etk_event_key_up_wrap(widget, event_info, &event);
-      propagate = etk_signal_emit(ETK_WIDGET_KEY_UP_SIGNAL, ETK_OBJECT(widget), NULL, &event);
+      propagate = etk_signal_emit(ETK_WIDGET_KEY_UP_SIGNAL, ETK_OBJECT(widget), &event);
    }
 }
 

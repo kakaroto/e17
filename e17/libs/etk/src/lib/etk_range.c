@@ -99,7 +99,7 @@ Etk_Bool etk_range_value_set(Etk_Range *range, double value)
    if (new_value != range->value)
    {
       range->value = new_value;
-      etk_signal_emit(ETK_RANGE_VALUE_CHANGED_SIGNAL, ETK_OBJECT(range), NULL, range->value);
+      etk_signal_emit(ETK_RANGE_VALUE_CHANGED_SIGNAL, ETK_OBJECT(range), range->value);
       etk_object_notify(ETK_OBJECT(range), "value");
       return ETK_TRUE;
    }

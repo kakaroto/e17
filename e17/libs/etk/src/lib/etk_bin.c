@@ -78,7 +78,7 @@ void etk_bin_child_set(Etk_Bin *bin, Etk_Widget *child)
       etk_widget_parent_set(child, ETK_WIDGET(bin));
       bin->child = child;
 
-      etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(bin), NULL, child);
+      etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(bin), child);
       etk_object_notify(ETK_OBJECT(bin), "child");
    }
 }
@@ -212,7 +212,7 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
       return;
 
    bin->child = NULL;
-   etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(bin), NULL, widget);
+   etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(bin), widget);
    etk_object_notify(ETK_OBJECT(bin), "child");
 }
 

@@ -321,7 +321,7 @@ void etk_widget_show(Etk_Widget *widget)
       evas_object_show(widget->smart_object);
    etk_widget_size_recalc_queue(widget);
 
-   etk_signal_emit(ETK_WIDGET_SHOWN_SIGNAL, ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_SHOWN_SIGNAL, ETK_OBJECT(widget));
    etk_object_notify(ETK_OBJECT(widget), "visible");
 }
 
@@ -356,7 +356,7 @@ void etk_widget_hide(Etk_Widget *widget)
       evas_object_hide(widget->smart_object);
    etk_widget_size_recalc_queue(widget);
 
-   etk_signal_emit(ETK_WIDGET_HIDDEN_SIGNAL, ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_HIDDEN_SIGNAL, ETK_OBJECT(widget));
    etk_object_notify(ETK_OBJECT(widget), "visible");
 }
 
@@ -442,7 +442,7 @@ void etk_widget_focus(Etk_Widget *widget)
 
    /* TODO: etk_toplevel_focused_widget_set() should emit the "focused" signal no? */
    etk_toplevel_focused_widget_set(widget->toplevel_parent, widget);
-   etk_signal_emit(ETK_WIDGET_FOCUSED_SIGNAL, ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_FOCUSED_SIGNAL, ETK_OBJECT(widget));
 }
 
 /**
@@ -456,7 +456,7 @@ void etk_widget_unfocus(Etk_Widget *widget)
 
    /* TODO: etk_toplevel_focused_widget_set() should emit the "unfocused" signal no? */
    etk_toplevel_focused_widget_set(widget->toplevel_parent, NULL);
-   etk_signal_emit(ETK_WIDGET_UNFOCUSED_SIGNAL, ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_UNFOCUSED_SIGNAL, ETK_OBJECT(widget));
 }
 
 /**
@@ -517,9 +517,9 @@ void etk_widget_disabled_set(Etk_Widget *widget, Etk_Bool disabled)
    if (widget->smart_object && !widget->pass_mouse_events)
       evas_object_pass_events_set(widget->smart_object, disabled);
    if (disabled)
-      etk_signal_emit(ETK_WIDGET_DISABLED_SIGNAL, ETK_OBJECT(widget), NULL);
+      etk_signal_emit(ETK_WIDGET_DISABLED_SIGNAL, ETK_OBJECT(widget));
    else
-      etk_signal_emit(ETK_WIDGET_ENABLED_SIGNAL, ETK_OBJECT(widget), NULL);
+      etk_signal_emit(ETK_WIDGET_ENABLED_SIGNAL, ETK_OBJECT(widget));
    etk_object_notify(ETK_OBJECT(widget), "disabled");
 }
 
@@ -612,7 +612,7 @@ Etk_Bool etk_widget_enter(Etk_Widget *widget)
 {
    if (!widget)
       return ETK_TRUE;
-   etk_signal_emit(ETK_WIDGET_ENTERED_SIGNAL, ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_ENTERED_SIGNAL, ETK_OBJECT(widget));
    return ETK_TRUE;
 }
 
@@ -624,7 +624,7 @@ Etk_Bool etk_widget_leave(Etk_Widget *widget)
 {
    if (!widget)
       return ETK_TRUE;
-   etk_signal_emit(ETK_WIDGET_LEFT_SIGNAL, ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_LEFT_SIGNAL, ETK_OBJECT(widget));
    return ETK_TRUE;
 }
 
@@ -1322,7 +1322,7 @@ void etk_widget_size_request_full(Etk_Widget *widget, Etk_Size *size_requisition
    size_requisition->h += widget->padding.top + widget->padding.bottom;
 
    widget->need_size_recalc = ETK_FALSE;
-   etk_signal_emit(ETK_WIDGET_SIZE_REQUESTED_SIGNAL, ETK_OBJECT(widget), NULL, size_requisition);
+   etk_signal_emit(ETK_WIDGET_SIZE_REQUESTED_SIGNAL, ETK_OBJECT(widget), size_requisition);
 }
 
 /**
@@ -2254,7 +2254,7 @@ static void _etk_widget_mouse_in_cb(void *data, Evas *evas, Evas_Object *object,
    if (!widget->pass_mouse_events && !widget->disabled)
    {
       etk_event_mouse_in_wrap(widget, event_info, &event);
-      etk_signal_emit(ETK_WIDGET_MOUSE_IN_SIGNAL, ETK_OBJECT(widget), NULL, &event);
+      etk_signal_emit(ETK_WIDGET_MOUSE_IN_SIGNAL, ETK_OBJECT(widget), &event);
    }
 }
 
@@ -2270,7 +2270,7 @@ static void _etk_widget_mouse_out_cb(void *data, Evas *evas, Evas_Object *object
    if (!widget->pass_mouse_events && !widget->disabled)
    {
       etk_event_mouse_out_wrap(widget, event_info, &event);
-      etk_signal_emit(ETK_WIDGET_MOUSE_OUT_SIGNAL, ETK_OBJECT(widget), NULL, &event);
+      etk_signal_emit(ETK_WIDGET_MOUSE_OUT_SIGNAL, ETK_OBJECT(widget), &event);
    }
 }
 
@@ -2286,7 +2286,7 @@ static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *objec
    if (!widget->pass_mouse_events && !widget->disabled)
    {
       etk_event_mouse_move_wrap(widget, event_info, &event);
-      etk_signal_emit(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(widget), NULL, &event);
+      etk_signal_emit(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(widget), &event);
    }
 
    if (widget->parent)
@@ -2305,7 +2305,7 @@ static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *objec
    if (!widget->pass_mouse_events && !widget->disabled)
    {
       etk_event_mouse_down_wrap(widget, event_info, &event);
-      etk_signal_emit(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(widget), NULL, &event);
+      etk_signal_emit(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(widget), &event);
    }
 
    if ((widget->pass_mouse_events || widget->repeat_mouse_events) && widget->parent)
@@ -2324,12 +2324,12 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
    if (!widget->pass_mouse_events && !widget->disabled)
    {
       etk_event_mouse_up_wrap(widget, event_info, &event);
-      etk_signal_emit(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(widget), NULL, &event);
+      etk_signal_emit(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(widget), &event);
 
       if (ETK_INSIDE(event.canvas.x, event.canvas.y,
             widget->geometry.x, widget->geometry.y, widget->geometry.w, widget->geometry.h))
       {
-         etk_signal_emit(ETK_WIDGET_MOUSE_CLICK_SIGNAL, ETK_OBJECT(widget), NULL, &event);
+         etk_signal_emit(ETK_WIDGET_MOUSE_CLICK_SIGNAL, ETK_OBJECT(widget), &event);
       }
    }
 
@@ -2348,7 +2348,7 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
       return;
 
    etk_event_mouse_wheel_wrap(widget, event_info, &event);
-   propagate = etk_signal_emit(ETK_WIDGET_MOUSE_WHEEL_SIGNAL, ETK_OBJECT(widget), NULL, &event);
+   propagate = etk_signal_emit(ETK_WIDGET_MOUSE_WHEEL_SIGNAL, ETK_OBJECT(widget), &event);
 
    if (propagate && widget->parent)
       _etk_widget_mouse_wheel_cb(widget->parent, evas, NULL, event_info);
@@ -2516,7 +2516,7 @@ static void _etk_widget_realize(Etk_Widget *widget)
 
    widget->need_theme_size_recalc = ETK_TRUE;
    widget->realized = ETK_TRUE;
-   etk_signal_emit(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(widget));
    etk_widget_size_recalc_queue(widget);
 }
 
@@ -2533,7 +2533,7 @@ static void _etk_widget_unrealize(Etk_Widget *widget)
    if (!widget || !widget->realized)
       return;
 
-   etk_signal_emit(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(widget), NULL);
+   etk_signal_emit(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(widget));
 
    while (widget->swallowed_objects)
    {

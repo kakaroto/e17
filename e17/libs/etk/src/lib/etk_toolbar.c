@@ -471,7 +471,7 @@ static Etk_Bool _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *chil
    {
       etk_widget_theme_parent_set(child, ETK_WIDGET(toolbar));
    }
-   //etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(toolbar), NULL, child);
+   //etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(toolbar), child);
 
    return ETK_TRUE;
 }
@@ -486,7 +486,7 @@ static Etk_Bool _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *ch
 
    if (etk_widget_theme_parent_get(child) == ETK_WIDGET(toolbar))
       etk_widget_theme_parent_set(child, NULL);
-   etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(toolbar), NULL, child);
+   etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(toolbar), child);
 
    return ETK_TRUE;
 }

@@ -112,7 +112,7 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
 
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Table::Cell", NULL);
    etk_widget_parent_set(child, NULL);
-   etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(table), NULL, child);
+   etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(table), child);
 }
 
 /**
@@ -237,7 +237,7 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
 
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Table::Cell", cell);
    etk_widget_parent_set(child, ETK_WIDGET(table));
-   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(table), NULL, child);
+   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(table), child);
 }
 
 /**

@@ -127,7 +127,7 @@ void etk_window_delete_request(Etk_Window *window)
 {
    Etk_Bool result;
 
-   result = etk_signal_emit(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(window), NULL);
+   result = etk_signal_emit(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(window));
 
    if (result)
       etk_object_destroy(ETK_OBJECT(window));

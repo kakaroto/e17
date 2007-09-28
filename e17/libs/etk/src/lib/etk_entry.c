@@ -130,7 +130,7 @@ void etk_entry_text_set(Etk_Entry *entry, const char *text)
    else
       etk_editable_text_set(entry->editable_object, text);
 
-   etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry), NULL);
+   etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry));
 }
 
 /**
@@ -744,7 +744,7 @@ static Etk_Bool _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
 
 
    if (changed)
-      etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry), NULL);
+      etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry));
    if (selection_changed)
       _etk_entry_selection_copy(entry, ETK_SELECTION_PRIMARY, ETK_FALSE);
 
@@ -1012,7 +1012,7 @@ static Etk_Bool _etk_entry_selection_received_cb(Etk_Object *object, void *event
       changed |= etk_editable_insert(editable, start_pos, text);
 
       if (changed)
-         etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry), NULL);
+         etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry));
    }
 
    return ETK_TRUE;
@@ -1054,7 +1054,7 @@ static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selec
       if (cut)
       {
          if (etk_editable_delete(editable, start_pos, end_pos))
-            etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry), NULL);
+            etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry));
       }
    }
 }

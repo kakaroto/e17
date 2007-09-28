@@ -211,12 +211,12 @@ Etk_Widget *etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
       if (new_current)
          etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(new_current->tab), ETK_TRUE);
       else
-         etk_signal_emit(ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL, ETK_OBJECT(notebook), NULL);
+         etk_signal_emit(ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL, ETK_OBJECT(notebook));
    }
 
    if (child)
       etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(notebook),
-                      NULL, child);
+                      child);
    etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
    return child;
 }
@@ -412,7 +412,7 @@ void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widge
    if (page->child)
    {
       etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(notebook),
-                      NULL, page->child);
+                      page->child);
       etk_widget_parent_set(page->child, NULL);
       page->child = NULL;
    }
@@ -422,7 +422,7 @@ void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widge
       page->child = child;
       etk_widget_parent_set(child, page->frame);
       etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(notebook),
-                      NULL, child);
+                      child);
    }
    etk_widget_size_recalc_queue(ETK_WIDGET(notebook));
 }
@@ -965,7 +965,7 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Evas
    {
       etk_widget_parent_set(child, new_page->frame);
       etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(notebook),
-                      NULL, child);
+                      child);
    }
 
    if (!notebook->current_page)
@@ -1004,7 +1004,7 @@ static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page 
       etk_widget_theme_signal_emit(page->tab, "etk,state,focused", ETK_FALSE);
 
    notebook->current_page = page;
-   etk_signal_emit(ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL, ETK_OBJECT(notebook), NULL);
+   etk_signal_emit(ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL, ETK_OBJECT(notebook));
 }
 
 /** @} */

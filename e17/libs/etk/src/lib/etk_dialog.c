@@ -440,7 +440,7 @@ static Etk_Bool _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
 
    if ((response_id = etk_dialog_button_response_id_get(ETK_BUTTON(object))) == ETK_RESPONSE_NONE)
       return ETK_TRUE;
-   etk_signal_emit(ETK_DIALOG_RESPONSE_SIGNAL, ETK_OBJECT(data), NULL, response_id);
+   etk_signal_emit(ETK_DIALOG_RESPONSE_SIGNAL, ETK_OBJECT(data), response_id);
 
    return ETK_TRUE;
 }
