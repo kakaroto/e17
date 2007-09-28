@@ -31,7 +31,7 @@ Evas_List  *event_handlers;
 static void _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path);
 static int _ex_main_dtree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
 static void _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data);
-static void _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data);
+static Etk_Bool _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _ex_main_combobox_entry_changed_cb(Etk_Object *object, void *data);
 static Etk_Bool _ex_main_window_deleted_cb(void *data);
 static void _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data);
@@ -546,10 +546,11 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
      }
 }
 
-static void
+static Etk_Bool
 _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Event_Key_Down *ev = event;
+   Etk_Bool stop_signal = ETK_FALSE;
 
    if (!strcmp(ev->key, "Tab"))
      {
@@ -559,7 +560,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	Evas_List *l;
         
         /* Stop the propagation of the signal so the focus won't be passed to the next widget */
-        etk_signal_stop();
+        stop_signal = ETK_TRUE;
 	
 	path = etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry))));
 	dir = ecore_file_dir_get((char*)path);
@@ -569,7 +570,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	  dir = strdup("/");
 		
 	if(!file || !strcmp(file, path))
-	  return;	
+	  return stop_signal;
 	
 	D(("dir='%s' file='%s'\n", dir, file));
 	
@@ -585,7 +586,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	       }
 	     
 	     if ((dirfd = opendir(dir)) == NULL)
-	       return;
+	       return stop_signal;
 	     
 	     while ((dir_entry = readdir(dirfd)) != NULL)
 	       {
@@ -631,6 +632,8 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
         _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
      }
+
+   return stop_signal;
 }
 
 static void _ex_main_combobox_entry_changed_cb(Etk_Object *object, void *data)
@@ -739,7 +742,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 static void
 _ex_main_window_resize_cb(Etk_Object *object, void *data)
 {
-   etk_window_geometry_get(ETK_WINDOW(object), NULL, NULL, 
+   etk_window_geometry_get(ETK_WINDOW(object), NULL, NULL,
 			   &e->options->last_w, &e->options->last_h);
 }
 
@@ -770,7 +773,7 @@ _ex_main_window_fullscreen_toggle(Exhibit *e)
      }
    else
      {
-	etk_signal_disconnect("resized", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb));
+	etk_signal_disconnect("resized", ETK_OBJECT(e->win), ETK_CALLBACK(_ex_main_window_resize_cb), e);
 	etk_window_fullscreen_set(ETK_WINDOW(e->win), ETK_TRUE);
 	etk_widget_hide(e->statusbar[0]);
 	etk_widget_hide(e->statusbar[1]);

@@ -21,7 +21,7 @@
 static void _ex_image_delete_dialog_response(Etk_Object *obj, int response_id, void *data);
 static void _ex_image_delete_cb(void *data);
 
-void
+Etk_Bool
 _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
 {
    Exhibit *e;
@@ -59,7 +59,7 @@ _ex_image_mouse_wheel(Etk_Object *object, void *event, void *data)
 	  }
      }
    
-   etk_signal_stop();
+   return ETK_FALSE;
 }
 
 void
