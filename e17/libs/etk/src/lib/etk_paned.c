@@ -660,7 +660,7 @@ static void _etk_hpaned_position_calc(Etk_Paned *paned)
    if (!paned)
       return;
 
-   if (paned->child1 && paned->child1->geometry.w == -1)
+   if (paned->child1 && paned->child1->requested_size.w == -1)
       return;
 
    geometry = ETK_WIDGET(paned)->geometry;
@@ -700,7 +700,7 @@ static void _etk_vpaned_position_calc(Etk_Paned *paned)
    if (!paned)
       return;
 
-   if (paned->child1 && paned->child1->geometry.h == -1)
+   if (paned->child1 && paned->child1->requested_size.h == -1)
       return;
 
    geometry = ETK_WIDGET(paned)->geometry;
