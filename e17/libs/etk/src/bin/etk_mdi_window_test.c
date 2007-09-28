@@ -24,7 +24,7 @@ void etk_test_mdi_window_window_create(void *data)
    etk_window_resize(ETK_WINDOW(win), 300, 300);
    etk_window_title_set(ETK_WINDOW(win), "Etk Mdi Window Test");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    mdi_area = etk_mdi_area_new();
    etk_container_add(ETK_CONTAINER(win), mdi_area);

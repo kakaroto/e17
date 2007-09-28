@@ -59,7 +59,7 @@ void etk_test_combobox_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Combobox Test");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    vbox = etk_vbox_new(ETK_FALSE, 3);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -86,7 +86,7 @@ void etk_test_combobox_window_create(void *data)
 
    /* Create a simple combobox containing one column of labels and add 3 items to it */
    combobox = etk_combobox_entry_new();
-   etk_signal_connect("active-item-changed", ETK_OBJECT(combobox), ETK_CALLBACK(_etk_combobox_entry_active_item_changed_cb), NULL);
+   etk_signal_connect_by_code(ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_CHANGED_SIGNAL, ETK_OBJECT(combobox), ETK_CALLBACK(_etk_combobox_entry_active_item_changed_cb), NULL);
    etk_combobox_entry_column_add(ETK_COMBOBOX_ENTRY(combobox), ETK_COMBOBOX_ENTRY_IMAGE, 24, ETK_COMBOBOX_ENTRY_NONE, 0.0);
    etk_combobox_entry_column_add(ETK_COMBOBOX_ENTRY(combobox), ETK_COMBOBOX_ENTRY_LABEL, 75, ETK_COMBOBOX_ENTRY_EXPAND, 0.0);
    etk_combobox_entry_build(ETK_COMBOBOX_ENTRY(combobox));
@@ -105,7 +105,7 @@ void etk_test_combobox_window_create(void *data)
    for (i = 0; _keywords[i]; i++)
      etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(combobox), _keywords[i], NULL);
 
-   etk_signal_connect("text-changed", ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(combobox))), ETK_CALLBACK(_etk_combobox_entry_text_changed_cb), combobox);
+   etk_signal_connect_by_code(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(combobox))), ETK_CALLBACK(_etk_combobox_entry_text_changed_cb), combobox);
    etk_container_add(ETK_CONTAINER(frame), combobox);
 
    /*******************
@@ -142,7 +142,7 @@ void etk_test_combobox_window_create(void *data)
    etk_combobox_column_add(ETK_COMBOBOX(combobox), ETK_COMBOBOX_OTHER, 24, ETK_COMBOBOX_NONE, 1.0);
    etk_combobox_build(ETK_COMBOBOX(combobox));
    etk_box_append(ETK_BOX(vbox), combobox, ETK_BOX_START, ETK_BOX_NONE, 0);
-   etk_signal_connect("active-item-changed", ETK_OBJECT(combobox), ETK_CALLBACK(_active_item_changed_cb), image);
+   etk_signal_connect_by_code(ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL, ETK_OBJECT(combobox), ETK_CALLBACK(_active_item_changed_cb), image);
 
    /* We fill the combobox with some stock-ids */
    for (i = STARTING_STOCK_ID; i <= ENDING_STOCK_ID; i++)

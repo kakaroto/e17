@@ -32,7 +32,7 @@ void etk_test_entry_window_create(void *data)
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Entry Test");
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -53,7 +53,7 @@ void etk_test_entry_window_create(void *data)
 
    image = etk_image_new_from_stock(ETK_STOCK_DOCUMENT_PRINT, ETK_STOCK_SMALL);
    etk_entry_image_set(ETK_ENTRY(_entry_normal), ETK_ENTRY_IMAGE_PRIMARY, ETK_IMAGE(image));
-   etk_signal_connect("mouse-click", ETK_OBJECT(image), ETK_CALLBACK(_normal_print_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_CLICK_SIGNAL, ETK_OBJECT(image), ETK_CALLBACK(_normal_print_cb), NULL);
    etk_entry_clear_button_add(ETK_ENTRY(_entry_normal));
 
    _label_normal = etk_label_new(NULL);
@@ -94,7 +94,7 @@ void etk_test_entry_window_create(void *data)
 
    button = etk_check_button_new_with_label("Password Visible");
    etk_box_append(ETK_BOX(vbox2), button, ETK_BOX_START, ETK_BOX_FILL, 0);
-   etk_signal_connect("toggled", ETK_OBJECT(button), ETK_CALLBACK(_password_show_cb), entry);
+   etk_signal_connect_by_code(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_password_show_cb), entry);
 
    etk_widget_show_all(win);
 }

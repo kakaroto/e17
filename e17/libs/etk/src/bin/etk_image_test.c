@@ -23,7 +23,7 @@ void etk_test_image_window_create(void *data)
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Image Test");
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    /* TODO: we need a more complete test-app for Etk_Image */
    /* Create two images with different "keep-aspect" property and pack theme into a table */

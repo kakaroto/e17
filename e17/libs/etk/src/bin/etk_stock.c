@@ -241,7 +241,7 @@ void etk_test_stock_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Stock Test");
    etk_window_resize(ETK_WINDOW(win), 450, 500);
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);

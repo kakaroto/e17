@@ -34,7 +34,7 @@ void etk_test_menu_window_create(void *data)
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Menu Test");
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    etk_widget_size_request_set(win, 325, 240);
 
    /****************
@@ -115,7 +115,7 @@ void etk_test_menu_window_create(void *data)
     ****************/
    /* Main menu */
    menu = etk_menu_new();
-   etk_signal_connect("mouse-down", ETK_OBJECT(win), ETK_CALLBACK(_etk_test_menu_window_down_cb), menu);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(_etk_test_menu_window_down_cb), menu);
    _etk_test_menu_stock_item_new("Open", ETK_STOCK_DOCUMENT_OPEN, ETK_MENU_SHELL(menu));
    _etk_test_menu_stock_item_new("Save", ETK_STOCK_DOCUMENT_SAVE, ETK_MENU_SHELL(menu));
    _etk_test_menu_separator_new(ETK_MENU_SHELL(menu));
@@ -163,8 +163,8 @@ static Etk_Widget *_etk_test_menu_item_new(const char *label, Etk_Menu_Shell *me
    menu_item = etk_menu_item_new_with_label(label);
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
 
-   etk_signal_connect("selected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), NULL);
-   etk_signal_connect("unselected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_unselected_cb), NULL);
+   etk_signal_connect_by_code(ETK_MENU_ITEM_SELECTED_SIGNAL, ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), NULL);
+   etk_signal_connect_by_code(ETK_MENU_ITEM_UNSELECTED_SIGNAL, ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_unselected_cb), NULL);
 
    return menu_item;
 }
@@ -183,8 +183,8 @@ static Etk_Widget *_etk_test_menu_stock_item_new(const char *label, Etk_Stock_Id
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
 
-   etk_signal_connect("selected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), NULL);
-   etk_signal_connect("unselected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_unselected_cb), NULL);
+   etk_signal_connect_by_code(ETK_MENU_ITEM_SELECTED_SIGNAL, ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), NULL);
+   etk_signal_connect_by_code(ETK_MENU_ITEM_UNSELECTED_SIGNAL, ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_unselected_cb), NULL);
 
    return menu_item;
 }
@@ -201,8 +201,8 @@ static Etk_Widget *_etk_test_menu_check_item_new(const char *label, Etk_Menu_She
    menu_item = etk_menu_item_check_new_with_label(label);
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
 
-   etk_signal_connect("selected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), NULL);
-   etk_signal_connect("unselected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_unselected_cb), NULL);
+   etk_signal_connect_by_code(ETK_MENU_ITEM_SELECTED_SIGNAL, ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), NULL);
+   etk_signal_connect_by_code(ETK_MENU_ITEM_UNSELECTED_SIGNAL, ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_unselected_cb), NULL);
 
    return menu_item;
 }
@@ -218,8 +218,8 @@ static Etk_Widget *_etk_test_menu_radio_item_new(const char *label, Etk_Menu_Ite
    menu_item = etk_menu_item_radio_new_with_label_from_widget(label, group_item);
    etk_menu_shell_append(menu_shell, ETK_MENU_ITEM(menu_item));
 
-   etk_signal_connect("selected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), NULL);
-   etk_signal_connect("unselected", ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_unselected_cb), NULL);
+   etk_signal_connect_by_code(ETK_MENU_ITEM_SELECTED_SIGNAL, ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_selected_cb), NULL);
+   etk_signal_connect_by_code(ETK_MENU_ITEM_UNSELECTED_SIGNAL, ETK_OBJECT(menu_item), ETK_CALLBACK(_etk_test_menu_item_unselected_cb), NULL);
 
    return menu_item;
 }

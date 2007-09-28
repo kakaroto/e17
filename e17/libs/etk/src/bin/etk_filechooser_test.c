@@ -43,7 +43,7 @@ void etk_test_filechooser_window_create(void *data)
 
    dialog = etk_dialog_new();
    etk_window_title_set(ETK_WINDOW(dialog), "Etk Filechooser Test");
-   etk_signal_connect("delete-event", ETK_OBJECT(dialog), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(dialog), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    filechooser = etk_filechooser_widget_new();
    etk_dialog_pack_in_main_area(ETK_DIALOG(dialog), filechooser, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
@@ -51,17 +51,17 @@ void etk_test_filechooser_window_create(void *data)
    is_save_toggle = etk_check_button_new_with_label("Is save");
    etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog),
       is_save_toggle, ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
-   etk_signal_connect("toggled", ETK_OBJECT(is_save_toggle), ETK_CALLBACK(on_checks_clicked), (void*)IS_SAVE);
+   etk_signal_connect_by_code(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(is_save_toggle), ETK_CALLBACK(on_checks_clicked), (void*)IS_SAVE);
 
    select_multiple_toggle = etk_check_button_new_with_label("Select multiple");
    etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog),
       select_multiple_toggle, ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
-   etk_signal_connect("toggled", ETK_OBJECT(select_multiple_toggle), ETK_CALLBACK(on_checks_clicked), (void*)SELECT_MULTI);
+   etk_signal_connect_by_code(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(select_multiple_toggle), ETK_CALLBACK(on_checks_clicked), (void*)SELECT_MULTI);
 
    show_hidden_toggle = etk_check_button_new_with_label("Show hidden");
    etk_dialog_pack_widget_in_action_area(ETK_DIALOG(dialog),
       show_hidden_toggle, ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
-   etk_signal_connect("toggled", ETK_OBJECT(show_hidden_toggle), ETK_CALLBACK(on_checks_clicked), (void*)SHOW_HIDDEN);
+   etk_signal_connect_by_code(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(show_hidden_toggle), ETK_CALLBACK(on_checks_clicked), (void*)SHOW_HIDDEN);
 
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DOCUMENT_OPEN, 1);
    etk_dialog_button_add_from_stock(ETK_DIALOG(dialog), ETK_STOCK_DIALOG_CLOSE, 2);

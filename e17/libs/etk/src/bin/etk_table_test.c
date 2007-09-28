@@ -28,7 +28,7 @@ void etk_test_table_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Table Test");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    /* First we create the widgets to pack into the table */
    image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/test.png", NULL);

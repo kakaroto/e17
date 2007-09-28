@@ -24,7 +24,7 @@ void etk_test_progress_bar_window_create(void *data)
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Progress Bar Test");
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    vbox = etk_vbox_new(ETK_TRUE, 5);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -41,8 +41,8 @@ void etk_test_progress_bar_window_create(void *data)
    _etk_test_progress_bar_timer = ecore_timer_add(0.05, _etk_test_progress_bar_update, pbar);
    _etk_test_progress_bar_timer2 = ecore_timer_add(0.025, _etk_test_progress_bar_update2, pbar2);
 
-   etk_signal_connect_swapped("destroyed", ETK_OBJECT(pbar), ETK_CALLBACK(ecore_timer_del), _etk_test_progress_bar_timer);
-   etk_signal_connect_swapped("destroyed", ETK_OBJECT(pbar2), ETK_CALLBACK(ecore_timer_del), _etk_test_progress_bar_timer2);
+   etk_signal_connect_swapped_by_code(ETK_OBJECT_DESTROYED_SIGNAL, ETK_OBJECT(pbar), ETK_CALLBACK(ecore_timer_del), _etk_test_progress_bar_timer);
+   etk_signal_connect_swapped_by_code(ETK_OBJECT_DESTROYED_SIGNAL, ETK_OBJECT(pbar2), ETK_CALLBACK(ecore_timer_del), _etk_test_progress_bar_timer2);
 }
 
 /* Updates the first progress bar */

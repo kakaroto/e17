@@ -44,17 +44,17 @@ void etk_test_text_view_window_create(void *data)
 
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Text View Test");
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    vbox = etk_vbox_new(ETK_TRUE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
 
    button = etk_button_new_with_label("Tag Presentation");
-   etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_text_view_tag_window_create), NULL);
+   etk_signal_connect_swapped_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_test_text_view_tag_window_create), NULL);
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
    button = etk_button_new_with_label("Instant Messenger");
-   etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_text_view_im_window_create), NULL);
+   etk_signal_connect_swapped_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_test_text_view_im_window_create), NULL);
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
    etk_widget_show_all(win);
@@ -84,7 +84,7 @@ static void _etk_test_text_view_tag_window_create(void *data)
    etk_window_title_set(ETK_WINDOW(win), "Etk Text View Test");
    etk_widget_size_request_set(win, 150, 150);
    etk_window_resize(ETK_WINDOW(win), 400, 300);
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -172,7 +172,7 @@ static void _etk_test_text_view_im_window_create(void *data)
    etk_window_title_set(ETK_WINDOW(win), "Etk Text View Test: Instant Messenger");
    etk_window_resize(ETK_WINDOW(win), 300, 300);
    etk_container_border_width_set(ETK_CONTAINER(win), 3);
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    vpaned = etk_vpaned_new();
    etk_container_add(ETK_CONTAINER(win), vpaned);
@@ -204,7 +204,7 @@ static void _etk_test_text_view_im_window_create(void *data)
    editor_view = etk_text_view_new();
    etk_widget_size_request_set(editor_view, 200, 80);
    etk_box_append(ETK_BOX(vbox), editor_view, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   etk_signal_connect("key-down", ETK_OBJECT(editor_view), ETK_CALLBACK(_etk_test_im_editor_key_down_cb), message_view);
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(editor_view), ETK_CALLBACK(_etk_test_im_editor_key_down_cb), message_view);
 
    etk_widget_show_all(win);
 }

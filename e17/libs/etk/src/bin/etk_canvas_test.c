@@ -22,7 +22,7 @@ void etk_test_canvas_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Canvas Test");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    vbox = etk_vbox_new(ETK_FALSE, 5);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -33,7 +33,7 @@ void etk_test_canvas_window_create(void *data)
 
    button = etk_button_new_from_stock(ETK_STOCK_LIST_ADD);
    etk_button_label_set(ETK_BUTTON(button), "Add object");
-   etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_etk_test_canvas_object_add), canvas);
+   etk_signal_connect_swapped_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_test_canvas_object_add), canvas);
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    etk_widget_show_all(win);

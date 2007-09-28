@@ -60,7 +60,7 @@ void etk_test_tree_window_create(void *data)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Tree Test");
    etk_window_resize(ETK_WINDOW(win), 640, 500);
-   etk_signal_connect("delete-event", ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -75,9 +75,9 @@ void etk_test_tree_window_create(void *data)
    kinfo->vmin = 0;
    kinfo->decel = 0.95;
    etk_object_data_set(ETK_OBJECT(tree), "_Etk_Test_Tree::Kinetic_Info", kinfo);
-   etk_signal_connect("mouse-down", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_mouse_down_cb), NULL);
-   etk_signal_connect("mouse-up", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_mouse_up_cb), NULL);
-   etk_signal_connect("mouse-move", ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_mouse_move_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_mouse_down_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_mouse_up_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_mouse_move_cb), NULL);
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
    etk_widget_padding_set(tree, 5, 5, 5, 5);
@@ -158,23 +158,23 @@ void etk_test_tree_window_create(void *data)
 
    button = etk_button_new_with_label("Sort the tree");
    etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_signal_connect("clicked", ETK_OBJECT(button),
+   etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button),
       ETK_CALLBACK(_etk_test_tree_sort_button_cb), col3);
 
    button = etk_button_new_with_label("Insert a sorted row");
    etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_signal_connect("clicked", ETK_OBJECT(button),
+   etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button),
       ETK_CALLBACK(_etk_test_tree_insert_sorted_button_cb), ETK_TREE(tree));
 
    /* Finally we create the statusbar used to display the events on the tree */
    statusbar = etk_statusbar_new();
    etk_box_append(ETK_BOX(vbox), statusbar, ETK_BOX_START, ETK_BOX_FILL, 0);
 
-   etk_signal_connect("key-down", ETK_OBJECT(tree),
+   etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(tree),
       ETK_CALLBACK(_etk_test_tree_key_down_cb), NULL);
-   etk_signal_connect("row-clicked", ETK_OBJECT(tree),
+   etk_signal_connect_by_code(ETK_TREE_ROW_CLICKED_SIGNAL, ETK_OBJECT(tree),
       ETK_CALLBACK(_etk_test_tree_row_clicked_cb), statusbar);
-   etk_signal_connect("cell-value-changed", ETK_OBJECT(col5),
+   etk_signal_connect_by_code(ETK_TREE_COL_CELL_VALUE_CHANGED_SIGNAL, ETK_OBJECT(col5),
       ETK_CALLBACK(_etk_test_tree_checkbox_toggled_cb), statusbar);
 
    etk_widget_show_all(win);

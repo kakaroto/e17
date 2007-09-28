@@ -183,7 +183,8 @@ static void _main_window_create(void)
    win = etk_window_new();
    etk_window_title_set(ETK_WINDOW(win), "Etk Test Application");
    etk_container_border_width_set(ETK_CONTAINER(win), 5);
-   etk_signal_connect_swapped("destroyed", ETK_OBJECT(win), ETK_CALLBACK(_main_quit_cb), NULL);
+   etk_signal_connect_swapped_by_code(ETK_OBJECT_DESTROYED_SIGNAL, ETK_OBJECT(win),
+				   ETK_CALLBACK(_main_quit_cb), NULL);
 
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(win), vbox);
@@ -208,7 +209,9 @@ static void _main_window_create(void)
    for (i = 0; i < _num_test_apps; i++)
    {
       button = etk_button_new_with_label(_test_apps[i].name);
-      etk_signal_connect_swapped("clicked", ETK_OBJECT(button), ETK_CALLBACK(_test_apps[i].func), NULL);
+      etk_signal_connect_swapped_by_code(ETK_BUTTON_CLICKED_SIGNAL,
+				      ETK_OBJECT(button),
+				      ETK_CALLBACK(_test_apps[i].func), NULL);
       j = current_ids[_test_apps[i].category]++;
       etk_table_attach_default(ETK_TABLE(tables[_test_apps[i].category]), button,
             j % NUM_COLS, j % NUM_COLS, j / NUM_COLS, j / NUM_COLS);
