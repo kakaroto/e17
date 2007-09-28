@@ -93,7 +93,7 @@ static void _etk_tree_property_set(Etk_Object *object, int property_id, Etk_Prop
 static void _etk_tree_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_tree_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_tree_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_tree_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_tree_realized_cb(Etk_Object *object, void *data);
 
 static void _etk_tree_col_constructor(Etk_Tree_Col *tree_col);
 static void _etk_tree_col_destructor(Etk_Tree_Col *tree_col);
@@ -111,11 +111,11 @@ static void _etk_tree_row_objects_cache(Etk_Tree *tree);
 static void _etk_tree_row_objects_create_destroy(Etk_Tree *tree, Etk_Geometry grid_geometry);
 static void _etk_tree_row_objects_update(Etk_Tree *tree, Etk_Geometry grid_geometry, Etk_Tree_Col *first_visible_col, Evas_List **prev_visible_rows, Evas_List **new_visible_rows);
 
-static void _etk_tree_focused_cb(Etk_Object *object, void *event, void *data);
-static void _etk_tree_unfocused_cb(Etk_Object *object, void *event, void *data);
-static void _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_tree_grid_realized_cb(Etk_Object *object, void *data);
-static void _etk_tree_grid_unrealized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_tree_focused_cb(Etk_Object *object, void *event, void *data);
+static Etk_Bool _etk_tree_unfocused_cb(Etk_Object *object, void *event, void *data);
+static Etk_Bool _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_tree_grid_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_tree_grid_unrealized_cb(Etk_Object *object, void *data);
 
 static void _etk_tree_header_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_tree_header_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -173,27 +173,27 @@ Etk_Type *etk_tree_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ALL_SELECTED_SIGNAL,
-            "all-selected", etk_marshaller_VOID__VOID, NULL, NULL),
+            "all-selected", etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ALL_UNSELECTED_SIGNAL,
-            "all-unselected", etk_marshaller_VOID__VOID, NULL, NULL),
+            "all-unselected", etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_SELECTED_SIGNAL,
-            "row-selected", etk_marshaller_VOID__POINTER, NULL, NULL),
+            "row-selected", etk_marshaller_POINTER, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_UNSELECTED_SIGNAL,
-            "row-unselected", etk_marshaller_VOID__POINTER, NULL, NULL),
+            "row-unselected", etk_marshaller_POINTER, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_CLICKED_SIGNAL,
-            "row-clicked", etk_marshaller_VOID__POINTER_POINTER, NULL, NULL),
+            "row-clicked", etk_marshaller_POINTER_POINTER, NULL, NULL),
 
          /* TODO: do we really need "row-activated" */
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_ACTIVATED_SIGNAL,
-            "row-activated", etk_marshaller_VOID__POINTER, NULL, NULL),
+            "row-activated", etk_marshaller_POINTER, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_UNFOLDED_SIGNAL,
-            "row-unfolded", etk_marshaller_VOID__POINTER, NULL, NULL),
+            "row-unfolded", etk_marshaller_POINTER, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_FOLDED_SIGNAL,
-            "row-folded", etk_marshaller_VOID__POINTER, NULL, NULL),
+            "row-folded", etk_marshaller_POINTER, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_SHOWN_SIGNAL,
-            "row-shown", etk_marshaller_VOID__POINTER, NULL, NULL),
+            "row-shown", etk_marshaller_POINTER, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_ROW_HIDDEN_SIGNAL,
-            "row-hidden", etk_marshaller_VOID__POINTER, NULL, NULL),
+            "row-hidden", etk_marshaller_POINTER, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -234,7 +234,7 @@ Etk_Type *etk_tree_col_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TREE_COL_CELL_VALUE_CHANGED_SIGNAL,
-            "cell-value-changed", etk_marshaller_VOID__POINTER, NULL, NULL),
+            "cell-value-changed", etk_marshaller_POINTER, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -2901,7 +2901,7 @@ static void _etk_tree_row_objects_update(Etk_Tree *tree, Etk_Geometry grid_geome
  **************************/
 
 /* Called when the tree is realized */
-static void _etk_tree_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_tree_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Tree *tree;
    Evas *evas;
@@ -2909,7 +2909,7 @@ static void _etk_tree_realized_cb(Etk_Object *object, void *data)
    int i;
 
    if (!(tree = ETK_TREE(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(tree))))
-      return;
+      return ETK_TRUE;
 
    /* Read the data from the theme */
    if (etk_widget_theme_data_get(ETK_WIDGET(tree), "tree_contains_headers", "%d", &tree_contains_headers) != 1)
@@ -2953,42 +2953,46 @@ static void _etk_tree_realized_cb(Etk_Object *object, void *data)
       }
       tree->tree_contains_headers = (tree_contains_headers != 0);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the tree is focused */
-static void _etk_tree_focused_cb(Etk_Object *object, void *event, void *data)
+static Etk_Bool _etk_tree_focused_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Tree *tree;
 
    if (!(tree = ETK_TREE(object)))
-      return;
+      return ETK_TRUE;
 
    etk_widget_theme_signal_emit(tree->scrolled_view, "etk,state,focused", ETK_FALSE);
    etk_widget_theme_signal_emit(tree->grid, "etk,state,focused", ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Called when the tree is unfocused */
-static void _etk_tree_unfocused_cb(Etk_Object *object, void *event, void *data)
+static Etk_Bool _etk_tree_unfocused_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Tree *tree;
 
    if (!(tree = ETK_TREE(object)))
-      return;
+      return ETK_TRUE;
 
    etk_widget_theme_signal_emit(tree->scrolled_view, "etk,state,unfocused", ETK_FALSE);
    etk_widget_theme_signal_emit(tree->grid, "etk,state,unfocused", ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* TODO: row_clicked event: sometimes it's a Etk_Event_Mouse_Up, sometimes a Etk_Event_Mouse_Down... */
 
 /* Called when a key is pressed while the tree is focused */
-static void _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Tree *tree;
    Etk_Tree_Row *selected_row, *row_to_select;
 
    if (!(tree = ETK_TREE(object)))
-      return;
+      return ETK_TRUE;
 
    /* CTRL + A: Select all the rows */
    if (strcmp(event->keyname, "a") == 0 && (event->modifiers & ETK_MODIFIER_CTRL))
@@ -3038,6 +3042,8 @@ static void _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event,
          etk_tree_row_unfold(selected_row);
       etk_signal_stop();
    }
+
+   return ETK_TRUE;
 }
 
 /**************************
@@ -3045,30 +3051,31 @@ static void _etk_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event,
  **************************/
 
 /* Called when the tree grid is realized */
-static void _etk_tree_grid_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_tree_grid_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Tree *tree;
    Evas *evas;
    int i;
 
    if (!(tree = TREE_GET(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(object))))
-      return;
+      return ETK_TRUE;
 
    for (i = 0; i < tree->num_cols; i++)
       _etk_tree_col_realize(tree, i);
 
    tree->grid_clip = evas_object_rectangle_add(evas);
    etk_widget_member_object_add(tree->grid, tree->grid_clip);
+   return ETK_TRUE;
 }
 
 /* Called when the tree grid is unrealized */
-static void _etk_tree_grid_unrealized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_tree_grid_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Tree *tree;
    int i;
 
    if (!(tree = TREE_GET(object)))
-      return;
+      return ETK_TRUE;
 
    tree->grid_clip = NULL;
 
@@ -3084,6 +3091,8 @@ static void _etk_tree_grid_unrealized_cb(Etk_Object *object, void *data)
       _etk_tree_row_object_destroy(tree, tree->row_objects->data);
       tree->row_objects = evas_list_remove_list(tree->row_objects, tree->row_objects);
    }
+
+   return ETK_TRUE;
 }
 
 /**************************

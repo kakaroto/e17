@@ -38,8 +38,8 @@ static void _etk_toolbar_size_allocate(Etk_Widget *widget, Etk_Geometry geometry
 void _etk_toolbar_child_add(Etk_Container *container, Etk_Widget *widget);
 void _etk_toolbar_child_remove(Etk_Container *container, Etk_Widget *widget);
 Evas_List *_etk_toolbar_children_get(Etk_Container *container);
-static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data);
-static void _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
+static Etk_Bool _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data);
+static Etk_Bool _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
 
 /**************************
  *
@@ -408,12 +408,12 @@ Evas_List *_etk_toolbar_children_get(Etk_Container *container)
  **************************/
 
 /* Called when a widget is added to the toolbar's box */
-static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data)
+static Etk_Bool _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data)
 {
    Etk_Toolbar *toolbar;
 
    if (!(toolbar = ETK_TOOLBAR(data)) || !child)
-      return;
+      return ETK_TRUE;
 
    /* Sets the style and the stock size if the new child is a tool-item */
    if (ETK_IS_TOOL_ITEM(child))
@@ -472,19 +472,23 @@ static void _etk_toolbar_child_added_cb(Etk_Object *object, Etk_Widget *child, v
       etk_widget_theme_parent_set(child, ETK_WIDGET(toolbar));
    }
    //etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(toolbar), NULL, child);
+
+   return ETK_TRUE;
 }
 
 /* Called when a widget is removed from the toolbar's box */
-static void _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
+static Etk_Bool _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
 {
    Etk_Toolbar *toolbar;
 
    if (!(toolbar = ETK_TOOLBAR(data)) || !child)
-      return;
+      return ETK_TRUE;
 
    if (etk_widget_theme_parent_get(child) == ETK_WIDGET(toolbar))
       etk_widget_theme_parent_set(child, NULL);
    etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(toolbar), NULL, child);
+
+   return ETK_TRUE;
 }
 
 /** @} */

@@ -26,7 +26,7 @@ static void _etk_frame_constructor(Etk_Frame *frame);
 static void _etk_frame_destructor(Etk_Frame *frame);
 static void _etk_frame_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_frame_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_frame_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_frame_realized_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -179,13 +179,14 @@ static void _etk_frame_property_get(Etk_Object *object, int property_id, Etk_Pro
  **************************/
 
 /* Called when the frame is realized */
-static void _etk_frame_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_frame_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Frame *frame;
 
    if (!(frame = ETK_FRAME(object)))
-      return;
+      return ETK_TRUE;
    etk_frame_label_set(frame, frame->label);
+   return ETK_TRUE;
 }
 
 /** @} */

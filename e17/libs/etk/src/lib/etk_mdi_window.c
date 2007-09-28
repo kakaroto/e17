@@ -36,7 +36,7 @@ static void _etk_mdi_window_constructor(Etk_Mdi_Window *mdi_window);
 static void _etk_mdi_window_destructor(Etk_Mdi_Window *mdi_window);
 static void _etk_mdi_window_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_mdi_window_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_mdi_window_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_mdi_window_realized_cb(Etk_Object *object, void *data);
 static void _etk_mdi_window_titlebar_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_mdi_window_titlebar_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_mdi_window_titlebar_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -68,10 +68,10 @@ Etk_Type *etk_mdi_window_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_MDI_WINDOW_MOVED_SIGNAL,
-            "moved", etk_marshaller_VOID__INT_INT, NULL, NULL),
+            "moved", etk_marshaller_INT_INT, NULL, NULL),
          ETK_SIGNAL_DESC_HANDLER(ETK_MDI_WINDOW_DELETE_EVENT_SIGNAL,
             "delete-event", Etk_Mdi_Window, delete_event,
-            etk_marshaller_BOOL__VOID, etk_accumulator_bool_or, NULL),
+            etk_marshaller_VOID, etk_accumulator_bool_or, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -407,14 +407,14 @@ static void _etk_mdi_window_property_get(Etk_Object *object, int property_id, Et
  **************************/
 
 /* Called when the mdi_window is realized */
-static void _etk_mdi_window_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_mdi_window_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Mdi_Window *mdi_window;
    Evas_Object *theme_object;
    Evas_Object *o;
 
    if (!(mdi_window = ETK_MDI_WINDOW(object)) || !(theme_object = ETK_WIDGET(mdi_window)->theme_object))
-      return;
+      return ETK_TRUE;
 
    etk_mdi_window_title_set(mdi_window, mdi_window->title);
 
@@ -440,6 +440,8 @@ static void _etk_mdi_window_realized_cb(Etk_Object *object, void *data)
       _etk_mdi_window_maximize_mouse_clicked_cb, mdi_window);
    edje_object_signal_callback_add(theme_object, "mouse,clicked,1*", "etk.event.close",
       _etk_mdi_window_close_mouse_clicked_cb, mdi_window);
+
+   return ETK_TRUE;
 }
 
 /* Called when the titlebar of the mdi_window is pressed */
@@ -583,7 +585,7 @@ static void _etk_mdi_window_close_mouse_clicked_cb(void *data, Evas_Object *obj,
 /* Default handler for the "delete-event" signal */
 static Etk_Bool _etk_mdi_window_delete_event_handler(Etk_Mdi_Window *mdi_window)
 {
-   return ETK_FALSE;
+   return ETK_TRUE;
 }
 
 /** @} */

@@ -27,10 +27,10 @@ int ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL;
 static void _etk_text_view_constructor(Etk_Text_View *text_view);
 static void _etk_text_view_destructor(Etk_Text_View *text_view);
 static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_text_view_realized_cb(Etk_Object *object, void *data);
-static void _etk_text_view_unrealized_cb(Etk_Object *object, void *data);
-static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_text_view_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _etk_text_view_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_text_view_unrealized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_text_view_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_text_view_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
 static void _etk_text_view_scroll(Etk_Widget *widget, int x, int y);
 static void _etk_text_view_selection_copy(Etk_Text_View *tv, Etk_Selection_Type selection, Etk_Bool cut);
@@ -54,7 +54,7 @@ Etk_Type *etk_text_view_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_TEXT_VIEW_TEXT_CHANGED_SIGNAL,
-            "text-changed", etk_marshaller_VOID__VOID, NULL, NULL),
+            "text-changed", etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -168,27 +168,29 @@ static void _etk_text_view_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
  **************************/
 
 /* Called when the text view is realized */
-static void _etk_text_view_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_text_view_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Text_View *text_view;
    Evas *evas;
 
    if (!(text_view = ETK_TEXT_VIEW(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(text_view))))
-      return;
+      return ETK_TRUE;
 
    text_view->textblock_object = etk_textblock_object_add(text_view->textblock, evas);
    etk_widget_member_object_add(ETK_WIDGET(text_view), text_view->textblock_object);
    evas_object_repeat_events_set(text_view->textblock_object, 1);
    evas_object_show(text_view->textblock_object);
+
+   return ETK_TRUE;
 }
 
 /* Called when the text view is unrealized */
-static void _etk_text_view_unrealized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_text_view_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Text_View *text_view;
 
    if (!(text_view = ETK_TEXT_VIEW(object)))
-      return;
+      return ETK_TRUE;
 
    if (text_view->textblock_object)
    {
@@ -196,10 +198,12 @@ static void _etk_text_view_unrealized_cb(Etk_Object *object, void *data)
       evas_object_del(text_view->textblock_object);
       text_view->textblock_object = NULL;
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when a key is pressed */
-static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Text_View *text_view;
    Etk_Textblock *tb;
@@ -209,7 +213,7 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
    Etk_Bool selecting;
 
    if (!(text_view = ETK_TEXT_VIEW(object)) || !text_view->textblock_object)
-      return;
+      return ETK_TRUE;
 
    tb = text_view->textblock;
    cursor = etk_textblock_object_cursor_get(text_view->textblock_object);
@@ -277,14 +281,17 @@ static void _etk_text_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
          etk_textblock_delete_range(tb, cursor, selection);
       etk_textblock_insert(tb, cursor, event->string, -1);
    }
+
+   return ETK_TRUE;
 }
 
-static void _etk_text_view_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
+static Etk_Bool _etk_text_view_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    if (event->button == 1)
    {
       _etk_text_view_selection_copy(ETK_TEXT_VIEW(object), ETK_SELECTION_PRIMARY, ETK_FALSE);
    }
+   return ETK_TRUE;
 }
 
 /* Size of all the text_view for scrolling ability. */

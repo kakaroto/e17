@@ -56,8 +56,8 @@ static void _etk_shadow_property_set(Etk_Object *object, int property_id, Etk_Pr
 static void _etk_shadow_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_shadow_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_shadow_realized_cb(Etk_Object *object, void *data);
-static void _etk_shadow_unrealized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_shadow_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_shadow_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_shadow_shadow_recalc(Etk_Shadow *shadow);
 static void _etk_shadow_border_recalc(Etk_Shadow *shadow);
 static Etk_Bool _etk_shadow_edge_visible(Etk_Shadow *shadow, Etk_Shadow_Object_Id object_id);
@@ -691,13 +691,13 @@ static void _etk_shadow_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the shadow container is realized */
-static void _etk_shadow_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_shadow_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Shadow *shadow;
    Evas *evas;
 
    if (!(shadow = ETK_SHADOW(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(shadow))))
-      return;
+      return ETK_TRUE;
 
    shadow->clip = evas_object_rectangle_add(evas);
    evas_object_show(shadow->clip);
@@ -734,16 +734,17 @@ static void _etk_shadow_realized_cb(Etk_Object *object, void *data)
 
    shadow->shadow_need_recalc = ETK_TRUE;
    shadow->border_need_recalc = ETK_TRUE;
+   return ETK_TRUE;
 }
 
 /* Called when the shadow container is unrealized */
-static void _etk_shadow_unrealized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_shadow_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Shadow *shadow;
    int i;
 
    if (!(shadow = ETK_SHADOW(object)))
-      return;
+      return ETK_TRUE;
 
    shadow->clip = NULL;
    for (i = 0; i < 4; i++)
@@ -751,6 +752,7 @@ static void _etk_shadow_unrealized_cb(Etk_Object *object, void *data)
       shadow->shadow_objs[i] = NULL;
       shadow->border_objs[i] = NULL;
    }
+   return ETK_TRUE;
 }
 
 /**************************

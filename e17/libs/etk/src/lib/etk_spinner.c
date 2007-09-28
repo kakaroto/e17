@@ -39,23 +39,23 @@ static void _etk_spinner_property_set(Etk_Object *object, int property_id, Etk_P
 static void _etk_spinner_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_spinner_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
-static void _etk_spinner_realized_cb(Etk_Object *object, void *data);
-static void _etk_spinner_unrealized_cb(Etk_Object *object, void *data);
-static void _etk_spinner_focused_cb(Etk_Object *object, void *data);
-static void _etk_spinner_unfocused_cb(Etk_Object *object, void *data);
-static void _etk_spinner_enabled_cb(Etk_Object *object, void *data);
-static void _etk_spinner_disabled_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_spinner_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_spinner_unrealized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_spinner_focused_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_spinner_unfocused_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_spinner_enabled_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_spinner_disabled_cb(Etk_Object *object, void *data);
 
-static void _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_spinner_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data);
+static Etk_Bool _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_spinner_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data);
 static void _etk_spinner_editable_mouse_in_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_spinner_editable_mouse_out_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_spinner_editable_mouse_down_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_spinner_editable_mouse_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_spinner_editable_mouse_move_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 
-static void _etk_spinner_selection_received_cb(Etk_Object *object, void *event, void *data);
-static void _etk_spinner_value_changed_handler(Etk_Range *range, double value);
+static Etk_Bool _etk_spinner_selection_received_cb(Etk_Object *object, void *event, void *data);
+static Etk_Bool _etk_spinner_value_changed_handler(Etk_Range *range, double value);
 static void _etk_spinner_step_increment_changed_cb(Etk_Object *object, const char *property_name, void *data);
 
 static void _etk_spinner_step_start_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -319,16 +319,16 @@ static void _etk_spinner_size_allocate(Etk_Widget *widget, Etk_Geometry geometry
  **************************/
 
 /* Called when the spinner is realized */
-static void _etk_spinner_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_spinner_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Spinner *spinner;
    Evas_Object *theme_object;
    Evas *evas;
 
    if (!(spinner = ETK_SPINNER(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(spinner))))
-      return;
+      return ETK_TRUE;
    if (!(theme_object = ETK_WIDGET(spinner)->theme_object))
-      return;
+      return ETK_TRUE;
 
    /* Create the editable object */
    spinner->editable_object = etk_editable_add(evas);
@@ -367,39 +367,44 @@ static void _etk_spinner_realized_cb(Etk_Object *object, void *data)
 
    /* Update the text of the editable object */
    _etk_spinner_update_text_from_value(spinner);
+
+   return ETK_TRUE;
 }
 
 /* Called when the spinner is unrealized */
-static void _etk_spinner_unrealized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_spinner_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Spinner *spinner;
 
    if (!(spinner = ETK_SPINNER(object)))
-      return;
+      return ETK_TRUE;
 
    evas_object_del(spinner->editable_object);
    spinner->editable_object = NULL;
+
+   return ETK_TRUE;
 }
 
 /* Called when the spinner is focused */
-static void _etk_spinner_focused_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_spinner_focused_cb(Etk_Object *object, void *data)
 {
    Etk_Spinner *spinner;
 
    if (!(spinner = ETK_SPINNER(object)) || !spinner->editable_object)
-      return;
+      return ETK_TRUE;
 
    etk_editable_cursor_show(spinner->editable_object);
    etk_editable_selection_show(spinner->editable_object);
+   return ETK_TRUE;
 }
 
 /* Called when the spinner is unfocused */
-static void _etk_spinner_unfocused_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_spinner_unfocused_cb(Etk_Object *object, void *data)
 {
    Etk_Spinner *spinner;
 
    if (!(spinner = ETK_SPINNER(object)) || !spinner->editable_object)
-      return;
+      return ETK_TRUE;
 
    etk_editable_cursor_move_to_end(spinner->editable_object);
    etk_editable_selection_move_to_end(spinner->editable_object);
@@ -407,30 +412,33 @@ static void _etk_spinner_unfocused_cb(Etk_Object *object, void *data)
    etk_editable_selection_hide(spinner->editable_object);
 
    _etk_spinner_update_value_from_text(spinner);
+   return ETK_TRUE;
 }
 
 /* Called when the spinner gets enabled */
-static void _etk_spinner_enabled_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_spinner_enabled_cb(Etk_Object *object, void *data)
 {
    Etk_Spinner *spinner;
 
    if (!(spinner = ETK_SPINNER(object)))
-      return;
+      return ETK_TRUE;
    etk_editable_disabled_set(spinner->editable_object, ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Called when the spinner gets disabled */
-static void _etk_spinner_disabled_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_spinner_disabled_cb(Etk_Object *object, void *data)
 {
    Etk_Spinner *spinner;
 
    if (!(spinner = ETK_SPINNER(object)))
-      return;
+      return ETK_TRUE;
    etk_editable_disabled_set(spinner->editable_object, ETK_TRUE);
+   return ETK_TRUE;
 }
 
 /* Called when the user presses a key */
-static void _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Spinner *spinner;
    Etk_Range *range;
@@ -444,7 +452,7 @@ static void _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *eve
    Etk_Bool stop_signal = ETK_TRUE;
 
    if (!(spinner = ETK_SPINNER(object)))
-     return;
+     return ETK_TRUE;
 
    range = ETK_RANGE(spinner);
    editable = spinner->editable_object;
@@ -587,21 +595,25 @@ static void _etk_spinner_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *eve
       _etk_spinner_selection_copy(spinner, ETK_SELECTION_PRIMARY, ETK_FALSE);
    if (stop_signal)
       etk_signal_stop();
+
+   return ETK_TRUE;
 }
 
 /* Called when a key is released while the spinner is focused */
-static void _etk_spinner_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data)
+static Etk_Bool _etk_spinner_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data)
 {
    Etk_Spinner *spinner;
 
    if (!(spinner = ETK_SPINNER(object)))
-      return;
+      return ETK_TRUE;
 
    if (strcmp(event->keyname, "Prior") == 0 || strcmp(event->keyname, "Next") == 0
       || strcmp(event->keyname, "Up") == 0 || strcmp(event->keyname, "Down") == 0)
    {
       spinner->successive_steps = 0;
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the mouse enters the spinner's editable-object */
@@ -699,7 +711,7 @@ static void _etk_spinner_editable_mouse_move_cb(void *data, Evas *evas, Evas_Obj
 }
 
 /* Called when the selection/clipboard content is received */
-static void _etk_spinner_selection_received_cb(Etk_Object *object, void *event, void *data)
+static Etk_Bool _etk_spinner_selection_received_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Spinner *spinner;
    Evas_Object *editable;
@@ -707,7 +719,7 @@ static void _etk_spinner_selection_received_cb(Etk_Object *object, void *event, 
    const char *text;
 
    if (!(spinner = ETK_SPINNER(object)) || !(editable = spinner->editable_object))
-      return;
+      return ETK_TRUE;
 
    if (ev->type == ETK_SELECTION_TEXT && (text = ev->data.text) && *text && (strlen(text) != 1 || text[0] >= 0x20))
    {
@@ -725,15 +737,17 @@ static void _etk_spinner_selection_received_cb(Etk_Object *object, void *event, 
          etk_editable_delete(editable, start_pos, end_pos);
       etk_editable_insert(editable, start_pos, text);
    }
+
+   return ETK_TRUE;
 }
 
 /* Default handler for the "value-changed" signal of a spinner */
-static void _etk_spinner_value_changed_handler(Etk_Range *range, double value)
+static Etk_Bool _etk_spinner_value_changed_handler(Etk_Range *range, double value)
 {
    Etk_Spinner *spinner;
 
    if (!(spinner = ETK_SPINNER(range)))
-      return;
+      return ETK_TRUE;
 
    if (spinner->snap_to_ticks)
    {
@@ -745,6 +759,7 @@ static void _etk_spinner_value_changed_handler(Etk_Range *range, double value)
    }
 
    _etk_spinner_update_text_from_value(spinner);
+   return ETK_TRUE;
 }
 
 /* Called when the step-increment of the spinner is changed:

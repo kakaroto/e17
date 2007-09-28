@@ -36,7 +36,7 @@ struct Etk_Toggle_Button
    Etk_Button button;
 
    void (*active_set)(Etk_Toggle_Button *toggle_button, Etk_Bool active);
-   void (*toggled_handler)(Etk_Toggle_Button *toggle_button);
+   Etk_Bool (*toggled_handler)(Etk_Toggle_Button *toggle_button);
    Etk_Bool active:1;
 };
 
@@ -45,7 +45,7 @@ Etk_Type   *etk_toggle_button_type_get(void);
 Etk_Widget *etk_toggle_button_new(void);
 Etk_Widget *etk_toggle_button_new_with_label(const char *label);
 
-void        etk_toggle_button_toggle(Etk_Toggle_Button *toggle_button);
+Etk_Bool    etk_toggle_button_toggle(Etk_Toggle_Button *toggle_button);
 void        etk_toggle_button_active_set(Etk_Toggle_Button *toggle_button, Etk_Bool active);
 Etk_Bool    etk_toggle_button_active_get(Etk_Toggle_Button *toggle_button);
 

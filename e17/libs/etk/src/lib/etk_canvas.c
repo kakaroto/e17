@@ -18,8 +18,8 @@
 
 static void _etk_canvas_constructor(Etk_Canvas *canvas);
 static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_canvas_realized_cb(Etk_Object *object, void *data);
-static void _etk_canvas_unrealized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_canvas_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_canvas_unrealized_cb(Etk_Object *object, void *data);
 static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 /**************************
@@ -204,7 +204,7 @@ static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the canvas is realized */
-static void _etk_canvas_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_canvas_realized_cb(Etk_Object *object, void *data)
 {
    Evas *evas;
    Etk_Canvas *canvas;
@@ -212,7 +212,7 @@ static void _etk_canvas_realized_cb(Etk_Object *object, void *data)
    Evas_List *l;
 
    if (!(canvas = ETK_CANVAS(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(canvas))))
-      return;
+      return ETK_TRUE;
 
    canvas->clip = evas_object_rectangle_add(evas);
    etk_widget_member_object_add(ETK_WIDGET(canvas), canvas->clip);
@@ -223,19 +223,23 @@ static void _etk_canvas_realized_cb(Etk_Object *object, void *data)
       evas_object_clip_set(obj, canvas->clip);
       evas_object_show(canvas->clip);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the canvas is unrealized */
-static void _etk_canvas_unrealized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_canvas_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Canvas *canvas;
 
    if (!(canvas = ETK_CANVAS(object)))
-      return;
+      return ETK_TRUE;
 
    canvas->clip = NULL;
    evas_list_free(canvas->objects);
    canvas->objects = NULL;
+
+   return ETK_TRUE;
 }
 
 /* Called when an object of the canvas is deleted */

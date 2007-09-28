@@ -39,9 +39,9 @@ static void _etk_statusbar_constructor(Etk_Statusbar *statusbar);
 static void _etk_statusbar_destructor(Etk_Statusbar *statusbar);
 static void _etk_statusbar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_statusbar_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_statusbar_realized_cb(Etk_Object *object, void *data);
 static void _etk_statusbar_resize_grip_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
-static void _etk_statusbar_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
+static Etk_Bool _etk_statusbar_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
 static void _etk_statusbar_update(Etk_Statusbar *statusbar);
 
 /**************************
@@ -343,13 +343,13 @@ static void _etk_statusbar_property_get(Etk_Object *object, int property_id, Etk
  **************************/
 
 /* Called when the statusbar is realized */
-static void _etk_statusbar_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_statusbar_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Statusbar *statusbar;
    Etk_Widget *statusbar_widget;
 
    if (!(statusbar = ETK_STATUSBAR(object)))
-      return;
+      return ETK_TRUE;
    statusbar_widget = ETK_WIDGET(statusbar);
 
    if (statusbar->has_resize_grip)
@@ -363,6 +363,8 @@ static void _etk_statusbar_realized_cb(Etk_Object *object, void *data)
       edje_object_signal_callback_add(statusbar_widget->theme_object, "*", "etk.event.resize",
          _etk_statusbar_resize_grip_cb, object);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when an event occurs on the resize grip of the statusbar */
@@ -392,19 +394,20 @@ static void _etk_statusbar_resize_grip_cb(void *data, Evas_Object *obj, const ch
 }
 
 /* Called when mouse presses the resize grip and when the mouse is moved */
-static void _etk_statusbar_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data)
+static Etk_Bool _etk_statusbar_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data)
 {
    Etk_Statusbar *statusbar;
    Etk_Toplevel *window;
 
    if (!(statusbar = ETK_STATUSBAR(object)))
-      return;
+      return ETK_TRUE;
    if (!(window = etk_widget_toplevel_parent_get(ETK_WIDGET(statusbar))) || !ETK_IS_WINDOW(window))
-      return;
+      return ETK_TRUE;
 
    statusbar->window_width += event->cur.widget.x - event->prev.widget.x;
    statusbar->window_height += event->cur.widget.y - event->prev.widget.y;
    etk_window_resize(ETK_WINDOW(window), statusbar->window_width, statusbar->window_height);
+   return ETK_TRUE;
 }
 
 /**************************

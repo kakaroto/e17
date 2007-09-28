@@ -6,6 +6,8 @@
 #include <math.h>
 #include <stdio.h>
 
+#include "etk_types.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -41,7 +43,7 @@ void etk_accumulator_bool_and(void *return_value, const void *value_to_accum, vo
 void etk_accumulator_stopping_bool_or(void *return_value, const void *value_to_accum, void *data);
 void etk_accumulator_stopping_bool_and(void *return_value, const void *value_to_accum, void *data);
 
-void etk_callback_set_null(void *data);
+Etk_Bool etk_callback_set_null(void *data);
 
 unsigned int etk_current_time_get();
 

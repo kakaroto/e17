@@ -31,18 +31,18 @@ static void _etk_menu_property_set(Etk_Object *object, int property_id, Etk_Prop
 static void _etk_menu_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_menu_window_popped_up_cb(Etk_Object *object, void *data);
-static void _etk_menu_window_popped_down_cb(Etk_Object *object, void *data);
-static void _etk_menu_window_key_down_cb(Etk_Object *object, void *event_info, void *data);
+static Etk_Bool _etk_menu_window_popped_up_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_menu_window_popped_down_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_menu_window_key_down_cb(Etk_Object *object, void *event_info, void *data);
 static void _etk_menu_parent_item_changed_cb(Etk_Object *object, const char *property_name, void *data);
-static void _etk_menu_item_added_cb(Etk_Object *object, void *item, void *data);
-static void _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data);
-static void _etk_menu_item_entered_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_left_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_mouse_up_cb(Etk_Object *object, void *event, void *data);
-static void _etk_menu_item_selected_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_unselected_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_activated_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_menu_item_added_cb(Etk_Object *object, void *item, void *data);
+static Etk_Bool _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data);
+static Etk_Bool _etk_menu_item_entered_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_menu_item_left_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_menu_item_mouse_up_cb(Etk_Object *object, void *event, void *data);
+static Etk_Bool _etk_menu_item_selected_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_menu_item_unselected_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_menu_item_activated_cb(Etk_Object *object, void *data);
 
 
 /**************************
@@ -64,9 +64,9 @@ Etk_Type *etk_menu_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_MENU_POPPED_UP_SIGNAL,
-            "popped-up", etk_marshaller_VOID__VOID, NULL, NULL),
+            "popped-up", etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_MENU_POPPED_DOWN_SIGNAL,
-            "popped-down", etk_marshaller_VOID__VOID, NULL, NULL),
+            "popped-down", etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -332,40 +332,44 @@ static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the menu window is popped up */
-static void _etk_menu_window_popped_up_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_menu_window_popped_up_cb(Etk_Object *object, void *data)
 {
    Etk_Menu *menu;
 
    if (!(menu = ETK_MENU(data)))
-      return;
+      return ETK_TRUE;
    etk_signal_emit(ETK_MENU_POPPED_UP_SIGNAL, ETK_OBJECT(menu), NULL);
+   return ETK_TRUE;
 }
 
 /* Called when the menu window is popped down */
-static void _etk_menu_window_popped_down_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_menu_window_popped_down_cb(Etk_Object *object, void *data)
 {
    Evas_List *l;
    Etk_Menu *menu;
 
    if (!(menu = ETK_MENU(data)))
-      return;
+      return ETK_TRUE;
 
    for (l = ETK_MENU_SHELL(menu)->items; l; l = l->next)
       etk_menu_item_unselect(ETK_MENU_ITEM(l->data));
 
    etk_signal_emit(ETK_MENU_POPPED_DOWN_SIGNAL, ETK_OBJECT(menu), NULL);
+   return ETK_TRUE;
 }
 
 /* Called when a key is pressed on the menu window */
-static void _etk_menu_window_key_down_cb(Etk_Object *object, void *event_info, void *data)
+static Etk_Bool _etk_menu_window_key_down_cb(Etk_Object *object, void *event_info, void *data)
 {
    Etk_Menu_Shell *menu_shell;
    Evas_Event_Key_Down *event;
 
    if (!(menu_shell = ETK_MENU_SHELL(data)) || !(event = event_info))
-      return;
+      return ETK_TRUE;
 
    /* TODO: keyboard navigation */
+
+   return ETK_TRUE;
 }
 
 /* Called when the menu is attached to a menu-item */
@@ -386,13 +390,13 @@ static void _etk_menu_parent_item_changed_cb(Etk_Object *object, const char *pro
 }
 
 /* Called when an item is added to the menu */
-static void _etk_menu_item_added_cb(Etk_Object *object, void *item, void *data)
+static Etk_Bool _etk_menu_item_added_cb(Etk_Object *object, void *item, void *data)
 {
    Etk_Widget *menu_widget;
    Etk_Object *item_object;
 
    if (!(menu_widget = ETK_WIDGET(object)) || !(item_object = ETK_OBJECT(item)))
-      return;
+      return ETK_TRUE;
 
    etk_widget_theme_parent_set(ETK_WIDGET(item_object), menu_widget);
    etk_signal_connect_by_code(ETK_WIDGET_ENTERED_SIGNAL, item_object, ETK_CALLBACK(_etk_menu_item_entered_cb), NULL);
@@ -401,15 +405,17 @@ static void _etk_menu_item_added_cb(Etk_Object *object, void *item, void *data)
    etk_signal_connect_by_code(ETK_MENU_ITEM_SELECTED_SIGNAL, item_object, ETK_CALLBACK(_etk_menu_item_selected_cb), NULL);
    etk_signal_connect_by_code(ETK_MENU_ITEM_UNSELECTED_SIGNAL, item_object, ETK_CALLBACK(_etk_menu_item_unselected_cb), NULL);
    etk_signal_connect_by_code(ETK_MENU_ITEM_ACTIVATED_SIGNAL, item_object, ETK_CALLBACK(_etk_menu_item_activated_cb), NULL);
+
+   return ETK_TRUE;
 }
 
 /* Called when an item is removed from the menu */
-static void _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data)
+static Etk_Bool _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data)
 {
    Etk_Object *item_object;
 
    if (!(item_object = ETK_OBJECT(item)))
-      return;
+      return ETK_TRUE;
 
    etk_widget_theme_parent_set(ETK_WIDGET(item_object), NULL);
    etk_signal_disconnect_by_code(ETK_WIDGET_ENTERED_SIGNAL, item_object, ETK_CALLBACK(_etk_menu_item_entered_cb), NULL);
@@ -418,43 +424,48 @@ static void _etk_menu_item_removed_cb(Etk_Object *object, void *item, void *data
    etk_signal_disconnect_by_code(ETK_MENU_ITEM_SELECTED_SIGNAL, item_object, ETK_CALLBACK(_etk_menu_item_selected_cb), NULL);
    etk_signal_disconnect_by_code(ETK_MENU_ITEM_UNSELECTED_SIGNAL, item_object, ETK_CALLBACK(_etk_menu_item_unselected_cb), NULL);
    etk_signal_disconnect_by_code(ETK_MENU_ITEM_ACTIVATED_SIGNAL, item_object, ETK_CALLBACK(_etk_menu_item_activated_cb), NULL);
+
+   return ETK_TRUE;
 }
 
 /* Called when the mouse pointer enters the item */
-static void _etk_menu_item_entered_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_menu_item_entered_cb(Etk_Object *object, void *data)
 {
    etk_menu_item_select(ETK_MENU_ITEM(object));
+   return ETK_TRUE;
 }
 
 /* Called when the mouse pointer leaves the item */
-static void _etk_menu_item_left_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_menu_item_left_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *item;
 
    if (!(item = ETK_MENU_ITEM(object)) || item->submenu)
-      return;
+      return ETK_TRUE;
    etk_menu_item_unselect(item);
+   return ETK_TRUE;
 }
 
 /* Called when the user has released the item */
-static void _etk_menu_item_mouse_up_cb(Etk_Object *object, void *event, void *data)
+static Etk_Bool _etk_menu_item_mouse_up_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Menu_Item *item;
 
    if (!(item = ETK_MENU_ITEM(object)) || item->submenu)
-      return;
+      return ETK_TRUE;
    etk_menu_item_activate(item);
+   return ETK_TRUE;
 }
 
 /* Called when the item is selected */
-static void _etk_menu_item_selected_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_menu_item_selected_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *item;
    Etk_Menu *menu;
    Evas_List *l;
 
    if (!(item = ETK_MENU_ITEM(object)) || !(menu = ETK_MENU(item->parent_shell)))
-      return;
+      return ETK_TRUE;
 
    /* First, we deactivate all the items that are on the same menu than the item */
    for (l = ETK_MENU_SHELL(menu)->items; l; l = l->next)
@@ -479,24 +490,29 @@ static void _etk_menu_item_selected_cb(Etk_Object *object, void *data)
       }
       etk_menu_popup_at_xy(item->submenu, mx + mw, my + item_y);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the item is unselected */
-static void _etk_menu_item_unselected_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_menu_item_unselected_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *item;
 
    if (!(item = ETK_MENU_ITEM(object)))
-      return;
+      return ETK_TRUE;
 
    if (item->submenu)
       etk_menu_popdown(item->submenu);
+
+   return ETK_TRUE;
 }
 
 /* Called when the item is activated */
-static void _etk_menu_item_activated_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_menu_item_activated_cb(Etk_Object *object, void *data)
 {
    etk_popup_window_popdown_all();
+   return ETK_TRUE;
 }
 
 /** @} */

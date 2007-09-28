@@ -30,8 +30,8 @@ static void _etk_mdi_area_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
 static void _etk_mdi_area_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *widget);
 static Evas_List *_etk_mdi_area_children_get(Etk_Container *container);
-static void _etk_mdi_area_realized_cb(Etk_Object *object, void *data);
-static void _etk_mdi_area_child_moved_cb(Etk_Widget *child, int x, int y, void *data);
+static Etk_Bool _etk_mdi_area_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_mdi_area_child_moved_cb(Etk_Widget *child, int x, int y, void *data);
 static void _etk_mdi_area_child_maximized_cb(Etk_Object *object, const char *property_name, void *data);
 
 /**************************
@@ -331,7 +331,7 @@ static Evas_List *_etk_mdi_area_children_get(Etk_Container *container)
  **************************/
 
 /* Called when the mdi_area container is realized */
-static void _etk_mdi_area_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_mdi_area_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Mdi_Area *mdi_area;
    Etk_Mdi_Area_Child *c;
@@ -339,7 +339,7 @@ static void _etk_mdi_area_realized_cb(Etk_Object *object, void *data)
    Evas *evas;
 
    if (!(mdi_area = ETK_MDI_AREA(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(object))))
-      return;
+      return ETK_TRUE;
 
    mdi_area->clip = evas_object_rectangle_add(evas);
    etk_widget_member_object_add(ETK_WIDGET(mdi_area), mdi_area->clip);
@@ -352,11 +352,14 @@ static void _etk_mdi_area_realized_cb(Etk_Object *object, void *data)
 
    if (mdi_area->children)
       evas_object_show(mdi_area->clip);
+
+   return ETK_TRUE;
 }
 
-static void _etk_mdi_area_child_moved_cb(Etk_Widget *child, int x, int y, void *data)
+static Etk_Bool _etk_mdi_area_child_moved_cb(Etk_Widget *child, int x, int y, void *data)
 {
    etk_mdi_area_move(ETK_MDI_AREA(data), child, x, y);
+   return ETK_TRUE;
 }
 
 static void _etk_mdi_area_child_maximized_cb(Etk_Object *object, const char *property_name, void *data)

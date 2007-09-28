@@ -27,8 +27,8 @@ enum Etk_Container_Property_Id
 static void _etk_container_constructor(Etk_Container *container);
 static void _etk_container_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_container_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_container_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data);
-static void _etk_container_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
+static Etk_Bool _etk_container_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data);
+static Etk_Bool _etk_container_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
 static void _etk_container_child_parent_changed_cb(Etk_Object *object, const char *property_name, void *data);
 
 /**************************
@@ -50,9 +50,9 @@ Etk_Type *etk_container_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_CONTAINER_CHILD_ADDED_SIGNAL,
-            "child-added", etk_marshaller_VOID__OBJECT, NULL, NULL),
+            "child-added", etk_marshaller_OBJECT, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_CONTAINER_CHILD_REMOVED_SIGNAL,
-            "child-removed", etk_marshaller_VOID__OBJECT, NULL, NULL),
+            "child-removed", etk_marshaller_OBJECT, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -307,26 +307,28 @@ static void _etk_container_property_get(Etk_Object *object, int property_id, Etk
  **************************/
 
 /* Called when a child is added to the container */
-static void _etk_container_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data)
+static Etk_Bool _etk_container_child_added_cb(Etk_Object *object, Etk_Widget *child, void *data)
 {
    Etk_Container *container;
 
    if (!(container = ETK_CONTAINER(object)) || !child)
-      return;
+      return ETK_TRUE;
 
    etk_object_notification_callback_add(ETK_OBJECT(child), "parent",
          _etk_container_child_parent_changed_cb, container);
+   return ETK_TRUE;
 }
 
 /* Called when a child is removed from the container */
-static void _etk_container_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
+static Etk_Bool _etk_container_child_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
 {
    Etk_Container *container;
 
    if (!(container = ETK_CONTAINER(object)) || !child)
-      return;
+      return ETK_TRUE;
 
    etk_object_notification_callback_remove(ETK_OBJECT(child), "parent", _etk_container_child_parent_changed_cb);
+   return ETK_TRUE;
 }
 
 /* Called when a child of the container is reparented */

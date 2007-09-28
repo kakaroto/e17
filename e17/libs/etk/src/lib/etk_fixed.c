@@ -29,7 +29,7 @@ static void _etk_fixed_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_fixed_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_fixed_child_remove(Etk_Container *container, Etk_Widget *widget);
 static Evas_List *_etk_fixed_children_get(Etk_Container *container);
-static void _etk_fixed_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_fixed_realized_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -306,7 +306,7 @@ static Evas_List *_etk_fixed_children_get(Etk_Container *container)
  **************************/
 
 /* Called when the fixed container is realized */
-static void _etk_fixed_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_fixed_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Fixed *fixed;
    Etk_Fixed_Child *c;
@@ -314,7 +314,7 @@ static void _etk_fixed_realized_cb(Etk_Object *object, void *data)
    Evas *evas;
 
    if (!(fixed = ETK_FIXED(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(object))))
-      return;
+      return ETK_TRUE;
 
    fixed->clip = evas_object_rectangle_add(evas);
    etk_widget_member_object_add(ETK_WIDGET(fixed), fixed->clip);
@@ -327,6 +327,8 @@ static void _etk_fixed_realized_cb(Etk_Object *object, void *data)
 
    if (fixed->children)
       evas_object_show(fixed->clip);
+
+   return ETK_TRUE;
 }
 
 /** @} */

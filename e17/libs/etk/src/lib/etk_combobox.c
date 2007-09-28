@@ -41,7 +41,7 @@ static void _etk_combobox_property_set(Etk_Object *object, int property_id, Etk_
 static void _etk_combobox_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_combobox_item_constructor(Etk_Combobox_Item *item);
 static void _etk_combobox_item_destructor(Etk_Combobox_Item *item);
-static void _etk_combobox_item_destroyed_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_item_destroyed_cb(Etk_Object *object, void *data);
 static void _etk_combobox_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_combobox_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_combobox_window_size_request(Etk_Widget *widget, Etk_Size *size);
@@ -52,19 +52,19 @@ static void _etk_combobox_active_item_size_allocate(Etk_Widget *widget, Etk_Geom
 static void _etk_combobox_button_theme_signal_emit(Etk_Widget *widget, const char *name, Etk_Bool size_recalc);
 static void _etk_combobox_item_theme_signal_emit(Etk_Widget *widget, const char *name, Etk_Bool size_recalc);
 
-static void _etk_combobox_realized_cb(Etk_Object *object, void *data);
-static void _etk_combobox_label_realized_cb(Etk_Object *object, void *data);
-static void _etk_combobox_focused_cb(Etk_Widget *widget, void *data);
-static void _etk_combobox_unfocused_cb(Etk_Widget *widget, void *data);
-static void _etk_combobox_enabled_cb(Etk_Widget *widget, void *data);
-static void _etk_combobox_disabled_cb(Etk_Widget *widget, void *data);
-static void _etk_combobox_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data);
-static void _etk_combobox_window_popped_down_cb(Etk_Object *object, void *data);
-static void _etk_combobox_window_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_combobox_item_entered_cb(Etk_Object *object, void *data);
-static void _etk_combobox_item_left_cb(Etk_Object *object, void *data);
-static void _etk_combobox_item_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _etk_combobox_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_label_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_focused_cb(Etk_Widget *widget, void *data);
+static Etk_Bool _etk_combobox_unfocused_cb(Etk_Widget *widget, void *data);
+static Etk_Bool _etk_combobox_enabled_cb(Etk_Widget *widget, void *data);
+static Etk_Bool _etk_combobox_disabled_cb(Etk_Widget *widget, void *data);
+static Etk_Bool _etk_combobox_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_combobox_button_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_window_popped_down_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_window_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_combobox_item_entered_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_item_left_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_item_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 
 static void _etk_combobox_selected_item_set(Etk_Combobox *combobox, Etk_Combobox_Item *item);
 static void _etk_combobox_item_cells_render(Etk_Combobox *combobox, Etk_Widget **cells, Etk_Geometry geometry, Etk_Bool ignore_other);
@@ -89,9 +89,9 @@ Etk_Type *etk_combobox_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_COMBOBOX_ITEM_ACTIVATED_SIGNAL,
-            "item-activated", etk_marshaller_VOID__OBJECT, NULL, NULL),
+            "item-activated", etk_marshaller_OBJECT, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_COMBOBOX_ACTIVE_ITEM_CHANGED_SIGNAL,
-            "active-item-changed", etk_marshaller_VOID__VOID, NULL, NULL),
+            "active-item-changed", etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -1081,13 +1081,13 @@ static void _etk_combobox_item_destructor(Etk_Combobox_Item *item)
 /* Called when a combobox-item is destroyed. We use this function and not the destructor because
  * the destructor is not called immediately after the etk_object_destroy() call, but we want to remove the item
  * immediately from the combobox (the destructor is still used the free the memory though) */
-static void _etk_combobox_item_destroyed_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_combobox_item_destroyed_cb(Etk_Object *object, void *data)
 {
    Etk_Combobox_Item *item;
    Etk_Combobox *combobox;
 
    if (!(item = ETK_COMBOBOX_ITEM(object)) || !(combobox = item->combobox))
-      return;
+      return ETK_TRUE;
 
    if (item->combobox->selected_item == item)
       _etk_combobox_selected_item_set(item->combobox, NULL);
@@ -1102,6 +1102,8 @@ static void _etk_combobox_item_destroyed_cb(Etk_Object *object, void *data)
       combobox->first_item = item->next;
    if (combobox->last_item == item)
       combobox->last_item = item->prev;
+
+   return ETK_TRUE;
 }
 
 /* Calculates the ideal size of the combobox */
@@ -1244,12 +1246,12 @@ static void _etk_combobox_item_theme_signal_emit(Etk_Widget *widget, const char 
  **************************/
 
 /* Called when the combobox is realized */
-static void _etk_combobox_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_combobox_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Combobox *combobox;
 
    if (!(combobox = ETK_COMBOBOX(object)))
-      return;
+      return ETK_TRUE;
 
    /* Read the data defined in the theme */
    if (etk_widget_theme_data_get(ETK_WIDGET(combobox), "popup_offset_x", "%d", &combobox->popup_offset_x) != 1)
@@ -1260,16 +1262,18 @@ static void _etk_combobox_realized_cb(Etk_Object *object, void *data)
       combobox->popup_extra_w = 0;
    if (combobox->items_height == -1 && etk_widget_theme_data_get(ETK_WIDGET(combobox), "item_height", "%d", &combobox->items_height) != 1)
       combobox->items_height = DEFAULT_ITEM_HEIGHT;
+
+   return ETK_TRUE;
 }
 
 /* Called when a child-label of the combobox's button is realized */
-static void _etk_combobox_label_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_combobox_label_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *label;
    Etk_Combobox *combobox;
 
    if (!(label = ETK_WIDGET(data)) || !(combobox = ETK_COMBOBOX(data)))
-      return;
+      return ETK_TRUE;
 
    if (etk_widget_disabled_get(ETK_WIDGET(combobox)))
       etk_widget_theme_signal_emit(label, "etk,state,disabled", ETK_FALSE);
@@ -1277,65 +1281,72 @@ static void _etk_combobox_label_realized_cb(Etk_Object *object, void *data)
       etk_widget_theme_signal_emit(label, "etk,state,focused", ETK_FALSE);
    if (etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(combobox->button)))
       etk_widget_theme_signal_emit(label, "etk,state,on", ETK_FALSE);
+
+   return ETK_TRUE;
 }
 
 /* Called when the combobox is focused */
-static void _etk_combobox_focused_cb(Etk_Widget *widget, void *data)
+static Etk_Bool _etk_combobox_focused_cb(Etk_Widget *widget, void *data)
 {
    Etk_Combobox *combobox;
 
    if (!(combobox = ETK_COMBOBOX(widget)))
-      return;
+      return ETK_TRUE;
    etk_widget_theme_signal_emit(combobox->button, "etk,state,focused", ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Called when the combobox is unfocused */
-static void _etk_combobox_unfocused_cb(Etk_Widget *widget, void *data)
+static Etk_Bool _etk_combobox_unfocused_cb(Etk_Widget *widget, void *data)
 {
    Etk_Combobox *combobox;
 
    if (!(combobox = ETK_COMBOBOX(widget)))
-      return;
+      return ETK_TRUE;
    etk_widget_theme_signal_emit(combobox->button, "etk,state,unfocused", ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Called when the combobox is enabled */
-static void _etk_combobox_enabled_cb(Etk_Widget *widget, void *data)
+static Etk_Bool _etk_combobox_enabled_cb(Etk_Widget *widget, void *data)
 {
    Etk_Combobox *combobox;
 
    if (!(combobox = ETK_COMBOBOX(widget)))
-      return;
+      return ETK_TRUE;
    etk_widget_disabled_set(combobox->button, ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Called when the combobox is disabled */
-static void _etk_combobox_disabled_cb(Etk_Widget *widget, void *data)
+static Etk_Bool _etk_combobox_disabled_cb(Etk_Widget *widget, void *data)
 {
    Etk_Combobox *combobox;
 
    if (!(combobox = ETK_COMBOBOX(widget)))
-      return;
+      return ETK_TRUE;
    etk_widget_disabled_set(combobox->button, ETK_TRUE);
+   return ETK_TRUE;
 }
 
 /* Called when a key is pressed while the combobox is focused*/
-static void _etk_combobox_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_combobox_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Combobox *combobox;
 
    if (!(combobox = ETK_COMBOBOX(object)))
-      return;
+      return ETK_TRUE;
 
    if (strcmp(event->keyname, "space") == 0)
    {
       etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(combobox->button), ETK_TRUE);
       etk_signal_stop();
    }
+   return ETK_TRUE;
 }
 
 /* Called when the combobox button is toggled */
-static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_combobox_button_toggled_cb(Etk_Object *object, void *data)
 {
    int ex, ey, sx, sy;
    int bx, by, bw, bh;
@@ -1343,7 +1354,7 @@ static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data)
    Etk_Toplevel *toplevel;
 
    if (!(combobox = ETK_COMBOBOX(data)) || !(toplevel = etk_widget_toplevel_parent_get(combobox->button)))
-      return;
+      return ETK_TRUE;
 
    if (etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(combobox->button)))
    {
@@ -1355,30 +1366,33 @@ static void _etk_combobox_button_toggled_cb(Etk_Object *object, void *data)
             sy + (by - ey) + bh + combobox->popup_offset_y);
       etk_window_resize(ETK_WINDOW(combobox->window), bw + combobox->popup_extra_w, 0);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the combobox window is popped down */
-static void _etk_combobox_window_popped_down_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_combobox_window_popped_down_cb(Etk_Object *object, void *data)
 {
    Etk_Combobox *combobox;
 
    if (!(combobox = ETK_COMBOBOX(data)))
-      return;
+      return ETK_TRUE;
    etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(combobox->button), ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Called when a key is pressed on the combobox window */
-static void _etk_combobox_window_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_combobox_window_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Combobox *combobox;
 
    if (!(combobox = ETK_COMBOBOX(data)))
-      return;
+      return ETK_TRUE;
 
    if (strcmp(event->keyname, "Down") == 0)
    {
       if (!combobox->first_item)
-         return;
+         return ETK_TRUE;
 
       if (!combobox->selected_item || !combobox->selected_item->next)
          _etk_combobox_selected_item_set(combobox, combobox->first_item);
@@ -1388,7 +1402,7 @@ static void _etk_combobox_window_key_down_cb(Etk_Object *object, Etk_Event_Key_D
    else if (strcmp(event->keyname, "Up") == 0)
    {
       if (!combobox->first_item)
-         return;
+         return ETK_TRUE;
 
       if (!combobox->selected_item || !combobox->selected_item->next)
          _etk_combobox_selected_item_set(combobox, combobox->last_item);
@@ -1407,43 +1421,48 @@ static void _etk_combobox_window_key_down_cb(Etk_Object *object, Etk_Event_Key_D
    }
    else if (strcmp(event->keyname, "Escape") == 0)
       etk_popup_window_popdown(combobox->window);
+
+   return ETK_TRUE;
 }
 
 /* Called when the mouse enters the item */
-static void _etk_combobox_item_entered_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_combobox_item_entered_cb(Etk_Object *object, void *data)
 {
    Etk_Combobox_Item *item;
 
    if (!(item = ETK_COMBOBOX_ITEM(object)))
-      return;
+      return ETK_TRUE;
    _etk_combobox_selected_item_set(item->combobox, item);
+   return ETK_TRUE;
 }
 
 /* Called when the mouse leaves the item */
-static void _etk_combobox_item_left_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_combobox_item_left_cb(Etk_Object *object, void *data)
 {
    Etk_Combobox_Item *item;
 
    if (!(item = ETK_COMBOBOX_ITEM(object)))
-      return;
+      return ETK_TRUE;
 
    if (item->combobox->selected_item == item)
       _etk_combobox_selected_item_set(item->combobox, NULL);
+   return ETK_TRUE;
 }
 
 /* Called when the mouse releases the item */
-static void _etk_combobox_item_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
+static Etk_Bool _etk_combobox_item_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Combobox_Item *item;
 
    if (!(item = ETK_COMBOBOX_ITEM(object)))
-      return;
+      return ETK_TRUE;
    if (event->button != 1 && event->button != 3)
-      return;
+      return ETK_TRUE;
 
    etk_combobox_active_item_set(item->combobox, item);
    if (event->button == 1)
       etk_popup_window_popdown(item->combobox->window);
+   return ETK_TRUE;
 }
 
 /**************************

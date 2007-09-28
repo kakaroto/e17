@@ -41,11 +41,11 @@ static void _etk_notebook_child_add(Etk_Container *container, Etk_Widget *widget
 static void _etk_notebook_child_remove(Etk_Container *container, Etk_Widget *widget);
 static Evas_List *_etk_notebook_children_get(Etk_Container *container);
 
-static void _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data);
-static void _etk_notebook_tab_bar_focused_cb(Etk_Object *object, void *data);
-static void _etk_notebook_tab_bar_unfocused_cb(Etk_Object *object, void *data);
-static void _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_notebook_tab_bar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
+static Etk_Bool _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_notebook_tab_bar_focused_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_notebook_tab_bar_unfocused_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_notebook_tab_bar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 
 static void _etk_notebook_tab_bar_create(Etk_Notebook *notebook);
 static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Evas_List *after, const char *tab_label, Etk_Widget *child);
@@ -70,7 +70,7 @@ Etk_Type *etk_notebook_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_NOTEBOOK_PAGE_CHANGED_SIGNAL,
-            "current-page-changed", etk_marshaller_VOID__VOID, NULL, NULL),
+            "current-page-changed", etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -809,55 +809,61 @@ static Evas_List *_etk_notebook_children_get(Etk_Container *container)
  **************************/
 
 /* Called when a tab is toggled (activated or deactivated) */
-static void _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *tab;
    Etk_Notebook *notebook;
    Etk_Notebook_Page *page;
 
    if (!(tab = ETK_WIDGET(object)) || !(notebook = ETK_NOTEBOOK(data)))
-      return;
+      return ETK_TRUE;
 
    if (etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(tab)))
    {
       if ((page = etk_object_data_get(object, "_Etk_Notebook::Page")))
          _etk_notebook_page_switch(notebook, page);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the tab bar is focused */
-static void _etk_notebook_tab_bar_focused_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_notebook_tab_bar_focused_cb(Etk_Object *object, void *data)
 {
    Etk_Notebook *notebook;
 
    if (!(notebook = ETK_NOTEBOOK(data)))
-      return;
+      return ETK_TRUE;
 
    if (notebook->current_page)
       etk_widget_theme_signal_emit(notebook->current_page->tab, "etk,state,focused", ETK_FALSE);
    notebook->tab_bar_focused = ETK_TRUE;
+
+   return ETK_TRUE;
 }
 
 /* Called when the tab bar is unfocused */
-static void _etk_notebook_tab_bar_unfocused_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_notebook_tab_bar_unfocused_cb(Etk_Object *object, void *data)
 {
    Etk_Notebook *notebook;
 
    if (!(notebook = ETK_NOTEBOOK(data)))
-      return;
+      return ETK_TRUE;
 
    if (notebook->current_page)
       etk_widget_theme_signal_emit(notebook->current_page->tab, "etk,state,unfocused", ETK_FALSE);
    notebook->tab_bar_focused = ETK_FALSE;
+
+   return ETK_TRUE;
 }
 
 /* Called when a key is pressed, if the tab bar is focused */
-static void _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Notebook *notebook;
 
    if (!(notebook = ETK_NOTEBOOK(data)))
-      return;
+      return ETK_TRUE;
 
    if (strcmp(event->keyname, "Left") == 0)
    {
@@ -869,22 +875,26 @@ static void _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, Etk_Event_Key_
       etk_notebook_page_next(notebook);
       etk_signal_stop();
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the user uses the mouse wheel over the tab bar */
-static void _etk_notebook_tab_bar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
+static Etk_Bool _etk_notebook_tab_bar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Notebook *notebook;
    int page_index;
 
    if (!(notebook = ETK_NOTEBOOK(data)))
-      return;
+      return ETK_TRUE;
 
    page_index = etk_notebook_current_page_get(notebook);
    page_index += event->z;
    page_index = ETK_CLAMP(page_index, 0, etk_notebook_num_pages_get(notebook) - 1);
    etk_notebook_current_page_set(notebook, page_index);
    etk_signal_stop();
+
+   return ETK_TRUE;
 }
 
 /**************************

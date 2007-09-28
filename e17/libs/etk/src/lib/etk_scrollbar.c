@@ -24,12 +24,12 @@
 #define ETK_SCROLLBAR_REPEAT_DELAY 0.05
 
 static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar);
-static void _etk_scrollbar_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_scrollbar_realized_cb(Etk_Object *object, void *data);
 static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
-static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value);
+static Etk_Bool _etk_scrollbar_value_changed_handler(Etk_Range *range, double value);
 static void _etk_scrollbar_page_size_changed_cb(Etk_Object *object, const char *property_name, void *data);
 static void _etk_scrollbar_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
-static void _etk_scrollbar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
+static Etk_Bool _etk_scrollbar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 
 static void _etk_scrollbar_scroll_start_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _etk_scrollbar_scroll_stop_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
@@ -165,18 +165,19 @@ static void _etk_scrollbar_constructor(Etk_Scrollbar *scrollbar)
  **************************/
 
 /* Called when the hscrollbar is realized */
-static void _etk_scrollbar_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_scrollbar_realized_cb(Etk_Object *object, void *data)
 {
    Evas_Object *theme_object;
 
    if (!object || !(theme_object = ETK_WIDGET(object)->theme_object))
-      return;
+      return ETK_TRUE;
 
    _etk_scrollbar_range_changed_cb(object, NULL, NULL);
    edje_object_signal_callback_add(theme_object, "drag*", "etk.dragable.bar", _etk_scrollbar_drag_dragged_cb, object);
    /* TODO: change the signal name to "etk,action,scroll,down/up,start" and "etk,action,scroll,stop" */
    edje_object_signal_callback_add(theme_object, "scroll_*_start", "", _etk_scrollbar_scroll_start_cb, object);
    edje_object_signal_callback_add(theme_object, "scroll_stop", "", _etk_scrollbar_scroll_stop_cb, object);
+   return ETK_TRUE;
 }
 
 /* Called when the drag button of the scrollbar is dragged */
@@ -203,25 +204,27 @@ static void _etk_scrollbar_drag_dragged_cb(void *data, Evas_Object *obj, const c
 }
 
 /* Called when the user wants to scroll the scrollbar with the mouse wheel */
-static void _etk_scrollbar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
+static Etk_Bool _etk_scrollbar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Range *scrollbar_range;
 
    if (!(scrollbar_range = ETK_RANGE(object)))
-      return;
+      return ETK_TRUE;
    etk_range_value_set(scrollbar_range, scrollbar_range->value + event->z * scrollbar_range->step_increment);
    etk_signal_stop();
+
+   return ETK_TRUE;
 }
 
 /* Default handler for the "value-changed" signal of a scrollbar */
-static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value)
+static Etk_Bool _etk_scrollbar_value_changed_handler(Etk_Range *range, double value)
 {
    Etk_Scrollbar *scrollbar;
    Evas_Object *theme_object;
    double percent;
 
    if (!(scrollbar = ETK_SCROLLBAR(range)) || !(theme_object = ETK_WIDGET(range)->theme_object))
-      return;
+      return ETK_TRUE;
 
    if (range->upper - range->page_size > range->lower)
       percent = ETK_CLAMP((value - range->lower) / (range->upper - range->lower - range->page_size), 0.0, 1.0);
@@ -235,6 +238,8 @@ static void _etk_scrollbar_value_changed_handler(Etk_Range *range, double value)
       else
          edje_object_part_drag_value_set(theme_object, "etk.dragable.bar", 0.0, percent);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the page size of the scrollbar is changed */

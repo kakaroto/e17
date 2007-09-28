@@ -31,7 +31,7 @@ static void _etk_label_destructor(Etk_Label *label);
 static void _etk_label_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_label_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_label_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_label_realized_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -277,18 +277,20 @@ static void _etk_label_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the label is realized */
-static void _etk_label_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_label_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Label *label;
 
    if (!(label = ETK_LABEL(object)))
-      return;
+      return ETK_TRUE;
 
    if (!label->text)
       etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.label", "");
    else
       etk_widget_theme_part_text_set(ETK_WIDGET(label), "etk.text.label", label->text);
    etk_widget_size_recalc_queue(ETK_WIDGET(label));
+
+   return ETK_TRUE;
 }
 
 /** @} */

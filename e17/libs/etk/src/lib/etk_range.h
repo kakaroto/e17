@@ -42,7 +42,7 @@ struct Etk_Range
    double page_increment;
    double page_size;
 
-   void (*value_changed_handler)(Etk_Range *range, double value);
+   Etk_Bool (*value_changed_handler)(Etk_Range *range, double value);
 };
 
 

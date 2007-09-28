@@ -48,13 +48,13 @@ static void _etk_menu_item_check_property_set(Etk_Object *object, int property_i
 static void _etk_menu_item_check_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_menu_item_radio_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_menu_item_radio_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_menu_item_realized_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_check_box_realized_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_check_activated_cb(Etk_Object *object, void *data);
-static void _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item);
-static void _etk_menu_item_unselected_handler(Etk_Menu_Item *menu_item);
-static void _etk_menu_item_activated_handler(Etk_Menu_Item *menu_item);
-static void _etk_menu_item_check_toggled_handler(Etk_Menu_Item_Check *check_item);
+static Etk_Bool _etk_menu_item_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_menu_item_check_box_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_menu_item_check_activated_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item);
+static Etk_Bool _etk_menu_item_unselected_handler(Etk_Menu_Item *menu_item);
+static Etk_Bool _etk_menu_item_activated_handler(Etk_Menu_Item *menu_item);
+static Etk_Bool _etk_menu_item_check_toggled_handler(Etk_Menu_Item_Check *check_item);
 static void _etk_menu_item_check_active_set(Etk_Menu_Item_Check *check_item, Etk_Bool active);
 static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk_Bool active);
 
@@ -82,13 +82,13 @@ Etk_Type *etk_menu_item_type_get(void)
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_HANDLER(ETK_MENU_ITEM_SELECTED_SIGNAL,
             "selected", Etk_Menu_Item, selected_handler,
-            etk_marshaller_VOID__VOID, NULL, NULL),
+            etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESC_HANDLER(ETK_MENU_ITEM_UNSELECTED_SIGNAL,
             "unselected", Etk_Menu_Item, unselected_handler,
-            etk_marshaller_VOID__VOID, NULL, NULL),
+            etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESC_HANDLER(ETK_MENU_ITEM_ACTIVATED_SIGNAL,
             "activated", Etk_Menu_Item, activated_handler,
-            etk_marshaller_VOID__VOID, NULL, NULL),
+            etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -436,7 +436,7 @@ Etk_Type *etk_menu_item_check_type_get(void)
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_HANDLER(ETK_MENU_ITEM_CHECK_TOGGLED_SIGNAL,
             "toggled", Etk_Menu_Item_Check, toggled_handler,
-            etk_marshaller_VOID__VOID, NULL, NULL),
+            etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -877,74 +877,82 @@ static void _etk_menu_item_radio_property_get(Etk_Object *object, int property_i
  **************************/
 
 /* Called when the menu item is realized */
-static void _etk_menu_item_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_menu_item_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *menu_item;
 
    if (!(menu_item = ETK_MENU_ITEM(object)))
-      return;
+      return ETK_TRUE;
 
    etk_widget_theme_part_text_set(ETK_WIDGET(menu_item), "etk.text.label", menu_item->label ? menu_item->label : "");
    if (menu_item->left_widget)
       etk_widget_swallow_widget(ETK_WIDGET(menu_item), "etk.swallow.left_widget", menu_item->left_widget);
    /* TODO: emit "show left_widget", "show arrow", ... ?? */
+
+   return ETK_TRUE;
 }
 
 /* Called when the checkbox of the check item is realized */
-static void _etk_menu_item_check_box_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_menu_item_check_box_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *menu_item;
 
    if (!(menu_item = ETK_MENU_ITEM(data)) || !menu_item->left_widget)
-      return;
+      return ETK_TRUE;
 
    if (ETK_MENU_ITEM_CHECK(menu_item)->active)
       etk_widget_theme_signal_emit(menu_item->left_widget, "etk,state,on", ETK_FALSE);
    else
       etk_widget_theme_signal_emit(menu_item->left_widget, "etk,state,off", ETK_FALSE);
+
+   return ETK_TRUE;
 }
 
 /* Called when the check item is activated */
-static void _etk_menu_item_check_activated_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_menu_item_check_activated_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item_Check *check_item;
 
    if (!(check_item = ETK_MENU_ITEM_CHECK(object)))
-      return;
+      return ETK_TRUE;
    etk_menu_item_check_active_set(check_item, !check_item->active);
+   return ETK_TRUE;
 }
 
 /* Default handler for the "selected" signal */
-static void _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item)
+static Etk_Bool _etk_menu_item_selected_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
-      return;
+      return ETK_TRUE;
    etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,state,selected", ETK_FALSE);
    etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "etk,state,selected", ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Default handler for the "unselected" signal */
-static void _etk_menu_item_unselected_handler(Etk_Menu_Item *menu_item)
+static Etk_Bool _etk_menu_item_unselected_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
-      return;
+      return ETK_TRUE;
    etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,state,unselected", ETK_FALSE);
    etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "etk,state,unselected", ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Default handler for the "activated" signal */
-static void _etk_menu_item_activated_handler(Etk_Menu_Item *menu_item)
+static Etk_Bool _etk_menu_item_activated_handler(Etk_Menu_Item *menu_item)
 {
    if (!menu_item)
-      return;
+      return ETK_TRUE;
 
    /* TODO: rename signal */
    etk_widget_theme_signal_emit(ETK_WIDGET(menu_item), "etk,state,activate", ETK_FALSE);
    etk_widget_theme_signal_emit(ETK_WIDGET(menu_item->left_widget), "etk,state,activate", ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Default handler for the "toggled" signal */
-static void _etk_menu_item_check_toggled_handler(Etk_Menu_Item_Check *check_item)
+static Etk_Bool _etk_menu_item_check_toggled_handler(Etk_Menu_Item_Check *check_item)
 {
    if (check_item && ETK_MENU_ITEM(check_item)->left_widget)
    {
@@ -953,6 +961,7 @@ static void _etk_menu_item_check_toggled_handler(Etk_Menu_Item_Check *check_item
       else
          etk_widget_theme_signal_emit(ETK_MENU_ITEM(check_item)->left_widget, "etk,state,off", ETK_FALSE);
    }
+   return ETK_TRUE;
 }
 
 /**************************

@@ -30,13 +30,13 @@ static void _etk_scrolled_view_property_set(Etk_Object *object, int property_id,
 static void _etk_scrolled_view_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_scrolled_view_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
-static void _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
-static void _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
-static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
-static void _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, void *data);
-static void _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child, void *data);
-static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_scrolled_view_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
+static Etk_Bool _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
+static Etk_Bool _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data);
+static Etk_Bool _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, void *data);
+static Etk_Bool _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child, void *data);
+static Etk_Bool _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -397,7 +397,7 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
  **************************/
 
 /* Called when the user presses a key */
-static void _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Scrolled_View *scrolled_view;
    Etk_Range *hscrollbar_range;
@@ -405,7 +405,7 @@ static void _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Dow
    Etk_Bool propagate = ETK_FALSE;
 
    if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
-      return;
+      return ETK_TRUE;
    hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
    vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
 
@@ -430,64 +430,74 @@ static void _etk_scrolled_view_key_down_cb(Etk_Object *object, Etk_Event_Key_Dow
 
    if (!propagate)
       etk_signal_stop();
+
+   return ETK_TRUE;
 }
 
 /* Called when the user wants to scroll the scrolled view with the mouse wheel */
-static void _etk_scrolled_view_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
+static Etk_Bool _etk_scrolled_view_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Scrolled_View *scrolled_view;
    Etk_Range *vscrollbar_range;
 
    if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
-      return;
+      return ETK_TRUE;
 
    vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
    etk_range_value_set(vscrollbar_range, vscrollbar_range->value + event->z * vscrollbar_range->step_increment);
    etk_signal_stop();
+
+   return ETK_TRUE;
 }
 
 /* Called when the value of the hscrollbar has changed */
-static void _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data)
+static Etk_Bool _etk_scrolled_view_hscrollbar_value_changed_cb(Etk_Object *object, double value, void *data)
 {
    Etk_Scrolled_View *scrolled_view;
    Etk_Widget *child;
 
    if (!(scrolled_view = ETK_SCROLLED_VIEW(data)) || !(child = ETK_BIN(scrolled_view)->child) || !child->scroll)
-      return;
+      return ETK_TRUE;
    child->scroll(child, value, ETK_RANGE(scrolled_view->vscrollbar)->value);
+
+   return ETK_TRUE;
 }
 
 /* Called when the value of the vscrollbar has changed */
-static void _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data)
+static Etk_Bool _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data)
 {
    Etk_Scrolled_View *scrolled_view;
    Etk_Widget *child;
 
    if (!(scrolled_view = ETK_SCROLLED_VIEW(data)) || !(child = ETK_BIN(scrolled_view)->child) || !child->scroll)
-      return;
+      return ETK_TRUE;
    child->scroll(child, ETK_RANGE(scrolled_view->hscrollbar)->value, value);
+
+   return ETK_TRUE;
 }
 
 /* Called when a new child is added */
-static void _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, void *data)
+static Etk_Bool _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, void *data)
 {
    if (!object || !child)
-      return;
+      return ETK_TRUE;
    etk_signal_connect_by_code(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(child),
       ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object);
+   return ETK_TRUE;
 }
 
 /* Called when a child is removed */
-static void _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child, void *data)
+static Etk_Bool _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child, void *data)
 {
    if (!object || !child)
-      return;
+      return ETK_TRUE;
    etk_signal_disconnect_by_code(ETK_WIDGET_SCROLL_SIZE_CHANGED_SIGNAL, ETK_OBJECT(child),
       ETK_CALLBACK(_etk_scrolled_view_child_scroll_size_changed_cb), object);
+   return ETK_TRUE;
 }
 
 /* Called when the scroll size of the scrolled view's child has changed */
-static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *child;
    Etk_Scrolled_View *scrolled_view;
@@ -497,7 +507,7 @@ static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, 
    Etk_Size scroll_size;
 
    if (!(child = ETK_WIDGET(object)) || !child->scroll_size_get || !(scrolled_view = ETK_SCROLLED_VIEW(data)))
-      return;
+      return ETK_TRUE;
 
    if (scrolled_view->hpolicy == ETK_POLICY_AUTO || scrolled_view->hpolicy == ETK_POLICY_SHOW)
       etk_widget_size_request_full(scrolled_view->hscrollbar, &hscrollbar_requisition, ETK_FALSE);
@@ -522,6 +532,8 @@ static void _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, 
    etk_range_range_set(ETK_RANGE(scrolled_view->hscrollbar), 0, scroll_size.w);
    etk_range_range_set(ETK_RANGE(scrolled_view->vscrollbar), 0, scroll_size.h);
    etk_widget_redraw_queue(ETK_WIDGET(scrolled_view));
+
+   return ETK_TRUE;
 }
 
 /** @} */

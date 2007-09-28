@@ -88,12 +88,12 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
 static void _etk_iconbox_grid_scroll(Etk_Widget *widget, int x, int y);
 static void _etk_iconbox_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
 
-static void _etk_iconbox_realized_cb(Etk_Object *object, void *data);
-static void _etk_iconbox_grid_realized_cb(Etk_Object *object, void *data);
-static void _etk_iconbox_grid_unrealized_cb(Etk_Object *object, void *data);
-static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
-static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
-static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
+static Etk_Bool _etk_iconbox_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_iconbox_grid_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_iconbox_grid_unrealized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
+static Etk_Bool _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
 
 static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid);
 static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid);
@@ -120,13 +120,13 @@ Etk_Type *etk_iconbox_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ICON_SELECTED_SIGNAL,
-            "icon-selected", etk_marshaller_VOID__POINTER, NULL, NULL),
+            "icon-selected", etk_marshaller_POINTER, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ICON_UNSELECTED_SIGNAL,
-            "icon-unselected", etk_marshaller_VOID__POINTER, NULL, NULL),
+            "icon-unselected", etk_marshaller_POINTER, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ALL_SELECTED_SIGNAL,
-            "all-selected", etk_marshaller_VOID__VOID, NULL, NULL),
+            "all-selected", etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_ICONBOX_ALL_UNSELECTED_SIGNAL,
-            "all-unselected", etk_marshaller_VOID__VOID, NULL, NULL),
+            "all-unselected", etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -1117,12 +1117,12 @@ static void _etk_iconbox_grid_scroll_size_get(Etk_Widget *widget, Etk_Size scrol
  **************************/
 
 /* Called when the iconbox is realized */
-static void _etk_iconbox_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_iconbox_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Iconbox *iconbox;
 
    if (!(iconbox = ETK_ICONBOX(object)))
-      return;
+      return ETK_TRUE;
 
    if (etk_widget_theme_data_get(ETK_WIDGET(iconbox), "selected_icon_color", "%d %d %d %d",
       &iconbox->selected_icon_color.r, &iconbox->selected_icon_color.g,
@@ -1133,6 +1133,8 @@ static void _etk_iconbox_realized_cb(Etk_Object *object, void *data)
       iconbox->selected_icon_color.b = 128;
       iconbox->selected_icon_color.a = 255;
    }
+
+   return ETK_TRUE;
 }
 
 /**************************
@@ -1140,13 +1142,13 @@ static void _etk_iconbox_realized_cb(Etk_Object *object, void *data)
  **************************/
 
 /* Called when the iconbox grid is realized */
-static void _etk_iconbox_grid_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_iconbox_grid_realized_cb(Etk_Object *object, void *data)
 {
    Evas *evas;
    Etk_Iconbox_Grid *grid;
 
    if (!(grid = ETK_ICONBOX_GRID(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(grid))))
-      return;
+      return ETK_TRUE;
 
    grid->clip = evas_object_rectangle_add(evas);
    evas_object_show(grid->clip);
@@ -1157,23 +1159,27 @@ static void _etk_iconbox_grid_realized_cb(Etk_Object *object, void *data)
    evas_object_pass_events_set(grid->selection_rect, 1);
    evas_object_clip_set(grid->selection_rect, grid->clip);
    etk_widget_member_object_add(ETK_WIDGET(grid), grid->selection_rect);
+
+   return ETK_TRUE;
 }
 
 /* Called when the iconbox grid is unrealized */
-static void _etk_iconbox_grid_unrealized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_iconbox_grid_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Iconbox_Grid *grid;
 
    if (!(grid = ETK_ICONBOX_GRID(object)))
-      return;
+      return ETK_TRUE;
 
    while (grid->icon_objects)
       _etk_iconbox_icon_object_delete(grid);
    grid->clip = NULL;
+
+   return ETK_TRUE;
 }
 
 /* Called when the mouse presses the iconbox */
-static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
+static Etk_Bool _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
 {
    Etk_Iconbox_Grid *grid;
    Etk_Iconbox *iconbox;
@@ -1181,10 +1187,10 @@ static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_
    Etk_Bool ctrl_pressed;
 
    if (!(grid = ETK_ICONBOX_GRID(object)) || !(iconbox = grid->iconbox))
-      return;
+      return ETK_TRUE;
 
    if (event->button != 1)
-      return;
+      return ETK_TRUE;
 
    ctrl_pressed = (event->modifiers & ETK_MODIFIER_CTRL);
    if ((icon = etk_iconbox_icon_get_at_xy(iconbox, event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
@@ -1219,18 +1225,20 @@ static void _etk_iconbox_grid_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_
       for (icon = iconbox->first_icon; icon; icon = icon->next)
          icon->was_selected = icon->selected;
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the mouse releases the iconbox */
-static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
+static Etk_Bool _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Iconbox_Grid *grid;
 
    if (!(grid = ETK_ICONBOX_GRID(object)))
-      return;
+      return ETK_TRUE;
 
    if (event->button != 1)
-      return;
+      return ETK_TRUE;
 
    if (grid->selection_started)
    {
@@ -1242,17 +1250,19 @@ static void _etk_iconbox_grid_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up
       ecore_timer_del(grid->scroll_timer);
       grid->scroll_timer = NULL;
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the mouse moves over the iconbox */
-static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data)
+static Etk_Bool _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data)
 {
    Etk_Iconbox_Grid *grid;
    Etk_Bool should_scroll = ETK_FALSE;
    int x, y, w, h;
 
    if (!(grid = ETK_ICONBOX_GRID(object)))
-      return;
+      return ETK_TRUE;
 
    if (grid->selection_started)
    {
@@ -1297,6 +1307,8 @@ static void _etk_iconbox_grid_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_
          grid->scroll_timer = NULL;
       }
    }
+
+   return ETK_TRUE;
 }
 
 /**************************

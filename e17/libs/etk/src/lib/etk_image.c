@@ -36,7 +36,7 @@ static void _etk_image_constructor(Etk_Image *image);
 static void _etk_image_destructor(Etk_Image *image);
 static void _etk_image_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_image_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_image_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_image_realized_cb(Etk_Object *object, void *data);
 static void _etk_image_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_image_source_set(Etk_Image *image, Etk_Image_Source source);
@@ -819,13 +819,14 @@ static void _etk_image_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the image is realized */
-static void _etk_image_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_image_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Image *image;
 
    if (!(image = ETK_IMAGE(object)))
-      return;
+      return ETK_TRUE;
    _etk_image_load(image);
+   return ETK_TRUE;
 }
 
 /**************************

@@ -34,11 +34,11 @@ static void _etk_slider_destructor(Etk_Slider *slider);
 static void _etk_slider_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_slider_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 
-static void _etk_slider_realized_cb(Etk_Object *object, void *data);
-static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_slider_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
+static Etk_Bool _etk_slider_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_slider_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
-static void _etk_slider_value_changed_handler(Etk_Range *range, double value);
+static Etk_Bool _etk_slider_value_changed_handler(Etk_Range *range, double value);
 static void _etk_slider_range_changed_cb(Etk_Object *object, const char *property_name, void *data);
 static int _etk_slider_update_timer_cb(void *data);
 static double _etk_slider_value_get_from_edje(Etk_Slider *slider);
@@ -334,13 +334,13 @@ static void _etk_slider_property_get(Etk_Object *object, int property_id, Etk_Pr
  **************************/
 
 /* Called when the slider is realized */
-static void _etk_slider_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_slider_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Slider *slider;
    Evas_Object *theme_object;
 
    if (!(slider = ETK_SLIDER(object)) || !(theme_object = ETK_WIDGET(slider)->theme_object))
-      return;
+      return ETK_TRUE;
 
    etk_widget_theme_signal_emit(ETK_WIDGET(slider),
       slider->inverted ? "etk,state,inverted" : "etk,state,normal", ETK_FALSE);
@@ -350,17 +350,18 @@ static void _etk_slider_realized_cb(Etk_Object *object, void *data)
       _etk_slider_cursor_dragged_cb, object);
 
    _etk_slider_value_changed_handler(ETK_RANGE(slider), ETK_RANGE(slider)->value);
+   return ETK_TRUE;
 }
 
 /* Called when the user presses a key */
-static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Range *range;
    Etk_Bool propagate = ETK_FALSE;
    int dir;
 
    if (!(range = ETK_RANGE(object)))
-      return;
+      return ETK_TRUE;
 
    dir = ETK_SLIDER(range)->inverted ? -1 : 1;
    if (strcmp(event->keyname, "Right") == 0 || strcmp(event->keyname, "Up") == 0)
@@ -380,20 +381,24 @@ static void _etk_slider_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *even
 
    if (!propagate)
       etk_signal_stop();
+
+   return ETK_TRUE;
 }
 
 /* Called when the user wants to change the value with the mouse wheel */
-static void _etk_slider_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
+static Etk_Bool _etk_slider_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
    Etk_Range *range;
    int dir;
 
    if (!(range = ETK_RANGE(object)))
-      return;
+      return ETK_TRUE;
 
    dir = ETK_SLIDER(range)->inverted ? 1 : -1;
    etk_range_value_set(range, range->value + dir * event->z * range->step_increment);
    etk_signal_stop();
+
+   return ETK_TRUE;
 }
 
 /* Called when the cursor of the slider is dragged */
@@ -446,14 +451,14 @@ static void _etk_slider_cursor_dragged_cb(void *data, Evas_Object *obj, const ch
 }
 
 /* Default handler for the "value-changed" signal */
-static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
+static Etk_Bool _etk_slider_value_changed_handler(Etk_Range *range, double value)
 {
    Etk_Slider *slider;
    Evas_Object *theme_object;
    double percent;
 
    if (!(slider = ETK_SLIDER(range)) || !(theme_object = ETK_WIDGET(slider)->theme_object))
-      return;
+      return ETK_TRUE;
 
    if (range->upper - range->page_size > range->lower)
       percent = ETK_CLAMP((value - range->lower) / (range->upper - range->lower - range->page_size), 0.0, 1.0);
@@ -475,6 +480,7 @@ static void _etk_slider_value_changed_handler(Etk_Range *range, double value)
    }
 
    _etk_slider_label_update(slider);
+   return ETK_TRUE;
 }
 
 /* Called when the range of the slider is changed */

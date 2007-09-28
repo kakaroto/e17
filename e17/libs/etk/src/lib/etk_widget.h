@@ -113,13 +113,13 @@ struct Etk_Widget
    void (*scroll_margins_get)(Etk_Widget *widget, Etk_Size *margin_size);
    void (*scroll)(Etk_Widget *widget, int x, int y);
 
-   void (*shown_handler)(Etk_Widget *widget);
-   void (*entered_handler)(Etk_Widget *widget);
-   void (*left_handler)(Etk_Widget *widget);
-   void (*focused_handler)(Etk_Widget *widget);
-   void (*unfocused_handler)(Etk_Widget *widget);
-   void (*enabled_handler)(Etk_Widget *widget);
-   void (*disabled_handler)(Etk_Widget *widget);
+   Etk_Bool (*shown_handler)(Etk_Widget *widget);
+   Etk_Bool (*entered_handler)(Etk_Widget *widget);
+   Etk_Bool (*left_handler)(Etk_Widget *widget);
+   Etk_Bool (*focused_handler)(Etk_Widget *widget);
+   Etk_Bool (*unfocused_handler)(Etk_Widget *widget);
+   Etk_Bool (*enabled_handler)(Etk_Widget *widget);
+   Etk_Bool (*disabled_handler)(Etk_Widget *widget);
 
    unsigned int realized : 1;
    unsigned int swallowed : 1;
@@ -157,8 +157,8 @@ Etk_Bool      etk_widget_focusable_get(Etk_Widget *widget);
 void          etk_widget_disabled_set(Etk_Widget *widget, Etk_Bool disabled);
 void          etk_widget_disabled_set_all(Etk_Widget *widget, Etk_Bool disabled);
 Etk_Bool      etk_widget_disabled_get(Etk_Widget *widget);
-void          etk_widget_enter(Etk_Widget *widget);
-void          etk_widget_leave(Etk_Widget *widget);
+Etk_Bool      etk_widget_enter(Etk_Widget *widget);
+Etk_Bool      etk_widget_leave(Etk_Widget *widget);
 void          etk_widget_raise(Etk_Widget *widget);
 void          etk_widget_lower(Etk_Widget *widget);
 

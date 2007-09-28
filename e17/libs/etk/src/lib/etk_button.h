@@ -52,9 +52,9 @@ struct Etk_Button
    Etk_Image *image;
    Etk_Widget *label;
 
-   void (*pressed_handler)(Etk_Button *button);
-   void (*released_handler)(Etk_Button *button);
-   void (*clicked_handler)(Etk_Button *button);
+   Etk_Bool (*pressed_handler)(Etk_Button *button);
+   Etk_Bool (*released_handler)(Etk_Button *button);
+   Etk_Bool (*clicked_handler)(Etk_Button *button);
 
    Etk_Button_Style style;
    Etk_Stock_Size stock_size;

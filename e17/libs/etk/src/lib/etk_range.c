@@ -53,7 +53,7 @@ Etk_Type *etk_range_type_get(void)
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_HANDLER(ETK_RANGE_VALUE_CHANGED_SIGNAL,
             "value-changed", Etk_Range, value_changed_handler,
-            etk_marshaller_VOID__DOUBLE, NULL, NULL),
+            etk_marshaller_DOUBLE, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 

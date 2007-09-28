@@ -29,7 +29,7 @@ static void _etk_toplevel_constructor(Etk_Toplevel *toplevel);
 static void _etk_toplevel_destructor(Etk_Toplevel *toplevel);
 static void _etk_toplevel_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_toplevel_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_toplevel_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_toplevel_realized_cb(Etk_Object *object, void *data);
 static void _etk_toplevel_key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _etk_toplevel_key_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_Widget *widget);
@@ -370,17 +370,18 @@ static void _etk_toplevel_property_get(Etk_Object *object, int property_id, Etk_
  **************************/
 
 /* Called when the toplevel widget is realized */
-static void _etk_toplevel_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_toplevel_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Widget *widget;
    Evas_Object *obj;
 
    if (!(widget = ETK_WIDGET(object)) || !(obj = widget->smart_object))
-      return;
+      return ETK_TRUE;
 
    evas_object_focus_set(obj, 1);
    evas_object_event_callback_add(obj, EVAS_CALLBACK_KEY_DOWN, _etk_toplevel_key_down_cb, widget);
    evas_object_event_callback_add(obj, EVAS_CALLBACK_KEY_UP, _etk_toplevel_key_up_cb, widget);
+   return ETK_TRUE;
 }
 
 /* Called when a key of the keyboard is pressed (if the toplevel widget is focused) */

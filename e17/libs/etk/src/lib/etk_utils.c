@@ -96,11 +96,13 @@ void etk_accumulator_stopping_bool_and(void *return_value, const void *value_to_
  * etk_signal_connect_swapped(ETK_OBJECT(button), "clicked", ETK_CALLBACK(etk_callback_set_null), &pointer);
  * @param data @a data stores the location of the pointer to set to NULL
  */
-void etk_callback_set_null(void *data)
+Etk_Bool etk_callback_set_null(void *data)
 {
    if (!data)
-      return;
+      return ETK_TRUE;
    *((void **)data) = NULL;
+
+   return ETK_TRUE;
 }
 
 /**

@@ -24,13 +24,13 @@
  */
 
 static Evas_Bool _etk_tooltips_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static void _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data);
-static void _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data);
-static void _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
-static void _etk_tooltips_mouse_down_cb(Etk_Object *object, void *event, void *data);
-static void _etk_tooltips_mouse_wheel_cb(Etk_Object *object, void *event, void *data);
-static void _etk_tooltips_key_down_cb(Etk_Object *object, void *event, void *data);
-static void _etk_tooltips_widget_unrealized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data);
+static Etk_Bool _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data);
+static Etk_Bool _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
+static Etk_Bool _etk_tooltips_mouse_down_cb(Etk_Object *object, void *event, void *data);
+static Etk_Bool _etk_tooltips_mouse_wheel_cb(Etk_Object *object, void *event, void *data);
+static Etk_Bool _etk_tooltips_key_down_cb(Etk_Object *object, void *event, void *data);
+static Etk_Bool _etk_tooltips_widget_unrealized_cb(Etk_Object *object, void *data);
 static int _etk_tooltips_timer_cb(void *data);
 
 static Etk_Widget *_etk_tooltips_window = NULL;
@@ -254,13 +254,14 @@ void etk_tooltips_pop_down()
 }
 
 /* Callback for when the mouse enters a widget */
-static void _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data)
+static Etk_Bool _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data)
 {
    if(!_etk_tooltips_enabled || !ETK_IS_OBJECT(object))
-     return;
+     return ETK_TRUE;
 
    _etk_tooltips_cur_object = object;
    _etk_tooltips_timer = ecore_timer_add(_etk_tooltips_delay, _etk_tooltips_timer_cb, NULL);
+   return ETK_TRUE;
 }
 
 /* Timer callback, pops up the tooltip */
@@ -274,28 +275,29 @@ static int _etk_tooltips_timer_cb(void *data)
 }
 
 /* Callback for when the mouse leave the widget */
-static void _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data)
+static Etk_Bool _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data)
 {
    if(!_etk_tooltips_enabled)
-     return;
+     return ETK_TRUE;
 
    if(_etk_tooltips_timer != NULL)
      ecore_timer_del(_etk_tooltips_timer);
 
    etk_tooltips_pop_down();
+   return ETK_TRUE;
 }
 
 /* Callback for when the mouse moves on the widget */
-static void _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data)
+static Etk_Bool _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data)
 {
    if(!_etk_tooltips_enabled)
-     return;
+     return ETK_TRUE;
 
    if(!ETK_IS_WINDOW(_etk_tooltips_window))
-     return;
+     return ETK_TRUE;
 
    if(etk_widget_is_visible(_etk_tooltips_window))
-     return;
+     return ETK_TRUE;
 
    if(_etk_tooltips_timer != NULL)
      ecore_timer_del(_etk_tooltips_timer);
@@ -303,43 +305,49 @@ static void _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move
    etk_tooltips_pop_down();
    _etk_tooltips_cur_object = object;
    _etk_tooltips_timer = ecore_timer_add(_etk_tooltips_delay, _etk_tooltips_timer_cb, NULL);
+   return ETK_TRUE;
 }
 
 /* Callback for when the mouse clicks the widget */
-static void _etk_tooltips_mouse_down_cb(Etk_Object *object, void *event, void *data)
+static Etk_Bool _etk_tooltips_mouse_down_cb(Etk_Object *object, void *event, void *data)
 {
    if(!_etk_tooltips_enabled)
-     return;
+     return ETK_TRUE;
 
    etk_tooltips_pop_down();
    _etk_tooltips_cur_object = object;
    _etk_tooltips_timer = ecore_timer_add(_etk_tooltips_delay, _etk_tooltips_timer_cb, NULL);
+   return ETK_TRUE;
 }
 
 /* Callback for when the mouse wheel is moved on the widget */
-static void _etk_tooltips_mouse_wheel_cb(Etk_Object *object, void *event, void *data)
+static Etk_Bool _etk_tooltips_mouse_wheel_cb(Etk_Object *object, void *event, void *data)
 {
    if(!_etk_tooltips_enabled)
-     return;
+     return ETK_TRUE;
 
    etk_tooltips_pop_down();
    _etk_tooltips_cur_object = object;
    _etk_tooltips_timer = ecore_timer_add(_etk_tooltips_delay, _etk_tooltips_timer_cb, NULL);
+
+   return ETK_TRUE;
 }
 
 /* Callback for when the a key is pressed on the widget */
-static void _etk_tooltips_key_down_cb(Etk_Object *object, void *event, void *data)
+static Etk_Bool _etk_tooltips_key_down_cb(Etk_Object *object, void *event, void *data)
 {
    if(!_etk_tooltips_enabled)
-     return;
+     return ETK_TRUE;
 
    etk_tooltips_pop_down();
    _etk_tooltips_cur_object = object;
    _etk_tooltips_timer = ecore_timer_add(_etk_tooltips_delay, _etk_tooltips_timer_cb, NULL);
+
+   return ETK_TRUE;
 }
 
 /* Callback for when the widget is unrealized */
-static void _etk_tooltips_widget_unrealized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_tooltips_widget_unrealized_cb(Etk_Object *object, void *data)
 {
    char *key;
    void *value = NULL;
@@ -350,11 +358,12 @@ static void _etk_tooltips_widget_unrealized_cb(Etk_Object *object, void *data)
    if((value = evas_hash_find(_etk_tooltips_hash, key)) == NULL)
    {
       free(key);
-      return;
+      return ETK_TRUE;
    }
 
    _etk_tooltips_hash = evas_hash_del(_etk_tooltips_hash, key, value);
    free(key);
+   return ETK_TRUE;
 }
 
 /* free hash items */

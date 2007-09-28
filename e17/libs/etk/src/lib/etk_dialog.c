@@ -32,7 +32,7 @@ enum Etk_Dialog_Property_Id
 static void _etk_dialog_constructor(Etk_Dialog *dialog);
 static void _etk_dialog_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_dialog_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_dialog_button_clicked_cb(Etk_Object *object, void *data);
 
 
 /**************************
@@ -54,7 +54,7 @@ Etk_Type *etk_dialog_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_DIALOG_RESPONSE_SIGNAL,
-            "response", etk_marshaller_VOID__INT, NULL, NULL),
+            "response", etk_marshaller_INT, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -434,13 +434,15 @@ static void _etk_dialog_property_get(Etk_Object *object, int property_id, Etk_Pr
  **************************/
 
 /* Called when a button of the action-area of the dialog is clicked */
-static void _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
 {
    int response_id;
 
    if ((response_id = etk_dialog_button_response_id_get(ETK_BUTTON(object))) == ETK_RESPONSE_NONE)
-      return;
+      return ETK_TRUE;
    etk_signal_emit(ETK_DIALOG_RESPONSE_SIGNAL, ETK_OBJECT(data), NULL, response_id);
+
+   return ETK_TRUE;
 }
 
 /** @} */

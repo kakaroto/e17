@@ -21,9 +21,9 @@ static void _etk_viewport_size_request(Etk_Widget *widget, Etk_Size *size_requis
 static void _etk_viewport_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size scrollview_size, Etk_Size scrollbar_size, Etk_Size *scroll_size);
 static void _etk_viewport_scroll(Etk_Widget *widget, int x, int y);
-static void _etk_viewport_realized_cb(Etk_Object *object, void *data);
-static void _etk_viewport_child_added_cb(Etk_Object *object, void *child, void *data);
-static void _etk_viewport_child_removed_cb(Etk_Object *object, void *child, void *data);
+static Etk_Bool _etk_viewport_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_viewport_child_added_cb(Etk_Object *object, void *child, void *data);
+static Etk_Bool _etk_viewport_child_removed_cb(Etk_Object *object, void *child, void *data);
 
 /**************************
  *
@@ -168,14 +168,14 @@ static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size scrollvie
  **************************/
 
 /* Called when the viewport is realized */
-static void _etk_viewport_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_viewport_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Viewport *viewport;
    Etk_Widget *child;
    Evas *evas;
 
    if (!(viewport = ETK_VIEWPORT(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(viewport))))
-      return;
+      return ETK_TRUE;
 
    viewport->clip = evas_object_rectangle_add(evas);
    etk_widget_member_object_add(ETK_WIDGET(viewport), viewport->clip);
@@ -184,30 +184,34 @@ static void _etk_viewport_realized_cb(Etk_Object *object, void *data)
       etk_widget_clip_set(child, viewport->clip);
       evas_object_show(viewport->clip);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when a child is added to the viewport */
-static void _etk_viewport_child_added_cb(Etk_Object *object, void *child, void *data)
+static Etk_Bool _etk_viewport_child_added_cb(Etk_Object *object, void *child, void *data)
 {
    Etk_Viewport *viewport;
 
    if (!(viewport = ETK_VIEWPORT(object)) || !child || !viewport->clip)
-      return;
+      return ETK_TRUE;
 
    etk_widget_clip_set(ETK_WIDGET(child), viewport->clip);
    evas_object_show(viewport->clip);
+   return ETK_TRUE;
 }
 
 /* Called when a child is removed from the viewport */
-static void _etk_viewport_child_removed_cb(Etk_Object *object, void *child, void *data)
+static Etk_Bool _etk_viewport_child_removed_cb(Etk_Object *object, void *child, void *data)
 {
    Etk_Viewport *viewport;
 
    if (!(viewport = ETK_VIEWPORT(object)) || !child || !viewport->clip)
-      return;
+      return ETK_TRUE;
 
    etk_widget_clip_unset(ETK_WIDGET(child));
    evas_object_hide(viewport->clip);
+   return ETK_TRUE;
 }
 
 /** @} */

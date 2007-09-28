@@ -29,7 +29,7 @@ static void _etk_progress_bar_destructor(Etk_Progress_Bar *progress_bar);
 static void _etk_progress_bar_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_progress_bar_update(Etk_Progress_Bar *progress_bar);
-static void _etk_progress_bar_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_progress_bar_realized_cb(Etk_Object *object, void *data);
 
 /**************************
  *
@@ -334,19 +334,20 @@ static void _etk_progress_bar_property_get(Etk_Object *object, int property_id, 
  **************************/
 
 /* Called when the progress bar is realized */
-static void _etk_progress_bar_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_progress_bar_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Progress_Bar *progress_bar;
    float w;
 
    if (!(progress_bar = ETK_PROGRESS_BAR(object)))
-      return;
+      return ETK_TRUE;
 
    if (etk_widget_theme_data_get(ETK_WIDGET(object), "filler_pulse_width", "%f", &w) != 1)
       w = 0.3;
    progress_bar->filler_pulse_w = ETK_CLAMP(w, 0.1, 0.9);
 
    _etk_progress_bar_update(progress_bar);
+   return ETK_TRUE;
 }
 
 /**************************

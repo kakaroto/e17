@@ -67,9 +67,9 @@ struct Etk_Menu_Item
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
 
-   void (*selected_handler)(Etk_Menu_Item *menu_item);
-   void (*unselected_handler)(Etk_Menu_Item *menu_item);
-   void (*activated_handler)(Etk_Menu_Item *menu_item);
+   Etk_Bool (*selected_handler)(Etk_Menu_Item *menu_item);
+   Etk_Bool (*unselected_handler)(Etk_Menu_Item *menu_item);
+   Etk_Bool (*activated_handler)(Etk_Menu_Item *menu_item);
 
    Etk_Menu_Shell *parent_shell;
    Etk_Menu *submenu;
@@ -112,7 +112,7 @@ struct Etk_Menu_Item_Check
    /* Inherit from Etk_Menu_Item */
    Etk_Menu_Item menu_item;
 
-   void (*toggled_handler)(Etk_Menu_Item_Check *check_item);
+   Etk_Bool (*toggled_handler)(Etk_Menu_Item_Check *check_item);
    void (*active_set)(Etk_Menu_Item_Check *check_item, Etk_Bool active);
    Etk_Bool active:1;
 };

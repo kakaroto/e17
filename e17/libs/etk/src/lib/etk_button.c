@@ -40,17 +40,17 @@ static void _etk_button_constructor(Etk_Button *button);
 static void _etk_button_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_button_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_button_theme_signal_emit(Etk_Widget *widget, const char *signal, Etk_Bool size_recalc);
-static void _etk_button_realized_cb(Etk_Object *object, void *data);
-static void _etk_button_label_realized_cb(Etk_Object *object, void *data);
-static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
-static void _etk_button_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_button_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data);
-static void _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
-static void _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
-static void _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
-static void _etk_button_pressed_handler(Etk_Button *button);
-static void _etk_button_released_handler(Etk_Button *button);
-static void _etk_button_clicked_handler(Etk_Button *button);
+static Etk_Bool _etk_button_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_button_label_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, void *data);
+static Etk_Bool _etk_button_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_button_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data);
+static Etk_Bool _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
+static Etk_Bool _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _etk_button_pressed_handler(Etk_Button *button);
+static Etk_Bool _etk_button_released_handler(Etk_Button *button);
+static Etk_Bool _etk_button_clicked_handler(Etk_Button *button);
 static void _etk_button_rebuild(Etk_Button *button);
 
 /**************************
@@ -73,13 +73,13 @@ Etk_Type *etk_button_type_get(void)
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_HANDLER(ETK_BUTTON_PRESSED_SIGNAL,
             "pressed", Etk_Button, pressed_handler,
-            etk_marshaller_VOID__VOID, NULL, NULL),
+            etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESC_HANDLER(ETK_BUTTON_RELEASED_SIGNAL,
             "released", Etk_Button, released_handler,
-            etk_marshaller_VOID__VOID, NULL, NULL),
+            etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESC_HANDLER(ETK_BUTTON_CLICKED_SIGNAL,
             "clicked", Etk_Button, clicked_handler,
-            etk_marshaller_VOID__VOID, NULL, NULL),
+            etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -545,24 +545,26 @@ static void _etk_button_theme_signal_emit(Etk_Widget *widget, const char *signal
  **************************/
 
 /* Called when the button is realized */
-static void _etk_button_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_button_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Button *button;
 
    if (!(button = ETK_BUTTON(object)))
-      return;
+      return ETK_TRUE;
 
    if (button->is_pressed)
       etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,pressed", ETK_FALSE);
+
+   return ETK_TRUE;
 }
 
 /* Called when the button's label is realized */
-static void _etk_button_label_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_button_label_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Button *button;
 
    if (!(button = ETK_BUTTON(data)))
-      return;
+      return ETK_TRUE;
 
    if (button->is_pressed)
       etk_widget_theme_signal_emit(button->label, "etk,state,pressed", ETK_FALSE);
@@ -570,15 +572,17 @@ static void _etk_button_label_realized_cb(Etk_Object *object, void *data)
       etk_widget_theme_signal_emit(button->label, "etk,state,disabled", ETK_FALSE);
    if (etk_widget_is_focused(ETK_WIDGET(button)))
       etk_widget_theme_signal_emit(button->label, "etk,state,focused", ETK_FALSE);
+
+   return ETK_TRUE;
 }
 
 /* Called when the image is removed from the box */
-static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
+static Etk_Bool _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, void *data)
 {
    Etk_Button *button;
 
    if (!(button = ETK_BUTTON(data)) || (child != ETK_WIDGET(button->image)))
-      return;
+      return ETK_TRUE;
 
    if (!button->ignore_image_remove)
    {
@@ -588,30 +592,34 @@ static void _etk_button_image_removed_cb(Etk_Object *object, Etk_Widget *child, 
          _etk_button_rebuild(button);
       etk_object_notify(ETK_OBJECT(button), "image");
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the user presses a key */
-static void _etk_button_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_button_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Button *button;
 
    if (!(button = ETK_BUTTON(object)))
-      return;
+      return ETK_TRUE;
 
    if (strcmp(event->keyname, "space") == 0)
    {
       etk_button_press(button);
       etk_signal_stop();
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the user releases a key */
-static void _etk_button_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data)
+static Etk_Bool _etk_button_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, void *data)
 {
    Etk_Button *button;
 
    if (!(button = ETK_BUTTON(object)))
-      return;
+      return ETK_TRUE;
 
    if (strcmp(event->keyname, "space") == 0)
    {
@@ -622,70 +630,85 @@ static void _etk_button_key_up_cb(Etk_Object *object, Etk_Event_Key_Up *event, v
       }
       etk_signal_stop();
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the user presses the button with the mouse */
-static void _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
+static Etk_Bool _etk_button_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
 {
    Etk_Button *button;
 
    if (!(button = ETK_BUTTON(object)))
-      return;
+      return ETK_TRUE;
 
    etk_widget_focus(ETK_WIDGET(button));
    if (event->button == 1)
       etk_button_press(button);
+   return ETK_TRUE;
 }
 
 /* Called when the user releases the button */
-static void _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
+static Etk_Bool _etk_button_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Button *button;
 
    if (!(button = ETK_BUTTON(object)))
-      return;
+      return ETK_TRUE;
 
    if (event->button == 1)
       etk_button_release(button);
+
+   return ETK_TRUE;
 }
 
 /* Called when the uses clicks on the button with the mouse */
-static void _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
+static Etk_Bool _etk_button_mouse_click_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Button *button;
 
    if (!(button = ETK_BUTTON(object)))
-      return;
+      return ETK_TRUE;
 
    if (event->button == 1)
       etk_button_click(button);
+
+   return ETK_TRUE;
 }
 
 /* Default handler for the "pressed" signal */
-static void _etk_button_pressed_handler(Etk_Button *button)
+static Etk_Bool _etk_button_pressed_handler(Etk_Button *button)
 {
    if (!button)
-      return;
+      return ETK_TRUE;
+
    etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,pressed", ETK_FALSE);
    etk_widget_theme_signal_emit(button->label, "etk,state,pressed", ETK_FALSE);
+
+   return ETK_TRUE;
 }
 
 /* Default handler for the "released" signal */
-static void _etk_button_released_handler(Etk_Button *button)
+static Etk_Bool _etk_button_released_handler(Etk_Button *button)
 {
    if (!button)
-      return;
+      return ETK_TRUE;
+
    etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,released", ETK_FALSE);
    etk_widget_theme_signal_emit(button->label, "etk,state,released", ETK_FALSE);
+
+   return ETK_TRUE;
 }
 
 /* Default handler for the "clicked" signal */
-static void _etk_button_clicked_handler(Etk_Button *button)
+static Etk_Bool _etk_button_clicked_handler(Etk_Button *button)
 {
    if (!button)
-      return;
+      return ETK_TRUE;
    etk_widget_theme_signal_emit(ETK_WIDGET(button), "etk,state,clicked", ETK_FALSE);
    etk_widget_theme_signal_emit(button->label, "etk,state,clicked", ETK_FALSE);
+
+   return ETK_TRUE;
 }
 
 /**************************

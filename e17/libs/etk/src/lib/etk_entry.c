@@ -42,24 +42,24 @@ static void _etk_entry_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_entry_internal_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_entry_internal_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
-static void _etk_entry_internal_realized_cb(Etk_Object *object, void *data);
-static void _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data);
-static void _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static void _etk_entry_editable_mouse_in_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_entry_editable_mouse_out_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_entry_editable_mouse_down_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_entry_editable_mouse_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_entry_editable_mouse_move_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
-static void _etk_entry_image_mouse_in_cb(Etk_Widget *widget, Etk_Event_Mouse_In *event, void *data);
-static void _etk_entry_image_mouse_out_cb(Etk_Widget *widget, Etk_Event_Mouse_Out *event, void *data);
-static void _etk_entry_image_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
-static void _etk_entry_image_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data);
-static void _etk_entry_clear_button_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data);
-static void _etk_entry_focused_cb(Etk_Object *object, void *data);
-static void _etk_entry_unfocused_cb(Etk_Object *object, void *data);
-static void _etk_entry_enabled_cb(Etk_Object *object, void *data);
-static void _etk_entry_disabled_cb(Etk_Object *object, void *data);
-static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, void *data);
+static Etk_Bool _etk_entry_image_mouse_in_cb(Etk_Widget *widget, Etk_Event_Mouse_In *event, void *data);
+static Etk_Bool _etk_entry_image_mouse_out_cb(Etk_Widget *widget, Etk_Event_Mouse_Out *event, void *data);
+static Etk_Bool _etk_entry_image_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
+static Etk_Bool _etk_entry_image_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _etk_entry_clear_button_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _etk_entry_focused_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_entry_unfocused_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_entry_enabled_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_entry_disabled_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_entry_selection_received_cb(Etk_Object *object, void *event, void *data);
 static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selection, Etk_Bool cut);
 
 
@@ -82,7 +82,7 @@ Etk_Type *etk_entry_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_ENTRY_TEXT_CHANGED_SIGNAL,
-            "text-changed", etk_marshaller_VOID__VOID, NULL, NULL),
+            "text-changed", etk_marshaller_VOID, NULL, NULL),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -538,16 +538,16 @@ static void _etk_entry_internal_size_allocate(Etk_Widget *widget, Etk_Geometry g
  **************************/
 
 /* Called when the entry's internal widget is realized */
-static void _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
    Etk_Widget *internal_entry;
    Evas *evas;
 
    if (!(internal_entry = ETK_WIDGET(object)) || !(evas = etk_widget_toplevel_evas_get(internal_entry)))
-      return;
+      return ETK_TRUE;
    if (!(entry = ETK_ENTRY(etk_object_data_get(object, "_Etk_Entry::Entry"))))
-      return;
+      return ETK_TRUE;
 
    entry->editable_object = etk_editable_add(evas);
    evas_object_show(entry->editable_object);
@@ -594,16 +594,18 @@ static void _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
 
    if (etk_widget_theme_data_get(internal_entry, "icon_interspace", "%d", &entry->image_interspace) != 1)
       entry->image_interspace = 5;
+
+   return ETK_TRUE;
 }
 
 /* Called when the entry's internal widget is unrealized */
-static void _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
    const char *text;
 
    if (!(entry = ETK_ENTRY(etk_object_data_get(object, "_Etk_Entry::Entry"))))
-      return;
+      return ETK_TRUE;
 
    free(entry->text);
    if ((text = etk_editable_text_get(entry->editable_object)))
@@ -613,10 +615,12 @@ static void _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data)
 
    evas_object_del(entry->editable_object);
    entry->editable_object = NULL;
+
+   return ETK_TRUE;
 }
 
 /* Called when the user presses a key */
-static void _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+static Etk_Bool _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    Etk_Entry *entry;
    Evas_Object *editable;
@@ -628,7 +632,7 @@ static void _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event
    Etk_Bool stop_signal = ETK_TRUE;
 
    if (!(entry = ETK_ENTRY(object)))
-     return;
+     return ETK_TRUE;
 
    editable = entry->editable_object;
    cursor_pos = etk_editable_cursor_pos_get(editable);
@@ -745,6 +749,8 @@ static void _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event
       _etk_entry_selection_copy(entry, ETK_SELECTION_PRIMARY, ETK_FALSE);
    if (stop_signal)
       etk_signal_stop();
+
+   return ETK_TRUE;
 }
 
 /* Called when the mouse enters the entry */
@@ -852,121 +858,134 @@ static void _etk_entry_editable_mouse_move_cb(void *data, Evas *evas, Evas_Objec
 }
 
 /* Called when the mouse is over the image */
-static void _etk_entry_image_mouse_in_cb(Etk_Widget *widget, Etk_Event_Mouse_In *event, void *data)
+static Etk_Bool _etk_entry_image_mouse_in_cb(Etk_Widget *widget, Etk_Event_Mouse_In *event, void *data)
 {
    Etk_Entry *entry;
    Etk_Image *image;
 
    if (!(entry = ETK_ENTRY(data)) || !(image = ETK_IMAGE(widget)))
-      return;
+      return ETK_TRUE;
 
    etk_widget_color_set(ETK_WIDGET(image),
          entry->highlight_color.r, entry->highlight_color.g,
          entry->highlight_color.b, entry->highlight_color.a);
+   return ETK_TRUE;
 }
 
 /* Called when the mouse moves out of the image */
-static void _etk_entry_image_mouse_out_cb(Etk_Widget *widget, Etk_Event_Mouse_Out *event, void *data)
+static Etk_Bool _etk_entry_image_mouse_out_cb(Etk_Widget *widget, Etk_Event_Mouse_Out *event, void *data)
 {
    Etk_Entry *entry;
    Etk_Image *image;
 
    if (!(entry = ETK_ENTRY(data)))
-      return;
+      return ETK_TRUE;
    if (!(image = ETK_IMAGE(widget)))
-      return;
+      return ETK_TRUE;
    etk_widget_color_set(ETK_WIDGET(image), 255, 255, 255, 255);
+
+   return ETK_TRUE;
 }
 
 /* Called when the mouse is pressed over the image */
-static void _etk_entry_image_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data)
+static Etk_Bool _etk_entry_image_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data)
 {
    Etk_Entry *entry;
    Etk_Image *image;
 
    if (!(entry = ETK_ENTRY(data)) || !(image = ETK_IMAGE(widget)))
-      return;
+      return ETK_TRUE;
    etk_widget_color_set(ETK_WIDGET(image), 255, 255, 255, 255);
+
+   return ETK_TRUE;
 }
 
 /* Called when the mouse released over the image */
-static void _etk_entry_image_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data)
+static Etk_Bool _etk_entry_image_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Entry *entry;
    Etk_Image *image;
 
    if (!(entry = ETK_ENTRY(data)) || !(image = ETK_IMAGE(widget)))
-      return;
+      return ETK_TRUE;
 
    etk_widget_color_set(ETK_WIDGET(image),
          entry->highlight_color.r, entry->highlight_color.g,
          entry->highlight_color.b, entry->highlight_color.a);
+   return ETK_TRUE;
 }
 
 /* Called when the clear button is pressed */
-static void _etk_entry_clear_button_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data)
+static Etk_Bool _etk_entry_clear_button_cb(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Entry *entry;
 
    if (!(entry = ETK_ENTRY(data)))
-      return;
+      return ETK_TRUE;
    etk_entry_clear(entry);
+
+   return ETK_TRUE;
 }
 
 /* Called when the entry is focused */
-static void _etk_entry_focused_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_entry_focused_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
 
    if (!(entry = ETK_ENTRY(object)) || !entry->editable_object)
-      return;
+      return ETK_TRUE;
 
    etk_editable_cursor_show(entry->editable_object);
    etk_editable_selection_show(entry->editable_object);
    etk_widget_theme_signal_emit(entry->internal_entry, "etk,state,focused", ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Called when the entry is unfocused */
-static void _etk_entry_unfocused_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_entry_unfocused_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
 
    if (!(entry = ETK_ENTRY(object)) || !entry->editable_object)
-      return;
+      return ETK_TRUE;
 
    etk_editable_cursor_move_to_end(entry->editable_object);
    etk_editable_selection_move_to_end(entry->editable_object);
    etk_editable_cursor_hide(entry->editable_object);
    etk_editable_selection_hide(entry->editable_object);
    etk_widget_theme_signal_emit(entry->internal_entry, "etk,state,unfocused", ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Called when the entry gets enabled */
-static void _etk_entry_enabled_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_entry_enabled_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
 
    if (!(entry = ETK_ENTRY(object)))
-      return;
+      return ETK_TRUE;
 
    etk_widget_disabled_set(entry->internal_entry, ETK_FALSE);
    etk_editable_disabled_set(entry->editable_object, ETK_FALSE);
+   return ETK_TRUE;
 }
 
 /* Called when the entry gets disabled */
-static void _etk_entry_disabled_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_entry_disabled_cb(Etk_Object *object, void *data)
 {
    Etk_Entry *entry;
 
    if (!(entry = ETK_ENTRY(object)))
-      return;
+      return ETK_TRUE;
 
    etk_widget_disabled_set(entry->internal_entry, ETK_TRUE);
    etk_editable_disabled_set(entry->editable_object, ETK_TRUE);
+
+   return ETK_TRUE;
 }
 
 /* Called when the selection/clipboard content is received */
-static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, void *data)
+static Etk_Bool _etk_entry_selection_received_cb(Etk_Object *object, void *event, void *data)
 {
    Etk_Entry *entry;
    Evas_Object *editable;
@@ -974,7 +993,7 @@ static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, vo
    const char *text;
 
    if (!(entry = ETK_ENTRY(object)) || !(editable = entry->editable_object))
-      return;
+      return ETK_TRUE;
 
    if (ev->type == ETK_SELECTION_TEXT && (text = ev->data.text) && text[0] != '\0'
          && (strlen(text) != 1 || text[0] >= 0x20))
@@ -997,6 +1016,8 @@ static void _etk_entry_selection_received_cb(Etk_Object *object, void *event, vo
       if (changed)
          etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry), NULL);
    }
+
+   return ETK_TRUE;
 }
 
 /**************************
