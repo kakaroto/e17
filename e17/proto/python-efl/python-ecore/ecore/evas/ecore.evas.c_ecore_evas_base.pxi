@@ -553,7 +553,7 @@ cdef class EcoreEvas:
         def __set__(self, int value):
             self.avoid_damage_set(value)
 
-    def withdrawn_set(self, int withdrawn):
+    def withdrawn_set(self, int on):
         ecore_evas_withdrawn_set(self.obj, on)
 
     def withdrawn_get(self):
@@ -566,7 +566,7 @@ cdef class EcoreEvas:
         def __set__(self, int value):
             self.withdrawn_set(value)
 
-    def sticky_set(self, int sticky):
+    def sticky_set(self, int on):
         ecore_evas_sticky_set(self.obj, on)
 
     def sticky_get(self):
@@ -579,7 +579,7 @@ cdef class EcoreEvas:
         def __set__(self, int value):
             self.sticky_set(value)
 
-    def ignore_events_set(self, int ignore):
+    def ignore_events_set(self, int on):
         ecore_evas_ignore_events_set(self.obj, on)
 
     def ignore_events_get(self):
