@@ -30,7 +30,7 @@
 struct _client
 {
    char               *name;
-   Win                 win;
+   Window              xwin;
    char               *msg;
    char               *clientname;
    char               *version;
@@ -45,8 +45,6 @@ static Win          comms_win = NoWin;
 static Atom         XA_ENLIGHTENMENT_COMMS = 0;
 static Atom         XA_ENL_MSG = 0;
 
-static void         ClientHandleEvents(Win win, XEvent * ev, void *cc);
-
 static Client      *
 ClientCreate(Window xwin)
 {
@@ -59,14 +57,7 @@ ClientCreate(Window xwin)
 
    Esnprintf(st, sizeof(st), "%8x", (int)xwin);
    c->name = Estrdup(st);
-   c->win = ERegisterWindow(xwin, NULL);
-   if (!c->win)
-     {
-	Efree(c);
-	return NULL;
-     }
-   EventCallbackRegister(c->win, 0, ClientHandleEvents, c);
-   ESelectInput(c->win, StructureNotifyMask | SubstructureNotifyMask);
+   c->xwin = xwin;
 
    if (!client_list)
       client_list = ecore_list_new();
@@ -82,9 +73,6 @@ ClientDestroy(Client * c)
       return;
 
    ecore_list_node_remove(client_list, c);
-
-   EventCallbackUnregister(c->win, 0, ClientHandleEvents, c);
-   EUnregisterWindow(c->win);
 
    if (c->name)
       Efree(c->name);
@@ -154,15 +142,22 @@ ClientConfigure(Client * c, const char *str)
 static int
 ClientMatchWindow(const void *data, const void *match)
 {
-   return WinGetXwin(((const Client *)data)->win) != (Window) match;
+   return ((const Client *)data)->xwin != (Window) match;
+}
+
+static Client      *
+ClientFind(Window xwin)
+{
+   return (Client *) ecore_list_find(client_list, ClientMatchWindow,
+				     (void *)xwin);
 }
 
 static char        *
 ClientCommsGet(Client ** c, XClientMessageEvent * ev)
 {
    char                s[13], s2[9], *msg;
-   int                 i;
-   Window              win = 0;
+   unsigned int        i;
+   Window              xwin;
    Client             *cl;
 
    if ((!ev) || (!c))
@@ -172,44 +167,37 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
 
    s[12] = 0;
    s2[8] = 0;
-   msg = NULL;
    for (i = 0; i < 8; i++)
       s2[i] = ev->data.b[i];
    for (i = 0; i < 12; i++)
       s[i] = ev->data.b[i + 8];
-   sscanf(s2, "%lx", &win);
-   cl = (Client *) ecore_list_find(client_list, ClientMatchWindow, (void *)win);
+   xwin = None;
+   sscanf(s2, "%lx", &xwin);
+   if (xwin == None)
+      return NULL;
+   cl = ClientFind(xwin);
    if (!cl)
      {
-	cl = ClientCreate(win);
+	cl = ClientCreate(xwin);
 	if (!cl)
 	   return NULL;
      }
 
-   if (cl->msg)
-     {
-	/* append text to end of msg */
-	cl->msg = EREALLOC(char, cl->msg, strlen(cl->msg) + strlen(s) + 1);
+   /* append text to end of msg */
+   i = (cl->msg) ? strlen(cl->msg) : 0;
+   cl->msg = EREALLOC(char, cl->msg, i + strlen(s) + 1);
+   if (!cl->msg)
+      return NULL;
+   strcpy(cl->msg + i, s);
 
-	if (!cl->msg)
-	   return NULL;
-	strcat(cl->msg, s);
-     }
-   else
-     {
-	/* new msg */
-	cl->msg = EMALLOC(char, strlen(s) + 1);
-
-	if (!cl->msg)
-	   return NULL;
-	strcpy(cl->msg, s);
-     }
+   msg = NULL;
    if (strlen(s) < 12)
      {
 	msg = cl->msg;
 	cl->msg = NULL;
 	*c = cl;
      }
+
    return msg;
 }
 
@@ -250,18 +238,34 @@ ClientHandleComms(XClientMessageEvent * ev)
 }
 
 static void
-ClientHandleEvents(Win win __UNUSED__, XEvent * ev, void *cc)
+ClientHandleRootEvents(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 {
-   Client             *c = (Client *) cc;
+   Client             *c;
 
 #if 0
-   Eprintf("ClientHandleEvents: type=%d win=%#lx\n", ev->type, ev->xany.window);
+   Eprintf("ClientHandleRootEvents: type=%d win=%#lx\n", ev->type,
+	   ev->xany.window);
 #endif
    switch (ev->type)
      {
      case DestroyNotify:
+	c = ClientFind(ev->xdestroywindow.window);
+	if (!c)
+	   break;
 	ClientDestroy(c);
 	break;
+     }
+}
+
+static void
+ClientHandleCommsEvents(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
+{
+#if 0
+   Eprintf("ClientHandleCommsEvents: type=%d win=%#lx\n", ev->type,
+	   ev->xany.window);
+#endif
+   switch (ev->type)
+     {
      case ClientMessage:
 	ClientHandleComms(&(ev->xclient));
 	break;
@@ -275,7 +279,8 @@ CommsInit(void)
 
    comms_win = ECreateEventWindow(VRoot.win, -100, -100, 5, 5);
    ESelectInput(comms_win, StructureNotifyMask | SubstructureNotifyMask);
-   EventCallbackRegister(comms_win, 0, ClientHandleEvents, NULL);
+   EventCallbackRegister(comms_win, 0, ClientHandleCommsEvents, NULL);
+   EventCallbackRegister(VRoot.win, 0, ClientHandleRootEvents, NULL);
 
    Esnprintf(s, sizeof(s), "WINID %8lx", WinGetXwin(comms_win));
    XA_ENLIGHTENMENT_COMMS = XInternAtom(disp, "ENLIGHTENMENT_COMMS", False);
@@ -326,7 +331,7 @@ CommsSend(Client * c, const char *s)
       return;
 
    c->replied = 1;
-   CommsDoSend(WinGetXwin(c->win), s);
+   CommsDoSend(c->xwin, s);
 }
 
 void
@@ -335,7 +340,7 @@ CommsFlush(Client * c)
    if (!c || c->replied)
       return;
 
-   CommsDoSend(WinGetXwin(c->win), "");
+   CommsDoSend(c->xwin, "");
 }
 
 /*
