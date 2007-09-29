@@ -554,7 +554,7 @@ MenuCreate(const char *name, const char *title, Menu * parent, MenuStyle * ms)
 
    if (!menu_list)
       menu_list = ecore_list_new();
-   ecore_list_prepend(menu_list, m);
+   ecore_list_append(menu_list, m);
 
    return m;
 }
@@ -569,6 +569,7 @@ MenuDestroy(Menu * m)
       return;
 
    MenuHide(m);
+   MenuEmpty(m, 1);
 
    if (m->ref_count)
       return;
@@ -577,8 +578,6 @@ MenuDestroy(Menu * m)
 
    if (m->win)
       EDestroyWindow(m->win);
-
-   MenuEmpty(m, 1);
 
    if (m->name)
       Efree(m->name);
@@ -1060,6 +1059,8 @@ MenusDestroyLoaded(void)
 	ECORE_LIST_FOR_EACH(menu_list, m)
 	{
 	   if (m->internal)
+	      continue;
+	   if (m->ref_count)
 	      continue;
 
 	   MenuDestroy(m);
