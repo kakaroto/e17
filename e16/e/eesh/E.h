@@ -44,7 +44,8 @@ typedef struct
    char               *msg;
 } Client;
 
-Window              CommsSetup(void);
+void                CommsInit(void);
+Window              CommsSetup(Window win);
 Window              CommsFindCommsWindow(void);
 void                CommsSend(Client * c, const char *s);
 char               *CommsGet(Client * c, XEvent * ev);

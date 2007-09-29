@@ -21,7 +21,6 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 #include "E.h"
 
 /* Global vars */
@@ -149,14 +148,15 @@ main(int argc, char **argv)
 	exit(1);
      }
 
-   my_win = CommsSetup();
+   CommsInit();
    comms_win = CommsFindCommsWindow();
+   my_win = CommsSetup(comms_win);
 
    e = ClientCreate(comms_win);
    me = ClientCreate(my_win);
 
    CommsSend(e, "set clientname eesh");
-   CommsSend(e, "set version 0.1");
+   CommsSend(e, "set version 0.2");
 #if 0				/* Speed it up */
    CommsSend(e, "set author The Rasterman");
    CommsSend(e, "set email raster@rasterman.com");
@@ -187,8 +187,10 @@ main(int argc, char **argv)
 	/* Non-interactive */
 	CommsSend(e, command);
 	XSync(disp, False);
+#if 0				/* No - Wait for ack */
 	if (mode <= 0)
 	   goto done;
+#endif
      }
    else
      {
@@ -199,6 +201,28 @@ main(int argc, char **argv)
 
    for (;;)
      {
+	XSync(disp, False);
+	while (XPending(disp))
+	  {
+	     XNextEvent(disp, &ev);
+	     switch (ev.type)
+	       {
+	       case ClientMessage:
+		  s = CommsGet(me, &ev);
+		  if (!s)
+		     break;
+		  if (*s)
+		     printf("%s", s);
+		  fflush(stdout);
+		  Efree(s);
+		  if (mode)
+		     goto done;
+		  break;
+	       case DestroyNotify:
+		  goto done;
+	       }
+	  }
+
 	FD_ZERO(&fd);
 	if (!command)
 	   FD_SET(0, &fd);
@@ -207,35 +231,9 @@ main(int argc, char **argv)
 	if (select(ConnectionNumber(disp) + 1, &fd, NULL, NULL, NULL) < 0)
 	   break;
 
-	XSync(disp, False);
-
 	if (FD_ISSET(0, &fd))
 	  {
 	     stdin_read();
-	  }
-	else if (FD_ISSET(ConnectionNumber(disp), &fd))
-	  {
-	     while (XPending(disp))
-	       {
-		  XNextEvent(disp, &ev);
-		  switch (ev.type)
-		    {
-		    case ClientMessage:
-		       s = CommsGet(me, &ev);
-		       if (!s)
-			  break;
-		       if (*s)
-			  printf("%s", s);
-		       fflush(stdout);
-		       Efree(s);
-		       if (mode)
-			  goto done;
-		       break;
-		    case DestroyNotify:
-		       goto done;
-		    }
-	       }
-	     XSync(disp, False);
 	  }
      }
 

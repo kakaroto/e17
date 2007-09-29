@@ -27,14 +27,19 @@
 static Window       root_win;
 static Window       my_win;
 
-Window
-CommsSetup(void)
+void
+CommsInit(void)
 {
    char               *str;
-   XSetWindowAttributes attr;
 
    str = getenv("ENL_WM_ROOT");
    root_win = (str) ? strtoul(str, NULL, 0) : DefaultRootWindow(disp);
+}
+
+Window
+CommsSetup(Window win __UNUSED__)
+{
+   XSetWindowAttributes attr;
 
    attr.override_redirect = False;
    my_win = XCreateWindow(disp, root_win, -100, -100, 5, 5, 0, 0, InputOnly,
@@ -128,7 +133,7 @@ char               *
 CommsGet(Client * c, XEvent * ev)
 {
    char                s[13], s2[9], *msg;
-   int                 i;
+   unsigned int        i;
    Window              win;
 
    if ((!ev) || (!c))
@@ -147,24 +152,14 @@ CommsGet(Client * c, XEvent * ev)
 
    sscanf(s2, "%lx", &win);
 
-   if (c->msg)
-     {
-	/* append text to end of msg */
-	c->msg = EREALLOC(char, c->msg, strlen(c->msg) + strlen(s) + 1);
+   /* append text to end of msg */
+   i = (c->msg) ? strlen(c->msg) : 0;
+   c->msg = EREALLOC(char, c->msg, i + strlen(s) + 1);
 
-	if (!c->msg)
-	   return NULL;
-	strcat(c->msg, s);
-     }
-   else
-     {
-	/* new msg */
-	c->msg = EMALLOC(char, strlen(s) + 1);
+   if (!c->msg)
+      return NULL;
+   strcpy(c->msg + i, s);
 
-	if (!c->msg)
-	   return NULL;
-	strcpy(c->msg, s);
-     }
    if (strlen(s) < 12)
      {
 	msg = c->msg;
