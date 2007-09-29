@@ -49,7 +49,7 @@ Etk_Type *etk_dvi_type_get()
 
    if (!dvi_type)
    {
-      dvi_type = etk_type_new("Etk_Dvi", ETK_WIDGET_TYPE, sizeof(Etk_Dvi), ETK_CONSTRUCTOR(_etk_dvi_constructor), ETK_DESTRUCTOR(_etk_dvi_destructor));
+      dvi_type = etk_type_new("Etk_Dvi", ETK_WIDGET_TYPE, sizeof(Etk_Dvi), ETK_CONSTRUCTOR(_etk_dvi_constructor), ETK_DESTRUCTOR(_etk_dvi_destructor), NULL);
 
       etk_type_property_add(dvi_type, "dvi_file", ETK_DVI_FILE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
 
