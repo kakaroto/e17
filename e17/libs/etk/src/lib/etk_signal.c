@@ -56,7 +56,6 @@ static Etk_Signal *etk_signal_new_raw(const char *signal_name, Etk_Type *type,
    new_signal->code = type->signals_count;
    new_signal->handler_offset = handler_offset;
    new_signal->marshaller = marshaller;
-   etk_type_signal_add(type, new_signal);
 
    type->signals_count++;
 
@@ -135,28 +134,20 @@ void etk_signal_new_with_desc(Etk_Type *type,
 }
 
 /**
- * @brief Gets the the signal corresponding to the name and the object type
- *
- * @param signal_name the name of the signal to return
- * @param type the object type of the signal to return
- *
- * @return Returns the signal called @a signal_name, for the object type
- *         @a type, or NULL on failure
+ * @brief Gets the signal corresponding to the name and the object type.
+ * @internal
+ * assumes @a signal_name and @a type to be valid.
  */
-Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type)
+static Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type)
 {
-   Etk_Type *t;
-   Etk_Signal *signal;
+   unsigned i;
 
-   if (!signal_name)
+   if (!type->signals)
       return NULL;
 
-   for (t = type; t; t = etk_type_parent_type_get(t))
-   {
-      signal = etk_type_signal_get_by_name(t, signal_name);
-      if (signal != NULL)
-         return signal;
-   }
+   for (i = 0; i < type->signals_count; i++)
+      if (strcmp(type->signals[i]->name, signal_name) == 0)
+         return type->signals[i];
 
    return NULL;
 }
@@ -164,21 +155,18 @@ Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type)
 
 /**
  * @brief Gets the signal code corresponding to the name and the object type.
+ * @internal
+ * assumes @a signal_name and @a type to be valid.
  */
-int etk_signal_lookup_code(const char *signal_name, Etk_Type *type)
+static int etk_signal_lookup_code(const char *signal_name, Etk_Type *type)
 {
-   Etk_Type *t;
    Etk_Signal *signal;
 
-   if (!signal_name)
-      return -1;
-
-   for (t = type; t; t = etk_type_parent_type_get(t))
-   {
-      if ((signal = etk_type_signal_get_by_name(t, signal_name)))
-         return signal->code;
-   }
-   return -1;
+   signal = etk_signal_lookup(signal_name, type);
+   if (signal)
+     return signal->code;
+   else
+     return -1;
 }
 
 
@@ -200,7 +188,10 @@ const char *etk_signal_name_get(Etk_Signal *signal)
  *
  * @param signal_code the signal code to connect to the callback
  * @param object the object to connect to the callback
- * @param callback the callback to call when the signal is emitted
+ * @param callback the callback to call when the signal is emitted. This
+ *        callback should return Etk_Bool with ETK_TRUE to continue
+ *        and ETK_FALSE to stop signal propagation to next callbacks
+ *        during the current emission.
  * @param data the data to pass to the callback
  * @param swapped if @a swapped == ETK_TRUE, the callback will be called
  *        with @a data as the only argument. It can be useful to set it to

@@ -36,10 +36,10 @@ typedef struct Etk_Signal_Connect_Desc {
 
 typedef struct Etk_Signal_Description
 {
-   int *signal_code_store;
-   char *name;
-   long handler_offset;
-   Etk_Marshaller marshaller;
+  int *signal_code_store; /**< where to store signal code. */
+  const char *name; /**< signal name */
+  long handler_offset; /**<  */
+  Etk_Marshaller marshaller;
 } Etk_Signal_Description;
 
 #define ETK_SIGNAL_DESCRIPTION_SENTINEL {NULL, NULL, 0, NULL}
@@ -73,8 +73,6 @@ void etk_signal_new_with_desc(Etk_Type *type,
                               const Etk_Signal_Description *desc);
 void        etk_signal_delete(Etk_Signal *signal);
 
-Etk_Signal    *etk_signal_lookup(const char *signal_name, Etk_Type *type);
-int            etk_signal_lookup_code(const char *signal_name, Etk_Type *type);
 const char    *etk_signal_name_get(Etk_Signal *signal);
 Etk_Marshaller etk_signal_marshaller_get(Etk_Signal *signal);
 

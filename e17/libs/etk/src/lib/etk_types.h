@@ -29,8 +29,8 @@ typedef struct Etk_Type Etk_Type;
 typedef void (*Etk_Accumulator)(void *return_value, const void *value_to_accum, void *data);
 typedef void (*Etk_Constructor)(Etk_Object *object);
 typedef void (*Etk_Destructor)(Etk_Object *object);
-typedef void (*Etk_Callback)();
-typedef void (*Etk_Callback_Swapped)(void *data);
+typedef Etk_Bool (*Etk_Callback)();
+typedef Etk_Bool (*Etk_Callback_Swapped)(void *data);
 typedef void (*Etk_Marshaller)(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
 
 typedef struct Etk_Alignment Etk_Alignment;

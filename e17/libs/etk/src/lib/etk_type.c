@@ -70,7 +70,6 @@ Etk_Type *etk_type_new(const char *type_name,
    new_type->destructor = destructor;
    new_type->property_set = NULL;
    new_type->property_get = NULL;
-   new_type->signals_hash = NULL;
    new_type->properties_hash = NULL;
    new_type->signals = NULL;
 
@@ -93,14 +92,12 @@ Etk_Type *etk_type_new(const char *type_name,
    }
    else
    {
-      int i;
-
       /* Build the type hierarchy */
       new_type->hierarchy_depth = parent_type->hierarchy_depth + 1;
       new_type->hierarchy = malloc(sizeof(Etk_Type *) * new_type->hierarchy_depth);
       new_type->hierarchy[0] = parent_type;
-      for (i = 1; i < new_type->hierarchy_depth; i++)
-         new_type->hierarchy[i] = parent_type->hierarchy[i - 1];
+      memcpy(new_type->hierarchy + 1, parent_type->hierarchy,
+	     parent_type->hierarchy_depth * sizeof(Etk_Type *));
 
       new_type->signals_count = parent_type->signals_count;
 
@@ -295,34 +292,6 @@ Etk_Type *etk_type_get_from_name(const char *name)
 }
 
 /**
- * @brief Adds a signal associated to the type
- * @param type the type to add the signal to
- * @param signal the signal to add
- */
-void etk_type_signal_add(Etk_Type *type, Etk_Signal *signal)
-{
-   const char *signal_name;
-
-   if (!type || !signal || !(signal_name = etk_signal_name_get(signal)))
-      return;
-   type->signals_hash = evas_hash_add(type->signals_hash, signal_name, signal);
-}
-
-/**
- * @brief Removes the signal from the list of signals of the type
- * @param type the type that is associated to the signal to remove
- * @param signal the signal to remove
- */
-void etk_type_signal_remove(Etk_Type *type, Etk_Signal *signal)
-{
-   const char *signal_name;
-
-   if (!type || !signal || !(signal_name = etk_signal_name_get(signal)))
-      return;
-   type->signals_hash = evas_hash_del(type->signals_hash, signal_name, NULL);
-}
-
-/**
  * @brief Gets the signal corresponding to the type and the signal name
  * @param type the type that is associated to the signal to get
  * @param signal_name the name of the signal to get
@@ -330,9 +299,16 @@ void etk_type_signal_remove(Etk_Type *type, Etk_Signal *signal)
  */
 Etk_Signal *etk_type_signal_get_by_name(Etk_Type *type, const char *signal_name)
 {
-   if (!type || !signal_name)
+   unsigned i;
+
+   if (!type || !type->signals || !signal_name)
       return NULL;
-   return evas_hash_find(type->signals_hash, signal_name);
+
+   for (i = 0; i < type->signals_count; i++)
+     if (strcmp(type->signals[i]->name, signal_name) == 0)
+       return type->signals[i];
+
+   return NULL;
 }
 
 Etk_Signal *etk_type_signal_get(Etk_Type *type, int signal_code)
@@ -416,7 +392,6 @@ static void _etk_type_free(Etk_Type *type)
    if (!type)
       return;
 
-   evas_hash_free(type->signals_hash);
    evas_hash_foreach(type->properties_hash, _etk_type_property_free_cb, NULL);
    evas_hash_free(type->properties_hash);
 
@@ -424,7 +399,8 @@ static void _etk_type_free(Etk_Type *type)
    if (type->signals)
       free(type->signals);
 
-   free(type->hierarchy);
+   if (type->hierarchy)
+      free(type->hierarchy);
    free(type->name);
    free(type);
 }
