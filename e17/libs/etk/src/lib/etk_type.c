@@ -49,6 +49,7 @@ void etk_type_shutdown(void)
  * @param type_size the size of an instance
  * @param constructor the constructor function
  * @param destructor the destructor function
+ * @param signals array of Etk_Signal_Description that will be used to describe type signals at this level (parent signals will be inherited), this array should be terminated with ETK_SIGNAL_DESCRIPTION_SENTINEL. May be NULL if no signals should be defined.
  * @return Returns the new type on success, NULL on failure
  */
 Etk_Type *etk_type_new(const char *type_name,
