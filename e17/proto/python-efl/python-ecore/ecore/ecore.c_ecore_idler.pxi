@@ -1,5 +1,7 @@
 # This file is included verbatim by c_ecore.pyx
 
+import traceback
+
 cdef int idler_cb(void *_td):
     cdef Idler obj
     cdef int r
@@ -9,7 +11,6 @@ cdef int idler_cb(void *_td):
     try:
         r = bool(obj._exec())
     except Exception, e:
-        import traceback
         traceback.print_exc()
         r = 0
 
@@ -19,6 +20,25 @@ cdef int idler_cb(void *_td):
 
 
 cdef class Idler:
+    """Add an idler handler.
+
+       This class represents an idler on the event loop that will
+       call B{func} when there is nothing more to do. The function will
+       be passed any extra parameters given to constructor.
+
+       When the idler B{func} is called, it must return a value of either
+       True or False (remember that Python returns None if no value is
+       explicitly returned and None evaluates to False). If it returns
+       B{True}, it will be called again when system become idle, or if it
+       returns B{False} it will be deleted automatically making any
+       references/handles for it invalid.
+
+       Idlers should be stopped/deleted by means of L{delete()} or
+       returning False from B{func}, otherwise they'll continue alive, even
+       if the current python context delete it's reference to it.
+
+       Idlers are useful for progressively prossessing data without blocking.
+    """
     def __init__(self, func, *args, **kargs):
         self.func = func
         self.args = args
@@ -50,14 +70,20 @@ cdef class Idler:
         return self.func(*self.args, **self.kargs)
 
     def delete(self):
+        "Stop callback emission and free internal resources."
         if self.obj != NULL:
             ecore_idler_del(self.obj)
             self.obj = NULL
             python.Py_DECREF(self)
 
     def stop(self):
+        "Alias for L{delete()}."
         self.delete()
 
 
 def idler_add(func, *args, **kargs):
+    """L{Idler} factory, for C-api compatibility.
+
+       @rtype: L{Idler}
+    """
     return Idler(func, *args, **kargs)

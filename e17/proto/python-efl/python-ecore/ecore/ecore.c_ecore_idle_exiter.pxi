@@ -1,5 +1,7 @@
 # This file is included verbatim by c_ecore.pyx
 
+import traceback
+
 cdef int idle_exiter_cb(void *_td):
     cdef IdleExiter obj
     cdef int r
@@ -9,7 +11,6 @@ cdef int idle_exiter_cb(void *_td):
     try:
         r = bool(obj._exec())
     except Exception, e:
-        import traceback
         traceback.print_exc()
         r = 0
 
@@ -19,6 +20,23 @@ cdef int idle_exiter_cb(void *_td):
 
 
 cdef class IdleExiter:
+    """Add an idle exiter handler.
+
+       This class represents a function that will be called before systems
+       exits idle. The function will be passed any extra parameters given
+       to constructor.
+
+       When the idle exiter B{func} is called, it must return a value of
+       either True or False (remember that Python returns None if no value
+       is explicitly returned and None evaluates to False). If it returns
+       B{True}, it will be called again when system become idle, or if it
+       returns B{False} it will be deleted automatically making any
+       references/handles for it invalid.
+
+       Idle exiters should be stopped/deleted by means of L{delete()} or
+       returning False from B{func}, otherwise they'll continue alive, even
+       if the current python context delete it's reference to it.
+    """
     def __init__(self, func, *args, **kargs):
         if not callable(func):
             raise TypeError("Parameter 'func' must be callable")
@@ -52,14 +70,20 @@ cdef class IdleExiter:
         return self.func(*self.args, **self.kargs)
 
     def delete(self):
+        "Stop callback emission and free internal resources."
         if self.obj != NULL:
             ecore_idle_exiter_del(self.obj)
             self.obj = NULL
             python.Py_DECREF(self)
 
     def stop(self):
+        "Alias for L{delete()}."
         self.delete()
 
 
 def idle_exiter_add(func, *args, **kargs):
+    """L{IdleExiter} factory, for C-api compatibility.
+
+       @rtype: L{IdleExiter}
+    """
     return IdleExiter(func, *args, **kargs)

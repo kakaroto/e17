@@ -1,5 +1,7 @@
 # This file is included verbatim by c_ecore.pyx
 
+import traceback
+
 cdef void fd_handler_prepare_cb(void *_td, Ecore_Fd_Handler *fdh):
     cdef FdHandler obj
     cdef int r
@@ -11,7 +13,6 @@ cdef void fd_handler_prepare_cb(void *_td, Ecore_Fd_Handler *fdh):
     try:
         func(obj, *args, **kargs)
     except Exception, e:
-        import traceback
         traceback.print_exc()
 
 
@@ -35,7 +36,6 @@ cdef int fd_handler_cb(void *_td, Ecore_Fd_Handler *fdh):
     try:
         r = bool(obj._exec())
     except Exception, e:
-        import traceback
         traceback.print_exc()
         r = 0
 
@@ -45,6 +45,23 @@ cdef int fd_handler_cb(void *_td, Ecore_Fd_Handler *fdh):
 
 
 cdef class FdHandler:
+    """Adds a callback for activity on the given file descriptor.
+
+       B{func} will be called during the execution of B{main_loop_begin()}
+       when the file descriptor is available for reading, or writing, or both.
+
+       When the handler B{func} is called, it must return a value of
+       either True or False (remember that Python returns None if no value
+       is explicitly returned and None evaluates to False). If it returns
+       B{True}, it will continue to montior the given file descriptor, or if
+       it returns B{False} it will be deleted automatically making any
+       references/handles for it invalid.
+
+       FdHandler use includes:
+        - handle multiple socket connections using a single process;
+        - thread wake-up and synchronization;
+        - non-blocking file description operations.
+    """
     def __init__(self, fd, int flags, func, *args, **kargs):
         if not callable(func):
             raise TypeError("Parameter 'func' must be callable")
@@ -101,15 +118,18 @@ cdef class FdHandler:
         return self.func(self, *self.args, **self.kargs)
 
     def delete(self):
+        "Stop callback emission and free internal resources."
         if self.obj != NULL:
             ecore_main_fd_handler_del(self.obj)
             self.obj = NULL
             python.Py_DECREF(self)
 
     def stop(self):
+        "Alias for L{delete()}."
         self.delete()
 
     def fd_get(self):
+        "@rtype: int"
         return ecore_main_fd_handler_fd_get(self.obj)
 
     property fd:
@@ -117,26 +137,47 @@ cdef class FdHandler:
             return self.fd_get()
 
     def active_get(self, int flags_query):
+        """Return if read, write or error, or a combination thereof, is
+           active on the file descriptor of the given FD handler.
+
+           @rtype: bool
+        """
         cdef Ecore_Fd_Handler_Flags v
         v = <Ecore_Fd_Handler_Flags>flags_query
-        return ecore_main_fd_handler_active_get(self.obj, v)
+        return bool(ecore_main_fd_handler_active_get(self.obj, v))
 
 
     def active_set(self, int flags):
+        """Set what active streams the given FdHandler should be monitoring.
+
+        @parm: B{flags} one of:
+         - ECORE_FD_NONE
+         - ECORE_FD_READ
+         - ECORE_FD_WRITE
+         - ECORE_FD_ERROR
+         - ECORE_FD_ALL
+        """
         cdef Ecore_Fd_Handler_Flags v
         v = <Ecore_Fd_Handler_Flags>flags_query
         ecore_main_fd_handler_active_set(self.obj, v)
 
     def can_read(self):
-        return ecore_main_fd_handler_active_get(self.obj, ECORE_FD_READ)
+        "@rtype: bool"
+        return bool(ecore_main_fd_handler_active_get(self.obj, ECORE_FD_READ))
 
     def can_write(self):
-        return ecore_main_fd_handler_active_get(self.obj, ECORE_FD_WRITE)
+        "@rtype: bool"
+        return bool(ecore_main_fd_handler_active_get(self.obj, ECORE_FD_WRITE))
 
     def has_error(self):
-        return ecore_main_fd_handler_active_get(self.obj, ECORE_FD_ERROR)
+        "@rtype: bool"
+        return bool(ecore_main_fd_handler_active_get(self.obj, ECORE_FD_ERROR))
 
     def prepare_callback_set(self, func, *args, **kargs):
+        """Set a function to call becore doing the select() on the fd.
+
+           Signature: C{function(object, *args, **kargs)}
+        """
         if func is None:
             self._prepare_callback = None
             ecore_main_fd_handler_prepare_callback_set(self.obj, NULL, NULL)
@@ -150,4 +191,8 @@ cdef class FdHandler:
 
 
 def fd_handler_add(fd, int flags, func, *args, **kargs):
+    """L{FdHandler} factory, for C-api compatibility.
+
+       @rtype: L{FdHandler}
+    """
     return FdHandler(fd, flags, func, *args, **kargs)

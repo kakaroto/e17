@@ -28,9 +28,9 @@ def connect_observer(ecore_evas, observer):
 
     Observer must have methods with name scheme: cb_on_<callback>,
     examples:
-     * cb_on_resize
-     * cb_on_move
-     * cb_on_show
+     - cb_on_resize
+     - cb_on_move
+     - cb_on_show
     """
     for cb_name in __callbacks:
         cb = __get_callback(observer, cb_name)
@@ -44,8 +44,8 @@ def connect_callbacks_by_name(ecore_evas, mapping):
 
     Mapping must be a dict or a list of tuples with callback name and
     desired function, example:
-     * mapping = (("resize", my_on_resize), ("show", my_on_show))
-     * mapping = {"resize": my_on_resize, "show": my_on_show}
+     - mapping = (("resize", my_on_resize), ("show", my_on_show))
+     - mapping = {"resize": my_on_resize, "show": my_on_show}
     """
     if isinstance(mapping, dict):
         mapping = mapping.iteritems()
