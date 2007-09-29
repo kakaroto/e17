@@ -1,3 +1,18 @@
+2007-09-29  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/lib/etk_dvi.c: (etk_dvi_type_get)
+	make edvi compile. adding NULL to the last parameter of
+	etk_type_new. I don't know if it's the correct value as
+	there's no doc about that param, but it seems to work
+
+2007-09-29  Gustavo Barbieri <barbieri at gmail dot com>
+
+	* src/lib/etk_dvi.c:
+	* src/bin/edvi_etk_test.c:
+	[UNTESTED] Fix Etk usage to match new signal system.
+
+	Please test as I don't have dvilib2.
+
 2007-08-30  Vincent Torri  <doursse at users dot sf dot net>
 
 	* Makefile.am:
