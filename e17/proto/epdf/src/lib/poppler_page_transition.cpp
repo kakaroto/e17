@@ -1,8 +1,13 @@
+#include "config.h"
+
 #include <stdlib.h>
 #include <string.h>
 
 #include <Object.h>
 #include <Dict.h>
+#ifndef HAVE_POPPLER_0_6
+# include <UGooString.h>
+#endif // HAVE_POPPLER_0_6
 
 #include "poppler_enum.h"
 #include "poppler_private.h"
@@ -33,7 +38,12 @@ epdf_page_transition_new (Object *data)
 
   trans_dict = data->getDict ();
 
+#ifdef HAVE_POPPLER_0_6
   if (trans_dict->lookup ("S", &obj)->isName ()) {
+#else
+  UGooString trans_str("S");
+  if (trans_dict->lookup (trans_str, &obj)->isName ()) {
+#endif // HAVE_POPPLER_0_6
     const char *s;
 
     s = obj.getName();

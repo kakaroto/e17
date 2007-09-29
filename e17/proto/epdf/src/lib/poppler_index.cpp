@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <stdlib.h>
 
 #include <GlobalParams.h>
@@ -99,7 +101,11 @@ epdf_index_item_page_get (Epdf_Document *document, Epdf_Index_Item *item)
   if (item->action->getKind () != actionGoTo)
     return -1;
 
+#ifdef HAVE_POPPLER_0_6
   GooString *named_dest = ((LinkGoTo *)item->action)->getNamedDest ();
+#else
+  UGooString *named_dest = ((LinkGoTo *)item->action)->getNamedDest ();
+#endif // HAVE_POPPLER_0_6
   LinkDest *dest = ((LinkGoTo *)item->action)->getDest ();
 
   if (!dest && named_dest)

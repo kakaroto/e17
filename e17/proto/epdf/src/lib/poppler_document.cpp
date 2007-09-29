@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -9,6 +11,9 @@
 #include <ErrorCodes.h>
 #include <PDFDocEncoding.h>
 #include <UnicodeMap.h>
+#ifndef HAVE_POPPLER_0_6
+# include <UGooString.h>
+#endif // HAVE_POPPLER_0_6
 
 #include "poppler_enum.h"
 #include "poppler_private.h"
@@ -29,7 +34,11 @@ epdf_document_new (const char *filename)
     return NULL;
 
   if (!globalParams)
+#ifdef HAVE_POPPLER_0_6
     globalParams = new GlobalParams();
+#else
+    globalParams = new GlobalParams("/etc/xpdfrc");
+#endif // HAVE_POPPLER_0_6
 
   doc->pdfdoc = new PDFDoc (new GooString (filename), NULL);
   if (doc->pdfdoc->isOk() || doc->pdfdoc->getErrorCode() == errEncrypted) {
@@ -325,13 +334,20 @@ static char *
 epdf_document_property_get (Epdf_Document *document, const char *property)
 {
   Object     obj;
+#ifndef HAVE_POPPLER_0_6
+  UGooString prop_str(property);
+#endif // HAVE_POPPLER_0_6
   GooString *goo_string;
   char      *title = NULL;
 
   if (!document)
     return NULL;
 
+#ifdef HAVE_POPPLER_0_6
   if (!document->dict->lookup ((char *)property, &obj)->isString ()) {
+#else
+  if (!document->dict->lookup (prop_str, &obj)->isString ()) {
+#endif // HAVE_POPPLER_0_6
     obj.free ();
 
     return NULL;

@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <stdlib.h>
 #include <sys/time.h>
 
@@ -7,7 +9,11 @@
 #include <PDFDoc.h>
 #include <Page.h>
 #include <Gfx.h>
-#include <PDFDocEncoding.h>
+#ifdef HAVE_POPPLER_0_6
+# include <PDFDocEncoding.h>
+#else
+# include <UGooString.h>
+#endif // HAVE_POPPLER_0_6
 #include <TextOutputDev.h>
 #include <SplashOutputDev.h>
 #include <splash/SplashBitmap.h>
@@ -92,7 +98,11 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
 
   doc = page->doc;
 
+#ifdef HAVE_POPPLER_0_6
   output_dev = new SplashOutputDev(splashModeXBGR8, 4, gFalse, white);
+#else
+  output_dev = new SplashOutputDev(splashModeBGRA8, 4, gFalse, white);
+#endif // HAVE_POPPLER_0_6
   output_dev->startDoc(doc->pdfdoc->getXRef ());
   switch (orientation) {
   case EPDF_PAGE_ORIENTATION_LANDSCAPE:
@@ -113,7 +123,11 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
                             rotate,
                             false, false,
                             x, y, w, h,
+#ifdef HAVE_POPPLER_0_6
 			    false,
+#else
+			    NULL,
+#endif // HAVE_POPPLER_0_6
                             doc->pdfdoc->getCatalog ());
   color_ptr = output_dev->getBitmap ()->getDataPtr ();
 
@@ -160,6 +174,7 @@ epdf_page_text_output_dev_get (Epdf_Page *page)
   if (!page->text_dev) {
     page->text_dev = new TextOutputDev (NULL, 1, 0, 0);
 
+#ifdef HAVE_POPPLER_0_6
     page->gfx = page->page->createGfx (page->text_dev,
                                        72.0, 72.0, 0,
                                        false, /* useMediaBox */
@@ -168,6 +183,16 @@ epdf_page_text_output_dev_get (Epdf_Page *page)
                                        false, /* printing */
                                        page->doc->pdfdoc->getCatalog (),
                                        NULL, NULL, NULL, NULL);
+#else
+    page->gfx = page->page->createGfx (page->text_dev,
+                                       72.0, 72.0, 0,
+                                       0, /* useMediaBox */
+                                       1, /* Crop */
+                                       -1, -1, -1, -1,
+                                       NULL, /* links */
+                                       page->doc->pdfdoc->getCatalog (),
+                                       NULL, NULL, NULL, NULL);
+#endif // HAVE_POPPLER_0_6
 
     page->page->display(page->gfx);
 
@@ -201,7 +226,11 @@ epdf_page_text_get (Epdf_Page *page, Epdf_Rectangle r)
   sel_text = new GooString;
   /* added selectionStyleGlyph to catch up with poppler 0.6. Is that correct
      or should we rather use selectionStyleLine or selectionStyleWord? :M: */
+#ifdef HAVE_POPPLER_0_6
   sel_text = text_dev->getSelectionText (&pdf_selection, selectionStyleGlyph);
+#else
+  sel_text = text_dev->getSelectionText (&pdf_selection);
+#endif // HAVE_POPPLER_0_6
   result = strdup (sel_text->getCString ());
   delete sel_text;
 
@@ -219,10 +248,15 @@ epdf_page_text_find (Epdf_Page    *page,
   double          xMin, yMin, xMax, yMax;
   int             length;
   int             height;
+#ifndef HAVE_POPPLER_0_6
+  UGooString      utext(text);
+#endif // HAVE_POPPLER_0_6
+
 
   if (!page || !text)
     return NULL;
 
+#ifdef HAVE_POPPLER_0_6
   GooString tmp (text);
   Unicode *s;
 
@@ -241,20 +275,31 @@ epdf_page_text_find (Epdf_Page    *page,
 	}
       }
   }
+#endif // HAVE_POPPLER_0_6
 
   length = strlen (text);
 
   output_dev = new TextOutputDev (NULL, 1, 0, 0);
 
   height = epdf_page_height_get (page);
+#ifdef HAVE_POPPLER_0_6
   page->page->display (output_dev, 72, 72, 0, false,
 		       true, false,
 		       page->doc->pdfdoc->getCatalog());
+#else
+  page->page->display (output_dev, 72, 72, 0, 0,
+                       1, NULL,
+                       page->doc->pdfdoc->getCatalog());
+#endif // HAVE_POPPLER_0_6
 
   xMin = 0;
   yMin = 0;
 #warning you probably want to add backwards as parameters
+#ifdef HAVE_POPPLER_0_6
   while (output_dev->findText (s, tmp.getLength (),
+#else
+  while (output_dev->findText (utext.unicode (), utext.getLength (),
+#endif // HAVE_POPPLER_0_6
 			       0, 1, // startAtTop, stopAtBottom
 			       1, 0, // startAtLast, stopAtLast
 			       is_case_sensitive, 0, // caseSensitive, backwards

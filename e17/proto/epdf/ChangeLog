@@ -1,3 +1,18 @@
+2007-09-29  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.in:
+	* src/lib/poppler_document.cpp:
+	* src/lib/poppler_index.cpp:
+	* src/lib/poppler_page.cpp:
+	* src/lib/poppler_page_transition.cpp:
+	* src/lib/poppler_postscript.cpp:
+	support poppler 0.6 and 0.5.4.
+
+	* src/lib/etk_pdf.c: (etk_pdf_type_get):
+	adding NULL to the last parameter of etk_type_new. I don't
+	know if it's the correct value as there's no doc about that
+	param, but it seems to work.
+
 2007-09-19	Michael Lauer  <mickey at vanille-media dot de>
 
 	* src/lib/poppler_page.cpp: (epdf_page_text_get):

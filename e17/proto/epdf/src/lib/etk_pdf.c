@@ -49,7 +49,7 @@ Etk_Type *etk_pdf_type_get()
 
    if (!pdf_type)
    {
-      pdf_type = etk_type_new("Etk_Pdf", ETK_WIDGET_TYPE, sizeof(Etk_Pdf), ETK_CONSTRUCTOR(_etk_pdf_constructor), ETK_DESTRUCTOR(_etk_pdf_destructor));
+      pdf_type = etk_type_new("Etk_Pdf", ETK_WIDGET_TYPE, sizeof(Etk_Pdf), ETK_CONSTRUCTOR(_etk_pdf_constructor), ETK_DESTRUCTOR(_etk_pdf_destructor), NULL);
 
       etk_type_property_add(pdf_type, "pdf_file", ETK_PDF_FILE_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
 

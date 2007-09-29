@@ -11,14 +11,33 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_CXX
 
-poppler_version=0.5.9
 evas_version=0.9.9
 ecore_version=0.9.9
 
-PKG_CHECK_MODULES(EPDF,
-   poppler >= ${poppler_version} evas >= ${evas_version} ecore >= ${ecore_version})
+PKG_CHECK_MODULES(EFL,
+   [ evas >= ${evas_version} ecore >= ${ecore_version} ]
+)
+
+PKG_CHECK_MODULES(POPPLER, [ poppler >= 0.6 ],
+   [
+    have_poppler_0_6="yes"
+    AC_DEFINE([HAVE_POPPLER_0_6], [1], [Define to 1 if you have Poppler 0.6.])
+   ],
+   [ have_poppler_0_6="no" ]
+)
+if test "x$have_poppler_0_6" = "xno"; then
+   PKG_CHECK_MODULES(POPPLER, [ poppler >= 0.5.4 ],
+      [ ],
+      [ AC_MSG_ERROR([No supported Poppler found.]) ]
+   )
+fi
 POPPLER_VERSION=`pkg-config --modversion poppler`
 AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
+
+EPDF_CFLAGS="$POPPLER_CFLAGS $EFL_CFLAGS"
+EPDF_LIBS="$POPPLER_LIBS $EFL_LIBS"
+AC_SUBST(EPDF_CFLAGS)
+AC_SUBST(EPDF_LIBS)
 
 requirements="poppler evas ecore"
 
