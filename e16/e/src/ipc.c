@@ -142,15 +142,12 @@ IPC_Screen(const char *params)
      }
    else if (!strcmp(param, "split"))
      {
-	int                 i, j, nx, ny;
+	unsigned int        nx, ny;
 
 	nx = 2;
 	ny = 1;
-	sscanf(p, "%i %i\n", &nx, &ny);
-	for (i = 0; i < nx; i++)
-	   for (j = 0; j < ny; j++)
-	      ScreenAdd(1, VRoot.scr, i * VRoot.w / nx, j * VRoot.h / ny,
-			VRoot.w / nx, VRoot.h / ny);
+	sscanf(p, "%u %u\n", &nx, &ny);
+	ScreenSplit(nx, ny);
      }
 }
 

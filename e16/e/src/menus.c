@@ -318,8 +318,8 @@ MenuShow(Menu * m, char noshow)
 	     int                 x_origin;
 	     int                 y_origin;
 
-	     head_num =
-		GetPointerScreenGeometry(&x_origin, &y_origin, &width, &height);
+	     head_num = ScreenGetGeometryByPointer(&x_origin, &y_origin,
+						   &width, &height);
 
 	     if (wx > x_origin + width - mw - b->border.right)
 		wx = x_origin + width - mw - b->border.right;

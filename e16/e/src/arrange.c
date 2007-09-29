@@ -286,7 +286,7 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
      {
 	int                 xx1, yy1, xx2, yy2;
 
-	GetPointerScreenAvailableArea(&xx1, &yy1, &xx2, &yy2);
+	ScreenGetAvailableAreaByPointer(&xx1, &yy1, &xx2, &yy2);
 	xx2 += xx1;
 	yy2 += yy1;
 	if (startx < xx1)
@@ -958,7 +958,7 @@ ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py)
 {
    int                 x, y, w, h;
 
-   GetPointerScreenAvailableArea(&x, &y, &w, &h);
+   ScreenGetAvailableAreaByPointer(&x, &y, &w, &h);
    *px = (w - EoGetW(ewin)) / 2 + x;
    *py = (h - EoGetH(ewin)) / 2 + y;
 }

@@ -61,6 +61,8 @@ ScreenAdd(int type, int head, int x, int y, unsigned int w, unsigned int h)
 void
 ScreenInit(void)
 {
+   n_screens = 0;		/* Causes reconfiguration */
+
 #ifdef HAVE_XINERAMA
    XineramaScreenInfo *screens = NULL;
    int                 num_screens = 0;
@@ -77,6 +79,22 @@ ScreenInit(void)
       ScreenAdd(0, screens[i].screen_number, screens[i].x_org,
 		screens[i].y_org, screens[i].width, screens[i].height);
 #endif
+}
+
+void
+ScreenSplit(unsigned int nx, unsigned int ny)
+{
+   unsigned int        i, j;
+
+   if (nx > 8 || ny > 8)	/* At least some limit */
+      return;
+
+   ScreenInit();		/* Reset screen configuration */
+
+   for (i = 0; i < nx; i++)
+      for (j = 0; j < ny; j++)
+	 ScreenAdd(1, VRoot.scr, i * VRoot.w / nx, j * VRoot.h / ny,
+		   VRoot.w / nx, VRoot.h / ny);
 }
 
 void
@@ -126,13 +144,41 @@ ScreenShowInfo(const char *prm __UNUSED__)
      }
 }
 
+void
+ScreenGetGeometryByHead(int head, int *px, int *py, int *pw, int *ph)
+{
+   EScreen            *ps;
+   int                 x, y, w, h;
+
+   if (head > 0 && head < n_screens)
+     {
+	ps = p_screens + head;
+	x = ps->x;
+	y = ps->y;
+	w = ps->w;
+	h = ps->h;
+     }
+   else
+     {
+	x = 0;
+	y = 0;
+	w = VRoot.w;
+	h = VRoot.h;
+     }
+
+   *px = x;
+   *py = y;
+   *pw = w;
+   *ph = h;
+}
+
 int
 ScreenGetGeometry(int xi, int yi, int *px, int *py, int *pw, int *ph)
 {
-   int                 i, dx, dy, x, y, w, h, dist, ix;
+   int                 i, dx, dy, dist, head;
    EScreen            *ps;
 
-   ix = -1;
+   head = 0;
    dist = 2147483647;
 
    if (n_screens > 1)
@@ -147,38 +193,13 @@ ScreenGetGeometry(int xi, int yi, int *px, int *py, int *pw, int *ph)
 	     if (dx >= dist)
 		continue;
 	     dist = dx;
-	     ix = i;
+	     head = i;
 	  }
      }
 
-   if (ix >= 0)
-     {
-	ps = p_screens + ix;
-	ix = ps->head;
-	x = ps->x;
-	y = ps->y;
-	w = ps->w;
-	h = ps->h;
-     }
-   else
-     {
-	ix = VRoot.scr;
-	x = 0;
-	y = 0;
-	w = VRoot.w;
-	h = VRoot.h;
-     }
+   ScreenGetGeometryByHead(head, px, py, pw, ph);
 
-   if (px)
-      *px = x;
-   if (py)
-      *py = y;
-   if (pw)
-      *pw = w;
-   if (ph)
-      *ph = h;
-
-   return ix;
+   return head;
 }
 
 static void
@@ -238,7 +259,7 @@ ScreenGetAvailableArea(int xi, int yi, int *px, int *py, int *pw, int *ph)
 }
 
 int
-GetPointerScreenGeometry(int *px, int *py, int *pw, int *ph)
+ScreenGetGeometryByPointer(int *px, int *py, int *pw, int *ph)
 {
    int                 pointer_x, pointer_y;
 
@@ -248,7 +269,7 @@ GetPointerScreenGeometry(int *px, int *py, int *pw, int *ph)
 }
 
 int
-GetPointerScreenAvailableArea(int *px, int *py, int *pw, int *ph)
+ScreenGetAvailableAreaByPointer(int *px, int *py, int *pw, int *ph)
 {
    int                 pointer_x, pointer_y;
 
