@@ -413,10 +413,10 @@ bg_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if ((!strcmp(ev->keyname, "p")) ||
        (!strcmp(ev->keyname, "Return")))
      {
-	char *fl;
+	Evas_Object *eo;
 	
-	ecore_evas_cursor_get(ee, &fl, NULL, NULL, NULL);
-	if (!fl)
+	ecore_evas_cursor_get(ee, &eo, NULL, NULL, NULL);
+	if (!eo)
 	  ecore_evas_cursor_set(ee, PT"mouse_pointer.png", 1000000, 2, 2);
 	else
 	  ecore_evas_cursor_set(ee, NULL, 0, 0, 0);
