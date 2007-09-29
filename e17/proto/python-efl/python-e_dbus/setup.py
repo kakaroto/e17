@@ -27,7 +27,7 @@ e_dbus_module = Extension("e_dbus",
                           **pkgconfig('"edbus >= 0.1.0.003"'))
 
 
-setup(name="e_dbus",
+setup(name="python-e_dbus",
       version="0.1.0",
       license="BSD",
       author="Ulisses Furquim",
