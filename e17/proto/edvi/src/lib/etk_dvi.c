@@ -27,8 +27,8 @@ static void _etk_dvi_constructor(Etk_Dvi *dvi);
 static void _etk_dvi_destructor(Etk_Dvi *dvi);
 static void _etk_dvi_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_dvi_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_dvi_realize_cb(Etk_Object *object, void *data);
-static void _etk_dvi_unrealize_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_dvi_realize_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_dvi_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_dvi_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_dvi_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_dvi_load(Etk_Dvi *dvi);
@@ -341,8 +341,12 @@ static void _etk_dvi_constructor(Etk_Dvi *dvi)
    widget->size_request = _etk_dvi_size_request;
    widget->size_allocate = _etk_dvi_size_allocate;
 
-   etk_signal_connect("realize", ETK_OBJECT(dvi), ETK_CALLBACK(_etk_dvi_realize_cb), NULL);
-   etk_signal_connect("unrealize", ETK_OBJECT(dvi), ETK_CALLBACK(_etk_dvi_unrealize_cb), NULL);
+   Etk_Signal_Connect_Desc desc[] = {
+      ETK_SC_DESC(ETK_WIDGET_REALIZED_SIGNAL, _etk_dvi_realize_cb),
+      ETK_SC_DESC(ETK_WIDGET_UNREALIZED_SIGNAL, _etk_dvi_unrealize_cb),
+      ETK_SC_DESC_SENTINEL
+   };
+   etk_signal_connect_multiple(desc, ETK_OBJECT(dvi), NULL);
 }
 
 /* Destroys the dvi */
@@ -454,30 +458,32 @@ static void _etk_dvi_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the dvi is realized */
-static void _etk_dvi_realize_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_dvi_realize_cb(Etk_Object *object, void *data)
 {
    Etk_Dvi *dvi;
    Evas *evas;
 /*    Evas_Object *o; */
 
    if (!(dvi = ETK_DVI(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(dvi))))
-      return;
+      return ETK_TRUE;
 
 /*    o = evas_object_rectangle_add(evas); */
 /*    evas_object_color_set(o, 255, 255, 0, 128); */
 /*    etk_widget_member_object_add(ETK_WIDGET(object), o); */
 /*    evas_object_show(o); */
    _etk_dvi_load(dvi);
+   return ETK_TRUE;
 }
 
 /* Called when the dvi is unrealized */
-static void _etk_dvi_unrealize_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_dvi_unrealize_cb(Etk_Object *object, void *data)
 {
    Etk_Dvi *dvi;
 
    if (!(dvi = ETK_DVI(object)))
-      return;
+      return ETK_TRUE;
    dvi->dvi_object = NULL;
+   return ETK_TRUE;
 }
 
 /**************************

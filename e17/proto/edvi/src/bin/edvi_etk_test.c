@@ -7,8 +7,8 @@
 #include "etk_dvi.h"
 
 
-static void _quit_cb(void *data);
-static void _change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _quit_cb(void *data);
+static Etk_Bool _change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 
 int
 main (int argc, char *argv[])
@@ -50,8 +50,9 @@ main (int argc, char *argv[])
 
   window = etk_window_new ();
   etk_window_title_set (ETK_WINDOW (window), "Etk Dvi Test Application");
-  etk_signal_connect ("delete-event", ETK_OBJECT (window),
-                      ETK_CALLBACK(_quit_cb), NULL);
+  etk_signal_connect_by_code (ETK_WINDOW_DELETE_EVENT_SIGNAL,
+			      ETK_OBJECT (window),
+			      ETK_CALLBACK(_quit_cb), NULL);
 
   hbox = etk_hbox_new (ETK_FALSE, 6);
   etk_container_add (ETK_CONTAINER (window), hbox);
@@ -80,8 +81,8 @@ main (int argc, char *argv[])
   }
 
   /* change page */
-  etk_signal_connect ("row-clicked", ETK_OBJECT (list),
-                      ETK_CALLBACK(_change_page_cb), dvi);
+  etk_signal_connect_by_code (ETK_TREE_ROW_CLICKED_SIGNAL, ETK_OBJECT (list),
+			      ETK_CALLBACK(_change_page_cb), dvi);
 
   /* we attach and show */
   etk_box_append (ETK_BOX (hbox), list, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -100,13 +101,14 @@ main (int argc, char *argv[])
   return EXIT_SUCCESS;
 }
 
-static void
+static Etk_Bool
 _quit_cb(void *data)
 {
   etk_main_quit ();
+  return ETK_TRUE;
 }
 
-static void
+static Etk_Bool
 _change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
 {
   Etk_Tree *tree;
@@ -117,4 +119,5 @@ _change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *even
   dvi = ETK_DVI (data);
   row_number = *(int *)etk_tree_row_data_get (row);
   etk_dvi_page_set (dvi, row_number);
+  return ETK_TRUE;
 }
