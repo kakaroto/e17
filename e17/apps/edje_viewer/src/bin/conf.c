@@ -55,33 +55,22 @@ char *edje_viewer_config_recent_get(int number)
 void edje_viewer_config_recent_set(const char *path)
 {
    int count, key_length, i;
-   char *key, *val, *cwd, *new_path;
+   char key[sizeof("/recent/") + 8], *key_v, *val, *cwd;
+   char new_path[PATH_MAX];
 
    if (!path) return;
    count = edje_viewer_config_count_get();
 
-   new_path = malloc(PATH_MAX);
-   if (!(path[0] == '/')) {
-	cwd = malloc(PATH_MAX);
-	getcwd(cwd, PATH_MAX);
+   realpath(path, new_path);
 
-	snprintf(new_path, PATH_MAX, "%s/%s", cwd, path);
-
-	FREE(cwd);
-   } else {
-	new_path = strdup(path);
-   }
-
-   key_length = strlen("/recent/") + 8;
-   key = malloc(key_length * sizeof(key));
+   strcpy(key, "/recent/");
+   key_v = key + sizeof("/recent/") - 1;
    for (i = 0; i < count; i++)
      {
-	snprintf(key, key_length, "/recent/%i", i + 1);
+	snprintf(key_v, 8, "%i", i + 1);
 	val = ecore_config_string_get(key);
 	if (!strcmp(new_path, val))
 	  {
-	     FREE(key);
-	     FREE(new_path);
 	     FREE(val);
 	     return;
 	  }
@@ -97,11 +86,8 @@ void edje_viewer_config_recent_set(const char *path)
      }
 
    edje_viewer_config_count_set(count);
-   snprintf(key, key_length, "/recent/%i", i);
+   snprintf(key_v, 8, "%i", i);
    ecore_config_string_set(key, new_path);
-
-   FREE(key);
-   FREE(new_path);
 }
 
 char *edje_viewer_config_last_get(void)
@@ -111,26 +97,12 @@ char *edje_viewer_config_last_get(void)
 
 void edje_viewer_config_last_set(const char *path)
 {
-   char *cwd, *new_path;
+   char new_path[PATH_MAX];
 
    if (!path) return;
 
-   new_path = malloc(PATH_MAX);
-   if (!(path[0] == '/')) {
-	cwd = malloc(PATH_MAX);
-	getcwd(cwd, PATH_MAX);
-
-	snprintf(new_path, PATH_MAX, "%s/%s", cwd, path);
-
-	FREE(cwd);
-   } else {
-	new_path = strdup(path);
-   }
-
-
+   realpath(path, new_path);
    ecore_config_string_set("/recent/last", new_path);
-
-   FREE(new_path);
 }
 
 Etk_Bool edje_viewer_config_open_last_get(void)

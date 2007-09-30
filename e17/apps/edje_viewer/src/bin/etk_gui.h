@@ -30,6 +30,6 @@ struct _Gui
    char *path;
 };
 
-void main_window_show(char *file);
-int gui_part_col_sort_cb(Etk_Tree *tree, Etk_Tree_Row *row1,
-      Etk_Tree_Row *row2, Etk_Tree_Col *col, void *data);
+void main_window_show(const char *file);
+int gui_part_col_sort_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1,
+      Etk_Tree_Row *row2, void *data);
