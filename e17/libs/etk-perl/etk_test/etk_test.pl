@@ -493,7 +493,7 @@ sub tree_window_show
 				$row->Delete();
 			}
 		}
-		Etk::Signal::Stop();
+		return 0;
 	}
 
     });
@@ -827,7 +827,7 @@ sub iconbox_window_show
 	    return unless $event->{flags} & MouseDoubleClick;
 	    my $icon = $iconbox->IconGetAtXy($event->{"canvas.x"},
 		$event->{"canvas.y"}, 0, 1, 1);
-	    return if($icon == undef);
+	    return unless $icon;
 	    if (-d $_iconbox_folder."/".$icon->LabelGet())
 	    {
 		_iconbox_folder_set($iconbox, $icon->LabelGet());
@@ -999,6 +999,7 @@ sub textview_window_show
 		"<b><font color=#a82f2f>David P:</font></b> "
 	    );
 	    my $num_messages = 0;
+
 	    $editor_view->SignalConnect("key-down", sub {
 		    my $self = shift->TextblockGet();
 		    my $event = shift;
@@ -1016,8 +1017,9 @@ sub textview_window_show
 				    $num_messages++;
 			    }
 			    $iter->free();
-			    Etk::Signal::Stop(); 
+			    return 0;
 		    }
+		    return 1;
 
 	    }, $message_view);
 
@@ -1026,6 +1028,7 @@ sub textview_window_show
     $vbox->Append($button);
     
     $win->ShowAll();  
+
 }
 
 sub table_window_show
