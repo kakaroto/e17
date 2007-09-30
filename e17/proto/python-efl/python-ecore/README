@@ -5,7 +5,7 @@ REQUIREMENTS
 
  * Evas >= 0.9.9.040
  * Ecore >= 0.9.9.040
- * Pyrex >= 0.9.5
+ * Cython from Mercurial repository (http://www.cython.org/hg/)
  * Python-Evas
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc3
@@ -25,7 +25,7 @@ Install::
         python setup.py install
 
 You can choose where to install by using command options, see output
-of "python setup.py $COMMAND --help", example:
+of "python setup.py <command> --help", example:
 
         python setup.py install --help
 
@@ -37,18 +37,19 @@ TROUBLESHOOTING
 
 If you get the following error during build_ext:
 
-        ecore/ecore.c_ecore.c:14:31: error: python_evas_utils.h: No such file or directory
+        ecore/ecore.c_ecore.pyx:1:8: 'evas.python.pxd' not found
 
-Means that either python_evas_utils.h was not installed or it is placed
+Means that either evas/python.pxd was not installed or it is placed
 at an non-standard place.
 
 If it's not installed at all, please do so by:
 
         # copy and extract python-evas to 'src/python-evas', then:
         cd src/python-evas
+        # read README
         python setup.py install_headers
 
-If it's installed at a non-standard place, you can specify it with
-"build_ext --include-dirs":
+If it's installed at a non-standard place, you can specify the same path you
+used to install python-evas to build_ext with "--include-dirs":
 
-        python setup.py build_ext --include-dirs $PYTHON_EVAS_UTILS_H_PATH
+        python setup.py build_ext --include-dirs <path>

@@ -1,4 +1,4 @@
-cimport python
+cimport evas.python as python
 import evas.c_evas
 
 

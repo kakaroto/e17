@@ -136,14 +136,14 @@ cdef class FdHandler:
         def __get__(self):
             return self.fd_get()
 
-    def active_get(self, int flags_query):
+    def active_get(self, int flags):
         """Return if read, write or error, or a combination thereof, is
            active on the file descriptor of the given FD handler.
 
            @rtype: bool
         """
         cdef Ecore_Fd_Handler_Flags v
-        v = <Ecore_Fd_Handler_Flags>flags_query
+        v = <Ecore_Fd_Handler_Flags>flags
         return bool(ecore_main_fd_handler_active_get(self.obj, v))
 
 
@@ -158,7 +158,7 @@ cdef class FdHandler:
          - ECORE_FD_ALL
         """
         cdef Ecore_Fd_Handler_Flags v
-        v = <Ecore_Fd_Handler_Flags>flags_query
+        v = <Ecore_Fd_Handler_Flags>flags
         ecore_main_fd_handler_active_set(self.obj, v)
 
     def can_read(self):

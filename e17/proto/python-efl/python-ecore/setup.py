@@ -4,12 +4,11 @@ import os
 from ez_setup import use_setuptools
 use_setuptools('0.6c3')
 
-import distutils.sysconfig
 from setuptools import setup, find_packages, Extension
+from distutils.sysconfig import get_python_inc
 import commands
 
-
-python_inc = distutils.sysconfig.get_python_inc()
+from Cython.Distutils import build_ext
 
 
 def pkgconfig(*packages, **kw):
@@ -34,15 +33,14 @@ ecoremodule = Extension('ecore.c_ecore',
                                  'ecore/ecore.c_ecore_idle_enterer.pxi',
                                  'ecore/ecore.c_ecore_idle_exiter.pxi',
                                  'ecore/ecore.c_ecore_fd_handler.pxi',
-                                 'ecore/ecore.c_ecore.pxd',
-                                 'ecore/python.pxd',
+                                 'include/ecore/c_ecore.pxd',
                                  ],
                         **pkgconfig('"ecore >= 0.9.9.040"'))
 
+
 ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                             sources=['ecore/evas/ecore.evas.c_ecore_evas.pyx'],
-                            depends=['ecore/evas/ecore.evas.c_ecore_evas.pxd',
-                                     'ecore/evas/ecore.evas.c_ecore_evas_base.pxi',
+                            depends=['ecore/evas/ecore.evas.c_ecore_evas_base.pxi',
                                      'ecore/evas/ecore.evas.c_ecore_evas_software_x11.pxi',
                                      'ecore/evas/ecore.evas.c_ecore_evas_gl_x11.pxi',
                                      'ecore/evas/ecore.evas.c_ecore_evas_xrender_x11.pxi',
@@ -50,11 +48,10 @@ ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
 #                                     'ecore/evas/ecore.evas.c_ecore_evas_directfb.pxi',
                                      'ecore/evas/ecore.evas.c_ecore_evas_buffer.pxi',
                                      'ecore/evas/ecore.evas.c_ecore_evas_software_x11_16.pxi',
-                                     'ecore/python.pxd',
+                                     'include/ecore/evas/c_ecore_evas.pxd',
                                      ],
                             **pkgconfig('"ecore-evas >= 0.9.9.040"'))
 
-include_dirs = [os.path.join(python_inc, "python-evas")]
 
 trove_classifiers = [
     "Development Status :: 3 - Alpha",
@@ -69,6 +66,7 @@ trove_classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: User Interfaces",
     ]
+
 
 long_description = """\
 Python bindings for Ecore and Ecore/Evas, part of Enlightenment Foundation Libraries.
@@ -87,6 +85,13 @@ for instance), toggling fullscreen, setting window shape, border and
 other parameters.
 """
 
+
+class ecore_build_ext(build_ext):
+    def finalize_options(self):
+        build_ext.finalize_options(self)
+        self.include_dirs.extend(['include', get_python_inc()])
+
+
 setup(name='python-ecore',
       version='0.1.1',
       license='BSD',
@@ -100,7 +105,7 @@ setup(name='python-ecore',
       packages=find_packages(),
       install_requires=['python-evas>=0.1.1'],
       setup_requires=['python-evas>=0.1.1'],
-      include_dirs=include_dirs,
       ext_modules=[ecoremodule, ecoreevasmodule],
       zip_safe=False,
+      cmdclass={'build_ext': ecore_build_ext,},
       )

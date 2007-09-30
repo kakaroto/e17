@@ -1,4 +1,4 @@
-cimport python
+cimport evas.python as python
 
 __extra_epydoc_fields__ = (
     ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly

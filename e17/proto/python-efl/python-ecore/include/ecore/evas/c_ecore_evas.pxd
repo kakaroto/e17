@@ -1,6 +1,6 @@
 cimport evas.c_evas
 
-cdef extern from "python_evas_utils.h":
+cdef extern from "evas/python_evas_utils.h":
     int PY_REFCOUNT(object)
 
 
