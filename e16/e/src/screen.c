@@ -187,6 +187,13 @@ ScreenGetGeometry(int xi, int yi, int *px, int *py, int *pw, int *ph)
 	  {
 	     ps = p_screens + i;
 
+	     if (xi >= ps->x && xi < ps->x + ps->w &&
+		 yi >= ps->y && yi < ps->y + ps->h)
+	       {
+		  /* Inside - done */
+		  head = i;
+		  break;
+	       }
 	     dx = xi - (ps->x + ps->w / 2);
 	     dy = yi - (ps->y + ps->h / 2);
 	     dx = dx * dx + dy * dy;
