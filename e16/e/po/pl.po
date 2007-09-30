@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-09-22 12:47+0200\n"
+"POT-Creation-Date: 2007-09-30 17:48+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -297,11 +297,11 @@ msgstr ""
 "Oknoustawieñ T³a\n"
 "Pulpitu Enlightenment\n"
 
-#: src/comms.c:241
+#: src/comms.c:229
 msgid "E IPC Error"
 msgstr "B³±d Enlightenment IPC"
 
-#: src/comms.c:242
+#: src/comms.c:230
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -1164,11 +1164,11 @@ msgstr "Opcje Pude³ka na Ikony"
 msgid "Iconbox Settings"
 msgstr "Ustawienia Pude³ka na Ikony"
 
-#: src/ipc.c:189 src/ipc.c:1415
+#: src/ipc.c:186 src/ipc.c:1412
 msgid "Message"
 msgstr "Wiadomo¶æ"
 
-#: src/ipc.c:945
+#: src/ipc.c:942
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1177,16 +1177,16 @@ msgstr ""
 "Wersja Enlightenment : %s\n"
 "kod jest aktualny na : %s\n"
 
-#: src/ipc.c:1416
+#: src/ipc.c:1413
 msgid "Enlightenment was built without composite support"
 msgstr ""
 
-#: src/ipc.c:1742
+#: src/ipc.c:1739
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Pomoc dla komend Enlightenmnet IPC"
 
-#: src/ipc.c:1746
+#: src/ipc.c:1743
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1197,23 +1197,23 @@ msgstr ""
 "wpisz \"help <komenda>\" aby uzyskaæ opis pojedynczej komendy\n"
 "\n"
 
-#: src/ipc.c:1748 src/ipc.c:1768 src/ipc.c:1780
+#: src/ipc.c:1745 src/ipc.c:1765 src/ipc.c:1777
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "Aktualnie dostêpne komendy :\n"
 
-#: src/ipc.c:1766
+#: src/ipc.c:1763
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1767
+#: src/ipc.c:1764
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "wpisz \"help <komenda>\" aby uzyskaæ opis pojedynczej komendy\n"
 
-#: src/ipc.c:1769 src/ipc.c:1781
+#: src/ipc.c:1766 src/ipc.c:1778
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<komenda> : <opis>\n"
@@ -1318,29 +1318,29 @@ msgstr "Zwiñ t± grupê do ikony"
 msgid "Group %i"
 msgstr "Grupa %i"
 
-#: src/menus.c:2035
+#: src/menus.c:2041
 msgid "Animated display of menus"
 msgstr "Animowane wy¶wietlanie menu"
 
-#: src/menus.c:2040
+#: src/menus.c:2046
 msgid "Always pop up menus on screen"
 msgstr "Zawsze pokazuj menu w ca³o¶ci na ekranie"
 
-#: src/menus.c:2045
+#: src/menus.c:2051
 msgid "Warp pointer after moving menus"
 msgstr "Przeno¶ wska¼nik myszy razem z menu"
 
-#: src/menus.c:2051
+#: src/menus.c:2057
 #, fuzzy
 msgid "Menus"
 msgstr "Styl Obramowania"
 
-#: src/menus.c:2052
+#: src/menus.c:2058
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Ustawienia ró¿ne"
 
-#: src/menus.c:2055
+#: src/menus.c:2061
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"

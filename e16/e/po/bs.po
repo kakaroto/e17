@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-09-22 12:47+0200\n"
+"POT-Creation-Date: 2007-09-30 17:48+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -313,11 +313,11 @@ msgstr ""
 "Enlightenment Desktop\n"
 "dijalog osobina pozadine\n"
 
-#: src/comms.c:241
+#: src/comms.c:229
 msgid "E IPC Error"
 msgstr "E IPC greŷka"
 
-#: src/comms.c:242
+#: src/comms.c:230
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -1178,11 +1178,11 @@ msgstr "Iconbox opcije"
 msgid "Iconbox Settings"
 msgstr "Iconbox Osobine"
 
-#: src/ipc.c:189 src/ipc.c:1415
+#: src/ipc.c:186 src/ipc.c:1412
 msgid "Message"
 msgstr "Poruka"
 
-#: src/ipc.c:945
+#: src/ipc.c:942
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1191,16 +1191,16 @@ msgstr ""
 "Enlightenment verzija : %s\n"
 "kod je trenutno na    : %s\n"
 
-#: src/ipc.c:1416
+#: src/ipc.c:1413
 msgid "Enlightenment was built without composite support"
 msgstr ""
 
-#: src/ipc.c:1742
+#: src/ipc.c:1739
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Comande Pomo?"
 
-#: src/ipc.c:1746
+#: src/ipc.c:1743
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1211,23 +1211,23 @@ msgstr ""
 "koristite \"help <command>\" za pojedinaīni opis\n"
 "\n"
 
-#: src/ipc.c:1748 src/ipc.c:1768 src/ipc.c:1780
+#: src/ipc.c:1745 src/ipc.c:1765 src/ipc.c:1777
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "trenutno dostupne komande:\n"
 
-#: src/ipc.c:1766
+#: src/ipc.c:1763
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1767
+#: src/ipc.c:1764
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "koristi \"help <command>\" za individualni opis\n"
 
-#: src/ipc.c:1769 src/ipc.c:1781
+#: src/ipc.c:1766 src/ipc.c:1778
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <command>   : <description>\n"
@@ -1331,29 +1331,29 @@ msgstr "Ikonificiraj ovu grupu"
 msgid "Group %i"
 msgstr "Grupa %i"
 
-#: src/menus.c:2035
+#: src/menus.c:2041
 msgid "Animated display of menus"
 msgstr "Animirani prikazi menija"
 
-#: src/menus.c:2040
+#: src/menus.c:2046
 msgid "Always pop up menus on screen"
 msgstr "Uvijek pop up meniji na ekranu"
 
-#: src/menus.c:2045
+#: src/menus.c:2051
 msgid "Warp pointer after moving menus"
 msgstr "Uvi pokaziva� nakon premjeŷtanja izbornika"
 
-#: src/menus.c:2051
+#: src/menus.c:2057
 #, fuzzy
 msgid "Menus"
 msgstr "Izbornici:"
 
-#: src/menus.c:2052
+#: src/menus.c:2058
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Razne osobine"
 
-#: src/menus.c:2055
+#: src/menus.c:2061
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"

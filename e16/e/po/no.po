@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-09-22 12:47+0200\n"
+"POT-Creation-Date: 2007-09-30 17:48+0200\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -298,11 +298,11 @@ msgstr ""
 "Dialog for innstilling av\n"
 "bakgrunn i Enlightenment\n"
 
-#: src/comms.c:241
+#: src/comms.c:229
 msgid "E IPC Error"
 msgstr "Feil ved E IPC"
 
-#: src/comms.c:242
+#: src/comms.c:230
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -1161,11 +1161,11 @@ msgstr "Meny for ikonboksen"
 msgid "Iconbox Settings"
 msgstr "Ikonboks"
 
-#: src/ipc.c:189 src/ipc.c:1415
+#: src/ipc.c:186 src/ipc.c:1412
 msgid "Message"
 msgstr "Beskjed"
 
-#: src/ipc.c:945
+#: src/ipc.c:942
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1174,16 +1174,16 @@ msgstr ""
 "Enlightenment Versjon : %s\n"
 "koden oppdatert       : %s\n"
 
-#: src/ipc.c:1416
+#: src/ipc.c:1413
 msgid "Enlightenment was built without composite support"
 msgstr ""
 
-#: src/ipc.c:1742
+#: src/ipc.c:1739
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Kommando Hjelp"
 
-#: src/ipc.c:1746
+#: src/ipc.c:1743
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1193,23 +1193,23 @@ msgstr ""
 "bruk \"help all\" for beskrivelse av ha alle kommandoene\n"
 "bruk \"help <kommando>\" for beskrivelse av hver enkelt kommando\n"
 
-#: src/ipc.c:1748 src/ipc.c:1768 src/ipc.c:1780
+#: src/ipc.c:1745 src/ipc.c:1765 src/ipc.c:1777
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "kommandoer som er tilgjengelig for øyeblikket:\n"
 
-#: src/ipc.c:1766
+#: src/ipc.c:1763
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1767
+#: src/ipc.c:1764
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "bruk \"help <kommando>\" for individuell beskrivelse\n"
 
-#: src/ipc.c:1769 src/ipc.c:1781
+#: src/ipc.c:1766 src/ipc.c:1778
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<kommando> : <beskrivelse>\n"
@@ -1311,29 +1311,29 @@ msgstr "Ikonifiser denne gruppa"
 msgid "Group %i"
 msgstr "Gruppe %i"
 
-#: src/menus.c:2035
+#: src/menus.c:2041
 msgid "Animated display of menus"
 msgstr "La menyer være animerte"
 
-#: src/menus.c:2040
+#: src/menus.c:2046
 msgid "Always pop up menus on screen"
 msgstr "La menyer alltid opptre innenfor skjermen"
 
-#: src/menus.c:2045
+#: src/menus.c:2051
 msgid "Warp pointer after moving menus"
 msgstr "Send muspeker tilbake etter flytting av meny"
 
-#: src/menus.c:2051
+#: src/menus.c:2057
 #, fuzzy
 msgid "Menus"
 msgstr "Rammestil"
 
-#: src/menus.c:2052
+#: src/menus.c:2058
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Forskjellige innstillinger"
 
-#: src/menus.c:2055
+#: src/menus.c:2061
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
