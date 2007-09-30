@@ -24,7 +24,7 @@ Install::
         python setup.py install
 
 You can choose where to install by using command options, see output
-of "python setup.py $COMMAND --help", example:
+of "python setup.py <command> --help", example:
 
         python setup.py install --help
 
