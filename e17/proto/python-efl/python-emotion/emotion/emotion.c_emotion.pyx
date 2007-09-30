@@ -1,3 +1,4 @@
+cimport evas.c_evas as c_evas
 import evas.c_evas
 
 cdef void _emotion_callback(void *data, evas.c_evas.Evas_Object *o, void *ei):
@@ -22,10 +23,10 @@ cdef class Emotion(evas.c_evas.Object):
     def __new__(self, *a, **ka):
         self._emotion_callbacks = {}
 
-    def __init__(self, evas.c_evas.Canvas canvas not None, **kargs):
+    def __init__(self, c_evas.Canvas canvas not None, **kargs):
         evas.c_evas.Object.__init__(self, canvas)
         if self.obj == NULL:
-            self._set_obj(emotion_object_add(self._evas.obj))
+            self._set_obj(emotion_object_add(self.evas.obj))
         self._set_common_params(**kargs)
 
     def _set_common_params(self,
