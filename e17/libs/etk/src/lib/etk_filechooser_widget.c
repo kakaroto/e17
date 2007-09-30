@@ -662,14 +662,17 @@ static Etk_Bool _etk_filechooser_widget_file_selected_cb(Etk_Object *object, Etk
 static Etk_Bool _etk_filechooser_widget_updir_clicked_cb(Etk_Button *button, void *data)
 {
    Etk_Filechooser_Widget *filechooser_widget;
-   char back[PATH_MAX];
+   char back[PATH_MAX], *path;
 
    if (!(filechooser_widget = ETK_FILECHOOSER_WIDGET(data)))
      return ETK_TRUE;
 
    snprintf(back, PATH_MAX, "%s/..", filechooser_widget->current_folder);
 
-   etk_filechooser_widget_current_folder_set(filechooser_widget, ecore_file_realpath(back));
+   path = ecore_file_realpath(back);
+   etk_filechooser_widget_current_folder_set(filechooser_widget, path);
+   free(path);
+
    return ETK_TRUE;
 }
 /**************************
