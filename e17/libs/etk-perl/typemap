@@ -85,6 +85,7 @@ Etk_Scrolled_View_Policy			T_IV
 Etk_Scrolled_View_Policy *			T_PTROBJ
 Etk_Signal *					T_PTROBJ
 Etk_Signal_Callback *				T_PTROBJ
+const Etk_Signal_Callback *			T_PTROBJ
 Etk_Signal_Callback_Function			T_CALLBACK
 Etk_Size *					T_SIZE
 Etk_Statusbar *					T_PTROBJ_ETK

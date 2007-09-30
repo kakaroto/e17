@@ -23,6 +23,7 @@ typedef struct _Callback_Timer_Data Callback_Timer_Data;
 struct _Callback_Signal_Data
 {
    char       *signal_name;   /* etk signal name */
+   int        signal_code;   /* etk signal code */
    Etk_Object *object;        /* object signal is connected to */
    SV         *perl_object;   /* reference to the perl object */
    SV         *perl_callback; /* perl callback to be called */

@@ -32,11 +32,14 @@ notification_callback(Etk_Object * object, const char * property_name, void * da
    call_sv(ncb->perl_callback, G_DISCARD);
 }
 
-static void
+static Etk_Bool
 callback_VOID(Etk_Object *object, void *data)
 {
    dSP;
    Callback_Signal_Data *cbd = NULL;
+   int count;
+   Etk_Bool ret = ETK_TRUE;
+   SV * sv_ret;
 
    cbd = data;
    
@@ -45,14 +48,34 @@ callback_VOID(Etk_Object *object, void *data)
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));
    PUTBACK ;
       
-   call_sv(cbd->perl_callback, G_DISCARD);
+   count = call_sv(cbd->perl_callback, G_SCALAR);
+
+   SPAGAIN;
+
+   if (count == 1) {
+   	sv_ret = POPs;
+	if (SvIOK(sv_ret))
+		ret = SvIV(sv_ret);
+	/* Assume true by default */
+	if (ret != ETK_FALSE) ret = ETK_TRUE;
+   }
+
+   PUTBACK;
+   FREETMPS;
+   LEAVE;
+
+   return ret;
+   
 }
 
-static void
+static Etk_Bool
 callback_INT(Etk_Object *object, int value, void *data)
 {
    dSP;
    Callback_Signal_Data *cbd = NULL;
+   int count;
+   Etk_Bool ret = ETK_TRUE;
+   SV * sv_ret;
 
    cbd = data;
 
@@ -62,14 +85,35 @@ callback_INT(Etk_Object *object, int value, void *data)
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
-   call_sv(cbd->perl_callback, G_DISCARD);
+   count = call_sv(cbd->perl_callback, G_SCALAR);
+
+   SPAGAIN;
+
+   if (count == 1) {
+   	sv_ret = POPs;
+	if (SvIOK(sv_ret))
+		ret = SvIV(sv_ret);
+	
+	if (ret != ETK_FALSE) ret = ETK_TRUE;
+   }
+
+   PUTBACK;
+   FREETMPS;
+   LEAVE;
+
+   return ret;
+
+
 }
 
-static void
+static Etk_Bool
 callback_DOUBLE(Etk_Object *object, double value, void *data)
 {
    dSP;
    Callback_Signal_Data *cbd = NULL;
+   int count;
+   Etk_Bool ret = ETK_TRUE;
+   SV * sv_ret;
 
    cbd = data;
 
@@ -79,15 +123,35 @@ callback_DOUBLE(Etk_Object *object, double value, void *data)
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
 
-   call_sv(cbd->perl_callback, G_DISCARD);
+   count = call_sv(cbd->perl_callback, G_SCALAR);
+
+   SPAGAIN;
+
+   if (count == 1) {
+   	sv_ret = POPs;
+	if (SvIOK(sv_ret))
+		ret = SvIV(sv_ret);
+	
+	if (ret != ETK_FALSE) ret = ETK_TRUE;
+   }
+
+   PUTBACK;
+   FREETMPS;
+   LEAVE;
+
+   return ret;
+
 }
 
-static void
+static Etk_Bool
 callback_POINTER(Etk_Object *object, void *value, void *data)
 {
    dSP;
    Callback_Signal_Data *cbd = NULL;
+   int count;
+   Etk_Bool ret = ETK_TRUE;
    SV *event_rv;
+   SV * sv_ret;
    cbd = data;   
 
    event_rv = GetSignalEvent_POINTER(object, value, cbd);
@@ -98,14 +162,35 @@ callback_POINTER(Etk_Object *object, void *value, void *data)
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
-   call_sv(cbd->perl_callback, G_DISCARD);
+   count = call_sv(cbd->perl_callback, G_SCALAR);
+
+   SPAGAIN;
+
+   if (count == 1) {
+   	sv_ret = POPs;
+	if (SvIOK(sv_ret))
+		ret = SvIV(sv_ret);
+	
+	if (ret != ETK_FALSE) ret = ETK_TRUE;
+   }
+
+   PUTBACK;
+   FREETMPS;
+   LEAVE;
+
+   return ret;
+
 }
 
-static void
+static Etk_Bool
 callback_POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void *data)
 {
    dSP;
    Callback_Signal_Data *cbd = NULL;
+   int count;
+   Etk_Bool ret = ETK_TRUE;
+   SV * sv_ret;
+
    cbd = data;   
 
    SV * obj1_rv, *event_rv;
@@ -120,14 +205,35 @@ callback_POINTER_POINTER(Etk_Object *object, void *val1, void *val2, void *data)
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
-   call_sv(cbd->perl_callback, G_DISCARD);
+ 
+   count = call_sv(cbd->perl_callback, G_SCALAR);
+
+   SPAGAIN;
+
+   if (count == 1) {
+   	sv_ret = POPs;
+	if (SvIOK(sv_ret))
+		ret = SvIV(sv_ret);
+	
+	if (ret != ETK_FALSE) ret = ETK_TRUE;
+   }
+
+   PUTBACK;
+   FREETMPS;
+   LEAVE;
+
+   return ret;
+
 }
 
-static void
+static Etk_Bool
 callback_INT_INT(Etk_Object *object, int val1, int val2, void *data)
 {
    dSP;
    Callback_Signal_Data *cbd = NULL;
+   int count;
+   Etk_Bool ret = ETK_TRUE;
+   SV * sv_ret;
 
    cbd = data;
 
@@ -138,15 +244,36 @@ callback_INT_INT(Etk_Object *object, int val1, int val2, void *data)
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
-   call_sv(cbd->perl_callback, G_DISCARD);
+   count = call_sv(cbd->perl_callback, G_SCALAR);
+
+   SPAGAIN;
+
+   if (count == 1) {
+   	sv_ret = POPs;
+	if (SvIOK(sv_ret))
+		ret = SvIV(sv_ret);
+	
+	if (ret != ETK_FALSE) ret = ETK_TRUE;
+   }
+
+   PUTBACK;
+   FREETMPS;
+   LEAVE;
+
+   return ret;
+
+
 }
 
 
-static void
+static Etk_Bool
 callback_OBJECT(Etk_Object *object, Etk_Object *obj2, void *data)
 {
    dSP;
    Callback_Signal_Data *cbd = NULL;
+   int count;
+   Etk_Bool ret = ETK_TRUE;
+   SV * sv_ret;
 
    cbd = data;
 
@@ -156,56 +283,93 @@ callback_OBJECT(Etk_Object *object, Etk_Object *obj2, void *data)
    XPUSHs(sv_2mortal(newSVsv(cbd->perl_data)));   
    PUTBACK ;
       
-   call_sv(cbd->perl_callback, G_DISCARD);
+   count = call_sv(cbd->perl_callback, G_SCALAR);
+
+   SPAGAIN;
+
+   if (count == 1) {
+   	sv_ret = POPs;
+	if (SvIOK(sv_ret))
+		ret = SvIV(sv_ret);
+	
+	if (ret != ETK_FALSE) ret = ETK_TRUE;
+   }
+
+   PUTBACK;
+   FREETMPS;
+   LEAVE;
+
+   return ret;
+
+
 }
 
 
-static Etk_Signal_Callback *
-__etk_signal_connect_full(char *signal_name, SV *object, SV *callback, SV *data, Etk_Bool swapped, Etk_Bool after)
+const Etk_Signal_Callback *
+__etk_signal_connect_full(SV *signal, SV *object, SV *callback, SV *data, Etk_Bool swapped, Etk_Bool after)
 {
 	dSP;
 
 	Callback_Signal_Data *cbd = NULL;
+	Etk_Object * obj;
+	const Etk_Signal_Callback * ret = NULL;
+	int signal_code;
+	char * signal_name = NULL;
+	Etk_Type *type = NULL;
 	Etk_Signal *sig = NULL;
 	Etk_Marshaller marsh;
-	Etk_Object * obj;
 
 	ENTER;
 	SAVETMPS;
 
 	obj = (Etk_Object *)SvObj(object, "Etk::Object");
+	type = etk_object_object_type_get(obj);
 
 	cbd = calloc(1, sizeof(Callback_Signal_Data));
-	cbd->signal_name = strdup(signal_name);
 	cbd->object = obj;
 	cbd->perl_object = newSVsv(object);
 	cbd->perl_data = newSVsv(data);
 	cbd->perl_callback = newSVsv(callback);	
-	
-	sig = etk_signal_lookup(signal_name, obj->type);
-	if(!sig) printf("CANT GET SIG!\n");
-	marsh = etk_signal_marshaller_get(sig);
 
-	if(marsh == etk_marshaller_VOID)
-	  etk_signal_connect_full_by_name(signal_name, obj, ETK_CALLBACK(callback_VOID), cbd, swapped, after);
-	else if(marsh == etk_marshaller_INT)
-	  etk_signal_connect_full_by_name(signal_name, obj, ETK_CALLBACK(callback_INT), cbd, swapped, after);
-	else if(marsh == etk_marshaller_DOUBLE)
-	  etk_signal_connect_full_by_name(signal_name, obj, ETK_CALLBACK(callback_DOUBLE), cbd, swapped, after);
-	else if(marsh == etk_marshaller_POINTER)
-	  etk_signal_connect_full_by_name(signal_name, obj, ETK_CALLBACK(callback_POINTER), cbd, swapped, after);
-	else if(marsh == etk_marshaller_INT_INT)
-	  etk_signal_connect_full_by_name(signal_name, obj, ETK_CALLBACK(callback_INT_INT), cbd, swapped, after);
-	else if(marsh == etk_marshaller_OBJECT)
-	  etk_signal_connect_full_by_name(signal_name, obj, ETK_CALLBACK(callback_OBJECT), cbd, swapped, after);
-	else if(marsh == etk_marshaller_POINTER_POINTER)
-	  etk_signal_connect_full_by_name(signal_name, obj, ETK_CALLBACK(callback_POINTER_POINTER), cbd, swapped, after);
-	else
-	etk_signal_connect_full_by_name(signal_name, obj, ETK_CALLBACK(callback_VOID), cbd, swapped, after);
+#define S(A) \
+	if ( signal_name == NULL ) \
+		ret = etk_signal_connect_full_by_code(signal_code,obj,ETK_CALLBACK(A),cbd,swapped,after); \
+	else \
+		ret = etk_signal_connect_full_by_name(signal_name,obj,ETK_CALLBACK(A),cbd,swapped,after); 
+
+
+	if (SvPOK(signal)) {
+		signal_name = SvPV_nolen(signal);
+		cbd->signal_name = strdup(signal_name);
+		sig = etk_type_signal_get_by_name(type, signal_name);
+	} else {
+		signal_code = SvIV(signal);
+		cbd->signal_code = signal_code;
+		sig = etk_type_signal_get(type, signal_code);
+	}
+
+	marsh = etk_signal_marshaller_get(sig);
+	if (marsh == etk_marshaller_VOID) {
+		S(callback_VOID);
+	} else if (marsh == etk_marshaller_INT) {
+		S(callback_INT);
+	} else if (marsh == etk_marshaller_DOUBLE) {
+		S(callback_DOUBLE);
+	} else if (marsh == etk_marshaller_POINTER) {
+		S(callback_POINTER);
+	} else if (marsh == etk_marshaller_POINTER_POINTER) {
+		S(callback_POINTER_POINTER);
+	} else if (marsh == etk_marshaller_OBJECT) {
+		S(callback_OBJECT);
+	} else {
+		S(callback_VOID);
+	}
 
 	PUTBACK;
 	FREETMPS;
 	LEAVE;
+
+	return ret;
 }
 
 
@@ -269,39 +433,41 @@ etk_object_notify(object, property_name)
 	Notify=1
 
 
-Etk_Signal_Callback *
-signal_connect(object, signal_name, callback, data=NULL)
+const Etk_Signal_Callback *
+signal_connect(object, signal, callback, data=NULL)
 	SV *		object
-	char *	        signal_name
+	SV *		signal
 	SV *	        callback
 	SV *            data
       ALIAS:
 	SignalConnect=1
        
 	CODE:	
-	RETVAL = __etk_signal_connect_full(signal_name, newSVsv(object), newSVsv(callback), newSVsv(data), 
-			ETK_FALSE, ETK_FALSE);
+	RETVAL = __etk_signal_connect_full(signal, newSVsv(object),
+		newSVsv(callback), newSVsv(data), 
+		ETK_FALSE, ETK_FALSE);
 	OUTPUT:
 	RETVAL
 
-Etk_Signal_Callback *
-signal_connect_after(object, signal_name, callback, data=NULL)
+const Etk_Signal_Callback *
+signal_connect_after(object, signal, callback, data=NULL)
 	SV *		object
-	char *	        signal_name
+	SV *	        signal
 	SV *	        callback
 	SV *            data
       ALIAS:
 	SignalConnectAfter=1
 	
 	CODE:	
-	RETVAL = __etk_signal_connect_full(signal_name, object, callback, data, ETK_FALSE, ETK_TRUE);
+	RETVAL = __etk_signal_connect_full(signal, newSVsv(object), newSVsv(callback), 
+		newSVsv(data), ETK_FALSE, ETK_TRUE);
 	OUTPUT:
 	RETVAL
 
-Etk_Signal_Callback * 
-signal_connect_full(object, signal_name, callback, data, swapped, after)
+const Etk_Signal_Callback * 
+signal_connect_full(object, signal, callback, data, swapped, after)
 	SV *		object
-	char *	        signal_name
+	SV *	        signal
 	SV *	        callback
 	SV *            data
 	Etk_Bool	swapped
@@ -309,22 +475,24 @@ signal_connect_full(object, signal_name, callback, data, swapped, after)
       ALIAS:
 	SignalConnectFull=1
 	CODE:
-	RETVAL = __etk_signal_connect_full(signal_name, object, callback, data, swapped, after);
+	RETVAL = __etk_signal_connect_full(signal, newSVsv(object), newSVsv(callback),
+		newSVsv(data), swapped, after);
 	OUTPUT:
 	RETVAL
 
 	
-Etk_Signal_Callback *
-signal_connect_swapped(object, signal_name, callback, data=NULL)
+const Etk_Signal_Callback *
+signal_connect_swapped(object, signal, callback, data=NULL)
 	SV *		object
-	char *	        signal_name
+	SV *	        signal
 	SV *	        callback
 	SV *            data
       ALIAS:
 	SignalConnectSwapped=1
 	
 	CODE:	
-	RETVAL = __etk_signal_connect_full(signal_name, object, callback, data, ETK_TRUE, ETK_FALSE);
+	RETVAL = __etk_signal_connect_full(signal, newSVsv(object), newSVsv(callback),
+		newSVsv(data), ETK_TRUE, ETK_FALSE);
 	OUTPUT:
 	RETVAL
 

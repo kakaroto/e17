@@ -23,9 +23,11 @@ etk_signal_shutdown()
       ALIAS:
 	Shutdown=1
 
-void
-etk_signal_stop()
-      ALIAS:
-	Stop=1
+
+const char *
+etk_signal_name_get(signal)
+	Etk_Signal * signal
+	ALIAS:
+	NameGet=1
 
 

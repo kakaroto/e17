@@ -1,5 +1,5 @@
 TODO:
-	- redo callback system 
+	- complete callback system 
 	- perldoc everything
 	- complete Tests
 		* Combobox
@@ -13,4 +13,3 @@ TODO:
 	- fix DND
 
 BUGS:
-	- signal handling is messed up now
