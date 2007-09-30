@@ -1367,8 +1367,6 @@ enhance_free(Enhance *en)
    if (en->callback_data) evas_hash_free(en->callback_data);
    if (en->radio_groups)  evas_hash_free(en->radio_groups);
 
-   if (_en_stock_items_hash) ecore_hash_destroy(_en_stock_items_hash);
-   
    E_FREE(en->main_window);
    E_FREE(en);   
 }
@@ -1383,6 +1381,9 @@ enhance_init()
 void
 enhance_shutdown()
 {   
+   if (_en_stock_items_hash) ecore_hash_destroy(_en_stock_items_hash);
+   _en_stock_items_hash = NULL;
+
 #ifdef ENHANCE_MEM_DEBUG
    printf("\n\n*** MEMORY DEBUG STATISTICS ***\n"
 	  "Total memory used:\t %ld bytes\n"
