@@ -10,8 +10,8 @@ is($hb->SpacingGet(), 1,	"Spacing Get");
 $hb->SpacingSet(4);
 is($hb->SpacingGet(), 4,	"Spacing Set");
 is($hb->HomogeneousGet(), 0,	"Homo Get");
-$hb->HomogeneousSet(5);
-is($hb->HomogeneousGet(), 5,	"Homo Set");
+$hb->HomogeneousSet(1);
+is($hb->HomogeneousGet(), 1,	"Homo Set");
 
 my $button = Etk::Button->new();
 $hb->Append($button, 0, 0, 5);
@@ -44,8 +44,8 @@ is($hb2->SpacingGet(), 1,	"Spacing Get");
 $hb2->SpacingSet(4);
 is($hb2->SpacingGet(), 4,	"Spacing Set");
 is($hb2->HomogeneousGet(), 0,	"Homo Get");
-$hb2->HomogeneousSet(5);
-is($hb2->HomogeneousGet(), 5,	"Homo Set");
+$hb2->HomogeneousSet(1);
+is($hb2->HomogeneousGet(), 1,	"Homo Set");
 
 my $button4 = Etk::Button->new();
 
