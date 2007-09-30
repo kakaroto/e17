@@ -806,18 +806,18 @@ static void _etk_button_rebuild(Etk_Button *button)
  *
  * \par Signals:
  * @signal_name "pressed": Emitted when the button is pressed
- * @signal_cb void callback(Etk_Button *button, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Button *button, void *data)
  * @signal_arg button: the button which has been pressed
  * @signal_data
  * \par
  * @signal_name "released": Emitted when the button is released
- * @signal_cb void callback(Etk_Button *button, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Button *button, void *data)
  * @signal_arg button: the button which has been released
  * @signal_data
  * \par
  * @signal_name "clicked": Emitted when the button is clicked
  * (i.e. when the button is released, and if the mouse is still above it)
- * @signal_cb void callback(Etk_Button *button, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Button *button, void *data)
  * @signal_arg button: the button which has been clicked
  * @signal_data
  *

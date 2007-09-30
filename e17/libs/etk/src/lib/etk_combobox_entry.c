@@ -1518,7 +1518,7 @@ static void _etk_combobox_entry_item_cells_render(Etk_Combobox_Entry *combobox_e
  *
  * \par Signals:
  * @signal_name "active-item-changed": Emitted when the active item is changed (when the user selects another items)
- * @signal_cb void callback(Etk_Combobox_Entry *combobox_entry, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Combobox_Entry *combobox_entry, void *data)
  * @signal_arg combobox_entry: the combobox_entry whose active item has been changed
  * @signal_data
  *

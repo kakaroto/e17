@@ -1602,7 +1602,7 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
  * @signal_name "icon-selected": Emitted when an icon of the iconbox has been selected.
  * If several icons have been selected at the same time (with etk_iconbox_select_all(), or with
  * the selection rectangle), the "icon-selected" signal will only be emitted once, on the last selected icon.
- * @signal_cb void callback(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
  * @signal_arg iconbox: the iconbox connected to the callback
  * @signal_arg icon: the icon which has been selected
  * @signal_data
@@ -1610,18 +1610,18 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
  * @signal_name "icon-unselected": Emitted when an icon of the iconbox has been unselected.
  * If several icons have been unselected at the same time (with etk_iconbox_unselect_all(), or with
  * the selection rectangle), the "icon-unselected" signal will only be emitted once, on the last unselected icon.
- * @signal_cb void callback(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
  * @signal_arg iconbox: the iconbox connected to the callback
  * @signal_arg icon: the icon which has been unselected
  * @signal_data
  * \par
  * @signal_name "all-selected": Emitted when all the icons of the iconbox have been selected with etk_iconbox_select_all()
- * @signal_cb void callback(Etk_Iconbox *iconbox, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Iconbox *iconbox, void *data)
  * @signal_arg iconbox: the iconbox connected to the callback
  * @signal_data
  * \par
  * @signal_name "all-unselected": Emitted when all the icons of the iconbox have been unselected with etk_iconbox_select_all()
- * @signal_cb void callback(Etk_Iconbox *iconbox, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Iconbox *iconbox, void *data)
  * @signal_arg iconbox: the iconbox connected to the callback
  * @signal_data
  */

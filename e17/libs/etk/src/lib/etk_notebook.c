@@ -1031,7 +1031,7 @@ static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page 
  *
  * \par Signals:
  * @signal_name "current-page-changed": Emitted when the active page of the notebook is changed
- * @signal_cb void callback(Etk_Notebook *notebook, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Notebook *notebook, void *data)
  * @signal_arg notebook: the notebook whose active page has been changed
  * @signal_data
  *

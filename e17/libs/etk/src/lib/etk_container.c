@@ -379,13 +379,13 @@ static void _etk_container_child_parent_changed_cb(Etk_Object *object, const cha
  *
  * \par Signals:
  * @signal_name "child-added": Emitted when a child has been added to the container
- * @signal_cb void callback(Etk_Container *container, Etk_Widget *child, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Container *container, Etk_Widget *child, void *data)
  * @signal_arg container: the container connected to the callback
  * @signal_arg child: the child which has been added
  * @signal_data
  * \par
  * @signal_name "child-removed": Emitted when a child has been removed from the container
- * @signal_cb void callback(Etk_Container *container, Etk_Widget *child, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Container *container, Etk_Widget *child, void *data)
  * @signal_arg container: the container connected to the callback
  * @signal_arg child: the child which has been removed
  * @signal_data

@@ -3573,115 +3573,115 @@ static void _etk_widget_content_object_clip_unset_cb(Evas_Object *obj)
  *
  * \par Signals:
  * @signal_name "shown": Emitted when the widget is shown
- * @signal_cb void callback(Etk_Widget *widget, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, void *data)
  * @signal_arg widget: the widget that has been shown
  * @signal_data
  * \par
  * @signal_name "hidden": Emitted when the widget is hidden
- * @signal_cb void callback(Etk_Widget *widget, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, void *data)
  * @signal_arg widget: the widget that has been hidden
  * @signal_data
  * \par
  * @signal_name "realized": Emitted when the widget is realized (i.e. when the graphical resources of
  * the widget are allocated - when the widget is attached to an Evas, or when its theme is changed)
- * @signal_cb void callback(Etk_Widget *widget, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, void *data)
  * @signal_arg widget: the widget that has been realized
  * @signal_data
  * \par
  * @signal_name "unrealized": Emitted when the widget is unrealized (i.e. when its graphical resources are deallocated)
- * @signal_cb void callback(Etk_Widget *widget, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, void *data)
  * @signal_arg widget: the widget that has been unrealized
  * @signal_data
  * \par
  * @signal_name "size-requested": Emitted each time the function etk_widget_size_request() is called on a widget
- * @signal_cb void callback(Etk_Widget *widget, Etk_Size *size, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Size *size, void *data)
  * @signal_arg widget: the widget whose size has been requested
  * @signal_arg size: The result of the call to etk_widget_size_request()
  * @signal_data
  * \par
  * @signal_name "mouse-in": Emitted when the mouse enters the widget
- * @signal_cb void callback(Etk_Widget *widget, Etk_Event_Mouse_In *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Event_Mouse_In *event, void *data)
  * @signal_arg widget: the widget that the mouse has entered
  * @signal_arg event: The event data
  * @signal_data
  * \par
  * @signal_name "mouse-out": Emitted when the mouse leaves the widget
- * @signal_cb void callback(Etk_Widget *widget, Etk_Event_Mouse_Out *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Event_Mouse_Out *event, void *data)
  * @signal_arg widget: the widget that the mouse has left
  * @signal_arg event: The event data
  * @signal_data
  * \par
  * @signal_name "mouse-move": Emitted when the mouse moves over the widget
- * @signal_cb void callback(Etk_Widget *widget, Etk_Event_Mouse_Move *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Event_Mouse_Move *event, void *data)
  * @signal_arg widget: the widget above which the mouse is moving
  * @signal_arg event: The event data
  * @signal_data
  * \par
  * @signal_name "mouse-down": Emitted when the user presses the widget with the mouse
- * @signal_cb void callback(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data)
  * @signal_arg widget: the widget that has been pressed
  * @signal_arg event: The event data
  * @signal_data
  * \par
  * @signal_name "mouse-up": Emitted when the user releases the widget with the mouse
- * @signal_cb void callback(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data)
  * @signal_arg widget: the widget that has been released
  * @signal_arg event: The event data
  * @signal_data
  * \par
  * @signal_name "mouse-click": Emitted when the user has clicked on the widget (i.e. the mouse button has been released
  * and the mouse is still above the widget)
- * @signal_cb void callback(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Event_Mouse_Up *event, void *data)
  * @signal_arg widget: the widget that has been clicked
  * @signal_arg event: The event data
  * @signal_data
  * \par
  * @signal_name "mouse-wheel": Emitted when the mouse wheel is used over the widget
- * @signal_cb void callback(Etk_Widget *widget, Etk_Event_Mouse_Wheel *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Event_Mouse_Wheel *event, void *data)
  * @signal_arg widget: the widget above which the mouse wheel has been used
  * @signal_arg event: The event data
  * @signal_data
  * \par
  * @signal_name "key-down": Emitted on the focused widget when a key has been pressed
- * @signal_cb void callback(Etk_Widget *widget, Etk_Event_Key_Down *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Event_Key_Down *event, void *data)
  * @signal_arg widget: the focused widget
  * @signal_arg event: The event data
  * @signal_data
  * \par
  * @signal_name "key-up": Emitted on the focused widget when a key has been released
- * @signal_cb void callback(Etk_Widget *widget, Etk_Event_Key_Up *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Event_Key_Up *event, void *data)
  * @signal_arg widget: the focused widget
  * @signal_arg event: The event data
  * @signal_data
  * \par
  * @signal_name "entered": Emitted when the widget is entered (not necessarily with the mouse)
- * @signal_cb void callback(Etk_Widget *widget, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, void *data)
  * @signal_arg widget: the widget that has been entered
  * @signal_data
  * \par
  * @signal_name "left": Emitted when the widget is left (not necessarily with the mouse)
- * @signal_cb void callback(Etk_Widget *widget, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, void *data)
  * @signal_arg widget: the widget that has been left
  * @signal_data
  * \par
  * @signal_name "focused": Emitted when the widget is focused
- * @signal_cb void callback(Etk_Widget *widget, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, void *data)
  * @signal_arg widget: the widget that has been focused
  * @signal_data
  * \par
  * @signal_name "unfocused": Emitted when the widget is unfocused
- * @signal_cb void callback(Etk_Widget *widget, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, void *data)
  * @signal_arg widget: the widget that has been unfocused
  * @signal_data
  * \par
  * @signal_name "scroll-size-changed": Emitted when the scroll-size of the widget has changed
  * (only for widgets with a scrolling abilty)
- * @signal_cb void callback(Etk_Widget *widget, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, void *data)
  * @signal_arg widget: the widget whose scroll-size has changed
  * @signal_data
  * \par
  * @signal_name "selection-received": Emitted when a selection has been received (after a clipboard request for example)
- * @signal_cb void callback(Etk_Widget *widget, Etk_Selection_Event *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Widget *widget, Etk_Selection_Event *event, void *data)
  * @signal_arg widget: the widget whose scroll-size has changed
  * @signal_arg event: the selection data
  * @signal_data

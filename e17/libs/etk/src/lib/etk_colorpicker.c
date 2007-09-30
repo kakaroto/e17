@@ -1481,7 +1481,7 @@ static void _etk_colorpicker_color_calc(Etk_Colorpicker_Mode mode, float sp_xpos
  *
  * \par Signals:
  * @signal_name "color-changed": Emitted when the selected color is changed
- * @signal_cb void callback(Etk_Colorpicker *colorpicker, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Colorpicker *colorpicker, void *data)
  * @signal_arg button: the colorpicker whose color has been changed
  * @signal_data
  *

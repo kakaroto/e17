@@ -508,7 +508,7 @@ static Etk_Bool _etk_dialog_button_clicked_cb(Etk_Object *object, void *data)
  *
  * \par Signals:
  * @signal_name "response": Emitted when a button of the action-area of the dialog is clicked.
- * @signal_cb void callback(Etk_Dialog *dialog, int response_id, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Dialog *dialog, int response_id, void *data)
  * @signal_arg dialog: the dialog connected to the callback
  * @signal_arg response_id: the response id of the button that has been clicked
  * @signal_data

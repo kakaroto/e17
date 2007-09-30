@@ -1046,23 +1046,23 @@ static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk
  *
  * \par Signals:
  * @signal_name "selected": Emitted when the menu item is selected
- * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Menu_Item *menu_item, void *data)
  * @signal_arg menu_item: the menu item which has been selected
  * @signal_data
  * \par
  * @signal_name "unselected": Emitted when the menu item is unselected
- * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Menu_Item *menu_item, void *data)
  * @signal_arg menu_item: the menu item which has been unselected
  * @signal_data
  * \par
  * @signal_name "activated": Emitted when the menu item is activated (mainly when it has been clicked)
- * @signal_cb void callback(Etk_Menu_Item *menu_item, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Menu_Item *menu_item, void *data)
  * @signal_arg menu_item: the menu item which has been activated
  * @signal_data
  * \par
  * @signal_name "toggled" (only for Etk_Menu_Item_Check and Etk_Menu_Item_Radio):
  * Emitted when the menu item (check or radio) has been toggled
- * @signal_cb void callback(Etk_Menu_Item_Check *check_item, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Menu_Item_Check *check_item, void *data)
  * @signal_arg menu_item: the menu item which has been toggled
  * @signal_data
  *

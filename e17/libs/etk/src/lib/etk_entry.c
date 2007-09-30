@@ -1084,7 +1084,7 @@ static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selec
  *
  * \par Signals:
  * @signal_name "text-changed": Emitted when the text of the entry is changed
- * @signal_cb void callback(Etk_Entry *entry, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Entry *entry, void *data)
  * @signal_arg entry: the entry whose text has been changed
  * @signal_data
  *

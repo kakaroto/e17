@@ -938,7 +938,7 @@ static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void
  * \par Signals:
  * @signal_name "destroyed": Emitted when the object is destroyed, before all the destructors of the object are called.
  * Since the destructors have not been called yet, the object should still be usable at this point.
- * @signal_cb void callback(Etk_Object *object, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Object *object, void *data)
  * @signal_arg object: the object which is about to be destroyed
  * @signal_data
  *

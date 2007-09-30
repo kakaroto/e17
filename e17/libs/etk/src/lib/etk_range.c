@@ -348,7 +348,7 @@ static void _etk_range_property_get(Etk_Object *object, int property_id, Etk_Pro
  *
  * \par Signals:
  * @signal_name "value-changed": Emitted when the value of the range is changed
- * @signal_cb void callback(Etk_Range *range, double value, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Range *range, double value, void *data)
  * @signal_arg range: the range whose value has been changed
  * @signal_arg value: the new value of the range
  * @signal_data

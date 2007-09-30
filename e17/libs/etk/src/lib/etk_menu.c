@@ -546,12 +546,12 @@ static Etk_Bool _etk_menu_item_activated_cb(Etk_Object *object, void *data)
  *
  * \par Signals:
  * @signal_name "popped-up": Emitted when the the menu has been popped up
- * @signal_cb void callback(Etk_Menu *menu, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Menu *menu, void *data)
  * @signal_arg menu: the menu that has been popped up
  * @signal_data
  * \par
  * @signal_name "popped-down": Emitted when the the menu has been popped down
- * @signal_cb void callback(Etk_Menu *menu, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Menu *menu, void *data)
  * @signal_arg menu: the menu that has been popped down
  * @signal_data
  *

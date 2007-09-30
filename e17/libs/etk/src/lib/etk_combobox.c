@@ -1607,13 +1607,13 @@ static void _etk_combobox_widgets_emit_theme_signal(Etk_Combobox *combobox, Etk_
  *
  * \par Signals:
  * @signal_name "item-activated": Emitted when an item is activated
- * @signal_cb void callback(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
  * @signal_arg combobox: the combobox whose item has been activated
  * @signal_arg item: the activated item
  * @signal_data
  * \par
  * @signal_name "active-item-changed": Emitted when the active item is changed (when the user selects another items)
- * @signal_cb void callback(Etk_Combobox *combobox, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Combobox *combobox, void *data)
  * @signal_arg combobox: the combobox whose active item has been changed
  * @signal_data
  *

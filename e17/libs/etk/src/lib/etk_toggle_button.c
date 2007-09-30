@@ -268,7 +268,7 @@ static void _etk_toggle_button_active_set_default(Etk_Toggle_Button *toggle_butt
  *
  * \par Signals:
  * @signal_name "toggled": Emitted when the state of the toggle button is changed
- * @signal_cb void callback(Etk_Toggle_Button *button, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Toggle_Button *button, void *data)
  * @signal_arg button: the toggle button that has been toggled
  * @signal_data
  *

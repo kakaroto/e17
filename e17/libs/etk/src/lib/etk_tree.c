@@ -3958,60 +3958,60 @@ static void _etk_tree_reverse_rows(Etk_Tree_Row *first)
  *
  * \par Signals of Etk_Tree:
  * @signal_name "row-selected": Emitted when a row is selected
- * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
  * @signal_arg tree: the tree containing the row that has been selected
  * @signal_arg row: the row that has been selected
  * @signal_data
  * \par
  * @signal_name "row-unselected": Emitted when a row is unselected
- * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
  * @signal_arg tree: the tree containing the row that has been unselected
  * @signal_arg row: the row that has been unselected
  * @signal_data
  * \par
  * @signal_name "all-selected": Emitted when all the rows of a tree are selected with etk_tree_select_all()
- * @signal_cb void callback(Etk_Tree *tree, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree *tree, void *data)
  * @signal_arg tree: the tree whose all rows have been selected
  * @signal_data
  * \par
  * @signal_name "all-unselected": Emitted when all the rows of a tree are unselected with etk_tree_unselect_all()
- * @signal_cb void callback(Etk_Tree *tree, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree *tree, void *data)
  * @signal_arg tree: the tree whose all rows have been unselected
  * @signal_data
  * \par
  * @signal_name "row-clicked": Emitted when a row of the tree has been clicked
- * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
  * @signal_arg tree: the tree containing the row that has been clicked
  * @signal_arg row: the row that has been clicked
  * @signal_arg event: the event-structure corresponding to the click event
  * @signal_data
  * \par
  * @signal_name "row-activated": Emitted when a row is double-clicked or when the user presses "space" on a selected row
- * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
  * @signal_arg tree: the tree containing the row that has been activated
  * @signal_arg row: the row that has been activated
  * @signal_data
  * \par
  * @signal_name "row-unfolded": Emitted when a row is unfolded
- * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
  * @signal_arg tree: the tree containing the row that has been unfolded
  * @signal_arg row: the row that has been unfolded
  * @signal_data
  * \par
  * @signal_name "row-folded": Emitted when a row is folded
- * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
  * @signal_arg tree: the tree containing the row that has been folded
  * @signal_arg row: the row that has been folded
  * @signal_data
  * \par
  * @signal_name "row-shown": Emitted when a row becomes visible, i.e when the row enters in the tree's viewport
- * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
  * @signal_arg tree: the tree containing the row that has hecome visible
  * @signal_arg row: the row that has hecome visible
  * @signal_data
  * \par
  * @signal_name "row-hidden": Emitted when a row becomes invisible, i.e when the row leaves in the tree's viewport
- * @signal_cb void callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
  * @signal_arg tree: the tree containing the row that has hecome invisible
  * @signal_arg row: the row that has hecome invisible
  * @signal_data
@@ -4051,7 +4051,7 @@ static void _etk_tree_reverse_rows(Etk_Tree_Row *first)
  *
  * \par Signals of Etk_Tree_Col:
  * @signal_name "cell-value-changed": Emitted when the value of a cell of the column is changed
- * @signal_cb void callback(Etk_Tree_Col *col, Etk_Tree_Row *row, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Tree_Col *col, Etk_Tree_Row *row, void *data)
  * @signal_arg col: the column containing the cell whose value has been changed
  * @signal_arg row: the row containing the cell whose value has been changed
  * @signal_data

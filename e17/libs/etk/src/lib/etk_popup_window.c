@@ -623,12 +623,12 @@ static Etk_Popup_Window_Screen_Edge _etk_popup_window_mouse_edge_get(void)
  *
  * \par Signals:
  * @signal_name "popped-up": Emitted when the popup window is popped up
- * @signal_cb void callback(Etk_Popup_Window *popup_window, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Popup_Window *popup_window, void *data)
  * @signal_arg popup_window: the popup window which has been popped up
  * @signal_data
  * \par
  * @signal_name "popped-down": Emitted when the popup window is popped down
- * @signal_cb void callback(Etk_Popup_Window *popup_window, void *data)
+ * @signal_cb Etk_Bool callback(Etk_Popup_Window *popup_window, void *data)
  * @signal_arg popup_window: the popup window which has been popped down
  * @signal_data
  */
