@@ -2811,7 +2811,9 @@ ECompMgrInit(void)
 
    Mode_compmgr.use_pixmap = Conf_compmgr.use_name_pixmap;
 
+#if 0				/* TBD - Force ECM_MODE_ROOT at startup */
    if (Conf_compmgr.mode == ECM_MODE_OFF)
+#endif
       Conf_compmgr.mode = ECM_MODE_ROOT;
 
  done:
@@ -2904,7 +2906,7 @@ static const IpcItem CompMgrIpcArray[] = {
 
 static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_BOOL(Conf_compmgr, enable, 0),
-   CFG_ITEM_INT(Conf_compmgr, mode, 1),
+   CFG_ITEM_INT(Conf_compmgr, mode, ECM_MODE_ROOT),
    CFG_ITEM_INT(Conf_compmgr, shadows.mode, 0),
    CFG_ITEM_INT(Conf_compmgr, shadows.offset_x, 3),
    CFG_ITEM_INT(Conf_compmgr, shadows.offset_y, 5),
