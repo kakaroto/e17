@@ -1,4 +1,5 @@
-cimport python
+cimport evas.python as python
+cimport evas.c_evas
 import evas.c_evas
 
 def init():

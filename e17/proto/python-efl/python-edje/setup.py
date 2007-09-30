@@ -4,12 +4,11 @@ import os
 from ez_setup import use_setuptools
 use_setuptools('0.6c3')
 
-import distutils.sysconfig
 from setuptools import setup, find_packages, Extension
+from distutils.sysconfig import get_python_inc
 import commands
 
-
-python_inc = distutils.sysconfig.get_python_inc()
+from Cython.Distutils import build_ext
 
 
 def pkgconfig(*packages, **kw):
@@ -29,12 +28,11 @@ def pkgconfig(*packages, **kw):
 edjemodule = Extension('edje.c_edje',
                        sources=['edje/edje.c_edje.pyx',
                                 ],
-                       depends=['edje/edje.c_edje.pxd',
-                                'edje/python.pxd',
+                       depends=['edje/edje.c_edje_object.pxi',
+                                'edje/edje.c_edje_message.pxi',
+                                'include/edje/c_edje.pxd',
                                 ],
                        **pkgconfig('"edje >= 0.5.0.040"'))
-
-include_dirs = [os.path.join(python_inc, "python-evas")]
 
 
 trove_classifiers = [
@@ -50,6 +48,7 @@ trove_classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: User Interfaces",
     ]
+
 
 long_description = """\
 Python bindings for Edje, part of Enlightenment Foundation Libraries.
@@ -93,6 +92,12 @@ C, originally called Small, later renamed to PAWN).
 """
 
 
+class edje_build_ext(build_ext):
+    def finalize_options(self):
+        build_ext.finalize_options(self)
+        self.include_dirs.extend(['include', get_python_inc()])
+
+
 setup(name='python-edje',
       version='0.1.1',
       license='BSD',
@@ -106,7 +111,7 @@ setup(name='python-edje',
       packages=find_packages(),
       install_requires=['python-evas>=0.1.1'],
       setup_requires=['python-evas>=0.1.1'],
-      include_dirs=include_dirs,
       ext_modules=[edjemodule],
       zip_safe=False,
+      cmdclass={'build_ext': edje_build_ext,},
       )

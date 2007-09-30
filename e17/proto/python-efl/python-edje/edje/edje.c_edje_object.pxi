@@ -1,6 +1,7 @@
 # This file is included verbatim by edje.c_edje.pyx
-
+cimport evas.c_evas as c_evas
 import traceback
+
 
 cdef void text_change_cb(void *data, evas.c_evas.Evas_Object *obj, char *part):
     cdef Edje self
@@ -79,10 +80,10 @@ cdef class Edje(evas.c_evas.Object):
     def __new__(self, *a, **ka):
         self._signal_callbacks = {}
 
-    def __init__(self, evas.c_evas.Canvas canvas not None, **kargs):
+    def __init__(self, c_evas.Canvas canvas not None, **kargs):
         evas.c_evas.Object.__init__(self, canvas)
         if self.obj == NULL:
-            self._set_obj(edje_object_add(self._evas.obj))
+            self._set_obj(edje_object_add(self.evas.obj))
         self._set_common_params(**kargs)
 
     def __free_wrapper_resources(self, ed):
@@ -90,7 +91,7 @@ cdef class Edje(evas.c_evas.Object):
         self._text_change_cb = None
         self._message_handler_cb = None
 
-    cdef int _set_obj(self, evas.c_evas.Evas_Object *obj) except 0:
+    cdef int _set_obj(self, c_evas.Evas_Object *obj) except 0:
         cdef int r
         r = evas.c_evas.Object._set_obj(self, obj)
         if r == 1:
@@ -509,7 +510,7 @@ cdef class Edje(evas.c_evas.Object):
                 return
 
             item_type = type(data[0])
-            if item_type not in (long, int, float, str, unicode):
+            if item_type not in (long, int, float, str): # FIXME: add unicode
                 raise TypeError("invalid message list type '%s'" %
                                 item_type.__name__)
 
