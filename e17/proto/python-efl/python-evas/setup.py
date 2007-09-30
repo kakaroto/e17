@@ -5,7 +5,11 @@ from ez_setup import use_setuptools
 use_setuptools('0.6c3')
 
 from setuptools import setup, find_packages, Extension
+from distutils.command.install_headers import install_headers
+from distutils.sysconfig import get_python_inc
 import commands
+
+from Cython.Distutils import build_ext
 
 
 def pkgconfig(*packages, **kw):
@@ -25,8 +29,7 @@ def pkgconfig(*packages, **kw):
 evasmodule = Extension('evas.c_evas',
                        sources=['evas/evas.c_evas.pyx',
                                 ],
-                       depends=['evas/evas.c_evas.pxd',
-                                'evas/evas.c_evas_canvas.pxi',
+                       depends=['evas/evas.c_evas_canvas.pxi',
                                 'evas/evas.c_evas_object.pxi',
                                 'evas/evas.c_evas_object_smart.pxi',
                                 'evas/evas.c_evas_object_rectangle.pxi',
@@ -35,14 +38,19 @@ evasmodule = Extension('evas.c_evas',
                                 'evas/evas.c_evas_object_gradient.pxi',
                                 'evas/evas.c_evas_object_polygon.pxi',
                                 'evas/evas.c_evas_object_text.pxi',
-                                'evas/python.pxd',
+                                'include/evas/c_evas.pxd',
+                                'include/python.pxd',
                                 ],
-                       **pkgconfig('"evas >= 0.9.9.040"'))
+                       **pkgconfig('"evas >= 0.9.9.040"')
+                       )
 
-headers = ['evas/evas.c_evas.pxd',
-           'evas/evas.c_evas.h',
-           'evas/python_evas_utils.h',
+
+headers = ['evas/evas.c_evas.h',
+           'include/evas/python_evas_utils.h',
+           'include/evas/c_evas.pxd',
+           'include/python.pxd',
            ]
+
 
 trove_classifiers = [
     "Development Status :: 3 - Alpha",
@@ -57,6 +65,7 @@ trove_classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: User Interfaces",
     ]
+
 
 long_description = """\
 Python bindings for Evas, part of Enlightenment Foundation Libraries.
@@ -80,6 +89,24 @@ only terminal to 16 color VGA to 256 color and all the way up through
 15, 16, 24 and 32bit color.
 """
 
+
+class evas_build_ext(build_ext):
+    def finalize_options(self):
+        build_ext.finalize_options(self)
+        self.include_dirs.append('include')
+
+
+class evas_install_headers(install_headers):
+    def finalize_options(self):
+        if self.install_dir is None:
+            instd = get_python_inc()
+        else:
+            instd = self.install_dir
+
+        self.install_dir = os.path.join(instd, 'evas')
+        install_headers.finalize_options(self)
+
+
 setup(name='python-evas',
       version='0.1.1',
       license='BSD',
@@ -94,4 +121,6 @@ setup(name='python-evas',
       headers=headers,
       ext_modules=[evasmodule],
       zip_safe=False,
+      cmdclass={'build_ext': evas_build_ext,
+                'install_headers': evas_install_headers},
       )
