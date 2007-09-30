@@ -313,23 +313,19 @@ MenuShow(Menu * m, char noshow)
 	b = BorderFind(m->style->border_name);
 	if (b)
 	  {
-	     int                 width;
-	     int                 height;
-	     int                 x_origin;
-	     int                 y_origin;
+	     int                 sx, sy, sw, sh;
 
-	     head_num = ScreenGetGeometryByPointer(&x_origin, &y_origin,
-						   &width, &height);
+	     head_num = ScreenGetGeometryByPointer(&sx, &sy, &sw, &sh);
 
-	     if (wx > x_origin + width - mw - b->border.right)
-		wx = x_origin + width - mw - b->border.right;
-	     if (wx < x_origin + b->border.left)
-		wx = x_origin + b->border.left;
+	     if (wx > sx + sw - mw - b->border.right)
+		wx = sx + sw - mw - b->border.right;
+	     if (wx < sx + b->border.left)
+		wx = sx + b->border.left;
 
-	     if (wy > y_origin + height - mh - b->border.bottom)
-		wy = y_origin + height - mh - b->border.bottom;
-	     if (wy < y_origin + b->border.top)
-		wy = y_origin + b->border.top;
+	     if (wy > sy + sh - mh - b->border.bottom)
+		wy = sy + sh - mh - b->border.bottom;
+	     if (wy < sy + b->border.top)
+		wy = sy + b->border.top;
 	  }
      }
 
@@ -1612,16 +1608,25 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 	EWin               *menus[256], *etmp;
 	int                 fx[256], fy[256], tx[256], ty[256];
 	int                 i, ww, hh;
+	int                 sx, sy, sw, sh;
 	int                 xdist = 0, ydist = 0;
 
 	/* Size of new submenu (may be shaded atm.) */
 	ww = mi->child->w + bl2 + br2;
 	hh = mi->child->h + bt2 + bb2;
 
-	if (EoGetX(ewin) + xo + ww > VRoot.w)
-	   xdist = VRoot.w - (EoGetX(ewin) + xo + ww);
-	if (EoGetY(ewin) + yo + hh > VRoot.h)
-	   ydist = VRoot.h - (EoGetY(ewin) + yo + hh);
+	ScreenGetGeometryByHead(Mode_menus.first->ewin->head,
+				&sx, &sy, &sw, &sh);
+
+	if (EoGetX(ewin) + xo + ww > sx + sw)
+	   xdist = sx + sw - (EoGetX(ewin) + xo + ww);
+	if (EoGetX(ewin) + xdist < sx)
+	   xdist = sx - EoGetX(ewin);
+
+	if (EoGetY(ewin) + yo + hh > sy + sh)
+	   ydist = sy + sh - (EoGetY(ewin) + yo + hh);
+	if (EoGetY(ewin) + ydist < sy)
+	   ydist = sy - EoGetY(ewin);
 
 	if ((xdist != 0) || (ydist != 0))
 	  {
