@@ -4514,3 +4514,18 @@ Spec file fix for x86_64 (Peter Kjellerstedt).
 Enable setting default maximise policy.
 Startup id bits.
 Japanese translation update (Yasufumi Haga).
+
+-------------------------------------------------------------------------------
+
+Sun Sep 30 20:02:02 CEST 2007
+(Kim)
+
+--- 0.16.8.10 0.02 ---
+Fix infinite loop when regenerating menus.
+Fix potential incorrect termination of IPC connection, which could cause segv.
+eesh: Fix bad event loop causing hangs in certain situations.
+eesh: Always wait for ack (also with -e), otherwise the message could get lost.
+Screen stuff naming consistency and code tweaks.
+Fix xinerama head selection in certain situations.
+Fix menu placement on xinerama screens.
+Force new (default as of 0.16.8.9) composite manager mode at startup.
