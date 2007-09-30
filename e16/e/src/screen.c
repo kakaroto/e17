@@ -150,7 +150,7 @@ ScreenGetGeometryByHead(int head, int *px, int *py, int *pw, int *ph)
    EScreen            *ps;
    int                 x, y, w, h;
 
-   if (head > 0 && head < n_screens)
+   if (head >= 0 && head < n_screens)
      {
 	ps = p_screens + head;
 	x = ps->x;
