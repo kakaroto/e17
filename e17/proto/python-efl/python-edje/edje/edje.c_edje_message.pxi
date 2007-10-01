@@ -1,6 +1,11 @@
 # This file is included verbatim by edje.c_edje.pyx
 
 cdef class Message:
+    """Base class to represent Edje messages.
+
+    @ivar type: message type.
+    @ivar id: message id.
+    """
     property type:
         def __get__(self):
             return self._type
@@ -11,6 +16,11 @@ cdef class Message:
 
 
 cdef class MessageString(Message):
+    """String message.
+
+    @ivar str: message contents.
+    @ivar val: same as str.
+    """
     property str:
         def __get__(self):
             if self.obj == NULL:
@@ -27,6 +37,10 @@ cdef class MessageString(Message):
 
 
 cdef class MessageInt(Message):
+    """Integer message.
+
+    @ivar val: message contents.
+    """
     property val:
         def __get__(self):
             if self.obj == NULL:
@@ -35,6 +49,10 @@ cdef class MessageInt(Message):
 
 
 cdef class MessageFloat(Message):
+    """Float message.
+
+    @ivar val: message contents.
+    """
     property val:
         def __get__(self):
             if self.obj == NULL:
@@ -43,6 +61,10 @@ cdef class MessageFloat(Message):
 
 
 cdef class MessageStringSet(Message):
+    """String set message.
+
+    @ivar val: message contents.
+    """
     property val:
         def __get__(self):
             cdef int i
@@ -68,6 +90,10 @@ cdef class MessageStringSet(Message):
 
 
 cdef class MessageIntSet(Message):
+    """Integer set message.
+
+    @ivar val: message contents.
+    """
     property val:
         def __get__(self):
             cdef int i
@@ -92,6 +118,10 @@ cdef class MessageIntSet(Message):
 
 
 cdef class MessageFloatSet(Message):
+    """Float set message.
+
+    @ivar val: message contents.
+    """
     property val:
         def __get__(self):
             cdef int i
@@ -116,6 +146,11 @@ cdef class MessageFloatSet(Message):
 
 
 cdef class MessageStringInt(Message):
+    """String + Integer message.
+
+    @ivar str: string.
+    @ivar val: integer.
+    """
     property str:
         def __get__(self):
             if self.obj == NULL:
@@ -131,6 +166,11 @@ cdef class MessageStringInt(Message):
 
 
 cdef class MessageStringFloat(Message):
+    """String + float message.
+
+    @ivar str: string.
+    @ivar val: float.
+    """
     property str:
         def __get__(self):
             if self.obj == NULL:
@@ -146,6 +186,11 @@ cdef class MessageStringFloat(Message):
 
 
 cdef class MessageStringIntSet(Message):
+    """String + Integer set message.
+
+    @ivar str: string.
+    @ivar val: integer list.
+    """
     property str:
         def __get__(self):
             if self.obj == NULL:
@@ -177,6 +222,11 @@ cdef class MessageStringIntSet(Message):
 
 
 cdef class MessageStringFloatSet(Message):
+    """String + Float set message.
+
+    @ivar str: string.
+    @ivar val: float list.
+    """
     property str:
         def __get__(self):
             if self.obj == NULL:

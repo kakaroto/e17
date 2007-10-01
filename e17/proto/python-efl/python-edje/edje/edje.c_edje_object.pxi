@@ -58,7 +58,8 @@ cdef _register_decorated_callbacks(obj):
 
 
 class EdjeLoadError(Exception):
-    def __init__(self, int code):
+    "Exception to represent Edje load errors."
+    def __init__(self, int code, char *file, char *group):
         if code == EDJE_LOAD_ERROR_NONE:
             msg = "No error"
         elif code == EDJE_LOAD_ERROR_GENERIC:
@@ -77,10 +78,45 @@ class EdjeLoadError(Exception):
             msg = "Incompatible file"
         elif code == EDJE_LOAD_ERROR_UNKNOWN_COLLECTION:
             msg = "Unknown collection"
-        Exception.__init__(self, msg)
+
+        self.code = code
+        self.file = file
+        self.group = group
+        Exception.__init__(self, "%s (file=%r, group=%r)" % (msg, file, group))
 
 
 cdef class Edje(evas.c_evas.Object):
+    """Edje evas object.
+
+    This is a high level L{evas.SmartObject} that is defined as a group of
+    parts (L{evas.c_evas.Object}, usually written in text files (.edc) and
+    compiled as a package using EET to store resources (.edj).
+
+    Edje is an important EFL component because it makes easy to split logic
+    and UI, usually used as theme engine but can be much more powerful than
+    just changing some random images or text fonts.
+
+    Edje also provides scripting through Embryo and communication can be
+    done using messages and signals.
+
+    @warning: although Edje provides L{part_object_get()}, you should B{NOT}
+      mess with these objects states or you'll screw the given Edje. The
+      objects you get with this function should be handled as "read-only".
+    @attention: messages are one way only! If you emit a message from Python
+      you will just get it from your Embryo script, if you emit from Embryo
+      you just get it in Python. If you want to emit events and capture
+      them on the same side, use signals.
+    @note: You can debug messages and signals by capturing all of them,
+      example:
+        >>> def sig_dbg(obj, emission, source):
+        ...     print "%s: %s %s" % (obj, emission, source)
+        ...
+        >>> my_edje.signal_callback_add("*", "*", sig_dbg)
+        >>> def msg_dbg(obj, msg):
+        ...     print "%s: %s" % (obj, msg)
+        ...
+        >>> my_edje.message_handler_set(msg_dbg)
+    """
     def __new__(self, *a, **ka):
         self._signal_callbacks = {}
 
@@ -144,35 +180,60 @@ cdef class Edje(evas.c_evas.Object):
                 self.layer_get(), clip, self.visible_get())
 
     def data_get(self, char *key):
+        """Get data from Edje data collection (defined in .edj).
+
+        Data collection is defined inside an Edje file as::
+
+           collections {
+              group {
+                 name: "a_group";
+                 data {
+                    item: "key1" "value1";
+                    item: "key2" "value2";
+                 }
+              }
+           }
+
+        @attention: this differs from L{Edje.data}! L{Edje.data} is a
+          Python specific utility provided as a dictionary. This function
+          returns data stored on the B{Edje} (.edj), stored inside a
+          C{data} section inside the C{group} that defines this object.
+        """
         cdef char *s
         s = edje_object_data_get(self.obj, key)
         if s != NULL:
             return s
 
-    def file_set(self, char *file, char *part):
-        if edje_object_file_set(self.obj, file, part) == 0:
-            raise EdjeLoadError(edje_object_load_error_get(self.obj))
+    def file_set(self, char *file, char *group):
+        "@raise EdjeLoadError: if error occurred during load."
+        if edje_object_file_set(self.obj, file, group) == 0:
+            raise EdjeLoadError(edje_object_load_error_get(self.obj),
+                                file, group)
 
     def file_get(self):
-        cdef char *file, *part
-        edje_object_file_get(self.obj, &file, &part)
+        "@rtype: tuple for str"
+        cdef char *file, *group
+        edje_object_file_get(self.obj, &file, &group)
         if file == NULL:
             f = None
         else:
             f = file
-        if part == NULL:
+        if group == NULL:
             p = None
         else:
-            p = part
+            p = group
         return (f, p)
 
     def load_error_get(self):
+        "@rtype: int"
         return edje_object_load_error_get(self.obj)
 
     def play_get(self):
+        "@rtype: bool"
         return bool(edje_object_play_get(self.obj))
 
     def play_set(self, int value):
+        "Set the Edje to play or pause."
         edje_object_play_set(self.obj, value)
 
     property play:
@@ -183,9 +244,11 @@ cdef class Edje(evas.c_evas.Object):
             self.play_set(value)
 
     def animation_get(self):
+        "@rtype: bool"
         return bool(edje_object_animation_get(self.obj))
 
     def animation_set(self, int value):
+        "Set animation state."
         edje_object_animation_set(self.obj, value)
 
     property animation:
@@ -196,15 +259,38 @@ cdef class Edje(evas.c_evas.Object):
             self.animation_set(value)
 
     def freeze(self):
+        """This puts all changes on hold.
+
+           Successive freezes will nest, requiring an equal number of thaws.
+
+           @rtype: int
+        """
         return edje_object_freeze(self.obj)
 
     def thaw(self):
+        "Thaw object."
         return edje_object_thaw(self.obj)
 
     def color_class_set(self, char *color_class,
                         int r, int g, int b, int a,
                         int r2, int g2, int b2, int a2,
                         int r3, int g3, int b3, int a3):
+        """Set color class.
+
+        @parm: B{color_class} color class name.
+        @parm: B{r}
+        @parm: B{g}
+        @parm: B{b}
+        @parm: B{a}
+        @parm: B{r2}
+        @parm: B{g2}
+        @parm: B{b2}
+        @parm: B{a2}
+        @parm: B{r3}
+        @parm: B{g3}
+        @parm: B{b3}
+        @parm: B{a3}
+        """
         edje_object_color_class_set(self.obj, color_class,
                                     r, g, b, a,
                                     r2, g2, b2, a2,
@@ -214,9 +300,16 @@ cdef class Edje(evas.c_evas.Object):
         edje_object_color_class_del(self.obj, color_class)
 
     def text_class_set(self, char *text_class, char *font, int size):
+        """Set text class.
+
+        @parm: B{text_class} text class name.
+        @parm: B{font}
+        @parm: B{size}
+        """
         edje_object_text_class_set(self.obj, text_class, font, size)
 
     def size_min_get(self):
+        "@rtype: tuple of int"
         cdef int w, h
         edje_object_size_min_get(self.obj, &w, &h)
         return (w, h)
@@ -226,6 +319,7 @@ cdef class Edje(evas.c_evas.Object):
             return self.size_min_get()
 
     def size_max_get(self):
+        "@rtype: tuple of int"
         cdef int w, h
         edje_object_size_max_get(self.obj, &w, &h)
         return (w, h)
@@ -235,49 +329,69 @@ cdef class Edje(evas.c_evas.Object):
             return self.size_max_get()
 
     def calc_force(self):
+        "Force recalculation of parts state (geometry, position, ...)"
         edje_object_calc_force(self.obj)
 
     def size_min_calc(self):
+        "Request object to calculate minimum size."
         cdef int w, h
         edje_object_size_min_calc(self.obj, &w, &h)
         return (w, h)
 
     def part_exists(self, char *part):
+        "@rtype: bool"
         return bool(edje_object_part_exists(self.obj, part))
 
     def part_object_get(self, char *part):
+        """Get L{evas.c_evas.Object} that represents this part.
+
+        @warning: You should never modify the state of the returned object
+          (with L{Edje.move()} or L{Edje.hide()} for example),
+          but you can safely query info about its current state
+          (with L{Edje.visible_get()} or L{Edje.color_get()} for example).
+        """
         cdef evas.c_evas.Evas_Object *o
         o = edje_object_part_object_get(self.obj, part)
         return evas.c_evas._Object_from_instance(<long>o)
 
     def part_geometry_get(self, char *part):
+        "@rtype: tuple of int"
         cdef int x, y, w, h
         edje_object_part_geometry_get(self.obj, part, &x, &y, &w, &h)
         return (x, y, w, h)
 
     def part_size_get(self, char *part):
+        "@rtype: tuple of int"
         cdef int w, h
         edje_object_part_geometry_get(self.obj, part, NULL, NULL, &w, &h)
         return (w, h)
 
     def part_pos_get(self, char *part):
+        "@rtype: tuple of int"
         cdef int x, y
         edje_object_part_geometry_get(self.obj, part, &x, &y, NULL, NULL)
         return (x, y)
 
     def text_change_cb_set(self, func, *args, **kargs):
+        """Set function to callback on text changes.
+
+        Signature: C{function(object, part, *args, **kargs)}
+        """
         if func is None:
             self._text_change_cb = None
             edje_object_text_change_cb_set(self.obj, NULL, NULL)
-        else:
+        elif callable(func):
             self._text_change_cb = (func, args, kargs)
             edje_object_text_change_cb_set(self.obj, text_change_cb,
                                            <void*>self)
+        else:
+            raise TypeError("func must be callable or None")
 
     def part_text_set(self, char *part, char *text):
         edje_object_part_text_set(self.obj, part, text)
 
     def part_text_get(self, char *part):
+        "@rtype: str"
         cdef char *s
         s = edje_object_part_text_get(self.obj, part)
         if s == NULL:
@@ -285,38 +399,43 @@ cdef class Edje(evas.c_evas.Object):
         else:
             return s
 
-    def part_swallow(self, char *part, obj):
-        cdef evas.c_evas.Object o
-        if not isinstance(obj, evas.c_evas.Object):
-            raise ValueError("Parameter \"obj\" should be of type evas.Object")
-        o = obj
-        edje_object_part_swallow(self.obj, part, o.obj)
+    def part_swallow(self, char *part, c_evas.Object obj):
+        """Swallows an object into the edje
 
-    def part_unswallow(self, obj):
-        cdef evas.c_evas.Object o
-        if not isinstance(obj, evas.c_evas.Object):
-            raise ValueError("Parameter \"obj\" should be of type evas.Object")
-        o = obj
-        edje_object_part_unswallow(self.obj, o.obj)
+        Swallows the object into the edje part so that all geometry changes
+        for the part affect the swallowed object. (e.g. resize, move, show,
+        raise/lower, etc.).
+
+        If an object has already been swallowed into this part, then it will
+        first be unswallowed before the new object is swallowed.
+        """
+        edje_object_part_swallow(self.obj, part, obj.obj)
+
+    def part_unswallow(self, c_evas.Object obj):
+        edje_object_part_unswallow(self.obj, obj.obj)
 
     def part_swallow_get(self, char *part):
+        "@rtype: L{evas.c_evas.Object}"
         cdef evas.c_evas.Evas_Object *o
         o = edje_object_part_swallow_get(self.obj, part)
         return evas.c_evas._Object_from_instance(<long>o)
 
     def part_state_get(self, char *part):
+        "@rtype: (name, value)"
         cdef double sv
         cdef char *sn
         sn = edje_object_part_state_get(self.obj, part, &sv)
         return (sn, sv)
 
     def part_drag_dir_get(self, char *part):
+        "@rtype: int"
         return edje_object_part_drag_dir_get(self.obj, part)
 
     def part_drag_value_set(self, char *part, double dx, double dy):
         edje_object_part_drag_value_set(self.obj, part, dx, dy)
 
     def part_drag_value_get(self, char *part):
+        "@rtype: tuple of float"
         cdef double dx, dy
         edje_object_part_drag_value_get(self.obj, part, &dx, &dy)
         return (dx, dy)
@@ -325,6 +444,7 @@ cdef class Edje(evas.c_evas.Object):
         edje_object_part_drag_size_set(self.obj, part, dw, dh)
 
     def part_drag_size_get(self, char *part):
+        "@rtype: tuple of float"
         cdef double dw, dh
         edje_object_part_drag_size_get(self.obj, part, &dw, &dh)
         return (dw, dh)
@@ -333,6 +453,7 @@ cdef class Edje(evas.c_evas.Object):
         edje_object_part_drag_step_set(self.obj, part, dx, dy)
 
     def part_drag_step_get(self, char *part):
+        "@rtype: tuple of float"
         cdef double dx, dy
         edje_object_part_drag_step_get(self.obj, part, &dx, &dy)
         return (dx, dy)
@@ -344,6 +465,7 @@ cdef class Edje(evas.c_evas.Object):
         edje_object_part_drag_page_set(self.obj, part, dx, dy)
 
     def part_drag_page_get(self, char *part):
+        "@rtype: tuple of float"
         cdef double dx, dy
         edje_object_part_drag_page_get(self.obj, part, &dx, &dy)
         return (dx, dy)
@@ -500,6 +622,20 @@ cdef class Edje(evas.c_evas.Object):
                     self.message_send_str_float_set(id, head, data[2:])
 
     def message_send(self, int id, data):
+        """Send message with given id and data.
+
+        Data should be pure-python types that will be converted to
+        the L{Message} subclass that better fits it. Supported are:
+         - long, int, float, str
+         - list of long, int, float, str
+         - str and one of long, int, float
+         - str and a list of one of long, int, float
+
+        Messages sent will B{NOT} be available at Python-side (ie:
+        L{message_handler_set()}), but just at Embryo-side.
+
+        @raise TypeError: if data has no supported EdjeMessage counterpart.
+        """
         if isinstance(data, (long, int)):
             self.message_send_int(id, data)
         elif isinstance(data, float):
@@ -523,22 +659,42 @@ cdef class Edje(evas.c_evas.Object):
             raise TypeError("invalid message type '%s'" % type(data).__name__)
 
     def message_handler_set(self, func, *args, **kargs):
-        if not callable(func):
-            raise TypeError("func must be callable")
+        """Set the handler of messages comming from Embryo.
 
+        Signature: C{function(object, message, *args, **kargs)}
+
+        @attention: this just handle messages sent from Embryo.
+        @raise TypeError: if func is not callable or None.
+        """
         if func is None:
             self._message_handler_cb = None
             edje_object_message_handler_set(self.obj, NULL, NULL)
-        else:
+        elif callable(func):
             self._message_handler_cb = (func, args, kargs)
             edje_object_message_handler_set(self.obj, message_handler_cb,
                                            <void*>self)
+        else:
+            raise TypeError("func must be callable or None")
 
     def message_signal_process(self):
+        "Manually iterate message signal system."
         edje_object_message_signal_process(self.obj)
 
     def signal_callback_add(self, char *emission, char *source, func,
                             *args, **kargs):
+        """Add callback to given signal (emission, source).
+
+        Signature: C{function(object, emission, source, *args, **kargs)}
+
+        @parm: B{emission} the emission to listen, may be or contain '*' to
+          match multiple.
+        @parm: B{source} the emission's source to listen, may be or contain
+          '*' to match multiple.
+        @parm: B{func} the callable to use. Will get any further arguments
+          you gave to signal_callback_add().
+
+        @raise TypeError: if func is not callable.
+        """
         if not callable(func):
             raise TypeError("func must be callable")
 
@@ -549,6 +705,7 @@ cdef class Edje(evas.c_evas.Object):
         lst.append((func, args, kargs))
 
     def signal_callback_del(self, char *emission, char *source, func):
+        "Remove the callable associated with given emission and source."
         key = (emission, source)
         lst = self._signal_callbacks[key]
         i = -1
@@ -562,6 +719,7 @@ cdef class Edje(evas.c_evas.Object):
                                             signal_cb)
 
     def signal_emit(self, char *emission, char *source):
+        "Emit signal with B{emission} and B{source}"
         edje_object_signal_emit(self.obj, emission, source)
 
 
