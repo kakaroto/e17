@@ -17,6 +17,7 @@ void etk_marshaller_DOUBLE(Etk_Callback callback, Etk_Object *object, void *data
 void etk_marshaller_OBJECT(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
 void etk_marshaller_POINTER(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
 void etk_marshaller_POINTER_POINTER(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
+void etk_marshaller_INT_POINTER(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments);
 
 #ifdef __cplusplus
 }

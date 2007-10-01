@@ -12,14 +12,10 @@ void etk_marshaller_VOID(Etk_Callback callback, Etk_Object *object, void *data, 
    Etk_Callback_VOID callback_VOID;
    Etk_Bool result;
 
-   if (!callback || !object)
-      return;
-
    callback_VOID = (Etk_Callback_VOID)callback;
    result = callback_VOID(object, data);
 
-   if (return_value)
-      *((Etk_Bool *)return_value) = result;
+   *((Etk_Bool *)return_value) = result;
 }
 
 /* etk_marshaller_INT */
@@ -30,16 +26,12 @@ void etk_marshaller_INT(Etk_Callback callback, Etk_Object *object, void *data, v
    int arg1;
    Etk_Bool result;
 
-   if (!callback || !object)
-      return;
-
    arg1 = va_arg(arguments, int);
 
    callback_INT = (Etk_Callback_INT)callback;
    result = callback_INT(object, arg1, data);
 
-   if (return_value)
-      *((Etk_Bool *)return_value) = result;
+   *((Etk_Bool *)return_value) = result;
 }
 
 /* etk_marshaller_INT_INT */
@@ -51,17 +43,13 @@ void etk_marshaller_INT_INT(Etk_Callback callback, Etk_Object *object, void *dat
    int arg2;
    Etk_Bool result;
 
-   if (!callback || !object)
-      return;
-
    arg1 = va_arg(arguments, int);
    arg2 = va_arg(arguments, int);
 
    callback_INT_INT = (Etk_Callback_INT_INT)callback;
    result = callback_INT_INT(object, arg1, arg2, data);
 
-   if (return_value)
-      *((Etk_Bool *)return_value) = result;
+   *((Etk_Bool *)return_value) = result;
 }
 
 /* etk_marshaller_DOUBLE */
@@ -72,16 +60,12 @@ void etk_marshaller_DOUBLE(Etk_Callback callback, Etk_Object *object, void *data
    double arg1;
    Etk_Bool result;
 
-   if (!callback || !object)
-      return;
-
    arg1 = va_arg(arguments, double);
 
    callback_DOUBLE = (Etk_Callback_DOUBLE)callback;
    result = callback_DOUBLE(object, arg1, data);
 
-   if (return_value)
-      *((Etk_Bool *)return_value) = result;
+   *((Etk_Bool *)return_value) = result;
 }
 
 /* etk_marshaller_OBJECT */
@@ -92,16 +76,12 @@ void etk_marshaller_OBJECT(Etk_Callback callback, Etk_Object *object, void *data
    Etk_Object *arg1;
    Etk_Bool result;
 
-   if (!callback || !object)
-      return;
-
    arg1 = va_arg(arguments, Etk_Object *);
 
    callback_OBJECT = (Etk_Callback_OBJECT)callback;
    result = callback_OBJECT(object, arg1, data);
 
-   if (return_value)
-      *((Etk_Bool *)return_value) = result;
+   *((Etk_Bool *)return_value) = result;
 }
 
 /* etk_marshaller_POINTER */
@@ -112,16 +92,12 @@ void etk_marshaller_POINTER(Etk_Callback callback, Etk_Object *object, void *dat
    void *arg1;
    Etk_Bool result;
 
-   if (!callback || !object)
-      return;
-
    arg1 = va_arg(arguments, void *);
 
    callback_POINTER = (Etk_Callback_POINTER)callback;
    result = callback_POINTER(object, arg1, data);
 
-   if (return_value)
-      *((Etk_Bool *)return_value) = result;
+   *((Etk_Bool *)return_value) = result;
 }
 
 
@@ -134,15 +110,29 @@ void etk_marshaller_POINTER_POINTER(Etk_Callback callback, Etk_Object *object, v
    void *arg2;
    Etk_Bool result;
 
-   if (!callback || !object)
-      return;
-
    arg1 = va_arg(arguments, void *);
    arg2 = va_arg(arguments, void *);
 
    callback_POINTER_POINTER = (Etk_Callback_POINTER_POINTER)callback;
    result = callback_POINTER_POINTER(object, arg1, arg2, data);
 
-   if (return_value)
-      *((Etk_Bool *)return_value) = result;
+   *((Etk_Bool *)return_value) = result;
+}
+
+/* etk_marshaller_INT_POINTER */
+void etk_marshaller_INT_POINTER(Etk_Callback callback, Etk_Object *object, void *data, void *return_value, va_list arguments)
+{
+   typedef Etk_Bool (*Etk_Callback_INT_POINTER)(Etk_Object *object, int arg1, void *arg2, void *data);
+   Etk_Callback_INT_POINTER callback_INT_POINTER;
+   int arg1;
+   void *arg2;
+   Etk_Bool result;
+
+   arg1 = va_arg(arguments, int);
+   arg2 = va_arg(arguments, void *);
+
+   callback_INT_POINTER = (Etk_Callback_INT_POINTER)callback;
+   result = callback_INT_POINTER(object, arg1, arg2, data);
+
+   *((Etk_Bool *)return_value) = result;
 }

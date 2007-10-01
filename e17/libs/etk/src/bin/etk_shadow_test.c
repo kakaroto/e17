@@ -5,10 +5,10 @@
 #define NUM_COLS 3
 #define NUM_PICTURES 6
 
-static void _shadow_offset_x_changed_cb(Etk_Object *object, double value, void *data);
-static void _shadow_offset_y_changed_cb(Etk_Object *object, double value, void *data);
-static void _shadow_radius_changed_cb(Etk_Object *object, double value, void *data);
-static void _show_border_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _shadow_offset_x_changed_cb(Etk_Object *object, double value, void *data);
+static Etk_Bool _shadow_offset_y_changed_cb(Etk_Object *object, double value, void *data);
+static Etk_Bool _shadow_radius_changed_cb(Etk_Object *object, double value, void *data);
+static Etk_Bool _show_border_toggled_cb(Etk_Object *object, void *data);
 
 static Etk_Widget *_picture_shadows[NUM_PICTURES];
 
@@ -152,7 +152,7 @@ void etk_test_shadow_window_create(void *data)
  **************************/
 
 /* Called when the x-offset is changed */
-static void _shadow_offset_x_changed_cb(Etk_Object *object, double value, void *data)
+static Etk_Bool _shadow_offset_x_changed_cb(Etk_Object *object, double value, void *data)
 {
    Etk_Shadow *shadow;
    int radius;
@@ -166,9 +166,11 @@ static void _shadow_offset_x_changed_cb(Etk_Object *object, double value, void *
       etk_shadow_shadow_get(shadow, NULL, NULL, &radius, NULL, &offset_y, &opacity);
       etk_shadow_shadow_set(shadow, ETK_SHADOW_OUTSIDE, ETK_SHADOW_ALL, radius, value, offset_y, opacity);
    }
+
+   return ETK_TRUE;
 }
 /* Called when the y-offset is changed */
-static void _shadow_offset_y_changed_cb(Etk_Object *object, double value, void *data)
+static Etk_Bool _shadow_offset_y_changed_cb(Etk_Object *object, double value, void *data)
 {
    Etk_Shadow *shadow;
    int radius;
@@ -182,10 +184,12 @@ static void _shadow_offset_y_changed_cb(Etk_Object *object, double value, void *
       etk_shadow_shadow_get(shadow, NULL, NULL, &radius, &offset_x, NULL, &opacity);
       etk_shadow_shadow_set(shadow, ETK_SHADOW_OUTSIDE, ETK_SHADOW_ALL, radius, offset_x, value, opacity);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the radius value is changed */
-static void _shadow_radius_changed_cb(Etk_Object *object, double value, void *data)
+static Etk_Bool _shadow_radius_changed_cb(Etk_Object *object, double value, void *data)
 {
    Etk_Shadow *shadow;
    int offset_x;
@@ -199,19 +203,23 @@ static void _shadow_radius_changed_cb(Etk_Object *object, double value, void *da
       etk_shadow_shadow_get(shadow, NULL, NULL, NULL, &offset_x, &offset_y, &opacity);
       etk_shadow_shadow_set(shadow, ETK_SHADOW_OUTSIDE, ETK_SHADOW_ALL, value, offset_x, offset_y, opacity);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when the "Show the border" check button is toggled */
-static void _show_border_toggled_cb(Etk_Object *object, void *data)
+static Etk_Bool _show_border_toggled_cb(Etk_Object *object, void *data)
 {
    Etk_Toggle_Button *check;
    Etk_Bool has_border;
    int i;
 
    if (!(check = ETK_TOGGLE_BUTTON(object)))
-      return;
+      return ETK_TRUE;
 
    has_border = etk_toggle_button_active_get(check);
    for (i = 0; i < NUM_PICTURES; i++)
       etk_shadow_border_set(ETK_SHADOW(_picture_shadows[i]), has_border ? 1 : 0);
+
+   return ETK_TRUE;
 }
