@@ -1,8 +1,6 @@
 /*
  * Glue code to attach the Ecore main loop to D-Bus from within Python.
- *
- * Copyright (C) 2007 INdT
- * @author Ulisses Furquim <ulisses.silva@openbossa.org>
+ * @author Ulisses Furquim <ulissesf@gmail.com>
  *
  * @copyright BSD
  */

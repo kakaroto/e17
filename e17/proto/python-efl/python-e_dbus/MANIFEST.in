@@ -1,0 +1,3 @@
+recursive-include tests *.py
+include ez_setup.py module.c
+include AUTHORS COPYING-PLAIN COPYING README
