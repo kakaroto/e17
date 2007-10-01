@@ -171,7 +171,7 @@ cdef extern from "Ecore_X.h":
 cdef class EcoreEvas:
     cdef Ecore_Evas *obj
     cdef readonly evas.c_evas.Canvas evas
-    cdef readonly object _data
+    cdef readonly object data
     cdef object _resize_cb
     cdef object _move_cb
     cdef object _show_cb
