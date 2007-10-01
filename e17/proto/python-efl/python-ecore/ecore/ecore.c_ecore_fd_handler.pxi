@@ -2,7 +2,7 @@
 
 import traceback
 
-cdef void fd_handler_prepare_cb(void *_td, Ecore_Fd_Handler *fdh):
+cdef void fd_handler_prepare_cb(void *_td, Ecore_Fd_Handler *fdh) with GIL:
     cdef FdHandler obj
     cdef int r
 
@@ -27,7 +27,7 @@ cdef flags2str(int value):
     return ", ".join(flags)
 
 
-cdef int fd_handler_cb(void *_td, Ecore_Fd_Handler *fdh):
+cdef int fd_handler_cb(void *_td, Ecore_Fd_Handler *fdh) with GIL:
     cdef FdHandler obj
     cdef int r
 

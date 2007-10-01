@@ -2,7 +2,7 @@
 
 import traceback
 
-cdef int idle_enterer_cb(void *_td):
+cdef int idle_enterer_cb(void *_td) with GIL:
     cdef IdleEnterer obj
     cdef int r
 

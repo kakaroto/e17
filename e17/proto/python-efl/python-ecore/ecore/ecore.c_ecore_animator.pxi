@@ -2,7 +2,7 @@
 
 import traceback
 
-cdef int animator_cb(void *_td):
+cdef int animator_cb(void *_td) with GIL:
     cdef Animator obj
     cdef int r
 

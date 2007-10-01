@@ -19,12 +19,16 @@ def main_loop_quit():
 
 def main_loop_begin():
     "Enter main loop, this function will not return until L{main_loop_quit()}."
+    python.Py_BEGIN_ALLOW_THREADS
     ecore_main_loop_begin()
+    python.Py_END_ALLOW_THREADS
 
 
 def main_loop_iterate():
     "Force main loop to process requests (timers, fd handlers, idlers, ...)"
+    python.Py_BEGIN_ALLOW_THREADS
     ecore_main_loop_iterate()
+    python.Py_END_ALLOW_THREADS
 
 
 def time_get():

@@ -2,7 +2,7 @@
 
 import traceback
 
-cdef int timer_cb(void *_td):
+cdef int timer_cb(void *_td) with GIL:
     cdef Timer obj
     cdef int r
 
