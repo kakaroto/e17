@@ -345,8 +345,9 @@ cdef class Image(Object):
 
 
 
-cdef void _cb_on_filled_image_resize(void *data, Evas *e, Evas_Object *obj,
-                                     void *event_info):
+cdef void _cb_on_filled_image_resize(void *data, Evas *e,
+                                     Evas_Object *obj,
+                                     void *event_info) with GIL:
     cdef int w, h
     evas_object_geometry_get(obj, NULL, NULL, &w, &h)
     evas_object_image_fill_set(obj, 0, 0, w, h)

@@ -7,7 +7,7 @@ _smart_classes = list()
 
 import traceback
 
-cdef void _smart_object_delete(Evas_Object *o):
+cdef void _smart_object_delete(Evas_Object *o) with GIL:
     cdef SmartObject obj
     obj = <SmartObject>evas_object_data_get(o, "python-evas")
 
@@ -60,7 +60,8 @@ cdef void _smart_object_delete(Evas_Object *o):
     obj._m_clip_unset = None
 
 
-cdef void _smart_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y):
+cdef void _smart_object_move(Evas_Object *o,
+                             Evas_Coord x, Evas_Coord y) with GIL:
     cdef SmartObject obj
     obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_move is not None:
@@ -70,7 +71,8 @@ cdef void _smart_object_move(Evas_Object *o, Evas_Coord x, Evas_Coord y):
             traceback.print_exc()
 
 
-cdef void _smart_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h):
+cdef void _smart_object_resize(Evas_Object *o,
+                               Evas_Coord w, Evas_Coord h) with GIL:
     cdef SmartObject obj
     obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_resize is not None:
@@ -80,7 +82,7 @@ cdef void _smart_object_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h):
             traceback.print_exc()
 
 
-cdef void _smart_object_show(Evas_Object *o):
+cdef void _smart_object_show(Evas_Object *o) with GIL:
     cdef SmartObject obj
     obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_show is not None:
@@ -90,7 +92,7 @@ cdef void _smart_object_show(Evas_Object *o):
             traceback.print_exc()
 
 
-cdef void _smart_object_hide(Evas_Object *o):
+cdef void _smart_object_hide(Evas_Object *o) with GIL:
     cdef SmartObject obj
     obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_hide is not None:
@@ -100,7 +102,8 @@ cdef void _smart_object_hide(Evas_Object *o):
             traceback.print_exc()
 
 
-cdef void _smart_object_color_set(Evas_Object *o, int r, int g, int b, int a):
+cdef void _smart_object_color_set(Evas_Object *o,
+                                  int r, int g, int b, int a) with GIL:
     cdef SmartObject obj
     obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_color_set is not None:
@@ -110,7 +113,7 @@ cdef void _smart_object_color_set(Evas_Object *o, int r, int g, int b, int a):
             traceback.print_exc()
 
 
-cdef void _smart_object_clip_set(Evas_Object *o, Evas_Object *clip):
+cdef void _smart_object_clip_set(Evas_Object *o, Evas_Object *clip) with GIL:
     cdef SmartObject obj
     cdef Object other
     obj = <SmartObject>evas_object_data_get(o, "python-evas")
@@ -122,7 +125,7 @@ cdef void _smart_object_clip_set(Evas_Object *o, Evas_Object *clip):
             traceback.print_exc()
 
 
-cdef void _smart_object_clip_unset(Evas_Object *o):
+cdef void _smart_object_clip_unset(Evas_Object *o) with GIL:
     cdef SmartObject obj
     obj = <SmartObject>evas_object_data_get(o, "python-evas")
     if obj._m_clip_unset is not None:
@@ -132,7 +135,8 @@ cdef void _smart_object_clip_unset(Evas_Object *o):
             traceback.print_exc()
 
 
-cdef void _smart_callback(void *data, Evas_Object *o, void *event_info):
+cdef void _smart_callback(void *data,
+                          Evas_Object *o, void *event_info) with GIL:
     cdef SmartObject obj
     cdef object event, ei
     obj = <SmartObject>evas_object_data_get(o, "python-evas")

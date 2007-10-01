@@ -24,7 +24,8 @@ cdef int _unregister_callbacks(Object obj) except 0:
     return 1
 
 
-cdef void obj_free_cb(void *data, Evas *e, Evas_Object *obj, void *event_info):
+cdef void obj_free_cb(void *data, Evas *e,
+                      Evas_Object *obj, void *event_info) with GIL:
     cdef Object self
     self = <Object>data
 
