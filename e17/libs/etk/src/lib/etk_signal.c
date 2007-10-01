@@ -858,7 +858,7 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object,
          va_copy(args2, args);
          signal->marshaller(*default_handler, object, NULL, &keep_emission,
                             args2);
-
+         va_end(args2);
       }
    }
 

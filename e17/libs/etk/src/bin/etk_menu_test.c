@@ -7,8 +7,8 @@ static Etk_Widget *_etk_test_menu_stock_item_new(const char *label, Etk_Stock_Id
 static Etk_Widget *_etk_test_menu_check_item_new(const char *label, Etk_Menu_Shell *menu_shell);
 static Etk_Widget *_etk_test_menu_radio_item_new(const char *label, Etk_Menu_Item_Radio *group_item, Etk_Menu_Shell *menu_shell);
 static Etk_Widget *_etk_test_menu_separator_new(Etk_Menu_Shell *menu_shell);
-static void _etk_test_menu_item_selected_cb(Etk_Object *object, void *data);
-static void _etk_test_menu_item_unselected_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_test_menu_item_selected_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_test_menu_item_unselected_cb(Etk_Object *object, void *data);
 
 static Etk_Widget *_etk_test_menu_statusbar;
 
@@ -236,18 +236,20 @@ static Etk_Widget *_etk_test_menu_separator_new(Etk_Menu_Shell *menu_shell)
 }
 
 /* Called when a menu item is selected */
-static void _etk_test_menu_item_selected_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_test_menu_item_selected_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *item;
 
    if (!(item = ETK_MENU_ITEM(object)))
-      return;
+      return ETK_TRUE;
    etk_statusbar_message_push(ETK_STATUSBAR(_etk_test_menu_statusbar), etk_menu_item_label_get(item), 0);
+   return ETK_TRUE;
 }
 
 /* Called when a menu item is unselected */
-static void _etk_test_menu_item_unselected_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_test_menu_item_unselected_cb(Etk_Object *object, void *data)
 {
    etk_statusbar_message_pop(ETK_STATUSBAR(_etk_test_menu_statusbar), 0);
+   return ETK_TRUE;
 }
 

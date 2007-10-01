@@ -23,12 +23,12 @@ struct Etk_Test_Tree_Scroll_Kinetic_Info
 
 static void _etk_test_tree_scroll(Etk_Widget *tree, double x, double y, Etk_Bool *sx, Etk_Bool *sy);
 static int _etk_test_tree_scroll_timeout(void *data);
-static void _etk_test_tree_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
-static void _etk_test_tree_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
-static void _etk_test_tree_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Move *event, void *data);
+static Etk_Bool _etk_test_tree_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
+static Etk_Bool _etk_test_tree_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
+static Etk_Bool _etk_test_tree_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Move *event, void *data);
 static Etk_Bool _etk_test_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-static void _etk_test_tree_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
-static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
+static Etk_Bool _etk_test_tree_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
 static int _etk_test_tree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
 static int _etk_test_tree_sort_button_cb(Etk_Object *object, void *data);
 static int _etk_test_tree_insert_sorted_button_cb(Etk_Object *object, void *data);
@@ -245,7 +245,7 @@ static int _etk_test_tree_scroll_timeout(void *data)
    return 1;
 }
 
-static void _etk_test_tree_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data)
+static Etk_Bool _etk_test_tree_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data)
 {
    Etk_Test_Tree_Scroll_Kinetic_Info *kinfo;
 
@@ -258,24 +258,28 @@ static void _etk_test_tree_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Dow
    kinfo->y = event->widget.y;
    kinfo->vel_x = 0;
    kinfo->vel_y = 0;
+
+   return ETK_TRUE;
 }
 
-static void _etk_test_tree_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data)
+static Etk_Bool _etk_test_tree_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data)
 {
    Etk_Test_Tree_Scroll_Kinetic_Info *kinfo;
 
    kinfo = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Test_Tree::Kinetic_Info");
    kinfo->clicked = ETK_FALSE;
+
+   return ETK_TRUE;
 }
 
-static void _etk_test_tree_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Move *event, void *data)
+static Etk_Bool _etk_test_tree_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Move *event, void *data)
 {
    Etk_Test_Tree_Scroll_Kinetic_Info *kinfo;
    int evx, evy;
 
    kinfo = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Test_Tree::Kinetic_Info");
    if (!kinfo->clicked)
-      return;
+      return ETK_TRUE;
 
    evx = event->cur.widget.x - kinfo->x;
    evy = event->cur.widget.y - kinfo->y;
@@ -295,6 +299,8 @@ static void _etk_test_tree_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Mov
       kinfo->vel_y = ((evy > 0) ? 1 : -1) *
         (((abs(evy) / (double)ETK_WIDGET(widget)->geometry.h) * (kinfo->vmax - kinfo->vmin)) + kinfo->vmin);
    }
+
+   return ETK_TRUE;
 }
 
 /* Called when a key is pressed while the tree is focused:
@@ -327,7 +333,7 @@ static Etk_Bool _etk_test_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Dow
 
 /* Called when a row of the tree is clicked: we display the clicked row in the statusbar */
 /* TODO: sometimes it's a Etk_Event_Mouse_Up, sometimes a Etk_Event_Mouse_Down... */
-static void _etk_test_tree_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
+static Etk_Bool _etk_test_tree_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Tree *tree;
    Etk_Statusbar *statusbar;
@@ -335,7 +341,7 @@ static void _etk_test_tree_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row,
    char message[1024];
 
    if (!(tree = ETK_TREE(object)) || !(statusbar = ETK_STATUSBAR(data)) || !row || !event)
-      return;
+      return ETK_TRUE;
 
    /* We retrieve the name of the row: this information is located in the first column,
     * and it corresponds to the third param of the model (the two first params correspond
@@ -348,10 +354,11 @@ static void _etk_test_tree_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row,
       ((event->flags & ETK_MOUSE_DOUBLE_CLICK) ? "Double" : "Single"));
 
    etk_statusbar_message_push(statusbar, message, 0);
+   return ETK_TRUE;
 }
 
 /* Called when a checkbox of the tree is toggled: we display its new state in the statusbar */
-static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+static Etk_Bool _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    Etk_Tree *tree;
    Etk_Tree_Col *col;
@@ -361,7 +368,7 @@ static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row 
    char message[1024];
 
    if (!(col = ETK_TREE_COL(object)) || !(statusbar = ETK_STATUSBAR(data)) || !row)
-      return;
+      return ETK_TRUE;
 
    tree = etk_tree_col_tree_get(col);
 
@@ -372,6 +379,8 @@ static void _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row 
 
    sprintf(message, "Row \"%s\" has been %s", row_name, checked ? "checked" : "unchecked");
    etk_statusbar_message_push(statusbar, message, 0);
+
+   return ETK_TRUE;
 }
 
 /* Used to sort the first column of the tree... */
