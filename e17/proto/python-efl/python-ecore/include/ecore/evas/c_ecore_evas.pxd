@@ -170,8 +170,8 @@ cdef extern from "Ecore_X.h":
 
 cdef class EcoreEvas:
     cdef Ecore_Evas *obj
-    cdef object _evas
-    cdef object _data
+    cdef readonly evas.c_evas.Canvas evas
+    cdef readonly object _data
     cdef object _resize_cb
     cdef object _move_cb
     cdef object _show_cb
@@ -226,8 +226,8 @@ cdef class FB(EcoreEvas):
 #     cdef _set_obj(self, Ecore_DirectFB_Window *obj)
 
 
-cdef class DirectFB(EcoreEvas):
-    pass
+# cdef class DirectFB(EcoreEvas):
+#     pass
 
 
 cdef class Buffer(EcoreEvas):

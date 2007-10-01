@@ -1,6 +1,12 @@
 # This file is included verbatim by c_ecore_evas.pyx
 
 cdef class SoftwareX11(BaseX11):
+    """X11 window using software render.
+
+    @ivar window: X11 window id.
+    @ivar subwindow: X11 sub-window id.
+    @ivar direct_resize: if direct resize is enabled or not.
+    """
     def __init__(self, char *display=NULL, long parent_xid=0, int x=0, int y=0,
                  int w=320, int h=240):
         cdef Ecore_Evas *obj
@@ -10,6 +16,10 @@ cdef class SoftwareX11(BaseX11):
             self._set_obj(obj)
 
     def window_get(self):
+        """Get X11 window id.
+
+           @rtype: int
+        """
         return ecore_evas_software_x11_window_get(self.obj)
 
     property window:
@@ -17,6 +27,7 @@ cdef class SoftwareX11(BaseX11):
             return self.window_get()
 
     def subwindow_get(self):
+        "@rtype: int"
         return ecore_evas_software_x11_subwindow_get(self.obj)
 
     property subwindow:
@@ -27,6 +38,7 @@ cdef class SoftwareX11(BaseX11):
         ecore_evas_software_x11_direct_resize_set(self.obj, on)
 
     def direct_resize_get(self):
+        "@rtype: bool"
         return bool(ecore_evas_software_x11_direct_resize_get(self.obj))
 
     property direct_resize:

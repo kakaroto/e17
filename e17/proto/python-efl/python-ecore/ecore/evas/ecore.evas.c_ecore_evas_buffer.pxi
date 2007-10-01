@@ -1,6 +1,7 @@
 # This file is included verbatim by c_ecore_evas.pyx
 
 cdef class Buffer(EcoreEvas):
+    "Buffer render."
     def __init__(self, int w=320, int h=240):
         cdef Ecore_Evas *obj
 

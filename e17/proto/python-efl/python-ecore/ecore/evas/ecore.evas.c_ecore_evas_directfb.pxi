@@ -42,6 +42,7 @@
 
 
 cdef class DirectFB(EcoreEvas):
+    "DirectFB render."
     def __init__(self, char *display=NULL, int windowed=1, int x=0, int y=0,
                  int w=320, int h=240):
         cdef Ecore_Evas *obj

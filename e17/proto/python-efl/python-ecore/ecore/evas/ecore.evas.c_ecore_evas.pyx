@@ -1,6 +1,9 @@
 cimport evas.python as python
 import evas.c_evas
 
+__extra_epydoc_fields__ = (
+    ("parm", "Parameter", "Parameters"), # epydoc don't support pyrex properly
+    )
 
 def init():
     return ecore_evas_init()
@@ -22,6 +25,11 @@ engines_len = 7
 
 
 def engine_type_from_name(char *method):
+    """Retrive the type id for the engine given it's name.
+
+    @return: >= 0 on success or -1 on failure.
+    @rtype: int
+    """
     cdef int i
 
     for i from 0 <= i < engines_len:
@@ -31,12 +39,20 @@ def engine_type_from_name(char *method):
 
 
 def engine_name_from_type(int type_id):
+    """Retrive the engine name given it's id.
+
+    @rtype: str
+    """
     if type_id >= 0 and type_id < engines_len:
         return engines[type_id]
     return None
 
 
 def engine_type_supported_get(method):
+    """Check if engine is supported.
+
+    @rtype: bool
+    """
     cdef Ecore_Evas_Engine_Type method_id
 
     if isinstance(method, (int, long)):

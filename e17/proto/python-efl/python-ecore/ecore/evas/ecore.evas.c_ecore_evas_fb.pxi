@@ -1,6 +1,7 @@
 # This file is included verbatim by c_ecore_evas.pyx
 
 cdef class FB(EcoreEvas):
+    "Framebuffer window."
     def __init__(self, char *display=NULL, int rotation=0, int w=320,
                  int h=240):
         cdef Ecore_Evas *obj

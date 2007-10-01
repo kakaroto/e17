@@ -5,9 +5,9 @@ cdef class BaseX11(EcoreEvas):
         """Set cursor to one pre-defined shape.
 
         Default value is ECORE_X_CURSOR_X, usual values are:
-         * ECORE_X_CURSOR_ARROW
-         * ECORE_X_CURSOR_CLOCK
-         * ECORE_X_CURSOR_CROSS
+         - ECORE_X_CURSOR_ARROW
+         - ECORE_X_CURSOR_CLOCK
+         - ECORE_X_CURSOR_CROSS
 
         See ecore.x for available symbols.
         """
