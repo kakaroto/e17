@@ -1519,7 +1519,8 @@ ewl_embed_tab_order_change(Ewl_Embed *e, void *(*change)(Ecore_DList *list),
 
 /**
  * @param embed: The embed to set the focused widget too
- * @param w: The widget to set as having focus
+ * @param w: The widget to set as having focus, NULL is valid value and 
+ *           signifies that no widget has the focus.
  * @return Returns no value.
  * @brief Set the current focused widget in the embed
  */
@@ -1528,9 +1529,7 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (embed->last.focused && (embed->last.focused != w))
 		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_OUT);
