@@ -1,11 +1,11 @@
 #include "etk_test.h"
 
-static void _slider_value_changed_cb(Etk_Object *object, double value, void *data);
-static void _inverted_toggled_cb(Etk_Object *object, void *data);
-static void _show_label_toggled_cb(Etk_Object *object, void *data);
-static void _continuous_toggled_cb(Etk_Object *object, void *data);
-static void _disabled_toggled_cb(Etk_Object *object, void *data);
-static void _maximum_changed_cb(Etk_Object *object, double value, void *data);
+static Etk_Bool _slider_value_changed_cb(Etk_Object *object, double value, void *data);
+static Etk_Bool _inverted_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _show_label_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _continuous_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _disabled_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _maximum_changed_cb(Etk_Object *object, double value, void *data);
 
 static Etk_Widget *_label = NULL;
 static Etk_Widget *_hslider = NULL;
@@ -147,65 +147,69 @@ void etk_test_slider_window_create(void *data)
  **************************/
 
 /* Called when one of the slider's value has been changed */
-static void _slider_value_changed_cb(Etk_Object *object, double value, void *data)
+static Etk_Bool _slider_value_changed_cb(Etk_Object *object, double value, void *data)
 {
    char buf[128];
 
    snprintf(buf, sizeof(buf), "<title><font_size=28>%.0f x %.0f</font_size></title>",
       etk_range_value_get(ETK_RANGE(_hslider)), etk_range_value_get(ETK_RANGE(_vslider)));
    etk_label_set(ETK_LABEL(_label), buf);
+   return ETK_TRUE;
 }
 
 /* Called when one of the "Inverted" check buttons is toggled */
-static void _inverted_toggled_cb(Etk_Object *object, void *data)
+static Etk_Bool _inverted_toggled_cb(Etk_Object *object, void *data)
 {
    Etk_Toggle_Button *toggle;
    Etk_Slider *slider;
 
    if (!(toggle = ETK_TOGGLE_BUTTON(object)) || !(slider = ETK_SLIDER(data)))
-      return;
+      return ETK_TRUE;
    etk_slider_inverted_set(slider, etk_toggle_button_active_get(toggle));
+   return ETK_TRUE;
 }
 
 /* Called when one of the "Show Label" check buttons is toggled */
-static void _show_label_toggled_cb(Etk_Object *object, void *data)
+static Etk_Bool _show_label_toggled_cb(Etk_Object *object, void *data)
 {
    Etk_Toggle_Button *toggle;
    Etk_Slider *slider;
 
    if (!(toggle = ETK_TOGGLE_BUTTON(object)) || !(slider = ETK_SLIDER(data)))
-      return;
+      return ETK_TRUE;
 
    if (etk_toggle_button_active_get(toggle))
       etk_slider_label_set(slider, "%.0f");
    else
       etk_slider_label_set(slider, NULL);
+   return ETK_TRUE;
 }
 
 /* Called when one of the "Continuous Update" check buttons is toggled */
-static void _continuous_toggled_cb(Etk_Object *object, void *data)
+static Etk_Bool _continuous_toggled_cb(Etk_Object *object, void *data)
 {
    Etk_Toggle_Button *toggle;
    Etk_Slider *slider;
 
    if (!(toggle = ETK_TOGGLE_BUTTON(object)) || !(slider = ETK_SLIDER(data)))
-      return;
+      return ETK_TRUE;
 
    if (etk_toggle_button_active_get(toggle))
       etk_slider_update_policy_set(slider, ETK_SLIDER_CONTINUOUS);
    else
       etk_slider_update_policy_set(slider, ETK_SLIDER_DELAYED);
+   return ETK_TRUE;
 }
 
 /* Called when one of the "Disabled" check buttons is toggled */
-static void _disabled_toggled_cb(Etk_Object *object, void *data)
+static Etk_Bool _disabled_toggled_cb(Etk_Object *object, void *data)
 {
    Etk_Toggle_Button *toggle;
    Etk_Widget *slider;
    Etk_Bool disabled;
 
    if (!(toggle = ETK_TOGGLE_BUTTON(object)) || !(slider = ETK_WIDGET(data)))
-      return;
+      return ETK_TRUE;
 
    disabled = etk_toggle_button_active_get(toggle);
    if (slider == _hslider)
@@ -218,14 +222,16 @@ static void _disabled_toggled_cb(Etk_Object *object, void *data)
       etk_widget_disabled_set(_vslider, disabled);
       etk_widget_disabled_set(_vspinner, disabled);
    }
+   return ETK_TRUE;
 }
 
 /* Called when the value of one the "Maximum" spinners is changed */
-static void _maximum_changed_cb(Etk_Object *object, double value, void *data)
+static Etk_Bool _maximum_changed_cb(Etk_Object *object, double value, void *data)
 {
    Etk_Range *range;
 
    if (!(range = ETK_RANGE(data)))
-      return;
+      return ETK_TRUE;
    etk_range_range_set(range, 0.0, value);
+   return ETK_TRUE;
 }

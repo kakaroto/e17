@@ -9,7 +9,7 @@ enum check_btns
    SHOW_HIDDEN
 };
 
-void on_checks_clicked(Etk_Button *button, void *data)
+Etk_Bool on_checks_clicked(Etk_Button *button, void *data)
 {
    Etk_Bool btn_status = etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(button));
 
@@ -25,6 +25,7 @@ void on_checks_clicked(Etk_Button *button, void *data)
          etk_filechooser_widget_show_hidden_set(ETK_FILECHOOSER_WIDGET(filechooser),btn_status);
          break;
    }
+   return ETK_TRUE;
 }
 
 /* Creates the window for the file chooser test */

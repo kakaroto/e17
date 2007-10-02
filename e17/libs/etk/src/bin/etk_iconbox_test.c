@@ -11,7 +11,7 @@ typedef struct _Etk_Test_Iconbox_Types
    char *icon;
 } Etk_Test_Iconbox_Types;
 
-static void _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folder);
 
 static Etk_Test_Iconbox_Types _etk_test_iconbox_types[] =
@@ -63,23 +63,24 @@ void etk_test_iconbox_window_create(void *data)
 }
 
 /* Called when the iconbox is pressed by the mouse */
-static void _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
+static Etk_Bool _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data)
 {
    Etk_Iconbox *iconbox;
    Etk_Iconbox_Icon *icon;
    Etk_String *new_folder;
 
    if (!(iconbox = ETK_ICONBOX(object)))
-      return;
+      return ETK_TRUE;
    if (event->button != 1 || !(event->flags & ETK_MOUSE_DOUBLE_CLICK) || (event->flags & ETK_MOUSE_TRIPLE_CLICK))
-      return;
+      return ETK_TRUE;
    if (!(icon = etk_iconbox_icon_get_at_xy(iconbox, event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
-      return;
+      return ETK_TRUE;
 
    new_folder = etk_string_new_printf("%s/%s", etk_string_get(_etk_test_iconbox_current_folder),
       etk_iconbox_icon_label_get(icon));
    _etk_test_iconbox_folder_set(iconbox, etk_string_get(new_folder));
    etk_object_destroy(ETK_OBJECT(new_folder));
+   return ETK_TRUE;
 }
 
 /* Sets the folder displayed in the iconbox */

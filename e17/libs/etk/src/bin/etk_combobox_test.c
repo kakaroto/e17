@@ -10,10 +10,10 @@
 #define STARTING_STOCK_ID ETK_STOCK_DIALOG_APPLY
 #define ENDING_STOCK_ID ETK_STOCK_FOLDER_NEW
 
-static void _active_item_changed_cb(Etk_Object *object, void *data);
+static Etk_Bool _active_item_changed_cb(Etk_Object *object, void *data);
 static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, char *dir);
-static void _etk_combobox_entry_active_item_changed_cb(Etk_Object *object, void *data);
-static void _etk_combobox_entry_text_changed_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_entry_active_item_changed_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_entry_text_changed_cb(Etk_Object *object, void *data);
 static char **str_split(char **str, char *delim);
 
 static char *cur_dir = NULL;
@@ -166,7 +166,7 @@ void etk_test_combobox_window_create(void *data)
  **************************/
 
 /* Called when the active item of the combobox has been changed */
-static void _active_item_changed_cb(Etk_Object *object, void *data)
+static Etk_Bool _active_item_changed_cb(Etk_Object *object, void *data)
 {
    Etk_Combobox *combobox;
    Etk_Image *image;
@@ -174,13 +174,14 @@ static void _active_item_changed_cb(Etk_Object *object, void *data)
    int *stock_id;
 
    if (!(combobox = ETK_COMBOBOX(object)) || !(image = ETK_IMAGE(data)))
-      return;
+      return ETK_TRUE;
    if (!(active_item = etk_combobox_active_item_get(combobox)))
-      return;
+      return ETK_TRUE;
    if (!(stock_id = etk_combobox_item_data_get(active_item)))
-      return;
+      return ETK_TRUE;
 
    etk_image_set_from_stock(image, *stock_id, ETK_STOCK_BIG);
+   return ETK_TRUE;
 }
 
 static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, char *dir)
@@ -241,7 +242,7 @@ static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, cha
 }
 
 /* Called when the active item of the combobox_entry is changed */
-static void _etk_combobox_entry_active_item_changed_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_combobox_entry_active_item_changed_cb(Etk_Object *object, void *data)
 {
    Etk_Combobox_Entry *combobox;
    Etk_Combobox_Entry_Item *active_item = NULL;
@@ -250,7 +251,7 @@ static void _etk_combobox_entry_active_item_changed_cb(Etk_Object *object, void 
    char path[PATH_MAX];
 
    if (!(combobox = ETK_COMBOBOX_ENTRY(object)) || !(active_item = etk_combobox_entry_active_item_get(combobox)))
-      return;
+      return ETK_TRUE;
 
    etk_combobox_entry_item_fields_get(active_item, &img, &file, NULL);
 
@@ -267,14 +268,16 @@ static void _etk_combobox_entry_active_item_changed_cb(Etk_Object *object, void 
    if (ecore_file_is_dir(path))
      {
 	_etk_combobox_entry_populate(combobox, path);
-	return;
+	return ETK_TRUE;
      }
 
    if (ecore_file_is_dir(file))
       _etk_combobox_entry_populate(combobox, file);
+
+   return ETK_TRUE;
 }
 
-static void _etk_combobox_entry_text_changed_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_combobox_entry_text_changed_cb(Etk_Object *object, void *data)
 {
    Etk_Combobox_Entry *combobox;
    Etk_Entry *entry;
@@ -284,7 +287,7 @@ static void _etk_combobox_entry_text_changed_cb(Etk_Object *object, void *data)
    int i;
 
    if (!(combobox = ETK_COMBOBOX_ENTRY(data)) || !(entry = ETK_ENTRY(object)))
-      return;
+      return ETK_TRUE;
 
    if (!etk_combobox_entry_is_popped_up(combobox))
      {
@@ -294,7 +297,7 @@ static void _etk_combobox_entry_text_changed_cb(Etk_Object *object, void *data)
 
    entry_text = etk_entry_text_get(entry);
    if (!entry_text)
-     return;
+     return ETK_TRUE;
 
    search_str = strdup(entry_text);
    words = str_split(&search_str, " ");
@@ -318,6 +321,7 @@ brk:
    etk_popup_window_focused_window_set(ETK_POPUP_WINDOW(win));
    if (words)
       free(words);
+   return ETK_TRUE;
 }
 
 static char **str_split(char **str, char *delim)

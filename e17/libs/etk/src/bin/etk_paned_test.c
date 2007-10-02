@@ -1,7 +1,7 @@
 #include "etk_test.h"
 
-static void _etk_test_paned_child1_expand_toggled_cb(Etk_Object *object, void *data);
-static void _etk_test_paned_child2_expand_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_test_paned_child1_expand_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_test_paned_child2_expand_toggled_cb(Etk_Object *object, void *data);
 
 /* Creates the window for the paned test */
 void etk_test_paned_window_create(void *data)
@@ -94,23 +94,25 @@ void etk_test_paned_window_create(void *data)
 }
 
 /* Called when one of the two "Child 1 expand" checkboxes is toggled */
-static void _etk_test_paned_child1_expand_toggled_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_test_paned_child1_expand_toggled_cb(Etk_Object *object, void *data)
 {
    Etk_Toggle_Button *check;
    Etk_Paned *paned;
 
    if (!(check = ETK_TOGGLE_BUTTON(object)) || !(paned = ETK_PANED(data)))
-      return;
+      return ETK_TRUE;
    etk_paned_child1_expand_set(paned, etk_toggle_button_active_get(check));
+   return ETK_TRUE;
 }
 
 /* Called when one of the two "Child 2 expand" checkboxes is toggled */
-static void _etk_test_paned_child2_expand_toggled_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_test_paned_child2_expand_toggled_cb(Etk_Object *object, void *data)
 {
    Etk_Toggle_Button *check;
    Etk_Paned *paned;
 
    if (!(check = ETK_TOGGLE_BUTTON(object)) || !(paned = ETK_PANED(data)))
-      return;
+      return ETK_TRUE;
    etk_paned_child2_expand_set(paned, etk_toggle_button_active_get(check));
+   return ETK_TRUE;
 }

@@ -1,7 +1,7 @@
 #include "etk_test.h"
 #include "config.h"
 
-static void _etk_test_menu_window_down_cb(Etk_Object *object, void *event_info, void *data);
+static Etk_Bool _etk_test_menu_window_down_cb(Etk_Object *object, void *event_info, void *data);
 static Etk_Widget *_etk_test_menu_item_new(const char *label, Etk_Menu_Shell *menu_shell);
 static Etk_Widget *_etk_test_menu_stock_item_new(const char *label, Etk_Stock_Id stock_id, Etk_Menu_Shell *menu_shell);
 static Etk_Widget *_etk_test_menu_check_item_new(const char *label, Etk_Menu_Shell *menu_shell);
@@ -147,9 +147,10 @@ void etk_test_menu_window_create(void *data)
 }
 
 /* Called when the user clicks on the window */
-static void _etk_test_menu_window_down_cb(Etk_Object *object, void *event_info, void *data)
+static Etk_Bool _etk_test_menu_window_down_cb(Etk_Object *object, void *event_info, void *data)
 {
    etk_menu_popup(ETK_MENU(data));
+   return ETK_TRUE;
 }
 
 /* Creates a new "normal" menu item and appends it to the menu shell */

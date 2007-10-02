@@ -1,7 +1,7 @@
 #include "etk_test.h"
 
-static void _normal_print_cb(Etk_Object *object, void *data);
-static void _password_show_cb(Etk_Object *object, void *data);
+static Etk_Bool _normal_print_cb(Etk_Object *object, void *data);
+static Etk_Bool _password_show_cb(Etk_Object *object, void *data);
 
 static Etk_Widget *_label_normal = NULL;
 static Etk_Widget *_entry_normal = NULL;
@@ -106,13 +106,15 @@ void etk_test_entry_window_create(void *data)
  **************************/
 
 /* Prints the text of the normal entry in the label when the "print" icon is clicked */
-static void _normal_print_cb(Etk_Object *object, void *data)
+static Etk_Bool _normal_print_cb(Etk_Object *object, void *data)
 {
    etk_label_set(ETK_LABEL(_label_normal), etk_entry_text_get(ETK_ENTRY(_entry_normal)));
+   return ETK_TRUE;
 }
 
 /* Toggles the password mode of the password entry when the "Password Visible" checkbox is toggled */
-static void _password_show_cb(Etk_Object *object, void *data)
+static Etk_Bool _password_show_cb(Etk_Object *object, void *data)
 {
    etk_entry_password_mode_set(ETK_ENTRY(data), !etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object)));
+   return ETK_TRUE;
 }

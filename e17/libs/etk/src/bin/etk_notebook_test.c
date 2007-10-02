@@ -1,7 +1,7 @@
 #include "etk_test.h"
 #include "config.h"
 
-static void _hide_tabs_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _hide_tabs_toggled_cb(Etk_Object *object, void *data);
 static Etk_Widget *_page1_widget_create(void);
 static Etk_Widget *_page2_widget_create(void);
 
@@ -78,12 +78,13 @@ void etk_test_notebook_window_create(void *data)
  **************************/
 
 /* Shows/hides the tab bar when the "hide tabs" button is toggled */
-static void _hide_tabs_toggled_cb(Etk_Object *object, void *data)
+static Etk_Bool _hide_tabs_toggled_cb(Etk_Object *object, void *data)
 {
    Etk_Bool state;
 
    state = etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object));
    etk_notebook_tabs_visible_set(ETK_NOTEBOOK(data), !state);
+   return ETK_TRUE;
 }
 
 /**************************
