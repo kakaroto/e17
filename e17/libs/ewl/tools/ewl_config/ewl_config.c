@@ -659,7 +659,7 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	o = ewl_widget_name_find(EC_ICON_SIZE);
 	val = ewl_config_int_get(ewl_config, EWL_CONFIG_THEME_ICON_SIZE);
-	ewl_range_value_set(EWL_RANGE(val), val);
+	ewl_range_value_set(EWL_RANGE(o), val);
 
 	for (sel = 0; strings[sel].name != NULL; sel++)
 	{
