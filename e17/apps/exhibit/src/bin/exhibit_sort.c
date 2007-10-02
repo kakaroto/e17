@@ -161,36 +161,40 @@ int _ex_sort_cmp_resol(const void *p1, const void *p2)
    return _ex_sort_resol(* (char * const *) p1, * (char * const *) p2);
 }
 
-void 
+Etk_Bool
 _ex_sort_name_cb(Etk_Object *obj, void *data)
 {    
    etk_tree_col_sort_full(etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), _ex_sort_itree_name_compare_cb,
 			  NULL, ETK_TRUE);
    _ex_tab_imagelist_rebuild();
+   return ETK_TRUE;
 }
 
-void 
+Etk_Bool
 _ex_sort_size_cb(Etk_Object *obj, void *data)
 {    
    etk_tree_col_sort_full(e->cur_tab->icol, _ex_sort_itree_size_compare_cb,
 			  NULL, ETK_TRUE);
    _ex_tab_imagelist_rebuild();
+   return ETK_TRUE;
 }
 
-void 
+Etk_Bool
 _ex_sort_resol_cb(Etk_Object *obj, void *data)
 {    
    etk_tree_col_sort_full(e->cur_tab->icol, _ex_sort_itree_resol_compare_cb,
 			  NULL, ETK_TRUE);
    _ex_tab_imagelist_rebuild();
+   return ETK_TRUE;
 }
 
-void 
+Etk_Bool
 _ex_sort_date_cb(Etk_Object *obj, void *data)
 {    
    etk_tree_col_sort_full(e->cur_tab->icol, _ex_sort_itree_date_compare_cb,
 			  NULL, ETK_TRUE);
    _ex_tab_imagelist_rebuild();
+   return ETK_TRUE;
 }
 
 void
