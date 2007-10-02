@@ -5,6 +5,7 @@
 #define _EX_THUMB_H
 
 int         _ex_thumb_exe_exit(void *data, int type, void *event);
+int         _ex_thumb_complete(void *data, int type, void *event);
 void        _ex_thumb_generate();
 void        _ex_thumb_abort();
 void        _ex_thumb_abort_all();

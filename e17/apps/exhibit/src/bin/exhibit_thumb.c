@@ -4,22 +4,16 @@
 #include "exhibit.h"
 #include "exhibit_file.h"
 
-pid_t pid = -1;
-Evas_List *thumb_list;
-
 int
-_ex_thumb_exe_exit(void *data, int type, void *event)
-{
-   Ecore_Exe_Event_Del  *ev;
-   Ex_Thumb             *thumb;
-   char                 *ext;
+_ex_thumb_complete(void *data, int type, void *event)
+{   
+   Epsilon_Request *ev = event;
+   Ex_Thumb *thumb;
+   char *ext;
 
-   ev = event;
-   if (ev->pid != pid) return 1;
-   if (!thumb_list) return 1;
-
-   thumb = thumb_list->data;
-   thumb_list = evas_list_remove_list(thumb_list, thumb_list);
+   thumb = ev->data;
+   if (!thumb)
+     return 1;
 
    ext = strrchr(thumb->name, '.');
 
@@ -27,7 +21,7 @@ _ex_thumb_exe_exit(void *data, int type, void *event)
      {
 	Etk_Tree_Row *row;
 	
-	thumb->image = (char*)epsilon_thumb_file_get(thumb->ep);
+	thumb->image = (char*)ev->dest;
 	row = _ex_image_find_row_from_file(thumb->tab, thumb->name);
 	etk_tree_row_fields_set(row,
 				ETK_FALSE,
@@ -40,47 +34,18 @@ _ex_thumb_exe_exit(void *data, int type, void *event)
 	     etk_tree_row_select(row);
 	     etk_tree_row_scroll_to(row, ETK_TRUE);
 	  }
-	E_FREE(thumb->image);
-	E_FREE(thumb->name);
-	epsilon_free(thumb->ep);
+	E_FREE(thumb->name);	
 	E_FREE(thumb);
      }
 
-   pid = -1;
-   _ex_thumb_generate();
    return 1;
-}
-
-void
-_ex_thumb_generate()
-{
-   Ex_Thumb *thumb;
-
-   if ((!thumb_list) || (pid != -1)) return;
-
-   pid = fork();
-   if (pid == 0)
-     {
-	/* reset signal handlers for the child */
-	signal(SIGSEGV, SIG_DFL);
-	signal(SIGILL, SIG_DFL);
-	signal(SIGFPE, SIG_DFL);
-	signal(SIGBUS, SIG_DFL);
-		
-	thumb = thumb_list->data;
-	if(_ex_file_is_ebg(thumb->name))
-	  epsilon_key_set(thumb->ep, "e/desktop/background");
-	if(epsilon_generate(thumb->ep))
-	  {
-	     thumb->image = (char*)epsilon_thumb_file_get(thumb->ep);
-	  }
-	exit(0);
-     }
 }
 
 void
 _ex_thumb_abort()
 {
+   /* TODO: reimplement */
+#if 0
    Evas_List *l;
    pid = -1;
    
@@ -99,12 +64,15 @@ _ex_thumb_abort()
 	     thumb_list = evas_list_remove_list(thumb_list, l);
 	  }
      }
+#endif
 }
 
 
 void
 _ex_thumb_abort_all()
 {
+   /* TODO: reimplement */
+#if 0   
    pid = -1;
    
    while(thumb_list)
@@ -119,6 +87,7 @@ _ex_thumb_abort_all()
 	thumb_list = evas_list_remove_list(thumb_list, thumb_list);
      }
    evas_list_free(thumb_list);
+#endif   
 }
 
 void
@@ -148,13 +117,6 @@ _ex_thumb_update_at_row(Etk_Tree_Row *row)
    snprintf(file, sizeof(file), "%s%s",
 	    tab->dir, icol_string);
    
-   ep = epsilon_new(file);
-
-   /* For some reason, if we dont call this, something goes wrong
-    * Need to look into epsilon to see what this function is doing that makes
-    * everything work well.
-    */
-   epsilon_exists(ep);
    ecore_file_unlink(old_thumb);
    
    thumb = calloc(1, sizeof(Ex_Thumb));
@@ -162,8 +124,7 @@ _ex_thumb_update_at_row(Etk_Tree_Row *row)
    thumb->e = e;
    thumb->name = strdup(basename(icol_string));
    thumb->tab = e->cur_tab;
-   thumb_list = evas_list_append(thumb_list, thumb);
    thumb->selected = ETK_FALSE;
    etk_tree_model_cache_remove(thumb->tab->imodel, old_thumb, NULL);
-   if(pid == -1) _ex_thumb_generate();   
+   epsilon_add(file, NULL, EPSILON_THUMB_NORMAL, thumb);
 }

@@ -12,9 +12,6 @@
 /* defines the initial size and increment size that file list arrays have */
 #define FILELIST_SIZE 3000
 
-extern pid_t pid;
-extern Evas_List *thumb_list;
-
 typedef struct _Ex_Populate_Data Ex_Populate_Data;
 
 struct _Ex_Populate_Data
@@ -36,19 +33,6 @@ static void _ex_main_combobox_entry_changed_cb(Etk_Object *object, void *data);
 static Etk_Bool _ex_main_window_deleted_cb(void *data);
 static void _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _ex_main_window_resize_cb(Etk_Object *object, void *data);
-
-/*******
- * We are defining these here until Tree2 has them
- *******/
-#if 0
-/* This is implemented in etk_tree now */
-Etk_Tree_Row *etk_tree_selected_row_get(Etk_Tree *tree)
-{
-   if (!tree || !tree->last_selected_row || !tree->last_selected_row->selected)
-     return NULL;
-   return tree->last_selected_row;
-}
-#endif
 
 Evas_List *etk_tree_selected_rows_get(Etk_Tree *tree)
 {
@@ -410,8 +394,8 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
 void
 _ex_main_itree_add(const char *file, const char *selected_file)
 {
-   Epsilon *ep;
    Etk_Tree_Row *row;
+   Ex_Thumb *thumb;
 
    if (!file)
      {
@@ -431,56 +415,25 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	return;
      }
    
-   ep = epsilon_new(file);
-   epsilon_thumb_size(ep, EPSILON_THUMB_NORMAL);
+   thumb = calloc(1, sizeof(Ex_Thumb));
+   thumb->ep = NULL;
+   thumb->e = e;
+   thumb->name = strdup(basename((char *) file));
+   thumb->tab = e->cur_tab;
+   if(selected_file)
+     {
+	if(!strcmp(selected_file, file))
+	  thumb->selected = ETK_TRUE;
+     }
+   else
+     thumb->selected = ETK_FALSE;
+
+   epsilon_add((char*)file, NULL, EPSILON_THUMB_NORMAL, thumb);
    
-   if(epsilon_exists(ep) == EPSILON_OK)
-     {
-	char *thumb;
-
-	thumb = (char*) epsilon_thumb_file_get(ep);
-	row = etk_tree_row_append(ETK_TREE(e->cur_tab->itree), NULL, 
-				   e->cur_tab->icol,
-				   thumb, NULL, 
-				   basename((char *) file), NULL);
-
-	if (selected_file)
-	  {
-	     if(!strcmp(selected_file, file))
-	       {
-		  etk_tree_row_select(row);
-		  etk_tree_row_scroll_to(row, ETK_TRUE);
-	       }
-	  }
-	
-	E_FREE(thumb);
-     }
-   else 
-     {
-	Ex_Thumb *thumb;
-	
-	thumb = calloc(1, sizeof(Ex_Thumb));
-	thumb->ep = ep;
-	thumb->e = e;
-	thumb->name = strdup(basename((char *) file));
-	thumb->tab = e->cur_tab;
-	thumb_list = evas_list_append(thumb_list, thumb);	
-	if(selected_file)
-	  {
-	     if(!strcmp(selected_file, file))
-	       thumb->selected = ETK_TRUE;
-	  }
-	else
-	  thumb->selected = ETK_FALSE;
-	
-	row = etk_tree_row_append(ETK_TREE(e->cur_tab->itree), NULL, 
-				  e->cur_tab->icol,
-				  PACKAGE_DATA_DIR"/gui.edj", "thumb_loading",
-				  basename((char *) file), NULL);	
-	
-	if(pid == -1) _ex_thumb_generate();
-     }
-
+   row = etk_tree_row_append(ETK_TREE(e->cur_tab->itree), NULL, 
+	 e->cur_tab->icol,
+	 PACKAGE_DATA_DIR"/gui.edj", "thumb_loading",
+	 basename((char *) file), NULL);
 }
 
 static void
@@ -1279,11 +1232,13 @@ main(int argc, char *argv[])
    ecore_file_init();
    if(!_ex_options_init())
      fprintf(stderr, "WARNING: Exhibit could not set up its options files!\n"
-	             "         You will not be able to save your preferences.\n");
+	   "         You will not be able to save your preferences.\n");
+
+   epsilon_thumb_init();
+
    event_handlers = evas_list_append(event_handlers,
-	 ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _ex_thumb_exe_exit, NULL));
-   
-   epsilon_init();
+	 ecore_event_handler_add(EPSILON_EVENT_DONE, _ex_thumb_complete, NULL));
+         
    if(argc > 1 + fullscreen + slideshow)
      _ex_main_window_show(argv[1 + fullscreen + slideshow], fullscreen, slideshow);
    else
