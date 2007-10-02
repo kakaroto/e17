@@ -1159,7 +1159,8 @@ main(int argc, char **argv)
 	engine_loop();
 	evas_render(evas);
      }
-
+   evas_free(evas);
+   
    evas_shutdown();
    return 0;
 }
