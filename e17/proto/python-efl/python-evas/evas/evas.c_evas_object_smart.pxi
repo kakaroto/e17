@@ -544,6 +544,9 @@ cdef class ClippedSmartObject(SmartObject):
        mess with it.
     """
     def __init__(self, Canvas canvas not None, **kargs):
+        if type(self) is ClippedSmartObject:
+            raise TypeError("Must not instantiate ClippedSmartObject, but "
+                            "subclasses")
         SmartObject.__init__(self, canvas, **kargs)
         if self.clipper is None:
             self.clipper = Rectangle(canvas)
