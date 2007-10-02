@@ -857,14 +857,10 @@ ee_window_selection_text_set(Ewl_Window *win, const char *txt)
 static void
 ee_window_geometry_set(Ewl_Window *win, int *width, int *height)
 {
-	int w, h;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ecore_x_window_geometry_get((win ? (Ecore_X_Window)win->window : (Ecore_X_Window)0),
-							NULL, NULL, &w, &h);
-	if (width) *width = w;
-	if (height) *height = w;
+							NULL, NULL, width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
