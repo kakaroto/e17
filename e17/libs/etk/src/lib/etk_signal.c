@@ -135,10 +135,10 @@ void etk_signal_new_with_desc(Etk_Type *type,
 
 /**
  * @brief Gets the signal corresponding to the name and the object type.
- * @internal
+ *
  * assumes @a signal_name and @a type to be valid.
  */
-static Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type)
+Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type)
 {
    unsigned i;
 

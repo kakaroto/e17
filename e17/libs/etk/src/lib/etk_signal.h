@@ -142,6 +142,8 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object,
 Evas_List * etk_signal_get_all();
 const Etk_Type * etk_signal_object_type_get(Etk_Signal *signal);
 
+Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type);
+
 /** @} */
 
 #ifdef __cplusplus
