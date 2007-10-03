@@ -965,6 +965,9 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def on_free_add(self, func, *a, **k):
         """Same as event_callback_add(EVAS_CALLBACK_FREE, ...)
 
+        This is called after freeing object resources (see
+        EVAS_CALLBACK_DEL).
+
         Expected signature: C{function(object, *args, **kargs)}
         """
         self.event_callback_add(EVAS_CALLBACK_FREE, func, *a, **k)
@@ -1071,6 +1074,20 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def on_restack_del(self, func):
         "Same as event_callback_del(EVAS_CALLBACK_RESTACK, ...)"
         self.event_callback_del(EVAS_CALLBACK_RESTACK, func)
+
+    def on_del_add(self, func, *a, **k):
+        """Same as event_callback_add(EVAS_CALLBACK_DEL, ...)
+
+        This is called before freeing object resources (see
+        EVAS_CALLBACK_FREE).
+
+        Expected signature: C{function(object, *args, **kargs)}
+        """
+        self.event_callback_add(EVAS_CALLBACK_DEL, func, *a, **k)
+
+    def on_del_del(self, func):
+        "Same as event_callback_del(EVAS_CALLBACK_DEL, ...)"
+        self.event_callback_del(EVAS_CALLBACK_FREE, func)
 
     def pass_events_get(self):
         "@rtype: bool"

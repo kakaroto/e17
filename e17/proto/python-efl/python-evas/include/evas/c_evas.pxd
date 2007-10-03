@@ -23,6 +23,7 @@ cdef extern from "Evas.h":
         EVAS_CALLBACK_MOVE
         EVAS_CALLBACK_RESIZE
         EVAS_CALLBACK_RESTACK
+        EVAS_CALLBACK_DEL
 
 
     cdef enum Evas_Load_Error:
