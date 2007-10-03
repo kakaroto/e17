@@ -192,6 +192,8 @@ void etk_cache_add(Etk_Cache *cache, Evas_Object *object, const char *filename, 
    if (evas_list_count(cache->cached_objects) >= cache->size)
    {
       item = cache->cached_objects->data;
+      evas_object_event_callback_call(item->object, EVAS_CALLBACK_FREE, NULL);
+      evas_object_event_callback_del(item->object, EVAS_CALLBACK_FREE, _etk_cache_object_deleted_cb);
       evas_object_del(item->object);
    }
 
