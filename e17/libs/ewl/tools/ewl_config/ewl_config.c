@@ -39,6 +39,8 @@ static void ec_cb_apply(Ewl_Widget *w, void *ev, void *data);
 static void ec_cb_revert(Ewl_Widget *w, void *ev, void *data);
 static void ec_cb_win_hide(Ewl_Widget *w, void *ev, void *data);
 
+int ec_themes_get(DIR *rep, Ecore_List *list, const char *v, int *count);
+
 typedef struct Ec_Gui_Menu_Item Ec_Gui_Menu_Item;
 struct Ec_Gui_Menu_Item
 {
@@ -240,7 +242,7 @@ ec_main_win(int save_system)
 	ewl_container_child_append(EWL_CONTAINER(o2), o);
 	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), save_system);
 	ewl_checkbutton_label_position_set(EWL_CHECKBUTTON(o), EWL_POSITION_RIGHT);
-	ewl_button_label_set(EWL_BUTTON(o), "Save as system config");
+	ewl_button_label_set(EWL_BUTTON(o), "Save as system configuration");
 	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_name_set(o, EC_SAVE_SYSTEM);
 	ewl_widget_show(o);
@@ -263,20 +265,20 @@ ec_menubar_setup(Ewl_Menubar *m)
 	int i;
 
 	Ec_Gui_Menu_Item file_menu[] = {
-	{"save", ec_cb_apply},
-	{"revert", ec_cb_revert},
-		{"quit", ec_cb_delete_window},
+	{"Save", ec_cb_apply},
+	{"Revert", ec_cb_revert},
+		{"Quit", ec_cb_delete_window},
 		{NULL, NULL}
 	};
 
 	Ec_Gui_Menu_Item help_menu[] = {
-	{"about", ec_cb_about},
+	{"About", ec_cb_about},
 		{NULL, NULL}
 	};
 
 	Ec_Gui_Menu menus[] = {
-		{"file", file_menu},
-	{"help", help_menu},
+		{"File", file_menu},
+	{"Help", help_menu},
 		{NULL, NULL}
 	};
 
@@ -317,11 +319,11 @@ ec_theme_page_setup(Ewl_Notebook *n)
 {
 	Ewl_Widget *box, *o, *o2, *o3;
 	DIR *rep;
-	struct dirent *file;
 	Ecore_List *list;
 	const char *v;
 	int val;
-	int i = 0, sel = 0;
+	int i = 0, sel = -1;
+	char *home_dir, path[PATH_MAX];
 
 	box = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(n), box);
@@ -346,34 +348,33 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	ewl_mvc_data_set(EWL_MVC(o), list);
 	ewl_widget_show(o);
 
-	i = 0;
 	v = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_NAME);
 	rep = opendir(PACKAGE_DATA_DIR "/ewl/themes");
 	if (rep)
 	{
-		while ((file = readdir(rep)))
-		{
-			int len;
+		int ret;
 
-			len = strlen(file->d_name);
-			if ((len >= 4) &&
-					(!strcmp(file->d_name + len - 4, ".edj")))
-			{
-				char *t;
-
-				t = strdup(file->d_name);
-				*(t + len - 4) = '\0';
-
-				if (!strcmp(t, v)) sel = i;
-
-				ecore_list_append(list, t);
-				i++;
-			}
-		}
-		closedir(rep);
+		ret = ec_themes_get(rep, list, v, &i);
+		if (ret >= 0)
+			sel = ret;
 	}
+	closedir(rep);
 
-	ewl_mvc_selected_set(EWL_MVC(o), NULL, list, sel, 0);
+	home_dir = getenv("HOME");
+	snprintf(path, PATH_MAX, "%s/%s", home_dir, ".e/ewl/themes");
+	rep = opendir(path);
+	if (rep)
+	{
+		int ret;
+
+		ret = ec_themes_get(rep, list, v, &i);
+		if (ret >= 0)
+			sel = ret;
+	}
+	closedir(rep);
+
+	if (sel >= 0)
+		ewl_mvc_selected_set(EWL_MVC(o), NULL, list, sel, 0);
 	ewl_mvc_dirty_set(EWL_MVC(o), TRUE);
 
 	o2 = ewl_border_new();
@@ -787,6 +788,39 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	}
 	else
 		ewl_config_user_save(ewl_config);
+}
+
+int
+ec_themes_get(DIR *rep, Ecore_List *list, const char *v, int *count)
+{
+	struct dirent *file;
+	int z = -1;
+	
+	while ((file = readdir(rep)))
+	{
+		int len;
+
+		len = strlen(file->d_name);
+		
+		if ((len >= 4) &&
+				(!strcmp(file->d_name + len - 4, ".edj")))
+		{
+			char *t;
+
+			t = strdup(file->d_name);
+			*(t + len - 4) = '\0';
+
+			if (!strcmp(t, v)) 
+			{
+				z = *count;
+			}
+
+			ecore_list_append(list, t);
+			(*count)++;
+		}
+	}
+
+	return z;
 }
 
 
