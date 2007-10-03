@@ -17,6 +17,11 @@ cdef extern from "Ecore_Evas.h":
         ECORE_EVAS_ENGINE_DIRECTFB
         ECORE_EVAS_ENGINE_SOFTWARE_X11_16
 
+    ctypedef enum Ecore_Evas_Avoid_Damage_Type:
+        ECORE_EVAS_AVOID_DAMAGE_NONE
+        ECORE_EVAS_AVOID_DAMAGE_EXPOSE
+        ECORE_EVAS_AVOID_DAMAGE_BUILT_IN
+
 
     ####################################################################
     # Structures
@@ -151,8 +156,8 @@ cdef extern from "Ecore_Evas.h":
     int  ecore_evas_maximized_get(Ecore_Evas *ee)
     void ecore_evas_fullscreen_set(Ecore_Evas *ee, int on)
     int  ecore_evas_fullscreen_get(Ecore_Evas *ee)
-    void ecore_evas_avoid_damage_set(Ecore_Evas *ee, int on)
-    int  ecore_evas_avoid_damage_get(Ecore_Evas *ee)
+    void ecore_evas_avoid_damage_set(Ecore_Evas *ee, Ecore_Evas_Avoid_Damage_Type damage_type)
+    Ecore_Evas_Avoid_Damage_Type  ecore_evas_avoid_damage_get(Ecore_Evas *ee)
     void ecore_evas_withdrawn_set(Ecore_Evas *ee, int withdrawn)
     int  ecore_evas_withdrawn_get(Ecore_Evas *ee)
     void ecore_evas_sticky_set(Ecore_Evas *ee, int sticky)

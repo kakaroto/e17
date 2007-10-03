@@ -646,12 +646,13 @@ cdef class EcoreEvas:
         def __set__(self, int spec):
             self.fullscreen_set(spec)
 
-    def avoid_damage_set(self, int on):
-        ecore_evas_avoid_damage_set(self.obj, on)
+    def avoid_damage_set(self, int damage_type):
+        ecore_evas_avoid_damage_set(self.obj,
+                                    <Ecore_Evas_Avoid_Damage_Type>damage_type)
 
     def avoid_damage_get(self):
-        "@rtype: bool"
-        return bool(ecore_evas_avoid_damage_get(self.obj))
+        "@rtype: int"
+        return <int>ecore_evas_avoid_damage_get(self.obj)
 
     property avoid_damage:
         def __get__(self):
