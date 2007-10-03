@@ -1094,10 +1094,47 @@ _engine_go(void)
    return go;
 }
 
+static int
+_profile_parse(int argc, char **argv)
+{
+   int i;
+   int ok = 0;
+
+   for (i = 1; i < argc; i++)
+     {
+	if ((!strcmp(argv[i], "-p")) && (i < (argc - 1)))
+	  {
+	     i++;
+	     if      (!strcmp(argv[i], "qvga"))   {win_w = 320 ; win_h = 240 ;}
+	     else if (!strcmp(argv[i], "qvga-p")) {win_w = 240 ; win_h = 320 ;}
+	     else if (!strcmp(argv[i], "vga"))    {win_w = 640 ; win_h = 480 ;}
+	     else if (!strcmp(argv[i], "vga-p"))  {win_w = 480 ; win_h = 640 ;}
+	     else if (!strcmp(argv[i], "wvga"))   {win_w = 800 ; win_h = 480 ;}
+	     else if (!strcmp(argv[i], "wvga-p")) {win_w = 480 ; win_h = 800 ;}
+	     else if (!strcmp(argv[i], "svga"))   {win_w = 800 ; win_h = 600 ;}
+	     else if (!strcmp(argv[i], "svga-p")) {win_w = 600 ; win_h = 800 ;}
+	     else if (!strcmp(argv[i], "xga"))    {win_w = 1024; win_h = 768 ;}
+	     else if (!strcmp(argv[i], "xga-p"))  {win_w = 768 ; win_h = 1024;}
+	     else if (!strcmp(argv[i], "wxga"))   {win_w = 1280; win_h = 768 ;}
+	     else if (!strcmp(argv[i], "wxga-p")) {win_w = 768 ; win_h = 1280;}
+	     else if (!strcmp(argv[i], "n800"))   {win_w = 720 ; win_h = 420 ;}
+	     else
+	       {
+		  printf("Invalid profile: %s\n", argv[i]);
+		  return 0;
+	       }
+	  }
+     }
+   return 1;
+}
+
 static void
 _engine_args(int argc, char **argv)
 {
+   int profile_ok;
+   
    /* FIXME: parse args for geometry, engine etc. */
+   profile_ok = _profile_parse(argc, argv);
    if (engine_software_x11_args(argc, argv))
      loop_func = engine_software_x11_loop;
    if (engine_gl_glew_args(argc, argv))
@@ -1114,20 +1151,24 @@ _engine_args(int argc, char **argv)
      loop_func = engine_software_sdl_loop;
    if (engine_direct3d_args(argc, argv))
      loop_func = engine_direct3d_loop;
-   if (!loop_func)
+   if ((!loop_func) || (!profile_ok))
      {
 	fprintf(stderr,
 		"No engine selected.\n"
 		"\n"
 		"Options:\n"
 		"  -e ENGINE\n"
+		"  -p PROFILE\n"
 		"\n"
 		"Where ENGINE can be one of:\n"
 		"  x11 xr gl-glew gl x11-16 ddraw direct3d sdl\n"
+		"Where PROFILE can be one of:\n"
+		"  qvga qvga-p vga vga-p wvga wvga-p svga svga-p xga xga-p wxga wxga-p\n"
+		"  n800\n"
 		);
 	exit(-1);
      }
-
+   
    evas_output_size_set(evas, win_w, win_h);
    evas_output_viewport_set(evas, 0, 0, win_w, win_h);
    evas_key_modifier_add(evas, "Shift");

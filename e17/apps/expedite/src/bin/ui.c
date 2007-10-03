@@ -241,15 +241,26 @@ _ui_setup(void)
    evas_object_show(o);
    o_bg = o;
 
-   o = evas_object_image_add(evas);
+   o = evas_object_rectangle_add(evas);
    evas_object_move(o, 0, 0);
-   evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/bg.png", NULL);
-   evas_object_image_fill_set(o, 0, 0, win_w, win_h);
    evas_object_resize(o, win_w, win_h);
+   evas_object_color_set(o, 255, 255, 255, 255);
    evas_object_layer_set(o, -99);
    evas_object_show(o);
    o_wallpaper = o;
 
+/*   
+   o = evas_object_image_add(evas);
+   evas_object_move(o, 0, 0);
+   evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/bg.png", NULL);
+   evas_object_image_fill_set(o, 0, 0, win_w, win_h);
+   evas_object_image_smooth_scale_set(o, 0);
+   evas_object_resize(o, win_w, win_h);
+   evas_object_layer_set(o, -99);
+   evas_object_show(o);
+   o_wallpaper = o;
+ */
+   
    o = evas_object_text_add(evas);
    evas_object_text_font_set(o, "Vera-Bold", 10);
    evas_object_text_text_set(o, "EXPEDITE");
