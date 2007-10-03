@@ -138,7 +138,7 @@ void etk_signal_new_with_desc(Etk_Type *type,
  *
  * assumes @a signal_name and @a type to be valid.
  */
-Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type)
+Etk_Signal *etk_signal_lookup_by_name(const char *signal_name, Etk_Type *type)
 {
    unsigned i;
 
@@ -152,6 +152,28 @@ Etk_Signal *etk_signal_lookup(const char *signal_name, Etk_Type *type)
    return NULL;
 }
 
+/**
+ * @brief Gets the signal corresponding to the code and the object type.
+ *
+ * assumes @a signal_name and @a type to be valid.
+ */
+Etk_Signal *etk_signal_lookup_by_code(int signal_code, Etk_Type *type)
+{
+   if (!type)
+      return NULL;
+
+   if (signal_code < 0 || signal_code >= type->signals_count)
+   {
+      ETK_WARNING("Invalid signal lookup: the type \"%s\" doesn't "
+                  "have a signal with code \"%d\"", type->name,
+                  signal_code);
+      return NULL;
+   }
+
+   return type->signals[signal_code];
+}
+
+
 
 /**
  * @brief Gets the signal code corresponding to the name and the object type.
@@ -162,7 +184,7 @@ static int etk_signal_lookup_code(const char *signal_name, Etk_Type *type)
 {
    Etk_Signal *signal;
 
-   signal = etk_signal_lookup(signal_name, type);
+   signal = etk_signal_lookup_by_name(signal_name, type);
    if (signal)
      return signal->code;
    else
@@ -446,7 +468,7 @@ void etk_signal_disconnect_scb(const char *signal_name, Etk_Object *object,
  * @param signal_code the code of the signal for which all callbacks will be disconnected
  * @param object the object for which all callbacks will be disconnected
  */
-void etk_signal_disconnect_all_code(int signal_code, Etk_Object *object)
+void etk_signal_disconnect_all_by_code(int signal_code, Etk_Object *object)
 {
    Evas_List *c;
    Etk_Signal_Callback *signal_callback;
@@ -487,7 +509,7 @@ void etk_signal_disconnect_all(const char *signal_name, Etk_Object *object)
    signal_code = etk_signal_lookup_code(signal_name,
                                         etk_object_object_type_get(object));
 
-   etk_signal_disconnect_all_code(signal_code, object);
+   etk_signal_disconnect_all_by_code(signal_code, object);
 }
 
 /**
@@ -802,7 +824,7 @@ Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object,
    if (!object || !signal_name)
       return ETK_FALSE;
 
-   signal = etk_signal_lookup(signal_name, etk_object_object_type_get(object));
+   signal = etk_signal_lookup_by_name(signal_name, etk_object_object_type_get(object));
    if (!signal)
    {
       ETK_WARNING("Invalid signal emission: the object type doesn't have "
@@ -869,12 +891,13 @@ Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object,
       etk_object_signal_callbacks_get(object, signal->code, &callbacks);
       while (keep_emission && callbacks && object_ptr)
       {
-         va_copy(args2, args);
          callback = callbacks->data;
+         callbacks = callbacks->next;
+
+         va_copy(args2, args);
          etk_signal_callback_call_valist(signal, callback, object,
                                          &keep_emission, args2);
          va_end(args2);
-         callbacks = callbacks->next;
       }
    }
 
