@@ -5,7 +5,6 @@ from ez_setup import use_setuptools
 use_setuptools('0.6c3')
 
 from setuptools import setup, find_packages, Extension
-from distutils.sysconfig import get_python_inc
 import commands
 
 from Cython.Distutils import build_ext
@@ -62,7 +61,7 @@ MPEG2, etc) is avalible using Emotion.
 class emotion_build_ext(build_ext):
     def finalize_options(self):
         build_ext.finalize_options(self)
-        self.include_dirs.extend(['include', get_python_inc()])
+        self.include_dirs.insert(0, 'include')
 
 
 setup(name='python-emotion',

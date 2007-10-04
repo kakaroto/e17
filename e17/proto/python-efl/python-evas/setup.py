@@ -93,7 +93,7 @@ only terminal to 16 color VGA to 256 color and all the way up through
 class evas_build_ext(build_ext):
     def finalize_options(self):
         build_ext.finalize_options(self)
-        self.include_dirs.append('include')
+        self.include_dirs.insert(0, 'include')
 
 
 class evas_install_headers(install_headers):
