@@ -39,7 +39,7 @@ static void ec_cb_apply(Ewl_Widget *w, void *ev, void *data);
 static void ec_cb_revert(Ewl_Widget *w, void *ev, void *data);
 static void ec_cb_win_hide(Ewl_Widget *w, void *ev, void *data);
 
-int ec_themes_get(DIR *rep, Ecore_List *list, const char *v, int *count);
+int ec_themes_get(DIR *rep, Ecore_List *list, const char *v);
 
 typedef struct Ec_Gui_Menu_Item Ec_Gui_Menu_Item;
 struct Ec_Gui_Menu_Item
@@ -322,7 +322,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	Ecore_List *list;
 	const char *v;
 	int val;
-	int i = 0, sel = -1;
+	int sel = -1;
 	char *home_dir, path[PATH_MAX];
 
 	box = ewl_hbox_new();
@@ -354,7 +354,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	{
 		int ret;
 
-		ret = ec_themes_get(rep, list, v, &i);
+		ret = ec_themes_get(rep, list, v);
 		if (ret >= 0)
 			sel = ret;
 	}
@@ -367,7 +367,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	{
 		int ret;
 
-		ret = ec_themes_get(rep, list, v, &i);
+		ret = ec_themes_get(rep, list, v);
 		if (ret >= 0)
 			sel = ret;
 	}
@@ -791,7 +791,7 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 int
-ec_themes_get(DIR *rep, Ecore_List *list, const char *v, int *count)
+ec_themes_get(DIR *rep, Ecore_List *list, const char *v)
 {
 	struct dirent *file;
 	int z = -1;
@@ -801,7 +801,7 @@ ec_themes_get(DIR *rep, Ecore_List *list, const char *v, int *count)
 		int len;
 
 		len = strlen(file->d_name);
-		
+
 		if ((len >= 4) &&
 				(!strcmp(file->d_name + len - 4, ".edj")))
 		{
@@ -810,13 +810,10 @@ ec_themes_get(DIR *rep, Ecore_List *list, const char *v, int *count)
 			t = strdup(file->d_name);
 			*(t + len - 4) = '\0';
 
-			if (!strcmp(t, v)) 
-			{
-				z = *count;
-			}
-
 			ecore_list_append(list, t);
-			(*count)++;
+		
+			if (!strcmp(t, v)) 
+				z = ecore_list_count(list) - 1;
 		}
 	}
 
