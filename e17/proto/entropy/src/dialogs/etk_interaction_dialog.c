@@ -13,7 +13,7 @@ void etk_entropy_user_interaction_dialog_cb(Etk_Object* w, void* user_data)
 	
         entropy_plugin_operation_respond( id, (int)user_data );
 
-	etk_signal_disconnect("pressed", ETK_OBJECT(w), ETK_CALLBACK(etk_entropy_user_interaction_dialog_cb));
+	etk_signal_disconnect_scb("pressed", ETK_OBJECT(w), ETK_CALLBACK(etk_entropy_user_interaction_dialog_cb));
 	
 	window = etk_object_data_get(ETK_OBJECT(w), "window");
 	etk_object_destroy(ETK_OBJECT(window));
@@ -31,7 +31,7 @@ void etk_entropy_delete_dialog_cb(Etk_Object* w, void* user_data)
 	files= etk_object_data_get(ETK_OBJECT(window), "files");
 	instance = etk_object_data_get(ETK_OBJECT(window), "instance");
 
-	etk_signal_disconnect("pressed", ETK_OBJECT(w), ETK_CALLBACK(etk_entropy_delete_dialog_cb));
+	etk_signal_disconnect_scb("pressed", ETK_OBJECT(w), ETK_CALLBACK(etk_entropy_delete_dialog_cb));
 
 	switch (result) {
 		case ENTROPY_USER_INTERACTION_RESPONSE_YES: {
