@@ -748,18 +748,19 @@ void
 _taskbar_config_updated(Config_Item *ci)
 {
    Evas_List *l;
+   Evas_List *m;
    if (!taskbar_config) return;
    for (l = taskbar_config->instances; l; l = l->next)
      {
 	Instance *inst;
 	inst = l->data;
 	if (inst->ci != ci) continue;
-	for (l = inst->taskbar->icons; l; l = l->next)
+	for (m = inst->taskbar->icons; m; m = m->next)
 	  {
 	     if (!inst->ci->show_label)
-	       edje_object_signal_emit(l->data, "label_hidden", "");
+	       edje_object_signal_emit(m->data, "label_hidden", "");
 	     else
-	       edje_object_signal_emit(l->data, "label_visible", "");
+	       edje_object_signal_emit(m->data, "label_visible", "");
 
 	  }
 
