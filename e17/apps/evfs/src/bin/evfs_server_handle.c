@@ -10,7 +10,6 @@
 #include <errno.h>
 #include <dirent.h>
 
-#include <Ecore_Desktop.h>
 #include <Efreet.h>
 #include <Efreet_Mime.h>
 #include <sqlite3.h>
