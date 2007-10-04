@@ -64,9 +64,9 @@ typedef struct Ewl_Menu_Info Ewl_Menu_Info;
  */
 struct Ewl_Menu_Info
 {
-	char *name;						/**< The name of the menu item */
-	char *img;						/**< The menu item image */
-	void (*cb)(Ewl_Widget *w, void *ev, void *data);	/**< The menu item callback */
+	const char *name;		/**< The name of the menu item */
+	const char *img;		/**< The menu item image */
+	void (*cb)(Ewl_Widget *w, void *ev, void *data); /**< The menu item callback */
 };
 
 Ewl_Widget	*ewl_menu_new(void);
