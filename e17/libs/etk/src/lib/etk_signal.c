@@ -138,7 +138,7 @@ void etk_signal_new_with_desc(Etk_Type *type,
  *
  * assumes @a signal_name and @a type to be valid.
  */
-Etk_Signal *etk_signal_lookup_by_name(const char *signal_name, Etk_Type *type)
+static Etk_Signal *etk_signal_lookup_by_name(const char *signal_name, Etk_Type *type)
 {
    unsigned i;
 
@@ -151,29 +151,6 @@ Etk_Signal *etk_signal_lookup_by_name(const char *signal_name, Etk_Type *type)
 
    return NULL;
 }
-
-/**
- * @brief Gets the signal corresponding to the code and the object type.
- *
- * assumes @a signal_name and @a type to be valid.
- */
-Etk_Signal *etk_signal_lookup_by_code(int signal_code, Etk_Type *type)
-{
-   if (!type)
-      return NULL;
-
-   if (signal_code < 0 || signal_code >= type->signals_count)
-   {
-      ETK_WARNING("Invalid signal lookup: the type \"%s\" doesn't "
-                  "have a signal with code \"%d\"", type->name,
-                  signal_code);
-      return NULL;
-   }
-
-   return type->signals[signal_code];
-}
-
-
 
 /**
  * @brief Gets the signal code corresponding to the name and the object type.

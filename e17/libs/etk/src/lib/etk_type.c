@@ -293,9 +293,12 @@ Etk_Type *etk_type_get_from_name(const char *name)
 
 /**
  * @brief Gets the signal corresponding to the type and the signal name
+ *
  * @param type the type that is associated to the signal to get
  * @param signal_name the name of the signal to get
- * @return Returns the signal corresponding to the type and the signal name, or NULL on failure
+ *
+ * @return Returns the signal corresponding to the type and the signal name,
+ *         or NULL on failure
  */
 Etk_Signal *etk_type_signal_get_by_name(Etk_Type *type, const char *signal_name)
 {
@@ -311,6 +314,15 @@ Etk_Signal *etk_type_signal_get_by_name(Etk_Type *type, const char *signal_name)
    return NULL;
 }
 
+/**
+ * @brief Gets the signal corresponding to the type and the signal code
+ *
+ * @param type the type that is associated to the signal to get
+ * @param signal_code the code of the signal to get
+ *
+ * @return Returns the signal corresponding to the type and the signal name,
+ *         or NULL on failure
+ */
 Etk_Signal *etk_type_signal_get(Etk_Type *type, int signal_code)
 {
    if (!type || signal_code < 0 || signal_code >= type->signals_count)
