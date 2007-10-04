@@ -37,6 +37,6 @@ efolder_la_LIBADD =  @ECORE_LIBS@ @taglib_libs@ -L$(top_builddir)/src/lib -levfs
 
 trash_la_CFLAGS =  @ECORE_CFLAGS@ @EFREET_CFLAGS@
 trash_la_LDFLAGS = -module -avoid-version
-trash_la_LIBADD =  @ECORE_LIBS@ @taglib_libs@ -L$(top_builddir)/src/lib -levfs
+trash_la_LIBADD =  @EFREET_LIBS@ @ECORE_LIBS@ @taglib_libs@ -L$(top_builddir)/src/lib -levfs
 
 

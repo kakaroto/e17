@@ -39,6 +39,7 @@
 #include <dirent.h>
 #include <Ecore_File.h>
 #include <Ecore_Desktop.h>
+#include <Efreet.h>
 
 #define EVFS_PLUGIN_VFOLDER_TRASH_ID "/Trash"
 
@@ -53,7 +54,7 @@ evfs_plugin_init()
    evfs_plugin_functions_vfolder *functions = calloc(1, sizeof(evfs_plugin_functions_vfolder));
    functions->evfs_vfolder_list = &evfs_vfolder_list;
 
-   ecore_desktop_init();
+   efreet_desktop_init();
 
    evfs_home_dir = strdup(getenv("HOME"));
    snprintf(evfs_trash_home, PATH_MAX, "%s/.Trash/info", evfs_home_dir);
@@ -80,7 +81,7 @@ void evfs_vfolder_list(EvfsFilereference* ref, Ecore_List** list)
 		char* pos;
 		
 		snprintf(parser, PATH_MAX, "%s/%s", evfs_trash_home, file);
-		Ecore_Desktop* desk = ecore_desktop_get(parser, NULL);
+		Efreet_Desktop* desk = efreet_desktop_get(parser);
 
 		if (desk->path) {
 			pos = strrchr(desk->path, '/');
