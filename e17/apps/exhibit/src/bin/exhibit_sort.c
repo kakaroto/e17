@@ -73,8 +73,8 @@ _ex_sort_itree_size_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_R
    if (!row1 || !row2 || !col)
       return 0;
    
-   etk_tree_row_fields_get(row1, col, NULL, NULL, &f1, NULL);
-   etk_tree_row_fields_get(row2, col, NULL, NULL, &f2, NULL);
+   f1 = (char *)etk_tree_row_data_get(row1);
+   f2 = (char *)etk_tree_row_data_get(row2);
    
    stat(f1, &s1);
    stat(f2, &s2);
@@ -94,8 +94,8 @@ _ex_sort_itree_date_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_R
    if (!row1 || !row2 || !col)
       return 0;
    
-   etk_tree_row_fields_get(row1, col, NULL, NULL, &f1, NULL);
-   etk_tree_row_fields_get(row2, col, NULL, NULL, &f2, NULL);
+   f1 = (char *)etk_tree_row_data_get(row1);
+   f2 = (char *)etk_tree_row_data_get(row2);
    
    stat(f1, &s1);
    stat(f2, &s2);
@@ -114,8 +114,8 @@ _ex_sort_itree_resol_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_
    if (!row1 || !row2 || !col)
       return 0;
    
-   etk_tree_row_fields_get(row1, col, NULL, NULL, &f1, NULL);
-   etk_tree_row_fields_get(row2, col, NULL, NULL, &f2, NULL);
+   f1 = (char *)etk_tree_row_data_get(row1);
+   f2 = (char *)etk_tree_row_data_get(row2);
 
    return _ex_sort_resol(f1, f2);
 }
@@ -166,7 +166,6 @@ _ex_sort_name_cb(Etk_Object *obj, void *data)
 {    
    etk_tree_col_sort_full(etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), _ex_sort_itree_name_compare_cb,
 			  NULL, ETK_TRUE);
-   _ex_tab_imagelist_rebuild();
    return ETK_TRUE;
 }
 
@@ -175,7 +174,6 @@ _ex_sort_size_cb(Etk_Object *obj, void *data)
 {    
    etk_tree_col_sort_full(e->cur_tab->icol, _ex_sort_itree_size_compare_cb,
 			  NULL, ETK_TRUE);
-   _ex_tab_imagelist_rebuild();
    return ETK_TRUE;
 }
 
@@ -184,7 +182,6 @@ _ex_sort_resol_cb(Etk_Object *obj, void *data)
 {    
    etk_tree_col_sort_full(e->cur_tab->icol, _ex_sort_itree_resol_compare_cb,
 			  NULL, ETK_TRUE);
-   _ex_tab_imagelist_rebuild();
    return ETK_TRUE;
 }
 
@@ -193,7 +190,6 @@ _ex_sort_date_cb(Etk_Object *obj, void *data)
 {    
    etk_tree_col_sort_full(e->cur_tab->icol, _ex_sort_itree_date_compare_cb,
 			  NULL, ETK_TRUE);
-   _ex_tab_imagelist_rebuild();
    return ETK_TRUE;
 }
 

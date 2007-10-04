@@ -263,7 +263,6 @@ _ex_main_populate_files_timer_cb(void *fdata)
 	if(!realpath(image, imagereal))
 	  snprintf(imagereal, PATH_MAX, "%s", image);
 	
-	e->cur_tab->images = evas_list_append(e->cur_tab->images, strdup(imagereal));
 	_ex_main_itree_add(imagereal, data->selected_file);
 	
 	if (i == MAX_INSERTS_PER_ITERATION)
@@ -385,10 +384,14 @@ _ex_main_populate_files(const char *selected_file, Ex_Tree_Update update)
    data->num = FILELIST_SIZE * j + i;
    closedir(dir);   
 
-   _ex_tab_imagelist_free(e->cur_tab);
-   
    ecore_timer_add(0.001, _ex_main_populate_files_timer_cb, data);  
    
+}
+
+void
+_ex_main_row_data_free(void *data) {
+   if (data)
+      free(data);
 }
 
 void
@@ -412,6 +415,7 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 				   e->cur_tab->icol,
 				   NULL, NULL, 
 				   basename((char *) file), NULL);
+	etk_tree_row_data_set_full(row, strdup(file), _ex_main_row_data_free);
 	return;
      }
    
@@ -434,6 +438,7 @@ _ex_main_itree_add(const char *file, const char *selected_file)
 	 e->cur_tab->icol,
 	 PACKAGE_DATA_DIR"/gui.edj", "thumb_loading",
 	 basename((char *) file), NULL);
+   etk_tree_row_data_set_full(row, strdup(file), _ex_main_row_data_free);
 }
 
 static void
@@ -488,7 +493,6 @@ _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_F
 		 _ex_main_itree_add(path, path);
 	      else
 		 _ex_main_itree_add(path, NULL);
-              e->cur_tab->images = evas_list_append(e->cur_tab->images, strdup(path));
 	      break;
 	   default:
 	      D(("Unknown ecore file event occured\n"));

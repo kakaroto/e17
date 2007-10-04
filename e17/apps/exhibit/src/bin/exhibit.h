@@ -164,7 +164,6 @@ struct _Ex_Tab
    Etk_Bool       fit_window;
    Ecore_File_Monitor *monitor;
    
-   Evas_List     *images;
    Evas_List     *dirs;
   
    Etk_Widget    *image;   
