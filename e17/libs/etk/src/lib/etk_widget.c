@@ -109,6 +109,8 @@ static void _etk_widget_mouse_move_cb(void *data, Evas *evas, Evas_Object *objec
 static void _etk_widget_mouse_down_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
 static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *object, void *event_info);
+static void _etk_widget_focus_out_cb(void *data, Evas *evas,
+                                     Evas_Object *object, void *event_info);
 static Etk_Bool _etk_widget_signal_mouse_down_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data);
 static Etk_Bool _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 
@@ -434,6 +436,12 @@ void etk_widget_focus(Etk_Widget *widget)
 
    if (!widget || !widget->toplevel_parent || !widget->focusable || etk_widget_disabled_get(widget))
       return;
+
+   /* Make sure to set the focus on the smart object of the toplevel parent
+    * because if many Etk_Embed are on the same Evas, only one of them will
+    * be able to receive keyboard events. */
+   evas_object_focus_set(ETK_WIDGET(widget->toplevel_parent)->smart_object, 1);
+
    if ((focused = etk_toplevel_focused_widget_get(widget->toplevel_parent)) && (widget == focused))
       return;
 
@@ -2354,6 +2362,21 @@ static void _etk_widget_mouse_wheel_cb(void *data, Evas *evas, Evas_Object *obje
       _etk_widget_mouse_wheel_cb(widget->parent, evas, NULL, event_info);
 }
 
+/* Evas Callback: Called when the widget loses focus */
+static void _etk_widget_focus_out_cb(void *data, Evas *evas,
+                                     Evas_Object *object, void *event_info)
+{
+   Etk_Widget *widget;
+   Etk_Widget *focused;
+
+   if (!(widget = ETK_WIDGET(data)))
+      return;
+
+   focused = etk_toplevel_focused_widget_get(widget->toplevel_parent);
+   if (focused)
+      etk_widget_unfocus(focused);
+}
+
 /* Signal Callback: Called when the user presses a key, if the widget is focused */
 static Etk_Bool _etk_widget_signal_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
@@ -2437,6 +2460,8 @@ static void _etk_widget_realize(Etk_Widget *widget)
    evas_object_event_callback_add(widget->smart_object, EVAS_CALLBACK_MOUSE_DOWN, _etk_widget_mouse_down_cb, widget);
    evas_object_event_callback_add(widget->smart_object, EVAS_CALLBACK_MOUSE_UP, _etk_widget_mouse_up_cb, widget);
    evas_object_event_callback_add(widget->smart_object, EVAS_CALLBACK_MOUSE_WHEEL, _etk_widget_mouse_wheel_cb, widget);
+   evas_object_event_callback_add(widget->smart_object, EVAS_CALLBACK_FOCUS_OUT,
+                                  _etk_widget_focus_out_cb, widget);
 
    if (widget->parent && widget->parent->smart_object)
       _etk_widget_object_add_to_smart(widget->parent, widget->smart_object, (widget->clip == NULL));
