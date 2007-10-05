@@ -146,7 +146,7 @@ cdef class Image(Object):
         respectively.
 
         The default values for the fill parameters is B{x} = 0, B{y} = 0,
-        B{w} = 32 and B{h} = 32.
+        B{w} = 1 and B{h} = 1.
 
         @parm: B{x}
         @parm: B{y}

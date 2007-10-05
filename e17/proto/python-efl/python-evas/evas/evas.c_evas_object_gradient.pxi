@@ -101,7 +101,7 @@ cdef class Gradient(Object):
         need to be the width and height of the gradient object respectively.
 
         The default values for the fill parameters is x = 0, y = 0,
-        w = 32 and h = 32.
+        w = 1 and h = 1.
 
         @parm: B{x}
         @parm: B{y}
