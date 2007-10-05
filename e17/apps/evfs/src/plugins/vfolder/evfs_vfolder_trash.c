@@ -38,7 +38,6 @@
 #include <errno.h>
 #include <dirent.h>
 #include <Ecore_File.h>
-#include <Ecore_Desktop.h>
 #include <Efreet.h>
 
 #define EVFS_PLUGIN_VFOLDER_TRASH_ID "/Trash"
