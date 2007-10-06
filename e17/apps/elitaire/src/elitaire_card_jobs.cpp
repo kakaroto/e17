@@ -1,6 +1,8 @@
 /* vim: set sw=4 ts=4 sts=4 expandtab: */
 #include "elitaire_card_private.h"
 
+#define VELOCITY(eli) ((eli)->velocity * (eli)->w / 500)
+
 /* ****************************************************************************
  * Declarations 
  * ****************************************************************************/
@@ -269,9 +271,8 @@ _elitaire_card_job_flip(Elitaire_Job_List * list, void * data)
     
     image = eli_card->image;
     evas_object_geometry_get(image, &x, NULL, NULL, NULL);
-    //job->x.ec = x;
-    
     _elitaire_card_job_timer_add(list, data, _elitaire_card_flip_cb);
+
     return 0;
 }
 
@@ -517,7 +518,7 @@ _elitaire_card_slide_cb(void * data)
 
     evas_object_geometry_get(card, &from_x, &from_y, NULL, NULL);
 
-    m = eli_card->eli->velocity * ft
+    m = VELOCITY(eli_card->eli) * ft
         / sqrt((double) (SQR(to_x - from_x) + SQR(to_y - from_y)));
 
     new_x = (Evas_Coord) (m * (to_x - from_x)) + from_x;
@@ -558,7 +559,7 @@ _elitaire_card_flip_cb(void * data)
     if (shadow)
         evas_object_geometry_get(shadow, &sh_x, &sh_y, NULL, NULL);
     
-    new_w = im_w + job->y.ec * (Evas_Coord) (eli_card->eli->velocity
+    new_w = im_w + job->y.ec * (Evas_Coord) (VELOCITY(eli_card->eli)
                                               / eli_card->eli->frame_rate);
     if (new_w < 0) {
         job->y.ec = 1;
@@ -655,7 +656,7 @@ _elitaire_card_drag_cb(void * data)
     evas_object_geometry_get(eli_card->shadow, &x, &y, &w, NULL);
     evas_object_geometry_get(eli_card->image, &image_x, &image_y, NULL, NULL);
 
-    d = (Evas_Coord) eli_card->eli->velocity / (eli_card->eli->frame_rate * 2);
+    d = (Evas_Coord) (VELOCITY(eli_card->eli) / (eli_card->eli->frame_rate * 2));
     image_x -= d;
     image_y -= d;
 
@@ -703,7 +704,7 @@ _elitaire_card_drop_cb(void * data)
     evas_object_geometry_get(card, &x, &y, &w, NULL);
     evas_object_geometry_get(eli_card->image, &image_x, &image_y, NULL, NULL);
 
-    d = (Evas_Coord) eli_card->eli->velocity / eli_card->eli->frame_rate;
+    d = (Evas_Coord) (VELOCITY(eli_card->eli) / eli_card->eli->frame_rate);
     image_x += d;
     image_y += d;
 
