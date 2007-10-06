@@ -4529,3 +4529,10 @@ Screen stuff naming consistency and code tweaks.
 Fix xinerama head selection in certain situations.
 Fix menu placement on xinerama screens.
 Force new (default as of 0.16.8.9) composite manager mode at startup.
+
+-------------------------------------------------------------------------------
+
+Sat Oct  6 09:16:40 CEST 2007
+(Kim)
+
+--- 0.16.8.10 ---
