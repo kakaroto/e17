@@ -116,8 +116,8 @@ class EcoreEvasWindow : public Trackable
     void setFullscreen( int on );
     int isFullscreen() const;
 
-    void setAvoidDamage( int on );
-    int isAvoidDamage() const;
+    void setAvoidDamage( Ecore_Evas_Avoid_Damage_Type value );
+    Ecore_Evas_Avoid_Damage_Type AvoidDamage() const;
 
     void setWithdrawn( int on );
     int isWithdrawn() const;

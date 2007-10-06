@@ -333,12 +333,12 @@ int EcoreEvasWindow::isFullscreen() const
     return ecore_evas_fullscreen_get( _ee );
 }
 
-void EcoreEvasWindow::setAvoidDamage( int on )
+void EcoreEvasWindow::setAvoidDamage( Ecore_Evas_Avoid_Damage_Type value )
 {
-    ecore_evas_avoid_damage_set( _ee, on );
+    ecore_evas_avoid_damage_set( _ee, value );
 }
 
-int EcoreEvasWindow::isAvoidDamage() const
+Ecore_Evas_Avoid_Damage_Type EcoreEvasWindow::AvoidDamage() const
 {
     return ecore_evas_avoid_damage_get( _ee );
 }
