@@ -433,7 +433,7 @@ setup(App *app, int argc, char **argv)
   else
   {
     printf("Usage: ./e_phys_demo <test>\n\nTests:\n");
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < 5; i++)
     {
       printf("\t%s\n", test[i].name);
     }
