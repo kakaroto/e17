@@ -318,17 +318,22 @@ SceneDraw1(double t, EWin ** ewins, int num)
 
    w = EobjGetW(GLWin.eo);
    h = EobjGetH(GLWin.eo);
+   w = (3 * w) / 4;
 
    DrawBackground(texture[sel_bg], w, h);
 
-   i = sqrt(w * h / (1.5 * num));
-   ny = h / i;
-   nx = num / ny;
+   i = sqrt(w * h / (1.0 * num));
+   nx = (w + i - 1) / i;
+   if (nx <= 0)
+      nx = 1;
+   ny = (num + nx - 1) / nx;
+   if (ny <= 0)
+      ny = 1;
 #if 0
    Eprintf("wxh=%fx%f num=%d nx,ny=%d,%d\n", w, h, num, nx, ny);
 #endif
-   w /= nx;
-   h /= ny;
+   w = EobjGetW(GLWin.eo) / nx;
+   h = EobjGetH(GLWin.eo) / ny;
 
    k = 0;
    for (j = 0; j < ny; j++)
@@ -344,7 +349,7 @@ SceneDraw1(double t, EWin ** ewins, int num)
 	     dx = (fabs(dx) < 1.0) ? 0. : dx * sin(5. * t);
 	     dy = 100.0f * exp(-t);
 	     dy = (fabs(dy) < 1.0) ? 0. : dy * cos(5. * t);
-	     sz = (k == sel_ewin) ? 1.0f : 0.5f;
+	     sz = (k == sel_ewin) ? 0.6f : 0.5f;
 	     DrawQube(EobjGetTexture(eo),
 		      dx + (0.5f + i) * w, dy + (0.5f + j) * h, 500.0f,
 		      sz * EobjGetW(eo), sz * EobjGetH(eo), rot_x, rot_y);
