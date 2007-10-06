@@ -359,6 +359,8 @@ _taskbar_fill(Taskbar *b)
            continue;
         if (bd->client.netwm.state.skip_taskbar)
            continue;
+	if (!ic||!ic->taskbar||!ic->taskbar->inst||!ic->taskbar->inst->ci)
+	  continue;
         if ((((bd->desk == e_desk_current_get(b->zone))||(bd->sticky)) && (bd->zone == b->zone)) ||
 	    (ic->taskbar->inst->ci->show_all))
           {
