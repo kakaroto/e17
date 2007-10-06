@@ -27,27 +27,27 @@ main (int argc, char *argv[])
 
   if (argc < 3) {
     printf ("\nUsage: %s filename page_number\n\n", argv[0]);
-    exit (-1);
+    return EXIT_FAILURE;
   }
 
   document = epdf_document_new (argv[1]);
   if (!document) {
     printf ("Bad pdf file\n");
-    exit (-1);
+    return EXIT_FAILURE;
   }
 
   sscanf (argv[2], "%d", &page_number);
   if (page_number >= epdf_document_page_count_get (document)) {
     printf ("Page number exceeds the page count of the PDF document\n");
     epdf_document_delete (document);
-    exit (-1);
+    return EXIT_FAILURE;
   }
 
   page = epdf_page_new (document, page_number);
   if (!page) {
     printf ("Bad page\n");
     epdf_document_delete (document);
-    exit (-1);
+    return EXIT_FAILURE;
   }
 
   document_info_print (document, page);
@@ -55,16 +55,28 @@ main (int argc, char *argv[])
   if (!evas_init()) return -1;
   if (!ecore_init()) {
     evas_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
 
   if (!ecore_evas_init()) {
     evas_shutdown ();
     ecore_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
 
   ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, 600, 850);
+  /* these tests can be improved... */
+  if (!ee) {
+    printf ("Can not find Software X11 engine. Trying DirectDraw engine...\n");
+    ee = ecore_evas_software_ddraw_new (NULL,  0, 0, 600, 850);
+    if (!ee) {
+      printf ("Can not find Software X11 engine. Trying DirectDraw engine...\n");
+      printf ("Exiting...\n");
+      evas_shutdown ();
+      ecore_shutdown ();
+      return EXIT_FAILURE;
+    }
+  }
   ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
   ecore_evas_callback_delete_request_set (ee, app_delete_request);
   ecore_evas_title_set (ee, "Evas Pdf Test");
@@ -92,7 +104,7 @@ main (int argc, char *argv[])
   ecore_shutdown ();
   evas_shutdown ();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 static void display_index (Epdf_Document *document, Ecore_List *children, int n)

@@ -1,3 +1,21 @@
+2007-10-06  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.in:
+	* src/bin/Makefile.am:
+	* src/lib/Makefile.am:
+	* src/plugins/epsilon/Makefile.am:
+	* src/plugins/ewl/Makefile.am:
+	make epdf work on Windows. Add libtool versioning.
+	Check poppler 0.5.9 instead of 0.6. configure fails
+	if the xpdf headers are not found. Add options to
+	configure to disable ewl or etk.
+
+	* src/lib/poppler_index.cpp:
+	remove useless header.
+
+	* src/bin/epdf_evas_test.c: (main):
+	if software_x11 is not found, use software_ddraw.
+
 2007-09-29  Vincent Torri  <doursse at users dot sf dot net>
 
 	* configure.in:

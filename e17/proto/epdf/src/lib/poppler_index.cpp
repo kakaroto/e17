@@ -1,7 +1,5 @@
 #include "config.h"
 
-#include <stdlib.h>
-
 #include <GlobalParams.h>
 #include <PDFDoc.h>
 #include <Outline.h>
