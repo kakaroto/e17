@@ -3,8 +3,10 @@
 #include "ewl_context_menu.h"
 #include "edje_frontend.h"
 
+#define ELI_ICON(icon) ewl_icon_theme_icon_path_get(EWL_ICON_ ## icon, EWL_ICON_SIZE_SMALL)
+
 static void _item_select_cb(Ewl_Widget * w, void * ev_data, void * user_data);
-static void _add_item(const char * text, Ewl_Widget * container, void * data);
+static void _add_item(const char * text, const char * image, Ewl_Widget * container, void * data);
 static void _new_cb(Ewl_Widget * w, void * ev_data, void * user_data);
 static Ewl_Widget * _new_menu(Eli_App * eap);
 
@@ -18,20 +20,23 @@ Ewl_Widget * eli_edje_frontend_conmenu_new(Eli_App * eap)
 
     w = _new_menu(eap);
     ewl_container_child_append(EWL_CONTAINER(menu), w);
-    _add_item(sgettext(N_("CONTEXT|Undo")), menu, eap);
-    _add_item(sgettext(N_("CONTEXT|Highscore")), menu, eap);
-    _add_item(sgettext(N_("CONTEXT|Preferences")), menu, eap);
-    _add_item(sgettext(N_("CONTEXT|About")), menu, eap);
+    _add_item(sgettext(N_("CONTEXT|Undo")), ELI_ICON(DOCUMENT_REVERT), menu, eap);
+    _add_item(sgettext(N_("CONTEXT|Highscore")), NULL, menu, eap);
+    _add_item(sgettext(N_("CONTEXT|Preferences")), ELI_ICON(PREFERENCES_OTHER), menu, eap);
+    _add_item(sgettext(N_("CONTEXT|About")), ELI_ICON(HELP_ABOUT), menu, eap);
     
     return EWL_WIDGET(menu);
 }
 
-static void _add_item(const char * text, Ewl_Widget * container, void * data)
+static void _add_item(const char * text, const char * icon, Ewl_Widget * container, void * data)
 {
     Ewl_Widget * w;
 
+    if (!icon) icon = "";
+
     w = ewl_menu_item_new();
     ewl_button_label_set(EWL_BUTTON(w), text);
+    ewl_button_image_set(EWL_BUTTON(w), icon, NULL);
     ewl_container_child_append(EWL_CONTAINER(container), w);
     ewl_callback_append(w, EWL_CALLBACK_CLICKED, _item_select_cb, data);
     ewl_widget_show(w);
@@ -68,6 +73,7 @@ static Ewl_Widget * _new_menu(Eli_App * eap)
 
     menu = ewl_menu_new();
     ewl_button_label_set(EWL_BUTTON(menu), sgettext(N_("CONTEXT|New")));
+    ewl_button_image_set(EWL_BUTTON(menu), ELI_ICON(DOCUMENT_NEW), NULL);
 
     for (int i = 0; games[i][0]; i++) {
         Ewl_Widget * w;
