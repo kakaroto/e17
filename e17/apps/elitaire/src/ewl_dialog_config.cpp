@@ -51,7 +51,7 @@ void ewl_frontend_dialog_config_open(Eli_App * eap)
     
     /* the main_box contain the border_boxes */
     ewl_dialog_active_area_set(EWL_DIALOG(conf_win), EWL_POSITION_TOP);
-    main_box = ewl_hbox_new();
+    main_box = ewl_vbox_new();
     ewl_container_child_append(EWL_CONTAINER(conf_win), main_box);
     ewl_object_fill_policy_set(EWL_OBJECT(main_box), EWL_FLAG_ALIGN_CENTER);
     ewl_widget_show(main_box);
@@ -85,10 +85,7 @@ void ewl_frontend_dialog_config_open(Eli_App * eap)
     border_box = ewl_border_new();
     ewl_border_label_set(EWL_BORDER(border_box), _("Graphic"));
     ewl_container_child_append(EWL_CONTAINER(main_box), border_box);
-    ewl_object_fill_policy_set(EWL_OBJECT(border_box), EWL_FLAG_FILL_VFILL);
-    ewl_object_alignment_set(EWL_OBJECT(border_box), EWL_FLAG_ALIGN_CENTER);
-    ewl_object_alignment_set(EWL_OBJECT(main_box), EWL_FLAG_ALIGN_TOP);
-    //ewl_object_padding_set(EWL_OBJECT(border_box),15,15,15,15);
+    //ewl_object_fill_policy_set(EWL_OBJECT(border_box), EWL_FLAG_FILL_HFILL);
     ewl_widget_show(border_box);
 
     /* Setup and show the checkbuttons */
@@ -216,7 +213,6 @@ void ewl_frontend_dialog_config_open(Eli_App * eap)
     ewl_object_fill_policy_set(EWL_OBJECT(border_box), EWL_FLAG_FILL_VFILL);
     ewl_object_alignment_set(EWL_OBJECT(border_box), EWL_FLAG_ALIGN_CENTER);
     ewl_object_alignment_set(EWL_OBJECT(main_box), EWL_FLAG_ALIGN_TOP);
-    //ewl_object_padding_set(EWL_OBJECT(border_box),15,15,15,15);
     ewl_widget_show(border_box);
 
     o = ewl_text_new();
