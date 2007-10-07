@@ -12,6 +12,12 @@
 /* defines the initial size and increment size that file list arrays have */
 #define FILELIST_SIZE 3000
 
+/* defines the number of bytes used for evas's image cache */
+#define IMAGE_CACHE_BYTES 16777216
+
+/* defines the number of objects used in evas's image cache */
+#define IMAGE_CACHE_NUM 128
+
 typedef struct _Ex_Populate_Data Ex_Populate_Data;
 
 struct _Ex_Populate_Data
@@ -1247,8 +1253,11 @@ main(int argc, char *argv[])
      _ex_main_window_show(argv[1 + fullscreen + slideshow], fullscreen, slideshow);
    else
      _ex_main_window_show(NULL, fullscreen, slideshow);   
-     
-   etk_main();
+   
+   evas_imaging_image_cache_set(IMAGE_CACHE_BYTES);
+   /*evas_image_cache_set(etk_toplevel_evas_get(ETK_TOPLEVEL(e->win)), IMAGE_CACHE_NUM);*/
+   
+   etk_main();         
    if(e)
      _ex_options_save(e);
    _ex_options_shutdown();
