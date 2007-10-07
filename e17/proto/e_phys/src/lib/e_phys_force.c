@@ -25,7 +25,6 @@ void
 e_phys_force_init(E_Phys_Force *force, E_Phys_World *world, void (*apply_func) (E_Phys_Force *force), void (*free_func) (E_Phys_Force *force))
 {
   force->world = world;
-  force->world = world;
   if (world) world->forces = evas_list_append(world->forces, force);
 
   force->apply = apply_func;
