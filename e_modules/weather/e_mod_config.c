@@ -108,7 +108,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   of = e_widget_frametable_add (evas, D_ ("ICAO Code"), 0);
   ob = e_widget_label_add (evas, D_ ("ICAO Code"));
   e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->code);
+  ob = e_widget_entry_add (evas, &cfdata->code, NULL, NULL, NULL);
   e_widget_min_size_set (ob, 100, 1);
   e_widget_frametable_object_append (of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
   ob = e_widget_label_add (evas, D_ ("Get your ICAO code at:"));

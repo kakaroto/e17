@@ -339,11 +339,11 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 0, 0, 0);
    ob = e_widget_label_add(evas, _("Host"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 0, 0);
-   ob = e_widget_entry_add(evas, &(cfdata->proxy.host));
+   ob = e_widget_entry_add(evas, &(cfdata->proxy.host), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
    ob = e_widget_label_add(evas, _("Port"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 0, 0);
-   ob = e_widget_entry_add(evas, &(cfdata->proxy.port));
+   ob = e_widget_entry_add(evas, &(cfdata->proxy.port), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
 
    e_widget_list_object_append(o2, of, 1, 1, 1.0);

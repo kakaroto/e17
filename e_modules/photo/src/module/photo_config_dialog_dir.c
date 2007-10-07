@@ -117,7 +117,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    of = e_widget_frametable_add(evas, _("Directory"), 0);
 
-   ob = e_widget_entry_add(evas, &(cfdata->path));
+   ob = e_widget_entry_add(evas, &(cfdata->path), NULL, NULL, NULL);
    e_widget_min_size_set(ob, 250, 25);
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
 

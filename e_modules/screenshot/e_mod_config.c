@@ -174,11 +174,11 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
   ob = e_widget_label_add (evas, D_ ("Save Directory:"));
   e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->location);
+  ob = e_widget_entry_add (evas, &cfdata->location, NULL, NULL, NULL);
   e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
   ob = e_widget_label_add (evas, D_ ("Filename:"));
   e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->filename);
+  ob = e_widget_entry_add (evas, &cfdata->filename, NULL, NULL, NULL);
   cfdata->file_entry = ob;
   e_widget_frametable_object_append (of, ob, 1, 2, 1, 1, 0, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
@@ -271,7 +271,7 @@ _advanced_create_widgets (E_Config_Dialog * cfd, Evas * evas,
     e_widget_check_add (evas, D_ ("Launch Image Viewer After Screenshot"),
 			&(cfdata->use_app));
   e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &(cfdata->app));
+  ob = e_widget_entry_add (evas, &(cfdata->app), NULL, NULL, NULL);
   e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
@@ -283,11 +283,11 @@ _advanced_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
   ob = e_widget_label_add (evas, D_ ("Save Directory:"));
   e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->location);
+  ob = e_widget_entry_add (evas, &cfdata->location, NULL, NULL, NULL);
   e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
   ob = e_widget_label_add (evas, D_ ("Filename:"));
   e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->filename);
+  ob = e_widget_entry_add (evas, &cfdata->filename, NULL, NULL, NULL);
   cfdata->file_entry = ob;
   e_widget_frametable_object_append (of, ob, 1, 2, 1, 1, 0, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);

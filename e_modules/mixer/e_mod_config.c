@@ -103,7 +103,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ot = e_widget_frametable_add(evas, D_("Mixer Application"), 1);
    ob = e_widget_check_add(evas, D_("Launch Mixer App"), &(cfdata->use_app));
    e_widget_frametable_object_append(ot, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &cfdata->app);
+   ob = e_widget_entry_add(evas, &cfdata->app, NULL, NULL, NULL);
    e_widget_frametable_object_append(ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
 
    e_widget_list_object_append(o, ot, 1, 1, 0.5);

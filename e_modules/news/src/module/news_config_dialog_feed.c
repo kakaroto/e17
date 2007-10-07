@@ -344,11 +344,11 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
 
    ob = e_widget_label_add(evas, _("Name :"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &(cfdata->name));
+   ob = e_widget_entry_add(evas, &(cfdata->name), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
    ob = e_widget_label_add(evas, _("Feed url :"));
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_entry_add(evas, &(cfdata->url_feed));
+   ob = e_widget_entry_add(evas, &(cfdata->url_feed), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 0, 1, 0);
    ob = e_widget_check_add(evas, _("Mark as important feed"), &(cfdata->important));
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 0, 1, 0);
@@ -392,11 +392,11 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    ob = e_widget_label_add(evas, _("Description"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_entry_add(evas, &(cfdata->description));
+   ob = e_widget_entry_add(evas, &(cfdata->description), NULL, NULL, NULL);
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_label_add(evas, _("Home url"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_entry_add(evas, &(cfdata->url_home));
+   ob = e_widget_entry_add(evas, &(cfdata->url_home), NULL, NULL, NULL);
    e_widget_framelist_object_append(of, ob);
 
    e_widget_table_object_append(o, of, 0, 1, 3, 1, 1, 1, 1, 1);

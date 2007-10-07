@@ -117,7 +117,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_label_add(evas, D_("Launch Application On Double-Click"));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_entry_add(evas, &(cfdata->app));
+   ob = e_widget_entry_add(evas, &(cfdata->app), NULL, NULL, NULL);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    

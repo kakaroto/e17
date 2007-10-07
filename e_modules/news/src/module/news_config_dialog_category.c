@@ -143,7 +143,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_list_object_append(o, of, 1, 1, 0.0);
 
    of = e_widget_framelist_add(evas, _("Name"), 0);
-   ob = e_widget_entry_add(evas, &(cfdata->name));
+   ob = e_widget_entry_add(evas, &(cfdata->name), NULL, NULL, NULL);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.0);
    

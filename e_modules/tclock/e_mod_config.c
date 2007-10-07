@@ -87,7 +87,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data 
   time_check =
     e_widget_check_add (evas, D_ ("Show Top Line"), &(cfdata->show_time));
   e_widget_frametable_object_append (of, time_check, 0, 0, 1, 1, 1, 0, 1, 0);
-  time_entry = e_widget_entry_add (evas, &cfdata->time_format);
+  time_entry = e_widget_entry_add (evas, &cfdata->time_format, NULL, NULL, NULL);
   e_widget_on_change_hook_set (time_check, _cb_time_check, time_entry);
   e_widget_disabled_set (time_entry, !cfdata->show_time);
   e_widget_min_size_set (time_entry, 150, 1);
@@ -101,7 +101,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data 
   date_check =
     e_widget_check_add (evas, D_ ("Show Bottom Line"), &(cfdata->show_date));
   e_widget_frametable_object_append (of, date_check, 0, 0, 1, 1, 1, 0, 1, 0);
-  date_entry = e_widget_entry_add (evas, &cfdata->date_format);
+  date_entry = e_widget_entry_add (evas, &cfdata->date_format, NULL, NULL, NULL);
   e_widget_on_change_hook_set (date_check, _cb_date_check, date_entry);
   e_widget_disabled_set (date_entry, !cfdata->show_date);
   e_widget_min_size_set (date_entry, 150, 1);

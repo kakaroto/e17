@@ -249,7 +249,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    ob = e_widget_check_add(evas, D_("Run program"), &(cfdata->alarms_run_program_default));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_entry_add(evas, &(cfdata->alarms_program_default));
+   ob = e_widget_entry_add(evas, &(cfdata->alarms_program_default), NULL, NULL, NULL);
    e_widget_min_size_set(ob, 80, 25);
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
 

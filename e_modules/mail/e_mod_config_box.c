@@ -154,7 +154,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   cfdata->exec_label = e_widget_label_add (evas, D_("Program:"));
   e_widget_table_object_append (ot, cfdata->exec_label, 0, 0, 1, 1, 0, 0, 1,
 				0);
-  cfdata->exec_entry = e_widget_entry_add (evas, &cfdata->exec);
+  cfdata->exec_entry = e_widget_entry_add (evas, &cfdata->exec, NULL, NULL, NULL);
   e_widget_table_object_append (ot, cfdata->exec_entry, 1, 0, 1, 1, 0, 0, 1,
 				0);
   e_widget_framelist_object_append (of, ot);
@@ -204,7 +204,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 
   ob = e_widget_label_add (evas, D_("Port:"));
   e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->port);
+  ob = e_widget_entry_add (evas, &cfdata->port, NULL, NULL, NULL);
   cfdata->port_entry = ob;
   e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
 
@@ -217,29 +217,29 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   of = e_widget_frametable_add (evas, D_("Mailbox Settings"), 1);
   ob = e_widget_label_add (evas, D_("Name:"));
   e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 0, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->name);
+  ob = e_widget_entry_add (evas, &cfdata->name, NULL, NULL, NULL);
   e_widget_frametable_object_append (of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
 
   ob = e_widget_label_add (evas, D_("Mail Host:"));
   e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->host);
+  ob = e_widget_entry_add (evas, &cfdata->host, NULL, NULL, NULL);
   e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
 
   ob = e_widget_label_add (evas, D_("Username:"));
   e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->user);
+  ob = e_widget_entry_add (evas, &cfdata->user, NULL, NULL, NULL);
   e_widget_frametable_object_append (of, ob, 1, 2, 1, 1, 0, 0, 1, 0);
 
   ob = e_widget_label_add (evas, D_("Password:"));
   e_widget_frametable_object_append (of, ob, 0, 3, 1, 1, 0, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->pass);
+  ob = e_widget_entry_add (evas, &cfdata->pass, NULL, NULL, NULL);
   e_widget_entry_password_set (ob, 1);
   e_widget_frametable_object_append (of, ob, 1, 3, 1, 1, 0, 0, 1, 0);
 
   cfdata->new_path_label = e_widget_label_add (evas, D_("New Mail Path:"));
   e_widget_frametable_object_append (of, cfdata->new_path_label, 0, 4, 1, 1,
 				     0, 0, 1, 0);
-  cfdata->new_path_entry = e_widget_entry_add (evas, &cfdata->new_path);
+  cfdata->new_path_entry = e_widget_entry_add (evas, &cfdata->new_path, NULL, NULL, NULL);
   e_widget_frametable_object_append (of, cfdata->new_path_entry, 1, 4, 1, 1,
 				     0, 0, 1, 0);
   if (cfdata->type == 0)
@@ -251,7 +251,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   cfdata->cur_path_label = e_widget_label_add (evas, D_("Current Mail Path:"));
   e_widget_frametable_object_append (of, cfdata->cur_path_label, 0, 5, 1, 1,
 				     0, 0, 1, 0);
-  cfdata->cur_path_entry = e_widget_entry_add (evas, &cfdata->cur_path);
+  cfdata->cur_path_entry = e_widget_entry_add (evas, &cfdata->cur_path, NULL, NULL, NULL);
   e_widget_frametable_object_append (of, cfdata->cur_path_entry, 1, 5, 1, 1,
 				     0, 0, 1, 0);
   if ((cfdata->type == 1) || (cfdata->type == 3))

@@ -98,7 +98,7 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data *
    ot = e_widget_table_add (evas, 1);
    ob = e_widget_label_add (evas, D_ ("Sub-directory to use for backgrounds"));
    e_widget_table_object_append (ot, ob, 0, 0, 1, 1, 0, 0, 1, 0);
-   ob = e_widget_entry_add (evas, &cfdata->dir);
+   ob = e_widget_entry_add (evas, &cfdata->dir, NULL, NULL, NULL);
    e_widget_table_object_append (ot, ob, 0, 1, 1, 1, 1, 0, 1, 0);
    e_widget_framelist_object_append (of, ot);
    e_widget_list_object_append (o, of, 1, 1, 0.5);

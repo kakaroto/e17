@@ -337,7 +337,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    ob = e_widget_label_add(evas, _("Pictures viewer"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_entry_add(evas, &(cfdata->pictures_viewer));
+   ob = e_widget_entry_add(evas, &(cfdata->pictures_viewer), NULL, NULL, NULL);
    e_widget_min_size_set(ob, 80, 25);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
 
