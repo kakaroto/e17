@@ -2,6 +2,7 @@
 #include "ewl_base.h"
 #include "ewl_dialog.h"
 #include "ewl_box.h"
+#include "ewl_cell.h"
 #include "ewl_separator.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
@@ -39,7 +40,7 @@ ewl_dialog_new(void)
 int
 ewl_dialog_init(Ewl_Dialog *dialog)
 {
-	Ewl_Widget *w;
+	Ewl_Widget *w, *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("dialog", dialog, FALSE);
@@ -92,16 +93,22 @@ ewl_dialog_init(Ewl_Dialog *dialog)
 	/*
 	 * Create an action area for buttons
 	 */
+	o = ewl_cell_new();
+	ewl_widget_appearance_set(o, "actionarea");
+	ewl_object_fill_policy_set(EWL_OBJECT(o),
+			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+	ewl_widget_internal_set(o, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(dialog->box), o);
+	ewl_widget_show(o);
+
 	dialog->action_area = ewl_hbox_new();
 	if (!dialog->action_area) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	ewl_widget_appearance_set(dialog->action_area, "actionarea");
-	ewl_container_child_append(EWL_CONTAINER(dialog->box),
-					   dialog->action_area);
-	ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
-			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+	ewl_container_child_append(EWL_CONTAINER(o), dialog->action_area);
 	ewl_box_homogeneous_set(EWL_BOX(dialog->action_area), FALSE);
+	ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
+			   EWL_FLAG_FILL_NONE);
 	ewl_widget_internal_set(dialog->action_area, TRUE);
 	ewl_widget_show(dialog->action_area);
 
@@ -187,6 +194,78 @@ ewl_dialog_action_position_get(Ewl_Dialog *d)
 }
 
 /**
+ * @param d: dialog to change fill policy of the action area position
+ * @param pol: The new fill policy to set
+ * @return Returns no value.
+ * @brief Changes the action area's fill policy for the dialog.
+ */
+void
+ewl_dialog_action_fill_policy_set(Ewl_Dialog *d, unsigned int pol)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("d", d);
+	DCHECK_TYPE("d", d, EWL_DIALOG_TYPE);
+
+	w = ewl_widget_parent_get(d->action_area);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), pol);	
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param d: dialog to check the fill policy of the action area
+ * @return Returns the current fill policy of the action area.
+ * @brief Checks the fill policy of the action area.
+ */
+unsigned int
+ewl_dialog_action_fill_policy_get(Ewl_Dialog *d)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_BOTTOM);
+	DCHECK_TYPE_RET("d", d, EWL_DIALOG_TYPE, EWL_FLAG_FILL_NONE);
+
+	DRETURN_INT(ewl_object_fill_policy_get(EWL_OBJECT(d->action_area)), DLEVEL_STABLE);
+}
+
+/**
+ * @param d: dialog to change the alignment of the action area position
+ * @param align: The new alignment to set
+ * @return Returns no value.
+ * @brief Changes the action area's alignment for the dialog.
+ */
+void
+ewl_dialog_action_alignment_set(Ewl_Dialog *d, unsigned int align)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("d", d);
+	DCHECK_TYPE("d", d, EWL_DIALOG_TYPE);
+
+	w = ewl_widget_parent_get(d->action_area);
+	ewl_object_alignment_set(EWL_OBJECT(w), align);	
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param d: dialog to check the alignment of the action area
+ * @return Returns the current alignment of the action area.
+ * @brief Checks the alignment of the action area.
+ */
+unsigned int
+ewl_dialog_action_alignment_get(Ewl_Dialog *d)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_BOTTOM);
+	DCHECK_TYPE_RET("d", d, EWL_DIALOG_TYPE, EWL_FLAG_FILL_NONE);
+
+	DRETURN_INT(ewl_object_alignment_get(EWL_OBJECT(d->action_area)), DLEVEL_STABLE);
+}
+
+/**
  * @param dialog: the dialog.
  * @return Returns TRUE if @a dialog has a separator.
  * @brief Checks if @a dialog has a separator or not.
@@ -198,9 +277,8 @@ ewl_dialog_has_separator_get(Ewl_Dialog *dialog)
 	DCHECK_PARAM_PTR_RET("dialog", dialog, 0);
 	DCHECK_TYPE_RET("dialog", dialog, EWL_DIALOG_TYPE, 0);
 
-	if (!dialog) {
+	if (!dialog)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	}
 
 	DRETURN_INT(dialog->separator != NULL, DLEVEL_STABLE);
 }

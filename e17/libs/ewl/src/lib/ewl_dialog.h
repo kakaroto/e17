@@ -64,6 +64,10 @@ int 		 ewl_dialog_init (Ewl_Dialog *dialog);
 
 void 		 ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos);
 Ewl_Position 	 ewl_dialog_action_position_get(Ewl_Dialog *dialog);
+void 		 ewl_dialog_action_fill_policy_set(Ewl_Dialog *d, unsigned int pol);
+unsigned int 	 ewl_dialog_action_fill_policy_get(Ewl_Dialog *dialog);
+void 		 ewl_dialog_action_alignment_set(Ewl_Dialog *d, unsigned int a);
+unsigned int	 ewl_dialog_action_alignment_get(Ewl_Dialog *dialog);
 
 void 		 ewl_dialog_active_area_set(Ewl_Dialog *d, Ewl_Position pos);
 Ewl_Position 	 ewl_dialog_active_area_get(Ewl_Dialog *d);
