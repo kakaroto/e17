@@ -275,22 +275,27 @@ void etk_combobox_build(Etk_Combobox *combobox)
 
 /**
  * @brief Inserts a new item at the start of the combobox
+ *
  * @param combobox a combobox
  * @param ... the different widgets to attach to the columns of the item:
- * there must be as many arguments as the number of columns in the combobox, one for each column. @n
- * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char *" @n
- * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image *" @n
- * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget *"
+ * there must be as many arguments as the number of columns in the combobox,
+ * one for each column. @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the
+ *   argument must be a "const char *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the
+ *   argument must be an "Etk_Image *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the
+ *   argument must be an "Etk_Widget *"
+ *
  * @return Returns the new item
- * @note Unlike other widgets, the new item will be automatically shown, so you won't have to call etk_widget_show()
+ *
+ * @note Unlike other widgets, the new item will be automatically shown, so
+ * you won't have to call etk_widget_show()
  */
 Etk_Combobox_Item *etk_combobox_item_prepend(Etk_Combobox *combobox, ...)
 {
    Etk_Combobox_Item *item;
    va_list args;
-
-   if (!combobox)
-      return NULL;
 
    va_start(args, combobox);
    item = etk_combobox_item_insert_valist(combobox, NULL, args);
@@ -300,23 +305,44 @@ Etk_Combobox_Item *etk_combobox_item_prepend(Etk_Combobox *combobox, ...)
 }
 
 /**
+ * @brief Inserts a new empty item at the start of the combobox
+ *
+ * @param combobox a combobox
+ *
+ * @return Returns the new item
+ *
+ * @note Unlike other widgets, the new item will be automatically shown, so
+ * you won't have to call etk_widget_show()
+ */
+inline Etk_Combobox_Item *etk_combobox_item_prepend_empty(
+   Etk_Combobox *combobox)
+{
+   return etk_combobox_item_insert_empty(combobox, NULL);
+}
+
+/**
  * @brief Inserts a new item at the end of the combobox
+ *
  * @param combobox a combobox
  * @param ... the different widgets to attach to the columns of the item:
- * there must be as many arguments as the number of columns in the combobox, one for each column. @n
- * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char *" @n
- * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image *" @n
- * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget *"
+ * there must be as many arguments as the number of columns in the combobox,
+ * one for each column. @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the
+ *   argument must be a "const char *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the
+ *   argument must be an "Etk_Image *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the
+ *   argument must be an "Etk_Widget *"
+ *
  * @return Returns the new item
- * @note Unlike other widgets, the new item will be automatically shown, so you won't have to call etk_widget_show()
+ *
+ * @note Unlike other widgets, the new item will be automatically shown, so
+ * you won't have to call etk_widget_show()
  */
 Etk_Combobox_Item *etk_combobox_item_append(Etk_Combobox *combobox, ...)
 {
    Etk_Combobox_Item *item;
    va_list args;
-
-   if (!combobox)
-      return NULL;
 
    va_start(args, combobox);
    item = etk_combobox_item_insert_valist(combobox, combobox->last_item, args);
@@ -326,25 +352,47 @@ Etk_Combobox_Item *etk_combobox_item_append(Etk_Combobox *combobox, ...)
 }
 
 /**
- * @brief Inserts a new item after an existing item of the combobox
+ * @brief Inserts a new empty item at the end of the combobox
+ *
  * @param combobox a combobox
- * @param after the item after which the new item should be inserted. If @a after is NULL, the new item will
- * be inserted at the start of the combobox
- * @param ... the different widgets to attach to the columns of the item:
- * there must be as many arguments as the number of columns in the combobox, one for each column. @n
- * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char *" @n
- * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image *" @n
- * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget *"
+ *
  * @return Returns the new item
- * @note Unlike other widgets, the new item will be automatically shown, so you won't have to call etk_widget_show()
+ *
+ * @note Unlike other widgets, the new item will be automatically shown, so
+ * you won't have to call etk_widget_show()
  */
-Etk_Combobox_Item *etk_combobox_item_insert(Etk_Combobox *combobox, Etk_Combobox_Item *after, ...)
+inline Etk_Combobox_Item *etk_combobox_item_append_empty(Etk_Combobox *combobox)
+{
+   return etk_combobox_item_insert_empty(combobox, combobox->last_item);
+}
+
+/**
+ * @brief Inserts a new item after an existing item of the combobox
+ *
+ * @param combobox a combobox
+ * @param after the item after which the new item should be inserted. If @a
+ * after is NULL, the new item will be inserted at the start of the combobox
+ * @param ... the different widgets to attach to the columns of the item:
+ * there must be as many arguments as the number of columns in the combobox,
+ * one for each column. @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the
+ *   argument must be a "const char *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the
+ *   argument must be an "Etk_Image *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the
+ *   argument must be an "Etk_Widget *"
+ *
+ * @return Returns the new item
+ *
+ * @note Unlike other widgets, the new item will be automatically shown, so
+ * you won't have to call etk_widget_show()
+
+*/
+Etk_Combobox_Item *etk_combobox_item_insert(Etk_Combobox *combobox,
+                                            Etk_Combobox_Item *after, ...)
 {
    Etk_Combobox_Item *item;
    va_list args;
-
-   if (!combobox)
-      return NULL;
 
    va_start(args, after);
    item = etk_combobox_item_insert_valist(combobox, after, args);
@@ -355,39 +403,79 @@ Etk_Combobox_Item *etk_combobox_item_insert(Etk_Combobox *combobox, Etk_Combobox
 
 /**
  * @brief Inserts a new item after an existing item of the combobox
+ *
  * @param combobox a combobox
- * @param after the item after which the new item should be inserted. If @a after is NULL, the new item will
- * be inserted at the start of the combobox
+ * @param after the item after which the new item should be inserted. If @a
+ * after is NULL, the new item will be inserted at the start of the combobox
  * @param args the different widgets to attach to the columns of the item:
- * there must be as many arguments as the number of columns in the combobox, one for each column. @n
- * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the argument must be a "const char *" @n
- * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the argument must be an "Etk_Image *" @n
- * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the argument must be an "Etk_Widget *"
+ * there must be as many arguments as the number of columns in the combobox,
+ * one for each column. @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_LABEL, the
+ *   argument must be a "const char *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_IMAGE, the
+ *   argument must be an "Etk_Image *" @n
+ * - If the type of the corresponding column is ETK_COMBOBOX_OTHER, the
+ *   argument must be an "Etk_Widget *"
+ *
  * @return Returns the new item
- * @note Unlike other widgets, the new item and its children will be automatically shown, so you won't have
- * to call etk_widget_show()
+ *
+ * @note Unlike other widgets, the new item and its children will be
+ * automatically shown, so you won't have to call etk_widget_show()
  */
-Etk_Combobox_Item *etk_combobox_item_insert_valist(Etk_Combobox *combobox, Etk_Combobox_Item *after, va_list args)
+Etk_Combobox_Item *etk_combobox_item_insert_valist(Etk_Combobox *combobox,
+                                                   Etk_Combobox_Item *after,
+                                                   va_list args)
 {
    Etk_Combobox_Item *item;
    va_list args2;
+
+   item = etk_combobox_item_insert_empty(combobox, after);
+   if (!item)
+      return NULL;
+
+   va_copy(args2, args);
+   etk_combobox_item_fields_set_valist(item, args2);
+   va_end(args2);
+
+   return item;
+}
+
+/**
+ * @brief Inserts a new empty item after an existing item of the combobox
+ *
+ * @param combobox a combobox
+ * @param after the item after which the new item should be inserted. If @a
+ * after is NULL, the new item will be inserted at the start of the combobox
+ *
+ * @return Returns the new item
+ *
+ * @note Unlike other widgets, the new item and its children will be
+ * automatically shown, so you won't have to call etk_widget_show()
+ */
+Etk_Combobox_Item *etk_combobox_item_insert_empty(Etk_Combobox *combobox,
+                                                  Etk_Combobox_Item *after)
+{
+   Etk_Combobox_Item *item;
 
    if (!combobox)
       return NULL;
    if (!combobox->built)
    {
-      ETK_WARNING("Unable to add a new item to the combobox because etk_combobox_build() has not been called yet");
+      ETK_WARNING("Unable to add a new item to the combobox because "
+                  "etk_combobox_build() has not been called yet");
       return NULL;
    }
    if (after && combobox != after->combobox)
    {
-      ETK_WARNING("Unable to add a new item after item %p because this item does not belong to the combobox "
-            "in which the new item should be added", after);
+      ETK_WARNING("Unable to add a new item after item %p because this item "
+                  "does not belong to the combobox in which the new item "
+                  "should be added", after);
       return NULL;
    }
 
    item = ETK_COMBOBOX_ITEM(etk_widget_new(ETK_COMBOBOX_ITEM_TYPE,
-      "theme-group", "item", "theme-parent", combobox, "visible", ETK_TRUE, NULL));
+      "theme-group", "item", "theme-parent", combobox, "visible", ETK_TRUE,
+      NULL));
    item->combobox = combobox;
 
    item->prev = after;
@@ -403,13 +491,12 @@ Etk_Combobox_Item *etk_combobox_item_insert_valist(Etk_Combobox *combobox, Etk_C
    item->widgets = calloc(combobox->num_cols, sizeof(Etk_Widget *));
    ETK_WIDGET(item)->size_allocate = _etk_combobox_item_size_allocate;
 
-   va_copy(args2, args);
-   etk_combobox_item_fields_set_valist(item, args2);
-   va_end(args2);
-
-   etk_signal_connect_by_code(ETK_WIDGET_ENTERED_SIGNAL, ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_item_entered_cb), NULL);
-   etk_signal_connect_by_code(ETK_WIDGET_LEFT_SIGNAL, ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_item_left_cb), NULL);
-   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(item), ETK_CALLBACK(_etk_combobox_item_mouse_up_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_ENTERED_SIGNAL, ETK_OBJECT(item),
+      ETK_CALLBACK(_etk_combobox_item_entered_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_LEFT_SIGNAL, ETK_OBJECT(item),
+      ETK_CALLBACK(_etk_combobox_item_left_cb), NULL);
+   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(item),
+      ETK_CALLBACK(_etk_combobox_item_mouse_up_cb), NULL);
 
    etk_widget_parent_set(ETK_WIDGET(item), ETK_WIDGET(combobox->window));
 
