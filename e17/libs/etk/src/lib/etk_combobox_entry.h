@@ -139,8 +139,11 @@ void               etk_combobox_entry_column_add(Etk_Combobox_Entry *combobox_en
 void               etk_combobox_entry_build(Etk_Combobox_Entry *combobox_entry);
 
 Etk_Combobox_Entry_Item *etk_combobox_entry_item_prepend(Etk_Combobox_Entry *combobox_entry, ...);
+inline Etk_Combobox_Entry_Item *etk_combobox_entry_item_prepend_empty(Etk_Combobox_Entry *combobox_entry);
 Etk_Combobox_Entry_Item *etk_combobox_entry_item_append(Etk_Combobox_Entry *combobox_entry, ...);
+inline Etk_Combobox_Entry_Item *etk_combobox_entry_item_append_empty(Etk_Combobox_Entry *combobox_entry);
 Etk_Combobox_Entry_Item *etk_combobox_entry_item_insert(Etk_Combobox_Entry *combobox_entry, Etk_Combobox_Entry_Item *after, ...);
+Etk_Combobox_Entry_Item *etk_combobox_entry_item_insert_empty(Etk_Combobox_Entry *combobox_entry, Etk_Combobox_Entry_Item *after);
 Etk_Combobox_Entry_Item *etk_combobox_entry_item_insert_valist(Etk_Combobox_Entry *combobox_entry, Etk_Combobox_Entry_Item *after, va_list args);
 void               etk_combobox_entry_item_remove(Etk_Combobox_Entry_Item *item);
 void               etk_combobox_entry_clear(Etk_Combobox_Entry *combobox_entry);
