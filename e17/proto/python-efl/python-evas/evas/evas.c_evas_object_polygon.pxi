@@ -28,5 +28,4 @@ cdef public class Polygon(Object) [object PyEvasPolygon,
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasPolygon_Type # hack to install metaclass
 
-cdef void _polygon_install_metaclass(object metaclass):
-    _install_metaclass(&PyEvasPolygon_Type, metaclass)
+_install_metaclass(&PyEvasPolygon_Type, EvasObjectMeta)

@@ -1,7 +1,5 @@
 # This file is included verbatim by c_evas.pyx
 
-cdef object _smart_objects
-_smart_objects = dict()
 cdef object _smart_classes
 _smart_classes = list()
 
@@ -180,18 +178,18 @@ cdef long _smart_object_class_new(char *name) except 0:
     return <long>cls
 
 
-cdef Evas_Smart *_smart_class_from_name(char *name) except NULL:
-    cdef long addr
-    key = name
-    # XXX: for optimizations this should be a try-except KeyError,
-    # XXX: but it just don't work, I'm getting non-released objects
-    # XXX: due pending references (Pyrex 0.9.5.1a).
-    if key in _smart_objects:
-        addr = _smart_objects[key]
-    else:
-        addr = _smart_object_class_new(name)
-        _smart_objects[key] = addr
-    return <Evas_Smart*>addr
+class EvasSmartObjectMeta(EvasObjectMeta):
+    def __init__(cls, name, bases, dict_):
+        EvasObjectMeta.__init__(cls, name, bases, dict_)
+        cls._setup_smart_class()
+
+    def _setup_smart_class(cls):
+        if "__evas_smart_class__" in cls.__dict__:
+            return
+
+        cdef long addr
+        addr = _smart_object_class_new(cls.__name__)
+        cls.__evas_smart_class__ = addr
 
 
 cdef object _smart_class_get_impl_method(object cls, char *name):
@@ -296,13 +294,14 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         self._smart_callbacks = None
 
     def __init__(self, Canvas canvas not None, **kargs):
-        cdef Evas_Smart *cls
+        cdef long addr
         if type(self) is SmartObject:
             raise TypeError("Must not instantiate SmartObject, but subclasses")
         Object.__init__(self, canvas)
         if self.obj == NULL:
-            cls = _smart_class_from_name(self.__class__.__name__)
-            self._set_obj(evas_object_smart_add(self.evas.obj, cls))
+            addr = self.__evas_smart_class__
+            self._set_obj(evas_object_smart_add(self.evas.obj,
+                                                <Evas_Smart*>addr))
         self._set_common_params(**kargs)
 
     def member_add(self, Object child):
@@ -526,8 +525,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasSmartObject_Type # hack to install metaclass
 
-cdef void _smartobj_install_metaclass(object metaclass):
-    _install_metaclass(&PyEvasSmartObject_Type, metaclass)
+_install_metaclass(&PyEvasSmartObject_Type, EvasSmartObjectMeta)
 
 
 cdef public class ClippedSmartObject(SmartObject) \
@@ -602,5 +600,4 @@ cdef public class ClippedSmartObject(SmartObject) \
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasClippedSmartObject_Type # hack to install metaclass
 
-cdef void _clippedsmartobj_install_metaclass(object metaclass):
-    _install_metaclass(&PyEvasClippedSmartObject_Type, metaclass)
+_install_metaclass(&PyEvasClippedSmartObject_Type, EvasSmartObjectMeta)

@@ -1201,5 +1201,4 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasObject_Type # hack to install metaclass
 
-cdef void _object_install_metaclass(object metaclass):
-    _install_metaclass(&PyEvasObject_Type, metaclass)
+_install_metaclass(&PyEvasObject_Type, EvasObjectMeta)

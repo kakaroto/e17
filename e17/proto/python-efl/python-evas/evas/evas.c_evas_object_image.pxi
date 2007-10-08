@@ -347,8 +347,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasImage_Type # hack to install metaclass
 
-cdef void _image_install_metaclass(object metaclass):
-    _install_metaclass(&PyEvasImage_Type, metaclass)
+_install_metaclass(&PyEvasImage_Type, EvasObjectMeta)
 
 
 cdef void _cb_on_filled_image_resize(void *data, Evas *e,
@@ -378,5 +377,4 @@ cdef public class FilledImage(Image) [object PyEvasFilledImage,
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasFilledImage_Type # hack to install metaclass
 
-cdef void _filledimage_install_metaclass(object metaclass):
-    _install_metaclass(&PyEvasFilledImage_Type, metaclass)
+_install_metaclass(&PyEvasFilledImage_Type, EvasObjectMeta)

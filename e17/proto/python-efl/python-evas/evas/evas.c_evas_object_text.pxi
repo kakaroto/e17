@@ -335,5 +335,4 @@ cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasText_Type # hack to install metaclass
 
-cdef void _text_install_metaclass(object metaclass):
-    _install_metaclass(&PyEvasText_Type, metaclass)
+_install_metaclass(&PyEvasText_Type, EvasObjectMeta)

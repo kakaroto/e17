@@ -121,5 +121,4 @@ cdef public class Line(Object) [object PyEvasLine, type PyEvasLine_Type]:
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasLine_Type # hack to install metaclass
 
-cdef void _line_install_metaclass(object metaclass):
-    _install_metaclass(&PyEvasLine_Type, metaclass)
+_install_metaclass(&PyEvasLine_Type, EvasObjectMeta)

@@ -12,5 +12,4 @@ cdef public class Rectangle(Object) [object PyEvasRectangle,
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEvasRectangle_Type # hack to install metaclass
 
-cdef void _rectangle_install_metaclass(object metaclass):
-    _install_metaclass(&PyEvasRectangle_Type, metaclass)
+_install_metaclass(&PyEvasRectangle_Type, EvasObjectMeta)
