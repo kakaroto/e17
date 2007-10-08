@@ -1,5 +1,11 @@
 #include "eflpp_ecore_window.h"
+#include <errno.h>
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <linux/fb.h>
 
 //===============================================================================================
 // EcoreEvasWindow
