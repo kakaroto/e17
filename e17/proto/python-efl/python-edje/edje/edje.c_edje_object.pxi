@@ -727,11 +727,41 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         edje_object_signal_emit(self.obj, emission, source)
 
 
-evas.c_evas._object_mapping_register("edje", Edje)
+class EdjeObjectMeta(evas.c_evas.EvasObjectMeta):
+    def __init__(cls, name, bases, dict_):
+        evas.c_evas.EvasObjectMeta.__init__(cls, name, bases, dict_)
+        cls._fetch_callbacks()
+
+    def _fetch_callbacks(cls):
+        if "__edje_signal_callbacks__" in cls.__dict__:
+            return
+
+        cls.__edje_signal_callbacks__ = []
+        cls.__edje_message_callbacks__ = []
+        cls.__edje_text_callbacks__ = []
+
+        sig_append = cls.__edje_signal_callbacks__.append
+        msg_append = cls.__edje_message_callbacks__.append
+        txt_append = cls.__edje_text_callbacks__.append
+
+        for name in dir(cls):
+            val = getattr(cls, name)
+            if not callable(val):
+                continue
+
+            if hasattr(val, "edje_signal_callback"):
+                sig_data = getattr(val, "edje_signal_callback")
+                sig_append((name, sig_data))
+            elif hasattr(val, "edje_message_handler"):
+                msg_append(name)
+            elif hasattr(val, "edje_text_change_callback"):
+                txt_append(name)
 
 
 cdef extern from "Python.h":
     cdef python.PyTypeObject PyEdje_Type # hack to install metaclass
 
-cdef void _edje_install_metaclass(object metaclass):
-    _install_metaclass(&PyEdje_Type, metaclass)
+_install_metaclass(&PyEdje_Type, EdjeObjectMeta)
+
+
+evas.c_evas._object_mapping_register("edje", Edje)
