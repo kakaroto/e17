@@ -1,6 +1,6 @@
 # This file is included verbatim by c_evas.pyx
 
-cdef class Image(Object):
+cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
     """Image from file or buffer.
 
     @note: if an image is resized it will B{tile} it's contents respecting
@@ -344,6 +344,12 @@ cdef class Image(Object):
         evas_object_image_save(self.obj, filename, key, flags)
 
 
+cdef extern from "Python.h":
+    cdef python.PyTypeObject PyEvasImage_Type # hack to install metaclass
+
+cdef void _image_install_metaclass(object metaclass):
+    _install_metaclass(&PyEvasImage_Type, metaclass)
+
 
 cdef void _cb_on_filled_image_resize(void *data, Evas *e,
                                      Evas_Object *obj,
@@ -352,7 +358,8 @@ cdef void _cb_on_filled_image_resize(void *data, Evas *e,
     evas_object_geometry_get(obj, NULL, NULL, &w, &h)
     evas_object_image_fill_set(obj, 0, 0, w, h)
 
-cdef class FilledImage(Image):
+cdef public class FilledImage(Image) [object PyEvasFilledImage,
+                                      type PyEvasFilledImage_Type]:
     """Image that automatically resize it's contents to fit object size.
 
     This L{Image} subclass already calls L{Image.fill_set()} on resize so
@@ -367,3 +374,9 @@ cdef class FilledImage(Image):
         "Not available for this class."
         raise NotImplementedError("FilledImage doesn't support fill_set()")
 
+
+cdef extern from "Python.h":
+    cdef python.PyTypeObject PyEvasFilledImage_Type # hack to install metaclass
+
+cdef void _filledimage_install_metaclass(object metaclass):
+    _install_metaclass(&PyEvasFilledImage_Type, metaclass)

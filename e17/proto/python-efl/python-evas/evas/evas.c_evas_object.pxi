@@ -41,11 +41,12 @@ cdef void obj_free_cb(void *data, Evas *e,
 
 
 cdef _register_decorated_callbacks(obj):
-    for attr_name in dir(obj):
+    if not hasattr(obj, "__evas_event_callbacks__"):
+        return
+
+    for attr_name, evt in obj.__evas_event_callbacks__:
         attr_value = getattr(obj, attr_name)
-        if callable(attr_value) and hasattr(attr_value, "evas_event_callback"):
-            t = getattr(attr_value, "evas_event_callback")
-            obj.event_callback_add(t, attr_value)
+        obj.event_callback_add(evt, attr_value)
 
 
 cdef _add_callback_to_list(Object obj, int type, func, args, kargs):
@@ -1195,3 +1196,10 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     property parent:
         def __get__(self):
             return self.parent_get()
+
+
+cdef extern from "Python.h":
+    cdef python.PyTypeObject PyEvasObject_Type # hack to install metaclass
+
+cdef void _object_install_metaclass(object metaclass):
+    _install_metaclass(&PyEvasObject_Type, metaclass)

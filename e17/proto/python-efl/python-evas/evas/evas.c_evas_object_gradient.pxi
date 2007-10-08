@@ -1,6 +1,7 @@
 # This file is included verbatim by c_evas.pyx
 
-cdef class Gradient(Object):
+cdef public class Gradient(Object) [object PyEvasGradient,
+                                    type PyEvasGradient_Type]:
     "Rectangular area with gradient filling"
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
@@ -220,3 +221,10 @@ cdef class Gradient(Object):
 
         def __set__(self, float value):
             self.offset_set(value)
+
+
+cdef extern from "Python.h":
+    cdef python.PyTypeObject PyEvasGradient_Type # hack to install metaclass
+
+cdef void _gradient_install_metaclass(object metaclass):
+    _install_metaclass(&PyEvasGradient_Type, metaclass)

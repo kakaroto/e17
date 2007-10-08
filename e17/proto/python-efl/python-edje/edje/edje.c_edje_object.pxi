@@ -45,16 +45,20 @@ cdef void signal_cb(void *data,
 
 
 cdef _register_decorated_callbacks(obj):
-    for attr_name in dir(obj):
+    if not hasattr(obj, "__edje_signal_callbacks__"):
+        return
+
+    for attr_name, sig_data in obj.__edje_signal_callbacks__:
         attr_value = getattr(obj, attr_name)
-        if callable(attr_value):
-            if hasattr(attr_value, "edje_signal_callback"):
-                emission, source = getattr(attr_value, "edje_signal_callback")
-                obj.signal_callback_add(emission, source, attr_value)
-            elif hasattr(attr_value, "edje_text_change_callback"):
-                obj.text_change_cb_set(attr_value)
-            elif hasattr(attr_value, "edje_message_handler"):
-                obj.message_handler_set(attr_value)
+        obj.signal_callback_add(sig_data[0], sig_data[1], attr_value)
+
+    for attr_name in obj.__edje_message_callbacks__:
+        attr_value = getattr(obj, attr_name)
+        obj.message_handler_set(attr_value)
+
+    for attr_name in obj.__edje_text_callbacks__:
+        attr_value = getattr(obj, attr_name)
+        obj.text_change_cb_set(attr_value)
 
 
 class EdjeLoadError(Exception):
@@ -85,7 +89,7 @@ class EdjeLoadError(Exception):
         Exception.__init__(self, "%s (file=%r, group=%r)" % (msg, file, group))
 
 
-cdef class Edje(evas.c_evas.Object):
+cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
     """Edje evas object.
 
     This is a high level L{evas.SmartObject} that is defined as a group of
@@ -724,3 +728,10 @@ cdef class Edje(evas.c_evas.Object):
 
 
 evas.c_evas._object_mapping_register("edje", Edje)
+
+
+cdef extern from "Python.h":
+    cdef python.PyTypeObject PyEdje_Type # hack to install metaclass
+
+cdef void _edje_install_metaclass(object metaclass):
+    _install_metaclass(&PyEdje_Type, metaclass)

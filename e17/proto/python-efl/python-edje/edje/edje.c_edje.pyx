@@ -230,5 +230,45 @@ def extern_object_aspect_set(evas.c_evas.Object obj, int aspect, int w, int h):
     edje_extern_object_aspect_set(obj.obj, <Edje_Aspect_Control>aspect, w, h)
 
 
+cdef void _install_metaclass(python.PyTypeObject *ctype, object metaclass):
+    python.Py_INCREF(metaclass)
+    ctype.ob_type = <python.PyTypeObject*>metaclass
+
+
 include "edje.c_edje_message.pxi"
 include "edje.c_edje_object.pxi"
+
+
+class EdjeMeta(evas.c_evas.EvasMeta):
+    def __init__(cls, name, bases, dict_):
+        evas.c_evas.EvasMeta.__init__(cls, name, bases, dict_)
+        cls._fetch_callbacks()
+
+    def _fetch_callbacks(cls):
+        if "__edje_signal_callbacks__" in cls.__dict__:
+            return
+
+        cls.__edje_signal_callbacks__ = []
+        cls.__edje_message_callbacks__ = []
+        cls.__edje_text_callbacks__ = []
+
+        sig_append = cls.__edje_signal_callbacks__.append
+        msg_append = cls.__edje_message_callbacks__.append
+        txt_append = cls.__edje_text_callbacks__.append
+
+        for name in dir(cls):
+            val = getattr(cls, name)
+            if not callable(val):
+                continue
+
+            if hasattr(val, "edje_signal_callback"):
+                sig_data = getattr(val, "edje_signal_callback")
+                sig_append((name, sig_data))
+            elif hasattr(val, "edje_message_handler"):
+                msg_append(name)
+            elif hasattr(val, "edje_text_change_callback"):
+                txt_append(name)
+
+
+# installing metaclass for all extension types
+_edje_install_metaclass(EdjeMeta)

@@ -1,6 +1,6 @@
 # This file is included verbatim by c_evas.pyx
 
-cdef class Text(Object):
+cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
     """Text object.
 
     @group Font settings: font_source_set, font_source_get, font_source,
@@ -331,3 +331,9 @@ cdef class Text(Object):
         def __get__(self):
             return self.style_pad_get()
 
+
+cdef extern from "Python.h":
+    cdef python.PyTypeObject PyEvasText_Type # hack to install metaclass
+
+cdef void _text_install_metaclass(object metaclass):
+    _install_metaclass(&PyEvasText_Type, metaclass)

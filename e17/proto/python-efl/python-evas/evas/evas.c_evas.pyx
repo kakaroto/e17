@@ -281,6 +281,11 @@ class EvasLoadError(Exception):
         Exception.__init__(self, "%s (file=%s, key=%s)" % (msg, filename, key))
 
 
+cdef void _install_metaclass(python.PyTypeObject *ctype, object metaclass):
+    python.Py_INCREF(metaclass)
+    ctype.ob_type = <python.PyTypeObject*>metaclass
+
+
 include "evas.c_evas_rect.pxi"
 include "evas.c_evas_canvas.pxi"
 include "evas.c_evas_object_events.pxi"
@@ -293,3 +298,36 @@ include "evas.c_evas_object_image.pxi"
 include "evas.c_evas_object_gradient.pxi"
 include "evas.c_evas_object_polygon.pxi"
 include "evas.c_evas_object_text.pxi"
+
+
+class EvasMeta(type):
+    def __init__(cls, name, bases, dict_):
+        type.__init__(cls, name, bases, dict_)
+        cls._fetch_evt_callbacks()
+
+    def _fetch_evt_callbacks(cls):
+        if "__evas_event_callbacks__" in cls.__dict__:
+            return
+
+        cls.__evas_event_callbacks__ = []
+        append = cls.__evas_event_callbacks__.append
+
+        for name in dir(cls):
+            val = getattr(cls, name)
+            if not callable(val) or not hasattr(val, "evas_event_callback"):
+                continue
+            evt = getattr(val, "evas_event_callback")
+            append((name, evt))
+
+
+# installing metaclass for all extension types
+_object_install_metaclass(EvasMeta)
+_smartobj_install_metaclass(EvasMeta)
+_clippedsmartobj_install_metaclass(EvasMeta)
+_rectangle_install_metaclass(EvasMeta)
+_line_install_metaclass(EvasMeta)
+_image_install_metaclass(EvasMeta)
+_filledimage_install_metaclass(EvasMeta)
+_gradient_install_metaclass(EvasMeta)
+_polygon_install_metaclass(EvasMeta)
+_text_install_metaclass(EvasMeta)

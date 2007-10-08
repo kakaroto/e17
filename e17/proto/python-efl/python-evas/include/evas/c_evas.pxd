@@ -606,7 +606,6 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
     cdef int _set_obj(self, Evas *obj) except 0
 
-
 cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     cdef Evas_Object *obj
     cdef readonly Canvas evas
@@ -617,7 +616,8 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     cdef int _set_obj(self, Evas_Object *obj) except 0
 
 
-cdef class SmartObject(Object):
+cdef public class SmartObject(Object) [object PyEvasSmartObject,
+                                       type PyEvasSmartObject_Type]:
     cdef object _smart_callbacks
     cdef object _m_delete
     cdef object _m_move
@@ -629,33 +629,38 @@ cdef class SmartObject(Object):
     cdef object _m_clip_unset
 
 
-cdef class Rectangle(Object):
+cdef public class Rectangle(Object) [object PyEvasRectangle,
+                                     type PyEvasRectangle_Type]:
     pass
 
 
-cdef class Line(Object):
+cdef public class Line(Object) [object PyEvasLine, type PyEvasLine_Type]:
     pass
 
 
-cdef class Image(Object):
+cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
     pass
 
 
-cdef class FilledImage(Image):
+cdef public class FilledImage(Image) [object PyEvasFilledImage,
+                                      type PyEvasFilledImage_Type]:
     pass
 
 
-cdef class Gradient(Object):
+cdef public class Gradient(Object) [object PyEvasGradient,
+                                    type PyEvasGradient_Type]:
     pass
 
 
-cdef class Polygon(Object):
+cdef public class Polygon(Object) [object PyEvasPolygon,
+                                   type PyEvasPolygon_Type]:
     pass
 
 
-cdef class Text(Object):
+cdef public class Text(Object) [object PyEvasText, type PyEvasText_Type]:
     pass
 
 
-cdef class ClippedSmartObject(SmartObject):
+cdef public class ClippedSmartObject(SmartObject) \
+         [object PyEvasClippedSmartObject, type PyEvasClippedSmartObject_Type]:
     cdef readonly Rectangle clipper

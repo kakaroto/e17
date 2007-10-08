@@ -203,7 +203,8 @@ cdef object _smart_class_get_impl_method(object cls, char *name):
         return meth
 
 
-cdef class SmartObject(Object):
+cdef public class SmartObject(Object) [object PyEvasSmartObject,
+                                       type PyEvasSmartObject_Type]:
     """Smart Evas Objects.
 
     Smart objects are user-defined Evas components, often used to group
@@ -522,8 +523,15 @@ cdef class SmartObject(Object):
         return obj
 
 
+cdef extern from "Python.h":
+    cdef python.PyTypeObject PyEvasSmartObject_Type # hack to install metaclass
 
-cdef class ClippedSmartObject(SmartObject):
+cdef void _smartobj_install_metaclass(object metaclass):
+    _install_metaclass(&PyEvasSmartObject_Type, metaclass)
+
+
+cdef public class ClippedSmartObject(SmartObject) \
+         [object PyEvasClippedSmartObject, type PyEvasClippedSmartObject_Type]:
     """SmartObject subclass that automatically handles an internal clipper.
 
     This class is optimized for the recommended SmartObject usage of
@@ -589,3 +597,10 @@ cdef class ClippedSmartObject(SmartObject):
     def clip_unset(self):
         "Default implementation that acts on the the clipper."
         evas_object_clip_unset(self.clipper.obj)
+
+
+cdef extern from "Python.h":
+    cdef python.PyTypeObject PyEvasClippedSmartObject_Type # hack to install metaclass
+
+cdef void _clippedsmartobj_install_metaclass(object metaclass):
+    _install_metaclass(&PyEvasClippedSmartObject_Type, metaclass)

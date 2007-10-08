@@ -1,6 +1,7 @@
 # This file is included verbatim by c_evas.pyx
 
-cdef class Polygon(Object):
+cdef public class Polygon(Object) [object PyEvasPolygon,
+                                   type PyEvasPolygon_Type]:
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
         if self.obj == NULL:
@@ -22,3 +23,10 @@ cdef class Polygon(Object):
 
     def points_clear(self):
         evas_object_polygon_points_clear(self.obj)
+
+
+cdef extern from "Python.h":
+    cdef python.PyTypeObject PyEvasPolygon_Type # hack to install metaclass
+
+cdef void _polygon_install_metaclass(object metaclass):
+    _install_metaclass(&PyEvasPolygon_Type, metaclass)

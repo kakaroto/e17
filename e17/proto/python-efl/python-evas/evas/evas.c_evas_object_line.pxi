@@ -1,6 +1,6 @@
 # This file is included verbatim by c_evas.pyx
 
-cdef class Line(Object):
+cdef public class Line(Object) [object PyEvasLine, type PyEvasLine_Type]:
     "Straight line."
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
@@ -117,3 +117,9 @@ cdef class Line(Object):
             evas_object_line_xy_get(self.obj, NULL, NULL, &x2, &y2)
             return (x2, y2)
 
+
+cdef extern from "Python.h":
+    cdef python.PyTypeObject PyEvasLine_Type # hack to install metaclass
+
+cdef void _line_install_metaclass(object metaclass):
+    _install_metaclass(&PyEvasLine_Type, metaclass)
