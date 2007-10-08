@@ -17,6 +17,7 @@ engine_gl_x11.c engine_gl_x11.h \
 engine_xrender_x11.c engine_xrender_x11.h \
 engine_software_16_x11.c engine_software_16_x11.h \
 engine_software_ddraw.c engine_software_ddraw.h \
+engine_software_16_ddraw.c engine_software_16_ddraw.h \
 engine_direct3d.cpp engine_direct3d.h \
 engine_software_sdl.c engine_software_sdl.h \
 ui.c ui.h \
@@ -61,4 +62,4 @@ image_blend_occlude2_very_many.c \
 image_blend_occlude3_very_many.c \
 poly_blend.c
 
-expedite_LDFLAGS = @EVAS_LIBS@ @sdl_libs@ @x_libs@ @ddraw_libs@ @d3d_libs@ @glew_libs@ -lm
+expedite_LDFLAGS = @EVAS_LIBS@ @sdl_libs@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @glew_libs@ -lm

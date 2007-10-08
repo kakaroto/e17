@@ -1147,6 +1147,8 @@ _engine_args(int argc, char **argv)
      loop_func = engine_software_16_x11_loop;
    if (engine_software_ddraw_args(argc, argv))
      loop_func = engine_software_ddraw_loop;
+   if (engine_software_16_ddraw_args(argc, argv))
+     loop_func = engine_software_16_ddraw_loop;
    if (engine_software_sdl_args(argc, argv))
      loop_func = engine_software_sdl_loop;
    if (engine_direct3d_args(argc, argv))
@@ -1161,7 +1163,7 @@ _engine_args(int argc, char **argv)
 		"  -p PROFILE\n"
 		"\n"
 		"Where ENGINE can be one of:\n"
-		"  x11 xr gl-glew gl x11-16 ddraw direct3d sdl\n"
+		"  x11 xr gl-glew gl x11-16 ddraw ddraw-16 direct3d sdl\n"
 		"Where PROFILE can be one of:\n"
 		"  qvga qvga-p vga vga-p wvga wvga-p svga svga-p xga xga-p wxga wxga-p\n"
 		"  n800\n"
