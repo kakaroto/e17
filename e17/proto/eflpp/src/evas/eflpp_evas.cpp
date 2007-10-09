@@ -2,6 +2,7 @@
 #include <eflpp_common.h>
 
 #include "eflpp_evas.h"
+#include "eflpp_evastextblockstyle.h"
 #include "eflpp_ecore.h"
 
 /* EFL */
@@ -821,52 +822,39 @@ EvasText::~EvasText()
 // Textblock
 //===============================================================================================
 
-EvasTextBlock::EvasTextBlock( EvasCanvas* canvas, const char* name )
+EvasTextblock::EvasTextblock( EvasCanvas* canvas, const char* name )
      :EvasObject( canvas )
 {
     o = evas_object_textblock_add( canvas->obj() );
     init( name ? name : "textblock" );
 }
 
-EvasTextBlock::EvasTextBlock( int x, int y, const char* text, EvasCanvas* canvas, const char* name )
+EvasTextblock::EvasTextblock( int x, int y, const char* text, EvasCanvas* canvas, const char* name )
      :EvasObject( canvas )
 {
     o = evas_object_textblock_add( canvas->obj() );
     init( name ? name : "textblock" );
 
     move( x, y );
-    insertText( text );
-    //setFont( "Vera", 10 );
+    setText( text );
 }
 
-void EvasTextBlock::insertFormattedText( const char* text, const char* font, int size, const char* color )
+void EvasTextblock::setStyle( const EvasTextblockStyle* style )
 {
-    insertFormat( font, size, color );
-    insertText( text );
+    evas_object_textblock_style_set( o, style->o );
 }
 
-void EvasTextBlock::insertFormat( const char* font, int size, const char* color )
+void EvasTextblock::setText( const char* text )
 {
-    char format[1024];
-    memset( format, 0, sizeof format );
-    sprintf( format, "font=%s size=%d color=%s", font, size, color );
-#if 0
-    evas_object_textblock_format_insert( o, format );
-#else
-#warning Excuse me - EvasTextBlock is currently broken due to internal evas changes
-#endif
+    evas_object_textblock_text_markup_set( o, text );
 }
 
-void EvasTextBlock::insertText( const char* text )
+void EvasTextblock::clear()
 {
-#if 0
-    evas_object_textblock_text_insert( o, text );
-#else
-#warning Excuse me - EvasTextBlock is currently broken due to internal evas changes
-#endif
+    evas_object_textblock_clear( o );
 }
 
-EvasTextBlock::~EvasTextBlock()
+EvasTextblock::~EvasTextblock()
 {
     evas_object_del( o );
 }

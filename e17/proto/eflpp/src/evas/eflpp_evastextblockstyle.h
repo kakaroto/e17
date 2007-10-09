@@ -21,11 +21,15 @@ namespace efl {
 
 class EvasTextblockStyle
 {
+  friend class EvasTextblock;
+
   public:
     EvasTextblockStyle();
     EvasTextblockStyle( const char* format );
     ~EvasTextblockStyle();
+
     const char* format() const;
+    void setFormat( const char* );
 
   private:
     Evas_Textblock_Style* o;

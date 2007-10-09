@@ -10,14 +10,14 @@ noinst_LTLIBRARIES = libeflpp_evas.la
 libeflpp_evas_la_SOURCES = \
 	eflpp_evas.cpp\
 	eflpp_evasfont.cpp\
-	eflpp_evastextblock.cpp
+	eflpp_evastextblockstyle.cpp
     
 libeflpp_includedir = $(pkgincludedir)
 
 libeflpp_include_DATA = \
 	eflpp_evasevent.h\
 	eflpp_evasfont.h\
-	eflpp_evastextblock.h\
+	eflpp_evastextblockstyle.h\
 	eflpp_evas.h\
 	eflpp_evasutils.h
 

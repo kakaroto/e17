@@ -4,6 +4,8 @@
 
 #include "eflpp_evastextblockstyle.h"
 
+#include <assert.h>
+
 namespace efl {
 
 EvasTextblockStyle::EvasTextblockStyle()
@@ -19,12 +21,19 @@ EvasTextblockStyle::EvasTextblockStyle( const char* format )
 
 EvasTextblockStyle::~EvasTextblockStyle()
 {
-    evas_textblock_style_free();
+    evas_textblock_style_free( o );
 }
 
-const char* EvasTextblockStyle::style() const
+const char* EvasTextblockStyle::format() const
 {
     return evas_textblock_style_get( o );
+}
+
+void EvasTextblockStyle::setFormat( const char* format )
+{
+    assert( o );
+    evas_textblock_style_set( o, format );
+
 }
 
 }

@@ -31,6 +31,7 @@ class EvasObject;
 class EvasPolygon;
 class EvasRectangle;
 class EvasText;
+class EvasTextblockStyle;
 
 static const char* EVAS_LOAD_ERROR[] =
 {
@@ -59,13 +60,13 @@ class EvasCanvas : public Trackable
 
     /* Output Methods */
     int lookupRenderMethod( const char* method );
-  
+
     /*! \brief Set the Evas output method.
      *  This does include a call to lookupRenderMethod().
      *  @param method Name of the output method. (See C API docs).
      */
     bool setOutputMethod( const char* method );
-  
+
     void resize( int width, int height );
     Size size() const;
     Rect geometry() const;
@@ -187,7 +188,7 @@ class EvasObject
   protected:
     Evas_Object* o;
     EvasCanvas* _canvas;
-  
+
     void init (const char *name);
 
   private:
@@ -276,16 +277,16 @@ class EvasText : public EvasObject
 /*
  * Wraps an Evas Textblock Object
  */
-class EvasTextBlock : public EvasObject
+class EvasTextblock : public EvasObject
 {
   public:
-    EvasTextBlock( EvasCanvas* canvas, const char* name = 0 );
-    EvasTextBlock( int x, int y, const char* text, EvasCanvas* canvas, const char* name = 0 );
-    virtual ~EvasTextBlock();
+    EvasTextblock( EvasCanvas* canvas, const char* name = 0 );
+    EvasTextblock( int x, int y, const char* text, EvasCanvas* canvas, const char* name = 0 );
+    virtual ~EvasTextblock();
 
-    void insertText( const char* text );
-    void insertFormat( const char* font, int size = 12, const char* color = "#ffffffff" );
-    void insertFormattedText( const char* text, const char* font = "Vera", int size = 12, const char* color = "#ffffffff" );
+    void setStyle( const EvasTextblockStyle* style );
+    void setText( const char* text );
+    void clear();
 };
 
 /*
@@ -326,7 +327,7 @@ class EvasImage : public EvasObject
     /* Border */
     void setBorder( int left, int right, int top, int bottom );
 
-    /// Sets the raw image data. 
+    /// Sets the raw image data.
     void setData (void *data);
 
     /// Retrieves the raw image data.
