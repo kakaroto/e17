@@ -1,5 +1,4 @@
 ## Process this file with automake to produce Makefile.in
-## Created by Anjuta - will *NOT* be overwritten
 
 INCLUDES = -I../common -I../ecore
 
@@ -10,13 +9,15 @@ noinst_LTLIBRARIES = libeflpp_evas.la
 
 libeflpp_evas_la_SOURCES = \
 	eflpp_evas.cpp\
-	eflpp_evasfont.cpp
+	eflpp_evasfont.cpp\
+	eflpp_evastextblock.cpp
     
 libeflpp_includedir = $(pkgincludedir)
 
 libeflpp_include_DATA = \
 	eflpp_evasevent.h\
 	eflpp_evasfont.h\
+	eflpp_evastextblock.h\
 	eflpp_evas.h\
 	eflpp_evasutils.h
 
