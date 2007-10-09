@@ -101,7 +101,7 @@ AC_CHECK_HEADER(Evas_Engine_Software_DDraw.h,
 
 have_ddraw_16="no"
 AC_CHECK_HEADER(Evas_Engine_Software_16_DDraw.h,
-  [ AC_DEFINE(HAVE_SOFTWARE_DDRAW, 1, [Evas 16bit Software DirectDraw Engine Support])
+  [ AC_DEFINE(HAVE_SOFTWARE_16_DDRAW, 1, [Evas 16bit Software DirectDraw Engine Support])
     have_ddraw_16="yes"
     ddraw_16_libs="-lddraw -ldxguid" ],
   [ dummy=no ],

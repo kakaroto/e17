@@ -1,16 +1,16 @@
 #include "main.h"
 
 
-#ifndef HAVE_SOFTWARE_DDRAW
+#ifndef HAVE_SOFTWARE_16_DDRAW
 int
-engine_software_ddraw_args(int argc, char **argv)
+engine_software_16_ddraw_args(int argc, char **argv)
 {
   fprintf(stderr, "ERROR: No 16bits Software DirectDraw Engine built\n");
   return 0;
 }
 
 void
-engine_software_ddraw_loop(void)
+engine_software_16_ddraw_loop(void)
 {
 }
 #else
