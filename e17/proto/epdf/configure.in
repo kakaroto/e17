@@ -41,7 +41,7 @@ PKG_CHECK_MODULES(ECORE_EVAS,
    [ ecore-evas >= ${ecore_version} ]
 )
 
-PKG_CHECK_MODULES(POPPLER, [ poppler >= 0.5.9 ],
+PKG_CHECK_MODULES(POPPLER, [ poppler >= 0.6 ],
    [
     have_poppler_0_6="yes"
     AC_DEFINE([HAVE_POPPLER_0_6], [1], [Define to 1 if you have Poppler 0.6.])

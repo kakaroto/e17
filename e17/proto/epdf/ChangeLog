@@ -1,3 +1,8 @@
+2007-10-09  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.in:
+	Reverse the change of version of poppler.
+
 2007-10-06  Vincent Torri  <doursse at users dot sf dot net>
 
 	* configure.in:
