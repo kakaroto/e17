@@ -379,13 +379,15 @@ static void _text_objects_create(Etk_Tree_Model *model, Evas_Object *cell_object
 static Etk_Bool _text_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geometry geometry, void *cell_data, Evas_Object *cell_objects[ETK_TREE_MAX_OBJECTS_PER_MODEL], Evas *evas)
 {
    char **text_data;
+   int th;
 
    if (!(text_data = cell_data) || !cell_objects[0])
       return ETK_FALSE;
 
    edje_object_part_text_set(cell_objects[0], "etk.text.label", *text_data);
-   evas_object_resize(cell_objects[0], geometry.w, geometry.h - (geometry.y / 2));
-   evas_object_move(cell_objects[0], geometry.x, geometry.y + (geometry.h / 2));
+   edje_object_size_min_calc(cell_objects[0], NULL, &th);
+   evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - th) / 2));
+   evas_object_resize(cell_objects[0], geometry.w, geometry.h);
    evas_object_show(cell_objects[0]);
 
    return ETK_FALSE;
@@ -436,13 +438,16 @@ static Etk_Bool _int_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geomet
 {
    int *int_data;
    char string[256];
+   int th;
 
    if (!(int_data = cell_data) || !cell_objects[0])
       return ETK_FALSE;
 
    snprintf(string, 255, "%d", *int_data);
    edje_object_part_text_set(cell_objects[0], "etk.text.label", string);
-   evas_object_move(cell_objects[0], geometry.x, geometry.y + (geometry.h / 2));
+   edje_object_size_min_calc(cell_objects[0], NULL, &th);
+   evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - th) / 2));
+   evas_object_resize(cell_objects[0], geometry.w, geometry.h);
    evas_object_show(cell_objects[0]);
 
    return ETK_FALSE;
@@ -481,13 +486,16 @@ static Etk_Bool _double_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Geo
 {
    double *double_data;
    char string[256];
+   int th;
 
    if (!(double_data = cell_data) || !model || !cell_objects[0])
       return ETK_FALSE;
 
    snprintf(string, 255, "%.2f", *double_data);
    edje_object_part_text_set(cell_objects[0], "etk.text.label", string);
-   evas_object_move(cell_objects[0], geometry.x, geometry.y + (geometry.h / 2));
+   edje_object_size_min_calc(cell_objects[0], NULL, &th);
+   evas_object_move(cell_objects[0], geometry.x, geometry.y + ((geometry.h - th) / 2));
+   evas_object_resize(cell_objects[0], geometry.w, geometry.h);
    evas_object_show(cell_objects[0]);
 
    return ETK_FALSE;
