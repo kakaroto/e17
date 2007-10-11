@@ -280,7 +280,6 @@ engine_software_ddraw_args(int argc, char **argv)
    WNDCLASS                         wc;
    RECT                             rect;
    HINSTANCE                        hinstance;
-   MSG                              msg;
    LPDIRECTDRAW                     object;
    LPDIRECTDRAWSURFACE              surface_primary;
    LPDIRECTDRAWSURFACE              surface_back;
