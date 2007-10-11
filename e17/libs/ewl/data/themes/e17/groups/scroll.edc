@@ -1,3 +1,4 @@
+
 images
 {
 	image: "e17_ibar_bg_v.png" COMP;
@@ -32,7 +33,7 @@ group
 
 	data
 	{
-		item: "inset" 2;
+		item: "inset" 4;
 	}
 
 	parts

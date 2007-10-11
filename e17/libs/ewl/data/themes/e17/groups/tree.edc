@@ -12,7 +12,7 @@ group
 
 	data
 	{
-		item: "inset" 2;
+		item: "inset" 3;
 	}
 
 	parts
