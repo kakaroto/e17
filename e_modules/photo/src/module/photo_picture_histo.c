@@ -102,6 +102,7 @@ void photo_picture_histo_picture_del(Picture *picture)
    Photo_Item *pi;
    Evas_List *l;
 
+   if (!picture) return;
    for (l=picture->items_histo; l; l=evas_list_next(l))
      {
         pi = evas_list_data(l);
