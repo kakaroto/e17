@@ -81,7 +81,7 @@ class Edje
 //===============================================================================================
 class EdjePart
 {
-    friend class EvasEdje;
+  friend class EvasEdje;
 
   private:
     EdjePart( EvasEdje* parent, const char* partname );

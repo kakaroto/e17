@@ -171,9 +171,19 @@ void EvasCanvas::setImageCache( unsigned int size )
     evas_image_cache_set( o, size );
 }
 
-EvasObject* EvasCanvas::focusObject() const
+EvasObject* EvasCanvas::focusedObject() const
 {
     return EvasObject::objectLink( evas_focus_get( o ) );
+}
+
+EvasObject* EvasCanvas::objectAtTop() const
+{
+    return EvasObject::objectLink( evas_object_top_get( o ) );
+}
+
+EvasObject* EvasCanvas::objectAtBottom() const
+{
+    return EvasObject::objectLink( evas_object_bottom_get( o ) );
 }
 
 //===============================================================================================
@@ -299,6 +309,26 @@ void EvasObject::setColor( int r, int g, int b, int alpha )
 void EvasObject::setColor( const Color& c )
 {
     setColor( c.r(), c.g(), c.b(), c.alpha() );
+}
+
+int EvasObject::colorInterpolation() const
+{
+    return evas_object_color_interpolation_get( o );
+}
+
+void EvasObject::setColorInterpolation( int colorspace )
+{
+    evas_object_color_interpolation_set( o, colorspace );
+}
+
+bool EvasObject::isAntiAliased() const
+{
+    return evas_object_anti_alias_get( o );
+}
+
+void EvasObject::setAntiAliased( bool antialias )
+{
+    evas_object_anti_alias_set( o, antialias );
 }
 
 void EvasObject::setLayer( int layer )

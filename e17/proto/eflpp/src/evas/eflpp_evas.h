@@ -23,17 +23,7 @@
 
 namespace efl {
 
-/* Forward declarations */
-class EvasCanvas;
-class EvasGradient;
-class EvasLine;
-class EvasObject;
-class EvasPolygon;
-class EvasRectangle;
-class EvasText;
-class EvasTextblockStyle;
-
-static const char* EVAS_LOAD_ERROR[] =
+static const char* const EVAS_LOAD_ERROR[] =
 {
     "No error on load",
     "A non-specific error occured",
@@ -44,6 +34,16 @@ static const char* EVAS_LOAD_ERROR[] =
     "File contains an unknown format",
     "File contains an incompatible format",
 };
+
+/* Forward declarations */
+class EvasCanvas;
+class EvasGradient;
+class EvasLine;
+class EvasObject;
+class EvasPolygon;
+class EvasRectangle;
+class EvasText;
+class EvasTextblockStyle;
 
 /**
  * An Evas Canvas Wrapper
@@ -90,8 +90,10 @@ class EvasCanvas : public Trackable
     void reloadImageCache();
     int imageCache();
 
-    /* Focus Handling */
-    EvasObject* focusObject() const;
+    /* Object queries */
+    EvasObject* focusedObject() const;
+    EvasObject* objectAtTop() const;
+    EvasObject* objectAtBottom() const;
 
   protected:
     Evas* o;
@@ -143,6 +145,15 @@ class EvasObject
     virtual Color color() const;
     virtual void setColor( int r, int g, int b, int alpha );
     virtual void setColor( const Color& color );
+    virtual int colorInterpolation() const;
+    virtual void setColorInterpolation( int );
+
+    /* Antialias */
+    virtual void setAntiAliased( bool );
+    virtual bool isAntiAliased() const;
+
+    /* Render Operation */
+    //FIXME add render_op
 
     /* Z */
     virtual int layer() const;
