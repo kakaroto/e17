@@ -160,6 +160,9 @@ static void _etk_widget_content_object_resize_cb(Evas_Object *obj, Evas_Coord w,
 static void _etk_widget_content_object_clip_set_cb(Evas_Object *obj, Evas_Object *clip);
 static void _etk_widget_content_object_clip_unset_cb(Evas_Object *obj);
 
+static void _evas_object_smart_move(Evas_Object *object, Evas_Coord x, Evas_Coord y);
+static void _evas_object_smart_resize(Evas_Object *object, Evas_Coord w, Evas_Coord h);
+
 
 static Etk_Bool _etk_widget_intercept_show_hide = ETK_TRUE;
 static Evas_Smart *_etk_widget_smart_object_smart = NULL;
@@ -1349,9 +1352,9 @@ void etk_widget_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 
    evas_object_geometry_get(widget->smart_object, &x, &y, &w, &h);
    if (geometry.x != x || geometry.y != y || widget->need_redraw)
-      evas_object_move(widget->smart_object, geometry.x, geometry.y);
+      _evas_object_smart_move(widget->smart_object, geometry.x, geometry.y);
    if (geometry.w != w || geometry.h != h || widget->need_redraw)
-      evas_object_resize(widget->smart_object, geometry.w, geometry.h);
+      _evas_object_smart_resize(widget->smart_object, geometry.w, geometry.h);
 }
 
 /**
@@ -3176,10 +3179,10 @@ static void _etk_widget_smart_object_move_cb(Evas_Object *obj, Evas_Coord x, Eva
       if (widget->theme_object)
       {
          evas_object_geometry_get(widget->theme_object, &child_x, &child_y, NULL, NULL);
-         evas_object_move(widget->theme_object, child_x + x_offset, child_y + y_offset);
+         _evas_object_smart_move(widget->theme_object, child_x + x_offset, child_y + y_offset);
       }
       if (widget->event_object)
-         evas_object_move(widget->event_object, widget->geometry.x, widget->geometry.y);
+         _evas_object_smart_move(widget->event_object, widget->geometry.x, widget->geometry.y);
       /* Move the member-objects and the children to the right place */
       if (!widget->content_object)
       {
@@ -3187,7 +3190,7 @@ static void _etk_widget_smart_object_move_cb(Evas_Object *obj, Evas_Coord x, Eva
          {
             m = l->data;
             evas_object_geometry_get(m->object, &child_x, &child_y, NULL, NULL);
-            evas_object_move(m->object, child_x + x_offset, child_y + y_offset);
+            _evas_object_smart_move(m->object, child_x + x_offset, child_y + y_offset);
          }
          for (l = widget->children; l; l = l->next)
          {
@@ -3195,7 +3198,7 @@ static void _etk_widget_smart_object_move_cb(Evas_Object *obj, Evas_Coord x, Eva
             if (!child->swallowed)
             {
                evas_object_geometry_get(child->smart_object, &child_x, &child_y, NULL, NULL);
-               evas_object_move(child->smart_object, child_x + x_offset, child_y + y_offset);
+               _evas_object_smart_move(child->smart_object, child_x + x_offset, child_y + y_offset);
             }
          }
       }
@@ -3229,13 +3232,13 @@ static void _etk_widget_smart_object_resize_cb(Evas_Object *obj, Evas_Coord w, E
 
       if (widget->theme_object)
       {
-         evas_object_move(widget->theme_object, widget->geometry.x, widget->geometry.y);
-         evas_object_resize(widget->theme_object, widget->geometry.w, widget->geometry.h);
+         _evas_object_smart_move(widget->theme_object, widget->geometry.x, widget->geometry.y);
+         _evas_object_smart_resize(widget->theme_object, widget->geometry.w, widget->geometry.h);
       }
       if (widget->event_object)
       {
-         evas_object_move(widget->event_object, widget->geometry.x, widget->geometry.y);
-         evas_object_resize(widget->event_object, widget->geometry.w, widget->geometry.h);
+         _evas_object_smart_move(widget->event_object, widget->geometry.x, widget->geometry.y);
+         _evas_object_smart_resize(widget->event_object, widget->geometry.w, widget->geometry.h);
       }
       if ((!widget->content_object || widget->need_redraw) && widget->size_allocate)
          widget->size_allocate(widget, widget->inner_geometry);
@@ -3495,7 +3498,7 @@ static void _etk_widget_content_object_move_cb(Evas_Object *obj, Evas_Coord x, E
       {
          m = l->data;
          evas_object_geometry_get(m->object, &child_x, &child_y, NULL, NULL);
-         evas_object_move(m->object, child_x + offset_x, child_y + offset_y);
+         _evas_object_smart_move(m->object, child_x + offset_x, child_y + offset_y);
       }
       for (l = widget->children; l; l = l->next)
       {
@@ -3503,7 +3506,7 @@ static void _etk_widget_content_object_move_cb(Evas_Object *obj, Evas_Coord x, E
          if (!child->swallowed)
          {
             evas_object_geometry_get(child->smart_object, &child_x, &child_y, NULL, NULL);
-            evas_object_move(child->smart_object, child_x + offset_x, child_y + offset_y);
+            _evas_object_smart_move(child->smart_object, child_x + offset_x, child_y + offset_y);
          }
       }
    }
@@ -3579,6 +3582,40 @@ static void _etk_widget_content_object_clip_unset_cb(Evas_Object *obj)
       if (!child->swallowed && etk_widget_clip_get(child) == prev_clip)
          etk_widget_clip_unset(child);
    }
+}
+
+/* Moves an Evas object and call the "move" smart-method even if the object has not been moved */
+static void _evas_object_smart_move(Evas_Object *object, Evas_Coord x, Evas_Coord y)
+{
+   Evas_Smart *smart;
+   const Evas_Smart_Class *sc;
+   Evas_Coord prev_x, prev_y;
+   
+   if (!object)
+      return;
+   
+   evas_object_geometry_get(object, &prev_x, &prev_y, NULL, NULL);
+   evas_object_move(object, x, y);
+   if (x == prev_x && y == prev_y
+         && (smart = evas_object_smart_smart_get(object)) && (sc = evas_smart_class_get(smart)) && sc->move)
+      sc->move(object, x, y);
+}
+
+/* Resizes an Evas object and call the "resize" smart-method even if the object has not been resized */
+static void _evas_object_smart_resize(Evas_Object *object, Evas_Coord w, Evas_Coord h)
+{
+   Evas_Smart *smart;
+   const Evas_Smart_Class *sc;
+   Evas_Coord prev_w, prev_h;
+   
+   if (!object)
+      return;
+   
+   evas_object_geometry_get(object, NULL, NULL, &prev_w, &prev_h);
+   evas_object_resize(object, w, h);
+   if (w == prev_w && h == prev_h
+         && (smart = evas_object_smart_smart_get(object)) && (sc = evas_smart_class_get(smart)) && sc->resize)
+      sc->resize(object, w, h);
 }
 
 /** @} */
