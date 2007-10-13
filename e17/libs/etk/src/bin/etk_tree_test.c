@@ -3,29 +3,6 @@
 #include <string.h>
 #include "config.h"
 
-typedef struct Etk_Test_Tree_Scroll_Kinetic_Info Etk_Test_Tree_Scroll_Kinetic_Info;
-
-struct Etk_Test_Tree_Scroll_Kinetic_Info
-{
-   Etk_Bool clicked;
-   Etk_Bool moved;
-   int sps;         /* amount of scroll events to generate per second */
-   int x;
-   int y;
-   int ex;
-   int ey;
-   double vel_x;
-   double vel_y;
-   double vmax;     /* maximum scroll velocity in pixels */
-   double vmin;     /* minimum scroll velocity in pixels */
-   double decel;    /* multiplier used when decelerating */
-};
-
-static void _etk_test_tree_scroll(Etk_Widget *tree, double x, double y, Etk_Bool *sx, Etk_Bool *sy);
-static int _etk_test_tree_scroll_timeout(void *data);
-static Etk_Bool _etk_test_tree_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
-static Etk_Bool _etk_test_tree_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data);
-static Etk_Bool _etk_test_tree_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Move *event, void *data);
 static Etk_Bool _etk_test_tree_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static Etk_Bool _etk_test_tree_row_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 static Etk_Bool _etk_test_tree_checkbox_toggled_cb(Etk_Object *object, Etk_Tree_Row *row, void *data);
@@ -40,7 +17,6 @@ void etk_test_tree_window_create(void *data)
    Etk_Widget *vbox;
    Etk_Widget *hbox;
    Etk_Widget *tree;
-   Etk_Test_Tree_Scroll_Kinetic_Info *kinfo;
    Etk_Widget *button;
    Etk_Tree_Col *col1, *col2, *col3, *col4, *col5, *col6;
    Etk_Tree_Row *row;
@@ -67,17 +43,6 @@ void etk_test_tree_window_create(void *data)
 
    /* Create the tree widget */
    tree = etk_tree_new();
-   kinfo = malloc(sizeof(Etk_Test_Tree_Scroll_Kinetic_Info));
-   kinfo->clicked = ETK_FALSE;
-   kinfo->moved = ETK_FALSE;
-   kinfo->sps = 15;
-   kinfo->vmax = 48;
-   kinfo->vmin = 0;
-   kinfo->decel = 0.95;
-   etk_object_data_set(ETK_OBJECT(tree), "_Etk_Test_Tree::Kinetic_Info", kinfo);
-   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_mouse_down_cb), NULL);
-   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_mouse_up_cb), NULL);
-   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(tree), ETK_CALLBACK(_etk_test_tree_mouse_move_cb), NULL);
    etk_tree_mode_set(ETK_TREE(tree), ETK_TREE_MODE_TREE);
    etk_tree_multiple_select_set(ETK_TREE(tree), ETK_TRUE);
    etk_widget_padding_set(tree, 5, 5, 5, 5);
@@ -178,129 +143,6 @@ void etk_test_tree_window_create(void *data)
       ETK_CALLBACK(_etk_test_tree_checkbox_toggled_cb), statusbar);
 
    etk_widget_show_all(win);
-}
-
-static void
-_etk_test_tree_scroll(Etk_Widget *tree, double x, double y, Etk_Bool *sx, Etk_Bool *sy)
-{
-   Etk_Test_Tree_Scroll_Kinetic_Info *kinfo;
-   double h, v;
-   Etk_Range *hrange, *vrange;
-   Etk_Scrolled_View *scrolled_view;
-
-   kinfo = etk_object_data_get(ETK_OBJECT(tree), "_Etk_Test_Tree::Kinetic_Info");
-
-   scrolled_view = etk_tree_scrolled_view_get(ETK_TREE(tree));
-   hrange = etk_scrolled_view_hscrollbar_get(scrolled_view);
-   vrange = etk_scrolled_view_vscrollbar_get(scrolled_view);
-
-   if (hrange) {
-      h = etk_range_value_get(hrange) - x;
-      if (h > hrange->upper - hrange->page_size) {
-         if (sx) *sx = FALSE;
-         h = hrange->upper - hrange->page_size;
-      } else if (h < hrange->lower) {
-         if (sx) *sx = FALSE;
-         h = hrange->lower;
-      } else if (sx)
-         *sx = TRUE;
-      etk_range_value_set(hrange, h);
-   }
-
-   if (vrange) {
-      v = etk_range_value_get(vrange) - y;
-      if (v > vrange->upper - vrange->page_size) {
-         if (sy) *sy = FALSE;
-         v = vrange->upper - vrange->page_size;
-      } else if (v < vrange->lower) {
-         if (sy) *sy = FALSE;
-         v = vrange->lower;
-      } else if (sy)
-         *sy = TRUE;
-      etk_range_value_set(vrange, v);
-   }
-}
-
-static int _etk_test_tree_scroll_timeout(void *data)
-{
-   Etk_Bool sx = ETK_FALSE, sy = ETK_FALSE;
-   Etk_Widget *tree = data;
-   Etk_Test_Tree_Scroll_Kinetic_Info *kinfo;
-
-   kinfo = etk_object_data_get(ETK_OBJECT(tree), "_Etk_Test_Tree::Kinetic_Info");
-   if (!kinfo->clicked) {
-      kinfo->vel_x *= kinfo->decel;
-      kinfo->vel_y *= kinfo->decel;
-      if ((abs(kinfo->vel_x) < 1.0) && (abs(kinfo->vel_y) < 1.0))
-         return 0;
-   }
-
-   _etk_test_tree_scroll(tree, kinfo->vel_x, kinfo->vel_y, &sx, &sy);
-
-   if (!sx)
-      kinfo->x = kinfo->ex;
-   if (!sy)
-      kinfo->y = kinfo->ey;
-
-   return 1;
-}
-
-static Etk_Bool _etk_test_tree_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data)
-{
-   Etk_Test_Tree_Scroll_Kinetic_Info *kinfo;
-
-   kinfo = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Test_Tree::Kinetic_Info");
-   kinfo->clicked = ETK_TRUE;
-   if ((abs(kinfo->vel_x) < (kinfo->vmax * 0.25)) &&
-       (abs(kinfo->vel_y) < (kinfo->vmax * 0.25)))
-      kinfo->moved = FALSE;
-   kinfo->x = event->widget.x;
-   kinfo->y = event->widget.y;
-   kinfo->vel_x = 0;
-   kinfo->vel_y = 0;
-
-   return ETK_TRUE;
-}
-
-static Etk_Bool _etk_test_tree_mouse_up_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *event, void *data)
-{
-   Etk_Test_Tree_Scroll_Kinetic_Info *kinfo;
-
-   kinfo = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Test_Tree::Kinetic_Info");
-   kinfo->clicked = ETK_FALSE;
-
-   return ETK_TRUE;
-}
-
-static Etk_Bool _etk_test_tree_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Move *event, void *data)
-{
-   Etk_Test_Tree_Scroll_Kinetic_Info *kinfo;
-   int evx, evy;
-
-   kinfo = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Test_Tree::Kinetic_Info");
-   if (!kinfo->clicked)
-      return ETK_TRUE;
-
-   evx = event->cur.widget.x - kinfo->x;
-   evy = event->cur.widget.y - kinfo->y;
-
-   if (!kinfo->moved)
-   {
-      kinfo->moved = ETK_TRUE;
-      ecore_timer_add(1.0 / kinfo->sps, _etk_test_tree_scroll_timeout, widget);
-   }
-
-   if (kinfo->moved)
-   {
-      kinfo->ex = event->cur.widget.x;
-      kinfo->ey = event->cur.widget.y;
-      kinfo->vel_x = ((evx > 0) ? 1 : -1) *
-         (((abs(evx) / (double)ETK_WIDGET(widget)->geometry.w) * (kinfo->vmax - kinfo->vmin)) + kinfo->vmin);
-      kinfo->vel_y = ((evy > 0) ? 1 : -1) *
-        (((abs(evy) / (double)ETK_WIDGET(widget)->geometry.h) * (kinfo->vmax - kinfo->vmin)) + kinfo->vmin);
-   }
-
-   return ETK_TRUE;
 }
 
 /* Called when a key is pressed while the tree is focused:
