@@ -17,3 +17,7 @@ ltmain.sh
 missing
 stamp-h1
 ecore_li.pc
+.settings
+.project
+.cproject
+.cdtconfigure.Build (GNU)

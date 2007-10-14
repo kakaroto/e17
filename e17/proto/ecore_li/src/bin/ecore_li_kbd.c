@@ -648,7 +648,9 @@ modifier:
 int main(int argc, char **argv)
 {
 	FILE *map;
+#if 0
 	Eet_Data_Descriptor *ldesc, *kdesc;
+#endif
 	Ecore_Li_Keyboard_Layout *l;
 	Ecore_Li_Keyboard_Keycode *c;
 
