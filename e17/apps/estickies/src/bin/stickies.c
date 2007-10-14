@@ -728,7 +728,7 @@ int main(int argc, char **argv)
    ss->stickies = NULL;   
    
    eet_init();
-   etk_init(&argc, &argv);
+   etk_init(argc, argv);
    //etk_tooltips_enable();
    _e_config_init();
    _e_config_load(ss);

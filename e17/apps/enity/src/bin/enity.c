@@ -596,7 +596,7 @@ En_Argument args[] = {
 
 int main(int argc, char **argv)
 {
-   etk_init(&argc, &argv);
+   etk_init(argc, argv);
       
    if(en_arguments_parse(args, argc, argv) != EN_ARGUMENT_RETURN_OK)
      {

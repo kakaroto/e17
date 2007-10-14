@@ -6,7 +6,7 @@
 
 int main(int argc, char **argv)
 {
-   if (!etk_init(&argc, &argv))
+   if (!etk_init(argc, argv))
      {
 	fprintf(stderr, "Could not init etk. Exiting...\n");
 	return 0;

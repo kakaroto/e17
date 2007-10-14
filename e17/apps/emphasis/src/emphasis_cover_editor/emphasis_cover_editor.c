@@ -237,7 +237,7 @@ int main(int argc, char **argv)
 {
   eet_init();
   enhance_init();
-  etk_init(&argc, &argv);
+  etk_init(argc, argv);
    
   en = enhance_new();      
 
