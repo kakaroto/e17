@@ -28,6 +28,53 @@ sub ModelAdd {
 	push @{$col->{_models}}, $model->{_model};
 }
 
+package Etk::Combobox;
+
+sub ItemAppend {
+	my $self = shift;
+	my $item = $self->ItemAppendEmpty();
+	$item->FieldsSet(@_) if @_;
+	return $item;
+}
+
+sub ItemPrepend {
+	my $self = shift;
+	my $item = $self->ItemPrependEmpty();
+	$item->FieldsSet(@_) if @_;
+	return $item;
+}
+
+sub ItemInsert {
+	my $self = shift;
+	my $after = shift;
+	my $item = $self->ItemInsert($after);
+	$item->FieldsSet(@_) if @_;
+	return $item;
+}
+
+package Etk::Combobox::Entry;
+
+sub ItemAppend {
+	my $self = shift;
+	my $item = $self->ItemAppendEmpty();
+	$item->FieldsSet(@_) if @_;
+	return $item;
+}
+
+sub ItemPrepend {
+	my $self = shift;
+	my $item = $self->ItemPrependEmpty();
+	$item->FieldsSet(@_) if @_;
+	return $item;
+}
+
+sub ItemInsert {
+	my $self = shift;
+	my $after = shift;
+	my $item = $self->ItemInsert($after);
+	$item->FieldsSet(@_) if @_;
+	return $item;
+}
 
 1;
 __END__
