@@ -19,7 +19,7 @@ static char *_etk_prefs_widget_theme = NULL;
 
 int main(int argc, char **argv)
 {
-   etk_init(&argc, &argv);
+   etk_init(argc, argv);
    
    etk_prefs_show();
    

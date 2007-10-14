@@ -153,16 +153,12 @@ Etk_Engine *etk_engine_get(void)
  * @internal
  * @brief Loads an engine. The loaded engine will automatically become the engine used by Etk
  * @param engine_name the name of the engine to load
- * @param argc the location of the "argc" parameter passed to main(). It is used to parse the arguments specific to Etk.
- * It can be set to NULL.
- * @param argv the location of the "argv" parameter passed to main(). It is used to parse the arguments specific to Etk.
- * It can be set to NULL.
  * @return Returns the loaded engine, or NULL if the engine could not be loaded
  */
-Etk_Engine *etk_engine_load(const char *engine_name, int *argc, char ***argv)
+Etk_Engine *etk_engine_load(const char *engine_name)
 {
    Etk_Engine *engine;
-   Etk_Engine *(*engine_open)(int *argc, char ***argv);
+   Etk_Engine *(*engine_open)(void);
    char filename[PATH_MAX];
    void *handle;
 
@@ -195,7 +191,7 @@ Etk_Engine *etk_engine_load(const char *engine_name, int *argc, char ***argv)
       return NULL;
    }
 
-   if (!(engine = engine_open(argc, argv)))
+   if (!(engine = engine_open()))
    {
       ETK_WARNING("Etk can not open the requested engine!");
       dlclose(handle);
@@ -221,20 +217,16 @@ Etk_Engine *etk_engine_load(const char *engine_name, int *argc, char ***argv)
  * will be used by the inheriting engine
  * @param engine the engine which will inherit from the methods of the base engine
  * @param inherit_name the name of the engine from which @a engine will inherit
- * @param argc the location of the "argc" parameter passed to main(). It is used to parse the arguments specific to Etk.
- * It can be set to NULL.
- * @param argv the location of the "argv" parameter passed to main(). It is used to parse the arguments specific to Etk.
- * It can be set to NULL.
  * @return Returns ETK_TRUE on success, ETK_FALSE otherwise
  */
-Etk_Bool etk_engine_inherit_from(Etk_Engine *engine, const char *inherit_name, int *argc, char ***argv)
+Etk_Bool etk_engine_inherit_from(Etk_Engine *engine, const char *inherit_name)
 {
    Etk_Engine *inherit_from;
 
    if (!engine || !inherit_name)
       return ETK_FALSE;
 
-   if (!(inherit_from = etk_engine_load(inherit_name, argc, argv)))
+   if (!(inherit_from = etk_engine_load(inherit_name)))
      return ETK_FALSE;
 
    _etk_engine_inheritance_set(engine, inherit_from);

@@ -151,7 +151,7 @@ static int _num_test_apps = sizeof(_test_apps) / sizeof (_test_apps[0]);
 
 int main(int argc, char *argv[])
 {
-   if (!etk_init(&argc, &argv))
+   if (!etk_init(argc, argv))
    {
       fprintf(stderr, "Could not init Etk. Exiting...\n");
       return 1;

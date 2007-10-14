@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include <Ecore.h>
+#include <Ecore_Job.h>
 #include <Edje.h>
 
 #include "etk_argument.h"
@@ -48,18 +49,37 @@ static Ecore_Idle_Enterer *_etk_main_idle_enterer = NULL;
 /**
  * @brief Initializes Etk. This function needs to be called before any other call to an etk_* function. @n
  * You can call safely etk_init() several times, it will only have an effect the first time you call it. The other
- * times, it will just increment the init counter. etk_shutdown() will decrement this counter and will effectively
+ * times, it will just increment the init-counter. etk_shutdown() will decrement this counter and will effectively
  * shutdown Etk only when the counter reaches 0. So you need to call etk_shutdown() the same number of times
  * you've called etk_init().
+ * @param argc the "argc" parameter passed to main(). It is used to parse the arguments specific to Etk.
+ * It can be set to 0.
+ * @param argv the "argv" parameter passed to main(). It is used to parse the arguments specific to Etk.
+ * It can be set to NULL.
+ * @return Returns the number of times Etk has been initialized, or 0 on failure
+ * @note It initializes Evas, Ecore and Edje so you don't need to initialize them after an etk_init()
+ * @see etk_init_full()
+ * @see etk_shutdown()
+ */
+int etk_init(int argc, char **argv)
+{
+   return etk_init_full(argc, argv, NULL);
+}
+
+/**
+ * @brief Does the same thing as etk_init() except you can specify custom arguments that could be then retrieved with
+ * etk_argument_* functions. For example, etk_init_full(argc, argv, "--option1 value --toggle1")
  * @param argc the location of the "argc" parameter passed to main(). It is used to parse the arguments specific to Etk.
  * It can be set to NULL.
  * @param argv the location of the "argv" parameter passed to main(). It is used to parse the arguments specific to Etk.
  * It can be set to NULL.
+ * @param custom_opts a string corresponding to the custom arguments to add to argv. It can be set to NULL
  * @return Returns the number of times Etk has been initialized, or 0 on failure
  * @note It initializes Evas, Ecore and Edje so you don't need to initialize them after an etk_init()
+ * @see etk_init()
  * @see etk_shutdown()
  */
-int etk_init(int *argc, char ***argv)
+int etk_init_full(int argc, char **argv, const char *custom_opts)
 {
    char *engine_name = NULL;
 
@@ -71,10 +91,8 @@ int etk_init(int *argc, char ***argv)
    else
    {
       /* Parse the arguments */
-      if (argc && argv)
-      {
-         etk_argument_value_get(argc, argv, "etk-engine", 0, ETK_TRUE, &engine_name);
-      }
+      etk_argument_init(argc, argv, custom_opts);
+      etk_argument_value_get("etk-engine", 0, ETK_TRUE, &engine_name);
 
       /* Initialize the EFL */
       if (!evas_init())
@@ -115,7 +133,7 @@ int etk_init(int *argc, char ***argv)
          ETK_WARNING("Etk_Engine initialization failed!");
          return 0;
       }
-      if (!etk_engine_load(engine_name ? engine_name : "ecore_evas_software_x11", argc, argv))
+      if (!etk_engine_load(engine_name ? engine_name : "ecore_evas_software_x11"))
       {
          ETK_WARNING("Etk can not load the requested engine!");
          return 0;
@@ -160,6 +178,7 @@ int etk_shutdown(void)
       etk_engine_shutdown();
       etk_config_shutdown();
       etk_theme_shutdown();
+      etk_argument_shutdown();
 
       /* Shutdown the EFL*/
       edje_shutdown();

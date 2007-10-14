@@ -7,7 +7,7 @@
 typedef Etk_Engine_Ecore_Evas_Window_Data Etk_Engine_Window_Data;
 
 /* General engine functions */
-Etk_Engine *engine_open(int *argc, char ***argv);
+Etk_Engine *engine_open(void);
 void engine_close(void);
 
 static Etk_Bool _engine_init(void);
@@ -132,7 +132,7 @@ static Etk_Engine engine_info = {
  **************************/
 
 /* Called when the engine is loaded */
-Etk_Engine *engine_open(int *argc, char ***argv)
+Etk_Engine *engine_open(void)
 {
    engine_info.engine_data = NULL;
    engine_info.engine_name = strdup("ecore_evas");

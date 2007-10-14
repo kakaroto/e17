@@ -14,6 +14,11 @@
  * @{
  */
 
+#define MAX_ARGS 256
+
+static int   _argc = 0;
+static char *_argv[MAX_ARGS + 1];
+
 /**************************
  *
  * Implementation
@@ -21,35 +26,118 @@
  **************************/
 
 /**
+ * @internal
+ * @brief Initializes the argument parser of Etk
+ * @param argc the number of arguments in @a argv
+ * @param argv a list of arguments given to the program
+ * @param custom_opts a string corresponding to the custom arguments to add to argv.
+ * For example, "--option1 value --toggle1". It can be set to NULL
+ */
+void etk_argument_init(int argc, char **argv, const char *custom_opts)
+{
+   int i;
+   
+   /* Copy the argv array to _argv */
+   _argc = 0;
+   if (argv)
+   {
+      for (i = 0; i < argc && _argc < MAX_ARGS; i++, _argc++)
+      {
+         if (!argv[i])
+            break;
+         _argv[_argc] = strdup(argv[i]);
+      }
+   }
+   
+   /* Parse the custom arguments and add them to _argv */
+   if (custom_opts)
+   {
+      const char *start, *end;
+      int len, arg_len;
+      
+      start = NULL;
+      end = NULL;
+      len = strlen(custom_opts);
+      for (i = 0; i < len && _argc < MAX_ARGS; i++)
+      {
+         if (!start)
+         {
+            if (custom_opts[i] != ' ')
+               start = &custom_opts[i];
+         }
+         if (start && ((i + 1 == len) || (custom_opts[i + 1] == ' ')))
+            end = &custom_opts[i];
+         
+         if (start && end)
+         {
+            arg_len = end - start + 1;
+            _argv[_argc] = malloc(arg_len + 1);
+            strncpy(_argv[_argc], start, arg_len);
+            _argv[_argc][arg_len] = '\0';
+            _argc++;
+            
+            start = NULL;
+            end = NULL;
+         }
+      }
+   }
+   
+   _argv[_argc] = NULL;
+}
+
+/**
+ * @internal
+ * @brief Shutdowns the argument parser of Etk
+ */
+void etk_argument_shutdown(void)
+{
+   int i;
+   
+   for (i = 0; i < _argc; i++)
+      free(_argv[i]);
+   _argc = 0;
+}
+
+/**
+ * @brief Retrieves the arguments passed to etk_init_full()
+ * @param argc the location where to store the number of arguments passed to etk_init_full()
+ * @param argv the location where to store the list of arguments passed to etk_init_full()
+ */
+void etk_argument_get(int *argc, char ***argv)
+{
+   if (argc)
+      *argc = _argc;
+   if (argv)
+      *argv = _argv;
+}
+
+/**
  * @brief Checks whether the argument has been passed to the program
- * @param argc the location of the "argc" parameter passed to main()
- * @param argv the location of the "argv" parameter passed to main()
  * @param long_name the complete name of the argument to find. If '--long_name' is found in @a argv, this function will
  * return ETK_TRUE. You can set this param to NULL to ignore it
  * @param short_name a shortcut for the argument to find. If '-short_name' is found in @a argv, this function will
- * return ETK_TRUE. You can set this param to NULL to ignore it
- * @param remove if @a remove is ETK_TRUE, the argument will be removed from @a argv if it is found
+ * return ETK_TRUE. You can set this param to 0 to ignore it
+ * @param remove if @a remove is set to ETK_TRUE, the argument will be removed from the list of arguments passed to
+ * the program if the argument has been found
  * @return Returns ETK_TRUE if the argument has been found, ETK_FALSE otherwise
  */
-Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, char short_name, Etk_Bool remove)
+Etk_Bool etk_argument_is_set(const char *long_name, char short_name, Etk_Bool remove)
 {
    Etk_Bool is_set = ETK_FALSE;
    char *arg;
    int arg_len;
    int i, j;
 
-   if (!argc || !argv)
-      return ETK_FALSE;
-
-   for (i = 0; i < *argc; i++)
+   for (i = 0; i < _argc; i++)
    {
-      if (!(arg = ((*argv)[i])))
-         continue;
-
+      arg = _argv[i];
       arg_len = strlen(arg);
-      if ((arg_len == 2) && (arg[0] == '-') && (arg[1] == short_name))
+      if (arg_len < 2 || arg[0] != '-')
+         continue;
+      
+      if ((arg_len == 2) && (arg[1] == short_name))
          is_set = ETK_TRUE;
-      else if ((arg_len > 2) && (arg[0] == '-') && (arg[1] == '-'))
+      else if ((arg_len > 2) && (arg[1] == '-'))
       {
          if (long_name && (strcmp(&arg[2], long_name) == 0))
             is_set = ETK_TRUE;
@@ -59,9 +147,9 @@ Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, cha
       {
          if (remove)
          {
-            for (j = i + 1; j < *argc; j++)
-               (*argv)[j - 1] = (*argv)[j];
-            (*argc)--;
+            for (j = i + 1; j <= _argc; j++)
+               _argv[j - 1] = _argv[j];
+            _argc--;
          }
          return ETK_TRUE;
       }
@@ -72,35 +160,31 @@ Etk_Bool etk_argument_is_set(int *argc, char ***argv, const char *long_name, cha
 
 /**
  * @brief Gets the value of an argument passed to the program
- * @param argc the location of the "argc" parameter passed to main()
- * @param argv the location of the "argv" parameter passed to main()
  * @param long_name the complete name of the argument to find. If --long_name is found in @a argv and is followed by a
  * value, this function will return ETK_TRUE. You can set this param to NULL to ignore it
  * @param short_name a shortcut for the argument to find. If -short_name is found in @a argv and is followed by a
- * value, this function will return ETK_TRUE. You can set this param to NULL to ignore it
- * @param remove if @a remove is ETK_TRUE, the argument and its value will be removed from @a argv
- * if they are found
+ * value, this function will return ETK_TRUE. You can set this param to 0 to ignore it
+ * @param remove if @a remove is ETK_TRUE, the argument and its value will be removed from the list of arguments
+ * passed to the program if they have been found
  * @param value the location where to store the value of the argument. You'll have to free it when you no
  * longer need it. This parameter should not be NULL, otherwise the function will return ETK_FALSE
  * @return Returns ETK_TRUE if the argument has been found and was followed by a value, ETK_FALSE otherwise
  */
-Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, char short_name, Etk_Bool remove, char **value)
+Etk_Bool etk_argument_value_get(const char *long_name, char short_name, Etk_Bool remove, char **value)
 {
    int num_args = 0;
    char *arg, *next, *value_ptr = NULL;
    int arg_len, long_name_len;
    int i, j;
 
-   if (!argc || !argv || !value)
+   if (!value)
       return ETK_FALSE;
 
    long_name_len = long_name ? strlen(long_name) : 0;
 
-   for (i = 0; i < *argc; i++)
+   for (i = 0; i < _argc; i++)
    {
-      if (!(arg = (*argv)[i]))
-         continue;
-
+      arg = _argv[i];
       arg_len = strlen(arg);
       if (arg_len < 2 || arg[0] != '-')
          continue;
@@ -113,7 +197,7 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
             /* -s value */
             if (arg_len == 2)
             {
-               if ((i + 1 < *argc) && (next = (*argv)[i + 1]) && next[0] != '-')
+               if ((i + 1 < _argc) && (next = _argv[i + 1]) && next[0] != '-')
                {
                   value_ptr = next;
                   num_args = 2;
@@ -135,7 +219,7 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
             /* --long_name value */
             if (arg_len == long_name_len + 2)
             {
-               if ((i + 1 < *argc) && (next = (*argv)[i + 1]) && next[0] != '-')
+               if ((i + 1 < _argc) && (next = _argv[i + 1]) && next[0] != '-')
                {
                   value_ptr = next;
                   num_args = 2;
@@ -156,9 +240,9 @@ Etk_Bool etk_argument_value_get(int *argc, char ***argv, const char *long_name, 
          *value = strdup(value_ptr);
          if (remove)
          {
-            for (j = i; j < *argc - num_args; j++)
-               (*argv)[j] = (*argv)[j + num_args];
-            (*argc) -= num_args;
+            for (j = i; j <= _argc - num_args; j++)
+               _argv[j] = _argv[j + num_args];
+            _argc -= num_args;
          }
          return ETK_TRUE;
       }

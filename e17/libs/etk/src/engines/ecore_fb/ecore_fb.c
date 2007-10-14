@@ -21,7 +21,7 @@
 typedef Etk_Engine_Ecore_Fb_Window_Data Etk_Engine_Window_Data;
 
 /* General engine functions */
-Etk_Engine *engine_open(int *argc, char ***argv);
+Etk_Engine *engine_open(void);
 void engine_close(void);
 
 static Etk_Bool _engine_init(void);
@@ -183,8 +183,12 @@ static Etk_Engine engine_info = {
  **************************/
 
 /* Called when the engine is loaded */
-Etk_Engine *engine_open(int *argc, char ***argv)
+Etk_Engine *engine_open(void)
 {
+   char *use_x11_arg = NULL;
+   char *fb_width_arg = NULL;
+   char *fb_height_arg = NULL;
+   
    _wm_theme_file = _theme_find(etk_config_wm_theme_get());
    if (!_wm_theme_file)
    {
@@ -201,39 +205,32 @@ Etk_Engine *engine_open(int *argc, char ***argv)
 
 #if ENGINE_E_FB_X11_SUPPORT
    /* Parse the arguments */
-   if (argc && argv)
+   etk_argument_value_get("ecore-fb-use-x11", 0, ETK_TRUE, &use_x11_arg);
+   if (use_x11_arg)
    {
-      char *use_x11_arg = NULL;
-      char *fb_width_arg = NULL;
-      char *fb_height_arg = NULL;
+      _use_x11 = ETK_TRUE;
 
-      etk_argument_value_get(argc, argv, "ecore-fb-use-x11", 0, ETK_TRUE, &use_x11_arg);
-      if (use_x11_arg)
+      etk_argument_value_get("ecore-fb-x11-engine", 0, ETK_TRUE, &_x11_engine);
+      if (!_x11_engine)
       {
-         _use_x11 = ETK_TRUE;
+         _x11_engine = strdup("ecore_evas_software_x11");
+      }
 
-         etk_argument_value_get(argc, argv, "ecore-fb-x11-engine", 0, ETK_TRUE, &_x11_engine);
-         if (!_x11_engine)
-         {
-            _x11_engine = strdup("ecore_evas_software_x11");
-         }
+      /* Note that this values are only used when X11 is enabled */
+      etk_argument_value_get("ecore-fb-width", 0, ETK_TRUE, &fb_width_arg);
+      if (fb_width_arg)
+      {
+         _fb_width = (int) strtol(fb_width_arg, (char **) NULL, 10);
+         if (_fb_width <= 0)
+            _fb_width = DEFAULT_FB_WIDTH;
+      }
 
-         /* Note that this values are only used when X11 is enabled */
-         etk_argument_value_get(argc, argv, "ecore-fb-width", 0, ETK_TRUE, &fb_width_arg);
-         if (fb_width_arg)
-         {
-            _fb_width = (int) strtol(fb_width_arg, (char **) NULL, 10);
-            if (_fb_width <= 0)
-               _fb_width = DEFAULT_FB_WIDTH;
-         }
-
-         etk_argument_value_get(argc, argv, "ecore-fb-height", 0, ETK_TRUE, &fb_height_arg);
-         if (fb_height_arg)
-         {
-            _fb_height = (int) strtol(fb_height_arg, (char **) NULL, 10);
-            if (_fb_height <= 0)
-               _fb_height = DEFAULT_FB_HEIGHT;
-         }
+      etk_argument_value_get("ecore-fb-height", 0, ETK_TRUE, &fb_height_arg);
+      if (fb_height_arg)
+      {
+         _fb_height = (int) strtol(fb_height_arg, (char **) NULL, 10);
+         if (_fb_height <= 0)
+            _fb_height = DEFAULT_FB_HEIGHT;
       }
    }
 #endif

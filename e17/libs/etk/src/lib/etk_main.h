@@ -16,7 +16,8 @@ extern "C" {
  * @{
  */
 
-int  etk_init(int *argc, char ***argv);
+int  etk_init(int argc, char **argv);
+int  etk_init_full(int argc, char **argv, const char *custom_opts);
 int  etk_shutdown(void);
 
 void etk_main(void);

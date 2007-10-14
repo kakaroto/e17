@@ -8,7 +8,7 @@
 typedef Etk_Engine_Ecore_Evas_X11_Window_Data Etk_Engine_Window_Data;
 
 /* General engine functions */
-Etk_Engine *engine_open(int *argc, char ***argv);
+Etk_Engine *engine_open(void);
 void engine_close(void);
 
 /* Etk_Window functions */
@@ -91,11 +91,11 @@ static Etk_Engine engine_info = {
  **************************/
 
 /* Called when the engine is loaded */
-Etk_Engine *engine_open(int *argc, char ***argv)
+Etk_Engine *engine_open(void)
 {
    engine_info.engine_data = NULL;
    engine_info.engine_name = strdup("ecore_evas_software_x11");
-   etk_engine_inherit_from(&engine_info, "ecore_evas_x11", argc, argv);
+   etk_engine_inherit_from(&engine_info, "ecore_evas_x11");
    return &engine_info;
 }
 
