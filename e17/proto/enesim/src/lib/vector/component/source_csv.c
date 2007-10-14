@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "Enesim.h"
 #include "enesim_private.h"
@@ -24,7 +26,7 @@ typedef struct _Source_Csv
 
 static int enesim_source_csv_open(Source_Csv *d, const char *name)
 {
-	if (!name) return;
+	if (!name) return 0;
 	
 	d->name = strdup(name);
 	d->f = fopen(name, "r");

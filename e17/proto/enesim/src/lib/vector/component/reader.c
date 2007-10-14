@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "Enesim.h"
 #include "enesim_private.h"
 #include "enesim_vector.h"
@@ -9,7 +11,7 @@
 /*============================================================================*
  *                                  Local                                     * 
  *============================================================================*/
-static inline _rewind(Enesim_Component_Reader *r)
+static inline void _rewind(Enesim_Component_Reader *r)
 {
 	r->points = r->from->path->points;
 	r->cmds = r->from->path->cmds;
@@ -104,5 +106,6 @@ EAPI int enesim_reader_vertex_get(Enesim_Component_Reader *r, float *x, float *y
 EAPI int enesim_reader_vertices_get(Enesim_Component_Reader *r, float *x, float *y, int *cmds)
 {
 
-
+  /* for now, return 0 */
+  return 0;
 }

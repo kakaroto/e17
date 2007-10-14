@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "Enesim.h"
 #include "enesim_private.h"
 #include "renderer.h"
@@ -18,6 +20,7 @@ typedef struct _Fill_Surface
 static inline void _draw_alias(Enesim_Renderer *r, Scanline_Alias *sl, Enesim_Surface *dst)
 {
 	Fill_Surface *f;
+	int off;
 
 	f = r->data;
 

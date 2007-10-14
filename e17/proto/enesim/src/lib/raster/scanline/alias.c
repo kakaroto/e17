@@ -37,8 +37,8 @@ static void _sl_add(Scanline_Alias *n, int y, int x0, int x1, int coverage)
 }
 
 Enesim_Scanline_Func naa = {
-	.free	= _sl_free,
-	.add 	= _sl_add
+	.free	= ENESIM_SCANLINE_FREE(_sl_free),
+	.add 	= ENESIM_SCANLINE_ADD(_sl_add)
 };
 
 /*============================================================================*

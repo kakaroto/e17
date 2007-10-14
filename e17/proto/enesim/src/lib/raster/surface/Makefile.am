@@ -4,7 +4,8 @@ MAINTAINERCLEANFILES = \
 Makefile.in
 
 INCLUDES = -I. \
--I$(top_srcdir)/src/lib
+-I$(top_srcdir)/src/lib \
+@EDATA_CFLAGS@
 
 noinst_LTLIBRARIES = libenesim_surface.la
 

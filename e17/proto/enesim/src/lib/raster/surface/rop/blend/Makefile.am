@@ -4,7 +4,8 @@ Makefile.in
 INCLUDES = -I. \
 -I$(top_srcdir)/src/lib \
 -I$(top_srcdir)/src/lib/raster/surface \
--I$(top_srcdir)/src/lib/raster/surface/rop 
+-I$(top_srcdir)/src/lib/raster/surface/rop \
+@EDATA_CFLAGS@
 
 noinst_LTLIBRARIES = libenesim_surface_rop_blend.la
 

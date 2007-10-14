@@ -1,7 +1,7 @@
 #ifndef _ARGB8888_H
 #define _ARGB8888_H
 
-static inline DATA32 mul_256(DATA32 c, DATA32 a)
+static inline DATA32 mul_256(DATA32 a, DATA32 c)
 {
 	return  ( (((((c) >> 8) & 0x00ff00ff) * (a)) & 0xff00ff00) +
 	(((((c) & 0x00ff00ff) * (a)) >> 8) & 0x00ff00ff) );

@@ -4,7 +4,8 @@ Makefile.in
 INCLUDES = -I. \
 -I$(top_srcdir)/src/lib \
 -I$(top_srcdir)/src/lib/raster/scanline \
--I$(top_srcdir)/src/lib/raster/surface
+-I$(top_srcdir)/src/lib/raster/surface \
+@EDATA_CFLAGS@
 
 noinst_LTLIBRARIES = libenesim_renderer.la
 

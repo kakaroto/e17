@@ -13,7 +13,7 @@ void argb8888_c_color(Enesim_Surface_Data *data, int off, DATA32 c, int len)
 
 	while (d < e)
 	{
-		*d = c + mul_256(*d, a);
+		*d = c + mul_256(a, *d);
 		d++;
 	}
 }

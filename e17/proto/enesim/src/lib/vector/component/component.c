@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "Enesim.h"
 #include "enesim_private.h"
 #include "container.h"
