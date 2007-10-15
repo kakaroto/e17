@@ -23,8 +23,6 @@ using namespace efl;
 
 int main( int argc, const char **argv )
 {
-    etk_init( &argc, const_cast<char***>(&argv) );
-
     /* Create the application object */
     EcoreApplication* app = new EcoreApplication( argc, argv, "Simple Ecore Test" );
 

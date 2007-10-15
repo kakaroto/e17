@@ -277,7 +277,7 @@ EtkApplication::EtkApplication( int argc, const char **argv, const char* name )
             ::exit( -1 );
     }
     cout << "EtkApplication::EtkApplication" << endl;
-    if ( !etk_init( &argc, const_cast<char***>(&argv) ) )
+    if ( !etk_init( argc, const_cast<char**>(argv) ) )
     {
             cout << "FATAL: Couldn't initialize Etk" << endl;
             ::exit( -1 );
