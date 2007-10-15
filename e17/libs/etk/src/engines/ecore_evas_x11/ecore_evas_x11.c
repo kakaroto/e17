@@ -737,7 +737,7 @@ static int _selection_notify_handler_cb(void *data, int type, void *event)
       etk_event.type = ETK_SELECTION_TEXT;
       etk_event.data.text = text_data->text;
       
-      etk_signal_emit_by_name("selection-received", ETK_OBJECT(_selection_widget), NULL, &etk_event);
+      etk_signal_emit_by_name("selection-received", ETK_OBJECT(_selection_widget), &etk_event);
    }
    
    return 1;

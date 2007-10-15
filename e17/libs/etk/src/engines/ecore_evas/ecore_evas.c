@@ -495,7 +495,7 @@ static void _window_move_cb(Ecore_Evas *ecore_evas)
    
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "_Etk_Engine::Window"))))
      return;
-   etk_signal_emit_by_name("moved", ETK_OBJECT(window), NULL);
+   etk_signal_emit_by_name("moved", ETK_OBJECT(window));
 }
 
 /* Called when the window is resized */
@@ -510,7 +510,7 @@ static void _window_resize_cb(Ecore_Evas *ecore_evas)
    engine_data = window->engine_data;
    ecore_evas_geometry_get(ecore_evas, NULL, NULL, &engine_data->width, &engine_data->height);
    
-   etk_signal_emit_by_name("resized", ETK_OBJECT(window), NULL);
+   etk_signal_emit_by_name("resized", ETK_OBJECT(window));
    etk_widget_redraw_queue(ETK_WIDGET(window)); 
 }
 
@@ -522,7 +522,7 @@ static void _window_focus_in_cb(Ecore_Evas *ecore_evas)
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "_Etk_Engine::Window"))))
      return;
    
-   etk_signal_emit_by_name("focused-in", ETK_OBJECT(window), NULL);
+   etk_signal_emit_by_name("focused-in", ETK_OBJECT(window));
    etk_object_notify(ETK_OBJECT(window), "focused");
 }
 
@@ -534,7 +534,7 @@ static void _window_focus_out_cb(Ecore_Evas *ecore_evas)
    if (!(window = ETK_WINDOW(ecore_evas_data_get(ecore_evas, "_Etk_Engine::Window"))))
      return;
    
-   etk_signal_emit_by_name("focused-out", ETK_OBJECT(window), NULL);
+   etk_signal_emit_by_name("focused-out", ETK_OBJECT(window));
    etk_object_notify(ETK_OBJECT(window), "focused");
 }
 
