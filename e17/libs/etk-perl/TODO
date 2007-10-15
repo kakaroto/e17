@@ -1,4 +1,5 @@
 TODO:
+	- Add initialization options
 	- complete callback system 
 	- perldoc everything
 	- complete Tests

@@ -41,7 +41,7 @@ etk_init()
       ALIAS:
 	Init=1
 	CODE:
-	RETVAL = etk_init(NULL, NULL);
+	RETVAL = etk_init(0, NULL);
 	__etk_perl_init();
 	OUTPUT:
 	RETVAL
