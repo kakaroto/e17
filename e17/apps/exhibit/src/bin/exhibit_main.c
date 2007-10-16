@@ -33,7 +33,6 @@ Evas_List  *event_handlers;
 
 static void _ex_main_monitor_dir(void *data, Ecore_File_Monitor *ecore_file_monitor, Ecore_File_Event event, const char *path);
 static int _ex_main_dtree_compare_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
-static void _ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data);
 static Etk_Bool _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data);
 static void _ex_main_combobox_entry_changed_cb(Etk_Object *object, void *data);
 static Etk_Bool _ex_main_window_deleted_cb(void *data);
@@ -612,16 +611,6 @@ static void _ex_main_combobox_entry_changed_cb(Etk_Object *object, void *data)
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);   
-}
-
-static void
-_ex_main_goto_dir_clicked_cb(Etk_Object *object, void *data)
-{
-   e->cur_tab->dir = strdup((char*)etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry)))));
-   etk_tree_clear(ETK_TREE(e->cur_tab->itree));
-   etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
-   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
-   _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
 }
 
 static Etk_Bool
