@@ -42,15 +42,15 @@ static void _ex_options_set_cancel_cb(Etk_Object *object, void *data);
 static void _ex_options_set_apply_cb(Etk_Object *object, void *data);
 static void _ex_options_set_ok_cb(Etk_Object *object, void *data);
 static Etk_Bool _ex_options_window_delete_cb(void *data);
-static void _ex_options_set();
-static Etk_Widget *_ex_options_page_1_create();
-static Etk_Widget *_ex_options_page_2_create();
+static void _ex_options_set(void);
+static Etk_Widget *_ex_options_page_1_create(void);
+static Etk_Widget *_ex_options_page_2_create(void);
 static void _ex_options_combobox_active_item_changed_cb(Etk_Object *object, void *data);
-static Etk_Widget *_ex_options_page_3_create();
-static Etk_Widget *_ex_options_page_4_create();
+static Etk_Widget *_ex_options_page_3_create(void);
+static Etk_Widget *_ex_options_page_4_create(void);
 
 int
-_ex_options_init()
+_ex_options_init(void)
 {
    char     *home;
    char      buf[PATH_MAX];
@@ -131,7 +131,7 @@ _ex_options_init()
 }
 
 int
-_ex_options_shutdown()
+_ex_options_shutdown(void)
 {
    FREED(_ex_config_options_edd);
    FREED(_ex_config_version_edd);   
@@ -180,7 +180,7 @@ _ex_options_version_compare(Ex_Config_Version *v1, Ex_Config_Version *v2)
 }
 
 Ex_Options *
-_ex_options_new()
+_ex_options_new(void)
 {
    Ex_Options *o;
    
@@ -365,7 +365,7 @@ _ex_options_window_delete_cb(void *data)
 }
 
 static void
-_ex_options_set()
+_ex_options_set(void)
 {
    Ex_Options_Dialog *dialog = e->opt_dialog;
    const char *string;
@@ -531,7 +531,7 @@ _ex_options_set()
 }
 
 static Etk_Widget *
-_ex_options_page_1_create()
+_ex_options_page_1_create(void)
 {
    Etk_Widget *vbox, *hbox;
    Etk_Widget *vbox2;
@@ -606,7 +606,7 @@ _ex_options_page_1_create()
 }
 
 static Etk_Widget *
-_ex_options_page_2_create()
+_ex_options_page_2_create(void)
 {
    Etk_Widget *vbox, *vbox2;
    Etk_Widget *label;
@@ -680,7 +680,7 @@ _ex_options_combobox_active_item_changed_cb(Etk_Object *object, void *data)
 }
 
 static Etk_Widget *
-_ex_options_page_3_create()
+_ex_options_page_3_create(void)
 {
    Etk_Widget *vbox, *vbox1, *hbox;
    Etk_Widget *vbox2;
@@ -764,7 +764,7 @@ _ex_options_page_3_create()
 
 
 static Etk_Widget *
-_ex_options_page_4_create()
+_ex_options_page_4_create(void)
 {
    Etk_Widget *vbox, *vbox2;
    Etk_Widget *frame, *table;
@@ -842,7 +842,7 @@ _ex_options_page_4_create()
 }
 
 void
-_ex_options_window_show()
+_ex_options_window_show(void)
 {
    Etk_Widget *win;
    Etk_Widget *vbox;

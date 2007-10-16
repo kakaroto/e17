@@ -105,7 +105,7 @@ _ex_main_statusbar_zoom_update(Exhibit *e)
 }
 
 void
-_ex_main_image_unset()
+_ex_main_image_unset(void)
 {
    Ex_Tab *tab = e->cur_tab;
    
@@ -587,7 +587,7 @@ _ex_main_entry_dir_key_down_cb(Etk_Object *object, void *event, void *data)
 	
 	entry = etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(e->combobox_entry));
 	
-	_ex_slideshow_stop(e);
+	_ex_slideshow_stop();
 	_ex_thumb_abort();
         e->cur_tab->dir = _ex_path_normalize((char*)etk_entry_text_get(ETK_ENTRY(entry)));
         etk_tree_clear(ETK_TREE(e->cur_tab->itree));
@@ -605,7 +605,7 @@ static void _ex_main_combobox_entry_changed_cb(Etk_Object *object, void *data)
    
    etk_combobox_entry_item_fields_get(etk_combobox_entry_active_item_get(ETK_COMBOBOX_ENTRY(e->combobox_entry)),
 				      &dir, NULL);   
-   _ex_slideshow_stop(e);
+   _ex_slideshow_stop();
    _ex_thumb_abort();
    e->cur_tab->dir = strdup(dir);
    etk_tree_clear(ETK_TREE(e->cur_tab->itree));
@@ -680,7 +680,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
 	  }		   
 	else if(!strcmp(ev->key, "f"))
 	  {
-	     _ex_main_window_fullscreen_toggle(e);
+	     _ex_main_window_fullscreen_toggle();
 	  }		   
      }
    
@@ -694,7 +694,7 @@ _ex_main_window_key_down_cb(Etk_Object *object, void *event, void *data)
    if(etk_window_fullscreen_get(ETK_WINDOW(e->win)))
      {
 	if(!strcmp(ev->key, "Escape") || !strcmp(ev->key, "f"))
-	  _ex_main_window_fullscreen_toggle(e);	
+	  _ex_main_window_fullscreen_toggle();	
 	if(!strcmp(ev->key, "space")) 
 	  _ex_slideshow_next(e);	
 	if(!strcmp(ev->key, "b")) 	  
@@ -710,7 +710,7 @@ _ex_main_window_resize_cb(Etk_Object *object, void *data)
 }
 
 void
-_ex_main_window_slideshow_toggle()
+_ex_main_window_slideshow_toggle(void)
 {
    if (e->slideshow.active)     
      _ex_slideshow_stop();     
@@ -719,7 +719,7 @@ _ex_main_window_slideshow_toggle()
 }
 
 void
-_ex_main_window_fullscreen_toggle(Exhibit *e) 
+_ex_main_window_fullscreen_toggle()
 {
    if (etk_window_fullscreen_get(ETK_WINDOW(e->win)))
      {
@@ -1187,7 +1187,7 @@ _ex_main_window_show(char *dir, int fullscreen, int slideshow)
    etk_widget_show_all(e->win);
    
    if(fullscreen)
-     _ex_main_window_fullscreen_toggle(e);
+     _ex_main_window_fullscreen_toggle();
    if (slideshow)
      _ex_main_window_slideshow_toggle();
 }

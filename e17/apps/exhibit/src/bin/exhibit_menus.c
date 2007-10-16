@@ -376,7 +376,7 @@ _ex_menu_window_fullscreen_toggle_cb(Etk_Object *obj, void *data)
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;   
-   _ex_main_window_fullscreen_toggle(e);
+   _ex_main_window_fullscreen_toggle();
 }
 
 void
@@ -385,7 +385,7 @@ _ex_menu_toggle_slideshow_cb(Etk_Object *obj, void *data)
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;   
-   _ex_main_window_slideshow_toggle(e);
+   _ex_main_window_slideshow_toggle();
 }
 
 void

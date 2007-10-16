@@ -4,7 +4,7 @@
 #include "exhibit.h"
 
 void
-_ex_slideshow_stop()
+_ex_slideshow_stop(void)
 {
    if(e->slideshow.active)
      {
@@ -15,7 +15,7 @@ _ex_slideshow_stop()
 }
 
 void
-_ex_slideshow_start()
+_ex_slideshow_start(void)
 {
 	if (e->options->slide_interval)
 		e->slideshow.interval = e->options->slide_interval;

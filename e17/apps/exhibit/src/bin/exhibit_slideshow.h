@@ -4,8 +4,8 @@
 #ifndef _EX_SLIDESHOW_H
 #define _EX_SLIDESHOW_H
 
-void  _ex_slideshow_stop();
-void  _ex_slideshow_start();
+void  _ex_slideshow_stop(void);
+void  _ex_slideshow_start(void);
 int   _ex_slideshow_next(void *data);    
 int   _ex_slideshow_prev(void *data);    
 

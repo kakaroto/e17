@@ -82,7 +82,7 @@ _ex_image_mouse_down(Etk_Object *object, void *event, void *data)
              etk_toplevel_pointer_push(ETK_TOPLEVEL(e->win), ETK_POINTER_MOVE);
 	  }
 	else
-          _ex_main_window_fullscreen_toggle(e);
+          _ex_main_window_fullscreen_toggle();
      }
    else if(ev->button == 2)
      {
@@ -668,7 +668,7 @@ destroy:
 }
 
 Ex_Filedialog *
-_ex_image_file_dialog_new()
+_ex_image_file_dialog_new(void)
 {
    Ex_Filedialog *fd;
    Etk_Widget *vbox;
@@ -709,7 +709,7 @@ _ex_image_file_dialog_destroy(Ex_Filedialog *fd)
 }
 
 void
-_ex_image_move()
+_ex_image_move(void)
 {
    Ex_Filedialog *fd;
    Etk_Widget *btn;
@@ -734,7 +734,7 @@ _ex_image_move()
 }
 
 void
-_ex_image_save_as()
+_ex_image_save_as(void)
 {
    Ex_Filedialog *fd;
    Etk_Widget *btn;
@@ -859,7 +859,7 @@ printf("Rename '%s' to '%s' \n", oldpath, newpath);
 }
 
 void
-_ex_image_rename() 
+_ex_image_rename(void) 
 {
    Ex_Tab *tab = e->cur_tab;
    Etk_Widget *dialog;
@@ -901,7 +901,7 @@ _ex_image_rename()
 }
 
 void
-_ex_image_refresh() 
+_ex_image_refresh(void) 
 {
    char file[PATH_MAX];
 

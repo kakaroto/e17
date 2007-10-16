@@ -42,7 +42,7 @@ _ex_thumb_complete(void *data, int type, void *event)
 }
 
 void
-_ex_thumb_abort()
+_ex_thumb_abort(void)
 {
    /* TODO: reimplement */
 #if 0
@@ -69,7 +69,7 @@ _ex_thumb_abort()
 
 
 void
-_ex_thumb_abort_all()
+_ex_thumb_abort_all(void)
 {
    /* TODO: reimplement */
 #if 0   
@@ -94,7 +94,7 @@ void
 _ex_thumb_update_at_row(Etk_Tree_Row *row)
 {   
    Etk_Tree *tree;
-   Epsilon *ep;
+   Epsilon *ep = NULL;
    char file[PATH_MAX];
    char *icol_string;
    char *old_thumb;   

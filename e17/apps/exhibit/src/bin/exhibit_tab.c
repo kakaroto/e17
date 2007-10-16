@@ -94,7 +94,7 @@ _ex_tab_new(Exhibit *e, char *dir)
 }
 
 void
-_ex_tab_delete()
+_ex_tab_delete(void)
 {
    if (!e->cur_tab) 
      {
@@ -374,7 +374,7 @@ _ex_tab_dtree_item_clicked_cb(Etk_Object *object, Etk_Tree_Row *row, void *event
    char *path, *real_path;
 
    e = data;
-   _ex_slideshow_stop(e);
+   _ex_slideshow_stop();
    _ex_thumb_abort();
    
    tree = ETK_TREE(object);

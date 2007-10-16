@@ -6,9 +6,9 @@
 
 int         _ex_thumb_exe_exit(void *data, int type, void *event);
 int         _ex_thumb_complete(void *data, int type, void *event);
-void        _ex_thumb_generate();
-void        _ex_thumb_abort();
-void        _ex_thumb_abort_all();
+void        _ex_thumb_generate(void);
+void        _ex_thumb_abort(void);
+void        _ex_thumb_abort_all(void);
 void        _ex_thumb_update_at_row(Etk_Tree_Row *row);
 
 #endif
