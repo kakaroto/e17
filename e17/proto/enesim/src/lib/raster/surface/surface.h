@@ -42,6 +42,11 @@ struct _Enesim_Surface
 	Enesim_Surface_Data 		data;
 };
 
+typedef void (*Conv_Func) (Enesim_Surface_Data *sdata, Enesim_Surface_Data *ddata, int w, int h);
+extern Conv_Func rgb565_conv_funcs[ENESIM_SURFACE_FORMATS];
+extern Conv_Func argb8888_conv_funcs[ENESIM_SURFACE_FORMATS];
+
 Span_Color_Func enesim_surface_span_color_get(Enesim_Surface *s, int rop);
+void enesim_surface_premul(Enesim_Surface *s);
 
 #endif

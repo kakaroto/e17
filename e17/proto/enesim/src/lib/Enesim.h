@@ -83,7 +83,8 @@ typedef struct _Enesim_Surface 	Enesim_Surface; /**< Surface Handler */
 typedef enum
 {
 	ENESIM_SURFACE_ALPHA =	(1 << 0),
-	ENESIM_SURFACE_DIRTY =	(1 << 1)
+	ENESIM_SURFACE_DIRTY =	(1 << 1),
+	ENESIM_SURFACE_PREMUL =	(1 << 2)
 } Enesim_Surface_Flag;
 
 typedef enum

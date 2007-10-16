@@ -11,6 +11,12 @@ static Enesim_Surface_Func *_funcs[ENESIM_SURFACE_FORMATS] = {
 	argb8888_funcs,
 	rgb565_funcs,
 };
+#if 0
+static Conv_Func *_conv_funcs[ENESIM_SURFACE_FORMATS] = {
+	argb8888_conv_funcs,
+	rgb565_conv_funcs,
+};
+#endif
 /*============================================================================*
  *                                 Global                                     * 
  *============================================================================*/
@@ -20,11 +26,20 @@ static Enesim_Surface_Func *_funcs[ENESIM_SURFACE_FORMATS] = {
  */
 Span_Color_Func enesim_surface_span_color_get(Enesim_Surface *s, int rop)
 {
+#if 0
 	if ((rop == ENESIM_RENDERER_BLEND) && (s->flags & ENESIM_SURFACE_DIRTY))
 	{
 
 	}
+#endif
 	return _funcs[s->format][ENESIM_RENDERER_BLEND].sp_color;
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+void enesim_surface_premul(Enesim_Surface *s)
+{
 }
 /*============================================================================*
  *                                   API                                      * 
@@ -61,6 +76,8 @@ enesim_surface_new(Enesim_Surface_Format f, int w, int h, Enesim_Surface_Flag fl
 		break;
 	}
 	va_end(va);
+	if (!(s->flags & ENESIM_SURFACE_PREMUL))
+		enesim_surface_premul(s);
 	return s;
 }
 /**
@@ -174,6 +191,8 @@ enesim_surface_data_set(Enesim_Surface *s, Enesim_Surface_Format f, ...)
 		break;
 	}
 	va_end(va);
+	if (!(s->flags & ENESIM_SURFACE_PREMUL))
+			enesim_surface_premul(s);
 }
 /**
  * To be documented
@@ -183,4 +202,48 @@ EAPI void
 enesim_surface_resize(Enesim_Surface *s, Enesim_Rectangle *srect, Enesim_Surface *d, Enesim_Rectangle *drect, int mode)
 {
 
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI void 
+enesim_surface_unpremul(Enesim_Surface *s)
+{
+	DATA32 *d, *e;
+	int len;
+	
+	assert(s);
+	/* FIXME this is only for 32bpp */
+	len = s->w * s->h;
+#define ARGB_JOIN(a,r,g,b) (((a) << 24) + ((r) << 16) + ((g) << 8) + (b))
+#define A_VAL(p) ((DATA8 *)(p))[3]
+#define R_VAL(p) ((DATA8 *)(p))[2]
+#define G_VAL(p) ((DATA8 *)(p))[1]
+#define B_VAL(p) ((DATA8 *)(p))[0]
+	d = s->data.argb8888.data;
+	e = d + len;
+	while (d < e)
+	{
+		DATA32 a = (*d >> 24);
+
+		if ((a > 0) && (a < 255))
+			*d = ARGB_JOIN(a, (R_VAL(d) * 255) / a, (G_VAL(d) * 255)
+					/ a, (B_VAL(d) * 255) / a);
+		d++;
+	}
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI void 
+enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d)
+{
+	assert(s);
+	assert(d);
+	if (s->format == d->format) return;
+	/* TODO call the correct convert function based on the src
+	 * and dst format, the src and dst flags, etc
+	 */
 }
