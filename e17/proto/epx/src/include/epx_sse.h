@@ -7,37 +7,36 @@ typedef union _epx_sse_t {
 	float 			s[4]; 	/* 4 Single-precision (32-bit) 	*/
 } __attribute__ ((aligned (16))) epx_sse_t;
 
-#define	sse_i2r(op, imm, reg) 						\
-	__asm__ __volatile__ (#op " $" #imm ", %%" #reg 		\
-			      : /* nothing */ 				\
+#define	sse_i2r(op, imm, reg) \
+	__asm__ __volatile__ (#op " $" #imm ", %%" #reg \
+			      : /* nothing */ \
 			      : /* nothing */);
 
-#define	sse_m2r(op, mem, reg) 						\
-	__asm__ __volatile__ (#op " %0, %%" #reg 			\
-			      : /* nothing */ 				\
+#define	sse_m2r(op, mem, reg) \
+	__asm__ __volatile__ (#op " %0, %%" #reg \
+			      : /* nothing */ \
 			      : "m" (mem))
 
-#define	sse_r2m(op, reg, mem) 						\
-	__asm__ __volatile__ (#op " %%" #reg ", %0" 			\
-			      : "=m" (mem) 				\
+#define	sse_r2m(op, reg, mem) \
+	__asm__ __volatile__ (#op " %%" #reg ", %0"	\
+			      : "=m" (mem) \
 			      : /* nothing */ )
 
-#define	sse_a2r(op, mem, reg) 						\
-	__asm__ __volatile__ (#op " %0, %%" #reg 			\
-			      : /* nothing */ 				\
+#define	sse_a2r(op, mem, reg) \
+	__asm__ __volatile__ (#op " %0, %%" #reg \
+			      : /* nothing */ \
 			      : "m" (mem))
 
-#define	sse_r2a(op, reg, mem) 						\
-	__asm__ __volatile__ (#op " %%" #reg ", %0" 			\
+#define	sse_r2a(op, reg, mem) \
+	__asm__ __volatile__ (#op " %%" #reg ", %0" \
 			      : "=m" (mem) \
 			      : /* nothing */ )
 
 #define	sse_r2r(op, regs, regd) \
 	__asm__ __volatile__ (#op " %" #regs ", %" #regd)
 
-
 /*============================================================================*
- *                             Data Movement                                  * 
+ *                             Data Transfer                                  * 
  *============================================================================*/
 /* MOVSS: Move Scalar */
 /* MOVAPS: Move Packed Aligned */

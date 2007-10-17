@@ -1,7 +1,7 @@
 #ifndef _EIX_H
 #define _EIX_H
 
-#include "sse.h"
-#include "mmx.h"
+#include "epx_sse.h"
+#include "epx_mmx.h"
 
 #endif
