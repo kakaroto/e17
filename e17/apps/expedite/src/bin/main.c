@@ -1134,7 +1134,7 @@ _engine_args(int argc, char **argv)
    char buf[4096];
    char *prefix;
    int profile_ok;
-   
+
    /* FIXME: parse args for geometry, engine etc. */
    profile_ok = _profile_parse(argc, argv);
    if (engine_software_x11_args(argc, argv))
@@ -1178,7 +1178,7 @@ _engine_args(int argc, char **argv)
      strcpy(buf, PACKAGE_DATA_DIR"/data");
    else
      snprintf(buf, 4096, "%s", prefix);
-   
+
    evas_output_size_set(evas, win_w, win_h);
    evas_output_viewport_set(evas, 0, 0, win_w, win_h);
    evas_key_modifier_add(evas, "Shift");
@@ -1211,7 +1211,7 @@ main(int argc, char **argv)
 	evas_render(evas);
      }
    evas_free(evas);
-   
+
    evas_shutdown();
    return 0;
 }

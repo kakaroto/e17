@@ -34,7 +34,7 @@ static void _setup(void)
 	else
 	  {
 	     Evas_Coord x, y;
-	     
+
 	     evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/image.png", NULL);
 	     x = (win_w / 4) + (((rnd() & 0xff) * ((win_w / 2) - 120)) >> 8);
 	     y = (win_h / 4) + (((rnd() & 0xff) * ((win_h / 2) - 120)) >> 8);

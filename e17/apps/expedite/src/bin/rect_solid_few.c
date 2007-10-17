@@ -28,7 +28,7 @@ static void _setup(void)
    for (i = 0; i < OBNUM; i++)
      {
 	int r, g, b, a;
-	
+
 	o = evas_object_rectangle_add(evas);
 	o_images[i] = o;
 	a = 0xff;

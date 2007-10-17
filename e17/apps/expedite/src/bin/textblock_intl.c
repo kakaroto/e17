@@ -34,7 +34,7 @@ static void _setup(void)
    evas_object_textblock_style_set(o, st);
    evas_textblock_style_free(st);
    evas_object_textblock_clear(o);
-   
+
    evas_object_textblock_text_markup_set
      (o,
       "This is a test of International test rendering in Evas<br>"
@@ -86,9 +86,9 @@ static void _setup(void)
       "Tibetan: 'ཨུ་ནི་ཀོཌྲ།'<br>"
       "Yiddish: 'יוניקאָד'<br>"
       );
-   
+
    evas_object_show(o);
-   
+
    done = 0;
 }
 
@@ -103,17 +103,17 @@ static void _loop(double t, int f)
 {
    Evas_Coord x, y, w, h, w0, h0;
    int i = 0;
-   
+
    evas_object_textblock_size_native_get(o_text, &w0, &h0);
    w = w0;
    h = h0;
-   x = (win_w / 2) - (w / 2);	
+   x = (win_w / 2) - (w / 2);
    x += sin((double)(f + (i * 13)) / (31.1 * SLOW)) * (w0 / (2 * 2));
    y = (win_h / 2) - (h / 2);
    y += cos((double)(f + (i * 28)) / (19.6 * SLOW)) * (h0 / (2 * 2));
    evas_object_move(o_text, x, y);
    evas_object_resize(o_text, w, h);
-   
+
    FPS_STD(NAME);
 }
 

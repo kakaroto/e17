@@ -90,7 +90,7 @@ static void _loop(double t, int f)
    for (i = 0; i < 1; i++)
      {
 	unsigned char **data, **lp;
-	
+
         w = 640;
 	h = 480;
 	x = (win_w / 2) - (w / 2);
@@ -98,13 +98,13 @@ static void _loop(double t, int f)
 	evas_object_move(o_images[i], x, y);
 	evas_object_resize(o_images[i], w, h);
 	evas_object_image_fill_set(o_images[i], 0, 0, w, h);
-	
+
 	w = 320 - 16 + f;
 	if (w < 1) w = 1;
 	else if (w > 640) w = 640;
-	
+
 	w &= ~0x1;
-	
+
 	evas_object_image_size_set(o_images[i], w, 480);
 	data = evas_object_image_data_get(o_images[i], 1);
 	if (data)

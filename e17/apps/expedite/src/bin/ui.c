@@ -56,11 +56,11 @@ _ui_all(void)
    Evas_List *l;
    double fps = 0.0;
    int t_count = 0;
-   
+
    for (l = menu; l; l = l->next)
      {
 	Menu_Item *mi;
-	
+
 	mi = l->data;
 	if ((mi->func == about_start) ||
 	    (mi->func == _ui_exit) ||
@@ -86,7 +86,7 @@ _ui_select(void)
    Evas_List *l;
    int i;
    void (*func) (void) = NULL;
-   
+
    evas_object_hide(o_menu_logo);
    evas_object_hide(o_menu_title);
    evas_object_hide(o_menu_title2);
@@ -97,7 +97,7 @@ _ui_select(void)
    for (i = 0, l = menu; l; l = l->next, i++)
      {
 	Menu_Item *mi;
-	
+
 	mi = l->data;
 	evas_object_hide(mi->o_icon);
 	if (i == menu_sel)
@@ -111,7 +111,7 @@ static void
 _ui_key(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Key_Down *ev;
-   
+
    ev = event_info;
    if (key_func)
      {
@@ -143,7 +143,7 @@ static void
 _ui_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Down *ev;
-   
+
    ev = event_info;
    if (ev->button != 1) return;
    if (menu_active)
@@ -162,13 +162,13 @@ static void
 _ui_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Up *ev;
-   
+
    ev = event_info;
    if (ev->button != 1) return;
    if (menu_active)
      {
 	Evas_Coord dx, dy;
-	
+
 	dx = ev->canvas.x - down_x;
 	dy = ev->canvas.y - down_y;
 	if ((((dx * dx) + (dy * dy)) < (20 * 20)) &&
@@ -187,7 +187,7 @@ static void
 _ui_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Move *ev;
-   
+
    ev = event_info;
    if (!down) return;
    if (menu_active)
@@ -208,7 +208,7 @@ _ui_menu_item_add(char *icon, char *text, void (*func) (void))
 {
    char buf[4096];
    Menu_Item *mi;
-   
+
    mi = malloc(sizeof(Menu_Item));
    snprintf(buf, 4096, "%s%s", data_dir, icon);
    mi->o_icon = evas_object_image_add(evas);
@@ -235,7 +235,7 @@ _ui_setup(void)
      strcpy(data_dir, PACKAGE_DATA_DIR"/data/");
    else
      snprintf(data_dir, 4096, "%s/", prefix);
-   
+
    o = evas_object_rectangle_add(evas);
    evas_object_move(o, 0, 0);
    evas_object_resize(o, win_w, win_h);
@@ -257,7 +257,7 @@ _ui_setup(void)
    evas_object_show(o);
    o_wallpaper = o;
 
-/*   
+/*
    o = evas_object_image_add(evas);
    evas_object_move(o, 0, 0);
    evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/bg.png", NULL);
@@ -268,7 +268,7 @@ _ui_setup(void)
    evas_object_show(o);
    o_wallpaper = o;
  */
-   
+
    o = evas_object_text_add(evas);
    evas_object_text_font_set(o, "Vera-Bold", 10);
    evas_object_text_text_set(o, "EXPEDITE");
@@ -279,7 +279,7 @@ _ui_setup(void)
    x = (win_w - w) / 2;
    y = 0;
    evas_object_move(o, x, y);
-   evas_object_show(o);   
+   evas_object_show(o);
    o_title = o;
 
    o = evas_object_text_add(evas);
@@ -292,9 +292,9 @@ _ui_setup(void)
    x = (win_w - w) / 2;
    y = h + 2;
    evas_object_move(o, x, y);
-   evas_object_show(o);   
+   evas_object_show(o);
    o_byline = o;
-   
+
    o = evas_object_image_add(evas);
    evas_object_move(o, (win_w - 120) / 2, ((win_h - 160) / 2));
    snprintf(buf, 4096, "%s%s", data_dir, "logo.png");
@@ -305,14 +305,14 @@ _ui_setup(void)
    evas_object_color_set(o, 255, 255, 255, 255);
    evas_object_show(o);
    o_menu_logo = o;
-   
+
    o = evas_object_image_add(evas);
    evas_object_move(o, win_w - 128, - 128);
    evas_object_image_fill_set(o, 0, 0, 256, 256);
    evas_object_resize(o, 256, 256);
    evas_object_show(o);
    o_menu_icon = o;
-   
+
    o = evas_object_image_add(evas);
    evas_object_move(o, 0, 0);
    snprintf(buf, 4096, "%s%s", data_dir, "icon_sel.png");
@@ -337,7 +337,7 @@ _ui_setup(void)
    evas_object_resize(o, 56, 41);
    evas_object_image_fill_set(o, 0, 0, 56, 41);
    o_menu_icon_sel2 = o;
-   
+
    o = evas_object_text_add(evas);
    evas_object_text_font_set(o, "Vera-Bold", 10);
    evas_object_text_text_set(o, "");
@@ -359,7 +359,7 @@ _ui_setup(void)
    y = (win_h - h) / 2;
    evas_object_move(o, x, y);
    o_menu_title = o;
-   
+
    _ui_menu_item_add("e.png", "About Enlightenment", about_start);
    _ui_menu_item_add("e.png", "All Tests", _ui_all);
 #define UI
@@ -375,7 +375,7 @@ void
 ui_args(int argc, char **argv)
 {
    int i;
-   
+
    for (i = 1; i < argc; i++)
      {
 	if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
@@ -420,7 +420,7 @@ ui_loop(void)
 	pt = t2;
      }
    first = 0;
-  
+
    /* menu layout */
    if (menu_active)
      {
@@ -428,7 +428,7 @@ ui_loop(void)
 	int i;
 	static double tr = 0.0;
 	double tt;
-	
+
 	tt = t;
 	tt += tr;
 	while (tt > 0.001)
@@ -445,7 +445,7 @@ ui_loop(void)
 	     Evas_Coord len;
 	     double a;
 	     Evas_Object *o;
-	     
+
 	     mi = l->data;
 	     o = mi->o_icon;
 	     evas_object_geometry_get(o_menu_logo, NULL, NULL, &w, &h);
@@ -463,8 +463,8 @@ ui_loop(void)
 	     a = 255 - (30 * a);
 	     evas_object_color_set(o, a, a, a, a);
 	     evas_object_show(o);
-	     
-	     
+
+
 	     if (i == menu_sel)
 	       {
 		  a = menu_anim - (double)i;
@@ -477,7 +477,7 @@ ui_loop(void)
 
 		  o = o_menu_icon_sel2;
 		  evas_object_move(o, (win_w - 56) / 2, (win_h / 2) + len - 4);
-		  
+
 		  o = o_menu_title;
 		  evas_object_color_set(o, 0, 0, 0, a);
 		  evas_object_text_text_set(o, mi->text);
@@ -490,7 +490,7 @@ ui_loop(void)
 		  evas_object_color_set(o, a / 2, a / 2, a / 2, a / 2);
 		  evas_object_text_text_set(o, mi->text);
 	          evas_object_move(o, x + 1, y + 1);
-		  
+
 		  o = o_menu_text_sel;
 		  w = tw + 24;
 		  h = 28;
@@ -500,7 +500,7 @@ ui_loop(void)
 		  evas_object_resize(o, w, h);
 		  evas_object_image_fill_set(o, 0, 0, w, h);
 		  evas_object_color_set(o, a, a, a, a);
-		  
+
 		  o = o_menu_icon;
 		  snprintf(buf, 4096, "%s%s", data_dir, mi->icon);
 		  evas_object_image_file_set(o, buf, NULL);
@@ -544,7 +544,7 @@ void
 ui_fps(double fps)
 {
    char buf[256];
-   
+
    snprintf(buf, sizeof(buf), "ESCAPE - exit, FPS: %4.3f", fps);
    evas_object_text_text_set(o_byline, buf);
    p_fps = fps;

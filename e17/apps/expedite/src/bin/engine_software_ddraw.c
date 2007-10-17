@@ -133,8 +133,8 @@ MainWndProc(HWND   hwnd,
        PostQuitMessage(0);
        return 0;
      case WM_WINDOWPOSCHANGED: {
-       PAINTSTRUCT ps; 
-       HDC hdc; 
+       PAINTSTRUCT ps;
+       HDC hdc;
 
        hdc = BeginPaint (window, &ps);
        evas_damage_rectangle_add(evas,

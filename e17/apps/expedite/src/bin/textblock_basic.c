@@ -44,7 +44,7 @@ static void _setup(void)
    evas_object_textblock_style_set(o, st);
    evas_textblock_style_free(st);
    evas_object_textblock_clear(o);
-   
+
    evas_object_textblock_text_markup_set
      (o,
            "<center><h1>Title</h1></center><br>"
@@ -110,9 +110,9 @@ static void _setup(void)
       "plutôt naïve Louÿs rêva crapaüter Íosa Úrmhac Óighe pór Éava Ádhaim"
       "</blockquote>"
       );
-   
+
    evas_object_show(o);
-   
+
    done = 0;
 }
 
@@ -127,18 +127,18 @@ static void _loop(double t, int f)
 {
    Evas_Coord x, y, w, h, w0, h0;
    int i = 0;
-   
+
    w0 = 160;
    h0 = 120;
    w = 150 + ((1.0 + cos((double)(f + (i * 10)) / (37.4 * SLOW) )) * w0 * 2);
    h = 50 + ((1.0 + sin((double)(f + (i * 19)) / (52.6 * SLOW) )) * h0 * 2);
-   x = (win_w / 2) - (w / 2);	
+   x = (win_w / 2) - (w / 2);
    x += sin((double)(f + (i * 13)) / (86.7 * SLOW)) * (w0 / 2);
    y = (win_h / 2) - (h / 2);
    y += cos((double)(f + (i * 28)) / (93.8 * SLOW)) * (h0 / 2);
    evas_object_move(o_text, x, y);
    evas_object_resize(o_text, w, 5000);
-   
+
    FPS_STD(NAME);
 }
 

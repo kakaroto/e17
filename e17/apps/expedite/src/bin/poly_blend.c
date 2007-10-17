@@ -67,7 +67,7 @@ static void _setup(void)
    for (i = 0; i < OBNUM; i++)
      {
 	int r, g, b, a;
-	
+
 	o = evas_object_polygon_add(evas);
 	o_images[i] = o;
 	a = (rnd()&0xff) / 2;
@@ -94,7 +94,7 @@ static void _loop(double t, int f)
    int i;
    Evas_Coord x, y, w, h;
    Evas_Object *o;
-   
+
    for (i = 0; i < OBNUM; i++)
      {
 	o = o_images[i];

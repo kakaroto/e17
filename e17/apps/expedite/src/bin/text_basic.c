@@ -22,7 +22,7 @@ static void _setup(void)
 {
    int i;
    Evas_Object *o;
-   
+
    for (i = 0; i < OBNUM; i++)
      {
 	o = evas_object_text_add(evas);

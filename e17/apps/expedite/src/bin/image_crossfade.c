@@ -21,21 +21,21 @@ static Evas_Object *o_images[2];
 static void _setup(void)
 {
    Evas_Object *o;
-   
+
    o = evas_object_image_add(evas);
    o_images[0] = o;
    evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/im1.png", NULL);
    evas_object_image_fill_set(o, 0, 0, 720, 420);
    evas_object_resize(o, 720, 420);
    evas_object_show(o);
-   
+
    o = evas_object_image_add(evas);
    o_images[1] = o;
    evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/im2.png", NULL);
    evas_object_image_fill_set(o, 0, 0, 720, 420);
    evas_object_resize(o, 720, 420);
    evas_object_show(o);
-   
+
    done = 0;
 }
 
@@ -50,7 +50,7 @@ static void _cleanup(void)
 static void _loop(double t, int f)
 {
    int a;
-   
+
    a = f & 0x1f;
    a = ((a << 3) | (a >> 2)) & 0xff;
    evas_object_color_set(o_images[1], a, a, a, a);

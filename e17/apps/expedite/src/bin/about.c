@@ -33,7 +33,7 @@ _setup(void)
       "components (libraries and applications) that have specific uses. "
       "It is very large, and so requires more testing and demonstration."
       "</center>"
-      
+
       "<center>"
       "Expedite is a full test suite for Evas, which is one of the "
       "core components of the Enlightenment Foundation Libraries. Evas "

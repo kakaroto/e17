@@ -6,5 +6,5 @@ void ui_loop(void);
 void ui_menu(void);
 void ui_func_set(void (*kfunc) (char *key), void (*lfunc) (double t, int f));
 void ui_fps(double fps);
-    
+
 #endif

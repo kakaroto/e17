@@ -26,7 +26,7 @@ static void _setup(void)
    char buf[1024];
    const char *strs[] = {
       "Big", "Smelly", "Fish", "Pants", "Octopus", "Garden", "There", "I",
-	"Am", "You", "Are", "Erogenous", "We", "Stick", "Wet", "Fishy", 
+	"Am", "You", "Are", "Erogenous", "We", "Stick", "Wet", "Fishy",
 	"Fiddly", "Family", "Lair", "Monkeys", "Magazine"
    };
 
