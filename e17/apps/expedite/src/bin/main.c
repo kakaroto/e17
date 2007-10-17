@@ -1131,6 +1131,8 @@ _profile_parse(int argc, char **argv)
 static void
 _engine_args(int argc, char **argv)
 {
+   char buf[4096];
+   char *prefix;
    int profile_ok;
    
    /* FIXME: parse args for geometry, engine etc. */
@@ -1170,6 +1172,12 @@ _engine_args(int argc, char **argv)
 		);
 	exit(-1);
      }
+
+   prefix = getenv("EXPEDITE_FONTS_DIR");
+   if (!prefix)
+     strcpy(buf, PACKAGE_DATA_DIR"/data");
+   else
+     snprintf(buf, 4096, "%s", prefix);
    
    evas_output_size_set(evas, win_w, win_h);
    evas_output_viewport_set(evas, 0, 0, win_w, win_h);
@@ -1180,7 +1188,7 @@ _engine_args(int argc, char **argv)
    evas_key_lock_add(evas, "Caps_Lock");
    evas_key_lock_add(evas, "Num_Lock");
    evas_key_lock_add(evas, "Scroll_Lock");
-   evas_font_path_append(evas, PACKAGE_DATA_DIR"/data");
+   evas_font_path_append(evas, buf);
    evas_image_cache_set(evas, 0 * 1024 * 1024);
    evas_font_cache_set(evas, 0 * 1024 * 1024);
 }

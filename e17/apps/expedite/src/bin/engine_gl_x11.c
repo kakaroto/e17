@@ -46,7 +46,7 @@ engine_gl_x11_args(int argc, char **argv)
    einfo = (Evas_Engine_Info_GL_X11 *)evas_engine_info_get(evas);
    if (!einfo)
      {
-	printf("Evas does not support the Software X11 Engine\n");
+	printf("Evas does not support the OpenGL X11 Engine\n");
 	return 0;
      }
    

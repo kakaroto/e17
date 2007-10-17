@@ -10,6 +10,7 @@ static double t_start = 0.0;
 static double t_loop = 0.0;
 static int    f_start = 0;
 static int    f_loop = 0;
+static char   data_dir[4096];
 
 typedef struct _Menu_Item Menu_Item;
 
@@ -205,12 +206,11 @@ _ui_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
 static void
 _ui_menu_item_add(char *icon, char *text, void (*func) (void))
 {
-   Menu_Item *mi;
    char buf[4096];
+   Menu_Item *mi;
    
    mi = malloc(sizeof(Menu_Item));
-   strcpy(buf, PACKAGE_DATA_DIR"/data/");
-   strcat(buf, icon);
+   snprintf(buf, 4096, "%s%s", data_dir, icon);
    mi->o_icon = evas_object_image_add(evas);
    evas_object_image_file_set(mi->o_icon, buf, NULL);
    evas_object_resize(mi->o_icon, 32, 32);
@@ -225,8 +225,16 @@ _ui_menu_item_add(char *icon, char *text, void (*func) (void))
 static void
 _ui_setup(void)
 {
+   char  buf[4096];
    Evas_Object *o;
    Evas_Coord x, y, w, h;
+   char *prefix;
+
+   prefix = getenv("EXPEDITE_DATA_DIR");
+   if (!prefix)
+     strcpy(data_dir, PACKAGE_DATA_DIR"/data/");
+   else
+     snprintf(data_dir, 4096, "%s/", prefix);
    
    o = evas_object_rectangle_add(evas);
    evas_object_move(o, 0, 0);
@@ -289,7 +297,8 @@ _ui_setup(void)
    
    o = evas_object_image_add(evas);
    evas_object_move(o, (win_w - 120) / 2, ((win_h - 160) / 2));
-   evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/logo.png", NULL);
+   snprintf(buf, 4096, "%s%s", data_dir, "logo.png");
+   evas_object_image_file_set(o, buf, NULL);
    evas_object_image_fill_set(o, 0, 0, 120, 160);
    evas_object_resize(o, 120, 160);
    evas_object_layer_set(o, -98);
@@ -306,14 +315,16 @@ _ui_setup(void)
    
    o = evas_object_image_add(evas);
    evas_object_move(o, 0, 0);
-   evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/icon_sel.png", NULL);
+   snprintf(buf, 4096, "%s%s", data_dir, "icon_sel.png");
+   evas_object_image_file_set(o, buf, NULL);
    evas_object_resize(o, 56, 56);
    evas_object_image_fill_set(o, 0, 0, 56, 56);
    o_menu_icon_sel = o;
 
    o = evas_object_image_add(evas);
    evas_object_move(o, 0, 0);
-   evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/text_sel.png", NULL);
+   snprintf(buf, 4096, "%s%s", data_dir, "text_sel.png");
+   evas_object_image_file_set(o, buf, NULL);
    evas_object_resize(o, 96, 32);
    evas_object_image_fill_set(o, 0, 0, 96, 32);
    evas_object_image_border_set(o, 8, 8, 8, 8);
@@ -321,7 +332,8 @@ _ui_setup(void)
 
    o = evas_object_image_add(evas);
    evas_object_move(o, 0, 0);
-   evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/icon_sel2.png", NULL);
+   snprintf(buf, 4096, "%s%s", data_dir, "icon_sel2.png");
+   evas_object_image_file_set(o, buf, NULL);
    evas_object_resize(o, 56, 41);
    evas_object_image_fill_set(o, 0, 0, 56, 41);
    o_menu_icon_sel2 = o;
@@ -427,12 +439,12 @@ ui_loop(void)
 	tr = tt;
 	for (i = 0, l = menu; l; l = l->next, i++)
 	  {
+	     char buf[4096];
 	     Menu_Item *mi;
 	     Evas_Coord x, y, w, h, tw, th;
 	     Evas_Coord len;
 	     double a;
 	     Evas_Object *o;
-	     char buf[4096];
 	     
 	     mi = l->data;
 	     o = mi->o_icon;
@@ -490,8 +502,7 @@ ui_loop(void)
 		  evas_object_color_set(o, a, a, a, a);
 		  
 		  o = o_menu_icon;
-		  strcpy(buf, PACKAGE_DATA_DIR"/data/");
-		  strcat(buf, mi->icon);
+		  snprintf(buf, 4096, "%s%s", data_dir, mi->icon);
 		  evas_object_image_file_set(o, buf, NULL);
 		  evas_object_color_set(o, a / 2, a / 2, a / 2, a / 2);
 	       }
