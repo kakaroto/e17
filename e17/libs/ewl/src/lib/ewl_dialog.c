@@ -209,7 +209,7 @@ ewl_dialog_action_fill_policy_set(Ewl_Dialog *d, unsigned int pol)
 	DCHECK_TYPE("d", d, EWL_DIALOG_TYPE);
 
 	w = ewl_widget_parent_get(d->action_area);
-	ewl_object_fill_policy_set(EWL_OBJECT(w), pol);	
+	ewl_object_fill_policy_set(EWL_OBJECT(w), pol);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -245,7 +245,7 @@ ewl_dialog_action_alignment_set(Ewl_Dialog *d, unsigned int align)
 	DCHECK_TYPE("d", d, EWL_DIALOG_TYPE);
 
 	w = ewl_widget_parent_get(d->action_area);
-	ewl_object_alignment_set(EWL_OBJECT(w), align);	
+	ewl_object_alignment_set(EWL_OBJECT(w), align);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -377,7 +377,7 @@ ewl_test_setup_tests(void)
 	list = ecore_plugin_available_get(tests_path_group);
 	/* no tests found ... */
 	if (!list) return 0;
-	
+
 	while ((name = ecore_list_first_goto(list)))
 	{
 		Ecore_Plugin *plugin;
@@ -410,7 +410,7 @@ ewl_test_setup_tests(void)
 	return 1;
 }
 
-static void 
+static void
 ewl_test_free(Ewl_Test *test)
 {
 	if (test->plugin) ecore_plugin_unload(test->plugin);

@@ -86,7 +86,7 @@ ewl_io_manager_shutdown(void)
 
 	IF_FREE_HASH(ewl_io_manager_ext_icon_map);
 	IF_FREE_HASH(ewl_io_manager_plugins);
-	if (ewl_io_manager_path) 
+	if (ewl_io_manager_path)
 	{
 		ecore_path_group_del(ewl_io_manager_path);
 		ewl_io_manager_path = 0;
@@ -321,19 +321,19 @@ ewl_io_manager_plugin_get(const char *mime)
 		FREE(m);
 		DRETURN_PTR(plugin, DLEVEL_STABLE);
 	}
-	
+
 	plugin->uri_read =
-		ecore_plugin_symbol_get(plugin->plugin, 
+		ecore_plugin_symbol_get(plugin->plugin,
 					"ewl_io_manager_plugin_uri_read");
 	plugin->string_read =
-		ecore_plugin_symbol_get(plugin->plugin, 
+		ecore_plugin_symbol_get(plugin->plugin,
 					"ewl_io_manager_plugin_string_read");
 
 	plugin->uri_write =
-		ecore_plugin_symbol_get(plugin->plugin, 
+		ecore_plugin_symbol_get(plugin->plugin,
 					"ewl_io_manager_plugin_uri_write");
 	plugin->string_write =
-		ecore_plugin_symbol_get(plugin->plugin, 
+		ecore_plugin_symbol_get(plugin->plugin,
 					"ewl_io_manager_plugin_string_write");
 
 	if (!plugin->uri_read || !plugin->uri_write

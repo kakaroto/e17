@@ -1519,7 +1519,7 @@ ewl_embed_tab_order_change(Ewl_Embed *e, void *(*change)(Ecore_DList *list),
 
 /**
  * @param embed: The embed to set the focused widget too
- * @param w: The widget to set as having focus, NULL is valid value and 
+ * @param w: The widget to set as having focus, NULL is valid value and
  *           signifies that no widget has the focus.
  * @return Returns no value.
  * @brief Set the current focused widget in the embed

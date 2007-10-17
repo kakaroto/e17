@@ -621,7 +621,7 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	if (!ewl_attach_tooltip)
 		ewl_attach_tooltip = NEW(Ewl_Attach_Tooltip, 1);
 
-	/* we only want to kill this tooltip if the move is outside 
+	/* we only want to kill this tooltip if the move is outside
 	 * the move tolerance */
 	if (ewl_attach_tooltip && (ewl_attach_tooltip->attach == attach))
 	{

@@ -16,7 +16,7 @@ struct Ewl_Engine_Evas_Software_SDL
 	Ewl_Engine engine;
 
 	/* There can be only one window in sdl land */
-	Ewl_Window *window; 
+	Ewl_Window *window;
 };
 
 #endif

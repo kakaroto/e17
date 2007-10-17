@@ -526,7 +526,7 @@ ec_debug_page_setup(Ewl_Notebook *n)
 		{
 			o = ewl_checkbutton_new();
 			ewl_widget_name_set(o, buttons[i].name);
-			ewl_object_alignment_set(EWL_OBJECT(o), 
+			ewl_object_alignment_set(EWL_OBJECT(o),
 					EWL_FLAG_ALIGN_LEFT);
 			ewl_button_label_set(EWL_BUTTON(o), buttons[i].label);
 			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o),
@@ -785,7 +785,7 @@ ec_themes_get(DIR *rep, Ecore_List *list, const char *v)
 {
 	struct dirent *file;
 	int z = -1;
-	
+
 	while ((file = readdir(rep)))
 	{
 		int len;
@@ -801,8 +801,8 @@ ec_themes_get(DIR *rep, Ecore_List *list, const char *v)
 			*(t + len - 4) = '\0';
 
 			ecore_list_append(list, t);
-		
-			if (!strcmp(t, v)) 
+
+			if (!strcmp(t, v))
 				z = ecore_list_count(list) - 1;
 		}
 	}
