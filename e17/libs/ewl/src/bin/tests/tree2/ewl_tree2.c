@@ -945,6 +945,7 @@ struct Tree2_Test_Row_Data
 struct Tree2_Test_Data
 {
 	unsigned int count;
+	unsigned int row_count;
 	Tree2_Test_Row_Data **rows;
 };
 
@@ -1109,6 +1110,7 @@ tree2_test_data_setup(void)
 
 	dt[1]->subdata = calloc(1, sizeof(Tree2_Test_Data));
 	dt[1]->subdata->count = 1;
+	dt[1]->subdata->row_count = 1;
 	dt[1]->subdata->rows = calloc(dt[1]->subdata->count, sizeof(Tree2_Test_Row_Data *));
 	dt[1]->subdata->rows[0] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[1]->subdata->rows[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
@@ -1121,25 +1123,26 @@ tree2_test_data_setup(void)
 
 	dt[2]->subdata = calloc(1, sizeof(Tree2_Test_Data));
 	dt[2]->subdata->count = 6;
+	dt[2]->subdata->row_count = 6;
 	dt[2]->subdata->rows = calloc(dt[2]->subdata->count, sizeof(Tree2_Test_Row_Data *));
 	dt[2]->subdata->rows[0] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[2]->subdata->rows[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
-	dt[2]->subdata->rows[0]->text = strdup("Squee.");
+	dt[2]->subdata->rows[0]->text = strdup("Squee. 1.");
 	dt[2]->subdata->rows[1] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[2]->subdata->rows[1]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
-	dt[2]->subdata->rows[1]->text = strdup("Splat");
+	dt[2]->subdata->rows[1]->text = strdup("Splat. 2.");
 	dt[2]->subdata->rows[2] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[2]->subdata->rows[2]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
-	dt[2]->subdata->rows[2]->text = strdup("Squee.");
+	dt[2]->subdata->rows[2]->text = strdup("Squee. 3.");
 	dt[2]->subdata->rows[3] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[2]->subdata->rows[3]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
-	dt[2]->subdata->rows[3]->text = strdup("Splat");
+	dt[2]->subdata->rows[3]->text = strdup("Splat. 4.");
 	dt[2]->subdata->rows[4] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[2]->subdata->rows[4]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
-	dt[2]->subdata->rows[4]->text = strdup("Squee.");
+	dt[2]->subdata->rows[4]->text = strdup("Squee. 5.");
 	dt[2]->subdata->rows[5] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[2]->subdata->rows[5]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
-	dt[2]->subdata->rows[5]->text = strdup("Splat");
+	dt[2]->subdata->rows[5]->text = strdup("Splat. 6.");
 
 	dt[3] = calloc(1, sizeof(Tree2_Test_Row_Data));
 	dt[3]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/End.png");
@@ -1153,6 +1156,7 @@ tree2_test_data_setup(void)
 
 	data->rows = dt;
 	data->count = TREE2_DATA_ELEMENTS;
+	data->row_count = TREE2_DATA_ELEMENTS;
 
 	return data;
 }
@@ -1222,21 +1226,21 @@ tree2_test_data_fetch(void *data, unsigned int row, unsigned int column)
 
 	/* NOTE: this is just for testing purposes, should not be needed in a
 	 * normal app */
-	if (row >= d->count)
+	if (row >= d->row_count)
 	{
 		printf("Asking for too many rows %d (count == %d)\n",
-							row, d->count);
+							row, d->row_count);
 		return NULL;
 	}
 
 	if (column == 0)
-		val = d->rows[row % TREE2_DATA_ELEMENTS]->text;
+		val = d->rows[row % d->count]->text;
 
 	else if (column == 1)
-		val = d->rows[row % TREE2_DATA_ELEMENTS]->image;
+		val = d->rows[row % d->count]->image;
 
 	else if (column == 2)
-		val = d->rows[row % TREE2_DATA_ELEMENTS];
+		val = d->rows[row % d->count];
 
 	else
 	{
@@ -1311,7 +1315,7 @@ tree2_test_data_count_get(void *data)
 
 	d = data;
 
-	return d->count;
+	return d->row_count;
 }
 
 static int
@@ -1322,8 +1326,8 @@ tree2_test_data_expandable_get(void *data, unsigned int row)
 
 	d = data;
 
-	if (d && d->rows[row % TREE2_DATA_ELEMENTS])
-		ret = d->rows[row % TREE2_DATA_ELEMENTS]->expandable;
+	if (d && d->rows[row % d->count])
+		ret = d->rows[row % d->count]->expandable;
 
 	return ret;
 }
@@ -1393,7 +1397,7 @@ ewl_tree2_cb_set_rows_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	spinner = ewl_widget_name_find("rows_spinner");
 
 	d = ewl_mvc_data_get(EWL_MVC(tree));
-	d->count = ewl_range_value_get(EWL_RANGE(spinner));
+	d->row_count = ewl_range_value_get(EWL_RANGE(spinner));
 
 	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
 }
