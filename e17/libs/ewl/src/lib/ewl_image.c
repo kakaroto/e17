@@ -269,6 +269,8 @@ ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
 		ewl_widget_reveal(w);
 	}
 
+	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1094,10 +1096,10 @@ ewl_image_type_get(const char *i)
 
 	l = strlen(i);
 
-	if ((l >= 8 && !(strncasecmp((char *) i + l - 8, ".bits.db", 8)))
-	    || (l >= 4 && !(strncasecmp((char *) i + l - 4, ".eet", 4)))
-	    || (l >= 4 && !(strncasecmp((char *) i + l - 4, ".edj", 4)))
-	    || (l >= 4 && !(strncasecmp((char *) i + l - 4, ".eap", 5))))
+	if ((l >= 8 && !(strncasecmp(i + l - 8, ".bits.db", 8)))
+	    || (l >= 4 && !(strncasecmp(i + l - 4, ".eet", 4)))
+	    || (l >= 4 && !(strncasecmp(i + l - 4, ".edj", 4)))
+	    || (l >= 4 && !(strncasecmp(i + l - 4, ".eap", 4))))
 		DRETURN_INT(EWL_IMAGE_TYPE_EDJE, DLEVEL_STABLE);
 
 	DRETURN_INT(EWL_IMAGE_TYPE_NORMAL, DLEVEL_STABLE);
