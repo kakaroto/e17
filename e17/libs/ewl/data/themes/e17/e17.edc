@@ -56,8 +56,7 @@ data
 	item: "/combo/cell/group" "ewl/combo/contents";
 	item: "/combo/popup/group" "ewl/menu";
 	item: "/combo_cell/group" "ewl/combo/popup/contents";
-	item: "/combo_menu/body/group"
-			"ewl/combo/popup/submenu";
+	item: "/combo_menu/body/group" "ewl/combo/popup/submenu";
 	item: "/combo/button/group" "ewl/combo/button";
 
 	/* dnd groups */
@@ -155,8 +154,7 @@ data
 	item: "/tree_header/header/button/group" "ewl/tree/header/button";
 
 	item: "/row/group" "ewl/row";
-//	item: "/node/check/group" "ewl/tree/expansion";
-  item: "/expansion/group" "ewl/tree/expansion";
+	item: "/expansion/group" "ewl/tree/expansion";
 
 	/* window related groups */
 	item: "/tooltip/group" "ewl/window";
@@ -178,6 +176,7 @@ data
 	item: "/tooltip/voffset" 10;
 	item: "/tooltip/hoffset" 10;
 	item: "/tooltip/delay" "1.0";
+	item: "/tooltip/tolerance" "5";
 
 	item: "/context_menu/voffset" 1;
 	item: "/context_menu/hoffset" 1;

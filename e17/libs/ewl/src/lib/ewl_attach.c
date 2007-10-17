@@ -569,9 +569,7 @@ ewl_attach_tooltip_detach(Ewl_Attach *attach)
 
 	/* make sure the display attach is our attach */
 	if (!ewl_attach_tooltip || (ewl_attach_tooltip->attach != attach))
-	{
 		DRETURN(DLEVEL_STABLE);
-	}
 
 	if (ewl_attach_tooltip->timer)
 		ecore_timer_del(ewl_attach_tooltip->timer);
@@ -623,6 +621,20 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	if (!ewl_attach_tooltip)
 		ewl_attach_tooltip = NEW(Ewl_Attach_Tooltip, 1);
 
+	/* we only want to kill this tooltip if the move is outside 
+	 * the move tolerance */
+	if (ewl_attach_tooltip && (ewl_attach_tooltip->attach == attach))
+	{
+		int amt = 0;
+
+		amt = ewl_theme_data_int_get(w, "/tooltip/tolerance");
+		if ((e->x >= (ewl_attach_tooltip->x - amt))
+				&& (e->x <= (ewl_attach_tooltip->x + amt))
+				&& (e->y >= (ewl_attach_tooltip->y - amt))
+				&& (e->y <= (ewl_attach_tooltip->y + amt)))
+			DRETURN(DLEVEL_STABLE);
+	}
+
 	ewl_attach_tooltip_detach(attach);
 
 	ewl_attach_tooltip->attach = attach;
@@ -632,10 +644,7 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	ewl_attach_tooltip->y = e->y;
 
 	delay_str = (const char *)ewl_theme_data_str_get(w, "/tooltip/delay");
-	if (delay_str)
-	{
-		delay = atof(delay_str);
-	}
+	if (delay_str) delay = atof(delay_str);
 
 	ewl_attach_tooltip->timer = ecore_timer_add(delay,
 					ewl_attach_cb_tooltip_timer, w);
