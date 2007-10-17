@@ -28,7 +28,7 @@ engine_software_16_x11_args(int argc, char **argv)
    Evas_Engine_Info_Software_16_X11 *einfo;
    int i;
    int ok = 0;
-   
+
    for (i = 1; i < argc; i++)
      {
 	if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
@@ -38,10 +38,10 @@ engine_software_16_x11_args(int argc, char **argv)
 	  }
      }
    if (!ok) return 0;
-   
+
    disp = XOpenDisplay(NULL);
    if (!disp) return 0;
-   
+
    evas_output_method_set(evas, evas_render_method_lookup("software_16_x11"));
    einfo = (Evas_Engine_Info_Software_16_X11 *)evas_engine_info_get(evas);
    if (!einfo)
@@ -49,7 +49,7 @@ engine_software_16_x11_args(int argc, char **argv)
 	printf("Evas does not support the Software 16bit X11 Engine\n");
 	return 0;
      }
-   
+
    einfo->info.display = disp;
    attr.backing_store = NotUseful;
    attr.colormap = DefaultColormap(disp, DefaultScreen(disp));
@@ -70,7 +70,7 @@ engine_software_16_x11_args(int argc, char **argv)
 		       &attr);
    einfo->info.drawable = win;
    evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
-   
+
    XStoreName(disp, win, "Expedite - Evas Test Suite");
    chint.res_name = "expedite";
    chint.res_class = "Expedite";
