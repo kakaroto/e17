@@ -7,11 +7,15 @@
 /*============================================================================*
  *                                  Local                                     * 
  *============================================================================*/
+static Surface_Backend *_backends[ENESIM_SURFACE_FORMATS] = {
+		&argb8888_backend,
+		&rgb565_backend,
+};
+#if 0
 static Enesim_Surface_Func *_funcs[ENESIM_SURFACE_FORMATS] = {
 	argb8888_funcs,
 	rgb565_funcs,
 };
-#if 0
 static Conv_Func *_conv_funcs[ENESIM_SURFACE_FORMATS] = {
 	argb8888_conv_funcs,
 	rgb565_conv_funcs,
@@ -32,7 +36,7 @@ Span_Color_Func enesim_surface_span_color_get(Enesim_Surface *s, int rop)
 
 	}
 #endif
-	return _funcs[s->format][ENESIM_RENDERER_BLEND].sp_color;
+	return _backends[s->format]->rops[ENESIM_RENDERER_BLEND].sp_color;
 }
 /**
  * To be documented

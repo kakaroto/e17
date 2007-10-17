@@ -10,9 +10,7 @@ INCLUDES = -I. \
 
 noinst_LTLIBRARIES = libenesim_surface_rop.la
 
-libenesim_surface_rop_la_SOURCES = \
-argb8888.c \
-rgb565.c
+libenesim_surface_rop_la_SOURCES =
 
 libenesim_surface_rop_la_LIBADD = \
 blend/libenesim_surface_rop_blend.la

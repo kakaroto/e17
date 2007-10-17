@@ -1,5 +1,6 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 #include "surface.h"
+#include "rgb565.h"
 
-Enesim_Surface_Func rgb565_funcs[ENESIM_RENDERER_ROPS];
+Surface_Backend rgb565_backend;

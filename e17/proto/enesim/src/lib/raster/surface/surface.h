@@ -17,7 +17,7 @@ typedef struct _Rgb565_Data
 	DATA8 	*alpha;
 } Rgb565_Data;
 
-typedef union
+typedef union _Enesim_Surface_Data
 {
 	Rgb565_Data 	rgb565;	
 	Argb8888_Data 	argb8888;	
@@ -25,13 +25,21 @@ typedef union
 
 typedef void (*Span_Color_Func) (Enesim_Surface_Data *data, int off, DATA32 c, int w);
 
-typedef struct _Enesim_Surface_Func
+typedef struct _Surface_Func
 {
 	Span_Color_Func	sp_color;
-} Enesim_Surface_Func;
+} Surface_Rop_Func;
 
-extern Enesim_Surface_Func rgb565_funcs[ENESIM_RENDERER_ROPS];
-extern Enesim_Surface_Func argb8888_funcs[ENESIM_RENDERER_ROPS];
+typedef void (*Surface_Conv_Func) (Enesim_Surface_Data *sdata, Enesim_Surface_Data *ddata, int w, int h);
+
+typedef struct _Surface_Backend
+{
+	Surface_Rop_Func rops[ENESIM_RENDERER_ROPS];
+	Surface_Conv_Func conv[ENESIM_SURFACE_FORMATS - 1];
+} Surface_Backend;
+
+extern Surface_Backend argb8888_backend;
+extern Surface_Backend rgb565_backend;
 
 struct _Enesim_Surface
 {
@@ -41,10 +49,6 @@ struct _Enesim_Surface
 	int 				flags;
 	Enesim_Surface_Data 		data;
 };
-
-typedef void (*Conv_Func) (Enesim_Surface_Data *sdata, Enesim_Surface_Data *ddata, int w, int h);
-extern Conv_Func rgb565_conv_funcs[ENESIM_SURFACE_FORMATS];
-extern Conv_Func argb8888_conv_funcs[ENESIM_SURFACE_FORMATS];
 
 Span_Color_Func enesim_surface_span_color_get(Enesim_Surface *s, int rop);
 void enesim_surface_premul(Enesim_Surface *s);
