@@ -44,6 +44,7 @@ static char *ewl_test_about_body =
 
 static int ewl_test_setup_tests(void);
 static void ewl_test_free(Ewl_Test *test);
+static int ewl_test_compare(Ewl_Test *test1, Ewl_Test *test2);
 static void ewl_test_print_tests(void);
 
 static void run_test_boxed(Ewl_Test *t);
@@ -407,6 +408,10 @@ ewl_test_setup_tests(void)
 	/* no tests found ... */
 	if (ecore_list_count(tests) == 0) return 0;
 
+	/* sort the tests in alphabetical order */
+	ecore_list_sort(tests, ECORE_COMPARE_CB(ewl_test_compare), 
+			ECORE_SORT_MIN);
+
 	return 1;
 }
 
@@ -415,6 +420,12 @@ ewl_test_free(Ewl_Test *test)
 {
 	if (test->plugin) ecore_plugin_unload(test->plugin);
 	free(test);
+}
+
+static int
+ewl_test_compare(Ewl_Test *test1, Ewl_Test *test2)
+{
+	return strcasecmp(test1->name, test2->name);
 }
 
 static int
