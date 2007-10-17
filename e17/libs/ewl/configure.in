@@ -89,6 +89,24 @@ if test "x$enable_software_x11" != "xno" ; then
 fi
 AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_X11, test "x$have_software_x11" = xyes)
 
+AC_ARG_ENABLE(software-sdl,
+	[AC_HELP_STRING([--enable-software-sdl],[enable software SDL support])],
+	[enable_software_sdl=$enableval], [enable_software_sdl="auto"])
+have_software_sdl=no
+if test "x$enable_software_sdl" != "xno" ; then
+	AC_CHECK_HEADER(Evas_Engine_SDL.h,
+		[AC_CHECK_HEADER(Ecore_Sdl.h,
+			[have_software_sdl=yes],
+			[], [#include <Ecore.h>])],
+		[], [#include <Evas.h>])
+	if test "x$have_software_sdl" = "xyes" ; then
+		AC_DEFINE(ENABLE_EWL_SOFTWARE_SDL, 1, [Enable SDL Software])
+	elif test "x$enable_software_sdl" = "xyes" ; then
+		AC_MSG_ERROR(software SDL requested but no evas/ecore support found)
+	fi
+fi
+AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_SDL, test "x$have_software_sdl" = xyes)
+
 AC_ARG_ENABLE(software-16-x11,
 	[AC_HELP_STRING([--enable-software-16-x11],[enable software X11 support])],
 	[enable_software_16_x11=$enableval], [enable_software_16_x11="auto"])
@@ -322,6 +340,7 @@ src/plugins/Makefile
 src/engines/x11/Makefile
 src/engines/evas/Makefile
 src/engines/evas_software_x11/Makefile
+src/engines/evas_software_sdl/Makefile
 src/engines/evas_software_16_x11/Makefile
 src/engines/evas_xrender_x11/Makefile
 src/engines/evas_gl_x11/Makefile
@@ -353,6 +372,7 @@ echo "  Software 16 X11..........................: $have_software_16_x11"
 echo "  OpenGL X11...............................: $have_opengl_x11" 
 echo "  XRender X11..............................: $have_xrender_x11"
 echo "  Framebuffer..............................: $have_fbcon"
+echo "  SDL......................................: $have_software_sdl"
 echo "  Buffer...................................: $have_buffer"
 echo
 echo "Optional Components:"
