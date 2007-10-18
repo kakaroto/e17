@@ -508,7 +508,9 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
 
     def top_right_set(self, int x, int y):
         "Set (x, y) of top-right corner."
-        evas_object_move(self.obj, x, y)
+        cdef int w
+        evas_object_geometry_get(self.obj, NULL, NULL, &w, NULL)
+        evas_object_move(self.obj, x - w, y)
 
     property top_right:
         def __get__(self): # replicated to avoid performance hit
