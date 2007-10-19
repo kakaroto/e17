@@ -13,8 +13,7 @@ libenesim_rasterizer_la_SOURCES = \
 rasterizer.c \
 cpsc.c 
 
-libenesim_rasterizer_la_LIBADD = \
- -lm
+libenesim_rasterizer_la_LIBADD = 
 
 libenesim_rasterizer_la_DEPENDENCIES =
 

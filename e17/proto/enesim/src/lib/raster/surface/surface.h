@@ -36,6 +36,8 @@ typedef struct _Surface_Backend
 {
 	Surface_Rop_Func rops[ENESIM_RENDERER_ROPS];
 	Surface_Conv_Func conv[ENESIM_SURFACE_FORMATS - 1];
+	void (*premul)(Enesim_Surface_Data *sdata, int len);
+	void (*unpremul)(Enesim_Surface_Data *sdata, Enesim_Surface_Data *ddata, int len);
 } Surface_Backend;
 
 extern Surface_Backend argb8888_backend;

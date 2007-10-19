@@ -12,8 +12,7 @@ libenesim_scanline_la_SOURCES = \
 scanline.c \
 alias.c
 
-libenesim_scanline_la_LIBADD = \
- -lm
+libenesim_scanline_la_LIBADD = 
 
 libenesim_scanline_la_DEPENDENCIES =
 

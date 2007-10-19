@@ -1,6 +1,12 @@
 #ifndef _ARGB8888_H
 #define _ARGB8888_H
 
+#define ARGB_JOIN(a,r,g,b) (((a) << 24) + ((r) << 16) + ((g) << 8) + (b))
+#define A_VAL(p) ((DATA8 *)(p))[3]
+#define R_VAL(p) ((DATA8 *)(p))[2]
+#define G_VAL(p) ((DATA8 *)(p))[1]
+#define B_VAL(p) ((DATA8 *)(p))[0]
+
 static inline DATA32 mul_256(DATA32 a, DATA32 c)
 {
 	return  ( (((((c) >> 8) & 0x00ff00ff) * (a)) & 0xff00ff00) +

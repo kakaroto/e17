@@ -11,16 +11,6 @@ static Surface_Backend *_backends[ENESIM_SURFACE_FORMATS] = {
 		&argb8888_backend,
 		&rgb565_backend,
 };
-#if 0
-static Enesim_Surface_Func *_funcs[ENESIM_SURFACE_FORMATS] = {
-	argb8888_funcs,
-	rgb565_funcs,
-};
-static Conv_Func *_conv_funcs[ENESIM_SURFACE_FORMATS] = {
-	argb8888_conv_funcs,
-	rgb565_conv_funcs,
-};
-#endif
 /*============================================================================*
  *                                 Global                                     * 
  *============================================================================*/
@@ -37,13 +27,6 @@ Span_Color_Func enesim_surface_span_color_get(Enesim_Surface *s, int rop)
 	}
 #endif
 	return _backends[s->format]->rops[ENESIM_RENDERER_BLEND].sp_color;
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-void enesim_surface_premul(Enesim_Surface *s)
-{
 }
 /*============================================================================*
  *                                   API                                      * 
@@ -65,23 +48,22 @@ enesim_surface_new(Enesim_Surface_Format f, int w, int h, Enesim_Surface_Flag fl
 	s->flags = flags;
 
 	va_start(va, flags);
-	switch (s->format)
-	{
-		case ENESIM_SURFACE_ARGB8888:
+	switch (s->format) {
+	case ENESIM_SURFACE_ARGB8888:
 		s->data.argb8888.data = va_arg(va, DATA32 *);
 		break;
 
-		case ENESIM_SURFACE_RGB565:
+	case ENESIM_SURFACE_RGB565:
 		s->data.rgb565.data = va_arg(va, DATA16 *);
 		s->data.rgb565.alpha = va_arg(va, DATA8 *);
 		break;
 
-		default:
+	default:
 		break;
 	}
 	va_end(va);
 	if (!(s->flags & ENESIM_SURFACE_PREMUL))
-		enesim_surface_premul(s);
+		_backends[s->format]->premul(&s->data, s->w * s->h);
 	return s;
 }
 /**
@@ -119,21 +101,20 @@ enesim_surface_data_get(Enesim_Surface *s, ...)
 	
 	assert(s);
 	va_start(va, s);
-	switch (s->format)
-	{
-		case ENESIM_SURFACE_ARGB8888:
+	switch (s->format) {
+	case ENESIM_SURFACE_ARGB8888:
 		d32 = va_arg(va, DATA32 **);
 		*d32 = s->data.argb8888.data;
 		break;
 
-		case ENESIM_SURFACE_RGB565:
+	case ENESIM_SURFACE_RGB565:
 		d16 = va_arg(va, DATA16 **);
 		*d16 = s->data.rgb565.data;
 		d8 = va_arg(va, DATA8 **);
 		*d8 = s->data.rgb565.alpha;
 		break;
 
-		default:
+	default:
 		break;
 	}
 	va_end(va);
@@ -180,23 +161,22 @@ enesim_surface_data_set(Enesim_Surface *s, Enesim_Surface_Format f, ...)
 	assert(s);
 	/* TODO check if we already had data */
 	va_start(va, f);
-	switch (s->format)
-	{
-		case ENESIM_SURFACE_ARGB8888:
+	switch (s->format) {
+	case ENESIM_SURFACE_ARGB8888:
 		s->data.argb8888.data = va_arg(va, DATA32 *);
 		break;
 
-		case ENESIM_SURFACE_RGB565:
+	case ENESIM_SURFACE_RGB565:
 		s->data.rgb565.data = va_arg(va, DATA16 *);
 		s->data.rgb565.alpha = va_arg(va, DATA8 *);
 		break;
 
-		default:
+	default:
 		break;
 	}
 	va_end(va);
 	if (!(s->flags & ENESIM_SURFACE_PREMUL))
-			enesim_surface_premul(s);
+		_backends[s->format]->premul(&s->data, s->w * s->h);
 }
 /**
  * To be documented
@@ -212,30 +192,29 @@ enesim_surface_resize(Enesim_Surface *s, Enesim_Rectangle *srect, Enesim_Surface
  * FIXME: To be fixed
  */
 EAPI void 
-enesim_surface_unpremul(Enesim_Surface *s)
-{
-	DATA32 *d, *e;
-	int len;
+enesim_surface_unpremul(Enesim_Surface *s, ...)
+{	
+	Enesim_Surface_Data data;
+	va_list va;
 	
 	assert(s);
-	/* FIXME this is only for 32bpp */
-	len = s->w * s->h;
-#define ARGB_JOIN(a,r,g,b) (((a) << 24) + ((r) << 16) + ((g) << 8) + (b))
-#define A_VAL(p) ((DATA8 *)(p))[3]
-#define R_VAL(p) ((DATA8 *)(p))[2]
-#define G_VAL(p) ((DATA8 *)(p))[1]
-#define B_VAL(p) ((DATA8 *)(p))[0]
-	d = s->data.argb8888.data;
-	e = d + len;
-	while (d < e)
-	{
-		DATA32 a = (*d >> 24);
+	/* TODO check if we already had data */
+	va_start(va, s);
+	switch (s->format) {
+	case ENESIM_SURFACE_ARGB8888:
+		data.argb8888.data = va_arg(va, DATA32 *);
+		break;
 
-		if ((a > 0) && (a < 255))
-			*d = ARGB_JOIN(a, (R_VAL(d) * 255) / a, (G_VAL(d) * 255)
-					/ a, (B_VAL(d) * 255) / a);
-		d++;
+	case ENESIM_SURFACE_RGB565:
+		data.rgb565.data = va_arg(va, DATA16 *);
+		data.rgb565.alpha = va_arg(va, DATA8 *);
+		break;
+
+	default:
+		break;
 	}
+	_backends[s->format]->unpremul(&s->data, &data, s->w * s->h);
+	va_end(va);
 }
 /**
  * To be documented
