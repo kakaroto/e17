@@ -254,7 +254,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
         @parm: B{x}
         @parm: B{y}
-        @parm: B{include_hidden_objects} if to include objects passing events.
+        @parm: B{include_pass_events_objects} if to include objects passing events.
         @parm: B{include_hidden_objects} if to include hidden objects.
 
         @return: child object.
@@ -286,7 +286,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         @parm: B{y}
         @parm: B{w}
         @parm: B{h}
-        @parm: B{include_hidden_objects} if to include objects passing events.
+        @parm: B{include_pass_events_objects} if to include objects passing events.
         @parm: B{include_hidden_objects} if to include hidden objects.
 
         @return: child object.
@@ -300,13 +300,13 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         return Object_from_instance(o)
 
     def objects_at_xy_get(self, int x, int y,
-                             include_pass_events_objects=False,
-                             include_hidden_objects=False):
+                          include_pass_events_objects=False,
+                          include_hidden_objects=False):
         """Get all children at (x, y).
 
         @parm: B{x}
         @parm: B{y}
-        @parm: B{include_hidden_objects} if to include objects passing events.
+        @parm: B{include_pass_events_objects} if to include objects passing events.
         @parm: B{include_hidden_objects} if to include hidden objects.
 
         @return: children objects.
@@ -328,15 +328,15 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         return lst
 
     def objects_in_rectangle_get(self, int x, int y, int w, int h,
-                             include_pass_events_objects=False,
-                             include_hidden_objects=False):
+                                 include_pass_events_objects=False,
+                                 include_hidden_objects=False):
         """Get all children at given geometry.
 
         @parm: B{x}
         @parm: B{y}
         @parm: B{w}
         @parm: B{h}
-        @parm: B{include_hidden_objects} if to include objects passing events.
+        @parm: B{include_pass_events_objects} if to include objects passing events.
         @parm: B{include_hidden_objects} if to include hidden objects.
 
         @return: children objects.
