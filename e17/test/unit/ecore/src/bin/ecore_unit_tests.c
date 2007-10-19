@@ -13,6 +13,7 @@ main()
 
    s = ecore_file_tests_suite();
    sr = srunner_create(s);
+   srunner_set_log(sr, "ecore_unit_tests.log");
    srunner_set_xml(sr, "ecore_unit_tests.xml");
    srunner_run_all(sr, CK_NORMAL);
 
