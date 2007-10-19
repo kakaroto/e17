@@ -21,10 +21,6 @@ using std::endl;
 
 void __attribute__ ((constructor)) eflplusplus_init(void)
 {
-    cout << "============================================================" << endl;
-    cout << "=  Enlightenment Foundation Libraries C++ Bindings (EFL++) =" << endl;
-    cout << "============================================================" << endl;
-
     // initialize C libraries
     evas_init();
     ecore_init();
@@ -60,9 +56,5 @@ void __attribute__ ((destructor)) eflplusplus_fini(void)
     ecore_config_system_shutdown();
     ecore_shutdown();
     evas_shutdown();
-
-    cout << "============================================================" << endl;
-    cout << "= (C) 2004-2005 Michael 'Mickey' Lauer <mickey@Vanille.de> =" << endl;
-    cout << "============================================================" << endl;
 }
 
