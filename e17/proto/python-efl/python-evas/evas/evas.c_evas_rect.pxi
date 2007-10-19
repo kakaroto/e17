@@ -430,6 +430,11 @@ cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
         "Checks if contains given rectangle."
         return obj in self
 
+    def contains_point(self, x, y):
+        "Checks if contains the given point."
+        return bool(self.x0 <= x <= self.x1 and \
+                    self.y0 <= y <= self.y1)
+
     def intercepts(self, obj):
         "Checks if intercepts given rectangle."
         cdef Rect o
