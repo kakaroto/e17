@@ -31,6 +31,17 @@ static inline int enesim_rectangle_is_empty(Enesim_Rectangle *r)
  * To be documented
  * FIXME: To be fixed
  */
+static inline void enesim_rectangle_from_coords(Enesim_Rectangle *r, int x, int y, int w, int h)
+{
+	r->x = x;
+	r->y = y;
+	r->w = w;
+	r->h = h;
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
 static inline int enesim_spans_common(int c1, int l1, int c2, int l2)
 {
 	return (!(((c2 + l2) <= c1) || (c2 >= (c1 + l1))));

@@ -12,18 +12,19 @@
  *============================================================================*/
 typedef struct _Fill_Surface
 {
-	Enesim_Surface 		*s;
-	int 			mode;
-	Enesim_Rectangle 	area;
+	Enesim_Surface *s;
+	int mode;
+	Enesim_Rectangle sarea;
+	Enesim_Rectangle darea;
 } Fill_Surface;
 
-static inline void _draw_alias(Enesim_Renderer *r, Scanline_Alias *sl, Enesim_Surface *dst)
+
+static inline void _draw_alias_sl(Fill_Surface *f, Scanline_Alias_Sl *sl, Enesim_Surface *dst)
 {
-	Fill_Surface *f;
-	int off;
+	int offset;
 
-	f = r->data;
-
+#define DRECT f->darea
+#define SRECT f->sarea
 	/*
 	 * +---+---+  +---+---+
 	 * | S | S |  | S |   |
@@ -34,7 +35,13 @@ static inline void _draw_alias(Enesim_Renderer *r, Scanline_Alias *sl, Enesim_Su
 	if (!(f->mode & ENESIM_SURFACE_REPEAT_Y))
 	{
 		/* scanline outside vertical area */
+		if (sl->y > DRECT.y + SRECT.h - 1)
+		{
+			// FIXME fill base color ?
+			return;		
+		}
 		/* scanline inside vertical area */
+		offset = ((sl->y - DRECT.y) + SRECT.y) * f->s->w + SRECT.x;
 	}
 	/*
 	 * +---+---+  +---+---+
@@ -46,6 +53,7 @@ static inline void _draw_alias(Enesim_Renderer *r, Scanline_Alias *sl, Enesim_Su
 	else
 	{
 		/* scanline inside vertical area */
+		offset = (((sl->y - DRECT.y) % SRECT.h)  + SRECT.y) * f->s->w + SRECT.x;
 	}
 	/*
 	 * +---+---+  +---+---+
@@ -74,6 +82,24 @@ static inline void _draw_alias(Enesim_Renderer *r, Scanline_Alias *sl, Enesim_Su
 		 * | Ds|---   s---|-D |    s-|-D-|-    |sD |
 		 * +---+          +----      +---+     +---+
 		 */
+	}
+}
+
+static inline void _draw_alias(Enesim_Renderer *r, Scanline_Alias *sl, Enesim_Surface *dst)
+{
+	Fill_Surface *f;
+	Scanline_Alias_Sl *s;
+	int nsl;	
+	int i;
+
+	f = r->data;
+	nsl = sl->num_sls;
+	s = sl->sls;
+	
+	for (i = 0; i < nsl; i++)
+	{
+		_draw_alias_sl(f, s, dst);
+		s++;
 	}
 }
 
@@ -140,14 +166,29 @@ EAPI void enesim_fill_surface_mode_set(Enesim_Renderer *r, int mode)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI void enesim_fill_surface_area_set(Enesim_Renderer *r, int x, int y, int w, int h)
+EAPI void enesim_fill_surface_dst_area_set(Enesim_Renderer *r, int x, int y, int w, int h)
+{
+	Fill_Surface *f;	
+	assert(r);
+	
+	x = (x < 0) ? 0 : x;
+	y = (y < 0) ? 0 : y;
+	w = (w < 0) ? 0 : w;
+	h = (h < 0) ? 0 : h;
+	enesim_rectangle_from_coords(&f->darea, x, y, w, h);
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI void enesim_fill_surface_src_area_set(Enesim_Renderer *r, int x, int y, int w, int h)
 {
 	Fill_Surface *f;
-	
 	assert(r);
-	f = r->data;
-	f->area.x = (x < 0) ? 0 : x;
-	f->area.y = (y < 0) ? 0 : y;
-	f->area.w = (w < 0) ? 0 : w;
-	f->area.h = (h < 0) ? 0 : h;
+	
+	x = (x < 0) ? 0 : x;
+	y = (y < 0) ? 0 : y;
+	w = (w < 0) ? 0 : w;
+	h = (h < 0) ? 0 : h;
+	enesim_rectangle_from_coords(&f->sarea, x, y, w, h);
 }

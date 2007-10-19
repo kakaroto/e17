@@ -139,7 +139,8 @@ enum
 EAPI Enesim_Renderer * enesim_fill_surface_new(void);
 EAPI void enesim_fill_surface_surface_set(Enesim_Renderer *r, Enesim_Surface *s);
 EAPI void enesim_fill_surface_mode_set(Enesim_Renderer *r, int mode);
-EAPI void enesim_fill_surface_area_set(Enesim_Renderer *r, int x, int y, int w, int h);
+EAPI void enesim_fill_surface_dst_area_set(Enesim_Renderer *r, int x, int y, int w, int h);
+EAPI void enesim_fill_surface_src_area_set(Enesim_Renderer *r, int x, int y, int w, int h);
 /** @} */ //End of Enesim_Renderer_Fill_Surface_Group
 /** @} */ //End of Enesim_Renderer_Group
 /** @} */ //End of Enesim_Raster_Group
