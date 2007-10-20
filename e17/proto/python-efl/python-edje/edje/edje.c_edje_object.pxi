@@ -653,10 +653,9 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
                 self.message_send(id, data[0])
                 return
 
-            item_type = type(data[0])
-            if item_type not in (long, int, float, str): # FIXME: add unicode
+            if not isinstance(data[0], (long, int, float, basestring)):
                 raise TypeError("invalid message list type '%s'" %
-                                item_type.__name__)
+                                type(data[0]).__name__)
 
             self.message_send_set(id, data)
         else:
