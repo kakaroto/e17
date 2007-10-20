@@ -1,0 +1,61 @@
+# Italian translation for penguins module.
+# This file is put in the public domain.
+# DaveMDS <dave@gurumeditation.it>, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Penguins\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-10-20 12:44+0200\n"
+"PO-Revision-Date: 2007-10-20 13:50+0200\n"
+"Last-Translator: DaveMDS <dave@gurumeditation.it>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:40
+msgid "Penguins Module"
+msgstr "Modulo dei pinguini"
+
+#: e_mod_config.c:88
+msgid "Population Settings"
+msgstr "Impostazioni della popolazione"
+
+#: e_mod_config.c:90
+msgid "Number of penguins:"
+msgstr "Numero di pinguini"
+
+#: e_mod_config.c:92 e_mod_config.c:102
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: e_mod_config.c:95
+msgid "Zoom factor:"
+msgstr "Ingrandimento:"
+
+#: e_mod_config.c:97
+#, c-format
+msgid "%1.1f X"
+msgstr "%1.1f X"
+
+#: e_mod_config.c:100
+msgid "Transparency:"
+msgstr "Trasparenza:"
+
+#: e_mod_config.c:110
+msgid "Select population:"
+msgstr "Seleziona il tipo di popolazione:"
+
+#: e_mod_main.c:84
+msgid "Enlightenment Penguins Module"
+msgstr "Modulo dei pinguini per Enlightenment"
+
+#: e_mod_main.c:86
+msgid ""
+"This is a module to display fancy penguins on your desktop.<br>and you can "
+"choose the population you like"
+msgstr ""
+"Questo modulo riempie il vostro desktop di simpatici pinguini.<br>"
+"Se preferite potete anche scegliere popolazioni diverse dai pinguini."

@@ -1,0 +1,22 @@
+THEME = default
+EDC = $(THEME).edc
+EDJ = $(THEME).edj
+SUFFIXES = .edc .edj
+MAINTAINERCLEANFILES = Makefile.in
+CLEANFILES = $(EDJ)
+
+pkgdatadir = $(datadir)
+themedir = $(pkgdatadir)/themes
+theme_DATA = $(EDJ)
+
+all: $(EDJ)
+
+.edc.edj:
+	edje_cc -v -id $(top_srcdir)/themes/$(THEME) -fd $(top_srcdir)/themes/$(THEME) $< $@
+
+EXTRA_DIST = \
+default.edc \
+Makefile
+
+dist-hook:
+	rm -rf `find $(distdir) -name CVS`
