@@ -170,7 +170,7 @@ EAPI void
 epeg_decode_colorspace_set(Epeg_Image *im, Epeg_Colorspace colorspace)
 {
    if (im->pixels) return;
-   if ((colorspace < EPEG_GRAY8) || (colorspace > EPEG_ARGB32)) return;
+   if ((colorspace < EPEG_GRAY8) || (colorspace > EPEG_CMYK)) return;
    im->color_space = colorspace;
 }
 
