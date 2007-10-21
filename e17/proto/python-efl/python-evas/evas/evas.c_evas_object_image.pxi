@@ -1,7 +1,94 @@
 # This file is included verbatim by c_evas.pyx
 
+cdef int _data_size_get(Evas_Object *obj):
+    cdef int stride, h, bpp, cspace, have_alpha
+    stride = evas_object_image_stride_get(obj)
+    evas_object_image_size_get(obj, NULL, &h)
+    cspace = evas_object_image_colorspace_get(obj)
+    have_alpha = evas_object_image_alpha_get(obj)
+    if cspace == EVAS_COLORSPACE_ARGB8888:
+        bpp = 4
+    elif cspace == EVAS_COLORSPACE_RGB565_A5P:
+        if have_alpha == 0:
+            bpp = 2
+        else:
+            bpp = 3
+    else:
+        return 0 # XXX not supported.
+
+    return stride * h * bpp
+
+
 cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
     """Image from file or buffer.
+
+    Introduction
+    ============
+
+    Image will consider the object's L{geometry<Object.geometry_set()>} as
+    the area to paint with tiles as described by L{fill_set()} and the real
+    pixels (image data) will be stored as described by
+    L{image_size<image_size_set()>}. This can be tricky to understand at
+    first, but gives flexibility to do everything.
+
+    If an image is loaded from file, it will have
+    L{image_size<image_size_set()>} set to its original size, unless some
+    other size was set with L{load_size_set()}, L{load_dpi_set()} or
+    L{load_scale_down_set()}.
+
+    Pixels will be scaled to match size specified by L{fill_set()}
+    using either sampled or smooth methods, these can be specified with
+    L{smooth_scale_set()}. The scale will consider borders as specified by
+    L{border_set()} and L{border_center_fill_set()}, while the former specify
+    the border dimensions (top and bottom will scale horizontally, while
+    right and left will do vertically, corners are kept unscaled), the latter
+    says whenever the center of the image will be used (useful to create
+    frames).
+
+    Contents will be tiled using L{fill_set()} information in order to paint
+    L{geometry<Object.geometry_set()>}, so if you want an image to be drawn
+    just once, you should match every L{geometry_set(x, y, w, h)} by a call
+    to L{fill_set(0, 0, w, h)}. L{FilledImage} does that for you.
+
+    Pixel data and buffer API
+    =========================
+
+    Images implement the Python Buffer API, so it's possible to use it
+    where buffers are expected (ie: file.write()). Available data will
+    depend on L{alpha<alpha_set()>}, L{colorspace<colorspace_set()>} and
+    L{image_size<image_size_set()>}, lines should be considered multiple
+    of L{stride<stride_get()>}, with the following considerations about
+    colorspace:
+     - B{EVAS_COLORSPACE_ARGB8888:} This pixel format is a linear block of
+       pixels, starting at the top-left row by row until the bottom right of
+       the image or pixel region. All pixels are 32-bit unsigned int's with
+       the high-byte being alpha and the low byte being blue in the format
+       ARGB. Alpha may or may not be used by evas depending on the alpha flag
+       of the image, but if not used, should be set to 0xff anyway.
+       This colorspace uses premultiplied alpha. That means that R, G and B
+       cannot exceed A in value. The conversion from non-premultiplied
+       colorspace is::
+         R = (r * a) / 255; G = (g * a) / 255; B = (b * a) / 255;
+       So 50% transparent blue will be: 0x80000080. This will not be "dark" -
+       just 50% transparent. Values are 0 == black, 255 == solid or full
+       red, green or blue.
+     - B{EVAS_COLORSPACE_RGB565_A5P:} In the process of being implemented in
+       1 engine only. This may change. This is a pointer to image data for
+       16-bit half-word pixel data in 16bpp RGB 565 format (5 bits red,
+       6 bits green, 5 bits blue), with the high-byte containing red and the
+       low byte containing blue, per pixel. This data is packed row by row
+       from the top-left to the bottom right. If the image has an alpha
+       channel enabled there will be an extra alpha plane B{after} the color
+       pixel plane. If not, then this data will not exist and should not be
+       accessed in any way. This plane is a set of pixels with 1 byte per
+       pixel defining the alpha values of all pixels in the image from
+       the top-left to the bottom right of the image, row by row. Even though
+       the values of the alpha pixels can be 0 to 255, only values 0 through
+       to 31 are used, 31 being solid and 0 being transparent.
+       RGB values can be 0 to 31 for red and blue and 0 to 63 for green, with 0
+       being black and 31 or 63 being full red, green or blue respectively.
+       This colorspace is also pre-multiplied like EVAS_COLORSPACE_ARGB8888 so::
+         R = (r * a) / 32; G = (g * a) / 32; B = (b * a) / 32;
 
     @note: if an image is resized it will B{tile} it's contents respecting
       geometry set by L{fill_set()}, so if you want the contents to be
@@ -14,8 +101,8 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
        load_dpi_set, load_dpi_get, load_dpi,
        load_scale_down_set, load_scale_down_get, load_scale_down
     @group Often unused: alpha_set, alpha_get, alpha, colorspace_set,
-       colorspace_set, colorspace, pixels_dirty_set, pixels_dirty_get,
-       pixels_dirty
+       colorspace_get, colorspace, pixels_dirty_set, pixels_dirty_get,
+       pixels_dirty, image_data_set, image_data_update_add
     """
     def __init__(self, Canvas canvas not None, **kargs):
         Object.__init__(self, canvas)
@@ -180,6 +267,13 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         larger, then the image will be treated as if it were in the upper
         left hand corner of a larger image that is otherwise transparent.
 
+        This method will force pixels to be allocated if they weren't, so
+        you should use this before accessing the image as a buffer in order
+        to allocate the pixels.
+
+        This method will recalculate L{stride} (L{stride_get()}) based on
+        width and the colorspace.
+
         @parm: B{w}
         @parm: B{h}
         """
@@ -191,6 +285,30 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
 
         def __set__(self, spec):
             self.image_size_set(*spec)
+
+    def stride_get(self):
+        """Get the row stride (in pixels) being used to draw this image.
+
+           While image have logical dimension of width and height set by
+           L{image_size_set()}, the line can be a bit larger than width to
+           improve memory alignment.
+
+           The amount of bytes will change based on colorspace, while using
+           ARGB8888 it will be multiple of 4 bytes, with colors being laid
+           out interleaved, RGB565_A5P will have the first part being RGB
+           data using stride in multiple of 2 bytes and after that an
+           alpha plane with data using stride in multiple of 1 byte.
+
+           @note: This value can change after L{image_size_set()}.
+           @note: Unit is pixels, not bytes.
+
+           @rtype: int
+        """
+        return evas_object_image_stride_get(self.obj)
+
+    property stride:
+        def __get__(self):
+            return self.stride_get()
 
     def alpha_get(self):
         "@rtype: bool"
@@ -342,6 +460,81 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
         else:
             f = NULL
         evas_object_image_save(self.obj, filename, key, flags)
+
+    def __getsegcount__(self, int *p_len):
+        if p_len == NULL:
+            return 1
+
+        p_len[0] = _data_size_get(self.obj)
+        return 1
+
+    def __getreadbuffer__(self, int segment, void **ptr):
+        ptr[0] = evas_object_image_data_get(self.obj, 0)
+        if ptr[0] == NULL:
+            raise SystemError("image has no allocated buffer.")
+        # XXX: keep Evas pixels_checked_out counter to 0 and allow
+        # XXX: image to reload and unload its data.
+        # XXX: may cause problems if buffer is used after these
+        # XXX: functions are called, but buffers aren't expected to
+        # XXX: live much.
+        evas_object_image_data_set(self.obj, ptr[0])
+        return _data_size_get(self.obj)
+
+    def __getwritebuffer__(self, int segment, void **ptr):
+        ptr[0] = evas_object_image_data_get(self.obj, 1)
+        if ptr[0] == NULL:
+            raise SystemError("image has no allocated buffer.")
+        # XXX: keep Evas pixels_checked_out counter to 0 and allow
+        # XXX: image to reload and unload its data.
+        # XXX: may cause problems if buffer is used after these
+        # XXX: functions are called, but buffers aren't expected to
+        # XXX: live much.
+        evas_object_image_data_set(self.obj, ptr[0])
+        return _data_size_get(self.obj)
+
+    def __getcharbuffer__(self, int segment, char **ptr):
+        ptr[0] = <char *>evas_object_image_data_get(self.obj, 0)
+        if ptr[0] == NULL:
+            raise SystemError("image has no allocated buffer.")
+        # XXX: keep Evas pixels_checked_out counter to 0 and allow
+        # XXX: image to reload and unload its data.
+        # XXX: may cause problems if buffer is used after these
+        # XXX: functions are called, but buffers aren't expected to
+        # XXX: live much.
+        evas_object_image_data_set(self.obj, ptr[0])
+        return _data_size_get(self.obj)
+
+    def image_data_set(self, buf):
+        """Sets the raw image data.
+
+        The given buffer will be B{copied}, so it's safe to give it a
+        temporary object.
+
+        @note: that the raw data must be of the same size and colorspace
+           of the image. If data is None the current image data will be freed.
+        """
+        cdef void *p_data
+        cdef Py_ssize_t size, expected_size
+
+        if buf is None:
+            evas_object_image_data_set(self.obj, NULL)
+            return
+
+        python.PyObject_AsReadBuffer(buf, &p_data, &size)
+        if p_data != NULL:
+            expected_size = _data_size_get(self.obj)
+            if size < expected_size:
+                raise ValueError(("buffer size (%d) is smalled than expected "
+                                  "(%d)!") % (size, expected_size))
+        evas_object_image_data_set(self.obj, p_data)
+
+    def image_data_update_add(self, x, y, w, h):
+        """Mark a sub-region of the image to be redrawn.
+
+        This function schedules a particular rectangular region
+        to be updated (redrawn) at the next render.
+        """
+        evas_object_image_data_update_add(self.obj, x, y, w, h)
 
 
 cdef extern from "Python.h":

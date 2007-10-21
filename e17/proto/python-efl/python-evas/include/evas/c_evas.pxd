@@ -52,6 +52,7 @@ cdef extern from "Evas.h":
         EVAS_COLORSPACE_ARGB8888
         EVAS_COLORSPACE_YCBCR422P601_PL
         EVAS_COLORSPACE_YCBCR422P709_PL
+        EVAS_COLORSPACE_RGB565_A5P
 
 
     ctypedef enum Evas_Render_Op:
@@ -437,6 +438,7 @@ cdef extern from "Evas.h":
     void evas_object_image_fill_get(Evas_Object *obj, Evas_Coord *x, Evas_Coord *y, Evas_Coord *w, Evas_Coord *h)
     void evas_object_image_size_set(Evas_Object *obj, int w, int h)
     void evas_object_image_size_get(Evas_Object *obj, int *w, int *h)
+    int evas_object_image_stride_get(Evas_Object *obj)
     int evas_object_image_load_error_get(Evas_Object *obj)
     void evas_object_image_data_set(Evas_Object *obj, void *data)
     void *evas_object_image_data_get(Evas_Object *obj, Evas_Bool for_writing)
