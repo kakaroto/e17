@@ -55,6 +55,8 @@ Imlib_Image         im_title;
 Imlib_Image         im_prev1, im_prev2;
 Imlib_Image         im_next1, im_next2;
 Imlib_Image         im_exit1, im_exit2;
+
+static const char   doxdir[] = ENLIGHTENMENT_ROOT "/E-docs";
 char               *docdir = NULL;
 
 static Atom         ATOM_WM_DELETE_WINDOW = None;
@@ -164,16 +166,27 @@ CreateWindow(Window parent, int x, int y, int ww, int hh)
 }
 
 static              Imlib_Image
-LoadImage(const char *file)
+ImageLoad(const char *dir, const char *file)
 {
    Imlib_Image         im;
    char                tmp[4096];
 
-   sprintf(tmp, "%s/E-docs/%s", ENLIGHTENMENT_ROOT, file);
-   findLocalizedFile(tmp);
+   Esnprintf(tmp, sizeof(tmp), "%s/%s", dir, file);
    im = imlib_load_image(tmp);
 
    return im;
+}
+
+static              Imlib_Image
+ImageLoadDox(const char *file)
+{
+   return ImageLoad(doxdir, file);
+}
+
+Imlib_Image
+ImageLoadDoc(const char *file)
+{
+   return ImageLoad(docdir, file);
 }
 
 static void
@@ -194,6 +207,31 @@ ApplyImage2(Window win, Imlib_Image im)
    imlib_context_set_image(im);
    imlib_context_set_drawable(win);
    imlib_render_image_on_drawable(0, 0);
+}
+
+static void
+LoadFile(const char *file, const char *docfile)
+{
+   char                s[4096];
+   FILE               *f;
+
+   f = fopen(file, "r");
+   if (!f)
+     {
+	strcpy(s, docdir);
+	strcat(s, "/");
+	strcat(s, docfile);
+	f = fopen(s, "r");
+	if (!f)
+	  {
+	     printf("Edoc_dir %s does not contain a %s file\n", docdir,
+		    docfile);
+	     exit(1);
+	  }
+     }
+
+   GetObjects(f);
+   fclose(f);
 }
 
 #define ApplyImage3(win, im) \
@@ -234,10 +272,9 @@ XClearWindow(disp, win_text); \
 int
 main(int argc, char **argv)
 {
-   int                 pagenum;
+   int                 pagenum, prev_pagenum;
    int                 i, w, h, t, x, y;
    int                 wx, wy;
-   FILE               *f;
    char               *s;
    const char         *docfile;
    Pixmap              draw = 0;
@@ -252,6 +289,14 @@ main(int argc, char **argv)
    x = 0;
    y = 0;
    pagenum = 0;
+
+   if (argc < 1)
+     {
+	printf("usage:\n"
+	       "%s [-page page_number] [-file Edoc_fname] [-size width height] [Edoc_dir]\n",
+	       argv[0]);
+	exit(1);
+     }
 
    if ((disp = XOpenDisplay(NULL)) == NULL)
      {
@@ -271,14 +316,6 @@ main(int argc, char **argv)
 
    VRootInit();
 
-   if (argc < 2)
-     {
-	printf("usage:\n"
-	       "%s [-page page_number] [-file Edoc_fname] [-size width height] Edoc_dir\n",
-	       argv[0]);
-	exit(1);
-     }
-
    docfile = "MAIN";
    for (i = 1; i < argc; i++)
      {
@@ -295,45 +332,26 @@ main(int argc, char **argv)
 	   docdir = strdup(argv[i]);
      }
    if (docdir == NULL)
-      docdir = strdup(".");
+      docdir = strdup(doxdir);
    s = EMALLOC(char, strlen(docdir) + strlen(docfile) + 2 + 20);
 
    sprintf(s, "%s/%s", docdir, docfile);
    findLocalizedFile(s);
 
-   im_title = LoadImage("title.png");
+   im_title = ImageLoadDox("title.png");
    imlib_context_set_image(im_title);
-
    ibd.left = 50;
    ibd.right = 2;
    ibd.top = 2;
    ibd.bottom = 2;
    imlib_image_set_border(&ibd);
 
-   im_prev1 = LoadImage("prev1.png");
-   im_prev2 = LoadImage("prev2.png");
-   im_next1 = LoadImage("next1.png");
-   im_next2 = LoadImage("next2.png");
-   im_exit1 = LoadImage("exit1.png");
-   im_exit2 = LoadImage("exit2.png");
-
-   f = fopen(s, "r");
-   if (!f)
-     {
-	strcpy(s, docdir);
-	strcat(s, "/");
-	strcat(s, docfile);
-	f = fopen(s, "r");
-	if (!f)
-	  {
-	     printf("Edoc_dir %s does not contain a %s file\n", docdir,
-		    docfile);
-	     exit(1);
-	  }
-     }
-
-   GetObjects(f);
-   fclose(f);
+   im_prev1 = ImageLoadDox("prev1.png");
+   im_prev2 = ImageLoadDox("prev2.png");
+   im_next1 = ImageLoadDox("next1.png");
+   im_next2 = ImageLoadDox("next2.png");
+   im_exit1 = ImageLoadDox("exit1.png");
+   im_exit2 = ImageLoadDox("exit2.png");
 
    t = 16;
    wx = (VRoot.w - w) / 2;
@@ -354,22 +372,13 @@ main(int argc, char **argv)
 	screens = XineramaQueryScreens(disp, &num);
 	for (i = 0; i < num; i++)
 	  {
-	     if (pointer_x >= screens[i].x_org)
+	     if (pointer_x >= screens[i].x_org &&
+		 pointer_x <= (screens[i].width + screens[i].x_org) &&
+		 pointer_y >= screens[i].y_org &&
+		 pointer_y <= (screens[i].height + screens[i].y_org))
 	       {
-		  if (pointer_x <= (screens[i].width + screens[i].x_org))
-		    {
-		       if (pointer_y >= screens[i].y_org)
-			 {
-			    if (pointer_y <= (screens[i].height +
-					      screens[i].y_org))
-			      {
-				 wx = ((screens[i].width - w) / 2)
-				    + screens[i].x_org;
-				 wy = ((screens[i].height - (h + t)) / 2)
-				    + screens[i].y_org;
-			      }
-			 }
-		    }
+		  wx = ((screens[i].width - w) / 2) + screens[i].x_org;
+		  wy = ((screens[i].height - (h + t)) / 2) + screens[i].y_org;
 	       }
 	  }
 
@@ -388,11 +397,13 @@ main(int argc, char **argv)
       XCreateSimpleWindow(disp, win_main, (w - 64 - 64 - t) + 64 + 64, 0, t, t,
 			  0, 0, 0);
    win_text = XCreateSimpleWindow(disp, win_main, 0, t, w, h, 0, 0, 0);
+
+   XSelectInput(disp, win_main, KeyPressMask | KeyReleaseMask);
    XSelectInput(disp, win_prev, ButtonPressMask | ButtonReleaseMask);
    XSelectInput(disp, win_next, ButtonPressMask | ButtonReleaseMask);
    XSelectInput(disp, win_exit, ButtonPressMask | ButtonReleaseMask);
    XSelectInput(disp, win_text, ButtonPressMask | ButtonReleaseMask |
-		KeyPressMask | KeyReleaseMask | PointerMotionMask);
+		PointerMotionMask);
 
    draw = XCreatePixmap(disp, win_text, w, h, VRoot.depth);
 
@@ -400,6 +411,8 @@ main(int argc, char **argv)
    ApplyImage1(win_prev, im_prev1);
    ApplyImage1(win_next, im_next1);
    ApplyImage1(win_exit, im_exit1);
+
+   LoadFile(s, docfile);
 
    l = RenderPage(draw, pagenum, w, h);
    UPDATE_NOW;
@@ -422,6 +435,8 @@ main(int argc, char **argv)
 	KeySym              key;
 	XEvent              ev;
 
+	prev_pagenum = pagenum;
+
 	XNextEvent(disp, &ev);
 	switch (ev.type)
 	  {
@@ -433,43 +448,73 @@ main(int argc, char **argv)
 		  exit(0);
 		  break;
 	       case XK_Down:
-	       case XK_Right:
-		  break;
+		  goto do_next;
 	       case XK_Up:
-	       case XK_Left:
-		  break;
-	       case XK_Return:
-		  break;
+		  goto do_prev;
 	       case XK_Home:
-		  FREE_LINKS;
 		  pagenum = 0;
-		  pagenum = FixPage(pagenum);
-		  l = RenderPage(draw, pagenum, w, h);
-		  UPDATE;
-		  break;
+		  page_hist_pos = 0;
+		  goto do_page;
 	       case XK_End:
-		  FREE_LINKS;
 		  pagenum = 99999;
-		  pagenum = FixPage(pagenum);
-		  l = RenderPage(draw, pagenum, w, h);
-		  UPDATE;
-		  break;
+		  goto do_page;
+	       case XK_Left:
 	       case XK_Prior:
-		  FREE_LINKS;
 		  pagenum--;
-		  pagenum = FixPage(pagenum);
-		  l = RenderPage(draw, pagenum, w, h);
-		  UPDATE;
-		  break;
+		  page_hist_len = page_hist_pos + 1;
+		  goto do_page;
+	       case XK_Right:
 	       case XK_Next:
-		  FREE_LINKS;
 		  pagenum++;
-		  pagenum = FixPage(pagenum);
-		  l = RenderPage(draw, pagenum, w, h);
-		  UPDATE;
-		  break;
+		  page_hist_len = page_hist_pos + 1;
+		  goto do_page;
+	       case XK_r:
+		  LoadFile(s, docfile);
+		  goto do_page1;
 	       }
 	     break;
+
+	   do_next:
+	     if (page_hist_pos >= page_hist_len - 1)
+		break;
+	     page_hist_pos++;
+	     pagenum = page_hist[page_hist_pos];
+	     goto do_page;
+
+	   do_prev:
+	     if (pagenum == page_hist[page_hist_pos])
+	       {
+		  page_hist_pos--;
+		  if (page_hist_pos < 0)
+		     page_hist_pos = 0;
+	       }
+	     pagenum = page_hist[page_hist_pos];
+	     goto do_page;
+
+	   do_page_save:
+	     pagenum = FixPage(pagenum);
+	     if (pagenum == prev_pagenum)
+		break;
+	     page_hist_pos++;
+	     if (page_hist_pos >= page_hist_len)
+	       {
+		  page_hist_len++;
+		  page_hist = EREALLOC(int, page_hist, page_hist_len);
+	       }
+	     page_hist_len = page_hist_pos + 1;
+	     page_hist[page_hist_pos] = pagenum;
+	     goto do_page;
+
+	   do_page:
+	     pagenum = FixPage(pagenum);
+	     if (pagenum == prev_pagenum)
+		break;
+	   do_page1:
+	     FREE_LINKS;
+	     l = RenderPage(draw, pagenum, w, h);
+	     UPDATE;
+	     break;
+
 	  case ButtonPress:
 	     if (ev.xbutton.window == win_prev)
 		ApplyImage2(win_prev, im_prev2);
@@ -553,19 +598,8 @@ main(int argc, char **argv)
 				 pg = GetPage(ll->name);
 				 if (pg >= 0)
 				   {
-				      FREE_LINKS;
 				      pagenum = pg;
-				      page_hist_pos++;
-				      if (page_hist_pos >= page_hist_len)
-					{
-					   page_hist_len++;
-					   page_hist =
-					      EREALLOC(int, page_hist,
-						       page_hist_len);
-					}
-				      page_hist[page_hist_pos] = pagenum;
-				      l = RenderPage(draw, pagenum, w, h);
-				      UPDATE;
+				      goto do_page_save;
 				   }
 			      }
 			    break;
@@ -574,42 +608,18 @@ main(int argc, char **argv)
 		    }
 	       }
 	     break;
+
 	  case ButtonRelease:
 	     if (ev.xbutton.window == win_prev)
 	       {
 		  ApplyImage3(win_prev, im_prev1);
-		  FREE_LINKS;
-		  page_hist_pos--;
-		  if (page_hist_pos < 0)
-		     page_hist_pos = 0;
-		  pagenum = page_hist[page_hist_pos];
-		  l = RenderPage(draw, pagenum, w, h);
-		  UPDATE;
+		  goto do_prev;
 	       }
 	     else if (ev.xbutton.window == win_next)
 	       {
-		  int                 prev_pagenum;
-
 		  ApplyImage3(win_next, im_next1);
-		  prev_pagenum = pagenum;
 		  pagenum++;
-		  pagenum = FixPage(pagenum);
-		  if (pagenum != prev_pagenum)
-		    {
-		       FREE_LINKS;
-		       page_hist_pos++;
-		       if (page_hist_pos >= page_hist_len)
-			 {
-			    page_hist_len++;
-			    page_hist = EREALLOC(int, page_hist, page_hist_len);
-
-			    page_hist[page_hist_pos] = pagenum;
-			 }
-		       else
-			  page_hist[page_hist_pos] = pagenum;
-		       l = RenderPage(draw, pagenum, w, h);
-		       UPDATE;
-		    }
+		  goto do_page_save;
 	       }
 	     else if (ev.xbutton.window == win_exit)
 	       {
@@ -617,10 +627,11 @@ main(int argc, char **argv)
 		  exit(0);
 	       }
 	     break;
+
 	  case EnterNotify:
-	     break;
 	  case LeaveNotify:
 	     break;
+
 	  case MotionNotify:
 	     while (XCheckTypedEvent(disp, ev.type, &ev));
 	     {
@@ -669,11 +680,13 @@ main(int argc, char **argv)
 		  }
 	     }
 	     break;
+
 	  case ClientMessage:
 	     if (ev.xclient.message_type == ATOM_WM_PROTOCOLS &&
 		 (Atom) ev.xclient.data.l[0] == ATOM_WM_DELETE_WINDOW)
 		goto done;
 	     break;
+
 	  default:
 	     break;
 	  }

@@ -75,7 +75,6 @@ TextStateLoadFont(TextState * ts)
 	     *ss = ' ';
 	     word(s2, 1, w);
 	     sprintf(s, "%s/%s.ttf", docdir, w);
-	     findLocalizedFile(s);
 	     word(s2, 2, w);
 	     ts->efont = Efont_load(s, atoi(w));
 	     if (ts->efont)

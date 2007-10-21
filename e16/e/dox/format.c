@@ -20,17 +20,65 @@
  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 #include "dox.h"
+
+#define DEFAULT_LINKCOLOR_R 30
+#define DEFAULT_LINKCOLOR_G 50
+#define DEFAULT_LINKCOLOR_B 160
+
+typedef enum _type
+{
+   IMG,
+   BR,
+   FONT,
+   P,
+   TEXT,
+   PAGE
+} Type;
+
+typedef struct _img
+{
+   char               *src;
+   char               *src2;
+   char               *src3;
+   int                 x, y;
+   char               *link;
+   int                 w, h;
+} Img_;
+
+typedef struct _font
+{
+   char               *face;
+   int                 r, g, b;
+} Font_;
+
+typedef struct _p
+{
+   float               align;
+} P_;
+
+typedef struct _object
+{
+   Type                type;
+   void               *object;
+} Object;
+
+typedef struct _page
+{
+   char               *name;
+   int                 count;
+   Object             *obj;
+   int                 columns;
+   int                 padding;
+   int                 linkr, linkg, linkb;
+   char               *background;
+} Page;
 
 static int          num_pages = 0;
 static Page        *page = NULL;
 static char        *fdat_ptr = NULL;
 static int          fdat_size = 0;
 static char        *fdat = NULL;
-
-static int          fdgetc(void);
-static void         fdjump(int count);
 
 static int
 fdgetc(void)
@@ -54,7 +102,7 @@ fdjump(int count)
       fdat_ptr = (fdat + fdat_size) - 1;
 }
 
-void
+static void
 AddPage(Object * obj)
 {
    num_pages++;
@@ -86,7 +134,7 @@ AddPage(Object * obj)
      }
 }
 
-void
+static void
 AddObject(Object * obj)
 {
    page[num_pages - 1].count++;
@@ -96,7 +144,7 @@ AddObject(Object * obj)
    page[num_pages - 1].obj[page[num_pages - 1].count - 1].object = obj->object;
 }
 
-void
+static void
 BuildObj(Object * obj, char *var, char *param)
 {
    static Page        *pg = NULL;
@@ -225,7 +273,7 @@ BuildObj(Object * obj, char *var, char *param)
      }
 }
 
-int
+static int
 GetNextTag(Object * obj)
 {
    char                s[65536];
@@ -304,7 +352,7 @@ GetNextTag(Object * obj)
    return 1;
 }
 
-char               *
+static char        *
 GetTextUntilTag(void)
 {
    char                s[65536];
@@ -537,11 +585,7 @@ RenderPage(Window win, int page_num, int w, int h)
    col_h = h - (pg->padding * 2);
    if (pg->background)
      {
-	char                tmp[4096];
-
-	sprintf(tmp, "%s/%s", docdir, pg->background);
-	findLocalizedFile(tmp);
-	im = imlib_load_image(tmp);
+	im = ImageLoadDoc(pg->background);
 	if (im)
 	  {
 	     imlib_context_set_image(im);
@@ -565,10 +609,7 @@ RenderPage(Window win, int page_num, int w, int h)
 	     img = (Img_ *) pg->obj[i].object;
 	     if (img->src)
 	       {
-		  char                tmp[4096];
-
-		  sprintf(tmp, "%s/%s", docdir, img->src);
-		  im = imlib_load_image(tmp);
+		  im = ImageLoadDoc(img->src);
 		  if (im)
 		    {
 		       imlib_context_set_image(im);
