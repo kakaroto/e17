@@ -62,7 +62,7 @@ EAPI Enesim_Component * enesim_path_new(void)
  */
 EAPI void enesim_path_move_to(Enesim_Component *p, int x, int y)
 {
-
+	enesim_container_vertex_add(p->c->path, x, y, ENESIM_CMD_MOVE_TO);
 }
 /**
  * To be documented
@@ -70,7 +70,7 @@ EAPI void enesim_path_move_to(Enesim_Component *p, int x, int y)
  */
 EAPI void enesim_path_line_to(Enesim_Component *p, int x, int y)
 {
-
+	enesim_container_vertex_add(p->c->path, x, y, ENESIM_CMD_LINE_TO);
 }
 /**
  * To be documented

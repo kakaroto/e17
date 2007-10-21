@@ -10,6 +10,11 @@
 #include <stdlib.h>
 #include "Edata.h"
 
+#ifdef MIN
+#undef MIN
+#endif
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 /* FIXME move the above to other place */
 typedef struct _Enesim_Rectangle
 {

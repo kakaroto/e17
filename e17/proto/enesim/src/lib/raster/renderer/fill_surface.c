@@ -18,70 +18,41 @@ typedef struct _Fill_Surface
 	Enesim_Rectangle darea;
 } Fill_Surface;
 
+#define DRECT f->darea
+#define SRECT f->sarea
 
 static inline void _draw_alias_sl(Fill_Surface *f, Scanline_Alias_Sl *sl, Enesim_Surface *dst)
 {
 	int offset;
+	int w = DRECT.w;
+	int h;
 
-#define DRECT f->darea
-#define SRECT f->sarea
-	/*
-	 * +---+---+  +---+---+
-	 * | S | S |  | S |   |
-	 * +---+---+  +---+   |
-	 * |       |  |       |
-	 * +-------+  +-------+
-	 */
-	if (!(f->mode & ENESIM_SURFACE_REPEAT_Y))
-	{
-		/* scanline outside vertical area */
-		if (sl->y > DRECT.y + SRECT.h - 1)
-		{
-			// FIXME fill base color ?
-			return;		
-		}
-		/* scanline inside vertical area */
-		offset = ((sl->y - DRECT.y) + SRECT.y) * f->s->w + SRECT.x;
-	}
-	/*
-	 * +---+---+  +---+---+
-	 * | S |   |  | S | S |
-	 * +---+   +  +---+---+
-	 * | S |   |  | S | S |
-	 * +-------+  +-------+
-	 */
-	else
-	{
-		/* scanline inside vertical area */
-		offset = (((sl->y - DRECT.y) % SRECT.h)  + SRECT.y) * f->s->w + SRECT.x;
-	}
-	/*
-	 * +---+---+  +---+---+
-	 * | S |   |  | S |   |
-	 * +---+   +  +---+   |
-	 * | S |   |  |       |
-	 * +-------+  +-------+
-	 */
-	/* simple cases are done, now the complex ones */
 	if (!(f->mode & ENESIM_SURFACE_REPEAT_X))
 	{
-		/* scanline inside horizontal area */
-		/* scanline outside horizontal area */
+		w = MIN(SRECT.w, DRECT.w);
 	}
-	/*
-	 * +---+---+  +---+---+
-	 * | S | S |  | S | S |
-	 * +---+---+  +---+---|
-	 * |       |  | S | S |
-	 * +-------+  +-------+
-	 */
+	if (!(f->mode & ENESIM_SURFACE_REPEAT_Y))
+	{
+		h = MIN(SRECT.h, DRECT.h);
+		offset = ((sl->y - DRECT.y) + SRECT.y) * f->s->w + SRECT.x;
+	}
 	else
 	{
-		/* check if the scanline is inside the dst rect
-		 * +---+          +---+      +---+     +---+
-		 * | Ds|---   s---|-D |    s-|-D-|-    |sD |
-		 * +---+          +----      +---+     +---+
-		 */
+		h = DRECT.h;
+		offset = (((sl->y - DRECT.y) % SRECT.h) + SRECT.y) * f->s->w + SRECT.x;
+	}
+	if (!enesim_rects_intersect(sl->x, sl->y, sl->w, 1, DRECT.x, DRECT.y, w,
+			h))
+	{
+		// FIXME fill base color ?
+	}
+	if (f->mode & ENESIM_SURFACE_REPEAT_X)
+	{
+		
+	}
+	else
+	{
+		
 	}
 }
 
