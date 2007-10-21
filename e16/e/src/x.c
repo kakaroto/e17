@@ -1033,11 +1033,13 @@ EGetWindowBackgroundPixmap(Win win)
 void
 EFreeWindowBackgroundPixmap(Win win)
 {
-   if (!win || !win->bgpmap || !win->bg_owned)
+   if (!win || !win->bgpmap)
       return;
 
-   EFreePixmap(win->bgpmap);
+   if (win->bg_owned)
+      EFreePixmap(win->bgpmap);
    win->bgpmap = 0;
+   win->bg_owned = 0;
 }
 
 void

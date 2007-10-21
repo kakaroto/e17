@@ -1217,7 +1217,10 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 
 	     /* Set window pixmap */
 	     if (pmap == pmm.pmap)
-		ESetWindowBackgroundPixmap(win, pmap);
+	       {
+		  ESetWindowBackgroundPixmap(win, pmap);
+		  EFreeWindowBackgroundPixmap(win);
+	       }
 
 	     if (pmm.w == w && pmm.h == h)
 		EShapeCombineMask(win, ShapeBounding, 0, 0, pmm.mask, ShapeSet);
