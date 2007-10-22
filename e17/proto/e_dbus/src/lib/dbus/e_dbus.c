@@ -392,6 +392,7 @@ e_dbus_filter(DBusConnection *conn, DBusMessage *message, void *user_data)
   return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
+int _e_dbus_idler_active = 0;
 
 static int
 e_dbus_idler(void *data)
@@ -405,10 +406,13 @@ e_dbus_idler(void *data)
     cd->idler = NULL;
     return 0;
   }
+  _e_dbus_idler_active++;
   dbus_connection_ref(cd->conn);
   DEBUG(5, "dispatch!\n");
   dbus_connection_dispatch(cd->conn);
   dbus_connection_unref(cd->conn);
+  _e_dbus_signal_handlers_clean(cd->conn);
+  _e_dbus_idler_active--;
   return 1;
 }
 

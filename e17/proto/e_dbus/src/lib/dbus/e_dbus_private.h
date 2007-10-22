@@ -29,4 +29,6 @@ struct E_DBus_Callback
 int e_dbus_object_init(void);
 void e_dbus_object_shutdown(void);
 
+extern int _e_dbus_idler_active;
+  
 #endif

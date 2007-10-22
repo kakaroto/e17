@@ -78,6 +78,7 @@ DBusPendingCall *e_dbus_method_call_send(E_DBus_Connection *conn, DBusMessage *m
 int  e_dbus_signal_init(void);
 void e_dbus_signal_shutdown(void);
 E_DBus_Signal_Handler *e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const char *path, const char *interface, const char *member, E_DBus_Signal_Cb cb_signal, void *data);
+void e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh);
 
 /* standard dbus method calls */
 
