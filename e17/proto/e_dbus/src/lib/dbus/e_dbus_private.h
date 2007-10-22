@@ -29,6 +29,7 @@ struct E_DBus_Callback
 int e_dbus_object_init(void);
 void e_dbus_object_shutdown(void);
 
-extern int _e_dbus_idler_active;
+extern int e_dbus_idler_active;
+void e_dbus_signal_handlers_clean(E_DBus_Connection *conn);
   
 #endif

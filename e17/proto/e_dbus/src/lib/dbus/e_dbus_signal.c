@@ -171,7 +171,7 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
   return sh;
 }
 
-static int _e_dbus_handler_deletions = 0;
+static int e_dbus_handler_deletions = 0;
 
 /**
  * Delete a signal handler
@@ -183,15 +183,13 @@ void
 e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
 {
   char match[DBUS_MAXIMUM_MATCH_RULE_LENGTH];
-  int started = 0;
   int len = 0;
-  DBusError err;
 
   sh->delete_me = 1;
-  if (_e_dbus_idler_active)
+  if (e_dbus_idler_active)
   {
-     _e_dbus_handler_deletions = 1;
-     return;
+    e_dbus_handler_deletions = 1;
+    return;
   }
   if (!ecore_list_goto(signal_handlers, sh)) return;
   ecore_list_remove(signal_handlers);
@@ -208,7 +206,6 @@ e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
     strcat(match, "," #PIECE "='");\
     strcat(match, PIECE);\
     strcat(match, "'");\
-    started = 1;\
   }
 
   ADD_MATCH_PIECE(sh->sender)
@@ -230,30 +227,30 @@ cb_signal_event(void *data, int type, void *event)
   ecore_list_first_goto(signal_handlers);
   while ((sh = ecore_list_next(signal_handlers)))
   {
-    if (!sh->cb_signal) continue;
+    if ((!sh->cb_signal) || (sh->delete_me)) continue;
 
     if (sh->sender && !dbus_message_has_sender(msg, sh->sender)) continue;
     if (sh->path && !dbus_message_has_path(msg, sh->path)) continue;
     if (sh->interface && !dbus_message_has_interface(msg, sh->interface)) continue;
     if (sh->member && !dbus_message_has_member(msg, sh->member)) continue;
 
-    if (!sh->delete_me) sh->cb_signal(sh->data, msg);
+    sh->cb_signal(sh->data, msg);
   }
 
   return 1;
 }
 
 void
-_e_dbus_signal_handlers_clean(E_DBus_Connection *conn)
+e_dbus_signal_handlers_clean(E_DBus_Connection *conn)
 {
   E_DBus_Signal_Handler *sh;
 
-  if (!_e_dbus_handler_deletions) return;
+  if (!e_dbus_handler_deletions) return;
   ecore_list_first_goto(signal_handlers);
   while ((sh = ecore_list_next(signal_handlers)))
   {
-     if (sh->delete_me)
-       e_dbus_signal_handler_del(conn, sh);
+    if (sh->delete_me)
+      e_dbus_signal_handler_del(conn, sh);
   }
-  _e_dbus_handler_deletions = 0;
+  e_dbus_handler_deletions = 0;
 }

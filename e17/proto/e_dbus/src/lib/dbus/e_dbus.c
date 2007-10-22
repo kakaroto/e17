@@ -50,7 +50,7 @@ struct E_DBus_Timeout_Data
 static int e_dbus_idler(void *data);
 
 static int
-_e_dbus_fd_handler(void *data, Ecore_Fd_Handler *fd_handler)
+e_dbus_fd_handler(void *data, Ecore_Fd_Handler *fd_handler)
 {
   E_DBus_Handler_Data *hd;
   DBusConnection *conn;
@@ -98,7 +98,7 @@ e_dbus_fd_handler_add(E_DBus_Handler_Data *hd)
 
   hd->fd_handler = ecore_main_fd_handler_add(hd->fd,
                                              eflags,
-                                             _e_dbus_fd_handler,
+                                             e_dbus_fd_handler,
                                              hd,
                                              NULL,
                                              NULL);
@@ -108,11 +108,11 @@ e_dbus_fd_handler_add(E_DBus_Handler_Data *hd)
 
 
 static void
-_e_dbus_handler_data_free(void *data)
+e_dbus_handler_data_free(void *data)
 {
   E_DBus_Handler_Data *hd = data;
   
-  DEBUG(5, "_e_dbus_handler_data_free\n");
+  DEBUG(5, "e_dbus_handler_data_free\n");
   if (hd->fd_handler)
   {
     if (ecore_list_goto(hd->cd->fd_handlers, hd->fd_handler))
@@ -128,7 +128,7 @@ e_dbus_connection_data_watch_add(E_DBus_Connection *cd, DBusWatch *watch)
   E_DBus_Handler_Data *hd;
 
   hd = calloc(1, sizeof(E_DBus_Handler_Data));
-  dbus_watch_set_data(watch, hd, _e_dbus_handler_data_free);
+  dbus_watch_set_data(watch, hd, e_dbus_handler_data_free);
   hd->cd = cd;
   hd->watch = watch;
 
@@ -139,7 +139,7 @@ e_dbus_connection_data_watch_add(E_DBus_Connection *cd, DBusWatch *watch)
 }
 
 static E_DBus_Connection *
-_e_dbus_connection_new(DBusConnection *conn)
+e_dbus_connection_new(DBusConnection *conn)
 {
   E_DBus_Connection *cd;
 
@@ -159,12 +159,12 @@ _e_dbus_connection_new(DBusConnection *conn)
 }
 
 static void
-_e_dbus_connection_free(void *data)
+e_dbus_connection_free(void *data)
 {
   E_DBus_Connection *cd = data;
   Ecore_Fd_Handler *fd_handler;
   Ecore_Timer *timer;
-  DEBUG(5, "_e_dbus_connection free!\n");
+  DEBUG(5, "e_dbus_connection free!\n");
 
   ecore_list_first_goto(cd->fd_handlers);
   while ((fd_handler = ecore_list_next(cd->fd_handlers)))
@@ -237,7 +237,7 @@ static void
 e_dbus_timeout_data_free(void *timeout_data)
 {
   E_DBus_Timeout_Data *td = timeout_data;
-  DEBUG(5, "_e_dbus_timeout_data_free\n");
+  DEBUG(5, "e_dbus_timeout_data_free\n");
   if (td->handler) ecore_timer_del(td->handler);
   free(td);
 }
@@ -392,7 +392,7 @@ e_dbus_filter(DBusConnection *conn, DBusMessage *message, void *user_data)
   return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
-int _e_dbus_idler_active = 0;
+int e_dbus_idler_active = 0;
 
 static int
 e_dbus_idler(void *data)
@@ -406,13 +406,13 @@ e_dbus_idler(void *data)
     cd->idler = NULL;
     return 0;
   }
-  _e_dbus_idler_active++;
+  e_dbus_idler_active++;
   dbus_connection_ref(cd->conn);
   DEBUG(5, "dispatch!\n");
   dbus_connection_dispatch(cd->conn);
   dbus_connection_unref(cd->conn);
-  _e_dbus_signal_handlers_clean(cd->conn);
-  _e_dbus_idler_active--;
+  e_dbus_signal_handlers_clean(cd);
+  e_dbus_idler_active--;
   return 1;
 }
 
@@ -476,14 +476,14 @@ e_dbus_connection_setup(DBusConnection *conn)
 {
   E_DBus_Connection *cd;
 
-  cd = _e_dbus_connection_new(conn);
+  cd = e_dbus_connection_new(conn);
   if (!cd) return NULL;
 
   /* connection_setup */
   dbus_connection_set_exit_on_disconnect(cd->conn, FALSE);
   dbus_connection_allocate_data_slot(&connection_slot);
 
-  dbus_connection_set_data(cd->conn, connection_slot, (void *)cd, _e_dbus_connection_free);
+  dbus_connection_set_data(cd->conn, connection_slot, (void *)cd, e_dbus_connection_free);
   dbus_connection_set_watch_functions(cd->conn,
                                       cb_watch_add,
                                       cb_watch_del,
@@ -515,7 +515,7 @@ e_dbus_connection_setup(DBusConnection *conn)
 void
 e_dbus_connection_close(E_DBus_Connection *conn)
 {
-  DEBUG(5, "_e_dbus_connection_close\n");
+  DEBUG(5, "e_dbus_connection_close\n");
 
   dbus_connection_free_data_slot(&connection_slot);
   dbus_connection_remove_filter(conn->conn, e_dbus_filter, NULL);
