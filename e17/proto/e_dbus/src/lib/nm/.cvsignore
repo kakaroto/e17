@@ -2,8 +2,5 @@
 .libs
 Makefile
 Makefile.in
-e_nm.lo
-e_nm_device.lo
-e_nm_manager.lo
-e_nm_util.lo
-libenm.la
+*.lo
+*.la
