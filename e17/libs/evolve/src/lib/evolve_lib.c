@@ -38,7 +38,7 @@
    EET_DATA_DESCRIPTOR_ADD_SUB(_prop_def_val_edd, Etk_Property_Value, str, it, type)
 
 #define PROP_DEF_VAL_VALUE_NEWI(str, it, type) \
-   EET_DATA_DESCRIPTOR_ADD_BASIC(_prop_def_val_value_edd, Etk_Property_Value_Value, str, it, type)
+   EET_DATA_DESCRIPTOR_ADD_BASIC(_prop_def_val_value_edd, Etk_Property_Value, str, it, type)
 
 #define EVOLVE_WIDGET_PACKING_PROP_NEWI(str, it, type) \
    EET_DATA_DESCRIPTOR_ADD_BASIC(_evolve_widget_packing_prop_edd, Evolve_Widget_Property, str, it, type)
@@ -88,15 +88,15 @@ int evolve_init()
    evas_init();
    ecore_file_init();
    
-   _prop_def_val_value_edd = NEWD("Etk_Property_Value_Value", Etk_Property_Value_Value);
-   PROP_DEF_VAL_VALUE_NEWI("iv", int_value, EET_T_INT);
-   PROP_DEF_VAL_VALUE_NEWI("ib", bool_value, EET_T_INT);
-   PROP_DEF_VAL_VALUE_NEWI("cv", char_value, EET_T_CHAR);
-   PROP_DEF_VAL_VALUE_NEWI("fv", float_value, EET_T_FLOAT);
-   PROP_DEF_VAL_VALUE_NEWI("dv", double_value, EET_T_DOUBLE);
-   PROP_DEF_VAL_VALUE_NEWI("sv", short_value, EET_T_SHORT);
-   PROP_DEF_VAL_VALUE_NEWI("lv", long_value, EET_T_LONG_LONG);
-   PROP_DEF_VAL_VALUE_NEWI("tv", string_value, EET_T_STRING);
+   _prop_def_val_value_edd = NEWD("Etk_Property_Value", Etk_Property_Value);
+   PROP_DEF_VAL_VALUE_NEWI("iv", value.int_value, EET_T_INT);
+   PROP_DEF_VAL_VALUE_NEWI("ib", value.bool_value, EET_T_INT);
+   PROP_DEF_VAL_VALUE_NEWI("cv", value.char_value, EET_T_CHAR);
+   PROP_DEF_VAL_VALUE_NEWI("fv", value.float_value, EET_T_FLOAT);
+   PROP_DEF_VAL_VALUE_NEWI("dv", value.double_value, EET_T_DOUBLE);
+   PROP_DEF_VAL_VALUE_NEWI("sv", value.short_value, EET_T_SHORT);
+   PROP_DEF_VAL_VALUE_NEWI("lv", value.long_value, EET_T_LONG_LONG);
+   PROP_DEF_VAL_VALUE_NEWI("tv", value.string_value, EET_T_STRING);
    
    _prop_def_val_edd = NEWD("Etk_Property_Value", Etk_Property_Value);
    PROP_DEF_VAL_NEWS("va", value, _prop_def_val_value_edd);
