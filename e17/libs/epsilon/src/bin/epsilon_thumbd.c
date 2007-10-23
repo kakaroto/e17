@@ -121,6 +121,7 @@ void epsilond_init_thumbd_server(Ecore_List* workers)
 	buf = epsilond_socket_path(EPSILOND_SOCK);
 
 	if (debug) printf("socket name %s\n", buf);
+	free(buf);
 
 	/*
 	 * Setup the IPC server to handle completed notifications
@@ -242,6 +243,7 @@ epsilond_cb_client_del(void *data, int type, void *event)
 			 *  Free thumbnail data associated with this client.
 			 */
 			epsilond_client_clean(cl);
+			free(cl);
 
 			break;
 		}
@@ -279,6 +281,7 @@ epsilond_cb_worker_del(void *data, int type, void *event)
 			 *  Free thumbnail data associated with this client.
 			 */
 			epsilond_client_clean(cl);
+			free(cl);
 
 			break;
 		}

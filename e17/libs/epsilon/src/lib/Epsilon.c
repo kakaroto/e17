@@ -23,14 +23,23 @@
 #endif
 #define THUMB_SIZE_NORMAL 128
 #define THUMB_SIZE_LARGE 256
+#define THUMB_SIZE_FAIL -1
 #include "exiftags/exif.h"
 
 #include <Ecore.h>
 
 #include <Evas.h>
 #include <Ecore_Evas.h>
+#include <Ecore_File.h>
 #include <Edje.h>
 #include <dlfcn.h>
+
+static char *PATH_DIR_LARGE = NULL;
+static char *PATH_DIR_NORMAL = NULL;
+static char *PATH_DIR_FAIL = NULL;
+static unsigned LEN_DIR_LARGE = 0;
+static unsigned LEN_DIR_NORMAL = 0;
+static unsigned LEN_DIR_FAIL = 0;
 
 
 static Ecore_Hash* plugins_mime;
@@ -45,10 +54,11 @@ extern void epsilon_exif_info_free (Epsilon_Exif_Info * eei);
  */
 extern Epsilon_Exif_Info *epsilon_exif_info_get (Epsilon * e);
 
+static int _epsilon_exists_ext(Epsilon *e, const char *ext, char *path, int path_size, time_t *mtime);
 static char *epsilon_hash (const char *file);
-static int _epsilon_png_mtime_get (const char *file);
+static time_t _epsilon_png_mtime_get (const char *file);
 #ifdef HAVE_EPEG_H
-static int _epsilon_jpg_mtime_get (const char *file);
+static time_t _epsilon_jpg_mtime_get (const char *file);
 #endif
 #ifdef HAVE_PNG_H
 static FILE *_epsilon_open_png_file_reading (const char *filename);
@@ -91,6 +101,8 @@ epsilon_free (Epsilon * e)
 	free (e->hash);
       if (e->src)
 	free (e->src);
+      if (e->thumb)
+	free (e->thumb);
       free (e);
     }
 }
@@ -112,16 +124,12 @@ epsilon_plugin_load(char* path)
 	return plugin;
 }
 
-
 EAPI void
 epsilon_init (void)
 {
-  int i = 0;
-  struct stat status;
   char buf[PATH_MAX];
-  const char *dirs[] = { ".thumbnails", ".thumbnails/normal",
-    ".thumbnails/large", ".thumbnails/fail"
-  };
+  int base_len;
+  char *home;
 
    struct dirent *de;
    char* type;
@@ -129,14 +137,27 @@ epsilon_init (void)
    Epsilon_Plugin *plugin;
    char plugin_path[1024];
 
-  for (i = 0; i < 4; i++)
-    {
-      snprintf (buf, sizeof(buf), "%s/%s", getenv ("HOME"), dirs[i]);
-      if (!stat (buf, &status))
-	continue;
-      else
-	mkdir (buf, S_IRUSR | S_IWUSR | S_IXUSR);
-    }
+  home = getenv("HOME");
+  base_len = snprintf(buf, sizeof(buf), "%s/.thumbnails", home);
+  if (!PATH_DIR_LARGE) {
+     strncpy(buf + base_len, "/large", PATH_MAX - base_len);
+     PATH_DIR_LARGE = strdup(buf);
+     LEN_DIR_LARGE = strlen(buf);
+  }
+  if (!PATH_DIR_NORMAL) {
+     strncpy(buf + base_len, "/normal", PATH_MAX - base_len);
+     PATH_DIR_NORMAL = strdup(buf);
+     LEN_DIR_NORMAL = strlen(buf);
+  }
+  if (!PATH_DIR_FAIL) {
+     strncpy(buf + base_len, "/fail/epsilon", PATH_MAX - base_len);
+     PATH_DIR_FAIL = strdup(buf);
+     LEN_DIR_FAIL = strlen(buf);
+  }
+
+  ecore_file_mkpath(PATH_DIR_LARGE);
+  ecore_file_mkpath(PATH_DIR_NORMAL);
+  ecore_file_mkpath(PATH_DIR_FAIL);
 
   plugins_mime = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
@@ -199,41 +220,28 @@ epsilon_file_get (Epsilon * e)
 EAPI const char *
 epsilon_thumb_file_get (Epsilon * e)
 {
-  int i = 0;
-  struct stat status;
+  time_t mtime;
   char buf[PATH_MAX];
-  const char *dirs[] = { ".thumbnails/normal", ".thumbnails/large",
-    ".thumbnails/fail"
-  };
 
   if (!e)
     return (NULL);
   if (e->thumb)
     return (e->thumb);
-  for (i = 0; i < 3; i++)
-    {
 #ifdef HAVE_EPEG_H
-      snprintf (buf, sizeof(buf), "%s/%s/%s.jpg", getenv ("HOME"), dirs[i],
-		e->hash);
-      if (stat (buf, &status) == 0)
-	{
-	  e->thumb = strdup (buf);
-	  break;
-	}
+  if (_epsilon_exists_ext(e, "jpg", buf, sizeof(buf), &mtime))
+    {
+       e->thumb = strdup(buf);
+       return (e->thumb);
+    }
 #endif
 #ifdef HAVE_PNG_H
-      snprintf (buf, sizeof(buf), "%s/%s/%s.png", getenv ("HOME"), dirs[i],
-		e->hash);
-      if (stat (buf, &status) == 0)
-	{
-	  if (e->thumb)
-	    free (e->thumb);
-	  e->thumb = strdup (buf);
-	  break;
-	}
-#endif
+  if (_epsilon_exists_ext(e, "png", buf, sizeof(buf), &mtime))
+    {
+       e->thumb = strdup (buf);
+       return (e->thumb);
     }
-  return (e->thumb);
+#endif
+  return (NULL);
 }
 
 static char *
@@ -416,99 +424,116 @@ epsilon_mime_for_extension_get(const char* extension)
 	else return NULL;
 }
 
+static void
+_epsilon_file_name(unsigned thumb_size, const char *hash, const char *ext, char *path, int path_size)
+{
+   char *dir;
+   int dir_len;
+
+   if (thumb_size == THUMB_SIZE_LARGE)
+     {
+	dir = PATH_DIR_LARGE;
+	dir_len = LEN_DIR_LARGE;
+     }
+   else if (thumb_size == THUMB_SIZE_NORMAL)
+     {
+	dir = PATH_DIR_NORMAL;
+	dir_len = LEN_DIR_NORMAL;
+     }
+   else
+     {
+	dir = PATH_DIR_FAIL;
+	dir_len = LEN_DIR_FAIL;
+     }
+
+   strncpy(path, dir, path_size);
+   path_size -= dir_len;
+   snprintf(path + dir_len, path_size, "/%s.%s", hash, ext);
+}
+
+static int
+_epsilon_exists_ext_int(unsigned thumb_size, const char *hash, const char *ext, char *path, int path_size, time_t *mtime)
+{
+   struct stat filestatus;
+
+   _epsilon_file_name(thumb_size, hash, ext, path, path_size);
+   if (stat(path, &filestatus) == 0)
+     {
+	*mtime = filestatus.st_mtime;
+	return 1;
+     }
+   else return 0;
+}
+
+static int
+_epsilon_exists_ext(Epsilon *e, const char *ext, char *path, int path_size, time_t *mtime)
+{
+   if (_epsilon_exists_ext_int(e->tw, e->hash, ext, path, path_size, mtime))
+     return 1;
+
+   return _epsilon_exists_ext_int(THUMB_SIZE_FAIL, e->hash, ext, path, path_size, mtime);
+}
+
 EAPI int
 epsilon_exists (Epsilon * e)
 {
-  int ok = 0, i = 0;
-  int filemtime = 0, epsilonmtime = 0;
-  struct stat filestatus;
-  const char *dirs[] = { "large", "normal", "fail/epsilon" };
-  char home[PATH_MAX], buf[PATH_MAX];
-
-  char *hash_seed = NULL;
+  int ok = 0;
 
   if (!e || !e->src)
     return (EPSILON_FAIL);
 
   if (!e->hash)
     {
-      hash_seed = malloc (PATH_MAX * sizeof (char));
-      if (!hash_seed)
-	return (EPSILON_FAIL);
+       char hash_seed[PATH_MAX] = "";
+       int idx = 0, len = sizeof(hash_seed);
 
-      memset (hash_seed, 0, PATH_MAX * sizeof (char));
+       if (e->key)
+	 {
+	    int size;
+	    size = snprintf (hash_seed, len, "%s:%s", e->src, e->key);
+	    idx += size;
+	    len -= size;
+	 }
 
-      if (e->key)
-	{
-	  snprintf (buf, sizeof(buf), "%s:%s", e->src, e->key);
-	  strcat (hash_seed, buf);
-	}
+       if ((e->w > 0) && (e->h > 0))
+	 snprintf (hash_seed + idx, len, ":%dx%d", e->w, e->h);
 
-      if ((e->w > 0) && (e->h > 0))
-	{
-	  snprintf (buf, sizeof(buf), ":%dx%d", e->w, e->h);
-	  strcat (hash_seed, buf);
-	}
-
-      if (hash_seed[0] != 0)
-	e->hash = epsilon_hash (hash_seed);
-      else
-	e->hash = epsilon_hash (e->src);
-
-      free(hash_seed);
+       if (hash_seed[0] != 0)
+	 e->hash = epsilon_hash (hash_seed);
+       else
+	 e->hash = epsilon_hash (e->src);
     }
 
   if (!e->hash)
     return (EPSILON_FAIL);
 
-  snprintf (home, sizeof(home), "%s", getenv ("HOME"));
-  for (i = 0; i < 3; i++)
-    {
 #ifdef HAVE_EPEG_H
-      snprintf (buf, sizeof(buf), "%s/.thumbnails/%s/%s.jpg", home,
-		dirs[i], e->hash);
-      if (!stat (buf, &filestatus) && 
-	 ((!strcmp(dirs[i], "large") && e->tw == THUMB_SIZE_LARGE) ||
-	  (!strcmp(dirs[i], "normal") && e->tw == THUMB_SIZE_NORMAL) ||
-	  (!strcmp(dirs[i], "fail/epsilon"))))
-	{
-	  ok = 1;
-	  break;
-	}
-#endif
-#ifdef HAVE_PNG_H
-      snprintf (buf, sizeof(buf), "%s/.thumbnails/%s/%s.png", home,
-		dirs[i], e->hash);
-      if (!stat (buf, &filestatus) && 
-	 ((!strcmp(dirs[i], "large") && e->tw == THUMB_SIZE_LARGE) ||
-	  (!strcmp(dirs[i], "normal") && e->tw == THUMB_SIZE_NORMAL) ||
-	  (!strcmp(dirs[i], "fail/epsilon"))))
-	{
-	  ok = 2;
-	  break;
-	}
-#endif
-    }
   if (!ok)
-    return (EPSILON_FAIL);
-  if (!stat (e->src, &filestatus))
     {
-      filemtime = filestatus.st_mtime;
-#ifdef HAVE_EPEG_H
-      if (ok == 1)
-	epsilonmtime = _epsilon_jpg_mtime_get (buf);
-      else
+       char path[PATH_MAX];
+       time_t filemtime;
+       if (_epsilon_exists_ext(e, "jpg", path, sizeof(path), &filemtime))
+	 {
+	    time_t epsilonmtime = _epsilon_jpg_mtime_get(path);
+	    if (filemtime >= epsilonmtime)
+	      return (EPSILON_OK);
+	 }
+    }
 #endif
-        {
 #ifdef HAVE_PNG_H
-	epsilonmtime = _epsilon_png_mtime_get (buf);
+  if (!ok)
+    {
+       char path[PATH_MAX];
+       time_t filemtime;
+       if (_epsilon_exists_ext(e, "png", path, sizeof(path), &filemtime))
+	 {
+	    time_t epsilonmtime = _epsilon_png_mtime_get(path);
+	    if (filemtime >= epsilonmtime)
+	      return (EPSILON_OK);
+	 }
 #endif
-        }
-      if (filemtime == epsilonmtime)
-	return (EPSILON_OK);
     }
   return (EPSILON_FAIL);
-
 }
 
 EAPI int
@@ -537,14 +562,7 @@ epsilon_generate (Epsilon * e)
   if ((len > 4) &&
       !strcasecmp (&e->src[len - 3], "jpg") && (im = epeg_file_open (e->src)))
     {
-      char *dir;
-      if (e->tw == THUMB_SIZE_LARGE)
-	 dir = strdup("large");
-      else
-	 dir = strdup("normal");
-      snprintf (outfile, sizeof(outfile), "%s/.thumbnails/%s/%s.jpg",
-		getenv ("HOME"), dir, e->hash);
-      free(dir);
+      _epsilon_file_name(e->tw, e->hash, "jpg", outfile, sizeof(outfile));
       epeg_thumbnail_comments_get (im, &info);
       epeg_size_get (im, &iw, &ih);
       if (iw > ih)
@@ -678,19 +696,12 @@ epsilon_generate (Epsilon * e)
 	imlib_context_set_cliprect (0, 0, tw, th);
 	if ((src = imlib_create_cropped_scaled_image (0, 0, iw, ih, tw, th)))
 	  {
-	    char *dir;
-	    if (e->tw == THUMB_SIZE_LARGE)
-	       dir = strdup("large");
-	    else
-	       dir = strdup("normal");
 	    imlib_free_image_and_decache ();
 	    imlib_context_set_image (src);
 	    imlib_image_set_has_alpha (1);
 	    imlib_image_set_format ("argb");
 	    snprintf (uri, sizeof(uri), "file://%s", e->src);
-	    snprintf (outfile, sizeof(outfile), "%s/.thumbnails/%s/%s.png",
-		      getenv ("HOME"), dir, e->hash);
-	    free(dir);
+	    _epsilon_file_name(e->tw, e->hash, "png", outfile, sizeof(outfile));
 	    if (!_epsilon_png_write (outfile,
 				     imlib_image_get_data (), tw, th, iw, ih,
 				     format, mtime, uri))
@@ -729,10 +740,10 @@ epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size)
 
 
 #ifdef HAVE_EPEG_H
-static int
+static time_t
 _epsilon_jpg_mtime_get (const char *file)
 {
-  int result = 0;
+  time_t result = 0;
   Epeg_Image *im;
   Epeg_Thumbnail_Info info;
 
@@ -779,10 +790,10 @@ _epsilon_open_png_file_reading (const char *filename)
   return fp;
 }
 
-static int
+static time_t
 _epsilon_png_mtime_get (const char *file)
 {
-  int result = 0;
+  time_t result = 0;
   FILE *fp = NULL;
 
   if ((fp = _epsilon_open_png_file_reading (file)))

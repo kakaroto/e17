@@ -28,7 +28,6 @@ struct _Epsilon_Message
 	unsigned int status;
 	unsigned int thumbsize;
 	unsigned int bufsize;
-	struct Epsilon_Client* cl;
 };
 
 typedef struct Epsilon_Ipc_End Epsilon_Ipc_End;

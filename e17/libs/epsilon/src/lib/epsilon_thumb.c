@@ -325,11 +325,11 @@ epsilon_add(char *path, char *dst, int size, void *data)
 		if (msg) {
 			msg->thumbsize = size;
 			if (debug) printf("!! requesting thumbnail for %s (request %d)!!, %d\n", path, msg->mid, sizeof(Epsilon_Message)+msg->bufsize);
-			
 			if (ecore_ipc_server_send(epsilon_server, 1,1,1,1,1,msg,sizeof(Epsilon_Message)+msg->bufsize)) {
 				thumb->id = msg->mid;
 				ecore_dlist_append(epsilon_request_queue, thumb);
 			}
+			free(msg);
 		}
 		else {
 			free(thumb);

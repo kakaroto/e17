@@ -69,6 +69,7 @@ int main(int argc, char** argv)
 		}
 		free(realpath);
 	}
+	ecore_list_destroy(files);
 
 	ecore_main_loop_begin();
 
