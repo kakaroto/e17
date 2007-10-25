@@ -260,7 +260,7 @@ def color_rgb_to_hsv(int r, int g, int b):
 
 
 class EvasLoadError(Exception):
-    def __init__(self, int code, char *filename, char *key):
+    def __init__(self, int code, filename, key):
         if code == EVAS_LOAD_ERROR_NONE:
             msg = "No error on load"
         elif code == EVAS_LOAD_ERROR_GENERIC:
