@@ -283,6 +283,7 @@ ewl_filelist_icon_icon_add(Ewl_Filelist *fl, const char *dir, char *file,
 	icon = ewl_icon_simple_new();
 	ewl_box_orientation_set(EWL_BOX(icon),
 			EWL_ORIENTATION_HORIZONTAL);
+	ewl_object_alignment_set(EWL_OBJECT(icon), EWL_FLAG_ALIGN_LEFT);
 	ewl_icon_label_set(EWL_ICON(icon), file);
 
 	snprintf(path, PATH_MAX, "%s/%s", dir, file);
