@@ -215,6 +215,8 @@ _emphasis_init_player_small(Emphasis_Player_Gui *player)
   etk_widget_hide(wid);
   etk_signal_connect("delete-event", ETK_OBJECT(wid),
                      ETK_CALLBACK(cb_pack_quit), player);
+  //etk_signal_connect_after("delete-event", ETK_OBJECT(wid),
+  //                         ETK_CALLBACK(etk_main_quit), NULL);
   player->small.ctr.window = wid;
   
   /* controls */
@@ -226,6 +228,8 @@ _emphasis_init_player_small(Emphasis_Player_Gui *player)
   etk_widget_hide(wid);
   etk_signal_connect("delete-event", ETK_OBJECT(wid),
                      ETK_CALLBACK(cb_pack_quit), player);
+  //etk_signal_connect_after("delete-event", ETK_OBJECT(wid),
+  //                         ETK_CALLBACK(etk_main_quit), NULL);
   player->small.cov.window = wid;
 
   player->small.packed = ETK_TRUE;

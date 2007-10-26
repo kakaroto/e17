@@ -62,7 +62,7 @@ struct _Emphasis_Player_Gui
       Etk_Widget *full;
       Etk_Widget *media;
 
-      Etk_Bool packed;
+      Etk_Bool packed; /* ETK_TRUE: small mode; ETK_FALSE: tiny mode */
     }small;
 
   struct /* full mode */

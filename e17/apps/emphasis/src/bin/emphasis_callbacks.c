@@ -62,7 +62,7 @@ cb_quit(Etk_Object *object, void *data)
   ecore_config_shutdown();
   etk_main_quit();
 
-  return ETK_TRUE;
+  return ETK_FALSE; /* don't set to TRUE */
 }
 
 /* TODO : doc */
@@ -75,9 +75,8 @@ cb_media_quit(Etk_Object *object, void *data)
   if(data) etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(player->small.media));
 
   etk_widget_hide(ETK_WIDGET(object));
-  return ETK_TRUE;
+  return ETK_FALSE; /* don't quit, hide */
 }
-
 Etk_Bool
 cb_pack_quit(Etk_Object *object, void *data)
 {
@@ -86,11 +85,13 @@ cb_pack_quit(Etk_Object *object, void *data)
 
   if(data && player->small.packed == ETK_FALSE)
     {
+      /* We are in the tiny mode */
       Etk_Widget *win = NULL;
 
       win = (object == (Etk_Object*)player->small.cov.window) ?
             player->small.ctr.window : player->small.cov.window;
       if (etk_widget_is_visible(win) == ETK_TRUE)
+        /* The other window is visible, don't quit, hide this window */
         { return cb_window_hide(object, data); }
 
       etk_widget_hide(player->small.cov.window);
@@ -107,7 +108,8 @@ cb_pack_quit(Etk_Object *object, void *data)
       if(player->state == EMPHASIS_SMALL)
         { cb_quit(NULL, player); }
     }
-  return ETK_FALSE;
+
+  return ETK_TRUE; /* else, quit */
 }
 
 Etk_Bool
@@ -115,77 +117,84 @@ cb_window_hide(Etk_Object *object, void *data)
 {
   UNUSED(data);
   etk_widget_hide(ETK_WIDGET(object));
-  return ETK_TRUE;
+  return ETK_FALSE; /* don't quit, hide */
 }
 
 /**
  * @brief Stop the playing
  */
-void
+Etk_Bool
 cb_button_stop_clicked(Etk_Object *object, void *data)
 {
   UNUSED_CLICKED_PARAM
   mpc_stop();
+
+  return ETK_TRUE;
 }
 
 /**
  * @brief Re-play the song from the start or play the previous song
  */
-void
+Etk_Bool
 cb_button_prev_clicked(Etk_Object *object, void *data)
 {
   UNUSED_CLICKED_PARAM
   mpc_prev();
+  return ETK_TRUE;
 }
 
 /**
  * @brief Toggle play/pause the current song
  */
-void
+Etk_Bool
 cb_button_play_clicked(Etk_Object *object, void *data)
 {
   UNUSED_CLICKED_PARAM
   mpc_toggle_play_pause();
+  return ETK_TRUE;
 }
 
 /**
  * @brief Play the next song
  */
-void
+Etk_Bool
 cb_button_next_clicked(Etk_Object *object, void *data)
 {
   UNUSED_CLICKED_PARAM
   mpc_next();
+  return ETK_TRUE;
 }
 
 /**
  * @brief Toggle the random mode
  */
-void
+Etk_Bool
 cb_toggle_random(Etk_Object *object, void *data)
 {
   UNUSED_CLICKED_PARAM
   mpc_toggle_random();
+  return ETK_TRUE;
 }
 
 /**
  * @brief Toggle the repeat mode
  */
-void
+Etk_Bool
 cb_toggle_repeat(Etk_Object *object, void *data)
 {
   UNUSED_CLICKED_PARAM
   mpc_toggle_repeat();
+  return ETK_TRUE;
 }
 
 /* TODO : doc */
-void
+Etk_Bool
 cb_toggle_full(Etk_Object *object, void *data)
 { 
   Emphasis_Player_Gui *player;
   player = data;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   if (player->state == EMPHASIS_FULL)
     {
@@ -195,43 +204,42 @@ cb_toggle_full(Etk_Object *object, void *data)
     {
       cb_switch_full(object, data);
     }
+  return ETK_TRUE;
 }
 
 /* TODO : doc */
-void
+Etk_Bool /* why? */
 cb_toggle_media(Etk_Object *object, void *data)
 {
   /* Okay, now I have an ETK_FALSE. */
   Emphasis_Player_Gui *player;
-  Etk_Bool checked;
   player = data;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
-  checked =
-   etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object));
-  
-  if(checked == ETK_FALSE)
-    {
-      etk_widget_show(player->media.window);
-    }
-  else
+  if(etk_widget_is_visible(player->media.window))
     {
       etk_widget_hide(player->media.window);
     }
+  else
+    {
+      etk_widget_show(player->media.window);
+    }
+
+  return ETK_TRUE; /* why? */
 }
 
 /**
  * @brief Seek in the song the same percent position than the progress bar click
  */
-void
+Etk_Bool
 cb_seek_time(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
 {
   UNUSED(data)
   Etk_Widget *progress;
   int x_click, widget_width;
 
-  if(event->button != 1) { return; }
+  if(event->button != 1) { return ETK_TRUE; }
 
   progress = ETK_WIDGET(object);
   x_click = event->widget.x;
@@ -239,9 +247,10 @@ cb_seek_time(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
   etk_widget_geometry_get(progress, NULL, NULL, &widget_width, NULL);
 
   mpc_seek((float) x_click / widget_width);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_vol_image_clicked(Etk_Object *object,
                      Etk_Event_Mouse_Down *event,
                      void *data)
@@ -249,10 +258,10 @@ cb_vol_image_clicked(Etk_Object *object,
   UNUSED(event);
   Emphasis_Player_Gui *player;
 
-  if(event->button != 1) { return; }
+  if(event->button != 1) { return ETK_TRUE; }
 
   player = data;
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   if (ETK_WIDGET(object) == player->full.sound_low ||
       ETK_WIDGET(object) == player->small.sound_low)
@@ -264,25 +273,27 @@ cb_vol_image_clicked(Etk_Object *object,
     {
       mpc_change_vol(mpc_get_vol() + 5);
     }
+  return ETK_TRUE;
 }
 
 /**
  * @brief Changed the mpd output volume level
  */
-void
+Etk_Bool
 cb_vol_slider_value_changed(Etk_Object *object, double value, void *data)
 {
   UNUSED(object)
   UNUSED(data)
   
   mpc_change_vol(value);
+  return ETK_TRUE;
 }
 
 /**
  * @brief Get the name of the selected artists, search for his albums.
  *        And set the album tree with.
  */
-void
+Etk_Bool
 cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
   UNUSED(object)
@@ -292,7 +303,7 @@ cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
   char *artist;
 
   player = data;
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   artist_sel = etk_tree_selected_rows_get(ETK_TREE(player->media.artist));
   artist     = etk_tree_row_data_get(evas_list_data(artist_sel));
@@ -305,7 +316,7 @@ cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
       etk_tree_row_select
        (etk_tree_first_row_get(ETK_TREE(player->media.album)));
 
-      return;
+      return ETK_TRUE;
     }
   emphasis_tree_mlib_set(ETK_TREE(player->media.album), NULL,
                          MPD_DATA_TYPE_TAG, NULL);
@@ -319,13 +330,14 @@ cb_tree_artist_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
     }
 
   etk_tree_row_select(etk_tree_first_row_get(ETK_TREE(player->media.album)));
+  return ETK_TRUE;
 }
 
 /**
  * @brief Get the selected albums and search for songs wich matches with these albums.
  *        Then set the tree track with that stuff.
  */
-void
+Etk_Bool
 cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
   UNUSED(object)
@@ -336,7 +348,7 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
   char *artist_tag;
 
   player = data;
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   album_sel = etk_tree_selected_rows_get(ETK_TREE(player->media.album));
   album_tag = etk_tree_row_data_get(evas_list_data(album_sel));
@@ -353,7 +365,7 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
                                     MPD_DATA_TYPE_SONG, NULL);
           artist_sel = evas_list_next(artist_sel);
         }
-      return;
+      return ETK_TRUE;
     }
 
   etk_tree_clear(ETK_TREE(player->media.track));
@@ -365,6 +377,7 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
                                 MPD_DATA_TYPE_SONG, NULL);
       album_sel = evas_list_next(album_sel);
     }
+  return ETK_TRUE;
 }
 
 /* FIXME wait for tree2 to support dnd */
@@ -372,7 +385,7 @@ cb_tree_album_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
  * @brief Set a drag widget from a list of artist selected
  * @param data A common drag widget
  */
-void
+Etk_Bool
 cb_drag_artist(Etk_Object *object, void *data)
 {
 #if 0
@@ -385,7 +398,7 @@ cb_drag_artist(Etk_Object *object, void *data)
   unsigned int num_types;
   Evas_List *playlist = NULL, *tmplist;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   tree = ETK_TREE(object);
   drag = ETK_DRAG((ETK_WIDGET(tree))->drag);
@@ -425,7 +438,7 @@ cb_drag_artist(Etk_Object *object, void *data)
   evas_list_free(rowlist);
 
   types = calloc(1, sizeof(char));
-  if(!types) return;
+  if(!types) return ETK_TRUE;
   num_types = 1;
   types[0] = strdup("Emphasis_Playlist");
 
@@ -435,13 +448,14 @@ cb_drag_artist(Etk_Object *object, void *data)
   etk_container_add(ETK_CONTAINER(drag), drag_menu);
   ((Emphasis_Player_Gui*)data)->media.drag = ETK_WIDGET(drag);
 #endif
+  return ETK_TRUE;
 }
 
 /**
  * @brief Set a drag widget from a list of albums selected
  * @param data An Emphasis_Gui
  */
-void
+Etk_Bool
 cb_drag_album(Etk_Object *object, void *data)
 {
 #if 0
@@ -454,7 +468,7 @@ cb_drag_album(Etk_Object *object, void *data)
   unsigned int num_types;
   Evas_List *playlist = NULL, *tmplist;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   tree = ETK_TREE(object);
   drag = ETK_DRAG((ETK_WIDGET(object))->drag);
@@ -509,7 +523,7 @@ cb_drag_album(Etk_Object *object, void *data)
     }
 
   types = calloc(1, sizeof(char));
-  if(!types) return;
+  if(!types) return ETK_TRUE;
   num_types = 1;
   types[0] = strdup("Emphasis_Playlist");
 
@@ -520,6 +534,7 @@ cb_drag_album(Etk_Object *object, void *data)
 
   ((Emphasis_Player_Gui*)data)->media.drag = ETK_WIDGET(drag);
 #endif
+  return ETK_TRUE;
 }
 
 /**
@@ -527,7 +542,7 @@ cb_drag_album(Etk_Object *object, void *data)
  * @param data A drag widget
  * @note this callback will set the data's drag and the object's drag
  */
-void
+Etk_Bool
 cb_drag_track(Etk_Object *object, void *data)
 {
 #if 0
@@ -540,7 +555,7 @@ cb_drag_track(Etk_Object *object, void *data)
   unsigned int num_types;
   Evas_List *playlist;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   tree = ETK_TREE(object);
   drag = ETK_DRAG((ETK_WIDGET(object))->drag);
@@ -562,7 +577,7 @@ cb_drag_track(Etk_Object *object, void *data)
     }
 
   types = calloc(1, sizeof(char));
-  if(!types) return;
+  if(!types) return ETK_TRUE;
   num_types = 1;
   types[0] = strdup("Emphasis_Playlist");
 
@@ -576,6 +591,7 @@ cb_drag_track(Etk_Object *object, void *data)
 
   ((Emphasis_Player_Gui*)data)->media.drag = ETK_WIDGET(drag);
 #endif
+  return ETK_TRUE;
 }
 
 /**
@@ -583,7 +599,7 @@ cb_drag_track(Etk_Object *object, void *data)
  *        And set the playlist tree up to date.
  * @param data A drag widget with a playlist in his data
  */
-void
+Etk_Bool
 cb_drop_song(Etk_Object *object, void *event, void *data)
 {
 #if 0
@@ -592,7 +608,7 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
   Etk_Drag *drag;
   Evas_List *list;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   tree = ETK_TREE(object);
 
@@ -602,7 +618,7 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
       drag->types[0] == NULL || 
       strcmp("Emphasis_Playlist", drag->types[0]))
     {
-      return;
+      return ETK_TRUE;
     }
   
   list = drag->data;
@@ -623,12 +639,13 @@ cb_drop_song(Etk_Object *object, void *event, void *data)
      }
    */
 #endif
+  return ETK_TRUE;
 }
 
 /**
  * @brief Double-click on a row add the artist's song to the playlist
  */
-void
+Etk_Bool
 cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
                      Etk_Event_Mouse_Down *event, void *data)
 {
@@ -636,7 +653,7 @@ cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
   Emphasis_Type et;
   char *str;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   player = data;
   et = (Emphasis_Type) etk_object_data_get(object, "Emphasis_Type");
@@ -652,12 +669,13 @@ cb_tree_mlib_clicked(Etk_Object *object, Etk_Tree_Row *row,
 
       emphasis_playlist_search_and_delete(ETK_TREE(player->media.pls), str, et);
     }
+  return ETK_TRUE;
 }
 
 /**
  * @brief Play the song double-clicked
  */
-void
+Etk_Bool
 cb_tree_pls_clicked(Etk_Object *object, Etk_Tree_Row *row,
                     Etk_Event_Mouse_Down *event, void *data)
 {
@@ -670,9 +688,10 @@ cb_tree_pls_clicked(Etk_Object *object, Etk_Tree_Row *row,
       id = (int) etk_tree_row_data_get(row);
       mpc_play_id(id);
     }
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_emphasis_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
                          void *data)
 {
@@ -681,39 +700,40 @@ cb_emphasis_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   if (!strcmp(event->key, "z"))
     {
       cb_toggle_random(NULL, NULL);
-      return;
+      return ETK_TRUE;
     }
   if (!strcmp(event->key, "r"))
     {
       cb_toggle_repeat(NULL, NULL);
-      return;
+      return ETK_TRUE;
     }
   if (!strcmp(event->key, "s"))
     {
       cb_button_stop_clicked(NULL, NULL);
-      return;
+      return ETK_TRUE;
     }
   if (!strcmp(event->key, "p"))
     {
       cb_button_play_clicked(NULL, NULL);
-      return;
+      return ETK_TRUE;
     }
   if (!strcmp(event->key, "greater"))
     {
       cb_button_next_clicked(NULL, NULL);
-      return;
+      return ETK_TRUE;
     }
   if (!strcmp(event->key, "less"))
     {
       cb_button_prev_clicked(NULL, NULL);
-      return;
+      return ETK_TRUE;
     }
+  return ETK_TRUE;
 }
 
 /**
  * @brief Fast find in mlib tree
  */
-void
+Etk_Bool
 cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
                      void *data)
 {
@@ -724,7 +744,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   char *str;
 
   if (!event->string || !data)
-    return;
+    return ETK_TRUE;
 
   tree = ETK_TREE(object);
   player = data;
@@ -736,7 +756,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
       etk_tree_select_all(tree);
 
       if (object == ETK_OBJECT(player->media.track))
-        return;
+        return ETK_TRUE;
 
       row = etk_tree_first_row_get(tree);
       etk_tree_row_unselect(row);
@@ -749,7 +769,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
           cb_tree_album_selected(object, row, data);
         }
 
-      return;
+      return ETK_TRUE;
     }
   if (!strcmp(event->key, "r")
       && event->modifiers == ETK_MODIFIER_CTRL)
@@ -762,12 +782,12 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
       row = etk_tree_nth_row_get(tree, r);
       etk_tree_row_select(row);
       etk_tree_row_scroll_to(row, ETK_TRUE);
-      return;
+      return ETK_TRUE;
     }
 
   if (!strcmp(event->key, "Tab")
       || event->modifiers == ETK_MODIFIER_CTRL)
-    return;
+    return ETK_TRUE;
 
   col = etk_tree_nth_col_get(tree, 0);
 
@@ -790,13 +810,13 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
       Emphasis_Type et;
 
       et = (Emphasis_Type)etk_object_data_get(object, "Emphasis_Type");
-      if(!et) { return; }
+      if(!et) { return ETK_TRUE; }
       emphasis_playlist_append_selected(tree, et);
       mpc_play_if_stopped();
       emphasis_tree_mlib_init(player, type);
       if (strcmp(base_title, cur_title))
         { etk_tree_col_title_set(col, base_title); }
-      return;
+      return ETK_TRUE;
     }
 
   /* FIXME & > < */
@@ -806,7 +826,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
       /* FIXME, works with kenjins-like? */
       /* Don't print extendted keys (shift, ctrl, etc.) */
       if(!islower(event->keyname[0]))
-        return;
+        return ETK_TRUE;
 
       asprintf(&title, "%s starting with : %s", base_title, event->string);
     }
@@ -822,7 +842,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
           if (strlen(title) == strlen(base_title) + 17)
             {
               etk_tree_col_title_set(col, base_title);
-              return;
+              return ETK_TRUE;
             }
         }
       else if (!strcmp("Escape", event->keyname))
@@ -830,7 +850,7 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
           /* quit fast search */
           emphasis_tree_mlib_init(player, type);
           etk_tree_col_title_set(col, base_title);
-          return;
+          return ETK_TRUE;
         }
       else
         asprintf(&title, "%s%s", cur_title, event->string);
@@ -860,19 +880,20 @@ cb_mlib_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   etk_tree_row_select(etk_tree_first_row_get(tree));
   free(title);
   free(filter);
+  return ETK_TRUE;
 }
 
 /**
  * @brief If right-clicked: popdown the contextual menu on the playlist
  */
-void
+Etk_Bool
 cb_pls_contextual_menu(Etk_Object *object, Etk_Event_Mouse_Down *event,
                        void *data)
 {
   UNUSED(object);
   Emphasis_Gui *gui;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   gui = data;
   if (event->button == 3)
@@ -880,12 +901,13 @@ cb_pls_contextual_menu(Etk_Object *object, Etk_Event_Mouse_Down *event,
       etk_menu_popup(ETK_MENU(gui->menu));
       etk_widget_show_all(gui->menu);
     }
+  return ETK_TRUE;
 }
 
 /**
  * @brief Clear the playlist
  */
-void
+Etk_Bool
 cb_playlist_clear(Etk_Object *object, Etk_Event_Mouse_Down *event,
                   void *data)
 {
@@ -894,23 +916,25 @@ cb_playlist_clear(Etk_Object *object, Etk_Event_Mouse_Down *event,
   UNUSED(data);
 
   mpc_playlist_clear();
+  return ETK_TRUE;
 }
 
 /**
  * * @brief Shuffle the playlist
  */
-void
+Etk_Bool
 cb_playlist_shuffle(Etk_Object *object, void *data)
 {
   UNUSED_CLICKED_PARAM;
   
   mpc_playlist_shuffle();
+  return ETK_TRUE;
 }
 
 /**
  * @brief Callback function of bindings key on the playlist
  */
-void
+Etk_Bool
 cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event, 
                     void *data)
 {
@@ -919,7 +943,7 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
   Evas_List *rowlist;
   Evas_List *list;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
 
   if (!strcmp(event->key, "d") || !strcmp(event->key, "Delete"))
@@ -943,12 +967,13 @@ cb_pls_bindings_key(Etk_Object *object, Etk_Event_Key_Down *event,
     {
       cb_database_update(NULL, data);
     }
+  return ETK_TRUE;
 }
 
 /**
  * @brief Delete all the selected item from the playlist
  */
-void
+Etk_Bool
 cb_playlist_delete(Etk_Object *object, void *data)
 {
   UNUSED(object);
@@ -956,25 +981,26 @@ cb_playlist_delete(Etk_Object *object, void *data)
   Evas_List *rowlist;
   Evas_List *list;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
 
   rowlist = etk_tree_selected_rows_get(ETK_TREE(player->media.pls));
   list = convert_rowlist_in_playlist_with_id(rowlist);
 
   mpc_playlist_delete(list);
+  return ETK_TRUE;
 }
 
 /**
  * @brief Request an database update
  */
-void
+Etk_Bool
 cb_database_update(Etk_Object *object, void *data)
 {
   UNUSED(object);
   Emphasis_Player_Gui *player;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
 
   mpc_database_update();
@@ -986,16 +1012,17 @@ cb_database_update(Etk_Object *object, void *data)
   etk_tree_col_title_set(ETK_TREE_COL_GET(player->media.track , 0), "Track");
 
   /* TODO redraw */
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_small_resize(Etk_Object *object, void *data)
 {
   Emphasis_Player_Gui *player;
   int w = 0;
 
   UNUSED(object);
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
 
   etk_window_geometry_get(ETK_WINDOW(player->small.window),
@@ -1005,20 +1032,21 @@ cb_small_resize(Etk_Object *object, void *data)
   etk_widget_size_request_set(player->small.cover,
                               player->small.cover_size_w,
                               player->small.cover_size_h);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_switch_full(Etk_Object *object, void *data)
 {
   UNUSED(object);
 
   Emphasis_Player_Gui *player;
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
 
   if(player->state == EMPHASIS_FULL)
     {
-      return;
+      return ETK_TRUE;
     }
   player->state = EMPHASIS_FULL;
 
@@ -1036,20 +1064,21 @@ cb_switch_full(Etk_Object *object, void *data)
   emphasis_player_toggle_full(player, ETK_TRUE);
 
   etk_widget_show(player->full.window);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_switch_small(Etk_Object *object, void *data)
 {
   UNUSED(object);
 
   Emphasis_Player_Gui *player;
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
 
   if(player->state == EMPHASIS_SMALL)
     {
-      return;
+      return ETK_TRUE;
     }
   player->state = EMPHASIS_SMALL;
 
@@ -1069,9 +1098,10 @@ cb_switch_small(Etk_Object *object, void *data)
       etk_widget_show(player->small.cov.window);
       etk_widget_show(player->small.ctr.window);
     }
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_button_lib_clicked(Etk_Object *object, 
                             void *data)
 {
@@ -1079,12 +1109,13 @@ cb_media_button_lib_clicked(Etk_Object *object,
 
   Emphasis_Player_Gui *player;
   player = data;
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   etk_notebook_current_page_set(ETK_NOTEBOOK(player->media.notebook), 0);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_button_search_clicked(Etk_Object *object, 
                                void *data)
 {
@@ -1092,12 +1123,13 @@ cb_media_button_search_clicked(Etk_Object *object,
 
   Emphasis_Player_Gui *player;
   player = data;
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   etk_notebook_current_page_set(ETK_NOTEBOOK(player->media.notebook), 1);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_button_playlists_clicked(Etk_Object *object, 
                                   void *data)
 {
@@ -1105,13 +1137,14 @@ cb_media_button_playlists_clicked(Etk_Object *object,
 
   Emphasis_Player_Gui *player;
   player = data;
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   etk_notebook_current_page_set(ETK_NOTEBOOK(player->media.notebook), 2);
   emphasis_pls_list_init(player);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_button_stats_clicked(Etk_Object *object, 
                               void *data)
 {
@@ -1119,25 +1152,26 @@ cb_media_button_stats_clicked(Etk_Object *object,
 
   Emphasis_Player_Gui *player;
   player = data;
-  if(!data) return;
+  if(!data) return ETK_TRUE;
 
   etk_notebook_current_page_set(ETK_NOTEBOOK(player->media.notebook), 3);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_config_show(Etk_Object *object, void *data)
 {
   Emphasis_Gui *gui;
   Emphasis_Config_Gui *configgui;
   UNUSED(object);
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   gui = data;
 
   if(gui->config_gui == NULL)
     {
       gui->config_gui = malloc(sizeof(Emphasis_Config_Gui));
-      if(!gui->config_gui) return;
+      if(!gui->config_gui) return ETK_TRUE;
       emphasis_init_configgui(gui->config_gui);
       gui->config_gui->data = data;
     }
@@ -1145,6 +1179,7 @@ cb_config_show(Etk_Object *object, void *data)
 
   emphasis_configgui_autoset(configgui);
   etk_widget_show_all(configgui->window);
+  return ETK_TRUE;
 }
 
 Etk_Bool
@@ -1160,20 +1195,21 @@ cb_config_hide(Etk_Object *object, void *data)
   return ETK_FALSE;
 }
 
-void
+Etk_Bool
 cb_config_ok(Etk_Object *object, void *data)
 {
   Emphasis_Config_Gui *configgui;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   configgui = data;
 
   emphasis_configgui_save(configgui);
 
   cb_config_hide(object, data);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree_Row *row, 
                               Etk_Event_Mouse_Down *event, void *data)
 {
@@ -1182,7 +1218,7 @@ cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree_Row *row,
   Etk_Tree_Col *col;
   char *playlist_name;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
   if (event->button == 1)
     {
@@ -1203,9 +1239,10 @@ cb_media_pls_list_row_clicked(Etk_Object *object, Etk_Tree_Row *row,
           cb_media_pls_load_clicked(NULL, data);
         }
     }
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_pls_save_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
@@ -1213,10 +1250,10 @@ cb_media_pls_save_clicked(Etk_Object *object, void *data)
   Emphasis_Player_Gui *player;
   Etk_Widget *entry;
  
-  if(!data) return; 
+  if(!data) return ETK_TRUE; 
   player = data;
   entry = player->media.pls_entry_save;
-  if(!entry) return;
+  if(!entry) return ETK_TRUE;
   if (etk_widget_is_visible(entry)) 
     {
       if (etk_entry_text_get(ETK_ENTRY(entry)))
@@ -1235,9 +1272,10 @@ cb_media_pls_save_clicked(Etk_Object *object, void *data)
 #else
   UNUSED(data);
 #endif
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_pls_load_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
@@ -1247,11 +1285,11 @@ cb_media_pls_load_clicked(Etk_Object *object, void *data)
   Etk_Tree_Row *row;
   char *playlist_name;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
   col = etk_tree_nth_col_get(ETK_TREE(player->media.pls_list), 0);
   row = etk_tree_selected_row_get(ETK_TREE(player->media.pls_list));
-  if(!row) return;
+  if(!row) return ETK_TRUE;
   etk_tree_row_fields_get(row, ETK_FALSE, col, &playlist_name, NULL);
 
   mpc_playlist_clear();
@@ -1264,9 +1302,10 @@ cb_media_pls_load_clicked(Etk_Object *object, void *data)
 #else
   UNUSED(data);
 #endif
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_pls_del_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
@@ -1276,7 +1315,7 @@ cb_media_pls_del_clicked(Etk_Object *object, void *data)
   Etk_Tree_Row *row;
   char *playlist_name;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
   col = etk_tree_nth_col_get(ETK_TREE(player->media.pls_list), 0);
   row = etk_tree_selected_row_get(ETK_TREE(player->media.pls_list));
@@ -1287,9 +1326,10 @@ cb_media_pls_del_clicked(Etk_Object *object, void *data)
 #else
   UNUSED(data);
 #endif
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_pls_save_key_down(Etk_Object *object, Etk_Event_Key_Down *event,
                            void *data)
 {
@@ -1298,9 +1338,10 @@ cb_media_pls_save_key_down(Etk_Object *object, Etk_Event_Key_Down *event,
       etk_widget_unfocus(ETK_WIDGET(object));
       cb_media_pls_save_clicked(NULL, data);
     }
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_search_btn_add_clicked(Etk_Object *object, void *data)
 {
   Emphasis_Player_Gui *player;
@@ -1310,7 +1351,7 @@ cb_media_search_btn_add_clicked(Etk_Object *object, void *data)
   Etk_Tree_Col *col;
   const char *file;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
 
   row = etk_tree_selected_rows_get(ETK_TREE(player->media.search_tree));
@@ -1327,39 +1368,42 @@ cb_media_search_btn_add_clicked(Etk_Object *object, void *data)
     }
   evas_list_free(list);
   mpc_playlist_commit();
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_search_btn_replace_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
   Emphasis_Player_Gui *player;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
   cb_playlist_clear(NULL,NULL,NULL);
   cb_media_search_btn_add_clicked(object, data);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_search_btn_add_search_clicked(Etk_Object *object, void *data)
 {
   UNUSED(object);
   Emphasis_Player_Gui *player;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player = data;
   emphasis_search_row_add(player);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_search_btn_remove_search_clicked(Etk_Object *object, void *data)
 {
   Etk_Widget *search_root;
   Etk_Widget *search_query_row;
   Etk_Widget *button;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   search_root = data;
   button = ETK_WIDGET(object);
   search_query_row  = etk_widget_parent_get(button);
@@ -1380,9 +1424,10 @@ cb_media_search_btn_remove_search_clicked(Etk_Object *object, void *data)
     }
   evas_list_free(children);
   etk_object_destroy(ETK_OBJECT(search_query_row));
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_search_entry_text_changed(Etk_Object *object,
                                    Etk_Event_Key_Down *event,
                                    void *data)
@@ -1391,9 +1436,10 @@ cb_media_search_entry_text_changed(Etk_Object *object,
     {
       cb_media_search_btn_search_clicked(object, data);
     }
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
 {
   /* FIXME read this */
@@ -1407,7 +1453,7 @@ cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
   Etk_Widget *widget;
   int index;
 
-  if(!data) return;
+  if(!data) return ETK_TRUE;
   player   = data;
   children = etk_container_children_get(ETK_CONTAINER(player->media.search_root));
 
@@ -1447,15 +1493,16 @@ cb_media_search_btn_search_clicked(Etk_Object *object, void *data)
   /* ^ freed results */
 
   evas_list_free(query);
+  return ETK_TRUE;
 }
 
-void
+Etk_Bool
 cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
 {
   Emphasis_Player_Gui *player;
   UNUSED(object);
 
-  if(!data) { return; }
+  if(!data) { return ETK_TRUE; }
 
   player = data;
 
@@ -1464,7 +1511,7 @@ cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
       /* show/hide concurrent window */
       Etk_Widget *win = NULL;
       
-      if(player->small.packed == ETK_TRUE) { return; }
+      if(player->small.packed == ETK_TRUE) { return ETK_TRUE; }
 
       if(object == (Etk_Object*)player->small.cover)
         {
@@ -1490,7 +1537,7 @@ cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
                   /* right zone */
                   mpc_toggle_play_pause();
                 }
-              return; /* no show/hide */
+              return ETK_TRUE; /* no show/hide */
             }
           else if( event->widget.y <= 7 )
             {
@@ -1498,7 +1545,7 @@ cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
               double seek;
               seek = (double) event->widget.x / (double) w;
               mpc_seek(seek);
-              return; /* no show/hide */
+              return ETK_TRUE; /* no show/hide */
             }
           win = player->small.ctr.window;
         }
@@ -1508,7 +1555,7 @@ cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
           win = player->small.cov.window;
         }
       else
-        { return; }
+        { return ETK_TRUE; }
 
 
       if(etk_widget_is_visible(win) == ETK_TRUE)
@@ -1573,20 +1620,21 @@ cb_small_pack(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
         ETK_FALSE);
       player->small.packed = !player->small.packed;
     }
+  return ETK_TRUE;
 }
 
 
-void
+Etk_Bool
 cb_tiny_cover_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
 {
   Emphasis_Player_Gui *player;
   Etk_Event_Mouse_Down event_md;
   UNUSED(object);
 
-  if(!data) { return; }
+  if(!data) { return ETK_TRUE; }
   player = data;
 
-  if(player->small.packed) { return; }
+  if(player->small.packed) { return ETK_TRUE; }
 
   event_md.button = 1;
   if(event->z < 0)
@@ -1599,4 +1647,5 @@ cb_tiny_cover_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data
       cb_vol_image_clicked(ETK_OBJECT(player->full.sound_low),
                            &event_md, player);
     }
+  return ETK_TRUE;
 }
