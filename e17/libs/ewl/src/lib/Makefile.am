@@ -92,6 +92,7 @@ EWLHEADERS = \
 	ewl_tree.h \
 	ewl_tree2.h \
 	ewl_tree2_view.h \
+	ewl_tree2_view_freebox.h \
 	ewl_tree2_view_plain.h \
 	ewl_tree2_view_scrolled.h \
 	ewl_theme.h \
@@ -179,6 +180,7 @@ EWLSOURCES= \
 	ewl_tree.c \
 	ewl_tree2.c \
 	ewl_tree2_view.c \
+	ewl_tree2_view_freebox.c \
 	ewl_tree2_view_plain.c \
 	ewl_tree2_view_scrolled.c \
 	ewl_toolbar.c \
