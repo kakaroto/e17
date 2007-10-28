@@ -56,7 +56,8 @@ changequote([,])dnl
 
 PCFLAGS=$CFLAGS
 
-PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
+have_evas="no"
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9], [have_evas="yes"])
 CFLAGS=$EVAS_CFLAGS" "$CFLAGS
 AM_CONDITIONAL(EWL_ENABLE_EVAS, test "x$have_evas" = "xyes")
 
