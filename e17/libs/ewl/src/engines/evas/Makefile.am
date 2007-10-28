@@ -10,7 +10,7 @@ INCLUDES = -I$(top_srcdir)/src/lib \
 
 pkgdir = $(libdir)/ewl/engines
 
-if EWL_ENABLE_EVAS_SOFTWARE_X11
+if EWL_ENABLE_EVAS
 
 pkg_LTLIBRARIES = evas.la
 
