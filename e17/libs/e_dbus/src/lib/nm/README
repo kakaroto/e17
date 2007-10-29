@@ -1,0 +1,2 @@
+This depends on NetworkManager 0.7, which was unrealeased as of 2007-03-20.
+It is only a start, and can't really be finished until the NetworkManagerInfo interface is reworked. So, for now, ignore it :)

@@ -1,0 +1,39 @@
+Source: e-dbus
+Section: libs
+Priority: optional
+Maintainer: E17 Debian Team <debian@edevelop.org>
+Build-Depends: cdbs, debhelper (>= 5), libecore0-dev, libewl0-dev, libdbus-1-dev, libefreet0-dev
+Standards-Version: 3.7.2
+
+Package: libe-dbus0
+Architecture: any
+Depends: ${shlibs:Depends}, libecore0, libefreet0, libdbus-1-3
+Provides: libe-dbus
+Recommends: libe-dbus0-bin | libe-dbus-bin
+Description: enlightenment interface to dbus
+ e-dbus implements some basic convenience wrappers around dbus
+ to ease integrating dbus with EFL based applications.
+ .
+ This package contains the e_dbus library.
+
+Package: libe-dbus0-dev
+Section: devel
+Architecture: any
+Depends: ${shlibs:Depends}, libe-dbus0-dev, libecore0-dev, libefreet0-dev, libdbus-1-dev
+Provides: libe-dbus-dev
+Description: enlightenment interface to dbus - develpment files
+ e-dbus implements some basic convenience wrappers around dbus
+ to ease integrating dbus with EFL based applications.
+ .
+ This package contains the e_dbus headers and static libraries.
+
+Package: libe-dbus0-bin
+Architecture: any
+Depends: ${shlibs:Depends}
+Provides: libe-dbus-bin
+Description: enlightenment interface to dbus - helper applications
+ e-dbus implements some basic convenience wrappers around dbus
+ to ease integrating dbus with EFL based applications.
+ .
+ This package contains the e_dbus helper applications e_dbus_hal and
+ e_dbus_nm.

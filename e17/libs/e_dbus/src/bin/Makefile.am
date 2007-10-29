@@ -1,0 +1,70 @@
+MAINTAINERCLEANFILES = Makefile.in
+
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src/lib/dbus \
+-I$(top_srcdir)/src/lib/hal \
+-I$(top_srcdir)/src/lib/nm \
+-I$(top_srcdir)/src/lib/notification \
+@EDBUS_CFLAGS@ 
+
+LIBS = \
+@EDBUS_LIBS@
+
+bin_PROGRAMS = e_dbus_test \
+							 e_dbus_test_client \
+							 e_dbus_hal \
+							 e_dbus_nm \
+							 e_dbus_notify \
+							 e_dbus_notification_daemon
+
+e_dbus_test_SOURCES = \
+test.c
+
+e_dbus_test_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(LIBS)
+e_dbus_test_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la
+
+e_dbus_test_client_SOURCES = \
+test_client.c
+
+e_dbus_test_client_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(LIBS)
+e_dbus_test_client_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la
+
+HALSOURCES = \
+hal.c
+
+e_dbus_hal_CPPFLAGS = \
+$(AM_CPPFLAGS) \
+@HAL_TEST_GUI_CFLAGS@
+
+e_dbus_hal_LIBS = \
+$(LIBS) \
+@HAL_TEST_GUI_LIBS@
+
+e_dbus_hal_SOURCES = \
+	$(HALSOURCES)
+
+e_dbus_hal_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la $(e_dbus_hal_LIBS) 
+e_dbus_hal_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/hal/libehal.la
+
+
+NMSOURCES = \
+nm.c
+
+e_dbus_nm_SOURCES = \
+	$(NMSOURCES)
+
+e_dbus_nm_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/nm/libenm.la $(LIBS) 
+e_dbus_nm_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/nm/libenm.la
+
+
+e_dbus_notify_SOURCES = \
+	notify.c
+
+e_dbus_notify_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la $(LIBS) 
+e_dbus_notify_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
+
+e_dbus_notification_daemon_SOURCES = \
+	notification_daemon.c
+
+e_dbus_notification_daemon_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la $(LIBS) 
+e_dbus_notification_daemon_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
