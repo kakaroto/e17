@@ -421,14 +421,15 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
             itr = itr.next
         evas_list_free(lst)
 
-    def move(self, int x, int y):
-        "Default implementation to move all children."
+    def move_children_relative(self, int dx, int dy):
+        "Move all children relatively."
         cdef Evas_List *lst, *itr
         cdef Evas_Object *o
-        cdef int orig_x, orig_y, dx, dy
-        evas_object_geometry_get(self.obj, &orig_x, &orig_y, NULL, NULL)
-        dx = x - orig_x
-        dy = y - orig_y
+        cdef int orig_x, orig_y
+
+        if dx == 0 and dy == 0:
+            return
+
         lst = evas_object_smart_members_get(self.obj)
         itr = lst
         while itr:
@@ -437,6 +438,14 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
             evas_object_move(o, orig_x + dx, orig_y + dy)
             itr = itr.next
         evas_list_free(lst)
+
+    def move(self, int x, int y):
+        "Default implementation to move all children."
+        cdef int orig_x, orig_y, dx, dy
+        evas_object_geometry_get(self.obj, &orig_x, &orig_y, NULL, NULL)
+        dx = x - orig_x
+        dy = y - orig_y
+        self.move_children_relative(dx, dy)
 
     def resize(self, int w, int h):
         "Virtual method resize(w, h) of SmartObject"
