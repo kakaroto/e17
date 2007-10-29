@@ -335,10 +335,6 @@ static void
 ewl_filelist_tree_data_sort(void *data, unsigned int column __UNUSED__,
 						Ewl_Sort_Direction sort)
 {
-	char *file;
-	unsigned int count;
-	Ecore_Sheap *sorttmp;
-	int (*list_add)(Ecore_List *list, void *data);
 	Ewl_Filelist_Tree_Data *td = data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -346,25 +342,13 @@ ewl_filelist_tree_data_sort(void *data, unsigned int column __UNUSED__,
 	if (sort == EWL_SORT_DIRECTION_NONE)
 		DRETURN(DLEVEL_STABLE);
 
-	/* Similar to ecore_file_ls, sort using a temporary heap. */
-	count = ecore_list_count(td->files);
-	sorttmp = ecore_sheap_new(ECORE_COMPARE_CB(strcmp), count);
-
-	/* Remove from list and push into sorted heap */
-	while ((file = ecore_list_first_remove(td->files)))
-		ecore_sheap_insert(sorttmp, file);
-
-	/* Handle sort order by switching between append and prepend */
+	/* Handle the correct sort order */
 	if (sort == EWL_SORT_DIRECTION_ASCENDING)
-		list_add = ecore_list_append;
+		ecore_list_sort(td->files, ECORE_COMPARE_CB(strcoll), 
+				ECORE_SORT_MIN);
 	else
-		list_add = ecore_list_prepend;
-
-	/* Remove from heap in sorted order and add to list */
-	while ((file = ecore_sheap_extract(sorttmp)))
-		list_add(td->files, file);
-
-	ecore_sheap_destroy(sorttmp);
+		ecore_list_sort(td->files, ECORE_COMPARE_CB(strcoll), 
+				ECORE_SORT_MAX);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
