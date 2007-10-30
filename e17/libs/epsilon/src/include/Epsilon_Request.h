@@ -49,8 +49,6 @@ EAPI int          epsilon_thumb_init(void);
 EAPI int          epsilon_shutdown(void);
 EAPI Epsilon_Request *epsilon_add(char *path, char *dst, int size, void *data);
 EAPI void         epsilon_del(Epsilon_Request *thumb);
-EAPI void         epsilon_pause();
-EAPI void         epsilon_resume();
 
 #ifdef __cplusplus
 }

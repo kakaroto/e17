@@ -41,6 +41,7 @@ epsilon_thumb_init()
 	 */
 	if (!ecore_init()) goto init_error;
 	if (!ecore_ipc_init()) goto con_init_error;
+	if (!epsilon_init()) goto init_error;
 
 	/*
 	 * Allocate a list for queueing requests.
@@ -72,12 +73,6 @@ epsilon_thumb_init()
 		 */
 		memset(&buffer, 0, sizeof(Epsilon_Ipc_End));
 	}
-
-	/*
-	 * FIXME: This function should not be void, so we can detect failure
-	 * and cleanup.
-	 */
-	epsilon_init();
 
 	return ++epsilon_init_count;
 
@@ -211,6 +206,7 @@ epsilon_cb_server_data(void *data, int type, void *event)
 		 * path, don't actually generate the thumbnail here.
 		 */
 		tb = epsilon_new(thumb->path);
+		epsilon_thumb_size(tb, thumb->size);
 		epsilon_exists(tb);
 		thumb->dest = (char *)epsilon_thumb_file_get(tb);
 		if (thumb->dest)

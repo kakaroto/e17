@@ -59,7 +59,7 @@ enum _Epsilon_Thumb_Size
 
 typedef enum _Epsilon_Thumb_Size Epsilon_Thumb_Size;
 
-EAPI void epsilon_init (void);
+EAPI int epsilon_init (void);
 
 /* construct destruct */
 EAPI void epsilon_free (Epsilon * e);

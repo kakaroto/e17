@@ -124,18 +124,20 @@ epsilon_plugin_load(char* path)
 	return plugin;
 }
 
-EAPI void
+static int epsilon_init_count = 0;
+EAPI int
 epsilon_init (void)
 {
   char buf[PATH_MAX];
   int base_len;
   char *home;
+  struct dirent *de;
+  char* type;
+  DIR *dir;
+  Epsilon_Plugin *plugin;
+  char plugin_path[1024];
 
-   struct dirent *de;
-   char* type;
-   DIR *dir;
-   Epsilon_Plugin *plugin;
-   char plugin_path[1024];
+  if (epsilon_init_count) return ++epsilon_init_count;
 
   home = getenv("HOME");
   base_len = snprintf(buf, sizeof(buf), "%s/.thumbnails", home);
@@ -180,8 +182,10 @@ epsilon_init (void)
 		}
 	}
 
+	closedir(dir);
   }
-  closedir(dir);
+
+  return ++epsilon_init_count;
 }
 
 EAPI void
