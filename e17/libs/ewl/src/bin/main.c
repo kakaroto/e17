@@ -470,6 +470,7 @@ create_main_test_window(Ewl_Container *box)
 	/* our data will be a list of lists. each of the child lists will
 	 * hold a set of tests to be run */
 	categories = ecore_list_new();
+	ecore_list_free_cb_set(categories, ECORE_FREE_CB(ecore_list_destroy));
 
 	simple = ecore_list_new();
 	ecore_list_append(categories, simple);
@@ -490,6 +491,8 @@ create_main_test_window(Ewl_Container *box)
 	ewl_model_data_fetch_set(model, ewl_test_cb_category_fetch);
 	ewl_model_data_count_set(model, ewl_model_cb_ecore_list_count);
 	ewl_model_data_expandable_set(model, ewl_test_cb_category_expandable);
+	ewl_model_data_unref_set(model, 
+				EWL_MODEL_DATA_UNREF(ecore_list_destroy));
 	ewl_model_expansion_data_fetch_set(model,
 				ewl_test_cb_category_expansion_fetch);
 	ewl_model_expansion_model_fetch_set(model,
