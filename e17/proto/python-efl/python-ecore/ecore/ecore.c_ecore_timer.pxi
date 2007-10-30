@@ -47,7 +47,8 @@ cdef class Timer:
         self.kargs = kargs
         if self.obj == NULL:
             self.obj = ecore_timer_add(interval, timer_cb, <void *>self)
-            python.Py_INCREF(self)
+            if self.obj != NULL:
+                python.Py_INCREF(self)
 
     def __str__(self):
         return "%s(interval=%f, func=%s, args=%s, kargs=%s)" % \

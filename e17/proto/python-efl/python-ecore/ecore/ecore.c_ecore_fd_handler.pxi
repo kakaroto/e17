@@ -80,7 +80,8 @@ cdef class FdHandler:
                                                  <Ecore_Fd_Handler_Flags>flags,
                                                  fd_handler_cb, <void *>self,
                                                  NULL, NULL)
-            python.Py_INCREF(self)
+            if self.obj != NULL:
+                python.Py_INCREF(self)
 
     def __str__(self):
         if self.obj == NULL:

@@ -47,7 +47,8 @@ cdef class IdleEnterer:
         self.kargs = kargs
         if self.obj == NULL:
             self.obj = ecore_idle_enterer_add(idle_enterer_cb, <void *>self)
-            python.Py_INCREF(self)
+            if self.obj != NULL:
+                python.Py_INCREF(self)
 
     def __str__(self):
         return "%s(func=%s, args=%s, kargs=%s)" % \

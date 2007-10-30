@@ -45,7 +45,8 @@ cdef class IdleExiter:
         self.kargs = kargs
         if self.obj == NULL:
             self.obj = ecore_idle_exiter_add(idle_exiter_cb, <void *>self)
-            python.Py_INCREF(self)
+            if self.obj != NULL:
+                python.Py_INCREF(self)
 
     def __str__(self):
         return "%s(func=%s, args=%s, kargs=%s)" % \
