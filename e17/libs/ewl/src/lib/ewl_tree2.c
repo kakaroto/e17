@@ -95,6 +95,7 @@ ewl_tree2_init(Ewl_Tree2 *tree)
 
 	ewl_tree2_headers_visible_set(tree, TRUE);
 	ewl_tree2_fixed_rows_set(tree, FALSE);
+	ewl_tree2_alternate_row_colors_set(tree, TRUE);
 
 	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
 					ewl_tree2_cb_configure, NULL);
@@ -147,6 +148,43 @@ ewl_tree2_headers_visible_get(Ewl_Tree2 *tree)
 	DCHECK_TYPE_RET("tree", tree, EWL_TREE2_TYPE, FALSE);
 
 	DRETURN_INT(tree->headers_visible, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to toggle the alternating row colour
+ * @param alternate: The boolean for alternating the row colour (TRUE == yes, FALSE == no)
+ * @return Returns no value
+ * @brief Toggle if the rows alternate in colour
+ */
+void
+ewl_tree2_alternate_row_colors_set(Ewl_Tree2 *tree, unsigned char alternate)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("tree", tree);
+	DCHECK_TYPE("tree", tree, EWL_TREE2_TYPE);
+
+	if (tree->row_color_alternate == !!alternate)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->row_color_alternate = !!alternate;
+	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @return Returns if the row colours are currently being alternated
+ * @brief Retrieve if the row colours are being alternated
+ */
+unsigned int
+ewl_tree2_alternate_row_colors_get(Ewl_Tree2 *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
+	DCHECK_TYPE_RET("tree", tree, EWL_TREE2_TYPE, FALSE);
+
+	DRETURN_INT(tree->row_color_alternate, DLEVEL_STABLE);
 }
 
 /**
@@ -730,10 +768,16 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 		EWL_TREE2_NODE(node)->row = row;
 		ewl_widget_show(row);
 
-		if (colour)
-			ewl_widget_state_set(row, "odd", EWL_STATE_PERSISTENT);
-		else
-			ewl_widget_state_set(row, "even", EWL_STATE_PERSISTENT);
+		if (tree->row_color_alternate)
+		{
+			if (colour)
+				ewl_widget_state_set(row, "odd", 
+							EWL_STATE_PERSISTENT);
+			else
+				ewl_widget_state_set(row, "even", 
+							EWL_STATE_PERSISTENT);
+		}
+
 		colour = (colour + 1) % 2;
 
 		/* do the current branch */
@@ -969,6 +1013,11 @@ ewl_tree2_node_init(Ewl_Tree2_Node *node)
 				ewl_tree2_cb_node_child_add);
 	ewl_container_remove_notify_set(EWL_CONTAINER(node),
 				ewl_tree2_cb_node_child_del);
+	
+	/* we don't want the mvc to unref our data since the data is owned
+	 * by the tree or the parent node */
+	ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_DESTROY, 
+						ewl_mvc_cb_data_unref);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(node),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
@@ -1010,6 +1059,8 @@ ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, void *data)
 		{
 			ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
 							ewl_tree2_cb_node_toggle, node);
+			ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
+						ewl_tree2_cb_node_data_unref, NULL);
 			ewl_widget_enable(node->handle);
 			ewl_expansion_expandable_set(EWL_EXPANSION(node->handle), TRUE);
 		}
@@ -1017,6 +1068,8 @@ ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, void *data)
 		{
 			ewl_callback_del(node->handle, EWL_CALLBACK_VALUE_CHANGED,
 							ewl_tree2_cb_node_toggle);
+			ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
+							ewl_tree2_cb_node_data_unref);
 			ewl_widget_disable(node->handle);
 			ewl_expansion_expandable_set(EWL_EXPANSION(node->handle), FALSE);
 		}
@@ -1074,15 +1127,21 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 	data = ewl_mvc_data_get(EWL_MVC(node));
 	if (model->expansion.data && !node->built_children)
 	{
-		Ewl_Model *tmp_model = NULL;
 		Ewl_View *view, *tmp_view = NULL;
-		void *tmp_data;
+		Ewl_Model *tmp_model;
 
-		tmp_data = model->expansion.data(data, node->row_num);
-		if (model->expansion.model)
-			tmp_model = model->expansion.model(data, node->row_num);
+		if (!node->expansion.data)
+			node->expansion.data = 
+				model->expansion.data(data, node->row_num);
 
-		if (!tmp_model) tmp_model = model;
+		if (!node->expansion.model && model->expansion.model)
+			node->expansion.model = 
+				model->expansion.model(data, node->row_num);
+
+		/* We only save the model reference here to unref it on destroy.
+		 * We don't need to save the parent model to unref */
+		if (!node->expansion.model) tmp_model = model;
+		else tmp_model = node->expansion.model;
 
 		view = ewl_mvc_view_get(EWL_MVC(node));
 		if (view->expansion)
@@ -1091,8 +1150,8 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 		if (!tmp_view) tmp_view = view;
 
 		ewl_tree2_build_tree_rows(EWL_TREE2(node->tree), tmp_model,
-						tmp_view, tmp_data, 0,
-						EWL_WIDGET(node), FALSE);
+						tmp_view, node->expansion.data,
+					       	0, EWL_WIDGET(node), FALSE);
 
 		node->built_children = TRUE;
 	}
@@ -1202,6 +1261,35 @@ ewl_tree2_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 			y += ewl_object_current_h_get(child);
 		}
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_tree2_cb_node_data_unref(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
+{
+	Ewl_Tree2_Node *node;
+	Ewl_Model *model;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_TREE2_NODE_TYPE);
+
+	node = EWL_TREE2_NODE(w);
+
+	if (!node->expansion.data)
+		DRETURN(DLEVEL_STABLE);
+
+	if (node->expansion.model)
+		model = node->expansion.model;
+	else
+		model = ewl_mvc_model_get(EWL_MVC(w));
+
+	if (model->unref)
+		model->unref(node->expansion.data);
+
+	node->expansion.data = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -53,6 +53,8 @@ ewl_mvc_init(Ewl_MVC *mvc)
 
 	ewl_callback_append(EWL_WIDGET(mvc), EWL_CALLBACK_DESTROY,
 					ewl_mvc_cb_destroy, NULL);
+	ewl_callback_append(EWL_WIDGET(mvc), EWL_CALLBACK_DESTROY,
+					ewl_mvc_cb_data_unref, NULL);
 
 	ewl_mvc_selection_mode_set(mvc, EWL_SELECTION_MODE_SINGLE);
 
@@ -1310,6 +1312,34 @@ ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	mvc = EWL_MVC(w);
 	IF_FREE_LIST(mvc->selected);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The wiget to destroy
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief Cleans up the data of the given mvc
+ */
+void
+ewl_mvc_cb_data_unref(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	Ewl_MVC *mvc;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	mvc = EWL_MVC(w);
+
+	/* unref the data, we don't need it anylonger */
+	if (mvc->data && mvc->model && mvc->model->unref)
+	{
+		mvc->model->unref(mvc->data);
+		mvc->data = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

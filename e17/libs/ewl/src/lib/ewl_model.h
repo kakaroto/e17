@@ -111,6 +111,18 @@ typedef void (*Ewl_Model_Data_Sort)(void *data, unsigned int column,
 typedef unsigned int (*Ewl_Model_Data_Count)(void *data);
 
 /**
+ * @def EWL_MODEL_DATA_UNREF(f)
+ * Model callback to unreference the data used by the model. This signalize
+ * that the data is not used later from the model nor the controller
+ */
+#define EWL_MODEL_DATA_UNREF(f) ((Ewl_Model_Data_Unref)f)
+
+/**
+ * A typedef to shorten the definition of the model_data_unref callbacks.
+ */
+typedef unsigned int (*Ewl_Model_Data_Unref)(void *data);
+
+/**
  * @def EWL_MODEL_COLUMN_SORTABLE(f)
  * Model callback to check if a columns data is sortable
  */
@@ -157,6 +169,7 @@ struct Ewl_Model
 	Ewl_Model_Data_Fetch fetch;    /**< Retrieve data for a cell */
 	Ewl_Model_Data_Free data_free; /**< Free data passed to view */
 	Ewl_Model_Data_Count count;    /**< Count of data items */
+	Ewl_Model_Data_Unref unref;    /**< Unreference the data */
 	Ewl_Model_Data_Sort sort;      /**< Trigger sort on column */
 	Ewl_Model_Data_Highlight highlight; /**< Highlight the cell */
 };
@@ -193,6 +206,10 @@ Ewl_Model_Data_Highlight ewl_model_data_highlight_get(Ewl_Model *m);
 void			 ewl_model_data_count_set(Ewl_Model *m,
 					Ewl_Model_Data_Count count);
 Ewl_Model_Data_Count	 ewl_model_data_count_get(Ewl_Model *m);
+
+void			 ewl_model_data_unref_set(Ewl_Model *m,
+					Ewl_Model_Data_Unref unref);
+Ewl_Model_Data_Unref	 ewl_model_data_unref_get(Ewl_Model *m);
 
 void			 ewl_model_data_expandable_set(Ewl_Model *m,
 					Ewl_Model_Data_Expandable exp);

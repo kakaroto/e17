@@ -115,6 +115,7 @@ struct Ewl_Tree2
 	unsigned int columns;	/**< Number of columns in the tree */
 	unsigned char fixed:1;    /**< Rows are fixed height */
 	unsigned char headers_visible:1; /**< Are the headers visible? */
+	unsigned char row_color_alternate:1; /**< Are the rows alternating? */
 };
 
 /*
@@ -140,6 +141,10 @@ void 		 ewl_tree2_selection_type_set(Ewl_Tree2 *tree,
 
 void		 ewl_tree2_fixed_rows_set(Ewl_Tree2 *tree, unsigned int fixed);
 unsigned int	 ewl_tree2_fixed_rows_get(Ewl_Tree2 *tree);
+
+void		 ewl_tree2_alternate_row_colors_set(Ewl_Tree2 *tree,
+						unsigned char alternate);
+unsigned int	 ewl_tree2_alternate_row_colors_get(Ewl_Tree2 *tree);
 
 Ewl_Widget	*ewl_tree2_content_widget_get(Ewl_Tree2 *tree);
 
@@ -188,6 +193,12 @@ struct Ewl_Tree2_Node
 	Ewl_Widget *row;		/**< The row this node is for */
 	Ewl_Widget *handle;		/**< the expansion handle */
 
+	struct
+	{
+		Ewl_Model *model;	/**< The model of the expansion */
+		void *data;		/**< The data of the expansion */
+	} expansion;
+
 	unsigned int row_num;		/**< The row number of this row */
 	Ewl_Tree_Node_Flags expanded;
 
@@ -206,6 +217,7 @@ void		 ewl_tree2_node_collapse(Ewl_Tree2_Node *node);
 unsigned int	 ewl_tree2_node_expanded_is(Ewl_Tree2_Node *node);
 
 void ewl_tree2_cb_node_configure(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_tree2_cb_node_data_unref(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree2_cb_node_realize(Ewl_Widget *w, void *ev, void *data);
 void ewl_tree2_cb_node_toggle(Ewl_Widget *w, void *ev_data, void *user_data);
 

@@ -250,6 +250,38 @@ ewl_model_data_count_get(Ewl_Model *m)
 }
 
 /**
+ * @param m: The Ewl_Model to set the unref callback on
+ * @param count: The unref callback to set on the model
+ * @return Returns no value.
+ * @brief Sets the unref callback into the model
+ */
+void
+ewl_model_data_unref_set(Ewl_Model *m, Ewl_Model_Data_Unref unref)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("m", m);
+
+	m->unref = unref;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param m: The Ewl_Model to get the unref callback from
+ * @return Returns the Ewl_Model_Data_Unref callback set on the model or 
+ * NULL if none set.
+ * @brief Gets the unref callback from the model
+ */
+Ewl_Model_Data_Unref
+ewl_model_data_unref_get(Ewl_Model *m)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("m", m, NULL);
+
+	DRETURN_PTR(m->unref, DLEVEL_STABLE);
+}
+
+/**
  * @param m: The model to set the callback on
  * @param exp: The expandable callback
  * @return Returns no value

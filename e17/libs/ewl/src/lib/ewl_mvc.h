@@ -197,6 +197,7 @@ void		 ewl_mvc_view_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
 void		 ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc));
 
 void		 ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev, void *data);
+void		 ewl_mvc_cb_data_unref(Ewl_Widget *w, void *ev, void *data);
 
 void		 ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model,
 					void *data, unsigned int row,
