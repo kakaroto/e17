@@ -10,6 +10,8 @@ static int _rain_cb_animator(void *data);
 static void _rain_clouds_load(Rain *rain);
 static void _rain_drops_load(char type, Rain *rain);
 
+EAPI E_Module *rain_module = NULL;
+
 /* public module routines. all modules must have these */
 EAPI E_Module_Api e_modapi = {
    E_MODULE_API_VERSION,
@@ -20,12 +22,20 @@ EAPI void *
 e_modapi_init(E_Module *m)
 {
    Rain *rain;
+   char buf[4096];
 
    /* Set up module's message catalogue */
    bindtextdomain(PACKAGE, LOCALEDIR);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
+   snprintf(buf, sizeof(buf), "%s/e-module-rain.edj", e_module_dir_get(m));
+   e_configure_registry_category_add("appearance", 10, _("Appearance"), NULL, 
+				     "enlightenment/appearance");
+   e_configure_registry_item_add("appearance/rain", 150, _("Rain"), NULL, 
+				 buf, e_int_config_rain_module);
+
    rain = _rain_init(m);
+rain_module = m;
    return rain;
 }
 
@@ -33,6 +43,9 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
    Rain *rain;
+
+   e_configure_registry_item_del("appearance/rain");
+   e_configure_registry_category_del("appearance");
 
    rain = m->data;
    if (rain)
@@ -56,42 +69,6 @@ e_modapi_save(E_Module *m)
    if (!rain)
       return 1;
    e_config_domain_save("module.rain", rain->conf_edd, rain->conf);
-   return 1;
-}
-
-EAPI int
-e_modapi_about(E_Module *m)
-{
-   e_module_dialog_show(m, D_("Enlightenment Rain Module"),
-                        D_
-                        ("This is a simple module to display some rain on the desktop.<br>It can display clouds too, if you like clouds."));
-   return 1;
-}
-
-EAPI int
-e_modapi_config(E_Module *m)
-{
-   Rain *r;
-   E_Container *con;
-   Evas_List *l;
-
-   r = m->data;
-   if (!r)
-      return 0;
-   if (!r->cons)
-      return 0;
-   con = e_container_current_get(e_manager_current_get());
-   for (l = r->cons; l; l = l->next)
-     {
-        E_Container *c;
-
-        c = l->data;
-        if (c == con)
-          {
-             _config_rain_module(con, r);
-             break;
-          }
-     }
    return 1;
 }
 

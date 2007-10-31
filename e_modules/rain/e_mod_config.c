@@ -20,13 +20,15 @@ static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Co
 static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _fill_data(Rain *rn, E_Config_Dialog_Data *cfdata);
 
-void
-_config_rain_module(E_Container *con, Rain *r)
+EAPI E_Config_Dialog *e_int_config_rain_module(E_Container *con, const char *params __UNUSED__)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
+   Rain *r;
    char buf[4096];
-   
+
+   r = rain_module->data;
+
    v = E_NEW(E_Config_Dialog_View, 1);
 
    if (v)
@@ -36,7 +38,7 @@ _config_rain_module(E_Container *con, Rain *r)
         v->basic.apply_cfdata = _basic_apply_data;
         v->basic.create_widgets = _basic_create_widgets;
 	
-	snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(r->module));
+	snprintf(buf, sizeof(buf), "%s/e-module-rain.edj", e_module_dir_get(r->module));
         cfd = e_config_dialog_new(con, D_("Rain Module"), "Rain", "_e_modules_rain_config_dialog", buf, 0, v, r);
         r->config_dialog = cfd;
      }
