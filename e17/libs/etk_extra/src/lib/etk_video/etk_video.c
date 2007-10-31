@@ -84,7 +84,7 @@ Etk_Widget *etk_video_new_from_file(const char *filename)
  */
 void etk_video_set_from_file(Etk_Video *video, const char *filename)
 {
-   
+
    Etk_Widget *widget;
 
    if (!(widget = ETK_WIDGET(video)) || (video->filename == filename))
@@ -95,7 +95,7 @@ void etk_video_set_from_file(Etk_Video *video, const char *filename)
    etk_object_notify(ETK_OBJECT(video), "video-file");
 
    _etk_video_load(video);
-   
+
 }
 
 /**
@@ -104,7 +104,7 @@ void etk_video_set_from_file(Etk_Video *video, const char *filename)
  * @return Returns the name of the file used by the video (NULL on failure)
  */
 const char *etk_video_file_get(Etk_Video *video)
-{   
+{
    if (!video)
       return NULL;
    return video->filename;
@@ -129,7 +129,7 @@ void etk_video_size_get(Etk_Video *video, int *width, int *height)
    {
 
       emotion_object_size_get(video->video_object, width, height);
-      
+
    }
 }
 
@@ -140,16 +140,16 @@ void etk_video_size_get(Etk_Video *video, int *width, int *height)
  */
 void etk_video_play_set(Etk_Video *video, Etk_Bool play)
 {
-   
+
    if (!video)
       return;
-   
+
    if (!video->video_object && video->filename)
    {
       video->play_queued = ETK_TRUE;
       return;
    }
-   
+
    emotion_object_play_set(video->video_object, play);
 
 }
@@ -161,10 +161,10 @@ void etk_video_play_set(Etk_Video *video, Etk_Bool play)
  */
 Etk_Bool etk_video_play_get(Etk_Video *video)
 {
-   
+
    if (!video || !video->video_object)
       return ETK_FALSE;
-      
+
    return emotion_object_play_get(video->video_object);
 
 }
@@ -176,10 +176,10 @@ Etk_Bool etk_video_play_get(Etk_Video *video)
  */
 void etk_video_position_set(Etk_Video *video, double seconds)
 {
-   
+
    if (!video || !video->video_object)
       return;
-      
+
    return emotion_object_position_set(video->video_object, seconds);
 }
 
@@ -190,10 +190,10 @@ void etk_video_position_set(Etk_Video *video, double seconds)
  */
 double etk_video_position_get(Etk_Video *video)
 {
-   
+
    if (!video || !video->video_object)
       return ETK_FALSE;
-      
+
    return emotion_object_position_get(video->video_object);
 }
 
@@ -204,10 +204,10 @@ double etk_video_position_get(Etk_Video *video)
  */
 double etk_video_play_length_get(Etk_Video *video)
 {
-   
+
    if (!video || !video->video_object)
       return 0;
-      
+
    return emotion_object_play_length_get(video->video_object);
 }
 
@@ -218,11 +218,11 @@ double etk_video_play_length_get(Etk_Video *video)
  */
 void etk_video_audio_volume_set(Etk_Video *video, double volume)
 {
-   
+
    if (!video || !video->video_object)
       return;
-      
-   emotion_object_audio_volume_set(video->video_object, volume);   
+
+   emotion_object_audio_volume_set(video->video_object, volume);
 }
 
 /**
@@ -232,11 +232,11 @@ void etk_video_audio_volume_set(Etk_Video *video, double volume)
  */
 double etk_video_audio_volume_get(Etk_Video *video)
 {
-   
+
    if (!video || !video->video_object)
       return 0;
-      
-   return emotion_object_audio_volume_get(video->video_object);  
+
+   return emotion_object_audio_volume_get(video->video_object);
 }
 
 /**
@@ -246,11 +246,11 @@ double etk_video_audio_volume_get(Etk_Video *video)
  */
 void etk_video_audio_mute_set(Etk_Video *video, Etk_Bool mute)
 {
-   
+
    if (!video || !video->video_object)
       return;
-      
-   emotion_object_audio_mute_set(video->video_object, mute);   
+
+   emotion_object_audio_mute_set(video->video_object, mute);
 }
 
 /**
@@ -260,10 +260,10 @@ void etk_video_audio_mute_set(Etk_Video *video, Etk_Bool mute)
  */
 Etk_Bool etk_video_audio_mute_get(Etk_Video *video)
 {
-   
+
    if (!video || !video->video_object)
       return 0;
-      
+
    return emotion_object_audio_mute_get(video->video_object);
 }
 
@@ -274,13 +274,13 @@ Etk_Bool etk_video_audio_mute_get(Etk_Video *video)
  */
 void etk_video_keep_aspect_set(Etk_Video *video, Etk_Bool keep_aspect)
 {
-   
+
    if (!video)
       return;
 
    video->keep_aspect = keep_aspect;
    etk_widget_size_recalc_queue(ETK_WIDGET(video));
-   etk_object_notify(ETK_OBJECT(video), "keep-aspect");  
+   etk_object_notify(ETK_OBJECT(video), "keep-aspect");
 }
 
 /**
@@ -304,7 +304,7 @@ Etk_Bool etk_video_keep_aspect_get(Etk_Video *video)
 /* Initializes the video */
 static void _etk_video_constructor(Etk_Video *video)
 {
-   
+
    Etk_Widget *widget;
 
    if (!(widget = ETK_WIDGET(video)))
@@ -313,14 +313,14 @@ static void _etk_video_constructor(Etk_Video *video)
    video->video_object = NULL;
    video->filename = NULL;
    video->keep_aspect = ETK_TRUE;
-   video->play_queued = ETK_FALSE;   
+   video->play_queued = ETK_FALSE;
 
    widget->size_request = _etk_video_size_request;
    widget->size_allocate = _etk_video_size_allocate;
 
    etk_signal_connect("realized", ETK_OBJECT(video), ETK_CALLBACK(_etk_video_realize_cb), NULL);
    etk_signal_connect("unrealized", ETK_OBJECT(video), ETK_CALLBACK(_etk_video_unrealize_cb), NULL);
-   
+
 }
 
 /* Destroys the video */
@@ -335,7 +335,7 @@ static void _etk_video_destructor(Etk_Video *video)
 /* Sets the property whose id is "property_id" to the value "value" */
 static void _etk_video_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value)
 {
-   
+
    Etk_Video *video;
 
    if (!(video = ETK_VIDEO(object)) || !value)
@@ -352,13 +352,13 @@ static void _etk_video_property_set(Etk_Object *object, int property_id, Etk_Pro
       default:
          break;
    }
-   
+
 }
 
 /* Gets the value of the property whose id is "property_id" */
 static void _etk_video_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value)
 {
-   
+
    Etk_Video *video;
 
    if (!(video = ETK_VIDEO(object)) || !value)
@@ -375,13 +375,13 @@ static void _etk_video_property_get(Etk_Object *object, int property_id, Etk_Pro
       default:
          break;
    }
-   
+
 }
 
 /* Calculates the ideal size of the video */
 static void _etk_video_size_request(Etk_Widget *widget, Etk_Size *size)
 {
-   
+
    Etk_Video *video;
 
    if (!(video = ETK_VIDEO(widget)) || !size)
@@ -396,13 +396,13 @@ static void _etk_video_size_request(Etk_Widget *widget, Etk_Size *size)
       size->w = 0;
       size->h = 0;
    }
-   
+
 }
 
 /* Resizes the video to the allocated size */
 static void _etk_video_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
-   
+
    Etk_Video *video;
 
    if (!(video = ETK_VIDEO(widget)))
@@ -418,13 +418,13 @@ static void _etk_video_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
       int new_size;
 
       emotion_object_size_get(video->video_object, &video_w, &video_h);
-      
+
       if (video_w <= 0 || video_h <= 0)
       {
          video_w = 1;
          video_h = 1;
       }
-      
+
       aspect_ratio = (double)video_w / (double)video_h;
       if (geometry.h * aspect_ratio > geometry.w)
       {
@@ -439,10 +439,10 @@ static void _etk_video_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
          geometry.w = new_size;
       }
    }
-      
+
    evas_object_move(video->video_object, geometry.x, geometry.y);
    evas_object_resize(video->video_object, geometry.w, geometry.h);
-   
+
 }
 
 /**************************
@@ -484,7 +484,7 @@ static Etk_Bool _etk_video_unrealize_cb(Etk_Object *object, void *data)
 /* Load the video from the video or the edje file */
 static void _etk_video_load(Etk_Video *video)
 {
-   
+
    Etk_Widget *widget;
 
    if (!(widget = ETK_WIDGET(video)))
@@ -505,13 +505,13 @@ static void _etk_video_load(Etk_Video *video)
          /* TODO: FIXME: the video might not be realized here... */
          video->video_object = emotion_object_add(evas);
 	 /* TODO: FIXME: we need to detect what engine emotion is using */
-	 emotion_object_init(video->video_object, "emotion_decoder_xine.so");
+	 emotion_object_init(video->video_object, "xine");
          etk_widget_member_object_add(widget, video->video_object);
       }
       if (video->video_object)
       {
          const char *video_file;
-         
+
 	 video_file = emotion_object_file_get(video->video_object);
          if (!video_file || strcmp(video_file, video->filename) != 0)
          {
@@ -520,16 +520,16 @@ static void _etk_video_load(Etk_Video *video)
 	    evas_object_show(video->video_object);
          }
       }
-      
+
       if (video->play_queued)
       {
 	 emotion_object_play_set(video->video_object, 1);
 	 video->play_queued = ETK_FALSE;
       }
-   }   
-   
+   }
+
    etk_widget_size_recalc_queue(widget);
-   
+
 }
 
 /** @} */
@@ -545,7 +545,7 @@ static void _etk_video_load(Etk_Video *video)
  *
  * @image html widgets/image.png
  * This widget supports loading any video supported by your installation of emotion.
- * 
+ *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget
