@@ -364,14 +364,6 @@ e_modapi_save (E_Module * m)
   return 1;
 }
 
-EAPI int
-e_modapi_about (E_Module * m)
-{
-  e_module_dialog_show (m, D_ ("Enlightenment Wlan Monitor Module"),
-			D_ ("This module is used to monitor wireless devices."));
-  return 1;
-}
-
 static Wlan *
 _wlan_new (Evas * evas)
 {
