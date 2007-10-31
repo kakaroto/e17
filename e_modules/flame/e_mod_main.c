@@ -50,23 +50,13 @@ EAPI void *
 e_modapi_init (E_Module * m)
 {
   Flame *f;
-   Efreet_Desktop *desk;
    char buf[4096];
 
   /* Set up module's message catalogue */
   bindtextdomain (PACKAGE, LOCALEDIR);
   bind_textdomain_codeset (PACKAGE, "UTF-8");
    
-   snprintf(buf, sizeof(buf), "%s/module.desktop", e_module_dir_get(m));
-   desk = efreet_desktop_get(buf);
-   if ((desk) && (desk->orig_path) && (desk->icon))
-     {
-	snprintf(buf, sizeof(buf), "%s/%s.edj", ecore_file_dir_get(desk->orig_path), desk->icon);
-	efreet_desktop_free(desk);
-     }
-   else
-     buf[0] = '\0';
-
+   snprintf(buf, sizeof(buf), "%s/e-module-flame.edj", e_module_dir_get(m));
    e_configure_registry_category_add("appearance", 10, _("Appearance"), NULL, 
 				     "enlightenment/appearance");
    e_configure_registry_item_add("appearance/flame", 150, _("Flame"), NULL, 
