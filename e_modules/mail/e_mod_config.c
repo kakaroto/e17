@@ -47,7 +47,7 @@ _config_mail_module (Config_Item * ci)
   v->basic.apply_cfdata = _basic_apply_data;
   v->basic.create_widgets = _basic_create_widgets;
 
-  snprintf (buf, sizeof (buf), "%s/module.edj",
+  snprintf (buf, sizeof (buf), "%s/e-module-mail.edj",
 	    e_module_dir_get (mail_config->module));
   con = e_container_current_get (e_manager_current_get ());
   cfd = e_config_dialog_new (con, D_("Mail Configuration"), "Mail", "_e_modules_mail_config_dialog", buf, 0, v, ci);

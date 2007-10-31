@@ -475,6 +475,7 @@ e_modapi_init (E_Module * m)
 
       mail_config->items = evas_list_append (mail_config->items, ci);
     }
+
   mail_config->module = m;
   e_gadcon_provider_register (&_gc_class);
   return m;
@@ -563,14 +564,6 @@ EAPI int
 e_modapi_save (E_Module * m)
 {
   e_config_domain_save ("module.mail", conf_edd, mail_config);
-  return 1;
-}
-
-EAPI int
-e_modapi_about (E_Module * m)
-{
-  e_module_dialog_show (m, D_("Enlightenment Mail Module"),
-			D_("This is a module to notify when you have new mail."));
   return 1;
 }
 
