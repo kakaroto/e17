@@ -383,14 +383,6 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-EAPI int
-e_modapi_about(E_Module *m)
-{
-   e_module_dialog_show(m, D_ ("Enlightenment Slide Show Module"),
-			 D_("This module is VERY simple and is used to cycle desktop backgrounds"));
-   return 1;
-}
-
 static Slideshow *
 _slide_new(Evas *evas)
 {
