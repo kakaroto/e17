@@ -42,7 +42,7 @@ e_int_config_flame_module(E_Container *con, const char *params __UNUSED__)
   v->advanced.apply_cfdata = _advanced_apply_data;
   v->advanced.create_widgets = _advanced_create_widgets;
 
-  snprintf (buf, sizeof (buf), "%s/module.edj",
+  snprintf (buf, sizeof (buf), "%s/e-module-flame.edj",
 	    e_module_dir_get (fl->module));
   cfd = e_config_dialog_new (con, D_ ("Flame Configuration"), "Flame", 
 			     "_e_modules_flame_config_dialog", buf, 0, v, fl);
