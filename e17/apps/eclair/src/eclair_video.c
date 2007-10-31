@@ -37,7 +37,7 @@ void eclair_video_shutdown(Eclair_Video *video)
       return;
 
    fprintf(stderr, "Eclair: Debug: Destroying \"create emotion object\" thread\n");
-   pthread_join(video->video_create_thread, NULL); 
+   pthread_join(video->video_create_thread, NULL);
    fprintf(stderr, "Eclair: Debug: \"create emotion object\" thread destroyed\n");
 }
 //Create the video window and object
@@ -59,7 +59,7 @@ void eclair_create_video_window(Eclair_Video *video, Eclair_Engine engine)
    ecore_evas_callback_delete_request_set(video->video_window, _eclair_video_window_close_cb);
    ecore_evas_hide(video->video_window);
 
-   evas = ecore_evas_get(video->video_window);   
+   evas = ecore_evas_get(video->video_window);
    video->black_background = evas_object_rectangle_add(evas);
    evas_object_color_set(video->black_background, 0, 0, 0, 255);
    evas_object_layer_set(video->black_background, 0);
@@ -97,11 +97,11 @@ static void *_eclair_video_create_emotion_object_thread(void *param)
    switch (eclair->video_module)
    {
       case ECLAIR_VIDEO_GSTREAMER:
-         result |= emotion_object_init(new_video_object, "emotion_decoder_gstreamer.so");
+         result |= emotion_object_init(new_video_object, "gstreamer");
          break;
       case ECLAIR_VIDEO_XINE:
       default:
-         result |= emotion_object_init(new_video_object, "emotion_decoder_xine.so");
+         result |= emotion_object_init(new_video_object, "xine");
          break;
    }
    if (!result)
@@ -124,7 +124,7 @@ static void *_eclair_video_create_emotion_object_thread(void *param)
    if (eclair->start_playing)
       eclair_play_current(eclair);
 
-   return NULL; 
+   return NULL;
 }
 
 //Resize the video object and the black background object according to the size of the window
@@ -153,7 +153,7 @@ void eclair_video_window_resize(Eclair_Video *video)
             video_width = window_width;
             video_height = video_width / ratio;
          }
-      
+
          X = (window_width - video_width) / 2.0;
          Y = (window_height - video_height) / 2.0;
       }
@@ -162,7 +162,7 @@ void eclair_video_window_resize(Eclair_Video *video)
          video_width = window_width;
          video_height = window_height;
          X = Y = 0;
-      }   
+      }
       evas_object_move(video->video_object, X, Y);
       evas_object_resize(video->video_object, video_width, video_height);
    }
@@ -182,7 +182,7 @@ void eclair_video_window_resize(Eclair_Video *video)
 static void _eclair_video_frame_decode_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eclair_Video *video;
-   
+
    if ((video = data))
       eclair_update(video->eclair);
 }
@@ -191,7 +191,7 @@ static void _eclair_video_frame_decode_cb(void *data, Evas_Object *obj, void *ev
 static void _eclair_video_playback_finished_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Eclair_Video *video;
-   
+
    if ((video = data))
       eclair_play_next(video->eclair);
 }
