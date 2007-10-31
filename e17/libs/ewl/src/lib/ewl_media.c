@@ -121,13 +121,13 @@ ewl_media_module_set(Ewl_Media *m, Ewl_Media_Module_Type module)
 		{
 			case EWL_MEDIA_MODULE_GSTREAMER:
 				ret = emotion_object_init(m->video,
-						"emotion_decoder_gstreamer.so");
+						"gstreamer");
 				break;
 
 			case EWL_MEDIA_MODULE_XINE:
 			default:
 				ret = emotion_object_init(m->video,
-						"emotion_decoder_xine.so");
+						"xine");
 				break;
 		}
 	}
