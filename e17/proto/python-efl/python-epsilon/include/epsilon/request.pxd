@@ -26,3 +26,4 @@ cdef extern from "Ecore.h":
 
 cdef class Request:
     cdef Epsilon_Request *obj
+    cdef object func

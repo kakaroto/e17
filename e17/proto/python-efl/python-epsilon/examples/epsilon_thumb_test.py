@@ -15,14 +15,11 @@ def cb(req):
     count[0] -= 1
     if count[0] < 1:
         ecore.main_loop_quit()
-    return True
-
-epsilon.request.event_done_handler_set(cb)
 
 for f in os.listdir(folder):
     p = os.path.join(folder, f)
     if os.path.isfile(p):
-        print "REQ:", epsilon.request.Request(p)
+        print "REQ:", epsilon.request.Request(cb, p)
         count[0] += 1
 
 ecore.main_loop_begin()

@@ -9,7 +9,7 @@ def shutdown():
     epsilon_shutdown()
 
 def init():
-    epsilon_thumb_init()
+    return epsilon_thumb_init()
 
 EPSILON_THUMB_NORMAL = 0
 EPSILON_THUMB_LARGE = 1
@@ -20,21 +20,32 @@ cdef class Request:
     This is an asynchronous request to the thumbnailer, that will take care
     of checking if thumbnail needs to be generated and if so, generate it.
 
-    After it's processed, it will be dispatched using callback set with
-    L{event_done_handler_set()} and then B{deleted} (it will become shallow
-    and no attribute will work, so don't store it).
+    After it's processed, it will be dispatched using callback 'func' provided
+    to constructor and then the request will be B{deleted} (it will become
+    shallow and no attribute will work, so don't store it).
 
     The thumbnailer daemon 'epsilon_thumbd' is automatically started.
     """
-    def __init__(self, char *path, dest=None, int size=EPSILON_THUMB_NORMAL):
+    def __init__(self, func, char *path, dest=None,
+                 int size=EPSILON_THUMB_NORMAL):
         """Epsilon Request constructor.
 
+        @parm func: function to call when request is served.
         @parm path: file to process.
         @path dest: if provided (not None), specify where to store the thumb.
-        @path size: EPSILON_THUMB_NORMAL or EPSILON_THUMB_LARGE
+        @path size: EPSILON_THUMB_NORMAL or EPSILON_THUMB_LARGE (it's not the
+           size in pixels!)
         """
         cdef char *d
+        if not callable(func):
+            raise TypeError("Parameter 'func' must be callable")
+
+        if size != EPSILON_THUMB_NORMAL and size != EPSILON_THUMB_LARGE:
+            raise ValueError("Invalid size, must be EPSILON_THUMB_NORMAL or "
+                             "EPSILON_THUMB_LARGE")
+
         if self.obj == NULL:
+            self.func = func
             if dest is not None:
                 d = dest
             else:
@@ -65,6 +76,7 @@ cdef class Request:
         if self.obj != NULL:
             epsilon_del(self.obj)
             self.obj = NULL
+            self.func = None
             python.Py_DECREF(self)
 
     def stop(self):
@@ -98,49 +110,23 @@ cdef class Request:
 
 
 init()
-cdef object _epsilon_handler_py = None
 cdef Ecore_Event_Handler *_epsilon_event_handler = NULL
 
 cdef int _epsilon_event_handler_cb(void *data, int type, void *event) with GIL:
     cdef Epsilon_Request *er
     cdef Request obj
-    global _epsilon_handler_py
 
     er = <Epsilon_Request *>event
     obj = <Request>er.data # this may bring problems if Epsilon is used
                            # by other non-python lib in this same process.
 
-    if _epsilon_handler_py is not None:
-        func, args, kargs = _epsilon_handler_py
-        try:
-            r = func(obj, *args, **kargs)
-        except Exception, e:
-            traceback.print_exc()
-            r = False
-
-        if not r:
-            _epsilon_handler_py = None
+    try:
+        obj.func(obj)
+    except Exception, e:
+        traceback.print_exc()
 
     obj.delete()
     return 1
-
-def event_done_handler_set(func, *args, **kargs):
-    """Set callback to call when requests are processed.
-
-    Signature: C{function(request, *args, **kargs)}
-    """
-    global _epsilon_handler_py
-    if func is None:
-        _epsilon_handler_py = None
-    elif callable(func):
-        _epsilon_handler_py = (func, args, kargs)
-    else:
-        raise TypeError("Parameter 'func' must be callable")
-
-def event_done_handler_unset():
-    "Do not deliver requests anymore."
-    _epsilon_handler_py = None
-
 
 # Call after init()
 # Always execute to clean up generated objects
