@@ -38,7 +38,7 @@ _configure_net_module(void *data)
    v->basic.apply_cfdata = _apply_data;
    v->basic.create_widgets = _basic_create;
    
-   snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(cfg->mod));
+   snprintf(buf, sizeof(buf), "%s/e-module-net.edj", e_module_dir_get(cfg->mod));
    con = e_container_current_get(e_manager_current_get());
    cfd = e_config_dialog_new(con, D_("Net Module Configuration"), "Net", 
 			     "_netmod_config_dialog", buf, 0, v, ci);
