@@ -44,17 +44,37 @@ EAPI E_Module_Api e_modapi = {
   "Flame"
 };
 
+EAPI E_Module *flame_module = NULL;
+
 EAPI void *
 e_modapi_init (E_Module * m)
 {
   Flame *f;
+   Efreet_Desktop *desk;
+   char buf[4096];
 
   /* Set up module's message catalogue */
   bindtextdomain (PACKAGE, LOCALEDIR);
   bind_textdomain_codeset (PACKAGE, "UTF-8");
+   
+   snprintf(buf, sizeof(buf), "%s/module.desktop", e_module_dir_get(m));
+   desk = efreet_desktop_get(buf);
+   if ((desk) && (desk->orig_path) && (desk->icon))
+     {
+	snprintf(buf, sizeof(buf), "%s/%s.edj", ecore_file_dir_get(desk->orig_path), desk->icon);
+	efreet_desktop_free(desk);
+     }
+   else
+     buf[0] = '\0';
+
+   e_configure_registry_category_add("appearance", 10, _("Appearance"), NULL, 
+				     "enlightenment/appearance");
+   e_configure_registry_item_add("appearance/flame", 150, _("Flame"), NULL, 
+				 buf, e_int_config_flame_module);
 
   f = _flame_init (m);
   f->module = m;
+   flame_module = m;
   return f;
 }
 
@@ -62,6 +82,9 @@ EAPI int
 e_modapi_shutdown (E_Module * m)
 {
   Flame *f;
+
+   e_configure_registry_item_del("appearance/flame");
+   e_configure_registry_category_del("appearance");
 
   f = m->data;
   if (f)
@@ -84,29 +107,6 @@ e_modapi_save (E_Module * m)
   f = m->data;
   if (f)
     e_config_domain_save ("module.flame", f->conf_edd, f->conf);
-  return 1;
-}
-
-EAPI int
-e_modapi_about (E_Module * m)
-{
-  e_module_dialog_show (m, D_ ("Enlightenment Flame Module"),
-			D_ ("A simple module to display flames."));
-  return 1;
-}
-
-EAPI int
-e_modapi_config (E_Module * m)
-{
-  Flame *f;
-  E_Container *con;
-
-  f = m->data;
-  if (!f)
-    return 0;
-  con = e_container_current_get (e_manager_current_get ());
-  if (f->face->con == con)
-    _config_flame_module (con, f);
   return 1;
 }
 

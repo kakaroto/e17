@@ -23,12 +23,15 @@ static int _advanced_apply_data (E_Config_Dialog * cfd,
 				 E_Config_Dialog_Data * cfdata);
 static void _fill_data (Flame * f, E_Config_Dialog_Data * cfdata);
 
-void
-_config_flame_module (E_Container * con, Flame * fl)
+EAPI E_Config_Dialog *
+e_int_config_flame_module(E_Container *con, const char *params __UNUSED__) 
 {
-  E_Config_Dialog *cfd;
-  E_Config_Dialog_View *v;
-  char buf[4096];
+   E_Config_Dialog *cfd;
+   E_Config_Dialog_View *v;
+   Flame *fl;
+   char buf[4096];
+
+   fl = flame_module->data;
 
   v = E_NEW (E_Config_Dialog_View, 1);
 
@@ -44,6 +47,7 @@ _config_flame_module (E_Container * con, Flame * fl)
   cfd = e_config_dialog_new (con, D_ ("Flame Configuration"), "Flame", 
 			     "_e_modules_flame_config_dialog", buf, 0, v, fl);
   fl->config_dialog = cfd;
+   return cfd;
 }
 
 static void *

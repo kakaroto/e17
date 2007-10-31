@@ -66,13 +66,13 @@ struct _Flame_Face
    Ecore_Event_Handler *ev_handler_container_resize;
 };
 
+extern E_Module *flame_module;
+
 EAPI extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init(E_Module *m);
 EAPI int e_modapi_shutdown(E_Module *m);
 EAPI int e_modapi_save(E_Module *m);
-EAPI int e_modapi_about(E_Module *m);
-EAPI int e_modapi_config(E_Module *m);
 
 void _flame_cb_config_updated(void *data);
 
