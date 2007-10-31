@@ -27,7 +27,6 @@ EAPI extern E_Module_Api e_modapi;
 EAPI void *e_modapi_init(E_Module *m);
 EAPI int e_modapi_shutdown(E_Module *m);
 EAPI int e_modapi_save(E_Module *m);
-EAPI int e_modapi_about(E_Module *m);
 
 void _config_ut_module(Config_Item *ci);
 void _ut_config_updated(Config_Item *ci);
