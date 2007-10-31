@@ -320,15 +320,34 @@ static Ewl_Widget *
 combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__)
 {
 	Combo_Test_Data *d;
-	Ewl_Widget *w, *o;
+	Ewl_Widget *w, *o, *o2;
+	Ewl_Selection_Idx *idx;
 	char *val;
 
 	d = data;
-	w = ewl_hbox_new();
-	val = "Please select an option.";
+	w = ewl_widget_name_find("combo_custom");
+	idx = ewl_mvc_selected_get(EWL_MVC(w));
 
+	w = ewl_hbox_new();
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT);
+	val = "Please select an option.";
 	o = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(o), val);
+	
+	if (idx)
+	{
+		val = strrchr(d->data[idx->row], '/');
+		ewl_text_text_set(EWL_TEXT(o),
+				(val ? val + 1 : d->data[idx->row]));
+		
+		o2 = ewl_image_new();
+		ewl_image_file_path_set(EWL_IMAGE(o2), d->data[idx->row]);
+		ewl_container_child_append(EWL_CONTAINER(w), o2);
+		ewl_widget_show(o2);
+	}
+
+	else
+		ewl_text_text_set(EWL_TEXT(o), val);
+
 	ewl_container_child_append(EWL_CONTAINER(w), o);
 	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
 				combo_cb_entry_changed, NULL);

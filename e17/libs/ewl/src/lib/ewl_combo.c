@@ -335,9 +335,25 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 		model = idx->sel.model;
 		mvc_data = idx->sel.data;
 
-		item = view->fetch(model->fetch(mvc_data, idx->row, 0),
+		if (combo->editable)
+		{
+			/* Give the row selected in the column parameter,
+			 * ewl_filepicker needs this to display proper filter
+			 */
+
+			item = view->header_fetch(ewl_mvc_data_get(mvc), 
+					idx->row);
+		}
+
+		else
+		{
+		
+		
+			item = view->fetch(model->fetch(mvc_data, idx->row, 0),
 				idx->row, 0);
+		}
 	}
+
 	else if (view->header_fetch)
 		item = view->header_fetch(ewl_mvc_data_get(mvc), 0);
 
