@@ -80,11 +80,3 @@ e_modapi_save(E_Module *m)
    e_config_domain_save("module.net", conf_edd, cfg);
    return 1;
 }
-
-EAPI int
-e_modapi_about(E_Module *m) 
-{
-   e_module_dialog_show(m, D_("Network Monitor Module"), 
-			D_("Module to monitor network traffic"));
-   return 1;
-}
