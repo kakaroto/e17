@@ -11,21 +11,25 @@
 extern "C" {
 #endif
 
+/* TODO: Etk_Object is a little too heavy for a string...
+   maybe we could use Etk_Base instead? */
+
 /**
  * @defgroup Etk_String Etk_String
+ * @brief An object that offers convenient methods to manipulate a string
  * @{
  */
 
-/** @brief Gets the type of a string */
+/** Gets the type of a string */
 #define ETK_STRING_TYPE            (etk_string_type_get())
-/** @brief Casts the object to an Etk_String */
+/** Casts the object to an Etk_String */
 #define ETK_STRING(obj)            (ETK_OBJECT_CAST((obj), ETK_STRING_TYPE, Etk_String))
-/** @brief Checks if the object is an Etk_Text_Buffer */
+/** Checks if the object is an Etk_String */
 #define ETK_IS_STRING(obj)         (ETK_OBJECT_CHECK_TYPE((obj), ETK_STRING_TYPE))
 
 /**
- * @struct Etk_String
- * @brief An Etk_String is an easy way to manipulate a string
+ * @brief @widget Etk_String is an object that offers convenient methods to manipulate a string
+ * @structinfo
  */
 struct Etk_String
 {
