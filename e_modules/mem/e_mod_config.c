@@ -37,10 +37,11 @@ _config_mem_module (Config_Item * ci)
   v->basic.apply_cfdata = _basic_apply_data;
   v->basic.create_widgets = _basic_create_widgets;
 
-  snprintf (buf, sizeof (buf), "%s/e-module-mail.edj",
+  snprintf (buf, sizeof (buf), "%s/e-module-mem.edj",
 	    e_module_dir_get (mem_config->module));
   con = e_container_current_get (e_manager_current_get ());
-  cfd = e_config_dialog_new (con, D_ ("Mem Configuration"), "Mem", "_e_modules_mem_config_dialog", buf, 0, v, ci);
+  cfd = e_config_dialog_new (con, D_ ("Mem Configuration"), "Mem", 
+			     "_e_modules_mem_config_dialog", buf, 0, v, ci);
   mem_config->config_dialog = cfd;
 }
 
