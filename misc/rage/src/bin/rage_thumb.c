@@ -19,7 +19,7 @@ static void help_show(void);
 static int signal_exit(void *data, int ev_type, void *ev);
 static int frame_grab(void *data);
 
-char *module_filename = "emotion_decoder_xine.so";
+char *module_filename = "xine";
 Ecore_Evas *ee = NULL, *ee_im = NULL, *ee_im2 = NULL;
 Evas *evas = NULL, *evas_im = NULL, *evas_im2 = NULL;
 Evas_Object *video = NULL, *bg = NULL, *im = NULL, *im2 = NULL;
@@ -47,7 +47,7 @@ main(int argc, char **argv)
    if (!ecore_evas_init()) return -1;
 
    args_parse();
-   
+
    ee = ecore_evas_buffer_new(outw, outh);
    if (!ee)
      {
@@ -55,7 +55,7 @@ main(int argc, char **argv)
 	exit(-1);
      }
    evas = ecore_evas_get(ee);
-   
+
    video = emotion_object_add(evas);
    emotion_object_module_option_set(video, "audio", "off");
    emotion_object_init(video, module_filename);
@@ -65,18 +65,18 @@ main(int argc, char **argv)
    evas_object_move(video, 0, 0);
    evas_object_resize(video, outw, outh);
    evas_object_show(video);
-   emotion_object_play_set(video, 1); 
+   emotion_object_play_set(video, 1);
    emotion_object_audio_mute_set(video, 1);
    video_resize();
 
    frame_grab(NULL);
    ecore_timer_add(1.0 / fps, frame_grab, NULL);
    ecore_main_loop_begin();
-   
+
    if (ef) eet_close(ef);
-   
+
    evas_object_del(video);
-   ecore_evas_free(ee);   
+   ecore_evas_free(ee);
    ecore_evas_shutdown();
    ecore_shutdown();
    return 0;
@@ -105,7 +105,7 @@ video_resize(void)
    if ((iw == 0) || (ih == 0)) return;
    ratio = emotion_object_ratio_get(video);
    if (ratio > 0.0) iw = (ih * ratio) + 0.5;
-   
+
    if ((firstsize) && (iw > 1))
      {
 	outw = (outh * iw) / ih;
@@ -130,7 +130,7 @@ args_parse(void)
    int argc;
    char **argv;
    int i;
-   
+
    ecore_app_args_get(&argc, &argv);
    for (i = 1; i < argc; i++)
      {
@@ -147,7 +147,7 @@ args_parse(void)
 	  {
 	     int n;
 	     char buf[16], buf2[16];
-	     
+
 	     n = sscanf(argv[i +1], "%10[^x]x%10s", buf, buf2);
 	     if (n == 2)
 	       {
@@ -243,7 +243,7 @@ frame_grab(void *data)
 	     pos = 1;
 	     endpos = 3;
 	  }
-	emotion_object_position_set(video, p1 - snip); 
+	emotion_object_position_set(video, p1 - snip);
      }
    p = emotion_object_position_get(video);
    printf("fr %i pos %i p %3.3f\n", frnum, pos, p);

@@ -64,7 +64,7 @@ main(int argc, char **argv)
 	  {
 	     int n, w, h;
 	     char buf[16], buf2[16];
-	     
+
 	     n = sscanf(argv[i +1], "%10[^x]x%10s", buf, buf2);
 	     if (n == 2)
 	       {
@@ -78,7 +78,7 @@ main(int argc, char **argv)
 	else if (!strcmp(argv[i], "-t"))
 	  {
 	     char buf[4096];
-	     
+
 	     snprintf(buf, sizeof(buf), "%s/%s.edj", PACKAGE_DATA_DIR, argv[i +1]);
 	     theme = strdup(buf);
 	     i++;
@@ -101,12 +101,12 @@ main(int argc, char **argv)
 	else
 	  main_usage();
      }
-   
+
    /* load config */
    if (!config)
      {
 	char buf[4096];
-	
+
 	if (getenv("HOME"))
 	  snprintf(buf, sizeof(buf), "%s/.rage", getenv("HOME"));
 	else if (getenv("TMPDIR"))
@@ -154,7 +154,7 @@ main(int argc, char **argv)
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN, main_key_down, NULL);
    evas_object_focus_set(o, 1);
    o_bg = o;
-   
+
    /* if fullscreen mode - go fullscreen and hide mouse */
    if (fullscreen)
      {
@@ -189,17 +189,17 @@ main(int argc, char **argv)
    menu_item_add("icon/update", "Scan Media",
 		  "Scan all media again and update", NULL,
 		  main_menu_scan, NULL, NULL, NULL, NULL);
-   
+
    menu_item_enabled_set("Main", "Settings", 1);
    menu_item_enabled_set("Main", "DVD", 1);
-   
+
    menu_go();
-   
+
    menu_item_select("Settings");
 
    /* show our canvas */
    ecore_evas_show(ecore_evas);
-   
+
    /* add event handlers for volume add/del event from the volume scanner
     * system so we know when volumes come and go */
    ecore_event_handler_add(VOLUME_ADD, main_volume_add, NULL);
@@ -207,7 +207,7 @@ main(int argc, char **argv)
 
    /* ... run the program core loop ... */
    ecore_main_loop_begin();
-   
+
    ecore_evas_shutdown();
    ecore_file_shutdown();
    ecore_shutdown();
@@ -219,7 +219,7 @@ void
 main_mode_push(int mode)
 {
    Mode *md;
-   
+
    md = calloc(1, sizeof(Mode));
    md->mode = mode;
    modes = evas_list_prepend(modes, md);
@@ -230,7 +230,7 @@ void
 main_mode_pop(void)
 {
    Mode *md;
-   
+
    if (!modes) return;
    md = modes->data;
    modes = evas_list_remove_list(modes, modes);
@@ -320,7 +320,7 @@ static void
 main_resize(Ecore_Evas *ee)
 {
    Evas_Coord w, h;
-             
+
    evas_output_viewport_get(evas, NULL, NULL, &w, &h);
    evas_object_resize(o_bg, w, h);
    layout_resize();
@@ -363,7 +363,7 @@ list_string_unique_append(Evas_List *list, const char *str, int count)
 {
    Evas_List *l;
    Genre *ge;
-	
+
    for (l = list; l; l = l->next)
      {
 	ge = l->data;
@@ -386,7 +386,7 @@ list_string_free(Evas_List *list)
    while (list)
      {
 	Genre *ge;
-	
+
 	ge = list->data;
 	evas_stringshare_del(ge->label);
 	free(ge);
@@ -404,7 +404,7 @@ list_video_genres(void)
    for (l = volume_items_get(); l; l = l->next)
      {
 	Volume_Item *vi;
-	
+
 	vi = l->data;
 	if (!strcmp(vi->type, "video"))
 	  {
@@ -446,7 +446,7 @@ static void
 video_lib_item_free(void *data)
 {
    Video_Lib_Item *vli;
-   
+
    vli = data;
    evas_stringshare_del(vli->label);
    evas_stringshare_del(vli->path);
@@ -460,10 +460,10 @@ static int
 main_menu_video_over_delay(void *data)
 {
    Video_Lib_Item *vli;
-   
+
    vli = data;
    if (over_video) minivid_del(over_video);
-   over_video = minivid_add("emotion_decoder_xine.so", vli->vi->path, 1);
+   over_video = minivid_add("xine", vli->vi->path, 1);
    layout_swallow("video_preview", over_video);
    over_delay_timer = NULL;
    return 0;
@@ -486,7 +486,7 @@ main_menu_video_view(void *data)
 	minivid_del(over_video);
 	over_video = NULL;
      }
-   video_init("emotion_decoder_xine.so", vli->vi->path, "video");
+   video_init("xine", vli->vi->path, "video");
 }
 
 static void
@@ -541,19 +541,19 @@ main_menu_video_library(void *data)
 	vl->path = evas_stringshare_add(vli->path);
 	menu_push("menu", vl->label, video_lib_free, vl);
      }
-   
+
    /* determine toplevel genres */
    genres = list_video_genres();
    if (genres)
      {
 	int vlpn;
-	
+
 	vlpn = strlen(vl->path);
 	printf("--- %s\n", vl->path);
 	for (l = genres; l; l = l->next)
 	  {
 	     Genre *ge;
-	     
+
 	     ge = l->data;
 	     if (vlpn > 0)
 	       {
@@ -561,7 +561,7 @@ main_menu_video_library(void *data)
 		      (strlen(ge->label) != vlpn))
 		    {
 		       char *s, *p;
-		       
+
 		       s = strdup(ge->label + vlpn + 1);
 		       p = strchr(s, '/');
 		       if (p) *p = 0;
@@ -573,7 +573,7 @@ main_menu_video_library(void *data)
 	     else
 	       {
 		  char *s, *p;
-		  
+
 		  s = strdup(ge->label);
 		  p = strchr(s, '/');
 		  if (p) *p = 0;
@@ -589,7 +589,7 @@ main_menu_video_library(void *data)
 	       {
 		  Genre *ge;
 		  char buf[4096];
-		  
+
 		  ge = l->data;
 		  if (vl->path[0])
 		    snprintf(buf, sizeof(buf), "%s/%s", vl->path, ge->label);
@@ -613,18 +613,18 @@ main_menu_video_library(void *data)
 	else
 	  {
 	     const char *sel = NULL;
-	     
+
 	     for (l = volume_items_get(); l; l = l->next)
 	       {
 		  Volume_Item *vi;
-		  
+
 		  vi = l->data;
 		  if (!strcmp(vi->type, "video"))
 		    {
 		       if (!strcmp(vi->genre, vl->path))
 			 {
 			    char buf[4096];
-			    
+
 			    buf[0] = 0;
 			    vli = calloc(1, sizeof(Video_Lib_Item));
 			    vli->label = evas_stringshare_add(vi->name);
@@ -633,7 +633,7 @@ main_menu_video_library(void *data)
 //			    snprintf(buf, sizeof(buf), "3:00:00");
 			    menu_item_add(vli->path, vli->label,
 					  "", buf,
-					  main_menu_video_view, vli, 
+					  main_menu_video_view, vli,
 					  video_lib_item_free,
 					  main_menu_video_over,
 					  main_menu_video_out);
@@ -665,7 +665,7 @@ main_menu_dvd_watch(void *data)
 	minivid_del(over_video);
 	over_video = NULL;
      }
-   video_init("emotion_decoder_xine.so", "dvd://", "video");
+   video_init("xine", "dvd://", "video");
 }
 
 static void
