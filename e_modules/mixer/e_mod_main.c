@@ -594,14 +594,6 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-EAPI int
-e_modapi_about(E_Module *m)
-{
-   e_module_dialog_show(m, D_("Mixer"), 
-			D_("Mixer module lets you change volume."));
-   return 1;
-}
-
 /* Changes the volume for the main channel*/
 static void 
 _mixer_simple_volume_change(Mixer *mixer, Config_Item *ci, double val)
