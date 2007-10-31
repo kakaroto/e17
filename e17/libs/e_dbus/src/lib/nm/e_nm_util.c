@@ -42,7 +42,7 @@ e_nm_free_by_type(int rettype)
   switch (rettype)
   {
     case DBUS_TYPE_STRING:
-     return NULL;
+      return NULL;
     case DBUS_TYPE_INT32:
     case DBUS_TYPE_UINT32:
     case DBUS_TYPE_BOOLEAN:
@@ -227,6 +227,6 @@ free_nm_string_list(void *data)
 {
   Ecore_List *list = data;
 
-   if (list) ecore_list_destroy(list);
+  if (list) ecore_list_destroy(list);
 }
 
