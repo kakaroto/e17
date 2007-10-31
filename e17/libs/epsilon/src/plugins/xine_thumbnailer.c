@@ -27,18 +27,18 @@ typedef struct _epsilon_xine_param
   xine_audio_port_t *ao_port;
 } epsilon_xine_param;
 
-Imlib_Image epsilon_thumb_imlib_standardize ();
+Imlib_Image epsilon_thumb_imlib_standardize (void);
 int clip (int val);
 void i_yuy2_to_yv12 (const unsigned char *src, unsigned char *dest, int width,
 		     int height);
 int yv12_to_rgb (const char *name, int w, int h, DATA8 ** buf,
 		 Imlib_Image * rp);
 Imlib_Image epsilon_generate_thumb (Epsilon * e);
-Epsilon_Plugin *epsilon_plugin_init ();
+Epsilon_Plugin *epsilon_plugin_init (void);
 
 /*----------------------------------------------*/
 Imlib_Image
-epsilon_thumb_imlib_standardize ()
+epsilon_thumb_imlib_standardize (void)
 {
   Imlib_Image dst = NULL;
   int dw, dh;
@@ -373,8 +373,8 @@ try_get_chance:
 
       if (format == XINE_IMGFMT_YUY2)
 	{
-	  char *buf2 = malloc (w * h * 2);
-	  char *tmp = buf;
+	  DATA8 *buf2 = malloc (w * h * 2);
+	  DATA8 *tmp = buf;
 	  i_yuy2_to_yv12 (buf, buf2, w, h);
 
 	  buf = buf2;
@@ -443,7 +443,7 @@ try_get_chance:
 	    }
 	}
       else
-	img = epsilon_thumb_imlib_standardize (e);
+	img = epsilon_thumb_imlib_standardize ();
 
       if (param->stream)
 	{
@@ -472,7 +472,7 @@ try_get_chance:
 
 
 Epsilon_Plugin *
-epsilon_plugin_init ()
+epsilon_plugin_init (void)
 {
   Epsilon_Plugin *plugin = calloc (1, sizeof (Epsilon_Plugin));
   plugin->epsilon_generate_thumb = &epsilon_generate_thumb;
