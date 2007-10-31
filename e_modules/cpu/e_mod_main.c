@@ -571,11 +571,3 @@ e_modapi_save(E_Module *m)
    e_config_domain_save("module.cpu", conf_edd, cpu_conf);
    return 1;
 }
-
-EAPI int
-e_modapi_about(E_Module *m)
-{
-  e_module_dialog_show(m, _("Enlightenment Cpu Monitor Module"),
-		       _("This module is used to monitor cpu load."));
-  return 1;
-}
