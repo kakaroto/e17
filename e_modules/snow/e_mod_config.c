@@ -19,13 +19,16 @@ static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 
-void
-_config_snow_module(E_Container *con, Snow *s)
+EAPI E_Config_Dialog *
+e_int_config_snow_module(E_Container *con, const char *params __UNUSED__)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
+   Snow *s;
    char buf[4096];
-   
+
+   s = snow_module->data;
+
    v = E_NEW(E_Config_Dialog_View, 1);
 
    v->create_cfdata = _create_data;
@@ -35,7 +38,7 @@ _config_snow_module(E_Container *con, Snow *s)
    v->advanced.apply_cfdata = NULL;
    v->advanced.create_widgets = NULL;
 
-   snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(s->module));
+   snprintf(buf, sizeof(buf), "%s/e-module-snow.edj", e_module_dir_get(s->module));
    cfd = e_config_dialog_new(con, D_("Snow Configuration"), "Snow", "_e_modules_snow_config_dialog", buf, 0, v, s);
    s->config_dialog = cfd;
 }

@@ -3,17 +3,14 @@
 #include "e_mod_main.h"
 #include "e_mod_config.h"
 
-/* TODO List:
- *
- *
- */
-
 /* module private routines */
 static Snow *_snow_init(E_Module *m);
 static void _snow_shutdown(Snow *snow);
 static int _snow_cb_animator(void *data);
 static void _snow_trees_load(Snow *snow);
 static void _snow_flakes_load(char type, Snow *snow);
+
+EAPI E_Module *snow_module = NULL;
 
 /* public module routines. all modules must have these */
 EAPI E_Module_Api e_modapi = {
@@ -25,12 +22,20 @@ EAPI void *
 e_modapi_init(E_Module *m)
 {
    Snow *snow;
+   char buf[4096];
 
    /* Set up module's message catalogue */
    bindtextdomain(PACKAGE, LOCALEDIR);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
+   snprintf(buf, sizeof(buf), "%s/e-module-snow.edj", e_module_dir_get(m));
+   e_configure_registry_category_add("appearance", 10, _("Appearance"), NULL, 
+				     "enlightenment/appearance");
+   e_configure_registry_item_add("appearance/snow", 150, _("Snow"), NULL, 
+				 buf, e_int_config_snow_module);
+
    snow = _snow_init(m);
+snow_module = m;
    return snow;
 }
 
@@ -38,6 +43,9 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
    Snow *snow;
+
+   e_configure_registry_item_del("appearance/snow");
+   e_configure_registry_category_del("appearance");
 
    snow = m->data;
    if (snow)
@@ -61,40 +69,6 @@ e_modapi_save(E_Module *m)
    if (!snow)
       return 1;
    e_config_domain_save("module.snow", snow->conf_edd, snow->conf);
-   return 1;
-}
-
-EAPI int
-e_modapi_about(E_Module *m)
-{
-   e_module_dialog_show(m, D_("Enlightenment Snow Module"), D_("This is a snow module that may replace xsnow."));
-   return 1;
-}
-
-EAPI int
-e_modapi_config(E_Module *m)
-{
-   Snow *s;
-   Evas_List *l;
-   E_Container *con;
-
-   s = m->data;
-   if (!s)
-      return 0;
-   if (!s->cons)
-      return 0;
-   con = e_container_current_get(e_manager_current_get());
-   for (l = s->cons; l; l = l->next)
-     {
-        E_Container *c;
-
-        c = l->data;
-        if (c == con)
-          {
-             _config_snow_module(con, s);
-             break;
-          }
-     }
    return 1;
 }
 
