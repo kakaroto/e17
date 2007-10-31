@@ -75,7 +75,9 @@ etk_stock.h \
 etk_string.h \
 etk_table.h \
 etk_text_view.h \
+etk_text_view2.h \
 etk_textblock.h \
+etk_textblock2.h \
 etk_theme.h \
 etk_toggle_button.h \
 etk_tool_button.h \
@@ -150,7 +152,9 @@ etk_stock.c \
 etk_string.c \
 etk_table.c \
 etk_text_view.c \
+etk_text_view2.c \
 etk_textblock.c \
+etk_textblock2.c \
 etk_theme.c \
 etk_toggle_button.c \
 etk_tool_button.c \
