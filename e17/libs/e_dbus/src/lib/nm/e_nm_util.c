@@ -42,6 +42,7 @@ e_nm_free_by_type(int rettype)
   switch (rettype)
   {
     case DBUS_TYPE_STRING:
+     return NULL;
     case DBUS_TYPE_INT32:
     case DBUS_TYPE_UINT32:
     case DBUS_TYPE_BOOLEAN:
@@ -93,7 +94,9 @@ e_nm_get_from_device(E_NM_Context *ctx, const char *device,
 
   msg = e_nm_device_call_new(device, method);
   ret = e_dbus_method_call_send(ctx->conn, msg, e_nm_callback_by_type(rettype),
-                                cb_func, e_nm_free_by_type(rettype), -1, data) ? 1 : 0;
+                                cb_func,
+				e_nm_free_by_type(rettype),
+				-1, data) ? 1 : 0;
   dbus_message_unref(msg);
   return ret;
 }
@@ -222,8 +225,8 @@ cb_nm_string_list(DBusMessage *msg, DBusError *err)
 void
 free_nm_string_list(void *data)
 {
-  Ecore_List *devices = data;
+  Ecore_List *list = data;
 
-  ecore_list_destroy(devices);
+   if (list) ecore_list_destroy(list);
 }
 
