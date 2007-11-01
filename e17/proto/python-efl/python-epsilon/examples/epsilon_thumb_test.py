@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import epsilon.request
 import ecore
 import sys
