@@ -1379,16 +1379,5 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-
-EAPI int
-e_modapi_about(E_Module *m)
-{
-   e_module_dialog_show(m, D_("Enlightenment Taskbar Module"),
-                        D_("This is the Taskbar Iconified Application module for Enlightenment.<br>"
-                          "It will hold all applications and display current desktop <br>"
-			   "or all running apps."));
-   return 1;
-}
-
  /**/
 /***************************************************************************/
