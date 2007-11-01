@@ -280,11 +280,3 @@ e_modapi_save(E_Module *m)
    e_config_domain_save("module.calendar", conf_edd, calendar_conf);
    return 1;
 }
-
-EAPI int
-e_modapi_about(E_Module *m)
-{
-  e_module_dialog_show(m, _("Enlightenment Calendar Module"),
-		       _("This module is used to show the current day."));
-  return 1;
-}

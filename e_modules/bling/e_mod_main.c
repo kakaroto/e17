@@ -64,13 +64,6 @@ e_modapi_save(E_Module *m)
 }
 
 EAPI int
-e_modapi_about(E_Module *m)
-{
-   e_module_dialog_show(m, D_("Enlightenment Bling Module"), D_("A module that enables X composite features such as translucency and drop shadows"));
-   return 1;
-}
-
-EAPI int
 e_modapi_config(E_Module *m)
 {
    Bling *b;

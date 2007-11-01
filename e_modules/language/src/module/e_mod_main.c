@@ -292,14 +292,6 @@ e_modapi_save(E_Module *m)
 }
 
 EAPI int
-e_modapi_about(E_Module *m)
-{
-   e_module_dialog_show(m,D_("Enlightenment Language Enhancment Module"),
-			 D_("This module is used to switch between input languages."));
-   return 1;
-}
-
-EAPI int
 e_modapi_config(E_Module *m)
 {
    if (!language_config) return 0;
