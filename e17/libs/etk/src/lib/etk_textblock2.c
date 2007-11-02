@@ -1669,6 +1669,8 @@ static void _etk_tb2_object_line_add(Evas_Object *tbo, Etk_Textblock2_Line *line
    object_line->tbo = tbo;
    object_line->line = line;
    object_line->object = NULL;
+   object_line->size.w = 0;
+   object_line->size.h = 0;
    object_line->need_content_update = ETK_TRUE;
    object_line->need_geometry_update = ETK_TRUE;
    object_line->wrapped = ETK_FALSE;
@@ -1745,7 +1747,7 @@ static void _etk_tb2_object_line_update_queue(Evas_Object *tbo, Etk_Textblock2_L
    if ((object_line = _etk_tb2_object_line_get(tbo, line)))
    {
       object_line->need_content_update |= update_content;
-      object_line->need_geometry_update |= update_geometry;
+      object_line->need_geometry_update |= (update_geometry || update_content);
       _etk_tb2_object_update_queue(tbo);
    }
 }
@@ -1768,9 +1770,11 @@ static void _etk_tb2_object_update(void *obj)
    Evas_Object *tbo;
    Etk_TB2_Object_SD *sd;
    Etk_TB2_Object_Line *line;
-   Evas_List *unused_line_objects, *l;
    Evas_Object *line_obj;
-   int x, y, w, h, lw, lh, nw, nh;
+   int x, y, w, h;
+   int tb_w, tb_h, native_w, native_h;
+   Etk_Bool visible;
+   int num_wrapped, num_lines, num_updates, num_visible;
    
    if (!(tbo = obj) || !(sd = evas_object_smart_data_get(tbo)))
       return;
@@ -1780,75 +1784,81 @@ static void _etk_tb2_object_update(void *obj)
    evas_object_geometry_get(tbo, &x, &y, &w, &h);
    if (w == 0 || h == 0)
       return;
-   w = ETK_MIN(w, 100);
+   w = ETK_MAX(w, 100);
    
+   tb_w = 0;
+   tb_h = 0;
+   line_obj = NULL;
+   
+   num_wrapped = 0;
+   num_lines = 0;
+   num_updates = 0;
+   num_visible = 0;
    for (line = sd->lines; line; line = line->next)
    {
-   }
-      
-#if 0
-   
-   /* Retrieve the line-objects that are unused or that need content-update
-    * and store them into "unused_line_objects" */
-   unused_line_objects = NULL;
-   /*for (l = sd->line_objects; l; l = l->next)
-   {
-      line_obj = l->data;
-      if (!(line = evas_object_data_get(line_obj, "_Etk_Textblock2::Line")) || line->need_content_update)
+      /* Update the geometry of the object-line if needed */
+      if (line->need_geometry_update)
       {
-         if (line)
+         if (!line->object)
          {
-            evas_object_data_set(line_obj, "_Etk_Textblock2::Line", NULL);
-            line->object = NULL;
-         }
-         unused_line_objects = evas_list_append(unused_line_objects, line_obj);
-      }
-   }*/
-   
-   lw = 0;
-   lh = 0;
-   line_obj = _etk_tb2_object_line_object_add(tbo);
-   for (line = sd->lines; line; line = line->next)
-   {
-      if (1 || line->need_geometry_update || line->need_content_update || !line->object)
-      {
-         if (1 || !line->object || line->need_content_update)
-         {
-            /*if (!line->object)
+            if (line_obj)
             {
-               if (unused_line_objects)
-               {
-                  line->object = unused_line_objects->data;
-                  unused_line_objects = evas_list_remove_list(unused_line_objects, unused_line_objects);
-               }
-               else
-                  line->object = _etk_tb2_object_line_object_add(tbo);
-               evas_object_data_set(line->object, "_Etk_Textblock2::Line", line);
-            }*/
-            line->object = line_obj;
+               line->object = line_obj;
+               line_obj = NULL;
+            }
+            else
+               line->object = _etk_tb2_object_line_object_add(tbo);
             _etk_tb2_object_line_object_build(line->object, line->line);
-            
-            evas_object_move(line->object, x, y + lh);
-            evas_object_resize(line->object, ETK_MAX(w, 50), 100);
-            evas_object_show(line->object);
-            //evas_object_textblock_size_native_get(line->object, &nw, &nh);
-            evas_object_textblock_size_formatted_get(line->object, &line->size.w, &line->size.h);
-            //line->wrapped = (nw != line->size.w || nh != line->size.h);
-            line->object = NULL;
          }
+         else if (line->need_content_update)
+            _etk_tb2_object_line_object_build(line->object, line->line);
+         
+         num_updates++;
+         evas_object_resize(line->object, w, 300);
+         evas_object_textblock_size_native_get(line->object, &native_w, &native_h);
+         evas_object_textblock_size_formatted_get(line->object, &line->size.w, &line->size.h);
+         line->wrapped = (native_w != line->size.w || native_h != line->size.h);
       }
-      lw = ETK_MAX(lw, line->size.w);
-      lh += line->size.h;
+      
+      /* Now, render the line-object if the line is visible, or delete it otherwise */
+      visible = ((tb_h <= (sd->yoffset + h)) && ((tb_h + line->size.h) >= sd->yoffset));
+      if (visible)
+      {
+         if (!line->object)
+         {
+            line->object = _etk_tb2_object_line_object_add(tbo);
+            _etk_tb2_object_line_object_build(line->object, line->line);
+         }
+         
+         evas_object_move(line->object, x - sd->xoffset, y + tb_h - sd->yoffset);
+         evas_object_resize(line->object, w, 300);
+         evas_object_show(line->object);
+         num_visible++;
+      }
+      else if (line->object)
+      {
+         if (!line_obj)
+            line_obj = line->object;
+         else
+            evas_object_del(line->object);
+         line->object = NULL;
+      }
+      
+      line->need_geometry_update = ETK_FALSE;
+      line->need_content_update = ETK_FALSE;
+      
+      tb_w = ETK_MAX(tb_w, line->size.w);
+      tb_h += line->size.h;
+      
+      if (line->wrapped)
+         num_wrapped++;
+      num_lines++;
    }
    
-   while (unused_line_objects)
-   {
-      line_obj = unused_line_objects->data;
+   if (line_obj)
       evas_object_del(line_obj);
-      sd->line_objects = evas_list_remove(sd->line_objects, line_obj);
-      unused_line_objects = evas_list_remove_list(unused_line_objects, unused_line_objects);
-   }
-#endif
+   
+   printf("Nb lines: %d | Updated: %d | Wrapped: %d | Visible: %d\n", num_lines, num_updates, num_wrapped, num_visible);
 }
 
 /* Creates a new line-object (Evas-Textblock) for the given textblock-object */
@@ -1980,7 +1990,7 @@ static void _etk_tb2_object_smart_resize(Evas_Object *tbo, Evas_Coord w, Evas_Co
    
    for (line = sd->lines; line; line = line->next)
    {
-      if (line->wrapped || line->size.w < w)
+      if (line->wrapped || line->size.w > w)
          line->need_geometry_update = ETK_TRUE;
    }
    _etk_tb2_object_update_queue(tbo);
