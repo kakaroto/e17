@@ -42,6 +42,7 @@ EAPI E_Config_Dialog *e_int_config_rain_module(E_Container *con, const char *par
         cfd = e_config_dialog_new(con, D_("Rain Module"), "Rain", "_e_modules_rain_config_dialog", buf, 0, v, r);
         r->config_dialog = cfd;
      }
+   return cfd;
 }
 
 static void

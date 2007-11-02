@@ -41,6 +41,7 @@ e_int_config_snow_module(E_Container *con, const char *params __UNUSED__)
    snprintf(buf, sizeof(buf), "%s/e-module-snow.edj", e_module_dir_get(s->module));
    cfd = e_config_dialog_new(con, D_("Snow Configuration"), "Snow", "_e_modules_snow_config_dialog", buf, 0, v, s);
    s->config_dialog = cfd;
+   return cfd;
 }
 
 static void
