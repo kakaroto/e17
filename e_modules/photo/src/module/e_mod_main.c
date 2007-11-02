@@ -125,28 +125,6 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-EAPI int
-e_modapi_about(E_Module *m)
-{
-   e_module_dialog_show(m, _("Enlightenment Photo Module - version " MODULE_VERSION),
-                        _("Module to display pictures on your desktop<br><br>"
-			  "ooookiwi@free.fr<br>"
-                          "http://oooo.zapto.org"
-                          ));
-   return 1;
-}
-
-EAPI int
-e_modapi_config(E_Module *m)
-{
-   if (!photo) return 0;
-   if (photo->config_dialog) return 0;
-
-   photo_config_dialog_show();
-
-   return 1;
-}
-
 
 /*
  * Gadcon functions

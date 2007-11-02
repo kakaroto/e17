@@ -51,7 +51,6 @@ EAPI extern E_Module_Api e_modapi;
 EAPI void *e_modapi_init(E_Module *m);
 EAPI int e_modapi_shutdown(E_Module *m);
 EAPI int e_modapi_save(E_Module *m);
-EAPI int e_modapi_config(E_Module *m);
 
 /* Composite functions */
 int composite_init(Bling *b);

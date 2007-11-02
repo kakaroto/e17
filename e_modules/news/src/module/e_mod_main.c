@@ -99,28 +99,6 @@ e_modapi_save(E_Module *m)
    return ret;
 }
 
-EAPI int
-e_modapi_about(E_Module *m)
-{
-   news_util_message_show(_("Module to display information feeds<br>"
-                            "like Rss (and soon Atom), on youre desktop<br><br>"
-                            "ooookiwi@gmail.com<br>"
-                            "http://oooo.zapto.org"));
-   return 1;
-}
-
-EAPI int
-e_modapi_config(E_Module *m)
-{
-   int ret;
-
-   if (!news) return 0;
-   ret = news_config_dialog_show();
-
-   return ret;
-}
-
-
 /*
  * Gadcon functions
  */

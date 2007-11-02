@@ -291,16 +291,6 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-EAPI int
-e_modapi_config(E_Module *m)
-{
-   if (!language_config) return 0;
-   if (language_config->config_dialog) return 0;
-   _lang_configure_language_module(language_config);
-   return 1;
-}
-
-
 /************************* Just publics **************************************************/
 void language_face_language_indicator_update()
 {

@@ -90,27 +90,6 @@ static const E_Gadcon_Client_Class _gadcon_class =
 };
 
 /**
- * Display your modules about dialog.
- *
- * @param   m a pointer to your E_Module structure.
- * @return  1 for success, 0 for failure.
- * @ingroup Emu_Module_Basic_Group
- */
-EAPI int
-e_modapi_about(E_Module *m)
-{
-   /* This is a basic module dialog that is provided for simplicity, 
-    * but there is probably nothing stopping you from making a complex dialog. */
-   e_module_dialog_show(m, D_("Enlightenment Emu Module - gadcon version " VERSION),
-                        D_
-                        ("Experimental generic scriptable module for E17.<br><br>"
-                         "Keep an eye out for the emu's.<br>"
-                         "Don't even try to run away, they're fast buggers.<br>"
-                         "Hiding in your dunny doesn't help, they can kick dunnies down."));
-   return 1;
-}
-
-/**
  * Setup basic module.
  *
  * It is called when the module is enabled.

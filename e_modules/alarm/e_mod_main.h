@@ -143,8 +143,6 @@ extern Config *alarm_config;
 EAPI void *e_modapi_init     (E_Module *m);
 EAPI int   e_modapi_shutdown (E_Module *m);
 EAPI int   e_modapi_save     (E_Module *m);
-EAPI int   e_modapi_about    (E_Module *m);
-EAPI int   e_modapi_config   (E_Module *m);
 
 Alarm *alarm_alarm_add(int state, char *name, int type, char *date, int day_monday, int day_tuesday, int day_wenesday, int day_thursday, int day_friday, int day_saturday, int day_sunday, int hour, int minute, int autoremove, char *description, int open_popup, int run_program, char *program, int *error);
 void   alarm_alarm_del(Alarm *al);

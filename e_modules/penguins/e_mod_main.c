@@ -78,42 +78,6 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-EAPI int
-e_modapi_about(E_Module *m)
-{
-   e_module_dialog_show(m, D_("Enlightenment Penguins Module"),
-                        D_
-                        ("This is a module to display fancy penguins on your desktop.<br>and you can choose the population you like"));
-   return 1;
-}
-
-EAPI int
-e_modapi_config(E_Module *m)
-{
-   Population *pop;
-   E_Container *con;
-   Evas_List *l;
-
-   pop = m->data;
-   if (!pop)
-      return 0;
-   if (!pop->cons)
-      return 0;
-   con = e_container_current_get(e_manager_current_get());
-   for (l = pop->cons; l; l = l->next)
-     {
-        E_Container *c;
-
-        c = l->data;
-        if (c == con)
-          {
-             _config_penguin_module(con, pop);
-             break;
-          }
-     }
-   return 1;
-}
-
 /* module private routines */
 static Population *
 _population_init(E_Module *m)

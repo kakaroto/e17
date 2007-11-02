@@ -1166,22 +1166,3 @@ e_modapi_save(E_Module *m)
    e_config_domain_save("module.alarm", _conf_edd, alarm_config);
    return 1;
 }
-
-EAPI int
-e_modapi_about(E_Module *m)
-{
-   e_module_dialog_show(m, D_("Alarm Module version " MODULE_VERSION),
-			D_("An alarm clock module<br><br>"
-                           "http://oooo.zapto.org<br>"
-                           "ooookiwi@gmail.fr"));
-   return 1;
-}
-
-EAPI int
-e_modapi_config(E_Module *m)
-{
-   if (!alarm_config) return 0;
-   if (alarm_config->config_dialog) return 0;
-   alarm_config_module();
-   return 1;
-}

@@ -63,20 +63,6 @@ e_modapi_save(E_Module *m)
    return 1;
 }
 
-EAPI int
-e_modapi_config(E_Module *m)
-{
-   Bling *b;
-   E_Container *con;
-
-   b = m->data;
-   if (!b)
-      return 0;
-   con = e_container_current_get(e_manager_current_get());
-   _config_bling_module(con, b);
-   return 1;
-}
-
 static void
 _bling_shutdown(Bling *b)
 {

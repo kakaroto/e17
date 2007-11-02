@@ -119,20 +119,6 @@ e_modapi_shutdown(E_Module *module)
    return 1;
 }
 
-EAPI int
-e_modapi_about(E_Module *module)
-{
-   char title[1024];
-
-   snprintf(title, sizeof(title), "%s %s", D_("Moon Clock Module"), 
-	 PACKAGE_VERSION);
-   e_module_dialog_show(module, title, 
-	 D_("Display current phase of the moon ala e16 E-MoonClock")); 
-   return 1;
-}
-
-
-
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
