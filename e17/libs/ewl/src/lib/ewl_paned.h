@@ -56,7 +56,7 @@ struct Ewl_Paned
 
 	int last_pos;			/**< the last position */
 	int last_size;			/**< the last size */
-	Ewl_Widget *last_grab;		/**< a pointer to the last resized pane */
+	Ewl_Widget *last_pane;		/**< a pointer to the last resized pane */
 	unsigned short updating_grabbers:1; /**< are we updating the grabbers */
 	unsigned short new_panes:1; /**< are there new visible panes */
 };
