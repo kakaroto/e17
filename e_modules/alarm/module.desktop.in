@@ -5,5 +5,5 @@ Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=alarm,gadget
-Icon=./module.edj
+Icon=module
 Comment=<hilight>Alarm Module</hilight><br>A module which allows you to<br>set popup reminders.
