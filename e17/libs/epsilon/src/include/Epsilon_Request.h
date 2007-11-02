@@ -22,7 +22,7 @@ struct _Epsilon_Request
 	char          *path;     /**< Path to file requiring thumbnail */
 	char          *dest;     /**< Path to generated file, NULL on error */
 	void          *data;     /**< Data associated with this thumbnail. */
-	void          *_event;    /**< private, Pointer to Ecore_Event if it existent. */
+	void          *_event;   /**< private, Pointer to Ecore_Event if it existent. */
 };
 
 EAPI extern int EPSILON_EVENT_DONE; /**< Ecore_Event type */
