@@ -11,7 +11,7 @@ struct _Menu_Item_Data
    E_Menu_Item *item;
    char *name;
    char *action;
-   char *edje;                  /* FIXME: make this similar to the e_modapi_info() shit. */
+   char *edje;
    void *data;
    struct _Menu_Item_Data *next;
    struct _Easy_Menu *easy_menu;
