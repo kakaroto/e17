@@ -184,7 +184,6 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if ((ev->button == 3) && (!calendar_conf->menu))
      {
 	E_Menu *mn;
-	E_Menu_Item *mi;
 	int cx, cy, cw, ch;
 
 	mn = e_menu_new();
