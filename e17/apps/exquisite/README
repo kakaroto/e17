@@ -1,0 +1,212 @@
+Exquisite 0.0.1
+---------------
+
+This is a psplash replacement that is very simple and uses EFL (Evas, Edje,
+Ecore etc.) for display - thus having immensely powerful theme abilities
+without needing any platform-specific compiled themes or modules. It is
+compatible with psplash with the same message commands (and more). The
+difference is that it requires libraries like evas, edje, ecore, eet and
+embryo. These also have loadable modules of their own - thus this isn't
+perfect for systems that can't have these libraries available and working at
+boot, but if you can, it's a lot more capable than other splash engines,
+while still running in the framebuffer.
+
+Requiremnents:
+--------------
+
+  * eet
+  * evas
+  * ecore
+  * embryo
+  * edje
+
+Please see http://www.enlightenment.org for information on these.
+
+If you want fraembuffer support to work, evas and ecore will need to be built
+with FB support. X11 support requires X11 (software and/or xrender) to be
+built for evas and ecore.
+
+Compiling:
+----------
+
+Once you have met requirements, compiling and installing is simple:
+
+  ./configure
+  make
+  make install
+
+There is a demo included in the demo/ directory:
+
+  cd ./demo
+  ./run-demo.sh
+
+As a very basic sample of what can be done - will run by default in X11 in a
+window and is a great way to test themes etc. Read run-demo.sh for some more
+details on commands used.
+
+So how does this work?
+----------------------
+
+1. You need to launch the exquisite somehow as the "display server". This
+will display the Exquisite screen and default theme in its basic state. There
+are many command line options, run 'exquisite -h' for a list. Here is what
+they are:
+
+-x11       Display using software X11
+  The default engine is the software X11 one anyway - so this option isn't
+  that useful.
+-gl        Display using OpenGL in X11
+  This uses the OpenGL engine if available in ecore and evas. Requires working
+  OpenGL libraries and an Xserver.
+-fb        Display using Framebuffer
+  This uses the linux framebuffer for display. It requires FB support in
+  ecore and evas. It will use the current bit depth and resolution for the FB.
+  Note that Evas's FB engine only supports 15, 16 and 24/32 bpp. 8bpp is not
+  supported.
+-xr        Display using XRender
+  This uses Xrender for display under X11.
+-fs        Display fullscreen (use current screen res)
+  This makes Exquisite ask to go fullscreen. Under X11 it requires a WM to be
+  present, and will mean Exquisite uses the whole FB res when in FB mode.
+-t theme   Use Theme file 'theme'
+  This specifies which theme to use. You can specify a relative or full path
+  to a specifric EDJE file (eg /path/to/theme.edj) or just a theme name like
+  "default" or "mydistro". themes must be put in
+  PREFIX/share/exquisite/data/themes , where PREFIX is the install prefix for
+  exquisite (the default is /usr/local). When using theme short names, the
+  theme name is just the filename of the EDJE file in the theme directory
+  minus the .edj extension.
+-x res     Use horizontal res 'res'
+  Display with a window or display resoltuion width of 'res' pixels
+-y res     Use vertical res 'res'
+  Display with a window or display resolution height of 'res' pixels
+-ic Kb     Set image cache in Kb
+  Use 'Kb' Kilobytes of memory for caching image data from disk to avoid
+  re-reading data from disk.
+-fc Kb     Set font cache in Kb
+  Use 'Kb' Kilobytes of memory for caching font data from disk to avoid
+  re-reading data from disk.
+-fps fps   Set attempted framerate in frames per second
+  Run at 'fps' frames per second for animation. Generally the higher, the
+  better, but if you want to reduce CPU overhead, run at a lower 'fps'. The
+  default is 30 frames per second. Note that Exquisite will LOWER the fps as
+  needed if it can't animate at the fps asked. This will mean animations will
+  take the same amount of time, but just be more "jerky".
+
+Some example command-lines you may want:
+
+  exquisite -fb -fs
+  exquisite -fb -fs -t ubuntu
+  exquisite -fb -fs -t openmkoko -fps 15
+  exquisite -fb -fs -t /boot/fedora.edj -fps 60
+  
+Remember that exquisite won't detech from the shell - and it doesn't write a
+PID file - there is no need because you can communicate via exquisite-write.
+
+2. You need a /tmp directory for the UNIX socket that is used to talk to
+exquisite. The exquisite-write utility sends messages to exquisite via a UNIX
+domain socket created in /tmp. This needs to be writable for exquisite to
+start.
+
+3. Use exquisite-write to send messages to the display. Your init scripts will
+need to be peppered with instances of exquisite-write. Its parameters are
+compatible with psplash. Here are the common examples that are compatible:
+
+exquisite-write MSG X
+  Tell Exquisite to display the text message "X" on the screen. Remember to
+  quote or escape whitespace for the "X" parameter.
+exquisite-write PROGRESS N
+  Tell Exquisite to update some progress display to be at "N" percent. N should
+  be an integer value from 0 to 100.
+exquisite-write QUIT
+  Tell Exquisite to exit immediately, freeing up its FB console or closing its
+  X11 window.
+
+These commands are extended (themes may or may not support them):
+
+exquisite-write END
+  This asks Exquisite to exit "nicely". Exquisite in turn asks the theme to
+  shut down. This may be animated and take some period of time. The 
+  exquisite-write command will not return until the shut down has finished.
+exquisite-write TITLE X
+  Tell Exquisite to display a title of "X" on the screen.
+exquisite-write TICK
+  Send a "tick" (a heartbeat) to Exquisite. This may be used to indicate
+  visially to the user that the boot process is working and is busy, and things
+  are alive, but are not making any "progress".
+
+4. You may want to do a theme of your own. Themes are done using Edje - the
+same theme engine used for Enlightenment 0.17, EWL, ETK, Rage, and other
+applications and toolkits. For detailed information on Edje themeing please
+see http://www.enlightenment.org. For the purposes of Exquisite, there is a
+sample (minimal) theme included. See data/themes/default.edc for the source.
+
+An Exquisite theme must:
+
+1. Respond to the "exquisite" "exit" signal. On this signal it must shut down
+somehow - and then emit a "exquisitie" "done" signal to indicate it is done.
+2. Must provide an "exquisite.message" TEXT part, OR have a sctip message
+handler that handles string messages. Message ID 1 is the message with the
+string to display if it choses to handle these via script. There will also be
+an "exquisite" "message" signal sent when a new message string is set.
+3. Must provide a dragable item "exquisite.progress" that is confined to
+another part so drag values 0.0 -> 1.0 can be used to indicate progress from
+0% to 100%. If the theme does not provide this it needs a script message
+handler. When a message ID 2 is sent - it is a float message and the float is
+from 0.0 to 1.0 indicating progress. In addition a "exquisite" "progress"
+signal is sent when the dragable position is set.
+
+Optional support:
+
+1. Respond to "exquisite" "tick" signals visually some how. One of these
+indicates the system is still alive and booting, but cannot indicate a
+change in progress.
+2. Provide a "exquisite.title" part that can hold a title text. When text is
+changed a "exquisite" "title" signal is also emitted. If this part does not
+exist a script message handler shoudl exist and handle string messages with
+ID 0 that contain the new title.
+
+Please see the default.edc file for details on some of the above. Script
+message versions are not demonstrated at this time (though these can be much
+more powerful).
+
+Future Development:
+-------------------
+
+Exquisite has started as a psplash replacement. This is a small splash
+utility targetting embedded devices. Exquisite hopes to be more capable and
+flexible with visual branding. It is very small and builds on the
+Enlightenment Foundation Libraries to do its work. In future more features
+would be good, such as handling user interaction (via buttons/keyboard or
+touchscreen), as well as compatibility with usplash commands and features so
+it can also be used as a drop-in desktop replacement for usplash. These
+commands (and features) are:
+
+TIMEOUT secs
+  Set a timeout in seconds between commands. If no command is received by the
+  timout, exit.
+CLEAR
+  Clear all text.
+TEXT text
+  Display the text given, and scroll up any previous text (if appropriate).
+TEXT-URGENT text
+  Same as TEXT, but if verbosity is off, display this anyway.
+STATUS status
+  Display the status string for the previous line of text given by the TEXT
+  cmmand.
+SUCCESS status
+  Same as "STATUS" but consider it a positive outcome.
+FAILURE status
+  Same as "STATUS" but consider it a negative outcome.
+PULSATE
+  Start indicating progress with a throbber (no known progress position).
+INPUT prompt
+  Display the prompt text and wait for a user to entry some text input. When
+  done write the result to /dev/.initramfs/exquisite_outfifo
+INPUTQUIET prompt
+  Same as INPUT, but no user typing is displayed on the screen (eg a password
+  prompt).
+INPUTENTER prompt
+  Same as INPUT - but displays no inptu on the screen and just waits for enter
+
+Some other things like verbose vs. quiet mode will be nice.

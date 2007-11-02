@@ -1,0 +1,652 @@
+fonts {
+   font: "Vera.ttf" "Edje-Vera";
+   font: "VeraBd.ttf" "Edje-Vera-Bold";
+}
+
+images {
+   image: "vert-white-grad.png" COMP;
+   image: "white-logo.png" COMP;
+   image: "logo-shadow-1.png" LOSSY 90;
+   image: "logo-shadow-2.png" LOSSY 90;
+   image: "logo-shadow-3.png" LOSSY 90;
+   image: "inset.png" COMP;
+   image: "bar.png" COMP;
+   image: "ball.png" COMP;
+}
+
+collections {
+   group {
+      name: "exquisite/theme";
+      parts {
+	 
+	 part {
+	    name: "background_image";
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "vert-white-grad.png";
+	       }
+               fill {
+		  size {
+		     relative: 0.0 1.0;
+		     offset:   64 0;
+		  }
+	       }
+	    }
+	 }
+
+	 part {
+	    name: "ball";
+	    description {
+	       state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       align: 1.0 1.0;
+	       image {
+		  normal: "ball.png";
+	       }
+	       min: 0 0;
+	       max: 0 0;
+	    }
+	    description {
+				 state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       min: 48 48;
+	       max: 48 48;
+	       color: 255 255 255 0;
+	    }
+	 }
+
+	 part {
+	    name: "bar_bg";
+	    description {
+	       state: "default" 0.0;
+	       align: 0.5 0.0;
+	       rel1 {
+		  to_y: "exquisite.message";
+		  relative: 0.2 1.0;
+		  offset: 0 10;
+	       }
+	       rel2 {
+		  to_y: "exquisite.message";
+		  relative: 0.8 1.0;
+		  offset: -1 10;
+	       }
+	       min: 80 24;
+	       image {
+		  normal: "inset.png";
+		  border: 14 14 14 14;
+	       }
+	    }
+	 }
+	 part {
+	    name: "bar_clip";
+	    mouse_events:  0;
+	    type: RECT;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "bar_bg";
+		  offset: 1 1;
+	       }
+	       rel2 {
+		  to: "bar_bg";
+		  offset: -2 -2;
+	       }
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part {
+	    name: "bar";
+	    clip_to: "bar_clip";
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "bar_bg";
+		  offset: -2 -2;
+	       }
+	       rel2 {
+		  to_x: "exquisite.progress";
+		  to_y: "bar_bg";
+		  relative: 1.0 1.0;
+		  offset: 1 1;
+	       }
+	       image {
+		  normal: "bar.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description {
+	       state: "pulse" 1.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "bar_bg";
+		  relative: 0.0 0.0;
+		  offset: -2 -2;
+	       }
+	       rel2 {
+		  to: "bar_bg";
+		  relative: 0.2 1.0;
+		  offset: 1 1;
+	       }
+	       image {
+		  normal: "bar.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description {
+	       state: "pulse" 0.0;
+	       inherit: "pulse" 1.0;
+	       rel1 {
+		  to: "bar_bg";
+		  relative: 0.8 0.0;
+		  offset: -2 -2;
+	       }
+	       rel2 {
+		  to: "bar_bg";
+		  relative: 1.0 1.0;
+		  offset: 1 1;
+	       }				
+	    }
+	 }
+	 
+	 part {
+	    name: "exquisite.progress";
+	    mouse_events: 0;
+	    type: RECT;
+	    dragable {
+	       x: 1 1 0;
+	       y: 0 0 0;
+	       confine: "bar_clip";
+	    }
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       rel1 {
+		  to: "bar_clip";
+		  relative: 0.5 0.5;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  to: "bar_clip";
+		  relative: 0.5 0.5;
+		  offset: 0 0;
+	       }
+	    }
+	 }
+
+	 part {      
+	    name: "exquisite.message";
+	    type: TEXT;
+	    effect: SOFT_SHADOW;
+	    mouse_events:  0;
+	    description {
+	       state: "default" 0.0;
+	       align: 0.5 0.5;
+	       rel1 {
+		  relative: 0.5 0.5;
+		  offset: 0 140;
+	       }
+	       rel2 {
+		  relative: 0.5 0.5;
+		  offset: 1 140;
+	       }
+	       color: 255 255 255 0;
+	       color3: 0 0 0 0;
+	       text {
+		  font: "Edje-Vera-Bold";
+		  size: 16;
+		  min: 1 1;
+		  align: 0.5 0.5;
+	       }
+	    }
+	    description {
+	       state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	       color3: 0 0 0 8;
+	    }
+	 }
+
+	 
+	 part {      
+	    name: "exquisite.title";
+	    type: TEXT;
+	    effect: SOFT_SHADOW;
+	    mouse_events:  0;
+	    description {
+	       state: "default" 0.0;
+	       align: 0.5 0.5;
+	       rel1 {
+		  relative: 0.5 0.5;
+		  offset: 0 -139;
+	       }
+	       rel2 {
+		  relative: 0.5 0.5;
+		  offset: 1 -139;
+	       }
+	       color: 255 255 255 0;
+	       color3: 0 0 0 0;
+	       text {
+		  font: "Edje-Vera-Bold";
+		  size: 24;
+		  min: 1 1;
+		  align: 0.5 0.5;
+	       }
+	    }
+	    description {
+	       state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	       color3: 0 0 0 8;
+	    }
+	 }
+
+	 part {
+	    name: "logo-shadow1";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -20;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 19;
+	       }
+	       image {
+		  normal: "logo-shadow-1.png";
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "out2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -17;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 22;
+	       }
+	       color: 255 255 255 48;
+	    }
+	    description {
+	       state: "out3" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -14;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 25;
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "out4" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -11;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 28;
+	       }
+	       color: 255 255 255 0;
+	    }
+	 }
+	 part {
+	    name: "logo-shadow2";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -20;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 19;
+	       }
+	       image {
+		  normal: "logo-shadow-2.png";
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "out2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -17;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 22;
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "out3" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -14;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 25;
+	       }
+	       color: 255 255 255 40;
+	    }
+	    description {
+	       state: "out4" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -11;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 28;
+	       }
+	       color: 255 255 255 0;
+	    }
+	 }
+	 part {
+	    name: "logo-shadow3";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -20;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 19;
+	       }
+	       image {
+		  normal: "logo-shadow-3.png";
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "out2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -17;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 22;
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "out3" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -14;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 25;
+	       }
+	       color: 255 255 255 0;
+	    }
+	    description {
+	       state: "out4" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "logo";
+		  offset: -20 -11;
+	       }
+	       rel2 {
+		  to: "logo";
+		  offset: 19 28;
+	       }
+	       color: 255 255 255 32;
+	    }
+	 }
+	 
+	 part {
+	    name: "logo";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       aspect: 0.741666667 0.741666667;
+	       aspect_preference: VERTICAL;
+	       max: 178 240;
+	       image {
+		  normal: "white-logo.png";
+	       }
+	       color: 255 255 255 0;
+	       rel1 {
+		  relative: 0.5 0.5;
+		  offset: -99 -99;
+	       }
+	       rel2 {
+		  relative: 0.5 0.5;
+		  offset: 100 100;
+	       }
+	    }
+	    description {
+	       state: "out" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	       rel1 {
+		  relative: 0.5 0.5;
+		  offset: -104 -104;
+	       }
+	       rel2 {
+		  relative: 0.5 0.5;
+		  offset: 105 105;
+	       }
+	    }
+	    description {
+	       state: "out2" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	       rel1 {
+		  relative: 0.5 0.5;
+		  offset: -109 -109;
+	       }
+	       rel2 {
+		  relative: 0.5 0.5;
+		  offset: 110 110;
+	       }
+	    }
+	    description {
+	       state: "out3" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	       rel1 {
+		  relative: 0.5 0.5;
+		  offset: -114 -114;
+	       }
+	       rel2 {
+		  relative: 0.5 0.5;
+		  offset: 115 115;
+	       }
+	    }
+	    description {
+	       state: "out4" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	       rel1 {
+		  relative: 0.5 0.5;
+		  offset: -119 -119;
+	       }
+	       rel2 {
+		  relative: 0.5 0.5;
+		  offset: 120 120;
+	       }
+	    }
+	 }
+	 
+	 part {
+	    name: "black";
+	    mouse_events: 0;
+	    type: RECT;
+	    description {
+	       state: "default" 0.0;
+	       color: 0 0 0 0;
+	    }
+	    description {
+	       state: "visible" 0.0;
+	       color: 0 0 0 255;
+	    }
+	 }
+      }
+      
+      programs {
+	 program {
+	    name: "logo-anim";
+	    in: 0.5 0.0;
+	    signal: "show";
+	    source: "";
+	    action: STATE_SET "out" 0.0;
+	    target: "logo";
+	    target: "logo-shadow1";
+	    target: "logo-shadow2";
+	    target: "logo-shadow3";
+	    transition: LINEAR 0.1;
+	    after: "logo-anim2";
+	 }
+	 program {
+	    name: "logo-anim2";
+	    action: STATE_SET "out2" 0.0;
+	    target: "logo";
+	    target: "logo-shadow1";
+	    target: "logo-shadow2";
+	    target: "logo-shadow3";
+	    transition: LINEAR 0.15;
+	    after: "logo-anim3";
+	 }
+	 program {
+	    name: "logo-anim3";
+	    action: STATE_SET "out3" 0.0;
+	    target: "logo";
+	    target: "logo-shadow1";
+	    target: "logo-shadow2";
+	    target: "logo-shadow3";
+	    transition: LINEAR 0.2;
+	    after: "logo-anim4";
+	 }
+	 program {
+	    name: "logo-anim4";
+	    action: STATE_SET "out4" 0.0;
+	    target: "logo";
+	    target: "logo-shadow1";
+	    target: "logo-shadow2";
+	    target: "logo-shadow3";
+	    transition: LINEAR 0.25;
+	 }
+	 
+	 program {
+	    name: "message";
+	    signal: "exquisite";
+	    source: "message";
+	    action: STATE_SET "default" 0.0;
+	    target: "exquisite.message";
+	    after: "message2";
+	 }
+	 program {
+	    name: "message2";
+	    action: STATE_SET "visible" 0.0;
+	    target: "exquisite.message";
+	    transition: LINEAR 0.25;
+	 }
+	 
+	 program {
+	    name: "title";
+	    signal: "exquisite";
+	    source: "title";
+	    action: STATE_SET "default" 0.0;
+	    target: "exquisite.title";
+	    after: "title2";
+	 }
+	 program {
+	    name: "title2";
+	    action: STATE_SET "visible" 0.0;
+	    target: "exquisite.title";
+	    transition: LINEAR 0.25;
+	 }
+
+	 program {
+	    name: "tick";
+	    signal: "exquisite";
+	    source: "tick";
+	    action: STATE_SET "default" 0.0;
+	    target: "ball";
+	    after: "tick2";
+	 }
+	 program {
+	    name: "tick2";
+	    action: STATE_SET "visible" 0.0;
+	    target: "ball";
+	    transition: LINEAR 0.5;
+	 }
+	 
+	 program {
+	    name: "exit";
+	    signal: "exquisite";
+	    source: "exit";
+	    action: STATE_SET "visible" 0.0;
+	    target: "black";
+	    transition: LINEAR 0.5;
+	    after: "exit2";
+	 }
+	 program {
+	    name: "exit2";
+	    action: SIGNAL_EMIT "exquisite" "done";
+	 }
+	 
+	 program {
+	    name: "pulsate";
+	    signal: "exquisite";
+	    source: "pulsate";
+	    action: STATE_SET "pulse" 1.0;
+	    target: "bar";
+	    after: "pulsate2";
+	 }
+	 program {
+	    name: "pulsate2";
+	    action: STATE_SET "pulse" 0.0;
+	    target: "bar";
+	    transition: SINUSOIDAL 0.8;
+	    after: "pulsate3";
+	 }
+	 program {
+	    name: "pulsate3";
+	    action: STATE_SET "pulse" 1.0;
+	    target: "bar";
+	    transition: SINUSOIDAL 0.8;
+	    after: "pulsate2";
+	 }
+	 
+	 program {
+	    name: "pulsate_stop";
+	    action: ACTION_STOP;
+	    target: "pulsate2";
+	    target: "pulsate3";
+	 }
+	 
+	 program {
+	    name: "progress";
+	    signal: "exquisite";
+	    source: "progress";
+	    action: STATE_SET "default" 0.0;
+	    target: "bar";
+	    after: "pulsate_stop";
+	 }
+      }
+   }
+}
