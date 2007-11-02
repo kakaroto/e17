@@ -6,8 +6,8 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS              = exiftags
 
-INCLUDES	     = @IMLIB2_CFLAGS@ @EPEG_CFLAGS@ @PNG_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EDJE_CFLAGS@ \
-			-I$(top_srcdir)/src/include \
+INCLUDES	     = -I$(top_srcdir)/src/include \
+			@IMLIB2_CFLAGS@ @EPEG_CFLAGS@ @PNG_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EDJE_CFLAGS@ \
 			-DPACKAGE_BIN_DIR=\""$(bindir)"\" \
 			-DPACKAGE_LIB_DIR=\""$(libdir)"\"
 

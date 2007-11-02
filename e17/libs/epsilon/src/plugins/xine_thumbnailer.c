@@ -34,7 +34,7 @@ void i_yuy2_to_yv12 (const unsigned char *src, unsigned char *dest, int width,
 int yv12_to_rgb (const char *name, int w, int h, DATA8 ** buf,
 		 Imlib_Image * rp);
 Imlib_Image epsilon_generate_thumb (Epsilon * e);
-Epsilon_Plugin *epsilon_plugin_init (void);
+EAPI Epsilon_Plugin *epsilon_plugin_init (void);
 
 /*----------------------------------------------*/
 Imlib_Image

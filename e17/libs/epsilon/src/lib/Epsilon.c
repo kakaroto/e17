@@ -56,10 +56,6 @@ extern Epsilon_Exif_Info *epsilon_exif_info_get (Epsilon * e);
 
 static int _epsilon_exists_ext(Epsilon *e, const char *ext, char *path, int path_size, time_t *mtime);
 static char *epsilon_hash (const char *file);
-static time_t _epsilon_png_mtime_get (const char *file);
-#ifdef HAVE_EPEG_H
-static time_t _epsilon_jpg_mtime_get (const char *file);
-#endif
 #ifdef HAVE_PNG_H
 static FILE *_epsilon_open_png_file_reading (const char *filename);
 static int _epsilon_png_write (const char *file, DATA32 * ptr,
@@ -118,6 +114,11 @@ epsilon_plugin_load(char* path)
 	dl_ref = dlopen(path, RTLD_LAZY);
 	if (dl_ref) {
 		epsilon_plugin_init = dlsym(dl_ref, "epsilon_plugin_init");
+		if (!epsilon_plugin_init) {
+		   fprintf(stderr, "Failed to load %s: %s", path, dlerror());
+		   dlclose(dl_ref);
+		   return NULL;
+		}
 		plugin = (*epsilon_plugin_init)();
 	}
 
@@ -482,9 +483,15 @@ EAPI int
 epsilon_exists (Epsilon * e)
 {
   int ok = 0;
+  struct stat st;
+  time_t srcmtime;
 
   if (!e || !e->src)
     return (EPSILON_FAIL);
+
+  if (stat(e->src, &st) != 0)
+    return (EPSILON_FAIL);
+  srcmtime = st.st_mtime;
 
   if (!e->hash)
     {
@@ -516,12 +523,11 @@ epsilon_exists (Epsilon * e)
     {
        char path[PATH_MAX];
        time_t filemtime;
-       if (_epsilon_exists_ext(e, "jpg", path, sizeof(path), &filemtime))
-	 {
-	    time_t epsilonmtime = _epsilon_jpg_mtime_get(path);
-	    if (filemtime >= epsilonmtime)
-	      return (EPSILON_OK);
-	 }
+       if (_epsilon_exists_ext(e, "jpg", path, sizeof(path), &filemtime)) {
+	  if (filemtime >= srcmtime)
+	    return (EPSILON_OK);
+	  /* XXX compare with time from e->src exif tag? */
+       }
     }
 #endif
 #ifdef HAVE_PNG_H
@@ -529,12 +535,11 @@ epsilon_exists (Epsilon * e)
     {
        char path[PATH_MAX];
        time_t filemtime;
-       if (_epsilon_exists_ext(e, "png", path, sizeof(path), &filemtime))
-	 {
-	    time_t epsilonmtime = _epsilon_png_mtime_get(path);
-	    if (filemtime >= epsilonmtime)
-	      return (EPSILON_OK);
-	 }
+       if (_epsilon_exists_ext(e, "png", path, sizeof(path), &filemtime)) {
+	 if (filemtime >= srcmtime)
+	   return (EPSILON_OK);
+	  /* XXX compare with time from e->src png tag? */
+       }
 #endif
     }
   return (EPSILON_FAIL);
@@ -747,25 +752,6 @@ epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size)
 }
 
 
-#ifdef HAVE_EPEG_H
-static time_t
-_epsilon_jpg_mtime_get (const char *file)
-{
-  time_t result = 0;
-  Epeg_Image *im;
-  Epeg_Thumbnail_Info info;
-
-  if ((im = epeg_file_open (file)))
-    {
-      epeg_thumbnail_comments_get (im, &info);
-      if (info.mimetype)
-	result = info.mtime;
-      epeg_close (im);
-    }
-  return (result);
-}
-#endif
-
 #ifdef HAVE_PNG_H
 static FILE *
 _epsilon_open_png_file_reading (const char *filename)
@@ -796,52 +782,6 @@ _epsilon_open_png_file_reading (const char *filename)
 	}
     }
   return fp;
-}
-
-static time_t
-_epsilon_png_mtime_get (const char *file)
-{
-  time_t result = 0;
-  FILE *fp = NULL;
-
-  if ((fp = _epsilon_open_png_file_reading (file)))
-    {
-      png_structp png_ptr = NULL;
-      png_infop info_ptr = NULL;
-      png_textp text_ptr;
-      int num_text = 0, i;
-
-      if (!
-	  (png_ptr =
-	   png_create_read_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL)))
-	{
-	  fclose (fp);
-	  return (result);
-	}
-
-      if (!(info_ptr = png_create_info_struct (png_ptr)))
-	{
-	  png_destroy_read_struct (&png_ptr, (png_infopp) NULL,
-				   (png_infopp) NULL);
-	  fclose (fp);
-	  return (result);
-	}
-      png_init_io (png_ptr, fp);
-      png_read_info (png_ptr, info_ptr);
-
-      num_text = png_get_text (png_ptr, info_ptr, &text_ptr, &num_text);
-      for (i = 0; (i < num_text) && (i < 10); i++)
-	{
-	  png_text text = text_ptr[i];
-
-	  if (!strcmp (text.key, "Thumb::MTime"))
-	    result = atoi (text.text);
-	}
-      /* png_read_end(png_ptr,info_ptr); */
-      png_destroy_read_struct (&png_ptr, &info_ptr, (png_infopp) NULL);
-      fclose (fp);
-    }
-  return (result);
 }
 
 #define GET_TMPNAME(_tmpbuf,_file) { \

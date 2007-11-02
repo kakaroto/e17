@@ -688,7 +688,7 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
 
 #ifdef BUILD_EPSILON_SUPPORT
 	if (!ewl_image_epsilon_handler) {
-		epsilon_thumb_init();
+		epsilon_request_init();
 		ewl_image_epsilon_handler =
 			ecore_event_handler_add(EPSILON_EVENT_DONE,
 					ewl_image_thumbnail_cb_complete,
@@ -754,7 +754,7 @@ ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, const char *path)
 		size = EPSILON_THUMB_NORMAL;
 	else size = EPSILON_THUMB_LARGE;
 
-	thumb->thumb = epsilon_add((char *)path, NULL, size, thumb);
+	thumb->thumb = epsilon_request_add(path, size, thumb);
 #else
 	thumb->thumb = NULL;
 #endif
@@ -775,7 +775,7 @@ ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 	thumb = EWL_IMAGE_THUMBNAIL(w);
 	if (thumb->thumb) {
 #ifdef BUILD_EPSILON_SUPPORT
-		epsilon_del(thumb->thumb);
+		epsilon_request_del(thumb->thumb);
 #endif
 		thumb->thumb = NULL;
 	}

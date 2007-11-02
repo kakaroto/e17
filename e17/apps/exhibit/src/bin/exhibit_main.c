@@ -437,7 +437,7 @@ _ex_main_itree_add(const char *file, const char *selected_file)
    else
      thumb->selected = ETK_FALSE;
 
-   epsilon_add((char*)file, NULL, EPSILON_THUMB_NORMAL, thumb);
+   epsilon_request_add(file, EPSILON_THUMB_NORMAL, thumb);
    
    row = etk_tree_row_append(ETK_TREE(e->cur_tab->itree), NULL, 
 	 e->cur_tab->icol,
@@ -1233,7 +1233,7 @@ main(int argc, char *argv[])
      fprintf(stderr, "WARNING: Exhibit could not set up its options files!\n"
 	   "         You will not be able to save your preferences.\n");
 
-   epsilon_thumb_init();
+   epsilon_request_init();
 
    event_handlers = evas_list_append(event_handlers,
 	 ecore_event_handler_add(EPSILON_EVENT_DONE, _ex_thumb_complete, NULL));

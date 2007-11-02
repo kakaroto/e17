@@ -13,10 +13,10 @@ cdef extern from "Epsilon_Request.h":
 
     int EPSILON_EVENT_DONE
 
-    int epsilon_thumb_init()
-    int epsilon_shutdown()
-    Epsilon_Request *epsilon_add(char *path, char *dst, int size, void *data)
-    void epsilon_del(Epsilon_Request *thumb)
+    int epsilon_request_init()
+    int epsilon_request_shutdown()
+    Epsilon_Request *epsilon_request_add(char *path, int size, void *data)
+    void epsilon_request_del(Epsilon_Request *thumb)
 
 
 cdef extern from "Ecore.h":

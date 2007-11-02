@@ -126,5 +126,5 @@ _ex_thumb_update_at_row(Etk_Tree_Row *row)
    thumb->tab = e->cur_tab;
    thumb->selected = ETK_FALSE;
    etk_tree_model_cache_remove(thumb->tab->imodel, old_thumb, NULL);
-   epsilon_add(file, NULL, EPSILON_THUMB_NORMAL, thumb);
+   epsilon_request_add(file, EPSILON_THUMB_NORMAL, thumb);
 }

@@ -2,7 +2,6 @@
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
 #include "Epsilon_Request.h"
-#include "Epsilon.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -43,7 +42,7 @@ int main(int argc, char** argv)
 		exit(0);
 	}
 
-	epsilon_thumb_init();
+	epsilon_request_init();
 
 	thumb_done = ecore_event_handler_add(EPSILON_EVENT_DONE, thumb_complete_cb, NULL);
 
@@ -64,7 +63,7 @@ int main(int argc, char** argv)
 		snprintf(fullpath, PATH_MAX, "%s/%s", argv[1], file);
 		realpath = ecore_file_realpath(fullpath);
 		if (ecore_file_exists(realpath) && !ecore_file_is_dir(realpath)) {
-			epsilon_add(realpath, NULL, EPSILON_THUMB_NORMAL, NULL);
+			epsilon_request_add(realpath, EPSILON_THUMB_NORMAL, NULL);
 			incomplete_thumbs++;
 		}
 		free(realpath);
@@ -76,6 +75,6 @@ int main(int argc, char** argv)
 	end = ecore_time_get();
 	printf("\nEpsilon Thumb completed in %g seconds\n\n", end - start);
 
-	epsilon_shutdown();
+	epsilon_request_shutdown();
 	return 0;
 }

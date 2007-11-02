@@ -22,6 +22,10 @@
 # endif
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define EPSILON_FAIL 0
 #define EPSILON_OK 1
 
@@ -105,4 +109,7 @@ EAPI const char *epsilon_info_exif_props_as_string_get (Epsilon_Info * ei,
 EAPI void epsilon_info_exif_props_print (Epsilon_Info * ei);
 EAPI int epsilon_info_exif_get (Epsilon_Info * ei);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

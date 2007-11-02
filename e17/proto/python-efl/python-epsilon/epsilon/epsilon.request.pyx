@@ -6,10 +6,10 @@ __extra_epydoc_fields__ = (
     )
 
 def shutdown():
-    epsilon_shutdown()
+    epsilon_request_shutdown()
 
 def init():
-    return epsilon_thumb_init()
+    return epsilon_request_init()
 
 EPSILON_THUMB_NORMAL = 0
 EPSILON_THUMB_LARGE = 1
@@ -26,17 +26,14 @@ cdef class Request:
 
     The thumbnailer daemon 'epsilon_thumbd' is automatically started.
     """
-    def __init__(self, func, char *path, dest=None,
-                 int size=EPSILON_THUMB_NORMAL):
+    def __init__(self, func, char *path, int size=EPSILON_THUMB_NORMAL):
         """Epsilon Request constructor.
 
         @parm func: function to call when request is served.
         @parm path: file to process.
-        @path dest: if provided (not None), specify where to store the thumb.
         @path size: EPSILON_THUMB_NORMAL or EPSILON_THUMB_LARGE (it's not the
            size in pixels!)
         """
-        cdef char *d
         if not callable(func):
             raise TypeError("Parameter 'func' must be callable")
 
@@ -46,11 +43,7 @@ cdef class Request:
 
         if self.obj == NULL:
             self.func = func
-            if dest is not None:
-                d = dest
-            else:
-                d = NULL
-            self.obj = epsilon_add(path, d, size, <void*>self)
+            self.obj = epsilon_request_add(path, size, <void*>self)
             if self.obj != NULL:
                 python.Py_INCREF(self)
 
@@ -68,13 +61,13 @@ cdef class Request:
 
     def __dealloc__(self):
         if self.obj != NULL:
-            epsilon_del(self.obj)
+            epsilon_request_del(self.obj)
             self.obj = NULL
 
     def delete(self):
         "Stop thumbnail request, free resources."
         if self.obj != NULL:
-            epsilon_del(self.obj)
+            epsilon_request_del(self.obj)
             self.obj = NULL
             self.func = None
             python.Py_DECREF(self)
@@ -106,7 +99,7 @@ cdef class Request:
     property status:
         def __get__(self):
             if self.obj != NULL:
-                return self.obj.status
+                return bool(self.obj.status)
 
 
 init()

@@ -38,7 +38,7 @@ struct Epsilon_Ipc_End
 	int      offset;
 };
 
-Epsilon_Message *epsilon_message_new(int clientid, char *path, char *dst, int status);
+Epsilon_Message *epsilon_message_new(int clientid, const char *path, int status);
 
 int epsilon_ipc_client_send(Ecore_Con_Client *cl, Epsilon_Message *msg);
 int epsilon_ipc_server_send(Ecore_Con_Server *cl, Epsilon_Message *msg);

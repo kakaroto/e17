@@ -34,7 +34,7 @@ static int epsilon_cb_server_data(void *data, int type, void *event);
  * Initialize epsilon subsystem.
  */
 int
-epsilon_thumb_init()
+epsilon_request_init(void)
 {
 	/*
 	 * Init required subsystems.
@@ -100,7 +100,7 @@ init_error:
  * Shutdown and deallocate epsilon internal variables.
  */
 int
-epsilon_shutdown()
+epsilon_request_shutdown(void)
 {
 	if (--epsilon_init_count == 0) {
 		ecore_event_handler_del(epsilon_server_data);
@@ -139,24 +139,62 @@ epsilon_cb_server_del(void *data, int type, void *event)
 }
 
 static void
+epsilon_request_free(Epsilon_Request *thumb)
+{
+	free(thumb->path);
+	if (thumb->dest)
+		free(thumb->dest);
+	free(thumb);
+}
+
+static void
 epsilon_event_free(void *data, void *ev)
 {
 	Epsilon_Request *thumb = ev;
 
 	data = NULL;
 
-	if (!thumb) { 
+	if (!thumb) {
 		fprintf(stderr,"!!Warning!! NULL pointer (*ev) : epsilon_event_free(void *data, void *ev)\n");
 		return;
 	}
+	epsilon_request_free(thumb);
+}
 
-	if (thumb->path)
-		free(thumb->path);
-	if (thumb->dest)
-		free(thumb->dest);
-	free(thumb);
+static void
+epsilon_event_inform_done(Epsilon_Request *thumb)
+{
+	if (!thumb)
+		return;
 
-	return;
+	thumb->_event = ecore_event_add(EPSILON_EVENT_DONE, thumb,
+					epsilon_event_free, NULL);
+}
+
+static int
+epsilon_request_resolve_thumb_file(Epsilon_Request *thumb)
+{
+	Epsilon* tb;
+
+	if (!thumb)
+		return 0;
+
+	/*
+	 * Create a temp thumbnail struct to get the thumbnail
+	 * path, don't actually generate the thumbnail here.
+	 */
+	tb = epsilon_new(thumb->path);
+	epsilon_thumb_size(tb, thumb->size);
+	if (epsilon_exists(tb) == EPSILON_OK) {
+		const char *dest;
+
+		dest = epsilon_thumb_file_get(tb);
+		if (dest)
+			thumb->dest = strdup(dest);
+	}
+	epsilon_free(tb);
+
+	return thumb->dest != NULL;
 }
 
 static int
@@ -189,6 +227,7 @@ epsilon_cb_server_data(void *data, int type, void *event)
 	while ((thumb = ecore_dlist_current(epsilon_request_queue))) {
 		if (thumb->id == msg->mid) {
 			if (debug) printf("Removing %d from queue\n", thumb->id);
+			thumb->status = msg->status;
 			ecore_dlist_remove(epsilon_request_queue);
 			break;
 		}
@@ -196,27 +235,10 @@ epsilon_cb_server_data(void *data, int type, void *event)
 		if (debug) printf("Cycling %d times looking for %d, current is %d\n", i++, msg->mid, thumb->id);
 	}
 
-	/*If the thumb dest is not set, but the generation was successful,
-	 * try to get the dest now */
-	if ( thumb && (!thumb->dest) && thumb->path && !thumb->status ) {
-		Epsilon* tb;
-		
-		/*
-		 * Create a temp thumbnail struct to get the thumbnail
-		 * path, don't actually generate the thumbnail here.
-		 */
-		tb = epsilon_new(thumb->path);
-		epsilon_thumb_size(tb, thumb->size);
-		epsilon_exists(tb);
-		thumb->dest = (char *)epsilon_thumb_file_get(tb);
-		if (thumb->dest)
-			thumb->dest = strdup(thumb->dest);
-		epsilon_free(tb);
-	}
+	if (thumb && thumb->status)
+		epsilon_request_resolve_thumb_file(thumb);
 
-	if (thumb) {
-		ecore_event_add(EPSILON_EVENT_DONE, thumb, epsilon_event_free, NULL);
-	}
+	epsilon_event_inform_done(thumb);
 	if (debug) printf("Jump out\n");
 
 	return 1;
@@ -226,7 +248,7 @@ epsilon_cb_server_data(void *data, int type, void *event)
  *
  */
 static int
-epsilon_client_connect()
+epsilon_client_connect(void)
 {
 	int retries = 0;
 
@@ -276,17 +298,15 @@ epsilon_client_connect()
 
 /**
  * @param path Path to the original image that will be thumbnailed.
- * @param dst Destination for generated thumbnail, NULL causes auto-generation.
  * @param size Enum determining the scale of the thumbnail.
  * @param data Data associated with this thumbnail for client use.
  * @brief Request a thumbnail to be generated asynchronously for the specified
  * @a path.
  */
 Epsilon_Request *
-epsilon_add(char *path, char *dst, int size, void *data)
+epsilon_request_add(const char *path, Epsilon_Thumb_Size size, void *data)
 {
 	Epsilon_Request *thumb;
-	Epsilon_Message *msg;
 
 	if (!epsilon_server) {
 		if (!epsilon_client_connect()) {
@@ -296,28 +316,23 @@ epsilon_add(char *path, char *dst, int size, void *data)
 	}
 
 	thumb = calloc(1, sizeof(Epsilon_Request));
-	if (thumb) {
-		thumb->path = strdup(path);
-		if (dst)
-			thumb->dest = strdup(dst);
-		else {
-			Epsilon *tb;
+	if (!thumb)
+		return NULL;
 
-			/*
-			 * Create a temp thumbnail struct to get the thumbnail
-			 * path, don't actually generate the thumbnail here.
-			 */
-			tb = epsilon_new(path);
-			epsilon_exists(tb);
-			epsilon_thumb_size(tb, size);
-			thumb->dest = (char *)epsilon_thumb_file_get(tb);
-			if (thumb->dest)
-				thumb->dest = strdup(thumb->dest);
-			epsilon_free(tb);
-		}
-		thumb->data = data;
+	thumb->path = strdup(path);
+	if (!thumb->path) {
+		free(thumb);
+		return NULL;
+	}
+	thumb->size = size;
+	thumb->data = data;
+	if (epsilon_request_resolve_thumb_file(thumb)) {
+		thumb->status = 1;
+		epsilon_event_inform_done(thumb);
+	} else {
+		Epsilon_Message *msg;
 
-		msg = epsilon_message_new(epsilon_mid++, (char *)path, dst, 0);
+		msg = epsilon_message_new(epsilon_mid++, path, 0);
 		if (msg) {
 			msg->thumbsize = size;
 			if (debug) printf("!! requesting thumbnail for %s (request %d)!!, %d\n", path, msg->mid, sizeof(Epsilon_Message)+msg->bufsize);
@@ -326,10 +341,9 @@ epsilon_add(char *path, char *dst, int size, void *data)
 				ecore_dlist_append(epsilon_request_queue, thumb);
 			}
 			free(msg);
-		}
-		else {
-			free(thumb);
-			thumb = NULL;
+		} else {
+			epsilon_request_free(thumb);
+			return NULL;
 		}
 	}
 
@@ -341,21 +355,32 @@ epsilon_add(char *path, char *dst, int size, void *data)
  * @brief Request a thumbnail request to be cancelled.
  */
 void
-epsilon_del(Epsilon_Request *thumb)
+epsilon_request_del(Epsilon_Request *thumb)
 {
 	Epsilon_Request *temp;
 
-	/*
-	 * Find the thumbnail request matching this message response and
-	 * remove it, at this point we don't bother cancelling the outstanding
-	 * request to the daemon.
-	 */
-	ecore_dlist_first_goto(epsilon_request_queue);
-	while ((temp = ecore_dlist_current(epsilon_request_queue))) {
-		if (temp->id == thumb->id) {
-			ecore_dlist_remove(epsilon_request_queue);
-			break;
+	if (!thumb)
+		return;
+
+	/* was nonexistent and so requested to server */
+	if (thumb->id > 0) {
+		/*
+		 * Find the thumbnail request matching this message response and
+		 * remove it, at this point we don't bother cancelling the outstanding
+		 * request to the daemon.
+		 */
+		ecore_dlist_first_goto(epsilon_request_queue);
+		while ((temp = ecore_dlist_current(epsilon_request_queue))) {
+			if (temp->id == thumb->id) {
+				ecore_dlist_remove(epsilon_request_queue);
+				break;
+			}
+			ecore_dlist_next(epsilon_request_queue);
 		}
-		ecore_dlist_next(epsilon_request_queue);
 	}
+
+	if (thumb->_event)
+		ecore_event_del(thumb->_event);
+	else
+		epsilon_request_free(thumb);
 }

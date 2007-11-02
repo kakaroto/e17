@@ -6,26 +6,22 @@
 static int mid = 1;
 
 Epsilon_Message *
-epsilon_message_new(int nid, char *path, char *dst, int status)
+epsilon_message_new(int nid, const char *path, int status)
 {
-	int size = 0;
+	int size, pathlen;
 	Epsilon_Message *msg;
-	int dstlen = 0;
-	int pathlen = 0;
 
 	size = sizeof(Epsilon_Message);
 	
 	if (path)
 		pathlen = strlen(path) + 1;
+	else
+		pathlen = 0;
 
-	if (dst)
-		dstlen = strlen(dst) + 1;
-	size += dstlen + pathlen;
+	size += pathlen;
 
 	msg = malloc(size);
 	if (msg) {
-		char *body;
-
 		msg->head = EPSILON_MAJOR;
 		msg->status = status;
 		msg->nid = nid;
@@ -33,14 +29,9 @@ epsilon_message_new(int nid, char *path, char *dst, int status)
 		msg->bufsize = size - sizeof(Epsilon_Message);
 
 		if (path) {
+			void *body;
 			body = ((char *)msg) + sizeof(Epsilon_Message);
-			strcpy(body, path);
-		}
-
-		if (dst) {
-			body = ((char *)msg) + sizeof(Epsilon_Message) 
-								+ pathlen;
-			strcpy(body, dst);
+			memcpy(body, path, pathlen);
 		}
 	}
 

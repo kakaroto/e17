@@ -150,7 +150,7 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
     entropy_core_file_cache_add_reference(request->file->md5);
 
     /*printf("'%s' (%s)...\n", buffer, request->file->md5);*/
-    epsilon_add(buffer, NULL, EPSILON_THUMB_NORMAL, NULL);
+    epsilon_add(buffer, EPSILON_THUMB_NORMAL, NULL);
   }
   else {
     return request->file->thumbnail;
