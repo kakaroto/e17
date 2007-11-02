@@ -78,8 +78,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *of, *ob, *ol, *oi;
-   E_Radio_Group *rg;
+   Evas_Object *o, *of, *ob, *ol;
    Population *pop;
 
    pop = cfd->data;
@@ -124,7 +123,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
       char * name;
       Evas_Object *oi;
       theme = l->data;
-      name = edje_file_data_get (theme, "PopulationName");
+      name = edje_file_data_get(theme, "PopulationName");
       if (name)
       {
          oi = edje_object_add(evas);
@@ -133,7 +132,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
          printf("TEMA: %s (%s)\n", name, cfdata->theme);
          e_widget_ilist_append(ol, oi, name, 
                _ilist_cb_selected, theme, theme);
-         if (strcmp(theme,cfdata->theme) == 0)
+         if (strcmp(theme, cfdata->theme) == 0)
          {
             e_widget_ilist_selected_set(ol, count);
          }
@@ -151,14 +150,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 static void
 _ilist_cb_selected(void *data)
 {
-  E_Config_Dialog_Data *cfdata;
    char *th;
    th = data;
-  //cfdata = data;
-  //if (!cfdata) return;
 
-  printf("CB %s\n",th);
- 
+   printf("CB %s\n", th);
 }
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)

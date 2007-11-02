@@ -1,7 +1,10 @@
 #include <e.h>
+#include <Ecore_Str.h>
+
 #include "config.h"
 #include "e_mod_main.h"
 #include "e_mod_config.h"
+
 
 #define CLIMBER_PROB 4 // 4 Means: one climber every 5 - 1 Means: all climber - !!Don't set to 0
 #define FLOATER_PROB 2 
@@ -135,7 +138,7 @@ _population_init(E_Module *m)
             if (es->visible)
             {
                e_container_shape_geometry_get(es, &x, &y, &w, &h);
-               printf("E_shape: [%d] x:%d y:%d w:%d h:%d\n", es->visible,x, y, w, h);
+               printf("E_shape: [%d] x:%d y:%d w:%d h:%d\n", es->visible, x, y, w, h);
             }
          }
       }
@@ -154,12 +157,12 @@ _population_init(E_Module *m)
    {
          if (ecore_str_has_suffix(filename, ".edj"))
          {
-            snprintf(buf,sizeof(buf),"%s/%s",PACKAGE_DATA_DIR"/themes",filename);
-            name = edje_file_data_get (buf, "PopulationName");
+            snprintf(buf, sizeof(buf),"%s/%s", PACKAGE_DATA_DIR"/themes", filename);
+            name = edje_file_data_get(buf, "PopulationName");
             if (name)
             {
-               printf("THEME FILE: %s (%s)\n",filename,name);
-               pop->themes = evas_list_append(pop->themes,strdup(buf));
+               printf("THEME FILE: %s (%s)\n", filename, name);
+               pop->themes = evas_list_append(pop->themes, strdup(buf));
             }
          }
    }   
@@ -178,9 +181,9 @@ _action_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Action *a;
    a = data;
-   printf("Free Action '%s' :(\n",a->name);
+   printf("Free Action '%s' :(\n", a->name);
    E_FREE(a->name);
-   E_FREE (a);
+   E_FREE(a);
    return 1;
 }
 static void
@@ -242,7 +245,7 @@ _population_shutdown(Population *pop)
    
    while (pop->themes)
    {
-      printf("Free Theme '%s' :(\n",pop->themes->data);
+      printf("Free Theme '%s' :(\n", (char *)pop->themes->data);
       pop->themes = evas_list_remove_list(pop->themes, pop->themes);
    }
 
@@ -274,9 +277,8 @@ _load_action(Population *pop, char *filename, char *name, int id)
 {
    Action *act;
    char *data;
-   int w, h, speed;
-      
-   data = edje_file_data_get (filename, name);
+ 
+   data = edje_file_data_get(filename, name);
    if (!data) 
       return NULL;
    
@@ -301,10 +303,9 @@ _load_custom_action(Population *pop, char *filename, char *name)
 {
    Custom_Action *c;
    char *data;
-   int w, h, speed;
    char buf[25];
    
-   data = edje_file_data_get (filename, name);
+   data = edje_file_data_get(filename, name);
    if (!data) 
       return NULL;
    
@@ -332,7 +333,7 @@ _load_custom_action(Population *pop, char *filename, char *name)
 Evas_Bool hash_fn(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Action *a = data;
-   printf("ACTIONS: name:'%s' w:%d h:%d speed:%d\n",key,a->w,a->h,a->speed);
+   printf("ACTIONS: name:'%s' w:%d h:%d speed:%d\n", key, a->w, a->h, a->speed);
    return 1;
 }
 
@@ -340,7 +341,6 @@ static void
 _theme_load(Population *pop)
 {
    char *name;
-   Action *act;
    char buf[15];
    int i;
    
@@ -352,7 +352,7 @@ _theme_load(Population *pop)
       pop->conf->theme = PACKAGE_DATA_DIR "/default.edj";
       
 
-   name = edje_file_data_get (pop->conf->theme, "PopulationName");
+   name = edje_file_data_get(pop->conf->theme, "PopulationName");
    if (!name) 
       return;
    
@@ -371,12 +371,12 @@ _theme_load(Population *pop)
    // load custom actions
    i = 2;
    snprintf(buf, sizeof(buf), "Custom_1");
-   while(_load_custom_action(pop, pop->conf->theme, buf))
+   while (_load_custom_action(pop, pop->conf->theme, buf))
       snprintf(buf, sizeof(buf), "Custom_%d", i++);
    
    evas_hash_foreach(pop->actions, hash_fn, NULL);
    Evas_List *l;
-   for ( l = pop->customs; l; l = l->next )
+   for (l = pop->customs; l; l = l->next )
    {
       Custom_Action *c = l->data;
       printf("CUSTOMS: name:'%s' w:%d h:%d h_speed:%d v_speed:%d\n",
@@ -394,13 +394,11 @@ _population_load(Population *pop)
    evas_output_viewport_get(pop->canvas, &xx, &yy, &ww, &hh);
   
    //Create edje
-   printf("\n *** LOAD %d ANIMS ***\n",pop->conf->penguins_count);
+   printf("\n *** LOAD %d ANIMS ***\n", pop->conf->penguins_count);
 
 	
    for (i = 0; i < pop->conf->penguins_count; i++)
      {
-        Evas_Coord tx, ty;
-
         tux = malloc(sizeof(Penguin));
 
         o = edje_object_add(pop->canvas);
@@ -410,7 +408,7 @@ _population_load(Population *pop)
               
         evas_object_image_alpha_set(o, 0.5);
         evas_object_color_set(o, pop->conf->alpha, pop->conf->alpha,
-                              pop->conf->alpha,pop->conf->alpha);
+                              pop->conf->alpha, pop->conf->alpha);
         evas_object_pass_events_set(o, 1);
        
         tux->obj = o;
@@ -443,11 +441,9 @@ _cb_animator(void *data)
 {
    Population *pop;
    Evas_List *l;
-   double d;
-   int ran;
-   
+
    pop = data;
-   for (l=pop->penguins; l ;l=l->next)
+   for (l = pop->penguins; l; l = l->next)
    {
       Penguin *tux;
       int touch;
@@ -463,17 +459,17 @@ _cb_animator(void *data)
       else if (tux->action->id == ID_FALLER)
       {
          tux->y += ((double)tux->action->speed / 100);
-         if (touch = _is_inside_any_win(pop,
+         if ((touch = _is_inside_any_win(pop,
                         (int)tux->x+(tux->action->w/2),
                         (int)tux->y + tux->action->h,
-                        _RET_TOP_VALUE))
+                        _RET_TOP_VALUE)))
          {
             if (( (int)tux->y - tux->faller_h)  > MAX_FALLER_HEIGHT)
                _start_splatting_at(tux, touch);
             else
                _start_walking_at(tux, touch); 
          }
-         else if(( (int)tux->y + tux->action->h ) > pop->height)
+         else if (( (int)tux->y + tux->action->h ) > pop->height)
          {
             if (( (int)tux->y - tux->faller_h)  > MAX_FALLER_HEIGHT)
                _start_splatting_at(tux, pop->height);
@@ -486,13 +482,13 @@ _cb_animator(void *data)
       else if (tux->action->id == ID_FLOATER)
       {
          tux->y += ((double)tux->action->speed / 100);
-         if (touch = _is_inside_any_win(pop,
+         if ((touch = _is_inside_any_win(pop,
                         (int)tux->x+(tux->action->w/2),
                         (int)tux->y + tux->action->h,
                         _RET_TOP_VALUE)
-            )
+            ))
             _start_walking_at(tux, touch);
-         else if(( (int)tux->y + tux->action->h ) > pop->height)
+         else if (( (int)tux->y + tux->action->h ) > pop->height)
             _start_walking_at(tux, pop->height);
             
       }
@@ -501,11 +497,11 @@ _cb_animator(void *data)
       {
          // random flyer
          if (_RAND(FLYER_PROB)){
-            _start_flying_at(tux,tux->y);
+            _start_flying_at(tux, tux->y);
          }
          // random custom
          else if (_RAND(CUSTOM_PROB)){
-            _start_custom_at(tux,tux->y+tux->action->h);
+            _start_custom_at(tux, tux->y+tux->action->h);
          }
          // left
          else if (tux->reverse)
@@ -603,7 +599,7 @@ _cb_animator(void *data)
          
       }
 
-     // printf("Place tux at x:%d y:%d w:%d h:%d\n",tux->x, tux->y,tux->action->w, tux->action->h);
+     // printf("Place tux at x:%d y:%d w:%d h:%d\n", tux->x, tux->y, tux->action->w, tux->action->h);
       evas_object_move(tux->obj, (int)tux->x, (int)tux->y);
 
   }
@@ -626,7 +622,7 @@ _is_inside_any_win(Population *pop, int x, int y, int ret_value)
       if (es->visible)
       {
          e_container_shape_geometry_get(es, &sx, &sy, &sw, &sh);
-         //printf("E_shape: [%d] x:%d y:%d w:%d h:%d\n", es->visible,sx, sy, sw, sh);
+         //printf("E_shape: [%d] x:%d y:%d w:%d h:%d\n", es->visible, sx, sy, sw, sh);
          if ( ((x > sx) && (x < (sx+sw))) &&
               ((y > sy) && (y < (sy+sh))) )
          {  
@@ -661,7 +657,7 @@ _is_inside_any_win(Population *pop, int x, int y, int ret_value)
 static void 
 _start_walking_at(Penguin *tux, int at_y)
 {
-   printf("Start walking...at %d\n",at_y);
+   printf("Start walking...at %d\n", at_y);
    tux->action = evas_hash_find(tux->pop->actions, "Walker");
    
    tux->y = at_y - tux->action->h;
@@ -675,7 +671,7 @@ _start_walking_at(Penguin *tux, int at_y)
 static void 
 _start_climbing_at(Penguin *tux, int at_x)
 {
-   //printf("Start climbing...at: %d\n",at_x);
+   //printf("Start climbing...at: %d\n", at_x);
    tux->action = evas_hash_find(tux->pop->actions, "Climber");
    evas_object_resize(tux->obj, tux->action->w, tux->action->h);
    
@@ -747,7 +743,7 @@ static void
 _cb_splatter_end (void *data, Evas_Object *o, const char *emi, const char *src)
 {
    _reborn((Penguin*)data);
-   edje_object_signal_callback_del(o,"splatting_done","edje",_cb_splatter_end);
+   edje_object_signal_callback_del(o,"splatting_done","edje", _cb_splatter_end);
 }
 
 static void 
@@ -757,7 +753,7 @@ _start_splatting_at(Penguin *tux, int at_y)
    evas_object_hide(tux->obj);
    tux->action = evas_hash_find(tux->pop->actions, "Splatter");
    evas_object_resize(tux->obj, tux->action->w, tux->action->h);
-   evas_object_image_fill_set(tux->obj,0,0, tux->action->w, tux->action->h);
+   evas_object_image_fill_set(tux->obj, 0, 0, tux->action->w, tux->action->h);
    tux->y = at_y - tux->action->h;
    if (tux->reverse)
       edje_object_signal_emit(tux->obj, "start_splatting_left", "epenguins");
@@ -765,9 +761,9 @@ _start_splatting_at(Penguin *tux, int at_y)
       edje_object_signal_emit(tux->obj, "start_splatting_right", "epenguins");
    
    
-   edje_object_signal_callback_add(tux->obj,"splatting_done","edje",_cb_splatter_end, tux);
+   edje_object_signal_callback_add(tux->obj,"splatting_done","edje", _cb_splatter_end, tux);
    evas_object_resize(tux->obj, tux->action->w, tux->action->h);
-   evas_object_image_fill_set(tux->obj,0,0, tux->action->w, tux->action->h);
+   evas_object_image_fill_set(tux->obj, 0, 0, tux->action->w, tux->action->h);
    evas_object_move(tux->obj,(int)tux->x,(int)tux->y);
    evas_object_show(tux->obj);
 }
@@ -788,8 +784,8 @@ _cb_custom_end (void *data, Evas_Object *o, const char *emi, const char *src)
    }
    else
    {
-      edje_object_signal_callback_del(o,"custom_done","edje",_cb_custom_end);
-      _start_walking_at(tux,tux->y+tux->custom->h);
+      edje_object_signal_callback_del(o,"custom_done","edje", _cb_custom_end);
+      _start_walking_at(tux, tux->y+tux->custom->h);
       tux->custom = NULL;
    }
 }
@@ -799,8 +795,7 @@ static void
 _start_custom_at(Penguin *tux, int at_y)
 {
    int ran;
-   char buf[25];
-   
+
    if (tux->pop->custom_num < 1)
       return;
    
@@ -825,9 +820,9 @@ _start_custom_at(Penguin *tux, int at_y)
       
    
    
-   printf("START Custom Action n %d (%s) repeat: %d\n", ran, tux->custom->left_program_name,tux->r_count);
+   printf("START Custom Action n %d (%s) repeat: %d\n", ran, tux->custom->left_program_name, tux->r_count);
    
-   edje_object_signal_callback_add(tux->obj,"custom_done","edje",_cb_custom_end, tux);
+   edje_object_signal_callback_add(tux->obj,"custom_done","edje", _cb_custom_end, tux);
    
 }
 /* static void
