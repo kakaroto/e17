@@ -18,7 +18,7 @@
 
 #define BLOCK_SIZE 128
 #define SIZE_TO_ALLOC(length) \
-   (((length) + (BLOCK_SIZE - 1)) / BLOCK_SIZE) * BLOCK_SIZE
+      (((length) + (BLOCK_SIZE - 1)) / BLOCK_SIZE) * BLOCK_SIZE
 
 enum _Etk_String_Property_Id
 {

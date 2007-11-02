@@ -126,6 +126,8 @@ struct Etk_Textblock2_Line
    Etk_Textblock2_Paragraph *paragraph;
    Etk_Textblock2_Line *prev;
    Etk_Textblock2_Line *next;
+   
+   void *object_lines;
 };
 
 /** TODOC */
