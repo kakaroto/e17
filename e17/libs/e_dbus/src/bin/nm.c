@@ -22,8 +22,6 @@ struct NM_Device
 void
 cb_manager_get_name(void *data, void *reply, DBusError *err)
 {
-   NM_Manager *app = data;
-   
    if (dbus_error_is_set(err))
      {
 	//XXX
@@ -37,8 +35,6 @@ cb_manager_get_name(void *data, void *reply, DBusError *err)
 void
 cb_manager_get_type(void *data, void *reply, DBusError *err)
 {
-   NM_Manager *app = data;
-   
    if (dbus_error_is_set(err))
      {
 	//XXX
@@ -52,8 +48,6 @@ cb_manager_get_type(void *data, void *reply, DBusError *err)
 void
 cb_manager_get_hal_udi(void *data, void *reply, DBusError *err)
 {
-   NM_Manager *app = data;
-   
    if (dbus_error_is_set(err))
      {
 	//XXX
@@ -67,8 +61,6 @@ cb_manager_get_hal_udi(void *data, void *reply, DBusError *err)
 void
 cb_manager_get_ip4_address(void *data, void *reply, DBusError *err)
 {
-   NM_Manager *app = data;
-   
    if (dbus_error_is_set(err))
      {
 	//XXX
@@ -87,8 +79,6 @@ cb_manager_get_ip4_address(void *data, void *reply, DBusError *err)
 void
 cb_manager_get_link_active(void *data, void *reply, DBusError *err)
 {
-   NM_Manager *app = data;
-   
    if (dbus_error_is_set(err))
      {
 	//XXX
@@ -102,8 +92,6 @@ cb_manager_get_link_active(void *data, void *reply, DBusError *err)
 void
 cb_manager_wireless_get_strength(void *data, void *reply, DBusError *err)
 {
-   NM_Manager *app = data;
-   
    if (dbus_error_is_set(err))
      {
 	//XXX
@@ -117,8 +105,6 @@ cb_manager_wireless_get_strength(void *data, void *reply, DBusError *err)
 void
 cb_manager_wireless_get_active_network(void *data, void *reply, DBusError *err)
 {
-   NM_Manager *app = data;
-   
    if (dbus_error_is_set(err))
      {
 	//XXX
@@ -132,7 +118,6 @@ cb_manager_wireless_get_active_network(void *data, void *reply, DBusError *err)
 void
 cb_manager_wireless_get_networks(void *data, void *reply, DBusError *err)
 {
-   NM_Manager *app = data;
    Ecore_List *networks;
    const char *net;
    
