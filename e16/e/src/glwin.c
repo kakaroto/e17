@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include "cursors.h"
 #include "desktops.h"
 #include "eimage.h"
 #include "eglx.h"
@@ -76,7 +77,7 @@ static GLfloat      rot_y;	/* Y rotation */
 static GLfloat      speed_x;	/* X rotation speed */
 static GLfloat      speed_y;	/* Y rotation speed */
 static GLfloat      bg_z;	/* Background z */
-static double       t0;
+static double       t0, tn;
 
 #define N_TEXTURES 5
 static unsigned int sel_bg;
@@ -310,7 +311,7 @@ DrawQube(ETexture * et, GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h,
 }
 
 static void
-SceneDraw1(double t, EWin ** ewins, int num)
+SceneDraw2(double t, EWin ** ewins, int num)
 {
    int                 i, j, k, nx, ny;
    GLfloat             x, y, w, h, dx, dy, sz;
@@ -378,9 +379,9 @@ SceneDraw1(double t, EWin ** ewins, int num)
 }
 
 static void
-SceneDraw2(double t, EWin ** ewins, int num)
+SceneDraw1(double t, EWin ** ewins, int num)
 {
-   static double       t1;
+   double              t1;
    int                 i;
    GLfloat             w, h, dx, dy, sz, dx1, dy1;
    EObj               *eo;
@@ -388,12 +389,14 @@ SceneDraw2(double t, EWin ** ewins, int num)
    w = EobjGetW(GLWin.eo);
    h = EobjGetH(GLWin.eo);
 
+   t1 = (2 * M_PI * sel_ewin) / num * (1. - exp(-(20. * (t - tn))));
+
    DrawBackground(texture[sel_bg], w, h);
 
    for (i = 0; i < num; i++)
      {
-	dx1 = (.5 + .3 * cos(t1 + t + (i + .5) * 2. * M_PI / num)) * w;
-	dy1 = (.5 - .3 * sin(t1 + t + (i + .5) * 2. * M_PI / num)) * h;
+	dx1 = (.5 + .3 * cos(t1 + (i + .5) * 2. * M_PI / num)) * w;
+	dy1 = (.5 - .3 * sin(t1 + (i + .5) * 2. * M_PI / num)) * h;
 
 	eo = EoObj(ewins[i]);
 	dx = 100.0f * exp(-t);
@@ -495,11 +498,13 @@ GlwinKeyPress(GLWindow * gw, KeySym key)
      case XK_g:		/* Toggle grabs */
 	if (gw->grabbing)
 	  {
+	     GrabPointerRelease();
 	     GrabKeyboardRelease();
 	     gw->grabbing = 0;
 	  }
 	else
 	  {
+	     GrabPointerSet(EobjGetWin(gw->eo), ECSR_GRAB, 0);
 	     GrabKeyboardSet(EobjGetWin(gw->eo));
 	     gw->grabbing = 1;
 	  }
@@ -545,9 +550,11 @@ GlwinKeyPress(GLWindow * gw, KeySym key)
 	break;
 
      case XK_n:
+     case XK_Tab:
 	sel_ewin++;
 	if (sel_ewin >= 5)
 	   sel_ewin = 0;
+	tn = GetDTime();
 	break;
      case XK_p:
 	sel_ewin--;
@@ -596,7 +603,7 @@ GlwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 #endif
      case MapNotify:
-	GrabKeyboardSet(EobjGetWin(GLWin.eo));
+	GlwinKeyPress(gw, XK_g);
 	AnimatorAdd(GlwinRun, NULL);
 	break;
 #if 0
@@ -639,9 +646,12 @@ GlwinCreate(const char *title __UNUSED__, int width, int height)
 
    EGlWindowConnect(WinGetXwin(win));
 
+   GLWin.grabbing = 0;
+
    EobjMap(GLWin.eo, 1);
 
    t0 = GetTime();
+   tn = -1e6;
 
    return 0;
 }
