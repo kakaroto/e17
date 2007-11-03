@@ -276,7 +276,7 @@ HandleEvent(XEvent * ev)
 	Mode.events.time = ev->xbutton.time;
 	ModeGetXY(ev->xbutton.root, ev->xbutton.x_root, ev->xbutton.y_root);
 	Mode.events.on_screen = ev->xbutton.same_screen;
-	TooltipsSetPending(0, NULL, NULL);
+	TooltipsHide();
 	goto do_stuff;
 
      case MotionNotify:
@@ -300,7 +300,7 @@ HandleEvent(XEvent * ev)
 	  }
 	ModeGetXY(ev->xcrossing.root, ev->xcrossing.x_root,
 		  ev->xcrossing.y_root);
-	TooltipsSetPending(0, NULL, NULL);
+	TooltipsHide();
 	goto do_stuff;
 
      case LeaveNotify:
@@ -314,7 +314,7 @@ HandleEvent(XEvent * ev)
 	  }
 	ModeGetXY(ev->xcrossing.root, ev->xcrossing.x_root,
 		  ev->xcrossing.y_root);
-	TooltipsSetPending(0, NULL, NULL);
+	TooltipsHide();
 	goto do_stuff;
 
      case PropertyNotify:

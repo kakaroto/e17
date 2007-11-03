@@ -699,6 +699,8 @@ TooltipsHide(void)
 {
    ToolTip            *tt;
 
+   TooltipsSetPending(0, NULL, NULL);
+
    ECORE_LIST_FOR_EACH(tt_list, tt) TooltipHide(tt);
 }
 
@@ -713,6 +715,7 @@ TooltipsEnable(int enable)
    else
      {
 	Mode_tooltips.inhibit++;
+	TooltipsHide();
      }
 }
 
@@ -771,8 +774,7 @@ TooltipsSetPending(int type, CB_GetAclass * func, void *data)
    Mode_tooltips.ac_func = func;
    Mode_tooltips.ac_data = data;
 
-   if (ttip)
-      TooltipHide(ttip);
+   TooltipHide(ttip);
 
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
 
@@ -818,6 +820,7 @@ TooltipsSighan(int sig, void *prm __UNUSED__)
 	break;
      case ESIGNAL_AREA_SWITCH_START:
      case ESIGNAL_DESK_SWITCH_START:
+     case ESIGNAL_EWIN_CHANGE:
 	TooltipsHide();
 	break;
      }
