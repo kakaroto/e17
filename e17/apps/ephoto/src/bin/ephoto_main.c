@@ -40,7 +40,7 @@ static void window_fullscreen(Ewl_Widget *w, void *event, void *data)
 void create_main(void)
 {
 	char buf[PATH_MAX];
-	Ewl_Widget *vbox, *hbox, *vsep, *button;
+	Ewl_Widget *vbox, *vsep, *button;
 	Ewl_Widget *mb, *menu, *mi;
 
 	/*Initialize our main Structure*/

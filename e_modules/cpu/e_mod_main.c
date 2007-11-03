@@ -237,13 +237,14 @@ _set_cpu_load(void *data)
 static int
 _get_cpu_count(void)
 {
-   FILE *f;
-   char tmp[4];
    int cpu = -1;
 
 #ifdef __FreeBSD__
    cpu = 1;
 #else
+   FILE *f;
+   char tmp[4];
+
    if (!(f = fopen("/proc/stat", "r"))) return cpu;
 
    while (fscanf(f, "cp%s %*u %*u %*u %*u %*u %*u %*u %*u\n", (char *) &tmp) == 1)
