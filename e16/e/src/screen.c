@@ -64,20 +64,25 @@ ScreenInit(void)
    n_screens = 0;		/* Causes reconfiguration */
 
 #ifdef HAVE_XINERAMA
-   XineramaScreenInfo *screens = NULL;
-   int                 num_screens = 0;
-   int                 i;
+   XineramaScreenInfo *screens;
+   int                 i, num_screens;
 
    if (Mode.wm.window)
       return;
 
    Mode.display.xinerama_active = XineramaIsActive(disp);
-   if (Mode.display.xinerama_active)
-      screens = XineramaQueryScreens(disp, &num_screens);
+   if (!Mode.display.xinerama_active)
+      return;
+
+   num_screens = 0;
+   screens = XineramaQueryScreens(disp, &num_screens);
 
    for (i = 0; i < num_screens; i++)
       ScreenAdd(0, screens[i].screen_number, screens[i].x_org,
 		screens[i].y_org, screens[i].width, screens[i].height);
+
+   if (screens)
+      XFree(screens);
 #endif
 }
 
