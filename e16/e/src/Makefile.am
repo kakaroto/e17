@@ -110,6 +110,12 @@ e16_SOURCES = \
 	$(SRCS_ECOMPMGR)	\
 	$(SRCS_SNPRINTF)
 
+e16_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
+	$(ECORE_CFLAGS) \
+	$(MODULE_CFLAGS) \
+	$(IMLIB2_CFLAGS) \
+	$(X_CFLAGS)
+
 LDADD = \
 	$(LTLIBINTL)		\
 	$(LTLIBICONV)		\
@@ -123,12 +129,6 @@ LDADD = \
 	$(X_EXTRA_LIBS)		\
 	$(E_X_LIBS)		\
 	-lX11 -lm
-
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) \
-	$(ECORE_CFLAGS) \
-	$(MODULE_CFLAGS) \
-	$(IMLIB2_CFLAGS) \
-	$(X_CFLAGS)
 
 if BUILD_MODULES
 

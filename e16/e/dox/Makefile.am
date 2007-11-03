@@ -6,9 +6,9 @@ bin_PROGRAMS = edox
 
 edox_SOURCES = dox.c dox.h file.c format.c text.c ttfont.c
 
-LDADD = $(IMLIB2_LIBS) $(X_LIBS) $(XINERAMA_LIBS) -lX11 -lm
+edox_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) $(IMLIB2_CFLAGS) $(X_CFLAGS)
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) $(IMLIB2_CFLAGS) $(X_CFLAGS)
+LDADD = $(IMLIB2_LIBS) $(X_LIBS) $(XINERAMA_LIBS) -lX11 -lm
 
 uninstall-local:
 	for i in $(bin_PROGRAMS); do \

@@ -3,9 +3,9 @@ bin_PROGRAMS = eesh
 
 eesh_SOURCES = E.h comms.c main.c
 
-LDADD = $(X_LIBS) -lX11
+eesh_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) $(X_CFLAGS)
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) $(X_CFLAGS)
+LDADD = $(X_LIBS) -lX11
 
 uninstall-local:
 	for i in $(bin_PROGRAMS); do \

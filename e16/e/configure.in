@@ -1,21 +1,14 @@
-AC_INIT(configure.in)
+m4_define([pkg_version],  [0.16.8.11])
+m4_define([pkg_revision], [0.00])
+m4_define([pkg_ver_rev],  m4_ifdef([pkg_revision], [pkg_version-pkg_revision], [pkg_version]))
+m4_define([rpm_revision], m4_ifdef([pkg_revision], [pkg_revision], [1]))
 
-E_PKG_VERSION=0.16.8.11
-E_PKG_REVISION=0.00
-if test "x$E_PKG_REVISION" != "x"; then
-  E_PKG_VER_REV=$E_PKG_VERSION-$E_PKG_REVISION
-  E_RPM_REVISION=$E_PKG_REVISION
-else
-  E_PKG_VER_REV=$E_PKG_VERSION
-  E_RPM_REVISION=1
-fi
+AC_INIT(e16, [pkg_ver_rev], [enlightenment-devel@lists.sourceforge.net])
+AM_INIT_AUTOMAKE([foreign])
 
-AM_INIT_AUTOMAKE(e16, $E_PKG_VER_REV)
-
-AC_DEFINE_UNQUOTED(E_PKG_VERSION, "$E_PKG_VERSION", [Version])
-AC_DEFINE_UNQUOTED(E_PKG_VER_REV, "$E_PKG_VER_REV", [Version, Revision])
-AC_SUBST(E_PKG_VERSION)
-AC_SUBST(E_RPM_REVISION)
+AC_DEFINE(E_PKG_VERSION, ["pkg_version"], [Version])
+AC_SUBST(E_PKG_VERSION,  [pkg_version])
+AC_SUBST(E_RPM_REVISION, [rpm_revision])
 
 # reasonable guesses for where stuff is installed
 if test "x$prefix" = "xNONE"; then
@@ -30,6 +23,8 @@ AM_MAINTAINER_MODE
 ALL_LINGUAS="bg bs da de en_US es fr hu ko nl no ru sv pt pl pt_BR tr ja"
 
 AC_PROG_CC
+AM_PROG_CC_C_O
+
 AC_PROG_MAKE_SET
 AC_ISC_POSIX
 AC_PROG_INSTALL
@@ -99,6 +94,7 @@ AC_DEFINE_UNQUOTED(ENLIGHTENMENT_ROOT, "$ENLIGHTENMENT_ROOT", [The installation 
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_BIN, "$ENLIGHTENMENT_BIN", [The installation bin directory])
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_LIB, "$ENLIGHTENMENT_LIB", [The installation lib directory])
 AC_DEFINE_UNQUOTED(LOCALEDIR, "$LOCALEDIR",  [The installation locale directory])
+AC_SUBST(ENLIGHTENMENT_ROOT)
 
 if test "x$enable_sound" = "xyes"; then
   AM_PATH_ESD(0.2.17,AC_DEFINE(HAVE_LIBESD, 1, [libesd.so]),[
