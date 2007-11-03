@@ -34,7 +34,8 @@ $AppDirs = MkDirList($Prefixes, "/share/applications:/share/applications/kde");
 
 $IconDirs = MkDirList($Prefixes, "/share/pixmaps:/share/icons");
 $IconDirs2 = MkDirList($Prefixes, "/share/icons");
-$Themes = "gnome:default.kde:hicolor";
+$Themes = "default.kde:gnome:hicolor";
+$IconCats = "apps:filesystems:actions:devices:categories:places";
 
 # Where to look for GNOME1 apps
 $OldGnomeDirs = MkDirList($Prefixes, "/share/gnome/apps");
@@ -334,13 +335,29 @@ sub FindIcon {
 		foreach $t (split(':', $Themes)) {
 			next unless (-d "$d/$t");
 			foreach $s (split(':', "16:24:32:48")) {
-				next unless (-d "$d/$t/$s$x$s");
-				foreach $u (split(':', "apps:filesystems:actions:devices")) {
-					next unless (-d "$d/$t/$s$x$s/$u");
-					$i = "$d/$t/$s$x$s/$u/$f";
-					$i = "$i.png" unless ($f =~ /\.png$/);
+				$S = "$d/$t/$s$x$s";
+				next unless (-d "$S");
+				if ($f =~ /^stock/) {
+					$i = "$S/stock/*/$f.png";
+					$ii = glob("$i");
 					print "Testing $i\n" if $dbg >= 2;
-					return $i if (-f $i);
+					return $ii if (-f $ii);
+				} else {
+					foreach $u (split(':', $IconCats)) {
+						next unless (-d "$S/$u");
+						$i = "$S/$u/$f";
+						if ($f =~ /\.png|\.xpm$/) {
+							print "Testing $i\n" if $dbg >= 2;
+							return $i if (-f $i);
+						} else {
+							$ii = "$i.png";
+							print "Testing $ii\n" if $dbg >= 2;
+							return $ii if (-f $ii);
+							$ii = "$i.xpm";
+							print "Testing $ii\n" if $dbg >= 2;
+							return $ii if (-f $ii);
+						}
+					}
 				}
 			}
 		}
