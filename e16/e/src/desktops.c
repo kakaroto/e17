@@ -36,6 +36,7 @@
 #include "grabs.h"
 #include "hints.h"
 #include "iclass.h"
+#include "screen.h"
 #include "settings.h"
 #include "timers.h"
 #include "tooltips.h"
@@ -1896,6 +1897,7 @@ DeskRootResize(int root, int w, int h)
    VRoot.w = w;
    VRoot.h = h;
 
+   ScreenInit();
    DesksResize(w, h);
 }
 
