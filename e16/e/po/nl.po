@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-09-30 17:48+0200\n"
+"POT-Creation-Date: 2007-11-02 22:17+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -496,7 +496,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Enlightenment Bericht Dialoog"
 
-#: src/desktops.c:121
+#: src/desktops.c:122
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -514,7 +514,7 @@ msgstr ""
 "Klik op de middelste muisknop voor een lijst\n"
 "van de applicaties die nu draaien.\n"
 
-#: src/desktops.c:132
+#: src/desktops.c:133
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -530,7 +530,7 @@ msgstr ""
 "Klik met de muisknop om een lijst van alle\n"
 "programma's te krijgen die nu actief zijn.\n"
 
-#: src/desktops.c:151
+#: src/desktops.c:152
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -538,7 +538,7 @@ msgstr ""
 "Klik hier om deze desktop naar\n"
 "boven te brengen\n"
 
-#: src/desktops.c:164
+#: src/desktops.c:165
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -546,73 +546,73 @@ msgstr ""
 "Klik hier om deze desktop naar\n"
 "beneden te brengen\n"
 
-#: src/desktops.c:2291 src/desktops.c:2330
+#: src/desktops.c:2293 src/desktops.c:2332
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktops"
 
-#: src/desktops.c:2293 src/desktops.c:2332
+#: src/desktops.c:2295 src/desktops.c:2334
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
-#: src/desktops.c:2325
+#: src/desktops.c:2327
 msgid "Number of virtual desktops:\n"
 msgstr "Aantal virtuele desktops:\n"
 
-#: src/desktops.c:2354
+#: src/desktops.c:2356
 msgid "Slide desktops around when changing"
 msgstr "Schuif desktops bij veranderen"
 
-#: src/desktops.c:2360
+#: src/desktops.c:2362
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Snelheid van desktop schuiven: (langzaam)\n"
 
-#: src/desktops.c:2374
+#: src/desktops.c:2376
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2382
+#: src/desktops.c:2384
 msgid "Display desktop dragbar"
 msgstr "Toon de desktop sleurstrip"
 
-#: src/desktops.c:2388
+#: src/desktops.c:2390
 msgid "Drag bar position:"
 msgstr "Sleurstrip positie:"
 
-#: src/desktops.c:2392
+#: src/desktops.c:2394
 msgid "Top"
 msgstr "Boven"
 
-#: src/desktops.c:2398
+#: src/desktops.c:2400
 msgid "Bottom"
 msgstr "Onder"
 
-#: src/desktops.c:2404 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
+#: src/desktops.c:2406 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
 msgid "Left"
 msgstr "Links"
 
-#: src/desktops.c:2410 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
+#: src/desktops.c:2412 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
 msgid "Right"
 msgstr "Rechts"
 
-#: src/desktops.c:2418 src/menus-misc.c:713
+#: src/desktops.c:2420 src/menus-misc.c:713
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2419
+#: src/desktops.c:2421
 msgid "Multiple Desktop Settings"
 msgstr "Meerdere Desktop Instellingen"
 
-#: src/desktops.c:2422
+#: src/desktops.c:2424
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/desktops.c:2501 src/desktops.c:2536
+#: src/desktops.c:2503 src/desktops.c:2538
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -621,7 +621,7 @@ msgstr ""
 "%i x %i\n"
 "Shermen in grootte"
 
-#: src/desktops.c:2504 src/desktops.c:2539
+#: src/desktops.c:2506 src/desktops.c:2541
 msgid ""
 "1\n"
 "Screen in size"
@@ -629,43 +629,43 @@ msgstr ""
 "1\n"
 "Sherm in grootte"
 
-#: src/desktops.c:2532
+#: src/desktops.c:2534
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuele Desktop grootte:\n"
 
-#: src/desktops.c:2573
+#: src/desktops.c:2575
 msgid "Wrap virtual desktops around"
 msgstr ""
 
-#: src/desktops.c:2580
+#: src/desktops.c:2582
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2583
+#: src/desktops.c:2585
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2588
+#: src/desktops.c:2590
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2593
+#: src/desktops.c:2595
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2599
+#: src/desktops.c:2601
 msgid "Resistance at edge of screen:\n"
 msgstr "Weerstand aan de rand van het scherm:\n"
 
-#: src/desktops.c:2611
+#: src/desktops.c:2613
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2612
+#: src/desktops.c:2614
 msgid "Virtual Desktop Settings"
 msgstr "Virtuele Dektop Instellingen"
 
-#: src/desktops.c:2615
+#: src/desktops.c:2617
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -2044,28 +2044,28 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/tooltips.c:858
+#: src/tooltips.c:861
 msgid "Display Tooltips"
 msgstr "Toon Tooltips"
 
-#: src/tooltips.c:863
+#: src/tooltips.c:866
 msgid "Display Root Window Tips"
 msgstr "Toon Tooltips op de achtergrond van desktop"
 
-#: src/tooltips.c:868
+#: src/tooltips.c:871
 msgid "Tooltip Delay:\n"
 msgstr "Wachttijd voor het tonen:\n"
 
-#: src/tooltips.c:879
+#: src/tooltips.c:882
 #, fuzzy
 msgid "Tooltips"
 msgstr "Wachttijd voor het tonen:\n"
 
-#: src/tooltips.c:880
+#: src/tooltips.c:883
 msgid "Tooltip Settings"
 msgstr "Tooltip instellingen"
 
-#: src/tooltips.c:883
+#: src/tooltips.c:886
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"

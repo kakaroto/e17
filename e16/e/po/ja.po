@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-09-30 17:48+0200\n"
+"POT-Creation-Date: 2007-11-02 22:17+0100\n"
 "PO-Revision-Date: 2007-09-22 23:01+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -530,7 +530,7 @@ msgstr ""
 "Enlightenment アイコンボックス\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:121
+#: src/desktops.c:122
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -547,7 +547,7 @@ msgstr ""
 "マウスの中ボタンをクリックすれば、実行中のアプリ\n"
 "ケーションがすべて一覧で表示されます。\n"
 
-#: src/desktops.c:132
+#: src/desktops.c:133
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -563,7 +563,7 @@ msgstr ""
 "マウスの中ボタンをクリックすれば、実行中のアプリ\n"
 "ケーションがすべて一覧で表示されます。\n"
 
-#: src/desktops.c:151
+#: src/desktops.c:152
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -571,7 +571,7 @@ msgstr ""
 "ここをクリックするとこのデスクトップが\n"
 "上に出ます。\n"
 
-#: src/desktops.c:164
+#: src/desktops.c:165
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -579,68 +579,68 @@ msgstr ""
 "ここをクリックするとこのデスクトップが\n"
 "下に移ります。\n"
 
-#: src/desktops.c:2291 src/desktops.c:2330
+#: src/desktops.c:2293 src/desktops.c:2332
 #, c-format
 msgid "%i Desktops"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2293 src/desktops.c:2332
+#: src/desktops.c:2295 src/desktops.c:2334
 #, c-format
 msgid "%i Desktop"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2325
+#: src/desktops.c:2327
 msgid "Number of virtual desktops:\n"
 msgstr "仮想デスクトップの枚数:\n"
 
-#: src/desktops.c:2354
+#: src/desktops.c:2356
 msgid "Slide desktops around when changing"
 msgstr "デスクトップ間を移動する時にスライドする"
 
 #
-#: src/desktops.c:2360
+#: src/desktops.c:2362
 msgid "Desktop Slide speed:\n"
 msgstr "デスクトップのスライド速度\n"
 
 #
-#: src/desktops.c:2374
+#: src/desktops.c:2376
 msgid "Wrap desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2384
 msgid "Display desktop dragbar"
 msgstr "デスクトップにドラッグバーを表示する"
 
-#: src/desktops.c:2388
+#: src/desktops.c:2390
 msgid "Drag bar position:"
 msgstr "ドラッグバーの位置"
 
-#: src/desktops.c:2392
+#: src/desktops.c:2394
 msgid "Top"
 msgstr "上"
 
-#: src/desktops.c:2398
+#: src/desktops.c:2400
 msgid "Bottom"
 msgstr "下"
 
-#: src/desktops.c:2404 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
+#: src/desktops.c:2406 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
 msgid "Left"
 msgstr "左"
 
-#: src/desktops.c:2410 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
+#: src/desktops.c:2412 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
 msgid "Right"
 msgstr "右"
 
 #
-#: src/desktops.c:2418 src/menus-misc.c:713
+#: src/desktops.c:2420 src/menus-misc.c:713
 msgid "Desks"
 msgstr "マルチデスクトップ"
 
-#: src/desktops.c:2419
+#: src/desktops.c:2421
 msgid "Multiple Desktop Settings"
 msgstr "マルチデスクトップの設定"
 
-#: src/desktops.c:2422
+#: src/desktops.c:2424
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -648,7 +648,7 @@ msgstr ""
 "Enlightenment マルチデスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:2501 src/desktops.c:2536
+#: src/desktops.c:2503 src/desktops.c:2538
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -657,7 +657,7 @@ msgstr ""
 "%i x %i\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2504 src/desktops.c:2539
+#: src/desktops.c:2506 src/desktops.c:2541
 msgid ""
 "1\n"
 "Screen in size"
@@ -665,43 +665,43 @@ msgstr ""
 "1\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2532
+#: src/desktops.c:2534
 msgid "Virtual Desktop size:\n"
 msgstr "仮想デスクトップの大きさ\n"
 
-#: src/desktops.c:2573
+#: src/desktops.c:2575
 msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2582
 msgid "Edge Flip Mode:"
 msgstr "マウスカーソルによるデスクトップの切り替え"
 
-#: src/desktops.c:2583
+#: src/desktops.c:2585
 msgid "Off"
 msgstr "無効"
 
-#: src/desktops.c:2588
+#: src/desktops.c:2590
 msgid "On"
 msgstr "有効"
 
-#: src/desktops.c:2593
+#: src/desktops.c:2595
 msgid "Only when moving window"
 msgstr "ウィンドウ移動時のみ切り替える"
 
-#: src/desktops.c:2599
+#: src/desktops.c:2601
 msgid "Resistance at edge of screen:\n"
 msgstr "画面の端に達した時の移動抵抗値\n"
 
-#: src/desktops.c:2611
+#: src/desktops.c:2613
 msgid "Areas"
 msgstr "デスクトップサイズ"
 
-#: src/desktops.c:2612
+#: src/desktops.c:2614
 msgid "Virtual Desktop Settings"
 msgstr "仮想デスクトップ設定"
 
-#: src/desktops.c:2615
+#: src/desktops.c:2617
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -2220,28 +2220,28 @@ msgstr ""
 " %s/themes/\n"
 "にもテーマが見つかりません。このまま進めてもほとんど無意味です。\n"
 
-#: src/tooltips.c:858
+#: src/tooltips.c:861
 msgid "Display Tooltips"
 msgstr "ツールチップを表示する"
 
-#: src/tooltips.c:863
+#: src/tooltips.c:866
 msgid "Display Root Window Tips"
 msgstr "ルートウィンドウのツールチップを表示する"
 
-#: src/tooltips.c:868
+#: src/tooltips.c:871
 msgid "Tooltip Delay:\n"
 msgstr "ツールチップが表示されるまでの時間\n"
 
 #
-#: src/tooltips.c:879
+#: src/tooltips.c:882
 msgid "Tooltips"
 msgstr "ツールチップ"
 
-#: src/tooltips.c:880
+#: src/tooltips.c:883
 msgid "Tooltip Settings"
 msgstr "ツールチップの設定"
 
-#: src/tooltips.c:883
+#: src/tooltips.c:886
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
