@@ -49,10 +49,6 @@ int
 main(int argc, char **argv)
 {
   int i;
-  int nocmb = 10;
-  int nocmb2 = 1239712310;
-  float flt = 10.40;
-  
   char *dbfile = NULL;
   
   for(i=1; i < argc; i++)
