@@ -6,7 +6,7 @@
 #include "engrave_parse.h"
 
 #define YYDEBUG 1
-    int yylex(void);
+	int yylex(void);
 	void yyerror(const char *s);
 	void parse_error(void);
 
