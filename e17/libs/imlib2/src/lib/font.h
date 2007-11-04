@@ -89,7 +89,7 @@ void                imlib_font_modify_cache_by(ImlibFont * fn, int dir);
 void                imlib_font_modify_cache_by(ImlibFont * fn, int dir);
 void                imlib_font_flush_last(void);
 ImlibFont          *imlib_font_find(const char *name, int size);
-ImlibFont          *imlib_font_find_glyph(ImlibFont * fn, int gl, int *ret_index);
+ImlibFont          *imlib_font_find_glyph(ImlibFont * fn, int gl, unsigned int *ret_index);
 
 void                imlib_font_query_size(ImlibFont * fn, const char *text,
 					  int *w, int *h);

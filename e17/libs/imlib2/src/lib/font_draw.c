@@ -253,7 +253,7 @@ imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
  * ret_index will be set to 0
  */
 ImlibFont          *
-imlib_font_find_glyph(ImlibFont * first_fn, int gl, int *ret_index)
+imlib_font_find_glyph(ImlibFont * first_fn, int gl, unsigned int *ret_index)
 {
    ImlibFont          *fn = first_fn;
 
