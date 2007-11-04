@@ -63,13 +63,10 @@ PKG_CHECK_MODULES(EXML, [
 AC_OUTPUT([
 Makefile 
 exml.pc
-exml-config
 README
 src/Makefile
 exml.spec
 debian/changelog
-], [
-chmod +x exml-config
 ]
 )
 
