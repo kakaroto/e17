@@ -41,6 +41,7 @@ EWLHEADERS = \
 	ewl_expansion.h \
 	ewl_floater.h \
 	ewl_filelist.h \
+	ewl_filelist_model.h \
 	ewl_filelist_tree.h\
 	ewl_filelist_list.h\
 	ewl_filelist_icon.h \
@@ -129,6 +130,7 @@ EWLSOURCES= \
 	ewl_expansion.c \
 	ewl_floater.c \
 	ewl_filelist.c \
+	ewl_filelist_model.c \
 	ewl_filelist_tree.c \
 	ewl_filelist_list.c \
 	ewl_filelist_icon.c \

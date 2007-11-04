@@ -333,6 +333,7 @@ extern"C" {
 #include <ewl_freebox.h>
 
 #include <ewl_filelist.h>
+#include <ewl_filelist_model.h>
 #include <ewl_filelist_list.h>
 #include <ewl_filelist_icon.h>
 #include <ewl_filelist_column.h>
