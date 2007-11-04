@@ -3,9 +3,9 @@ MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = @X_CFLAGS@ @ECORE_CFLAGS@ -I$(srcdir)/../lib
 
-bin_PROGRAMS=entrance_edit
+bin_PROGRAMS = entrance_edit
 
 entrance_edit_SOURCES = ../daemon/Entranced.h entrance_edit_main.c ../lib/Entrance_Edit.h
 entrance_edit_LDADD = @ECORE_LIBS@ -lentrance_edit
 entrance_edit_CFLAGS = @ECORE_CFLAGS@
-entrance_edit_LDFLAGS= -L../lib
+entrance_edit_LDFLAGS = -L../lib

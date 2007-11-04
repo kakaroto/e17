@@ -32,18 +32,37 @@
 #define ENTRANCE_EDIT_KEY_CLIENT_SESSION_0_TITLE_STR "/entrance/session/0/title"
 #define ENTRANCE_EDIT_KEY_CLIENT_SESSION_0_ICON_STR "/entrance/session/0/icon"
 
-int entrance_edit_init(const char*);
-int entrance_edit_shutdown();
-int entrance_edit_save();
+#ifdef EAPI
+#undef EAPI
+#endif
+#ifdef _MSC_VER
+# ifdef BUILDING_DLL
+#  define EAPI __declspec(dllexport)
+# else
+#  define EAPI __declspec(dllimport)
+# endif
+#else
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+#   define EAPI __attribute__ ((visibility("default")))
+#  else
+#   define EAPI
+#  endif
+# else
+#  define EAPI
+# endif
+#endif
 
-void entrance_edit_list();
+EAPI int entrance_edit_init(const char *filename);
+EAPI int entrance_edit_shutdown(void);
+EAPI int entrance_edit_save(void);
 
-int entrance_edit_int_get(const char*);
-int entrance_edit_int_set(const char*, int);
+EAPI void entrance_edit_list(void);
 
-char* entrance_edit_string_get(const char*);
-int entrance_edit_string_set(const char*, const char*);
+EAPI int entrance_edit_int_get(const char *key);
+EAPI int entrance_edit_int_set(const char *key, int val);
 
-int entrance_edit_session_add(const char *title, const char *exec, const char *icon);
+EAPI char *entrance_edit_string_get(const char *key);
+EAPI int   entrance_edit_string_set(const char *key, const char *val);
 
 #endif

@@ -9,26 +9,25 @@
 
 
 
-struct __Entranced_Edit {
-	char* config_file;
+struct _Entranced_Edit {
+	char *config_file;
 };
 
-typedef struct __Entranced_Edit _Entranced_Edit;
-typedef struct __Entranced_Edit* Entranced_Edit;
+typedef struct _Entranced_Edit Entranced_Edit;
 
-static Entranced_Edit _entrance_edit;
+static Entranced_Edit *_entrance_edit;
 
-static int _entrance_edit_new();
-static void _entrance_edit_free();
-static void _entrance_edit_defaults_set();
+static int _entrance_edit_new(void);
+static void _entrance_edit_free(void);
+static void _entrance_edit_defaults_set(void);
 
-int 
+EAPI int 
 entrance_edit_init(const char *filename)
 {
 	int status;
 
 	ecore_init();
-	if(ecore_config_init(_CONF_INIT_DOMAIN) != ECORE_CONFIG_ERR_SUCC) 
+	if (ecore_config_init(_CONF_INIT_DOMAIN) != ECORE_CONFIG_ERR_SUCC) 
 	{
 		ecore_shutdown();
 		return 0;
@@ -37,13 +36,13 @@ entrance_edit_init(const char *filename)
 
 	_entrance_edit_defaults_set();
 
-	if(!_entrance_edit_new()) 
+	if (!_entrance_edit_new()) 
 	{
 		ecore_shutdown();
 		return 0;
 	}
 
-	if(filename) 
+	if (filename) 
 	{
 		_entrance_edit->config_file = strdup(filename);
 	} 
@@ -54,7 +53,7 @@ entrance_edit_init(const char *filename)
 
 	status = ecore_config_file_load(_entrance_edit->config_file);
 
-	if(status != ECORE_CONFIG_ERR_SUCC) 
+	if (status != ECORE_CONFIG_ERR_SUCC) 
 	{
 		return 0;
 	}
@@ -63,8 +62,8 @@ entrance_edit_init(const char *filename)
 }
 
 
-int
-entrance_edit_shutdown()
+EAPI int
+entrance_edit_shutdown(void)
 {
 	_entrance_edit_free();
 	ecore_config_shutdown();
@@ -74,12 +73,12 @@ entrance_edit_shutdown()
 	return 1;
 }
 
-int
-entrance_edit_save()
+EAPI int
+entrance_edit_save(void)
 {
-	if(_entrance_edit) 
+	if (_entrance_edit) 
 	{
-		if(ecore_config_file_save(_entrance_edit->config_file) != ECORE_CONFIG_ERR_SUCC) 
+		if (ecore_config_file_save(_entrance_edit->config_file) != ECORE_CONFIG_ERR_SUCC) 
 		{
 		   return 0;
 		} 
@@ -92,8 +91,8 @@ entrance_edit_save()
 	return 0;
 }
 
-void 
-entrance_edit_list()
+EAPI void 
+entrance_edit_list(void)
 {
 	/*TODO:eet_list anyone?*/
 	printf("Entrance Daemon Settings\n");
@@ -138,26 +137,26 @@ entrance_edit_list()
  * entrance_edit_auth_set/get, entrance_edit_theme_set/get
  * */
 
-int 
+EAPI int 
 entrance_edit_int_get(const char *key)
 {
 	return ecore_config_int_get(key);
 }
 
-int 
+EAPI int 
 entrance_edit_int_set(const char *key, int val)
 {
 	return ecore_config_int_set(key, val);
 }
 
-char* 
+EAPI char * 
 entrance_edit_string_get(const char *key)
 {
 	return ecore_config_string_get(key);
 }
 
-int 
-entrance_edit_string_set(const char *key, const char* val)
+EAPI int 
+entrance_edit_string_set(const char *key, const char *val)
 {
 	return ecore_config_string_set(key, val);
 }
@@ -165,10 +164,10 @@ entrance_edit_string_set(const char *key, const char* val)
 /*private parts - oops!!!*/
 
 static int 
-_entrance_edit_new()
+_entrance_edit_new(void)
 {
-	_entrance_edit = calloc(1, sizeof(_Entranced_Edit));
-	if(!_entrance_edit) 
+	_entrance_edit = calloc(1, sizeof(Entranced_Edit));
+	if (!_entrance_edit) 
 	{
 		return 0;
 	} 
@@ -177,11 +176,11 @@ _entrance_edit_new()
 }
 
 static void 
-_entrance_edit_free()
+_entrance_edit_free(void)
 {
-	if(_entrance_edit) 
+	if (_entrance_edit) 
 	{
-		if(_entrance_edit->config_file) 
+		if (_entrance_edit->config_file) 
 		{
 			free(_entrance_edit->config_file);
 		}
@@ -191,7 +190,8 @@ _entrance_edit_free()
 }
 
 
-static void _entrance_edit_defaults_set()
+static void
+_entrance_edit_defaults_set(void)
 {
 	ecore_config_string_default(ENTRANCE_EDIT_KEY_DAEMON_XSERVER_STR, DEFAULT_X_SERVER);
 	ecore_config_int_default(ENTRANCE_EDIT_KEY_DAEMON_ATTEMPTS_INT, 5);
