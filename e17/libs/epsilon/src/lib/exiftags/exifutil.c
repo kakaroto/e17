@@ -149,8 +149,8 @@ finddescr(struct descrip *table, u_int16_t val)
 	char *c;
 
 	for (i = 0; table[i].val != -1 && table[i].val != val; i++);
-	if (!(c = (char *)malloc(strlen(table[i].descr) + 1)))
-		exifdie((const char *)strerror(errno));
+	if (!(c = malloc(strlen(table[i].descr) + 1)))
+		exifdie(strerror(errno));
 	strcpy(c, table[i].descr);
 	return (c);
 }
@@ -189,9 +189,9 @@ newprop(void)
 {
 	struct exifprop *prop;
 
-	prop = (struct exifprop *)malloc(sizeof(struct exifprop));
+	prop = malloc(sizeof(struct exifprop));
 	if (!prop)
-		exifdie((const char *)strerror(errno));
+		exifdie(strerror(errno));
 	memset(prop, 0, sizeof(struct exifprop));
 
 	/*
@@ -307,9 +307,9 @@ readifd(unsigned char *b, struct ifd **dir, struct exiftags *t)
 		return (0);
 	}
 
-	*dir = (struct ifd *)malloc(sizeof(struct ifd));
+	*dir = malloc(sizeof(struct ifd));
 	if (!*dir)
-		exifdie((const char *)strerror(errno));
+		exifdie(strerror(errno));
 
 	(*dir)->next = NULL;
 	(*dir)->num = exif2byte(b, t->tifforder);

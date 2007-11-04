@@ -623,7 +623,7 @@ static const struct ccstm canon_1dcustom[] = {
  * Process maker note tag 0x0001 values.
  */
 static int
-canon_prop01(struct exifprop *aprop, struct exifprop *prop, char *off,
+canon_prop01(struct exifprop *aprop, struct exifprop *prop, unsigned char *off,
     enum order o)
 {
 	u_int16_t v = (u_int16_t)aprop->value;
@@ -631,8 +631,8 @@ canon_prop01(struct exifprop *aprop, struct exifprop *prop, char *off,
 	switch (aprop->subtag) {
 	case 2:
 		aprop->lvl = v ? ED_IMG : ED_VRB;
-		if (!(aprop->str = (char *)malloc(32)))
-			exifdie((const char *)strerror(errno));
+		if (!(aprop->str = malloc(32)))
+			exifdie(strerror(errno));
 		snprintf(aprop->str, 31, "%d sec", v / 10);
 		aprop->str[31] = '\0';
 		break;
@@ -651,8 +651,8 @@ canon_prop01(struct exifprop *aprop, struct exifprop *prop, char *off,
 		 */
 
 		if (v == 3 && prop->count >= 37) {
-			if (!(aprop->str = (char *)malloc(32)))
-				exifdie((const char *)strerror(errno));
+			if (!(aprop->str = malloc(32)))
+				exifdie(strerror(errno));
 			snprintf(aprop->str, 31, "x%.1f", 2 *
 			    (float)exif2byte(off + 37 * 2, o) /
 			    (float)exif2byte(off + 36 * 2, o));
@@ -717,8 +717,8 @@ canon_propA0(struct exifprop *aprop, struct exifprop *prop, char *off,
 
 	switch (aprop->subtag) {
 	case 9:
-		if (!(aprop->str = (char *)malloc(32)))
-			exifdie((const char *)strerror(errno));
+		if (!(aprop->str = malloc(32)))
+			exifdie(strerror(errno));
 		snprintf(aprop->str, 31, "%d K", aprop->value);
 		aprop->str[31] = '\0';
 		break;
@@ -741,7 +741,7 @@ canon_subval(struct exifprop *prop, struct exiftags *t,
 	int i, j;
 	u_int16_t v;
 	struct exifprop *aprop;
-	char *off = t->btiff + prop->value;
+	unsigned char *off = t->btiff + prop->value;
 
 	/* Check size of tag (first value). */
 
@@ -775,8 +775,8 @@ canon_subval(struct exifprop *prop, struct exiftags *t,
 			if (aprop->lvl != ED_UNK)
 				continue;
 
-			if (!(aprop->str = (char *)malloc(32)))
-				exifdie((const char *)strerror(errno));
+			if (!(aprop->str = malloc(32)))
+				exifdie(strerror(errno));
 			snprintf(aprop->str, 31, "num %02d, val 0x%04X", i, v);
 			aprop->str[31] = '\0';
 		}
@@ -789,7 +789,7 @@ canon_subval(struct exifprop *prop, struct exiftags *t,
  * Process custom function tag values.
  */
 static void
-canon_custom(struct exifprop *prop, char *off, enum order o,
+canon_custom(struct exifprop *prop, unsigned char *off, enum order o,
              const struct ccstm *table)
 {
 	int i, j = -1;
@@ -838,9 +838,9 @@ canon_custom(struct exifprop *prop, char *off, enum order o,
 		} else
 			cn = "Unknown";
 
-		if (!(aprop->str = (char *)malloc(4 + strlen(cn) +
+		if (!(aprop->str = malloc(4 + strlen(cn) +
 		    (cv ? strlen(cv) : 10))))
-			exifdie((const char *)strerror(errno));
+			exifdie(strerror(errno));
 
 		if (cv && j != -1) {
 			snprintf(aprop->str, 4 + strlen(cn) + strlen(cv),
@@ -864,7 +864,7 @@ void
 canon_prop(struct exifprop *prop, struct exiftags *t)
 {
 	unsigned int i;
-	char *offset;
+	unsigned char *offset;
 	u_int16_t v, flmin = 0, flmax = 0, flunit = 0;
 	struct exifprop *tmpprop;
 
@@ -919,8 +919,8 @@ canon_prop(struct exifprop *prop, struct exiftags *t)
 			tmpprop = childprop(prop);
 			tmpprop->name = "CanonLensSz";
 			tmpprop->descr = "Lens Size";
-			if (!(tmpprop->str = (char *)malloc(32)))
-				exifdie((const char *)strerror(errno));
+			if (!(tmpprop->str = malloc(32)))
+				exifdie(strerror(errno));
 
 			if (flmin == flmax) {
 				snprintf(tmpprop->str, 31, "%.2f mm",
@@ -955,8 +955,8 @@ canon_prop(struct exifprop *prop, struct exiftags *t)
 	/* Image number. */
 
 	case 0x0008:
-		if (!(prop->str = (char *)malloc(32)))
-			exifdie((const char *)strerror(errno));
+		if (!(prop->str = malloc(32)))
+			exifdie(strerror(errno));
 		snprintf(prop->str, 31, "%03d-%04d", prop->value / 10000,
 		    prop->value % 10000);
 		prop->str[31] = '\0';
@@ -965,8 +965,8 @@ canon_prop(struct exifprop *prop, struct exiftags *t)
 	/* Serial number. */
 
 	case 0x000c:
-		if (!(prop->str = (char *)malloc(11)))
-			exifdie((const char *)strerror(errno));
+		if (!(prop->str = malloc(11)))
+			exifdie(strerror(errno));
 		snprintf(prop->str, 11, "%010d", prop->value);
 		break;
 

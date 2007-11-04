@@ -97,7 +97,7 @@ olympus_prop(struct exifprop *prop, struct exiftags *t)
 	int i;
 	u_int32_t a, b;
 	u_int16_t v = (u_int16_t)prop->value;
-	char *offset;
+	unsigned char *offset;
 	struct exifprop *aprop;
 
 	/*
@@ -183,8 +183,8 @@ olympus_prop(struct exifprop *prop, struct exiftags *t)
 	/* Image number. */
 
 	case 0x0008:
-		if (!(prop->str = (char *)malloc(32)))
-			exifdie((const char *)strerror(errno));
+		if (!(prop->str = malloc(32)))
+			exifdie(strerror(errno));
 		snprintf(prop->str, 31, "%03d-%04d", prop->value / 10000,
 		    prop->value % 10000);
 		prop->str[31] = '\0';

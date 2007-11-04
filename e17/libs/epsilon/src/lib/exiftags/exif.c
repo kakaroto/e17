@@ -341,8 +341,8 @@ postprop(struct exifprop *prop, struct exiftags *t)
 		break;
 
 	case EXIF_T_FOCALLEN35:
-		if (!(prop->str = (char *)malloc(16))) {
-			exifdie((const char *)strerror(errno));
+		if (!(prop->str = malloc(16))) {
+			exifdie(strerror(errno));
 			return;
 		}
 		snprintf(prop->str, 15, "%d mm", prop->value);
@@ -449,8 +449,8 @@ parsetag(struct exifprop *prop, struct ifd *dir, struct exiftags *t, int domkr)
 
 	case EXIF_T_VERSION:
 		/* These contortions are to make 0220 = 2.20. */
-		if (!(prop->str = (char *)malloc(8))) {
-			exifdie((const char *)strerror(errno));
+		if (!(prop->str = malloc(8))) {
+			exifdie(strerror(errno));
 			return(FALSE);
 		}
 
@@ -546,8 +546,8 @@ parsetag(struct exifprop *prop, struct ifd *dir, struct exiftags *t, int domkr)
 
 			while (d > c && isspace((int)*(d - 1))) --d;
 
-			if (!(prop->str = (char *)malloc(d - c + 1))) {
-				exifdie((const char *)strerror(errno));
+			if (!(prop->str = malloc(d - c + 1))) {
+				exifdie(strerror(errno));
 				return(FALSE);
 			}
 			strncpy(prop->str, c, d - c);
@@ -577,8 +577,8 @@ parsetag(struct exifprop *prop, struct ifd *dir, struct exiftags *t, int domkr)
 
 	if (prop->type == TIFF_ASCII &&
 	    (prop->value + prop->count < (u_int32_t)(t->etiff - t->btiff))) {
-		if (!(prop->str = (char *)malloc(prop->count + 1))) {
-			exifdie((const char *)strerror(errno));
+		if (!(prop->str = malloc(prop->count + 1))) {
+			exifdie(strerror(errno));
 			return(FALSE);
 		}
 		strncpy(prop->str, t->btiff + prop->value, prop->count);
@@ -595,8 +595,8 @@ parsetag(struct exifprop *prop, struct ifd *dir, struct exiftags *t, int domkr)
 	    (prop->value + prop->count * 8 <=
 	    (u_int32_t)(t->etiff - t->btiff))) {
 
-		if (!(prop->str = (char *)malloc(32))) {
-			exifdie((const char *)strerror(errno));
+		if (!(prop->str = malloc(32))) {
+			exifdie(strerror(errno));
 			return(FALSE);
 		}
 
@@ -631,8 +631,8 @@ parsetag(struct exifprop *prop, struct ifd *dir, struct exiftags *t, int domkr)
 			return (TRUE);
 
 		len = 8 * prop->count + 1;
-		if (!(prop->str = (char *)malloc(len))) {
-			exifdie((const char *)strerror(errno));
+		if (!(prop->str = malloc(len))) {
+			exifdie(strerror(errno));
 			return(FALSE);
 		}
 		prop->str[0] = '\0';
@@ -688,9 +688,9 @@ exifscan(unsigned char *b, int len, int domkr)
 
 	/* Create and initialize our file info structure. */
 
-	t = (struct exiftags *)malloc(sizeof(struct exiftags));
+	t = malloc(sizeof(struct exiftags));
 	if (!t) {
-		exifdie((const char *)strerror(errno));
+		exifdie(strerror(errno));
 		return(t);
 	}
 	memset(t, 0, sizeof(struct exiftags));

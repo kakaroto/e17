@@ -228,8 +228,8 @@ fuji_prop(struct exifprop *prop, struct exiftags *t)
 	/* Maker note version. */
 
 	case 0x0000:
-		if (!(prop->str = (char *)malloc(prop->count + 1)))
-			exifdie((const char *)strerror(errno));
+		if (!(prop->str = malloc(prop->count + 1)))
+			exifdie(strerror(errno));
 		strncpy(prop->str, (const char*)(&prop->value), prop->count);
 		prop->str[prop->count] = '\0';
 		break;

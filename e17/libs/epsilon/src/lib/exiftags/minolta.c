@@ -408,14 +408,14 @@ static struct exiftag minolta_unkn[] = {
  * Process maker note tag 0x0001 and 0x0003 fields.
  */
 void
-minolta_cprop(struct exifprop *prop, char *off, struct exiftags *t,
+minolta_cprop(struct exifprop *prop, unsigned char *off, struct exiftags *t,
     struct exiftag *thetags)
 {
 	unsigned int i, j, k;
 	u_int32_t v;
 	int32_t model;
 	double d;
-	unsigned char *cp, *valbuf;
+	char *cp, *valbuf;
 	struct exifprop *aprop;
 
 	valbuf = NULL;
@@ -465,8 +465,8 @@ minolta_cprop(struct exifprop *prop, char *off, struct exiftags *t,
 			continue;
 
 		if (!valbuf) {
-			if (!(valbuf = (char *)malloc(16)))
-				exifdie((const char *)strerror(errno));
+			if (!(valbuf = malloc(16)))
+				exifdie(strerror(errno));
 			valbuf[15] = '\0';
 		}
 
@@ -588,7 +588,7 @@ minolta_cprop(struct exifprop *prop, char *off, struct exiftags *t,
 		case 21:
 			aprop->str = valbuf;
 			valbuf = NULL;
-			cp = (unsigned char *)&aprop->value;
+			cp = (char *)&aprop->value;
 			snprintf(aprop->str, 15, "%02d/%02d/%04d",
 			    cp[0], cp[1], cp[3] << 8 | cp[2]);
 			break;
@@ -598,7 +598,7 @@ minolta_cprop(struct exifprop *prop, char *off, struct exiftags *t,
 		case 22:
 			aprop->str = valbuf;
 			valbuf = NULL;
-			cp = (unsigned char *)&aprop->value;
+			cp = (char *)&aprop->value;
 			snprintf(aprop->str, 9, "%02d:%02d:%02d",
 			    cp[2], cp[1], cp[0]);
 			break;
@@ -663,8 +663,8 @@ minolta_naval(struct exifprop *props, u_int16_t tag, int16_t subtag)
 		return;
 
 	free(prop->str);
-	if (!(prop->str = (char *)malloc(strlen(na) + 1)))
-		exifdie((const char *)strerror(errno));
+	if (!(prop->str = malloc(strlen(na) + 1)))
+		exifdie(strerror(errno));
 	strcpy(prop->str, na);
 	prop->lvl = ED_BAD;
 }
@@ -711,8 +711,8 @@ minolta_prop(struct exifprop *prop, struct exiftags *t)
 	/* Maker note type. */
 
 	case 0x0000:
-		if (!(prop->str = (char *)malloc(prop->count + 1)))
-			exifdie((const char *)strerror(errno));
+		if (!(prop->str = malloc(prop->count + 1)))
+			exifdie(strerror(errno));
 		strncpy(prop->str, (const char *)&prop->value, prop->count);
 		prop->str[prop->count] = '\0';
 
