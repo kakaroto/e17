@@ -117,7 +117,7 @@ entropy_plugin_gui_instance_new (entropy_core * core)
 
   _ecore_thumb_file_instance_hash = ecore_hash_new (ecore_str_hash, ecore_str_compare);
 
-  epsilon_thumb_init();
+  epsilon_request_init();
 
   thumb_done = ecore_event_handler_add(EPSILON_EVENT_DONE, thumb_complete_cb, NULL);
 
@@ -150,7 +150,7 @@ entropy_thumbnailer_thumbnail_get (entropy_thumbnail_request * request)
     entropy_core_file_cache_add_reference(request->file->md5);
 
     /*printf("'%s' (%s)...\n", buffer, request->file->md5);*/
-    epsilon_add(buffer, EPSILON_THUMB_NORMAL, NULL);
+    epsilon_request_add(buffer, EPSILON_THUMB_NORMAL, NULL);
   }
   else {
     return request->file->thumbnail;

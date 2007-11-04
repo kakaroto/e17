@@ -216,7 +216,7 @@ gui_event_callback (entropy_notify_event * eevent, void *requestor, void *obj,
    
 		  ecore_hash_set (_ecore_thumb_file_instance_hash, md5_entropy_local_file(new_path), o_request);
 
-		  epsilon_add(new_path, EPSILON_THUMB_NORMAL, NULL);
+		  epsilon_request_add(new_path, EPSILON_THUMB_NORMAL, NULL);
 		  
 		  entropy_core_file_cache_remove_reference (listener->file->md5);
 	}
