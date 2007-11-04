@@ -10,6 +10,27 @@
 #include <dbus/dbus.h>
 #include <Ecore.h>
 
+#ifdef EAPI
+#undef EAPI
+#endif
+#ifdef _MSC_VER
+# ifdef BUILDING_DLL
+#  define EAPI __declspec(dllexport)
+# else
+#  define EAPI __declspec(dllimport)
+# endif
+#else
+# ifdef __GNUC__
+#  if __GNUC__ >= 4
+#   define EAPI __attribute__ ((visibility("default")))
+#  else
+#   define EAPI
+#  endif
+# else
+#  define EAPI
+# endif
+#endif
+
 EAPI extern int E_DBUS_EVENT_SIGNAL;
 
 typedef struct E_DBus_Connection E_DBus_Connection;
