@@ -183,7 +183,7 @@ class MovieWindow(evas.SmartObject):
 
     def frame_signal_speed_cb(self, frame, emission, source):
         x, y = frame.part_drag_value_get(source)
-        spd = 255 * y
+        spd = int(255 * y)
         frame.color = (spd, spd, spd, spd)
         frame.part_text_set("video_speed_txt", "%0.0f" % spd)
 
@@ -366,7 +366,7 @@ def cmdline_parse():
                       default=(800, 600),
                       help="use given window geometry")
     parser.add_option("-e", "--engine", type="choice",
-                      choices=("xine", "gst"), default="xine",
+                      choices=("xine", "gstreamer"), default="xine",
                       help=("which multimedia engine to use (xine, gst), "
                             "default=%default"))
     parser.add_option("-d", "--display", type="choice",
@@ -400,11 +400,7 @@ def main():
         }
     cls = display_map[options.display]
 
-    engine_map = {
-        "xine": "emotion_decoder_xine.so",
-        "gst": "emotion_decoder_gstreamer.so",
-        }
-    media_module = engine_map[options.engine]
+    media_module = options.engine
 
     w, h = options.geometry
     ee = cls(w=w, h=h)
