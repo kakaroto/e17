@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tclock\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-21 10:58+0100\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2007-01-21 11:05+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -18,38 +18,30 @@ msgstr ""
 msgid "Tclock Configuration"
 msgstr "Configurazione di Tclock"
 
-#: e_mod_config.c:85
+#: e_mod_config.c:86
 msgid "Top"
 msgstr "Riga superiore"
 
-#: e_mod_config.c:87
+#: e_mod_config.c:88
 msgid "Show Top Line"
 msgstr "Mostra riga superiore"
 
-#: e_mod_config.c:95 e_mod_config.c:109
+#: e_mod_config.c:96 e_mod_config.c:110
 msgid "Consult strftime(3) for format syntax"
 msgstr "Consulta strftime(3) per sintassi formato"
 
-#: e_mod_config.c:99
+#: e_mod_config.c:100
 msgid "Bottom"
 msgstr "Riga inferiore"
 
-#: e_mod_config.c:101
+#: e_mod_config.c:102
 msgid "Show Bottom Line"
 msgstr "Mostra riga inferiore"
 
-#: e_mod_main.c:127
+#: e_mod_main.c:128
 msgid "TClock"
 msgstr "TClock"
 
-#: e_mod_main.c:163
+#: e_mod_main.c:173
 msgid "Configuration"
 msgstr "Configurazione"
-
-#: e_mod_main.c:418
-msgid "Simple Digital Clock"
-msgstr "Semplice orologio digitale"
-
-#: e_mod_main.c:419
-msgid "Displays a digital clock on the desktop"
-msgstr "Visualizza un orologio digitale sul desktop."

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Rain\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-07 13:40+0100\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2006-02-07 13:52+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,38 +14,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:40
+#: e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Modulo Rain"
 
-#: e_mod_config.c:97
+#: e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "Mostra nuvole"
 
-#: e_mod_config.c:101
+#: e_mod_config.c:105
 msgid "Rain Density"
 msgstr "Intensità della pioggia"
 
-#: e_mod_config.c:103
+#: e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "Schizzi"
 
-#: e_mod_config.c:105
+#: e_mod_config.c:109
 msgid "Drizzle"
 msgstr "Pioggia"
 
-#: e_mod_config.c:107
+#: e_mod_config.c:111
 msgid "Downpour"
 msgstr "Nubifragio"
-
-#: e_mod_main.c:81
-msgid "Enlightenment Rain Module"
-msgstr "Modulo Rain di Enlightenment"
-
-#: e_mod_main.c:83
-msgid ""
-"This is a simple module to display some rain on the desktop.<br>It can "
-"display clouds too, if you like clouds."
-msgstr ""
-"Questo è un semplice modulo per visualizzare un pò di pioggia sul desktop<br>"
-"Può anche visualizzare delle nuvole, se vi piacciono."

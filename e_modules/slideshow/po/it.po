@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-29 12:21+0200\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2006-07-29 12:23+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,53 +14,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: e_mod_config.c:39
+#: e_mod_config.c:37
 msgid "Slideshow Configuration"
 msgstr "Configurazione modulo Slideshow"
 
-#: e_mod_config.c:91
+#: e_mod_config.c:90
 msgid "Cycle Time"
 msgstr "Durata singola visualizzazione"
 
-#: e_mod_config.c:93
+#: e_mod_config.c:92
 msgid "Disable Timer"
 msgstr "Disabilita timer"
 
-#: e_mod_config.c:96
+#: e_mod_config.c:95
 #, c-format
 msgid "%3.0f seconds"
 msgstr "%3.0f secondi"
 
-#: e_mod_config.c:101
+#: e_mod_config.c:100
 msgid "Directory"
 msgstr "Directory"
 
-#: e_mod_config.c:103
+#: e_mod_config.c:102
 msgid "Sub-directory to use for backgrounds"
 msgstr "Sottodirectory per gli sfondi"
 
-#: e_mod_config.c:110
+#: e_mod_config.c:109
 msgid "Extra"
 msgstr "Extra"
 
-#: e_mod_config.c:111
+#: e_mod_config.c:110
 msgid "Randomize order"
 msgstr "Ordina in modo casuale"
 
-#: e_mod_main.c:139
+#: e_mod_main.c:140
 msgid "Slideshow"
 msgstr "Slideshow"
 
-#: e_mod_main.c:173
+#: e_mod_main.c:184
 msgid "Configuration"
 msgstr "Configurazione"
-
-#: e_mod_main.c:383
-msgid "Enlightenment Slide Show Module"
-msgstr "Modulo Slideshow di Enlightenment"
-
-#: e_mod_main.c:384
-msgid "This module is VERY simple and is used to cycle desktop backgrounds"
-msgstr ""
-"Questo modulo è molto semplice e serve per vedere ciclicamente gli sfondi "
-"del desktop"

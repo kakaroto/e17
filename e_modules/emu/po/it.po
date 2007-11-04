@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Emu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-10 13:00+0200\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2006-06-10 13:52+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -114,24 +114,10 @@ msgstr "Fuori lista finestre (%w)"
 msgid "Emu Configuration"
 msgstr "Configurazione di Emu"
 
-#: src/modules/emu/e_mod_main.c:102
-msgid "Enlightenment Emu Module - gadcon version "
-msgstr "Modulo Emu di Enlightenment - versione gadcon"
-
-#: src/modules/emu/e_mod_main.c:104
-msgid ""
-"Experimental generic scriptable module for E17.<br><br>Keep an eye out for "
-"the emu's.<br>Don't even try to run away, they're fast buggers.<br>Hiding in "
-"your dunny doesn't help, they can kick dunnies down."
-msgstr ""
-"Modulo sperimentale generico scriptabile per E17.<br><br>Fate sempre "
-"attenzione agli emu.<br>Non cercate neanche di scappare, sono pederasti "
-"veloci.<br>Non aiuterà neanche rifugiarsi nelle stupidità, possono sventarla."
-
-#: src/modules/emu/e_mod_main.c:227
+#: src/modules/emu/e_mod_main.c:208
 msgid "Enlightenment Emu Module - error"
 msgstr "Modulo Emu di Enlightenment - errore"
 
-#: src/modules/emu/e_mod_main.c:227
+#: src/modules/emu/e_mod_main.c:208
 msgid "There is no emu."
 msgstr "Non ci sono emu"

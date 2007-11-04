@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taskbar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-09 12:25+0200\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2006-09-09 12:32+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -34,24 +34,10 @@ msgstr "Mostra etichette scorrevoli"
 msgid "Show windows from all desktops"
 msgstr "Mostra finestre da tutti i desktop"
 
-#: e_mod_main.c:211
+#: e_mod_main.c:214
 msgid "Taskbar"
 msgstr "Taskbar"
 
-#: e_mod_main.c:282 e_mod_main.c:819
+#: e_mod_main.c:308 e_mod_main.c:838
 msgid "Configuration"
 msgstr "Configurazione"
-
-#: e_mod_main.c:1366
-msgid "Enlightenment Taskbar Module"
-msgstr "Modulo Taskbar di Enlightenment"
-
-#: e_mod_main.c:1367
-msgid ""
-"This is the Taskbar Iconified Application module for Enlightenment.<br>It "
-"will hold all applications and display current desktop <br>or all running "
-"apps."
-msgstr ""
-"Questo è il modulo per applicazioni iconificate di Enlightenment.<br>"
-"Esso visualizzerà tutte le applicazioni in esecuzione<br>o solo quelle "
-"del desktop attuale."

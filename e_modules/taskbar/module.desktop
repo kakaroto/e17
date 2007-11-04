@@ -4,3 +4,4 @@ Name=Taskbar
 X-Enlightenment-IconClass=taskbar,gadget
 Icon=e-module-taskbar
 Comment=<hilight>Taskbar Gadget</hilight><br>Gadget to provide a taskbar.
+Comment[it]=<hilight>Modulo Taskbar</hilight><br>Modulo che fornisce una taskbar.

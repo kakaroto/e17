@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-31 10:10+0200\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2007-03-04 16:34+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -60,62 +60,54 @@ msgstr "Per trovare il codice della propria zona vedere:"
 msgid "%s, find your area, and look at the URL"
 msgstr "%s, trovate la vostra zona e guardate l'URL"
 
-#: e_mod_main.c:241
+#: e_mod_main.c:242
 msgid "Forecasts"
 msgstr "Forecasts"
 
-#: e_mod_main.c:277
+#: e_mod_main.c:287
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: e_mod_main.c:461
-msgid "Enlightenment Forecasts Module"
-msgstr "Modulo Forecasts di Enlightenment"
-
-#: e_mod_main.c:462
-msgid "A weather forecast module for Enlightenment"
-msgstr "Un modulo per le previsioni del tempo per Enlightenment."
-
-#: e_mod_main.c:979
+#: e_mod_main.c:959
 msgid "Wind Chill"
 msgstr "Temperatura"
 
-#: e_mod_main.c:985
+#: e_mod_main.c:965
 msgid "Wind Speed"
 msgstr "Velocità vento"
 
-#: e_mod_main.c:991
+#: e_mod_main.c:971
 msgid "Humidity"
 msgstr "Umidità"
 
-#: e_mod_main.c:997
+#: e_mod_main.c:977
 msgid "Visibility"
 msgstr "Visibilità"
 
-#: e_mod_main.c:1003
+#: e_mod_main.c:983
 msgid "Pressure"
 msgstr "Pressione"
 
-#: e_mod_main.c:1010
+#: e_mod_main.c:990
 msgid "Rising"
 msgstr "In aumento"
 
-#: e_mod_main.c:1012
+#: e_mod_main.c:992
 msgid "Falling"
 msgstr "In diminuzione"
 
-#: e_mod_main.c:1014
+#: e_mod_main.c:994
 msgid "Steady"
 msgstr "Stabile"
 
-#: e_mod_main.c:1018
+#: e_mod_main.c:998
 msgid "Sunrise / Sunset"
 msgstr "Alba / Tramonto"
 
-#: e_mod_main.c:1041
+#: e_mod_main.c:1021
 msgid "High"
 msgstr "Massima"
 
-#: e_mod_main.c:1051
+#: e_mod_main.c:1032
 msgid "Low"
 msgstr "Minima"

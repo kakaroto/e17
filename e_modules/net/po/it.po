@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-31 10:10+0200\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2007-03-31 10:16+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -50,23 +50,15 @@ msgstr "Basso (B)"
 msgid "Device Settings"
 msgstr "Impostazione del dispositivo"
 
-#: src/e_mod_gadcon.c:92
+#: src/e_mod_gadcon.c:91
 msgid "Net"
 msgstr "Net"
 
-#: src/e_mod_main.c:100
-msgid "Network Monitor Module"
-msgstr "Modulo monitoraggio di rete"
-
-#: src/e_mod_main.c:101
-msgid "Module to monitor network traffic"
-msgstr "Modulo per il monitoraggio del traffico di rete"
-
-#: src/e_mod_net.c:178
+#: src/e_mod_net.c:168
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: src/e_mod_net.c:224
+#: src/e_mod_net.c:204
 #, c-format
 msgid "Device - %s"
 msgstr "Dispositivo - %s"

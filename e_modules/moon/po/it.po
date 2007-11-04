@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Moon\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-16 19:25+0200\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2006-05-16 19:29+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,82 +14,74 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_config.c:97
+#: src/e_mod_config.c:101
 msgid "Moon Configuration"
 msgstr "Configurazione modulo Moon"
 
-#: src/e_mod_config.c:153
+#: src/e_mod_config.c:157
 msgid "Display Settings"
 msgstr "Impostazioni di visualizzazione"
 
-#: src/e_mod_config.c:154
+#: src/e_mod_config.c:158
 msgid "Animated Clouds"
 msgstr "Nuvole animate"
 
-#: src/e_mod_config.c:158
+#: src/e_mod_config.c:162
 msgid "Moon Phase Value"
 msgstr "Valore della fase lunare"
 
-#: src/e_mod_config.c:160
+#: src/e_mod_config.c:164
 msgid "Show always"
 msgstr "Mostra sempre"
 
-#: src/e_mod_config.c:162
+#: src/e_mod_config.c:166
 msgid "Show on mouse over"
 msgstr "Mostra al passaggio del mouse"
 
-#: src/e_mod_config.c:164
+#: src/e_mod_config.c:168
 msgid "Never show"
 msgstr "Non mostrare mai"
 
-#: src/e_mod_config.c:168
+#: src/e_mod_config.c:172
 msgid "Description"
 msgstr "Descrittivo"
 
-#: src/e_mod_config.c:171
+#: src/e_mod_config.c:175
 msgid "Numerical"
 msgstr "Numerico"
 
-#: src/e_mod_main.c:136
-msgid "Moon Clock Module"
-msgstr "Modulo orologio lunare"
-
-#: src/e_mod_main.c:139
-msgid "Display current phase of the moon ala e16 E-MoonClock"
-msgstr "Mostra l'attuale fase lunare in stile E-MoonClock di e16"
-
-#: src/e_mod_main.c:227
+#: src/e_mod_main.c:204
 msgid "Moon"
 msgstr "Luna"
 
-#: src/e_mod_main.c:505
+#: src/e_mod_main.c:488
 msgid "New Moon"
 msgstr "Luna nuova"
 
-#: src/e_mod_main.c:507
+#: src/e_mod_main.c:490
 msgid "Waxing Crescent"
 msgstr "A falce crescente"
 
-#: src/e_mod_main.c:509
+#: src/e_mod_main.c:492
 msgid "First Quarter"
 msgstr "Primo quarto"
 
-#: src/e_mod_main.c:511
+#: src/e_mod_main.c:494
 msgid "Waxing Gibbous"
 msgstr "Gibbosa crescente"
 
-#: src/e_mod_main.c:513
+#: src/e_mod_main.c:496
 msgid "Full Moon"
 msgstr "Luna piena"
 
-#: src/e_mod_main.c:515
+#: src/e_mod_main.c:498
 msgid "Waning Gibbous"
 msgstr "Gibbosa calante"
 
-#: src/e_mod_main.c:517
+#: src/e_mod_main.c:500
 msgid "Last Quarter"
 msgstr "Ultimo quarto"
 
-#: src/e_mod_main.c:519
+#: src/e_mod_main.c:502
 msgid "Waning Crescent"
 msgstr "A falce calante"

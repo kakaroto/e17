@@ -3,3 +3,4 @@ Type=Link
 Name=Cpu
 Icon=e-module-cpu
 Comment=<hilight>CPU Gadget</hilight><br>Used to monitor CPU utilization.
+Comment[it]=<hilight>Modulo CPU</hilight><br>Usato per monitorare l'utilizzo<br>della CPU.

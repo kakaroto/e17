@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wlan\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-09 12:25+0200\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2006-09-09 12:35+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -42,18 +42,10 @@ msgstr "Frequenza di aggiornamento:"
 msgid "Device Settings"
 msgstr "Impostazione del dispositivo"
 
-#: e_mod_main.c:108
+#: e_mod_main.c:107
 msgid "Wlan"
 msgstr "Wlan"
 
-#: e_mod_main.c:157
+#: e_mod_main.c:165
 msgid "Configuration"
 msgstr "Configurazione"
-
-#: e_mod_main.c:366
-msgid "Enlightenment Wlan Monitor Module"
-msgstr "Modulo Wlan di Enlightenment"
-
-#: e_mod_main.c:367
-msgid "This module is used to monitor wireless devices."
-msgstr "Questo modulo viene usato per monitorare i dispositivi wireless."

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mail\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-01 09:30+0200\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2006-08-26 21:07+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -131,22 +131,14 @@ msgstr "Percorso posta corrente:"
 msgid "Inbox"
 msgstr "Posta in arrivo"
 
-#: e_mod_main.c:191
+#: e_mod_main.c:189
 msgid "Mail"
 msgstr "Posta"
 
-#: e_mod_main.c:237
+#: e_mod_main.c:242
 msgid "Mailboxes"
 msgstr "Caselle postali"
 
-#: e_mod_main.c:261
+#: e_mod_main.c:266
 msgid "Configuration"
 msgstr "Configurazione"
-
-#: e_mod_main.c:567
-msgid "Enlightenment Mail Module"
-msgstr "Modulo Mail di Enlightenment"
-
-#: e_mod_main.c:568
-msgid "This is a module to notify when you have new mail."
-msgstr "Questo è un modulo per notificare l'arrivo di nuova posta"

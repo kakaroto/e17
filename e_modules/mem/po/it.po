@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-27 13:52+0200\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2006-05-27 13:55+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,50 +14,42 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: e_mod_config.c:36
+#: e_mod_config.c:43
 msgid "Mem Configuration"
 msgstr "Configurazione modulo Mem"
 
-#: e_mod_config.c:80
+#: e_mod_config.c:92
 msgid "General Settings"
 msgstr "Impostazioni generali"
 
-#: e_mod_config.c:82
+#: e_mod_config.c:94
 msgid "Always Show Text"
 msgstr "Mostra testo sempre"
 
-#: e_mod_config.c:84
+#: e_mod_config.c:96
 msgid "Show Text On Mouse Over"
 msgstr "Mostra testo al passaggio del mouse"
 
-#: e_mod_config.c:86
+#: e_mod_config.c:99
 msgid "Show Text As Percent"
 msgstr "Mostra testo come percentuale"
 
-#: e_mod_config.c:88
+#: e_mod_config.c:104
 msgid "Ignore Buffers"
 msgstr "Ignora buffer"
 
-#: e_mod_config.c:90
+#: e_mod_config.c:108
 msgid "Ignore Cached"
 msgstr "Ignora cache"
 
-#: e_mod_config.c:92
+#: e_mod_config.c:112
 msgid "Check Interval:"
 msgstr "Frequenza di aggiornamento:"
 
-#: e_mod_main.c:101
+#: e_mod_main.c:105
 msgid "Mem"
 msgstr "Mem"
 
-#: e_mod_main.c:148
+#: e_mod_main.c:163
 msgid "Configuration"
 msgstr "Configurazione"
-
-#: e_mod_main.c:361
-msgid "Enlightenment Mem Monitor Module"
-msgstr "Modulo Mem di Enlightenment"
-
-#: e_mod_main.c:362
-msgid "This module is used to monitor memory."
-msgstr "Questo modulo viene usato per monitorare la memoria."

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mixer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-21 10:58+0100\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2007-01-21 11:01+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -51,18 +51,14 @@ msgstr "Velocità popup"
 msgid "%1.1f seconds"
 msgstr "%1.1f secondi"
 
-#: e_mod_main.c:179 e_mod_main.c:611
+#: e_mod_main.c:173
 msgid "Mixer"
 msgstr "Mixer"
 
-#: e_mod_main.c:612
-msgid "Mixer module lets you change volume."
-msgstr "Il modulo Mixer consente di cambiare il volume"
-
-#: e_mod_main.c:733 e_mod_main.c:1174
+#: e_mod_main.c:710 e_mod_main.c:1141
 msgid "Volume"
 msgstr "Volume"
 
-#: e_mod_main.c:755
+#: e_mod_main.c:732
 msgid "Mute"
 msgstr "Muto"

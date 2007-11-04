@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Alarm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-02-03 19:10+0100\n"
+"POT-Creation-Date: 2007-11-03 13:45+0100\n"
 "PO-Revision-Date: 2007-02-03 19:15+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -18,7 +18,7 @@ msgstr ""
 msgid "Alarm Configuration"
 msgstr "Configurazione di Alarm"
 
-#: e_mod_config.c:155 e_mod_main.c:179
+#: e_mod_config.c:155 e_mod_main.c:180
 msgid "Alarm"
 msgstr "Alarm"
 
@@ -168,7 +168,7 @@ msgstr ""
 "<hilight>Errore, l'allarme non è stato aggiunto!</hilight><br><br>La data "
 "inserita è già trascorsa"
 
-#: e_mod_config_alarm.c:317 e_mod_main.c:412
+#: e_mod_config_alarm.c:317 e_mod_main.c:419
 msgid "Alarm Module Error"
 msgstr "Errore del modulo Alarm"
 
@@ -218,16 +218,16 @@ msgstr "<hilight>Test allarme FALLITO!</hilight>"
 msgid "Alarm Module Test Report"
 msgstr "Rapporto test modulo Alarm"
 
-#: e_mod_main.c:384
+#: e_mod_main.c:391
 #, c-format
 msgid "<hilight>Alarm : %s</hilight><br><br>%s"
 msgstr "<hilight>Allarme: %s</hilight><br><br>%s"
 
-#: e_mod_main.c:387
+#: e_mod_main.c:394
 msgid "Alarm Module Popup"
 msgstr "Popup modulo Alarm"
 
-#: e_mod_main.c:410
+#: e_mod_main.c:417
 msgid ""
 "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
 "specified"
@@ -235,35 +235,35 @@ msgstr ""
 "<hilight>Fallito!</hilight><br><br>Alarm non ha potuto lanciare il programma "
 "specificato"
 
-#: e_mod_main.c:644 e_mod_main.c:827
+#: e_mod_main.c:651 e_mod_main.c:830
 #, c-format
 msgid "Snooze %s"
 msgstr "Rinvia %s"
 
-#: e_mod_main.c:648
+#: e_mod_main.c:655
 #, c-format
 msgid "%1.0f hours"
 msgstr "%1.0f ore"
 
-#: e_mod_main.c:651
+#: e_mod_main.c:658
 #, c-format
 msgid "%1.0f minutes"
 msgstr "%1.0f minuti"
 
-#: e_mod_main.c:835
+#: e_mod_main.c:838
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
 msgstr "Rinvia %.14s di %.2d:%.2d"
 
-#: e_mod_main.c:849
+#: e_mod_main.c:852
 msgid "Snooze (No alarm to delay)"
 msgstr "Rinvio (nulla da rinviare)"
 
-#: e_mod_main.c:856
+#: e_mod_main.c:859
 msgid "Add an alarm"
 msgstr "Aggiungi allarme"
 
-#: e_mod_main.c:1040
+#: e_mod_main.c:1043
 #, c-format
 msgid ""
 "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
@@ -274,11 +274,11 @@ msgstr ""
 "configurazione del modulo Alarm è stata<br>aggiornata e le vostre "
 "impostazioni rimosse.<br>Ci scusiamo per l'inconveniente<br><br>(%d -> %d)"
 
-#: e_mod_main.c:1046 e_mod_main.c:1060 e_mod_main.c:1170
+#: e_mod_main.c:1049 e_mod_main.c:1063
 msgid "Alarm Module version "
 msgstr "Modulo Alarm versione "
 
-#: e_mod_main.c:1054
+#: e_mod_main.c:1057
 #, c-format
 msgid ""
 "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "
@@ -288,12 +288,3 @@ msgstr ""
 "<hilight>Modulo Alarm: ripristino configurazione</hilight><br><br>La "
 "configurazione del modulo Alarm è stata<br>ripristinata e le vostre "
 "impostazioni rimosse.<br>Ci scusiamo per l'inconveniente<br><br>(%d -> %d)"
-
-#: e_mod_main.c:1171
-msgid "An alarm clock module<br><br>http://oooo.zapto.org<br>ooookiwi@gmail.fr"
-msgstr ""
-"Un modulo per programmare allarmi<br><br>http://oooo.zapto."
-"org<br>ooookiwi@gmail.fr"
-
-#~ msgid "Alarm Alarm Configuration"
-#~ msgstr "Configurazione allarme di Alarm"

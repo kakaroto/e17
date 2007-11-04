@@ -3,3 +3,4 @@ Type=Link
 Name=Uptime
 Icon=e-module-uptime
 Comment=<hilight>Uptime Gadget</hilight><br>Gadget to display the current<br>uptime of the system.
+Comment[it]=<hilight>Modulo Uptime</hilight><br>Modulo per visualizzare il tempo<br>di servizio del sistema.
