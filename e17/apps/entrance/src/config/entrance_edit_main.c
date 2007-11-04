@@ -329,7 +329,7 @@ main(int argc, char** argv)
 	   }
 	}
 
-	entrance_edit_shutdown(config_file);
+	entrance_edit_shutdown();
 	exit(EXIT_SUCCESS);
 }
 

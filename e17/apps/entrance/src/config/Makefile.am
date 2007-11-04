@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = @X_CFLAGS@ @ECORE_CFLAGS@ -I$(srcdir)/../lib
+INCLUDES = -I$(srcdir)/../lib @X_CFLAGS@ @ECORE_CFLAGS@
 
 bin_PROGRAMS = entrance_edit
 
