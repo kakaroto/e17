@@ -1,5 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
-INCLUDES =  \
+
+AM_CPPFLAGS = \
 -I $(top_srcdir)/src/lib/dbus \
 @EDBUS_CFLAGS@
 
@@ -18,3 +19,4 @@ daemon.c
 libenotify_la_LIBADD = \
 @EDBUS_LIBS@ \
 $(top_builddir)/src/lib/dbus/libedbus.la
+libenotify_la_LDFLAGS      = -version-info @version_info@

@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES =  \
+AM_CPPFLAGS = \
 @EDBUS_CFLAGS@
 
 lib_LTLIBRARIES = libedbus.la
@@ -18,4 +18,5 @@ libedbus_la_SOURCES = \
 
 
 libedbus_la_LIBADD = \
-@EDBUS_LIBS@ 
+@EDBUS_LIBS@
+libedbus_la_LDFLAGS      = -version-info @version_info@

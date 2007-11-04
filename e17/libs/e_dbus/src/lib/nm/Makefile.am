@@ -1,6 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES =  \
+AM_CPPFLAGS = \
 -I $(top_srcdir)/src/lib/dbus \
 @EDBUS_CFLAGS@
 
@@ -13,12 +13,13 @@ e_nm.c \
 e_nm_manager.c \
 e_nm_device.c \
 e_nm_network.c \
-e_nm_util.c 
+e_nm_util.c
 
 
 libenm_la_LIBADD = \
 @EDBUS_LIBS@ \
 $(top_builddir)/src/lib/dbus/libedbus.la
+libenm_la_LDFLAGS      = -version-info @version_info@
 
 
 libenm_la_DEPENDENCIES = \
