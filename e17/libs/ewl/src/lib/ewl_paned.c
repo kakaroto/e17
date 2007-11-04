@@ -7,8 +7,10 @@
 
 typedef struct
 {
-	int size;
 	Ewl_Widget *pane;
+	Ewl_Paned_Size_Info *info;
+	int size;
+	unsigned char fixed:1;
 } Ewl_Paned_Pane_Info;
 
 /**
@@ -42,7 +44,19 @@ static void ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev,
 
 static void ewl_paned_grabbers_update(Ewl_Paned *p);
 static void ewl_paned_layout_setup(void);
-static int ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, Ewl_Paned_Layout *layout);
+static int ewl_paned_pane_info_setup(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
+		Ewl_Paned_Layout *layout, int *resizable);
+
+static int ewl_paned_pane_info_collect(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
+	       	Ewl_Paned_Layout *layout, int *resizable, int grabber_size);
+static void ewl_paned_pane_info_layout(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
+				Ewl_Paned_Layout *layout, int available,
+				int resizable);
+
+static void ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
+		int grabber_size);
+
+static int ewl_paned_grapper_size_get(Ewl_Paned *p);
 
 /**
  * @return Returns NULL on failure, or a pointer to a new paned widget on success.
@@ -133,6 +147,8 @@ ewl_paned_init(Ewl_Paned *p)
 
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_paned_cb_configure, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
+				ewl_paned_cb_destroy, NULL);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT |
@@ -187,6 +203,51 @@ ewl_paned_orientation_get(Ewl_Paned *p)
 	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(p->orientation, DLEVEL_STABLE);
+}
+
+/**
+ * @param p: The paned to work with
+ * @param child: The child widget to set the initial size
+ * @param size: the size to set
+ * @return Returns no value.
+ * @brief Set the initial size of a pane in px
+ */
+void
+ewl_paned_initial_size_set(Ewl_Paned *p, Ewl_Widget *child, int size)
+{
+	Ewl_Paned_Size_Info *info;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
+
+	info = ewl_paned_size_info_add(p, child);
+	info->initial_size = size;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param p: The paned to work with
+ * @param child: The child widget to get the initial size
+ * @return Returns the initial size that is set to the given widget. If there
+ * isn't any size set, it'll return 0.
+ * @brief Get the initial size of a pane in px
+ */
+int
+ewl_paned_initial_size_get(Ewl_Paned *p, Ewl_Widget *child)
+{
+	Ewl_Paned_Size_Info *info;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("p", p, 0);
+	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, 0);
+
+	info = ewl_paned_size_info_get(p, child);
+	if (!info)
+		DRETURN_INT(0, DLEVEL_STABLE);
+
+	DRETURN_INT(info->initial_size, DLEVEL_STABLE);
 }
 
 /**
@@ -253,10 +314,12 @@ ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx)
 	/* our grabber is always to our left, since we were just removed
 	 * from idx that means it's at idx - 1 */
 	o = ewl_container_child_internal_get(c, idx - 1);
-	if (p->last_pane == o)
+	ewl_widget_destroy(o);
+
+	if (p->last_pane == w)
 		p->last_pane = NULL;
 
-	ewl_widget_destroy(o);
+	ewl_paned_size_info_del(p, w);
 	ewl_paned_grabbers_update(EWL_PANED(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -348,12 +411,10 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	Ewl_Paned *p;
 	Ewl_Container *c;
-	Ewl_Widget *child = NULL;
 	Ewl_Paned_Pane_Info *panes;
-	int available = 0, pane_num;
-	int main_pos, main_size, cur_pos, cur_size;
-	int grabber_size = 0, resizable, i;
-	const int *xx, *yy, *ww, *hh;
+	int available, pane_num;
+	int main_size, main_pos;
+	int grabber_size, resizable = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -367,20 +428,12 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		layout = horizontal_layout;
 		main_size = CURRENT_W(w);
 		main_pos = CURRENT_X(w);
-		xx = &cur_pos;
-		yy = &CURRENT_Y(w);
-		ww = &cur_size;
-		hh = &CURRENT_H(w);
 	}
 	else
 	{
 		layout = vertical_layout;
 		main_size = CURRENT_H(w);
 		main_pos = CURRENT_Y(w);
-		xx = &CURRENT_X(w);
-		yy = &cur_pos;
-		ww = &CURRENT_W(w);
-		hh = &cur_size;
 	}
 
 	if (ecore_dlist_empty_is(c->children))
@@ -390,142 +443,50 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	pane_num = (ewl_container_child_count_visible_get(c) + 1)/2;
 	panes = alloca(sizeof(Ewl_Paned_Pane_Info) * pane_num);
 
+	grabber_size = ewl_paned_grapper_size_get(p);
+
 	/* if there are new widgets we place them first */
-	if (p->new_panes) {
-		available = ewl_paned_widgets_place(p, panes, layout);
-		p->new_panes = 0;
-	}
-	else 
-	{
-		/* We haven't moved the widgets yet. Let us now get their 
-		 * previous position so we can determine the size of the
-		 * space they had */
-		int prev_pos = p->last_pos;
-		i = 0;
+	if (p->new_panes)
+		available = ewl_paned_pane_info_setup(p, panes, layout, 
+								&resizable);
+	else
+		available = ewl_paned_pane_info_collect(p, panes, layout,
+						&resizable, grabber_size);
 
-		/* get size infos of the children */		
-		ecore_dlist_first_goto(c->children);
-		while ((child = ecore_dlist_next(c->children)))
-		{
-			int pos;
-
-			if (!VISIBLE(child))
-				continue;
-			if (!EWL_PANED_GRABBER_IS(child))
-			{
-				panes[i].pane = child;
-				continue;
-			}
-			/* get the grabber size if needed */
-			if (!grabber_size)
-				grabber_size = 
-					layout->current_size(EWL_OBJECT(child));
-
-			pos = layout->current_position(EWL_OBJECT(child));
-			panes[i].size = pos - prev_pos;
-			available += panes[i].size;
-			prev_pos = pos + grabber_size;
-			i++;
-		}
-		/* only the last position is not set because we have no grabber
-		 * at the end */
-	       panes[i].size = p->last_size - (prev_pos - p->last_pos);
-	       available += panes[i].size;
-	}
-
-	if (!grabber_size)
-	{
-		ecore_list_first_goto(c->children);
-		while ((child = ecore_list_next(c->children)))
-		{
-			if (!VISIBLE(child) || !EWL_PANED_GRABBER_IS(child))
-				continue;
-			grabber_size = layout->current_size(EWL_OBJECT(child));
-			break;
-		}
-	}
 	
 	available = main_size - grabber_size * (pane_num - 1) - available;
-	resizable = pane_num;
 
-	while (available != 0)
-	{
-		int give;
-
-		/* if we have no panes we don't need to calc their place */
-		if (resizable < 1)
-			break;
-
-		/* give can also be negative, so see it as a can take or give */
-		give = available / resizable;
-		/* reset the resizable pane_num now */
-		resizable = pane_num;
-		i = 0;
-		/* to prevent rounding errors */
-		if (give == 0) {
-			give = (available > 0) ? 1 : -1;
-			if (p->last_pane)
-			{
-				/* find the index to start with */
-				while (panes[i].pane != p->last_pane)
-					i++;
-				/* on the next run we don't want to start 
-				 * with this widget */
-				p->last_pane = NULL;
-				i++;
-				if (i >= pane_num)
-					i = 0;
-			}
-		}
-
-		for (;i < pane_num; i++)
-		{
-			int min;
-
-			min = layout->minimum_size(EWL_OBJECT(panes[i].pane));
-
-			if (min > panes[i].size + give) {
-				available -= panes[i].size - min;
-				panes[i].size = min;
-				resizable--;
-			}
-			else {
-				available -= give;
-				panes[i].size += give;
-			}
-
-			/* if there is no space to distribute left
-			 * we can stop in resizing the panes */
-			if (available == 0) {
-				p->last_pane = panes[i].pane;
-				break;
-			}
-		}
-	}
-
+	ewl_paned_pane_info_layout(p, panes, layout, available, resizable);
 	/* now that all of the space is filled we can go and layout all of
 	 * the available widgets */
-	cur_pos = main_pos;
-	i = 0;
-
-	ecore_dlist_first_goto(c->children);
-	while ((child = ecore_dlist_next(c->children)))
-	{
-		if (!VISIBLE(child))
-			continue;
-
-		if (EWL_PANED_GRABBER_IS(child))
-			cur_size = grabber_size;
-		else
-			cur_size = panes[i++].size;
-
-		ewl_object_place(EWL_OBJECT(child), *xx, *yy, *ww, *hh);
-
-		cur_pos += cur_size;
-	}
+	ewl_paned_widgets_place(p, panes, grabber_size);
 
 	p->last_size = main_size;
 	p->last_pos = main_pos;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
+void
+ewl_paned_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
+					void *data __UNUSED__)
+{
+	Ewl_Paned *p;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_TYPE("w", w, EWL_PANED_TYPE);
+
+	p = EWL_PANED(w);
+	IF_FREE(p->info);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -575,6 +536,345 @@ ewl_paned_grabbers_update(Ewl_Paned *p)
 	}
 
 	p->updating_grabbers = 0;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int
+ewl_paned_pane_info_setup(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
+		Ewl_Paned_Layout *layout, int *resizable)
+{
+	Ewl_Widget *child;
+	Ewl_Container *c;
+	int available = 0;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("p", p, 0);
+	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, 0);
+	DCHECK_PARAM_PTR_RET("layout", layout, 0);
+
+	c = EWL_CONTAINER(p);
+
+	ecore_dlist_first_goto(c->children);
+	while ((child = ecore_dlist_next(c->children)))
+	{
+		if (!VISIBLE(child) || EWL_PANED_GRABBER_IS(child)) 
+			continue;
+
+		panes->info = ewl_paned_size_info_get(p, child);
+		panes->pane = child;
+		
+		if (!panes->info)
+		{
+			panes->size = layout->minimum_size(EWL_OBJECT(child));
+			(*resizable)++;
+			panes->fixed = FALSE;
+		}
+		else
+		{
+			panes->size = panes->info->initial_size;
+			panes->fixed = TRUE;
+		}
+
+		available += panes->size;
+		panes++;
+	}
+
+	p->new_panes = FALSE;
+
+	DRETURN_INT(available, DLEVEL_STABLE);
+}
+
+static int
+ewl_paned_pane_info_collect(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
+		Ewl_Paned_Layout *layout, int *resizable, int grabber_size)
+{
+	Ewl_Container *c;
+	Ewl_Widget *child;
+	int prev_pos;
+	int i = 0;
+	int available = 0;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("p", p, 0);
+	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, 0);
+
+	prev_pos = p->last_pos;
+	c = EWL_CONTAINER(p);
+
+	/* We haven't moved the widgets yet. Let us now get their 
+	 * previous position so we can determine the size of the
+	 * space they had */
+	ecore_dlist_first_goto(c->children);
+	while ((child = ecore_dlist_next(c->children)))
+	{
+		int pos;
+
+		if (!VISIBLE(child))
+			continue;
+		if (!EWL_PANED_GRABBER_IS(child))
+		{
+			panes[i].pane = child;
+			panes[i].info = ewl_paned_size_info_get(p, child);
+			continue;
+		}
+
+		panes[i].fixed = FALSE;
+		pos = layout->current_position(EWL_OBJECT(child));
+		panes[i].size = pos - prev_pos;
+		available += panes[i].size;
+		prev_pos = pos + grabber_size;
+		i++;
+	}
+	/* only the last position is not set because we have no grabber
+	 * at the end */
+	panes[i].fixed = FALSE;
+	panes[i].size = p->last_size - (prev_pos - p->last_pos);
+	available += panes[i].size;
+
+	*resizable = i + 1;
+	
+	DRETURN_INT(available, DLEVEL_STABLE);
+}
+
+static void
+ewl_paned_pane_info_layout(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
+				Ewl_Paned_Layout *layout, int available, 
+				int resizable)
+{
+	int pane_num = 
+		(ewl_container_child_count_visible_get(EWL_CONTAINER(p)) + 1)/2;
+	int cur_res = resizable;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
+
+	while (available != 0)
+	{
+		int give;
+		int i;
+
+		/* if we have no panes we don't need to calc their place */
+		if (cur_res < 1)
+			break;
+
+		/* give can also be negative, so see it as a can take or give */
+		give = available / cur_res;
+		/* reset the resizable pane_num now */
+		cur_res = resizable;
+		i = 0;
+		/* to prevent rounding errors */
+		if (give == 0) {
+			give = (available > 0) ? 1 : -1;
+			if (p->last_pane)
+			{
+				/* find the index to start with */
+				while (panes[i].pane != p->last_pane)
+					i++;
+				/* on the next run we don't want to start 
+				 * with this widget */
+				p->last_pane = NULL;
+				i++;
+				if (i >= pane_num)
+					i = 0;
+			}
+		}
+
+		for (;i < pane_num; i++)
+		{
+			int min;
+
+			if (panes[i].fixed)
+				continue;
+
+			min = layout->minimum_size(EWL_OBJECT(panes[i].pane));
+
+			if (min > panes[i].size + give) {
+				available -= panes[i].size - min;
+				panes[i].size = min;
+				cur_res--;
+			}
+			else {
+				available -= give;
+				panes[i].size += give;
+			}
+
+			/* if there is no space to distribute left
+			 * we can stop in resizing the panes */
+			if (available == 0) {
+				p->last_pane = panes[i].pane;
+				break;
+			}
+		}
+	}
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void 
+ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
+				int grabber_size)
+{
+	Ewl_Container *c;
+	Ewl_Widget *child;
+	int cur_pos, cur_size;
+	const int *x, *y, *w, *h;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
+	
+	c = EWL_CONTAINER(p);
+
+	if (ewl_paned_orientation_get(p) == EWL_ORIENTATION_HORIZONTAL)
+	{
+		cur_pos = CURRENT_X(p);
+		x = &cur_pos;
+		y = &CURRENT_Y(p);
+		w = &cur_size;
+		h = &CURRENT_H(p);
+	}
+	else
+	{
+		cur_pos = CURRENT_Y(p);
+		x = &CURRENT_X(p);
+		y = &cur_pos;
+		w = &CURRENT_W(p);
+		h = &cur_size;
+	}
+
+	ecore_dlist_first_goto(c->children);
+	while ((child = ecore_dlist_next(c->children)))
+	{
+		if (!VISIBLE(child))
+			continue;
+
+		if (EWL_PANED_GRABBER_IS(child))
+			cur_size = grabber_size;
+		else
+			cur_size = (panes++)->size;
+
+		ewl_object_place(EWL_OBJECT(child), *x, *y, *w, *h);
+
+		cur_pos += cur_size;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static int
+ewl_paned_grapper_size_get(Ewl_Paned *p)
+{
+	Ewl_Container *c;
+	Ewl_Widget *child;
+
+	c = EWL_CONTAINER(p);
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("p", p, 0);
+	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, 0);
+
+	ecore_list_first_goto(c->children);
+	while ((child = ecore_list_next(c->children)))
+	{
+		if (!VISIBLE(child) || !EWL_PANED_GRABBER_IS(child))
+			continue;
+		
+	       	DRETURN_INT(layout->current_size(EWL_OBJECT(child)), 
+				DLEVEL_STABLE);
+	}
+
+	DRETURN_INT(0, DLEVEL_STABLE);
+}
+
+
+/*
+ * Ewl_Paned_Size_Info stuff
+ */
+Ewl_Paned_Size_Info *
+ewl_paned_size_info_add(Ewl_Paned *p, Ewl_Widget *w)
+{
+	Ewl_Paned_Size_Info *info;
+	int i;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("p", p, NULL);
+	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, NULL);
+
+
+	/* if we already have a info item for this widget we don't need 
+	 * to create one */
+	info = ewl_paned_size_info_get(p, w);
+	if (info)
+		DRETURN_PTR(info, DLEVEL_STABLE);
+
+	/* ok we don't have found one first we have to resize our array */
+	p->info = realloc(p->info, (p->info_size + 1) 
+				* sizeof(Ewl_Paned_Size_Info));
+	/* now we need to find the position for the new info item */
+	for (i = 0; i < p->info_size; i++)
+	{
+		if (p->info[i].child > w)
+			break;
+	}
+	/* move the rest so we can insert it */
+	memmove(p->info + i + 1, p->info + i, 
+			sizeof(Ewl_Paned_Size_Info) * (p->info_size - i));
+	memset(p->info + i, 0, sizeof(Ewl_Paned_Size_Info));
+	p->info[i].child = w;
+	p->info_size++;
+
+	DRETURN_PTR(p->info + i, DLEVEL_STABLE);
+}
+
+static int
+ewl_paned_size_info_compare(const void *key1, const void *key2)
+{
+	const Ewl_Paned_Size_Info *info1, *info2;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	info1 = key1;
+	info2 = key2;
+
+	DRETURN_INT(ecore_direct_compare(info1->child, info2->child),
+			DLEVEL_STABLE);
+}
+
+Ewl_Paned_Size_Info *
+ewl_paned_size_info_get(Ewl_Paned *p, Ewl_Widget *w)
+{
+	Ewl_Paned_Size_Info info;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("p", p, NULL);
+	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, NULL);
+
+	memset(&info, 0, sizeof(Ewl_Paned_Size_Info));
+	info.child = w;
+
+	DRETURN_PTR(bsearch(&info, p->info, p->info_size, 
+			sizeof(Ewl_Paned_Size_Info), 
+			ewl_paned_size_info_compare), DLEVEL_STABLE);
+}
+
+void
+ewl_paned_size_info_del(Ewl_Paned *p, Ewl_Widget *w)
+{
+	Ewl_Paned_Size_Info *info;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
+
+	info = ewl_paned_size_info_get(p, w);
+	if (!info)
+		DRETURN(DLEVEL_STABLE);
+	
+	memmove(info, info + 1, (p->info_size - (info - p->info) + 1) 
+				* sizeof(Ewl_Paned_Size_Info));
+	p->info = realloc(p->info, --p->info_size);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -969,38 +1269,6 @@ ewl_paned_layout_setup(void)
 	vertical_layout->stable_position_request = ewl_object_x_request;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-		
-static int
-ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
-		Ewl_Paned_Layout *layout)
-{
-	Ewl_Widget *child;
-	Ewl_Container *c;
-	int available = 0;
-	
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("p", p, 0);
-	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, 0);
-	DCHECK_PARAM_PTR_RET("layout", layout, 0);
-
-	c = EWL_CONTAINER(p);
-
-	ecore_dlist_first_goto(c->children);
-	while ((child = ecore_dlist_next(c->children)))
-	{
-		if (!VISIBLE(child) || EWL_PANED_GRABBER_IS(child)) 
-			continue;
-
-		panes->size = layout->minimum_size(EWL_OBJECT(child));
-		panes->pane = child;
-		available += panes->size;
-		panes++;
-	}
-
-	p->new_panes = FALSE;
-
-	DRETURN_INT(available, DLEVEL_STABLE);
 }
 
 static void

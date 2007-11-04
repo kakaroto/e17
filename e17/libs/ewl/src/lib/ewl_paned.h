@@ -24,6 +24,20 @@
  */
 
 /**
+ * The Ewl_Paned_Size_Info structure
+ */
+typedef struct Ewl_Paned_Size_Info Ewl_Paned_Size_Info;
+
+/**
+ * @brief Holds some information about the children. It is only used internally.
+ */
+struct Ewl_Paned_Size_Info
+{
+	Ewl_Widget *child;
+	int initial_size;
+};
+
+/**
  * @def EWL_PANED_TYPE
  * The type name for the Ewl_Paned widget
  */
@@ -57,6 +71,8 @@ struct Ewl_Paned
 	int last_pos;			/**< the last position */
 	int last_size;			/**< the last size */
 	Ewl_Widget *last_pane;		/**< a pointer to the last resized pane */
+	Ewl_Paned_Size_Info *info;	/**< The extra infos for the children */
+	int info_size;			/**< The size of the info array */
 	unsigned short updating_grabbers:1; /**< are we updating the grabbers */
 	unsigned short new_panes:1; /**< are there new visible panes */
 };
@@ -68,10 +84,17 @@ int		 ewl_paned_init(Ewl_Paned *p);
 
 void		 ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o);
 Ewl_Orientation	 ewl_paned_orientation_get(Ewl_Paned *p);
+void		 ewl_paned_initial_size_set(Ewl_Paned *p, Ewl_Widget *child,
+						int size);
+int		 ewl_paned_initial_size_get(Ewl_Paned *p, Ewl_Widget *child);
 
 /*
  * Internal functions. Override at your risk.
  */
+Ewl_Paned_Size_Info 	*ewl_paned_size_info_add(Ewl_Paned *p, Ewl_Widget *w);
+Ewl_Paned_Size_Info 	*ewl_paned_size_info_get(Ewl_Paned *p, Ewl_Widget *w);
+void 			 ewl_paned_size_info_del(Ewl_Paned *p, Ewl_Widget *w);
+
 void ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
 void ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx);
 void ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
