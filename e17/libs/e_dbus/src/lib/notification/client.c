@@ -3,7 +3,7 @@
 static E_DBus_Connection *client_conn;
 static int init_count = 0;
   
-int
+EAPI int
 e_notification_init(void)
 {
   if (init_count) return ++init_count;
@@ -19,7 +19,7 @@ e_notification_init(void)
   return ++init_count;
 }
 
-int
+EAPI int
 e_notification_shutdown(void)
 {
   if (--init_count) return init_count;
@@ -30,7 +30,7 @@ e_notification_shutdown(void)
 }
 
 /**** client api ****/
-void
+EAPI void
 e_notification_send(E_Notification *n, E_DBus_Callback_Func func, void *data)
 {
   DBusMessage *msg;
@@ -40,7 +40,7 @@ e_notification_send(E_Notification *n, E_DBus_Callback_Func func, void *data)
   dbus_message_unref(msg);
 }
 
-void
+EAPI void
 e_notification_get_capabilities(E_DBus_Callback_Func func, void *data)
 {
   DBusMessage *msg;
@@ -50,7 +50,7 @@ e_notification_get_capabilities(E_DBus_Callback_Func func, void *data)
   dbus_message_unref(msg);
 }
 
-void
+EAPI void
 e_notification_get_server_information(E_DBus_Callback_Func func, void *data)
 {
   DBusMessage *msg;

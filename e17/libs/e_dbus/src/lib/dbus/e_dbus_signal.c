@@ -123,7 +123,7 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
  * @param cb_signal a callback to call when the signal is received
  * @param data custom data to pass in to the callback
  */
-E_DBus_Signal_Handler *
+EAPI E_DBus_Signal_Handler *
 e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const char *path, const char *interface, const char *member, E_DBus_Signal_Cb cb_signal, void *data)
 {
   E_DBus_Signal_Handler *sh;
@@ -179,7 +179,7 @@ static int e_dbus_handler_deletions = 0;
  * @param conn the dbus connection
  * @param sh the handler to delete
  */
-void
+EAPI void
 e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
 {
   char match[DBUS_MAXIMUM_MATCH_RULE_LENGTH];

@@ -22,7 +22,7 @@
 static int connection_slot = -1;
 
 static int init = 0;
-int E_DBUS_EVENT_SIGNAL = 0;
+EAPI int E_DBUS_EVENT_SIGNAL = 0;
 
 static E_DBus_Connection *shared_connections[2] = {NULL, NULL};
 
@@ -420,7 +420,7 @@ e_dbus_idler(void *data)
  * Retrieve a connection to the bus and integrate it with the ecore main loop.
  * @param type the type of bus to connect to, e.g. DBUS_BUS_SYSTEM or DBUS_BUS_SESSION
  */
-E_DBus_Connection *
+EAPI E_DBus_Connection *
 e_dbus_bus_get(DBusBusType type)
 {
   DBusError err;
@@ -471,7 +471,7 @@ e_dbus_bus_get(DBusBusType type)
  *
  * @param conn - a dbus connection
  */
-E_DBus_Connection *
+EAPI E_DBus_Connection *
 e_dbus_connection_setup(DBusConnection *conn)
 {
   E_DBus_Connection *cd;
@@ -512,7 +512,7 @@ e_dbus_connection_setup(DBusConnection *conn)
  * Close out a connection retrieved with e_dbus_bus_get()
  * @param conn the connection to close
  */
-void
+EAPI void
 e_dbus_connection_close(E_DBus_Connection *conn)
 {
   DEBUG(5, "e_dbus_connection_close\n");
@@ -539,13 +539,13 @@ e_dbus_connection_close(E_DBus_Connection *conn)
   // Note: the E_DBus_Connection gets freed when the dbus_connection is cleaned up by the previous unref
 }
 
-void
+EAPI void
 e_dbus_connection_ref(E_DBus_Connection *conn)
 {
   conn->refcount++;
 }
 
-void
+EAPI void
 e_dbus_connection_unref(E_DBus_Connection *conn)
 {
   if (--(conn->refcount) == 0) e_dbus_connection_close(conn);
@@ -560,7 +560,7 @@ e_dbus_connection_dbus_connection_get(E_DBus_Connection *conn)
 /**
  * @brief Initialize e_dbus
  */
-int
+EAPI int
 e_dbus_init(void)
 {
   if (++init != 1) return init;
@@ -574,10 +574,11 @@ e_dbus_init(void)
 /**
  * Shutdown e_dbus.
  */
-void
+EAPI int
 e_dbus_shutdown(void)
 {
-  if (--init) return;
+  if (--init) return init;
   e_dbus_object_shutdown();
   e_dbus_signal_shutdown();
+  return init;
 }

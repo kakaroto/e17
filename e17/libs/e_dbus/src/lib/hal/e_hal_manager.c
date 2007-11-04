@@ -55,7 +55,7 @@ free_string_list(void *data)
   free(ret);
 }
 
-int
+EAPI int
 e_hal_manager_get_all_devices(E_DBus_Connection *conn, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
@@ -103,7 +103,7 @@ free_manager_device_exists(void *data)
   free(ret);
 }
 
-int
+EAPI int
 e_hal_manager_device_exists(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data)
 {
   int ret;
@@ -117,7 +117,7 @@ e_hal_manager_device_exists(E_DBus_Connection *conn, const char *udi, E_DBus_Cal
 }
 
 /* Manager.FindDeviceStringMatch */
-int
+EAPI int
 e_hal_manager_find_device_string_match(E_DBus_Connection *conn, const char *key, const char *value, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
@@ -132,7 +132,7 @@ e_hal_manager_find_device_string_match(E_DBus_Connection *conn, const char *key,
 
 /* Manager.FindDeviceByCapability */
 
-int
+EAPI int
 e_hal_manager_find_device_by_capability(E_DBus_Connection *conn, const char *capability, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;

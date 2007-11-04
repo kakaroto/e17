@@ -62,7 +62,7 @@ method_get_server_information(E_DBus_Object *obj, DBusMessage *message)
 /**** daemon api ****/
 
 
-E_Notification_Daemon *
+EAPI E_Notification_Daemon *
 e_notification_daemon_add(const char *name, const char *vendor)
 {
   E_Notification_Daemon *daemon;
@@ -91,7 +91,7 @@ e_notification_daemon_add(const char *name, const char *vendor)
   return daemon;
 }
 
-void
+EAPI void
 e_notification_daemon_free(E_Notification_Daemon *daemon)
 {
   if (daemon->obj) e_dbus_object_free(daemon->obj);
@@ -103,25 +103,25 @@ e_notification_daemon_free(E_Notification_Daemon *daemon)
   e_dbus_shutdown();
 }
 
-void
+EAPI void
 e_notification_daemon_data_set(E_Notification_Daemon *daemon, void *data)
 {
   daemon->data = data;
 }
 
-void *
+EAPI void *
 e_notification_daemon_data_get(E_Notification_Daemon *daemon)
 {
   return daemon->data;
 }
 
-void
+EAPI void
 e_notification_daemon_callback_notify_set(E_Notification_Daemon *daemon, E_Notification_Daemon_Callback_Notify func)
 {
   daemon->func.notify = func;
 }
 
-void
+EAPI void
 e_notification_daemon_callback_close_notification_set(E_Notification_Daemon *daemon, E_Notification_Daemon_Callback_Close_Notification func)
 {
   daemon->func.close_notification = func;
@@ -192,7 +192,7 @@ e_notification_daemon_object_init(E_Notification_Daemon *daemon)
 }
 
 
-void
+EAPI void
 e_notification_daemon_signal_notification_closed(E_Notification_Daemon *daemon, unsigned int id, E_Notification_Closed_Reason reason)
 {
   DBusMessage *msg = e_notify_marshal_notification_closed_signal(id, reason);
@@ -202,7 +202,7 @@ e_notification_daemon_signal_notification_closed(E_Notification_Daemon *daemon, 
   dbus_message_unref(msg);
 }
 
-void
+EAPI void
 e_notification_daemon_signal_action_invoked(E_Notification_Daemon *daemon, unsigned int notification_id, const char *action_id)
 {
   DBusMessage *msg = e_notify_marshal_action_invoked_signal(notification_id, action_id);

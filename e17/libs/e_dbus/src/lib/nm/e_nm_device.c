@@ -18,7 +18,7 @@
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  */
-int
+EAPI int
 e_nm_device_get_name(E_NM_Context *ctx, const char *device,
                      E_DBus_Callback_Func cb_func, void *data)
 {
@@ -39,7 +39,7 @@ e_nm_device_get_name(E_NM_Context *ctx, const char *device,
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  */
-int
+EAPI int
 e_nm_device_get_type(E_NM_Context *ctx, const char *device, 
                      E_DBus_Callback_Func cb_func, void *data)
 {
@@ -56,7 +56,7 @@ e_nm_device_get_type(E_NM_Context *ctx, const char *device,
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  */
-int
+EAPI int
 e_nm_device_get_hal_udi(E_NM_Context *ctx, const char *device,
                         E_DBus_Callback_Func cb_func, void *data)
 {
@@ -73,7 +73,7 @@ e_nm_device_get_hal_udi(E_NM_Context *ctx, const char *device,
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  */
-int
+EAPI int
 e_nm_device_get_ip4_address(E_NM_Context *ctx, const char *device,
                             E_DBus_Callback_Func cb_func, void *data)
 {
@@ -90,7 +90,7 @@ e_nm_device_get_ip4_address(E_NM_Context *ctx, const char *device,
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  */
-int
+EAPI int
 e_nm_device_get_link_active(E_NM_Context *ctx, const char *device,
                             E_DBus_Callback_Func cb_func, void *data)
 {
@@ -108,7 +108,7 @@ e_nm_device_get_link_active(E_NM_Context *ctx, const char *device,
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  */
-int
+EAPI int
 e_nm_device_wireless_get_strength(E_NM_Context *ctx, const char *device,
                             E_DBus_Callback_Func cb_func, void *data)
 {
@@ -125,7 +125,7 @@ e_nm_device_wireless_get_strength(E_NM_Context *ctx, const char *device,
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  */
-int
+EAPI int
 e_nm_device_wireless_get_active_network(E_NM_Context *ctx, const char *device,
                                         E_DBus_Callback_Func cb_func, void *data)
 {
@@ -144,7 +144,7 @@ e_nm_device_wireless_get_active_network(E_NM_Context *ctx, const char *device,
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  */
-int
+EAPI int
 e_nm_device_wireless_get_networks(E_NM_Context *ctx, const char *device, 
                                   E_DBus_Callback_Func cb_func, void *data)
 {

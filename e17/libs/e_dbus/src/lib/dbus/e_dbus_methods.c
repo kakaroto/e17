@@ -1,7 +1,7 @@
 #include "E_DBus.h"
 #include "e_dbus_private.h"
 
-void
+EAPI void
 e_dbus_request_name(E_DBus_Connection *conn, const char *name, unsigned int flags, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
@@ -14,7 +14,7 @@ e_dbus_request_name(E_DBus_Connection *conn, const char *name, unsigned int flag
   e_dbus_message_send(conn, msg, cb_return, -1, data);
 }
 
-void
+EAPI void
 e_dbus_release_name(E_DBus_Connection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
@@ -25,7 +25,7 @@ e_dbus_release_name(E_DBus_Connection *conn, const char *name, E_DBus_Method_Ret
 }
 
 
-void
+EAPI void
 e_dbus_get_name_owner(E_DBus_Connection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
@@ -35,7 +35,7 @@ e_dbus_get_name_owner(E_DBus_Connection *conn, const char *name, E_DBus_Method_R
   e_dbus_message_send(conn, msg, cb_return, -1, data);
 }
 
-void
+EAPI void
 e_dbus_list_names(E_DBus_Connection *conn, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
@@ -45,7 +45,7 @@ e_dbus_list_names(E_DBus_Connection *conn, E_DBus_Method_Return_Cb cb_return, vo
 }
 
 
-void
+EAPI void
 e_dbus_list_activatable_names(E_DBus_Connection *conn, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
@@ -54,7 +54,7 @@ e_dbus_list_activatable_names(E_DBus_Connection *conn, E_DBus_Method_Return_Cb c
   e_dbus_message_send(conn, msg, cb_return, -1, data);
 }
 
-void
+EAPI void
 e_dbus_name_has_owner(E_DBus_Connection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
@@ -65,7 +65,7 @@ e_dbus_name_has_owner(E_DBus_Connection *conn, const char *name, E_DBus_Method_R
 }
 
 
-void
+EAPI void
 e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;

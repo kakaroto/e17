@@ -12,7 +12,7 @@
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  **/
-int
+EAPI int
 e_nm_get_devices(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
@@ -35,7 +35,7 @@ e_nm_get_devices(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data)
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  **/
-int
+EAPI int
 e_nm_get_active_device(E_NM_Context *ctx, E_DBus_Callback_Func cb_func,
                        void *data)
 {
@@ -66,7 +66,7 @@ e_nm_get_active_device(E_NM_Context *ctx, E_DBus_Callback_Func cb_func,
  * @param cb a callback, used when the method returns (or an error is received)
  * @param data user data to pass to the callback function
  **/
-int
+EAPI int
 e_nm_status(E_NM_Context *ctx, E_DBus_Callback_Func cb_func,
                        void *data)
 {

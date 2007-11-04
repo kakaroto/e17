@@ -54,7 +54,7 @@ free_device_get_property(void *data)
   free(ret);
 }
 
-int
+EAPI int
 e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *property, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
@@ -163,7 +163,7 @@ free_device_get_all_properties(void *data)
   free(ret);
 }
 
-int
+EAPI int
 e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
@@ -214,7 +214,7 @@ free_device_query_capability(void *data)
   free(ret);
 }
 
-int
+EAPI int
 e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const char *capability, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
@@ -240,7 +240,7 @@ e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const ch
  * @param fstype the fstype of the device (e.g. volume.fstype property)
  * @param options a list of additional options (not sure... fstype dependant?)
  */
-int
+EAPI int
 e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *mount_point, const char *fstype, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;
@@ -279,7 +279,7 @@ e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *
  * @param udi the udi of the device object
  * @param options a list of additional options (not sure... fstype dependant?)
  */
-int
+EAPI int
 e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data)
 {
   DBusMessage *msg;

@@ -7,7 +7,7 @@
  * @param cb_func the callback function
  * @param user_data data to pass to the callback
  */
-E_DBus_Callback *
+EAPI E_DBus_Callback *
 e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Free_Func free_func, void *user_data)
 {
   E_DBus_Callback *cb;
@@ -28,20 +28,20 @@ e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmarshal_Func unmarsha
  * @brief Free a callback structure
  * @param callback the callback to free
  */
-void
+EAPI void
 e_dbus_callback_free(E_DBus_Callback *callback)
 {
   free(callback);
 }
 
-void
+EAPI void
 e_dbus_callback_call(E_DBus_Callback *cb, void *data, DBusError *error)
 {
   if (cb && cb->cb_func)
     cb->cb_func(cb->user_data, data, error);
 }
 
-void *
+EAPI void *
 e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg, DBusError *err)
 {
   if (cb && cb->unmarshal_func)
@@ -50,7 +50,7 @@ e_dbus_callback_unmarshal(E_DBus_Callback *cb, DBusMessage *msg, DBusError *err)
     return NULL;
 }
 
-void
+EAPI void
 e_dbus_callback_return_free(E_DBus_Callback *cb, void *data)
 {
   if (cb && cb->free_func)

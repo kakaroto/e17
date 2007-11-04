@@ -198,7 +198,7 @@ e_dbus_object_shutdown(void)
  * @param data custom data to set on the object (retrievable via
  *             e_dbus_object_data_get())
  */
-E_DBus_Object *
+EAPI E_DBus_Object *
 e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data)
 {
   E_DBus_Object *obj;
@@ -229,7 +229,7 @@ e_dbus_object_add(E_DBus_Connection *conn, const char *object_path, void *data)
  *
  * @param obj the object to free
  */
-void
+EAPI void
 e_dbus_object_free(E_DBus_Object *obj)
 {
   if (!obj) return;
@@ -249,7 +249,7 @@ e_dbus_object_free(E_DBus_Object *obj)
  * @brief Fetch the data pointer for a dbus object
  * @param obj the dbus object
  */
-void *
+EAPI void *
 e_dbus_object_data_get(E_DBus_Object *obj)
 {
   return obj->data;
@@ -260,7 +260,7 @@ e_dbus_object_data_get(E_DBus_Object *obj)
  * @param obj the object
  * @param func the callback
  */
-void
+EAPI void
 e_dbus_object_property_get_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Get_Cb func)
 {
   obj->cb_property_get = func;
@@ -271,13 +271,13 @@ e_dbus_object_property_get_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Get
  * @param obj the object
  * @param func the callback
  */
-void
+EAPI void
 e_dbus_object_property_set_cb_set(E_DBus_Object *obj, E_DBus_Object_Property_Set_Cb func)
 {
   obj->cb_property_set = func;
 }
 
-void
+EAPI void
 e_dbus_object_interface_attach(E_DBus_Object *obj, E_DBus_Interface *iface)
 {
   e_dbus_interface_ref(iface);
@@ -286,7 +286,7 @@ e_dbus_object_interface_attach(E_DBus_Object *obj, E_DBus_Interface *iface)
   DEBUG(4, "e_dbus_object_interface_attach (%s, %s) ", obj->path, iface->name);
 }
 
-void
+EAPI void
 e_dbus_object_interface_detach(E_DBus_Object *obj, E_DBus_Interface *iface)
 {
   E_DBus_Interface *found;
@@ -300,14 +300,14 @@ e_dbus_object_interface_detach(E_DBus_Object *obj, E_DBus_Interface *iface)
   e_dbus_interface_unref(iface);
 }
 
-void
+EAPI void
 e_dbus_interface_ref(E_DBus_Interface *iface)
 {
   iface->refcount++;
   DEBUG(4, "e_dbus_interface_ref (%s) = %d\n", iface->name, iface->refcount);
 }
 
-void
+EAPI void
 e_dbus_interface_unref(E_DBus_Interface *iface)
 {
   DEBUG(4, "e_dbus_interface_unref (%s) = %d\n", iface->name, iface->refcount - 1);
@@ -336,7 +336,7 @@ e_dbus_interface_free(E_DBus_Interface *iface)
  *
  * @return 1 if successful, 0 if failed (e.g. no memory)
  */
-int
+EAPI int
 e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, const char *signature, const char *reply_signature, E_DBus_Method_Cb func)
 {
   E_DBus_Method *m;
@@ -349,7 +349,7 @@ e_dbus_interface_method_add(E_DBus_Interface *iface, const char *member, const c
   return 1;
 }
 
-E_DBus_Interface *
+EAPI E_DBus_Interface *
 e_dbus_interface_new(const char *interface)
 {
   E_DBus_Interface *iface;

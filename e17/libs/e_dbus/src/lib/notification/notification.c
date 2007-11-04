@@ -12,7 +12,7 @@ static void e_notification_action_free(E_Notification_Action *act);
 
 /* (con|de)structor */
 
-E_Notification *
+EAPI E_Notification *
 e_notification_full_new(const char *app_name, unsigned int replaces_id, const char *app_icon, const char *summary, const char *body, int expire_timeout)
 {
   E_Notification *n;
@@ -31,7 +31,7 @@ e_notification_full_new(const char *app_name, unsigned int replaces_id, const ch
   return n;
 }
 
-E_Notification *
+EAPI E_Notification *
 e_notification_new()
 {
   E_Notification *n;
@@ -42,19 +42,19 @@ e_notification_new()
   return n;
 }
 
-void
+EAPI void
 e_notification_ref(E_Notification *n)
 {
   n->refcount++;
 }
 
-void
+EAPI void
 e_notification_unref(E_Notification *n)
 {
   if (--n->refcount == 0) e_notification_free(n);
 }
 
-void
+EAPI void
 e_notification_free(E_Notification *n)
 {
   if (!n) return;
@@ -74,41 +74,41 @@ e_notification_free(E_Notification *n)
 }
 
 /* mutators */
-void
+EAPI void
 e_notification_id_set(E_Notification *note, unsigned int id)
 {
   note->id = id;
 }
 
-void
+EAPI void
 e_notification_app_name_set(E_Notification *note, const char *app_name)
 {
   if (note->app_name) free(note->app_name);
   if (app_name) note->app_name = strdup(app_name);
 }
 
-void
+EAPI void
 e_notification_app_icon_set(E_Notification *note, const char *app_icon)
 {
   if (note->app_icon) free(note->app_icon);
   if (app_icon) note->app_icon = strdup(app_icon);
 }
 
-void
+EAPI void
 e_notification_summary_set(E_Notification *note, const char *summary)
 {
   if (note->summary) free(note->summary);
   if (summary) note->summary = strdup(summary);
 }
 
-void
+EAPI void
 e_notification_body_set(E_Notification *note, const char *body)
 {
   if (note->body) free(note->body);
   if (body) note->body = strdup(body);
 }
 
-void
+EAPI void
 e_notification_action_add(E_Notification *n, const char *action_id, const char *action_name)
 {
   E_Notification_Action *a;
@@ -121,19 +121,19 @@ e_notification_action_add(E_Notification *n, const char *action_id, const char *
 }
 
 
-void
+EAPI void
 e_notification_replaces_id_set(E_Notification *note, int replaces_id)
 {
   note->replaces_id = replaces_id;
 }
 
-void
+EAPI void
 e_notification_timeout_set(E_Notification *note, int timeout)
 {
   note->expire_timeout = timeout;
 }
 
-void
+EAPI void
 e_notification_closed_set(E_Notification *note, unsigned char closed)
 {
   note->closed = closed;
@@ -141,55 +141,55 @@ e_notification_closed_set(E_Notification *note, unsigned char closed)
 
 
 /* accessors */
-unsigned int
+EAPI unsigned int
 e_notification_id_get(E_Notification *note)
 {
   return note->id;
 }
 
-const char *
+EAPI const char *
 e_notification_app_name_get(E_Notification *note)
 {
   return note->app_name;
 }
 
-const char *
+EAPI const char *
 e_notification_app_icon_get(E_Notification *note)
 {
   return note->app_icon;
 }
 
-const char *
+EAPI const char *
 e_notification_summary_get(E_Notification *note)
 {
   return note->summary;
 }
 
-const char *
+EAPI const char *
 e_notification_body_get(E_Notification *note)
 {
   return note->body;
 }
 
-Ecore_List *
+EAPI Ecore_List *
 e_notification_actions_get(E_Notification *note)
 {
   return note->actions;
 }
 
-int
+EAPI int
 e_notification_replaces_id_get(E_Notification *note)
 {
   return note->replaces_id;
 }
 
-int
+EAPI int
 e_notification_timeout_get(E_Notification *note)
 {
   return note->expire_timeout;
 }
 
-unsigned char
+EAPI unsigned char
 e_notification_closed_get(E_Notification *note)
 {
   return note->closed;
@@ -230,14 +230,14 @@ e_notification_action_free(E_Notification_Action *act)
 /********* hints *******/
 
 
-void 
+EAPI void 
 e_notification_hint_urgency_set(E_Notification *n, char urgency)
 {
   n->hints.urgency = urgency;
   n->hint_flags |= E_NOTIFICATION_HINT_URGENCY;
 }
 
-void 
+EAPI void 
 e_notification_hint_category_set(E_Notification *n, const char *category)
 {
   if (n->hints.category) free(n->hints.category);
@@ -245,7 +245,7 @@ e_notification_hint_category_set(E_Notification *n, const char *category)
   n->hint_flags |= E_NOTIFICATION_HINT_CATEGORY;
 }
 
-void 
+EAPI void 
 e_notification_hint_desktop_set(E_Notification *n, const char *desktop)
 {
   if (n->hints.desktop) free(n->hints.desktop);
@@ -253,7 +253,7 @@ e_notification_hint_desktop_set(E_Notification *n, const char *desktop)
   n->hint_flags |= E_NOTIFICATION_HINT_DESKTOP;
 }
 
-void 
+EAPI void 
 e_notification_hint_sound_file_set(E_Notification *n, const char *sound_file)
 {
   if (n->hints.sound_file) free(n->hints.sound_file);
@@ -261,14 +261,14 @@ e_notification_hint_sound_file_set(E_Notification *n, const char *sound_file)
   n->hint_flags |= E_NOTIFICATION_HINT_SOUND_FILE;
 }
 
-void 
+EAPI void 
 e_notification_hint_suppress_sound_set(E_Notification *n, char suppress_sound)
 {
   n->hints.suppress_sound = suppress_sound;
   n->hint_flags |= E_NOTIFICATION_HINT_SUPPRESS_SOUND;
 }
 
-void 
+EAPI void 
 e_notification_hint_xy_set(E_Notification *n, int x, int y)
 {
   n->hints.x = x;
@@ -276,44 +276,44 @@ e_notification_hint_xy_set(E_Notification *n, int x, int y)
   n->hint_flags |= E_NOTIFICATION_HINT_XY;
 }
 
-void 
+EAPI void 
 e_notification_hint_image_data_set(E_Notification *n, E_Notification_Image *image)
 {
   n->hints.image_data = image;
 }
 
 
-char  
+EAPI char  
 e_notification_hint_urgency_get(E_Notification *n)
 {
   return (n->hint_flags & E_NOTIFICATION_HINT_URGENCY ? n->hints.urgency : 1);
 }
 
-const char *
+EAPI const char *
 e_notification_hint_category_get(E_Notification *n)
 {
   return n->hints.category;
 }
 
-const char *
+EAPI const char *
 e_notification_hint_desktop_get(E_Notification *n)
 {
   return n->hints.desktop;
 }
 
-const char *
+EAPI const char *
 e_notification_hint_sound_file_get(E_Notification *n)
 {
   return n->hints.sound_file;
 }
 
-char  
+EAPI char  
 e_notification_hint_suppress_sound_get(E_Notification *n)
 {
   return n->hints.suppress_sound;
 }
 
-int  
+EAPI int  
 e_notification_hint_xy_get(E_Notification *n, int *x, int *y)
 {
   if (x) *x = n->hints.x;
@@ -322,14 +322,14 @@ e_notification_hint_xy_get(E_Notification *n, int *x, int *y)
   return (n->hint_flags & E_NOTIFICATION_HINT_XY ? 1 : 0);
 }
 
-E_Notification_Image *
+EAPI E_Notification_Image *
 e_notification_hint_image_data_get(E_Notification *n)
 {
   return n->hints.image_data;
 }
 
 
-E_Notification_Image *
+EAPI E_Notification_Image *
 e_notification_image_new()
 {
   E_Notification_Image *img;
@@ -338,7 +338,7 @@ e_notification_image_new()
   return img;
 }
 
-void
+EAPI void
 e_notification_image_free(E_Notification_Image *img)
 {
   if (img->data) free(img->data);
@@ -346,7 +346,7 @@ e_notification_image_free(E_Notification_Image *img)
 }
 
 
-Evas_Object *
+EAPI Evas_Object *
 e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img)
 {
 #if 0 

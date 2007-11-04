@@ -1,7 +1,7 @@
 #include "E_Nm.h"
 #include "e_nm_private.h"
 
-E_NM_Context *
+EAPI E_NM_Context *
 e_nm_new(void)
 {
   E_NM_Context *ctx;
@@ -21,7 +21,7 @@ error:
 
 }
 
-void
+EAPI void
 e_nm_free(E_NM_Context *ctx)
 {
   e_dbus_connection_unref(ctx->conn);
@@ -92,7 +92,7 @@ cb_signal_manager_device_removed(void *data, DBusMessage *msg)
 }
 
 
-void
+EAPI void
 e_nm_callback_manager_state_change_set(E_NM_Context *ctx, E_NM_Cb_Manager_State_Change cb_func, void *user_data)
 {
   ctx->cb_manager_state_change = cb_func;
@@ -101,7 +101,7 @@ e_nm_callback_manager_state_change_set(E_NM_Context *ctx, E_NM_Cb_Manager_State_
   e_dbus_signal_handler_add(ctx->conn, E_NM_SERVICE, E_NM_PATH_NETWORK_MANAGER, E_NM_INTERFACE_NETWORK_MANAGER, "StateChange", cb_signal_manager_state_change, ctx);
 }
 
-void
+EAPI void
 e_nm_callback_manager_device_added_set(E_NM_Context *ctx, E_NM_Cb_Manager_Device_Added cb_func, void *user_data)
 {
   ctx->cb_manager_device_added = cb_func;
@@ -110,7 +110,7 @@ e_nm_callback_manager_device_added_set(E_NM_Context *ctx, E_NM_Cb_Manager_Device
   e_dbus_signal_handler_add(ctx->conn, E_NM_SERVICE, E_NM_PATH_NETWORK_MANAGER, E_NM_INTERFACE_NETWORK_MANAGER, "DeviceAdded", cb_signal_manager_device_added, ctx);
 }
 
-void
+EAPI void
 e_nm_callback_manager_device_removed_set(E_NM_Context *ctx, E_NM_Cb_Manager_Device_Removed cb_func, void *user_data)
 {
   ctx->cb_manager_device_removed = cb_func;

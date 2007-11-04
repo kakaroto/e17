@@ -62,7 +62,7 @@ cb_pending(DBusPendingCall *pending, void *user_data)
  * @param timeout   A timeout in milliseconds, after which a synthetic error will be generated
  * @return a DBusPendingCall that can be used to cancel the current call
  */
-DBusPendingCall *
+EAPI DBusPendingCall *
 e_dbus_message_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Method_Return_Cb cb_return, int timeout, void *data)
 {
   DBusPendingCall *pending;
@@ -107,7 +107,7 @@ cb_method_call(void *data, DBusMessage *msg, DBusError *err)
   e_dbus_callback_free(cb);
 }
 
-DBusPendingCall *
+EAPI DBusPendingCall *
 e_dbus_method_call_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Callback_Func cb_func, E_DBus_Free_Func free_func, int timeout, void *data)
 {
   E_DBus_Callback *cb;

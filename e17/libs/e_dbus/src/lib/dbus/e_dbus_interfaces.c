@@ -6,7 +6,7 @@
  * objects on the bus should implement.
  */
 
-void
+EAPI void
 e_dbus_peer_ping(E_DBus_Connection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
@@ -15,7 +15,7 @@ e_dbus_peer_ping(E_DBus_Connection*conn, const char *destination, const char *pa
   e_dbus_message_send(conn, msg, cb_return, -1, data);
 }
 
-void
+EAPI void
 e_dbus_peer_get_machine_id(E_DBus_Connection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
@@ -36,7 +36,7 @@ e_dbus_peer_get_machine_id(E_DBus_Connection*conn, const char *destination, cons
  * @param cb_return a callback for a successful return
  * @param data data to pass to the callbacks
  */
-void
+EAPI void
 e_dbus_properties_get(E_DBus_Connection*conn, const char *destination, const char *path, const char *interface, const char *property, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;
@@ -59,7 +59,7 @@ e_dbus_properties_get(E_DBus_Connection*conn, const char *destination, const cha
  * @param cb_return a callback for a successful return
  * @param data data to pass to the callbacks
  */
-void
+EAPI void
 e_dbus_properties_set(E_DBus_Connection*conn, const char *destination, const char *path, const char *interface, const char *property, int value_type, void *value, E_DBus_Method_Return_Cb cb_return, void *data)
 {
   DBusMessage *msg;

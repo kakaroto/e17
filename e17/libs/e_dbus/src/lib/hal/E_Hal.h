@@ -79,27 +79,27 @@ typedef struct E_Hal_UDI_Return E_Hal_Manager_Device_Removed;
 typedef struct E_Hal_Capability E_Hal_Manager_New_Capability;
 
 /* org.freedesktop.Hal.Device */
-int e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *property, E_DBus_Callback_Func cb_func, void *data);
-int e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data);
-int e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const char *capability, E_DBus_Callback_Func cb_func, void *data);
+EAPI int e_hal_device_get_property(E_DBus_Connection *conn, const char *udi, const char *property, E_DBus_Callback_Func cb_func, void *data);
+EAPI int e_hal_device_get_all_properties(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data);
+EAPI int e_hal_device_query_capability(E_DBus_Connection *conn, const char *udi, const char *capability, E_DBus_Callback_Func cb_func, void *data);
 
 /* org.freedesktop.Hal.Manager */
-int e_hal_manager_get_all_devices(E_DBus_Connection *conn, E_DBus_Callback_Func cb_func, void *data);
-int e_hal_manager_device_exists(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data);
-int e_hal_manager_find_device_string_match(E_DBus_Connection *conn, const char *key, const char *value, E_DBus_Callback_Func cb_func, void *data);
-int e_hal_manager_find_device_by_capability(E_DBus_Connection *conn, const char *capability, E_DBus_Callback_Func cb_func, void *data);
+EAPI int e_hal_manager_get_all_devices(E_DBus_Connection *conn, E_DBus_Callback_Func cb_func, void *data);
+EAPI int e_hal_manager_device_exists(E_DBus_Connection *conn, const char *udi, E_DBus_Callback_Func cb_func, void *data);
+EAPI int e_hal_manager_find_device_string_match(E_DBus_Connection *conn, const char *key, const char *value, E_DBus_Callback_Func cb_func, void *data);
+EAPI int e_hal_manager_find_device_by_capability(E_DBus_Connection *conn, const char *capability, E_DBus_Callback_Func cb_func, void *data);
 
 /* utility functions */
-void e_hal_property_free(E_Hal_Property *prop);
-char *e_hal_property_string_get(E_Hal_Properties *properties, const char *key, int *err);
-char e_hal_property_bool_get(E_Hal_Properties *properties, const char *key, int *err);
-int e_hal_property_int_get(E_Hal_Properties *properties, const char *key, int *err);
-dbus_uint64_t e_hal_property_uint64_get(E_Hal_Properties *properties, const char *key, int *err);
-double e_hal_property_double_get(E_Hal_Properties *properties, const char *key, int *err);
-Ecore_List *e_hal_property_strlist_get(E_Hal_Properties *properties, const char *key, int *err);
+EAPI void           e_hal_property_free(E_Hal_Property *prop);
+EAPI char          *e_hal_property_string_get(E_Hal_Properties *properties, const char *key, int *err);
+EAPI char           e_hal_property_bool_get(E_Hal_Properties *properties, const char *key, int *err);
+EAPI int            e_hal_property_int_get(E_Hal_Properties *properties, const char *key, int *err);
+EAPI dbus_uint64_t  e_hal_property_uint64_get(E_Hal_Properties *properties, const char *key, int *err);
+EAPI double         e_hal_property_double_get(E_Hal_Properties *properties, const char *key, int *err);
+EAPI Ecore_List    *e_hal_property_strlist_get(E_Hal_Properties *properties, const char *key, int *err);
 
 /* (un)mount */
-int e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *mount_point, const char *fstype, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data);
-int e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data);
+EAPI int e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *mount_point, const char *fstype, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data);
+EAPI int e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data);
 
 #endif
