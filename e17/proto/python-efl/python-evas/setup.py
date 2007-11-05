@@ -94,6 +94,7 @@ class evas_build_ext(build_ext):
     def finalize_options(self):
         build_ext.finalize_options(self)
         self.include_dirs.insert(0, 'include')
+        self.pyrex_include_dirs.extend(self.include_dirs)
 
 
 class evas_install_headers(install_headers):

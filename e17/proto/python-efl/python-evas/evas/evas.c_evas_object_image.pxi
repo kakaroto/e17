@@ -545,7 +545,7 @@ _install_metaclass(&PyEvasImage_Type, EvasObjectMeta)
 
 cdef void _cb_on_filled_image_resize(void *data, Evas *e,
                                      Evas_Object *obj,
-                                     void *event_info) with GIL:
+                                     void *event_info) with gil:
     cdef int w, h
     evas_object_geometry_get(obj, NULL, NULL, &w, &h)
     evas_object_image_fill_set(obj, 0, 0, w, h)

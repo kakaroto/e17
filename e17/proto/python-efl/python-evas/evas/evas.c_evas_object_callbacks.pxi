@@ -25,7 +25,7 @@ cdef int cb_dispatcher2(Object self, Evas_Callback_Type type) except 0:
 
 
 cdef void cb_mouse_in(void *data, Evas *e,
-                      Evas_Object *obj, void *e_inf) with GIL:
+                      Evas_Object *obj, void *e_inf) with gil:
     cdef EventMouseIn event
     event = EventMouseIn()
     event._set_obj(e_inf)
@@ -33,7 +33,7 @@ cdef void cb_mouse_in(void *data, Evas *e,
 
 
 cdef void cb_mouse_out(void *data, Evas *e,
-                       Evas_Object *obj, void *e_inf) with GIL:
+                       Evas_Object *obj, void *e_inf) with gil:
     cdef EventMouseOut event
     event = EventMouseOut()
     event._set_obj(e_inf)
@@ -41,7 +41,7 @@ cdef void cb_mouse_out(void *data, Evas *e,
 
 
 cdef void cb_mouse_down(void *data, Evas *e,
-                        Evas_Object *obj, void *e_inf) with GIL:
+                        Evas_Object *obj, void *e_inf) with gil:
     cdef EventMouseDown event
     event = EventMouseDown()
     event._set_obj(e_inf)
@@ -49,7 +49,7 @@ cdef void cb_mouse_down(void *data, Evas *e,
 
 
 cdef void cb_mouse_up(void *data, Evas *e,
-                      Evas_Object *obj, void *e_inf) with GIL:
+                      Evas_Object *obj, void *e_inf) with gil:
     cdef EventMouseUp event
     event = EventMouseUp()
     event._set_obj(e_inf)
@@ -57,7 +57,7 @@ cdef void cb_mouse_up(void *data, Evas *e,
 
 
 cdef void cb_mouse_move(void *data, Evas *e,
-                        Evas_Object *obj, void *e_inf) with GIL:
+                        Evas_Object *obj, void *e_inf) with gil:
     cdef EventMouseMove event
     event = EventMouseMove()
     event._set_obj(e_inf)
@@ -65,7 +65,7 @@ cdef void cb_mouse_move(void *data, Evas *e,
 
 
 cdef void cb_mouse_wheel(void *data, Evas *e,
-                         Evas_Object *obj, void *e_inf) with GIL:
+                         Evas_Object *obj, void *e_inf) with gil:
     cdef EventMouseWheel event
     event = EventMouseWheel()
     event._set_obj(e_inf)
@@ -73,12 +73,12 @@ cdef void cb_mouse_wheel(void *data, Evas *e,
 
 
 cdef void cb_free(void *data, Evas *e,
-                  Evas_Object *obj, void *e_inf) with GIL:
+                  Evas_Object *obj, void *e_inf) with gil:
     cb_dispatcher2(<Object>data, EVAS_CALLBACK_FREE)
 
 
 cdef void cb_key_down(void *data, Evas *e,
-                      Evas_Object *obj, void *e_inf) with GIL:
+                      Evas_Object *obj, void *e_inf) with gil:
     cdef EventKeyDown event
     event = EventKeyDown()
     event._set_obj(e_inf)
@@ -86,7 +86,7 @@ cdef void cb_key_down(void *data, Evas *e,
 
 
 cdef void cb_key_up(void *data, Evas *e,
-                    Evas_Object *obj, void *e_inf) with GIL:
+                    Evas_Object *obj, void *e_inf) with gil:
     cdef EventKeyUp event
     event = EventKeyUp()
     event._set_obj(e_inf)
@@ -94,39 +94,39 @@ cdef void cb_key_up(void *data, Evas *e,
 
 
 cdef void cb_focus_in(void *data, Evas *e,
-                      Evas_Object *obj, void *e_inf) with GIL:
+                      Evas_Object *obj, void *e_inf) with gil:
     cb_dispatcher2(<Object>data, EVAS_CALLBACK_FOCUS_IN)
 
 
 cdef void cb_focus_out(void *data, Evas *e,
-                       Evas_Object *obj, void *e_inf) with GIL:
+                       Evas_Object *obj, void *e_inf) with gil:
     cb_dispatcher2(<Object>data, EVAS_CALLBACK_FOCUS_OUT)
 
 
-cdef void cb_show(void *data, Evas *e, Evas_Object *obj, void *e_inf) with GIL:
+cdef void cb_show(void *data, Evas *e, Evas_Object *obj, void *e_inf) with gil:
     cb_dispatcher2(<Object>data, EVAS_CALLBACK_SHOW)
 
 
-cdef void cb_hide(void *data, Evas *e, Evas_Object *obj, void *e_inf) with GIL:
+cdef void cb_hide(void *data, Evas *e, Evas_Object *obj, void *e_inf) with gil:
     cb_dispatcher2(<Object>data, EVAS_CALLBACK_HIDE)
 
 
-cdef void cb_move(void *data, Evas *e, Evas_Object *obj, void *e_inf) with GIL:
+cdef void cb_move(void *data, Evas *e, Evas_Object *obj, void *e_inf) with gil:
     cb_dispatcher2(<Object>data, EVAS_CALLBACK_MOVE)
 
 
 cdef void cb_resize(void *data, Evas *e,
-                    Evas_Object *obj, void *e_inf) with GIL:
+                    Evas_Object *obj, void *e_inf) with gil:
     cb_dispatcher2(<Object>data, EVAS_CALLBACK_RESIZE)
 
 
 cdef void cb_restack(void *data, Evas *e,
-                     Evas_Object *obj, void *e_inf) with GIL:
+                     Evas_Object *obj, void *e_inf) with gil:
     cb_dispatcher2(<Object>data, EVAS_CALLBACK_RESTACK)
 
 
 cdef void cb_del(void *data, Evas *e,
-                 Evas_Object *obj, void *e_inf) with GIL:
+                 Evas_Object *obj, void *e_inf) with gil:
     cb_dispatcher2(<Object>data, EVAS_CALLBACK_DEL)
 
 
