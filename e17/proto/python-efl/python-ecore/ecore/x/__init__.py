@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-# XXX TODO: implement ecore_x
+from c_ecore_x import *
 
 ECORE_X_CURSOR_X = 0
 ECORE_X_CURSOR_ARROW = 2

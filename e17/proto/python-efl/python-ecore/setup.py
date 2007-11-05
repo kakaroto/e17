@@ -51,6 +51,17 @@ ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
                                      ],
                             **pkgconfig('"ecore-evas >= 0.9.9.040"'))
 
+ecorexmodule = Extension('ecore.x.c_ecore_x',
+                            sources=['ecore/x/ecore.x.c_ecore_x.pyx'],
+                            depends=['ecore/x/ecore.x.c_ecore_x_window.pxi',
+                                     'include/ecore/x/c_ecore_x.pxd',
+                                     ],
+                            **pkgconfig('"ecore-x >= 0.9.9.040"'))
+ecorexscreensavermodule = Extension('ecore.x.screensaver',
+                            sources=['ecore/x/ecore.x.screensaver.pyx'],
+                            depends=['include/ecore/x/screensaver.pxd'],
+                            **pkgconfig('"ecore-x >= 0.9.9.040"'))
+
 
 trove_classifiers = [
     "Development Status :: 3 - Alpha",
@@ -82,6 +93,9 @@ converting events to an uniform structure and handling them to
 applications, also updating the screen when necessary (expose events,
 for instance), toggling fullscreen, setting window shape, border and
 other parameters.
+
+Ecore/X is acts on low-level X11 API, providing resources like XDamage,
+XFixes, window management and more.
 """
 
 
@@ -104,7 +118,8 @@ setup(name='python-ecore',
       packages=find_packages(),
       install_requires=['python-evas>=0.2.0'],
       setup_requires=['python-evas>=0.2.0'],
-      ext_modules=[ecoremodule, ecoreevasmodule],
+      ext_modules=[ecoremodule, ecoreevasmodule, ecorexmodule,
+                   ecorexscreensavermodule],
       zip_safe=False,
       cmdclass={'build_ext': ecore_build_ext,},
       )
