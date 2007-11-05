@@ -53,7 +53,7 @@ static void ewl_paned_pane_info_layout(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 				Ewl_Paned_Layout *layout, int available,
 				int resizable);
 
-static void ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
+static int ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
 		int grabber_size);
 
 static int ewl_paned_grapper_size_get(Ewl_Paned *p);
@@ -415,6 +415,7 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	int available, pane_num;
 	int main_size, main_pos;
 	int grabber_size, resizable = 0;
+	int used_size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -447,21 +448,21 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	/* if there are new widgets we place them first */
 	if (p->new_panes)
-		available = ewl_paned_pane_info_setup(p, panes, layout, 
+		used_size = ewl_paned_pane_info_setup(p, panes, layout, 
 								&resizable);
 	else
-		available = ewl_paned_pane_info_collect(p, panes, layout,
+		used_size = ewl_paned_pane_info_collect(p, panes, layout,
 						&resizable, grabber_size);
 
 	
-	available = main_size - grabber_size * (pane_num - 1) - available;
+	available = main_size - grabber_size * (pane_num - 1) - used_size;
 
 	ewl_paned_pane_info_layout(p, panes, layout, available, resizable);
 	/* now that all of the space is filled we can go and layout all of
 	 * the available widgets */
-	ewl_paned_widgets_place(p, panes, grabber_size);
+	used_size = ewl_paned_widgets_place(p, panes, grabber_size);
 
-	p->last_size = main_size;
+	p->last_size = used_size;
 	p->last_pos = main_pos;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -712,24 +713,24 @@ ewl_paned_pane_info_layout(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void 
+static int
 ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
 				int grabber_size)
 {
 	Ewl_Container *c;
 	Ewl_Widget *child;
-	int cur_pos, cur_size;
+	int cur_pos, cur_size, first_pos;
 	const int *x, *y, *w, *h;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, EWL_PANED_TYPE);
+	DCHECK_PARAM_PTR_RET("p", p, 0);
+	DCHECK_TYPE_RET("p", p, EWL_PANED_TYPE, 0);
 	
 	c = EWL_CONTAINER(p);
 
 	if (ewl_paned_orientation_get(p) == EWL_ORIENTATION_HORIZONTAL)
 	{
-		cur_pos = CURRENT_X(p);
+		first_pos = cur_pos = CURRENT_X(p);
 		x = &cur_pos;
 		y = &CURRENT_Y(p);
 		w = &cur_size;
@@ -737,7 +738,7 @@ ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 	}
 	else
 	{
-		cur_pos = CURRENT_Y(p);
+		first_pos = cur_pos = CURRENT_Y(p);
 		x = &CURRENT_X(p);
 		y = &cur_pos;
 		w = &CURRENT_W(p);
@@ -760,7 +761,7 @@ ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 		cur_pos += cur_size;
 	}
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(cur_pos - first_pos, DLEVEL_STABLE);
 }
 
 static int
