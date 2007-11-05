@@ -19,8 +19,6 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 	stamp-h.in \
 	debian/changelog
 
-bin_SCRIPTS = exml-config
-
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = exml.pc
 
