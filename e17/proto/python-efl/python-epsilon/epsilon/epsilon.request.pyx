@@ -105,7 +105,7 @@ cdef class Request:
 init()
 cdef Ecore_Event_Handler *_epsilon_event_handler = NULL
 
-cdef int _epsilon_event_handler_cb(void *data, int type, void *event) with GIL:
+cdef int _epsilon_event_handler_cb(void *data, int type, void *event) with gil:
     cdef Epsilon_Request *er
     cdef Request obj
 

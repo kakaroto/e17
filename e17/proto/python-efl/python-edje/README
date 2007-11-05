@@ -9,7 +9,7 @@ REQUIREMENTS
  * Ecore >= 0.9.9.040   (indirect, Edje dependency)
  * Evas >= 0.9.9.040
  * Python-Evas
- * Cython from Mercurial repository (http://www.cython.org/hg/)
+ * Cython >= 0.9.6.8
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc3
 

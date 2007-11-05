@@ -4,7 +4,7 @@ import traceback
 
 
 cdef void text_change_cb(void *data,
-                         evas.c_evas.Evas_Object *obj, char *part) with GIL:
+                         evas.c_evas.Evas_Object *obj, char *part) with gil:
     cdef Edje self
     self = <Edje>data
     if self._text_change_cb is None:
@@ -19,7 +19,7 @@ cdef void text_change_cb(void *data,
 cdef void message_handler_cb(void *data,
                              evas.c_evas.Evas_Object *obj,
                              Edje_Message_Type type,
-                             int id, void *msg) with GIL:
+                             int id, void *msg) with gil:
     cdef Edje self
     self = <Edje>data
     if self._message_handler_cb is None:
@@ -33,7 +33,7 @@ cdef void message_handler_cb(void *data,
 
 cdef void signal_cb(void *data,
                     evas.c_evas.Evas_Object *obj,
-                    char *emission, char *source) with GIL:
+                    char *emission, char *source) with gil:
     cdef Edje self
     self = <Edje>evas.c_evas._Object_from_instance(<long>obj)
     lst = <object>data

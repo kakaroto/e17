@@ -2,7 +2,7 @@ cimport evas.c_evas as c_evas
 import evas.c_evas
 
 cdef void _emotion_callback(void *data,
-                            evas.c_evas.Evas_Object *o, void *ei) with GIL:
+                            evas.c_evas.Evas_Object *o, void *ei) with gil:
     cdef Emotion obj
     cdef object event
     obj = <Emotion>evas.c_evas._Object_from_instance(<long>o)

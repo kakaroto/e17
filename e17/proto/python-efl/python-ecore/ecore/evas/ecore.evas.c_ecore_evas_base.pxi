@@ -9,7 +9,7 @@ cdef EcoreEvas EcoreEvas_from_instance(Ecore_Evas *obj):
     assert data != NULL, "Ecore_Evas is not wrapped by Python object."
     return <EcoreEvas>data
 
-cdef void resize_cb(Ecore_Evas *ee) with GIL:
+cdef void resize_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -17,7 +17,7 @@ cdef void resize_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void move_cb(Ecore_Evas *ee) with GIL:
+cdef void move_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -25,7 +25,7 @@ cdef void move_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void show_cb(Ecore_Evas *ee) with GIL:
+cdef void show_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -33,7 +33,7 @@ cdef void show_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void hide_cb(Ecore_Evas *ee) with GIL:
+cdef void hide_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -41,7 +41,7 @@ cdef void hide_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void delete_request_cb(Ecore_Evas *ee) with GIL:
+cdef void delete_request_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -49,7 +49,7 @@ cdef void delete_request_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void destroy_cb(Ecore_Evas *ee) with GIL:
+cdef void destroy_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -57,7 +57,7 @@ cdef void destroy_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void focus_in_cb(Ecore_Evas *ee) with GIL:
+cdef void focus_in_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -65,7 +65,7 @@ cdef void focus_in_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void focus_out_cb(Ecore_Evas *ee) with GIL:
+cdef void focus_out_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -73,7 +73,7 @@ cdef void focus_out_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void sticky_cb(Ecore_Evas *ee) with GIL:
+cdef void sticky_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -81,7 +81,7 @@ cdef void sticky_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void unsticky_cb(Ecore_Evas *ee) with GIL:
+cdef void unsticky_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -89,7 +89,7 @@ cdef void unsticky_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void mouse_in_cb(Ecore_Evas *ee) with GIL:
+cdef void mouse_in_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -97,7 +97,7 @@ cdef void mouse_in_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void mouse_out_cb(Ecore_Evas *ee) with GIL:
+cdef void mouse_out_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -105,7 +105,7 @@ cdef void mouse_out_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void pre_render_cb(Ecore_Evas *ee) with GIL:
+cdef void pre_render_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
@@ -113,7 +113,7 @@ cdef void pre_render_cb(Ecore_Evas *ee) with GIL:
     except Exception, e:
         traceback.print_exc()
 
-cdef void post_render_cb(Ecore_Evas *ee) with GIL:
+cdef void post_render_cb(Ecore_Evas *ee) with gil:
     cdef EcoreEvas self
     self = EcoreEvas_from_instance(ee)
     try:
