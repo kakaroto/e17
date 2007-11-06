@@ -437,11 +437,14 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		main_pos = CURRENT_Y(w);
 	}
 
-	if (ecore_dlist_empty_is(c->children))
-		DRETURN(DLEVEL_STABLE);
-	
 	/* we need to now the number of panes */	
 	pane_num = (ewl_container_child_count_visible_get(c) + 1)/2;
+
+	/* we cannot place the panes if there aren't any */
+	if (pane_num <= 0)
+		DRETURN(DLEVEL_STABLE);
+
+	/* setup the array holding the information about the panes */
 	panes = alloca(sizeof(Ewl_Paned_Pane_Info) * pane_num);
 
 	grabber_size = ewl_paned_grapper_size_get(p);
@@ -658,7 +661,7 @@ ewl_paned_pane_info_layout(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 
 		/* if we have no panes we don't need to calc their place */
 		if (cur_res < 1)
-			break;
+			DRETURN(DLEVEL_STABLE);
 
 		/* give can also be negative, so see it as a can take or give */
 		give = available / cur_res;
