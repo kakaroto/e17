@@ -8,20 +8,20 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir =  $(datadir)
 
-files_DATA = module_icon.png \
-			module.desktop \
-			e-module-deskshow.edj \
-			deskshow.edj
+files_DATA = module.desktop \
+	     e-module-deskshow.edj \
+	     deskshow.edj
 
 EXTRA_DIST = $(files_DATA) \
-				deskshow.edc \
-				e17_titlebar.png \
-				e17_titlebar_glint1.png \
-				e17_titlebar_glint2.png \
-				e17_titlebar_glint3.png \
-				e17_titlebar_shadow1.png \
-				e17_titlebar_shadow2.png \
-				VeraBd.ttf
+	     deskshow.edc \
+	     e17_titlebar.png \
+	     e17_titlebar_glint1.png \
+	     e17_titlebar_glint2.png \
+	     e17_titlebar_glint3.png \
+	     e17_titlebar_shadow1.png \
+	     e17_titlebar_shadow2.png \
+	     VeraBd.ttf \
+	     module_icon.png
 
 # the module .so file
 INCLUDES = -I. \
@@ -45,4 +45,4 @@ clean-local:
 	 rm -rf deskshow.edj *~
 
 uninstall:
-	rm -rf $(datadir)
+	rm -rf $(DESTDIR)$(datadir)
