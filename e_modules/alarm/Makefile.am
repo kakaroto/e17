@@ -8,13 +8,14 @@ EDJE_FLAGS = -v \
 -fd $(top_srcdir)/fonts
 
 filesdir = $(datadir)
-files_DATA = module.edj module.desktop\
-			$(wildcard alarm.ed?) \
-			$(wildcard fonts/*.ttf) \
-			$(wildcard images/*.png)
+files_DATA = module.edj module.desktop alarm.edj
 
-EXTRA_DIST = $(files_DATA) e_modules-alarm.spec
-CONFIG_CLEAN_FILES = e_modules-alarm.spec alarm.edj
+EXTRA_DIST = $(files_DATA) e_modules-alarm.spec \
+	     alarm.edc \
+	     fonts/vera.ttf \
+	     images/alarm_enabled.png \
+	     images/alarm_disabled.png \
+	     images/alarm_snooze.png
 
 # the module .so file
 INCLUDES               = -I. \
