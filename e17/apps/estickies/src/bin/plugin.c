@@ -1,6 +1,6 @@
 #include "stickies.h"
 
-static int _e_plugin_path = -1;
+static Ecore_Path_Group *_e_plugin_path = NULL;
 static Ecore_Hash *_e_plugin_loaded;
 
 static int _e_plugin_unload_from_ptr(Ecore_Plugin *plugin);
@@ -16,7 +16,7 @@ int _e_plugin_init()
    if (!home)
      return 0;
    
-   _e_plugin_path = ecore_path_group_new("estickies_plugin_path");
+   _e_plugin_path = ecore_path_group_new();
    
    snprintf(path, sizeof(path), "%s/.e/estickies/plugins", home);
    ecore_file_mkpath(path);
