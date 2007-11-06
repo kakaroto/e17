@@ -16,7 +16,7 @@ enum Ewl_Engine_Hook_Type
 typedef enum Ewl_Engine_Hook_Type Ewl_Engine_Hook_Type;
 
 static Ecore_Hash *ewl_engines = NULL;
-static int ewl_engines_path = 0;
+static Ecore_Path_Group *ewl_engines_path = NULL;
 static void ewl_engine_free(Ewl_Engine *engine);
 static void **ewl_engine_hooks_get(Ewl_Engine *engine, Ewl_Engine_Hook_Type type);
 static void *ewl_engine_hook_get(Ewl_Embed *embed,
@@ -136,7 +136,7 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
 	{
 		char pathname[PATH_MAX];
 
-		ewl_engines_path = ecore_path_group_new("Ewl Engine Paths");
+		ewl_engines_path = ecore_path_group_new();
 		snprintf(pathname, sizeof(pathname), "%s/ewl/%s/",
 							PACKAGE_LIB_DIR,
 							EWL_ENGINE_DIR);

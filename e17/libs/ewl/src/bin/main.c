@@ -81,7 +81,7 @@ static void *cb_unit_test_fetch(void *data, unsigned int row, unsigned int colum
 static unsigned int cb_unit_test_count(void *data);
 
 static Ecore_List *tests = NULL;
-static int tests_path_group = 0;
+static Ecore_Path_Group *tests_path_group = NULL;
 static int window_count = 0;
 static int current_unit_test = 0;
 static Ecore_Timer *unit_test_timer = NULL;
@@ -373,7 +373,7 @@ ewl_test_setup_tests(void)
 
 	ecore_list_free_cb_set(tests, ECORE_FREE_CB(ewl_test_free));
 
-	tests_path_group = ecore_path_group_new("Test Plugins");
+	tests_path_group = ecore_path_group_new();
 	ecore_path_group_add(tests_path_group, PACKAGE_LIB_DIR "/ewl/tests");
 	list = ecore_plugin_available_get(tests_path_group);
 	/* no tests found ... */

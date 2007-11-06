@@ -10,7 +10,7 @@
 
 static Ecore_Hash *ewl_io_manager_plugins = NULL;
 static Ecore_Hash *ewl_io_manager_ext_icon_map = NULL;
-static int ewl_io_manager_path = 0;
+static Ecore_Path_Group *ewl_io_manager_path = NULL;
 static int ewl_io_manager_strcasecompare(const void *key1, const void *key2);
 static void ewl_io_manager_cb_free_plugin(void *data);
 
@@ -290,7 +290,7 @@ ewl_io_manager_plugin_get(const char *mime)
 
 	if (!ewl_io_manager_path)
 	{
-		ewl_io_manager_path = ecore_path_group_new("Ewl IO Manager");
+		ewl_io_manager_path = ecore_path_group_new();
 		ecore_path_group_add(ewl_io_manager_path,
 				PACKAGE_LIB_DIR"/ewl/plugins/");
 	}
