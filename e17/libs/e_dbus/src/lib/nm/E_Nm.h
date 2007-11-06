@@ -30,8 +30,12 @@ typedef void (*E_NM_Cb_Manager_State_Change) (void *data, int state);
 typedef void (*E_NM_Cb_Manager_Device_Added) (void *data, const char *device);
 typedef void (*E_NM_Cb_Manager_Device_Removed) (void *data, const char *device);
 
-EAPI E_NM_Context *e_nm_new(void);
-EAPI void          e_nm_free(E_NM_Context *ctx);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+   EAPI E_NM_Context *e_nm_new(void);
+   EAPI void          e_nm_free(E_NM_Context *ctx);
 
 
 /**
@@ -45,15 +49,15 @@ EAPI void          e_nm_free(E_NM_Context *ctx);
 
 /* org.freedesktop.NetworkManager api */
 /* methods */
-EAPI int e_nm_get_devices(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data);
-EAPI int e_nm_get_active_device(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data);
+   EAPI int e_nm_get_devices(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data);
+   EAPI int e_nm_get_active_device(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data);
 /* TODO: EAPI int e_nm_set_active_device() */
-EAPI int e_nm_status(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data);
+   EAPI int e_nm_status(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data);
 /* signals */
 /* TODO: These have changed! */
-/* deprecated */EAPI void e_nm_callback_manager_state_change_set(E_NM_Context *ctx, E_NM_Cb_Manager_State_Change cb_func, void *user_data);
-/* deprecated */EAPI void e_nm_callback_manager_device_added_set(E_NM_Context *ctx, E_NM_Cb_Manager_Device_Added cb_func, void *user_data);
-/* deprecated */EAPI void e_nm_callback_manager_device_removed_set(E_NM_Context *ctx, E_NM_Cb_Manager_Device_Removed cb_func, void *user_data);
+   /* deprecated */EAPI void e_nm_callback_manager_state_change_set(E_NM_Context *ctx, E_NM_Cb_Manager_State_Change cb_func, void *user_data);
+   /* deprecated */EAPI void e_nm_callback_manager_device_added_set(E_NM_Context *ctx, E_NM_Cb_Manager_Device_Added cb_func, void *user_data);
+   /* deprecated */EAPI void e_nm_callback_manager_device_removed_set(E_NM_Context *ctx, E_NM_Cb_Manager_Device_Removed cb_func, void *user_data);
 /* TODO: EAPI void e_nm_callback_device_no_longer_active() */
 /* TODO: EAPI void e_nm_callback_device_now_active() */
 /* TODO: EAPI void e_nm_callback_device_activating() */
@@ -66,24 +70,28 @@ EAPI int e_nm_status(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data
 
 
 /* org.freedesktop.NetworkManager.Device api */
-EAPI int e_nm_device_get_name(E_NM_Context *ctx, const char *device,
-                              E_DBus_Callback_Func cb_func, void *data);
-EAPI int e_nm_device_get_type(E_NM_Context *ctx, const char *device, 
-                              E_DBus_Callback_Func cb_func, void *data);
-EAPI int e_nm_device_get_hal_udi(E_NM_Context *ctx, const char *device,
+   EAPI int e_nm_device_get_name(E_NM_Context *ctx, const char *device,
                                  E_DBus_Callback_Func cb_func, void *data);
-EAPI int e_nm_device_get_ip4_address(E_NM_Context *ctx, const char *device,
-                                     E_DBus_Callback_Func cb_func, void *data);
-EAPI int e_nm_device_get_link_active(E_NM_Context *ctx, const char *device,
-                                     E_DBus_Callback_Func cb_func, void *data);
-EAPI int e_nm_device_wireless_get_strength(E_NM_Context *ctx, const char *device,
-                                           E_DBus_Callback_Func cb_func, void *data);
-EAPI int e_nm_device_wireless_get_active_network(E_NM_Context *ctx,
-                                                 const char *device,
-                                                 E_DBus_Callback_Func cb_func,
-                                                 void *data);
-EAPI int e_nm_device_wireless_get_networks(E_NM_Context *ctx, const char *device, 
-                                           E_DBus_Callback_Func cb_func, void *data);
+   EAPI int e_nm_device_get_type(E_NM_Context *ctx, const char *device,
+                                 E_DBus_Callback_Func cb_func, void *data);
+   EAPI int e_nm_device_get_hal_udi(E_NM_Context *ctx, const char *device,
+                                    E_DBus_Callback_Func cb_func, void *data);
+   EAPI int e_nm_device_get_ip4_address(E_NM_Context *ctx, const char *device,
+                                        E_DBus_Callback_Func cb_func, void *data);
+   EAPI int e_nm_device_get_link_active(E_NM_Context *ctx, const char *device,
+                                        E_DBus_Callback_Func cb_func, void *data);
+   EAPI int e_nm_device_wireless_get_strength(E_NM_Context *ctx,
+                                              const char *device,
+                                              E_DBus_Callback_Func cb_func,
+                                              void *data);
+   EAPI int e_nm_device_wireless_get_active_network(E_NM_Context *ctx,
+                                                    const char *device,
+                                                    E_DBus_Callback_Func cb_func,
+                                                    void *data);
+   EAPI int e_nm_device_wireless_get_networks(E_NM_Context *ctx,
+                                              const char *device,
+                                              E_DBus_Callback_Func cb_func,
+                                              void *data);
 
 /* org.freedesktop.NetworkManager.Devices api */
 /* TODO: EAPI int e_nm_network_get_name() */
@@ -98,5 +106,8 @@ EAPI int e_nm_device_wireless_get_networks(E_NM_Context *ctx, const char *device
 /* TODO: EAPI void e_nmi_callback_trusted_network_update() */
 /* TODO: EAPI void e_nmi_callback_preferred_network_update() */
 
+#ifdef __cplusplus
+}
 #endif
 
+#endif

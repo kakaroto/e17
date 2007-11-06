@@ -106,74 +106,82 @@ struct E_Notification_Event_Action_Invoked
   char *action_id;
 };
 
-EAPI int e_notification_init();
-EAPI int e_notification_shutdown();
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+   EAPI int e_notification_init();
+   EAPI int e_notification_shutdown();
 
 /* client */
-EAPI void e_notification_send(E_Notification *n, E_DBus_Callback_Func func, void *data);
-EAPI void e_notification_get_capabilities(E_DBus_Callback_Func func, void *data);
-EAPI void e_notification_get_server_information(E_DBus_Callback_Func func, void *data);
+   EAPI void e_notification_send(E_Notification *n, E_DBus_Callback_Func func, void *data);
+   EAPI void e_notification_get_capabilities(E_DBus_Callback_Func func, void *data);
+   EAPI void e_notification_get_server_information(E_DBus_Callback_Func func, void *data);
 
 
 /* Notifications */
 
-EAPI E_Notification *e_notification_new();
-EAPI void e_notification_ref(E_Notification *n);
-EAPI void e_notification_unref(E_Notification *n);
-EAPI void e_notification_free(E_Notification *n);
+   EAPI E_Notification *e_notification_new();
+   EAPI void e_notification_ref(E_Notification *n);
+   EAPI void e_notification_unref(E_Notification *n);
+   EAPI void e_notification_free(E_Notification *n);
 
-EAPI E_Notification *e_notification_full_new(const char *app_name,
-                                             unsigned int replaces_id,
-                                             const char *app_icon,
-                                             const char *summary,
-                                             const char *body,
-                                             int expire_timeout);
+   EAPI E_Notification *e_notification_full_new(const char *app_name,
+                                                unsigned int replaces_id,
+                                                const char *app_icon,
+                                                const char *summary,
+                                                const char *body,
+                                                int expire_timeout);
 
 /* notification mutators */
-EAPI void e_notification_id_set(E_Notification *note, unsigned int id);
-EAPI void e_notification_app_name_set(E_Notification *n, const char *app_name);
-EAPI void e_notification_app_icon_set(E_Notification *n, const char *app_icon);
-EAPI void e_notification_summary_set(E_Notification *n, const char *summary);
-EAPI void e_notification_body_set(E_Notification *n, const char *body);
-EAPI void e_notification_replaces_id_set(E_Notification *n, int replaces_id);
-EAPI void e_notification_timeout_set(E_Notification *n, int timeout);
-EAPI void e_notification_closed_set(E_Notification *note, unsigned char closed);
+   EAPI void e_notification_id_set(E_Notification *note, unsigned int id);
+   EAPI void e_notification_app_name_set(E_Notification *n, const char *app_name);
+   EAPI void e_notification_app_icon_set(E_Notification *n, const char *app_icon);
+   EAPI void e_notification_summary_set(E_Notification *n, const char *summary);
+   EAPI void e_notification_body_set(E_Notification *n, const char *body);
+   EAPI void e_notification_replaces_id_set(E_Notification *n, int replaces_id);
+   EAPI void e_notification_timeout_set(E_Notification *n, int timeout);
+   EAPI void e_notification_closed_set(E_Notification *note, unsigned char closed);
 
 /* notification accessors */
-EAPI unsigned int e_notification_id_get(E_Notification *note);
-EAPI const char *e_notification_app_name_get(E_Notification *n);
-EAPI const char *e_notification_app_icon_get(E_Notification *n);
-EAPI const char *e_notification_summary_get(E_Notification *n);
-EAPI const char *e_notification_body_get(E_Notification *n);
-EAPI int e_notification_replaces_id_get(E_Notification *note);
-EAPI int e_notification_timeout_get(E_Notification *note);
-EAPI unsigned char e_notification_closed_get(E_Notification *note);
+   EAPI unsigned int e_notification_id_get(E_Notification *note);
+   EAPI const char *e_notification_app_name_get(E_Notification *n);
+   EAPI const char *e_notification_app_icon_get(E_Notification *n);
+   EAPI const char *e_notification_summary_get(E_Notification *n);
+   EAPI const char *e_notification_body_get(E_Notification *n);
+   EAPI int e_notification_replaces_id_get(E_Notification *note);
+   EAPI int e_notification_timeout_get(E_Notification *note);
+   EAPI unsigned char e_notification_closed_get(E_Notification *note);
 
 /* actions */
-EAPI void e_notification_action_add(E_Notification *n, const char *action_id, const char *action_name);
-EAPI Ecore_List *e_notification_actions_get(E_Notification *n);
+   EAPI void e_notification_action_add(E_Notification *n, const char *action_id, const char *action_name);
+   EAPI Ecore_List *e_notification_actions_get(E_Notification *n);
 
 /* hint mutators */
-EAPI void e_notification_hint_urgency_set(E_Notification *n, char urgency);
-EAPI void e_notification_hint_category_set(E_Notification *n, const char *category);
-EAPI void e_notification_hint_desktop_set(E_Notification *n, const char *desktop);
-EAPI void e_notification_hint_sound_file_set(E_Notification *n, const char *sound_file);
-EAPI void e_notification_hint_suppress_sound_set(E_Notification *n, char suppress_sound);
-EAPI void e_notification_hint_xy_set(E_Notification *n, int x, int y);
-EAPI void e_notification_hint_image_data_set(E_Notification *n, E_Notification_Image *image);
+   EAPI void e_notification_hint_urgency_set(E_Notification *n, char urgency);
+   EAPI void e_notification_hint_category_set(E_Notification *n, const char *category);
+   EAPI void e_notification_hint_desktop_set(E_Notification *n, const char *desktop);
+   EAPI void e_notification_hint_sound_file_set(E_Notification *n, const char *sound_file);
+   EAPI void e_notification_hint_suppress_sound_set(E_Notification *n, char suppress_sound);
+   EAPI void e_notification_hint_xy_set(E_Notification *n, int x, int y);
+   EAPI void e_notification_hint_image_data_set(E_Notification *n, E_Notification_Image *image);
 
 /* hint accessors */
-EAPI char  e_notification_hint_urgency_get(E_Notification *n);
-EAPI const char *e_notification_hint_category_get(E_Notification *n);
-EAPI const char *e_notification_hint_desktop_get(E_Notification *n);
-EAPI const char *e_notification_hint_sound_file_get(E_Notification *n);
-EAPI char  e_notification_hint_suppress_sound_get(E_Notification *n);
-EAPI int   e_notification_hint_xy_get(E_Notification *n, int *x, int *y);
-EAPI E_Notification_Image *e_notification_hint_image_data_get(E_Notification *n);
+   EAPI char  e_notification_hint_urgency_get(E_Notification *n);
+   EAPI const char *e_notification_hint_category_get(E_Notification *n);
+   EAPI const char *e_notification_hint_desktop_get(E_Notification *n);
+   EAPI const char *e_notification_hint_sound_file_get(E_Notification *n);
+   EAPI char  e_notification_hint_suppress_sound_get(E_Notification *n);
+   EAPI int   e_notification_hint_xy_get(E_Notification *n, int *x, int *y);
+   EAPI E_Notification_Image *e_notification_hint_image_data_get(E_Notification *n);
 
 /* image hint */
-EAPI E_Notification_Image *e_notification_image_new();
-EAPI void e_notification_image_free(E_Notification_Image *img);
-EAPI Evas_Object *e_notification_image_object_add(Evas *evas, E_Notification_Image *img);
+   EAPI E_Notification_Image *e_notification_image_new();
+   EAPI void e_notification_image_free(E_Notification_Image *img);
+   EAPI Evas_Object *e_notification_image_object_add(Evas *evas, E_Notification_Image *img);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
