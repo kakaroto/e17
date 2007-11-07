@@ -15,9 +15,6 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-ALL_LINGUAS="it"
-AC_SUBST(ALL_LINGUAS)
-
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
@@ -132,12 +129,12 @@ AC_SUBST(e_libs)
 AC_SUBST(e_modules)
 
 # uncomment this for new imap code
-#AM_CONDITIONAL(IMAP2, true)
-AM_CONDITIONAL(IMAP2, false)
+AM_CONDITIONAL(IMAP2, true)
+#AM_CONDITIONAL(IMAP2, false)
 
 AC_OUTPUT([
 Makefile
-po/Makefile
+po/Makefile.in
 e_modules-mail.spec
 ],[
 ])
