@@ -6,7 +6,7 @@ ICONS = e16.png
 
 bin_SCRIPTS = starte16
 
-miscdir = $(ENLIGHTENMENT_ROOT)/misc
+miscdir = $(pkgdatadir)/misc
 misc_DATA = $(ICONS) $(DESKTOPS)
 misc_SCRIPTS = $(XCLIENTS)
 

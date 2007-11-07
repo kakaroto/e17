@@ -50,7 +50,3 @@ DEFS= \
 -DTARGET_TAB=9 \
 -DTARGET_VT=11
 
-uninstall-local:
-	for i in $(bin_PROGRAMS); do \
-	  rm -f $(exec_prefix)/bin/$$i; \
-	done

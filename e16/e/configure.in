@@ -85,17 +85,6 @@ if test "x$enable_hints_gnome" = "xyes"; then
 fi
 AM_CONDITIONAL(ENABLE_GNOME, test "x$enable_hints_gnome" = "xyes")
 
-DATADIR=`eval echo ${datadir}`
-LOCALEDIR=`eval echo ${DATADIR}/locale`
-ENLIGHTENMENT_ROOT=`eval echo ${DATADIR}/e16`
-ENLIGHTENMENT_BIN=`eval echo ${bindir}`
-ENLIGHTENMENT_LIB=`eval echo ${libdir}`
-AC_DEFINE_UNQUOTED(ENLIGHTENMENT_ROOT, "$ENLIGHTENMENT_ROOT", [The installation root directory])
-AC_DEFINE_UNQUOTED(ENLIGHTENMENT_BIN, "$ENLIGHTENMENT_BIN", [The installation bin directory])
-AC_DEFINE_UNQUOTED(ENLIGHTENMENT_LIB, "$ENLIGHTENMENT_LIB", [The installation lib directory])
-AC_DEFINE_UNQUOTED(LOCALEDIR, "$LOCALEDIR",  [The installation locale directory])
-AC_SUBST(ENLIGHTENMENT_ROOT)
-
 if test "x$enable_sound" = "xyes"; then
   AM_PATH_ESD(0.2.17,AC_DEFINE(HAVE_LIBESD, 1, [libesd.so]),[
     enable_sound=no

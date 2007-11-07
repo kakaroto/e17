@@ -2,11 +2,9 @@
 THEME = winter
 THEME_FILES = winter.etheme
 
-ethemedir = $(datadir)/themes
-
 EXTRA_DIST = $(THEME_FILES) 
 
-THEME_DIR = $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes/$(THEME)
+THEME_DIR = $(DESTDIR)$(pkgdatadir)/themes/$(THEME)
 
 install-data-local:
 	$(mkinstalldirs) $(THEME_DIR)

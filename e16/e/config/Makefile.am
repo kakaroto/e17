@@ -1,13 +1,13 @@
 SUBDIRS = pix
 
-configdir = $(ENLIGHTENMENT_ROOT)/config
+configdir = $(pkgdatadir)/config
 config_DATA = \
 	definitions \
 	actionclasses.cfg bindings.cfg matches.cfg menus.cfg \
 	e16keyedit.db \
 	fonts.cfg.xft fonts.cfg.pango
 
-menudir = $(ENLIGHTENMENT_ROOT)/config/menus
+menudir = $(pkgdatadir)/config/menus
 menu_DATA = \
 	desktop.menu enlightenment.menu maintenance.menu settings.menu \
 	winops.menu winops_groups.menu winops_layer.menu \

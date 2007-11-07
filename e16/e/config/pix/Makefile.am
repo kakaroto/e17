@@ -1,4 +1,4 @@
-epixdir = $(ENLIGHTENMENT_ROOT)/config/pix
+epixdir = $(pkgdatadir)/config/pix
 
 epix_DATA = wait1.png wait2.png wait3.png wait4.png \
             wait5.png wait6.png wait7.png wait8.png \

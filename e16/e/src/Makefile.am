@@ -114,7 +114,11 @@ e16_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
 	$(ECORE_CFLAGS) \
 	$(MODULE_CFLAGS) \
 	$(IMLIB2_CFLAGS) \
-	$(X_CFLAGS)
+	$(X_CFLAGS) \
+	-D LOCALEDIR=\"$(localedir)\" \
+	-D ENLIGHTENMENT_BIN=\"$(bindir)\" \
+	-D ENLIGHTENMENT_LIB=\"$(pkglibdir)\" \
+	-D ENLIGHTENMENT_ROOT=\"$(pkgdatadir)\"
 
 LDADD = \
 	$(LTLIBINTL)		\
@@ -134,7 +138,7 @@ if BUILD_MODULES
 
 e16_LDFLAGS = -export-dynamic
 
-libe16dir = $(libdir)/e16
+libe16dir = $(pkglibdir)
 
 libe16_LTLIBRARIES = $(LIBSND_ESD) $(LIBFNT_IFT) $(LIBFNT_XFT) $(LIBFNT_PANGO)
 
@@ -176,10 +180,3 @@ MODULE_CFLAGS = $(ESD_CFLAGS) $(PANGO_CFLAGS) $(XFT_CFLAGS)
 
 endif
 
-install-data-local:
-	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes
-
-uninstall-local:
-	for i in $(bin_PROGRAMS); do \
-	  rm -f $(exec_prefix)/bin/$$i; \
-	done

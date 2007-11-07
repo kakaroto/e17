@@ -1,8 +1,6 @@
-MAINTAINERCLEANFILES	= Makefile.in
+libe16dir = $(pkglibdir)
 
 if BUILD_ROOTHACKLIB
-
-libe16dir = $(libdir)/e16
 
 libe16_LTLIBRARIES = libhack.la
 

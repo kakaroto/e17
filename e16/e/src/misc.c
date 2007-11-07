@@ -332,8 +332,7 @@ ModLoadSym(const char *lib, const char *sym, const char *name)
    char                buf[1024];
    void               *h;
 
-   Esnprintf(buf, sizeof(buf), "%s/e16/lib%s_%s.so",
-	     ENLIGHTENMENT_LIB, lib, name);
+   Esnprintf(buf, sizeof(buf), "%s/lib%s_%s.so", ENLIGHTENMENT_LIB, lib, name);
    if (EDebug(1))
       Eprintf("ModLoad %s\n", buf);
    h = dlopen(buf, RTLD_NOW | RTLD_LOCAL);
