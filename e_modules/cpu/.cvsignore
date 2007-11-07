@@ -23,3 +23,6 @@ stamp-h1
 *.tar.gz
 cpu.edj
 module.desktop
+config.rpath
+m4
+mkinstalldirs
