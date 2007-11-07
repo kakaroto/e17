@@ -9,5 +9,9 @@ en@quot.header
 insert-header.sin
 quot.sed
 remove-potcdate.sin
+POTFILES
+remove-potcdate.sed
+stamp-po
 *.mo
 *.pot
+*.gmo
