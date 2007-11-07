@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Alamr\n"
-"POT-Creation-Date: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-11-07 21:04+0100\n"
 "PO-Revision-Date: 2007-06-04 16:54+0100\n"
 "Last-Translator: Antoine Giniès <aginies.cooker@gmail.com>\n"
 "Language-Team: none <aginies.cooker@gmail.com>\n"
@@ -16,13 +17,11 @@ msgstr ""
 msgid "Alarm Configuration"
 msgstr "Configuration de l'alarme"
 
-#: e_mod_config.c:155
-#: e_mod_main.c:179
+#: e_mod_config.c:155 e_mod_main.c:180
 msgid "Alarm"
 msgstr "Alarme"
 
-#: e_mod_config.c:157
-#: e_mod_config_alarm.c:190
+#: e_mod_config.c:157 e_mod_config_alarm.c:190
 msgid "Active"
 msgstr "Activé"
 
@@ -38,8 +37,7 @@ msgstr "Monter l'alarme suivante"
 msgid "Alarms Defaults"
 msgstr "Alarme par défaut"
 
-#: e_mod_config.c:246
-#: e_mod_config_alarm.c:404
+#: e_mod_config.c:246 e_mod_config_alarm.c:404
 msgid "Open popup"
 msgstr "Ouvrir un popup"
 
@@ -126,32 +124,54 @@ msgid "Tomorrow"
 msgstr "Demain"
 
 #: e_mod_config_alarm.c:288
-msgid "<hilight>Error, The alarm was not added !</hilight><br><br>There is an error in the informations / schedule of your alarm"
-msgstr "<hilight>Erreur, l'alarme n'a pas été ajouté !</hilight><br><br>Il y a une erreur dans les informations/planification de votre alarme"
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
+"in the informations / schedule of your alarm"
+msgstr ""
+"<hilight>Erreur, l'alarme n'a pas été ajouté !</hilight><br><br>Il y a une "
+"erreur dans les informations/planification de votre alarme"
 
 #: e_mod_config_alarm.c:293
-msgid "<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter a name for the alarm"
-msgstr "<hilight>Erreur, l'alarme n'a pas été ajouté !</hilight><br><br>Vous devez entrer un nom pour cette alarme"
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
+"a name for the alarm"
+msgstr ""
+"<hilight>Erreur, l'alarme n'a pas été ajouté !</hilight><br><br>Vous devez "
+"entrer un nom pour cette alarme"
 
 #: e_mod_config_alarm.c:298
-msgid "<hilight>Error, The alarm was not added !</hilight><br><br>You have to select at least one day in the week"
-msgstr "<hilight>Erreur, l'alarme n'a pas été ajouté !</hilight><br><br>Vous n'avez sélectionné aucune journée dans la semaine"
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
+"select at least one day in the week"
+msgstr ""
+"<hilight>Erreur, l'alarme n'a pas été ajouté !</hilight><br><br>Vous n'avez "
+"sélectionné aucune journée dans la semaine"
 
 #: e_mod_config_alarm.c:303
-msgid "<hilight>Error, The alarm was not added !</hilight><br><br>The date you entered for the alarm has incorrect syntax<br><br>You have to respect this format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the month on 2 numbers<br>DD is the day on 2 numbers<br>"
-msgstr "<hilight>Erreur, l'alarme n'a pas été ajouté !</hilight><br><br>La date que vous avez entré n'est pas correcte.<br><br>Vous devez respecter ce format :<br> AAAA/MM/JJ<br>AAAA est l'année (4 chiffres)<br>MM est le mois (2chiffres)<br>JJ est le jour (2 chiffres)<br>"
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
+"entered for the alarm has incorrect syntax<br><br>You have to respect this "
+"format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the "
+"month on 2 numbers<br>DD is the day on 2 numbers<br>"
+msgstr ""
+"<hilight>Erreur, l'alarme n'a pas été ajouté !</hilight><br><br>La date que "
+"vous avez entré n'est pas correcte.<br><br>Vous devez respecter ce format :"
+"<br> AAAA/MM/JJ<br>AAAA est l'année (4 chiffres)<br>MM est le mois "
+"(2chiffres)<br>JJ est le jour (2 chiffres)<br>"
 
 #: e_mod_config_alarm.c:313
-msgid "<hilight>Error, The alarm was not added !</hilight><br><br>The date you entered is before now"
-msgstr "<hilight>Erreur, l'alarme n'a pas été ajouté !</hilight><br><br>La date que vous avez entré précède la date d' aujourd'hui."
+msgid ""
+"<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
+"entered is before now"
+msgstr ""
+"<hilight>Erreur, l'alarme n'a pas été ajouté !</hilight><br><br>La date que "
+"vous avez entré précède la date d' aujourd'hui."
 
-#: e_mod_config_alarm.c:317
-#: e_mod_main.c:412
+#: e_mod_config_alarm.c:317 e_mod_main.c:419
 msgid "Alarm Module Error"
 msgstr "Erreur dans le module alarme"
 
-#: e_mod_config_alarm.c:354
-#: e_mod_config_alarm.c:442
+#: e_mod_config_alarm.c:354 e_mod_config_alarm.c:442
 msgid "Test this alarm"
 msgstr "Tester cette alarme"
 
@@ -176,8 +196,14 @@ msgid "Run this program"
 msgstr "Exécuter ce programme"
 
 #: e_mod_config_alarm.c:478
-msgid "<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE the alarms<br>via the 'Active' check button on the<br>main Alarm configuration panel."
-msgstr "<hilight>Test de l'alarme effectué avec succès !</hilight><br><br>N'oubliez pas d'ACTIVER l'alarme<br>en utilisant le bouton \"Activé\" dans le<br>panneau principal de configuration."
+msgid ""
+"<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE "
+"the alarms<br>via the 'Active' check button on the<br>main Alarm "
+"configuration panel."
+msgstr ""
+"<hilight>Test de l'alarme effectué avec succès !</hilight><br><br>N'oubliez "
+"pas d'ACTIVER l'alarme<br>en utilisant le bouton \"Activé\" dans "
+"le<br>panneau principal de configuration."
 
 #: e_mod_config_alarm.c:484
 msgid "<hilight>Alarm test SUCCEED !</hilight>"
@@ -191,65 +217,80 @@ msgstr "<hilight>Erreur lors du test de l'alarme !</hilight>"
 msgid "Alarm Module Test Report"
 msgstr "Test du rapport d'alarme"
 
-#: e_mod_main.c:384
+#: e_mod_main.c:391
 #, c-format
 msgid "<hilight>Alarm : %s</hilight><br><br>%s"
 msgstr "<hilight>Alarme : %s</hilight><br><br>%s"
 
-#: e_mod_main.c:387
+#: e_mod_main.c:394
 msgid "Alarm Module Popup"
 msgstr "Popup du module d'alarme"
 
-#: e_mod_main.c:410
-msgid "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you specified"
-msgstr "<hilight>Echec!</hilight><br><br>L'Alarme n'a pas pu lancer le programmer spécifié"
+#: e_mod_main.c:417
+msgid ""
+"<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
+"specified"
+msgstr ""
+"<hilight>Echec!</hilight><br><br>L'Alarme n'a pas pu lancer le programmer "
+"spécifié"
 
-#: e_mod_main.c:644
-#: e_mod_main.c:823
+#: e_mod_main.c:651 e_mod_main.c:830
 #, c-format
 msgid "Snooze %s"
 msgstr "Répétition %s"
 
-#: e_mod_main.c:648
+#: e_mod_main.c:655
 #, c-format
 msgid "%1.0f hours"
 msgstr "%1.0f heures"
 
-#: e_mod_main.c:651
+#: e_mod_main.c:658
 #, c-format
 msgid "%1.0f minutes"
 msgstr "%1.0f minutes"
 
-#: e_mod_main.c:831
+#: e_mod_main.c:838
 #, c-format
 msgid "Snooze %.14s of %.2d:%.2d"
 msgstr "Alarme retardée %.14s of %.2d:%.2d"
 
-#: e_mod_main.c:845
+#: e_mod_main.c:852
 msgid "Snooze (No alarm to delay)"
 msgstr "Alarme retardée (pas d'alarme à répéter)"
 
-#: e_mod_main.c:852
+#: e_mod_main.c:859
 msgid "Add an alarm"
 msgstr "Ajouter une alarme"
 
-#: e_mod_main.c:1036
+#: e_mod_main.c:1043
 #, c-format
-msgid "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your configuration of alarm module<br>has been upgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr "<hilight>Module d'alarme : configuration mise à jour</hilight><br><br>Votre configuration du module alarme a été mise à jour.<br>Vos paramètres et toutes les alarmes ont été effacé.<br>Désolé pour ce dérangement.<br><br>(%d -> %d)"
+msgid ""
+"<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
+"configuration of alarm module<br>has been upgraded<br>Your settings and "
+"alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
+msgstr ""
+"<hilight>Module d'alarme : configuration mise à jour</hilight><br><br>Votre "
+"configuration du module alarme a été mise à jour.<br>Vos paramètres et "
+"toutes les alarmes ont été effacé.<br>Désolé pour ce dérangement.<br><br>(%d "
+"-> %d)"
 
-#: e_mod_main.c:1042
-#: e_mod_main.c:1056
-#: e_mod_main.c:1166
+#: e_mod_main.c:1049 e_mod_main.c:1063
 msgid "Alarm Module version "
 msgstr "Version du module alarme"
 
-#: e_mod_main.c:1050
+#: e_mod_main.c:1057
 #, c-format
-msgid "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your configuration of Alarm module<br>has been downgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr "<hilight>Module d'alarme : configuration précédente</hilight><br><br>Votre configuration du module alarme a été remplacé par une plus anciennes.<br>Vos paramètres et toutes les alarmes ont été effacé.<br>Désolé pour ce dérangement.<br><br>(%d -> %d)"
+msgid ""
+"<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "
+"configuration of Alarm module<br>has been downgraded<br>Your settings and "
+"alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
+msgstr ""
+"<hilight>Module d'alarme : configuration précédente</hilight><br><br>Votre "
+"configuration du module alarme a été remplacé par une plus anciennes.<br>Vos "
+"paramètres et toutes les alarmes ont été effacé.<br>Désolé pour ce "
+"dérangement.<br><br>(%d -> %d)"
 
-#: e_mod_main.c:1167
-msgid "An alarm clock module<br><br>http://oooo.zapto.org<br>ooookiwi@gmail.fr"
-msgstr "Un module d'alarme<br><br>http://oooo.zapto.org<br>ooookiwi@gmail.fr"
-
+#~ msgid ""
+#~ "An alarm clock module<br><br>http://oooo.zapto.org<br>ooookiwi@gmail.fr"
+#~ msgstr ""
+#~ "Un module d'alarme<br><br>http://oooo.zapto.org<br>ooookiwi@gmail.fr"

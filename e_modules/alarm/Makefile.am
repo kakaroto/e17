@@ -8,7 +8,7 @@ EDJE_FLAGS = -v \
 -fd $(top_srcdir)/fonts
 
 filesdir = $(datadir)
-files_DATA = module.edj module.desktop alarm.edj
+files_DATA = e-module-alarm.edj module.desktop alarm.edj
 
 EXTRA_DIST = $(files_DATA) e_modules-alarm.spec \
 	     alarm.edc \
