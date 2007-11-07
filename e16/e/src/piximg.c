@@ -135,6 +135,9 @@ EBlendRemoveShape(Win win, Pixmap pmap, int x, int y)
 	return;
      }
 
+   if (win->num_rect <= 0)
+      return;
+
    w = WinGetW(win);
    h = WinGetH(win);
 
