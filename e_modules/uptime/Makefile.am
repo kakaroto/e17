@@ -43,6 +43,4 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 clean-local:
 	 rm -rf uptime.edj *~
-uninstall-local:
-	rm -rf $(datadir)
 
