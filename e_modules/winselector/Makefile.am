@@ -8,20 +8,20 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir =  $(datadir)
 
-files_DATA = module_icon.png \
-			module.desktop \
-			e-module-winselector.edj \
-			winselector.edj
+files_DATA = module.desktop \
+	     e-module-winselector.edj \
+	     winselector.edj
 
 EXTRA_DIST = $(files_DATA) \
-				winselector.edc \
-				e17_titlebar.png \
-				e17_titlebar_glint1.png \
-				e17_titlebar_glint2.png \
-				e17_titlebar_glint3.png \
-				e17_titlebar_shadow1.png \
-				e17_titlebar_shadow2.png \
-				VeraBd.ttf
+	     module_icon.png \
+	     winselector.edc \
+	     e17_titlebar.png \
+	     e17_titlebar_glint1.png \
+	     e17_titlebar_glint2.png \
+	     e17_titlebar_glint3.png \
+	     e17_titlebar_shadow1.png \
+	     e17_titlebar_shadow2.png \
+	     VeraBd.ttf
 
 # the module .so file
 INCLUDES = -I. \

@@ -10,14 +10,14 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir = $(datadir)
 
-files_DATA = module_icon.png \
-			module.desktop \
+files_DATA = module.desktop \
 			e-module-mem.edj \
 			mem.edj
 
 EXTRA_DIST= e_modules-mem.spec \
 			$(files_DATA) \
 			mem.edc \
+			module_icon.png \
 			real_00.png \
 			real_01.png \
 			real_02.png \

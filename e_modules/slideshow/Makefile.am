@@ -10,14 +10,13 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir =  $(datadir)
 
-files_DATA = \
-module_icon.png \
-module.desktop \
-e-module-slideshow.edj \
-slideshow.edj
+files_DATA = module.desktop \
+	     e-module-slideshow.edj \
+	     slideshow.edj
 
 EXTRA_DIST = $(files_DATA) \
-			slideshow.edc
+	     module_icon.png \
+	     slideshow.edc
 
 # the module .so file
 INCLUDES = -I. \

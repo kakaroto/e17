@@ -10,15 +10,15 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir =  $(datadir)
 
-files_DATA = module_icon.png \
-			module.desktop \
-			e-module-screenshot.edj \
-			screenshot.edj
+files_DATA = module.desktop \
+	     e-module-screenshot.edj \
+	     screenshot.edj
 
 EXTRA_DIST = $(files_DATA) \
-				e_modules-screenshot.spec \
-				screenshot.edc \
-				VeraBd.ttf
+	     module_icon.png \
+	     e_modules-screenshot.spec \
+	     screenshot.edc \
+	     VeraBd.ttf
 
 # the module .so file
 INCLUDES = -I. \
