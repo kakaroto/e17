@@ -287,12 +287,7 @@ _mail_imap_server_data (void *data, int type, void *event)
 	if (data == reply)
 	  E_FREE (reply);
 	else
-	  {
-	     data -= 2;
-	     data = NULL;
-	     data += 2;
-	     size -= ic->prev.size;
-	  }
+	  size -= ic->prev.size;
      }
 
    if (reply)
@@ -591,11 +586,13 @@ elements (char *p)
 {
 	int count = 0;
 	if (!p) return 0;
-	do {
-		if (*p) count++;
-		p = strchr (p, ' ');
-		if (p) p++;
-	} while (p);
+	do
+	  {
+	     if (*p) count++;
+	     p = strchr (p, ' ');
+	     if (p) p++;
+	  }
+	while (p);
 	return count;
 }
 
