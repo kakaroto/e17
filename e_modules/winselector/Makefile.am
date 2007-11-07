@@ -43,5 +43,3 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/winselector.ed
 
 clean-local:
 	 rm -rf winselector.edj *~
-uninstall:
-	rm -rf $(datadir)

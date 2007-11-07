@@ -14,9 +14,8 @@ all: $(EDJ)
 .edc.edj:
 	edje_cc -v -id $(top_srcdir)/themes/$(THEME) -fd $(top_srcdir)/themes/$(THEME) $< $@
 
-EXTRA_DIST = \
-default.edc \
-Makefile
+EXTRA_DIST = $(EDC) \
+	     $(wildcard *.png)
 
 dist-hook:
 	rm -rf `find $(distdir) -name CVS`
