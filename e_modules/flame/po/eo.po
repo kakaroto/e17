@@ -4,11 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
-"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
 "Project-Id-Version: eo\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-07 07:59+0100\n"
 "PO-Revision-Date: 2006-08-30 23:40+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
@@ -17,59 +15,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:44
-msgid "Flame Configuration"
-msgstr "Konfigurajxo de Flamoj"
+#: e_mod_main.c:60
+msgid "Appearance"
+msgstr ""
 
-#: e_mod_config.c:89 e_mod_config.c:172
-msgid "Flame Color"
+#: e_mod_main.c:62
+#, fuzzy
+msgid "Flame"
 msgstr "Koloro de Flamoj"
 
-#: e_mod_config.c:91
-msgid "Gold"
-msgstr "Oro"
-
-#: e_mod_config.c:93
-msgid "Fire"
-msgstr "Fajro"
-
-#: e_mod_config.c:95
-msgid "Plasma"
+#: e_mod_config.c:182 e_mod_config.c:189 e_mod_config.c:196
+#, c-format
+msgid "%1.0f"
 msgstr ""
 
-#: e_mod_config.c:97
-msgid "Matrix"
-msgstr "Matrico"
+#~ msgid "Flame Configuration"
+#~ msgstr "Konfigurajxo de Flamoj"
 
-#: e_mod_config.c:99
-msgid "Ice"
-msgstr "Glacio"
+#~ msgid "Gold"
+#~ msgstr "Oro"
 
-#: e_mod_config.c:101
-msgid "White"
-msgstr "Blanko"
+#~ msgid "Fire"
+#~ msgstr "Fajro"
 
-#: e_mod_config.c:103
-msgid "Custom"
-msgstr "Propra"
+#~ msgid "Matrix"
+#~ msgstr "Matrico"
 
-#: e_mod_config.c:174
-msgid "Red Amount"
-msgstr ""
+#~ msgid "Ice"
+#~ msgstr "Glacio"
 
-#: e_mod_config.c:181
-msgid "Blue Amount"
-msgstr ""
+#~ msgid "White"
+#~ msgstr "Blanko"
 
-#: e_mod_config.c:188
-msgid "Green Amount"
-msgstr ""
+#~ msgid "Custom"
+#~ msgstr "Propra"
 
-#: e_mod_main.c:97
-msgid "Enlightenment Flame Module"
-msgstr "\"Enlightenment-a Flamo\" Modulo"
+#~ msgid "Enlightenment Flame Module"
+#~ msgstr "\"Enlightenment-a Flamo\" Modulo"
 
-#: e_mod_main.c:98
-msgid "A simple module to display flames."
-msgstr "Simpla modulo por vidigi flamojn."
-
+#~ msgid "A simple module to display flames."
+#~ msgstr "Simpla modulo por vidigi flamojn."
