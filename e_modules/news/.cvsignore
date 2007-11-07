@@ -19,3 +19,4 @@ m4
 missing
 mkinstalldirs
 stamp-h1
+*.tar.gz
