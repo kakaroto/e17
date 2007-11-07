@@ -2,31 +2,24 @@
 
 cdef class EventPoint:
     cdef void _set_obj(self, Evas_Point *obj):
-        self.obj = obj
+        self.x = obj.x
+        self.y = obj.y
 
     def __str__(self):
-        return "%s(%d, %d)" % (self.__class__.__name__, self.obj.x, self.obj.y)
-
-    property x:
-        def __get__(self):
-            return self.obj.x
-
-    property y:
-        def __get__(self):
-            return self.obj.y
+        return "%s(%d, %d)" % (self.__class__.__name__, self.x, self.y)
 
     property xy:
         def __get__(self):
-            return (self.obj.x, self.obj.y)
+            return (self.x, self.y)
 
     def __len__(self):
         return 2
 
     def __getitem__(self, int index):
         if index == 0:
-            return self.obj.x
+            return self.x
         elif index == 1:
-            return self.obj.y
+            return self.y
         else:
             raise IndexError("list index out of range")
 
@@ -48,235 +41,180 @@ cdef class EventPosition:
 
 cdef class EventMouseIn:
     cdef void _set_obj(self, void *ptr):
-        self.obj = <Evas_Event_Mouse_In*>ptr
+        cdef Evas_Event_Mouse_In *obj
+        obj = <Evas_Event_Mouse_In*>ptr
+        self.buttons = obj.buttons
+        self.timestamp = obj.timestamp
         self.position = EventPosition()
-        self.position._set_objs(&self.obj.output, &self.obj.canvas)
+        self.position._set_objs(&obj.output, &obj.canvas)
 
     def __str__(self):
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
                 "timestamp=%d)") % \
-                (self.__class__.__name__, self.obj.buttons,
-                 self.obj.output.x, self.obj.output.y,
-                 self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp)
-
-    property buttons:
-        def __get__(self):
-            return self.obj.buttons
-
-    property timestamp:
-        def __get__(self):
-            return self.obj.timestamp
+                (self.__class__.__name__, self.buttons,
+                 self.position.output.x, self.position.output.y,
+                 self.position.canvas.x, self.position.canvas.y,
+                 self.timestamp)
 
 
 cdef class EventMouseOut:
     cdef void _set_obj(self, void *ptr):
-        self.obj = <Evas_Event_Mouse_Out*>ptr
+        cdef Evas_Event_Mouse_Out *obj
+        obj = <Evas_Event_Mouse_Out*>ptr
+        self.buttons = obj.buttons
+        self.timestamp = obj.timestamp
         self.position = EventPosition()
-        self.position._set_objs(&self.obj.output, &self.obj.canvas)
+        self.position._set_objs(&obj.output, &obj.canvas)
 
     def __str__(self):
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
                 "timestamp=%d)") % \
-                (self.__class__.__name__, self.obj.buttons,
-                 self.obj.output.x, self.obj.output.y,
-                 self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp)
-
-    property buttons:
-        def __get__(self):
-            return self.obj.buttons
-
-    property timestamp:
-        def __get__(self):
-            return self.obj.timestamp
+                (self.__class__.__name__, self.buttons,
+                 self.position.output.x, self.position.output.y,
+                 self.position.canvas.x, self.position.canvas.y,
+                 self.timestamp)
 
 
 cdef class EventMouseDown:
     cdef void _set_obj(self, void *ptr):
-        self.obj = <Evas_Event_Mouse_Down*>ptr
+        cdef Evas_Event_Mouse_Down *obj
+        obj = <Evas_Event_Mouse_Down*>ptr
+        self.button = obj.button
+        self.timestamp = obj.timestamp
         self.position = EventPosition()
-        self.position._set_objs(&self.obj.output, &self.obj.canvas)
+        self.position._set_objs(&obj.output, &obj.canvas)
 
     def __str__(self):
         return ("%s(button=%d, output=(%d, %d), canvas=(%d, %d), "
                 "timestamp=%d)") % \
-                (self.__class__.__name__, self.obj.button,
-                 self.obj.output.x, self.obj.output.y,
-                 self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp)
-
-    property button:
-        def __get__(self):
-            return self.obj.button
-
-    property timestamp:
-        def __get__(self):
-            return self.obj.timestamp
+                (self.__class__.__name__, self.button,
+                 self.position.output.x, self.position.output.y,
+                 self.position.canvas.x, self.position.canvas.y,
+                 self.timestamp)
 
 
 cdef class EventMouseUp:
     cdef void _set_obj(self, void *ptr):
-        self.obj = <Evas_Event_Mouse_Up*>ptr
+        cdef Evas_Event_Mouse_Up *obj
+        obj = <Evas_Event_Mouse_Up*>ptr
+        self.button = obj.button
+        self.timestamp = obj.timestamp
         self.position = EventPosition()
-        self.position._set_objs(&self.obj.output, &self.obj.canvas)
+        self.position._set_objs(&obj.output, &obj.canvas)
 
     def __str__(self):
         return ("%s(button=%d, output=(%d, %d), canvas=(%d, %d), "
                 "timestamp=%d)") % \
-                (self.__class__.__name__, self.obj.button,
-                 self.obj.output.x, self.obj.output.y,
-                 self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp)
-
-    property button:
-        def __get__(self):
-            return self.obj.button
-
-    property timestamp:
-        def __get__(self):
-            return self.obj.timestamp
+                (self.__class__.__name__, self.button,
+                 self.position.output.x, self.position.output.y,
+                 self.position.canvas.x, self.position.canvas.y,
+                 self.timestamp)
 
 
 cdef class EventMouseMove:
     cdef void _set_obj(self, void *ptr):
-        self.obj = <Evas_Event_Mouse_Move*>ptr
+        cdef Evas_Event_Mouse_Move *obj
+        obj = <Evas_Event_Mouse_Move*>ptr
+        self.buttons = obj.buttons
+        self.timestamp = obj.timestamp
         self.position = EventPosition()
-        self.position._set_objs(&self.obj.cur.output, &self.obj.cur.canvas)
+        self.position._set_objs(&obj.cur.output, &obj.cur.canvas)
         self.prev_position = EventPosition()
-        self.prev_position._set_objs(&self.obj.prev.output,
-                                     &self.obj.prev.canvas)
+        self.prev_position._set_objs(&obj.prev.output,
+                                     &obj.prev.canvas)
 
     def __str__(self):
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
                 "prev_output=(%d, %d), prev_canvas=(%d, %d), timestamp=%d)") %\
-                (self.__class__.__name__, self.obj.buttons,
-                 self.obj.cur.output.x, self.obj.cur.output.y,
-                 self.obj.cur.canvas.x, self.obj.cur.canvas.y,
-                 self.obj.prev.output.x, self.obj.prev.output.y,
-                 self.obj.prev.canvas.x, self.obj.prev.canvas.y,
-                 self.obj.timestamp)
-
-    property buttons:
-        def __get__(self):
-            return self.obj.buttons
-
-    property timestamp:
-        def __get__(self):
-            return self.obj.timestamp
+                (self.__class__.__name__, self.buttons,
+                 self.position.output.x, self.position.output.y,
+                 self.position.canvas.x, self.position.canvas.y,
+                 self.prev_position.output.x, self.prev_position.output.y,
+                 self.prev_position.canvas.x, self.prev_position.canvas.y,
+                 self.timestamp)
 
 
 cdef class EventMouseWheel:
     cdef void _set_obj(self, void *ptr):
-        self.obj = <Evas_Event_Mouse_Wheel*>ptr
+        cdef Evas_Event_Mouse_Wheel *obj
+        obj = <Evas_Event_Mouse_Wheel*>ptr
+        self.z = obj.z
+        self.direction = obj.direction
+        self.timestamp = obj.timestamp
         self.position = EventPosition()
-        self.position._set_objs(&self.obj.output, &self.obj.canvas)
+        self.position._set_objs(&obj.output, &obj.canvas)
 
     def __str__(self):
         return ("%s(direction=%d, z=%d, output=(%d, %d), "
                 "canvas=(%d, %d), timestamp=%d)") % \
-                (self.__class__.__name__, self.obj.direction, self.obj.z,
-                 self.obj.output.x, self.obj.output.y,
-                 self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp)
-
-    property timestamp:
-        def __get__(self):
-            return self.obj.timestamp
-
-    property direction:
-        def __get__(self):
-            return self.obj.direction
-
-    property z:
-        def __get__(self):
-            return self.obj.z
+                (self.__class__.__name__, self.direction, self.z,
+                 self.position.output.x, self.position.output.y,
+                 self.position.canvas.x, self.position.canvas.y,
+                 self.timestamp)
 
 
 cdef class EventKeyDown:
     cdef void _set_obj(self, void *ptr):
-        self.obj = <Evas_Event_Key_Down*>ptr
+        cdef Evas_Event_Key_Down *obj
+        obj = <Evas_Event_Key_Down*>ptr
+        self.timestamp = obj.timestamp
+        if obj.keyname != NULL:
+            self.keyname = obj.keyname
+        else:
+            self.keyname = None
+
+        if obj.key != NULL:
+            self.key = obj.key
+        else:
+            self.key = None
+
+        if obj.string != NULL:
+            self.string = obj.string
+        else:
+            self.string = None
+
+        if obj.compose != NULL:
+            self.compose = obj.compose
+        else:
+            self.compose = None
 
     def __str__(self):
         return ("%s(keyname=%r, key=%r, string=%r, compose=%r, "
                 "timestamp=%d)") % \
                 (self.__class__.__name__, self.keyname,
                  self.key, self.string, self.compose,
-                 self.obj.timestamp)
-
-    property keyname:
-        def __get__(self):
-            if self.obj.keyname == NULL:
-                return None
-            else:
-                return self.obj.keyname
-
-    property key:
-        def __get__(self):
-            if self.obj.key == NULL:
-                return None
-            else:
-                return self.obj.key
-
-    property string:
-        def __get__(self):
-            if self.obj.string == NULL:
-                return None
-            else:
-                return self.obj.string
-
-    property compose:
-        def __get__(self):
-            if self.obj.compose == NULL:
-                return None
-            else:
-                return self.obj.compose
-
-    property timestamp:
-        def __get__(self):
-            return self.obj.timestamp
+                 self.timestamp)
 
 
 cdef class EventKeyUp:
     cdef void _set_obj(self, void *ptr):
-        self.obj = <Evas_Event_Key_Up*>ptr
+        cdef Evas_Event_Key_Up *obj
+        obj = <Evas_Event_Key_Up*>ptr
+        self.timestamp = obj.timestamp
+        if obj.keyname != NULL:
+            self.keyname = obj.keyname
+        else:
+            self.keyname = None
+
+        if obj.key != NULL:
+            self.key = obj.key
+        else:
+            self.key = None
+
+        if obj.string != NULL:
+            self.string = obj.string
+        else:
+            self.string = None
+
+        if obj.compose != NULL:
+            self.compose = obj.compose
+        else:
+            self.compose = None
 
     def __str__(self):
         return ("%s(keyname=%r, key=%r, string=%r, compose=%r, "
                 "timestamp=%d)") % \
                 (self.__class__.__name__, self.keyname,
                  self.key, self.string, self.compose,
-                 self.obj.timestamp)
-
-    property keyname:
-        def __get__(self):
-            if self.obj.keyname == NULL:
-                return None
-            else:
-                return self.obj.keyname
-
-    property key:
-        def __get__(self):
-            if self.obj.key == NULL:
-                return None
-            else:
-                return self.obj.key
-
-    property string:
-        def __get__(self):
-            if self.obj.string == NULL:
-                return None
-            else:
-                return self.obj.string
-
-    property compose:
-        def __get__(self):
-            if self.obj.compose == NULL:
-                return None
-            else:
-                return self.obj.compose
-
-    property timestamp:
-        def __get__(self):
-            return self.obj.timestamp
+                 self.timestamp)
 
