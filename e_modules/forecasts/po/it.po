@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Weather\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-03 13:45+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-07 21:03+0100\n"
 "PO-Revision-Date: 2007-03-04 16:34+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,100 +14,78 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:41
-msgid "Forecasts Configuration"
-msgstr "Configurazione di Forecasts"
+#: e_mod_config.c:95
+msgid "Show Description"
+msgstr ""
 
-#: e_mod_config.c:88
-msgid "Display Settings"
-msgstr "Visualizzazione"
+#~ msgid "Forecasts Configuration"
+#~ msgstr "Configurazione di Forecasts"
 
-#: e_mod_config.c:89
-msgid "Poll Time"
-msgstr "Tempo di campionamento"
+#~ msgid "Display Settings"
+#~ msgstr "Visualizzazione"
 
-#: e_mod_config.c:92
-#, c-format
-msgid "%2.0f minutes"
-msgstr "%2.0f minuti"
+#~ msgid "Poll Time"
+#~ msgstr "Tempo di campionamento"
 
-#: e_mod_config.c:99
-msgid "Unit Settings"
-msgstr "Impostazione sistema di misura"
+#~ msgid "%2.0f minutes"
+#~ msgstr "%2.0f minuti"
 
-#: e_mod_config.c:101
-msgid "Metric"
-msgstr "Metrico"
+#~ msgid "Unit Settings"
+#~ msgstr "Impostazione sistema di misura"
 
-#: e_mod_config.c:103
-msgid "English"
-msgstr "Inglese"
+#~ msgid "Metric"
+#~ msgstr "Metrico"
 
-#: e_mod_config.c:107
-msgid "Yahoo Forecasts Code"
-msgstr "Codice meteo di Yahoo"
+#~ msgid "English"
+#~ msgstr "Inglese"
 
-#: e_mod_config.c:108
-msgid "Yahoo Forecasts Code/US Zip Code"
-msgstr "Codice meteo Yahoo/codice postale USA"
+#~ msgid "Yahoo Forecasts Code"
+#~ msgstr "Codice meteo di Yahoo"
 
-#: e_mod_config.c:113
-msgid "To find the code for your area, go to:"
-msgstr "Per trovare il codice della propria zona vedere:"
+#~ msgid "Yahoo Forecasts Code/US Zip Code"
+#~ msgstr "Codice meteo Yahoo/codice postale USA"
 
-#: e_mod_config.c:115
-#, c-format
-msgid "%s, find your area, and look at the URL"
-msgstr "%s, trovate la vostra zona e guardate l'URL"
+#~ msgid "To find the code for your area, go to:"
+#~ msgstr "Per trovare il codice della propria zona vedere:"
 
-#: e_mod_main.c:242
-msgid "Forecasts"
-msgstr "Forecasts"
+#~ msgid "%s, find your area, and look at the URL"
+#~ msgstr "%s, trovate la vostra zona e guardate l'URL"
 
-#: e_mod_main.c:287
-msgid "Configuration"
-msgstr "Configurazione"
+#~ msgid "Forecasts"
+#~ msgstr "Forecasts"
 
-#: e_mod_main.c:959
-msgid "Wind Chill"
-msgstr "Temperatura"
+#~ msgid "Configuration"
+#~ msgstr "Configurazione"
 
-#: e_mod_main.c:965
-msgid "Wind Speed"
-msgstr "Velocità vento"
+#~ msgid "Wind Chill"
+#~ msgstr "Temperatura"
 
-#: e_mod_main.c:971
-msgid "Humidity"
-msgstr "Umidità"
+#~ msgid "Wind Speed"
+#~ msgstr "Velocità vento"
 
-#: e_mod_main.c:977
-msgid "Visibility"
-msgstr "Visibilità"
+#~ msgid "Humidity"
+#~ msgstr "Umidità"
 
-#: e_mod_main.c:983
-msgid "Pressure"
-msgstr "Pressione"
+#~ msgid "Visibility"
+#~ msgstr "Visibilità"
 
-#: e_mod_main.c:990
-msgid "Rising"
-msgstr "In aumento"
+#~ msgid "Pressure"
+#~ msgstr "Pressione"
 
-#: e_mod_main.c:992
-msgid "Falling"
-msgstr "In diminuzione"
+#~ msgid "Rising"
+#~ msgstr "In aumento"
 
-#: e_mod_main.c:994
-msgid "Steady"
-msgstr "Stabile"
+#~ msgid "Falling"
+#~ msgstr "In diminuzione"
 
-#: e_mod_main.c:998
-msgid "Sunrise / Sunset"
-msgstr "Alba / Tramonto"
+#~ msgid "Steady"
+#~ msgstr "Stabile"
 
-#: e_mod_main.c:1021
-msgid "High"
-msgstr "Massima"
+#~ msgid "Sunrise / Sunset"
+#~ msgstr "Alba / Tramonto"
 
-#: e_mod_main.c:1032
-msgid "Low"
-msgstr "Minima"
+#~ msgid "High"
+#~ msgstr "Massima"
+
+#~ msgid "Low"
+#~ msgstr "Minima"
