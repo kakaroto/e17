@@ -141,6 +141,7 @@ AC_SUBST(e_modules)
 AC_OUTPUT([
 Makefile
 data/Makefile
+data/fonts/Makefile
 data/images/Makefile
 src/Makefile
 src/modules/Makefile

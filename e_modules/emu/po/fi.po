@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-07 20:34+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-07 21:53+0100\n"
 "PO-Revision-Date: 2006-04-04\n"
 "Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
 "Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
@@ -14,148 +14,81 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: emu-2006.01.27/src/modules/emu/border_props.c:52
-#: src/modules/emu/border_props.c:52
-msgid "Window properties"
-msgstr "Ikkunan asetukset"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:221
-#: emu-2006.01.27/src/modules/emu/border_props.c:276
-#: src/modules/emu/border_props.c:221 src/modules/emu/border_props.c:276
-msgid "Window identification"
-msgstr "Ikkunan tunnistin"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:222
-#: emu-2006.01.27/src/modules/emu/border_props.c:289
-#: src/modules/emu/border_props.c:222 src/modules/emu/border_props.c:289
-msgid "Title (%T)"
-msgstr "Otsikko (%T)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:228
-#: emu-2006.01.27/src/modules/emu/border_props.c:307
-#: src/modules/emu/border_props.c:228 src/modules/emu/border_props.c:307
-msgid "Properties"
-msgstr "Asetukset"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:229
-#: emu-2006.01.27/src/modules/emu/border_props.c:308
-#: src/modules/emu/border_props.c:229 src/modules/emu/border_props.c:308
-#, c-format
-msgid "Position (%p)"
-msgstr "Sijainti (%p)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:233
-#: emu-2006.01.27/src/modules/emu/border_props.c:312
-#: src/modules/emu/border_props.c:233 src/modules/emu/border_props.c:312
-#, c-format
-msgid "Size (%s)"
-msgstr "Koko (%s)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:237
-#: emu-2006.01.27/src/modules/emu/border_props.c:320
-#: src/modules/emu/border_props.c:237 src/modules/emu/border_props.c:320
-msgid "Border style (%b)"
-msgstr "Reunan tyyli (%b)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:241
-#: src/modules/emu/border_props.c:241
-#, c-format
-msgid "Stickiness (%p)"
-msgstr "Tarttuvuus (%p)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:245
-#: emu-2006.01.27/src/modules/emu/border_props.c:328
-#: src/modules/emu/border_props.c:245 src/modules/emu/border_props.c:328
-#, c-format
-msgid "Virtual desktop (%d)"
-msgstr "Virtuaalityöpöytä (%d)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:249
-#: emu-2006.01.27/src/modules/emu/border_props.c:332
-#: src/modules/emu/border_props.c:249 src/modules/emu/border_props.c:332
-msgid "Shaded state (%r)"
-msgstr "Varjostustila (%r)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:253
-#: emu-2006.01.27/src/modules/emu/border_props.c:344
-#: src/modules/emu/border_props.c:253 src/modules/emu/border_props.c:344
-#, c-format
-msgid "Fullscreen (%f)"
-msgstr "Kokoruutu (%f)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:257
-#: emu-2006.01.27/src/modules/emu/border_props.c:348
-#: src/modules/emu/border_props.c:257 src/modules/emu/border_props.c:348
-#, c-format
-msgid "Iconified (%i)"
-msgstr "Ikonisoitu (%i)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:277
-#: src/modules/emu/border_props.c:277
-msgid "Window ID (%I)"
-msgstr "Ikkunan tunnus (%I)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:281
-#: src/modules/emu/border_props.c:281
-msgid "Window name (%N)"
-msgstr "Ikkunan nimi (%N)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:285
-#: src/modules/emu/border_props.c:285
-#, c-format
-msgid "Window class (%C)"
-msgstr "Ikkunan luokka (%C)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:293
-#: src/modules/emu/border_props.c:293
-msgid "Window role (%R)"
-msgstr "Ikkunan rooli (%R)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:297
-#: src/modules/emu/border_props.c:297
-#, c-format
-msgid "Window type (%S)"
-msgstr "Ikkinan tyyppi (%S)"
-
-#: emu-2006.01.27/src/modules/emu/border_props.c:301
-#: src/modules/emu/border_props.c:301
-msgid "Transient (%H)"
+#: src/modules/emu/e_mod_main.c:282
+msgid "Emu"
 msgstr ""
 
-#: emu-2006.01.27/src/modules/emu/border_props.c:316
-#: src/modules/emu/border_props.c:316
-msgid "Layer (%l)"
-msgstr "Taso (%l)"
+#~ msgid "Window properties"
+#~ msgstr "Ikkunan asetukset"
 
-#: emu-2006.01.27/src/modules/emu/border_props.c:324
-#: src/modules/emu/border_props.c:324
-msgid "Stickiness (%y)"
-msgstr "Tarttuvuus (%y)"
+#~ msgid "Window identification"
+#~ msgstr "Ikkunan tunnistin"
 
-#: emu-2006.01.27/src/modules/emu/border_props.c:336
-#: src/modules/emu/border_props.c:336
-msgid "Screen zone (%z)"
-msgstr "Ruudun alue (%z)"
+#~ msgid "Title (%T)"
+#~ msgstr "Otsikko (%T)"
 
-#: emu-2006.01.27/src/modules/emu/border_props.c:340
-#: src/modules/emu/border_props.c:340
-msgid "Window list skip (%w)"
-msgstr "Ikkunalistan sivuutus (%w)"
+#~ msgid "Properties"
+#~ msgstr "Asetukset"
 
-#: emu-2006.01.27/src/modules/emu/e_mod_config.c:40
-#: src/modules/emu/e_mod_config.c:40
-msgid "Emu Configuration"
-msgstr "Emun asetukset"
+#~ msgid "Position (%p)"
+#~ msgstr "Sijainti (%p)"
 
-#: emu-2006.01.27/src/modules/emu/e_mod_main.c:208
-#: src/modules/emu/e_mod_main.c:208
-msgid "Enlightenment Emu Module - error"
-msgstr "Enlightenment Emu moduuli - virhe"
+#~ msgid "Size (%s)"
+#~ msgstr "Koko (%s)"
 
-#: emu-2006.01.27/src/modules/emu/e_mod_main.c:208
-#: src/modules/emu/e_mod_main.c:208
-msgid "There is no emu."
-msgstr "Emua ei ole."
+#~ msgid "Border style (%b)"
+#~ msgstr "Reunan tyyli (%b)"
+
+#~ msgid "Stickiness (%p)"
+#~ msgstr "Tarttuvuus (%p)"
+
+#~ msgid "Virtual desktop (%d)"
+#~ msgstr "Virtuaalityöpöytä (%d)"
+
+#~ msgid "Shaded state (%r)"
+#~ msgstr "Varjostustila (%r)"
+
+#~ msgid "Fullscreen (%f)"
+#~ msgstr "Kokoruutu (%f)"
+
+#~ msgid "Iconified (%i)"
+#~ msgstr "Ikonisoitu (%i)"
+
+#~ msgid "Window ID (%I)"
+#~ msgstr "Ikkunan tunnus (%I)"
+
+#~ msgid "Window name (%N)"
+#~ msgstr "Ikkunan nimi (%N)"
+
+#~ msgid "Window class (%C)"
+#~ msgstr "Ikkunan luokka (%C)"
+
+#~ msgid "Window role (%R)"
+#~ msgstr "Ikkunan rooli (%R)"
+
+#~ msgid "Window type (%S)"
+#~ msgstr "Ikkinan tyyppi (%S)"
+
+#~ msgid "Layer (%l)"
+#~ msgstr "Taso (%l)"
+
+#~ msgid "Stickiness (%y)"
+#~ msgstr "Tarttuvuus (%y)"
+
+#~ msgid "Screen zone (%z)"
+#~ msgstr "Ruudun alue (%z)"
+
+#~ msgid "Window list skip (%w)"
+#~ msgstr "Ikkunalistan sivuutus (%w)"
+
+#~ msgid "Emu Configuration"
+#~ msgstr "Emun asetukset"
+
+#~ msgid "Enlightenment Emu Module - error"
+#~ msgstr "Enlightenment Emu moduuli - virhe"
+
+#~ msgid "There is no emu."
+#~ msgstr "Emua ei ole."
 
 #~ msgid "Enlightenment Emu Module - version "
 #~ msgstr "Enlightenment Emu moduuli - versio "
