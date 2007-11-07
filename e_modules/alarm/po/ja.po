@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Eveil\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-07 21:04+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-07 21:44+0100\n"
 "PO-Revision-Date: 2006-06-17 13:08+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: none\n"
@@ -14,285 +14,244 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:55
+#: e_mod_config.c:166
+msgid "Add"
+msgstr ""
+
+#: e_mod_config.c:168
+msgid "Delete"
+msgstr ""
+
+#: e_mod_config.c:170
+msgid "Configure"
+msgstr ""
+
+#: e_mod_config.c:172
+msgid "Duplicate"
+msgstr ""
+
+#: e_mod_config_alarm.c:192
+msgid "Name"
+msgstr ""
+
+#: e_mod_config_alarm.c:391 e_mod_config_alarm.c:411
+msgid "No [default]"
+msgstr ""
+
+#: e_mod_config_alarm.c:393 e_mod_config_alarm.c:413
+msgid "Yes"
+msgstr ""
+
+#: e_mod_config_alarm.c:398 e_mod_config_alarm.c:418 e_mod_config_alarm.c:429
+msgid "No"
+msgstr ""
+
+#: e_mod_config_alarm.c:400 e_mod_config_alarm.c:420
+msgid "Yes [default]"
+msgstr ""
+
+#: e_mod_main.c:665
+msgid "Ok"
+msgstr ""
+
+#: e_mod_main.c:666
+msgid "Close"
+msgstr ""
+
+#: e_mod_main.c:866
 #, fuzzy
-msgid "Alarm Configuration"
+msgid "Configuration"
 msgstr "eveilアラームの設定"
 
-#: e_mod_config.c:155 e_mod_main.c:180
-msgid "Alarm"
-msgstr "アラーム"
+#~ msgid "Alarm"
+#~ msgstr "アラーム"
 
-#: e_mod_config.c:157 e_mod_config_alarm.c:190
-msgid "Active"
-msgstr "作動"
+#~ msgid "Active"
+#~ msgstr "作動"
 
-#: e_mod_config.c:226
-msgid "Alarm Options"
-msgstr "アラームオプション"
+#~ msgid "Alarm Options"
+#~ msgstr "アラームオプション"
 
-#: e_mod_config.c:238
 #, fuzzy
-msgid "Show next alarm"
-msgstr "詳細表示"
+#~ msgid "Show next alarm"
+#~ msgstr "詳細表示"
 
-#: e_mod_config.c:244
-msgid "Alarms Defaults"
-msgstr ""
+#~ msgid "Open popup"
+#~ msgstr "ポップアップを表示する"
 
-#: e_mod_config.c:246 e_mod_config_alarm.c:404
-msgid "Open popup"
-msgstr "ポップアップを表示する"
+#~ msgid "Run program"
+#~ msgstr "プログラムを実行する"
 
-#: e_mod_config.c:249
-msgid "Run program"
-msgstr "プログラムを実行する"
-
-#: e_mod_config.c:256
 #, fuzzy
-msgid "Auto-Remove alarms"
-msgstr "アラームを削除する"
+#~ msgid "Auto-Remove alarms"
+#~ msgstr "アラームを削除する"
 
-#: e_mod_config_alarm.c:71
 #, fuzzy
-msgid "Alarm Configuration : Setup an alarm"
-msgstr "eveilアラームの設定"
+#~ msgid "Alarm Configuration : Setup an alarm"
+#~ msgstr "eveilアラームの設定"
 
-#: e_mod_config_alarm.c:188
-msgid "Informations"
-msgstr "情報"
+#~ msgid "Informations"
+#~ msgstr "情報"
 
-#: e_mod_config_alarm.c:197
-msgid "Description"
-msgstr "説明"
+#~ msgid "Description"
+#~ msgstr "説明"
 
-#: e_mod_config_alarm.c:207
-msgid "Schedule"
-msgstr "スケジュール"
+#~ msgid "Schedule"
+#~ msgstr "スケジュール"
 
-#: e_mod_config_alarm.c:209
-#, c-format
-msgid "%1.0f hour"
-msgstr "%1.0f 時"
+#~ msgid "%1.0f hour"
+#~ msgstr "%1.0f 時"
 
-#: e_mod_config_alarm.c:212
-#, c-format
-msgid "%1.0f minute"
-msgstr "%1.0f 分"
+#~ msgid "%1.0f minute"
+#~ msgstr "%1.0f 分"
 
-#: e_mod_config_alarm.c:218
-msgid "Days of the week"
-msgstr "毎週"
+#~ msgid "Days of the week"
+#~ msgstr "毎週"
 
-#: e_mod_config_alarm.c:222
-msgid "Monday"
-msgstr "月曜日"
+#~ msgid "Monday"
+#~ msgstr "月曜日"
 
-#: e_mod_config_alarm.c:224
-msgid "Tuesday"
-msgstr "火曜日"
+#~ msgid "Tuesday"
+#~ msgstr "火曜日"
 
-#: e_mod_config_alarm.c:226
-msgid "Wenesday"
-msgstr "水曜日"
+#~ msgid "Wenesday"
+#~ msgstr "水曜日"
 
-#: e_mod_config_alarm.c:228
-msgid "Thursday"
-msgstr "木曜日"
+#~ msgid "Thursday"
+#~ msgstr "木曜日"
 
-#: e_mod_config_alarm.c:230
-msgid "Friday"
-msgstr "金曜日"
+#~ msgid "Friday"
+#~ msgstr "金曜日"
 
-#: e_mod_config_alarm.c:232
-msgid "Saturday"
-msgstr "土曜日"
+#~ msgid "Saturday"
+#~ msgstr "土曜日"
 
-#: e_mod_config_alarm.c:234
-msgid "Sunday"
-msgstr "日曜日"
+#~ msgid "Sunday"
+#~ msgstr "日曜日"
 
-#: e_mod_config_alarm.c:239
-msgid "One day"
-msgstr "指定日のみ"
+#~ msgid "One day"
+#~ msgstr "指定日のみ"
 
-#: e_mod_config_alarm.c:243
-msgid "Date (YYYY/MM/DD)"
-msgstr "日付 (年/月/日)"
+#~ msgid "Date (YYYY/MM/DD)"
+#~ msgstr "日付 (年/月/日)"
 
-#: e_mod_config_alarm.c:248
-msgid "Today"
-msgstr "今日"
+#~ msgid "Today"
+#~ msgstr "今日"
 
-#: e_mod_config_alarm.c:250
-msgid "Tomorrow"
-msgstr "明日"
+#~ msgid "Tomorrow"
+#~ msgstr "明日"
 
-#: e_mod_config_alarm.c:288
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>There is an error "
-"in the informations / schedule of your alarm"
-msgstr ""
-"<hilight>エラーにより, アラームは設定されませんでした.</hilight><br><br>ア"
-"ラームの情報かスケジュール内容に誤りがあります."
+#~ msgid ""
+#~ "<hilight>Error, The alarm was not added !</hilight><br><br>There is an "
+#~ "error in the informations / schedule of your alarm"
+#~ msgstr ""
+#~ "<hilight>エラーにより, アラームは設定されませんでした.</hilight><br><br>ア"
+#~ "ラームの情報かスケジュール内容に誤りがあります."
 
-#: e_mod_config_alarm.c:293
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter "
-"a name for the alarm"
-msgstr ""
-"<hilight>エラーにより, アラームは設定されませんでした.</hilight><br><br>追加"
-"するアラームには名前をつける必要があります."
+#~ msgid ""
+#~ "<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
+#~ "enter a name for the alarm"
+#~ msgstr ""
+#~ "<hilight>エラーにより, アラームは設定されませんでした.</hilight><br><br>追"
+#~ "加するアラームには名前をつける必要があります."
 
-#: e_mod_config_alarm.c:298
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
-"select at least one day in the week"
-msgstr ""
-"<hilight>エラーにより, アラームは設定されませんでした.</hilight><br><br>週の"
-"うち最低1日は指定する必要があります."
+#~ msgid ""
+#~ "<hilight>Error, The alarm was not added !</hilight><br><br>You have to "
+#~ "select at least one day in the week"
+#~ msgstr ""
+#~ "<hilight>エラーにより, アラームは設定されませんでした.</hilight><br><br>週"
+#~ "のうち最低1日は指定する必要があります."
 
-#: e_mod_config_alarm.c:303
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
-"entered for the alarm has incorrect syntax<br><br>You have to respect this "
-"format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the "
-"month on 2 numbers<br>DD is the day on 2 numbers<br>"
-msgstr ""
-"<hilight>エラーにより, アラームは設定されませんでした.</hilight><br><br>指定"
-"された日付は書式が間違っています.<br><br>次の書式に従って下さい.<br>   年/月/"
-"日<br>年は西暦4桁、月は数字2桁、日は数字2桁<br>"
+#~ msgid ""
+#~ "<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
+#~ "entered for the alarm has incorrect syntax<br><br>You have to respect "
+#~ "this format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is "
+#~ "the month on 2 numbers<br>DD is the day on 2 numbers<br>"
+#~ msgstr ""
+#~ "<hilight>エラーにより, アラームは設定されませんでした.</hilight><br><br>指"
+#~ "定された日付は書式が間違っています.<br><br>次の書式に従って下さい.<br>   "
+#~ "年/月/日<br>年は西暦4桁、月は数字2桁、日は数字2桁<br>"
 
-#: e_mod_config_alarm.c:313
-msgid ""
-"<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
-"entered is before now"
-msgstr ""
-"<hilight>エラーにより, アラームは設定されませんでした.</hilight><br><br>指定"
-"された日付はもう過ぎてしまいました."
+#~ msgid ""
+#~ "<hilight>Error, The alarm was not added !</hilight><br><br>The date you "
+#~ "entered is before now"
+#~ msgstr ""
+#~ "<hilight>エラーにより, アラームは設定されませんでした.</hilight><br><br>指"
+#~ "定された日付はもう過ぎてしまいました."
 
-#: e_mod_config_alarm.c:317 e_mod_main.c:419
 #, fuzzy
-msgid "Alarm Module Error"
-msgstr "eveil モジュールエラー"
+#~ msgid "Alarm Module Error"
+#~ msgstr "eveil モジュールエラー"
 
-#: e_mod_config_alarm.c:354 e_mod_config_alarm.c:442
-msgid "Test this alarm"
-msgstr "このアラームを試す"
+#~ msgid "Test this alarm"
+#~ msgstr "このアラームを試す"
 
-#: e_mod_config_alarm.c:382
-msgid "Ring Options"
-msgstr "通知オプション"
+#~ msgid "Ring Options"
+#~ msgstr "通知オプション"
 
-#: e_mod_config_alarm.c:384
-msgid "Remove alarm"
-msgstr "アラームを削除する"
+#~ msgid "Remove alarm"
+#~ msgstr "アラームを削除する"
 
-#: e_mod_config_alarm.c:424
-msgid "Run a program"
-msgstr "プログラムを実行する"
+#~ msgid "Run a program"
+#~ msgstr "プログラムを実行する"
 
-#: e_mod_config_alarm.c:431
-msgid "Run default one"
-msgstr ""
+#~ msgid "Run this program"
+#~ msgstr "プログラムを実行する"
 
-#: e_mod_config_alarm.c:433
-msgid "Run this program"
-msgstr "プログラムを実行する"
+#~ msgid "<hilight>Alarm test SUCCEED !</hilight>"
+#~ msgstr "<hilight>アラームテスト成功</hilight>"
 
-#: e_mod_config_alarm.c:478
-msgid ""
-"<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE "
-"the alarms<br>via the 'Active' check button on the<br>main Alarm "
-"configuration panel."
-msgstr ""
+#~ msgid "<hilight>Alarm test FAILED !</hilight>"
+#~ msgstr "<hilight>アラームテスト失敗</hilight>"
 
-#: e_mod_config_alarm.c:484
-msgid "<hilight>Alarm test SUCCEED !</hilight>"
-msgstr "<hilight>アラームテスト成功</hilight>"
-
-#: e_mod_config_alarm.c:489
-msgid "<hilight>Alarm test FAILED !</hilight>"
-msgstr "<hilight>アラームテスト失敗</hilight>"
-
-#: e_mod_config_alarm.c:491
 #, fuzzy
-msgid "Alarm Module Test Report"
-msgstr "eveilモジュールテスト結果"
+#~ msgid "Alarm Module Test Report"
+#~ msgstr "eveilモジュールテスト結果"
 
-#: e_mod_main.c:391
-#, c-format
-msgid "<hilight>Alarm : %s</hilight><br><br>%s"
-msgstr "<hilight>アラーム: %s</hilight><br><br>%s"
+#~ msgid "<hilight>Alarm : %s</hilight><br><br>%s"
+#~ msgstr "<hilight>アラーム: %s</hilight><br><br>%s"
 
-#: e_mod_main.c:394
 #, fuzzy
-msgid "Alarm Module Popup"
-msgstr "eveilモジュールポップアップ"
+#~ msgid "Alarm Module Popup"
+#~ msgstr "eveilモジュールポップアップ"
 
-#: e_mod_main.c:417
 #, fuzzy
-msgid ""
-"<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
-"specified"
-msgstr ""
-"<hilight>失敗</hilight><br><br>Eveilから指定のプログラムを起動できませんでし"
-"た."
+#~ msgid ""
+#~ "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you "
+#~ "specified"
+#~ msgstr ""
+#~ "<hilight>失敗</hilight><br><br>Eveilから指定のプログラムを起動できませんで"
+#~ "した."
 
-#: e_mod_main.c:651 e_mod_main.c:830
-#, c-format
-msgid "Snooze %s"
-msgstr ""
+#~ msgid "%1.0f hours"
+#~ msgstr "%1.0f 時間"
 
-#: e_mod_main.c:655
-#, c-format
-msgid "%1.0f hours"
-msgstr "%1.0f 時間"
+#~ msgid "Add an alarm"
+#~ msgstr "アラームを追加する"
 
-#: e_mod_main.c:658
-#, c-format
-msgid "%1.0f minutes"
-msgstr ""
-
-#: e_mod_main.c:838
-#, c-format
-msgid "Snooze %.14s of %.2d:%.2d"
-msgstr ""
-
-#: e_mod_main.c:852
-msgid "Snooze (No alarm to delay)"
-msgstr ""
-
-#: e_mod_main.c:859
-msgid "Add an alarm"
-msgstr "アラームを追加する"
-
-#: e_mod_main.c:1043
-#, fuzzy, c-format
-msgid ""
-"<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
-"configuration of alarm module<br>has been upgraded<br>Your settings and "
-"alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
-msgstr ""
-"<hilight>eveilモジュール: 設定方法の更新</hilight><br><br>eveilモジュールの設"
-"定方法が更新されました.<br>そのため今までの設定内容は削除されました。<br>ご不"
-"便をおかけして恐縮です.<br><br>(%d -> %d)"
-
-#: e_mod_main.c:1049 e_mod_main.c:1063
 #, fuzzy
-msgid "Alarm Module version "
-msgstr "eveilモジュールのバージョン "
+#~ msgid ""
+#~ "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your "
+#~ "configuration of alarm module<br>has been upgraded<br>Your settings and "
+#~ "alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
+#~ msgstr ""
+#~ "<hilight>eveilモジュール: 設定方法の更新</hilight><br><br>eveilモジュール"
+#~ "の設定方法が更新されました.<br>そのため今までの設定内容は削除されました。"
+#~ "<br>ご不便をおかけして恐縮です.<br><br>(%d -> %d)"
 
-#: e_mod_main.c:1057
-#, fuzzy, c-format
-msgid ""
-"<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "
-"configuration of Alarm module<br>has been downgraded<br>Your settings and "
-"alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
-msgstr ""
-"<hilight>eveilモジュール: 設定方法の変更</hilight><br><br>eveilモジュールの設"
-"定方法が以前の方法に戻ってしまいました.<br>そのため今までの設定内容は削除され"
-"ました。<br>ご不便をおかけして恐縮です.<br><br>(%d -> %d)"
+#, fuzzy
+#~ msgid "Alarm Module version "
+#~ msgstr "eveilモジュールのバージョン "
+
+#, fuzzy
+#~ msgid ""
+#~ "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your "
+#~ "configuration of Alarm module<br>has been downgraded<br>Your settings and "
+#~ "alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
+#~ msgstr ""
+#~ "<hilight>eveilモジュール: 設定方法の変更</hilight><br><br>eveilモジュール"
+#~ "の設定方法が以前の方法に戻ってしまいました.<br>そのため今までの設定内容は"
+#~ "削除されました。<br>ご不便をおかけして恐縮です.<br><br>(%d -> %d)"
 
 #~ msgid "Eveil Configuration"
 #~ msgstr "eveilの設定"
