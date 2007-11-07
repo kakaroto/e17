@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Language\n"
-"POT-Creation-Date: \n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-07 21:26+0100\n"
 "PO-Revision-Date: 2007-06-04 17:05+0100\n"
 "Last-Translator: Antoine Giniès <aginies.cooker@gmail.com>\n"
 "Language-Team: none <aginies.cooker@gmail.com>\n"
@@ -12,79 +13,62 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/module/e_mod_config.c:104
-msgid "Language Module Settings"
-msgstr "Paramètres du module des Langes"
-
-#: src/module/e_mod_config.c:174
-#: src/module/e_mod_config.c:249
-msgid "Available Languages"
-msgstr "Langes disponibles"
-
-#: src/module/e_mod_config.c:182
-#: src/module/e_mod_config.c:257
-msgid "Selected Languages"
-msgstr "Sélection de la lange"
-
-#: src/module/e_mod_config.c:198
-#: src/module/e_mod_config.c:273
-msgid "Up"
-msgstr "Haut"
-
-#: src/module/e_mod_config.c:203
-#: src/module/e_mod_config.c:278
-msgid "Down"
-msgstr "Bas"
-
-#: src/module/e_mod_config.c:211
-#: src/module/e_mod_config.c:304
-msgid "Language Switch Policy"
-msgstr "Politique de changement de Lange"
-
-#: src/module/e_mod_config.c:214
-#: src/module/e_mod_config.c:307
-msgid "Global"
-msgstr "Globale"
-
-#: src/module/e_mod_config.c:217
-#: src/module/e_mod_config.c:310
-msgid "Window"
-msgstr "Fenêtre"
-
-#: src/module/e_mod_config.c:220
-#: src/module/e_mod_config.c:313
-msgid "Application"
-msgstr "Application"
-
-#: src/module/e_mod_config.c:287
-msgid "Keyboard Model"
-msgstr "Modèle du clavier"
-
-#: src/module/e_mod_config.c:295
-msgid "Layout Variant"
-msgstr "Disposition alternative"
-
-#: src/module/e_mod_main.c:112
+#: src/module/e_mod_keybindings.c:6
 msgid "Language"
 msgstr "Langage"
 
-#: src/module/e_mod_main.c:290
-msgid "Enlightenment Language Enhancment Module"
-msgstr "Module amélioré de gestion des langes d'Enlightenment"
+#: src/module/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr ""
 
-#: src/module/e_mod_main.c:291
-msgid "This module is used to switch between input languages."
-msgstr "Ce module sert à changé la lange saisie du clavier"
+#: src/module/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr ""
 
-#: src/module/e_mod_main.c:408
-msgid "Configuration"
-msgstr "Configuration"
+#~ msgid "Language Module Settings"
+#~ msgstr "Paramètres du module des Langes"
 
-#: src/module/e_mod_main.c:413
-msgid "Configure Key Bindings"
-msgstr "Configuration des raccourcis clavier"
+#~ msgid "Available Languages"
+#~ msgstr "Langes disponibles"
 
-#: src/module/e_mod_main.c:430
-msgid "Module Configuration"
-msgstr "Configuration du module"
+#~ msgid "Selected Languages"
+#~ msgstr "Sélection de la lange"
 
+#~ msgid "Up"
+#~ msgstr "Haut"
+
+#~ msgid "Down"
+#~ msgstr "Bas"
+
+#~ msgid "Language Switch Policy"
+#~ msgstr "Politique de changement de Lange"
+
+#~ msgid "Global"
+#~ msgstr "Globale"
+
+#~ msgid "Window"
+#~ msgstr "Fenêtre"
+
+#~ msgid "Application"
+#~ msgstr "Application"
+
+#~ msgid "Keyboard Model"
+#~ msgstr "Modèle du clavier"
+
+#~ msgid "Layout Variant"
+#~ msgstr "Disposition alternative"
+
+#~ msgid "Enlightenment Language Enhancment Module"
+#~ msgstr "Module amélioré de gestion des langes d'Enlightenment"
+
+#~ msgid "This module is used to switch between input languages."
+#~ msgstr "Ce module sert à changé la lange saisie du clavier"
+
+#~ msgid "Configuration"
+#~ msgstr "Configuration"
+
+#~ msgid "Configure Key Bindings"
+#~ msgstr "Configuration des raccourcis clavier"
+
+#~ msgid "Module Configuration"
+#~ msgstr "Configuration du module"
