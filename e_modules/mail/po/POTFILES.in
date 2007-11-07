@@ -1,4 +1,3 @@
-config.h
 e_mod_config_box.c
 e_mod_config_box.h
 e_mod_config.c
