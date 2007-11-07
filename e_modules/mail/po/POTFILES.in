@@ -1,0 +1,16 @@
+config.h
+e_mod_config_box.c
+e_mod_config_box.h
+e_mod_config.c
+e_mod_main.c
+e_mod_main.h
+imap2.c
+imap2.h
+imap.c
+imap.h
+mbox.c
+mbox.h
+mdir.c
+mdir.h
+pop.c
+pop.h
