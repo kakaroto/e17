@@ -270,36 +270,17 @@ AC_ARG_WITH(png,
 AC_MSG_RESULT($png_loader)
 
 if test "$png_loader" != no ; then
-  AC_CHECK_LIB(png, png_read_info,
-    png_ok=yes,
-    png_ok=no,
-    -lz -lm)
-  if test "$png_ok" = yes; then
-    AC_MSG_CHECKING([for png.h])
-    AC_TRY_CPP(
-    [#include <stdio.h>
-     #undef PACKAGE
-     #undef VERSION
-     #include <png.h>],
-    png_ok=yes,
-    png_ok=no)
-    AC_MSG_RESULT($png_ok)
-    if test "$png_ok" = yes; then
-      PNGLIBS="-lpng -lz -lm"
-    fi
-  fi
-  if test "$png_ok" = no ; then
-    if test "$png_loader" = yes ; then
-      AC_MSG_ERROR(PNG support was requested but system does not support it)
-    else
-      AC_MSG_WARN(*** Native PNG support will not be built (PNG not found) ***)
-    fi
-  fi
-else
-  png_ok=no
+  PKG_CHECK_EXISTS(libpng12,
+    [ PKG_CHECK_MODULES(PNG, libpng12, [ png_ok="yes" ], [ png_ok="no"]) ],
+    [
+      PKG_CHECK_EXISTS(libpng10,
+        [ PKG_CHECK_MODULES(PNG, libpng10, [ png_ok="yes" ], [ png_ok="no"]) ],
+        [ PKG_CHECK_MODULES(PNG, libpng, [ png_ok="yes" ], [ png_ok="no"]) ]
+      )
+    ]
+  )
 fi
 AM_CONDITIONAL(BUILD_PNG_LOADER, test "$png_ok" = yes)
-AC_SUBST(PNGLIBS)
 
 
 
