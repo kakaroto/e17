@@ -5,6 +5,6 @@ Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=alarm,gadget
-Icon=module
+Icon=e-module-alarm
 Comment=<hilight>Alarm Module</hilight><br>A module which allows you to<br>set popup reminders.
 Comment[it]=<hilight>Modulo Alarm</hilight><br>Un modulo che consente di impostare<br>dei popup di promemoria.
