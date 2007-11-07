@@ -44,16 +44,20 @@ PKG_CHECK_MODULES(EPEG, [epeg >= 0.9.0],
 )
 
 dnl Make sure the png header/lib is available
-PKG_CHECK_MODULES(PNG, libpng12 >= 1.2.0,
+PKG_CHECK_EXISTS(libpng12,
+  [ PKG_CHECK_MODULES(PNG, libpng12, [ have_png="yes" ], [ have_png="no"]) ],
   [
-    have_png="yes"
-    AC_DEFINE(HAVE_PNG_H, 1, [png.h is available])
-  ],
-  [
-    have_png="no"
-    AC_MSG_WARN(Cannot find libpng on your system: png thumbnail suckage!)
+    PKG_CHECK_EXISTS(libpng10,
+      [ PKG_CHECK_MODULES(PNG, libpng10, [ have_png="yes" ], [ have_png="no"]) ],
+      [ PKG_CHECK_MODULES(PNG, libpng, [ have_png="yes" ], [ have_png="no"]) ]
+    )
   ]
 )
+if test X"$have_png" = Xyes; then
+  AC_DEFINE(HAVE_PNG_H, 1, [png.h is available])
+else
+  AC_MSG_WARN(Cannot find libpng on your system: png thumbnail suckage!)
+fi
 
 AC_PATH_PROG(PERL, perl, 0)
 AC_SUBST(PERL)
@@ -69,7 +73,7 @@ PKG_CHECK_MODULES(ECORE, [
 
 epdf=""
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-PKG_CHECK_MODULES(EPDF, [epdf >= 0.1], epdf="yes",epdf="no")
+PKG_CHECK_MODULES(EPDF, [epdf >= 0.1], epdf="yes", epdf="no")
 AM_CONDITIONAL(HAVE_EPDF, test $epdf = "yes")
 
 xine=""
