@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-04-04\n"
+"POT-Creation-Date: 2007-11-07 20:50+0100\n"
 "PO-Revision-Date: 2006-04-04\n"
 "Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
 "Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
@@ -14,30 +14,51 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:34
-msgid "Cpu Configuration"
-msgstr "Prosessorin asetukset"
+#: e_mod_main.c:131
+msgid "Cpu"
+msgstr ""
 
-#: e_mod_config.c:77
-msgid "Cpu Settings"
-msgstr "Prosessorisetukset"
+#: e_mod_main.c:366
+msgid "Fast (0.5 sec)"
+msgstr ""
 
-#: e_mod_config.c:78
-msgid "Show Text"
-msgstr "Näytä teksti"
+#: e_mod_main.c:373
+msgid "Medium (1 sec)"
+msgstr ""
 
-#: e_mod_config.c:80
-msgid "Show Graph"
-msgstr "Näytä kuvaaja"
+#: e_mod_main.c:380
+msgid "Normal (2 sec)"
+msgstr ""
 
-#: e_mod_config.c:83
-msgid "Check Interval:"
-msgstr "Tarkistusväli"
+#: e_mod_main.c:387
+msgid "Slow (5 sec)"
+msgstr ""
 
-#: e_mod_main.c:96
-msgid "Enlightenment Cpu Monitor Module"
-msgstr "Enlightenment prosessorintarkkailumooduuli"
+#: e_mod_main.c:394
+msgid "Very Slow (30 sec)"
+msgstr ""
 
-#: e_mod_main.c:97
-msgid "This module is used to monitor a cpu."
-msgstr "Tämä moduuli tarkkailee prosessoria."
+#: e_mod_main.c:405
+msgid "Time Between Updates"
+msgstr ""
+
+#~ msgid "Cpu Configuration"
+#~ msgstr "Prosessorin asetukset"
+
+#~ msgid "Cpu Settings"
+#~ msgstr "Prosessorisetukset"
+
+#~ msgid "Show Text"
+#~ msgstr "Näytä teksti"
+
+#~ msgid "Show Graph"
+#~ msgstr "Näytä kuvaaja"
+
+#~ msgid "Check Interval:"
+#~ msgstr "Tarkistusväli"
+
+#~ msgid "Enlightenment Cpu Monitor Module"
+#~ msgstr "Enlightenment prosessorintarkkailumooduuli"
+
+#~ msgid "This module is used to monitor a cpu."
+#~ msgstr "Tämä moduuli tarkkailee prosessoria."

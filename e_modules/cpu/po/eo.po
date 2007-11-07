@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
-"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
-"POT-Creation-Date: 2006-06-04 19:43+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-07 20:50+0100\n"
 "PO-Revision-Date: 2006-06-04 19:46+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
@@ -16,16 +16,39 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:86
-#, c-format
-msgid "%1.0f seconds"
-msgstr "%1.0f sekundoj"
+#: e_mod_main.c:131
+msgid "Cpu"
+msgstr ""
 
-#: e_mod_main.c:193 e_mod_main.c:303
-msgid "Configuration"
-msgstr "Konfiguraĵo"
+#: e_mod_main.c:366
+msgid "Fast (0.5 sec)"
+msgstr ""
 
-#: e_mod_main.c:308
-msgid "Edit Mode"
-msgstr "Redaktomoduso"
+#: e_mod_main.c:373
+msgid "Medium (1 sec)"
+msgstr ""
 
+#: e_mod_main.c:380
+msgid "Normal (2 sec)"
+msgstr ""
+
+#: e_mod_main.c:387
+msgid "Slow (5 sec)"
+msgstr ""
+
+#: e_mod_main.c:394
+msgid "Very Slow (30 sec)"
+msgstr ""
+
+#: e_mod_main.c:405
+msgid "Time Between Updates"
+msgstr ""
+
+#~ msgid "%1.0f seconds"
+#~ msgstr "%1.0f sekundoj"
+
+#~ msgid "Configuration"
+#~ msgstr "Konfiguraĵo"
+
+#~ msgid "Edit Mode"
+#~ msgstr "Redaktomoduso"

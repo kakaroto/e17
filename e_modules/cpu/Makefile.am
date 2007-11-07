@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+SUBDIRS = po
+
 EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
 -id $(top_srcdir) \
@@ -39,6 +41,3 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 clean-local:
 	 rm -rf cpu.edj *~
-uninstall:
-	rm -rf $(DESTDIR)$(datadir)
-
