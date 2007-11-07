@@ -10,7 +10,7 @@ Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-#BuildSuggests: xorg-x11-devel
+#BuildSuggests: xorg-x11-devel xine-lib-devel epdf-devel
 BuildRequires: libjpeg-devel XFree86-devel /usr/bin/freetype-config
 BuildRequires: epeg-devel imlib2-devel evas-devel ecore-devel edje-devel
 Requires: epeg >= 0.9.0
@@ -48,6 +48,8 @@ Epsilon thumbnailer development headers and libraries.
 %{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
 test -x `which doxygen` && sh gendoc || :
 
+%{__rm} -rf %{_libdir}/%{name}/plugins/*a
+
 %post
 /sbin/ldconfig
 
@@ -63,7 +65,7 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libepsilon.so.*
 %{_libdir}/libepsilon.la
 %{_libdir}/pkgconfig/epsilon.pc
-%{_libdir}/%{name}/plugins/*.so
+%{_libdir}/%{name}
 %{_bindir}/epsilon
 %{_bindir}/epsilon_thumb_test
 %{_bindir}/epsilon_thumbd
@@ -71,11 +73,8 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-, root, root)
 %doc doc/html
+%{_includedir}/*.h
 %{_libdir}/libepsilon.so
 %{_libdir}/libepsilon.a
-%{_libdir}/%{name}/plugins/*.a
-%{_libdir}/%{name}/plugins/*.la
-%{_includedir}/Epsilon.h
-%{_includedir}/Epsilon_Request.h
 
 %changelog

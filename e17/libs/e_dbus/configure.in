@@ -40,6 +40,7 @@ PKG_CHECK_MODULES([HAL_TEST_GUI], [
 )
 
 AC_OUTPUT([
+e_dbus.spec
 Makefile
 src/Makefile
 src/lib/Makefile
