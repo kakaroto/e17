@@ -11,6 +11,7 @@ config.rpath
 config.status
 config.sub
 configure
+confdefs.h
 depcomp
 e_modules-emu.spec
 install-sh
