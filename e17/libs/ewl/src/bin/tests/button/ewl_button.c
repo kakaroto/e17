@@ -6,6 +6,8 @@
 #include "ewl_radiobutton.h"
 #include "ewl_separator.h"
 #include <stdio.h>
+#include <string.h>
+#include <limits.h>
 
 /**
  * @addtogroup Ewl_Button
@@ -26,6 +28,25 @@
 
 static int create_test(Ewl_Container *win);
 
+static int label_test_set_get(char *buf, int len);
+static int image_test_set_get(char *buf, int len);
+static int image_size_null_height_test_set_get(char *buf, int len);
+static int image_size_null_width_test_set_get(char *buf, int len);
+static int image_size_match_test_set_get(char *buf, int len);
+static int image_size_differ_test_set_get(char *buf, int len);
+static int image_size_max_int_test_set_get(char *buf, int len);
+
+static Ewl_Unit_Test button_unit_tests[] = {
+		{"label set/get", label_test_set_get, -1, NULL},
+		{"image set/get", image_test_set_get, -1, NULL},
+		{"image size null height set/get", image_size_null_height_test_set_get, -1, NULL},
+		{"image size null width set/get", image_size_null_width_test_set_get, -1, NULL},
+		{"image size match set/get", image_size_match_test_set_get, -1, NULL},
+		{"image size differ set/get", image_size_differ_test_set_get, -1, NULL},
+		{"image size max int set/get", image_size_max_int_test_set_get, -1, NULL},
+		{NULL, NULL, -1, NULL}
+	};
+
 void
 test_info(Ewl_Test *test)
 {
@@ -37,6 +58,7 @@ test_info(Ewl_Test *test)
 	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
+	test->unit_tests = button_unit_tests;
 }
 
 static int
@@ -191,3 +213,144 @@ create_test(Ewl_Container *box)
 	return 1;
 }
 
+static int
+label_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *button;
+	int ret = 0;
+
+	button = ewl_button_new();
+
+	ewl_button_label_set(EWL_BUTTON(button), "my_label");
+	if (strcmp("my_label", ewl_button_label_get(EWL_BUTTON(button))))
+		snprintf(buf, len, "label_get dosen't match label_set");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+image_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *button;
+	int ret = 0;
+
+	button = ewl_button_new();
+
+	if (ewl_button_image_get(EWL_BUTTON(button)))
+		snprintf(buf, len, "image_get not NULL");
+	else
+		ret = 1;
+
+	ewl_button_image_set(EWL_BUTTON(button), "my_image", NULL);
+	if (strcmp("my_image", ewl_button_image_get(EWL_BUTTON(button)))) {
+		snprintf(buf, len, "image_get dosen't match image_set");
+		ret = 0;
+	}
+
+	ewl_button_image_set(EWL_BUTTON(button), NULL, NULL);
+	if (ewl_button_image_get(EWL_BUTTON(button))) {
+		snprintf(buf, len, "image_get not NULL when set to NULL");
+		ret = 0;
+	}
+
+	return ret;
+}
+
+static int
+image_size_null_height_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *button;
+	int w = 0;
+	int ret = 0;
+
+	button = ewl_button_new();
+
+	ewl_button_image_size_get(EWL_BUTTON(button), &w, NULL);
+	if (w != 0)
+		snprintf(buf, len, "image_size_get width not 0");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+image_size_null_width_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *button;
+	int h = 0;
+	int ret = 0;
+
+	button = ewl_button_new();
+
+	ewl_button_image_size_get(EWL_BUTTON(button), NULL, &h);
+	if (h != 0)
+		snprintf(buf, len, "image_size_get height not 0");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+image_size_match_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *button;
+	int w = 0, h = 0;
+	int ret = 0;
+
+	button = ewl_button_new();
+
+	ewl_button_image_size_set(EWL_BUTTON(button), 32, 32);
+	ewl_button_image_size_get(EWL_BUTTON(button), &w, &h);
+	if (w != 32 || h != 32) {
+		snprintf(buf, len, "image_size_get width and height don't match");
+		ret = 0;
+	}
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+image_size_differ_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *button;
+	int w = 0, h = 0;
+	int ret = 0;
+
+	button = ewl_button_new();
+	ewl_button_image_size_set(EWL_BUTTON(button), 30, 24);
+	ewl_button_image_size_get(EWL_BUTTON(button), &w, &h);
+	if (w != 32 || h != 24) {
+		snprintf(buf, len, "image_size_get width and height don't differ");
+		ret = 0;
+	}
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+image_size_max_int_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *button;
+	int w = 0, h = 0;
+	int ret = 0;
+
+	button = ewl_button_new();
+	ewl_button_image_size_set(EWL_BUTTON(button), INT_MAX, INT_MAX);
+	ewl_button_image_size_get(EWL_BUTTON(button), &w, &h);
+	if (w != INT_MAX|| h != INT_MAX) {
+		snprintf(buf, len, "image_size_get width and height not INT_MAX");
+		ret = 0;
+	}
+	else
+		ret = 1;
+
+	return ret;
+}
