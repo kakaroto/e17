@@ -138,9 +138,14 @@ AC_SUBST(exml_libs)
 
 #AC_CHECK_HEADERS(EXML.h,, AC_MSG_ERROR([Cannot find EXML.h. Make sure your CFLAGS environment variable contains include lines for the location of this file and EXML lib is installed]))
 
-AC_CHECK_HEADERS(X11/XKBlib.h,, AC_MSG_ERROR([Cannot find XKBlib.h. Make sure your CFLAGS environment variable contains include lines for the location of this file.]))
+AC_CHECK_HEADERS(X11/XKBlib.h, ,
+		 AC_MSG_ERROR([Cannot find XKBlib.h. Make sure your CFLAGS environment variable contains include lines for the location of this file.]))
 
-AC_CHECK_HEADERS(X11/extensions/XKBrules.h,, AC_MSG_ERROR([Cannot find XKBrules.h. Make sure your CFLAGS environment variable contains include lines for the location of this file.]))
+AC_CHECK_HEADERS(X11/extensions/XKBrules.h,, AC_MSG_ERROR([Cannot find XKBrules.h. Make sure your CFLAGS environment variable contains include lines for the location of this file.]),
+		 [
+                   #include <stdio.h>
+                   #include <X11/XKBlib.h>
+		 ])
 
 AC_OUTPUT([
 e_modules-language.spec
