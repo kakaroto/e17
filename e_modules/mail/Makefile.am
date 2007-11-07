@@ -10,16 +10,16 @@ EDJE_FLAGS = -v \
 # data files for the module
 filesdir =  $(datadir)
 
-files_DATA = module_icon.png \
-			module.desktop \
-			e-module-mail.edj \
-			mail.edj
+files_DATA = module.desktop \
+	     e-module-mail.edj \
+	     mail.edj
 
 EXTRA_DIST = $(files_DATA) \
-			mail.edc \
-			checking.png \
-			newmail.png \
-			VeraBd.ttf
+	     mail.edc \
+	     checking.png \
+	     newmail.png \
+	     VeraBd.ttf \
+	     module_icon.png
 
 # the module .so file
 INCLUDES = -I. \
@@ -52,5 +52,3 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/mail.edj
 
 clean-local:
 	 rm -rf mail.edj *~
-uninstall:
-	rm -rf $(datadir)
