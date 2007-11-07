@@ -4,7 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 filesdir = $(datadir)
 files_DATA = \
 module.desktop \
-module.edj
+e-module-bling.edj
 
 EXTRA_DIST = $(files_DATA) \
 e_modules-bling.spec \
