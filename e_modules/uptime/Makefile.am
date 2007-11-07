@@ -12,14 +12,14 @@ filesdir = $(datadir)
 files_DATA = \
 uptime.edj \
 module.desktop \
-e-module-uptime.edj \
-uptime.png
+e-module-uptime.edj
 
 EXTRA_DIST = $(files_DATA) \
-				uptime.edc \
-				VeraMono.ttf \
-				e_modules-uptime.spec \
-				e_modules-uptime.spec.in
+	     uptime.png \
+	     uptime.edc \
+	     VeraMono.ttf \
+	     e_modules-uptime.spec \
+	     e_modules-uptime.spec.in
 
 
 # the module .so file
