@@ -540,8 +540,8 @@ epsilon_exists (Epsilon * e)
 	   return (EPSILON_OK);
 	  /* XXX compare with time from e->src png tag? */
        }
-#endif
     }
+#endif
   return (EPSILON_FAIL);
 }
 
