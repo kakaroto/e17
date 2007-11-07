@@ -43,6 +43,3 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/deskshow.edj
 
 clean-local:
 	 rm -rf deskshow.edj *~
-
-uninstall:
-	rm -rf $(DESTDIR)$(datadir)

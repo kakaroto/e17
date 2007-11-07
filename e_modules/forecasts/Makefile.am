@@ -41,6 +41,3 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 clean-local:
 	 rm -rf forecasts.edj *~
-uninstall:
-	rm -rf $(datadir)
-

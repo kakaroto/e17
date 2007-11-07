@@ -76,6 +76,3 @@ module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/mem.edj
 
 clean-local:
 	 rm -rf mem.edj *~
-uninstall:
-	rm -rf $(datadir)
-

@@ -57,5 +57,3 @@ mixer.edj:  mixer.edc
 
 clean-local:
 	 rm -rf mixer.edj *~
-uninstall:
-	rm -rf $(datadir)
