@@ -15,7 +15,6 @@ files_DATA = module.desktop \
 	     net.edj
 	     
 EXTRA_DIST = $(files_DATA) \
-	     module.edc \
 	     net.edc \
 	     fonts/Vera.ttf \
 	     fonts/VeraBd.ttf \
@@ -31,6 +30,3 @@ EXTRA_DIST = $(files_DATA) \
 	
 clean-local:
 	rm -rf net.edj *~
-	
-uninstall:
-	rm -rf $(datadir)
