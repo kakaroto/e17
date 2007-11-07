@@ -18,9 +18,6 @@ if test "$GCC" = "yes"; then
 fi
 AC_PROG_LIBTOOL
 
-ALL_LINGUAS="eo ja it sv"
-AC_SUBST(ALL_LINGUAS)
-
 AM_GNU_GETTEXT([external]) 
 AM_GNU_GETTEXT_VERSION(0.14)
 
@@ -117,6 +114,6 @@ AC_CONFIG_FILES([Makefile
                  data/Makefile
                  data/themes/Makefile
                  data/themes/images/Makefile
-                 po/Makefile
+                 po/Makefile.in
                  src/Makefile])
 AC_OUTPUT

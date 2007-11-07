@@ -13,9 +13,6 @@ AC_PROG_CC
 AM_PROG_LIBTOOL
 AC_HEADER_STDC
 
-ALL_LINGUAS="it fr"
-AC_SUBST(ALL_LINGUAS)
-
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
@@ -104,7 +101,7 @@ AC_SUBST(e_modules)
 AC_OUTPUT([
 Makefile
 src/Makefile
-po/Makefile
+po/Makefile.in
 e_modules-net.spec
 ],[])
 

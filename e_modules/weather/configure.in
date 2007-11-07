@@ -17,9 +17,6 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-ALL_LINGUAS="eo it ja sv"
-AC_SUBST(ALL_LINGUAS)
-
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
@@ -136,7 +133,7 @@ AC_SUBST(e_modules)
 AC_OUTPUT([
 Makefile
 images/Makefile
-po/Makefile
+po/Makefile.in
 e_modules-weather.spec
 ],[
 ])

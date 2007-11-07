@@ -20,8 +20,6 @@ AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
 AC_CHECK_FUNCS(getloadavg, [], [])
-ALL_LINGUAS="bg eo fi it ja sv fr"
-AC_SUBST(ALL_LINGUAS)
 
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
@@ -139,7 +137,7 @@ AC_SUBST(e_modules)
 AC_OUTPUT([
 Makefile
 e_modules-uptime.spec
-po/Makefile
+po/Makefile.in
 ],[
 ])
 

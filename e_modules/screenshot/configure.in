@@ -20,9 +20,6 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-ALL_LINGUAS="eo fi fr it ja ru sv"
-AC_SUBST(ALL_LINGUAS)
-
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
@@ -161,6 +158,6 @@ AC_DEFINE_UNQUOTED(LOCALEDIR, "${localedir}", [Module Locale Directory])
 AC_OUTPUT([
 Makefile
 e_modules-screenshot.spec
-po/Makefile
+po/Makefile.in
 ],[
 ])

@@ -17,9 +17,6 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-ALL_LINGUAS="it"
-AC_SUBST(ALL_LINGUAS)
-
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
@@ -122,7 +119,7 @@ AC_SUBST(e_modules)
 AC_OUTPUT([
 Makefile
 e_modules-penguins.spec
-po/Makefile
+po/Makefile.in
 themes/Makefile
 themes/default/Makefile
 themes/lemmings/Makefile
