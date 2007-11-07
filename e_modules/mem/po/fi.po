@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-04-04\n"
+"POT-Creation-Date: 2007-11-07 22:18+0100\n"
 "PO-Revision-Date: 2006-04-04\n"
 "Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
 "Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
@@ -14,42 +14,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:37
-msgid "Mem Configuration"
-msgstr "Muistiasetukset"
+#: e_mod_config.c:115
+#, c-format
+msgid "%1.0f seconds"
+msgstr ""
 
-#: e_mod_config.c:83
-msgid "Mem Settings"
-msgstr "Muistiasetukset"
+#~ msgid "Mem Configuration"
+#~ msgstr "Muistiasetukset"
 
-#: e_mod_config.c:84
-msgid "Show Text"
-msgstr "Näytä teksti"
+#~ msgid "Mem Settings"
+#~ msgstr "Muistiasetukset"
 
-#: e_mod_config.c:86
-msgid "Show Text As Percent"
-msgstr "Näytä teksti prosentteina"
+#~ msgid "Show Text"
+#~ msgstr "Näytä teksti"
 
-#: e_mod_config.c:88
-msgid "Show Graph"
-msgstr "Näytä kuvaaja"
+#~ msgid "Show Text As Percent"
+#~ msgstr "Näytä teksti prosentteina"
 
-#: e_mod_config.c:90
-msgid "Ignore Buffers"
-msgstr "Sivuuta puskurit"
+#~ msgid "Show Graph"
+#~ msgstr "Näytä kuvaaja"
 
-#: e_mod_config.c:92
-msgid "Ignore Cached"
-msgstr "Sivuuta välimuisti"
+#~ msgid "Ignore Buffers"
+#~ msgstr "Sivuuta puskurit"
 
-#: e_mod_config.c:94
-msgid "Check Interval:"
-msgstr "Tarkistusväli:"
+#~ msgid "Ignore Cached"
+#~ msgstr "Sivuuta välimuisti"
 
-#: e_mod_main.c:93
-msgid "Enlightenment Mem Monitor Module"
-msgstr "Enlightenment muistintarkkailumoduuli"
+#~ msgid "Check Interval:"
+#~ msgstr "Tarkistusväli:"
 
-#: e_mod_main.c:94
-msgid "This module is used to monitor memory."
-msgstr "Tällä moduulilla tarkkaillaan muistia."
+#~ msgid "Enlightenment Mem Monitor Module"
+#~ msgstr "Enlightenment muistintarkkailumoduuli"
+
+#~ msgid "This module is used to monitor memory."
+#~ msgstr "Tällä moduulilla tarkkaillaan muistia."

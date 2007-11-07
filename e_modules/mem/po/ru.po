@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mem\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-08 13:52+0300\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-07 22:18+0100\n"
 "PO-Revision-Date: 2006-06-08 13:55+0300\n"
 "Last-Translator: Stanislav Sedov <ssedov@mbsd.msk.ru>\n"
 "Language-Team: none\n"
@@ -14,50 +14,43 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-r\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: e_mod_config.c:36
-msgid "Mem Configuration"
-msgstr "Параметры модуля mem"
+#: e_mod_config.c:115
+#, c-format
+msgid "%1.0f seconds"
+msgstr ""
 
-#: e_mod_config.c:80
-msgid "General Settings"
-msgstr "Основные параметры"
+#~ msgid "Mem Configuration"
+#~ msgstr "Параметры модуля mem"
 
-#: e_mod_config.c:82
-msgid "Always Show Text"
-msgstr "Всегда отображать текстовые подписи"
+#~ msgid "General Settings"
+#~ msgstr "Основные параметры"
 
-#: e_mod_config.c:84
-msgid "Show Text On Mouse Over"
-msgstr "Отображать текстовые подписи при наведении указателя мыши"
+#~ msgid "Always Show Text"
+#~ msgstr "Всегда отображать текстовые подписи"
 
-#: e_mod_config.c:86
-msgid "Show Text As Percent"
-msgstr "Отображать значения в процентах"
+#~ msgid "Show Text On Mouse Over"
+#~ msgstr "Отображать текстовые подписи при наведении указателя мыши"
 
-#: e_mod_config.c:88
-msgid "Ignore Buffers"
-msgstr "Игнорировать память в буферах"
+#~ msgid "Show Text As Percent"
+#~ msgstr "Отображать значения в процентах"
 
-#: e_mod_config.c:90
-msgid "Ignore Cached"
-msgstr "Игнорировать память для кеша"
+#~ msgid "Ignore Buffers"
+#~ msgstr "Игнорировать память в буферах"
 
-#: e_mod_config.c:92
-msgid "Check Interval:"
-msgstr "Интервал проверки:"
+#~ msgid "Ignore Cached"
+#~ msgstr "Игнорировать память для кеша"
 
-#: e_mod_main.c:101
-msgid "Mem"
-msgstr "Mem"
+#~ msgid "Check Interval:"
+#~ msgstr "Интервал проверки:"
 
-#: e_mod_main.c:148
-msgid "Configuration"
-msgstr "Настройка"
+#~ msgid "Mem"
+#~ msgstr "Mem"
 
-#: e_mod_main.c:361
-msgid "Enlightenment Mem Monitor Module"
-msgstr "Модуль слежения за памятью"
+#~ msgid "Configuration"
+#~ msgstr "Настройка"
 
-#: e_mod_main.c:362
-msgid "This module is used to monitor memory."
-msgstr "Этот модуль используется для слежения за состоянием памяти."
+#~ msgid "Enlightenment Mem Monitor Module"
+#~ msgstr "Модуль слежения за памятью"
+
+#~ msgid "This module is used to monitor memory."
+#~ msgstr "Этот модуль используется для слежения за состоянием памяти."
