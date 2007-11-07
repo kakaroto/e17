@@ -11,7 +11,8 @@ EDJE_FLAGS = \
 filesdir = $(libdir)/enlightenment/modules/$(MODULE)
 files_DATA = e-module-emu.edj module.desktop
 
-EXTRA_DIST = $(files_DATA)
+EXTRA_DIST = $(files_DATA) \
+	     $(wildcard *.edc)
 
 # the module .so file
 INCLUDES               = -I. \
@@ -37,10 +38,9 @@ module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
 e-module-emu.edj: Makefile module_edje.edc module_face.edc module_icon.edc
-	$(EDJE_CC) $(EDJE_FLAGS) module_edje.edc e-module-emu.edj
+		  $(EDJE_CC) $(EDJE_FLAGS) \
+		  $(top_srcdir)/src/modules/emu/module_edje.edc \
+		  e-module-emu.edj
 
 clean-local:
 	 rm -rf *.eap *.edj *~
-uninstall:
-	rm -rf $(libdir)/enlightenment/modules/$(MODULE)
-

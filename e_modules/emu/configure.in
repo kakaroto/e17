@@ -18,9 +18,6 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-ALL_LINGUAS="eo fi it ja sv"
-AC_SUBST(ALL_LINGUAS)
-
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
@@ -148,7 +145,7 @@ data/images/Makefile
 src/Makefile
 src/modules/Makefile
 src/modules/emu/Makefile
-po/Makefile
+po/Makefile.in
 e_modules-emu.spec
 ],[
 ])
