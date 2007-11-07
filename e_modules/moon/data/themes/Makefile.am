@@ -17,6 +17,7 @@ e-module-moon.edj \
 moon.edj
 
 EXTRA_DIST = \
+module.desktop \
 moon.edc \
 icon.edc
 
@@ -31,4 +32,4 @@ e-module-moon.edj: Makefile $(EXTRA_DIST)
 	 e-module-moon.edj
 
 clean-local:
-	 rm -rf moon.edj
+	 rm -rf *.edj
