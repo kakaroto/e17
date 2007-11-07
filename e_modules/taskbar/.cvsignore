@@ -24,3 +24,4 @@ missing
 mkinstalldirs
 ltmain.sh
 stamp-h1
+*.tar.gz

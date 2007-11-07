@@ -25,3 +25,4 @@ ltmain.sh
 stamp-h1
 *.la
 *.lo
+*.tar.gz
