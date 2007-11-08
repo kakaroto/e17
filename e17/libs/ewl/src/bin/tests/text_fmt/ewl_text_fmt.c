@@ -8,7 +8,6 @@
 
 static int tf_new(char *buf, int len);
 static int tf_new_null_text(char *buf, int len);
-static int tf_destroy(char *buf, int len);
 static int tf_clear(char *buf, int len);
 
 static int tf_count_empty(char *buf, int len);
@@ -37,7 +36,6 @@ static int tf_apply_partial_node_text(char *buf, int len);
 static Ewl_Unit_Test text_fmt_unit_tests[] = {
 		{"New Format", tf_new, -1, NULL},
 		{"New NULL Text", tf_new_null_text, -1, NULL},
-		{"Destroy Format", tf_destroy, -1, NULL},
 		{"Clear Format", tf_clear, -1, NULL},
 
 		{"Count empty", tf_count_empty, -1, NULL},
@@ -113,24 +111,6 @@ tf_new_null_text(char *buf, int len)
 		return 0;
 	}
 	ewl_text_fmt_destroy(fmt);
-	return 1;
-}
-
-static int
-tf_destroy(char *buf, int len)
-{
-	Ewl_Widget *t;
-	Ewl_Text_Fmt *fmt;
-
-	t = ewl_text_new();
-	fmt = ewl_text_fmt_new(EWL_TEXT(t));
-
-	ewl_text_fmt_destroy(fmt);
-	if (fmt)
-	{
-		snprintf(buf, len, "_destroy failed to make fmt NULL.");
-		return 0;
-	}
 	return 1;
 }
 
