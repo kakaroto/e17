@@ -108,9 +108,9 @@ tf_new_null_text(char *buf, int len)
 	if (fmt)
 	{
 		snprintf(buf, len, "_new returned fmt when Ewl_Text was NULL.");
+		ewl_text_fmt_destroy(fmt);
 		return 0;
 	}
-	ewl_text_fmt_destroy(fmt);
 	return 1;
 }
 
