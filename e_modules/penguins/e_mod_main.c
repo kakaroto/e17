@@ -305,8 +305,8 @@ _load_action(Population *pop, char *filename, char *name, int id)
    
    act->w = act->w * pop->conf->zoom;
    act->h = act->h * pop->conf->zoom;
+   act->speed = act->speed * pop->conf->zoom;
    act->id = id;
-   //TODO ZOOM ALSO THE SPEED ???
    
    pop->actions = evas_hash_add(pop->actions, name, act);
    
