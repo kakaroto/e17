@@ -91,26 +91,13 @@ static Ewl_Test *current_test = NULL;
 int
 main(int argc, char **argv)
 {
-	int i, unit_test = 0, ran_test = 0, ret = 0;
+	int i, ret = 0;
+	int unit_test = 0, ran_test = 0, all_tests = 0, profile_tests = 0;
+	double start_time = 0, end_time = 0;
 
-	/* initialize the ewl library */
-	if (!ewl_init(&argc, argv))
-	{
-		printf("Unable to init EWL.\n");
-		return 1;
-	}
-
-	if (!ewl_test_setup_tests())
-	{
-		printf("Unable to setup tests.\n");
-		return 1;
-	}
-
-	/* check for any flags */
+	/* check for any flags before ewl_init to avoid opening the display */
 	for (i = 0; i < argc; i++)
 	{
-		Ewl_Test *t;
-
 		if (!strncmp(argv[i], "-list", 5))
 		{
 			ewl_test_print_tests();
@@ -129,21 +116,39 @@ main(int argc, char **argv)
 			exit(0);
 		}
 		else if (!strncmp(argv[i], "-all", 4))
-		{
-			Ewl_Test *t;
-
-			ecore_list_first_goto(tests);
-			while ((t = ecore_list_next(tests)))
-				run_window_test(t, MAIN_WIDTH, MAIN_HEIGHT);
-		}
+			all_tests = 1;
 		else if (!strncmp(argv[i], "-unit", 5))
 			unit_test = 1;
+		else if (!strncmp(argv[i], "-profile", 8))
+			profile_tests = 1;
+	}
+
+	/* initialize the ewl library */
+	if (!ewl_init(&argc, argv))
+	{
+		printf("Unable to init EWL.\n");
+		return 1;
+	}
+
+	if (!ewl_test_setup_tests())
+	{
+		printf("Unable to setup tests.\n");
+		return 1;
+	}
+
+
+	if (profile_tests) start_time = ecore_time_get();
+
+	/* check for any flags */
+	for (i = 0; i < argc || all_tests; i++)
+	{
+		Ewl_Test *t;
 
 		/* see if this thing was a test to run */
 		ecore_list_first_goto(tests);
 		while ((t = ecore_list_next(tests)))
 		{
-			if (!strcasecmp(argv[i], t->name))
+			if (all_tests || !strcasecmp(argv[i], t->name))
 			{
 				if (unit_test)
 					ret = run_unit_tests(t);
@@ -152,9 +157,17 @@ main(int argc, char **argv)
 								MAIN_HEIGHT);
 
 				ran_test ++;
-				break;
+				if (!all_tests) break;
 			}
 		}
+
+		if (all_tests) break;
+	}
+
+	if (profile_tests)
+	{
+		end_time = ecore_time_get();
+		printf("Tests completed in %.03fs\n", end_time - start_time);
 	}
 
 	/* no passed in tests, run the main test app */
