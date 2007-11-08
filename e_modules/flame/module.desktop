@@ -2,5 +2,6 @@
 Type=Link
 Name=Flame
 Icon=e-module-flame
+X-Enlightenment-ModuleType=appearance
 Comment=<hilight>Flame Module</hilight><br>A module to display flames on<br>the desktop.
 Comment[it]=<hilight>Modulo Flame</hilight><br>Un modulo per visualizzare<br>fiamme sul desktop.
