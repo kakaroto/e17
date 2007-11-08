@@ -1,4 +1,4 @@
-edocdatadir = $(ENLIGHTENMENT_ROOT)/E-docs
+edocdatadir = $(datadir)/e16/E-docs
 
 edocdata_DATA = @edocdata@
 

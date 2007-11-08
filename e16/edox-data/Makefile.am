@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 MAINTAINERCLEANFILES = aclocal.m4 configure install-sh missing \
-		       Makefile.in
+		       Makefile.in E-docs/Makefile.in
 
 SUBDIRS = E-docs
 
