@@ -5,10 +5,22 @@
 #include "ewl_label.h"
 
 #include <stdio.h>
+#include <string.h>
 
 static int counter = 0;
 static int create_test(Ewl_Container *win);
 static void cb_click(Ewl_Widget *w, void *ev, void *data);
+
+static int label_null_test_get(char *buf, int len);
+static int label_null_test_set_get(char *buf, int len);
+static int label_test_set_get(char *buf, int len);
+
+static Ewl_Unit_Test label_unit_tests[] = {
+		{"label null get", label_null_test_get, -1, NULL},
+		{"label null set/get", label_null_test_set_get, -1, NULL},
+		{"label set/get", label_test_set_get, -1, NULL},
+		{NULL, NULL, -1, NULL}
+	};
 
 void
 test_info(Ewl_Test *test)
@@ -18,6 +30,7 @@ test_info(Ewl_Test *test)
 	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_SIMPLE;
+	test->unit_tests = label_unit_tests;
 }
 
 static int
@@ -55,4 +68,65 @@ cb_click(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *data)
 	counter ++;
 }
 
+static int
+label_null_test_get(char *buf, int len)
+{
+	Ewl_Widget *label;
+	int ret = 0;
 
+	label = ewl_label_new();
+
+	if (ewl_label_text_get(EWL_LABEL(label)))
+		snprintf(buf, len, "text_get not NULL");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(label);
+
+	return ret;
+}
+
+static int
+label_null_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *label;
+	const char *val;
+	int ret = 0;
+
+	label = ewl_label_new();
+
+	ewl_label_text_set(EWL_LABEL(label), "some text");
+	ewl_label_text_set(EWL_LABEL(label), NULL);
+
+	val = ewl_label_text_get(EWL_LABEL(label));
+	if (val)
+		snprintf(buf, len, "text_set_get %s instead of NULL", val);
+	else
+		ret = 1;
+
+	ewl_widget_destroy(label);
+
+	return ret;
+}
+
+static int
+label_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *label;
+	const char *val;
+	int ret = 0;
+
+	label = ewl_label_new();
+
+	ewl_label_text_set(EWL_LABEL(label), "some text");
+
+	val = ewl_label_text_get(EWL_LABEL(label));
+	if (strcmp(val, "some text"))
+		snprintf(buf, len, "text_get not NULL");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(label);
+
+	return ret;
+}
