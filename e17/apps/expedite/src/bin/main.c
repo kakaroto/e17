@@ -1098,7 +1098,6 @@ static int
 _profile_parse(int argc, char **argv)
 {
    int i;
-   int ok = 0;
 
    for (i = 1; i < argc; i++)
      {
