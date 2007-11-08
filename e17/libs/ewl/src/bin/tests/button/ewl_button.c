@@ -325,7 +325,7 @@ image_size_differ_test_set_get(char *buf, int len)
 	button = ewl_button_new();
 	ewl_button_image_size_set(EWL_BUTTON(button), 30, 24);
 	ewl_button_image_size_get(EWL_BUTTON(button), &w, &h);
-	if (w != 32 || h != 24) {
+	if (w != 30 || h != 24) {
 		snprintf(buf, len, "image_size_get width and height don't differ");
 		ret = 0;
 	}
