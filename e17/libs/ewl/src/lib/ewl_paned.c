@@ -336,6 +336,7 @@ void
 ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 {
 	int cw, ch, ww, wh;
+	Ewl_Paned_Size_Info *info;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -348,14 +349,24 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 
 	EWL_PANED(c)->new_panes = TRUE;
 
+	info = ewl_paned_size_info_get(EWL_PANED(c), w);
+
 	if (EWL_ORIENTATION_HORIZONTAL == EWL_PANED(c)->orientation)
 	{
-		cw += ww;
+		if (!info)
+			cw += ww;
+		else
+			cw += info->initial_size;
+
 		if (wh > ch) ch = wh;
 	}
 	else
 	{
-		ch += wh;
+		if (!info)
+			ch += wh;
+		else
+			ch += info->initial_size;
+
 		if (ww > cw) cw = ww;
 	}
 
@@ -376,6 +387,7 @@ void
 ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 {
 	int cw, ch, ww, wh;
+	Ewl_Paned_Size_Info *info;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -385,11 +397,22 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 
 	ewl_object_preferred_size_get(EWL_OBJECT(w), &ww, &wh);
 	ewl_object_preferred_inner_size_get(EWL_OBJECT(c), &cw, &ch);
+	info = ewl_paned_size_info_get(EWL_PANED(c), w);
 
 	if (EWL_ORIENTATION_HORIZONTAL == EWL_PANED(c)->orientation)
-		cw -= ww;
+	{
+		if (!info)
+			cw -= ww;
+		else
+			cw -= info->initial_size;
+	}
 	else
-		ch -= wh;
+	{
+		if (!info)
+			ch -= wh;
+		else
+			ch -= info->initial_size;
+	}
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c), cw, ch);
 	ewl_paned_grabbers_update(EWL_PANED(c));
