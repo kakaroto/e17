@@ -79,6 +79,8 @@ struct _Penguin
    Population *pop;
 };
 
+extern E_Module *penguins_mod;
+
 EAPI extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init(E_Module *m);

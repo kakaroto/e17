@@ -20,26 +20,30 @@ static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void _fill_data(Population *pop, E_Config_Dialog_Data *cfdata);
 static void _ilist_cb_selected(void *data);
 
-void
-_config_penguin_module(E_Container *con, Population *pop)
+EAPI E_Config_Dialog *
+e_int_config_penguins_module(E_Container *con, const char *params __UNUSED__)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
    char buf[4096];
-   
-   v = E_NEW(E_Config_Dialog_View, 1);
+   Population *pop;
 
-   if (v)
-     {
-        v->create_cfdata = _create_data;
-        v->free_cfdata = _free_data;
-        v->basic.apply_cfdata = _basic_apply_data;
-        v->basic.create_widgets = _basic_create_widgets;
-	
-	snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(pop->module));
-        cfd = e_config_dialog_new(con, D_("Penguins Module"), "Penguins", "_e_modules_penguins_config_dialog", buf, 0, v, pop);
-        pop->config_dialog = cfd;
-     }
+   pop = penguins_mod->data;
+   if (e_config_dialog_find("E", "_e_mod_penguins_config_dialog")) return NULL;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   
+   v->create_cfdata = _create_data;
+   v->free_cfdata = _free_data;
+   v->basic.apply_cfdata = _basic_apply_data;
+   v->basic.create_widgets = _basic_create_widgets;
+
+   snprintf(buf, sizeof(buf), "%s/e-module-penguins.edj", e_module_dir_get(pop->module));
+   cfd = e_config_dialog_new(con,
+			     _("Population Settings"),
+			     "E", "_e_mod_penguins_config_dialog",
+			     buf, 0, v, pop);
+   pop->config_dialog = cfd;
+   return cfd;
 }
 
 static void
@@ -83,35 +87,28 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    pop = cfd->data;
    o = e_widget_list_add(evas, 0, 0);
-
-   of = e_widget_framelist_add(evas, D_("Population Settings"), 0);
    
    ob = e_widget_label_add(evas, D_("Number of penguins:"));
-   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, ob, 1, 1, 0.5);
    ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 1, 50, 1, 0, NULL, &(cfdata->penguins_count), 200);
-   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, ob, 1, 1, 0.5);
    
    ob = e_widget_label_add(evas, D_("Zoom factor:"));
-   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, ob, 1, 1, 0.5);
    ob = e_widget_slider_add(evas, 1, 0, D_("%1.1f X"), 0.2, 3, 0.2, 0, &(cfdata->zoom), NULL, 200);
-   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, ob, 1, 1, 0.5);
    
    ob = e_widget_label_add(evas, D_("Transparency:"));
-   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, ob, 1, 1, 0.5);
    ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 50, 255, 1, 0, NULL, &(cfdata->alpha), 200);
-   e_widget_framelist_object_append(of, ob);
-   
-   
-   
-   
+   e_widget_list_object_append(o, ob, 1, 1, 0.5);
    
    //Lista
    ob = e_widget_label_add(evas, D_("Select population:"));
-   e_widget_framelist_object_append(of, ob);
+   e_widget_list_object_append(o, ob, 1, 1, 0.5);
    ol = e_widget_ilist_add(evas, 24, 24, &(cfdata->theme));
 
    e_widget_ilist_clear(ol);
-   e_widget_ilist_go(ol);
    
    Evas_List *l;
    int count;
@@ -127,9 +124,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
       if (name)
       {
          oi = edje_object_add(evas);
-         e_util_edje_icon_set(oi, "enlightenment/shelf_position_left");
          edje_object_file_set(oi, theme, "icon");
-         printf("TEMA: %s (%s)\n", name, cfdata->theme);
+         //printf("TEMA: %s (%s)\n", name, cfdata->theme);
          e_widget_ilist_append(ol, oi, name, 
                _ilist_cb_selected, theme, theme);
          if (strcmp(theme, cfdata->theme) == 0)
@@ -142,8 +138,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    }
    e_widget_ilist_go(ol);
    e_widget_min_size_set(ol, 155, 250);
-   e_widget_framelist_object_append(of, ol);
-   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   e_widget_list_object_append(o, ol, 1, 1, 0.5);
 
    return o;
 }

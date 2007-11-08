@@ -37,17 +37,27 @@ EAPI E_Module_Api e_modapi = {
    E_MODULE_API_VERSION,
    "Penguins"
 };
+EAPI E_Module *penguins_mod = NULL;
 
 EAPI void *
 e_modapi_init(E_Module *m)
 {
    Population *pop;
+   char buf[4096];
 
    /* Set up module's message catalogue */
    bindtextdomain(PACKAGE, LOCALEDIR);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    pop = _population_init(m);
+   
+   snprintf(buf, sizeof(buf), "%s/e-module-penguins.edj", e_module_dir_get(m));
+   e_configure_registry_category_add("appearance", 10, _("Appearance"), NULL, "enlightenment/appearance");
+   e_configure_registry_item_add("appearance/penguins", 150, _("Penguins"), NULL, buf, e_int_config_penguins_module);
+
+   penguins_mod = m;
+
+   
    return pop;
 }
 
