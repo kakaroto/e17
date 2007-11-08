@@ -44,6 +44,8 @@ static double       p_fps = 0.0;
 static void (*key_func) (char *key) = NULL;
 static void (*loop_func) (double t, int f) = NULL;
 
+static int run_all = 0;
+
 static void
 _ui_exit(void)
 {
@@ -367,8 +369,15 @@ _ui_setup(void)
 #undef UI
    _ui_menu_item_add("exit.png", "Exit", _ui_exit);
 
-   menu_active = 1;
-
+   if (run_all)
+     {
+	_ui_all();
+	_ui_exit();
+     }
+   else
+     {
+	menu_active = 1;
+     }
 }
 
 void
@@ -378,9 +387,9 @@ ui_args(int argc, char **argv)
 
    for (i = 1; i < argc; i++)
      {
-	if ((!strcmp(argv[i], "-e")) && (i < (argc - 1)))
+	if (!strcmp(argv[i], "-a"))
 	  {
-	     i++;
+	     run_all = 1;
 	  }
      }
    _ui_setup();
