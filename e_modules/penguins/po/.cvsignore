@@ -7,8 +7,8 @@ boldquot.sed
 en@boldquot.header
 en@quot.header
 insert-header.sin
-it.mo
+POTFILES
 penguins.pot
 quot.sed
 remove-potcdate.sin
-
+*.mo
