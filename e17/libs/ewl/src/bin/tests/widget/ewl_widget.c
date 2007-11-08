@@ -114,12 +114,16 @@ static void ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev,
 
 static int appearance_test_set_get(char *buf, int len);
 static int inheritance_test_set_get(char *buf, int len);
+static int internal_test_set_get(char *buf, int len);
+static int clipped_test_set_get(char *buf, int len);
 static int data_test_set_get(char *buf, int len);
 static int data_test_set_remove(char *buf, int len);
 
 static Ewl_Unit_Test widget_unit_tests[] = {
 		{"widget appearance set/get", appearance_test_set_get, -1, NULL},
 		{"widget inheritance set/get", inheritance_test_set_get, -1, NULL},
+		{"widget internal set/get", internal_test_set_get, -1, NULL},
+		{"widget clipped set/get", clipped_test_set_get, -1, NULL},
 		{"widget data set/get", data_test_set_get, -1, NULL},
 		{"widget data set/remove", data_test_set_remove, -1, NULL},
 		{NULL, NULL, -1, NULL}
@@ -267,6 +271,60 @@ inheritance_test_set_get(char *buf, int len)
 		snprintf(buf, len, "inheritance dosen't contain correct type");
 	else
 		ret = 1;
+
+	return ret;
+}
+
+static int
+internal_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	if (!ewl_widget_internal_is(w)) {
+		ewl_widget_internal_set(w, TRUE);
+		if (ewl_widget_internal_is(w)) {
+			ewl_widget_internal_set(w, FALSE);
+			if (ewl_widget_internal_is(w))
+				snprintf(buf, len, "internal flag not FALSE");
+			else
+				ret = 1;
+		}
+		else
+			snprintf(buf, len, "internal flag not TRUE");
+	}
+	else
+		snprintf(buf, len, "internal set after widget_init");
+
+	return ret;
+}
+
+static int
+clipped_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	if (ewl_widget_clipped_is(w)) {
+		ewl_widget_clipped_set(w, FALSE);
+		if (ewl_widget_clipped_is(w)) {
+			ewl_widget_clipped_set(w, TRUE);
+			if (!ewl_widget_clipped_is(w))
+				snprintf(buf, len, "clipped flag not TRUE");
+			else
+				ret = 1;
+		}
+		else
+			snprintf(buf, len, "clipped flag not FALSE");
+	}
+	else
+		snprintf(buf, len, "clipped not set after widget_init");
 
 	return ret;
 }
