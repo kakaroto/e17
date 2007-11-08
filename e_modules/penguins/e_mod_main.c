@@ -18,19 +18,20 @@
 
 /* module private routines */
 static int _is_inside_any_win(Population *pop, int x, int y, int ret_value);
-static Population    *_population_init(E_Module *m);
-static void          _population_shutdown(Population *pop);
-static int           _cb_animator(void *data);
-static void          _population_load(Population *pop);
-static void          _theme_load(Population *pop);
-static void          _start_walking_at(Penguin *tux, int at_y);
-static void          _start_climbing_at(Penguin *tux, int at_x);
-static void          _start_falling_at(Penguin *tux, int at_x);
-static void          _start_flying_at(Penguin *tux, int at_y);
-static void          _start_splatting_at(Penguin *tux, int at_y);
-static void          _start_custom_at(Penguin *tux, int at_y);
-//static void        _win_shape_change(void *data, E_Container_Shape *es, E_Container_Shape_Change ch);
-static void          _reborn(Penguin *tux);
+static Population *_population_init(E_Module *m);
+static void       _population_shutdown(Population *pop);
+static int        _cb_animator(void *data);
+static void       _population_load(Population *pop);
+static void       _theme_load(Population *pop);
+static void       _start_walking_at(Penguin *tux, int at_y);
+static void       _start_climbing_at(Penguin *tux, int at_x);
+static void       _start_falling_at(Penguin *tux, int at_x);
+static void       _start_flying_at(Penguin *tux, int at_y);
+static void       _start_splatting_at(Penguin *tux, int at_y);
+static void       _start_custom_at(Penguin *tux, int at_y);
+//static void     _win_shape_change(void *data, E_Container_Shape *es, E_Container_Shape_Change ch);
+static void       _reborn(Penguin *tux);
+static void       _cb_custom_end(void *data, Evas_Object *o, const char *emi, const char *src);
 
 /* public module routines. all modules must have these */
 EAPI E_Module_Api e_modapi = {
@@ -467,6 +468,15 @@ _cb_animator(void *data)
       {
          tux->x += ((double)tux->custom->h_speed / 100);
          tux->y += ((double)tux->custom->v_speed / 100);
+         if (!_is_inside_any_win(pop,
+               (int)tux->x+(tux->action->w/2),
+               (int)tux->y+tux->action->h+1,
+               _RET_NONE_VALUE))
+         {
+            edje_object_signal_callback_del(tux->obj,"custom_done","edje", _cb_custom_end);
+            _start_falling_at(tux, (int)tux->x+(tux->action->w/2));
+            tux->custom = NULL;
+         }
       }
       // ******  FALLER  ********
       else if (tux->action->id == ID_FALLER)
