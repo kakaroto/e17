@@ -875,7 +875,6 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const cha
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("text", text);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!w->theme_object)
@@ -947,7 +946,7 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 	 * Part key exists and the value is the same as the current value.
 	 */
 	if (match) {
-	       	if (!strcmp(text, match->value))
+	       	if (text && !strcmp(text, match->value))
 			DRETURN(DLEVEL_STABLE);
 
 		IF_FREE(match->value);
@@ -983,7 +982,7 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 	 * What should be the default if you enter NULL? A blank string?
 	 * Revert to the text specified in the Edje? Use blank for now.
 	 */
-	match->value = strdup(text ? text : "");
+	match->value = (text ? strdup(text) : NULL);
 	ewl_widget_appearance_part_text_apply(w, match->key, match->value);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
