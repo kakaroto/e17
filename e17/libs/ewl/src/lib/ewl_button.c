@@ -219,7 +219,8 @@ ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 		DRETURN(DLEVEL_STABLE);
 	}
 
-	if (!b->image_object) {
+	if (!b->image_object)
+	{
 		Ewl_Container *redir;
 
 		/*
@@ -300,12 +301,17 @@ ewl_button_image_size_set(Ewl_Button *b, int width, int height)
 void
 ewl_button_image_size_get(Ewl_Button *b, int *width, int *height)
 {
+	int w = 0, h = 0;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("b", b);
 	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
 
-	if (!b->image_object)
-		ewl_image_size_get(EWL_IMAGE(b->image_object), width, height);
+	if (b->image_object)
+		ewl_image_size_get(EWL_IMAGE(b->image_object), &w, &h);
+
+	if (width) *width = w;
+	if (height) *height = h;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
