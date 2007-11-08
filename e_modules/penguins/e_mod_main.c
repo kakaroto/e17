@@ -7,7 +7,7 @@
 
 
 #define CLIMBER_PROB 4 // 4 Means: one climber every 5 - 1 Means: all climber - !!Don't set to 0
-#define FLOATER_PROB 2 
+#define FALLING_PROB 5 
 #define MAX_FALLER_HEIGHT 300
 
 #define FLYER_PROB 1000 // every n animation cicle
@@ -713,24 +713,7 @@ _start_climbing_at(Penguin *tux, int at_x)
 static void 
 _start_falling_at(Penguin *tux, int at_x)
 {
-   if (_RAND(FLOATER_PROB))
-   {
-      //printf("Start floating...\n");
-      tux->action = evas_hash_find(tux->pop->actions, "Floater");
-      evas_object_resize(tux->obj, tux->action->w, tux->action->h);
-
-      if (tux->reverse)
-      {
-         tux->x = (double)(at_x - tux->action->w);
-         edje_object_signal_emit(tux->obj, "start_floating_left", "epenguins");
-      }
-      else
-      {
-         tux->x = (double)at_x;
-         edje_object_signal_emit(tux->obj, "start_floating_right", "epenguins");      
-      }
-   }
-   else
+   if (_RAND(FALLING_PROB))
    {
       //printf("Start falling...\n");
       tux->action = evas_hash_find(tux->pop->actions, "Faller");
@@ -745,6 +728,23 @@ _start_falling_at(Penguin *tux, int at_x)
       {
          tux->x = (double)at_x;
          edje_object_signal_emit(tux->obj, "start_falling_right", "epenguins");      
+      }
+   }
+   else
+   {
+      //printf("Start floating...\n");
+      tux->action = evas_hash_find(tux->pop->actions, "Floater");
+      evas_object_resize(tux->obj, tux->action->w, tux->action->h);
+
+      if (tux->reverse)
+      {
+         tux->x = (double)(at_x - tux->action->w);
+         edje_object_signal_emit(tux->obj, "start_floating_left", "epenguins");
+      }
+      else
+      {
+         tux->x = (double)at_x;
+         edje_object_signal_emit(tux->obj, "start_floating_right", "epenguins");      
       }
    }
    tux->faller_h = (int)tux->y;
