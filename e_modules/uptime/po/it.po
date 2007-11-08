@@ -41,7 +41,7 @@ msgstr "Configurazione"
 #: e_mod_main.c:565
 #, c-format
 msgid "up: %d days, %d:%02d:%02ld"
-msgstr "tempo di servizio: %d giorni, %d:%02d:%02d"
+msgstr "tempo di servizio: %d giorni, %d:%02d:%02ld"
 
 #: e_mod_main.c:572
 #, c-format
