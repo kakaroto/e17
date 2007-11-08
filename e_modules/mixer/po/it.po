@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Mixer\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-03 13:45+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-07 23:21+0100\n"
 "PO-Revision-Date: 2007-01-21 11:01+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,51 +14,53 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:52
-msgid "Mixer Configuration"
-msgstr "Configurazione di Mixer"
-
-#: e_mod_config.c:103
-msgid "Mixer Application"
-msgstr "Applicazione mixer"
-
-#: e_mod_config.c:104
-msgid "Launch Mixer App"
-msgstr "Lancia applicazione"
-
-#: e_mod_config.c:119
-msgid "Available Cards"
-msgstr "Schede disponibili"
-
-#: e_mod_config.c:139
-msgid "Available Mixers"
-msgstr "Controlli disponibili"
-
-#: e_mod_config.c:154
-msgid "Mixer Popup"
-msgstr "Popup di Mixer"
-
-#: e_mod_config.c:155
-msgid "Show Popup"
-msgstr "Mostra popup"
-
-#: e_mod_config.c:157
-msgid "Popup Speed"
-msgstr "Velocità popup"
-
-#: e_mod_config.c:159
-#, c-format
-msgid "%1.1f seconds"
-msgstr "%1.1f secondi"
-
-#: e_mod_main.c:173
+#: e_mod_keybindings.c:9
 msgid "Mixer"
 msgstr "Mixer"
 
-#: e_mod_main.c:710 e_mod_main.c:1141
-msgid "Volume"
-msgstr "Volume"
+#: e_mod_keybindings.c:10
+msgid "Decrease the volume"
+msgstr ""
 
-#: e_mod_main.c:732
-msgid "Mute"
-msgstr "Muto"
+#: e_mod_keybindings.c:11
+msgid "Increase the volume"
+msgstr ""
+
+#: e_mod_keybindings.c:12
+msgid "Mute the mixer"
+msgstr ""
+
+#: e_mod_main.c:261
+#, fuzzy
+msgid "Configuration"
+msgstr "Configurazione di Mixer"
+
+#~ msgid "Mixer Application"
+#~ msgstr "Applicazione mixer"
+
+#~ msgid "Launch Mixer App"
+#~ msgstr "Lancia applicazione"
+
+#~ msgid "Available Cards"
+#~ msgstr "Schede disponibili"
+
+#~ msgid "Available Mixers"
+#~ msgstr "Controlli disponibili"
+
+#~ msgid "Mixer Popup"
+#~ msgstr "Popup di Mixer"
+
+#~ msgid "Show Popup"
+#~ msgstr "Mostra popup"
+
+#~ msgid "Popup Speed"
+#~ msgstr "Velocità popup"
+
+#~ msgid "%1.1f seconds"
+#~ msgstr "%1.1f secondi"
+
+#~ msgid "Volume"
+#~ msgstr "Volume"
+
+#~ msgid "Mute"
+#~ msgstr "Muto"
