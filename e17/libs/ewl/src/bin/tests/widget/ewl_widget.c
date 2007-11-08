@@ -113,11 +113,13 @@ static void ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev,
 								void *data);
 
 static int appearance_test_set_get(char *buf, int len);
+static int inheritance_test_set_get(char *buf, int len);
 static int data_test_set_get(char *buf, int len);
 static int data_test_set_remove(char *buf, int len);
 
 static Ewl_Unit_Test widget_unit_tests[] = {
 		{"widget appearance set/get", appearance_test_set_get, -1, NULL},
+		{"widget inheritance set/get", inheritance_test_set_get, -1, NULL},
 		{"widget data set/get", data_test_set_get, -1, NULL},
 		{"widget data set/remove", data_test_set_remove, -1, NULL},
 		{NULL, NULL, -1, NULL}
@@ -244,6 +246,25 @@ appearance_test_set_get(char *buf, int len)
 	ewl_widget_appearance_set(w, "my_appearance");
 	if (strcmp("my_appearance", ewl_widget_appearance_get(w)))
 		snprintf(buf, len, "appearance_get dosen't match appearance_set");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+inheritance_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+	const char *my_class = "myclass";
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	ewl_widget_inherit(w, my_class);
+	if (!ewl_widget_type_is(w, my_class))
+		snprintf(buf, len, "inheritance dosen't contain correct type");
 	else
 		ret = 1;
 
