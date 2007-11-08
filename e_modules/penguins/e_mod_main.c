@@ -65,7 +65,10 @@ EAPI int
 e_modapi_shutdown(E_Module *m)
 {
    Population *pop;
-
+   
+   e_configure_registry_item_del("appearance/penguins");
+   e_configure_registry_category_del("appearance");
+   
    pop = m->data;
    if (pop)
    {
