@@ -13,4 +13,4 @@ echo "</div>\n";
 
 ?>
 
-<p align='right'><a href='p.php?p=news&l=en' title='Read archives'>Go back</a></p>
+<p><a href='p.php?p=news&l=en' title='Read archives'>Back</a></p>

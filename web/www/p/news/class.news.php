@@ -129,7 +129,7 @@ class news {
   }
 
   private function _get_localtime($timestamp) {
-    return strftime('%a %e %b %G  %I:%M %p', $timestamp);
+    return strftime('%b %e, %G at %I:%M %p', $timestamp);
   }
 }
 

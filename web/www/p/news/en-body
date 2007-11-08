@@ -1,4 +1,4 @@
-<h1>News</h1>
+<h1>Enlightenment News</h1>
 
 <?php
 require_once 'class.news.php';
@@ -12,17 +12,16 @@ foreach($list as $new)
    if (($new = $news->read_content($new)) !== NULL)
    {
      echo "<div class='post'>\n";
-     echo "<p class='news-date'>".$new['date']."</p>\n";
      echo "<p class='news-title'><a href='p.php?p=news/show&l=".$_GET['l']."&news_id=$new[id]'>".$new['title']."</a></p>";
      echo "<p class='tiny'><a href='mailto:".$new['email']."'>".$new['author']."</a> - ".$new['date']."</p>";
-     echo "<p class='news-content'>".$new['content']."</p>\n";
+     echo "<div class='news-content'>".$new['content']."</div>\n";
      echo "</div>\n";
    }
 }
 
 if ($news->has_archives() == true)
 {
-   echo "<p align='right'>more in the <a href='p.php?p=news/archives&l=".$_GET['l']."' title='Read archives'>archive</a></p>";
+   echo "<p><a href='p.php?p=news/archives&l=".$_GET['l']."' title='Read archives'>News archives</a></p>";
 }
 
 ?>

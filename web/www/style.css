@@ -34,11 +34,13 @@ td.tl {
 }
 
 div.content {
-   margin: 0 40px 0 40px;
+   margin: 0 auto 0 auto;
+   width: 80%;
+   text-align: justify;
 }
 
 div.main {
-   text-align             : left;
+   text-align             : justify;
    vertical-align         : top;
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #444444;
@@ -159,10 +161,10 @@ pre {
    font-family            : "Bitstream Vera Mono", "Vera Mono", "Trebuchet MS Mono", "Trebuchet Mono", "Tahoma Mono", mono;
    color                  : #000000;
    font-size              : 0.9em;
-   border                 : 1px dotted #eeeeee;
+   border                 : 1px dotted #bbb;
    text-align             : left;
    vertical-align         : middle;
-   padding                : 2em;
+   padding                : 5px;
    overflow               : auto;
 }
 
@@ -397,24 +399,8 @@ a.b:hover {
 
 .post {
    margin                 : 0 0 2.5em 40px;
-   border-left            : 1px solid #DDD;
+   border-left            : 1px solid #bbb;
    padding-left           : 2ex;
-   position               : relative;
-}
-
-html>body .news-date{
-   left                   : -11ex;
-}
-
-.news-date {
-   margin                 : 0;
-   text-align             : right;
-   width                  : 10ex;
-   position               : absolute;
-   left                   : -13ex;
-   font-size              : 90%;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #888888;
 }
 
 .news-title {
@@ -431,239 +417,19 @@ html>body .news-date{
 }
 
 .news-content {
-   text-align             : justify;
+   text-align: justify;
 }
 
-
-
-/* OLD CSS STUFF TO STEAL FROM */
-
-/*
-table.main {
-   border                 : 0;
-   cellpadding            : 8;
-   cellspacing            : 0;
+.news-latest-title {
+  margin-bottom: 0;
 }
 
-td.bx1 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/b1.png'); }
-td.bx1[class] { background-image:url("i/b1.png"); }
-td.bx2 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_top.png'); }
-td.bx2[class] { background-image:url("i/b2.png"); }
-td.bx3 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_trt.png'); }
-td.bx3[class] { background-image:url("i/b3.png"); }
-td.bx4 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_lef.png'); }
-td.bx4[class] { background-image:url("i/b4.png"); }
-td.bx5 {
-   background             : #fff;
-   text-align             : left;
-   vertical-align         : middle;
-}
-td.bx5b {
-   background             : #fff;
-   background-repeat      : no-repeat;
-   background-image       : url("i/card_bg2.png");
-   background-position    : bottom right;
-   text-align             : left;
-   vertical-align         : middle;
-}
-td.bx6 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_rig.png'); }
-td.bx6[class] { background-image:url("i/nav_rig.png"); }
-td.bx7 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_blf.png'); }
-td.bx7[class] { background-image:url("i/nav_blf.png"); }
-td.bx8 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_bot.png'); }
-td.bx8[class] { background-image:url("i/nav_bot.png"); }
-td.bx9 { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='i/nav_brt.png'); }
-td.bx9[class] { background-image:url("i/nav_brt.png"); }
-
-td.nav {
-   align                  : middle;
-   text-align             : center;
-   vertical-align         : top;
+.news-latest-date {
+  padding-left: 10px;
+  font-size: .8em;
 }
 
-td.navtop, td.navbottom {
-   align             : center;
-   text-align             : center;
-   vertical-align         : middle;
+.news-latest-body {
+  margin-top: 5px;
 }
 
-td.nav_img {
-   width                  : 10;
-   text-align             : center;
-   vertical-align         : middle;
-}
-
-td.nav_text {
-   text-align             : left;
-   vertical-align         : middle;
-}
-
-td.xsm_menu_category {
-   text-align             : left;
-   vertical-align         : middle;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #ccc;
-   font-size              : 12px;
-   font-weight            : bold;
-   white-space            : no-wrap;
-}
-
-table.menu {
-   border                 : 0;
-   cellpadding            : 0;
-   cellspacing            : 2;
-}
-
-table.menu2 {
-   border                 : 0;
-   cellpadding            : 0;
-   cellspacing            : 2;
-}
-
-td.title {
-   height                 : 24;
-   text-align             : center;
-   vertical-align         : middle;
-}
-
-td.body {
-   width                  : 100%;
-   height                 : *;
-   text-align             : center;
-   vertical-align         : top;
-}
-
-td.menu {
-   background             : #fff;
-   text-align             : left;
-   vertical-align         : middle;
-}
-
-
-td.nav_text a:link {
-   color                  : #444;
-   text-decoration        : none;
-}
-
-td.nav_text a:visited {
-   color                  : #444;
-   text-decoration        : none;
-}
-
-td.nav_text a:active {
-   color                  : #888;
-   text-decoration        : none;
-}
-
-td.nav_text a:hover {
-   color                  : #000;
-   text-decoration        : none;
-}
-
-font.xsm_menu_item {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #000;
-   font-size              : 11px;
-   white-space            : no-wrap;
-}
-
-font.xsm_menu_item_selected {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #000;
-   font-size              : 15px;
-   font-weight            : bold;
-   white-space            : no-wrap;
-}
-
-div.left {
-   float                  : left;
-   margin                 : 16px;
-   text-align             : center;
-   vertical-align         : middle;
-}
-
-div.right {
-   float                  : right;
-   margin                 : 16px;
-   text-align             : center;
-   vertical-align         : middle;
-}
-
-div.item {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   color                  : #000;
-   font-size              : 11px;
-   line-height            : 14px;
-   width                  : 100;
-   border                 : 1px solid #ccc;
-   text-align             : center;
-   vertical-align         : middle;
-   padding                : 8px;
-}
-
-div.img {
-   border                 : 1px solid #ccc;
-   text-align             : center;
-   vertical-align         : middle;
-   padding                : 0px;
-}
-
-img.shot  {
-   border                 : 0px;
-}
-
-td.newsdate {
-   background             : #000;
-   color                  : #fff;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   text-align             : left;
-   font-weight            : bold;
-   font-size              : 11px;
-   line-height            : 14px;
-   padding                : 4px;
-}
-
-td.newstitle {
-   background             : #000;
-   color                  : #fff;
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   text-align             : right;
-   font-weight            : bold;
-   font-size              : 11px;
-   line-height            : 14px;
-   padding                : 4px;
-}
-
-td.news {
-   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
-   text-align             : left;
-   font-size              : 11px;
-   line-height            : 14px;
-   padding                : 8px;
-}
-
-div.thumb {
-   float                  : left;
-   border                 : 0px;
-   text-align             : center;
-   vertical-align         : bottom;
-   padding                : 2px;
-   margin                 : 2px;
-}
-
-div.thumbsub {
-   border                 : 0px;
-   text-align             : center;
-   vertical-align         : middle;
-   padding                : 2px;
-   margin                 : 2px;
-}
-
-td.thumb {
-   border                 : 0px;
-   text-align             : center;
-   vertical-align         : bottom;
-   padding                : 0px;
-   margin                 : 2px;
-}
-*/
