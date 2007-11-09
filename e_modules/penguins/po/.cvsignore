@@ -11,4 +11,6 @@ POTFILES
 penguins.pot
 quot.sed
 remove-potcdate.sin
+stamp-po
+*.gmo
 *.mo

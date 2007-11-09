@@ -10,5 +10,7 @@ insert-header.sin
 quot.sed
 remove-potcdate.sin
 POTFILES
+stamp-po
+*.gmo
 *.mo
 *.pot
