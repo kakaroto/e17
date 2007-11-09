@@ -381,7 +381,8 @@ ev_redraw(void)
 
       //place engrave canvas
       evas_object_move(engrave_canvas, x, y);
-      evas_object_resize(engrave_canvas,w+1,h);  //This make engrave_canvas redraw
+      evas_object_resize(engrave_canvas, w+1, h);  
+      engrave_canvas_current_group_set(engrave_canvas, Cur.eg); //This make engrave_canvas redraw
 
       evas_object_show(engrave_canvas);
       evas_object_show(EV_fakewin);
