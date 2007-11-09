@@ -451,7 +451,7 @@ _epsilon_file_name(unsigned thumb_size, const char *hash, const char *ext, char 
 	dir_len = LEN_DIR_FAIL;
      }
 
-   strncpy(path, dir, path_size);
+   if (dir) strncpy(path, dir, path_size);
    path_size -= dir_len;
    snprintf(path + dir_len, path_size, "/%s.%s", hash, ext);
 }
