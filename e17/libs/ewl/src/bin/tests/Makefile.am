@@ -36,6 +36,7 @@ SUBDIRS				= \
 	modal \
 	mvc \
 	notebook \
+	object \
 	paned \
 	password \
 	pointer \
