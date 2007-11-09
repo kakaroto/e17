@@ -313,7 +313,7 @@ clipped_test_set_get(char *buf, int len)
 
 	if (ewl_widget_clipped_is(w)) {
 		ewl_widget_clipped_set(w, FALSE);
-		if (ewl_widget_clipped_is(w)) {
+		if (!ewl_widget_clipped_is(w)) {
 			ewl_widget_clipped_set(w, TRUE);
 			if (!ewl_widget_clipped_is(w))
 				snprintf(buf, len, "clipped flag not TRUE");
