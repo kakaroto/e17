@@ -59,8 +59,7 @@ static char *_action_string[ENGRAVE_ACTION_NUM] = {
         "SIGNAL_EMIT",
         "DRAG_VAL_SET",
         "DRAG_VAL_STEP",
-        "DRAG_VAL_PAGE",
-        "SCRIPT"
+        "DRAG_VAL_PAGE"
         };
 
 static char *_transition_string[ENGRAVE_TRANSITION_NUM] = {
