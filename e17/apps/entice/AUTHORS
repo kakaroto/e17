@@ -1,8 +1,0 @@
-Carsten Haitzler <raster@rasterman.com>
-  original main code
-Nolan Goodnight <n_goodnight@coloradocollege.edu>
-  extra key bindings
-Daniel Hulme <dh286@cam.ac.uk>
-  update to ecore2 and general code rewriting
-Corey Donohoe <atmos@atmos.org>
-  migration to edje and initial IPC subsystem
