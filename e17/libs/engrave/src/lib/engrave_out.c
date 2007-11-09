@@ -59,7 +59,8 @@ static char *_action_string[ENGRAVE_ACTION_NUM] = {
         "SIGNAL_EMIT",
         "DRAG_VAL_SET",
         "DRAG_VAL_STEP",
-        "DRAG_VAL_PAGE"
+        "DRAG_VAL_PAGE",
+        "SCRIPT"
         };
 
 static char *_transition_string[ENGRAVE_TRANSITION_NUM] = {
@@ -394,6 +395,10 @@ _engrave_output_program(Engrave_Program *program, void *data)
     case ENGRAVE_ACTION_SIGNAL_EMIT:
       engrave_out_data(out, "action", "%s \"%s\" \"%s\"",
             _action_string[action], state, state2);
+      break;
+
+    case ENGRAVE_ACTION_SCRIPT:
+      engrave_out_data(out, "action", "%s", _action_string[action]);
       break;
 
     case ENGRAVE_ACTION_NUM:

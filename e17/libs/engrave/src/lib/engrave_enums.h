@@ -82,6 +82,7 @@ enum _Engrave_Action
   ENGRAVE_ACTION_DRAG_VAL_SET, /**< Set the drag value of a given part */
   ENGRAVE_ACTION_DRAG_VAL_STEP, /**< Set the drag step of a given part */
   ENGRAVE_ACTION_DRAG_VAL_PAGE, /**< Set the drag page of a given part */
+  ENGRAVE_ACTION_SCRIPT, /**< Set the cript action of a given part */
   ENGRAVE_ACTION_NUM
 };
 
