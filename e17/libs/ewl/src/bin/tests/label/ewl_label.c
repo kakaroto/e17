@@ -122,7 +122,7 @@ label_test_set_get(char *buf, int len)
 
 	val = ewl_label_text_get(EWL_LABEL(label));
 	if (strcmp(val, "some text"))
-		snprintf(buf, len, "text_get not NULL");
+		snprintf(buf, len, "%s is not 'some text'", val);
 	else
 		ret = 1;
 
