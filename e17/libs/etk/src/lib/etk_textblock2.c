@@ -319,6 +319,14 @@ void etk_textblock2_insert_markup(Etk_Textblock2_Iter *iter, const char *markup_
    
    for (i = 0; markup_text[i] != '\0' && (length < 0 || i < length); i++)
    {
+      if (!text_start && !tag_start)
+      {
+         if (markup_text[i] == '<')
+            tag_start = &markup_text[i];
+         else
+            text_start = &markup_text[i];
+      }
+      
       if (text_start)
       {
          if (markup_text[i + 1] == '\0' || markup_text[i + 1] == '<' || (length >= 0 && (i + 1) >= length))
@@ -332,24 +340,25 @@ void etk_textblock2_insert_markup(Etk_Textblock2_Iter *iter, const char *markup_
       }
       else if (tag_start)
       {
-         if (markup_text[i] == '>')
+         if (markup_text[i + 1] == '\0' || markup_text[i] == '>' || (length >= 0 && (i + 1) >= length))
          {
             tag_end = &markup_text[i];
             etk_string_set_sized(string, tag_start, tag_end - tag_start + 1);
             
-            prev_node = iter->node;
-            node = etk_textblock2_node_add(iter);
-            etk_textblock2_node_format_set(node, prev_node->format);
+            if (iter->node->unicode_length > 0)
+            {
+               prev_node = iter->node;
+               node = etk_textblock2_node_add(iter);
+               etk_textblock2_node_format_set(node, prev_node->format);
+            }
+            else
+               node = iter->node;
             etk_textblock2_node_format_apply(node, etk_string_get(string));
             
             tag_start = NULL;
             tag_end = NULL;
          }
       }
-      else if (markup_text[i] == '<')
-         tag_start = &markup_text[i];
-      else
-         text_start = &markup_text[i];
    }
    
    etk_object_destroy(ETK_OBJECT(string));
@@ -998,7 +1007,7 @@ void etk_textblock2_node_format_apply(Etk_Textblock2_Node *node, const char *for
    if (!node || !format)
       return;
    
-   /* TODO! */
+   
 }
 
 /**************************
@@ -1854,6 +1863,14 @@ static void _etk_tb2_escaped_text_to_string(const char *text, int length, Etk_St
    
    for (i = 0; text[i] != '\0' && (length < 0 || i < length); i++)
    {
+      if (!text_start && !escape_start)
+      {
+         if (text[i] == '&')
+            escape_start = &text[i];
+         else
+            text_start = &text[i];
+      }
+      
       if (text_start)
       {
          if (text[i + 1] == '\0' || text[i + 1] == '&' || (length >= 0 && (i + 1) >= length))
@@ -1888,10 +1905,6 @@ static void _etk_tb2_escaped_text_to_string(const char *text, int length, Etk_St
             escape_end = NULL;
          }
       }
-      else if (text[i] == '&')
-         escape_start = &text[i];
-      else
-         text_start = &text[i];
    }
 }
 
