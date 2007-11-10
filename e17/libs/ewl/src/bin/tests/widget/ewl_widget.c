@@ -109,8 +109,7 @@ static int create_test(Ewl_Container *box);
 static void ewl_widget_cb_toggle(Ewl_Widget *w, void *ev, void *data);
 static void ewl_widget_cb_first_click(Ewl_Widget *w, void *ev, void *data);
 static void ewl_widget_cb_second_click(Ewl_Widget *w, void *ev, void *data);
-static void ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev,
-								void *data);
+static void ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev, void *data);
 
 static int appearance_test_set_get(char *buf, int len);
 static int inheritance_test_set_get(char *buf, int len);
@@ -119,6 +118,19 @@ static int clipped_test_set_get(char *buf, int len);
 static int data_test_set_get(char *buf, int len);
 static int data_test_set_remove(char *buf, int len);
 
+static int new(char *buf, int len);
+static int init(char *buf, int len);
+static int show(char *buf, int len);
+static int realize(char *buf, int len);
+static int realize_unrealize(char *buf, int len);
+static int parent_set(char *buf, int len);
+static int parent_set_show(char *buf, int len);
+static int reparent_unrealized(char *buf, int len);
+static int reparent_realized(char *buf, int len);
+static int realize_reveal(char *buf, int len);
+static int realize_reveal_obscure(char *buf, int len);
+static int realize_reveal_unrealize(char *buf, int len);
+
 static Ewl_Unit_Test widget_unit_tests[] = {
 		{"widget appearance set/get", appearance_test_set_get, -1, NULL},
 		{"widget inheritance set/get", inheritance_test_set_get, -1, NULL},
@@ -126,6 +138,18 @@ static Ewl_Unit_Test widget_unit_tests[] = {
 		{"widget clipped set/get", clipped_test_set_get, -1, NULL},
 		{"widget data set/get", data_test_set_get, -1, NULL},
 		{"widget data set/remove", data_test_set_remove, -1, NULL},
+		{"widget_new", new, -1, NULL},
+		{"widget_init state", init, -1, NULL},
+		{"widget_show state", show, -1, NULL},
+		{"widget_realize state", realize, -1, NULL},
+		{"widget realize unrealize state", realize_unrealize, -1, NULL},
+		{"widget_parent_set state", parent_set, -1, NULL},
+		{"widget parent set while shown state", parent_set_show, -1, NULL},
+		{"widget Reparent unrealized state", reparent_unrealized, -1, NULL},
+		{"widget reparent realized state", reparent_realized, -1, NULL},
+		{"widget realize then reveal state", realize_reveal, -1, NULL},
+		{"widget realize reveal obscure state", realize_reveal_obscure, -1, NULL},
+		{"widget realize reveal unrealize state", realize_reveal_unrealize, -1, NULL},
 		{NULL, NULL, -1, NULL}
 	};
 
@@ -382,3 +406,307 @@ data_test_set_remove(char *buf, int len)
 
 	return ret;
 }
+
+static int
+new(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	if (!w)
+		snprintf(buf, len, "Failed to create widget");
+	else
+	{
+		ewl_widget_destroy(w);
+		ret = 1;
+	}
+
+	return ret;
+}
+
+static int
+init(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	if (VISIBLE(w))
+		snprintf(buf, len, "Widget VISIBLE after _init");
+	else if (REALIZED(w))
+		snprintf(buf, len, "Widget REALIZED after _init");
+	else if (!OBSCURED(w))
+		snprintf(buf, len, "Widget !OBSCURED after _init");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+static int
+show(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_show(w);
+
+	if (!VISIBLE(w))
+		snprintf(buf, len, "Widget !VISIBLE after show");
+	else if (REALIZED(w))
+		snprintf(buf, len, "Widget REALIZED after show");
+	else if (!OBSCURED(w))
+		snprintf(buf, len, "Widget !OBSCURED after show");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+static int
+realize(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_realize(w);
+	if (VISIBLE(w))
+		snprintf(buf, len, "Widget VISIBLE after realize");
+	else if (!REALIZED(w))
+		snprintf(buf, len, "Widget !REALIZED after realize");
+	else if (!OBSCURED(w))
+		snprintf(buf, len, "Widget !OBSCURED after realize");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+static int
+realize_unrealize(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_realize(w);
+	ewl_widget_unrealize(w);
+
+	if (VISIBLE(w))
+		snprintf(buf, len, "Widget VISIBLE after realize/unrealize");
+	else if (REALIZED(w))
+		snprintf(buf, len, "Widget REALIZED after realize/unrealize");
+	else if (!OBSCURED(w))
+		snprintf(buf, len, "Widget !OBSCURED after realize/unrealize");
+	else 
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+static int
+parent_set(char *buf, int len)
+{
+	Ewl_Widget *w, *b;
+	int ret = 0;
+
+	b = ewl_box_new();
+	ewl_widget_show(b);
+
+	w = ewl_widget_new();
+	ewl_widget_parent_set(w, b);
+	if (!w->parent)
+		snprintf(buf, len, "Widget parent NULL after parent set");
+	else if (VISIBLE(w))
+		snprintf(buf, len, "Widget VISIBLE after parent set");
+	else if (REALIZED(w))
+		snprintf(buf, len, "Widget REALIZED after parent set");
+	else if (!OBSCURED(w))
+		snprintf(buf, len, "Widget !OBSCURED after parent set");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	ewl_widget_destroy(b);
+	return ret;
+}
+
+static int
+parent_set_show(char *buf, int len)
+{
+	Ewl_Widget *w, *b;
+	int ret = 0;
+
+	b = ewl_box_new();
+	ewl_widget_show(b);
+
+	w = ewl_widget_new();
+	ewl_widget_show(w);
+	ewl_widget_parent_set(w, b);
+
+	if (!w->parent)
+		snprintf(buf, len, "Parent NULL after parent_set");
+	else if (!VISIBLE(w))
+		snprintf(buf, len, "Widget !VISIBLE after parent_set");
+	else if (!REALIZED(w))
+		snprintf(buf, len, "Widget !REALIZED after parent_set");
+	else if (!OBSCURED(w))
+		snprintf(buf, len, "Widget !OBSCURED after parent_set");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	ewl_widget_destroy(b);
+	return ret;
+}
+
+static int
+reparent_unrealized(char *buf, int len)
+{
+	Ewl_Widget *w, *b1, *b2;
+	int ret = 0;
+
+	b1 = ewl_box_new();
+	ewl_widget_show(b1);
+
+	b2 = ewl_box_new();
+	ewl_widget_show(b2);
+
+	w = ewl_widget_new();
+	ewl_widget_parent_set(w, b1);
+	ewl_widget_parent_set(w, b2);
+
+	if (!w->parent)
+		snprintf(buf, len, "Widget parent NULL after reparent");
+	else if (w->parent != b2)
+		snprintf(buf, len, "Widget parent != b2 after reparent");
+	else if (VISIBLE(w))
+		snprintf(buf, len, "Widget VISIBLE after reparent");
+	else if (REALIZED(w))
+		snprintf(buf, len, "Widget REALIZED after reparent");
+	else if (!OBSCURED(w))
+		snprintf(buf, len, "Widget !OBSUCRED after reparent");
+	else 
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	ewl_widget_destroy(b1);
+	ewl_widget_destroy(b2);
+	return ret;
+}
+
+static int
+reparent_realized(char *buf, int len)
+{
+	Ewl_Widget *w, *b1, *b2;
+	int ret = 0;
+
+	b1 = ewl_box_new();
+	ewl_widget_show(b1);
+
+	b2 = ewl_box_new();
+	ewl_widget_show(b2);
+
+	w = ewl_widget_new();
+	ewl_widget_show(w);
+	ewl_widget_parent_set(w, b1);
+	ewl_widget_parent_set(w, b2);
+
+	if (!w->parent)
+		snprintf(buf, len, "Widget parent NULL after reparent");
+	else if (w->parent != b2)
+		snprintf(buf, len, "Widget parent != b2 after reparent");
+	else if (!VISIBLE(w))
+		snprintf(buf, len, "Widget !VISIBLE after reparent");
+	else if (!REALIZED(w))
+		snprintf(buf, len, "Widget !REALIZED after reparent");
+	else if (!OBSCURED(w))
+		snprintf(buf, len, "Widget !OBSUCRED after reparent");
+	else 
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	ewl_widget_destroy(b1);
+	ewl_widget_destroy(b2);
+
+	return ret;
+}
+
+static int
+realize_reveal(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_realize(w);
+	ewl_widget_reveal(w);
+
+	if (VISIBLE(w))
+		snprintf(buf, len, "Widget VISIBLE after realize/reveal");
+	else if (!REALIZED(w))
+		snprintf(buf, len, "Widget !REALIZED after realize/reveal");
+	else if (OBSCURED(w))
+		snprintf(buf, len, "Widget OBSCURED after realize/reveal");
+	else 
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+static int
+realize_reveal_obscure(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_realize(w);
+	ewl_widget_reveal(w);
+
+	if (VISIBLE(w))
+		snprintf(buf, len, "Widget VISIBLE after realize/reveal/obscure");
+	else if (!REALIZED(w))
+		snprintf(buf, len, "Widget !REALIZED after realize/reveal/obscure");
+	else if (!OBSCURED(w))
+		snprintf(buf, len, "Widget !OBSCURED after realize/reveal/obscure");
+	else 
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+static int
+realize_reveal_unrealize(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_realize(w);
+	ewl_widget_reveal(w);
+	ewl_widget_unrealize(w);
+
+	if (VISIBLE(w))
+		snprintf(buf, len, "Widget VISIBLE after realize/reveal/unrealize");
+	else if (REALIZED(w))
+		snprintf(buf, len, "Widget REALIZED after realize/reveal/unrealize");
+	else if (!OBSCURED(w))
+		snprintf(buf, len, "Widget !OBSCURED after realize/reveal/unrealize");
+	else 
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
