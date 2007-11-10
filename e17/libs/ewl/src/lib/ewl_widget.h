@@ -158,6 +158,7 @@ struct Ewl_Widget
 	Ewl_Pair_List theme_text;	/**< Overriding text in theme */
 };
 
+Ewl_Widget 	*ewl_widget_new(void);
 int 		 ewl_widget_init(Ewl_Widget *w);
 void		 ewl_widget_free(Ewl_Widget *w);
 
