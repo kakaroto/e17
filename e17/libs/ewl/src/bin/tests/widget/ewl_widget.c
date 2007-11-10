@@ -118,7 +118,7 @@ static int clipped_test_set_get(char *buf, int len);
 static int data_test_set_get(char *buf, int len);
 static int data_test_set_remove(char *buf, int len);
 
-static int new(char *buf, int len);
+static int widget_new(char *buf, int len);
 static int init(char *buf, int len);
 static int show(char *buf, int len);
 static int realize(char *buf, int len);
@@ -138,7 +138,7 @@ static Ewl_Unit_Test widget_unit_tests[] = {
 		{"widget clipped set/get", clipped_test_set_get, -1, NULL},
 		{"widget data set/get", data_test_set_get, -1, NULL},
 		{"widget data set/remove", data_test_set_remove, -1, NULL},
-		{"widget_new", new, -1, NULL},
+		{"widget_new", widget_new, -1, NULL},
 		{"widget_init state", init, -1, NULL},
 		{"widget_show state", show, -1, NULL},
 		{"widget_realize state", realize, -1, NULL},
@@ -408,7 +408,7 @@ data_test_set_remove(char *buf, int len)
 }
 
 static int
-new(char *buf, int len)
+widget_new(char *buf, int len)
 {
 	Ewl_Widget *w;
 	int ret = 0;
