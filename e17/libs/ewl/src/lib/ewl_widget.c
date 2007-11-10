@@ -886,7 +886,11 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const cha
 	if (!part || !*part)
 		part = ewl_theme_data_str_get(w, "textpart");
 
-	edje_object_part_text_set(w->theme_object, part, text);
+	/*
+	 * Set the text to empty if text is NULL. Edje defaults to using the
+	 * default value specified in the theme.
+	 */
+	edje_object_part_text_set(w->theme_object, part, (text ? text : ""));
 	edje_object_size_min_calc(w->theme_object, &nw, &nh);
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), (int)nw, (int)nh);
@@ -946,7 +950,7 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 	 * Part key exists and the value is the same as the current value.
 	 */
 	if (match) {
-	       	if (text && !strcmp(text, match->value))
+	       	if (text && match->value && !strcmp(text, match->value))
 			DRETURN(DLEVEL_STABLE);
 
 		IF_FREE(match->value);
