@@ -414,6 +414,7 @@ ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *ev, void *data)
 	char path[PATH_MAX];
 	Ewl_Widget *parent;
 	Ewl_Container *dir_parent;
+	Ecore_List *selected;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -447,12 +448,20 @@ ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *ev, void *data)
 					"icon,select", "icon,unselect");
 
 	if (fl->preview) ewl_widget_destroy(fl->preview);
-	fl->preview = ewl_filelist_selected_file_preview_get(EWL_FILELIST(data),
-						ewl_icon_label_get(EWL_ICON(w)));
+
+	selected = ewl_filelist_selected_files_get(EWL_FILELIST(fl));
+	if (ecore_list_count(selected) == 1)
+		fl->preview = ewl_filelist_selected_file_preview_get(EWL_FILELIST(data),
+							ewl_icon_label_get(EWL_ICON(w)));
+	else
+		fl->preview = ewl_filelist_multi_select_preview_get(EWL_FILELIST(data));
+
 	ewl_object_fill_policy_set(EWL_OBJECT(fl->preview),
 				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->preview);
 	ewl_widget_show(fl->preview);
+
+	ecore_list_destroy(selected);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

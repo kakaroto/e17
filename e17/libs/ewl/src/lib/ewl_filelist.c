@@ -446,6 +446,33 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 }
 
 /**
+ * @param fl: The filelist to work with
+ * @return Return the widget to display
+ * @brief Sets up a widget to display when multiple files selected
+ */
+Ewl_Widget *
+ewl_filelist_multi_select_preview_get(Ewl_Filelist *fl)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
+	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+
+	Ewl_Widget *box, *icon;
+
+	box = ewl_vbox_new();
+	ewl_widget_show(box);
+
+	icon = ewl_icon_simple_new();
+	ewl_box_orientation_set(EWL_BOX(icon),
+			EWL_ORIENTATION_VERTICAL);
+	ewl_icon_label_set(EWL_ICON(icon), "Multiple files selected");
+	ewl_container_child_append(EWL_CONTAINER(box), icon);
+	ewl_widget_show(icon);
+
+	DRETURN_PTR(box, DLEVEL_STABLE);
+}
+
+/**
  * @param fl: The filelist to set the selected files into
  * @param files: The Ecore_List of files to set
  * @return Returns no value.
@@ -490,6 +517,8 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
 
 	selected = ecore_list_new();
+	ecore_list_free_cb_set(selected, free);
+
 	ecore_list_first_goto(fl->selected);
 	while ((item = ecore_list_next(fl->selected)))
 	{
