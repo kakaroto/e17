@@ -1152,7 +1152,7 @@ _engine_args(int argc, char **argv)
    if (engine_xrender_x11_args(argc, argv))
      loop_func = engine_xrender_x11_loop;
 #endif
-#if HAVE_EVAS_SOFTWARE_X11
+#if HAVE_EVAS_SOFTWARE_16_X11
    if (engine_software_16_x11_args(argc, argv))
      loop_func = engine_software_16_x11_loop;
 #endif
