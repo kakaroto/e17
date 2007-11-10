@@ -1172,6 +1172,10 @@ _engine_args(int argc, char **argv)
    if (engine_direct3d_args(argc, argv))
      loop_func = engine_direct3d_loop;
 #endif
+#if HAVE_EVAS_FB
+   if (engine_fb_args(argc, argv))
+     loop_func = engine_fb_loop;
+#endif
    if ((!loop_func) || (!profile_ok))
      {
 	fprintf(stderr,
@@ -1209,6 +1213,9 @@ _engine_args(int argc, char **argv)
 #endif
 #if HAVE_EVAS_SOFTWARE_SDL
 	       	" sdl"
+#endif
+#if HAVE_EVAS_FB
+	       	" fb"
 #endif
 		"\n"
 		"Where PROFILE can be one of:\n"

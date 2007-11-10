@@ -41,6 +41,9 @@
 #if HAVE_EVAS_SOFTWARE_SDL
 #include "engine_software_sdl.h"
 #endif
+#if HAVE_EVAS_FB
+#include "engine_fb.h"
+#endif
 #include "ui.h"
 #include "about.h"
 

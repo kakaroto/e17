@@ -97,6 +97,16 @@ PKG_CHECK_EXISTS(evas-software-16-x11,
 )
 AM_CONDITIONAL(BUILD_SOFTWARE_16_X11, test "x$have_software_16_x11" = "xyes")
 
+dnl FB
+PKG_CHECK_EXISTS(evas-framebuffer,
+  [
+    AC_DEFINE(HAVE_EVAS_FB, 1, [Evas FB Engine Support])
+    have_fb="yes"
+  ],
+  [ have_fb="no" ]
+)
+AM_CONDITIONAL(BUILD_FB, test "x$have_fb" = "xyes")
+
 # TODO: Check availability of libs
 dnl DirectDraw
 PKG_CHECK_EXISTS(evas-software-ddraw,
@@ -188,6 +198,7 @@ echo "    Software DirectDraw..........: ${have_software_ddraw}"
 echo "    Software DirectDraw 16 bits..: ${have_software_16_ddraw}"
 echo "    Direct3D.....................: ${have_direct3d}"
 echo "    Software SDL.................: ${have_software_sdl}"
+echo "    FB...........................: ${have_fb}"
 echo
 echo "  Installation:"
 echo "    prefix.......................: ${prefix}"

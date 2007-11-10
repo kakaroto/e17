@@ -99,3 +99,9 @@ if BUILD_SOFTWARE_SDL
 expedite_SOURCES += \
 engine_software_sdl.c engine_software_sdl.h
 endif
+
+if BUILD_FB
+expedite_SOURCES += \
+engine_fb.c engine_fb.h
+endif
+
