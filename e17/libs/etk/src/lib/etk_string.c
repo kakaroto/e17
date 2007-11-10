@@ -150,9 +150,9 @@ Etk_String *etk_string_copy(const Etk_String *string)
  */
 const char *etk_string_get(Etk_String *string)
 {
-   if (!string)
-      return NULL;
-   return string->string ? string->string : _empty_string;
+   if (!string || !string->string)
+      return _empty_string;
+   return string->string;
 }
 
 /**

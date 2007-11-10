@@ -119,6 +119,7 @@ typedef struct Etk_Textblock_Format Etk_Textblock_Format;
 typedef struct Etk_Textblock_Iter Etk_Textblock_Iter;
 typedef struct Etk_Textblock_Node Etk_Textblock_Node;
 typedef struct Etk_Textblock2 Etk_Textblock2;
+typedef struct Etk_Textblock2_Format Etk_Textblock2_Format;
 typedef struct Etk_Textblock2_Iter Etk_Textblock2_Iter;
 typedef struct Etk_Textblock2_Line Etk_Textblock2_Line;
 typedef struct Etk_Textblock2_Node Etk_Textblock2_Node;

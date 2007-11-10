@@ -72,6 +72,7 @@ static Etk_Textblock2_Node      *_etk_tb2_node_split(Etk_Textblock2_Node *node, 
 
 static Etk_Bool                  _etk_tb2_iter_is_valid(Etk_Textblock2_Iter *iter);
 static void                      _etk_tb2_iter_reorder(Etk_Textblock2_Iter *iter, Etk_Textblock2_Iter *prev);
+static void                      _etk_tb2_escaped_text_to_string(const char *text, int length, Etk_String *string);
 
 static Etk_TB2_Object_Line      *_etk_tb2_object_line_get(Evas_Object *tbo, Etk_Textblock2_Line *line);
 static void                      _etk_tb2_object_line_add(Evas_Object *tbo, Etk_Textblock2_Line *line);
@@ -301,7 +302,57 @@ void etk_textblock2_insert(Etk_Textblock2_Iter *iter, const char *text, int leng
  */
 void etk_textblock2_insert_markup(Etk_Textblock2_Iter *iter, const char *markup_text, int length)
 {
-   /* TODO: implement etk_textblock2_insert_markup() */
+   Etk_Textblock2_Node *node, *prev_node;
+   const char *text_start, *text_end;
+   const char *tag_start, *tag_end;
+   Etk_String *string;
+   int i;
+   
+   if (!iter || !markup_text || !_etk_tb2_iter_is_valid(iter))
+      return;
+   
+   string = etk_string_new(NULL);
+   text_start = NULL;
+   text_end = NULL;
+   tag_start = NULL;
+   tag_end = NULL;
+   
+   for (i = 0; markup_text[i] != '\0' && (length < 0 || i < length); i++)
+   {
+      if (text_start)
+      {
+         if (markup_text[i + 1] == '\0' || markup_text[i + 1] == '<' || (length >= 0 && (i + 1) >= length))
+         {
+            text_end = &markup_text[i];
+            _etk_tb2_escaped_text_to_string(text_start, text_end - text_start + 1, string);
+            etk_textblock2_insert(iter, etk_string_get(string), etk_string_length_get(string));
+            text_start = NULL;
+            text_end = NULL;
+         }
+      }
+      else if (tag_start)
+      {
+         if (markup_text[i] == '>')
+         {
+            tag_end = &markup_text[i];
+            etk_string_set_sized(string, tag_start, tag_end - tag_start + 1);
+            
+            prev_node = iter->node;
+            node = etk_textblock2_node_add(iter);
+            etk_textblock2_node_format_set(node, prev_node->format);
+            etk_textblock2_node_format_apply(node, etk_string_get(string));
+            
+            tag_start = NULL;
+            tag_end = NULL;
+         }
+      }
+      else if (markup_text[i] == '<')
+         tag_start = &markup_text[i];
+      else
+         text_start = &markup_text[i];
+   }
+   
+   etk_object_destroy(ETK_OBJECT(string));
 }
 
 /**
@@ -712,8 +763,10 @@ Etk_Textblock2_Line *etk_textblock2_line_walk_next(Etk_Textblock2_Line *line)
  */
 Etk_Textblock2_Node *etk_textblock2_node_add(Etk_Textblock2_Iter *iter)
 {
-   Etk_Textblock2_Node *node;
+   Etk_Textblock2_Node *node, *new_node;
    Etk_Textblock2_Line *line;
+   Etk_Textblock2_Iter *it;
+   int pos;
    
    if (!iter || !_etk_tb2_iter_is_valid(iter))
       return NULL;
@@ -723,16 +776,31 @@ Etk_Textblock2_Node *etk_textblock2_node_add(Etk_Textblock2_Iter *iter)
    
    /* No need to split the current node if the iter is at the start of the node */
    if (iter->pos == 0)
-      return _etk_tb2_node_create(line, node->prev);
+      new_node = _etk_tb2_node_create(line, node->prev);
    /* No need to split the current node if the iter is at the end of the node */
    else if (iter->pos == node->unicode_length)
-      return _etk_tb2_node_create(line, node);
+      new_node = _etk_tb2_node_create(line, node);
    /* Otherwise, we split the current node and insert a new node between the two chunks */
    else
    {
       _etk_tb2_node_split(node, iter);
-      return _etk_tb2_node_create(line, node);
+      new_node = _etk_tb2_node_create(line, node);
    }
+   
+   /* Move the affected iterators to the new node */
+   node = iter->node;
+   pos = iter->pos;
+   for (it = iter->tb->iters; it; it = it->next)
+   {
+      if (it->node == node && it->pos == pos)
+      {
+         it->node = new_node;
+         it->pos = 0;
+         it->index = 0;
+      }
+   }
+   
+   return new_node;
 }
 
 /**
@@ -883,6 +951,104 @@ Etk_Textblock2_Node *etk_textblock2_node_walk_next(Etk_Textblock2_Node *node)
       return node->line->paragraph->next->lines->nodes;
    else
       return NULL;
+}
+
+/**
+ * @brief TODOC
+ */
+void etk_textblock2_node_format_set(Etk_Textblock2_Node *node, const Etk_Textblock2_Format *format)
+{
+   Evas_List *l;
+   
+   if (!node)
+      return;
+   
+   if (!format)
+   {
+      etk_textblock2_format_free(node->format);
+      node->format = NULL;
+   }
+   else
+   {
+      if (!node->format)
+         node->format = etk_textblock2_format_new();
+      etk_textblock2_format_copy(node->format, format);
+   }
+   
+   /* Update the corresponding line of each textblock-objects */
+   for (l = node->line->paragraph->tb->tbos; l; l = l->next)
+      _etk_tb2_object_line_update_queue(l->data, node->line, ETK_TRUE, ETK_TRUE);
+}
+
+/**
+ * @brief TODOC
+ */
+const Etk_Textblock2_Format *etk_textblock2_node_format_get(Etk_Textblock2_Node *node)
+{
+   if (!node)
+      return NULL;
+   return node->format;
+}
+
+/**
+ * @brief TODOC
+ */
+void etk_textblock2_node_format_apply(Etk_Textblock2_Node *node, const char *format)
+{
+   if (!node || !format)
+      return;
+   
+   /* TODO! */
+}
+
+/**************************
+ * Textblock-Format's funcs
+ **************************/
+
+/**
+ * @brief TODOC
+ */
+Etk_Textblock2_Format *etk_textblock2_format_new(void)
+{
+   Etk_Textblock2_Format *format;
+   
+   format = calloc(1, sizeof(Etk_Textblock2_Format));
+   etk_textblock2_format_reset(format);
+   
+   return format;
+}
+
+/**
+ * @brief TODOC
+ */
+void etk_textblock2_format_free(Etk_Textblock2_Format *format)
+{
+   if (!format)
+      return;
+   
+   free(format->font.face);
+   free(format);
+}
+
+/**
+ * @brief TODOC
+ */
+void etk_textblock2_format_reset(Etk_Textblock2_Format *format)
+{
+   /* TODO */
+}
+
+/**
+ * @brief TODOC
+ */
+void etk_textblock2_format_copy(Etk_Textblock2_Format *format1, const Etk_Textblock2_Format *format2)
+{
+   if (!format1 || !format2)
+      return;
+   
+   *format1 = *format2;
+   if (format2->font.face)
+      format1->font.face = strdup(format2->font.face);
 }
 
 /**************************
@@ -1378,7 +1544,7 @@ static Etk_Textblock2_Node *_etk_tb2_node_create(Etk_Textblock2_Line *line, Etk_
    
    node = malloc(sizeof(Etk_Textblock2_Node));
    node->line = line;
-   node->type = ETK_TEXTBLOCK2_TAG_DEFAULT;
+   node->format = NULL;
    node->text = NULL;
    node->unicode_length = 0;
    
@@ -1400,8 +1566,6 @@ static Etk_Textblock2_Node *_etk_tb2_node_create(Etk_Textblock2_Line *line, Etk_
       line->nodes = node;
    if (!node->next)
       line->last_node = node;
-   
-   /* TODO: set the default properties */
    
    return node;
 }
@@ -1467,7 +1631,7 @@ static void _etk_tb2_node_free(Etk_Textblock2_Node *node)
       _etk_tb2_object_line_update_queue(l->data, node->line, ETK_TRUE, ETK_TRUE);
    
    etk_object_destroy(ETK_OBJECT(node->text));
-   //TODO: free(node->font.face);
+   etk_textblock2_format_free(node->format);
    
    if (node->prev)
       node->prev->next = node->next;
@@ -1580,9 +1744,14 @@ static Etk_Textblock2_Node *_etk_tb2_node_split(Etk_Textblock2_Node *node, Etk_T
       }
    }
    
-   /* Copy the properties */
-   next_node->type = node->type;
-   next_node->params = node->params;
+   /* Copy the format */
+   if (node->format)
+   {
+      next_node->format = etk_textblock2_format_new();
+      etk_textblock2_format_copy(next_node->format, node->format);
+   }
+   else
+      node->format = NULL;
    
    /* Update the node's line in each textblock-objects */
    for (l = iter->tb->tbos; l; l = l->next)
@@ -1664,6 +1833,66 @@ static void _etk_tb2_iter_reorder(Etk_Textblock2_Iter *iter, Etk_Textblock2_Iter
       tb->iters = iter;
    if (!iter->next)
       tb->last_iter = iter;
+}
+
+/* Converts the escape sequences of the given text and store the result into "string" */
+static void _etk_tb2_escaped_text_to_string(const char *text, int length, Etk_String *string)
+{
+   const char *text_start, *text_end;
+   const char *escape_start, *escape_end;
+   const char *converted;
+   int i, j;
+   
+   if (!text || !string)
+      return;
+   
+   text_start = NULL;
+   text_end = NULL;
+   escape_start = NULL;
+   escape_end = NULL;
+   etk_string_truncate(string, 0);
+   
+   for (i = 0; text[i] != '\0' && (length < 0 || i < length); i++)
+   {
+      if (text_start)
+      {
+         if (text[i + 1] == '\0' || text[i + 1] == '&' || (length >= 0 && (i + 1) >= length))
+         {
+            text_end = &text[i];
+            etk_string_append_sized(string, text_start, text_end - text_start + 1);
+            text_start = NULL;
+            text_end = NULL;
+         }
+      }
+      else if (escape_start)
+      {
+         if (text[i + 1] == '\0' || text[i] == ';' || (length >= 0 && (i + 1) >= length))
+         {
+            converted = NULL;
+            escape_end = &text[i];
+            for (j = 0; _escape_sequences[j] != NULL; j++)
+            {
+               if (strncmp(escape_start, _escape_sequences[j], escape_end - escape_start + 1) == 0)
+               {
+                  converted = _escape_sequences[j + 1];
+                  break;
+               }
+            }
+            
+            if (converted)
+               etk_string_append(string, converted);
+            else
+               etk_string_append_sized(string, escape_start, escape_end - escape_start + 1);
+            
+            escape_start = NULL;
+            escape_end = NULL;
+         }
+      }
+      else if (text[i] == '&')
+         escape_start = &text[i];
+      else
+         text_start = &text[i];
+   }
 }
 
 /**************************
@@ -1764,7 +1993,7 @@ static void _etk_tb2_object_line_remove(Evas_Object *tbo, Etk_Textblock2_Line *l
       if (line->object_lines == object_line)
          line->object_lines = object_line->fellow_next;
       
-      /* MMM */
+      /* TODO: MMM?! */
       if (sd->first_visible == object_line)
       {
          sd->first_visible = sd->lines;
@@ -1850,7 +2079,7 @@ static void _etk_tb2_object_update(Evas_Object *tbo, int w, int h)
    
    for (line = sd->lines; line; line = line->next)
    {
-      if (time - start_time > 0.03 && num_updated > 20)
+      if (time - start_time > 0.03 && num_updated > 5)
          break;
       
       /* Update the geometry of the object-line if needed */
@@ -1929,6 +2158,9 @@ static void _etk_tb2_object_update(Evas_Object *tbo, int w, int h)
    
    if (line_obj)
       evas_object_del(line_obj);
+   
+   //sd->yoffset += 1;
+   //_etk_tb2_object_update_queue(tbo);
    
    printf("Nb lines: %d | Updated: %d | Wrapped: %d | Visible: %d | %f\n", num_lines, num_updated, num_wrapped, num_visible, time - start_time);
 }

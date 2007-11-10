@@ -70,6 +70,42 @@ typedef enum
 
 
 /** TODOC */
+struct Etk_Textblock2_Format
+{
+   /* Params for the <u> tag */
+   struct
+   {
+      Etk_Textblock2_Underline_Type type;
+      Etk_Color color1;
+      Etk_Color color2;
+   } u;
+
+   /* Params for the <s> tag */
+   struct
+   {
+      Etk_Color color;
+   } s;
+
+   /* Params for the <style> tag */
+   struct
+   {
+      Etk_Textblock2_Style_Type type;
+      Etk_Color color1;
+      Etk_Color color2;
+   } style;
+
+   /* Params for the <font> tag */
+   struct
+   {
+      char *face;
+      int size;
+      Etk_Color color;
+   } font;
+   
+   Etk_Textblock2_Tag_Type type;
+};
+
+/** TODOC */
 struct Etk_Textblock2_Node
 {
    /* private: */
@@ -77,40 +113,7 @@ struct Etk_Textblock2_Node
    Etk_Textblock2_Node *prev;
    Etk_Textblock2_Node *next;
 
-   struct
-   {
-      /* Params for the <u> tag */
-      struct
-      {
-         Etk_Textblock2_Underline_Type type;
-         Etk_Color color1;
-         Etk_Color color2;
-      } u;
-
-      /* Params for the <s> tag */
-      struct
-      {
-         Etk_Color color;
-      } s;
-
-      /* Params for the <style> tag */
-      struct
-      {
-         Etk_Textblock2_Style_Type type;
-         Etk_Color color1;
-         Etk_Color color2;
-      } style;
-
-      /* Params for the <font> tag */
-      struct
-      {
-         char *face;
-         int size;
-         Etk_Color color;
-      } font;
-
-   } params;
-   Etk_Textblock2_Tag_Type type;
+   Etk_Textblock2_Format *format;
 
    Etk_String *text;
    int unicode_length;
@@ -222,6 +225,15 @@ Etk_Textblock2_Node      *etk_textblock2_node_prev_get(Etk_Textblock2_Node *node
 Etk_Textblock2_Node      *etk_textblock2_node_next_get(Etk_Textblock2_Node *node);
 Etk_Textblock2_Node      *etk_textblock2_node_walk_prev(Etk_Textblock2_Node *node);
 Etk_Textblock2_Node      *etk_textblock2_node_walk_next(Etk_Textblock2_Node *node);
+void                      etk_textblock2_node_format_set(Etk_Textblock2_Node *node, const Etk_Textblock2_Format *format);
+const Etk_Textblock2_Format *etk_textblock2_node_format_get(Etk_Textblock2_Node *node);
+void                      etk_textblock2_node_format_apply(Etk_Textblock2_Node *node, const char *format);
+
+/* Textblock-format's funcs */
+Etk_Textblock2_Format    *etk_textblock2_format_new(void);
+void                      etk_textblock2_format_free(Etk_Textblock2_Format *format);
+void                      etk_textblock2_format_reset(Etk_Textblock2_Format *format);
+void                      etk_textblock2_format_copy(Etk_Textblock2_Format *format1, const Etk_Textblock2_Format *format2);
 
 /* Textblock-iter's funcs */
 Etk_Textblock2_Iter      *etk_textblock2_iter_new(Etk_Textblock2 *tb);
