@@ -84,6 +84,7 @@ static Ecore_List *tests = NULL;
 static Ecore_Path_Group *tests_path_group = NULL;
 static int window_count = 0;
 static int current_unit_test = 0;
+static int hide_passed = 0;
 static Ecore_Timer *unit_test_timer = NULL;
 
 static Ewl_Test *current_test = NULL;
@@ -111,10 +112,13 @@ main(int argc, char **argv)
 					"\t-all\tRun tests for all widgets\n"
 					"\t-help\tDisplay this help text\n"
 					"\t-list\tPrint available tests\n"
+					"\t-p\tHide passed test information\n"
 					"\t-unit\tRun unit tests\n",
 					argv[0]);
 			exit(0);
 		}
+		else if (!strncmp(argv[i], "-p", 2))
+			hide_passed = 1;
 		else if (!strncmp(argv[i], "-all", 4))
 			all_tests = 1;
 		else if (!strncmp(argv[i], "-unit", 5))
@@ -126,7 +130,7 @@ main(int argc, char **argv)
 	/* initialize the ewl library */
 	if (!ewl_init(&argc, argv))
 	{
-		printf("Unable to init EWL.\n");
+		printf("Unable to init Ewl.\n");
 		return 1;
 	}
 
@@ -135,7 +139,6 @@ main(int argc, char **argv)
 		printf("Unable to setup tests.\n");
 		return 1;
 	}
-
 
 	if (profile_tests) start_time = ecore_time_get();
 
@@ -153,14 +156,12 @@ main(int argc, char **argv)
 				if (unit_test)
 					ret = run_unit_tests(t);
 				else
-					run_window_test(t, MAIN_WIDTH,
-								MAIN_HEIGHT);
+					run_window_test(t, MAIN_WIDTH, MAIN_HEIGHT);
 
 				ran_test ++;
 				if (!all_tests) break;
 			}
 		}
-
 		if (all_tests) break;
 	}
 
@@ -302,11 +303,13 @@ run_unit_tests(Ewl_Test *test)
 	{
 		int ret;
 
-		printf("Running %s: ", test->unit_tests[i].name);
 		ret = test->unit_tests[i].func(buf, sizeof(buf));
-		printf("%s %s\n", (ret ? "PASSED" : "FAILED"),
-						(ret ? "" : buf));
-
+		if (!ret || !hide_passed)
+		{
+			printf("Running %s: ", test->unit_tests[i].name);
+			printf("%s %s\n", (ret ? "PASSED" : "FAILED"),
+							(ret ? "" : buf));
+		}
 		buf[0] = '\0';
 
 		if (!ret) failures++;
