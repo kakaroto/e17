@@ -3,12 +3,10 @@ AUTOMAKE_OPTIONS = foreign
 THEME = ShinyMetal
 THEME_FILES = $(THEME).etheme
 
-ethemedir = $(datadir)/themes
-
 BUILT_SOURCES = $(THEME).etheme
 EXTRA_DIST = etheme-$(THEME).spec $(THEME_FILES)
 
-THEME_DIR = $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes/$(THEME)
+THEME_DIR = $(DESTDIR)$(datadir)/e16/themes/$(THEME)
 
 install-data-local:
 	$(mkinstalldirs) $(THEME_DIR)
