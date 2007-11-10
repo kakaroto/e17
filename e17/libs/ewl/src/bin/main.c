@@ -57,6 +57,8 @@ static void text_parse(char *str);
 static void tutorial_parse(Ewl_Text *tutorial, char *str);
 static void setup_unit_tests(Ewl_Test *test);
 
+static void statusbar_label_update(Ewl_Widget *w, void *ev, void *data);
+
 static int ewl_test_cb_unit_test_timer(void *data);
 static void ewl_test_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
 static void ewl_test_cb_exit(Ewl_Widget *w, void *ev, void *data);
@@ -622,11 +624,31 @@ create_main_test_window(Ewl_Container *box)
 
 	o = ewl_statusbar_new();
 	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_statusbar_right_show(EWL_STATUSBAR(o));
 	ewl_statusbar_push(EWL_STATUSBAR(o), "Select Test");
 	ewl_widget_name_set(o, "statusbar");
 	ewl_widget_show(o);
 
+	/* create a label for the mouse coordinates */
+	o2 = ewl_label_new();
+	ewl_container_child_append(EWL_CONTAINER(o), o2);
+	ewl_callback_append(EWL_WIDGET(box), EWL_CALLBACK_MOUSE_MOVE,
+				statusbar_label_update, o2);
+	ewl_widget_show(o2);
+
 	return 1;
+}
+
+static void
+statusbar_label_update(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Event_Mouse *event;
+	char buf[265];
+
+	event = EWL_EVENT_MOUSE(ev);
+
+	snprintf(buf, sizeof(buf), "x: %d  y: %d", event->x, event->y);
+	ewl_label_text_set(EWL_LABEL(data), buf);
 }
 
 static void
