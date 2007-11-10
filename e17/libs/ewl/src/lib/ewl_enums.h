@@ -138,13 +138,13 @@ enum Ewl_Flags
 	/*
 	 * Flags to indicate queues this object is on.
 	 */
-	EWL_FLAG_QUEUED_CSCHEDULED = 0x100000,	/**< Configure scheduled */
-	EWL_FLAG_QUEUED_RSCHEDULED = 0x200000,	/**< Reveal scheduled */
-	EWL_FLAG_QUEUED_DSCHEDULED = 0x400000,	/**< Delete scheduled */
+	EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE = 0x100000,	/**< Configure scheduled */
+	EWL_FLAG_QUEUED_SCHEDULED_REVEAL = 0x200000,	/**< Reveal scheduled */
+	EWL_FLAG_QUEUED_SCHEDULED_DESTROY = 0x400000,	/**< Delete scheduled */
 
-	EWL_FLAG_QUEUED_CPROCESS = 0x800000,	/**< Configure in progress */
-	EWL_FLAG_QUEUED_RPROCESS = 0x1000000,	/**< Reveal in progress */
-	EWL_FLAG_QUEUED_DPROCESS = 0x2000000,	/**< Delete in progress */
+	EWL_FLAG_QUEUED_PROCESS_CONFIGURE = 0x800000,	/**< Configure in progress */
+	EWL_FLAG_QUEUED_PROCESS_REVEAL = 0x1000000,	/**< Reveal in progress */
+	EWL_FLAG_QUEUED_PROCESS_DESTROY = 0x2000000,	/**< Delete in progress */
 
 	/*
 	 * The state enum specifies the current state of a widget, ie. has it
@@ -201,10 +201,10 @@ enum Ewl_Flags
  * @def EWL_FLAGS_QUEUED_MASK
  * The queue mask
  */
-#define EWL_FLAGS_QUEUED_MASK (EWL_FLAG_QUEUED_CSCHEDULED | \
-		EWL_FLAG_QUEUED_RSCHEDULED | EWL_FLAG_QUEUED_DSCHEDULED | \
-		EWL_FLAG_QUEUED_CPROCESS | EWL_FLAG_QUEUED_RPROCESS | \
-		EWL_FLAG_QUEUED_DPROCESS)
+#define EWL_FLAGS_QUEUED_MASK (EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE | \
+		EWL_FLAG_QUEUED_SCHEDULED_REVEAL | EWL_FLAG_QUEUED_SCHEDULED_DESTROY | \
+		EWL_FLAG_QUEUED_PROCESS_CONFIGURE | EWL_FLAG_QUEUED_PROCESS_REVEAL | \
+		EWL_FLAG_QUEUED_PROCESS_DESTROY)
 
 /**
  * @def EWL_FLAGS_STATE_MASK

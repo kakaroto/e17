@@ -206,9 +206,9 @@ ewl_widget_realize(Ewl_Widget *w)
 	if (REALIZED(w))
 		DRETURN(DLEVEL_STABLE);
 
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED)
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL)
 			&& !ewl_object_queued_has(EWL_OBJECT(w),
-						EWL_FLAG_QUEUED_RPROCESS))
+						EWL_FLAG_QUEUED_PROCESS_REVEAL))
 		ewl_realize_cancel_request(w);
 
 	/*
@@ -218,10 +218,10 @@ ewl_widget_realize(Ewl_Widget *w)
 		ewl_widget_realize(w->parent);
 
 	else if (w->parent || ewl_object_toplevel_get(EWL_OBJECT(w))) {
-		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_RPROCESS);
+		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_PROCESS_REVEAL);
 		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
 		ewl_object_queued_remove(EWL_OBJECT(w),
-					 EWL_FLAG_QUEUED_RPROCESS);
+					 EWL_FLAG_QUEUED_PROCESS_REVEAL);
 
 		ewl_object_visible_add(EWL_OBJECT(w),
 					EWL_FLAG_VISIBLE_REALIZED);
@@ -249,7 +249,7 @@ ewl_widget_unrealize(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
 		ewl_realize_cancel_request(w);
 
 	if (!REALIZED(w))
@@ -314,7 +314,7 @@ void ewl_widget_obscure(Ewl_Widget *w)
 	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
 
 	if (REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
-				EWL_FLAG_QUEUED_RSCHEDULED))
+				EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
 		ewl_callback_call(w, EWL_CALLBACK_OBSCURE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -375,7 +375,7 @@ ewl_widget_hide(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
 		ewl_realize_cancel_request(w);
 
 	/*

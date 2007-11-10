@@ -552,18 +552,18 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * Used to determine if a widget has been destroyed
  */
 #define DESTROYED(o) (ewl_object_queued_has(EWL_OBJECT(o), \
-					EWL_FLAG_QUEUED_DSCHEDULED) \
+					EWL_FLAG_QUEUED_SCHEDULED_DESTROY) \
 			|| ewl_object_queued_has(EWL_OBJECT(o), \
-					EWL_FLAG_QUEUED_DPROCESS))
+					EWL_FLAG_QUEUED_PROCESS_DESTROY))
 
 /**
  * @def CONFIGURED(o)
  * Used to determine if a widget is scheduled for configure
  */
 #define CONFIGURED(o) (ewl_object_queued_has(EWL_OBJECT(o), \
-					EWL_FLAG_QUEUED_CSCHEDULED) \
+					EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE) \
 			|| ewl_object_queued_has(EWL_OBJECT(o), \
-					EWL_FLAG_QUEUED_CPROCESS))
+					EWL_FLAG_QUEUED_PROCESS_CONFIGURE))
 
 /**
  * @def DISABLED(o)

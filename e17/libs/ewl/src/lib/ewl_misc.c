@@ -750,9 +750,9 @@ ewl_configure_request(Ewl_Widget * w)
 	 * Widget scheduled for destruction, configuration, or is being called
 	 * within a configure callback.
 	 */
-	if (ewl_object_queued_has(o, (EWL_FLAG_QUEUED_DSCHEDULED |
-				EWL_FLAG_QUEUED_CSCHEDULED |
-				EWL_FLAG_QUEUED_CPROCESS)))
+	if (ewl_object_queued_has(o, (EWL_FLAG_QUEUED_SCHEDULED_DESTROY |
+				EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE |
+				EWL_FLAG_QUEUED_PROCESS_CONFIGURE)))
 		DRETURN(DLEVEL_STABLE);
 
 	/*
@@ -763,7 +763,7 @@ ewl_configure_request(Ewl_Widget * w)
 	while (search->parent) {
 		search = search->parent;
 		if (ewl_object_queued_has(EWL_OBJECT(search),
-					EWL_FLAG_QUEUED_CSCHEDULED))
+					EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE))
 			DRETURN(DLEVEL_TESTING);
 	}
 
@@ -771,7 +771,7 @@ ewl_configure_request(Ewl_Widget * w)
 	 * Verify top level widget is not queued for configure.
 	 */
 	if (ewl_object_queued_has(EWL_OBJECT(search),
-				EWL_FLAG_QUEUED_CSCHEDULED))
+				EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE))
 		DRETURN(DLEVEL_TESTING);
 
 	/*
@@ -785,7 +785,7 @@ ewl_configure_request(Ewl_Widget * w)
 	 * No parent of this widget is queued so add it to the queue. All
 	 * children widgets should have been removed by this point.
 	 */
-	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
+	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE);
 
 	queue_buffer = ecore_list_last_goto(configure_active);
 
@@ -836,7 +836,7 @@ ewl_configure_queue_widget_run(Ewl_Widget *w)
 	 * Remove the flag that the widget is scheduled for
 	 * configuration.
 	 */
-	ewl_object_queued_remove(EWL_OBJECT(w), EWL_FLAG_QUEUED_CSCHEDULED);
+	ewl_object_queued_remove(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE);
 
 	/*
 	 * Items that are off screen should be queued to give up their
@@ -851,11 +851,11 @@ ewl_configure_queue_widget_run(Ewl_Widget *w)
 		if (OBSCURED(w))
 			ecore_list_prepend(reveal_list, w);
 
-		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_CPROCESS);
+		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_PROCESS_CONFIGURE);
 		if (REALIZED(w) && VISIBLE(w) && !OBSCURED(w))
 			ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
 		ewl_object_queued_remove(EWL_OBJECT(w),
-			EWL_FLAG_QUEUED_CPROCESS);
+			EWL_FLAG_QUEUED_PROCESS_CONFIGURE);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -918,7 +918,7 @@ ewl_configure_cancel_request(Ewl_Widget *w)
 			tmp = queue_buffer->buffer[i];
 			if (tmp == w) {
 				ewl_object_queued_remove(EWL_OBJECT(w),
-							 EWL_FLAG_QUEUED_CSCHEDULED);
+							 EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE);
 				if (i < queue_buffer->end - 1)
 					memmove(queue_buffer->buffer + i,
 						queue_buffer->buffer + i + 1,
@@ -946,7 +946,7 @@ ewl_realize_request(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED))
+	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
 		DRETURN(DLEVEL_STABLE);
 
 	if (!ewl_object_flags_get(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL)) {
@@ -955,13 +955,13 @@ ewl_realize_request(Ewl_Widget *w)
 			DRETURN(DLEVEL_STABLE);
 
 		if (!ewl_object_queued_has(EWL_OBJECT(o),
-				EWL_FLAG_QUEUED_RPROCESS)) {
+				EWL_FLAG_QUEUED_PROCESS_REVEAL)) {
 			if (!REALIZED(o))
 				DRETURN(DLEVEL_STABLE);
 		}
 	}
 
-	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_RSCHEDULED);
+	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL);
 	ecore_list_append(realize_list, w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -986,7 +986,7 @@ ewl_realize_cancel_request(Ewl_Widget *w)
 	if (ecore_list_current(realize_list) == w)
 	{
 		ewl_object_queued_remove(EWL_OBJECT(w),
-					 EWL_FLAG_QUEUED_RSCHEDULED);
+					 EWL_FLAG_QUEUED_SCHEDULED_REVEAL);
 		ecore_list_remove(realize_list);
 	}
 
@@ -1014,10 +1014,10 @@ ewl_realize_queue(void)
 	while ((w = ecore_list_first_remove(realize_list))) {
 		if (VISIBLE(w) && !REALIZED(w)) {
 			ewl_object_queued_add(EWL_OBJECT(w),
-						EWL_FLAG_QUEUED_RPROCESS);
+						EWL_FLAG_QUEUED_PROCESS_REVEAL);
 			ewl_widget_realize(EWL_WIDGET(w));
 			ewl_object_queued_remove(EWL_OBJECT(w),
-						EWL_FLAG_QUEUED_RPROCESS);
+						EWL_FLAG_QUEUED_PROCESS_REVEAL);
 			ecore_list_prepend(child_add_list, w);
 		}
 	}
@@ -1047,7 +1047,7 @@ ewl_realize_queue(void)
 		 * Indicate widget no longer on the realize queue.
 		 */
 		ewl_object_queued_remove(EWL_OBJECT(w),
-					 EWL_FLAG_QUEUED_RSCHEDULED);
+					 EWL_FLAG_QUEUED_SCHEDULED_REVEAL);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1074,7 +1074,7 @@ ewl_destroy_request(Ewl_Widget *w)
 	if (CONFIGURED(w))
 		ewl_configure_cancel_request(w);
 
-	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_DSCHEDULED);
+	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_DESTROY);
 
 	/*
 	 * Must prepend to ensure children are freed before parents.
@@ -1148,7 +1148,7 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
 	while ((cleanup < EWL_GC_LIMIT) &&
 			(w = ecore_list_first_remove(destroy_list))) {
 		if (ewl_object_queued_has(EWL_OBJECT(w),
-					  EWL_FLAG_QUEUED_CSCHEDULED))
+					  EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE))
 			ewl_configure_cancel_request(w);
 
 		ewl_callback_call(w, EWL_CALLBACK_DESTROY);

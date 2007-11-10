@@ -654,7 +654,7 @@ ewl_container_child_resize(Ewl_Widget *w, int size, Ewl_Orientation o)
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
 	if (!size || !REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
-						EWL_FLAG_QUEUED_RSCHEDULED))
+						EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
 		DRETURN(DLEVEL_STABLE);
 
 	c = EWL_CONTAINER(w->parent);
