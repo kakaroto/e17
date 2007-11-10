@@ -1,19 +1,5 @@
 #include "main.h"
 
-
-#ifndef HAVE_SOFTWARE_DDRAW
-int
-engine_software_ddraw_args(int argc, char **argv)
-{
-  fprintf(stderr, "ERROR: No Software DirectDraw Engine built\n");
-  return 0;
-}
-
-void
-engine_software_ddraw_loop(void)
-{
-}
-#else
 #include <windows.h>
 #include <windowsx.h>
 #include <ddraw.h>
@@ -374,5 +360,3 @@ engine_software_ddraw_loop(void)
 
    goto again;
 }
-
-#endif /* HAVE_SOFTWARE_DDRAW */

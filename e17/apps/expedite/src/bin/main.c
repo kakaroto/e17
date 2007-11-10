@@ -1136,24 +1136,42 @@ _engine_args(int argc, char **argv)
 
    /* FIXME: parse args for geometry, engine etc. */
    profile_ok = _profile_parse(argc, argv);
+#if HAVE_EVAS_SOFTWARE_X11
    if (engine_software_x11_args(argc, argv))
      loop_func = engine_software_x11_loop;
+#endif
+#if HAVE_EVAS_OPENGL_GLEW
    if (engine_gl_glew_args(argc, argv))
      loop_func = engine_gl_glew_loop;
+#endif
+#if HAVE_EVAS_OPENGL_X11
    if (engine_gl_x11_args(argc, argv))
      loop_func = engine_gl_x11_loop;
+#endif
+#if HAVE_EVAS_XRENDER_X11
    if (engine_xrender_x11_args(argc, argv))
      loop_func = engine_xrender_x11_loop;
+#endif
+#if HAVE_EVAS_SOFTWARE_X11
    if (engine_software_16_x11_args(argc, argv))
      loop_func = engine_software_16_x11_loop;
+#endif
+#if HAVE_EVAS_SOFTWARE_DDRAW
    if (engine_software_ddraw_args(argc, argv))
      loop_func = engine_software_ddraw_loop;
+#endif
+#if HAVE_EVAS_SOFTWARE_16_DDRAW
    if (engine_software_16_ddraw_args(argc, argv))
      loop_func = engine_software_16_ddraw_loop;
+#endif
+#if HAVE_EVAS_SOFTWARE_SDL
    if (engine_software_sdl_args(argc, argv))
      loop_func = engine_software_sdl_loop;
+#endif
+#if HAVE_EVAS_DIRECT3D
    if (engine_direct3d_args(argc, argv))
      loop_func = engine_direct3d_loop;
+#endif
    if ((!loop_func) || (!profile_ok))
      {
 	fprintf(stderr,
@@ -1164,7 +1182,35 @@ _engine_args(int argc, char **argv)
 		"  -p PROFILE\n"
 		"\n"
 		"Where ENGINE can be one of:\n"
-		"  x11 xr gl-glew gl x11-16 ddraw ddraw-16 direct3d sdl\n"
+		" "
+#if HAVE_EVAS_SOFTWARE_X11
+	       	" x11"
+#endif
+#if HAVE_EVAS_XRENDER_X11
+	       	" xr"
+#endif
+#if HAVE_EVAS_OPENGL_GLEW
+	       	" gl-glew"
+#endif
+#if HAVE_EVAS_OPENGL_X11
+	       	" gl"
+#endif
+#if HAVE_EVAS_SOFTWARE_16_X11
+	       	" x11-16"
+#endif
+#if HAVE_EVAS_SOFTWARE_DDRAW
+	       	" ddraw"
+#endif
+#if HAVE_EVAS_SOFTWARE_16_DDRAW
+	       	" ddraw-16"
+#endif
+#if HAVE_EVAS_DIRECT3D
+	       	" direct3d"
+#endif
+#if HAVE_EVAS_SOFTWARE_SDL
+	       	" sdl"
+#endif
+		"\n"
 		"Where PROFILE can be one of:\n"
 		"  qvga qvga-p vga vga-p wvga wvga-p svga svga-p xga xga-p wxga wxga-p\n"
 		"  n800\n"

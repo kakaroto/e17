@@ -1,19 +1,5 @@
 #include "main.h"
 
-
-#ifndef HAVE_EVAS_GL_GLEW
-int
-engine_gl_glew_args(int argc, char **argv)
-{
-  fprintf(stderr, "ERROR: No GL Glew Engine built\n");
-  return 0;
-}
-
-void
-engine_gl_glew_loop(void)
-{
-}
-#else
 #include <windows.h>
 #include <windowsx.h>
 #include <GL/glew.h>
@@ -321,5 +307,3 @@ engine_gl_glew_loop(void)
 
    goto again;
 }
-
-#endif /* HAVE_EVAS_GL_GLEW */

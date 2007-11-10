@@ -1,28 +1,7 @@
 #include "main.h"
 
-
-#ifndef HAVE_DIRECT3D
-
-
-extern "C" {
-
-int
-engine_direct3d_args(int argc, char **argv)
-{
-  fprintf(stderr, "ERROR: No Direct3D Engine built\n");
-  return 0;
-}
-
-void
-engine_direct3d_loop(void)
-{
-}
-
-}
-
-#else
-# include <windowsx.h>
-# include <Evas_Engine_Direct3D.h>
+#include <windowsx.h>
+#include <Evas_Engine_Direct3D.h>
 
 
 static HWND window;
@@ -388,5 +367,3 @@ engine_direct3d_loop(void)
 
 
 }
-
-#endif /* HAVE_DIRECT3D */

@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = -I$(includedir) \
 	   -I$(top_srcdir) \
 	   -I$(top_srcdir)/src/bin \
-	   @EVAS_CFLAGS@ @x_cflags@ @sdl_cflags@ \
+	   @EVAS_CFLAGS@ @x_cflags@ @SDL_CFLAGS@ \
 	   -DPACKAGE_BIN_DIR=\"@PACKAGE_BIN_DIR@\" \
 	   -DPACKAGE_LIB_DIR=\"@PACKAGE_LIB_DIR@\" \
 	   -DPACKAGE_DATA_DIR=\"@PACKAGE_DATA_DIR@\"
@@ -11,15 +11,6 @@ bin_PROGRAMS = expedite
 
 expedite_SOURCES = \
 main.c main.h \
-engine_software_x11.c engine_software_x11.h \
-engine_gl_glew.c engine_gl_glew.h \
-engine_gl_x11.c engine_gl_x11.h \
-engine_xrender_x11.c engine_xrender_x11.h \
-engine_software_16_x11.c engine_software_16_x11.h \
-engine_software_ddraw.c engine_software_ddraw.h \
-engine_software_16_ddraw.c engine_software_16_ddraw.h \
-engine_direct3d.cpp engine_direct3d.h \
-engine_software_sdl.c engine_software_sdl.h \
 ui.c ui.h \
 about.c about.h \
 tests.h \
@@ -62,4 +53,49 @@ image_blend_occlude2_very_many.c \
 image_blend_occlude3_very_many.c \
 poly_blend.c
 
-expedite_LDFLAGS = @EVAS_LIBS@ @sdl_libs@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @glew_libs@ -lm
+expedite_LDFLAGS = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @glew_libs@ -lm
+
+if BUILD_SOFTWARE_X11
+expedite_SOURCES += \
+engine_software_x11.c engine_software_x11.h
+endif
+
+if BUILD_OPENGL_X11
+expedite_SOURCES += \
+engine_gl_x11.c engine_gl_x11.h
+endif
+
+if BUILD_SOFTWARE_16_X11
+expedite_SOURCES += \
+engine_software_16_x11.c engine_software_16_x11.h
+endif
+
+if BUILD_XRENDER_X11
+expedite_SOURCES += \
+engine_xrender_x11.c engine_xrender_x11.h
+endif
+
+if BUILD_OPENGL_GLEW
+expedite_SOURCES += \
+engine_gl_glew.c engine_gl_glew.h
+endif
+
+if BUILD_SOFTWARE_DDRAW
+expedite_SOURCES += \
+engine_software_ddraw.c engine_software_ddraw.h
+endif
+
+if BUILD_SOFTWARE_16_DDRAW
+expedite_SOURCES += \
+engine_software_16_ddraw.c engine_software_16_ddraw.h
+endif
+
+if BUILD_DIRECT3D
+expedite_SOURCES += \
+engine_direct3d.cpp engine_direct3d.h
+endif
+
+if BUILD_SOFTWARE_SDL
+expedite_SOURCES += \
+engine_software_sdl.c engine_software_sdl.h
+endif

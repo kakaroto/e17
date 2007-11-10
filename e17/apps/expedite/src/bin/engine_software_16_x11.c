@@ -1,17 +1,5 @@
 #include "main.h"
-#ifndef HAVE_SOFTWARE_16_X11
-int
-engine_software_16_x11_args(int argc, char **argv)
-{
-   fprintf(stderr, "ERROR: No Software 16bit X11 Engine built\n");
-   return 0;
-}
 
-void
-engine_software_16_x11_loop(void)
-{
-}
-#else
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <Evas_Engine_Software_16_X11.h>
@@ -200,4 +188,3 @@ engine_software_16_x11_loop(void)
      }
    goto again;
 }
-#endif

@@ -46,83 +46,120 @@ AC_SUBST(PACKAGE_DATA_DIR)
 
 PKG_CHECK_MODULES([EVAS], evas)
 
-PCFLAGS=$CFLAGS
-CFLAGS="$EVAS_CFLAGS $CFLAGS"
-
-have_glew_opengl="no"
-AC_CHECK_HEADER(Evas_Engine_GL_Glew.h,
-  [ AC_DEFINE(HAVE_EVAS_GL_GLEW, 1, [Evas GL Glew Engine Support])
-    have_glew_opengl="yes"
-    glew_libs="-lglew32 -lgdi32" ],
-  [ dummy=no ],
-  [ #include <Evas.h> ]
+dnl OpenGL GLEW
+PKG_CHECK_EXISTS(evas-opengl-glew,
+  [
+    AC_DEFINE(HAVE_EVAS_OPENGL_GLEW, 1, [Evas GL Glew Engine Support])
+    have_opengl_glew="yes"
+    glew_libs="-lglew32 -lgdi32"
+  ],
+  [ have_opengl_glew="no" ]
 )
+AM_CONDITIONAL(BUILD_OPENGL_GLEW, test "x$have_opengl_glew" = "xyes")
 
-have_xlib_opengl="no"
-AC_CHECK_HEADER(Evas_Engine_GL_X11.h,
-  [ AC_DEFINE(HAVE_EVAS_GL, 1, [Evas GL Engine Support])
-    have_xlib_opengl="yes" ],
-  [ dummy=no ],
-  [ #include <Evas.h> ]
+dnl OpenGL X11
+PKG_CHECK_EXISTS(evas-opengl-x11,
+  [
+    AC_DEFINE(HAVE_EVAS_OPENGL_X11, 1, [Evas GL X11 Engine Support])
+    have_opengl_x11="yes"
+  ],
+  [ have_opengl_x11="no" ]
 )
+AM_CONDITIONAL(BUILD_OPENGL_X11, test "x$have_opengl_x11" = "xyes")
 
-have_xlib="no"
-AC_CHECK_HEADER(Evas_Engine_Software_X11.h,
-  [ AC_DEFINE(HAVE_SOFTWARE_X11, 1, [Evas Software X11 Engine Support])
-    have_xlib="yes" ],
-  [ dummy=no ],
-  [ #include <Evas.h> ]
+dnl Software X11
+PKG_CHECK_EXISTS(evas-software-x11,
+  [
+    AC_DEFINE(HAVE_EVAS_SOFTWARE_X11, 1, [Evas Software X11 Engine Support])
+    have_software_x11="yes"
+  ],
+  [ have_software_x11="no" ]
 )
+AM_CONDITIONAL(BUILD_SOFTWARE_X11, test "x$have_software_x11" = "xyes")
 
-have_xlib_render="no"
-AC_CHECK_HEADER(Evas_Engine_XRender_X11.h,
-  [ AC_DEFINE(HAVE_XRENDER_X11, 1, [Evas XRender X11 Engine Support])
-    have_xlib_render="yes" ],
-  [ dummy=no ],
-  [ #include <Evas.h> ]
+dnl XRender X11
+PKG_CHECK_EXISTS(evas-xrender-x11,
+  [
+    AC_DEFINE(HAVE_EVAS_XRENDER_X11, 1, [Evas XRender X11 Engine Support])
+    have_xrender_x11="yes"
+  ],
+  [ have_xrender_x11="no" ]
 )
+AM_CONDITIONAL(BUILD_XRENDER_X11, test "x$have_xrender_x11" = "xyes")
 
-have_xlib_16="no"
-AC_CHECK_HEADER(Evas_Engine_Software_16_X11.h,
-  [ AC_DEFINE(HAVE_SOFTWARE_16_X11, 1, [Evas Software 16bit X11 Engine Support])
-    have_xlib_16="yes" ],
-  [ dummy=no ],
-  [ #include <Evas.h> ]
+dnl Software 16bit X11
+PKG_CHECK_EXISTS(evas-software-16-x11,
+  [
+    AC_DEFINE(HAVE_EVAS_SOFTWARE_16_X11, 1, [Evas Software 16bit X11 Engine Support])
+    have_software_16_x11="yes"
+  ],
+  [ have_software_16_x11="no" ]
 )
+AM_CONDITIONAL(BUILD_SOFTWARE_16_X11, test "x$have_software_16_x11" = "xyes")
 
-have_ddraw="no"
-AC_CHECK_HEADER(Evas_Engine_Software_DDraw.h,
-  [ AC_DEFINE(HAVE_SOFTWARE_DDRAW, 1, [Evas Software DirectDraw Engine Support])
-    have_ddraw="yes"
-    ddraw_libs="-lddraw -ldxguid" ],
-  [ dummy=no ],
-  [ #include <Evas.h> ]
+# TODO: Check availability of libs
+dnl DirectDraw
+PKG_CHECK_EXISTS(evas-software-ddraw,
+  [
+    AC_DEFINE(HAVE_EVAS_SOFTWARE_DDRAW, 1, [Evas Software DirectDraw Engine Support])
+    have_software_ddraw="yes"
+    ddraw_libs="-lddraw -ldxguid"
+  ],
+  [ have_software_ddraw="no" ]
 )
+AM_CONDITIONAL(BUILD_SOFTWARE_DDRAW, test "x$have_software_ddraw" = "xyes")
 
-have_ddraw_16="no"
-AC_CHECK_HEADER(Evas_Engine_Software_16_DDraw.h,
-  [ AC_DEFINE(HAVE_SOFTWARE_16_DDRAW, 1, [Evas 16bit Software DirectDraw Engine Support])
-    have_ddraw_16="yes"
-    ddraw_16_libs="-lddraw -ldxguid" ],
-  [ dummy=no ],
-  [ #include <Evas.h> ]
+# TODO: Check availability of libs
+dnl 16bit DirectDraw
+PKG_CHECK_EXISTS(evas-software-16-ddraw,
+  [
+    AC_DEFINE(HAVE_EVAS_SOFTWARE_16_DDRAW, 1, [Evas Software 16bit DirectDraw Engine Support])
+    have_software_16_ddraw="yes"
+    ddraw_libs="-lddraw -ldxguid"
+  ],
+  [ have_software_16_ddraw="no" ]
 )
+AM_CONDITIONAL(BUILD_SOFTWARE_16_DDRAW, test "x$have_software_16_ddraw" = "xyes")
 
-have_d3d="no"
-AC_CHECK_HEADER(Evas_Engine_Direct3D.h,
-  [ AC_DEFINE(HAVE_DIRECT3D, 1, [Evas Direct3D Engine Support])
-    have_d3d="yes"
-    d3d_libs="-ld3d9 -ld3dx9d" ],
-  [ dummy=no ],
-  [ #include <Evas.h> ]
+# TODO: Check availability of libs
+dnl Direct3D
+PKG_CHECK_EXISTS(evas-direct3d,
+  [
+    AC_DEFINE(HAVE_EVAS_DIRECT3D, 1, [Evas Direct3D Engine Support])
+    have_direct3d="yes"
+    d3d_libs="-ld3d9 -ld3dx9d"
+  ],
+  [ have_direct3d="no" ]
 )
+AM_CONDITIONAL(BUILD_DIRECT3D, test "x$have_direct3d" = "xyes")
 
-if test "x$have_xlib" = "xyes" -o "x$have_xlib_16" = "xyes" -o "x$have_xlib_render" = "xyes" -o "x$have_xlib_opengl" = "xyes" ; then
-AC_PATH_XTRA
-x_dir=${x_dir:-/usr/X11R6}
-x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
-x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
+dnl Software SDL
+PKG_CHECK_EXISTS(evas-software-sdl,
+  [
+    AC_DEFINE(HAVE_EVAS_SOFTWARE_SDL, 1, [Evas Software SDL Engine Support])
+    have_software_sdl="yes"
+  ],
+  [ have_direct3d="no" ]
+)
+AM_CONDITIONAL(BUILD_SOFTWARE_SDL, test "x$have_software_sdl" = "xyes")
+
+if test "x$have_software_x11" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "x$have_xrender_x11" = "xyes" -o "x$have_opengl_x11" = "xyes"; then
+  AC_PATH_XTRA
+  AC_CHECK_HEADERS(X11/Xlib.h X11/Xutil.h,
+    [ have_x11="yes" ],
+    [ have_x11="no" ])
+  x_dir=${x_dir:-/usr/X11R6}
+  x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
+  x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
 fi
+AM_CONDITIONAL(BUILD_X11, test "x$have_x11" = "xyes")
+
+if test "x$have_software_sdl" = "xyes"; then
+  PKG_CHECK_MODULES([SDL], sdl,
+    [ have_sdl="yes" ],
+    [ have_sdl="no" ])
+fi
+AM_CONDITIONAL(BUILD_SDL, test "x$have_sdl" = "xyes")
 
 AC_SUBST(x_cflags)
 AC_SUBST(x_libs)
@@ -130,35 +167,6 @@ AC_SUBST(ddraw_libs)
 AC_SUBST(ddraw_16_libs)
 AC_SUBST(d3d_libs)
 AC_SUBST(glew_libs)
-
-#######################################
-## SDL
-AC_ARG_WITH(sdl-config, [  --with-sdl-config=SDL_CONFIG     use sdl-config specified],
-[ SDL_CONFIG=$withval;
-  echo "using "$SDL_CONFIG" for sdl-config"; ],
-[ if test -z "$SDL_CONFIG"; then
-    AC_PATH_PROG(SDL_CONFIG, "sdl-config", "", $PATH)
-  fi
-])
-if test -z "$SDL_CONFIG" ; then SDL_CONFIG="sdl-config"; fi
-
-sdl_cflags=""
-sdl_libs=""
-
-have_sdl="no"
-AC_CHECK_HEADER(Evas_Engine_SDL.h,
-  [ AC_DEFINE(HAVE_SOFTWARE_SDL, 1, [Evas Software SDL Support])
-    have_sdl="yes"
-    sdl_cflags=`$SDL_CONFIG --cflags`
-    sdl_libs=`$SDL_CONFIG --libs` ],
-  [ dummy=no ],
-  [ #include <Evas.h> ]
-)
-
-AC_SUBST(sdl_cflags)
-AC_SUBST(sdl_libs)
-
-CFLAGS=$PCFLAGS
 
 AC_OUTPUT([
 Makefile
@@ -171,15 +179,15 @@ echo
 echo "  $PACKAGE $VERSION"
 echo
 echo "  Engines:"
-echo "    Software Xlib................: ${have_xlib}"
-echo "    Software Xlib 16 bits........: ${have_xlib_16}"
-echo "    X Render Xlib................: ${have_xlib_render}"
-echo "    Open GL Glew.................: ${have_glew_opengl}"
-echo "    Open GL Xlib.................: ${have_xlib_opengl}"
-echo "    Software DirectDraw..........: ${have_ddraw}"
-echo "    Software DirectDraw 16 bits..: ${have_ddraw}"
-echo "    Direct3D.....................: ${have_d3d}"
-echo "    Software SDL.................: ${have_sdl}"
+echo "    Software X11.................: ${have_software_x11}"
+echo "    Software X11 16 bits.........: ${have_software_16_x11}"
+echo "    X Render X11.................: ${have_xrender_x11}"
+echo "    Open GL X11..................: ${have_opengl_x11}"
+echo "    Open GL Glew.................: ${have_opengl_glew}"
+echo "    Software DirectDraw..........: ${have_software_ddraw}"
+echo "    Software DirectDraw 16 bits..: ${have_software_16_ddraw}"
+echo "    Direct3D.....................: ${have_direct3d}"
+echo "    Software SDL.................: ${have_software_sdl}"
 echo
 echo "  Installation:"
 echo "    prefix.......................: ${prefix}"

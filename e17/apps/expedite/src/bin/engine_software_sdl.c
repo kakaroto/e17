@@ -1,20 +1,5 @@
 #include "main.h"
 
-#ifndef HAVE_SOFTWARE_SDL
-
-int
-engine_software_sdl_args(int argc, char **argv)
-{
-   fprintf(stderr, "ERROR: No Software SDL Engine built\n");
-   return 0;
-}
-
-void
-engine_software_sdl_loop(void)
-{
-}
-
-#else
 #include <SDL/SDL.h>
 #include <Evas_Engine_SDL.h>
 
@@ -44,6 +29,7 @@ engine_software_sdl_args(int argc, char **argv)
    einfo->info.noframe = 0;
 
    evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   return 1;
 }
 
 void
@@ -122,6 +108,8 @@ engine_software_sdl_loop(void)
                   else
                     evas_event_feed_key_down(evas, "q", "q", NULL, NULL, 0, NULL);
                   break;
+	       default:
+		  break;
                }
              break;
           case SDL_KEYUP:
@@ -154,6 +142,8 @@ engine_software_sdl_loop(void)
                   else
                     evas_event_feed_key_up(evas, "q", "q", NULL, NULL, 0, NULL);
                   break;
+	       default:
+		  break;
                }
              break;
           case SDL_QUIT:
@@ -170,5 +160,3 @@ engine_software_sdl_loop(void)
           }
      }
 }
-
-#endif
