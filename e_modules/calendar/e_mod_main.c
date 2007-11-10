@@ -4,11 +4,7 @@
 #include <e.h>
 #include "e_mod_main.h"
 
-#ifdef __FreeBSD__
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#include <sys/resource.h>
-#endif
+#define GOLDEN_RATIO 1.618033989
 
 typedef struct _Instance Instance;
 typedef struct _Calendar Calendar;
@@ -18,6 +14,8 @@ struct _Instance
    E_Gadcon_Client *gcc;
    Calendar        *calendar;
    Ecore_Timer     *timer;
+
+   E_Gadcon_Popup  *popup;
 };
 
 struct _Calendar 
@@ -33,8 +31,19 @@ static char *_gc_label(void);
 static Evas_Object *_gc_icon(Evas *evas);
 static const char *_gc_id_new(void);
 static int _update_calendar_sheet(void *data);
-static void _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _calendar_popup_content_create(Instance *inst);
+static void _calendar_popup_resize(Evas_Object *obj, int *w, int *h);
+static void _calendar_popup_destroy(Instance *inst);
+static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _menu_cb_post(void *data, E_Menu *m);
+
+static int days_in_month[2][12] =
+{
+   {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
+   {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+};
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
@@ -75,8 +84,12 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->calendar = calendar;
 
    calendar_conf->instances = evas_list_append(calendar_conf->instances, inst);
+   evas_object_event_callback_add(calendar->o_icon, EVAS_CALLBACK_MOUSE_IN,
+				   _cb_mouse_in, inst);
+   evas_object_event_callback_add(calendar->o_icon, EVAS_CALLBACK_MOUSE_OUT,
+				   _cb_mouse_out, inst);
    evas_object_event_callback_add(calendar->o_icon, EVAS_CALLBACK_MOUSE_DOWN,
-				  _button_cb_mouse_down, inst);
+				  _cb_mouse_down, inst);
 
    _update_calendar_sheet(inst);
    inst->timer = ecore_timer_add(1, _update_calendar_sheet, inst);
@@ -92,6 +105,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    inst = gcc->data;
    calendar = inst->calendar;
 
+   if (inst->popup) _calendar_popup_destroy(inst);
    if (inst->timer)
      ecore_timer_del(inst->timer);
    if (calendar->o_icon)
@@ -153,34 +167,164 @@ _gc_id_new(void)
 static int
 _update_calendar_sheet(void *data)
 {
-    Instance *inst;
-    Calendar *calendar;
-    char buf[4];
-    time_t current_time;
-    struct tm *local_time;
+   Instance *inst;
+   Calendar *calendar;
+   char buf[4];
+   time_t current_time;
+   struct tm *local_time;
+   static prev_day=0;
 
-    inst = data;
-    if (!inst) return 1;
-    calendar = inst->calendar;
-    if (!calendar) return 1;
+   inst = data;
+   if (!inst) return 1;
+   calendar = inst->calendar;
+   if (!calendar) return 1;
 
-    current_time = time (NULL);
-    local_time = localtime (&current_time);
-    strftime (buf, sizeof(buf), "%d", local_time);
-    edje_object_part_text_set (calendar->o_icon, "monthday", buf);
-    strftime (buf, sizeof(buf), "%a", local_time);
-    edje_object_part_text_set (calendar->o_icon, "weekday", buf);
-    return 1;
+   current_time = time (NULL);
+   local_time = localtime (&current_time);
+   if (prev_day == local_time->tm_mday)
+     return 1;
+   else
+     prev_day = local_time->tm_mday;
+
+   strftime (buf, sizeof(buf), "%d", local_time);
+   edje_object_part_text_set (calendar->o_icon, "monthday", buf);
+   strftime (buf, sizeof(buf), "%a", local_time);
+   edje_object_part_text_set (calendar->o_icon, "weekday", buf);
+
+   if (inst->popup)
+     {
+	_calendar_popup_content_create(inst);
+	e_gadcon_popup_show(inst->popup);
+     }
+   else
+     _calendar_popup_content_create(inst);
+
+   return 1;
 }
 
 static void
-_button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
+_calendar_popup_content_create(Instance *inst)
+{
+   Evas_Object *o, *ol, *of, *ob, *oi;
+   Evas *evas;
+   char buf[32];
+   time_t current_time, start_time;
+   struct tm *local_time, *local_time2;
+   int row, col, day;
+   int startwd, today, month, year, maxdays;
+
+   if (inst->popup) _calendar_popup_destroy(inst);
+   inst->popup = e_gadcon_popup_new(inst->gcc, _calendar_popup_resize);
+
+   current_time = time (NULL);
+   local_time = localtime (&current_time);
+   today = local_time->tm_mday;
+   month = local_time->tm_mon;
+   year = local_time->tm_year + 1900;
+   if (!(year % 4))
+     maxdays = days_in_month[(!(year % 4) && (year % 100))][month];
+   else
+     maxdays = days_in_month[(!(year % 400))][month];
+
+   start_time = current_time - ((today-1) * 86400);
+   local_time2 = localtime (&start_time);
+   strftime (buf, sizeof(buf), "%w", local_time2);
+   startwd = atoi (buf);
+
+   evas = inst->popup->win->evas;
+   o = e_widget_list_add(evas, 0, 0);
+   strftime (buf, sizeof(buf), "%B %Y", local_time);
+   of = e_widget_frametable_add(evas, buf, 0);
+
+   /* column titles */
+   for (col=0; col<=6; col++)
+     {
+	switch (col)
+	  {
+	     case 0: ob = e_widget_label_add(evas, _("Su")); break;
+	     case 1: ob = e_widget_label_add(evas, _("Mo")); break;
+	     case 2: ob = e_widget_label_add(evas, _("Tu")); break;
+	     case 3: ob = e_widget_label_add(evas, _("We")); break;
+	     case 4: ob = e_widget_label_add(evas, _("Th")); break;
+	     case 5: ob = e_widget_label_add(evas, _("Fr")); break;
+	     case 6: ob = e_widget_label_add(evas, _("Sa")); break;
+	  }    
+	e_widget_frametable_object_append(of, ob, col, 0, 1, 1, 1, 0, 0, 0);
+     }
+
+   /* output days */
+   day=0;
+   for (row=1; row<=6; row++)
+     {
+	for (col=0; col<=6; col++)
+	  {
+	     if (!day) if (col == startwd) day=1;
+
+	     if (day && (day <= maxdays))
+	       snprintf(buf, sizeof(buf), "%02d", day++);
+	     else
+	       snprintf(buf, sizeof(buf), "");
+	     ob = e_widget_label_add(evas, buf);
+	     // if (day == today) // FIXME: highlight needed
+	     e_widget_frametable_object_append(of, ob, col, row, 1, 1, 1, 0, 0, 0);
+	}
+	if (day > maxdays) break;
+     }
+
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+   e_gadcon_popup_content_set(inst->popup, o);
+}
+
+static void
+_calendar_popup_resize(Evas_Object *obj, int *w, int *h)
+{
+   if (!(*w)) *w = 0;
+   if (!(*h)) *h = 0;
+   /* Apply the golden ratio to the popup */
+   if ((double) *w / *h > GOLDEN_RATIO) {
+	*h = *w / GOLDEN_RATIO;
+   } else if ((double) *w / *h < GOLDEN_RATIO - (double) 1) {
+	*w = *h * (GOLDEN_RATIO - (double) 1);
+   }
+}
+
+static void
+_calendar_popup_destroy(Instance *inst)
+{
+   if (!inst->popup) return;
+   e_object_del(E_OBJECT(inst->popup));
+}
+
+static void
+_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Instance *inst;
+
+   if (!(inst = data)) return;
+   e_gadcon_popup_show(inst->popup);
+}
+
+static void 
+_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Instance *inst;
+   
+   if (!(inst = data)) return;
+   e_gadcon_popup_hide(inst->popup);
+}
+
+static void
+_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
    Evas_Event_Mouse_Down *ev;
 
    inst = data;
    ev = event_info;
+   if (ev->button == 1)
+     {
+	e_gadcon_popup_toggle_pinned(inst->popup);
+     }
    if ((ev->button == 3) && (!calendar_conf->menu))
      {
 	E_Menu *mn;
