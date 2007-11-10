@@ -23,6 +23,8 @@ static int minimum_size_test_set_get(char *buf, int len);
 static int maximum_size_test_set_get(char *buf, int len);
 static int minimum_size_test_set_request(char *buf, int len);
 static int maximum_size_test_set_request(char *buf, int len);
+static int fill_policy_test_set_get(char *buf, int len);
+static int alignment_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test object_unit_tests[] = {
 		{"preferred inner size set/get", preferred_inner_size_test_set_get, -1, NULL},
@@ -31,6 +33,8 @@ static Ewl_Unit_Test object_unit_tests[] = {
 		{"maximum size set/get", maximum_size_test_set_get, -1, NULL},
 		{"minimum size set/request", minimum_size_test_set_request, -1, NULL},
 		{"maximum size set/request", maximum_size_test_set_request, -1, NULL},
+		{"fill policy set/get", fill_policy_test_set_get, -1, NULL},
+		{"alignment set/get", alignment_test_set_get, -1, NULL},
 		{NULL, NULL, -1, NULL}
 	};
 
@@ -79,6 +83,8 @@ preferred_inner_size_test_set_get(char *buf, int len)
 		snprintf(buf, len, "default preferred inner size %dx%d",
 			width, height);
 
+	ewl_widget_destroy(w);
+
 	return ret;
 }
 
@@ -117,6 +123,8 @@ preferred_size_test_set_get(char *buf, int len)
 		snprintf(buf, len, "default preferred size %dx%d",
 			width, height);
 
+	ewl_widget_destroy(w);
+
 	return ret;
 }
 
@@ -153,6 +161,8 @@ minimum_size_test_set_get(char *buf, int len)
 		snprintf(buf, len, "default minimum size %dx%d",
 			width, height);
 
+	ewl_widget_destroy(w);
+
 	return ret;
 }
 
@@ -188,6 +198,8 @@ maximum_size_test_set_get(char *buf, int len)
 	else
 		snprintf(buf, len, "default maximum size %dx%d",
 			width, height);
+
+	ewl_widget_destroy(w);
 
 	return ret;
 }
@@ -241,6 +253,8 @@ minimum_size_test_set_request(char *buf, int len)
 	else
 		snprintf(buf, len, "same sizes wrong %dx%d", width, height);
 
+	ewl_widget_destroy(w);
+
 	return ret;
 }
 
@@ -292,6 +306,74 @@ maximum_size_test_set_request(char *buf, int len)
 	}
 	else
 		snprintf(buf, len, "same sizes wrong %dx%d", width, height);
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+static int
+fill_policy_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	unsigned int fill;
+	int ret = 0;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	/*
+	 * Since fill all should simply be a mask of all other values, this
+	 * tests each bit being set.
+	 */
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_ALL);
+	fill = ewl_object_fill_policy_get(EWL_OBJECT(w));
+
+	if ((fill & EWL_FLAG_FILL_HSHRINK) && (fill & EWL_FLAG_FILL_VSHRINK) &&
+	    (fill & EWL_FLAG_FILL_HFILL) && (fill & EWL_FLAG_FILL_VFILL)) {
+		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+		fill = ewl_object_fill_policy_get(EWL_OBJECT(w));
+		if (!fill)
+			ret = 1;
+		else
+			snprintf(buf, len, "fill none incorrect");
+	}
+	else
+		snprintf(buf, len, "fill all missing flags");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+static int
+alignment_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	unsigned int align;
+	int ret = 0;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT |
+			EWL_FLAG_ALIGN_RIGHT | EWL_FLAG_ALIGN_TOP |
+			EWL_FLAG_ALIGN_BOTTOM);
+	align = ewl_object_alignment_get(EWL_OBJECT(w));
+
+	if ((align & EWL_FLAG_ALIGN_LEFT) && (align & EWL_FLAG_ALIGN_RIGHT) &&
+	    (align & EWL_FLAG_ALIGN_TOP) && (align & EWL_FLAG_ALIGN_BOTTOM)) {
+		ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_CENTER);
+		align = ewl_object_alignment_get(EWL_OBJECT(w));
+		if (!align)
+			ret = 1;
+		else
+			snprintf(buf, len, "align none incorrect");
+	}
+	else
+		snprintf(buf, len, "alignment missing flags");
+
+	ewl_widget_destroy(w);
 
 	return ret;
 }
