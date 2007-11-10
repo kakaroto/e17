@@ -219,7 +219,7 @@ ee_canvas_stack_add(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (w->parent && OBSCURED(w->parent))
+	if (w->parent && !REVEALED(w->parent))
 		DRETURN(DLEVEL_STABLE);
 
 

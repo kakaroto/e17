@@ -284,7 +284,7 @@ ewl_widget_reveal(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (!OBSCURED(w))
+	if (REVEALED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
@@ -308,7 +308,7 @@ void ewl_widget_obscure(Ewl_Widget *w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (OBSCURED(w))
+	if (!REVEALED(w))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
@@ -466,7 +466,7 @@ ewl_widget_configure(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if ((!VISIBLE(w)) || (w->parent && OBSCURED(w->parent)))
+	if ((!VISIBLE(w)) || (w->parent && !REVEALED(w->parent)))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_configure_request(w);
@@ -2034,7 +2034,7 @@ ewl_widget_layer_stack_add(Ewl_Widget *w)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
 
-	if (w->parent && OBSCURED(w->parent))
+	if (w->parent && !REVEALED(w->parent))
 		DRETURN(DLEVEL_STABLE);
 
 	if (w->parent && !w->toplayered)
@@ -2449,7 +2449,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 */
 	ewl_widget_layer_stack_add(w);
 
-	if (w->parent && !OBSCURED(w->parent))
+	if (w->parent && REVEALED(w->parent))
 		ewl_widget_layer_update(w);
 
 	if (w->fx_clip_box) {

@@ -3119,7 +3119,7 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE("w", w, EWL_TEXT_TYPE);
 
 	/* don't do anything if we're obscured */
-	if (OBSCURED(w)) DRETURN(DLEVEL_STABLE);
+	if (!REVEALED(w)) DRETURN(DLEVEL_STABLE);
 
 	t = EWL_TEXT(w);
 	xx = CURRENT_X(w);

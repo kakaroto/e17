@@ -189,7 +189,7 @@ ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types)
 				EWL_FLAG_PROPERTY_DND_TARGET,
 				EWL_FLAGS_PROPERTY_MASK);
 
-		if (REALIZED(w) && !OBSCURED(w)) {
+		if (REALIZED(w) && REVEALED(w)) {
 			Ewl_Embed *emb;
 
 			emb = ewl_embed_widget_find(w);
@@ -201,7 +201,7 @@ ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types)
 				EWL_FLAG_PROPERTY_DND_TARGET,
 				EWL_FLAGS_PROPERTY_MASK);
 
-		if (REALIZED(w) && !OBSCURED(w)) {
+		if (REALIZED(w) && REVEALED(w)) {
 			Ewl_Embed *emb;
 
 			emb = ewl_embed_widget_find(w);

@@ -470,7 +470,7 @@ ewl_idle_render(void *data __UNUSED__)
 			 * revealed so that the obscure will succeed (and mark
 			 * it obscured again.
 			 */
-			if (!OBSCURED(w))
+			if (REVEALED(w))
 				ewl_widget_obscure(w);
 		}
 
@@ -481,7 +481,7 @@ ewl_idle_render(void *data __UNUSED__)
 			/*
 			 * Follow the same logic as the obscure loop.
 			 */
-			if (OBSCURED(w))
+			if (!REVEALED(w))
 				ewl_widget_reveal(w);
 		}
 	}
@@ -844,15 +844,15 @@ ewl_configure_queue_widget_run(Ewl_Widget *w)
 	 * queued to receive new evas objects.
 	 */
 	if (!ewl_widget_onscreen_is(w)) {
-		if (!OBSCURED(w))
+		if (REVEALED(w))
 			ecore_list_prepend(obscure_list, w);
 	}
 	else {
-		if (OBSCURED(w))
+		if (!REVEALED(w))
 			ecore_list_prepend(reveal_list, w);
 
 		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_PROCESS_CONFIGURE);
-		if (REALIZED(w) && VISIBLE(w) && !OBSCURED(w))
+		if (REALIZED(w) && VISIBLE(w) && REVEALED(w))
 			ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
 		ewl_object_queued_remove(EWL_OBJECT(w),
 			EWL_FLAG_QUEUED_PROCESS_CONFIGURE);

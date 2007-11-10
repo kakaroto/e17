@@ -436,8 +436,8 @@ init(char *buf, int len)
 		snprintf(buf, len, "Widget VISIBLE after _init");
 	else if (REALIZED(w))
 		snprintf(buf, len, "Widget REALIZED after _init");
-	else if (!OBSCURED(w))
-		snprintf(buf, len, "Widget !OBSCURED after _init");
+	else if (REVEALED(w))
+		snprintf(buf, len, "Widget REVEALED after _init");
 	else
 		ret = 1;
 
@@ -459,8 +459,8 @@ show(char *buf, int len)
 		snprintf(buf, len, "Widget !VISIBLE after show");
 	else if (REALIZED(w))
 		snprintf(buf, len, "Widget REALIZED after show");
-	else if (!OBSCURED(w))
-		snprintf(buf, len, "Widget !OBSCURED after show");
+	else if (REVEALED(w))
+		snprintf(buf, len, "Widget REVEALED after show");
 	else
 		ret = 1;
 
@@ -480,8 +480,8 @@ realize(char *buf, int len)
 		snprintf(buf, len, "Widget VISIBLE after realize");
 	else if (!REALIZED(w))
 		snprintf(buf, len, "Widget !REALIZED after realize");
-	else if (!OBSCURED(w))
-		snprintf(buf, len, "Widget !OBSCURED after realize");
+	else if (REVEALED(w))
+		snprintf(buf, len, "Widget REVEALED after realize");
 	else
 		ret = 1;
 
@@ -503,8 +503,8 @@ realize_unrealize(char *buf, int len)
 		snprintf(buf, len, "Widget VISIBLE after realize/unrealize");
 	else if (REALIZED(w))
 		snprintf(buf, len, "Widget REALIZED after realize/unrealize");
-	else if (!OBSCURED(w))
-		snprintf(buf, len, "Widget !OBSCURED after realize/unrealize");
+	else if (REVEALED(w))
+		snprintf(buf, len, "Widget REVEALED after realize/unrealize");
 	else 
 		ret = 1;
 
@@ -529,8 +529,8 @@ parent_set(char *buf, int len)
 		snprintf(buf, len, "Widget VISIBLE after parent set");
 	else if (REALIZED(w))
 		snprintf(buf, len, "Widget REALIZED after parent set");
-	else if (!OBSCURED(w))
-		snprintf(buf, len, "Widget !OBSCURED after parent set");
+	else if (REVEALED(w))
+		snprintf(buf, len, "Widget REVEALED after parent set");
 	else
 		ret = 1;
 
@@ -558,8 +558,8 @@ parent_set_show(char *buf, int len)
 		snprintf(buf, len, "Widget !VISIBLE after parent_set");
 	else if (!REALIZED(w))
 		snprintf(buf, len, "Widget !REALIZED after parent_set");
-	else if (!OBSCURED(w))
-		snprintf(buf, len, "Widget !OBSCURED after parent_set");
+	else if (REVEALED(w))
+		snprintf(buf, len, "Widget REVEALED after parent_set");
 	else
 		ret = 1;
 
@@ -592,8 +592,8 @@ reparent_unrealized(char *buf, int len)
 		snprintf(buf, len, "Widget VISIBLE after reparent");
 	else if (REALIZED(w))
 		snprintf(buf, len, "Widget REALIZED after reparent");
-	else if (!OBSCURED(w))
-		snprintf(buf, len, "Widget !OBSUCRED after reparent");
+	else if (REVEALED(w))
+		snprintf(buf, len, "Widget REVEALED after reparent");
 	else 
 		ret = 1;
 
@@ -628,8 +628,8 @@ reparent_realized(char *buf, int len)
 		snprintf(buf, len, "Widget !VISIBLE after reparent");
 	else if (!REALIZED(w))
 		snprintf(buf, len, "Widget !REALIZED after reparent");
-	else if (!OBSCURED(w))
-		snprintf(buf, len, "Widget !OBSUCRED after reparent");
+	else if (REVEALED(w))
+		snprintf(buf, len, "Widget REVEALED after reparent");
 	else 
 		ret = 1;
 
@@ -654,8 +654,8 @@ realize_reveal(char *buf, int len)
 		snprintf(buf, len, "Widget VISIBLE after realize/reveal");
 	else if (!REALIZED(w))
 		snprintf(buf, len, "Widget !REALIZED after realize/reveal");
-	else if (OBSCURED(w))
-		snprintf(buf, len, "Widget OBSCURED after realize/reveal");
+	else if (!REVEALED(w))
+		snprintf(buf, len, "Widget !REVEALED after realize/reveal");
 	else 
 		ret = 1;
 
@@ -677,8 +677,8 @@ realize_reveal_obscure(char *buf, int len)
 		snprintf(buf, len, "Widget VISIBLE after realize/reveal/obscure");
 	else if (!REALIZED(w))
 		snprintf(buf, len, "Widget !REALIZED after realize/reveal/obscure");
-	else if (!OBSCURED(w))
-		snprintf(buf, len, "Widget !OBSCURED after realize/reveal/obscure");
+	else if (REVEALED(w))
+		snprintf(buf, len, "Widget REVEALED after realize/reveal/obscure");
 	else 
 		ret = 1;
 
@@ -701,8 +701,8 @@ realize_reveal_unrealize(char *buf, int len)
 		snprintf(buf, len, "Widget VISIBLE after realize/reveal/unrealize");
 	else if (REALIZED(w))
 		snprintf(buf, len, "Widget REALIZED after realize/reveal/unrealize");
-	else if (!OBSCURED(w))
-		snprintf(buf, len, "Widget !OBSCURED after realize/reveal/unrealize");
+	else if (REVEALED(w))
+		snprintf(buf, len, "Widget REVEALED after realize/reveal/unrealize");
 	else 
 		ret = 1;
 
