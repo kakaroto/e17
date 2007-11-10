@@ -39,7 +39,7 @@ evasmodule = Extension('evas.c_evas',
                                 'evas/evas.c_evas_object_polygon.pxi',
                                 'evas/evas.c_evas_object_text.pxi',
                                 'include/evas/c_evas.pxd',
-                                'include/python.pxd',
+                                'include/evas/python.pxd',
                                 ],
                        **pkgconfig('"evas >= 0.9.9.040"')
                        )
@@ -48,7 +48,7 @@ evasmodule = Extension('evas.c_evas',
 headers = ['evas/evas.c_evas.h',
            'include/evas/python_evas_utils.h',
            'include/evas/c_evas.pxd',
-           'include/python.pxd',
+           'include/evas/python.pxd',
            ]
 
 
