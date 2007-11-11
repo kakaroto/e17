@@ -49,8 +49,8 @@ static int ewl_test_setup_tests(void);
 static void ewl_test_free(Ewl_Test *test);
 static int ewl_test_compare(Ewl_Test *test1, Ewl_Test *test2);
 static void ewl_test_print_tests(void);
-static void ewl_test_stderr_enable();
-static void ewl_test_stderr_disable();
+static void ewl_test_stderr_enable(void);
+static void ewl_test_stderr_disable(void);
 
 static void run_test_boxed(Ewl_Test *t);
 static void run_unit_test_boxed(Ewl_Test *t);
@@ -210,7 +210,7 @@ main(int argc, char **argv)
 }
 
 static void
-ewl_test_stderr_disable()
+ewl_test_stderr_disable(void)
 {
 	static int null_fd = -1;
 
@@ -240,7 +240,7 @@ ewl_test_stderr_disable()
 }
 
 static void
-ewl_test_stderr_enable()
+ewl_test_stderr_enable(void)
 {
 	/*
 	 * Return early if stderr is not disabled.
