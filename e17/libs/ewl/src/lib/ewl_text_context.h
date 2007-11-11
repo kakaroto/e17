@@ -3,7 +3,6 @@
 #define EWL_TEXT_CONTEXT_H
 
 /**
- * @internal
  * @addtogroup Ewl_Text_Context Ewl_Text_Context: A text formatting context
  * @brief Defines a class for text formatting information
  *

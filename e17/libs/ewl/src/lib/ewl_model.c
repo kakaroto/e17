@@ -251,7 +251,7 @@ ewl_model_data_count_get(Ewl_Model *m)
 
 /**
  * @param m: The Ewl_Model to set the unref callback on
- * @param count: The unref callback to set on the model
+ * @param unref: The unref callback to set on the model
  * @return Returns no value.
  * @brief Sets the unref callback into the model
  */

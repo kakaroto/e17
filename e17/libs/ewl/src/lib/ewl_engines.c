@@ -1149,8 +1149,9 @@ ewl_engine_theme_thaw(Ewl_Embed *embed)
 }
 
 /**
- * @param embed: Embed used to lookup the current theme key.
- * @return Returns no value
+ * @param w: Widget used to lookup the current theme key.
+ * @param key: The key to lookup
+ * @return Returns the theme data
  * @brief Fetch data from the theme system
  */
 char *

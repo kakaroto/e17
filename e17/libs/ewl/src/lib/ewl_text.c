@@ -158,7 +158,7 @@ ewl_text_length_get(Ewl_Text *t)
 
 /**
  * @param t: The Ewl_Text to set the maximum number of characters
- * @param num: The maximum number of characters
+ * @param char_num: The maximum number of characters
  * @return Returns no value
  * @brief Set the maximum number of characters
  *
@@ -192,7 +192,7 @@ ewl_text_length_maximum_set(Ewl_Text *t, unsigned int char_num)
 }
 
 /**
- * @param e: The Ewl_Entry to get the maximum number of characters
+ * @param t: The Ewl_Text to get the maximum number of characters
  * @return Returns the maximum length of characters, if the number is unlimited
  *         it returns 0
  * @brief Retrieve if maximum number of characters

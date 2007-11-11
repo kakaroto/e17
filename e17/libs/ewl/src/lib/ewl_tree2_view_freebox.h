@@ -29,7 +29,7 @@
 typedef struct Ewl_Tree2_View_Freebox Ewl_Tree2_View_Freebox;
 
 /**
- * @def EWL_TREE2_FREEBOX(tv)
+ * @def EWL_TREE2_VIEW_FREEBOX(tv)
  * Typecasts a pointer to an Ewl_Tree2_View_Freebox pointer
  */
 #define EWL_TREE2_VIEW_FREEBOX(tv) ((Ewl_Tree2_View_Freebox*)tv)
