@@ -6,7 +6,7 @@
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	@EVAS_CFLAGS@ \
 	@ECORE_CFLAGS@ 
 
@@ -66,6 +66,6 @@ installed_headers_DATA = $(ENGRAVEHEADERS)
 libengrave_la_YFLAGS		= -d
 libengrave_la_LIBADD		= @EVAS_LIBS@ @ECORE_LIBS@ @LEXLIB@ -lm
 libengrave_la_DEPENDENCIES	= $(top_builddir)/src/config.h
-libengrave_la_LDFLAGS		= -version-info 1:0:1
+libengrave_la_LDFLAGS		= -version-info @version_info@
 libengrave_la_CFLAGS		= -Wall
 

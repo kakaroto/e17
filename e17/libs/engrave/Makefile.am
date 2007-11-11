@@ -6,9 +6,9 @@ SUBDIRS = src
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess engrave.spec \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in debian/changelog
+		       stamp-h.in debian/changelog depcomp ylwrap
 
-bin_SCRIPTS = 
+bin_SCRIPTS =
 
 #install-data-local:
 #	@$(NORMAL_INSTALL)

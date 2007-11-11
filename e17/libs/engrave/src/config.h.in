@@ -33,26 +33,11 @@
 /* Name of package */
 #undef PACKAGE
 
-/* Installation directory for user executables */
-#undef PACKAGE_BIN_DIR
-
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 
-/* Shared Data Directory */
-#undef PACKAGE_DATA_DIR
-
-/* Installation directory for libraries */
-#undef PACKAGE_LIB_DIR
-
-/* Locale-specific data directory */
-#undef PACKAGE_LOCALE_DIR
-
 /* Define to the full name of this package. */
 #undef PACKAGE_NAME
-
-/* Source code directory */
-#undef PACKAGE_SOURCE_DIR
 
 /* Define to the full name and version of this package. */
 #undef PACKAGE_STRING
