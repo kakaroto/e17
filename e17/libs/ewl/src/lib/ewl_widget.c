@@ -145,7 +145,7 @@ ewl_widget_name_set(Ewl_Widget *w, const char *name)
 		ewl_shutdown_add(ewl_widget_name_table_shutdown);
 	}
 
-	t = strdup(name);
+	t = (name ? strdup(name) : NULL);
 	ewl_attach_name_set(w, t);
 
 	if (ewl_widget_name_table)
