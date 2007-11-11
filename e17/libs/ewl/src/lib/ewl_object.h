@@ -539,7 +539,7 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * @def REVEALED(o)
  * Used to determine if a widget is marked as revealed.
  */
-#define REVEALED(o) (!(EWL_OBJECT(o)->flags & EWL_FLAG_VISIBLE_OBSCURED))
+#define REVEALED(o) (EWL_OBJECT(o)->flags & EWL_FLAG_VISIBLE_REVEALED)
 
 /**
  * @def HIDDEN(o)

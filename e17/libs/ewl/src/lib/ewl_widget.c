@@ -287,7 +287,7 @@ ewl_widget_reveal(Ewl_Widget *w)
 	if (REVEALED(w))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
+	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
 
 	emb = ewl_embed_widget_find(w);
 	if (emb && emb->canvas)
@@ -311,7 +311,7 @@ void ewl_widget_obscure(Ewl_Widget *w)
 	if (!REVEALED(w))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
+	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
 
 	if (REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
 				EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
@@ -2609,7 +2609,7 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * prepended callbacks in the embed can create the evas, windows,
 	 * etc.
 	 */
-	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_OBSCURED);
+	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
 	ewl_widget_reveal(w);
 
 	/*
