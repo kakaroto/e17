@@ -16,13 +16,7 @@ EXTRA_DIST = \
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 	README config.h.in config.sub configure install-sh \
 	ltconfig ltmain.sh missing mkinstalldirs \
-	stamp-h.in \
-	debian/changelog
+	stamp-h.in debian/changelog depcomp
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = exml.pc
-
-dist-hook:
-	if test -d data; then \
-	  (cd $(srcdir); tar -cf - data) | (cd $(distdir); tar -xf -; rm -rf `find . -name CVS`) \
-	fi
