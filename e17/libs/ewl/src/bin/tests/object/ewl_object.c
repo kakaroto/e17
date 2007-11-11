@@ -48,6 +48,10 @@ test_info(Ewl_Test *test)
 	test->unit_tests = object_unit_tests;
 }
 
+/*
+ * Set the preferred inner size and verify that it gets the same size back under
+ * various combinations of sizes.
+ */
 static int
 preferred_inner_size_test_set_get(char *buf, int len)
 {
@@ -88,6 +92,10 @@ preferred_inner_size_test_set_get(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Set the preferred size under a variety of cases and verify that it gets the
+ * same sizes back.
+ */
 static int
 preferred_size_test_set_get(char *buf, int len)
 {
@@ -128,6 +136,10 @@ preferred_size_test_set_get(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Set the minimum size and verify that it returns the same minimum size when
+ * get is called.
+ */
 static int
 minimum_size_test_set_get(char *buf, int len)
 {
@@ -166,6 +178,10 @@ minimum_size_test_set_get(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Set the maximum size with a variety of aspects and test that get returns the
+ * same sizes set.
+ */
 static int
 maximum_size_test_set_get(char *buf, int len)
 {
@@ -204,6 +220,10 @@ maximum_size_test_set_get(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Set the minimum size to different aspects and verify that requesting the size
+ * for the object respects the minimum sizes properly.
+ */
 static int
 minimum_size_test_set_request(char *buf, int len)
 {
@@ -258,6 +278,10 @@ minimum_size_test_set_request(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Test that size requests respect the maximum size settings under a variety of
+ * cases.
+ */
 static int
 maximum_size_test_set_request(char *buf, int len)
 {
@@ -312,6 +336,10 @@ maximum_size_test_set_request(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify that setting a fill policy on an object returns the proper value when
+ * get is called.
+ */
 static int
 fill_policy_test_set_get(char *buf, int len)
 {
@@ -346,6 +374,10 @@ fill_policy_test_set_get(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Set the alignment of an object to a variety of options and check that get
+ * returns the correctly set alignment.
+ */
 static int
 alignment_test_set_get(char *buf, int len)
 {
