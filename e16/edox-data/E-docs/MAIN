@@ -1,49 +1,49 @@
 <page columns=1 padding=16 name=front background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_logo.png x=32 y=77>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p align=50%>
 <br>
-Enlightenment<br>
-version 0.16.8
-<font face=aircut3/12 color=#ffffff>
+Enlightenment version 0.16.8
+<font face=Vera/11 color=#ffffff>
 <p align=50%>
+<br>
+<br>
+<br>
 Topics:<br>
+<br>
 _How_To_Use_Documentation(aboutdox)<br>
 _About_Enlightenment(about)<br>
-_Copyright(copyright)<br>
-_Credits(credits)<br>
-_Website(web)<br>
-_IRC(irc)<br>
-_Email(email)<br>
+_Resources(res)<br>
 <br>
 _User_Documentation(docindex)<br>
 _Frequently_Asked_Questions(faq)<br>
 <br>
-<font face=aircut3/11 color=#ffffff>
+<br>
+<br>
+<br>
+<br>
+<font face=Vera/10 color=#ffffff>
 Welcome to the Enlightenment Documentation Viewer.  Please select a topic from
 the list.
 
 
 
-
-
-
 <page columns=1 padding=16 name=aboutdox background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 This Documentation is intended to take you step by step through Enlightenment(E16)
 and its default setup, how to use it, modify settings, and put it to use for
-you. When you have finished reading each page please press the NEXT button on
-the top of this window to go to the next page, or use the Back button until you
-have reached the _Docs_Index(docindex)
+you. When you have finished reading each page please press the NEXT button to go
+to the next page, or use the Back button until you have reached the
+_Docs_Index(docindex)
 <p>
 If you are reading this right now you have managed to get E16 itself
 installed correctly and are either running E16 for the first time or
 have just upgraded to a new version. Congratulations. Now it's time to take
 you on a quick tour of the desktop you will have before you.
 <p>
-Please remember that if you use a _theme(themes) other than the default
-(Brushed Metal) that it may look slightly or completely different to the 
+Please remember that if you use a _theme(themes) other than
+Brushed Metal that it may look slightly or completely different to the 
 contents of this User Documentation. Some behavior may also vary.
 <p>
 To relaunch this Help Browser at any time, middle click on your
@@ -54,9 +54,8 @@ any time during the program.
 
 
 
-
 <page columns=1 padding=16 name=about background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p align=50%>
 E16 is your Window Manager. The Window Manager controls the 
 appearance of the borders of your windows, their behavior and
@@ -72,7 +71,7 @@ The version you are now running (0.16.8) is by no means the
 end of development and improvements, fixes and new exciting features are
 being worked on all the time. Please visit the 
 <br>
-_Web(web) site often for
+_Web(res) site often for
 new versions, fixes, patches and updates.
 <p align=50%>
 We hope that you enjoy using E16 as much as we have enjoyed writing
@@ -80,200 +79,35 @@ it.  We'd like to think that even if this isn't the right software for you, you
 at least can have fun playing around with what we have created.
 
 
-<page columns=1 padding=16 name=copyright background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
-<p align=50%>
-Copyright (C) 1997-2005 _The_Enlightenment_Development_Team(credits)
-<font face=aircut3/11 color=#ffffff>
+
+<page columns=1 padding=16 name=res background=Edoc_bg.png linkcolor=#88dddd>
+<font face=VeraBd/16 color=#ffffff>
 <p>
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to
-deal in the Software without restriction, including without limitation the
-rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-sell copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Resources
+<font face=Vera/11 color=#ffffff>
 <p>
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+Web site: http://www.enlightenment.org/
 <p>
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Forums: http://forum.enlightenment.org/
+<br>
+Bugs: http://bugs.enlightenment.org/
 
-
-
-
-
-
-<page columns=2 padding=16 name=credits background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/10 color=#ffffff>
 <p>
-E16 has been written by:<br>
-<br>
-The Rasterman (Carsten Haitzler),<br>
-Mandrake (Geoff Harrison),<br>
-Chutt (Isaac Richards),<br>
-Michael Jennings (KainX),<br>
-Christian Kreibich (cK),<br>
-Sung-Hyun Nam,
-Kimball Thurston,<br>
-Michael Kellen,
-Frederic Devernay,<br>
-Felix Bellaby,
-Peter Kjellerstedt,<br>
-Troy Pesola,
-Owen Taylor,<br>
-Stalyn,
-Knut Neumann,<br>
-Nathan Heagy,
-Simon Forman,<br>
-Brent Nelson,
-Martin Tyler,<br>
-Graham MacDonald,
-Jesse Michael,<br>
-Paul Duncan,
-Daniel Erat,<br>
-Tom Gilbert,
-Peter Alm,<br>
-Ben FrantzDale,
-Hallvar Helleseth,<br>
-Kameran Kashani,
-Carl Strasen,<br>
-David Mason,
-Tom Christiansen<br>
-And others (see AUTHORS file).
+Download: http://sourceforge.net/project/showfiles.php?group_id=2
 <p>
-A big thanks to several companies that helped support Enlightenment.
+Mailing lists: http://sourceforge.net/mail/?group_id=2
+
 <p>
-Red Hat Software (www.redhat.com) for allowing developers resources and time
-to work on Enlightenment.
-<br>
-VA Linux Systems (www.valinux.com) for providing hardware, bandwidth, Coke, and
-the patience to hire a couple of loony bin candidates to work on something we
-(and hopefully you) think is interesting.
-<p>
-Xi Graphics (www.xig.com) for providing X servers to test out code on.
-<p>
-Not only should these people be thanked, but the whole E community - those on
-the E mailing list, on #E on IRC on openprojects.net and all E users who have provided
-feedback and debugging information, bug-fixes, patches and support. A big
-thanks goes out to all of you who make a project like this possible.
-<p>
-In addition we'd like to thank several other projects - such
-as XFree86, Imlib, Esound, Freetype and many others, The people working on 
-these equally important projects should not be forgotten.
-
-
-
-
-
-
-
-<page columns=1 padding=16 name=web background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
-<img src=E_website.png x=300 y=20>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<p align=50%>
-For updated information on Enlightenment, development, bug-fixes, snapshots of
-development versions etc. please visit:
-<p align=50%>
-<font face=rothwell/30 color=#ccdddd>
-http://www.enlightenment.org/
-<font face=aircut3/12 color=#ffffff>
-<p align=50%>
-You may want to visit this site often as it changes
-regularly with fixes and development releases -- also visiting the 
-daily-snapshots section
-on the FTP site is a good idea (see the snapshots section on the website for 
-more information).
-
-
-
-
-
-
-
-<page columns=1 padding=16 name=irc background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
-<p>
-There is an Official Enlightenment IRC channel where you can go and "hang out"
-if you want - talk to other E users, developers, get some help, drool 
-together, or whatever. #E will kill me for this but get onto any
-openprojects irc server (irc.openprojects.net) then join #E. For example:
-<p>
-epic4 your_nick irc.openprojects.net<br>
-<br>
-or<br>
-<br>
-irc your_nick irc.efnet.org<br>
-<br>
-or use your favorite graphical IRC client.
-<p>
-Please remember that it can get busy with 100's of people talking at once.
-Not everyone is actually listening all the time or are in the middle of a 
-conversation. Be polite and patient, and have a sense of humor and you'll
-have fun.
-
-
-
-
-
-
-
-<page columns=1 padding=16 name=email background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
-<p>
-<br>
-<br>
-CVS Commit List Mail
-<p>
-To receive CVS Commit mails, please go to the
-CVS Commits List mail page:
-https://lists.sourceforge.net/lists/listinfo/enlightenment-cvs
-<br>
-This mailing list does not accept user-submissions. It is automatically
-generated email that is sent out whenever the enlightenment CVS server
-receives a commit.  Sometimes it can generate a lot of email, sometimes it
-doesn't.
-<p>
-Developer Mailing List
-<p>
-If you would like to receive mail from the developer mailing list, please go
-to the E-develop Mailing List mail page:
-https://lists.sourceforge.net/lists/listinfo/enlightenment-devel
-<br>
-This mailing list is for discussing Enlightenment and it's development, bugs,
-feature requests, etc.  It is not a general chatter list.  The developers do
-read this mailing list and will often comment on subjects brought up on the
-list.
-<p>
-
-
-
-
-
+IRC: #E on freenode
 
 
 
 <page columns=2 padding=16 name=docindex background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
-<br>
 Documentation Index
+<font face=Vera/11 color=#ffffff>
 <p>
-<br>
-<br>
 _Basic_Intro(basicintro)<br>
 _Using_Menus(rootmenu)<br>
 _Mouse_Bindings(mousebind)<br>
@@ -316,9 +150,8 @@ _Maintenance_Scripts(maint)<br>
 
 
 
-
 <page columns=1 padding=16 name=basicintro background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_screen_start.png x=16 y=16>
 <p>
 Now that you have started E16, if you are using it for your desktop 
@@ -336,16 +169,13 @@ else is your desktop background.
 
 
 
-
-
-
-
 <page columns=1 padding=16 name=rootmenu background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_app_menu.png x=350 y=38>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Using Menus
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
+<p>
 When you click with your left mouse button on the desktop _background(backgrounds) you will
 see an "User Menus" menu appear (example displayed on the right here). 
 Applications you may have installed will appear in this menu. To launch one 
@@ -357,20 +187,11 @@ selection you want, or release elsewhere to not select anything. You can also
 quickly click and release, then navigate: move the mouse, and click
 again on the item you wish to select, or elsewhere if you do not wish to
 select an entry.
-<p>
-To "stick" a menu up and leave it up so you can select items from
-it multiple times, click and hold down the mouse and release on the title of
-the menu (if it has one) and it will remain up. You can move it and
-manipulate it like a normal window. Close the window to unstick the menu.
-
-
-
-
 
 
 
 <page columns=1 padding=16 name=tut4 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_settings_menu.png x=285 y=235>
 <img src=E_enlightenment_menu.png x=4 y=30>
 <p>
@@ -392,15 +213,12 @@ better suit your needs.
 
 
 
-
-
-
-
 <page columns=1 padding=16 name=mousebind background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Mouse Bindings
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
+<p>
 Of course, when you click on the _desktop(desktops) _background(backgrounds) of
 your screen, normally you will bring up a _menu(rootmenu).  And of course, when you
 click on the _border(border) of a window, you will do various things.  But these
@@ -420,18 +238,14 @@ application windows. Selecting one of these will take you to that application.
 By using the CTRL key instead of ALT you will get a menu displaying all 
 current desktops as sub-menus, with applications on each desktop in the 
 desktop sub-menu.
-<p>
-
-
-
 
 
 
 <page columns=1 padding=16 name=mouseconfig background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Mouse Configuration
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 <br>
 <br>
@@ -454,12 +268,8 @@ assumed to be there, and is used by many applications, including E.
 
 
 
-
-
-
-
 <page columns=1 padding=16 name=tut6 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_mousewheel.png x=370 y=30>
 <img src=E_mouse.png x=410 y=330>
 <p>
@@ -473,7 +283,7 @@ forward a desktop.
 If this doesn't work, then it may be you haven't configured your X server to
 understand a mouse with a wheel. You may need to edit your X server
 configuration to have a "Pointer" Section like:
-<font face=aircut3/12 color=#ccaacc>
+<font face=Vera/11 color=#ccaacc>
 <p>
 Section "Pointer"<br>
 Protocol    "MousemanPlusPS/2"<br>
@@ -481,20 +291,17 @@ Device      "/dev/mouse"<br>
 ZAxisMapping 4 5<br>
 Buttons      5<br>
 EndSection
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 You may need to modify this for your mouse.
 
 
 
-
-
-
 <page columns=1 padding=16 name=border background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Using the Window Border
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 When you start an application, unless it has special properties, it will come 
 up on your screen with a border surrounding it that contains a titlebar and
 several control buttons.
@@ -518,21 +325,15 @@ start with).
 
 
 
-
-
-
 <page columns=1 padding=16 name=tut8 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_window_diagram.png x=16 y=48>
 <p>
 
 
 
-
-
-
 <page columns=1 padding=16 name=tut9 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 Clicking left mouse button on the iconify button will iconify the window
 and send it off to the _Iconbox(iconbox) . Hitting the Maximize button will
@@ -560,12 +361,12 @@ operations menu.
 
 <page columns=1 padding=16 name=changeborder background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_border_selector.png x=300 y=40>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Changing Window Borders
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
-From time to time you may find that you don't like a particular border that a
+You may find that you don't like a particular border that a
 window uses, for some reason or another.  You can easily change the border
 style of a window in E16 using the _Window_Operations(windowops)
 menu, however.  Select the "Set Border Style" menu, and a list will be
@@ -582,17 +383,15 @@ the current window border.
 
 
 
-
-
 <page columns=1 padding=16 name=defkeys background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <img src=E_keyboard.png x=312 y=0>
 <p>
 Default Keybindings
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 Below are the keybindings for E as it comes "from the factory"
-<font face=aircut3/12 color=#112222>
+<font face=Vera/10 color=#112222>
 <p>
 CTRL+ALT+Home - Re-shuffle windows on screen to be Clean
 <br>
@@ -624,15 +423,13 @@ CTRL+ALT+F - Toggle fullscreen mode of the currently focused window
 <br>
 CTRL+ALT+(F1 - F8) - Go directly to desktops 0 - 7
 <br>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 (more on next page ...)
 
 
 
-
-
 <page columns=1 padding=16 name=tut11 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#112222>
+<font face=Vera/10 color=#112222>
 <p>
 ALT+Tab - Switch focus to the next window
 <br>
@@ -646,32 +443,27 @@ one
 SHIFT+ALT+Up-Arrow - Move to the virtual desktop above if there is one
 <br>
 SHIFT+ALT+Down-Arrow - Move to the virtual desktop below if there is one
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 Note: Zooming in and out of windows will only work if you have an X server
 that implements the Xf86VidMode extension. You also need to define multiple
 screen modes for your display, e.g. with a "Display" subsection of the X11
 configuration that looks like:
-<font face=aircut3/12 color=#ccaacc>
+<font face=Vera/11 color=#ccaacc>
 <p>
 SubSection "Display"<br>
 	Depth 16<br>
 	Modes "1600x1200" "1280x1024" "1152x864" "1024x768" "800x600" "640x480" "512x384" "400x300" "320x240"<br>
 EndSubSection
-<font face=aircut3/12 color=#ffffff>
-<p>
-
-
-
 
 
 
 <page columns=1 padding=16 name=desktops background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <img src=E_deskstack.png x=360 y=70>
 <p>
 Multiple & Virtual Desktops
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 E16 supports both Multiple and Virtual desktops. There are
 distinct difference between the two, and E16 treats them differently.
@@ -689,12 +481,8 @@ application windows.
 
 
 
-
-
-
-
 <page columns=1 padding=16 name=desktops2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_deskarray.png x=350 y=140>
 <p>
 Windows normally live on one desktop, but can be made
@@ -716,7 +504,7 @@ automatically scroll over to that part of the desktop.
 
 
 <page columns=1 padding=16 name=desktops3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_virtual_desk_settings.png x=335 y=51>
 <img src=E_area_settings.png x=30 y=190>
 <p>
@@ -739,7 +527,7 @@ virtual areas.
 
 
 <page columns=1 padding=16 name=desktops4 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_deskimg.png x=275 y=81>
 <p>
 E16 also allows you to set a different desktop backdrop per desktop
@@ -755,15 +543,11 @@ _Desktop_Backgrounds(backgrounds) section.
 
 
 
-
-
-
-
 <page columns=1 padding=16 name=changedesk background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Changing Desktops
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 There are several ways that you can change your current desktop - let's go over
 a few of them here.
@@ -783,15 +567,13 @@ You can also use external applications such as the GNOME panel's pager or the
 KDE panel's pager to navigate desktops and/or applications.<br>
 
 
+
 <page columns=1 padding=16 name=appsdesk background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Moving Applications Between Desktops
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
-<br>
-<br>
-<br>
 There are several ways that you can move applications from one desktop to
 another.  We'll go over a few of them now.
 <p>
@@ -807,13 +589,14 @@ You can also _move(movemode) a window, then bring the window with you as you
 change desktops using _keybinding(defkeys) .
 
 
+
 <page columns=1 padding=16 name=dragbar background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <img src=E_dragbar.png x=10 y=345>
 <img src=E_dragging_desktops.png x=315 y=20>
 <p>
 The Dragbar
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 If you look along the top of your screen, you will notice a long thin bar that
 looks something like the bar pictured below.  This is called your Dragbar.  It
@@ -832,16 +615,13 @@ windowlist sorted by desktops.
 
 
 
-
-
-
-
 <page columns=1 padding=16 name=pager background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <img src=E_pager.png x=320 y=70>
 <p>
 The Pager
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
+<p>
 Pagers may not be a new idea in desktop environments, but the Pager in
 E16 (as seen on the right) is a highly advanced and highly
 configurable tool for desktop and window control, as well as a navigation tool.
@@ -856,20 +636,11 @@ Dragging a window from
 one area of a pager to another will move it there, or to another desktop. 
 Dragging it out onto the actual desktop will drop that window right there.
 You can also drag a window into the _Iconbox(iconbox) to iconify the window.
-<p>
-
-
-
-
-
-
-
-
 
 
 
 <page columns=1 padding=16 name=pager2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_pager_settings_menu.png x=8 y=30>
 <img src=E_pager_settings.png x=208 y=180>
 <p>
@@ -887,22 +658,10 @@ intended for high end machines.
 
 
 
-
-
-
-
-
-
-
-
 <page columns=1 padding=16 name=pager3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
-<img src=E_pager.png x=320 y=220>
+<font face=Vera/11 color=#ffffff>
+<img src=E_pager.png x=340 y=140>
 <p>
-<br>
-<br>
-<br>
-<br>
 You can resize the pager to make it the size you'd like.  Hold down
 ALT and use the middle-mouse button to resize the pager in any direction. Using
 left-mouse button while holding ALT and dragging will move the window. Holding
@@ -918,15 +677,12 @@ allow you to move the pager about, just like the titlebar of any window.
 
 
 
-
-
-
 <page columns=1 padding=16 name=iconbox background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <img src=E_iconbox.png x=300 y=90>
 <p>
 The Iconbox
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 The iconbox is the place the icons for all your iconified windows go.  It is
 one method of recovering _minimized(minimized) applications.  Whenever
@@ -943,11 +699,11 @@ on the window, and then moving it to the desired location on the screen.  You
 can _resize(resizemode) the Iconbox by alt-middleclicking on the window and
 then adjusting the size  as described in the _Mouse_Bindings(mousebind)
 section.
-<p>
+
 
 
 <page columns=1 padding=16 name=iconbox2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_iconbox_menu.png x=300 y=20>
 <img src=E_iconbox_settings.png x=10 y=200>
 <p>
@@ -965,24 +721,27 @@ from this dialog.  You may choose to change the anchor of
 alignment for resizes - play with it until it resizes appropriately for your
 Iconbox location.
 
+
+
 <page columns=1 padding=16 name=iconbox3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 If you want to customize the images used for the icons in your iconbox, there 
 is already an example configuration supplied. To make your own configuration
 copy the matches.cfg file installed in your E16 system config 
 directory (/usr/local/e16/config/matches.cfg or 
-/usr/share/e16/config/matches.cfg) to your ~/.e16
-directory and then edit it.
+/usr/share/e16/config/matches.cfg) to your ~/.e16 directory and then edit it.
 <p>
 There are several examples of using the globbing and matching in the system
 matches.cfg file. Use that as a reference for your own additions.
 
+
+
 <page columns=1 padding=16 name=minimized background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Recovering Minimized Applications
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 There are several ways to recover an application once you have minimized it.
 The most obvious way is to use the<br>
@@ -1003,19 +762,17 @@ _settings(settings) .
 
 
 
-
-
 <page columns=1 padding=16 name=properties background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_remember_settings.png x=320 y=50>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Remembering Application Properties
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
+<p>
 In the _window_operations(windowops) menu of every window you will see an
 entry labeled
 "Remember...". If you select this it will bring up the "Remember" dialog for
-that window (Note: only one of these dialogs can be active at any one time), as
-shown to our right.
+that window, as shown to our right.
 <p>
 This dialog lets you selectively snapshot certain attributes of that window at
 that time and have E16 remember them. You may choose to only remember
@@ -1029,16 +786,13 @@ if you so wish.
 
 
 
-
-
-
-
 <page columns=1 padding=16 name=settings background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_settings_menu.png x=240 y=87>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Settings
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
+<p>
 When you click the right mouse button on the desktop background you will pop 
 up the Settings menu. From here you can select an aspect of E16 to
 configure to your liking. There are too many settings to actually document
@@ -1052,16 +806,12 @@ clicking on Apply again.
 
 
 
-
-
-
-
 <page columns=1 padding=16 name=groups background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_group_settings.png x=370 y=255>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Window Groups
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 Sometimes you have a number of windows on your desktop that logically go
 together. E16 allows you to group windows
@@ -1081,11 +831,9 @@ the right.
 
 
 
-
-
 <page columns=1 padding=16 name=groups2 background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_groups_menu.png x=320 y=25>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 There are two different methods for manipulating window groups. First, there's a
 comprehensive submenu available in each window's operations menu
@@ -1106,57 +854,62 @@ Selecting the appropriate checkboxes (showing the group members' titles)
 at the top of the dialog windows.
 
 
+
 <page columns=1 padding=16 name=backgrounds background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Selecting and Adding backgrounds
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 Often you will want to change the background of a particular desktop.  There
 are several ways you can do this.  But of course, to change your desktop,
 you'll need to give E16 some graphics to play with.  A desktop
 theme may add a background or two to your available selections, but 
-most users want to have even backgrounds to choose from.  To add backgrounds to your
-selection, make a backgrounds directory under your home directory.  To
-do this using most shells you can type
+most users want to have even more backgrounds to choose from.
+To add backgrounds to your selection, make a backgrounds directory under your
+home directory.  To do this using most shells you can type
 <p>
 mkdir ~/.e16/backgrounds
 <p>
-Once you've done this, you should restart E16 - this can be done
-quickly and easily by simply hitting the Ctrl-Alt-End key combination.  When
-E16 starts up, it will rescan these directories, and add new files
-into the background selector.
-
-
-
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+(more on next page ...)
 
 
 
 <page columns=1 padding=16 name=backgrounds2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
-<img src=E_backgrounds_menu.png x=163 y=107>
+<font face=Vera/11 color=#ffffff>
+<img src=E_backgrounds_menu.png x=163 y=70>
 <p>
-<br>
-<br>
-Once you have added your backgrounds and restarted E16, you should be
+Once you have added your backgrounds, you should be
 able to go to the root menu desktop selector.  To get to this menu, middle
 click on the desktop, select "Desktop",
 and go to Backgrounds.  You should get something that looks similar to the
 image  on the right.  From here you will be able to navigate the backgrounds
 menus.  
-<br>
-<br>
-<br>
-<br>
-(Click next for more information)
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+(more on next page ...)
+
 
 
 <page columns=1 padding=16 name=backgrounds3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_backgrounds_menu_view.png x=3 y=84>
 <p>
-<br>
-<br>
 Once you have opened up the backgrounds menu, you should see something similar
 to the image below.  From here, you can put your mouse over any of the images
 there, and it will change the desktop background of the current desktop to the
@@ -1170,8 +923,10 @@ change the settings by hand.  By bringing up the settings menu with the right
 mouse button and selecting the "Desktop Background Settings" item, you can
 bring up a dialog that looks something like the one on the next page . . .
 
+
+
 <page columns=1 padding=16 name=backgrounds4 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <img src=E_backgrounds_settings.png x=0 y=0>
 <p>
 <br>
@@ -1199,20 +954,13 @@ all the various settings for each individual background available.
 
 
 
-
-
-
-
-
-
-
 <page columns=1 padding=16 name=tooltips background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_tooltips.png x=260 y=65>
 <img src=E_tooltip_settings.png x=20 y=245>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Tooltips
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 From time to time, as you use E16, if you don't remember what does
 what, if you keep the mouse still for a little bit a tooltip will pop up.  The
@@ -1228,16 +976,13 @@ shown here on the left.
 
 
 
-
 <page columns=1 padding=16 name=audio background=Edoc_bg.png linkcolor=#88dddd>
-<img src=E_audio_settings.png x=300 y=220>
-<font face=rothwell/25 color=#ffffff>
+<img src=E_audio_settings.png x=300 y=180>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Audio
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
-<br>
-<br>
 Of course, E16 comes preconfigured to play lots of little blips and
 beeps when you do various things on your desktop.  In order to use sound in
 E16, you must have both ESounD and audiofile installed.  You can find
@@ -1246,18 +991,18 @@ more information about these libraries from http://www.gnome.org.
 <br>
 <br>
 <br>
-<br>
 You can enable and/or disable sound at runtime simply by selecting from the
 _Settings(settings) menu the "Audio Settings" option, which brings up a dialog,
 shown here at right.
 
 
+
 <page columns=1 padding=16 name=fx background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_special_fx_settings.png x=320 y=60>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Special Effects
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 E16 has many features that are configured via the "Special FX"<br>
 _settings(settings) dialog.  Here you can configure the _Dragbar(dragbar) ,
@@ -1271,15 +1016,14 @@ enable saveunders here, which may improve or slow down the performance of
 E16 on your X server, depending on server and configuration.
 
 
+
 <page columns=1 padding=16 name=focus background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_mouse.png x=410 y=330>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Setting the Focus
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
-<br>
-<br>
 E16 offers lots of different options for focusing windows.  By
 default, it comes up in sloppy focus mode.  There are two other primary focus
 modes supported by E16 - click to focus and pointer focus.
@@ -1295,12 +1039,11 @@ _desktop_background(backgrounds) you still are focused on the last window
 Next we'll tell you how to change these settings.
 
 
+
 <page columns=1 padding=16 name=focus2 background=Edoc_bg.png linkcolor=#88dddd>
-<img src=E_focus_settings.png x=320 y=30>
-<font face=aircut3/12 color=#ffffff>
+<img src=E_focus_settings.png x=320 y=20>
+<font face=Vera/11 color=#ffffff>
 <p>
-<br>
-<br>
 E16 allows you to change your focus settings at any time.  Simply
 bring up the _Settings(settings) menu and then select "Focus Settings" to bring
 up a dialog that looks something like the one on the right.  At the top, we can
@@ -1310,20 +1053,18 @@ We can also enable some other features, such as one that will allow a simple
 _mouse(mousebind) click to raise any window to the foreground, as well as several
 other advanced focus settings.
 <p>
-Here we can also enable the focuslist feature.  This feature requires Xkb to be
-enabled in your X server.  If you don't have Xkb enabled, please consult your X
-server documentation to see how to do this.  The focuslist is a 
-window list that pops up
-as you cycle through your focus using the ALT + TAB<br>
+Here we can also enable the focuslist feature.  The focuslist is a window list
+that pops up as you cycle through your focus using the ALT + TAB
 _Keybinding(defkeys) .
+
 
 
 <page columns=1 padding=16 name=movemode background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_move_resize_settings.png x=300 y=50>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Moving Windows
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 E16 comes with several different available methods for moving a
 window.  You can perform the actual moves using the  Window
@@ -1343,12 +1084,13 @@ work if your X server and E16 are running on the same machine,
 however.
 
 
+
 <page columns=1 padding=16 name=resizemode background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_move_resize_settings.png x=300 y=50>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Resizing Windows
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 E16 also comes with several available methods for resizing windows.
 You can perform the actual resize on the window by clicking on any
@@ -1365,13 +1107,15 @@ The best eyecandy resize mode is probably technical move mode.  This mode shows
 you the height and width of the window, in addition to the distance from the
 nearest edge.
 
+
+
 <page columns=1 padding=16 name=windowops background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_app_rightmouse_menu.png x=360 y=40>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 The Window Operations Menu
+<font face=Vera/11 color=#ffffff>
 <p>
-<font face=aircut3/12 color=#ffffff>
 The Window Operations menu is a commonly used menu that allows you to perform
 many different actions onto the current window.  
 <p>
@@ -1390,10 +1134,13 @@ The Raise function raises the window above any windows
 that may be obscuring it and Lower 
 lowers it below windows it is obscuring. 
 <p>
-More on the _next(windowops2) page.
+<p>
+(more on next page ...)
+
+
 
 <page columns=1 padding=16 name=windowops2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 Shade/Unshade toggles the shaded state of the window. Note that borderless
 windows are not allowed to be shaded.
@@ -1414,16 +1161,17 @@ attributes selected to be remembered in the state they are when you hit Apply or
 Ok in this dialog. You will have to bring it up again if you wish to remember
 a new state of the window.
 <p>
-More on the _next(windowops3) page.
+<p>
+(more on next page ...)
+
+
 
 <page columns=1 padding=16 name=windowops3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 In the _Window_Groups(groups) submenu there are various options for
 configuring window
-groups and how this window relates to any groups you may have. Note that you
-cannot group _Pagers(pager) windows or _Iconboxes(iconbox) together with 
-each other or any other windows.
+groups and how this window relates to any groups you may have.
 <p>
 You can quickly modify the size of a window to one of several aspects of 
 maximum sizes using the Window Size submenu.
@@ -1437,13 +1185,14 @@ name, the window will fall back to using the DEFAULT border until you
 change it again.
 
 
+
 <page columns=1 padding=16 name=placement background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_placement_settings.png x=220 y=70>
 <img src=E_autoraise_settings.png x=10 y=270>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Window Placement and Autoraise
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 These two _Settings(settings) dialogs allow you to configure various options
 for the placement of windows.  The two Dialog window options are for windows
@@ -1452,14 +1201,15 @@ use the mouse to position every new window that attempts to map itself.
 <p>
 The Autoraise settings Dialog will allow you to set a timer event that causes a
 window to automatically raise itself to the foreground after a set time.  You
-can enable it here, as well as change the timer.  This is only useful in the
-sloppy and pointer _focus_modes(focus) .
+can enable it here, as well as change the timer.
+
+
 
 <page columns=1 padding=16 name=eesh background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 E16 and IPC
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 E16 has a fairly interesting IPC system that allows external
 applications (such as Eterm) to talk to E16 and both ask for
@@ -1480,28 +1230,30 @@ revisions.
 <br>
 To exit eesh, hit CTRL + D (EOF)
 
+
+
 <page columns=1 padding=16 name=editmenus background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Editing E16's Menus
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 The first time you run E16 as a user after you've installed it, it
-should create a directory under your home directory called .e16.  In
+should create a directory under your home directory called .e16/menus.  In
 this directory, there will be a file called "file.menu" - this file controls
 the contents of your left-mouse button _Menu(rootmenu) .  The very first line
 of this file contains the title for the menu, and the remainder of the file
 looks something like this:
-<font face=aircut3/10 color=#112222>
+<font face=Vera/10 color=#112222>
 <p>
 "Eterm" NULL exec "Eterm"
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 Where each column represents:
-<font face=aircut3/10 color=#112222>
+<font face=Vera/10 color=#112222>
 <p>
 Entry title , graphic for menu (or NULL) , exec "commandline"
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 You may have several files in here, including a KDE menu and a Gnome menu if
 E16 has detected their presence during installation.  If
@@ -1509,21 +1261,17 @@ detected, your primary apps will be located in another file called
 user_apps.menu.  Each of these files is for you to edit as desired.
 
 
+
 <page columns=1 padding=16 name=editkeys background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Editing Your Keybindings
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
-<br>
-<br>
-<br>
-<br>
-
-To set your own keybindings, all you have to do is find the keybindings.cfg
+To set your own keybindings, all you have to do is find the bindings.cfg
 file that was installed with E16, and make a copy in your
-~/.e16 directory.  This file is fairly long, but shouldn't be too
-difficult to edit.  Be careful!  The keybindings in this file will override ALL
+~/.e16 directory. This file shouldn't be too difficult to edit.
+Be careful!  The keybindings in this file will override ALL
 the default keybindings, as long as this file exists, so edit this file with
 extreme caution (unless you know what you're doing).
 <p>
@@ -1531,11 +1279,13 @@ To reset your keybindings back to the default, simply remove this file from
 your ~/.e16 directory.  The next time you restart E16
 it should reload the default keybindings into memory.
 
+
+
 <page columns=1 padding=16 name=themes background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 E16 and Themes
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 One of the strong points of E16, of course, is that you can change
 around the complete look and feel of your desktop whenever you want to.
@@ -1551,23 +1301,18 @@ and searching around until you find something you like.
 <p>
 To install a new theme
 is simple: all you need to do is take the bleh.etheme file and drop it into
-your<br>
-~/.e16/themes<br>
-directory.  Once you've restarted E16,
+your ~/.e16/themes directory.  Once you've restarted E16,
 it will automatically show up in your Themes _menu(rootmenu), and you can
 choose it just like any other theme.
 
 
 
-
 <page columns=1 padding=16 name=eyecandy background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 E16's Eyecandy Features
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
-<br>
-<br>
 Of course, E16 wouldn't be complete without just a few bits of
 eyecandy to play with.
 <p>
@@ -1586,17 +1331,16 @@ respect to the desktop background.
 
 <page columns=1 padding=16 name=maint background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_maint_menu.png x=265 y=60>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Included Maintenance Scripts
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 E16 comes with several scripts that are executable out of the middle
 mouse button _menu(rootmenu) - these scripts can perform all sorts of
 maintenance on the files that E16 creates automatically for you.
 When you select "Maintenance" you should get a menu that looks something like
-the one above-right.  You can also rebuild the KDE and GNOME menus
-E16 uses from here<p>
+the one above-right.  You can also rebuild the menus from here<p>
 As a warning, when you purge configuration information, the next time you
 restart E16 it will take longer to load.  You can monitor
 E16's usage using the query tools provided.  If you change themes a
@@ -1605,14 +1349,11 @@ on a theme.  This will help keep your disk usage by E16 down.
 
 
 
-
-
-
 <page columns=1 padding=16 name=faq background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Frequently Asked Questions
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 <br>
 <br>
@@ -1639,10 +1380,10 @@ _These_docs_didn't_help,_where_can_I_get_more_help?(faqend)
 
 
 <page columns=1 padding=16 name=faq2 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 1
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 <br>
 <br>
@@ -1667,19 +1408,18 @@ Rebuild them using the _Maintenance(maint) menu.
 
 
 <page columns=1 padding=16 name=faq3 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 2
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 <br>
 Q:  All My Settings Are Mangled And I Can't Fix It
 <p>
 A:  Well, if things get really messed up, you can always remove all of
-E16's automatically saved files.  go into ~/.e16, and
-remove the ...e_session* files, and then blow away the cached directory.  If
-your theme is broken, remove the user_theme.cfg file, also.  The
-next time you start E16 it should reset everything to the default.
+E16's automatically saved files.  Go into ~/.e16, and
+remove the e_config* files, and then blow away the cached directory.
+The next time you start E16 it should reset everything to the default.
 <p>
 <br>
 <br>
@@ -1691,11 +1431,13 @@ directory version of your theme that should be sitting next to the theme, if it
 is there.  Otherwise when E16 attempts to start the new version it
 will use the old files, which causes this problem.
 
+
+
 <page columns=1 padding=16 name=faq4 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 3
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 <br>
 Q:  I set my window to borderless and can't set it back or move it.
@@ -1718,11 +1460,13 @@ Q: How can I disable that annoying desktop tooltip?
 A: There is a special config option for it under the _tooltip(tooltips) <br>
 _settings(settings) menu.
 
+
+
 <page columns=1 padding=16 name=faq5 background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 4
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 
 <p>
 Q: How do I set up E16 to work with GNOME?
@@ -1740,10 +1484,10 @@ export KDEWM=e16<br>
 exec startkde<br>
 
 <page columns=1 padding=16 name=faqend background=Edoc_bg.png linkcolor=#88dddd>
-<font face=rothwell/25 color=#ffffff>
+<font face=VeraBd/16 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 5
-<font face=aircut3/12 color=#ffffff>
+<font face=Vera/11 color=#ffffff>
 <p>
 <br>
 <br>
@@ -1751,8 +1495,8 @@ Frequently Asked Questions: Page 5
 Q:  These Docs Didn't Help, Where Can I Get More Help?
 <p>
 A: Well, we obviously can't answer all of your questions just by predicting
-them, so I would try the _website(web) as well as looking at the
-_mailing_lists(email) , especially the mail archives.  Chances are that someone
+them, so I would try the _website(res) as well as looking at the
+_mailing_lists(res) , especially the mail archives.  Chances are that someone
 else has probably had the same problem that you have.  And if all that still
-fails, you might try someone on the _irc(irc) channel
+fails, you might try someone on the _irc(res) channel
 <p>
