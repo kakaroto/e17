@@ -13,9 +13,6 @@ AM_INIT_AUTOMAKE
 
 # Checks for programs.
 AC_PROG_CC
-if test "$GCC" = "yes"; then
-  CFLAGS="$CFLAGS -Wall"
-fi
 AC_PROG_LIBTOOL
 
 AM_GNU_GETTEXT([external]) 
