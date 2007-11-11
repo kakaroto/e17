@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Link
+Name=EFM Path
+Exec=enlightenment
+StartupNotify=false
+Icon=e-module-efm_path
+Comment=<hilight>Efm Path Module</hilight><br>A module that allows a user to type<br> a location into the filemanager.
+X-Enlightenment-WaitExit=false
+X-Enlightenment-IconClass=efm_path,gadget
+X-Enlightenment-ModuleType=fileman
