@@ -19,36 +19,6 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
 # Checks for libraries.
-PKG_CHECK_MODULES(EET, [eet >= 0.9.10])
-eet_libs=$EET_LIBS
-eet_cflags=$EET_CFLAGS
-AC_SUBST(eet_flags)
-AC_SUBST(eet_cflags)
-
-PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
-evas_libs=$EVAS_LIBS
-evas_cflags=$EVAS_CFLAGS
-AC_SUBST(evas_libs)
-AC_SUBST(evas_cflags)
-
-PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9])
-ecore_libs=$ECORE_LIBS
-ecore_cflags=$ECORE_CFLAGS
-AC_SUBST(ecore_libs)
-AC_SUBST(ecore_cflags)
-
-PKG_CHECK_MODULES(EMBRYO, [embryo >= 0.5.0])
-embryo_libs=$EMBRYO_LIBS
-embryo_cflags=$EMBRYO_CFLAGS
-AC_SUBST(embryo_libs)
-AC_SUBST(embryo_cflags)
-
-PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-edje_libs=$EDJE_LIBS
-edje_cflags=$EDJE_CFLAGS
-AC_SUBST(edje_libs)
-AC_SUBST(edje_cflags)
-
 edje_cc="$(pkg-config --variable=prefix edje)/bin/edje_cc"
 AC_ARG_WITH(edje-cc,
 [  --with-edje-cc=PATH              specify a specific path to edje_cc],
