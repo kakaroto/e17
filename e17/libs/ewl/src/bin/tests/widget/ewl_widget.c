@@ -111,6 +111,19 @@ static void ewl_widget_cb_first_click(Ewl_Widget *w, void *ev, void *data);
 static void ewl_widget_cb_second_click(Ewl_Widget *w, void *ev, void *data);
 static void ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev, void *data);
 
+static int widget_is_test(char *buf, int len);
+static int name_test_set_get(char *buf, int len);
+static int name_test_nul_set_get(char *buf, int len);
+static int name_find_test(char *buf, int len);
+static int name_find_missing_test(char *buf, int len);
+static int name_find_null_test(char *buf, int len);
+static int widget_type_is_test(char *buf, int len);
+static int widget_type_is_non_type_test(char *buf, int len);
+static int widget_enable_test(char *buf, int len);
+static int widget_disable_test(char *buf, int len);
+static int widget_colour_test_set_get(char *buf, int len);
+static int widget_colour_test_get_null(char *buf, int len);
+
 static int appearance_test_set_get(char *buf, int len);
 static int inheritance_test_set_get(char *buf, int len);
 static int internal_test_set_get(char *buf, int len);
@@ -132,6 +145,18 @@ static int realize_reveal_obscure(char *buf, int len);
 static int realize_reveal_unrealize(char *buf, int len);
 
 static Ewl_Unit_Test widget_unit_tests[] = {
+		{"EWL_WIDGET_IS", widget_is_test, NULL, -1, 0},
+		{"Widget name set/get", name_test_set_get, NULL, -1, 0},
+		{"Widget NULL name set/get", name_test_nul_set_get, NULL, -1, 0},
+		{"Widget name find", name_find_test, NULL, -1, 0},
+		{"Widget missing name find", name_find_missing_test, NULL, -1, 0},
+		{"Widget find NULL", name_find_null_test, NULL, -1, 1},
+		{"Widget type is test", widget_type_is_test, NULL, -1, 0},
+		{"Widget type is without type test", widget_type_is_non_type_test, NULL, -1, 0},
+		{"Widget enable", widget_enable_test, NULL, -1, 0},
+		{"Widget disable", widget_disable_test, NULL, -1, 0},
+		{"Widget colour set/get", widget_colour_test_set_get, NULL, -1, 0},
+		{"Widget colour get NULL", widget_colour_test_get_null, NULL, -1, 0},
 		{"widget appearance set/get", appearance_test_set_get, NULL, -1, 0},
 		{"widget inheritance set/get", inheritance_test_set_get, NULL, -1, 0},
 		{"widget internal set/get", internal_test_set_get, NULL, -1, 0},
@@ -719,5 +744,246 @@ realize_reveal_unrealize(char *buf, int len)
 
 	ewl_widget_destroy(w);
 	return ret;
+}
+
+/*
+ * Test the EWL_WIDGET_IS macro (and the widget setting its type correctly)
+ */
+static int
+widget_is_test(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	if (!EWL_WIDGET_IS(w))
+		snprintf(buf, len, "Widget is not Widget type");
+	else
+		ret = 1;
+	
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+/*
+ * Test the name set/get functions
+ */
+static int
+name_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+	const char *name;
+
+	w = ewl_widget_new();
+	ewl_widget_name_set(w, "test widget");
+	name = ewl_widget_name_get(w);
+	if (strcmp("test widget", name))
+		snprintf(buf, len, "Returned name '%s' not 'test widget'", name);
+	else
+		ret = 1;
+	
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+/*
+ * Set the widgets name to NULL
+ */
+static int
+name_test_nul_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_name_set(w, "test name");
+	ewl_widget_name_set(w, NULL);
+	if (NULL != ewl_widget_name_get(w))
+		snprintf(buf, len, "Widget name not NULL");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+/*
+ * Test the name find function
+ */
+static int
+name_find_test(char *buf, int len)
+{
+	Ewl_Widget *w1, *w2;
+	int ret = 0;
+
+	w1 = ewl_widget_new();
+	ewl_widget_name_set(w1, "test widget");
+	w2 = ewl_widget_name_find("test widget");
+	if (w1 != w2)
+		snprintf(buf, len, "widget found not equal to widget set");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w1);
+	return ret;
+}
+
+/*
+ * Search for a name that won't be in the hash
+ */
+static int
+name_find_missing_test(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_name_find("Missing widget name");
+	if (w != NULL)
+		snprintf(buf, len, "Found widget when we shouldn't have");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+/*
+ * Find with a NULL name passed in
+ */
+static int
+name_find_null_test(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_name_find(NULL);
+	if (w != NULL)
+		snprintf(buf, len, "Found widget when searching for NULL");
+	else
+		ret = 1;
+	return ret;
+}
+
+/*
+ * test the ewl_widget_type_is function for a type on the widget
+ */
+static int
+widget_type_is_test(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_inherit(w, "my type");
+	if (!ewl_widget_type_is(w, "my type"))
+		snprintf(buf, len, "Failed to match 'my type' on widget");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+/* 
+ * test the ewl_widget_type_is for a non existant type on the widget
+ */
+static int
+widget_type_is_non_type_test(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	if (ewl_widget_type_is(w, "my missing type"))
+		snprintf(buf, len, "Matchined 'my missing type' on widget without type set");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+/*
+ * Test the widget enable function
+ */
+static int
+widget_enable_test(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_disable(w);
+	ewl_widget_enable(w);
+
+	if (DISABLED(w))
+		snprintf(buf, len, "Widget DISABLED after calling enable");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+/*
+ * Test the ewl_widget_disable function
+ */
+static int
+widget_disable_test(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_disable(w);
+	if (!DISABLED(w))
+		snprintf(buf, len, "Widget not disabled aftering calling disable");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+/*
+ * Test the colour set/get functions
+ */
+static int
+widget_colour_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+	unsigned int r = 0, g = 0, b = 0, a = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_color_set(w, 248, 148, 48, 255);
+	ewl_widget_color_get(w, &r, &g, &b, &a);
+	if (r != 248)
+		snprintf(buf, len, "Red colour not retrieved correctly");
+	else if (g != 148)
+		snprintf(buf, len, "Green colour not retrived correctly");
+	else if (b != 48)
+		snprintf(buf, len, "Blue colour not retrived correctly");
+	else if (a != 255)
+		snprintf(buf, len, "Alpha colour not retrieved correctly");
+	else
+		ret = 1;
+
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+/*
+ * Call color_get with the destination pointers as NULL. This will only
+ * really fail if it crashes or throws warnings. Nothing to check.
+ */
+static int
+widget_colour_test_get_null(char *buf, int len)
+{
+	Ewl_Widget *w;
+
+	w = ewl_widget_new();
+	ewl_widget_color_get(w, NULL, NULL, NULL, NULL);
+	return 1;
 }
 
