@@ -1,3 +1,6 @@
+.git
+.gitignore
+compile
 config.log
 config.sub
 config.cache

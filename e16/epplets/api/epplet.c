@@ -5653,7 +5653,7 @@ Epplet_find_instance(char *name)
    pid_t               pid;
 
    /* Set epplet data dir */
-   Esnprintf(s, sizeof(s), EROOT "/epplet_data/%s", name);
+   Esnprintf(s, sizeof(s), ENLIGHTENMENT_ROOT "/epplet_data/%s", name);
    data_dir = Estrdup(s);
 
    /* Find E dir */
