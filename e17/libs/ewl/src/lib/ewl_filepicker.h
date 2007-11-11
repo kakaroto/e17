@@ -10,7 +10,9 @@
  * A widget to allow selecting ifles
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Filepicker_inheritance.png
+ * @endif
  *
  * @{
  */

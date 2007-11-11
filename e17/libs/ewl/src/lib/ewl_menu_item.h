@@ -9,7 +9,9 @@
  * The basic menu item
  *
  * @remarks Inherits from Ewl_Button.
+ * @if HAVE_IMAGES
  * @image html Ewl_Menu_Item_inheritance.png
+ * @endif
  *
  * @{
  */

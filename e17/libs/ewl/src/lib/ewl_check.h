@@ -8,7 +8,9 @@
  * state, without any extra decorating.
  *
  * @remarks Inherits from Ewl_Widget.
+ * @if HAVE_IMAGES
  * @image html Ewl_Check_inheritance.png
+ * @endif
  *
  * @{
  */

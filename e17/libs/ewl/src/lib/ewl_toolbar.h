@@ -9,7 +9,9 @@
  * @brief Defines a widget to contain a toolbar
  *
  * @remarks Inherits from Ewl_Menubar.
+ * @if HAVE_IMAGES
  * @image html Ewl_Toolbar_inheritance.png
+ * @endif
  *
  * @{
  */

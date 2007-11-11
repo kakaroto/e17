@@ -9,7 +9,9 @@
  * Defines a class for displaying status bars
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Statusbar_inheritance.png
+ * @endif
  *
  * @{
  */

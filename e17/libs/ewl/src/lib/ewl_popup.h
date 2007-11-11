@@ -8,7 +8,9 @@
  * placed with some kind of smartness
  *
  * @remarks Inherits from Ewl_Window.
+ * @if HAVE_IMAGES
  * @image html Ewl_Popup_inheritance.png
+ * @endif
  *
  * @{
  */

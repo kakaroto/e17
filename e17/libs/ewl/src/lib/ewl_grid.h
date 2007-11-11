@@ -7,7 +7,9 @@
  * @brief The Ewl Grid widget
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Grid_inheritance.png
+ * @endif
  *
  * @{
  */

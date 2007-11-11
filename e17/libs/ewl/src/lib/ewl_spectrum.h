@@ -7,7 +7,9 @@
  * Defines a colour spectrum widget
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Spectrum_inheritance.png
+ * @endif
  *
  * @{
  */

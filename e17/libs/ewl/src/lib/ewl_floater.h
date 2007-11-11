@@ -10,7 +10,9 @@
  * area, with the ability to follow the movement of another widget.
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Floater_inheritance.png
+ * @endif
  *
  * @{
  */

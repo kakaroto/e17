@@ -9,7 +9,9 @@
  * Provides a widget to have a resizable paned container
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Paned_inheritance.png
+ * @endif
  *
  * @{
  */

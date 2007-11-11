@@ -12,7 +12,9 @@
  * A base class to be extended to provide different views on the file list
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Filelist_inheritance.png
+ * @endif
  *
  * @{
  */

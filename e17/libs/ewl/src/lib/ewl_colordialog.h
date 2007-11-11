@@ -8,7 +8,9 @@
  * @addtogroup Ewl_Colordialog Ewl_Colordialog: A Simple Colour Dialog widget
  *
  * @remarks Inherits from Ewl_Dialog.
+ * @if HAVE_IMAGES
  * @image html Ewl_Colordialog_inheritance.png
+ * @endif
  *
  * @{
  */

@@ -55,7 +55,9 @@
  *   cache, easy for fixed height rows, more complex for variable height.
  *
  * @remarks Inherits from Ewl_MVC.
+ * @if HAVE_IMAGES
  * @image html Ewl_Tree2_inheritance.png
+ * @endif
  *
  * @{
  */

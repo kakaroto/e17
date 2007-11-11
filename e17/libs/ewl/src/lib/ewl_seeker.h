@@ -10,7 +10,9 @@
  * value from a range.
  *
  * @remarks Inherits from Ewl_Range.
+ * @if HAVE_IMAGES
  * @image html Ewl_Seeker_inheritance.png
+ * @endif
  *
  * @{
  */

@@ -12,7 +12,9 @@
  * display.
  *
  * @remarks Inherits from Ewl_Object.
+ * @if HAVE_IMAGES
  * @image html Ewl_Widget_inheritance.png
+ * @endif
  *
  * @{
  */

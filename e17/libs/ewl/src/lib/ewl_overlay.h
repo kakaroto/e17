@@ -8,7 +8,9 @@
  * evas.
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Overlay_inheritance.png
+ * @endif
  *
  * @{
  */

@@ -10,7 +10,9 @@
  * Defines a class for displaying menu bars
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Menubar_inheritance.png
+ * @endif
  *
  * @{
  */

@@ -10,7 +10,9 @@
  * around a group of widgets.
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Shadow_inheritance.png
+ * @endif
  *
  * @{
  */

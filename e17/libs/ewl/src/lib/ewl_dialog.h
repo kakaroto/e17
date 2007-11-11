@@ -7,7 +7,9 @@
  * @brief Defines the Ewl_Dialog class which extends the Ewl_Window class.
  *
  * @remarks Inherits from Ewl_Window.
+ * @if HAVE_IMAGES
  * @image html Ewl_Dialog_inheritance.png
+ * @endif
  *
  * @{
  */

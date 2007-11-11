@@ -10,7 +10,9 @@
  * A view of the files using a new column for each directory.
  *
  * @remarks Inherits from Ewl_Filelist.
+ * @if HAVE_IMAGES
  * @image html Ewl_Filelist_Column_inheritance.png
+ * @endif
  *
  * @{
  */

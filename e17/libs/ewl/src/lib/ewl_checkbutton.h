@@ -10,7 +10,9 @@
  * provides an Ewl_Check that changes value on each click.
  *
  * @remarks Inherits from Ewl_Button.
+ * @if HAVE_IMAGES
  * @image html Ewl_Checkbutton_inheritance.png
+ * @endif
  *
  * @{
  */

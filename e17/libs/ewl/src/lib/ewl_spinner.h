@@ -10,7 +10,9 @@
  * increment and decrement the value.
  *
  * @remarks Inherits from Ewl_Range.
+ * @if HAVE_IMAGES
  * @image html Ewl_Spinner_inheritance.png
+ * @endif
  *
  * @{
  */

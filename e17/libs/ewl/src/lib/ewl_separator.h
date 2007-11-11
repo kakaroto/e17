@@ -8,7 +8,9 @@
  * visual separation is needed.
  *
  * @remarks Inherits from Ewl_Widget.
+ * @if HAVE_IMAGES
  * @image html Ewl_Separator_inheritance.png
+ * @endif
  *
  * @{
  */

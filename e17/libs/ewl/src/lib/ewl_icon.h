@@ -9,7 +9,9 @@
  * @brief Describes a widget to layout and manipulate icons
  *
  * @remarks Inherits from Ewl_Stock.
+ * @if HAVE_IMAGES
  * @image html Ewl_Icon_inheritance.png
+ * @endif
  *
  * @{
  */

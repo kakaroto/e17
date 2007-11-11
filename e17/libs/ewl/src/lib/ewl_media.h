@@ -7,7 +7,9 @@
  * @brief Defines a class for displaing video
  *
  * @remarks Inherits from Ewl_Widget.
+ * @if HAVE_IMAGES
  * @image html Ewl_Media_inheritance.png
+ * @endif
  *
  * @{
  */

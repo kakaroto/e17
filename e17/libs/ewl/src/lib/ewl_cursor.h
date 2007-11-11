@@ -7,7 +7,9 @@
  * @brief Defines the Ewl_Cursor class used for generating ARGB cursor data.
  *
  * @remarks Inherits from Ewl_Window.
+ * @if HAVE_IMAGES
  * @image html Ewl_Cursor_inheritance.png
+ * @endif
  *
  * @{
  */

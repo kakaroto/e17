@@ -9,7 +9,9 @@
  * Defines a class for notebook layout
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Notebook_inheritance.png
+ * @endif
  *
  * @{
  */

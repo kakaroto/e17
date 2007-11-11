@@ -8,7 +8,9 @@
  * creating it's own window and evas.
  *
  * @remarks Inherits from Ewl_Embed.
+ * @if HAVE_IMAGES
  * @image html Ewl_Window_inheritance.png
+ * @endif
  *
  * @{
  */

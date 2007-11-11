@@ -11,7 +11,9 @@
  * to allow for placing any other widget inside the stock.
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Stock_inheritance.png
+ * @endif
  *
  * @{
  */

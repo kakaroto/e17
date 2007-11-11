@@ -7,7 +7,9 @@
  * Defines a widget for tree2's expansion node
  *
  * @remarks Inherits from Ewl_Check.
+ * @if HAVE_IMAGES
  * @image html Ewl_Expansion_inheritance.png
+ * @endif
  *
  * @{
  */

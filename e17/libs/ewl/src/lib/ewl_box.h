@@ -8,7 +8,9 @@
  * horizontal or vertical line.
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Box_inheritance.png
+ * @endif
  *
  * @{
  */

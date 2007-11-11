@@ -9,7 +9,9 @@
  * @brief Defines a class to layout data in a list
  *
  * @remarks Inherits from Ewl_MVC.
+ * @if HAVE_IMAGES
  * @image html Ewl_List_inheritance.png
+ * @endif
  *
  * @{
  */

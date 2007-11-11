@@ -7,7 +7,9 @@
  * @addtogroup Ewl_Context_Menu Ewl_Context_Menu: A context menu
  *
  * @remarks Inherits from Ewl_Popup.
+ * @if HAVE_IMAGES
  * @image html Ewl_Context_Menu_inheritance.png
+ * @endif
  *
  * @{
  */

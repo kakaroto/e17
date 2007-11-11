@@ -7,7 +7,9 @@
  * @brief Defines a class for text layout and formatting
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Text_inheritance.png
+ * @endif
  *
  * @{
  */

@@ -9,7 +9,9 @@
  * @brief Defines the Ewl_Password class to allow for single line obscured text.
  *
  * @remarks Inherits from Ewl_Entry.
+ * @if HAVE_IMAGES
  * @image html Ewl_Password_inheritance.png
+ * @endif
  *
  * @{
  */

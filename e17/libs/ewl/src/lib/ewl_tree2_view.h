@@ -10,7 +10,9 @@
  * @brief The tree view class
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Tree2_View_inheritance.png
+ * @endif
  *
  * @{
  */

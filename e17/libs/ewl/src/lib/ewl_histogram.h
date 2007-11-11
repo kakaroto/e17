@@ -8,7 +8,9 @@
  * @addtogroup Ewl_Histogram Ewl_Histogram: A Simple Histogram widget
  *
  * @remarks Inherits from Ewl_Image.
+ * @if HAVE_IMAGES
  * @image html Ewl_Histogram_inheritance.png
+ * @endif
  *
  * @{
  */

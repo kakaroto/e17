@@ -11,7 +11,9 @@
  * horizontal or vertical line.
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Table_inheritance.png
+ * @endif
  *
  * @{
  */

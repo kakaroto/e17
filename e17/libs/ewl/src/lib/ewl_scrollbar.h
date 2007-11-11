@@ -9,7 +9,9 @@
  * Defines an Ewl_Scrollbar for using when scrolling values are needed.
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Scrollbar_inheritance.png
+ * @endif
  *
  * @{
  */

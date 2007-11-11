@@ -8,7 +8,9 @@
  * viewable region.
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Scrollpane_inheritance.png
+ * @endif
  *
  * @{
  */

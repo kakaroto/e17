@@ -8,7 +8,9 @@
  * canvas.
  *
  * @remarks Inherits from Ewl_Overlay.
+ * @if HAVE_IMAGES
  * @image html Ewl_Embed_inheritance.png
+ * @endif
  *
  * @{
  */

@@ -9,7 +9,9 @@
  * @brief Defines the Ewl_Calendar class
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Calendar_inheritance.png
+ * @endif
  *
  * @{
  */

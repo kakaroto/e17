@@ -7,7 +7,9 @@
  * Defines a widget to display a row
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Row_inheritance.png
+ * @endif
  *
  * @{
  */

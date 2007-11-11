@@ -7,7 +7,9 @@
  * Defines a container to layout a single child with all of it's available space.
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Cell_inheritance.png
+ * @endif
  *
  * @{
  */

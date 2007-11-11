@@ -10,7 +10,9 @@
  * for selecting a single option.
  *
  * @remarks Inherits from Ewl_Checkbutton.
+ * @if HAVE_IMAGES
  * @image html Ewl_Radiobutton_inheritance.png
+ * @endif
  *
  * @{
  */

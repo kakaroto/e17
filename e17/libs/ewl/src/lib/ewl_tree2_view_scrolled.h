@@ -9,7 +9,9 @@
  * @brief A scrolled view for the tree
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Tree2_View_Scrolled_inheritance.png
+ * @endif
  *
  * @{
  */

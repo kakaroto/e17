@@ -9,7 +9,9 @@
  * @brief Defines a plain view into the tree just listing rows
  *
  * @remarks Inherits from Ewl_Tree2_View.
+ * @if HAVE_IMAGES
  * @image html Ewl_Tree2_View_Plain_inheritance.png
+ * @endif
  *
  * @{
  */

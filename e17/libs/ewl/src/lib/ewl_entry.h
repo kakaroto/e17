@@ -9,7 +9,9 @@
  * This widget provides all text entry needs, from single to multiline
  *
  * @remarks Inherits from Ewl_Text.
+ * @if HAVE_IMAGES
  * @image html Ewl_Entry_inheritance.png
+ * @endif
  *
  * @{
  */

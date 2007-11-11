@@ -11,7 +11,9 @@
  * from the Ewl_Box to allow for placing any other widget inside the button.
  *
  * @remarks Inherits from Ewl_Stock.
+ * @if HAVE_IMAGES
  * @image html Ewl_Button_inheritance.png
+ * @endif
  *
  * @{
  */

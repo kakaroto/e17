@@ -4,6 +4,7 @@
 /**
  * @addtogroup Ewl_Filelist_Model Ewl_Filelist_Model The model for the filelist
  * @brief A model for the filelist
+ *
  * @{
  */
 

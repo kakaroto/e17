@@ -9,7 +9,9 @@
  * @brief Defines the Ewl_Datepicker class,
  *
  * @remarks Inherits from Ewl_Text.
+ * @if HAVE_IMAGES
  * @image html Ewl_Datepicker_inheritance.png
+ * @endif
  *
  * @{
  */

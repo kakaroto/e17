@@ -9,7 +9,9 @@
  * Defines a widget to highlight other widgets
  *
  * @remarks Inherits from Ewl_Floater.
+ * @if HAVE_IMAGES
  * @image html Ewl_Highlight_inheritance.png
+ * @endif
  *
  * @{
  */

@@ -8,7 +8,9 @@
  * layout.
  *
  * @remarks Inherits from Ewl_Widget.
+ * @if HAVE_IMAGES
  * @image html Ewl_Spacer_inheritance.png
+ * @endif
  *
  * @{
  */

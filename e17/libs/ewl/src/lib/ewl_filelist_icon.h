@@ -10,7 +10,9 @@
  * A view of the files using simple name/icon graphics
  *
  * @remarks Inherits from Ewl_Filelist.
+ * @if HAVE_IMAGES
  * @image html Ewl_Filelist_Icon_inheritance.png
+ * @endif
  *
  * @{
  */

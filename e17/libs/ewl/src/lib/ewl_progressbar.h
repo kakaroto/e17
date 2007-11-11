@@ -9,7 +9,9 @@
  * A progress bar widget
  *
  * @remarks Inherits from Ewl_Range.
+ * @if HAVE_IMAGES
  * @image html Ewl_Progressbar_inheritance.png
+ * @endif
  *
  * @{
  */

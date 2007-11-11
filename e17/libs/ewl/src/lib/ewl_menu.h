@@ -9,7 +9,9 @@
  * the canvas.
  *
  * @remarks Inherits from Ewl_Menu_Item.
+ * @if HAVE_IMAGES
  * @image html Ewl_Menu_inheritance.png
+ * @endif
  *
  * @{
  */

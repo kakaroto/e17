@@ -10,7 +10,9 @@
  * Provides a tree view of the files giving name, size, etc information
  *
  * @remarks Inherits from Ewl_Filelist.
+ * @if HAVE_IMAGES
  * @image html Ewl_Filelist_Tree_inheritance.png
+ * @endif
  *
  * @{
  */

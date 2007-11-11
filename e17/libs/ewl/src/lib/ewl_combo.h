@@ -11,7 +11,9 @@
  * outside of the Evas.
  *
  * @remarks Inherits from Ewl_MVC.
+ * @if HAVE_IMAGES
  * @image html Ewl_Combo_inheritance.png
+ * @endif
  *
  * @{
  */

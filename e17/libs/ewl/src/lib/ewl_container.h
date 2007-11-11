@@ -8,7 +8,9 @@
  * the ability to nest Ewl_Widget's inside.
  *
  * @remarks Inherits from Ewl_Widget.
+ * @if HAVE_IMAGES
  * @image html Ewl_Container_inheritance.png
+ * @endif
  *
  * @{
  */

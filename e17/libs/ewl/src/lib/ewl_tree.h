@@ -10,7 +10,9 @@
  * manner.
  *
  * @remarks Inherits from Ewl_Container.
+ * @if HAVE_IMAGES
  * @image html Ewl_Tree_inheritance.png
+ * @endif
  *
  * @{
  */

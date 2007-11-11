@@ -8,7 +8,9 @@
  * Provides a widget for displaying evas loadable images, and edjes.
  *
  * @remarks Inherits from Ewl_Widget.
+ * @if HAVE_IMAGES
  * @image html Ewl_Image_inheritance.png
+ * @endif
  *
  * @{
  */

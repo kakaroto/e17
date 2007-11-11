@@ -10,7 +10,9 @@
  * A simple dialog to show a file selector widget
  *
  * @remarks Inherits from Ewl_Dialog.
+ * @if HAVE_IMAGES
  * @image html Ewl_Filedialog_inheritance.png
+ * @endif
  *
  * @{
  */

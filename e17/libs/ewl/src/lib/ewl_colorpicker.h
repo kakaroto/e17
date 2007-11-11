@@ -8,7 +8,9 @@
  * @addtogroup Ewl_Colorpicker Ewl_Colorpicker: The colour picking widget
  *
  * @remarks Inherits from Ewl_Box.
+ * @if HAVE_IMAGES
  * @image html Ewl_Colorpicker_inheritance.png
+ * @endif
  *
  * @{
  */
