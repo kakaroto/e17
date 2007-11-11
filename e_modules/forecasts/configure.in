@@ -101,10 +101,6 @@ AC_DEFINE_UNQUOTED(LOCALEDIR, "${localedir}", [Module Locale Directory])
 #AC_SUBST(dlopen_libs)
 
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-edje_cflags=$EDJE_CFLAGS
-edje_libs=$EDJE_LIBS
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_libs)
 
 edje_cc="$(pkg-config --variable=prefix edje)/bin/edje_cc"
 AC_ARG_WITH(edje-cc,

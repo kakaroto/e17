@@ -131,10 +131,6 @@ AC_SUBST(e_libs)
 AC_SUBST(e_modules)
 
 PKG_CHECK_MODULES(EXML, [exml >= 0.1.1])
-exml_cflags=$EXML_CFLAGS
-exml_libs=$EXML_LIBS
-AC_SUBST(exml_cflags)
-AC_SUBST(exml_libs)
 
 #AC_CHECK_HEADERS(EXML.h,, AC_MSG_ERROR([Cannot find EXML.h. Make sure your CFLAGS environment variable contains include lines for the location of this file and EXML lib is installed]))
 
