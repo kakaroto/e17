@@ -500,6 +500,8 @@ realize_unrealize(char *buf, int len)
 	ewl_widget_unrealize(w);
 
 	if (VISIBLE(w))
+		/* This is the currently expected behavior, but we're discussing
+		 * if this is really the behavior we want */
 		snprintf(buf, len, "Widget VISIBLE after realize/unrealize");
 	else if (REALIZED(w))
 		snprintf(buf, len, "Widget REALIZED after realize/unrealize");
@@ -556,8 +558,11 @@ parent_set_show(char *buf, int len)
 		snprintf(buf, len, "Parent NULL after parent_set");
 	else if (!VISIBLE(w))
 		snprintf(buf, len, "Widget !VISIBLE after parent_set");
-	else if (!REALIZED(w))
-		snprintf(buf, len, "Widget !REALIZED after parent_set");
+	else if (REALIZED(w))
+		/* The widget has not been realized yet as that happens in the
+		 * idle loop, so this should test that it is still not realized
+		 * after changing parents. */
+		snprintf(buf, len, "Widget REALIZED after parent_set");
 	else if (REVEALED(w))
 		snprintf(buf, len, "Widget REVEALED after parent_set");
 	else
@@ -627,6 +632,8 @@ reparent_realized(char *buf, int len)
 	else if (!VISIBLE(w))
 		snprintf(buf, len, "Widget !VISIBLE after reparent");
 	else if (!REALIZED(w))
+		/* FIXME: This can't possibly be REALIZED, since there is no
+		 * top level parent. */
 		snprintf(buf, len, "Widget !REALIZED after reparent");
 	else if (REVEALED(w))
 		snprintf(buf, len, "Widget REVEALED after reparent");
@@ -674,6 +681,8 @@ realize_reveal_obscure(char *buf, int len)
 	ewl_widget_reveal(w);
 
 	if (VISIBLE(w))
+		/* Realize presently triggers a show, so this is presently the
+		 * correct behavior but it is up for discussion right now. */
 		snprintf(buf, len, "Widget VISIBLE after realize/reveal/obscure");
 	else if (!REALIZED(w))
 		snprintf(buf, len, "Widget !REALIZED after realize/reveal/obscure");
@@ -698,6 +707,8 @@ realize_reveal_unrealize(char *buf, int len)
 	ewl_widget_unrealize(w);
 
 	if (VISIBLE(w))
+		/* This is another case where the realize has caused the show.
+		 * Since that occurs, being VISIBLE is correct. */
 		snprintf(buf, len, "Widget VISIBLE after realize/reveal/unrealize");
 	else if (REALIZED(w))
 		snprintf(buf, len, "Widget REALIZED after realize/reveal/unrealize");
