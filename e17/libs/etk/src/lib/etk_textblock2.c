@@ -18,6 +18,12 @@
  * @{
  */
 
+#define SET_COLOR(color, cr, cg, cb, ca) \
+   (color).r = (cr); \
+   (color).g = (cg); \
+   (color).b = (cb); \
+   (color).a = (ca);
+
 typedef struct Etk_TB2_Object_SD Etk_TB2_Object_SD;
 typedef struct Etk_TB2_Object_Line Etk_TB2_Object_Line;
 
@@ -1004,10 +1010,133 @@ const Etk_Textblock2_Format *etk_textblock2_node_format_get(Etk_Textblock2_Node 
  */
 void etk_textblock2_node_format_apply(Etk_Textblock2_Node *node, const char *format)
 {
+   Etk_Textblock2_Tag_Type type;
+   const char *tag_start, *tag_end;
+   const char *param_start, *param_end;
+   const char *value_start, *value_end;
+   Etk_Bool close;
+   int len, len2;
+   int i;
+   
    if (!node || !format)
       return;
    
+   if (!node->format)
+      node->format = etk_textblock2_format_new();
    
+   type = ETK_TEXTBLOCK2_TAG_DEFAULT;
+   tag_start = NULL;
+   tag_end = NULL;
+   param_start = NULL;
+   param_end = NULL;
+   value_start = NULL;
+   value_end = NULL;
+   close = ETK_FALSE;
+   
+   for (i = 0; format[i] != '\0'; i++)
+   {
+      /* Read the tag-name */
+      if (!tag_start)
+      {
+         if (format[i] == '<')
+         {
+            if (format[i + 1] == '/')
+            {
+               close = ETK_TRUE;
+               i++;
+            }
+            tag_start = &format[i + 1];
+         }
+      }
+      else if (!tag_end)
+      {
+         if (format[i] == '>' || format[i] == ' ')
+         {
+            tag_end = &format[i - 1];
+            len = tag_end - tag_start + 1;
+            
+            if (len == 1 && tag_start[0] == 'b')
+               type = ETK_TEXTBLOCK2_TAG_BOLD;
+            else if (len == 1 && tag_start[0] == 'i')
+               type = ETK_TEXTBLOCK2_TAG_ITALIC;
+            else if (len == 1 && tag_start[0] == 'u')
+               type = ETK_TEXTBLOCK2_TAG_UNDERLINE;
+            else if (len == 1 && tag_start[0] == 's')
+               type = ETK_TEXTBLOCK2_TAG_STRIKETHROUGH;
+            else if (len == 5 && strncmp(tag_start, "style", 5) == 0)
+               type = ETK_TEXTBLOCK2_TAG_STYLE;
+            else if (len == 4 && strncmp(tag_start, "font", 4) == 0)
+               type = ETK_TEXTBLOCK2_TAG_FONT;
+            else
+            {
+               printf("%d\n", len);
+               ETK_WARNING("The format \"%s\" is not supported by the textblock", format);
+               return;
+            }
+            
+            if (close)
+               node->format->type &= ~type;
+            else
+               node->format->type |= type;
+         }
+      }
+      
+      /* Read the parameters */
+      if (tag_start && tag_end)
+      {
+         if (!param_start)
+         {
+            if (format[i] != ' ' && format[i] != '>')
+               param_start = &format[i];
+         }
+         else
+         {
+            if (!value_start)
+            {
+               if (format[i] == '=')
+               {
+                  value_start = &format[i + 1];
+                  param_end = &format[i - 1];
+               }
+            }
+            
+            if (!value_end)
+            {
+               if (format[i] == ' ' && format[i] == '>')
+               {
+                  value_end = &format[i - 1];
+                  if (value_start && value_start[0] == '"');
+                     value_start++;
+                  if (value_end[0] == '"');
+                     value_end--;
+                  
+                  if ((len = param_end - param_start + 1) > 1 && (len2 = value_end - value_start + 1) > 1)
+                  {
+                     /* TODO: parse the parameter/value... */
+                  }
+                  
+                  param_start = NULL;
+                  param_end = NULL;
+                  value_start = NULL;
+                  value_end = NULL;
+               }
+            }
+         }
+      }
+      
+      /* The current tag is closed */
+      if (format[i] == '>')
+      {
+         type = ETK_TEXTBLOCK2_TAG_DEFAULT;
+         tag_start = NULL;
+         tag_end = NULL;
+         param_start = NULL;
+         param_end = NULL;
+         value_start = NULL;
+         value_end = NULL;
+         close = ETK_FALSE;
+      }
+   }
 }
 
 /**************************
@@ -1044,7 +1173,25 @@ void etk_textblock2_format_free(Etk_Textblock2_Format *format)
  */
 void etk_textblock2_format_reset(Etk_Textblock2_Format *format)
 {
-   /* TODO */
+   if (!format)
+      return;
+   
+   format->type = ETK_TEXTBLOCK2_TAG_DEFAULT;
+   
+   format->u.type = ETK_TEXTBLOCK2_UNDERLINE_NONE;
+   SET_COLOR(format->style.color2, -1, -1, -1, -1);
+   SET_COLOR(format->style.color2, -1, -1, -1, -1);
+   
+   SET_COLOR(format->style.color2, -1, -1, -1, -1);
+   
+   format->style.type = ETK_TEXTBLOCK2_STYLE_NONE;
+   SET_COLOR(format->style.color2, -1, -1, -1, -1);
+   SET_COLOR(format->style.color2, -1, -1, -1, -1);
+   
+   free(format->font.face);
+   format->font.face = NULL;
+   format->font.size = -1;
+   SET_COLOR(format->style.color2, -1, -1, -1, -1);
 }
 
 /**
@@ -2201,6 +2348,8 @@ static void _etk_tb2_object_line_object_build(Evas_Object *lo, Etk_Textblock2_Li
 {
    Etk_Textblock2_Node *n;
    Evas_Textblock_Cursor *cursor;
+   int num_tags;
+   int i;
    
    if (!lo || !line)
       return;
@@ -2209,8 +2358,33 @@ static void _etk_tb2_object_line_object_build(Evas_Object *lo, Etk_Textblock2_Li
    cursor = evas_object_textblock_cursor_new(lo);
    for (n = line->nodes; n; n = n->next)
    {
-      /* TODO: apply format */
-      evas_textblock_cursor_text_prepend(cursor, etk_string_get(n->text));
+      /* Inserts format nodes */
+      num_tags = 0;
+      if (n->format)
+      {
+         if ((n->format->type & ETK_TEXTBLOCK2_TAG_BOLD) && (n->format->type & ETK_TEXTBLOCK2_TAG_ITALIC))
+         {
+            evas_textblock_cursor_format_append(cursor, "+ font=Vera-Bold-Italic");
+            num_tags++;
+         }
+         else if (n->format->type & ETK_TEXTBLOCK2_TAG_BOLD)
+         {
+            evas_textblock_cursor_format_append(cursor, "+ font=Vera-Bold");
+            num_tags++;
+         }
+         else if (n->format->type & ETK_TEXTBLOCK2_TAG_ITALIC)
+         {
+            evas_textblock_cursor_format_append(cursor, "+ font=Vera-Italic");
+            num_tags++;
+         }
+      }
+      
+      /* Insert the text */
+      evas_textblock_cursor_text_append(cursor, etk_string_get(n->text));
+      
+      /* Close the format nodes */
+      for (i = 0; i < num_tags; i++)
+         evas_textblock_cursor_format_append(cursor, "-");
    }
    evas_textblock_cursor_free(cursor);
 }
