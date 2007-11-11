@@ -1,16 +1,15 @@
-## Process this file with automake to produce Makefile.in
 
-AUTOMAKE_OPTIONS     = 1.4 foreign
-
-# A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES             = -I$(top_builddir)/src \
-		       -I$(top_srcdir)/src \
-		       -I$(top_srcdir)/src/lib \
-		       @IMLIB2_CFLAGS@ @EPEG_CFLAGS@
+AM_CPPFLAGS = \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/src \
+-I$(top_srcdir)/src/lib \
+@IMLIB2_CFLAGS@ \
+@EPEG_CFLAGS@
 
 noinst_LTLIBRARIES = libepsilon_exiftags.la
+
 libepsilon_exiftags_la_SOURCES = \
 exif.h \
 exifint.h \
