@@ -123,6 +123,7 @@ main(int argc, char **argv)
 					"\t-help\tDisplay this help text\n"
 					"\t-list\tPrint available tests\n"
 					"\t-p\tHide passed test information\n"
+					"\t-d\tEnable all debugging output\n"
 					"\t-unit\tRun unit tests\n",
 					argv[0]);
 			exit(0);
