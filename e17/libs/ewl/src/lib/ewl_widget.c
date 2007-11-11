@@ -2609,7 +2609,6 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * prepended callbacks in the embed can create the evas, windows,
 	 * etc.
 	 */
-	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
 	ewl_widget_reveal(w);
 
 	/*
