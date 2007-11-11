@@ -5727,7 +5727,7 @@ Epplet_find_instance(char *name)
 	for (;;)
 	  {
 	     err = fcntl(fd, F_SETLK, &fl);
-	     if (err != EINTR)
+	     if (err == 0 || errno != EINTR)
 		break;
 	  }
 	if (err == 0)
@@ -5735,6 +5735,11 @@ Epplet_find_instance(char *name)
 	     /* Locking succeeded, file is open for writing */
 	     locked = 1;
 	     break;
+	  }
+	if (errno == EACCES || errno == EAGAIN)
+	  {
+	     /* Locking failed due to held lock */
+	     continue;
 	  }
 
 	if (!exists)
