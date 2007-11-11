@@ -1,6 +1,7 @@
-## Process this file with automake to produce Makefile.in
 
-INCLUDES = \
+MAINTAINERCLEANFILES = Makefile.in
+
+AM_CPPFLAGS = \
 -I../lib \
 -I$(top_srcdir)/src/lib \
 @my_includes@

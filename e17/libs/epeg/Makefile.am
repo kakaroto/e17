@@ -5,27 +5,8 @@ SUBDIRS = src
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in epeg.c \
+		       stamp-h.in epeg.c depcomp \
 		       epeg.spec debian/changelog
-
-install-data-local:
-        @$(NORMAL_INSTALL)
-	if test -d $(srcdir)/data; then \
-	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/data; \
-	  for d in $(srcdir)/data/*; do \
-	    cp -pR $$d $(DESTDIR)$(pkgdatadir)/data; \
-          done \
-	fi
-
-dist-hook:
-	if test -d data; then \
-	  mkdir $(distdir)/data; \
-	  for file in data/*; do \
-	    cp -pR $$file $(distdir)/data; \
-	  done \
-	fi
-
-bin_SCRIPTS = 
 
 EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN \
 	     epeg.spec epeg.spec.in epeg.c.in gendoc \
@@ -35,7 +16,7 @@ EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN \
              debian/control \
              debian/copyright \
              debian/libepeg0-dev.install \
-    	     debian/epeg0-bin.install \
+	     debian/epeg0-bin.install \
              debian/libepeg0.install \
              debian/rules
 
