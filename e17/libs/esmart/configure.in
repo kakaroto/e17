@@ -1,7 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(esmart, 0.9.0.011)
+AC_INIT(esmart, 0.9.0.011, enlightenment-devel@lists.sourceforge.net)
+AC_PREREQ(2.52)
+AC_CONFIG_SRCDIR(configure.in)
+
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(src/config.h)
 
 AC_ISC_POSIX
@@ -10,11 +13,20 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_BIGENDIAN
 AC_C_CONST
-AM_ENABLE_SHARED
-AM_PROG_LIBTOOL
 
-dnl Use -Wall if we have gcc.
-							
+AC_LIBTOOL_WIN32_DLL
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
+AC_PROG_LIBTOOL
+
+VMAJ=`echo $PACKAGE_VERSION | awk -F . '{printf("%s", $1);}'`
+VMIN=`echo $PACKAGE_VERSION | awk -F . '{printf("%s", $2);}'`
+VMIC=`echo $PACKAGE_VERSION | awk -F . '{printf("%s", $3);}'`
+SNAP=`echo $PACKAGE_VERSION | awk -F . '{printf("%s", $4);}'`
+version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
+AC_SUBST(version_info)
+
+
 dnl Set PACKAGE_DATA_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
@@ -31,16 +43,6 @@ else
 fi
 
 AC_DEFINE_UNQUOTED(CONTAINER_PLUGIN_DIR, "${container_plugin_dir}", [Container Plugin Directory])
-AC_SUBST(CONTAINER_PLUGIN_DIR)
-
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \	]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall " ;;
-  esac
-fi
-changequote([,])dnl
 
 # evas is required by all of the modules anyway :)
 requirements="evas"

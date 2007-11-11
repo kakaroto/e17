@@ -1,3 +1,6 @@
+
+MAINTAINERCLEANFILES = Makefile.in
+
 FILES = \
 esmart.png \
 text_view_bg.png \

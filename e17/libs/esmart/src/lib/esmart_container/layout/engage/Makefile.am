@@ -1,8 +1,12 @@
+
+MAINTAINERCLEANFILES = Makefile.in
+
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src/lib/esmart_container \
+@CONTAINER_CFLAGS@
+
 plugindir = @libdir@/@PACKAGE@/layout
 plugin_LTLIBRARIES = engage.la
-
-INCLUDES = -I$(top_srcdir)/src/lib/esmart_container \
-	   @CONTAINER_CFLAGS@
 
 engage_la_SOURCES = engage.c
 engage_la_LDFLAGS = -module -avoid-version

@@ -1,3 +1,4 @@
-SUBDIRS = default engage entice
+
 MAINTAINERCLEANFILES = Makefile.in
 
+SUBDIRS = default engage entice

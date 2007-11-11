@@ -1,21 +1,27 @@
+
+MAINTAINERCLEANFILES = Makefile.in
+
 SUBDIRS = layout
+
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src/lib/esmart_container \
+-DCONTAINER_PLUGIN_DIR=\"$(libdir)/$(PACKAGE)/layout\" \
+@CONTAINER_CFLAGS@
 
 pkgdir = @libdir@
 pkg_LTLIBRARIES = libesmart_container.la
 
-INCLUDES = -I$(top_srcdir)/src/lib/esmart_container \
-	   @CONTAINER_CFLAGS@
-
 installed_headersdir = $(prefix)/include/Esmart
 installed_headers_DATA = Esmart_Container.h
 
-libesmart_container_la_SOURCES = esmart_container.c \
-				 Esmart_Container.h \
-				 esmart_container_element.c \
-				 esmart_container_plugin.c \
-				 esmart_container_private.h \
-				 esmart_container_smart.c \
-				 esmart_container_util.c
+libesmart_container_la_SOURCES = \
+esmart_container.c \
+Esmart_Container.h \
+esmart_container_element.c \
+esmart_container_plugin.c \
+esmart_container_private.h \
+esmart_container_smart.c \
+esmart_container_util.c
 
-libesmart_container_la_LDFLAGS = @CONTAINER_LIBS@ -version-info 0:9:0 
-libesmart_container_la_LIBADD = -lltdl -lm
+libesmart_container_la_LDFLAGS = -version-info @version_info@
+libesmart_container_la_LIBADD = -lltdl -lm @CONTAINER_LIBS@
