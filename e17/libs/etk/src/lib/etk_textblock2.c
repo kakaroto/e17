@@ -335,6 +335,7 @@ void etk_textblock2_insert_markup(Etk_Textblock2_Iter *iter, const char *markup_
       
       if (text_start)
       {
+         /* A piece of text has been read: we insert it */
          if (markup_text[i + 1] == '\0' || markup_text[i + 1] == '<' || (length >= 0 && (i + 1) >= length))
          {
             text_end = &markup_text[i];
@@ -346,20 +347,27 @@ void etk_textblock2_insert_markup(Etk_Textblock2_Iter *iter, const char *markup_
       }
       else if (tag_start)
       {
+         /* A tag has been read: we apply it */
          if (markup_text[i + 1] == '\0' || markup_text[i] == '>' || (length >= 0 && (i + 1) >= length))
          {
             tag_end = &markup_text[i];
-            etk_string_set_sized(string, tag_start, tag_end - tag_start + 1);
             
-            if (iter->node->unicode_length > 0)
-            {
-               prev_node = iter->node;
-               node = etk_textblock2_node_add(iter);
-               etk_textblock2_node_format_set(node, prev_node->format);
-            }
+            if (tag_end - tag_start + 1 == 4 && strncmp(tag_start, "<br>", 4) == 0)
+               etk_textblock2_insert(iter, "\n", 1);
             else
-               node = iter->node;
-            etk_textblock2_node_format_apply(node, etk_string_get(string));
+            {
+               etk_string_set_sized(string, tag_start, tag_end - tag_start + 1);
+               
+               if (iter->node->unicode_length > 0)
+               {
+                  prev_node = iter->node;
+                  node = etk_textblock2_node_add(iter);
+                  etk_textblock2_node_format_set(node, prev_node->format);
+               }
+               else
+                  node = iter->node;
+               etk_textblock2_node_format_apply(node, etk_string_get(string));
+            }
             
             tag_start = NULL;
             tag_end = NULL;
@@ -1069,7 +1077,6 @@ void etk_textblock2_node_format_apply(Etk_Textblock2_Node *node, const char *for
                type = ETK_TEXTBLOCK2_TAG_FONT;
             else
             {
-               printf("%d\n", len);
                ETK_WARNING("The format \"%s\" is not supported by the textblock", format);
                return;
             }
@@ -1179,19 +1186,19 @@ void etk_textblock2_format_reset(Etk_Textblock2_Format *format)
    format->type = ETK_TEXTBLOCK2_TAG_DEFAULT;
    
    format->u.type = ETK_TEXTBLOCK2_UNDERLINE_NONE;
-   SET_COLOR(format->style.color2, -1, -1, -1, -1);
-   SET_COLOR(format->style.color2, -1, -1, -1, -1);
+   SET_COLOR(format->u.color1, -1, -1, -1, -1);
+   SET_COLOR(format->u.color2, -1, -1, -1, -1);
    
-   SET_COLOR(format->style.color2, -1, -1, -1, -1);
+   SET_COLOR(format->s.color, -1, -1, -1, -1);
    
    format->style.type = ETK_TEXTBLOCK2_STYLE_NONE;
-   SET_COLOR(format->style.color2, -1, -1, -1, -1);
+   SET_COLOR(format->style.color1, -1, -1, -1, -1);
    SET_COLOR(format->style.color2, -1, -1, -1, -1);
    
    free(format->font.face);
    format->font.face = NULL;
    format->font.size = -1;
-   SET_COLOR(format->style.color2, -1, -1, -1, -1);
+   SET_COLOR(format->font.color, -1, -1, -1, -1);
 }
 
 /**
@@ -2344,11 +2351,15 @@ static Evas_Object *_etk_tb2_object_line_object_add(Evas_Object *tbo)
 }
 
 /* Builds the line-object (Evas-Textblock) from the given line of the textblock */
+/* TODO: default color might be different from black */
 static void _etk_tb2_object_line_object_build(Evas_Object *lo, Etk_Textblock2_Line *line)
 {
    Etk_Textblock2_Node *n;
    Evas_Textblock_Cursor *cursor;
-   int num_tags;
+   Etk_Color default_color = { 0, 0, 0, 255 };
+   Etk_Color color;
+   char format[64];
+   int num_tags, num_ptags;
    int i;
    
    if (!lo || !line)
@@ -2356,26 +2367,233 @@ static void _etk_tb2_object_line_object_build(Evas_Object *lo, Etk_Textblock2_Li
    
    evas_object_textblock_clear(lo);
    cursor = evas_object_textblock_cursor_new(lo);
+   
+   /* Insert paragraph's format-nodes */
+   {
+      num_ptags = 0;
+      
+      if (line->paragraph->wrap == ETK_TEXTBLOCK2_WRAP_NONE)
+         evas_textblock_cursor_format_append(cursor, "+ wrap=none");
+      else if (line->paragraph->wrap == ETK_TEXTBLOCK2_WRAP_CHAR)
+         evas_textblock_cursor_format_append(cursor, "+ wrap=char");
+      else
+         evas_textblock_cursor_format_append(cursor, "+ wrap=word");
+      num_ptags++;
+      
+      sprintf(format, "+ align=%d%%", (int)(line->paragraph->align * 100));
+      evas_textblock_cursor_format_append(cursor, format);
+      num_ptags++;
+      
+      if (line->paragraph->left_margin > 0)
+      {
+         sprintf(format, "+ left_margin=%d", line->paragraph->left_margin);
+         evas_textblock_cursor_format_append(cursor, format);
+         num_ptags++;
+      }
+      if (line->paragraph->right_margin > 0)
+      {
+         sprintf(format, "+ right_margin=%d", line->paragraph->right_margin);
+         evas_textblock_cursor_format_append(cursor, format);
+         num_ptags++;
+      }
+   }
+   
+   /* For each nodes of the line: */
    for (n = line->nodes; n; n = n->next)
    {
-      /* Inserts format nodes */
+      /* Insert format nodes */
       num_tags = 0;
       if (n->format)
       {
+         /* Format: Bold Italic */
          if ((n->format->type & ETK_TEXTBLOCK2_TAG_BOLD) && (n->format->type & ETK_TEXTBLOCK2_TAG_ITALIC))
          {
             evas_textblock_cursor_format_append(cursor, "+ font=Vera-Bold-Italic");
             num_tags++;
          }
+         /* Format: Bold */
          else if (n->format->type & ETK_TEXTBLOCK2_TAG_BOLD)
          {
             evas_textblock_cursor_format_append(cursor, "+ font=Vera-Bold");
             num_tags++;
          }
+         /* Format: Italic */
          else if (n->format->type & ETK_TEXTBLOCK2_TAG_ITALIC)
          {
             evas_textblock_cursor_format_append(cursor, "+ font=Vera-Italic");
             num_tags++;
+         }
+         
+         /* Format: Underline */
+         if (n->format->type & ETK_TEXTBLOCK2_TAG_UNDERLINE)
+         {
+            if (n->format->u.type == ETK_TEXTBLOCK2_UNDERLINE_SINGLE)
+            {
+               evas_textblock_cursor_format_append(cursor, "+ underline=single");
+               num_tags++;
+            }
+            else if (n->format->u.type == ETK_TEXTBLOCK2_UNDERLINE_DOUBLE)
+            {
+               evas_textblock_cursor_format_append(cursor, "+ underline=single");
+               num_tags++;
+            }
+            
+            if (n->format->u.type >= ETK_TEXTBLOCK2_UNDERLINE_SINGLE)
+            {
+               if (n->format->u.color1.r >= 0)
+                  color = n->format->u.color1;
+               else if (n->format->font.color.r >= 0)
+                  color = n->format->font.color;
+               else
+                  color = default_color;
+               sprintf(format, "+ underline_color=#%.2X%.2X%.2X%.2X", color.r, color.g, color.b, color.a);
+               evas_textblock_cursor_format_append(cursor, format);
+               num_tags++;
+            }
+            
+            if (n->format->u.type >= ETK_TEXTBLOCK2_UNDERLINE_DOUBLE)
+            {
+               if (n->format->u.color2.r >= 0)
+                  color = n->format->u.color2;
+               else if (n->format->u.color1.r >= 0)
+                  color = n->format->u.color1;
+               else if (n->format->font.color.r >= 0)
+                  color = n->format->font.color;
+               else
+                  color = default_color;
+               sprintf(format, "+ underline_color2=#%.2X%.2X%.2X%.2X", color.r, color.g, color.b, color.a);
+               evas_textblock_cursor_format_append(cursor, format);
+               num_tags++;
+            }
+         }
+         
+         /* Format: Strikethrough */
+         if (n->format->type & ETK_TEXTBLOCK2_TAG_STRIKETHROUGH)
+         {
+            evas_textblock_cursor_format_append(cursor, "+ strikethrough=on");
+            num_tags++;
+            
+            if (n->format->s.color.r >= 0)
+               color = n->format->s.color;
+            else if (n->format->font.color.r >= 0)
+               color = n->format->font.color;
+            else
+               color = default_color;
+            sprintf(format, "+ strikethrough_color=#%.2X%.2X%.2X%.2X", color.r, color.g, color.b, color.a);
+            evas_textblock_cursor_format_append(cursor, format);
+            num_tags++;
+         }
+         
+         /* Format: Font */
+         if (n->format->type & ETK_TEXTBLOCK2_TAG_FONT)
+         {
+            if (n->format->font.size > 0)
+            {
+               sprintf(format, "+ font_size=%d", n->format->font.size);
+               evas_textblock_cursor_format_append(cursor, format);
+               num_tags++;
+            }
+            if (n->format->font.color.r >= 0)
+            {
+               sprintf(format, "+ color=#%.2X%.2X%.2X%.2X", n->format->font.color.r,
+                     n->format->font.color.g, n->format->font.color.b, n->format->font.color.a);
+               evas_textblock_cursor_format_append(cursor, format);
+               num_tags++;
+            }
+         }
+         
+         /* Format: Style */
+         if (n->format->type & ETK_TEXTBLOCK2_TAG_STYLE)
+         {
+            switch (n->format->style.type)
+            {
+               case ETK_TEXTBLOCK2_STYLE_OUTLINE:
+                  evas_textblock_cursor_format_append(cursor, "+ style=outline");
+                  break;
+               case ETK_TEXTBLOCK2_STYLE_SHADOW:
+                  evas_textblock_cursor_format_append(cursor, "+ style=shadow");
+                  break;
+               case ETK_TEXTBLOCK2_STYLE_SOFT_OUTLINE:
+                  evas_textblock_cursor_format_append(cursor, "+ style=soft_outline");
+                  break;
+               case ETK_TEXTBLOCK2_STYLE_GLOW:
+                  evas_textblock_cursor_format_append(cursor, "+ style=glow");
+                  break;
+               case ETK_TEXTBLOCK2_STYLE_OUTLINE_SHADOW:
+                  evas_textblock_cursor_format_append(cursor, "+ style=outline_shadow");
+                  break;
+               case ETK_TEXTBLOCK2_STYLE_FAR_SHADOW:
+                  evas_textblock_cursor_format_append(cursor, "+ style=far_shadow");
+                  break;
+               case ETK_TEXTBLOCK2_STYLE_OUTLINE_SOFT_SHADOW:
+                  evas_textblock_cursor_format_append(cursor, "+ style=outline_soft_shadow");
+                  break;
+               case ETK_TEXTBLOCK2_STYLE_SOFT_SHADOW:
+                  evas_textblock_cursor_format_append(cursor, "+ style=soft_shadow");
+                  break;
+               case ETK_TEXTBLOCK2_STYLE_FAR_SOFT_SHADOW:
+                  evas_textblock_cursor_format_append(cursor, "+ style=far_soft_shadow");
+                  break;
+               default:
+                  num_tags--;
+                  break;
+            }
+            num_tags++;
+            
+            if (n->format->style.color1.r >= 0)
+            {
+               switch (n->format->style.type)
+               {
+                  case ETK_TEXTBLOCK2_STYLE_OUTLINE:
+                  case ETK_TEXTBLOCK2_STYLE_SOFT_OUTLINE:
+                  case ETK_TEXTBLOCK2_STYLE_OUTLINE_SHADOW:
+                  case ETK_TEXTBLOCK2_STYLE_OUTLINE_SOFT_SHADOW:
+                     sprintf(format, "+ outline_color=#%.2X%.2X%.2X%.2X", n->format->style.color1.r,
+                           n->format->style.color1.g, n->format->style.color1.b, n->format->style.color1.a);
+                     evas_textblock_cursor_format_append(cursor, format);
+                     num_tags++;
+                     break;
+                  case ETK_TEXTBLOCK2_STYLE_SHADOW:
+                  case ETK_TEXTBLOCK2_STYLE_FAR_SHADOW:
+                  case ETK_TEXTBLOCK2_STYLE_SOFT_SHADOW:
+                  case ETK_TEXTBLOCK2_STYLE_FAR_SOFT_SHADOW:
+                     sprintf(format, "+ shadow_color=#%.2X%.2X%.2X%.2X", n->format->style.color1.r,
+                           n->format->style.color1.g, n->format->style.color1.b, n->format->style.color1.a);
+                     evas_textblock_cursor_format_append(cursor, format);
+                     num_tags++;
+                     break;
+                  case ETK_TEXTBLOCK2_STYLE_GLOW:
+                     sprintf(format, "+ glow_color=#%.2X%.2X%.2X%.2X", n->format->style.color1.r,
+                           n->format->style.color1.g, n->format->style.color1.b, n->format->style.color1.a);
+                     evas_textblock_cursor_format_append(cursor, format);
+                     num_tags++;
+                     break;
+                  default:
+                     break;
+               }
+            }
+            
+            if (n->format->style.color2.r >= 0)
+            {
+               switch (n->format->style.type)
+               {
+                  case ETK_TEXTBLOCK2_STYLE_OUTLINE_SHADOW:
+                  case ETK_TEXTBLOCK2_STYLE_OUTLINE_SOFT_SHADOW:
+                     sprintf(format, "+ shadow_color=#%.2X%.2X%.2X%.2X", n->format->style.color2.r,
+                           n->format->style.color2.g, n->format->style.color2.b, n->format->style.color2.a);
+                     evas_textblock_cursor_format_append(cursor, format);
+                     num_tags++;
+                     break;
+                  case ETK_TEXTBLOCK2_STYLE_GLOW:
+                     sprintf(format, "+ glow_color2=#%.2X%.2X%.2X%.2X", n->format->style.color2.r,
+                           n->format->style.color2.g, n->format->style.color2.b, n->format->style.color2.a);
+                     evas_textblock_cursor_format_append(cursor, format);
+                     num_tags++;
+                     break;
+                  default:
+                     break;
+               }
+            }
          }
       }
       
@@ -2386,6 +2604,11 @@ static void _etk_tb2_object_line_object_build(Evas_Object *lo, Etk_Textblock2_Li
       for (i = 0; i < num_tags; i++)
          evas_textblock_cursor_format_append(cursor, "-");
    }
+   
+   /* Close the paragraph's format-nodes */
+   for (i = 0; i < num_ptags; i++)
+      evas_textblock_cursor_format_append(cursor, "-");
+      
    evas_textblock_cursor_free(cursor);
 }
 
