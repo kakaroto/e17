@@ -16,10 +16,10 @@ static int label_null_test_set_get(char *buf, int len);
 static int label_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test label_unit_tests[] = {
-		{"label null get", label_null_test_get, -1, NULL},
-		{"label null set/get", label_null_test_set_get, -1, NULL},
-		{"label set/get", label_test_set_get, -1, NULL},
-		{NULL, NULL, -1, NULL}
+		{"label null get", label_null_test_get, NULL, -1, 0},
+		{"label null set/get", label_null_test_set_get, NULL, -1, 0},
+		{"label set/get", label_test_set_get, NULL, -1, 0},
+		{NULL, NULL, NULL, -1, 0}
 	};
 
 void

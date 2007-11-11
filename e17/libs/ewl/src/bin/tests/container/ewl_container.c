@@ -9,8 +9,8 @@
 static int switch_parents(char *buf, int len);
 
 static Ewl_Unit_Test container_unit_tests[] = {
-		{"switch parents", switch_parents, -1, NULL},
-		{NULL, NULL, -1, NULL}
+		{"switch parents", switch_parents, NULL, -1, 0},
+		{NULL, NULL, NULL, -1, 0}
 	};
 
 void

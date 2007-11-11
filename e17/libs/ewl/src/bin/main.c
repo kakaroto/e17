@@ -18,6 +18,7 @@
 #include <limits.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <Ecore.h>
@@ -25,6 +26,8 @@
 #include <Ecore_Data.h>
 #include <Ecore_Str.h>
 #include <zlib.h>
+
+#define NULL_PATH "/dev/null"
 
 #define MAIN_WIDTH 640
 #define MAIN_HEIGHT 320
@@ -46,6 +49,8 @@ static int ewl_test_setup_tests(void);
 static void ewl_test_free(Ewl_Test *test);
 static int ewl_test_compare(Ewl_Test *test1, Ewl_Test *test2);
 static void ewl_test_print_tests(void);
+static void ewl_test_stderr_enable();
+static void ewl_test_stderr_disable();
 
 static void run_test_boxed(Ewl_Test *t);
 static void run_unit_test_boxed(Ewl_Test *t);
@@ -87,6 +92,9 @@ static Ecore_Path_Group *tests_path_group = NULL;
 static int window_count = 0;
 static int current_unit_test = 0;
 static int hide_passed = 0;
+static int show_debug = 0;
+static int saved_stderr = -1;
+
 static Ecore_Timer *unit_test_timer = NULL;
 
 static Ewl_Test *current_test = NULL;
@@ -121,6 +129,8 @@ main(int argc, char **argv)
 		}
 		else if (!strncmp(argv[i], "-p", 2))
 			hide_passed = 1;
+		else if (!strncmp(argv[i], "-d", 2))
+			show_debug = 1;
 		else if (!strncmp(argv[i], "-all", 4))
 			all_tests = 1;
 		else if (!strncmp(argv[i], "-unit", 5))
@@ -198,6 +208,49 @@ main(int argc, char **argv)
 	return ret;
 }
 
+static void
+ewl_test_stderr_disable()
+{
+	static int null_fd = -1;
+
+	/*
+	 * If stderr is already disabled, bail out early.
+	 */
+	if (show_debug || saved_stderr >= 0)
+		return;
+
+	/*
+	 * Open /dev/null the first time it's necessary, and maintain a
+	 * reference to it for the lifetime of the test app.
+	 */
+	if (null_fd < 0)
+		null_fd = open(NULL_PATH, O_RDONLY);
+
+	if (null_fd >= 0)
+	{
+		saved_stderr = dup(fileno(stderr));
+
+		if (dup2(null_fd, fileno(stderr)) < 0)
+		{
+			close(saved_stderr);
+			saved_stderr = -1;
+		}
+	}
+}
+
+static void
+ewl_test_stderr_enable()
+{
+	/*
+	 * Return early if stderr is not disabled.
+	 */
+	if (show_debug || saved_stderr < 0)
+		return;
+
+	dup2(saved_stderr, fileno(stderr));
+	saved_stderr = -1;
+}
+
 static int
 ewl_test_cb_unit_test_timer(void *data)
 {
@@ -214,7 +267,11 @@ ewl_test_cb_unit_test_timer(void *data)
 		stat = ewl_widget_name_find("statusbar");
 		ewl_statusbar_push(EWL_STATUSBAR(stat),
 				(char *)unit_tests[current_unit_test].name);
+		if (unit_tests[current_unit_test].quiet)
+			ewl_test_stderr_disable();
 		val = unit_tests[current_unit_test].func(buf, sizeof(buf));
+		if (unit_tests[current_unit_test].quiet)
+			ewl_test_stderr_enable();
 		ewl_statusbar_pop(EWL_STATUSBAR(stat));
 
 		tree = ewl_widget_name_find("unit_test_tree");
@@ -308,6 +365,9 @@ run_unit_tests(Ewl_Test *test)
 	{
 		int ret;
 
+		if (test->unit_tests[i].quiet)
+			ewl_test_stderr_disable();
+
 		ret = test->unit_tests[i].func(buf, sizeof(buf));
 		if (!ret || !hide_passed)
 		{
@@ -318,6 +378,9 @@ run_unit_tests(Ewl_Test *test)
 		buf[0] = '\0';
 
 		if (!ret) failures++;
+
+		if (test->unit_tests[i].quiet)
+			ewl_test_stderr_enable();
 	}
 
 	return failures;
@@ -1274,6 +1337,3 @@ cb_unit_test_count(void *data)
 
 	return i;
 }
-
-
-

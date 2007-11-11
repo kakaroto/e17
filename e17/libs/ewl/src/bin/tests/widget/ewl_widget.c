@@ -132,25 +132,25 @@ static int realize_reveal_obscure(char *buf, int len);
 static int realize_reveal_unrealize(char *buf, int len);
 
 static Ewl_Unit_Test widget_unit_tests[] = {
-		{"widget appearance set/get", appearance_test_set_get, -1, NULL},
-		{"widget inheritance set/get", inheritance_test_set_get, -1, NULL},
-		{"widget internal set/get", internal_test_set_get, -1, NULL},
-		{"widget clipped set/get", clipped_test_set_get, -1, NULL},
-		{"widget data set/get", data_test_set_get, -1, NULL},
-		{"widget data set/remove", data_test_set_remove, -1, NULL},
-		{"widget_new", widget_new, -1, NULL},
-		{"widget_init state", init, -1, NULL},
-		{"widget_show state", show, -1, NULL},
-		{"widget_realize state", realize, -1, NULL},
-		{"widget realize unrealize state", realize_unrealize, -1, NULL},
-		{"widget_parent_set state", parent_set, -1, NULL},
-		{"widget parent set while shown state", parent_set_show, -1, NULL},
-		{"widget Reparent unrealized state", reparent_unrealized, -1, NULL},
-		{"widget reparent realized state", reparent_realized, -1, NULL},
-		{"widget realize then reveal state", realize_reveal, -1, NULL},
-		{"widget realize reveal obscure state", realize_reveal_obscure, -1, NULL},
-		{"widget realize reveal unrealize state", realize_reveal_unrealize, -1, NULL},
-		{NULL, NULL, -1, NULL}
+		{"widget appearance set/get", appearance_test_set_get, NULL, -1, 0},
+		{"widget inheritance set/get", inheritance_test_set_get, NULL, -1, 0},
+		{"widget internal set/get", internal_test_set_get, NULL, -1, 0},
+		{"widget clipped set/get", clipped_test_set_get, NULL, -1, 0},
+		{"widget data set/get", data_test_set_get, NULL, -1, 0},
+		{"widget data set/remove", data_test_set_remove, NULL, -1, 0},
+		{"widget_new", widget_new, NULL, -1, 0},
+		{"widget_init state", init, NULL, -1, 0},
+		{"widget_show state", show, NULL, -1, 0},
+		{"widget_realize state", realize, NULL, -1, 0},
+		{"widget realize unrealize state", realize_unrealize, NULL, -1, 0},
+		{"widget_parent_set state", parent_set, NULL, -1, 0},
+		{"widget parent set while shown state", parent_set_show, NULL, -1, 0},
+		{"widget Reparent unrealized state", reparent_unrealized, NULL, -1, 0},
+		{"widget reparent realized state", reparent_realized, NULL, -1, 0},
+		{"widget realize then reveal state", realize_reveal, NULL, -1, 0},
+		{"widget realize reveal obscure state", realize_reveal_obscure, NULL, -1, 0},
+		{"widget realize reveal unrealize state", realize_reveal_unrealize, NULL, -1, 0},
+		{NULL, NULL, NULL, -1, 0}
 	};
 
 void

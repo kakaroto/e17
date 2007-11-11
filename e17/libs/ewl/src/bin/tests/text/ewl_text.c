@@ -90,10 +90,10 @@ static int text_valid_utf8_set_get(char *buf, int len);
 static int text_invalid_utf8_set_get(char *buf, int len);
 
 static Ewl_Unit_Test text_unit_tests[] = {
-		{"text set/get", text_test_set_get, -1, NULL},
-		{"valid UTF-8 text set/get", text_valid_utf8_set_get, -1, NULL},
-		{"invalid UTF-8 text set/get", text_invalid_utf8_set_get, -1, NULL},
-		{NULL, NULL, -1, NULL}
+		{"text set/get", text_test_set_get, NULL, -1, 0},
+		{"valid UTF-8 text set/get", text_valid_utf8_set_get, NULL, -1, 0},
+		{"invalid UTF-8 text set/get", text_invalid_utf8_set_get, NULL, -1, 0},
+		{NULL, NULL, NULL, -1, 0}
 	};
 
 void

@@ -27,15 +27,15 @@ static int fill_policy_test_set_get(char *buf, int len);
 static int alignment_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test object_unit_tests[] = {
-		{"preferred inner size set/get", preferred_inner_size_test_set_get, -1, NULL},
-		{"preferred size set/get", preferred_size_test_set_get, -1, NULL},
-		{"minimum size set/get", minimum_size_test_set_get, -1, NULL},
-		{"maximum size set/get", maximum_size_test_set_get, -1, NULL},
-		{"minimum size set/request", minimum_size_test_set_request, -1, NULL},
-		{"maximum size set/request", maximum_size_test_set_request, -1, NULL},
-		{"fill policy set/get", fill_policy_test_set_get, -1, NULL},
-		{"alignment set/get", alignment_test_set_get, -1, NULL},
-		{NULL, NULL, -1, NULL}
+		{"preferred inner size set/get", preferred_inner_size_test_set_get, NULL, -1, 0},
+		{"preferred size set/get", preferred_size_test_set_get, NULL, -1, 0},
+		{"minimum size set/get", minimum_size_test_set_get, NULL, -1, 0},
+		{"maximum size set/get", maximum_size_test_set_get, NULL, -1, 0},
+		{"minimum size set/request", minimum_size_test_set_request, NULL, -1, 0},
+		{"maximum size set/request", maximum_size_test_set_request, NULL, -1, 0},
+		{"fill policy set/get", fill_policy_test_set_get, NULL, -1, 0},
+		{"alignment set/get", alignment_test_set_get, NULL, -1, 0},
+		{NULL, NULL, NULL, -1, 0}
 	};
 
 void

@@ -40,16 +40,16 @@ static int image_size_differ_test_set_get(char *buf, int len);
 static int image_size_max_int_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test button_unit_tests[] = {
-		{"label set/get", label_test_set_get, -1, NULL},
-		{"image null get", image_null_test_get, -1, NULL},
-		{"image null set/get", image_null_test_set_get, -1, NULL},
-		{"image nonexistent set/get", image_nonexist_relative_test_set_get, -1, NULL},
-		{"image size null height set/get", image_size_null_height_test_set_get, -1, NULL},
-		{"image size null width set/get", image_size_null_width_test_set_get, -1, NULL},
-		{"image size match set/get", image_size_match_test_set_get, -1, NULL},
-		{"image size differ set/get", image_size_differ_test_set_get, -1, NULL},
-		{"image size max int set/get", image_size_max_int_test_set_get, -1, NULL},
-		{NULL, NULL, -1, NULL}
+		{"label set/get", label_test_set_get, NULL, -1, 0},
+		{"image null get", image_null_test_get, NULL, -1, 0},
+		{"image null set/get", image_null_test_set_get, NULL, -1, 0},
+		{"image nonexistent set/get", image_nonexist_relative_test_set_get, NULL, -1, 0},
+		{"image size null height set/get", image_size_null_height_test_set_get, NULL, -1 , 0},
+		{"image size null width set/get", image_size_null_width_test_set_get, NULL, -1, 0},
+		{"image size match set/get", image_size_match_test_set_get, NULL, -1, 0},
+		{"image size differ set/get", image_size_differ_test_set_get, NULL, -1, 0},
+		{"image size max int set/get", image_size_max_int_test_set_get, NULL, -1, 0},
+		{NULL, NULL, NULL, -1, 0}
 	};
 
 void
