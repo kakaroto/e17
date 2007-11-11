@@ -24,6 +24,15 @@
    (color).b = (cb); \
    (color).a = (ca);
 
+#define TAG_NAME_IS(name, l) \
+   (len == (l) && strncmp(tag_start, (name), (l)) == 0)
+
+#define TAG_PARAM_IS(name, l) \
+   (len == (l) && strncmp(param_start, (name), (l)) == 0)
+
+#define TAG_VALUE_IS(name, l) \
+   (len2 == (l) && strncmp(value_start, (name), (l)) == 0)
+
 typedef struct Etk_TB2_Object_SD Etk_TB2_Object_SD;
 typedef struct Etk_TB2_Object_Line Etk_TB2_Object_Line;
 
@@ -79,6 +88,10 @@ static Etk_Textblock2_Node      *_etk_tb2_node_split(Etk_Textblock2_Node *node, 
 static Etk_Bool                  _etk_tb2_iter_is_valid(Etk_Textblock2_Iter *iter);
 static void                      _etk_tb2_iter_reorder(Etk_Textblock2_Iter *iter, Etk_Textblock2_Iter *prev);
 static void                      _etk_tb2_escaped_text_to_string(const char *text, int length, Etk_String *string);
+static int                       _etk_tb2_int_parse(const char *str, int length, int error_value);
+static float                     _etk_tb2_float_parse(const char *str, int length, float error_value);
+static void                      _etk_tb2_color_parse(const char *str, int length, Etk_Color *color);
+static int                       _etk_tb2_hex_string_get(char ch);
 
 static Etk_TB2_Object_Line      *_etk_tb2_object_line_get(Evas_Object *tbo, Etk_Textblock2_Line *line);
 static void                      _etk_tb2_object_line_add(Evas_Object *tbo, Etk_Textblock2_Line *line);
@@ -1063,17 +1076,17 @@ void etk_textblock2_node_format_apply(Etk_Textblock2_Node *node, const char *for
             tag_end = &format[i - 1];
             len = tag_end - tag_start + 1;
             
-            if (len == 1 && tag_start[0] == 'b')
+            if (TAG_NAME_IS("b", 1))
                type = ETK_TEXTBLOCK2_TAG_BOLD;
-            else if (len == 1 && tag_start[0] == 'i')
+            else if (TAG_NAME_IS("i", 1))
                type = ETK_TEXTBLOCK2_TAG_ITALIC;
-            else if (len == 1 && tag_start[0] == 'u')
+            else if (TAG_NAME_IS("u", 1))
                type = ETK_TEXTBLOCK2_TAG_UNDERLINE;
-            else if (len == 1 && tag_start[0] == 's')
+            else if (TAG_NAME_IS("s", 1))
                type = ETK_TEXTBLOCK2_TAG_STRIKETHROUGH;
-            else if (len == 5 && strncmp(tag_start, "style", 5) == 0)
+            else if (TAG_NAME_IS("style", 5))
                type = ETK_TEXTBLOCK2_TAG_STYLE;
-            else if (len == 4 && strncmp(tag_start, "font", 4) == 0)
+            else if (TAG_NAME_IS("font", 4))
                type = ETK_TEXTBLOCK2_TAG_FONT;
             else
             {
@@ -1109,17 +1122,90 @@ void etk_textblock2_node_format_apply(Etk_Textblock2_Node *node, const char *for
             
             if (!value_end)
             {
-               if (format[i] == ' ' && format[i] == '>')
+               if (format[i] == ' ' || format[i] == '>')
                {
                   value_end = &format[i - 1];
-                  if (value_start && value_start[0] == '"');
+                  if (value_start && value_start[0] == '"')
                      value_start++;
-                  if (value_end[0] == '"');
+                  if (value_end[0] == '"')
                      value_end--;
                   
-                  if ((len = param_end - param_start + 1) > 1 && (len2 = value_end - value_start + 1) > 1)
+                  /* Read the value of the current parameter */
+                  if ((len = param_end - param_start + 1) > 0 && (len2 = value_end - value_start + 1) > 0)
                   {
-                     /* TODO: parse the parameter/value... */
+                     switch (type)
+                     {
+                        /* Parameters for format "underline" */
+                        case ETK_TEXTBLOCK2_TAG_UNDERLINE:
+                           if (TAG_PARAM_IS("type", 4))
+                           {
+                              if (TAG_VALUE_IS("none", 4))
+                                 node->format->u.type = ETK_TEXTBLOCK2_UNDERLINE_NONE;
+                              else if (TAG_VALUE_IS("single", 6))
+                                 node->format->u.type = ETK_TEXTBLOCK2_UNDERLINE_SINGLE;
+                              else if (TAG_VALUE_IS("double", 6))
+                                 node->format->u.type = ETK_TEXTBLOCK2_UNDERLINE_DOUBLE;
+                           }
+                           else if (TAG_PARAM_IS("color1", 6))
+                              _etk_tb2_color_parse(value_start, len2, &node->format->u.color1);
+                           else if (TAG_PARAM_IS("color2", 6))
+                              _etk_tb2_color_parse(value_start, len2, &node->format->u.color2);
+                           break;
+                        
+                        /* Parameters for format "strikethrough" */
+                        case ETK_TEXTBLOCK2_TAG_STRIKETHROUGH:
+                           if (TAG_PARAM_IS("color", 5))
+                              _etk_tb2_color_parse(value_start, len2, &node->format->s.color);
+                           break;
+                        
+                        /* Parameters for format "font" */
+                        case ETK_TEXTBLOCK2_TAG_FONT:
+                           if (TAG_PARAM_IS("size", 4))
+                              node->format->font.size = _etk_tb2_int_parse(value_start, len2, -1);
+                           else if (TAG_PARAM_IS("color", 5))
+                              _etk_tb2_color_parse(value_start, len2, &node->format->font.color);
+                           else if (TAG_PARAM_IS("face", 4))
+                           {
+                              free(node->format->font.face);
+                              node->format->font.face = malloc(len2 + 1);
+                              strncpy(node->format->font.face, value_start, len2);
+                              node->format->font.face[len2] = '\0';
+                           }
+                           break;
+                        
+                        /* Parameters for format "style" */
+                        case ETK_TEXTBLOCK2_TAG_STYLE:
+                           if (TAG_PARAM_IS("effect", 6))
+                           {
+                              if (TAG_VALUE_IS("none", 4))
+                                 node->format->style.type = ETK_TEXTBLOCK2_STYLE_NONE;
+                              else if (TAG_VALUE_IS("outline", 7))
+                                 node->format->style.type = ETK_TEXTBLOCK2_STYLE_OUTLINE;
+                              else if (TAG_VALUE_IS("shadow", 6))
+                                 node->format->style.type = ETK_TEXTBLOCK2_STYLE_SHADOW;
+                              else if (TAG_VALUE_IS("soft_outline", 12))
+                                 node->format->style.type = ETK_TEXTBLOCK2_STYLE_SOFT_OUTLINE;
+                              else if (TAG_VALUE_IS("glow", 4))
+                                 node->format->style.type = ETK_TEXTBLOCK2_STYLE_GLOW;
+                              else if (TAG_VALUE_IS("outline_shadow", 14))
+                                 node->format->style.type = ETK_TEXTBLOCK2_STYLE_OUTLINE_SHADOW;
+                              else if (TAG_VALUE_IS("far_shadow", 10))
+                                 node->format->style.type = ETK_TEXTBLOCK2_STYLE_FAR_SHADOW;
+                              else if (TAG_VALUE_IS("outline_soft_shadow", 19))
+                                 node->format->style.type = ETK_TEXTBLOCK2_STYLE_OUTLINE_SOFT_SHADOW;
+                              else if (TAG_VALUE_IS("soft_shadow", 11))
+                                 node->format->style.type = ETK_TEXTBLOCK2_STYLE_SOFT_SHADOW;
+                              else if (TAG_VALUE_IS("far_soft_shadow", 15))
+                                 node->format->style.type = ETK_TEXTBLOCK2_STYLE_FAR_SOFT_SHADOW;
+                           }
+                           else if (TAG_PARAM_IS("color1", 6))
+                              _etk_tb2_color_parse(value_start, len2, &node->format->style.color1);
+                           else if (TAG_PARAM_IS("color2", 6))
+                              _etk_tb2_color_parse(value_start, len2, &node->format->style.color2);
+                           break;
+                        default:
+                           break;
+                     }
                   }
                   
                   param_start = NULL;
@@ -1131,7 +1217,7 @@ void etk_textblock2_node_format_apply(Etk_Textblock2_Node *node, const char *for
          }
       }
       
-      /* The current tag is closed */
+      /* The current tag has been closed... */
       if (format[i] == '>')
       {
          type = ETK_TEXTBLOCK2_TAG_DEFAULT;
@@ -1185,7 +1271,7 @@ void etk_textblock2_format_reset(Etk_Textblock2_Format *format)
    
    format->type = ETK_TEXTBLOCK2_TAG_DEFAULT;
    
-   format->u.type = ETK_TEXTBLOCK2_UNDERLINE_NONE;
+   format->u.type = ETK_TEXTBLOCK2_UNDERLINE_SINGLE;
    SET_COLOR(format->u.color1, -1, -1, -1, -1);
    SET_COLOR(format->u.color2, -1, -1, -1, -1);
    
@@ -2027,6 +2113,7 @@ static void _etk_tb2_escaped_text_to_string(const char *text, int length, Etk_St
       
       if (text_start)
       {
+         /* A piece of text has been read: we insert it into the string */
          if (text[i + 1] == '\0' || text[i + 1] == '&' || (length >= 0 && (i + 1) >= length))
          {
             text_end = &text[i];
@@ -2037,6 +2124,7 @@ static void _etk_tb2_escaped_text_to_string(const char *text, int length, Etk_St
       }
       else if (escape_start)
       {
+         /* An escape-sequence has been read: we convert it and insert the corresponding char into the string */
          if (text[i + 1] == '\0' || text[i] == ';' || (length >= 0 && (i + 1) >= length))
          {
             converted = NULL;
@@ -2060,6 +2148,109 @@ static void _etk_tb2_escaped_text_to_string(const char *text, int length, Etk_St
          }
       }
    }
+}
+
+/* Read an integer string and return its value, or "error_value" on failure */
+static int _etk_tb2_int_parse(const char *str, int length, int error_value)
+{
+   char buffer[32];
+   int value;
+   int len;
+   
+   if (!str)
+      return error_value;
+   
+   len = ETK_MIN(length, 31);
+   strncpy(buffer, str, len);
+   buffer[len] = '\0';
+   
+   if (sscanf(buffer, "%d", &value) == 1)
+      return value;
+   else
+      return error_value;
+}
+
+/* Read a float string and return its value, or "error_value" on failure */
+static float _etk_tb2_float_parse(const char *str, int length, float error_value)
+{
+   char buffer[32];
+   float value;
+   int len;
+   
+   if (!str)
+      return error_value;
+   
+   len = ETK_MIN(length, 31);
+   strncpy(buffer, str, len);
+   buffer[len] = '\0';
+   
+   if (sscanf(buffer, "%f", &value) == 1)
+      return value;
+   else
+      return error_value;
+}
+
+/* Reads a color string and stores the result into 'color' */
+/* TODO: Add support for common color names ("red", "blue", ...) */
+static void _etk_tb2_color_parse(const char *str, int length, Etk_Color *color)
+{
+   if (!str || !color)
+      return;
+
+   /* #RRGGBB */
+   if (length == 7)
+   {
+      color->r = (_etk_tb2_hex_string_get(str[1]) << 4) | (_etk_tb2_hex_string_get(str[2]));
+      color->g = (_etk_tb2_hex_string_get(str[3]) << 4) | (_etk_tb2_hex_string_get(str[4]));
+      color->b = (_etk_tb2_hex_string_get(str[5]) << 4) | (_etk_tb2_hex_string_get(str[6]));
+      color->a = 255;
+   }
+   /* #RRGGBBAA */
+   else if (length == 9)
+   {
+      color->r = (_etk_tb2_hex_string_get(str[1]) << 4) | (_etk_tb2_hex_string_get(str[2]));
+      color->g = (_etk_tb2_hex_string_get(str[3]) << 4) | (_etk_tb2_hex_string_get(str[4]));
+      color->b = (_etk_tb2_hex_string_get(str[5]) << 4) | (_etk_tb2_hex_string_get(str[6]));
+      color->a = (_etk_tb2_hex_string_get(str[7]) << 4) | (_etk_tb2_hex_string_get(str[8]));
+   }
+   /* #RGB */
+   else if (length == 4)
+   {
+      color->r = _etk_tb2_hex_string_get(str[1]);
+      color->r = (color->r << 4) | color->r;
+      color->g = _etk_tb2_hex_string_get(str[2]);
+      color->g = (color->g << 4) | color->g;
+      color->b = _etk_tb2_hex_string_get(str[3]);
+      color->b = (color->b << 4) | color->b;
+      color->a = 255;
+   }
+   /* #RGBA */
+   else if (length == 5)
+   {
+      color->r = _etk_tb2_hex_string_get(str[1]);
+      color->r = (color->r << 4) | color->r;
+      color->g = _etk_tb2_hex_string_get(str[2]);
+      color->g = (color->g << 4) | color->g;
+      color->b = _etk_tb2_hex_string_get(str[3]);
+      color->b = (color->b << 4) | color->b;
+      color->a = _etk_tb2_hex_string_get(str[4]);
+      color->a = (color->a << 4) | color->a;
+   }
+   else
+      color->r = -1;
+}
+
+/* Gets the decimal value of the hexadecimal figure */
+static int _etk_tb2_hex_string_get(char ch)
+{
+   if ((ch >= '0') && (ch <= '9'))
+      return (ch - '0');
+   else if ((ch >= 'A') && (ch <= 'F'))
+      return (ch - 'A' + 10);
+   else if ((ch >= 'a') && (ch <= 'f'))
+      return (ch - 'a' + 10);
+   else
+      return 0;
 }
 
 /**************************
@@ -2429,12 +2620,12 @@ static void _etk_tb2_object_line_object_build(Evas_Object *lo, Etk_Textblock2_Li
          {
             if (n->format->u.type == ETK_TEXTBLOCK2_UNDERLINE_SINGLE)
             {
-               evas_textblock_cursor_format_append(cursor, "+ underline=single");
+               evas_textblock_cursor_format_append(cursor, "+ underline=on");
                num_tags++;
             }
             else if (n->format->u.type == ETK_TEXTBLOCK2_UNDERLINE_DOUBLE)
             {
-               evas_textblock_cursor_format_append(cursor, "+ underline=single");
+               evas_textblock_cursor_format_append(cursor, "+ underline=double");
                num_tags++;
             }
             
@@ -2461,7 +2652,7 @@ static void _etk_tb2_object_line_object_build(Evas_Object *lo, Etk_Textblock2_Li
                   color = n->format->font.color;
                else
                   color = default_color;
-               sprintf(format, "+ underline_color2=#%.2X%.2X%.2X%.2X", color.r, color.g, color.b, color.a);
+               sprintf(format, "+ underline2_color=#%.2X%.2X%.2X%.2X", color.r, color.g, color.b, color.a);
                evas_textblock_cursor_format_append(cursor, format);
                num_tags++;
             }
