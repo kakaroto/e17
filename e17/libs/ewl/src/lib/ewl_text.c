@@ -63,6 +63,10 @@ static void ewl_text_selection_select_to(Ewl_Text_Trigger *s,
 static void ewl_text_theme_color_get(Ewl_Text *t, Ewl_Color_Set *color, char *name);
 static Ewl_Text_Context *ewl_text_context_default_create(Ewl_Text *t);
 
+static void ewl_text_triggers_place(Ewl_Text *t);
+static void ewl_text_triggers_unrealize(Ewl_Text *t);
+static void ewl_text_triggers_show(Ewl_Text *t);
+static void ewl_text_triggers_hide(Ewl_Text *t);
 
 /**
  * @return Returns a new Ewl_Text widget on success, NULL on failure.
@@ -3136,7 +3140,7 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 		if (t->dirty) ewl_text_display(t);
 
-		ewl_text_triggers_areas_place(t);
+		ewl_text_triggers_place(t);
 
 		/* re-configure the selection to make sure it resizes
 		 * if needed */
@@ -3214,7 +3218,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 		evas_object_show(t->textblock);
 	}
 
-	ewl_text_triggers_areas_place(t);
+	ewl_text_triggers_place(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3693,9 +3697,7 @@ ewl_text_triggers_remove(Ewl_Text *t)
 		DRETURN(DLEVEL_STABLE);
 
 	while ((trig = ecore_list_first_remove(t->triggers)))
-	{
 		ewl_widget_destroy(EWL_WIDGET(trig));
-	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3797,10 +3799,10 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int char_pos,
  * @internal
  * @param t: The ewl_text to work with
  * @return Returns no value
- * @brief Sets all of the triggers in the text @a t as realized
+ * @brief Positions all of the triggers in the text
  */
-void
-ewl_text_triggers_areas_place(Ewl_Text *t)
+static void
+ewl_text_triggers_place(Ewl_Text *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -3827,7 +3829,7 @@ ewl_text_triggers_areas_place(Ewl_Text *t)
  * @return Returns no value
  * @brief Sets all of the triggers in the text @a t as unrealized
  */
-void
+static void
 ewl_text_triggers_unrealize(Ewl_Text *t)
 {
 	Ewl_Text_Trigger *cur;
@@ -3854,7 +3856,7 @@ ewl_text_triggers_unrealize(Ewl_Text *t)
  * @return Returns no value
  * @brief Shows all triggers in text @a t
  */
-void
+static void
 ewl_text_triggers_show(Ewl_Text *t)
 {
 	Ewl_Text_Trigger *cur;
@@ -3881,7 +3883,7 @@ ewl_text_triggers_show(Ewl_Text *t)
  * @return Returns no value
  * @brief Hides all of the triggers in the text @a t
  */
-void
+static void
 ewl_text_triggers_hide(Ewl_Text *t)
 {
 	Ewl_Text_Trigger *cur;
@@ -3900,34 +3902,6 @@ ewl_text_triggers_hide(Ewl_Text *t)
 
 	/* hide the selection */
 	if (t->selection) ewl_widget_hide(t->selection);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param t: The ewl_text widget
- * @return Returns no value
- * @brief Configures the position and size of all the triggers within the
- * text widget @a t.
- */
-void
-ewl_text_triggers_configure(Ewl_Text *t)
-{
-	Ewl_Text_Trigger *cur;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
-
-	if (t->triggers)
-	{
-		ecore_list_first_goto(t->triggers);
-		while ((cur = ecore_list_next(t->triggers)))
-			ewl_widget_configure(EWL_WIDGET(cur));
-	}
-
-	if (t->selection) ewl_widget_configure(t->selection);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3957,7 +3931,7 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 	/* if we have no length, we start past the end of the text, or we
 	 * extend past the end of the text then return an error */
 	if ((trigger->char_len == 0)
-		|| ((trigger->char_pos + trigger->char_len) > t->length.chars))
+			|| ((trigger->char_pos + trigger->char_len) > t->length.chars))
 		DRETURN(DLEVEL_STABLE);
 
 

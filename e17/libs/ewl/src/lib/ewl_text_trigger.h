@@ -84,13 +84,6 @@ void ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_unrealize(Ewl_Widget *w, void *ev, void *data);
 
-/* you find these functions in ewl_text.c */
-void ewl_text_triggers_configure(Ewl_Text *t);
-void ewl_text_triggers_areas_place(Ewl_Text *t);
-void ewl_text_triggers_unrealize(Ewl_Text *t);
-void ewl_text_triggers_show(Ewl_Text *t);
-void ewl_text_triggers_hide(Ewl_Text *t);
-
 /**
  * @}
  */
