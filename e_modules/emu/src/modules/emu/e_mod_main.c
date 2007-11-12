@@ -107,7 +107,8 @@ e_modapi_init(E_Module *m)
    snprintf(buf, sizeof(buf), "%s/e-module-emu.edj", e_module_dir_get(m));
    _emu_module_edje = evas_stringshare_add(buf);
    /* Set up module's message catalogue */
-   bindtextdomain(PACKAGE, LOCALEDIR);
+   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    e_gadcon_provider_register(&_gadcon_class);

@@ -49,23 +49,24 @@ EAPI E_Module *flame_module = NULL;
 EAPI void *
 e_modapi_init (E_Module * m)
 {
-  Flame *f;
+   Flame *f;
    char buf[4096];
 
-  /* Set up module's message catalogue */
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset (PACKAGE, "UTF-8");
-   
-   snprintf(buf, sizeof(buf), "%s/e-module-flame.edj", e_module_dir_get(m));
-   e_configure_registry_category_add("appearance", 10, _("Appearance"), NULL, 
+   /* Set up module's message catalogue */
+   snprintf (buf, sizeof (buf), "%s/locale", e_module_dir_get (m));
+   bindtextdomain (PACKAGE, buf);
+   bind_textdomain_codeset (PACKAGE, "UTF-8");
+
+   snprintf (buf, sizeof (buf), "%s/e-module-flame.edj", e_module_dir_get (m));
+   e_configure_registry_category_add ("appearance", 10, _("Appearance"), NULL, 
 				     "enlightenment/appearance");
-   e_configure_registry_item_add("appearance/flame", 150, _("Flame"), NULL, 
+   e_configure_registry_item_add ("appearance/flame", 150, _("Flame"), NULL, 
 				 buf, e_int_config_flame_module);
 
-  f = _flame_init (m);
-  f->module = m;
+   f = _flame_init (m);
+   f->module = m;
    flame_module = m;
-  return f;
+   return f;
 }
 
 EAPI int
@@ -73,8 +74,8 @@ e_modapi_shutdown (E_Module * m)
 {
   Flame *f;
 
-   e_configure_registry_item_del("appearance/flame");
-   e_configure_registry_category_del("appearance");
+   e_configure_registry_item_del ("appearance/flame");
+   e_configure_registry_category_del ("appearance");
 
   f = m->data;
   if (f)
@@ -387,7 +388,7 @@ _flame_palette_gold_set (Flame_Face * ff)
       r = gold_cmap[(i * 4) + 0];
       g = gold_cmap[(i * 4) + 1];
       b = gold_cmap[(i * 4) + 2];
-      evas_common_convert_color_argb_premul(a, &r, &g, &b);
+      evas_common_convert_color_argb_premul (a, &r, &g, &b);
       ff->palette[i] =
 	((((unsigned char) a) << 24) | (((unsigned char) r) << 16) |
 	 (((unsigned char) g) << 8) | ((unsigned char) b));
@@ -418,7 +419,7 @@ _flame_palette_fire_set (Flame_Face * ff)
       if (b > 255)
 	b = 255;
       a = (int) ((r * 0.299) + (g * 0.587) + (b * 0.114));
-      evas_common_convert_color_argb_premul(a, &r, &g, &b);
+      evas_common_convert_color_argb_premul (a, &r, &g, &b);
       ff->palette[i] =
 	((((unsigned char) a) << 24) | (((unsigned char) r) << 16) |
 	 (((unsigned char) g) << 8) | ((unsigned char) b));
@@ -437,7 +438,7 @@ _flame_palette_plasma_set (Flame_Face * ff)
       g = 0;
       b = (i * 255) / 80;
       a = (int) ((r * 0.299) + (g * 0.587) + (b * 0.114));
-      evas_common_convert_color_argb_premul(a, &r, &g, &b);
+      evas_common_convert_color_argb_premul (a, &r, &g, &b);
       ff->palette[i] =
 	((((unsigned char) a) << 24) | (((unsigned char) r) << 16) |
 	 (((unsigned char) g) << 8) | ((unsigned char) b));
@@ -452,7 +453,7 @@ _flame_palette_plasma_set (Flame_Face * ff)
 	 a = (r * r + g * g + b * b);
       else
          a = (int) ((r * 0.299) + (g * 0.587) + (b * 0.114));
-      evas_common_convert_color_argb_premul(a, &r, &g, &b);
+      evas_common_convert_color_argb_premul (a, &r, &g, &b);
       ff->palette[i] =
 	((((unsigned char) a) << 24) | (((unsigned char) r) << 16) |
 	 (((unsigned char) g) << 8) | ((unsigned char) b));
@@ -467,7 +468,7 @@ _flame_palette_plasma_set (Flame_Face * ff)
          a = r * r + g * g + b * b;
       else
          a = (int) ((r * 0.299) + (g * 0.587) + (b * 0.114));
-      evas_common_convert_color_argb_premul(a, &r, &g, &b);
+      evas_common_convert_color_argb_premul (a, &r, &g, &b);
       ff->palette[i] =
 	((((unsigned char) a) << 24) | (((unsigned char) r) << 16) |
 	 (((unsigned char) g) << 8) | ((unsigned char) b));
@@ -498,7 +499,7 @@ _flame_palette_matrix_set (Flame_Face * ff)
       if (b > 255)
 	b = 255;
       a = (int) ((r * 0.299) + (g * 0.587) + (b * 0.114));
-      evas_common_convert_color_argb_premul(a, &r, &g, &b);
+      evas_common_convert_color_argb_premul (a, &r, &g, &b);
       ff->palette[i] =
 	((((unsigned char) a) << 24) | (((unsigned char) r) << 16) |
 	 (((unsigned char) g) << 8) | ((unsigned char) b));
@@ -529,7 +530,7 @@ _flame_palette_ice_set (Flame_Face * ff)
       if (b > 255)
 	b = 255;
       a = (int) ((r * 0.299) + (g * 0.587) + (b * 0.114));
-      evas_common_convert_color_argb_premul(a, &r, &g, &b);
+      evas_common_convert_color_argb_premul (a, &r, &g, &b);
       ff->palette[i] =
 	((((unsigned char) a) << 24) | (((unsigned char) r) << 16) |
 	 (((unsigned char) g) << 8) | ((unsigned char) b));
@@ -560,7 +561,7 @@ _flame_palette_white_set (Flame_Face * ff)
       if (b > 255)
 	b = 255;
       a = (int) ((r * 0.299) + (g * 0.587) + (b * 0.114));
-      evas_common_convert_color_argb_premul(a, &r, &g, &b);
+      evas_common_convert_color_argb_premul (a, &r, &g, &b);
       ff->palette[i] =
 	((((unsigned char) a) << 24) | (((unsigned char) r) << 16) |
 	 (((unsigned char) g) << 8) | ((unsigned char) b));
@@ -593,7 +594,7 @@ _flame_palette_custom_set (Flame_Face * ff)
       if (b > 255)
 	b = 255;
       a = (int) ((r * 0.299) + (g * 0.587) + (b * 0.114));
-      evas_common_convert_color_argb_premul(a, &r, &g, &b);
+      evas_common_convert_color_argb_premul (a, &r, &g, &b);
       ff->palette[i] =
 	((((unsigned char) a) << 24) | (((unsigned char) r) << 16) |
 	 (((unsigned char) g) << 8) | ((unsigned char) b));

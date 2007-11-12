@@ -141,11 +141,13 @@ EAPI E_Module_Api e_modapi =
 EAPI void *
 e_modapi_init(E_Module *m)
 {
-   bindtextdomain(PACKAGE, LOCALEDIR);
-   bind_textdomain_codeset(PACKAGE, "UTF-8");
-   
-   int	     load_default_config = 0;
+   int	      load_default_config = 0;
    Evas_List *l;
+   char       buf[4096];
+
+   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   bindtextdomain(PACKAGE, buf);
+   bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    conf_langlist_edd = E_CONFIG_DD_NEW("Language_List_Config", Language);
 #undef T
