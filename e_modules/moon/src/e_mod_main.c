@@ -98,7 +98,7 @@ e_modapi_init(E_Module *module)
    char buf[4096];
 
    /* Set up module message catalog */
-   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(m));
+   snprintf(buf, sizeof(buf), "%s/locale", e_module_dir_get(module));
    bindtextdomain(PACKAGE, buf);
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
