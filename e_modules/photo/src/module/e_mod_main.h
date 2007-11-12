@@ -1,3 +1,5 @@
+#define D_(str) dgettext(PACKAGE, str)
+
 #ifdef E_MOD_PHOTO_TYPEDEFS
 
 typedef struct _Photo Photo;
