@@ -345,11 +345,17 @@ ewl_filelist_model_data_expansion_data_fetch(void *data,
  * @internal
  */
 unsigned int 
-ewl_filelist_model_data_unref(Ewl_Filelist_Directory *dir)
+ewl_filelist_model_data_unref(void *data)
 {
+	Ewl_Filelist_Directory *dir;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dir", dir, FALSE);
+	DCHECK_PARAM_PTR_RET("data", data, FALSE);
+	DCHECK_TYPE_RET("data", data, EWL_FILELIST_DIRECTORY_TYPE,
+								FALSE);
 	
+	dir = data;
+
 	ecore_string_release(dir->name);
 	ecore_list_destroy(dir->files);
 	ecore_list_destroy(dir->dirs);

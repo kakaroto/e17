@@ -77,7 +77,7 @@ int ewl_filelist_model_data_expandable_get(void *data,
 						unsigned int row);
 void *ewl_filelist_model_data_expansion_data_fetch(void *data, 
 						unsigned int parent);
-unsigned int ewl_filelist_model_data_unref(Ewl_Filelist_Directory *dir);
+unsigned int ewl_filelist_model_data_unref(void *data);
 int ewl_filelist_model_column_sortable(void *data, 
 						unsigned int column);
 
