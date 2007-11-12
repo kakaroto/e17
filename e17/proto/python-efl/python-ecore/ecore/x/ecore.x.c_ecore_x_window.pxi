@@ -42,6 +42,42 @@ cdef class Window:
             raise ValueError("object already wraps an X Window.")
             return 0
 
+    def __str__(self):
+        cdef int x, y, w, h, visible
+        cdef unsigned int parent
+
+        ecore_x_window_geometry_get(self.xid, &x, &y, &w, &h)
+        parent = ecore_x_window_parent_get(self.xid)
+        visible = ecore_x_window_visible_get(self.xid)
+        return "%s(xid=%#x, parent=%#x, x=%d, y=%d, w=%d, h=%d, visible=%s)" % \
+               (self.__class__.__name__, self.xid, parent, x, y, w, h,
+                bool(visible))
+
+    def __repr__(self):
+        cdef int x, y, w, h
+        cdef unsigned int parent
+
+        ecore_x_window_geometry_get(self.xid, &x, &y, &w, &h)
+        parent = ecore_x_window_parent_get(self.xid)
+        return "%s(%#x, xid=%#x, parent=%#x, x=%d, y=%d, w=%d, h=%d)" % \
+               (self.__class__.__name__, <unsigned long>self,
+                self.xid, parent, x, y, w, h)
+
+    def __richcmp__(self, other, int op):
+        if op == 2: # equal
+            if self is other:
+                return 1
+            else:
+                return self.xid == int(other)
+        else:
+            return 0
+
+    def __int__(self):
+        return self.xid
+
+    def __long__(self):
+        return self.xid
+
     def delete(self):
         "Deletes the current window."
         if self.xid != 0:
@@ -304,16 +340,18 @@ cdef class Window:
     def background_color_set(self, int r, int g, int b):
         """Set background color.
 
-        @parm r: red
-        @parm g: green
-        @parm b: blue
+        @parm r: red (0...65536, 16 bits)
+        @parm g: green (0...65536, 16 bits)
+        @parm b: blue (0...65536, 16 bits)
         """
         ecore_x_window_background_color_set(self.xid, r, g, b)
 
     def area_clear(self, int x, int y, int w, int h):
+        "Paints the specified area with background's color or pixmap."
         ecore_x_window_area_clear(self.xid, x, y, w, h)
 
     def area_expose(self, int x, int y, int w, int h):
+        "Like L{area_clear()}, but generates exposures."
         ecore_x_window_area_expose(self.xid, x, y, w, h)
 
     def override_set(self, int setting):
@@ -341,6 +379,7 @@ def Window_from_xid(unsigned long xid):
     """Create a Python wrapper for given window id.
 
     @parm xid: window id.
+    @rtype: L{Window}
     """
     cdef Window w
     w = Window.__new__(Window)

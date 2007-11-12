@@ -1310,7 +1310,338 @@ cdef extern from "Ecore_X.h":
     void ecore_x_dpms_timeout_off_set(unsigned int new_timeout)
 
 
+cimport ecore.c_ecore
+
+
 cdef class Window:
     cdef readonly Ecore_X_Window xid
 
     cdef int _set_xid(self, Ecore_X_Window xid)
+
+
+cdef class EventKeyDown(ecore.c_ecore.Event):
+    cdef readonly object keyname
+    cdef readonly object keysymbol
+    cdef readonly object key_compose
+    cdef readonly int modifiers
+    cdef readonly Window win
+    cdef readonly Window event_win
+    cdef readonly unsigned int time
+
+
+cdef class EventKeyUp(ecore.c_ecore.Event):
+    cdef readonly object keyname
+    cdef readonly object keysymbol
+    cdef readonly object key_compose
+    cdef readonly int modifiers
+    cdef readonly Window win
+    cdef readonly Window event_win
+    cdef readonly unsigned int time
+
+
+cdef class EventPoint:
+    cdef readonly int x
+    cdef readonly int y
+
+
+cdef class EventMouseButtonDown(ecore.c_ecore.Event):
+    cdef readonly int button
+    cdef readonly int modifiers
+    cdef readonly int x
+    cdef readonly int y
+    cdef readonly EventPoint root
+    cdef readonly Window win
+    cdef readonly Window event_win
+    cdef readonly unsigned int time
+    cdef readonly int double_click
+    cdef readonly int triple_click
+
+
+cdef class EventMouseButtonUp(ecore.c_ecore.Event):
+    cdef readonly int button
+    cdef readonly int modifiers
+    cdef readonly int x
+    cdef readonly int y
+    cdef readonly EventPoint root
+    cdef readonly Window win
+    cdef readonly Window event_win
+    cdef readonly unsigned int time
+    cdef readonly int double_click
+    cdef readonly int triple_click
+
+
+cdef class EventMouseMove(ecore.c_ecore.Event):
+    cdef readonly int modifiers
+    cdef readonly int x
+    cdef readonly int y
+    cdef readonly EventPoint root
+    cdef readonly Window win
+    cdef readonly Window event_win
+    cdef readonly unsigned int time
+
+
+cdef class EventMouseIn(ecore.c_ecore.Event):
+    cdef readonly int modifiers
+    cdef readonly int x
+    cdef readonly int y
+    cdef readonly EventPoint root
+    cdef readonly Window win
+    cdef readonly Window event_win
+    cdef readonly int mode
+    cdef readonly int detail
+    cdef readonly unsigned int time
+
+
+cdef class EventMouseOut(ecore.c_ecore.Event):
+    cdef readonly int modifiers
+    cdef readonly int x
+    cdef readonly int y
+    cdef readonly EventPoint root
+    cdef readonly Window win
+    cdef readonly Window event_win
+    cdef readonly int mode
+    cdef readonly int detail
+    cdef readonly unsigned int time
+
+
+cdef class EventMouseWheel(ecore.c_ecore.Event):
+    cdef readonly int direction
+    cdef readonly int z
+    cdef readonly int modifiers
+    cdef readonly int x
+    cdef readonly int y
+    cdef readonly EventPoint root
+    cdef readonly Window win
+    cdef readonly Window event_win
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowFocusIn(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly int mode
+    cdef readonly int detail
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowFocusOut(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly int mode
+    cdef readonly int detail
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowKeymap(ecore.c_ecore.Event):
+    cdef readonly Window win
+
+
+cdef class EventWindowDamage(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly int x
+    cdef readonly int y
+    cdef readonly int w
+    cdef readonly int h
+    cdef readonly int count
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowVisibilityChange(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly int fully_obscured
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowCreate(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly int override
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowDestroy(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowHide(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowShow(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowShowRequest(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly Window parent
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowReparent(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly Window parent
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowConfigure(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly Window above_win
+    cdef readonly int x
+    cdef readonly int y
+    cdef readonly int w
+    cdef readonly int h
+    cdef readonly int border
+    cdef readonly unsigned int override
+    cdef readonly unsigned int from_wm
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowConfigureRequest(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly Window above_win
+    cdef readonly int x
+    cdef readonly int y
+    cdef readonly int w
+    cdef readonly int h
+    cdef readonly int border
+    cdef readonly int stack_mode
+    cdef readonly unsigned long value_mask
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowGravity(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowResizeRequest(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly int w
+    cdef readonly int h
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowStack(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly Window event_win
+    cdef readonly int stack_mode
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowStackRequest(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly Window parent
+    cdef readonly int stack_mode
+    cdef readonly unsigned int time
+
+
+cdef class EventDesktopChange(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly long desktop
+    cdef readonly unsigned int time
+
+
+cdef class EventPing(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly Window event_win
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowStateRequest(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly int action
+    cdef readonly int state1
+    cdef readonly int state2
+    cdef readonly int source
+
+
+cdef class EventFrameExtentsRequest(ecore.c_ecore.Event):
+    cdef readonly Window win
+
+
+cdef class EventWindowShape(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly unsigned int time
+
+
+cdef class EventScreensaverNotify(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly int on
+    cdef readonly unsigned int time
+
+
+cdef class EventSyncCounter(ecore.c_ecore.Event):
+    cdef readonly unsigned int time
+
+
+cdef class EventSyncAlarm(ecore.c_ecore.Event):
+    cdef readonly unsigned int time
+    cdef readonly unsigned int alarm
+
+
+cdef class EventScreenChange(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly Window root
+    cdef readonly int width
+    cdef readonly int height
+
+
+cdef class EventWindowDeleteRequest(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly unsigned int time
+
+
+cdef class EventWindowMoveResizeRequest(ecore.c_ecore.Event):
+    cdef readonly Window win
+    cdef readonly int x
+    cdef readonly int y
+    cdef readonly int button
+    cdef readonly int source
+
+
+
+
+## cdef class EventWindowProperty(ecore.c_ecore.Event):
+##     cdef readonly Window win
+##     Atom atom
+##     cdef readonly unsigned int time
+
+
+## cdef class EventWindowColormap(ecore.c_ecore.Event):
+##     cdef readonly Window win
+##     Colormap cmap
+##     cdef readonly int installed
+##     cdef readonly unsigned int time
+
+
+## cdef class EventSelectionClear(ecore.c_ecore.Event):
+##     cdef readonly Window win
+##     Selection selection
+##     cdef readonly unsigned int time
+
+
+## cdef class EventSelectionRequest(ecore.c_ecore.Event):
+##     cdef readonly Window owner
+##     cdef readonly Window requestor
+##     cdef readonly unsigned int time
+##     Atom selection
+##     Atom target
+##     Atom property
+
+
+## cdef class EventSelectionNotify(ecore.c_ecore.Event):
+##     cdef readonly Window win
+##     cdef readonly unsigned int time
+##     Selection selection
+##     cdef readonly object target
+##     void *data
+
+
+## cdef class EventDamage(ecore.c_ecore.Event):
+##     cdef readonly int level
+##     Ecore_X_Drawable drawable
+##     Ecore_X_Damage damage
+##     cdef readonly int more
+##     cdef readonly unsigned int time
+##     cdef readonly EventRectangle area
+##     cdef readonly EventRectangle geometry

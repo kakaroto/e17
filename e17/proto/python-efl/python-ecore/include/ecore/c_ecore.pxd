@@ -15,6 +15,7 @@ cdef extern from "Ecore.h":
     cdef struct Ecore_Idle_Enterer
     cdef struct Ecore_Idle_Exiter
     ctypedef struct Ecore_Fd_Handler
+    ctypedef void Ecore_Event_Handler
 
     int ecore_init()
     int ecore_shutdown()
@@ -49,6 +50,10 @@ cdef extern from "Ecore.h":
     int ecore_main_fd_handler_fd_get(Ecore_Fd_Handler *fd_handler)
     int ecore_main_fd_handler_active_get(Ecore_Fd_Handler *fd_handler, Ecore_Fd_Handler_Flags flags)
     void ecore_main_fd_handler_active_set(Ecore_Fd_Handler *fd_handler, Ecore_Fd_Handler_Flags flags)
+
+    Ecore_Event_Handler *ecore_event_handler_add(int type, int (*func) (void *data, int type, void *event), void *data)
+    void *ecore_event_handler_del(Ecore_Event_Handler *event_handler)
+
 
 
 cdef class Timer:
@@ -105,3 +110,20 @@ cdef class FdHandler:
     cdef object _prepare_callback
 
     cdef object _exec(self)
+
+
+cdef public class Event [object PyEcoreEvent, type PyEcoreEvent_Type]:
+    cdef int _set_obj(self, void *obj) except 0
+
+
+cdef class EventHandler:
+    cdef Ecore_Event_Handler *obj
+    cdef readonly int type
+    cdef readonly object event_cls
+    cdef readonly object func
+    cdef readonly object args
+    cdef readonly object kargs
+
+    cdef int _set_obj(self, Ecore_Event_Handler *obj) except 0
+    cdef int _unset_obj(self) except 0
+    cdef int _exec(self, void *event) except 2

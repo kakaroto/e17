@@ -12,11 +12,14 @@ def init(name=None):
     @rtype: int
     """
     cdef char *s
+    cdef int i
     if name is None:
         s = NULL
     else:
         s = name
-    return ecore_x_init(s)
+    i = ecore_x_init(s)
+    x_events_register()
+    return i
 
 
 def shutdown():
@@ -213,3 +216,4 @@ def window_at_xy_begin_get(Window begin, int x, int y):
 
 
 include "ecore.x.c_ecore_x_window.pxi"
+include "ecore.x.c_ecore_x_events.pxi"
