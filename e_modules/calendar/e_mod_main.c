@@ -241,13 +241,13 @@ _calendar_popup_content_create(Instance *inst)
      {
 	switch (col)
 	  {
-	     case 0: ob = e_widget_label_add(evas, _("Su")); break;
-	     case 1: ob = e_widget_label_add(evas, _("Mo")); break;
-	     case 2: ob = e_widget_label_add(evas, _("Tu")); break;
-	     case 3: ob = e_widget_label_add(evas, _("We")); break;
-	     case 4: ob = e_widget_label_add(evas, _("Th")); break;
-	     case 5: ob = e_widget_label_add(evas, _("Fr")); break;
-	     case 6: ob = e_widget_label_add(evas, _("Sa")); break;
+	     case 0: ob = e_widget_label_add(evas, D_("Su")); break;
+	     case 1: ob = e_widget_label_add(evas, D_("Mo")); break;
+	     case 2: ob = e_widget_label_add(evas, D_("Tu")); break;
+	     case 3: ob = e_widget_label_add(evas, D_("We")); break;
+	     case 4: ob = e_widget_label_add(evas, D_("Th")); break;
+	     case 5: ob = e_widget_label_add(evas, D_("Fr")); break;
+	     case 6: ob = e_widget_label_add(evas, D_("Sa")); break;
 	  }    
 	e_widget_frametable_object_append(of, ob, col, 0, 1, 1, 1, 0, 0, 0);
      }
