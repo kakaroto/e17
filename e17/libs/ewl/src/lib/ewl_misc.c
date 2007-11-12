@@ -1,4 +1,5 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+#include <locale.h>
 #include "ewl_base.h"
 #include "ewl_icon_theme.h"
 #include "ewl_io_manager.h"
@@ -145,11 +146,19 @@ ewl_backtrace(void)
 int
 ewl_init(int *argc, char **argv)
 {
+	const char *locale;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/* check if we are already initialized */
 	if (++ewl_init_count > 1)
 		DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
+
+	/* set the locale for string collation if it isn't already set */
+	locale = setlocale(LC_COLLATE, NULL);
+	if (strcmp(locale, "C") || strcmp(locale, "POSIX")) {
+		setlocale(LC_COLLATE, "");
+	}
 
 	shutdown_queue = ecore_list_new();
 	if (!shutdown_queue) {
