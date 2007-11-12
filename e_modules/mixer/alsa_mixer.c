@@ -20,12 +20,6 @@ alsa_get_cards()
    snd_ctl_card_info_t *hw_info;
    int                  err, i;
    char                 buf[1024];
-   
-   if ((err = snd_mixer_open(&handle, 0)) < 0) 
-     {
-	printf("Cannot open mixer: %s\n", snd_strerror(err));
-	return NULL;
-     }
 
    snd_ctl_card_info_alloca(&hw_info);
    
@@ -34,16 +28,10 @@ alsa_get_cards()
 	Mixer_Card *card;
 	
 	snprintf(buf, sizeof(buf), "hw:%d", i);
-	if ((err = snd_mixer_attach(handle, buf)) < 0) break;
-	if ((err = snd_mixer_detach(handle, buf)) < 0) 
-	  {
-	     snd_mixer_close(handle);
-	     break;
-	  }
 	if ((err = snd_ctl_open(&control, buf, 0)) < 0) 
 	  {
-	     printf("Cannot control: %s: %s\n", buf, snd_strerror(err));
-	     continue;
+//	     printf("Cannot control: %s: %s\n", buf, snd_strerror(err));
+	     break;
 	  }
 	if ((err = snd_ctl_card_info(control, hw_info)) < 0) 
 	  {
@@ -54,16 +42,32 @@ alsa_get_cards()
 	  }
 	
 	snd_ctl_close(control);
-	
+	if ((err = snd_mixer_open(&handle, 0)) < 0) 
+	  {
+	     printf("Cannot open mixer\n");
+	     continue;
+	  }
+	if ((err = snd_mixer_attach(handle, buf)) < 0)  
+	  {
+	     printf("Cannot attach mixer\n");
+	     snd_mixer_close(handle);
+	     continue;
+	  }
+	if ((err = snd_mixer_detach(handle, buf)) < 0) 
+	  {
+	     printf("Cannot detach mixer\n");
+	     snd_mixer_close(handle);
+	     continue;
+	  }
+
 	card = E_NEW(Mixer_Card, 1);
 	if (!card) continue;
 	card->name = evas_stringshare_add(buf);
 	card->real = evas_stringshare_add(snd_ctl_card_info_get_name(hw_info));
 	card->id = _alsa_get_card_id(card->real);
-	
+	snd_mixer_close(handle);
 	cards = evas_list_append(cards, card);
      }
-   snd_mixer_close(handle);
    return cards;
 }
 
@@ -108,40 +112,44 @@ alsa_get_card(int id)
    int                  err, i;
    char                 buf[1024];
 
-   if ((err = snd_mixer_open(&handle, 0)) < 0) 
-     {
-	printf("Cannot open mixer: %s\n", snd_strerror(err));
-	return NULL;
-     }
-
-   snd_ctl_card_info_alloca(&hw_info);
+    snd_ctl_card_info_alloca(&hw_info);
 
    for (i = 0; i < 32; i++) 
      {
 	Mixer_Card *card;
 	
 	snprintf(buf, sizeof(buf), "hw:%d", i);
-	if ((err = snd_mixer_attach(handle, buf)) < 0) break;
-	if ((err = snd_mixer_detach(handle, buf)) < 0) 
-	  {
-	     snd_mixer_close(handle);
-	     continue;
-	  }
 	if ((err = snd_ctl_open(&control, buf, 0)) < 0) 
 	  {
-	     printf("Cannot control: %s: %s\n", buf, snd_strerror(err));
-	     snd_mixer_close(handle);
-	     continue;
+//	     printf("Cannot control: %s: %s\n", buf, snd_strerror(err));
+	     break;
 	  }
 	if ((err = snd_ctl_card_info(control, hw_info)) < 0) 
 	  {
-	     printf("Cannot get hardware info: %s: %s\n", buf, snd_strerror(err));
+	     printf("Cannot get hardware info: %s: %s\n", buf, 
+		    snd_strerror(err));
 	     snd_ctl_close(control);
-	     snd_mixer_close(handle);
 	     continue;
 	  }
 	
 	snd_ctl_close(control);
+	if ((err = snd_mixer_open(&handle, 0)) < 0) 
+	  {
+	     printf("Cannot open mixer\n");
+	     continue;
+	  }
+	if ((err = snd_mixer_attach(handle, buf)) < 0)  
+	  {
+	     printf("Cannot attach mixer\n");
+	     snd_mixer_close(handle);
+	     continue;
+	  }
+	if ((err = snd_mixer_detach(handle, buf)) < 0) 
+	  {
+	     printf("Cannot detach mixer\n");
+	     snd_mixer_close(handle);
+	     continue;
+	  }
 	snd_mixer_close(handle);
 
 	card = E_NEW(Mixer_Card, 1);
@@ -156,7 +164,7 @@ alsa_get_card(int id)
 	return card;
      }
    //snd_ctl_close(control);
-   snd_mixer_close(handle);
+//   snd_mixer_close(handle);
    return NULL;
 }
 
