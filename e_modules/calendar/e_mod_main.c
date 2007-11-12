@@ -237,7 +237,7 @@ _calendar_popup_content_create(Instance *inst)
    of = e_widget_frametable_add(evas, buf, 0);
 
    /* column titles */
-   for (col=0; col<=6; col++)
+   for (col = 0; col <= 6; col++)
      {
 	switch (col)
 	  {
@@ -253,17 +253,17 @@ _calendar_popup_content_create(Instance *inst)
      }
 
    /* output days */
-   day=0;
-   for (row=1; row<=6; row++)
+   day = 0;
+   for (row = 1; row <= 6; row++)
      {
-	for (col=0; col<=6; col++)
+	for (col = 0; col <= 6; col++)
 	  {
-	     if (!day) if (col == startwd) day=1;
+	     if (!day) if (col == startwd) day = 1;
 
 	     if (day && (day <= maxdays))
 	       snprintf(buf, sizeof(buf), "%02d", day++);
 	     else
-	       snprintf(buf, sizeof(buf), "");
+	       buf[0] = 0;
 	     ob = e_widget_label_add(evas, buf);
 	     // if (day == today) // FIXME: highlight needed
 	     e_widget_frametable_object_append(of, ob, col, row, 1, 1, 1, 0, 0, 0);
