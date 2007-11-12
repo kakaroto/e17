@@ -128,7 +128,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void) 
 {
-   return _("Cpu");
+   return D_("Cpu");
 }
 
 static Evas_Object *
@@ -363,35 +363,35 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	cpu_conf->menu_interval = mn;
 	
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Fast (0.5 sec)"));
+	e_menu_item_label_set(mi, D_("Fast (0.5 sec)"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
 	if (inst->ci->interval <= 0.5) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cpu_menu_fast, inst);
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Medium (1 sec)"));
+	e_menu_item_label_set(mi, D_("Medium (1 sec)"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
 	if (inst->ci->interval > 0.5) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cpu_menu_medium, inst);
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Normal (2 sec)"));
+	e_menu_item_label_set(mi, D_("Normal (2 sec)"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
 	if (inst->ci->interval >= 2.0) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cpu_menu_normal, inst);
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Slow (5 sec)"));
+	e_menu_item_label_set(mi, D_("Slow (5 sec)"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
 	if (inst->ci->interval >= 5.0) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cpu_menu_slow, inst);
 
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Very Slow (30 sec)"));
+	e_menu_item_label_set(mi, D_("Very Slow (30 sec)"));
 	e_menu_item_radio_set(mi, 1);
 	e_menu_item_radio_group_set(mi, 1);
 	if (inst->ci->interval >= 30.0) e_menu_item_toggle_set(mi, 1);
@@ -402,7 +402,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	e_menu_post_deactivate_callback_set(mn, _menu_cb_post, inst);
 	
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Time Between Updates"));
+	e_menu_item_label_set(mi, D_("Time Between Updates"));
 	e_menu_item_submenu_set(mi, cpu_conf->menu_interval);
 
         e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
