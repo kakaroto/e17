@@ -110,7 +110,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    
    o = e_widget_list_add(evas, 0, 0);
    
-   of = e_widget_framelist_add(evas, _("General Settings"), 0);
+   of = e_widget_framelist_add(evas, D_("General Settings"), 0);
    ob = e_widget_check_add(evas, D_("Show Text"), &(cfdata->show_text));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, D_("Show Popup On Mouse-Over"), &(cfdata->show_popup));
