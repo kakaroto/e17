@@ -118,7 +118,7 @@ void photo_picture_histo_menu_append(Photo_Item *pi, E_Menu *mn_main)
   E_Menu_Item *mi;
 
    mi = e_menu_item_new(mn_main);
-   e_menu_item_label_set(mi, _("Historic"));
+   e_menu_item_label_set(mi, D_("Historic"));
    e_menu_item_submenu_pre_callback_set(mi,
 					_cb_menu_populate, pi);
    e_menu_item_submenu_post_callback_set(mi,

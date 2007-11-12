@@ -62,13 +62,13 @@ int photo_config_init(void)
         if (photo->config->version < CONFIG_VERSION)
           {
              snprintf(buf, sizeof(buf),
-                      _("<hilight>Photo module : Configuration Upgraded</hilight><br><br>"
+                      D_("<hilight>Photo module : Configuration Upgraded</hilight><br><br>"
                         "Your configuration of photo module<br>"
                         "has been upgraded<br>"
                         "Your settings were removed<br>"
                         "Sorry for the inconvenience<br><br>"
                         "(%d -> %d)"), photo->config->version, CONFIG_VERSION);
-             e_module_dialog_show(photo->module, _("Photo Module version " MODULE_VERSION), buf);
+             e_module_dialog_show(photo->module, D_("Photo Module version " MODULE_VERSION), buf);
              photo->config = NULL;
           }
         else
@@ -76,13 +76,13 @@ int photo_config_init(void)
              if (photo->config->version > CONFIG_VERSION)
                {
                   snprintf(buf, sizeof(buf),
-                           _("<hilight>Photo module : Configuration Downgraded</hilight><br><br>"
+                           D_("<hilight>Photo module : Configuration Downgraded</hilight><br><br>"
                              "Your configuration of Photo module<br>"
                              "has been downgraded<br>"
                              "Your settings were removed<br>"
                              "Sorry for the inconvenience<br><br>"
                              "(%d ->%d)"), photo->config->version, CONFIG_VERSION);
-                  e_module_dialog_show(photo->module, _("Photo Module version " MODULE_VERSION), buf);
+                  e_module_dialog_show(photo->module, D_("Photo Module version " MODULE_VERSION), buf);
                   photo->config = NULL;
                }
           }

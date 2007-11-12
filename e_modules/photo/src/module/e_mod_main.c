@@ -49,42 +49,42 @@ e_modapi_init(E_Module *m)
 
    if (!_e_canvas_init())
      {
-        e_module_dialog_show(m, _("Photo Module"), _("E Canvas init failed !"));
+        e_module_dialog_show(m, D_("Photo Module"), D_("E Canvas init failed !"));
         e_modapi_shutdown(m);
         return NULL;
      }
 
    if (!_theme_init())
      {
-        e_module_dialog_show(m, _("Photo Module"), _("Theme init failed !"));
+        e_module_dialog_show(m, D_("Photo Module"), D_("Theme init failed !"));
         e_modapi_shutdown(m);
         return NULL;
      }
 
    if (!photo_config_init())
      {
-        e_module_dialog_show(m, _("Photo Module"), _("Config init failed"));
+        e_module_dialog_show(m, D_("Photo Module"), D_("Config init failed"));
         e_modapi_shutdown(m);
         return NULL;
      }
 
    if (!photo_picture_init())
      {
-        e_module_dialog_show(m, _("Photo Module"), _("Picture subsystem init failed"));
+        e_module_dialog_show(m, D_("Photo Module"), D_("Picture subsystem init failed"));
         e_modapi_shutdown(m);
         return NULL;
      }
 
    if (!photo_popup_warn_init())
      {
-        e_module_dialog_show(m, _("Photo Module"), _("Popup warn subsystem init failed"));
+        e_module_dialog_show(m, D_("Photo Module"), D_("Popup warn subsystem init failed"));
         e_modapi_shutdown(m);
         return NULL;
      }
 
    if (!photo_popup_info_init())
      {
-        e_module_dialog_show(m, _("Photo Module"), _("Popup info subsystem init failed"));
+        e_module_dialog_show(m, D_("Photo Module"), D_("Popup info subsystem init failed"));
         e_modapi_shutdown(m);
         return NULL;
      }
@@ -177,7 +177,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void)
 {
-   return _("Photo");
+   return D_("Photo");
 }
 
 static Evas_Object *

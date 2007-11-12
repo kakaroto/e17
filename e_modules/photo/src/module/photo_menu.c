@@ -27,21 +27,21 @@ int photo_menu_show(Photo_Item *pi)
    mi = e_menu_item_new(mn);
    if (pi->config->timer_active)
      {
-        e_menu_item_label_set(mi, _("Pause slideshow"));
+        e_menu_item_label_set(mi, D_("Pause slideshow"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_PAUSE);
      }
    else
      {
-        e_menu_item_label_set(mi, _("Resume slideshow"));
+        e_menu_item_label_set(mi, D_("Resume slideshow"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_RESUME);
      }
    e_menu_item_callback_set(mi, _cb_pause_toggle, pi);
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Next picture"));
+   e_menu_item_label_set(mi, D_("Next picture"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_NEXT);
    e_menu_item_callback_set(mi, _cb_picture_next, pi);
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Previous picture"));
+   e_menu_item_label_set(mi, D_("Previous picture"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_PREVIOUS);
    e_menu_item_callback_set(mi, _cb_picture_prev, pi);
 
@@ -51,15 +51,15 @@ int photo_menu_show(Photo_Item *pi)
    e_menu_item_separator_set(mi, 1);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Picture informations"));
+   e_menu_item_label_set(mi, D_("Picture informations"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_INFOS);
    e_menu_item_callback_set(mi, _cb_picture_info, pi);
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Set as background"));
+   e_menu_item_label_set(mi, D_("Set as background"));
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_SETBG);
    e_menu_item_callback_set(mi, _cb_picture_setbg, pi);
    mi = e_menu_item_new(mn);
-   snprintf(buf, sizeof(buf), "%s %s", _("Open in"), photo->config->pictures_viewer);
+   snprintf(buf, sizeof(buf), "%s %s", D_("Open in"), photo->config->pictures_viewer);
    e_menu_item_label_set(mi, buf);
    photo_util_menu_icon_set(mi, PHOTO_THEME_ICON_VIEWER);
    e_menu_item_callback_set(mi, _cb_picture_viewer, pi);
@@ -68,18 +68,18 @@ int photo_menu_show(Photo_Item *pi)
    e_menu_item_separator_set(mi, 1);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Configure Photo module"));
+   e_menu_item_label_set(mi, D_("Configure Photo module"));
    e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _cb_configure_general, NULL);
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Configure this Photo gadget"));
+   e_menu_item_label_set(mi, D_("Configure this Photo gadget"));
    e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _cb_configure_item, pi);
 
    mn2 = e_menu_new();
    e_gadcon_client_util_menu_items_append(pi->gcc, mn2, 0);
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Configure Gadget and Shelf"));
+   e_menu_item_label_set(mi, D_("Configure Gadget and Shelf"));
    e_menu_item_submenu_set(mi, mn2);
 
    pi->menu = mn;

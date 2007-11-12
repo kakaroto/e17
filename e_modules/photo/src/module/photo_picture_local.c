@@ -250,13 +250,13 @@ Picture_Local_Dir *photo_picture_local_dir_new(char *path, int recursive, int re
      {
         char buf[4096];
         snprintf(buf, sizeof(buf),
-                 _("<hilight>Directory %s doesnt exists.</hilight><br><br>"
+                 D_("<hilight>Directory %s doesnt exists.</hilight><br><br>"
                    "You can change the picture's folders in main configuration panel<br>"
                    "They can be jpeg or png<br><br>"
                    "After import, if you can remove these files and the pictures still can<br>"
                    "be viewed, but you wont be able to set them as wallpaper anymore<br><br>"),
                  path);
-        e_module_dialog_show(photo->module, _("Photo Module Error"), buf);
+        e_module_dialog_show(photo->module, D_("Photo Module Error"), buf);
         return NULL;
      }
 
@@ -590,8 +590,8 @@ _thumb_generate_cb(void *data, Evas_Object *obj, void *event_info)
      {
         photo->config->local.thumb_msg = 0;
 	photo_config_save();
-        e_module_dialog_show(photo->module, _("Photo Module Information"),
-                             _("<hilight>Creating thumbs</hilight><br><br>"
+        e_module_dialog_show(photo->module, D_("Photo Module Information"),
+                             D_("<hilight>Creating thumbs</hilight><br><br>"
                                "Some pictures are being thumbed in a <hilight>background task</hilight>.<br>"
                                "It can take a while, but after, loading will be faster and lighter :)<br><br>"
                                "Each time wou will load pictures that haven't been loaded in Photo module before,<br>"

@@ -92,7 +92,7 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
     e_widget_slider_add(evas, 1, 0, D_("%2.0f minutes"), 15.0, 60.0, 1.0, 0,
 			 &(cfdata->poll_time), NULL, 40);
   e_widget_framelist_object_append(of, ob);
-  ob = e_widget_check_add(evas, _("Show Description"), &(cfdata->show_text));
+  ob = e_widget_check_add(evas, D_("Show Description"), &(cfdata->show_text));
   e_widget_framelist_object_append(of, ob);
   e_widget_list_object_append(o, of, 1, 1, 0.5);
 

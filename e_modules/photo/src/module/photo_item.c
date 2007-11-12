@@ -386,10 +386,10 @@ int  photo_item_action_setbg(Photo_Item *pi)
    if (!ecore_file_exists(file))
      {
         snprintf(buf, sizeof(buf),
-                 _("<hilight>File %s doesnt exists.</hilight><br><br>"
+                 D_("<hilight>File %s doesnt exists.</hilight><br><br>"
                    "This file is in Photo module picture list, but it seems you removed it from the disk<br>"
                    "It cant be set as background, sorry."), file);
-        e_module_dialog_show(photo->module, _("Photo Module Error"), buf);
+        e_module_dialog_show(photo->module, D_("Photo Module Error"), buf);
         return 0;
      }
 
@@ -410,11 +410,11 @@ int  photo_item_action_setbg(Photo_Item *pi)
         else
           {
              snprintf(buf, sizeof(buf),
-                      _("<hilight>e17setroot needed</hilight><br><br>"
+                      D_("<hilight>e17setroot needed</hilight><br><br>"
                         "%s is not an edje file !<br>"
                         "Photo module needs e17setroot util from e_utils package to set you're picture as background"
                         "Please install it and try again"), file);
-             e_module_dialog_show(photo->module, _("Photo Module Error"), buf);
+             e_module_dialog_show(photo->module, D_("Photo Module Error"), buf);
              return 0;
           }
      }
@@ -449,10 +449,10 @@ int photo_item_action_viewer(Photo_Item *pi)
    if (!ecore_file_exists(file))
      {
         snprintf(buf, sizeof(buf),
-                 _("<hilight>File %s doesnt exists !</hilight><br><br>"
+                 D_("<hilight>File %s doesnt exists !</hilight><br><br>"
                    "This file is in Photo's module picture list, but it seems you removed it from the disk.<br>"
                    "It cant be set opened in a viewer, sorry."), file);
-        e_module_dialog_show(photo->module, _("Photo Module Error"), buf);
+        e_module_dialog_show(photo->module, D_("Photo Module Error"), buf);
         return 0;
      }
 
@@ -469,10 +469,10 @@ int photo_item_action_viewer(Photo_Item *pi)
    else
      {
         snprintf(buf, sizeof(buf),
-                 _("<hilight>Viewer %s not found !</hilight><br><br>"
+                 D_("<hilight>Viewer %s not found !</hilight><br><br>"
                    "You can change the viewer for images in Photo module configuration panel (Advanced view)"),
                  photo->config->pictures_viewer);
-        e_module_dialog_show(photo->module, _("Photo Module Error"), buf);
+        e_module_dialog_show(photo->module, D_("Photo Module Error"), buf);
         return 0;
      }
 

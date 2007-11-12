@@ -45,7 +45,7 @@ int  photo_config_dialog_item_show(Photo_Item *pi)
    
    snprintf(buf, sizeof(buf), "%s/e-module-photo.edj", e_module_dir_get(photo->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Photo Item Configuration"), "Photo", "_e_modules_photo_item_config_dialog", buf, 0, v, pi);
+			     D_("Photo Item Configuration"), "Photo", "_e_modules_photo_item_config_dialog", buf, 0, v, pi);
    pi->config_dialog = cfd;
 
    return 1;
@@ -109,12 +109,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    
    o = e_widget_table_add(evas, 0);
 
-   of = e_widget_frametable_add(evas, _("Timer between pictures change"), 0);
+   of = e_widget_frametable_add(evas, D_("Timer between pictures change"), 0);
 
-   ob = e_widget_check_add(evas, _("Activate"), &(cfdata->timer_active));
+   ob = e_widget_check_add(evas, D_("Activate"), &(cfdata->timer_active));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f seconds"),
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f seconds"),
                             (float)ITEM_TIMER_S_MIN, (float)ITEM_TIMER_S_MAX,
                             1.0, 0,
                             NULL, &(cfdata->timer_s), 130);
@@ -124,24 +124,24 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    
 
-   of = e_widget_frametable_add(evas, _("Appearance"), 0);
+   of = e_widget_frametable_add(evas, D_("Appearance"), 0);
 
-   ob = e_widget_label_add(evas, _("Alpha"));
+   ob = e_widget_label_add(evas, D_("Alpha"));
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 1);
 
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), 0.0, 255, 1.0, 0,
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), 0.0, 255, 1.0, 0,
                             NULL, &(cfdata->alpha), 130);
    e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 0, 1, 0);
 
-   ob = e_widget_label_add(evas, _("Always show label"));
+   ob = e_widget_label_add(evas, D_("Always show label"));
    e_widget_frametable_object_append(of, ob, 0, 2, 3, 1, 1, 1, 1, 1);
 
    rg = e_widget_radio_group_new(&(cfdata->show_label));
-   ob = e_widget_radio_add(evas, _("Yes"), ITEM_SHOW_LABEL_YES, rg);
+   ob = e_widget_radio_add(evas, D_("Yes"), ITEM_SHOW_LABEL_YES, rg);
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("No"), ITEM_SHOW_LABEL_NO, rg);
+   ob = e_widget_radio_add(evas, D_("No"), ITEM_SHOW_LABEL_NO, rg);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Default setting"), ITEM_SHOW_LABEL_PARENT, rg);
+   ob = e_widget_radio_add(evas, D_("Default setting"), ITEM_SHOW_LABEL_PARENT, rg);
    e_widget_frametable_object_append(of, ob, 2, 3, 1, 1, 1, 1, 1, 1);   
 
    e_widget_table_object_append(o, of, 0, 1, 1, 1, 1, 1, 1, 1);
@@ -186,24 +186,24 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    o = e_widget_table_add(evas, 0);
 
-   of = e_widget_frametable_add(evas, _("Mouse actions"), 0);
+   of = e_widget_frametable_add(evas, D_("Mouse actions"), 0);
 
-   ob = e_widget_label_add(evas, _("Over"));
+   ob = e_widget_label_add(evas, D_("Over"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
    CONFIG_DIALOG_ACTION_CHOICE(of, 0, 2, cfdata->action_mouse_over, ITEM_ACTION_PARENT);
 
-   ob = e_widget_label_add(evas, _("Left"));
+   ob = e_widget_label_add(evas, D_("Left"));
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("click"));
+   ob = e_widget_label_add(evas, D_("click"));
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
    CONFIG_DIALOG_ACTION_CHOICE(of, 1, 2, cfdata->action_mouse_left, ITEM_ACTION_PARENT);
 
-   ob = e_widget_label_add(evas, _("Middle"));
+   ob = e_widget_label_add(evas, D_("Middle"));
    e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("click"));
+   ob = e_widget_label_add(evas, D_("click"));
    e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 1, 1);
    CONFIG_DIALOG_ACTION_CHOICE(of, 2, 2, cfdata->action_mouse_middle, ITEM_ACTION_PARENT);
-   CONFIG_DIALOG_ACTION_CHOICE_LABELS(of, 3, 2, _("Default setting"));
+   CONFIG_DIALOG_ACTION_CHOICE_LABELS(of, 3, 2, D_("Default setting"));
 
    e_widget_table_object_append(o, of, 1, 0, 1, 2, 1, 1, 1, 1);
 

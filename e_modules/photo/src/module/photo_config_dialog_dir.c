@@ -35,7 +35,7 @@ int  photo_config_dialog_dir_show(Picture_Local_Dir *dir)
    
    snprintf(buf, sizeof(buf), "%s/e-module-photo.edj", e_module_dir_get(photo->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Photo Directory Configuration"), "Photo", "_e_modules_photo_dir_config_dialog", buf, 0, v, dir);
+			     D_("Photo Directory Configuration"), "Photo", "_e_modules_photo_dir_config_dialog", buf, 0, v, dir);
 
    if (dir) dir->config_dialog = cfd;
    else photo->config_dialog_adddir = cfd;
@@ -115,7 +115,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    
    o = e_widget_table_add(evas, 0);
 
-   of = e_widget_frametable_add(evas, _("Directory"), 0);
+   of = e_widget_frametable_add(evas, D_("Directory"), 0);
 
    ob = e_widget_entry_add(evas, &(cfdata->path), NULL, NULL, NULL);
    e_widget_min_size_set(ob, 250, 25);
@@ -124,11 +124,11 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_table_object_append(o, of, 0, 0, 1, 1, 1, 1, 1, 1);
 
 
-   of = e_widget_frametable_add(evas, _("Loading options"), 0);
+   of = e_widget_frametable_add(evas, D_("Loading options"), 0);
 
-   ob = e_widget_check_add(evas, _("Recursive"), &(cfdata->recursive));
+   ob = e_widget_check_add(evas, D_("Recursive"), &(cfdata->recursive));
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 1);
-   ob = e_widget_check_add(evas, _("Read hidden files"), &(cfdata->read_hidden));
+   ob = e_widget_check_add(evas, D_("Read hidden files"), &(cfdata->read_hidden));
    e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, of, 0, 1, 1, 1, 1, 1, 1, 1);
@@ -155,7 +155,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
                       "<hilight>The directory %s is being loaded at the moment !</hilight><br>"
                       "Please wait until the loading is finished to modify its settings",
                       cfdata->dir->path);
-             e_module_dialog_show(photo->module, _("Photo Module Warning"), buf);
+             e_module_dialog_show(photo->module, D_("Photo Module Warning"), buf);
              return 0;
           }
 

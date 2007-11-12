@@ -61,7 +61,7 @@ int  photo_config_dialog_show(void)
    
    snprintf(buf, sizeof(buf), "%s/e-module-photo.edj", e_module_dir_get(photo->module));
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("Photo Configuration"), "Photo", "_e_modules_photo_config_dialog", buf, 0, v, NULL);
+			     D_("Photo Configuration"), "Photo", "_e_modules_photo_config_dialog", buf, 0, v, NULL);
 
    return 1;
 }
@@ -217,7 +217,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    
    o = e_widget_table_add(evas, 0);
 
-   of = e_widget_frametable_add(evas, _("Picture directories"), 0);
+   of = e_widget_frametable_add(evas, D_("Picture directories"), 0);
 
    ob = e_widget_textblock_add(evas);
    cfdata->textblock_local_infos = ob;
@@ -232,51 +232,51 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    photo_config_dialog_refresh_local_dirs();
    e_widget_frametable_object_append(of, ob, 0, 1, 3, 1, 1, 1, 1, 1);
 
-   ob = e_widget_button_add(evas, _("Add"), NULL, _cb_dir_add, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Add"), NULL, _cb_dir_add, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_button_add(evas, _("Delete"), NULL, _cb_dir_del, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Delete"), NULL, _cb_dir_del, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_button_add(evas, _("Configure"), NULL, _cb_dir_config, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Configure"), NULL, _cb_dir_config, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 2, 2, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_button_add(evas, _("Reload picture directories"), NULL, _cb_dir_reload, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Reload picture directories"), NULL, _cb_dir_reload, cfdata, NULL);
    cfdata->button_local_load_start = ob;
    e_widget_frametable_object_append(of, ob, 0, 3, 3, 1, 1, 1, 1, 1);
-   ob = e_widget_button_add(evas, _("Stop loading"), NULL, _cb_dir_stopload, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Stop loading"), NULL, _cb_dir_stopload, cfdata, NULL);
    cfdata->button_local_load_stop = ob;
    e_widget_frametable_object_append(of, ob, 0, 4, 3, 1, 1, 1, 1, 1);
    photo_config_dialog_refresh_local_load();
 
    e_widget_table_object_append(o, of, 0, 0, 1, 1, 1, 1, 1, 1);
 
-   of = e_widget_frametable_add(evas, _("Appearance"), 0);
+   of = e_widget_frametable_add(evas, D_("Appearance"), 0);
 
-   ob = e_widget_check_add(evas, _("Always show label"), &(cfdata->show_label));
+   ob = e_widget_check_add(evas, D_("Always show label"), &(cfdata->show_label));
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 1);
-   ob = e_widget_check_add(evas, _("Nice transitions"), &(cfdata->nice_trans));
+   ob = e_widget_check_add(evas, D_("Nice transitions"), &(cfdata->nice_trans));
    e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, of, 0, 1, 1, 1, 1, 1, 1, 1);
 
 
-   of = e_widget_frametable_add(evas, _("Default Mouse actions"), 0);
+   of = e_widget_frametable_add(evas, D_("Default Mouse actions"), 0);
 
-   ob = e_widget_label_add(evas, _("Over"));
+   ob = e_widget_label_add(evas, D_("Over"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
    CONFIG_DIALOG_ACTION_CHOICE(of, 0, 2, cfdata->action_mouse_over, ITEM_ACTION_NO);
 
-   ob = e_widget_label_add(evas, _("Left"));
+   ob = e_widget_label_add(evas, D_("Left"));
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("click"));
+   ob = e_widget_label_add(evas, D_("click"));
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
    CONFIG_DIALOG_ACTION_CHOICE(of, 1, 2, cfdata->action_mouse_left, ITEM_ACTION_NO);
 
-   ob = e_widget_label_add(evas, _("Middle"));
+   ob = e_widget_label_add(evas, D_("Middle"));
    e_widget_frametable_object_append(of, ob, 2, 0, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("click"));
+   ob = e_widget_label_add(evas, D_("click"));
    e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 1, 1);
    CONFIG_DIALOG_ACTION_CHOICE(of, 2, 2, cfdata->action_mouse_middle, ITEM_ACTION_NO);
-   CONFIG_DIALOG_ACTION_CHOICE_LABELS(of, 3, 2, _("No"));
+   CONFIG_DIALOG_ACTION_CHOICE_LABELS(of, 3, 2, D_("No"));
 
 
    e_widget_table_object_append(o, of, 1, 0, 1, 1, 1, 1, 1, 1);
@@ -315,45 +315,45 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    o = e_widget_table_add(evas, 0);
 
-   of = e_widget_frametable_add(evas, _("Popups"), 0);
+   of = e_widget_frametable_add(evas, D_("Popups"), 0);
 
-   ob = e_widget_label_add(evas, _("Picture loader popup"));
+   ob = e_widget_label_add(evas, D_("Picture loader popup"));
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 1);
    rg = e_widget_radio_group_new(&(cfdata->local.popup));
-   ob = e_widget_radio_add(evas, _("Never"), PICTURE_LOCAL_POPUP_NEVER, rg);
+   ob = e_widget_radio_add(evas, D_("Never"), PICTURE_LOCAL_POPUP_NEVER, rg);
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Summary"), PICTURE_LOCAL_POPUP_SUM, rg);
+   ob = e_widget_radio_add(evas, D_("Summary"), PICTURE_LOCAL_POPUP_SUM, rg);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_radio_add(evas, _("Verbose"), PICTURE_LOCAL_POPUP_ALWAYS, rg);
+   ob = e_widget_radio_add(evas, D_("Verbose"), PICTURE_LOCAL_POPUP_ALWAYS, rg);
    e_widget_frametable_object_append(of, ob, 2, 1, 1, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, of, 0, 0, 1, 1, 1, 1, 1, 1);
 
-   of = e_widget_frametable_add(evas, _("Miscellaneous"), 0);
+   of = e_widget_frametable_add(evas, D_("Miscellaneous"), 0);
 
-   ob = e_widget_check_add(evas, _("Remove generated backgrounds"),
+   ob = e_widget_check_add(evas, D_("Remove generated backgrounds"),
                            &(cfdata->pictures_set_bg_purge));
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 1, 1, 1);
 
-   ob = e_widget_label_add(evas, _("Pictures viewer"));
+   ob = e_widget_label_add(evas, D_("Pictures viewer"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
    ob = e_widget_entry_add(evas, &(cfdata->pictures_viewer), NULL, NULL, NULL);
    e_widget_min_size_set(ob, 80, 25);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_label_add(evas, _("Images Quality"));
+   ob = e_widget_label_add(evas, D_("Images Quality"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f pix"),
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f pix"),
                             (float)PICTURE_THUMB_SIZE_MIN,
                             (float)PICTURE_THUMB_SIZE_MAX,
                             100.0, 0,
                             NULL, &(cfdata->pictures_thumb_size), 80);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);
 
-   ob = e_widget_check_add(evas, _("Automaticly reload directories"),
+   ob = e_widget_check_add(evas, D_("Automaticly reload directories"),
                            &(cfdata->local.auto_reload));
    e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("when add / modify directory list"));
+   ob = e_widget_label_add(evas, D_("when add / modify directory list"));
    e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 1, 1, 1);
 
 
