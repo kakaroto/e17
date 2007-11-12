@@ -26,7 +26,7 @@ struct _Config
 {
    double zoom;
    int penguins_count;
-   char *theme;
+   const char *theme;
    int alpha;
 };
 
