@@ -5,7 +5,7 @@ typedef struct _Instance Instance;
 struct _Instance 
 {
    E_Gadcon_Client *gcc;
-   Evas_Object *o_entry, *o_base, *o_loc;
+   Evas_Object *o_entry, *o_base, *o_loc, *o_event;
    E_Menu *menu;
    E_Toolbar *tbar;
    char *path;
@@ -72,7 +72,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_show(inst->o_loc);
 
    inst->o_entry = e_widget_entry_add(gc->evas, &(inst->path), NULL, NULL, NULL);
-   e_widget_can_focus_set(inst->o_entry, 0);
    edje_object_part_swallow(inst->o_base, "e.swallow.entry", inst->o_entry);
    evas_object_show(inst->o_entry);
 
@@ -94,10 +93,16 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_smart_callback_add(inst->o_base, "selection_change", 
 				  _cb_sel_changed, inst);
 
+   inst->o_event = evas_object_rectangle_add(gc->evas);
+   evas_object_color_set(inst->o_event, 255, 0, 0, 142);
+   evas_object_repeat_events_set(inst->o_event, 1);
+   evas_object_event_callback_add(inst->o_event, EVAS_CALLBACK_MOUSE_DOWN, 
+				  _cb_mouse_down, inst);
+   evas_object_show(inst->o_event);
+
    inst->gcc = e_gadcon_client_new(gc, name, id, style, inst->o_base);
    inst->gcc->data = inst;
 
-   e_gadcon_client_resizable_set(inst->gcc, 1);
    instances = evas_list_append(instances, inst);
    return inst->gcc;
 }
@@ -110,6 +115,17 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    inst = gcc->data;
    if (!inst) return;
    instances = evas_list_remove(instances, inst);
+   if (inst->menu) 
+     {
+	e_menu_post_deactivate_callback_set(inst->menu, NULL, NULL);
+	e_object_del(E_OBJECT(inst->menu));
+	inst->menu = NULL;
+     }
+
+   evas_object_event_callback_del(inst->o_event, EVAS_CALLBACK_MOUSE_DOWN, _cb_mouse_down);
+   evas_object_event_callback_del(inst->o_base, EVAS_CALLBACK_MOUSE_DOWN, _cb_mouse_down);
+
+   if (inst->o_event) evas_object_del(inst->o_event);
    if (inst->o_loc) evas_object_del(inst->o_loc);
    if (inst->o_entry) evas_object_del(inst->o_entry);
    if (inst->o_base) evas_object_del(inst->o_base);
@@ -325,7 +341,9 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ecore_x_pointer_xy_get(zone->container->win, &x, &y);
    e_menu_activate_mouse(inst->menu, zone, x, y, 1, 1, 
 			 E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-   e_util_evas_fake_mouse_up_later(e, ev->button);
+   evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button, 
+			    EVAS_BUTTON_NONE, ev->timestamp, NULL);
+//   e_util_evas_fake_mouse_up_later(e, ev->button);
 }
 
 static void 

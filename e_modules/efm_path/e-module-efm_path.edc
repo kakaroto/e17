@@ -54,11 +54,7 @@ collections
 		    {
 		       state: "default" 0.0;
 		       align: 0.0 0.5;
-		       rel1 
-			 {
-			    relative: 0.0 0.0;
-			    to: "base";
-			 }
+		       rel1.to: "base";
 		       rel2 
 			 {
 			    relative: 0.2 1.0;
@@ -78,11 +74,7 @@ collections
 			    relative: 1.0 0.0;
 			    to_x: "e.swallow.location";
 			 }
-		       rel2 
-			 {
-			    offset: -2 -1;
-			    to: "base";
-			 }
+		       rel2.to: "base";
 		    }
 	       }
 	  }
