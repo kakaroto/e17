@@ -87,7 +87,7 @@ news_config_dialog_show(void)
    v->advanced.create_widgets = _advanced_create_widgets;
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("News Main Configuration"),
+			     D_("News Main Configuration"),
                              "E", DIALOG_CLASS,
                              news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, NULL);
 
@@ -187,22 +187,22 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_frametable_add(evas, _("Feeds"), 0);
+   of = e_widget_frametable_add(evas, D_("Feeds"), 0);
 
-   ob = e_widget_check_add(evas, _("Sort lists by name (disable Move action)"), &(cfdata->feed.sort_name));
+   ob = e_widget_check_add(evas, D_("Sort lists by name (disable Move action)"), &(cfdata->feed.sort_name));
    e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 0);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, _("News Viewer"), 0);
+   of = e_widget_frametable_add(evas, D_("News Viewer"), 0);
 
-   ob = e_widget_label_add(evas, _("Font size"));
+   ob = e_widget_label_add(evas, D_("Font size"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
 
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), NEWS_VIEWER_VCONTENT_FONT_SIZE_MIN, NEWS_VIEWER_VCONTENT_FONT_SIZE_MAX, 1.0, 0, NULL, &(cfdata->viewer.vcontent.font_size), 50);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), NEWS_VIEWER_VCONTENT_FONT_SIZE_MIN, NEWS_VIEWER_VCONTENT_FONT_SIZE_MAX, 1.0, 0, NULL, &(cfdata->viewer.vcontent.font_size), 50);
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
 
-   ob = e_widget_label_add(evas, _("Font color"));
+   ob = e_widget_label_add(evas, D_("Font color"));
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 1);
 
    ob = e_widget_color_well_add(evas, cfdata->viewer.vcontent.font_color, 1);
@@ -225,51 +225,51 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    o2 = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_frametable_add(evas, _("Feeds"), 0);
+   of = e_widget_frametable_add(evas, D_("Feeds"), 0);
 
-   ob = e_widget_label_add(evas, _("Timer"));
+   ob = e_widget_label_add(evas, D_("Timer"));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f min"),
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f min"),
 			    (float)NEWS_FEED_TIMER_MIN, (float)NEWS_FEED_TIMER_MAX,
 			    1.0, 0, NULL, &(cfdata->feed.timer_m), 70);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_check_add(evas, _("Sort lists by name (disable Move action)"), &(cfdata->feed.sort_name));
+   ob = e_widget_check_add(evas, D_("Sort lists by name (disable Move action)"), &(cfdata->feed.sort_name));
    e_widget_frametable_object_append(of, ob, 0, 1, 2, 1, 1, 1, 1, 0);
 
    e_widget_list_object_append(o2, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Browser"), 0);
+   of = e_widget_framelist_add(evas, D_("Browser"), 0);
 
-   ob = e_widget_label_add(evas, _("Uses xdg-open script, from freedesktop.org"));
+   ob = e_widget_label_add(evas, D_("Uses xdg-open script, from freedesktop.org"));
    e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(o2, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, _("Popup On News"), 0);
+   of = e_widget_frametable_add(evas, D_("Popup On News"), 0);
 
    rg = e_widget_radio_group_new(&(cfdata->popup_news.active));
-   ob = e_widget_radio_add(evas, _("Never"),
+   ob = e_widget_radio_add(evas, D_("Never"),
 			   NEWS_FEED_POPUP_NEWS_ACTIVE_NO, rg);
    //TODO: NOT IMPLEMENTED YET
    e_widget_radio_toggle_set(ob, 0);
    e_widget_disabled_set(ob, 1);
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_radio_add(evas, _("Only on urgent feeds"),
+   ob = e_widget_radio_add(evas, D_("Only on urgent feeds"),
 			   NEWS_FEED_POPUP_NEWS_ACTIVE_URGENT, rg);
    //TODO: NOT IMPLEMENTED YET
    e_widget_radio_toggle_set(ob, 0);
    e_widget_disabled_set(ob, 1);
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_radio_add(evas, _("On all feeds"),
+   ob = e_widget_radio_add(evas, D_("On all feeds"),
 			   NEWS_FEED_POPUP_NEWS_ACTIVE_ALL, rg);
    //TODO: NOT IMPLEMENTED YET
    e_widget_radio_toggle_set(ob, 0);
    e_widget_disabled_set(ob, 1);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 0);
 
-   ob = e_widget_label_add(evas, _("Timer"));
+   ob = e_widget_label_add(evas, D_("Timer"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f s"),
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f s"),
 			    (float)NEWS_POPUP_TIMER_S_MIN,
 			    (float)NEWS_POPUP_TIMER_S_MAX,
 			    1.0, 0, NULL, &(cfdata->popup_news.timer_s), 70);
@@ -277,19 +277,19 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    e_widget_list_object_append(o2, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, _("Popup On Warning / Error"), 0);
+   of = e_widget_frametable_add(evas, D_("Popup On Warning / Error"), 0);
 
    //TODO: NOT IMPLEMENTED YET
    news->config->popup_other.on_timeout = 0;
    cfdata->popup_other.on_timeout = 0;
-   ob = e_widget_check_add(evas, _("Show on timeout ?"), &(cfdata->popup_other.on_timeout));
+   ob = e_widget_check_add(evas, D_("Show on timeout ?"), &(cfdata->popup_other.on_timeout));
    //TODO: NOT IMPLEMENTED YET
    e_widget_disabled_set(ob, 1);
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 0, 1, 0);
 
-   ob = e_widget_label_add(evas, _("Timer"));
+   ob = e_widget_label_add(evas, D_("Timer"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 0);
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f s"),
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f s"),
 			    (float)NEWS_POPUP_TIMER_S_MIN,
 			    (float)NEWS_POPUP_TIMER_S_MAX,
 			    1.0, 0, NULL, &(cfdata->popup_other.timer_s), 70);
@@ -302,18 +302,18 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    o2 = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_frametable_add(evas, _("News Viewer"), 0);
+   of = e_widget_frametable_add(evas, D_("News Viewer"), 0);
 
-   ob = e_widget_check_add(evas, _("Unread feeds first"), &(cfdata->viewer.vfeeds.unread_first));
+   ob = e_widget_check_add(evas, D_("Unread feeds first"), &(cfdata->viewer.vfeeds.unread_first));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_check_add(evas, _("Unread articles first"), &(cfdata->viewer.varticles.unread_first));
+   ob = e_widget_check_add(evas, D_("Unread articles first"), &(cfdata->viewer.varticles.unread_first));
    e_widget_frametable_object_append(of, ob, 1, 0, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_check_add(evas, _("Sort articles by date"), &(cfdata->viewer.varticles.sort_date));
+   ob = e_widget_check_add(evas, D_("Sort articles by date"), &(cfdata->viewer.varticles.sort_date));
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
 
-   of2 = e_widget_frametable_add(evas, _("Font"), 0);
+   of2 = e_widget_frametable_add(evas, D_("Font"), 0);
 
-   ob = e_widget_slider_add(evas, 1, 0, _("%1.0f"), NEWS_VIEWER_VCONTENT_FONT_SIZE_MIN, NEWS_VIEWER_VCONTENT_FONT_SIZE_MAX, 1.0, 0, NULL, &(cfdata->viewer.vcontent.font_size), 70);
+   ob = e_widget_slider_add(evas, 1, 0, D_("%1.0f"), NEWS_VIEWER_VCONTENT_FONT_SIZE_MIN, NEWS_VIEWER_VCONTENT_FONT_SIZE_MAX, 1.0, 0, NULL, &(cfdata->viewer.vcontent.font_size), 70);
    e_widget_frametable_object_append(of2, ob, 0, 0, 1, 1, 1, 0, 1, 0);
 
    ob = e_widget_color_well_add(evas, cfdata->viewer.vcontent.font_color, 1);
@@ -321,7 +321,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_on_change_hook_set(ob, _cb_color_viewer_font_change, cfdata);
    e_widget_frametable_object_append(of2, ob, 0, 1, 1, 1, 1, 0, 1, 0);
 
-   ob = e_widget_check_add(evas, _("Font Shadow"), &cfdata->viewer.vcontent.font_shadow);
+   ob = e_widget_check_add(evas, D_("Font Shadow"), &cfdata->viewer.vcontent.font_shadow);
    e_widget_frametable_object_append(of2, ob, 1, 0, 1, 1, 1, 0, 1, 0);
 
    ob = e_widget_color_well_add(evas, cfdata->viewer.vcontent.font_shadow_color, 1);
@@ -333,15 +333,15 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    e_widget_list_object_append(o2, of, 1, 1, 0.0);
 
-   of = e_widget_frametable_add(evas, _("Proxy"), 0);
+   of = e_widget_frametable_add(evas, D_("Proxy"), 0);
 
-   ob = e_widget_check_add(evas, _("Enable"), &(cfdata->proxy.enable));
+   ob = e_widget_check_add(evas, D_("Enable"), &(cfdata->proxy.enable));
    e_widget_frametable_object_append(of, ob, 0, 0, 2, 1, 1, 0, 0, 0);
-   ob = e_widget_label_add(evas, _("Host"));
+   ob = e_widget_label_add(evas, D_("Host"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 0, 0);
    ob = e_widget_entry_add(evas, &(cfdata->proxy.host), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_label_add(evas, _("Port"));
+   ob = e_widget_label_add(evas, D_("Port"));
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 0, 0);
    ob = e_widget_entry_add(evas, &(cfdata->proxy.port), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 0, 1, 0);

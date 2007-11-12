@@ -47,7 +47,7 @@ news_config_dialog_category_show(News_Feed_Category *fcat)
    v->basic.create_widgets = _basic_create_widgets;
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("News Category Configuration"),
+			     D_("News Category Configuration"),
                              "E", "_e_mod_news_config_dialog_category",
                              news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, fcat);
 
@@ -132,7 +132,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_framelist_add(evas, _("Icon"), 0);
+   of = e_widget_framelist_add(evas, D_("Icon"), 0);
    ob = e_widget_button_add(evas, "", NULL,
                             _icon_select, cfdata, NULL);
    cfdata->gui.button_icon = ob;
@@ -142,7 +142,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.0);
 
-   of = e_widget_framelist_add(evas, _("Name"), 0);
+   of = e_widget_framelist_add(evas, D_("Name"), 0);
    ob = e_widget_entry_add(evas, &(cfdata->name), NULL, NULL, NULL);
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.0);
@@ -200,7 +200,7 @@ _icon_select(void *data1, void *data2)
 
    dia = e_dialog_new(cfd->con, "E", "_news_category_icon_select_dialog");
    if (!dia) return;
-   e_dialog_title_set(dia, _("Select an Icon"));
+   e_dialog_title_set(dia, D_("Select an Icon"));
    dia->data = cfdata;
 
    if (cfdata->icon)
@@ -225,8 +225,8 @@ _icon_select(void *data1, void *data2)
    e_dialog_content_set(dia, o, mw, mh);
 
    /* buttons at the bottom */
-   e_dialog_button_add(dia, _("OK"), NULL, _icon_select_ok, cfdata);
-   e_dialog_button_add(dia, _("Cancel"), NULL, _icon_select_cancel, cfdata);
+   e_dialog_button_add(dia, D_("OK"), NULL, _icon_select_ok, cfdata);
+   e_dialog_button_add(dia, D_("Cancel"), NULL, _icon_select_cancel, cfdata);
    e_dialog_resizable_set(dia, 1);
    e_win_centered_set(dia->win, 1);
    e_dialog_show(dia);

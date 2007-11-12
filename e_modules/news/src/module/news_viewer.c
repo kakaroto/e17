@@ -371,7 +371,7 @@ _dialog_content_create(News_Viewer *nv)
    o2 = e_widget_list_add(evas, 0, 1);
    nv->dialog.tab = o;
 
-   of = e_widget_frametable_add(evas, _("Feeds in this gadget"), 0);
+   of = e_widget_frametable_add(evas, D_("Feeds in this gadget"), 0);
    nv->dialog.ftab_feeds = of;
 
    ob = e_widget_button_add(evas, "", NULL, _vfeeds_cb_button_feed, nv, NULL);
@@ -437,7 +437,7 @@ _dialog_content_create(News_Viewer *nv)
    e_widget_list_object_append(o2, ob, 1, 1, 0.5);
    e_widget_list_object_append(o, o2, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Articles in selected feed"), 0);
+   of = e_widget_framelist_add(evas, D_("Articles in selected feed"), 0);
    nv->dialog.ftab_articles = of;
 
    ob = e_widget_ilist_add(evas, 16, 16, NULL);

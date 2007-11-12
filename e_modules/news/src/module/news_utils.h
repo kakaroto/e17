@@ -10,21 +10,21 @@
    char __tmpbuf[4096];                                      \
                                                              \
    snprintf(__tmpbuf, sizeof(__tmpbuf), ##args);             \
-   e_module_dialog_show(news->module, _("News Module DEBUG DEBUG DEBUG DEBUG"), __tmpbuf); \
+   e_module_dialog_show(news->module, D_("News Module DEBUG DEBUG DEBUG DEBUG"), __tmpbuf); \
 }
 #define news_util_message_show(args...)                            \
 {                                                                  \
    char __tmpbuf[4096];                                            \
                                                                    \
    snprintf(__tmpbuf, sizeof(__tmpbuf), ##args);                   \
-   e_module_dialog_show(news->module, _("News Module"), __tmpbuf); \
+   e_module_dialog_show(news->module, D_("News Module"), __tmpbuf); \
 }
 #define news_util_message_error_show(args...)                            \
 {                                                                        \
    char __tmpbuf[4096];                                                  \
                                                                          \
    snprintf(__tmpbuf, sizeof(__tmpbuf), ##args);                         \
-   e_module_dialog_show(news->module, _("News Module Error"), __tmpbuf); \
+   e_module_dialog_show(news->module, D_("News Module Error"), __tmpbuf); \
 }
 
 int         news_util_url_image_get(char *url, void (*func_cb) (News_Feed_Document *doc, int error));

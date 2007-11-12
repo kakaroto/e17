@@ -42,7 +42,7 @@ news_config_dialog_langs_show(void)
    v->basic.create_widgets = _basic_create_widgets;
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("News Feeds Language Configuration"),
+			     D_("News Feeds Language Configuration"),
                              "E", DIALOG_CLASS,
                              news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, NULL);
    return 1;
@@ -120,9 +120,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    if (news->config->feed.langs_notset)
      {
-        ob = e_widget_label_add(evas, _("Welcome to News Module !"));
+        ob = e_widget_label_add(evas, D_("Welcome to News Module !"));
         e_widget_list_object_append(o, ob, 1, 1, 0.5);
-        ob = e_widget_label_add(evas, _("Please select the languages that you are able to read"));
+        ob = e_widget_label_add(evas, D_("Please select the languages that you are able to read"));
         e_widget_list_object_append(o, ob, 1, 1, 0.0);
         ob = e_widget_label_add(evas, "");
         e_widget_list_object_append(o, ob, 1, 1, 0.0);
@@ -130,7 +130,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    l = cfdata->choices;
    line = 0;
-   of = e_widget_framelist_add(evas, _("Languages"), 1);
+   of = e_widget_framelist_add(evas, D_("Languages"), 1);
    ol = e_widget_list_add(evas, 0, 0);
    for (l=cfdata->choices; l; l=evas_list_next(l))
      {

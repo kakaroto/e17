@@ -288,34 +288,34 @@ news_feed_edit(News_Feed *f, char *name, int name_ovrw, char *language, int lang
 
    if ( !name || !name[0] )
      {
-        news_util_message_error_show(_("The <hilight>name</hilight> you entered is not correct"));
+        news_util_message_error_show(D_("The <hilight>name</hilight> you entered is not correct"));
         return 0;
      }
    if (!category)
      {
-        news_util_message_error_show(_("The need to <hilight>select a category</hilight>."));
+        news_util_message_error_show(D_("The need to <hilight>select a category</hilight>."));
         return 0;
      }
    f2 = _feed_find(category, name);
    if ( f2 && (f != f2) )
      {
-        news_util_message_error_show(_("A feed with the <hilight>name</hilight> %s <hilight>already exists</hilight><br>"
-                                       "in the %s category<br><br>"
-                                       "Its not possible to have feeds with the same name<br>"
-                                       "in one category."),
+        news_util_message_error_show(D_("A feed with the <hilight>name</hilight> %s <hilight>already exists</hilight><br>"
+                                        "in the %s category<br><br>"
+                                        "Its not possible to have feeds with the same name<br>"
+                                        "in one category."),
                                      name, category->name);
         return 0;
      }
    if (!language || !language[0])
      {
-        news_util_message_error_show(_("You need to select a <hilight>language</hilight>."));
+        news_util_message_error_show(D_("You need to select a <hilight>language</hilight>."));
         return 0;
      }
    if ( !url_feed || !url_feed[0] ||
         !(host = _get_host_from_url(url_feed)) ||
         !(file = _get_file_from_url(url_feed)) )
      {
-        news_util_message_error_show(_("The <hilight>url</hilight> you specified is not correct"));
+        news_util_message_error_show(D_("The <hilight>url</hilight> you specified is not correct"));
         if (host) free(host);
         return 0;
      }
@@ -877,7 +877,7 @@ news_feed_category_edit(News_Feed_Category *cat, char *name, char *icon)
 
    if (!name || !name[0])
      {
-        news_util_message_error_show(_("You need to enter a <hilight>name</hilight> !"));
+        news_util_message_error_show(D_("You need to enter a <hilight>name</hilight> !"));
         return 0;
      }
 
@@ -885,7 +885,7 @@ news_feed_category_edit(News_Feed_Category *cat, char *name, char *icon)
    cat2 = _feed_category_find(name);
    if (cat2 && (cat2 != cat))
      {
-        news_util_message_error_show(_("The <hilight>name</hilight> you entered is <hilight>already used</hilight><br>"
+        news_util_message_error_show(D_("The <hilight>name</hilight> you entered is <hilight>already used</hilight><br>"
                                        "by another category"));
         return 0;
      }

@@ -97,24 +97,24 @@ news_config_init(void)
      {
         if (news->config->version < NEWS_CONFIG_VERSION)
           {
-             news_util_message_show(_("<hilight>News module : Configuration Upgraded</hilight><br><br>"
-                                      "Your configuration of news module<br>"
-                                      "has been upgraded<br>"
-                                      "Your settings were removed<br>"
-                                      "Sorry for the inconvenience<br><br>"
-                                      "(%d -> %d)"), news->config->version, NEWS_CONFIG_VERSION);
+             news_util_message_show(D_("<hilight>News module : Configuration Upgraded</hilight><br><br>"
+                                       "Your configuration of news module<br>"
+                                       "has been upgraded<br>"
+                                       "Your settings were removed<br>"
+                                       "Sorry for the inconvenience<br><br>"
+                                       "(%d -> %d)"), news->config->version, NEWS_CONFIG_VERSION);
              news->config = NULL;
           }
         else
           {
              if (news->config->version > NEWS_CONFIG_VERSION)
                {
-                  news_util_message_show(_("<hilight>News module : Configuration Downgraded</hilight><br><br>"
-                                           "Your configuration of News module<br>"
-                                           "has been downgraded<br>"
-                                           "Your settings were removed<br>"
-                                           "Sorry for the inconvenience<br><br>"
-                                           "(%d ->%d)"), news->config->version, NEWS_CONFIG_VERSION);
+                  news_util_message_show(D_("<hilight>News module : Configuration Downgraded</hilight><br><br>"
+                                            "Your configuration of News module<br>"
+                                            "has been downgraded<br>"
+                                            "Your settings were removed<br>"
+                                            "Sorry for the inconvenience<br><br>"
+                                            "(%d ->%d)"), news->config->version, NEWS_CONFIG_VERSION);
                   news->config = NULL;
                }
           }

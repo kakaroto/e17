@@ -1,3 +1,5 @@
+#define D_(str) dgettext(PACKAGE, str)
+
 #ifdef E_MOD_NEWS_TYPEDEFS
 
 typedef struct _News News;

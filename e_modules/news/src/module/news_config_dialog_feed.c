@@ -60,7 +60,7 @@ news_config_dialog_feed_show(News_Feed *feed)
 
    if (!evas_list_count(news->config->feed.categories))
      {
-        news_util_message_error_show(_("You need to <hilight>create a category</hilight> first"));
+        news_util_message_error_show(D_("You need to <hilight>create a category</hilight> first"));
         return 0;
      }
 
@@ -74,7 +74,7 @@ news_config_dialog_feed_show(News_Feed *feed)
    v->advanced.create_widgets = _advanced_create_widgets;
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("News Feed Configuration"),
+			     D_("News Feed Configuration"),
                              "E", "_e_mod_news_config_dialog_feed",
                              news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, feed);
 
@@ -326,7 +326,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
 {
    Evas_Object *of, *ob;
 
-   of = e_widget_frametable_add(evas, _("Basic informations"), 0);
+   of = e_widget_frametable_add(evas, D_("Basic informations"), 0);
 
    ob = e_widget_button_add(evas, "", NULL,
                             _icon_select, cfdata, NULL);
@@ -336,26 +336,26 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    e_widget_min_size_set(ob, 48, 48);
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 0, 0, 0, 0);
 
-   //ob = e_widget_check_add(evas, _("Get from the server"), &(cfdata->icon_ovrw));
+   //ob = e_widget_check_add(evas, D_("Get from the server"), &(cfdata->icon_ovrw));
    //TODO: NOT IMPLEMENTED YET
    //e_widget_check_checked_set(ob, 0);
    //e_widget_disabled_set(ob, 1);
    //   e_widget_list_object_append(o2, of, 1, 1, 0.5);
 
-   ob = e_widget_label_add(evas, _("Name :"));
+   ob = e_widget_label_add(evas, D_("Name :"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &(cfdata->name), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_label_add(evas, _("Feed url :"));
+   ob = e_widget_label_add(evas, D_("Feed url :"));
    e_widget_frametable_object_append(of, ob, 0, 3, 1, 1, 1, 0, 1, 0);
    ob = e_widget_entry_add(evas, &(cfdata->url_feed), NULL, NULL, NULL);
    e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 0, 1, 0);
-   ob = e_widget_check_add(evas, _("Mark as important feed"), &(cfdata->important));
+   ob = e_widget_check_add(evas, D_("Mark as important feed"), &(cfdata->important));
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 0, 1, 0);
 
    e_widget_table_object_append(o, of, 0, 0, 2, 1, 1, 1, 1, 1);
 
-   of = e_widget_framelist_add(evas, _("Category"), 0);
+   of = e_widget_framelist_add(evas, D_("Category"), 0);
 
    ob = e_widget_ilist_add(evas, 16, 16, NULL);
    e_widget_ilist_selector_set(ob, 1);
@@ -365,7 +365,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
 
    e_widget_table_object_append(o, of, 2, 0, 2, 1, 1, 1, 1, 1);
 
-   of = e_widget_framelist_add(evas, _("Language"), 0);
+   of = e_widget_framelist_add(evas, D_("Language"), 0);
 
    ob = e_widget_ilist_add(evas, 16, 16, NULL);
    e_widget_ilist_selector_set(ob, 1);
@@ -388,13 +388,13 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    _common_create_widgets(cfd, evas, cfdata, o);
 
 
-   of = e_widget_framelist_add(evas, _("Advanced informations"), 0);
+   of = e_widget_framelist_add(evas, D_("Advanced informations"), 0);
 
-   ob = e_widget_label_add(evas, _("Description"));
+   ob = e_widget_label_add(evas, D_("Description"));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_entry_add(evas, &(cfdata->description), NULL, NULL, NULL);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_label_add(evas, _("Home url"));
+   ob = e_widget_label_add(evas, D_("Home url"));
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_entry_add(evas, &(cfdata->url_home), NULL, NULL, NULL);
    e_widget_framelist_object_append(of, ob);
@@ -402,18 +402,18 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_table_object_append(o, of, 0, 1, 3, 1, 1, 1, 1, 1);
 
 
-   of = e_widget_framelist_add(evas, _("Server informations"), 0);
+   of = e_widget_framelist_add(evas, D_("Server informations"), 0);
 
-   ob = e_widget_label_add(evas, _("Do allow the server to overwrite the informations you entered ?"));
+   ob = e_widget_label_add(evas, D_("Do allow the server to overwrite the informations you entered ?"));
    e_widget_framelist_object_append(of, ob);
 
-   ob = e_widget_check_add(evas, _("Name"), &(cfdata->name_ovrw));
+   ob = e_widget_check_add(evas, D_("Name"), &(cfdata->name_ovrw));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Language"), &(cfdata->language_ovrw));
+   ob = e_widget_check_add(evas, D_("Language"), &(cfdata->language_ovrw));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Description"), &(cfdata->description_ovrw));
+   ob = e_widget_check_add(evas, D_("Description"), &(cfdata->description_ovrw));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Home url"), &(cfdata->url_home_ovrw));
+   ob = e_widget_check_add(evas, D_("Home url"), &(cfdata->url_home_ovrw));
    e_widget_framelist_object_append(of, ob);
 
    e_widget_table_object_append(o, of, 3, 1, 3, 1, 1, 1, 1, 1);
@@ -536,7 +536,7 @@ _icon_select(void *data1, void *data2)
 
    dia = e_dialog_new(cfd->con, "E", "_news_feed_icon_select_dialog");
    if (!dia) return;
-   e_dialog_title_set(dia, _("Select an Icon"));
+   e_dialog_title_set(dia, D_("Select an Icon"));
    dia->data = cfdata;
 
    if (cfdata->icon)
@@ -561,8 +561,8 @@ _icon_select(void *data1, void *data2)
    e_dialog_content_set(dia, o, mw, mh);
 
    /* buttons at the bottom */
-   e_dialog_button_add(dia, _("OK"), NULL, _icon_select_ok, cfdata);
-   e_dialog_button_add(dia, _("Cancel"), NULL, _icon_select_cancel, cfdata);
+   e_dialog_button_add(dia, D_("OK"), NULL, _icon_select_ok, cfdata);
+   e_dialog_button_add(dia, D_("Cancel"), NULL, _icon_select_cancel, cfdata);
    e_dialog_resizable_set(dia, 1);
    e_win_centered_set(dia->win, 1);
    e_dialog_show(dia);

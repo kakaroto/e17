@@ -37,7 +37,7 @@ news_config_dialog_item_show(News_Item *ni)
    v->basic.create_widgets = _basic_create_widgets;
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("News Gadget Configuration"),
+			     D_("News Gadget Configuration"),
                              "E", DIALOG_CLASS,
                              news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, ni);
 
@@ -101,39 +101,39 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_framelist_add(evas, _("View Mode"), 0);
+   of = e_widget_framelist_add(evas, D_("View Mode"), 0);
 
    rg = e_widget_radio_group_new(&(cfdata->view_mode));
-   ob = e_widget_radio_add(evas, _("Show one icon for all feeds"), NEWS_ITEM_VIEW_MODE_ONE, rg);
+   ob = e_widget_radio_add(evas, D_("Show one icon for all feeds"), NEWS_ITEM_VIEW_MODE_ONE, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Show all feeds"), NEWS_ITEM_VIEW_MODE_FEED, rg);
+   ob = e_widget_radio_add(evas, D_("Show all feeds"), NEWS_ITEM_VIEW_MODE_FEED, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Show unread feeds"), NEWS_ITEM_VIEW_MODE_FEED_UNREAD, rg);
+   ob = e_widget_radio_add(evas, D_("Show unread feeds"), NEWS_ITEM_VIEW_MODE_FEED_UNREAD, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Show all feeds marked as important"), NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT, rg);
+   ob = e_widget_radio_add(evas, D_("Show all feeds marked as important"), NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Show unread feeds marked as important"), NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT_UNREAD, rg);
+   ob = e_widget_radio_add(evas, D_("Show unread feeds marked as important"), NEWS_ITEM_VIEW_MODE_FEED_IMPORTANT_UNREAD, rg);
    e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(o, of, 1, 1, 0.0);
 
-   of = e_widget_framelist_add(evas, _("Feed open in"), 0);
+   of = e_widget_framelist_add(evas, D_("Feed open in"), 0);
 
    rg = e_widget_radio_group_new(&(cfdata->openmethod));
-   ob = e_widget_radio_add(evas, _("the feed viewer"), NEWS_ITEM_OPENMETHOD_VIEWER, rg);
+   ob = e_widget_radio_add(evas, D_("the feed viewer"), NEWS_ITEM_OPENMETHOD_VIEWER, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("my favorite browser"), NEWS_ITEM_OPENMETHOD_BROWSER, rg);
+   ob = e_widget_radio_add(evas, D_("my favorite browser"), NEWS_ITEM_OPENMETHOD_BROWSER, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_check_add(evas, _("Browser opens home url"), &(cfdata->browser_open_home));
+   ob = e_widget_check_add(evas, D_("Browser opens home url"), &(cfdata->browser_open_home));
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_label_add(evas, _("instead of feed url"));
+   ob = e_widget_label_add(evas, D_("instead of feed url"));
    e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(o, of, 1, 1, 0.0);
 
    ob = e_widget_label_add(evas, "");
    e_widget_list_object_append(o, ob, 1, 1, 0.0);
-   ob = e_widget_check_add(evas, _("Apply this to all News gadgets"), &(cfdata->apply_to_all));
+   ob = e_widget_check_add(evas, D_("Apply this to all News gadgets"), &(cfdata->apply_to_all));
    e_widget_list_object_append(o, ob, 1, 1, 0.0);
    
    return o;

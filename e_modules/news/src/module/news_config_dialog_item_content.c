@@ -50,7 +50,7 @@ news_config_dialog_item_content_show(News_Item *ni)
    v->basic.create_widgets = _basic_create_widgets;
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("News Gadget Content Configuration"),
+			     D_("News Gadget Content Configuration"),
                              "E", DIALOG_CLASS,
                              news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, ni);
 
@@ -255,7 +255,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    o = e_widget_list_add(evas, 0, 1);
 
-   of = e_widget_frametable_add(evas, _("Avalaible Feeds"), 0);
+   of = e_widget_frametable_add(evas, D_("Avalaible Feeds"), 0);
 
    ob = e_widget_ilist_add(evas, 16, 16, NULL);
    e_widget_ilist_multi_select_set(ob, 1);
@@ -264,14 +264,14 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_on_change_hook_set(ob, _cb_feed_change, cfdata);
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
    
-   ob = e_widget_button_add(evas, _("Add this Feed"), NULL, _cb_feed_add, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Add this Feed"), NULL, _cb_feed_add, cfdata, NULL);
    e_widget_disabled_set(ob, 1);
    cfdata->button_add = ob;
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 0);
 
    e_widget_list_object_append(o, of, 1, 1, 0.0);
 
-   of = e_widget_frametable_add(evas, _("Selected Feeds"), 0);
+   of = e_widget_frametable_add(evas, D_("Selected Feeds"), 0);
 
    ob = e_widget_ilist_add(evas, 16, 16, NULL);
    e_widget_ilist_multi_select_set(ob, 1);
@@ -289,7 +289,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    cfdata->button_down = ob;
    e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 0, 0, 0, 0);
 
-   ob = e_widget_button_add(evas, _("Remove this Feed"), NULL, _cb_feed_remove, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Remove this Feed"), NULL, _cb_feed_remove, cfdata, NULL);
    cfdata->button_rem = ob;
    e_widget_disabled_set(ob, 1);
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 4, 1, 1, 1, 0);

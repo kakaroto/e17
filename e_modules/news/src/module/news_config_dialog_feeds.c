@@ -79,7 +79,7 @@ news_config_dialog_feeds_show(void)
    v->basic.create_widgets = _basic_create_widgets;
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
-			     _("News Feeds Configuration"),
+			     D_("News Feeds Configuration"),
                              "E", DIALOG_CLASS,
                              news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, NULL);
 
@@ -287,7 +287,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    o2 = e_widget_list_add(evas, 0, 0);
    
-   of = e_widget_frametable_add(evas, _("Categories"), 0);
+   of = e_widget_frametable_add(evas, D_("Categories"), 0);
 
    cfdata->selected_category = NULL;
    ob = e_widget_ilist_add(evas, 16, 16, NULL);
@@ -311,12 +311,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
         cfdata->button_cat_down = NULL;
      }
 
-   ob = e_widget_button_add(evas, _("Add"), NULL, _cb_category_add, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Add"), NULL, _cb_category_add, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_button_add(evas, _("Delete"), NULL, _cb_category_del, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Delete"), NULL, _cb_category_del, cfdata, NULL);
    cfdata->button_cat_del = ob;
    e_widget_frametable_object_append(of, ob, 2, 2, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_button_add(evas, _("Configure"), NULL, _cb_category_config, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Configure"), NULL, _cb_category_config, cfdata, NULL);
    cfdata->button_cat_conf = ob;
    _buttons_category_update(cfdata);
    e_widget_frametable_object_append(of, ob, 4, 2, 2, 1, 1, 0, 1, 0);
@@ -328,12 +328,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    o3 = e_widget_list_add(evas, 0, 1);
 
-   of = e_widget_framelist_add(evas, _("Languages"), 1);
+   of = e_widget_framelist_add(evas, D_("Languages"), 1);
 
-   ob = e_widget_check_add(evas, _("All"), &(cfdata->langs_all));
+   ob = e_widget_check_add(evas, D_("All"), &(cfdata->langs_all));
    e_widget_on_change_hook_set(ob, _cb_langs_all_change, cfdata);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_button_add(evas, _("Select"), NULL, _cb_langs_config, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Select"), NULL, _cb_langs_config, cfdata, NULL);
    if (cfdata->langs_all)
      e_widget_disabled_set(ob, 1);
    cfdata->button_langs = ob;
@@ -343,10 +343,10 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    o4 = e_widget_list_add(evas, 0, 0);
 
-   ob = e_widget_button_add(evas, _("Empty the lists"), "enlightenment/e", _cb_empty, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Empty the lists"), "enlightenment/e", _cb_empty, cfdata, NULL);
    e_widget_list_object_append(o4, ob, 1, 0, 0.5);
 
-   ob = e_widget_button_add(evas, _("Restore default lists"), "enlightenment/e", _cb_reset, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Restore default lists"), "enlightenment/e", _cb_reset, cfdata, NULL);
    e_widget_list_object_append(o4, ob, 1, 0, 0.5);
 
    e_widget_list_object_append(o3, o4, 1, 1, 0.5);
@@ -355,7 +355,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    e_widget_list_object_append(o, o2, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, _("Feeds"), 0);
+   of = e_widget_frametable_add(evas, D_("Feeds"), 0);
 
    ob = e_widget_textblock_add(evas);
    cfdata->textblock_feed_infos = ob;
@@ -385,12 +385,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
         cfdata->button_feed_down = NULL;
      }
 
-   ob = e_widget_button_add(evas, _("Add"), NULL, _cb_feed_add, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Add"), NULL, _cb_feed_add, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 0, 3, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_button_add(evas, _("Delete"), NULL, _cb_feed_del, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Delete"), NULL, _cb_feed_del, cfdata, NULL);
    cfdata->button_feed_del = ob;
    e_widget_frametable_object_append(of, ob, 2, 3, 2, 1, 1, 0, 1, 0);
-   ob = e_widget_button_add(evas, _("Configure"), NULL, _cb_feed_config, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Configure"), NULL, _cb_feed_config, cfdata, NULL);
    cfdata->button_feed_conf = ob;
    _buttons_feed_update(cfdata);
    e_widget_frametable_object_append(of, ob, 4, 3, 2, 1, 1, 0, 1, 0);
@@ -683,8 +683,8 @@ _cb_category_del(void *data, void *data2)
    if (!c) return;
    if (c->feeds && evas_list_count(c->feeds))
      {
-        news_util_message_error_show(_("There are <hilight>feeds</hilight> in this category.<br>"
-                                       "You have to <hilight>remove them first</hilight>"));
+        news_util_message_error_show(D_("There are <hilight>feeds</hilight> in this category.<br>"
+                                        "You have to <hilight>remove them first</hilight>"));
         return;
      }
 
@@ -751,10 +751,10 @@ _cb_empty(void *data, void *data2)
 
    cfdata = data;
    if (cfdata->cd) return;
-   cd = e_confirm_dialog_show(_("News Module - Are you sure ?"), "enlightenment/e",
-                              "<hilight>Empty  the lists</hilight><br>"
-                              "It will delete all the categories and feeds<br><br>"
-                              "<hilight>Confirm ?</hilight>",
+   cd = e_confirm_dialog_show(D_("News Module - Are you sure ?"), "enlightenment/e",
+                                 "<hilight>Empty  the lists</hilight><br>"
+                                 "It will delete all the categories and feeds<br><br>"
+                                 "<hilight>Confirm ?</hilight>",
                               NULL, NULL, _cb_empty_yes, NULL, NULL, NULL, 
                               _cb_confirm_dialog_destroy, cfdata);
    if (!cd) return;
@@ -776,11 +776,11 @@ _cb_reset(void *data, void *data2)
 
    cfdata = data;
    if (cfdata->cd) return;
-   cd = e_confirm_dialog_show(_("News Module - Are you sure ?"), "enlightenment/e",
-                              "<hilight>Restore default lists</hilight><br>"
-                              "It will delete all the categories and feeds,<br>"
-                              "and restore the default ones<br><br>"
-                              "<hilight>Confirm ?</hilight>",
+   cd = e_confirm_dialog_show(D_("News Module - Are you sure ?"), "enlightenment/e",
+                                 "<hilight>Restore default lists</hilight><br>"
+                                 "It will delete all the categories and feeds,<br>"
+                                 "and restore the default ones<br><br>"
+                                 "<hilight>Confirm ?</hilight>",
                               NULL, NULL, _cb_reset_yes, NULL, NULL, NULL, 
                               _cb_confirm_dialog_destroy, cfdata);
    if (!cd) return;

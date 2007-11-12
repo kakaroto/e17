@@ -53,7 +53,7 @@ news_menu_feed_show(News_Feed *f)
    e_menu_post_deactivate_callback_set(mn, _cb_feed_deactivate_post, f);
 
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Configure this feed"));
+   e_menu_item_label_set(mi, D_("Configure this feed"));
    if (f->icon && f->icon[0])
      e_menu_item_icon_file_set(mi, f->icon);
    e_menu_item_callback_set(mi, _cb_configure_feed, f);
@@ -127,13 +127,13 @@ _menu_append(E_Menu *mn, News_Item *ni)
         if (ni->unread_count)
           {
              mi = e_menu_item_new(mn);
-             e_menu_item_label_set(mi, _("Set all feeds as read"));
+             e_menu_item_label_set(mi, D_("Set all feeds as read"));
              news_theme_menu_icon_set(mi, NEWS_THEME_ICON_SETASREAD);
              e_menu_item_callback_set(mi, _cb_item_setasread, ni);
           }
 
         mi = e_menu_item_new(mn);
-        e_menu_item_label_set(mi, _("Update all feeds"));
+        e_menu_item_label_set(mi, D_("Update all feeds"));
         news_theme_menu_icon_set(mi, NEWS_THEME_ICON_UPDATE);
         e_menu_item_callback_set(mi, _cb_item_update, ni);
 
@@ -144,23 +144,23 @@ _menu_append(E_Menu *mn, News_Item *ni)
    mn_conf = e_menu_new();
 
    mi = e_menu_item_new(mn_conf);
-   e_menu_item_label_set(mi, _("Configure gadget"));
+   e_menu_item_label_set(mi, D_("Configure gadget"));
    e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _cb_configure_item, ni);
    mi = e_menu_item_new(mn_conf);
-   e_menu_item_label_set(mi, _("Configure gadget content"));
+   e_menu_item_label_set(mi, D_("Configure gadget content"));
    news_theme_menu_icon_set(mi, "icon");
    e_menu_item_callback_set(mi, _cb_configure_item_content, ni);
    mi = e_menu_item_new(mn_conf);
-   e_menu_item_label_set(mi, _("Main Configuration"));
+   e_menu_item_label_set(mi, D_("Main Configuration"));
    e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_callback_set(mi, _cb_configure_main, NULL);
    mi = e_menu_item_new(mn_conf);
-   e_menu_item_label_set(mi, _("Feeds Configuration"));
+   e_menu_item_label_set(mi, D_("Feeds Configuration"));
    news_theme_menu_icon_set(mi, "icon");
    e_menu_item_callback_set(mi, _cb_configure_feeds, NULL);
    mi = e_menu_item_new(mn);
-   e_menu_item_label_set(mi, _("Configuration"));
+   e_menu_item_label_set(mi, D_("Configuration"));
    e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
    e_menu_item_submenu_set(mi, mn_conf);
 

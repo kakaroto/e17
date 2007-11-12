@@ -1,10 +1,10 @@
 #include "News.h"
 
-#define E_MOD_INIT_FAIL(m, msg)    \
-{                                  \
-news_util_message_error_show(msg); \
-   e_modapi_shutdown(m);           \
-   return NULL;                    \
+#define E_MOD_INIT_FAIL(m, msg)       \
+{                                     \
+   news_util_message_error_show(msg); \
+   e_modapi_shutdown(m);              \
+   return NULL;                       \
 }
 
 /* module requirements */
@@ -49,11 +49,11 @@ e_modapi_init(E_Module *m)
 
    DMAIN(("Initialisation ..."));
 
-   if (!news_config_init()) E_MOD_INIT_FAIL(m, _("Config init failed"));
-   if (!news_parse_init())  E_MOD_INIT_FAIL(m, _("Parser init failed"));
-   if (!news_feed_init())   E_MOD_INIT_FAIL(m, _("Feeds init failed"));
-   if (!news_viewer_init()) E_MOD_INIT_FAIL(m, _("Viewer init failed"));
-   if (!news_popup_init()) E_MOD_INIT_FAIL(m, _("Popup subsystem init failed"));
+   if (!news_config_init()) E_MOD_INIT_FAIL(m, D_("Config init failed"));
+   if (!news_parse_init())  E_MOD_INIT_FAIL(m, D_("Parser init failed"));
+   if (!news_feed_init())   E_MOD_INIT_FAIL(m, D_("Feeds init failed"));
+   if (!news_viewer_init()) E_MOD_INIT_FAIL(m, D_("Viewer init failed"));
+   if (!news_popup_init()) E_MOD_INIT_FAIL(m, D_("Popup subsystem init failed"));
 
    e_gadcon_provider_register((E_Gadcon_Client_Class *)&_gadcon_class);
 
@@ -216,7 +216,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void)
 {
-   return _("News");
+   return D_("News");
 }
 
 static Evas_Object *
