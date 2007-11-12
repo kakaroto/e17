@@ -126,7 +126,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void) 
 {
-   return _("Calendar");
+   return "Calendar";
 }
 
 static Evas_Object *
