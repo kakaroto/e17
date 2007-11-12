@@ -30,9 +30,9 @@ e_modapi_init(E_Module *m)
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    snprintf(buf, sizeof(buf), "%s/e-module-snow.edj", e_module_dir_get(m));
-   e_configure_registry_category_add("appearance", 10, _("Appearance"), NULL, 
+   e_configure_registry_category_add("appearance", 10, D_("Appearance"), NULL, 
 				     "enlightenment/appearance");
-   e_configure_registry_item_add("appearance/snow", 150, _("Snow"), NULL, 
+   e_configure_registry_item_add("appearance/snow", 150, D_("Snow"), NULL, 
 				 buf, e_int_config_snow_module);
 
    snow = _snow_init(m);

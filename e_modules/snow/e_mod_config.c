@@ -96,7 +96,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_framelist_add(evas, _("General Settings"), 0);
+   of = e_widget_framelist_add(evas, D_("General Settings"), 0);
    ob = e_widget_check_add(evas, D_("Show Trees"), &(cfdata->show_trees));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -105,7 +105,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    rg = e_widget_radio_group_new(&(cfdata->density));
    ob = e_widget_radio_add(evas, D_("Sparse"), DENSITY_SPARSE, rg);
    e_widget_framelist_object_append(of, ob);
-   ob = e_widget_radio_add(evas, _("Medium"), DENSITY_MEDIUM, rg);
+   ob = e_widget_radio_add(evas, D_("Medium"), DENSITY_MEDIUM, rg);
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_radio_add(evas, D_("Dense"), DENSITY_DENSE, rg);
    e_widget_framelist_object_append(of, ob);

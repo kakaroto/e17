@@ -144,7 +144,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   E_Radio_Group *rg;
 
   o = e_widget_list_add (evas, 0, 0);
-  of = e_widget_framelist_add (evas, _("General Settings"), 0);
+  of = e_widget_framelist_add (evas, D_("General Settings"), 0);
   ob =
     e_widget_check_add (evas, D_("Start Program When New Mail Arrives"),
 			&(cfdata->use_exec));

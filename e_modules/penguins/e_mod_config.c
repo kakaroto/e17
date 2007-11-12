@@ -39,7 +39,7 @@ e_int_config_penguins_module(E_Container *con, const char *params __UNUSED__)
 
    snprintf(buf, sizeof(buf), "%s/e-module-penguins.edj", e_module_dir_get(pop->module));
    cfd = e_config_dialog_new(con,
-			     _("Population Settings"),
+			     D_("Population Settings"),
 			     "E", "_e_mod_penguins_config_dialog",
 			     buf, 0, v, pop);
    pop->config_dialog = cfd;

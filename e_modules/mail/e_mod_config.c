@@ -93,7 +93,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   Evas_Object *o, *of, *ob, *ot;
 
   o = e_widget_list_add (evas, 0, 0);
-  of = e_widget_framelist_add (evas, _("General Settings"), 0);
+  of = e_widget_framelist_add (evas, D_("General Settings"), 0);
   ob =
     e_widget_check_add (evas, D_("Always Show Labels"), &(cfdata->show_label));
   e_widget_framelist_object_append (of, ob);
@@ -121,11 +121,11 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 
   ot = e_widget_table_add (evas, 0);
   ob =
-    e_widget_button_add (evas, _("Add"), "widget/add", _cb_add_box, cfd,
+    e_widget_button_add (evas, D_("Add"), "widget/add", _cb_add_box, cfd,
 			 NULL);
   e_widget_table_object_append (ot, ob, 0, 0, 1, 1, 1, 1, 1, 0);
   ob =
-    e_widget_button_add (evas, _("Delete"), "widget/del", _cb_del_box, cfd,
+    e_widget_button_add (evas, D_("Delete"), "widget/del", _cb_del_box, cfd,
 			 NULL);
   e_widget_disabled_set (ob, 1);
   cfdata->del = ob;

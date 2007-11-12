@@ -687,9 +687,9 @@ _ss_take_shot (void *data)
 static void
 _ss_get_filename (void *data)
 {
-  e_entry_dialog_show (_("Enlightenment Screenshot Module"),
+  e_entry_dialog_show (D_("Enlightenment Screenshot Module"),
 		       "enlightenment/e",
-		       _("Enter a new filename to use for this screenshot"),
+		       D_("Enter a new filename to use for this screenshot"),
 		       NULL, NULL, NULL, _cb_entry_ok, NULL, data);
 }
 
