@@ -58,9 +58,9 @@ e_modapi_init (E_Module * m)
    bind_textdomain_codeset (PACKAGE, "UTF-8");
 
    snprintf (buf, sizeof (buf), "%s/e-module-flame.edj", e_module_dir_get (m));
-   e_configure_registry_category_add ("appearance", 10, _("Appearance"), NULL, 
+   e_configure_registry_category_add ("appearance", 10, D_ ("Appearance"), NULL, 
 				     "enlightenment/appearance");
-   e_configure_registry_item_add ("appearance/flame", 150, _("Flame"), NULL, 
+   e_configure_registry_item_add ("appearance/flame", 150, D_ ("Flame"), NULL, 
 				 buf, e_int_config_flame_module);
 
    f = _flame_init (m);

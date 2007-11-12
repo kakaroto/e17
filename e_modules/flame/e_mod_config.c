@@ -179,21 +179,21 @@ _advanced_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   ob = e_widget_label_add (evas, D_ ("Red Amount"));
   e_widget_framelist_object_append (of, ob);
   ob =
-    e_widget_slider_add (evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL,
+    e_widget_slider_add (evas, 1, 0, D_ ("%1.0f"), 0, 300, 10, 0, NULL,
 			 &(cfdata->r), 200);
   e_widget_framelist_object_append (of, ob);
 
-  ob = e_widget_label_add (evas, D_ ("Blue Amount"));
+  ob = e_widget_label_add (evas, D_("Blue Amount"));
   e_widget_framelist_object_append (of, ob);
   ob =
-    e_widget_slider_add (evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL,
+    e_widget_slider_add (evas, 1, 0, D_("%1.0f"), 0, 300, 10, 0, NULL,
 			 &(cfdata->b), 200);
   e_widget_framelist_object_append (of, ob);
 
   ob = e_widget_label_add (evas, D_ ("Green Amount"));
   e_widget_framelist_object_append (of, ob);
   ob =
-    e_widget_slider_add (evas, 1, 0, _("%1.0f"), 0, 300, 10, 0, NULL,
+    e_widget_slider_add (evas, 1, 0, D_ ("%1.0f"), 0, 300, 10, 0, NULL,
 			 &(cfdata->g), 200);
   e_widget_framelist_object_append (of, ob);
 

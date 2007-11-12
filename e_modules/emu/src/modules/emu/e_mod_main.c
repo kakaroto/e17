@@ -280,7 +280,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void)
 {
-   return _("Emu");
+   return D_("Emu");
 }
 
 static Evas_Object *
@@ -560,7 +560,7 @@ _emu_parse_menu(Emu_Face *emu_face, char *name, int start, int end)
 //   E_Menu_Item *mi;
 //
 //   mi = e_menu_item_new(menu);
-//   e_menu_item_label_set(mi, _("Configuration"));
+//   e_menu_item_label_set(mi, D_("Configuration"));
 //   e_menu_item_callback_set(mi, _emu_cb_menu_configure, face);
 //
 //   mi = e_menu_item_new(menu);

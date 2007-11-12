@@ -129,7 +129,7 @@ _easy_menu_add_menus_real(Easy_Menu * easy_menu, char *input, char *end, int *i,
                 e_menu_item_separator_set(item->item, 1);
              else
                {                /* Set up the item with our parsed data. */
-                  e_menu_item_label_set(item->item, _(item->name));
+                  e_menu_item_label_set(item->item, D_(item->name));
                   if (item->edje)
                      e_util_menu_item_edje_icon_set(item->item, item->edje);
                   if (item->action)
