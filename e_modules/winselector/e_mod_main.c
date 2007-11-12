@@ -139,7 +139,7 @@ _gc_orient (E_Gadcon_Client * gcc)
 static char *
 _gc_label (void)
 {
-  return D_("Winselector");
+  return "Winselector";
 }
 
 static Evas_Object *
@@ -249,7 +249,7 @@ _win_menu_new(Instance *inst)
    E_Menu *m;
 
    m = e_menu_new();
-   e_menu_title_set(m, D_("Applications"));
+   e_menu_title_set(m, "Applications");
    e_menu_pre_activate_callback_set(m, _win_menu_pre_cb, inst);
    return m;
 }
@@ -283,7 +283,7 @@ _win_menu_pre_cb(void *data, E_Menu *m)
      { 
 	/* FIXME here we want nothing, but that crashes!!! */
 	mi = e_menu_item_new(m);
-	e_menu_item_label_set(mi, D_("(No Windows)"));
+	e_menu_item_label_set(mi, "(No Windows)");
 	return;
      }
 
@@ -328,7 +328,7 @@ _win_menu_item_create(E_Border *bd, E_Menu *m)
    if ((title) && (title[0]))
      e_menu_item_label_set(mi, title);
    else
-     e_menu_item_label_set(mi, D_("No name!!"));
+     e_menu_item_label_set(mi, "No name!!");
    /* ref the border as we implicitly unref it in the callback */
    e_object_ref(E_OBJECT(bd));
 /*   e_object_breadcrumb_add(E_OBJECT(bd), "clients_menu");*/
