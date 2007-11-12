@@ -1,12 +1,7 @@
 #!/bin/sh
 
-rm -Rf  aclocal.m4 autom4te.cache/ ltmain.sh config.log config.status config.cache configure configure.scan libtool Makefile \
-	data/Makefile.in data/Makefile \
-	data/images/Makefile.in data/images/Makefile \
-	data/themes/Makefile.in data/themes/Makefile \
-	data/themes/minimal/Makefile.in data/themes/minimal/Makefile \
-	src/Makefile src/Makefile.in \
-	src/module/Makefile src/module/Makefile.in
+rm -rf autom4te.cache
+rm -f aclocal.m4 ltmain.sh
 
 echo "Running aclocal..." ; aclocal $ACLOCAL_FLAGS || exit 1
 echo "Running autoheader..." ; autoheader || exit 1
