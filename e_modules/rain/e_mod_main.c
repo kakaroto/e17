@@ -200,11 +200,13 @@ _rain_canvas_reset(Rain *rain)
 static void
 _rain_clouds_load(Rain *rain)
 {
+   char buf[4096];
    Evas_Object *o;
    int tw, th, i;
 
    o = evas_object_image_add(rain->canvas);
-   evas_object_image_file_set(o, PACKAGE_DATA_DIR "/cloud.png", "");
+   snprintf(buf, sizeof(buf), "%s/cloud.png", e_module_dir_get(rain->module));
+   evas_object_image_file_set(o, buf, "");
    evas_object_image_size_get(o, &tw, &th);
 
    for (i = 0; i < rain->conf->cloud_count; i++)
@@ -214,7 +216,8 @@ _rain_clouds_load(Rain *rain)
         if (i != 0)
           {
              o = evas_object_image_add(rain->canvas);
-             evas_object_image_file_set(o, PACKAGE_DATA_DIR "/cloud.png", "");
+	     snprintf(buf, sizeof(buf), "%s/cloud.png", e_module_dir_get(rain->module));
+	     evas_object_image_file_set(o, buf, "");
           }
         evas_object_resize(o, tw, th);
         evas_object_image_alpha_set(o, 1);
@@ -239,7 +242,7 @@ _rain_drops_load(char type, Rain *rain)
    Rain_Drop *drop;
 
    evas_output_viewport_get(rain->canvas, &xx, &yy, &ww, &hh);
-   snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR "/drop-%c.png", type);
+   snprintf(buf, sizeof(buf), "%s/drop-%c.png", e_module_dir_get(rain->module), type);
 
    o = evas_object_image_add(rain->canvas);
    evas_object_image_file_set(o, buf, "");
