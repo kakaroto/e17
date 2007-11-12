@@ -358,7 +358,7 @@ _container_scroll_timer (void *data)
   return 1;
 }
 
-int
+EAPI int
 plugin_init (Container_Layout_Plugin * p)
 {
   p->layout = _engage_layout;

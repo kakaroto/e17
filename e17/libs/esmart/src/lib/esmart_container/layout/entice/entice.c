@@ -258,7 +258,7 @@ _entice_shutdown ()
 {
 }
 
-int
+EAPI int
 plugin_init (Container_Layout_Plugin * p)
 {
   p->layout = _entice_layout;
