@@ -172,7 +172,7 @@ _update_calendar_sheet(void *data)
    char buf[4];
    time_t current_time;
    struct tm *local_time;
-   static prev_day=0;
+   static int prev_day = 0;
 
    inst = data;
    if (!inst) return 1;
