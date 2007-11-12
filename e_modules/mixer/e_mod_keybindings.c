@@ -6,10 +6,10 @@
 #include "e_mod_types.h"
 #include "e_mod_keybindings.h"
 
-#define MIXER_ACTION_GROUP	    _("Mixer")
-#define MIXER_ACTION_DECREASE_VOL   _("Decrease the volume")
-#define MIXER_ACTION_INCREASE_VOL   _("Increase the volume")
-#define MIXER_ACTION_MUTE           _("Mute the mixer")
+#define MIXER_ACTION_GROUP	    D_("Mixer")
+#define MIXER_ACTION_DECREASE_VOL   D_("Decrease the volume")
+#define MIXER_ACTION_INCREASE_VOL   D_("Increase the volume")
+#define MIXER_ACTION_MUTE           D_("Mute the mixer")
 
 #define ACT_FN_GO(act) \
    static void _e_actions_act_##act##_go(E_Object *obj, const char *params)
