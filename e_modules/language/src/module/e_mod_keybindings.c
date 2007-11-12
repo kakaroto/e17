@@ -3,9 +3,9 @@
 #include "e_mod_lang.h"
 #include "e_mod_keybindings.h"
 
-#define LANG_ACTION_GROUP	    _("Language")
-#define LANG_ACTION_NEXT_LANGUAGE   _("Switch To Next Language")
-#define LANG_ACTION_PREV_LANGUAGE   _("Switch To Previous Language")
+#define LANG_ACTION_GROUP	    D_("Language")
+#define LANG_ACTION_NEXT_LANGUAGE   D_("Switch To Next Language")
+#define LANG_ACTION_PREV_LANGUAGE   D_("Switch To Previous Language")
 
 #define ACT_FN_GO(act) \
    static void _e_actions_act_##act##_go(E_Object *obj, const char *params)
