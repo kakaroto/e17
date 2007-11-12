@@ -111,7 +111,7 @@ ewl_image_init(Ewl_Image *i)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("i", i, FALSE);
+	DCHECK_PARAM_PTR_RET(i, FALSE);
 
 	w = EWL_WIDGET(i);
 
@@ -164,9 +164,9 @@ void
 ewl_image_file_path_set(Ewl_Image *i, const char *path)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_PARAM_PTR("path", path);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_PARAM_PTR(path);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	ewl_image_file_set(i, path, i->key);
 
@@ -182,8 +182,8 @@ const char *
 ewl_image_file_path_get(Ewl_Image *i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("i", i, NULL);
-	DCHECK_TYPE_RET("i", i, EWL_IMAGE_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(i, NULL);
+	DCHECK_TYPE_RET(i, EWL_IMAGE_TYPE, NULL);
 
 	DRETURN_PTR(i->path, DLEVEL_STABLE);
 }
@@ -198,8 +198,8 @@ void
 ewl_image_file_key_set(Ewl_Image *i, const char *key)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	if (i->path)
 		ewl_image_file_set(i, i->path, key);
@@ -220,8 +220,8 @@ const char *
 ewl_image_file_key_get(Ewl_Image *i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("i", i, NULL);
-	DCHECK_TYPE_RET("i", i, EWL_IMAGE_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(i, NULL);
+	DCHECK_TYPE_RET(i, EWL_IMAGE_TYPE, NULL);
 
 	DRETURN_PTR(i->key, DLEVEL_STABLE);
 }
@@ -242,8 +242,8 @@ ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	w = EWL_WIDGET(i);
 
@@ -288,8 +288,8 @@ ewl_image_constrain_set(Ewl_Image *i, unsigned int size)
 	int osize;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	osize = i->cs;
 	i->cs = size;
@@ -322,8 +322,8 @@ unsigned int
 ewl_image_constrain_get(Ewl_Image *i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("i", i, 0);
-	DCHECK_TYPE_RET("i", i, EWL_IMAGE_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(i, 0);
+	DCHECK_TYPE_RET(i, EWL_IMAGE_TYPE, 0);
 
 	DRETURN_INT(i->cs, DLEVEL_STABLE);
 }
@@ -340,8 +340,8 @@ void
 ewl_image_proportional_set(Ewl_Image *i, char p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	i->proportional = p;
 	ewl_widget_configure(EWL_WIDGET(i));
@@ -358,8 +358,8 @@ char
 ewl_image_proportional_get(Ewl_Image *i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("i", i, FALSE);
-	DCHECK_TYPE_RET("i", i, EWL_IMAGE_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(i, FALSE);
+	DCHECK_TYPE_RET(i, EWL_IMAGE_TYPE, FALSE);
 
 	DRETURN_INT(i->proportional, DLEVEL_STABLE);
 }
@@ -381,8 +381,8 @@ ewl_image_scale_set(Ewl_Image *i, double wp, double hp)
 	int aw, ah;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	i->sw = wp;
 	i->sh = hp;
@@ -433,8 +433,8 @@ void
 ewl_image_scale_get(Ewl_Image *i, double *wp, double *hp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	if (wp)
 		*wp = i->sw;
@@ -460,8 +460,8 @@ ewl_image_size_set(Ewl_Image *i, int w, int h)
 {
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	i->aw = w;
 	i->ah = h;
@@ -486,8 +486,8 @@ ewl_image_size_get(Ewl_Image *i, int *w, int *h)
 {
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	if (w)
 		*w = i->aw;
@@ -513,8 +513,8 @@ void
 ewl_image_tile_set(Ewl_Image *i, int x, int y, int w, int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	i->tile.set = 1;
 	i->tile.x = x;
@@ -540,8 +540,8 @@ ewl_image_flip(Ewl_Image *img, Ewl_Orientation orient)
 	unsigned int tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("img", img);
-	DCHECK_TYPE("img", img, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(img);
+	DCHECK_TYPE(img, EWL_IMAGE_TYPE);
 
 	evas_object_image_size_get(img->image, &w, &h);
 	in = evas_object_image_data_get(img->image, TRUE);
@@ -599,8 +599,8 @@ void
 ewl_image_rotate(Ewl_Image *i, Ewl_Rotate rotate)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("i", i);
-	DCHECK_TYPE("i", i, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(i);
+	DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
 	if (rotate == EWL_ROTATE_180)
 		ewl_image_rotate_180(i);
@@ -627,8 +627,8 @@ ewl_image_thumbnail_get(Ewl_Image *i)
 	Ewl_Widget *thumb = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("i", i, NULL);
-	DCHECK_TYPE_RET("i", i, EWL_IMAGE_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(i, NULL);
+	DCHECK_TYPE_RET(i, EWL_IMAGE_TYPE, NULL);
 
 #ifdef BUILD_EPSILON_SUPPORT
 	if (i->path && (i->type == EWL_IMAGE_TYPE_NORMAL)) {
@@ -673,7 +673,7 @@ int
 ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("image", image, FALSE);
+	DCHECK_PARAM_PTR_RET(image, FALSE);
 
 	if (!ewl_image_init(EWL_IMAGE(image)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -709,8 +709,8 @@ void
 ewl_image_thumbnail_size_set(Ewl_Image_Thumbnail *thumb, Ewl_Thumbnail_Size s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("thumb", thumb);
-	DCHECK_TYPE("thumb", thumb, EWL_IMAGE_THUMBNAIL_TYPE);
+	DCHECK_PARAM_PTR(thumb);
+	DCHECK_TYPE(thumb, EWL_IMAGE_THUMBNAIL_TYPE);
 
 	thumb->size = s;
 
@@ -726,7 +726,7 @@ Ewl_Thumbnail_Size
 ewl_image_thumbnail_size_get(Ewl_Image_Thumbnail *thumb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("thumb", thumb, EWL_THUMBNAIL_SIZE_NORMAL);
+	DCHECK_PARAM_PTR_RET(thumb, EWL_THUMBNAIL_SIZE_NORMAL);
 
 	DRETURN_INT(thumb->size, DLEVEL_STABLE);
 }
@@ -745,9 +745,9 @@ ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, const char *path)
 	Ewl_Thumbnail_Size size;
 #endif
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("thumb", thumb);
-	DCHECK_TYPE("thumb", thumb, EWL_IMAGE_THUMBNAIL_TYPE);
-	DCHECK_PARAM_PTR("path", path);
+	DCHECK_PARAM_PTR(thumb);
+	DCHECK_TYPE(thumb, EWL_IMAGE_THUMBNAIL_TYPE);
+	DCHECK_PARAM_PTR(path);
 
 #ifdef BUILD_EPSILON_SUPPORT
 	if (thumb->size == EWL_THUMBNAIL_SIZE_NORMAL)
@@ -769,8 +769,8 @@ ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Image_Thumbnail *thumb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_IMAGE_THUMBNAIL_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_IMAGE_THUMBNAIL_TYPE);
 
 	thumb = EWL_IMAGE_THUMBNAIL(w);
 	if (thumb->thumb) {
@@ -792,7 +792,7 @@ ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__,
 	Epsilon_Request *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("event", event, FALSE);
+	DCHECK_PARAM_PTR_RET(event, FALSE);
 
 	ev = event;
 	thumb = ev->data;
@@ -831,8 +831,8 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 	double sw, sh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
@@ -932,8 +932,8 @@ ewl_image_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_IMAGE_TYPE);
 
 	emb = ewl_embed_widget_find(w);
 
@@ -962,8 +962,8 @@ ewl_image_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Image *i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 
@@ -988,8 +988,8 @@ ewl_image_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Image *i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 	if (!i->image)
@@ -1015,8 +1015,8 @@ ewl_image_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int dx = 0, dy = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	i = EWL_IMAGE(w);
 	if (!i->image)
@@ -1092,7 +1092,7 @@ ewl_image_type_get(const char *i)
 	int l;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("i", i, -1);
+	DCHECK_PARAM_PTR_RET(i, -1);
 
 	l = strlen(i);
 
@@ -1122,8 +1122,8 @@ ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data,
 	Ewl_Event_Mouse_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
@@ -1155,8 +1155,8 @@ ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data,
 	Ewl_Event_Mouse_Up *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
@@ -1188,8 +1188,8 @@ ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 	Ewl_Event_Mouse *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_IMAGE_TYPE);
 
 	i = EWL_IMAGE(w);
 	emb = ewl_embed_widget_find(w);
@@ -1211,8 +1211,8 @@ ewl_image_rotate_90(Ewl_Image *img, int cc)
 	unsigned int *in, *out;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("img", img);
-	DCHECK_TYPE("img", img, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(img);
+	DCHECK_TYPE(img, EWL_IMAGE_TYPE);
 
 	evas_object_image_size_get(img->image, &w, &h);
 	in = evas_object_image_data_get(img->image, FALSE);
@@ -1274,8 +1274,8 @@ ewl_image_rotate_180(Ewl_Image *img)
 	unsigned int *in, tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("img", img);
-	DCHECK_TYPE("img", img, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(img);
+	DCHECK_TYPE(img, EWL_IMAGE_TYPE);
 
 	evas_object_image_size_get(img->image, &w, &h);
 	in = evas_object_image_data_get(img->image, TRUE);

@@ -43,7 +43,7 @@ int
 ewl_mvc_init(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, FALSE);
+	DCHECK_PARAM_PTR_RET(mvc, FALSE);
 
 	if (!ewl_box_init(EWL_BOX(mvc)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -71,9 +71,9 @@ void
 ewl_mvc_view_set(Ewl_MVC *mvc, Ewl_View *view)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_PARAM_PTR("view", view);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_PARAM_PTR(view);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->view == view)
 		DRETURN(DLEVEL_STABLE);
@@ -96,8 +96,8 @@ Ewl_View *
 ewl_mvc_view_get(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(mvc, NULL);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, NULL);
 
 	DRETURN_PTR(mvc->view, DLEVEL_STABLE);
 }
@@ -113,8 +113,8 @@ void
 ewl_mvc_view_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc))
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	mvc->cb.view_change = cb;
 
@@ -131,9 +131,9 @@ void
 ewl_mvc_model_set(Ewl_MVC *mvc, Ewl_Model *model)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_PARAM_PTR("model", model);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_PARAM_PTR(model);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->model == model)
 		DRETURN(DLEVEL_STABLE);
@@ -153,8 +153,8 @@ Ewl_Model *
 ewl_mvc_model_get(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(mvc, NULL);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, NULL);
 
 	DRETURN_PTR(mvc->model, DLEVEL_STABLE);
 }
@@ -169,8 +169,8 @@ void
 ewl_mvc_data_set(Ewl_MVC *mvc, void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	mvc->data = data;
 
@@ -190,8 +190,8 @@ void *
 ewl_mvc_data_get(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(mvc, NULL);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, NULL);
 
 	DRETURN_PTR(mvc->data, DLEVEL_STABLE);
 }
@@ -206,8 +206,8 @@ void
 ewl_mvc_dirty_set(Ewl_MVC *mvc, unsigned int dirty)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->dirty == dirty)
 		DRETURN(DLEVEL_STABLE);
@@ -227,8 +227,8 @@ unsigned int
 ewl_mvc_dirty_get(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, FALSE);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(mvc, FALSE);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, FALSE);
 
 	DRETURN_INT(mvc->dirty, DLEVEL_STABLE);
 }
@@ -243,8 +243,8 @@ void
 ewl_mvc_selection_mode_set(Ewl_MVC *mvc, Ewl_Selection_Mode mode)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->selection_mode == mode)
 		DRETURN(DLEVEL_STABLE);
@@ -272,8 +272,8 @@ Ewl_Selection_Mode
 ewl_mvc_selection_mode_get(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, EWL_SELECTION_MODE_NONE);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, EWL_SELECTION_MODE_NONE);
+	DCHECK_PARAM_PTR_RET(mvc, EWL_SELECTION_MODE_NONE);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, EWL_SELECTION_MODE_NONE);
 
 	DRETURN_INT(mvc->selection_mode, DLEVEL_STABLE);
 }
@@ -287,8 +287,8 @@ void
 ewl_mvc_selected_clear(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
@@ -305,8 +305,8 @@ ewl_mvc_selected_clear_private(Ewl_MVC *mvc)
 	Ewl_Selection *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
@@ -331,8 +331,8 @@ ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list)
 	unsigned int count = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
@@ -370,8 +370,8 @@ Ecore_List *
 ewl_mvc_selected_list_get(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(mvc, NULL);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, NULL);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -401,8 +401,8 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 	unsigned int tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
@@ -454,8 +454,8 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 				unsigned int row, unsigned int column)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
@@ -483,8 +483,8 @@ ewl_mvc_selected_add(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 	Ewl_Model *mod;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
@@ -513,8 +513,8 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
 	Ewl_Selection_Idx *ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(mvc, NULL);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, NULL);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -562,8 +562,8 @@ ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
 	Ewl_Selection *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
@@ -598,8 +598,8 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
 	Ewl_Selection *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, 0);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(mvc, 0);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, 0);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN_INT(0, DLEVEL_STABLE);
@@ -644,8 +644,8 @@ ewl_mvc_selected_goto(Ewl_MVC *mvc, unsigned int row, unsigned int column)
 	Ewl_Selection *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, FALSE);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(mvc, FALSE);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, FALSE);
 
 	ecore_list_first_goto(mvc->selected);
 	while ((sel = ecore_list_current(mvc->selected)))
@@ -688,8 +688,8 @@ ewl_mvc_selected_is(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
 						unsigned int column)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, FALSE);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(mvc, FALSE);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, FALSE);
 
 	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -706,7 +706,7 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 	Ecore_List *intersections;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
+	DCHECK_PARAM_PTR(mvc);
 
 	if (!sel)
 		sel = EWL_SELECTION(ewl_mvc_selection_index_new(model,
@@ -807,9 +807,9 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 	Ewl_Selection *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("list", list);
-	DCHECK_PARAM_PTR("range", range);
-	DCHECK_PARAM_PTR("cur", cur);
+	DCHECK_PARAM_PTR(list);
+	DCHECK_PARAM_PTR(range);
+	DCHECK_PARAM_PTR(cur);
 
 	/* if the new pointer is totaly in range
 	 * then delete the original one and keep the
@@ -924,8 +924,8 @@ static int
 ewl_mvc_selection_intersects(Ewl_Selection_Range *range, Ewl_Selection *sel)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("range", range, FALSE);
-	DCHECK_PARAM_PTR_RET("sel", sel, FALSE);
+	DCHECK_PARAM_PTR_RET(range, FALSE);
+	DCHECK_PARAM_PTR_RET(sel, FALSE);
 
 	if (sel->type == EWL_SELECTION_TYPE_INDEX)
 	{
@@ -1000,8 +1000,8 @@ static int
 ewl_mvc_selection_contained(Ewl_Selection_Range *a, Ewl_Selection_Range *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("a", a, FALSE);
-	DCHECK_PARAM_PTR_RET("b", b, FALSE);
+	DCHECK_PARAM_PTR_RET(a, FALSE);
+	DCHECK_PARAM_PTR_RET(b, FALSE);
 
 	if ((a->start.column <= b->start.column)
 			&& (b->start.column <= a->end.column)
@@ -1038,9 +1038,9 @@ ewl_mvc_selected_range_split(Ewl_MVC *mvc, Ewl_Selection_Range *range,
 	void *data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_PARAM_PTR("range", range);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_PARAM_PTR(range);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	/* make life easier by removing the range */
 	ecore_list_remove(mvc->selected);
@@ -1107,8 +1107,8 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 	Ewl_Model *mod;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	switch (ewl_mvc_selection_mode_get(mvc))
 	{
@@ -1197,9 +1197,9 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 	Ewl_Selection *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_PARAM_PTR("widget", widget);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_PARAM_PTR(widget);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	if (!mvc->selected || !REALIZED(mvc))
 		DRETURN(DLEVEL_STABLE);
@@ -1248,11 +1248,11 @@ ewl_mvc_highlight_do(Ewl_MVC *mvc __UNUSED__, Ewl_Container *c,
 	Ewl_Widget *h;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("sel", sel);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(sel);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	h = ewl_highlight_new();
 	ewl_highlight_follow_set(EWL_HIGHLIGHT(h), w);
@@ -1284,8 +1284,8 @@ void
 ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc))
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	mvc->cb.selected_change = cb;
 	if (mvc->selected && (ecore_list_count(mvc->selected) > 0))
@@ -1308,7 +1308,7 @@ ewl_mvc_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	Ewl_MVC *mvc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR(w);
 
 	mvc = EWL_MVC(w);
 	IF_FREE_LIST(mvc->selected);
@@ -1330,7 +1330,7 @@ ewl_mvc_cb_data_unref(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	Ewl_MVC *mvc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR(w);
 
 	mvc = EWL_MVC(w);
 
@@ -1348,8 +1348,8 @@ static void
 ewl_mvc_selected_change_notify(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_MVC_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
 	/* notify any inheriting widgets */
 	if (mvc->cb.selected_change)
@@ -1365,7 +1365,7 @@ static void
 ewl_mvc_cb_sel_free(void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
+	DCHECK_PARAM_PTR(data);
 
 	ewl_mvc_selection_free(EWL_SELECTION(data));
 	data = NULL;
@@ -1377,7 +1377,7 @@ static void
 ewl_mvc_selection_free(Ewl_Selection *sel)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("sel", sel);
+	DCHECK_PARAM_PTR(sel);
 
 	/* we remove the destroy callback on the highlight as it will try to
 	 * remove itself which causes the selection to get a NULL highlight

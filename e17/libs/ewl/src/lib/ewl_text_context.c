@@ -92,11 +92,11 @@ ewl_text_context_find(Ewl_Text_Context *tx, unsigned int context_mask,
 	Ewl_Text_Context *new_tx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tx", tx, NULL);
+	DCHECK_PARAM_PTR_RET(tx, NULL);
 
 	/* only need the tx_change if we have a context mask */
 	if (context_mask > 0)
-		DCHECK_PARAM_PTR_RET("tx_change", tx_change, NULL);
+		DCHECK_PARAM_PTR_RET(tx_change, NULL);
 
 	memcpy(&tmp_tx, tx, sizeof(Ewl_Text_Context));
 	ewl_text_context_merge(&tmp_tx, context_mask, tx_change);
@@ -186,7 +186,7 @@ void
 ewl_text_context_acquire(Ewl_Text_Context *tx)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tx", tx);
+	DCHECK_PARAM_PTR(tx);
 
 	tx->ref_count ++;
 
@@ -205,7 +205,7 @@ int
 ewl_text_context_release(Ewl_Text_Context *tx)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tx", tx, 0);
+	DCHECK_PARAM_PTR_RET(tx, 0);
 
 	tx->ref_count --;
 	if (tx->ref_count > 0) DRETURN_INT(tx->ref_count, DLEVEL_STABLE);
@@ -233,7 +233,7 @@ ewl_text_context_print(Ewl_Text_Context *tx, const char *indent)
 	const char *t, *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tx", tx);
+	DCHECK_PARAM_PTR(tx);
 
 	if (!tx->font) t = "";
 	else t = tx->font;
@@ -280,7 +280,7 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
 	} fmt[128];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("ctx", ctx);
+	DCHECK_PARAM_PTR(ctx);
 
 	/* only do this once if possible */
 	if (ctx->format)
@@ -476,7 +476,7 @@ ewl_text_context_dup(Ewl_Text_Context *old)
 	Ewl_Text_Context *tx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("old", old, NULL);
+	DCHECK_PARAM_PTR_RET(old, NULL);
 
 	tx = ewl_text_context_new();
 	memcpy(tx, old, sizeof(Ewl_Text_Context));
@@ -560,7 +560,7 @@ ewl_text_context_merge(Ewl_Text_Context *tx, unsigned int context_mask,
 						Ewl_Text_Context *tx_change)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tx", tx);
+	DCHECK_PARAM_PTR(tx);
 
 	if (context_mask & EWL_TEXT_CONTEXT_MASK_FONT) {
 		IF_RELEASE(tx->font);
@@ -642,7 +642,7 @@ ewl_text_context_cb_free(void *data)
 	Ewl_Text_Context *tx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
+	DCHECK_PARAM_PTR(data);
 
 	tx = data;
 	while (ewl_text_context_release(tx) > 0)

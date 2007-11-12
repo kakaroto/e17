@@ -43,7 +43,7 @@ int
 ewl_list_init(Ewl_List *list)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("list", list, FALSE);
+	DCHECK_PARAM_PTR_RET(list, FALSE);
 
 	if (!ewl_mvc_init(EWL_MVC(list)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -80,8 +80,8 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_LIST_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_LIST_TYPE);
 
 	list = EWL_LIST(w);
 
@@ -124,10 +124,10 @@ void
 ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_LIST_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_LIST_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (ewl_mvc_selection_mode_get(EWL_MVC(c)) ==
 					EWL_SELECTION_MODE_NONE)
@@ -155,10 +155,10 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	int row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("data", data, EWL_LIST_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(data, EWL_LIST_TYPE);
 
 	model = ewl_mvc_model_get(EWL_MVC(data));
 	mvc_data = ewl_mvc_data_get(EWL_MVC(data));
@@ -195,8 +195,8 @@ void
 ewl_list_cb_selected_change(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_LIST_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_LIST_TYPE);
 
 	ewl_mvc_highlight(mvc, EWL_CONTAINER(mvc), ewl_list_widget_at);
 
@@ -210,8 +210,8 @@ ewl_list_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mvc", mvc, NULL);
-	DCHECK_TYPE_RET("mvc", mvc, EWL_MVC_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(mvc, NULL);
+	DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, NULL);
 
 	w = ewl_container_child_get(EWL_CONTAINER(mvc), row);
 

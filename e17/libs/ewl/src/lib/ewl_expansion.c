@@ -43,7 +43,7 @@ ewl_expansion_init(Ewl_Expansion *cb)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cb", cb, FALSE);
+	DCHECK_PARAM_PTR_RET(cb, FALSE);
 
 	w = EWL_WIDGET(cb);
 	if (!ewl_check_init(EWL_CHECK(w)))
@@ -76,8 +76,8 @@ void
 ewl_expansion_expanded_set(Ewl_Expansion *cb, int c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cb", cb);
-	DCHECK_TYPE("cb", cb, EWL_EXPANSION_TYPE);
+	DCHECK_PARAM_PTR(cb);
+	DCHECK_TYPE(cb, EWL_EXPANSION_TYPE);
 
 	ewl_check_checked_set(EWL_CHECK(cb), c);
 
@@ -93,8 +93,8 @@ int
 ewl_expansion_is_expanded(Ewl_Expansion *cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cb", cb, FALSE);
-	DCHECK_TYPE_RET("cb", cb, EWL_EXPANSION_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(cb, FALSE);
+	DCHECK_TYPE_RET(cb, EWL_EXPANSION_TYPE, FALSE);
 
 	DRETURN_INT(ewl_check_is_checked(EWL_CHECK(cb)), DLEVEL_STABLE);
 }
@@ -112,8 +112,8 @@ void
 ewl_expansion_expandable_set(Ewl_Expansion *cb, int c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cb", cb);
-	DCHECK_TYPE("cb", cb, EWL_EXPANSION_TYPE);
+	DCHECK_PARAM_PTR(cb);
+	DCHECK_TYPE(cb, EWL_EXPANSION_TYPE);
 
 	cb->expandable = !!c;
 	ewl_expansion_cb_update_expandable(EWL_WIDGET(cb), NULL, NULL);
@@ -130,8 +130,8 @@ int
 ewl_expansion_is_expandable(Ewl_Expansion *cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cb", cb, FALSE);
-	DCHECK_TYPE_RET("cb", cb, EWL_EXPANSION_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(cb, FALSE);
+	DCHECK_TYPE_RET(cb, EWL_EXPANSION_TYPE, FALSE);
 
 	DRETURN_INT(cb->expandable, DLEVEL_STABLE);
 }
@@ -151,8 +151,8 @@ ewl_expansion_cb_update_expandable(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Expansion *cb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_EXPANSION_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_EXPANSION_TYPE);
 
 	cb = EWL_EXPANSION(w);
 	if (cb->expandable)
@@ -177,8 +177,8 @@ ewl_expansion_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_expansion_cb_update_expandable(w, NULL, NULL);
 

@@ -41,7 +41,7 @@ ewl_floater_init(Ewl_Floater *f)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("f", f, FALSE);
+	DCHECK_PARAM_PTR_RET(f, FALSE);
 
 	w = EWL_WIDGET(f);
 
@@ -75,8 +75,9 @@ void
 ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("f", f);
-	DCHECK_TYPE("f", f, EWL_FLOATER_TYPE);
+	DCHECK_PARAM_PTR(f);
+	DCHECK_TYPE(f, EWL_FLOATER_TYPE);
+	DCHECK_TYPE(p, EWL_WIDGET_TYPE);
 
 	/*
 	 * Don't follow the old parent.
@@ -116,8 +117,8 @@ Ewl_Widget *
 ewl_floater_follow_get(Ewl_Floater *f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("f", f, NULL);
-	DCHECK_TYPE_RET("f", f, EWL_FLOATER_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(f, NULL);
+	DCHECK_TYPE_RET(f, EWL_FLOATER_TYPE, NULL);
 
 	DRETURN_PTR(f->follows, DLEVEL_STABLE);
 }
@@ -133,8 +134,8 @@ void
 ewl_floater_position_set(Ewl_Floater *f, int x, int y)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("f", f);
-	DCHECK_TYPE("f", f, EWL_FLOATER_TYPE);
+	DCHECK_PARAM_PTR(f);
+	DCHECK_TYPE(f, EWL_FLOATER_TYPE);
 
 	if (x == f->x && y == f->y)
 		DRETURN(DLEVEL_STABLE);
@@ -167,8 +168,8 @@ void
 ewl_floater_relative_set(Ewl_Floater *f, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("f", f);
-	DCHECK_TYPE("f", f, EWL_FLOATER_TYPE);
+	DCHECK_PARAM_PTR(f);
+	DCHECK_TYPE(f, EWL_FLOATER_TYPE);
 
 	if (f->follows == w)
 		DRETURN(DLEVEL_STABLE);
@@ -204,8 +205,8 @@ ewl_floater_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 			void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_FLOATER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_FLOATER_TYPE);
 
 	ewl_floater_follow_set(EWL_FLOATER(w), NULL);
 
@@ -229,8 +230,8 @@ ewl_floater_cb_follow_configure(Ewl_Widget *w __UNUSED__,
 	Ewl_Floater *f;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_FLOATER_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_FLOATER_TYPE);
 
 	f = EWL_FLOATER(user_data);
 
@@ -291,8 +292,8 @@ ewl_floater_cb_follow_destroy(Ewl_Widget *w __UNUSED__ ,
 				void *ev_data __UNUSED__, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_FLOATER_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_FLOATER_TYPE);
 
 	EWL_FLOATER(user_data)->follows = NULL;
 

@@ -45,7 +45,7 @@ int
 ewl_grid_init(Ewl_Grid *g)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, FALSE);
+	DCHECK_PARAM_PTR_RET(g, FALSE);
 
 	/*
 	 * Initialize the grids inherited fields
@@ -104,8 +104,8 @@ ewl_grid_dimensions_set(Ewl_Grid *g, int cols, int rows)
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	w = EWL_WIDGET(g);
 
@@ -168,8 +168,8 @@ void
 ewl_grid_dimensions_get(Ewl_Grid *g, int *cols, int *rows)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	if (cols) *cols = g->cols;
 	if (rows) *rows = g->rows;
@@ -187,8 +187,8 @@ void
 ewl_grid_orientation_set(Ewl_Grid *g, Ewl_Orientation orientation)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	if (g->orientation == orientation)
 		DRETURN(DLEVEL_STABLE);
@@ -210,8 +210,8 @@ Ewl_Orientation
 ewl_grid_orientation_get(Ewl_Grid *g)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, 0);
-	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(g, 0);
+	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
 	DRETURN_INT(g->orientation, DLEVEL_STABLE);
 }
@@ -229,8 +229,8 @@ void
 ewl_grid_homogeneous_set(Ewl_Grid *g, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
  	if (g->homogeneous_h != h)
 		ewl_grid_hhomogeneous_set(g, h);
@@ -255,8 +255,8 @@ void
 ewl_grid_hhomogeneous_set(Ewl_Grid *g, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	if (g->homogeneous_h == h)
 		DRETURN(DLEVEL_STABLE);
@@ -282,8 +282,8 @@ void
 ewl_grid_vhomogeneous_set(Ewl_Grid *g, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
  	if (g->homogeneous_v == h)
 		DRETURN(DLEVEL_STABLE);
@@ -304,8 +304,8 @@ unsigned int
 ewl_grid_hhomogeneous_get(Ewl_Grid *g)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, 0);
-	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(g, 0);
+	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
 	DRETURN_INT(g->homogeneous_h, DLEVEL_STABLE);
 }
@@ -319,8 +319,8 @@ unsigned int
 ewl_grid_vhomogeneous_get(Ewl_Grid *g)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, 0);
-	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(g, 0);
+	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
 	DRETURN_INT(g->homogeneous_v, DLEVEL_STABLE);
 }
@@ -344,10 +344,10 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 	int new_cols, new_rows;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	IF_FREE(g->map);
 	g->map = NULL;
@@ -434,10 +434,10 @@ ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *w,
 	int sc, ec, sr, er;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	child = ewl_widget_data_get(w, g);
 	if (child) {
@@ -503,8 +503,8 @@ int
 ewl_grid_column_current_w_get(Ewl_Grid *g, int col)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, 0);
-	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(g, 0);
+	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
 	if ((col >= g->cols) || (col < 0))
 		DRETURN_INT(0, DLEVEL_STABLE);
@@ -523,8 +523,8 @@ void
 ewl_grid_column_fixed_w_set(Ewl_Grid *g, int col, int width)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	/*
 	 * check bounds
@@ -557,8 +557,8 @@ int
 ewl_grid_column_fixed_w_get(Ewl_Grid *g, int col)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, 0);
-	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(g, 0);
+	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
 	if ((col >= g->cols) || (col < 0))
 		DRETURN_INT(0, DLEVEL_STABLE);
@@ -577,8 +577,8 @@ void
 ewl_grid_column_relative_w_set(Ewl_Grid *g, int col, float relw)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	/*
 	 * check bounds
@@ -611,8 +611,8 @@ float
 ewl_grid_column_relative_w_get(Ewl_Grid *g, int col)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, 0.0);
-	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0.0);
+	DCHECK_PARAM_PTR_RET(g, 0.0);
+	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0.0);
 
 	if ((col >= g->cols) || (col < 0))
 		DRETURN_FLOAT(0.0, DLEVEL_STABLE);
@@ -630,8 +630,8 @@ void
 ewl_grid_column_preferred_w_use(Ewl_Grid *g, int col)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	/*
 	 * check bounds
@@ -662,8 +662,8 @@ void
 ewl_grid_column_w_remove(Ewl_Grid *g, int col)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	/*
 	 * check bounds
@@ -696,8 +696,8 @@ int
 ewl_grid_row_current_h_get(Ewl_Grid *g, int row)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, 0);
-	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(g, 0);
+	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
 	if ((row >= g->rows) || (row < 0))
 		DRETURN_INT(0, DLEVEL_STABLE);
@@ -716,8 +716,8 @@ void
 ewl_grid_row_fixed_h_set(Ewl_Grid *g, int row, int height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	/*
 	 * check bounds
@@ -750,8 +750,8 @@ int
 ewl_grid_row_fixed_h_get(Ewl_Grid *g, int row)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, 0);
-	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(g, 0);
+	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
 	if ((row >= g->rows) || (row < 0))
 		DRETURN_INT(0, DLEVEL_STABLE);
@@ -770,8 +770,8 @@ void
 ewl_grid_row_relative_h_set(Ewl_Grid *g, int row, float relh)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	/*
 	 * check bounds
@@ -804,8 +804,8 @@ float
 ewl_grid_row_relative_h_get(Ewl_Grid *g, int row)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("g", g, 0.0);
-	DCHECK_TYPE_RET("g", g, EWL_GRID_TYPE, 0.0);
+	DCHECK_PARAM_PTR_RET(g, 0.0);
+	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0.0);
 
 	if ((row >= g->rows) || (row < 0))
 		DRETURN_FLOAT(0.0, DLEVEL_STABLE);
@@ -823,8 +823,8 @@ void
 ewl_grid_row_preferred_h_use(Ewl_Grid *g, int row)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	/*
 	 * check bounds
@@ -855,8 +855,8 @@ void
 ewl_grid_row_h_remove(Ewl_Grid *g, int row)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	/*
 	 * check bounds
@@ -898,8 +898,8 @@ ewl_grid_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	void (*go_next)(Ewl_Grid *g, int *c, int *r);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_GRID_TYPE);
 
 	g = EWL_GRID(w);
 
@@ -978,8 +978,8 @@ ewl_grid_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Grid *g;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_GRID_TYPE);
 
 	g = EWL_GRID(w);
 
@@ -1007,8 +1007,8 @@ ewl_grid_map_recalc(Ewl_Grid *g)
 	int l, k;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	IF_FREE(g->map);
 	g->map = NEW(char, g->cols * g->rows);
@@ -1045,8 +1045,8 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 	void (*go_next)(Ewl_Grid *g, int *c, int *r);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	if (!g->map)
 		ewl_grid_map_recalc(g);
@@ -1207,8 +1207,8 @@ ewl_grid_resize(Ewl_Grid *g)
 	int pos;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	new_w = CURRENT_W(g);
 	new_h = CURRENT_H(g);
@@ -1402,10 +1402,10 @@ ewl_grid_hmap_position_next(Ewl_Grid *g, int *c, int *r)
 	int col, row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("r", r);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(r);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	col = *c;
 	row = *r;
@@ -1440,10 +1440,10 @@ ewl_grid_vmap_position_next(Ewl_Grid *g, int *c, int *r)
 	int col, row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("r", r);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(r);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	col = *c;
 	row = *r;
@@ -1474,10 +1474,10 @@ static void
 ewl_grid_map_start_position_get(Ewl_Grid *g, int *c, int *r)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("g", g);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("r", r);
-	DCHECK_TYPE("g", g, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(g);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(r);
+	DCHECK_TYPE(g, EWL_GRID_TYPE);
 
 	*c = 0;
 	*r = 0;
@@ -1505,8 +1505,8 @@ ewl_grid_cb_child_add(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 	Ewl_Grid *g;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_TYPE(p, EWL_GRID_TYPE);
 
 	g = EWL_GRID(p);
 	g->data_dirty = TRUE;
@@ -1539,10 +1539,10 @@ ewl_grid_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 	Ewl_Grid *g;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_GRID_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_GRID_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	g = EWL_GRID(c);
 	child = (Ewl_Grid_Child *)ewl_widget_data_get(w, g);
@@ -1573,8 +1573,8 @@ void
 ewl_grid_cb_child_show(Ewl_Container *p, Ewl_Widget *child __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_TYPE(p, EWL_GRID_TYPE);
 
 	EWL_GRID(p)->data_dirty = TRUE;
 	ewl_grid_child_data_collect(EWL_GRID(p));
@@ -1597,8 +1597,8 @@ ewl_grid_cb_child_resize(Ewl_Container *p, Ewl_Widget *child __UNUSED__,
 				Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, EWL_GRID_TYPE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_TYPE(p, EWL_GRID_TYPE);
 
 	EWL_GRID(p)->data_dirty = TRUE;
 	ewl_widget_configure(EWL_WIDGET(p));

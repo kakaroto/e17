@@ -57,7 +57,7 @@ ee_init(Ewl_Engine *engine)
 	Ewl_Engine_Info *info;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("engine", engine, TRUE);
+	DCHECK_PARAM_PTR_RET(engine, TRUE);
 
 	info = NEW(Ewl_Engine_Info, 1);
 	info->shutdown = ee_shutdown;
@@ -72,7 +72,7 @@ static void
 ee_shutdown(Ewl_Engine *engine)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("engine", engine);
+	DCHECK_PARAM_PTR(engine);
 
 	IF_FREE(engine->functions);
 
@@ -88,8 +88,8 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
 	Ewl_Object *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	evas = evas_new();
 	evas_output_method_set(evas, evas_render_method_lookup("buffer"));
@@ -134,8 +134,8 @@ ee_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height)
 	Ewl_Object *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("emb", emb);
-	DCHECK_TYPE("emb", emb, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(emb);
+	DCHECK_TYPE(emb, EWL_EMBED_TYPE);
 
 	evas = emb->canvas;
 
@@ -167,7 +167,7 @@ static void
 ee_canvas_render(Ewl_Embed *embed)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_PARAM_PTR(embed);
 
 	if (embed->canvas) {
 		Evas_List *updates;

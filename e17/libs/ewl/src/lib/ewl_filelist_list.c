@@ -90,7 +90,7 @@ ewl_filelist_list_init(Ewl_Filelist_List *fl)
 			"permissions", "owner", "group"};
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, FALSE);
+	DCHECK_PARAM_PTR_RET(fl, FALSE);
 
 	if (!ewl_filelist_init(EWL_FILELIST(fl)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -126,7 +126,7 @@ ewl_filelist_list_dir_change(Ewl_Filelist *fl)
 	Ewl_Filelist_List *list;;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_PARAM_PTR(fl);
 
 	list = EWL_FILELIST_LIST(fl);
 	ewl_container_reset(EWL_CONTAINER(list->tree));
@@ -147,7 +147,7 @@ ewl_filelist_list_selected_file_add(Ewl_Filelist *fl,
 				const char *file __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_PARAM_PTR(fl);
 
 	/* XXX Write me ... */
 
@@ -166,9 +166,9 @@ ewl_filelist_list_filename_get(Ewl_Filelist *fl, void *item)
 	Ewl_Widget *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_PARAM_PTR_RET("item", item, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_PARAM_PTR_RET(item, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	o = ewl_tree_row_column_get(EWL_ROW(item), 0);
 
@@ -185,8 +185,8 @@ void
 ewl_filelist_list_selected_unselect(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	ewl_filelist_selected_signal_all(fl, "row,unselect");
 
@@ -204,10 +204,10 @@ void
 ewl_filelist_list_shift_handle(Ewl_Filelist *fl, Ewl_Widget *clicked)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("clicked", clicked);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
-	DCHECK_TYPE("clicked", clicked, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(clicked);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+	DCHECK_TYPE(clicked, EWL_WIDGET_TYPE);
 
 	/* XXX fix me */
 
@@ -224,10 +224,10 @@ ewl_filelist_list_add(Ewl_Filelist *fl, const char *dir, char *file,
 	Ewl_Filelist_List *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("dir", dir);
-	DCHECK_PARAM_PTR("file", file);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(dir);
+	DCHECK_PARAM_PTR(file);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	list = EWL_FILELIST_LIST(fl);
 
@@ -295,10 +295,10 @@ static void
 ewl_filelist_list_cb_icon_clicked(Ewl_Widget *w, void *ev, void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev", ev);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_filelist_handle_click(EWL_FILELIST(data), w, ev,
 					"row,select", "row,unselect");

@@ -68,7 +68,7 @@ ewl_calendar_init(Ewl_Calendar* ib)
 	const char *icon;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("ib", ib, FALSE);
+	DCHECK_PARAM_PTR_RET(ib, FALSE);
 
 	w = EWL_WIDGET(ib);
 	if (!ewl_box_init(EWL_BOX(ib)))
@@ -158,8 +158,8 @@ ewl_calendar_ascii_time_get(Ewl_Calendar *cal)
 	char str[1024];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cal", cal, NULL);
-	DCHECK_TYPE_RET("cal", cal, EWL_CALENDAR_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(cal, NULL);
+	DCHECK_TYPE_RET(cal, EWL_CALENDAR_TYPE, NULL);
 
 	tm = time(NULL);
 	month_start = localtime(&tm);
@@ -182,8 +182,8 @@ int
 ewl_calendar_day_get(Ewl_Calendar *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-	DCHECK_TYPE_RET("c", c, EWL_CALENDAR_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(c, FALSE);
+	DCHECK_TYPE_RET(c, EWL_CALENDAR_TYPE, FALSE);
 
 	DRETURN_INT(c->cur_day, DLEVEL_STABLE);
 }
@@ -197,8 +197,8 @@ int
 ewl_calendar_month_get(Ewl_Calendar *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-	DCHECK_TYPE_RET("c", c, EWL_CALENDAR_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(c, FALSE);
+	DCHECK_TYPE_RET(c, EWL_CALENDAR_TYPE, FALSE);
 
 	DRETURN_INT(c->cur_month, DLEVEL_STABLE);
 }
@@ -212,8 +212,8 @@ int
 ewl_calendar_year_get(Ewl_Calendar *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-	DCHECK_TYPE_RET("c", c, EWL_CALENDAR_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(c, FALSE);
+	DCHECK_TYPE_RET(c, EWL_CALENDAR_TYPE, FALSE);
 
 	DRETURN_INT(c->cur_year, DLEVEL_STABLE);
 }
@@ -229,8 +229,8 @@ ewl_calendar_grid_setup(Ewl_Calendar *cal)
 	Ewl_Widget *day_label;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cal", cal);
-	DCHECK_TYPE("cal", cal, EWL_CALENDAR_TYPE);
+	DCHECK_PARAM_PTR(cal);
+	DCHECK_TYPE(cal, EWL_CALENDAR_TYPE);
 
 	ewl_container_reset(EWL_CONTAINER(cal->grid));
 	ewl_calendar_add_day_labels(cal);
@@ -325,11 +325,11 @@ ewl_calendar_highlight_today(struct tm *now, Ewl_Label *day,
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("now", now);
-	DCHECK_PARAM_PTR("day", day);
-	DCHECK_PARAM_PTR("cal", cal);
-	DCHECK_TYPE("day", day, EWL_LABEL_TYPE);
-	DCHECK_TYPE("cal", cal, EWL_CALENDAR_TYPE);
+	DCHECK_PARAM_PTR(now);
+	DCHECK_PARAM_PTR(day);
+	DCHECK_PARAM_PTR(cal);
+	DCHECK_TYPE(day, EWL_LABEL_TYPE);
+	DCHECK_TYPE(cal, EWL_CALENDAR_TYPE);
 
 	/* Get the day */
 	i = atoi(ewl_label_text_get(EWL_LABEL(day)));
@@ -351,10 +351,10 @@ ewl_calendar_day_select_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Widget* it;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("user_data", user_data, EWL_CALENDAR_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(user_data, EWL_CALENDAR_TYPE);
 
 	now_tm = time(NULL);
 	now = localtime(&now_tm);
@@ -380,8 +380,8 @@ ewl_calendar_day_pick_cb(Ewl_Widget *w __UNUSED__, void *ev_data,
 	Ewl_Event_Mouse_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_WIDGET_TYPE);
 
 	ev = ev_data;
 	if (ev->clicks == 2)
@@ -398,8 +398,8 @@ ewl_calendar_prev_month_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	Ewl_Calendar *ib;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_CALENDAR_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_CALENDAR_TYPE);
 
 	ib = EWL_CALENDAR(user_data);
 	ib->cur_month -= 1;
@@ -419,8 +419,8 @@ ewl_calendar_next_month_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	Ewl_Calendar *ib;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_CALENDAR_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_CALENDAR_TYPE);
 
 	ib = EWL_CALENDAR(user_data);
 	ib->cur_month += 1;
@@ -441,8 +441,8 @@ ewl_calendar_add_day_labels(Ewl_Calendar *ib)
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("ib", ib);
-	DCHECK_TYPE("ib", ib, EWL_CALENDAR_TYPE);
+	DCHECK_PARAM_PTR(ib);
+	DCHECK_TYPE(ib, EWL_CALENDAR_TYPE);
 
 	for (i = 0; days[i] != NULL; i++)
 	{

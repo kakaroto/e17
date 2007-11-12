@@ -34,7 +34,7 @@ ewl_filelist_model_directory_new(const char *path,
 	Ecore_List *files, *dirs, *all_files;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(path, "path", NULL);
+	DCHECK_PARAM_PTR_RET(path, NULL);
 
 	files = ecore_list_new();
 	dirs = ecore_list_new();
@@ -133,7 +133,7 @@ ewl_filelist_model_data_count(void *data)
 	Ewl_Filelist_Directory *fld = data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, 0);
+	DCHECK_PARAM_PTR_RET(data, 0);
 
 	DRETURN_INT((fld->num_dirs + fld->num_files), DLEVEL_STABLE);
 }
@@ -151,7 +151,7 @@ ewl_filelist_model_data_fetch(void *data, unsigned int row,
 	void *ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, NULL);
+	DCHECK_PARAM_PTR_RET(data, NULL);
 
 	fld = data;
 
@@ -191,8 +191,8 @@ ewl_filelist_model_data_sort(void *data, unsigned int column,
 	Ewl_Filelist_File *file, *root = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_PARAM_PTR("sort", sort);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_PARAM_PTR(sort);
 
 	if (sort == EWL_SORT_DIRECTION_NONE)
 		DRETURN(DLEVEL_STABLE);
@@ -269,8 +269,8 @@ ewl_filelist_model_data_name_sort(Ewl_Filelist_File *file1,
 					Ewl_Filelist_File *file2)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("file1", file1, 0);
-	DCHECK_PARAM_PTR_RET("file2", file2, 0);
+	DCHECK_PARAM_PTR_RET(file1, 0);
+	DCHECK_PARAM_PTR_RET(file2, 0);
 	DRETURN_INT((strcoll(file1->name, file2->name)), DLEVEL_STABLE);
 }
 
@@ -284,8 +284,8 @@ ewl_filelist_model_data_size_sort(Ewl_Filelist_File *file1,
 	int ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("file1", file1, 0);
-	DCHECK_PARAM_PTR_RET("file2", file2, 0);
+	DCHECK_PARAM_PTR_RET(file1, 0);
+	DCHECK_PARAM_PTR_RET(file2, 0);
 
 	if (file1->size > file2->size)
 		ret = 1;
@@ -306,7 +306,7 @@ ewl_filelist_model_data_expandable_get(void *data, unsigned int row)
 	Ewl_Filelist_Directory *fld = data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, 0);
+	DCHECK_PARAM_PTR_RET(data, 0);
 
 	if (row >= fld->num_dirs)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -330,7 +330,7 @@ ewl_filelist_model_data_expansion_data_fetch(void *data,
 	Ewl_Filelist_Directory *fld = data, *subdir;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, NULL);
+	DCHECK_PARAM_PTR_RET(data, NULL);
 
 	file = ecore_list_index_goto(fld->dirs, parent);
 	snprintf(path, PATH_MAX, "%s/%s", fld->name, file->name);
@@ -350,9 +350,7 @@ ewl_filelist_model_data_unref(void *data)
 	Ewl_Filelist_Directory *dir;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_TYPE_RET("data", data, EWL_FILELIST_DIRECTORY_TYPE,
-								FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
 	
 	dir = data;
 
@@ -370,7 +368,7 @@ ewl_filelist_model_data_unref(void *data)
 static void free_file(Ewl_Filelist_File *file)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("file", file);
+	DCHECK_PARAM_PTR(file);
 
 	ecore_string_release(file->name);
 	FREE(file);

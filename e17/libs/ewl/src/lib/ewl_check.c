@@ -42,7 +42,7 @@ ewl_check_init(Ewl_Check *cb)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cb", cb, FALSE);
+	DCHECK_PARAM_PTR_RET(cb, FALSE);
 
 	w = EWL_WIDGET(cb);
 
@@ -76,8 +76,8 @@ void
 ewl_check_checked_set(Ewl_Check *cb, int c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cb", cb);
-	DCHECK_TYPE("cb", cb, EWL_CHECK_TYPE);
+	DCHECK_PARAM_PTR(cb);
+	DCHECK_TYPE(cb, EWL_CHECK_TYPE);
 
 	cb->checked = !!c;
 	ewl_check_cb_update_check(EWL_WIDGET(cb), NULL, NULL);
@@ -94,8 +94,8 @@ int
 ewl_check_is_checked(Ewl_Check *cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cb", cb, 0);
-	DCHECK_TYPE_RET("cb", cb, EWL_CHECK_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(cb, 0);
+	DCHECK_TYPE_RET(cb, EWL_CHECK_TYPE, 0);
 
 	DRETURN_INT(cb->checked, DLEVEL_STABLE);
 }
@@ -115,8 +115,8 @@ ewl_check_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Check *cb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_CHECK_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_CHECK_TYPE);
 
 	cb = EWL_CHECK(w);
 	cb->checked ^= 1;
@@ -141,8 +141,8 @@ ewl_check_cb_update_check(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Check *cb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_CHECK_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_CHECK_TYPE);
 
 	cb = EWL_CHECK(w);
 	if (cb->checked)

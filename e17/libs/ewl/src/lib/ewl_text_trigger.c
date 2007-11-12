@@ -91,7 +91,7 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 	const char *type_str;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("trigger", trigger, FALSE);
+	DCHECK_PARAM_PTR_RET(trigger, FALSE);
 
 	if (type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
 		type_str = EWL_TEXT_TRIGGER_TYPE;
@@ -141,8 +141,8 @@ ewl_text_trigger_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Text_Trigger *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TEXT_TRIGGER_TYPE);
 
 	t = EWL_TEXT_TRIGGER(w);
 
@@ -162,8 +162,8 @@ Ewl_Text_Trigger_Type
 ewl_text_trigger_type_get(Ewl_Text_Trigger *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, EWL_TEXT_TRIGGER_TYPE_NONE);
-	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, EWL_TEXT_TRIGGER_TYPE_NONE);
+	DCHECK_PARAM_PTR_RET(t, EWL_TEXT_TRIGGER_TYPE_NONE);
+	DCHECK_TYPE_RET(t, EWL_TEXT_TRIGGER_TYPE, EWL_TEXT_TRIGGER_TYPE_NONE);
 
 	DRETURN_INT(t->type, DLEVEL_STABLE);
 }
@@ -178,8 +178,8 @@ void
 ewl_text_trigger_start_pos_set(Ewl_Text_Trigger *t, unsigned int char_pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, EWL_TEXT_TRIGGER_TYPE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_TYPE(t, EWL_TEXT_TRIGGER_TYPE);
 
 	t->char_pos = char_pos;
 
@@ -195,8 +195,8 @@ unsigned int
 ewl_text_trigger_start_pos_get(Ewl_Text_Trigger *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(t, 0);
+	DCHECK_TYPE_RET(t, EWL_TEXT_TRIGGER_TYPE, 0);
 
 	DRETURN_INT(t->char_pos, DLEVEL_STABLE);
 }
@@ -211,8 +211,8 @@ void
 ewl_text_trigger_length_set(Ewl_Text_Trigger *t, unsigned int char_len)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, EWL_TEXT_TRIGGER_TYPE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_TYPE(t, EWL_TEXT_TRIGGER_TYPE);
 
 	t->char_len = char_len;
 
@@ -232,8 +232,8 @@ unsigned int
 ewl_text_trigger_length_get(Ewl_Text_Trigger *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(t, 0);
+	DCHECK_TYPE_RET(t, EWL_TEXT_TRIGGER_TYPE, 0);
 
 	DRETURN_INT(t->char_len, DLEVEL_STABLE);
 }
@@ -248,8 +248,8 @@ void
 ewl_text_trigger_base_set(Ewl_Text_Trigger *t, unsigned int char_pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, EWL_TEXT_TRIGGER_TYPE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_TYPE(t, EWL_TEXT_TRIGGER_TYPE);
 
 	t->char_base = char_pos;
 
@@ -265,8 +265,8 @@ unsigned int
 ewl_text_trigger_base_get(Ewl_Text_Trigger *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, 0);
-	DCHECK_TYPE_RET("t", t, EWL_TEXT_TRIGGER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(t, 0);
+	DCHECK_TYPE_RET(t, EWL_TEXT_TRIGGER_TYPE, 0);
 
 	DRETURN_INT(t->char_base, DLEVEL_STABLE);
 }
@@ -288,10 +288,10 @@ ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
 	Ewl_Widget *area;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_PARAM_PTR("cur", cur);
-	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
-	DCHECK_TYPE("cur", cur, EWL_TEXT_TRIGGER_TYPE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_PARAM_PTR(cur);
+	DCHECK_TYPE(t, EWL_TEXT_TYPE);
+	DCHECK_TYPE(cur, EWL_TEXT_TRIGGER_TYPE);
 
 	area = ewl_text_trigger_area_cached_get(t);
 	ewl_text_trigger_area_type_set(EWL_TEXT_TRIGGER_AREA(area), cur->type);
@@ -315,8 +315,8 @@ void
 ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("trig", trig);
-	DCHECK_TYPE("trig", trig, EWL_TEXT_TRIGGER_TYPE);
+	DCHECK_PARAM_PTR(trig);
+	DCHECK_TYPE(trig, EWL_TEXT_TRIGGER_TYPE);
 
 	/* cleanup any old areas */
 	if (trig->areas)
@@ -345,8 +345,8 @@ ewl_text_trigger_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Text_Trigger_Area *area;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TEXT_TRIGGER_TYPE);
 
 	trig = EWL_TEXT_TRIGGER(w);
 
@@ -374,8 +374,8 @@ ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Text_Trigger *trig;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TEXT_TRIGGER_TYPE);
 
 	trig = EWL_TEXT_TRIGGER(w);
 	if (!trig->areas) DRETURN(DLEVEL_STABLE);;
@@ -402,8 +402,8 @@ ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Text_Trigger *trig;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TEXT_TRIGGER_TYPE);
 
 	trig = EWL_TEXT_TRIGGER(w);
 	if (!trig->areas) DRETURN(DLEVEL_STABLE);
@@ -427,8 +427,8 @@ ewl_text_trigger_cb_unrealize(Ewl_Widget *w, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TEXT_TRIGGER_TYPE);
 
 	ewl_text_trigger_areas_cleanup(EWL_TEXT_TRIGGER(w));
 
@@ -477,7 +477,7 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("area", area, FALSE);
+	DCHECK_PARAM_PTR_RET(area, FALSE);
 
 	w = EWL_WIDGET(area);
 
@@ -512,8 +512,8 @@ ewl_text_trigger_area_type_set(Ewl_Text_Trigger_Area *area,
 				Ewl_Text_Trigger_Type type)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("area", area);
-	DCHECK_TYPE("area", area, EWL_TEXT_TRIGGER_AREA_TYPE);
+	DCHECK_PARAM_PTR(area);
+	DCHECK_TYPE(area, EWL_TEXT_TRIGGER_AREA_TYPE);
 
 	ewl_widget_appearance_set(EWL_WIDGET(area),
 			((type == EWL_TEXT_TRIGGER_TYPE_SELECTION) ?
@@ -538,8 +538,8 @@ ewl_text_trigger_area_cached_get(Ewl_Text *t)
 	Ewl_Widget *area;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, NULL);
-	DCHECK_TYPE_RET("t", t, EWL_TEXT_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(t, NULL);
+	DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, NULL);
 
 	if (t->areas_cache && !ecore_list_empty_is(t->areas_cache))
 		area = ecore_list_first_remove(t->areas_cache);
@@ -555,10 +555,10 @@ static void
 ewl_text_trigger_area_cache(Ewl_Text *t, Ewl_Text_Trigger_Area *area)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_PARAM_PTR("area", area);
-	DCHECK_TYPE("t", t, EWL_TEXT_TYPE);
-	DCHECK_TYPE("area", area, EWL_TEXT_TRIGGER_AREA_TYPE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_PARAM_PTR(area);
+	DCHECK_TYPE(t, EWL_TEXT_TYPE);
+	DCHECK_TYPE(area, EWL_TEXT_TRIGGER_AREA_TYPE);
 
 	area->trigger = NULL;
 	ewl_widget_hide(EWL_WIDGET(area));
@@ -589,8 +589,8 @@ ewl_text_trigger_area_cb_mouse_in(Ewl_Widget *w, void *ev,
 	Ewl_Text_Trigger_Area *a;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_AREA_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TEXT_TRIGGER_AREA_TYPE);
 
 	a = EWL_TEXT_TRIGGER_AREA(w);
 	if (a->trigger)
@@ -615,8 +615,8 @@ ewl_text_trigger_area_cb_mouse_out(Ewl_Widget *w, void *ev,
 	Ewl_Text_Trigger_Area *a;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_AREA_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TEXT_TRIGGER_AREA_TYPE);
 
 	a = EWL_TEXT_TRIGGER_AREA(w);
 	if (a->trigger)
@@ -641,8 +641,8 @@ ewl_text_trigger_area_cb_mouse_up(Ewl_Widget *w, void *ev,
 	Ewl_Text_Trigger_Area *a;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_AREA_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TEXT_TRIGGER_AREA_TYPE);
 
 	a = EWL_TEXT_TRIGGER_AREA(w);
 	if (a->trigger)
@@ -667,8 +667,8 @@ ewl_text_trigger_area_cb_mouse_down(Ewl_Widget *w, void *ev,
 	Ewl_Text_Trigger_Area *a;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TEXT_TRIGGER_AREA_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TEXT_TRIGGER_AREA_TYPE);
 
 	a = EWL_TEXT_TRIGGER_AREA(w);
 	if (a->trigger)

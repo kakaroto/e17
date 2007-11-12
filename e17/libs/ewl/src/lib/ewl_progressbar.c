@@ -42,7 +42,7 @@ ewl_progressbar_init(Ewl_Progressbar *p)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("p", p, FALSE);
+	DCHECK_PARAM_PTR_RET(p, FALSE);
 
 	w = EWL_WIDGET(p);
 
@@ -98,8 +98,8 @@ void
 ewl_progressbar_label_set(Ewl_Progressbar *p, char *label)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, EWL_PROGRESSBAR_TYPE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_TYPE(p, EWL_PROGRESSBAR_TYPE);
 
 	p->auto_label = FALSE;
 
@@ -122,8 +122,8 @@ ewl_progressbar_custom_label_set(Ewl_Progressbar *p, char *format_string)
 	char label[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, EWL_PROGRESSBAR_TYPE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_TYPE(p, EWL_PROGRESSBAR_TYPE);
 
 	p->auto_label = FALSE;
 	r = EWL_RANGE(p);
@@ -145,8 +145,8 @@ void
 ewl_progressbar_label_hide(Ewl_Progressbar *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, EWL_PROGRESSBAR_TYPE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_TYPE(p, EWL_PROGRESSBAR_TYPE);
 
 	p->auto_label = FALSE;
 	ewl_label_text_set(EWL_LABEL(p->label), "");
@@ -163,8 +163,8 @@ void
 ewl_progressbar_label_show (Ewl_Progressbar *p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, EWL_PROGRESSBAR_TYPE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_TYPE(p, EWL_PROGRESSBAR_TYPE);
 
 	p->auto_label = TRUE;
 
@@ -191,8 +191,8 @@ ewl_progressbar_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int dw;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_PROGRESSBAR_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_PROGRESSBAR_TYPE);
 
 	p = EWL_PROGRESSBAR(w);
 	r = EWL_RANGE(p);
@@ -231,8 +231,8 @@ ewl_progressbar_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Range *r;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_PROGRESSBAR_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_PROGRESSBAR_TYPE);
 
 	p = EWL_PROGRESSBAR(w);
 	r = EWL_RANGE(p);
@@ -257,8 +257,8 @@ ewl_progressbar_child_handle(Ewl_Container *c)
 	double value;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_PROGRESSBAR_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_PROGRESSBAR_TYPE);
 
 	r = EWL_RANGE(c);
 	value = r->step / (r->max_val - r->min_val);
@@ -290,8 +290,8 @@ void
 ewl_progressbar_cb_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_PROGRESSBAR_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_PROGRESSBAR_TYPE);
 
 	ewl_progressbar_child_handle(c);
 
@@ -313,8 +313,8 @@ ewl_progressbar_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 				Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_PROGRESSBAR_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_PROGRESSBAR_TYPE);
 
 	ewl_progressbar_child_handle(c);
 

@@ -106,7 +106,7 @@ ewl_io_manager_extension_icon_name_get(const char *ext)
 	char *ret = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("ext", ext, NULL);
+	DCHECK_PARAM_PTR_RET(ext, NULL);
 
 	ret = ecore_hash_get(ewl_io_manager_ext_icon_map, ext);
 	if (ret) DRETURN_PTR(ret, DLEVEL_STABLE);
@@ -123,7 +123,7 @@ const char *
 ewl_io_manager_mime_type_icon_name_get(const char *mime)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mime", mime, NULL);
+	DCHECK_PARAM_PTR_RET(mime, NULL);
 
 	DWARNING("NOT WRITTEN");
 
@@ -141,7 +141,7 @@ ewl_io_manager_uri_mime_type_get(const char *uri)
 	const char *mime = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("uri", uri, NULL);
+	DCHECK_PARAM_PTR_RET(uri, NULL);
 
 	mime = efreet_mime_type_get(uri);
 
@@ -161,7 +161,7 @@ ewl_io_manager_uri_read(const char *uri)
 	const char *mime;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("uri", uri, NULL);
+	DCHECK_PARAM_PTR_RET(uri, NULL);
 
 	mime = ewl_io_manager_uri_mime_type_get(uri);
 	if (!mime)
@@ -195,8 +195,8 @@ ewl_io_manager_string_read(const char *string, const char *mime)
 	Ewl_Widget *ret = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("string", string, NULL);
-	DCHECK_PARAM_PTR_RET("mime", mime, NULL);
+	DCHECK_PARAM_PTR_RET(string, NULL);
+	DCHECK_PARAM_PTR_RET(mime, NULL);
 
 	plugin = ewl_io_manager_plugin_get(mime);
 	if (!plugin)
@@ -225,10 +225,10 @@ ewl_io_manager_uri_write(Ewl_Widget *data, const char *uri,
 	int ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_PARAM_PTR_RET("uri", uri, FALSE);
-	DCHECK_PARAM_PTR_RET("mime", mime, FALSE);
-	DCHECK_TYPE_RET("data", data, EWL_WIDGET_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_PARAM_PTR_RET(uri, FALSE);
+	DCHECK_PARAM_PTR_RET(mime, FALSE);
+	DCHECK_TYPE_RET(data, EWL_WIDGET_TYPE, FALSE);
 
 	plugin = ewl_io_manager_plugin_get(mime);
 	if (!plugin)
@@ -257,9 +257,9 @@ ewl_io_manager_string_write(Ewl_Widget *data, char **string,
 	int ret = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_PARAM_PTR_RET("mime", mime, FALSE);
-	DCHECK_TYPE_RET("data", data, EWL_WIDGET_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_PARAM_PTR_RET(mime, FALSE);
+	DCHECK_TYPE_RET(data, EWL_WIDGET_TYPE, FALSE);
 
 	plugin = ewl_io_manager_plugin_get(mime);
 	if (!plugin)
@@ -281,7 +281,7 @@ ewl_io_manager_plugin_get(const char *mime)
 	char *m = NULL, *ptr;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("mime", mime, NULL);
+	DCHECK_PARAM_PTR_RET(mime, NULL);
 
 	/* see if this was already cached */
 	plugin = ecore_hash_get(ewl_io_manager_plugins, mime);
@@ -375,7 +375,7 @@ ewl_io_manager_cb_free_plugin(void *data)
 	Ewl_IO_Manager_Plugin *plugin;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
+	DCHECK_PARAM_PTR(data);
 
 	plugin = data;
 	if (plugin->plugin)

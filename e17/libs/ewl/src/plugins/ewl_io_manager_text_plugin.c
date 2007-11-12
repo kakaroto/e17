@@ -12,7 +12,7 @@ ewl_io_manager_plugin_uri_read(const char *uri)
 	FILE *file;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("uri", uri, NULL);
+	DCHECK_PARAM_PTR_RET(uri, NULL);
 
 	file = fopen(uri, "r");
 	if (file)
@@ -55,9 +55,9 @@ ewl_io_manager_plugin_uri_write(Ewl_Widget *data, const char *uri)
 	int ret = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_PARAM_PTR_RET("uri", uri, FALSE);
-	DCHECK_TYPE_RET("data", data, EWL_TEXT_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_PARAM_PTR_RET(uri, FALSE);
+	DCHECK_TYPE_RET(data, EWL_TEXT_TYPE, FALSE);
 
 	file = fopen(uri, "w");
 	if (file)
@@ -80,8 +80,8 @@ int
 ewl_io_manager_plugin_string_write(Ewl_Widget *data, const char **string)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_TYPE_RET("data", data, EWL_TEXT_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_TYPE_RET(data, EWL_TEXT_TYPE, FALSE);
 
 	*string = ewl_text_text_get(EWL_TEXT(data));
 

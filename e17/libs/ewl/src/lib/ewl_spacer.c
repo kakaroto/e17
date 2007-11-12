@@ -39,7 +39,7 @@ int
 ewl_spacer_init(Ewl_Spacer *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, FALSE);
+	DCHECK_PARAM_PTR_RET(s, FALSE);
 
 	ewl_widget_init(EWL_WIDGET(s));
 	ewl_widget_appearance_set(EWL_WIDGET(s), EWL_SPACER_TYPE);

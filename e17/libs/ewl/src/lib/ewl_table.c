@@ -52,7 +52,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, FALSE);
+	DCHECK_PARAM_PTR_RET(t, FALSE);
 
 	/*
 	 * Iniitialize the tables inherited fields
@@ -136,10 +136,10 @@ ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
 	Ewl_Cell *cell;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("table", table);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(table);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(table, EWL_TABLE_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	cell = (Ewl_Cell *)ewl_cell_new ();
 	ewl_container_child_append(EWL_CONTAINER (cell), w);
@@ -190,10 +190,10 @@ ewl_table_col_row_get(Ewl_Table *t, Ewl_Cell *cell,
 	Ecore_List *children;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_PARAM_PTR("cell", cell);
-	DCHECK_TYPE("t", t, EWL_TABLE_TYPE);
-	DCHECK_TYPE("cell", cell, EWL_CELL_TYPE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_PARAM_PTR(cell);
+	DCHECK_TYPE(t, EWL_TABLE_TYPE);
+	DCHECK_TYPE(cell, EWL_CELL_TYPE);
 
 	children = EWL_CONTAINER(t->grid)->children;
 
@@ -244,8 +244,8 @@ ewl_table_find(Ewl_Table *t, int start_col, int end_col,
 	Ecore_List *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, NULL);
-	DCHECK_TYPE_RET("t", t, EWL_TABLE_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(t, NULL);
+	DCHECK_TYPE_RET(t, EWL_TABLE_TYPE, NULL);
 
 	list = ecore_list_new();
 	children = EWL_CONTAINER(t->grid)->children;
@@ -275,8 +275,8 @@ void
 ewl_table_column_w_set(Ewl_Table *table, int col, int width)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("table", table);
-	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
+	DCHECK_PARAM_PTR(table);
+	DCHECK_TYPE(table, EWL_TABLE_TYPE);
 
 	ewl_grid_column_fixed_w_set(table->grid, col, width);
 	ewl_widget_configure(EWL_WIDGET(table));
@@ -295,8 +295,8 @@ void
 ewl_table_column_w_get(Ewl_Table *table, int col, int *width)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("table", table);
-	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
+	DCHECK_PARAM_PTR(table);
+	DCHECK_TYPE(table, EWL_TABLE_TYPE);
 
 	if (width) *width = ewl_grid_column_fixed_w_get(table->grid, col);
 
@@ -314,8 +314,8 @@ void
 ewl_table_row_h_set(Ewl_Table *table, int row, int height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("table", table);
-	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
+	DCHECK_PARAM_PTR(table);
+	DCHECK_TYPE(table, EWL_TABLE_TYPE);
 
 	ewl_grid_row_fixed_h_set(table->grid, row, height);
 
@@ -335,8 +335,8 @@ void
 ewl_table_row_h_get(Ewl_Table *table, int row, int *height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("table", table);
-	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
+	DCHECK_PARAM_PTR(table);
+	DCHECK_TYPE(table, EWL_TABLE_TYPE);
 
 	if (height) *height = ewl_grid_row_fixed_h_get(table->grid, row);
 
@@ -359,8 +359,8 @@ ewl_table_reset(Ewl_Table *t, int cols, int rows, char **col_headers)
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, EWL_TABLE_TYPE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_TYPE(t, EWL_TABLE_TYPE);
 
 	ewl_container_reset(EWL_CONTAINER(t->grid));
 	if (col_headers != NULL)
@@ -406,8 +406,8 @@ ewl_table_selected_get(Ewl_Table *t)
 	Ewl_Grid_Child *gc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, strdup(""));
-	DCHECK_TYPE_RET("t", t, EWL_TABLE_TYPE, strdup(""));
+	DCHECK_PARAM_PTR_RET(t, strdup(""));
+	DCHECK_TYPE_RET(t, EWL_TABLE_TYPE, strdup(""));
 
 	children = EWL_CONTAINER(t->grid)->children;
 	ecore_dlist_first_goto(children);
@@ -446,10 +446,10 @@ ewl_table_cb_child_select(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Grid_Child *gc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("user_data", user_data, EWL_TABLE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(user_data, EWL_TABLE_TYPE);
 
 	t = EWL_TABLE(user_data);
 	gc = (Ewl_Grid_Child *) ewl_widget_data_get(w, (void *) t->grid);
@@ -484,8 +484,8 @@ ewl_table_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Table *table;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TABLE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TABLE_TYPE);
 
 	table = EWL_TABLE(w);
 
@@ -513,8 +513,8 @@ ewl_table_cb_child_show(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 	int width_g, height_g;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_TYPE("p", p, EWL_CONTAINER_TYPE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_TYPE(p, EWL_CONTAINER_TYPE);
 
 	table = EWL_TABLE (p);
 	ewl_object_preferred_inner_size_get (EWL_OBJECT (table->grid),
@@ -537,8 +537,8 @@ void
 ewl_table_homogeneous_set(Ewl_Table *table, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("table", table);
-	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
+	DCHECK_PARAM_PTR(table);
+	DCHECK_TYPE(table, EWL_TABLE_TYPE);
 
  	if (table->homogeneous_h != h)
 		ewl_table_hhomogeneous_set(table, h);
@@ -562,8 +562,8 @@ void
 ewl_table_hhomogeneous_set(Ewl_Table *table, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("table", table);
-	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
+	DCHECK_PARAM_PTR(table);
+	DCHECK_TYPE(table, EWL_TABLE_TYPE);
 
  	if (table->homogeneous_h != h)
 	{
@@ -588,8 +588,8 @@ void
 ewl_table_vhomogeneous_set(Ewl_Table *table, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("table", table);
-	DCHECK_TYPE("table", table, EWL_TABLE_TYPE);
+	DCHECK_PARAM_PTR(table);
+	DCHECK_TYPE(table, EWL_TABLE_TYPE);
 
  	if (table->homogeneous_v != h)
 	{
@@ -609,8 +609,8 @@ unsigned int
 ewl_table_hhomogeneous_get(Ewl_Table *table)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("table", table, 0);
-	DCHECK_TYPE_RET("table", table, EWL_TABLE_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(table, 0);
+	DCHECK_TYPE_RET(table, EWL_TABLE_TYPE, 0);
 
 	DRETURN_INT(table->homogeneous_h, DLEVEL_STABLE);
 }
@@ -624,8 +624,8 @@ unsigned int
 ewl_table_vhomogeneous_get(Ewl_Table *table)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("table", table, 0);
-	DCHECK_TYPE_RET("table", table, EWL_TABLE_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(table, 0);
+	DCHECK_TYPE_RET(table, EWL_TABLE_TYPE, 0);
 
 	DRETURN_INT(table->homogeneous_v, DLEVEL_STABLE);
 }

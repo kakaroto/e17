@@ -65,7 +65,7 @@ ee_init(Ewl_Engine *engine)
 	Ewl_Engine_Info *info;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("engine", engine, TRUE);
+	DCHECK_PARAM_PTR_RET(engine, TRUE);
 
 	if (ee_key_down_handler)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -110,7 +110,7 @@ static void
 ee_shutdown(Ewl_Engine *engine)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("engine", engine);
+	DCHECK_PARAM_PTR(engine);
 
 	if (ee_key_down_handler)
 		ecore_event_handler_del(ee_key_down_handler);
@@ -148,8 +148,8 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
 	Ewl_Object *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	evas = evas_new();
 	evas_output_method_set(evas, evas_render_method_lookup("fb"));

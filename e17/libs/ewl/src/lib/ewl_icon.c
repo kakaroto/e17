@@ -93,7 +93,7 @@ int
 ewl_icon_init(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, FALSE);
+	DCHECK_PARAM_PTR_RET(icon, FALSE);
 
 	if (!ewl_stock_init(EWL_STOCK((icon))))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -130,8 +130,8 @@ void
 ewl_icon_type_set(Ewl_Icon *icon, Ewl_Icon_Type type)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (icon->type == type)
 		DRETURN(DLEVEL_STABLE);
@@ -160,8 +160,8 @@ Ewl_Icon_Type
 ewl_icon_type_get(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, EWL_ICON_TYPE_SHORT);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, EWL_ICON_TYPE_SHORT);
+	DCHECK_PARAM_PTR_RET(icon, EWL_ICON_TYPE_SHORT);
+	DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, EWL_ICON_TYPE_SHORT);
 
 	DRETURN_INT(icon->type, DLEVEL_STABLE);
 }
@@ -176,8 +176,8 @@ void
 ewl_icon_part_hide(Ewl_Icon *icon, Ewl_Icon_Part part)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (icon->hidden == part)
 		DRETURN(DLEVEL_STABLE);
@@ -202,9 +202,9 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
 	Ewl_Widget *img;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_PARAM_PTR("file", file);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_PARAM_PTR(file);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (icon->image)
 		ewl_widget_destroy(icon->image);
@@ -261,8 +261,8 @@ ewl_icon_image_file_get(Ewl_Icon *icon)
 	const char *file = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(icon, NULL);
+	DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, NULL);
 
 	if (icon->image)
 		file = ewl_image_file_path_get(EWL_IMAGE(icon->image));
@@ -280,8 +280,8 @@ void
 ewl_icon_editable_set(Ewl_Icon *icon, unsigned int e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (icon->editable == e)
 		DRETURN(DLEVEL_STABLE);
@@ -306,8 +306,8 @@ unsigned int
 ewl_icon_editable_get(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, FALSE);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(icon, FALSE);
+	DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, FALSE);
 
 	DRETURN_INT(icon->editable, DLEVEL_STABLE);
 }
@@ -322,8 +322,8 @@ void
 ewl_icon_label_set(Ewl_Icon *icon, const char *label)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (!label)
 	{
@@ -354,8 +354,8 @@ const char *
 ewl_icon_label_get(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(icon, NULL);
+	DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, NULL);
 
 	if (!icon->label)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -377,8 +377,8 @@ void
 ewl_icon_extended_data_set(Ewl_Icon *icon, Ewl_Widget *ext)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (icon->extended)
 		ewl_widget_destroy(icon->extended);
@@ -404,8 +404,8 @@ Ewl_Widget *
 ewl_icon_extended_data_get(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(icon, NULL);
+	DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, NULL);
 
 	DRETURN_PTR(icon->extended, DLEVEL_STABLE);
 }
@@ -420,8 +420,8 @@ void
 ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	icon->constrain = val;
 	if (icon->image)
@@ -439,8 +439,8 @@ unsigned int
 ewl_icon_constrain_get(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, 0);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(icon, 0);
+	DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, 0);
 
 	DRETURN_INT(icon->constrain, DLEVEL_STABLE);
 }
@@ -455,8 +455,8 @@ void
 ewl_icon_label_compressed_set(Ewl_Icon *icon, unsigned int compress)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	/* nothing to do if no compression change */
 	if (compress == icon->compress_label)
@@ -477,8 +477,8 @@ unsigned int
 ewl_icon_label_compressed_get(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, FALSE);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(icon, FALSE);
+	DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, FALSE);
 
 	DRETURN_INT(icon->compress_label, DLEVEL_STABLE);
 }
@@ -494,8 +494,8 @@ void
 ewl_icon_label_complex_set(Ewl_Icon *icon, unsigned int c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (icon->complex_label == !!c)
 		DRETURN(DLEVEL_STABLE);
@@ -528,8 +528,8 @@ unsigned int
 ewl_icon_label_complex_get(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, FALSE);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(icon, FALSE);
+	DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, FALSE);
 
 	DRETURN_INT(icon->complex_label, DLEVEL_STABLE);
 }
@@ -545,8 +545,8 @@ void
 ewl_icon_thumbnailing_set(Ewl_Icon *icon, unsigned int t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (icon->thumbnailing == !!t)
 		DRETURN(DLEVEL_STABLE);
@@ -565,8 +565,8 @@ unsigned int
 ewl_icon_thumbnailing_get(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, FALSE);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(icon, FALSE);
+	DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, FALSE);
 
 	DRETURN_INT(icon->thumbnailing, DLEVEL_STABLE);
 }
@@ -583,8 +583,8 @@ ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt)
 	const char *img, *file;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (icon->alt)
 	{
@@ -621,8 +621,8 @@ const char *
 ewl_icon_alt_text_get(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
-	DCHECK_TYPE_RET("icon", icon, EWL_ICON_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(icon, NULL);
+	DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, NULL);
 
 	DRETURN_PTR(ewl_label_text_get(EWL_LABEL(icon->alt)), DLEVEL_STABLE);
 }
@@ -641,8 +641,8 @@ ewl_icon_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	Ewl_Icon *icon;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_ICON_TYPE);
 
 	icon = EWL_ICON(w);
 	IF_FREE(icon->label_text);
@@ -660,8 +660,8 @@ ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	int x, y;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("data", data, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_ICON_TYPE);
 
 	icon = data;
 	emb = ewl_embed_widget_find(EWL_WIDGET(icon));
@@ -689,16 +689,15 @@ ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static void
-ewl_icon_cb_entry_focus_out(Ewl_Widget *w, void *ev __UNUSED__,
-						void *data __UNUSED__)
+ewl_icon_cb_entry_focus_out(Ewl_Widget *w, void *ev __UNUSED__,	void *data)
 {
 	Ewl_Icon *icon;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("data", data, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(data, EWL_ICON_TYPE);
 
 	icon = data;
 
@@ -714,10 +713,10 @@ ewl_icon_cb_entry_value_changed(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	Ewl_Icon *icon;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("data", data, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(data, EWL_ICON_TYPE);
 
 	icon = data;
 	ewl_icon_label_set(icon, ewl_text_text_get(EWL_TEXT(w)));
@@ -732,8 +731,8 @@ static void
 ewl_icon_parts_update(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	/*
 	 * show both the label and the image
@@ -784,8 +783,8 @@ static void
 ewl_icon_label_build(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (icon->complex_label)
 		icon->label = ewl_text_new();
@@ -826,8 +825,8 @@ static void
 ewl_icon_label_text_set(Ewl_Icon *icon, const char *txt)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	if (icon->complex_label)
 		ewl_text_text_set(EWL_TEXT(icon->label), txt);
@@ -841,8 +840,8 @@ static void
 ewl_icon_label_update(Ewl_Icon *icon)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("icon", icon);
-	DCHECK_TYPE("icon", icon, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(icon);
+	DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
 	/* nothing to do if no label set */
 	if (!icon->label_text)
@@ -873,8 +872,8 @@ ewl_icon_cb_thumb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Icon *icon;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("data", data, EWL_ICON_TYPE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_ICON_TYPE);
 
 	icon = EWL_ICON(data);
 	if (icon->alt && VISIBLE(icon->alt))

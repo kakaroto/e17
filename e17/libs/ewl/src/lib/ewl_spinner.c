@@ -47,7 +47,7 @@ ewl_spinner_init(Ewl_Spinner *s)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, FALSE);
+	DCHECK_PARAM_PTR_RET(s, FALSE);
 
 	w = EWL_WIDGET(s);
 
@@ -151,8 +151,8 @@ void
 ewl_spinner_digits_set(Ewl_Spinner *s, unsigned char digits)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, EWL_SPINNER_TYPE);
+	DCHECK_PARAM_PTR(s);
+	DCHECK_TYPE(s, EWL_SPINNER_TYPE);
 
 	s->digits = digits;
 	ewl_spinner_entry_update(s);
@@ -169,8 +169,8 @@ unsigned char
 ewl_spinner_digits_get(Ewl_Spinner *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, 0);
-	DCHECK_TYPE_RET("s", s, EWL_SPINNER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(s, 0);
+	DCHECK_TYPE_RET(s, EWL_SPINNER_TYPE, 0);
 
 	DRETURN_INT(s->digits, DLEVEL_STABLE);
 }
@@ -190,8 +190,8 @@ ewl_spinner_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Spinner *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	s = EWL_SPINNER(w);
 	ewl_spinner_entry_update(s);
@@ -214,8 +214,8 @@ ewl_spinner_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Spinner *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	s = EWL_SPINNER(w);
 	ewl_spinner_entry_update(s);
@@ -240,8 +240,8 @@ ewl_spinner_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int pvw; /* the preferred w of the vbox */
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	s = EWL_SPINNER(w);
 
@@ -275,9 +275,9 @@ ewl_spinner_cb_key_down(Ewl_Widget *w, void *ev_data,
 	Ewl_Event_Key *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev_data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	s = EWL_SPINNER(w);
 	e = EWL_ENTRY(s->entry);
@@ -337,8 +337,8 @@ ewl_spinner_cb_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__,
 	float val;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	s = EWL_SPINNER(w);
 	str = ewl_text_text_get(EWL_TEXT(s->entry));
@@ -369,9 +369,9 @@ ewl_spinner_cb_wheel(Ewl_Widget *w, void *ev_data,
 	Ewl_Event_Mouse_Wheel *wheel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev_data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	r = EWL_RANGE(w);
 	wheel = (Ewl_Event_Mouse_Wheel *)ev_data;
@@ -389,8 +389,8 @@ ewl_spinner_entry_update(Ewl_Spinner *s)
 	char str[64];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, EWL_SPINNER_TYPE);
+	DCHECK_PARAM_PTR(s);
+	DCHECK_TYPE(s, EWL_SPINNER_TYPE);
 
 	r = EWL_RANGE(s);
 
@@ -418,8 +418,8 @@ ewl_spinner_cb_increase_value(Ewl_Widget *w __UNUSED__, void *ev_data,
 	Ewl_Range *r;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_SPINNER_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_SPINNER_TYPE);
 
 	s = EWL_SPINNER(user_data);
 	r = EWL_RANGE(s);
@@ -455,8 +455,8 @@ ewl_spinner_cb_value_stop(Ewl_Widget *w __UNUSED__,
 	Ewl_Spinner *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_SPINNER_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_SPINNER_TYPE);
 
 	s = user_data;
 	if (s->timer) {
@@ -486,8 +486,8 @@ ewl_spinner_cb_decrease_value(Ewl_Widget *w __UNUSED__, void *ev_data,
 	Ewl_Range *r;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_SPINNER_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_SPINNER_TYPE);
 
 	s = EWL_SPINNER(user_data);
 	r = EWL_RANGE(s);
@@ -524,8 +524,8 @@ ewl_spinner_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Spinner *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_SPINNER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_SPINNER_TYPE);
 
 	s = EWL_SPINNER(w);
 	if (s->timer) {
@@ -546,7 +546,7 @@ ewl_spinner_timer(void *data)
 	int velocity;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
 
 	s = EWL_SPINNER(data);
 	r = EWL_RANGE(s);
@@ -589,8 +589,8 @@ ewl_spinner_child_handle(Ewl_Spinner *s)
 	int pvw, pvh, pew, peh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, EWL_SPINNER_TYPE);
+	DCHECK_PARAM_PTR(s);
+	DCHECK_TYPE(s, EWL_SPINNER_TYPE);
 
 	pvw = ewl_object_preferred_w_get(EWL_OBJECT(s->vbox));
 	pvh = ewl_object_preferred_h_get(EWL_OBJECT(s->vbox));
@@ -615,8 +615,8 @@ void
 ewl_spinner_cb_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_SPINNER_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_SPINNER_TYPE);
 
 	ewl_spinner_child_handle(EWL_SPINNER(c));
 
@@ -638,8 +638,8 @@ ewl_spinner_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 				Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_SPINNER_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_SPINNER_TYPE);
 
 	ewl_spinner_child_handle(EWL_SPINNER(c));
 

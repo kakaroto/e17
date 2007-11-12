@@ -135,7 +135,7 @@ ewl_box_init(Ewl_Box * b)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, FALSE);
+	DCHECK_PARAM_PTR_RET(b, FALSE);
 
 	w = EWL_WIDGET(b);
 
@@ -202,8 +202,8 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 	char *appearance;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BOX_TYPE);
 
 	/*
 	 * Set the orientation and reconfigure the widget so that child
@@ -253,8 +253,8 @@ Ewl_Orientation
 ewl_box_orientation_get(Ewl_Box *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, 0);
-	DCHECK_TYPE_RET("b", b, EWL_BOX_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(b, 0);
+	DCHECK_TYPE_RET(b, EWL_BOX_TYPE, 0);
 
 	DRETURN_INT(b->orientation, DLEVEL_STABLE);
 }
@@ -274,8 +274,8 @@ ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
 	Ewl_Container *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BOX_TYPE);
 
 	if (b->homogeneous == !!h)
 		DRETURN(DLEVEL_STABLE);
@@ -349,8 +349,8 @@ unsigned int
 ewl_box_homogeneous_get(Ewl_Box *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, 0);
-	DCHECK_TYPE_RET("b", b, EWL_BOX_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(b, 0);
+	DCHECK_TYPE_RET(b, EWL_BOX_TYPE, 0);
 
 	DRETURN_INT(b->homogeneous, DLEVEL_STABLE);
 }
@@ -371,8 +371,8 @@ ewl_box_spacing_set(Ewl_Box * b, int s)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BOX_TYPE);
 
 	w = EWL_WIDGET(b);
 
@@ -429,8 +429,8 @@ ewl_box_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Object **spread;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_BOX_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_BOX_TYPE);
 
 	b = EWL_BOX(w);
 
@@ -515,8 +515,8 @@ ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Box *b;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_BOX_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_BOX_TYPE);
 
 	if (ecore_dlist_empty_is(EWL_CONTAINER(w)->children))
 		DRETURN(DLEVEL_STABLE);
@@ -578,9 +578,9 @@ ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread, int *fill_size, int *al
 	int initial;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, 0);
-	DCHECK_TYPE_RET("b", b, EWL_BOX_TYPE, 0);
-	DCHECK_PARAM_PTR_RET("spread", spread, 0);
+	DCHECK_PARAM_PTR_RET(b, 0);
+	DCHECK_TYPE_RET(b, EWL_BOX_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(spread, 0);
 
 	initial = *fill_size /
 		ewl_container_child_count_visible_get(EWL_CONTAINER(b));
@@ -649,7 +649,7 @@ ewl_box_configure_fill(Ewl_Object **spread, int fill_count, int *fill_size)
 	Ewl_Object *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("spread", spread);
+	DCHECK_PARAM_PTR(spread);
 
 	/*
 	 * Calculate the space to give per child. Safeguard against divide by
@@ -764,8 +764,8 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BOX_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BOX_TYPE);
 
 	/*
 	 * Configure the widgets on the first list.
@@ -796,7 +796,7 @@ ewl_box_configure_child(Ewl_Box * b __UNUSED__, Ewl_Object * c,
 			int *x, int *y, int *align, int *align_size)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
+	DCHECK_PARAM_PTR(c);
 
 	/*
 	 * Adjust the alignment in the direction opposite of the
@@ -844,10 +844,10 @@ ewl_box_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	int cw, ch;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_BOX_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_BOX_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (ewl_container_child_count_visible_get(c) > 1)
 		space = EWL_BOX(c)->spacing;
@@ -897,8 +897,8 @@ ewl_box_cb_child_homogeneous_show(Ewl_Container *c,
 	int size, space = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
 	numc = ewl_container_child_count_visible_get(c);
 	if (numc > 1)
@@ -932,10 +932,10 @@ ewl_box_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	Ewl_Box *b = EWL_BOX(c);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_BOX_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_BOX_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (ewl_container_child_count_visible_get(c) > 1)
 		space = b->spacing;
@@ -974,8 +974,8 @@ ewl_box_cb_child_homogeneous_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 			int size __UNUSED__, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_BOX_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_BOX_TYPE);
 
 	/*
 	 * If the change is in the orientation direction, we do the same
@@ -1009,8 +1009,8 @@ ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w __UNUSED__,
 	Ewl_Box_Orientation *info;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_BOX_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_BOX_TYPE);
 
 	/*
 	 * Get the appropriate dimension setting functions based on the

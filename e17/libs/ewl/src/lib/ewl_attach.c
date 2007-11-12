@@ -74,8 +74,8 @@ void
 ewl_attach_text_set(Ewl_Widget *w, Ewl_Attach_Type t, const char *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (!w->attach)
 		ewl_attach_parent_setup(w);
@@ -106,9 +106,9 @@ void
 ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("data", data, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(data, EWL_WIDGET_TYPE);
 
 	if (!w->attach)
 		ewl_attach_parent_setup(w);
@@ -140,8 +140,8 @@ void
 ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (!w->attach)
 		ewl_attach_parent_setup(w);
@@ -175,8 +175,8 @@ ewl_attach_dnd_drag_set(Ewl_Widget *w, Ewl_Widget *c, void *data, int size)
 	Ewl_Attach_Dnd *dnd_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	dnd_data = ewl_attach_get(w, EWL_ATTACH_TYPE_DND_DATA);
 	if (!c && !data) {
@@ -208,8 +208,8 @@ ewl_attach_get(Ewl_Widget *w, Ewl_Attach_Type t)
 	Ewl_Attach *attach;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(w, NULL);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
 	if (!w->attach)
 	{
@@ -240,7 +240,7 @@ static void
 ewl_attach_list_free(Ewl_Attach_List *list)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("list", list);
+	DCHECK_PARAM_PTR(list);
 
 	if (list->direct)
 		ewl_attach_list_del(list, EWL_ATTACH(list->list)->type);
@@ -265,8 +265,8 @@ static void
 ewl_attach_list_add(Ewl_Attach_List *list, Ewl_Widget *parent, Ewl_Attach *attach)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("list", list);
-	DCHECK_PARAM_PTR("attach", attach);
+	DCHECK_PARAM_PTR(list);
+	DCHECK_PARAM_PTR(attach);
 
 	if (!list->len)
 	{
@@ -329,9 +329,9 @@ static void
 ewl_attach_attach_type_setup(Ewl_Widget *w, Ewl_Attach *attach)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("attach", attach);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(attach);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	switch (attach->type)
 	{
@@ -358,7 +358,7 @@ void
 ewl_attach_list_del(Ewl_Attach_List *list, Ewl_Attach_Type type)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("list", list);
+	DCHECK_PARAM_PTR(list);
 
 	if (!list->len)
 	{
@@ -411,7 +411,7 @@ static void *
 ewl_attach_list_get(Ewl_Attach_List *list, Ewl_Attach_Type type)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("list", list, NULL);
+	DCHECK_PARAM_PTR_RET(list, NULL);
 
 	if (!list->len)
 	{
@@ -472,7 +472,7 @@ ewl_attach_init(Ewl_Attach *attach, Ewl_Attach_Type t,
 			Ewl_Attach_Data_Type dt, void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("attach", attach, FALSE);
+	DCHECK_PARAM_PTR_RET(attach, FALSE);
 
 	attach->type = t;
 
@@ -489,7 +489,7 @@ static void
 ewl_attach_free(Ewl_Attach *attach)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("attach", attach);
+	DCHECK_PARAM_PTR(attach);
 
 	/* XXX should we clean up _WIDGET in here? */
 
@@ -508,8 +508,8 @@ static void
 ewl_attach_parent_setup(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	w->attach = ewl_attach_list_new();
 	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
@@ -523,8 +523,8 @@ ewl_attach_cb_parent_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 				void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	/* make sure the timer gets cleaned up if the widget goes away */
 	if ((ewl_attach_tooltip) && (w == ewl_attach_tooltip->to)
@@ -545,9 +545,9 @@ static void
 ewl_attach_tooltip_attach(Ewl_Widget *w, Ewl_Attach *attach)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("attach", attach);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(attach);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_attach_cb_tooltip_mouse_move, NULL);
@@ -565,7 +565,7 @@ static void
 ewl_attach_tooltip_detach(Ewl_Attach *attach)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("attach", attach);
+	DCHECK_PARAM_PTR(attach);
 
 	/* make sure the display attach is our attach */
 	if (!ewl_attach_tooltip || (ewl_attach_tooltip->attach != attach))
@@ -609,9 +609,9 @@ ewl_attach_cb_tooltip_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	double delay = 1.0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev", ev);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	e = ev;
 	attach = ewl_attach_list_get(w->attach, EWL_ATTACH_TYPE_TOOLTIP);
@@ -689,7 +689,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
 
 	/* we are returning false so that will shutdown the timer, just need
 	 * to make sure we don't try to del it a second time so set it NULL */

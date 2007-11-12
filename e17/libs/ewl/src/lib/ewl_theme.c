@@ -71,7 +71,7 @@ ewl_theme_theme_set(const char *theme_name)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("theme_name", theme_name, FALSE);
+	DCHECK_PARAM_PTR_RET(theme_name, FALSE);
 
 	/* Allocate and clear the default theme */
 	IF_FREE_HASH(ewl_theme_def_data);
@@ -124,8 +124,8 @@ int
 ewl_theme_widget_init(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, FALSE);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(w, FALSE);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
 	w->theme = NULL;
 
@@ -144,8 +144,8 @@ void
 ewl_theme_widget_shutdown(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	/*
 	 * We only want to destroy the hash if its not ewl_theme_def_data
@@ -197,7 +197,7 @@ ewl_theme_font_path_add(char *path)
 	char *temp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("path", path);
+	DCHECK_PARAM_PTR(path);
 
 	temp = strdup(path);
 	ecore_list_append(ewl_theme_font_paths, temp);
@@ -218,9 +218,9 @@ ewl_theme_image_get(Ewl_Widget *w, char *k)
 	const char *data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_PARAM_PTR_RET("k", k, NULL);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(w, NULL);
+	DCHECK_PARAM_PTR_RET(k, NULL);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
 	data = ewl_theme_data_str_get(w, k);
 	if (!data)
@@ -252,8 +252,8 @@ static void
 ewl_theme_lookup_cache(Ecore_Hash *cache, const char *k, const char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cache", cache);
-	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR(cache);
+	DCHECK_PARAM_PTR(k);
 
 	/*
 	 * The v value should already be a string instance at this point so we
@@ -270,8 +270,8 @@ ewl_theme_lookup_key(Ecore_Hash *cache, const char *path, const char *k)
 	const char *ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cache", cache, NULL);
-	DCHECK_PARAM_PTR_RET("k", k, NULL);
+	DCHECK_PARAM_PTR_RET(cache, NULL);
+	DCHECK_PARAM_PTR_RET(k, NULL);
 
 	ret = ecore_hash_get(cache, k);
 	if (!ret) {
@@ -307,8 +307,8 @@ void
 ewl_theme_data_reset(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	IF_FREE_HASH(w->theme);
 
@@ -330,7 +330,7 @@ ewl_theme_data_str_get(Ewl_Widget *w, char *k)
 	char key[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("k", k, NULL);
+	DCHECK_PARAM_PTR_RET(k, NULL);
 
 	/*
 	 * Use the widget's appearance string to build a relative theme key.
@@ -443,7 +443,7 @@ ewl_theme_data_int_get(Ewl_Widget *w, char *k)
 	int ret = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("k", k, FALSE);
+	DCHECK_PARAM_PTR_RET(k, FALSE);
 
 	temp = ewl_theme_data_str_get(w, k);
 	if (temp) ret = atoi(temp);
@@ -465,8 +465,8 @@ void
 ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(k);
 
 	if (!w->theme || w->theme == ewl_theme_def_data) {
 		w->theme = ecore_hash_new(ecore_str_hash, ecore_str_compare);
@@ -506,8 +506,8 @@ ewl_theme_data_int_set(Ewl_Widget *w, char *k, int v)
 	char value[16];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(k);
 
 	snprintf(value, 16, "%d", v);
 	ewl_theme_data_str_set(w, k, value);
@@ -528,7 +528,7 @@ ewl_theme_path_find(const char *name)
 	char *home;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("name", name, NULL);
+	DCHECK_PARAM_PTR_RET(name, NULL);
 
 	/*
 	 * Get the users home directory. This environment variable should

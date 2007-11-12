@@ -38,7 +38,7 @@ int
 ewl_shadow_init(Ewl_Shadow *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, FALSE);
+	DCHECK_PARAM_PTR_RET(s, FALSE);
 
 	if (!ewl_box_init(EWL_BOX(s)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);

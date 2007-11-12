@@ -44,7 +44,7 @@ ewl_entry_init(Ewl_Entry *e)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("e", e, FALSE);
+	DCHECK_PARAM_PTR_RET(e, FALSE);
 
 	w = EWL_WIDGET(e);
 
@@ -111,8 +111,8 @@ void
 ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
 	e->multiline = !!multiline;
 
@@ -128,8 +128,8 @@ unsigned int
 ewl_entry_multiline_get(Ewl_Entry *e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("e", e, 0);
-	DCHECK_TYPE_RET("e", e, EWL_ENTRY_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(e, 0);
+	DCHECK_TYPE_RET(e, EWL_ENTRY_TYPE, 0);
 
 	DRETURN_INT(e->multiline, DLEVEL_STABLE);
 }
@@ -144,8 +144,8 @@ void
 ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
 	if (e->editable == !!editable)
 		DRETURN(DLEVEL_STABLE);
@@ -187,8 +187,8 @@ unsigned int
 ewl_entry_editable_get(Ewl_Entry *e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("e", e, 0);
-	DCHECK_TYPE_RET("e", e, EWL_ENTRY_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(e, 0);
+	DCHECK_TYPE_RET(e, EWL_ENTRY_TYPE, 0);
 
 	DRETURN_INT(e->editable, DLEVEL_STABLE);
 }
@@ -204,8 +204,8 @@ ewl_entry_selection_clear(Ewl_Entry *e)
 	Ewl_Text_Trigger *sel;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("e", e, FALSE);
-	DCHECK_TYPE_RET("e", e, EWL_ENTRY_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(e, FALSE);
+	DCHECK_TYPE_RET(e, EWL_ENTRY_TYPE, FALSE);
 
 	sel = EWL_TEXT_TRIGGER(ewl_text_selection_get(EWL_TEXT(e)));
 	if (sel)
@@ -248,8 +248,8 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	int ox = 0, oy = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	e = EWL_ENTRY(w);
 	if (!e->editable)
@@ -291,8 +291,8 @@ ewl_entry_cb_focus_in(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Entry *entry;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	entry = EWL_ENTRY(w);
 	if (entry->editable && !VISIBLE(entry->cursor))
@@ -316,8 +316,8 @@ ewl_entry_cb_focus_out(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Entry *entry;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	entry = EWL_ENTRY(w);
 	if (entry->editable && VISIBLE(entry->cursor))
@@ -341,8 +341,8 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	Ewl_Entry *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	event = ev;
 	e = EWL_ENTRY(w);
@@ -421,8 +421,8 @@ ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	unsigned int idx = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	event = ev;
 	e = EWL_ENTRY(w);
@@ -453,8 +453,8 @@ ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Entry *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	e = EWL_ENTRY(w);
 
@@ -476,8 +476,8 @@ void
 ewl_entry_cb_disable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_entry_editable_set(EWL_ENTRY(w), FALSE);
 
@@ -496,8 +496,8 @@ void
 ewl_entry_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_entry_editable_set(EWL_ENTRY(w), TRUE);
 
@@ -517,8 +517,8 @@ ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	/* XXX do we leave the cursor at the start? or move to the end? */
 
@@ -540,9 +540,9 @@ ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	Ewl_Text *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev", ev);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	event = ev;
 	txt = EWL_TEXT(w);
@@ -572,9 +572,9 @@ ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	Ewl_Text *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev", ev);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	event = ev;
 	txt = EWL_TEXT(w);
@@ -616,8 +616,8 @@ ewl_entry_cursor_move_left(Ewl_Entry *e)
 	unsigned int pos;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
 	pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
@@ -642,8 +642,8 @@ ewl_entry_cursor_move_right(Ewl_Entry *e)
 	unsigned int pos;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
 	pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
@@ -668,8 +668,8 @@ ewl_entry_cursor_move_up(Ewl_Entry *e)
 	unsigned int current_pos = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
 	current_pos = ewl_text_cursor_position_line_up_get(EWL_TEXT(e));
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
@@ -689,8 +689,8 @@ ewl_entry_cursor_move_down(Ewl_Entry *e)
 	unsigned int current_pos = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
 	current_pos = ewl_text_cursor_position_line_down_get(EWL_TEXT(e));
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), current_pos);
@@ -710,8 +710,8 @@ ewl_entry_delete_left(Ewl_Entry *e)
 	unsigned int pos;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
 	if (!EWL_TEXT(e)->text)
 		DRETURN(DLEVEL_STABLE);
@@ -737,8 +737,8 @@ void
 ewl_entry_delete_right(Ewl_Entry *e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_ENTRY_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_ENTRY_TYPE);
 
 	if (!EWL_TEXT(e)->text)
 		DRETURN(DLEVEL_STABLE);
@@ -787,9 +787,9 @@ int
 ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, FALSE);
-	DCHECK_PARAM_PTR_RET("parent", parent, FALSE);
-	DCHECK_TYPE_RET("parent", parent, EWL_ENTRY_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(c, FALSE);
+	DCHECK_PARAM_PTR_RET(parent, FALSE);
+	DCHECK_TYPE_RET(parent, EWL_ENTRY_TYPE, FALSE);
 
 	if (!ewl_widget_init(EWL_WIDGET(c)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -813,8 +813,8 @@ void
 ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, unsigned int pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_ENTRY_CURSOR_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_ENTRY_CURSOR_TYPE);
 
 	ewl_text_cursor_position_set(EWL_TEXT(c->parent), pos);
 
@@ -830,8 +830,8 @@ unsigned int
 ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("c", c, 0);
-	DCHECK_TYPE_RET("c", c, EWL_ENTRY_CURSOR_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(c, 0);
+	DCHECK_TYPE_RET(c, EWL_ENTRY_CURSOR_TYPE, 0);
 
 	DRETURN_INT(ewl_text_cursor_position_get(EWL_TEXT(c->parent)),
 							DLEVEL_STABLE);

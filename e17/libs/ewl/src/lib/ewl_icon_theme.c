@@ -103,7 +103,7 @@ ewl_icon_theme_icon_path_get(const char *icon, int size)
 	char key[256];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, NULL);
+	DCHECK_PARAM_PTR_RET(icon, NULL);
 
 	icon_theme = ewl_config_string_get(ewl_config,
 				EWL_CONFIG_THEME_ICON_THEME);
@@ -143,7 +143,7 @@ ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
 	char *ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("icon", icon, EWL_THEME_KEY_NOMATCH);
+	DCHECK_PARAM_PTR_RET(icon, EWL_THEME_KEY_NOMATCH);
 
 	ret = ecore_hash_get(cache, key);
 	if (!ret)

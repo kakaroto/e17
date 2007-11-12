@@ -54,7 +54,7 @@ ewl_button_init(Ewl_Button *b)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, 0);
+	DCHECK_PARAM_PTR_RET(b, 0);
 
 	w = EWL_WIDGET(b);
 
@@ -143,8 +143,8 @@ void
 ewl_button_label_set(Ewl_Button *b, const char *l)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BUTTON_TYPE);
 
 	if ((!l) && (b->label_object)) {
 		ewl_widget_destroy(b->label_object);
@@ -186,8 +186,8 @@ const char *
 ewl_button_label_get(Ewl_Button *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, NULL);
-	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(b, NULL);
+	DCHECK_TYPE_RET(b, EWL_BUTTON_TYPE, NULL);
 
 	if (b->label_object)
 		DRETURN_PTR(ewl_label_text_get(EWL_LABEL(b->label_object)),
@@ -207,8 +207,8 @@ void
 ewl_button_image_set(Ewl_Button *b, const char *file, const char *key)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BUTTON_TYPE);
 
 	if (!file)
 	{
@@ -258,8 +258,8 @@ ewl_button_image_get(Ewl_Button *b)
 	const char *file;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, NULL);
-	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(b, NULL);
+	DCHECK_TYPE_RET(b, EWL_BUTTON_TYPE, NULL);
 
 	if (!b->image_object)
 		file = NULL;
@@ -280,8 +280,8 @@ void
 ewl_button_image_size_set(Ewl_Button *b, int width, int height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BUTTON_TYPE);
 
 	if (!b->image_object)
 		ewl_button_image_set(b, "", NULL);
@@ -304,8 +304,8 @@ ewl_button_image_size_get(Ewl_Button *b, int *width, int *height)
 	int w = 0, h = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BUTTON_TYPE);
 
 	if (b->image_object)
 		ewl_image_size_get(EWL_IMAGE(b->image_object), &w, &h);
@@ -326,8 +326,8 @@ void
 ewl_button_alignment_set(Ewl_Button *b, unsigned int align)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BUTTON_TYPE);
 
 	ewl_object_alignment_set(EWL_OBJECT(b->body), align);
 
@@ -343,8 +343,8 @@ unsigned int
 ewl_button_alignment_get(Ewl_Button *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, 0);
-	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(b, 0);
+	DCHECK_TYPE_RET(b, EWL_BUTTON_TYPE, 0);
 
 	DRETURN_INT(ewl_object_alignment_get(EWL_OBJECT(b->body)),
 			DLEVEL_STABLE);
@@ -360,8 +360,8 @@ void
 ewl_button_fill_policy_set(Ewl_Button *b, unsigned int fill)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BUTTON_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BUTTON_TYPE);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(b->body), fill);
 
@@ -377,8 +377,8 @@ unsigned int
 ewl_button_fill_policy_get(Ewl_Button *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, 0);
-	DCHECK_TYPE_RET("b", b, EWL_BUTTON_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(b, 0);
+	DCHECK_TYPE_RET(b, EWL_BUTTON_TYPE, 0);
 
 	DRETURN_INT(ewl_object_fill_policy_get(EWL_OBJECT(b->body)),
 			DLEVEL_STABLE);
@@ -398,8 +398,8 @@ ewl_button_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	Ewl_Event_Key *event;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_BUTTON_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_BUTTON_TYPE);
 
 	event = ev;
 	if ((!strcmp(event->keyname, "Return"))

@@ -39,7 +39,7 @@ int
 ewl_notebook_init(Ewl_Notebook *n)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("n", n, FALSE);
+	DCHECK_PARAM_PTR_RET(n, FALSE);
 
 	if (!ewl_box_init(EWL_BOX(n)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -95,8 +95,8 @@ void
 ewl_notebook_tabbar_alignment_set(Ewl_Notebook *n, unsigned int align)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
+	DCHECK_PARAM_PTR(n);
+	DCHECK_TYPE(n, EWL_NOTEBOOK_TYPE);
 
 	ewl_object_alignment_set(EWL_OBJECT(n->body.tabbar), align);
 
@@ -112,8 +112,8 @@ unsigned int
 ewl_notebook_tabbar_alignment_get(Ewl_Notebook *n)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("n", n, 0);
-	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(n, 0);
+	DCHECK_TYPE_RET(n, EWL_NOTEBOOK_TYPE, 0);
 
 	DRETURN_INT(ewl_object_alignment_get(EWL_OBJECT(n->body.tabbar)),
 							DLEVEL_STABLE);
@@ -131,8 +131,8 @@ ewl_notebook_tabbar_position_set(Ewl_Notebook *n, Ewl_Position pos)
 	int t, pw, ph;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, "notebook");
+	DCHECK_PARAM_PTR(n);
+	DCHECK_TYPE(n, "notebook");
 
 	if (n->tabbar_position == pos)
 		DRETURN(DLEVEL_STABLE);
@@ -215,8 +215,8 @@ Ewl_Position
 ewl_notebook_tabbar_position_get(Ewl_Notebook *n)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("n", n, EWL_POSITION_TOP);
-	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, EWL_POSITION_TOP);
+	DCHECK_PARAM_PTR_RET(n, EWL_POSITION_TOP);
+	DCHECK_TYPE_RET(n, EWL_NOTEBOOK_TYPE, EWL_POSITION_TOP);
 
 	DRETURN_INT(n->tabbar_position, DLEVEL_STABLE);
 }
@@ -231,8 +231,8 @@ void
 ewl_notebook_tabbar_visible_set(Ewl_Notebook *n, unsigned int visible)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
+	DCHECK_PARAM_PTR(n);
+	DCHECK_TYPE(n, EWL_NOTEBOOK_TYPE);
 
 	if (visible)
 	{
@@ -259,8 +259,8 @@ unsigned int
 ewl_notebook_tabbar_visible_get(Ewl_Notebook *n)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("n", n, FALSE);
-	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(n, FALSE);
+	DCHECK_TYPE_RET(n, EWL_NOTEBOOK_TYPE, FALSE);
 
 	DRETURN_INT(((VISIBLE(n->body.tabbar)) ? TRUE : FALSE),
 							DLEVEL_STABLE);
@@ -278,8 +278,8 @@ ewl_notebook_visible_page_set(Ewl_Notebook *n, Ewl_Widget *page)
 	Ewl_Widget *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
+	DCHECK_PARAM_PTR(n);
+	DCHECK_TYPE(n, EWL_NOTEBOOK_TYPE);
 
 	if (page == n->cur_page)
 		DRETURN(DLEVEL_STABLE);
@@ -318,8 +318,8 @@ Ewl_Widget *
 ewl_notebook_visible_page_get(Ewl_Notebook *n)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("n", n, NULL);
-	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(n, NULL);
+	DCHECK_TYPE_RET(n, EWL_NOTEBOOK_TYPE, NULL);
 
 	DRETURN_PTR(n->cur_page, DLEVEL_STABLE);
 }
@@ -338,10 +338,10 @@ ewl_notebook_page_tab_text_set(Ewl_Notebook *n, Ewl_Widget *page,
 	Ewl_Widget *t = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("n", n);
-	DCHECK_PARAM_PTR("page", page);
-	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
-	DCHECK_TYPE("page", page, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(n);
+	DCHECK_PARAM_PTR(page);
+	DCHECK_TYPE(n, EWL_NOTEBOOK_TYPE);
+	DCHECK_TYPE(page, EWL_WIDGET_TYPE);
 
 	if (text)
 	{
@@ -367,10 +367,10 @@ ewl_notebook_page_tab_text_get(Ewl_Notebook *n, Ewl_Widget *page)
 	Ewl_Widget *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("n", n, EWL_NOTEBOOK_TYPE);
-	DCHECK_PARAM_PTR_RET("page", page, EWL_WIDGET_TYPE);
-	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, NULL);
-	DCHECK_TYPE_RET("page", page, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(n, EWL_NOTEBOOK_TYPE);
+	DCHECK_PARAM_PTR_RET(page, EWL_WIDGET_TYPE);
+	DCHECK_TYPE_RET(n, EWL_NOTEBOOK_TYPE, NULL);
+	DCHECK_TYPE_RET(page, EWL_WIDGET_TYPE, NULL);
 
 	/* get the label widget */
 	o = ewl_notebook_page_tab_widget_get(n, page);
@@ -392,10 +392,10 @@ ewl_notebook_page_tab_widget_set(Ewl_Notebook *n, Ewl_Widget *page,
 	Ewl_Widget *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("n", n);
-	DCHECK_PARAM_PTR("page", page);
-	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
-	DCHECK_TYPE("page", page, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(n);
+	DCHECK_PARAM_PTR(page);
+	DCHECK_TYPE(n, EWL_NOTEBOOK_TYPE);
+	DCHECK_TYPE(page, EWL_WIDGET_TYPE);
 
 	if (!tab)
 	{
@@ -442,10 +442,10 @@ ewl_notebook_page_tab_widget_get(Ewl_Notebook *n, Ewl_Widget *page)
 	Ewl_Widget *t, *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("n", n, NULL);
-	DCHECK_PARAM_PTR_RET("page", page, NULL);
-	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, NULL);
-	DCHECK_TYPE_RET("page", page, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(n, NULL);
+	DCHECK_PARAM_PTR_RET(page, NULL);
+	DCHECK_TYPE_RET(n, EWL_NOTEBOOK_TYPE, NULL);
+	DCHECK_TYPE_RET(page, EWL_WIDGET_TYPE, NULL);
 
 	t = ewl_attach_widget_association_get(page);
 	if (!t)
@@ -469,8 +469,8 @@ void
 ewl_notebook_tabbar_homogeneous_set(Ewl_Notebook *n, unsigned int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("n", n);
-	DCHECK_TYPE("n", n, EWL_NOTEBOOK_TYPE);
+	DCHECK_PARAM_PTR(n);
+	DCHECK_TYPE(n, EWL_NOTEBOOK_TYPE);
 
 	ewl_box_homogeneous_set(EWL_BOX(n->body.tabbar), !!h);
 
@@ -486,8 +486,8 @@ unsigned int
 ewl_notebook_tabbar_homogeneous_get(Ewl_Notebook *n)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("n", n, 0);
-	DCHECK_TYPE_RET("n", n, EWL_NOTEBOOK_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(n, 0);
+	DCHECK_TYPE_RET(n, EWL_NOTEBOOK_TYPE, 0);
 
 	DRETURN_INT(ewl_box_homogeneous_get(EWL_BOX(n->body.tabbar)),
 		       	DLEVEL_STABLE);
@@ -507,10 +507,10 @@ ewl_notebook_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	int pw, ph;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	n = EWL_NOTEBOOK(EWL_WIDGET(c)->parent);
 
@@ -536,10 +536,10 @@ ewl_notebook_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	Ewl_Notebook *n;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	n = EWL_NOTEBOOK(EWL_WIDGET(c)->parent);
 
@@ -562,10 +562,10 @@ ewl_notebook_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	Ewl_Notebook *n;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	n = EWL_NOTEBOOK(EWL_WIDGET(c)->parent);
 
@@ -599,10 +599,10 @@ ewl_notebook_cb_child_remove(Ewl_Container *c, Ewl_Widget *w,
 	int idx = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	n = EWL_NOTEBOOK(EWL_WIDGET(c)->parent);
 
@@ -656,10 +656,10 @@ ewl_notebook_cb_tab_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	Ewl_Notebook *n;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("data", data, EWL_NOTEBOOK_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(data, EWL_NOTEBOOK_TYPE);
 
 	n = data;
 	page = ewl_attach_widget_association_get(w);

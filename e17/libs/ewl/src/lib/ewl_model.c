@@ -57,7 +57,7 @@ int
 ewl_model_init(Ewl_Model *model)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("model", model, FALSE);
+	DCHECK_PARAM_PTR_RET(model, FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -72,7 +72,7 @@ void
 ewl_model_data_header_fetch_set(Ewl_Model *m, Ewl_Model_Data_Header_Fetch get)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->header = get;
 
@@ -88,7 +88,7 @@ Ewl_Model_Data_Header_Fetch
 ewl_model_data_header_fetch_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->header, DLEVEL_STABLE);
 }
@@ -103,7 +103,7 @@ void
 ewl_model_data_fetch_set(Ewl_Model *m, Ewl_Model_Data_Fetch get)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->fetch = get;
 
@@ -119,7 +119,7 @@ Ewl_Model_Data_Fetch
 ewl_model_data_fetch_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->fetch, DLEVEL_STABLE);
 }
@@ -134,7 +134,7 @@ void
 ewl_model_column_sortable_set(Ewl_Model *m, Ewl_Model_Column_Sortable sortable)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->sortable = sortable;
 
@@ -150,7 +150,7 @@ Ewl_Model_Column_Sortable
 ewl_model_column_sortable_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->sortable, DLEVEL_STABLE);
 }
@@ -165,7 +165,7 @@ void
 ewl_model_data_sort_set(Ewl_Model *m, Ewl_Model_Data_Sort sort)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->sort = sort;
 
@@ -181,7 +181,7 @@ Ewl_Model_Data_Sort
 ewl_model_data_sort_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->sort, DLEVEL_STABLE);
 }
@@ -196,7 +196,7 @@ void
 ewl_model_data_highlight_set(Ewl_Model *m, Ewl_Model_Data_Highlight highlight)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->highlight = highlight;
 
@@ -212,7 +212,7 @@ Ewl_Model_Data_Highlight
 ewl_model_data_highlight_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->highlight, DLEVEL_STABLE);
 }
@@ -227,7 +227,7 @@ void
 ewl_model_data_count_set(Ewl_Model *m, Ewl_Model_Data_Count count)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->count = count;
 
@@ -244,7 +244,7 @@ Ewl_Model_Data_Count
 ewl_model_data_count_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->count, DLEVEL_STABLE);
 }
@@ -259,7 +259,7 @@ void
 ewl_model_data_unref_set(Ewl_Model *m, Ewl_Model_Data_Unref unref)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->unref = unref;
 
@@ -276,7 +276,7 @@ Ewl_Model_Data_Unref
 ewl_model_data_unref_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->unref, DLEVEL_STABLE);
 }
@@ -291,7 +291,7 @@ void
 ewl_model_data_expandable_set(Ewl_Model *m, Ewl_Model_Data_Expandable exp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->expansion.is = exp;
 
@@ -307,7 +307,7 @@ Ewl_Model_Data_Expandable
 ewl_model_data_expandable_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->expansion.is, DLEVEL_STABLE);
 }
@@ -323,7 +323,7 @@ ewl_model_expansion_data_fetch_set(Ewl_Model *m,
 				Ewl_Model_Expansion_Data_Fetch get)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->expansion.data = get;
 
@@ -339,7 +339,7 @@ Ewl_Model_Expansion_Data_Fetch
 ewl_model_expansion_data_fetch_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->expansion.data, DLEVEL_STABLE);
 }
@@ -358,7 +358,7 @@ void
 ewl_model_data_free_set(Ewl_Model *m, Ewl_Model_Data_Free data_free)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->data_free = data_free;
 
@@ -375,7 +375,7 @@ Ewl_Model_Data_Free
 ewl_model_data_free_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->data_free, DLEVEL_STABLE);
 }
@@ -391,7 +391,7 @@ ewl_model_expansion_model_fetch_set(Ewl_Model *m,
 				Ewl_Model_Expansion_Model_Fetch f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("m", m);
+	DCHECK_PARAM_PTR(m);
 
 	m->expansion.model = f;
 
@@ -407,7 +407,7 @@ Ewl_Model_Expansion_Model_Fetch
 ewl_model_expansion_model_fetch_get(Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("m", m, NULL);
+	DCHECK_PARAM_PTR_RET(m, NULL);
 
 	DRETURN_PTR(m->expansion.model, DLEVEL_STABLE);
 }
@@ -426,7 +426,7 @@ ewl_model_cb_ecore_list_fetch(void *data, unsigned int row,
 	Ecore_List *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, NULL);
+	DCHECK_PARAM_PTR_RET(data, NULL);
 
 	list = data;
 	ecore_list_index_goto(list, row);
@@ -445,7 +445,7 @@ ewl_model_cb_ecore_list_count(void *data)
 	Ecore_List *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, 0);
+	DCHECK_PARAM_PTR_RET(data, 0);
 
 	list = data;
 

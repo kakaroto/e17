@@ -20,7 +20,7 @@ int
 ewl_filelist_init(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, FALSE);
+	DCHECK_PARAM_PTR_RET(fl, FALSE);
 
 	if (!ewl_box_init(EWL_BOX(fl)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -53,8 +53,8 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 	Ewl_Event_Action_Response ev_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	IF_FREE(fl->directory);
 	fl->directory = strdup(dir);
@@ -77,8 +77,8 @@ const char *
 ewl_filelist_directory_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	DRETURN_PTR(fl->directory, DLEVEL_STABLE);
 }
@@ -93,8 +93,8 @@ void
 ewl_filelist_filter_set(Ewl_Filelist *fl, const char *filter)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	IF_FREE(fl->filter);
 
@@ -113,8 +113,8 @@ const char *
 ewl_filelist_filter_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	DRETURN_PTR(fl->filter, DLEVEL_STABLE);
 }
@@ -129,8 +129,8 @@ void
 ewl_filelist_multiselect_set(Ewl_Filelist *fl, unsigned int ms)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	fl->multiselect = !!ms;
 	if (fl->multiselect_change) fl->multiselect_change(fl);
@@ -147,8 +147,8 @@ unsigned int
 ewl_filelist_multiselect_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, 0);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fl, 0);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, 0);
 
 	DRETURN_INT((unsigned int)fl->multiselect, DLEVEL_STABLE);
 }
@@ -163,8 +163,8 @@ void
 ewl_filelist_show_dot_files_set(Ewl_Filelist *fl, unsigned int dot)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	fl->show_dot_files = !!dot;
 	if (fl->show_dot_change) fl->show_dot_change(fl);
@@ -181,8 +181,8 @@ unsigned int
 ewl_filelist_show_dot_files_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, 0);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fl, 0);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, 0);
 
 	DRETURN_INT((unsigned int)fl->show_dot_files, DLEVEL_STABLE);
 }
@@ -197,8 +197,8 @@ void
 ewl_filelist_selected_file_set(Ewl_Filelist *fl, const char *file)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	/* clean out the old set of selected files */
 	if (fl->selected_unselect) fl->selected_unselect(fl);
@@ -222,8 +222,8 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 	const char *file = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, 0);
 
 	ecore_list_first_goto(fl->selected);
 	widget = ecore_list_current(fl->selected);
@@ -387,9 +387,9 @@ ewl_filelist_selected_file_preview_get(Ewl_Filelist *fl, const char *path)
 	struct stat buf;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_PARAM_PTR_RET("path", path, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_PARAM_PTR_RET(path, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	path2 = ewl_filelist_directory_get(EWL_FILELIST(fl));
 	snprintf(path3, PATH_MAX, "%s/%s", path2, path);
@@ -454,8 +454,8 @@ Ewl_Widget *
 ewl_filelist_multi_select_preview_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	Ewl_Widget *box, *icon;
 
@@ -484,9 +484,9 @@ ewl_filelist_selected_files_set(Ewl_Filelist *fl, Ecore_List *files)
 	char *file;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("files", files);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(files);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	/* clean out the old set of selected files */
 	if (fl->selected_unselect) fl->selected_unselect(fl);
@@ -513,8 +513,8 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 	void *item;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	selected = ecore_list_new();
 	ecore_list_free_cb_set(selected, free);
@@ -542,8 +542,8 @@ ewl_filelist_selected_files_change_notify(Ewl_Filelist *fl)
 	Ewl_Event_Action_Response ev_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	ev_data.response = EWL_FILELIST_EVENT_SELECTION_CHANGE;
 	ewl_callback_call_with_event_data(EWL_WIDGET(fl),
@@ -564,9 +564,9 @@ ewl_filelist_selected_signal_all(Ewl_Filelist *fl, const char *signal)
 	Ewl_Widget *item;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("signal", signal);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(signal);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	ecore_list_first_goto(fl->selected);
 	while ((item = ecore_list_next(fl->selected)))
@@ -585,8 +585,8 @@ void
 ewl_filelist_vscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollpane_Flags v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	fl->scroll_flags.v = v;
 
@@ -602,8 +602,8 @@ Ewl_Scrollpane_Flags
 ewl_filelist_vscroll_flag_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, EWL_SCROLLPANE_FLAG_NONE);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE,
+	DCHECK_PARAM_PTR_RET(fl, EWL_SCROLLPANE_FLAG_NONE);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE,
 					EWL_SCROLLPANE_FLAG_NONE);
 
 	DRETURN_INT(fl->scroll_flags.v, DLEVEL_STABLE);
@@ -619,8 +619,8 @@ void
 ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl, Ewl_Scrollpane_Flags h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	fl->scroll_flags.h = h;
 
@@ -636,8 +636,8 @@ Ewl_Scrollpane_Flags
 ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, EWL_SCROLLPANE_FLAG_NONE);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE,
+	DCHECK_PARAM_PTR_RET(fl, EWL_SCROLLPANE_FLAG_NONE);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE,
 					EWL_SCROLLPANE_FLAG_NONE);
 
 	DRETURN_INT(fl->scroll_flags.h, DLEVEL_STABLE);
@@ -656,9 +656,9 @@ ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path)
 	char *ptr = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_PARAM_PTR_RET("path", path, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_PARAM_PTR_RET(path, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	if (ecore_file_is_dir(path))
 		DRETURN_PTR(EWL_ICON_FOLDER, DLEVEL_STABLE);
@@ -692,9 +692,9 @@ ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir)
 	const char *cur_dir;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_PARAM_PTR_RET("dir", dir, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_PARAM_PTR_RET(dir, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	cur_dir = ewl_filelist_directory_get(EWL_FILELIST(fl));
 	if (!strcmp(dir, ".."))
@@ -755,9 +755,9 @@ ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
 	char *file;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("func", func);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(func);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	all_files = ecore_file_ls(dir);
 	if (!all_files) DRETURN(DLEVEL_STABLE);
@@ -827,11 +827,11 @@ ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
 	int multi = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev", ev);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	/* only trigger on lmb */
 	if (ev->button != 1)
@@ -936,14 +936,14 @@ ewl_filelist_container_shift_handle(Ewl_Filelist *fl,
 	int base_idx, last_idx = -1, cur_idx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("clicked", clicked);
-	DCHECK_PARAM_PTR("select_signal", select_signal);
-	DCHECK_PARAM_PTR("unselect_signal", unselect_signal);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("clicked", clicked, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(clicked);
+	DCHECK_PARAM_PTR(select_signal);
+	DCHECK_PARAM_PTR(unselect_signal);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(clicked, EWL_WIDGET_TYPE);
 
 	ecore_list_goto(c->children, fl->select.base);
 	base_idx = ecore_list_index(c->children);
@@ -1013,15 +1013,15 @@ ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add,
 	Ewl_Widget *start, *end, *cur;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("signal", signal);
-	DCHECK_PARAM_PTR("a", a);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("a", a, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("b", b, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(signal);
+	DCHECK_PARAM_PTR(a);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(a, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(b, EWL_WIDGET_TYPE);
 
 	if (a_idx < b_idx)
 	{
@@ -1078,8 +1078,8 @@ ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Filelist *fl;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_FILELIST_TYPE);
 
 	fl = EWL_FILELIST(w);
 

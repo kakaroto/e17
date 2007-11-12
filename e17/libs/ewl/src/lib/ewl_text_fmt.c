@@ -18,7 +18,7 @@ ewl_text_fmt_new(Ewl_Text *t)
 	Ewl_Text_Fmt *fmt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, NULL);
+	DCHECK_PARAM_PTR_RET(t, NULL);
 
 	fmt = NEW(Ewl_Text_Fmt, 1);
 	if (!fmt) DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -45,7 +45,7 @@ void
 ewl_text_fmt_destroy(Ewl_Text_Fmt *fmt)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
+	DCHECK_PARAM_PTR(fmt);
 
 	if (fmt->nodes) ecore_dlist_destroy(fmt->nodes);
 	FREE(fmt);
@@ -64,7 +64,7 @@ ewl_text_fmt_clear(Ewl_Text_Fmt *fmt)
 	Ewl_Text_Fmt_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
+	DCHECK_PARAM_PTR(fmt);
 
 	while ((node = ecore_dlist_first_remove(fmt->nodes)))
 	{
@@ -96,7 +96,7 @@ ewl_text_fmt_node_prepend(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
 	Ewl_Text_Fmt_Node *node = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
+	DCHECK_PARAM_PTR(fmt);
 
 	fmt->length.char_len += char_len;
 	fmt->length.byte_len += byte_len;
@@ -136,7 +136,7 @@ ewl_text_fmt_node_append(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
 	Ewl_Text_Fmt_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
+	DCHECK_PARAM_PTR(fmt);
 
 	node = ewl_text_fmt_get_last(fmt);
 	if (tx && (!node || (node->char_len > 0)))
@@ -183,7 +183,7 @@ ewl_text_fmt_node_insert(Ewl_Text_Fmt *fmt, unsigned int idx,
 	Ewl_Text_Fmt_Node *node = NULL, *cur_node, *left = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
+	DCHECK_PARAM_PTR(fmt);
 
 	fmt->length.char_len += char_len;
 	fmt->length.byte_len += byte_len;
@@ -277,7 +277,7 @@ ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
 	Ewl_Text_Fmt_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
+	DCHECK_PARAM_PTR(fmt);
 
 	if (idx < fmt->current_node.char_idx)
 	{
@@ -352,7 +352,7 @@ unsigned int
 ewl_text_fmt_node_count_get(Ewl_Text_Fmt *fmt)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fmt", fmt, 0);
+	DCHECK_PARAM_PTR_RET(fmt, 0);
 
 	DRETURN_INT(ecore_dlist_count(fmt->nodes), DLEVEL_STABLE);
 }
@@ -366,7 +366,7 @@ Ewl_Text_Fmt_Node *
 ewl_text_fmt_get_last(Ewl_Text_Fmt *fmt)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fmt", fmt, NULL);
+	DCHECK_PARAM_PTR_RET(fmt, NULL);
 
 	DRETURN_PTR(ecore_dlist_last_goto(fmt->nodes),DLEVEL_STABLE);
 }
@@ -380,7 +380,7 @@ Ewl_Text_Fmt_Node *
 ewl_text_fmt_get_first(Ewl_Text_Fmt *fmt)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fmt", fmt, NULL);
+	DCHECK_PARAM_PTR_RET(fmt, NULL);
 
 	DRETURN_PTR(ecore_dlist_first_goto(fmt->nodes), DLEVEL_STABLE);
 }
@@ -394,7 +394,7 @@ Ewl_Text_Fmt_Node *
 ewl_text_fmt_get_current(Ewl_Text_Fmt *fmt)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fmt", fmt, NULL);
+	DCHECK_PARAM_PTR_RET(fmt, NULL);
 
 	DRETURN_PTR(ecore_dlist_current(fmt->nodes), DLEVEL_STABLE);
 }
@@ -412,7 +412,7 @@ ewl_text_fmt_get(Ewl_Text_Fmt *fmt, unsigned int idx)
 	unsigned int cur_byte, cur_char;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fmt", fmt, NULL);
+	DCHECK_PARAM_PTR_RET(fmt, NULL);
 
 	cur_char = fmt->current_node.char_idx;
 	cur_byte = fmt->current_node.byte_idx;
@@ -440,7 +440,7 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 	Ewl_Text_Fmt_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
+	DCHECK_PARAM_PTR(fmt);
 
 	if (fmt->length.char_len != EWL_TEXT(fmt->text)->length.chars)
 	{
@@ -564,7 +564,7 @@ ewl_text_fmt_dump(Ewl_Text_Fmt *fmt)
 	Ewl_Text_Fmt_Node *node, *cur_node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
+	DCHECK_PARAM_PTR(fmt);
 
 	cur_node = ecore_dlist_current(fmt->nodes);
 	ecore_dlist_first_goto(fmt->nodes);
@@ -604,7 +604,7 @@ ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
 	void *(*move)(Ecore_DList *list);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
+	DCHECK_PARAM_PTR(fmt);
 
 	t = fmt->text;
 	current_node = ecore_dlist_current(fmt->nodes);
@@ -719,7 +719,7 @@ ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt,
 	void *(*move)(Ecore_DList *list);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
+	DCHECK_PARAM_PTR(fmt);
 
 	t = fmt->text;
 	current_node = ecore_dlist_current(fmt->nodes);
@@ -827,8 +827,8 @@ ewl_text_fmt_walk(Ewl_Text_Fmt *fmt,
 	unsigned int byte_idx = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fmt", fmt);
-	DCHECK_PARAM_PTR("cb", cb);
+	DCHECK_PARAM_PTR(fmt);
+	DCHECK_PARAM_PTR(cb);
 
 	current_node = ecore_dlist_current(fmt->nodes);
 	ecore_dlist_first_goto(fmt->nodes);
@@ -862,7 +862,7 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
 	Ewl_Text_Fmt_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("change", change);
+	DCHECK_PARAM_PTR(change);
 
 	if ((char_len == 0) || (context_mask == EWL_TEXT_CONTEXT_MASK_NONE))
 		DRETURN(DLEVEL_STABLE);
@@ -1047,7 +1047,7 @@ ewl_text_fmt_node_free(void *node)
 	Ewl_Text_Fmt_Node *n;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("node", node);
+	DCHECK_PARAM_PTR(node);
 
 	n = node;
 	if (n->tx) ewl_text_context_release(n->tx);

@@ -99,8 +99,8 @@ ewl_dnd_provided_types_set(Ewl_Widget *w, const char **types)
 	char *type;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	type = ecore_hash_get(ewl_dnd_provided_hash, w);
 	IF_FREE(type);
@@ -136,8 +136,8 @@ ewl_dnd_provided_types_contains(Ewl_Widget *w, char *type)
 	int ret = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, FALSE);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(w, FALSE);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
 	types = ecore_hash_get(ewl_dnd_provided_hash, w);
 	if (types) ret = ewl_dnd_types_encoded_contains(types, type);
@@ -156,8 +156,8 @@ ewl_dnd_provided_types_get(Ewl_Widget *w)
 	const char *types;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(w, NULL);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
 	types = ecore_hash_get(ewl_dnd_provided_hash, w);
 
@@ -176,8 +176,8 @@ ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types)
 	char *type;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	type = ecore_hash_remove(ewl_dnd_accepted_hash, w);
 	IF_FREE(type);
@@ -225,8 +225,8 @@ ewl_dnd_accepted_types_contains(Ewl_Widget *w, char *type)
 	int ret = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, FALSE);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(w, FALSE);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
 	types = ecore_hash_get(ewl_dnd_accepted_hash, w);
 	if (types) ret = ewl_dnd_types_encoded_contains(types, type);
@@ -245,8 +245,8 @@ ewl_dnd_accepted_types_get(Ewl_Widget *w)
 	const char *types;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(w, NULL);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
 	types = ecore_hash_get(ewl_dnd_provided_hash, w);
 
@@ -267,8 +267,8 @@ ewl_dnd_drag_start(Ewl_Widget *w)
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (!ewl_dnd_status || ewl_dragging_current)
 		DRETURN(DLEVEL_STABLE);
@@ -326,8 +326,8 @@ ewl_dnd_drag_drop(Ewl_Widget *w)
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_dragging_current = 0;
 	ewl_dnd_widget = NULL;
@@ -501,7 +501,7 @@ static char *
 ewl_dnd_type_stpcpy(char *dst, const char *src)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dst", dst, dst);
+	DCHECK_PARAM_PTR_RET(dst, dst);
 
 	while (*src) {
 		*dst = *src;

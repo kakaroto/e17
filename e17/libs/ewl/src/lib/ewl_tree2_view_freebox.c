@@ -79,7 +79,7 @@ int
 ewl_tree2_view_freebox_init(Ewl_Tree2_View_Freebox *tv)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tv", tv, FALSE);
+	DCHECK_PARAM_PTR_RET(tv, FALSE);
 
 	if (!ewl_tree2_view_init(EWL_TREE2_VIEW(tv)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);

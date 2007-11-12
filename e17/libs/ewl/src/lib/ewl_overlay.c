@@ -38,7 +38,7 @@ int
 ewl_overlay_init(Ewl_Overlay *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+	DCHECK_PARAM_PTR_RET(w, FALSE);
 
 	/*
 	 * Initialize the fields of the inherited container class
@@ -82,8 +82,8 @@ ewl_overlay_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_OVERLAY_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_OVERLAY_TYPE);
 
 	o = EWL_OBJECT(w);
 
@@ -122,10 +122,10 @@ ewl_overlay_cb_child_show(Ewl_Container *o, Ewl_Widget *child)
 	int size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("o", o);
-	DCHECK_PARAM_PTR("child", child);
-	DCHECK_TYPE("o", o, EWL_OVERLAY_TYPE);
-	DCHECK_TYPE("child", child, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(o);
+	DCHECK_PARAM_PTR(child);
+	DCHECK_TYPE(o, EWL_OVERLAY_TYPE);
+	DCHECK_TYPE(child, EWL_WIDGET_TYPE);
 
 	size = ewl_object_current_x_get(EWL_OBJECT(child));
        	size += ewl_object_preferred_w_get(EWL_OBJECT(child));
@@ -159,10 +159,10 @@ ewl_overlay_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_OVERLAY_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_OVERLAY_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	child = EWL_OBJECT(w);
 	overlay = EWL_OVERLAY(c);

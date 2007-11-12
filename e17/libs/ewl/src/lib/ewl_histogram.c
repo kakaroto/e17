@@ -43,7 +43,7 @@ ewl_histogram_init(Ewl_Histogram *hist)
 	Ewl_Widget *w = EWL_WIDGET(hist);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("hist", hist, FALSE);
+	DCHECK_PARAM_PTR_RET(hist, FALSE);
 
 	if (!ewl_image_init(EWL_IMAGE(hist)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -72,7 +72,8 @@ ewl_histogram_color_set(Ewl_Histogram *hist, unsigned int r, unsigned int g,
 						unsigned int b, unsigned int a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("hist", hist);
+	DCHECK_PARAM_PTR(hist);
+	DCHECK_TYPE(hist, EWL_HISTOGRAM_TYPE);
 
 	hist->color.r = r;
 	hist->color.g = g;
@@ -97,7 +98,8 @@ ewl_histogram_color_get(Ewl_Histogram *hist, unsigned int *r, unsigned int *g,
 						unsigned int *b, unsigned int *a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("hist", hist);
+	DCHECK_PARAM_PTR(hist);
+	DCHECK_TYPE(hist, EWL_HISTOGRAM_TYPE);
 
 	if (r) *r = hist->color.r;
 	if (g) *g = hist->color.g;
@@ -123,8 +125,8 @@ ewl_histogram_channel_set(Ewl_Histogram *hist, Ewl_Histogram_Channel channel)
 	 */
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("hist", hist);
-	DCHECK_TYPE("hist", hist, EWL_HISTOGRAM_TYPE);
+	DCHECK_PARAM_PTR(hist);
+	DCHECK_TYPE(hist, EWL_HISTOGRAM_TYPE);
 
 	hist->channel = channel;
 	if (hist->source && REALIZED(hist->source))
@@ -142,8 +144,8 @@ Ewl_Histogram_Channel
 ewl_histogram_channel_get(Ewl_Histogram *hist)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("hist", hist, EWL_HISTOGRAM_CHANNEL_Y);
-	DCHECK_TYPE_RET("hist", hist, EWL_HISTOGRAM_TYPE, EWL_HISTOGRAM_CHANNEL_Y);
+	DCHECK_PARAM_PTR_RET(hist, EWL_HISTOGRAM_CHANNEL_Y);
+	DCHECK_TYPE_RET(hist, EWL_HISTOGRAM_TYPE, EWL_HISTOGRAM_CHANNEL_Y);
 
 	DRETURN_INT(hist->channel, DLEVEL_STABLE);
 }
@@ -158,10 +160,10 @@ void
 ewl_histogram_image_set(Ewl_Histogram *hist, Ewl_Image *image)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("hist", hist);
-	DCHECK_PARAM_PTR("image", image);
-	DCHECK_TYPE("hist", hist, EWL_HISTOGRAM_TYPE);
-	DCHECK_TYPE("image", image, EWL_IMAGE_TYPE);
+	DCHECK_PARAM_PTR(hist);
+	DCHECK_PARAM_PTR(image);
+	DCHECK_TYPE(hist, EWL_HISTOGRAM_TYPE);
+	DCHECK_TYPE(image, EWL_IMAGE_TYPE);
 
 	hist->source = image;
 	if (REALIZED(image))
@@ -183,8 +185,8 @@ Ewl_Image *
 ewl_histogram_image_get(Ewl_Histogram *hist)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("hist", hist, NULL);
-	DCHECK_TYPE_RET("hist", hist, EWL_HISTOGRAM_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(hist, NULL);
+	DCHECK_TYPE_RET(hist, EWL_HISTOGRAM_TYPE, NULL);
 
 	DRETURN_PTR(EWL_IMAGE(hist->source), DLEVEL_STABLE);
 }
@@ -202,8 +204,8 @@ ewl_histogram_cb_configure(Ewl_Widget *w, void *event __UNUSED__,
 						void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_HISTOGRAM_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_HISTOGRAM_TYPE);
 
 	/* Only bother drawing if we've seen some usable data. */
 	if (EWL_HISTOGRAM(w)->maxv)
@@ -228,8 +230,8 @@ ewl_histogram_cb_data_load(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *
 	Ewl_Histogram *hist = EWL_HISTOGRAM(h);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("hist", hist);
-	DCHECK_TYPE("hist", hist, EWL_HISTOGRAM_TYPE);
+	DCHECK_PARAM_PTR(hist);
+	DCHECK_TYPE(hist, EWL_HISTOGRAM_TYPE);
 
 	if (!hist->source || !REALIZED(hist->source))
 		DRETURN(DLEVEL_STABLE);
@@ -289,8 +291,8 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 	Evas_Object *img;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("hist", hist);
-	DCHECK_TYPE("hist", hist, EWL_HISTOGRAM_TYPE);
+	DCHECK_PARAM_PTR(hist);
+	DCHECK_TYPE(hist, EWL_HISTOGRAM_TYPE);
 
 	img = EWL_IMAGE(hist)->image;
 

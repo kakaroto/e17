@@ -13,7 +13,7 @@ ewl_io_manager_plugin_uri_read(const char *uri)
 	Ewl_Widget *ret = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("uri", uri, NULL);
+	DCHECK_PARAM_PTR_RET(uri, NULL);
 
 	ret = ewl_image_new();
 	ewl_image_file_path_set(EWL_IMAGE(ret), uri);
@@ -38,9 +38,9 @@ ewl_io_manager_plugin_uri_write(Ewl_Widget *data, const char *uri)
 	int ret = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_PARAM_PTR_RET("uri", uri, FALSE);
-	DCHECK_TYPE_RET("data", data, EWL_IMAGE_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_PARAM_PTR_RET(uri, FALSE);
+	DCHECK_TYPE_RET(data, EWL_IMAGE_TYPE, FALSE);
 
 	img = EWL_IMAGE(data);
 	if (!img->image)
@@ -56,8 +56,8 @@ ewl_io_manager_plugin_string_write(Ewl_Widget *data,
 				const char **string __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_TYPE_RET("data", data, EWL_IMAGE_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_TYPE_RET(data, EWL_IMAGE_TYPE, FALSE);
 
 	/* XXX not sure if we want to provide this ? ... */
 

@@ -60,7 +60,7 @@ int
 ewl_view_init(Ewl_View *view)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("view", view, FALSE);
+	DCHECK_PARAM_PTR_RET(view, FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -75,7 +75,7 @@ void
 ewl_view_widget_fetch_set(Ewl_View *v, Ewl_View_Widget_Fetch fetch)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("v", v);
+	DCHECK_PARAM_PTR(v);
 
 	v->fetch = fetch;
 
@@ -92,7 +92,7 @@ Ewl_View_Widget_Fetch
 ewl_view_widget_fetch_get(Ewl_View *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("v", v, NULL);
+	DCHECK_PARAM_PTR_RET(v, NULL);
 
 	DRETURN_PTR(v->fetch, DLEVEL_STABLE);
 }
@@ -107,7 +107,7 @@ void
 ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("v", v);
+	DCHECK_PARAM_PTR(v);
 
 	v->header_fetch = f;
 
@@ -124,7 +124,7 @@ Ewl_View_Header_Fetch
 ewl_view_header_fetch_get(Ewl_View *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("v", v, NULL);
+	DCHECK_PARAM_PTR_RET(v, NULL);
 
 	DRETURN_PTR(v->header_fetch, DLEVEL_STABLE);
 }
@@ -139,7 +139,7 @@ void
 ewl_view_expansion_view_fetch_set(Ewl_View *v, Ewl_View_Expansion_View_Fetch f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("v", v);
+	DCHECK_PARAM_PTR(v);
 
 	v->expansion = f;
 
@@ -156,7 +156,7 @@ Ewl_View_Expansion_View_Fetch
 ewl_view_expansion_view_fetch_get(Ewl_View *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("v", v, NULL);
+	DCHECK_PARAM_PTR_RET(v, NULL);
 
 	DRETURN_PTR(v->expansion, DLEVEL_STABLE);
 }

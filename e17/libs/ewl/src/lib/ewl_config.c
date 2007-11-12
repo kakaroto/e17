@@ -113,7 +113,7 @@ ewl_config_new(const char *app_name)
 	Ewl_Config *cfg;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("app_name", app_name, NULL);
+	DCHECK_PARAM_PTR_RET(app_name, NULL);
 
 	cfg = NEW(Ewl_Config, 1);
 	cfg->app_name = strdup(app_name);
@@ -133,7 +133,7 @@ void
 ewl_config_destroy(Ewl_Config *cfg)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cfg", cfg);
+	DCHECK_PARAM_PTR(cfg);
 
 	IF_FREE_HASH(cfg->data.user);
 	IF_FREE_HASH(cfg->data.system);
@@ -161,7 +161,7 @@ ewl_config_string_set(Ewl_Config *cfg, const char *k, const char *v,
 						Ewl_State_Type state)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR(k);
 
 	ecore_hash_set(ewl_config_set_hash_get(cfg, state),
 						strdup(k), strdup(v));
@@ -179,7 +179,7 @@ const char *
 ewl_config_string_get(Ewl_Config *cfg, const char *k)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("k", k, NULL);
+	DCHECK_PARAM_PTR_RET(k, NULL);
 
 	DRETURN_PTR(ewl_config_get(cfg, k), DLEVEL_STABLE);
 }
@@ -202,7 +202,7 @@ ewl_config_int_set(Ewl_Config *cfg, const char *k, int v,
 	char buf[128];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR(k);
 
 	snprintf(buf, sizeof(buf), "%d", v);
 	ecore_hash_set(ewl_config_set_hash_get(cfg, state),
@@ -224,7 +224,7 @@ ewl_config_int_get(Ewl_Config *cfg, const char *k)
 	int v = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("k", k, 0);
+	DCHECK_PARAM_PTR_RET(k, 0);
 
 	val = ewl_config_get(cfg, k);
 	if (val) v = atoi(val);
@@ -250,7 +250,7 @@ ewl_config_float_set(Ewl_Config *cfg, const char *k, float v,
 	char buf[128];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR(k);
 
 	snprintf(buf, sizeof(buf), "%f", v);
 	ecore_hash_set(ewl_config_set_hash_get(cfg, state),
@@ -272,7 +272,7 @@ ewl_config_float_get(Ewl_Config *cfg, const char *k)
 	float v = 0.0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("k", k, 0.0);
+	DCHECK_PARAM_PTR_RET(k, 0.0);
 
 	val = ewl_config_get(cfg, k);
 	if (val) v = atof(val);
@@ -302,7 +302,7 @@ ewl_config_color_set(Ewl_Config *cfg, const char *k, int r, int g,
 	char buf[128];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR(k);
 
 	snprintf(buf, sizeof(buf), "%i %i %i %i", r, g, b, a);
 	ecore_hash_set(ewl_config_set_hash_get(cfg, state),
@@ -329,7 +329,7 @@ ewl_config_color_get(Ewl_Config *cfg, const char *k, int *r, int *g,
 	int tmp_r = 0, tmp_g = 0, tmp_b = 0, tmp_a = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR(k);
 
 	val = ewl_config_get(cfg, k);
 	if (val)
@@ -357,7 +357,7 @@ ewl_config_can_save_system(Ewl_Config *cfg)
 	int ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
+	DCHECK_PARAM_PTR_RET(cfg, FALSE);
 
 	fname = ewl_config_file_name_system_get(cfg);
 	ret = access(fname, W_OK);
@@ -378,7 +378,7 @@ ewl_config_user_save(Ewl_Config *cfg)
 	int ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
+	DCHECK_PARAM_PTR_RET(cfg, FALSE);
 
 	fname = ewl_config_file_name_user_get(cfg);
 	ret = ewl_config_save(cfg, cfg->data.user, fname);
@@ -401,7 +401,7 @@ ewl_config_system_save(Ewl_Config *cfg)
 	Ecore_List *keys;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
+	DCHECK_PARAM_PTR_RET(cfg, FALSE);
 
 	if (!ewl_config_can_save_system(cfg))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -446,8 +446,8 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
 	int fd;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
-	DCHECK_PARAM_PTR_RET("file", file, FALSE);
+	DCHECK_PARAM_PTR_RET(cfg, FALSE);
+	DCHECK_PARAM_PTR_RET(file, FALSE);
 
 	/* make sure the config directory exists */
 	path = strdup(file);
@@ -510,7 +510,7 @@ ewl_config_file_name_clean(Ewl_Config *cfg)
 	char *fname = NULL, *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, NULL);
+	DCHECK_PARAM_PTR_RET(cfg, NULL);
 
 	/* convert all whitespace, / or \ characters to _ */
 	fname = strdup(cfg->app_name);
@@ -530,7 +530,7 @@ ewl_config_file_name_system_get(Ewl_Config *cfg)
 	int is_ewl = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, NULL);
+	DCHECK_PARAM_PTR_RET(cfg, NULL);
 
 	if (!strcmp(cfg->app_name, "ewl"))
 		is_ewl = TRUE;
@@ -552,7 +552,7 @@ ewl_config_file_name_user_get(Ewl_Config *cfg)
 	int is_ewl = FALSE;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, NULL);
+	DCHECK_PARAM_PTR_RET(cfg, NULL);
 
 	if (!strcmp(cfg->app_name, "ewl"))
 		is_ewl = TRUE;
@@ -576,7 +576,7 @@ ewl_config_load(Ewl_Config *cfg)
 	int sys_ret, user_ret;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
+	DCHECK_PARAM_PTR_RET(cfg, FALSE);
 
 	fname = ewl_config_file_name_system_get(cfg);
 	sys_ret = ewl_config_file_load(cfg, TRUE, fname);
@@ -639,7 +639,7 @@ static void
 ewl_config_create_user_hash(Ewl_Config *cfg)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cfg", cfg);
+	DCHECK_PARAM_PTR(cfg);
 
 	if (!cfg->data.user)
 		cfg->data.user = ewl_config_create_hash();
@@ -651,7 +651,7 @@ static void
 ewl_config_create_system_hash(Ewl_Config *cfg)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cfg", cfg);
+	DCHECK_PARAM_PTR(cfg);
 
 	if (!cfg->data.system)
 		cfg->data.system = ewl_config_create_hash();
@@ -663,7 +663,7 @@ static void
 ewl_config_create_instance_hash(Ewl_Config *cfg)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cfg", cfg);
+	DCHECK_PARAM_PTR(cfg);
 
 	if (!cfg->data.instance)
 		cfg->data.instance = ewl_config_create_hash();
@@ -677,7 +677,7 @@ ewl_config_set_hash_get(Ewl_Config *cfg, Ewl_State_Type state)
 	Ecore_Hash *hash = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, NULL);
+	DCHECK_PARAM_PTR_RET(cfg, NULL);
 
 	if (state == EWL_STATE_TRANSIENT)
 	{
@@ -701,8 +701,8 @@ ewl_config_get(Ewl_Config *cfg, const char *key)
 	const char *val = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, NULL);
-	DCHECK_PARAM_PTR_RET("key", key, NULL);
+	DCHECK_PARAM_PTR_RET(cfg, NULL);
+	DCHECK_PARAM_PTR_RET(key, NULL);
 
 	if (cfg->data.instance
 			&& (val = ecore_hash_get(cfg->data.instance, key)))
@@ -736,8 +736,8 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 	struct stat buf;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cfg", cfg, FALSE);
-	DCHECK_PARAM_PTR_RET("file", file, FALSE);
+	DCHECK_PARAM_PTR_RET(cfg, FALSE);
+	DCHECK_PARAM_PTR_RET(file, FALSE);
 
 	/* make sure the config file exists */
 	if (!ecore_file_exists(file))
@@ -802,9 +802,9 @@ ewl_config_parse(Ewl_Config *cfg, Ecore_Hash *hash, char *data)
 	char *start;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cfg", cfg);
-	DCHECK_PARAM_PTR("hash", hash);
-	DCHECK_PARAM_PTR("data", data);
+	DCHECK_PARAM_PTR(cfg);
+	DCHECK_PARAM_PTR(hash);
+	DCHECK_PARAM_PTR(data);
 
 	start = data;
 	while (start)
@@ -864,7 +864,7 @@ ewl_config_trim(char *v2)
 	char *end, *old, *v;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("v2", v2, NULL);
+	DCHECK_PARAM_PTR_RET(v2, NULL);
 
 	old = v2;
 	v = v2;

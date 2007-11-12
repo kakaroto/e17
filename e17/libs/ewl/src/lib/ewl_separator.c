@@ -80,7 +80,7 @@ ewl_separator_init(Ewl_Separator *s)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, FALSE);
+	DCHECK_PARAM_PTR_RET(s, FALSE);
 
 	w = EWL_WIDGET(s);
 	if (!ewl_widget_init(w))
@@ -110,8 +110,8 @@ void
 ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, EWL_SEPARATOR_TYPE);
+	DCHECK_PARAM_PTR(s);
+	DCHECK_TYPE(s, EWL_SEPARATOR_TYPE);
 
 	if (s->orientation == o)
 		DRETURN(DLEVEL_STABLE);
@@ -145,8 +145,8 @@ Ewl_Orientation
 ewl_separator_orientation_get(Ewl_Separator *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, EWL_ORIENTATION_HORIZONTAL);
-	DCHECK_TYPE_RET("s", s, EWL_SEPARATOR_TYPE, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_PARAM_PTR_RET(s, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET(s, EWL_SEPARATOR_TYPE, EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(s->orientation, DLEVEL_STABLE);
 }

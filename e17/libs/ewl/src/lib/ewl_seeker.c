@@ -86,7 +86,7 @@ ewl_seeker_init(Ewl_Seeker *s)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, FALSE);
+	DCHECK_PARAM_PTR_RET(s, FALSE);
 
 	w = EWL_WIDGET(s);
 
@@ -162,8 +162,8 @@ void
 ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
+	DCHECK_PARAM_PTR(s);
+	DCHECK_TYPE(s, EWL_SEEKER_TYPE);
 
 	if (o == s->orientation)
 		DRETURN(DLEVEL_STABLE);
@@ -194,8 +194,8 @@ Ewl_Orientation
 ewl_seeker_orientation_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, EWL_ORIENTATION_HORIZONTAL);
-	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_PARAM_PTR_RET(s, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET(s, EWL_SEEKER_TYPE, EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(s->orientation, DLEVEL_STABLE);
 }
@@ -214,8 +214,8 @@ void
 ewl_seeker_autohide_set(Ewl_Seeker *s, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, EWL_SEEKER_TYPE);
+	DCHECK_PARAM_PTR(s);
+	DCHECK_TYPE(s, EWL_SEEKER_TYPE);
 
 	if (s->autohide == v || s->autohide == -v)
 		DRETURN(DLEVEL_STABLE);
@@ -242,8 +242,8 @@ int
 ewl_seeker_autohide_get(Ewl_Seeker *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, 0);
-	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(s, 0);
+	DCHECK_TYPE_RET(s, EWL_SEEKER_TYPE, 0);
 
 	DRETURN_INT(abs(s->autohide), DLEVEL_STABLE);
 }
@@ -271,8 +271,8 @@ ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int nw, nh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_SEEKER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_SEEKER_TYPE);
 
 	s = EWL_SEEKER(w);
 	r = EWL_RANGE(w);
@@ -346,10 +346,10 @@ ewl_seeker_cb_button_mouse_down(Ewl_Widget *w, void *ev_data,
 	int xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("w->parent", w->parent, EWL_SEEKER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev_data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(w->parent, EWL_SEEKER_TYPE);
 
 	ev = ev_data;
 	s = EWL_SEEKER(w->parent);
@@ -377,9 +377,9 @@ ewl_seeker_cb_button_mouse_up(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("w->parent", w->parent, EWL_SEEKER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(w->parent, EWL_SEEKER_TYPE);
 
 	EWL_SEEKER(w->parent)->dragstart = 0;
 
@@ -404,9 +404,9 @@ ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 	double scale;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_SEEKER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev_data);
+	DCHECK_TYPE(w, EWL_SEEKER_TYPE);
 
 	s = EWL_SEEKER(w);
 	r = EWL_RANGE(w);
@@ -463,9 +463,9 @@ ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data,
 	int xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_SEEKER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev_data);
+	DCHECK_TYPE(w, EWL_SEEKER_TYPE);
 
 	ev = ev_data;
 	s = EWL_SEEKER(w);
@@ -527,8 +527,8 @@ ewl_seeker_cb_mouse_up(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Seeker *s = EWL_SEEKER(w);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_SEEKER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_SEEKER_TYPE);
 
 	if (s->timer)
 		ecore_timer_del(s->timer);
@@ -560,9 +560,9 @@ ewl_seeker_cb_key_down(Ewl_Widget *w, void *ev_data,
 	void (*decrease)(Ewl_Range *r);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_SEEKER_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev_data);
+	DCHECK_TYPE(w, EWL_SEEKER_TYPE);
 
 	ev = ev_data;
 	r = EWL_RANGE(w);
@@ -612,10 +612,10 @@ ewl_seeker_cb_child_show(Ewl_Container *p, Ewl_Widget *w)
 	Ewl_Range *r;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("p", p);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("p", p, EWL_SEEKER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(p, EWL_SEEKER_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	r = EWL_RANGE(p);
 
@@ -642,8 +642,8 @@ ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my)
 	double scale;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, 0.0);
-	DCHECK_TYPE_RET("s", s, EWL_SEEKER_TYPE, 0.0);
+	DCHECK_PARAM_PTR_RET(s, 0.0);
+	DCHECK_TYPE_RET(s, EWL_SEEKER_TYPE, 0.0);
 
 	r = EWL_RANGE(s);
 
@@ -703,8 +703,8 @@ ewl_seeker_timer(void *data)
 	double value, posval, step;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, FALSE);
-	DCHECK_TYPE_RET("data", data, EWL_SEEKER_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_TYPE_RET(data, EWL_SEEKER_TYPE, FALSE);
 
 	s = EWL_SEEKER(data);
 	value = ewl_range_value_get(EWL_RANGE(s));

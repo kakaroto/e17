@@ -32,10 +32,10 @@ void
 ewl_tree2_view_tree2_set(Ewl_Tree2_View *v, Ewl_Tree2 *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("v", v);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("v", v, EWL_TREE2_VIEW_TYPE);
-	DCHECK_TYPE("t", t, EWL_TREE2_TYPE);
+	DCHECK_PARAM_PTR(v);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_TYPE(v, EWL_TREE2_VIEW_TYPE);
+	DCHECK_TYPE(t, EWL_TREE2_TYPE);
 
 	v->parent = t;
 
@@ -51,8 +51,8 @@ Ewl_Tree2 *
 ewl_tree2_view_tree2_get(Ewl_Tree2_View *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("v", v, NULL);
-	DCHECK_TYPE_RET("v", v, EWL_TREE2_VIEW_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(v, NULL);
+	DCHECK_TYPE_RET(v, EWL_TREE2_VIEW_TYPE, NULL);
 
 	DRETURN_PTR(v->parent, DLEVEL_STABLE);
 }

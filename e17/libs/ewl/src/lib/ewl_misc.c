@@ -747,8 +747,8 @@ ewl_configure_request(Ewl_Widget * w)
 	Ewl_Configure_Queue *queue_buffer;
 
 	DENTER_FUNCTION(DLEVEL_TESTING);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (!VISIBLE(w))
 		DRETURN(DLEVEL_STABLE);
@@ -952,8 +952,8 @@ void
 ewl_realize_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
 		DRETURN(DLEVEL_STABLE);
@@ -988,8 +988,8 @@ void
 ewl_realize_cancel_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_TESTING);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ecore_list_goto(realize_list, w);
 	if (ecore_list_current(realize_list) == w)
@@ -1075,7 +1075,7 @@ void
 ewl_destroy_request(Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR(w);
 
 	if (DESTROYED(w))
 		DRETURN(DLEVEL_STABLE);
@@ -1109,7 +1109,7 @@ void
 ewl_canvas_destroy(void *evas)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("evas", evas);
+	DCHECK_PARAM_PTR(evas);
 
 	ecore_list_append(free_evas_list, evas);
 
@@ -1126,7 +1126,7 @@ void
 ewl_canvas_object_destroy(void *obj)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("obj", obj);
+	DCHECK_PARAM_PTR(obj);
 
 	ecore_list_append(free_evas_object_list, obj);
 
@@ -1249,7 +1249,7 @@ void
 ewl_shutdown_add(Ewl_Shutdown_Hook hook)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("hook", hook);
+	DCHECK_PARAM_PTR(hook);
 
 	ecore_list_prepend(shutdown_hooks, hook);
 

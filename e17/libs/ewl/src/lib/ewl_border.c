@@ -41,7 +41,7 @@ ewl_border_init(Ewl_Border * b)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, FALSE);
+	DCHECK_PARAM_PTR_RET(b, FALSE);
 
 	w = EWL_WIDGET(b);
 
@@ -83,8 +83,8 @@ void
 ewl_border_label_set(Ewl_Border *b, const char *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BORDER_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BORDER_TYPE);
 
 	ewl_label_text_set(EWL_LABEL(b->label), t);
 
@@ -100,8 +100,8 @@ const char *
 ewl_border_label_get(Ewl_Border *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, NULL);
-	DCHECK_TYPE_RET("b", b, EWL_BORDER_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(b, NULL);
+	DCHECK_TYPE_RET(b, EWL_BORDER_TYPE, NULL);
 
 	DRETURN_PTR(ewl_label_text_get(EWL_LABEL(b->label)), DLEVEL_STABLE);
 }
@@ -116,8 +116,8 @@ void
 ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BORDER_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BORDER_TYPE);
 
 	if (b->label_position == pos) {
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -167,8 +167,8 @@ Ewl_Position
 ewl_border_label_position_get(Ewl_Border *b)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, EWL_POSITION_LEFT);
-	DCHECK_TYPE_RET("b", b, EWL_BORDER_TYPE, EWL_POSITION_LEFT);
+	DCHECK_PARAM_PTR_RET(b, EWL_POSITION_LEFT);
+	DCHECK_TYPE_RET(b, EWL_BORDER_TYPE, EWL_POSITION_LEFT);
 
 	DRETURN_INT(b->label_position, DLEVEL_STABLE);
 }
@@ -183,8 +183,8 @@ void
 ewl_border_label_alignment_set(Ewl_Border *b, unsigned int align)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("b", b);
-	DCHECK_TYPE("b", b, EWL_BORDER_TYPE);
+	DCHECK_PARAM_PTR(b);
+	DCHECK_TYPE(b, EWL_BORDER_TYPE);
 
 	ewl_object_alignment_set(EWL_OBJECT(b->label), align);
 
@@ -202,8 +202,8 @@ ewl_border_label_alignment_get(Ewl_Border *b)
 	unsigned int align;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("b", b, 0);
-	DCHECK_TYPE_RET("b", b, EWL_BORDER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(b, 0);
+	DCHECK_TYPE_RET(b, EWL_BORDER_TYPE, 0);
 
 	align = ewl_object_alignment_get(EWL_OBJECT(b->label));
 

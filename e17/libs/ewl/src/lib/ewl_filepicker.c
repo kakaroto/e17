@@ -85,7 +85,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	Ewl_View *view;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fp", fp, FALSE);
+	DCHECK_PARAM_PTR_RET(fp, FALSE);
 
 	if (!ewl_box_init(EWL_BOX(fp)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -210,8 +210,8 @@ void
 ewl_filepicker_show_favorites_set(Ewl_Filepicker *fp, unsigned int show)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	if (show == fp->show_favorites)
 		DRETURN(DLEVEL_STABLE);
@@ -234,8 +234,8 @@ unsigned int
 ewl_filepicker_show_favorites_get(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fp", fp, 0);
-	DCHECK_TYPE_RET("fp", fp, EWL_FILEPICKER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fp, 0);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, 0);
 
 	DRETURN_INT(fp->show_favorites, DLEVEL_STABLE);
 }
@@ -252,9 +252,9 @@ ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
 	Ewl_Filelist *old_fl;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_PARAM_PTR("view", view);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_PARAM_PTR(view);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	if (view == fp->view)
 		DRETURN(DLEVEL_STABLE);
@@ -308,8 +308,8 @@ Ewl_View *
 ewl_filepicker_list_view_get(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fp", fp, NULL);
-	DCHECK_TYPE_RET("fp", fp, EWL_FILEPICKER_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fp, NULL);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, NULL);
 
 	DRETURN_PTR(fp->view, DLEVEL_STABLE);
 }
@@ -326,8 +326,8 @@ ewl_filepicker_directory_set(Ewl_Filepicker *fp, const char *dir)
 	char *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	/* if no directory is given try to default to the HOME directory,
 	 * and if that failes try /tmp and if that fails try / */
@@ -364,8 +364,8 @@ const char *
 ewl_filepicker_directory_get(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fp", fp, NULL);
-	DCHECK_TYPE_RET("fp", fp, EWL_FILEPICKER_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fp, NULL);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, NULL);
 
 	DRETURN_PTR(ewl_filelist_directory_get(EWL_FILELIST(fp->file_list)),
 							DLEVEL_STABLE);
@@ -381,8 +381,8 @@ void
 ewl_filepicker_filter_set(Ewl_Filepicker *fp, const char *filter)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	ewl_filelist_filter_set(EWL_FILELIST(fp->file_list), filter);
 
@@ -398,8 +398,8 @@ const char *
 ewl_filepicker_filter_get(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fp", fp, NULL);
-	DCHECK_TYPE_RET("fp", fp, EWL_FILEPICKER_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fp, NULL);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, NULL);
 
 	DRETURN_PTR(ewl_filelist_filter_get(EWL_FILELIST(fp->file_list)),
 							DLEVEL_STABLE);
@@ -415,8 +415,8 @@ void
 ewl_filepicker_multiselect_set(Ewl_Filepicker *fp, unsigned int ms)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	ewl_filelist_multiselect_set(EWL_FILELIST(fp->file_list), ms);
 
@@ -432,8 +432,8 @@ unsigned int
 ewl_filepicker_multiselect_get(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fp", fp, 0);
-	DCHECK_TYPE_RET("fp", fp, EWL_FILEPICKER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fp, 0);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, 0);
 
 	DRETURN_INT(ewl_filelist_multiselect_get(EWL_FILELIST(fp->file_list)),
 								DLEVEL_STABLE);
@@ -450,8 +450,8 @@ void
 ewl_filepicker_show_dot_files_set(Ewl_Filepicker *fp, unsigned int dot)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	ewl_filelist_show_dot_files_set(EWL_FILELIST(fp->file_list), dot);
 
@@ -467,8 +467,8 @@ unsigned int
 ewl_filepicker_show_dot_files_get(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fp", fp, 0);
-	DCHECK_TYPE_RET("fp", fp, EWL_FILEPICKER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fp, 0);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, 0);
 
 	DRETURN_INT(ewl_filelist_show_dot_files_get(EWL_FILELIST(fp->file_list)),
 								DLEVEL_STABLE);
@@ -484,8 +484,8 @@ void
 ewl_filepicker_selected_file_set(Ewl_Filepicker *fp, const char *file)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	ewl_filelist_selected_file_set(EWL_FILELIST(fp->file_list), file);
 
@@ -503,8 +503,8 @@ ewl_filepicker_selected_file_get(Ewl_Filepicker *fp)
 	char *file;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fp", fp, NULL);
-	DCHECK_TYPE_RET("fp", fp, EWL_FILEPICKER_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fp, NULL);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, NULL);
 
 	/* we try to grab whats in the text entry first as the user may have
 	 * changed the selected name. Otherwise we try to grab whats in the
@@ -526,8 +526,8 @@ void
 ewl_filepicker_selected_files_set(Ewl_Filepicker *fp, Ecore_List *files)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	ewl_filelist_selected_files_set(EWL_FILELIST(fp->file_list), files);
 
@@ -543,8 +543,8 @@ Ecore_List *
 ewl_filepicker_selected_files_get(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fp", fp, NULL);
-	DCHECK_TYPE_RET("fp", fp, EWL_FILEPICKER_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fp, NULL);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, NULL);
 
 	DRETURN_PTR(ewl_filelist_selected_files_get(EWL_FILELIST(fp->file_list)),
 								DLEVEL_STABLE);
@@ -564,9 +564,9 @@ ewl_filepicker_filter_add(Ewl_Filepicker *fp, const char *name,
 	Ewl_Filepicker_Filter *f;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_PARAM_PTR("name", name);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_PARAM_PTR(name);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	f= NEW(Ewl_Filepicker_Filter, 1);
 	f->name = strdup(name);
@@ -585,8 +585,8 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 	Ewl_Event_Action_Response *e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
 
 	fl = EWL_FILELIST(w);
 	fp = data;
@@ -619,9 +619,9 @@ ewl_filepicker_cb_button_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Event_Action_Response e;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	fp = data;
 	s = EWL_STOCK(w);
@@ -643,8 +643,8 @@ static void
 ewl_filepicker_favorites_populate(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	/* XXX Write me */
 
@@ -659,7 +659,7 @@ ewl_filepicker_cb_type_fetch(void *data, unsigned int row,
 	Ewl_Filepicker_Filter *filter;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, NULL);
+	DCHECK_PARAM_PTR_RET(data, NULL);
 
 	fp = data;
 	ecore_list_index_goto(fp->filters, row);
@@ -674,7 +674,7 @@ ewl_filepicker_cb_type_count(void *data)
 	Ewl_Filepicker *fp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, 0);
+	DCHECK_PARAM_PTR_RET(data, 0);
 
 	fp = data;
 
@@ -689,7 +689,7 @@ ewl_filepicker_cb_type_header(void *data, unsigned int col)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, NULL);
+	DCHECK_PARAM_PTR_RET(data, NULL);
 
 	fp = data;
 	ecore_list_index_goto(fp->filters, col);
@@ -711,9 +711,9 @@ ewl_filepicker_path_populate(Ewl_Filepicker *fp, char *path)
 	char *p, *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fp", fp);
-	DCHECK_PARAM_PTR("path", path);
-	DCHECK_TYPE("fp", fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_PARAM_PTR(path);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
 	ecore_list_clear(fp->path);
 	ecore_list_append(fp->path, strdup("/"));
@@ -745,9 +745,9 @@ ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Selection_Idx *idx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	fp = data;
 	idx = ewl_mvc_selected_get(EWL_MVC(w));
@@ -764,9 +764,9 @@ ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	Ewl_Filepicker *fp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	fp = data;
 	ewl_filepicker_filter_set(fp, ewl_text_text_get(EWL_TEXT(w)));
@@ -783,9 +783,9 @@ ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Selection_Idx *idx;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	fp = data;
 	idx = ewl_mvc_selected_get(EWL_MVC(w));
@@ -808,8 +808,8 @@ ewl_filepicker_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Filepicker_Filter *filter;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	fp = EWL_FILEPICKER(w);
 

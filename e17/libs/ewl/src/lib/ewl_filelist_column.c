@@ -101,7 +101,7 @@ ewl_filelist_column_init(Ewl_Filelist_Column *fl)
 	Ewl_Filelist *list;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, FALSE);
+	DCHECK_PARAM_PTR_RET(fl, FALSE);
 
 	if (!ewl_filelist_init(EWL_FILELIST(fl)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -147,8 +147,8 @@ ewl_filelist_column_dir_change(Ewl_Filelist *fl)
 	unsigned int i = 0, count = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_COLUMN_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_COLUMN_TYPE);
 
 	list = EWL_FILELIST_COLUMN(fl);
 	new_path = strdup(ewl_filelist_directory_get(EWL_FILELIST(fl)));
@@ -261,9 +261,9 @@ void
 ewl_filelist_column_selected_file_add(Ewl_Filelist *fl, const char *file)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("file", file);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(file);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -280,9 +280,9 @@ ewl_filelist_column_filename_get(Ewl_Filelist *fl, void *item)
 	Ewl_Icon *icon;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_PARAM_PTR_RET("item", item, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_PARAM_PTR_RET(item, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	icon = EWL_ICON(item);
 
@@ -299,8 +299,8 @@ void
 ewl_filelist_column_selected_unselect(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	ewl_filelist_selected_signal_all(fl, "icon,unselect");
 
@@ -323,10 +323,10 @@ ewl_filelist_column_shift_handle(Ewl_Filelist *fl, Ewl_Widget *clicked)
 	Ewl_Container *dir_parent;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("clicked", clicked);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
-	DCHECK_TYPE("clicked", clicked, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(clicked);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+	DCHECK_TYPE(clicked, EWL_WIDGET_TYPE);
 
 	list = EWL_FILELIST_COLUMN(fl);
 	parent = clicked->parent;
@@ -362,11 +362,11 @@ ewl_filelist_column_cb_dir_clicked(Ewl_Widget *w, void *ev, void *data)
 	Ewl_Container *dir_parent;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev", ev);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_ICON_TYPE);
-	DCHECK_TYPE("data", data, EWL_FILELIST_COLUMN_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_ICON_TYPE);
+	DCHECK_TYPE(data, EWL_FILELIST_COLUMN_TYPE);
 
 	fl = data;
 	event = ev;
@@ -417,11 +417,11 @@ ewl_filelist_column_cb_file_clicked(Ewl_Widget *w, void *ev, void *data)
 	Ecore_List *selected;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev", ev);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("data", data, EWL_FILELIST_COLUMN_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(data, EWL_FILELIST_COLUMN_TYPE);
 
 	fl = data;
 
@@ -476,11 +476,11 @@ ewl_filelist_column_row_add(Ewl_Filelist *fl, const char *dir, char *file,
 	char path[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("dir", dir);
-	DCHECK_PARAM_PTR("file", file);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(dir);
+	DCHECK_PARAM_PTR(file);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	list = EWL_FILELIST_COLUMN(fl);
 

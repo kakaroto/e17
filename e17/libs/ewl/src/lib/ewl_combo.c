@@ -49,7 +49,7 @@ int
 ewl_combo_init(Ewl_Combo *combo)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("combo", combo, FALSE);
+	DCHECK_PARAM_PTR_RET(combo, FALSE);
 
 	if (!ewl_mvc_init(EWL_MVC(combo)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -106,8 +106,8 @@ void
 ewl_combo_editable_set(Ewl_Combo *combo, unsigned int editable)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("combo", combo);
-	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
+	DCHECK_PARAM_PTR(combo);
+	DCHECK_TYPE(combo, EWL_COMBO_TYPE);
 
 	if (combo->editable == !!editable)
 		DRETURN(DLEVEL_STABLE);
@@ -129,8 +129,8 @@ unsigned int
 ewl_combo_editable_get(Ewl_Combo *combo)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("combo", combo, FALSE);
-	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(combo, FALSE);
+	DCHECK_TYPE_RET(combo, EWL_COMBO_TYPE, FALSE);
 
 	DRETURN_INT(combo->editable, DLEVEL_STABLE);
 }
@@ -148,8 +148,8 @@ void
 ewl_combo_scrollable_set(Ewl_Combo *combo, unsigned int scrollable)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("combo", combo);
-	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
+	DCHECK_PARAM_PTR(combo);
+	DCHECK_TYPE(combo, EWL_COMBO_TYPE);
 
 	if (combo->scrollable == !!scrollable)
 		DRETURN(DLEVEL_STABLE);
@@ -194,8 +194,8 @@ unsigned int
 ewl_combo_scrollable_get(Ewl_Combo *combo)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("combo", combo, FALSE);
-	DCHECK_TYPE_RET("combo", combo, EWL_COMBO_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(combo, FALSE);
+	DCHECK_TYPE_RET(combo, EWL_COMBO_TYPE, FALSE);
 
 	DRETURN_INT(combo->scrollable, DLEVEL_STABLE);
 }
@@ -209,8 +209,9 @@ void
 ewl_combo_popup_container_set(Ewl_Combo *combo, Ewl_Container *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("combo", combo);
-	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
+	DCHECK_PARAM_PTR(combo);
+	DCHECK_TYPE(combo, EWL_COMBO_TYPE);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
 	combo->scrollable = FALSE;
 	ewl_context_menu_container_set(EWL_CONTEXT_MENU(combo->popup), c);
@@ -236,8 +237,8 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	void *mvc_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_PARAM_PTR("data", EWL_COMBO_TYPE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_COMBO_TYPE);
 
 	combo = data;
 	model = ewl_mvc_model_get(EWL_MVC(combo));
@@ -283,8 +284,8 @@ ewl_combo_cb_popup_hide(Ewl_Widget *w __UNUSED__,
 	Ewl_Combo *combo;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("data", data, EWL_COMBO_TYPE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_COMBO_TYPE);
 
 	combo = EWL_COMBO(data);
 	ewl_widget_state_set(combo->button, "collapsed", EWL_STATE_PERSISTENT);
@@ -301,8 +302,8 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 	Ewl_Widget *item = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("mvc", mvc);
-	DCHECK_TYPE("mvc", mvc, EWL_COMBO_TYPE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_COMBO_TYPE);
 
 	combo = EWL_COMBO(mvc);
 	view = ewl_mvc_view_get(mvc);
@@ -381,7 +382,8 @@ ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, Ewl_View *view,
 	Ewl_Widget *menu;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("combo", combo, NULL);
+	DCHECK_PARAM_PTR_RET(combo, NULL);
+	DCHECK_TYPE_RET(combo, EWL_COMBO_TYPE, NULL);
 
 	menu = ewl_menu_new();
 	ewl_widget_appearance_set(EWL_MENU(menu)->popup, EWL_COMBO_TYPE
@@ -420,7 +422,10 @@ ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model,
 	unsigned int count, i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("combo", combo);
+	DCHECK_PARAM_PTR(combo);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(combo, EWL_COMBO_TYPE);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
 	if (!model->count)
 		DRETURN(DLEVEL_STABLE);
@@ -509,7 +514,7 @@ int
 ewl_combo_cell_init(Ewl_Combo_Cell *cell)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cell", cell, FALSE);
+	DCHECK_PARAM_PTR_RET(cell, FALSE);
 
 	if (!ewl_cell_init(EWL_CELL(cell)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -532,10 +537,10 @@ void
 ewl_combo_cell_combo_set(Ewl_Combo_Cell *cell, Ewl_Combo *combo)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cell", cell);
-	DCHECK_TYPE("cell", cell, EWL_COMBO_CELL_TYPE);
-	DCHECK_PARAM_PTR("combo", combo);
-	DCHECK_TYPE("combo", combo, EWL_COMBO_TYPE);
+	DCHECK_PARAM_PTR(cell);
+	DCHECK_TYPE(cell, EWL_COMBO_CELL_TYPE);
+	DCHECK_PARAM_PTR(combo);
+	DCHECK_TYPE(combo, EWL_COMBO_TYPE);
 
 	cell->combo = combo;
 
@@ -550,8 +555,8 @@ Ewl_Combo *
 ewl_combo_cell_combo_get(Ewl_Combo_Cell *cell)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cell", cell, NULL);
-	DCHECK_TYPE_RET("cell", cell, EWL_COMBO_CELL_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(cell, NULL);
+	DCHECK_TYPE_RET(cell, EWL_COMBO_CELL_TYPE, NULL);
 
 	DRETURN_PTR(cell->combo, DLEVEL_STABLE);
 }
@@ -565,9 +570,9 @@ void
 ewl_combo_cell_model_set(Ewl_Combo_Cell *cell, Ewl_Model *model)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cell", cell);
-	DCHECK_TYPE("cell", cell, EWL_COMBO_CELL_TYPE);
-	DCHECK_PARAM_PTR("model", model);
+	DCHECK_PARAM_PTR(cell);
+	DCHECK_TYPE(cell, EWL_COMBO_CELL_TYPE);
+	DCHECK_PARAM_PTR(model);
 
 	cell->model = model;
 
@@ -582,8 +587,8 @@ Ewl_Model *
 ewl_combo_cell_model_get(Ewl_Combo_Cell *cell)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cell", cell, NULL);
-	DCHECK_TYPE_RET("cell", cell, EWL_COMBO_CELL_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(cell, NULL);
+	DCHECK_TYPE_RET(cell, EWL_COMBO_CELL_TYPE, NULL);
 
 	DRETURN_PTR(cell->model, DLEVEL_STABLE);
 }
@@ -597,8 +602,8 @@ void
 ewl_combo_cell_data_set(Ewl_Combo_Cell *cell, void *mvc_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cell", cell);
-	DCHECK_TYPE("cell", cell, EWL_COMBO_CELL_TYPE);
+	DCHECK_PARAM_PTR(cell);
+	DCHECK_TYPE(cell, EWL_COMBO_CELL_TYPE);
 
 	cell->mvc_data = mvc_data;
 
@@ -613,8 +618,8 @@ void *
 ewl_combo_cell_data_get(Ewl_Combo_Cell *cell)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cell", cell, NULL);
-	DCHECK_TYPE_RET("cell", cell, EWL_COMBO_CELL_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(cell, NULL);
+	DCHECK_TYPE_RET(cell, EWL_COMBO_CELL_TYPE, NULL);
 
 	DRETURN_PTR(cell->mvc_data, DLEVEL_STABLE);
 }
@@ -636,8 +641,8 @@ ewl_combo_cell_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_COMBO_CELL_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_COMBO_CELL_TYPE);
 
 	i = ewl_container_child_index_get(EWL_CONTAINER(w->parent), w);
 	if (i < 0) DRETURN(DLEVEL_STABLE);

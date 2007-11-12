@@ -46,7 +46,7 @@ int
 ewl_stock_init(Ewl_Stock *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, FALSE);
+	DCHECK_PARAM_PTR_RET(s, FALSE);
 
 	if (!ewl_box_init(EWL_BOX(s)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -67,9 +67,9 @@ void
 ewl_stock_functions_set(Ewl_Stock *s, Ewl_Stock_Funcs *funcs)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-	DCHECK_PARAM_PTR("funcs", funcs);
-	DCHECK_TYPE("s", s, EWL_STOCK_TYPE);
+	DCHECK_PARAM_PTR(s);
+	DCHECK_PARAM_PTR(funcs);
+	DCHECK_TYPE(s, EWL_STOCK_TYPE);
 
 	s->stock_funcs = funcs;
 
@@ -86,8 +86,8 @@ void
 ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
-	DCHECK_TYPE("s", s, EWL_STOCK_TYPE);
+	DCHECK_PARAM_PTR(s);
+	DCHECK_TYPE(s, EWL_STOCK_TYPE);
 
 	if (stock == s->stock_type)
 		DRETURN(DLEVEL_STABLE);
@@ -137,8 +137,8 @@ Ewl_Stock_Type
 ewl_stock_type_get(Ewl_Stock *s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("s", s, EWL_STOCK_NONE);
-	DCHECK_TYPE_RET("s", s, EWL_STOCK_TYPE, EWL_STOCK_NONE);
+	DCHECK_PARAM_PTR_RET(s, EWL_STOCK_NONE);
+	DCHECK_TYPE_RET(s, EWL_STOCK_TYPE, EWL_STOCK_NONE);
 
 	DRETURN_INT(s->stock_type, DLEVEL_STABLE);
 }

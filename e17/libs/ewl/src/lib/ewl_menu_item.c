@@ -37,7 +37,7 @@ int
 ewl_menu_item_init(Ewl_Menu_Item *item)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("item", item, FALSE);
+	DCHECK_PARAM_PTR_RET(item, FALSE);
 
 	/*
 	 * Initialize the inherited container fields.

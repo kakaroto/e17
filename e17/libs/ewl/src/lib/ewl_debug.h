@@ -121,7 +121,7 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	ewl_segv(); \
 }
 
-#define DCHECK_PARAM_PTR(str, ptr) \
+#define DCHECK_PARAM_PTR(ptr) \
 { \
 	if (!(ptr)) \
 	  { \
@@ -131,14 +131,14 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 				"\tWith the parameter:\n\n" \
 				"\t%s\n\n" \
 				"\tbeing NULL. Please fix your program.\n", \
-				__func__, str); \
+				__func__, # ptr); \
 		ewl_backtrace(); \
 		ewl_segv(); \
 		return; \
 	  } \
 }
 
-#define DCHECK_PARAM_PTR_RET(str, ptr, ret) \
+#define DCHECK_PARAM_PTR_RET(ptr, ret) \
 { \
 	if (!(ptr)) \
 	  { \
@@ -148,16 +148,16 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 				"\tWith the parameter:\n\n" \
 				"\t%s\n\n" \
 				"\tbeing NULL. Please fix your program.\n", \
-				__func__, str); \
+				__func__, # ptr); \
 		ewl_backtrace(); \
 		ewl_segv(); \
 		return ret; \
 	  } \
 }
 
-#define DCHECK_TYPE(str, ptr, type) \
+#define DCHECK_TYPE(ptr, type) \
 { \
-	if (!ewl_widget_type_is(EWL_WIDGET(ptr), type)) \
+	if (ptr && !ewl_widget_type_is(EWL_WIDGET(ptr), type)) \
 	{ \
 		ewl_print_warning(); \
 		fprintf(stderr, "\tThis program is calling:\n\n" \
@@ -166,7 +166,7 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 				"\t%s\n\n" \
 				"\tas the wrong type. (%s) instead of (%s).\n" \
 				"\tPlease fix your program.\n", \
-				__func__, str, \
+				__func__, # ptr, \
 				(EWL_WIDGET(ptr)->inheritance ? \
 					EWL_WIDGET(ptr)->inheritance : \
 					"NULL") , type); \
@@ -176,9 +176,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 	} \
 }
 
-#define DCHECK_TYPE_RET(str, ptr, type, ret) \
+#define DCHECK_TYPE_RET(ptr, type, ret) \
 { \
-	if (!ewl_widget_type_is(EWL_WIDGET(ptr), type)) \
+	if (ptr && !ewl_widget_type_is(EWL_WIDGET(ptr), type)) \
 	{ \
 		ewl_print_warning(); \
 		fprintf(stderr, "\tThis program is calling:\n\n" \
@@ -187,7 +187,7 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 				"\t%s\n\n" \
 				"\tas the wrong type. (%s) instead of (%s).\n" \
 				"\tPlease fix your program.\n", \
-				__func__, str, \
+				__func__, # ptr, \
 				(EWL_WIDGET(ptr)->inheritance ? \
 					EWL_WIDGET(ptr)->inheritance : \
 					"NULL") , type); \
@@ -206,20 +206,20 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 #define DRETURN_FLOAT(num, lvl) return num
 #define DRETURN_INT(num, lvl) return num
 #define DWARNING(fmt, args...) {}
-#define DCHECK_PARAM_PTR(str, ptr) \
+#define DCHECK_PARAM_PTR(ptr) \
 { \
 	if (!(ptr)) { \
 		return; \
 	} \
 }
-#define DCHECK_PARAM_PTR_RET(str, ptr, ret) \
+#define DCHECK_PARAM_PTR_RET(ptr, ret) \
 { \
 	if (!(ptr)) { \
 		return ret; \
 	} \
 }
-#define DCHECK_TYPE(str, ptr, type) {}
-#define DCHECK_TYPE_RET(str, ptr, type, ret) {}
+#define DCHECK_TYPE(ptr, type) {}
+#define DCHECK_TYPE_RET(ptr, type, ret) {}
 #endif
 
 #define DERROR(fmt) \

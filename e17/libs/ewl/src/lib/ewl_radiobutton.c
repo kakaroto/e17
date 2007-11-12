@@ -43,7 +43,7 @@ ewl_radiobutton_init(Ewl_Radiobutton *rb)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("rb", rb, FALSE);
+	DCHECK_PARAM_PTR_RET(rb, FALSE);
 
 	cb = EWL_CHECKBUTTON(rb);
 	w = EWL_WIDGET(rb);
@@ -75,10 +75,10 @@ void
 ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("rb", rb);
-	DCHECK_PARAM_PTR("crb", crb);
-	DCHECK_TYPE("rb", rb, EWL_RADIOBUTTON_TYPE);
-	DCHECK_TYPE("crb", crb, EWL_RADIOBUTTON_TYPE);
+	DCHECK_PARAM_PTR(rb);
+	DCHECK_PARAM_PTR(crb);
+	DCHECK_TYPE(rb, EWL_RADIOBUTTON_TYPE);
+	DCHECK_TYPE(crb, EWL_RADIOBUTTON_TYPE);
 
 	/*
 	 * If a chain doesnt exist, create one
@@ -116,8 +116,8 @@ ewl_radiobutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int oc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_RADIOBUTTON_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_RADIOBUTTON_TYPE);
 
 	cb = EWL_CHECKBUTTON(w);
 	rb = EWL_RADIOBUTTON(w);
@@ -154,8 +154,8 @@ ewl_radiobutton_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Radiobutton *rb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_RADIOBUTTON_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_RADIOBUTTON_TYPE);
 
 	rb = EWL_RADIOBUTTON(w);
 

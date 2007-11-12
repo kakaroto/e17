@@ -42,7 +42,7 @@ int
 ewl_window_init(Ewl_Window *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, FALSE);
+	DCHECK_PARAM_PTR_RET(w, FALSE);
 
 	/*
 	 * Initialize the fields of the inherited container class
@@ -94,7 +94,7 @@ ewl_window_window_find(void *window)
 	Ewl_Window *retwin;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("window", window, NULL);
+	DCHECK_PARAM_PTR_RET(window, NULL);
 
 	ecore_list_first_goto(ewl_window_list);
 	while ((retwin = ecore_list_next(ewl_window_list)))
@@ -117,8 +117,8 @@ void
 ewl_window_title_set(Ewl_Window *win, const char *title)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if ((!title) || (strcmp(win->title, title))) {
 		IF_FREE(win->title);
@@ -141,8 +141,8 @@ char *
 ewl_window_title_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, NULL);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(win, NULL);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, NULL);
 
 	DRETURN_PTR(strdup(win->title), DLEVEL_STABLE);
 }
@@ -160,8 +160,8 @@ void
 ewl_window_name_set(Ewl_Window *win, const char *name)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if ((!name) || (strcmp(win->name, name))) {
 		IF_FREE(win->name);
@@ -184,8 +184,8 @@ char *
 ewl_window_name_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, NULL);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(win, NULL);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, NULL);
 
 	DRETURN_PTR(strdup(win->name), DLEVEL_STABLE);
 }
@@ -203,8 +203,8 @@ void
 ewl_window_class_set(Ewl_Window *win, const char *classname)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if ((!classname) || (!win->classname)
 			|| (strcmp(win->classname, classname)))
@@ -229,8 +229,8 @@ char *
 ewl_window_class_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, NULL);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(win, NULL);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, NULL);
 
 	DRETURN_PTR(strdup(win->classname), DLEVEL_STABLE);
 }
@@ -247,8 +247,8 @@ void
 ewl_window_borderless_set(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	win->flags |= EWL_WINDOW_BORDERLESS;
 
@@ -269,8 +269,8 @@ void
 ewl_window_dialog_set(Ewl_Window *win, int dialog)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	/* do nothing if already set */
 	if (dialog == ewl_window_dialog_get(win))
@@ -295,8 +295,8 @@ int
 ewl_window_dialog_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, FALSE);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(win, FALSE);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, FALSE);
 
 	DRETURN_INT((!!(win->flags & EWL_WINDOW_DIALOG)), DLEVEL_STABLE);
 }
@@ -312,8 +312,8 @@ void
 ewl_window_fullscreen_set(Ewl_Window *win, unsigned int fullscreen)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	/* do nothing if already set */
 	if (fullscreen == ewl_window_fullscreen_get(win))
@@ -338,8 +338,8 @@ unsigned int
 ewl_window_fullscreen_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, FALSE);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(win, FALSE);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, FALSE);
 
 	DRETURN_INT((!!(win->flags & EWL_WINDOW_FULLSCREEN)), DLEVEL_STABLE);
 }
@@ -354,8 +354,8 @@ void
 ewl_window_skip_taskbar_set(Ewl_Window *win, unsigned int skip)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	/* do nothing if already set */
 	if (skip == ewl_window_skip_taskbar_get(win))
@@ -381,8 +381,8 @@ unsigned int
 ewl_window_skip_taskbar_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, FALSE);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(win, FALSE);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, FALSE);
 
 	DRETURN_INT((!!(win->flags & EWL_WINDOW_SKIP_TASKBAR)), DLEVEL_STABLE);
 }
@@ -397,8 +397,8 @@ void
 ewl_window_skip_pager_set(Ewl_Window *win, unsigned int skip)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	/* do nothing if already set */
 	if (skip == ewl_window_skip_pager_get(win))
@@ -424,8 +424,8 @@ unsigned int
 ewl_window_skip_pager_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, FALSE);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(win, FALSE);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, FALSE);
 
 	DRETURN_INT((!!(win->flags & EWL_WINDOW_SKIP_PAGER)), DLEVEL_STABLE);
 }
@@ -444,8 +444,8 @@ void
 ewl_window_move(Ewl_Window *win, int x, int y)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	EWL_EMBED(win)->x = x;
 	EWL_EMBED(win)->y = y;
@@ -466,8 +466,8 @@ void
 ewl_window_raise(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	ewl_engine_window_raise(win);
 
@@ -485,8 +485,8 @@ void
 ewl_window_lower(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	ewl_engine_window_lower(win);
 
@@ -508,8 +508,8 @@ void
 ewl_window_attention_demand(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	win->flags |= EWL_WINDOW_DEMANDS_ATTENTION;
 	ewl_engine_window_states_set(win);
@@ -533,8 +533,8 @@ void
 ewl_window_urgent_set(Ewl_Window *win, unsigned int urgent)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (urgent)
 		win->flags |= EWL_WINDOW_URGENT;
@@ -555,8 +555,8 @@ unsigned int
 ewl_window_urgent_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, FALSE);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(win, FALSE);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, FALSE);
 
 	DRETURN_INT(!!(win->flags & EWL_WINDOW_URGENT), DLEVEL_STABLE);
 }
@@ -571,8 +571,8 @@ void
 ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	win->transient.ewl = forwin;
 	win->flags &= ~EWL_WINDOW_TRANSIENT_FOREIGN;
@@ -612,8 +612,8 @@ void
 ewl_window_transient_for_foreign(Ewl_Window *win, Ewl_Embed_Window *forwin)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	win->transient.foreign = forwin;
 	win->flags |= EWL_WINDOW_TRANSIENT_FOREIGN;
@@ -635,8 +635,8 @@ void
 ewl_window_leader_set(Ewl_Window *win, Ewl_Window *leader)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	win->leader.ewl = leader;
 	win->flags &= ~EWL_WINDOW_LEADER_FOREIGN;
@@ -680,8 +680,8 @@ void
 ewl_window_leader_foreign_set(Ewl_Window *win, Ewl_Embed_Window *leader)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	win->leader.foreign = leader;
 	win->flags &= ~EWL_WINDOW_LEADER;
@@ -713,8 +713,8 @@ Ewl_Window *
 ewl_window_leader_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, NULL);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(win, NULL);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, NULL);
 
 	if (win->flags & EWL_WINDOW_LEADER)
 		DRETURN_PTR(win->leader.ewl, DLEVEL_STABLE);
@@ -734,8 +734,8 @@ Ewl_Embed_Window *
 ewl_window_leader_foreign_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, NULL);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(win, NULL);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, NULL);
 
 	if (win->flags & EWL_WINDOW_LEADER_FOREIGN)
 		DRETURN_PTR(win->leader.foreign, DLEVEL_STABLE);
@@ -752,8 +752,8 @@ int
 ewl_window_modal_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, FALSE);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(win, FALSE);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, FALSE);
 
 	DRETURN_INT(!!(win->flags & EWL_WINDOW_MODAL), DLEVEL_STABLE);
 }
@@ -768,8 +768,8 @@ void
 ewl_window_modal_set(Ewl_Window *win, int modal)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (modal)
 		win->flags |= EWL_WINDOW_MODAL;
@@ -791,8 +791,8 @@ void
 ewl_window_keyboard_grab_set(Ewl_Window *win, int grab)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (grab)
 		win->flags |= EWL_WINDOW_GRAB_KEYBOARD;
@@ -815,8 +815,8 @@ ewl_window_keyboard_grab_get(Ewl_Window *win)
 	int grab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, FALSE);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(win, FALSE);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, FALSE);
 
 	if (win->flags & EWL_WINDOW_GRAB_KEYBOARD)
 		grab = TRUE;
@@ -836,8 +836,8 @@ void
 ewl_window_pointer_grab_set(Ewl_Window *win, int grab)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (grab)
 		win->flags |= EWL_WINDOW_GRAB_POINTER;
@@ -860,8 +860,8 @@ ewl_window_pointer_grab_get(Ewl_Window *win)
 	int grab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, FALSE);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(win, FALSE);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, FALSE);
 
 	if (win->flags & EWL_WINDOW_GRAB_POINTER)
 		grab = TRUE;
@@ -881,8 +881,8 @@ void
 ewl_window_override_set(Ewl_Window *win, int override)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (override)
 		win->flags |= EWL_WINDOW_OVERRIDE;
@@ -905,8 +905,8 @@ ewl_window_override_get(Ewl_Window *win)
 	int override;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, FALSE);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(win, FALSE);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, FALSE);
 
 	if (win->flags & EWL_WINDOW_OVERRIDE)
 		override = TRUE;
@@ -928,8 +928,8 @@ void
 ewl_window_selection_text_set(Ewl_Window *win, const char *txt)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	ewl_engine_window_selection_text_set(win, txt);
 
@@ -952,8 +952,8 @@ ewl_window_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WINDOW_TYPE);
 
 	window = EWL_WINDOW(w);
 
@@ -996,8 +996,8 @@ ewl_window_cb_postrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WINDOW_TYPE);
 
 	if (EWL_WINDOW(w)->flags & EWL_WINDOW_TRANSIENT)
 		ewl_window_transient_for(EWL_WINDOW(w),
@@ -1024,10 +1024,10 @@ ewl_window_cb_realize_parent(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Window *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
-	DCHECK_TYPE("user_data", user_data, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(w, EWL_WINDOW_TYPE);
+	DCHECK_TYPE(user_data, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(user_data);
 	/*
@@ -1067,8 +1067,8 @@ ewl_window_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Embed *embed;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WINDOW_TYPE);
 
 	embed = EWL_EMBED(w);
 	win = EWL_WINDOW(w);
@@ -1101,8 +1101,8 @@ ewl_window_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Window *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(w);
 	if (!win->window)
@@ -1141,8 +1141,8 @@ ewl_window_cb_expose(Ewl_Widget *w, void *ev __UNUSED__,
 	Ewl_Window *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(w);
 
@@ -1167,8 +1167,8 @@ ewl_window_cb_hide(Ewl_Widget *widget, void *ev_data __UNUSED__,
 	Ewl_Window *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("widget", widget);
-	DCHECK_TYPE("widget", widget, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(widget);
+	DCHECK_TYPE(widget, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(widget);
 
@@ -1197,8 +1197,8 @@ ewl_window_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Window *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(w);
 
@@ -1227,8 +1227,8 @@ ewl_window_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Window *win;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WINDOW_TYPE);
 
 	win = EWL_WINDOW(w);
 

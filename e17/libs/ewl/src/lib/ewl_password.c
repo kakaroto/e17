@@ -43,7 +43,7 @@ ewl_password_init(Ewl_Password *e)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("e", e, FALSE);
+	DCHECK_PARAM_PTR_RET(e, FALSE);
 
 	w = EWL_WIDGET(e);
 
@@ -86,8 +86,8 @@ ewl_password_text_set(Ewl_Password *e, const char *t)
 	int len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_PASSWORD_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_PASSWORD_TYPE);
 
 	/*
 	 * Zero this out just in case a segv occurs (by the end
@@ -125,8 +125,8 @@ ewl_password_text_get(Ewl_Password *e)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("e", e, NULL);
-	DCHECK_TYPE_RET("e", e, EWL_PASSWORD_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(e, NULL);
+	DCHECK_TYPE_RET(e, EWL_PASSWORD_TYPE, NULL);
 
 	w = EWL_WIDGET(e);
 
@@ -145,8 +145,8 @@ ewl_password_clear(Ewl_Password *e)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_PASSWORD_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_PASSWORD_TYPE);
 
 	w = EWL_WIDGET(e);
 
@@ -164,8 +164,8 @@ char
 ewl_password_obscure_get(Ewl_Password *e)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("e", e, 0);
-	DCHECK_TYPE_RET("e", e, EWL_PASSWORD_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(e, 0);
+	DCHECK_TYPE_RET(e, EWL_PASSWORD_TYPE, 0);
 
 	DRETURN_INT(e->obscure, DLEVEL_STABLE);
 }
@@ -180,8 +180,8 @@ void
 ewl_password_obscure_set(Ewl_Password *e, char o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_PASSWORD_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_PASSWORD_TYPE);
 
 	e->obscure = o;
 
@@ -195,8 +195,8 @@ ewl_password_text_insert(Ewl_Password *e, const char *s)
 	int l = 0, l2 = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("e", e);
-	DCHECK_TYPE("e", e, EWL_PASSWORD_TYPE);
+	DCHECK_PARAM_PTR(e);
+	DCHECK_TYPE(e, EWL_PASSWORD_TYPE);
 
 	s2 = ewl_password_text_get(e);
 	if (s) l = strlen(s);
@@ -247,8 +247,8 @@ ewl_password_cb_key_down(Ewl_Widget *w, void *ev_data,
 	Ewl_Event_Key *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_PASSWORD_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_PASSWORD_TYPE);
 
 	e = EWL_PASSWORD(w);
 	ev = ev_data;
@@ -295,8 +295,8 @@ void
 ewl_password_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	/*
 	 * Entry re-enables its callbacks when enabled, so we
@@ -324,8 +324,8 @@ ewl_password_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Password *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_PASSWORD_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_PASSWORD_TYPE);
 
 	p = EWL_PASSWORD(w);
 	if (p->real_text) {

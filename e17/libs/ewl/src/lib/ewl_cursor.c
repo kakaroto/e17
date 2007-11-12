@@ -43,7 +43,7 @@ ewl_cursor_init(Ewl_Cursor *cursor)
 	Ewl_Widget *w = EWL_WIDGET(cursor);
 
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
-	DCHECK_PARAM_PTR_RET("cursor", cursor, FALSE);
+	DCHECK_PARAM_PTR_RET(cursor, FALSE);
 
 	if (!ewl_window_init(EWL_WINDOW(cursor)))
 		DRETURN_INT(FALSE, DLEVEL_UNSTABLE);
@@ -72,8 +72,8 @@ ewl_cursor_cb_render(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	Ewl_Cursor *cursor = EWL_CURSOR(w);
 
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_CURSOR_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_CURSOR_TYPE);
 
 	/*
 	 * Find the widget setting the current cursor.
@@ -108,8 +108,8 @@ ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 {
 	Ewl_Cursor *cursor = EWL_CURSOR(w);
 
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_CURSOR_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_CURSOR_TYPE);
 
 	/* FIXME: Also needs to be handled for the correct engine refs
 	if (cursor->handle)

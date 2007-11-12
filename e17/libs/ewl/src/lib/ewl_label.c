@@ -44,7 +44,7 @@ ewl_label_init(Ewl_Label *la)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("la", la, FALSE);
+	DCHECK_PARAM_PTR_RET(la, FALSE);
 
 	w = EWL_WIDGET(la);
 	if (!ewl_widget_init(w))
@@ -69,8 +69,8 @@ void
 ewl_label_text_set(Ewl_Label *la, const char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("la", la);
-	DCHECK_TYPE("la", la, EWL_LABEL_TYPE);
+	DCHECK_PARAM_PTR(la);
+	DCHECK_TYPE(la, EWL_LABEL_TYPE);
 
 	ewl_widget_appearance_text_set(EWL_WIDGET(la), (char *)text);
 
@@ -87,8 +87,8 @@ const char *
 ewl_label_text_get(Ewl_Label *la)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("la", la, NULL);
-	DCHECK_TYPE_RET("la", la, EWL_LABEL_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(la, NULL);
+	DCHECK_TYPE_RET(la, EWL_LABEL_TYPE, NULL);
 
 	DRETURN_PTR(ewl_widget_appearance_text_get(EWL_WIDGET(la)), DLEVEL_STABLE);
 }

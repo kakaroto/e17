@@ -43,7 +43,7 @@ ewl_dialog_init(Ewl_Dialog *dialog)
 	Ewl_Widget *w, *o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dialog", dialog, FALSE);
+	DCHECK_PARAM_PTR_RET(dialog, FALSE);
 
 	w = EWL_WIDGET(dialog);
 
@@ -127,8 +127,8 @@ void
 ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("d", d);
-	DCHECK_TYPE("d", d, EWL_DIALOG_TYPE);
+	DCHECK_PARAM_PTR(d);
+	DCHECK_TYPE(d, EWL_DIALOG_TYPE);
 
 	if (pos == d->position) {
 		DRETURN(DLEVEL_STABLE);
@@ -187,8 +187,8 @@ Ewl_Position
 ewl_dialog_action_position_get(Ewl_Dialog *d)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_BOTTOM);
-	DCHECK_TYPE_RET("d", d, EWL_DIALOG_TYPE, EWL_POSITION_BOTTOM);
+	DCHECK_PARAM_PTR_RET(d, EWL_POSITION_BOTTOM);
+	DCHECK_TYPE_RET(d, EWL_DIALOG_TYPE, EWL_POSITION_BOTTOM);
 
 	DRETURN_INT(d->position, DLEVEL_STABLE);
 }
@@ -205,8 +205,8 @@ ewl_dialog_action_fill_policy_set(Ewl_Dialog *d, unsigned int pol)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("d", d);
-	DCHECK_TYPE("d", d, EWL_DIALOG_TYPE);
+	DCHECK_PARAM_PTR(d);
+	DCHECK_TYPE(d, EWL_DIALOG_TYPE);
 
 	w = ewl_widget_parent_get(d->action_area);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), pol);
@@ -223,8 +223,8 @@ unsigned int
 ewl_dialog_action_fill_policy_get(Ewl_Dialog *d)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_BOTTOM);
-	DCHECK_TYPE_RET("d", d, EWL_DIALOG_TYPE, EWL_FLAG_FILL_NONE);
+	DCHECK_PARAM_PTR_RET(d, EWL_POSITION_BOTTOM);
+	DCHECK_TYPE_RET(d, EWL_DIALOG_TYPE, EWL_FLAG_FILL_NONE);
 
 	DRETURN_INT(ewl_object_fill_policy_get(EWL_OBJECT(d->action_area)), DLEVEL_STABLE);
 }
@@ -241,8 +241,8 @@ ewl_dialog_action_alignment_set(Ewl_Dialog *d, unsigned int align)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("d", d);
-	DCHECK_TYPE("d", d, EWL_DIALOG_TYPE);
+	DCHECK_PARAM_PTR(d);
+	DCHECK_TYPE(d, EWL_DIALOG_TYPE);
 
 	w = ewl_widget_parent_get(d->action_area);
 	ewl_object_alignment_set(EWL_OBJECT(w), align);
@@ -259,8 +259,8 @@ unsigned int
 ewl_dialog_action_alignment_get(Ewl_Dialog *d)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_BOTTOM);
-	DCHECK_TYPE_RET("d", d, EWL_DIALOG_TYPE, EWL_FLAG_FILL_NONE);
+	DCHECK_PARAM_PTR_RET(d, EWL_POSITION_BOTTOM);
+	DCHECK_TYPE_RET(d, EWL_DIALOG_TYPE, EWL_FLAG_FILL_NONE);
 
 	DRETURN_INT(ewl_object_alignment_get(EWL_OBJECT(d->action_area)), DLEVEL_STABLE);
 }
@@ -274,8 +274,8 @@ unsigned int
 ewl_dialog_has_separator_get(Ewl_Dialog *dialog)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dialog", dialog, 0);
-	DCHECK_TYPE_RET("dialog", dialog, EWL_DIALOG_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(dialog, 0);
+	DCHECK_TYPE_RET(dialog, EWL_DIALOG_TYPE, 0);
 
 	if (!dialog)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -296,8 +296,8 @@ ewl_dialog_has_separator_set(Ewl_Dialog *dialog, unsigned int has_sep)
 	int n;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dialog", dialog);
-	DCHECK_TYPE("dialog", dialog, EWL_DIALOG_TYPE);
+	DCHECK_PARAM_PTR(dialog);
+	DCHECK_TYPE(dialog, EWL_DIALOG_TYPE);
 
 	if (!dialog) {
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -337,8 +337,8 @@ void
 ewl_dialog_active_area_set(Ewl_Dialog *d, Ewl_Position pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("d", d);
-	DCHECK_TYPE("d", d, EWL_DIALOG_TYPE);
+	DCHECK_PARAM_PTR(d);
+	DCHECK_TYPE(d, EWL_DIALOG_TYPE);
 
 	d->active_area = pos;
 
@@ -361,8 +361,8 @@ Ewl_Position
 ewl_dialog_active_area_get(Ewl_Dialog *d)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("d", d, EWL_POSITION_TOP);
-	DCHECK_TYPE_RET("d", d, EWL_DIALOG_TYPE, EWL_POSITION_TOP);
+	DCHECK_PARAM_PTR_RET(d, EWL_POSITION_TOP);
+	DCHECK_TYPE_RET(d, EWL_DIALOG_TYPE, EWL_POSITION_TOP);
 
 	DRETURN_INT(d->active_area, DLEVEL_STABLE);
 }

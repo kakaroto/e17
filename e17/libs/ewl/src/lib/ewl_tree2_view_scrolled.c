@@ -78,7 +78,7 @@ int
 ewl_tree2_view_scrolled_init(Ewl_Tree2_View_Scrolled *tv)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tv", tv, FALSE);
+	DCHECK_PARAM_PTR_RET(tv, FALSE);
 
 	if (!ewl_tree2_view_init(EWL_TREE2_VIEW(tv)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -111,8 +111,8 @@ ewl_tree2_view_scrolled_scroll_headers_set(Ewl_Tree2_View *view,
 	Ewl_Tree2_View_Scrolled *vs;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("view", view);
-	DCHECK_TYPE("view", view, EWL_TREE2_VIEW_SCROLLED_TYPE);
+	DCHECK_PARAM_PTR(view);
+	DCHECK_TYPE(view, EWL_TREE2_VIEW_SCROLLED_TYPE);
 
 	if (!view->parent)
 	{
@@ -147,8 +147,8 @@ ewl_tree2_view_scrolled_scroll_headers_get(Ewl_Tree2_View *view)
 	Ewl_Tree2_View_Scrolled *vs;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("view", view, FALSE);
-	DCHECK_TYPE_RET("view", view, EWL_TREE2_VIEW_SCROLLED_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(view, FALSE);
+	DCHECK_TYPE_RET(view, EWL_TREE2_VIEW_SCROLLED_TYPE, FALSE);
 
 	vs = EWL_TREE2_VIEW_SCROLLED(view);
 

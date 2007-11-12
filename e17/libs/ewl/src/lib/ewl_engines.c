@@ -125,7 +125,7 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
 	Ecore_Plugin *plugin;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("name", name, NULL);
+	DCHECK_PARAM_PTR_RET(name, NULL);
 
 	/* see if we've created this engine already */
 	engine = ecore_hash_get(ewl_engines, name);
@@ -219,8 +219,8 @@ ewl_engine_window_new(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_New window_new;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	window_new = ewl_engine_hook_get(EWL_EMBED(win),
 					EWL_ENGINE_HOOK_TYPE_WINDOW,
@@ -242,8 +242,8 @@ ewl_engine_window_destroy(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Destroy window_destroy;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -268,8 +268,8 @@ ewl_engine_window_move(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Move window_move;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -294,8 +294,8 @@ ewl_engine_window_resize(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Resize window_resize;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -320,8 +320,8 @@ ewl_engine_window_min_max_size_set(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Min_Max_Size_Set window_min_max_size_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	window_min_max_size_set = ewl_engine_hook_get(EWL_EMBED(win),
 					EWL_ENGINE_HOOK_TYPE_WINDOW,
@@ -343,8 +343,8 @@ ewl_engine_window_show(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Show window_show;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	window_show = ewl_engine_hook_get(EWL_EMBED(win),
 					EWL_ENGINE_HOOK_TYPE_WINDOW,
@@ -366,8 +366,8 @@ ewl_engine_window_hide(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Hide window_hide;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	window_hide = ewl_engine_hook_get(EWL_EMBED(win),
 					EWL_ENGINE_HOOK_TYPE_WINDOW,
@@ -389,8 +389,8 @@ ewl_engine_window_title_set(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Title_Set window_title_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
@@ -415,8 +415,8 @@ ewl_engine_window_name_class_set(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Name_Class_Set window_name_class_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
@@ -441,8 +441,8 @@ ewl_engine_window_borderless_set(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Borderless_Set window_borderless_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
@@ -467,8 +467,8 @@ ewl_engine_window_dialog_set(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Dialog_Set window_dialog_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
@@ -493,8 +493,8 @@ ewl_engine_window_states_set(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_States_Set window_states_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
@@ -519,8 +519,8 @@ ewl_engine_window_hints_set(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Hints_Set window_hints_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
@@ -545,8 +545,8 @@ ewl_engine_window_transient_for(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Transient_For window_transient_for;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
@@ -571,8 +571,8 @@ ewl_engine_window_leader_set(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Leader_Set window_leader_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!(win->window))
 		DRETURN(DLEVEL_STABLE);
@@ -597,8 +597,8 @@ ewl_engine_window_raise(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Raise window_raise;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -623,8 +623,8 @@ ewl_engine_window_lower(Ewl_Window *win)
 	Ewl_Engine_Cb_Window_Lower window_lower;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -649,8 +649,8 @@ ewl_engine_keyboard_grab(Ewl_Window *win)
 	Ewl_Engine_Cb_Keyboard_Grab keyboard_grab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, 0);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(win, 0);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, 0);
 
 	if (!VISIBLE(win) || !REALIZED(win))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -675,8 +675,8 @@ ewl_engine_keyboard_ungrab(Ewl_Window *win)
 	Ewl_Engine_Cb_Keyboard_Ungrab keyboard_ungrab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!VISIBLE(win) || !REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -701,8 +701,8 @@ ewl_engine_pointer_grab(Ewl_Window *win)
 	Ewl_Engine_Cb_Pointer_Grab pointer_grab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("win", win, 0);
-	DCHECK_TYPE_RET("win", win, EWL_WINDOW_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(win, 0);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, 0);
 
 	if (!VISIBLE(win) || !REALIZED(win))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -727,8 +727,8 @@ ewl_engine_pointer_ungrab(Ewl_Window *win)
 	Ewl_Engine_Cb_Pointer_Ungrab pointer_ungrab;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!VISIBLE(win) || !REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -754,9 +754,9 @@ ewl_engine_window_selection_text_set(Ewl_Window *win, const char *txt)
 	Ewl_Engine_Cb_Window_Selection_Text_Set window_selection_text_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_PARAM_PTR("txt", txt);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_PARAM_PTR(txt);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	if (!REALIZED(win))
 		DRETURN(DLEVEL_STABLE);
@@ -786,8 +786,8 @@ ewl_engine_window_geometry_get(Ewl_Window *win, int root, int *width, int *heigh
 	Ewl_Engine_Cb_Window_Geometry_Get window_geometry_get;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	/* make sure these get set to _something_ */
 	if (width) *width = 0;
@@ -813,8 +813,8 @@ ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed)
 	Ewl_Engine_Cb_Window_Dnd_Aware_Set embed_dnd_aware_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	if (!(embed->canvas_window))
 		DRETURN(DLEVEL_STABLE);
@@ -841,8 +841,8 @@ ewl_engine_embed_dnd_drag_types_set(Ewl_Embed *embed, char **types, unsigned int
 	Ewl_Engine_Cb_Window_Dnd_Drag_Types_Set embed_dnd_drag_types_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	if (!(embed->canvas_window))
 		DRETURN(DLEVEL_STABLE);
@@ -867,8 +867,8 @@ ewl_engine_embed_dnd_drag_start(Ewl_Embed *embed)
 	Ewl_Engine_Cb_Window_Dnd_Drag_Start embed_dnd_drag_start;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	if (!(embed->canvas_window))
 		DRETURN(DLEVEL_STABLE);
@@ -893,8 +893,8 @@ ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed)
 	Ewl_Engine_Cb_Window_Dnd_Drag_Drop embed_dnd_drag_drop;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	if (!(embed->canvas_window))
 		DRETURN(DLEVEL_STABLE);
@@ -923,8 +923,8 @@ ewl_engine_embed_dnd_drag_data_send(Ewl_Embed *embed, void *handle, void *data,
 	Ewl_Engine_Cb_Window_Dnd_Drag_Data_Send embed_dnd_drag_data_send;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("embed", embed, FALSE);
-	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(embed, FALSE);
+	DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, FALSE);
 
 	if (!(embed->canvas_window))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -952,8 +952,8 @@ ewl_engine_desktop_size_get(Ewl_Embed *embed, int *w, int *h)
 	Ewl_Engine_Cb_Window_Desktop_Size_Get desktop_size_get;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	desktop_size_get = ewl_engine_hook_get(EWL_EMBED(embed),
 					EWL_ENGINE_HOOK_TYPE_WINDOW,
@@ -976,8 +976,8 @@ ewl_engine_canvas_setup(Ewl_Window *win, int debug)
 	Ewl_Engine_Cb_Canvas_Setup canvas_setup;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-	DCHECK_TYPE("win", win, EWL_WINDOW_TYPE);
+	DCHECK_PARAM_PTR(win);
+	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
 	canvas_setup = ewl_engine_hook_get(EWL_EMBED(win),
 					EWL_ENGINE_HOOK_TYPE_CANVAS,
@@ -1003,8 +1003,8 @@ ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y, int width, int height
 	Ewl_Engine_Cb_Canvas_Output_Set canvas_output_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("emb", emb);
-	DCHECK_TYPE("emb", emb, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(emb);
+	DCHECK_TYPE(emb, EWL_EMBED_TYPE);
 
 	canvas_output_set = ewl_engine_hook_get(emb,
 					EWL_ENGINE_HOOK_TYPE_CANVAS,
@@ -1026,8 +1026,8 @@ ewl_engine_canvas_render(Ewl_Embed *embed)
 	Ewl_Engine_Cb_Canvas_Render canvas_render;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	canvas_render = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_CANVAS,
@@ -1049,8 +1049,8 @@ ewl_engine_canvas_freeze(Ewl_Embed *embed)
 	Ewl_Engine_Cb_Canvas_Freeze canvas_freeze;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	canvas_freeze = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_CANVAS,
@@ -1072,8 +1072,8 @@ ewl_engine_canvas_thaw(Ewl_Embed *embed)
 	Ewl_Engine_Cb_Canvas_Thaw canvas_thaw;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	canvas_thaw = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_CANVAS,
@@ -1090,8 +1090,8 @@ ewl_engine_canvas_damage_add(Ewl_Embed *embed, int x, int y, int w, int h)
 	Ewl_Engine_Cb_Canvas_Damage_Add damage_add;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	damage_add = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_CANVAS,
@@ -1113,8 +1113,8 @@ ewl_engine_theme_freeze(Ewl_Embed *embed)
 	Ewl_Engine_Cb_Theme_Freeze theme_freeze;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	theme_freeze = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1136,8 +1136,8 @@ ewl_engine_theme_thaw(Ewl_Embed *embed)
 	Ewl_Engine_Cb_Theme_Thaw theme_thaw;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	theme_thaw = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1162,8 +1162,8 @@ ewl_engine_theme_data_get(Ewl_Widget *w, char *key)
 	char *value = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(w, NULL);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
 	embed = ewl_embed_widget_find(w);
 	if (embed) {
@@ -1188,8 +1188,8 @@ ewl_engine_theme_widget_group(Ewl_Widget *w)
 	Ewl_Engine_Cb_Theme_Widget_Group theme_widget_group;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(w, NULL);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
 	embed = ewl_embed_widget_find(w);
 	if (embed) {
@@ -1213,8 +1213,8 @@ ewl_engine_theme_object_add(Ewl_Embed *embed)
 	Ewl_Engine_Cb_Theme_Object_Add theme_object_add;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
-	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(embed, NULL);
+	DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, NULL);
 
 	theme_object_add = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1235,7 +1235,9 @@ ewl_engine_theme_object_del(Ewl_Embed *embed, void *obj)
 	Ewl_Engine_Cb_Theme_Object_Del theme_object_del;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("obj", obj);
+	DCHECK_PARAM_PTR(obj);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	theme_object_del = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1256,8 +1258,8 @@ ewl_engine_theme_object_move(Ewl_Embed *embed, void *obj, int x, int y)
 	Ewl_Engine_Cb_Theme_Object_Move theme_object_move;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	theme_object_move = ewl_engine_hook_get(EWL_EMBED(embed),
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1278,8 +1280,8 @@ ewl_engine_theme_object_resize(Ewl_Embed *embed, void *obj, int width, int heigh
 	Ewl_Engine_Cb_Theme_Object_Resize theme_object_resize;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_WIDGET_TYPE);
 
 	theme_object_resize = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1300,8 +1302,8 @@ ewl_engine_theme_object_show(Ewl_Embed *embed, void *obj)
 	Ewl_Engine_Cb_Theme_Object_Show theme_object_show;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	theme_object_show = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1322,8 +1324,8 @@ ewl_engine_theme_object_hide(Ewl_Embed *embed, void *obj)
 	Ewl_Engine_Cb_Theme_Object_Hide theme_object_hide;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	theme_object_hide = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1344,8 +1346,8 @@ ewl_engine_theme_object_clip_set(Ewl_Embed *embed, void *obj, void *clip)
 	Ewl_Engine_Cb_Theme_Object_Clip_Set theme_object_clip_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	theme_object_clip_set = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1366,8 +1368,8 @@ ewl_engine_theme_object_clip_unset(Ewl_Embed *embed, void *obj)
 	Ewl_Engine_Cb_Theme_Object_Clip_Unset theme_object_clip_unset;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	theme_object_clip_unset = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1388,8 +1390,8 @@ ewl_engine_theme_object_file_set(Ewl_Embed *embed, void *obj, char *file, char *
 	Ewl_Engine_Cb_Theme_Object_File_Set theme_object_file_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	theme_object_file_set = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_THEME,
@@ -1410,8 +1412,8 @@ ewl_engine_pointer_data_new(Ewl_Embed *embed, unsigned int *data, int w, int h)
 	Ewl_Engine_Cb_Pointer_Data_New pointer_data_new;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("embed", embed, 0);
-	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(embed, 0);
+	DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, 0);
 
 	pointer_data_new = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_POINTER,
@@ -1432,8 +1434,8 @@ ewl_engine_pointer_set(Ewl_Embed *embed, int pointer)
 	Ewl_Engine_Cb_Pointer_Set pointer_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	pointer_set = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_POINTER,
@@ -1455,8 +1457,8 @@ ewl_engine_pointer_free(Ewl_Embed *embed, int pointer)
 	Ewl_Engine_Cb_Pointer_Set pointer_free;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
-	DCHECK_TYPE("embed", embed, EWL_EMBED_TYPE);
+	DCHECK_PARAM_PTR(embed);
+	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
 	pointer_free = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_POINTER,
@@ -1477,8 +1479,8 @@ ewl_engine_pointer_get(Ewl_Embed *embed)
 	Ewl_Engine_Cb_Pointer_Get pointer_get;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("embed", embed, 0);
-	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(embed, 0);
+	DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, 0);
 
 	pointer_get = ewl_engine_hook_get(embed,
 					EWL_ENGINE_HOOK_TYPE_POINTER,
@@ -1495,7 +1497,7 @@ ewl_engine_hooks_get(Ewl_Engine *engine, Ewl_Engine_Hook_Type type)
 	void **hooks = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("engine", engine, NULL);
+	DCHECK_PARAM_PTR_RET(engine, NULL);
 
 	switch (type)
 	{
@@ -1537,8 +1539,8 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook_Type type, int hook)
 	void **hooks = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
-	DCHECK_TYPE_RET("embed", embed, EWL_EMBED_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(embed, NULL);
+	DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, NULL);
 
 	caller = EWL_ENGINE(embed->engine);
 	hooks = ewl_engine_hooks_get(caller, type);
@@ -1563,7 +1565,7 @@ static void
 ewl_engine_free(Ewl_Engine *engine)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("engine", engine);
+	DCHECK_PARAM_PTR(engine);
 
 	if (engine->functions->shutdown)
 		engine->functions->shutdown(engine);

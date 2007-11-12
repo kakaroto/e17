@@ -59,7 +59,7 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	Ewl_Widget *button;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
+	DCHECK_PARAM_PTR_RET(tree, FALSE);
 
 	if (!ewl_container_init(EWL_CONTAINER(tree)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -140,8 +140,8 @@ ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
 	Ewl_Widget *header;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
 	if (!EWL_CONTAINER(tree)->children)
 		DRETURN(DLEVEL_STABLE);
@@ -178,8 +178,8 @@ ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible)
 	Ewl_Widget *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
 	tree->headers_visible = !!visible;
 	row = tree->header;
@@ -205,8 +205,8 @@ unsigned int
 ewl_tree_headers_visible_get(Ewl_Tree *tree)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, 0);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(tree, 0);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, 0);
 
 	DRETURN_INT(tree->headers_visible, DLEVEL_STABLE);
 }
@@ -221,8 +221,8 @@ void
 ewl_tree_expandable_rows_set(Ewl_Tree *tree, unsigned int expand)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
 	tree->expands_visible = !!expand;
 
@@ -238,8 +238,8 @@ unsigned int
 ewl_tree_expandable_rows_get(Ewl_Tree *tree)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, 0);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(tree, 0);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, 0);
 
 	DRETURN_INT(tree->expands_visible, DLEVEL_STABLE);
 }
@@ -267,8 +267,8 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	Ewl_Widget *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(tree, NULL);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
 
 	w = EWL_WIDGET(prow);
 
@@ -357,8 +357,8 @@ ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 	Ewl_Widget *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(tree, NULL);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
 
 	texts = NEW(Ewl_Widget *, tree->ncols);
 	if (!texts)
@@ -403,8 +403,8 @@ ewl_tree_entry_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 	Ewl_Widget *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(tree, NULL);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
 
 	entries = NEW(Ewl_Widget *, tree->ncols);
 	if (!entries)
@@ -446,10 +446,10 @@ ewl_tree_row_remove(Ewl_Tree *tree, Ewl_Row *row)
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("row", row);
-	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
-	DCHECK_TYPE("row", row, EWL_ROW_TYPE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_PARAM_PTR(row);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+	DCHECK_TYPE(row, EWL_ROW_TYPE);
 
 	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
 	c = EWL_CONTAINER(row);
@@ -480,10 +480,10 @@ ewl_tree_row_destroy(Ewl_Tree *tree, Ewl_Row *row)
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("row", row);
-	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
-	DCHECK_TYPE("row", row, EWL_ROW_TYPE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_PARAM_PTR(row);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+	DCHECK_TYPE(row, EWL_ROW_TYPE);
 
 	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
 	ewl_widget_destroy(EWL_WIDGET(node));
@@ -508,9 +508,9 @@ void
 ewl_tree_columns_set(Ewl_Tree *tree, unsigned short columns)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_PARAM_PTR("columns", columns);
-	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_PARAM_PTR(columns);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -530,8 +530,8 @@ ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("row", row);
-	DCHECK_TYPE("row", row, EWL_ROW_TYPE);
+	DCHECK_PARAM_PTR(row);
+	DCHECK_TYPE(row, EWL_ROW_TYPE);
 
 	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
 	if (node && node->expanded != expanded) {
@@ -559,8 +559,8 @@ void
 ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Selection_Mode mode)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
 	if (tree->mode == mode)
 		DRETURN(DLEVEL_STABLE);
@@ -582,8 +582,8 @@ Ewl_Selection_Mode
 ewl_tree_mode_get(Ewl_Tree *tree)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, EWL_SELECTION_MODE_NONE);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, EWL_SELECTION_MODE_NONE);
+	DCHECK_PARAM_PTR_RET(tree, EWL_SELECTION_MODE_NONE);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, EWL_SELECTION_MODE_NONE);
 
 	DRETURN_INT(tree->mode, DLEVEL_STABLE);
 }
@@ -597,8 +597,8 @@ Ecore_List *
 ewl_tree_selected_get(Ewl_Tree *tree)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(tree, NULL);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
 
 	DRETURN_PTR(tree->selected, DLEVEL_STABLE);
 }
@@ -614,8 +614,8 @@ ewl_tree_selected_clear(Ewl_Tree *tree)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("tree", tree);
-	DCHECK_TYPE("tree", tree, EWL_TREE_TYPE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
 	while ((w = ecore_list_first_remove(tree->selected)))
 		ewl_widget_state_set(w, "tree-deselect", EWL_STATE_PERSISTENT);
@@ -634,8 +634,8 @@ ewl_tree_row_find(Ewl_Tree *tree, int row)
 	Ewl_Widget *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
-	DCHECK_TYPE_RET("tree", tree, EWL_TREE_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(tree, NULL);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
 
 	child = ewl_container_child_get(EWL_CONTAINER(tree), row);
 	if (child) {
@@ -661,8 +661,8 @@ ewl_tree_row_column_get(Ewl_Row *row, int i)
 	Ecore_List *children;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("row", row, NULL);
-	DCHECK_TYPE_RET("row", row, EWL_ROW_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(row, NULL);
+	DCHECK_TYPE_RET(row, EWL_ROW_TYPE, NULL);
 
 	children = EWL_CONTAINER(row)->children;
 
@@ -678,8 +678,8 @@ static void
 ewl_tree_row_signal(Ewl_Tree *tree __UNUSED__, Ewl_Widget *row)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("row", row);
-	DCHECK_TYPE("row", row, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(row);
+	DCHECK_TYPE(row, EWL_WIDGET_TYPE);
 
 	if (ewl_tree_row_pos & 1) {
 		ewl_widget_state_set(row, "odd", EWL_STATE_PERSISTENT);
@@ -752,8 +752,8 @@ ewl_tree_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Tree *tree;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TREE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TREE_TYPE);
 
 	tree = EWL_TREE(w);
 	scroll = ewl_scrollpane_hscrollbar_value_get(EWL_SCROLLPANE(tree->scrollarea));
@@ -789,8 +789,8 @@ ewl_tree_cb_header_configure(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	Ewl_Widget *scrollarea;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_WIDGET_TYPE);
 
 	scrollarea = user_data;
 	ewl_widget_configure(scrollarea);
@@ -813,8 +813,8 @@ ewl_tree_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Tree *tree;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TREE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TREE_TYPE);
 
 	tree = EWL_TREE(w);
 	IF_FREE_LIST(tree->selected);
@@ -832,8 +832,8 @@ void
 ewl_tree_cb_child_resize(Ewl_Container *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
 	ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
 	ewl_container_sum_prefer(c, EWL_ORIENTATION_VERTICAL);
@@ -875,7 +875,7 @@ int
 ewl_tree_node_init(Ewl_Tree_Node *node)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("node", node, FALSE);
+	DCHECK_PARAM_PTR_RET(node, FALSE);
 
 	if (!ewl_container_init(EWL_CONTAINER(node)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -919,8 +919,8 @@ void
 ewl_tree_node_expandable_set(Ewl_Tree_Node *node, int expand)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("node", node);
-	DCHECK_TYPE("node", node, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(node);
+	DCHECK_TYPE(node, EWL_TREE_NODE_TYPE);
 
 	/*
 	 * The handle for expanding and collapsing the branch point at this
@@ -952,8 +952,8 @@ int
 ewl_tree_node_expandable_get(Ewl_Tree_Node *node)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("node", node, FALSE);
-	DCHECK_TYPE_RET("node", node, EWL_TREE_NODE_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(node, FALSE);
+	DCHECK_TYPE_RET(node, EWL_TREE_NODE_TYPE, FALSE);
 
 	if (node->handle)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -973,8 +973,8 @@ ewl_tree_node_collapse(Ewl_Tree_Node *node)
 	Ecore_List *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("node", node);
-	DCHECK_TYPE("node", node, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(node);
+	DCHECK_TYPE(node, EWL_TREE_NODE_TYPE);
 
 	if (node->expanded == EWL_TREE_NODE_COLLAPSED)
 		DRETURN(DLEVEL_STABLE);
@@ -1024,8 +1024,8 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 	Ecore_List *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("node", node);
-	DCHECK_TYPE("node", node, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(node);
+	DCHECK_TYPE(node, EWL_TREE_NODE_TYPE);
 
 	if (node->expanded == EWL_TREE_NODE_EXPANDED)
 		DRETURN(DLEVEL_STABLE);
@@ -1081,8 +1081,8 @@ ewl_tree_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int x, y, hw = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TREE_NODE_TYPE);
 
 	node = EWL_TREE_NODE(w);
 	if (!node->tree)
@@ -1135,8 +1135,8 @@ ewl_tree_cb_node_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TREE_NODE_TYPE);
 
 	node = EWL_TREE_NODE(w);
 	if (!node->tree)
@@ -1165,8 +1165,8 @@ ewl_tree_cb_node_toggle(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_TREE_NODE_TYPE);
 
 	node = EWL_TREE_NODE(user_data);
 
@@ -1194,8 +1194,8 @@ ewl_tree_cb_node_child_add(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_TREE_NODE_TYPE);
 
 	node = EWL_TREE_NODE(c);
 	if (w != node->handle && !node->row)
@@ -1224,8 +1224,8 @@ void
 ewl_tree_cb_node_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
 	ewl_tree_cb_node_child_add(c, w);
 
@@ -1245,8 +1245,8 @@ ewl_tree_cb_node_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_TYPE("c", c, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_TREE_NODE_TYPE);
 
 	node = EWL_TREE_NODE(c);
 
@@ -1289,10 +1289,10 @@ ewl_tree_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_TREE_NODE_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_TREE_NODE_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	node = EWL_TREE_NODE(c);
 
@@ -1328,10 +1328,10 @@ ewl_tree_cb_node_resize(Ewl_Container *c, Ewl_Widget *w,
 		int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_tree_cb_node_child_show(c, w);
 
@@ -1355,9 +1355,9 @@ ewl_tree_cb_row_select(Ewl_Widget *w, void *ev_data,
 	Ewl_Event_Mouse *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("w->parent", w->parent, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(w->parent, EWL_TREE_NODE_TYPE);
 
 	ev = ev_data;
 	node = EWL_TREE_NODE(w->parent);
@@ -1392,9 +1392,9 @@ ewl_tree_cb_row_hide(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE("w->parent", w->parent, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(w->parent, EWL_TREE_NODE_TYPE);
 
 	node = EWL_TREE_NODE(w->parent);
 	tree = node->tree;
@@ -1421,8 +1421,8 @@ ewl_tree_cb_hscroll(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 					void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_WIDGET_TYPE);
 
 	ewl_widget_configure(EWL_WIDGET(user_data));
 
@@ -1443,8 +1443,8 @@ ewl_tree_cb_header_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 {
 	Ewl_Tree *tree;
 
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("data", data, EWL_TREE_TYPE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_TREE_TYPE);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

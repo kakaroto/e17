@@ -96,7 +96,7 @@ ee_init(Ewl_Engine *engine)
 	Ewl_Engine_Info *info;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("engine", engine, FALSE);
+	DCHECK_PARAM_PTR_RET(engine, FALSE);
 
 	info = NEW(Ewl_Engine_Info, 1);
 	info->shutdown = ee_shutdown;
@@ -112,7 +112,7 @@ static void
 ee_shutdown(Ewl_Engine *engine)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("engine", engine);
+	DCHECK_PARAM_PTR(engine);
 
 	IF_FREE(engine->functions);
 
@@ -130,7 +130,7 @@ static void
 ee_canvas_render(Ewl_Embed *embed)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_PARAM_PTR(embed);
 
 	if (embed->canvas)
 		evas_render(embed->canvas);
@@ -142,7 +142,7 @@ static void
 ee_canvas_freeze(Ewl_Embed *embed)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_PARAM_PTR(embed);
 
 	if (embed->canvas && evas_event_freeze_get(embed->canvas) < 1) {
 		evas_event_freeze(embed->canvas);
@@ -155,7 +155,7 @@ static void
 ee_canvas_thaw(Ewl_Embed *embed)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_PARAM_PTR(embed);
 
 	if (embed->canvas && evas_event_freeze_get(embed->canvas) > 0)
 		evas_event_thaw(embed->canvas);
@@ -167,7 +167,7 @@ static void
 ee_canvas_damage_add(Ewl_Embed *embed, int x, int y, int w, int h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("embed", embed);
+	DCHECK_PARAM_PTR(embed);
 
 	if (embed->canvas)
 		evas_damage_rectangle_add(embed->canvas, x, y, w, h);
@@ -181,7 +181,7 @@ ee_canvas_smart_new(Ewl_Embed *embed)
 	Evas_Object *smart_object;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
+	DCHECK_PARAM_PTR_RET(embed, NULL);
 
 	if (!widget_smart) {
 		widget_smart = evas_smart_new("Ewl Widget Smart Object",
@@ -201,7 +201,7 @@ ee_canvas_clip_add(Ewl_Embed *embed)
 	Evas_Object *obj;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("embed", embed, NULL);
+	DCHECK_PARAM_PTR_RET(embed, NULL);
 
 	obj = evas_object_rectangle_add(embed->canvas);
 	if (obj)
@@ -216,8 +216,8 @@ ee_canvas_stack_add(Ewl_Widget *w)
 	Evas_Object *smart_parent;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (w->parent && !REVEALED(w->parent))
 		DRETURN(DLEVEL_STABLE);
@@ -253,8 +253,8 @@ ee_canvas_layer_update(Ewl_Widget *w)
 	int layer;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (!(p = w->parent))
 		DRETURN(DLEVEL_STABLE);
@@ -295,8 +295,8 @@ ewl_widget_layer_neighbor_find_above(Ewl_Widget *w)
 	Evas_Object *o, *ol;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(w, NULL);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
 	if (!w->parent)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -331,8 +331,8 @@ ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
 	Evas_Object *o, *ol;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, NULL);
-	DCHECK_TYPE_RET("w", w, EWL_WIDGET_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(w, NULL);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
 	if (!w->parent)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);

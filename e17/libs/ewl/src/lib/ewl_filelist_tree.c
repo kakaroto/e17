@@ -117,7 +117,7 @@ ewl_filelist_tree_init(Ewl_Filelist_Tree *fl)
 	Ewl_Filelist_Tree_Data *data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, FALSE);
+	DCHECK_PARAM_PTR_RET(fl, FALSE);
 
 	if (!ewl_filelist_init(EWL_FILELIST(fl)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -175,7 +175,7 @@ ewl_filelist_tree_dir_change(Ewl_Filelist *fl)
 	Ewl_Filelist_Tree *tree;;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_PARAM_PTR(fl);
 
 	tree = EWL_FILELIST_TREE(fl);
 	ewl_filelist_directory_read(fl, ewl_filelist_directory_get(fl),
@@ -195,7 +195,7 @@ ewl_filelist_tree_selected_file_add(Ewl_Filelist *fl,
 				const char *file __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
+	DCHECK_PARAM_PTR(fl);
 
 	/* XXX Write me ... */
 
@@ -215,9 +215,9 @@ ewl_filelist_tree_filename_get(Ewl_Filelist *fl, void *item)
 	Ewl_Selection_Idx *selected;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("fl", fl, NULL);
-	DCHECK_PARAM_PTR_RET("item", item, NULL);
-	DCHECK_TYPE_RET("fl", fl, EWL_FILELIST_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DCHECK_PARAM_PTR_RET(item, NULL);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	selected = ewl_mvc_selected_get(EWL_MVC(fl));
 	data = selected->sel.data;
@@ -237,8 +237,8 @@ void
 ewl_filelist_tree_selected_unselect(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	ewl_filelist_selected_signal_all(fl, "row,unselect");
 
@@ -256,10 +256,10 @@ void
 ewl_filelist_tree_shift_handle(Ewl_Filelist *fl, Ewl_Widget *clicked)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("clicked", clicked);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
-	DCHECK_TYPE("clicked", clicked, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(clicked);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+	DCHECK_TYPE(clicked, EWL_WIDGET_TYPE);
 
 	/* XXX fix me */
 
@@ -274,10 +274,10 @@ ewl_filelist_tree_add(Ewl_Filelist *fl, const char *dir, char *file,
 	Ewl_Filelist_Tree_Data *d;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fl", fl);
-	DCHECK_PARAM_PTR("dir", dir);
-	DCHECK_PARAM_PTR("file", file);
-	DCHECK_TYPE("fl", fl, EWL_FILELIST_TYPE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(dir);
+	DCHECK_PARAM_PTR(file);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	flt = EWL_FILELIST_TREE(fl);
 	d = ewl_mvc_data_get(EWL_MVC(flt->tree));
@@ -295,7 +295,7 @@ ewl_filelist_tree_data_count(void *data)
 	Ewl_Filelist_Tree_Data *td = data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, 0);
+	DCHECK_PARAM_PTR_RET(data, 0);
 
 	DRETURN_INT(ecore_list_count(td->files), DLEVEL_STABLE);
 }
@@ -310,7 +310,7 @@ ewl_filelist_tree_data_fetch(void *data, unsigned int row, unsigned int col)
 	char *ret = NULL, *tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, 0);
+	DCHECK_PARAM_PTR_RET(data, 0);
 
 	td = data;
 	tmp = ecore_list_index_goto(td->files, row);
@@ -365,7 +365,7 @@ ewl_filelist_tree_data_expandable_get(void *data, unsigned int row)
 	Ewl_Filelist_Tree_Data *td = data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, 0);
+	DCHECK_PARAM_PTR_RET(data, 0);
 
 	file = ecore_list_index_goto(td->files, row);
 	if (!strcmp(file, ".."))
@@ -390,7 +390,7 @@ ewl_filelist_tree_data_expansion_data_fetch(void *data, unsigned int parent)
 	Ewl_Filelist_Tree_Data *td = data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("data", data, NULL);
+	DCHECK_PARAM_PTR_RET(data, NULL);
 
 	file = ecore_list_index_goto(td->files, parent);
 	path = ewl_filelist_expand_path(EWL_FILELIST(td->list), file);

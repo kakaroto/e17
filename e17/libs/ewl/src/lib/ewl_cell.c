@@ -39,7 +39,7 @@ int
 ewl_cell_init(Ewl_Cell *cell)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cell", cell, FALSE);
+	DCHECK_PARAM_PTR_RET(cell, FALSE);
 
 	if (!ewl_container_init(EWL_CONTAINER(cell)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -77,8 +77,8 @@ ewl_cell_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_CELL_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_CELL_TYPE);
 
 	c = EWL_CONTAINER(w);
 
@@ -103,10 +103,10 @@ ewl_cell_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	Ewl_Widget *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CELL_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CELL_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	/*
 	 * Cell's only allow one child, so remove the rest, this may cause a
@@ -139,10 +139,10 @@ ewl_cell_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 			int size __UNUSED__, Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CELL_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CELL_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c),
 			ewl_object_preferred_w_get(EWL_OBJECT(w)),

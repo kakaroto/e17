@@ -74,7 +74,7 @@ ewl_toolbar_init(Ewl_Toolbar *t)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, FALSE);
+	DCHECK_PARAM_PTR_RET(t, FALSE);
 
 	w = EWL_WIDGET(t);
 	if (!ewl_menubar_init(EWL_MENUBAR(t)))
@@ -105,8 +105,8 @@ void
 ewl_toolbar_orientation_set(Ewl_Toolbar *t, Ewl_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, EWL_TOOLBAR_TYPE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_TYPE(t, EWL_TOOLBAR_TYPE);
 
 	ewl_menubar_orientation_set(EWL_MENUBAR(t), o);
 	if (o == EWL_ORIENTATION_HORIZONTAL)
@@ -128,8 +128,8 @@ Ewl_Orientation
 ewl_toolbar_orientation_get(Ewl_Toolbar *t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, EWL_ORIENTATION_HORIZONTAL);
-	DCHECK_TYPE_RET("t", t, EWL_TOOLBAR_TYPE, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_PARAM_PTR_RET(t, EWL_ORIENTATION_HORIZONTAL);
+	DCHECK_TYPE_RET(t, EWL_TOOLBAR_TYPE, EWL_ORIENTATION_HORIZONTAL);
 
 	DRETURN_INT(ewl_menubar_orientation_get(EWL_MENUBAR(t)), DLEVEL_STABLE);
 }
@@ -146,8 +146,8 @@ ewl_toolbar_icon_part_hide(Ewl_Toolbar *t, Ewl_Icon_Part part)
 	Ewl_Widget *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_TYPE("t", t, EWL_TOOLBAR_TYPE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_TYPE(t, EWL_TOOLBAR_TYPE);
 
 	if (t->hidden == part)
 		DRETURN(DLEVEL_STABLE);
@@ -176,10 +176,10 @@ ewl_toolbar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	Ewl_Toolbar *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_menubar_cb_child_add(c, w);
 	t = EWL_TOOLBAR(EWL_WIDGET(c)->parent);

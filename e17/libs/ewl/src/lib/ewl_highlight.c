@@ -44,7 +44,7 @@ int
 ewl_highlight_init(Ewl_Highlight *h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("h", h, FALSE);
+	DCHECK_PARAM_PTR_RET(h, FALSE);
 
 	if (!ewl_floater_init(EWL_FLOATER(h)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -67,8 +67,8 @@ void
 ewl_highlight_follow_set(Ewl_Highlight *h, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("h", h);
-	DCHECK_TYPE("h", h, EWL_HIGHLIGHT_TYPE);
+	DCHECK_PARAM_PTR(h);
+	DCHECK_TYPE(h, EWL_HIGHLIGHT_TYPE);
 
 	ewl_floater_follow_set(EWL_FLOATER(h), w);
 	if (!w) DRETURN(DLEVEL_STABLE);
@@ -95,8 +95,8 @@ Ewl_Widget *
 ewl_highlight_follow_get(Ewl_Highlight *h)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("h", h, NULL);
-	DCHECK_TYPE_RET("h", h, EWL_HIGHLIGHT_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(h, NULL);
+	DCHECK_TYPE_RET(h, EWL_HIGHLIGHT_TYPE, NULL);
 
 	DRETURN_PTR(ewl_floater_follow_get(EWL_FLOATER(h)), DLEVEL_STABLE);
 }
@@ -108,9 +108,9 @@ ewl_highlight_cb_follow_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	int width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_object_current_size_get(EWL_OBJECT(w), &width, &height);
 	ewl_object_size_request(EWL_OBJECT(data), width, height);
@@ -123,8 +123,8 @@ ewl_highlight_cb_follow_destroy(Ewl_Widget *w __UNUSED__,
 				void *ev __UNUSED__, void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("data", data, EWL_HIGHLIGHT_TYPE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_HIGHLIGHT_TYPE);
 
 	ewl_floater_follow_set(EWL_FLOATER(data), NULL);
 	ewl_callback_del(EWL_WIDGET(data), EWL_CALLBACK_DESTROY,
@@ -138,10 +138,10 @@ static void
 ewl_highlight_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("w", w, EWL_HIGHLIGHT_TYPE);
-	DCHECK_TYPE("data", data, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_HIGHLIGHT_TYPE);
+	DCHECK_TYPE(data, EWL_WIDGET_TYPE);
 
 	ewl_floater_follow_set(EWL_FLOATER(w), NULL);
 	ewl_callback_del(EWL_WIDGET(data), EWL_CALLBACK_CONFIGURE,

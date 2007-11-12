@@ -38,7 +38,7 @@ int
 ewl_menu_init(Ewl_Menu *menu)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("menu", menu, FALSE);
+	DCHECK_PARAM_PTR_RET(menu, FALSE);
 
 	/*
 	 * Initialize the defaults of the inherited fields.
@@ -92,9 +92,9 @@ ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info)
 	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("menu", menu);
-	DCHECK_PARAM_PTR("info", info);
-	DCHECK_TYPE("menu", menu, EWL_MENU_TYPE);
+	DCHECK_PARAM_PTR(menu);
+	DCHECK_PARAM_PTR(info);
+	DCHECK_TYPE(menu, EWL_MENU_TYPE);
 
 	for (i = 0; info[i].name != NULL; i++)
 	{
@@ -123,8 +123,8 @@ void
 ewl_menu_collapse(Ewl_Menu *menu)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("menu", menu);
-	DCHECK_TYPE("menu", menu, EWL_MENU_TYPE);
+	DCHECK_PARAM_PTR(menu);
+	DCHECK_TYPE(menu, EWL_MENU_TYPE);
 
 	ewl_widget_hide(menu->popup);
 
@@ -147,8 +147,8 @@ ewl_menu_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Box *parent;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_MENU_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_MENU_TYPE);
 
 	menu = EWL_MENU(w);
 	parent = EWL_BOX(menu->menubar_parent);
@@ -180,8 +180,8 @@ ewl_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Menu *menu;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_MENU_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_MENU_TYPE);
 
 	menu = EWL_MENU(w);
 	if (menu->menubar_parent) {
@@ -225,8 +225,8 @@ ewl_menu_cb_expand(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Menu_Item *item;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_MENU_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_MENU_TYPE);
 
 	menu = EWL_MENU(w);
 	item = EWL_MENU_ITEM(w);
@@ -261,8 +261,8 @@ ewl_menu_cb_popup_destroy(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Menu *m;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("data", data);
-	DCHECK_TYPE("data", data, EWL_MENU_TYPE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_MENU_TYPE);
 
 	/* We need to set the popup to NULL here in case the popup gets
 	 * freed before the menu does. This makes sure we don't segv in the
@@ -288,8 +288,8 @@ ewl_menu_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	Ewl_Menu *menu;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_MENU_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_MENU_TYPE);
 
 	menu = EWL_MENU(w);
 	if (menu->popup) {
@@ -307,8 +307,8 @@ ewl_menu_mouse_feed(Ewl_Menu *menu, int x, int y)
 {
 	int emb_x = 0, emb_y = 0, emb_w = 0, emb_h = 0;
 
-	DCHECK_PARAM_PTR_RET("menu", menu, FALSE);
-	DCHECK_TYPE_RET("menu", menu, EWL_MENU_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(menu, FALSE);
+	DCHECK_TYPE_RET(menu, EWL_MENU_TYPE, FALSE);
 
 	ewl_embed_window_position_get(EWL_EMBED(menu->popup), &emb_x, &emb_y);
 	ewl_object_current_size_get(EWL_OBJECT(menu->popup), &emb_w, &emb_h);
