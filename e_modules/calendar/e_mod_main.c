@@ -205,7 +205,7 @@ _update_calendar_sheet(void *data)
 static void
 _calendar_popup_content_create(Instance *inst)
 {
-   Evas_Object *o, *ol, *of, *ob, *oi;
+   Evas_Object *o, *of, *ob;
    Evas *evas;
    char buf[32];
    time_t current_time, start_time;
