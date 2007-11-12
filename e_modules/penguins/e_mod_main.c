@@ -101,7 +101,7 @@ static Population *
 _population_init(E_Module *m)
 {
    Population *pop;
-   Evas_List *managers, *l, *l2, *l3;
+   Evas_List *managers, *l, *l2;
 
    printf("PENGUINS: Starting up...\n");
    
@@ -123,12 +123,16 @@ _population_init(E_Module *m)
    pop->conf = e_config_domain_load("module.penguins", pop->conf_edd);
    if (!pop->conf)
      {
+	char buf[4096];
+
         pop->conf = E_NEW(Config, 1);
 
         pop->conf->zoom = 1;
         pop->conf->penguins_count = 3;
         pop->conf->alpha = 200;
-        pop->conf->theme = PACKAGE_DATA_DIR"/themes/default.edj";
+
+	snprintf(buf, sizeof(buf), "%s/themes/default.edj", e_module_dir_get(m));
+        pop->conf->theme = evas_stringshare_add(buf);
      }
 
    managers = e_manager_list();
@@ -169,12 +173,13 @@ _population_init(E_Module *m)
    char *name;
    char buf[4096];
      
-   files = ecore_file_ls(PACKAGE_DATA_DIR"/themes");
+   snprintf(buf, sizeof(buf), "%s/themes", e_module_dir_get(m));
+   files = ecore_file_ls(buf);
    while ((filename = ecore_list_next(files)))
    {
          if (ecore_str_has_suffix(filename, ".edj"))
          {
-            snprintf(buf, sizeof(buf),"%s/%s", PACKAGE_DATA_DIR"/themes", filename);
+            snprintf(buf, sizeof(buf), "%s/themes/%s", e_module_dir_get(m), filename);
             name = edje_file_data_get(buf, "PopulationName");
             if (name)
             {
@@ -268,7 +273,7 @@ _population_shutdown(Population *pop)
       pop->themes = evas_list_remove_list(pop->themes, pop->themes);
    }
 
-   //E_FREE(pop->conf->theme); //TODO Why can't free??
+   if (pop->conf->theme) evas_stringshare_del(pop->conf->theme);
    E_FREE(pop->conf);
    E_CONFIG_DD_FREE(pop->conf_edd);
    
@@ -292,7 +297,7 @@ _penguins_cb_config_updated(void *data)
    _population_load(pop);
 }
 static Action*
-_load_action(Population *pop, char *filename, char *name, int id)
+_load_action(Population *pop, const char *filename, char *name, int id)
 {
    Action *act;
    char *data;
@@ -318,7 +323,7 @@ _load_action(Population *pop, char *filename, char *name, int id)
    return act;
 }
 static Custom_Action*
-_load_custom_action(Population *pop, char *filename, char *name)
+_load_custom_action(Population *pop, const char *filename, char *name)
 {
    Custom_Action *c;
    char *data;
@@ -367,10 +372,6 @@ _theme_load(Population *pop)
    pop->customs = NULL;
    pop->custom_num = 0;
    
-   if (!pop->conf->theme)
-      pop->conf->theme = PACKAGE_DATA_DIR "/default.edj";
-      
-
    name = edje_file_data_get(pop->conf->theme, "PopulationName");
    if (!name) 
       return;

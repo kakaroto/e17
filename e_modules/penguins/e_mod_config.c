@@ -52,7 +52,7 @@ _fill_data(Population *pop, E_Config_Dialog_Data *cfdata)
    cfdata->penguins_count = pop->conf->penguins_count;
    cfdata->zoom = pop->conf->zoom;
    cfdata->alpha = pop->conf->alpha;
-   cfdata->theme = strdup(pop->conf->theme);//TOFO FREE old cfdata->theme
+   cfdata->theme = strdup(pop->conf->theme);
 }
 
 static void *
@@ -75,6 +75,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 
    pop = cfd->data;
    pop->config_dialog = NULL;
+   E_FREE(cfdata->theme);
    free(cfdata);
    cfdata = NULL;
 }
@@ -82,7 +83,7 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *of, *ob, *ol;
+   Evas_Object *o, *ob, *ol;
    Population *pop;
 
    pop = cfd->data;
@@ -116,8 +117,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    count = 0;
    while (l)
    {
-      char * theme;
-      char * name;
+      char *theme;
+      char *name;
       Evas_Object *oi;
       theme = l->data;
       name = edje_file_data_get(theme, "PopulationName");
@@ -162,7 +163,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    pop->conf->zoom = cfdata->zoom;
    pop->conf->alpha = cfdata->alpha;
    
-   pop->conf->theme = strdup(cfdata->theme);//TODO FREE old pop->conf->theme
+   if (pop->conf->theme) evas_stringshare_del(pop->conf->theme);
+   pop->conf->theme = evas_stringshare_add(cfdata->theme);
 
    e_config_save_queue();
    e_border_button_bindings_grab_all();
