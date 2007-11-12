@@ -30,26 +30,14 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
-/* Module Locale Directory */
-#undef LOCALEDIR
-
 /* "Module architecture" */
 #undef MODULE_ARCH
 
 /* Name of package */
 #undef PACKAGE
 
-/* "Package installed binaries destination" */
-#undef PACKAGE_BIN_DIR
-
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
-
-/* "Package installed data destination" */
-#undef PACKAGE_DATA_DIR
-
-/* "Package installed libraries destination" */
-#undef PACKAGE_LIB_DIR
 
 /* Define to the full name of this package. */
 #undef PACKAGE_NAME

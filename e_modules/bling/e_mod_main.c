@@ -22,10 +22,6 @@ e_modapi_init(E_Module *m)
 {
    Bling *b = NULL;
 
-   /* Set up module's message catalogue */
-   bindtextdomain(PACKAGE, LOCALEDIR);
-   bind_textdomain_codeset(PACKAGE, "UTF-8");
-
    b = _bling_init(m);
    if (!b) return NULL;
 
