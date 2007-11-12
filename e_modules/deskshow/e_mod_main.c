@@ -102,7 +102,7 @@ _gc_orient (E_Gadcon_Client * gcc)
 static char *
 _gc_label (void)
 {
-  return _("Deskshow");
+  return "Deskshow";
 }
 
 static Evas_Object *
