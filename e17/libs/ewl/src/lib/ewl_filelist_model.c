@@ -116,7 +116,7 @@ ewl_filelist_model_directory_new(const char *path,
 /*
  * @internal
  */
-unsigned int
+int
 ewl_filelist_model_column_sortable(void *data __UNUSED__, 
 					unsigned int column)
 {
@@ -344,18 +344,18 @@ ewl_filelist_model_data_expansion_data_fetch(void *data,
 /**
  * @internal
  */
-void 
+unsigned int 
 ewl_filelist_model_data_unref(Ewl_Filelist_Directory *dir)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dir", dir);
+	DCHECK_PARAM_PTR_RET("dir", dir, FALSE);
 	
 	ecore_string_release(dir->name);
 	ecore_list_destroy(dir->files);
 	ecore_list_destroy(dir->dirs);
 	FREE(dir);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
