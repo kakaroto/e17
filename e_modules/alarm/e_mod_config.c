@@ -163,13 +163,13 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
    alarm_config_refresh_alarms_ilist(cfdata);
    e_widget_frametable_object_append(of, ob, 0, 1, 6, 1, 1, 1, 1, 1);
 
-   ob = e_widget_button_add(evas, _("Add"), NULL, _cb_alarm_add, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Add"), NULL, _cb_alarm_add, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 0, 2, 2, 1, 1, 1, 1, 1);
-   ob = e_widget_button_add(evas, _("Delete"), NULL, _cb_alarm_del, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Delete"), NULL, _cb_alarm_del, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 2, 2, 2, 1, 1, 1, 1, 1);
-   ob = e_widget_button_add(evas, _("Configure"), NULL, _cb_alarm_config, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Configure"), NULL, _cb_alarm_config, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 4, 2, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_button_add(evas, _("Duplicate"), NULL, _cb_alarm_duplicate, cfdata, NULL);
+   ob = e_widget_button_add(evas, D_("Duplicate"), NULL, _cb_alarm_duplicate, cfdata, NULL);
    e_widget_frametable_object_append(of, ob, 5, 2, 1, 1, 1, 1, 1, 1);
 
    e_widget_table_object_append(o, of, 0, 0, 1, 2, 1, 1, 1, 1);

@@ -662,8 +662,8 @@ _alarm_snooze(Alarm *al)
    e_widget_min_size_get(o, &w, &h);
    e_dialog_content_set(dia, o, w, h);
 
-   e_dialog_button_add(dia, _("Ok"), NULL, _alarm_cb_dialog_snooze_ok, al);
-   e_dialog_button_add(dia, _("Close"), NULL, _alarm_cb_dialog_snooze_cancel, al);
+   e_dialog_button_add(dia, D_("Ok"), NULL, _alarm_cb_dialog_snooze_ok, al);
+   e_dialog_button_add(dia, D_("Close"), NULL, _alarm_cb_dialog_snooze_cancel, al);
 
    al->snooze.dia = dia;
    e_win_centered_set(dia->win, 1);
@@ -863,7 +863,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         mi = e_menu_item_new(mn);
         e_menu_item_separator_set(mi, 1);
 	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, _("Configuration"));
+	e_menu_item_label_set(mi, D_("Configuration"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
 	e_menu_item_callback_set(mi, _menu_cb_configure, NULL);
 	

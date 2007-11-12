@@ -189,7 +189,7 @@ _common_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *c
 
    ob = e_widget_check_add(evas, D_("Active"), &(cfdata->state));
    e_widget_frametable_object_append(of, ob, 0, 0, 1, 1, 1, 1, 1, 1);
-   ob = e_widget_label_add(evas, _("Name"));
+   ob = e_widget_label_add(evas, D_("Name"));
    e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
    ob = e_widget_entry_add(evas, &(cfdata->name), NULL, NULL, NULL);
    e_widget_min_size_set(ob, 200, 25);
@@ -388,16 +388,16 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    if (!alarm_config->alarms_autoremove_default)
      {
-        ob = e_widget_radio_add(evas, _("No [default]"), 0, rg);
+        ob = e_widget_radio_add(evas, D_("No [default]"), 0, rg);
         e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_radio_add(evas, _("Yes"), 1, rg);
+        ob = e_widget_radio_add(evas, D_("Yes"), 1, rg);
         e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
      }
    else
      {
-        ob = e_widget_radio_add(evas, _("No"), 0, rg);
+        ob = e_widget_radio_add(evas, D_("No"), 0, rg);
         e_widget_frametable_object_append(of, ob, 1, 1, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_radio_add(evas, _("Yes [default]"), 1, rg);
+        ob = e_widget_radio_add(evas, D_("Yes [default]"), 1, rg);
         e_widget_frametable_object_append(of, ob, 1, 2, 1, 1, 1, 1, 1, 1);
      }
 
@@ -408,16 +408,16 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    if (!alarm_config->alarms_open_popup_default)
      {
-        ob = e_widget_radio_add(evas, _("No [default]"), 0, rg);
+        ob = e_widget_radio_add(evas, D_("No [default]"), 0, rg);
         e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_radio_add(evas, _("Yes"), 1, rg);
+        ob = e_widget_radio_add(evas, D_("Yes"), 1, rg);
         e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
      }
    else
      {
-        ob = e_widget_radio_add(evas, _("No"), 0, rg);
+        ob = e_widget_radio_add(evas, D_("No"), 0, rg);
         e_widget_frametable_object_append(of, ob, 0, 1, 1, 1, 1, 1, 1, 1);
-        ob = e_widget_radio_add(evas, _("Yes [default]"), 1, rg);
+        ob = e_widget_radio_add(evas, D_("Yes [default]"), 1, rg);
         e_widget_frametable_object_append(of, ob, 0, 2, 1, 1, 1, 1, 1, 1);
      }
         
@@ -426,7 +426,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    rg = e_widget_radio_group_new(&(cfdata->run_program));
 
-   ob = e_widget_radio_add(evas, _("No"), ALARM_RUN_PROGRAM_NO, rg);
+   ob = e_widget_radio_add(evas, D_("No"), ALARM_RUN_PROGRAM_NO, rg);
    e_widget_frametable_object_append(of, ob, 0, 5, 1, 1, 1, 1, 1, 1);
    ob = e_widget_radio_add(evas, D_("Run default one"), ALARM_RUN_PROGRAM_PARENT, rg);
    e_widget_frametable_object_append(of, ob, 0, 6, 1, 1, 1, 1, 1, 1);
