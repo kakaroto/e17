@@ -2042,17 +2042,17 @@ composite_init(Bling *b)
 
    if (!XRenderQueryExtension(dpy, &render_event, &render_error))
    {
-      e_error_message_show(_("Unable to load Bling module:<br>"
-                             "Your X server does not have the Render extension.<br>"));
+      e_error_message_show("Unable to load Bling module:<br>"
+                           "Your X server does not have the Render extension.<br>");
       return 0;
    }
    if (!XQueryExtension
        (dpy, COMPOSITE_NAME, &composite_opcode, &composite_event,
         &composite_error))
    {
-      e_error_message_show(_("Unable to load Bling module:<br>"
-                             "Your X server does not have the Composite extension.<br>"
-                             "You may need to enable this manually in your X configuration.<br>"));
+      e_error_message_show("Unable to load Bling module:<br>"
+                           "Your X server does not have the Composite extension.<br>"
+                           "You may need to enable this manually in your X configuration.<br>");
       return 0;
    }
    XCompositeQueryVersion(dpy, &composite_major, &composite_minor);
