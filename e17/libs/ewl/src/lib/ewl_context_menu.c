@@ -54,7 +54,7 @@ ewl_context_menu_init(Ewl_Context_Menu *cm)
 	int oh, ov;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("cm", cm, FALSE);
+	DCHECK_PARAM_PTR_RET(cm, FALSE);
 
 	w = EWL_WIDGET(cm);
 	if (!ewl_popup_init(EWL_POPUP(w)))
@@ -101,10 +101,10 @@ ewl_context_menu_attach(Ewl_Context_Menu *cm, Ewl_Widget *w)
 	Ewl_Widget *follow;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cm", cm);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("cm", cm, EWL_CONTEXT_MENU_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(cm);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(cm, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
 	if (!emb) {
@@ -138,10 +138,10 @@ void
 ewl_context_menu_detach(Ewl_Context_Menu *cm, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cm", cm);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("cm", cm, EWL_CONTEXT_MENU_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(cm);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(cm, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_DOWN,
 			    ewl_context_menu_cb_attach_mouse_down);
@@ -169,8 +169,9 @@ ewl_context_menu_container_set(Ewl_Context_Menu *cm, Ewl_Container *c)
 	Ewl_Container *red;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cm", cm);
-	DCHECK_TYPE("cm", cm, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_PARAM_PTR(cm);
+	DCHECK_TYPE(cm, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
 	/* if there is not a container specified we will create a vbox as
 	 * default */
@@ -239,15 +240,16 @@ ewl_context_menu_cb_attach_mouse_down(Ewl_Widget *w __UNUSED__, void *ev_data,
 	Ewl_Event_Mouse_Down *ev;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_POPUP_TYPE);
+	DCHECK_PARAM_PTR(ev_data);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_POPUP_TYPE);
 
 	ev = ev_data;
 
 	if (ev->button != 3)
 		DRETURN(DLEVEL_STABLE);
 
+	ewl_widget_focus_send(EWL_WIDGET(user_data));
 	ewl_popup_mouse_position_set(EWL_POPUP(user_data), ev->base.x,
 								ev->base.y);
 	ewl_widget_show(EWL_WIDGET(user_data));
@@ -268,8 +270,8 @@ ewl_context_menu_cb_mouse_down(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_CONTEXT_MENU_TYPE);
 
 	if (w == ewl_embed_focused_widget_get(EWL_EMBED(w))) {
 		Ewl_Context_Menu *cm;
@@ -309,8 +311,8 @@ ewl_context_menu_cb_hide(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Context_Menu *cm;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_CONTEXT_MENU_TYPE);
 
 	cm = EWL_CONTEXT_MENU(w);
 
@@ -343,9 +345,9 @@ ewl_context_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data,
 	int ex = 0, ey = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("ev_data", ev_data);
-	DCHECK_TYPE("w", w, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev_data);
+	DCHECK_TYPE(w, EWL_CONTEXT_MENU_TYPE);
 
 	ev = ev_data;
 	cm = EWL_CONTEXT_MENU(w);
@@ -406,8 +408,8 @@ ewl_context_menu_cb_focus_in(Ewl_Widget *w, void *ev_data __UNUSED__,
 				void *user_data __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_CONTEXT_MENU_TYPE);
 
 	ewl_context_menu_grabber_set(EWL_CONTEXT_MENU(w));
 
@@ -427,10 +429,10 @@ ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 	Ewl_Context_Menu *cm;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	cm = EWL_CONTEXT_MENU(ewl_embed_widget_find(EWL_WIDGET(c)));
 
@@ -466,10 +468,10 @@ ewl_context_menu_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx)
 	Ewl_Context_Menu *cm;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("c", c);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("c", c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	cm = EWL_CONTEXT_MENU(ewl_embed_widget_find(EWL_WIDGET(c)));
 	/* call the overridden callback first */
@@ -508,8 +510,8 @@ ewl_context_menu_cb_child_mouse_in(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
 	cm = EWL_CONTEXT_MENU(emb);
@@ -545,8 +547,8 @@ ewl_context_menu_cb_child_clicked(Ewl_Widget *w __UNUSED__,
 	Ewl_Widget *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("user_data", user_data);
-	DCHECK_TYPE("user_data", user_data, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(user_data);
+	DCHECK_TYPE(user_data, EWL_WIDGET_TYPE);
 
 	c = EWL_WIDGET(user_data);
 
@@ -567,10 +569,10 @@ ewl_context_menu_mouse_feed(Ewl_Context_Menu *cm, Ewl_Embed *emb, int x, int y)
 {
 	int emb_x = 0, emb_y = 0, emb_w = 0, emb_h = 0;
 
-	DCHECK_PARAM_PTR_RET("cm", cm, FALSE);
-	DCHECK_PARAM_PTR_RET("emb", emb, FALSE);
-	DCHECK_TYPE_RET("cm", cm, EWL_CONTEXT_MENU_TYPE, FALSE);
-	DCHECK_TYPE_RET("emb", emb, EWL_EMBED_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(cm, FALSE);
+	DCHECK_PARAM_PTR_RET(emb, FALSE);
+	DCHECK_TYPE_RET(cm, EWL_CONTEXT_MENU_TYPE, FALSE);
+	DCHECK_TYPE_RET(emb, EWL_EMBED_TYPE, FALSE);
 
 	ewl_embed_window_position_get(emb, &emb_x, &emb_y);
 	ewl_object_current_size_get(EWL_OBJECT(emb), &emb_w, &emb_h);
@@ -590,8 +592,8 @@ static void
 ewl_context_menu_grabber_set(Ewl_Context_Menu *cm)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cm", cm);
-	DCHECK_TYPE("cm", cm, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_PARAM_PTR(cm);
+	DCHECK_TYPE(cm, EWL_CONTEXT_MENU_TYPE);
 
 	if (cm == ewl_context_menu_grabber)
 		DRETURN(DLEVEL_STABLE);
@@ -610,8 +612,8 @@ static void
 ewl_context_menu_grabber_unset(Ewl_Context_Menu *cm)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("cm", cm);
-	DCHECK_TYPE("cm", cm, EWL_CONTEXT_MENU_TYPE);
+	DCHECK_PARAM_PTR(cm);
+	DCHECK_TYPE(cm, EWL_CONTEXT_MENU_TYPE);
 
 	if (cm == ewl_context_menu_grabber) {
 		ewl_window_keyboard_grab_set(EWL_WINDOW(cm), FALSE);
