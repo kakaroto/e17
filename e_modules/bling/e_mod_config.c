@@ -175,7 +175,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    ob = e_widget_label_add(evas, "Fade Out Speed");
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
-   ob = e_widget_slider_add(evas, 1, 0, "%.0f" 1.0, 100.0, 1, 0, &(cfdata->fade_out_step), NULL, 150);
+   ob = e_widget_slider_add(evas, 1, 0, "%.0f", 1.0, 100.0, 1, 0, &(cfdata->fade_out_step), NULL, 150);
    e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
 
    e_widget_framelist_object_append(of, ot);
