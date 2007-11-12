@@ -43,7 +43,7 @@ e_modules=`$E_CONFIG --module-dir`
 AC_SUBST(e_cflags)
 AC_SUBST(e_libs)
 
-dnl TODO: Fix better install for userdir
+dnl TODO: Fix better install for homedir
 datadir="${e_modules}/${PACKAGE}"    
 
 edje_cc="$(pkg-config --variable=prefix edje)/bin/edje_cc"
@@ -61,6 +61,6 @@ Makefile
 po/Makefile.in
 e_modules-alarm.spec
 module.desktop
-],[
+], [
 ])
 

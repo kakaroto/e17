@@ -41,7 +41,7 @@ AC_ARG_WITH(enlightenment-config,
   [
     E_CONFIG=$withval;
     echo "using "$E_CONFIG" for enlightenment-config";
-  ],[
+  ], [
     PROG="enlightenment-config";
     AC_PATH_PROG(E_CONFIG, $PROG, "", $PATH)
   ]
@@ -58,6 +58,6 @@ datadir="${e_modules}/${PACKAGE}"
 AC_OUTPUT([
 Makefile
 e_modules-calendar.spec
-],[
+], [
 ])
 
