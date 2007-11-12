@@ -244,7 +244,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	e_menu_post_deactivate_callback_set(mn, _menu_cb_post, inst);
 	moon_config->menu = mn;
 	
-	mi = e_menu_item_new(mn); e_menu_item_label_set(mi, _("Configuration"));
+	mi = e_menu_item_new(mn); e_menu_item_label_set(mi, D_("Configuration"));
 	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
 	e_menu_item_callback_set(mi, _moon_inst_cb_menu_configure, obj); 
 	
