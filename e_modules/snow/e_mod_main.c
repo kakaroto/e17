@@ -200,11 +200,13 @@ _snow_canvas_reset(Snow *snow)
 static void
 _snow_trees_load(Snow *snow)
 {
+   char buf[4096];
    Evas_Object *o;
    int tw, th, i;
 
    o = evas_object_image_add(snow->canvas);
-   evas_object_image_file_set(o, PACKAGE_DATA_DIR "/tree.png", "");
+   snprintf(buf, sizeof(buf), "%s/tree.png", e_module_dir_get(snow->module));
+   evas_object_image_file_set(o, buf, "");
    evas_object_image_size_get(o, &tw, &th);
 
    for (i = 0; i < snow->conf->tree_count; i++)
@@ -214,7 +216,8 @@ _snow_trees_load(Snow *snow)
         if (i != 0)
           {
              o = evas_object_image_add(snow->canvas);
-             evas_object_image_file_set(o, PACKAGE_DATA_DIR "/tree.png", "");
+	     snprintf(buf, sizeof(buf), "%s/tree.png", e_module_dir_get(snow->module));
+	     evas_object_image_file_set(o, buf, "");
           }
         evas_object_resize(o, tw, th);
         evas_object_image_alpha_set(o, 1);
@@ -239,7 +242,7 @@ _snow_flakes_load(char type, Snow *snow)
    Snow_Flake *flake;
 
    evas_output_viewport_get(snow->canvas, &xx, &yy, &ww, &hh);
-   snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR "/flake-%c.png", type);
+   snprintf(buf, sizeof(buf), "%s/flake-%c.png", e_module_dir_get(snow->module), type);
 
    o = evas_object_image_add(snow->canvas);
    evas_object_image_file_set(o, buf, "");
