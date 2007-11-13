@@ -283,7 +283,10 @@ EAPI void
 imlib_context_set_cliprect(int x, int y, int w, int h)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->cliprect.x = x;
    ctx->cliprect.y = y;
    ctx->cliprect.w = w;
@@ -294,7 +297,10 @@ EAPI void
 imlib_context_get_cliprect(int *x, int *y, int *w, int *h)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    *x = ctx->cliprect.x;
    *y = ctx->cliprect.y;
    *w = ctx->cliprect.w;
@@ -318,7 +324,10 @@ EAPI void
 imlib_context_set_display(Display * display)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->display = display;
 }
 
@@ -331,7 +340,10 @@ EAPI Display       *
 imlib_context_get_display(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->display;
 }
 
@@ -347,7 +359,10 @@ EAPI void
 imlib_context_set_visual(Visual * visual)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->visual = visual;
    ctx->depth = imlib_get_visual_depth(ctx->display, ctx->visual);
 }
@@ -361,7 +376,10 @@ EAPI Visual        *
 imlib_context_get_visual(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->visual;
 }
 
@@ -376,7 +394,10 @@ EAPI void
 imlib_context_set_colormap(Colormap colormap)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->colormap = colormap;
 }
 
@@ -389,7 +410,10 @@ EAPI                Colormap
 imlib_context_get_colormap(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->colormap;
 }
 
@@ -404,7 +428,10 @@ EAPI void
 imlib_context_set_drawable(Drawable drawable)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->drawable = drawable;
 }
 
@@ -417,7 +444,10 @@ EAPI                Drawable
 imlib_context_get_drawable(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->drawable;
 }
 
@@ -432,7 +462,10 @@ EAPI void
 imlib_context_set_mask(Pixmap mask)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->mask = mask;
 }
 
@@ -445,7 +478,10 @@ EAPI                Pixmap
 imlib_context_get_mask(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->mask;
 }
 #endif
@@ -462,7 +498,10 @@ EAPI void
 imlib_context_set_dither_mask(char dither_mask)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->dither_mask = dither_mask;
 }
 
@@ -476,7 +515,10 @@ EAPI char
 imlib_context_get_dither_mask(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->dither_mask;
 }
 
@@ -491,7 +533,10 @@ EAPI void
 imlib_context_set_mask_alpha_threshold(int mask_alpha_threshold)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->mask_alpha_threshold = mask_alpha_threshold;
 }
 
@@ -504,7 +549,10 @@ EAPI int
 imlib_context_get_mask_alpha_threshold(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->mask_alpha_threshold;
 }
 
@@ -522,7 +570,10 @@ EAPI void
 imlib_context_set_anti_alias(char anti_alias)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->anti_alias = anti_alias;
 }
 
@@ -536,7 +587,10 @@ EAPI char
 imlib_context_get_anti_alias(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->anti_alias;
 }
 
@@ -555,7 +609,10 @@ EAPI void
 imlib_context_set_dither(char dither)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->dither = dither;
 }
 
@@ -569,7 +626,10 @@ EAPI char
 imlib_context_get_dither(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->dither;
 }
 
@@ -585,7 +645,10 @@ EAPI void
 imlib_context_set_blend(char blend)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->blend = blend;
 }
 
@@ -599,7 +662,10 @@ EAPI char
 imlib_context_get_blend(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->blend;
 }
 
@@ -618,7 +684,10 @@ EAPI void
 imlib_context_set_color_modifier(Imlib_Color_Modifier color_modifier)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->color_modifier = color_modifier;
 }
 
@@ -631,7 +700,10 @@ EAPI                Imlib_Color_Modifier
 imlib_context_get_color_modifier(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->color_modifier;
 }
 
@@ -654,7 +726,10 @@ EAPI void
 imlib_context_set_operation(Imlib_Operation operation)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->operation = operation;
 }
 
@@ -667,7 +742,10 @@ EAPI                Imlib_Operation
 imlib_context_get_operation(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->operation;
 }
 
@@ -681,7 +759,10 @@ EAPI void
 imlib_context_set_font(Imlib_Font font)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->font = font;
 }
 
@@ -694,7 +775,10 @@ EAPI                Imlib_Font
 imlib_context_get_font(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->font;
 }
 
@@ -712,7 +796,10 @@ EAPI void
 imlib_context_set_direction(Imlib_Text_Direction direction)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->direction = direction;
 }
 
@@ -727,7 +814,10 @@ EAPI void
 imlib_context_set_angle(double angle)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->angle = angle;
 }
 
@@ -741,7 +831,10 @@ EAPI double
 imlib_context_get_angle(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->angle;
 }
 
@@ -754,7 +847,10 @@ EAPI                Imlib_Text_Direction
 imlib_context_get_direction(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return ctx->direction;
 }
 
@@ -773,7 +869,10 @@ EAPI void
 imlib_context_set_color(int red, int green, int blue, int alpha)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    ctx->color.red = red;
    ctx->color.green = green;
    ctx->color.blue = blue;
@@ -792,7 +891,10 @@ EAPI void
 imlib_context_get_color(int *red, int *green, int *blue, int *alpha)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    *red = ctx->color.red;
    *green = ctx->color.green;
    *blue = ctx->color.blue;
@@ -809,7 +911,10 @@ EAPI Imlib_Color   *
 imlib_context_get_imlib_color(void)
 {
    if (!ctx)
-      ctx = imlib_context_new();
+     {
+	ctx = imlib_context_new();
+	imlib_context_push(ctx);
+     }
    return &ctx->color;
 }
 
