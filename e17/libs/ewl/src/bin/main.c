@@ -35,15 +35,26 @@
 static Ewl_Model *expansion_model = NULL;
 
 static char *ewl_test_about_body =
-		"The EWL Test application services two purposes\n"
-		"The first is to allow us to test the different\n"
-		"pieces of EWL as we develop and work on them.\n\n"
-		"The second piece is to allow deveopers to see\n"
-		"tutorials and source listings for the different\n"
+		"The EWL Test application serves two purposes. "
+		"The first is to allow us to test the different "
+		"components of EWL as we develop them.\n\n"
+		"The second is to allow deveopers to view "
+		"tutorials and source listings for the different "
 		"widgets in the system.\n\n"
-		"If you develop your own EWL widget you can add\n"
-		"a test to the test widget without needing to\n"
-		"recompile or edit the test application.\n";
+		"If you develop your own EWL widget you can add "
+		"a test to the test widget without needing to "
+		"recompile or edit the test application.";
+
+static char *ewl_test_help_body =
+		"Select the test you want from the test tree under the "
+		"'Tests' tab. You can then use the 'UI Tests' tab "
+		"to view the UI test for that widget. The 'Unit Tests' "
+		"tab will let you execute the available unit tests.\n\n"
+		"To view the source for the current test click on the "
+		"'Source' tab. A short tutorial on the widget will be "
+		"available under the 'Tutorial' tab.\n\n"
+		"If you encounter any bugs in the test application "
+		"please report them to http://bugs.enlightenment.org.";
 
 static int ewl_test_setup_tests(void);
 static void ewl_test_free(Ewl_Test *test);
@@ -86,6 +97,8 @@ static Ewl_Widget *cb_unit_test_header_fetch(void *data, unsigned int column);
 static void *cb_unit_test_header_data_fetch(void *data, unsigned int column);
 static void *cb_unit_test_fetch(void *data, unsigned int row, unsigned int column);
 static unsigned int cb_unit_test_count(void *data);
+
+static void ewl_test_create_info_window(const char *title, const char *text);
 
 static Ecore_List *tests = NULL;
 static Ecore_Path_Group *tests_path_group = NULL;
@@ -529,7 +542,7 @@ create_main_test_window(Ewl_Container *box)
 	};
 
 	Ewl_Menu_Info help_menu[] = {
-		{"About Ewl ...", NULL, ewl_test_cb_about},
+		{"About Ewl_Test ...", NULL, ewl_test_cb_about},
 		{"Ewl Test Help ...", NULL, ewl_test_cb_help},
 		{NULL, NULL, NULL}
 	};
@@ -1124,53 +1137,19 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 }
 
 static void
-ewl_test_cb_help(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-						void *data __UNUSED__)
+ewl_test_create_info_window(const char *title, const char *text)
 {
 	Ewl_Widget *win, *vbox, *o;
 
 	window_count++;
 
 	win = ewl_window_new();
-	ewl_window_title_set(EWL_WINDOW(win), "EWL Test Help");
-	ewl_window_class_set(EWL_WINDOW(win), "ewl_test");
-	ewl_window_name_set(EWL_WINDOW(win), "ewl_test");
-	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
-					ewl_test_cb_delete_window, NULL);
-	ewl_widget_show(win);
-
-	vbox = ewl_vbox_new();
-	ewl_container_child_append(EWL_CONTAINER(win), vbox);
-	ewl_widget_show(vbox);
-
-	o = ewl_text_new();
-	ewl_text_font_size_set(EWL_TEXT(o), 22);
-	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
-	ewl_text_text_set(EWL_TEXT(o), "Ewl_ Test App Help");
-	ewl_text_text_append(EWL_TEXT(o), "\n\n");
-	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_LEFT);
-	ewl_text_font_size_set(EWL_TEXT(o), 12);
-	ewl_text_text_append(EWL_TEXT(o), "Still need to write this, eh.");
-	ewl_container_child_append(EWL_CONTAINER(vbox), o);
-	ewl_widget_show(o);
-}
-
-static void
-ewl_test_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-						void *data __UNUSED__)
-{
-	Ewl_Widget *win, *vbox, *o;
-
-	window_count++;
-
-	win = ewl_window_new();
-	ewl_window_title_set(EWL_WINDOW(win), "EWL Test About");
+	ewl_window_title_set(EWL_WINDOW(win), title);
 	ewl_window_class_set(EWL_WINDOW(win), "ewl_test");
 	ewl_window_name_set(EWL_WINDOW(win), "ewl_test");
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
 					ewl_test_cb_delete_window, NULL);
 	ewl_object_size_request(EWL_OBJECT(win), 400, 400);
-	ewl_object_fill_policy_set(EWL_OBJECT(win), EWL_FLAG_FILL_ALL);
 	ewl_widget_show(win);
 
 	vbox = ewl_scrollpane_new();
@@ -1178,15 +1157,34 @@ ewl_test_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_widget_show(vbox);
 
 	o = ewl_text_new();
+	ewl_text_font_source_set(EWL_TEXT(o), ewl_theme_path_get(), "ewl/default/bold");
 	ewl_text_font_size_set(EWL_TEXT(o), 22);
 	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
-	ewl_text_text_set(EWL_TEXT(o), "Ewl_ Test App");
-	ewl_text_text_append(EWL_TEXT(o), "\n\n");
+	ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_SOFT_SHADOW);
+	ewl_text_text_append(EWL_TEXT(o), title);
+
 	ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_LEFT);
+	ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_NONE);
+	ewl_text_font_set(EWL_TEXT(o), NULL);
 	ewl_text_font_size_set(EWL_TEXT(o), 12);
-	ewl_text_text_append(EWL_TEXT(o), ewl_test_about_body);
+	ewl_text_text_append(EWL_TEXT(o), "\n\n");
+	ewl_text_text_append(EWL_TEXT(o), text);
 	ewl_container_child_append(EWL_CONTAINER(vbox), o);
 	ewl_widget_show(o);
+}
+
+static void
+ewl_test_cb_help(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+						void *data __UNUSED__)
+{
+	ewl_test_create_info_window("Ewl Test Help", ewl_test_help_body);
+}
+
+static void
+ewl_test_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+						void *data __UNUSED__)
+{
+	ewl_test_create_info_window("Ewl Test About", ewl_test_about_body);
 }
 
 static void *
