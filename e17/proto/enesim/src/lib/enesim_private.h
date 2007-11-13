@@ -6,9 +6,20 @@
  * @{
  */
 
-#include <assert.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "Edata.h"
+
+#ifndef DEBUG
+#define NDEBUG
+#define ENESIM_WARNING(format, ...)
+#else
+#define
+#define ENESIM_WARNING(format, ...) \
+fprintf(stderr, "[Enesim] (%s:%d - %s()):\n" format "\n\n", __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+#endif
+
+#include <assert.h>
 
 #ifdef MIN
 #undef MIN
@@ -16,13 +27,6 @@
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
 /* FIXME move the above to other place */
-typedef struct _Enesim_Rectangle
-{
-	int 	x;
-	int 	y;
-	int 	w;
-	int 	h;
-} Enesim_Rectangle;
 
 /**
  * To be documented
@@ -31,17 +35,6 @@ typedef struct _Enesim_Rectangle
 static inline int enesim_rectangle_is_empty(Enesim_Rectangle *r)
 {
 	return ((r->w < 1) || (r->h < 1));
-}
-/**
- * To be documented
- * FIXME: To be fixed
- */
-static inline void enesim_rectangle_from_coords(Enesim_Rectangle *r, int x, int y, int w, int h)
-{
-	r->x = x;
-	r->y = y;
-	r->w = w;
-	r->h = h;
 }
 /**
  * To be documented

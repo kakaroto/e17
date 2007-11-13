@@ -52,6 +52,26 @@ enum
 typedef unsigned int 		DATA32;
 typedef unsigned short int 	DATA16;
 typedef unsigned char 		DATA8;
+typedef struct _Enesim_Rectangle
+{
+	int 	x;
+	int 	y;
+	int 	w;
+	int 	h;
+} Enesim_Rectangle;
+
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+static inline void enesim_rectangle_from_coords(Enesim_Rectangle *r, int x, int y, int w, int h)
+{
+	r->x = x;
+	r->y = y;
+	r->w = w;
+	r->h = h;
+}
+
 /**
  * @defgroup Enesim_Scanline_Group Scanline
  * @{
@@ -70,8 +90,19 @@ EAPI void 		enesim_scanline_delete(Enesim_Scanline *sl);
 typedef struct _Enesim_Rasterizer Enesim_Rasterizer; /**< Rasterizer Handler */
 EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y);
 EAPI void enesim_rasterizer_generate(Enesim_Rasterizer *r, Enesim_Scanline *sl);
-EAPI void enesim_rasterizer_boundings_set(Enesim_Rasterizer *r, int x, int y, int w, int h);
-EAPI Enesim_Rasterizer * enesim_rasterizer_new(void);
+EAPI void enesim_rasterizer_delete(Enesim_Rasterizer *r);
+EAPI Enesim_Rasterizer * enesim_rasterizer_cpsc_new(Enesim_Rectangle boundaries);
+
+typedef enum
+{
+	ENESIM_RASTERIZER_KIIA_COUNT_8,
+	ENESIM_RASTERIZER_KIIA_COUNT_16,
+	ENESIM_RASTERIZER_KIIA_COUNT_32,
+	ENESIM_RASTERIZER_KIIA_COUNTS
+} Enesim_Rasterizer_Kiia_Count;
+
+EAPI Enesim_Rasterizer * enesim_rasterizer_kiia_new(Enesim_Rasterizer_Kiia_Count count,
+		Enesim_Rectangle boundaries);
 
 /** @} */ //End of Enesim_Rasterizer_Group
 

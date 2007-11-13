@@ -35,6 +35,7 @@ typedef struct _Cpsc_Edge
 typedef struct _Cpsc
 {
 	Edata_Array	*a;
+	Enesim_Rasterizer *r;
 	Cpsc_Vertex 	*vertices;
 	int 		num_vertices;
 } Cpsc;
@@ -117,16 +118,6 @@ static int _compare_edge(const void *a, const void *b)
 	return 1;
 }
 
-static void * _create(void)
-{
-	Cpsc *c;
-
-	c = calloc(1, sizeof(Cpsc));
-	c->a = edata_array_new(c, EDATA_ARRAY_ALLOC(_a_alloc),
-		EDATA_ARRAY_FREE(_a_free));
-	return c;
-}
-
 static void _vertex_add(Cpsc *r, float x, float y)
 {
 	int n = r->num_vertices;
@@ -170,7 +161,7 @@ static void _generate(Cpsc *r, Enesim_Scanline *sl)
 	}
 	free(vertices);
 	vertices = r->vertices;
-	/* get the min and max y from the polygon and thw display size */
+	/* get the min and max y from the polygon and the display size */
 	y0 = ceil(vertices[sindex[0]].y - 0.5);
 	y1 = floor(vertices[sindex[n - 1]].y - 0.5);
 
@@ -229,11 +220,33 @@ static void _generate(Cpsc *r, Enesim_Scanline *sl)
 	free(sindex);
 }
 
-/*============================================================================*
- *                                 Global                                     * 
- *============================================================================*/
-Enesim_Rasterizer_Func cpsc = {
-	.create 	= _create,
-	.vertex_add 	= _vertex_add,
-	.generate 	= _generate
+static void _delete(Cpsc *c)
+{
+	free(c);
+}
+
+static Enesim_Rasterizer_Func cpsc_func = {
+	.vertex_add = ENESIM_RASTERIZER_VERTEX_ADD(_vertex_add),
+	.generate   = ENESIM_RASTERIZER_GENERATE(_generate),
+	.delete     = ENESIM_RASTERIZER_DELETE(_delete)
 };
+
+/*============================================================================*
+ *                                   API                                      * 
+ *============================================================================*/
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI Enesim_Rasterizer * enesim_rasterizer_cpsc_new(Enesim_Rectangle boundaries)
+{
+	Enesim_Rasterizer *r;
+	Cpsc *c;
+
+	c = calloc(1, sizeof(Cpsc));
+	c->a = edata_array_new(c, EDATA_ARRAY_ALLOC(_a_alloc),
+		EDATA_ARRAY_FREE(_a_free));
+	r = enesim_rasterizer_new(c, &cpsc_func, boundaries);
+	c->r = r;
+	return r;
+}
