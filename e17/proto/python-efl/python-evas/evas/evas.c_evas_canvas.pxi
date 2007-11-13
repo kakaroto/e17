@@ -65,12 +65,10 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
         Canvas_remember(<long>self.obj, self)
         return 1
 
-    # XXX: this should be C-only, but it would require ecore_evas
-    # XXX: being able to use it.
-    def _unset_obj(self):
-        "Remove internally wrapped Evas*."
+    cdef int _unset_obj(self) except 0:
         Canvas_forget(<long>self.obj)
         self.obj = NULL
+        return 1
 
     def _new_evas(self):
         """Creates an internal (wrapped) 'Evas*' for this object.

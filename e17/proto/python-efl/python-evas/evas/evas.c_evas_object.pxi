@@ -29,6 +29,9 @@ cdef void obj_free_cb(void *data, Evas *e,
     cdef Object self
     self = <Object>data
 
+    self.obj = NULL
+    self.evas = <Canvas>None
+
     lst = self._callbacks[EVAS_CALLBACK_FREE]
     if lst is not None:
         for func, args, kargs in lst:
@@ -37,7 +40,8 @@ cdef void obj_free_cb(void *data, Evas *e,
             except Exception, e:
                 traceback.print_exc()
 
-    self._unset_obj()
+    _free_wrapper_resources(self)
+    python.Py_DECREF(self)
 
 
 cdef _register_decorated_callbacks(obj):

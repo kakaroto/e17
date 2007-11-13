@@ -623,6 +623,8 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     cdef Evas *obj
 
     cdef int _set_obj(self, Evas *obj) except 0
+    cdef int _unset_obj(self) except 0
+
 
 cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     cdef Evas_Object *obj
