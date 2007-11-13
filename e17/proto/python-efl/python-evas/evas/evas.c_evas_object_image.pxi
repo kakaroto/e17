@@ -459,7 +459,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
             f = flags
         else:
             f = NULL
-        evas_object_image_save(self.obj, filename, key, flags)
+        evas_object_image_save(self.obj, filename, k, f)
 
     def __getsegcount__(self, int *p_len):
         if p_len == NULL:
