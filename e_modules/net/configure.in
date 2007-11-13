@@ -1,6 +1,6 @@
 rm -f config.cache
 
-AC_INIT(net, 0.0.1, devilhorns@devilhorns.us)
+AC_INIT(net, 0.0.1, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.59)
 AC_CONFIG_SRCDIR(configure.in)
 AC_CANONICAL_BUILD
