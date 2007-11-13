@@ -11,7 +11,7 @@
 #define MAX_FALLER_HEIGHT 300
 
 #define FLYER_PROB 1000 // every n animation cicle
-#define CUSTOM_PROB 600 // every n animation cicle
+#define CUSTOM_PROB 600 // every n animation cicle (def: 600)
 
 //_RAND(prob) is true one time every prob
 #define _RAND(prob) ( ( random() % prob ) == 0 )
@@ -32,7 +32,10 @@ static void       _start_custom_at(Penguin *tux, int at_y);
 //static void     _win_shape_change(void *data, E_Container_Shape *es, E_Container_Shape_Change ch);
 static void       _reborn(Penguin *tux);
 static void       _cb_custom_end(void *data, Evas_Object *o, const char *emi, const char *src);
-
+static void       _cb_click_l (void *data, Evas_Object *o, const char *emi, const char *src);
+static void       _cb_click_r (void *data, Evas_Object *o, const char *emi, const char *src);
+static void       _cb_click_c (void *data, Evas_Object *o, const char *emi, const char *src);
+static void       _start_bombing_at(Penguin *tux, int at_y);
 /* public module routines. all modules must have these */
 EAPI E_Module_Api e_modapi = {
    E_MODULE_API_VERSION,
@@ -384,7 +387,7 @@ _theme_load(Population *pop)
    _load_action(pop, pop->conf->theme, "Faller", ID_FALLER);
    _load_action(pop, pop->conf->theme, "Climber", ID_CLIMBER);
    _load_action(pop, pop->conf->theme, "Floater", ID_FLOATER);
-   //_load_action(pop, pop->conf->theme, "Bomber");
+   _load_action(pop, pop->conf->theme, "Bomber", ID_BOMBER);
    _load_action(pop, pop->conf->theme, "Splatter", ID_SPLATTER);
    _load_action(pop, pop->conf->theme, "Flyer", ID_FLYER);
    
@@ -429,7 +432,11 @@ _population_load(Population *pop)
         evas_object_image_alpha_set(o, 0.5);
         evas_object_color_set(o, pop->conf->alpha, pop->conf->alpha,
                               pop->conf->alpha, pop->conf->alpha);
-        evas_object_pass_events_set(o, 1);
+        evas_object_pass_events_set(o, 0);
+        
+        edje_object_signal_callback_add(o,"click_l","penguins", _cb_click_l, tux);
+        edje_object_signal_callback_add(o,"click_r","penguins", _cb_click_r, tux);
+        edje_object_signal_callback_add(o,"click_c","penguins", _cb_click_c, tux);
        
         tux->obj = o;
         tux->pop = pop;
@@ -440,6 +447,25 @@ _population_load(Population *pop)
         
         _reborn(tux);
      }
+}
+
+static void
+_cb_click_l (void *data, Evas_Object *o, const char *emi, const char *src)
+{
+   Penguin *tux = data;
+   //printf("Left-click on TUX !!!\n");
+   _start_bombing_at(tux, tux->y + tux->action->h);
+}
+static void
+_cb_click_r (void *data, Evas_Object *o, const char *emi, const char *src)
+{
+   //printf("Right-click on TUX !!!\n");
+   e_int_config_penguins_module(NULL, NULL);
+}
+static void
+_cb_click_c (void *data, Evas_Object *o, const char *emi, const char *src)
+{
+   printf("Center-click on TUX !!!\n");
 }
 
 static void
@@ -796,13 +822,39 @@ _start_splatting_at(Penguin *tux, int at_y)
    evas_object_move(tux->obj,(int)tux->x,(int)tux->y);
    evas_object_show(tux->obj);
 }
-
+static void 
+_cb_bomber_end(void *data, Evas_Object *o, const char *emi, const char *src)
+{
+   edje_object_signal_callback_del(o,"bombing_done","edje", _cb_bomber_end);
+   _reborn((Penguin*)data);
+}
+static void 
+_start_bombing_at(Penguin *tux, int at_y)
+{
+   //printf("PENGUINS: Start bombing at %d...\n", at_y);
+   
+   if (tux->reverse)
+      edje_object_signal_emit(tux->obj, "start_bombing_left", "epenguins");
+   else
+      edje_object_signal_emit(tux->obj, "start_bombing_right", "epenguins");
+   
+   tux->x = tux->x + (tux->action->w /2);
+   tux->action = evas_hash_find(tux->pop->actions, "Bomber");
+   tux->x = tux->x - (tux->action->w /2);
+   tux->y = at_y - tux->action->h;
+   
+   edje_object_signal_callback_add(tux->obj,"bombing_done","edje", _cb_bomber_end, tux);
+   evas_object_image_fill_set(tux->obj, 0, 0, tux->action->w, tux->action->h);
+   evas_object_resize(tux->obj, tux->action->w, tux->action->h);
+   evas_object_move(tux->obj,(int)tux->x,(int)tux->y);
+   
+}
 
 static void 
 _cb_custom_end (void *data, Evas_Object *o, const char *emi, const char *src)
 {
    Penguin* tux = data;
-  // printf("PENGUINS: Custom action end.\n");
+   printf("PENGUINS: Custom action end.\n");
    if (tux->r_count > 0)
    {
       if (tux->reverse)
@@ -829,9 +881,13 @@ _start_custom_at(Penguin *tux, int at_y)
       return;
    
    ran = random() % (tux->pop->custom_num);
+   ran=2;  //!!!!
+   printf("START CUSTOM NUM %d RAN %d\n",tux->pop->custom_num, ran);
+   
    tux->custom = evas_list_nth(tux->pop->customs, ran);
    if (!tux->custom)
       return;
+   
    
    evas_object_resize(tux->obj, tux->custom->w, tux->custom->h);
    tux->y = at_y - tux->custom->h;
@@ -842,6 +898,7 @@ _start_custom_at(Penguin *tux, int at_y)
       tux->r_count = tux->custom->r_min + 
                      (random() % (tux->custom->r_max - tux->custom->r_min + 1));
    tux->r_count --;
+
    if (tux->reverse)
       edje_object_signal_emit(tux->obj, tux->custom->left_program_name, "epenguins");
    else   
@@ -849,7 +906,7 @@ _start_custom_at(Penguin *tux, int at_y)
       
    
    
-   //printf("START Custom Action n %d (%s) repeat: %d\n", ran, tux->custom->left_program_name, tux->r_count);
+   printf("START Custom Action n %d (%s) repeat: %d\n", ran, tux->custom->left_program_name, tux->r_count);
    
    edje_object_signal_callback_add(tux->obj,"custom_done","edje", _cb_custom_end, tux);
    
