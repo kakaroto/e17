@@ -57,6 +57,7 @@ ewl_checkbutton_init(Ewl_Checkbutton *cb)
 	ewl_widget_inherit(w, EWL_CHECKBUTTON_TYPE);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
 				ewl_checkbutton_cb_clicked, NULL);
 
