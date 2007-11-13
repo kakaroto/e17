@@ -108,43 +108,6 @@ images
    image: "blocker10b.png" FRAME;
    image: "blocker11b.png" FRAME;
    
-   image: "trap0.png" FRAME;
-   image: "trap1.png" FRAME;
-   image: "trap2.png" FRAME;
-   image: "trap3.png" FRAME;
-   image: "trap4.png" FRAME;
-   image: "trap5.png" FRAME;
-   image: "trap6.png" FRAME;
-   image: "trap7.png" FRAME;
-   image: "trap8.png" FRAME;
-   image: "trap9.png" FRAME;
-   image: "trap10.png" FRAME;
-   image: "trap11.png" FRAME;
-   image: "trap12.png" FRAME;
-   image: "trap13.png" FRAME;
-   image: "trap14.png" FRAME;
-   image: "trap15.png" FRAME;
-   image: "trap16.png" FRAME;
-   image: "trap17.png" FRAME;
-   image: "trap18.png" FRAME;
-   image: "trap19.png" FRAME;
-   image: "trap20.png" FRAME;
-   image: "trap21.png" FRAME;
-   image: "trap22.png" FRAME;
-   image: "trap23.png" FRAME;
-   image: "trap24.png" FRAME;
-   image: "trap25.png" FRAME;
-   image: "trap26.png" FRAME;
-   image: "trap27.png" FRAME;
-   image: "trap28.png" FRAME;
-   image: "trap29.png" FRAME;
-   image: "trap30.png" FRAME;
-   image: "trap31.png" FRAME;
-   image: "trap32.png" FRAME;
-   image: "trap33.png" FRAME;
-   image: "trap34.png" FRAME;
-   image: "trap35.png" FRAME;
-   
    image: "miner0a.png" FRAME;
    image: "miner1a.png" FRAME;
    image: "miner2a.png" FRAME;
@@ -252,6 +215,63 @@ images
    image: "basher26b.png" FRAME;
    image: "basher27b.png" FRAME;
    
+   image: "bomber0.png" FRAME;
+   image: "bomber1.png" FRAME;
+   image: "bomber2.png" FRAME;
+   image: "bomber3.png" FRAME;
+   image: "bomber4.png" FRAME;
+   image: "bomber5.png" FRAME;
+   image: "bomber6.png" FRAME;
+   image: "bomber7.png" FRAME;
+   image: "bomber8.png" FRAME;
+   image: "bomber9.png" FRAME;
+   image: "bomber10.png" FRAME;
+   image: "bomber11.png" FRAME;
+   image: "bomber12.png" FRAME;
+   image: "bomber13.png" FRAME;
+   image: "bomber14.png" FRAME;
+   image: "bomber15.png" FRAME;
+   image: "bomber16.png" FRAME;
+   image: "bomber17.png" FRAME;
+   image: "bomber18.png" FRAME;
+   image: "bomber19.png" FRAME;
+   image: "bomber20.png" FRAME;
+   image: "bomber21.png" FRAME;
+   image: "bomber22.png" FRAME;
+   image: "bomber23.png" FRAME;
+   image: "bomber24.png" FRAME;
+   image: "bomber25.png" FRAME;
+   image: "bomber26.png" FRAME;
+   image: "bomber27.png" FRAME;
+   image: "bomber28.png" FRAME;
+   image: "bomber29.png" FRAME;
+   image: "bomber30.png" FRAME;
+   image: "bomber31.png" FRAME;
+   image: "bomber32.png" FRAME;
+   image: "bomber33.png" FRAME;
+   image: "bomber34.png" FRAME;
+   image: "bomber35.png" FRAME;
+   image: "bomber36.png" FRAME;
+   image: "bomber37.png" FRAME;
+   image: "bomber38.png" FRAME;
+   image: "bomber39.png" FRAME;
+   image: "bomber40.png" FRAME;
+   image: "bomber41.png" FRAME;
+   image: "bomber42.png" FRAME;
+   image: "bomber43.png" FRAME;
+   image: "bomber44.png" FRAME;
+   image: "bomber45.png" FRAME;
+   image: "bomber46.png" FRAME;
+   image: "bomber47.png" FRAME;
+   image: "bomber48.png" FRAME;
+   image: "bomber49.png" FRAME;
+   image: "bomber50.png" FRAME;
+   image: "bomber51.png" FRAME;
+   image: "bomber52.png" FRAME;
+   image: "bomber53.png" FRAME;
+   image: "bomber54.png" FRAME;
+   image: "bomber55.png" FRAME;
+   image: "bomber56.png" FRAME;
    
 }
 data
@@ -264,13 +284,14 @@ data
    item: "Floater" "18 32 80";
    item: "Splatter" "32 32 80";
    item: "Flyer" "18 32 80";
-   //item: "Bomber" "30 30 0";
+   item: "Bomber" "64 83 0";
    
-   //item: "Custom_x" "width height h_speed v_speed";
+ //item: "Custom_x" "width height h_speed v_speed r_min r_max";
    item: "Custom_1" "20 20 0 0 10 10"; //blocker
-   item: "Custom_2" "17 41 0 0 1 1"; //trap
+   item: "Custom_2" "64 83 0 0 1 1"; //bomber
    item: "Custom_3" "32 32 2 0 3 10"; //miner
    item: "Custom_4" "32 32 2 0 3 8"; //basher
+
 }
 collections
 {
@@ -314,7 +335,7 @@ collections
 			{
 				name: "penguins";
 				type: IMAGE;
-				mouse_events: 0;
+				mouse_events: 1;
 				description
 				{
 					state: "default" 0.0;
@@ -411,7 +432,7 @@ collections
 						tween: "floater7b.png";
 					}
 				}
-                        description
+            description
 				{
 					state: "flyer" 0.0;
 					image { 
@@ -516,10 +537,72 @@ collections
 						tween: "splatter15.png";
 					}
 				}
-            
             description
 				{
-				state: "blocker" 0.0;
+					state: "bomber" 0.0;
+					image { 
+                  normal: "bomber0.png";
+						tween: "bomber1.png";
+						tween: "bomber2.png";
+						tween: "bomber3.png";
+						tween: "bomber4.png";
+						tween: "bomber5.png";
+						tween: "bomber6.png";
+						tween: "bomber7.png";
+						tween: "bomber8.png";
+						tween: "bomber9.png";
+                  tween: "bomber10.png";
+						tween: "bomber11.png";
+						tween: "bomber12.png";
+						tween: "bomber13.png";
+						tween: "bomber14.png";
+						tween: "bomber15.png";
+						tween: "bomber16.png";
+						tween: "bomber17.png";
+						tween: "bomber18.png";
+						tween: "bomber19.png";
+                  tween: "bomber20.png";
+						tween: "bomber21.png";
+						tween: "bomber22.png";
+						tween: "bomber23.png";
+						tween: "bomber24.png";
+						tween: "bomber25.png";
+						tween: "bomber26.png";
+						tween: "bomber27.png";
+						tween: "bomber28.png";
+						tween: "bomber29.png";
+                  tween: "bomber30.png";
+						tween: "bomber31.png";
+						tween: "bomber32.png";
+						tween: "bomber33.png";
+						tween: "bomber34.png";
+						tween: "bomber35.png";
+						tween: "bomber36.png";
+						tween: "bomber37.png";
+						tween: "bomber38.png";
+						tween: "bomber39.png";
+                  tween: "bomber40.png";
+						tween: "bomber41.png";
+						tween: "bomber42.png";
+						tween: "bomber43.png";
+						tween: "bomber44.png";
+						tween: "bomber45.png";
+						tween: "bomber46.png";
+						tween: "bomber47.png";
+						tween: "bomber48.png";
+						tween: "bomber49.png";
+                  tween: "bomber50.png";
+						tween: "bomber51.png";
+						tween: "bomber52.png";
+						tween: "bomber53.png";
+						tween: "bomber54.png";
+						tween: "bomber55.png";
+						tween: "bomber56.png";
+					}
+				}
+            description
+				{
+               state: "blocker" 0.0;
 					image { 
                   normal: "blocker0a.png";
 						tween: "blocker1a.png";
@@ -683,53 +766,34 @@ collections
 						
 					}
 				}
-            description
-				{
-					state: "trap" 0.0;
-					image { 
-                  normal: "trap0.png";
-						tween: "trap1.png";
-						tween: "trap2.png";
-						tween: "trap3.png";
-						tween: "trap4.png";
-						tween: "trap5.png";
-						tween: "trap6.png";
-						tween: "trap7.png";
-						tween: "trap8.png";
-						tween: "trap9.png";
-						tween: "trap10.png";
-						tween: "trap11.png";
-						tween: "trap12.png";
-						tween: "trap13.png";
-						tween: "trap14.png";
-						tween: "trap15.png";
-						tween: "trap16.png";
-						tween: "trap17.png";
-						tween: "trap18.png";
-						tween: "trap19.png";
-						tween: "trap20.png";
-						tween: "trap21.png";
-						tween: "trap22.png";
-						tween: "trap23.png";
-						tween: "trap24.png";
-						tween: "trap25.png";
-						tween: "trap26.png";
-						tween: "trap27.png";
-						tween: "trap28.png";
-						tween: "trap29.png";
-						tween: "trap30.png";
-						tween: "trap31.png";
-						tween: "trap32.png";
-						tween: "trap33.png";
-						tween: "trap34.png";
-						tween: "trap35.png";
-               }
-				}
-            
 			}
 		}
 		programs
 		{
+      /****************************
+       * Mouse click
+       ****************************/
+      program
+			{
+				name: "left_click";
+				signal: "mouse,down,1";
+				source: "penguins";
+				action: SIGNAL_EMIT "click_l" "penguins";
+         }
+      program
+			{
+				name: "center_click";
+				signal: "mouse,down,2";
+				source: "penguins";
+				action: SIGNAL_EMIT "click_c" "penguins";
+         }
+      program
+			{
+				name: "right_click";
+				signal: "mouse,down,3";
+				source: "penguins";
+				action: SIGNAL_EMIT "click_r" "penguins";
+         }
       /****************************
        * Faller
        ****************************/
@@ -949,13 +1013,40 @@ collections
 				action: STATE_SET "splatter" 1.0;
 				transition: LINEAR 1;
 				target: "penguins";
-            //after: "stop_all";
             after: "splatting_done";
          }
       program
          {
             name: "splatting_done";
             action: SIGNAL_EMIT "splatting_done" "edje";
+         }
+      /****************************
+       * Bomber
+       ****************************/ 
+      program
+			{
+				name: "start_bombing_right";
+				signal: "start_bombing_right";
+				source: "epenguins";
+				action: STATE_SET "bomber" 0.0;
+				transition: LINEAR 3;
+				target: "penguins";
+				after: "bombing_done";
+         }
+      program
+			{
+				name: "start_bombing_left";
+				signal: "start_bombing_left";
+				source: "epenguins";
+				action: STATE_SET "bomber" 0.0;
+				transition: LINEAR 3;
+				target: "penguins";
+				after: "bombing_done";
+         }
+      program
+         {
+            name: "bombing_done";
+            action: SIGNAL_EMIT "bombing_done" "edje";
          }
       /****************************
        * Customs programs
@@ -991,17 +1082,16 @@ collections
             after: "custom_done";
          }
       /****************************
-       * Custom_2 - trap
+       * Custom_2 - bomber
        ****************************/ 
       program
 			{
 				name: "start_custom_2_right";
 				signal: "start_custom_2_right";
 				source: "epenguins";
-				action: STATE_SET "trap" 0.0;
-				transition: LINEAR 2;
+				action: STATE_SET "bomber" 0.0;
+				transition: LINEAR 3;
 				target: "penguins";
-          //  after: "stop_all";
             after: "custom_done";
          }
       program
@@ -1009,10 +1099,9 @@ collections
 				name: "start_custom_2_left";
 				signal: "start_custom_2_left";
 				source: "epenguins";
-				action: STATE_SET "trap" 0.0;
-				transition: LINEAR 2;
+				action: STATE_SET "bomber" 0.0;
+				transition: LINEAR 3;
 				target: "penguins";
-           // after: "stop_all";
             after: "custom_done";
          }
       /****************************

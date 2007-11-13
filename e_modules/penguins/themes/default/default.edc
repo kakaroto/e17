@@ -142,7 +142,7 @@ data
    item: "Floater" "30 30 300"; //600
    item: "Walker" "30 30 150"; //90
    item: "Climber" "30 30 150";
-   //item: "Bomber" "30 30 0";
+   item: "Bomber" "32 32 0";
    item: "Splatter" "30 30 0";
    item: "Flyer" "30 30 200";
    
@@ -222,7 +222,7 @@ collections
 			{
 				name: "penguins";
 				type: IMAGE;
-				mouse_events: 0;
+				mouse_events: 1;
 				description
 				{
 					state: "default" 0.0;
@@ -357,8 +357,9 @@ collections
 				{
                state: "bomber" 0.0;
 					image { 
-                  normal: "bomber0.png";
-						tween: "bomber1.png";
+                  normal: "bomber15.png";
+						tween: "bomber0.png";
+                  tween: "bomber1.png";
 						tween: "bomber2.png";
 						tween: "bomber3.png";
 						tween: "bomber4.png";
@@ -372,16 +373,15 @@ collections
 						tween: "bomber12.png";
 						tween: "bomber13.png";
 						tween: "bomber14.png";
-						tween: "bomber15.png";
-						
 					}
 				}
             description
 				{
 					state: "bomber" 1.0;
 					image { 
-                  normal: "bomber0.png";
-						tween: "bomber1.png";
+                  normal: "bomber15.png";
+						tween: "bomber0.png";
+                  tween: "bomber1.png";
 						tween: "bomber2.png";
 						tween: "bomber3.png";
 						tween: "bomber4.png";
@@ -395,7 +395,6 @@ collections
 						tween: "bomber12.png";
 						tween: "bomber13.png";
 						tween: "bomber14.png";
-						tween: "bomber15.png";
 					}
 				}
             description
@@ -538,6 +537,30 @@ collections
          target: "climbing_right";
          target: "floating_left";
          target: "floating_right";
+         }
+      /****************************
+       * Mouse click
+       ****************************/
+      program
+			{
+				name: "left_click";
+				signal: "mouse,down,1";
+				source: "penguins";
+				action: SIGNAL_EMIT "click_l" "penguins";
+         }
+      program
+			{
+				name: "center_click";
+				signal: "mouse,down,2";
+				source: "penguins";
+				action: SIGNAL_EMIT "click_c" "penguins";
+         }
+      program
+			{
+				name: "right_click";
+				signal: "mouse,down,3";
+				source: "penguins";
+				action: SIGNAL_EMIT "click_r" "penguins";
          }
       /****************************
        * Faller
@@ -753,18 +776,10 @@ collections
 				signal: "start_bombing_right";
 				source: "epenguins";
 				action: STATE_SET "bomber" 0.0;
-				transition: LINEAR 0;
-				target: "penguins";
-            after: "stop_all";
-				after: "bombing_right";
-         }
-      program
-			{
-				name: "bombing_right";
-				action: STATE_SET "bomber" 0.0;
 				transition: LINEAR 1;
 				target: "penguins";
-				after: "bombing_right";
+            after: "stop_all";
+				after: "bombing_done";
          }
       program
 			{
@@ -772,18 +787,15 @@ collections
 				signal: "start_bombing_left";
 				source: "epenguins";
 				action: STATE_SET "bomber" 1.0;
-				transition: LINEAR 0;
-				target: "penguins";
-            after: "stop_all";
-				after: "bombing_left";
-         }
-      program
-			{
-				name: "bombing_left";
-				action: STATE_SET "bomber" 1.0;
 				transition: LINEAR 1;
 				target: "penguins";
-				after: "bombing_left";
+            after: "stop_all";
+				after: "bombing_done";
+         }
+      program
+         {
+            name: "bombing_done";
+            action: SIGNAL_EMIT "bombing_done" "edje";
          }
       /****************************
        * Splatter
@@ -817,7 +829,7 @@ collections
          }
       /*****************************************
        * Customs programs
-       * Every teme must have this program set
+       * Every theme must have this program set
        *****************************************/ 
       program
          {
