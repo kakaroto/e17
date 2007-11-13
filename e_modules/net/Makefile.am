@@ -26,7 +26,7 @@ EXTRA_DIST = $(files_DATA) \
 	     images/idle.png	     
 
 %.edj: %.edc
-	$(EDJE_CC) $(EDJE_FLAGS) $< $@
+	$(edje_cc) $(EDJE_FLAGS) $< $@
 	
 clean-local:
 	rm -rf net.edj *~
