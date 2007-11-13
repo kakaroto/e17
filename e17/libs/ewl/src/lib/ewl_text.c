@@ -39,6 +39,7 @@ static void ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
 				unsigned int *byte_len);
 static int ewl_text_char_utf8_is(const char *c);
 
+static void ewl_text_size(Ewl_Text *t);
 static void ewl_text_display(Ewl_Text *t);
 static void ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t,
 						unsigned int byte_idx);
@@ -2868,6 +2869,26 @@ ewl_text_text_next_char(const char *text, unsigned int *idx)
 }
 
 static void
+ewl_text_size(Ewl_Text *t)
+{
+	int xx, yy, ww, hh;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_TYPE(t, EWL_TEXT_TYPE);
+
+	xx = CURRENT_X(t);
+	yy = CURRENT_Y(t);
+	hh = CURRENT_H(t);
+	ww = CURRENT_W(t);
+	
+	evas_object_move(t->textblock, xx + t->offset.x, yy + t->offset.y);
+	evas_object_resize(t->textblock, ww - t->offset.x, hh - t->offset.y);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
 ewl_text_display(Ewl_Text *t)
 {
 	Evas_Coord w = 0, h = 0;
@@ -2876,6 +2897,8 @@ ewl_text_display(Ewl_Text *t)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(t);
 	DCHECK_TYPE(t, EWL_TEXT_TYPE);
+
+	ewl_text_size(t);
 
 	evas_object_textblock_clear(t->textblock);
 
@@ -2898,7 +2921,6 @@ ewl_text_display(Ewl_Text *t)
 		ewl_text_cursor_position_set(t, cur_pos);
 		t->formatting.tx = cur_tx;
 	}
-
 	evas_object_textblock_size_formatted_get(t->textblock, &w, &h);
 
 	/* Fallback, just in case we hit a corner case */
@@ -3116,7 +3138,6 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Text *t;
-	int xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
@@ -3126,18 +3147,9 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	if (!REVEALED(w)) DRETURN(DLEVEL_STABLE);
 
 	t = EWL_TEXT(w);
-	xx = CURRENT_X(w);
-	yy = CURRENT_Y(w);
-	hh = CURRENT_H(w);
-	ww = CURRENT_W(w);
-
 	if (t->textblock)
 	{
-		evas_object_move(t->textblock, xx + t->offset.x,
-						 yy + t->offset.y);
-		evas_object_resize(t->textblock, ww - t->offset.x,
-						hh - t->offset.y);
-
+		ewl_text_size(t);
 		if (t->dirty) ewl_text_display(t);
 
 		ewl_text_triggers_place(t);
