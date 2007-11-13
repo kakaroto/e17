@@ -854,7 +854,7 @@ static void
 _cb_custom_end (void *data, Evas_Object *o, const char *emi, const char *src)
 {
    Penguin* tux = data;
-   printf("PENGUINS: Custom action end.\n");
+   //printf("PENGUINS: Custom action end.\n");
    if (tux->r_count > 0)
    {
       if (tux->reverse)
@@ -881,8 +881,8 @@ _start_custom_at(Penguin *tux, int at_y)
       return;
    
    ran = random() % (tux->pop->custom_num);
-   ran=2;  //!!!!
-   printf("START CUSTOM NUM %d RAN %d\n",tux->pop->custom_num, ran);
+   //ran=2;  //!!!!
+   //printf("START CUSTOM NUM %d RAN %d\n",tux->pop->custom_num, ran);
    
    tux->custom = evas_list_nth(tux->pop->customs, ran);
    if (!tux->custom)
@@ -906,7 +906,7 @@ _start_custom_at(Penguin *tux, int at_y)
       
    
    
-   printf("START Custom Action n %d (%s) repeat: %d\n", ran, tux->custom->left_program_name, tux->r_count);
+   //printf("START Custom Action n %d (%s) repeat: %d\n", ran, tux->custom->left_program_name, tux->r_count);
    
    edje_object_signal_callback_add(tux->obj,"custom_done","edje", _cb_custom_end, tux);
    
