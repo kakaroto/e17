@@ -5,6 +5,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 
 SUBDIRS = src po
 
+EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
 -id $(top_srcdir)/images \
 -fd $(top_srcdir)/fonts
@@ -26,7 +27,7 @@ EXTRA_DIST = $(files_DATA) \
 	     images/idle.png	     
 
 %.edj: %.edc
-	$(edje_cc) $(EDJE_FLAGS) $< $@
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 	
 clean-local:
 	rm -rf net.edj *~
