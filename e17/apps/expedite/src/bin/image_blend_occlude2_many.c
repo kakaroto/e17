@@ -30,12 +30,12 @@ static void _setup(void)
 	o = evas_object_image_add(evas);
 	o_images[i] = o;
 	if (i & 0x1)
-	  evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/logo.png", NULL);
+	  evas_object_image_file_set(o, build_path("logo.png"), NULL);
 	else
 	  {
 	     Evas_Coord x, y;
 
-	     evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/image.png", NULL);
+	     evas_object_image_file_set(o, build_path("image.png"), NULL);
 	     x = (win_w / 4) + (((rnd() & 0xff) * ((win_w / 2) - 120)) >> 8);
 	     y = (win_h / 4) + (((rnd() & 0xff) * ((win_h / 2) - 120)) >> 8);
 	     evas_object_move(o, x, y);

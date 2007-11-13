@@ -1075,9 +1075,36 @@ get_time(void)
 }
 #endif
 
+
+const char *
+build_path(const char *filename)
+{
+   static char  path[4096];
+   static char  buffer[4096];
+   static int   init = 0;
+
+   if (!init)
+     {
+        char    *prefix;
+
+        prefix = getenv("EXPEDITE_DATA_DIR");
+        if (!prefix)
+          strcpy(path, PACKAGE_DATA_DIR"/data/");
+        else
+          snprintf(path, 4096, "%s/", prefix);
+
+        init = 1;
+     }
+
+   snprintf(buffer, 4096, "%s%s", path, filename);
+
+   return buffer;
+}
+
 int
 engine_abort(void)
 {
+   fprintf(stderr, "go: %i\n", go);
    go = 0;
    return go;
 }

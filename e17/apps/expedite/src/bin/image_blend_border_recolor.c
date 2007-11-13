@@ -25,7 +25,7 @@ static void _setup(void)
      {
 	o = evas_object_image_add(evas);
 	o_images[i] = o;
-	evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/pan.png", NULL);
+	evas_object_image_file_set(o, build_path("pan.png"), NULL);
 	evas_object_color_set(o, 64, 64, 64, 255);
 	evas_object_image_border_set(o, 3, 3, 3, 3);
 	evas_object_show(o);

@@ -38,7 +38,7 @@ static void _setup(void)
 	yp = malloc(640 * 480);
 	up = malloc(320 * 240);
 	vp = malloc(320 * 240);
-	f = fopen(PACKAGE_DATA_DIR"/data/tp.yuv", "rb");
+	f = fopen(build_path("tp.yuv"), "rb");
 	if (f)
 	  {
 	     fread(yp, 640 * 480, 1, f);

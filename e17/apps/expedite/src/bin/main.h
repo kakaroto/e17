@@ -55,6 +55,7 @@ extern int   win_w, win_h;
 void srnd(void);
 unsigned int rnd(void);
 double get_time(void);
+const char      *build_path(const char *filename);
 void   engine_loop(void);
 int    engine_abort(void);
 

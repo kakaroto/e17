@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "main.h"
 
 #include <SDL/SDL.h>
@@ -16,11 +17,15 @@ engine_software_sdl_args(int argc, char **argv)
           {
              i++;
              if (!strcmp(argv[i], "sdl")) ok = 1;
+             if (!strcmp(argv[i], "sdl-16")) ok = 2;
           }
      }
    if (!ok) return 0;
 
+   if (ok == 1)
    evas_output_method_set(evas, evas_render_method_lookup("software_sdl"));
+   else
+     evas_output_method_set(evas, evas_render_method_lookup("software_16_sdl"));
 
    einfo = (Evas_Engine_Info_SDL *) evas_engine_info_get(evas);
 
@@ -98,8 +103,14 @@ engine_software_sdl_loop(void)
                   else
                     evas_key_lock_on(evas, "Scroll_Lock");
                   break;
-               case SDLK_ESCAPE: evas_event_feed_key_down(evas, "Escape", "Escape", NULL, NULL, 0, NULL); break;
-               case SDLK_RETURN: evas_event_feed_key_down(evas, "Return", "Return", NULL, NULL, 0, NULL); break;
+               case SDLK_s:
+               case SDLK_ESCAPE:
+                  evas_event_feed_key_down(evas, "Escape", "Escape", NULL, NULL, 0, NULL);
+                  break;
+               case SDLK_KP_ENTER:
+               case SDLK_RETURN:
+                  evas_event_feed_key_down(evas, "Return", "Return", NULL, NULL, 0, NULL);
+                  break;
                case SDLK_LEFT: evas_event_feed_key_down(evas, "Left", "Left", NULL, NULL, 0, NULL); break;
                case SDLK_RIGHT: evas_event_feed_key_down(evas, "Right", "Right", NULL, NULL, 0, NULL); break;
                case SDLK_q:

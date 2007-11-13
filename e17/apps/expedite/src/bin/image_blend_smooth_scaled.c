@@ -25,7 +25,7 @@ static void _setup(void)
      {
 	o = evas_object_image_add(evas);
 	o_images[i] = o;
-        evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/logo.png", NULL);
+        evas_object_image_file_set(o, build_path("logo.png"), NULL);
 	evas_object_image_smooth_scale_set(o, 1);
 	evas_object_show(o);
      }

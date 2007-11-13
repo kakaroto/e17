@@ -24,14 +24,14 @@ static void _setup(void)
 
    o = evas_object_image_add(evas);
    o_images[0] = o;
-   evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/im1.png", NULL);
+   evas_object_image_file_set(o, build_path("im1.png"), NULL);
    evas_object_image_fill_set(o, 0, 0, 720, 420);
    evas_object_resize(o, 720, 420);
    evas_object_show(o);
 
    o = evas_object_image_add(evas);
    o_images[1] = o;
-   evas_object_image_file_set(o, PACKAGE_DATA_DIR"/data/im2.png", NULL);
+   evas_object_image_file_set(o, build_path("im2.png"), NULL);
    evas_object_image_fill_set(o, 0, 0, 720, 420);
    evas_object_resize(o, 720, 420);
    evas_object_show(o);
