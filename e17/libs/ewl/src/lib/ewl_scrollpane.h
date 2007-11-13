@@ -92,8 +92,6 @@ void ewl_scrollpane_cb_vscroll(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_scrollpane_cb_wheel_scroll(Ewl_Widget *w, void *ev_data,
 							void *user_data);
 
-void ewl_scrollpane_cb_child_resize(Ewl_Container *parent, Ewl_Widget *child);
-
 /**
  * @}
  */

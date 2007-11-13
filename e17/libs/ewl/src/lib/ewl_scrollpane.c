@@ -55,14 +55,6 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 	ewl_widget_focusable_set(EWL_WIDGET(s), TRUE);
 	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
 
-	ewl_container_show_notify_set(EWL_CONTAINER(s),
-					ewl_scrollpane_cb_child_resize);
-	ewl_container_resize_notify_set(EWL_CONTAINER(s),
-					(Ewl_Child_Resize)
-					ewl_scrollpane_cb_child_resize);
-	ewl_container_hide_notify_set(EWL_CONTAINER(s),
-					ewl_scrollpane_cb_child_resize);
-
 	ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_IN);
 	ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_OUT);
 
@@ -631,38 +623,6 @@ ewl_scrollpane_cb_wheel_scroll(Ewl_Widget *cb, void *ev_data,
 	ewl_scrollpane_vscrollbar_value_set(s,
 			ewl_scrollpane_vscrollbar_value_get(s) +
 			ev->z * ewl_scrollpane_vscrollbar_step_get(s));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param parent: The container to work with
- * @param child: The widget to work with
- * @return Returns no value
- * @brief This handles all of the various size affecting callbacks.
- */
-void
-ewl_scrollpane_cb_child_resize(Ewl_Container *parent, Ewl_Widget *child)
-{
-	int pw, ph;
-	Ewl_Scrollpane *s;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(parent);
-	DCHECK_PARAM_PTR(child);
-	DCHECK_TYPE(parent, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE(child, EWL_WIDGET_TYPE);
-
-	s = EWL_SCROLLPANE(parent);
-
-	pw = ewl_object_preferred_w_get(EWL_OBJECT(s->vscrollbar)) +
-			ewl_object_preferred_w_get(EWL_OBJECT(s->box));
-	ph = ewl_object_preferred_h_get(EWL_OBJECT(s->hscrollbar)) +
-			ewl_object_preferred_h_get(EWL_OBJECT(s->box));
-
-	ewl_object_preferred_inner_w_set(EWL_OBJECT(parent), pw);
-	ewl_object_preferred_inner_h_set(EWL_OBJECT(parent), ph);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
