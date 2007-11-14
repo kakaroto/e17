@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-12 05:34+0100\n"
+"POT-Creation-Date: 2007-11-14 22:14+0100\n"
 "PO-Revision-Date: 2007-11-14 09:07+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
@@ -269,7 +269,7 @@ msgstr "%1.0f horoj"
 #: e_mod_main.c:658
 #, c-format
 msgid "%1.0f minutes"
-msgstr "minutoj"
+msgstr "%1.0f minutoj"
 
 #: e_mod_main.c:665
 msgid "Ok"
