@@ -54,12 +54,17 @@ struct Ewl_Radiobutton
 {
 	Ewl_Checkbutton button; /**< Inherit from Ewl_Checkbutton */
 	Ecore_List *chain; /**< List of members of the group */
+	void *value; /**< the value of the radio button */
 };
 
 Ewl_Widget 	*ewl_radiobutton_new(void);
-int 		 ewl_radiobutton_init(Ewl_Radiobutton *cb);
+int 		 ewl_radiobutton_init(Ewl_Radiobutton *rb);
 
-void 		 ewl_radiobutton_chain_set(Ewl_Radiobutton *w, Ewl_Radiobutton *c);
+void		 ewl_radiobutton_value_set(Ewl_Radiobutton *rb, void *v);
+void 		*ewl_radiobutton_value_get(Ewl_Radiobutton *rb);
+
+void 		 ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb);
+Ewl_Radiobutton	*ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb);
 
 /**
  * @def ewl_radiobutton_checked_set(r, c)

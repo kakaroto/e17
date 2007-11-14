@@ -62,6 +62,39 @@ ewl_radiobutton_init(Ewl_Radiobutton *rb)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/*
+ * @param rb: the radio button to set the value
+ * @param value: A user defined value. Ewl does't use this value at all.
+ * @return Returns no value.
+ * @brief Set an user defined value.
+ */
+void
+ewl_radiobutton_value_set(Ewl_Radiobutton *rb, void *value)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(rb);
+	DCHECK_TYPE(rb, EWL_RADIOBUTTON_TYPE);
+
+	rb->value = value;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * @param rb: the radio button to get the value
+ * @return Returns the value of the radio button.
+ * @brief Get the user defined value.
+ */
+void *
+ewl_radiobutton_value_get(Ewl_Radiobutton *rb)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(rb, 0);
+	DCHECK_TYPE_RET(rb, EWL_RADIOBUTTON_TYPE, 0);
+
+	DRETURN_INT(rb->value, DLEVEL_STABLE);
+}
+
 /**
  * @param rb: the radio button to be added to a chain of radio buttons
  * @param crb: a radio button already in the chain of radio buttons
@@ -97,6 +130,40 @@ ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb)
 	rb->chain = crb->chain;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * @param rb: the radio button to get the checked chain link
+ * @return Returns the current checked chain link
+ * @brief XXX write me
+ */
+Ewl_Radiobutton *
+ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb)
+{
+	Ewl_Checkbutton *c;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(rb, NULL);
+	DCHECK_TYPE_RET(rb, EWL_RADIOBUTTON_TYPE, NULL);
+
+	/* if there is no chain or the chain is empty we have to
+	 * treat it special */
+	if (!rb->chain || ecore_list_empty_is(rb->chain)) {
+		if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(rb))) {
+			DRETURN_PTR(rb, DLEVEL_STABLE);
+		}
+		else {
+			DRETURN_PTR(NULL, DLEVEL_STABLE);
+		}
+	}
+
+	ecore_list_first_goto(rb->chain);
+	while ((c = ecore_list_next(rb->chain))) {
+		if (ewl_checkbutton_is_checked(c))
+			DRETURN_PTR(c, DLEVEL_STABLE);
+	}
+
+	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
 /**
