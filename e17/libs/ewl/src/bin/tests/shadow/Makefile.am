@@ -5,6 +5,7 @@ INCLUDES                =       -I$(top_srcdir)/src/lib \
                                 -I$(top_builddir)/src/lib \
                                 -I$(top_srcdir)/src/bin \
                                 -I$(top_builddir)/src/bin \
+				-DPACKAGE_DATA_DIR=\"$(datadir)\" \
                                 @EDJE_CFLAGS@ \
                                 @ECORE_CFLAGS@ \
                                 @EVAS_CFLAGS@ \

@@ -1,9 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(configure.in)
+AC_INIT(ewl, 0.5.1.011, enlightenment-devel@lists.sourceforge.net)
+AC_PREREQ(2.52)
+AC_CONFIG_SRCDIR(configure.in)
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE(ewl, 0.5.1.011)
+
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(ewl-config.h)
 
 AC_ISC_POSIX
@@ -11,38 +14,14 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
-AM_ENABLE_SHARED
-AM_PROG_LIBTOOL
 AC_C___ATTRIBUTE__
+
+AC_LIBTOOL_WIN32_DLL
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
+AC_PROG_LIBTOOL
+
 AC_FUNC_ALLOCA
-
-dnl Check for Solaris or other OS
-case "$host" in
-     *-sun-*)
-        AC_DEFINE(HAVE_SUN, 1, [Support for SunOS/Solaris])
-        ;;
-     *) ;;
-esac
-
-dnl Set PACKAGE_LOCALE_DIR in config.h.
-# if test "x${prefix}" = "xNONE"; then
-#   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${PACKAGE}/locale", [Locale data directory])
-# else
-#   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${PACKAGE}/locale", [Locale data directory])
-# fi
-
-dnl Set PACKAGE_SYSCONF_DIR in config.h.
-AC_DEFINE_DIR([PACKAGE_SYSCONF_DIR], [sysconfdir], [System Configuration Directory.])
-
-dnl Set PACKAGE_DATA_DIR in config.h.
-AC_DEFINE_DIR([PACKAGE_DATA_DIR], [datadir], [Shared Data Directory.])
-
-dnl Set PACKAGE_LIB_DIR in config.h.
-AC_DEFINE_DIR([PACKAGE_LIB_DIR], [libdir], [Library Module Directory.])
-
-dnl Set PACKAGE_SOURCE_DIR in config.h.
-packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
 dnl Use -Wall if we have gcc.
 changequote(,)dnl
@@ -54,255 +33,74 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-PCFLAGS=$CFLAGS
-
 have_evas="no"
 PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9], [have_evas="yes"])
-CFLAGS=$EVAS_CFLAGS" "$CFLAGS
 AM_CONDITIONAL(EWL_ENABLE_EVAS, test "x$have_evas" = "xyes")
 
 PKG_CHECK_MODULES(EFREET, [
 efreet >= 0.0.3
 efreet-mime
 ])
-CFLAGS=$EFREET_CFLAGS" "$CFLAGS
 
 PKG_CHECK_MODULES(ECORE, [
   ecore-txt
   ecore-file
 ])
-CFLAGS=$ECORE_CFLAGS" "$CFLAGS
-
-dnl software X11
-AC_ARG_ENABLE(software-x11,
-  [
-    AC_HELP_STRING(
-      [--enable-software-x11],
-      [enable software X11 support])
-  ],
-  [enable_software_x11=$enableval],
-  [enable_software_x11="auto"])
-
-if test "x$enable_software_x11" != "xno" ; then
-  PKG_CHECK_MODULES(EVAS_SOFTWARE_X11,
-    [evas-software-x11 >= 0.9.9],
-    [
-      PKG_CHECK_MODULES(ECORE_X,
-        [ecore-x >= 0.9.9],
-        [have_software_x11="yes"],
-        [have_software_x11="no"])
-    ],
-    [have_software_x11="no"])
-  if test "x$have_software_x11" = "xyes" ; then
-    AC_DEFINE(ENABLE_EWL_SOFTWARE_X11, 1, [Enable X11 Software])
-  elif test "x$enable_software_x11" = "xyes" ; then
-    AC_MSG_ERROR(software X11 requested but no evas/ecore support found)
-  fi
-fi
-AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_X11, test "x$have_software_x11" = xyes)
-
-dnl software X11 16 bpp
-AC_ARG_ENABLE(software-16-x11,
-  [
-    AC_HELP_STRING(
-      [--enable-software-16-x11],
-      [enable software 16 bpp X11 support])
-  ],
-  [enable_software_16_x11=$enableval],
-  [enable_software_16_x11="auto"])
-
-if test "x$enable_software_16_x11" != "xno" ; then
-  PKG_CHECK_MODULES(EVAS_SOFTWARE_16_X11,
-    [evas-software-16-x11 >= 0.9.9],
-    [
-      PKG_CHECK_MODULES(ECORE_X,
-        [ecore-x >= 0.9.9],
-        [have_software_16_x11="yes"],
-        [have_software_16_x11="no"])
-    ],
-    [have_software_16_x11="no"])
-  if test "x$have_software_16_x11" = "xyes" ; then
-    AC_DEFINE(ENABLE_EWL_SOFTWARE_16_X11, 1, [Enable X11 16 bpp Software])
-  elif test "x$enable_software_16_x11" = "xyes" ; then
-    AC_MSG_ERROR(software 16 bpp X11 requested but no evas/ecore support found)
-  fi
-fi
-AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_16_X11, test "x$have_software_16_x11" = xyes)
-
-dnl Render X11
-AC_ARG_ENABLE(xrender-x11,
-  [
-    AC_HELP_STRING(
-      [--enable-xrender-x11],
-      [enable xrender X11 support])
-  ],
-  [enable_xrender_x11=$enableval],
-  [enable_xrender_x11="auto"])
-
-if test "x$enable_xrender_x11" != "xno" ; then
-  PKG_CHECK_MODULES(EVAS_XRENDER_X11,
-    [evas-xrender-x11 >= 0.9.9],
-    [
-      PKG_CHECK_MODULES(ECORE_X,
-        [ecore-x >= 0.9.9],
-        [have_xrender_x11="yes"],
-        [have_xrender_x11="no"])
-    ],
-    [have_xrender_x11="no"])
-  if test "x$have_xrender_x11" = "xyes" ; then
-    AC_DEFINE(ENABLE_EWL_XRENDER_X11, 1, [Enable X11 Xrender])
-  elif test "x$enable_xrender_x11" = "xyes" ; then
-    AC_MSG_ERROR(xrender X11 requested but no evas/ecore support found)
-  fi
-fi
-AM_CONDITIONAL(EWL_ENABLE_EVAS_XRENDER_X11, test "x$have_xrender_x11" = xyes)
-
-dnl OpenGL X11
-AC_ARG_ENABLE(opengl-x11,
-  [
-    AC_HELP_STRING(
-      [--enable-opengl-x11],
-      [enable opengl X11 support])
-  ],
-  [enable_opengl_x11=$enableval],
-  [enable_opengl_x11="auto"])
-
-if test "x$enable_opengl_x11" != "xno" ; then
-  PKG_CHECK_MODULES(EVAS_OPENGL_X11,
-    [evas-opengl-x11 >= 0.9.9],
-    [
-      PKG_CHECK_MODULES(ECORE_X,
-        [ecore-x >= 0.9.9],
-        [have_opengl_x11="yes"],
-        [have_opengl_x11="no"])
-    ],
-    [have_opengl_x11="no"])
-  if test "x$have_opengl_x11" = "xyes" ; then
-    AC_DEFINE(ENABLE_EWL_OPENGL_X11, 1, [Enable X11 Opengl])
-  elif test "x$enable_opengl_x11" = "xyes" ; then
-    AC_MSG_ERROR(opengl X11 requested but no evas/ecore support found)
-  fi
-fi
-AM_CONDITIONAL(EWL_ENABLE_EVAS_OPENGL_X11, test "x$have_opengl_x11" = xyes)
-
-AM_CONDITIONAL(EWL_ENABLE_X11, test "x$have_software_x11" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "x$have_xrender_x11" = "xyes" -o "x$have_opengl_x11" = "xyes")
-
-dnl software XCB
-AC_ARG_ENABLE(software-xcb,
-  [
-    AC_HELP_STRING(
-      [--enable-software-xcb],
-      [enable software XCB support])
-  ],
-  [enable_software_xcb=$enableval],
-  [enable_software_xcb="auto"])
-
-if test "x$enable_software_xcb" != "xno" ; then
-  PKG_CHECK_MODULES(EVAS_SOFTWARE_XCB,
-    [xcb >= 1.0 evas-software-xcb >= 0.9.9],
-    [
-      PKG_CHECK_MODULES(ECORE_XCB,
-        [xcb >= 1.0 ecore-x >= 0.9.9],
-        [have_software_xcb="yes"],
-        [have_software_xcb="no"])
-    ],
-    [have_software_xcb="no"])
-  if test "x$have_software_xcb" = "xyes" ; then
-    AC_DEFINE(ENABLE_EWL_SOFTWARE_XCB, 1, [Enable XCB Software])
-  elif test "x$enable_software_xcb" = "xyes" ; then
-    AC_MSG_ERROR(software XCB requested but no evas/ecore support found)
-  fi
-fi
-AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_XCB, test "x$have_software_xcb" = xyes)
-
-AM_CONDITIONAL(EWL_ENABLE_XCB, test "x$have_software_xcb" = "xyes")
-
-dnl software SDL
-AC_ARG_ENABLE(software-sdl,
-  [
-    AC_HELP_STRING(
-      [--enable-software-sdl],
-      [enable software SDL support])
-  ],
-  [enable_software_sdl=$enableval],
-  [enable_software_sdl="auto"])
-
-if test "x$enable_software_sdl" != "xno" ; then
-  PKG_CHECK_MODULES(EVAS_SOFTWARE_SDL,
-    [evas-software-sdl >= 0.9.9],
-    [
-      PKG_CHECK_MODULES(ECORE_SDL,
-        [ecore-sdl >= 0.9.9],
-        [have_software_sdl="yes"],
-        [have_software_sdl="no"])
-    ],
-    [have_software_sdl="no"])
-  if test "x$have_software_sdl" = "xyes" ; then
-    AC_DEFINE(ENABLE_EWL_SOFTWARE_SDL, 1, [Enable SDL Software])
-  elif test "x$enable_software_sdl" = "xyes" ; then
-    AC_MSG_ERROR(software SDL requested but no evas/ecore support found)
-  fi
-fi
-AM_CONDITIONAL(EWL_ENABLE_EVAS_SOFTWARE_SDL, test "x$have_software_sdl" = xyes)
-
-dnl Frame Buffer
-AC_ARG_ENABLE(framebuffer,
-  [
-    AC_HELP_STRING(
-      [--enable-framebuffer],
-      [enable framebuffer support])
-  ],
-  [enable_framebuffer=$enableval],
-  [enable_framebuffer="auto"])
-
-if test "x$enable_framebuffer" != "xno" ; then
-  PKG_CHECK_MODULES(EVAS_FRAMEBUFFER,
-    [evas-framebuffer >= 0.9.9],
-    [
-      PKG_CHECK_MODULES(ECORE_FB,
-        [ecore-fb >= 0.9.9],
-        [have_framebuffer="yes"],
-        [have_framebuffer="no"])
-    ],
-    [have_framebuffer="no"])
-  if test "x$have_framebuffer" = "xyes" ; then
-    AC_DEFINE(ENABLE_EWL_FB, 1, [Enable FB])
-  elif test "x$enable_framebuffer" = "xyes" ; then
-    AC_MSG_ERROR(framebuffer requested but no evas/ecore support found)
-  fi
-fi
-AM_CONDITIONAL(EWL_ENABLE_EVAS_FB, test "x$have_framebuffer" = xyes)
-
-dnl Buffer
-AC_ARG_ENABLE(buffer,
-  [
-    AC_HELP_STRING(
-      [--enable-buffer],
-      [enable buffer support])
-  ],
-  [enable_buffer=$enableval],
-  [enable_buffer="auto"])
-
-if test "x$enable_buffer" != "xno" ; then
-  PKG_CHECK_MODULES(EVAS_BUFFER,
-    [evas-software-buffer >= 0.9.9],
-    [have_buffer="yes"],
-    [have_buffer="no"])
-  if test "x$have_buffer" = "xyes" ; then
-    AC_DEFINE(ENABLE_EWL_BUFFER, 1, [Enable Buffer])
-  elif test "x$enable_buffer" = "xyes" ; then
-    AC_MSG_ERROR(buffer requested but no evas/ecore support found)
-  fi
-fi
-AM_CONDITIONAL(EWL_ENABLE_EVAS_BUFFER, test "x$have_buffer" = xyes)
 
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-CFLAGS=$EDJE_CFLAGS" "$CFLAGS
+
+dnl Xlib engines
+
+PKG_CHECK_MODULES(ECORE_X,
+  [ecore-x >= 0.9.9],
+  [have_ecore_x="yes"],
+  [have_ecore_x="no"])
+
+EWL_CHECK_ENGINE([software_x11], [software X11], [0.9.9], [$have_ecore_x])
+EWL_CHECK_ENGINE([software_16_x11], [software 16 bpp X11], [0.9.9], [$have_ecore_x])
+EWL_CHECK_ENGINE([xrender_x11], [xrender X11], [0.9.9], [$have_ecore_x])
+EWL_CHECK_ENGINE([opengl_x11], [opengl X11], [0.9.9], [$have_ecore_x])
+
+AM_CONDITIONAL(EWL_ENABLE_X11, test "x$have_ecore_x" = "xyes" -a "x$have_software_x11" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "x$have_xrender_x11" = "xyes" -o "x$have_opengl_x11" = "xyes")
+
+dnl XCB engine
+
+PKG_CHECK_MODULES(ECORE_XCB,
+  [xcb >= 1.0 ecore-x >= 0.9.9],
+  [have_ecore_xcb="yes"],
+  [have_ecore_xcb="no"])
+
+dnl Disable xcb support for now
+have_ecore_xcb="no"
+
+EWL_CHECK_ENGINE([software_xcb], [software XCB], [0.9.9], [$have_ecore_xcb])
+
+AM_CONDITIONAL(EWL_ENABLE_XCB, test "x$have_software_xcb" = "xyes" -a "x$have_ecore_xcb" = "xyes")
+
+PKG_CHECK_MODULES(ECORE_SDL,
+  [ecore-sdl >= 0.9.9],
+  [have_ecore_sdl="yes"],
+  [have_ecore_sdl="no"])
+
+EWL_CHECK_ENGINE([software_sdl], [software SDL], [0.9.9], [$have_ecore_sdl])
+
+dnl Frame Buffer engine
+
+PKG_CHECK_MODULES(ECORE_FB,
+  [ecore-fb >= 0.9.9],
+  [have_ecore_framebuffer="yes"],
+  [have_ecore_framebuffer="no"])
+
+EWL_CHECK_ENGINE([framebuffer], [framebuffer], [0.9.9], [$have_ecore_framebuffer])
+
+dnl Buffer engine
+
+EWL_CHECK_ENGINE([software_buffer], [buffer], [0.9.9], ["yes"])
 
 requirements="evas ecore edje efreet"
 
 PKG_CHECK_MODULES(EMOTION, [emotion >= 0.0.1],
-  [ 
+  [
     have_emotion="yes"
     ewl_media_include="#include <ewl_media.h>"
     requirements="$requirements emotion"
@@ -313,10 +111,8 @@ PKG_CHECK_MODULES(EMOTION, [emotion >= 0.0.1],
   ]
 )
 
-CFLAGS=$EMOTION_CFLAGS" "$CFLAGS
-
 PKG_CHECK_MODULES(EPSILON, [epsilon >= 0.3.0],
-  [ 
+  [
     have_epsilon="yes"
     requirements="$requirements epsilon"
     AC_DEFINE(BUILD_EPSILON_SUPPORT, 1, [Enable Epsilon Support for Ewl_Image])
@@ -325,8 +121,6 @@ PKG_CHECK_MODULES(EPSILON, [epsilon >= 0.3.0],
     have_epsilon="no"
   ]
 )
-
-CFLAGS=$EPSILON_CFLAGS" "$CFLAGS
 
 AC_ARG_ENABLE(debug,
 	[AC_HELP_STRING([--enable-debug],[enable debug support])],
@@ -343,16 +137,13 @@ fi
 INTERFACE_CURRENT="1"
 INTERFACE_REVISION="0"
 INTERFACE_AGE="0"
+INTERFACE_VERSION=${INTERFACE_CURRENT}:${INTERFACE_REVISION}:${INTERFACE_AGE}
 
-AC_SUBST(INTERFACE_CURRENT)
-AC_SUBST(INTERFACE_REVISION)
-AC_SUBST(INTERFACE_AGE)
+AC_SUBST(INTERFACE_VERSION)
 
 AC_DEFINE_UNQUOTED(INTERFACE_CURRENT, "$INTERFACE_CURRENT", [Interface current version number])
 AC_DEFINE_UNQUOTED(INTERFACE_REVISION, "$INTERFACE_REVISION", [Interface revision number])
 AC_DEFINE_UNQUOTED(INTERFACE_AGE, "$INTERFACE_AGE", [Interface age number])
-
-CFLAGS=$PCFLAGS
 
 AC_SUBST(ewl_media_include)
 
@@ -463,15 +254,14 @@ echo "  XRender X11..............................: $have_xrender_x11"
 echo "  Software XCB.............................: $have_software_xcb"
 echo "  Framebuffer..............................: $have_framebuffer"
 echo "  SDL......................................: $have_software_sdl"
-echo "  Buffer...................................: $have_buffer"
+echo "  Buffer...................................: $have_software_buffer"
 echo
 echo "Optional Components:"
 echo
 echo "  Emotion Support..........................: $have_emotion"
 echo "  Epsilon Support..........................: $have_epsilon"
-echo 
+echo
 echo "Debug Support..............................: $enable_debug"
 echo
 echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE."
 echo
-
