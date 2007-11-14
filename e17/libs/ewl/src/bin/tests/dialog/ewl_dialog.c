@@ -2,6 +2,8 @@
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
 #include "ewl_button.h"
+#include "ewl_border.h"
+#include "ewl_radiobutton.h"
 #include "ewl_dialog.h"
 #include "ewl_image.h"
 #include "ewl_icon_theme.h"
@@ -28,6 +30,8 @@ static int
 create_test(Ewl_Container *box)
 {
 	Ewl_Widget *o;
+	Ewl_Widget *border;
+	Ewl_Widget *chain;
 
 	o = ewl_label_new();
 	ewl_label_text_set(EWL_LABEL(o), "");
@@ -35,9 +39,46 @@ create_test(Ewl_Container *box)
 	ewl_widget_name_set(o, "dialog_label");
 	ewl_widget_show(o);
 
+	border = ewl_border_new();
+	ewl_border_label_set(EWL_BORDER(border), "Button Position");
+	ewl_container_child_append(EWL_CONTAINER(box), border);
+	ewl_widget_show(border);
+	
+	chain = ewl_radiobutton_new();
+	ewl_button_label_set(EWL_BUTTON(chain), "Top");
+	ewl_radiobutton_value_set(EWL_RADIOBUTTON(chain), 
+						(void *)EWL_POSITION_TOP);
+	ewl_container_child_append(EWL_CONTAINER(border), chain);
+	ewl_widget_show(chain);
+
+	o = ewl_radiobutton_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Right");
+	ewl_radiobutton_value_set(EWL_RADIOBUTTON(o), 
+						(void *)EWL_POSITION_RIGHT);
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(chain));
+	ewl_container_child_append(EWL_CONTAINER(border), o);
+	ewl_widget_show(o);
+
+	o = ewl_radiobutton_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Left");
+	ewl_radiobutton_value_set(EWL_RADIOBUTTON(o), 
+						(void *)EWL_POSITION_LEFT);
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(chain));
+	ewl_container_child_append(EWL_CONTAINER(border), o);
+	ewl_widget_show(o);
+
+	o = ewl_radiobutton_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Bottom");
+	ewl_radiobutton_value_set(EWL_RADIOBUTTON(o), 
+						(void *)EWL_POSITION_BOTTOM);
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o), EWL_RADIOBUTTON(chain));
+	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
+	ewl_container_child_append(EWL_CONTAINER(border), o);
+	ewl_widget_show(o);
+
 	o = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(o), "Lanuch Dialog");
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED, run_dialog, NULL);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, run_dialog, chain);
 	ewl_container_child_append(box, o);
 	ewl_widget_show(o);
 
@@ -45,12 +86,17 @@ create_test(Ewl_Container *box)
 }
 
 static void
-run_dialog(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+run_dialog(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Widget *o, *dialog, *hbox;
+	Ewl_Radiobutton *radio;
 	Ewl_Window *win;
+	Ewl_Position pos;
 
-	/* this is a bad cast, but the ewl_test will ever a standalone app */
+	radio = EWL_RADIOBUTTON(data);
+	pos = (Ewl_Position)ewl_radiobutton_value_get(
+			ewl_radiobutton_chain_selected_get(radio));
+	/* this is a bad cast, but the ewl_test will ever be a standalone app */
 	win = EWL_WINDOW(ewl_embed_widget_find(w));
 
 	dialog = ewl_dialog_new();
@@ -60,11 +106,24 @@ run_dialog(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	ewl_window_transient_for(EWL_WINDOW(dialog), win);
 	ewl_callback_append(dialog, EWL_CALLBACK_DELETE_WINDOW,
 						dialog_delete_cb, NULL);
+	ewl_dialog_action_position_set(EWL_DIALOG(dialog), pos);
 	ewl_widget_show(dialog);
-	ewl_dialog_active_area_set(EWL_DIALOG(dialog), EWL_POSITION_TOP);
+	if (pos == EWL_POSITION_TOP)
+		ewl_dialog_active_area_set(EWL_DIALOG(dialog), 
+				EWL_POSITION_BOTTOM);
+	else if (pos == EWL_POSITION_BOTTOM)
+		ewl_dialog_active_area_set(EWL_DIALOG(dialog), 
+				EWL_POSITION_TOP);
+	else if (pos == EWL_POSITION_LEFT)
+		ewl_dialog_active_area_set(EWL_DIALOG(dialog), 
+				EWL_POSITION_RIGHT);
+	else if (pos == EWL_POSITION_RIGHT)
+		ewl_dialog_active_area_set(EWL_DIALOG(dialog), 
+				EWL_POSITION_LEFT);
 
 	hbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(dialog), hbox);
+	ewl_object_padding_set(EWL_OBJECT(hbox), 20, 20, 20, 20);
 	ewl_widget_show(hbox);
 
 	o = ewl_image_new();
@@ -72,7 +131,7 @@ run_dialog(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 		ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_INFORMATION, 46),
 		EWL_ICON_DIALOG_INFORMATION);
 	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-	ewl_object_padding_set(EWL_OBJECT(o), 20, 20, 20, 20);
+	ewl_object_padding_set(EWL_OBJECT(o), 0, 20, 0, 0);
 	ewl_widget_show(o);
 
 	o = ewl_text_new();
@@ -82,7 +141,7 @@ run_dialog(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	ewl_text_text_set(EWL_TEXT(o), "This is a dialog window");
 	ewl_widget_show(o);
 
-	ewl_dialog_active_area_set(EWL_DIALOG(dialog), EWL_POSITION_BOTTOM);
+	ewl_dialog_active_area_set(EWL_DIALOG(dialog), pos);
 
 	o = ewl_button_new();
 	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_OK);
