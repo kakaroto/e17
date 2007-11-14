@@ -42,10 +42,7 @@ EWLHEADERS = \
 	ewl_floater.h \
 	ewl_filelist.h \
 	ewl_filelist_model.h \
-	ewl_filelist_tree.h\
-	ewl_filelist_list.h\
-	ewl_filelist_icon.h \
-	ewl_filelist_column.h \
+	ewl_filelist_view.h \
 	ewl_filepicker.h \
 	ewl_filedialog.h \
 	ewl_freebox.h \
@@ -131,10 +128,7 @@ EWLSOURCES= \
 	ewl_floater.c \
 	ewl_filelist.c \
 	ewl_filelist_model.c \
-	ewl_filelist_tree.c \
-	ewl_filelist_list.c \
-	ewl_filelist_icon.c \
-	ewl_filelist_column.c \
+	ewl_filelist_view.c \
 	ewl_filepicker.c \
 	ewl_filedialog.c \
 	ewl_freebox.c \

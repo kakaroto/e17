@@ -1,10 +1,10 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "ewl_base.h"
 #include "ewl_filepicker.h"
+#include "ewl_filelist.h"
 #include "ewl_button.h"
 #include "ewl_combo.h"
 #include "ewl_entry.h"
-#include "ewl_filelist_icon.h"
 #include "ewl_label.h"
 #include "ewl_model.h"
 #include "ewl_scrollpane.h"
@@ -104,6 +104,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	view = ewl_label_view_get();
 
 	fp->path = ecore_list_new();
+	ecore_list_free_cb_set(fp->path, ECORE_FREE_CB(free));
 
 	fp->path_combo = ewl_combo_new();
 	ewl_container_child_append(EWL_CONTAINER(fp), fp->path_combo);
@@ -194,7 +195,14 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_widget_show(o);
 
 	/* do this last so all the other widgets are set correctly */
-	ewl_filepicker_list_view_set(fp, ewl_filelist_icon_view_get());
+	fp->file_list = ewl_filelist_new();
+	ewl_container_child_append(EWL_CONTAINER(fp->file_list_box),
+							fp->file_list);
+	ewl_callback_append(EWL_WIDGET(fp->file_list),
+				EWL_CALLBACK_VALUE_CHANGED,
+				ewl_filepicker_cb_list_value_changed,
+				fp);
+	ewl_widget_show(fp->file_list);
 	ewl_filepicker_directory_set(fp, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -247,55 +255,19 @@ ewl_filepicker_show_favorites_get(Ewl_Filepicker *fp)
  * @brief Sets the given view to be used to display the file list
  */
 void
-ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
+ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_Filelist_View view)
 {
-	Ewl_Filelist *old_fl;
+	Ewl_Filelist *temp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fp);
-	DCHECK_PARAM_PTR(view);
 	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
-
-	if (view == fp->view)
+	
+	temp = EWL_FILELIST(fp->file_list);
+	
+	if (temp->view_flag == view)
 		DRETURN(DLEVEL_STABLE);
-
-	fp->view = view;
-	old_fl = EWL_FILELIST(fp->file_list);
-
-	/* set the new view */
-	fp->file_list = view->fetch(NULL, 0, 0);
-	ewl_container_child_append(EWL_CONTAINER(fp->file_list_box),
-							fp->file_list);
-	ewl_callback_append(EWL_WIDGET(fp->file_list),
-				EWL_CALLBACK_VALUE_CHANGED,
-				ewl_filepicker_cb_list_value_changed, fp);
-
-	/* get any scrollpane flags from the file list in case they need to
-	 * turn off certain bars */
-	ewl_scrollpane_vscrollbar_flag_set(EWL_SCROLLPANE(fp->file_list_box),
-				ewl_filelist_vscroll_flag_get(
-						EWL_FILELIST(fp->file_list)));
-	ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(fp->file_list_box),
-				ewl_filelist_hscroll_flag_get(
-						EWL_FILELIST(fp->file_list)));
-
-	/* load new view from old view values */
-	if (old_fl)
-	{
-		ewl_filepicker_directory_set(fp,
-					ewl_filelist_directory_get(old_fl));
-		ewl_filepicker_filter_set(fp,
-					ewl_filelist_filter_get(old_fl));
-		ewl_filepicker_multiselect_set(fp,
-					ewl_filelist_multiselect_get(old_fl));
-		ewl_filepicker_show_dot_files_set(fp,
-					ewl_filelist_show_dot_files_get(old_fl));
-		ewl_filepicker_selected_files_set(fp,
-					ewl_filelist_selected_files_get(old_fl));
-		ewl_widget_destroy(EWL_WIDGET(old_fl));
-	}
-	ewl_widget_show(fp->file_list);
-
+	ewl_filelist_view_set(EWL_FILELIST(fp->file_list), view);
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -304,14 +276,15 @@ ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_View *view)
  * @return Returns the current view set on the filepicker
  * @brief Retrieves the current view used for the file list
  */
-Ewl_View *
+Ewl_Filelist_View *
 ewl_filepicker_list_view_get(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(fp, NULL);
 	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, NULL);
 
-	DRETURN_PTR(fp->view, DLEVEL_STABLE);
+	DRETURN_PTR(ewl_filelist_view_get(EWL_FILELIST(fp->file_list)),
+							DLEVEL_STABLE);
 }
 
 /**
@@ -432,8 +405,8 @@ unsigned int
 ewl_filepicker_multiselect_get(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(fp, 0);
-	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fp, FALSE);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, FALSE);
 
 	DRETURN_INT(ewl_filelist_multiselect_get(EWL_FILELIST(fp->file_list)),
 								DLEVEL_STABLE);
@@ -467,8 +440,8 @@ unsigned int
 ewl_filepicker_show_dot_files_get(Ewl_Filepicker *fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(fp, 0);
-	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fp, FALSE);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, FALSE);
 
 	DRETURN_INT(ewl_filelist_show_dot_files_get(EWL_FILELIST(fp->file_list)),
 								DLEVEL_STABLE);
@@ -600,12 +573,25 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 		dir = strdup(ewl_filelist_directory_get(fl));
 		ewl_filepicker_path_populate(fp, dir);
 		ewl_text_clear(EWL_TEXT(fp->file_entry));
-
 		FREE(dir);
 	}
-	else if (e->response == EWL_FILELIST_EVENT_SELECTION_CHANGE)
+	else if ((e->response == EWL_FILELIST_EVENT_SELECTION_CHANGE) &&
+					(!fl->multiselect))
 		ewl_text_text_set(EWL_TEXT(fp->file_entry),
 				ewl_filelist_selected_file_get(fl));
+
+	else if (e->response == EWL_FILELIST_EVENT_MULTI_TRUE)
+	{
+		ewl_text_clear(EWL_TEXT(fp->file_entry));
+		ewl_widget_disable(EWL_WIDGET(fp->file_entry));
+	}
+
+	else if (e->response == EWL_FILELIST_EVENT_MULTI_FALSE)
+	{
+		ewl_widget_enable(EWL_WIDGET(fp->file_entry));
+		ewl_text_text_set(EWL_TEXT(fp->file_entry),
+				ewl_filelist_selected_file_get(fl));
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -674,7 +660,7 @@ ewl_filepicker_cb_type_count(void *data)
 	Ewl_Filepicker *fp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(data, 0);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
 
 	fp = data;
 

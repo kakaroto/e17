@@ -6,7 +6,6 @@
 #include "ewl_model.h"
 #include "ewl_filelist.h"
 #include <dirent.h>
-#include <locale.h>
 
 static int ewl_filelist_model_data_name_sort(Ewl_Filelist_File *file1,
 				Ewl_Filelist_File *file2);
@@ -44,7 +43,7 @@ ewl_filelist_model_directory_new(const char *path,
 	all_files = ecore_file_ls(path);
 
 	/* Add in the ".." entry for now */
-	if (show_dot_dot)
+	if ((show_dot_dot) && (strcmp(path, "/")))
 		ecore_list_prepend(all_files, strdup(path));
 
 	while ((file_temp = ecore_list_first_remove(all_files)))
@@ -149,6 +148,7 @@ ewl_filelist_model_data_fetch(void *data, unsigned int row,
 	Ewl_Filelist_File *file;
 	int i;
 	void *ret;
+	char path[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(data, NULL);
@@ -164,7 +164,11 @@ ewl_filelist_model_data_fetch(void *data, unsigned int row,
 		file = ecore_list_index_goto(fld->files, i);
 	}
 
-	if (column == 0) ret = strdup(file->name);
+	if ((column == 0) && (strcmp(file->name, "..")))
+	{
+		snprintf(path, PATH_MAX, "%s/%s", fld->name, file->name);
+		ret = strdup(path);
+	}
 	else if (column == 1) ret = ewl_filelist_size_get(file->size);
 	else if (column == 2) ret = ewl_filelist_perms_get(file->mode);
 	else if (column == 3) ret = ewl_filelist_username_get
@@ -173,7 +177,7 @@ ewl_filelist_model_data_fetch(void *data, unsigned int row,
 						(file->groupname);
 	else if (column == 5) ret = ewl_filelist_modtime_get
 						(file->modtime);
-	else ret = NULL;
+	else ret = strdup(file->name);
 
 	/* ret needs to be freed by the view or with model_data_free_set */
 	DRETURN_PTR(ret, DLEVEL_STABLE);
@@ -353,7 +357,6 @@ ewl_filelist_model_data_unref(void *data)
 	DCHECK_PARAM_PTR_RET(data, FALSE);
 	
 	dir = data;
-
 	ecore_string_release(dir->name);
 	ecore_list_destroy(dir->files);
 	ecore_list_destroy(dir->dirs);

@@ -1,16 +1,47 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "ewl_base.h"
 #include "ewl_filelist.h"
+#include "ewl_filelist_model.h"
+#include "ewl_filelist_view.h"
+#include "ewl_tree2.h"
+#include "ewl_tree2_view_freebox.h"
+#include "ewl_tree2_view_scrolled.h"
+#include "ewl_mvc.h"
 #include "ewl_icon_theme.h"
 #include "ewl_io_manager.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static void ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c,
-						int add, const char *signal,
-						int a_idx, Ewl_Widget *a,
-						int b_idx, Ewl_Widget *b);
+static void ewl_filelist_setup(Ewl_Filelist *fl);
+static void ewl_filelist_view_setup(Ewl_Filelist *fl);
+static void ewl_filelist_cb_clicked(Ewl_Widget *w, void *ev,
+						void *data __UNUSED__);
+
+/**
+ * @return Returns a new Ewl_Filelist widget or NULL on failure
+ * @brief Creates a new Ewl_Filelist widget
+ */
+Ewl_Widget *
+ewl_filelist_new(void)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	w = NEW(Ewl_Filelist, 1);
+	if (!w)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	if (!ewl_filelist_init(EWL_FILELIST(w)))
+	{
+		ewl_widget_destroy(w);
+		w = NULL;
+	}
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
+}
+
 /**
  * @param fl: The filelist to initialize
  * @return Returns TRUE on success or FALSE on failure
@@ -31,14 +62,189 @@ ewl_filelist_init(Ewl_Filelist *fl)
 	fl->scroll_flags.h = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 	fl->scroll_flags.v = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 
-	fl->selected = ecore_list_new();
 	ewl_callback_prepend(EWL_WIDGET(fl), EWL_CALLBACK_DESTROY,
 				ewl_filelist_cb_destroy, NULL);
 
+	fl->view_flag = EWL_FILELIST_VIEW_ICON;
+	fl->multiselect = FALSE;
+	fl->skip_hidden = TRUE;
+
 	ewl_filelist_filter_set(fl, NULL);
+	ewl_filelist_directory_set(fl, NULL);
+	ewl_filelist_setup(fl);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
+
+/**
+ * @param fl: The filelist to setup
+ * @return Returns no value
+ * @brief Sets up the filelist view and data
+ */
+static void
+ewl_filelist_setup(Ewl_Filelist *fl)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+
+	fl->view = ewl_view_new();
+	ewl_view_widget_fetch_set(fl->view,
+				ewl_filelist_view_widget_fetch);
+	ewl_view_header_fetch_set(fl->view,
+				ewl_filelist_view_header_fetch);
+
+	fl->model = ewl_model_new();
+	ewl_model_data_count_set(fl->model,
+			ewl_filelist_model_data_count);
+	ewl_model_data_fetch_set(fl->model,
+			ewl_filelist_model_data_fetch);
+	ewl_model_data_sort_set(fl->model,
+			ewl_filelist_model_data_sort);
+	ewl_model_column_sortable_set(fl->model,
+			ewl_filelist_model_column_sortable);
+	ewl_model_data_unref_set(fl->model,
+			ewl_filelist_model_data_unref);
+
+	/* For now just create a tree and set different views */
+	fl->controller = ewl_tree2_new();
+	ewl_mvc_view_set(EWL_MVC(fl->controller), fl->view);
+	ewl_mvc_model_set(EWL_MVC(fl->controller), fl->model);
+	ewl_container_child_append(EWL_CONTAINER(fl), fl->controller);
+	ewl_callback_append(EWL_WIDGET(fl->controller),
+			EWL_CALLBACK_CLICKED, ewl_filelist_cb_clicked,
+			fl);
+	ewl_widget_show(fl->controller);
+
+	if (fl->multiselect)
+		ewl_mvc_selection_mode_set(EWL_MVC(fl->controller),
+				EWL_SELECTION_MODE_MULTI);
+	else
+		ewl_mvc_selection_mode_set(EWL_MVC(fl->controller),
+				EWL_SELECTION_MODE_SINGLE);
+
+	ewl_filelist_view_setup(fl);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ */
+static void
+ewl_filelist_view_setup(Ewl_Filelist *fl)
+{
+	Ewl_View *view;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+
+	/* Set expansions callbacks to NULL right off the bat */
+	ewl_model_expansion_data_fetch_set(fl->model, NULL);
+	ewl_model_data_expandable_set(fl->model, NULL);
+
+	if (fl->view_flag == EWL_FILELIST_VIEW_TREE)
+	{
+		ewl_tree2_column_count_set(EWL_TREE2(fl->controller), 2);
+		ewl_tree2_headers_visible_set(EWL_TREE2(fl->controller),
+								TRUE);
+		ewl_tree2_alternate_row_colors_set
+				(EWL_TREE2(fl->controller), TRUE);
+		ewl_tree2_selection_type_set(EWL_TREE2(fl->controller),
+					EWL_TREE_SELECTION_TYPE_CELL);
+		ewl_model_expansion_data_fetch_set(fl->model,
+			ewl_filelist_model_data_expansion_data_fetch);
+		ewl_model_data_expandable_set(fl->model,
+			ewl_filelist_model_data_expandable_get);
+		view = ewl_tree2_view_scrolled_get();
+	}
+
+	else if (fl->view_flag == EWL_FILELIST_VIEW_LIST)
+	{
+		ewl_tree2_column_count_set(EWL_TREE2(fl->controller), 6);
+		ewl_tree2_headers_visible_set(EWL_TREE2(fl->controller),
+								TRUE);
+		ewl_tree2_alternate_row_colors_set
+				(EWL_TREE2(fl->controller), TRUE);
+		ewl_tree2_selection_type_set(EWL_TREE2(fl->controller),
+					EWL_TREE_SELECTION_TYPE_ROW);
+		view = ewl_tree2_view_scrolled_get();
+	}
+
+	/* Until column view is written just default and throw a warning */
+	else if (fl->view_flag == EWL_FILELIST_VIEW_COLUMN)
+	{
+		ewl_tree2_column_count_set(EWL_TREE2(fl->controller), 1);
+		ewl_tree2_headers_visible_set(EWL_TREE2(fl->controller),
+								FALSE);
+		ewl_tree2_alternate_row_colors_set
+				(EWL_TREE2(fl->controller), FALSE);
+		ewl_tree2_selection_type_set(EWL_TREE2(fl->controller),
+					EWL_TREE_SELECTION_TYPE_ROW);
+		view = ewl_tree2_view_freebox_get();
+		DWARNING("Column view not implemented");
+	}
+
+	/* Make icon view default */
+	else
+	{
+		ewl_tree2_column_count_set(EWL_TREE2(fl->controller), 1);
+		ewl_tree2_headers_visible_set(EWL_TREE2(fl->controller),
+								FALSE);
+		ewl_tree2_alternate_row_colors_set
+				(EWL_TREE2(fl->controller), FALSE);
+		ewl_tree2_selection_type_set(EWL_TREE2(fl->controller),
+					EWL_TREE_SELECTION_TYPE_ROW);
+		view = ewl_tree2_view_freebox_get();
+		fl->view_flag = EWL_FILELIST_VIEW_ICON;
+	}
+	
+	/* Set the view and redraw the tree */
+	ewl_tree2_content_view_set(EWL_TREE2(fl->controller), view);
+	ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to change the view for
+ * @param view: The view to set
+ * @return: Returns no value
+ * @brief Sets the filelist view
+ */
+void
+ewl_filelist_view_set(Ewl_Filelist *fl, Ewl_Filelist_View view)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(fl);
+	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+
+	if (fl->view_flag == view)
+		DRETURN(DLEVEL_STABLE);
+
+	fl->view_flag = view;
+
+	ewl_filelist_view_setup(fl);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to get the view from
+ * @returns Returns the Ewl_Filelist_View used
+ * @brief Gets the filelist view
+ */
+Ewl_Filelist_View *
+ewl_filelist_view_get(Ewl_Filelist *fl)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(fl, NULL);
+	DRETURN_PTR(fl->view_flag, DLEVEL_STABLE);
+}
+
+
+
 
 /**
  * @param fl: The filelist to set the directory into
@@ -50,20 +256,33 @@ ewl_filelist_init(Ewl_Filelist *fl)
 void
 ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 {
+	Ewl_Filelist_Directory *data;
 	Ewl_Event_Action_Response ev_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fl);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	IF_FREE(fl->directory);
-	fl->directory = strdup(dir);
-	if (fl->dir_change) fl->dir_change(fl);
+	if (dir == NULL) fl->directory = NULL;
 
-	ev_data.response = EWL_FILELIST_EVENT_DIR_CHANGE;
+	else if ((!fl->directory) || (strcmp(dir, fl->directory)))
+	{
+		fl->directory = strdup(dir);
 
-	ewl_callback_call_with_event_data(EWL_WIDGET(fl),
-			EWL_CALLBACK_VALUE_CHANGED, &ev_data);
+		data = ewl_mvc_data_get(EWL_MVC(fl->controller));
+		if (data)
+			ewl_filelist_model_data_unref(data);
+		
+		data = ewl_filelist_model_directory_new
+					(fl->directory,
+					 fl->skip_hidden, TRUE);
+		ewl_mvc_data_set(EWL_MVC(fl->controller), data);
+		ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
+
+		ev_data.response = EWL_FILELIST_EVENT_DIR_CHANGE;
+		ewl_callback_call_with_event_data(EWL_WIDGET(fl),
+				EWL_CALLBACK_VALUE_CHANGED, &ev_data);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -99,7 +318,9 @@ ewl_filelist_filter_set(Ewl_Filelist *fl, const char *filter)
 	IF_FREE(fl->filter);
 
 	fl->filter = (filter ? strdup(filter) : NULL);
-	if (fl->filter_change) fl->filter_change(fl);
+	
+	/* Model does not do filtering yet */
+	DWARNING("Filtering not yet implemented");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -128,13 +349,35 @@ ewl_filelist_filter_get(Ewl_Filelist *fl)
 void
 ewl_filelist_multiselect_set(Ewl_Filelist *fl, unsigned int ms)
 {
+	Ewl_Event_Action_Response ev_data;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fl);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	fl->multiselect = !!ms;
-	if (fl->multiselect_change) fl->multiselect_change(fl);
+	if (fl->multiselect == ms)
+		DRETURN(DLEVEL_STABLE);
 
+	fl->multiselect = !!ms;
+		
+	if (ms == TRUE)
+	{
+		ewl_mvc_selection_mode_set
+			(EWL_MVC(fl->controller),
+			 EWL_SELECTION_MODE_MULTI);
+		ev_data.response = EWL_FILELIST_EVENT_MULTI_TRUE;
+	}
+	else
+	{
+		ewl_mvc_selection_mode_set
+			(EWL_MVC(fl->controller),
+			 EWL_SELECTION_MODE_SINGLE);
+		ev_data.response = EWL_FILELIST_EVENT_MULTI_FALSE;
+	}
+
+	ewl_callback_call_with_event_data(EWL_WIDGET(fl),
+			EWL_CALLBACK_VALUE_CHANGED, &ev_data);
+	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -147,8 +390,8 @@ unsigned int
 ewl_filelist_multiselect_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(fl, 0);
-	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fl, FALSE);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, FALSE);
 
 	DRETURN_INT((unsigned int)fl->multiselect, DLEVEL_STABLE);
 }
@@ -162,13 +405,25 @@ ewl_filelist_multiselect_get(Ewl_Filelist *fl)
 void
 ewl_filelist_show_dot_files_set(Ewl_Filelist *fl, unsigned int dot)
 {
+	Ewl_Filelist_Directory *data;
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fl);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	fl->show_dot_files = !!dot;
-	if (fl->show_dot_change) fl->show_dot_change(fl);
+	if (fl->skip_hidden == dot)
+		DRETURN(DLEVEL_STABLE);
 
+	fl->skip_hidden = !!dot;
+	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
+	if (data)
+		ewl_filelist_model_data_unref(data);
+						
+	data = ewl_filelist_model_directory_new(fl->directory,
+					 fl->skip_hidden, TRUE);
+	ewl_mvc_data_set(EWL_MVC(fl->controller), data);
+	ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
+	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -181,10 +436,10 @@ unsigned int
 ewl_filelist_show_dot_files_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(fl, 0);
-	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fl, FALSE);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, FALSE);
 
-	DRETURN_INT((unsigned int)fl->show_dot_files, DLEVEL_STABLE);
+	DRETURN_INT((unsigned int)fl->skip_hidden, DLEVEL_STABLE);
 }
 
 /**
@@ -196,17 +451,55 @@ ewl_filelist_show_dot_files_get(Ewl_Filelist *fl)
 void
 ewl_filelist_selected_file_set(Ewl_Filelist *fl, const char *file)
 {
+	char *filename;
+	Ewl_Filelist_Directory *data;
+	Ewl_Filelist_File *file_temp;
+	int dir = 0, index = -1;
+	Ecore_List *temp;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fl);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	/* clean out the old set of selected files */
-	if (fl->selected_unselect) fl->selected_unselect(fl);
-	ecore_list_clear(fl->selected);
-	if (fl->selected_file_add && file) fl->selected_file_add(fl, file);
+	if (!file)
+	{
+		ewl_mvc_selected_clear(EWL_MVC(fl->controller));
+		DRETURN(DLEVEL_STABLE);
+	}
 
+	filename = ewl_filelist_expand_path(fl, file);
+	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
+
+	if (ecore_file_is_dir(filename))
+	{
+		temp = data->dirs;
+		dir = 1;
+	}
+	else
+		temp = data->files;
+
+	ecore_list_first_goto(temp);
+
+	while ((file_temp = ecore_list_next(temp)))
+	{
+		if (!strcoll(file_temp->name, file))
+		{
+			index = ecore_list_index(temp);
+			break;
+		}
+	}
+
+	if ((index >= 0) && (dir == 0))
+		ewl_mvc_selected_set(EWL_MVC(fl->controller), NULL,
+					NULL, (index+data->num_dirs-1),
+				       	0);
+	
+	else if ((index >= 0) && (dir == 1))
+		ewl_mvc_selected_set(EWL_MVC(fl->controller), NULL,
+					NULL, (index-1), 0);
+
+	FREE(filename);
 	ewl_filelist_selected_files_change_notify(fl);
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -218,18 +511,42 @@ ewl_filelist_selected_file_set(Ewl_Filelist *fl, const char *file)
 char *
 ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 {
-	void *widget;
-	const char *file = NULL;
+	Ewl_Filelist_Directory *data;
+	Ewl_Filelist_File *file;
+	Ewl_Selection_Idx *idx;
+	char path[PATH_MAX];
+	int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(fl, NULL);
 	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, 0);
 
-	ecore_list_first_goto(fl->selected);
-	widget = ecore_list_current(fl->selected);
-	if (widget && fl->file_name_get) file = fl->file_name_get(fl, widget);
+	if (!ewl_mvc_selected_count_get(EWL_MVC(fl->controller)))
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	DRETURN_PTR((file ? strdup(file) : NULL), DLEVEL_STABLE);
+	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
+	idx = ewl_mvc_selected_get(EWL_MVC(fl->controller));
+	if (idx->row < data->num_dirs)
+		file = ecore_list_index_goto(data->dirs, idx->row);
+	else
+	{
+		i = (idx->row - data->num_dirs);
+		file = ecore_list_index_goto(data->files, i);
+	}
+
+	FREE(idx);
+
+	if (!strcmp(file->name, ".."))
+		snprintf(path, PATH_MAX, "%s", data->name);
+
+	else if (!strcmp(data->name, "/"))
+		snprintf(path, PATH_MAX, "%s%s", data->name, file->name);
+
+	else
+		snprintf(path, PATH_MAX, "%s/%s", data->name,
+							file->name);
+
+	DRETURN_PTR(strdup(path), DLEVEL_STABLE);
 }
 
 /**
@@ -366,7 +683,7 @@ ewl_filelist_modtime_get(time_t st_modtime)
 		time = strdup(time);
 		time[strlen(time) - 1] = '\0';
 	}
-	else time = strdup("unknown");
+	else time = strdup("Unknown");
 
 	DRETURN_PTR(time, DLEVEL_STABLE);
 }
@@ -474,29 +791,72 @@ ewl_filelist_multi_select_preview_get(Ewl_Filelist *fl)
 
 /**
  * @param fl: The filelist to set the selected files into
- * @param files: The Ecore_List of files to set
+ * @param files: The Ecore_List of the files
  * @return Returns no value.
  * @brief Sets the given files as selected in the filelist
  */
 void
 ewl_filelist_selected_files_set(Ewl_Filelist *fl, Ecore_List *files)
 {
-	char *file;
+	Ewl_Filelist_Directory *data;
+	Ewl_Filelist_File *file;
+	Ecore_List *selected, *temp;
+	Ewl_Selection *sel;
+	int i, index;
+	char *path;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fl);
 	DCHECK_PARAM_PTR(files);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	/* clean out the old set of selected files */
-	if (fl->selected_unselect) fl->selected_unselect(fl);
-	ecore_list_clear(fl->selected);
+	/* Get the mvc data and get ready for looping */
+	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
+	selected = ecore_list_new();
 
+	ecore_list_first_goto(data->dirs);
+	ecore_list_first_goto(data->files);
 	ecore_list_first_goto(files);
-	while ((file = ecore_list_next(files)))
-		if (fl->selected_file_add) fl->selected_file_add(fl, file);
 
+	/* For every file, search for a match */
+	for (i = 0; i < ecore_list_count(files); i++)
+	{
+		path = ecore_list_next(files);
+
+		/* Set temp to whichever list the file could be in */
+		if (ecore_file_is_dir(path))
+		{
+			temp = data->dirs;
+			index = 0;
+		}
+		else
+		{
+			temp = data->files;
+			index = data->num_dirs;
+		}
+
+		/* Search the list and return the index if found */
+		while ((file = ecore_list_next(temp)))
+		{
+			if (!strcmp(file->name, ecore_file_file_get
+							(path)))
+			{
+				index = (index + 
+					ecore_list_index(temp) - 1);
+				sel = ewl_mvc_selection_index_new
+					(fl->model, NULL, index, 0);
+				ecore_list_append(selected, sel);
+				break;
+			}
+		}
+
+		ecore_list_first_goto(temp);
+	}		
+
+	ewl_mvc_selected_list_set(EWL_MVC(fl->controller), selected);
 	ewl_filelist_selected_files_change_notify(fl);
+	ecore_list_destroy(files);
+	ecore_list_destroy(selected);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -509,25 +869,71 @@ ewl_filelist_selected_files_set(Ewl_Filelist *fl, Ecore_List *files)
 Ecore_List *
 ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 {
-	Ecore_List *selected;
-	void *item;
+	Ecore_List *selected, *ret;
+	Ewl_Selection *sel;
+	Ewl_Filelist_Directory *data;
+	Ewl_Filelist_File *file;
+	char path[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(fl, NULL);
 	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
-	selected = ecore_list_new();
-	ecore_list_free_cb_set(selected, free);
+	ret = ecore_list_new();
 
-	ecore_list_first_goto(fl->selected);
-	while ((item = ecore_list_next(fl->selected)))
+	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
+	selected = ewl_mvc_selected_list_get(EWL_MVC(fl->controller));
+	ecore_list_first_goto(selected);
+
+	while ((sel = ecore_list_next(selected)))
 	{
-		const char *file;
-		file = fl->file_name_get(fl, item);
-		ecore_list_append(selected, strdup(file));
-	}
+		/* If using Index instead of range */
+		if (sel->type == EWL_SELECTION_TYPE_INDEX)
+		{
+			Ewl_Selection_Idx *idx;
+			
+			idx = EWL_SELECTION_IDX(sel);
+			/* Get the file data */
+			if (idx->row < data->num_dirs)
+				file = ecore_list_index_goto
+					(data->dirs, idx->row);
+			else
+				file = ecore_list_index_goto
+					(data->files,
+					 (idx->row - data->num_dirs));
 
-	DRETURN_PTR(selected, DLEVEL_STABLE);
+			snprintf(path, PATH_MAX, "%s/%s", data->name,
+							file->name);
+			ecore_list_append(ret, strdup(path));
+		}
+
+		/* If using range instead of index */
+		else if (sel->type == EWL_SELECTION_TYPE_RANGE)
+		{
+			Ewl_Selection_Range *r;
+			int i;
+
+			r = EWL_SELECTION_RANGE(sel);
+			for (i = r->start.row; i <= r->end.row; i++)
+			{
+				/* Get the file data */
+				if (i < data->num_dirs)
+					file = ecore_list_index_goto
+						(data->dirs, i);
+				else
+					file = ecore_list_index_goto
+						(data->files,
+						 (i - data->num_dirs));
+
+				snprintf(path, PATH_MAX, "%s/%s",
+							data->name,
+							file->name);
+				ecore_list_append(ret, strdup(path));
+			}
+		}
+	}	
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -548,29 +954,6 @@ ewl_filelist_selected_files_change_notify(Ewl_Filelist *fl)
 	ev_data.response = EWL_FILELIST_EVENT_SELECTION_CHANGE;
 	ewl_callback_call_with_event_data(EWL_WIDGET(fl),
 			EWL_CALLBACK_VALUE_CHANGED, &ev_data);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param fl: The filelist to work with
- * @param signal: The signal to send
- * @return Returns no value
- * @brief Signals all of the selected widgets with the given signal
- */
-void
-ewl_filelist_selected_signal_all(Ewl_Filelist *fl, const char *signal)
-{
-	Ewl_Widget *item;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(fl);
-	DCHECK_PARAM_PTR(signal);
-	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
-
-	ecore_list_first_goto(fl->selected);
-	while ((item = ecore_list_next(fl->selected)))
-		ewl_widget_state_set(item, signal, EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -644,21 +1027,18 @@ ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl)
 }
 
 /**
- * @param fl: The filelist to work with
  * @param path: The path to get the icon for
  * @return Returns the stock icon for the given file
  * @brief Retrieves the stock icon for the given file
  */
 const char *
-ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path)
+ewl_filelist_stock_icon_get(const char *path)
 {
 	const char *ret = NULL;
 	char *ptr = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(fl, NULL);
 	DCHECK_PARAM_PTR_RET(path, NULL);
-	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	if (ecore_file_is_dir(path))
 		DRETURN_PTR(EWL_ICON_FOLDER, DLEVEL_STABLE);
@@ -734,337 +1114,6 @@ ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir)
 
 /**
  * @internal
- * @param fl: The filelist to work with
- * @param dir: The directory to read
- * @param skip_dot_dot: Should the .. entry be skipped
- * @param func: The function to call to actually add the item
- * @param data: The data to pass to the callback function
- * @return Returns no value.
- * @brief This will read the directory set in the file list, filter each
- * item through the set filter and call @a func if the file is to be
- * displayed.
- */
-void
-ewl_filelist_directory_read(Ewl_Filelist *fl, const char *dir,
-		unsigned int skip_dot_dot,
-		void (*func)(Ewl_Filelist *fl, const char *dir,
-				char *file, void *data), void *data)
-{
-	Ecore_List *all_files, *files, *dirs;
-	char path[PATH_MAX];
-	char *file;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(fl);
-	DCHECK_PARAM_PTR(func);
-	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
-
-	all_files = ecore_file_ls(dir);
-	if (!all_files) DRETURN(DLEVEL_STABLE);
-
-	files = ecore_list_new();
-	dirs = ecore_list_new();
-
-	/* if this isn't the root dir add a .. entry */
-	if (strcmp(dir, "/") && !skip_dot_dot)
-		ecore_list_append(dirs, strdup(".."));
-
-	while ((file = ecore_list_first_remove(all_files)))
-	{
-		int is_dir;
-
-		snprintf(path, PATH_MAX, "%s/%s", dir, file);
-		is_dir = ecore_file_is_dir(path);
-
-		/* check the filter if this isn't a directory */
-		if (fl->filter && (!is_dir) && fnmatch(fl->filter, file, 0))
-			continue;
-
-		if ((!ewl_filelist_show_dot_files_get(fl))
-				&& (file[0] == '.'))
-			continue;
-
-		if (is_dir) ecore_list_append(dirs, file);
-		else ecore_list_append(files, file);
-	}
-
-	/* XXX will need to do sorting here ... */
-	while ((file = ecore_list_first_remove(dirs)))
-	{
-		func(fl, dir, file, data);
-		FREE(file);
-	}
-
-	while ((file = ecore_list_first_remove(files)))
-	{
-		func(fl, dir, file, data);
-		FREE(file);
-	}
-
-	IF_FREE_LIST(all_files);
-	IF_FREE_LIST(files);
-	IF_FREE_LIST(dirs);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param fl: The filelist to work with
- * @param w: The widget that was clicked
- * @param ev: The Ewl_Event_Mouse_Up structure
- * @param select_state: Signal to send to goto select state
- * @param unselect_state: Signal to send to goto unselect state
- * @return Returns no value.
- * @brief Adds or removes the given widget from the select list as needed
- */
-void
-ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
-				Ewl_Event_Mouse_Up *ev,
-				const char *select_state,
-				const char *unselect_state)
-{
-	int multi = FALSE;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(fl);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_PARAM_PTR(ev);
-	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-	/* only trigger on lmb */
-	if (ev->button != 1)
-		DRETURN(DLEVEL_STABLE);
-
-	/* are the multiselect keys pressed? */
-	if ((ev->base.modifiers & EWL_KEY_MODIFIER_SHIFT)
-			|| (ev->base.modifiers & EWL_KEY_MODIFIER_CTRL))
-		multi = TRUE;
-
-	/* we are not in multiselect mode, or the multiselect keys aren't
-	 * pressed */
-	if (!ewl_filelist_multiselect_get(fl) || (!multi))
-	{
-		if (fl->selected_unselect) fl->selected_unselect(fl);
-		ecore_list_clear(fl->selected);
-
-		if (select_state)
-			ewl_widget_state_set(w, select_state,
-						EWL_STATE_PERSISTENT);
-
-		ecore_list_append(fl->selected, w);
-		ewl_filelist_selected_files_change_notify(fl);
-
-		fl->select.base = w;
-		fl->select.last = NULL;
-
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	/* ok, we're in multiselect mode and either shift or ctrl are
-	 * pressed */
-
-	if (ev->base.modifiers & EWL_KEY_MODIFIER_SHIFT)
-	{
-		/* we have no base selected so this is the first click with
-		 * the shift. set base and set the clicked as selected */
-		if (!fl->select.base)
-		{
-			fl->select.base = w;
-			fl->select.last = NULL;
-
-			if (fl->selected_unselect) fl->selected_unselect(fl);
-			ecore_list_clear(fl->selected);
-		}
-		else
-		{
-			if (fl->shift_handle) fl->shift_handle(fl, w);
-			fl->select.last = w;
-		}
-
-		if (select_state)
-			ewl_widget_state_set(w, select_state,
-						EWL_STATE_PERSISTENT);
-		ecore_list_append(fl->selected, w);
-
-		ewl_filelist_selected_files_change_notify(fl);
-	}
-	else
-	{
-		void *item;
-
-		fl->select.base = w;
-		fl->select.last = NULL;
-
-		item = ecore_list_goto(fl->selected, w);
-		if (item)
-		{
-			if (unselect_state)
-				ewl_widget_state_set(w, unselect_state,
-							EWL_STATE_PERSISTENT);
-			ecore_list_remove(fl->selected);
-		}
-		else
-		{
-			if (select_state)
-				ewl_widget_state_set(w, select_state,
-							EWL_STATE_PERSISTENT);
-			ecore_list_append(fl->selected, w);
-		}
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param fl: The filelist to work with
- * @param c: The container to select/unselect from
- * @param clicked: The clicked widget
- * @param select_signal: The signal to send on select
- * @param unselect_signal: The signal to send on unselect
- * @return Returns no value
- * @brief Handles the select/deselect of widgets in the given container @a c
- */
-void
-ewl_filelist_container_shift_handle(Ewl_Filelist *fl,
-			Ewl_Container *c, Ewl_Widget *clicked,
-			const char *select_signal,
-			const char *unselect_signal)
-{
-	int base_idx, last_idx = -1, cur_idx;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(fl);
-	DCHECK_PARAM_PTR(c);
-	DCHECK_PARAM_PTR(clicked);
-	DCHECK_PARAM_PTR(select_signal);
-	DCHECK_PARAM_PTR(unselect_signal);
-	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
-	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE(clicked, EWL_WIDGET_TYPE);
-
-	ecore_list_goto(c->children, fl->select.base);
-	base_idx = ecore_list_index(c->children);
-
-	ecore_list_goto(c->children, clicked);
-	cur_idx = ecore_list_index(c->children);
-
-	if (fl->select.last)
-	{
-		ecore_list_goto(c->children, fl->select.last);
-		last_idx = ecore_list_index(c->children);
-	}
-
-	if (last_idx < 0)
-	{
-		ewl_filelist_signal_between(fl, c, TRUE, select_signal, base_idx,
-					fl->select.base, cur_idx, clicked);
-	}
-	else
-	{
-		/* user selected more, just tag on whats between the last
-		 * click and the current click */
-		if (((cur_idx < last_idx) && (last_idx < base_idx))
-				|| ((base_idx < last_idx)
-					&& (last_idx < cur_idx)))
-		{
-			ewl_filelist_signal_between(fl, c, TRUE, select_signal,
-						last_idx, fl->select.last,
-						cur_idx, clicked);
-		}
-		else
-		{
-			/* unselect stuff between last and our current index */
-			ewl_filelist_signal_between(fl, c, FALSE,
-					unselect_signal, last_idx,
-					fl->select.last, cur_idx, clicked);
-
-			/* make sure the last selected is removed */
-			ewl_widget_state_set(fl->select.last, unselect_signal,
-						EWL_STATE_PERSISTENT);
-			ecore_list_goto(fl->selected, fl->select.last);
-			ecore_list_remove(fl->selected);
-
-			/* if we moved over the base point we need to
-			 * reseelct some stuff */
-			if (!((last_idx < base_idx) && (cur_idx < base_idx))
-					&& !((last_idx > base_idx)
-						&& (cur_idx > base_idx)))
-			{
-				ewl_filelist_signal_between(fl, c, TRUE,
-						select_signal, base_idx,
-						fl->select.base, cur_idx,
-						clicked);
-			}
-		}
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-ewl_filelist_signal_between(Ewl_Filelist *fl, Ewl_Container *c, int add,
-						const char *signal,
-						int a_idx, Ewl_Widget *a,
-						int b_idx, Ewl_Widget *b)
-{
-	Ewl_Widget *start, *end, *cur;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(fl);
-	DCHECK_PARAM_PTR(c);
-	DCHECK_PARAM_PTR(signal);
-	DCHECK_PARAM_PTR(a);
-	DCHECK_PARAM_PTR(b);
-	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
-	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
-	DCHECK_TYPE(a, EWL_WIDGET_TYPE);
-	DCHECK_TYPE(b, EWL_WIDGET_TYPE);
-
-	if (a_idx < b_idx)
-	{
-		start = a;
-		end = b;
-	}
-	else
-	{
-		start = b;
-		end = a;
-	}
-
-	/* select all the widgets between the base and clicked
-	 * point, excluding the start/end points */
-	ecore_list_goto(c->children, start);
-	ecore_list_next(c->children);
-	while ((cur = ecore_list_next(c->children)))
-	{
-		if (cur == end) break;
-
-		if (add)
-		{
-			ewl_widget_state_set(cur, signal, EWL_STATE_PERSISTENT);
-			ecore_list_append(fl->selected, cur);
-		}
-		else
-		{
-			/* don't remove the base selected widget */
-			if (cur != fl->select.base)
-			{
-				ecore_list_goto(fl->selected, cur);
-				ecore_list_remove(fl->selected);
-				ewl_widget_state_set(cur, signal,
-							EWL_STATE_PERSISTENT);
-			}
-		}
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
  * @param w: The widget to work with
  * @param ev: UNUSED
  * @param data: UNUSED
@@ -1082,19 +1131,56 @@ ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 	DCHECK_TYPE(w, EWL_FILELIST_TYPE);
 
 	fl = EWL_FILELIST(w);
-
-	IF_FREE_LIST(fl->selected);
 	IF_FREE(fl->directory);
 	IF_FREE(fl->filter);
+	IF_FREE(fl->view);
+	IF_FREE(fl->model);
 
-	fl->dir_change = NULL;
-	fl->filter_change = NULL;
-	fl->multiselect_change = NULL;
-	fl->show_dot_change = NULL;
-	fl->selected_file_add = NULL;
-	fl->file_name_get = NULL;
-	fl->selected_unselect = NULL;
-	fl->shift_handle = NULL;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filelist_cb_clicked(Ewl_Widget *w, void *ev,
+				void *data __UNUSED__)
+{
+	Ewl_Event_Mouse_Down *event;
+	char *file, *t;
+	Ewl_Filelist *fl;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(ev);
+
+	event = ev;
+	fl = data;
+
+	if (!ewl_mvc_selected_count_get(EWL_MVC(fl->controller)))
+		DRETURN(DLEVEL_STABLE);
+
+	/* Single clicks only */
+	if (event->clicks != 2)
+		ewl_filelist_selected_files_change_notify(fl);
+
+	/* Handle double clicks */
+	if (event->clicks == 2)
+	{
+		file = ewl_filelist_selected_file_get(fl);
+
+		/* If .. */
+		if (!strcmp(file, fl->directory))
+		{
+			t = ecore_file_dir_get(fl->directory);
+			ewl_filelist_directory_set(fl, t);
+			FREE(t);
+		}
+		/* Change dir if dir, else call above */
+		else if (ecore_file_is_dir(file))
+			ewl_filelist_directory_set(fl, file);
+		
+		/* Send signal of file selected */
+		else
+			ewl_filelist_selected_files_change_notify(fl);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

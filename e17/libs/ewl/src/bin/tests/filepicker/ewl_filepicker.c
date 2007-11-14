@@ -130,9 +130,7 @@ ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev,
 			if (!file)
 				printf("No file selected.\n");
 			else
-				printf("Selected %s/%s\n",
-					ewl_filepicker_directory_get(fp),
-					file);
+				printf("%s\n", file);
 			break;
 		}
 		default:

@@ -6,6 +6,8 @@
 #include "ewl_image.h"
 #include "ewl_icon.h"
 #include "ewl_text.h"
+#include "ewl_model.h"
+#include "ewl_view.h"
 
 /**
  * @addtogroup Ewl_Filelist Ewl_Filelist: The base widget for the filelists
@@ -48,49 +50,27 @@ typedef struct Ewl_Filelist Ewl_Filelist;
 struct Ewl_Filelist
 {
 	Ewl_Box box;		/**< Inherits from Ewl_Box */
+	Ewl_Widget *controller; /**< Must inherit from mvc **/
 
-	Ecore_List *selected;	/**< The selected files */
+	Ewl_View *view;		 /**< The view for mvc */
+	Ewl_Model *model;	/**< The model for the mvc */
+
 	char *directory;	/**< The directory to display */
 	char *filter;		/**< The file filter to employ */
 
 	unsigned char multiselect:1;	/**< Allow multiple file selctions */
-	unsigned char show_dot_files:1;	/**< Show . files */
+	unsigned char skip_hidden:1;	/**< Show . files */
 
-	struct
-	{
-		Ewl_Widget *base; /**< First select in SHIFT select */
-		Ewl_Widget *last; /**< Last selected in SHIFT select */
-	} select;		 /**< Data used in SHIFT select */
+	Ewl_Filelist_View view_flag;	/**< The view to use for controller */
 
 	struct
 	{	Ewl_Scrollpane_Flags h; /**< Horizontal scroll flag */
 		Ewl_Scrollpane_Flags v; /**< Vertical scroll flag */
 	} scroll_flags;		/**< Flags to modify a containing scrollpane */
-
-	void (*dir_change)(Ewl_Filelist *fl);	/**< Callback to notify of
-							directory change */
-	void (*filter_change)(Ewl_Filelist *fl);	/**< Callback to notify
-							of filter change */
-	void (*multiselect_change)(Ewl_Filelist *fl); /**< Callback to notify
-							of multilselect state
-							change */
-	void (*show_dot_change)(Ewl_Filelist *fl);	/**< Callback to notify
-							of show dot file
-							setting change */
-	void (*selected_unselect)(Ewl_Filelist *fl); /**< Callback to
-							unselect all files */
-	void (*selected_file_add)(Ewl_Filelist *fl, const char *file); /**<
-							Callback to
-							notify of a change
-							to the selected
-							files */
-	const char *(*file_name_get)(Ewl_Filelist *fl, void *file); /**<
-							Callback to get the
-							selected filename */
-	void (*shift_handle)(Ewl_Filelist *fl, Ewl_Widget *clicked); /**<
-							Callback to handle
-							SHIFT clicks */
 };
+
+
+Ewl_Widget	*ewl_filelist_new(void);
 
 int		 ewl_filelist_init(Ewl_Filelist *fl);
 
@@ -101,6 +81,11 @@ const char	*ewl_filelist_directory_get(Ewl_Filelist *fl);
 void		 ewl_filelist_filter_set(Ewl_Filelist *fl,
 							const char *filter);
 const char	*ewl_filelist_filter_get(Ewl_Filelist *fl);
+
+void		 ewl_filelist_view_set(Ewl_Filelist *fl,
+						Ewl_Filelist_View view);
+Ewl_Filelist_View *ewl_filelist_view_get(Ewl_Filelist *fl);
+
 
 void		 ewl_filelist_multiselect_set(Ewl_Filelist *fl,
 							unsigned int ms);
@@ -138,7 +123,7 @@ void		 ewl_filelist_hscroll_flag_set(Ewl_Filelist *fl,
 						Ewl_Scrollpane_Flags h);
 Ewl_Scrollpane_Flags ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl);
 
-const char	*ewl_filelist_stock_icon_get(Ewl_Filelist *fl, const char *path);
+const char	*ewl_filelist_stock_icon_get(const char *path);
 
 char 		*ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir);
 void 		 ewl_filelist_directory_read(Ewl_Filelist *fl,

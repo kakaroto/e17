@@ -93,7 +93,7 @@ ewl_tree2_view_freebox_init(Ewl_Tree2_View_Freebox *tv)
 	ewl_widget_inherit(EWL_WIDGET(tv), EWL_TREE2_VIEW_FREEBOX_TYPE);
 	ewl_widget_show(tv->scroll);
 
-	tv->fbox = ewl_hfreebox_new();
+	tv->fbox = ewl_vfreebox_new();
 	ewl_freebox_layout_type_set(EWL_FREEBOX(tv->fbox),
 				EWL_FREEBOX_LAYOUT_AUTO);
 	ewl_container_child_append(EWL_CONTAINER(tv->scroll), tv->fbox);

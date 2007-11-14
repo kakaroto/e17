@@ -3,7 +3,6 @@
 #define EWL_FILEPICKER_H
 
 #include "ewl_box.h"
-#include "ewl_view.h"
 
 /**
  * @addtogroup Ewl_Filepicker Ewl_Filepicker: Allows selecting files from a list
@@ -59,7 +58,6 @@ struct Ewl_Filepicker
 	Ecore_List *filters;		/**< The type filters */
 
 	unsigned char show_favorites:1;	/**< Show the favorite box */
-	Ewl_View *view;			/**< The filelist view to use */
 };
 
 Ewl_Widget	*ewl_filepicker_new(void);
@@ -94,8 +92,8 @@ void		 ewl_filepicker_show_favorites_set(Ewl_Filepicker *fp,
 unsigned int	 ewl_filepicker_show_favorites_get(Ewl_Filepicker *fp);
 
 void		 ewl_filepicker_list_view_set(Ewl_Filepicker *fp,
-							Ewl_View *view);
-Ewl_View 	*ewl_filepicker_list_view_get(Ewl_Filepicker *fp);
+							Ewl_Filelist_View view);
+Ewl_Filelist_View *ewl_filepicker_list_view_get(Ewl_Filepicker *fp);
 
 void 		 ewl_filepicker_filter_add(Ewl_Filepicker *fp,
 						const char *name,

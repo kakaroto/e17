@@ -2,10 +2,6 @@
 #include "ewl_base.h"
 #include "ewl_filedialog.h"
 #include "ewl_filepicker.h"
-#include "ewl_filelist_column.h"
-#include "ewl_filelist_icon.h"
-#include "ewl_filelist_list.h"
-#include "ewl_filelist_tree.h"
 #include "ewl_menu.h"
 #include "ewl_context_menu.h"
 #include "ewl_macros.h"
@@ -168,11 +164,10 @@ ewl_filedialog_init(Ewl_Filedialog *fd)
  * @brief Set the view to be used for displaying the files in the dialog
  */
 void
-ewl_filedialog_list_view_set(Ewl_Filedialog *fd, Ewl_View *view)
+ewl_filedialog_list_view_set(Ewl_Filedialog *fd, Ewl_Filelist_View view)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fd);
-	DCHECK_PARAM_PTR(view);
 	DCHECK_TYPE(fd, EWL_FILEDIALOG_TYPE);
 
 	ewl_filepicker_list_view_set(EWL_FILEPICKER(fd->fp), view);
@@ -185,7 +180,7 @@ ewl_filedialog_list_view_set(Ewl_Filedialog *fd, Ewl_View *view)
  * @return Returns the Ewl_View set on this file dialog
  * @brief Retrieve the file list view used in this file dialog
  */
-Ewl_View *
+Ewl_Filelist_View *
 ewl_filedialog_list_view_get(Ewl_Filedialog *fd)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -258,8 +253,8 @@ unsigned int
 ewl_filedialog_multiselect_get(Ewl_Filedialog *fd)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(fd, 0);
-	DCHECK_TYPE_RET(fd, EWL_FILEDIALOG_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fd, FALSE);
+	DCHECK_TYPE_RET(fd, EWL_FILEDIALOG_TYPE, FALSE);
 
 	DRETURN_INT(ewl_filepicker_multiselect_get(EWL_FILEPICKER(fd->fp)),
 							DLEVEL_STABLE);
@@ -292,8 +287,8 @@ unsigned int
 ewl_filedialog_show_dot_files_get(Ewl_Filedialog *fd)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(fd, 0);
-	DCHECK_TYPE_RET(fd, EWL_FILEDIALOG_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fd, FALSE);
+	DCHECK_TYPE_RET(fd, EWL_FILEDIALOG_TYPE, FALSE);
 
 	DRETURN_INT(ewl_filepicker_show_dot_files_get(EWL_FILEPICKER(fd->fp)),
 								DLEVEL_STABLE);
@@ -326,8 +321,8 @@ unsigned int
 ewl_filedialog_show_favorites_get(Ewl_Filedialog *fd)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(fd, 0);
-	DCHECK_TYPE_RET(fd, EWL_FILEDIALOG_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(fd, FALSE);
+	DCHECK_TYPE_RET(fd, EWL_FILEDIALOG_TYPE, FALSE);
 
 	DRETURN_INT(ewl_filepicker_show_favorites_get(EWL_FILEPICKER(fd->fp)),
 								DLEVEL_STABLE);
@@ -496,7 +491,7 @@ ewl_filedialog_cb_column_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	DCHECK_TYPE(data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
-	ewl_filedialog_list_view_set(fd, ewl_filelist_column_view_get());
+	ewl_filedialog_list_view_set(fd, EWL_FILELIST_VIEW_COLUMN);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -512,7 +507,7 @@ ewl_filedialog_cb_icon_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	DCHECK_TYPE(data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
-	ewl_filedialog_list_view_set(fd, ewl_filelist_icon_view_get());
+	ewl_filedialog_list_view_set(fd, EWL_FILELIST_VIEW_ICON);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -528,7 +523,7 @@ ewl_filedialog_cb_list_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	DCHECK_TYPE(data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
-	ewl_filedialog_list_view_set(fd, ewl_filelist_list_view_get());
+	ewl_filedialog_list_view_set(fd, EWL_FILELIST_VIEW_LIST);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -544,7 +539,7 @@ ewl_filedialog_cb_tree_view(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	DCHECK_TYPE(data, EWL_FILEDIALOG_TYPE);
 
 	fd = data;
-	ewl_filedialog_list_view_set(fd, ewl_filelist_tree_view_get());
+	ewl_filedialog_list_view_set(fd, EWL_FILELIST_VIEW_TREE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

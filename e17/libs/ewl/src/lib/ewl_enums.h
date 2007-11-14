@@ -598,7 +598,9 @@ enum Ewl_Filelist_Event_Type
 {
 	EWL_FILELIST_EVENT_DIR_CHANGE,
 	EWL_FILELIST_EVENT_SELECTION_CHANGE,
-	EWL_FILELIST_EVENT_FILE_SELECTED
+	EWL_FILELIST_EVENT_FILE_SELECTED,
+	EWL_FILELIST_EVENT_MULTI_TRUE,
+	EWL_FILELIST_EVENT_MULTI_FALSE
 };
 
 /**
@@ -857,6 +859,23 @@ enum Ewl_Thumbnail_Size
  * The Ewl_Thumbnail_Size
  */
 typedef enum Ewl_Thumbnail_Size Ewl_Thumbnail_Size;
+
+/*
+ * @enum Ewl_Filelist_View
+ * The view used in the filelist
+ */
+enum Ewl_Filelist_View
+{
+	EWL_FILELIST_VIEW_ICON, /**< Uses freebox view of tree */
+	EWL_FILELIST_VIEW_LIST, /**< Normal tree with no expansions */
+	EWL_FILELIST_VIEW_TREE, /**< Normal tree with expansions */
+	EWL_FILELIST_VIEW_COLUMN, /**< A custom column view */
+};
+
+/**
+ * The Ewl_Filelist_View
+ */
+typedef enum Ewl_Filelist_View Ewl_Filelist_View;
 
 /**
  * @}
