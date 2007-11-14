@@ -63,7 +63,7 @@ create_test(Ewl_Container *box)
 
 	button_aleft = ewl_radiobutton_new();
 	ewl_button_label_set(EWL_BUTTON(button_aleft), "Left");
-	ewl_radiobutton_checked_set(button_aleft, 1);
+	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(button_aleft), TRUE);
 	ewl_container_child_append(EWL_CONTAINER(avbox), button_aleft);
 	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_aleft),
 				  EWL_RADIOBUTTON(button_atop));
@@ -130,7 +130,7 @@ create_test(Ewl_Container *box)
 
 	button_ptop = ewl_radiobutton_new();
 	ewl_button_label_set(EWL_BUTTON(button_ptop), "Top");
-	ewl_radiobutton_checked_set(button_ptop, 1);
+	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(button_ptop), TRUE);
 	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_ptop),
 				  EWL_RADIOBUTTON(button_pright));
 	ewl_container_child_append(EWL_CONTAINER(pvbox), button_ptop);
@@ -171,7 +171,7 @@ static void
 border_change_alignment(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
-	if (!ewl_radiobutton_is_checked(EWL_RADIOBUTTON(w)))
+	if (!ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
 		return;
 
 	if (w == button_aleft)
@@ -196,7 +196,7 @@ static void
 border_change_position(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
-	if (!ewl_radiobutton_is_checked(w))
+	if (!ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
 		return;
 
 	if (w == button_pleft)

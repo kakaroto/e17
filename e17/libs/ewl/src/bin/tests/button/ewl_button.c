@@ -143,7 +143,8 @@ create_test(Ewl_Container *box)
 	 * Create a check button with a label and checked.
 	 */
 	check_button[1]  = ewl_checkbutton_new();
-	ewl_button_label_set(EWL_BUTTON(check_button[1] ), "With Label and checked");
+	ewl_button_label_set(EWL_BUTTON(check_button[1] ), 
+						"With Label and checked");
 	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(check_button[1]), TRUE);
 	ewl_container_child_append(EWL_CONTAINER(vbox), check_button[1]);
 	ewl_widget_show(check_button[1]);
@@ -184,7 +185,7 @@ create_test(Ewl_Container *box)
 	 */
 	radio_button[0]  = ewl_radiobutton_new();
 	ewl_button_label_set(EWL_BUTTON(radio_button[0] ), "With Label");
-	ewl_radiobutton_checked_set(radio_button[0], TRUE);
+	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(radio_button[0]), TRUE);
 	ewl_container_child_append(EWL_CONTAINER(vbox), radio_button[0]);
 	ewl_widget_show(radio_button[0]);
 
@@ -196,7 +197,7 @@ create_test(Ewl_Container *box)
 
 	radio_button[2]  = ewl_radiobutton_new();
 	ewl_button_label_set(EWL_BUTTON(radio_button[2] ), "Disabled");
-	ewl_radiobutton_checked_set(radio_button[2], TRUE);
+	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(radio_button[2]), TRUE);
 	ewl_container_child_append(EWL_CONTAINER(vbox), radio_button[2]);
 	ewl_widget_disable(radio_button[2]);
 	ewl_widget_show(radio_button[2]);

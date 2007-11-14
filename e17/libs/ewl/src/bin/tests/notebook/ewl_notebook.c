@@ -248,7 +248,7 @@ create_main_page(void)
 							EWL_RADIOBUTTON(o2));
 
 		if (!strcmp(alignment[i], "center"))
-			ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), TRUE);
+			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
 
 		ewl_widget_show(o);
 
@@ -275,7 +275,7 @@ create_main_page(void)
 							EWL_RADIOBUTTON(o2));
 
 		if (!strcmp(alignment[i], "top"))
-			ewl_radiobutton_checked_set(EWL_RADIOBUTTON(o), TRUE);
+			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
 
 		ewl_widget_show(o);
 
