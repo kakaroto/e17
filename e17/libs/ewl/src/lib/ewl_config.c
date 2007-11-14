@@ -5,11 +5,19 @@
 #include "ewl_debug.h"
 
 #include <Evas.h>
+#include <ctype.h>
 #include <fcntl.h>
 #include <libgen.h>
 
 Ewl_Config *ewl_config = NULL;
 Ewl_Config_Cache ewl_config_cache;
+
+/*
+ * @internal
+ * @def EWL_CONFIG_KEY_NOMATCH
+ * Marker used to set when a config key has no matching value
+ */
+#define EWL_CONFIG_KEY_NOMATCH ((char *)0xdeadbeef)
 
 extern Ecore_List *ewl_embed_list;
 
@@ -26,6 +34,7 @@ static void ewl_config_create_user_hash(Ewl_Config *cfg);
 static Ecore_Hash *ewl_config_set_hash_get(Ewl_Config *cfg,
 					Ewl_State_Type state);
 static const char *ewl_config_get(Ewl_Config *cfg, const char *key);
+static const char * ewl_config_env_get(Ewl_Config *cfg, const char *key);
 static char *ewl_config_trim(char *v);
 static char *ewl_config_file_name_user_get(Ewl_Config *cfg);
 static char *ewl_config_file_name_system_get(Ewl_Config *cfg);
@@ -709,6 +718,10 @@ ewl_config_get(Ewl_Config *cfg, const char *key)
 	{
 		/* we got our value, just NOP */
 	}
+	else if ((val = ewl_config_env_get(cfg, key)))
+	{
+		/* we got our value, just NOP */
+	}
 	else if (cfg->data.user
 			&& (val = ecore_hash_get(cfg->data.user, key)))
 	{
@@ -719,6 +732,42 @@ ewl_config_get(Ewl_Config *cfg, const char *key)
 	{
 		/* we got our value, just NOP */
 	}
+
+	DRETURN_PTR(val, DLEVEL_STABLE);
+}
+
+/* Look up hash values in the environment and cache the results. */
+static const char *
+ewl_config_env_get(Ewl_Config *cfg, const char *key)
+{
+	int kpos, epos = 0;
+	const char *val = NULL;
+	char var_name[PATH_MAX];
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(cfg, NULL);
+	DCHECK_PARAM_PTR_RET(key, NULL);
+
+	/* Skip all leading non-alphanumeric characters */
+	for (kpos = 0; (key[kpos] && !isalnum(key[kpos])); kpos++);
+
+	/*
+	 * Copy the config variable name in all upper case and substitute _ for
+	 * any non-alphanumeric characters.
+	 */
+	while (epos < PATH_MAX && key[kpos])
+	{
+		if (isalnum(key[kpos]))
+			var_name[epos] = toupper(key[kpos]);
+		else
+			var_name[epos] = '_';
+		epos++;
+		kpos++;
+	}
+
+	var_name[epos] = '\0';
+
+	if (var_name[0]) val = getenv(var_name);
 
 	DRETURN_PTR(val, DLEVEL_STABLE);
 }
