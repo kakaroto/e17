@@ -1,7 +1,7 @@
 # Japanese translation for E17 eveil module.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # Yasufumi Haga <yasufumi.haga@nifty.com>, 2006
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Eveil\n"
