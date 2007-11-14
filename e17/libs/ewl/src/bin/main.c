@@ -148,7 +148,10 @@ main(int argc, char **argv)
 		else if (!strncmp(argv[i], "-all", 4))
 			all_tests = 1;
 		else if (!strncmp(argv[i], "-unit", 5))
+		{
 			unit_test = 1;
+			setenv("EWL_ENGINE_NAME", "evas_buffer", 1);
+		}
 		else if (!strncmp(argv[i], "-profile", 8))
 			profile_tests = 1;
 	}
