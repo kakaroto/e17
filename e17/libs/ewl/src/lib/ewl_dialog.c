@@ -40,7 +40,7 @@ ewl_dialog_new(void)
 int
 ewl_dialog_init(Ewl_Dialog *dialog)
 {
-	Ewl_Widget *w, *o;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(dialog, FALSE);
@@ -93,24 +93,26 @@ ewl_dialog_init(Ewl_Dialog *dialog)
 	/*
 	 * Create an action area for buttons
 	 */
-	o = ewl_cell_new();
-	ewl_widget_appearance_set(o, "actionarea");
-	ewl_object_fill_policy_set(EWL_OBJECT(o),
+	dialog->action_area = ewl_cell_new();
+	ewl_widget_appearance_set(dialog->action_area, "actionarea");
+	ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
 			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
-	ewl_widget_internal_set(o, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(dialog->box), o);
-	ewl_widget_show(o);
+	ewl_widget_internal_set(dialog->action_area, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(dialog->box), 
+			dialog->action_area);
+	ewl_widget_show(dialog->action_area);
 
-	dialog->action_area = ewl_hbox_new();
-	if (!dialog->action_area) {
+	dialog->action_box = ewl_hbox_new();
+	if (!dialog->action_box) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
-	ewl_container_child_append(EWL_CONTAINER(o), dialog->action_area);
-	ewl_box_homogeneous_set(EWL_BOX(dialog->action_area), FALSE);
-	ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
+	ewl_container_child_append(EWL_CONTAINER(dialog->action_area), 
+			dialog->action_box);
+	ewl_box_homogeneous_set(EWL_BOX(dialog->action_box), FALSE);
+	ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_box),
 			   EWL_FLAG_FILL_NONE);
-	ewl_widget_internal_set(dialog->action_area, TRUE);
-	ewl_widget_show(dialog->action_area);
+	ewl_widget_internal_set(dialog->action_box, TRUE);
+	ewl_widget_show(dialog->action_box);
 
 	ewl_dialog_active_area_set(dialog, dialog->position);
 
@@ -142,18 +144,22 @@ ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
 	if (pos & (EWL_POSITION_LEFT | EWL_POSITION_RIGHT)) {
 		ewl_box_orientation_set(EWL_BOX(d->box),
 					EWL_ORIENTATION_HORIZONTAL);
-		ewl_box_orientation_set(EWL_BOX(d->separator),
+		ewl_separator_orientation_set(EWL_SEPARATOR((d->separator)),
 					EWL_ORIENTATION_VERTICAL);
-		ewl_box_orientation_set(EWL_BOX(d->action_area),
+		ewl_box_orientation_set(EWL_BOX(d->action_box),
 					EWL_ORIENTATION_VERTICAL);
+		ewl_object_fill_policy_set(EWL_OBJECT(d->action_area),
+			   EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HSHRINK);
 	}
 	else {
 		ewl_box_orientation_set(EWL_BOX(d->box),
 					EWL_ORIENTATION_VERTICAL);
-		ewl_box_orientation_set(EWL_BOX(d->separator),
+		ewl_separator_orientation_set(EWL_SEPARATOR((d->separator)),
 					EWL_ORIENTATION_HORIZONTAL);
-		ewl_box_orientation_set(EWL_BOX(d->action_area),
+		ewl_box_orientation_set(EWL_BOX(d->action_box),
 					EWL_ORIENTATION_HORIZONTAL);
+		ewl_object_fill_policy_set(EWL_OBJECT(d->action_area),
+			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 	}
 
 	ewl_container_child_remove(EWL_CONTAINER(d->box), d->separator);
@@ -202,14 +208,11 @@ ewl_dialog_action_position_get(Ewl_Dialog *d)
 void
 ewl_dialog_action_fill_policy_set(Ewl_Dialog *d, unsigned int pol)
 {
-	Ewl_Widget *w;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(d);
 	DCHECK_TYPE(d, EWL_DIALOG_TYPE);
 
-	w = ewl_widget_parent_get(d->action_area);
-	ewl_object_fill_policy_set(EWL_OBJECT(w), pol);
+	ewl_object_fill_policy_set(EWL_OBJECT(d->action_box), pol);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -226,7 +229,8 @@ ewl_dialog_action_fill_policy_get(Ewl_Dialog *d)
 	DCHECK_PARAM_PTR_RET(d, EWL_POSITION_BOTTOM);
 	DCHECK_TYPE_RET(d, EWL_DIALOG_TYPE, EWL_FLAG_FILL_NONE);
 
-	DRETURN_INT(ewl_object_fill_policy_get(EWL_OBJECT(d->action_area)), DLEVEL_STABLE);
+	DRETURN_INT(ewl_object_fill_policy_get(EWL_OBJECT(d->action_box)), 
+			DLEVEL_STABLE);
 }
 
 /**
@@ -238,14 +242,11 @@ ewl_dialog_action_fill_policy_get(Ewl_Dialog *d)
 void
 ewl_dialog_action_alignment_set(Ewl_Dialog *d, unsigned int align)
 {
-	Ewl_Widget *w;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(d);
 	DCHECK_TYPE(d, EWL_DIALOG_TYPE);
 
-	w = ewl_widget_parent_get(d->action_area);
-	ewl_object_alignment_set(EWL_OBJECT(w), align);
+	ewl_object_alignment_set(EWL_OBJECT(d->action_box), align);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -262,7 +263,8 @@ ewl_dialog_action_alignment_get(Ewl_Dialog *d)
 	DCHECK_PARAM_PTR_RET(d, EWL_POSITION_BOTTOM);
 	DCHECK_TYPE_RET(d, EWL_DIALOG_TYPE, EWL_FLAG_FILL_NONE);
 
-	DRETURN_INT(ewl_object_alignment_get(EWL_OBJECT(d->action_area)), DLEVEL_STABLE);
+	DRETURN_INT(ewl_object_alignment_get(EWL_OBJECT(d->action_box)), 
+			DLEVEL_STABLE);
 }
 
 /**
@@ -274,8 +276,8 @@ unsigned int
 ewl_dialog_has_separator_get(Ewl_Dialog *dialog)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(dialog, 0);
-	DCHECK_TYPE_RET(dialog, EWL_DIALOG_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(dialog, FALSE);
+	DCHECK_TYPE_RET(dialog, EWL_DIALOG_TYPE, FALSE);
 
 	if (!dialog)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -344,7 +346,7 @@ ewl_dialog_active_area_set(Ewl_Dialog *d, Ewl_Position pos)
 
 	if (pos == d->position)
 		ewl_container_redirect_set(EWL_CONTAINER(d),
-					   EWL_CONTAINER(d->action_area));
+					   EWL_CONTAINER(d->action_box));
 	else
 		ewl_container_redirect_set(EWL_CONTAINER(d),
 					   EWL_CONTAINER(d->vbox));

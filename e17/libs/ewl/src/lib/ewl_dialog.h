@@ -53,7 +53,8 @@ struct Ewl_Dialog
 
 	Ewl_Widget *box;	/**< The box for window layout */
 	Ewl_Widget *vbox;	/**< The box where messages are displayed */
-	Ewl_Widget *action_area; /**< The box where the buttons are added */
+	Ewl_Widget *action_area; /**< The cell holding the action box */
+	Ewl_Widget *action_box; /**< The box where the buttons are added */
 
 	Ewl_Widget *separator;   /**< The separator between vbox and action_area */
 
