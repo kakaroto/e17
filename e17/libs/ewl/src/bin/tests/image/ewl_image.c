@@ -343,32 +343,14 @@ create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 	e = ev;
 
 	if (e->response == EWL_STOCK_OK) {
-		const char *path;
 		char *filename;
-		char *file;
-		int   l1;
-		int   l2;
 
-		path = ewl_filedialog_directory_get (EWL_FILEDIALOG (w));
 		filename = ewl_filedialog_selected_file_get (EWL_FILEDIALOG (w));
-		l1 = strlen (path);
-		l2 = strlen (filename);
-
-		if (!path || (path[0] == '\0'))
-			file = strdup (filename);
-		else {
-			file = (char *)malloc (sizeof (char) * (l1 + l2 + 2));
-			memcpy (file, path, l1);
-			file[l1] = '/';
-			memcpy (file + l1 + 1, filename, l2);
-			file [l1 + l2 + 1] = '\0';
-		}
-
-		printf("File open from image test: %s\n", file);
-		if (file) {
-			ewl_text_text_set(EWL_TEXT(entry), file);
+		printf("File open from image test: %s\n", filename);
+		if (filename) {
+			ewl_text_text_set(EWL_TEXT(entry), filename);
 			image_load();
-			free (file);
+			free (filename);
 			// free(path); FIXME: Is text widget allocated correctly?
 		}
 	}

@@ -81,22 +81,21 @@ cb_open(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
 	fd = EWL_FILEDIALOG(w);
 	s = ewl_filedialog_selected_file_get(fd);
-	snprintf(path, sizeof(path), "%s/%s",
-			ewl_filedialog_directory_get(fd), s);
-	if (s) free(s);
 	ewl_widget_destroy(w);
 
 	scroll = ewl_widget_name_find("scroll");
 	ewl_container_reset(EWL_CONTAINER(scroll));
 
-	t = ewl_io_manager_uri_read(path);
+	t = ewl_io_manager_uri_read(s);
 	if (!t)
 	{
-		printf("Unable to create widget from file (%s)\n", path);
+		printf("Unable to create widget from file (%s)\n", s);
 		return;
 	}
 	ewl_container_child_append(EWL_CONTAINER(scroll), t);
 	ewl_widget_show(t);
+
+	free(s);
 }
 
 
