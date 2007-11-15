@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -156,7 +156,7 @@ msgstr "Okno wiadomo¶ci Enlightenment"
 msgid "Ignore this"
 msgstr "Zignoruj to"
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr "Uruchom Enlightenment ponownie"
 
@@ -2553,6 +2553,10 @@ msgstr "O Enlightenment %s"
 msgid "About this theme"
 msgstr ""
 
+#: config/strings.c:95 config/strings.c:198
+msgid "Restart"
+msgstr "Uruchom ponownie"
+
 #: config/strings.c:96 config/strings.c:199
 #, fuzzy
 msgid "Log Out"
@@ -2894,9 +2898,12 @@ msgid "Other"
 msgstr ""
 
 #: config/strings.c:197
+msgid "Epplets"
+msgstr ""
+
 #, fuzzy
-msgid "Enlightenment Epplets"
-msgstr "Wyjd¼ z Enlightenment"
+#~ msgid "Enlightenment Epplets"
+#~ msgstr "Wyjd¼ z Enlightenment"
 
 #~ msgid ""
 #~ "Warning: unable to determine what to do with\n"
@@ -3257,9 +3264,6 @@ msgstr "Wyjd¼ z Enlightenment"
 
 #~ msgid "Ignore"
 #~ msgstr "Zignoruj"
-
-#~ msgid "Restart"
-#~ msgstr "Uruchom ponownie"
 
 #~ msgid "Exit"
 #~ msgstr "Wyj¶cie"

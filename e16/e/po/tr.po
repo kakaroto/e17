@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -158,7 +158,7 @@ msgstr "Enlightenment ileti kutusu"
 msgid "Ignore this"
 msgstr "Bunu geç"
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr "Enlightenment'i yeniden baþlat"
 
@@ -2560,6 +2560,10 @@ msgstr "Enlightenment %s hakkýnda bilgi "
 msgid "About this theme"
 msgstr ""
 
+#: config/strings.c:95 config/strings.c:198
+msgid "Restart"
+msgstr "Yeniden baþla"
+
 #: config/strings.c:96 config/strings.c:199
 #, fuzzy
 msgid "Log Out"
@@ -2901,9 +2905,12 @@ msgid "Other"
 msgstr ""
 
 #: config/strings.c:197
+msgid "Epplets"
+msgstr ""
+
 #, fuzzy
-msgid "Enlightenment Epplets"
-msgstr "Enlightenment'ten çýk"
+#~ msgid "Enlightenment Epplets"
+#~ msgstr "Enlightenment'ten çýk"
 
 #~ msgid ""
 #~ "Warning: unable to determine what to do with\n"
@@ -3266,9 +3273,6 @@ msgstr "Enlightenment'ten çýk"
 
 #~ msgid "Ignore"
 #~ msgstr "Unut"
-
-#~ msgid "Restart"
-#~ msgstr "Yeniden baþla"
 
 #~ msgid "Exit"
 #~ msgstr "Çýk"

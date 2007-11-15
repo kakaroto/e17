@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -157,7 +157,7 @@ msgstr "Enlightenment meddelandedialog"
 msgid "Ignore this"
 msgstr "Ignorera detta"
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr "Starta om Enlightenment"
 
@@ -2555,6 +2555,10 @@ msgstr "Om Enlightenment %s"
 msgid "About this theme"
 msgstr ""
 
+#: config/strings.c:95 config/strings.c:198
+msgid "Restart"
+msgstr "Starta om"
+
 #: config/strings.c:96 config/strings.c:199
 #, fuzzy
 msgid "Log Out"
@@ -2896,9 +2900,12 @@ msgid "Other"
 msgstr ""
 
 #: config/strings.c:197
+msgid "Epplets"
+msgstr ""
+
 #, fuzzy
-msgid "Enlightenment Epplets"
-msgstr "Avsluta Enlightenment"
+#~ msgid "Enlightenment Epplets"
+#~ msgstr "Avsluta Enlightenment"
 
 #~ msgid ""
 #~ "Warning: unable to determine what to do with\n"
@@ -3261,9 +3268,6 @@ msgstr "Avsluta Enlightenment"
 
 #~ msgid "Ignore"
 #~ msgstr "Ignorera"
-
-#~ msgid "Restart"
-#~ msgstr "Starta om"
 
 #~ msgid "Exit"
 #~ msgstr "Avsluta"

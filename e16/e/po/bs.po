@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Å anjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -175,7 +175,7 @@ msgstr "Enlightenment dijalog poruka"
 msgid "Ignore this"
 msgstr "IgnoriÅ·i ovo"
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr "Ponovo pokreni Enlightenment"
 
@@ -2563,6 +2563,10 @@ msgstr "O Enlightenment-u %s"
 msgid "About this theme"
 msgstr ""
 
+#: config/strings.c:95 config/strings.c:198
+msgid "Restart"
+msgstr "Ponovo pokreni"
+
 #: config/strings.c:96 config/strings.c:199
 #, fuzzy
 msgid "Log Out"
@@ -2889,8 +2893,12 @@ msgstr ""
 
 #: config/strings.c:197
 #, fuzzy
-msgid "Enlightenment Epplets"
-msgstr "IzaÄi iz Enlightenment-a"
+msgid "Epplets"
+msgstr "Talasi"
+
+#, fuzzy
+#~ msgid "Enlightenment Epplets"
+#~ msgstr "IzaÄi iz Enlightenment-a"
 
 #~ msgid ""
 #~ "Warning: unable to determine what to do with\n"
@@ -3256,9 +3264,6 @@ msgstr "IzaÄi iz Enlightenment-a"
 
 #~ msgid "Ignore"
 #~ msgstr "IgnoriÅ·i"
-
-#~ msgid "Restart"
-#~ msgstr "Ponovo pokreni"
 
 #~ msgid "Exit"
 #~ msgstr "IzaÄi"

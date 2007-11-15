@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -159,7 +159,7 @@ msgstr "Диалог сообщения Enlightenment"
 msgid "Ignore this"
 msgstr "Игнорировать"
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr "Перезапустить Enlightenment"
 
@@ -2510,6 +2510,10 @@ msgstr "Enlightenment %s"
 msgid "About this theme"
 msgstr ""
 
+#: config/strings.c:95 config/strings.c:198
+msgid "Restart"
+msgstr "Перезапуск"
+
 #: config/strings.c:96 config/strings.c:199
 #, fuzzy
 msgid "Log Out"
@@ -2847,9 +2851,12 @@ msgid "Other"
 msgstr ""
 
 #: config/strings.c:197
+msgid "Epplets"
+msgstr ""
+
 #, fuzzy
-msgid "Enlightenment Epplets"
-msgstr "Выйти из Enlightenment"
+#~ msgid "Enlightenment Epplets"
+#~ msgstr "Выйти из Enlightenment"
 
 #~ msgid ""
 #~ "Warning: unable to determine what to do with\n"
@@ -3172,9 +3179,6 @@ msgstr "Выйти из Enlightenment"
 
 #~ msgid "Ignore"
 #~ msgstr "Игнорировать"
-
-#~ msgid "Restart"
-#~ msgstr "Перезапуск"
 
 #~ msgid "Exit"
 #~ msgstr "Выход"

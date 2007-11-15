@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2007-09-22 23:01+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -164,7 +164,7 @@ msgstr "Enlightenment メッセージダイアログ"
 msgid "Ignore this"
 msgstr "無視する"
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr "Enlightenment 再起動"
 
@@ -2547,6 +2547,10 @@ msgstr "Enlightenment について"
 msgid "About this theme"
 msgstr "このテーマについて"
 
+#: config/strings.c:95 config/strings.c:198
+msgid "Restart"
+msgstr "再起動"
+
 #
 #: config/strings.c:96 config/strings.c:199
 msgid "Log Out"
@@ -2876,10 +2880,14 @@ msgstr "ユーザーアプリケーション"
 msgid "Other"
 msgstr "その他"
 
-#
 #: config/strings.c:197
-msgid "Enlightenment Epplets"
-msgstr "Enlightenment Epplets"
+#, fuzzy
+msgid "Epplets"
+msgstr "さざなみ"
+
+#
+#~ msgid "Enlightenment Epplets"
+#~ msgstr "Enlightenment Epplets"
 
 #~ msgid ""
 #~ "Warning: unable to determine what to do with\n"
@@ -3258,9 +3266,6 @@ msgstr "Enlightenment Epplets"
 
 #~ msgid "Ignore"
 #~ msgstr "無視"
-
-#~ msgid "Restart"
-#~ msgstr "再起動"
 
 #~ msgid "Exit"
 #~ msgstr "終了"

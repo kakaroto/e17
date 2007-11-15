@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -158,7 +158,7 @@ msgstr "Caixa de Diálogo do Enlightement"
 msgid "Ignore this"
 msgstr "Ignorar"
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr "Reiniciar o Enlightenment"
 
@@ -2509,6 +2509,10 @@ msgstr "Sobre o Enlightenment %s"
 msgid "About this theme"
 msgstr ""
 
+#: config/strings.c:95 config/strings.c:198
+msgid "Restart"
+msgstr "Reiniciar"
+
 #: config/strings.c:96 config/strings.c:199
 #, fuzzy
 msgid "Log Out"
@@ -2848,9 +2852,12 @@ msgid "Other"
 msgstr ""
 
 #: config/strings.c:197
+msgid "Epplets"
+msgstr ""
+
 #, fuzzy
-msgid "Enlightenment Epplets"
-msgstr "Sair do Enlightenment"
+#~ msgid "Enlightenment Epplets"
+#~ msgstr "Sair do Enlightenment"
 
 #~ msgid ""
 #~ "Warning: unable to determine what to do with\n"
@@ -3166,9 +3173,6 @@ msgstr "Sair do Enlightenment"
 
 #~ msgid "Ignore"
 #~ msgstr "Ignorar"
-
-#~ msgid "Restart"
-#~ msgstr "Reiniciar"
 
 #~ msgid "Exit"
 #~ msgstr "Sair"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2007-04-19 20:56+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -168,7 +168,7 @@ msgstr "Enlightenment meddelelsesdialog"
 msgid "Ignore this"
 msgstr "Ignorér dette"
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr "Genstart Enlightenment"
 
@@ -2341,6 +2341,11 @@ msgstr "Om Enlightenment"
 msgid "About this theme"
 msgstr "Om dette tema"
 
+#: config/strings.c:95 config/strings.c:198
+#, fuzzy
+msgid "Restart"
+msgstr "Start"
+
 #: config/strings.c:96 config/strings.c:199
 msgid "Log Out"
 msgstr "Log ud"
@@ -2643,8 +2648,12 @@ msgid "Other"
 msgstr "Andet"
 
 #: config/strings.c:197
-msgid "Enlightenment Epplets"
-msgstr "Enlightenment Epplets"
+#, fuzzy
+msgid "Epplets"
+msgstr "Krusninger"
+
+#~ msgid "Enlightenment Epplets"
+#~ msgstr "Enlightenment Epplets"
 
 #~ msgid "Recover system config?"
 #~ msgstr "Gendan systemkonfig?"

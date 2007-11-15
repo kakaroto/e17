@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -169,7 +169,7 @@ msgstr "Enlightenment üzenetablak"
 msgid "Ignore this"
 msgstr "Hiba átlépése"
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr "Enlightenment újraindítása"
 
@@ -2481,6 +2481,10 @@ msgstr "Az Enlightenment %s névjegye"
 msgid "About this theme"
 msgstr ""
 
+#: config/strings.c:95 config/strings.c:198
+msgid "Restart"
+msgstr "Újraindítás"
+
 #: config/strings.c:96 config/strings.c:199
 #, fuzzy
 msgid "Log Out"
@@ -2821,8 +2825,12 @@ msgstr ""
 
 #: config/strings.c:197
 #, fuzzy
-msgid "Enlightenment Epplets"
-msgstr "Kilépés"
+msgid "Epplets"
+msgstr "Körhullámok"
+
+#, fuzzy
+#~ msgid "Enlightenment Epplets"
+#~ msgstr "Kilépés"
 
 #~ msgid ""
 #~ "Warning: unable to determine what to do with\n"
@@ -3124,9 +3132,6 @@ msgstr "Kilépés"
 
 #~ msgid "Ignore"
 #~ msgstr "Átlépés"
-
-#~ msgid "Restart"
-#~ msgstr "Újraindítás"
 
 #~ msgid "Exit"
 #~ msgstr "Kilépés"

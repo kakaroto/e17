@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.9-0.02-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2007-06-14 18:36+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
@@ -179,7 +179,7 @@ msgstr "Dialogue Enlightenment"
 msgid "Ignore this"
 msgstr "Ignorer"
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr "Redémarrer Enlightenment"
 
@@ -2486,6 +2486,11 @@ msgstr "A propos d'Enlightenment"
 msgid "About this theme"
 msgstr "A propos de ce thème"
 
+#: config/strings.c:95 config/strings.c:198
+#, fuzzy
+msgid "Restart"
+msgstr "Début"
+
 #: config/strings.c:96 config/strings.c:199
 msgid "Log Out"
 msgstr "Déconnexion"
@@ -2787,8 +2792,12 @@ msgid "Other"
 msgstr "Autres"
 
 #: config/strings.c:197
-msgid "Enlightenment Epplets"
-msgstr "Epplets d'Enlightenment"
+#, fuzzy
+msgid "Epplets"
+msgstr "Ondes"
+
+#~ msgid "Enlightenment Epplets"
+#~ msgstr "Epplets d'Enlightenment"
 
 #~ msgid ""
 #~ "Warning: unable to determine what to do with\n"

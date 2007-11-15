@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-02 22:17+0100\n"
+"POT-Creation-Date: 2007-11-12 20:18+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -127,7 +127,7 @@ msgstr ""
 msgid "Ignore this"
 msgstr ""
 
-#: src/alert.c:572 config/strings.c:95 config/strings.c:198
+#: src/alert.c:572
 msgid "Restart Enlightenment"
 msgstr ""
 
@@ -2216,6 +2216,10 @@ msgstr ""
 msgid "About this theme"
 msgstr ""
 
+#: config/strings.c:95 config/strings.c:198
+msgid "Restart"
+msgstr ""
+
 #: config/strings.c:96 config/strings.c:199
 msgid "Log Out"
 msgstr ""
@@ -2517,7 +2521,7 @@ msgid "Other"
 msgstr ""
 
 #: config/strings.c:197
-msgid "Enlightenment Epplets"
+msgid "Epplets"
 msgstr ""
 
 #~ msgid ""
