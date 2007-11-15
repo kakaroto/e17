@@ -296,14 +296,14 @@ group
 			description
 			{
 				state: "default" 0.0;
+				color: 255 255 255 255;
 				min: 5 19;
-				color: 221 221 221 100;
 			}
 			description
 			{
-				state: "odd" 0.0;
+				state: "even" 0.0;
 				inherit: "default" 0.0;
-				color: 255 255 255 255;
+				color: 221 221 221 100;
 			}
 		}
 		part
@@ -366,7 +366,7 @@ group
 			name: "odd";
 			signal: "odd";
 			source: "*";
-			action: STATE_SET "odd" 0.0;
+			action: STATE_SET "default" 0.0;
 			transition: LINEAR 0.0;
 			target: "bg";
 		}
@@ -375,7 +375,7 @@ group
 			name: "even";
 			signal: "even";
 			source: "*";
-			action: STATE_SET "default" 0.0;
+			action: STATE_SET "even" 0.0;
 			transition: LINEAR 0.0;
 			target: "bg";
 		}
